@@ -14,7 +14,6 @@
 #include "setitems.h"
 #include "btbutton.h"
 #include "diffsonora.h"
-//#include "main.h"
 #include <qfont.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -28,7 +27,7 @@
 sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
         : QWidget( parent, name )
 {
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)
+#if defined(BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
     showFullScreen();
 #endif    

@@ -1,16 +1,18 @@
 //#if defined(Q_WS_QWS) || defined(_WS_QWS_)
 
-#ifndef	CALIBRATE
-#define	CALIBRATE
+#ifndef	CALIBRATE_H
+#define	CALIBRATE_H
 
 //#include <qwsmouse_qws.h>
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)
-#include "qmouselinuxtp_qws.h" 
+#if defined(BT_EMBEDDED)
+//#include "QWSMOUSE/qmouselinuxtp_qws.h"
+#include "QWSMOUSE/qmouse_qws.h"
 #endif
 #include <qwidget.h>
 #include <qpixmap.h>
 
-class QTimer;
+//class QTimer;
+#include <qtimer.h>
 
 class Calibrate : public QWidget
 {
@@ -31,11 +33,11 @@ private slots:
     void timeout();
 
 private:
-//    QPixmap logo;
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)
+    QPixmap logo;
+//#if defined(Q_WS_QWS) || defined(_WS_QWS_)
     QWSPointerCalibrationData cd;
     QWSPointerCalibrationData::Location location;
-#endif    
+//#endif    
     QPoint crossPos;
     QPoint penPos;
     QPixmap saveUnder;
@@ -45,6 +47,6 @@ private:
 };
 
 
-#endif
+#endif //CALIBRATE_H
 //#endif // _WS_QWS_
 

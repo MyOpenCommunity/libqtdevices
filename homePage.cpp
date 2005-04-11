@@ -37,7 +37,7 @@
 homePage::homePage( QWidget *parent, const char *name, WFlags f )
         : QWidget( parent, name )
 {
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)
+#if defined(BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
     showFullScreen();
 #endif

@@ -2,7 +2,7 @@
 
 #include <qpainter.h>
 #include <qtimer.h>
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)
+#if defined(BT_EMBEDDED)
 #include <qwindowsystem_qws.h>
 #include <qgfx_qws.h>
 #endif
@@ -19,8 +19,8 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
     setGeometry( 0, 0, desk.width(), desk.height() );
 //    logo = Resource::loadPixmap( "qtlogo" );
     QPixmap logo;
-	logo.load("qtlogo");
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)
+	logo.load("cfg/skin/bticino.png");
+#if defined(BT_EMBEDDED)
 
     cd.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint( offset, offset );
     cd.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint( offset, qt_screen->deviceHeight() - offset );
@@ -32,7 +32,7 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
 #endif
     timer = new QTimer( this );
     connect( timer, SIGNAL(timeout()), this, SLOT(timeout()) );
-//    QWSServer::mouseHandler()->clearCalibration();
+    QWSServer::mouseHandler()->clearCalibration();
     grabMouse();
 }
 
@@ -42,7 +42,7 @@ Calibrate::~Calibrate()
 
 QPoint Calibrate::fromDevice( const QPoint &p )
 {
-    #if defined(Q_WS_QWS) || defined(_WS_QWS_)
+#if defined(BT_EMBEDDED)
     return qt_screen->mapFromDevice( p,
 		QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()) );
 #endif
@@ -50,7 +50,7 @@ QPoint Calibrate::fromDevice( const QPoint &p )
 
 bool Calibrate::sanityCheck()
 {
- #if defined(Q_WS_QWS) || defined(_WS_QWS_)
+#if defined(BT_EMBEDDED)
    
     QPoint tl = cd.devPoints[QWSPointerCalibrationData::TopLeft];
     QPoint tr = cd.devPoints[QWSPointerCalibrationData::TopRight];
@@ -98,11 +98,11 @@ void Calibrate::paintEvent( QPaintEvent * )
 
     int y;
 
- /*   if ( !logo.isNull() ) {
+   if ( !logo.isNull() ) {
 	y = height() / 2 - logo.height() - 15;
 	p.drawPixmap( (width() - logo.width())/2, y, logo );
     }
-*/
+
     y = height() / 2 + 15;
 
     QString text( "Schermata di calibrazione" );
@@ -123,7 +123,7 @@ void Calibrate::paintEvent( QPaintEvent * )
 void Calibrate::mousePressEvent( QMouseEvent *e )
 {
     // map to device coordinates
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)    
+#if defined(BT_EMBEDDED)    
     QPoint devPos = qt_screen->mapToDevice( e->pos(),
 			QSize(qt_screen->width(), qt_screen->height()) );
     if ( penPos.isNull() )
@@ -141,7 +141,7 @@ void Calibrate::mouseReleaseEvent( QMouseEvent * )
 
     bool doMove = TRUE;
 
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)
+#if defined(BT_EMBEDDED)
 
     cd.devPoints[location] = penPos;
     if ( location < QWSPointerCalibrationData::LastLocation ) {
@@ -169,7 +169,7 @@ void Calibrate::mouseReleaseEvent( QMouseEvent * )
 
 void Calibrate::timeout()
 {
-#if defined(Q_WS_QWS) || defined(_WS_QWS_)    
+#if defined(BT_EMBEDDED)    
     QPoint target = fromDevice( cd.screenPoints[location] );
 
     bool doneX = FALSE;
