@@ -116,14 +116,14 @@ void BtMain::hom()
     Home->setFGColor(205,205,205);
       
 //    Home->addButton(0,35,ICON_USCITA_80,USCITA);
-    Home->addButton(0,125,ICON_ILLUMINAZ_80,ILLUMINAZIONE);
+    Home->addButton(0,90,ICON_ILLUMINAZ_80,ILLUMINAZIONE);
     Home->addButton(80,5,ICON_SCENARI_80 ,SCENARI);
-    Home->addButton(80,90,ICON_AUTOMAZIONE_80 	,AUTOMAZIONE);
+    Home->addButton(80,90,ICON_AUTOMAZIONE_80, AUTOMAZIONE);
     Home->addButton(80,175,ICON_DIFSON_80 ,DIFSON);
     Home->addButton(160,35,ICON_CARICHI_80,CARICHI);
     Home->addButton(160,125,ICON_IMPOSTAZIONI_80 ,IMPOSTAZIONI);
-    Home->addButton(0,35,ICON_TERMOREGOL_80,TERMOREGOLAZIONE);
-//     Home.addButton(12,12,ICON_AUTOMAZIONE_80,DIFSON);
+    Home->addButton(0,5,ICON_TERMOREGOL_80,TERMOREGOLAZIONE);
+    Home->addButton(0,175,ICON_ANTIINTRUS_80,ANTIINTRUSIONE);
     
     Home->addClock(30,265,180,40,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);
     
@@ -299,6 +299,15 @@ void BtMain::myMain()
         termo->addItem(TERMO,"Zona DUE",(void*)"2",ICON_PIU, ICON_MENO, ICON_MANUAL_ON, ICON_AUTO_ON,0,0,QColor(255,0,0));	
         termo->addItem(TERMO,"Zona numero uno",(void*)"1",ICON_PIU, ICON_MENO, ICON_MANUAL_ON, ICON_AUTO_ON,0,0,QColor(255,0,0));	
 	
+/*******************************************
+** Antiintrusione
+********************************************/      	
+        antintr = new antintrusione(NULL, "ANTIINTRUSIONE");
+        antintr->setBGColor(BG_R, BG_G, BG_B);
+        antintr->setFGColor(205,205,205);
+        antintr->addItem(ZONANTINTRUS,"Zona num 1", (void*)"#1", ICON_ZONA_PARZ, ICON_ZONA_NONPARZ);	
+        antintr->addItem(ZONANTINTRUS,"Zona num 2", (void*)"#2", ICON_ZONA_PARZ, ICON_ZONA_NONPARZ);		
+	
 
 /*------------------------------------------------------------------------------------------*/     
      
@@ -340,7 +349,10 @@ void BtMain::myMain()
      connect(Home,SIGNAL(Termoregolazione()),termo,SLOT(show()));
      connect(termo,SIGNAL(Closed()),termo,SLOT(hide()));
      connect(termo,SIGNAL(Closed()),Home,SLOT(show()));
-     
+          
+     connect(Home,SIGNAL(Antiintrusione()),antintr,SLOT(show()));
+     connect(antintr,SIGNAL(Closed()),antintr,SLOT(hide()));
+     connect(antintr,SIGNAL(Closed()),Home,SLOT(show()));     
      
      connect(client_monitor,SIGNAL(frameIn(char *)),illumino,SIGNAL(gestFrame(char *)));
      connect(client_monitor,SIGNAL(frameIn(char *)),automazioni,SIGNAL(gestFrame(char *)));
@@ -367,15 +379,16 @@ void BtMain::myMain()
      connect(difSon,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));     
      connect(Home,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));     
      connect(termo,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));     
+     connect(antintr,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));          
    
     connect(this,SIGNAL(freeze(bool)),illumino,SLOT(freezed(bool)));     
      connect(this,SIGNAL(freeze(bool)),automazioni,SLOT(freezed(bool)));     
      connect(this,SIGNAL(freeze(bool)),scenari,SLOT(freezed(bool)));     
      connect(this,SIGNAL(freeze(bool)),carichi,SLOT(freezed(bool)));          
      connect(this,SIGNAL(freeze(bool)),imposta,SLOT(freezed(bool)));     
-     connect(this,SIGNAL(freeze(bool)),difSon,SLOT(freezed(bool)));          
+     connect(this,SIGNAL(freeze(bool)),difSon,SIGNAL(freezed(bool)));          
      connect(this,SIGNAL(freeze(bool)),Home,SLOT(freezed(bool)));               
-     connect(this,SIGNAL(freeze(bool)),termo,SLOT(freezed(bool)));               
+     connect(this,SIGNAL(freeze(bool)),antintr,SIGNAL(freezed(bool)));               
 
      
 /*******************************************/     
@@ -387,7 +400,8 @@ void BtMain::myMain()
      /*scenari->inizializza();*/
      difSon->inizializza();
      termo->inizializza();     
-   
+     antintr->inizializza();
+     
 //     Home.showFullScreen();
  
 
