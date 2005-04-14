@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouse_qws.cpp,v 1.1 2005/04/11 08:55:34 cvs Exp $
+** $Id: qmouse_qws.cpp,v 1.2 2005/04/14 13:38:35 cvs Exp $
 **
 ** Implementation of Qt/Embedded mouse drivers
 **
@@ -29,6 +29,8 @@
 ** not clear to you.
 **
 **********************************************************************/
+
+#if  defined BT_EMBEDDED
 
 #include "qmouse_qws.h"
 #include "qwindowsystem_qws.h"
@@ -296,3 +298,4 @@ bool QWSCalibratedMouseHandler::sendFiltered( const QPoint &p, int button )
     return sent;
 }
 
+#endif

@@ -11,6 +11,7 @@
 
 #include "banner.h"
 #include "bannondx.h"
+#include "genericfunz.h"
 
 
 /*****************************************************************
@@ -84,12 +85,61 @@ class calibration : public bannOnDx
 {
     Q_OBJECT
 public:
-     calibration( QWidget *, const char *);     
+     calibration( QWidget *, const char *,const char *);     
 signals:
 
 public slots:	
      void 	doCalib();
+void	fineCalib();
 private:
       Calibrate* calib;
 };
 #endif //CALIBRATION
+
+
+/*****************************************************************
+**beep
+****************************************************************/
+
+#ifndef BEEP_H
+#define BEEP_H
+
+class impBeep : public bannOnDx
+{
+    Q_OBJECT
+public:
+     impBeep( QWidget *, const char *,const char *,const char *);     
+signals:
+
+public slots:	
+     void 	toggleBeep();
+private:
+      char iconOn[50];
+      char iconOff[50]; 
+};
+#endif //BEEP_H
+
+/*****************************************************************
+**contrasto
+****************************************************************/
+
+#ifndef IMP_CONTR_H
+#define IMP_CONTR_H
+
+#include "contrpage.h"
+
+class impContr : public bannOnDx
+{
+    Q_OBJECT
+public:
+     impContr( QWidget *, const char *,const char *);     
+signals:
+
+public slots:	
+     void 	showContr();
+     void 	contrMade();
+private:
+     contrPage* contrasto; 
+};
+#endif //IMP_CONTR_H
+

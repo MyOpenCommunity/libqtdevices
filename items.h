@@ -505,3 +505,59 @@ enum statisonda{
 		 S_OFF,
 		     };
 #endif //THERMO_H
+
+/*****************************************************************
+**Zona Antiintrusione
+****************************************************************/	
+#ifndef ZONA_ANTI_H
+#define ZONA_ANTI_H
+
+#include "bannonoff.h"
+
+class zonaAnti : public bannOnOff
+{
+    Q_OBJECT
+public:
+     zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
+          void inizializza();
+public slots:
+     void gestFrame(char*);
+     char* getChi();
+signals:
+private:    
+};
+
+
+#endif //ZONA_ANTI
+
+/*****************************************************************
+**Impianto Antiintrusione
+****************************************************************/	
+#ifndef IMP_ANTI_H
+#define IMP_ANTI_H
+
+#include "bann2butlab.h"
+#include "tastiera.h"
+
+class impAnti : public  bann2butLab
+{
+    Q_OBJECT
+public:
+     impAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
+          void inizializza();
+public slots:
+     void gestFrame(char*);
+     char* getChi();
+     void Inserisci();
+     void Disinserisci();
+     void Insert(char*);
+     void DeInsert(char*);
+     
+     void CodaAllarmi();
+signals:
+private:    
+     tastiera* tasti;
+};
+
+
+#endif //IMP_ANTI_H

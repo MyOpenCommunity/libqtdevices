@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouselinuxtp_qws.cpp,v 1.1 2005/04/11 08:55:34 cvs Exp $
+** $Id: qmouselinuxtp_qws.cpp,v 1.2 2005/04/14 13:38:35 cvs Exp $
 **
 ** Implementation of Qt/Embedded mouse drivers
 **
@@ -29,6 +29,7 @@
 ** not clear to you.
 **
 **********************************************************************/
+#if defined BT_EMBEDDED
 
 #include "qmouselinuxtp_qws.h"
 
@@ -355,3 +356,5 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
 
 // #include "qmouselinuxtp_qws.moc"
 #endif //QT_NO_QWS_MOUSE_LINUXTP
+
+#endif

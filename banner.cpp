@@ -645,13 +645,13 @@ void banner::Draw()
    if (BannerText)
    {
      BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-     BannerText->setFont( QFont( "Times", 12, QFont::Bold ) );
+     BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
      BannerText->setText(testo);
    }
    if (SecondaryText)
    {	
      SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-     SecondaryText->setFont( QFont( "Times", 14, QFont::Bold ) );
+     SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
      SecondaryText->setText(testoSecondario);
    }
 }

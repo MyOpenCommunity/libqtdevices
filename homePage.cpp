@@ -39,7 +39,7 @@ homePage::homePage( QWidget *parent, const char *name, WFlags f )
 {
 #if defined(BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
-    showFullScreen();
+//    showFullScreen();
 #endif
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
     xClock=xTemp=MAX_WIDTH+2;

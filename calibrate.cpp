@@ -10,6 +10,7 @@
 #include "calibrate.h"
 #include <qfile.h>
 #include <qapplication.h>
+#include <qcursor.h>
 
 Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
     QWidget( parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose )
@@ -29,10 +30,11 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
     cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint( qt_screen->deviceWidth()/2, qt_screen->deviceHeight()/2 );
     crossPos = fromDevice( cd.screenPoints[QWSPointerCalibrationData::TopLeft] );
     location = QWSPointerCalibrationData::TopLeft;
+   setCursor (QCursor (blankCursor));
 #endif
     timer = new QTimer( this );
     connect( timer, SIGNAL(timeout()), this, SLOT(timeout()) );
-    QWSServer::mouseHandler()->clearCalibration();
+//    QWSServer::mouseHandler()->clearCalibration();
     grabMouse();
 }
 
@@ -153,6 +155,7 @@ void Calibrate::mouseReleaseEvent( QMouseEvent * )
 	    hide();
 	    close();
 	    doMove = FALSE;
+	    emit (fineCalib());
 	} else {
 	    location = QWSPointerCalibrationData::TopLeft;
 	}

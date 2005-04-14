@@ -31,13 +31,15 @@ private:
 
 private slots:
     void timeout();
+signals:
+void fineCalib();
 
 private:
     QPixmap logo;
-//#if defined(Q_WS_QWS) || defined(_WS_QWS_)
+#if defined(BT_EMBEDDED)
     QWSPointerCalibrationData cd;
     QWSPointerCalibrationData::Location location;
-//#endif    
+#endif    
     QPoint crossPos;
     QPoint penPos;
     QPixmap saveUnder;

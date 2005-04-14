@@ -101,19 +101,84 @@ void impostaSveglia::deFreez()
 /*****************************************************************
 **calibration
 ****************************************************************/
-#include "calibrate.h"
+//#include "calibrate.h"
 
-calibration::calibration( QWidget *parent,const char *name )
+calibration::calibration( QWidget *parent,const char *name, const char* icon )
         : bannOnDx( parent, name )
 {   
-     SetIcons( ICON_OK_80,1);
      
-     //settalora.setBGColor(backgroundColor()/*BG_R, BG_G, BG_B*/);  
-     //settalora.setFGColor(foregroundColor()/*255-BG_R, 255-BG_G, 255-BG_B*/);  
+//     SetIcons(icon,1);
+      SetIcons( ICON_OK_80,1);
      connect(this,SIGNAL(click()),this,SLOT(doCalib()));      
 }
 
 void calibration::doCalib()
 {
     calib = new Calibrate();
+    calib->show();
+    hide();
+    connect(calib,SIGNAL(fineCalib()), this, SLOT(fineCalib()));
+}
+void calibration::fineCalib()
+{
+    show();
+    delete(calib);
+}
+
+/*****************************************************************
+**beep
+****************************************************************/
+
+impBeep::impBeep( QWidget *parent,const char *name ,const char * icon1, const char *icon2)
+        : bannOnDx( parent, name )
+{   
+     strncpy(&iconOn[0], icon1, sizeof(iconOn));
+     strncpy(&iconOff[0], icon2, sizeof(iconOff));
+     SetIcons( &iconOff[0],1);
+     setBeep(FALSE);//non va bene, bisogna prendere il valore di partenza dal costruttore
+     connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));      
+}
+
+void impBeep::toggleBeep()
+{
+    if(getBeep())
+    {
+	setBeep(FALSE);
+	SetIcons(uchar(0), &iconOff[0]);
+    }
+    else
+    {
+	setBeep(TRUE);
+	SetIcons(uchar(0), &iconOn[0]);	
+    }
+    Draw();
+}
+
+/*****************************************************************
+**contrasto
+****************************************************************/
+
+impContr::impContr( QWidget *parent,const char *name ,const char * icon1)
+        : bannOnDx( parent, name )
+{   
+     SetIcons( icon1,1);
+     connect(this,SIGNAL(click()),this,SLOT(showContr()));      
+}
+
+void impContr::showContr()
+{
+    hide();
+    contrasto = new contrPage(NULL,"contr"); 
+    connect(contrasto, SIGNAL(Close()), this, SLOT(contrMade()));
+
+    contrasto->setBGColor(backgroundColor());  
+    contrasto->setFGColor(foregroundColor());  
+    contrasto->show();
+}
+
+void impContr::contrMade()
+{
+    show();
+    contrasto->hide();
+    delete(contrasto);
 }

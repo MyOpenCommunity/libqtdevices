@@ -12,13 +12,13 @@
 #define RADIO_H
 
 #include <qframe.h>
-#include <qlabel.h>
+#include "btlabel.h"
 #include <qprocess.h>
 #include "btbutton.h"
 #include "main.h"
 #include "bannfrecce.h"
 #include <qlcdnumber.h>
-
+#include <qcursor.h>
 
     
 class  radio : public QWidget
@@ -33,7 +33,7 @@ public:
    int 	setBGPixmap(char* );
    BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
    BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
-   QLabel* rdsLabel,* radioName,*progrText;
+   BtLabel* rdsLabel,* radioName,*progrText;
    QLCDNumber *freq;
    void 	setName(char*);
    char* 	getName();

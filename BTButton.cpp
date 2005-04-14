@@ -1,5 +1,7 @@
 #include "btbutton.h"
 #include "main.h"
+#include "genericfunz.h"
+
 
 #include <qdialog.h>
 #include <qfontmetrics.h>
@@ -282,7 +284,8 @@ void BtButton::drawButton( QPainter *paint )
     
 #ifdef  BEEP
     if (isDown())
-	qApp->beep();
+//	qApp->beep();
+	beep();    
 #endif
     
     lastEnabled = isEnabled();

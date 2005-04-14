@@ -27,6 +27,10 @@
 sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSonora* diso, char* f)
         : QFrame( parent, name )
 {
+#if defined(BT_EMBEDDED)
+    setCursor (QCursor (blankCursor));
+ //  showFullScreen();
+#endif    
    bannNavigazione  = new bannFrecce(this,"bannerfrecce",9);
    bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );
    
@@ -116,7 +120,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	testiChoice[idx] = new QLabel(this,"choiceLabel"+QString::number(idx));
 	testiChoice[idx] -> setGeometry( 80,idx*60,120,60);
 	testiChoice[idx] -> setAlignment(AlignHCenter|AlignVCenter);
-	testiChoice[idx] -> setFont( QFont( "Times", 14, QFont::Bold ) );
+	testiChoice[idx] -> setFont( QFont( "helvetica", 14, QFont::Bold ) );
 	testiChoice[idx] -> hide();
     }	
 

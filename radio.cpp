@@ -33,6 +33,10 @@
 radio::radio( QWidget *parent, const char *name )
         : QWidget( parent, name )
 {
+#if defined(BT_EMBEDDED)
+    setCursor (QCursor (blankCursor));
+    showFullScreen();
+#endif
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);      
 
     bannNavigazione  = new bannFrecce(this,"bannerfrecce",1);    
@@ -51,10 +55,10 @@ radio::radio( QWidget *parent, const char *name )
     cinBut = new BtButton(this,"Bottone cinque");
     cancBut = new BtButton(this,"Bottone di canc");
     
-    rdsLabel = new QLabel(this,"Bottone di sinistra");
-    radioName = new QLabel(this,"Bottone di sinistra");
+    rdsLabel = new BtLabel(this,"Bottone di sinistra");
+    radioName = new BtLabel(this,"Bottone di sinistra");
     freq = new QLCDNumber(this,"pippo");
-    progrText = new QLabel(this,"progressivo stazione");
+    progrText = new BtLabel(this,"progressivo stazione");
     freq->setSegmentStyle(QLCDNumber::Flat); 
     freq->setSmallDecimalPoint(TRUE);
     freq->setNumDigits(6);
@@ -242,8 +246,7 @@ void radio::setBGColor(QColor c)
     quatBut->setPaletteBackgroundColor(c);
     cinBut->setPaletteBackgroundColor(c);    
     cancBut->setPaletteBackgroundColor(c);    
-    bannNavigazione->setPaletteBackgroundColor(c);    
-     qDebug("setto BG color di myRadio %d, %d, %d",c.red(), c.green(), c.blue());
+    bannNavigazione->setBGColor(c);    
 }
 void radio::setFGColor(QColor c)
 {
@@ -262,7 +265,7 @@ void radio::setFGColor(QColor c)
     quatBut->setPaletteForegroundColor(c);
     cinBut->setPaletteForegroundColor(c);    
     cancBut->setPaletteForegroundColor(c);    
-    bannNavigazione->setPaletteForegroundColor(c);  
+    bannNavigazione->setFGColor(c);  
 }
 
 int radio::setBGPixmap(char* backImage)

@@ -19,7 +19,7 @@
 #include "openclient.h"
 #include <qptrlist.h> 
 
-
+#include <qcursor.h>
 
 //class QPushButton;
 
@@ -42,10 +42,10 @@ signals:
     void	gesFrame(char*);    
     void	sendFrame(char*);
     void 	freeze(bool);
+    void 	freezed(bool);
 public slots:
     void 	gestFrame(char*);	
     void	show();
-    void 	freezed(bool);
 private:
   uchar numRighe;	
   sottoMenu* sorgenti;

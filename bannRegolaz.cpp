@@ -19,8 +19,8 @@
 bannRegolaz::bannRegolaz( QWidget *parent,const char *name )
         : banner( parent, name )
 {
-    addItem( BUT1 , 0 , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM );
-    addItem( BUT2 , MAX_WIDTH-BANREGOL_BUT_DIM , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM );
+    addItem( BUT2 , 0 , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM );
+    addItem( BUT1 , MAX_WIDTH-BANREGOL_BUT_DIM , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM );
     addItem( BUT3 , (MAX_WIDTH-BUTREGOL_ICON_DIM_X)/2 , 0,BUTREGOL_ICON_DIM_X/2 , BUTREGOL_ICON_DIM_Y );
     addItem( BUT4 , MAX_WIDTH/2 , 0,BUTREGOL_ICON_DIM_X/2 , BUTREGOL_ICON_DIM_Y );
     addItem( TEXT , 0 , BANREGOL_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE-BANREGOL_BUT_DIM );

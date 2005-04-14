@@ -1443,7 +1443,7 @@ void banradio::startRDS()
      char    pippo[50];
      
      memset(pippo,'\000',sizeof(pippo));
-     strcat(pippo,"*#16*101*");
+     strcat(pippo,"*16*101*");
      strcat(pippo,getAddress());
 //     strcat(pippo,"*8##");
      strcat(pippo,"##");
@@ -1459,7 +1459,7 @@ void banradio::stopRDS()
      char    pippo[50];
      
      memset(pippo,'\000',sizeof(pippo));
-     strcat(pippo,"*#16*102*");
+     strcat(pippo,"*16*102*");
      strcat(pippo,getAddress());
      strcat(pippo,"##");
      
@@ -1865,3 +1865,192 @@ void termoPage::inizializza()
 }
 
 
+/*****************************************************************
+**zonaAnti
+****************************************************************/
+
+zonaAnti::zonaAnti( QWidget *parent,const char *name,char* indirizzo,char* IconActive,char* IconDisactive,char *icon ,char *pressedIcon ,int period,int number )
+        : bannOnOff( parent, name )
+{       
+    char    pippo[MAX_PATH];
+    char    pluto[MAX_PATH];
+    
+     setAddress(indirizzo);
+     getZoneName(IconActive, &pippo[0], indirizzo, sizeof(pippo));
+     getZoneName(IconDisactive, &pluto[0], indirizzo, sizeof(pluto));
+     SetIcons( NULL, NULL,&pippo[0],&pluto[0]);    
+     setChi("5");
+}
+
+
+void zonaAnti::gestFrame(char* frame)
+ {    
+    openwebnet msg_open;
+    char aggiorna;
+    
+    aggiorna=0;
+      
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+
+    
+    if (!strcmp(msg_open.Extract_chi(),"5"))
+    {
+	if ( (! strcmp(msg_open.Extract_dove(),getAddress()) )   )   
+	{
+	    if (!strcmp(msg_open.Extract_cosa(),"11")) 		
+	    {
+		if (!isActive())
+		{
+		    impostaAttivo(1);
+		    aggiorna=1;
+		}
+	    }
+	    else if (!strcmp(msg_open.Extract_cosa(),"18")) 
+	    {
+	                if (isActive())
+		{
+		    impostaAttivo(0);
+		    aggiorna=1;
+		}
+	    }
+	}
+    }    
+    if (aggiorna)
+	Draw();
+ }
+
+
+
+char* zonaAnti::getChi()
+{
+   return("5");
+}
+
+void zonaAnti::inizializza()
+{ 
+        
+     openwebnet msg_open;
+     char    pippo[50];
+     
+     memset(pippo,'\000',sizeof(pippo));
+     strcat(pippo,"*#5*");
+     strcat(pippo,getAddress());
+     strcat(pippo,"##");
+     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+     emit sendFrame(msg_open.frame_open);    
+}
+
+
+/*****************************************************************
+**impAnti
+****************************************************************/
+
+
+impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn, char* IconOff, char* IconInfo, char* IconActive, int ,int  )
+        :  bann2butLab( parent, name )
+{      
+    char pippo[MAX_PATH];
+    
+     memset(pippo,'\000',sizeof(pippo));
+     if (IconActive)
+	 strncpy(&pippo[0],IconActive,strstr(IconActive,".")-IconActive-3);
+
+     strcat(pippo,"Dis");
+     strcat(pippo,strstr(IconActive,"."));
+     SetIcons(  IconInfo,IconOn,IconActive,IconOff,&pippo[0]);
+     setChi("5");
+     nascondi(BUT2);
+     impostaAttivo(2);
+     connect(this,SIGNAL(dxClick()),this,SLOT(Inserisci()));
+     connect(this,SIGNAL(cdxClick()),this,SLOT(Disinserisci()));               
+     connect(this,SIGNAL(sxClick()),this,SLOT(CodaAllarmi()));                    
+}
+
+
+void impAnti::gestFrame(char* frame)
+ {    
+    openwebnet msg_open;
+    char aggiorna;
+    
+    aggiorna=0;
+      
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+
+    
+    if (!strcmp(msg_open.Extract_chi(),"5"))
+    {
+	if  (! strcmp(msg_open.Extract_dove(),"1" )   )   
+	{
+	    if (!strcmp(msg_open.Extract_cosa(),"11")) 		
+	    {
+		if (!isActive())
+		{
+		    impostaAttivo(2);
+		    nascondi(BUT4);
+		    mostra(BUT2);
+		    aggiorna=1;
+		}
+	    }
+	    else if (!strcmp(msg_open.Extract_cosa(),"2")) 
+	    {
+	                if (isActive())
+		{
+		    impostaAttivo(0);
+		    nascondi(BUT2);
+		    mostra(BUT4);		    
+		    aggiorna=1;
+		}
+	    }
+	}
+    }    
+    if (aggiorna)
+	Draw();
+ }
+
+void impAnti::Inserisci()
+{
+    tasti = new tastiera(NULL, "");
+    connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert(char*)));
+    tasti->setBGColor(backgroundColor());
+    tasti->setFGColor(foregroundColor());
+    tasti->showTastiera();
+    this->hide();
+}
+void impAnti::Disinserisci()
+{
+    tasti = new tastiera(NULL, "");
+    connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
+    tasti->setBGColor(backgroundColor());
+    tasti->setFGColor(foregroundColor());    
+    tasti->showTastiera();
+    this->hide();    
+}
+void impAnti::CodaAllarmi()
+{
+    
+}
+ 
+void impAnti::Insert(char* pwd)
+{
+    show();   
+    
+    qDebug("inserisco con %s",pwd);
+
+//    delete(tasti);  da segmentation fault
+}
+void impAnti::DeInsert(char* pwd)
+{
+    show();   
+    qDebug("disinserisco con %s", pwd);
+//   delete(tasti);
+}
+
+char* impAnti::getChi()
+{
+   return("5");
+}
+
+void impAnti::inizializza()
+{ 
+     emit sendFrame("*#5*0##");    
+}

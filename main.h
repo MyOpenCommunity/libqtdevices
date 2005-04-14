@@ -64,7 +64,7 @@ enum pagSecLiv{
 
 #define ICON_ON_60		"cfg/skin//btnOn.png"
 #define ICON_OFF_60		"cfg/skin//btnOff.png"
-#define ICON_ON_80		"cfg/skin//btnOn0.png"
+#define ICON_ON_80		"cfg/skin//btnOn.png"
 #define ICON_OFF_80		"cfg/skin//btnOff.png"
 #define ICON_STOP_60		"cfg/skin//stopMovs.png"
 #define ICON_UP_60		"cfg/skin//btnOpen.png"
@@ -127,6 +127,11 @@ enum pagSecLiv{
 #define ICON_SONDAOFF	"cfg/skin//sondaAntigelo.png"
 #define ICON_SONDAANTI	"cfg/skin//sondaOFF.png"
 
+#define ICON_ZONA_PARZ	"cfg/skin/zona.png"
+#define ICON_ZONA_NONPARZ	"cfg/skin/zonaP.png"
+#define ICON_IMP_INS		"cfg/skin/antifurtoIns.png"
+#define ICON_IMP_DIS		"cfg/skin/antifurtoDis.png"
+
 #define ICON_VUOTO		"cfg/skin//btnEmpty.png"
 
 /****************************************************************
@@ -143,7 +148,6 @@ enum  bannerType {
 	ATTUAT_AUTOM,
 	DIMMER,
 	ATTUAT_AUTOM_INT,
-	SERRATURA,
 	SCENARIO,
 	GR_ATTUAT_AUTOM, 
 	GR_DIMMER,
@@ -161,7 +165,13 @@ enum  bannerType {
 	GR_AMPLIFICATORI,
 	SET_SVEGLIA,
 	CALIBRAZIONE,
-	TERMO
+	TERMO,
+	ZONANTINTRUS,
+	IMPIANTINTRUS,
+	SUONO,
+	PROTEZIONE,
+	VERSIONE,
+	CONTRASTO
     };
       
 enum pulsType{
@@ -174,6 +184,6 @@ enum pulsType{
 ***************************************************************/
 #define MAX_PATH		50
 #define TIME_RIP_REGOLAZ	500
-//#define BEEP
+#define BEEP
 #endif //MAIN_H
 

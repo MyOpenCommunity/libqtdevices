@@ -38,6 +38,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
        freez=FALSE;
        
        setGeometry(0,0,width,height);   
+       setFixedSize(QSize(width, height));
 	
         bannNavigazione  = NULL;
 		
@@ -128,8 +129,12 @@ int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* Icona
     case SORGENTE_RADIO : elencoBanner.append(new banradio(this,"bannercentoundici",(char*)indirizzo)); break;
     case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,"bannerquattro",indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;  	
     case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,"bannerventotto",(diffSonora*)indirizzo, IconaSx,IconaDx, icon,  periodo, numFrame)); break;
-    case CALIBRAZIONE: elencoBanner.append(new calibration(this,"bannerventinove")); break;
+    case CALIBRAZIONE: elencoBanner.append(new calibration(this,"bannerventinove",IconaSx)); break;
     case TERMO: elencoBanner.append(new termoPage(this,"bannertrenta",(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,SecondForeground)); break;		       
+    case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,"bannertrentuno",(char*)indirizzo, IconaSx, IconaDx)); break;
+    case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,"bannertrentadue",(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;       
+    case SUONO: elencoBanner.append(new impBeep(this,"bannertrentatre", IconaSx,IconaDx)); break;
+    case CONTRASTO: elencoBanner.append(new impContr(this,"bannertrenta4", IconaSx)); break;
 	  }
     
      connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
