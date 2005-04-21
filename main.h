@@ -10,6 +10,20 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+/****************************************************************
+** Default configurazione applicativo
+****************************************************************/
+#define MYPROCESSNAME              "BTouch"
+#define MY_FILE_CFG_DEFAULT        "cfg/stack_open.xml"
+#define MY_FILE_USER_CFG_DEFAULT   "cfg/conf.xml"
+#define MY_PARSER_DEFAULT          "bin/bt_xmlparser"
+#define MY_FILE_LOG_DEFAULT        "log/BTouch.log"
+#define VERBOSITY_LEVEL_DEFAULT    0
+// Parsing XML
+#define XML_FILE_IN_DEFAULT        ".bto-to-xml"
+#define XML_FILE_OUT_DEFAULT       ".xml-to-bto"
+#define PATH_VAR_DEFAULT           "/var"
+
 
 /****************************************************************
 **  definizione dimensioni schermo
