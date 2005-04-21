@@ -494,6 +494,7 @@ public slots:
      void	hide();
 signals:
   // void 	sendFrame(char *);          
+private:     
     uchar  statoSonda; 
 };
 
@@ -552,12 +553,35 @@ public slots:
      void Disinserisci();
      void Insert(char*);
      void DeInsert(char*);
-     
-     void CodaAllarmi();
 signals:
+    // void CodaAllarmi();
 private:    
      tastiera* tasti;
 };
 
 
 #endif //IMP_ANTI_H
+
+/*****************************************************************
+**Allarme
+****************************************************************/	
+#ifndef ALLARME_H
+#define ALLARME_H
+
+#include "bannondx.h"
+
+class allarme : public  bannOnDx
+{
+    Q_OBJECT
+public:
+     allarme( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL);   
+public slots:
+    void muoio();	
+signals:
+private:    
+};
+
+
+#endif //ALLARME_H
+
+

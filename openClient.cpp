@@ -52,12 +52,12 @@ void Client::socketConnected()
 {
   qDebug( "Connected to server");
   if (ismonitor)  {
-    qDebug( "TRY TO START monitor session");
+//    qDebug( "TRY TO START monitor session");
     socket->clearPendingData ();
     sendToServer(SOCKET_MONITOR);
   }
   else {
-    qDebug( "TRY TO START command");
+//    qDebug( "TRY TO START command");
     //socket->clearPendingData ();
     sendToServer(SOCKET_COMANDI ); 
   }
@@ -131,7 +131,8 @@ void Client::closeConnection()
 void Client::sendToServer(char * frame)
 {
  // qDebug( "Writing");
-  qDebug( "Written %d bytes",socket->writeBlock( frame, strlen(frame) ));
+//  qDebug( "Written %d bytes",socket->writeBlock( frame, strlen(frame) ));
+  socket->writeBlock( frame, strlen(frame));
 //  QTextStream os(socket);
 //  os << "\n";
 //  os << frame;

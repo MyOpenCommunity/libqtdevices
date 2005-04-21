@@ -9,6 +9,7 @@
 ****************************************************************/
 #include "setitems.h"
 #include "main.h"
+#include "openclient.h"
 
 //#include "btbutton.h"
 #include <qfont.h>
@@ -31,41 +32,40 @@ setDataOra::setDataOra( QWidget *parent,const char *name )
      settalora.setBGColor(backgroundColor()/*BG_R, BG_G, BG_B*/);  
      settalora.setFGColor(foregroundColor()/*255-BG_R, 255-BG_G, 255-BG_B*/);  
      connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));      
+     connect(&settalora,SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 }
 
 /*****************************************************************
 **impostaSveglia
 ****************************************************************/
 
-impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* diso, char* icon1, char*icon2, char* frame, int freq, int tipo )
+impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* diso, char* icon1, char*icon2, char* frame, int freq, int tipo , char* descr1, char* descr2, char* descr3, char* descr4)
         : bann2But( parent, name )
 {   
 
      strncpy(&iconOn[0], icon1, sizeof(iconOn));
      strncpy(&iconOff[0], icon2, sizeof(iconOff));
+   
      
      SetIcons( &iconOff[0] ,ICON_INFO);
 	  
-     svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame);
+     svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame,descr1,descr2,descr3,descr4);
      
-     svegliolina->setBGColor(backgroundColor()/*BG_R, BG_G, BG_B*/);  
-     svegliolina->setFGColor(foregroundColor()/*255-BG_R, 255-BG_G, 255-BG_B*/);  
+     svegliolina->setBGColor(backgroundColor());  
+     svegliolina->setFGColor(foregroundColor());  
      svegliolina->hide();
      connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));      
      connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));    
      
-//    connect(this , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*))); 
      connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*))); 
      connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));      
      connect(svegliolina,SIGNAL(ImClosed()),this , SLOT(show()));      
      connect(svegliolina,SIGNAL(freeze(bool)),this , SIGNAL(freeze(bool)));     
-     connect(this, SIGNAL(spegniSveglia()), svegliolina,SLOT(spegniSveglia()));     
+     connect(this, SIGNAL(freezed(bool)), svegliolina,SLOT(spegniSveglia(bool)));     
 }
 
 void impostaSveglia::gestFrame(char* frame)
 {	
-//       qDebug("SLOT SVEGLIA GESTFRAME");
-   //      emit gFrame(fr);
 }
 
 void impostaSveglia::setAbil(bool b) 
@@ -77,27 +77,25 @@ void impostaSveglia::toggleAbil()
 {
     bool b;
     b=svegliolina->getActivation()^1;
-    qDebug("impostaSveglia b= %d",b);
+//    qDebug("impostaSveglia b= %d",b);
     svegliolina-> activateSveglia(b);
     show();
 }      
 void  impostaSveglia::show()
 {
     if (svegliolina->getActivation())
-	SetIcons(uchar(0),&iconOn[0]/*ICON_SVEGLIA_ON_60*/);
-//	SetIcons( ICON_SVEGLIA_ON ,ICON_INFO);  
+	SetIcons(uchar(0),&iconOn[0]);
    else
-       	SetIcons(uchar(0),&iconOff[0]/*ICON_SVEGLIA_OFF_60*/);
-//                SetIcons( ICON_SVEGLIA_OFF ,ICON_INFO);
+       	SetIcons(uchar(0),&iconOff[0]);
    Draw();
     QWidget::show();
 }
 
-void impostaSveglia::deFreez()
+/*void impostaSveglia::deFreez()
 {
    emit( spegniSveglia());
 }
-
+*/
 /*****************************************************************
 **calibration
 ****************************************************************/
@@ -181,4 +179,33 @@ void impContr::contrMade()
     show();
     contrasto->hide();
     delete(contrasto);
+}
+
+
+/*****************************************************************
+**machVers
+****************************************************************/
+
+machVers::machVers( QWidget *parent,const char *name, versio * ver, const char* icon1)
+        : bannOnDx( parent, name )
+{   
+    SetIcons( icon1,1);
+    connect(this,SIGNAL(click()),this,SLOT(showVers()));   
+    v=ver;
+}
+
+void machVers::showVers()
+{
+     v->setPaletteBackgroundColor(backgroundColor());  
+     v->setPaletteForegroundColor(foregroundColor());  
+     v->show();
+     
+    tiempo = new QTimer(this,"clock");
+    tiempo->start(3000,TRUE);
+    connect(tiempo,SIGNAL(timeout()),this,SLOT(tiempout()));
+ }
+void machVers::tiempout()
+{
+    v->hide();
+    delete(tiempo);
 }

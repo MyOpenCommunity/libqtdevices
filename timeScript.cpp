@@ -10,7 +10,7 @@
 
 #include "timescript.h"
 #include <qdatetime.h>
-
+#include <qlocale.h>
 
 
 timeScript::timeScript( QWidget *parent, const char *name, uchar tipo,QDateTime* mioOrol)
@@ -32,8 +32,12 @@ timeScript::timeScript( QWidget *parent, const char *name, uchar tipo,QDateTime*
 	mioClock = new QDateTime(*mioOrol);
 	/*mioClock->setDate(mioOrol->date());
 	mioClock->setTime(mioOrol->time());*/
+	//qDebug("MIOCLOCK %s", mioClock->toString("h:mm:ss"));
     }   
-    showTime();	
+    if (type!=25)	
+	showTime();	
+    else
+	showDate();
 }
 
 
@@ -71,8 +75,12 @@ void timeScript::showDate()
     if (mioClock)
 	 date = mioClock->date();
    else		    
-                 date = QDate::currentDate();
-    QString s = date.toString("dd:MM:yy");
+                 date = QDate::currentDate(Qt::LocalTime);
+   
+   
+    QString s = date.toString("dd:MM:yy"/*,Qt::TextDateQt::LocalDate*/);
+//    QLocale s = date.toString(/*"dd:MM:yy",*/Qt::TextDate/*Qt::LocalDate*/);    
+    setNumDigits(((QString)s).length());
     display( s );		
     if  ( showDateTimer == -1 ) 
     {
@@ -88,7 +96,17 @@ void timeScript::stopDate()
 {
     killTimer( showDateTimer );
     showDateTimer = -1;
-      showTime();
+   
+    if(type!=25)
+    {
+	showTime();
+	if (type!=2)
+	    setNumDigits(8);
+	else
+	    setNumDigits(5);
+    }
+    else
+	showDate();	
 }
 
 
@@ -103,10 +121,12 @@ void timeScript::showTime()
 	    s = mioClock->toString("h:mm:ss");	
     }
     else
+    {
 	if (type==2)
-	    s = QTime::currentTime().toString("h:mm");
-                else
-	    s = QTime::currentTime().toString("h:mm:ss");
+	    s = QTime::currentTime(Qt::LocalTime).toString("h:mm");
+	else
+	    s = QTime::currentTime(Qt::LocalTime).toString("h:mm:ss");
+    }
      display( s );	
 }
 
@@ -133,7 +153,7 @@ QDateTime timeScript::getDataOra()
 {
     if  (type) 
 	return (* mioClock);
-    return (QDateTime::currentDateTime());
+    return (QDateTime::currentDateTime(Qt::LocalTime));
     
 }
 

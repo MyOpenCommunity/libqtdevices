@@ -79,7 +79,6 @@ public slots:
    virtual void gestFrame(char *);
    void 	animate();
    virtual void  rispStato(char*);
-   virtual void deFreez();   
    virtual void hide();
    virtual void show();
 signals:
@@ -95,10 +94,11 @@ signals:
   void 	cdxReleased();
   void 	csxPressed();
   void 	cdxPressed();
+  virtual void freezed(bool);  
   virtual void freeze(bool);
   virtual void richStato(char*);
   virtual void sendFrame(char*);
-
+ virtual void killMe(banner*);
   
 private:
 /*   QLabel * BannerIcon;

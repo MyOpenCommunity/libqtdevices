@@ -16,6 +16,9 @@
 
 #include <qapplication.h>
 #include <qfile.h>
+#include "genericfunz.h"
+#include "openclient.h"
+
 
 void getPressName(char* name, char* pressName,char len)
 {
@@ -42,7 +45,7 @@ void setContrast(unsigned char c)
 	if (fd >= 0 )
 	{
 	    sprintf(&contr[0],"%d",c);
-	    qDebug("setto il contrasto a : %d", c);
+//	    qDebug("setto il contrasto a : %d", c);
 	    write(fd, &contr[0], 4);
 	    close(fd);
 	}
@@ -84,7 +87,8 @@ void setBacklight(bool b)
 void setBeep(bool b)
 {
     if ( QFile::exists("/proc/sys/dev/btweb/buzzer_enable") )
-    {  qDebug("buzzer exists");
+    { 
+	// qDebug("buzzer exists");
 	FILE* fd = fopen("/proc/sys/dev/btweb/buzzer_enable", "w");
 	if (fd >= 0 )
 	{
@@ -108,15 +112,38 @@ bool getBeep()
 	{	 	    
 	    fread (&c ,1, 1,fd);	 
 	    fclose(fd);
-	    qDebug("ho letto buzzer= %d",c);
+//	    qDebug("ho letto buzzer= %d",c);
 	    if (c!='0')
 	    {
-		qDebug("getBeep TRUE");
+	//	qDebug("getBeep TRUE");
 		return(TRUE);
 	    }
 	    else
 	    {
-		qDebug("getBeep FALSE");
+//		qDebug("getBeep FALSE");
+		return(FALSE);		
+	    }
+	}
+    }
+    return(FALSE);    
+}
+
+bool getBacklight()
+{
+    unsigned char c;
+    if ( QFile::exists("/proc/sys/dev/btweb/backlight") )
+    {
+	FILE*fd = fopen("/proc/sys/dev/btweb/backlight",  "r");
+	if (fd >= 0 )
+	{	 	    
+	    fread (&c ,1, 1,fd);	 
+	    fclose(fd);
+	    if (c!='0')
+	    {
+		return(TRUE);
+	    }
+	    else
+	    {
 		return(FALSE);		
 	    }
 	}
@@ -138,22 +165,26 @@ void setOrientation(unsigned char o)
     }
 }
 
-void beep()
+void beep(int t)
 {
     if ( QFile::exists("/proc/sys/dev/btweb/buzzer") )
     {
 	int fd = open("/proc/sys/dev/btweb/buzzer", O_WRONLY);
 	if (fd >= 0 )
 	{
-/*	    int freq=4000;
-	    int time=150;
-	    write(fd, &freq, 2);
-	    write(fd, &time, 2);	    */
-	    
-	    write(fd, "4000 50",8);
+	    char te[10];
+//	    memset(te,'\000',sizeof(te));
+	    sprintf(&te[0],"4000 %d",t);
+//	    write(fd, "4000 ",6);
+	    write(fd, &te[0],strlen(&te[0]));	    
 	    close(fd);
 	}
     }    
+}
+
+void beep()
+{
+    beep(50);
 }
 
 
@@ -165,17 +196,12 @@ unsigned long getTimePress()
     memset(time,'\000',sizeof(time));
     if ( QFile::exists("/proc/sys/dev/btweb/touch_ago") )
     {
-	FILE*fd = fopen("/proc/sys/dev/btweb/touch_ago",  "r");
-	if (fd >= 0 )
-	{	 	
-	    do
-	    {
-		fread (&time[strlen(time)] ,1, 1,fd);	 
-		qDebug("touch_ago: %s",&time[0] );
-	    }while ((!feof(fd)) && (strlen(time)<sizeof(time)) );
-	    fclose(fd);
-	}
+	int fd = open("/proc/sys/dev/btweb/touch_ago", O_RDONLY);
+	
+	read(fd, &time[0], 6);
+	close(fd);
 	t=atol(time);	
+	//qDebug("touch_ago: %s  ",&time[0]);
     }
     return(t);    
 }
@@ -191,3 +217,7 @@ void  rearmWDT()
 	}
     }       
 }
+
+
+
+

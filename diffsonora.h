@@ -37,6 +37,8 @@ public:
    void 	inizializza();
    void	setGeom(int,int,int,int);
    void 	setNavBarMode(uchar);
+   sottoMenu* amplificatori;  
+   void draw();
 signals:
     void 	Closed();
     void	gesFrame(char*);    
@@ -49,7 +51,7 @@ public slots:
 private:
   uchar numRighe;	
   sottoMenu* sorgenti;
-  sottoMenu* amplificatori;  
+
 };
 
 

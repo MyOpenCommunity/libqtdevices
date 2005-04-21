@@ -45,6 +45,7 @@ homePage::homePage( QWidget *parent, const char *name, WFlags f )
     xClock=xTemp=MAX_WIDTH+2;
     yClock=yTemp=MAX_HEIGHT+2;
     freez=FALSE;
+    descrizione=NULL;
  }
 
 
@@ -54,7 +55,7 @@ homePage::homePage( QWidget *parent, const char *name, WFlags f )
 }
 */
 
-void homePage::addButton(int x, int y, char* iconName, char function)
+void homePage::addButton(int x, int y, char* iconName, char function, char* chix, char* cosax, char* dovex, char tipo)
 {
     BtButton *b1;
     QPixmap Icon;
@@ -65,7 +66,11 @@ void homePage::addButton(int x, int y, char* iconName, char function)
     elencoButtons.append(new BtButton (this,"BelBottone"));
     b1 = elencoButtons.getLast();
     
-    b1->setGeometry(x,y,DIM_BUT_HOME ,DIM_BUT_HOME );
+    if (function==SPECIAL)
+	b1->setGeometry(x, y, DIM_SPECBUT_HOME, DIM_BUT_HOME );
+    else
+	b1->setGeometry(x, y, DIM_BUT_HOME, DIM_BUT_HOME );
+    
     if (Icon.load(iconName))
     	 b1->setPixmap(Icon);
     b1->setPaletteBackgroundColor(backgroundColor());
@@ -79,6 +84,7 @@ void homePage::addButton(int x, int y, char* iconName, char function)
     if (Icon.load(nomeFile))
     	 b1->setPressedPixmap(Icon);     
 
+    
 
     switch (function){
 	case USCITA:   connect(b1,SIGNAL(clicked()), qApp, SLOT(quit()) );       break;
@@ -90,6 +96,21 @@ void homePage::addButton(int x, int y, char* iconName, char function)
 	case DIFSON:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Difson() )); break;
 	case SCENARI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Scenari() )); break;
 	case IMPOSTAZIONI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Settings() )); break;
+	case SPECIAL:
+			     tipoSpecial=tipo;
+			     strcpy(&chi[0],chix);
+			     strcpy(&cosa[0],cosax);
+			     strcpy(&dove[0],dovex);			     
+			     if (tipoSpecial==PULSANTE)
+			     {
+				 qDebug("tipoSpecial= PULSANTE");
+				 connect(b1, SIGNAL(pressed()), this, SLOT(specFunzPress()));
+				 connect(b1, SIGNAL(released()), this, SLOT(specFunzRelease()));
+			     }
+			     else
+				 connect(b1, SIGNAL(clicked()), this, SLOT(specFunz()));
+			     break;
+	case BACK: connect(b1, SIGNAL(clicked()), this, SIGNAL(Close()));break;			
     }
 }
 
@@ -124,17 +145,68 @@ void homePage::addClock(int x, int y,int width,int height,QColor bg, QColor fg, 
      dataOra->setLineWidth(line);    
 }    
 void homePage::addClock(int x, int y)
-{
-     dataOra = new timeScript(this,"scrittaHomePage");
-     dataOra->setGeometry(x,y,180,35);
-     dataOra->setPaletteForegroundColor(foregroundColor());
+{  
+    addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
 }	
 
-/*void homePage::mousePressEvent ( QMouseEvent *  )
+
+void homePage::addDate(int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
 {
-    qDebug("Pressed");    
-}*/
-void homePage::mouseReleaseEvent ( QMouseEvent *  )	
+     dataOra = new timeScript(this,"scrittaHomePage",uchar (25));
+     dataOra->setGeometry(x,y,width,height);
+     dataOra->setPaletteForegroundColor(fg);
+     dataOra->setPaletteBackgroundColor(bg);
+
+     dataOra->setFrameStyle( style );
+     dataOra->setLineWidth(line);    
+}    
+void homePage::addDate(int x, int y)
+{  
+    addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
+}	
+
+void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
+{
+     strcpy(zonaTermo,z);
+     temperatura = new QLCDNumber(this,"0.00 C");
+     temperatura ->setGeometry(x,y,width,height);
+     temperatura ->setPaletteForegroundColor(fg);
+     temperatura ->setPaletteBackgroundColor(bg);
+
+     temperatura ->setFrameStyle( style );
+     temperatura ->setLineWidth(line);    
+     temperatura ->setNumDigits(6);
+     temperatura -> display("0.00\272C");
+     temperatura -> setSegmentStyle(QLCDNumber::Flat);    
+ }    
+
+void homePage::addTemp(char *z, int x, int y)
+{
+     addTemp(z,x,y,180, 35, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0);
+}    
+
+
+void homePage::addDescr(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
+{
+    descrizione = new BtLabel(this,z);
+    descrizione->setFont( QFont( "helvetica", 14, QFont::Bold ));
+    descrizione->setAlignment(AlignHCenter|AlignVCenter);
+    descrizione->setText(z);
+    descrizione->setGeometry(x,y,width,height);
+    descrizione->setPaletteForegroundColor(fg);
+    descrizione->setPaletteBackgroundColor(bg);
+    descrizione->setFrameStyle( style );
+    descrizione->setLineWidth(line);       
+ }    
+
+void homePage::addDescr(char *z, int x, int y)
+{
+     addDescr(z,x,y,160, 20, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0);
+}    
+
+
+
+void homePage::mouseReleaseEvent ( QMouseEvent * e )	
 {
      qDebug("Released");   
      if (freez)
@@ -142,6 +214,7 @@ void homePage::mouseReleaseEvent ( QMouseEvent *  )
 	 freez=FALSE;
 	 emit(freeze(freez));    
      }
+     QWidget::mouseReleaseEvent ( e );
 }
 
 void homePage::freezed(bool f)
@@ -151,13 +224,114 @@ void homePage::freezed(bool f)
     {
 	for(uchar idx=0;idx<elencoButtons.count();idx++)
 	    elencoButtons.at(idx)->setEnabled(FALSE);
+	if (descrizione)
+	    descrizione->setEnabled(FALSE);
 	qDebug("Homepage freezed");	
     }
     else
     {
 	for(uchar idx=0;idx<elencoButtons.count();idx++)
 	    elencoButtons.at(idx)->setEnabled(TRUE);
+	if (descrizione)
+	    descrizione->setEnabled(TRUE);
 	qDebug("Homepage DEfreezed");
     }
  
 }
+
+void homePage::gestFrame(char* frame)
+ {    
+    openwebnet msg_open;
+    char aggiorna;
+    char dovex[30];
+
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+
+    
+    if (!strcmp(msg_open.Extract_chi(),"4"))
+    {
+	strcpy(&dovex[0], msg_open.Extract_dove());
+	if (dove[0]=='#')
+	    strcpy(&dovex[0], &dovex[1]);
+	
+	if ( (! strcmp(&dovex[0],&zonaTermo[0]) ) )
+	{	 
+	     if   (!strcmp(msg_open.Extract_grandezza(),"0")) 
+	    {
+	       //Temperatura misurata
+	       float icx;
+	       char	tmp[10], temp[10];   
+	       
+	       icx=atoi(msg_open.Extract_valori(0));
+	      qDebug("vedo temperatura per Temp in Homepage: %d",icx);
+	       memset(temp,'\000',sizeof(temp));
+	       if (icx>=1000)
+	       {
+		   strcat(temp,"-");
+		   icx=icx-1000;
+	       }
+	       icx/=10;
+	       sprintf(tmp,"%.1f",icx);
+	       strcat(temp,tmp);
+       	       strcat(temp,"\272C");
+	       temperatura->display(&temp[0]);
+	   }
+	 }
+    }
+     if ( (!strcmp(msg_open.Extract_chi(),&chi[0])) && (tipoSpecial==CICLICO) )
+    {
+	if ( (! strcmp(&dove[0],msg_open.Extract_dove())) )
+	{
+	     strcpy(&cosa[0], msg_open.Extract_cosa());
+	 }
+    }
+ }
+
+void homePage::specFunz()
+{    
+      char specialFrame[50];
+      
+      if (tipoSpecial==CICLICO)
+      {
+	  if (strcmp(&cosa[0], "0"))
+	      strcpy(&cosa[0],"0");
+	  else
+	      strcpy(&cosa[0],"1");
+      }
+	    
+      strcpy(&specialFrame[0],"*");
+      strcat(&specialFrame[0],&chi[0]);
+      strcat(&specialFrame[0],"*");      
+      strcat(&specialFrame[0],&cosa[0]);
+      strcat(&specialFrame[0],"*");      
+      strcat(&specialFrame[0],&dove[0]);      
+      strcat(&specialFrame[0],"##");                  
+
+      emit(sendFrame(&specialFrame[0]));      
+}
+
+void homePage::specFunzPress()
+{  
+    	 qDebug("tipoSpecial= PRESSED");
+      char specialFrame[50];
+      
+      strcpy(&specialFrame[0],"*");
+      strcat(&specialFrame[0],&chi[0]);
+      strcat(&specialFrame[0],"*1*");      
+      strcat(&specialFrame[0],&dove[0]);      
+      strcat(&specialFrame[0],"##");          
+      emit(sendFrame(&specialFrame[0]));
+  }
+
+void homePage::specFunzRelease()
+{    
+    	 qDebug("tipoSpecial= RELEASED");
+      char specialFrame[50];
+      
+      strcpy(&specialFrame[0],"*");
+      strcat(&specialFrame[0],&chi[0]);
+      strcat(&specialFrame[0],"*0*");      
+      strcat(&specialFrame[0],&dove[0]);      
+      strcat(&specialFrame[0],"##");                  
+      emit(sendFrame(&specialFrame[0]));
+  }

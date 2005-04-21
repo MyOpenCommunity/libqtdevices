@@ -66,6 +66,7 @@ tastiera::tastiera( QWidget *parent, const char *name )
     scrittaLabel->setGeometry(0,LINE*4,MAX_WIDTH/2,LINE);	       
     digitLabel->setGeometry(MAX_WIDTH/2,LINE*4,MAX_WIDTH/2,LINE);    
 
+ 
     QPixmap *Icon, *pressIcon;
     char   pressIconName[MAX_PATH];  
     
@@ -201,6 +202,21 @@ tastiera::tastiera( QWidget *parent, const char *name )
     connect(zeroBut,SIGNAL(clicked()),this,SLOT(press0()));          
     connect(cancBut,SIGNAL(clicked()),this,SLOT(canc()));
     connect(okBut,SIGNAL(clicked()),this,SLOT(ok()));    
+    
+     unoBut->show();
+    dueBut->show();
+    treBut->show();
+    quatBut->show();
+    cinBut->show();
+    seiBut->show();
+    setBut->show();
+    ottBut->show();
+    novBut->show();
+    zeroBut->show();
+    okBut->show();       
+    cancBut->show();   
+    scrittaLabel->show();       
+    digitLabel->show();   
  }
 void tastiera::showTastiera()
 {

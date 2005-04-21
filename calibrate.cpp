@@ -18,11 +18,9 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
     const int offset = 30;
     QRect desk = qApp->desktop()->geometry();
     setGeometry( 0, 0, desk.width(), desk.height() );
-//    logo = Resource::loadPixmap( "qtlogo" );
-    QPixmap logo;
-	logo.load("cfg/skin/bticino.png");
+    logo.load("cfg/skin/my_home.png");
+    bersaglio.load("cfg/skin/bersaglio.png");
 #if defined(BT_EMBEDDED)
-
     cd.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint( offset, offset );
     cd.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint( offset, qt_screen->deviceHeight() - offset );
     cd.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint( qt_screen->deviceWidth() - offset, qt_screen->deviceHeight() - offset );
@@ -34,7 +32,7 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
 #endif
     timer = new QTimer( this );
     connect( timer, SIGNAL(timeout()), this, SLOT(timeout()) );
-//    QWSServer::mouseHandler()->clearCalibration();
+    QWSServer::mouseHandler()->clearCalibration();
     grabMouse();
 }
 
@@ -45,8 +43,7 @@ Calibrate::~Calibrate()
 QPoint Calibrate::fromDevice( const QPoint &p )
 {
 #if defined(BT_EMBEDDED)
-    return qt_screen->mapFromDevice( p,
-		QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()) );
+    return qt_screen->mapFromDevice( p,QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()) );
 #endif
 }
 
@@ -73,7 +70,6 @@ bool Calibrate::sanityCheck()
     int hb = QABS( br.x() - bl.x() );
     diff = QABS( ht - hb );
     avg = ( ht + hb ) / 2;
-//    if ( diff > avg / 20 ) // 5% leeway
 	if ( diff > avg / 20 )
 {
 	return FALSE;
@@ -86,11 +82,12 @@ void Calibrate::moveCrosshair( QPoint pt )
 {
     QPainter p( this );
     p.drawPixmap( crossPos.x()-8, crossPos.y()-8, saveUnder );
-    saveUnder = QPixmap::grabWindow( winId(), pt.x()-8, pt.y()-8, 16, 16 );
-    p.drawRect( pt.x()-1, pt.y()-8, 2, 7 );
+   saveUnder = QPixmap::grabWindow( winId(), pt.x()-40, pt.y()-40, 80, 80 );
+/*    p.drawRect( pt.x()-1, pt.y()-8, 2, 7 );
     p.drawRect( pt.x()-1, pt.y()+1, 2, 7 );
     p.drawRect( pt.x()-8, pt.y()-1, 7, 2 );
-    p.drawRect( pt.x()+1, pt.y()-1, 7, 2 );
+    p.drawRect( pt.x()+1, pt.y()-1, 7, 2 );*/
+   p.drawPixmap(pt.x()-40,pt.y()-40,bersaglio);
     crossPos = pt;
 }
 
@@ -104,6 +101,8 @@ void Calibrate::paintEvent( QPaintEvent * )
 	y = height() / 2 - logo.height() - 15;
 	p.drawPixmap( (width() - logo.width())/2, y, logo );
     }
+   else
+       qDebug("logo is Null");
 
     y = height() / 2 + 15;
 
@@ -112,13 +111,12 @@ void Calibrate::paintEvent( QPaintEvent * )
     p.drawText( 0, y, width(), height() - y, AlignHCenter, text );
 
     y += 40;
-    text = "Tocca il vetro\n"
-	    "in modo fermo e sicuro per calibrarlo.";
+/*    text = "Tocca il vetro\n"
+	    "in modo fermo e sicuro per calibrarlo.";	//traduzioni!!!
     p.setFont( QFont( "helvetica", 12 ) );
-    p.drawText( 0, y, width(), height() - y, AlignHCenter, text );
+    p.drawText( 0, y, width(), height() - y, AlignHCenter, text );*/
 
-    saveUnder = QPixmap::grabWindow( winId(), crossPos.x()-8, crossPos.y()-8,
-				     16, 16 );
+    saveUnder = QPixmap::grabWindow( winId(), crossPos.x()-40, crossPos.y()-40, 80, 80 );
     moveCrosshair( crossPos );
 }
 

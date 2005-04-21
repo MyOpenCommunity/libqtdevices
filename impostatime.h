@@ -36,6 +36,7 @@ public:
 signals:
     void 	Closed();
     void 	gestFrame(char*);
+    void 	sendFrame(char*);
 
 public slots:
     void	OKTime();

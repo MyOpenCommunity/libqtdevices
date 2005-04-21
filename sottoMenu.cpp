@@ -14,6 +14,7 @@
 #include "setitems.h"
 #include "btbutton.h"
 #include "diffsonora.h"
+#include "versio.h"
 #include <qfont.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -27,10 +28,6 @@
 sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
         : QWidget( parent, name )
 {
-#if defined(BT_EMBEDDED)
-    setCursor (QCursor (blankCursor));
-    showFullScreen();
-#endif    
        numRighe=n;  
        hasNavBar=navBarMode;
        width=wi;
@@ -52,7 +49,15 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 	   connect(bannNavigazione  ,SIGNAL(downClick()),this,SLOT(goDown()));
 	   connect(bannNavigazione  ,SIGNAL(forwardClick()),this,SIGNAL(goDx()));
        }
+       
+       elencoBanner.setAutoDelete( TRUE );
     indice=0;
+    indicold=100;
+#if defined(BT_EMBEDDED)
+    setCursor (QCursor (blankCursor));
+    if (!parentWidget())
+	showFullScreen();
+#endif       
 }
 
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
@@ -71,6 +76,7 @@ void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 	   connect(bannNavigazione  ,SIGNAL(downClick()),this,SLOT(goDown()));
   	   connect(bannNavigazione  ,SIGNAL(forwardClick()),this,SIGNAL(goDx()));
        }
+     hasNavBar=navBarMode;
 }
 
 void sottoMenu::setBGColor(int r, int g, int b)
@@ -107,7 +113,8 @@ int sottoMenu::setBGPixmap(char* backImage)
 }
 
 
-int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char*  IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame, QColor SecondForeground)
+int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char*  IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame, \
+		       QColor SecondForeground,char* descr1,char* descr2,char* descr3,char* descr4)
  {
     switch (tipo){
     case ATTUAT_AUTOM:   elencoBanner.append(new attuatAutom(this,"banneruno",(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame)); break;     
@@ -128,82 +135,73 @@ int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* Icona
     case SORGENTE : elencoBanner.append(new sorgente(this,"bannerundici",(char*)indirizzo)); break;
     case SORGENTE_RADIO : elencoBanner.append(new banradio(this,"bannercentoundici",(char*)indirizzo)); break;
     case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,"bannerquattro",indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;  	
-    case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,"bannerventotto",(diffSonora*)indirizzo, IconaSx,IconaDx, icon,  periodo, numFrame)); break;
+    case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,"bannerventotto",(diffSonora*)indirizzo, IconaSx,IconaDx, icon,  periodo, numFrame,descr1,descr2,descr3,descr4)); break;
     case CALIBRAZIONE: elencoBanner.append(new calibration(this,"bannerventinove",IconaSx)); break;
     case TERMO: elencoBanner.append(new termoPage(this,"bannertrenta",(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,SecondForeground)); break;		       
     case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,"bannertrentuno",(char*)indirizzo, IconaSx, IconaDx)); break;
     case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,"bannertrentadue",(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;       
     case SUONO: elencoBanner.append(new impBeep(this,"bannertrentatre", IconaSx,IconaDx)); break;
     case CONTRASTO: elencoBanner.append(new impContr(this,"bannertrenta4", IconaSx)); break;
+    case VERSIONE: elencoBanner.append(new machVers(this,"bannertrenta5", (versio*)indirizzo, IconaSx)); break;
+    case ALLARME: elencoBanner.append(new allarme(this,"seqw",(char*)indirizzo, IconaSx));break;
 	  }
     
      connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
      connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
      connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , SIGNAL(freeze(bool))); 
-     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez())); 
+     connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));      
+//     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez())); 
      connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*))); 
+     connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
      elencoBanner.getLast()->SetText(descrizione);
      elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
      elencoBanner.getLast()->setBGColor(backgroundColor());
      elencoBanner.getLast()->setFGColor(foregroundColor());
-     draw();
+//     draw();
      return(1);    
  }
-
 
 void sottoMenu::draw()
 {
     uint idx,idy;
-    
-     for (idy=0;idy<elencoBanner.count();idy++)
-	elencoBanner.at(idy)->hide();
-     if (hasNavBar)
-     {
-	    for (idx=0;idx<numRighe;idx++)
-	    {
-		if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>numRighe) ) 
-		{   
-		    elencoBanner.at( (indice+idx) %(elencoBanner.count()))->setGeometry(0,idx*(QWidget::height()-MAX_HEIGHT/NUM_RIGHE)/numRighe,QWidget::width(),(QWidget::height()-MAX_HEIGHT/NUM_RIGHE)/numRighe);
-		    elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
-		    elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+    if (!(indicold==indice))
+    {
+	for (idy=0;idy<elencoBanner.count();idy++)
+	    elencoBanner.at(idy)->hide();
+	if (hasNavBar)
+	{
+		for (idx=0;idx<numRighe;idx++)
+		{
+		    if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>numRighe) ) 
+		    {   			
+			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->setGeometry(0,idx*(height-MAX_HEIGHT/NUM_RIGHE)/numRighe,width,(height-MAX_HEIGHT/NUM_RIGHE)/numRighe);			
+			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
+			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+		    }
+		}		
+		bannNavigazione  ->setGeometry( 0 ,height-MAX_HEIGHT/NUM_RIGHE,width , MAX_HEIGHT/NUM_RIGHE);			
+		bannNavigazione->show();	
+	    }
+	else
+	{
+		for (idx=0;idx<numRighe;idx++)
+		{
+		    if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>=numRighe) ) 
+		    {   
+			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->setGeometry(0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
+			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
+			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+		    }
 		}
 	    }
-	  /*  if (parentWidget(FALSE)/*->parentWidget(FALSE))
-		bannNavigazione->setGeometry(0,parentWidget(FALSE)->height()-parentWidget(FALSE)->height()/numRighe,parentWidget(FALSE)->width(),parentWidget(FALSE)->height()/numRighe);
-	    else*/
-//		bannNavigazione  ->setGeometry( 0 , height-height/numRighe ,width , height/numRighe );	
-	    
-	    
-	    
-//	    bannNavigazione  ->setGeometry( 0 , QWidget::height()/numRighe *(numRighe-1),QWidget::width() , QWidget::height()/numRighe );	
-	    bannNavigazione  ->setGeometry( 0 , QWidget::height()-MAX_HEIGHT/NUM_RIGHE,QWidget::width() , MAX_HEIGHT/NUM_RIGHE);	
-	    
-	    
-	    
-	 //    qDebug("sottomenu CON navBar x:%d - y:%d - w:%d - h:%d ",0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
-	 //    qDebug("        %s",elencoBanner.at(0)->testo);
-	 //   qDebug("height: %d - numRighe:%d",QWidget::height(),numRighe);
-	    bannNavigazione->show();	
-	}
-     else
-         {
-	    for (idx=0;idx<numRighe;idx++)
-	    {
-		if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>=numRighe) ) 
-		{   
-		     elencoBanner.at( (indice+idx) %(elencoBanner.count()))->setGeometry(0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
-	//	     qDebug("sottomenu senza navBar x:%d - y:%d - w:%d - h:%d ",0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
-		    elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
-		    elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
-		}
-	    }
-	}
+    }
 }
 
 void sottoMenu::goUp()
 {
     if (elencoBanner.count()>(numRighe))
     {
+	indicold=indice;
 	indice=(++indice)%(elencoBanner.count());
 	draw();
     }
@@ -213,6 +211,7 @@ void sottoMenu::goDown()
 {
     if (elencoBanner.count()>(numRighe))
     {
+	indicold=indice;
 	if (--indice<0)
 	    indice=elencoBanner.count()-1;
 	draw();
@@ -293,12 +292,7 @@ int sottoMenu::getHeight()
        return(height);
   }
 
-
-/*void sottoMenu::mousePressEvent ( QMouseEvent *  )
-{
-    qDebug("Pressed");    
-}*/
-void sottoMenu::mouseReleaseEvent ( QMouseEvent *  )	
+void sottoMenu::mouseReleaseEvent ( QMouseEvent *  e)	
 {
      qDebug("Released");   
      if (freez)
@@ -306,6 +300,7 @@ void sottoMenu::mouseReleaseEvent ( QMouseEvent *  )
 	 freez=FALSE;
 	 emit(freeze(freez));    
      }
+     QWidget::mouseReleaseEvent ( e );
 }
 
 void sottoMenu::freezed(bool f)
@@ -315,24 +310,46 @@ void sottoMenu::freezed(bool f)
     {	   
 	for(uchar idx=0;idx<elencoBanner.count();idx++)
 	   {
-//	    setUpdatesEnabled( FALSE );    
-//	    elencoBanner.at(idx)->setEnabled(FALSE);
-	    elencoBanner.at(idx)->setDisabled(TRUE);
-//	   setUpdatesEnabled( TRUE );    
+	    elencoBanner.at(idx)->setEnabled(FALSE);
        }
+	if(hasNavBar)
+	    bannNavigazione->setEnabled(FALSE);
     }
     else
     {
 	for(uchar idx=0;idx<elencoBanner.count();idx++)
-//	    elencoBanner.at(idx)->setEnabled(TRUE);
-	    elencoBanner.at(idx)->setDisabled(FALSE);
-	qDebug("Homepage DEfreezed");
-	emit(deFreez());
+	    elencoBanner.at(idx)->setEnabled(TRUE);
     }
+    	if(hasNavBar)
+	    bannNavigazione->setEnabled(TRUE);
+    emit (frez(f));
 }
 
+void sottoMenu::setGeometry(int x, int y, int w, int h)
+{
+    //purtroppo in QTE se da un figlio faccio height() o width() mi da le dimensioni del padre...
+    height=h; 
+    width=w;
+    QWidget::setGeometry(x, y, w, h);
+    
+}
 
-
+void  sottoMenu::killBanner(banner* b)
+{
+    int icx=elencoBanner.findRef( b ) ;
+//    int icx=elencoBanner.find( b ) ;    
+    
+    if ( icx  != -1 )
+    {
+	elencoBanner.at(icx)->hide();
+	elencoBanner.remove(icx);
+	//qDebug("ti scrivo icx %d", icx);    
+	indice=0;
+	indicold=100;
+//	qDebug("bannerCount= %d", elencoBanner.count());
+	draw();
+    }
+}
 
 
 

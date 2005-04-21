@@ -26,13 +26,15 @@ class sottoMenu : public QWidget
 {
     Q_OBJECT
 public:
-    sottoMenu( QWidget *parent=0, const char *name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=3);
+    sottoMenu( QWidget *parent=0, const char *name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
    void 	setBGColor(int, int , int );
    void 	setFGColor(int , int , int );		
    void 	setBGColor(QColor );
    void 	setFGColor(QColor );	
    int 	setBGPixmap(char* );
-   int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) );
+   int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,\
+		char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
+		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL);
    void 	inizializza();
    void 	draw();
    void 	setNumRighe(uchar);
@@ -45,6 +47,7 @@ public:
   uchar 	getNumRig();
   int 	getHeight();  
   void 	setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
+  void setGeometry(int, int, int, int );
 signals:
   void 	Closed();
   void 	gestFrame(char*);
@@ -52,19 +55,21 @@ signals:
   void 	richStato(char*);
   void 	rispStato(char*);
   void	freeze(bool);
-  void 	deFreez();
-  void	goDx();
+  void 	frez(bool);
+  void	goDx();  
 public slots:
   void 	goUp();	
   void 	goDown();
   void	init();    
   void 	freezed(bool);
+//  void 	show();
 //  void 	mousePressEvent ( QMouseEvent * );
   void 	mouseReleaseEvent ( QMouseEvent * );  
+  void 	killBanner(banner*);
 private:
   QPtrList<banner> elencoBanner;
   QTimer* iniTim;
-  int indice,height,width;  
+  int indice,height,width, indicold;  
   uchar numRighe, hasNavBar;	
   bannFrecce * bannNavigazione;
   bool 	freez;

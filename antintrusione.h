@@ -15,6 +15,7 @@
 #include "items.h"
 #include "sottomenu.h"
 #include "openclient.h"
+#include "banner.h"
 #include <qptrlist.h> 
 
 
@@ -32,20 +33,21 @@ public:
    void 	inizializza();
    void	setGeom(int,int,int,int);
    void 	setNavBarMode(uchar);
+      void draw();
 signals:
     void 	Closed();
-    void	gesFrame(char*);    
+    void	gestFrame(char*);    
     void	sendFrame(char*);
     void 	freeze(bool);
     void 	freezed(bool);
 public slots:
-    void 	gestFrame(char*);	
-//    void	show();
-
+    void 	gesFrame(char*);	
+    void tiempout();
 private:
   uchar numRighe;	
   sottoMenu* zone;  
   sottoMenu* impianto;
+  sottoMenu* allarmi;
 };
 
 

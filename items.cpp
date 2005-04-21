@@ -1498,7 +1498,6 @@ void banradio::setBGColor(QColor c)
     {
  myRadio->setBGColor(c);   
  banner::setBGColor(c); 
- qDebug("setto BG color di myRadio");
 }
 }
 void banradio::setFGColor(QColor c)
@@ -1928,7 +1927,6 @@ char* zonaAnti::getChi()
 
 void zonaAnti::inizializza()
 { 
-        
      openwebnet msg_open;
      char    pippo[50];
      
@@ -1963,7 +1961,8 @@ impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn,
      impostaAttivo(2);
      connect(this,SIGNAL(dxClick()),this,SLOT(Inserisci()));
      connect(this,SIGNAL(cdxClick()),this,SLOT(Disinserisci()));               
-     connect(this,SIGNAL(sxClick()),this,SLOT(CodaAllarmi()));                    
+//     connect(this,SIGNAL(sxClick()),this,SIGNAL(CodaAllarmi()));                
+     connect(this,SIGNAL(sxClick()), parentWidget(),SIGNAL(goDx()));
 }
 
 
@@ -1979,9 +1978,9 @@ void impAnti::gestFrame(char* frame)
     
     if (!strcmp(msg_open.Extract_chi(),"5"))
     {
-	if  (! strcmp(msg_open.Extract_dove(),"1" )   )   
+	if  (! strcmp(msg_open.Extract_dove(),"0" )   )   
 	{
-	    if (!strcmp(msg_open.Extract_cosa(),"11")) 		
+	    if (!strcmp(msg_open.Extract_cosa(),"8")) 		
 	    {
 		if (!isActive())
 		{
@@ -1991,7 +1990,7 @@ void impAnti::gestFrame(char* frame)
 		    aggiorna=1;
 		}
 	    }
-	    else if (!strcmp(msg_open.Extract_cosa(),"2")) 
+	    else if (!strcmp(msg_open.Extract_cosa(),"9")) 
 	    {
 	                if (isActive())
 		{
@@ -2014,7 +2013,8 @@ void impAnti::Inserisci()
     tasti->setBGColor(backgroundColor());
     tasti->setFGColor(foregroundColor());
     tasti->showTastiera();
-    this->hide();
+    parentWidget()->hide();
+//    this->hide();
 }
 void impAnti::Disinserisci()
 {
@@ -2023,26 +2023,44 @@ void impAnti::Disinserisci()
     tasti->setBGColor(backgroundColor());
     tasti->setFGColor(foregroundColor());    
     tasti->showTastiera();
-    this->hide();    
+    parentWidget()->hide();
+//    this->hide();    
 }
-void impAnti::CodaAllarmi()
-{
-    
-}
+
  
 void impAnti::Insert(char* pwd)
-{
-    show();   
+{   
+    if (pwd)
+    {
+	openwebnet msg_open;
+	char    pippo[50];
+	
+	memset(pippo,'\000',sizeof(pippo));
+	strcat(pippo,"*5*36#");
+	strcat(pippo,pwd);
+	strcat(pippo,"*0##");
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	emit sendFrame(msg_open.frame_open);    
+    }
+        parentWidget()->show();       
     
-    qDebug("inserisco con %s",pwd);
-
-//    delete(tasti);  da segmentation fault
-}
+ }
 void impAnti::DeInsert(char* pwd)
 {
-    show();   
-    qDebug("disinserisco con %s", pwd);
-//   delete(tasti);
+    if (pwd)
+    {
+	openwebnet msg_open;
+	char    pippo[50];
+	
+	memset(pippo,'\000',sizeof(pippo));
+	strcat(pippo,"*5*36#");
+	strcat(pippo,pwd);
+	strcat(pippo,"*0##");
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	emit sendFrame(msg_open.frame_open);    
+    }    
+    parentWidget()->show();   
+//    qDebug("disinserisco con %s", pwd);
 }
 
 char* impAnti::getChi()
@@ -2054,3 +2072,22 @@ void impAnti::inizializza()
 { 
      emit sendFrame("*#5*0##");    
 }
+
+
+/*****************************************************************
+**allarme
+****************************************************************/
+
+allarme::allarme( QWidget *parent,const char *name,char* indirizzo,char* IconaDx )
+        : bannOnDx( parent, name )
+{   
+     SetIcons( IconaDx,1);    
+ //    setAddress(indirizzo);
+     connect(this,SIGNAL(click()),this,SLOT(muoio()));
+}
+
+void allarme::muoio()
+{
+    emit killMe(this);
+}
+

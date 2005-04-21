@@ -105,7 +105,7 @@ void BtButton::init()
     autoDefButton = FALSE;
 #endif
     setBackgroundMode( PaletteButton );
-    setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+    setSizePolicy( QSizePolicy( QSizePolicy::Fixed/*QSizePolicy::Minimum*/, QSizePolicy::Fixed ) );
   prespixmap=NULL;
   rilpixmap=NULL;
     
@@ -185,7 +185,7 @@ QSize BtButton::sizeHint() const
 	w += pm->width();
 	h += pm->height();
     } else {
-	QString s( text() );
+/*	QString s( text() );
 	bool empty = s.isEmpty();
 	if ( empty )
 	    s = QString::fromLatin1("XXXX");
@@ -194,10 +194,10 @@ QSize BtButton::sizeHint() const
 	if(!empty || !w)
 	    w += sz.width();
 	if(!empty || !h)
-	    h = QMAX(h, sz.height());
+	    h = QMAX(h, sz.height());*/
     }
 
-    return (style().sizeFromContents(QStyle::CT_PushButton, this, QSize(w, h)).
+    return (style().sizeFromContents(QStyle::CT_CustomBase/*CT_PushButton*/, this, QSize(w, h)).
 	    expandedTo(QApplication::globalStrut()));
 }
 
@@ -207,7 +207,7 @@ QSize BtButton::sizeHint() const
 */
 void BtButton::move( int x, int y )
 {
-    QWidget::move( x, y );
+ //   QWidget::move( x, y );
 }
 
 /*!
@@ -215,7 +215,7 @@ void BtButton::move( int x, int y )
 */
 void BtButton::move( const QPoint &p )
 {
-    move( p.x(), p.y() );
+  //  move( p.x(), p.y() );
 }
 
 /*!
@@ -266,21 +266,30 @@ void BtButton::drawButton( QPainter *paint )
 {
     int diw = 0;
 
-    QStyle::SFlags flags = QStyle::Style_Default;
+    QStyle::SFlags flags = QStyle::Style_Enabled;//QStyle::Style_Default;
   //  if (isEnabled())
-    flags |= QStyle::Style_Enabled;
+//    flags |= QStyle::Style_Enabled;
 
     if  ( ( (isDown()) && (prespixmap) ) || ( (isOn()) && (prespixmap) ) )
     {
 		    
 	    QButton::setPixmap(*prespixmap);
+	         paint->drawPixmap( 0,0, *prespixmap );
     }
     else if (rilpixmap)
     {
 	    QButton::setPixmap(*rilpixmap); 
+	         paint->drawPixmap( 0,0, *rilpixmap );
 	    }
-  
-    drawButtonLabel( paint );
+    
+//  style().drawControl(QStyle::CE_PushButton, paint, this, rect(), colorGroup(), flags);
+    
+    
+    //drawButtonLabel( paint );
+    
+
+    
+    
     
 #ifdef  BEEP
     if (isDown())
@@ -298,15 +307,19 @@ void BtButton::drawButton( QPainter *paint )
 void BtButton::drawButtonLabel( QPainter *paint )
 {
 
-    QStyle::SFlags flags = QStyle::Style_Default;
+    QStyle::SFlags flags =QStyle::Style_Enabled;// QStyle::Style_Default;
 //    if (isEnabled())
-    flags |= QStyle::Style_Enabled;
+//    flags |= QStyle::Style_Enabled;
+//    flags && ~QStyle::Style_Down;
 
    // update();
+         
     
-    style().drawControl(QStyle::CE_PushButtonLabel, paint, this,
-			this->rect()/*style().subRect(QStyle::SR_CustomBase, this)*/,
+    style().drawControl(QStyle::CE_PushButtonLabel, paint, this, style().subRect(QStyle::SR_CustomBase,this),
 			colorGroup(),flags);
+/*   style().drawControl(QStyle::CE_PushButtonLabel, paint, this,
+                        style().subRect(QStyle::SR_PushButtonContents, this),
+                        colorGroup(), flags);*/
 			
 }
 
@@ -316,7 +329,7 @@ void BtButton::drawButtonLabel( QPainter *paint )
  */
 void BtButton::updateMask()
 {
-    QBitmap bm( size() );
+   /* QBitmap bm( size() );
     bm.fill( color0 );
 
     {
@@ -324,7 +337,7 @@ void BtButton::updateMask()
 	style().drawControlMask(QStyle::CE_PushButton, &p, this, rect());
     }
 
-    setMask( bm );
+    setMask( bm );*/
 }
 
 /*!
@@ -332,10 +345,10 @@ void BtButton::updateMask()
 */
 void BtButton::focusInEvent( QFocusEvent *e )
 {
-    if (autoDefButton && !defButton) {
+   /* if (autoDefButton && !defButton) {
 	defButton = TRUE;
     }
-    QButton::focusInEvent( e );
+    QButton::focusInEvent( e );*/
 }
 
 /*!
@@ -344,7 +357,7 @@ void BtButton::focusInEvent( QFocusEvent *e )
 void BtButton::focusOutEvent( QFocusEvent *e )
 {
 
-    QButton::focusOutEvent( e );
+ //   QButton::focusOutEvent( e );
 /*#ifndef QT_NO_POPUPMENU
     if ( popup() && popup()->isVisible() )	// restore pressed status
 	setDown( TRUE );
@@ -365,3 +378,5 @@ void BtButton::setPixmap( const QPixmap &pixmap )
     QButton::setPixmap( pixmap );
     }
 //#endif
+
+

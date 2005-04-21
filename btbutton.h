@@ -16,14 +16,14 @@ class Q_EXPORT BtButton : public QButton
 {
     Q_OBJECT
 
-    Q_PROPERTY( bool autoDefault READ autoDefault WRITE setAutoDefault )
+//    Q_PROPERTY( bool autoDefault READ autoDefault WRITE setAutoDefault )
     Q_PROPERTY( bool default READ isDefault WRITE setDefault )
   //  Q_PROPERTY( bool menuButton READ isMenuButton DESIGNABLE false )
   //  Q_PROPERTY( QIconSet iconSet READ iconSet WRITE setIconSet )
     Q_OVERRIDE( bool toggleButton WRITE setToggleButton )
     Q_OVERRIDE( bool on WRITE setOn )
    // Q_PROPERTY( bool flat READ isFlat WRITE setFlat )
-    Q_OVERRIDE( bool autoMask DESIGNABLE true SCRIPTABLE true )
+//    Q_OVERRIDE( bool autoMask DESIGNABLE true SCRIPTABLE true )
 
 public:
     BtButton( QWidget *parent, const char* name=0 );
@@ -82,7 +82,6 @@ private:
     QPixmap    *rilpixmap;
 
     friend class QDialog;
-
 
 #if defined(Q_DISABLE_COPY)
     BtButton( const BtButton & );

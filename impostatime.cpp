@@ -28,10 +28,17 @@
 
 #include "impostatime.h"
 #include "genericfunz.h"
- 
+#include "openclient.h"
+
+
 impostaTime::impostaTime( QWidget *parent, const char *name )
         : QFrame( parent, name )
 {
+#if defined(BT_EMBEDDED)
+    setCursor (QCursor (blankCursor));
+//    showFullScreen();
+#endif    
+    
    char iconName[MAX_PATH];
    QPixmap* Icon1 = new QPixmap();
    QPixmap* Icon2 = NULL;
@@ -193,7 +200,38 @@ void impostaTime::OKDate()
     disconnect( but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
     
     
-    QTextOStream (stdout)<<"\nOra impostata = "<<dataOra->getDataOra().toString();  
+     QTextOStream (stdout)<<"\nOra impostata = "<<dataOra->getDataOra().toString();  
+    
+#if defined BT_EMBEDDED     
+     openwebnet msg_open;
+     char    pippo[50];
+     QString s;
+     
+     memset(pippo,'\000',sizeof(pippo));
+     strcat(pippo,"*#13**#22*");
+     s=dataOra->getDataOra().toString("hh");
+     strcat(pippo,s.ascii());     
+     strcat(pippo,"*");
+     s=dataOra->getDataOra().toString("mm");
+     strcat(pippo,s.ascii());     
+     strcat(pippo,"*");
+     s=dataOra->getDataOra().toString("ss");
+     strcat(pippo,s.ascii());     
+     strcat(pippo,"***");
+     s=dataOra->getDataOra().toString("dd");
+     strcat(pippo,s.ascii());     
+     strcat(pippo,"*");
+     s=dataOra->getDataOra().toString("MM");
+     strcat(pippo,s.ascii());     
+     strcat(pippo,"*");
+     s=dataOra->getDataOra().toString("yyyy");
+     strcat(pippo,s.ascii());     
+     strcat(pippo,"##");
+     
+     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+     emit sendFrame(msg_open.frame_open);    
+#endif
+     
     delete (dataOra);
     hide();
 }

@@ -24,11 +24,12 @@
 #include "impostatime.h"
 #include "diffsonora.h"
 #include "sveglia.h"
-
+#include "genericfunz.h"
 
 
 #include <qapplication.h>
 #include <qfontdatabase.h>
+#include <qlocale.h>
 
 
 
@@ -60,7 +61,12 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
   GetConfigValue(DEFAULT_FILETIWEB, "configuratore", "setup", "scs", "coordinate_scs", "scs_addr"," ",buff, "in", "out");
   QTextOStream (stdout)<<"GETCO" << buff << "\n"; 
   
-/*******************************************
+   
+//  QLocale::setDefault(QLocale(QLocale:: Italian, QLocale::Italy ));
+  
+   
+  
+  /*******************************************
 ** Socket 
 *******************************************/
      
@@ -70,46 +76,18 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 /**********************************************/
      setBacklight(TRUE);
      setContrast(0x80);
+     pagDefault=NULL;
+     
 
-     page0 = new QWidget(NULL,"PAGE0");
-     page0->setGeometry(0,0,240,320);
-     page0->setPaletteBackgroundColor(QColor(77,75,100));
-     page0->setPaletteForegroundColor(QColor(205,200,195));
-     BtLabel* datiGen = new BtLabel(page0, "DG");
-     
-     datiGen->setGeometry(15, 150, 210, 160);
-     datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
-     datiGen->setAlignment(AlignLeft|AlignTop);//VCenter);
-     
-     BtLabel* myHome = new BtLabel(page0, "MH");
-     myHome->setGeometry(30, 12, 181, 128);     
-     myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
-     myHome->setAutoResize(TRUE);
-     myHome->setPixmap(QPixmap("cfg/skin/my_home.png"));
-     
-     BtLabel* bticino = new BtLabel(page0, "BT");
-     bticino->setGeometry(129, 258, 92, 42);
-     bticino->setFrameStyle( QFrame::Plain);
-     bticino->setAutoResize(TRUE);
-     bticino->setPixmap(QPixmap("cfg/skin/bticino.png"));
-     bticino->setPaletteBackgroundColor(page0->foregroundColor());
-    
-     qDebug("prefont");
-     datiGen->setFont( QFont( "helvetica", 14, QFont::Bold) );
-     datiGen->setIndent(15);
-     datiGen->setPaletteForegroundColor(page0->backgroundColor());
-     datiGen->setPaletteBackgroundColor(page0->foregroundColor());
-     datiGen->setLineWidth(4);
-     datiGen->setText("art. H4684\n\nFIRMWARE: 0.0.0\nHARDWARE: 0");   
-     qDebug("postfont");
-     
-#if defined(BT_EMBEDDED)
-    page0->setCursor (QCursor (blankCursor));
-//    page0->showFullScreen();
-#endif
-     page0->show();
+     datiGen = new versio(NULL, "DG");
+      connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
+     connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
+     datiGen->inizializza();
+     datiGen->setPaletteForegroundColor(QColor(205,205,205));
+     datiGen->setPaletteBackgroundColor(QColor(BG_R, BG_G, BG_B));
+     datiGen->show();
      tempo1 = new QTimer(this,"clock");
-     tempo1->start(100);
+     tempo1->start(200);
     connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
  }
 
@@ -118,7 +96,7 @@ void BtMain::hom()
     delete(tempo1);
          Home = new homePage(NULL,"homepage",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);    
     // !!!raf font
-     QFontInfo(Home->font());
+  /*   QFontInfo(Home->font());
 
     qDebug( "FONT FAMILY=%s",(Home->font()).family().ascii());
     qDebug( "FONT PIXEL SIZE=%d",(Home->font()).pixelSize());
@@ -150,7 +128,7 @@ void BtMain::hom()
     }
      qDebug( "FINE ANALISI FONT");
     
-    
+*/    
     
     
     
@@ -172,21 +150,23 @@ void BtMain::hom()
     Home->addButton(0,5,ICON_TERMOREGOL_80,TERMOREGOLAZIONE);
     Home->addButton(0,175,ICON_ANTIINTRUS_80,ANTIINTRUSIONE);
     
+//        Home->addTemp("2",30,265,180,40,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);
     Home->addClock(30,265,180,40,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);
+//   Home->addDate(30,265,180,40,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);    
     
 //    Home.setShown(TRUE);
  
     Home->hide();
     
-    qDebug("home.show()"); 
+//    qDebug("home.show()"); 
     qApp->setMainWidget( Home);    
 
     tempo2 = new QTimer(this,"clock");
-    tempo2->start(5000);
+    tempo2->start(1500);
     connect(tempo2,SIGNAL(timeout()),this,SLOT(showHome()));
     
     tempo3 = new QTimer(this,"clock");
-    tempo3->start(10);
+    tempo3->start(100);
     connect(tempo3,SIGNAL(timeout()),this,SLOT(myMain()));
     
     
@@ -194,12 +174,12 @@ void BtMain::hom()
 	
 void BtMain::showHome()
 {
-       qDebug("SHOWHOME");
+//       qDebug("SHOWHOME");
     delete(tempo2);
     Home->show();
-    page0->hide();
+    datiGen->hide();
 //    qDebug("PREDELETE");
-    delete(page0);    
+//    delete(page0);    
 //        qDebug("POSTDELETE");
 }
 
@@ -226,7 +206,7 @@ void BtMain::myMain()
 /*******************************************
 ** illuminazione - definizione
 ********************************************/
- //   qDebug("1");
+//   qDebug("1");
 
     illumino = new sottoMenu (NULL,"ILLUMINAZIONE");	 
 
@@ -235,6 +215,7 @@ void BtMain::myMain()
     illumino->setFGColor(205,205,205);
 
      illumino->addItem(ATTUAT_AUTOM, "TINELLO",(void*)"11",ICON_ON_60 , ICON_OFF_60 , ICON_LUCE_ACCESA,ICON_LUCE_SPENTA);
+ //    qDebug("11");
      illumino->addItem(ATTUAT_AUTOM, "CUCINA",(void*)"13",ICON_ON_60 , ICON_OFF_60 , ICON_LUCE_ACCESA,ICON_LUCE_SPENTA);
      illumino->addItem(ATTUAT_AUTOM, "CAMERA", (void*)"28" ,ICON_ON_60 , ICON_OFF_60 , ICON_VENTIL_ACC , ICON_VENTIL_SPE);
      illumino->addItem(DIMMER , "ATRIO" ,  (void*)"99" , ICON_ON_60 , ICON_OFF_60 ,ICON_DIMMER_ACC , ICON_DIMMER_SPE);
@@ -257,12 +238,12 @@ void BtMain::myMain()
      illumino->addItem(ATTUAT_VCT_LS, "Luci VCT",(void*)"0",ICON_ON_60 , ICON_LUCE_ACCESA,ICON_LUCE_ACCESA,NULL);
      
      illumino->addItem(ATTUAT_AUTOM_TEMP, "Temporizzato",(void*)"48", ICON_CICLA_60 , ICON_ON_60 ,ICON_LUCE_ACCESA2,ICON_LUCE_SPENTA2);  
-
+illumino->draw();
      
 /*******************************************
 ** Automazioni - definizione
 ********************************************/
-//    qDebug("2");
+ //   qDebug("2");
      automazioni = new sottoMenu (NULL,"AUTOMAZIONE");	 
      automazioni->hide();
 
@@ -276,7 +257,7 @@ void BtMain::myMain()
      elDispGroup.append(((char*) "79"));
      automazioni->addItem(GR_ATTUAT_INT, "GRUP_Interbloc",&elDispGroup,ICON_UP_60 , ICON_DOWN_60, ICON_STOP_MOVS,NULL);     
      automazioni->addItem(ATTUAT_AUTOM_TEMP, "Temporizzato",(void*)"11",ICON_CICLA_60 , ICON_ON_60 , ICON_RUBINETTO_ACCESO2,ICON_RUBINETTO_SPENTO2);
-     
+     automazioni->draw();
  /*******************************************
 ** Scenari - definizione
 ********************************************/   
@@ -294,7 +275,7 @@ void BtMain::myMain()
      scenari->addItem(SCENARIO , "SCENARIO 2" , indirizzo,ICON_ON_60);
      scenari->addItem(SCENARIO , "SCENARIO 3" , indirizzo,ICON_ON_60);
      scenari->addItem(SCENARIO , "SCENARIO 4" , indirizzo,ICON_ON_60);
-
+     scenari->draw();
  /*******************************************
 ** Carichi - definizione
 ********************************************/   
@@ -308,57 +289,61 @@ void BtMain::myMain()
      carichi->addItem(CARICO , "CARICO 2" , indirizzo,ICON_ON_60);
      carichi->addItem(CARICO , "CARICO 3" , indirizzo,ICON_ON_60);
      carichi->addItem(CARICO , "CARICO 4" , indirizzo,ICON_ON_60);
-     
+     carichi->draw();
 /*******************************************
 ** Diffusione sonora - definizione
 ********************************************/   
-//         qDebug("5");
+ //      qDebug("5");
      difSon = new diffSonora (NULL,"DIFFUSIONE_SONORA");	 	 
 difSon->hide();
      difSon->setBGColor(BG_R, BG_G, BG_B);     
      difSon->setFGColor(205,205,205); 
 //      qDebug("11");
-    difSon->addItem(SORGENTE_RADIO,"Radio Cantina",(void*)"101");
+    difSon->addItem(SORGENTE_RADIO,"Radio",(void*)"101");
      difSon->addItem(SORGENTE,"Hi Fi",(void*)"102");
 //  qDebug("12");
-     difSon->addItem(AMPLIFICATORE,"Ampli 1",(void*)"78", ICON_ON_60 , ICON_OFF_60 , ICON_AMPLI_ACC , ICON_AMPLI_SPE);
+     difSon->addItem(AMPLIFICATORE,"VERANDA",(void*)"78", ICON_ON_60 , ICON_OFF_60 , ICON_AMPLI_ACC , ICON_AMPLI_SPE);
 //     difSon.addItem(AMPLIFICATORE,"Ampli 2",indirizzo, ICON_ON_60 , ICON_OFF_60 , ICON_AMPLI_ACC , ICON_AMPLI_SPE);
 //     difSon.addItem(AMPLIFICATORE,"Ampli 3",indirizzo, ICON_ON_60 , ICON_OFF_60 , ICON_AMPLI_ACC , ICON_AMPLI_SPE);
      elDispGroup.clear();
      elDispGroup.append( (char*) "48");
      elDispGroup.append(((char*) "#7"));
 //         qDebug("13");
-     difSon->addItem(GR_AMPLIFICATORI,"Ampli 4",&elDispGroup, ICON_ON_60 , ICON_OFF_60 , ICON_AMPLIS_SX,  ICON_AMPLIS_DX);     
+     difSon->addItem(GR_AMPLIFICATORI,"SOGGIORNO",&elDispGroup, ICON_ON_60 , ICON_OFF_60 , ICON_AMPLIS_SX,  ICON_AMPLIS_DX);     
 //     difSon.addItem(AMPLIFICATORE,"Ampli 5",indirizzo, ICON_ON_60 , ICON_OFF_60 , ICON_AMPLI_ACC , ICON_AMPLI_SPE);
    //      qDebug("14");
-	  
+	  difSon->draw();
 /*******************************************
 ** Impostazioni - definizione
 ********************************************/   
-//         qDebug("6");
+//    qDebug("6");
     imposta = new sottoMenu (NULL,"IMPOSTAZIONE");	 
  imposta->hide();
      imposta->setBGColor(BG_R, BG_G, BG_B);       
      imposta->setFGColor(205,205,205);
      
      imposta->addItem(SET_DATA_ORA,"set Ora",NULL,NULL,NULL);
-     imposta->addItem(SET_SVEGLIA,"Sveglia 1",(void*)difSon,ICON_SVEGLIA_ON_60,ICON_SVEGLIA_OFF_60,NULL,NULL,(int)SEMPRE, (int)DI_SON );
-     imposta->addItem(SET_SVEGLIA,"Sched  1",NULL,ICON_AUTO_ON, ICON_AUTO_OFF,"*0*3*11##",NULL, (int)SEMPRE, (int)FRAME );
+     imposta->addItem(SET_SVEGLIA,"Sveglia 1",(void*)difSon,ICON_SVEGLIA_ON_60,ICON_SVEGLIA_OFF_60,NULL,NULL,(int)SEMPRE, (int)BUZZER,QColor(255,0,0),"UNA VOLTA", \
+		      "SEMPRE", "LUN-VEN", "SAB-DOM");
+     imposta->addItem(SET_SVEGLIA,"Sched  1",NULL,ICON_AUTO_ON, ICON_AUTO_OFF,"*0*3*11##",NULL, (int)SEMPRE, (int)FRAME,QColor(255,0,0),"ONCE", \
+		      "ALWAYS", "MON-FRI", "SAT-SUN" );
+//     imposta->addItem(PROTEZIONE,"Sched  1",NULL,ICON_AUTO_ON, ICON_AUTO_OFF,ICON_INFO,NULL, (int)SEMPRE, (int)FRAME );     
      imposta->addItem(CALIBRAZIONE,"Calibration",NULL,ICON_ON_80);
      imposta->addItem(SUONO,"Beep",NULL, ICON_ON_80, ICON_OFF_80);
      imposta->addItem(CONTRASTO, "Contr",NULL, ICON_INFO); 
- 
+     imposta->addItem(VERSIONE, "Ver", (void*) datiGen, ICON_INFO);      
+ imposta->draw();
 /*******************************************
 ** Termoregolazione
 ********************************************/        
- //   qDebug("7");
+//   qDebug("7");
         termo = new sottoMenu( NULL, "TERMOREGOLAZIONE", 4, MAX_WIDTH, MAX_HEIGHT,1);
 	termo->hide();
         termo->setBGColor(BG_R, BG_G, BG_B);       	
         termo->setFGColor(205,205,205);
         termo->addItem(TERMO,"Zona DUE",(void*)"2",ICON_PIU, ICON_MENO, ICON_MANUAL_ON, ICON_AUTO_ON,0,0,QColor(255,0,0));	
         termo->addItem(TERMO,"Zona numero uno",(void*)"1",ICON_PIU, ICON_MENO, ICON_MANUAL_ON, ICON_AUTO_ON,0,0,QColor(255,0,0));	
-	
+	termo->draw();
 /*******************************************
 ** Antiintrusione
 ********************************************/      	
@@ -369,8 +354,9 @@ difSon->hide();
         antintr->setFGColor(205,205,205);
         antintr->addItem(ZONANTINTRUS,"Zona num 1", (void*)"#1", ICON_ZONA_PARZ, ICON_ZONA_NONPARZ);	
         antintr->addItem(ZONANTINTRUS,"Zona num 2", (void*)"#2", ICON_ZONA_PARZ, ICON_ZONA_NONPARZ);		
-        antintr->addItem(IMPIANTINTRUS , "ImpAntiintr" , (void*)"0" , ICON_ON_60, ICON_OFF_60, ICON_INFO, ICON_IMP_INS);	     	
+        antintr->addItem(IMPIANTINTRUS , "ImpAntiintr" , (void*)"0" , ICON_ON_60, ICON_OFF_60, ICON_INFO_60, ICON_IMP_INS);	     	
 //	qDebug("ANTIINTR");
+	antintr->draw();
 /*------------------------------------------------------------------------------------------*/     
      
    
@@ -378,6 +364,34 @@ difSon->hide();
      illumino->setPul("1","11");
      illumino->setGroup("1","28", pep);
      */
+	
+	
+/*******************************************
+** Pagina Speciale
+********************************************/      		
+       specPage = new homePage(NULL,"homepage",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase); 
+	
+       specPage ->setBGColor(BG_R, BG_G, BG_B);
+       specPage ->setFGColor(205,205,205);
+      
+       specPage ->addButton(80,260,ICON_VUOTO,SPECIAL,"1","2","13",CICLICO);
+       specPage ->addButton(0,260,ICON_FRECCIA_SX ,BACK);
+    
+       specPage ->addTemp("2",20,10,200,60,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);
+       specPage ->addClock(20,90,200,60,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);
+       specPage ->addDate(20,170,200,60,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);    
+       specPage ->addDescr("TESTO SPECIALE", 80,240,160,20,QColor :: QColor(BG_R, BG_G, BG_B),QColor :: QColor(205, 205, 205),QFrame::Plain,3);           
+    
+
+ 
+    specPage ->hide();
+	
+//    strcpy(specialFrame,"*0*1*1##");
+	
+	
+    pagDefault=specPage ;
+	
+	
 /*******************************************
 ** connessioni 
 ********************************************/
@@ -414,13 +428,22 @@ difSon->hide();
 
      connect(Home,SIGNAL(Antiintrusione()),antintr,SLOT(show()));
      connect(antintr,SIGNAL(Closed()),antintr,SLOT(hide()));
-     connect(antintr,SIGNAL(Closed()),Home,SLOT(show()));     
+     connect(antintr,SIGNAL(Closed()),Home,SLOT(show()));   
+     
+     connect(specPage,SIGNAL(Close()),specPage,SLOT(hide()));
+     connect(specPage,SIGNAL(Close()),Home,SLOT(show()));     
+///////////////     connect(specPage,SIGNAL(Special()),this, SLOT(specFunz()));          
+     
 
      connect(client_monitor,SIGNAL(frameIn(char *)),illumino,SIGNAL(gestFrame(char *)));
      connect(client_monitor,SIGNAL(frameIn(char *)),automazioni,SIGNAL(gestFrame(char *)));
      connect(client_monitor,SIGNAL(frameIn(char *)),difSon,SLOT(gestFrame(char *)));
      connect(client_monitor,SIGNAL(frameIn(char *)),imposta,SIGNAL(gestFrame(char *)));
      connect(client_monitor,SIGNAL(frameIn(char *)),termo,SIGNAL(gestFrame(char *)));
+     connect(client_monitor,SIGNAL(frameIn(char *)),antintr,SIGNAL(gestFrame(char *)));     
+     connect(client_monitor,SIGNAL(frameIn(char *)),antintr,SLOT(gesFrame(char *)));          
+     connect(client_monitor,SIGNAL(frameIn(char *)),Home,SLOT(gestFrame(char *)));     
+     connect(client_monitor,SIGNAL(frameIn(char *)),specPage,SLOT(gestFrame(char *)));          
 
 //     QObject::connect(client_comandi,SIGNAL(frameIn(char *)),&illumino,SIGNAL(gestFrame(char *)));
      connect(illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));     
@@ -430,6 +453,10 @@ difSon->hide();
      connect(imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));        
      connect(difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));          
      connect(termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));          
+     connect(antintr,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));               
+     
+     connect(specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));      
+       
      connect(illumino,SIGNAL(richStato(char *)),client_comandi,SLOT(richStato(char *)));     
 
 //--------     
@@ -440,8 +467,10 @@ difSon->hide();
      connect(imposta,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));     
      connect(difSon,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));     
      connect(Home,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));     
+     connect(specPage,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));          
      connect(termo,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));     
      connect(antintr,SIGNAL(freeze(bool)),this,SIGNAL(freeze(bool)));          
+     
      
      connect(this,SIGNAL(freeze(bool)),illumino,SLOT(freezed(bool)));     
      connect(this,SIGNAL(freeze(bool)),automazioni,SLOT(freezed(bool)));     
@@ -450,8 +479,10 @@ difSon->hide();
      connect(this,SIGNAL(freeze(bool)),imposta,SLOT(freezed(bool)));     
      connect(this,SIGNAL(freeze(bool)),difSon,SIGNAL(freezed(bool)));          
      connect(this,SIGNAL(freeze(bool)),Home,SLOT(freezed(bool)));               
+     connect(this,SIGNAL(freeze(bool)),specPage,SLOT(freezed(bool)));                    
      connect(this,SIGNAL(freeze(bool)),antintr,SIGNAL(freezed(bool)));               
-
+     
+     connect(this,SIGNAL(freeze(bool)),this,SLOT(freezed(bool)));               
      
 /*******************************************/     
      illumino->inizializza();
@@ -461,18 +492,62 @@ difSon->hide();
      antintr->inizializza();
 
     tempo1 = new QTimer(this,"clock");
-    tempo1->start(5000);
+    tempo1->start(2000);
     disconnect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
     connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
 }
 
+
 void BtMain::gesScrSav()
 {
-    static unsigned long tiempo;
+    unsigned long tiempo;
     
     tiempo= getTimePress();
- //   qDebug("leggo tempo no press = %l", tiempo);
-  rearmWDT();  
+    
+    if  ( ( (tiempo>=14) && (tiempo<=16) ) || ( (tiempo>=16) && (getBacklight())) )
+    {
+	setBacklight(FALSE);
+	emit freeze(TRUE);
+    }
+    else if ( (tiempo<=5) && (!getBacklight()) )
+    {
+	setBacklight(TRUE);
+	emit freeze(FALSE);
+    }
+    else if  ( (tiempo>=60) /*&& (tiempo<=62) */ && (pagDefault->isHidden ()))
+    {
+	if (illumino)
+	    illumino -> hide();
+	if (scenari)
+	    scenari -> hide();
+	if (carichi)
+	    carichi -> hide();
+	if (imposta)
+	    imposta -> hide();
+	if (automazioni)
+	    automazioni -> hide();
+	if (termo)
+	    termo -> hide();
+	if (difSon)
+	    difSon -> hide();
+	if (antintr)
+	    antintr -> hide();
+	if (specPage )
+	    specPage -> hide();
+	pagDefault -> show();
+    }	
+    rearmWDT();  
 }
 
+void BtMain::freezed(bool b)
+{
+    if (!b)
+    {
+	setBacklight(TRUE);
+    }
+}
 
+/*void BtMain::specFunz()
+{
+    emit(sendFrame(&specialFrame[0]));
+}*/

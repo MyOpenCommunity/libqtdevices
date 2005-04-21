@@ -24,16 +24,27 @@
 #include "sveglia.h"
 #include "genericfunz.h"
  
-sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSonora* diso, char* f)
+sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSonora* diso, char* f,char* descr1,char* descr2,char* descr3,char* descr4)
         : QFrame( parent, name )
 {
 #if defined(BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
  //  showFullScreen();
 #endif    
+    if(descr1)
+	strncpy(&text1[0], descr1, sizeof(text1));
+    if(descr2)
+	strncpy(&text2[0], descr2, sizeof(text2));
+    if(descr3)    
+	strncpy(&text3[0], descr3, sizeof(text3));
+    if(descr4)	
+	strncpy(&text4[0], descr4, sizeof(text4));  
+     
    bannNavigazione  = new bannFrecce(this,"bannerfrecce",9);
    bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );
    
+   aumVolTimer=NULL;
+	   
    char iconName[MAX_PATH];
    QPixmap* Icon1 = new QPixmap();
    QPixmap* Icon2 = NULL;
@@ -126,14 +137,16 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 
     dataOra=NULL;
     
-    testiChoice[0]  -> setText("UNA VOLTA");
-    testiChoice[1]  -> setText("SEMPRE");
-    testiChoice[2]  -> setText("LUN-VEN");
-    testiChoice[3]  -> setText("SAB-DOM");        
+    testiChoice[0]  -> setText(&text1[0]);
+    testiChoice[1]  -> setText(&text2[0]);
+    testiChoice[2]  -> setText(&text3[0]);
+    testiChoice[3]  -> setText(&text4[0]);        
     
    // OroTemp = QDateTime(QDateTime::currentDateTime());
-     oraSveglia =  new QDateTime(QDate(),QTime(12,0));
-    
+     oraSveglia =  new QDateTime();//QDate(),QTime(12,0));
+     oraSveglia->setTime(QTime(12,0));
+     oraSveglia->setDate(QDate::currentDate(Qt::LocalTime));     
+     
      dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
      
      dataOra->setGeometry(40,140,160,50);
@@ -144,20 +157,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
     if (difson)
 	difson->hide();
     
-  /*  connect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-    connect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));  
-    connect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-    connect( but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-  
-    connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
-    connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(okTime()));
-    connect(bannNavigazione  ,SIGNAL(forwardClick()),this,SLOT(okTime()));
-    connect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
-    connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
-    connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
-    connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
-    connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));   
-*/
+
     for (uchar idx=0;idx<AMPLI_NUM;idx++)
 	volSveglia[idx]=0;
     minuTimer=NULL;
@@ -168,8 +168,8 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	frame = new char[50];
 	memset(frame,'\000',sizeof(frame));
 	sprintf(frame,"%s",f);
-	qDebug("f= %s",f);
-	qDebug("frame= %s",frame);
+/*	qDebug("f= %s",f);
+	qDebug("frame= %s",frame);*/
     }
     
 //    buzzer=1;
@@ -241,14 +241,7 @@ void sveglia::okTime()
     disconnect( but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
     disconnect(bannNavigazione  ,SIGNAL(forwardClick()),this,SLOT(okTime()));
     connect( bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));
- /*  if (buzzer)
-    {
-	delete (bannNavigazione);
-	bannNavigazione  = new bannFrecce(this,"bannerfrecce",10);
-	bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );  
-	bannNavigazione->setFGColor(foregroundColor());
-	bannNavigazione->setBGColor(backgroundColor());
-    }*/
+
     
     for (uchar idx=0;idx<4;idx++)
 	but[idx]  -> hide();   
@@ -343,14 +336,13 @@ void sveglia::Closed()
 	difson->setNumRighe((uchar)4);
 	difson->setGeom(0,0,240,320);
 	difson->setNavBarMode(3);
+	difson->amplificatori->showFullScreen();
 	difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
 	difson->hide();
+	
     }
     hide();
- /*   delete (bannNavigazione);
-   bannNavigazione  = new bannFrecce(this,"bannerfrecce",9);
-   bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );*/
-   
+ 
     gesFrameAbil=FALSE;
 /*    delete(oraSveglia);
     oraSveglia=new QDateTime();*/
@@ -373,20 +365,19 @@ void sveglia::okTipo()
     {
 	Closed();
     }
-    else
-    {
-	if (difson)
-	{
-	    difson->setNumRighe((uchar)3);
-	    difson->setGeom(0,0,240,240);	
-	    difson->setNavBarMode(6);
-	    difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)FALSE);
-	    difson->show();
-	    
-	    bannNavigazione->hide();
-	}
+    else if (difson)
+    {	
+	difson->setNumRighe((uchar)3);	
+	difson->setGeom(0,0,240,240);	
+	difson->setNavBarMode(6);
+	difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)FALSE);	
+	difson->show();	
+
+	this->bannNavigazione->hide();
+	
 	gesFrameAbil=TRUE;
 	sorgente=101;
+	//	difson->amplificatori->showNormal();
 	stazione=0;	    
     }
 }
@@ -487,7 +478,7 @@ void sveglia::verificaSveglia()
     if (!svegliaAbil)
 	return;
     
-    QDateTime actualDateTime = QDateTime(QDateTime::currentDateTime());
+    QDateTime actualDateTime = QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
     
   
     if ( (tipoSveglia==SEMPRE) || \
@@ -532,7 +523,7 @@ void sveglia::verificaSveglia()
 
 bool sveglia::getActivation()
 {
-    qDebug("getActivation. svegliaAbil= %d",svegliaAbil);
+//    qDebug("getActivation. svegliaAbil= %d",svegliaAbil);
     return(svegliaAbil);
 }
 
@@ -617,14 +608,16 @@ void sveglia::aumVol()
 
 void sveglia::buzzerAlarm()
 {
-//    qDebug("buzzerAlarm");
+    if (contaBuzzer==0)
+    {
+	buzAbilOld=getBeep();
+	setBeep(TRUE);
+    }	
     if  (contaBuzzer%2==0) 
     {
- //   qDebug("DIV x 2");
-	if (contaBuzzer%10) 
+	if ( ((contaBuzzer+2)%12) && (contaBuzzer%12) )
 	{
-	    qApp->beep();
-	//    qDebug("BEEP");
+	    beep(10);
 	}
     }
     contaBuzzer++;
@@ -632,13 +625,22 @@ void sveglia::buzzerAlarm()
     {
 	qDebug("SPENGO LA SVEGLIA");
 	aumVolTimer->stop();
+	setBeep(buzAbilOld);
 	delete (aumVolTimer);
     }
 }
 
-void sveglia::spegniSveglia()
+void sveglia::spegniSveglia(bool b)
 {
-	aumVolTimer->stop();
-	delete (aumVolTimer);
+    if ( (!b) && (aumVolTimer) )
+    {
+	if (aumVolTimer->isActive()) 
+	{
+	    qDebug("SPENGO LA SVEGLIA");
+	    aumVolTimer->stop();
+	    setBeep(buzAbilOld);
+	    delete (aumVolTimer);
+	}
+    }
 }
 

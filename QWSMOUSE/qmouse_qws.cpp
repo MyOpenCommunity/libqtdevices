@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouse_qws.cpp,v 1.2 2005/04/14 13:38:35 cvs Exp $
+** $Id: qmouse_qws.cpp,v 1.3 2005/04/21 07:06:05 cvs Exp $
 **
 ** Implementation of Qt/Embedded mouse drivers
 **
@@ -223,18 +223,18 @@ QPoint QWSCalibratedMouseHandler::transform( const QPoint &p )
     QPoint tp;
 
 
-    qDebug( "IN:%d,%d",p.x(),p.y());
+//    qDebug( "IN:%d,%d",p.x(),p.y());
     
     tp.setX( (a * p.x() + b * p.y() + c) / s );
     tp.setY( (d * p.x() + e * p.y() + f) / s );
 
-    int c=tp.x();
+  //  int c=tp.x();
 //    tp.setX(c*13/8);
     
-    c=tp.y();
+  //  c=tp.y();
 //    tp.setY(c*13/8);
     
-    qDebug( "OUT:%d,%d",tp.x(),tp.y());
+  //  qDebug( "OUT:%d,%d",tp.x(),tp.y());
     
     return tp;
 }

@@ -34,7 +34,7 @@ signals:
 public slots:
 //     void Attiva();
       impostaTime settalora;
-private:
+//private:
 };
 #endif //SETDATAORA
 
@@ -53,14 +53,13 @@ class impostaSveglia : public bann2But
 {
     Q_OBJECT
 public:
-     impostaSveglia( QWidget *, const char * ,diffSonora* , char* , char*, char*, int, int);     
+     impostaSveglia( QWidget *, const char * ,diffSonora* , char* , char*, char*, int, int, char* , char*, char* , char*);     
      void 	setAbil(bool);
 signals:
 //     void sendFrame(char *); 
      void spegniSveglia();
 //     void freeze(bool);
 public slots:	
-      void deFreez();
       void gestFrame(char*);
       void 	toggleAbil();
       void	show();
@@ -142,4 +141,29 @@ private:
      contrPage* contrasto; 
 };
 #endif //IMP_CONTR_H
+
+/*****************************************************************
+**versione 
+****************************************************************/
+
+#ifndef VERSIONE_H
+#define VERSIONE_H
+
+#include "versio.h"
+class machVers : public bannOnDx
+{
+    Q_OBJECT
+public:
+     machVers( QWidget *, const char *,  versio*, const char*);     
+signals:
+public slots:
+     void tiempout();
+     void showVers();
+private:
+  versio * v;
+  QTimer *tiempo;
+};
+#endif //VERSIONE_H
+
+
 

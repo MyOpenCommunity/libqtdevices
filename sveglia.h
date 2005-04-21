@@ -30,7 +30,7 @@ class  sveglia : public QFrame
 {
    Q_OBJECT
 public:
-    sveglia( QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, diffSonora* diso=NULL, char* frame=NULL);
+    sveglia( QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, diffSonora* diso=NULL, char* frame=NULL, char* descr1=NULL,char* descr2=NULL,char* descr3=NULL,char* descr4=NULL);
    void 	setBGColor(QColor);
    void 	setFGColor(QColor);
    void 	setBGColor(int, int , int );
@@ -62,19 +62,24 @@ public slots:
     void	aumVol();
     void 	buzzerAlarm();
     void 	gestFrame(char*);
-    void 	spegniSveglia();
+    void 	spegniSveglia(bool);
 private:
     void 	drawSelectPage();
    timeScript* dataOra;
    bannFrecce * bannNavigazione;
    uchar 	tipoSveglia,conta2min,sorgente,stazione,tipo;
-   int 	contaBuzzer;
+   bool 	buzAbilOld;
+   unsigned int contaBuzzer;
    QDateTime* oraSveglia;
    diffSonora* difson;
    uchar	volSveglia[AMPLI_NUM];
    bool	gesFrameAbil,svegliaAbil,onceToGest;
    QTimer   *minuTimer,*aumVolTimer;
    char*	frame;
+   char text1[50]; 
+   char text2[50]; 
+   char text3[50]; 
+   char text4[50];       
 };
 
 enum sveFreq{

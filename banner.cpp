@@ -647,6 +647,7 @@ void banner::Draw()
      BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
      BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
      BannerText->setText(testo);
+//     qDebug("TESTO: %s", testo);
    }
    if (SecondaryText)
    {	
@@ -827,7 +828,6 @@ void banner:: inizializza(){}
 
 //char* banner::getChi(){return(NULL);}
 void  banner::rispStato(char*){}
-void banner:: deFreez(){}
 
 
 

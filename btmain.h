@@ -14,6 +14,7 @@
 #include "diffsonora.h"
 #include "openclient.h"
 #include "antintrusione.h"
+#include "versio.h"
 
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
@@ -24,22 +25,27 @@ class  BtMain : public QObject
        Q_OBJECT
 public:
     BtMain ( QWidget *parent=0, const char *name=0,QApplication*a=NULL);
-    homePage * Home;
+    homePage * Home, *specPage;
     sottoMenu *illumino,*scenari,*carichi,*imposta,*automazioni,*termo;
     diffSonora *difSon;
     antintrusione* antintr;
     Client * client_comandi;
     Client *  client_monitor; 
+    versio* datiGen;
 signals:
     void freeze(bool);
+//    void sendFrame(char*);
 private slots:    
     void hom();
     void myMain();
     void showHome();
     void gesScrSav();
+    void freezed(bool);
+//    void specFunz();
 private:
-    QWidget* page0;
     QTimer  *  tempo1;
     QTimer  *  tempo2;
     QTimer  *  tempo3;	
+    QWidget* pagDefault;
+//    char specialFrame[50];
 };

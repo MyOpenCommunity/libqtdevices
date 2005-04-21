@@ -96,7 +96,7 @@ int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* Icon
 void diffSonora::setNumRighe(uchar n)
 {
     numRighe=n;
-    amplificatori->setNumRighe(n-1);
+    amplificatori->setNumRighe(n-2);
     sorgenti->setNumRighe(1);
     amplificatori->draw();
     sorgenti->draw();
@@ -139,22 +139,28 @@ void diffSonora::show()
 {
      openwebnet msg_open;
      emit sendFrame("*16*53*100##"); 
-     QWidget::show();
      sorgenti->draw();
      amplificatori->draw();
+   // if (!parentWidget())
+//	showFullScreen();
+     QWidget::show();
 }   
 
-
+void diffSonora::draw()
+{	
+      if (sorgenti)
+	sorgenti-> draw();
+    if (amplificatori)
+	amplificatori-> draw();
+}
 
 void diffSonora::setGeom(int x,int y,int w,int h)
 {
       QWidget::setGeometry(x,y,w,h);
       if (sorgenti)
 	sorgenti->setGeometry(x,y,w,h/numRighe);
-      qDebug("x:%d-y:%d-w:%d-h:%d",x,y,w,h/numRighe);
     if(amplificatori)
 	amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
-    
 }
 
 void diffSonora::setNavBarMode(uchar c)

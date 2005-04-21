@@ -30,7 +30,9 @@ enum pagSecLiv{
 		TERMOREGOLAZIONE,
 		DIFSON,
 		SCENARI,
-		IMPOSTAZIONI
+		IMPOSTAZIONI,
+		BACK,
+		SPECIAL
 	    };
 
 
@@ -76,6 +78,7 @@ enum pagSecLiv{
 #define ICON_OK_80		"cfg/skin//btnOk.png"
 #define ICON_IMPOSTA_60	"cfg/skin//audioSetting.png"
 #define ICON_INFO		"cfg/skin//btnInfo.png"
+#define ICON_INFO_60		"cfg/skin//btnInfo60.png"
 
 #define ICON_FRECCIA_SU	"cfg/skin//arrUp.png"
 #define ICON_FRECCIA_GIU	"cfg/skin//arrDw.png"
@@ -141,6 +144,10 @@ enum pagSecLiv{
 #define	BG_G		75
 #define	BG_B		100
 
+/*#define	BG_R		150 
+#define	BG_G		180
+#define	BG_B		220*/
+
 /****************************************************************
 **  definizione dei vari item
 ****************************************************************/
@@ -171,7 +178,11 @@ enum  bannerType {
 	SUONO,
 	PROTEZIONE,
 	VERSIONE,
-	CONTRASTO
+	CONTRASTO,
+	MOD_SCENARI,
+	OROLOGIO,
+	TEMPERATURA,
+	ALLARME
     };
       
 enum pulsType{

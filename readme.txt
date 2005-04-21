@@ -5,5 +5,8 @@ export QMAKESPEC=qws/linux-hardhat-g++
 export QTDIR=/home/davide/myopt/sharp/qt-3.3.2/hardhat/qt-embedded-free-3.3.2
              (o altro nome che uno ha usato)	
 $QTDIR/qmake/qmake
+
+export
+LD_LIBRARY_PATH=$LC_LIBRARY_PATH:/home/davide/CVS_3_2_2005/bt_stackopen/common_files/
        
 
