@@ -31,6 +31,7 @@ public:
    BtButton *zeroBut, *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
    BtLabel* digitLabel, *scrittaLabel;
    void 	draw(); 
+   void	setMode(char);
     
 signals:
     void 	Closed(char*);
@@ -51,7 +52,13 @@ public slots:
     void press9();    
 private:
     char 	pwd[6];
+    char mode;
 };
+
+enum tastiType{
+                HIDDEN,
+	CLEAN
+   };
 
 #define BUT_DIM	60
 #define LINE 		MAX_HEIGHT/5

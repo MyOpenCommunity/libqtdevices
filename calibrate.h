@@ -43,7 +43,7 @@ private:
     QPoint crossPos;
     QPoint penPos;
     QPixmap saveUnder;
-    QPixmap bersaglio;    
+    //QPixmap bersaglio;    
     QTimer *timer;
     int dx;
     int dy;

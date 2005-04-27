@@ -32,7 +32,7 @@ private:
 
 
 
-#define  BAN2BUT_BUT_DIM		80
+#define  BAN2BUT_BUT_DIM		60
 //#define BAN2BUT_SCRITTA_DIM		120
 
 #endif //BANN2BUT_H

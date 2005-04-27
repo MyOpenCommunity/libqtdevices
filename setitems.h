@@ -33,8 +33,9 @@ signals:
   //    void sendFrame(char *); 
 public slots:
 //     void Attiva();
-      impostaTime settalora;
-//private:
+private:
+       impostaTime settalora;
+
 };
 #endif //SETDATAORA
 
@@ -103,7 +104,7 @@ private:
 #ifndef BEEP_H
 #define BEEP_H
 
-class impBeep : public bannOnDx
+class impBeep : public bannOnSx
 {
     Q_OBJECT
 public:
@@ -131,7 +132,7 @@ class impContr : public bannOnDx
 {
     Q_OBJECT
 public:
-     impContr( QWidget *, const char *,const char *);     
+     impContr( QWidget *, const char *,char *, const char *);     
 signals:
 
 public slots:	
@@ -164,6 +165,44 @@ private:
   QTimer *tiempo;
 };
 #endif //VERSIONE_H
+
+
+/*****************************************************************
+**passWord
+****************************************************************/
+
+#ifndef PASSWORD_H
+#define PASSWORD_H
+
+
+#include "bann2but.h"
+#include "tastiera.h"
+
+class impPassword : public bann2But 
+{
+    Q_OBJECT
+public:
+     impPassword ( QWidget *, const char * , char* ,char* , char*,char*,char*);     
+//     void 	setActivation(bool);
+signals:
+     void activatePaswd(bool);
+     void 	setPwd(bool,char*);
+public slots:	
+      void 	toggleActivation();
+      void	show();
+      void  reShow1(char*);
+      void  reShow2(char*);      
+      void  tiempout();
+private:
+      char paswd[10];
+      bool active;
+      char iconOn[50];
+      char iconOff[50];       
+      tastiera *tasti;
+      bool sb;
+      QTimer * tiempo;
+};
+#endif //PASSWORD_H
 
 
 

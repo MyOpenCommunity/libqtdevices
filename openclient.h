@@ -20,6 +20,7 @@
 
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_COMANDI "*99*0##"
+//#define SOCKET_COMANDI "*99*##"
 
 
 class Client  : public QSocket

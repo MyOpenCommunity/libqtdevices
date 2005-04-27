@@ -21,24 +21,10 @@ class bannOnOff : public banner
     Q_OBJECT
 public:
      bannOnOff( QWidget *, const char * );
-/*    void SetText(const char *;
-    void SetIcons(const char *onIcon=0, const char *offIcon=0);
-    void Draw();*/
      void setIcons(const char *onIcon=0, const char *offIcon=0);
 public slots:
- /*void Accendi();
-  void Spegni();*/
 private:
-  signals:
-/*  void sxClick();
-  void dxClick();*/
-  
-/*  QLabel * BannerIcon;
-  QLabel * BannerText;
-  QPixmap *  Icon1;
-  QPixmap * Icon2; 
-  char testo[20];
-  char spento;*/
+signals:
 };
 
 

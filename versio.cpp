@@ -83,10 +83,11 @@ void versio::gestFrame(char* frame)
 	    pic_build=atoi(msg_open.Extract_valori(2));	    
     	    aggiorna=1;
 	}
-	if (!strcmp(msg_open.Extract_dove(),"3"))
+	if (!strcmp(msg_open.Extract_grandezza(),"3"))
 	{
 	    hw=atoi(msg_open.Extract_valori(2));
 	    aggiorna=1;	    
+	 //   qDebug("presa vers HW = %d",hw);
 	}
     }
     if (aggiorna)

@@ -12,6 +12,7 @@
 #include "main.h"
 #include "btbutton.h"
 #include "timescript.h"
+#include "genericfunz.h"
 
 #include <qfont.h>
 #include <qlabel.h>
@@ -74,11 +75,14 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
     if (Icon.load(iconName))
     	 b1->setPixmap(Icon);
     b1->setPaletteBackgroundColor(backgroundColor());
-   memset(nomeFile,'\000',sizeof(nomeFile));
+    
+    
+    getPressName((char*)iconName, &nomeFile[0],sizeof(nomeFile));
+/*   memset(nomeFile,'\000',sizeof(nomeFile));
     
     strncpy(nomeFile,iconName,strstr(iconName,".")-iconName);
-    strcat(nomeFile,"P");
-    strcat(nomeFile,strstr(iconName,"."));
+    strcat(nomeFile,"p");
+    strcat(nomeFile,strstr(iconName,"."));*/
 
    
     if (Icon.load(nomeFile))
@@ -87,7 +91,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
     
 
     switch (function){
-	case USCITA:   connect(b1,SIGNAL(clicked()), qApp, SLOT(quit()) );       break;
+//	case USCITA:   connect(b1,SIGNAL(clicked()), qApp, SLOT(quit()) );       break;
 	case AUTOMAZIONE:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Automazione() )); break;
 	case ILLUMINAZIONE:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Illuminazione() )); break;
 	case ANTIINTRUSIONE:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Antiintrusione() )); break;
@@ -165,11 +169,11 @@ void homePage::addDate(int x, int y)
     addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
 }	
 
-void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
+void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line, char* text)
 {
      strcpy(zonaTermo,z);
      temperatura = new QLCDNumber(this,"0.00 C");
-     temperatura ->setGeometry(x,y,width,height);
+     temperatura ->setGeometry(x,y,width,height-H_SCR_TEMP);
      temperatura ->setPaletteForegroundColor(fg);
      temperatura ->setPaletteBackgroundColor(bg);
 
@@ -178,11 +182,22 @@ void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QCo
      temperatura ->setNumDigits(6);
      temperatura -> display("0.00\272C");
      temperatura -> setSegmentStyle(QLCDNumber::Flat);    
+     
+     if (text)
+     {
+	 descrTemp = new BtLabel(this,text);
+	 descrTemp ->setFont( QFont( "helvetica", 14, QFont::Bold ));
+	 descrTemp ->setAlignment(AlignHCenter|AlignVCenter);
+	 descrTemp ->setText(text);
+	 descrTemp ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
+	 descrTemp ->setPaletteForegroundColor(fg);
+	 descrTemp ->setPaletteBackgroundColor(bg);
+     }     
  }    
 
 void homePage::addTemp(char *z, int x, int y)
 {
-     addTemp(z,x,y,180, 35, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0);
+     addTemp(z,x,y,180, 35, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0,NULL);
 }    
 
 

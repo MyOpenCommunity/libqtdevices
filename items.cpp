@@ -350,7 +350,7 @@ void grDimmer::inizializza(){}
 ****************************************************************/
 
 scenario::scenario( QWidget *parent,const char *name,char* indirizzo,char* IconaSx )
-        : bannOnDx( parent, name )
+        : bannOnSx( parent, name )
 {   
      SetIcons( IconaSx,1);    
      setAddress(indirizzo);
@@ -377,7 +377,7 @@ void scenario::inizializza(){}
 ****************************************************************/
 
 carico::carico( QWidget *parent,const char *name,char* indirizzo ,char* IconaSx)
-        : bannOnDx( parent, name )
+        : bannOnSx( parent, name )
 {
    
      SetIcons( IconaSx,1);
@@ -410,8 +410,8 @@ attuatAutomInt::attuatAutomInt( QWidget *parent,const char *name,char* indirizzo
       memset(nomeFile2,'\000',sizeof(nomeFile2));
       strncpy(nomeFile1,icon,strstr(icon,".")-icon);
       strncpy(nomeFile2,icon,strstr(icon,".")-icon);
-      strcat(nomeFile1,"O");
-      strcat(nomeFile2,"C");
+      strcat(nomeFile1,"o");
+      strcat(nomeFile2,"c");
       strcat(nomeFile1,strstr(icon,"."));
       strcat(nomeFile2,strstr(icon,"."));
       SetIcons( IconaSx, IconaDx , icon,nomeFile1,nomeFile2);
@@ -555,8 +555,8 @@ attuatAutomIntSic::attuatAutomIntSic( QWidget *parent,const char *name,char* ind
       memset(nomeFile2,'\000',sizeof(nomeFile2));
       strncpy(nomeFile1,icon,strstr(icon,".")-icon);
       strncpy(nomeFile2,icon,strstr(icon,".")-icon);
-      strcat(nomeFile1,"O");
-      strcat(nomeFile2,"C");
+      strcat(nomeFile1,"o");
+      strcat(nomeFile2,"c");
       strcat(nomeFile1,strstr(icon,"."));
       strcat(nomeFile2,strstr(icon,"."));
       SetIcons( IconaSx, IconaDx , icon,nomeFile1,nomeFile2);
@@ -701,13 +701,16 @@ void attuatAutomIntSic::inizializza()
 attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number )
         : bannOnOff2scr( parent, name )
 {     
+    qDebug("attuatAutomTemp -0");
      SetIcons( IconaSx, IconaDx ,icon, pressedIcon,period ,number );
     setAddress(indirizzo);
-
+qDebug("attuatAutomTemp -1");
      cntTempi=0;
      SetSeconaryText(tempi[cntTempi]);
+ qDebug("attuatAutomTemp -2");    
      connect(this,SIGNAL(dxClick()),this,SLOT(Attiva()));
      connect(this,SIGNAL(sxClick()),this,SLOT(CiclaTempo()));
+ qDebug("attuatAutomTemp -3");    
 }
 
 
@@ -850,10 +853,10 @@ void grAttuatInt::inizializza()
 **attuatPuls
 ****************************************************************/
 
-attuatPuls::attuatPuls( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char tipo ,int period,int number )
+attuatPuls::attuatPuls( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,/*char* IconaDx,*/char *icon ,char tipo ,int period,int number )
         : bannPuls( parent, name )
 {     
-     SetIcons(  IconaSx, IconaDx , NULL,icon,period ,number );
+     SetIcons(  IconaSx,NULL, NULL,icon,period ,number );
       setAddress(indirizzo);
      connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
      connect(this,SIGNAL(sxReleased()),this,SLOT(Disattiva()));
@@ -1833,42 +1836,14 @@ void termoPage::inizializza()
      strcat(pippo,"##");
      msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
      emit sendFrame(msg_open.frame_open);   
-     /*
-//Richiesta offset alla sonda     
-     memset(pippo,'\000',sizeof(pippo));
-     strcat(pippo,"*#4*");
-     strcat(pippo,getAddress());
-     strcat(pippo,"*13");
-     strcat(pippo,"##");
-     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-     emit sendFrame(msg_open.frame_open);    
-     
-//Richiesta temperatura alla sonda     
-     memset(pippo,'\000',sizeof(pippo));
-     strcat(pippo,"*#4*");
-     strcat(pippo,getAddress());
-     strcat(pippo,"*0");
-     strcat(pippo,"##");
-     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-     emit sendFrame(msg_open.frame_open);         
-     
-//Richiesta offset della sonda  via centrale
-     memset(pippo,'\000',sizeof(pippo));
-     strcat(pippo,"*#4*");
-     strcat(pippo,getAddress());
-     strcat(pippo,"*14");
-     strcat(pippo,"##");
-     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-     emit sendFrame(msg_open.frame_open);         */
-
-}
+ }
 
 
 /*****************************************************************
 **zonaAnti
 ****************************************************************/
 
-zonaAnti::zonaAnti( QWidget *parent,const char *name,char* indirizzo,char* IconActive,char* IconDisactive,char *icon ,char *pressedIcon ,int period,int number )
+zonaAnti::zonaAnti( QWidget *parent,const char *name,char* indirizzo,char* IconActive,char* IconDisactive,/*char *icon ,char *pressedIcon ,*/int period,int number )
         : bannOnOff( parent, name )
 {       
     char    pippo[MAX_PATH];
@@ -1953,7 +1928,7 @@ impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn,
      if (IconActive)
 	 strncpy(&pippo[0],IconActive,strstr(IconActive,".")-IconActive-3);
 
-     strcat(pippo,"Dis");
+     strcat(pippo,"dis");
      strcat(pippo,strstr(IconActive,"."));
      SetIcons(  IconInfo,IconOn,IconActive,IconOff,&pippo[0]);
      setChi("5");
@@ -2091,3 +2066,183 @@ void allarme::muoio()
     emit killMe(this);
 }
 
+
+/*****************************************************************
+**gesModScen
+****************************************************************/
+
+gesModScen::gesModScen( QWidget *parent, const char *name ,char*indirizzo,char* IcoSx,char* IcoDx,char* IcoCsx,char* IcoCdx,char* IcoDes, char* IcoSx2, char* IcoDx2)
+	:  bann4tasLab(parent, name)
+{
+    strcpy(&iconOn[0],IcoSx);
+    strcpy(&iconStop[0],IcoSx2);       
+    strcpy(&iconInfo[0],IcoDx);
+    strcpy(&iconNoInfo[0],IcoDx2);       
+
+    SetIcons (IcoSx, IcoDx, IcoCsx, IcoCdx, IcoDes);
+    nascondi(BUT3);
+    nascondi(BUT4);    
+
+    memset(&cosa[0],'\000',sizeof(&cosa[0]) );
+    memset(&dove[0],'\000',sizeof(&dove[0]) );    
+ //   strcpy(&cosa[0], indirizzo);
+    
+//   *strstr(&cosa[0],"*")='\000';
+    if (strstr(indirizzo,"*"))
+    {
+	strncpy(&cosa[0], indirizzo, strstr(indirizzo,"*")-indirizzo);
+
+	strcpy(&dove[0], strstr(indirizzo,"*")+1);    
+    }
+    sendInProgr=0;
+
+     setAddress(indirizzo);
+     impostaAttivo(2);   
+    connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
+    connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
+    connect(this,SIGNAL(csxClick()),this,SLOT(startProgScen()));
+    connect(this,SIGNAL(cdxClick()),this,SLOT(cancScen()));    
+
+}
+
+void gesModScen::attivaScenario()
+{
+    openwebnet msg_open;
+    char    pippo[50];
+	
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*0*");
+    strcat(pippo,&cosa[0]);
+    strcat(pippo,"*");
+    strcat(pippo,&dove[0]);
+    strcat(pippo,"##");
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit sendFrame(msg_open.frame_open);    
+}
+void gesModScen::enterInfo()
+{
+      nascondi(ICON);
+      mostra(BUT4);    
+      mostra(BUT3);      
+      SetIcons(uchar(1),&iconNoInfo[0]);
+      qDebug(&iconNoInfo[0]);
+      disconnect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
+      connect(this,SIGNAL(dxClick()),this,SLOT(exitInfo())); 
+      Draw();
+}
+void gesModScen::exitInfo()
+{
+      mostra(ICON);
+      nascondi(BUT4);    
+      nascondi(BUT3);      
+      SetIcons(uchar(1),&iconInfo[0]);
+        qDebug(&iconInfo[0]);
+      connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
+      disconnect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));     
+      Draw();
+}
+void gesModScen::startProgScen()
+{
+    openwebnet msg_open;
+    char    pippo[50];
+	
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*0*40#");
+    strcat(pippo,&cosa[0]);
+    strcat(pippo,"*");
+    strcat(pippo,&dove[0]);
+    strcat(pippo,"##");
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit sendFrame(msg_open.frame_open);    
+}
+void gesModScen::stopProgScen()
+{
+    openwebnet msg_open;
+    char    pippo[50];
+	
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*0*41#");
+    strcat(pippo,&cosa[0]);
+    strcat(pippo,"*");
+    strcat(pippo,&dove[0]);
+    strcat(pippo,"##");
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit sendFrame(msg_open.frame_open);    
+}
+void gesModScen::cancScen()
+{
+    openwebnet msg_open;
+    char    pippo[50];
+	
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*0*42#");
+    strcat(pippo,&cosa[0]);
+    strcat(pippo,"*");
+    strcat(pippo,&dove[0]);
+    strcat(pippo,"##");
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit sendFrame(msg_open.frame_open);    
+}
+void gesModScen::gestFrame(char* frame)
+{
+    openwebnet msg_open;
+    char aggiorna;
+    
+    aggiorna=0;
+      
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+
+    
+    if (!strcmp(msg_open.Extract_chi(),"0"))
+    {
+	if ( (! strcmp(msg_open.Extract_dove(),&dove[0])) )
+	{
+	    if (!strncmp(msg_open.Extract_cosa(),"40",2)) 		
+	    {
+		if (sendInProgr)
+		{	
+		    SetIcons(uchar(0),&iconStop[0]);       
+		    disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
+		    connect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
+		    Draw();
+		}
+		else
+		{
+		    nascondi(BUT2);
+		    exitInfo();
+		}
+	    }
+	    else if ( (!strncmp(msg_open.Extract_cosa(),"43",2)) || (!strncmp(msg_open.Extract_cosa(),"45",2)))
+	    {
+		nascondi(BUT2);
+		exitInfo();
+	    }
+	    else if  (!strncmp(msg_open.Extract_cosa(),"41",2)) 
+	    {
+		SetIcons(uchar(0),&iconOn[0]);       
+		connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
+		disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
+		Draw();
+	    }
+	    
+	    else if (!strcmp(msg_open.Extract_cosa(),"0")) 
+	    {
+
+	    }
+	}
+    }    
+    if (aggiorna)
+	Draw();
+}
+void gesModScen::inizializza()
+{   
+  	openwebnet msg_open;
+	char    pippo[50];
+	
+	memset(pippo,'\000',sizeof(pippo));
+	strcat(pippo,"*#0*");
+	strcat(pippo,&dove[0]);
+	strcat(pippo,"##");
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	emit sendFrame(msg_open.frame_open);    
+}

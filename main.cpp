@@ -16,7 +16,7 @@
 /*******************************************
 ** Configurazione applicativo - path - verbosity - ecc
 *******************************************/
-// Variabili di iniziaùlizzazione
+// Variabili di inizializzazione
 char * My_File_Cfg=MY_FILE_CFG_DEFAULT;
 char * My_File_User_Cfg=MY_FILE_USER_CFG_DEFAULT;
 char * My_File_Log=MY_FILE_LOG_DEFAULT;
@@ -35,11 +35,13 @@ void myMessageOutput( QtMsgType type, const char *msg )
   switch ( type ) {
     case QtDebugMsg:
       if (VERBOSITY_LEVEL>1)
-        fprintf( StdLog, "<BTo> %s\n", msg );
+        fprintf( stdout, "<BTo> %s\n", msg );
+//              fprintf( StdLog, "<BTo> %s\n", msg );
     break;
     case QtWarningMsg:
       if (VERBOSITY_LEVEL>0)
-        fprintf( StdLog, "<BTo> %s\n", msg );
+        fprintf( stdout, "<BTo> %s\n", msg );
+//        fprintf( StdLog, "<BTo> %s\n", msg );      
     break;
     case QtFatalMsg:
       fprintf( stderr, "<BTo> FATAL %s\n", msg );

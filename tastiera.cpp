@@ -189,6 +189,7 @@ tastiera::tastiera( QWidget *parent, const char *name )
 	cancBut->setPressedPixmap(*pressIcon); 
     }
     memset(pwd,'\000', sizeof(pwd));
+    mode=CLEAN;
 
     connect(unoBut,SIGNAL(clicked()),this,SLOT(press1()));
     connect(dueBut,SIGNAL(clicked()),this,SLOT(press2()));
@@ -294,8 +295,16 @@ void tastiera::draw()
      scrittaLabel->setFont( QFont( "helvetica", 14, QFont::Bold ) );
      scrittaLabel->setText("PASSWORD:");
      digitLabel->setAlignment(AlignLeft|AlignVCenter);
-     digitLabel->setFont( QFont( "helvetica", 18, QFont::Bold ) );
-     digitLabel->setText(&pwd[0]);
+     digitLabel->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+     if (mode==CLEAN)
+	 digitLabel->setText(&pwd[0]);
+     else
+     {
+	     char pw[10];
+	     memset(pw,'\000',sizeof(pw));
+	     memset(pw,'*',strlen(&pwd[0]));
+	     digitLabel->setText(&pw[0]);
+      }
 }
 
 
@@ -366,13 +375,21 @@ void tastiera::canc()
 	pwd[strlen(&pwd[0])-1]='\000';
     else
     {
+    	hide();
 	emit (Closed(NULL));
-	hide();
     }
     draw();
 }
 void tastiera::ok()
 {
-    emit(Closed(&pwd[0]));
     hide();
+    emit(Closed(&pwd[0]));
 }    
+
+void tastiera::setMode(char m)	
+{
+    mode=m;
+//    memset(&pwd[0],'\000',sizeof(pwd));
+}
+
+

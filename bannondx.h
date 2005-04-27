@@ -31,8 +31,37 @@ private:
 };
 
 
-#define BUTONDX_BUT_DIM_X 	80
-#define BUTONDX_BUT_DIM_Y	80
+#define BUTONDX_BUT_DIM_X 	60
+#define BUTONDX_BUT_DIM_Y	60
 #define BUTONDX_H_SCRITTA	20
 
 #endif //BANNONDX
+
+#ifndef BANNONSX_H
+#define BANNONSX_H
+
+#include "banner.h"
+#include <qwidget.h>
+#include <qlabel.h>
+#include <qpixmap.h>
+
+class bannOnSx : public banner
+{
+    Q_OBJECT
+public:
+     bannOnSx( QWidget *, const char * );
+
+public slots:
+signals:
+  void click();
+
+private:
+
+};
+
+
+/*#define BUTONDX_BUT_DIM_X 	60
+#define BUTONDX_BUT_DIM_Y	60
+#define BUTONDX_H_SCRITTA	20*/
+
+#endif //BANNONSX

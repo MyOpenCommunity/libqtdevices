@@ -10,7 +10,6 @@
 
 #include "timescript.h"
 #include <qdatetime.h>
-#include <qlocale.h>
 
 
 timeScript::timeScript( QWidget *parent, const char *name, uchar tipo,QDateTime* mioOrol)

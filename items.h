@@ -142,7 +142,7 @@ private:
 
 #include "bannondx.h"
 
-class scenario : public bannOnDx 
+class scenario : public bannOnSx 
 {
     Q_OBJECT
 public:
@@ -153,6 +153,7 @@ signals:
 public slots:
      void Attiva();
 private:
+
 };
 
 
@@ -167,7 +168,7 @@ private:
 
 #include "bannondx.h"
 
-class carico : public bannOnDx 
+class carico : public bannOnSx 
 {
     Q_OBJECT
 public:
@@ -179,6 +180,7 @@ public slots:
 signals:
  //   void sendFrame(char *);      
 private:
+
 };
 
 
@@ -254,7 +256,7 @@ private:
 #ifndef ATTUAT_AUTOM_TEMP_H
 #define ATTUAT_AUTOM_TEMP_H
 
-     static const char* tempi[]={"1'","2'","3'","4'","5'","15'","30''","0,5''"} ;
+static const char* tempi[]={"1'","2'","3'","4'","5'","15'"};//,"30''","0,5''"} ;
      
 #include "bannonoff2scr.h"
 
@@ -322,7 +324,7 @@ class attuatPuls : public bannPuls
 {
     Q_OBJECT
 public:
-     attuatPuls( QWidget *parent=0, const char *name=NULL ,char*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char tipo=0,int periodo=0,int numFrame=0); 
+     attuatPuls( QWidget *parent=0, const char *name=NULL ,char*indirizzi=NULL,char* IconaSx=NULL,/*char* IconaDx=NULL,*/char*IconActive=NULL,char tipo=0,int periodo=0,int numFrame=0); 
      void inizializza();
 public slots:
      void Attiva();
@@ -519,7 +521,7 @@ class zonaAnti : public bannOnOff
 {
     Q_OBJECT
 public:
-     zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
+     zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
           void inizializza();
 public slots:
      void gestFrame(char*);
@@ -584,4 +586,38 @@ private:
 
 #endif //ALLARME_H
 
+/*****************************************************************
+**Gestione Modulo scenari
+****************************************************************/	
+#ifndef MOD_SCEN_H
+#define MOD_SCEN_H
 
+#include "bann4taslab.h"
+
+class gesModScen : public  bann4tasLab
+{
+    Q_OBJECT
+public:
+     gesModScen( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* Ico1=NULL,char* Ico2=NULL,char* Ico3=NULL,char* Ico4=NULL,\
+		 char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL);   
+public slots:
+    void attivaScenario();	
+    void enterInfo();
+    void exitInfo();
+    void startProgScen();
+    void stopProgScen();
+    void cancScen();
+    void gestFrame(char*);
+    void inizializza();
+signals:
+private:    
+    char iconOn[50];
+    char iconStop[50];       
+    char iconInfo[50];
+    char iconNoInfo[50];       
+    char cosa[10];
+    char dove[10];
+    unsigned char sendInProgr;
+};
+
+#endif //MOD_SCEN_H

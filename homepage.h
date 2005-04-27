@@ -34,7 +34,7 @@ public:
    void 	addDate(int , int );
    void	addDate(int, int, int, int, QColor, QColor, int, int );   
    void 	addTemp(char*, int , int );
-   void	addTemp(char*, int, int, int, int, QColor, QColor, int, int );   
+   void	addTemp(char*, int, int, int, int, QColor, QColor, int, int, char* );   
    void 	addDescr(char*, int , int );
    void	addDescr(char*, int, int, int, int, QColor, QColor, int, int );      
    int 	setBGPixmap(char* );
@@ -77,18 +77,19 @@ int xClock,yClock,xTemp,yTemp;
   char cosa[10];
   char dove[10];
   char tipoSpecial;
-  BtLabel *descrizione;
+  BtLabel *descrizione, *descrTemp;
 };
 
 enum tipoFunzSpe{
-                NORMALE,
-	CICLICO,
-	PULSANTE
+                NORMALE=0,
+	CICLICO=1,
+	PULSANTE=2
    };
 
 #define MAX_BUT_SOTMEN 	9
 #define DIM_BUT_HOME 		80 
-#define DIM_SPECBUT_HOME 	240 
+#define DIM_SPECBUT_HOME 	180 
+#define H_SCR_TEMP		20
 /*
 #define OFFSET_CLOCK_1SEP	45
 #define OFFSET_CLOCK_2SEP	102

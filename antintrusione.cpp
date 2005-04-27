@@ -107,7 +107,7 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* I
  {        
     if (tipo== IMPIANTINTRUS)
 	impianto -> addItem(tipo, descrizione,indirizzo,  IconaSx, IconaDx, icon, pressedIcon);
-    else
+    else if (tipo== ZONANTINTRUS)
 	zone->addItem(tipo , descrizione , indirizzo ,IconaSx,IconaDx, icon, pressedIcon);
     return(1);    
  }

@@ -23,17 +23,23 @@
 void getPressName(char* name, char* pressName,char len)
 {
     memset(pressName,'\000',len);
-    strncpy(pressName,name,strstr(name,".")-name);
-    strcat(pressName,"P");
-    strcat(pressName,strstr(name,"."));
+    if (strstr(name,"."))
+    {
+	strncpy(pressName,name,strstr(name,".")-name);
+	strcat(pressName,"p");
+	strcat(pressName,strstr(name,"."));
+    }
 }
 
 void getZoneName(char* name, char* pressName,char*zona, char len)
 {
     memset(pressName,'\000',len);
-    strncpy(pressName,name,strstr(name,".")-name);
-    strncat(pressName,&zona[1],1);
-    strcat(pressName,strstr(name,"."));
+    if (strstr(name,"."))
+    {
+	strncpy(pressName,name,strstr(name,".")-name);
+	strncat(pressName,&zona[1],1);
+	strcat(pressName,strstr(name,"."));
+    }
 }
 
 void setContrast(unsigned char c)

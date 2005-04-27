@@ -391,20 +391,22 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
     Icon[3] = new QPixmap();
     memset(nomeFile,'\000',sizeof(nomeFile));
     strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
-    strcat(nomeFile,"Sx");
+    strcat(nomeFile,"sxl0");
     strcat(nomeFile,strstr(centerInactiveIcon,"."));
     Icon[2]->load(nomeFile);	
-    nomeFile[strstr(nomeFile,".")-nomeFile-2]='D';
+    nomeFile[strstr(nomeFile,".")-nomeFile-4]='d';
     Icon[3]->load(nomeFile);		
     
     char idy=0;
+    char suff[10];
  
     for (char idx=minValue;idx<=maxValue;idx++,idy++)
     {
 	Icon[4+idy*2]=new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
 	strncpy(nomeFile,centerActiveIcon,strstr(centerActiveIcon,".")-centerActiveIcon);
-	strcat(nomeFile,QString::number(idx)+"Sx");
+	sprintf(&suff[0],"sxl%d",idx);
+	strcat(nomeFile,&suff[0]);
 	strcat(nomeFile,strstr(centerActiveIcon,"."));
 	Icon[4+idy*2]->load(nomeFile);	
 	if (inactiveLevel)
@@ -412,7 +414,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	    Icon[22+idy*2]=new QPixmap();
 	    memset(nomeFile,'\000',sizeof(nomeFile));
 	    strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
-	    strcat(nomeFile,QString::number(idx)+"Sx");
+	    sprintf(&suff[0],"sxl%d",idx);
+	    strcat(nomeFile,&suff[0]);
 	    strcat(nomeFile,strstr(centerInactiveIcon,"."));
 	    Icon[22+idy*2]->load(nomeFile);		    
 	}
@@ -422,7 +425,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[5+idy*2]=new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
 	strncpy(nomeFile,centerActiveIcon,strstr(centerActiveIcon,".")-centerActiveIcon);
-	strcat(nomeFile,QString::number(idx)+"Dx");
+	sprintf(&suff[0],"dxl%d",idx);
+	strcat(nomeFile,&suff[0]);
 	strcat(nomeFile,strstr(centerActiveIcon,"."));
 	Icon[5+idy*2]->load(nomeFile);	
 	if (inactiveLevel)
@@ -430,7 +434,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	    Icon[23+idy*2]=new QPixmap();
 	    memset(nomeFile,'\000',sizeof(nomeFile));
 	    strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
-	    strcat(nomeFile,QString::number(idx)+"Dx");
+	    sprintf(&suff[0],"dxl%d",idx);
+	    strcat(nomeFile,&suff[0]);
 	    strcat(nomeFile,strstr(centerInactiveIcon,"."));
 	    Icon[23+idy*2]->load(nomeFile);	
 	}
@@ -560,7 +565,7 @@ void banner::Draw()
 		pntIcon=Icon[3+contFrame];
     	    if  (attivo==2)
 	    {
-		pntIcon=Icon[4+contFrame];qDebug("attivo =2");
+		pntIcon=Icon[4+contFrame];
 	    }
 	    else if (!attivo)
 		pntIcon=Icon[2];

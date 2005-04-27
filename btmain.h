@@ -8,6 +8,10 @@
 **
 ****************************************************************/
 
+
+#ifndef BTMAIN_H
+#define BTMAIN_H
+
 #include <qwidget.h>
 #include "homepage.h"
 #include "sottomenu.h"
@@ -42,10 +46,18 @@ private slots:
     void gesScrSav();
     void freezed(bool);
 //    void specFunz();
+    void setPwd(bool,char*);
+    void testPwd(char*);
 private:
     QTimer  *  tempo1;
     QTimer  *  tempo2;
     QTimer  *  tempo3;	
     QWidget* pagDefault;
+    char	pwd[10];
+    bool	pwdOn;
+    tastiera *tasti;
+    unsigned char firstTime;
 //    char specialFrame[50];
 };
+
+#endif// BTMAIN_H

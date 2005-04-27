@@ -31,6 +31,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
     setCursor (QCursor (blankCursor));
  //  showFullScreen();
 #endif    
+
     if(descr1)
 	strncpy(&text1[0], descr1, sizeof(text1));
     if(descr2)
@@ -39,12 +40,11 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	strncpy(&text3[0], descr3, sizeof(text3));
     if(descr4)	
 	strncpy(&text4[0], descr4, sizeof(text4));  
-     
+
    bannNavigazione  = new bannFrecce(this,"bannerfrecce",9);
    bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );
-   
+
    aumVolTimer=NULL;
-	   
    char iconName[MAX_PATH];
    QPixmap* Icon1 = new QPixmap();
    QPixmap* Icon2 = NULL;
@@ -52,15 +52,15 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT); 
     memset(iconName,'\000',sizeof(iconName));
     strcpy(iconName,ICON_FRECCIA_SU);
+
     Icon1->load(iconName);	
     getPressName((char*)ICON_FRECCIA_SU, &iconName[0],sizeof(iconName));
- 
-        if (QFile::exists(iconName))
+            if (QFile::exists(iconName))
     {  	 
 	Icon2 = new QPixmap();
 	Icon2->load(iconName);
     }
-    
+
     for (uchar idx=0;idx<2;idx++)
     {
 	but[idx] = new BtButton(this,"freccia"/*+QString::number(idx)*/);
@@ -85,7 +85,6 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	Icon2 = new QPixmap();
 	Icon2->load(iconName);
     }
-    
     for (uchar idx=2;idx<4;idx++)
     {
 	but[idx] = new BtButton(this,"freccia"+QString::number(idx));
@@ -95,7 +94,6 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	if (Icon2)
 	    but[idx] -> setPressedPixmap(*Icon2);
     }	
-    
      delete(Icon1);
      Icon1 = new QPixmap();
      Icon1->load(ICON_SVEGLIA_ON);    
@@ -105,7 +103,6 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
      if (Icon1)
 	 Immagine -> setPixmap(*Icon1); 
     
-     
     Immagine->setGeometry(80,0,80,80);
     delete(Icon1);
     delete(Icon2);
@@ -117,47 +114,49 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	Icon2 = new QPixmap();
 	Icon2->load(iconName);
     }
-   
     for (uchar idx=0;idx<4;idx++)
     {
 	choice[idx] = new BtButton (this,"choice"+QString::number(idx));
 	choice[idx]  -> setGeometry( 10,idx*60,60,60);
 	choice[idx]  -> setToggleButton (TRUE);
-	choice[idx]  -> setPixmap(*Icon1);
+	if (!(Icon1->isNull()))
+	{
+	    choice[idx]  -> setPixmap(*Icon1);
+	}
 	if (Icon2)
 	    choice[idx]  -> setPressedPixmap(*Icon2);
 	choice[idx]  -> hide();
-	
 	testiChoice[idx] = new QLabel(this,"choiceLabel"+QString::number(idx));
 	testiChoice[idx] -> setGeometry( 80,idx*60,120,60);
 	testiChoice[idx] -> setAlignment(AlignHCenter|AlignVCenter);
 	testiChoice[idx] -> setFont( QFont( "helvetica", 14, QFont::Bold ) );
 	testiChoice[idx] -> hide();
     }	
-
+    qDebug("- - - - - - - - SVEGLIOLINA  6");
     dataOra=NULL;
     
     testiChoice[0]  -> setText(&text1[0]);
     testiChoice[1]  -> setText(&text2[0]);
     testiChoice[2]  -> setText(&text3[0]);
     testiChoice[3]  -> setText(&text4[0]);        
-    
+       qDebug("- - - - - - - - SVEGLIOLINA  7"); 
    // OroTemp = QDateTime(QDateTime::currentDateTime());
      oraSveglia =  new QDateTime();//QDate(),QTime(12,0));
      oraSveglia->setTime(QTime(12,0));
      oraSveglia->setDate(QDate::currentDate(Qt::LocalTime));     
      
      dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
-     
+         qDebug("- - - - - - - - SVEGLIOLINA  8");
      dataOra->setGeometry(40,140,160,50);
      dataOra->setFrameStyle( QFrame::Plain );
      dataOra->setLineWidth(0);    
-     
      difson=diso;
     if (difson)
-	difson->hide();
-    
-
+    {
+	 qDebug("- - - - - - - - SVEGLIOLINA  81");
+	 difson->hide();
+    }
+qDebug("- - - - - - - - SVEGLIOLINA  82");
     for (uchar idx=0;idx<AMPLI_NUM;idx++)
 	volSveglia[idx]=0;
     minuTimer=NULL;
@@ -171,7 +170,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 /*	qDebug("f= %s",f);
 	qDebug("frame= %s",frame);*/
     }
-    
+        qDebug("- - - - - - - - SVEGLIOLINA  9");
 //    buzzer=1;
 }
 

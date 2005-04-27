@@ -19,7 +19,7 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
     QRect desk = qApp->desktop()->geometry();
     setGeometry( 0, 0, desk.width(), desk.height() );
     logo.load("cfg/skin/my_home.png");
-    bersaglio.load("cfg/skin/bersaglio.png");
+//    bersaglio.load("cfg/skin/bersaglio.png");
 #if defined(BT_EMBEDDED)
     cd.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint( offset, offset );
     cd.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint( offset, qt_screen->deviceHeight() - offset );
@@ -32,7 +32,9 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
 #endif
     timer = new QTimer( this );
     connect( timer, SIGNAL(timeout()), this, SLOT(timeout()) );
+#if defined(BT_EMBEDDED)   
     QWSServer::mouseHandler()->clearCalibration();
+#endif  
     grabMouse();
 }
 
@@ -83,11 +85,11 @@ void Calibrate::moveCrosshair( QPoint pt )
     QPainter p( this );
     p.drawPixmap( crossPos.x()-8, crossPos.y()-8, saveUnder );
    saveUnder = QPixmap::grabWindow( winId(), pt.x()-40, pt.y()-40, 80, 80 );
-/*    p.drawRect( pt.x()-1, pt.y()-8, 2, 7 );
+    p.drawRect( pt.x()-1, pt.y()-8, 2, 7 );
     p.drawRect( pt.x()-1, pt.y()+1, 2, 7 );
     p.drawRect( pt.x()-8, pt.y()-1, 7, 2 );
-    p.drawRect( pt.x()+1, pt.y()-1, 7, 2 );*/
-   p.drawPixmap(pt.x()-40,pt.y()-40,bersaglio);
+    p.drawRect( pt.x()+1, pt.y()-1, 7, 2 );
+/*   p.drawPixmap(pt.x()-40,pt.y()-40,bersaglio);*/
     crossPos = pt;
 }
 
