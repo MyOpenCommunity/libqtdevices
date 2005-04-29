@@ -42,6 +42,7 @@ banner::banner( QWidget *parent,const char *name )
     memset(chi,'\000',sizeof(chi));
     memset(group,FALSE,sizeof(group));
     pul=FALSE;
+    serNum=1;
 }
 
 void banner::SetText( const char *text )
@@ -838,3 +839,7 @@ void  banner::rispStato(char*){}
 
 void banner::hide(){QWidget::hide(); }
 void banner::show(){QWidget::show();}
+void banner::setSerNum(int s){serNum=s;}
+int    banner::getSerNum(){return(serNum);}
+char banner::getId(){return(id);}
+void banner::setId(char i){id=i;}

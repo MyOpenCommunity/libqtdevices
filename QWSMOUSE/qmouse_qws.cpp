@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouse_qws.cpp,v 1.3 2005/04/21 07:06:05 cvs Exp $
+** $Id: qmouse_qws.cpp,v 1.4 2005/04/29 09:42:59 cvs Exp $
 **
 ** Implementation of Qt/Embedded mouse drivers
 **
@@ -30,7 +30,7 @@
 **
 **********************************************************************/
 
-#if  defined BT_EMBEDDED
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 
 #include "qmouse_qws.h"
 #include "qwindowsystem_qws.h"

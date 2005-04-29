@@ -30,9 +30,10 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
     
 
      datiGen->setLineWidth(3);
-     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");     
-
-#if defined(BT_EMBEDDED)
+     datiGen->setText("art. H4684");     
+//     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");       
+     
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
 #endif
      datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);

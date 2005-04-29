@@ -18,6 +18,12 @@
 #include <qfile.h>
 #include "genericfunz.h"
 #include "openclient.h"
+#include "main.h"
+#include <qiodevice.h>
+
+
+#define CONFILENAME	"cfg/conf.xml"
+
 
 
 void getPressName(char* name, char* pressName,char len)
@@ -42,9 +48,87 @@ void getZoneName(char* name, char* pressName,char*zona, char len)
     }
 }
 
+
+bool setCfgValue(char* file, int id, const char* campo, const char* valore,int serNumId)
+{
+    char appoggio[100];
+    QString Line;
+    int count;
+    
+    count=1;    
+    QFile *fil=new QFile(file);
+    if ( !fil->open( IO_WriteOnly | IO_ReadOnly) )
+	return(FALSE);
+    QTextStream t( fil);
+    do{     
+	Line= t.readLine();
+	sprintf(&appoggio[0], "<id>%d</id>",id);
+	
+	if  (Line.contains(&appoggio[0],TRUE)) 
+	{
+	    if  (count==serNumId)
+	    {
+		sprintf(&appoggio[0], "<%s>",campo);
+		QIODevice::Offset ofs;
+		do{
+		    ofs=t.device()->at();
+		    Line= t.readLine();
+		}while( (!Line.isNull()) && !Line.contains(&appoggio[0],TRUE));
+		if (!Line.isNull())
+		{
+		     t.device()->at(ofs);
+		     Line.sprintf("<%s>%s</%s>",campo,valore,campo);
+		     t.writeRawBytes(Line.ascii(), Line.length());
+		     fil->flush();
+//		     Line= t.readLine();
+		     fil->close();
+		     return(TRUE);
+		 }		
+	    }
+	    else
+		count++;
+	}
+    }while  (!Line.isNull());
+    fil->close();    
+    return(FALSE);
+}   
+
+bool setCfgValue(int id, const char* campo, const char* valore)
+{
+    setCfgValue(id, campo, valore,1);
+}
+
+bool setCfgValue(int id, const char* campo, const char* valore,int serNumId)
+{
+    setCfgValue(CONFILENAME, id, campo, valore, serNumId);
+}
+
+bool copyFile(char* orig, char* dest)
+{
+    QFile *filIN=new QFile(orig);
+    if ( !filIN->open( IO_ReadOnly) )
+	return(FALSE);
+    if (QFile::exists(dest))
+	QFile::remove(dest);
+    QFile *filOUT=new QFile(dest);
+        
+    if ( !filOUT->open( IO_WriteOnly ) )
+	return(FALSE);
+    QDataStream tIN( filIN);
+    QDataStream tOUT( filOUT);
+    unsigned char i;
+    do{
+	 tIN>>i;
+	 tOUT<<i;
+    }while(!tIN.atEnd());
+     filIN->close();    
+     filOUT->close();             
+}
+
 void setContrast(unsigned char c)
 {
     char contr[4];
+    
     if ( QFile::exists("/proc/sys/dev/btweb/contrast") )
     {
 	int fd = open("/proc/sys/dev/btweb/contrast", O_WRONLY);
@@ -56,6 +140,8 @@ void setContrast(unsigned char c)
 	    close(fd);
 	}
     }
+    sprintf(&contr[0],"%03d",c);
+    setCfgValue(CONTRASTO, "value",&contr[0] ); 
 }
 unsigned char getContrast()
 {
@@ -106,6 +192,10 @@ void setBeep(bool b)
 	    fclose(fd);
 	}
     }
+    if (b)
+	setCfgValue(SUONO, "value","1"); 
+    else
+	setCfgValue(SUONO, "value","0"); 
 }
 
 bool getBeep()

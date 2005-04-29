@@ -34,7 +34,7 @@
 impostaTime::impostaTime( QWidget *parent, const char *name )
         : QFrame( parent, name )
 {
-#if defined(BT_EMBEDDED)
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
 //    showFullScreen();
 #endif    
@@ -202,7 +202,7 @@ void impostaTime::OKDate()
     
      QTextOStream (stdout)<<"\nOra impostata = "<<dataOra->getDataOra().toString();  
     
-#if defined BT_EMBEDDED     
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
      openwebnet msg_open;
      char    pippo[50];
      QString s;

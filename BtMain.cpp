@@ -50,7 +50,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
   
 /**********************************************/
      setBacklight(TRUE);
-     setContrast(0x80);
+//     setContrast(0x80);
      pagDefault=NULL;
      
 

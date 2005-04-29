@@ -4,7 +4,7 @@
 #define	CALIBRATE_H
 
 //#include <qwsmouse_qws.h>
-#if defined(BT_EMBEDDED)
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 //#include "QWSMOUSE/qmouselinuxtp_qws.h"
 #include "QWSMOUSE/qmouse_qws.h"
 #endif
@@ -36,7 +36,7 @@ void fineCalib();
 
 private:
     QPixmap logo;
-#if defined(BT_EMBEDDED)
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
     QWSPointerCalibrationData cd;
     QWSPointerCalibrationData::Location location;
 #endif    

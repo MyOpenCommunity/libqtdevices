@@ -137,32 +137,32 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
     if (CurTagL1.isEmpty())
     {
 	CurTagL1 = qName;
-	qDebug("ENTRO-1:%s",(const char*)CurTagL1);
+//	qDebug("ENTRO-1:%s",(const char*)CurTagL1);
     }
     else if (CurTagL2.isEmpty())
     {
 	CurTagL2 = qName;
-	qDebug("ENTRO-2:%s",(const char*)CurTagL2);
+//	qDebug("ENTRO-2:%s",(const char*)CurTagL2);
     }
     else if (CurTagL3.isEmpty()) 
     {
 	CurTagL3 = qName;
-	qDebug("ENTRO-3:%s",(const char*)CurTagL3);
+//	qDebug("ENTRO-3:%s",(const char*)CurTagL3);
     }
     else if (CurTagL4.isEmpty()) 
     {
 	CurTagL4 = qName;
-	qDebug("ENTRO-4:%s",(const char*)CurTagL4);
+//	qDebug("ENTRO-4:%s",(const char*)CurTagL4);
     }
     else if (CurTagL5.isEmpty()) 
     {
 	CurTagL5 = qName;
-	qDebug("ENTRO-5:%s",(const char*)CurTagL5);
+//	qDebug("ENTRO-5:%s",(const char*)CurTagL5);
     }
     else if (CurTagL6.isEmpty()) 
     {
 	CurTagL6 = qName;
-	qDebug("ENTRO-6:%s",(const char*)CurTagL6);
+//	qDebug("ENTRO-6:%s",(const char*)CurTagL6);
     }
     else if (CurTagL7.isEmpty())
     {
@@ -187,9 +187,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	{
 	    if ( !CurTagL3.compare("homepage") && (CurTagL4.isEmpty()) )
 	    {
-		qWarning("HOMEPAGE");
+/*		qWarning("HOMEPAGE");
 		qWarning("hompage_isdefined=%d",hompage_isdefined);
-		qWarning("hompage_id=%d",hompage_id);
+		qWarning("hompage_id=%d",hompage_id);	*/
 		if (hompage_isdefined)
 		{
 		    if (hompage_isdefined)
@@ -202,12 +202,12 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	    {
 		if ( CurTagL4.startsWith("item") && CurTagL5.isEmpty() )
 		{
-		    qWarning("sottomenu_id=%d",sottomenu_id);
+/*		    qWarning("sottomenu_id=%d",sottomenu_id);
 		    qWarning("sottomenu_descr=%s",(const char*)sottomenu_descr);
 		    qWarning("sottomenu_left=%d",sottomenu_left);
 		    qWarning("sottomenu_top=%d",sottomenu_top);
 		    qWarning("sottomenu_icon_where=%s",(const char*)sottomenu_where);	  	  
-		    qWarning("sottomenu_icon_name=%s",(const char*)sottomenu_icon_name);
+		    qWarning("sottomenu_icon_name=%s",(const char*)sottomenu_icon_name);	*/
 		    
 		    
 		    switch (sottomenu_id)
@@ -329,7 +329,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			{
 				pnt=datiGen;
 			    }
-			pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii()  )  ;
+			pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3 )  ;
 			break;			   
 			case ANTIINTRUSIONE:
 			(*antintr)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  (char*)page_item_where.ascii(), (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
@@ -371,16 +371,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			    (*specPage) ->addClock(10,(itemNum-1)*80+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);	
 			    break;
 			    case CMDSPECIAL:
-			    qDebug("\nCCMMDDSSPPEECCIIAALL\n");
-			    qDebug("descr= %s",(char*)page_item_descr.ascii());
-			    if (!page_item_type.isNull())			    
-			    qDebug("type= %s", (char*)page_item_type.ascii());
-			    if (!page_item_who.isNull())			    
-			    qDebug("who= %s", (char*)page_item_who.ascii());
-			    if (!page_item_where.isNull())			    
-			    qDebug("where= %s", (char*)page_item_where.ascii());
-			   if (!page_item_list_img->at(0)->isNull())			    
-			    qDebug("immagine= %s", (char*)page_item_list_img->at(0)->ascii()); 
 			    
 			    (*specPage) ->addButton(60,260,(char*)page_item_list_img->at(0)->ascii(),SPECIAL,(char*)page_item_who.ascii(),(char*)page_item_what.ascii(),(char*)page_item_where.ascii(),(char)page_item_type.ascii());
 			    (*specPage) ->addDescr((char*)page_item_descr.ascii(), 60,240,180,20,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
@@ -490,6 +480,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*imposta,SLOT(freezed(bool)));
+			(*imposta)->inizializza();
 			break;
 		    case SPECIAL:    
 			qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
@@ -529,32 +520,32 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
     }
     else if (!CurTagL6.isEmpty())
     {
-	qDebug("ESCO-6:%s",(const char*)CurTagL6);
+//	qDebug("ESCO-6:%s",(const char*)CurTagL6);
 	CurTagL6 = "";
     }
     else if (!CurTagL5.isEmpty())
     {
-	qDebug("ESCO-5:%s",(const char*)CurTagL5);
+//	qDebug("ESCO-5:%s",(const char*)CurTagL5);
 	CurTagL5 = "";
     }
     else if (!CurTagL4.isEmpty())
     {
-	qDebug("ESCO-4:%s",(const char*)CurTagL4);
+//	qDebug("ESCO-4:%s",(const char*)CurTagL4);
 	CurTagL4 = "";
     }
     else if (!CurTagL3.isEmpty())
     {
-	qDebug("ESCO-3:%s",(const char*)CurTagL3);
+//	qDebug("ESCO-3:%s",(const char*)CurTagL3);
 	CurTagL3 = "";
     }
     else if (!CurTagL2.isEmpty())
     {
-	qDebug("ESCO-2:%s",(const char*)CurTagL2);
+//	qDebug("ESCO-2:%s",(const char*)CurTagL2);
 	CurTagL2 = "";
     }
     else if (!CurTagL1.isEmpty())
     {
-	qDebug("ESCO-1:%s",(const char*)CurTagL1);
+//	qDebug("ESCO-1:%s",(const char*)CurTagL1);
 	CurTagL1 = "";
     }
     
@@ -812,11 +803,12 @@ bool xmlconfhandler::characters( const QString & qValue)
 					page_item_list_group->append(new QString(qValue));
 				    }
 				}
-			    else if ((CurTagL5.startsWith("cimg"))||(!CurTagL5.compare("value")))
+			    else if ((CurTagL5.startsWith("cimg"))||(!CurTagL5.compare("value"))||(!CurTagL5.compare("hour"))||(!CurTagL5.compare("minute")))
 			    {
 				    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
 				    QString sValue=qValue;
-				    sValue.prepend(IMG_PATH);
+				    if  (CurTagL5.startsWith("cimg"))
+					sValue.prepend(IMG_PATH);
 				    page_item_list_img->append(new QString(sValue));
 				}
 			    else if (CurTagL5.startsWith("txt"))
@@ -827,12 +819,12 @@ bool xmlconfhandler::characters( const QString & qValue)
 			    else if (!CurTagL5.compare("type"))
 			    {
 				    qDebug("FOR PAGEITEM:TYPE=%s",qValue.ascii());
-				    par1=qValue.toInt( &ok, 10 );
+				    par2=qValue.toInt( &ok, 10 );
 				}   
 			    else if (!CurTagL5.compare("alarmset"))
 			    {
 				    qDebug("FOR PAGEITEM:ALARMSET=%s",qValue.ascii());
-				    par2=qValue.toInt( &ok, 10 );
+				    par3=qValue.toInt( &ok, 10 );
 				}   	 
 			    else if (!CurTagL5.compare("enabled"))
 			    {
@@ -843,7 +835,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 			    {
 				    qDebug("FOR PAGEITEM:PASSWORD=%s",qValue.ascii());
 				    par2=qValue.toInt( &ok, 10 );
-				}   	       
+				}   
 			} // if (!CurTagL4.startsWith("item"))
 		else if (!CurTagL4.compare("command"))
 		{

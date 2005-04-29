@@ -2231,6 +2231,18 @@ void gesModScen::gestFrame(char* frame)
 	    }
 	}
     }    
+     if (!strcmp(msg_open.Extract_chi(),"1001"))
+    {
+	if ( (! strcmp(msg_open.Extract_dove(),&dove[0])) )
+	{	
+	    if ( (! strcmp(msg_open.Extract_grandezza(),"1")) )
+	    {
+		if ( (! strcmp(msg_open.Extract_valori(0),"55")) )
+		    mostra(BUT2);
+	    }
+	}
+    }
+
     if (aggiorna)
 	Draw();
 }
@@ -2240,9 +2252,10 @@ void gesModScen::inizializza()
 	char    pippo[50];
 	
 	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#0*");
+	strcat(pippo,"*#1001*");
 	strcat(pippo,&dove[0]);
-	strcat(pippo,"##");
+	strcat(pippo,"*1##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);    
+	emit sendFrame(msg_open.frame_open);    	
+	nascondi(BUT2);
 }

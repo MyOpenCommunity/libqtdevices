@@ -54,8 +54,9 @@ class impostaSveglia : public bann2But
 {
     Q_OBJECT
 public:
-     impostaSveglia( QWidget *, const char * ,diffSonora* , char* , char*, char*, int, int, char* , char*, char* , char*);     
+     impostaSveglia( QWidget *, const char * ,diffSonora*, char* , char* , char*, char*, int, int, char* , char*, char* , char*, char*,int);     
      void 	setAbil(bool);
+     void inizializza();
 signals:
 //     void sendFrame(char *); 
      void spegniSveglia();
@@ -108,7 +109,7 @@ class impBeep : public bannOnSx
 {
     Q_OBJECT
 public:
-     impBeep( QWidget *, const char *,const char *,const char *);     
+     impBeep( QWidget *, const char *,char *,const char *,const char *);     
 signals:
 
 public slots:	
@@ -132,7 +133,7 @@ class impContr : public bannOnDx
 {
     Q_OBJECT
 public:
-     impContr( QWidget *, const char *,char *, const char *);     
+     impContr( QWidget *, const char *,char *,const char *);     
 signals:
 
 public slots:	

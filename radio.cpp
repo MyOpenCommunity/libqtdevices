@@ -33,7 +33,7 @@
 radio::radio( QWidget *parent, const char *name )
         : QWidget( parent, name )
 {
-#if defined(BT_EMBEDDED)
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
     showFullScreen();
 #endif

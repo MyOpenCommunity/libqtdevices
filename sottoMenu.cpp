@@ -53,7 +53,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
        elencoBanner.setAutoDelete( TRUE );
     indice=0;
     indicold=100;
-#if defined(BT_EMBEDDED)
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
     if (!parentWidget())
 	showFullScreen();
@@ -114,7 +114,7 @@ int sottoMenu::setBGPixmap(char* backImage)
 
 
 int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char*  IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame, \
-		       QColor SecondForeground,char* descr1,char* descr2,char* descr3,char* descr4, char* icoEx1, char* icoEx2, char* icoEx3)
+		       QColor SecondForeground,char* descr1,char* descr2,char* descr3,char* descr4, char* icoEx1, char* icoEx2, char* icoEx3,int par3)
  {
     switch (tipo){
     case ATTUAT_AUTOM:   elencoBanner.append(new attuatAutom(this,"bann1",(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame)); break;     
@@ -135,12 +135,12 @@ int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* Icona
     case SORGENTE : elencoBanner.append(new sorgente(this,"bannG",(char*)indirizzo)); break;
     case SORGENTE_RADIO : elencoBanner.append(new banradio(this,"bannH",(char*)indirizzo)); break;
     case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,"bannI",indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;  	
-    case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,"bannL",(diffSonora*)indirizzo, IconaSx,IconaDx, icon,  periodo, numFrame,descr1,descr2,descr3,descr4)); break;
+    case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,"bannL",(diffSonora*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,descr1,descr2,descr3,descr4,icoEx1,par3)); break;
     case CALIBRAZIONE: elencoBanner.append(new calibration(this,"bannM",IconaSx)); break;
     case TERMO: elencoBanner.append(new termoPage(this,"bannN",(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,SecondForeground)); break;		       
     case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,"bannO",(char*)indirizzo, IconaSx, IconaDx)); break;
     case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,"bannP",(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;       
-    case SUONO: elencoBanner.append(new impBeep(this,"bannQ", IconaSx,IconaDx)); break;
+    case SUONO: elencoBanner.append(new impBeep(this,"bannQ", IconaSx,IconaDx, icon)); break;
     case CONTRASTO: elencoBanner.append(new impContr(this,"bannR", IconaSx,IconaDx)); break;
     case VERSIONE: elencoBanner.append(new machVers(this,"bannS", (versio*)indirizzo, IconaSx)); break;
     case ALLARME: elencoBanner.append(new allarme(this,"bannT",(char*)indirizzo, IconaSx));break;
@@ -159,6 +159,16 @@ int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* Icona
      elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
      elencoBanner.getLast()->setBGColor(backgroundColor());
      elencoBanner.getLast()->setFGColor(foregroundColor());
+     elencoBanner.getLast()->setId(tipo);
+     for (int idx=elencoBanner.count()-2;idx>=0;idx--)
+     {
+	 if (elencoBanner.at(idx)->getId()==tipo)
+	 {
+	     elencoBanner.getLast()->setSerNum(elencoBanner.at(idx)->getSerNum()+1);
+     	     idx=-1;
+	 }
+     }
+     
 //     draw();
      return(1);    
  }

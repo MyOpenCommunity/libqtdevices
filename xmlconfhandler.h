@@ -66,7 +66,7 @@ private:
     QPtrList<QString> * page_item_list_group;
     QPtrList<QString> * page_item_list_txt;
     
-      int	par1, par2;
+      int	par1, par2,par3;
       unsigned int itemNum;
       QString CurTagL4_copy;
     unsigned char bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;

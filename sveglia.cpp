@@ -20,14 +20,19 @@
 #include <qprocess.h>
 
 #include <qfile.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 #include "sveglia.h"
 #include "genericfunz.h"
  
-sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSonora* diso, char* f,char* descr1,char* descr2,char* descr3,char* descr4)
+sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSonora* diso, char* f,char* descr1,char* descr2,char* descr3,char* descr4, char*h, char*m)
         : QFrame( parent, name )
 {
-#if defined(BT_EMBEDDED)
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
  //  showFullScreen();
 #endif    
@@ -132,31 +137,26 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	testiChoice[idx] -> setFont( QFont( "helvetica", 14, QFont::Bold ) );
 	testiChoice[idx] -> hide();
     }	
-    qDebug("- - - - - - - - SVEGLIOLINA  6");
     dataOra=NULL;
     
     testiChoice[0]  -> setText(&text1[0]);
     testiChoice[1]  -> setText(&text2[0]);
     testiChoice[2]  -> setText(&text3[0]);
     testiChoice[3]  -> setText(&text4[0]);        
-       qDebug("- - - - - - - - SVEGLIOLINA  7"); 
    // OroTemp = QDateTime(QDateTime::currentDateTime());
      oraSveglia =  new QDateTime();//QDate(),QTime(12,0));
-     oraSveglia->setTime(QTime(12,0));
+     oraSveglia->setTime(QTime(atoi(h),atoi(m)));
      oraSveglia->setDate(QDate::currentDate(Qt::LocalTime));     
      
      dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
-         qDebug("- - - - - - - - SVEGLIOLINA  8");
      dataOra->setGeometry(40,140,160,50);
      dataOra->setFrameStyle( QFrame::Plain );
      dataOra->setLineWidth(0);    
      difson=diso;
     if (difson)
     {
-	 qDebug("- - - - - - - - SVEGLIOLINA  81");
 	 difson->hide();
     }
-qDebug("- - - - - - - - SVEGLIOLINA  82");
     for (uchar idx=0;idx<AMPLI_NUM;idx++)
 	volSveglia[idx]=0;
     minuTimer=NULL;
@@ -170,7 +170,6 @@ qDebug("- - - - - - - - SVEGLIOLINA  82");
 /*	qDebug("f= %s",f);
 	qDebug("frame= %s",frame);*/
     }
-        qDebug("- - - - - - - - SVEGLIOLINA  9");
 //    buzzer=1;
 }
 
@@ -256,8 +255,8 @@ void sveglia::okTime()
     dataOra->hide();
     Immagine->hide();
     
-    delete(oraSveglia);
-    oraSveglia = new QDateTime(dataOra->getDataOra());
+/*    delete(oraSveglia);
+    oraSveglia = new QDateTime(dataOra->getDataOra());*/
 	
 }
 
@@ -286,7 +285,8 @@ void sveglia::mostra()
 
     connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
     connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(okTime()));
-    connect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+    if (difson)
+	connect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
     connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
     connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
     connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
@@ -338,7 +338,13 @@ void sveglia::Closed()
 	difson->amplificatori->showFullScreen();
 	difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
 	difson->hide();
-	
+#if defined (BTWEB) || defined (BT_EMBEDDED)
+	int eeprom;
+	 lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH)+KEY_LENGTH, SEEK_SET);
+	 for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
+	     write(eeprom,&volSveglia[idx],1 );
+#endif
+	 
     }
     hide();
  
@@ -347,6 +353,18 @@ void sveglia::Closed()
     oraSveglia=new QDateTime();*/
     activateSveglia(TRUE);
 //    qDebug("sveglia::Closed()");
+    
+    delete(oraSveglia);
+    oraSveglia = new QDateTime(dataOra->getDataOra());
+    
+    copyFile("cfg/conf.xml","cfg/conf1.lmx");
+    setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "hour",oraSveglia->time().toString("hh"),serNum);
+    setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "minute",oraSveglia->time().toString("mm"),serNum);
+    char t[2];
+    sprintf(&t[0],"%d",tipoSveglia);
+    setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "type",&t[0],serNum);
+    QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+	
     emit(ImClosed());
 }
 
@@ -376,7 +394,6 @@ void sveglia::okTipo()
 	
 	gesFrameAbil=TRUE;
 	sorgente=101;
-	//	difson->amplificatori->showNormal();
 	stazione=0;	    
     }
 }
@@ -391,6 +408,7 @@ void sveglia::activateSveglia(bool a)
 	    minuTimer=new QTimer(this,"tick");
 	    minuTimer->start(200);
                     connect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
+	    setCfgValue(SET_SVEGLIA, "enabled","1",serNum);
 	}
     }
     else
@@ -401,6 +419,7 @@ void sveglia::activateSveglia(bool a)
 	    disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
 	    delete(minuTimer);
 	    minuTimer=NULL;
+    	    setCfgValue(SET_SVEGLIA, "enabled","0",serNum);
 	}
     }
 }
@@ -643,3 +662,45 @@ void sveglia::spegniSveglia(bool b)
     }
 }
 
+void sveglia::setSerNum(int s){serNum=s;}
+
+
+
+
+void sveglia::inizializza()
+{
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+    if (tipo==DI_SON)
+    {
+	int eeprom;
+	char chiave[6];
+	
+	memset(&chiave[0],'\000',sizeof(chiave));
+	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+	lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH),SEEK_SET );
+	read(eeprom, &chiave[0], 5);
+	
+	if (strcmp(&chiave[0],AL_KEY))
+	{
+	    lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH), SEEK_SET);
+	    write(eeprom,AL_KEY,5);
+	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
+	    {
+		write(eeprom,"\000",1 );
+		volSveglia[idx]=0;
+	    }
+	}
+	else
+	{
+	    lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH)+KEY_LENGTH, SEEK_SET);
+	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
+	    {
+		read(eeprom,&volSveglia[idx],1 );
+		volSveglia[idx]&=0x31;
+		qDebug("%d : %d", idx, volSveglia[idx]);
+	    }
+	}
+	::close(eeprom);    // servono i :: se no fa la close() di QWidget
+    }
+#endif
+}

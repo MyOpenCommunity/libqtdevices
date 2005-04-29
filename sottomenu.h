@@ -34,7 +34,7 @@ public:
    int 	setBGPixmap(char* );
    int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,\
 		char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
-		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL);
+		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0);
    void 	inizializza();
    void 	draw();
    void 	setNumRighe(uchar);

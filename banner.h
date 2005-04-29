@@ -51,6 +51,10 @@ public:
     bool*	 getGroup( );
     void 	setPul();
     bool 	getPul();
+    void 	setSerNum(int);
+    int 	getSerNum();
+    char 	getId();
+    void 	setId(char);    
     virtual void 	setBGColor(int, int , int );
     virtual void 	setFGColor(int , int , int );		
     virtual void 	setBGColor(QColor );
@@ -114,8 +118,8 @@ private:
    QPixmap *  Icon[MAX_NUM_ICON];
    QPixmap * pressIcon[4];
 //   char testo[MAX_TEXT],testoSecondario[MAX_TEXT_2];
-   char attivo,value,maxValue,minValue;
-   int periodo, numFrame,contFrame;
+   char attivo,value,maxValue,minValue,id;
+   int periodo, numFrame,contFrame,serNum;
    char address[20];
    char chi[5];
    bool group[9];

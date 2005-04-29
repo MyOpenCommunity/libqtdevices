@@ -41,33 +41,30 @@ setDataOra::setDataOra( QWidget *parent,const char *name )
 **impostaSveglia
 ****************************************************************/
 
-impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* diso, char* icon1, char*icon2, char* frame, int freq, int tipo , char* descr1, char* descr2, char* descr3, char* descr4)
+impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* descr1, char* descr2, char* descr3, char* descr4,char* frame, int tipo)
         : bann2But( parent, name )
 {   
-     qDebug("IMPOST SVEGLIA");
      strcpy(&iconOn[0], icon1);
-     qDebug("IMPOST SVEGLIA 1");
      strcpy(&iconOff[0], icon2);
-     qDebug("IMPOST SVEGLIA 2");
 /*    strncpy(&iconOn[0], icon1, sizeof(iconOn));
      strncpy(&iconOff[0], icon2, sizeof(iconOff));*/
      SetIcons( &iconOff[0] ,ICON_INFO);
-	qDebug("IMPOST SVEGLIA 3");  
-     svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame,descr1,descr2,descr3,descr4);
-     qDebug("IMPOST SVEGLIA 4");
+     svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame,descr1,descr2,descr3,descr4,h,m);
      svegliolina->setBGColor(backgroundColor());  
      svegliolina->setFGColor(foregroundColor());  
      svegliolina->hide();
-     qDebug("IMPOST SVEGLIA 5");
+     if (enabled==1)
+	 setAbil(TRUE);
+     else
+	 setAbil(FALSE);	 
      connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));      
      connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));    
      
      connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*))); 
      connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));      
-     connect(svegliolina,SIGNAL(ImClosed()),this , SLOT(show()));      
+     connect(svegliolina,SIGNAL(ImClosed()),parentWidget() , SLOT(showFullScreen()));      
      connect(svegliolina, SIGNAL(freeze(bool)),this , SIGNAL(freeze(bool)));     
      connect(this, SIGNAL(freezed(bool)), svegliolina,SLOT(spegniSveglia(bool)));     
-          qDebug("IMPOST SVEGLIA - END");
 }
 
 void impostaSveglia::gestFrame(char* frame)
@@ -99,13 +96,15 @@ void  impostaSveglia::show()
     }
    Draw();
     QWidget::show();
+    svegliolina->setSerNum(getSerNum());
 }
 
-/*void impostaSveglia::deFreez()
+void impostaSveglia::inizializza()
 {
-   emit( spegniSveglia());
+    svegliolina->inizializza();
 }
-*/
+
+
 /*****************************************************************
 **calibration
 ****************************************************************/
@@ -138,7 +137,7 @@ void calibration::fineCalib()
 **beep
 ****************************************************************/
 
-impBeep::impBeep( QWidget *parent,const char *name ,const char * icon1, const char *icon2)
+impBeep::impBeep( QWidget *parent,const char *name ,char* val, const char * icon1, const char *icon2)
         : bannOnSx( parent, name )
 {   
          qDebug("BEEP");
@@ -148,6 +147,10 @@ impBeep::impBeep( QWidget *parent,const char *name ,const char * icon1, const ch
      setBeep(FALSE);//non va bene, bisogna prendere il valore di partenza dal costruttore
      connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));      
           qDebug("BEEP_END");
+	if (strcmp(val,"1"))
+	    setBeep(FALSE);
+	else
+	    setBeep(TRUE);
 }
 
 void impBeep::toggleBeep()
@@ -269,9 +272,15 @@ void impPassword::toggleActivation()
 {
 
     if (active)
+    {
 	active=FALSE;
+	setCfgValue(PROTEZIONE, "enabled","0",getSerNum());
+    }
     else
+    {
 	active=TRUE;
+	setCfgValue(PROTEZIONE, "enabled","1",getSerNum());	
+    }
     emit(setPwd(active,&paswd[0]));
     show();
 }      
@@ -291,7 +300,7 @@ void  impPassword::reShow1(char* c)
     if (strcmp(&paswd[0],c))
     {
 	   show();
-	   qDebug("password errata");
+	   qDebug("password errata doveva essere %s",&paswd[0]);
 	   sb=getBeep();
 	   setBeep(TRUE);
 	   beep(1000);
@@ -314,6 +323,7 @@ void  impPassword::reShow2(char* c)
     connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));  
     disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));  
     strcpy(&paswd[0],c);
+    setCfgValue(PROTEZIONE, "value",&paswd[0],getSerNum());
     emit(setPwd(active,&paswd[0]));
     show();
     tasti->setMode(HIDDEN);

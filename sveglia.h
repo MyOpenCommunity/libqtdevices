@@ -30,12 +30,13 @@ class  sveglia : public QFrame
 {
    Q_OBJECT
 public:
-    sveglia( QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, diffSonora* diso=NULL, char* frame=NULL, char* descr1=NULL,char* descr2=NULL,char* descr3=NULL,char* descr4=NULL);
+    sveglia( QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, diffSonora* diso=NULL, char* frame=NULL, char* descr1=NULL,char* descr2=NULL,char* descr3=NULL,char* descr4=NULL, char*h="12",char* m="0");
    void 	setBGColor(QColor);
    void 	setFGColor(QColor);
    void 	setBGColor(int, int , int );
    void 	setFGColor(int , int , int );
    int 	setBGPixmap(char* );
+   void 	setSerNum(int);
    BtButton*  but[4];
    QLabel* Immagine;
    BtButton* choice[4];
@@ -43,6 +44,7 @@ public:
 
    void	activateSveglia(bool);
    bool	getActivation();
+   void 	inizializza();
 signals:
    void 	sendFrame(char*);
    void	ImClosed();
@@ -68,6 +70,7 @@ private:
    timeScript* dataOra;
    bannFrecce * bannNavigazione;
    uchar 	tipoSveglia,conta2min,sorgente,stazione,tipo;
+   int 	serNum;
    bool 	buzAbilOld;
    unsigned int contaBuzzer;
    QDateTime* oraSveglia;
@@ -90,9 +93,14 @@ enum sveFreq{
    };
 
 enum sveType{
-                BUZZER,
-	DI_SON,
-	FRAME
+                BUZZER = 0,
+	DI_SON = 1,
+	FRAME = 2
    };
 
+
+
+#define BASE_EEPROM	11360
+#define KEY_LENGTH	4
+#define AL_KEY		"\125\252\125\252\125"
 #endif // SVEGLIA_H
