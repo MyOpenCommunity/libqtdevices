@@ -629,7 +629,7 @@ void sveglia::buzzerAlarm()
     if (contaBuzzer==0)
     {
 	buzAbilOld=getBeep();
-	setBeep(TRUE);
+	setBeep(TRUE,FALSE);
     }	
     if  (contaBuzzer%2==0) 
     {
@@ -643,7 +643,7 @@ void sveglia::buzzerAlarm()
     {
 	qDebug("SPENGO LA SVEGLIA");
 	aumVolTimer->stop();
-	setBeep(buzAbilOld);
+	setBeep(buzAbilOld,FALSE);
 	delete (aumVolTimer);
     }
 }
@@ -656,7 +656,7 @@ void sveglia::spegniSveglia(bool b)
 	{
 	    qDebug("SPENGO LA SVEGLIA");
 	    aumVolTimer->stop();
-	    setBeep(buzAbilOld);
+	    setBeep(buzAbilOld,FALSE);
 	    delete (aumVolTimer);
 	}
     }
@@ -697,7 +697,7 @@ void sveglia::inizializza()
 	    {
 		read(eeprom,&volSveglia[idx],1 );
 		volSveglia[idx]&=0x31;
-		qDebug("%d : %d", idx, volSveglia[idx]);
+	//	qDebug("%d : %d", idx, volSveglia[idx]);
 	    }
 	}
 	::close(eeprom);    // servono i :: se no fa la close() di QWidget

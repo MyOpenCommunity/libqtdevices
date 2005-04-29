@@ -12,11 +12,11 @@
 
 void getPressName(char*, char*,char);
 void getZoneName(char* , char* ,char*, char );
-void setContrast(unsigned char);
+void setContrast(unsigned char,bool);
 unsigned char getContrast();
 void setBacklight(bool);
 bool getBacklight();
-void setBeep(bool);
+void setBeep(bool,bool);
 void setOrientation(unsigned char);
 void beep();
 void beep(int);

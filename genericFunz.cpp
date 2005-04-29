@@ -125,7 +125,7 @@ bool copyFile(char* orig, char* dest)
      filOUT->close();             
 }
 
-void setContrast(unsigned char c)
+void setContrast(unsigned char c,bool b)
 {
     char contr[4];
     
@@ -140,8 +140,11 @@ void setContrast(unsigned char c)
 	    close(fd);
 	}
     }
-    sprintf(&contr[0],"%03d",c);
-    setCfgValue(CONTRASTO, "value",&contr[0] ); 
+    if (b)
+    {
+	sprintf(&contr[0],"%03d",c);
+	setCfgValue(CONTRASTO, "value",&contr[0] ); 
+    }
 }
 unsigned char getContrast()
 {
@@ -176,7 +179,7 @@ void setBacklight(bool b)
     }
 }
 
-void setBeep(bool b)
+void setBeep(bool b,bool ab)
 {
     if ( QFile::exists("/proc/sys/dev/btweb/buzzer_enable") )
     { 
@@ -192,10 +195,13 @@ void setBeep(bool b)
 	    fclose(fd);
 	}
     }
-    if (b)
-	setCfgValue(SUONO, "value","1"); 
-    else
-	setCfgValue(SUONO, "value","0"); 
+    if (ab)
+    {
+	if (b)
+	    setCfgValue(SUONO, "value","1"); 
+	else
+	    setCfgValue(SUONO, "value","0"); 
+    }
 }
 
 bool getBeep()

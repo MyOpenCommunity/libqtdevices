@@ -144,25 +144,25 @@ impBeep::impBeep( QWidget *parent,const char *name ,char* val, const char * icon
      strncpy(&iconOn[0], icon1, sizeof(iconOn));
      strncpy(&iconOff[0], icon2, sizeof(iconOff));
      SetIcons( &iconOff[0],1);
-     setBeep(FALSE);//non va bene, bisogna prendere il valore di partenza dal costruttore
+//     setBeep(FALSE);//non va bene, bisogna prendere il valore di partenza dal costruttore
      connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));      
           qDebug("BEEP_END");
 	if (strcmp(val,"1"))
-	    setBeep(FALSE);
+	    setBeep(FALSE,FALSE);
 	else
-	    setBeep(TRUE);
+	    setBeep(TRUE,FALSE);
 }
 
 void impBeep::toggleBeep()
 {
     if(getBeep())
     {
-	setBeep(FALSE);
+	setBeep(FALSE,TRUE);
 	SetIcons(uchar(0), &iconOff[0]);
     }
     else
     {
-	setBeep(TRUE);
+	setBeep(TRUE,TRUE);
 	SetIcons(uchar(0), &iconOn[0]);	
     }
     Draw();
@@ -177,7 +177,7 @@ impContr::impContr( QWidget *parent,const char *name ,char* val, const char * ic
 {   
      SetIcons( icon1,1);
      connect(this,SIGNAL(click()),this,SLOT(showContr()));      
-     setContrast(atoi(val));
+     setContrast(atoi(val),FALSE);
 }
 
 void impContr::showContr()
@@ -195,6 +195,7 @@ void impContr::contrMade()
 {
     show();
     contrasto->hide();
+    setContrast(getContrast(),TRUE);
     delete(contrasto);
 }
 
@@ -302,7 +303,7 @@ void  impPassword::reShow1(char* c)
 	   show();
 	   qDebug("password errata doveva essere %s",&paswd[0]);
 	   sb=getBeep();
-	   setBeep(TRUE);
+	   setBeep(TRUE,FALSE);
 	   beep(1000);
 	   tiempo = new QTimer(this,"clock");
 	   tiempo->start(1100,TRUE);
@@ -332,5 +333,5 @@ void  impPassword::reShow2(char* c)
 void impPassword::tiempout()
 {
     delete(tiempo);
-    setBeep(sb);	   
+    setBeep(sb,FALSE);	   
 }

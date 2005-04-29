@@ -151,7 +151,7 @@ void contrPage::aumContr()
     
     c=getContrast();
     if (c<=250)
-	setContrast(c+5);    
+	setContrast(c+5,FALSE);    
 }
 
 void contrPage::decContr()
@@ -160,6 +160,6 @@ void contrPage::decContr()
     
     c=getContrast();
     if (c>=5)
-	setContrast(c-5);    
+	setContrast(c-5,FALSE);    
 }
 
