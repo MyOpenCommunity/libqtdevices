@@ -35,7 +35,7 @@ diffSonora::diffSonora( QWidget *parent, const char *name )
 //   amplificatori -> setGeometry (0, MAX_HEIGHT/numRighe, MAX_WIDTH, MAX_HEIGHT- MAX_HEIGHT/numRighe );
      	
     connect(amplificatori  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
-    QLabel* linea = new QLabel(this,NULL,0);
+    BtLabel* linea = new BtLabel(this,NULL,0);
     linea->setGeometry(0,77,240,3);
     linea->setPaletteForegroundColor(QColor::QColor(0,0,0));
 
@@ -84,7 +84,7 @@ int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* Icon
     {     	
 	sorgenti-> setBGColor(backgroundColor() );
 	sorgenti-> setFGColor(foregroundColor() );	
-	sorgenti-> addItem(tipo , descrizione , indirizzo , icon, pressedIcon);	       
+	sorgenti-> addItem(tipo , descrizione , indirizzo , icon, pressedIcon);	    
     }
     else 
    {     

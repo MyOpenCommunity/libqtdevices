@@ -35,7 +35,7 @@ radio::radio( QWidget *parent, const char *name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
-    showFullScreen();
+ //   showFullScreen();
 #endif
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);      
 
@@ -91,8 +91,8 @@ radio::radio( QWidget *parent, const char *name )
     QPixmap* pressIcon = new QPixmap();
     char pressIconName[MAX_PATH];
     
-    Icon->load(ICON_CICLA_60);
-    getPressName((char*)ICON_CICLA_60, &pressIconName[0],sizeof(pressIconName));
+    Icon->load(ICON_CICLA);
+    getPressName((char*)ICON_CICLA, &pressIconName[0],sizeof(pressIconName));
     cicBut->setPixmap(*Icon);
     
     if (QFile::exists(pressIconName))
@@ -215,9 +215,9 @@ radio::radio( QWidget *parent, const char *name )
     connect(cinBut,SIGNAL(clicked()),this,SLOT(memo5()));      
  }
 void radio::showRadio()
-{
+{    
     draw();
-    show();
+    showFullScreen();
 }
 
 void radio::setBGColor(int r, int g, int b)

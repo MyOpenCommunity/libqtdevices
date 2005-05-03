@@ -71,7 +71,7 @@ private:
       QString CurTagL4_copy;
     unsigned char bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
     QColor SecondForeground;    
-    unsigned char idPageDefault;
+    unsigned char idPageDefault,car;
 
     void set_page_item_defaults();
     

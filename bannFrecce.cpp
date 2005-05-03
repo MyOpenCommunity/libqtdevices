@@ -34,7 +34,7 @@ bannFrecce::bannFrecce( QWidget *parent,const char *name ,uchar num,char* IconBu
    if (num<5)
        SetIcons ( ICON_FRECCIA_SX , IconBut4 , ICON_FRECCIA_SU , ICON_FRECCIA_GIU );
    else
-       SetIcons ( ICON_OK_60 ,IconBut4 , ICON_FRECCIA_SU , ICON_FRECCIA_GIU );
+       SetIcons ( ICON_OK ,IconBut4 , ICON_FRECCIA_SU , ICON_FRECCIA_GIU );
     
     connect(this,SIGNAL(sxClick()),this,SIGNAL(backClick()));
     connect(this,SIGNAL(dxClick()),this,SIGNAL(forwardClick()));

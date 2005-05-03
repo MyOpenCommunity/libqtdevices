@@ -35,16 +35,14 @@ void myMessageOutput( QtMsgType type, const char *msg )
   switch ( type ) {
     case QtDebugMsg:
       if (VERBOSITY_LEVEL>1)
-        fprintf( stdout, "<BTo> %s\n", msg );
-//              fprintf( StdLog, "<BTo> %s\n", msg );
+	  fprintf( StdLog, "<BTo> %s\n", msg );
     break;
     case QtWarningMsg:
       if (VERBOSITY_LEVEL>0)
-        fprintf( stdout, "<BTo> %s\n", msg );
-//        fprintf( StdLog, "<BTo> %s\n", msg );      
+	  fprintf( StdLog, "<BTo> %s\n", msg );      
     break;
     case QtFatalMsg:
-      fprintf( stderr, "<BTo> FATAL %s\n", msg );
+    fprintf( stderr, "<BTo> FATAL %s\n", msg );
       abort();                    // deliberately core dump
   }
 }

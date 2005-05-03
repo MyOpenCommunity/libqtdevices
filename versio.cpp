@@ -30,17 +30,16 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
     
 
      datiGen->setLineWidth(3);
-     datiGen->setText("art. H4684");     
+     datiGen->setText(" H4684");     
 //     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");       
      
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
 #endif
      datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
-     datiGen->setAlignment(AlignLeft|AlignTop);//VCenter);
+     datiGen->setAlignment(AlignHCenter|AlignVCenter);
        
-     datiGen->setFont( QFont( "helvetica", 14, QFont::Bold) );
-     datiGen-> setIndent(15);
+     datiGen->setFont( QFont( "helvetica", 24, QFont::Black,TRUE) );
 }
 
 void   versio::setPaletteForegroundColor( const QColor & c )
@@ -52,6 +51,7 @@ void   versio::setPaletteForegroundColor( const QColor & c )
 void   versio::setPaletteBackgroundColor( const QColor &  c)
 {
       datiGen->setPaletteForegroundColor(c);
+       bticino->setPaletteForegroundColor(c);
       BtLabel::setPaletteBackgroundColor(c);      
 }
 
@@ -94,10 +94,12 @@ void versio::gestFrame(char* frame)
     if (aggiorna)
     {
 	char scritta[100];
+	datiGen->setFont( QFont( "helvetica", 14, QFont::Bold) );
+	datiGen-> setIndent(15);
+	datiGen->setAlignment(AlignLeft|AlignTop);    
 	sprintf(&scritta[100], "art. H4684\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d", vers, release, build, pic_version, pic_release, pic_build, hw);
+	
 	datiGen->setText(&scritta[100]);   
-//	qDebug("scritto VERSIONE");
-//	repaint(FALSE);
     }
  }
 

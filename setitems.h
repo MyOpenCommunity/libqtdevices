@@ -183,7 +183,7 @@ class impPassword : public bann2But
 {
     Q_OBJECT
 public:
-     impPassword ( QWidget *, const char * , char* ,char* , char*,char*,char*);     
+     impPassword (QWidget *,const char *, char* , char*, char*,char*,int );     
 //     void 	setActivation(bool);
 signals:
      void activatePaswd(bool);

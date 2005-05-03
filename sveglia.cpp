@@ -10,7 +10,6 @@
 
 
 #include <qfont.h>
-#include <qlabel.h>
 #include <qlayout.h>
 #include <qpixmap.h>
 #include <stdlib.h>
@@ -103,12 +102,12 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
      Icon1 = new QPixmap();
      Icon1->load(ICON_SVEGLIA_ON);    
        
-     Immagine = new QLabel(this, "immaginetta superiore");
+     Immagine = new BtLabel(this, "immaginetta superiore");
     
      if (Icon1)
 	 Immagine -> setPixmap(*Icon1); 
     
-    Immagine->setGeometry(80,0,80,80);
+    Immagine->setGeometry(90,0,80,80);
     delete(Icon1);
     delete(Icon2);
      Icon1 = new QPixmap();
@@ -131,7 +130,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar freq, uchar t, diffSo
 	if (Icon2)
 	    choice[idx]  -> setPressedPixmap(*Icon2);
 	choice[idx]  -> hide();
-	testiChoice[idx] = new QLabel(this,"choiceLabel"+QString::number(idx));
+	testiChoice[idx] = new BtLabel(this,"choiceLabel"+QString::number(idx));
 	testiChoice[idx] -> setGeometry( 80,idx*60,120,60);
 	testiChoice[idx] -> setAlignment(AlignHCenter|AlignVCenter);
 	testiChoice[idx] -> setFont( QFont( "helvetica", 14, QFont::Bold ) );
@@ -291,6 +290,7 @@ void sveglia::mostra()
     connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
     connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
     connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));   
+    aggiornaDatiEEprom=0;
 }
 
 
@@ -335,14 +335,25 @@ void sveglia::Closed()
 	difson->setNumRighe((uchar)4);
 	difson->setGeom(0,0,240,320);
 	difson->setNavBarMode(3);
-	difson->amplificatori->showFullScreen();
+	difson->/*amplificatori->*/showFullScreen();
 	difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
 	difson->hide();
 #if defined (BTWEB) || defined (BT_EMBEDDED)
-	int eeprom;
-	 lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH)+KEY_LENGTH, SEEK_SET);
-	 for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
-	     write(eeprom,&volSveglia[idx],1 );
+	if(aggiornaDatiEEprom)
+	{
+	    int eeprom;
+	    eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+	    lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH, SEEK_SET);
+	    qDebug("%d",(BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH));
+	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
+	    {
+		write(eeprom,&volSveglia[idx],1 );
+		qDebug("%d : %d", idx, volSveglia[idx]);
+	    }
+	    write(eeprom,&sorgente,1 );
+	    write(eeprom,&stazione,1 );
+	    ::close(eeprom);
+	}
 #endif
 	 
     }
@@ -391,10 +402,14 @@ void sveglia::okTipo()
 	difson->show();	
 
 	this->bannNavigazione->hide();
-	
+	aggiornaDatiEEprom=1;
 	gesFrameAbil=TRUE;
 	sorgente=101;
 	stazione=0;	    
+	for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
+	{
+	    volSveglia[idx]=0;
+	}
     }
 }
 
@@ -571,8 +586,8 @@ void sveglia::aumVol()
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);    
 	
-	if (stazione)
-	{
+	//if (stazione)
+	//{
 	    memset(pippo,'\000',sizeof(pippo));
 	    strcat(pippo,"*#16*");
 	    sprintf(&pippo[strlen(pippo)],"%d",sorgente);
@@ -581,7 +596,7 @@ void sveglia::aumVol()
 	    strcat(pippo,"##");
 	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	    emit sendFrame(msg_open.frame_open);
-	}
+	//}
     }
     
     conta2min++;
@@ -608,7 +623,7 @@ void sveglia::aumVol()
     }
     else if (conta2min>40)
     {
-	 qDebug("SPENGO LA SVEGLIA");
+	 qDebug("SPENGO LA SVEGLIA per timeout");
 	aumVolTimer->stop();
 	delete (aumVolTimer);
 	
@@ -658,6 +673,7 @@ void sveglia::spegniSveglia(bool b)
 	    aumVolTimer->stop();
 	    setBeep(buzAbilOld,FALSE);
 	    delete (aumVolTimer);
+	    aumVolTimer=NULL;	   
 	}
     }
 }
@@ -677,12 +693,12 @@ void sveglia::inizializza()
 	
 	memset(&chiave[0],'\000',sizeof(chiave));
 	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
-	lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH),SEEK_SET );
+	lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET );
 	read(eeprom, &chiave[0], 5);
 	
 	if (strcmp(&chiave[0],AL_KEY))
 	{
-	    lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH), SEEK_SET);
+	    lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
 	    write(eeprom,AL_KEY,5);
 	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
 	    {
@@ -692,13 +708,16 @@ void sveglia::inizializza()
 	}
 	else
 	{
-	    lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH)+KEY_LENGTH, SEEK_SET);
+	    int ploffete=BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH;
+	    lseek(eeprom,ploffete, SEEK_SET);
 	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
 	    {
 		read(eeprom,&volSveglia[idx],1 );
-		volSveglia[idx]&=0x31;
-	//	qDebug("%d : %d", idx, volSveglia[idx]);
+		volSveglia[idx]&=0x1F;
+//		qDebug("%d : %d", idx, volSveglia[idx]);
 	    }
+	    read(eeprom,&sorgente,1 );
+	    read(eeprom,&stazione,1 );
 	}
 	::close(eeprom);    // servono i :: se no fa la close() di QWidget
     }

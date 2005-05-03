@@ -46,9 +46,8 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu
     client_monitor=c_m;
     datiGen=dG;
     
-    qDebug("puntatore %p" , *home);
     
-    SecondForeground=QColor(0,0,0);
+    SecondForeground=QColor(255,0,0);
     
     page_item_list_img = new QPtrList<QString>;
     page_item_list_group = new QPtrList<QString>;
@@ -84,7 +83,6 @@ void xmlconfhandler::set_page_item_defaults()
     page_item_list_img->clear();
     page_item_list_txt->clear();
     page_item_list_group->clear(); 
-    SecondForeground=QColor(0,0,0);
     page_item_what = "";
     page_item_descr = "";
     page_item_what = "";
@@ -133,6 +131,8 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 				   const QString& qName, 
 				   const QXmlAttributes& )
 {
+    car=0;
+    
     //  qDebug("%s\n",(const char*)qName );
     if (CurTagL1.isEmpty())
     {
@@ -181,6 +181,10 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 *******************************************/
 bool xmlconfhandler::endElement( const QString&, const QString&, const QString& )
 {
+        if (!car)
+	characters( QString("\000"));        // se ho un tag vuoto riempio con '\000' il suo campo 
+	
+	
     if (!CurTagL1.compare("configuratore"))
     {
 	if (!CurTagL2.compare("displaypages"))
@@ -222,19 +226,19 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			case IMPOSTAZIONI: 				  // addbutton normali
 			(*home)->addButton(sottomenu_left,sottomenu_top,(char *)sottomenu_icon_name.ascii(), (char)sottomenu_id); break;
 			//  Home->addButton(160,125,ICON_IMPOSTAZIONI_80 ,IMPOSTAZIONI);
-			qWarning("ADDBUTTON NORMALE");
+//			qWarning("ADDBUTTON NORMALE");
 			break;
 		    case DATA:
 			(*home)->addDate(sottomenu_left+10,sottomenu_top+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
-			qWarning("ADDBUTTON DATA");
+//			qWarning("ADDBUTTON DATA");
 			break;
 		    case OROLOGIO:
 			(*home)->addClock(sottomenu_left+10,sottomenu_top+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
-			qWarning("ADDBUTTON OROLOGIO");
+//			qWarning("ADDBUTTON OROLOGIO");
 			break;
 		    case TEMPERATURA:
 			(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3,"");
-			qWarning("ADDBUTTON TEMPERATURA");
+//			qWarning("ADDBUTTON TEMPERATURA");
 			break;
 		    } // switch (sottomenu_id)
 		    
@@ -356,7 +360,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			(*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  pnt/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
 			break;
 			case SPECIAL:
-			qDebug("VISTA PPAAGGIINNAA SSPPEECCIIAALL --- page_item_id=%d", page_item_id);
 			switch(page_item_id)
 			{
 			    case TEMPERATURA:
@@ -384,13 +387,13 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		else if ( CurTagL3.startsWith("page") && CurTagL4.isEmpty() )
 		{
 		    // Esco dalla pagina
-		    qWarning("DRAW %s",(const char*)page_descr);
+//		    qWarning("DRAW %s",(const char*)page_descr);
 		    
 		    
 		    switch (page_id)
 		    {
 		    case AUTOMAZIONE:
-			qWarning(".- .- .- -. -.  .- -.QObject::connect AUTOMAZIONE");
+//			qWarning(".- .- .- -. -.  .- -.QObject::connect AUTOMAZIONE");
 			(*automazioni)->draw();
 			QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(show()));
 			QObject::connect(*automazioni,SIGNAL(Closed()),*automazioni,SLOT(hide()));
@@ -402,7 +405,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			(*automazioni)->inizializza();
 			break;
 		    case ILLUMINAZIONE:
-			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
+//			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
 			(*illumino)->draw();
 			QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
 			QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));
@@ -416,7 +419,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			(*illumino)->inizializza();
 			break;
 		    case ANTIINTRUSIONE:
-			qWarning(".- .- .- .- .-.- - -.QObject::connect ANTIINTRUSIONE");
+//			qWarning(".- .- .- .- .-.- - -.QObject::connect ANTIINTRUSIONE");
 			(*antintr)->draw();
 			QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(show()));
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*antintr,SLOT(gesFrame(char *)));    
@@ -427,7 +430,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			(*antintr)->inizializza();
 			break;
 		    case CARICHI:
-			qWarning(".- .- .- .- .-  -. .- .- .- QObject::connect CARICHI");
+//			qWarning(".- .- .- .- .-  -. .- .- .- QObject::connect CARICHI");
 			(*carichi)->draw();
 			QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(show()));
 			QObject::connect(*carichi,SIGNAL(Closed()),*carichi,SLOT(hide()));
@@ -437,7 +440,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*carichi,SLOT(freezed(bool)));
 			break;
 		    case TERMOREGOLAZIONE:
-			qWarning(" - -  .     .- . . .- .-QObject::connect TERMOREGOLAZIONE ");
+//			qWarning(" - -  .     .- . . .- .-QObject::connect TERMOREGOLAZIONE ");
 			(*termo)->draw();
 			QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(show()));
 			QObject::connect(*termo,SIGNAL(Closed()),*termo,SLOT(hide()));
@@ -448,7 +451,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			(*termo)->inizializza();
 			break;
 		    case DIFSON:
-			qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
+//			qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
 			(*difSon)->draw(); 
 			QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(show()));
 			QObject::connect(*difSon,SIGNAL(Closed()),*difSon,SLOT(hide()));
@@ -460,7 +463,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			(*difSon)->inizializza();
 			break;
 		    case SCENARI:
-			qWarning("- - -  - - - - - - - -QObject::connect ");
+//			qWarning("- - -  - - - - - - - -QObject::connect ");
 			(*scenari)->draw();
 			QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(show()));
 			QObject::connect(*scenari,SIGNAL(Closed()),*scenari,SLOT(hide()));
@@ -468,10 +471,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			QObject::connect(*scenari,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*scenari,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari,SLOT(freezed(bool)));
+			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari,SIGNAL(gestFrame(char *)));
 			(*scenari)->inizializza();
 			break;
 		    case IMPOSTAZIONI:    
-			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
+//			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
 			(*imposta)->draw();
 			QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(show()));
 			QObject::connect(*imposta,SIGNAL(Closed()),*imposta,SLOT(hide()));
@@ -483,7 +487,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			(*imposta)->inizializza();
 			break;
 		    case SPECIAL:    
-			qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
+//			qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
 			//(*specPage)->draw();
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*specPage,SLOT(freezed(bool)));          
 			QObject::connect(*specPage,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));     
@@ -502,7 +506,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	    } //  if (CurTagL3.startsWith("page"))
 	    if ( !CurTagL2.compare("displaypages") && CurTagL3.isEmpty() )
 	    {
-		qWarning("QObject::connect HOME");
+//		qWarning("QObject::connect HOME");
 		QObject::connect(BtM,SIGNAL(freeze(bool)),*home,SLOT(freezed(bool)));
 		QObject::connect(*home,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 	    }
@@ -548,7 +552,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 //	qDebug("ESCO-1:%s",(const char*)CurTagL1);
 	CurTagL1 = "";
     }
-    
+ 
+
     return TRUE;
 }
 
@@ -560,23 +565,12 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 *******************************************/
 bool xmlconfhandler::characters( const QString & qValue)
 {
-    /*
-  printf( "%s ",(const char*)CurTagL1 );
-  printf( "%s ",(const char*)CurTagL2 );
-  printf( "%s ",(const char*)CurTagL3 );
-  printf( "%s ",(const char*)CurTagL4 );
-  printf( "%s ",(const char*)CurTagL5 );
-  printf( "%s ",(const char*)CurTagL6 );
-  printf( "%s",(const char*)CurTagL7 );
-  printf( "\n");
-*/
-    
+        car=1;
+	
     if (!CurTagL1.compare("configuratore"))
     {
-	//    qDebug( "1\n");
 	if (!CurTagL2.compare("displaypages"))
 	{
-	    //      qDebug( "2\n");
 	    if (!CurTagL3.compare("orientation"))
 	    {   	    
 		setOrientation((unsigned char)qValue.ascii()); 	
@@ -594,6 +588,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 		else if (!CurTagL4.compare("b"))
 		{   
 		    bg_b=qValue.toInt( &ok, 10 );
+		    datiGen->setPaletteBackgroundColor(QColor(bg_r,bg_g,bg_b));
 		}
 	    }
 	    else if (!CurTagL3.compare("fg1"))
@@ -609,6 +604,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 		else if (!CurTagL4.compare("b"))
 		{   
 		    fg_b=qValue.toInt( &ok, 10 );
+		    datiGen->setPaletteForegroundColor(QColor(fg_r,fg_g,fg_b));
 		}
 	    }
 	    else if (!CurTagL3.compare("fg2"))
@@ -624,8 +620,9 @@ bool xmlconfhandler::characters( const QString & qValue)
 		else if (!CurTagL4.compare("b"))
 		{   
 		    fg_b1=qValue.toInt( &ok, 10 );
+		    SecondForeground=QColor(fg_r1,fg_g1,fg_b1);
 		}
-		SecondForeground=QColor(fg_r1,fg_g1,fg_b1);
+		
 	    }
 	    //
 	    // Leggo info homepage
@@ -660,7 +657,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 			if (!CurTagL5.compare("id"))
 			{
 			    sottomenu_id = qValue.toInt( &ok, 10 );  
-			    qWarning("PAGEMENU:ID %d",sottomenu_id);
+//			    qWarning("PAGEMENU:ID %d",sottomenu_id);
 			    
 			} else if (!CurTagL5.compare("descr"))
 			    sottomenu_descr = qValue;
@@ -672,7 +669,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 			{
 				sottomenu_icon_name = QString(IMG_PATH);
 				sottomenu_icon_name.append(qValue.ascii());
-				qDebug ("PAGEMENU:icon_name %s",sottomenu_icon_name.ascii());
+//				qDebug ("PAGEMENU:icon_name %s",sottomenu_icon_name.ascii());
 			    } else if (!CurTagL5.compare("where"))
 				sottomenu_where = qValue;
 			    
@@ -693,78 +690,78 @@ bool xmlconfhandler::characters( const QString & qValue)
 			    switch (page_id)
 			    {
 			    case AUTOMAZIONE:	      
-				*automazioni = new sottoMenu (NULL);
+				*automazioni = new sottoMenu (NULL,"AUTOM");
 				(*automazioni)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*automazioni)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				//              automazioni->hide();
 				pageAct=*automazioni;
-				qWarning("AUTOMAZIONE new.- . . .- -. -. .-");
+//				qWarning("AUTOMAZIONE new.- . . .- -. -. .-");
 				break;
 			    case ILLUMINAZIONE:	    
-				*illumino = new sottoMenu (NULL);
+				*illumino = new sottoMenu (NULL,"ILLUMINO");
 				(*illumino)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*illumino)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				//              illumino->hide();
 				pageAct=*illumino;		      
-				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");
+//				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");
 				break;
 			    case SCENARI:
-				*scenari = new sottoMenu (NULL);
+				*scenari = new sottoMenu (NULL,"SCENARI");
 				(*scenari)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*scenari)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				//              scenari->hide();
 				pageAct=*scenari;
-				qWarning("SCENARI new.- .- -. -. . -. -");
+//				qWarning("SCENARI new.- .- -. -. . -. -");
 				break;
 			    case CARICHI:
-				*carichi = new sottoMenu (NULL);
+				*carichi = new sottoMenu (NULL,"CARICHI");
 				(*carichi)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*carichi)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				//              carichi->hide();
 				pageAct=*carichi;
-				qWarning("CARICHI new-. -. .- .-");
+//				qWarning("CARICHI new-. -. .- .-");
 				break;
 			    case DIFSON:
-				*difSon = new diffSonora (NULL);
+				*difSon = new diffSonora (NULL,"DIFSON");
 				(*difSon)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*difSon)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				//              difSon->hide();
 				pageAct=*difSon;
-				qWarning("DIFSON new.- .- .- .--. ");
+//				qWarning("DIFSON new.- .- .- .--. ");
 				break;
 			    case ANTIINTRUSIONE:
-				*antintr = new antintrusione(NULL);
+				*antintr = new antintrusione(NULL,"ANTI");
 				(*antintr)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*antintr)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				//              automazioni->hide();
 				pageAct=*antintr;
-				qWarning("ANTIINTRUSIONE new.- - ..- -.  .- .- .-");
+//				qWarning("ANTIINTRUSIONE new.- - ..- -.  .- .- .-");
 				break;
 			    case TERMOREGOLAZIONE:
-				*termo = new sottoMenu( NULL,"", 4, MAX_WIDTH, MAX_HEIGHT,1);
+				*termo = new sottoMenu( NULL,"TERMO", 4, MAX_WIDTH, MAX_HEIGHT,1);
 				(*termo)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*termo)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				//              termo->hide();
 				pageAct=*termo;
-				qWarning("TERMOREGOLAZIONE new.- .- - .. -. -. -. . ");
+//				qWarning("TERMOREGOLAZIONE new.- .- - .. -. -. -. . ");
 				break;
 			    case IMPOSTAZIONI:
-				*imposta = new sottoMenu (NULL);
+				*imposta = new sottoMenu (NULL,"IMPOSTA");
 				(*imposta) ->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*imposta) ->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				QObject::connect(*imposta,SIGNAL(setPwd(bool,char*)), BtM, SLOT (setPwd(bool,char*))); 
 				//              imposta->hide();	      		
 				pageAct=*imposta;
-				qWarning("IMPOSTAZIONI new.- .- . -. -.- .- -. .-.");
+//				qWarning("IMPOSTAZIONI new.- .- . -. -.- .- -. .-.");
 				break;
 			    case SPECIAL:	    
-				(*specPage) = new homePage(NULL,"",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
+				(*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
 				//              specPage ->hide();
 				pageAct=*specPage;
 				(*specPage) ->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 				(*specPage) ->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 				(*specPage) ->addButton(0,260,ICON_FRECCIA_SX ,BACK);				 
-				qWarning("SPECIAL new.- .- . -.-  .- .-");
+//				qWarning("SPECIAL new.- .- . -.-  .- .-");
 				break;
 			    } // switch (page_id)
 			    
@@ -789,7 +786,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 			    if (!CurTagL5.compare("id"))
 			    {
 				page_item_id = qValue.toInt( &ok, 10 );
-				qWarning("PAGEITEM:ID %d",page_item_id);
+//				qWarning("PAGEITEM:ID %d",page_item_id);
 			    } else if (!CurTagL5.compare("descr"))
 				page_item_descr = qValue;
 			    else if (!CurTagL5.compare("where"))
@@ -805,7 +802,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 				}
 			    else if ((CurTagL5.startsWith("cimg"))||(!CurTagL5.compare("value"))||(!CurTagL5.compare("hour"))||(!CurTagL5.compare("minute")))
 			    {
-				    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
+//				    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
 				    QString sValue=qValue;
 				    if  (CurTagL5.startsWith("cimg"))
 					sValue.prepend(IMG_PATH);
@@ -813,36 +810,35 @@ bool xmlconfhandler::characters( const QString & qValue)
 				}
 			    else if (CurTagL5.startsWith("txt"))
 			    {
-				    qDebug("FOR PAGEITEM:TXT=%s",qValue.ascii());
+//				    qDebug("FOR PAGEITEM:TXT=%s",qValue.ascii());
 				    page_item_list_txt->append(new QString(qValue));
 				}  
 			    else if (!CurTagL5.compare("type"))
 			    {
-				    qDebug("FOR PAGEITEM:TYPE=%s",qValue.ascii());
+//				    qDebug("FOR PAGEITEM:TYPE=%s",qValue.ascii());
 				    par2=qValue.toInt( &ok, 10 );
 				}   
 			    else if (!CurTagL5.compare("alarmset"))
 			    {
-				    qDebug("FOR PAGEITEM:ALARMSET=%s",qValue.ascii());
+//				    qDebug("FOR PAGEITEM:ALARMSET=%s",qValue.ascii());
 				    par3=qValue.toInt( &ok, 10 );
 				}   	 
 			    else if (!CurTagL5.compare("enabled"))
 			    {
-				    qDebug("FOR PAGEITEM:PASSWORD ENABLED=%s",qValue.ascii());
+//				    qDebug("FOR PAGEITEM:PASSWORD ENABLED=%s",qValue.ascii());
 				    par1=qValue.toInt( &ok, 10 );
 				}   	 
-			    else if (!CurTagL5.compare("value"))
+/*			    else if (!CurTagL5.compare("value"))
 			    {
-				    qDebug("FOR PAGEITEM:PASSWORD=%s",qValue.ascii());
 				    par2=qValue.toInt( &ok, 10 );
-				}   
+				}   */
 			} // if (!CurTagL4.startsWith("item"))
 		else if (!CurTagL4.compare("command"))
 		{
 			     if (!CurTagL5.compare("id"))
 			    {
 				page_item_id = qValue.toInt( &ok, 10 );
-				qWarning("PAGEITEM:ID %d",page_item_id);
+//				qWarning("PAGEITEM:ID %d",page_item_id);
 			    }
 			    else if (!CurTagL5.compare("descr"))
 				page_item_descr=qValue;
@@ -856,19 +852,11 @@ bool xmlconfhandler::characters( const QString & qValue)
 				page_item_where=qValue;
 			    else if (CurTagL5.startsWith("cimg"))
 			    {
-				    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
+//				    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
 				    QString sValue=qValue;
 				    sValue.prepend(IMG_PATH);
 				    page_item_list_img->append(new QString(sValue));
-				}
-			/*    if (!page_item_descr.isNull())
-			    qDebug("descr= %s",(char*)page_item_descr.ascii());
-			    if (!page_item_type.isNull())			    
-			    qDebug("type= %s", (char*)page_item_type.ascii());
-			    if (!page_item_who.isNull())			    
-			    qDebug("who= %s", (char*)page_item_who.ascii());
-			    if (!page_item_where.isNull())			    
-			    qDebug("where= %s", (char*)page_item_where.ascii());*/
+				}		
 			}   	 
 	    } // else if (CurTagL4.startsWith("page"))
 	} // if (!CurTagL2.startsWith("displaypages"))

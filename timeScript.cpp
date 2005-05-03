@@ -60,8 +60,8 @@ void timeScript::timerEvent( QTimerEvent *e )
 
 void timeScript::mousePressEvent( QMouseEvent * )
 {
-    if(!mioClock)
-	showDate();
+  /*  if(!mioClock)
+	showDate();*/
 }
 
 

@@ -94,11 +94,11 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
      free (Icon2);
      Icon2=NULL;
      Icon1 = new QPixmap();
-     Icon1->load(ICON_OK_60);
+     Icon1->load(ICON_OK);
      but[6] = new BtButton(this,"OK");
      but[6] -> setGeometry(90,260,60,60);
      but[6] -> setPixmap(*Icon1);
-     getPressName((char*)ICON_OK_60, &iconName[0],sizeof(iconName));
+     getPressName((char*)ICON_OK, &iconName[0],sizeof(iconName));
      if (QFile::exists(iconName))
     {  
 	Icon2 = new QPixmap();
@@ -107,18 +107,9 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
      if (Icon2)
 	    but[6] -> setPressedPixmap(*Icon2);
      
-     free(Icon1);
-     Icon1 = new QPixmap();
-     Icon1->load(ICON_OROLOGIO);
-    
-       
-     Immagine = new QLabel(this, "immaginetta superiore");
-    
-     if (Icon1)
-	 Immagine -> setPixmap(*Icon1); 
-    
      
-    Immagine->setGeometry(60,0,120,60);
+    Immagine = new BtLabel(this, "immaginetta superiore");
+    Immagine->setGeometry(90,0,120,60);
     
     dataOra=NULL;
 }
@@ -179,7 +170,13 @@ void impostaTime::OKTime()
     disconnect( but[6] ,SIGNAL(clicked()),this,SLOT(OKTime()));
  
     dataOra->showDate();
-    
+
+    QPixmap* Icon1 = new QPixmap();
+     Icon1->load(ICON_CALENDARIO);
+           
+     if (Icon1)
+	 Immagine -> setPixmap(*Icon1); 
+     
     connect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumDay()));
     connect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
     connect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(aumYear()));
@@ -200,7 +197,7 @@ void impostaTime::OKDate()
     disconnect( but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
     
     
-     QTextOStream (stdout)<<"\nOra impostata = "<<dataOra->getDataOra().toString();  
+     //QTextOStream (stdout)<<"\nOra impostata = "<<dataOra->getDataOra().toString();  
     
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
      openwebnet msg_open;
@@ -239,7 +236,7 @@ void impostaTime::OKDate()
 void impostaTime::mostra()
 {
       QDateTime OroTemp = QDateTime(QDateTime::currentDateTime());
-      QTextOStream (stdout)<<"\nmostra";
+    // QTextOStream (stdout)<<"\nmostra";
     
      dataOra = new timeScript(this,"scrittaHomePage",1,&OroTemp);
          
@@ -250,7 +247,13 @@ void impostaTime::mostra()
      dataOra->setFrameStyle( QFrame::Plain );
      dataOra->setLineWidth(0);    
      
+     QPixmap *Icon1 = new QPixmap();
+     Icon1->load(ICON_OROLOGIO);
+           
     
+     if (Icon1)
+	 Immagine -> setPixmap(*Icon1); 
+     
     connect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
     connect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
     connect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(aumSec()));

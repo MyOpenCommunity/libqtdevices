@@ -18,7 +18,7 @@ class Calibrate : public QWidget
 {
     Q_OBJECT
 public:
-    Calibrate(QWidget* parent=0, const char * name=0, WFlags=0);
+    Calibrate(QWidget* parent=0, const char * name=0, WFlags=0, unsigned char manut=0);
     ~Calibrate();
 
 private:
@@ -45,6 +45,7 @@ private:
     QPixmap saveUnder;
     //QPixmap bersaglio;    
     QTimer *timer;
+    unsigned char manut;
     int dx;
     int dy;
 };

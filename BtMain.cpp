@@ -27,6 +27,7 @@
 #include "genericfunz.h"
 //#include "structureparser.h"
 #include "xmlconfhandler.h"
+#include "calibrate.h"
 
 #include <qfontdatabase.h>
 #include <qfile.h>
@@ -50,29 +51,48 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
   
 /**********************************************/
      setBacklight(TRUE);
-//     setContrast(0x80);
+     setContrast(0x80,FALSE);
      pagDefault=NULL;
      
-
+     rearmWDT();
+     
+     
      datiGen = new versio(NULL, "DG");
-      connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
+     connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
      connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
-
-     datiGen->setPaletteForegroundColor(QColor(205,205,205));
-     datiGen->setPaletteBackgroundColor(QColor(BG_R, BG_G, BG_B));
-     datiGen->show();
-     tempo1 = new QTimer(this,"clock");
-     tempo1->start(200);
-    connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
-    firstTime=1;
-      Home=NULL;
+     
+     firstTime=1;
+     Home=NULL;
+     
+     if (QFile::exists("/etc/pointercal"))
+     {
+	      tempo1 = new QTimer(this,"clock");
+	      tempo1->start(200);
+	      connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
+	      datiGen->show();
+     }
+     else
+     {
+	      tempo1=NULL;
+	      Calibrate* calib = new Calibrate(NULL,"calibrazione",(unsigned char)0,(unsigned char)1);
+	      calib->show(); 
+	      connect(calib, SIGNAL(fineCalib()), this,SLOT(hom()));
+	      connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
+     }     
  }
 
 void BtMain::hom()
 {
-    delete(tempo1);  
-  
-    // !!!raf font
+    if (tempo1)  
+	delete(tempo1);   
+    else
+    {
+	tempo1 = new QTimer(this,"clock");
+	tempo1->start(200);
+	connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
+	return;
+    }
+ 
   /*   QFontInfo(Home->font());
 
     qDebug( "FONT FAMILY=%s",(Home->font()).family().ascii());
@@ -82,9 +102,7 @@ void BtMain::hom()
     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
     qDebug( "FONT BOLD=%d",(Home->font()).bold());
     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
-    
-    
-    
+  
     QFontDatabase fdb;
     QStringList families = fdb.families();
     for ( QStringList::Iterator f = families.begin(); f != families.end(); ++f ) {
@@ -105,15 +123,10 @@ void BtMain::hom()
     }
      qDebug( "FINE ANALISI FONT");
     
-*/    
-    
-    
-    
-    
 //    qDebug( "FONT FIXED PITCH=%d",(Home.font()).fixedPitch());
 //    qDebug( "FONT RAWMODE=%d",(Home.font()).rawMode());
 //    qDebug( "FONT EXACTMATCH=%d",(Home.font()).exactMatch());
-	 
+*/	 
     
      datiGen->inizializza();    	 
 	 
@@ -184,16 +197,18 @@ void BtMain::gesScrSav()
 	if  ( (tiempo>=16) && (getBacklight())) 
 	{
 	    setBacklight(FALSE);
+	//    qDebug("BtMain emetto freezed TRUE");
 	    emit freeze(TRUE);
-	    tempo1->stop();
-	    tempo1->start(500);
+	    tempo1->changeInterval(500);
+	  //  qDebug("Cambiato tempo intervento");
 	}
 	else if ( (tiempo<=5) && (!getBacklight()) )
 	{
 	    setBacklight(TRUE);
+	  //  qDebug("BtMain emetto freezed FALSE");	    
 	    emit freeze(FALSE);
-    	    tempo1->stop();
-	    tempo1->start(2000);
+	    tempo1->changeInterval(2000);
+	  //  qDebug("Cambiato tempo intervento");	    
 	}
 	else if  ( (tiempo>=60) )
 	{
@@ -230,8 +245,7 @@ void BtMain::gesScrSav()
 	setBacklight(FALSE);
 	emit freeze(TRUE);
 	firstTime=0;
-	tempo1->stop();
-	tempo1->start(500);
+	tempo1->changeInterval(500);
     }
     rearmWDT();  
 }
@@ -241,11 +255,12 @@ void BtMain::freezed(bool b)
     if  (!b) 
     {
 	setBacklight(TRUE);
+	//qDebug("BtMain freezed FALSE");
 	if (pwdOn)
 	{
 	    tasti = new tastiera(NULL,"tast");
-	    tasti->setBGColor(BG_R, BG_G, BG_B);     
-	    tasti->setFGColor(205,205,205); 
+	    tasti->setBGColor(Home->backgroundColor());     
+	    tasti->setFGColor(Home->foregroundColor()); 
 	    tasti -> showTastiera();
 	    connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
 	}

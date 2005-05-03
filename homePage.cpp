@@ -235,13 +235,13 @@ void homePage::mouseReleaseEvent ( QMouseEvent * e )
 void homePage::freezed(bool f)
 {
     freez=f;
+//        	qDebug("%s freezed %d",name(),freez);			
     if (freez)
     {
 	for(uchar idx=0;idx<elencoButtons.count();idx++)
 	    elencoButtons.at(idx)->setEnabled(FALSE);
 	if (descrizione)
 	    descrizione->setEnabled(FALSE);
-	qDebug("Homepage freezed");	
     }
     else
     {
@@ -249,7 +249,6 @@ void homePage::freezed(bool f)
 	    elencoButtons.at(idx)->setEnabled(TRUE);
 	if (descrizione)
 	    descrizione->setEnabled(TRUE);
-	qDebug("Homepage DEfreezed");
     }
  
 }

@@ -31,6 +31,6 @@ bannOnOff::bannOnOff( QWidget *parent,const char *name )
 
 void bannOnOff::setIcons( const char *onIcon , const char *offIcon)
 {
-    SetIcons(ICON_ON_60,ICON_OFF_60,onIcon,offIcon);
+    SetIcons(ICON_ON,ICON_OFF,onIcon,offIcon);
 }
 

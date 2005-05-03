@@ -12,11 +12,12 @@
 #define IMPOSTA_TIME_H
 
 #include <qframe.h>
-#include <qlabel.h>
+//#include <qlabel.h>
 #include <qprocess.h>
 #include "btbutton.h"
 #include "main.h"
 #include "timescript.h"
+#include "btlabel.h"
 //#include <qobject.h>
 
     
@@ -31,7 +32,6 @@ public:
    void 	setFGColor(int , int , int );
    int 	setBGPixmap(char* );
    BtButton*  but[7];
-    QLabel* Immagine;
     
 signals:
     void 	Closed();
@@ -44,7 +44,8 @@ public slots:
     void 	mostra();
 private:
    timeScript* dataOra;
-//   QProcess* dateChange;
+   BtLabel* Immagine;
+   //   QProcess* dateChange;
 };
 
 

@@ -20,7 +20,7 @@
 #include "openclient.h"
 #include "main.h"
 #include <qiodevice.h>
-
+#include <qdir.h>
 
 #define CONFILENAME	"cfg/conf.xml"
 
@@ -48,13 +48,14 @@ void getZoneName(char* name, char* pressName,char*zona, char len)
     }
 }
 
-
+/*
 bool setCfgValue(char* file, int id, const char* campo, const char* valore,int serNumId)
 {
     char appoggio[100];
     QString Line;
     int count;
     
+    comChConf();
     count=1;    
     QFile *fil=new QFile(file);
     if ( !fil->open( IO_WriteOnly | IO_ReadOnly) )
@@ -80,7 +81,6 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 		     Line.sprintf("<%s>%s</%s>",campo,valore,campo);
 		     t.writeRawBytes(Line.ascii(), Line.length());
 		     fil->flush();
-//		     Line= t.readLine();
 		     fil->close();
 		     return(TRUE);
 		 }		
@@ -92,6 +92,74 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
     fil->close();    
     return(FALSE);
 }   
+*/
+bool setCfgValue(char* file, int id, const char* campo, const char* valore,int serNumId)
+{
+    char app1[100];
+    char app2[100];    
+    QString Line;
+    int count;
+    
+    comChConf();
+    count=1;   
+    if (QFile::exists("cfg/appoggio.xml"))
+	QFile::remove("cfg/appoggio.xml");	  
+	  
+    QFile *fil1=new QFile(file);
+    QFile *fil2=new QFile("cfg/appoggio.xml");    
+    if ( !fil1->open( IO_WriteOnly | IO_ReadOnly) )
+	return(FALSE);
+    if ( !fil2->open( IO_WriteOnly) )
+    {	
+	fil1->close();	         
+	return(FALSE);
+    }
+    QTextStream t1( fil1);
+    QTextStream t2( fil2);
+    sprintf(&app1[0], "<id>%d</id>",id);
+    do{     
+	Line= t1.readLine().append('\n');
+	t2.writeRawBytes(Line.ascii(), Line.length());
+	if  (Line.contains(&app1[0],TRUE)) 
+	{
+	    if  (count==serNumId)
+	    {
+		sprintf(&app2[0], "<%s>",campo);
+		QIODevice::Offset ofs;
+		do{
+		    Line= t1.readLine().append('\n');
+		    if (!Line.contains(&app2[0],TRUE))
+			    t2.writeRawBytes(Line.ascii(), Line.length());
+		    else
+			break;
+		}while  (Line.compare("\n") );
+		if (!Line.isNull())
+		{
+		     Line.sprintf("<%s>%s</%s>\n",campo,valore,campo);
+		     t2.writeRawBytes(Line.ascii(), Line.length());
+		     do{
+			 Line= t1.readLine().append('\n');
+			 t2.writeRawBytes(Line.ascii(), Line.length());
+		     }while( Line.compare("\n"));
+		     fil2->flush();
+		     fil1->close();
+		     fil2->close();		     
+		     QDir::current().rename("cfg/appoggio.xml",file,FALSE);
+		     return(TRUE);
+		 }		
+	    }
+	    else
+		count++;
+	}
+    }while  (Line.compare("\n"));
+    fil1->close();
+    fil2->close();	
+    return(FALSE);
+}   
+
+
+
+
 
 bool setCfgValue(int id, const char* campo, const char* valore)
 {
@@ -312,8 +380,9 @@ void  rearmWDT()
 {
    if (! QFile::exists("/var/tmp/bticino/bt_wd/BTouch_qws") )
     {
-	int fd = open("/var/tmp/bticino/bt_wd/BTouch_qws", O_CREAT);
-	if (fd >= 0 )
+//	int fd = open("/var/tmp/bticino/bt_wd/BTouch_qws", O_CREAT, 0666);
+	int fd = creat("/var/tmp/bticino/bt_wd/BTouch_qws",S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+	if (fd != -1 )
 	{
 	    close(fd);
 	}
@@ -321,5 +390,13 @@ void  rearmWDT()
 }
 
 
-
+void  comChConf()
+{
+    int fd = open("/BTOUCH_CHANGE_CONF", O_CREAT, 0666);
+    if (fd >= 0 )
+    {
+	close(fd);
+    }
+    
+}
 

@@ -701,16 +701,12 @@ void attuatAutomIntSic::inizializza()
 attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number )
         : bannOnOff2scr( parent, name )
 {     
-    qDebug("attuatAutomTemp -0");
-     SetIcons( IconaSx, IconaDx ,icon, pressedIcon,period ,number );
-    setAddress(indirizzo);
-qDebug("attuatAutomTemp -1");
+     SetIcons( IconaDx, IconaSx ,icon, pressedIcon,period ,number );
+     setAddress(indirizzo);
      cntTempi=0;
      SetSeconaryText(tempi[cntTempi]);
- qDebug("attuatAutomTemp -2");    
      connect(this,SIGNAL(dxClick()),this,SLOT(Attiva()));
      connect(this,SIGNAL(sxClick()),this,SLOT(CiclaTempo()));
- qDebug("attuatAutomTemp -3");    
 }
 
 
@@ -855,12 +851,13 @@ void grAttuatInt::inizializza()
 
 attuatPuls::attuatPuls( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,/*char* IconaDx,*/char *icon ,char tipo ,int period,int number )
         : bannPuls( parent, name )
-{     
-     SetIcons(  IconaSx,NULL, NULL,icon,period ,number );
-      setAddress(indirizzo);
+{               
+     SetIcons(  IconaSx,NULL,icon,NULL,period ,number );
+     setAddress(indirizzo);
      connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
      connect(this,SIGNAL(sxReleased()),this,SLOT(Disattiva()));
      type=tipo;
+     impostaAttivo(1);
 }
 
 
@@ -1145,7 +1142,7 @@ sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo )
         : bannCiclaz( parent, name )
 {
    
-     SetIcons( ICON_CICLA_60,NULL,ICON_FFWD_60,ICON_REW_60);
+     SetIcons( ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
      setAddress(indirizzo);
  //     connect(this,SIGNAL(click()),this,SLOT(Attiva()));
      connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
@@ -1193,7 +1190,7 @@ void sorgente::inizializza()
 banradio::banradio( QWidget *parent,const char *name,char* indirizzo )
         : bannCiclaz( parent, name )
 {     
-     SetIcons( ICON_CICLA_60,ICON_IMPOSTA_60,ICON_FFWD_60,ICON_REW_60);
+     SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
      setAddress(indirizzo);
      myRadio = new radio(NULL,"radio");
      myRadio->setRDS("");
@@ -1201,6 +1198,7 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo )
      
 //     myRadio-> setBGColor(parentWidget(TRUE)->backgroundColor() );
 //     myRadio-> setFGColor(parentWidget(TRUE)->foregroundColor() );	
+     
      
      myRadio->setStaz((uchar)1);
      
@@ -1285,18 +1283,10 @@ void banradio::gestFrame(char*frame)
 
 void banradio::show()
 {
-//    startRDS();
     
     openwebnet msg_open;
      char    pippo[50];
      
-/*     memset(pippo,'\000',sizeof(pippo));
-     strcat(pippo,"*#16*");
-     strcat(pippo,getAddress());
-     strcat(pippo,"*7##");
-     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));		      
-     emit sendFrame(msg_open.frame_open);   
-     */
      memset(pippo,'\000',sizeof(pippo));
      strcat(pippo,"*#16*");
      strcat(pippo,getAddress());
@@ -1304,9 +1294,15 @@ void banradio::show()
      msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		      
      emit sendFrame(msg_open.frame_open);
-	     
-    QWidget::show();
+           
+     QWidget::show();
+    
+      if (parentWidget()->parentWidget()->parentWidget(TRUE))
+	nascondi(BUT2);
+      else
+	mostra(BUT2);
 }
+
 void banradio::SetText( const char *text )
 {
 /*    memset(testo,'\000',sizeof(testo));
@@ -1343,7 +1339,7 @@ void banradio::aumFreqAuto()
       openwebnet msg_open;
           
      myRadio->setFreq(0.00);
-     myRadio->setRDS("SEARCH");
+     myRadio->setRDS("- - - - ");
      myRadio->draw();
      msg_open.CreateMsgOpen("16","5000",getAddress(),"");	     
      emit sendFrame(msg_open.frame_open);   
@@ -1353,7 +1349,7 @@ void banradio::decFreqAuto()
        openwebnet msg_open;
           
      myRadio->setFreq(0.00);
-     myRadio->setRDS("SEARCH");
+     myRadio->setRDS("- - - - ");
      myRadio->draw();
      msg_open.CreateMsgOpen("16","5100",getAddress(),"");	     
      emit sendFrame(msg_open.frame_open);       
@@ -1511,6 +1507,7 @@ void banradio::setFGColor(QColor c)
  banner::setFGColor(c); 
 }
 }
+
 
 
 void banradio::inizializza()
@@ -2154,6 +2151,7 @@ void gesModScen::startProgScen()
     strcat(pippo,"##");
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
+    sendInProgr=1;
 }
 void gesModScen::stopProgScen()
 {
@@ -2168,6 +2166,7 @@ void gesModScen::stopProgScen()
     strcat(pippo,"##");
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
+    sendInProgr=0;
 }
 void gesModScen::cancScen()
 {
@@ -2195,10 +2194,13 @@ void gesModScen::gestFrame(char* frame)
     
     if (!strcmp(msg_open.Extract_chi(),"0"))
     {
+	qDebug("preso bt_scenario. mio dove = %s",&dove[0]);
 	if ( (! strcmp(msg_open.Extract_dove(),&dove[0])) )
 	{
+	    		qDebug("preso con dove giusto");
 	    if (!strncmp(msg_open.Extract_cosa(),"40",2)) 		
 	    {
+		qDebug("preso 40");
 		if (sendInProgr)
 		{	
 		    SetIcons(uchar(0),&iconStop[0]);       
@@ -2214,11 +2216,13 @@ void gesModScen::gestFrame(char* frame)
 	    }
 	    else if ( (!strncmp(msg_open.Extract_cosa(),"43",2)) || (!strncmp(msg_open.Extract_cosa(),"45",2)))
 	    {
+		qDebug("preso 43 o 45");
 		nascondi(BUT2);
 		exitInfo();
 	    }
 	    else if  (!strncmp(msg_open.Extract_cosa(),"41",2)) 
 	    {
+		qDebug("preso 41");		
 		SetIcons(uchar(0),&iconOn[0]);       
 		connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 		disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
@@ -2227,7 +2231,7 @@ void gesModScen::gestFrame(char* frame)
 	    
 	    else if (!strcmp(msg_open.Extract_cosa(),"0")) 
 	    {
-
+		qDebug("preso 0");
 	    }
 	}
     }    
@@ -2239,6 +2243,7 @@ void gesModScen::gestFrame(char* frame)
 	    {
 		if ( (! strcmp(msg_open.Extract_valori(0),"55")) )
 		    mostra(BUT2);
+		qDebug("preso 1001 * 55 ");
 	    }
 	}
     }
@@ -2257,5 +2262,5 @@ void gesModScen::inizializza()
 	strcat(pippo,"*1##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);    	
-	nascondi(BUT2);
+//	nascondi(BUT2);     DA RIMETTERE BLOHWOH
 }

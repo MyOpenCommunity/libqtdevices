@@ -20,6 +20,7 @@
 #include "timescript.h"
 #include "bannfrecce.h"
 #include "diffsonora.h"
+#include "btlabel.h"
 #include <qcheckbox.h>
 
 
@@ -38,9 +39,9 @@ public:
    int 	setBGPixmap(char* );
    void 	setSerNum(int);
    BtButton*  but[4];
-   QLabel* Immagine;
+   BtLabel* Immagine;
    BtButton* choice[4];
-   QLabel* testiChoice[4];
+   BtLabel* testiChoice[4];
 
    void	activateSveglia(bool);
    bool	getActivation();
@@ -69,7 +70,7 @@ private:
     void 	drawSelectPage();
    timeScript* dataOra;
    bannFrecce * bannNavigazione;
-   uchar 	tipoSveglia,conta2min,sorgente,stazione,tipo;
+   uchar 	tipoSveglia,conta2min,sorgente,stazione,tipo,aggiornaDatiEEprom;
    int 	serNum;
    bool 	buzAbilOld;
    unsigned int contaBuzzer;
@@ -101,6 +102,7 @@ enum sveType{
 
 
 #define BASE_EEPROM	11360
-#define KEY_LENGTH	4
+#define KEY_LENGTH	5
 #define AL_KEY		"\125\252\125\252\125"
+#define SORG_PAR	2
 #endif // SVEGLIA_H

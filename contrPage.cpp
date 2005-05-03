@@ -83,8 +83,8 @@ contrPage::contrPage( QWidget *parent, const char *name )
     }
     
 
-    Icon->load(ICON_OK_60);
-    getPressName((char*)ICON_OK_60, &pressIconName[0],sizeof(pressIconName));    
+    Icon->load(ICON_OK);
+    getPressName((char*)ICON_OK, &pressIconName[0],sizeof(pressIconName));    
     okBut->setPixmap(*Icon);    
     if (QFile::exists(pressIconName))
     {

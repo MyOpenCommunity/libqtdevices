@@ -33,6 +33,8 @@ private:
 
 #define BUTONDX_BUT_DIM_X 	60
 #define BUTONDX_BUT_DIM_Y	60
+#define BUTONSX_BUT_DIM_X 	80
+#define BUTONSX_BUT_DIM_Y	80
 #define BUTONDX_H_SCRITTA	20
 
 #endif //BANNONDX

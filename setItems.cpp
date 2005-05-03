@@ -29,12 +29,10 @@ setDataOra::setDataOra( QWidget *parent,const char *name )
  //     connect(this,SIGNAL(click()),this,SLOT(Attiva()));
       
 //    settalora =  impostaTime (NULL,"impOra");
-     qDebug("SETTAORA");
      settalora.setBGColor(backgroundColor()/*BG_R, BG_G, BG_B*/);  
      settalora.setFGColor(foregroundColor()/*255-BG_R, 255-BG_G, 255-BG_B*/);  
      connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));      
      connect(&settalora,SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
-          qDebug("SETTAORA - END");
 }
 
 /*****************************************************************
@@ -58,6 +56,7 @@ impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* dis
      else
 	 setAbil(FALSE);	 
      connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));      
+     connect(this,SIGNAL(dxClick()),parentWidget(),SLOT(hide()));           
      connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));    
      
      connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*))); 
@@ -113,11 +112,9 @@ void impostaSveglia::inizializza()
 calibration::calibration( QWidget *parent,const char *name, const char* icon )
         : bannOnDx( parent, name )
 {   
-          qDebug("CALIBRATION");
 //     SetIcons(icon,1);
       SetIcons( ICON_INFO,1);
      connect(this,SIGNAL(click()),this,SLOT(doCalib()));      
-          qDebug("CLIBRATION-END");
 }
 
 void calibration::doCalib()
@@ -207,12 +204,10 @@ void impContr::contrMade()
 machVers::machVers( QWidget *parent,const char *name, versio * ver, const char* icon1)
         : bannOnDx( parent, name )
 {   
-         qDebug("VERSIONE");
-    SetIcons( icon1,1);
+         SetIcons( icon1,1);
     connect(this,SIGNAL(click()),this,SLOT(showVers()));   
     v=ver;
-         qDebug("VRSIONE _END");
-}
+     }
 
 void machVers::showVers()
 {
@@ -236,10 +231,11 @@ void machVers::tiempout()
 **impPassword 
 ****************************************************************/
 
-impPassword ::impPassword ( QWidget *parent,const char *name, char* attiva,char* password, char* icon1, char*icon2,char* icon3)
+//impPassword ::impPassword ( QWidget *parent,const char *name, char* attiva,char* password, char* icon1, char*icon2,char* icon3)
+impPassword ::impPassword ( QWidget *parent,const char *name, char* icon1, char*icon2,char* icon3, char* password,int attiva)	
         : bann2But( parent, name )
 {   
-     qDebug("PWD");
+
      strncpy(&iconOn[0], icon1, sizeof(iconOn));
      strncpy(&iconOff[0], icon2, sizeof(iconOff));
      strncpy(&paswd[0], password, sizeof(paswd));     
@@ -259,14 +255,18 @@ impPassword ::impPassword ( QWidget *parent,const char *name, char* attiva,char*
      connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));      
      connect(this, SIGNAL(setPwd(bool,char*)), parentWidget(), SIGNAL(setPwd(bool,char*)));
      
-     if (!strcmp(attiva,"1"))
+/*     if (!strcmp(attiva,"1"))
 	 active=TRUE;
       else
- 	 active=FALSE;      
+ 	 active=FALSE;      */
+     if (attiva==1)
+	 active=TRUE;
+     else
+	 active=FALSE;
+      
       emit(setPwd(active,&paswd[0]));	 
 //     connect(this, SIGNAL(freezed(bool)), tasti,SLOT(freezed(bool)));     --da mettere
-           qDebug("PWD _ END");
-}
+ }
 
 
 void impPassword::toggleActivation()
@@ -293,11 +293,32 @@ void  impPassword::show()
    else
        	SetIcons(uchar(0),&iconOff[0]);
    Draw();
+   qDebug("passwd = %s %d", &paswd[0], paswd[0]);
+   if (paswd[0]=='\000')
+   {
+       qDebug("passwd = ZERO");
+       disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
+       disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
+       tasti->setMode(CLEAN);	
+       connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*))); 
+   }
+   else
+   {
+       disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));  
+       disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));  
+       tasti->setMode(HIDDEN);       
+       connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*))); 
+   }
     QWidget::show();
 }
 
 void  impPassword::reShow1(char* c)
 {
+    if (c==NULL)
+    {
+	show();
+	return;
+    }
     if (strcmp(&paswd[0],c))
     {
 	   show();
@@ -321,11 +342,14 @@ void  impPassword::reShow1(char* c)
 
 void  impPassword::reShow2(char* c)
 {
-    connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));  
-    disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));  
-    strcpy(&paswd[0],c);
-    setCfgValue(PROTEZIONE, "value",&paswd[0],getSerNum());
-    emit(setPwd(active,&paswd[0]));
+    if (c)
+    {
+	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));  
+	disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));  
+	strcpy(&paswd[0],c);
+	setCfgValue(PROTEZIONE, "value",&paswd[0],getSerNum());
+	emit(setPwd(active,&paswd[0]));
+    }
     show();
     tasti->setMode(HIDDEN);
 }

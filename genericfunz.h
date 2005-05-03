@@ -27,4 +27,5 @@ bool setCfgValue(int , const char* , const char* );
 bool setCfgValue(int , const char*, const char* ,int);
 bool setCfgValue(char*, int , const char*, const char* ,int);
 bool copyFile(char*, char*);
+void  comChConf();
 

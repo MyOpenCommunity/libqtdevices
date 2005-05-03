@@ -12,7 +12,7 @@
 #include <qapplication.h>
 #include <qcursor.h>
 
-Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
+Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned char m) :
     QWidget( parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose )
 {
     const int offset = 30;
@@ -36,6 +36,7 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf) :
     QWSServer::mouseHandler()->clearCalibration();
 #endif  
     grabMouse();
+    manut=m;
 }
 
 Calibrate::~Calibrate()
@@ -84,7 +85,7 @@ void Calibrate::moveCrosshair( QPoint pt )
 {
     QPainter p( this );
     p.drawPixmap( crossPos.x()-8, crossPos.y()-8, saveUnder );
-   saveUnder = QPixmap::grabWindow( winId(), pt.x()-40, pt.y()-40, 80, 80 );
+   saveUnder = QPixmap::grabWindow( winId(), pt.x()-8, pt.y()-8, 16, 16 );
     p.drawRect( pt.x()-1, pt.y()-8, 2, 7 );
     p.drawRect( pt.x()-1, pt.y()+1, 2, 7 );
     p.drawRect( pt.x()-8, pt.y()-1, 7, 2 );
@@ -108,17 +109,17 @@ void Calibrate::paintEvent( QPaintEvent * )
 
     y = height() / 2 + 15;
 
-    QString text( "Schermata di calibrazione" );
-    p.setFont( QFont( "helvetica", 20, QFont::Bold ) );
-    p.drawText( 0, y, width(), height() - y, AlignHCenter, text );
+//    QString text( "Schermata di calibrazione" );
+ //   p.setFont( QFont( "helvetica", 20, QFont::Bold ) );
+//    p.drawText( 0, y, width(), height() - y, AlignHCenter, text );
 
-    y += 40;
+//    y += 40;
 /*    text = "Tocca il vetro\n"
 	    "in modo fermo e sicuro per calibrarlo.";	//traduzioni!!!
     p.setFont( QFont( "helvetica", 12 ) );
     p.drawText( 0, y, width(), height() - y, AlignHCenter, text );*/
 
-    saveUnder = QPixmap::grabWindow( winId(), crossPos.x()-40, crossPos.y()-40, 80, 80 );
+    saveUnder = QPixmap::grabWindow( winId(), crossPos.x()-8, crossPos.y()-8, 16, 16 );
     moveCrosshair( crossPos );
 }
 
@@ -146,7 +147,15 @@ void Calibrate::mouseReleaseEvent( QMouseEvent * )
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 
     cd.devPoints[location] = penPos;
-    if ( location < QWSPointerCalibrationData::LastLocation ) {
+    
+    unsigned char lastLoc;
+    if (manut==0)
+	lastLoc=QWSPointerCalibrationData::LastLocation;
+    else
+	lastLoc=QWSPointerCalibrationData::LastLocation-1;
+    qDebug("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
+    //if ( location < QWSPointerCalibrationData::LastLocation ) {
+    if ( location < lastLoc) {
 	location = (QWSPointerCalibrationData::Location)((int)location + 1);
     } else {
 	if ( sanityCheck() ) {
@@ -156,6 +165,8 @@ void Calibrate::mouseReleaseEvent( QMouseEvent * )
 	    close();
 	    doMove = FALSE;
 	    emit (fineCalib());
+	    if (manut==1)
+		delete(this);
 	} else {
 	    location = QWSPointerCalibrationData::TopLeft;
 	}
