@@ -12,6 +12,7 @@
 #define BANNONDX_H
 
 #include "banner.h"
+#include "sottomenu.h"
 #include <qwidget.h>
 #include <qlabel.h>
 #include <qpixmap.h>
@@ -20,7 +21,7 @@ class bannOnDx : public banner
 {
     Q_OBJECT
 public:
-     bannOnDx( QWidget *, const char * );
+     bannOnDx( sottoMenu *, const char * );
 
 public slots:
 signals:
@@ -51,7 +52,7 @@ class bannOnSx : public banner
 {
     Q_OBJECT
 public:
-     bannOnSx( QWidget *, const char * );
+     bannOnSx( sottoMenu *, const char * );
 
 public slots:
 signals:

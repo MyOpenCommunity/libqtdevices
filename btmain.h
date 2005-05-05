@@ -19,6 +19,7 @@
 #include "openclient.h"
 #include "antintrusione.h"
 #include "versio.h"
+#include "genpage.h"
 
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
@@ -57,6 +58,8 @@ private:
     bool	pwdOn;
     tastiera *tasti;
     unsigned char firstTime;
+    genPage* screen;
+    unsigned char tiposcreen;
 //    char specialFrame[50];
 };
 

@@ -11,6 +11,7 @@
 #include "main.h"
 #include "openclient.h"
 #include "genericfunz.h"
+#include "sottomenu.h"
 
 //#include "btbutton.h"
 #include <qfont.h>
@@ -22,7 +23,7 @@
 **setdataOra
 ****************************************************************/
 
-setDataOra::setDataOra( QWidget *parent,const char *name )
+setDataOra::setDataOra( sottoMenu *parent,const char *name )
         : bannOnDx( parent, name )
 {   
      SetIcons( ICON_INFO,1);
@@ -109,7 +110,7 @@ void impostaSveglia::inizializza()
 ****************************************************************/
 //#include "calibrate.h"
 
-calibration::calibration( QWidget *parent,const char *name, const char* icon )
+calibration::calibration( sottoMenu  *parent,const char *name, const char* icon )
         : bannOnDx( parent, name )
 {   
 //     SetIcons(icon,1);
@@ -134,7 +135,7 @@ void calibration::fineCalib()
 **beep
 ****************************************************************/
 
-impBeep::impBeep( QWidget *parent,const char *name ,char* val, const char * icon1, const char *icon2)
+impBeep::impBeep( sottoMenu  *parent,const char *name ,char* val, const char * icon1, const char *icon2)
         : bannOnSx( parent, name )
 {   
      strncpy(&iconOn[0], icon1, sizeof(iconOn));
@@ -168,7 +169,7 @@ void impBeep::toggleBeep()
 **contrasto
 ****************************************************************/
 
-impContr::impContr( QWidget *parent,const char *name ,char* val, const char * icon1)
+impContr::impContr( sottoMenu  *parent,const char *name ,char* val, const char * icon1)
         : bannOnDx( parent, name )
 {   
      SetIcons( icon1,1);
@@ -200,7 +201,7 @@ void impContr::contrMade()
 **machVers
 ****************************************************************/
 
-machVers::machVers( QWidget *parent,const char *name, versio * ver, const char* icon1)
+machVers::machVers( sottoMenu  *parent,const char *name, versio * ver, const char* icon1)
         : bannOnDx( parent, name )
 {   
          SetIcons( icon1,1);

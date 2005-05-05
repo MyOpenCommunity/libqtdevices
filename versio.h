@@ -1,3 +1,12 @@
+/****************************************************************
+**
+** BTicino Touch scren Colori art. H4686
+**
+** versio.h
+**
+**definizioni della pagine di visualizzazione versioni
+**
+****************************************************************/
 #ifndef  GENERIC_CLASSES_H
 #define GENERIC_CLASSES_H
 

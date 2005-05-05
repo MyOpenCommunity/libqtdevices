@@ -1,3 +1,13 @@
+/****************************************************************
+**
+** BTicino Touch scren Colori art. H4686
+**
+** versio.h
+**
+**definizioni della pagine di visualizzazione versioni
+**
+****************************************************************/
+
 #include "versio.h"
 #include <qwidget.h>
 #include <qpixmap.h>

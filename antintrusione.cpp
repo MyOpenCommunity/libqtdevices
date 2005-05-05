@@ -39,24 +39,12 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(this,SIGNAL(freezed(bool)),zone,SLOT(freezed(bool)));
     connect(this,SIGNAL(freezed(bool)),impianto,SLOT(freezed(bool)));        
     connect(this,SIGNAL(freezed(bool)),allarmi,SLOT(freezed(bool)));            
-/*  QTimer *tiempo = new QTimer(this,"clock");
-    tiempo->start(3000,TRUE);
-    connect(tiempo,SIGNAL(timeout()),this,SLOT(tiempout()));*/
+
 }
 
  
  
-void antintrusione::tiempout()
-{ 
-    /*---fuffoide inizializzazione di elenco Allarmi---*/
-   char descr[25];
-    for(unsigned int idx=0; idx<10; idx++)
-    {	
-	sprintf(&descr[0], "%s - %s z%d", QDateTime::currentDateTime(Qt::LocalTime).toString("hh:mm:ss").ascii(), QDateTime::currentDateTime(Qt::LocalTime).toString("dd:MM").ascii(), idx);	
-	allarmi->addItem(ALLARME, &descr[0], NULL, ICON_MENO);
-    }
-    allarmi->draw();
-}
+
 
 void antintrusione::setBGColor(int r, int g, int b)
 {	
@@ -106,7 +94,10 @@ int antintrusione::setBGPixmap(char* backImage)
 int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame)
  {        
     if (tipo== IMPIANTINTRUS)
+    {
 	impianto -> addItem(tipo, descrizione,indirizzo,  IconaSx, IconaDx, icon, pressedIcon);
+	connect(impianto->getLast(),SIGNAL(impiantoInserito()),allarmi,SLOT(svuota()));
+    }
     else if (tipo== ZONANTINTRUS)
 	zone->addItem(tipo , descrizione , indirizzo ,IconaSx,IconaDx, icon, pressedIcon);
     return(1);    
@@ -146,9 +137,10 @@ void antintrusione::gesFrame(char*frame)
 	     (! strncmp(msg_open.Extract_cosa(),"16",2) ) || (! strncmp(msg_open.Extract_cosa(),"17",2) ) )     
 	{
 	    char descr[25];
-                    sprintf(&descr[0], "%s - %s z%d", QDateTime::currentDateTime().toString("hh:mm:ss").ascii(), \
-			    QDateTime::currentDateTime().toString("dd:MM").ascii(), msg_open.Extract_dove());	
+                    sprintf(&descr[0], "%s   %s      Z %s", QDateTime::currentDateTime().toString("hh:mm").ascii(), \
+			    QDateTime::currentDateTime().toString("dd.MM").ascii(), msg_open.Extract_dove()+1);	
                     allarmi->addItem(ALLARME, &descr[0], NULL, ICON_MENO);
+	    aggiorna=1;
 	 }
     }    
     if (aggiorna)

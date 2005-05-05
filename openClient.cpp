@@ -73,7 +73,7 @@ void Client::socketConnected()
 *****************************************************************************/
 void Client::ApriInviaFrameChiudi(char* frame)
 {
-        if ( socket->state() != QSocket::Connected )
+        if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
     {
 	//strcpy(&fr[0],frame);
 	connetti();	

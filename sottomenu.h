@@ -67,6 +67,7 @@ public slots:
 //  void 	mousePressEvent ( QMouseEvent * );
   void 	mouseReleaseEvent ( QMouseEvent * );  
   void 	killBanner(banner*);
+  void 	svuota();
 private:
   QPtrList<banner> elencoBanner;
   QTimer* iniTim;

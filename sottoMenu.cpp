@@ -372,4 +372,8 @@ void sottoMenu::hide()
     draw();
 }
 
-
+void sottoMenu::svuota()
+{
+    elencoBanner.clear();
+    draw();
+}

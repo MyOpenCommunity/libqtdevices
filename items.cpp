@@ -349,7 +349,7 @@ void grDimmer::inizializza(){}
 **scenario
 ****************************************************************/
 
-scenario::scenario( QWidget *parent,const char *name,char* indirizzo,char* IconaSx )
+scenario::scenario( sottoMenu *parent,const char *name,char* indirizzo,char* IconaSx )
         : bannOnSx( parent, name )
 {   
      SetIcons( IconaSx,1);    
@@ -376,7 +376,7 @@ void scenario::inizializza(){}
 **carico
 ****************************************************************/
 
-carico::carico( QWidget *parent,const char *name,char* indirizzo ,char* IconaSx)
+carico::carico( sottoMenu *parent,const char *name,char* indirizzo ,char* IconaSx)
         : bannOnSx( parent, name )
 {
    
@@ -1929,7 +1929,7 @@ impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn,
 
      strcat(pippo,"dis");
      strcat(pippo,strstr(IconActive,"."));
-     SetIcons(  IconInfo,IconOn,IconActive,IconOff,&pippo[0]);
+     SetIcons(  IconInfo,IconOff,&pippo[0],IconOn,IconActive);
      setChi("5");
      nascondi(BUT2);
      impostaAttivo(2);
@@ -1962,6 +1962,7 @@ void impAnti::gestFrame(char* frame)
 		    nascondi(BUT4);
 		    mostra(BUT2);
 		    aggiorna=1;
+		    emit(impiantoInserito());
 		}
 	    }
 	    else if (!strcmp(msg_open.Extract_cosa(),"9")) 
@@ -1998,6 +1999,7 @@ void impAnti::Disinserisci()
     tasti->setFGColor(foregroundColor());    
     tasti->showTastiera();
     parentWidget()->hide();
+    
 //    this->hide();    
 }
 
@@ -2052,7 +2054,7 @@ void impAnti::inizializza()
 **allarme
 ****************************************************************/
 
-allarme::allarme( QWidget *parent,const char *name,char* indirizzo,char* IconaDx )
+allarme::allarme( sottoMenu  *parent,const char *name,char* indirizzo,char* IconaDx )
         : bannOnDx( parent, name )
 {   
      SetIcons( IconaDx,1);    

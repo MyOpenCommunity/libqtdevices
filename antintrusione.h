@@ -42,7 +42,7 @@ signals:
     void 	freezed(bool);
 public slots:
     void 	gesFrame(char*);	
-    void tiempout();
+
 private:
   uchar numRighe;	
   sottoMenu* zone;  

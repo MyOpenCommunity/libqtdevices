@@ -28,7 +28,7 @@ class setDataOra : public bannOnDx
 {
     Q_OBJECT
 public:
-     setDataOra( QWidget *, const char * );     
+     setDataOra( sottoMenu  *, const char * );     
 signals:
   //    void sendFrame(char *); 
 public slots:
@@ -86,7 +86,7 @@ class calibration : public bannOnDx
 {
     Q_OBJECT
 public:
-     calibration( QWidget *, const char *,const char *);     
+     calibration( sottoMenu  *, const char *,const char *);     
 signals:
 
 public slots:	
@@ -109,7 +109,7 @@ class impBeep : public bannOnSx
 {
     Q_OBJECT
 public:
-     impBeep( QWidget *, const char *,char *,const char *,const char *);     
+     impBeep( sottoMenu  *, const char *,char *,const char *,const char *);     
 signals:
 
 public slots:	
@@ -133,7 +133,7 @@ class impContr : public bannOnDx
 {
     Q_OBJECT
 public:
-     impContr( QWidget *, const char *,char *,const char *);     
+     impContr( sottoMenu  *, const char *,char *,const char *);     
 signals:
 
 public slots:	
@@ -156,7 +156,7 @@ class machVers : public bannOnDx
 {
     Q_OBJECT
 public:
-     machVers( QWidget *, const char *,  versio*, const char*);     
+     machVers( sottoMenu  *, const char *,  versio*, const char*);     
 signals:
 public slots:
      void tiempout();

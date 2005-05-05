@@ -146,7 +146,7 @@ class scenario : public bannOnSx
 {
     Q_OBJECT
 public:
-     scenario( QWidget *, const char * ,char*,char*);
+     scenario( sottoMenu  *, const char * ,char*,char*);
      void inizializza();
 signals:
   //  void sendFrame(char *);           
@@ -172,7 +172,7 @@ class carico : public bannOnSx
 {
     Q_OBJECT
 public:
-     carico( QWidget *, const char * ,char*,char*);     
+     carico(sottoMenu  *, const char * ,char*,char*);     
      void inizializza();
 public slots:
      void gestFrame(char*);
@@ -557,6 +557,7 @@ public slots:
      void DeInsert(char*);
 signals:
     // void CodaAllarmi();
+     void impiantoInserito();
 private:    
      tastiera* tasti;
 };
@@ -576,7 +577,7 @@ class allarme : public  bannOnDx
 {
     Q_OBJECT
 public:
-     allarme( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL);   
+     allarme( sottoMenu  *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL);   
 public slots:
     void muoio();	
 signals:

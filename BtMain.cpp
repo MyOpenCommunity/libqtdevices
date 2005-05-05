@@ -47,7 +47,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 *******************************************/
       qDebug("parte BtMain");
       
-     client_comandi = new  Client("127.0.0.1",20000,0);
+      client_comandi = new  Client("127.0.0.1",20000,0);
       client_monitor	 = new  Client("127.0.0.1",20000,1); 
   
 
@@ -62,6 +62,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
      illumino=scenari=carichi=imposta=automazioni=termo=NULL;
      difSon=NULL;
      antintr=NULL;
+     screen=NULL;
      
      datiGen = new versio(NULL, "DG");
    
@@ -211,68 +212,129 @@ void BtMain::myMain()
 void BtMain::gesScrSav()
 {
     unsigned long tiempo;
+    rearmWDT();  
     
-    tiempo= getTimePress();
-    
-    if (!firstTime)
+    if (QFile::exists("/MODALITA_TEST1"))
     {
-	if  (tiempo<=5)
-	    firstTime=0;
+	if ( (screen) && (tiposcreen!=RED))
+	    delete(screen);
+	else if (!screen)
+	{
+	    tiposcreen=RED;
+	    screen = new genPage(NULL,"red",RED);
+	    screen->show();
+	    qDebug("TEST1");
+	    setBacklight(TRUE);
+	}
+    }
+    else if (QFile::exists("/MODALITA_TEST2"))
+    {
+	if ( (screen)&& (tiposcreen!=GREEN))	
+	    delete(screen);
+	else if (!screen)
+	{
+	    tiposcreen=GREEN;
+	    screen = new genPage(NULL,"green",GREEN);
+	    screen->show();
+	    qDebug("TEST2");
+	    setBacklight(TRUE);	
+	}
+    }
+    else if (QFile::exists("/MODALITA_TEST3"))
+    {
+	if ( (screen)&& (tiposcreen!=BLUE))	
+	    delete(screen);
+	else if(!screen)
+	{
+	    tiposcreen=BLUE;
+	    screen = new genPage(NULL,"blu",BLUE);
+	    screen->show();
+	    qDebug("TEST3");
+	    setBacklight(TRUE);
+	}
+    }
+    else if (QFile::exists("/MODALITA_AGGIORNAMENTO"))
+    {
+	if ((screen)&& (tiposcreen!=IMAGE))	
+	    delete(screen);
+	else if (!screen)
+	{
+	    screen = new genPage(NULL,"blu",IMAGE,"cfg/skin/dwnpage.png");
+	    tiposcreen=IMAGE;	    
+	    screen->show();
+	    qDebug("AGGIORNAMENTO");
+	    setBacklight(TRUE);	
+	}
 	
-	if  ( (tiempo>=16) && (getBacklight())) 
+    }
+    else
+    {
+	if (screen)
+	    delete(screen);
+	screen=NULL;
+	tiposcreen=NONE;
+	
+	tiempo= getTimePress();
+	
+	if (!firstTime)
+	{
+	    if  (tiempo<=5)
+		firstTime=0;
+	    
+	    if  ( (tiempo>=16) && (getBacklight())) 
+	    {
+		    setBacklight(FALSE);
+		    //    qDebug("BtMain emetto freezed TRUE");
+		    emit freeze(TRUE);
+		    tempo1->changeInterval(500);
+		    //  qDebug("Cambiato tempo intervento");
+		}
+	    else if ( (tiempo<=5) && (!getBacklight()) )
+	    {
+		    setBacklight(TRUE);
+		    //  qDebug("BtMain emetto freezed FALSE");	    
+		    emit freeze(FALSE);
+		    tempo1->changeInterval(2000);
+		    //  qDebug("Cambiato tempo intervento");	    
+		}
+	    else if  ( (tiempo>=60) )
+	    {
+		    if (pagDefault)
+		    {
+			if (pagDefault->isHidden ()) 
+			{
+			    if (illumino)
+				illumino -> hide();
+			    if (scenari)
+				scenari -> hide();
+			    if (carichi)
+				carichi -> hide();
+			    if (imposta)
+				imposta -> hide();
+			    if (automazioni)
+				automazioni -> hide();
+			    if (termo)
+				termo -> hide();
+			    if (difSon)
+				difSon -> hide();
+			    if (antintr)
+				antintr -> hide();
+			    if (specPage )
+				specPage -> hide();
+			    if (pagDefault)
+				pagDefault -> showFullScreen();
+			}
+		    }
+		}	
+	}
+	else if  ( (tiempo>=120)  )
 	{
 	    setBacklight(FALSE);
-	//    qDebug("BtMain emetto freezed TRUE");
 	    emit freeze(TRUE);
+	    firstTime=0;
 	    tempo1->changeInterval(500);
-	  //  qDebug("Cambiato tempo intervento");
 	}
-	else if ( (tiempo<=5) && (!getBacklight()) )
-	{
-	    setBacklight(TRUE);
-	  //  qDebug("BtMain emetto freezed FALSE");	    
-	    emit freeze(FALSE);
-	    tempo1->changeInterval(2000);
-	  //  qDebug("Cambiato tempo intervento");	    
-	}
-	else if  ( (tiempo>=60) )
-	{
-	    if (pagDefault)
-	    {
-		if (pagDefault->isHidden ()) 
-		{
-		    if (illumino)
-			illumino -> hide();
-		    if (scenari)
-			scenari -> hide();
-		    if (carichi)
-			carichi -> hide();
-		    if (imposta)
-			imposta -> hide();
-		    if (automazioni)
-			automazioni -> hide();
-		    if (termo)
-			termo -> hide();
-		    if (difSon)
-			difSon -> hide();
-		    if (antintr)
-			antintr -> hide();
-		    if (specPage )
-			specPage -> hide();
-		    if (pagDefault)
-			pagDefault -> showFullScreen();
-		}
-	    }
-	}	
     }
-    else if  ( (tiempo>=120)  )
-    {
-	setBacklight(FALSE);
-	emit freeze(TRUE);
-	firstTime=0;
-	tempo1->changeInterval(500);
-    }
-    rearmWDT();  
 }
 
 void BtMain::freezed(bool b)
