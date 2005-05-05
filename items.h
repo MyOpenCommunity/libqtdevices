@@ -96,7 +96,7 @@ public slots:
 signals:
   //  void sendFrame(char *);           
 private:
-    QPtrList<char> elencoDisp;
+    QPtrList<QString> elencoDisp;
    
 };
 
@@ -127,7 +127,7 @@ public slots:
 signals:
  //   void sendFrame(char *);           
 private:
-    QPtrList<char> elencoDisp;
+    QPtrList<QString> elencoDisp;
    
 };
 
@@ -304,7 +304,7 @@ public slots:
 signals:
 //    void sendFrame(char *);           
 private:
-    QPtrList<char> elencoDisp;
+    QPtrList<QString> elencoDisp;
  };
 
 
@@ -394,7 +394,7 @@ public slots:
 signals:
  //   void sendFrame(char *);           
 private:
-    QPtrList<char> elencoDisp;
+    QPtrList<QString> elencoDisp;
     
 };
 

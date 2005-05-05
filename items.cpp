@@ -242,7 +242,7 @@ grAttuatAutom::grAttuatAutom( QWidget *parent,const char *name,void *indirizzi, 
 
 void grAttuatAutom::setAddress(void*indirizzi)
 {
-    elencoDisp=*((QPtrList<char>*)indirizzi);        
+    elencoDisp=*((QPtrList<QString>*)indirizzi);        
 //      elencoDisp=new (QPtrList<char>*)*((QPtrList<char>*)indirizzi);        
 }
 
@@ -254,7 +254,7 @@ void grAttuatAutom::Attiva()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("1", "1",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("1", "1",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -266,7 +266,7 @@ void grAttuatAutom::Disattiva()
    for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("1", "0",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("1", "0",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
 }
@@ -291,7 +291,7 @@ grDimmer::grDimmer( QWidget *parent,const char *name,void *indirizzi, char* Icon
 
 void grDimmer::setAddress(void*indirizzi)
 {
-    elencoDisp=*((QPtrList<char>*)indirizzi);        
+    elencoDisp=*((QPtrList<QString>*)indirizzi);        
 }
 
 
@@ -302,7 +302,7 @@ void grDimmer::Attiva()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("1", "1",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("1", "1",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -314,7 +314,7 @@ void grDimmer::Disattiva()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("1", "0",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("1", "0",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -326,7 +326,7 @@ void grDimmer::Aumenta()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("1", "30",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("1", "30",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -338,7 +338,7 @@ void grDimmer::Diminuisci()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("1", "31",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("1", "31",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -802,7 +802,7 @@ grAttuatInt::grAttuatInt( QWidget *parent,const char *name,void *indirizzi,char*
 
 void grAttuatInt::setAddress(void*indirizzi)
 {
-    elencoDisp=*((QPtrList<char>*)indirizzi);        
+    elencoDisp=*((QPtrList<QString>*)indirizzi);        
 }
 
 
@@ -813,7 +813,7 @@ void grAttuatInt::Alza()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("2", "1",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("2", "1",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -825,7 +825,7 @@ void grAttuatInt::Abbassa()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("2", "2",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("2", "2",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -837,7 +837,7 @@ void grAttuatInt::Ferma()
     for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("2", "0",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("2", "0",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -1080,7 +1080,7 @@ grAmplificatori::grAmplificatori( QWidget *parent,const char *name,void *indiriz
 
 void grAmplificatori::setAddress(void*indirizzi)
 {
-    elencoDisp=*((QPtrList<char>*)indirizzi);        
+    elencoDisp=*((QPtrList<QString>*)indirizzi);        
 }
 
 
@@ -1091,7 +1091,7 @@ void grAmplificatori::Attiva()
  for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "3",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("16", "3",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -1103,7 +1103,7 @@ void grAmplificatori::Disattiva()
  for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "13",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("16", "13",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -1115,7 +1115,7 @@ void grAmplificatori::Aumenta()
  for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "1001",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("16", "1001",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }
@@ -1127,7 +1127,7 @@ void grAmplificatori::Diminuisci()
  for(uchar idx=0; idx<elencoDisp.count();idx++)
     {
 	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "1101",elencoDisp.at(idx),"");
+	msg_open.CreateMsgOpen("16", "1101",(char*)elencoDisp.at(idx)->ascii(),"");
 	emit sendFrame(msg_open.frame_open);
     }
  }

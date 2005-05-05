@@ -280,6 +280,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    
 		    // QString* pip;   
 		    char pip[50];
+		    memset(&pip[0],'\000',sizeof(pip));
 		    void* pnt;
 		    switch (  page_id )
 		    {	    
