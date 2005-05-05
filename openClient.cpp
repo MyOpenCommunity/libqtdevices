@@ -20,7 +20,7 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon)
 //   qDebug( "Creating Client");      
    
   ismonitor=ismon;
-    
+ //   memset(&fr[0],'\000',sizeof(fr));
  
   socket = new QSocket( this );
  
@@ -37,10 +37,10 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon)
   else 
      qDebug( "Command");      
 */      
-   if (ismonitor) 
+  /* if (ismonitor) 
    {
        connetti();
-   }  
+   }*/  
 }
 
 /****************************************************************************
@@ -55,12 +55,15 @@ void Client::socketConnected()
 //    qDebug( "TRY TO START monitor session");
     socket->clearPendingData ();
     sendToServer(SOCKET_MONITOR);
+    emit(monitorSu());
   }
-  else {
+/*  else {
 //    qDebug( "TRY TO START command");
     //socket->clearPendingData ();
-    sendToServer(SOCKET_COMANDI ); 
-  }
+//    sendToServer(SOCKET_COMANDI ); 
+
+    memset(&fr[0],'\000',sizeof(fr));
+  }*/
       
 }
 /****************************************************************************
@@ -70,12 +73,16 @@ void Client::socketConnected()
 *****************************************************************************/
 void Client::ApriInviaFrameChiudi(char* frame)
 {
-        if ( socket->state() == QSocket::Idle )
+        if ( socket->state() != QSocket::Connected )
     {
-	connetti();
+	//strcpy(&fr[0],frame);
+	connetti();	
+	sendToServer(SOCKET_COMANDI ); //lo metto qui else mando prima frame di questo!
     }
-    sendToServer(frame);
-    qDebug("invio: %s",frame);
+        sendToServer(frame);
+	qDebug("invio: %s",frame);
+
+	
 //    sleep(2);
 //    closeConnection();
 }
@@ -234,7 +241,7 @@ void Client::socketError( int e )
 //  qDebug( "Error number %d occurred",e);
   if (ismonitor) {
     tick = new QTimer(this,"tick");
-    tick->start(2500,TRUE);
+    tick->start(500,TRUE);
   //  qDebug( "Monitor: riprovo a connettermi");
     connect(tick,SIGNAL(timeout()), this,SLOT(connetti()));  
   }

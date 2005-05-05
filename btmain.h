@@ -42,7 +42,7 @@ signals:
 private slots:    
     void hom();
     void myMain();
-    void showHome();
+    void init();
     void gesScrSav();
     void freezed(bool);
 //    void specFunz();

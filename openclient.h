@@ -19,9 +19,9 @@
 #include "../bt_stackopen/common_files/openwebnet.h"
 
 #define SOCKET_MONITOR "*99*1##"
-#define SOCKET_COMANDI "*99*0##"
-//#define SOCKET_COMANDI "*99*##"
-
+#define SOCKET_COMANDI "*99*9##"
+//#define SOCKET_COMANDI "*99*0##"
+//#define SOCKET_MONITOR "*99*1##"
 
 class Client  : public QSocket
 {
@@ -31,7 +31,8 @@ class Client  : public QSocket
     ~Client(){};
 
 //    void ApriInviaFrameChiudi(char *);
-
+    public slots:
+       void connetti();
     private slots:
     void closeConnection(void);
     void sendToServer(char *);    
@@ -40,7 +41,7 @@ class Client  : public QSocket
     void socketConnectionClosed(void);
     void socketClosed(void);
     void socketError(int e );
-    void connetti();
+ 
     void ApriInviaFrameChiudi(char *);
     void richStato(char*);
    
@@ -49,11 +50,12 @@ class Client  : public QSocket
     int ismonitor;
     QTimer* tick;  
     void socketStateRead(char*);
+   // char fr[100];
 	    
      signals:
       void  frameIn(char*);
       void rispStato(char*);
-    
+      void monitorSu();
 };
 
 //

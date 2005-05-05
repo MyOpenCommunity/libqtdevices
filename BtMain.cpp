@@ -45,25 +45,28 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
   /*******************************************
 ** Socket 
 *******************************************/
-     
+      qDebug("parte BtMain");
+      
      client_comandi = new  Client("127.0.0.1",20000,0);
-     client_monitor	 = new  Client("127.0.0.1",20000,1); 
+      client_monitor	 = new  Client("127.0.0.1",20000,1); 
   
-/**********************************************/
+
      setBacklight(TRUE);
      setContrast(0x80,FALSE);
-     pagDefault=NULL;
      
      rearmWDT();
      
+     firstTime=1;
+     pagDefault=NULL;
+     Home=specPage=NULL;
+     illumino=scenari=carichi=imposta=automazioni=termo=NULL;
+     difSon=NULL;
+     antintr=NULL;
      
      datiGen = new versio(NULL, "DG");
-     connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
-     connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
-     
-     firstTime=1;
-     Home=NULL;
-     
+   
+
+       
      if (QFile::exists("/etc/pointercal"))
      {
 	      tempo1 = new QTimer(this,"clock");
@@ -138,8 +141,10 @@ void BtMain::hom()
   xmlFile = new QFile("cfg/conf.xml");
   QXmlInputSource source( xmlFile );
   QXmlSimpleReader reader;
+  qDebug("parte parsing");
   reader.setContentHandler( handler );
   reader.parse( source );
+   qDebug("finito parsing");
   delete handler;
   delete xmlFile;
    
@@ -154,13 +159,30 @@ void BtMain::hom()
 }
 	
 ////////non più eseguito////////
-void BtMain::showHome()
+void BtMain::init()
 {
-       qDebug("SHOWHOME");
-    delete(tempo2);
-        Home->show();
-	       qDebug("SHOWHOME_2");
-    datiGen->hide();
+    qDebug("parte init");
+    connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
+     connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
+
+     
+     if(illumino)
+	 illumino->inizializza();
+     if(automazioni)
+	 automazioni->inizializza();
+     if(antintr)
+	 antintr->inizializza();
+     if(termo)
+	 termo->inizializza();
+     if(difSon)
+	 difSon->inizializza();
+     if (datiGen)
+	 datiGen->inizializza();
+     if(scenari)
+	 scenari->inizializza();
+     if(imposta)
+	 imposta->inizializza();
+     qDebug("fine init");
 }
 
 
@@ -168,18 +190,21 @@ void BtMain::showHome()
 
 void BtMain::myMain()
 {
-
+    qDebug("entro MyMain");
+    
     delete(tempo3);
     
       Home->show();
       datiGen->hide();
 
 
-    
-    tempo1 = new QTimer(this,"clock");
-    tempo1->start(2000);
-    disconnect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
-    connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
+      connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(init()));
+      client_monitor->connetti();
+	
+      tempo1 = new QTimer(this,"clock");
+      tempo1->start(2000);
+      disconnect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
+      connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
 }
 
 

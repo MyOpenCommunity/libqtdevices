@@ -1066,12 +1066,14 @@ grAmplificatori::grAmplificatori( QWidget *parent,const char *name,void *indiriz
         : bannRegolaz( parent, name )
 { 
 //     setRange(1,1);
+    qDebug("gr ampli1");
      SetIcons(IconaSx,IconaDx ,icondx,iconsx );
      setAddress(indirizzi);
     connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
     connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
     connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
     connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
+    qDebug("gr ampli2");    
 }
 
 
@@ -2194,13 +2196,10 @@ void gesModScen::gestFrame(char* frame)
     
     if (!strcmp(msg_open.Extract_chi(),"0"))
     {
-	qDebug("preso bt_scenario. mio dove = %s",&dove[0]);
 	if ( (! strcmp(msg_open.Extract_dove(),&dove[0])) )
 	{
-	    		qDebug("preso con dove giusto");
 	    if (!strncmp(msg_open.Extract_cosa(),"40",2)) 		
 	    {
-		qDebug("preso 40");
 		if (sendInProgr)
 		{	
 		    SetIcons(uchar(0),&iconStop[0]);       
@@ -2216,13 +2215,11 @@ void gesModScen::gestFrame(char* frame)
 	    }
 	    else if ( (!strncmp(msg_open.Extract_cosa(),"43",2)) || (!strncmp(msg_open.Extract_cosa(),"45",2)))
 	    {
-		qDebug("preso 43 o 45");
 		nascondi(BUT2);
 		exitInfo();
 	    }
 	    else if  (!strncmp(msg_open.Extract_cosa(),"41",2)) 
 	    {
-		qDebug("preso 41");		
 		SetIcons(uchar(0),&iconOn[0]);       
 		connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 		disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
@@ -2231,7 +2228,6 @@ void gesModScen::gestFrame(char* frame)
 	    
 	    else if (!strcmp(msg_open.Extract_cosa(),"0")) 
 	    {
-		qDebug("preso 0");
 	    }
 	}
     }    
@@ -2242,8 +2238,7 @@ void gesModScen::gestFrame(char* frame)
 	    if ( (! strcmp(msg_open.Extract_grandezza(),"1")) )
 	    {
 		if ( (! strcmp(msg_open.Extract_valori(0),"55")) )
-		    mostra(BUT2);
-		qDebug("preso 1001 * 55 ");
+		    mostra(BUT2);	
 	    }
 	}
     }
@@ -2262,5 +2257,5 @@ void gesModScen::inizializza()
 	strcat(pippo,"*1##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);    	
-//	nascondi(BUT2);     DA RIMETTERE BLOHWOH
+	nascondi(BUT2);     
 }

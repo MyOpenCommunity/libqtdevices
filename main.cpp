@@ -12,6 +12,10 @@
 #include <qapplication.h>
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
+#define	TIMESTAMP
+#ifdef TIMESTAMP
+#include <qdatetime.h>
+#endif
 
 /*******************************************
 ** Configurazione applicativo - path - verbosity - ecc
@@ -35,7 +39,12 @@ void myMessageOutput( QtMsgType type, const char *msg )
   switch ( type ) {
     case QtDebugMsg:
       if (VERBOSITY_LEVEL>1)
+#ifndef TIMESTAMP	  
 	  fprintf( StdLog, "<BTo> %s\n", msg );
+#endif
+#ifdef TIMESTAMP      
+      fprintf( StdLog, "<BTo> %d:%d:%d ->%s\n",QTime::currentTime().minute() ,QTime::currentTime().second(),QTime::currentTime().msec(),msg );
+#endif      
     break;
     case QtWarningMsg:
       if (VERBOSITY_LEVEL>0)

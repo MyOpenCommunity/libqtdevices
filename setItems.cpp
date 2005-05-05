@@ -137,17 +137,15 @@ void calibration::fineCalib()
 impBeep::impBeep( QWidget *parent,const char *name ,char* val, const char * icon1, const char *icon2)
         : bannOnSx( parent, name )
 {   
-         qDebug("BEEP");
      strncpy(&iconOn[0], icon1, sizeof(iconOn));
      strncpy(&iconOff[0], icon2, sizeof(iconOff));
      SetIcons( &iconOff[0],1);
 //     setBeep(FALSE);//non va bene, bisogna prendere il valore di partenza dal costruttore
      connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));      
-          qDebug("BEEP_END");
-	if (strcmp(val,"1"))
-	    setBeep(FALSE,FALSE);
-	else
-	    setBeep(TRUE,FALSE);
+     if (strcmp(val,"1"))
+	 setBeep(FALSE,FALSE);
+     else
+	 setBeep(TRUE,FALSE);
 }
 
 void impBeep::toggleBeep()
@@ -161,6 +159,7 @@ void impBeep::toggleBeep()
     {
 	setBeep(TRUE,TRUE);
 	SetIcons(uchar(0), &iconOn[0]);	
+	beep();
     }
     Draw();
 }
