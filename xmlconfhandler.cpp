@@ -28,7 +28,7 @@
 *
 *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, sottoMenu** t,\
-			       diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,QWidget* dG)
+			       diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG)
 {
     home=h;
     specPage=sP;
@@ -484,6 +484,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
 			QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+			QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*imposta,SLOT(freezed(bool)));
 			//(*imposta)->inizializza();
 			break;
@@ -861,6 +862,19 @@ bool xmlconfhandler::characters( const QString & qValue)
 			}   	 
 	    } // else if (CurTagL4.startsWith("page"))
 	} // if (!CurTagL2.startsWith("displaypages"))
+	else if (!CurTagL2.compare("setup"))
+	{
+	    if (!CurTagL3.compare("scs"))
+	    {
+		if (!CurTagL4.compare("coordinate_scs"))	
+		{
+			    if (!CurTagL5.compare("scs_addr"))		
+			    {
+				datiGen->setAddr(qValue.toInt( &ok, 10 ));
+			     }
+		}
+	    }
+	}
     } // if (!CurTagL1.startsWith("configuratore"))
     
     return TRUE;

@@ -57,9 +57,10 @@ private:
     char	pwd[10];
     bool	pwdOn;
     tastiera *tasti;
-    unsigned char firstTime;
+    unsigned char firstTime,bloccato;
     genPage* screen;
     unsigned char tiposcreen;
+    
 //    char specialFrame[50];
 };
 

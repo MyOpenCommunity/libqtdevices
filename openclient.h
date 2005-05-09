@@ -56,6 +56,7 @@ class Client  : public QSocket
       void  frameIn(char*);
       void rispStato(char*);
       void monitorSu();
+      void frameToAutoread(char*);
 };
 
 //

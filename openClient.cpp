@@ -73,18 +73,23 @@ void Client::socketConnected()
 *****************************************************************************/
 void Client::ApriInviaFrameChiudi(char* frame)
 {
-        if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
+    if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
     {
 	//strcpy(&fr[0],frame);
 	connetti();	
 	sendToServer(SOCKET_COMANDI ); //lo metto qui else mando prima frame di questo!
     }
-        sendToServer(frame);
-	qDebug("invio: %s",frame);
-
-	
-//    sleep(2);
-//    closeConnection();
+    sendToServer(frame);
+    qDebug("invio: %s",frame);
+    
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen(frame,strlen(frame));	  
+    if (!strcmp(msg_open.Extract_chi(),"1"))
+    {
+	QString s=msg_open.Extract_dove();
+	if (s.length()==1) 
+	    emit(frameToAutoread(msg_open.frame_open));
+    }    
 }
 
 /****************************************************************************

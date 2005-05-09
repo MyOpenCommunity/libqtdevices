@@ -281,11 +281,16 @@ void sveglia::mostra()
     connect(bannNavigazione  ,SIGNAL(forwardClick()),this,SLOT(okTime()));
     disconnect( bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));    
     disconnect( bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(Closed()));    
-
+    
+    disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
     connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
-    connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(okTime()));
+    
+ //   connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(okTime()));
     if (difson)
+    {
+	disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
 	connect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+    }
     connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
     connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
     connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
@@ -329,18 +334,22 @@ void sveglia::sel4(bool isOn)
 }
 void sveglia::Closed()
 {
+    qDebug("Sveglia Closed");
     //imposta la sveglia in 
     if (difson)
     {
-	difson->setNumRighe((uchar)4);
-	difson->setGeom(0,0,240,320);
-	difson->setNavBarMode(3);
-	difson->/*amplificatori->*/showFullScreen();
-	difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
-	difson->hide();
-#if defined (BTWEB) || defined (BT_EMBEDDED)
+	qDebug("Sveglia Closed DIFSON");
 	if(aggiornaDatiEEprom)
 	{
+	     difson->hide();
+	     difson->setNumRighe((uchar)4);	     
+	     difson->setGeom(0,0,240,320);
+	     difson->setNavBarMode(3);
+	    //	difson->/*amplificatori->*/showFullScreen();
+	     difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
+#if defined (BTWEB) || defined (BT_EMBEDDED)
+	    
+	    qDebug("Sveglia Closed AGGIORNA EEPROM");
 	    int eeprom;
 	    eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
 	    lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH, SEEK_SET);
@@ -353,17 +362,18 @@ void sveglia::Closed()
 	    write(eeprom,&sorgente,1 );
 	    write(eeprom,&stazione,1 );
 	    ::close(eeprom);
+	    qDebug("Sveglia Closed FINE AGGIORNA EEPROM");
 	}
 #endif
-	 
+	
     }
     hide();
- 
+    
     gesFrameAbil=FALSE;
-/*    delete(oraSveglia);
+    /*    delete(oraSveglia);
     oraSveglia=new QDateTime();*/
     activateSveglia(TRUE);
-//    qDebug("sveglia::Closed()");
+    //    qDebug("sveglia::Closed()");
     
     delete(oraSveglia);
     oraSveglia = new QDateTime(dataOra->getDataOra());
@@ -373,9 +383,9 @@ void sveglia::Closed()
     setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "minute",oraSveglia->time().toString("mm"),serNum);
     char t[2];
     sprintf(&t[0],"%d",tipoSveglia);
-    setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "type",&t[0],serNum);
+    setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",&t[0],serNum);
     QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
-	
+    
     emit(ImClosed());
 }
 
@@ -396,10 +406,14 @@ void sveglia::okTipo()
     else if (difson)
     {	
 	difson->setNumRighe((uchar)3);	
+		    qDebug("--01--");
 	difson->setGeom(0,0,240,240);	
+		    qDebug("--02--");
 	difson->setNavBarMode(6);
-	difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)FALSE);	
-	difson->show();	
+		    qDebug("--03--");
+	difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
+		    qDebug("--04--");
+//	difson->show();	
 
 	this->bannNavigazione->hide();
 	aggiornaDatiEEprom=1;
@@ -660,6 +674,8 @@ void sveglia::buzzerAlarm()
 	aumVolTimer->stop();
 	setBeep(buzAbilOld,FALSE);
 	delete (aumVolTimer);
+	aumVolTimer=NULL;	
+	emit(freeze(FALSE));
     }
 }
 

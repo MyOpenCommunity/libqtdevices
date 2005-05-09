@@ -50,6 +50,7 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
      datiGen->setAlignment(AlignHCenter|AlignVCenter);
        
      datiGen->setFont( QFont( "helvetica", 24, QFont::Black,TRUE) );
+     indDisp=0;
 }
 
 void   versio::setPaletteForegroundColor( const QColor & c )
@@ -107,7 +108,7 @@ void versio::gestFrame(char* frame)
 	datiGen->setFont( QFont( "helvetica", 14, QFont::Bold) );
 	datiGen-> setIndent(15);
 	datiGen->setAlignment(AlignLeft|AlignTop);    
-	sprintf(&scritta[100], "art. H4684\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d", vers, release, build, pic_version, pic_release, pic_build, hw);
+	sprintf(&scritta[100], "art. H4684\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d\nT.S. n. %d", vers, release, build, pic_version, pic_release, pic_build, hw,indDisp);
 	
 	datiGen->setText(&scritta[100]);   
     }
@@ -119,4 +120,10 @@ void versio::inizializza()
       emit sendFrame("*#1013**6##"); 
        emit sendFrame("*#1013**3##");        
        emit sendFrame("*#13**16##");        
+}
+
+
+void versio::setAddr(int a)
+{
+    indDisp=a;
 }

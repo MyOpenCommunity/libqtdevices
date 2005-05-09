@@ -18,6 +18,7 @@
 #include "antintrusione.h"
 #include "genericfunz.h"
 #include "btmain.h"
+#include "versio.h"
 //#include "openclient.h"
 
 #include <qstring.h>
@@ -26,7 +27,7 @@
 class xmlconfhandler : public QXmlDefaultHandler
 {
 public:
-    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, sottoMenu** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, QWidget* datiGen=NULL);
+    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, sottoMenu** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL);
     
     ~xmlconfhandler();
 
@@ -80,7 +81,8 @@ private:
     sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**termo;
     diffSonora **difSon;
     antintrusione** antintr;
-    QWidget ** pagDefault, *datiGen ;
+    QWidget ** pagDefault;
+    versio *datiGen ;
 
     BtMain * BtM;
     Client * client_comandi;

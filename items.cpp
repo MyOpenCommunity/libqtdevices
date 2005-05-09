@@ -1525,8 +1525,8 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
 {       
      SetIcons( IconaMeno, IconaPiu , ICON_SONDAOFF,ICON_SONDAANTI);/*IconaMan, IconaAuto );*/
      setAddress(indirizzo);
-     connect(this,SIGNAL(sxClick()),this,SLOT(aumSetpoint()));
-     connect(this,SIGNAL(dxClick()),this,SLOT(decSetpoint()));                       
+     connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
+     connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));                       
      setChi("4");
 }
 
@@ -2225,6 +2225,7 @@ void gesModScen::gestFrame(char* frame)
 		SetIcons(uchar(0),&iconOn[0]);       
 		connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 		disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
+		mostra(BUT2);
 		Draw();
 	    }
 	    

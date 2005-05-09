@@ -62,21 +62,27 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 {
-    delete( bannNavigazione );
-     if (navBarMode)
-       {
-	   bannNavigazione  = new bannFrecce(this,"bannerfrecce",navBarMode, IconBut4);
-    
-	   bannNavigazione  ->setGeometry( 0 , height-height/numRighe ,width , height/numRighe );
-	   
-	   bannNavigazione->setBGColor(backgroundColor());
-  	   bannNavigazione->setFGColor(foregroundColor());
-	   connect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
-	   connect(bannNavigazione  ,SIGNAL(upClick()),this,SLOT(goUp()));
-	   connect(bannNavigazione  ,SIGNAL(downClick()),this,SLOT(goDown()));
-  	   connect(bannNavigazione  ,SIGNAL(forwardClick()),this,SIGNAL(goDx()));
-       }
-     hasNavBar=navBarMode;
+    if(bannNavigazione)
+    {
+	qDebug("banNav seg fault %d %d", hasNavBar, navBarMode);
+	free( bannNavigazione );
+	//delete( bannNavigazione );
+	qDebug("postDelete");
+	bannNavigazione=NULL;
+    }
+    if (navBarMode)
+    {
+	bannNavigazione  = new bannFrecce(this,"bannerfrecce",navBarMode, IconBut4);
+	
+	bannNavigazione -> setGeometry( 0, height-height/numRighe, width, height/numRighe );
+	bannNavigazione -> setBGColor(backgroundColor());
+	bannNavigazione -> setFGColor(foregroundColor());
+	connect(bannNavigazione, SIGNAL(backClick()), this, SIGNAL(Closed()));
+	connect(bannNavigazione, SIGNAL(upClick()), this, SLOT(goUp()));
+	connect(bannNavigazione, SIGNAL(downClick()), this, SLOT(goDown()));
+	connect(bannNavigazione, SIGNAL(forwardClick()), this, SIGNAL(goDx()));
+    }
+    hasNavBar=navBarMode;
 }
 
 void sottoMenu::setBGColor(int r, int g, int b)

@@ -49,8 +49,8 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
       
       client_comandi = new  Client("127.0.0.1",20000,0);
       client_monitor	 = new  Client("127.0.0.1",20000,1); 
-  
-
+      connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
+      
      setBacklight(TRUE);
      setContrast(0x80,FALSE);
      
@@ -283,17 +283,19 @@ void BtMain::gesScrSav()
 	    
 	    if  ( (tiempo>=16) && (getBacklight())) 
 	    {
+#ifndef BACKLIGHT_SEMPRE_ON  
 		    setBacklight(FALSE);
-		    //    qDebug("BtMain emetto freezed TRUE");
 		    emit freeze(TRUE);
+		    bloccato=01;
 		    tempo1->changeInterval(500);
-		    //  qDebug("Cambiato tempo intervento");
+#endif		    
 		}
-	    else if ( (tiempo<=5) && (!getBacklight()) )
+	    else if ( (tiempo<=5) && (bloccato/*!getBacklight()*/) )
 	    {
 		    setBacklight(TRUE);
-		    //  qDebug("BtMain emetto freezed FALSE");	    
+		    //qDebug("BtMain emetto freezed FALSE");	    
 		    emit freeze(FALSE);
+		    bloccato=0;
 		    tempo1->changeInterval(2000);
 		    //  qDebug("Cambiato tempo intervento");	    
 		}
@@ -329,16 +331,22 @@ void BtMain::gesScrSav()
 	}
 	else if  ( (tiempo>=120)  )
 	{
+#ifndef BACKLIGHT_SEMPRE_ON 	    
 	    setBacklight(FALSE);
-	    emit freeze(TRUE);
-	    firstTime=0;
+	    emit freeze(TRUE);	   
 	    tempo1->changeInterval(500);
+#endif	    
+	     firstTime=0;
 	}
     }
 }
 
 void BtMain::freezed(bool b)
 {
+    bloccato=0;
+    if (b)
+	bloccato=1;
+    qDebug("BLOCCATO   : %d",bloccato);
     if  (!b) 
     {
 	setBacklight(TRUE);

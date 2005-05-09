@@ -26,6 +26,7 @@ public:
      void   inizializza();
      void   setPaletteForegroundColor( const QColor & );
      void   setPaletteBackgroundColor( const QColor & );
+     void 	setAddr(int);
 
 public slots:
      void gestFrame(char*);
@@ -40,6 +41,7 @@ private:
      unsigned char pic_build;
      unsigned char hw;
      BtLabel*datiGen, *bticino;
+     int indDisp;
 };
 
 #endif //GENERIC_CLASSES_H
