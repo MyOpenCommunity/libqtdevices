@@ -264,8 +264,7 @@ void BtMain::gesScrSav()
 	    screen->show();
 	    qDebug("AGGIORNAMENTO");
 	    setBacklight(TRUE);	
-	}
-	
+	}	
     }
     else
     {
@@ -299,7 +298,7 @@ void BtMain::gesScrSav()
 		    tempo1->changeInterval(2000);
 		    //  qDebug("Cambiato tempo intervento");	    
 		}
-	    else if  ( (tiempo>=60) )
+	    if  ( (tiempo>=60) )
 	    {
 		    if (pagDefault)
 		    {

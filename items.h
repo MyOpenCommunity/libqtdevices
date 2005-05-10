@@ -423,6 +423,7 @@ public:
 public slots:
      void 	gestFrame(char*);
     void	show();
+    void	hide();
     void 	ciclaSorg();
     void 	decBrano();
     void 	aumBrano();

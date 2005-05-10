@@ -48,8 +48,9 @@ signals:
 public slots:
     void 	gestFrame(char*);	
     void	show();
+    void 	fineVis();
 private:
-  uchar numRighe;	
+  uchar numRighe,isVisual;	
   sottoMenu* sorgenti;
 
 };

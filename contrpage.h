@@ -38,9 +38,10 @@ signals:
 public slots:
     void aumContr();    
     void decContr();    
+//    void okClose();
 private:
 };
-
+ 
 #define BUT_DIM	60
 #define IMG_X		181
 #define IMG_Y		128

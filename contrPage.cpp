@@ -91,16 +91,17 @@ contrPage::contrPage( QWidget *parent, const char *name )
 	pressIcon->load(pressIconName);
 	okBut->setPressedPixmap(*pressIcon); 
     }
-aumBut->show();
-decBut->show();
-okBut->show();
-paintLabel->show();
-colorBar->show();
-aumBut->setAutoRepeat(TRUE);
-decBut->setAutoRepeat(TRUE);
+    aumBut->show();
+    decBut->show();
+    okBut->show();
+    paintLabel->show();
+    colorBar->show();
+    aumBut->setAutoRepeat(TRUE);
+    decBut->setAutoRepeat(TRUE);
     connect(decBut,SIGNAL(clicked()),this,SLOT(decContr()));
     connect(aumBut,SIGNAL(clicked()),this,SLOT(aumContr()));
     connect(okBut,SIGNAL(clicked()),this,SIGNAL(Close()));    
+//        connect(okBut,SIGNAL(clicked()),this,SLOT(OkClose()));    
  }
 
 
@@ -163,3 +164,8 @@ void contrPage::decContr()
 	setContrast(c-5,FALSE);    
 }
 
+/*void contrPage::OkClose()
+{
+    setContrast(getContrast(),TRUE);
+    emit(Close());
+}*/

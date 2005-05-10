@@ -1305,6 +1305,14 @@ void banradio::show()
 	mostra(BUT2);
 }
 
+void banradio::hide()
+{
+    if (myRadio->isShown())
+	stopRDS();
+    myRadio->hide();
+    QWidget::hide();
+}
+
 void banradio::SetText( const char *text )
 {
 /*    memset(testo,'\000',sizeof(testo));

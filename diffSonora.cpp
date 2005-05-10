@@ -34,7 +34,7 @@ diffSonora::diffSonora( QWidget *parent, const char *name )
    //sorgenti -> setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT/numRighe);
 //   amplificatori -> setGeometry (0, MAX_HEIGHT/numRighe, MAX_WIDTH, MAX_HEIGHT- MAX_HEIGHT/numRighe );
      	
-    connect(amplificatori  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
+    connect(amplificatori  ,SIGNAL(Closed()),this,SLOT(fineVis()));
     BtLabel* linea = new BtLabel(this,NULL,0);
     linea->setGeometry(0,77,240,3);
     linea->setPaletteForegroundColor(QColor::QColor(0,0,0));
@@ -132,7 +132,13 @@ void diffSonora::gestFrame(char*frame)
 	}
     }    
     if (aggiorna)
+    {
 	sorgenti->draw();
+	if(isVisual)
+	{
+	    QWidget::show();	    
+	}
+    }
 }
 
 void diffSonora::show()
@@ -141,6 +147,7 @@ void diffSonora::show()
      emit sendFrame("*16*53*100##"); 
      sorgenti->draw();
      amplificatori->draw();
+     isVisual=1;
    // if (!parentWidget())
 //	showFullScreen();
      QWidget::show();
@@ -168,7 +175,8 @@ void diffSonora::setNavBarMode(uchar c)
     amplificatori->setNavBarMode(c);
 }
 
-/*void diffSonora::freezed(bool)
+void diffSonora::fineVis()
  {
-    qDebug("DIFSON FREEZED");
-}*/
+    isVisual=0;
+    emit(Closed());
+}
