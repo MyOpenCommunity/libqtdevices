@@ -195,7 +195,7 @@ void BtMain::myMain()
     
     delete(tempo3);
     
-      Home->show();
+      Home->showFullScreen();
       datiGen->hide();
 
 
