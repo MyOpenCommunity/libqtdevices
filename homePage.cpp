@@ -100,6 +100,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 	case DIFSON:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Difson() )); break;
 	case SCENARI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Scenari() )); break;
 	case IMPOSTAZIONI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Settings() )); break;
+	case SCHEDULAZIONI:  connect(b1,SIGNAL(clicked()),this, SIGNAL(Schedulazioni() )); break;
 	case SPECIAL:
 			     tipoSpecial=tipo;
 			     strcpy(&chi[0],chix);

@@ -45,7 +45,8 @@ enum pagSecLiv{
   SCENARI=7,
   IMPOSTAZIONI=8,
   BACK=9,             // tipo di bottone per tornare
-  SPECIAL=10          // tipo di bottone special
+  SPECIAL=10,          // tipo di bottone special
+  SCHEDULAZIONI=11	  
 };
 
 

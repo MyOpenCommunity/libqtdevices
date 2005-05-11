@@ -31,7 +31,7 @@ class  BtMain : public QObject
 public:
     BtMain ( QWidget *parent=0, const char *name=0,QApplication*a=NULL);
     homePage * Home, *specPage;
-    sottoMenu *illumino,*scenari,*carichi,*imposta,*automazioni,*termo;
+    sottoMenu *illumino,*scenari,*carichi,*imposta,*automazioni,*termo,*sched;
     diffSonora *difSon;
     antintrusione* antintr;
     Client * client_comandi;

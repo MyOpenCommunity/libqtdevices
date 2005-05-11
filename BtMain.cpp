@@ -59,7 +59,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
      firstTime=1;
      pagDefault=NULL;
      Home=specPage=NULL;
-     illumino=scenari=carichi=imposta=automazioni=termo=NULL;
+     illumino=scenari=carichi=imposta=automazioni=termo=sched=NULL;
      difSon=NULL;
      antintr=NULL;
      screen=NULL;
@@ -134,7 +134,7 @@ void BtMain::hom()
     
      datiGen->inizializza();    	 
 	 
-  xmlconfhandler  * handler=new xmlconfhandler(this, &Home,&specPage, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen);
+  xmlconfhandler  * handler=new xmlconfhandler(this, &Home,&specPage, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen, &sched);
   
 
   

@@ -27,7 +27,7 @@
 class xmlconfhandler : public QXmlDefaultHandler
 {
 public:
-    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, sottoMenu** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL);
+    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, sottoMenu** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,sottoMenu** sched=NULL);
     
     ~xmlconfhandler();
 
@@ -78,7 +78,7 @@ private:
     
     homePage **home;
     homePage **specPage;
-    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**termo;
+    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**termo,**sched;
     diffSonora **difSon;
     antintrusione** antintr;
     QWidget ** pagDefault;

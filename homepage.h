@@ -64,6 +64,7 @@ private slots:
   void	Close();
   void	freeze(bool);
   void 	sendFrame(char*);
+  void	Schedulazioni();
 private:
 // QTimer 	 *orologio;
   timeScript* dataOra;

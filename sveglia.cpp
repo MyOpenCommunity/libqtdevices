@@ -353,7 +353,7 @@ void sveglia::Closed()
 	     difson->setNavBarMode(3);
 	    //	difson->/*amplificatori->*/showFullScreen();
 	     difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
-	     
+	     disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
 #if defined (BTWEB) || defined (BT_EMBEDDED)
 	    
 	    qDebug("Sveglia Closed AGGIORNA EEPROM");
@@ -412,13 +412,9 @@ void sveglia::okTipo()
     else if (difson)
     {	
 	difson->setNumRighe((uchar)3);	
-		    qDebug("--01--");
 	difson->setGeom(0,0,240,240);	
-		    qDebug("--02--");
 	difson->setNavBarMode(6);
-		    qDebug("--03--");
 	difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
-		    qDebug("--04--");
 //	difson->show();	
 
 	this->bannNavigazione->hide();

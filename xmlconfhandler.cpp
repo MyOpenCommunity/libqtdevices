@@ -28,7 +28,7 @@
 *
 *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, sottoMenu** t,\
-			       diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG)
+			       diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG, sottoMenu** sch)
 {
     home=h;
     specPage=sP;
@@ -45,6 +45,7 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu
     client_comandi=c_c;
     client_monitor=c_m;
     datiGen=dG;
+    sched = sch;
     
     
     SecondForeground=QColor(255,0,0);
@@ -223,6 +224,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case TERMOREGOLAZIONE:
 		    case DIFSON:
 		    case SCENARI:
+		    case SCHEDULAZIONI:
 			case IMPOSTAZIONI: 				  // addbutton normali
 			(*home)->addButton(sottomenu_left,sottomenu_top,(char *)sottomenu_icon_name.ascii(), (char)sottomenu_id); break;
 			//  Home->addButton(160,125,ICON_IMPOSTAZIONI_80 ,IMPOSTAZIONI);
@@ -301,6 +303,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			case IMPOSTAZIONI:
 			if (!pageAct)
 			    pageAct=(*imposta);
+		             case SCHEDULAZIONI:
+			if (!pageAct)
+			    pageAct=(*sched);
 			
 			if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
 			{			       
@@ -486,7 +491,18 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 			QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*imposta,SLOT(freezed(bool)));
-			//(*imposta)->inizializza();
+			break;
+		    case SCHEDULAZIONI:    
+//			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
+			(*sched)->draw();
+			QObject::connect(*home,SIGNAL(Schedulazioni()),*sched,SLOT(show()));
+			QObject::connect(*sched,SIGNAL(Closed()),*sched,SLOT(hide()));
+			QObject::connect(*sched,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*sched,SIGNAL(gestFrame(char *)));
+			QObject::connect(*sched,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+			QObject::connect(*sched,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+			QObject::connect(*sched,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
+			QObject::connect(BtM,SIGNAL(freeze(bool)),*sched,SLOT(freezed(bool)));
 			break;
 		    case SPECIAL:    
 //			qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
@@ -755,6 +771,13 @@ bool xmlconfhandler::characters( const QString & qValue)
 				//              imposta->hide();	      		
 				pageAct=*imposta;
 //				qWarning("IMPOSTAZIONI new.- .- . -. -.- .- -. .-.");
+				break;
+			    case SCHEDULAZIONI:
+				*sched = new sottoMenu (NULL,"IMPOSTA");
+				(*sched) ->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
+				(*sched) ->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+				pageAct=*sched;
+//				qWarning("SCHEDULAZIONI new.- .- . -. -.- .- -. .-.");
 				break;
 			    case SPECIAL:	    
 				(*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
