@@ -194,6 +194,7 @@ public slots:
       void  reShow1(char*);
       void  reShow2(char*);      
       void  tiempout();
+      void setEnabled ( bool );
 private:
       char paswd[10];
       bool active;
@@ -202,6 +203,7 @@ private:
       tastiera *tasti;
       bool sb;
       QTimer * tiempo;
+      unsigned char starting;
 };
 #endif //PASSWORD_H
 

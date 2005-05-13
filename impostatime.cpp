@@ -29,7 +29,7 @@
 #include "impostatime.h"
 #include "genericfunz.h"
 #include "openclient.h"
-
+extern unsigned char tipoData;
 
 impostaTime::impostaTime( QWidget *parent, const char *name )
         : QFrame( parent, name )
@@ -38,7 +38,7 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
     setCursor (QCursor (blankCursor));
 //    showFullScreen();
 #endif    
-    
+     qDebug("-----31-----");
    char iconName[MAX_PATH];
    QPixmap* Icon1 = new QPixmap();
    QPixmap* Icon2 = NULL;
@@ -67,7 +67,7 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	    but[idx] -> setPressedPixmap(*Icon2);
 	}
     }
-     
+      qDebug("-----32-----");
     free (Icon1);
     free (Icon2);
     Icon2=NULL;
@@ -89,7 +89,7 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	if (Icon2)
 	    but[idx] -> setPressedPixmap(*Icon2);
     }	
-    
+     qDebug("-----33-----");
      free (Icon1);
      free (Icon2);
      Icon2=NULL;
@@ -106,7 +106,7 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
     }
      if (Icon2)
 	    but[6] -> setPressedPixmap(*Icon2);
-     
+      qDebug("-----34-----");
      
     Immagine = new BtLabel(this, "immaginetta superiore");
     Immagine->setGeometry(90,0,120,60);
@@ -176,7 +176,18 @@ void impostaTime::OKTime()
            
      if (Icon1)
 	 Immagine -> setPixmap(*Icon1); 
-     
+        if (tipoData==1)
+	{
+    connect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumDay()));
+    connect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
+    connect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(aumYear()));
+    connect( but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
+    connect( but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
+    connect( but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
+    connect( but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
+}
+   else
+	{
     connect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumDay()));
     connect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
     connect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(aumYear()));
@@ -185,16 +196,30 @@ void impostaTime::OKTime()
     connect( but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
     connect( but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
 }
+}
 
 void impostaTime::OKDate()
 {
-    disconnect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-    disconnect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
-    disconnect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(aumSec()));
-    disconnect( but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-    disconnect( but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-    disconnect( but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminSec()));
+       if (tipoData==1)
+	{
+    disconnect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumDay()));
+    disconnect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
+    disconnect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(aumYear()));
+    disconnect( but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
+    disconnect( but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
+    disconnect( but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
     disconnect( but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
+}
+   else
+	{
+    disconnect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumDay()));
+    disconnect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
+    disconnect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(aumYear()));
+    disconnect( but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
+    disconnect( but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
+    disconnect( but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
+    disconnect( but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
+}
     
     
      //QTextOStream (stdout)<<"\nOra impostata = "<<dataOra->getDataOra().toString();  

@@ -9,6 +9,7 @@
 ****************************************************************/
 
 #include "antintrusione.h"
+extern unsigned char tipoData;
 
 antintrusione::antintrusione( QWidget *parent, const char *name )
         : QWidget( parent, name )
@@ -137,9 +138,11 @@ void antintrusione::gesFrame(char*frame)
 	     (! strncmp(msg_open.Extract_cosa(),"16",2) ) || (! strncmp(msg_open.Extract_cosa(),"17",2) ) )     
 	{
 	    char descr[25];
-                    sprintf(&descr[0], "%s   %s      Z %s", QDateTime::currentDateTime().toString("hh:mm").ascii(), \
-			    QDateTime::currentDateTime().toString("dd.MM").ascii(), msg_open.Extract_dove()+1);	
-                    allarmi->addItem(ALLARME, &descr[0], NULL, ICON_MENO);
+	    char zona[3];
+	    strcpy(&zona[0],msg_open.Extract_dove());
+	    sprintf(&descr[0], "%s   %s    Z %s", QDateTime::currentDateTime().toString("hh:mm").ascii(), \
+			    QDateTime::currentDateTime().toString("dd.MM").ascii(), &zona[1]);	
+	    allarmi->addItem(ALLARME, &descr[0], NULL, ICON_MENO);
 	    aggiorna=1;
 	 }
     }    

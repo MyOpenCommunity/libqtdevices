@@ -356,8 +356,12 @@ char pressIconName[MAX_PATH];
     numFrame=number;
 }
 
-
 void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,char inactiveLevel)
+{
+    SetIcons( sxIcon , dxIcon,centerActiveIcon,centerInactiveIcon,NULL,inactiveLevel);
+}
+
+void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon, const char*breakIcon, char inactiveLevel)
 {
    char nomeFile[MAX_PATH];
 	
@@ -442,6 +446,19 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	}
     }
 
+    if (breakIcon)
+    {
+	Icon[40] = new QPixmap();
+	Icon[41] = new QPixmap();
+	memset(nomeFile,'\000',sizeof(nomeFile));
+	strncpy(nomeFile,breakIcon,strstr(breakIcon,".")-breakIcon);
+	strcat(nomeFile,"sx");
+	strcat(nomeFile,strstr(breakIcon,"."));
+	Icon[40]->load(nomeFile);	
+	nomeFile[strstr(nomeFile,".")-nomeFile-2]='d';
+	Icon[41]->load(nomeFile);		
+    }
+    	    
 }
 
 
@@ -604,31 +621,47 @@ void banner::Draw()
 		    {
 			cdxButton->setPixmap(*Icon[5+(value-1)*2]);    		
 		    }
-    	   }	  	   
-	  else if (Icon[22])
+    	   }
+	  else if (attivo==0)
 	  {
-		    if ( (Icon[22+(value-1)*2]) && (csxButton) )
+		    if (Icon[22])
 		    {
-			csxButton->setPixmap(*Icon[22+(value-1)*2]);			
-		    }
- 
-		    if ( (cdxButton) && (Icon[23+(value-1)*2]) )
+			if ( (Icon[22+(value-1)*2]) && (csxButton) )
+			{
+			    csxButton->setPixmap(*Icon[22+(value-1)*2]);			
+			}
+			
+			if ( (cdxButton) && (Icon[23+(value-1)*2]) )
+			{
+			    cdxButton->setPixmap(*Icon[23+(value-1)*2]);    				
+			}
+		    }	  	
+		    else
 		    {
-			cdxButton->setPixmap(*Icon[23+(value-1)*2]);    				
+			if ( (Icon[2]) && (csxButton) )
+			{
+			    csxButton->setPixmap(*Icon[2]);		    
+			}
+			
+			if ( (cdxButton) && (Icon[3]) )
+			{
+			    cdxButton->setPixmap(*Icon[3]);    
+			}
 		    }
-    	   }	  	
-	  else
+		}
+	  else if (attivo==2)
 	  {
-		if ( (Icon[2]) && (csxButton) )
-		{
-		    csxButton->setPixmap(*Icon[2]);		    
-		}
- 
-		if ( (cdxButton) && (Icon[3]) )
-		{
-		    cdxButton->setPixmap(*Icon[3]);    
-		}
+		    if ( (Icon[40]) && (csxButton) )
+			{
+			    csxButton->setPixmap(*Icon[40]);		    
+			}
+			
+			if ( (cdxButton) && (Icon[41]) )
+			{
+			    cdxButton->setPixmap(*Icon[41]);    
+			}
 	}
+	  
       }
      
         /*TODO
@@ -669,7 +702,7 @@ void banner::impostaAttivo(char Attivo)
     if ( (animationTimer) && (!Attivo) )
     {
 	animationTimer->stop();
-	  QTextOStream (stdout)<<"\nKILLanimationTimer";   
+	  qDebug("KILLanimationTimer");   
     }
 }
 
@@ -763,12 +796,12 @@ void banner::setRange(char minval,char maxval)
     minValue=minval;
 }
     
-    
-bool banner::isActive()
+unsigned char banner::isActive()
 {
-    if (attivo)
+ return attivo;
+/*    if (attivo)
 	return(TRUE);
-    return(FALSE);
+    return(FALSE);*/
 }
     
 char banner::getValue()

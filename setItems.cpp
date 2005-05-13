@@ -18,7 +18,7 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
-
+extern unsigned char tipoData;
 /*****************************************************************
 **setdataOra
 ****************************************************************/
@@ -43,11 +43,13 @@ setDataOra::setDataOra( sottoMenu *parent,const char *name )
 impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* descr1, char* descr2, char* descr3, char* descr4,char* frame, int tipo)
         : bann2But( parent, name )
 {   
+    qDebug("-----1-----");
      strcpy(&iconOn[0], icon1);
      strcpy(&iconOff[0], icon2);
 /*    strncpy(&iconOn[0], icon1, sizeof(iconOn));
      strncpy(&iconOff[0], icon2, sizeof(iconOff));*/
      SetIcons( &iconOff[0] ,ICON_INFO);
+      qDebug("-----2-----");
      svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame,descr1,descr2,descr3,descr4,h,m);
      svegliolina->setBGColor(backgroundColor());  
      svegliolina->setFGColor(foregroundColor());  
@@ -265,6 +267,7 @@ impPassword ::impPassword ( QWidget *parent,const char *name, char* icon1, char*
 	 active=FALSE;
       
       emit(setPwd(active,&paswd[0]));	 
+      starting=1;
 //     connect(this, SIGNAL(freezed(bool)), tasti,SLOT(freezed(bool)));     --da mettere
  }
 
@@ -294,7 +297,7 @@ void  impPassword::show()
        	SetIcons(uchar(0),&iconOff[0]);
    Draw();
    qDebug("passwd = %s %d", &paswd[0], paswd[0]);
-   if (paswd[0]=='\000')
+   if ( (paswd[0]=='\000') || (starting) )
    {
        qDebug("passwd = ZERO");
        disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -358,4 +361,11 @@ void impPassword::tiempout()
 {
     delete(tiempo);
     setBeep(sb,FALSE);	   
+}
+
+void impPassword::setEnabled ( bool  b)
+{
+    if (!b)
+	starting=0;
+    QWidget::setEnabled(b);
 }

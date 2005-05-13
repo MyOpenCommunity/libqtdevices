@@ -12,7 +12,7 @@
 #define BANNER
 
 
-#define MAX_NUM_ICON		40
+#define MAX_NUM_ICON		42
 #define MAX_TEXT 		21
 #define MAX_TEXT_2		11
 
@@ -40,6 +40,7 @@ public:
     void 	SetIcons(const char *, const char *,const char *,const char *,int,int);
     void 	SetIcons(const char *, const char *,const char *,const char *,char);
     void 	SetIcons( const char * , const char *,const char*,const char*,const char*);
+    void    SetIcons( const char *,const char* ,const char*,const char*, const char*, char );
     void 	addItem(char ,int ,int ,int , int );
     virtual void  Draw();
     void 	impostaAttivo(char);
@@ -68,7 +69,7 @@ public:
     void 	setMaxValue(char);
     void 	setMinValue(char);
     void 	setRange(char,char);
-    bool 	isActive();
+    unsigned char isActive();
     void 	setAnimationParams(int,int);
     void 	setNumRighe(uchar);
     QTimer *animationTimer;

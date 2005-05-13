@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <qstring.h>
 
-
+unsigned char tipoData=0;
 
 /*******************************************
 *
@@ -894,6 +894,16 @@ bool xmlconfhandler::characters( const QString & qValue)
 			    if (!CurTagL5.compare("scs_addr"))		
 			    {
 				datiGen->setAddr(qValue.toInt( &ok, 10 ));
+			     }
+		}
+	    }
+	    else if (!CurTagL3.compare("generale"))
+	    {
+		if (!CurTagL4.compare("clock"))	
+		{
+			    if (!CurTagL5.compare("dateformat"))		
+			    {
+				tipoData=qValue.toInt( &ok, 10 );//FORMATO DATA
 			     }
 		}
 	    }

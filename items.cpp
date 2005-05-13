@@ -23,11 +23,11 @@
 **dimmer
 ****************************************************************/
 
-dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon )
+dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon )
         : bannRegolaz( parent, name )
 { 
      setRange(1,9);
-     SetIcons( IconaSx,IconaDx,icon, inactiveIcon,(char)0 );
+     SetIcons( IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0 );
      setAddress(indirizzo);
 /*      impostaAttivo(1);
       setValue(5);*/
@@ -59,7 +59,7 @@ void dimmer::gestFrame(char* frame)
 	{
 	    if (!strcmp(msg_open.Extract_cosa(),"1")) 		
 	    {
-		if (!isActive())
+		if (isActive()!=1)
 		{
 		    impostaAttivo(1);
 		    aggiorna=1;
@@ -67,7 +67,7 @@ void dimmer::gestFrame(char* frame)
 	    }
 	    else if (!strcmp(msg_open.Extract_cosa(),"0")) 
 	    {
-	                if (isActive())
+	                if (isActive()!=0)
 		{
 		    impostaAttivo(0);
 		    aggiorna=1;
@@ -80,6 +80,15 @@ void dimmer::gestFrame(char* frame)
 		    setValue(atoi(msg_open.Extract_cosa())-1);
 		    qDebug("imposto livello : %d",(atoi(msg_open.Extract_cosa())-1));		    
 		    aggiorna=1;
+	    }
+	    else if (!strcmp(msg_open.Extract_cosa(),"19")) 
+	    {
+	              //DIMMER out of work
+		    if (isActive()!=2)
+		    {
+			impostaAttivo(2);
+			aggiorna=1;
+		    }
 	    }
 	}
     }    

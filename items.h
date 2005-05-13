@@ -27,7 +27,7 @@ class dimmer : public bannRegolaz
 {
     Q_OBJECT
 public:
-     dimmer( QWidget *, const char *,char*,char*,char*,char*,char*);     
+     dimmer( QWidget *, const char *,char*,char*,char*,char*,char*,char*);     
      void inizializza();
 public slots:
     void gestFrame(char*);

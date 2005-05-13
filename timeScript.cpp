@@ -10,7 +10,7 @@
 
 #include "timescript.h"
 #include <qdatetime.h>
-
+extern unsigned char tipoData;
 
 timeScript::timeScript( QWidget *parent, const char *name, uchar tipo,QDateTime* mioOrol)
     : QLCDNumber( parent, name )
@@ -75,9 +75,11 @@ void timeScript::showDate()
 	 date = mioClock->date();
    else		    
                  date = QDate::currentDate(Qt::LocalTime);
-   
-   
-    QString s = date.toString("dd:MM:yy"/*,Qt::TextDateQt::LocalDate*/);
+   QString s;
+   if (tipoData==1)
+       s = date.toString("MM:dd:yy");
+   else
+       s = date.toString("dd:MM:yy");
 //    QLocale s = date.toString(/*"dd:MM:yy",*/Qt::TextDate/*Qt::LocalDate*/);    
     setNumDigits(((QString)s).length());
     display( s );		

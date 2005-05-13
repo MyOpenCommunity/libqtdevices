@@ -27,7 +27,8 @@
 
 #include "sveglia.h"
 #include "genericfunz.h"
- 
+
+
 sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSonora* diso, char* f,char* descr1,char* descr2,char* descr3,char* descr4, char*h, char*m)
         : QFrame( parent, name )
 {
@@ -35,7 +36,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
     setCursor (QCursor (blankCursor));
  //  showFullScreen();
 #endif    
-
+ qDebug("-----10-----");
     if(descr1)
 	strncpy(&text1[0], descr1, sizeof(text1));
     if(descr2)
@@ -44,10 +45,10 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	strncpy(&text3[0], descr3, sizeof(text3));
     if(descr4)	
 	strncpy(&text4[0], descr4, sizeof(text4));  
-
+ qDebug("-----11-----");
    bannNavigazione  = new bannFrecce(this,"bannerfrecce",9);
    bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );
-
+ qDebug("-----12-----");
    aumVolTimer=NULL;
    char iconName[MAX_PATH];
    QPixmap* Icon1 = new QPixmap();
@@ -56,7 +57,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT); 
     memset(iconName,'\000',sizeof(iconName));
     strcpy(iconName,ICON_FRECCIA_SU);
-
+ qDebug("-----13-----");
     Icon1->load(iconName);	
     getPressName((char*)ICON_FRECCIA_SU, &iconName[0],sizeof(iconName));
             if (QFile::exists(iconName))
@@ -77,7 +78,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	    but[idx] -> setPressedPixmap(*Icon2);
 	}
     }
-     
+      qDebug("-----14-----");
     delete (Icon1);
     delete (Icon2);
     Icon2=NULL;
@@ -98,6 +99,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	if (Icon2)
 	    but[idx] -> setPressedPixmap(*Icon2);
     }	
+     qDebug("-----15-----");
      delete(Icon1);
      Icon1 = new QPixmap();
      Icon1->load(ICON_SVEGLIA_ON);    
@@ -106,7 +108,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
     
      if (Icon1)
 	 Immagine -> setPixmap(*Icon1); 
-    
+     qDebug("-----16-----");
     Immagine->setGeometry(90,0,80,80);
     delete(Icon1);
     delete(Icon2);
@@ -137,7 +139,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	testiChoice[idx] -> hide();
     }	
     dataOra=NULL;
-    
+     qDebug("-----17-----");
     testiChoice[0]  -> setText(&text1[0]);
     testiChoice[1]  -> setText(&text2[0]);
     testiChoice[2]  -> setText(&text3[0]);
@@ -146,7 +148,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
      oraSveglia =  new QDateTime();//QDate(),QTime(12,0));
      oraSveglia->setTime(QTime(atoi(h),atoi(m)));
      oraSveglia->setDate(QDate::currentDate(Qt::LocalTime));     
-     
+      qDebug("-----18-----");
      dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
      dataOra->setGeometry(40,140,160,50);
      dataOra->setFrameStyle( QFrame::Plain );
@@ -504,6 +506,7 @@ void sveglia::gestFrame(char* frame)
 		    vol=atoi(msg_open.Extract_valori(0))&0x1F;
 		 //   vol=trasformaVol(vol);
 		    volSveglia[deviceAddr]=vol;
+		    qDebug("o visto un volume di %d",deviceAddr);
 		}
 	    }
 	}
@@ -604,7 +607,7 @@ void sveglia::aumVol()
 	    {		
 		memset(pippo,'\000',sizeof(pippo));
 		strcat(pippo,"*16*3*");
-		sprintf(&pippo[6],"%d",idx);
+		sprintf(&pippo[6],"%02d",idx);
 		strcat(pippo,"##");
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		emit sendFrame(msg_open.frame_open);    
@@ -626,7 +629,7 @@ void sveglia::aumVol()
 		
 		memset(pippo,'\000',sizeof(pippo));
 		strcat(pippo,"*#16*");
-		sprintf(&pippo[5],"%d",idx);
+		sprintf(&pippo[5],"%02d",idx);
 		strcat(pippo,"*#1*");
 		sprintf(&pippo[11],"%d",conta2min);
 		strcat(pippo,"##");
