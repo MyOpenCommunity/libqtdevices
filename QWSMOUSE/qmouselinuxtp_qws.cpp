@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouselinuxtp_qws.cpp,v 1.3 2005/04/29 09:42:59 cvs Exp $
+** $Id: qmouselinuxtp_qws.cpp,v 1.4 2005/05/24 14:40:10 cvs Exp $
 **
 ** Implementation of Qt/Embedded mouse drivers
 **
@@ -91,9 +91,10 @@ typedef struct {
   } TS_EVENT;
 
 
-#define QT_QWS_TP_PRESSURE_THRESHOLD 1 // ORIGINALE !!!raf
-//#define QT_QWS_TP_PRESSURE_THRESHOLD 500
-// !!!raf #define QT_QWS_TP_MOVE_LIMIT 25
+#define QT_QWS_TP_PRESSURE_THRESHOLD 1 
+  
+//ORIGINALE #define QT_QWS_TP_PRESSURE_THRESHOLD 500
+//ORIGINALE #define QT_QWS_TP_MOVE_LIMIT 25
 #define QT_QWS_TP_MOVE_LIMIT 100
 
 #define QT_QWS_TP_SAMPLE_SIZE 5
@@ -178,10 +179,10 @@ QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHan
 
     if ((mouseFD = open( "/dev/ts", O_RDONLY | O_NDELAY)) < 0)
     {
-        qWarning( "RAF  Cannot open /dev/ts (%s)", strerror(errno));
+        qWarning( "Cannot open /dev/ts (%s)", strerror(errno));
         return;
     }
-    qWarning( "RAF  OK open /dev/ts (%s)", strerror(errno));
+    qWarning( "OK open /dev/ts");
     
 
 
@@ -190,10 +191,10 @@ QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHan
 					 this );
     connect(mouseNotifier, SIGNAL(activated(int)),this, SLOT(readMouseData()));
 
-    // !!!raf rilascio manuale
-    QTimer * tick = new QTimer(this,"tick");
-    tick->start(400);
-    QObject::connect(tick,SIGNAL(timeout()), this, SLOT(readMouseData()));
+    // BOH: rilascio manuale
+    //QTimer * tick = new QTimer(this,"tick");
+    //tick->start(400);
+    //QObject::connect(tick,SIGNAL(timeout()), this, SLOT(readMouseData()));
 
 
     waspressed=FALSE;
@@ -210,7 +211,7 @@ QWSLinuxTPMouseHandlerPrivate::~QWSLinuxTPMouseHandlerPrivate()
 
 void QWSLinuxTPMouseHandlerPrivate::readMouseData()
 {
-//!!!raf  qWarning( "RAF  readMouseData ");
+// DEBUG  qWarning( "readMouseData ");
 
 
 
@@ -220,7 +221,7 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
   int n;
   int myidx;
 
-//!!!raf  qWarning("mouseIdx=%d",mouseIdx);
+//DEBUG  qWarning("mouseIdx=%d",mouseIdx);
   do
   {
     n = read(mouseFD, mouseBuf+mouseIdx, mouseBufSize-mouseIdx );
@@ -230,24 +231,24 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
       
   } while ( n > 0 && mouseIdx < mouseBufSize );
 
-//!!!raf    if (n<0)
-//!!!raf    {
-//!!!raf      qWarning("ERR");
-//!!!raf    if (mouseIdx==0)
-//!!!raf    {
-//!!!raf      // !!!raf
-//!!!raf      qWarning( "AUTORILASCIO");
-//!!!raf      for (myidx=0;myidx<8;myidx++)
-//!!!raf        mouseBuf[myidx]=0;
-//!!!raf      mouseIdx=8;
-//!!!raf    }
-//!!!raf    }
-//!!!raf  else if (n==0)
-//!!!raf    qWarning("0OO");
+//DEBUG    if (n<0)
+//DEBUG    {
+//DEBUG      qWarning("ERR");
+//DEBUG    if (mouseIdx==0)
+//DEBUG    {
+//DEBUG  
+//DEBUG      qWarning( "AUTORILASCIO");
+//DEBUG      for (myidx=0;myidx<8;myidx++)
+//DEBUG        mouseBuf[myidx]=0;
+//DEBUG      mouseIdx=8;
+//DEBUG    }
+//DEBUG    }
+//DEBUG  else if (n==0)
+//DEBUG    qWarning("0OO");
     
-//!!!raf  qWarning( "RAW:mouseIdx=%d",mouseIdx);
-//  for (myidx=0;myidx<mouseIdx;myidx++)
-//    qWarning( "%d",mouseBuf[myidx]);
+//DEBUG  qWarning( "RAW:mouseIdx=%d",mouseIdx);
+//DEBUG  for (myidx=0;myidx<mouseIdx;myidx++)
+//DEBUG    qWarning( "%d",mouseBuf[myidx]);
     
   TS_EVENT *data;
   int idx = 0;
@@ -258,11 +259,11 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
     uchar *mb = mouseBuf+idx;
     data = (TS_EVENT *) mb;
 
-//!!!raf    qWarning( "D:%d,%d,%d",data->pressure,data->x,data->y);
+//DEBUG    qWarning( "D:%d,%d,%d",data->pressure,data->x,data->y);
   
     if(data->pressure >= QT_QWS_TP_PRESSURE_THRESHOLD) {
 
-//!!!raf    qWarning( "T");
+//DEBUG    qWarning( "T");
 
 #ifdef QT_QWS_SHARP
     samples[currSample] = QPoint( data->x, data->y );
@@ -273,7 +274,7 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
     numSamples++;
     if ( numSamples >= QT_QWS_TP_MINIMUM_SAMPLES )
     {
-//!!!raf      qWarning( "M");
+//DEBUG      qWarning( "M");
 
       int sampleCount = QMIN(numSamples + 1,samples.count());
       // average the rest
@@ -289,7 +290,7 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
       // si trova in qmouse_qws.cpp
  //     handler->readCalibration();
       mousePos = handler->transform( mousePos );
-//!!!raf      qWarning( "TRANSFORM");
+//DEBUG      qWarning( "TRANSFORM");
 //# endif
       if(!waspressed)
         oldmouse = mousePos;
@@ -318,14 +319,14 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
         oldTotalMousePos = totalMousePos;
       } else {
 
-//!!!raf        qWarning( "B");
+//DEBUG        qWarning( "B");
         numSamples--; // don't use this sample, it was bad.
         
       }
     } else {
       // build up the average
 
-//!!!raf      qWarning( "A");
+//DEBUG     qWarning( "A");
       oldTotalMousePos += samples[currSample];
       currSample++;
     }
