@@ -84,7 +84,7 @@ void Client::ApriInviaFrameChiudi(char* frame)
     
     openwebnet msg_open;
     msg_open.CreateMsgOpen(frame,strlen(frame));	  
-    if (!strcmp(msg_open.Extract_chi(),"1"))
+    if ( (!strcmp(msg_open.Extract_chi(),"1")) || (!strcmp(msg_open.Extract_chi(),"2")) )
     {
 	QString s=msg_open.Extract_dove();
 	if (s.length()==1) 

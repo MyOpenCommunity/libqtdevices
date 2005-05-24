@@ -83,8 +83,8 @@ int xClock,yClock,xTemp,yTemp;
 
 enum tipoFunzSpe{
                 NORMALE=0,
-	CICLICO=1,
-	PULSANTE=2
+                CICLICO=1,
+                PULSANTE=2
    };
 
 #define MAX_BUT_SOTMEN 	9

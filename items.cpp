@@ -549,7 +549,7 @@ void attuatAutomInt::inizializza()
      strcat(pippo,"*#1*");
      strcat(pippo,getAddress());
      strcat(pippo,"##");
-     qDebug(pippo);
+     qDebug("mando frame attuat autom int %s",pippo);
      msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
      emit sendFrame(msg_open.frame_open);    
 }
@@ -697,7 +697,7 @@ void attuatAutomIntSic::inizializza()
      strcat(pippo,"*#1*");
      strcat(pippo,getAddress());
      strcat(pippo,"##");
-     qDebug(pippo);
+      qDebug("mando frame attuat autom intSic %s",pippo);
      msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
      emit sendFrame(msg_open.frame_open);    
 }
@@ -789,7 +789,7 @@ void attuatAutomTemp::inizializza()
      strcat(pippo,"*#1*");
      strcat(pippo,getAddress());
      strcat(pippo,"##");
-     qDebug(pippo);
+      qDebug("mando frame attuat autom Temp %s",pippo);
      msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
      emit sendFrame(msg_open.frame_open);    
 }
@@ -927,6 +927,7 @@ amplificatore::amplificatore( QWidget *parent,const char *name,char* indirizzo,c
 { 
      setRange(1,9);
      SetIcons( IconaSx, IconaDx ,icon, inactiveIcon,(char)1 );
+     qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
      setAddress(indirizzo);
     connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));
     connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
@@ -1054,7 +1055,7 @@ void amplificatore::inizializza()
      strcat(pippo,"*#16*");
      strcat(pippo,getAddress());
      strcat(pippo,"*1##");
-     qDebug(pippo);
+      qDebug("mando frame ampli %s",pippo);
      msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
      emit sendFrame(msg_open.frame_open);    
      
@@ -1062,7 +1063,7 @@ void amplificatore::inizializza()
      strcat(pippo,"*#16*");
      strcat(pippo,getAddress());
      strcat(pippo,"*5##");
-     qDebug(pippo);
+      qDebug("mando frame ampli %s",pippo);
      msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
      emit sendFrame(msg_open.frame_open);    
      
@@ -1075,15 +1076,13 @@ grAmplificatori::grAmplificatori( QWidget *parent,const char *name,void *indiriz
         : bannRegolaz( parent, name )
 { 
 //     setRange(1,1);
-    qDebug("gr ampli1");
-     SetIcons(IconaSx,IconaDx ,icondx,iconsx );
+        SetIcons(IconaSx,IconaDx ,icondx,iconsx );
      setAddress(indirizzi);
     connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
     connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
     connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
     connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
-    qDebug("gr ampli2");    
-}
+   }
 
 
 
@@ -1159,6 +1158,7 @@ sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo )
      connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
      connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
      connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+     nascondi(BUT3);
 }
 
 void sorgente::gestFrame(char*)
@@ -2077,10 +2077,14 @@ allarme::allarme( sottoMenu  *parent,const char *name,char* indirizzo,char* Icon
      SetIcons( IconaDx,1);    
  //    setAddress(indirizzo);
      connect(this,SIGNAL(click()),this,SLOT(muoio()));
+//     connect(this,SIGNAL(click()),parent,SIGNAL(itemKilled()));
+//     qDebug(parent->name());
+       connect(this,SIGNAL(itemKilled()),parent,SIGNAL(itemKilled()));
 }
 
 void allarme::muoio()
-{
+{    
+    emit (itemKilled());
     emit killMe(this);
 }
 

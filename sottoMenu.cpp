@@ -63,11 +63,9 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 {
     if(bannNavigazione)
-    {
-	qDebug("banNav seg fault %d %d", hasNavBar, navBarMode);
+    {	
 	free( bannNavigazione );
 	//delete( bannNavigazione );
-	qDebug("postDelete");
 	bannNavigazione=NULL;
     }
     if (navBarMode)
@@ -361,13 +359,15 @@ void  sottoMenu::killBanner(banner* b)
     
     if ( icx  != -1 )
     {
-	elencoBanner.at(icx)->hide();
-	elencoBanner.remove(icx);
-	//qDebug("ti scrivo icx %d", icx);    
-	indice=0;
-	indicold=100;
-//	qDebug("bannerCount= %d", elencoBanner.count());
-	draw();
+        elencoBanner.at(icx)->hide();
+        elencoBanner.remove(icx);
+        //qDebug("ti scrivo icx %d", icx);    
+        indice=0;
+        indicold=100;
+        //	qDebug("bannerCount= %d", elencoBanner.count());
+        draw();
+        if (elencoBanner.count()==0)
+            hide();
     }
 }
 
@@ -382,4 +382,9 @@ void sottoMenu::svuota()
 {
     elencoBanner.clear();
     draw();
+}
+
+uint sottoMenu::getCount()
+{
+    return(elencoBanner.count());
 }

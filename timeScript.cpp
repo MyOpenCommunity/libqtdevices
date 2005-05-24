@@ -77,9 +77,9 @@ void timeScript::showDate()
                  date = QDate::currentDate(Qt::LocalTime);
    QString s;
    if (tipoData==1)
-       s = date.toString("MM:dd:yy");
+       s = date.toString("MM.dd.yy");
    else
-       s = date.toString("dd:MM:yy");
+       s = date.toString("dd.MM.yy");
 //    QLocale s = date.toString(/*"dd:MM:yy",*/Qt::TextDate/*Qt::LocalDate*/);    
     setNumDigits(((QString)s).length());
     display( s );		

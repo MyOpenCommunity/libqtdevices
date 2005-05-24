@@ -103,6 +103,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 	case SCHEDULAZIONI:  connect(b1,SIGNAL(clicked()),this, SIGNAL(Schedulazioni() )); break;
 	case SPECIAL:
 			     tipoSpecial=tipo;
+                                               qDebug("tipoSpecial= %d",tipoSpecial);
 			     strcpy(&chi[0],chix);
 			     strcpy(&cosa[0],cosax);
 			     strcpy(&dove[0],dovex);			     
@@ -260,8 +261,9 @@ void homePage::gestFrame(char* frame)
     char aggiorna;
     char dovex[30];
 
+    
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-
+//qDebug("vedo frame in Homepage: ");
     
     if (!strcmp(msg_open.Extract_chi(),"4"))
     {

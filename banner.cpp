@@ -358,7 +358,7 @@ char pressIconName[MAX_PATH];
 
 void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,char inactiveLevel)
 {
-    SetIcons( sxIcon , dxIcon,centerActiveIcon,centerInactiveIcon,NULL,inactiveLevel);
+    SetIcons( sxIcon , dxIcon,centerActiveIcon,centerInactiveIcon,(const char*)NULL,inactiveLevel);
 }
 
 void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon, const char*breakIcon, char inactiveLevel)
@@ -389,7 +389,6 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	     pressIcon[1]->load(nomeFile);
 	 }
     }
-    
     
     
     Icon[2] = new QPixmap();

@@ -111,6 +111,7 @@ void versio::gestFrame(char* frame)
 	sprintf(&scritta[100], "art. H4684\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d\nT.S. n. %d", vers, release, build, pic_version, pic_release, pic_build, hw,indDisp);
 	
 	datiGen->setText(&scritta[100]);   
+        qDebug("setta scritte versio");
     }
  }
 

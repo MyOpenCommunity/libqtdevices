@@ -582,6 +582,7 @@ public:
 public slots:
     void muoio();	
 signals:
+    void itemKilled();
 private:    
 };
 

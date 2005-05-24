@@ -36,7 +36,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
     setCursor (QCursor (blankCursor));
  //  showFullScreen();
 #endif    
- qDebug("-----10-----");
+// qDebug("-----10-----");
     if(descr1)
 	strncpy(&text1[0], descr1, sizeof(text1));
     if(descr2)
@@ -45,10 +45,10 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	strncpy(&text3[0], descr3, sizeof(text3));
     if(descr4)	
 	strncpy(&text4[0], descr4, sizeof(text4));  
- qDebug("-----11-----");
+// qDebug("-----11-----");
    bannNavigazione  = new bannFrecce(this,"bannerfrecce",9);
    bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );
- qDebug("-----12-----");
+// qDebug("-----12-----");
    aumVolTimer=NULL;
    char iconName[MAX_PATH];
    QPixmap* Icon1 = new QPixmap();
@@ -57,7 +57,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT); 
     memset(iconName,'\000',sizeof(iconName));
     strcpy(iconName,ICON_FRECCIA_SU);
- qDebug("-----13-----");
+// qDebug("-----13-----");
     Icon1->load(iconName);	
     getPressName((char*)ICON_FRECCIA_SU, &iconName[0],sizeof(iconName));
             if (QFile::exists(iconName))
@@ -78,7 +78,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	    but[idx] -> setPressedPixmap(*Icon2);
 	}
     }
-      qDebug("-----14-----");
+//      qDebug("-----14-----");
     delete (Icon1);
     delete (Icon2);
     Icon2=NULL;
@@ -99,7 +99,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	if (Icon2)
 	    but[idx] -> setPressedPixmap(*Icon2);
     }	
-     qDebug("-----15-----");
+//     qDebug("-----15-----");
      delete(Icon1);
      Icon1 = new QPixmap();
      Icon1->load(ICON_SVEGLIA_ON);    
@@ -108,7 +108,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
     
      if (Icon1)
 	 Immagine -> setPixmap(*Icon1); 
-     qDebug("-----16-----");
+//     qDebug("-----16-----");
     Immagine->setGeometry(90,0,80,80);
     delete(Icon1);
     delete(Icon2);
@@ -139,7 +139,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
 	testiChoice[idx] -> hide();
     }	
     dataOra=NULL;
-     qDebug("-----17-----");
+//    qDebug("-----17-----");
     testiChoice[0]  -> setText(&text1[0]);
     testiChoice[1]  -> setText(&text2[0]);
     testiChoice[2]  -> setText(&text3[0]);
@@ -148,7 +148,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSo
      oraSveglia =  new QDateTime();//QDate(),QTime(12,0));
      oraSveglia->setTime(QTime(atoi(h),atoi(m)));
      oraSveglia->setDate(QDate::currentDate(Qt::LocalTime));     
-      qDebug("-----18-----");
+//      qDebug("-----18-----");
      dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
      dataOra->setGeometry(40,140,160,50);
      dataOra->setFrameStyle( QFrame::Plain );
@@ -257,6 +257,8 @@ void sveglia::okTime()
     dataOra->hide();
     Immagine->hide();
     
+    if (tipo!=DI_SON)
+        bannNavigazione  -> nascondi(BUT2);
 /*    delete(oraSveglia);
     oraSveglia = new QDateTime(dataOra->getDataOra());*/
 	
@@ -304,6 +306,8 @@ void sveglia::mostra()
     connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
     connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));   
     aggiornaDatiEEprom=0;
+    if (tipo!=DI_SON)
+        bannNavigazione  -> mostra(BUT2);
 }
 
 
@@ -362,7 +366,7 @@ void sveglia::Closed()
 	    int eeprom;
 	    eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
 	    lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH, SEEK_SET);
-	    qDebug("%d",(BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH));
+//	    qDebug("%d",(BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH));
 	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
 	    {
 		write(eeprom,&volSveglia[idx],1 );
@@ -373,6 +377,7 @@ void sveglia::Closed()
 	    ::close(eeprom);
 	    qDebug("Sveglia Closed FINE AGGIORNA EEPROM");
 #endif
+                  disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
 	}	
     }
     hide();

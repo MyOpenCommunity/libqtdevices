@@ -29,6 +29,7 @@
 #include "xmlconfhandler.h"
 #include "calibrate.h"
 
+ #include <sys/sysinfo.h>
 #include <qfontdatabase.h>
 #include <qfile.h>
 #include <qxml.h>
@@ -65,15 +66,18 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
      screen=NULL;
      
      datiGen = new versio(NULL, "DG");
-   
+     struct sysinfo info;
+     sysinfo(&info);
+     qDebug("uptime: %d",info.uptime);
+     qDebug("touch ago: %d",getTimePress());
 
        
-     if (QFile::exists("/etc/pointercal"))
+     if (   (QFile::exists("/etc/pointercal")) && ( (info.uptime>200) || ( (info.uptime-1)<=getTimePress() )  ) )
      {
 	      tempo1 = new QTimer(this,"clock");
 	      tempo1->start(200);
 	      connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
-	      datiGen->show();
+	      datiGen->show();            
      }
      else
      {
@@ -291,13 +295,15 @@ void BtMain::gesScrSav()
 		}
 	    else if ( (tiempo<=5) && (bloccato/*!getBacklight()*/) )
 	    {
-		    setBacklight(TRUE);
-		    //qDebug("BtMain emetto freezed FALSE");	    
-		    emit freeze(FALSE);
-		    bloccato=0;
-		    tempo1->changeInterval(2000);
-		    //  qDebug("Cambiato tempo intervento");	    
-		}
+                    //  setBacklight(TRUE);
+                    //qDebug("BtMain emetto freezed FALSE");	    
+                    emit freeze(FALSE);
+                    bloccato=0;
+                    tempo1->changeInterval(2000);
+                    freezed(FALSE);
+                    
+                    //  qDebug("Cambiato tempo intervento");	    
+                }
 	    if  ( (tiempo>=60) )
 	    {
 		    if (pagDefault)
@@ -366,7 +372,7 @@ void BtMain::setPwd(bool b ,char* p)
 {
     pwdOn=b;
     strcpy(&pwd[0],p);
-//    qDebug("nuova pwd = %s",&pwd[0] );
+    qDebug("BtMain nuova pwd = %s - %d",&pwd[0],pwdOn );
 }
 
 void BtMain::testPwd(char* p)
@@ -376,7 +382,7 @@ void BtMain::testPwd(char* p)
 	if (strcmp(p,&pwd[0]))
 	{
 	    tasti -> showTastiera();
-	    //	    qDebug("pwd ko %s  doveva essere %s",p,&pwd[0]);
+	    qDebug("pwd ko %s  doveva essere %s",p,&pwd[0]);
 	}
 	else
 	{

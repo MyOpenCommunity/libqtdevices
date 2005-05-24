@@ -32,6 +32,7 @@ public:
    void 	setBGColor(QColor );
    void 	setFGColor(QColor );	
    int 	setBGPixmap(char* );
+   uint	getCount();
    int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,\
 		char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
 		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0);
@@ -47,7 +48,7 @@ public:
   uchar 	getNumRig();
   int 	getHeight();  
   void 	setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
-  void setGeometry(int, int, int, int );
+  void 	setGeometry(int, int, int, int );
 signals:
   void 	Closed();
   void 	gestFrame(char*);
@@ -57,6 +58,7 @@ signals:
   void	freeze(bool);
   void 	frez(bool);
   void	goDx();  
+  void	itemKilled();
   void 	setPwd(bool,char*);
 public slots:
   void 	goUp();	

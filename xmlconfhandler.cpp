@@ -287,25 +287,45 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    switch (  page_id )
 		    {	    
 			case AUTOMAZIONE:
-			pageAct= (*automazioni);					 
+			pageAct= (*automazioni);	
+                //         qDebug("automaz");
+                        
 		                case  ILLUMINAZIONE:
 			if (!pageAct)
+                        {
 			    pageAct= (*illumino); 
+                  //       qDebug("illumino");
+                        }
 			case CARICHI:
 			if (!pageAct)
-			    pageAct=(*carichi); 							 
+                        {
+			    pageAct=(*carichi); 		
+               //          qDebug("carichi");
+                        }
 			case TERMOREGOLAZIONE:
 			if (!pageAct)
+                        {
 			    pageAct=(*termo);
+                //         qDebug("termo");
+                        }
 			case  SCENARI:
 			if (!pageAct)
-			    pageAct=(*scenari); 			
+                        {
+			    pageAct=(*scenari); 		
+                //             qDebug("scenari");
+                        }
 			case IMPOSTAZIONI:
 			if (!pageAct)
+                        {
 			    pageAct=(*imposta);
+               //             qDebug("imposta");
+                        }
 		             case SCHEDULAZIONI:
 			if (!pageAct)
+                        {
 			    pageAct=(*sched);
+             //                 qDebug("schedul");
+                        }
 			
 			if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
 			{			       
@@ -342,9 +362,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3 )  ;
 			break;			   
 			case ANTIINTRUSIONE:
+                   //     qDebug("antiintr");
 			(*antintr)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  (char*)page_item_where.ascii(), (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
 			break;
 		               case DIFSON:
+                  //      qDebug("difson");
 			if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
 			{			       
 			    strcpy(&pip[0], page_item_what.ascii());
@@ -362,10 +384,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			{
 				pnt=page_item_list_group;
 			    }			
-											   
+					   
 			(*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  pnt/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
 			break;
 			case SPECIAL:
+                 //       qDebug("special");
 			switch(page_item_id)
 			{
 			    case TEMPERATURA:
@@ -380,8 +403,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			    (*specPage) ->addClock(10,(itemNum-1)*80+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);	
 			    break;
 			    case CMDSPECIAL:
-			    
-			    (*specPage) ->addButton(60,260,(char*)page_item_list_img->at(0)->ascii(),SPECIAL,(char*)page_item_who.ascii(),(char*)page_item_what.ascii(),(char*)page_item_where.ascii(),(char)page_item_type.ascii());
+			     
+			    (*specPage) ->addButton(60,260,(char*)page_item_list_img->at(0)->ascii(),SPECIAL,(char*)page_item_who.ascii(),(char*)page_item_what.ascii(),(char*)page_item_where.ascii(),(char)page_item_type.toInt( &ok, 10 ));
 			    (*specPage) ->addDescr((char*)page_item_descr.ascii(), 60,240,180,20,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
 			    pageAct=NULL;
 			    break;
@@ -401,9 +424,15 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case AUTOMAZIONE:
 //			qWarning(".- .- .- -. -.  .- -.QObject::connect AUTOMAZIONE");
 			(*automazioni)->draw();
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                    
+			QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
+			QObject::connect(*automazioni,SIGNAL(Closed()),*home,SLOT(showFullScreen()));                        
+#endif                        
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)                    
 			QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(show()));
+			QObject::connect(*automazioni,SIGNAL(Closed()),*home,SLOT(show()));                        
+#endif                              
 			QObject::connect(*automazioni,SIGNAL(Closed()),*automazioni,SLOT(hide()));
-			QObject::connect(*automazioni,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*automazioni,SIGNAL(gestFrame(char *)));
 			QObject::connect(*automazioni,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*automazioni,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
@@ -413,9 +442,15 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case ILLUMINAZIONE:
 //			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
 			(*illumino)->draw();
-			QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
-			QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));
-			QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
+			QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
+                                          QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)       
+                                          QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
+                                          QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                          
+			QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));			
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
 			QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
@@ -427,10 +462,17 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case ANTIINTRUSIONE:
 //			qWarning(".- .- .- .- .-.- - -.QObject::connect ANTIINTRUSIONE");
 			(*antintr)->draw();
-			QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(show()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+			QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(showFullScreen()));
+                                          QObject::connect(*antintr,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)         
+                                          QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(show()));
+                                          QObject::connect(*antintr,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                       
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*antintr,SLOT(gesFrame(char *)));    
 			QObject::connect(*antintr,SIGNAL(Closed()),*antintr,SLOT(hide()));
-			QObject::connect(*antintr,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+			
 			QObject::connect(*antintr,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*antintr,SIGNAL(freezed(bool)));
 			//(*antintr)->inizializza();
@@ -438,9 +480,15 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case CARICHI:
 //			qWarning(".- .- .- .- .-  -. .- .- .- QObject::connect CARICHI");
 			(*carichi)->draw();
-			QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(show()));
-			QObject::connect(*carichi,SIGNAL(Closed()),*carichi,SLOT(hide()));
-			QObject::connect(*carichi,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+			QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(showFullScreen()));
+                                          QObject::connect(*carichi,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)         
+                                          QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(show()));
+                                          QObject::connect(*carichi,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                        
+			QObject::connect(*carichi,SIGNAL(Closed()),*carichi,SLOT(hide()));			
 			QObject::connect(*carichi,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*carichi,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*carichi,SLOT(freezed(bool)));
@@ -448,9 +496,16 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case TERMOREGOLAZIONE:
 //			qWarning(" - -  .     .- . . .- .-QObject::connect TERMOREGOLAZIONE ");
 			(*termo)->draw();
-			QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(show()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+			QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showFullScreen()));
+                                          QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)    
+                                          QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(show()));
+                                          QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                    
 			QObject::connect(*termo,SIGNAL(Closed()),*termo,SLOT(hide()));
-			QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+			
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
 			QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
@@ -459,9 +514,16 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case DIFSON:
 //			qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
 			(*difSon)->draw(); 
-			QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(show()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+			QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showFullScreen()));
+                                          QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)     
+                                          QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(show()));
+                                          QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                      
 			QObject::connect(*difSon,SIGNAL(Closed()),*difSon,SLOT(hide()));
-			QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+			
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
 			QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*difSon,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
@@ -471,9 +533,16 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case SCENARI:
 //			qWarning("- - -  - - - - - - - -QObject::connect ");
 			(*scenari)->draw();
-			QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(show()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+			QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showFullScreen()));
+                                          QObject::connect(*scenari,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)  
+                                          QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(show()));
+                                          QObject::connect(*scenari,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                       
 			QObject::connect(*scenari,SIGNAL(Closed()),*scenari,SLOT(hide()));
-			QObject::connect(*scenari,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+			
 			QObject::connect(*scenari,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*scenari,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 			QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari,SLOT(freezed(bool)));
@@ -481,11 +550,18 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			//(*scenari)->inizializza();
 			break;
 		    case IMPOSTAZIONI:    
-//			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
+			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
 			(*imposta)->draw();
-			QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(show()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+			QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
+                                          QObject::connect(*imposta,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)                  
+                                          QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(show()));
+                                          QObject::connect(*imposta,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                          
 			QObject::connect(*imposta,SIGNAL(Closed()),*imposta,SLOT(hide()));
-			QObject::connect(*imposta,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+			
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
 			QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
@@ -495,9 +571,16 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 		    case SCHEDULAZIONI:    
 //			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
 			(*sched)->draw();
-			QObject::connect(*home,SIGNAL(Schedulazioni()),*sched,SLOT(show()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+			QObject::connect(*home,SIGNAL(Schedulazioni()),*sched,SLOT(showFullScreen()));
+                                          QObject::connect(*sched,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)      
+                                          QObject::connect(*home,SIGNAL(Schedulazioni()),*sched,SLOT(show()));
+                                          QObject::connect(*sched,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                    
 			QObject::connect(*sched,SIGNAL(Closed()),*sched,SLOT(hide()));
-			QObject::connect(*sched,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+			
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*sched,SIGNAL(gestFrame(char *)));
 			QObject::connect(*sched,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 			QObject::connect(*sched,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
@@ -511,7 +594,12 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			QObject::connect(*specPage,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));     
 			QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));  
 			QObject::connect(*specPage,SIGNAL(Close()),*specPage,SLOT(hide()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
 			QObject::connect(*specPage,SIGNAL(Close()),*home,SLOT(showFullScreen()));     
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)  
+                                          QObject::connect(*specPage,SIGNAL(Close()),*home,SLOT(show()));
+#endif                                           
 			QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*specPage,SLOT(gestFrame(char *)));
 			break;
 		    } // switch page_id
@@ -668,6 +756,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 			*home = new homePage(NULL,"homepage",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);    
 			(*home)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
 			(*home)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                          QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*home,SLOT(gestFrame(char *)));
 		    }
 		
 		else if (CurTagL4.startsWith("item"))
@@ -893,7 +982,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 		{
 			    if (!CurTagL5.compare("scs_addr"))		
 			    {
-				datiGen->setAddr(qValue.toInt( &ok, 10 ));
+				datiGen->setAddr(qValue.toInt( &ok, 16 ));
 			     }
 		}
 	    }

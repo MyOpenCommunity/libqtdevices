@@ -42,7 +42,8 @@ signals:
     void 	freezed(bool);
 public slots:
     void 	gesFrame(char*);	
-
+    void 	ctrlAllarm();
+    void 	testranpo();
 private:
   uchar numRighe;	
   sottoMenu* zone;  

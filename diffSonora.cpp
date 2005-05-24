@@ -84,7 +84,7 @@ int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* Icon
     {     	
 	sorgenti-> setBGColor(backgroundColor() );
 	sorgenti-> setFGColor(foregroundColor() );	
-	sorgenti-> addItem(tipo , descrizione , indirizzo , icon, pressedIcon);	    
+	sorgenti-> addItem(tipo , descrizione , indirizzo , icon, pressedIcon);	
     }
     else 
    {     

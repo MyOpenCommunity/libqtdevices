@@ -40,11 +40,25 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(this,SIGNAL(freezed(bool)),zone,SLOT(freezed(bool)));
     connect(this,SIGNAL(freezed(bool)),impianto,SLOT(freezed(bool)));        
     connect(this,SIGNAL(freezed(bool)),allarmi,SLOT(freezed(bool)));            
+    connect(allarmi,SIGNAL(itemKilled()),this,SLOT(testranpo()));
 
 }
 
- 
- 
+void antintrusione::testranpo()
+{
+    QTimer *t=new  QTimer(this,"T");
+    connect(t,SIGNAL(timeout()),this,SLOT( ctrlAllarm()));
+    t->start(150,TRUE);
+}
+
+void antintrusione:: ctrlAllarm()
+{
+    qDebug("ctrlAllarm %d",allarmi->getCount());
+    if (allarmi->getCount()>0)
+        impianto->getLast()->mostra(BUT1);
+    else
+        impianto->getLast()->nascondi(BUT1);
+}
 
 
 void antintrusione::setBGColor(int r, int g, int b)
@@ -71,7 +85,8 @@ void antintrusione::setFGColor(int r, int g, int b)
 
 void antintrusione::draw()
 {	
-      if (impianto)
+    ctrlAllarm();
+    if (impianto)
 	impianto-> draw();
     if (zone)
 	zone-> draw();
@@ -147,7 +162,12 @@ void antintrusione::gesFrame(char*frame)
 	 }
     }    
     if (aggiorna)
-	allarmi->draw();
+    {
+        allarmi->draw();
+        allarmi->showFullScreen();
+        this->showFullScreen();
+        ctrlAllarm();
+    }
 }
 
 
