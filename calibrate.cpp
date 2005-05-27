@@ -41,6 +41,7 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
 
 Calibrate::~Calibrate()
 {
+    releaseMouse();
 }
 
 QPoint Calibrate::fromDevice( const QPoint &p )
@@ -66,7 +67,7 @@ bool Calibrate::sanityCheck()
 
     int avg = ( vl + vr ) / 2;
 
-      if ( diff > avg /20 ) // 5% leeway
+      if ( diff > avg /15 ) // era /20         5% leeway
         return FALSE;
 
     int ht = QABS( tl.x() - tr.x() );
@@ -128,12 +129,12 @@ void Calibrate::mousePressEvent( QMouseEvent *e )
     // map to device coordinates
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     QPoint devPos = qt_screen->mapToDevice( e->pos(),
-			QSize(qt_screen->width(), qt_screen->height()) );
+                                            QSize(qt_screen->width(), qt_screen->height()) );
     if ( penPos.isNull() )
-	penPos = devPos;
+        penPos = devPos;
     else
-	penPos = QPoint( (penPos.x() + devPos.x())/2,
-			 (penPos.y() + devPos.y())/2 );
+        penPos = QPoint( (penPos.x() + devPos.x())/2,
+                         (penPos.y() + devPos.y())/2 );
 #endif    
 }
 

@@ -20,6 +20,7 @@
 #include "antintrusione.h"
 #include "versio.h"
 #include "genpage.h"
+#include "calibrate.h"
 
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
@@ -60,6 +61,7 @@ private:
     unsigned char firstTime,bloccato;
     genPage* screen;
     unsigned char tiposcreen;
+     Calibrate* calib;
     
 //    char specialFrame[50];
 };

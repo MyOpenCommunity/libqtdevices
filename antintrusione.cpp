@@ -165,7 +165,9 @@ void antintrusione::gesFrame(char*frame)
     {
         allarmi->draw();
         allarmi->showFullScreen();
-        this->showFullScreen();
+        impianto->hide();
+        zone->hide();
+        //this->showFullScreen();
         ctrlAllarm();
     }
 }

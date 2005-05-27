@@ -349,36 +349,37 @@ void sveglia::Closed()
     qDebug("Sveglia Closed");
     //imposta la sveglia in 
     if (difson)
-    {
-	qDebug("Sveglia Closed DIFSON");
-	if(aggiornaDatiEEprom)
-	{
-	     difson->hide();
-	     difson->setNumRighe((uchar)4);	     
-	     difson->setGeom(0,0,240,320);
-	     difson->setNavBarMode(3);
-	    //	difson->/*amplificatori->*/showFullScreen();
-	     difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
-	     disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+    {	
+        qDebug("Sveglia Closed DIFSON");
+        disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+        if(aggiornaDatiEEprom)
+        {
+            difson->hide();
+            difson->setNumRighe((uchar)4);	     
+            difson->setGeom(0,0,240,320);
+            difson->setNavBarMode(3);
+            //	difson->/*amplificatori->*/showFullScreen();
+            difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
+            
 #if defined (BTWEB) || defined (BT_EMBEDDED)
-	    
-	    qDebug("Sveglia Closed AGGIORNA EEPROM");
-	    int eeprom;
-	    eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
-	    lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH, SEEK_SET);
-//	    qDebug("%d",(BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH));
-	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
-	    {
-		write(eeprom,&volSveglia[idx],1 );
-	//	qDebug("%d : %d", idx, volSveglia[idx]);
-	    }
-	    write(eeprom,&sorgente,1 );
-	    write(eeprom,&stazione,1 );
-	    ::close(eeprom);
-	    qDebug("Sveglia Closed FINE AGGIORNA EEPROM");
+            
+            qDebug("Sveglia Closed AGGIORNA EEPROM");
+            int eeprom;
+            eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+            lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH, SEEK_SET);
+            //	    qDebug("%d",(BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH));
+            for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
+            {
+                write(eeprom,&volSveglia[idx],1 );
+                //	qDebug("%d : %d", idx, volSveglia[idx]);
+            }
+            write(eeprom,&sorgente,1 );
+            write(eeprom,&stazione,1 );
+            ::close(eeprom);
+            qDebug("Sveglia Closed FINE AGGIORNA EEPROM");
 #endif
-                  disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
-	}	
+//            disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+        }	
     }
     hide();
     
@@ -588,75 +589,97 @@ void sveglia::aumVol()
 {
     if (conta2min==0)
     {
-	openwebnet msg_open;
-	char    pippo[50];
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*16*3*");
-	sprintf(&pippo[6],"%d",sorgente);
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);    
-	
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#16*");
-	sprintf(&pippo[strlen(pippo)],"%d",sorgente);
-	strcat(pippo,"*#7*");
-	sprintf(&pippo[strlen(pippo)],"%d",stazione);
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
-	    
-	for (uchar idx=0;idx<AMPLI_NUM;idx++)
-	{
-	    if (volSveglia[idx]>0)
-	    {		
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*16*3*");
-		sprintf(&pippo[6],"%02d",idx);
-		strcat(pippo,"##");
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-		emit sendFrame(msg_open.frame_open);    
-	    }
-	}
-	
+        openwebnet msg_open;
+        char    pippo[50];
+        
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*#16*");
+        sprintf(&pippo[strlen(pippo)],"%d",sorgente);
+        strcat(pippo,"*#7*");
+        sprintf(&pippo[strlen(pippo)],"%d",stazione);
+        strcat(pippo,"##");
+        msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+        emit sendFrame(msg_open.frame_open);
+        
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*16*3*");
+        sprintf(&pippo[6],"%d",sorgente);
+        strcat(pippo,"##");
+        msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+        emit sendFrame(msg_open.frame_open);    
+                
+        for (uchar idx=0;idx<AMPLI_NUM;idx++)
+        {
+            if (volSveglia[idx]>0)
+            {		
+                
+                if (volSveglia[idx]<10)
+                {		
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*#16*");
+                    sprintf(&pippo[5],"%02d",idx);
+                    strcat(pippo,"*#1*");
+                    sprintf(&pippo[11],"%d",volSveglia[idx]);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);    
+                }          
+                else
+                {		
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*#16*");
+                    sprintf(&pippo[5],"%02d",idx);
+                    strcat(pippo,"*#1*8##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);    
+                }         
+                memset(pippo,'\000',sizeof(pippo));
+                strcat(pippo,"*16*3*");
+                sprintf(&pippo[6],"%02d",idx);
+                strcat(pippo,"##");
+                msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                emit sendFrame(msg_open.frame_open);    	    
+            }
+        }
+        conta2min=9;
     }
     
     conta2min++;
-	
+    
     if (conta2min<32)
     {
-	for (uchar idx=0;idx<AMPLI_NUM;idx++)
-	{
-	    if (volSveglia[idx]>=conta2min)
-	    {
-		openwebnet msg_open;
-		char    pippo[50];
-		
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*#16*");
-		sprintf(&pippo[5],"%02d",idx);
-		strcat(pippo,"*#1*");
-		sprintf(&pippo[11],"%d",conta2min);
-		strcat(pippo,"##");
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-		emit sendFrame(msg_open.frame_open);    
-	    }
-	}
+        for (uchar idx=0;idx<AMPLI_NUM;idx++)
+        {
+            if (volSveglia[idx]>=conta2min)
+            {
+                openwebnet msg_open;
+                char    pippo[50];
+                
+                memset(pippo,'\000',sizeof(pippo));
+                strcat(pippo,"*#16*");
+                sprintf(&pippo[5],"%02d",idx);
+                strcat(pippo,"*#1*");
+                sprintf(&pippo[11],"%d",conta2min);
+                strcat(pippo,"##");
+                msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                emit sendFrame(msg_open.frame_open);    
+            }
+        }
     }
     else if (conta2min>40)
     {
-	 qDebug("SPENGO LA SVEGLIA per timeout");
-	aumVolTimer->stop();
-	delete (aumVolTimer);
-	
-	// manda general OFF
-	openwebnet msg_open;
-	char    pippo[50];
-     
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*16*13*0##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);    
+        qDebug("SPENGO LA SVEGLIA per timeout");
+        aumVolTimer->stop();
+        delete (aumVolTimer);
+        aumVolTimer=NULL;
+        // manda general OFF
+        openwebnet msg_open;
+        char    pippo[50];
+        
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*16*13*0##");
+        msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+        emit sendFrame(msg_open.frame_open);    
     }
     
 }
@@ -699,6 +722,11 @@ void sveglia::spegniSveglia(bool b)
 	    delete (aumVolTimer);
 	    aumVolTimer=NULL;	   
 	}
+    }
+    else if (b)
+    {
+        if (isVisible())
+            Closed();
     }
 }
 

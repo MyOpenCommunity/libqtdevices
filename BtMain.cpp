@@ -64,7 +64,9 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
      difSon=NULL;
      antintr=NULL;
      screen=NULL;
-     
+    
+     pwdOn=0;
+ 
      datiGen = new versio(NULL, "DG");
      struct sysinfo info;
      sysinfo(&info);
@@ -82,10 +84,16 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
      else
      {
 	      tempo1=NULL;
-	      Calibrate* calib = new Calibrate(NULL,"calibrazione",(unsigned char)0,(unsigned char)1);
+	      /*Calibrate**/ calib = new Calibrate(NULL,"calibrazione",(unsigned char)0,(unsigned char)1);
 	      calib->show(); 
 	      connect(calib, SIGNAL(fineCalib()), this,SLOT(hom()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)              
+	     connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(showFullScreen()));
+#endif
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)    
 	      connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
+#endif                 
+	      
      }     
  }
 
@@ -152,42 +160,59 @@ void BtMain::hom()
    qDebug("finito parsing");
   delete handler;
   delete xmlFile;
+  
+       qApp->setMainWidget( Home);   
+       
    
     
-    qApp->setMainWidget( Home);    
-
-
     tempo3 = new QTimer(this,"clock");
     tempo3->start(10);
     connect(tempo3,SIGNAL(timeout()),this,SLOT(myMain()));
-
 }
+
 	
-////////non più eseguito////////
 void BtMain::init()
 {
-    qDebug("parte init");
+    qDebug("------------------------------ parte init -------------------------------");
     connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
-     connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
-
-     
-     if(illumino)
-	 illumino->inizializza();
-     if(automazioni)
-	 automazioni->inizializza();
-     if(antintr)
-	 antintr->inizializza();
-     if(termo)
-	 termo->inizializza();
-     if(difSon)
-	 difSon->inizializza();
-     if (datiGen)
-	 datiGen->inizializza();
-     if(scenari)
-	 scenari->inizializza();
-     if(imposta)
-	 imposta->inizializza();
-     qDebug("fine init");
+    connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
+    
+    if (datiGen)
+        datiGen->inizializza();
+    if(illumino)
+        illumino->inizializza();
+    if(automazioni)
+        automazioni->inizializza();
+    if(antintr)
+        antintr->inizializza();
+    if(difSon)
+        difSon->inizializza();     
+    if(scenari)
+        scenari->inizializza();
+    if(imposta)
+        imposta->inizializza();
+    if(termo)
+        termo->inizializza();
+//    rearmWDT();
+    
+         struct sysinfo info;
+    sysinfo(&info);
+    qDebug("uptime= %d - timePress= %d", info.uptime, getTimePress() );
+    if ( (info.uptime<200) && ( (info.uptime-1)>getTimePress() )  ) 
+    {	
+        calib = new Calibrate(NULL,"calibrazione",0,1);
+        
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)          
+        Home->hide();
+        calib->show();//FullScreen(); 
+        connect(calib, SIGNAL(fineCalib()),Home,SLOT(showFullScreen()));
+#endif
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)    
+        calib->show(); 
+      //  connect(calib, SIGNAL(fineCalib()), Home,SLOT(show()));
+#endif              
+    }         
+    qDebug("fine init");
 }
 
 
@@ -201,7 +226,6 @@ void BtMain::myMain()
     
       Home->showFullScreen();
       datiGen->hide();
-
 
       connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(init()));
       client_monitor->connetti();

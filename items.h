@@ -620,7 +620,7 @@ private:
     char iconNoInfo[50];       
     char cosa[10];
     char dove[10];
-    unsigned char sendInProgr;
+    unsigned char sendInProgr, bloccato, in_progr;
 };
 
 #endif //MOD_SCEN_H
