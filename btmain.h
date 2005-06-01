@@ -18,6 +18,7 @@
 #include "diffsonora.h"
 #include "openclient.h"
 #include "antintrusione.h"
+#include "termoregolaz.h"
 #include "versio.h"
 #include "genpage.h"
 #include "calibrate.h"
@@ -32,7 +33,8 @@ class  BtMain : public QObject
 public:
     BtMain ( QWidget *parent=0, const char *name=0,QApplication*a=NULL);
     homePage * Home, *specPage;
-    sottoMenu *illumino,*scenari,*carichi,*imposta,*automazioni,*termo,*sched;
+    sottoMenu *illumino,*scenari,*carichi,*imposta,*automazioni,*sched;
+    termoregolaz *termo;
     diffSonora *difSon;
     antintrusione* antintr;
     Client * client_comandi;
@@ -50,6 +52,8 @@ private slots:
 //    void specFunz();
     void setPwd(bool,char*);
     void testPwd(char*);
+    void testFiles();
+    
 private:
     QTimer  *  tempo1;
     QTimer  *  tempo2;

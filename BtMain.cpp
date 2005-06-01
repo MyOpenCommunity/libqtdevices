@@ -27,6 +27,7 @@
 #include "genericfunz.h"
 //#include "structureparser.h"
 #include "xmlconfhandler.h"
+#include "xmlvarihandler.h"
 #include "calibrate.h"
 
  #include <sys/sysinfo.h>
@@ -60,7 +61,8 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
      firstTime=1;
      pagDefault=NULL;
      Home=specPage=NULL;
-     illumino=scenari=carichi=imposta=automazioni=termo=sched=NULL;
+     illumino=scenari=carichi=imposta=automazioni=sched=NULL;
+     termo=NULL;
      difSon=NULL;
      antintr=NULL;
      screen=NULL;
@@ -146,19 +148,42 @@ void BtMain::hom()
     
      datiGen->inizializza();    	 
 	 
-  xmlconfhandler  * handler=new xmlconfhandler(this, &Home,&specPage, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen, &sched);
+ 
   
-
-  
+//--------------------------------------------------
+  QColor *bg, *fg1, *fg2;
   QFile * xmlFile;
+  bg=fg1=fg2=NULL;
+  
+  xmlskinhandler *handler1 = new xmlskinhandler(&bg, &fg1, &fg2);
+  xmlFile = new QFile("cfg/extra.xml");
+  QXmlInputSource source1( xmlFile );
+  QXmlSimpleReader reader1;
+  reader1.setContentHandler( handler1 );
+  reader1.parse( source1 );
+  delete handler1;
+  delete xmlFile;
+/*  if ( (bg) && (fg1) && (fg2) )
+      qDebug("COLORI:\n%d - %d - %d\n%d - %d - %d\n%d - %d - %d",bg->red(),bg->green(),bg-> blue(),fg1->red(), fg1->green(), fg1-> blue(),fg2->red(), fg2->green(), fg2-> blue());*/
+  if (!bg)
+      bg=new QColor(77,61,66);
+  if (!fg1)
+      fg1=new QColor(205,205,205);
+  if (!bg)
+      fg2=new QColor(7,151,254);
+  
+  
+  //-----------------------------------------------
+   xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen, &sched,bg, fg1, fg2);
+   
   xmlFile = new QFile("cfg/conf.xml");
-  QXmlInputSource source( xmlFile );
-  QXmlSimpleReader reader;
+  QXmlInputSource source2( xmlFile );
+  QXmlSimpleReader reader2;
   qDebug("parte parsing");
-  reader.setContentHandler( handler );
-  reader.parse( source );
+  reader2.setContentHandler( handler2 );
+  reader2.parse( source2 );
    qDebug("finito parsing");
-  delete handler;
+  delete handler2;
   delete xmlFile;
   
        qApp->setMainWidget( Home);   
@@ -173,7 +198,6 @@ void BtMain::hom()
 	
 void BtMain::init()
 {
-    qDebug("------------------------------ parte init -------------------------------");
     connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
     connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
     
@@ -197,14 +221,14 @@ void BtMain::init()
     
          struct sysinfo info;
     sysinfo(&info);
-    qDebug("uptime= %d - timePress= %d", info.uptime, getTimePress() );
+//    qDebug("uptime= %d - timePress= %d", info.uptime, getTimePress() );
     if ( (info.uptime<200) && ( (info.uptime-1)>getTimePress() )  ) 
     {	
         calib = new Calibrate(NULL,"calibrazione",0,1);
         
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)          
         Home->hide();
-        calib->show();//FullScreen(); 
+        calib->show();//FullScreen(); con fullscreen non va!
         connect(calib, SIGNAL(fineCalib()),Home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)    
@@ -212,7 +236,6 @@ void BtMain::init()
       //  connect(calib, SIGNAL(fineCalib()), Home,SLOT(show()));
 #endif              
     }         
-    qDebug("fine init");
 }
 
 
@@ -234,15 +257,15 @@ void BtMain::myMain()
       tempo1->start(2000);
       disconnect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
       connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
+      
+      tempo2 = new QTimer(this,"clock");
+      tempo2->start(3000);
+      connect(tempo2,SIGNAL(timeout()),this,SLOT(testFiles()));      
 }
 
-
-void BtMain::gesScrSav()
+void BtMain::testFiles()
 {
-    unsigned long tiempo;
-    rearmWDT();  
-    
-    if (QFile::exists("/MODALITA_TEST1"))
+        if (QFile::exists("/MODALITA_TEST1"))
     {
 	if ( (screen) && (tiposcreen!=RED))
 	    delete(screen);
@@ -300,74 +323,82 @@ void BtMain::gesScrSav()
 	    delete(screen);
 	screen=NULL;
 	tiposcreen=NONE;
-	
-	tiempo= getTimePress();
-	
-	if (!firstTime)
-	{
-	    if  (tiempo<=5)
-		firstTime=0;
-	    
-	    if  ( (tiempo>=16) && (getBacklight())) 
-	    {
-#ifndef BACKLIGHT_SEMPRE_ON  
-		    setBacklight(FALSE);
-		    emit freeze(TRUE);
-		    bloccato=01;
-		    tempo1->changeInterval(500);
-#endif		    
-		}
-	    else if ( (tiempo<=5) && (bloccato/*!getBacklight()*/) )
-	    {
-                    //  setBacklight(TRUE);
-                    //qDebug("BtMain emetto freezed FALSE");	    
-                    emit freeze(FALSE);
-                    bloccato=0;
-                    tempo1->changeInterval(2000);
-                    freezed(FALSE);
-                    
-                    //  qDebug("Cambiato tempo intervento");	    
-                }
-	    if  ( (tiempo>=60) )
-	    {
-		    if (pagDefault)
-		    {
-			if (pagDefault->isHidden ()) 
-			{
-			    if (illumino)
-				illumino -> hide();
-			    if (scenari)
-				scenari -> hide();
-			    if (carichi)
-				carichi -> hide();
-			    if (imposta)
-				imposta -> hide();
-			    if (automazioni)
-				automazioni -> hide();
-			    if (termo)
-				termo -> hide();
-			    if (difSon)
-				difSon -> hide();
-			    if (antintr)
-				antintr -> hide();
-			    if (specPage )
-				specPage -> hide();
-			    if (pagDefault)
-				pagDefault -> showFullScreen();
-			}
-		    }
-		}	
-	}
-	else if  ( (tiempo>=120)  )
-	{
-#ifndef BACKLIGHT_SEMPRE_ON 	    
-	    setBacklight(FALSE);
-	    emit freeze(TRUE);	   
-	    tempo1->changeInterval(500);
-#endif	    
-	     firstTime=0;
-	}
     }
+}
+        
+        
+void BtMain::gesScrSav()
+{
+    unsigned long tiempo;
+    rearmWDT();  
+    
+    tiempo= getTimePress();
+    
+    if (!firstTime)
+    {
+        if  (tiempo<=5)
+            firstTime=0;
+        
+        if  ( (tiempo>=16) && (getBacklight())) 
+        {
+#ifndef BACKLIGHT_SEMPRE_ON  
+                setBacklight(FALSE);
+                emit freeze(TRUE);
+                bloccato=01;
+                tempo1->changeInterval(500);
+#endif		    
+            }
+        else if ( (tiempo<=5) && (bloccato/*!getBacklight()*/) )
+        {
+                //  setBacklight(TRUE);
+                //qDebug("BtMain emetto freezed FALSE");	    
+                emit freeze(FALSE);
+                bloccato=0;
+                tempo1->changeInterval(2000);
+                freezed(FALSE);
+                
+                //  qDebug("Cambiato tempo intervento");	    
+            }
+        if  ( (tiempo>=60) )
+        {
+                if (pagDefault)
+                {
+                    if (pagDefault->isHidden ()) 
+                    {
+                        if (illumino)
+                            illumino -> hide();
+                        if (scenari)
+                            scenari -> hide();
+                        if (carichi)
+                            carichi -> hide();
+                        if (imposta)
+                            imposta -> hide();
+                        if (automazioni)
+                            automazioni -> hide();
+                        if (termo)
+                            termo -> hide();
+                        if (difSon)
+                            difSon -> hide();
+                        if (antintr)
+                            antintr -> hide();
+                        if (specPage )
+                            specPage -> hide();
+                        if (pagDefault)
+                            pagDefault -> showFullScreen();
+                    }
+                }
+            }	
+    }
+    else if  ( (tiempo>=120)  )
+    {
+#ifndef BACKLIGHT_SEMPRE_ON 	    
+        setBacklight(FALSE);
+        emit freeze(TRUE);	   
+        tempo1->changeInterval(500);
+#endif	    
+        firstTime=0;
+    }
+    
 }
 
 void BtMain::freezed(bool b)

@@ -1582,10 +1582,10 @@ void termoPage::gestFrame(char* frame)
         {
                 if ( (!strcmp(msg_open.Extract_cosa(),"110")) || (!strcmp(msg_open.Extract_cosa(),"210")) || (!strcmp(msg_open.Extract_cosa(),"310")) )
                 {
-                    if  (statoSonda!=S_MAN) 
+                    if  (stato!=S_MAN) 
                     {
-                        ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_MANUAL_ON);
-                        statoSonda=S_MAN;
+                        ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_AUTO_ON);
+                        stato=S_MAN;
                         mostra(BUT1);
                         mostra(BUT2);
                         nascondi(ICON);
@@ -1596,14 +1596,14 @@ void termoPage::gestFrame(char* frame)
                 }
                 else if  ( (!strcmp(msg_open.Extract_cosa(),"111")) || (!strcmp(msg_open.Extract_cosa(),"211")) || (!strcmp(msg_open.Extract_cosa(),"311")) )
                 {
-                    if  (statoSonda!=S_AUTO) 
+                    if  (stato!=S_AUTO) 
                     {
-                        ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_AUTO_ON);
+                        ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_MANUAL_ON);
                         nascondi(BUT1);
                         nascondi(BUT2);
                         nascondi(ICON);
                         tempImp->show();
-                        statoSonda=S_AUTO;
+                        stato=S_AUTO;
                         aggiorna=1;
                         ((sottoMenu*)parentWidget())->draw();
                     }
@@ -1617,7 +1617,7 @@ void termoPage::gestFrame(char* frame)
                     tempImp->hide();
                     impostaAttivo(1);
                     aggiorna=1;
-                    statoSonda=S_ANTIGELO;
+                    stato=S_ANTIGELO;
                 }
                 else if   (!strcmp(msg_open.Extract_cosa(),"202")) 
                 {
@@ -1628,7 +1628,7 @@ void termoPage::gestFrame(char* frame)
                     tempImp->hide();
                     impostaAttivo(1);
                     aggiorna=1;	       
-                    statoSonda=S_OFF;
+                    stato=S_OFF;
                 }
                 else if   (!strcmp(msg_open.Extract_cosa(),"103")) 
                 {
@@ -1728,6 +1728,8 @@ char* termoPage::getChi()
     return("4");
 }
 
+
+
 void termoPage::autoMan()
 {
     openwebnet msg_open;
@@ -1736,7 +1738,7 @@ void termoPage::autoMan()
     memset(pippo,'\000',sizeof(pippo));
     
     
-    if    (statoSonda==S_MAN)
+    if    (stato==S_MAN)
     {
         strcat(pippo,"*4*311*#");
         strcat(pippo,getAddress());

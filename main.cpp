@@ -12,6 +12,8 @@
 #include <qapplication.h>
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
+#include "xmlvarihandler.h"
+#include <signal.h>
 #define	TIMESTAMP
 #ifdef TIMESTAMP
 #include <qdatetime.h>
@@ -63,8 +65,25 @@ int main( int argc, char **argv )
 ** Inizio Lettura configurazione applicativo
 *******************************************/
     qDebug("<BTo> BTouch release");
-    Leggi_logfile_name(My_File_Cfg,MYPROCESSNAME,&My_File_Log,Xml_File_In,Xml_File_Out);
-    Leggi_logverbosity(My_File_Cfg,MYPROCESSNAME,&VERBOSITY_LEVEL,Xml_File_In,Xml_File_Out);
+//    Leggi_logfile_name(My_File_Cfg,MYPROCESSNAME,&My_File_Log,Xml_File_In,Xml_File_Out);
+//    Leggi_logverbosity(My_File_Cfg,MYPROCESSNAME,&VERBOSITY_LEVEL,Xml_File_In,Xml_File_Out);
+    
+    
+//---
+     QFile * xmlFile;
+    char logFile[100];
+    
+  xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile[0]);
+  xmlFile = new QFile(My_File_Cfg);
+  QXmlInputSource source( xmlFile );
+  QXmlSimpleReader reader;
+  reader.setContentHandler( handler );
+  reader.parse( source );
+  delete handler;
+  delete xmlFile;
+  //-----
+    
+    
     qDebug("<BTo> logfile=%s",My_File_Log);
     qDebug("<BTo> logverbosity=%d",VERBOSITY_LEVEL);
     if (strcmp(My_File_Log,"")&&strcmp(My_File_Log,"-"))
@@ -78,12 +97,17 @@ int main( int argc, char **argv )
     setvbuf(stderr, (char *)NULL, _IONBF, 0);
     // D'ora in avanti qDebug, ... scrivono dove gli ho detto io
     qInstallMsgHandler( myMessageOutput );
+    
+  
 /*******************************************
 ** Fine Lettura configurazione applicativo
 *******************************************/
 
     QApplication a( argc, argv );
-        
+    
+    signal(SIGUSR1, MySignal);
+    signal(SIGUSR2, MySignal);    
+          
     qDebug("Start BtMain");
     
     BtMain mainprogr(NULL,"MAIN PROGRAM",&a);

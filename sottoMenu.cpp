@@ -244,6 +244,25 @@ banner* sottoMenu::getLast()
     return(elencoBanner.last());
 }
 
+banner* sottoMenu::getCurrent()
+{
+    return(elencoBanner.at(indice));
+}
+
+banner* sottoMenu::getNext()
+{            
+    if (indice==(elencoBanner.count()-1))
+        return(elencoBanner.at(0));
+     return(elencoBanner.at(indice+1));
+}
+
+banner* sottoMenu::getPrevious()
+{
+    if (indice==0)
+        return(elencoBanner.at(elencoBanner.count()-1));
+     return(elencoBanner.at(indice-1));
+}
+
 void sottoMenu::inizializza()
 {
     iniTim = new QTimer(this,"iniTimer");

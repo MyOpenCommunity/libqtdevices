@@ -17,6 +17,7 @@
 #include "diffsonora.h"
 #include "antintrusione.h"
 #include "genericfunz.h"
+#include "termoregolaz.h"
 #include "btmain.h"
 #include "versio.h"
 //#include "openclient.h"
@@ -27,7 +28,7 @@
 class xmlconfhandler : public QXmlDefaultHandler
 {
 public:
-    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, sottoMenu** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,sottoMenu** sched=NULL);
+    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,sottoMenu** sched=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
     
     ~xmlconfhandler();
 
@@ -70,15 +71,15 @@ private:
       int	par1, par2,par3;
       unsigned int itemNum;
       QString CurTagL4_copy;
-    unsigned char bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
-    QColor SecondForeground;    
+    QColor Background, Foreground,SecondForeground;    
     unsigned char idPageDefault,car;
 
     void set_page_item_defaults();
     
     homePage **home;
     homePage **specPage;
-    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**termo,**sched;
+    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched;
+    termoregolaz **termo;
     diffSonora **difSon;
     antintrusione** antintr;
     QWidget ** pagDefault;

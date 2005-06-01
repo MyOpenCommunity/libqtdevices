@@ -40,6 +40,9 @@ public:
    void 	draw();
    void 	setNumRighe(uchar);
   banner* getLast();
+  banner* getCurrent();
+  banner* getNext();
+  banner* getPrevious();
   bool 	setPul(char* chi="", char* where="");
   bool	setGroup(char* chi="", char* where="", bool group[9] =NULL);// {(bool)FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE});
   void 	setIndex(char*);

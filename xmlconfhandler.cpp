@@ -27,8 +27,9 @@ unsigned char tipoData=0;
 /*******************************************
 *
 *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, sottoMenu** t,\
-                               diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG, sottoMenu** sch)
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
+                               diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG, sottoMenu** sch,\
+                               QColor* bg, QColor* fg1, QColor *fg2)
 {
     home=h;
     specPage=sP;
@@ -47,8 +48,11 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu
     datiGen=dG;
     sched = sch;
     
-    
-    SecondForeground=QColor(255,0,0);
+ //   bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
+    Background=*bg;
+    Foreground=*fg1;
+    SecondForeground=*fg2;//QColor(255,0,0);
+    datiGen->setPaletteBackgroundColor(Background);
     
     page_item_list_img = new QPtrList<QString>;
     page_item_list_group = new QPtrList<QString>;
@@ -231,15 +235,15 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             //			qWarning("ADDBUTTON NORMALE");
                             break;
                         case DATA:
-                            (*home)->addDate(sottomenu_left+10,sottomenu_top+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
+                            (*home)->addDate(sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3);
                             //			qWarning("ADDBUTTON DATA");
                             break;
                         case OROLOGIO:
-                            (*home)->addClock(sottomenu_left+10,sottomenu_top+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
+                            (*home)->addClock(sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3);
                             //			qWarning("ADDBUTTON OROLOGIO");
                             break;
                         case TEMPERATURA:
-                            (*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3,"");
+                            (*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
                             //			qWarning("ADDBUTTON TEMPERATURA");
                             break;
                         } // switch (sottomenu_id)
@@ -392,20 +396,20 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             switch(page_item_id)
                             {
                             case TEMPERATURA:
-                                (*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),(int)QFrame::Plain,3,(char*)page_item_descr.ascii());
+                                (*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii());
                                 break;
                             case DATA:
                                 //sottomenu_left,sottomenu_top,
-                                (*specPage) ->addDate(10,(itemNum-1)*80+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
+                                (*specPage) ->addDate(10,(itemNum-1)*80+10,220,60,Background,Foreground,QFrame::Plain,3);
                                 break;
                             case OROLOGIO:
                                 //sottomenu_left,sottomenu_top,
-                                (*specPage) ->addClock(10,(itemNum-1)*80+10,220,60,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);	
+                                (*specPage) ->addClock(10,(itemNum-1)*80+10,220,60,Background,Foreground,QFrame::Plain,3);	
                                 break;
                             case CMDSPECIAL:
                                 
                                 (*specPage) ->addButton(60,260,(char*)page_item_list_img->at(0)->ascii(),SPECIAL,(char*)page_item_who.ascii(),(char*)page_item_what.ascii(),(char*)page_item_where.ascii(),(char)page_item_type.toInt( &ok, 10 ));
-                                (*specPage) ->addDescr((char*)page_item_descr.ascii(), 60,240,180,20,QColor :: QColor(bg_r, bg_g, bg_b),QColor :: QColor(fg_r, fg_g, fg_b),QFrame::Plain,3);
+                                (*specPage) ->addDescr((char*)page_item_descr.ascii(), 60,240,180,20,Background,Foreground,QFrame::Plain,3);
                                 pageAct=NULL;
                                 break;
                             }
@@ -682,7 +686,7 @@ bool xmlconfhandler::characters( const QString & qValue)
             {   	    
                 setOrientation((unsigned char)qValue.ascii()); 	
             }
-            else if (!CurTagL3.compare("bg"))
+            /*else if (!CurTagL3.compare("bg"))
             {   
                 if (!CurTagL4.compare("r"))
                 {   
@@ -730,7 +734,7 @@ bool xmlconfhandler::characters( const QString & qValue)
                     SecondForeground=QColor(fg_r1,fg_g1,fg_b1);
                 }
                 
-            }
+            }*/
             //
             // Leggo info homepage
             //
@@ -755,8 +759,8 @@ bool xmlconfhandler::characters( const QString & qValue)
                 if (CurTagL4.startsWith("id"))
                 {	      
                         *home = new homePage(NULL,"homepage",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);    
-                        (*home)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                        (*home)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                        (*home)->setBGColor(Background.red(),Background.green(),Background.blue());
+                        (*home)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
                         QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*home,SLOT(gestFrame(char *)));
                     }
                 
@@ -799,64 +803,64 @@ bool xmlconfhandler::characters( const QString & qValue)
                             {
                             case AUTOMAZIONE:	      
                                 *automazioni = new sottoMenu (NULL,"AUTOM");
-                                (*automazioni)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*automazioni)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*automazioni)->setBGColor(Background);
+                                (*automazioni)->setFGColor(Foreground);
                                 //              automazioni->hide();
                                 pageAct=*automazioni;
                                 //				qWarning("AUTOMAZIONE new.- . . .- -. -. .-");
                                 break;
                             case ILLUMINAZIONE:	    
                                 *illumino = new sottoMenu (NULL,"ILLUMINO");
-                                (*illumino)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*illumino)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*illumino)->setBGColor(Background);
+                                (*illumino)->setFGColor(Foreground);
                                 //              illumino->hide();
                                 pageAct=*illumino;		      
                                 //				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");
                                 break;
                             case SCENARI:
                                 *scenari = new sottoMenu (NULL,"SCENARI");
-                                (*scenari)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*scenari)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*scenari)->setBGColor(Background);
+                                (*scenari)->setFGColor(Foreground);
                                 //              scenari->hide();
                                 pageAct=*scenari;
                                 //				qWarning("SCENARI new.- .- -. -. . -. -");
                                 break;
                             case CARICHI:
                                 *carichi = new sottoMenu (NULL,"CARICHI");
-                                (*carichi)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*carichi)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*carichi)->setBGColor(Background);
+                                (*carichi)->setFGColor(Foreground);
                                 //              carichi->hide();
                                 pageAct=*carichi;
                                 //				qWarning("CARICHI new-. -. .- .-");
                                 break;
                             case DIFSON:
                                 *difSon = new diffSonora (NULL,"DIFSON");
-                                (*difSon)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*difSon)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*difSon)->setBGColor(Background.red(),Background.green(),Background.blue());
+                                (*difSon)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
                                 //              difSon->hide();
                                 pageAct=*difSon;
                                 //				qWarning("DIFSON new.- .- .- .--. ");
                                 break;
                             case ANTIINTRUSIONE:
                                 *antintr = new antintrusione(NULL,"ANTI");
-                                (*antintr)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*antintr)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*antintr)->setBGColor(Background.red(),Background.green(),Background.blue());
+                                (*antintr)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
                                 //              automazioni->hide();
                                 pageAct=*antintr;
                                 //				qWarning("ANTIINTRUSIONE new.- - ..- -.  .- .- .-");
                                 break;
                             case TERMOREGOLAZIONE:
-                                *termo = new sottoMenu( NULL,"TERMO", 4, MAX_WIDTH, MAX_HEIGHT,1);
-                                (*termo)->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*termo)->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                *termo = new termoregolaz( NULL,"TERMO", 4, MAX_WIDTH, MAX_HEIGHT,1);
+                                (*termo)->setBGColor(Background);
+                                (*termo)->setFGColor(Foreground);
                                 //              termo->hide();
                                 pageAct=*termo;
                                 //				qWarning("TERMOREGOLAZIONE new.- .- - .. -. -. -. . ");
                                 break;
                             case IMPOSTAZIONI:
                                 *imposta = new sottoMenu (NULL,"IMPOSTA");
-                                (*imposta) ->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*imposta) ->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*imposta) ->setBGColor(Background);
+                                (*imposta) ->setFGColor(Foreground);
                                 QObject::connect(*imposta,SIGNAL(setPwd(bool,char*)), BtM, SLOT (setPwd(bool,char*))); 
                                 //              imposta->hide();	      		
                                 pageAct=*imposta;
@@ -864,8 +868,8 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 break;
                             case SCHEDULAZIONI:
                                 *sched = new sottoMenu (NULL,"IMPOSTA");
-                                (*sched) ->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*sched) ->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*sched) ->setBGColor(Background);
+                                (*sched) ->setFGColor(Foreground);
                                 pageAct=*sched;
                                 //				qWarning("SCHEDULAZIONI new.- .- . -. -.- .- -. .-.");
                                 break;
@@ -873,8 +877,8 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 (*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
                                 //              specPage ->hide();
                                 pageAct=*specPage;
-                                (*specPage) ->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-                                (*specPage) ->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
+                                (*specPage) ->setBGColor(Background.red(),Background.green(),Background.blue());
+                                (*specPage) ->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
                                 (*specPage) ->addButton(0,260,ICON_FRECCIA_SX ,BACK);				 
                                 //				qWarning("SPECIAL new.- .- . -.-  .- .-");
                                 break;

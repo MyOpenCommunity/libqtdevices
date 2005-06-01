@@ -74,11 +74,13 @@ public:
     void 	setNumRighe(uchar);
     QTimer *animationTimer;
     uchar 	numRighe;
+    unsigned char stato;
     virtual void inizializza();	
     //provvisoriamente per debug li metto public
     char testo[MAX_TEXT],testoSecondario[MAX_TEXT_2];
     void	nascondi(char);
     void	mostra(char);
+    unsigned char getState();
 	
 public slots:
    virtual void gestFrame(char *);
@@ -125,6 +127,7 @@ private:
    char chi[5];
    bool group[9];
    bool pul;
+
 };
 
 enum oggettinoDelBanner{

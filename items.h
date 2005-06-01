@@ -498,7 +498,6 @@ public slots:
 signals:
   // void 	sendFrame(char *);          
 private:     
-    uchar  statoSonda; 
 };
 
 
