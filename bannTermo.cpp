@@ -45,7 +45,7 @@ bannTermo::bannTermo( QWidget *parent,const char *name,QColor SecondForeground )
     secondForeground=QColor(SecondForeground);
 
     val_imp=3;
-    ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_MANUAL_ON);
+ //   ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_MANUAL_ON);
     isOff=0;
     isAntigelo=0;
 }
@@ -109,9 +109,4 @@ void bannTermo::Draw()
 }
 
 
-/*
- if (manual)
-       ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_MANUAL_ON);
-   else
-       ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_AUTO_ON);   
-       */
+

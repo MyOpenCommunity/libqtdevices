@@ -485,9 +485,11 @@ class termoPage : public bannTermo
 {
         Q_OBJECT
 public:
-    termoPage ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaMeno=NULL,char* IconaPiu=NULL,char*IconaMansx=NULL,char*IconaAuto=NULL, QColor 	SecondForeground=QColor(0,0,0));      
+    termoPage ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaMeno=NULL,char* IconaPiu=NULL,char*IconaMansx=NULL,char*IconaAuto=NULL,char*IconaAntigelo=NULL,char*IconaOff=NULL, QColor 	SecondForeground=QColor(0,0,0));      
    void 	inizializza();
    char* 	getChi();
+   char*	getAutoIcon();
+   char* 	getManIcon();
 public slots:
      void 	gestFrame(char*);
      void	aumSetpoint();
@@ -497,6 +499,8 @@ public slots:
      void	hide();
 signals:
   // void 	sendFrame(char *);          
+     char 	manIco[50];
+     char 	autoIco[50];
 private:     
 };
 

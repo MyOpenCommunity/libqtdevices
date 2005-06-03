@@ -157,7 +157,7 @@ void antintrusione::gesFrame(char*frame)
 	    strcpy(&zona[0],msg_open.Extract_dove());
 	    sprintf(&descr[0], "%s   %s    Z %s", QDateTime::currentDateTime().toString("hh:mm").ascii(), \
 			    QDateTime::currentDateTime().toString("dd.MM").ascii(), &zona[1]);	
-	    allarmi->addItem(ALLARME, &descr[0], NULL, ICON_MENO);
+	    allarmi->addItem(ALLARME, &descr[0], NULL, ICON_DEL);
 	    aggiorna=1;
 	 }
     }    

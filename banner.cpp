@@ -877,3 +877,5 @@ int    banner::getSerNum(){return(serNum);}
 char banner::getId(){return(id);}
 void banner::setId(char i){id=i;}
 unsigned char banner::getState(){return stato;}
+char* banner::getManIcon(){}
+char* banner::getAutoIcon(){}

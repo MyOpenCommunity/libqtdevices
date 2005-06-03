@@ -81,7 +81,9 @@ public:
     void	nascondi(char);
     void	mostra(char);
     unsigned char getState();
-	
+    virtual 	char* 	getManIcon();
+    virtual 	char* 	getAutoIcon();
+    
 public slots:
    virtual void gestFrame(char *);
    void 	animate();

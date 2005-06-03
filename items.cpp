@@ -1537,13 +1537,17 @@ void banradio::inizializza()
 /*****************************************************************
 **termoPage
 ****************************************************************/
-termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* IconaMeno,char* IconaPiu,char*IconaMan,char*IconaAuto, QColor SecondForeground)
+termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* IconaMeno,char* IconaPiu,char*IconaMan,char*IconaAuto, char* IconaAntigelo, char* IconaOff, QColor SecondForeground)
         : bannTermo( parent, name, SecondForeground)
         {       
-    SetIcons( IconaMeno, IconaPiu , ICON_SONDAOFF,ICON_SONDAANTI);/*IconaMan, IconaAuto );*/
+    //SetIcons( IconaMeno, IconaPiu , ICON_SONDAOFF,ICON_SONDAANTI);/*IconaMan, IconaAuto );*/
+    SetIcons( IconaMeno, IconaPiu, IconaOff, IconaAntigelo);
     setAddress(indirizzo);
+    strncpy(&manIco[0],IconaMan,sizeof(manIco));
+    strncpy(&autoIco[0],IconaAuto, sizeof(autoIco));
     connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
-    connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));                       
+    connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));    
+    qDebug("\n\n\n------------ATTENZIONE--------- \n %s - %s \n %s - %s \n%s - %s ",IconaMeno, IconaPiu, &manIco[0],&autoIco[0],IconaOff, IconaAntigelo);
     setChi("4");
 }
 
@@ -1584,7 +1588,7 @@ void termoPage::gestFrame(char* frame)
                 {
                     if  (stato!=S_MAN) 
                     {
-                        ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_AUTO_ON);
+                        ((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
                         stato=S_MAN;
                         mostra(BUT1);
                         mostra(BUT2);
@@ -1598,7 +1602,7 @@ void termoPage::gestFrame(char* frame)
                 {
                     if  (stato!=S_AUTO) 
                     {
-                        ((sottoMenu*)parentWidget())->setNavBarMode(4,ICON_MANUAL_ON);
+                        ((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
                         nascondi(BUT1);
                         nascondi(BUT2);
                         nascondi(ICON);
@@ -1728,7 +1732,15 @@ char* termoPage::getChi()
     return("4");
 }
 
+char* termoPage::getAutoIcon()
+{
+    return &autoIco[0];
+}
 
+char* termoPage::getManIcon()
+{
+    return &manIco[0];
+}
 
 void termoPage::autoMan()
 {
