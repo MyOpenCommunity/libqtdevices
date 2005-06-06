@@ -172,7 +172,6 @@ void BtMain::hom()
   if (!bg)
       fg2=new QColor(7,151,254);
   
-  
   //-----------------------------------------------
    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen, &sched,bg, fg1, fg2);
    
@@ -188,7 +187,6 @@ void BtMain::hom()
   
        qApp->setMainWidget( Home);   
        
-   
     
     tempo3 = new QTimer(this,"clock");
     tempo3->start(10);
@@ -266,7 +264,7 @@ void BtMain::myMain()
 void BtMain::testFiles()
 {
         if (QFile::exists("/MODALITA_TEST1"))
-    {
+    { 
 	if ( (screen) && (tiposcreen!=RED))
 	    delete(screen);
 	else if (!screen)

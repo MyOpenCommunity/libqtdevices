@@ -52,7 +52,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu
     Background=*bg;
     Foreground=*fg1;
     SecondForeground=*fg2;//QColor(255,0,0);
-    datiGen->setPaletteBackgroundColor(Background);
     
     page_item_list_img = new QPtrList<QString>;
     page_item_list_group = new QPtrList<QString>;
@@ -122,6 +121,8 @@ bool xmlconfhandler::startDocument()
     hompage_id=0;
     
     set_page_item_defaults();
+
+    datiGen->setPaletteBackgroundColor(Background);
     
     return TRUE;
 }
@@ -1006,7 +1007,3 @@ bool xmlconfhandler::characters( const QString & qValue)
     
     return TRUE;
 }
-
-
-
-
