@@ -64,7 +64,7 @@ int main( int argc, char **argv )
 /*******************************************
 ** Inizio Lettura configurazione applicativo
 *******************************************/
-    qDebug("<BTo> BTouch release");
+//    qDebug("<BTo> BTouch release");
 //    Leggi_logfile_name(My_File_Cfg,MYPROCESSNAME,&My_File_Log,Xml_File_In,Xml_File_Out);
 //    Leggi_logverbosity(My_File_Cfg,MYPROCESSNAME,&VERBOSITY_LEVEL,Xml_File_In,Xml_File_Out);
     
@@ -84,8 +84,8 @@ int main( int argc, char **argv )
   //-----
     
     
-    qDebug("<BTo> logfile=%s",My_File_Log);
-    qDebug("<BTo> logverbosity=%d",VERBOSITY_LEVEL);
+ //   qDebug("<BTo> logfile=%s",My_File_Log);
+ //   qDebug("<BTo> logverbosity=%d",VERBOSITY_LEVEL);
     if (strcmp(My_File_Log,"")&&strcmp(My_File_Log,"-"))
       // Settato il file di log
       StdLog = fopen(My_File_Log,"a+");

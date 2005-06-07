@@ -499,9 +499,9 @@ public slots:
      void	hide();
 signals:
   // void 	sendFrame(char *);          
+private:     
      char 	manIco[50];
      char 	autoIco[50];
-private:     
 };
 
 

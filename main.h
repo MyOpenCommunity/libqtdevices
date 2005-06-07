@@ -55,21 +55,21 @@ enum pagSecLiv{
 **  definizione dei file di immagini
 ****************************************************************/
 
-#define ICON_CICLA		"cfg/skin/btncycle.png"
+#define ICON_CICLA			"cfg/skin/btncycle.png"
 #define ICON_OK			"cfg/skin/btnok.png"
 #define ICON_ON			"cfg/skin/btnon.png"
 #define ICON_OFF			"cfg/skin/btnoff.png"
 #define ICON_IMPOSTA		"cfg/skin/audiosetting.png"
 
-#define ICON_INFO		"cfg/skin/btninfo.png"
+#define ICON_INFO			"cfg/skin/btninfo.png"
 
-#define ICON_FRECCIA_SU		"cfg/skin/arrup.png"
+#define ICON_FRECCIA_SU	"cfg/skin/arrup.png"
 #define ICON_FRECCIA_GIU	"cfg/skin/arrdw.png"
-#define ICON_FRECCIA_SX		"cfg/skin/arrlf.png"
-#define ICON_FRECCIA_DX		"cfg/skin/arrrg.png"
+#define ICON_FRECCIA_SX	"cfg/skin/arrlf.png"
+#define ICON_FRECCIA_DX	"cfg/skin/arrrg.png"
 
-#define ICON_FFWD		"cfg/skin/btnforward.png"
-#define ICON_REW		"cfg/skin/btnbackward.png"
+#define ICON_FFWD			"cfg/skin/btnforward.png"
+#define ICON_REW			"cfg/skin/btnbackward.png"
 
 #define ICON_OROLOGIO		"cfg/skin/orologio.png"
 #define ICON_CALENDARIO	"cfg/skin/calendario.png"
@@ -77,28 +77,25 @@ enum pagSecLiv{
 #define ICON_SVEGLIA_ON 	"cfg/skin/svegliaon.png"
 
 #define ICON_PIU			"cfg/skin/btnplus.png"
-#define ICON_MENO		"cfg/skin/btnmin.png"
+#define ICON_MENO			"cfg/skin/btnmin.png"
 
-#define ICON_MANUAL_ON		"cfg/skin/btnman.png"
+#define ICON_MANUAL_ON	"cfg/skin/btnman.png"
 #define ICON_MANUAL_OFF	"cfg/skin/btnmanoff.png"
 #define ICON_AUTO_ON		"cfg/skin/btnauto.png"
-#define ICON_AUTO_OFF		"cfg/skin/btnautooff.png"
-#define ICON_MEM		"cfg/skin/btnmem.png"
+#define ICON_AUTO_OFF	"cfg/skin/btnautooff.png"
+#define ICON_MEM			"cfg/skin/btnmem.png"
 
-#define ICON_ZERO		"cfg/skin/num0.png"
-#define ICON_UNO		"cfg/skin/num1.png"
-#define ICON_DUE		"cfg/skin/num2.png"
+#define ICON_ZERO			"cfg/skin/num0.png"
+#define ICON_UNO			"cfg/skin/num1.png"
+#define ICON_DUE			"cfg/skin/num2.png"
 #define ICON_TRE			"cfg/skin/num3.png"
 #define ICON_QUATTRO		"cfg/skin/num4.png"
 #define ICON_CINQUE		"cfg/skin/num5.png"
 #define ICON_SEI			"cfg/skin/num6.png"
-#define ICON_SETTE		"cfg/skin/num7.png"
-#define ICON_OTTO		"cfg/skin/num8.png"
-#define ICON_NOVE		"cfg/skin/num9.png"
-#define ICON_CANC		"cfg/skin/btncanc.png"
-
-#define ICON_SONDAOFF		"cfg/skin/sondaantigelo.png"
-#define ICON_SONDAANTI		"cfg/skin/sondaoff.png"
+#define ICON_SETTE			"cfg/skin/num7.png"
+#define ICON_OTTO			"cfg/skin/num8.png"
+#define ICON_NOVE			"cfg/skin/num9.png"
+#define ICON_CANC			"cfg/skin/btncanc.png"
 
 #define ICON_VUOTO		"cfg/skin/btnempty.png"
 #define ICON_DEL			"cfg/skin/btndel.png"

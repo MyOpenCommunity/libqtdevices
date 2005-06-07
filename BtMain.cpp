@@ -334,9 +334,6 @@ void BtMain::gesScrSav()
     
     if (!firstTime)
     {
-        if  (tiempo<=5)
-            firstTime=0;
-        
         if  ( (tiempo>=16) && (getBacklight())) 
         {
 #ifndef BACKLIGHT_SEMPRE_ON  
@@ -346,16 +343,12 @@ void BtMain::gesScrSav()
                 tempo1->changeInterval(500);
 #endif		    
             }
-        else if ( (tiempo<=5) && (bloccato/*!getBacklight()*/) )
+        else if ( (tiempo<=5) && (bloccato) )
         {
-                //  setBacklight(TRUE);
-                //qDebug("BtMain emetto freezed FALSE");	    
                 emit freeze(FALSE);
                 bloccato=0;
                 tempo1->changeInterval(2000);
                 freezed(FALSE);
-                
-                //  qDebug("Cambiato tempo intervento");	    
             }
         if  ( (tiempo>=60) )
         {
@@ -395,7 +388,15 @@ void BtMain::gesScrSav()
         tempo1->changeInterval(500);
 #endif	    
         firstTime=0;
+        bloccato=1;	
     }
+    else  if  (tiempo<=5)
+    {
+	firstTime=0;
+	setBacklight(TRUE);    
+	tempo1->changeInterval(2000);
+	bloccato=0;
+	}
     
 }
 
