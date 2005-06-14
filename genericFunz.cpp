@@ -392,7 +392,7 @@ void  rearmWDT()
 
 void  comChConf()
 {
-    int fd = open("/BTOUCH_CHANGE_CONF", O_CREAT, 0666);
+    int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
     if (fd >= 0 )
     {
 	close(fd);

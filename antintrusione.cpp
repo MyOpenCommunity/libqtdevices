@@ -33,7 +33,12 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(zone,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 
     connect(impianto,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 	 
 //    connect(allarmi,SIGNAL(Closed()),this , SLOT(show())); 	 
+    
+        qDebug("BLABLABERO!!!!");
     connect(allarmi,SIGNAL(Closed()),allarmi , SLOT(hide())); 	     
+    connect(allarmi,SIGNAL(Closed()),zone, SLOT(show())); 	     
+    connect(allarmi,SIGNAL(Closed()),impianto , SLOT(show())); 	     
+    
     connect(impianto, SIGNAL(goDx()), allarmi,SLOT(show())); 	 
 //    connect(impianto, SIGNAL(goDx()), this,SLOT(hide())); 	     
     
@@ -163,11 +168,12 @@ void antintrusione::gesFrame(char*frame)
     }    
     if (aggiorna)
     {
+    qDebug("ARRIVATO ALLARME!!!!");
         allarmi->draw();
-        allarmi->showFullScreen();
+        allarmi->show();
         impianto->hide();
         zone->hide();
-        //this->showFullScreen();
+        this->showFullScreen();
         ctrlAllarm();
     }
 }

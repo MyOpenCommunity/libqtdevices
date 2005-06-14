@@ -25,6 +25,14 @@
 #define PATH_VAR_DEFAULT           "/var"
 
 
+
+#define FILE_TEST1				"MODALITA_TEST1"
+#define FILE_TEST2				"MODALITA_TEST2"
+#define FILE_TEST3				"MODALITA_TEST3"
+#define FILE_TEST4				"MODALITA_TEST4"
+#define FILE_AGGIORNAMENTO	"MODALITA_AGGIORNAMENTO"
+#define FILE_CHANGE_CONF	"BTOUCH_CHANGE_CONF"
+
 /****************************************************************
 **  definizione dimensioni schermo
 ****************************************************************/

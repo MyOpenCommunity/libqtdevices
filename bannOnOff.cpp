@@ -19,8 +19,8 @@
 bannOnOff::bannOnOff( QWidget *parent,const char *name )
         : banner( parent, name )
 {
-    addItem( BUT1 , MAX_WIDTH-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM );
-    addItem( BUT2 , 0 , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM );
+    addItem( BUT2 , MAX_WIDTH-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM );
+    addItem( BUT1 , 0 , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM );
     addItem( TEXT , 0 , BANONOFF_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE-BANONOFF_BUT_DIM );
     addItem( ICON , BANONOFF_BUT_DIM , 0 , BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y );
     
