@@ -32,6 +32,7 @@
 #define FILE_TEST4				"MODALITA_TEST4"
 #define FILE_AGGIORNAMENTO	"MODALITA_AGGIORNAMENTO"
 #define FILE_CHANGE_CONF	"BTOUCH_CHANGE_CONF"
+#define FILE_WDT				"/var/tmp/bticino/bt_wd/BTouch_qws"
 
 /****************************************************************
 **  definizione dimensioni schermo

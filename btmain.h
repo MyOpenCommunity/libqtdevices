@@ -25,9 +25,9 @@
 
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
+#include <qmainwindow.h> 
 
-
-class  BtMain : public QObject
+class  BtMain : public QWidget
 {
        Q_OBJECT
 public:
@@ -62,12 +62,13 @@ private:
     char	pwd[10];
     bool	pwdOn;
     tastiera *tasti;
-    unsigned char firstTime,bloccato;
+    unsigned char firstTime,bloccato,backcol;
     genPage* screen;
     unsigned char tiposcreen;
      Calibrate* calib;
-    
-//    char specialFrame[50];
+    QPixmap* Sfondo[12];
+    BtLabel* screensav[12];
+    int countScrSav,icx,icy;
 };
 
 #endif// BTMAIN_H

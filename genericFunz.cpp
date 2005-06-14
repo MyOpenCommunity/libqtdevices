@@ -378,10 +378,10 @@ unsigned long getTimePress()
 
 void  rearmWDT()
 {
-   if (! QFile::exists("/var/tmp/bticino/bt_wd/BTouch_qws") )
+   if (! QFile::exists(FILE_WDT) )
     {
 //	int fd = open("/var/tmp/bticino/bt_wd/BTouch_qws", O_CREAT, 0666);
-	int fd = creat("/var/tmp/bticino/bt_wd/BTouch_qws",S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+	int fd = creat(FILE_WDT,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	if (fd != -1 )
 	{
 	    close(fd);

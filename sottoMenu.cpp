@@ -385,8 +385,11 @@ void  sottoMenu::killBanner(banner* b)
         indicold=100;
         //	qDebug("bannerCount= %d", elencoBanner.count());
         draw();
-        if (elencoBanner.count()==0)
-            hide();
+        if ((elencoBanner.count()==0)&&(parentWidget()) )
+        {
+            emit(Closed());//hide();
+            parentWidget()->showFullScreen();
+        }
     }
 }
 

@@ -29,18 +29,21 @@
 #include "xmlconfhandler.h"
 #include "xmlvarihandler.h"
 #include "calibrate.h"
+#include "btlabel.h"
 
 #include <sys/sysinfo.h>
 #include <qfontdatabase.h>
 #include <qfile.h>
 #include <qxml.h>
 #include <qwindowdefs.h>
+#include <stdlib.h>
+#include <math.h>
 
 
 
 
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
-    : QObject( parent, name )
+    : QWidget( parent, name )
     {
     
     
@@ -67,8 +70,18 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
     antintr=NULL;
     screen=NULL;
     
-    pwdOn=0;
+   /* scrsav=new QMainWindow(NULL,"Sfondo");
+    scrsav->setGeometry(0,0,240,320);
+    scrsav->hide();*/
+    for (int idx=0;idx<12;idx++)
+    {
+        screensav[idx]=new BtLabel("culo",/*NULLscrsav*/this,"g");
+       screensav[idx]->setFrameStyle(QFrame::Panel | QFrame::Raised);
+       screensav[idx]-> hide();
+    }
     
+    pwdOn=0;
+   
     datiGen = new versio(NULL, "DG");
     struct sysinfo info;
     sysinfo(&info);
@@ -186,8 +199,11 @@ void BtMain::hom()
     delete xmlFile;
     
     qApp->setMainWidget( Home);   
-    
-    
+    hide();
+    setGeometry(0,0,240,320);
+    setCursor (QCursor (blankCursor));
+    setBackgroundColor(QColor(255,255,255));
+        
     tempo3 = new QTimer(this,"clock");
     tempo3->start(10);
     connect(tempo3,SIGNAL(timeout()),this,SLOT(myMain()));
@@ -373,7 +389,7 @@ void BtMain::gesScrSav()
         {
             if (pagDefault)
             {
-                if (pagDefault->isHidden ()) 
+                if ( (pagDefault->isHidden ())/* && (scrsav->isHidden() )*/ ) 
                 {
                     if (illumino)
                         illumino -> hide();
@@ -395,9 +411,70 @@ void BtMain::gesScrSav()
                         specPage -> hide();
                     if (pagDefault)
                         pagDefault -> showFullScreen();
+                    
+                    
+//                    Sfondo.grabWindow(pagDefault->winId(),0,0,240,320); 
+//                    Sfondo.grabWidget(pagDefault,0,0,240,320); 
+//                    scrsav->setGeometry(0,0,240,320);
+                }
+            }    
+            if  ( (tiempo>=65) && isHidden())
+            {
+                    for (int idx=0;idx<12;idx++)
+                    {
+                if (pagDefault)
+                             Sfondo[idx] = new QPixmap(QPixmap::grabWindow(pagDefault->winId(),(idx%3)*80,(int)(idx/3)*80,80,80)); 
+                else
+                             Sfondo[idx] = new QPixmap(QPixmap::grabWindow(Home->winId(),(idx%3)*80,(int)(idx/3)*80,80,80)); 
+                             screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
+                             screensav[idx]->setPixmap(*Sfondo[idx]);
+                             screensav[idx]->show();
+                             qDebug("idx=%d - memo %d %d",idx,idx%3, (int)(idx/3));
+                         }
+                    show();   
+                    countScrSav=0;
+                }  
+            
+            if (isShown())
+            {
+                countScrSav=(countScrSav+1)%8;
+                qDebug("%d",countScrSav);
+                switch (countScrSav){
+                    case 1:
+//                    icx=(int) ( rand()*12 / (RAND_MAX+1) );
+                    icx=(int) (12.0*rand()/(RAND_MAX+1.0));
+                    icy=(int) (12.0*rand()/(RAND_MAX+1.0));
+                    screensav[icx]->hide();
+                    break;
+                    case 2:
+                    screensav[icy]->hide();
+                    break;
+                    case 3:
+                    setBackgroundColor(QColor(255,0,0));
+                    break;
+//                    case 3:
+                case 4:                  
+                        QRect r;
+                        qDebug("cambio x: %d,y:%d", icx,icy);   
+                        r=screensav[icx]->geometry();
+                        screensav[icx]->setGeometry(screensav[icy]->geometry());
+                        screensav[icy]->setGeometry(r);
+//                    screensav[icx]->repaint();
+//                    screensav[icx]-> repaint();    
+                        if (backcol)
+                            setBackgroundColor(QColor(0,255,0));
+                        else
+                            setBackgroundColor(QColor(0,0,255));
+                        backcol=(backcol+1)%2;
+                        screensav[icx]->show(); 
+                        screensav[icy]->show(); 
+                    break;
+                    repaint();
+                    show();                               
                 }
             }
         }	
+        
     }
     else if  ( (tiempo>=120)  )
     {
@@ -429,6 +506,7 @@ void BtMain::freezed(bool b)
     {
         setBacklight(TRUE);
         //qDebug("BtMain freezed FALSE");
+        hide();
         if (pwdOn)
         {
             tasti = new tastiera(NULL,"tast");
