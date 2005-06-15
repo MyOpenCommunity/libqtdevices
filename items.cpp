@@ -243,8 +243,8 @@ grAttuatAutom::grAttuatAutom( QWidget *parent,const char *name,void *indirizzi, 
         {     
     SetIcons( IconaDx, IconaSx,NULL,icon,period ,number );
     setAddress(indirizzi);
-    connect(this,SIGNAL(dxClick()),this,SLOT(Attiva()));
-    connect(this,SIGNAL(sxClick()),this,SLOT(Disattiva()));
+    connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
+    connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 }
 
 
