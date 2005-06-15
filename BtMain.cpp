@@ -70,16 +70,22 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
     antintr=NULL;
     screen=NULL;
     
-   /* scrsav=new QMainWindow(NULL,"Sfondo");
-    scrsav->setGeometry(0,0,240,320);
-    scrsav->hide();*/
+backcol=0;
+
     for (int idx=0;idx<12;idx++)
     {
-        screensav[idx]=new BtLabel("culo",/*NULLscrsav*/this,"g");
+        screensav[idx]=new BtLabel("",/*NULLscrsav*/this,"g");
        screensav[idx]->setFrameStyle(QFrame::Panel | QFrame::Raised);
        screensav[idx]-> hide();
+       Sfondo[idx]=NULL;
     }
-    
+     for (int idx=0;idx<12;idx++)
+    {
+       ball[idx]=new BtLabel("",/*NULLscrsav*/this,"g");
+       ball[idx]->hide();
+   }
+    grab=NULL;
+        
     pwdOn=0;
    
     datiGen = new versio(NULL, "DG");
@@ -418,29 +424,58 @@ void BtMain::gesScrSav()
             }    
             if  ( (tiempo>=65) && isHidden())
             {
-                    for (int idx=0;idx<12;idx++)
+                for (int idx=0;idx<12;idx++)
+                {
+                    if (Sfondo[idx])
+                        delete(Sfondo[idx]);
+                        if (pagDefault)
+                        {
+  //                      Sfondo[idx] = new QPixmap(QPixmap::grabWindow(pagDefault->winId(),(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4))
+                            Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(pagDefault,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4)); 
+                    }
+                    else
                     {
-                if (pagDefault)
-                             Sfondo[idx] = new QPixmap(QPixmap::grabWindow(pagDefault->winId(),(idx%3)*80,(int)(idx/3)*80,80,80)); 
+                            Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(Home,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4));     
+//                        Sfondo[idx] = new QPixmap(QPixmap::grabWindow(Home->winId(),(idx%3)*80,(int)(idx/3)*80,80,80)); 
+                    }
+                    screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
+                    screensav[idx]->setPixmap(*Sfondo[idx]);
+                    screensav[idx]->show();
+                    //                             qDebug("idx=%d - memo %d %d",idx,idx%3, (int)(idx/3));
+                }                           
+                if (grab)
+                    delete(grab);
+                if(pagDefault)
+                    grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT)); 
                 else
-                             Sfondo[idx] = new QPixmap(QPixmap::grabWindow(Home->winId(),(idx%3)*80,(int)(idx/3)*80,80,80)); 
-                             screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
-                             screensav[idx]->setPixmap(*Sfondo[idx]);
-                             screensav[idx]->show();
-//                             qDebug("idx=%d - memo %d %d",idx,idx%3, (int)(idx/3));
-                         }
-                    show();   
-                    countScrSav=0;
+                    grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT)); 
+                //grab= new QPixmap(QPixmap::grabWindow(pagDefault->winId(),0,0,MAX_WIDTH,MAX_HEIGHT)); 
+                show();   
+                countScrSav=0;
                 }  
             
             if (isShown())
             {
+        //        qDebug("tiempo: %d",tiempo);
+                if ( (tiempo/100)%2 )
+                {                   
+                    if(backcol>2)
+                    {
+                        tempo1->changeInterval(500);
+                        for (int idx=0;idx<12;idx++)
+                        {
+                            screensav[idx]->show();
+                        }
+                         for (int idx=0;idx<BALL_NUM;idx++)
+    {
+                        ball[idx]->hide();
+                    }
+                    }
                 countScrSav=(countScrSav+1)%8;
                  switch (countScrSav){
                     case 1:
-//                    icx=(int) ( rand()*12 / (RAND_MAX+1) );
-                    icx=(int) (12.0*rand()/(RAND_MAX+1.0));
-                    icy=(int) (12.0*rand()/(RAND_MAX+1.0));
+                    icx=(int) (12.0*rand() / (RAND_MAX+1.0));
+                    icy=(int) (12.0*rand() / (RAND_MAX+1.0));
                     screensav[icx]->hide();
                     break;
                     case 2:
@@ -449,15 +484,11 @@ void BtMain::gesScrSav()
                     case 3:
                     setBackgroundColor(QColor(255,0,0));
                     break;
-//                    case 3:
                 case 4:                  
                         QRect r;
-//                        qDebug("cambio x: %d,y:%d", icx,icy);   
                         r=screensav[icx]->geometry();
                         screensav[icx]->setGeometry(screensav[icy]->geometry());
                         screensav[icy]->setGeometry(r);
-//                    screensav[icx]->repaint();
-//                    screensav[icx]-> repaint();    
                         if (backcol)
                             setBackgroundColor(QColor(0,255,0));
                         else
@@ -469,6 +500,91 @@ void BtMain::gesScrSav()
                     repaint();
                     show();                               
                 }
+             }
+                 else
+                 {
+                    if (backcol<3)
+                    {
+                        backcol=4;
+                        for (int idx=0;idx<12;idx++)
+                        {
+                            screensav[idx]->hide();
+                        }
+                        setPaletteBackgroundPixmap(*grab);        
+                         for (int idx=0;idx<BALL_NUM;idx++)
+    {
+                        x[idx]=(int) (200.0*rand() / (RAND_MAX+1.0));
+                        y[idx]=(int) (200.0*rand() / (RAND_MAX+1.0));
+                        vx[idx]=(int) (30.0*rand() / (RAND_MAX+1.0)) -15;
+                        vy[idx]=(int) (30.0*rand() / (RAND_MAX+1.0)) -15;
+                            if (!vy[idx])
+                                vy[idx]=1;
+                            if (!vx[idx])
+                                vx[idx]=1;                            
+                        dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
+                        ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                        ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
+                        ball[idx]->show();
+                    }
+                        tempo1->changeInterval(100);
+                    }
+                    else
+                    {
+                        backcol++;
+                        if (backcol==9)
+                        {
+                            backcol=4;
+                            if (grab)
+                                delete(grab);
+                            if(pagDefault)
+                                grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT)); 
+                            else
+                                grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT)); 
+                            setPaletteBackgroundPixmap(*grab);   
+                        }
+                        
+                                                
+                         for (int idx=0;idx<BALL_NUM;idx++)
+    {
+                        x[idx]+=vx[idx];
+                        y[idx]+=vy[idx];
+                        ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
+                        repaint();
+                        if  (x[idx]<=0) 
+                        {
+                            vx[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) ;
+                            x[idx]=0;
+    //                        dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0));
+                            ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                        }
+                        if  (y[idx]>(MAX_HEIGHT-dim[idx])) 
+                        {
+                           vy[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) -15;
+   //                         dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0));
+                            y[idx]=MAX_HEIGHT-dim[idx];
+                            ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                        }
+                        if   (y[idx]<=0) 
+                        {                         
+                            vy[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) ;
+                            if (!vy[idx])
+                                vy[idx]=1;
+                            y[idx]=0;
+                            dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
+  //                          ball[idx]->setPaletteBackgroundColor(QColor((int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0))));
+                        }
+                   if  (x[idx]>(MAX_WIDTH-dim[idx])) 
+                        {
+                            vx[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) -15;         
+                            if (!vx[idx])
+                                vx[idx]=1;
+                            dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
+                            x[idx]=MAX_WIDTH-dim[idx];
+   //                         ball[idx]->setPaletteBackgroundColor(QColor((int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0))));
+                        }
+               }
+                    }
+                }        
             }
         }	
         
@@ -500,6 +616,7 @@ void BtMain::freezed(bool b)
         bloccato=1;
     //qDebug("BLOCCATO   : %d",bloccato);
     if  (!b) 
+        
     {
         setBacklight(TRUE);
         //qDebug("BtMain freezed FALSE");

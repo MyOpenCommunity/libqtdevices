@@ -27,6 +27,9 @@
 #include "../bt_stackopen/common_files/common_functions.h"
 #include <qmainwindow.h> 
 
+
+#define BALL_NUM	5
+
 class  BtMain : public QWidget
 {
        Q_OBJECT
@@ -66,9 +69,9 @@ private:
     genPage* screen;
     unsigned char tiposcreen;
      Calibrate* calib;
-    QPixmap* Sfondo[12];
-    BtLabel* screensav[12];
-    int countScrSav,icx,icy;
+    QPixmap* Sfondo[12], *grab;
+    BtLabel* screensav[12], *ball[10];
+    int countScrSav,icx,icy,x[BALL_NUM],y[BALL_NUM],vx[BALL_NUM],vy[BALL_NUM],dim[BALL_NUM];
 };
 
 #endif// BTMAIN_H

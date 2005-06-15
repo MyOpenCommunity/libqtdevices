@@ -23,6 +23,7 @@ public:
 public slots:
      void goUp();
      void goDown();
+     void show();
 signals:
 private:
 };

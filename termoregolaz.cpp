@@ -34,3 +34,12 @@ void termoregolaz::goDown()
         setNavBarMode(4,getNext()->getManIcon());
     sottoMenu::goDown();
 }
+void termoregolaz::show()
+{
+    if (getCurrent() ->getState()==(unsigned char)S_MAN) 
+        setNavBarMode(4,getNext()->getAutoIcon());
+    else
+        setNavBarMode(4,getNext()->getManIcon());
+    draw();
+    QWidget::show();    
+}

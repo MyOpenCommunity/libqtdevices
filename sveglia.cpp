@@ -666,7 +666,7 @@ void sveglia::aumVol()
             }
         }
     }
-    else if (conta2min>40)
+    else if (conta2min>49)
     {
         qDebug("SPENGO LA SVEGLIA per timeout");
         aumVolTimer->stop();

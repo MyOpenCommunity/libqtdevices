@@ -241,10 +241,10 @@ void attuatAutom::inizializza()
 grAttuatAutom::grAttuatAutom( QWidget *parent,const char *name,void *indirizzi, char* IconaDx,char* IconaSx,char *icon ,int period,int number )
         : bannOnOff( parent, name )
         {     
-    SetIcons( IconaSx, IconaDx,NULL,icon,period ,number );
+    SetIcons( IconaDx, IconaSx,NULL,icon,period ,number );
     setAddress(indirizzi);
-    connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
-    connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
+    connect(this,SIGNAL(dxClick()),this,SLOT(Attiva()));
+    connect(this,SIGNAL(sxClick()),this,SLOT(Disattiva()));
 }
 
 
@@ -1548,6 +1548,7 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
     connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
     connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));    
     setChi("4");
+    stato=S_MAN;
 }
 
 
@@ -1587,28 +1588,35 @@ void termoPage::gestFrame(char* frame)
                 {
                     if  (stato!=S_MAN) 
                     {
-                        ((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
+                        
                         stato=S_MAN;
                         mostra(BUT1);
                         mostra(BUT2);
                         nascondi(ICON);
                         tempImp->show();
                         aggiorna=1;
-                        ((sottoMenu*)parentWidget())->draw();
+                        if (isShown())
+                        {
+                            ((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
+                            ((sottoMenu*)parentWidget())->draw();
+                        }
                     }
                 }
                 else if  ( (!strcmp(msg_open.Extract_cosa(),"111")) || (!strcmp(msg_open.Extract_cosa(),"211")) || (!strcmp(msg_open.Extract_cosa(),"311")) )
                 {
                     if  (stato!=S_AUTO) 
-                    {
-                        ((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
+                    {                 
                         nascondi(BUT1);
                         nascondi(BUT2);
                         nascondi(ICON);
                         tempImp->show();
                         stato=S_AUTO;
                         aggiorna=1;
-                        ((sottoMenu*)parentWidget())->draw();
+                        if(isShown())
+                        {
+                            ((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
+                            ((sottoMenu*)parentWidget())->draw();
+                        }
                     }
                 }
                 else if   (!strcmp(msg_open.Extract_cosa(),"102")) 
