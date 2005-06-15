@@ -371,7 +371,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             (*antintr)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  (char*)page_item_where.ascii(), (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
                             break;
                                case DIFSON:
-                            //      qDebug("difson");
                             if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
                             {			       
                                 strcpy(&pip[0], page_item_what.ascii());
@@ -392,8 +391,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             
                             (*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  pnt/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
                             break;
+                           
                         case SPECIAL:
-                            //       qDebug("special");
+                                   qDebug("special");
                             switch(page_item_id)
                             {
                             case TEMPERATURA:
@@ -518,9 +518,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             //(*termo)->inizializza();
                             break;
                         case DIFSON:
-                            //			qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
+                            //	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
                             (*difSon)->draw(); 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
                             QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showFullScreen()));
                             QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif                                          
@@ -529,7 +529,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                      
                             QObject::connect(*difSon,SIGNAL(Closed()),*difSon,SLOT(hide()));
-                            
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
                             QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
                             QObject::connect(*difSon,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
@@ -556,7 +555,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             //(*scenari)->inizializza();
                             break;
                         case IMPOSTAZIONI:    
-                            qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
+                       //    qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
                             (*imposta)->draw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
@@ -594,7 +593,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*sched,SLOT(freezed(bool)));
                             break;
                         case SPECIAL:    
-                            //			qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
+                            		//	qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
                             //(*specPage)->draw();
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*specPage,SLOT(freezed(bool)));          
                             QObject::connect(*specPage,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));     
@@ -875,6 +874,7 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 //				qWarning("SCHEDULAZIONI new.- .- . -. -.- .- -. .-.");
                                 break;
                             case SPECIAL:	    
+                                 qDebug("!");
                                 (*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
                                 //              specPage ->hide();
                                 pageAct=*specPage;

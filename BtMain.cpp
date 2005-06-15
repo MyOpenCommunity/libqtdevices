@@ -158,9 +158,7 @@ void BtMain::hom()
 //    qDebug( "FONT RAWMODE=%d",(Home.font()).rawMode());
 //    qDebug( "FONT EXACTMATCH=%d",(Home.font()).exactMatch());
 */	 
-    
     datiGen->inizializza();    	 
-    
     
     
     //--------------------------------------------------
@@ -429,7 +427,7 @@ void BtMain::gesScrSav()
                              screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
                              screensav[idx]->setPixmap(*Sfondo[idx]);
                              screensav[idx]->show();
-                             qDebug("idx=%d - memo %d %d",idx,idx%3, (int)(idx/3));
+//                             qDebug("idx=%d - memo %d %d",idx,idx%3, (int)(idx/3));
                          }
                     show();   
                     countScrSav=0;
@@ -438,8 +436,7 @@ void BtMain::gesScrSav()
             if (isShown())
             {
                 countScrSav=(countScrSav+1)%8;
-                qDebug("%d",countScrSav);
-                switch (countScrSav){
+                 switch (countScrSav){
                     case 1:
 //                    icx=(int) ( rand()*12 / (RAND_MAX+1) );
                     icx=(int) (12.0*rand()/(RAND_MAX+1.0));
@@ -455,7 +452,7 @@ void BtMain::gesScrSav()
 //                    case 3:
                 case 4:                  
                         QRect r;
-                        qDebug("cambio x: %d,y:%d", icx,icy);   
+//                        qDebug("cambio x: %d,y:%d", icx,icy);   
                         r=screensav[icx]->geometry();
                         screensav[icx]->setGeometry(screensav[icy]->geometry());
                         screensav[icy]->setGeometry(r);
@@ -501,7 +498,7 @@ void BtMain::freezed(bool b)
     bloccato=0;
     if (b)
         bloccato=1;
-    qDebug("BLOCCATO   : %d",bloccato);
+    //qDebug("BLOCCATO   : %d",bloccato);
     if  (!b) 
     {
         setBacklight(TRUE);

@@ -34,7 +34,6 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(impianto,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 	 
 //    connect(allarmi,SIGNAL(Closed()),this , SLOT(show())); 	 
     
-        qDebug("BLABLABERO!!!!");
     connect(allarmi,SIGNAL(Closed()),allarmi , SLOT(hide())); 	     
     connect(allarmi,SIGNAL(Closed()),zone, SLOT(show())); 	     
     connect(allarmi,SIGNAL(Closed()),impianto , SLOT(show())); 	     

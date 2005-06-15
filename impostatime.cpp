@@ -38,7 +38,6 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
     setCursor (QCursor (blankCursor));
 //    showFullScreen();
 #endif    
-     qDebug("-----31-----");
    char iconName[MAX_PATH];
    QPixmap* Icon1 = new QPixmap();
    QPixmap* Icon2 = NULL;
@@ -67,7 +66,6 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	    but[idx] -> setPressedPixmap(*Icon2);
 	}
     }
-      qDebug("-----32-----");
     free (Icon1);
     free (Icon2);
     Icon2=NULL;
@@ -89,7 +87,6 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	if (Icon2)
 	    but[idx] -> setPressedPixmap(*Icon2);
     }	
-     qDebug("-----33-----");
      free (Icon1);
      free (Icon2);
      Icon2=NULL;

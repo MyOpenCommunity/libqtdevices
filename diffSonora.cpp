@@ -157,9 +157,9 @@ void diffSonora::draw()
 {	
       if (sorgenti)
 	sorgenti-> draw();
-    if (amplificatori)
+      if (amplificatori)
 	amplificatori-> draw();
-}
+  }
 
 void diffSonora::setGeom(int x,int y,int w,int h)
 {

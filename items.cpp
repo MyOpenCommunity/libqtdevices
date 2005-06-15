@@ -549,7 +549,7 @@ void attuatAutomInt::inizializza()
     strcat(pippo,"*#1*");
     strcat(pippo,getAddress());
     strcat(pippo,"##");
-    qDebug("mando frame attuat autom int %s",pippo);
+   // qDebug("mando frame attuat autom int %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
 }
@@ -697,7 +697,7 @@ void attuatAutomIntSic::inizializza()
     strcat(pippo,"*#1*");
     strcat(pippo,getAddress());
     strcat(pippo,"##");
-    qDebug("mando frame attuat autom intSic %s",pippo);
+ //   qDebug("mando frame attuat autom intSic %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
 }
@@ -789,7 +789,7 @@ void attuatAutomTemp::inizializza()
     strcat(pippo,"*#1*");
     strcat(pippo,getAddress());
     strcat(pippo,"##");
-    qDebug("mando frame attuat autom Temp %s",pippo);
+  //  qDebug("mando frame attuat autom Temp %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
 }
@@ -1055,7 +1055,7 @@ void amplificatore::inizializza()
     strcat(pippo,"*#16*");
     strcat(pippo,getAddress());
     strcat(pippo,"*1##");
-    qDebug("mando frame ampli %s",pippo);
+ //   qDebug("mando frame ampli %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
     
@@ -1063,7 +1063,7 @@ void amplificatore::inizializza()
     strcat(pippo,"*#16*");
     strcat(pippo,getAddress());
     strcat(pippo,"*5##");
-    qDebug("mando frame ampli %s",pippo);
+ //   qDebug("mando frame ampli %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
     
@@ -1547,7 +1547,6 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
     strncpy(&autoIco[0],IconaAuto, sizeof(autoIco));
     connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
     connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));    
-    qDebug("\n\n\n------------ATTENZIONE--------- \n %s - %s \n %s - %s \n%s - %s ",IconaMeno, IconaPiu, &manIco[0],&autoIco[0],IconaOff, IconaAntigelo);
     setChi("4");
 }
 
