@@ -38,6 +38,7 @@ public:
 		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0);
    void 	inizializza();
    void 	draw();
+   void 	forceDraw();   
    void 	setNumRighe(uchar);
   banner* getLast();
   banner* getCurrent();
@@ -64,8 +65,8 @@ signals:
   void	itemKilled();
   void 	setPwd(bool,char*);
 public slots:
-  void 	goUp();	
-  void 	goDown();
+  virtual void 	goUp();	
+  virtual void 	goDown();
   void	init();    
   void 	freezed(bool);
   void 	hide();
@@ -73,6 +74,7 @@ public slots:
   void 	mouseReleaseEvent ( QMouseEvent * );  
   void 	killBanner(banner*);
   void 	svuota();
+//  void 	show();
 private:
   QPtrList<banner> elencoBanner;
   QTimer* iniTim;
@@ -80,6 +82,7 @@ private:
   uchar numRighe, hasNavBar;	
   bannFrecce * bannNavigazione;
   bool 	freez;
+  char	iconName[MAX_PATH];
 };
 
 

@@ -19,16 +19,18 @@ termoregolaz::termoregolaz( QWidget *parent, const char *name, uchar withNavBar 
 
 void termoregolaz::goUp()
 {
+        qDebug("goUp");
     if (getNext()->getState()==(unsigned char)S_MAN) 
         setNavBarMode(4,getNext()->getAutoIcon());
     else
         setNavBarMode(4,getNext()->getManIcon());
     sottoMenu::goUp();
-}
+ }
 
 void termoregolaz::goDown()
 {
-        if (getPrevious()->getState()==(unsigned char)S_MAN) 
+    qDebug("goDown");
+    if (getPrevious()->getState()==(unsigned char)S_MAN) 
         setNavBarMode(4,getNext()->getAutoIcon());
     else
         setNavBarMode(4,getNext()->getManIcon());
@@ -36,10 +38,12 @@ void termoregolaz::goDown()
 }
 void termoregolaz::show()
 {
+    qDebug("TermoShow");
     if (getCurrent() ->getState()==(unsigned char)S_MAN) 
         setNavBarMode(4,getNext()->getAutoIcon());
     else
         setNavBarMode(4,getNext()->getManIcon());
+//    forceDraw();
     draw();
     QWidget::show();    
 }

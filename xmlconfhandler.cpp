@@ -428,7 +428,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                         {
                         case AUTOMAZIONE:
                             //			qWarning(".- .- .- -. -.  .- -.QObject::connect AUTOMAZIONE");
-                            (*automazioni)->draw();
+                            (*automazioni)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                    
                             QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
                             QObject::connect(*automazioni,SIGNAL(Closed()),*home,SLOT(showFullScreen()));                        
@@ -446,7 +446,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             break;
                         case ILLUMINAZIONE:
                             //			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
-                            (*illumino)->draw();
+                            (*illumino)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
                             QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
                             QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
@@ -485,7 +485,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             break;
                         case CARICHI:
                             //			qWarning(".- .- .- .- .-  -. .- .- .- QObject::connect CARICHI");
-                            (*carichi)->draw();
+                            (*carichi)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(showFullScreen()));
                             QObject::connect(*carichi,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
@@ -501,7 +501,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             break;
                         case TERMOREGOLAZIONE:
                             //			qWarning(" - -  .     .- . . .- .-QObject::connect TERMOREGOLAZIONE ");
-                            (*termo)->draw();
+                            (*termo)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showFullScreen()));
                             QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
@@ -537,7 +537,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             break;
                         case SCENARI:
                             //			qWarning("- - -  - - - - - - - -QObject::connect ");
-                            (*scenari)->draw();
+                            (*scenari)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showFullScreen()));
                             QObject::connect(*scenari,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
@@ -556,7 +556,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             break;
                         case IMPOSTAZIONI:    
                        //    qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
-                            (*imposta)->draw();
+                            (*imposta)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
                             QObject::connect(*imposta,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
@@ -575,7 +575,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             break;
                         case SCHEDULAZIONI:    
                             //			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
-                            (*sched)->draw();
+                            (*sched)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(Schedulazioni()),*sched,SLOT(showFullScreen()));
                             QObject::connect(*sched,SIGNAL(Closed()),*home,SLOT(showFullScreen()));

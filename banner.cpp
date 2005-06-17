@@ -60,9 +60,15 @@ void banner::SetSeconaryText( const char *text )
 
 void banner::SetIcons( uchar idIcon, const char *actuallcon )
 {
+    char pressIconName[MAX_PATH];
+    
     if (!(Icon[idIcon]))
-	Icon[idIcon]= new QPixmap();
+        Icon[idIcon]= new QPixmap();
     Icon[idIcon]->load(actuallcon);
+    
+    getPressName((char*)actuallcon, & pressIconName[0],MAX_PATH);
+    pressIcon[idIcon]->load(&pressIconName[0]);
+    
 }
 	
 void banner::SetIcons( const char *actuallcon ,char tipo)

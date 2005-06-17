@@ -196,6 +196,7 @@ radio::radio( QWidget *parent, const char *name )
     
     
     manual=FALSE;
+    wasManual=TRUE;
     
     
     
@@ -325,6 +326,8 @@ void radio::draw()
     freq->display(&fr[0]);
 
     QPixmap* Icon = new QPixmap();
+    if (manual!=wasManual)
+    {
     if (manual)
 	Icon->load(ICON_MANUAL_ON);
     else
@@ -334,7 +337,10 @@ void radio::draw()
 	Icon->load(ICON_AUTO_OFF);
     else
 	Icon->load(ICON_AUTO_ON);
-     autoBut->setPixmap(*Icon);
+    autoBut->setPixmap(*Icon);
+}
+    wasManual=manual;
+
      progrText ->setAlignment(AlignHCenter|AlignVCenter);
      progrText ->setFont( QFont( "Helvetica", 20, QFont::Bold ) );
      progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");

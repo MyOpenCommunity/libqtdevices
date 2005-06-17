@@ -62,25 +62,37 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 {
-    if(bannNavigazione)
-    {	
-	free( bannNavigazione );
-	//delete( bannNavigazione );
-	bannNavigazione=NULL;
-    }
-    if (navBarMode)
+    qDebug("*********\n%d   +    %d",navBarMode,hasNavBar);
+    if(navBarMode!=hasNavBar)
     {
-	bannNavigazione  = new bannFrecce(this,"bannerfrecce",navBarMode, IconBut4);
-	
-	bannNavigazione -> setGeometry( 0, height-height/numRighe, width, height/numRighe );
-	bannNavigazione -> setBGColor(backgroundColor());
-	bannNavigazione -> setFGColor(foregroundColor());
-	connect(bannNavigazione, SIGNAL(backClick()), this, SIGNAL(Closed()));
-	connect(bannNavigazione, SIGNAL(upClick()), this, SLOT(goUp()));
-	connect(bannNavigazione, SIGNAL(downClick()), this, SLOT(goDown()));
-	connect(bannNavigazione, SIGNAL(forwardClick()), this, SIGNAL(goDx()));
+        if(bannNavigazione)
+        {	
+            //free( bannNavigazione );
+            delete( bannNavigazione );
+            bannNavigazione=NULL;
+        }
+        if (navBarMode)
+        {
+            bannNavigazione  = new bannFrecce(this,"bannerfrecce",navBarMode, IconBut4);
+            
+            bannNavigazione -> setGeometry( 0, height-height/NUM_RIGHE/*numRighe*/, width, height/NUM_RIGHE/*numRighe */);
+            bannNavigazione -> setBGColor(backgroundColor());
+            bannNavigazione -> setFGColor(foregroundColor());
+            connect(bannNavigazione, SIGNAL(backClick()), this, SIGNAL(Closed()));
+            connect(bannNavigazione, SIGNAL(upClick()), this, SLOT(goUp()));
+            connect(bannNavigazione, SIGNAL(downClick()), this, SLOT(goDown()));
+            connect(bannNavigazione, SIGNAL(forwardClick()), this, SIGNAL(goDx()));
+        }
+        hasNavBar=navBarMode;
+        strncpy(&iconName[0],IconBut4,sizeof(&iconName[0]));
     }
-    hasNavBar=navBarMode;
+    else if (strcmp(IconBut4,&iconName[0]))
+    {        
+        strncpy(&iconName[0],IconBut4,MAX_PATH);
+        qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", &iconName[0], IconBut4);
+        bannNavigazione -> SetIcons(1,&iconName[0]);
+        bannNavigazione -> Draw();
+    }
 }
 
 void sottoMenu::setBGColor(int r, int g, int b)
@@ -183,6 +195,7 @@ void sottoMenu::draw()
     uint idx,idy;
     if (!(indicold==indice))
     {
+        qDebug("indicold=%d - indice=%d",indicold,indice);
 	for (idy=0;idy<elencoBanner.count();idy++)
 	    elencoBanner.at(idy)->hide();
 	if (hasNavBar)
@@ -196,7 +209,8 @@ void sottoMenu::draw()
 			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
 		    }
 		}		
-		bannNavigazione  ->setGeometry( 0 ,height-MAX_HEIGHT/NUM_RIGHE,width , MAX_HEIGHT/NUM_RIGHE);			
+		bannNavigazione  ->setGeometry( 0 ,height-MAX_HEIGHT/NUM_RIGHE,width , MAX_HEIGHT/NUM_RIGHE);		
+        bannNavigazione->Draw();
 		bannNavigazione->show();	
 	    }
 	else
@@ -211,7 +225,14 @@ void sottoMenu::draw()
 		    }
 		}
 	    }
+    indicold=indice;
     }
+}
+
+void sottoMenu::forceDraw()
+{
+    indicold=indice+1;
+    draw();
 }
 
 void sottoMenu::goUp()
@@ -410,3 +431,10 @@ uint sottoMenu::getCount()
 {
     return(elencoBanner.count());
 }
+
+
+/*void sottoMenu::show()
+{
+    draw();
+    QWidget::show();
+}*/

@@ -83,7 +83,7 @@ private:
     uchar	stazione;
     char 	rds[9];
     char 	nome[15];
-    bool 	manual;
+    bool 	manual,wasManual;
     bannFrecce * bannNavigazione;
 };
 

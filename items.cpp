@@ -800,10 +800,10 @@ void attuatAutomTemp::inizializza()
 grAttuatInt::grAttuatInt( QWidget *parent,const char *name,void *indirizzi,char* IconaSx,char* IconaDx, char *icon ,int period,int number )
         : bann3But( parent, name )
         {     
-    SetIcons(  IconaSx,IconaDx ,NULL,icon,period ,number );
+    SetIcons(  IconaDx,IconaSx ,NULL,icon,period ,number );
     setAddress(indirizzi);
-    connect(this,SIGNAL(sxClick()),this,SLOT(Alza()));
-    connect(this,SIGNAL(dxClick()),this,SLOT(Abbassa()));
+    connect(this,SIGNAL(dxClick()),this,SLOT(Alza()));
+    connect(this,SIGNAL(sxClick()),this,SLOT(Abbassa()));
     connect(this,SIGNAL(centerClick()),this,SLOT(Ferma()));
 }
 
@@ -1598,7 +1598,7 @@ void termoPage::gestFrame(char* frame)
                         if (isShown())
                         {
                             ((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
-                            ((sottoMenu*)parentWidget())->draw();
+                            ((sottoMenu*)parentWidget())->forceDraw();
                         }
                     }
                 }
@@ -1615,7 +1615,7 @@ void termoPage::gestFrame(char* frame)
                         if(isShown())
                         {
                             ((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
-                            ((sottoMenu*)parentWidget())->draw();
+                            ((sottoMenu*)parentWidget())->forceDraw();
                         }
                     }
                 }
@@ -1659,10 +1659,10 @@ void termoPage::gestFrame(char* frame)
                                         case 2:	val_imp=5;isOff=0;isAntigelo=0;break;
                                                 case 3:	val_imp=6;isOff=0;isAntigelo=0;break;
                                                         case 11:	val_imp=2;isOff=0;isAntigelo=0;break;
-                                                                        case 12:	val_imp=1;isOff=0;isAntigelo=0;break;
-                                                                                        case 13:	val_imp=0;isOff=0;isAntigelo=0;break;
-                                                                                                        case 4:	val_imp=0;isOff=1;isAntigelo=0;/*OFF*/break;
-                                                                                                                case 5:	val_imp=0;isOff=0;isAntigelo=1;/*LOCAL PROTECTION*/break;			
+                                                                    case 12:	val_imp=1;isOff=0;isAntigelo=0;break;
+                                                                                case 13:	val_imp=0;isOff=0;isAntigelo=0;break;
+                                                                                            case 4:	val_imp=0;isOff=1;isAntigelo=0;/*OFF*/break;
+                                                                                                    case 5:	val_imp=0;isOff=0;isAntigelo=1;/*LOCAL PROTECTION*/break;			
                                                                                                                     }
                     aggiorna=1;
                 }
