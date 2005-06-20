@@ -71,14 +71,15 @@ private:
 int xClock,yClock,xTemp,yTemp;
   QPtrList<BtButton> elencoButtons;
   bool	freez;
-  char 	zonaTermo[50];
-  QLCDNumber 	*temperatura;
+  char 	zonaTermo1[50],zonaTermo2[50],zonaTermo3[50];
+  char * zt[3];
+  QLCDNumber 	*temperatura[3];
   char specialFrame[50];
   char chi[10];
   char cosa[10];
   char dove[10];
-  char tipoSpecial;
-  BtLabel *descrizione, *descrTemp;
+  char tipoSpecial,tempCont;
+  BtLabel *descrizione, *descrTemp[3];
 };
 
 enum tipoFunzSpe{

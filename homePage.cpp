@@ -47,6 +47,7 @@ homePage::homePage( QWidget *parent, const char *name, WFlags f )
     yClock=yTemp=MAX_HEIGHT+2;
     freez=FALSE;
     descrizione=NULL;
+    tempCont=0;
  }
 
 
@@ -173,28 +174,35 @@ void homePage::addDate(int x, int y)
 
 void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line, char* text)
 {
-     strcpy(zonaTermo,z);
-     temperatura = new QLCDNumber(this,"0.00 C");
-     temperatura ->setGeometry(x,y,width,height-H_SCR_TEMP);
-     temperatura ->setPaletteForegroundColor(fg);
-     temperatura ->setPaletteBackgroundColor(bg);
+    switch(tempCont){
+	case 0: strcpy(zonaTermo1,z);zt[0]=&zonaTermo1[0];break;
+	case 1: strcpy(zonaTermo2,z);zt[1]=&zonaTermo2[0];break;
+	case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];break;
+    }
 
-     temperatura ->setFrameStyle( style );
-     temperatura ->setLineWidth(line);    
-     temperatura ->setNumDigits(6);
-     temperatura -> display("0.00\272C");
-     temperatura -> setSegmentStyle(QLCDNumber::Flat);    
+     temperatura[tempCont] = new QLCDNumber(this,"0.00 C");
+     temperatura[tempCont] ->setGeometry(x,y,width,height-H_SCR_TEMP);
+     temperatura[tempCont] ->setPaletteForegroundColor(fg);
+     temperatura[tempCont] ->setPaletteBackgroundColor(bg);
+
+     temperatura[tempCont] ->setFrameStyle( style );
+     temperatura[tempCont] ->setLineWidth(line);    
+     temperatura[tempCont] ->setNumDigits(6);
+     temperatura[tempCont] -> display("0.00\272C");
+     temperatura[tempCont] -> setSegmentStyle(QLCDNumber::Flat);    
      
      if (text)
      {
-	 descrTemp = new BtLabel(this,text);
-	 descrTemp ->setFont( QFont( "helvetica", 14, QFont::Bold ));
-	 descrTemp ->setAlignment(AlignHCenter|AlignVCenter);
-	 descrTemp ->setText(text);
-	 descrTemp ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
-	 descrTemp ->setPaletteForegroundColor(fg);
-	 descrTemp ->setPaletteBackgroundColor(bg);
+	 descrTemp[tempCont] = new BtLabel(this,text);
+	 descrTemp[tempCont] ->setFont( QFont( "helvetica", 14, QFont::Bold ));
+	 descrTemp[tempCont] ->setAlignment(AlignHCenter|AlignVCenter);
+	 descrTemp[tempCont] ->setText(text);
+	 descrTemp[tempCont] ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
+	 descrTemp[tempCont] ->setPaletteForegroundColor(fg);
+	 descrTemp[tempCont] ->setPaletteBackgroundColor(bg);
      }     
+     
+     tempCont++;
  }    
 
 void homePage::addTemp(char *z, int x, int y)
@@ -271,7 +279,9 @@ void homePage::gestFrame(char* frame)
 	if (dove[0]=='#')
 	    strcpy(&dovex[0], &dovex[1]);
 	
-	if ( (! strcmp(&dovex[0],&zonaTermo[0]) ) )
+	for(int idx=0; idx<tempCont; idx++)
+	{
+	if ( (! strcmp(&dovex[0],zt[idx]) ) )
 	{	 
 	     if   (!strcmp(msg_open.Extract_grandezza(),"0")) 
 	    {
@@ -291,9 +301,10 @@ void homePage::gestFrame(char* frame)
 	       sprintf(tmp,"%.1f",icx);
 	       strcat(temp,tmp);
        	       strcat(temp,"\272C");
-	       temperatura->display(&temp[0]);
+	       temperatura[idx]->display(&temp[0]);
 	   }
 	 }
+    }
     }
      if ( (!strcmp(msg_open.Extract_chi(),&chi[0])) && (tipoSpecial==CICLICO) )
     {
