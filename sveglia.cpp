@@ -358,6 +358,7 @@ void sveglia::Closed()
             difson->setNumRighe((uchar)4);	     
             difson->setGeom(0,0,240,320);
             difson->setNavBarMode(3);
+            difson->forceDraw();
             //	difson->/*amplificatori->*/showFullScreen();
             difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
             
@@ -420,10 +421,11 @@ void sveglia::okTipo()
     else if (difson)
     {	
 	difson->setNumRighe((uchar)3);	
+        difson->forceDraw();
 	difson->setGeom(0,0,240,240);	
 	difson->setNavBarMode(6);
 	difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
-//	difson->show();	
+	difson->show();	
 
 	this->bannNavigazione->hide();
 	aggiornaDatiEEprom=1;

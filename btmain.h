@@ -22,6 +22,7 @@
 #include "versio.h"
 #include "genpage.h"
 #include "calibrate.h"
+#include "btlabel.h"
 
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
@@ -29,6 +30,20 @@
 
 
 #define BALL_NUM	5
+
+class palla : public BtLabel
+{
+    Q_OBJECT
+    public:
+    palla(QWidget*parent=0, const char* name=0,unsigned int f=0);
+    void clear();
+    public slots:
+        void paintEvent(QPaintEvent *); 
+    private:
+    int rx, ry;
+};
+
+
 
 class  BtMain : public QWidget
 {
@@ -70,7 +85,8 @@ private:
     unsigned char tiposcreen;
      Calibrate* calib;
     QPixmap* Sfondo[12], *grab;
-    BtLabel* screensav[12], *ball[10];
+    BtLabel* screensav[12];//, *ball[10];
+    palla	*ball[10];
     int countScrSav,icx,icy,x[BALL_NUM],y[BALL_NUM],vx[BALL_NUM],vy[BALL_NUM],dim[BALL_NUM];
 };
 

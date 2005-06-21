@@ -161,6 +161,15 @@ void diffSonora::draw()
 	amplificatori-> draw();
   }
 
+void diffSonora::forceDraw()
+{	
+      if (sorgenti)
+	sorgenti-> forceDraw();
+      if (amplificatori)
+	amplificatori-> forceDraw();
+  }
+
+
 void diffSonora::setGeom(int x,int y,int w,int h)
 {
       QWidget::setGeometry(x,y,w,h);

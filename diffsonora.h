@@ -38,7 +38,8 @@ public:
    void	setGeom(int,int,int,int);
    void 	setNavBarMode(uchar);
    sottoMenu* amplificatori;  
-   void draw();
+   void 	draw();
+   void	forceDraw();
 signals:
     void 	Closed();
     void	gesFrame(char*);    

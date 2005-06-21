@@ -42,6 +42,8 @@
 
 
 
+
+
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
     : QWidget( parent, name )
     {
@@ -81,8 +83,8 @@ backcol=0;
     }
      for (int idx=0;idx<12;idx++)
     {
-       ball[idx]=new BtLabel("",/*NULLscrsav*/this,"g");
-       ball[idx]->hide();
+       ball[idx]=new palla/*BtLabel*/(/*NULLscrsav*/this,"",0);
+       ball[idx]->hide();       
    }
     grab=NULL;
         
@@ -191,6 +193,14 @@ void BtMain::hom()
     
     //-----------------------------------------------
     xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen, &sched,bg, fg1, fg2);
+    
+    setBackgroundColor(*bg);
+     for (int idx=0;idx<12;idx++)
+    {
+       ball[idx] -> setBackgroundColor(*bg);  
+       ball[idx] -> setBackgroundMode(Qt::NoBackground);
+   }
+    //setForegroundColor(*fg1);
     
     xmlFile = new QFile("cfg/conf.xml");
     QXmlInputSource source2( xmlFile );
@@ -415,11 +425,6 @@ void BtMain::gesScrSav()
                         specPage -> hide();
                     if (pagDefault)
                         pagDefault -> showFullScreen();
-                    
-                    
-//                    Sfondo.grabWindow(pagDefault->winId(),0,0,240,320); 
-//                    Sfondo.grabWidget(pagDefault,0,0,240,320); 
-//                    scrsav->setGeometry(0,0,240,320);
                 }
             }    
             if  ( (tiempo>=65) && isHidden())
@@ -430,18 +435,15 @@ void BtMain::gesScrSav()
                         delete(Sfondo[idx]);
                         if (pagDefault)
                         {
-  //                      Sfondo[idx] = new QPixmap(QPixmap::grabWindow(pagDefault->winId(),(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4))
                             Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(pagDefault,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4)); 
                     }
                     else
                     {
                             Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(Home,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4));     
-//                        Sfondo[idx] = new QPixmap(QPixmap::grabWindow(Home->winId(),(idx%3)*80,(int)(idx/3)*80,80,80)); 
                     }
                     screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
                     screensav[idx]->setPixmap(*Sfondo[idx]);
-                    screensav[idx]->show();
-                    //                             qDebug("idx=%d - memo %d %d",idx,idx%3, (int)(idx/3));
+                    screensav[idx]->hide();show();
                 }                           
                 if (grab)
                     delete(grab);
@@ -457,7 +459,7 @@ void BtMain::gesScrSav()
             if (isShown())
             {
         //        qDebug("tiempo: %d",tiempo);
-                if ( (tiempo/100)%2 )
+                if ( 0/*(tiempo/100)%2 */)
                 {                   
                     if(backcol>2)
                     {
@@ -521,8 +523,9 @@ void BtMain::gesScrSav()
                                 vy[idx]=1;
                             if (!vx[idx])
                                 vx[idx]=1;                            
-                        dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
-                        ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                        dim[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
+                    //    ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                        //    ball[idx]->setPaletteBackgroundColor(backgroundColor());
                         ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
                         ball[idx]->show();
                     }
@@ -546,42 +549,54 @@ void BtMain::gesScrSav()
                                                 
                          for (int idx=0;idx<BALL_NUM;idx++)
     {
+                            ball[idx] -> setBackgroundMode(Qt::NoBackground);
                         x[idx]+=vx[idx];
                         y[idx]+=vy[idx];
-                        ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
-                        repaint();
+                       
                         if  (x[idx]<=0) 
                         {
-                            vx[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) ;
-                            x[idx]=0;
+                            vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5 ;
+                            x[idx]=dim[idx]+0;
     //                        dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0));
-                            ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+//                            ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                            
+                             ball[idx]->setPaletteForegroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                            // repaint(0,0,width(),height(),TRUE);
                         }
                         if  (y[idx]>(MAX_HEIGHT-dim[idx])) 
                         {
-                           vy[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) -15;
+                           vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;
    //                         dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0));
-                            y[idx]=MAX_HEIGHT-dim[idx];
-                            ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                            y[idx]=MAX_HEIGHT-2*dim[idx];
+//                            ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                            ball[idx]->setPaletteForegroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+                          //   repaint(0,0,width(),height(),TRUE);
                         }
                         if   (y[idx]<=0) 
                         {                         
-                            vy[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) ;
+                            vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5 ;
                             if (!vy[idx])
                                 vy[idx]=1;
-                            y[idx]=0;
-                            dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
-  //                          ball[idx]->setPaletteBackgroundColor(QColor((int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0))));
+                            y[idx]=dim[idx]+0;
+   //                         dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
+  //                         ball[idx]->setPaletteBackgroundColor(QColor((int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0))));
+
+                            ball[idx]->setPaletteForegroundColor(QColor((int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0))));
+                        //    repaint(0,0,width(),height(),TRUE);
                         }
                    if  (x[idx]>(MAX_WIDTH-dim[idx])) 
                         {
-                            vx[idx]=(int) (15.0*rand() / (RAND_MAX+1.0)) -15;         
+                            vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;         
                             if (!vx[idx])
                                 vx[idx]=1;
-                            dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
-                            x[idx]=MAX_WIDTH-dim[idx];
+       //                     dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
+                            x[idx]=MAX_WIDTH-2*dim[idx];
    //                         ball[idx]->setPaletteBackgroundColor(QColor((int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0))));
+                             ball[idx]->setPaletteForegroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
+
+                      //       repaint(0,0,width(),height(),TRUE);
                         }
+                    ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
                }
                     }
                 }        
@@ -657,3 +672,39 @@ void BtMain::testPwd(char* p)
     else
         tasti -> showTastiera();
 }
+
+
+
+
+palla::palla(QWidget*parent, const char* name,unsigned int f) : BtLabel(parent, name, f){}
+
+void palla::paintEvent(QPaintEvent *)  {
+        QPainter paint(this);
+
+//        paint.fillRect ( 0,0,width(),height(),QBrush ( backgroundColor(), Qt::SolidPattern ));
+                
+   /*     rx+=(int)(3.0*rand() / (RAND_MAX+1.0)) -1;
+        if (rx<8)
+            rx=8;
+        if (rx>width())
+            rx=width();
+        
+        ry+=(int) (3.0*rand() / (RAND_MAX+1.0)) -1;
+        if (ry<8)
+            ry=8;
+        if (ry>height())
+            ry=height();
+
+      //  setFixedSize(rx,ry);
+ */
+        paint.setBrush(QBrush ( foregroundColor(), Qt::SolidPattern ));
+
+//       paint.drawEllipse ( 0,0,rx,ry);
+       paint.drawEllipse ( 0,0,width(),height());
+       //ball[idx]->height(),ball[idx]->width());
+    };
+void palla ::clear()
+{
+QPainter paint(this);
+        paint.fillRect ( 0,0,width(),height(),QBrush ( backgroundColor(), Qt::SolidPattern ));
+  }
