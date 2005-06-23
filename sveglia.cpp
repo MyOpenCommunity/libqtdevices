@@ -425,7 +425,7 @@ void sveglia::okTipo()
 	difson->setGeom(0,0,240,240);	
 	difson->setNavBarMode(6);
 	difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
-	difson->show();	
+        difson->forceDraw();	
 
 	this->bannNavigazione->hide();
 	aggiornaDatiEEprom=1;
@@ -436,6 +436,7 @@ void sveglia::okTipo()
 	{
 	    volSveglia[idx]=0;
 	}
+    difson->show();	
     }
 }
 

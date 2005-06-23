@@ -385,7 +385,7 @@ void BtMain::gesScrSav()
     
     if (!firstTime)
     {
-        if  ( (tiempo>=16) && (getBacklight())) 
+        if  ( (tiempo>=30) && (getBacklight())) 
         {
 #ifndef BACKLIGHT_SEMPRE_ON  
             setBacklight(FALSE);
@@ -525,7 +525,7 @@ void BtMain::gesScrSav()
                                 vy[idx]=1;
                             if (!vx[idx])
                                 vx[idx]=1;                            
-                        dim[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
+                        dim[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+15;
                           
                         QBitmap Maschera=QBitmap(dim[idx],dim[idx],TRUE);
                         QPainter p( &Maschera );
