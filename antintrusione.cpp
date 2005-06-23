@@ -111,12 +111,16 @@ int antintrusione::setBGPixmap(char* backImage)
 }
 
 
-int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame)
+int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame, char* txt_tecnico, char* txt_intrusione, char* txt_manomissione, char* txt_panic)
  {        
     if (tipo== IMPIANTINTRUS)
     {
 	impianto -> addItem(tipo, descrizione,indirizzo,  IconaSx, IconaDx, icon, pressedIcon);
 	connect(impianto->getLast(),SIGNAL(impiantoInserito()),allarmi,SLOT(svuota()));
+    strncpy(&testoManom[0],txt_manomissione,MAX_PATH);
+    strncpy(&testoTecnico[0],txt_tecnico,MAX_PATH);
+    strncpy(&testoIntrusione[0],txt_intrusione,MAX_PATH);
+    strncpy(&testoPanic[0],txt_panic,MAX_PATH);
     }
     else if (tipo== ZONANTINTRUS)
 	zone->addItem(tipo , descrizione , indirizzo ,IconaSx,IconaDx, icon, pressedIcon);
@@ -156,13 +160,24 @@ void antintrusione::gesFrame(char*frame)
 	if ( (! strncmp(msg_open.Extract_cosa(),"12",2) ) || (! strncmp(msg_open.Extract_cosa(),"15",2) ) || \
 	     (! strncmp(msg_open.Extract_cosa(),"16",2) ) || (! strncmp(msg_open.Extract_cosa(),"17",2) ) )     
 	{
-	    char descr[25];
-	    char zona[3];
+            
+	    char descr[2*MAX_PATH],time[MAX_PATH];
+	    char zona[3];            
+            if  (! strncmp(msg_open.Extract_cosa(),"12",2))
+                strncpy(&descr[0],&testoTecnico[0],MAX_PATH);
+             if  (! strncmp(msg_open.Extract_cosa(),"15",2))
+                strncpy(&descr[0],&testoIntrusione[0],MAX_PATH);
+             if  (! strncmp(msg_open.Extract_cosa(),"16",2))
+                strncpy(&descr[0],&testoManom[0],MAX_PATH);
+             if  (! strncmp(msg_open.Extract_cosa(),"17",2))
+                strncpy(&descr[0],&testoPanic[0],MAX_PATH);
+
 	    strcpy(&zona[0],msg_open.Extract_dove());
-	    sprintf(&descr[0], "%s   %s    Z %s", QDateTime::currentDateTime().toString("hh:mm").ascii(), \
+	    sprintf(&time[0], "\n%s   %s    Z %s", QDateTime::currentDateTime().toString("hh:mm").ascii(), \
 			    QDateTime::currentDateTime().toString("dd.MM").ascii(), &zona[1]);	
-	    allarmi->addItem(ALLARME, &descr[0], NULL, ICON_DEL);
-	    aggiorna=1;
+        strncat(&descr[0],&time[0],MAX_PATH);
+        allarmi->addItem(ALLARME, &descr[0], NULL, ICON_DEL);
+        aggiorna=1;
 	 }
     }    
     if (aggiorna)

@@ -21,6 +21,7 @@
 #include "genericfunz.h"
 #include <qwidget.h>
 #include "btlabel.h"
+#include "main.h"
 #include <qpixmap.h>
 #include <qtimer.h>
 
@@ -77,7 +78,7 @@ public:
     unsigned char stato;
     virtual void inizializza();	
     //provvisoriamente per debug li metto public
-    char testo[MAX_TEXT],testoSecondario[MAX_TEXT_2];
+    char testo[MAX_PATH*2],testoSecondario[MAX_TEXT_2];
     void	nascondi(char);
     void	mostra(char);
     unsigned char getState();

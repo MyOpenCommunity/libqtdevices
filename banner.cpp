@@ -49,7 +49,7 @@ banner::banner( QWidget *parent,const char *name )
 void banner::SetText( const char *text )
 {
     memset(testo,'\000',sizeof(testo));
-    strncpy(testo,text,MAX_TEXT-1);
+    strncpy(testo,text,MAX_PATH*2-1);
  }
 
 void banner::SetSeconaryText( const char *text )

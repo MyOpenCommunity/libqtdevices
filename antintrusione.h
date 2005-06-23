@@ -28,7 +28,7 @@ public:
    void 	setBGColor(int, int , int );
    void 	setFGColor(int , int , int );
    int 	setBGPixmap(char* );
-   int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0);
+   int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, char* txt_tecnico=NULL, char* txt_intrusione=NULL, char* txt_manomissione=NULL, char* txt_panic=NULL );
    void 	setNumRighe(uchar);
    void 	inizializza();
    void	setGeom(int,int,int,int);
@@ -49,6 +49,7 @@ private:
   sottoMenu* zone;  
   sottoMenu* impianto;
   sottoMenu* allarmi;
+  char testoManom[MAX_PATH], testoTecnico[MAX_PATH], testoIntrusione[MAX_PATH], testoPanic[MAX_PATH];
 };
 
 

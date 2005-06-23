@@ -61,8 +61,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 }
 
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
-{
-    qDebug("*********\n%d   +    %d",navBarMode,hasNavBar);
+{   
     if(navBarMode!=hasNavBar)
     {
         if(bannNavigazione)
@@ -195,7 +194,7 @@ void sottoMenu::draw()
     uint idx,idy;
     if (!(indicold==indice))
     {
-        qDebug("indicold=%d - indice=%d",indicold,indice);
+//        qDebug("indicold=%d - indice=%d",indicold,indice);
 	for (idy=0;idy<elencoBanner.count();idy++)
 	    elencoBanner.at(idy)->hide();
 	if (hasNavBar)
