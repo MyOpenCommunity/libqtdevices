@@ -168,7 +168,7 @@ void antintrusione::gesFrame(char*frame)
     if (aggiorna)
     {
     qDebug("ARRIVATO ALLARME!!!!");
-        allarmi->draw();
+        allarmi->forceDraw();
         allarmi->show();
         impianto->hide();
         zone->hide();
