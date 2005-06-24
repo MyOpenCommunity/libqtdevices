@@ -117,10 +117,18 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* I
     {
 	impianto -> addItem(tipo, descrizione,indirizzo,  IconaSx, IconaDx, icon, pressedIcon);
 	connect(impianto->getLast(),SIGNAL(impiantoInserito()),allarmi,SLOT(svuota()));
-    strncpy(&testoManom[0],txt_manomissione,MAX_PATH);
-    strncpy(&testoTecnico[0],txt_tecnico,MAX_PATH);
-    strncpy(&testoIntrusione[0],txt_intrusione,MAX_PATH);
-    strncpy(&testoPanic[0],txt_panic,MAX_PATH);
+    memset(&testoManom[0],'\000',MAX_PATH);
+    memset(&testoTecnico[0],'\000',MAX_PATH);
+    memset(&testoIntrusione[0],'\000',MAX_PATH);
+    memset(&testoPanic[0],'\000',MAX_PATH);  
+    if (txt_manomissione)
+        strncpy(&testoManom[0],txt_manomissione,MAX_PATH);
+    if (txt_tecnico)
+        strncpy(&testoTecnico[0],txt_tecnico,MAX_PATH);
+    if (txt_intrusione)
+        strncpy(&testoIntrusione[0],txt_intrusione,MAX_PATH);
+    if (txt_panic)
+        strncpy(&testoPanic[0],txt_panic,MAX_PATH);
     }
     else if (tipo== ZONANTINTRUS)
 	zone->addItem(tipo , descrizione , indirizzo ,IconaSx,IconaDx, icon, pressedIcon);
@@ -162,14 +170,17 @@ void antintrusione::gesFrame(char*frame)
 	{
             
 	    char descr[2*MAX_PATH],time[MAX_PATH];
-	    char zona[3];            
-            if  (! strncmp(msg_open.Extract_cosa(),"12",2))
+	    char zona[3];       
+        
+        memset(&descr[0],'\000',2*MAX_PATH);
+        
+            if  ( (! strncmp(msg_open.Extract_cosa(),"12",2)) && (testoTecnico[0]) )
                 strncpy(&descr[0],&testoTecnico[0],MAX_PATH);
-             if  (! strncmp(msg_open.Extract_cosa(),"15",2))
+             if  ( (! strncmp(msg_open.Extract_cosa(),"15",2)) && (testoIntrusione[0]) )
                 strncpy(&descr[0],&testoIntrusione[0],MAX_PATH);
-             if  (! strncmp(msg_open.Extract_cosa(),"16",2))
+             if  ( (! strncmp(msg_open.Extract_cosa(),"16",2)) && (testoManom[0]) )
                 strncpy(&descr[0],&testoManom[0],MAX_PATH);
-             if  (! strncmp(msg_open.Extract_cosa(),"17",2))
+             if  ( (! strncmp(msg_open.Extract_cosa(),"17",2)) && (testoPanic[0]) )
                 strncpy(&descr[0],&testoPanic[0],MAX_PATH);
 
 	    strcpy(&zona[0],msg_open.Extract_dove());
