@@ -322,14 +322,15 @@ bool getBacklight()
 }
 
 
-void setOrientation(unsigned char o)
+void setOrientation(char* o)
 {
+        qDebug("\n\n\nsetOrientation: %s\n\n\n",o);
     if ( QFile::exists("/proc/sys/dev/btweb/upsidedown") )
     {
 	int fd = open("/proc/sys/dev/btweb/upsidedown", O_WRONLY);
 	if (fd >= 0 )
 	{
-	    write(fd, &o, 1);
+	    write(fd, &o[0], 1);
 	    close(fd);
 	}
     }

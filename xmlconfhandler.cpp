@@ -684,57 +684,10 @@ bool xmlconfhandler::characters( const QString & qValue)
         {
             if (!CurTagL3.compare("orientation"))
             {   	    
-                setOrientation((unsigned char)qValue.ascii()); 	
+                qDebug(qValue.ascii());
+                setOrientation((char*)qValue.ascii()); 	
             }
-            /*else if (!CurTagL3.compare("bg"))
-            {   
-                if (!CurTagL4.compare("r"))
-                {   
-                    bg_r=qValue.toInt( &ok, 10 );
-                }
-                else if (!CurTagL4.compare("g"))
-                {   
-                    bg_g=qValue.toInt( &ok, 10 );
-                }
-                else if (!CurTagL4.compare("b"))
-                {   
-                    bg_b=qValue.toInt( &ok, 10 );
-                    datiGen->setPaletteBackgroundColor(QColor(bg_r,bg_g,bg_b));
-                }
-            }
-            else if (!CurTagL3.compare("fg1"))
-            {   
-                if (!CurTagL4.compare("r"))
-                {   
-                    fg_r=qValue.toInt( &ok, 10 );
-                }
-                else if (!CurTagL4.compare("g"))
-                {   
-                    fg_g=qValue.toInt( &ok, 10 );
-                }
-                else if (!CurTagL4.compare("b"))
-                {   
-                    fg_b=qValue.toInt( &ok, 10 );
-                    datiGen->setPaletteForegroundColor(QColor(fg_r,fg_g,fg_b));
-                }
-            }
-            else if (!CurTagL3.compare("fg2"))
-            {   
-                if (!CurTagL4.compare("r"))
-                {   
-                    fg_r1=qValue.toInt( &ok, 10 );
-                }
-                else if (!CurTagL4.compare("g"))
-                {   
-                    fg_g1=qValue.toInt( &ok, 10 );
-                }
-                else if (!CurTagL4.compare("b"))
-                {   
-                    fg_b1=qValue.toInt( &ok, 10 );
-                    SecondForeground=QColor(fg_r1,fg_g1,fg_b1);
-                }
-                
-            }*/
+ 
             //
             // Leggo info homepage
             //

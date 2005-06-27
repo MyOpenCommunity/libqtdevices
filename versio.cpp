@@ -97,9 +97,9 @@ void versio::gestFrame(char* frame)
 	}
 	if (!strcmp(msg_open.Extract_grandezza(),"3"))
 	{
-	    hw=atoi(msg_open.Extract_valori(2));
+	    hw=atoi(msg_open.Extract_valori(1));
 	    aggiorna=1;	    
-	 //   qDebug("presa vers HW = %d",hw);
+	    qDebug("presa vers HW = %d",hw);
 	}
     }
     if (aggiorna)

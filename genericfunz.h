@@ -17,7 +17,7 @@ unsigned char getContrast();
 void setBacklight(bool);
 bool getBacklight();
 void setBeep(bool,bool);
-void setOrientation(unsigned char);
+void setOrientation( char*);
 void beep();
 void beep(int);
 bool getBeep();
