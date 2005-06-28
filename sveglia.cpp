@@ -317,13 +317,18 @@ void sveglia::drawSelectPage()
     {
 	if (idx!=tipoSveglia)
    	    choice[idx]->setOn(FALSE);
+    else
+        choice[idx]->setOn(TRUE);
     }
 }
 
 void sveglia::sel1(bool isOn)
 {
     if (isOn)
-	tipoSveglia=ONCE;
+    {
+        tipoSveglia=ONCE;
+        onceToGest=TRUE;
+    }
     drawSelectPage();
 }
 void sveglia::sel2(bool isOn)
@@ -346,25 +351,27 @@ void sveglia::sel4(bool isOn)
 }
 void sveglia::Closed()
 {
+    emit(ImClosed()); 
     qDebug("Sveglia Closed");
+    hide();
     //imposta la sveglia in 
     if (difson)
     {	
-        qDebug("Sveglia Closed DIFSON");
         disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
         if(aggiornaDatiEEprom)
         {
             difson->hide();
-            difson->setNumRighe((uchar)4);	     
-            difson->setGeom(0,0,240,320);
-            difson->setNavBarMode(3);
-            difson->forceDraw();
-            //	difson->/*amplificatori->*/showFullScreen();
             difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
+            difson->setNumRighe((uchar)4);	     
+            difson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
+            difson->setNavBarMode(3);
+            
+            //	difson->/*amplificatori->*/showFullScreen();
+
+            difson->forceDraw();
             
 #if defined (BTWEB) || defined (BT_EMBEDDED)
             
-            qDebug("Sveglia Closed AGGIORNA EEPROM");
             int eeprom;
             eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
             lseek(eeprom,BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR)+KEY_LENGTH, SEEK_SET);
@@ -377,22 +384,14 @@ void sveglia::Closed()
             write(eeprom,&sorgente,1 );
             write(eeprom,&stazione,1 );
             ::close(eeprom);
-            qDebug("Sveglia Closed FINE AGGIORNA EEPROM");
 #endif
-//            disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
         }	
     }
-    hide();
-    
+
     gesFrameAbil=FALSE;
-    /*    delete(oraSveglia);
-    oraSveglia=new QDateTime();*/
     activateSveglia(TRUE);
-    //    qDebug("sveglia::Closed()");
-    
     delete(oraSveglia);
     oraSveglia = new QDateTime(dataOra->getDataOra());
-    
     copyFile("cfg/conf.xml","cfg/conf1.lmx");
     setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "hour",oraSveglia->time().toString("hh"),serNum);
     setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "minute",oraSveglia->time().toString("mm"),serNum);
@@ -401,8 +400,9 @@ void sveglia::Closed()
     setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",&t[0],serNum);
     QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
     
-    emit(ImClosed());
 }
+
+
 
 void sveglia::okTipo()
 {
@@ -420,24 +420,23 @@ void sveglia::okTipo()
     }
     else if (difson)
     {	
-	difson->setNumRighe((uchar)3);	
-        difson->forceDraw();
-	difson->setGeom(0,0,240,240);	
-	difson->setNavBarMode(6);
-	difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
-        difson->forceDraw();	
-
-	this->bannNavigazione->hide();
-	aggiornaDatiEEprom=1;
-	gesFrameAbil=TRUE;
-	sorgente=101;
-	stazione=0;	    
-	for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
-	{
-	    volSveglia[idx]=0;
-	}
-    difson->show();	
+    this->bannNavigazione->hide();
+    difson->setNumRighe((uchar)3);	
+    difson->setGeom(0,0,240,240);	
+    difson->setNavBarMode(6);
+    difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
+    difson->forceDraw();	    
+    
+    aggiornaDatiEEprom=1;
+    gesFrameAbil=TRUE;
+    sorgente=101;
+    stazione=0;	    
+    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
+    {
+        volSveglia[idx]=0;
     }
+    difson->show();	
+}
 }
 
 void sveglia::activateSveglia(bool a)
@@ -574,6 +573,8 @@ void sveglia::verificaSveglia()
 	    }
 
 	    qDebug("PARTE LA SVEGLIA");
+        if (onceToGest)
+            tipoSveglia=NESSUNO;
 	    onceToGest=FALSE;
 
 	}
@@ -598,7 +599,7 @@ void sveglia::aumVol()
         memset(pippo,'\000',sizeof(pippo));
         strcat(pippo,"*#16*");
         sprintf(&pippo[strlen(pippo)],"%d",sorgente);
-        strcat(pippo,"*#7*");
+        strcat(pippo,"*#10*"); //7
         sprintf(&pippo[strlen(pippo)],"%d",stazione);
         strcat(pippo,"##");
         msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));

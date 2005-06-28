@@ -46,6 +46,65 @@ banner::banner( QWidget *parent,const char *name )
     stato=0;
 }
 
+
+banner::~banner()
+{
+    qDebug("---1---");
+    if (BannerIcon)
+        delete (BannerIcon);
+    qDebug("---2---");
+    if (BannerText)
+        delete (BannerText);
+    qDebug("---3---");
+    if (SecondaryText)
+        delete (SecondaryText);
+    qDebug("---4---");
+    
+    for(int idx=0;idx<MAX_NUM_ICON;idx++)
+    {
+        if (Icon[idx])
+            delete (Icon[idx]);
+    }
+    qDebug("---9---");
+    for (int idx=0;idx<4;idx++)
+    {
+        if (Icon[idx])
+            delete (pressIcon[idx]);
+    }
+    qDebug("---10---");
+    
+    if (dxButton)
+        delete (dxButton);
+    qDebug("---6---");
+    if (csxButton)
+    {
+ /*       disconnect(csxButton,SIGNAL(clicked()),this,SIGNAL(csxClick()));
+        disconnect(csxButton,SIGNAL(pressed()),this,SIGNAL(csxPressed()));
+        disconnect(csxButton,SIGNAL(released()),this,SIGNAL(csxReleased()));*/
+      delete(csxButton);
+    }
+    qDebug("---7---");
+    if (cdxButton)
+        
+        delete (cdxButton);
+    qDebug("---8---");
+    if (sxButton)
+        delete (sxButton);
+    qDebug("---5---");
+    BannerIcon = NULL;
+    BannerText = NULL;
+    SecondaryText = NULL;
+    sxButton = NULL;
+    dxButton = NULL;
+    csxButton = NULL;
+    cdxButton = NULL;
+    for (int idx=0;idx<MAX_NUM_ICON;idx++)
+        Icon[idx] = NULL;
+    for (int idx=0;idx<4;idx++)
+        pressIcon[idx] = NULL;
+}
+
+
 void banner::SetText( const char *text )
 {
     memset(testo,'\000',sizeof(testo));

@@ -2,7 +2,6 @@
 #include "main.h"
 #include "genericfunz.h"
 
-
 #include <qdialog.h>
 #include <qfontmetrics.h>
 #include <qpainter.h>
@@ -17,6 +16,7 @@
 #if defined(QT_ACCESSIBILITY_SUPPORT)
 #include <qaccessible.h>
 #endif
+#include <unistd.h>
 
 
 static const int autoRepeatDelay  = 2300;
@@ -90,6 +90,10 @@ BtButton::BtButton( const QIconSet& icon, const QString &text,
 BtButton::~BtButton()
 {
     delete d;
+    if (prespixmap)
+        delete (prespixmap);
+    if (rilpixmap)
+        delete(rilpixmap);
 }
 
 void BtButton::init()
@@ -107,8 +111,7 @@ void BtButton::init()
     setBackgroundMode( PaletteButton );
     setSizePolicy( QSizePolicy( QSizePolicy::Fixed/*QSizePolicy::Minimum*/, QSizePolicy::Fixed ) );
   prespixmap=NULL;
-  rilpixmap=NULL;
-    
+  rilpixmap=NULL;    
 }
 
 

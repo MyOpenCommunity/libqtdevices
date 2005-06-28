@@ -62,11 +62,13 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 {   
+     
     if(navBarMode!=hasNavBar)
     {
-        if(bannNavigazione)
+       if(bannNavigazione)
         {	
             //free( bannNavigazione );
+            bannNavigazione->hide();
             delete( bannNavigazione );
             bannNavigazione=NULL;
         }

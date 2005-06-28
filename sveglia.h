@@ -90,7 +90,8 @@ enum sveFreq{
                 SEMPRE = 1,
 	ONCE = 0,
 	FERIALI = 2,
-	FESTIVI= 3
+	FESTIVI= 3,
+    NESSUNO=5
    };
 
 enum sveType{

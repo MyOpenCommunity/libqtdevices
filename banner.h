@@ -31,6 +31,7 @@ class banner : public QWidget
     Q_OBJECT
 public:
     banner( QWidget *, const char *);
+    ~banner();
     virtual void SetText(const char *);
     void 	SetSeconaryText( const char * );
     void 	SetIcons( uchar , const char * );
