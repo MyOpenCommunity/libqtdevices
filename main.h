@@ -145,10 +145,10 @@ enum  bannerType {
   PROTEZIONE=26,
   VERSIONE=27,
   CONTRASTO=28,
-  MOD_SCENARI=29,       // programmazione modulo scenari
-  DATA=30,              // item special visualizza data 
-  TEMPERATURA=31,       // item special visualizza temperatura
-  OROLOGIO=32,          // item special visualizza ora
+  MOD_SCENARI=29,       
+  DATA=30,                
+  TEMPERATURA=31,       
+  OROLOGIO=32,          
   ALLARME=33,
   CMDSPECIAL=34	  
 };

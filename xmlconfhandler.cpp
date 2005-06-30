@@ -270,7 +270,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                     if ( ( CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty() )
                     {
                         sottoMenu *pageAct=NULL;
-                        qWarning("ESCO PAGEITEM:ID %d",page_item_id);
+                        qWarning("INSERTED ITEM:ID %d",page_item_id);
                         /*		    for ( QString * MyPnt = page_item_list_img->first(); MyPnt; MyPnt= page_item_list_img->next() )
                         qWarning("IMG=%s su %d",MyPnt->ascii(),page_item_list_img->count());*/
                         
@@ -684,7 +684,7 @@ bool xmlconfhandler::characters( const QString & qValue)
         {
             if (!CurTagL3.compare("orientation"))
             {   	    
-                qDebug(qValue.ascii());
+              // qDebug(qValue.ascii());
                 setOrientation((char*)qValue.ascii()); 	
             }
  
@@ -749,7 +749,7 @@ bool xmlconfhandler::characters( const QString & qValue)
                 {
                             QWidget* pageAct;  
                             page_id = qValue.toInt( &ok, 10 );
-                            qWarning("PAGE:ID %d",page_id);
+                            qWarning("INSERTING PAGE: %d",page_id);
                             
                             
                             switch (page_id)

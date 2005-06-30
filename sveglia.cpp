@@ -599,7 +599,7 @@ void sveglia::aumVol()
         memset(pippo,'\000',sizeof(pippo));
         strcat(pippo,"*#16*");
         sprintf(&pippo[strlen(pippo)],"%d",sorgente);
-        strcat(pippo,"*#10*"); //7
+        strcat(pippo,"*#7*"); 
         sprintf(&pippo[strlen(pippo)],"%d",stazione);
         strcat(pippo,"##");
         msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
@@ -718,14 +718,15 @@ void sveglia::spegniSveglia(bool b)
 {
     if ( (!b) && (aumVolTimer) )
     {
-	if (aumVolTimer->isActive()) 
-	{
-	    qDebug("SPENGO LA SVEGLIA");
-	    aumVolTimer->stop();
-	    setBeep(buzAbilOld,FALSE);
-	    delete (aumVolTimer);
-	    aumVolTimer=NULL;	   
-	}
+        if (aumVolTimer->isActive()) 
+        {
+            qDebug("SPENGO LA SVEGLIA");
+            aumVolTimer->stop();
+            if (tipo==BUZZER)
+                setBeep(buzAbilOld,FALSE);
+            delete (aumVolTimer);
+            aumVolTimer=NULL;	   
+        }
     }
     else if (b)
     {

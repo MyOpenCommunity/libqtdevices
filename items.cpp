@@ -927,7 +927,7 @@ amplificatore::amplificatore( QWidget *parent,const char *name,char* indirizzo,c
         { 
     setRange(1,9);
     SetIcons( IconaSx, IconaDx ,icon, inactiveIcon,(char)1 );
-    qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
+    //qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
     setAddress(indirizzo);
     connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));
     connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
@@ -1264,6 +1264,7 @@ void banradio::gestFrame(char*frame)
                     freq=atoi(msg_open.Extract_valori(1));
                     freq=freq/1000;
                     myRadio->setFreq(freq);
+                    myRadio->setRDS("");
                     aggiorna=1;
                 }
                 if ( !strcmp(msg_open.Extract_grandezza(),"7")) 
@@ -1438,7 +1439,7 @@ void banradio::memoStaz(uchar st)
     memset(pippa,'\000',sizeof(pippa));
     strcat(pippo,"*#16*");
     strcat(pippo,getAddress());
-    strcat(pippo,"*#7*");//     strcat(pippo,"*#9*0*");
+    strcat(pippo,"*#10*");
     memset(pippa,'\000',sizeof(pippa));
     //     f=myRadio->getFreq()*1000;
     //     sprintf(pippa,"%.0f",f);

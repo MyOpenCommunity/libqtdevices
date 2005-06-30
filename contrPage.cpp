@@ -151,8 +151,8 @@ void contrPage::aumContr()
     uchar c;
     
     c=getContrast();
-    if (c<=250)
-	setContrast(c+5,FALSE);    
+    if (c<=240)
+	setContrast(c+10,FALSE);    
 }
 
 void contrPage::decContr()
@@ -160,8 +160,8 @@ void contrPage::decContr()
     uchar c;
     
     c=getContrast();
-    if (c>=5)
-	setContrast(c-5,FALSE);    
+    if (c>=10)
+	setContrast(c-10,FALSE);    
 }
 
 /*void contrPage::OkClose()
