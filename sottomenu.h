@@ -78,7 +78,7 @@ public slots:
 private:
   QPtrList<banner> elencoBanner;
   QTimer* iniTim;
-  int indice,height,width, indicold;  
+  unsigned int indice,height,width, indicold;  
   uchar numRighe, hasNavBar;	
   bannFrecce * bannNavigazione;
   bool 	freez;

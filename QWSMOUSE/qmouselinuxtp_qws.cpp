@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouselinuxtp_qws.cpp,v 1.4 2005/05/24 14:40:10 cvs Exp $
+** $Id: qmouselinuxtp_qws.cpp,v 1.5 2005/06/30 13:38:33 cvs Exp $
 **
 ** Implementation of Qt/Embedded mouse drivers
 **
@@ -219,7 +219,7 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
     return;
 
   int n;
-  int myidx;
+//  int myidx;
 
 //DEBUG  qWarning("mouseIdx=%d",mouseIdx);
   do

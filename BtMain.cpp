@@ -95,11 +95,11 @@ backcol=0;
     datiGen = new versio(NULL, "DG");
     struct sysinfo info;
     sysinfo(&info);
-    qDebug("uptime: %d",info.uptime);
-    qDebug("touch ago: %d",getTimePress());
+    qDebug("uptime: %d",(int)info.uptime);
+    qDebug("touch ago: %d",(int)getTimePress());
     
     
-    if (   (QFile::exists("/etc/pointercal")) && ( (info.uptime>200) || ( (info.uptime-1)<=getTimePress() )  ) )
+    if (   (QFile::exists("/etc/pointercal")) && ( (info.uptime>200) || ( (unsigned long)(info.uptime-1)<=(unsigned long)getTimePress() )  ) )
     {
         tempo1 = new QTimer(this,"clock");
         tempo1->start(200);
@@ -252,7 +252,7 @@ void BtMain::init()
     struct sysinfo info;
     sysinfo(&info);
     //    qDebug("uptime= %d - timePress= %d", info.uptime, getTimePress() );
-    if ( (info.uptime<200) && ( (info.uptime-1)>getTimePress() )  ) 
+    if ( (info.uptime<200) && ( (unsigned long)(info.uptime-1)>(unsigned long)getTimePress() )  ) 
     {	
         calib = new Calibrate(NULL,"calibrazione",0,1);
         

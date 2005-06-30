@@ -45,7 +45,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
 	  fprintf( StdLog, "<BTo> %s\n", msg );
 #endif
 #ifdef TIMESTAMP      
-      fprintf( StdLog, "<BTo> %02d:%02d:%02d:%01d -> %s\n",QTime::currentTime().hour() ,QTime::currentTime().minute() ,QTime::currentTime().second(),QTime::currentTime().msec(),msg );
+      fprintf( StdLog, "<BTo>%.2d:%.2d:%.2d,%.1d  %s\n",QTime::currentTime().hour() ,QTime::currentTime().minute() ,QTime::currentTime().second(),QTime::currentTime().msec()/100,msg );
 #endif      
     break;
     case QtWarningMsg:

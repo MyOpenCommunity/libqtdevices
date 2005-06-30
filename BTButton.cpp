@@ -267,9 +267,9 @@ void BtButton::resizeEvent( QResizeEvent * )
 */
 void BtButton::drawButton( QPainter *paint )
 {
-    int diw = 0;
+   // int diw = 0;
 
-    QStyle::SFlags flags = QStyle::Style_Enabled;//QStyle::Style_Default;
+   // QStyle::SFlags flags = QStyle::Style_Enabled;//QStyle::Style_Default;
   //  if (isEnabled())
 //    flags |= QStyle::Style_Enabled;
 

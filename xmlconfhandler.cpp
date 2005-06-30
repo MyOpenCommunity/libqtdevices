@@ -270,7 +270,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                     if ( ( CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty() )
                     {
                         sottoMenu *pageAct=NULL;
-                        qWarning("INSERTED ITEM:ID %d",page_item_id);
+//                        qDebug("INSERTED ITEM:ID %d",page_item_id);
+                        qDebug("INS ITEM: %s",banTesti[page_item_id]);
                         /*		    for ( QString * MyPnt = page_item_list_img->first(); MyPnt; MyPnt= page_item_list_img->next() )
                         qWarning("IMG=%s su %d",MyPnt->ascii(),page_item_list_img->count());*/
                         
@@ -747,9 +748,9 @@ bool xmlconfhandler::characters( const QString & qValue)
             {
                 if (!CurTagL4.compare("id"))
                 {
-                            QWidget* pageAct;  
+                            QWidget* pageAct=NULL;  
                             page_id = qValue.toInt( &ok, 10 );
-                            qWarning("INSERTING PAGE: %d",page_id);
+                            qDebug("INSERTING PAGE: %s",pagTesti[page_id-1]);
                             
                             
                             switch (page_id)

@@ -211,7 +211,7 @@ int Client::socketFrameRead()
 	  emit frameIn(msg_open.frame_open);
       }
 }
-  
+return 0;  
 }
 
 

@@ -302,19 +302,36 @@ void sottoMenu::init()
 
 bool sottoMenu::setPul(char* chi, char* where)
 {
+    unsigned char p=0;
+    
     for (char idx=0;idx<elencoBanner.count();idx++)     
     {
-	if ( (!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)) )
-	    elencoBanner.at(idx)->setPul();
+        if ( (!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)) )
+        {
+            elencoBanner.at(idx)->setPul();
+            p=1;
+          }
     }
+    if (p)
+        return TRUE;
+    return FALSE;
 }
+
 bool sottoMenu::setGroup(char* chi, char* where, bool* group)
 {
+    unsigned char p=0;
+    
     for (char idx=0;idx<elencoBanner.count();idx++)     
     {	
-	if ( (!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)) )
-	    elencoBanner.at(idx)->setGroup(group); 
+        if ( (!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)) )
+        {
+            elencoBanner.at(idx)->setGroup(group); 
+            p=1;
+          }
     }
+    if (p)
+        return TRUE;
+    return FALSE;  
 }
 
 void sottoMenu::setIndex(char* indiriz)

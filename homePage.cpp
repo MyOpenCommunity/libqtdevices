@@ -266,7 +266,7 @@ void homePage::freezed(bool f)
 void homePage::gestFrame(char* frame)
  {    
     openwebnet msg_open;
-    char aggiorna;
+//    char aggiorna;
     char dovex[30];
 
     
@@ -290,7 +290,7 @@ void homePage::gestFrame(char* frame)
 	       char	tmp[10], temp[10];   
 	       
 	       icx=atoi(msg_open.Extract_valori(0));
-	      qDebug("vedo temperatura per Temp in Homepage: %d",icx);
+	      qDebug("vedo temperatura per Temp in Homepage: %d",(int)icx);
 	       memset(temp,'\000',sizeof(temp));
 	       if (icx>=1000)
 	       {

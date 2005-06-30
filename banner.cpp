@@ -519,7 +519,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 
 void banner::addItem(char item,int x,int y,int dimX, int dimY)
 {
-    QWidget * Item;
+    QWidget * Item=NULL;
  
     switch (item){
     case BUT1: sxButton = new BtButton(this,"Bottone di sinistra"); 
@@ -632,7 +632,7 @@ void banner::Draw()
     }
           if (minValue==maxValue)
     {
-	    QPixmap *pntIcon;
+	    QPixmap *pntIcon=NULL;
       
 	    if  (attivo==1)
 		pntIcon=Icon[3+contFrame];
@@ -932,5 +932,5 @@ int    banner::getSerNum(){return(serNum);}
 char banner::getId(){return(id);}
 void banner::setId(char i){id=i;}
 unsigned char banner::getState(){return stato;}
-char* banner::getManIcon(){}
-char* banner::getAutoIcon(){}
+char* banner::getManIcon(){return NULL;}
+char* banner::getAutoIcon(){return NULL;}

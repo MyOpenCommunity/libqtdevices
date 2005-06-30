@@ -153,8 +153,13 @@ enum  bannerType {
   CMDSPECIAL=34	  
 };
 
-
-      
+const char banTesti[34][20] = {"ATTUAT_AUTOM","DIMMER","ATTUAT_AUTOM_INT","VUOTO","SCENARIO","GR_ATT_INT","GR_DIMMER","CARICO",\
+                            "ATT_AUT_INT_SIC","ATT_AUT_TEMP","GR_ATT_INT","ATT_AUT_PULS","ATT_VCT_LS","ATT_VCT_SER","SET_DATA","VUOTO",\
+                            "SORGENTE","SORG_RADIO","AMPLI", "GR_AMPLI","SET_SVEGLIA","CALIB","TERMO","ZONANTI","IMPANTI","SUONO","PROT","VERS",\
+                            "CONTR","MOD_SCEN","DATA;TEMP","TIME","ALL","SPECIAL" };
+const char pagTesti[11][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
+                            "BACK","SPECIAL"," SCHEDULAZ" };
+                
 enum pulsType{
                 AUTOMAZ,
 	VCT_SERR,

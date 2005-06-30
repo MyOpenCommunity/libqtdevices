@@ -1433,7 +1433,7 @@ void banradio::memoStaz(uchar st)
     openwebnet msg_open;
     char    pippo[50],pippa[10];
     unsigned int ic;
-    double f;
+   // double f;
     
     memset(pippo,'\000',sizeof(pippo));
     memset(pippa,'\000',sizeof(pippa));
@@ -1448,7 +1448,7 @@ void banradio::memoStaz(uchar st)
     //     strcat(pippo,"*");
     ic=(unsigned int)st;
     sprintf(pippa,"%01hu",st);
-    qDebug("pippa1  :%01hu",&pippa[0]);
+ //   qDebug("pippa1  :%01hu",&pippa[0]);
     strcat(pippo,pippa);
     strcat(pippo,"##");
     qDebug(msg_open.frame_open);
@@ -1674,7 +1674,7 @@ void termoPage::gestFrame(char* frame)
                     char	tmp[10];   
                     
                     icx=atoi(msg_open.Extract_valori(0));
-                    qDebug("temperatura misurata: %d",icx);
+                    qDebug("temperatura misurata: %d",(int)icx);
                     memset(temp,'\000',sizeof(temp));
                     if (icx>=1000)
                     {
@@ -1714,8 +1714,8 @@ void termoPage::gestFrame(char* frame)
                     float icx;
                     char	tmp[10];   
                     
-                    qDebug("temperatura setpoint: %d",icx);
                     icx=atoi(msg_open.Extract_valori(0));
+                    qDebug("temperatura setpoint: %d",(int)icx);                    
                     memset(setpoint,'\000',sizeof(setpoint));
                     if (icx>=1000)
                     {

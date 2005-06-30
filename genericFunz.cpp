@@ -125,7 +125,7 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 	    if  (count==serNumId)
 	    {
 		sprintf(&app2[0], "<%s>",campo);
-		QIODevice::Offset ofs;
+	//	QIODevice::Offset ofs;
 		do{
 		    Line= t1.readLine().append('\n');
 		    if (!Line.contains(&app2[0],TRUE))
@@ -163,12 +163,12 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 
 bool setCfgValue(int id, const char* campo, const char* valore)
 {
-    setCfgValue(id, campo, valore,1);
+    return  setCfgValue(id, campo, valore,1);
 }
 
 bool setCfgValue(int id, const char* campo, const char* valore,int serNumId)
 {
-    setCfgValue(CONFILENAME, id, campo, valore, serNumId);
+    return  setCfgValue(CONFILENAME, id, campo, valore, serNumId);    
 }
 
 bool copyFile(char* orig, char* dest)
@@ -191,6 +191,7 @@ bool copyFile(char* orig, char* dest)
     }while(!tIN.atEnd());
      filIN->close();    
      filOUT->close();             
+     return(TRUE);
 }
 
 void setContrast(unsigned char c,bool b)
