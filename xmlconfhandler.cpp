@@ -50,12 +50,15 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu
     
  //   bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
     Background=*bg;
+            qDebug("scello %d",bg);
     Foreground=*fg1;
+            qDebug("scello1 %d",bg);
     SecondForeground=*fg2;//QColor(255,0,0);
-    
+            qDebug("scello2 %d",bg);
     page_item_list_img = new QPtrList<QString>;
     page_item_list_group = new QPtrList<QString>;
     page_item_list_txt = new QPtrList<QString>;
+            qDebug("scello3 %d",bg);
 }
 
 /*******************************************
