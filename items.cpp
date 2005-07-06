@@ -1727,6 +1727,8 @@ void termoPage::gestFrame(char* frame)
                     strcat(setpoint,tmp);
                     strcat(setpoint,"\272C");
                     aggiorna=1;	       
+                    
+                    
                 }
             }
     }    

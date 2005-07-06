@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
-
+ #include <unistd.h>
 
  
 sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
@@ -252,10 +252,10 @@ void sottoMenu::goDown()
     {
 	indicold=indice;
 	if (--indice<0)
-	    indice=elencoBanner.count()-1;
-	draw();
+ 	    indice=elencoBanner.count()-1;
+ 	draw();
     }
-}
+ }
 void sottoMenu::setNumRighe(uchar n)
 {
     numRighe=n;
@@ -272,17 +272,17 @@ banner* sottoMenu::getCurrent()
 }
 
 banner* sottoMenu::getNext()
-{            
-    if (indice==(elencoBanner.count()-1))
-        return(elencoBanner.at(0));
-     return(elencoBanner.at(indice+1));
+{        
+        if (indice==(elencoBanner.count()-1))
+            return(elencoBanner.at(0));
+        return(elencoBanner.at(indice+1));
 }
 
 banner* sottoMenu::getPrevious()
 {
-    if (indice==0)
-        return(elencoBanner.at(elencoBanner.count()-1));
-     return(elencoBanner.at(indice-1));
+        if (indice==0)
+            return(elencoBanner.at(elencoBanner.count()-1));
+        return(elencoBanner.at(indice-1));
 }
 
 void sottoMenu::inizializza()

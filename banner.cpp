@@ -568,9 +568,9 @@ void banner::nascondi(char item)
     case BUT2: if(dxButton)
 		   dxButton->hide();
 	    break;
-    case TEXT: if(BannerText)
-		   BannerText->hide();
-	       break;
+    case TEXT: if(BannerText)        
+ 		   BannerText->hide();
+ 	       break;
     case ICON: if(BannerIcon)
 		   BannerIcon->hide();
 	       break;
@@ -931,6 +931,6 @@ void banner::setSerNum(int s){serNum=s;}
 int    banner::getSerNum(){return(serNum);}
 char banner::getId(){return(id);}
 void banner::setId(char i){id=i;}
-unsigned char banner::getState(){return stato;}
+unsigned char banner::getState(){return (stato); }
 char* banner::getManIcon(){return NULL;}
 char* banner::getAutoIcon(){return NULL;}
