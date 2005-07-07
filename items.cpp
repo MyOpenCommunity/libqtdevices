@@ -2278,6 +2278,7 @@ void gesModScen::gestFrame(char* frame)
             else if  (!strncmp(msg_open.Extract_cosa(),"41",2))  
             {
                 SetIcons(uchar(0),&iconOn[0]);       
+                disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
                 connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
                 disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
                 //mostra(BUT2);
@@ -2287,6 +2288,7 @@ void gesModScen::gestFrame(char* frame)
             else if  (!strncmp(msg_open.Extract_cosa(),"44",2))
             {
                 SetIcons(uchar(0),&iconOn[0]);       
+                disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
                 connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
                 disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
                 //mostra(BUT2);
