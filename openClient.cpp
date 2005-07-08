@@ -52,18 +52,18 @@ void Client::socketConnected()
 {
   qDebug( "Connected to server");
   if (ismonitor)  {
-//    qDebug( "TRY TO START monitor session");
+    qDebug( "TRY TO START monitor session");
     socket->clearPendingData ();
     sendToServer(SOCKET_MONITOR);
     emit(monitorSu());
   }
-/*  else {
-//    qDebug( "TRY TO START command");
+  else {
+    qDebug( "TRY TO START command");
     //socket->clearPendingData ();
 //    sendToServer(SOCKET_COMANDI ); 
 
-    memset(&fr[0],'\000',sizeof(fr));
-  }*/
+//    memset(&fr[0],'\000',sizeof(fr));
+  }
       
 }
 /****************************************************************************
@@ -224,6 +224,8 @@ return 0;
 void Client::socketConnectionClosed()
 {
   qDebug( "Connection closed by the server");    
+  if (ismonitor)
+      connetti();
 }
 
 /****************************************************************************
