@@ -41,7 +41,7 @@ private:
 class xmlcfghandler : public QXmlDefaultHandler
 {
 public:
-    xmlcfghandler(int*, char*);
+    xmlcfghandler(int*, char**);
     
     ~xmlcfghandler();
 
@@ -54,7 +54,7 @@ public:
 private:
     QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6,CurTagL7;
     bool ok;
-    char* logFile;
+    char** logFile;
     int* verbosity;
 };                   
 #endif 

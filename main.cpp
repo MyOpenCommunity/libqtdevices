@@ -71,9 +71,12 @@ int main( int argc, char **argv )
     
 //---
      QFile * xmlFile;
-    char logFile[100];
+    char *logFile;
     
-  xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile[0]);
+    logFile=new(char[MAX_PATH]);
+    strncpy(logFile, My_File_Log, MAX_PATH);
+    
+  xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
   xmlFile = new QFile(My_File_Cfg);
   QXmlInputSource source( xmlFile );
   QXmlSimpleReader reader;
@@ -84,13 +87,18 @@ int main( int argc, char **argv )
   //-----
     
     
- //   qDebug("<BTo> logfile=%s",My_File_Log);
- //   qDebug("<BTo> logverbosity=%d",VERBOSITY_LEVEL);
-    if (strcmp(My_File_Log,"")&&strcmp(My_File_Log,"-"))
+/*   qDebug("<BTo> logfile=%s",My_File_Log);
+   qDebug("<BTo> logfile=%s",logFile);
+   qDebug("<BTo> logverbosity=%d",VERBOSITY_LEVEL);*/
+  
+    if (strcmp(logFile,"")&&strcmp(logFile,"-"))
       // Settato il file di log
-      StdLog = fopen(My_File_Log,"a+");
+      StdLog = fopen(logFile,"a+");
     if (NULL==StdLog)
+    {
       StdLog = stdout;
+      qDebug("StdLog==NULL");
+  }
     // No bufferizzazione
     setvbuf(StdLog, (char *)NULL, _IONBF, 0);
     setvbuf(stdout, (char *)NULL, _IONBF, 0);

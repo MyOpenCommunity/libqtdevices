@@ -142,7 +142,7 @@ bool xmlskinhandler::characters( const QString & qValue)
 //_-------------------_------________-----------------------------------
 //-___________-_____-------------____________________
 
-xmlcfghandler::xmlcfghandler(int* v, char* c)
+xmlcfghandler::xmlcfghandler(int* v, char** c)
 {
     logFile=c;
     verbosity=v;
@@ -244,11 +244,20 @@ bool xmlcfghandler::characters( const QString & qValue)
                  if (!CurTagL4.compare("logverbosity"))
                      *verbosity=qValue.toInt( &ok, 10 );
             }
-            else if (!CurTagL3.compare("openserver"))
+            if (!CurTagL3.compare("logfile"))
+            {
+                  qDebug("sto per far strcpy");
+                 strncpy(*logFile,qValue.ascii(),MAX_PATH);
+                 qDebug("trovato logfile: %s      %s",*logFile,qValue.ascii());
+             }
+            /* else if (!CurTagL3.compare("openserver"))
             {
                  if (!CurTagL4.compare("logfile"))
+                 {
                      strncat(logFile,qValue.ascii(),sizeof(logFile));
-            }
+                     qDebug("trovato logfile: %s      %s",logFile,qValue.ascii());
+                 }
+            }*/
         }           
     }
     return TRUE;

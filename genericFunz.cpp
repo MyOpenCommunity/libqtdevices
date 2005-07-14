@@ -344,11 +344,30 @@ void beep(int t)
 	if (fd >= 0 )
 	{
 	    char te[10];
-//	    memset(te,'\000',sizeof(te));
-	    sprintf(&te[0],"4000 %d",t);
+#ifndef   HAS_HP      
+//	    memset(te,'\000',sizeof(te)); 
+        	    sprintf(&te[0],"4000 %d",t);
 //	    write(fd, "4000 ",6);
 	    write(fd, &te[0],strlen(&te[0]));	    
-	    close(fd);
+#endif        
+#ifdef  HAS_HP
+        sprintf(&te[0],"%d %d",2400,t/3);
+        write(fd, &te[0],strlen(&te[0]));	           
+        sleep(t/3000);
+        sprintf(&te[0],"%d %d",1600,t/3);
+        write(fd, &te[0],strlen(&te[0]));	          
+        sleep(t/3000);
+        sprintf(&te[0],"%d %d",800,t/3);
+        write(fd, &te[0],strlen(&te[0]));	          
+#endif        
+        
+        
+/*        sleep(t/3000);
+        sprintf(&te[0],"%d %d",800,t/3);
+        write(fd, &te[0],strlen(&te[0]));	          
+        sleep(t/3000);*/
+        
+      close(fd);
 	}
     }    
 }
