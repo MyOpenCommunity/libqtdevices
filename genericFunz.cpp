@@ -358,7 +358,7 @@ void beep(int t)
         write(fd, &te[0],strlen(&te[0]));	          
         sleep(t/3000);
         sprintf(&te[0],"%d %d",800,t/3);
-        write(fd, &te[0],strlen(&te[0]));	          
+        write(fd, &te[0],strlen(&te[0]));	 
 #endif        
         
         

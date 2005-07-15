@@ -150,6 +150,10 @@ void diffSonora::show()
      isVisual=1;
    // if (!parentWidget())
 //	showFullScreen();
+      if (sorgenti)
+	sorgenti-> show();
+      if (amplificatori)
+	amplificatori-> show();
      QWidget::show();
 }   
 
@@ -167,8 +171,16 @@ void diffSonora::forceDraw()
 	sorgenti-> forceDraw();
       if (amplificatori)
 	amplificatori-> forceDraw();
-  }
+ }
 
+void diffSonora::hide()
+{	
+      if (sorgenti)
+	sorgenti-> hide();
+      if (amplificatori)
+	amplificatori-> hide();
+      QWidget::hide();
+  }
 
 void diffSonora::setGeom(int x,int y,int w,int h)
 {

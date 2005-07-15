@@ -2314,7 +2314,7 @@ void gesModScen::gestFrame(char* frame)
     
     if (aggiorna)
     {
-        qDebug("bloccato= %d * in_progr= %d",bloccato,in_progr);
+//        qDebug("bloccato= %d * in_progr= %d",bloccato,in_progr);
         if (bloccato || in_progr)
             nascondi(BUT2);
         else

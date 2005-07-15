@@ -49,6 +49,7 @@ signals:
 public slots:
     void 	gestFrame(char*);	
     void	show();
+    void 	hide();
     void 	fineVis();
 private:
   uchar numRighe,isVisual;	

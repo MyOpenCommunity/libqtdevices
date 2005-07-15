@@ -246,9 +246,7 @@ bool xmlcfghandler::characters( const QString & qValue)
             }
             if (!CurTagL3.compare("logfile"))
             {
-                  qDebug("sto per far strcpy");
                  strncpy(*logFile,qValue.ascii(),MAX_PATH);
-                 qDebug("trovato logfile: %s      %s",*logFile,qValue.ascii());
              }
             /* else if (!CurTagL3.compare("openserver"))
             {

@@ -436,7 +436,7 @@ void sottoMenu::hide()
 {
     indice=0;
     QWidget::hide();
-    draw();
+    forceDraw();
 }
 
 void sottoMenu::svuota()

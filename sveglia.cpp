@@ -360,19 +360,12 @@ void sveglia::Closed()
         disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
         if(aggiornaDatiEEprom)
         {
-            qDebug("urca 1");
             difson->hide();
-            qDebug("urca 2");
             difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
-            qDebug("urca 7");
             difson->setNavBarMode(3);
-            qDebug("urca 4");
             difson->setNumRighe((uchar)4);	              
-            qDebug("urca 3");
             difson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-            qDebug("urca 5");
             difson->forceDraw();
-            qDebug("urca 6");
 
             //	difson->/*amplificatori->*/showFullScreen();
 
@@ -427,19 +420,12 @@ void sveglia::okTipo()
     }
     else if (difson)
     {	
-    qDebug("ops 1");
     this->bannNavigazione->hide();
-        qDebug("ops 2");
     difson->setNumRighe((uchar)3);	
-        qDebug("ops 3");
     difson->setGeom(0,0,240,240);	
-        qDebug("ops 4");
     difson->setNavBarMode(6);
-        qDebug("ops 5");
     difson->forceDraw();
-        qDebug("ops 6");
     difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
-        qDebug("ops 7");
     
     aggiornaDatiEEprom=1;
     gesFrameAbil=TRUE;
@@ -449,7 +435,7 @@ void sveglia::okTipo()
     {
         volSveglia[idx]=0;
     }
- //  difson->show();	
+   difson->show();	
 }
 }
 
