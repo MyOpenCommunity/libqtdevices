@@ -148,12 +148,11 @@ void diffSonora::show()
      sorgenti->draw();
      amplificatori->draw();
      isVisual=1;
-   // if (!parentWidget())
-//	showFullScreen();
-      if (sorgenti)
+
+/*      if (sorgenti)
 	sorgenti-> show();
       if (amplificatori)
-	amplificatori-> show();
+	amplificatori-> show();*/
      QWidget::show();
 }   
 
@@ -175,10 +174,12 @@ void diffSonora::forceDraw()
 
 void diffSonora::hide()
 {	
-      if (sorgenti)
+/*      if (sorgenti)
 	sorgenti-> hide();
       if (amplificatori)
-	amplificatori-> hide();
+	amplificatori-> hide();*/
+    if (amplificatori)
+	amplificatori->setIndice(0);
       QWidget::hide();
   }
 

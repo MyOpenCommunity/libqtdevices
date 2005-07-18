@@ -451,6 +451,13 @@ uint sottoMenu::getCount()
 }
 
 
+
+void  sottoMenu::setIndice(char c)
+{
+    if (c<=elencoBanner.count())
+        indice=c;
+}
+
 /*void sottoMenu::show()
 {
     draw();

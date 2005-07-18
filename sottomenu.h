@@ -47,6 +47,7 @@ public:
   bool 	setPul(char* chi="", char* where="");
   bool	setGroup(char* chi="", char* where="", bool group[9] =NULL);// {(bool)FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE});
   void 	setIndex(char*);
+  void 	setIndice(char);  
   void 	setNumRig(uchar);
   void 	setHeight(int);
   uchar 	getNumRig();
