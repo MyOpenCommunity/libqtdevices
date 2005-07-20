@@ -16,6 +16,15 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
+
+/*!
+  \class bann2butLab
+  \brief This is a class that describes a banner with a label between 2 buttons and a text under them
+  There are 2 alternative buttons on the left and only one is visible at a time.
+  \author Davide
+  \date lug 2005
+*/    
+
 class bann2butLab : public banner
 {
     Q_OBJECT

@@ -396,12 +396,15 @@ void BtMain::gesScrSav()
     {
         if  ( (tiempo>=30) && (getBacklight())) 
         {
+            if (!svegliaIsOn)
+            {
 #ifndef BACKLIGHT_SEMPRE_ON  
             setBacklight(FALSE);
             emit freeze(TRUE);
             bloccato=01;
             tempo1->changeInterval(500);
 #endif		    
+        }            
         }
         else if ( (tiempo<=5) && (bloccato) )
         {
@@ -410,7 +413,7 @@ void BtMain::gesScrSav()
             tempo1->changeInterval(2000);
             freezed(FALSE);
         }
-        if  ( (tiempo>=60) )
+        if  ( (tiempo>=60) && (!svegliaIsOn) )
         {
             if (pagDefault)
             {
@@ -623,6 +626,8 @@ void BtMain::gesScrSav()
                 }        
             }
         }	
+        else
+            hide();
         
     }
     else if  ( (tiempo>=120)  )
@@ -694,7 +699,11 @@ void BtMain::testPwd(char* p)
         tasti -> showTastiera();
 }
 
-
+void BtMain::svegl(bool b)
+{
+    qDebug("BtMain::svegl -> %d",b);
+    svegliaIsOn=b;
+}
 
 
 palla::palla(QWidget*parent, const char* name,unsigned int f) : BtLabel(parent, name, f){}
@@ -729,3 +738,4 @@ void palla ::clear()
 QPainter paint(this);
         paint.fillRect ( 0,0,width(),height(),QBrush ( backgroundColor(), Qt::SolidPattern ));
   }
+

@@ -16,6 +16,13 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
+/*!
+  \class bann2But
+  \brief This is a class that describes a banner with a text between 2 buttons 
+  \author Davide
+  \date lug 2005
+*/    
+
 class bann2But : public banner
 {
     Q_OBJECT
@@ -27,7 +34,7 @@ public slots:
 
 private:
   signals:
-  void centerClick();
+//  void centerClick();
 };
 
 

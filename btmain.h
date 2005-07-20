@@ -71,6 +71,7 @@ private slots:
     void setPwd(bool,char*);
     void testPwd(char*);
     void testFiles();
+     void svegl(bool);
     
 private:
     QTimer  *  tempo1;
@@ -78,7 +79,7 @@ private:
     QTimer  *  tempo3;	
     QWidget* pagDefault;
     char	pwd[10];
-    bool	pwdOn;
+    bool	pwdOn,svegliaIsOn;
     tastiera *tasti;
     unsigned char firstTime,bloccato,backcol;
     genPage* screen;

@@ -16,6 +16,14 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
+/*!
+  \class bann4tasLab
+  \brief This is a class that describes a banner with 4 buttons and a text over the two internal buttons.
+  The two external buttons are big while the internal ones leave the space to host the descripting text over them.
+  \author Davide
+  \date lug 2005
+*/   
+
 class bannCiclaz : public banner
 {
     Q_OBJECT

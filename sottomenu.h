@@ -62,6 +62,7 @@ signals:
   void 	rispStato(char*);
   void	freeze(bool);
   void 	frez(bool);
+  virtual void svegl(bool);
   void	goDx();  
   void	itemKilled();
   void 	setPwd(bool,char*);

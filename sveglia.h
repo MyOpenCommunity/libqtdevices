@@ -51,6 +51,7 @@ signals:
    void	ImClosed();
 //    void 	gestFrame(char*);
    void	freeze(bool);
+   void 	svegl(bool);
    
 public slots:
     void 	okTime();	

@@ -14,6 +14,7 @@ extern unsigned char tipoData;
 antintrusione::antintrusione( QWidget *parent, const char *name )
         : QWidget( parent, name )
 {
+    
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
 //    showFullScreen();

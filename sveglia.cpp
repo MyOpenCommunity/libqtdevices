@@ -557,6 +557,7 @@ void sveglia::verificaSveglia()
 		contaBuzzer=0;
 		conta2min=0;
 		emit( freeze(TRUE));
+         emit (svegl(TRUE));
 	    }
 	    else if(tipo==DI_SON)
 	    {
@@ -565,6 +566,7 @@ void sveglia::verificaSveglia()
 		connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 		conta2min=0;
 		emit( freeze(TRUE));
+        emit (svegl(TRUE));
 	    }
 	    else if (tipo==FRAME)
 	    {
@@ -700,8 +702,12 @@ void sveglia::buzzerAlarm()
 	if ( ((contaBuzzer+2)%12) && (contaBuzzer%12) )
 	{
 	    beep(10);
-	}
+	}   
     }
+    if  (contaBuzzer%8==0) 
+         setBacklight(TRUE);  
+    else
+        setBacklight(FALSE);
     contaBuzzer++;
     if (contaBuzzer>=10*60*2)
     {
@@ -726,6 +732,7 @@ void sveglia::spegniSveglia(bool b)
                 setBeep(buzAbilOld,FALSE);
             delete (aumVolTimer);
             aumVolTimer=NULL;	   
+            emit (svegl(FALSE));
         }
     }
     else if (b)

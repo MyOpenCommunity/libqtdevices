@@ -66,6 +66,7 @@ impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* dis
      connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));      
      connect(svegliolina,SIGNAL(ImClosed()),parentWidget() , SLOT(showFullScreen()));      
      connect(svegliolina, SIGNAL(freeze(bool)),this , SIGNAL(freeze(bool)));     
+     connect(svegliolina, SIGNAL(svegl(bool)),this , SIGNAL(svegl(bool)));          
      connect(this, SIGNAL(freezed(bool)), svegliolina,SLOT(spegniSveglia(bool)));     
 }
 
