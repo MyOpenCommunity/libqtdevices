@@ -79,7 +79,7 @@ private:
     QTimer  *  tempo3;	
     QWidget* pagDefault;
     char	pwd[10];
-    bool	pwdOn,svegliaIsOn;
+    bool	pwdOn,svegliaIsOn,alreadyCalibrated;
     tastiera *tasti;
     unsigned char firstTime,bloccato,backcol;
     genPage* screen;

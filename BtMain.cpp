@@ -72,6 +72,7 @@ v** Socket
     difSon=NULL;
     antintr=NULL;
     screen=NULL;
+    alreadyCalibrated=FALSE;
     
 backcol=0;
 
@@ -118,7 +119,7 @@ backcol=0;
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)    
                        connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
 #endif                 
-                       
+                    alreadyCalibrated=TRUE;   
                    }     
 }
 
@@ -261,7 +262,7 @@ void BtMain::init()
     struct sysinfo info;
     sysinfo(&info);
     //    qDebug("uptime= %d - timePress= %d", info.uptime, getTimePress() );
-    if ( (info.uptime<200) && ( (unsigned long)(info.uptime-1)>(unsigned long)getTimePress() )  ) 
+    if ( (info.uptime<200) && ( (unsigned long)(info.uptime-1)>(unsigned long)getTimePress() )  && (!alreadyCalibrated)) 
     {	
         calib = new Calibrate(NULL,"calibrazione",0,1);
         
