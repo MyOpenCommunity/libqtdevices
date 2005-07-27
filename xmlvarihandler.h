@@ -16,7 +16,16 @@
 #include "btmain.h"
 
 #include <qstring.h>
+/*!
+  \class xmlskinhandler
+  \brief This class parses the skin configuration file and returns the colors to be used in the application.
 
+  Using QT SAX handler for xml parsing, this class reads the colors to be used.
+  The arguments of the constructor are the pointer to a QColor pointer returning respectively backgroundColor, foregroundColor and secondForegroundColor
+  
+  \author Davide
+  \date lug 2005
+*/  
 class xmlskinhandler : public QXmlDefaultHandler
 {
 public:
@@ -37,7 +46,15 @@ private:
     QColor** bg,** fg1, **fg2;
 };                   
 
+/*!
+  \class xmlcfghandler 
+  \brief This class parses the stack open configuration file and reads logFile and verbosity level.
 
+  Using QT SAX handler for xml parsing, this class discoveres is the logFile to be used (whose pointer is passed as a second argument of the constructor) and the initial verbosity level (the first argument is a *int which return this value).
+  
+  \author Davide
+  \date lug 2005
+*/  
 class xmlcfghandler : public QXmlDefaultHandler
 {
 public:

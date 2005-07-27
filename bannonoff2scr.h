@@ -16,6 +16,14 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
+
+/*!
+  \class bannOnOff2scr
+  \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
+  \author Davide
+  \date lug 2005
+*/   
+
 class bannOnOff2scr : public banner
 {
     Q_OBJECT

@@ -12,6 +12,22 @@
 class BtButtonPrivate;
 class QPopupMenu;
 
+/*!
+  \class BtButton
+  \brief This is the QPushButton given by QT modified for the necessities of this application
+  
+  In particoular the differencies implemented from QT version of the pushbutton class are:
+  no border is drawed on the contour;
+  no animation is done during pression;
+  a pressed image is added;
+  there is no focus;
+  a beep is generated when the button is pressed (it's heard only if the beep is enabled).  
+  \author Davide
+  \date lug 2005
+*/   
+
+
+
 class Q_EXPORT BtButton : public QButton
 {
     Q_OBJECT

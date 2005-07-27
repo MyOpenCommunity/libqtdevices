@@ -258,7 +258,7 @@ void sveglia::okTime()
     Immagine->hide();
     
     if (tipo!=DI_SON)
-        bannNavigazione  -> nascondi(BUT2);
+        bannNavigazione  -> nascondi(banner::BUT2);
 /*    delete(oraSveglia);
     oraSveglia = new QDateTime(dataOra->getDataOra());*/
 	
@@ -307,7 +307,7 @@ void sveglia::mostra()
     connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));   
     aggiornaDatiEEprom=0;
     if (tipo!=DI_SON)
-        bannNavigazione  -> mostra(BUT2);
+        bannNavigazione  -> mostra(banner::BUT2);
 }
 
 

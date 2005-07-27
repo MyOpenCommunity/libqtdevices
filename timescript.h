@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: timescript.h,v 1.1 2005/04/11 08:55:34 cvs Exp $
+** $Id: timescript.h,v 1.2 2005/07/27 06:13:41 cvs Exp $
 **
 ** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
 **
@@ -14,7 +14,14 @@
 #include <qlcdnumber.h>
 #include <qdatetime.h>
 
+/*!
+  \class timeScript
+  \brief This class shows a time and eventually a date with the possibility to modify them using a set of appropriate slots.
 
+  The argument are the pointer to the parent Widget, the pointer to the name, the type (0=shows the local time with hh:mm:ss, 1=, 2=shows a stopped time with hh:mm, 25= shows the date), 
+  \author Davide
+  \date lug 2005
+*/  
 class timeScript : public QLCDNumber		
 {
     Q_OBJECT
@@ -34,20 +41,57 @@ protected:
 private slots:					
     void	stopDate();
 public slots:
+/*!
+  \brief Shows the time.
+*/   
     void	showTime();
-    
+/*!
+  \brief Decreases seconds value.
+*/       
     void 	diminSec();	
+/*!
+  \brief Decreases minuts value.
+*/           
     void 	diminMin();
+/*!
+  \brief Decreases hours value.
+*/           
     void 	diminOra();
+/*!
+  \brief Decreases days value.
+*/           
     void 	diminDay();
+/*!
+  \brief Decreases months value.
+*/           
     void 	diminMonth();
+/*!
+  \brief Decreases years value.
+*/           
     void 	diminYear();
-    
+/*!
+  \brief Increases seconds value.
+*/           
     void 	aumSec();	
+/*!
+  \brief Increases minutes value.
+*/           
     void 	aumMin();
+/*!
+  \brief Increases hours value.
+*/           
     void 	aumOra();
+/*!
+  \brief Increases days value.
+*/           
     void 	aumDay();
+/*!
+  \brief Increases months value.
+*/               
     void 	aumMonth();
+/*!
+  \brief Increases years value.
+*/           
     void 	aumYear();    
     
     

@@ -17,6 +17,13 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
+/*!
+  \class bannOnDx
+  \brief This is a class that describes a banner with a button on the right and a text on the remaining area
+  \author Davide
+  \date lug 2005
+*/   
+
 class bannOnDx : public banner
 {
     Q_OBJECT
@@ -47,7 +54,12 @@ private:
 #include <qwidget.h>
 #include <qlabel.h>
 #include <qpixmap.h>
-
+/*!
+  \class bannOnSx
+  \brief This is a class that describes a banner with a button on the left and a text on the remaining area
+  \author Davide
+  \date lug 2005
+*/   
 class bannOnSx : public banner
 {
     Q_OBJECT

@@ -16,6 +16,13 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
+/*!
+  \class bannOnDx
+  \brief This is a class that describes a banner with a button on the right, an icon in the center and a text on the bottom
+  \author Davide
+  \date lug 2005
+*/   
+
 class bannPuls : public banner
 {
     Q_OBJECT

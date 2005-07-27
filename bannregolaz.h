@@ -16,28 +16,26 @@
 #include <qlabel.h>
 #include <qpixmap.h>
 
+
+/*!
+  \class bannRegolaz
+  \brief This is a class that describes a banner with a button on the right and on the left and two adjacent buttons on the center (thought to represent each one an half of the same image) and a text in the bottom.
+  \author Davide
+  \date lug 2005
+*/   
+
 class bannRegolaz : public banner
 {
     Q_OBJECT
 public:
      bannRegolaz( QWidget *, const char * );
 
-//     void setIcons(const char *onIcon=0, const char *offIcon=0);
-public slots:
- /*void Accendi();
-  void Spegni();
-  void Aumenta();
-  void Diminuisci();*/
+private slots:
   void armTimRipdx();
   void armTimRipsx();
   void killTimRipdx();
   void killTimRipsx();
-//  void Regola()  
   signals:
-/*  void sxClick();
-  void dxClick();
-  void regolPiu();
-  void regolMen();*/
 private:
   QTimer *timRip;
 

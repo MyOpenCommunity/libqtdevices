@@ -143,7 +143,7 @@ int homePage::setBGPixmap(char* backImage)
 
 void homePage::addClock(int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
 {
-     dataOra = new timeScript(this,"scrittaHomePage");
+     dataOra = new timeScript(this,"scrittaHomePage",1);
      dataOra->setGeometry(x,y,width,height);
      dataOra->setPaletteForegroundColor(fg);
      dataOra->setPaletteBackgroundColor(bg);

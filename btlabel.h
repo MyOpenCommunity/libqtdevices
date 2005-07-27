@@ -6,6 +6,14 @@
 #endif // QT_H
 
 #ifndef QT_NO_LABEL
+/*!
+  \class BtLabel
+  \brief This is the QLabel given by QT modified for the necessities of this application
+  
+  In particoular the difference implemented from QT version of the pushbutton class is that the label isn't modified when is disabled.
+  \author Davide
+  \date lug 2005
+*/   
 
 class QSimpleRichText;
 class BtLabelPrivate;

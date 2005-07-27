@@ -23,6 +23,15 @@
 //#define SOCKET_COMANDI "*99*0##"
 //#define SOCKET_MONITOR "*99*1##"
 
+
+/*!
+  \class Client
+  \brief This class manages the socket communication throught the application and the \a openserver.
+
+  \author Davide
+  \date lug 2005
+*/  
+
 class Client  : public QSocket
 {
     Q_OBJECT
@@ -32,16 +41,26 @@ class Client  : public QSocket
 
 //    void ApriInviaFrameChiudi(char *);
     public slots:
+/*! Connects to the socket
+*/  
        void connetti();
     private slots:
+/*! Closes the socket
+*/          
     void closeConnection(void);
+/*! Sends messages throught the socket
+*/      
     void sendToServer(char *);    
+/*! Reads messages from the socket
+*/      
     int socketFrameRead(void);
+    
     void socketConnected(void);
     void socketConnectionClosed(void);
     void socketClosed(void);
     void socketError(int e );
- 
+/*! Send an \a Open \aFrame throught the socket
+*/   
     void ApriInviaFrameChiudi(char *);
     void richStato(char*);
    

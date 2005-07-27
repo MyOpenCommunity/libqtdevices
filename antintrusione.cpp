@@ -60,9 +60,9 @@ void antintrusione:: ctrlAllarm()
 {
     qDebug("ctrlAllarm %d",allarmi->getCount());
     if (allarmi->getCount()>0)
-        impianto->getLast()->mostra(BUT1);
+        impianto->getLast()->mostra(banner::BUT1);
     else
-        impianto->getLast()->nascondi(BUT1);
+        impianto->getLast()->nascondi(banner::BUT1);
 }
 
 

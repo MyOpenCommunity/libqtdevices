@@ -355,7 +355,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                                 }
                             if ((char)page_item_id==SET_SVEGLIA) 
                             {
-                                    if  (par2==DI_SON) 
+                                    if  (par2==sveglia::DI_SON) 
                                     {
                                         pnt=*difSon;        
                                     }

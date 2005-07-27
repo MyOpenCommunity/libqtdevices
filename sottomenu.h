@@ -21,62 +21,218 @@
 
 //class QPushButton;
 
+/*!
+  \class sottoMenu
+  \brief This class is the general list of the subtree describing the various system functions.
 
+  Many functions are directily a \a sottoMenu type while other are new class inheriting this one. This class core is made of a dinamical list representing all the devices included in the menu.
+  \author Davide
+  \date lug 2005
+*/  
 class sottoMenu : public QWidget
 {
     Q_OBJECT
 public:
     sottoMenu( QWidget *parent=0, const char *name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
+/*!
+  \brief Sets the background color for the banner.
+  
+  The arguments are RGB components for the color.
+*/           
    void 	setBGColor(int, int , int );
+/*!
+  \brief Sets the foreground color for the banner.
+  
+  The arguments are RGB components for the color.
+*/       
    void 	setFGColor(int , int , int );		
+/*!
+  \brief Sets the background color for the banner.
+  
+  The argument is the QColor description of the color.
+*/          
    void 	setBGColor(QColor );
+/*!
+  \brief Sets the foreground color for the banner.
+  
+  The argument is the QColor description of the color.
+*/          
    void 	setFGColor(QColor );	
+/*!
+  \brief Sets the background pixmap for the banner.
+*/  
    int 	setBGPixmap(char* );
+/*!
+  \brief Retrieves the number of objects in the list
+*/   
    uint	getCount();
+/*!
+  \brief Adds an item to the list. the arguments are:
+  tipo:		banner type as described in the bannerType (main.h)
+  nome:		banner name which is the description showed on the banner
+  indirizzo:	address pointer which is a char* if the banner controls only a device; QptrList char* if the banner control a device group
+  IconaSx, IconaDx, IconaAttiva, IconaDisattiv, IcoEx1, IcoEx2, IcoEx3:	Images' name to use in different positions in the banner
+  periodo:	repetition time of the animated descriptive image on the banner if there's one
+  numFrame: 	number of images composing the animated descriptive image on the banner if there's one
+  secondFroreground:	color for a particoular text in the banner
+  descr1, descr2, descr3, descr4:	additional texts describng the banner
+  par3:		an other possible parameter
+*/     
    int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,\
 		char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
 		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0);
+/*!
+  \brief Initializes all the objects in the list calling init() after a certain time
+*/      
    void 	inizializza();
+/*!
+  \brief Draws the subtree starting from the right item.
+  
+  The drawn isn't made if the first item to draw doesn't change
+*/     
    void 	draw();
+ /*!
+  \brief Draws the subtree starting from the right item.
+  
+  The drawn is always made
+*/  
    void 	forceDraw();   
+/*!
+  \brief Set the row's number to be drawn in the screen
+*/
    void 	setNumRighe(uchar);
+ /*!
+  \brief Retrieves the last banner of the list
+*/  
   banner* getLast();
+/*!
+  \brief Retrieves the current banner in the list
+*/   
   banner* getCurrent();
+/*!
+  \brief Retrieves the next banner in the list
+*/     
   banner* getNext();
+/*!
+  \brief Retrieves the previous banner in the list
+*/     
   banner* getPrevious();
+/*!
+  \brief Set an item in the list to be PUL that means that the device works only with addresse \a Open \a frame.
+  
+  The arguments passed are \a Open \a who and \a Open \a where.
+*/     
   bool 	setPul(char* chi="", char* where="");
-  bool	setGroup(char* chi="", char* where="", bool group[9] =NULL);// {(bool)FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE});
+/*!
+  \brief Set an item in the list to be part of some groups.
+  
+  The arguments passed are \a Open \a who and \a Open \a where and a list af bool each of them telling if the object belongs to a certain group or not.
+*/       
+  bool	setGroup(char* chi="", char* where="", bool group[9] =NULL);
+/*!
+  \brief Sets the index of the list forcing it to the object having the address passed by argument.
+*/     
   void 	setIndex(char*);
+/*!
+  \brief Sets the index of the list forcing which is the first item to draw.
+*/    
   void 	setIndice(char);  
+/*!
+  \brief Such as setNumRighe(uchar).
+*/      
   void 	setNumRig(uchar);
+/*!
+  \brief Set the height of the area occupied by the subtree.
+*/        
   void 	setHeight(int);
+/*!
+  \brief Retrieves the number of rows used by the subtree.
+*/ 
   uchar 	getNumRig();
+ /*!
+  \brief Retrieves the height of th area occupied by the subtree.
+*/   
   int 	getHeight();  
+/*!
+  \brief Changes the type of navigation bar present at the bsubtree (see bannFrecce)
+*/  
   void 	setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
+/*!
+  \brief Set the Geometry for the object.
+*/ 
   void 	setGeometry(int, int, int, int );
 signals:
+ /*!
+  \brief Emitted when the object is closed.
+*/  
   void 	Closed();
+ /*!
+  \brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
+*/
   void 	gestFrame(char*);
+ /*!
+  \brief Emitted to connect the \a Open \a Frame coming from to the banners in the list to the openClient.
+*/  
   void 	sendFrame(char*);
   void 	richStato(char*);
   void 	rispStato(char*);
+/*!
+  \brief Emitted to signal to BtMain that a banner requires to freeze the device.
+*/    
   void	freeze(bool);
+/*!
+  \brief Emitted to tell to banners in the list that the device was frozen.
+*/  
   void 	frez(bool);
+/*!
+  \brief Emitted to tell BtMain the state af the alarmset.
+*/    
   virtual void svegl(bool);
+/*!
+  \brief Emitted to go to a further page.
+*/  
   void	goDx();  
+/*!
+  \brief Emitted to tell that an item in the list was removed.
+*/  
   void	itemKilled();
+ /*!
+  \brief Emitted to tell to BtMain tha state of the password (value and abilitation).
+*/   
   void 	setPwd(bool,char*);
 public slots:
+/*!
+  \brief Slides the list upward.
+*/      
   virtual void 	goUp();	
+/*!
+  \brief Slides the list downward.
+*/ 
   virtual void 	goDown();
+/*!
+  \brief  See inizializza().
+*/   
   void	init();    
+/*!
+  \brief  Sets all the banners disabled.
+*/     
   void 	freezed(bool);
+ /*!
+  \brief  Reimplements QWidget::Hide() and hides the page.
+*/      
   void 	hide();
-//  void 	mousePressEvent ( QMouseEvent * );
+/*!
+  \brief  Reimplements QWidget::mouseReleaseEvent( QMouseEvent * ), used to wake up from frozen state.
+*/       
   void 	mouseReleaseEvent ( QMouseEvent * );  
+/*!
+  \brief  Removes a banner from the list.
+*/    
   void 	killBanner(banner*);
+/*!
+  \brief  Empties the banner list.
+*/    
   void 	svuota();
-//  void 	show();
 private:
   QPtrList<banner> elencoBanner;
   QTimer* iniTim;

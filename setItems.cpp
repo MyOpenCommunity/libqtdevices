@@ -251,7 +251,7 @@ impPassword ::impPassword ( QWidget *parent,const char *name, char* icon1, char*
      tasti->setBGColor(backgroundColor());  
      tasti->setFGColor(foregroundColor());  
      tasti->hide();
-     tasti->setMode(HIDDEN);
+     tasti->setMode(tastiera::HIDDEN);
      connect(this,SIGNAL(dxClick()),tasti,SLOT(showTastiera()));      
      connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));    
      
@@ -303,14 +303,14 @@ void  impPassword::show()
        qDebug("passwd = ZERO");
        disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
        disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
-       tasti->setMode(CLEAN);	
+       tasti->setMode(tastiera::CLEAN);	
        connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*))); 
    }
    else
    {
        disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));  
        disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));  
-       tasti->setMode(HIDDEN);       
+       tasti->setMode(tastiera::HIDDEN);       
        connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*))); 
    }
     QWidget::show();
@@ -338,7 +338,7 @@ void  impPassword::reShow1(char* c)
     {
 	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));  
 	disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));  
-	tasti->setMode(CLEAN);	
+	tasti->setMode(tastiera::CLEAN);	
 	tasti->showTastiera();
 	qDebug("password giusta");
     }
@@ -355,7 +355,7 @@ void  impPassword::reShow2(char* c)
 	emit(setPwd(active,&paswd[0]));
     }
     show();
-    tasti->setMode(HIDDEN);
+    tasti->setMode(tastiera::HIDDEN);
 }
 
 void impPassword::tiempout()

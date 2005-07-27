@@ -31,6 +31,15 @@
 
 #define BALL_NUM	5
 
+/*!
+  \class palla
+  \brief This is a specific BtLabel used to draw balls on the screen-saver
+  \author Davide
+  \date lug 2005
+*/   
+
+
+
 class palla : public BtLabel
 {
     Q_OBJECT
@@ -44,6 +53,14 @@ class palla : public BtLabel
 };
 
 
+/*!
+  \class BtMain
+  \brief This is a class used to manage the starting sequence, call the xml handler that builds the objects configured, shunt signals and controlling screen-saver and special page displaying (such as configuration page, colored pages and so on).
+  
+  This is the widget used for screen saver but has the main aim to connect the various class passing signal from one to the others. This class supervise the freezing (baclight off and uman inteface disabled) and the starting sequence also deciding if there's need of a new calibration.
+  \author Davide
+  \date lug 2005
+*/   
 
 class  BtMain : public QWidget
 {
@@ -59,6 +76,9 @@ public:
     Client *  client_monitor; 
     versio* datiGen;
 signals:
+/*!
+  \brief Emitted to (de)freeze the console
+*/  
     void freeze(bool);
 //    void sendFrame(char*);
 private slots:    

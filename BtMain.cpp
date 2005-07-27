@@ -30,6 +30,7 @@
 #include "xmlvarihandler.h"
 #include "calibrate.h"
 #include "btlabel.h"
+#include "genpage.h"
 
 #include <sys/sysinfo.h>
 #include <qfontdatabase.h>
@@ -307,15 +308,15 @@ void BtMain::testFiles()
 {
     if (QFile::exists(FILE_TEST1))
     { 
-        if ( (screen) && (tiposcreen!=RED))
+        if ( (screen) && (tiposcreen!=genPage::RED))
         {
             delete(screen);
             screen=NULL;
         }
         else if (!screen)
         {
-                tiposcreen=RED;
-                screen = new genPage(NULL,"red",RED);
+            tiposcreen=genPage::RED;
+                screen = new genPage(NULL,"red",genPage::RED);
                 screen->show();
                 qDebug("TEST1");
                 setBacklight(TRUE);
@@ -324,15 +325,15 @@ void BtMain::testFiles()
     }
     else if (QFile::exists(FILE_TEST2))
     {
-        if ( (screen)&& (tiposcreen!=GREEN))	
+        if ( (screen)&& (tiposcreen!=genPage::GREEN))	
         {
             delete(screen);
             screen=NULL;
         }
         else if (!screen)
         {
-                tiposcreen=GREEN;
-                screen = new genPage(NULL,"green",GREEN);
+                tiposcreen=genPage::GREEN;
+                screen = new genPage(NULL,"green",genPage::GREEN);
                 screen->show();
                 qDebug("TEST2");
                 setBacklight(TRUE);	
@@ -341,15 +342,15 @@ void BtMain::testFiles()
     }
     else if (QFile::exists(FILE_TEST3))
     {
-        if ( (screen)&& (tiposcreen!=BLUE))	
+        if ( (screen)&& (tiposcreen!=genPage::BLUE))	
         {
             delete(screen);
             screen=NULL;
         }
         else if(!screen)
         {
-                tiposcreen=BLUE;
-                screen = new genPage(NULL,"blu",BLUE);
+                tiposcreen=genPage::BLUE;
+                screen = new genPage(NULL,"blu",genPage::BLUE);
                 screen->show();
                 qDebug("TEST3");
                 setBacklight(TRUE);
@@ -358,15 +359,15 @@ void BtMain::testFiles()
     }
     else if (QFile::exists(FILE_AGGIORNAMENTO))
     {
-        if ((screen)&& (tiposcreen!=IMAGE))	
+        if ((screen)&& (tiposcreen!=genPage::IMAGE))	
         {
             delete(screen);
             screen=NULL;
         }
         else if (!screen)
         {
-                screen = new genPage(NULL,"blu",IMAGE,"cfg/skin/dwnpage.png");
-                tiposcreen=IMAGE;	    
+                screen = new genPage(NULL,"blu",genPage::IMAGE,"cfg/skin/dwnpage.png");
+                tiposcreen=genPage::IMAGE;	    
                 screen->show();
                 qDebug("AGGIORNAMENTO");
                 setBacklight(TRUE);	
@@ -379,7 +380,7 @@ void BtMain::testFiles()
         {
                 delete(screen);
                 screen=NULL;
-                tiposcreen=NONE;
+                tiposcreen=genPage::NONE;
                 tempo1->start(2000);
             }
     }

@@ -96,36 +96,169 @@ the arguments describe the images to put on the buttons and into the describing 
   the arguments describe the images to put on the buttons and into the describing label passing the file names. The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has to visualize when the banner is in active state. The 5° argument represent the broken state image path.
 */            
     void    SetIcons( const char *,const char* ,const char*,const char*, const char*, char );
+/*!
+  \brief Inserts an object in the banner.
+  
+  The arguments describe the object to insert (as described in oggettinoDelBanner), the position (x,y) and the dimension (w,h)
+*/                
     void 	addItem(char ,int ,int ,int , int );
+/*!
+  \brief Draws all the objects composing the banner.
+  
+  This method automatically detects what compose the banner, which is its state and draws it in the right manner.
+*/      
     virtual void  Draw();
+/*!
+  \brief Changes the banner state.
+  
+  If the argument is zero the banner assume that the state of what is controlled is "disabled" otherwise is "active".
+*/      
     void 	impostaAttivo(char);
+/*!
+  \brief  Changes the address of what is controlled by the banner.
+  
+  The argument  describe the Open What of the object controlled by the banner.
+*/      
     void 	setAddress(char* );
+/*!
+  \brief Retrieves the address of what is controlled by the banner.
+  
+  The returned value is the Open What of the object controlled by the banner.
+*/      
     char*	 getAddress( );
+/*!
+  \brief Changes the function of what is controlled by the banner.
+  
+  he argument  describe the Open Who of the object controlled by the banner.
+*/          
     void 	setChi(char* );
+/*!
+  \brief Retrieves the function of what is controlled by the banner.
+  
+  The returned value is the Open Who of the object controlled by the banner.
+*/   
     char*	 getChi( );
+/*!
+  \brief Changes the group list of the object controlled by the banner.
+  
+  The group list is an array of 9 bool varibles. The element in position \a n tells if the object controlled is part of the group \a n+1
+*/          
     void 	setGroup(bool* );
+/*!
+  \brief Retrieves the group list of the object controlled by the banner.
+  
+  The group list is an array of 9 bool varibles. The element in position \a n tells if the object controlled is part of the group \a n+1
+*/              
     bool*	 getGroup( );
+/*!
+  \brief Force the object controlled being PUL.
+  
+  When a ligthing/automation object is considered PUL it changes its state only with \a point \a to \a point commands.
+*/       
     void 	setPul();
+/*!
+  \brief Retrieves if the object controlled is PUL or not.
+  
+  When a ligthing/automation object is considered PUL it changes its state only with \a point \a to \a point commands.
+*/      
     bool 	getPul();
+/*!
+  \brief Sets the serial number of the banner.
+  
+  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree. It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
+*/      
     void 	setSerNum(int);
+/*!
+  \brief Retrieves the serial number of the banner.
+  
+  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree. It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
+*/           
     int 	getSerNum();
+ /*!
+  \brief Retrieves the Id of the object controlled by the banner.
+*/              
     char 	getId();
+ /*!
+  \brief Sets the Id of the object controlled by the banner.
+*/                 
     void 	setId(char);    
+ /*!
+  \brief Sets the background color for the banner.
+  
+  The arguments are RGB components for the color.
+*/      
     virtual void 	setBGColor(int, int , int );
+ /*!
+  \brief Sets the foreground color for the banner.
+  
+  The arguments are RGB components for the color.
+*/          
     virtual void 	setFGColor(int , int , int );		
+ /*!
+  \brief Sets the background color for the banner.
+  
+  The argument is the QColor description of the color.
+*/          
     virtual void 	setBGColor(QColor );
+ /*!
+  \brief Sets the foreground color for the banner.
+  
+  The argument is the QColor description of the color.
+*/          
     virtual void 	setFGColor(QColor );	
-   
+ /*!
+  \brief Sets the Value for the object controlled by the banner.
+  
+  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. The function in used to set the value of such an object.
+*/         
     void 	setValue(char);
+/*!
+  \brief Increments the Value for the object controlled by the banner.
+  
+  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. The function in used to increment the value of such an object.
+*/         
     void 	aumValue();
+/*!
+  \brief Derements the Value for the object controlled by the banner.
+  
+  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. The function in used to decrement the value of such an object.
+*/             
     void 	decValue();
+/*!
+  \brief Retrieves the Value for the object controlled by the banner.
+  
+  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. The function in used to retrieve the value of such an object.
+*/             
     char 	getValue();
-//    char* getChi();
+/*!
+  \brief Sets the maximum Value for the object controlled by the banner.
+  
+  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. The function in used to determine the maximum value for such an object.
+*/         
     void 	setMaxValue(char);
+/*!
+  \brief Sets the minimum Value for the object controlled by the banner.
+  
+  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. The function in used to determine the minimum value for such an object.
+*/             
     void 	setMinValue(char);
+/*!
+  \brief Sets the value range for the object controlled by the banner.
+  
+  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. The function in used to determine the minimum and maximum (in this order) value for such an object.
+*/                 
     void 	setRange(char,char);
+/*!
+  \brief Retrieves if the object controlled by the banner is \a active or not.
+*/                 
     unsigned char isActive();
+/*!
+  \brief Sets the parameters necessary for the animation of the image describing the image controlled by the banner.
+  
+  The arguments of the method are: the period in ms and the number frame describing the animation.
+*/                 
     void 	setAnimationParams(int,int);
+    
     void 	setNumRighe(uchar);
     QTimer *animationTimer;
     uchar 	numRighe;
@@ -133,36 +266,137 @@ the arguments describe the images to put on the buttons and into the describing 
     virtual void inizializza();	
     //provvisoriamente per debug li metto public
     char testo[MAX_PATH*2],testoSecondario[MAX_TEXT_2];
+/*!
+  \brief Force an object of the banner to be hided.
+  
+  The object to be hided is described by the \a oggettinoDelBanner description.
+*/                 
     void	nascondi(char);
+/*!
+  \brief Force an object of the banner to be shown.
+  
+  The object to be shown is described by the \a oggettinoDelBanner description.
+*/        
     void	mostra(char);
+/*!
+  \brief Retrieves the state of the object controlled by the banner.
+*/        
     unsigned char getState();
+/*!
+  \brief Must be reimplemented to retrieve the filereference of the manual icon for the object controlled by the banner.
+*/        
     virtual 	char* 	getManIcon();
+/*!
+  \brief Must be reimplemented to retrieve the filereference of the automatic icon for the object controlled by the banner.
+*/     
     virtual 	char* 	getAutoIcon();
     
+    /*!
+  \enum oggettinoDelBanner
+  \brief describes the possible items one can have into a banner
+  
+  BUT1 - BUT2 - BUT3 - BUT4 are 4 possible button 
+  TEXT is the describing text
+  TEXT2 is an additional text 
+  ICON is a possible image describing the banner or its state
+*/  
+enum oggettinoDelBanner{
+                                                 BUT1,
+			 BUT2,
+			 TEXT,
+			 ICON,
+			 BUT3,
+			 BUT4,
+			 TEXT2,
+		     };
 public slots:
-   virtual void gestFrame(char *);
-   void 	animate();
+/*!
+  \brief Must be reimplemented to analyze the \a Open \a Frame incoming.
+*/        
+   virtual void gestFrame(char *);   
+/*!
+  \brief Must be reimplemented to retrieve the state ofthe object controlled by the banner.
+*/     
    virtual void  rispStato(char*);
+/*!
+  \brief Must be reimplemented to do something when hiding the banner.
+*/     
    virtual void hide();
+/*!
+  \brief Must be reimplemented to do something when showing the banner.
+*/        
    virtual void show();
+private slots:
+    void 	animate();
 signals:
+/*!
+  \brief Emitted when the right button is clicked.
+*/  
   void 	dxClick(); 
+/*!
+  \brief Emitted when the left button is clicked.
+*/    
   void 	sxClick(); 
+/*!
+  \brief Emitted when the center-right button is clicked.
+*/    
   void 	cdxClick(); 
+/*!
+  \brief Emitted when the center-left button is clicked.
+*/    
   void 	csxClick();
+/*!
+  \brief Emitted when the left button is released.
+*/    
   void	sxReleased();
+/*!
+  \brief Emitted when the right button is released.
+*/      
   void 	dxReleased();
+/*!
+  \brief Emitted when the left button is pressed.
+*/      
   void	sxPressed();
+/*!
+  \brief Emitted when the right button is pressed.
+*/        
   void 	dxPressed();
+/*!
+  \brief Emitted when the center-left button is released.
+*/      
   void 	csxReleased();
+/*!
+  \brief Emitted when the center-right button is released.
+*/    
   void 	cdxReleased();
+/*!
+  \brief Emitted when the center-left button is pressed.
+*/        
   void 	csxPressed();
+/*!
+  \brief Emitted when the center-right button is pressed.
+*/        
   void 	cdxPressed();
+  /*!
+  \brief Emitted to (de)freeze the objects of the banner
+*/      
   virtual void freezed(bool);  
+/*!
+  \brief Emitted when the banner decide to freeze the device (i.e. when the \a alarm \a clock turns on).
+*/        
   virtual void freeze(bool);
+  /*!
+  \brief Emitted to communicate when the \a alarm \a clock begins and ends.
+*/  
   virtual void svegl(bool);
   virtual void richStato(char*);
+/*!
+  \brief Emitted when the banner decide send an \a Open \a frame to the system.
+*/    
   virtual void sendFrame(char*);
+/*!
+  \brief Emitted when the banner decide to die and to be removed from the list containig it.
+*/    
  virtual void killMe(banner*);
   
 private:
@@ -188,18 +422,6 @@ private:
 
 };
 
-/*!
-  \enum oggettinoDelBanner
-  \brief describes the possible items one can have into a banner
-*/  
-enum oggettinoDelBanner{
-                                                 BUT1,
-			 BUT2,
-			 TEXT,
-			 ICON,
-			 BUT3,
-			 BUT4,
-			 TEXT2,
-		     };
+
 
 #endif //BANNER

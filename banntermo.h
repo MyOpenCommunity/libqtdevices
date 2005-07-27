@@ -15,6 +15,15 @@
 #include <qwidget.h>
 #include "btlabel.h"
 #include <qpixmap.h>
+ 
+/*!
+  \class bannTermo
+  \brief This is a class that describes a banner thought to describe a thermoregulation zone. 
+  
+  It occupies an etire page and has two buttons a text an icon eredithed from banner and other text areas to describe other data tipical of this banner.
+  \author Davide
+  \date lug 2005
+*/   
 
 class bannTermo : public banner
 {
