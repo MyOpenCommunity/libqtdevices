@@ -67,14 +67,14 @@ bool Calibrate::sanityCheck()
 
     int avg = ( vl + vr ) / 2;
 
-      if ( diff > avg /15 ) // era /20         5% leeway
+      if ( diff > avg /9 ) // era /20         5% leeway
         return FALSE;
 
     int ht = QABS( tl.x() - tr.x() );
     int hb = QABS( br.x() - bl.x() );
     diff = QABS( ht - hb );
     avg = ( ht + hb ) / 2;
-	if ( diff > avg / 20 )
+	if ( diff > avg / 9 ) //era /20
 {
 	return FALSE;
 }

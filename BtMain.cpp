@@ -74,7 +74,8 @@ v** Socket
     antintr=NULL;
     screen=NULL;
     alreadyCalibrated=FALSE;
-    
+    svegliaIsOn=FALSE;
+        
 backcol=0;
 
     for (int idx=0;idx<12;idx++)
