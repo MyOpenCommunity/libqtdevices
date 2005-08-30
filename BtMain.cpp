@@ -443,7 +443,8 @@ void BtMain::gesScrSav()
                     if (pagDefault)
                         pagDefault -> showFullScreen();
                 }
-            }    
+            }  
+
             if  ( (tiempo>=65) && isHidden())
             {
                 for (int idx=0;idx<12;idx++)

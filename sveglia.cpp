@@ -557,7 +557,7 @@ void sveglia::verificaSveglia()
 		contaBuzzer=0;
 		conta2min=0;
 		emit( freeze(TRUE));
-         emit (svegl(TRUE));
+                emit (svegl(TRUE));
 	    }
 	    else if(tipo==DI_SON)
 	    {
@@ -565,8 +565,9 @@ void sveglia::verificaSveglia()
 		aumVolTimer -> start (3000,FALSE);
 		connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 		conta2min=0;
+                setBacklight(TRUE); 
 		emit( freeze(TRUE));
-        emit (svegl(TRUE));
+                emit (svegl(TRUE));
 	    }
 	    else if (tipo==FRAME)
 	    {
@@ -686,6 +687,8 @@ void sveglia::aumVol()
         strcat(pippo,"*16*13*0##");
         msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
         emit sendFrame(msg_open.frame_open);    
+	emit(freeze(FALSE));        
+        emit (svegl(FALSE));
     }
     
 }
@@ -717,6 +720,7 @@ void sveglia::buzzerAlarm()
 	delete (aumVolTimer);
 	aumVolTimer=NULL;	
 	emit(freeze(FALSE));
+        emit (svegl(FALSE));    
     }
 }
 
