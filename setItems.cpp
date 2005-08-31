@@ -91,10 +91,12 @@ void  impostaSveglia::show()
 {
     if (svegliolina->getActivation())
     {
+        qDebug("impostaSveglia mette icona ON");
 	SetIcons(uchar(0),&iconOn[0]);
     }
    else
     {
+       qDebug("impostaSveglia mette icona OFF");
        	SetIcons(uchar(0),&iconOff[0]);
     }
    Draw();

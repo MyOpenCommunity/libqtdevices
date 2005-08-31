@@ -327,7 +327,7 @@ void sveglia::sel1(bool isOn)
     if (isOn)
     {
         tipoSveglia=ONCE;
-        onceToGest=TRUE;
+//        onceToGest=TRUE;
     }
     drawSelectPage();
 }
@@ -351,7 +351,6 @@ void sveglia::sel4(bool isOn)
 }
 void sveglia::Closed()
 {
-    emit(ImClosed()); 
     qDebug("Sveglia Closed");
     hide();
     //imposta la sveglia in 
@@ -390,6 +389,7 @@ void sveglia::Closed()
 
     gesFrameAbil=FALSE;
     activateSveglia(TRUE);
+    emit(ImClosed()); 
     delete(oraSveglia);
     oraSveglia = new QDateTime(dataOra->getDataOra());
     copyFile("cfg/conf.xml","cfg/conf1.lmx");
@@ -542,7 +542,7 @@ void sveglia::verificaSveglia()
     
   
     if ( (tipoSveglia==SEMPRE) || \
-	 ((tipoSveglia==ONCE) && (onceToGest)) ||\
+	 ((tipoSveglia==ONCE) /*&& (onceToGest)*/) ||\
 	 ((tipoSveglia==FERIALI) && (actualDateTime.date().dayOfWeek()<6)) ||\
 	 ((tipoSveglia==FESTIVI) && (actualDateTime.date().dayOfWeek()>5)) )
     {
@@ -576,13 +576,17 @@ void sveglia::verificaSveglia()
 	    }
 
 	    qDebug("PARTE LA SVEGLIA");
-        if (onceToGest)
-            tipoSveglia=NESSUNO;
-	    onceToGest=FALSE;
+        
+        if (tipoSveglia==ONCE)
+            activateSveglia(FALSE);
+  //      if (onceToGest)
+            //tipoSveglia=NESSUNO;
+//	    onceToGest=FALSE;
 
 	}
     }    
-    minuTimer->start((60-actualDateTime.time().second())*1000);
+    if  (svegliaAbil)
+        minuTimer->start((60-actualDateTime.time().second())*1000);
 }
 
 
