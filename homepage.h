@@ -140,6 +140,8 @@ private slots:
   void 	sendFrame(char*);
 /*! \brief Emitted when the \a schedulation subtree(sottoMenu) is required.*/
   void	Schedulazioni();
+/*! \brief Emitted when the \a advanced scenarios management(sottoMenu) is required */
+  void ScenariEvoluti();
 private:
 // QTimer 	 *orologio;
   timeScript* dataOra;

@@ -68,7 +68,7 @@ v** Socket
     firstTime=1;
     pagDefault=NULL;
     Home=specPage=NULL;
-    illumino=scenari=carichi=imposta=automazioni=sched=NULL;
+    illumino=scenari=carichi=imposta=automazioni=scenari_evoluti=NULL;
     termo=NULL;
     difSon=NULL;
     antintr=NULL;
@@ -203,7 +203,7 @@ void BtMain::hom()
    if (QFile::exists("cfg/conf.xml"))
      { 
                     qDebug("scello %d",bg);
-    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen, &sched,bg, fg1, fg2);
+    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen,bg, fg1, fg2);
                 qDebug("scello %d",bg);
     setBackgroundColor(*bg);
      for (int idx=0;idx<12;idx++)
@@ -259,6 +259,8 @@ void BtMain::init()
         imposta->inizializza();
     if(termo)
         termo->inizializza();
+    if(scenari_evoluti)
+	scenari_evoluti->inizializza();
     //    rearmWDT();
     
     struct sysinfo info;
@@ -403,6 +405,7 @@ void BtMain::gesScrSav()
             {
 #ifndef BACKLIGHT_SEMPRE_ON  
             setBacklight(FALSE);
+	    qDebug("***** freeze(TRUE) ***** ");
             emit freeze(TRUE);
             bloccato=01;
             tempo1->changeInterval(500);
@@ -411,6 +414,7 @@ void BtMain::gesScrSav()
         }
         else if ( (tiempo<=5) && (bloccato) )
         {
+	  qDebug("***** freeze(FALSE) ***** ");
             emit freeze(FALSE);
             bloccato=0;
             tempo1->changeInterval(2000);
@@ -440,6 +444,8 @@ void BtMain::gesScrSav()
                         antintr -> hide();
                     if (specPage )
                         specPage -> hide();
+		    if (scenari_evoluti)
+			scenari_evoluti->hide();
                     if (pagDefault)
                         pagDefault -> showFullScreen();
                 }
@@ -638,6 +644,7 @@ void BtMain::gesScrSav()
     {
 #ifndef BACKLIGHT_SEMPRE_ON 	    
         setBacklight(FALSE);
+	qDebug("***** freeze(TRUE) ***** ");
         emit freeze(TRUE);	   
         tempo1->changeInterval(500);
 #endif	    
@@ -671,6 +678,7 @@ void BtMain::freezed(bool b)
             tasti = new tastiera(NULL,"tast");
             tasti->setBGColor(Home->backgroundColor());     
             tasti->setFGColor(Home->foregroundColor()); 
+	    tasti->setMode(tastiera::HIDDEN);
             tasti -> showTastiera();
             connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
         }

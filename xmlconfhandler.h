@@ -57,7 +57,7 @@
 class xmlconfhandler : public QXmlDefaultHandler
 {
 public:
-    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,sottoMenu** sched=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
+    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
     
     ~xmlconfhandler();
 /*!
@@ -100,15 +100,20 @@ private:
     QString page_item_descr;
     QString page_item_what;
     QString page_item_where;
-    QString page_icon, page_item_who, page_item_type;
+    QString page_icon, page_item_who, page_item_type, page_item_action;
+    int page_item_softstart, page_item_softstop;
 
     void * page_item_indirizzo;
     
     QPtrList<QString> * page_item_list_img;
     QPtrList<QString> * page_item_list_group;
     QPtrList<QString> * page_item_list_txt;
+    QPtrList<QString> * page_item_list_txt_times;
     
-      int	par1, par2,par3;
+    scenEvo_cond *page_item_cond;
+    QPtrList<scenEvo_cond> *page_item_cond_list;
+    
+      int	par1, par2,par3, par4;
       unsigned int itemNum;
       QString CurTagL4_copy;
     QColor Background, Foreground,SecondForeground;    
@@ -118,7 +123,8 @@ private:
     
     homePage **home;
     homePage **specPage;
-    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched;
+    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,
+	**scenari_evoluti;
     termoregolaz **termo;
     diffSonora **difSon;
     antintrusione** antintr;

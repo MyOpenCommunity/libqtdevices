@@ -27,12 +27,13 @@ unsigned char tipoData=0;
 /*******************************************
 *
 *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
-                               diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG, sottoMenu** sch,\
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
+                               diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG,\
                                QColor* bg, QColor* fg1, QColor *fg2)
 {
     home=h;
     specPage=sP;
+    scenari_evoluti = se;
     illumino=i;
     scenari=s;
     carichi=c;
@@ -46,19 +47,21 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP,  sottoMenu
     client_comandi=c_c;
     client_monitor=c_m;
     datiGen=dG;
-    sched = sch;
-    
+
  //   bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
     Background=*bg;
-            qDebug("scello %d",bg);
+    //qDebug("scello %d",bg);
     Foreground=*fg1;
-            qDebug("scello1 %d",bg);
+    //qDebug("scello1 %d",bg);
     SecondForeground=*fg2;//QColor(255,0,0);
-            qDebug("scello2 %d",bg);
+    //qDebug("scello2 %d",bg);
     page_item_list_img = new QPtrList<QString>;
     page_item_list_group = new QPtrList<QString>;
     page_item_list_txt = new QPtrList<QString>;
-            qDebug("scello3 %d",bg);
+    page_item_list_txt_times = new QPtrList<QString>;
+    page_item_cond = NULL;
+    page_item_cond_list = new QPtrList<scenEvo_cond>;
+    //qDebug("scello3 %d",bg);
 }
 
 /*******************************************
@@ -69,6 +72,8 @@ xmlconfhandler::~xmlconfhandler()
     delete page_item_list_img;
     delete page_item_list_group;
     delete page_item_list_txt;
+    delete page_item_list_txt_times;
+    delete page_item_cond_list;
 }
 
 
@@ -89,7 +94,9 @@ void xmlconfhandler::set_page_item_defaults()
     par1=par2=0;
     page_item_list_img->clear();
     page_item_list_txt->clear();
+    page_item_list_txt_times->clear();
     page_item_list_group->clear(); 
+    page_item_cond_list->clear();
     page_item_what = "";
     page_item_descr = "";
     page_item_what = "";
@@ -97,6 +104,8 @@ void xmlconfhandler::set_page_item_defaults()
     page_icon = "";
     page_item_who = "";
     page_item_type = "0";
+    page_item_softstart = 25;
+    page_item_softstop = 25;
     itemNum=0;
 }
 
@@ -232,8 +241,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                         case TERMOREGOLAZIONE:
                         case DIFSON:
                         case SCENARI:
-                        case SCHEDULAZIONI:
-                            case IMPOSTAZIONI: 				  // addbutton normali
+                        case IMPOSTAZIONI: 				  // addbutton normali
+			case SCENARI_EVOLUTI:
                             (*home)->addButton(sottomenu_left,sottomenu_top,(char *)sottomenu_icon_name.ascii(), (char)sottomenu_id); break;
                             //  Home->addButton(160,125,ICON_IMPOSTAZIONI_80 ,IMPOSTAZIONI);
                             //			qWarning("ADDBUTTON NORMALE");
@@ -273,8 +282,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                     if ( ( CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty() )
                     {
                         sottoMenu *pageAct=NULL;
-//                        qDebug("INSERTED ITEM:ID %d",page_item_id);
+                        qDebug("INSERTED ITEM:ID %d",page_item_id);
                         qDebug("INS ITEM: %s",banTesti[page_item_id]);
+			
                         /*		    for ( QString * MyPnt = page_item_list_img->first(); MyPnt; MyPnt= page_item_list_img->next() )
                         qWarning("IMG=%s su %d",MyPnt->ascii(),page_item_list_img->count());*/
                         
@@ -286,6 +296,13 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                         {
                             page_item_list_txt->append(new QString(""));
                         }		     
+#if 0
+			for(int idx=page_item_list_txt_times->count(); 
+			    idx < 20; idx++)
+			{
+                            page_item_list_txt_times->append(new QString(""));
+                        }
+#endif
                         /*		    for (QString * MyPnt = page_item_list_group->first(); MyPnt; MyPnt = page_item_list_group->next() )
                         qWarning("GROUP=%s",MyPnt->ascii());	*/
                         
@@ -299,10 +316,12 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             pageAct= (*automazioni);	
                             //         qDebug("automaz");
                             
-                                case  ILLUMINAZIONE:
+			case  ILLUMINAZIONE:
                             if (!pageAct)
                             {
                                 pageAct= (*illumino); 
+				par3 = page_item_softstart; 
+				par4 = page_item_softstop;
                                 //       qDebug("illumino");
                             }
                         case CARICHI:
@@ -323,17 +342,19 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                                 pageAct=(*scenari); 		
                                 //             qDebug("scenari");
                             }
+			case SCENARI_EVOLUTI:
+			  if(!pageAct)
+			    pageAct= (*scenari_evoluti);
+			  qDebug("SCENARI_EVOLUTI: %s %s %s %s",
+				 (char*)page_item_list_img->at(0)->ascii(),
+				 (char*)page_item_list_img->at(1)->ascii(),
+				 (char*)page_item_list_img->at(2)->ascii(),
+				 (char*)page_item_list_img->at(3)->ascii());
                         case IMPOSTAZIONI:
                             if (!pageAct)
                             {
                                 pageAct=(*imposta);
                                 //             qDebug("imposta");
-                            }
-                             case SCHEDULAZIONI:
-                            if (!pageAct)
-                            {
-                                pageAct=(*sched);
-                                //                 qDebug("schedul");
                             }
                             
                             if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
@@ -368,7 +389,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             {
                                     pnt=datiGen;
                                 }
-                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3 )  ;
+                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action)  ;
+			    page_item_cond_list->clear();
                             break;			   
                         case ANTIINTRUSIONE:
                             //     qDebug("antiintr");
@@ -395,7 +417,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             
                             (*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  pnt/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
                             break;
-                           
                         case SPECIAL:
                                    qDebug("special");
                             switch(page_item_id)
@@ -578,24 +599,25 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*imposta,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*imposta,SLOT(freezed(bool)));
                             break;
-                        case SCHEDULAZIONI:    
-                            //			qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
-                            (*sched)->forceDraw();
+			case SCENARI_EVOLUTI:
+			  qDebug("******* scenari_evoluti = %p, "
+				 "impostazioni = %p ******", *scenari_evoluti,
+				 *imposta);
+			     (*scenari_evoluti)->forceDraw();
+			     QObject::connect(*scenari_evoluti,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+			     QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari_evoluti,SIGNAL(gestFrame(char *)));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
-                            QObject::connect(*home,SIGNAL(Schedulazioni()),*sched,SLOT(showFullScreen()));
-                            QObject::connect(*sched,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+                            QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
+                            QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif                                          
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)      
-                            QObject::connect(*home,SIGNAL(Schedulazioni()),*sched,SLOT(show()));
-                            QObject::connect(*sched,SIGNAL(Closed()),*home,SLOT(show()));
+                            QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(show()));
+                            QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                    
-                            QObject::connect(*sched,SIGNAL(Closed()),*sched,SLOT(hide()));
-                            
-                            QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*sched,SIGNAL(gestFrame(char *)));
-                            QObject::connect(*sched,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-                            QObject::connect(*sched,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-                            QObject::connect(*sched,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
-                            QObject::connect(BtM,SIGNAL(freeze(bool)),*sched,SLOT(freezed(bool)));
+                            QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*scenari_evoluti,SLOT(hide()));
+                            QObject::connect(*scenari_evoluti,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+                            QObject::connect(*scenari_evoluti,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
+                            QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari_evoluti,SLOT(freezed(bool)));
                             break;
                         case SPECIAL:    
                             		//	qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
@@ -618,7 +640,16 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                         set_page_item_defaults();
                         page_id=0;
                         page_descr="";
-                    }
+                    } else if(CurTagL3.startsWith("page") && 
+			      CurTagL4.startsWith("item") && 
+			      CurTagL5.startsWith("cond") && 
+			      CurTagL6.isEmpty()) {
+		      if(page_item_cond) {
+			  page_item_cond->SetIcons();
+			page_item_cond_list->append(page_item_cond);
+			page_item_cond = NULL;
+		      }
+		    }
                 } //  if (CurTagL3.startsWith("page"))
                 if ( !CurTagL2.compare("displaypages") && CurTagL3.isEmpty() )
                 {
@@ -739,7 +770,7 @@ bool xmlconfhandler::characters( const QString & qValue)
                         {
                                 sottomenu_icon_name = QString(IMG_PATH);
                                 sottomenu_icon_name.append(qValue.ascii());
-                                //				qDebug ("PAGEMENU:icon_name %s",sottomenu_icon_name.ascii());
+                                qDebug ("PAGEMENU:icon_name %s",sottomenu_icon_name.ascii());
                             } else if (!CurTagL5.compare("where"))
                                 sottomenu_where = qValue;
                             
@@ -824,13 +855,13 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 pageAct=*imposta;
                                 //				qWarning("IMPOSTAZIONI new.- .- . -. -.- .- -. .-.");
                                 break;
-                            case SCHEDULAZIONI:
-                                *sched = new sottoMenu (NULL,"IMPOSTA");
-                                (*sched) ->setBGColor(Background);
-                                (*sched) ->setFGColor(Foreground);
-                                pageAct=*sched;
-                                //				qWarning("SCHEDULAZIONI new.- .- . -. -.- .- -. .-.");
-                                break;
+			    case SCENARI_EVOLUTI:
+                                *scenari_evoluti = new sottoMenu (NULL,"SCENARI_EVOLUTI");
+                                (*scenari_evoluti) ->setBGColor(Background);
+                                (*scenari_evoluti) ->setFGColor(Foreground);
+                                pageAct=*scenari_evoluti;
+                                //				qWarning("SCENARI_EVOLUTI new.- .- . -. -.- .- -. .-.");
+				break;
                             case SPECIAL:	    
                                  qDebug("!");
                                 (*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
@@ -855,7 +886,7 @@ bool xmlconfhandler::characters( const QString & qValue)
                 else if (!CurTagL4.compare("descr"))
                 {
                             page_descr = qValue;
-                        }
+		}
                 else if (CurTagL4.startsWith("item"))
                 {
                             CurTagL4_copy=CurTagL4;
@@ -867,6 +898,12 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 //				qWarning("PAGEITEM:ID %d",page_item_id);
                             } else if (!CurTagL5.compare("descr"))
                                 page_item_descr = qValue;
+			    else if (!CurTagL5.compare("softstart"))
+				page_item_softstart = qValue.toInt( &ok, 10);
+			    else if (!CurTagL5.compare("softstop"))
+				page_item_softstop = qValue.toInt( &ok, 10);
+			    else if (CurTagL5.startsWith("time"))
+				page_item_list_txt_times->append(new QString(qValue));
                             else if (!CurTagL5.compare("where"))
                                 page_item_where = qValue;
                             else if (!CurTagL5.compare("what"))
@@ -880,10 +917,11 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 }
                             else if ((CurTagL5.startsWith("cimg"))||(!CurTagL5.compare("value"))||(!CurTagL5.compare("hour"))||(!CurTagL5.compare("minute")))
                             {
-                                    //				    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
+                                    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
                                     QString sValue=qValue;
                                     if  (CurTagL5.startsWith("cimg"))
                                         sValue.prepend(IMG_PATH);
+				    qDebug("cimg %s", sValue.ascii());
                                     page_item_list_img->append(new QString(sValue));
                                 }
                             else if (CurTagL5.startsWith("txt"))
@@ -910,6 +948,87 @@ bool xmlconfhandler::characters( const QString & qValue)
                             {
                                     par2=qValue.toInt( &ok, 10 );
                                 }   */
+			    else if(!CurTagL5.compare("condH"))
+			    {
+				if(!page_item_cond)
+				    page_item_cond = new scenEvo_cond_h(NULL,
+									"cond h s.evo.");
+				scenEvo_cond_h *ch = (scenEvo_cond_h *)
+				    page_item_cond;
+				// Hour condition
+				if(!CurTagL6.compare("value")) {
+				    qDebug("condH, value = %s", 
+					   qValue.ascii());
+				    ch->setVal(atoi(qValue.ascii()));
+							   
+				} else if(!CurTagL6.compare("hour")) {
+				    qDebug("condH, hour = %s", qValue.ascii());
+				    ch->set_h(qValue.ascii());
+				} else if(!CurTagL6.compare("minute")) {
+				    qDebug("condH, minute = %s", 
+					   qValue.ascii());
+				    ch->set_m(qValue.ascii());
+				} else if(!CurTagL6.compare("cimg1")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    ch->setImg(0, tmp);
+				} else if(!CurTagL6.compare("cimg2")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    ch->setImg(1, tmp.ascii());
+				} else if(!CurTagL6.compare("cimg3")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    ch->setImg(2, tmp.ascii());
+				} else if(!CurTagL6.compare("cimg4")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    ch->setImg(3, tmp.ascii());
+				} 
+			    }
+			    else if(!CurTagL5.compare("condDevice")) 
+			    {
+				// Device condition
+				if(!page_item_cond)
+				    page_item_cond = new scenEvo_cond_d(NULL,
+									"scen. evo. c.disp.");
+				scenEvo_cond_d *cd = (scenEvo_cond_d *)
+				    page_item_cond;
+				if(!CurTagL6.compare("value")) {
+				    cd->setVal(atoi(qValue.ascii()));
+				} else if(!CurTagL6.compare("descr")) {
+				    cd->set_descr(qValue.ascii());
+				} else if(!CurTagL6.compare("where")) {
+				    cd->set_where(qValue.ascii());
+				} else if(!CurTagL6.compare("trigger")) {
+				    cd->set_trigger(qValue.ascii());
+				} else if(!CurTagL6.compare("cimg1")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    cd->setImg(0, tmp.ascii());
+				} else if(!CurTagL6.compare("cimg2")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    cd->setImg(1, tmp.ascii());
+				} else if(!CurTagL6.compare("cimg3")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    cd->setImg(2, tmp.ascii());
+				} else if(!CurTagL6.compare("cimg4")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    cd->setImg(3, tmp.ascii());
+				} else if(!CurTagL6.compare("cimg5")) {
+				    QString tmp(IMG_PATH);
+				    tmp.append(qValue.ascii());
+				    cd->setImg(4, tmp.ascii());
+				} 
+			    } else if(!CurTagL5.compare("action")) {
+				if(!CurTagL6.compare("open")) {
+				    page_item_action = qValue;
+				    qDebug("action = %s", qValue.ascii());
+				}
+			    }
                         } // if (!CurTagL4.startsWith("item"))
                 else if (!CurTagL4.compare("command"))
                 {

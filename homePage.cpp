@@ -101,7 +101,6 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 	case DIFSON:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Difson() )); break;
 	case SCENARI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Scenari() )); break;
 	case IMPOSTAZIONI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Settings() )); break;
-	case SCHEDULAZIONI:  connect(b1,SIGNAL(clicked()),this, SIGNAL(Schedulazioni() )); break;
 	case SPECIAL:
 			     tipoSpecial=tipo;
                                                qDebug("tipoSpecial= %d",tipoSpecial);
@@ -117,6 +116,8 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 			     else
 				 connect(b1, SIGNAL(clicked()), this, SLOT(specFunz()));
 			     break;
+    case SCENARI_EVOLUTI: connect(b1, SIGNAL(clicked()), this, SIGNAL(ScenariEvoluti())); break;
+      
 	case BACK: connect(b1, SIGNAL(clicked()), this, SIGNAL(Close()));break;			
     }
 }

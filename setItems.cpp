@@ -298,6 +298,7 @@ void  impPassword::show()
 	SetIcons(uchar(0),&iconOn[0]);
    else
        	SetIcons(uchar(0),&iconOff[0]);
+    qDebug("impPassword::show()");
    Draw();
    qDebug("passwd = %s %d", &paswd[0], paswd[0]);
    if ( (paswd[0]=='\000') || (starting) )

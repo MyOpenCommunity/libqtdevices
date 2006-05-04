@@ -8,7 +8,7 @@
 **
 ****************************************************************/
 #include <qwidget.h>
-
+#include "openclient.h"
 #include "banner.h"
 #include "main.h"
 #include <qptrlist.h>
@@ -34,23 +34,72 @@ class dimmer : public bannRegolaz
     Q_OBJECT
 public:
      dimmer( QWidget *, const char *,char*,char*,char*,char*,char*,char*);     
-     void inizializza();
+     virtual void inizializza();
 public slots:
-    void gestFrame(char*);
+     virtual void gestFrame(char*);
 private slots:
-    void Accendi();
-    void Spegni();
-    void Aumenta();
-    void Diminuisci();
+    virtual void Accendi();
+    virtual void Spegni();
+    virtual void Aumenta();
+    virtual void Diminuisci();
 signals:
    // void sendFrame(char *);          
-private:
-     char value;
-     char pul;
-     char gruppi[4];
+protected:
+    char value;
+    char pul;
+    char gruppi[4];
 };
 
 #endif //DIMMER_H
+
+/*****************************************************************
+**Dimmer
+****************************************************************/
+
+#ifndef  DIMMER100_H
+#define DIMMER100_H
+
+#include "bannregolaz.h"
+
+/*!
+  \class dimmer 100 livelli
+  \brief This is the 100 lev dimmer-banner class.
+  
+  \author Ciminaghi
+  \date Mar 2006
+*/  
+class dimmer100 : public dimmer
+{
+    Q_OBJECT ;
+ public:
+    dimmer100( QWidget *, const char *,char*,char*,char*,char*,char*,char*,
+	       int, int); 
+    void inizializza();
+    void Draw();
+    public slots:
+	void gestFrame(char*);
+    private slots:
+	void Accendi();
+	void Spegni();
+	void Aumenta();
+	void Diminuisci();
+ signals:
+// void sendFrame(char *);          
+ private:
+    /*!
+      \brief decode msg code, lev and speed from open message
+      returns true if msg_open is a message for a new dimmer, 
+      false otherwise
+    */
+    bool decCLV(openwebnet&, char& code, char& lev, char& speed,
+		char& h, char& m, char& s); 
+    int softstart, softstop;
+    int last_on_lev;
+    int speed;
+    bool spento;
+};
+
+#endif //DIMMER100_H
 
 /*****************************************************************
 **attuatore automazione
@@ -317,7 +366,7 @@ private:
 #ifndef ATTUAT_AUTOM_TEMP_H
 #define ATTUAT_AUTOM_TEMP_H
 
-static const char* tempi[]={"1'","2'","3'","4'","5'","15'"};//,"30''","0,5''"} ;
+//static const char* tempi[]={"1'","2'","3'","4'","5'","15'"};//,"30''","0,5''"} ;
      
 #include "bannonoff2scr.h"
 /*!
@@ -332,21 +381,114 @@ class attuatAutomTemp : public bannOnOff2scr
 {
     Q_OBJECT
 public:
-     attuatAutomTemp ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
-     void inizializza();
+     attuatAutomTemp ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
+    virtual void inizializza();
+    ~attuatAutomTemp();
 public slots:
-     void gestFrame(char*);
+     virtual void gestFrame(char*);
+protected slots:
+     virtual void Attiva();
 private slots:
-     void Attiva();
      void CiclaTempo();
 signals:
   //  void sendFrame(char *);           
-private:
+protected:
      uchar cntTempi;   
+     char tempo_display[100];
+     uchar ntempi() ;
+     void leggi_tempo(char *&);
+     virtual void assegna_tempo_display() ;
+     /*
+       \brief Returns true if the object is a target for message
+       TODO: MAKE THIS A METHOD OF class banner ?
+     */
+     //bool isForMe(openwebnet& message);
+     QPtrList<QString> *tempi;
 };
 
 
 #endif //ATTUAT_AUTOM_TEMP_H
+
+/*****************************************************************
+**attuatore automazione temporizzato nuovo a N tempi
+****************************************************************/
+
+#ifndef ATTUAT_AUTOM_TEMP_NUOVO_N_H
+#define ATTUAT_AUTOM_TEMP_NUOVO_N_H
+
+#include "bannonoff2scr.h"
+/*!
+  \class attuatAutomTempN
+  \brief This class is made to manage a timed control.
+  
+  This object implements the new timed actuator with N time settings
+  With this object is possible to have the actuator active for a certain time. After that time the actuator releases by itself. Clicking on the left button it is possible to select the time the actuator has to remain active; clicking on the right button the actuation effectively starts.
+  \author Ciminaghi
+  \date Apr 2006
+*/  
+class attuatAutomTempNuovoN : public attuatAutomTemp
+{
+    Q_OBJECT ;
+public:
+    attuatAutomTempNuovoN ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
+    void inizializza();
+public slots:
+    void gestFrame(char*);
+protected slots:
+    void Attiva();
+ protected:
+ void assegna_tempo_display() ; 
+ bool stato_noto;
+signals:
+//  void sendFrame(char *);           
+};
+
+
+#endif //ATTUAT_AUTOM_TEMP_NUOVO_N_H
+
+/*****************************************************************
+**attuatore automazione temporizzato nuovo a tempo fisso
+****************************************************************/
+
+#ifndef ATTUAT_AUTOM_TEMP_NUOVO_F_H
+#define ATTUAT_AUTOM_TEMP_NUOVO_F_H
+
+#include "bannon2scr.h"
+/*!
+  \class attuatAutomTempN
+  \brief This class is made to manage a timed control.
+  
+  This object implements the new timed actuator with fixed time setting
+  \author Ciminaghi
+  \date Apr 2006
+*/  
+class attuatAutomTempNuovoF : public bannOn2scr
+{
+    Q_OBJECT ;
+public:
+    attuatAutomTempNuovoF ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, const char *tempo=NULL);
+    void inizializza();
+    void SetIcons(char *, char *, char *);
+    void Draw();
+public slots:
+    void gestFrame(char*);
+protected slots:
+    void Attiva();
+ void update(); 
+ protected:
+ char tempo[20] ;
+ void leggi_tempo(char *&out); 
+ void chiedi_stato();
+ int h, m, s, val;
+ QTimer *myTimer;
+ bool stato_noto;
+ bool temp_nota;
+signals:
+//  void sendFrame(char *);           
+};
+
+
+#endif //ATTUAT_AUTOM_TEMP_NUOVO_F_H
 
 
 /*****************************************************************
@@ -799,3 +941,55 @@ private:
 };
 
 #endif //MOD_SCEN_H
+
+/*****************************************************************
+** Scenario evoluto
+****************************************************************/	
+#ifndef SCEN_EVO_H
+#define SCEN_EVO_H
+
+#include "scenevocond.h"
+
+
+/*!
+  \class gesModScen
+  \brief This class represents an advanced scenario management object
+  \author Ciminaghi
+  \date apr 2006
+*/  
+class scenEvo : public  bann3But
+{
+    Q_OBJECT
+ private:
+    QPtrList<scenEvo_cond> *condList;
+    QPtrListIterator<scenEvo_cond> *cond_iterator;
+    QString action;
+ public:
+    scenEvo( QWidget *parent=0, const char *name=NULL, QPtrList<scenEvo_cond> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3=NULL,char* Ico4=NULL,\
+	     char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, 
+	     QString act="");   
+    //void SetIcons(char *, char *, char *, char *);
+    void Draw();
+    /*!
+      \brief Returns action as an open message
+    */
+    const char *getAction() ;
+    /*!
+      \brief Sets action as an open message
+      \param a pointer to open frame
+    */
+    void setAction(const char *a) ;
+public slots:
+	void toggleAttivaScev();
+ void configScev();
+ void forzaScev();
+ void nextCond();
+ void prevCond();
+ void trig();
+ void freezed(bool);
+private slots:    
+signals:
+private:    
+};
+
+#endif // SCEN_EVO_H

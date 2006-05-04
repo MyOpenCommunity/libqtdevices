@@ -85,7 +85,9 @@ enum pagSecLiv{
   IMPOSTAZIONI=8,				/*!< Settings */
   BACK=9,             					/*!< Back button - placed here for convenience*/  
   SPECIAL=10,          				/*!< Special button - placed here for convenience*/
-  SCHEDULAZIONI=11	  		/*!< Schedulations page*/
+  //SCHEDULAZIONI=11,	  		/*!< Schedulations page*/
+  VIDEOCITOFONIA=11,
+  SCENARI_EVOLUTI=12,                   /*!< Advanced scenarios management */
 };
 
 
@@ -242,17 +244,23 @@ enum  bannerType {
   TEMPERATURA=31,       			/*!<  Temperature*/
   OROLOGIO=32,          			/*!<  Clock*/
   ALLARME=33,					/*!<  Alarm*/
-  CMDSPECIAL=34	  			/*!<  Special command*/
+  CMDSPECIAL=34,	  			/*!<  Special command*/
+  DIMMER_100=35,                                /*!<  New dimmer */
+  ATTUAT_AUTOM_TEMP_NUOVO_N=36,         /*!< Attuatore temp nuovo, N tempi */
+  ATTUAT_AUTOM_TEMP_NUOVO_F=37,         /*!< Attuatore temp nuovo, fisso */
+  SCENARIO_EVOLUTO=38,                  /*!< Scenario evoluto */
+  SCENARIO_SCHEDULATO=39,               /*!< Scenario schedulato */
 };
 
 /*! banTesti: text utilized during the initialization sequence when the menu is built up*/
-const char banTesti[34][20] = {"ATTUAT_AUTOM","DIMMER","ATTUAT_AUTOM_INT","VUOTO","SCENARIO","GR_ATT_INT","GR_DIMMER","CARICO",\
+const char banTesti[40][20] = {"ATTUAT_AUTOM","DIMMER 10","ATTUAT_AUTOM_INT","VUOTO","SCENARIO","GR_ATT_INT","GR_DIMMER","CARICO",\
                             "ATT_AUT_INT_SIC","ATT_AUT_TEMP","GR_ATT_INT","ATT_AUT_PULS","ATT_VCT_LS","ATT_VCT_SER","SET_DATA","VUOTO",\
                             "SORGENTE","SORG_RADIO","AMPLI", "GR_AMPLI","SET_SVEGLIA","CALIB","TERMO","ZONANTI","IMPANTI","SUONO","PROT","VERS",\
-                            "CONTR","MOD_SCEN","DATA;TEMP","TIME","ALL","SPECIAL" };
+                            "CONTR","MOD_SCEN","DATA", "TEMP","TIME","ALL","SPECIAL","DIMMER 100","ATT_AUT_TEMP_N","ATT_AUT_TEMP_F","SCENARIO EVOLUTO",
+"SCENARIO SCHEDULATO" };
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up*/
-const char pagTesti[11][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
-                            "BACK","SPECIAL"," SCHEDULAZ" };
+const char pagTesti[12][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
+                            "BACK","SPECIAL","VIDEOCITOF","SCENARI EVO" };
                 
 /*! \enum pulsType
   differentiate various type of pulse banner*/

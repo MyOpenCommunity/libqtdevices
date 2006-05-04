@@ -12,11 +12,11 @@
 #define BANNER
 
 
-#define MAX_NUM_ICON		42
+#define MAX_NUM_ICON		46
 #define MAX_TEXT 		21
 #define MAX_TEXT_2		11
 
-
+#include "openclient.h"
 #include "btbutton.h"
 #include "genericfunz.h"
 #include <qwidget.h>
@@ -162,6 +162,7 @@ the arguments describe the images to put on the buttons and into the describing 
   When a ligthing/automation object is considered PUL it changes its state only with \a point \a to \a point commands.
 */      
     bool 	getPul();
+
 /*!
   \brief Sets the serial number of the banner.
   
@@ -249,6 +250,12 @@ the arguments describe the images to put on the buttons and into the describing 
 */                 
     void 	setRange(char,char);
 /*!
+  \bried Sets the step for the object controlled by the banner.
+  
+  The object's value is decremented/incremented by this quantity
+*/
+    void        setStep(char);
+/*!
   \brief Retrieves if the object controlled by the banner is \a active or not.
 */                 
     unsigned char isActive();
@@ -298,13 +305,14 @@ the arguments describe the images to put on the buttons and into the describing 
   BUT1 - BUT2 - BUT3 - BUT4 are 4 possible button 
   TEXT is the describing text
   TEXT2 is an additional text 
-  ICON is a possible image describing the banner or its state
+  ICON - ICON2 are possibles image describing the banner or its state
 */  
 enum oggettinoDelBanner{
-                                                 BUT1,
+                         BUT1,
 			 BUT2,
 			 TEXT,
 			 ICON,
+			 ICON2,
 			 BUT3,
 			 BUT4,
 			 TEXT2,
@@ -399,11 +407,12 @@ signals:
 */    
  virtual void killMe(banner*);
   
-private:
+protected:
 /*   QLabel * BannerIcon;
    QLabel * BannerText;
    QLabel * SecondaryText;*/
    BtLabel * BannerIcon;
+   BtLabel * BannerIcon2;
    BtLabel * BannerText;
    BtLabel * SecondaryText;
    BtButton * sxButton;
@@ -413,13 +422,17 @@ private:
    QPixmap *  Icon[MAX_NUM_ICON];
    QPixmap * pressIcon[4];
 //   char testo[MAX_TEXT],testoSecondario[MAX_TEXT_2];
-   char attivo,value,maxValue,minValue,id;
+   char attivo,value,maxValue,minValue,id,step;
    int periodo, numFrame,contFrame,serNum;
    char address[20];
    char chi[5];
    bool group[9];
    bool pul;
-
+   /*
+      \brief Returns true if the object is a target for message
+      TODO: MAKE THIS A METHOD OF class banner ?
+    */
+    bool isForMe(openwebnet& message);
 };
 
 

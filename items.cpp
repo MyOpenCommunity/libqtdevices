@@ -25,8 +25,9 @@
 
 dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon )
         : bannRegolaz( parent, name )
-        { 
-    setRange(1,9);
+        {
+    setRange(10,90);
+    setStep(10);
     SetIcons( IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0 );
     setAddress(indirizzo);
     /*      impostaAttivo(1);
@@ -36,8 +37,6 @@ dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,c
     connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
     connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
-
-
 
 void dimmer::gestFrame(char* frame)
 {
@@ -49,49 +48,42 @@ void dimmer::gestFrame(char* frame)
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
     
     
-    if (!strcmp(msg_open.Extract_chi(),"1"))
+    if (isForMe(msg_open))
     {
-        if ( (! strcmp(msg_open.Extract_dove(),getAddress()) ) ||     \
-             ( !getPul() &&  (  \
-                                (! strcmp(msg_open.Extract_dove(),"0")) ||   \
-                                ( ( strlen(msg_open.Extract_dove())==1) && (! strncmp(msg_open.Extract_dove(),getAddress(),1)) ) ||     \
-                                ( (! strncmp(msg_open.Extract_dove(),"#",1))  && *(getGroup()+(atoi(msg_open.Extract_dove()+1))-1) )        )   )  )
-        {
-            if (!strcmp(msg_open.Extract_cosa(),"1")) 		
-            {
-                if (isActive()!=1)
-                {
-                    impostaAttivo(1);
-                    aggiorna=1;
-                }
-            }
-            else if (!strcmp(msg_open.Extract_cosa(),"0")) 
-            {
-                if (isActive()!=0)
-                {
-                    impostaAttivo(0);
-                    aggiorna=1;
-                }
-            }
-            //	    else if (!strcmp(msg_open.Extract_cosa(),"2")) 
-            else if ( (atoi(msg_open.Extract_cosa()))<11) 
-            {
-                impostaAttivo(1);
-                setValue(atoi(msg_open.Extract_cosa())-1);
-                qDebug("imposto livello : %d",(atoi(msg_open.Extract_cosa())-1));		    
-                aggiorna=1;
-            }
-            else if (!strcmp(msg_open.Extract_cosa(),"19")) 
-            {
-                //DIMMER out of work
-                if (isActive()!=2)
-                {
-                    impostaAttivo(2);
-                    aggiorna=1;
-                }
-            }
-        }
-    }    
+	if (!strcmp(msg_open.Extract_cosa(),"1")) 		
+	{
+	    if (isActive()!=1)
+	    {
+		impostaAttivo(1);
+		aggiorna=1;
+	    }
+	}
+	else if (!strcmp(msg_open.Extract_cosa(),"0")) 
+	{
+	    if (isActive()!=0)
+	    {
+		impostaAttivo(0);
+		aggiorna=1;
+	    }
+	}
+	//	    else if (!strcmp(msg_open.Extract_cosa(),"2")) 
+	else if ( (atoi(msg_open.Extract_cosa()))<11) 
+	{
+	    impostaAttivo(1);
+	    setValue(10 * (atoi(msg_open.Extract_cosa())-1));
+	    qDebug("imposto livello : %d",(atoi(msg_open.Extract_cosa())-1));		    
+	    aggiorna=1;
+	}
+	else if (!strcmp(msg_open.Extract_cosa(),"19")) 
+	{
+	    //DIMMER out of work
+	    if (isActive()!=2)
+	    {
+		impostaAttivo(2);
+		aggiorna=1;
+	    }
+	}
+    }
     if (aggiorna)
         Draw();
 }
@@ -132,7 +124,8 @@ void dimmer::inizializza()
 {   
     openwebnet msg_open;
     char    pippo[50];
-    
+    qDebug("dimmer::inizializza");
+
     memset(pippo,'\000',sizeof(pippo));
     strcat(pippo,"*#1*");
     strcat(pippo,getAddress());
@@ -140,6 +133,273 @@ void dimmer::inizializza()
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit richStato(msg_open.frame_open);    
 }
+
+
+/*****************************************************************
+**dimmer 100 livelli
+****************************************************************/
+
+dimmer100::dimmer100( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon,
+		      int sstart, int sstop)
+  : dimmer( parent, name, indirizzo, IconaSx, IconaDx, icon, 
+	    inactiveIcon, breakIcon)
+{ 
+    qDebug("costruttore dimmer100, name = %s", name);
+    softstart = sstart;
+    qDebug("softstart = %d", softstart);
+    softstop = sstop;
+    qDebug("softstop = %d", softstop);
+    setRange(5,100);
+    setStep(5);
+    setValue(0);
+    qDebug("IconaSx = %s", IconaSx);
+    qDebug("IconaDx = %s", IconaDx);
+    qDebug("icon = %s", icon);
+    qDebug("inactiveIcon = %s", inactiveIcon);
+    qDebug("breakIcon = %s", breakIcon);
+    SetIcons( IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0 );
+}
+
+
+bool dimmer100::decCLV(openwebnet& msg, char& code, char& lev, char& speed,
+		       char& h, char &m, char &s)
+{
+    // Message is a new one if it has the form:
+    // *#1*where*1*lev*speed##
+    // which is a measure frame
+    bool out = msg.IsMeasureFrame();
+    if(!out) return out;
+    code = atoi(msg.Extract_grandezza());
+    qDebug("dimmer100::decCLV, code = %d", code);
+    if(code == 2) {
+	h = atoi(msg.Extract_valori(0));
+	m = atoi(msg.Extract_valori(1));
+	s = atoi(msg.Extract_valori(2));
+    } else if(code == 1) {
+	lev = atoi(msg.Extract_valori(0)) - 100;
+	speed = atoi(msg.Extract_valori(1));
+    }
+    return true;
+}
+
+void dimmer100:: Accendi()
+{
+    //*#1*where*#1*lev*speed
+    openwebnet msg_open;
+    msg_open.CreateNullMsgOpen();
+    char s[100];
+#if 0
+    sprintf(s, "*#1*%s*#1*%d*%d##", getAddress(), last_on_lev, softstart);
+#else
+    //*1*0#velocita*dove## 
+    sprintf(s, "*1*1#%d*%s##", softstart, getAddress());
+#endif
+    msg_open.CreateMsgOpen(s, strlen(s));
+    emit sendFrame(msg_open.frame_open);   
+}
+
+void dimmer100:: Spegni()
+{
+    if(spento) return;
+    openwebnet msg_open;
+    msg_open.CreateNullMsgOpen();
+    char s[100];
+    last_on_lev = value;
+    //*1*0#velocita*dove## 
+    sprintf(s, "*1*0#%d*%s##", softstop, getAddress());
+    msg_open.CreateMsgOpen(s, strlen(s));
+    emit sendFrame(msg_open.frame_open);   
+}
+
+void dimmer100:: Aumenta()
+{
+    openwebnet msg_open;
+    if(spento) return;
+    msg_open.CreateNullMsgOpen();     
+    //msg_open.CreateMsgOpen("1", "30",getAddress(),"");
+    char cosa[100];
+    // Simone agresta il 4/4/2006
+    // per l'incremento e il decremento prova ad usare il valore di velocit? di
+    // default 255.
+    sprintf(cosa, "30#5#255");
+    msg_open.CreateMsgOpen("1", cosa, getAddress(), "");
+    emit sendFrame(msg_open.frame_open);   
+}
+
+void dimmer100:: Diminuisci()	
+{
+    if(spento) return;
+    openwebnet msg_open;
+    char cosa[100];
+    sprintf(cosa, "31#5#255", speed);
+    msg_open.CreateNullMsgOpen(); 
+    msg_open.CreateMsgOpen("1", cosa ,getAddress(),"");
+    emit sendFrame(msg_open.frame_open);   
+}
+
+
+
+void dimmer100::gestFrame(char* frame)
+{
+    openwebnet msg_open;
+    char aggiorna;
+    char livello, velocita, codice, h, m, s;
+    
+    aggiorna=0;
+    
+    qDebug("dimmer100::gestFrame");
+
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+    
+    bool nuovo = decCLV(msg_open, codice, livello, velocita, h, m, s);
+
+    if(isForMe(msg_open)) {	
+	if(!nuovo) {
+	    // Frame vecchie
+
+	    }
+	} else {
+	    // Frame nuove
+	    if(codice == 1) {
+		qDebug("value = %d, velocita = %d", livello, velocita);
+		spento = livello ? false : true ;
+		if(livello > 100) 
+		    livello = 100;
+		if(value != livello) { 
+		    value = livello;
+		    aggiorna = 1;
+		}
+		speed = velocita;
+		setValue(livello);
+		if(!livello) {
+		    if(isActive()) {
+			impostaAttivo(0);
+			spento = true ;
+			aggiorna = 1;
+		    }
+		}
+		else {
+		    if(!isActive()) {
+			impostaAttivo(1);
+			spento = false ;
+			aggiorna = 1;
+		    }
+		}
+	    } else if(codice == 2) {
+		qDebug("Frame temp: %d %d %d", h, m ,s);
+		if((h == 255) && (m == 255) && (s == 255)) {
+		    if(isActive()) {
+			impostaAttivo(0);
+			aggiorna = 1;
+		    }
+		} else if((h == 0) && (m == 0) && (s == 0)) {
+		    qDebug("MAMMA MIA: frame temporizzata con tempo 0");
+		    if(!isActive()) {
+			// Legge il livello. Senno` come fa ?
+			//inizializza();
+			//qDebug("REINIZIALIZZO IL DIMMER 100");
+			impostaAttivo(1);
+			aggiorna = 1;
+		    }
+		} else {
+		    qDebug("Devo chiedere livello e velocita`");
+		    inizializza();
+		    return;
+		}
+	    }
+	}
+    if (aggiorna)
+	  Draw();
+}
+
+void dimmer100::inizializza()
+{   
+    openwebnet msg_open;
+    char    pippo[50];    
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*#1*");
+    strcat(pippo,getAddress());
+    strcat(pippo,"*1##"); 
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0])); 
+    emit richStato(msg_open.frame_open);
+}
+
+
+
+void dimmer100::Draw()
+{
+  if(value > 100)
+    value = 100;
+    qDebug("dimmer100::Draw(), attivo = %d, value = %d", attivo, value);
+    if ( (sxButton) && (Icon[0]) )
+    {
+	sxButton->setPixmap(*Icon[0]);
+	if (pressIcon[0])
+	    sxButton->setPressedPixmap(*pressIcon[0]);
+    }
+    
+    if ( (dxButton) && (Icon[1]) )
+    {
+	dxButton->setPixmap(*Icon[1]);
+	if (pressIcon[1])
+	    dxButton->setPressedPixmap(*pressIcon[1]);
+    }
+    if (attivo==1)
+    {
+	if ( (Icon[4+((value-step)/step)*2]) && (csxButton) )
+	{
+	    csxButton->setPixmap(*Icon[4+((value-step)/step)*2]);
+	    qDebug("* Icon[%d]", 4+((value-step)/step)*2);
+	}
+	if ( (cdxButton) && (Icon[5+((value-step)/step)*2]) )
+	{
+	    cdxButton->setPixmap(*Icon[5+((value-step)/step)*2]);
+	    qDebug("** Icon[%d]", 5+((value-step)/step)*2);
+	}
+    }
+    else if (attivo==0)
+    {
+	if ( (Icon[2]) && (csxButton) )
+	{
+	    csxButton->setPixmap(*Icon[2]);
+	    qDebug("*** Icon[%d]", 2);
+	}
+	if ( (cdxButton) && (Icon[3]) )
+	{
+	    cdxButton->setPixmap(*Icon[3]);
+	    qDebug("**** Icon[%d]", 3);
+	}
+    }
+    else if (attivo==2)
+    {
+	if ( (Icon[44]) && (csxButton) )
+	{
+	    csxButton->setPixmap(*Icon[44]);		    
+	    qDebug("******* Icon[%d]", 44);
+	}
+	
+	if ( (cdxButton) && (Icon[45]) )
+	{
+	    cdxButton->setPixmap(*Icon[45]);    
+	    qDebug("******* Icon[%d]", 45);
+	}
+    }
+    if (BannerText)
+      {
+	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	BannerText->setText(testo);
+	//     qDebug("TESTO: %s", testo);
+      }
+    if (SecondaryText)
+      {	
+	SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+	SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+	SecondaryText->setText(testoSecondario);
+      }
+}
+
+
 /*****************************************************************
 **attuatAutom
 ****************************************************************/
@@ -707,18 +967,58 @@ void attuatAutomIntSic::inizializza()
 **attuatAutomTemp
 ****************************************************************/
 
-attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number )
+attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number, QPtrList<QString> *lt)
         : bannOnOff2scr( parent, name )
         {     
     SetIcons( IconaDx, IconaSx ,icon, pressedIcon,period ,number );
     setAddress(indirizzo);
     cntTempi=0;
-    SetSeconaryText(tempi[cntTempi]);
-    connect(this,SIGNAL(dxClick()),this,SLOT(Attiva()));
-    connect(this,SIGNAL(sxClick()),this,SLOT(CiclaTempo()));
+    static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "10'", "15'" } ;
+    tempi = new QPtrList<QString>;
+    tempi->clear();
+    qDebug("***** lt->count = %d *****", lt->count());
+    int nt = lt->count() ? lt->count() : sizeof(t) / sizeof(char *) ;
+    for(int i = 0; i < nt ; i++) {
+	QString *s;
+	if(lt->count() && i < lt->count())
+	    s = lt->at(i);
+	else
+	    s = new QString(t[i]) ;
+	tempi->append(s);
+    }
+    //SetSeconaryText((tempi->at(cntTempi))->ascii());
+    assegna_tempo_display();
+    SetSeconaryText(tempo_display);
+    connect(this, SIGNAL(dxClick()), this, SLOT(Attiva()));
+    connect(this, SIGNAL(sxClick()), this, SLOT(CiclaTempo()));
 }
 
+void attuatAutomTemp::leggi_tempo(char *&out)
+{
+   if(cntTempi >= ntempi())
+      out = (char *)"";
+   else
+      out = (char *)(tempi->at(cntTempi))->ascii();
+}
 
+uchar attuatAutomTemp::ntempi()
+{
+    return tempi->count();
+}
+
+#if 0
+bool attuatAutomTemp::isForMe(openwebnet& m)
+{
+    if(strcmp(m.Extract_chi(), "1")) return false ;
+    if(!strcmp(m.Extract_dove(),getAddress())) return true;
+    // BAH
+    return (!getPul() && ((!strcmp(m.Extract_dove(),"0")) ||
+			  ((strlen(m.Extract_dove())==1) && 
+			   (!strncmp(m.Extract_dove(), getAddress(), 1)) ) || 
+			  ((!strncmp(m.Extract_dove(),"#",1)) && 
+			   *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
+}
+#endif
 
 void attuatAutomTemp::gestFrame(char* frame)
 {  
@@ -729,33 +1029,24 @@ void attuatAutomTemp::gestFrame(char* frame)
     
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
     
-    
-    if (!strcmp(msg_open.Extract_chi(),"1"))
-    {
-        if ( (! strcmp(msg_open.Extract_dove(),getAddress()) ) ||     \
-             ( !getPul() &&  (  \
-                                (! strcmp(msg_open.Extract_dove(),"0")) ||   \
-                                ( ( strlen(msg_open.Extract_dove())==1) && (! strncmp(msg_open.Extract_dove(),getAddress(),1)) ) ||     \
-                                ( (! strncmp(msg_open.Extract_dove(),"#",1))  && *(getGroup()+(atoi(msg_open.Extract_dove()+1))-1) )        )   )  )
-        {
-            if (!strcmp(msg_open.Extract_cosa(),"1")) 		
-            {
-                if (!isActive())
-                {
-                    impostaAttivo(1);
-                    aggiorna=1;
-                }
-            }
-            else if (!strcmp(msg_open.Extract_cosa(),"0")) 
-            {
-                if (isActive())
-                {
-                    impostaAttivo(0);
-                    aggiorna=1;
-                }
-            }
-        }
-    }    
+    if(isForMe(msg_open)) {
+	if (!strcmp(msg_open.Extract_cosa(),"1")) 		
+	{
+	    if (!isActive())
+	    {
+		impostaAttivo(1);
+		aggiorna=1;
+	    }
+	}
+	else if (!strcmp(msg_open.Extract_cosa(),"0")) 
+	{
+	    if (isActive())
+	    {
+		impostaAttivo(0);
+		aggiorna=1;
+	    }
+	}
+    }
     if (aggiorna)
         Draw();
 }
@@ -775,8 +1066,11 @@ void attuatAutomTemp::Attiva()
 
 void attuatAutomTemp::CiclaTempo()
 {
-    cntTempi= (cntTempi+1)%(sizeof(tempi)/sizeof(char*));
-    SetSeconaryText(tempi[cntTempi]);
+    cntTempi= (cntTempi+1) % ntempi();
+    qDebug("ntempi = %d", ntempi());
+    qDebug("cntTempi = %d", cntTempi);
+    assegna_tempo_display();
+    SetSeconaryText(tempo_display);
     Draw();
 }
 
@@ -793,6 +1087,497 @@ void attuatAutomTemp::inizializza()
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
 }
+
+void attuatAutomTemp::assegna_tempo_display()
+{ 
+    char *s ; leggi_tempo(s) ; 
+    strcpy(tempo_display, s);
+}
+
+attuatAutomTemp::~attuatAutomTemp()
+{
+    int i;
+    for(i=0; i<tempi->count(); i++)
+	delete tempi->at(i);
+    delete tempi;
+}
+
+/*****************************************************************
+**attuatAutomTempNuovoN
+****************************************************************/
+
+attuatAutomTempNuovoN::attuatAutomTempNuovoN( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number , QPtrList<QString> *lt)
+        : attuatAutomTemp( parent, name, indirizzo, IconaSx, IconaDx, icon,
+			   pressedIcon, period, number, lt)
+{     
+    assegna_tempo_display();
+    stato_noto = false ;
+    SetSeconaryText(tempo_display);
+}
+
+void attuatAutomTempNuovoN::gestFrame(char* frame)
+{  
+    openwebnet msg_open;
+    char aggiorna;
+
+    aggiorna=0;
+    qDebug("attuatAutomTempNuovoN::gestFrame()");
+    
+    // *#1*dove*2*ore*min*sec## 
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+    
+    if(isForMe(msg_open)) {
+	if(msg_open.IsMeasureFrame()) {
+	    uchar c, h, m, s;
+	    c = atoi(msg_open.Extract_grandezza());
+	    qDebug("Frame misura (%d)", c);
+	    if(c == 2) {
+		qDebug("Frame temporizzata nuova");
+		h = atoi(msg_open.Extract_valori(0));
+		m = atoi(msg_open.Extract_valori(1));
+		s = atoi(msg_open.Extract_valori(2));
+		qDebug("Frame temporizzata con h = %d, m = %d, s = %d", 
+		       h, m, s);
+		if((h == 255) && (m == 255) && (s == 255)) {
+		    stato_noto = true ;
+		    if(isActive()) {
+			impostaAttivo(0);
+			aggiorna = 1;
+		    }
+		} else if((h == 0) && (m == 0) && (s == 0)) {
+		    qDebug("Frame temporizzata con tempo 0");
+		    // No timing, ask for state
+		    if(!stato_noto) {
+			attuatAutomTemp::inizializza();
+			aggiorna = 0;
+		    } else
+			aggiorna = 1;
+		} else {
+		    stato_noto = true ;
+		    if(!isActive()) {
+			impostaAttivo(1);
+			aggiorna = 1;
+		    }
+		}
+	    } else if(c == 1) {
+		qDebug("Misura da dimmer 100 livelli");
+		uchar l, v;
+		l = atoi(msg_open.Extract_valori(0)) - 100;
+		v = atoi(msg_open.Extract_valori(1));
+		qDebug("Livello = %d, velocita` = %d", l, v);
+		stato_noto = true ;
+		if(l) {
+		    if(!isActive()) {
+			impostaAttivo(1);
+			aggiorna = 1;
+			inizializza();
+		    }
+		} else {
+		    if(isActive()) {
+			impostaAttivo(0);
+			aggiorna = 1;
+		    }
+		}
+	    } else {
+		qDebug("Frame misura con cosa = %d. Ignoro !!", c);
+		return;
+	    }
+	} else if(msg_open.IsNormalFrame()) {
+	    int c = atoi(msg_open.Extract_cosa());
+	    qDebug("Comando con cosa = %d", c);
+	    if(!c) {
+		// OFF illuminazione
+		if(isActive()) {
+		    impostaAttivo(0);
+		    aggiorna = 1;
+		    stato_noto = true ;
+		}
+	    } else if((c >= 1) && (c <= 30)) {
+		// ON illuminazione, ON percentuale, vecchie temporizzate
+		if(!isActive()) {
+		    impostaAttivo(1);
+		    aggiorna = 1;
+		    stato_noto = true ;
+		}
+	    } 
+	}
+    }
+    if (aggiorna) {
+	qDebug("invoco Draw con value = %d", value);
+	Draw();
+    }
+}
+
+void attuatAutomTempNuovoN::Attiva()
+{
+    openwebnet msg_open;
+    char frame[100];
+    char *t ; leggi_tempo(t);
+    sprintf(frame, "*#1*%s*#2*%s##", getAddress(), t);
+    msg_open.CreateNullMsgOpen();     
+    msg_open.CreateMsgOpen(frame, strlen(frame));
+    emit sendFrame(msg_open.frame_open);
+}
+
+// *#1*dove*2## 
+void attuatAutomTempNuovoN::inizializza()
+{ 
+    openwebnet msg_open;
+    char    pippo[50];
+    
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*#1*");
+    strcat(pippo,getAddress());
+    strcat(pippo,"*2##");
+    //  qDebug("mando frame attuat autom Temp %s",pippo);
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit sendFrame(msg_open.frame_open);    
+}
+
+void attuatAutomTempNuovoN::assegna_tempo_display()
+{
+    char tmp[50];
+    int hh , mm, ss;
+    char *ptr;
+    leggi_tempo(ptr);
+    strcpy(tmp, ptr);
+    // Prende solo hh e min
+    ptr = strtok(tmp, "*");
+    hh = strtol(ptr, NULL, 10);
+    ptr = strtok(NULL, "*");
+    mm = strtol(ptr, NULL, 10);
+    ptr = strtok(NULL, "*");
+    ss = strtol(ptr, NULL, 10);
+    qDebug("tempo = %d %d %d", hh, mm, ss);
+    if(!hh && !mm) {
+	// Time in secs
+	sprintf(tempo_display, "%d\"", ss);
+    } else if (!hh) {
+	// Time in mins'
+	sprintf(tempo_display, "%d'", mm);
+    } else if(hh < 10) {
+	// Time in hh:mm
+	sprintf(tempo_display, "%d:%d", hh, mm);
+    } else {
+	// Time in hh h
+	sprintf(tempo_display, "%dh", hh);
+    }
+}
+
+
+/*****************************************************************
+**attuatAutomTempNuovoF
+****************************************************************/
+
+#define NTIMEICONS 9
+
+attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,char* indirizzo,char* IconaCentroSx,char* IconaCentroDx,char *IconaDx, const char *t)
+        : bannOn2scr( parent, name)
+{     
+    attuatAutomTempNuovoF::SetIcons( IconaCentroSx, IconaCentroDx, IconaDx );
+    setAddress(indirizzo);
+    SetSeconaryText("????");
+    strncpy(tempo, t ? t : "0*0*0", sizeof(tempo));
+    char *ptr ; 
+    char tmp1[50];
+    strcpy(tmp1, tempo);
+    ptr = strtok(tmp1, "*");
+    h = strtol(ptr, NULL, 10);
+    ptr = strtok(NULL, "*");
+    m = strtol(ptr, NULL, 10);
+    ptr = strtok(NULL, "*");
+    s = strtol(ptr, NULL, 10);
+    val = 0;
+    qDebug("tempo = %d %d %d", h, m, s);
+    char tmp[50];
+    if(!h && !m) {
+	// Time in secs
+	sprintf(tmp, "%d\"", s);
+    } else if (!h) {
+	// Time in mins'
+	sprintf(tmp, "%d'", m);
+    } else if(h < 10) {
+	// Time in hh:mm
+	sprintf(tmp, "%d:%d", h, m);
+    } else {
+	// Time in hh h
+	sprintf(tmp, "%dh", h);
+    }
+    myTimer = new QTimer(this,"periodic_refresh");
+    stato_noto = false ;
+    temp_nota = false ;
+    connect(myTimer,SIGNAL(timeout()),this,SLOT(update()));
+    SetSeconaryText(tmp);
+    connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
+}
+
+void attuatAutomTempNuovoF::gestFrame(char* frame)
+{  
+    openwebnet msg_open;
+    char aggiorna;
+
+    aggiorna=0;
+
+    qDebug("attuatAutomTempNuovoF::gestFrame");
+
+    // *#1*dove*2*ore*min*sec## 
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+    
+    if(isForMe(msg_open)) {
+	if(msg_open.IsMeasureFrame()) {
+	    uchar c, hnow, mnow, snow;
+	    c = atoi(msg_open.Extract_grandezza());
+	    if(c == 2) {
+		hnow = atoi(msg_open.Extract_valori(0));
+		mnow = atoi(msg_open.Extract_valori(1));
+		snow = atoi(msg_open.Extract_valori(2));
+		qDebug("Frame temporizzata con h = %d, m = %d, s = %d", hnow, 
+		       mnow, snow);
+		if((hnow == 255) && (mnow == 255) && (snow == 255)) {
+		    if(isActive()) {
+			stato_noto = true ;
+			temp_nota = true ;
+			impostaAttivo(0);
+			aggiorna = 1;
+			myTimer->stop();
+		    }
+		} else if((hnow == 0) && (mnow == 0) && (snow == 0)) {
+		    qDebug("Frame temporizzazione con tempo 0");
+		    myTimer->stop();
+		    // Legge lo stato, non c'e` temporizzazione
+		    if(!stato_noto)
+			chiedi_stato();
+		    temp_nota = true ;
+		    value = 0;
+		    aggiorna = 1;
+		} else {
+		    if(mnow > 60) {
+			qDebug("Minuti non ammissibili, lascio perdere");
+			return;
+		    }
+		    if(snow > 60) {
+			qDebug("Secondi non ammissibili, lascio perdere");
+			return;
+		    }
+		    int tmpval = (hnow * 3600) + (mnow * 60) + snow;
+		    if(tmpval == val) return;
+		    val = tmpval ;
+		    impostaAttivo((val != 0));
+		    if(!val) myTimer->stop();
+		    stato_noto = true;
+		    temp_nota = true ;
+		    qDebug("tempo = %d %d %d", hnow, mnow, snow);
+		    aggiorna = 1;
+		}
+	    } else if(c == 1) {
+		qDebug("Misura da dimmer 100 livelli");
+		uchar l, v;
+		l = atoi(msg_open.Extract_valori(0)) - 100;
+		v = atoi(msg_open.Extract_valori(1));
+		stato_noto = true ;
+		temp_nota = false ;
+		qDebug("Livello = %d, velocita` = %d", l, v);
+		if(l) {
+		    if(!isActive()) {
+			impostaAttivo(1);
+			aggiorna = 1;
+			// Valore iniziale = il valore impostato
+			//val = h * 3600 + m * 60 + s;
+			// Senno` come fa a conoscere la temporizzazione ?
+			inizializza();
+			// e programma un aggiornamento
+			//myTimer->start((1000 * val) / NTIMEICONS );
+			value = 0;
+			aggiorna = 1;
+		    }
+		} else {
+		    if(isActive()) {
+			impostaAttivo(0);
+			stato_noto = true ;
+			aggiorna = 1;
+			myTimer->stop();
+		    }
+		}
+	    } else {
+		qDebug("Frame misura con cosa = %d. Ignoro !!", c);
+		return;
+	    }
+	} else if(msg_open.IsNormalFrame()) {
+	    int c = atoi(msg_open.Extract_cosa());
+	    qDebug("Comando con cosa = %d", c);
+	    if ((c >= 1) && (c <= 30))  {
+		if (isActive()!=1) {
+		    impostaAttivo(1);
+		    aggiorna=1;
+		    val = 0;
+		    // Chiede subito la temporizzazione
+		    if(!temp_nota)
+			inizializza();
+		    // e programma un aggiornamento
+		    // &myTimer->start((1000 * val) / NTIMEICONS );
+		}
+	    } else if(c == 0) {
+		if (isActive()!=0) {
+		    impostaAttivo(0);
+		    aggiorna=1;
+		    stato_noto = true;
+		    temp_nota = true;
+		    myTimer->stop();
+		}
+	    }
+	}
+    }
+    if (aggiorna) {
+	qDebug("invoco Draw con value = %d", value);
+        Draw();
+    }
+}
+
+void attuatAutomTempNuovoF::update()
+{
+    openwebnet msg_open;
+    char frame[100];
+    sprintf(frame, "*#1*%s*2##", getAddress());
+    msg_open.CreateNullMsgOpen();     
+    msg_open.CreateMsgOpen(frame, strlen(frame));
+    emit sendFrame(msg_open.frame_open);
+}
+
+void attuatAutomTempNuovoF::Attiva()
+{
+    openwebnet msg_open;
+    char frame[100];
+    char *t ; leggi_tempo(t);
+    sprintf(frame, "*#1*%s*#2*%s##", getAddress(), t);
+    msg_open.CreateNullMsgOpen();     
+    msg_open.CreateMsgOpen(frame, strlen(frame));
+    emit sendFrame(msg_open.frame_open);
+    // Chiede subito la temporizzazione
+    update();
+    // Valore iniziale = il valore impostato
+    int v = h * 3600 + m * 60 + s;
+    // e programma un aggiornamento
+    myTimer->start((1000 * v) / NTIMEICONS );
+    Draw();
+}
+
+// *#1*dove*2## 
+void attuatAutomTempNuovoF::inizializza()
+{ 
+    openwebnet msg_open;
+    char    pippo[50];
+    
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*#1*");
+    strcat(pippo,getAddress());
+    strcat(pippo,"*2##");
+    //  qDebug("mando frame attuat autom Temp %s",pippo);
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit sendFrame(msg_open.frame_open);    
+}
+
+// Chiede lo stato dell'attuatore con una frame vecchia
+void attuatAutomTempNuovoF::chiedi_stato()
+{
+    openwebnet msg_open;
+    char    pippo[50];
+
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*#1*");
+    strcat(pippo,getAddress());
+    strcat(pippo,"##");
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit richStato(msg_open.frame_open);    
+}
+
+void attuatAutomTempNuovoF::leggi_tempo(char *&out)
+{
+    out = tempo;
+}
+
+void attuatAutomTempNuovoF::SetIcons(char *i1, char *i2, char *i3)
+{
+    qDebug("attuatAutomTempNuovoF::SetIcons");
+    char tmp[MAX_PATH], tmp1[MAX_PATH] ;
+    char *ptr;
+    char pressIconName[MAX_PATH];
+    Icon[0] = new QPixmap();
+    strcpy(tmp1, i2);
+    ptr = strtok(tmp1, ".");
+    sprintf(tmp, "%soff.png", ptr);
+    Icon[0]->load(tmp);
+    qDebug("Icon[0] <- %s", tmp);
+    Icon[1] = new QPixmap();
+    strcpy(tmp1, i2);
+    ptr = strtok(tmp1, ".");
+    sprintf(tmp, "%son.png", ptr);
+    Icon[1]->load(tmp);
+    qDebug("Icon[1] <- %s", tmp);
+    Icon[2] = new QPixmap();
+    Icon[2]->load(i3);
+    qDebug("Icon[2] <- %s", i3);
+    getPressName(i3, pressIconName, sizeof(pressIconName));
+    if (QFile::exists(pressIconName)) {
+	pressIcon[2] = new QPixmap();
+	pressIcon[2]->load(pressIconName);
+	qDebug("pressIcon[2] <- %s", pressIconName);
+    }
+    for(int i = 0; i < NTIMEICONS ; i++) {
+	Icon[3 + i] = new QPixmap();
+	strcpy(tmp1, i1);
+	ptr = strtok(tmp1, ".");
+	sprintf(tmp, "%s%d.png", ptr, i);
+	Icon[3 + i]->load(tmp);	
+	qDebug("Icon[%d] <- %s", 3+i, tmp);
+    }
+}
+
+void attuatAutomTempNuovoF::Draw()
+{
+    qDebug("attuatAutomTempNuovoF::Draw(), attivo = %d, value = %d", 
+	   attivo, val);
+    if (attivo == 1) {
+	int index = ((10 * val * (NTIMEICONS-1))/((h * 3600) + (m * 60) + s)) ;
+	index = (index % 10) >= 5 ? index/10 + 1 : index/10;
+	if(index >= NTIMEICONS)
+	    index = NTIMEICONS - 1;
+	qDebug("index = %d", index);
+	if (Icon[3 + index] && BannerIcon2) {
+	    BannerIcon->setPixmap(*Icon[3 + index]);
+	    qDebug("* Icon[%d]", 3 + index);
+	}
+	if (Icon[1] && BannerIcon) {
+	    BannerIcon2->setPixmap(*Icon[1]);
+	    qDebug("** Icon[%d]", 1);
+	}
+    } else {
+	if (Icon[0] && BannerIcon) {
+	    BannerIcon->setPixmap(*Icon[3]);
+	    qDebug("*** Icon[3]");
+	}
+	if (Icon[3] && BannerIcon2) {
+	    BannerIcon2->setPixmap(*Icon[0]);
+	    qDebug("**** Icon[0]");
+	}
+    }
+    if ( (dxButton) && (Icon[2]) ) {
+	dxButton->setPixmap(*Icon[2]);
+	if (pressIcon[2])
+	    dxButton->setPressedPixmap(*pressIcon[2]);
+    }
+    if (BannerText) {
+	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	BannerText->setText(testo);
+    }
+    if (SecondaryText) {	
+	SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+	SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+	SecondaryText->setText(testoSecondario);
+    } 
+}
+
+
 /*****************************************************************
 **gruppo di attuatInt
 ****************************************************************/
@@ -2028,6 +2813,7 @@ void impAnti::Inserisci()
     connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert(char*)));
     tasti->setBGColor(backgroundColor());
     tasti->setFGColor(foregroundColor());
+    tasti->setMode(tastiera::HIDDEN);
     tasti->showTastiera();
     parentWidget()->hide();
     //    this->hide();
@@ -2038,6 +2824,7 @@ void impAnti::Disinserisci()
     connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
     tasti->setBGColor(backgroundColor());
     tasti->setFGColor(foregroundColor());    
+    tasti->setMode(tastiera::HIDDEN);
     tasti->showTastiera();
     parentWidget()->hide();
     
@@ -2335,4 +3122,191 @@ void gesModScen::inizializza()
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    	
     nascondi(BUT2);     
+}
+
+/*****************************************************************
+** Scenario evoluto
+****************************************************************/	
+
+scenEvo::scenEvo( QWidget *parent, const char *name, 
+		  QPtrList<scenEvo_cond> *c, 
+		  char *i1, char *i2, char *i3, char *i4, char *i5, 
+		  char *i6, char *i7, QString act)
+        : bann3But( parent, name )
+{
+    if(c)
+	condList = new QPtrList<scenEvo_cond>(*c);
+    cond_iterator = new QPtrListIterator<scenEvo_cond>(*condList);
+    scenEvo_cond *co;
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    while( ( co = ci->current() ) != 0) {
+      qDebug(co->getDescription());
+      connect(co, SIGNAL(verificata()), this, SLOT(trig()));
+      ++(*ci);
+    }
+    delete ci;
+    action = act;
+    qDebug("#### action = %s ####", action.ascii());
+    SetIcons(i1, i2 , i3, i4);
+    impostaAttivo(0);
+    connect(this,SIGNAL(sxClick()),this,SLOT(toggleAttivaScev()));
+    connect(this,SIGNAL(dxClick()),this,SLOT(configScev()));
+    connect(this,SIGNAL(centerClick()),this,SLOT(forzaScev()));
+    connect(parent, SIGNAL(frez(bool)), this, SLOT(freezed(bool)));
+}
+
+void scenEvo::toggleAttivaScev(void)
+{
+    qDebug("scenEvo::toggleAttivaScev");
+    impostaAttivo(!isActive());
+    Draw();
+}
+
+
+void scenEvo::configScev(void)
+{
+    qDebug("scenEvo::configScev");
+    hide();
+    scenEvo_cond *co = cond_iterator->current();
+    qDebug("Invoco %p->mostra()", co);
+    co->setBGColor(backgroundColor());
+    co->setFGColor(foregroundColor());
+    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+    co->mostra();
+}
+
+void scenEvo::forzaScev(void)
+{
+    qDebug("scenEvo::forzaScev");
+    trig();
+    Draw();
+}
+
+void scenEvo::nextCond(void)
+{
+    qDebug("scenEvo::nextCond()");
+    scenEvo_cond *co = cond_iterator->current();
+    disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+    disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+    co->hide();
+    if(!cond_iterator->atLast()) {
+	++(*cond_iterator);
+	co = cond_iterator->current();
+	qDebug("co = %p", co);
+	if(co) {
+	    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+	    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+	    co->mostra();
+	}
+    } else {
+	cond_iterator->toFirst();
+	Draw();
+	show();
+    }
+}
+
+void scenEvo::prevCond(void)
+{
+    qDebug("scenEvo::prevCond()");
+    scenEvo_cond *co = cond_iterator->current();
+    disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+    disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+    co->hide();
+    if(!cond_iterator->atFirst()) {
+	--(*cond_iterator);
+	co = cond_iterator->current();
+	qDebug("co = %p", co);
+	if(co) {
+	    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+	    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+	    co->mostra();
+	}
+    } else {
+	Draw();
+	show();
+    }
+}
+
+void scenEvo::Draw()
+{
+    // Icon[0] => left button (inactive)
+    // pressIcon[0] => pressed left button (inactive)
+    // Icon[1] => left button (active)
+    // pressIcon[1] => pressed left button (active)
+    // Icon[3] => center button
+    // pressIcon[3] => pressed center button
+    // Icon[2] => right button
+    // pressIcon[2] => pressed right button
+    qDebug("scenEvo::Draw()");
+    cond_iterator->toFirst();
+    if ( (sxButton) && (Icon[0]) && (Icon[1])) {
+	int sxb_index = isActive() ? 0 : 1;
+	sxButton->setPixmap(*Icon[sxb_index]);
+	if (pressIcon[sxb_index])
+	    sxButton->setPressedPixmap(*pressIcon[sxb_index]);
+    }
+    if ( (dxButton) && (Icon[2]) ) {
+	dxButton->setPixmap(*Icon[2]);
+	if(pressIcon[2])
+	    dxButton->setPressedPixmap(*pressIcon[2]);
+    }
+    if ( (csxButton) && (Icon[3]) ) {
+	csxButton->setPixmap(*Icon[3]);
+	if(pressIcon[3])
+	    csxButton->setPressedPixmap(*pressIcon[3]);
+    }
+    if (BannerText) {
+	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	BannerText->setText(testo);
+	//     qDebug("TESTO: %s", testo);
+    }
+    if (SecondaryText) {	
+	SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+	SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+	SecondaryText->setText(testoSecondario);
+    }
+}
+
+const char *scenEvo::getAction() 
+{
+    return action.ascii() ; 
+}
+
+void scenEvo::setAction(const char *a)
+{
+    action = a ;
+}
+
+
+void scenEvo::trig()
+{
+    if(!isActive()) {
+	qDebug("scenEvo::trig(), non abilitato, non faccio niente");
+	return;
+    }
+    if(!action) {
+	qDebug("scenEvo::trig(), act = NULL, non faccio niente");
+	return;
+    }
+    qDebug("scenEvo::trig(), act = %s", action.ascii());
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen((char *)action.ascii(), action.length());
+    emit sendFrame(msg_open.frame_open);    	
+}
+
+void scenEvo::freezed(bool f)
+{
+    qDebug("scenEvo::freezed(bool f)");
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    scenEvo_cond *co ;
+    while( ( co = ci->current() ) != 0) {
+	co->setEnabled(!f);
+	++(*ci);
+    }
 }

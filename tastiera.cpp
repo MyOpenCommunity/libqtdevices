@@ -296,6 +296,7 @@ void tastiera::draw()
      scrittaLabel->setText("PASSWORD:");
      digitLabel->setAlignment(AlignLeft|AlignVCenter);
      digitLabel->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+     qDebug("tastiera::draw(), mode = %d", mode);
      if (mode==CLEAN)
 	 digitLabel->setText(&pwd[0]);
      else

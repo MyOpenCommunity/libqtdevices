@@ -8,6 +8,7 @@
 **
 ****************************************************************/
 
+#include <stdlib.h>
 #include "banner.h"
 #include "btbutton.h"
 #include "main.h"
@@ -37,6 +38,7 @@ banner::banner( QWidget *parent,const char *name )
     value=0;
     attivo=0;
     minValue=maxValue=0;
+    step = 1;
     animationTimer=NULL;   
     numRighe=NUM_RIGHE;
     memset(chi,'\000',sizeof(chi));
@@ -186,12 +188,11 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *cente
     Icon[0] = new QPixmap();
     Icon[1] = new QPixmap();
     Icon[3] = new QPixmap();
-    
-   
-    
+        
      if (sxIcon)
      {
 	Icon[0]->load(sxIcon);  
+	qDebug("Icon[0] <- %s", sxIcon);
 	getPressName((char*)sxIcon, &pressIconName[0],sizeof(pressIconName));
 	if (QFile::exists(pressIconName))
 	{
@@ -202,6 +203,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *cente
       if (dxIcon)
      {
 	Icon[1]->load(dxIcon);
+	qDebug("Icon[1] <- %s", dxIcon);
 	getPressName((char*)dxIcon, &pressIconName[0],sizeof(pressIconName));
 	if (QFile::exists(pressIconName))
 	{
@@ -212,11 +214,14 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *cente
        if (centerIcon)
      {
 	Icon[3]->load(centerIcon);
+	qDebug("Icon[3] <- %s", centerIcon);
 	getPressName((char*)centerIcon, &pressIconName[0],sizeof(pressIconName));
+	qDebug("pressIconName is %s", pressIconName);
 	if (QFile::exists(pressIconName))
 	{
 	    pressIcon[3] = new QPixmap();
 	    pressIcon[3]->load(pressIconName);   
+	    qDebug("pressIcon[3] <- %s", pressIconName);
 	}
     }
        impostaAttivo(1);
@@ -460,7 +465,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
     char idy=0;
     char suff[10];
  
-    for (char idx=minValue;idx<=maxValue;idx++,idy++)
+    for (char idx=minValue;idx<=maxValue;idx+=step,idy++)
     {
 	Icon[4+idy*2]=new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
@@ -469,6 +474,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	strcat(nomeFile,&suff[0]);
 	strcat(nomeFile,strstr(centerActiveIcon,"."));
 	Icon[4+idy*2]->load(nomeFile);	
+	qDebug("Icon[%d] <- %s", 4+idy*2, nomeFile);
 	if (inactiveLevel)
 	{
 	    Icon[22+idy*2]=new QPixmap();
@@ -477,10 +483,11 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	    sprintf(&suff[0],"sxl%d",idx);
 	    strcat(nomeFile,&suff[0]);
 	    strcat(nomeFile,strstr(centerInactiveIcon,"."));
-	    Icon[22+idy*2]->load(nomeFile);		    
+	    Icon[22+idy*2]->load(nomeFile);		
+	    qDebug("Icon[%d] <- %s", 22+idy*2, nomeFile);
 	}
     }
-    for (char idx=minValue,idy=0;idx<=maxValue;idx++,idy++)
+    for (char idx=minValue,idy=0;idx<=maxValue;idx+=step,idy++)
     {
 	Icon[5+idy*2]=new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
@@ -489,6 +496,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	strcat(nomeFile,&suff[0]);
 	strcat(nomeFile,strstr(centerActiveIcon,"."));
 	Icon[5+idy*2]->load(nomeFile);	
+	qDebug("Icon[%d] <- %s", 5+idy*2, nomeFile);
 	if (inactiveLevel)
 	{
 	    Icon[23+idy*2]=new QPixmap();
@@ -498,20 +506,23 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	    strcat(nomeFile,&suff[0]);
 	    strcat(nomeFile,strstr(centerInactiveIcon,"."));
 	    Icon[23+idy*2]->load(nomeFile);	
+	    qDebug("Icon[%d] <- %s", 23+idy*2, nomeFile);
 	}
     }
 
     if (breakIcon)
     {
-	Icon[40] = new QPixmap();
-	Icon[41] = new QPixmap();
+	Icon[44] = new QPixmap();
+	Icon[45] = new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
 	strncpy(nomeFile,breakIcon,strstr(breakIcon,".")-breakIcon);
 	strcat(nomeFile,"sx");
 	strcat(nomeFile,strstr(breakIcon,"."));
-	Icon[40]->load(nomeFile);	
+	Icon[44]->load(nomeFile);	
+	qDebug("Icon[%d] <- %s", 44, nomeFile);
 	nomeFile[strstr(nomeFile,".")-nomeFile-2]='d';
-	Icon[41]->load(nomeFile);		
+	Icon[45]->load(nomeFile);	
+	qDebug("Icon[%d] <- %s", 45, nomeFile);
     }
     	    
 }
@@ -536,6 +547,8 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 	    break;
     case TEXT: BannerText = new BtLabel(this,"Testo"); Item = BannerText; break;
     case ICON: BannerIcon = new BtLabel(this,"Icona"); Item = BannerIcon; break;
+    case ICON2: BannerIcon2 = new BtLabel(this, "Icona2"); 
+	Item = BannerIcon2; break;
     case BUT3: csxButton = new BtButton(this,"Bottone di centrosinistra");  
 	  connect(csxButton,SIGNAL(clicked()),this,SIGNAL(csxClick()));
 	  connect(csxButton,SIGNAL(pressed()),this,SIGNAL(csxPressed()));
@@ -617,7 +630,8 @@ void banner::mostra(char item)
     
 void banner::Draw()
 {
-          if ( (sxButton) && (Icon[0]) )
+    qDebug("banner::Draw(), attivo = %d, value = %d", attivo, value);
+    if ( (sxButton) && (Icon[0]) )
     {
 	sxButton->setPixmap(*Icon[0]);
 	if (pressIcon[0])
@@ -668,52 +682,60 @@ void banner::Draw()
       {
 	  if (attivo==1)
 	    {
-		    if ( (Icon[4+(value-1)*2]) && (csxButton) )
-	                    {
-			csxButton->setPixmap(*Icon[4+(value-1)*2]);
-		    }
-		    if ( (cdxButton) && (Icon[5+(value-1)*2]) )
+		    if ( (Icon[4+((value-step)/step)*2]) && (csxButton) )
 		    {
-			cdxButton->setPixmap(*Icon[5+(value-1)*2]);    		
+			csxButton->setPixmap(*Icon[4+((value-step)/step)*2]);
+			qDebug("* Icon[%d]", 4+((value-step)/step)*2);
+		    }
+		    if ( (cdxButton) && (Icon[5+((value-step)/step)*2]) )
+		    {
+			cdxButton->setPixmap(*Icon[5+((value-step)/step)*2]);
+			qDebug("** Icon[%d]", 5+((value-step)/step)*2);
 		    }
     	   }
 	  else if (attivo==0)
 	  {
 		    if (Icon[22])
 		    {
-			if ( (Icon[22+(value-1)*2]) && (csxButton) )
+			if ( (Icon[22+(value-step)/step*2]) && (csxButton) )
 			{
-			    csxButton->setPixmap(*Icon[22+(value-1)*2]);			
+			    csxButton->setPixmap(*Icon[22+((value-step)/step)*2]);			
+			    qDebug("*** Icon[%d]", 22+((value-step)/step)*2);
 			}
 			
-			if ( (cdxButton) && (Icon[23+(value-1)*2]) )
+			if ( (cdxButton) && (Icon[23+((value-step)/step)*2]) )
 			{
-			    cdxButton->setPixmap(*Icon[23+(value-1)*2]);    				
+			    cdxButton->setPixmap(*Icon[23+((value-step)/step)*2]);    				
+			     qDebug("**** Icon[%d]", 23+((value-step)/step)*2);
 			}
 		    }	  	
 		    else
 		    {
 			if ( (Icon[2]) && (csxButton) )
 			{
-			    csxButton->setPixmap(*Icon[2]);		    
+			    csxButton->setPixmap(*Icon[2]);	
+			    qDebug("***** Icon[%d]", 2);
 			}
 			
 			if ( (cdxButton) && (Icon[3]) )
 			{
-			    cdxButton->setPixmap(*Icon[3]);    
+			    cdxButton->setPixmap(*Icon[3]); 
+			    qDebug("****** Icon[%d]", 3);
 			}
 		    }
 		}
 	  else if (attivo==2)
 	  {
-		    if ( (Icon[40]) && (csxButton) )
+		    if ( (Icon[44]) && (csxButton) )
 			{
-			    csxButton->setPixmap(*Icon[40]);		    
+			    csxButton->setPixmap(*Icon[44]);		    
+			    qDebug("******* Icon[%d]", 44);
 			}
 			
-			if ( (cdxButton) && (Icon[41]) )
+			if ( (cdxButton) && (Icon[45]) )
 			{
-			    cdxButton->setPixmap(*Icon[41]);    
+			    cdxButton->setPixmap(*Icon[45]);    
+			    qDebug("******* Icon[%d]", 45);
 			}
 	}
 	  
@@ -829,12 +851,12 @@ void banner::setValue(char val)
 void banner::aumValue()
 {
     if (value<maxValue)
-	value++;
+	value+=step;
 }
 void banner::decValue()
 {
     if (value>minValue)
-	value--;
+	value-=step;
 }
 
 void banner::setMaxValue(char val)
@@ -849,6 +871,11 @@ void banner::setRange(char minval,char maxval)
 {
     maxValue=maxval;
     minValue=minval;
+}
+
+void banner::setStep(char s)
+{
+    step = s;
 }
     
 unsigned char banner::isActive()
@@ -916,6 +943,18 @@ void banner::setPul( )
 bool banner::getPul( )
 {
     return(pul);
+}
+
+bool banner::isForMe(openwebnet& m)
+{
+    if(strcmp(m.Extract_chi(), "1")) return false ;
+    if(!strcmp(m.Extract_dove(),getAddress())) return true;
+    // BAH
+    return (!getPul() && ((!strcmp(m.Extract_dove(),"0")) ||
+			  ((strlen(m.Extract_dove())==1) && 
+			   (!strncmp(m.Extract_dove(), getAddress(), 1)) ) || 
+			  ((!strncmp(m.Extract_dove(),"#",1)) && 
+			   *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
 }
 
 void banner:: inizializza(){}
