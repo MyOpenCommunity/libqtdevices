@@ -3197,6 +3197,8 @@ void scenEvo::nextCond(void)
 	co = cond_iterator->current();
 	qDebug("co = %p", co);
 	if(co) {
+	    co->setBGColor(backgroundColor());
+	    co->setFGColor(foregroundColor());
 	    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	    co->mostra();
@@ -3220,6 +3222,8 @@ void scenEvo::prevCond(void)
 	co = cond_iterator->current();
 	qDebug("co = %p", co);
 	if(co) {
+	    co->setBGColor(backgroundColor());
+	    co->setFGColor(foregroundColor());
 	    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	    co->mostra();
