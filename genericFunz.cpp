@@ -420,3 +420,16 @@ void  comChConf()
     
 }
 
+#if 0
+bool isForMe(openwebnet& m, char *chi = "1")
+{
+    if(strcmp(m.Extract_chi(), chi)) return false ;
+    if(!strcmp(m.Extract_dove(),getAddress())) return true;
+    // BAH
+    return (!getPul() && ((!strcmp(m.Extract_dove(),"0")) ||
+			  ((strlen(m.Extract_dove())==1) && 
+			   (!strncmp(m.Extract_dove(), getAddress(), 1)) ) || 
+			  ((!strncmp(m.Extract_dove(),"#",1)) && 
+			   *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
+}
+#endif

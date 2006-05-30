@@ -948,6 +948,10 @@ bool xmlconfhandler::characters( const QString & qValue)
                             {
                                     par2=qValue.toInt( &ok, 10 );
                                 }   */
+			    else if(!CurTagL5.compare("enable"))
+			    {
+				par3 = qValue.toInt(&ok, 10);
+			    }
 			    else if(!CurTagL5.compare("condH"))
 			    {
 				if(!page_item_cond)

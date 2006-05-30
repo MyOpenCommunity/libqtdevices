@@ -459,8 +459,10 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
     strcat(nomeFile,"sxl0");
     strcat(nomeFile,strstr(centerInactiveIcon,"."));
     Icon[2]->load(nomeFile);	
+    qDebug("Icon[2] <- %s", nomeFile);
     nomeFile[strstr(nomeFile,".")-nomeFile-4]='d';
     Icon[3]->load(nomeFile);		
+    qDebug("Icon[3] <- %s", nomeFile);
     
     char idy=0;
     char suff[10];

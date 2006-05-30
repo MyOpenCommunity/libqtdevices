@@ -21,6 +21,8 @@
 #define DIMMER_H
 
 #include "bannregolaz.h"
+#include "device.h"
+#include "frame_interpreter.h"
 
 /*!
   \class dimmer
@@ -35,8 +37,10 @@ class dimmer : public bannRegolaz
 public:
      dimmer( QWidget *, const char *,char*,char*,char*,char*,char*,char*);     
      virtual void inizializza();
+     void Draw();
 public slots:
      virtual void gestFrame(char*);
+     virtual void status_changed(device_status *);
 private slots:
     virtual void Accendi();
     virtual void Spegni();
@@ -44,10 +48,12 @@ private slots:
     virtual void Diminuisci();
 signals:
    // void sendFrame(char *);          
+    void frame_available(char *);
 protected:
-    char value;
+    //char value;
     char pul;
     char gruppi[4];
+    device *dev;
 };
 
 #endif //DIMMER_H
@@ -75,9 +81,12 @@ class dimmer100 : public dimmer
     dimmer100( QWidget *, const char *,char*,char*,char*,char*,char*,char*,
 	       int, int); 
     void inizializza();
-    void Draw();
+    //void Draw();
+#if 0
     public slots:
 	void gestFrame(char*);
+#endif
+    void status_changed(device_status *);
     private slots:
 	void Accendi();
 	void Spegni();
@@ -96,7 +105,6 @@ class dimmer100 : public dimmer
     int softstart, softstop;
     int last_on_lev;
     int speed;
-    bool spento;
 };
 
 #endif //DIMMER100_H
@@ -952,7 +960,7 @@ private:
 
 
 /*!
-  \class gesModScen
+  \class scenEvo
   \brief This class represents an advanced scenario management object
   \author Ciminaghi
   \date apr 2006
@@ -964,10 +972,12 @@ class scenEvo : public  bann3But
     QPtrList<scenEvo_cond> *condList;
     QPtrListIterator<scenEvo_cond> *cond_iterator;
     QString action;
+    int serial_number;
+    static int next_serial_number;
  public:
     scenEvo( QWidget *parent=0, const char *name=NULL, QPtrList<scenEvo_cond> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3=NULL,char* Ico4=NULL,\
 	     char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, 
-	     QString act="");   
+	     QString act="", int enabled = 0);   
     //void SetIcons(char *, char *, char *, char *);
     void Draw();
     /*!
@@ -980,15 +990,20 @@ class scenEvo : public  bann3But
     */
     void setAction(const char *a) ;
 public slots:
+ void gestFrame(char*);
+ void inizializza();
+ private slots:
 	void toggleAttivaScev();
  void configScev();
  void forzaScev();
  void nextCond();
  void prevCond();
+ void firstCond();
  void trig();
  void freezed(bool);
 private slots:    
 signals:
+ void frame_available(char *); 
 private:    
 };
 

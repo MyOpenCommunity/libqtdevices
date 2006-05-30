@@ -17,6 +17,9 @@
 #include "openclient.h"
 #include "sottomenu.h"
 #include "scenevocond.h"
+#include "device.h"
+#include "frame_interpreter.h"
+#include "device_cache.h"
 
 /*****************************************************************
 ** Advanced scenario management generic condition
@@ -99,17 +102,45 @@ void scenEvo_cond::Next()
 void scenEvo_cond::Prev()
 {
     qDebug("scenEvo_cond::Prev()");
-    emit(SwitchToPrev());
+    //emit(SwitchToPrev());
+    emit(SwitchToFirst());
 }
 
 void scenEvo_cond::OK()
 {
     qDebug("scenEvo_cond::OK()");
+    save();
+    emit(SwitchToFirst());
 }
 
 void scenEvo_cond::setEnabled(bool e)
 {
     qDebug("scenEvo_cond::setEnabled(%d)", e);
+}
+
+void scenEvo_cond::save()
+{
+    qDebug("scenEvo_cond::save()");
+}
+
+int scenEvo_cond::get_serial_number()
+{
+    return serial_number;
+}
+
+void scenEvo_cond::set_serial_number(int n)
+{
+    serial_number = n;
+}
+
+void scenEvo_cond::inizializza(void)
+{
+}
+
+void scenEvo_cond::handle_frame(char *s)
+{
+    qDebug("scenEvo_cond::handle_frame()");
+    emit(frame_available(s));
 }
 
 /*****************************************************************
@@ -296,9 +327,14 @@ void scenEvo_cond_h::mostra()
     //disconnect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(Closed()));
     //disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(Closed()));
     //connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(Closed()));
-    connect( but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Prev()));
-    connect( but[A7_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
-    connect( but[A8_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Next()));
+    connect( but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
+    if(getImg(3)[0] == 0) 
+	// cimg4 is empty
+	connect( but[A8_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Prev()));
+    else {
+	connect( but[A7_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Prev()));
+	connect( but[A8_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Next()));
+    }
 }
 
 void scenEvo_cond_h::setBGColor(QColor c)
@@ -336,24 +372,9 @@ void scenEvo_cond_h::OK()
     while(secsto <= 0)
       // Do it tomorrow 
       secsto += 24 * 60 * 60;
-#if 0
-    if(!timer) {
-	qDebug("scenEvo_cond_h::OK(), creating timer");
-	timer = new QTimer(this, "scenEvo_cond_h timer");
-    }
-    connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
-    if(!timer->isActive()) {
-      qDebug("starting timer (%d)", secsto * 1000);
-      timer->start(secsto * 1000, true);
-    } else {
-      qDebug("timer is already active, changing period to %d", secsto * 1000);
-      timer->changeInterval(secsto * 1000);
-    }
-#else
     qDebug("scheduling scaduta() after %d ms", secsto*1000);
     QTimer::singleShot(secsto*1000, this, SLOT(scaduta()) );
-#endif
-    
+    scenEvo_cond::OK();
 }
 
 void scenEvo_cond_h::scaduta()
@@ -381,6 +402,17 @@ void scenEvo_cond_h::setEnabled(bool e)
 	but[i]->setEnabled(e);
 }
 
+void scenEvo_cond_h::save()
+{
+    qDebug("scenEvo_cond_h::save()");
+    copyFile("cfg/conf.xml","cfg/conf1.lmx");
+    setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "hour", 
+		cond_time->time().toString("hh").ascii(), get_serial_number());
+    setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "minute", 
+		cond_time->time().toString("mm").ascii(), get_serial_number());
+    QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+}
+
 /*****************************************************************
  ** Advanced scenario management, device condition
 ****************************************************************/
@@ -406,11 +438,18 @@ void scenEvo_cond_d::set_descr(const char *d)
 
 void scenEvo_cond_d::set_where(const char *w)
 {
+    qDebug("scenEvo_cond_d::set_where(%s)", w);
     *where = w;
+}
+
+void scenEvo_cond_d::get_where(QString& out)
+{
+    out = *where;
 }
 
 void scenEvo_cond_d::set_trigger(const char *t)
 {
+    qDebug("scenEvo_cond_d::set_trigger(%s)", t);
     *trigger = t;
 }
 
@@ -427,6 +466,8 @@ void scenEvo_cond_d::mostra()
 	    but[idx]->show();   
     area1_ptr->show();
     area2_ptr->show();
+    if(actual_condition)
+	actual_condition->show();
     show();
 }
 
@@ -438,7 +479,10 @@ void scenEvo_cond_d::setBGColor(QColor c)
 	if (but[idx])
 	    but[idx]->setPaletteBackgroundColor(c);
     }
-    
+    area1_ptr->setPaletteBackgroundColor(c);
+    area2_ptr->setPaletteBackgroundColor(c);
+    if(actual_condition)
+	actual_condition->setBGColor(c);
 }
 
 void scenEvo_cond_d::setFGColor(QColor c)
@@ -451,6 +495,8 @@ void scenEvo_cond_d::setFGColor(QColor c)
     }
     area1_ptr->setPaletteForegroundColor(c);
     area2_ptr->setPaletteForegroundColor(c);
+    if(actual_condition)
+	actual_condition->setFGColor(c);
 }
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
@@ -462,12 +508,14 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
     getPressName((char *)getImg(icon_index), iconName, sizeof(iconName));
     if(QFile::exists(getImg(icon_index))) {
 	Icon1->load(getImg(icon_index));
-	but[button_index]->setPixmap(*Icon1);
+	if(but[button_index])
+	    but[button_index]->setPixmap(*Icon1);
     }
     if(QFile::exists(iconName)) {
 	Icon2 = new QPixmap();
 	Icon2->load(iconName);
-	but[button_index]->setPressedPixmap(*Icon2);
+	if(but[button_index])
+	    but[button_index]->setPressedPixmap(*Icon2);
     }
     delete Icon1;
     if(Icon2) 
@@ -476,7 +524,7 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 
 void scenEvo_cond_d::SetIcons() 
 {
-    qDebug("scenEvo_cond_h::SetIcons()");
+    qDebug("scenEvo_cond_d::SetIcons()");
     QPixmap* Icon1 = new QPixmap();
     QPixmap* Icon2 = NULL;
     char iconName[MAX_PATH];
@@ -496,24 +544,15 @@ void scenEvo_cond_d::SetIcons()
     but[A4_BUTTON_INDEX] = b;
     b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
     connect(b, SIGNAL(clicked()), this, SLOT(Down()));
-    b = new BtButton(this, "Prev button");
+    b = new BtButton(this, "OK button");
     but[A5_BUTTON_INDEX] = b;
     b->setGeometry(0, MAX_HEIGHT - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-    connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
-#if 0
-    b = new BtButton(this, "Next button");
+    connect(b, SIGNAL(clicked()), this, SLOT(OK()));
+    b = new BtButton(this, "Prev button");
     but[A6_BUTTON_INDEX] = b;
-    b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, MAX_HEIGHT - BUTTON_DIM, 
+    b->setGeometry(MAX_WIDTH - BUTTON_DIM, MAX_HEIGHT - BUTTON_DIM, 
 		   BUTTON_DIM, BUTTON_DIM);
-    connect(b, SIGNAL(clicked()), this, SLOT(OK()));
-#else
-    but[A6_BUTTON_INDEX] = NULL;
-#endif
-    b = new BtButton(this, "OK button");
-    but[A7_BUTTON_INDEX] = b;
-    b->setGeometry(MAX_WIDTH - BUTTON_DIM, MAX_HEIGHT - BUTTON_DIM, BUTTON_DIM, 
-		   BUTTON_DIM);
-    connect(b, SIGNAL(clicked()), this, SLOT(OK()));
+    connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
     // area #1
     if (QFile::exists(getImg(A1_ICON_INDEX)))
       Icon1->load(getImg(A1_ICON_INDEX));
@@ -525,21 +564,602 @@ void scenEvo_cond_d::SetIcons()
     SetButtonIcon(A4_ICON_INDEX, A4_BUTTON_INDEX);
     // area #5
     SetButtonIcon(A5_ICON_INDEX, A5_BUTTON_INDEX);
-    // area #7
-    SetButtonIcon(A7_ICON_INDEX, A7_BUTTON_INDEX);
+    // area #8
+    SetButtonIcon(A6_ICON_INDEX, A6_BUTTON_INDEX);
+    // Create actual device condition
+    device_condition *dc ;
+    qDebug("#### Condition type = %d", getVal());
+    switch(getVal()) {
+    case 1:
+	dc = new device_condition_light_status(this, "light_status", trigger);
+	break;
+    case 2:
+	dc = new device_condition_dimming(this, "dimming_val", trigger);
+	break;
+    case 3:
+	dc = new device_condition_temp(this, "temp_val", trigger);
+	break;
+    case 4:
+	dc = new device_condition_volume(this, "audio_val", trigger);
+	break;
+    default:
+	qDebug("Unknown device condition");
+	dc = NULL;
+    }
+    if(dc) {
+	dc->setGeometry(40,140,160,50);
+	connect(dc, SIGNAL(richStato(char *)), this, 
+		SIGNAL(richStato(char *)));
+	connect(dc, SIGNAL(verificata()), this, SIGNAL(verificata()));
+	connect(this, SIGNAL(frame_available(char *)),
+		dc, SLOT(handle_frame(char *)));
+	dc->set_where(*where);
+    }
+    actual_condition = dc;
+    qDebug("scenEvo_cond_d::SetIcons(), end");
 }
 
 void scenEvo_cond_d::Up(void)
 {
     qDebug("scenEvo_cond_d::Up()");
+    actual_condition->Up();
 }
 
 void scenEvo_cond_d::Down(void)
 {
     qDebug("scenEvo_cond_d::Down()");
+    actual_condition->Down();
 }
 
 void scenEvo_cond_d::OK(void)
 {
     qDebug("scenEvo_cond_d::OK()");
+    actual_condition->OK();
+    scenEvo_cond::OK();
+}
+
+void scenEvo_cond_d::save()
+{
+    QString s; actual_condition->get_condition_value(s);
+    copyFile("cfg/conf.xml","cfg/conf1.lmx");
+    setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "trigger", 
+		s.ascii(), get_serial_number());
+    QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+}
+
+void scenEvo_cond_d::inizializza(void)
+{
+    if(actual_condition)
+	actual_condition->inizializza();
+}
+
+/*****************************************************************
+ ** Actual generic device condition
+****************************************************************/
+device_condition::device_condition(QWidget *p, QString *s)
+{
+    qDebug("device_condtion::device_condition(%s)", s->ascii());
+    parent = p;
+}
+
+int device_condition::get_min()
+{
+    return 0;
+}
+
+int device_condition::get_max()
+{
+    return 0;
+}
+
+int device_condition::get_step()
+{
+    return 1;
+}
+
+int device_condition::get_divisor()
+{
+    return 1;
+}
+
+int device_condition::get_condition_value(void)
+{
+    return cond_value;
+}
+
+int device_condition::set_condition_value(int v)
+{
+    if(v > get_max())
+	v = get_max();
+    if(v < get_min())
+	v = get_min();
+    cond_value = v;
+}
+
+int device_condition::set_condition_value(QString s)
+{
+    qDebug("device_condition::set_condition_value");
+    set_condition_value(s.toInt());
+}
+
+void device_condition::get_condition_value(QString& out)
+{
+    qDebug("device_condition::get_condition_value(QString&)");
+    char tmp[100];
+    sprintf(tmp, "%d", get_condition_value());
+    out = tmp;
+}
+
+void device_condition::show()
+{
+    qDebug("device_condition::show()");
+    frame->show();
+}
+
+void device_condition::Draw()
+{
+}
+
+void device_condition::setGeometry(int x, int y, int sx, int sy)
+{
+    frame->setGeometry(x, y, sx, sy);
+}
+
+void device_condition::Up()
+{
+    qDebug("device_condition::Up()");
+    int val = get_current_value();
+    val += get_step();
+    set_current_value(val);
+    Draw();
+    show();
+}
+
+void device_condition::Down()
+{
+    qDebug("device_condition::Down()");
+    int val = get_current_value();
+    val -= get_step();
+    set_current_value(val);
+    Draw();
+    show();
+}
+
+void device_condition::OK()
+{
+    qDebug("device_condition::OK()");
+    set_condition_value(get_current_value());
+}
+
+int device_condition::get_current_value()
+{
+    return current_value;
+}
+
+int device_condition::set_current_value(int v)
+{
+    if(v > get_max())
+	v = get_max();
+    if(v < get_min())
+	v = get_min();
+    current_value = v;
+    return current_value;
+}
+
+scenEvo_cond_d *device_condition::get_parent()
+{
+    return (scenEvo_cond_d *)parent;
+}
+
+void device_condition::setFGColor(QColor c)
+{
+    qDebug("device_condition::setFGColor (%d, %d, %d)", c.red(), c.green(),
+	   c.blue());
+    frame->setPaletteForegroundColor(c);
+}
+
+void device_condition::setBGColor(QColor c)
+{
+    qDebug("device_condition::setBGColor", c.red(), c.green(),
+	   c.blue());
+    frame->setPaletteBackgroundColor(c);
+}
+
+void device_condition::inizializza()
+{
+    qDebug("device_condition::inizializza()");
+    dev->init();
+}
+
+void device_condition::set_where(QString s)
+{
+    qDebug("device_condition::set_where(%s)\n", s.ascii());
+    dev->set_where(s);
+    // Aggiunge il nodo alla cache
+    dev = btouch_device_cache.add_device(dev) ;
+    // Pass frames on to device for analysis
+    connect(this, SIGNAL(frame_available(char *)), 
+	    dev, SLOT(frame_rx_handler(char *)));
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(device_status *)), 
+	    this, SLOT(status_changed(device_status *)));
+}
+
+void device_condition::set_pul(bool p)
+{
+    dev->set_pul(p);
+}
+
+void device_condition::set_group(int g)
+{
+    dev->set_group(g);
+}
+
+void device_condition::status_changed(device_status *s)
+{
+    qDebug("device_condition::status_changed()");
+}
+
+void device_condition::handle_frame(char *s)
+{
+    qDebug("device_condition::handle_frame()");
+    emit(frame_available(s));
+}
+
+/*****************************************************************
+ ** Actual light status device condition
+****************************************************************/
+device_condition_light_status::
+device_condition_light_status(QWidget *parent, char *name, QString *c) : 
+    device_condition(parent, c)
+{
+    QLabel *l = new QLabel(parent, name);
+    l->setAlignment(AlignHCenter|AlignVCenter);
+    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    frame = l;
+    set_condition_value(*c);
+    set_current_value(device_condition::get_condition_value());
+    dev = new light(QString(""));
+    Draw();
+}
+
+void device_condition_light_status::get_string(QString& out)
+{
+    out = get_current_value() ? "ON" : "OFF" ;
+}
+
+void device_condition_light_status::Draw()
+{
+    QString s; get_string(s);
+    ((QLabel *)frame)->setText(s.ascii());
+}
+
+void device_condition_light_status::status_changed(device_status *ds)
+{
+    device_status::type t = ds->get_type();
+    int trig_v = device_condition::get_condition_value();
+    stat_var curr_status(stat_var::ON_OFF);
+    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+    qDebug("device_condition_light_status::status_changed()");
+    switch (t) {
+    case device_status::LIGHTS:
+	qDebug("Light status variation");
+	qDebug("trigger value = %d, current value = %d\n", trig_v, 
+	       curr_status.get_val());
+	if(trig_v == curr_status.get_val()) {
+	    qDebug("light condition (%d) triggered", trig_v);
+	    emit(verificata());
+	}
+	break;
+    case device_status::DIMMER:
+	qDebug("dimmer status variation, ignored");
+	break;
+    case device_status::DIMMER100:
+	qDebug("new dimmer status variation, ignored");
+	break;
+    case device_status::NEWTIMED:
+	qDebug("new timed device status variation, ignored");
+	break;
+    default:
+	qDebug("device status of unknown type (%d)", t);
+	break;
+    }
+}
+
+int device_condition_light_status::get_max()
+{
+    return 1;
+}
+
+int device_condition_light_status::set_condition_value(QString s)
+{
+    qDebug("device_condition_light_status::set_condition_value");
+    int v = 0;
+    if(s == "ON")
+	v = 1;
+    else if(s == "OFF")
+	v = 0;
+    else 
+	qDebug("Unknown condition value %s for device_condition_light_status");
+    return device_condition::set_condition_value(v);
+}
+
+void device_condition_light_status::get_condition_value(QString& out)
+{
+    out = device_condition::get_condition_value() ? "ON" : "OFF" ;
+}
+
+
+/*****************************************************************
+ ** Actual dimming value device condition
+****************************************************************/
+device_condition_dimming::device_condition_dimming(QWidget *parent, 
+						   char *name, QString *c) :
+    device_condition(parent, c)
+{
+    QLCDNumber *l = new QLCDNumber(parent, name);
+    l->setFrameStyle( QFrame::Plain );
+    l->setLineWidth(0);
+    l->setNumDigits(2);
+    l->setSegmentStyle(QLCDNumber::Flat);    
+    frame = l;
+    set_condition_value(*c);
+    set_current_value(device_condition::get_condition_value());
+    // A dimmer is actually a light
+    dev = new light(QString(""));
+    Draw();
+}
+
+
+int device_condition_dimming::get_min() 
+{ 
+    return 10; 
+} 
+
+int device_condition_dimming::get_max()
+{
+    return 90;
+}
+
+int device_condition_dimming::get_step()
+{
+    return 10;
+}
+
+void device_condition_dimming::Draw()
+{
+    QLCDNumber *l = (QLCDNumber *)frame;
+    l->display(get_current_value());
+    show();
+}
+
+int device_condition_dimming::set_condition_value(QString s)
+{
+    return set_current_value((s.toInt() - 1) * 10);
+}
+
+void device_condition_dimming::get_condition_value(QString& out)
+{
+    char tmp[100];
+    sprintf(tmp, "%d", (device_condition::get_condition_value() / 10) + 1);
+    out =  tmp ;
+}
+
+void device_condition_dimming::status_changed(device_status *ds)
+{
+    device_status::type t = ds->get_type();
+    int trig_v = device_condition::get_condition_value();
+    stat_var curr_lev(stat_var::LEV);
+    stat_var curr_speed(stat_var::SPEED);
+    stat_var curr_status(stat_var::ON_OFF);
+    int val10;
+    qDebug("device_condition_dimming::status_changed()");
+    //qDebug("trigger value is %d", trig_v);
+    switch (t) {
+    case device_status::LIGHTS:
+	qDebug("Light status variation, ignored");
+	ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	qDebug("status = %d", curr_status.get_val());
+	break;
+    case device_status::DIMMER:
+	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	qDebug("dimmer status variation");
+	qDebug("level = %d", curr_lev.get_val());
+	qDebug("trigger value is %d, val10 = %d", trig_v, curr_lev.get_val());
+	if(curr_lev.get_val() == trig_v) {
+	    qDebug("Condition triggered");
+	    emit(verificata());
+	}
+	break;
+    case device_status::DIMMER100:
+	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+	qDebug("dimmer 100 status variation");
+	qDebug("level = %d, speed = %d", curr_lev.get_val(), 
+	       curr_speed.get_val());
+	val10 = curr_lev.get_val()/10;
+	if((curr_lev.get_val() % 10) >= 5)
+	    val10++;
+	val10 *= 10;
+	qDebug("trigger value is %d, val10 = %d", trig_v, val10);
+	if(val10 == trig_v) {
+	    qDebug("Condition triggered");
+	    emit(verificata());
+	}
+	break;
+    case device_status::NEWTIMED:
+	qDebug("new timed device status variation, ignored");
+	break;
+    default:
+	qDebug("device status of unknown type (%d)", t);
+	break;
+    }
+}
+
+/*****************************************************************
+ ** Actual volume device condition
+****************************************************************/
+device_condition_volume::device_condition_volume(QWidget *parent, 
+						   char *name, QString *c) :
+    device_condition(parent, c)
+{
+    QLCDNumber *l = new QLCDNumber(parent, name);
+    l->setFrameStyle( QFrame::Plain );
+    l->setLineWidth(0);
+    l->setNumDigits(2);
+    l->setSegmentStyle(QLCDNumber::Flat);    
+    frame = l;
+    set_condition_value(*c);
+    set_current_value(device_condition::get_condition_value());
+    dev = new sound_device(QString(""));
+}
+
+
+int device_condition_volume::get_min() 
+{ 
+    return 1; 
+} 
+
+int device_condition_volume::get_max()
+{
+    return 30;
+}
+
+int device_condition_volume::get_step()
+{
+    return 1;
+}
+
+#if 0
+void device_condition_volume::gestFrame(char *s)
+{
+    qDebug("device_condition_volume::gestFrame");
+}
+#endif
+
+void device_condition_volume::Draw()
+{
+    QLCDNumber *l = (QLCDNumber *)frame;
+    l->display(get_current_value());
+}
+
+int device_condition_volume::set_condition_value(QString s)
+{
+    return set_current_value(s.toInt() - 1);
+}
+
+void device_condition_volume::get_condition_value(QString& out)
+{
+    char tmp[100];
+    sprintf(tmp, "%d", device_condition::get_condition_value() + 1);
+    out = tmp;
+}
+
+#if 0
+void device_condition_volume::inizializza(void)
+{
+    qDebug("device_condition_volume::inizializza");
+}
+#endif
+
+void device_condition_volume::status_changed(device_status *ds)
+{
+    device_status::type t = ds->get_type();
+    int trig_v = device_condition::get_condition_value();
+    stat_var curr_volume(stat_var::AUDIO_LEVEL);
+    qDebug("device_condition_volume::status_changed()");
+    switch (t) {
+    case device_status::AMPLIFIER:
+	qDebug("Amplifier status change");
+	ds->read(device_status_amplifier::AUDIO_LEVEL_INDEX, curr_volume);
+	qDebug("volume = %d", curr_volume.get_val());
+	if(curr_volume.get_val() == trig_v) {
+	    qDebug("Condition triggered");
+	    emit(verificata());
+	}
+	break;
+    default:
+	qDebug("device status of unknown type (%d)", t);
+	break;
+    }
+}
+
+/*****************************************************************
+ ** Actual temperature device condition
+****************************************************************/
+device_condition_temp::device_condition_temp(QWidget *parent, 
+					     char *name, QString *c) :
+    device_condition(parent, c)
+{
+    QLCDNumber *l = new QLCDNumber(parent, name);
+    l->setFrameStyle( QFrame::Plain );
+    l->setLineWidth(0);
+    l->setNumDigits(3);
+    l->setSegmentStyle(QLCDNumber::Flat);    
+    frame = l;
+    set_condition_value(*c);
+    set_current_value(device_condition::get_condition_value());
+    dev = new temperature_probe(QString(""));
+}
+
+
+int device_condition_temp::get_max()
+{
+    return 511;
+}
+
+int device_condition_temp::get_step()
+{
+    return 1;
+}
+
+int device_condition_temp::get_divisor()
+{
+    return 10;
+}
+
+void device_condition_temp::Draw()
+{
+    QLCDNumber *l = (QLCDNumber *)frame;
+    int val = get_current_value();
+    char tmp[100] ;
+    sprintf(tmp, "%d.%d", val/10, val%10);
+    l->display(tmp);
+}
+
+int device_condition_temp::set_condition_value(QString s)
+{
+    bool neg = s[0] == '1';
+    int val = (s.right(3)).toInt();
+    return set_current_value(neg ? -val : val);
+}
+
+void device_condition_temp::get_condition_value(QString& out)
+{
+    char tmp[100];
+    int val = device_condition::get_condition_value();
+    sprintf(tmp, "%c%3d", (val < 0 ? '1' : '0') , abs(val));
+    out = tmp;
+}
+
+void device_condition_temp::status_changed(device_status *ds)
+{
+    device_status::type t = ds->get_type();
+    int trig_v = device_condition::get_condition_value();
+    stat_var curr_temp(stat_var::TEMPERATURE);
+    qDebug("device_condition_temp::status_changed()");
+    switch (t) {
+    case stat_var::TEMPERATURE:
+	qDebug("Temperature changed");
+	ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, 
+		 curr_temp);
+	if(curr_temp.get_val() == trig_v) {
+	    qDebug("Condition triggered");
+	    emit(verificata());
+	}
+	break;
+    default:
+	qDebug("device status of unknown type (%d)", t);
+	break;
+    }
 }

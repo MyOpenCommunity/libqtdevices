@@ -430,9 +430,8 @@ protected:
    bool pul;
    /*
       \brief Returns true if the object is a target for message
-      TODO: MAKE THIS A METHOD OF class banner ?
     */
-    bool isForMe(openwebnet& message);
+   bool isForMe(openwebnet& message);
 };
 
 

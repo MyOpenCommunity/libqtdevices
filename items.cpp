@@ -10,13 +10,15 @@
 #include "items.h"
 #include "openclient.h"
 #include "sottomenu.h"
+#include "device.h"
+#include "frame_interpreter.h"
+#include "device_cache.h"
 
 //#include "btbutton.h"
 #include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
 #include <stdlib.h>
-
 
 
 /*****************************************************************
@@ -26,7 +28,8 @@
 dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon )
         : bannRegolaz( parent, name )
         {
-    setRange(10,90);
+	  //setRange(10,90);
+	  setRange(10, 100);
     setStep(10);
     SetIcons( IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0 );
     setAddress(indirizzo);
@@ -36,8 +39,94 @@ dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,c
     connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
     connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
     connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_light(getAddress());
+#if 0
+    connect(this, SLOT(gestFrame(char *)), this, 
+	    SIGNAL(frame_available(char *)));
+#endif
+    // Pass frames on to device for analysis
+    connect(this, SIGNAL(frame_available(char *)), 
+	    dev, SLOT(frame_rx_handler(char *)));
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(device_status *)), 
+	    this, SLOT(status_changed(device_status *)));
 }
 
+void dimmer::Draw()
+{
+    if(getValue() > 100)
+	setValue(100);
+    qDebug("dimmer::Draw(), attivo = %d, value = %d", attivo, getValue());
+    if ( (sxButton) && (Icon[0]) )
+    {
+	sxButton->setPixmap(*Icon[0]);
+	if (pressIcon[0])
+	    sxButton->setPressedPixmap(*pressIcon[0]);
+    }
+    
+    if ( (dxButton) && (Icon[1]) )
+    {
+	dxButton->setPixmap(*Icon[1]);
+	if (pressIcon[1])
+	    dxButton->setPressedPixmap(*pressIcon[1]);
+    }
+    if (attivo==1)
+    {
+	if ( (Icon[4+((getValue()-step)/step)*2]) && (csxButton) )
+	{
+	    csxButton->setPixmap(*Icon[4+((getValue()-step)/step)*2]);
+	    qDebug("* Icon[%d]", 4+((getValue()-step)/step)*2);
+	}
+	if ( (cdxButton) && (Icon[5+((getValue()-step)/step)*2]) )
+	{
+	    cdxButton->setPixmap(*Icon[5+((getValue()-step)/step)*2]);
+	    qDebug("** Icon[%d]", 5+((getValue()-step)/step)*2);
+	}
+    }
+    else if (attivo==0)
+    {
+	if ( (Icon[2]) && (csxButton) )
+	{
+	    csxButton->setPixmap(*Icon[2]);
+	    qDebug("*** Icon[%d]", 2);
+	}
+	if ( (cdxButton) && (Icon[3]) )
+	{
+	    cdxButton->setPixmap(*Icon[3]);
+	    qDebug("**** Icon[%d]", 3);
+	}
+    }
+    else if (attivo==2)
+    {
+	if ( (Icon[44]) && (csxButton) )
+	{
+	    csxButton->setPixmap(*Icon[44]);		    
+	    qDebug("******* Icon[%d]", 44);
+	}
+	
+	if ( (cdxButton) && (Icon[45]) )
+	{
+	    cdxButton->setPixmap(*Icon[45]);    
+	    qDebug("******* Icon[%d]", 45);
+	}
+    }
+    if (BannerText)
+      {
+	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	BannerText->setText(testo);
+	//     qDebug("TESTO: %s", testo);
+      }
+    if (SecondaryText)
+      {	
+	SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+	SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+	SecondaryText->setText(testoSecondario);
+      }
+}
+
+#if 0
 void dimmer::gestFrame(char* frame)
 {
     openwebnet msg_open;
@@ -87,6 +176,66 @@ void dimmer::gestFrame(char* frame)
     if (aggiorna)
         Draw();
 }
+#else
+void dimmer::gestFrame(char *s)
+{
+    emit(frame_available(s));
+}
+
+void dimmer::status_changed(device_status *ds)
+{
+    device_status::type t = ds->get_type();
+    stat_var curr_lev(stat_var::LEV);
+    stat_var curr_speed(stat_var::SPEED);
+    stat_var curr_status(stat_var::ON_OFF);
+    int val10;
+    bool aggiorna;
+    qDebug("dimmer10::status_changed()");
+    switch (t) {
+    case device_status::LIGHTS:
+	qDebug("Light status variation");
+	ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	qDebug("status = %d", curr_status.get_val());
+	impostaAttivo(curr_status.get_val() != 0);
+	aggiorna = true;
+	break;
+    case device_status::DIMMER:
+	ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
+	qDebug("dimmer status variation");
+	qDebug("level = %d", curr_lev.get_val());
+	setValue(curr_lev.get_val());
+	//valy
+	aggiorna = true;
+	break;
+    case device_status::DIMMER100:
+	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+	qDebug("dimmer 100 status variation, ignored");
+#if 0
+	qDebug("level = %d, speed = %d", curr_lev.get_val(), 
+	       curr_speed.get_val());
+	val10 = curr_lev.get_val()/10;
+	if((curr_lev.get_val() % 10) >= 5)
+	    val10++;
+	val10 *= 10;
+	setValue(val10);
+#endif
+	aggiorna = true ;
+	break;
+    case device_status::NEWTIMED:
+	qDebug("new timed device status variation");
+	setValue(1);
+	aggiorna = true;
+	break;
+    default:
+	qDebug("device status of unknown type (%d)", t);
+	break;
+    }
+    if(aggiorna)
+	Draw();
+}
+#endif
+
 void dimmer:: Accendi()
 {
     openwebnet msg_open;
@@ -114,7 +263,6 @@ void dimmer:: Aumenta()
 void dimmer:: Diminuisci()	
 {
     openwebnet msg_open;
-    
     msg_open.CreateNullMsgOpen();     
     msg_open.CreateMsgOpen("1", "31",getAddress(),"");
     emit sendFrame(msg_open.frame_open);   
@@ -184,6 +332,8 @@ bool dimmer100::decCLV(openwebnet& msg, char& code, char& lev, char& speed,
 
 void dimmer100:: Accendi()
 {
+    qDebug("dimmer100::Accendi()");
+    if(isActive()) return;
     //*#1*where*#1*lev*speed
     openwebnet msg_open;
     msg_open.CreateNullMsgOpen();
@@ -200,11 +350,12 @@ void dimmer100:: Accendi()
 
 void dimmer100:: Spegni()
 {
-    if(spento) return;
+    qDebug("dimmer100::Spegni()");
+    if(!isActive()) return;
     openwebnet msg_open;
     msg_open.CreateNullMsgOpen();
     char s[100];
-    last_on_lev = value;
+    last_on_lev = getValue();
     //*1*0#velocita*dove## 
     sprintf(s, "*1*0#%d*%s##", softstop, getAddress());
     msg_open.CreateMsgOpen(s, strlen(s));
@@ -213,8 +364,9 @@ void dimmer100:: Spegni()
 
 void dimmer100:: Aumenta()
 {
+    qDebug("dimmer100::Aumenta()");
+    if(!isActive()) return;
     openwebnet msg_open;
-    if(spento) return;
     msg_open.CreateNullMsgOpen();     
     //msg_open.CreateMsgOpen("1", "30",getAddress(),"");
     char cosa[100];
@@ -228,7 +380,8 @@ void dimmer100:: Aumenta()
 
 void dimmer100:: Diminuisci()	
 {
-    if(spento) return;
+    qDebug("dimmer100::Diminuisci()");
+    if(!isActive()) return;
     openwebnet msg_open;
     char cosa[100];
     sprintf(cosa, "31#5#255", speed);
@@ -237,79 +390,49 @@ void dimmer100:: Diminuisci()
     emit sendFrame(msg_open.frame_open);   
 }
 
-
-
-void dimmer100::gestFrame(char* frame)
+void dimmer100::status_changed(device_status *ds)
 {
-    openwebnet msg_open;
-    char aggiorna;
-    char livello, velocita, codice, h, m, s;
-    
-    aggiorna=0;
-    
-    qDebug("dimmer100::gestFrame");
-
-    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    
-    bool nuovo = decCLV(msg_open, codice, livello, velocita, h, m, s);
-
-    if(isForMe(msg_open)) {	
-	if(!nuovo) {
-	    // Frame vecchie
-
-	    }
-	} else {
-	    // Frame nuove
-	    if(codice == 1) {
-		qDebug("value = %d, velocita = %d", livello, velocita);
-		spento = livello ? false : true ;
-		if(livello > 100) 
-		    livello = 100;
-		if(value != livello) { 
-		    value = livello;
-		    aggiorna = 1;
-		}
-		speed = velocita;
-		setValue(livello);
-		if(!livello) {
-		    if(isActive()) {
-			impostaAttivo(0);
-			spento = true ;
-			aggiorna = 1;
-		    }
-		}
-		else {
-		    if(!isActive()) {
-			impostaAttivo(1);
-			spento = false ;
-			aggiorna = 1;
-		    }
-		}
-	    } else if(codice == 2) {
-		qDebug("Frame temp: %d %d %d", h, m ,s);
-		if((h == 255) && (m == 255) && (s == 255)) {
-		    if(isActive()) {
-			impostaAttivo(0);
-			aggiorna = 1;
-		    }
-		} else if((h == 0) && (m == 0) && (s == 0)) {
-		    qDebug("MAMMA MIA: frame temporizzata con tempo 0");
-		    if(!isActive()) {
-			// Legge il livello. Senno` come fa ?
-			//inizializza();
-			//qDebug("REINIZIALIZZO IL DIMMER 100");
-			impostaAttivo(1);
-			aggiorna = 1;
-		    }
-		} else {
-		    qDebug("Devo chiedere livello e velocita`");
-		    inizializza();
-		    return;
-		}
-	    }
-	}
-    if (aggiorna)
-	  Draw();
+    device_status::type t = ds->get_type();
+    stat_var curr_lev(stat_var::LEV);
+    stat_var curr_speed(stat_var::SPEED);
+    stat_var curr_status(stat_var::ON_OFF);
+    int val10;
+    bool aggiorna = false;
+    qDebug("dimmer100::status_changed()");
+    switch (t) {
+    case device_status::LIGHTS:
+	qDebug("Light status variation");
+	ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	qDebug("status = %d", curr_status.get_val());
+	impostaAttivo(curr_status.get_val() != 0);
+	aggiorna = true;
+	break;
+    case device_status::DIMMER:
+	ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
+	qDebug("dimmer status variation, ignored");
+	break;
+    case device_status::DIMMER100:
+	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+	qDebug("dimmer 100 status variation");
+	qDebug("level = %d, speed = %d", curr_lev.get_val(), 
+	       curr_speed.get_val());
+	setValue(curr_lev.get_val());
+	    //setValue(curr_lev.get_val());
+	qDebug("value = %d", getValue());
+	aggiorna = true ;
+	break;
+    case device_status::NEWTIMED:
+	qDebug("new timed device status variation");
+	setValue(1);
+	aggiorna = true;
+	break;
+    default:
+	qDebug("device status of unknown type (%d)", t);
+	break;
+    }
+    if(aggiorna)
+	Draw();
 }
 
 void dimmer100::inizializza()
@@ -325,7 +448,7 @@ void dimmer100::inizializza()
 }
 
 
-
+#if 0
 void dimmer100::Draw()
 {
   if(value > 100)
@@ -398,7 +521,7 @@ void dimmer100::Draw()
 	SecondaryText->setText(testoSecondario);
       }
 }
-
+#endif
 
 /*****************************************************************
 **attuatAutom
@@ -3128,33 +3251,41 @@ void gesModScen::inizializza()
 ** Scenario evoluto
 ****************************************************************/	
 
+int scenEvo::next_serial_number = 1;
+
 scenEvo::scenEvo( QWidget *parent, const char *name, 
 		  QPtrList<scenEvo_cond> *c, 
 		  char *i1, char *i2, char *i3, char *i4, char *i5, 
-		  char *i6, char *i7, QString act)
+		  char *i6, char *i7, QString act, int enable)
         : bann3But( parent, name )
 {
     if(c)
 	condList = new QPtrList<scenEvo_cond>(*c);
     cond_iterator = new QPtrListIterator<scenEvo_cond>(*condList);
+    cond_iterator->toFirst();
     scenEvo_cond *co;
     QPtrListIterator<scenEvo_cond> *ci = 
 	new QPtrListIterator<scenEvo_cond>(*condList);
     ci->toFirst();
+    serial_number = next_serial_number++;
     while( ( co = ci->current() ) != 0) {
       qDebug(co->getDescription());
+      co->set_serial_number(serial_number);
+      qDebug("connecting richStato and frame_available signals");
       connect(co, SIGNAL(verificata()), this, SLOT(trig()));
+      connect(co, SIGNAL(richStato(char *)), this, SIGNAL(richStato(char *)));
+      connect(this, SIGNAL(frame_available(char *)), co, 
+	      SLOT(handle_frame(char *)));
       ++(*ci);
     }
     delete ci;
     action = act;
-    qDebug("#### action = %s ####", action.ascii());
     SetIcons(i1, i2 , i3, i4);
-    impostaAttivo(0);
+    impostaAttivo(enable);
     connect(this,SIGNAL(sxClick()),this,SLOT(toggleAttivaScev()));
     connect(this,SIGNAL(dxClick()),this,SLOT(configScev()));
     connect(this,SIGNAL(centerClick()),this,SLOT(forzaScev()));
-    connect(parent, SIGNAL(frez(bool)), this, SLOT(freezed(bool)));
+    connect(parent, SIGNAL(frez(bool)), this, SLOT(freezed(bool)));    
 }
 
 void scenEvo::toggleAttivaScev(void)
@@ -3162,6 +3293,10 @@ void scenEvo::toggleAttivaScev(void)
     qDebug("scenEvo::toggleAttivaScev");
     impostaAttivo(!isActive());
     Draw();
+    const char *s = isActive() ? "1" : "0";
+    copyFile("cfg/conf.xml","cfg/conf1.lmx");
+    setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "enable", s, serial_number);
+    QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
 }
 
 
@@ -3175,6 +3310,8 @@ void scenEvo::configScev(void)
     co->setFGColor(foregroundColor());
     connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
     connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+    connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
+    //connect(co, SIGNAL(SaveCondition()), this, SLOT(saveCond()));
     co->mostra();
 }
 
@@ -3191,6 +3328,7 @@ void scenEvo::nextCond(void)
     scenEvo_cond *co = cond_iterator->current();
     disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
     disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+    disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
     co->hide();
     if(!cond_iterator->atLast()) {
 	++(*cond_iterator);
@@ -3201,6 +3339,7 @@ void scenEvo::nextCond(void)
 	    co->setFGColor(foregroundColor());
 	    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+	    connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	    co->mostra();
 	}
     } else {
@@ -3216,6 +3355,7 @@ void scenEvo::prevCond(void)
     scenEvo_cond *co = cond_iterator->current();
     disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
     disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+    disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
     co->hide();
     if(!cond_iterator->atFirst()) {
 	--(*cond_iterator);
@@ -3226,12 +3366,24 @@ void scenEvo::prevCond(void)
 	    co->setFGColor(foregroundColor());
 	    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+	    connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	    co->mostra();
 	}
     } else {
 	Draw();
 	show();
     }
+}
+
+void scenEvo::firstCond(void)
+{
+    qDebug("scenEvo::firstCond()");
+    scenEvo_cond *co = cond_iterator->current();
+    disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
+    co->hide();
+    cond_iterator->toFirst();
+    Draw();
+    show();
 }
 
 void scenEvo::Draw()
@@ -3314,3 +3466,37 @@ void scenEvo::freezed(bool f)
 	++(*ci);
     }
 }
+
+void scenEvo::gestFrame(char* frame)
+{
+    qDebug("scenEvo::gestFrame()");
+#if 1
+    emit(frame_available(frame));
+#else
+    scenEvo_cond *co;
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    while( ( co = ci->current() ) != 0) {
+	co->gestFrame(frame);
+	++(*ci);
+    }
+    delete ci;
+#endif
+}
+
+void scenEvo::inizializza(void)
+{
+    qDebug("scenEvo::inizializza()");
+    scenEvo_cond *co;
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    while( ( co = ci->current() ) != 0) {
+	co->inizializza();
+	++(*ci);
+    }
+    delete ci;
+}
+
+// FIXME: FAI IL DISTRUTTORE !!!!!
