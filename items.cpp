@@ -3448,6 +3448,19 @@ void scenEvo::trig()
 	qDebug("scenEvo::trig(), act = NULL, non faccio niente");
 	return;
     }
+    // Verifica tutte le condizioni
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    scenEvo_cond *co;
+    while( ( co = ci->current() ) != 0) {
+	if(!co->isTrue()) {
+	    qDebug("Condizione %p (%s), non verificata, non faccio niente",
+		   co, co->getDescription());
+	    return;
+	}
+	++(*ci);
+    }
     qDebug("scenEvo::trig(), act = %s", action.ascii());
     openwebnet msg_open;
     msg_open.CreateMsgOpen((char *)action.ascii(), action.length());

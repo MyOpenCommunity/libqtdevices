@@ -284,7 +284,7 @@ void frame_interpreter_lights::handle_frame(openwebnet m,
 		set_status(ds, (cosa - 1) * 10);
 #else
 	        qDebug("setting dimmer level to %d", cosa *10);
-	        set_status(ds, (cosa - 1) * 10);
+	        set_status(ds, cosa * 10);
 #endif
 	    } else if((cosa >= 11) && (cosa <= 19)) {
 		// What shall we do here ?                
@@ -414,7 +414,7 @@ void frame_interpreter_lights::handle_frame(openwebnet m,
 #if 0
 		set_status(ds, (cosa - 1) * 10);
 #else
-         	set_status(ds, (cosa - 1) * 10);
+         	set_status(ds, cosa * 10);
 #endif
 	    else if((cosa >= 11) && (cosa <= 19)) {
 		// What shall we do here ?

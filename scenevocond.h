@@ -93,6 +93,8 @@ class scenEvo_cond : public QFrame {
     //virtual void gestFrame(char *);
     //! Inits condition
     virtual void inizializza(void);
+    //! Returns true when condition is satisfied
+    virtual bool isTrue(void);
 public slots:
      void Next();
      void Prev();
@@ -192,6 +194,8 @@ class scenEvo_cond_h : public scenEvo_cond {
     void setEnabled(bool);
     //! Save condition
     void save();
+    //! Return true when condition is satisfied
+    bool isTrue(void);
 public slots:
     //! OK method
     void OK();
@@ -222,6 +226,8 @@ class device_condition : public QObject {
     QFrame *frame;
     // Our "real" device 
     device *dev;
+    //! True when condition is satisfied
+    bool satisfied ;
  public:
     //! Constructor
     device_condition(QWidget *parent, QString *trigger);    
@@ -233,6 +239,8 @@ class device_condition : public QObject {
     virtual int get_step();
     //! Returns value divisor
     virtual int get_divisor();
+    //! Returns true if OFF must be shown instead of 0
+    virtual bool show_OFF_on_zero();
     //! Returns condition's serial number
     //int get_serial_number();
     //! Sets condition's serial number
@@ -247,6 +255,8 @@ class device_condition : public QObject {
     virtual void get_condition_value(QString&);
     //! Gets condition value
     int get_condition_value(void);
+    //! Gets condition's meas unit
+    virtual void get_unit(QString&);
     //! Shows condition
     void show();
     //! Sets geometry
@@ -275,11 +285,13 @@ class device_condition : public QObject {
     void set_pul(bool);
     //! Set device group
     void set_group(int);
+    //! Returns true when actual condition is satisfied
+    bool isTrue(void);
 public slots:
     //! Invoked when UP button is pressed
-    void Up();
+    virtual void Up();
     //! Invoked when DOWN button is pressed
-    void Down();
+    virtual void Down();
     //! Invoked when OK button is pressed
     void OK();
     //! Invoked by device when status changes
@@ -287,8 +299,8 @@ public slots:
     //! Invoked when a frame is available
     void handle_frame(char *s);
 signals:
-    //! Emitted when condition is true
-    void verificata();
+    //! No more emitted when condition is true
+    // void verificata();
     //! Status request
     void richStato(char *);
     //! Emitted when a frame is received
@@ -303,7 +315,8 @@ signals:
 */
 class device_condition_light_status : public device_condition
 {
-    Q_OBJECT private:
+    Q_OBJECT 
+ private:
     //! Returns string to be displayed as a function of value
     void get_string(QString&);
  public:
@@ -347,8 +360,14 @@ class device_condition_dimming : public device_condition {
     int get_max();
     //! Returns step
     int get_step();
+    //! Gets condition's meas unit
+    void get_unit(QString&);
+    //! Returns true if OFF must be shown instead of 0
+    bool show_OFF_on_zero();
+#if 0
     //! Draws condition
     void Draw();
+#endif
     //! Translates trigger condition from open encoding to int and sets val
     int set_condition_value(QString);
     //! Translates current trigger condition to open
@@ -360,6 +379,10 @@ class device_condition_dimming : public device_condition {
     void inizializza();
 #endif
 public slots:
+    //! Invoked when UP button is pressed
+    void Up();
+    //! Invoked when DOWN button is pressed
+    void Down();
     //! Invoked when status changes
     void status_changed(device_status *ds);
 };
@@ -383,14 +406,18 @@ class device_condition_volume : public device_condition
     int get_max();
     //! Returns step
     int get_step();
+#if 0
     //! Draws condition
     void Draw();
+#endif
     //! Translates trigger condition from open encoding to int and sets val
     int set_condition_value(QString);
     //! Translates current trigger condition to open
     void get_condition_value(QString&);
     //! Decodes incoming frame
     //void gestFrame(char*);
+    //! Gets condition's meas unit
+    void get_unit(QString&);
 #if 0
     //! Inits condition
     void inizializza();
@@ -413,14 +440,20 @@ class device_condition_temp : public device_condition
  public:
     //! Constructor
     device_condition_temp(QWidget *parent, char *name, QString *trigger); 
+    //! Returns min value
+    int get_min();
     //! Returns max value
     int get_max();
     //! Returns step
     int get_step();
     //! Returns divisor
     int get_divisor();
+    //! Gets condition's meas unit
+    void get_unit(QString&);
+#if 1
     //! Draws condition
     void Draw();
+#endif
     //! Returns value
     int intValue();
     //! Translates trigger condition from open encoding to int and sets val
@@ -544,6 +577,8 @@ class scenEvo_cond_d : public scenEvo_cond {
     void SetIcons();
     //! Save condition
     virtual void save();
+    //! Return true when condition is satisfied
+    bool isTrue(void);
 public slots:
     //! OK method
     void OK();
@@ -551,6 +586,8 @@ public slots:
     void Up();
     //! Down method
     void Down();
+    //! Invoked when actual device condition has been triggered by a frame
+    //void device_condition_triggered(void);
 signals:
 };
 

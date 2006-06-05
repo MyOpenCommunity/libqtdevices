@@ -143,6 +143,11 @@ void scenEvo_cond::handle_frame(char *s)
     emit(frame_available(s));
 }
 
+bool scenEvo_cond::isTrue(void)
+{
+    return false;
+}
+
 /*****************************************************************
  ** Advanced scenario management, time condition
 ****************************************************************/	
@@ -413,6 +418,15 @@ void scenEvo_cond_h::save()
     QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
 }
 
+bool scenEvo_cond_h::isTrue(void)
+{
+    return 
+	((cond_time->time().hour() == 
+	  QDateTime::currentDateTime().time().hour()) &&
+	 (cond_time->time().minute() == 
+	  QDateTime::currentDateTime().time().minute()));
+}
+
 /*****************************************************************
  ** Advanced scenario management, device condition
 ****************************************************************/
@@ -590,7 +604,12 @@ void scenEvo_cond_d::SetIcons()
 	dc->setGeometry(40,140,160,50);
 	connect(dc, SIGNAL(richStato(char *)), this, 
 		SIGNAL(richStato(char *)));
+#if 0
+	// Non mandiamo + segnali quando la condizione sul device e` verificata
+	// E` solo la condizione oraria che manda un segnale. Questa 
+	// condizione dice solo se e` verificata o meno con isTrue()
 	connect(dc, SIGNAL(verificata()), this, SIGNAL(verificata()));
+#endif
 	connect(this, SIGNAL(frame_available(char *)),
 		dc, SLOT(handle_frame(char *)));
 	dc->set_where(*where);
@@ -633,6 +652,11 @@ void scenEvo_cond_d::inizializza(void)
 	actual_condition->inizializza();
 }
 
+bool scenEvo_cond_d::isTrue(void)
+{
+    return actual_condition ? actual_condition->isTrue() : false ;
+}
+
 /*****************************************************************
  ** Actual generic device condition
 ****************************************************************/
@@ -640,6 +664,7 @@ device_condition::device_condition(QWidget *p, QString *s)
 {
     qDebug("device_condtion::device_condition(%s)", s->ascii());
     parent = p;
+    satisfied = false;
 }
 
 int device_condition::get_min()
@@ -662,8 +687,14 @@ int device_condition::get_divisor()
     return 1;
 }
 
+bool device_condition::show_OFF_on_zero()
+{
+    return false;
+}
+
 int device_condition::get_condition_value(void)
 {
+  qDebug("URCHISSIMO: returning %d\n", cond_value);
     return cond_value;
 }
 
@@ -674,12 +705,13 @@ int device_condition::set_condition_value(int v)
     if(v < get_min())
 	v = get_min();
     cond_value = v;
+    return v;
 }
 
 int device_condition::set_condition_value(QString s)
 {
     qDebug("device_condition::set_condition_value");
-    set_condition_value(s.toInt());
+    return set_condition_value(s.toInt());
 }
 
 void device_condition::get_condition_value(QString& out)
@@ -698,6 +730,15 @@ void device_condition::show()
 
 void device_condition::Draw()
 {
+    char tmp[50];
+    QString u;
+    get_unit(u);
+    int v = get_current_value();
+    if(show_OFF_on_zero() && !v)
+    	sprintf(tmp, "OFF");
+    else
+	    sprintf(tmp, "%d%s", v, u.ascii());
+    ((QLabel *)frame)->setText(tmp);
 }
 
 void device_condition::setGeometry(int x, int y, int sx, int sy)
@@ -738,17 +779,26 @@ int device_condition::get_current_value()
 
 int device_condition::set_current_value(int v)
 {
+  qDebug("URCO : v = %d\n", v);
     if(v > get_max())
 	v = get_max();
+    qDebug("URCO1 : v = %d\n", v);
     if(v < get_min())
 	v = get_min();
+    qDebug("URCO2 : v = %d\n", v);
     current_value = v;
+    qDebug("URCO3 : current_value = %d\n", current_value);
     return current_value;
 }
 
 scenEvo_cond_d *device_condition::get_parent()
 {
     return (scenEvo_cond_d *)parent;
+}
+
+void device_condition::get_unit(QString& out)
+{
+    out = QString("");
 }
 
 void device_condition::setFGColor(QColor c)
@@ -769,6 +819,11 @@ void device_condition::inizializza()
 {
     qDebug("device_condition::inizializza()");
     dev->init();
+}
+
+bool device_condition::isTrue()
+{
+    return satisfied;
 }
 
 void device_condition::set_where(QString s)
@@ -847,8 +902,8 @@ void device_condition_light_status::status_changed(device_status *ds)
 	qDebug("trigger value = %d, current value = %d\n", trig_v, 
 	       curr_status.get_val());
 	if(trig_v == curr_status.get_val()) {
-	    qDebug("light condition (%d) triggered", trig_v);
-	    emit(verificata());
+	    qDebug("light condition (%d) satisfied", trig_v);
+	    satisfied = true;
 	}
 	break;
     case device_status::DIMMER:
@@ -875,9 +930,9 @@ int device_condition_light_status::set_condition_value(QString s)
 {
     qDebug("device_condition_light_status::set_condition_value");
     int v = 0;
-    if(s == "ON")
+    if(s == "1")
 	v = 1;
-    else if(s == "OFF")
+    else if(s == "0")
 	v = 0;
     else 
 	qDebug("Unknown condition value %s for device_condition_light_status");
@@ -886,7 +941,7 @@ int device_condition_light_status::set_condition_value(QString s)
 
 void device_condition_light_status::get_condition_value(QString& out)
 {
-    out = device_condition::get_condition_value() ? "ON" : "OFF" ;
+    out = device_condition::get_condition_value() ? "1" : "0" ;
 }
 
 
@@ -897,13 +952,21 @@ device_condition_dimming::device_condition_dimming(QWidget *parent,
 						   char *name, QString *c) :
     device_condition(parent, c)
 {
+#if 0
     QLCDNumber *l = new QLCDNumber(parent, name);
     l->setFrameStyle( QFrame::Plain );
     l->setLineWidth(0);
     l->setNumDigits(2);
     l->setSegmentStyle(QLCDNumber::Flat);    
+#else
+    QLabel *l = new QLabel(parent, name);
+    l->setAlignment(AlignHCenter|AlignVCenter);
+    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+#endif
     frame = l;
-    set_condition_value(*c);
+    device_condition_dimming::set_condition_value(*c);
+    qDebug("^^^^^^ condition value is %d\n", 
+	   device_condition::get_condition_value());
     set_current_value(device_condition::get_condition_value());
     // A dimmer is actually a light
     dev = new light(QString(""));
@@ -913,12 +976,12 @@ device_condition_dimming::device_condition_dimming(QWidget *parent,
 
 int device_condition_dimming::get_min() 
 { 
-    return 10; 
+    return 0; 
 } 
 
 int device_condition_dimming::get_max()
 {
-    return 90;
+    return 100;
 }
 
 int device_condition_dimming::get_step()
@@ -926,22 +989,63 @@ int device_condition_dimming::get_step()
     return 10;
 }
 
+void device_condition_dimming::Down()
+{
+    qDebug("device_condition_dimming::Down()");
+    int val = get_current_value();
+    if(val > 20)
+      val -= get_step();
+    else
+      val -= 20;
+    set_current_value(val);
+    Draw();
+    show();
+}
+
+void device_condition_dimming::Up()
+{
+    qDebug("device_condition_dimming::Up()");
+    int val = get_current_value();
+    if(val >= 20)
+      val += get_step();
+    else
+      val += 20;
+    set_current_value(val);
+    Draw();
+    show();
+}
+
+void device_condition_dimming::get_unit(QString& out)
+{
+    out = "%";
+}
+
+bool device_condition_dimming::show_OFF_on_zero()
+{
+    return true;
+}
+
+#if 0
 void device_condition_dimming::Draw()
 {
     QLCDNumber *l = (QLCDNumber *)frame;
     l->display(get_current_value());
     show();
 }
+#endif
 
 int device_condition_dimming::set_condition_value(QString s)
 {
-    return set_current_value((s.toInt() - 1) * 10);
+    int v = s.toInt() * 10;
+    int w = atoi(s.ascii()) * 10;
+    qDebug("******* URCA : v = %d, w = %d\n", v, w);
+    return device_condition::set_condition_value(s.toInt() * 10);
 }
 
 void device_condition_dimming::get_condition_value(QString& out)
 {
     char tmp[100];
-    sprintf(tmp, "%d", (device_condition::get_condition_value() / 10) + 1);
+    sprintf(tmp, "%d", (device_condition::get_condition_value() / 10));
     out =  tmp ;
 }
 
@@ -968,8 +1072,9 @@ void device_condition_dimming::status_changed(device_status *ds)
 	qDebug("trigger value is %d, val10 = %d", trig_v, curr_lev.get_val());
 	if(curr_lev.get_val() == trig_v) {
 	    qDebug("Condition triggered");
-	    emit(verificata());
-	}
+	    satisfied = true;
+	} else
+	    satisfied = false;
 	break;
     case device_status::DIMMER100:
 	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
@@ -984,8 +1089,9 @@ void device_condition_dimming::status_changed(device_status *ds)
 	qDebug("trigger value is %d, val10 = %d", trig_v, val10);
 	if(val10 == trig_v) {
 	    qDebug("Condition triggered");
-	    emit(verificata());
-	}
+	    satisfied = true;
+	} else
+	    satisfied = false;
 	break;
     case device_status::NEWTIMED:
 	qDebug("new timed device status variation, ignored");
@@ -1017,17 +1123,17 @@ device_condition_volume::device_condition_volume(QWidget *parent,
 
 int device_condition_volume::get_min() 
 { 
-    return 1; 
+    return 0; 
 } 
 
 int device_condition_volume::get_max()
 {
-    return 30;
+    return 100;
 }
 
 int device_condition_volume::get_step()
 {
-    return 1;
+    return 10;
 }
 
 #if 0
@@ -1037,11 +1143,13 @@ void device_condition_volume::gestFrame(char *s)
 }
 #endif
 
+#if 0
 void device_condition_volume::Draw()
 {
     QLCDNumber *l = (QLCDNumber *)frame;
     l->display(get_current_value());
 }
+#endif
 
 int device_condition_volume::set_condition_value(QString s)
 {
@@ -1050,9 +1158,19 @@ int device_condition_volume::set_condition_value(QString s)
 
 void device_condition_volume::get_condition_value(QString& out)
 {
+    // Mail di agresta del 29/05/2006
+    static const int trans_table[] = 
+    { 0, 3, 6, 9, 12, 15, 19, 22, 25, 28, 31 };
+    int v = device_condition::get_condition_value();
+    if(v > 100) v = 100;
     char tmp[100];
-    sprintf(tmp, "%d", device_condition::get_condition_value() + 1);
+    sprintf(tmp, "%d", trans_table[v/10]);
     out = tmp;
+}
+
+void device_condition_volume::get_unit(QString& out)
+{
+    out = "%" ;
 }
 
 #if 0
@@ -1075,8 +1193,9 @@ void device_condition_volume::status_changed(device_status *ds)
 	qDebug("volume = %d", curr_volume.get_val());
 	if(curr_volume.get_val() == trig_v) {
 	    qDebug("Condition triggered");
-	    emit(verificata());
-	}
+	    satisfied = true;
+	} else
+	    satisfied = false;
 	break;
     default:
 	qDebug("device status of unknown type (%d)", t);
@@ -1102,15 +1221,19 @@ device_condition_temp::device_condition_temp(QWidget *parent,
     dev = new temperature_probe(QString(""));
 }
 
+int device_condition_temp::get_min()
+{
+    return -50;
+}
 
 int device_condition_temp::get_max()
 {
-    return 511;
+    return 500;
 }
 
 int device_condition_temp::get_step()
 {
-    return 1;
+    return 10;
 }
 
 int device_condition_temp::get_divisor()
@@ -1118,6 +1241,12 @@ int device_condition_temp::get_divisor()
     return 10;
 }
 
+void device_condition_temp::get_unit(QString& out)
+{
+    out = "°C" ;
+}
+
+#if 0
 void device_condition_temp::Draw()
 {
     QLCDNumber *l = (QLCDNumber *)frame;
@@ -1126,6 +1255,17 @@ void device_condition_temp::Draw()
     sprintf(tmp, "%d.%d", val/10, val%10);
     l->display(tmp);
 }
+#else
+void device_condition_temp::Draw()
+{
+    char tmp[50];
+    QString u;
+    get_unit(u);
+    int val = get_current_value();
+    sprintf(tmp, "%d.%d%s", val/10, val%10, u.ascii());
+    ((QLabel *)frame)->setText(tmp);
+}
+#endif
 
 int device_condition_temp::set_condition_value(QString s)
 {
@@ -1155,8 +1295,9 @@ void device_condition_temp::status_changed(device_status *ds)
 		 curr_temp);
 	if(curr_temp.get_val() == trig_v) {
 	    qDebug("Condition triggered");
-	    emit(verificata());
-	}
+	    satisfied = true;
+	} else
+	    satisfied = false;
 	break;
     default:
 	qDebug("device status of unknown type (%d)", t);
