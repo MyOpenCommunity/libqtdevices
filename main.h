@@ -250,14 +250,39 @@ enum  bannerType {
   ATTUAT_AUTOM_TEMP_NUOVO_F=37,         /*!< Attuatore temp nuovo, fisso */
   SCENARIO_EVOLUTO=38,                  /*!< Scenario evoluto */
   SCENARIO_SCHEDULATO=39,               /*!< Scenario schedulato */
+  POSTO_ESTERNO=49,                     /*!< Posto esterno */
 };
 
 /*! banTesti: text utilized during the initialization sequence when the menu is built up*/
-const char banTesti[40][20] = {"ATTUAT_AUTOM","DIMMER 10","ATTUAT_AUTOM_INT","VUOTO","SCENARIO","GR_ATT_INT","GR_DIMMER","CARICO",\
-                            "ATT_AUT_INT_SIC","ATT_AUT_TEMP","GR_ATT_INT","ATT_AUT_PULS","ATT_VCT_LS","ATT_VCT_SER","SET_DATA","VUOTO",\
-                            "SORGENTE","SORG_RADIO","AMPLI", "GR_AMPLI","SET_SVEGLIA","CALIB","TERMO","ZONANTI","IMPANTI","SUONO","PROT","VERS",\
-                            "CONTR","MOD_SCEN","DATA", "TEMP","TIME","ALL","SPECIAL","DIMMER 100","ATT_AUT_TEMP_N","ATT_AUT_TEMP_F","SCENARIO EVOLUTO",
-"SCENARIO SCHEDULATO" };
+const char banTesti[][20] = 
+{
+/*    0                  1                 2               3               */
+ "ATTUAT_AUTOM",     "DIMMER 10",     "ATTUAT_AUTOM_INT","VUOTO",        
+/*    4                  5                 6               7               */
+ "SCENARIO",         "GR_ATT_INT",    "GR_DIMMER",       "CARICO",
+/*    8                  9                 10              11              */
+ "ATT_AUT_INT_SIC",  "ATT_AUT_TEMP",  "GR_ATT_INT",      "ATT_AUT_PULS",
+/*    12                 13               14               15              */
+ "ATT_VCT_LS",       "ATT_VCT_SER",   "SET_DATA",        "VUOTO",
+/*    16                 17               18               19              */
+ "SORGENTE",         "SORG_RADIO",    "AMPLI",           "GR_AMPLI",
+/*    20                 21               22               23              */
+ "SET_SVEGLIA",      "CALIB",         "TERMO",           "ZONANTI",
+/*    24                 25               26               27              */
+ "IMPANTI",          "SUONO",         "PROT",            "VERS",
+/*    28                 29               30               31              */
+ "CONTR",            "MOD_SCEN",      "DATA",            "TEMP",
+/*    32                 33               34               35              */
+ "TIME",             "ALL",           "SPECIAL",         "DIMMER 100",
+/*    36                 37               38               39              */
+ "ATT_AUT_TEMP_N",   "ATT_AUT_TEMP_F","SCENARIO EVOLUTO","SCENARIO SCHEDULATO",
+/*    40                 41               42               43              */
+ "VUOTO",            "VUOTO",         "VUOTO",           "VUOTO",
+/*    44                 45               46               47              */
+ "VUOTO",            "VUOTO",         "VUOTO",           "VUOTO",
+/*    48                 49               50               51              */
+ "VUOTO",            "POSTO_ESTERNO" ,
+};
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up*/
 const char pagTesti[12][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
                             "BACK","SPECIAL","VIDEOCITOF","SCENARI EVO" };
@@ -275,11 +300,12 @@ enum pulsType{
 /*! \def MAX_PATH
   maximum number of characters describing a file path*/
 #define MAX_PATH		50
-/*! \def TIME_RIP_REGOLAZ
-  time [ms] between two repetitionof a regulation command during the same pressure*/
+/*! \def TIME_RIP_REGOLAZ  time [ms] between two repetitionof a regulation command during the same pressure*/
 #define TIME_RIP_REGOLAZ	500
 /*! \def BEEP
   if not defined it's impossible to have a beep qhen pressing a button*/
 #define BEEP
+
+
 #endif //MAIN_H
 

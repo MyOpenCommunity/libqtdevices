@@ -29,7 +29,7 @@ dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,c
         : bannRegolaz( parent, name )
         {
 	  //setRange(10,90);
-	  setRange(10, 100);
+	  setRange(20, 100);
     setStep(10);
     SetIcons( IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0 );
     setAddress(indirizzo);
@@ -73,15 +73,15 @@ void dimmer::Draw()
     }
     if (attivo==1)
     {
-	if ( (Icon[4+((getValue()-step)/step)*2]) && (csxButton) )
+	if ( (Icon[4+((getValue()-minValue)/step)*2]) && (csxButton) )
 	{
-	    csxButton->setPixmap(*Icon[4+((getValue()-step)/step)*2]);
-	    qDebug("* Icon[%d]", 4+((getValue()-step)/step)*2);
+	    csxButton->setPixmap(*Icon[4+((getValue()-minValue)/step)*2]);
+	    qDebug("* Icon[%d]", 4+((getValue()-minValue)/step)*2);
 	}
-	if ( (cdxButton) && (Icon[5+((getValue()-step)/step)*2]) )
+	if ( (cdxButton) && (Icon[5+((getValue()-minValue)/step)*2]) )
 	{
-	    cdxButton->setPixmap(*Icon[5+((getValue()-step)/step)*2]);
-	    qDebug("** Icon[%d]", 5+((getValue()-step)/step)*2);
+	    cdxButton->setPixmap(*Icon[5+((getValue()-minValue)/step)*2]);
+	    qDebug("** Icon[%d]", 5+((getValue()-minValue)/step)*2);
 	}
     }
     else if (attivo==0)
@@ -3318,7 +3318,8 @@ void scenEvo::configScev(void)
 void scenEvo::forzaScev(void)
 {
     qDebug("scenEvo::forzaScev");
-    trig();
+    // Forced trigger
+    trig(true);
     Draw();
 }
 
@@ -3438,7 +3439,7 @@ void scenEvo::setAction(const char *a)
 }
 
 
-void scenEvo::trig()
+void scenEvo::trig(bool forced)
 {
     if(!isActive()) {
 	qDebug("scenEvo::trig(), non abilitato, non faccio niente");
@@ -3448,9 +3449,11 @@ void scenEvo::trig()
 	qDebug("scenEvo::trig(), act = NULL, non faccio niente");
 	return;
     }
+    QPtrListIterator<scenEvo_cond> *ci;
+    if(forced) 
+	goto do_send;
     // Verifica tutte le condizioni
-    QPtrListIterator<scenEvo_cond> *ci = 
-	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci = new QPtrListIterator<scenEvo_cond>(*condList);
     ci->toFirst();
     scenEvo_cond *co;
     while( ( co = ci->current() ) != 0) {
@@ -3461,6 +3464,7 @@ void scenEvo::trig()
 	}
 	++(*ci);
     }
+ do_send:
     qDebug("scenEvo::trig(), act = %s", action.ascii());
     openwebnet msg_open;
     msg_open.CreateMsgOpen((char *)action.ascii(), action.length());
@@ -3513,3 +3517,174 @@ void scenEvo::inizializza(void)
 }
 
 // FIXME: FAI IL DISTRUTTORE !!!!!
+
+
+/*****************************************************************
+** Scenario schedulato
+****************************************************************/	
+scenSched::scenSched(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *aen, char *adis, char *astart, char *astop) : bann4But( parent, name )
+{
+    char pressIconName[100];
+    action_enable = aen;
+    action_disable = adis;
+    action_start = astart;
+    action_stop = astop;
+    qDebug("scenSched::scenSched(), enable = %s, start = %s, stop = %s, "
+	   "disable = %s", aen, adis, astart, astop);
+    qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", 
+	   Icona1, Icona2, Icona3, Icona4);
+    SetIcons(Icona1, Icona3, Icona4, Icona2);
+    if(aen[0]) {
+	// sx
+	qDebug("BUT1 attivo");
+	connect(this, SIGNAL(sxClick()), this, SLOT(enable()));
+    } else
+	nascondi(BUT1);
+    if(astart[0]) {
+	// csx
+	qDebug("BUT3 attivo");
+	connect(this, SIGNAL(csxClick()), this, SLOT(start()));
+    } else
+	nascondi(BUT3);
+    if(astop[0]) {
+	// cdx
+	qDebug("BUT4 attivo");
+	connect(this, SIGNAL(cdxClick()), this, SLOT(stop()));
+    } else
+	nascondi(BUT4);
+    if(adis[0]) {
+	// dx
+	qDebug("BUT2 attivo");
+	connect(this, SIGNAL(dxClick()), this, SLOT(disable()));
+    } else
+	nascondi(BUT2);
+    Draw();
+}
+
+void scenSched::enable(void)
+{
+    qDebug("scenSched::enable()");
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen((char *)action_enable.ascii(), 
+			   action_enable.length());
+    emit sendFrame(msg_open.frame_open);
+    Draw();
+}
+
+void scenSched::start(void)
+{
+    qDebug("scenSched::start()");
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen((char *)action_start.ascii(), 
+			   action_start.length());
+    emit sendFrame(msg_open.frame_open);
+    Draw();
+}
+
+void scenSched::stop(void)
+{
+    qDebug("scenSched::stop()");
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen((char *)action_stop.ascii(), 
+			   action_stop.length());
+    emit sendFrame(msg_open.frame_open);
+    Draw();
+}
+
+void scenSched::disable(void)
+{
+    qDebug("scenSched::disable()");
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen((char *)action_disable.ascii(), 
+			   action_disable.length());
+    emit sendFrame(msg_open.frame_open);
+    Draw();
+}
+
+
+void scenSched::Draw()
+{
+    // Icon[0] => left button
+    // pressIcon[0] => pressed left button
+    // Icon[1] => center left button 
+    // pressIcon[1] => pressed center left button
+    // Icon[3] => center right button
+    // pressIcon[3] => pressed center right button
+    // Icon[2] => right button
+    // pressIcon[2] => pressed right button
+    qDebug("scenSched::Draw()");
+    if ((sxButton) && (Icon[0])) {
+	sxButton->setPixmap(*Icon[0]);
+	if (pressIcon[0])
+	    sxButton->setPressedPixmap(*pressIcon[0]);
+    }
+    if ( (csxButton) && (Icon[1]) ) {
+	csxButton->setPixmap(*Icon[1]);
+	if(pressIcon[1])
+	    csxButton->setPressedPixmap(*pressIcon[1]);
+    }
+    if ( (cdxButton) && (Icon[3]) ) {
+	cdxButton->setPixmap(*Icon[3]);
+	if(pressIcon[3])
+	    cdxButton->setPressedPixmap(*pressIcon[3]);
+    }
+    if ( (dxButton) && (Icon[2]) ) {
+	dxButton->setPixmap(*Icon[2]);
+	if(pressIcon[2])
+	    dxButton->setPressedPixmap(*pressIcon[2]);
+    }
+    if (BannerText) {
+	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	BannerText->setText(testo);
+	//     qDebug("TESTO: %s", testo);
+    }
+#if 0
+    if (SecondaryText) {	
+	SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+	SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+	SecondaryText->setText(testoSecondario);
+    }
+#endif
+}
+
+/*****************************************************************
+** Posto Esterno
+****************************************************************/	
+postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_descr, char *_light, char *_key) : bann4tasLab( parent, name )
+{
+    char pressIconName[100];
+    where = _where;
+    descr = _descr;
+    light = !strcmp(_light, "1");
+    key = !strcmp(_key, "1");
+    qDebug("postoExt::postoExt()");
+    qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", 
+	   Icona1, Icona2, Icona3, Icona4);
+    qDebug("light = %d, key = %d", light, key);
+    //SetIcons(Icona1, Icona3, Icona4, Icona2);
+    SetIcons (Icona2, Icona3, "", "", Icona1);
+    if(key) 
+	connect(this, SIGNAL(sxClick()), this, SLOT(apri_serratura()));
+    else
+	nascondi(BUT1);
+    if(light)
+	connect(this, SIGNAL(dxClick()), this, SLOT(luce_scale()));
+    else
+	nascondi(BUT2);
+    impostaAttivo(2);
+    Draw();
+}
+
+
+void postoExt::apri_serratura(void)
+{
+    qDebug("postoExt::apri_serratura()");
+}
+
+void postoExt::luce_scale(void)
+{
+    qDebug("postoExt::luce_scale()");
+}
+
+

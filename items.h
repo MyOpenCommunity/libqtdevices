@@ -129,8 +129,8 @@ class attuatAutom : public bannOnOff
 {
     Q_OBJECT
 public:
-     attuatAutom( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
-          void inizializza();
+    attuatAutom( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0); 
+    void inizializza();
 public slots:
      void gestFrame(char*);
 private slots:
@@ -999,7 +999,7 @@ public slots:
  void nextCond();
  void prevCond();
  void firstCond();
- void trig();
+ void trig(bool forced = false);
  void freezed(bool);
 private slots:    
 signals:
@@ -1008,3 +1008,94 @@ private:
 };
 
 #endif // SCEN_EVO_H
+
+/*****************************************************************
+** Scenario schedulato
+****************************************************************/	
+#ifndef SCEN_SCHED_H
+#define SCEN_SCHED_H
+
+#include "bann4but.h"
+
+/*!
+  \class scenEvo
+  \brief This class represents a scheduled scenario management object
+  \author Ciminaghi
+  \date apr 2006
+*/  
+class scenSched : public  bann4But
+{
+    Q_OBJECT
+ private:
+    QString action_enable;
+    QString action_disable;
+    QString action_start;
+    QString action_stop;
+ public:
+    scenSched( QWidget *parent=0, const char *name=NULL, char* IconaSx="",char *IconaCSx="", char *IconaCDx="", char* IconaDx="", char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");   
+    /*!
+      \brief Returns action as an open message
+    */
+    const char *getAction() ;
+    /*!
+      \brief Sets action as an open message
+      \param a pointer to open frame
+    */
+    void setAction(const char *a) ;
+    /*!
+      Reimplemented draw
+    */
+    void Draw();
+public slots:
+    /*!
+     \brief Enable scheduled scenario
+    */
+    void enable(void);
+    /*! Disable scheduled scenario */
+    void disable(void); 
+    /*! Start scheduled scenario */
+    void start(void);
+    /*! Stop scheduled scenario */
+    void stop(void);
+signals:
+};
+
+#endif // SCEN_SCHED_H
+
+/*****************************************************************
+** Posto esterno
+****************************************************************/	
+#ifndef POSTO_EXT_H
+#define POSTO_EXT_H
+
+#include "bann4taslab.h"
+
+/*!
+  \class postoExt
+  \brief This class represents an outdoor station
+  \author Ciminaghi
+  \date apr 2006
+*/  
+class postoExt : public bann4tasLab
+{
+    Q_OBJECT
+ private:
+    QString where;
+    QString descr;
+    bool light;
+    bool key;
+ public:
+    postoExt(QWidget *parent=0, const char *name=NULL, char* Icona1="",char *Icona2="", char *Icona3="", char* Icona4="", char *where="", char *descr="", char *light="", char *key="");   
+    /*!
+      Reimplemented draw
+    */
+    //void Draw();
+public  slots:
+	//! Invoked when left button is clicked
+	void apri_serratura(void);
+//! Invoked when right button is clicked
+ void luce_scale(void); 
+signals:
+};
+
+#endif // POSTO_EXT_H

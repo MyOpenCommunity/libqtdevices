@@ -289,9 +289,9 @@ class device_condition : public QObject {
     bool isTrue(void);
 public slots:
     //! Invoked when UP button is pressed
-    virtual void Up();
+    void Up();
     //! Invoked when DOWN button is pressed
-    virtual void Down();
+    void Down();
     //! Invoked when OK button is pressed
     void OK();
     //! Invoked by device when status changes
@@ -379,10 +379,6 @@ class device_condition_dimming : public device_condition {
     void inizializza();
 #endif
 public slots:
-    //! Invoked when UP button is pressed
-    void Up();
-    //! Invoked when DOWN button is pressed
-    void Down();
     //! Invoked when status changes
     void status_changed(device_status *ds);
 };

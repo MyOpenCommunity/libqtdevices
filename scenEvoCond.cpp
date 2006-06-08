@@ -247,58 +247,69 @@ void scenEvo_cond_h::SetIcons()
 	Immagine -> setPixmap(*Icon1); 
     Immagine->setGeometry(90,0,60,60);
     delete(Icon1);
-    // Pulsante in basso a sinistra, area 6
-    Icon1 = new QPixmap();
-    Icon1->load(getImg(A6_ICON_INDEX));
-    qDebug("Area 6: loaded icon %s", getImg(A6_ICON_INDEX));
-    getPressName((char *)getImg(A6_ICON_INDEX), iconName, sizeof(iconName));
-    if (QFile::exists(iconName)) {  
-	Icon2 = new QPixmap();
-	Icon2->load(iconName);
-    }
-    but[A6_BUTTON_INDEX] = new BtButton(this, "prev");
-    but[A6_BUTTON_INDEX]->setGeometry(0, MAX_HEIGHT - 60, 60, 60);
-    but[A6_BUTTON_INDEX]->setPixmap(*Icon1);
-    if (Icon2)
-	but[A6_BUTTON_INDEX]->setPressedPixmap(*Icon2);
-    delete Icon1;
-    if(Icon2)
-	delete Icon2;
+    // Pulsante in basso a sinistra, area 6 (SE C'E` L'ICONA)
+    if(getImg(A6_ICON_INDEX)[0]) {
+	Icon1 = new QPixmap();
+	Icon1->load(getImg(A6_ICON_INDEX));
+	qDebug("Area 6: loaded icon %s", getImg(A6_ICON_INDEX));
+	getPressName((char *)getImg(A6_ICON_INDEX), iconName,sizeof(iconName));
+	if (QFile::exists(iconName)) {  
+	    Icon2 = new QPixmap();
+	    Icon2->load(iconName);
+	}
+	but[A6_BUTTON_INDEX] = new BtButton(this, "ok");
+	but[A6_BUTTON_INDEX]->setGeometry(0, MAX_HEIGHT - 60, 60, 60);
+	but[A6_BUTTON_INDEX]->setPixmap(*Icon1);
+	if (Icon2)
+	    but[A6_BUTTON_INDEX]->setPressedPixmap(*Icon2);
+	delete Icon1;
+	if(Icon2)
+	    delete Icon2;
+    } else
+	but[A6_BUTTON_INDEX] = NULL;
     // Pulsante in basso al centro, area 7
-    Icon1 = new QPixmap();
-    Icon2 = NULL;
-    Icon1->load(getImg(A7_ICON_INDEX));
-    getPressName((char *)getImg(A7_ICON_INDEX), iconName, sizeof(iconName));
-    if (QFile::exists(iconName)) {  
-	Icon2 = new QPixmap();
-	Icon2->load(iconName);
-    }
-    but[A7_BUTTON_INDEX] = new BtButton(this, "ok");
-    but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 
-				      60, 60);
-    but[A7_BUTTON_INDEX]->setPixmap(*Icon1);
-    if (Icon2)
-	but[A7_BUTTON_INDEX]->setPressedPixmap(*Icon2);
-    delete Icon1;
-    if(Icon2)
-	delete Icon2;
+    if(getImg(A7_ICON_INDEX)[0]) {
+	Icon1 = new QPixmap();
+	Icon2 = NULL;
+	Icon1->load(getImg(A7_ICON_INDEX));
+	qDebug("Area 7: loaded icon %s", getImg(A7_ICON_INDEX));
+	getPressName((char *)getImg(A7_ICON_INDEX),iconName, sizeof(iconName));
+	if (QFile::exists(iconName)) {  
+	    Icon2 = new QPixmap();
+	    Icon2->load(iconName);
+	} 
+	but[A7_BUTTON_INDEX] = new BtButton(this, "np1");
+	but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 
+					  60, 60);
+	but[A7_BUTTON_INDEX]->setPixmap(*Icon1);
+	if (Icon2)
+	    but[A7_BUTTON_INDEX]->setPressedPixmap(*Icon2);
+	delete Icon1;
+	if(Icon2)
+	    delete Icon2;
+    } else
+	but[A7_BUTTON_INDEX] = NULL;
     // Pulsante in basso a destra, area 8
-    Icon1 = new QPixmap();
-    Icon2 = NULL;
-    Icon1->load(getImg(A8_ICON_INDEX));
-    getPressName((char *)getImg(A8_ICON_INDEX), iconName, sizeof(iconName));
-    if (QFile::exists(iconName)) {  
-	Icon2 = new QPixmap();
-	Icon2->load(iconName);
-    }
-    but[A8_BUTTON_INDEX] = new BtButton(this, "next");
-    but[A8_BUTTON_INDEX]->setGeometry(MAX_WIDTH - 60, MAX_HEIGHT - 60, 60, 60);
-    but[A8_BUTTON_INDEX]->setPixmap(*Icon1);
-    if (Icon2)
-	but[A8_BUTTON_INDEX]->setPressedPixmap(*Icon2);
-    delete Icon1;
-    if(Icon2)
-	delete Icon2;
+    if(getImg(A8_ICON_INDEX)[0]) {
+	Icon1 = new QPixmap();
+	Icon2 = NULL;
+	Icon1->load(getImg(A8_ICON_INDEX));
+	qDebug("Area 8: loaded icon %s", getImg(A8_ICON_INDEX));
+	getPressName((char *)getImg(A8_ICON_INDEX),iconName, sizeof(iconName));
+	if (QFile::exists(iconName)) {  
+	    Icon2 = new QPixmap();
+	    Icon2->load(iconName);
+	}
+	but[A8_BUTTON_INDEX] = new BtButton(this, "np2");
+	but[A8_BUTTON_INDEX]->setGeometry(MAX_WIDTH - 60, MAX_HEIGHT - 60, 60, 60);
+	but[A8_BUTTON_INDEX]->setPixmap(*Icon1);
+	if (Icon2)
+	    but[A8_BUTTON_INDEX]->setPressedPixmap(*Icon2);
+	delete Icon1;
+	if(Icon2)
+	    delete Icon2;
+    } else
+	but[A8_BUTTON_INDEX] = NULL;
     cond_time = new QDateTime(QDateTime::currentDateTime());
     cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
     ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
@@ -332,13 +343,26 @@ void scenEvo_cond_h::mostra()
     //disconnect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(Closed()));
     //disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(Closed()));
     //connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(Closed()));
-    connect( but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
-    if(getImg(3)[0] == 0) 
+    if(but[A6_BUTTON_INDEX])
+	connect( but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
+    if(getImg(3)[0] == 0) {
 	// cimg4 is empty
-	connect( but[A8_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Prev()));
-    else {
-	connect( but[A7_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Prev()));
-	connect( but[A8_BUTTON_INDEX], SIGNAL(released()), this, SLOT(Next()));
+	if(but[A8_BUTTON_INDEX]) {
+	    qDebug("connecting A8 to Prev");
+	    connect( but[A8_BUTTON_INDEX], SIGNAL(released()), 
+		     this, SLOT(Prev()));
+	}
+    } else {
+	if(but[A7_BUTTON_INDEX]) {
+	    qDebug("connecting A7 to Prev");
+	    connect( but[A7_BUTTON_INDEX], SIGNAL(released()), 
+		     this, SLOT(Prev()));
+	}
+	if(but[A8_BUTTON_INDEX]) {
+	    qDebug("connecting A8 to Next");
+	    connect( but[A8_BUTTON_INDEX], SIGNAL(released()), 
+		     this, SLOT(Next()));
+	}
     }
 }
 
@@ -404,7 +428,8 @@ void scenEvo_cond_h::setEnabled(bool e)
 {
     qDebug("scenEvo_cond_h::setEnabled(%d)", e);
     for(int i=0; i<8; i++)
-	but[i]->setEnabled(e);
+	if(but[i])
+	    but[i]->setEnabled(e);
 }
 
 void scenEvo_cond_h::save()
@@ -447,6 +472,7 @@ scenEvo_cond_d::scenEvo_cond_d(QWidget *parent, char *name) :
 
 void scenEvo_cond_d::set_descr(const char *d)
 {
+    qDebug("scenEvo_cond_d::set_descr(%s)", d);
     *descr = d;
 }
 
@@ -475,10 +501,13 @@ const char *scenEvo_cond_d::getDescription(void)
 void scenEvo_cond_d::mostra()
 {
     qDebug("scenEvo_cond_d::mostra()");
+    char tmp[100];
     for (uchar idx=0; idx < 8; idx++)
 	if(but[idx])
 	    but[idx]->show();   
     area1_ptr->show();
+    sprintf(tmp, "Descr: %s", descr->ascii());
+    area2_ptr->setText(tmp);
     area2_ptr->show();
     if(actual_condition)
 	actual_condition->show();
@@ -518,6 +547,10 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
     QPixmap* Icon1;
     QPixmap* Icon2;
     char iconName[MAX_PATH];
+    if(!getImg(icon_index)[0]) {
+	but[button_index] = NULL;
+	return;
+    }
     Icon1 = new QPixmap();
     getPressName((char *)getImg(icon_index), iconName, sizeof(iconName));
     if(QFile::exists(getImg(icon_index))) {
@@ -550,6 +583,8 @@ void scenEvo_cond_d::SetIcons()
     area2_ptr = new BtLabel(this, "Area2");
     area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, 
 			   TEXT_X_DIM, TEXT_Y_DIM);
+    area2_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    area2_ptr->setAlignment(AlignHCenter|AlignVCenter);
     BtButton *b = new BtButton(this, "Up button");
     but[A3_BUTTON_INDEX] = b;
     b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
@@ -694,7 +729,6 @@ bool device_condition::show_OFF_on_zero()
 
 int device_condition::get_condition_value(void)
 {
-  qDebug("URCHISSIMO: returning %d\n", cond_value);
     return cond_value;
 }
 
@@ -705,13 +739,12 @@ int device_condition::set_condition_value(int v)
     if(v < get_min())
 	v = get_min();
     cond_value = v;
-    return v;
 }
 
 int device_condition::set_condition_value(QString s)
 {
-    qDebug("device_condition::set_condition_value");
-    return set_condition_value(s.toInt());
+    qDebug("device_condition::set_condition_value (%s)", s.ascii());
+    set_condition_value(s.toInt());
 }
 
 void device_condition::get_condition_value(QString& out)
@@ -735,9 +768,9 @@ void device_condition::Draw()
     get_unit(u);
     int v = get_current_value();
     if(show_OFF_on_zero() && !v)
-    	sprintf(tmp, "OFF");
+	sprintf(tmp, "OFF");
     else
-	    sprintf(tmp, "%d%s", v, u.ascii());
+	sprintf(tmp, "%d%s", v, u.ascii());
     ((QLabel *)frame)->setText(tmp);
 }
 
@@ -779,15 +812,11 @@ int device_condition::get_current_value()
 
 int device_condition::set_current_value(int v)
 {
-  qDebug("URCO : v = %d\n", v);
     if(v > get_max())
 	v = get_max();
-    qDebug("URCO1 : v = %d\n", v);
     if(v < get_min())
 	v = get_min();
-    qDebug("URCO2 : v = %d\n", v);
     current_value = v;
-    qDebug("URCO3 : current_value = %d\n", current_value);
     return current_value;
 }
 
@@ -952,21 +981,13 @@ device_condition_dimming::device_condition_dimming(QWidget *parent,
 						   char *name, QString *c) :
     device_condition(parent, c)
 {
-#if 0
-    QLCDNumber *l = new QLCDNumber(parent, name);
-    l->setFrameStyle( QFrame::Plain );
-    l->setLineWidth(0);
-    l->setNumDigits(2);
-    l->setSegmentStyle(QLCDNumber::Flat);    
-#else
+    qDebug("device_condition_dimming::device_condition_dimming(%s)",
+	   c->ascii());
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
     l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
-#endif
     frame = l;
-    device_condition_dimming::set_condition_value(*c);
-    qDebug("^^^^^^ condition value is %d\n", 
-	   device_condition::get_condition_value());
+    set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
     // A dimmer is actually a light
     dev = new light(QString(""));
@@ -987,32 +1008,6 @@ int device_condition_dimming::get_max()
 int device_condition_dimming::get_step()
 {
     return 10;
-}
-
-void device_condition_dimming::Down()
-{
-    qDebug("device_condition_dimming::Down()");
-    int val = get_current_value();
-    if(val > 20)
-      val -= get_step();
-    else
-      val -= 20;
-    set_current_value(val);
-    Draw();
-    show();
-}
-
-void device_condition_dimming::Up()
-{
-    qDebug("device_condition_dimming::Up()");
-    int val = get_current_value();
-    if(val >= 20)
-      val += get_step();
-    else
-      val += 20;
-    set_current_value(val);
-    Draw();
-    show();
 }
 
 void device_condition_dimming::get_unit(QString& out)
@@ -1036,9 +1031,6 @@ void device_condition_dimming::Draw()
 
 int device_condition_dimming::set_condition_value(QString s)
 {
-    int v = s.toInt() * 10;
-    int w = atoi(s.ascii()) * 10;
-    qDebug("******* URCA : v = %d, w = %d\n", v, w);
     return device_condition::set_condition_value(s.toInt() * 10);
 }
 
@@ -1153,7 +1145,7 @@ void device_condition_volume::Draw()
 
 int device_condition_volume::set_condition_value(QString s)
 {
-    return set_current_value(s.toInt() - 1);
+    return device_condition::set_condition_value(s.toInt() - 1);
 }
 
 void device_condition_volume::get_condition_value(QString& out)
@@ -1271,7 +1263,7 @@ int device_condition_temp::set_condition_value(QString s)
 {
     bool neg = s[0] == '1';
     int val = (s.right(3)).toInt();
-    return set_current_value(neg ? -val : val);
+    return device_condition::set_condition_value(neg ? -val : val);
 }
 
 void device_condition_temp::get_condition_value(QString& out)

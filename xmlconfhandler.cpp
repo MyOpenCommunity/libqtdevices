@@ -27,13 +27,14 @@ unsigned char tipoData=0;
 /*******************************************
 *
 *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
                                diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG,\
                                QColor* bg, QColor* fg1, QColor *fg2)
 {
     home=h;
     specPage=sP;
     scenari_evoluti = se;
+    videocitofonia = vc;
     illumino=i;
     scenari=s;
     carichi=c;
@@ -99,8 +100,9 @@ void xmlconfhandler::set_page_item_defaults()
     page_item_cond_list->clear();
     page_item_what = "";
     page_item_descr = "";
-    page_item_what = "";
     page_item_where = "";
+    page_item_key = "";
+    page_item_light = "";
     page_icon = "";
     page_item_who = "";
     page_item_type = "0";
@@ -243,6 +245,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                         case SCENARI:
                         case IMPOSTAZIONI: 				  // addbutton normali
 			case SCENARI_EVOLUTI:
+			case VIDEOCITOFONIA:
                             (*home)->addButton(sottomenu_left,sottomenu_top,(char *)sottomenu_icon_name.ascii(), (char)sottomenu_id); break;
                             //  Home->addButton(160,125,ICON_IMPOSTAZIONI_80 ,IMPOSTAZIONI);
                             //			qWarning("ADDBUTTON NORMALE");
@@ -277,9 +280,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                     //
                     // Aggiungo gli item delle pagine
                     //
-                    
-                    
-                    if ( ( CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty() )
+                    if ( ( CurTagL4.startsWith("device") || CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty() )
                     {
                         sottoMenu *pageAct=NULL;
                         qDebug("INSERTED ITEM:ID %d",page_item_id);
@@ -343,13 +344,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                                 //             qDebug("scenari");
                             }
 			case SCENARI_EVOLUTI:
-			  if(!pageAct)
-			    pageAct= (*scenari_evoluti);
-			  qDebug("SCENARI_EVOLUTI: %s %s %s %s",
-				 (char*)page_item_list_img->at(0)->ascii(),
-				 (char*)page_item_list_img->at(1)->ascii(),
-				 (char*)page_item_list_img->at(2)->ascii(),
-				 (char*)page_item_list_img->at(3)->ascii());
+			    if(!pageAct)
+				pageAct= (*scenari_evoluti);
+			case VIDEOCITOFONIA:
+			    if(!pageAct)
+				pageAct = (*videocitofonia);
                         case IMPOSTAZIONI:
                             if (!pageAct)
                             {
@@ -389,7 +388,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             {
                                     pnt=datiGen;
                                 }
-                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action)  ;
+                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key)  ;
 			    page_item_cond_list->clear();
                             break;			   
                         case ANTIINTRUSIONE:
@@ -619,6 +618,24 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*scenari_evoluti,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari_evoluti,SLOT(freezed(bool)));
                             break;
+			case VIDEOCITOFONIA:
+			    qDebug("******* videocitofonia = %p ", *videocitofonia);
+			    (*videocitofonia)->forceDraw();
+			    QObject::connect(*videocitofonia,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+			     QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*videocitofonia,SIGNAL(gestFrame(char *)));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+                            QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showFullScreen()));
+                            QObject::connect(*videocitofonia,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)      
+                            QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(show()));
+                            QObject::connect(*videocitofonia,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                    
+                            QObject::connect(*videocitofonia,SIGNAL(Closed()),*videocitofonia,SLOT(hide()));
+                            QObject::connect(*videocitofonia,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+                            QObject::connect(*videocitofonia,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
+                            QObject::connect(BtM,SIGNAL(freeze(bool)),*videocitofonia,SLOT(freezed(bool)));
+                            break;
                         case SPECIAL:    
                             		//	qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
                             //(*specPage)->draw();
@@ -645,9 +662,14 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			      CurTagL5.startsWith("cond") && 
 			      CurTagL6.isEmpty()) {
 		      if(page_item_cond) {
-			  page_item_cond->SetIcons();
-			page_item_cond_list->append(page_item_cond);
-			page_item_cond = NULL;
+			  if(!(page_item_cond->getVal())) {
+			      // Value is 0, condition has to be deleted
+			      delete page_item_cond;
+			  } else {
+			      page_item_cond->SetIcons();
+			      page_item_cond_list->append(page_item_cond);
+			  }
+			  page_item_cond = NULL;
 		      }
 		    }
                 } //  if (CurTagL3.startsWith("page"))
@@ -862,6 +884,12 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 pageAct=*scenari_evoluti;
                                 //				qWarning("SCENARI_EVOLUTI new.- .- . -. -.- .- -. .-.");
 				break;
+			    case VIDEOCITOFONIA:
+				*videocitofonia = new sottoMenu (NULL, "VIDEOCITOFONIA");
+				(*videocitofonia)->setBGColor(Background);
+				(*videocitofonia)->setFGColor(Foreground);
+				pageAct=*videocitofonia;
+				break;
                             case SPECIAL:	    
                                  qDebug("!");
                                 (*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
@@ -873,24 +901,25 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 //				qWarning("SPECIAL new.- .- . -.-  .- .-");
                                 break;
                             } // switch (page_id)
-                            
                             pageAct->hide();
                             //	  pageAct->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
                             //	  pageAct->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
                             if (idPageDefault==page_id)
                                 *pagDefault=pageAct;	  
                             
-                            
-                            
                         } // if (!CurTagL4.compare("id"))
                 else if (!CurTagL4.compare("descr"))
                 {
                             page_descr = qValue;
 		}
-                else if (CurTagL4.startsWith("item"))
+                else if (CurTagL4.startsWith("item") || 
+			 CurTagL4.startsWith("device"))
                 {
                             CurTagL4_copy=CurTagL4;
-                            CurTagL4_copy.remove("item");
+			    if(CurTagL4.startsWith("item"))
+				CurTagL4_copy.remove("item");
+			    else
+				CurTagL4_copy.remove("device");
                             itemNum=CurTagL4_copy.toInt( &ok, 10 );
                             if (!CurTagL5.compare("id"))
                             {
@@ -907,7 +936,11 @@ bool xmlconfhandler::characters( const QString & qValue)
                             else if (!CurTagL5.compare("where"))
                                 page_item_where = qValue;
                             else if (!CurTagL5.compare("what"))
-                                page_item_what = qValue;	  
+                                page_item_what = qValue;	
+			    else if (!CurTagL5.compare("light"))
+				page_item_light = qValue;
+			    else if (!CurTagL5.compare("key"))
+				page_item_key = qValue;
                             else if (CurTagL5.startsWith("element"))
                             {
                                     if (!CurTagL6.compare("where"))
@@ -973,21 +1006,29 @@ bool xmlconfhandler::characters( const QString & qValue)
 					   qValue.ascii());
 				    ch->set_m(qValue.ascii());
 				} else if(!CurTagL6.compare("cimg1")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    ch->setImg(0, tmp);
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					ch->setImg(0, tmp);
+				    }
 				} else if(!CurTagL6.compare("cimg2")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    ch->setImg(1, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					ch->setImg(1, tmp.ascii());
+				    }
 				} else if(!CurTagL6.compare("cimg3")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    ch->setImg(2, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					ch->setImg(2, tmp.ascii());
+				    }
 				} else if(!CurTagL6.compare("cimg4")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    ch->setImg(3, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					ch->setImg(3, tmp.ascii());
+				    }
 				} 
 			    }
 			    else if(!CurTagL5.compare("condDevice")) 
@@ -999,38 +1040,121 @@ bool xmlconfhandler::characters( const QString & qValue)
 				scenEvo_cond_d *cd = (scenEvo_cond_d *)
 				    page_item_cond;
 				if(!CurTagL6.compare("value")) {
-				    cd->setVal(atoi(qValue.ascii()));
+				    int v = qValue.toInt();
+				    cd->setVal(v);
 				} else if(!CurTagL6.compare("descr")) {
 				    cd->set_descr(qValue.ascii());
 				} else if(!CurTagL6.compare("where")) {
 				    cd->set_where(qValue.ascii());
-				} else if(!CurTagL6.compare("trigger")) {
+				} else if(!CurTagL6.compare("trigger")){
 				    cd->set_trigger(qValue.ascii());
 				} else if(!CurTagL6.compare("cimg1")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    cd->setImg(0, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					cd->setImg(0, tmp.ascii());
+				    }
 				} else if(!CurTagL6.compare("cimg2")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    cd->setImg(1, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					cd->setImg(1, tmp.ascii());
+				    }
 				} else if(!CurTagL6.compare("cimg3")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    cd->setImg(2, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					cd->setImg(2, tmp.ascii());
+				    }
 				} else if(!CurTagL6.compare("cimg4")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    cd->setImg(3, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					cd->setImg(3, tmp.ascii());
+				    }
 				} else if(!CurTagL6.compare("cimg5")) {
-				    QString tmp(IMG_PATH);
-				    tmp.append(qValue.ascii());
-				    cd->setImg(4, tmp.ascii());
+				    if(qValue != "") {
+					QString tmp(IMG_PATH);
+					tmp.append(qValue.ascii());
+					cd->setImg(4, tmp.ascii());
+				    }
 				} 
 			    } else if(!CurTagL5.compare("action")) {
 				if(!CurTagL6.compare("open")) {
 				    page_item_action = qValue;
 				    qDebug("action = %s", qValue.ascii());
+				}
+			    } else if(!CurTagL5.compare("unable")) {
+				if(!CurTagL6.compare("value")) {
+				    if(!qValue.compare("0")) {
+					par1 = 0;
+					QString *s = new QString("");
+					page_item_list_txt->insert(0, s);
+					s = new QString("");
+					page_item_list_img->insert(0, s);
+				    } else
+					par1 = 1;
+				} else if(!CurTagL6.compare("open") && par1) {
+				    QString *s = new QString(qValue.ascii());
+				    page_item_list_txt->insert(0, s);
+				} else if(CurTagL6.startsWith("cimg") && par1){
+				    QString *s = new QString(IMG_PATH);
+				    s->append(qValue);
+				    page_item_list_img->insert(0, s);
+				}
+			    } else if(!CurTagL5.compare("disable")) {
+				if(!CurTagL6.compare("value")) {
+				    if(!qValue.compare("0")) {
+					QString *s = new QString("");
+					page_item_list_txt->insert(1, s);
+					s = new QString("");
+					page_item_list_img->insert(1, s);
+					par1 = 0;
+				    } else
+					par1 = 1;
+				} else if(!CurTagL6.compare("open") && par1) {
+				    QString *s = new QString(qValue.ascii());
+				    page_item_list_txt->insert(1, s);
+				} else if(CurTagL6.startsWith("cimg") && par1){
+				    QString *s = new QString(IMG_PATH);
+				    s->append(qValue);
+				    page_item_list_img->insert(1, s);
+				}
+			    } else if(!CurTagL5.compare("start")) {
+				if(!CurTagL6.compare("value")) {
+				    if(!qValue.compare("0")) {
+					QString *s = new QString("");
+					page_item_list_txt->insert(2, s);
+					s = new QString("");
+					page_item_list_img->insert(2, s);
+					par1 = 0;
+				    } else
+					par1 = 1;
+				} else if(!CurTagL6.compare("open") && par1) {
+				    QString *s = new QString(qValue.ascii());
+				    page_item_list_txt->insert(2, s);
+				} else if(CurTagL6.startsWith("cimg") && par1){
+				    QString *s = new QString(IMG_PATH);
+				    s->append(qValue);
+				    page_item_list_img->insert(2, s);
+				}
+			    } else if(!CurTagL5.compare("stop")) {
+				if(!CurTagL6.compare("value")) {
+				    if(!qValue.compare("0")) {
+					QString *s = new QString("");
+					page_item_list_txt->insert(3, s);
+					s = new QString("");
+					page_item_list_img->insert(3, s);
+					par1 = 0;
+				    } else
+					par1 = 1;
+				} else if(!CurTagL6.compare("open") && par1) {
+				    QString *s = new QString(qValue.ascii());
+				    page_item_list_txt->insert(3, s);
+				} else if(CurTagL6.startsWith("cimg") && par1){
+				    QString *s = new QString(IMG_PATH);
+				    s->append(qValue);
+				    page_item_list_img->insert(3, s);
 				}
 			    }
                         } // if (!CurTagL4.startsWith("item"))
@@ -1058,7 +1182,7 @@ bool xmlconfhandler::characters( const QString & qValue)
                                     sValue.prepend(IMG_PATH);
                                     page_item_list_img->append(new QString(sValue));
                                 }		
-                        }   	 
+		}  //else if (!CurTagL4.compare("command"))
             } // else if (CurTagL4.startsWith("page"))
         } // if (!CurTagL2.startsWith("displaypages"))
         else if (!CurTagL2.compare("setup"))
@@ -1085,6 +1209,7 @@ bool xmlconfhandler::characters( const QString & qValue)
             }
         }
     } // if (!CurTagL1.startsWith("configuratore"))
+
     
     return TRUE;
 }

@@ -82,12 +82,15 @@ public:
   par4:     one more possible parameter
   lt : a pointer to a list of QStrings describing the list of times for new timed actuators
   lc : a pointer to a list of pointers to scenEvo_cond (advanced scenarios management conditions
+  action : action string
+  light : light field (for video door phone items)
+  key : key field (for video door phone items)
 */     
    int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,\
 		char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
 		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0, int par4=0, 
 QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, 
-QString action="");
+QString action="", QString light="", QString key="");
 /*!
   \brief Initializes all the objects in the list calling init() after a certain time
 */      

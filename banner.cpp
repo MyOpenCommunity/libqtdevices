@@ -241,6 +241,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
      if (sxIcon)
     {
 	getPressName((char*)sxIcon, &pressIconName[0],sizeof(pressIconName));
+	qDebug("Icon[0] <- %s", sxIcon);
 	Icon[0]->load(sxIcon);
 	if (QFile::exists(pressIconName))
 	{
@@ -251,6 +252,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
      if (dxIcon)
      {
 	getPressName((char*)dxIcon, &pressIconName[0],sizeof(pressIconName));
+	qDebug("Icon[1] <- %s", dxIcon);
 	Icon[1]->load(dxIcon);
 	if (QFile::exists(pressIconName))
 	{
@@ -261,6 +263,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
       if (centerActiveIcon)
      {
 	getPressName((char*)centerActiveIcon, &pressIconName[0],sizeof(pressIconName));
+	qDebug("Icon[3] <- %s", centerActiveIcon);
 	Icon[3]->load(centerActiveIcon);
 	if (QFile::exists(pressIconName))
 	{
@@ -271,6 +274,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
        if (centerInactiveIcon)
      {
 	getPressName((char*)centerInactiveIcon, &pressIconName[0],sizeof(pressIconName));
+	qDebug("Icon[2] <- %s", centerInactiveIcon);
 	Icon[2]->load(centerInactiveIcon);
 	if (QFile::exists(pressIconName))
 	{
@@ -476,7 +480,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	strcat(nomeFile,&suff[0]);
 	strcat(nomeFile,strstr(centerActiveIcon,"."));
 	Icon[4+idy*2]->load(nomeFile);	
-	qDebug("Icon[%d] <- %s", 4+idy*2, nomeFile);
+	qDebug("Lev = %d, Icon[%d] <- %s", idx, 4+idy*2, nomeFile);
 	if (inactiveLevel)
 	{
 	    Icon[22+idy*2]=new QPixmap();
@@ -498,7 +502,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	strcat(nomeFile,&suff[0]);
 	strcat(nomeFile,strstr(centerActiveIcon,"."));
 	Icon[5+idy*2]->load(nomeFile);	
-	qDebug("Icon[%d] <- %s", 5+idy*2, nomeFile);
+	qDebug("Lev = %d, Icon[%d] <- %s", idx, 5+idy*2, nomeFile);
 	if (inactiveLevel)
 	{
 	    Icon[23+idy*2]=new QPixmap();

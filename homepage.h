@@ -142,6 +142,8 @@ private slots:
   void	Schedulazioni();
 /*! \brief Emitted when the \a advanced scenarios management(sottoMenu) is required */
   void ScenariEvoluti();
+/*! \brief Emitted when the \a video door phone management(sottoMenu) is required */
+  void Videocitofonia();
 private:
 // QTimer 	 *orologio;
   timeScript* dataOra;

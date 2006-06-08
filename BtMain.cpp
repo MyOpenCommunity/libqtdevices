@@ -68,7 +68,7 @@ v** Socket
     firstTime=1;
     pagDefault=NULL;
     Home=specPage=NULL;
-    illumino=scenari=carichi=imposta=automazioni=scenari_evoluti=NULL;
+    illumino=scenari=carichi=imposta=automazioni=scenari_evoluti=videocitofonia=NULL;
     termo=NULL;
     difSon=NULL;
     antintr=NULL;
@@ -203,7 +203,7 @@ void BtMain::hom()
    if (QFile::exists("cfg/conf.xml"))
      { 
                     qDebug("scello %d",bg);
-    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen,bg, fg1, fg2);
+    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen,bg, fg1, fg2);
                 qDebug("scello %d",bg);
     setBackgroundColor(*bg);
      for (int idx=0;idx<12;idx++)
@@ -261,6 +261,8 @@ void BtMain::init()
         termo->inizializza();
     if(scenari_evoluti)
 	scenari_evoluti->inizializza();
+    if(videocitofonia)
+	videocitofonia->inizializza();
     //    rearmWDT();
     
     struct sysinfo info;
@@ -446,6 +448,8 @@ void BtMain::gesScrSav()
                         specPage -> hide();
 		    if (scenari_evoluti)
 			scenari_evoluti->hide();
+		    if (videocitofonia)
+			videocitofonia->hide();
                     if (pagDefault)
                         pagDefault -> showFullScreen();
                 }

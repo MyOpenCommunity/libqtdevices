@@ -117,7 +117,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 				 connect(b1, SIGNAL(clicked()), this, SLOT(specFunz()));
 			     break;
     case SCENARI_EVOLUTI: connect(b1, SIGNAL(clicked()), this, SIGNAL(ScenariEvoluti())); break;
-      
+    case VIDEOCITOFONIA: connect(b1,SIGNAL(clicked()),this, SIGNAL(Videocitofonia() )); break;
 	case BACK: connect(b1, SIGNAL(clicked()), this, SIGNAL(Close()));break;			
     }
 }

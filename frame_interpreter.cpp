@@ -254,7 +254,7 @@ void frame_interpreter_lights::set_status(device_status_dimmer *ds, int lev)
 void frame_interpreter_lights::handle_frame(openwebnet m, 
 					    device_status_dimmer *ds)
 {
-    qDebug("frame_interpreter_dimmer::handle_frame(), dimmer");
+    qDebug("frame_interpreter_lights::handle_frame(), dimmer");
     stat_var sv(stat_var::LEV);
     if(m.IsNormalFrame()) {
 	int cosa = atoi(m.Extract_cosa());
@@ -385,7 +385,7 @@ void frame_interpreter_lights::set_status(device_status_dimmer100 *ds,
 void frame_interpreter_lights::handle_frame(openwebnet m, 
 					    device_status_dimmer100 *ds)
 {
-    qDebug("frame_interpreter_dimmer::handle_frame(), dimmer 100");
+    qDebug("frame_interpreter_lights::handle_frame(), dimmer 100");
     stat_var lev(stat_var::LEV), speed(stat_var::SPEED);
     if(m.IsNormalFrame()) {
 	int cosa = atoi(m.Extract_cosa());
@@ -511,7 +511,7 @@ void frame_interpreter_lights::set_status(device_status_new_timed *ds,
 void frame_interpreter_lights::handle_frame(openwebnet m, 
 					    device_status_new_timed *ds)
 {
-    qDebug("frame_interpreter_dimmer::handle_frame(), new timed device");
+    qDebug("frame_interpreter_lights::handle_frame(), new timed device");
     stat_var hh(stat_var::HH), mm(stat_var::MM), ss(stat_var::SS);
     if(m.IsNormalFrame()) {
 	int cosa = atoi(m.Extract_cosa());

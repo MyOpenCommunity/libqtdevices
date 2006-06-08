@@ -34,22 +34,24 @@
   1. pointer to \a BtMain object;
   2. pointer to the \a homePage pointer; the homePage is the page populated with buttons activating various functions; 
   3. pointer to \a specialPage pointer; the specialPage is the page with up to three rows with data/clock/temperatures and a special command; 
-  4. pointer to \a lighting subtree (sottoMenu) pointer;
-  5. pointer to \a scenarios subtree (sottoMenu) pointer;
-  6. pointer to \a appliance's control subtree (sottoMenu) pointer;  
-  7. pointer to \a settings subtree (sottoMenu) pointer;  
-  8. pointer to \a automations subtree (sottoMenu) pointer;  
-  9. pointer to \a thermoregulation subtree (sottoMenu) pointer;    
-  10. pointer to \a sound \a diffusion subtree (sottoMenu) pointer;  
-  11. pointer to \a anti-intusion subtree (sottoMenu) pointer;  
-  12. pointer to \a default \a page subtree pointer. The default page is the page shown a minute after the last touch;  
-  13. pointer to commands socket device;
-  14. pointer to monitor socket device;  
-  15. pointer to the page with versions;  
-  16. pointer to \a schedulations subtree (sottoMenu) pointer;  
-  17. pointer to \a background color;    
-  18. pointer to \a foreground color;    
-  19. pointer to \a second \a foreground color;    
+  4. pointer to \a advanced scenario management (sottoMenu) pointer;
+  5. pointer to \a video door phone (sottoMenu) pointer;
+  6. pointer to \a lighting subtree (sottoMenu) pointer;
+  7. pointer to \a scenarios subtree (sottoMenu) pointer;
+  8. pointer to \a appliance's control subtree (sottoMenu) pointer;  
+  9. pointer to \a settings subtree (sottoMenu) pointer;  
+  10. pointer to \a automations subtree (sottoMenu) pointer;  
+  11. pointer to \a thermoregulation subtree (sottoMenu) pointer;    
+  12. pointer to \a sound \a diffusion subtree (sottoMenu) pointer;  
+  13. pointer to \a anti-intusion subtree (sottoMenu) pointer;  
+  14. pointer to \a default \a page subtree pointer. The default page is the page shown a minute after the last touch;  
+  15. pointer to commands socket device;
+  16. pointer to monitor socket device;  
+  17. pointer to the page with versions;  
+  18. pointer to \a schedulations subtree (sottoMenu) pointer;  
+  19. pointer to \a background color;    
+  20. pointer to \a foreground color;    
+  21. pointer to \a second \a foreground color;    
   
   \author Davide
   \date lug 2005
@@ -57,7 +59,7 @@
 class xmlconfhandler : public QXmlDefaultHandler
 {
 public:
-    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
+    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
     
     ~xmlconfhandler();
 /*!
@@ -100,6 +102,8 @@ private:
     QString page_item_descr;
     QString page_item_what;
     QString page_item_where;
+    QString page_item_key;
+    QString page_item_light;
     QString page_icon, page_item_who, page_item_type, page_item_action;
     int page_item_softstart, page_item_softstop;
 
@@ -112,7 +116,6 @@ private:
     
     scenEvo_cond *page_item_cond;
     QPtrList<scenEvo_cond> *page_item_cond_list;
-    
       int	par1, par2,par3, par4;
       unsigned int itemNum;
       QString CurTagL4_copy;
@@ -124,7 +127,7 @@ private:
     homePage **home;
     homePage **specPage;
     sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,
-	**scenari_evoluti;
+	**scenari_evoluti, **videocitofonia;
     termoregolaz **termo;
     diffSonora **difSon;
     antintrusione** antintr;
