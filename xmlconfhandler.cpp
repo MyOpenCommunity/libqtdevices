@@ -62,6 +62,7 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu*
     page_item_list_txt_times = new QPtrList<QString>;
     page_item_cond = NULL;
     page_item_cond_list = new QPtrList<scenEvo_cond>;
+    page_item_unknown = "";
     //qDebug("scello3 %d",bg);
 }
 
@@ -388,7 +389,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             {
                                     pnt=datiGen;
                                 }
-                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key)  ;
+                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key, page_item_unknown)  ;
 			    page_item_cond_list->clear();
                             break;			   
                         case ANTIINTRUSIONE:
@@ -634,6 +635,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*videocitofonia,SIGNAL(Closed()),*videocitofonia,SLOT(hide()));
                             QObject::connect(*videocitofonia,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(*videocitofonia,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
+			    QObject::connect(*videocitofonia,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*videocitofonia,SLOT(freezed(bool)));
                             break;
                         case SPECIAL:    
@@ -803,6 +805,10 @@ bool xmlconfhandler::characters( const QString & qValue)
             //
             else if (CurTagL3.startsWith("page"))
             {
+		if(!CurTagL3.compare("pagevct") && 
+		   !CurTagL4.compare("unknown"))
+		    page_item_unknown = qValue;
+
                 if (!CurTagL4.compare("id"))
                 {
                             QWidget* pageAct=NULL;  
@@ -1084,7 +1090,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 				    page_item_action = qValue;
 				    qDebug("action = %s", qValue.ascii());
 				}
-			    } else if(!CurTagL5.compare("unable")) {
+			    } else if(!CurTagL5.compare("do_enable")) {
 				if(!CurTagL6.compare("value")) {
 				    if(!qValue.compare("0")) {
 					par1 = 0;

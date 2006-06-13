@@ -99,13 +99,33 @@ class frame_interpreter_temperature_probe : public frame_interpreter {
 class frame_interpreter_sound_device : public frame_interpreter {
     Q_OBJECT
  private:
-    //! Set status, lights
+    //! Set status, amplifier
     void set_status(device_status_amplifier *ds, int s);
-    //! Analyze a frame for a pl status
+    //! Analyze a frame
     void handle_frame(openwebnet, device_status_amplifier *);
  public:
     //! Constructor
     frame_interpreter_sound_device(QString, bool, int);
+    //! Returns init message given device status
+    void get_init_message(device_status *, QString&);
+ public slots:
+    //! Receive a frame
+    void handle_frame_handler(char *, QPtrList<device_status> *);
+};
+
+//! Doorphone device frame interpreter
+class frame_interpreter_doorphone_device : public frame_interpreter {
+    Q_OBJECT
+ private:
+    //! Set status, doorphone
+    void set_status(device_status_doorphone *ds, int s);
+    //! Analyze a frame
+    void handle_frame(openwebnet, device_status_doorphone *);
+ public:
+    //! Constructor
+    frame_interpreter_doorphone_device(QString, bool, int);
+    //! Returns true when frame is ours (reimplemented for doorphone dev.)
+    bool is_frame_ours(openwebnet m);
     //! Returns init message given device status
     void get_init_message(device_status *, QString&);
  public slots:

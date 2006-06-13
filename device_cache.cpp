@@ -39,6 +39,22 @@ deviceptr device_cache::get_light(QString w)
     return out;
 }
 
+// Get doorphone device given address
+deviceptr device_cache::get_doorphone_device(QString w)
+{
+    QString k = get_device_key(QString("6"), w);
+    qDebug("device_cache::get_doorphone_device(%s)", k.ascii());
+    deviceptr out = (*this)[k];
+    if(!out) {
+	out = new doorphone_device(w);
+	qDebug("device is not there, creating device %p", out);
+	(*this)[k] = out;
+    }
+    out->get();
+    qDebug("device_cache::get_doorphone_device() returning %p", out);
+    return out;
+}
+
 // Destroy device given key
 void device_cache::put_device(QString k)
 {

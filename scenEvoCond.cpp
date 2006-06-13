@@ -1010,6 +1010,32 @@ int device_condition_dimming::get_step()
     return 10;
 }
 
+void device_condition_dimming::Down()
+{
+    qDebug("device_condition_dimming::Down()");
+    int val = get_current_value();
+    if(val > 20)
+      val -= get_step();
+    else
+      val -= 20;
+    set_current_value(val);
+    Draw();
+    show();
+}
+
+void device_condition_dimming::Up()
+{
+    qDebug("device_condition_dimming::Up()");
+    int val = get_current_value();
+    if(val >= 20)
+      val += get_step();
+    else
+      val += 20;
+    set_current_value(val);
+    Draw();
+    show();
+}
+
 void device_condition_dimming::get_unit(QString& out)
 {
     out = "%";
@@ -1053,9 +1079,15 @@ void device_condition_dimming::status_changed(device_status *ds)
     //qDebug("trigger value is %d", trig_v);
     switch (t) {
     case device_status::LIGHTS:
-	qDebug("Light status variation, ignored");
+	qDebug("Light status variation");
 	ds->read(device_status_light::ON_OFF_INDEX, curr_status);
 	qDebug("status = %d", curr_status.get_val());
+	qDebug("trigger value is %d", trig_v);
+	if(curr_lev.get_val() == trig_v) {
+	    qDebug("Condition triggered");
+	    satisfied = true;
+	} else
+	    satisfied = false;
 	break;
     case device_status::DIMMER:
 	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);

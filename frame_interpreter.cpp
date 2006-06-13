@@ -761,3 +761,96 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	++(*dsi);
     }    
 }
+
+
+// Doorphone device frame interpreter
+
+// Public methods
+frame_interpreter_doorphone_device::
+frame_interpreter_doorphone_device(QString w, bool p, int g) :
+    frame_interpreter(QString("6"), w, p, g)
+{
+    qDebug("frame_interpreter_doorphone_device::"
+	   "frame_interpreter_doorphone_device()");
+}
+
+void frame_interpreter_doorphone_device::
+get_init_message(device_status *s, QString& out)
+{
+    out = QString("");
+}
+
+bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet m)
+{
+    qDebug("frame_interpreter_doorphone_device::is_frame_ours");
+    qDebug("who = %s, where = %s", who.ascii(), where.ascii());
+    char *c = m.Extract_chi();
+    qDebug("msg who = %s, msg where = %s", c, m.Extract_dove());
+    // I posti esterni hanno chi = 8
+    if(!strcmp(c, "8")) {
+	qDebug("who = 8, where = %s", m.Extract_dove());
+	if(where == "ANY") return true;
+	return (atoi(&m.Extract_dove()[1]) + 4000) == where.toInt();
+    }
+#if 0
+    if(strcmp(m.Extract_chi(), who.ascii())) return false ;
+    return !strcmp(m.Extract_dove(), where.ascii());
+#else
+    return false;
+#endif
+}
+
+// Private methods
+void frame_interpreter_doorphone_device::
+set_status(device_status_doorphone *ds, int s)
+{
+    qDebug("frame_interpreter_doorphone_device::set_status"
+	   "(device_status_doorphone, %d)", s);
+    // When we get here, we surely got a call. So trigger a frame event
+    emit(frame_event(ds));
+}
+
+void frame_interpreter_doorphone_device::
+handle_frame(openwebnet m, device_status_doorphone *ds)
+{
+    qDebug("frame_interpreter_doorphone_device::handle_frame");
+    // FIXME: REALLY HANDLE FRAME
+    emit frame_event(ds);
+}
+
+void frame_interpreter_doorphone_device::
+handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+{
+    openwebnet msg_open;
+    qDebug("frame_interpreter_doorphone_device::handle_frame_handler");
+    qDebug("#### frame is %s ####", frame);
+#if 1
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+    if(!is_frame_ours(msg_open))
+	// Discard frame if not ours
+	return;
+#else
+    // PER DEBUG !!!!!!
+    //frame = "*6*9*4000#2##"
+    frame = "*8*9#1#1*21##";
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+    if(!is_frame_ours(msg_open))
+	return;
+#endif
+    QPtrListIterator<device_status> *dsi = 
+	new QPtrListIterator<device_status>(*sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	device_status::type type = ds->get_type();
+	switch (type) {
+	case device_status::DOORPHONE:
+	    handle_frame(msg_open, (device_status_doorphone *)ds);
+	    break;
+	default:
+	    // Do nothing
+	    break;
+	}
+	++(*dsi);
+    }    
+}

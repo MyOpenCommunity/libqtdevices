@@ -93,6 +93,11 @@ void stat_var::invalidate(void)
     _initialized = false ;
 }
 
+void stat_var::force_initialized(void)
+{
+    _initialized = true;
+}
+
 stat_var::~stat_var()
 {
 }
@@ -171,8 +176,23 @@ void device_status::invalidate(void)
 	new QPtrListIterator<stat_var>(vars);
     svi->toFirst();
     stat_var *sv ; 
-    while( ( sv = svi->current() ) != 0)
+    while( ( sv = svi->current() ) != 0) {
 	sv->invalidate();
+	++(*svi);
+    }
+    delete svi;
+}
+
+void device_status::force_initialized(void)
+{
+    QPtrListIterator<stat_var> *svi = 
+	new QPtrListIterator<stat_var>(vars);
+    svi->toFirst();
+    stat_var *sv ; 
+    while( ( sv = svi->current() ) != 0) {
+	sv->force_initialized();
+	++(*svi);
+    }
     delete svi;
 }
 
@@ -235,6 +255,14 @@ device_status_amplifier::device_status_amplifier() :
 	    new stat_var(stat_var::AUDIO_LEVEL, 1, 1, 31, 1));
 }
 
+//! Device status for doorphone devices
+device_status_doorphone::device_status_doorphone() :
+    device_status(DOORPHONE)
+{
+    add_var((int)device_status_doorphone::PENDING_CALL_INDEX,
+	    new stat_var(stat_var::PENDING_CALL, 0, 0, 1, 1));
+}
+
 
 // Device implementation
 
@@ -260,7 +288,7 @@ void device::init(void)
     dsi->toFirst();
     device_status *ds ;
     while( ( ds = dsi->current() ) != 0) {
-	QString msg;
+	QString msg = "";
 	if(ds->initialized()) {
 	    qDebug("device is already initialized");
 	    emit(initialized(ds));
@@ -268,10 +296,14 @@ void device::init(void)
 	    qDebug("getting init message");
 	    interpreter->get_init_message(ds, msg);
 	    qDebug("init message is %s", msg.ascii());
-	    emit(send_frame((char *)msg.ascii()));
+	    if(msg != "")
+		emit(send_frame((char *)msg.ascii()));
+	    else
+		ds->force_initialized();
 	}
 	++(*dsi);
     }
+    qDebug("device::init() end");
 }
 
 void device::set_where(QString w)
@@ -376,6 +408,21 @@ device(QString("16"), w, p, g)
     interpreter = new frame_interpreter_sound_device(w, p, g);
     set_frame_interpreter(interpreter);
     stat->append(new device_status_amplifier());
+    connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
+	    interpreter, 
+	    SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+    connect(interpreter, SIGNAL(frame_event(device_status *)), this, 
+	    SLOT(frame_event_handler(device_status *)));
+}
+
+// Doorphone device implementation
+doorphone_device::doorphone_device(QString w, bool p, int g) : 
+device(QString("6"), w, p, g)
+{
+    qDebug("doorphone_device::doorphone_device()");
+    interpreter = new frame_interpreter_doorphone_device(w, p, g);
+    set_frame_interpreter(interpreter);
+    stat->append(new device_status_doorphone());
     connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
 	    interpreter, 
 	    SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));

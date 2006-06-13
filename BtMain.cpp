@@ -671,6 +671,7 @@ void BtMain::freezed(bool b)
     if (b)
         bloccato=1;
     //qDebug("BLOCCATO   : %d",bloccato);
+    qDebug("BtMain::freezed(%d)", b);
     if  (!b) 
         
     {

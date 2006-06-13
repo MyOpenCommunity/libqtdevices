@@ -21,6 +21,7 @@ class stat_var {
 	   SS,
 	   TEMPERATURE,
 	   AUDIO_LEVEL,
+	   PENDING_CALL,
       } type;
  private:
     type t;
@@ -63,6 +64,8 @@ class stat_var {
     bool initialized(void);
     //! Invalidate variable contents
     void invalidate(void);
+    //! Force initialized state
+    void force_initialized(void);
     //! Destructor
     ~stat_var();
 };
@@ -77,6 +80,7 @@ class device_status {
 	   NEWTIMED,
 	   TEMPERATURE_PROBE, 
 	   AMPLIFIER,
+	   DOORPHONE,
       } type;
  private:
     //! Type
@@ -102,6 +106,8 @@ class device_status {
     bool initialized(void);
     //! Invalidate device status
     void invalidate(void);
+    //! Force initialized status
+    void force_initialized(void);
     //! Destructor
     ~device_status();
 };
@@ -165,6 +171,14 @@ class device_status_amplifier : public device_status {
 	AUDIO_LEVEL_INDEX  = 0,
     } ind;
     device_status_amplifier();
+};
+
+class device_status_doorphone : public device_status {
+ public:
+    enum {
+	PENDING_CALL_INDEX = 0,
+    } ind;
+    device_status_doorphone();
 };
 
 class frame_interpreter;
@@ -252,6 +266,15 @@ class sound_device : public device
  public:
     //! Constructor
     sound_device(QString, bool p=false, int g=-1);
+};
+
+//! Doorphone device
+class doorphone_device : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    doorphone_device(QString, bool p=false, int g=-1);
 };
 
 #endif __DEVICE_H__

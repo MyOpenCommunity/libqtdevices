@@ -85,12 +85,13 @@ public:
   action : action string
   light : light field (for video door phone items)
   key : key field (for video door phone items)
+  unknown : unknown field (for video door phone items
 */     
    int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,\
 		char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
 		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0, int par4=0, 
 QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, 
-QString action="", QString light="", QString key="");
+QString action="", QString light="", QString key="", QString unk="");
 /*!
   \brief Initializes all the objects in the list calling init() after a certain time
 */      

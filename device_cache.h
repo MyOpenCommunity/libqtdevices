@@ -20,6 +20,8 @@ class device_cache : public QMap<QString, deviceptr> {
     device *get_device(QString k = "");
     //! Get light device
     device *get_light(QString where);
+    //! Get doorphone device
+    device *get_doorphone_device(QString where);
     //! Destroy device given key
     void put_device(QString k);
     //! Add already created device to cache. Key is device's who+where

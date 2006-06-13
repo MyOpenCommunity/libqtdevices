@@ -145,13 +145,19 @@ impBeep::impBeep( sottoMenu  *parent,const char *name ,char* val, const char * i
 {   
      strncpy(&iconOn[0], icon1, sizeof(iconOn));
      strncpy(&iconOff[0], icon2, sizeof(iconOff));
-     SetIcons( &iconOff[0],1);
 //     setBeep(FALSE);//non va bene, bisogna prendere il valore di partenza dal costruttore
      connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));      
-     if (strcmp(val,"1"))
-	 setBeep(FALSE,FALSE);
-     else
-	 setBeep(TRUE,FALSE);
+     SetIcons( &iconOff[0],1);
+     SetIcons( &iconOn[0],1);
+     bool on = !strcmp(val, "1");
+     if (!on) {
+	 setBeep(FALSE,TRUE);
+	 SetIcons(uchar(0), &iconOff[0]);
+     } else {
+	 setBeep(TRUE,TRUE);
+	 SetIcons(uchar(1), &iconOn[0]);
+     }
+     Draw();
 }
 
 void impBeep::toggleBeep()

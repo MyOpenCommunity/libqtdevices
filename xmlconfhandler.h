@@ -104,6 +104,7 @@ private:
     QString page_item_where;
     QString page_item_key;
     QString page_item_light;
+    QString page_item_unknown;
     QString page_icon, page_item_who, page_item_type, page_item_action;
     int page_item_softstart, page_item_softstop;
 
