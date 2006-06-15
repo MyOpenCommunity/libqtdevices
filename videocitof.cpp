@@ -269,8 +269,12 @@ void call_notifier_manager::set_unknown_call_notifier(call_notifier *cn)
 {
     qDebug("call_notifier_manager::set_unknown_call_notifier");
     unknown_station_notifier = cn;
+#if 0
+    // Don't pass frames to unknown station notifier via signal
+    // call_notifier_manager::gestFrame will do that via direct call
     connect(this, SIGNAL(frame_available(char *)),
 	    cn, SLOT(frame_available_handler(char *)));
+#endif
     connect(cn, SIGNAL(frame_captured(call_notifier *)),
 	    this, SLOT(frame_captured_handler(call_notifier *)));
     connect(cn, SIGNAL(closed(call_notifier *)), 
@@ -293,6 +297,7 @@ void call_notifier_manager::gestFrame(char *f)
 void call_notifier_manager::frame_captured_handler(call_notifier *cn)
 {
     qDebug("frame_captured_handler()");
+    known_station = true;
     // A frame has been captured by a call notifier (cn)
     cn->showFullScreen();
     emit(frame_captured(cn));

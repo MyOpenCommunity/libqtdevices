@@ -786,18 +786,29 @@ bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet m)
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     char *c = m.Extract_chi();
     qDebug("msg who = %s, msg where = %s", c, m.Extract_dove());
+    QString cosa = m.Extract_cosa();
+    qDebug("cosa = %s", cosa.ascii());
+    if(!cosa.startsWith("9")) return false;
     // I posti esterni hanno chi = 8
-    if(!strcmp(c, "8")) {
-	qDebug("who = 8, where = %s", m.Extract_dove());
-	if(where == "ANY") return true;
-	return (atoi(&m.Extract_dove()[1]) + 4000) == where.toInt();
+    if(strcmp(c, "8")) return false;
+    if(where == "ANY") return true;
+    int d ;
+    QString w = &m.Extract_dove()[1];
+    qDebug("w = %s, w.toInt = %d", w.ascii(), w.toInt());
+    int p;
+    if((p = w.find('#')) >= 0) {
+	// FIXME: CHECK THIS
+	d = 4000 + w.left(p).toInt();
+	char tmp[20];
+	sprintf(tmp, "%d%s", d, w.right(w.length() - p).ascii());
+	qDebug("BAH: %s", tmp);
+	return !where.compare(tmp) ;
+    } else {
+	d = w.toInt() + 4000;
+	qDebug("d = %d, where.toInt() = %d", d, where.toInt());
+	return (d == where.toInt());
     }
-#if 0
-    if(strcmp(m.Extract_chi(), who.ascii())) return false ;
-    return !strcmp(m.Extract_dove(), where.ascii());
-#else
-    return false;
-#endif
+    // NEVER REACHED
 }
 
 // Private methods
@@ -832,7 +843,9 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 #else
     // PER DEBUG !!!!!!
     //frame = "*6*9*4000#2##"
-    frame = "*8*9#1#1*21##";
+    //frame = "*8*9#1#1*20#2##";
+    frame = "*8*9#1#1*21#2##" ;
+    //frame = "*8*1#1#4*11##";
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
     if(!is_frame_ours(msg_open))
 	return;
