@@ -23,7 +23,7 @@
 #include "main.h"
 
  
-tastiera::tastiera( QWidget *parent, const char *name )
+tastiera::tastiera( QWidget *parent, const char *name, int line )
         : QWidget( parent, name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -51,20 +51,20 @@ tastiera::tastiera( QWidget *parent, const char *name )
     scrittaLabel = new BtLabel(this,"PASSWORD:");
 
 
-    unoBut->setGeometry(POSX1,LINE*0,BUT_DIM,BUT_DIM);
-    dueBut->setGeometry(POSX2,LINE*0,BUT_DIM,BUT_DIM);
-    treBut->setGeometry(POSX3,LINE*0,BUT_DIM,BUT_DIM);
-    quatBut->setGeometry(POSX1,LINE*1,BUT_DIM,BUT_DIM);
-    cinBut->setGeometry(POSX2,LINE*1,BUT_DIM,BUT_DIM);
-    seiBut->setGeometry(POSX3,LINE*1,BUT_DIM,BUT_DIM);
-    setBut->setGeometry(POSX1,LINE*2,BUT_DIM,BUT_DIM);
-    ottBut->setGeometry(POSX2,LINE*2,BUT_DIM,BUT_DIM);
-    novBut->setGeometry(POSX3,LINE*2,BUT_DIM,BUT_DIM);
-    zeroBut->setGeometry(POSX2,LINE*3,BUT_DIM,BUT_DIM);
-    okBut->setGeometry(POSX3,LINE*3,BUT_DIM,BUT_DIM);        
-    cancBut->setGeometry(POSX1, LINE*3,BUT_DIM,BUT_DIM);    
-    scrittaLabel->setGeometry(0,LINE*4,MAX_WIDTH/2,LINE);	       
-    digitLabel->setGeometry(MAX_WIDTH/2,LINE*4,MAX_WIDTH/2,LINE);    
+    unoBut->setGeometry(POSX1,line*0,BUT_DIM,BUT_DIM);
+    dueBut->setGeometry(POSX2,line*0,BUT_DIM,BUT_DIM);
+    treBut->setGeometry(POSX3,line*0,BUT_DIM,BUT_DIM);
+    quatBut->setGeometry(POSX1,line*1,BUT_DIM,BUT_DIM);
+    cinBut->setGeometry(POSX2,line*1,BUT_DIM,BUT_DIM);
+    seiBut->setGeometry(POSX3,line*1,BUT_DIM,BUT_DIM);
+    setBut->setGeometry(POSX1,line*2,BUT_DIM,BUT_DIM);
+    ottBut->setGeometry(POSX2,line*2,BUT_DIM,BUT_DIM);
+    novBut->setGeometry(POSX3,line*2,BUT_DIM,BUT_DIM);
+    zeroBut->setGeometry(POSX2,line*3,BUT_DIM,BUT_DIM);
+    okBut->setGeometry(POSX3,line*3,BUT_DIM,BUT_DIM);        
+    cancBut->setGeometry(POSX1, line*3,BUT_DIM,BUT_DIM);    
+    scrittaLabel->setGeometry(0,line*4,MAX_WIDTH/2,line);	       
+    digitLabel->setGeometry(MAX_WIDTH/2,line*4,MAX_WIDTH/2,line);    
 
  
     QPixmap *Icon, *pressIcon;
@@ -237,6 +237,7 @@ void tastiera::setFGColor(int r, int g, int b)
 
 void tastiera::setBGColor(QColor c)
 {	
+    qDebug("tastiera::setBGColor");
     setPaletteBackgroundColor( c );    
  
     unoBut->setPaletteBackgroundColor(c);
@@ -256,6 +257,7 @@ void tastiera::setBGColor(QColor c)
 }
 void tastiera::setFGColor(QColor c)
 {
+    qDebug("tastiera::setFGColor");
     setPaletteForegroundColor( c );
 
     unoBut->setPaletteForegroundColor(c);
@@ -394,3 +396,64 @@ void tastiera::setMode(char m)
 }
 
 
+// tastiera_con_stati implementation
+tastiera_con_stati::tastiera_con_stati(bool s[8], 
+				       QWidget *parent, const char *name) : 
+    tastiera(parent, name, MAX_HEIGHT/6)
+{
+    int i, x;
+    char tmp[2] = "1";
+    for(i=0, x=POSX1_SMALL; i<8; i++, x+=BUT_SMALL_DIM) {
+	// Create button
+	stati[i] = new BtButton(this, "bottone stato");	
+	stati[i]->setEnabled(0);
+	stati[i]->setFont( QFont( "helvetica", 16, QFont::Bold ) );
+	stati[i]->setText(tmp);
+	//stati[i]->setAlignment(AlignHCenter|AlignVCenter);
+	tmp[0]++;
+	stati[i]->setGeometry(x, (MAX_HEIGHT/6)*4 + MAX_HEIGHT/12, 
+			      BUT_SMALL_DIM,  
+			      BUT_SMALL_DIM);
+	stati[i]->show();
+	st[i] = s[i];
+    }
+
+    scrittaLabel->setGeometry(0,(MAX_HEIGHT/6)*5,MAX_WIDTH/2,(MAX_HEIGHT/6));	       
+    digitLabel->setGeometry(MAX_WIDTH/2,(MAX_HEIGHT/6)*5,MAX_WIDTH/2,
+			    MAX_HEIGHT/6); 
+    scrittaLabel->show();       
+    digitLabel->show();   
+ }
+
+void tastiera_con_stati::setBGColor(QColor c)
+{
+    int i;
+    qDebug("tastiera_con_stati::setBGColor");
+    for(i=0; i<8; i++)
+	stati[i]->setPaletteBackgroundColor(c);
+    tastiera::setBGColor(c);
+}
+
+void tastiera_con_stati::setFGColor(QColor c)
+{
+    int i;
+    qDebug("tastiera_con_stati::setFGColor");
+    for(i=0; i<8; i++)
+	stati[i]->setPaletteForegroundColor(c);
+    tastiera::setFGColor(c);
+}
+
+void tastiera_con_stati::show()
+{
+    for(int i=0; i<8; i++) {
+	if(st[i]) {
+	    QColor fc = stati[i]->paletteForegroundColor();
+	    stati[i]->setPaletteForegroundColor
+		(
+		    stati[i]->paletteBackgroundColor()
+		    );
+	    stati[i]->setPaletteBackgroundColor(fc);
+	}
+    }
+    QWidget::show();
+}

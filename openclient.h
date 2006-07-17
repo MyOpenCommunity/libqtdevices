@@ -54,7 +54,9 @@ class Client  : public QSocket
 /*! Reads messages from the socket
 */      
     int socketFrameRead(void);
-    
+    //! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
+    int socketWaitForAck(void);
+
     void socketConnected(void);
     void socketConnectionClosed(void);
     void socketClosed(void);
@@ -62,13 +64,17 @@ class Client  : public QSocket
 /*! Send an \a Open \aFrame throught the socket
 */   
     void ApriInviaFrameChiudi(char *);
+    /*! Send an \a Open \aFrame through the socket and wait for ack */
+    void ApriInviaFrameChiudiw(char*);
     void richStato(char*);
-   
+    void ackReceived(void);
+
     private:
     QSocket *socket;
     int ismonitor;
     QTimer* tick;  
     void socketStateRead(char*);
+    bool ackRx;
    // char fr[100];
 	    
      signals:
@@ -76,6 +82,10 @@ class Client  : public QSocket
       void rispStato(char*);
       void monitorSu();
       void frameToAutoread(char*);
+      //! Openwebnet ack received
+      void openAckRx();
+      //! Openwebnet nak received
+      void openNakRx();
 };
 
 //

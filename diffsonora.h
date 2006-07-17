@@ -25,8 +25,9 @@
 /*!
   \class diffSonora
   \brief This is a class that manage sound diffusion function of the system. 
-  
-  It is composed of two subtree (sottoMenu): amplifiers and sources. In the first row of the page is shown the source active at a certain time while in the remaining rows there are all the amplifiers one ca control.
+  It is composed of two subtree (sottoMenu): amplifiers and sources. 
+  In the first row of the page is shown the source active at a certain 
+  time while in the remaining rows there are all the amplifiers one ca control.
   \author Davide
   \date lug 2005
 */  
@@ -56,7 +57,7 @@ public:
   
   If it is a source it is added to the sources subtree otherwise it's added to the amplifiers one. This method reproduce the one implemented in sottoMenù in similar manner.
 */       
-   int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0);
+   virtual int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, char *ambdescr="");
  /*!
   \brief Sets the row's number.
 */       
@@ -91,6 +92,7 @@ signals:
   \brief Emitted when the object is closed.
 */          
     void 	Closed();
+    void        closed(diffSonora*);
  /*!
   \brief Emitted when there are \a Open \a frame incoming to make them arrive to amplifiers and sources.
 */              
@@ -128,11 +130,10 @@ public slots:
   \brief Emittes the closed signal when amplifiers subtree(sottoMenu) is closed.
 */                          
     void 	fineVis();
-private:
+protected:
   uchar numRighe,isVisual;	
   sottoMenu* sorgenti;
 
 };
-
 
 #endif // DIFFSONORA_H

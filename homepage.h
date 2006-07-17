@@ -126,6 +126,8 @@ private slots:
   void 	Termoregolazione(); 
 /*! \brief Emitted when the \a sound \a diffusion subtree(sottoMenu) is required.*/  
   void 	Difson(); 
+/*! \brief Emitted when the \a multichannel \a diffusione subtree is required. */
+  void Difmulti();
 /*! \brief Emitted when the \a scenarios subtree(sottoMenu) is required.*/  
   void 	Scenari(); 
 /*! \brief Emitted when the \a settings subtree(sottoMenu) is required.*/  

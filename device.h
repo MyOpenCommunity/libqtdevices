@@ -16,12 +16,19 @@ class stat_var {
 	   OLD_LEV,
 	   TEMP ,
 	   ON_OFF ,
+	   STAT,
 	   HH,
 	   MM,
 	   SS,
 	   TEMPERATURE,
 	   AUDIO_LEVEL,
 	   PENDING_CALL,
+	   FREQ,
+	   STAZ,
+	   RDS0,
+	   RDS1,
+	   LOCAL,
+	   SP,
       } type;
  private:
     type t;
@@ -78,9 +85,15 @@ class device_status {
 	   DIMMER ,
 	   DIMMER100 ,
 	   NEWTIMED,
+	   AUTOM,
 	   TEMPERATURE_PROBE, 
 	   AMPLIFIER,
+	   RADIO,
 	   DOORPHONE,
+	   IMPANTI,
+	   ZONANTI,
+	   THERMR,
+	   MODSCEN,
       } type;
  private:
     //! Type
@@ -112,6 +125,7 @@ class device_status {
     ~device_status();
 };
 
+//! Simple light status
 class device_status_light : public device_status {
  private:
  public:
@@ -122,6 +136,7 @@ class device_status_light : public device_status {
     //~device_status_light();
 };
 
+//! Dimmer status
 class device_status_dimmer : public device_status {
  private:
  public:
@@ -133,6 +148,7 @@ class device_status_dimmer : public device_status {
     //~device_status_dimmer();
 };
 
+//! Dimmer 100 status
 class device_status_dimmer100 : public device_status {
  private:
  public:
@@ -145,6 +161,7 @@ class device_status_dimmer100 : public device_status {
     //~device_status_dimmer100();
 };
 
+//! New timed device status
 class device_status_new_timed : public device_status {
  private:
  public:
@@ -157,6 +174,17 @@ class device_status_new_timed : public device_status {
     //~device_status_temp_new();
 };
 
+//! Autom device status 
+class device_status_autom : public device_status {
+ private:
+ public:
+    enum {
+	STAT_INDEX = 0,
+    } ind;
+    device_status_autom();
+};
+
+//! Temperature probe status
 class device_status_temperature_probe : public device_status {
  public:
     enum {
@@ -165,20 +193,90 @@ class device_status_temperature_probe : public device_status {
     device_status_temperature_probe();
 };
 
+//! Amplifier status
 class device_status_amplifier : public device_status {
  public:
     enum {
-	AUDIO_LEVEL_INDEX  = 0,
+	ON_OFF_INDEX = 0,
+	AUDIO_LEVEL_INDEX  = 1,
     } ind;
     device_status_amplifier();
 };
 
+//! Radio status
+class device_status_radio : public device_status {
+ public:
+    enum {
+	FREQ_INDEX = 0,
+	STAZ_INDEX,
+	RDS0_INDEX,
+	RDS1_INDEX,
+    } ind;
+    device_status_radio();
+};
+
+//! Doorphone status
 class device_status_doorphone : public device_status {
  public:
     enum {
 	PENDING_CALL_INDEX = 0,
     } ind;
     device_status_doorphone();
+};
+
+//! Imp. anti status
+class device_status_impanti : public device_status {
+ public:
+    enum {
+	ON_OFF_INDEX = 0,
+    } ind;
+    device_status_impanti();
+};
+
+//! Zon. anti status
+class device_status_zonanti : public device_status {
+ public:
+    enum {
+	ON_OFF_INDEX = 0,
+    } ind;
+    device_status_zonanti();
+};
+
+//! Thermal regulator status
+class device_status_thermr : public device_status {
+ public:
+    enum {
+	STAT_INDEX = 0,
+	LOCAL_INDEX,
+	SP_INDEX,
+    } ind;
+    enum {
+	S_MAN = 0,
+	S_AUTO,
+	S_ANTIGELO,
+	S_TERM,
+	S_GEN,
+	S_OFF,
+    } val;
+    device_status_thermr();
+};
+
+//! Modscen status
+class device_status_modscen : public device_status {
+ public:
+    enum {
+	STAT_INDEX = 0,
+    };
+    enum {
+	PROGRAMMING_START = 40,
+	PROGRAMMING_STOP = 41,
+	DELETE_SCEN = 42,
+	LOCKED = 43,
+	UNLOCKED = 44,
+	BUSY = 45,
+	FULL = 46,
+    } val;
+    device_status_modscen();
 };
 
 class frame_interpreter;
@@ -215,6 +313,8 @@ class device : public QObject {
     void set_pul(bool);
     //! Set group
     void set_group(int);
+    //! Add device status
+    void add_device_status(device_status *);
     //! Increment reference count
     void get();
     //! Decrement reference count, return reference count after decrement
@@ -225,7 +325,7 @@ class device : public QObject {
     virtual ~device();
  signals:
     //! Status changed
-    void status_changed(device_status *);
+    void status_changed(QPtrList<device_status>);
     //! Invoked after successful initialization
     void initialized(device_status *);
     //! We want to send a frame
@@ -236,7 +336,9 @@ class device : public QObject {
     //! receive a frame
     void frame_rx_handler(char *);
     //! Deal with frame event
-    void frame_event_handler(device_status *);
+    void frame_event_handler(QPtrList<device_status>);
+    //! Initialization requested by frame interpreter
+    void init_requested_handler(QString msg);
 };
 
 //! Light (might be a simple light, a dimmer or a dimmer 100)
@@ -250,6 +352,15 @@ class light : public device
     //virtual ~light();
 };
 
+//! Automatismo
+class autom : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    autom(QString, bool p=false, int g=-1);
+};
+
 //! Temperature probe
 class temperature_probe : public device
 {
@@ -259,13 +370,22 @@ class temperature_probe : public device
     temperature_probe(QString, bool p=false, int g=-1);
 };
 
-//! Sound device
+//! Sound device (ampli)
 class sound_device : public device
 {
     Q_OBJECT
  public:
     //! Constructor
     sound_device(QString, bool p=false, int g=-1);
+};
+
+//! Radio
+class radio_device : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    radio_device(QString, bool p=false, int g=-1);
 };
 
 //! Doorphone device
@@ -275,6 +395,42 @@ class doorphone_device : public device
  public:
     //! Constructor
     doorphone_device(QString, bool p=false, int g=-1);
+};
+
+//! ??
+class impanti_device : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    impanti_device(QString, bool p=false, int g=-1);
+};
+
+//! ??
+class zonanti_device : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    zonanti_device(QString, bool p=false, int g=-1);
+};
+
+//! Thermal regulator device
+class thermr_device : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    thermr_device(QString, bool p=false, int g=-1);
+};
+
+//! Modscen device
+class modscen_device : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    modscen_device(QString, bool p=false, int g=-1);
 };
 
 #endif __DEVICE_H__

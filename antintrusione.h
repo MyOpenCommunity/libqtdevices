@@ -13,6 +13,7 @@
 
 #include <qwidget.h>
 #include "items.h"
+#include "allarme.h"
 #include "sottomenu.h"
 #include "openclient.h"
 #include "banner.h"
@@ -94,6 +95,13 @@ signals:
 */     
     void	sendFrame(char*);
 /*!
+  \brief as above, but wait for ack
+*/
+    void        sendFramew(char*);
+    void        openAckRx();
+    void        openNakRx();
+
+/*!
   \brief emitted to take the device out from or into a freezed state
 */     
     void 	freeze(bool);
@@ -101,6 +109,18 @@ signals:
   \brief emitted when the device goes out from or into a freezed state to allineate the impianto-zone-allarmi behavior
 */     
     void 	freezed(bool);
+/*!
+  \brief enable/disable area partialization enable events
+*/
+    void        abilitaParz(bool ab);
+/*!
+  \brief part. changed events
+*/
+    void        partChanged(zonaAnti*);
+/*!
+  \brief clear changed flags
+*/ 
+    void        clearChanged();
 public slots:
 /*!
   \brief analyzes the open frame coming from the plant. If there are an allarm is added to the queue; if the plant is inserted the alarm queue is resetted
@@ -114,6 +134,27 @@ public slots:
   \brief arms a timer and calls ctrlAllarm after 150ms. This is necessary because some time is necessary to destroy the object from the queue
 */     
     void 	testranpo();
+/*!
+  \brief Invoked when next alarm must be displayed
+*/
+    void        nextAlarm();
+/*!
+  \brief Invoked when prev alarm must be displayed
+*/
+    void        prevAlarm();
+/*!
+  \brief Invoked when current alarm must be deleted
+*/
+    void        deleteAlarm();
+/*!
+  \brief Invoked when the current alarm window must be closed and this window 
+must be displayed.
+*/
+    void        closeAlarms();
+/*!
+  \brief Invoked when alarm list must be shown
+*/
+    void        showAlarms();
 private:
 /*!
   \param <numRighe> row number of the object
@@ -130,7 +171,8 @@ private:
 /*!
   \param <allarmi> alarm's queue
 */   
-  sottoMenu* allarmi;
+  QPtrList<allarme> allarmi;
+  allarme *curr_alarm;
 /*!
   \param <testoManom> text for a manomission alarm
   \param <testoTecnico> text for a tecnical alarm

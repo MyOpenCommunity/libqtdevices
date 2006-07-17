@@ -23,6 +23,7 @@
 #include "sottomenu.h"
 #include "impostatime.h"
 #include "diffsonora.h"
+#include "diffmulti.h"
 #include "sveglia.h"
 #include "genericfunz.h"
 //#include "structureparser.h"
@@ -31,6 +32,7 @@
 #include "calibrate.h"
 #include "btlabel.h"
 #include "genpage.h"
+#include "device_cache.h"
 
 #include <sys/sysinfo.h>
 #include <qfontdatabase.h>
@@ -58,6 +60,7 @@ v** Socket
     
     client_comandi = new  Client("127.0.0.1",20000,0);
     client_monitor	 = new  Client("127.0.0.1",20000,1); 
+    btouch_device_cache.set_clients(client_comandi, client_monitor);
     connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
     
     setBacklight(TRUE);
@@ -77,6 +80,7 @@ v** Socket
     svegliaIsOn=FALSE;
         
 backcol=0;
+ tasti=NULL; 
 
     for (int idx=0;idx<12;idx++)
     {
@@ -203,7 +207,7 @@ void BtMain::hom()
    if (QFile::exists("cfg/conf.xml"))
      { 
                     qDebug("scello %d",bg);
-    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &antintr,&pagDefault, client_comandi, client_monitor, datiGen,bg, fg1, fg2);
+    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &dm, &antintr,&pagDefault, client_comandi, client_monitor, datiGen,bg, fg1, fg2);
                 qDebug("scello %d",bg);
     setBackgroundColor(*bg);
      for (int idx=0;idx<12;idx++)
@@ -680,12 +684,14 @@ void BtMain::freezed(bool b)
         hide();
         if (pwdOn)
         {
+	  if(!tasti) {
             tasti = new tastiera(NULL,"tast");
             tasti->setBGColor(Home->backgroundColor());     
             tasti->setFGColor(Home->foregroundColor()); 
 	    tasti->setMode(tastiera::HIDDEN);
             tasti -> showTastiera();
             connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
+	  }
         }
     }
 }
@@ -710,6 +716,7 @@ void BtMain::testPwd(char* p)
         else
         {
             delete (tasti);
+	    tasti = NULL;
         }
     }
     else

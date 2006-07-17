@@ -39,8 +39,8 @@ public:
      virtual void inizializza();
      void Draw();
 public slots:
-     virtual void gestFrame(char*);
-     virtual void status_changed(device_status *);
+      //virtual void gestFrame(char*);
+     virtual void status_changed(QPtrList<device_status>);
 private slots:
     virtual void Accendi();
     virtual void Spegni();
@@ -86,7 +86,7 @@ class dimmer100 : public dimmer
     public slots:
 	void gestFrame(char*);
 #endif
-    void status_changed(device_status *);
+    void status_changed(QPtrList<device_status>);
     private slots:
 	void Accendi();
 	void Spegni();
@@ -132,7 +132,8 @@ public:
     attuatAutom( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0); 
     void inizializza();
 public slots:
-     void gestFrame(char*);
+	//void gestFrame(char*);
+ void status_changed(QPtrList<device_status>); 
 private slots:
      void Attiva();
      void Disattiva();
@@ -141,6 +142,7 @@ signals:
   //  void sendFrame(char *);      
 private:    
      char gruppi[4];    
+     device *dev;
 };
 
 
@@ -210,18 +212,53 @@ public:
      void setAddress(void*);	    
      void inizializza();
 private slots:
+     virtual void Attiva();
+     virtual void Disattiva();
+     virtual void Aumenta();
+     virtual void Diminuisci();
+signals:
+ //   void sendFrame(char *);           
+protected:
+    QPtrList<QString> elencoDisp;
+   
+};
+
+#endif //GR_DIMMER_H
+
+/*****************************************************************
+**gruppo dimmer 100 livelli
+****************************************************************/
+
+#ifndef GR_DIMMER100_H
+#define GR_DIMMER100_H
+
+#include "bannregolaz.h"
+/*!
+  \class grDimmer100
+  \brief This class is made to control a number of 100 levels dimmers
+  
+  It behaves essentially like \a dimmer group
+  \author Davide
+  \date Jun 2006
+*/  
+class grDimmer100 : public grDimmer
+{
+    Q_OBJECT
+public:
+     grDimmer100  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0, QValueList<int> sstart = QValueList<int>(), QValueList<int> sstop = QValueList<int>());
+private slots:
      void Attiva();
      void Disattiva();
      void Aumenta();
      void Diminuisci();
 signals:
  //   void sendFrame(char *);           
-private:
-    QPtrList<QString> elencoDisp;
-   
+ private:
+     QValueList<int> soft_start;
+     QValueList<int> soft_stop;
 };
 
-#endif //GR_DIMMER_H
+#endif //GR_DIMMER100_H
 
 /*****************************************************************
 **scenario
@@ -312,7 +349,8 @@ public:
      attuatAutomInt ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);     
        void inizializza();      
 public slots:
-     void gestFrame(char*);
+      //void gestFrame(char*);
+      virtual void status_changed(QPtrList<device_status>);
 private slots:
      void analizzaUp();
      void analizzaDown();
@@ -321,6 +359,7 @@ signals:
 private:
      char uprunning,dorunning;  
      char nomeFile1[MAX_PATH],nomeFile2[MAX_PATH],nomeFile3[MAX_PATH];
+     device *dev;
 };
 
 
@@ -350,7 +389,8 @@ public:
      attuatAutomIntSic ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0); 
      void inizializza();
 public slots:
-     void gestFrame(char*);
+	//void gestFrame(char*);
+	virtual void status_changed(QPtrList<device_status>);
 private slots:
      void doPres();
      void upPres();
@@ -361,6 +401,7 @@ signals:
 private:
      char uprunning,dorunning;
      char nomeFile1[MAX_PATH],nomeFile2[MAX_PATH],nomeFile3[MAX_PATH];
+     device *dev;
 };
 
 
@@ -393,7 +434,8 @@ public:
     virtual void inizializza();
     ~attuatAutomTemp();
 public slots:
-     virtual void gestFrame(char*);
+      //virtual void gestFrame(char*);
+     virtual void status_changed(QPtrList<device_status>);
 protected slots:
      virtual void Attiva();
 private slots:
@@ -412,6 +454,7 @@ protected:
      */
      //bool isForMe(openwebnet& message);
      QPtrList<QString> *tempi;
+     device *dev;
 };
 
 
@@ -441,7 +484,8 @@ public:
     attuatAutomTempNuovoN ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
     void inizializza();
 public slots:
-    void gestFrame(char*);
+      //void gestFrame(char*);
+    void status_changed(QPtrList<device_status>); 
 protected slots:
     void Attiva();
  protected:
@@ -479,7 +523,8 @@ public:
     void SetIcons(char *, char *, char *);
     void Draw();
 public slots:
-    void gestFrame(char*);
+      //void gestFrame(char*);
+    void status_changed(QPtrList<device_status>) ;
 protected slots:
     void Attiva();
  void update(); 
@@ -572,6 +617,76 @@ private:
 
 #endif //ATTUAT_PULS_H
 
+/*****************************************************************
+** Automatismi-Cancello con attuatore videocitofonia 
+****************************************************************/
+
+#ifndef _AUTOM_CANC_ATTUAT_VC_H_
+#define _AUTOM_CANC_ATTUAT_VC_H_
+
+#include "bannbuticon.h"
+/*!
+  \class 
+  \brief This class represents an automated video-doorphone actuator
+  \author Ciminaghi
+  \date June 2006
+*/  
+class automCancAttuatVC : public bannButIcon
+{
+    Q_OBJECT
+public:
+     automCancAttuatVC ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL);     
+    //void inizializza();      
+public slots:
+      //void gestFrame(char*);
+      //virtual void status_changed(QPtrList<device_status>);
+private slots:
+      void Attiva(void);
+signals:
+ //   void sendFrame(char *);           
+private:
+     device *dev;
+};
+
+
+#endif // _AUTOM_CANC_ATTUAT_VC_H_
+
+
+/*****************************************************************
+** Automatismi-Cancello con attuatore ILLUMINAZIONE
+****************************************************************/
+
+#ifndef _AUTOM_CANC_ATTUAT_ILL_H_
+#define _AUTOM_CANC_ATTUAT_ILL_H_
+
+#include "bannbuticon.h"
+/*!
+  \class 
+  \brief This class represents an automated light actuator
+  \author Ciminaghi
+  \date June 2006
+*/  
+class automCancAttuatIll : public bannButIcon
+{
+    Q_OBJECT
+public:
+     automCancAttuatIll ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,int t=18);     
+    //void inizializza();      
+public slots:
+      //void gestFrame(char*);
+      //virtual void status_changed(QPtrList<device_status>);
+private slots:
+      void Attiva(void);
+signals:
+ //   void sendFrame(char *);           
+private:
+     device *dev;
+     int time;
+};
+
+
+#endif // _AUTOM_CANC_ATTUAT_VC_H_
+
 
 /*****************************************************************
 **Amplificatore
@@ -597,7 +712,11 @@ public:
      amplificatore( QWidget *, const char *,char*,char*,char*,char*,char*);          
      void inizializza();
 public slots:
+#if 0
     void gestFrame(char*);
+#else
+    void status_changed(QPtrList<device_status>);
+#endif
 private slots:
     void Accendi();
     void Spegni();
@@ -607,6 +726,7 @@ signals:
 //    void sendFrame(char *);          
 private:
      char value;
+     device *dev;
 };
 
 #endif //AMPLIFICATORE_H
@@ -670,7 +790,7 @@ class banradio : public bannCiclaz
 {
         Q_OBJECT
 public:
-    banradio( QWidget *parent,const char *name,char* indirizzo );
+    banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, char *ambdescr="" );
    void 	inizializza();
  /*!
   \brief Sets the background color for the banner.
@@ -697,11 +817,15 @@ public:
 */             
    void 	setFGColor(QColor );	
 public slots:
+#if 0
      void 	gestFrame(char*);
+#else
+    void        status_changed(QPtrList<device_status>);
+#endif
     void	show();
     void	hide();
     void 	SetText(const char *);
-private slots: 
+protected slots: 
     void 	ciclaSorg();
     void 	decBrano();
     void 	aumBrano();
@@ -716,8 +840,9 @@ private slots:
    void	startRDS();    
 signals:
    // void 	sendFrame(char *);          
-private:    
+protected:    
     radio*	 myRadio;    
+    device *dev;
 };
 
 #endif //SORGENTE_RADIO_H
@@ -730,6 +855,7 @@ private:
 #define SORGENTE_H
 
 #include "bannciclaz.h"
+#include "aux.h"
 /*!
   \class sorgente
   \brief This class is made to manage an auxiliary sound source.
@@ -742,7 +868,7 @@ class sorgente : public bannCiclaz
 {
         Q_OBJECT
 public:
-    sorgente( QWidget *parent,const char *name,char* indirizzo );
+    sorgente( QWidget *parent,const char *name,char* indirizzo, bool vecchio=true, char *ambdescr="");
    void inizializza();
 public slots:
      void gestFrame(char*);
@@ -752,6 +878,8 @@ private slots:
     void aumBrano();
 signals:
   //  void sendFrame(char *);          
+ protected:
+    aux *myAux;
 };
 
 #endif //SORGENTE_H
@@ -783,7 +911,11 @@ public:
    char*	getAutoIcon();
    char* 	getManIcon();
 public slots:
+#if 0
      void 	gestFrame(char*);
+#else
+     void       status_changed(QPtrList<device_status>);
+#endif
      void	show();
      void	hide();
 private slots:     
@@ -812,7 +944,7 @@ enum statisonda{
 #ifndef ZONA_ANTI_H
 #define ZONA_ANTI_H
 
-#include "bannonoff.h"
+#include "bannonicons.h"
 /*!
   \class zonaAnti
   \brief This class is made to manage an anti-intrusion zone.
@@ -821,17 +953,35 @@ enum statisonda{
   \author Davide
   \date lug 2005
 */  
-class zonaAnti : public bannOnOff
+class zonaAnti : public bannOnIcons
 {
     Q_OBJECT
 public:
-     zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
-          void inizializza();
+     zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);   
+    void inizializza();
+    void SetIcons(char *, char *, char *);
+    void Draw();
 public slots:
+#if 0
      void gestFrame(char*);
+#else
+     void status_changed(QPtrList<device_status>);
+#endif
      char* getChi();
+     void ToggleParzializza();
+     void abilitaParz(bool);
+     void clearChanged(void);
+     int getIndex();
 signals:
+     void partChanged(zonaAnti *);
 private:    
+     void setIcons();
+     char *parzIName;
+     char *sparzIName;
+     char *zonaAttiva;
+     char *zonaNonAttiva;
+     bool already_changed;
+     device *dev;
 };
 
 
@@ -860,51 +1010,41 @@ public:
      impAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
           void inizializza();
 public slots:
+#if 0
      void gestFrame(char*);
+#else
+     void status_changed(QPtrList<device_status>);
+#endif
      char* getChi();
+     void partChanged(zonaAnti*);
+     void setZona(zonaAnti*);
+     void openAckRx();
+     void openNakRx();
 private slots:     
      void Inserisci();
      void Disinserisci();
-     void Insert(char*);
+     void Insert1(char*);
+     void Insert2();
+     void Insert3();
      void DeInsert(char*);
 signals:
     // void CodaAllarmi();
      void impiantoInserito();
+     void abilitaParz(bool);
+     void clearChanged(void);
 private:    
+     static const int MAX_ZONE = 8;
      tastiera* tasti;
+     zonaAnti *le_zone[MAX_ZONE];
+     bool send_part_msg;
+     bool part_msg_sent;
+     QTimer insert_timer;
+     char *passwd;
+     device *dev;
 };
 
 
 #endif //IMP_ANTI_H
-
-/*****************************************************************
-**Allarme
-****************************************************************/	
-#ifndef ALLARME_H
-#define ALLARME_H
-
-#include "bannondx.h"
-/*!
-  \class allarme
-  \brief This a banner representing an alarm occurred in the anti-intrusion system.
-  
- \author Davide
-  \date lug 2005
-*/  
-class allarme : public  bannOnDx
-{
-    Q_OBJECT
-public:
-     allarme( sottoMenu  *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL);   
-public slots:
-    void muoio();	
-signals:
-    void itemKilled();
-private:    
-};
-
-
-#endif //ALLARME_H
 
 /*****************************************************************
 **Gestione Modulo scenari
@@ -928,7 +1068,11 @@ public:
      gesModScen( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* Ico1=NULL,char* Ico2=NULL,char* Ico3=NULL,char* Ico4=NULL,\
 		 char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL);   
 public slots:
+#if 0
     void gestFrame(char*);
+#else
+    void status_changed(QPtrList<device_status>); 
+#endif
     void inizializza();
 private slots:    
     void attivaScenario();	
@@ -946,6 +1090,7 @@ private:
     char cosa[10];
     char dove[10];
     unsigned char sendInProgr, bloccato, in_progr;
+    device *dev;
 };
 
 #endif //MOD_SCEN_H
@@ -1130,3 +1275,136 @@ signals:
 };
 
 #endif // POSTO_EXT_H
+
+/*****************************************************************
+** Ambiente diffusione sonora multicanale
+****************************************************************/	
+#ifndef AMB_DIFF_SON_H
+#define AMB_DIFF_SON_H
+
+#include "bannbut2icon.h"
+#include "diffsonora.h"
+#include "diffmulti.h"
+
+//class sorgenteMulti;
+class diffSonora;
+class dati_sorgente_multi;
+class dati_ampli_multi;
+
+/*!
+  \class postoExt
+  \brief This class represents an env. in the multi-channel audio diff. sys.
+  \author Ciminaghi
+  \date jul 2006
+*/  
+class ambDiffSon : public bannBut2Icon
+{
+    Q_OBJECT
+ public:
+    ambDiffSon(QWidget *parent=0, const char *name=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", char *Icona3="", QPtrList<dati_sorgente_multi> *ls = NULL,
+	       QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL);
+    void Draw();
+#if 0
+    void addAmpli(char, char *, void *, char *, char *, char *, char *, int, 
+		  int);
+#endif
+public slots:
+    void configura(); 
+ private: 
+// QPtrList<sorgenteMulti> *lista_sorg;
+ diffSonora *diffson;
+};
+
+#endif // AMB_DIFF_SON_H
+
+/*****************************************************************
+** Insieme Ambienti diffusione sonora multicanale
+****************************************************************/	
+#ifndef INS_AMB_DIFF_SON_H
+#define INS_AMB_DIFF_SON_H
+
+#include "bannbuticon.h"
+#include "diffsonora.h"
+#include "diffmulti.h"
+
+//class sorgenteMulti;
+class diffSonora;
+class dati_sorgente_multi;
+class dati_ampli_multi;
+
+/*!
+  \class insAmbDiffSon
+  \brief This class represents an env. in the multi-channel audio diff. sys.
+  \author Ciminaghi
+  \date jul 2006
+*/  
+class insAmbDiffSon : public bannButIcon
+{
+    Q_OBJECT
+ public:
+    insAmbDiffSon(QWidget *parent=0, QPtrList<QString> *descrizioni=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", QPtrList<dati_sorgente_multi> *ls = NULL, QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL);
+    void Draw();
+public slots:
+    void configura(); 
+ private:
+ diffSonora *diffson;
+};
+
+#endif // INS_AMB_DIFF_SON_H
+
+#if 0
+#endif // 0
+
+/*****************************************************************
+** Sorgente radio diffusione sonora multicanale
+****************************************************************/	
+#ifndef SORG_RADIO_DIFF_SON_H
+#define SORG_RADIO_DIFF_SON_H
+
+#include "bannciclaz.h"
+
+/*!
+  \class sorgenteMultiRadio
+  \brief This class represents a radio source in the multi-channel audio diff. sys.
+  \author Ciminaghi
+  \date jul 2006
+*/  
+class sorgenteMultiRadio : public banradio
+{
+    Q_OBJECT
+ public:
+    sorgenteMultiRadio(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambDescr=""); 
+public slots:
+	void attiva();
+ private:
+};
+
+#endif // SORG_RADIO_DIFF_SON_H
+
+/*****************************************************************
+** Sorgente aux diffusione sonora multicanale
+****************************************************************/	
+#ifndef SORG_AUX_DIFF_SON_H
+#define SORG_AUX_DIFF_SON_H
+
+#include "bannciclaz.h"
+
+/*!
+  \class sorgenteMultiAux
+  \brief This class represents an aux source in the multi-channel audio diff. sys.
+  \author Ciminaghi
+  \date jul 2006
+*/  
+class sorgenteMultiAux : public sorgente
+{
+    Q_OBJECT
+ public:
+    sorgenteMultiAux(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambdescr=""); 
+public slots:
+	void attiva();
+ private:
+};
+
+#endif // SORG_AUX_DIFF_SON_H
+
+

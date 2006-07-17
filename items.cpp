@@ -40,17 +40,10 @@ dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,c
     connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
     connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
     // Crea o preleva il dispositivo dalla cache
-    dev = btouch_device_cache.get_light(getAddress());
-#if 0
-    connect(this, SLOT(gestFrame(char *)), this, 
-	    SIGNAL(frame_available(char *)));
-#endif
-    // Pass frames on to device for analysis
-    connect(this, SIGNAL(frame_available(char *)), 
-	    dev, SLOT(frame_rx_handler(char *)));
+    dev = btouch_device_cache.get_dimmer(getAddress());
     // Get status changed events back
-    connect(dev, SIGNAL(status_changed(device_status *)), 
-	    this, SLOT(status_changed(device_status *)));
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 void dimmer::Draw()
@@ -126,115 +119,68 @@ void dimmer::Draw()
       }
 }
 
-#if 0
-void dimmer::gestFrame(char* frame)
+void dimmer::status_changed(QPtrList<device_status> sl)
 {
-    openwebnet msg_open;
-    char aggiorna;
-    
-    aggiorna=0;
-    
-    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    
-    
-    if (isForMe(msg_open))
-    {
-	if (!strcmp(msg_open.Extract_cosa(),"1")) 		
-	{
-	    if (isActive()!=1)
-	    {
-		impostaAttivo(1);
-		aggiorna=1;
-	    }
-	}
-	else if (!strcmp(msg_open.Extract_cosa(),"0")) 
-	{
-	    if (isActive()!=0)
-	    {
-		impostaAttivo(0);
-		aggiorna=1;
-	    }
-	}
-	//	    else if (!strcmp(msg_open.Extract_cosa(),"2")) 
-	else if ( (atoi(msg_open.Extract_cosa()))<11) 
-	{
-	    impostaAttivo(1);
-	    setValue(10 * (atoi(msg_open.Extract_cosa())-1));
-	    qDebug("imposto livello : %d",(atoi(msg_open.Extract_cosa())-1));		    
-	    aggiorna=1;
-	}
-	else if (!strcmp(msg_open.Extract_cosa(),"19")) 
-	{
-	    //DIMMER out of work
-	    if (isActive()!=2)
-	    {
-		impostaAttivo(2);
-		aggiorna=1;
-	    }
-	}
-    }
-    if (aggiorna)
-        Draw();
-}
-#else
-void dimmer::gestFrame(char *s)
-{
-    emit(frame_available(s));
-}
-
-void dimmer::status_changed(device_status *ds)
-{
-    device_status::type t = ds->get_type();
     stat_var curr_lev(stat_var::LEV);
     stat_var curr_speed(stat_var::SPEED);
     stat_var curr_status(stat_var::ON_OFF);
     int val10;
-    bool aggiorna;
+    bool aggiorna = false;
     qDebug("dimmer10::status_changed()");
-    switch (t) {
-    case device_status::LIGHTS:
-	qDebug("Light status variation");
-	ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-	qDebug("status = %d", curr_status.get_val());
-	impostaAttivo(curr_status.get_val() != 0);
-	aggiorna = true;
-	break;
-    case device_status::DIMMER:
-	ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-	qDebug("dimmer status variation");
-	qDebug("level = %d", curr_lev.get_val());
-	setValue(curr_lev.get_val());
-	//valy
-	aggiorna = true;
-	break;
-    case device_status::DIMMER100:
-	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-	ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-	qDebug("dimmer 100 status variation, ignored");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    qDebug("Light status variation");
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("status = %d", curr_status.get_val());
+	    impostaAttivo(curr_status.get_val() != 0);
+	    if(!curr_status.get_val()) {
+		// Update 
+		aggiorna = true;
+		impostaAttivo(0);
+	    } else
+		impostaAttivo(1);
+	    break;
+	case device_status::DIMMER:
+	    ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
+	    qDebug("dimmer status variation");
+	    qDebug("level = %d", curr_lev.get_val());
+	    setValue(curr_lev.get_val());
+	    aggiorna = true;
+	    break;
+	case device_status::DIMMER100:
+	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	    ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+	    qDebug("dimmer 100 status variation, ignored");
 #if 0
-	qDebug("level = %d, speed = %d", curr_lev.get_val(), 
-	       curr_speed.get_val());
-	val10 = curr_lev.get_val()/10;
-	if((curr_lev.get_val() % 10) >= 5)
-	    val10++;
-	val10 *= 10;
-	setValue(val10);
+	    qDebug("level = %d, speed = %d", curr_lev.get_val(), 
+		   curr_speed.get_val());
+	    val10 = curr_lev.get_val()/10;
+	    if((curr_lev.get_val() % 10) >= 5)
+		val10++;
+	    val10 *= 10;
+	    setValue(val10);
+	    aggiorna = true ;
 #endif
-	aggiorna = true ;
-	break;
-    case device_status::NEWTIMED:
-	qDebug("new timed device status variation");
-	setValue(1);
-	aggiorna = true;
-	break;
-    default:
-	qDebug("device status of unknown type (%d)", t);
-	break;
+	    break;
+	case device_status::NEWTIMED:
+	    qDebug("new timed device status variation, ignored");
+	    //setValue(1);
+	    //aggiorna = true;
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
     }
     if(aggiorna)
 	Draw();
 }
-#endif
 
 void dimmer:: Accendi()
 {
@@ -306,6 +252,7 @@ dimmer100::dimmer100( QWidget *parent,const char *name,char* indirizzo,char* Ico
     qDebug("inactiveIcon = %s", inactiveIcon);
     qDebug("breakIcon = %s", breakIcon);
     SetIcons( IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0 );
+    dev = btouch_device_cache.get_dimmer100(getAddress());
 }
 
 
@@ -390,46 +337,58 @@ void dimmer100:: Diminuisci()
     emit sendFrame(msg_open.frame_open);   
 }
 
-void dimmer100::status_changed(device_status *ds)
+void dimmer100::status_changed(QPtrList<device_status> sl)
 {
-    device_status::type t = ds->get_type();
     stat_var curr_lev(stat_var::LEV);
     stat_var curr_speed(stat_var::SPEED);
     stat_var curr_status(stat_var::ON_OFF);
     int val10;
     bool aggiorna = false;
     qDebug("dimmer100::status_changed()");
-    switch (t) {
-    case device_status::LIGHTS:
-	qDebug("Light status variation");
-	ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-	qDebug("status = %d", curr_status.get_val());
-	impostaAttivo(curr_status.get_val() != 0);
-	aggiorna = true;
-	break;
-    case device_status::DIMMER:
-	ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-	qDebug("dimmer status variation, ignored");
-	break;
-    case device_status::DIMMER100:
-	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-	ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-	qDebug("dimmer 100 status variation");
-	qDebug("level = %d, speed = %d", curr_lev.get_val(), 
-	       curr_speed.get_val());
-	setValue(curr_lev.get_val());
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    qDebug("Light status variation");
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("status = %d", curr_status.get_val());
+	    //impostaAttivo(curr_status.get_val() != 0);
+	    //aggiorna = true;
+	    if(!curr_status.get_val()) {
+		// Only update on OFF
+		aggiorna = true;
+		impostaAttivo(0);
+	    } else
+		impostaAttivo(1);
+	    break;
+	case device_status::DIMMER:
+	    ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
+	    qDebug("dimmer status variation, ignored");
+	    break;
+	case device_status::DIMMER100:
+	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	    ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+	    qDebug("dimmer 100 status variation");
+	    qDebug("level = %d, speed = %d", curr_lev.get_val(), 
+		   curr_speed.get_val());
+	    setValue(curr_lev.get_val());
 	    //setValue(curr_lev.get_val());
-	qDebug("value = %d", getValue());
-	aggiorna = true ;
-	break;
-    case device_status::NEWTIMED:
-	qDebug("new timed device status variation");
-	setValue(1);
-	aggiorna = true;
-	break;
-    default:
-	qDebug("device status of unknown type (%d)", t);
-	break;
+	    qDebug("value = %d", getValue());
+	    aggiorna = true ;
+	    break;
+	case device_status::NEWTIMED:
+	    qDebug("new timed device status variation, ignored");
+	    //setValue(1);
+	    //aggiorna = true;
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
     }
     if(aggiorna)
 	Draw();
@@ -447,82 +406,6 @@ void dimmer100::inizializza()
     emit richStato(msg_open.frame_open);
 }
 
-
-#if 0
-void dimmer100::Draw()
-{
-  if(value > 100)
-    value = 100;
-    qDebug("dimmer100::Draw(), attivo = %d, value = %d", attivo, value);
-    if ( (sxButton) && (Icon[0]) )
-    {
-	sxButton->setPixmap(*Icon[0]);
-	if (pressIcon[0])
-	    sxButton->setPressedPixmap(*pressIcon[0]);
-    }
-    
-    if ( (dxButton) && (Icon[1]) )
-    {
-	dxButton->setPixmap(*Icon[1]);
-	if (pressIcon[1])
-	    dxButton->setPressedPixmap(*pressIcon[1]);
-    }
-    if (attivo==1)
-    {
-	if ( (Icon[4+((value-step)/step)*2]) && (csxButton) )
-	{
-	    csxButton->setPixmap(*Icon[4+((value-step)/step)*2]);
-	    qDebug("* Icon[%d]", 4+((value-step)/step)*2);
-	}
-	if ( (cdxButton) && (Icon[5+((value-step)/step)*2]) )
-	{
-	    cdxButton->setPixmap(*Icon[5+((value-step)/step)*2]);
-	    qDebug("** Icon[%d]", 5+((value-step)/step)*2);
-	}
-    }
-    else if (attivo==0)
-    {
-	if ( (Icon[2]) && (csxButton) )
-	{
-	    csxButton->setPixmap(*Icon[2]);
-	    qDebug("*** Icon[%d]", 2);
-	}
-	if ( (cdxButton) && (Icon[3]) )
-	{
-	    cdxButton->setPixmap(*Icon[3]);
-	    qDebug("**** Icon[%d]", 3);
-	}
-    }
-    else if (attivo==2)
-    {
-	if ( (Icon[44]) && (csxButton) )
-	{
-	    csxButton->setPixmap(*Icon[44]);		    
-	    qDebug("******* Icon[%d]", 44);
-	}
-	
-	if ( (cdxButton) && (Icon[45]) )
-	{
-	    cdxButton->setPixmap(*Icon[45]);    
-	    qDebug("******* Icon[%d]", 45);
-	}
-    }
-    if (BannerText)
-      {
-	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-	BannerText->setText(testo);
-	//     qDebug("TESTO: %s", testo);
-      }
-    if (SecondaryText)
-      {	
-	SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-	SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
-	SecondaryText->setText(testoSecondario);
-      }
-}
-#endif
-
 /*****************************************************************
 **attuatAutom
 ****************************************************************/
@@ -534,10 +417,16 @@ attuatAutom::attuatAutom( QWidget *parent,const char *name,char* indirizzo,char*
     setAddress(indirizzo);
     connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
     connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));                       
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_light(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
+
     setChi("1");
 }
 
-
+#if 0
 void attuatAutom::gestFrame(char* frame)
 {    
     openwebnet msg_open;
@@ -576,6 +465,41 @@ void attuatAutom::gestFrame(char* frame)
     }    
     if (aggiorna)
         Draw();
+}
+#endif
+
+void attuatAutom::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_status(stat_var::ON_OFF);
+    bool aggiorna = false;
+    qDebug("attuatAutom::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    qDebug("attuatAutom status variation");
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("status = %d", curr_status.get_val());
+	    qDebug("status = %d", curr_status.get_val());
+	    if(!curr_status.get_val() && isActive()) {
+		aggiorna = true;
+		impostaAttivo(0);
+	    } else if(curr_status.get_val() && !isActive()) {
+		aggiorna = true;
+		impostaAttivo(1);
+	    }
+	    break;
+	default:
+	    qDebug("attuatAutom variation, ignored");
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna)
+	Draw();
 }
 
 
@@ -738,6 +662,73 @@ void grDimmer::Diminuisci()
 void grDimmer::inizializza(){}
 
 /*****************************************************************
+**gruppo di dimmer100
+****************************************************************/
+
+grDimmer100::grDimmer100( QWidget *parent,const char *name,void *indirizzi, char* IconaSx,char* IconaDx,char *iconsx ,char* icondx,int period,int number, QValueList<int>sstart, QValueList<int>sstop)
+        : grDimmer(parent, name, indirizzi, IconaSx, IconaDx, iconsx,
+		   icondx, period, number)
+{ 
+    qDebug("grDimmer100::grDimmer100()");
+    qDebug("sstart[0] = %d", sstart[0]);
+    soft_start = sstart;
+    soft_stop = sstop;
+}
+
+void grDimmer100::Attiva()
+{
+    openwebnet msg_open;
+    
+    for(uchar idx=0; idx<elencoDisp.count();idx++) {
+        msg_open.CreateNullMsgOpen();     
+	char s[100];
+	sprintf(s, "*1*1#%d*%s##", soft_start[idx], 
+		(elencoDisp.at(idx))->ascii());
+	msg_open.CreateMsgOpen(s, strlen(s));
+	emit sendFrame(msg_open.frame_open);   
+    }
+}
+
+void grDimmer100::Disattiva()
+{
+    openwebnet msg_open;
+    
+    for(uchar idx=0; idx<elencoDisp.count();idx++) {
+        msg_open.CreateNullMsgOpen();     
+	char s[100];
+	sprintf(s, "*1*0#%d*%s##", soft_stop[idx], 
+		(elencoDisp.at(idx))->ascii());
+	msg_open.CreateMsgOpen(s, strlen(s));
+	emit sendFrame(msg_open.frame_open);   
+    }
+   
+}
+
+void grDimmer100::Aumenta()
+{
+    openwebnet msg_open;
+    for(uchar idx=0; idx<elencoDisp.count();idx++) {
+        msg_open.CreateNullMsgOpen();     
+        msg_open.CreateMsgOpen("1", "30#5#255",
+			       (char*)elencoDisp.at(idx)->ascii(),"");
+        emit sendFrame(msg_open.frame_open);
+    }
+}
+
+void grDimmer100::Diminuisci()
+{
+    openwebnet msg_open;
+    for(uchar idx=0; idx<elencoDisp.count();idx++) {
+        msg_open.CreateNullMsgOpen();     
+        msg_open.CreateMsgOpen("1", "31#5#255",
+			       (char*)elencoDisp.at(idx)->ascii(),"");
+        emit sendFrame(msg_open.frame_open);
+    }
+}
+
+//void grDimmer100::inizializza(){}
+
+/*****************************************************************
 **scenario
 ****************************************************************/
 
@@ -816,9 +807,13 @@ attuatAutomInt::attuatAutomInt( QWidget *parent,const char *name,char* indirizzo
     connect(this,SIGNAL(dxClick()),this,SLOT(analizzaDown()));
     
     uprunning = dorunning = 0;    
+    dev = btouch_device_cache.get_autom_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
-
+#if 0
 void attuatAutomInt::gestFrame(char* frame)
 {  
     openwebnet msg_open;
@@ -875,6 +870,66 @@ void attuatAutomInt::gestFrame(char* frame)
     if (aggiorna)
         Draw();   
 }
+#else
+void attuatAutomInt::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_status(stat_var::STAT);
+    bool aggiorna = false;
+    qDebug("attuatAutomInt::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    int v;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::AUTOM:
+	    qDebug("Autom status variation");
+	    ds->read(device_status_autom::STAT_INDEX, curr_status);
+	    v = curr_status.get_val();
+	    qDebug("status = %d", v);
+	    switch(v) {
+	    case 0:
+		if (isActive()) {
+		    impostaAttivo(0);
+		    uprunning=dorunning=0;
+		    aggiorna=1;
+		    SetIcons((uchar)0,nomeFile1 );
+                    SetIcons((uchar)1,nomeFile2 );
+                }
+		break;
+	    case 1:
+		if (!isActive()) {
+                    impostaAttivo(1);
+                    dorunning=0;
+                    uprunning=1;
+                    aggiorna=1;
+                    SetIcons((uchar)0,nomeFile3 );
+                }
+		break;
+	    case 2:
+		if (!isActive()) {
+                    impostaAttivo(2);
+                    dorunning=1;
+                    uprunning=0;
+                    aggiorna=1;
+                    SetIcons((uchar)1,nomeFile3 );
+                }
+		break;
+	    default:
+		qDebug("Unknown status in autom. message");
+		break;
+	    }
+	default:
+	    qDebug("Unknown device status type");
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna)
+	Draw();
+}
+#endif
 
 void attuatAutomInt::analizzaUp()
 {
@@ -964,10 +1019,14 @@ attuatAutomIntSic::attuatAutomIntSic( QWidget *parent,const char *name,char* ind
     connect(this,SIGNAL(dxReleased()),this,SLOT(doRil()));
     
     uprunning = dorunning = 0;
+    dev = btouch_device_cache.get_autom_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 
-
+#if 0
 void attuatAutomIntSic::gestFrame(char* frame)
 {  
     openwebnet msg_open;
@@ -1024,6 +1083,66 @@ void attuatAutomIntSic::gestFrame(char* frame)
     if (aggiorna)
         Draw();   
 }
+#else
+void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_status(stat_var::STAT);
+    bool aggiorna = false;
+    qDebug("attuatAutomInt::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    int v;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::AUTOM:
+	    qDebug("Autom status variation");
+	    ds->read(device_status_autom::STAT_INDEX, curr_status);
+	    v = curr_status.get_val();
+	    qDebug("status = %d", v);
+	    switch(v) {
+	    case 0:
+		if (isActive()) {
+		    impostaAttivo(0);
+		    uprunning=dorunning=0;
+		    aggiorna=1;
+		    SetIcons((uchar)0,nomeFile1 );
+                    SetIcons((uchar)1,nomeFile2 );
+                }
+		break;
+	    case 1:
+		if (!isActive()) {
+                    impostaAttivo(1);
+                    dorunning=0;
+                    uprunning=1;
+                    aggiorna=1;
+                    SetIcons((uchar)0,nomeFile3 );
+                }
+		break;
+	    case 2:
+		if (!isActive()) {
+                    impostaAttivo(2);
+                    dorunning=1;
+                    uprunning=0;
+                    aggiorna=1;
+                    SetIcons((uchar)1,nomeFile3 );
+                }
+		break;
+	    default:
+		qDebug("Unknown status in autom. message");
+		break;
+	    }
+	default:
+	    qDebug("Unknown device status type");
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna)
+	Draw();
+}
+#endif
 
 void attuatAutomIntSic::upPres()
 {
@@ -1085,6 +1204,74 @@ void attuatAutomIntSic::inizializza()
     emit sendFrame(msg_open.frame_open);    
 }
 
+/*****************************************************************
+** automCancAttuatVC
+****************************************************************/
+
+automCancAttuatVC::automCancAttuatVC( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx)
+        : bannButIcon( parent, name )
+        {       
+	    qDebug("automCancAttuatVC::automCancAttuatVC() : "
+		   "%s %s", IconaSx, IconaDx);
+    SetIcons(IconaSx, NULL, IconaDx);
+    setAddress(indirizzo);
+    connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_autom_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
+
+    //setChi("1");
+}
+
+void automCancAttuatVC::Attiva()
+{
+    openwebnet msg_open;
+    
+    msg_open.CreateNullMsgOpen();  
+    // FIXME: CHECK FRAME !!
+    msg_open.CreateMsgOpen("6", "10",getAddress(),"");
+    emit sendFrame(msg_open.frame_open);
+}
+
+
+/*****************************************************************
+** automCancAttuatIll
+****************************************************************/
+
+automCancAttuatIll::automCancAttuatIll( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,int t)
+        : bannButIcon( parent, name )
+        {       	  
+	    qDebug("automCancAttuatIll::automCancAttuatIll() : "
+		   "%s %s", IconaSx, IconaDx);
+    SetIcons(IconaSx, NULL, IconaDx);
+    setAddress(indirizzo);
+    connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_autom_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
+    time = t;
+    Draw();
+    //setChi("1");
+}
+
+void automCancAttuatIll::Attiva()
+{
+    openwebnet msg_open;
+    char cosa[10];
+    
+    sprintf(cosa, "%d", time);
+    
+    msg_open.CreateNullMsgOpen();  
+    // FIXME: CHECK FRAME !!
+    msg_open.CreateMsgOpen("1", cosa , getAddress(),"");
+    emit sendFrame(msg_open.frame_open);
+}
+
+
 
 /*****************************************************************
 **attuatAutomTemp
@@ -1099,7 +1286,6 @@ attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indiriz
     static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "10'", "15'" } ;
     tempi = new QPtrList<QString>;
     tempi->clear();
-    qDebug("***** lt->count = %d *****", lt->count());
     int nt = lt->count() ? lt->count() : sizeof(t) / sizeof(char *) ;
     for(int i = 0; i < nt ; i++) {
 	QString *s;
@@ -1112,6 +1298,10 @@ attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indiriz
     //SetSeconaryText((tempi->at(cntTempi))->ascii());
     assegna_tempo_display();
     SetSeconaryText(tempo_display);
+    dev = btouch_device_cache.get_light(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
     connect(this, SIGNAL(dxClick()), this, SLOT(Attiva()));
     connect(this, SIGNAL(sxClick()), this, SLOT(CiclaTempo()));
 }
@@ -1129,49 +1319,45 @@ uchar attuatAutomTemp::ntempi()
     return tempi->count();
 }
 
-#if 0
-bool attuatAutomTemp::isForMe(openwebnet& m)
+void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
 {
-    if(strcmp(m.Extract_chi(), "1")) return false ;
-    if(!strcmp(m.Extract_dove(),getAddress())) return true;
-    // BAH
-    return (!getPul() && ((!strcmp(m.Extract_dove(),"0")) ||
-			  ((strlen(m.Extract_dove())==1) && 
-			   (!strncmp(m.Extract_dove(), getAddress(), 1)) ) || 
-			  ((!strncmp(m.Extract_dove(),"#",1)) && 
-			   *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
-}
-#endif
-
-void attuatAutomTemp::gestFrame(char* frame)
-{  
-    openwebnet msg_open;
-    char aggiorna;
-    
-    aggiorna=0;
-    
-    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    
-    if(isForMe(msg_open)) {
-	if (!strcmp(msg_open.Extract_cosa(),"1")) 		
-	{
-	    if (!isActive())
-	    {
-		impostaAttivo(1);
-		aggiorna=1;
-	    }
+    bool aggiorna = false;
+    qDebug("attuatAutomTemp::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    stat_var curr_status(stat_var::ON_OFF);
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    qDebug("Light status variation");
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("status = %d", curr_status.get_val());
+	    impostaAttivo(curr_status.get_val() != 0);
+	    if(!curr_status.get_val())
+		// Update 
+		aggiorna = true;
+	    break;
+	case device_status::DIMMER:
+	    qDebug("dimmer status variation, ignored");
+	    break;
+	case device_status::DIMMER100:
+	    qDebug("dimmer 100 status variation, ignored");
+	    break;
+	case device_status::NEWTIMED:
+	    qDebug("new timed device status variation, ignored");
+	    //setValue(1);
+	    //aggiorna = true;
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
 	}
-	else if (!strcmp(msg_open.Extract_cosa(),"0")) 
-	{
-	    if (isActive())
-	    {
-		impostaAttivo(0);
-		aggiorna=1;
-	    }
-	}
+	++(*dsi);
     }
-    if (aggiorna)
-        Draw();
+    if(aggiorna)
+	Draw();
 }
 
 void attuatAutomTemp::Attiva()
@@ -1235,99 +1421,46 @@ attuatAutomTempNuovoN::attuatAutomTempNuovoN( QWidget *parent,const char *name,c
 {     
     assegna_tempo_display();
     stato_noto = false ;
+    dev =  btouch_device_cache.get_newtimed(getAddress());
     SetSeconaryText(tempo_display);
 }
 
-void attuatAutomTempNuovoN::gestFrame(char* frame)
-{  
-    openwebnet msg_open;
-    char aggiorna;
-
-    aggiorna=0;
-    qDebug("attuatAutomTempNuovoN::gestFrame()");
-    
-    // *#1*dove*2*ore*min*sec## 
-    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    
-    if(isForMe(msg_open)) {
-	if(msg_open.IsMeasureFrame()) {
-	    uchar c, h, m, s;
-	    c = atoi(msg_open.Extract_grandezza());
-	    qDebug("Frame misura (%d)", c);
-	    if(c == 2) {
-		qDebug("Frame temporizzata nuova");
-		h = atoi(msg_open.Extract_valori(0));
-		m = atoi(msg_open.Extract_valori(1));
-		s = atoi(msg_open.Extract_valori(2));
-		qDebug("Frame temporizzata con h = %d, m = %d, s = %d", 
-		       h, m, s);
-		if((h == 255) && (m == 255) && (s == 255)) {
-		    stato_noto = true ;
-		    if(isActive()) {
-			impostaAttivo(0);
-			aggiorna = 1;
-		    }
-		} else if((h == 0) && (m == 0) && (s == 0)) {
-		    qDebug("Frame temporizzata con tempo 0");
-		    // No timing, ask for state
-		    if(!stato_noto) {
-			attuatAutomTemp::inizializza();
-			aggiorna = 0;
-		    } else
-			aggiorna = 1;
-		} else {
-		    stato_noto = true ;
-		    if(!isActive()) {
-			impostaAttivo(1);
-			aggiorna = 1;
-		    }
-		}
-	    } else if(c == 1) {
-		qDebug("Misura da dimmer 100 livelli");
-		uchar l, v;
-		l = atoi(msg_open.Extract_valori(0)) - 100;
-		v = atoi(msg_open.Extract_valori(1));
-		qDebug("Livello = %d, velocita` = %d", l, v);
-		stato_noto = true ;
-		if(l) {
-		    if(!isActive()) {
-			impostaAttivo(1);
-			aggiorna = 1;
-			inizializza();
-		    }
-		} else {
-		    if(isActive()) {
-			impostaAttivo(0);
-			aggiorna = 1;
-		    }
-		}
-	    } else {
-		qDebug("Frame misura con cosa = %d. Ignoro !!", c);
-		return;
-	    }
-	} else if(msg_open.IsNormalFrame()) {
-	    int c = atoi(msg_open.Extract_cosa());
-	    qDebug("Comando con cosa = %d", c);
-	    if(!c) {
-		// OFF illuminazione
-		if(isActive()) {
-		    impostaAttivo(0);
-		    aggiorna = 1;
-		    stato_noto = true ;
-		}
-	    } else if((c >= 1) && (c <= 30)) {
-		// ON illuminazione, ON percentuale, vecchie temporizzate
-		if(!isActive()) {
-		    impostaAttivo(1);
-		    aggiorna = 1;
-		    stato_noto = true ;
-		}
-	    } 
+void attuatAutomTempNuovoN::status_changed(QPtrList<device_status> sl)
+{
+    bool aggiorna = false;
+    qDebug("dimmer10::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    stat_var curr_status(stat_var::ON_OFF);
+    stat_var curr_lev(stat_var::LEV);
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    qDebug("Light status variation");
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("status = %d", curr_status.get_val());
+	    impostaAttivo(curr_status.get_val() != 0);
+	    if(!curr_status.get_val())
+		// Update 
+		aggiorna = true;
+	    break;
+	case device_status::DIMMER:
+	    ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
+	    qDebug("dimmer status variation, ignored");
+	    break;
+	case device_status::DIMMER100:
+	    qDebug("dimmer 100 status variation, ignored");
+	    break;
+	case device_status::NEWTIMED:
+	    qDebug("new timed device status variation, ignored");
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
 	}
-    }
-    if (aggiorna) {
-	qDebug("invoco Draw con value = %d", value);
-	Draw();
+	++(*dsi);
     }
 }
 
@@ -1432,125 +1565,83 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
     connect(myTimer,SIGNAL(timeout()),this,SLOT(update()));
     SetSeconaryText(tmp);
     connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
+    // Crea o preleva il dispositivo dalla cache
+    device *dev = btouch_device_cache.get_newtimed(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
-void attuatAutomTempNuovoF::gestFrame(char* frame)
-{  
-    openwebnet msg_open;
-    char aggiorna;
-
-    aggiorna=0;
-
-    qDebug("attuatAutomTempNuovoF::gestFrame");
-
-    // *#1*dove*2*ore*min*sec## 
-    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    
-    if(isForMe(msg_open)) {
-	if(msg_open.IsMeasureFrame()) {
-	    uchar c, hnow, mnow, snow;
-	    c = atoi(msg_open.Extract_grandezza());
-	    if(c == 2) {
-		hnow = atoi(msg_open.Extract_valori(0));
-		mnow = atoi(msg_open.Extract_valori(1));
-		snow = atoi(msg_open.Extract_valori(2));
-		qDebug("Frame temporizzata con h = %d, m = %d, s = %d", hnow, 
-		       mnow, snow);
-		if((hnow == 255) && (mnow == 255) && (snow == 255)) {
-		    if(isActive()) {
-			stato_noto = true ;
-			temp_nota = true ;
-			impostaAttivo(0);
-			aggiorna = 1;
-			myTimer->stop();
-		    }
-		} else if((hnow == 0) && (mnow == 0) && (snow == 0)) {
-		    qDebug("Frame temporizzazione con tempo 0");
+void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_hh(stat_var::HH);
+    stat_var curr_mm(stat_var::MM);
+    stat_var curr_ss(stat_var::SS);
+    stat_var curr_status(stat_var::ON_OFF);
+    int val10;
+    bool aggiorna = false;
+    qDebug("attuatAutomTempNuovoF::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    qDebug("Light status variation");
+	    aggiorna = true;
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("status = %d", curr_status.get_val());
+	    if((isActive() && !curr_status.get_val()) ||
+	       (!isActive() && curr_status.get_val())) {
+		impostaAttivo(curr_status.get_val() != 0);
+		if(!isActive())
 		    myTimer->stop();
-		    // Legge lo stato, non c'e` temporizzazione
-		    if(!stato_noto)
-			chiedi_stato();
-		    temp_nota = true ;
-		    value = 0;
-		    aggiorna = 1;
-		} else {
-		    if(mnow > 60) {
-			qDebug("Minuti non ammissibili, lascio perdere");
-			return;
-		    }
-		    if(snow > 60) {
-			qDebug("Secondi non ammissibili, lascio perdere");
-			return;
-		    }
-		    int tmpval = (hnow * 3600) + (mnow * 60) + snow;
-		    if(tmpval == val) return;
-		    val = tmpval ;
-		    impostaAttivo((val != 0));
-		    if(!val) myTimer->stop();
-		    stato_noto = true;
-		    temp_nota = true ;
-		    qDebug("tempo = %d %d %d", hnow, mnow, snow);
-		    aggiorna = 1;
-		}
-	    } else if(c == 1) {
-		qDebug("Misura da dimmer 100 livelli");
-		uchar l, v;
-		l = atoi(msg_open.Extract_valori(0)) - 100;
-		v = atoi(msg_open.Extract_valori(1));
-		stato_noto = true ;
-		temp_nota = false ;
-		qDebug("Livello = %d, velocita` = %d", l, v);
-		if(l) {
-		    if(!isActive()) {
-			impostaAttivo(1);
-			aggiorna = 1;
-			// Valore iniziale = il valore impostato
-			//val = h * 3600 + m * 60 + s;
-			// Senno` come fa a conoscere la temporizzazione ?
-			inizializza();
-			// e programma un aggiornamento
-			//myTimer->start((1000 * val) / NTIMEICONS );
-			value = 0;
-			aggiorna = 1;
-		    }
-		} else {
-		    if(isActive()) {
-			impostaAttivo(0);
-			stato_noto = true ;
-			aggiorna = 1;
-			myTimer->stop();
-		    }
-		}
-	    } else {
-		qDebug("Frame misura con cosa = %d. Ignoro !!", c);
-		return;
+		val = 0;
+
 	    }
-	} else if(msg_open.IsNormalFrame()) {
-	    int c = atoi(msg_open.Extract_cosa());
-	    qDebug("Comando con cosa = %d", c);
-	    if ((c >= 1) && (c <= 30))  {
-		if (isActive()!=1) {
-		    impostaAttivo(1);
-		    aggiorna=1;
-		    val = 0;
-		    // Chiede subito la temporizzazione
-		    if(!temp_nota)
-			inizializza();
-		    // e programma un aggiornamento
-		    // &myTimer->start((1000 * val) / NTIMEICONS );
-		}
-	    } else if(c == 0) {
-		if (isActive()!=0) {
-		    impostaAttivo(0);
-		    aggiorna=1;
-		    stato_noto = true;
-		    temp_nota = true;
-		    myTimer->stop();
-		}
+	    break;
+	case device_status::DIMMER:
+	    qDebug("dimmer status variation, ignored");
+	    break;
+	case device_status::DIMMER100:
+	    qDebug("dimmer 100 status variation, ignored");
+	    break;
+	case device_status::NEWTIMED:
+	    qDebug("new timed device status variation");
+	    ds->read(device_status_new_timed::HH_INDEX, curr_hh);
+	    ds->read(device_status_new_timed::MM_INDEX, curr_mm);
+	    ds->read(device_status_new_timed::SS_INDEX, curr_ss);
+	    if(!curr_hh.get_val() && !curr_mm.get_val() && !curr_ss.get_val()){
+		qDebug("hh == mm == ss == 0, ignoring");
+		myTimer->stop();
+		val = 0;
+		break;
 	    }
+	    if(curr_hh.get_val()==255 && curr_mm.get_val()==255 && 
+	       curr_ss.get_val()==255) {
+		qDebug("hh == mm == ss == 255, ignoring");
+		break;
+	    }
+	    uchar hnow, mnow, snow;
+	    hnow = curr_hh.get_val();
+	    mnow = curr_mm.get_val();
+	    snow = curr_ss.get_val();
+	    int tmpval = (hnow * 3600) + (mnow * 60) + snow;
+	    if(tmpval == val) return;
+	    val = tmpval ;
+	    impostaAttivo((val != 0));
+	    if(!val) 
+		myTimer->stop();
+	    else if(!myTimer->isActive())
+		myTimer->start((1000 * val) / NTIMEICONS);
+	    qDebug("tempo = %d %d %d", hnow, mnow, snow);
+	    aggiorna = true;
+	    break;
 	}
+	++(*dsi);
     }
-    if (aggiorna) {
+    if(aggiorna) {
 	qDebug("invoco Draw con value = %d", value);
         Draw();
     }
@@ -1833,15 +1924,22 @@ void attuatPuls::inizializza()
 amplificatore::amplificatore( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon )
         : bannRegolaz( parent, name )
         { 
+	    qDebug("amplificatore::amplificatore()");
     setRange(1,9);
     SetIcons( IconaSx, IconaDx ,icon, inactiveIcon,(char)1 );
-    //qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
+    qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
     setAddress(indirizzo);
     connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));
     connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
     connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
     connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
-    setValue(5);
+    setValue(1);
+    impostaAttivo(0);
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_sound_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 int trasformaVol(int vol)
@@ -1869,6 +1967,8 @@ int trasformaVol(int vol)
         return(9);    
     return(-1);	
 }
+
+#if 0
 void amplificatore::gestFrame(char* frame)
 {
     openwebnet msg_open;
@@ -1922,10 +2022,52 @@ void amplificatore::gestFrame(char* frame)
     if (aggiorna)
         Draw();
 }
+#else
+void amplificatore::status_changed(QPtrList<device_status>sl)
+{
+    stat_var curr_lev(stat_var::LEV);
+    stat_var curr_status(stat_var::ON_OFF);
+    bool aggiorna = false;
+    qDebug("amplificatore::status_changed");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::AMPLIFIER :
+	    qDebug("Ampli status variation");
+	    ds->read(device_status_amplifier::ON_OFF_INDEX, curr_status);
+	    ds->read(device_status_amplifier::AUDIO_LEVEL_INDEX, curr_lev);
+	    qDebug("status = %d, lev = %d", curr_status.get_val(), 
+		   curr_lev.get_val());
+	    if((isActive() && !curr_status.get_val()) ||
+	       (!isActive() && curr_status.get_val())) {
+		impostaAttivo(curr_status.get_val() != 0);
+		aggiorna = true;
+	    }
+	    if(getValue() != curr_lev.get_val()) {
+		setValue(trasformaVol(curr_lev.get_val()));
+		aggiorna = true ;
+	    }
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna)
+	Draw();
+}
+#endif
+
+
 void amplificatore:: Accendi()
 {
     openwebnet msg_open;
     
+    qDebug("amplificatore::Accendi()");
     msg_open.CreateNullMsgOpen();     
     msg_open.CreateMsgOpen("16", "3",getAddress(),"");
     emit sendFrame(msg_open.frame_open);     
@@ -1934,6 +2076,7 @@ void amplificatore:: Spegni()
 {
     openwebnet msg_open;
     
+    qDebug("amplificatore::Spegni()");
     msg_open.CreateNullMsgOpen();     
     msg_open.CreateMsgOpen("16", "13",getAddress(),"");
     emit sendFrame(msg_open.frame_open);     
@@ -1942,6 +2085,7 @@ void amplificatore:: Aumenta()
 {
     openwebnet msg_open;
     
+    qDebug("amplificatore::Aumenta()");
     msg_open.CreateNullMsgOpen();     
     msg_open.CreateMsgOpen("16", "1001",getAddress(),"");
     emit sendFrame(msg_open.frame_open);     
@@ -1950,6 +2094,7 @@ void amplificatore:: Diminuisci()
 {
     openwebnet msg_open;
     
+    qDebug("amplificatore::Diminuisci()");
     msg_open.CreateNullMsgOpen();     
     msg_open.CreateMsgOpen("16", "1101",getAddress(),"");
     emit sendFrame(msg_open.frame_open);     
@@ -1996,7 +2141,17 @@ grAmplificatori::grAmplificatori( QWidget *parent,const char *name,void *indiriz
 
 void grAmplificatori::setAddress(void*indirizzi)
 {
-    elencoDisp=*((QPtrList<QString>*)indirizzi);        
+    elencoDisp=*((QPtrList<QString>*)indirizzi);    
+#if 0
+    QPtrListIterator<QString> *lii =
+	new QPtrListIterator<QString>(elencoDisp);
+    QString *s;
+    qDebug("Indirizzi gruppi amplificatori:");
+    while( ( s = lii->current()) ) {
+	qDebug("INDIRIZZO = %s", s->ascii());
+	++(*lii);
+    }
+#endif
 }
 
 
@@ -2056,17 +2211,24 @@ void grAmplificatori::inizializza()
 ****************************************************************/
 
 
-sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo )
-        : bannCiclaz( parent, name )
-        {
-    
-    SetIcons( ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
+sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
+    : bannCiclaz( parent, name, 3)
+{
+    SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
+
+	
     setAddress(indirizzo);
     //     connect(this,SIGNAL(click()),this,SLOT(Attiva()));
-    connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
-    connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
-    connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
-    nascondi(BUT3);
+    if(vecchio) {
+	connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
+	connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
+	connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+	nascondi(BUT3);
+    } else {
+	myAux = new aux(NULL, name, ambdescr);
+	myAux->setBGColor(parentWidget(TRUE)->backgroundColor() );
+	myAux->setFGColor(parentWidget(TRUE)->foregroundColor() );
+    }
 }
 
 void sorgente::gestFrame(char*)
@@ -2106,14 +2268,15 @@ void sorgente::inizializza()
 ****************************************************************/
 
 
-banradio::banradio( QWidget *parent,const char *name,char* indirizzo )
-        : bannCiclaz( parent, name )
+banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, char *ambdescr )
+        : bannCiclaz( parent, name, nbut )
         {     
     SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
     setAddress(indirizzo);
-    myRadio = new radio(NULL,"radio");
+    myRadio = new radio(NULL,"radio", ambdescr);
     myRadio->setRDS("");
     myRadio->setFreq(0.00);
+    //myRadio->setAmbDescr(ambdescr);
     
     //     myRadio-> setBGColor(parentWidget(TRUE)->backgroundColor() );
     //     myRadio-> setFGColor(parentWidget(TRUE)->foregroundColor() );	
@@ -2121,9 +2284,12 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo )
     
     myRadio->setStaz((uchar)1);
     
-    connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
-    connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
-    connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+    if(nbut == 4) {
+	// Old difson
+	connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
+	connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
+	connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+    }
     
     connect(this  ,SIGNAL(dxClick()),myRadio,SLOT(showRadio()));
     connect(this , SIGNAL(dxClick()),this,SLOT(startRDS()));
@@ -2132,7 +2298,6 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo )
     connect(myRadio,SIGNAL(Closed()),this->parentWidget(FALSE)->parentWidget(FALSE),SLOT(show()));
     connect(myRadio,SIGNAL(Closed()),myRadio,SLOT(hide()));
     connect(myRadio,SIGNAL(Closed()),this,SLOT(stopRDS()));     
-    
     
     connect(myRadio,SIGNAL(decFreqAuto()),this,SLOT(decFreqAuto()));
     connect(myRadio,SIGNAL(aumFreqAuto()),this,SLOT(aumFreqAuto()));
@@ -2143,10 +2308,16 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo )
     connect(myRadio,SIGNAL(richFreq()),this,SLOT(richFreq()));
     
     //     myRadio->hide();
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_radio_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
+
 }
 
 
-
+#if 0
 void banradio::gestFrame(char*frame)
 {
     openwebnet msg_open;
@@ -2200,6 +2371,54 @@ void banradio::gestFrame(char*frame)
     if (aggiorna)
         myRadio->draw();
 }
+#else
+void banradio::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_freq(stat_var::FREQ);
+    stat_var curr_staz(stat_var::STAZ);
+    stat_var curr_rds0(stat_var::RDS0);
+    stat_var curr_rds1(stat_var::RDS1);
+    int val10;
+    bool aggiorna = false;
+    qDebug("bannradio::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    int tmp;
+    float freq;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::RADIO:
+	    qDebug("Radio status variation");
+	    ds->read(device_status_radio::FREQ_INDEX, curr_freq);
+	    ds->read(device_status_radio::STAZ_INDEX, curr_staz);
+	    ds->read(device_status_radio::RDS0_INDEX, curr_rds0);
+	    ds->read(device_status_radio::RDS1_INDEX, curr_rds1);
+	    freq = (float)curr_freq.get_val()/1000.0F;
+	    myRadio->setFreq(freq);
+	    myRadio->setStaz((uchar)curr_staz.get_val());
+	    char rds[9];
+	    tmp = curr_rds0.get_val();
+	    qDebug("rds0 = 0x%08x", tmp);
+	    memcpy((void *)rds, (void *)&tmp, 4);
+	    tmp = curr_rds1.get_val();
+	    qDebug("rds1 = 0x%08x", tmp);
+	    memcpy((void *)&rds[4], (void *)&tmp, 4);
+	    qDebug("*** setting rds to %s", rds);
+	    myRadio->setRDS(rds);
+	    aggiorna=1;
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna)
+	myRadio->draw();
+}
+#endif
 
 void banradio::show()
 {
@@ -2242,7 +2461,7 @@ void banradio::SetText( const char *text )
 void banradio::ciclaSorg()
 {
     openwebnet msg_open;
-    
+    qDebug("banradio::ciclaSorg()");
     msg_open.CreateMsgOpen("16","23","100","");	     
     emit sendFrame(msg_open.frame_open);      
 }
@@ -2461,6 +2680,7 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
 }
 
 
+#if 0
 void termoPage::gestFrame(char* frame)
 {    
     openwebnet msg_open;
@@ -2563,16 +2783,16 @@ void termoPage::gestFrame(char* frame)
                 else if   (!strcmp(msg_open.Extract_grandezza(),"13")) 
                 {
                     switch (atoi(msg_open.Extract_valori(0))){
-                        case 0:	val_imp=3;isOff=0;isAntigelo=0;break;
-                                case 1:	val_imp=4;isOff=0;isAntigelo=0;break;
-                                        case 2:	val_imp=5;isOff=0;isAntigelo=0;break;
-                                                case 3:	val_imp=6;isOff=0;isAntigelo=0;break;
-                                                        case 11:	val_imp=2;isOff=0;isAntigelo=0;break;
-                                                                    case 12:	val_imp=1;isOff=0;isAntigelo=0;break;
-                                                                                case 13:	val_imp=0;isOff=0;isAntigelo=0;break;
-                                                                                            case 4:	val_imp=0;isOff=1;isAntigelo=0;/*OFF*/break;
-                                                                                                    case 5:	val_imp=0;isOff=0;isAntigelo=1;/*LOCAL PROTECTION*/break;			
-                                                                                                                    }
+		    case 0:	val_imp=3;isOff=0;isAntigelo=0;break;
+		    case 1:	val_imp=4;isOff=0;isAntigelo=0;break;
+		    case 2:	val_imp=5;isOff=0;isAntigelo=0;break;
+		    case 3:	val_imp=6;isOff=0;isAntigelo=0;break;
+		    case 11:	val_imp=2;isOff=0;isAntigelo=0;break;
+		    case 12:	val_imp=1;isOff=0;isAntigelo=0;break;
+		    case 13:	val_imp=0;isOff=0;isAntigelo=0;break;
+		    case 4:	val_imp=0;isOff=1;isAntigelo=0;/*OFF*/break;
+		    case 5:	val_imp=0;isOff=0;isAntigelo=1;/*LOCAL PROTECTION*/break;			
+		    }
                     aggiorna=1;
                 }
                 else if   (!strcmp(msg_open.Extract_grandezza(),"0")) 
@@ -2643,6 +2863,216 @@ void termoPage::gestFrame(char* frame)
     if (aggiorna)
         Draw();
 }
+#else
+void termoPage::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_stat(stat_var::STAT);
+    stat_var curr_local(stat_var::LOCAL);
+    stat_var curr_sp(stat_var::SP);
+    stat_var curr_temp(stat_var::TEMPERATURE);
+    openwebnet msg_open;
+    bool aggiorna = false;
+    qDebug("termoPage::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::THERMR:
+	    qDebug("Th. regulator status variation");
+	    ds->read(device_status_thermr::STAT_INDEX, curr_stat);
+	    ds->read(device_status_thermr::LOCAL_INDEX, curr_local);
+	    ds->read(device_status_thermr::SP_INDEX, curr_sp);
+	    qDebug("stat = %d", curr_stat.get_val());
+	    qDebug("loc = %d", curr_local.get_val());
+	    qDebug("sp = %d", curr_sp.get_val());
+	    if (curr_stat.initialized()) {
+		switch(curr_stat.get_val()) {
+		case device_status_thermr::S_MAN:
+		    qDebug("stato S_MAN");
+		    stato = device_status_thermr::S_MAN;
+		    mostra(BUT1);
+		    mostra(BUT2);
+		    nascondi(ICON);
+		    tempImp->show();
+		    aggiorna = true;
+		    if (isShown()) {
+			((sottoMenu*)parentWidget())->
+			    setNavBarMode(4,&autoIco[0]);
+			((sottoMenu*)parentWidget())->forceDraw();
+		    }
+		    break;
+		case device_status_thermr::S_AUTO:
+		    qDebug("stato S_AUTO");
+		    stato = device_status_thermr::S_AUTO;
+		    nascondi(BUT1);
+		    nascondi(BUT2);
+		    nascondi(ICON);
+		    tempImp->show();
+		    aggiorna = true;
+		    if(isShown()) {
+			((sottoMenu*)parentWidget())->
+			    setNavBarMode(4,&manIco[0]);
+			((sottoMenu*)parentWidget())->forceDraw();
+		    }
+		    break;
+		case device_status_thermr::S_ANTIGELO:
+		    qDebug("stato S_ANTIGELO");
+		    stato = device_status_thermr::S_ANTIGELO;
+		    nascondi(BUT1);
+		    nascondi(BUT2);
+		    mostra(ICON);
+		    tempImp->hide();
+		    impostaAttivo(1);
+		    aggiorna = true;
+		    break;
+		case device_status_thermr::S_TERM:
+		    qDebug("stato S_TERM");
+		    nascondi(BUT1);
+		    nascondi(BUT2);
+		    mostra(ICON);
+		    tempImp->hide();
+		    impostaAttivo(1);
+		    aggiorna=1;	       
+		    stato = device_status_thermr::S_TERM;
+		    break;
+		case device_status_thermr::S_OFF:
+		    qDebug("stato S_OFF");
+		    mostra(ICON);
+		    nascondi(BUT1);
+		    nascondi(BUT2);	       
+		    tempImp->hide();
+		    impostaAttivo(0);
+		    aggiorna=1;
+		    stato = device_status_thermr::S_OFF;
+		    break;
+		default:
+		    qDebug("unk status");
+		    break;
+		}
+	    }
+	    if(curr_local.initialized()) {
+		qDebug("loc = %d", curr_local.get_val());
+		switch(curr_local.get_val()) {
+		case 0:	
+		    val_imp=3;
+		    isOff=0;
+		    isAntigelo=0;
+		    break;
+		case 1:	
+		    val_imp=4;
+		    isOff=0;
+		    isAntigelo=0;
+		    break;
+		case 2:	
+		    val_imp=5;
+		    isOff=0;
+		    isAntigelo=0;
+		    break;
+		case 3:	
+		    val_imp=6;
+		    isOff=0;
+		    isAntigelo=0;
+		    break;
+		case 11:	
+		    val_imp=2;
+		    isOff=0;
+		    isAntigelo=0;
+		    break;
+		case 12:	
+		    val_imp=1;
+		    isOff=0;
+		    isAntigelo=0;
+		    break;
+		case 13:	
+		    val_imp=0;
+		    isOff=0;
+		    isAntigelo=0;
+		    break;
+		case 4:	
+		    val_imp=0;
+		    isOff=1;
+		    isAntigelo=0;
+		    break;
+		case 5:	
+		    val_imp=0;
+		    isOff=0;
+		    isAntigelo=1;
+		    break;
+		}
+	    }
+	    if(curr_sp.initialized()) {
+		//Set Point
+		float icx;
+		char	tmp[10];   
+		icx = curr_sp.get_val();
+		qDebug("temperatura setpoint: %d",(int)icx);                    
+		memset(setpoint,'\000',sizeof(setpoint));
+		if (icx>=1000)
+		{
+		    strcat(setpoint,"-");
+		    icx=icx-1000;
+		}
+		icx/=10;
+		sprintf(tmp,"%.1f",icx);
+		strcat(setpoint,tmp);
+		strcat(setpoint,"\272C");
+		aggiorna=1;	       
+		break;
+	    }
+	case device_status::TEMPERATURE_PROBE:
+	    ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, 
+		     curr_temp);
+	    qDebug("temperature probe status variation");
+	    //Temperatura misurata
+	    float icx;
+	    char	tmp[10];   
+	    
+	    icx = curr_temp.get_val();
+	    qDebug("temperatura misurata: %d",(int)icx);
+	    memset(temp,'\000',sizeof(temp));
+	    if (icx>=1000)
+	    {
+		strcat(temp,"-");
+		icx=icx-1000;
+	    }
+	    icx/=10;
+	    sprintf(tmp,"%.1f",icx);
+	    qDebug("-1: tmp: %.1f - %s",icx, &tmp[0]);
+	    strcat(temp,tmp);
+	    qDebug("-1: temp: %s", &temp[0]);
+	    strcat(temp,"\272C");
+	    qDebug("-2: temp: %s", &temp[0]);
+	    aggiorna=1;	       
+	    char pippo[50];
+	    memset(pippo,'\000',sizeof(pippo));
+	    strcat(pippo,"*#4*");
+	    strcat(pippo,getAddress());
+	    strcat(pippo,"*14");
+	    strcat(pippo,"##");
+	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	    emit sendFrame(msg_open.frame_open);         	       
+	    ////	       
+	    //Richiesta via centrale     
+	    memset(pippo,'\000',sizeof(pippo));
+	    strcat(pippo,"*#4*#");
+	    strcat(pippo,getAddress());
+	    strcat(pippo,"##");
+	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	    emit sendFrame(msg_open.frame_open);   
+	    /////	       
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna)
+	Draw();
+}
+#endif
 
 
 char* termoPage::getChi()
@@ -2791,20 +3221,75 @@ void termoPage::inizializza()
 **zonaAnti
 ****************************************************************/
 
-zonaAnti::zonaAnti( QWidget *parent,const char *name,char* indirizzo,char* IconActive,char* IconDisactive,/*char *icon ,char *pressedIcon ,*/int period,int number )
-        : bannOnOff( parent, name )
+void zonaAnti::setIcons()
+{
+    if(isActive()) {
+	banner::SetIcons((unsigned char)1, sparzIName);
+	banner::SetIcons((unsigned char)3, zonaAttiva);
+    } else {
+	banner::SetIcons((unsigned char)1, parzIName);
+	banner::SetIcons((unsigned char)3, zonaNonAttiva);
+    }
+}
+
+
+zonaAnti::zonaAnti( QWidget *parent,const char *name,char* indirizzo,char* iconzona, char* IconDisactive, char *IconActive, char *iconSparz, /*char *icon ,char *pressedIcon ,*/int period,int number )
+        : bannOnIcons ( parent, name )
         {       
     char    pippo[MAX_PATH];
     char    pluto[MAX_PATH];
     
+    
+    
     setAddress(indirizzo);
-    getZoneName(IconActive, &pippo[0], indirizzo, sizeof(pippo));
-    getZoneName(IconDisactive, &pluto[0], indirizzo, sizeof(pluto));
-    SetIcons( NULL, NULL,&pippo[0],&pluto[0]);    
+    qDebug("zonaAnti::zonaAnti()");
+    // Mail agresta 22/06
+    parzIName = "cfg/skin/btnparzializza.png";
+    sparzIName = "cfg/skin/btnsparzializza.png";
+    getZoneName(iconzona, &pippo[0], indirizzo, sizeof(pippo));
+    //getZoneName(IconDisactive, &pluto[0], indirizzo, sizeof(pluto));
+    qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
+    zonaAnti::SetIcons(sparzIName, &pippo[0], IconDisactive);
+    zonaAttiva = IconActive;
+    zonaNonAttiva = IconDisactive;
     setChi("5");
+    already_changed = false;
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_zonanti_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));    
+    // Button will be disabled later
+    //nascondi(BUT2);
+    //nascondi(BUT1);
+    abilitaParz(true);
+    setIcons();
+    zonaAnti::Draw();
 }
 
+void zonaAnti::SetIcons(char *i1, char *i2, char *i3)
+{
+    banner::SetIcons((unsigned char)1, i1);
+    banner::SetIcons((unsigned char)2, i2);
+    banner::SetIcons((unsigned char)3, i3);
+}
 
+void zonaAnti::Draw()
+{
+    qDebug("sxButton = %p", sxButton);
+    sxButton->setPixmap(*Icon[1]);
+    if (pressIcon[1])
+	sxButton->setPressedPixmap(*pressIcon[1]);
+    BannerIcon->setPixmap(*Icon[2]);
+    BannerIcon2->setPixmap(*Icon[3]);
+}
+
+int zonaAnti::getIndex(void)
+{
+    return atoi(&(getAddress()[1]));
+}
+
+#if 0
 void zonaAnti::gestFrame(char* frame)
 {    
     openwebnet msg_open;
@@ -2837,16 +3322,92 @@ void zonaAnti::gestFrame(char* frame)
             }
         }
     }    
-    if (aggiorna)
+    if (aggiorna) {
+	setIcons();
         Draw();
+    }
 }
-
+#else
+void zonaAnti::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_status(stat_var::ON_OFF);
+    bool aggiorna = false;
+    qDebug("zonAnti::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	int s;
+	switch (ds->get_type()) {
+	case device_status::ZONANTI:
+	    qDebug("Zon.anti status variation");
+	    ds->read(device_status_zonanti::ON_OFF_INDEX, curr_status);
+	    s = curr_status.get_val();
+	    qDebug("stat is %d", s);
+	    if(!isActive() && s) {
+		impostaAttivo(1);
+		qDebug("new status = %d", s);
+		aggiorna = true;
+	    } else if(isActive() && !s) {
+		impostaAttivo(0);
+		qDebug("new status = %d", s);
+		aggiorna = true;
+	    }
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna) {
+	if(!already_changed) {
+	    already_changed = true;
+	    emit(partChanged(this));
+	}
+	setIcons();
+	Draw();
+    }
+}
+#endif
 
 
 char* zonaAnti::getChi()
 {
     return("5");
 }
+
+void zonaAnti::ToggleParzializza()
+{
+    qDebug("zonaAnti::ToggleParzializza()");
+    impostaAttivo(!isActive());
+    if(!already_changed) {
+	already_changed = true;
+	emit(partChanged(this));
+    }
+    setIcons();
+    Draw();
+}
+
+void zonaAnti::abilitaParz(bool ab)
+{
+    qDebug("zonaAnti::abilitaParz(%d)", ab);
+    if(ab) {
+	connect(this, SIGNAL(sxClick()), this, SLOT(ToggleParzializza()));
+	mostra(BUT1);
+    } else {
+	disconnect(this, SIGNAL(sxClick()), this, SLOT(ToggleParzializza()));
+	nascondi(BUT1);
+    }
+    Draw();
+}
+
+void zonaAnti::clearChanged()
+{
+    already_changed = false;
+}
+
 
 void zonaAnti::inizializza()
 { 
@@ -2879,15 +3440,36 @@ impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn,
     strcat(pippo,strstr(IconActive,"."));
     SetIcons(  IconInfo,IconOff,&pippo[0],IconOn,IconActive);
     setChi("5");
+    send_part_msg = false;
+    memset(le_zone, 0, sizeof(le_zone));
     nascondi(BUT2);
+#if 0
+    // orig
     impostaAttivo(2);
+#else
+    impostaAttivo(0);
+#endif
+    // BUT2 and 4 are actually both on the left of the banner.
+#if 0
+    // orig
     connect(this,SIGNAL(dxClick()),this,SLOT(Inserisci()));
     connect(this,SIGNAL(cdxClick()),this,SLOT(Disinserisci()));               
     //     connect(this,SIGNAL(sxClick()),this,SIGNAL(CodaAllarmi()));                
+#else
+    connect(this,SIGNAL(dxClick()),this,SLOT(Disinserisci()));
+    connect(this,SIGNAL(cdxClick()),this,SLOT(Inserisci()));  
+#endif
     connect(this,SIGNAL(sxClick()), parentWidget(),SIGNAL(goDx()));
+
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_impanti_device();
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
+
 }
 
-
+#if 0
 void impAnti::gestFrame(char* frame)
 {    
     openwebnet msg_open;
@@ -2911,7 +3493,9 @@ void impAnti::gestFrame(char* frame)
                     nascondi(BUT1);
                     mostra(BUT2);
                     aggiorna=1;
+		    qDebug("IMPIANTO INSERITO !!");
                     emit(impiantoInserito());
+		    emit(abilitaParz(false));
                 }
             }
             else if (!strcmp(msg_open.Extract_cosa(),"9")) 
@@ -2922,6 +3506,10 @@ void impAnti::gestFrame(char* frame)
                     nascondi(BUT2);
                     mostra(BUT4);		    
                     aggiorna=1;
+		    qDebug("IMPIANTO DISINSERITO !!");
+		    emit(abilitaParz(true));
+		    emit(clearChanged());
+		    send_part_msg = false;
                 }
             }
         }
@@ -2929,11 +3517,62 @@ void impAnti::gestFrame(char* frame)
     if (aggiorna)
         Draw();
 }
+#else
+void impAnti::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_status(stat_var::ON_OFF);
+    bool aggiorna = false;
+    qDebug("impAnti::status_changed()");
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	int s;
+	switch (ds->get_type()) {
+	case device_status::IMPANTI:
+	    qDebug("Imp.anti status variation");
+	    ds->read(device_status_impanti::ON_OFF_INDEX, curr_status);
+	    s = curr_status.get_val();
+	    qDebug("status = %d", s);
+	    if(!isActive() && s) {
+		impostaAttivo(2);
+		nascondi(BUT4);
+		nascondi(BUT1);
+		mostra(BUT2);
+		aggiorna=1;
+		qDebug("IMPIANTO INSERITO !!");
+		emit(impiantoInserito());
+		emit(abilitaParz(false));
+	    } else if(isActive() && !s) {
+		impostaAttivo(0);
+		nascondi(BUT2);
+		mostra(BUT4);		    
+		aggiorna=1;
+		qDebug("IMPIANTO DISINSERITO !!");
+		emit(abilitaParz(true));
+		emit(clearChanged());
+		send_part_msg = false;		
+	    }
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
+    }
+    if(aggiorna)
+	Draw();
+}
+#endif
 
 void impAnti::Inserisci()
 {
-    tasti = new tastiera(NULL, "");
-    connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert(char*)));
+    bool s[MAX_ZONE];
+    for(int i=0; i<MAX_ZONE; i++)
+	s[i] = le_zone[i]->isActive() ;
+    tasti = new tastiera_con_stati(s, NULL, "");
+    connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
     tasti->setBGColor(backgroundColor());
     tasti->setFGColor(foregroundColor());
     tasti->setMode(tastiera::HIDDEN);
@@ -2955,25 +3594,62 @@ void impAnti::Disinserisci()
 }
 
 
-void impAnti::Insert(char* pwd)
-{   
-    if (pwd)
-    {
-        openwebnet msg_open;
-        char    pippo[50];
-        
-        memset(pippo,'\000',sizeof(pippo));
-        strcat(pippo,"*5*36#");
-        strcat(pippo,pwd);
-        strcat(pippo,"*0##");
-        msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-        emit sendFrame(msg_open.frame_open);    
-    }
-    parentWidget()->show();       
+void impAnti::Insert1(char* pwd)
+{  
+    openwebnet msg_open;
+    char    pippo[50];
     
+    if (!pwd) 
+	goto end;
+    passwd = pwd;
+    
+    qDebug("impAnti::Insert()");
+    if(!send_part_msg) {
+	Insert3();
+	goto end;
+    }
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*5*50#");
+    strcat(pippo,pwd);
+    strcat(pippo,"#");
+    for(int i=0; i<MAX_ZONE; i++)
+	strcat(pippo, le_zone[i] && le_zone[i]->isActive() ? 
+	       "0" : "1");
+    strcat(pippo,"*0##");
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    qDebug("sending part frame %s", pippo);
+    emit sendFrame(msg_open.frame_open);
+    send_part_msg = false;
+    part_msg_sent = true;
+ end:
+    parentWidget()->show();
 }
+
+void impAnti::Insert2()
+{
+    // 5 seconds between first open ack and open insert messages
+    connect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
+    // single shot timer
+    insert_timer.start(5000, TRUE);
+}
+
+void impAnti::Insert3()
+{
+    char *pwd = passwd;
+    openwebnet msg_open;
+    char    pippo[50];
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*5*36#");
+    strcat(pippo,pwd);
+    strcat(pippo,"*0##");
+    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+    emit sendFrame(msg_open.frame_open);    
+    parentWidget()->show();       
+}
+
 void impAnti::DeInsert(char* pwd)
 {
+    qDebug("impAnti::DeInsert()");
     if (pwd)
     {
         openwebnet msg_open;
@@ -2990,36 +3666,44 @@ void impAnti::DeInsert(char* pwd)
     //    qDebug("disinserisco con %s", pwd);
 }
 
+void impAnti::openAckRx()
+{
+    qDebug("impAnti::openAckRx()");
+    if(!part_msg_sent) return;
+    part_msg_sent = false;
+    qDebug("waiting 5 seconds before sending insert message");
+    // Do second step of insert
+    Insert2();
+}
+
+void impAnti::openNakRx()
+{
+    qDebug("impAnti::openNakRx()");
+    if(!part_msg_sent) return;
+    part_msg_sent = false;
+}
+
 char* impAnti::getChi()
 {
     return("5");
 }
 
+void impAnti::setZona(zonaAnti *za)
+{
+    int index = za->getIndex() - 1;
+    if((index >= 0) && (index < MAX_ZONE))
+	le_zone[index] = za;
+}
+
+void impAnti::partChanged(zonaAnti *za)
+{
+    qDebug("impAnti::partChanged");
+    send_part_msg = true;
+}
+
 void impAnti::inizializza()
 { 
     emit sendFrame("*#5*0##");    
-}
-
-
-/*****************************************************************
-**allarme
-****************************************************************/
-
-allarme::allarme( sottoMenu  *parent,const char *name,char* indirizzo,char* IconaDx )
-        : bannOnDx( parent, name )
-        {   
-    SetIcons( IconaDx,1);    
-    //    setAddress(indirizzo);
-    connect(this,SIGNAL(click()),this,SLOT(muoio()));
-    //     connect(this,SIGNAL(click()),parent,SIGNAL(itemKilled()));
-    //     qDebug(parent->name());
-    connect(this,SIGNAL(itemKilled()),parent,SIGNAL(itemKilled()));
-}
-
-void allarme::muoio()
-{    
-    emit (itemKilled());
-    emit killMe(this);
 }
 
 
@@ -3059,6 +3743,12 @@ gesModScen::gesModScen( QWidget *parent, const char *name ,char*indirizzo,char* 
     connect(this,SIGNAL(csxClick()),this,SLOT(startProgScen()));
     connect(this,SIGNAL(cdxClick()),this,SLOT(cancScen()));    
     
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_modscen_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
+
 }
 
 void gesModScen::attivaScenario()
@@ -3141,6 +3831,8 @@ void gesModScen::cancScen()
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
 }
+
+#if 0
 void gesModScen::gestFrame(char* frame)
 {
     openwebnet msg_open;
@@ -3232,6 +3924,87 @@ void gesModScen::gestFrame(char* frame)
         Draw();
     }
 }
+#else
+void gesModScen::status_changed(QPtrList<device_status> sl)
+{
+    stat_var curr_status(stat_var::STAT);
+    qDebug("gesModScen::status_changed");
+    QPtrListIterator<device_status> *dsi = 
+	new QPtrListIterator<device_status>(sl);
+    bool aggiorna = false;
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::MODSCEN:
+	    qDebug("Modscen status change");
+	    ds->read((int)device_status_modscen::STAT_INDEX, curr_status);
+	    switch(curr_status.get_val()) {
+	    case device_status_modscen::PROGRAMMING_START:
+		qDebug("Programming start");
+		if (sendInProgr) {	
+                    SetIcons(uchar(0),&iconStop[0]);       
+                    disconnect(this,SIGNAL(sxClick()), this,
+			       SLOT(attivaScenario()));
+                    connect(this,SIGNAL(sxClick()), this,
+			    SLOT(stopProgScen()));
+                    in_progr=0;
+                } else {
+                    in_progr=1;
+                    exitInfo();
+                }
+                aggiorna=1;
+		break;
+	    case device_status_modscen::LOCKED:
+		qDebug("Locked");
+		bloccato=1;
+                exitInfo();
+                aggiorna=1;
+		break;
+	    case device_status_modscen::BUSY:
+		qDebug("Busy");
+		in_progr=1;
+                exitInfo();
+                aggiorna=1;
+		break;
+	    case device_status_modscen::PROGRAMMING_STOP:
+		qDebug("Programming stop");
+		SetIcons(uchar(0),&iconOn[0]);       
+                disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
+                connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
+                disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
+                aggiorna=1;
+                in_progr=0;
+		break;
+	    case device_status_modscen::UNLOCKED:
+		qDebug("Unlocked");
+		SetIcons(uchar(0),&iconOn[0]);       
+                disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
+                connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
+                disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
+                aggiorna=1;
+                bloccato=0;
+		break;
+	    default:
+		qDebug("Unknown status %d", curr_status.get_val());
+	    }
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
+    }
+    if (aggiorna) {
+//        qDebug("bloccato= %d * in_progr= %d",bloccato,in_progr);
+        if (bloccato || in_progr)
+            nascondi(BUT2);
+        else
+            mostra(BUT2);
+        Draw();
+    }
+}
+#endif
 
 void gesModScen::inizializza()
 {   
@@ -3273,9 +4046,6 @@ scenEvo::scenEvo( QWidget *parent, const char *name,
       co->set_serial_number(serial_number);
       qDebug("connecting richStato and frame_available signals");
       connect(co, SIGNAL(verificata()), this, SLOT(trig()));
-      connect(co, SIGNAL(richStato(char *)), this, SIGNAL(richStato(char *)));
-      connect(this, SIGNAL(frame_available(char *)), co, 
-	      SLOT(handle_frame(char *)));
       ++(*ci);
     }
     delete ci;
@@ -3488,7 +4258,10 @@ void scenEvo::gestFrame(char* frame)
 {
     qDebug("scenEvo::gestFrame()");
 #if 1
+#if 0
+    // devices talk directly to comm clients
     emit(frame_available(frame));
+#endif
 #else
     scenEvo_cond *co;
     QPtrListIterator<scenEvo_cond> *ci = 
@@ -3698,9 +4471,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
     if(!cnm) {
 	qDebug("Creating call notifier manager");
 	cnm = new call_notifier_manager();
-	//connect(this, SLOT(gestFrame(char *)), cnm, SLOT(gestFrame(char *)));
-	connect(this, SIGNAL(frame_available(char *)), 
-		cnm, SLOT(gestFrame(char *)));
 	connect(cnm, SIGNAL(frame_captured(call_notifier *)),
 		this, SLOT(frame_captured_handler(call_notifier *)));
 	connect(cnm, SIGNAL(call_notifier_closed(call_notifier *)),
@@ -3719,7 +4489,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 void postoExt::gestFrame(char *s)
 {
     qDebug("postoExt::gestFrame()");
-    emit frame_available(s);
+    // devices talk directly to comm clients
 }
 
 void postoExt::frame_captured_handler(call_notifier *cn)
@@ -3802,4 +4572,227 @@ void postoExt::get_key_icon(QString& out)
 void postoExt::get_close_icon(QString& out)
 {
     out = close_icon;
+}
+
+
+/*****************************************************************
+** Ambiente diffusione sonora multicanale
+****************************************************************/
+
+ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* IconaSx,char* IconaDx, char *icon, QPtrList<dati_sorgente_multi> *ls, QPtrList<dati_ampli_multi> *la, diffSonora *ds)
+        : bannBut2Icon( parent, name )
+        {       
+	    qDebug("ambDiffSon::ambDiffSon() : "
+		   "%s %s %s %s", indirizzo, IconaSx, IconaDx, icon);
+	    char zoneIcon[50];
+	    getAmbName(IconaSx, zoneIcon, (char *)indirizzo, sizeof(zoneIcon));
+	    qDebug("zoneIcon = %s", zoneIcon);
+    SetIcons(icon, zoneIcon, IconaDx);
+    Draw();
+    //setAddress(indirizzo);
+    connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
+#if 0
+    lista_sorg = ls;
+    lista_ampli = la;
+#endif
+    //diffson = new diffSonora(NULL, "Diff sonora ambiente");
+    diffson = ds;
+    QPtrListIterator<dati_sorgente_multi> *lsi = 
+      new QPtrListIterator<dati_sorgente_multi>(*ls);
+    lsi->toFirst();
+    dati_sorgente_multi *sm;
+    while( ( sm = lsi->current() ) != 0) {
+	qDebug("Adding source (%s %s %s %s)", 
+	       sm->descr->at(0)->ascii(),
+	       sm->I1, sm->I2, sm->I3);
+	QString *dove = new QString(
+	      QString::number(100 + 
+			      QString((const char *)indirizzo).toInt() * 10 +
+			      QString((const char *)sm->indirizzo).toInt(),
+			      10));
+	qDebug("Source where = %s", dove->ascii());
+	diffson->addItem(sm->tipo, (char *)sm->descr->at(0)->ascii(), 
+			 (char *)dove->ascii(),
+			 sm->I1, sm->I2, sm->I3, "", sm->modo, 0, 
+			 (char *)name);
+	++(*lsi);
+    }
+    QPtrListIterator<dati_ampli_multi> *lai = 
+      new QPtrListIterator<dati_ampli_multi>(*la);
+    lai->toFirst();
+    dati_ampli_multi *am;
+    while( ( am = lai->current() ) != 0) {
+	qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
+	       (char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
+	QString *dove = new QString(
+	      QString::number((QString((const char *)am->indirizzo).toInt())));
+	qDebug("Amplifier where = %s", dove->ascii());
+	diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
+			 (char *)dove->ascii(),
+			 am->I1, am->I2, am->I4, am->I3, am->modo);
+	++(*lai);
+    }
+}
+
+#if 0
+void ambDiffSon::addAmpli(char tipo, char *descrizione, void *indirizzo, 
+			  char *IconaSx, char *IconaDx, char *icon, 
+			  char *pressedIcon, int modo, int numframe)
+{
+    qDebug("ambDiffSon::addAmpli");
+    diffson->addItem(tipo, descrizione, indirizzo, IconaSx, IconaDx, icon,
+		     pressedIcon, modo, numframe);
+}
+#endif
+
+void ambDiffSon::Draw()
+{
+    qDebug("ambDiffSon::Draw()");
+    sxButton->setPixmap(*Icon[0]);
+    if (pressIcon[0])
+	sxButton->setPressedPixmap(*pressIcon[0]);
+    BannerIcon->repaint();
+    BannerIcon->setPixmap(*(Icon[1]));
+    BannerIcon->repaint();
+    BannerIcon2->repaint();
+    BannerIcon2->setPixmap(*(Icon[3]));
+    BannerIcon2->repaint();
+    BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+    BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+    BannerText->setText(testo);
+}
+
+void ambDiffSon::configura()
+{
+    qDebug("ambDiffSon::configura()");
+    diffson->forceDraw();
+    diffson->showFullScreen();
+}
+
+/*****************************************************************
+** Insieme ambienti diffusione sonora multicanale
+****************************************************************/
+
+insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *indirizzo,char* Icona1,char* Icona2, QPtrList<dati_sorgente_multi> *ls, QPtrList<dati_ampli_multi> *la, diffSonora *ds)
+        : bannButIcon( parent, (char *)names->at(0)->ascii() )
+        {       
+	    qDebug("insAmbDiffSon::insAmbDiffSon() : "
+		   "%s %s %s", indirizzo, Icona1, Icona2);
+    SetIcons(Icona1, Icona2);
+    Draw();
+    //setAddress(indirizzo);
+    connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
+    diffson = ds;
+    QPtrListIterator<dati_sorgente_multi> *lsi = 
+      new QPtrListIterator<dati_sorgente_multi>(*ls);
+    lsi->toFirst();
+    dati_sorgente_multi *sm;
+    while( ( sm = lsi->current() ) != 0) {
+	qDebug("Adding source (%s %s %s)", sm->I1, sm->I2, sm->I3);
+	diffson->addItem(sm->tipo, (char *)sm->descr->at(0)->ascii(), 
+			 sm->indirizzo,
+			 sm->I1, sm->I2, sm->I3, "", sm->modo, 0,
+			 (char *)names->at(0)->ascii());
+	++(*lsi);
+    }
+    QPtrListIterator<dati_ampli_multi> *lai = 
+      new QPtrListIterator<dati_ampli_multi>(*la);
+    lai->toFirst();
+    dati_ampli_multi *am;
+    while( ( am = lai->current() ) != 0) {
+	qDebug("Adding amplifier group(%d)", am->tipo);
+#if 1
+	QPtrListIterator<QString> *lsi = 
+	  new QPtrListIterator<QString>(*(am->descr));
+	QPtrListIterator<QString> *lii =
+	    new QPtrListIterator<QString>(*(QPtrList<QString> *)
+					  (am->indirizzo));
+	QString *s, *i;
+	while( ( s = lsi->current()) ) {
+	    i = lii->current();
+	    qDebug("DESCR = %s", s->ascii());
+	    if(i)
+		qDebug("INDIRIZZO = %s", i->ascii());
+	    QStringList qsl = QStringList::split(QChar(','), *i);
+	    QPtrList<QString> *indirizzi = new QPtrList<QString>();
+	    indirizzi->setAutoDelete(true);
+	    for(int j=0; j<qsl.count(); j++)
+		indirizzi->append(new QString(qsl[j]));
+	    diffson->addItem(am->tipo, (char *)s->ascii(), 
+			     indirizzi,
+			     am->I1, am->I2, am->I3, am->I4, am->modo);
+	    ++(*lsi);
+	    ++(*lii);
+	}
+#endif
+	++(*lai);
+    }
+}
+
+void insAmbDiffSon::Draw()
+{
+    qDebug("insAmbDiffSon::Draw()");
+    sxButton->setPixmap(*Icon[1]);
+    if (pressIcon[0])
+	sxButton->setPressedPixmap(*pressIcon[0]);
+    BannerIcon->repaint();
+    BannerIcon->setPixmap(*(Icon[0]));
+    BannerIcon->repaint();
+    BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+    BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+    BannerText->setText(testo);
+}
+
+void insAmbDiffSon::configura()
+{
+    qDebug("ambDiffSon::configura()");
+    hide();
+    diffson->forceDraw();
+    diffson->showFullScreen();
+}
+
+/*****************************************************************
+ ** Sorgente radio diffusione sonora multicanale
+****************************************************************/
+sorgenteMultiRadio::sorgenteMultiRadio( QWidget *parent,const char *name,char* indirizzo,char* Icona1,char* Icona2, char *Icona3, char *ambDescr)
+        : banradio( parent, name, indirizzo, 3, ambDescr )
+{       
+    qDebug("sorgenteMultiRadio::sorgenteMultiRadio() : "
+	   "%s %s %s", Icona1, Icona2, Icona3);
+    SetIcons(Icona1, Icona2, NULL, Icona3);
+    connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
+    //connect(this, SIGNAL(dxClick()), this, SLOT(configura()));
+    //connect(this, SIGNAL(csxClick()), this, SLOT(cicla()));
+}
+
+void sorgenteMultiRadio::attiva()
+{
+    qDebug("sorgenteMultiRadio::attiva()");
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+    emit sendFrame(msg_open.frame_open);   
+}
+
+/*****************************************************************
+ ** Sorgente aux diffusione sonora multicanale
+****************************************************************/
+sorgenteMultiAux::sorgenteMultiAux( QWidget *parent,const char *name,char* indirizzo,char* Icona1,char* Icona2, char *Icona3, char *ambdescr)
+        : sorgente( parent, name, indirizzo, false, ambdescr)
+{       
+    qDebug("sorgenteMultiAux::sorgenteMultiAux() : "
+	   "%s %s %s", Icona1, Icona2, Icona3);
+    SetIcons(Icona1, Icona2, NULL, Icona3);
+    connect(this, SIGNAL(dxClick()), myAux, SLOT(showAux()));
+    connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
+    connect(myAux, SIGNAL(Closed()), myAux, SLOT(hide()));
+    connect(myAux, SIGNAL(Closed()), this, SLOT(show()));
+    connect(myAux, SIGNAL(Btnfwd()), this, SLOT(aumBrano()));
+}
+
+void sorgenteMultiAux::attiva()
+{
+    qDebug("sorgenteAuxRadio::attiva()");
+    openwebnet msg_open;
+    msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+    emit sendFrame(msg_open.frame_open);   
 }

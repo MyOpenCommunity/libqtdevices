@@ -15,6 +15,7 @@
 #include "sottomenu.h"
 #include "impostatime.h"
 #include "diffsonora.h"
+#include "diffmulti.h"
 #include "sveglia.h"
 #include "genericfunz.h"
 
@@ -28,7 +29,7 @@ unsigned char tipoData=0;
 *
 *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
-                               diffSonora**dS, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG,\
+                               diffSonora**dS, diffmulti**_dm, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG,\
                                QColor* bg, QColor* fg1, QColor *fg2)
 {
     home=h;
@@ -42,6 +43,7 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu*
     automazioni=a;
     termo=t;
     difSon=dS;
+    dm=_dm;
     antintr=ant;
     pagDefault=pD;
     BtM=BM;
@@ -57,11 +59,14 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu*
     SecondForeground=*fg2;//QColor(255,0,0);
     //qDebug("scello2 %d",bg);
     page_item_list_img = new QPtrList<QString>;
+    page_item_list_img_m = new QPtrList<QString>;
     page_item_list_group = new QPtrList<QString>;
+    page_item_list_group_m = new QPtrList<QString>;
     page_item_list_txt = new QPtrList<QString>;
     page_item_list_txt_times = new QPtrList<QString>;
     page_item_cond = NULL;
     page_item_cond_list = new QPtrList<scenEvo_cond>;
+    page_item_descr_m = new QPtrList<QString>;
     page_item_unknown = "";
     //qDebug("scello3 %d",bg);
 }
@@ -72,10 +77,13 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu*
 xmlconfhandler::~xmlconfhandler()
 {
     delete page_item_list_img;
+    delete page_item_list_img_m;
     delete page_item_list_group;
+    delete page_item_list_group_m;
     delete page_item_list_txt;
     delete page_item_list_txt_times;
     delete page_item_cond_list;
+    delete page_item_descr_m;
 }
 
 
@@ -92,7 +100,9 @@ void xmlconfhandler::set_page_item_defaults()
     page_item_indirizzo=NULL;
     
     page_item_list_img->clear();
+    page_item_list_img_m->clear();
     page_item_list_group->clear();
+    page_item_list_group_m->clear();
     par1=par2=0;
     page_item_list_img->clear();
     page_item_list_txt->clear();
@@ -107,8 +117,11 @@ void xmlconfhandler::set_page_item_defaults()
     page_icon = "";
     page_item_who = "";
     page_item_type = "0";
+    page_item_mode = "0";
     page_item_softstart = 25;
     page_item_softstop = 25;
+    sstart.clear();
+    sstop.clear();
     itemNum=0;
 }
 
@@ -243,6 +256,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                         case CARICHI:
                         case TERMOREGOLAZIONE:
                         case DIFSON:
+			case DIFSON_MULTI:
                         case SCENARI:
                         case IMPOSTAZIONI: 				  // addbutton normali
 			case SCENARI_EVOLUTI:
@@ -281,11 +295,12 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                     //
                     // Aggiungo gli item delle pagine
                     //
-                    if ( ( CurTagL4.startsWith("device") || CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty() )
+                    if ( (( CurTagL4.startsWith("device") || CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty()))
                     {
                         sottoMenu *pageAct=NULL;
                         qDebug("INSERTED ITEM:ID %d",page_item_id);
                         qDebug("INS ITEM: %s",banTesti[page_item_id]);
+			qDebug("DESCR: %s", page_item_descr.ascii());
 			
                         /*		    for ( QString * MyPnt = page_item_list_img->first(); MyPnt; MyPnt= page_item_list_img->next() )
                         qWarning("IMG=%s su %d",MyPnt->ascii(),page_item_list_img->count());*/
@@ -350,6 +365,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			case VIDEOCITOFONIA:
 			    if(!pageAct)
 				pageAct = (*videocitofonia);
+#if 0
+			case DIFSON_MULTI:
+			    if(!pageAct)
+				pageAct = (*dm);
+#endif
                         case IMPOSTAZIONI:
                             if (!pageAct)
                             {
@@ -389,34 +409,47 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             {
                                     pnt=datiGen;
                                 }
-                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key, page_item_unknown)  ;
+                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key, page_item_unknown, sstart, sstop)  ;
 			    page_item_cond_list->clear();
                             break;			   
                         case ANTIINTRUSIONE:
                             //     qDebug("antiintr");
                             (*antintr)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  (char*)page_item_where.ascii(), (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii())  ;
                             break;
-                               case DIFSON:
-                            if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
-                            {			       
-                                strcpy(&pip[0], page_item_what.ascii());
-                                strcat(pip,"*");
+			case DIFSON:
+			  if ((!page_item_what.isNull()) && 
+				(!page_item_what.isEmpty())) {
+				strcpy(&pip[0], page_item_what.ascii());
+				strcat(pip,"*");
                                 strcat(pip,page_item_where.ascii());
-                            }
-                            else
+                            } else
                                 strcpy(&pip[0], page_item_where.ascii());
                             
-                            if (page_item_list_group->isEmpty())
-                            {
-                                    pnt=pip;
-                                }
-                            else
-                            {
-                                    pnt=page_item_list_group;
-                                }			
-                            
+                            if (page_item_list_group->isEmpty()) {
+				pnt=pip;
+			    } else {
+				pnt=page_item_list_group;
+			    }		       
+			    par1 = page_item_mode.toInt();
                             (*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  pnt/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2)  ;
+			    break;
+#if 1
+			case DIFSON_MULTI:
+			    strcpy(&pip[0], page_item_where.ascii());
+			    qDebug("**** DIFSON_MULTI address = %s", pip);
+			    qDebug("id = %d, page_item_descr = %s",
+				   page_item_id, page_item_descr.ascii());
+			    if((page_item_id == SORG_RADIO) || 
+			       (page_item_id==SORG_AUX) ||
+			       (page_item_id==AMBIENTE) ||
+			       (page_item_id==INSIEME_AMBIENTI)) {
+				page_item_descr_m->clear();
+				page_item_descr_m->append(new QString(page_item_descr));
+			    }
+                            (*dm)->addItem ((char)page_item_id, page_item_descr_m,  pip/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, QColor(0,0,0))  ;
+			    page_item_descr_m->clear();
                             break;
+#endif
                         case SPECIAL:
                                    qDebug("special");
                             switch(page_item_id)
@@ -443,6 +476,34 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                         
                         set_page_item_defaults();
                     } // if ( CurTagL4.startsWith("item") && CurTagL5.isEmpty() )
+		    else if (CurTagL4.startsWith("item") && 
+			      CurTagL5.startsWith("device") && 
+			      CurTagL6.isEmpty()) {
+			char pip[50];
+                        memset(&pip[0],'\000',sizeof(pip));
+                        void* pnt;
+			qDebug("DIFF SON MULTI END ELEMENT !!!!");
+                        qDebug("INSERTED ITEM:ID %d",page_item_id_m);
+                        qDebug("INS ITEM: %s",banTesti[page_item_id_m]);
+			qDebug("DESCR = %s", 
+			       (page_item_descr_m->at(0))->ascii());
+			strcpy(&pip[0], page_item_where_m.ascii());
+			
+			if (page_item_list_group_m->isEmpty()) {
+			    pnt=pip;
+			} else {
+			    qDebug("**** DIFSON_MULTI: multi address");
+			    pnt=page_item_list_group_m;
+			}
+			(*dm)->addItem((char)page_item_id_m, 
+#if 0
+				       (char *)page_item_descr_m.ascii(),
+#else
+				       page_item_descr_m,
+#endif
+				       pnt, 
+				       (char*)page_item_list_img_m->at(0)->ascii(), (char*)page_item_list_img_m->at(1)->ascii(), (char*)page_item_list_img_m->at(2)->ascii(), (char*)page_item_list_img_m->at(3)->ascii());
+		    }
                     else if ( CurTagL3.startsWith("page") && CurTagL4.isEmpty() )
                     {
                         // Esco dalla pagina
@@ -501,6 +562,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*antintr,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                       
                             QObject::connect(*antintr,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+			    QObject::connect(*antintr,SIGNAL(sendFramew(char*)),client_comandi,SLOT(ApriInviaFrameChiudiw(char*)));
+			    QObject::connect(client_comandi,SIGNAL(openAckRx()),*antintr,SIGNAL(openAckRx()));
+			    QObject::connect(client_comandi,SIGNAL(openNakRx()),*antintr,SIGNAL(openNakRx()));
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*antintr,SLOT(gesFrame(char *)));    
                             QObject::connect(*antintr,SIGNAL(Closed()),*antintr,SLOT(hide()));
                             
@@ -558,6 +622,25 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
                             QObject::connect(*difSon,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SIGNAL(freezed(bool)));
+                            //(*difSon)->inizializza();
+                            break;
+                        case DIFSON_MULTI:
+                            //	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
+                            //(*dm)->draw(); 
+			    (*dm)->forceDraw();
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
+                            QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(showFullScreen()));
+                            QObject::connect(*dm,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif                                          
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)     
+                            QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(show()));
+                            QObject::connect(*dm,SIGNAL(Closed()),*home,SLOT(show()));
+#endif                                      
+                            QObject::connect(*dm,SIGNAL(Closed()),*dm,SLOT(hide()));
+                            QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*dm,SLOT(gestFrame(char *)));
+                            QObject::connect(*dm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*dm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+                            QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SIGNAL(freezed(bool)));
                             //(*difSon)->inizializza();
                             break;
                         case SCENARI:
@@ -834,6 +917,16 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 pageAct=*illumino;		      
                                 //				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");
                                 break;
+			    case DIFSON_MULTI:
+				*dm = new diffmulti(NULL, "DIFSON_MULTI");
+				(*dm)->setBGColor(Background);
+				(*dm)->setFGColor(Foreground);
+				pageAct = *dm;
+				page_item_id_m = 0;
+				page_item_descr_m->clear();
+				page_item_where_m = "";
+				page_item_list_img_m->clear();
+				break;
                             case SCENARI:
                                 *scenari = new sottoMenu (NULL,"SCENARI");
                                 (*scenari)->setBGColor(Background);
@@ -918,8 +1011,9 @@ bool xmlconfhandler::characters( const QString & qValue)
                 {
                             page_descr = qValue;
 		}
-                else if (CurTagL4.startsWith("item") || 
-			 CurTagL4.startsWith("device"))
+                else if ((CurTagL4.startsWith("item") || 
+			 CurTagL4.startsWith("device")) &&
+			 (!CurTagL5.startsWith("device")))
                 {
                             CurTagL4_copy=CurTagL4;
 			    if(CurTagL4.startsWith("item"))
@@ -933,6 +1027,8 @@ bool xmlconfhandler::characters( const QString & qValue)
                                 //				qWarning("PAGEITEM:ID %d",page_item_id);
                             } else if (!CurTagL5.compare("descr"))
                                 page_item_descr = qValue;
+			    else if (!CurTagL5.compare("mode"))
+				page_item_mode = qValue;
 			    else if (!CurTagL5.compare("softstart"))
 				page_item_softstart = qValue.toInt( &ok, 10);
 			    else if (!CurTagL5.compare("softstop"))
@@ -953,6 +1049,12 @@ bool xmlconfhandler::characters( const QString & qValue)
                                     {
                                         page_item_list_group->append(new QString(qValue));
                                     }
+				    if (!CurTagL6.compare("softstart")) {
+					qDebug("**** QUA %d", qValue.toInt());
+					sstart.append(qValue.toInt());
+				    }
+				    if (!CurTagL6.compare("softstop"))
+					sstop.append(qValue.toInt());
                                 }
                             else if ((CurTagL5.startsWith("cimg"))||(!CurTagL5.compare("value"))||(!CurTagL5.compare("hour"))||(!CurTagL5.compare("minute")))
                             {
@@ -1090,7 +1192,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 				    page_item_action = qValue;
 				    qDebug("action = %s", qValue.ascii());
 				}
-			    } else if(!CurTagL5.compare("do_enable")) {
+			    } else if(!CurTagL5.compare("unable")) {
 				if(!CurTagL6.compare("value")) {
 				    if(!qValue.compare("0")) {
 					par1 = 0;
@@ -1163,7 +1265,35 @@ bool xmlconfhandler::characters( const QString & qValue)
 				    page_item_list_img->insert(3, s);
 				}
 			    }
-                        } // if (!CurTagL4.startsWith("item"))
+                        } // if (CurTagL4.startsWith("item"))
+		else if (CurTagL4.startsWith("item") && 
+			  CurTagL5.startsWith("device")) {
+		    // Multichannel sound system
+		    //qDebug("MULTI CHANNEL START ELEMENT");
+		    CurTagL5_copy=CurTagL5;
+		    CurTagL5_copy.remove("device");
+		    itemNum=CurTagL5_copy.toInt( &ok, 10 );
+		    if (!CurTagL6.compare("id")) {
+			page_item_id_m = qValue.toInt( &ok, 10 );
+			qWarning("PAGEITEM:ID %d",page_item_id_m);
+		    } else if (CurTagL6.startsWith("descr")) {
+			page_item_descr_m->append(new QString(qValue));
+			qDebug("DESCR = %s", qValue.ascii());
+		    } else if (CurTagL6.startsWith("where")) {
+			if(!CurTagL6.compare("where")) {
+			    page_item_where_m = qValue;
+			    qDebug("WHERE = %s", qValue.ascii());
+			}  else {
+			    page_item_list_group_m->append(new QString(qValue));
+			    qDebug("WHERE_MULTI %s", qValue.ascii());
+			}
+		    } else if(CurTagL6.startsWith("cimg")) {
+			QString sValue=qValue;
+			sValue.prepend(IMG_PATH);
+			qDebug("cimg %s", sValue.ascii());
+			page_item_list_img_m->append(new QString(sValue));
+		    }
+		} // CurTagL4.startsWith("item") && CurTagL5.startsWith("device")
                 else if (!CurTagL4.compare("command"))
                 {
                             if (!CurTagL5.compare("id"))

@@ -29,7 +29,7 @@ class bannCiclaz : public banner
 {
     Q_OBJECT
 public:
-     bannCiclaz( QWidget *, const char * );
+     bannCiclaz( QWidget *, const char *, int nbuts=4 );
 
 public slots:
 

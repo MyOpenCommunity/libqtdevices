@@ -78,16 +78,24 @@ int diffSonora::setBGPixmap(char* backImage)
 }
 
 
-int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame)
+int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int modo, int numFrame, char *ambdescr)
  {    
-    if  ( (tipo==SORGENTE) || (tipo==SORGENTE_RADIO) )
+    if  ( (tipo==SORGENTE) || (tipo==SORGENTE_RADIO))
     {     	
 	sorgenti-> setBGColor(backgroundColor() );
 	sorgenti-> setFGColor(foregroundColor() );	
-	sorgenti-> addItem(tipo , descrizione , indirizzo , icon, pressedIcon);	
+	sorgenti-> addItem(tipo , descrizione , indirizzo , icon, pressedIcon, 
+			   NULL, NULL, modo);	
+    } else if ((tipo == SORG_RADIO) || (tipo == SORG_AUX)) {
+	sorgenti-> setBGColor(backgroundColor() );
+	sorgenti-> setFGColor(foregroundColor() );	
+	sorgenti-> addItem(tipo , descrizione , indirizzo , IconaSx, IconaDx, 
+			   icon, NULL, modo, 0, QColor(0,0,0), ambdescr); 
+	banner *b = sorgenti->getLast();
+	connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
     }
     else 
-   {     
+    {     
 	amplificatori->addItem(tipo , descrizione , indirizzo ,IconaSx,IconaDx, icon, pressedIcon);
     }
      return(1);    
@@ -201,4 +209,20 @@ void diffSonora::fineVis()
  {
     isVisual=0;
     emit(Closed());
+    emit(closed(this));
 }
+
+
+#if 0
+// diffMulti implementation
+diffMulti::diffMulti( QWidget *parent, const char *name ) : 
+    diffSonora(parent, name)
+{  
+}
+
+int diffMulti::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame)
+{
+
+
+}
+#endif

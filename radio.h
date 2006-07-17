@@ -31,7 +31,7 @@ class  radio : public QWidget
 {
    Q_OBJECT
 public:
-    radio( QWidget *parent=0, const char *name=0 );
+    radio( QWidget *parent=0, const char *name=0, const char *amb="" );
  /*!
   \brief Sets the background color for the banner.
   
@@ -62,7 +62,7 @@ public:
    int 	setBGPixmap(char* );
    BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
    BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
-   BtLabel* rdsLabel,* radioName,*progrText;
+   BtLabel* rdsLabel,* radioName,*progrText, *ambDescr;
    QLCDNumber *freq;
 /*!
   \brief Sets the name of the tuner found in user configuration file
@@ -84,6 +84,10 @@ public:
   \brief Sets the RDS message of the syntonized station
 */     
    void 	setRDS(char*);
+/*!
+  \brief Sets amb. description
+*/
+   void         setAmbDescr(char *);
 /*!
   \brief Gets the RDS message of the syntonized station
 */     
@@ -197,6 +201,7 @@ private:
     float	frequenza;
     uchar	stazione;
     char 	rds[9];
+    char        amb[80];
     char 	nome[15];
     bool 	manual,wasManual;
     bannFrecce * bannNavigazione;

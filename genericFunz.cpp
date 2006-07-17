@@ -48,6 +48,17 @@ void getZoneName(char* name, char* pressName,char*zona, char len)
     }
 }
 
+void getAmbName(char *name, char *out, char *amb, char len)
+{
+    memset(out,'\000',len);
+    if (strstr(name,"."))
+    {
+	strncpy(out,name,strstr(name,".")-name);
+	strncat(out, amb, 1);
+	strcat(out,strstr(name,"."));
+    }
+}
+
 /*
 bool setCfgValue(char* file, int id, const char* campo, const char* valore,int serNumId)
 {

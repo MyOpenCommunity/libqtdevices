@@ -118,6 +118,8 @@ void banner::SetIcons( uchar idIcon, const char *actuallcon )
     Icon[idIcon]->load(actuallcon);
     
     getPressName((char*)actuallcon, & pressIconName[0],MAX_PATH);
+    if (!pressIcon[idIcon])
+        pressIcon[idIcon]= new QPixmap();
     pressIcon[idIcon]->load(&pressIconName[0]);
     
 }
@@ -972,6 +974,14 @@ void  banner::rispStato(char*){}
 
 void banner::hide(){QWidget::hide(); }
 void banner::show(){QWidget::show();}
+void banner::openAckRx(void)
+{
+    qDebug("openAckRx()");
+}
+void banner::openNakRx(void)
+{
+    qDebug("openNakRx()");
+}
 void banner::setSerNum(int s){serNum=s;}
 int    banner::getSerNum(){return(serNum);}
 char banner::getId(){return(id);}

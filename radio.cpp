@@ -30,7 +30,7 @@
 
 //#include "ban.h"
  
-radio::radio( QWidget *parent, const char *name )
+radio::radio( QWidget *parent, const char *name, const char *amb )
         : QWidget( parent, name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -57,28 +57,33 @@ radio::radio( QWidget *parent, const char *name )
     
     rdsLabel = new BtLabel(this,"Bottone di sinistra");
     radioName = new BtLabel(this,"Bottone di sinistra");
+    ambDescr = new BtLabel(this, "descrizione ambiente");
+    ambDescr->setAlignment(AlignHCenter|AlignTop);
+    ambDescr->setFont( QFont( "Helvetica", 12, QFont::Bold ) );
+    ambDescr->setText(amb);
     freq = new QLCDNumber(this,"pippo");
     progrText = new BtLabel(this,"progressivo stazione");
     freq->setSegmentStyle(QLCDNumber::Flat); 
     freq->setSmallDecimalPoint(TRUE);
     freq->setNumDigits(6);
-    freq->setGeometry(60,20,180,60);    
+    freq->setGeometry(60,40,180,60);    
     freq->setLineWidth(0);
     memoBut->setGeometry(60,190,120,60);
-    decBut->setGeometry(0,110,60,80);
-    aumBut->setGeometry(180,110,60,80);
-    autoBut->setGeometry(60,110,60,80);
-    manBut->setGeometry(120,110,60,80);
-    cicBut->setGeometry(0,20,60,60);
-    rdsLabel->setGeometry(0,80,240,30);
-    unoBut->setGeometry(15,110,60,60);
-    dueBut->setGeometry(90,110,60,60);
-    treBut->setGeometry(165,110,60,60);
-    quatBut->setGeometry(15,180,60,60);
-    cinBut->setGeometry(90,180,60,60);
-    cancBut->setGeometry(165,180,60,60);    
-    radioName->setGeometry(0,0,240,20);	       
-    progrText->setGeometry(65,35,35,30);
+    decBut->setGeometry(0,130,60,60);
+    aumBut->setGeometry(180,130,60,60);
+    autoBut->setGeometry(60,130,60,60);
+    manBut->setGeometry(120,130,60,60);
+    cicBut->setGeometry(0,40,60,60);
+    rdsLabel->setGeometry(0,100,240,30);
+    unoBut->setGeometry(15,130,60,60);
+    dueBut->setGeometry(90,130,60,60);
+    treBut->setGeometry(165,130,60,60);
+    quatBut->setGeometry(15,190,60,60);
+    cinBut->setGeometry(90,190,60,60);
+    cancBut->setGeometry(165,190,60,60);    
+    radioName->setGeometry(0,0,240,20);
+    ambDescr->setGeometry(0,20,240,20);
+    progrText->setGeometry(65,55,35,30);
     
     unoBut->hide();
     dueBut->hide();
@@ -241,6 +246,7 @@ void radio::setBGColor(QColor c)
     cicBut->setPaletteBackgroundColor(c);
     rdsLabel->setPaletteBackgroundColor(c);
     radioName->setPaletteBackgroundColor(c);
+    ambDescr->setPaletteBackgroundColor(c);
     unoBut->setPaletteBackgroundColor(c);
     dueBut->setPaletteBackgroundColor(c);
     treBut->setPaletteBackgroundColor(c);
@@ -260,6 +266,7 @@ void radio::setFGColor(QColor c)
     cicBut->setPaletteForegroundColor(c);
     rdsLabel->setPaletteForegroundColor(c);
     radioName->setPaletteForegroundColor(c);
+    ambDescr->setPaletteForegroundColor(c);
     unoBut->setPaletteForegroundColor(c);
     dueBut->setPaletteForegroundColor(c);
     treBut->setPaletteForegroundColor(c);
@@ -313,13 +320,18 @@ bool radio::isManual()
     return (manual);
 }
 
+void radio::setAmbDescr(char *d)
+{
+    ambDescr->setText(d);
+}
+
 void radio::draw()
 {
-     rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
-     rdsLabel->setFont( QFont( "Helvetica", 26, QFont::Bold ) );
-     radioName->setAlignment(AlignHCenter|AlignTop);
-     radioName->setFont( QFont( "Helvetica", 12, QFont::Bold ) );
-     radioName->setText(&nome[0]);
+    rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
+    rdsLabel->setFont( QFont( "Helvetica", 26, QFont::Bold ) );
+    radioName->setAlignment(AlignHCenter|AlignTop);
+    radioName->setFont( QFont( "Helvetica", 12, QFont::Bold ) );
+    radioName->setText(&nome[0]);
     rdsLabel->setText(&rds[0]);
     char fr[10];
     sprintf(fr,"%.2f",frequenza);

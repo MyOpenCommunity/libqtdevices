@@ -16,6 +16,7 @@
 #include "homepage.h"
 #include "sottomenu.h"
 #include "diffsonora.h"
+#include "diffmulti.h"
 #include "openclient.h"
 #include "antintrusione.h"
 #include "termoregolaz.h"
@@ -69,6 +70,7 @@ public:
     BtMain ( QWidget *parent=0, const char *name=0,QApplication*a=NULL);
     homePage * Home, *specPage;
     sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
+    diffmulti *dm;
     termoregolaz *termo;
     diffSonora *difSon;
     antintrusione* antintr;

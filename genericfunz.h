@@ -21,6 +21,10 @@ void getPressName(char*, char*,char);
   The ".png" file name is converted into a "[number]p.png" file name. The first argument is the name to convert, the second is the converted name gave back from the procedure,  the third is a string like "zn" where n is the number of the \a antiintrusion \a zone and the fourth is the length of the file name.
 */     
 void getZoneName(char* , char* ,char*, char );
+/*!
+  Like getZoneName, but receives an "ambiente" number
+*/
+void getAmbName(char *, char *, char *, char);
  /*!
   \brief Sets the contrast of the device.
   

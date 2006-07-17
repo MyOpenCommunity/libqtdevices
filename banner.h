@@ -334,6 +334,14 @@ public slots:
   \brief Must be reimplemented to do something when showing the banner.
 */        
    virtual void show();
+/*!
+  \brief Invoked on open ack reception
+*/
+   virtual void openAckRx();
+/*!
+  \brief Invoked on open nak reception
+*/
+   virtual void openNakRx();
 private slots:
     void 	animate();
 signals:
@@ -402,6 +410,10 @@ signals:
   \brief Emitted when the banner decide send an \a Open \a frame to the system.
 */    
   virtual void sendFrame(char*);
+/*!
+  \brief As above, but we want to wait for the relevant open ack message
+*/
+  virtual void sendFramew(char*);
 /*!
   \brief Emitted when the banner decide to die and to be removed from the list containig it.
 */    

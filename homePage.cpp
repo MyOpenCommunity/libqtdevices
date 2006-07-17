@@ -99,6 +99,8 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 	case CARICHI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Carichi() )); break;
 	case TERMOREGOLAZIONE:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Termoregolazione()) ); break;		  
 	case DIFSON:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Difson() )); break;
+    case DIFSON_MULTI:
+	connect(b1,SIGNAL(clicked()),this, SIGNAL(Difmulti() )); break;
 	case SCENARI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Scenari() )); break;
 	case IMPOSTAZIONI:   connect(b1,SIGNAL(clicked()),this, SIGNAL(Settings() )); break;
 	case SPECIAL:

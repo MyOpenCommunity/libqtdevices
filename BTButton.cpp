@@ -287,8 +287,11 @@ void BtButton::drawButton( QPainter *paint )
     
 //  style().drawControl(QStyle::CE_PushButton, paint, this, rect(), colorGroup(), flags);
     
-    
+ #if 0   
     //drawButtonLabel( paint );
+#else
+    drawButtonLabel( paint );
+#endif
     
 
     

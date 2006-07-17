@@ -254,7 +254,7 @@ class device_condition : public QObject {
     //! Translates current trigger condition to open
     virtual void get_condition_value(QString&);
     //! Gets condition value
-    int get_condition_value(void);
+    virtual int get_condition_value(void);
     //! Gets condition's meas unit
     virtual void get_unit(QString&);
     //! Shows condition
@@ -285,6 +285,8 @@ class device_condition : public QObject {
     void set_pul(bool);
     //! Set device group
     void set_group(int);
+    //! Set enabled/disabled
+    void setEnabled(bool);
     //! Returns true when actual condition is satisfied
     bool isTrue(void);
 public slots:
@@ -295,7 +297,7 @@ public slots:
     //! Invoked when OK button is pressed
     void OK();
     //! Invoked by device when status changes
-    virtual void status_changed(device_status *);
+    virtual void status_changed(QPtrList<device_status>);
     //! Invoked when a frame is available
     void handle_frame(char *s);
 signals:
@@ -339,7 +341,7 @@ class device_condition_light_status : public device_condition
 #endif
 public slots:
     //! Invoked when status changes
-    void status_changed(device_status *ds);
+    void status_changed(QPtrList<device_status>);
 };
 
 /*!
@@ -384,7 +386,7 @@ public slots:
     //! Invoked when DOWN button is pressed
     void Down();
     //! Invoked when status changes
-    void status_changed(device_status *ds);
+    void status_changed(QPtrList<device_status>);
 };
 
 /*!
@@ -400,31 +402,37 @@ class device_condition_volume : public device_condition
  public:
     //! Constructor
     device_condition_volume(QWidget *parent, char *name, QString *trigger); 
+#if 1
     //! Returns min value
     int get_min();
     //! Returns max value
     int get_max();
+#endif
     //! Returns step
-    int get_step();
-#if 0
+    //int get_step();
     //! Draws condition
     void Draw();
-#endif
     //! Translates trigger condition from open encoding to int and sets val
     int set_condition_value(QString);
     //! Translates current trigger condition to open
-    void get_condition_value(QString&);
+    //void get_condition_value(QString&);
+    //! Read current value (%)
+    //int get_current_value(void);
     //! Decodes incoming frame
     //void gestFrame(char*);
+#if 0
     //! Gets condition's meas unit
     void get_unit(QString&);
-#if 0
     //! Inits condition
     void inizializza();
 #endif
 public slots:
     //! Invoked when status changes
-    void status_changed(device_status *ds);
+    void status_changed(QPtrList<device_status>); 
+    //! Invoked when UP button is pressed
+    void Up();
+    //! Invoked when DOWN button is pressed
+    void Down(); 
 };
 
 /*!
@@ -468,7 +476,7 @@ class device_condition_temp : public device_condition
 #endif
 public slots:
     //! Invoked when status changes
-    void status_changed(device_status *ds);
+    void status_changed(QPtrList<device_status>);
 };
 
 /*!
@@ -573,6 +581,8 @@ class scenEvo_cond_d : public scenEvo_cond {
       \param c QColor description of the color.
     */         
     void 	setFGColor(QColor c);
+    //! Set enabled/disabled
+    void setEnabled(bool);
     //! Sets icons
     void SetIcons();
     //! Save condition

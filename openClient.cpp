@@ -92,6 +92,15 @@ void Client::ApriInviaFrameChiudi(char* frame)
     }    
 }
 
+void Client::ApriInviaFrameChiudiw(char *frame)
+{
+    qDebug("Client::ApriInviaFrameChiudiw()");
+    ApriInviaFrameChiudi(frame);
+    qDebug("Frame sent waiting for ack");
+    while(socketWaitForAck() < 0);
+    qDebug("Ack received");
+}
+
 /****************************************************************************
 **
 ** richiesta stato all'openserver
@@ -209,12 +218,37 @@ int Client::socketFrameRead()
 	  msg_open.CreateMsgOpen(buf,strlen(buf));	  
 	  qDebug("letto: %s", msg_open.frame_open);
 	  emit frameIn(msg_open.frame_open);
+      } else {
+	  if(!strcmp(buf, "*#*1##")) {
+	      qDebug("ack received");
+	      emit openAckRx();
+	  }
+	  else if(!strcmp(buf, "*#*0##")) {
+	      qDebug("nak received");
+	      emit openNakRx();
+	  }
       }
 }
 return 0;  
 }
 
+// Aspetta ack
+int Client::socketWaitForAck()
+{
+    if(ismonitor) return -1;
+    ackRx = false;
+    connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
+    int stat;
+    if((stat = socketFrameRead()) < 0)
+	return stat;
+    disconnect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
+    return ackRx ? 0 : -1 ;
+}
 
+void Client::ackReceived()
+{
+    ackRx = true ;
+}
 
 /****************************************************************************
 **

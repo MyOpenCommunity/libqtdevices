@@ -542,6 +542,15 @@ void scenEvo_cond_d::setFGColor(QColor c)
 	actual_condition->setFGColor(c);
 }
 
+void scenEvo_cond_d::setEnabled(bool e)
+{
+    qDebug("scenEvo_cond_h::setEnabled(%d)", e);
+    for(int i=0; i<7; i++)
+	if(but[i])
+	    but[i]->setEnabled(e);
+}
+
+
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 {
     QPixmap* Icon1;
@@ -784,6 +793,7 @@ void device_condition::Up()
     qDebug("device_condition::Up()");
     int val = get_current_value();
     val += get_step();
+    qDebug("val = %d", val);
     set_current_value(val);
     Draw();
     show();
@@ -861,12 +871,14 @@ void device_condition::set_where(QString s)
     dev->set_where(s);
     // Aggiunge il nodo alla cache
     dev = btouch_device_cache.add_device(dev) ;
+#if 0
     // Pass frames on to device for analysis
     connect(this, SIGNAL(frame_available(char *)), 
 	    dev, SLOT(frame_rx_handler(char *)));
+#endif
     // Get status changed events back
-    connect(dev, SIGNAL(status_changed(device_status *)), 
-	    this, SLOT(status_changed(device_status *)));
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 void device_condition::set_pul(bool p)
@@ -879,7 +891,7 @@ void device_condition::set_group(int g)
     dev->set_group(g);
 }
 
-void device_condition::status_changed(device_status *s)
+void device_condition::status_changed(QPtrList<device_status>)
 {
     qDebug("device_condition::status_changed()");
 }
@@ -918,35 +930,41 @@ void device_condition_light_status::Draw()
     ((QLabel *)frame)->setText(s.ascii());
 }
 
-void device_condition_light_status::status_changed(device_status *ds)
+void device_condition_light_status::status_changed(QPtrList<device_status> sl)
 {
-    device_status::type t = ds->get_type();
     int trig_v = device_condition::get_condition_value();
     stat_var curr_status(stat_var::ON_OFF);
-    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
     qDebug("device_condition_light_status::status_changed()");
-    switch (t) {
-    case device_status::LIGHTS:
-	qDebug("Light status variation");
-	qDebug("trigger value = %d, current value = %d\n", trig_v, 
-	       curr_status.get_val());
-	if(trig_v == curr_status.get_val()) {
-	    qDebug("light condition (%d) satisfied", trig_v);
-	    satisfied = true;
+     QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("Light status variation");
+	    qDebug("trigger value = %d, current value = %d\n", trig_v, 
+		   curr_status.get_val());
+	    if(trig_v == curr_status.get_val()) {
+		qDebug("light condition (%d) satisfied", trig_v);
+		satisfied = true;
+	    }
+	    break;
+	case device_status::DIMMER:
+	    qDebug("dimmer status variation, ignored");
+	    break;
+	case device_status::DIMMER100:
+	    qDebug("new dimmer status variation, ignored");
+	    break;
+	case device_status::NEWTIMED:
+	    qDebug("new timed device status variation, ignored");
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
 	}
-	break;
-    case device_status::DIMMER:
-	qDebug("dimmer status variation, ignored");
-	break;
-    case device_status::DIMMER100:
-	qDebug("new dimmer status variation, ignored");
-	break;
-    case device_status::NEWTIMED:
-	qDebug("new timed device status variation, ignored");
-	break;
-    default:
-	qDebug("device status of unknown type (%d)", t);
-	break;
+	++(*dsi);
     }
 }
 
@@ -1067,62 +1085,69 @@ void device_condition_dimming::get_condition_value(QString& out)
     out =  tmp ;
 }
 
-void device_condition_dimming::status_changed(device_status *ds)
+void device_condition_dimming::status_changed(QPtrList<device_status> sl)
 {
-    device_status::type t = ds->get_type();
+    //device_status::type t = ds->get_type();
     int trig_v = device_condition::get_condition_value();
     stat_var curr_lev(stat_var::LEV);
     stat_var curr_speed(stat_var::SPEED);
     stat_var curr_status(stat_var::ON_OFF);
     int val10;
+    QPtrListIterator<device_status> *dsi = 
+	new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
     qDebug("device_condition_dimming::status_changed()");
-    //qDebug("trigger value is %d", trig_v);
-    switch (t) {
-    case device_status::LIGHTS:
-	qDebug("Light status variation");
-	ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-	qDebug("status = %d", curr_status.get_val());
-	qDebug("trigger value is %d", trig_v);
-	if(curr_lev.get_val() == trig_v) {
-	    qDebug("Condition triggered");
-	    satisfied = true;
-	} else
-	    satisfied = false;
-	break;
-    case device_status::DIMMER:
-	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-	qDebug("dimmer status variation");
-	qDebug("level = %d", curr_lev.get_val());
-	qDebug("trigger value is %d, val10 = %d", trig_v, curr_lev.get_val());
-	if(curr_lev.get_val() == trig_v) {
-	    qDebug("Condition triggered");
-	    satisfied = true;
-	} else
-	    satisfied = false;
-	break;
-    case device_status::DIMMER100:
-	ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-	ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-	qDebug("dimmer 100 status variation");
-	qDebug("level = %d, speed = %d", curr_lev.get_val(), 
-	       curr_speed.get_val());
-	val10 = curr_lev.get_val()/10;
-	if((curr_lev.get_val() % 10) >= 5)
-	    val10++;
-	val10 *= 10;
-	qDebug("trigger value is %d, val10 = %d", trig_v, val10);
-	if(val10 == trig_v) {
-	    qDebug("Condition triggered");
-	    satisfied = true;
-	} else
-	    satisfied = false;
-	break;
-    case device_status::NEWTIMED:
-	qDebug("new timed device status variation, ignored");
-	break;
-    default:
-	qDebug("device status of unknown type (%d)", t);
-	break;
+    while( ( ds = dsi->current() ) != 0) {
+	//qDebug("trigger value is %d", trig_v);
+	switch (ds->get_type()) {
+	case device_status::LIGHTS:
+	    qDebug("Light status variation");
+	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+	    qDebug("status = %d", curr_status.get_val());
+	    qDebug("trigger value is %d", trig_v);
+	    if(curr_lev.get_val() == trig_v) {
+		qDebug("Condition triggered");
+		satisfied = true;
+	    } else
+		satisfied = false;
+	    break;
+	case device_status::DIMMER:
+	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	    qDebug("dimmer status variation");
+	    qDebug("level = %d", curr_lev.get_val());
+	    qDebug("trigger value is %d, val10 = %d", trig_v, curr_lev.get_val());
+	    if(curr_lev.get_val() == trig_v) {
+		qDebug("Condition triggered");
+		satisfied = true;
+	    } else
+		satisfied = false;
+	    break;
+	case device_status::DIMMER100:
+	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	    ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+	    qDebug("dimmer 100 status variation");
+	    qDebug("level = %d, speed = %d", curr_lev.get_val(), 
+		   curr_speed.get_val());
+	    val10 = curr_lev.get_val()/10;
+	    if((curr_lev.get_val() % 10) >= 5)
+		val10++;
+	    val10 *= 10;
+	    qDebug("trigger value is %d, val10 = %d", trig_v, val10);
+	    if(val10 == trig_v) {
+		qDebug("Condition triggered");
+		satisfied = true;
+	    } else
+		satisfied = false;
+	    break;
+	case device_status::NEWTIMED:
+	    qDebug("new timed device status variation, ignored");
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
     }
 }
 
@@ -1133,17 +1158,15 @@ device_condition_volume::device_condition_volume(QWidget *parent,
 						   char *name, QString *c) :
     device_condition(parent, c)
 {
-    QLCDNumber *l = new QLCDNumber(parent, name);
-    l->setFrameStyle( QFrame::Plain );
-    l->setLineWidth(0);
-    l->setNumDigits(2);
-    l->setSegmentStyle(QLCDNumber::Flat);    
+    QLabel *l = new QLabel(parent, name);
+    l->setAlignment(AlignHCenter|AlignVCenter);
+    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
     frame = l;
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
+    Draw();
     dev = new sound_device(QString(""));
 }
-
 
 int device_condition_volume::get_min() 
 { 
@@ -1152,78 +1175,130 @@ int device_condition_volume::get_min()
 
 int device_condition_volume::get_max()
 {
-    return 100;
+    return 31;
 }
 
+#if 0
 int device_condition_volume::get_step()
 {
     return 10;
-}
-
-#if 0
-void device_condition_volume::gestFrame(char *s)
-{
-    qDebug("device_condition_volume::gestFrame");
-}
-#endif
-
-#if 0
-void device_condition_volume::Draw()
-{
-    QLCDNumber *l = (QLCDNumber *)frame;
-    l->display(get_current_value());
 }
 #endif
 
 int device_condition_volume::set_condition_value(QString s)
 {
-    return device_condition::set_condition_value(s.toInt() - 1);
-}
-
-void device_condition_volume::get_condition_value(QString& out)
-{
+#if 0
     // Mail di agresta del 29/05/2006
     static const int trans_table[] = 
     { 0, 3, 6, 9, 12, 15, 19, 22, 25, 28, 31 };
-    int v = device_condition::get_condition_value();
-    if(v > 100) v = 100;
-    char tmp[100];
-    sprintf(tmp, "%d", trans_table[v/10]);
-    out = tmp;
-}
-
-void device_condition_volume::get_unit(QString& out)
-{
-    out = "%" ;
-}
-
-#if 0
-void device_condition_volume::inizializza(void)
-{
-    qDebug("device_condition_volume::inizializza");
-}
+    int v = s.toInt()/get_step() - 1;
+    qDebug("device_condition_volume::set_condition_value()");
+    if(v < 0)
+	v = 0;
+    if(v > 10)
+	v = sizeof(trans_table) / sizeof(v);
 #endif
+    // FIXME: USE device_condition::set_condition_value
+    int v = s.toInt();
+    qDebug("setting condition value to %d", v);
+    return device_condition::set_condition_value(v);
+}
 
-void device_condition_volume::status_changed(device_status *ds)
+void device_condition_volume::Up()
 {
-    device_status::type t = ds->get_type();
+    qDebug("device_condition_volume::Up()");
+    int v = get_current_value();
+    qDebug("v = %d", v);
+    if((v <= 15) && (v % 3)) {
+	v /= 3;
+	v *= 3;
+    } else if((v > 15) && ((v-1) % 3)) {
+	int z = v-1;
+	z /= 3;
+	z *= 3;
+	v = z+1;
+    }
+    if(v < 0) {
+	v = 0;
+    } else if((v <= 12) || (v > 15))
+	v += 3;
+    else
+	v += 4;
+    if(v > 31)
+	v = 31;
+    qDebug("new value = %d", v);
+    set_current_value(v);
+    Draw();
+    show();
+}
+
+void device_condition_volume::Down()
+{
+    qDebug("device_condition_volume::Down()");
+    int v = get_current_value();
+    qDebug("v = %d", v);
+    if((v <= 15) && (v % 3)) {
+	v /= 3;
+	v *= 3;
+    } else if((v > 15) && ((v-1) % 3)) {
+	int z = v-1;
+	z /= 3;
+	z *= 3;
+	v = z+1;
+    }
+    if(v > 31) {
+	v = 31;
+    } else if((v <= 15) || (v > 19))
+	v -= 3;
+    else
+	v -= 4;
+    if(v < 0)
+	v = 0;
+    qDebug("new value = %d", v);
+    set_current_value(v);
+    Draw();
+    show();
+}
+
+void device_condition_volume::Draw()
+{
+    char tmp[50];
+    QString u;
+    get_unit(u);
+    int val = get_current_value();
+    qDebug("device_condition_volume::Draw(), val = %d", val);
+    sprintf(tmp, "%d", 10 * (val <= 15 ? val/3 : (val-1)/3), u.ascii());
+    ((QLabel *)frame)->setText(tmp);
+}
+
+void device_condition_volume::status_changed(QPtrList<device_status> sl)
+{
+    //device_status::type t = ds->get_type();
     int trig_v = device_condition::get_condition_value();
     stat_var curr_volume(stat_var::AUDIO_LEVEL);
     qDebug("device_condition_volume::status_changed()");
-    switch (t) {
-    case device_status::AMPLIFIER:
-	qDebug("Amplifier status change");
-	ds->read(device_status_amplifier::AUDIO_LEVEL_INDEX, curr_volume);
-	qDebug("volume = %d", curr_volume.get_val());
-	if(curr_volume.get_val() == trig_v) {
-	    qDebug("Condition triggered");
-	    satisfied = true;
-	} else
-	    satisfied = false;
-	break;
-    default:
-	qDebug("device status of unknown type (%d)", t);
-	break;
+    QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::AMPLIFIER:
+	    qDebug("Amplifier status change");
+	    qDebug("Confition value = %d", trig_v);
+	    ds->read(device_status_amplifier::AUDIO_LEVEL_INDEX, curr_volume);
+	    qDebug("volume = %d", curr_volume.get_val());
+	    if(curr_volume.get_val() == trig_v) {
+		qDebug("Condition triggered");
+		satisfied = true;
+	    } else
+		satisfied = false;
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
     }
 }
 
@@ -1234,14 +1309,21 @@ device_condition_temp::device_condition_temp(QWidget *parent,
 					     char *name, QString *c) :
     device_condition(parent, c)
 {
+#if 0
     QLCDNumber *l = new QLCDNumber(parent, name);
     l->setFrameStyle( QFrame::Plain );
     l->setLineWidth(0);
     l->setNumDigits(3);
     l->setSegmentStyle(QLCDNumber::Flat);    
+#else
+    QLabel *l = new QLabel(parent, name);
+    l->setAlignment(AlignHCenter|AlignVCenter);
+    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+#endif
     frame = l;
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
+    Draw();
     dev = new temperature_probe(QString(""));
 }
 
@@ -1257,7 +1339,7 @@ int device_condition_temp::get_max()
 
 int device_condition_temp::get_step()
 {
-    return 10;
+    return 5;
 }
 
 int device_condition_temp::get_divisor()
@@ -1286,7 +1368,8 @@ void device_condition_temp::Draw()
     QString u;
     get_unit(u);
     int val = get_current_value();
-    sprintf(tmp, "%d.%d%s", val/10, val%10, u.ascii());
+    qDebug("device_condition_temp::Draw(), val = %d", val);
+    sprintf(tmp, "%d.%d%s", val/10, val >= 0 ? val%10 : -val%10, u.ascii());
     ((QLabel *)frame)->setText(tmp);
 }
 #endif
@@ -1306,25 +1389,33 @@ void device_condition_temp::get_condition_value(QString& out)
     out = tmp;
 }
 
-void device_condition_temp::status_changed(device_status *ds)
+void device_condition_temp::status_changed(QPtrList<device_status> sl)
 {
-    device_status::type t = ds->get_type();
+    //device_status::type t = ds->get_type();
     int trig_v = device_condition::get_condition_value();
     stat_var curr_temp(stat_var::TEMPERATURE);
     qDebug("device_condition_temp::status_changed()");
-    switch (t) {
-    case stat_var::TEMPERATURE:
-	qDebug("Temperature changed");
-	ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, 
-		 curr_temp);
-	if(curr_temp.get_val() == trig_v) {
-	    qDebug("Condition triggered");
-	    satisfied = true;
-	} else
-	    satisfied = false;
-	break;
-    default:
-	qDebug("device status of unknown type (%d)", t);
-	break;
+    qDebug("trig_v = %d", trig_v);
+     QPtrListIterator<device_status> *dsi = 
+      new QPtrListIterator<device_status>(sl);
+    dsi->toFirst();
+    device_status *ds;
+    while( ( ds = dsi->current() ) != 0) {
+	switch (ds->get_type()) {
+	case device_status::TEMPERATURE_PROBE:
+	    qDebug("Temperature changed");
+	    ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, 
+		     curr_temp);
+	    if(curr_temp.get_val() == trig_v) {
+		qDebug("Condition triggered");
+		satisfied = true;
+	    } else
+		satisfied = false;
+	    break;
+	default:
+	    qDebug("device status of unknown type (%d)", ds->get_type());
+	    break;
+	}
+	++(*dsi);
     }
 }

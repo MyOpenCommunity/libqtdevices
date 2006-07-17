@@ -15,6 +15,7 @@
 #include "homepage.h"
 #include "sottomenu.h"
 #include "diffsonora.h"
+#include "diffmulti.h"
 #include "antintrusione.h"
 #include "genericfunz.h"
 #include "termoregolaz.h"
@@ -52,6 +53,7 @@
   19. pointer to \a background color;    
   20. pointer to \a foreground color;    
   21. pointer to \a second \a foreground color;    
+  22. pointer to a multichannel sound \a diffusion subtree (sottoMenu) pointer;
   
   \author Davide
   \date lug 2005
@@ -59,7 +61,7 @@
 class xmlconfhandler : public QXmlDefaultHandler
 {
 public:
-    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
+    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
     
     ~xmlconfhandler();
 /*!
@@ -98,10 +100,12 @@ private:
     int page_id;
     QString page_descr;
 
-    int page_item_id;
+    int page_item_id, page_item_id_m;
     QString page_item_descr;
+    QPtrList<QString> *page_item_descr_m;
     QString page_item_what;
-    QString page_item_where;
+    QString page_item_where, page_item_where_m;
+    QString page_item_mode;
     QString page_item_key;
     QString page_item_light;
     QString page_item_unknown;
@@ -110,16 +114,19 @@ private:
 
     void * page_item_indirizzo;
     
-    QPtrList<QString> * page_item_list_img;
-    QPtrList<QString> * page_item_list_group;
+    QPtrList<QString> * page_item_list_img, *page_item_list_img_m;
+    QPtrList<QString> * page_item_list_group, *page_item_list_group_m;
     QPtrList<QString> * page_item_list_txt;
     QPtrList<QString> * page_item_list_txt_times;
+    QValueList<int>sstart;
+    QValueList<int>sstop;
+    ambDiffSon *curr_amb;
     
     scenEvo_cond *page_item_cond;
     QPtrList<scenEvo_cond> *page_item_cond_list;
       int	par1, par2,par3, par4;
       unsigned int itemNum;
-      QString CurTagL4_copy;
+      QString CurTagL4_copy, CurTagL5_copy;
     QColor Background, Foreground,SecondForeground;    
     unsigned char idPageDefault,car;
 
@@ -129,6 +136,7 @@ private:
     homePage **specPage;
     sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,
 	**scenari_evoluti, **videocitofonia;
+    diffmulti **dm;
     termoregolaz **termo;
     diffSonora **difSon;
     antintrusione** antintr;
