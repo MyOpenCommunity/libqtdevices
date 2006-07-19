@@ -1184,9 +1184,9 @@ void frame_interpreter_radio_device::handle_frame(openwebnet_ext m,
 		char rds[8];
 		int tmp[2];
 	    } tmpu;
-	    for(int idx=1;idx<9;idx++) {
-		tmpu.rds[idx-1] = strtol(m.Extract_valori(idx), NULL, 10);
-		qDebug("RDS: char[%d] = %c", idx, tmpu.rds[idx-1]);
+	    for(int idx=0;idx<8;idx++) {
+		tmpu.rds[idx] = strtol(m.Extract_valori(idx), NULL, 10);
+		qDebug("RDS: char[%d] = %c", idx, tmpu.rds[idx]);
 	    }
 	    ds->read((int)device_status_radio::RDS0_INDEX, curr_rds0);
 	    qDebug("setting rds0 to 0x%08x", tmpu.tmp[0]);
@@ -1314,9 +1314,11 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     qDebug("#### frame is %s ####", frame);
 #if 1
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open)) {
 	// Discard frame if not ours
+	qDebug("discarding frame");
 	return;
+    }
 #else
     // PER DEBUG !!!!!!
     //frame = "*6*9*4000#2##"

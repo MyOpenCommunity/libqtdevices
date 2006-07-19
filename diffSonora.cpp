@@ -122,9 +122,11 @@ void diffSonora::setNumRighe(uchar n)
 {
     numRighe=n;
     amplificatori->setNumRighe(n-2);
-    sorgenti->setNumRighe(1);
+    if(sorgenti)
+      sorgenti->setNumRighe(1);
+    if(sorgenti)
+	sorgenti->draw();
     amplificatori->draw();
-    sorgenti->draw();
 }
 
 
@@ -216,7 +218,7 @@ void diffSonora::setGeom(int x,int y,int w,int h)
       if (sorgenti) {
 	  qDebug("sorgenti->setGeometry(%d, %d, %d, %d)",
 		 x, y, w, h/numRighe);
-	  sorgenti->setGeometry(x,y,w,h/numRighe);
+	  sorgenti->setGeometry(x,y,w,10); //h/numRighe - 40);
       }
       if(amplificatori) {
 	  qDebug("amplificatori->setGeometry(%d, %d, %d, %d)",

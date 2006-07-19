@@ -46,8 +46,8 @@ call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) :
     connect(this, SIGNAL(frame_available(char *)), 
 	    station_dev, SLOT(frame_rx_handler(char *)));
     // Get status changed events
-    connect(station_dev, SIGNAL(status_changed(device_status*)),
-	    this, SLOT(status_changed(device_status*)));
+    connect(station_dev, SIGNAL(status_changed(QPtrList<device_status>)),
+	    this, SLOT(status_changed(QPtrList<device_status>)));
     station_dev->init();
     SetIcons();
 }
@@ -58,7 +58,7 @@ void call_notifier::get_where(QString& out)
     my_station->get_where(out);
 }
 
-void call_notifier::status_changed(device_status *ds)
+void call_notifier::status_changed(QPtrList<device_status> dsl)
 {
     // When we get here, we captured a call frame for sure, no need to 
     // read status

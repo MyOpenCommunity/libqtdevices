@@ -4614,12 +4614,19 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
     while( ( am = lai->current() ) != 0) {
 	qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
 	       (char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
+#if 0
 	QString *dove = new QString(
-	      QString::number(QString((const char *)am->indirizzo).toInt()));
+	      QString::number((QString((const char *)am->indirizzo).toInt() +
+			       QString((const char *)indirizzo).toInt()), 10));
 	qDebug("Amplifier where = %s", dove->ascii());
 	diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
 			 (char *)dove->ascii(),
+			 am->I4, am->I3, am->I1, am->I2, am->modo);
+#else
+	diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
+			 (char *)am->indirizzo,
 			 am->I1, am->I2, am->I4, am->I3, am->modo);
+#endif
 	++(*lai);
     }
 }
@@ -4655,7 +4662,7 @@ void ambDiffSon::configura()
     qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
     //connect(diffmul, SIGNAL(gestFrame(char *)), 
     //diffson, SIGNAL(gestFrame(char *)));
-    diffson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
+    //diffson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
     diffson->forceDraw();
     diffson->showFullScreen();
 }
@@ -4794,6 +4801,12 @@ void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
       setAddress((char *)dove->ascii());
   } else {
       multiamb = true;
+      QString *dove = new QString(
+				  QString::number(100 + 
+						  indirizzo_semplice.toInt(),
+						  10));
+      qDebug("Source where is now %s", dove->ascii());
+      setAddress((char *)dove->ascii());
   }
   myRadio->setAmbDescr(ad);
 }
@@ -4857,6 +4870,12 @@ void sorgenteMultiAux::ambChanged(char *ad, bool multi, void *indamb)
 	qDebug("Source where now = %s", dove->ascii());
 	setAddress((char *)dove->ascii());
     } else {
+	QString *dove = new QString(
+	    QString::number(100 + 
+			    indirizzo_semplice.toInt(),
+			    10));
+	qDebug("Source where is now %s", dove->ascii());
+	setAddress((char *)dove->ascii());
 	multiamb = true;
     }
     myAux->setAmbDescr(ad);

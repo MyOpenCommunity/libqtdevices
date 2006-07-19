@@ -66,7 +66,7 @@ class call_notifier : public QFrame {
     void 	setFGColor(int r, int g, int b);
  public slots:
     //! Invoked by device when status changes
-    void status_changed(device_status *);
+    void status_changed(QPtrList<device_status>);
     //! A frame is available, pass it on to the device
     void frame_available_handler(char *);
     //! Area 2 button pressed
