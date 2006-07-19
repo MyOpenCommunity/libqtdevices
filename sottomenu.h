@@ -174,6 +174,14 @@ QString action="", QString light="", QString key="", QString unk="", QValueList<
   \brief Set the Geometry for the object.
 */ 
   void 	setGeometry(int, int, int, int );
+/*!
+  \brief reparent implementation
+*/
+  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
+/*!
+  \brief add amb to all banners
+*/
+  void addAmb(char *);
 signals:
  /*!
   \brief Emitted when the object is closed.
@@ -226,6 +234,14 @@ signals:
   \brief Emitted to tell to BtMain tha state of the password (value and abilitation).
 */   
   void 	setPwd(bool,char*);
+/*!
+  \brief Parent changed
+*/
+ void parentChanged(QWidget *newParent);
+ /*!
+   \brief amb description changed (for diffmulti)
+ */
+ void ambChanged(char *newdescr, bool multiwhere, void *where);
 public slots:
 /*!
   \brief Slides the list upward.
@@ -255,6 +271,10 @@ public slots:
   \brief  Removes a banner from the list.
 */    
   void 	killBanner(banner*);
+/*!
+  \brief Adds a banner
+*/
+  void addItem(banner *);
 /*!
   \brief  Empties the banner list.
 */    

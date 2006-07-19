@@ -265,7 +265,7 @@ the arguments describe the images to put on the buttons and into the describing 
   The arguments of the method are: the period in ms and the number frame describing the animation.
 */                 
     void 	setAnimationParams(int,int);
-    
+    void        getAnimationParams(int&, int&);
     void 	setNumRighe(uchar);
     QTimer *animationTimer;
     uchar 	numRighe;
@@ -317,6 +317,7 @@ enum oggettinoDelBanner{
 			 BUT4,
 			 TEXT2,
 		     };
+ virtual void addAmb(char *); 
 public slots:
 /*!
   \brief Must be reimplemented to analyze the \a Open \a Frame incoming.
@@ -342,6 +343,15 @@ public slots:
   \brief Invoked on open nak reception
 */
    virtual void openNakRx();
+   virtual void ambChanged(char *, bool, void *);
+/*!
+  \brief Parent of my parent changed
+*/
+ virtual void grandadChanged(QWidget *newGrandad);
+/*!
+  \brief Parent changed
+*/
+ virtual void parentChanged(QWidget *newParent);
 private slots:
     void 	animate();
 signals:

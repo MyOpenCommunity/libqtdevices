@@ -506,7 +506,7 @@ void scenEvo_cond_d::mostra()
 	if(but[idx])
 	    but[idx]->show();   
     area1_ptr->show();
-    sprintf(tmp, "Descr: %s", descr->ascii());
+    sprintf(tmp, "%s", descr->ascii());
     area2_ptr->setText(tmp);
     area2_ptr->show();
     if(actual_condition)
@@ -1267,7 +1267,7 @@ void device_condition_volume::Draw()
     get_unit(u);
     int val = get_current_value();
     qDebug("device_condition_volume::Draw(), val = %d", val);
-    sprintf(tmp, "%d", 10 * (val <= 15 ? val/3 : (val-1)/3), u.ascii());
+    sprintf(tmp, "%d%s", 10 * (val <= 15 ? val/3 : (val-1)/3), u.ascii());
     ((QLabel *)frame)->setText(tmp);
 }
 
@@ -1300,6 +1300,11 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
 	}
 	++(*dsi);
     }
+}
+
+void device_condition_volume::get_unit(QString& out)
+{
+    out = "%";
 }
 
 /*****************************************************************
@@ -1369,7 +1374,10 @@ void device_condition_temp::Draw()
     get_unit(u);
     int val = get_current_value();
     qDebug("device_condition_temp::Draw(), val = %d", val);
-    sprintf(tmp, "%d.%d%s", val/10, val >= 0 ? val%10 : -val%10, u.ascii());
+    if(val == -5)
+      sprintf(tmp, "-0.5%s", u.ascii());
+    else
+      sprintf(tmp, "%d.%d%s", val/10, val >= 0 ? val%10 : -val%10, u.ascii());
     ((QLabel *)frame)->setText(tmp);
 }
 #endif

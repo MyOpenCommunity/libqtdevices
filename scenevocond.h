@@ -420,9 +420,9 @@ class device_condition_volume : public device_condition
     //int get_current_value(void);
     //! Decodes incoming frame
     //void gestFrame(char*);
-#if 0
     //! Gets condition's meas unit
     void get_unit(QString&);
+#if 0
     //! Inits condition
     void inizializza();
 #endif

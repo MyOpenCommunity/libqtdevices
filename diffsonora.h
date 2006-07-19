@@ -35,7 +35,8 @@ class diffSonora : public QWidget
 {
     Q_OBJECT
 public:
-    diffSonora( QWidget *parent=0, const char *name=0);
+    diffSonora( QWidget *parent=0, const char *name=0, 
+		bool creasorgenti=true);
  /*!
   \brief Sets the background color for the banner.
   
@@ -52,6 +53,10 @@ public:
   \brief Sets the background pixmap for the banner.
 */       
    int 	setBGPixmap(char* );
+   /*! 
+     \brief Set the "sorgenti" submenu"
+    */
+   void setSorgenti(sottoMenu *);
  /*!
   \brief Adds an object in the class.
   
@@ -130,6 +135,10 @@ public slots:
   \brief Emittes the closed signal when amplifiers subtree(sottoMenu) is closed.
 */                          
     void 	fineVis();
+    /*! 
+      \brief adds a source
+    */
+    int addSource(banner *b);
 protected:
   uchar numRighe,isVisual;	
   sottoMenu* sorgenti;

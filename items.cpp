@@ -2268,7 +2268,7 @@ void sorgente::inizializza()
 ****************************************************************/
 
 
-banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, char *ambdescr )
+banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, char *ambdescr)
         : bannCiclaz( parent, name, nbut )
         {     
     SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
@@ -2280,7 +2280,7 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, 
     
     //     myRadio-> setBGColor(parentWidget(TRUE)->backgroundColor() );
     //     myRadio-> setFGColor(parentWidget(TRUE)->foregroundColor() );	
-    
+    QWidget *grandad = this->parentWidget(FALSE)->parentWidget(FALSE);
     
     myRadio->setStaz((uchar)1);
     
@@ -2293,9 +2293,9 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, 
     
     connect(this  ,SIGNAL(dxClick()),myRadio,SLOT(showRadio()));
     connect(this , SIGNAL(dxClick()),this,SLOT(startRDS()));
-    
-    connect(this  ,SIGNAL(dxClick()),this->parentWidget(FALSE)->parentWidget(FALSE),SLOT(hide()));
-    connect(myRadio,SIGNAL(Closed()),this->parentWidget(FALSE)->parentWidget(FALSE),SLOT(show()));
+
+    connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
+    connect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
     connect(myRadio,SIGNAL(Closed()),myRadio,SLOT(hide()));
     connect(myRadio,SIGNAL(Closed()),this,SLOT(stopRDS()));     
     
@@ -2314,6 +2314,17 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, 
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
 
+}
+
+void banradio::grandadChanged(QWidget *newGrandad)
+{
+    qDebug("banradio::grandadChanged (%p)", newGrandad); 
+    QWidget *grandad = this->parentWidget(FALSE)->parentWidget(FALSE);
+    disconnect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
+    disconnect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
+    grandad = newGrandad;
+    connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
+    connect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
 }
 
 
@@ -4579,7 +4590,7 @@ void postoExt::get_close_icon(QString& out)
 ** Ambiente diffusione sonora multicanale
 ****************************************************************/
 
-ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* IconaSx,char* IconaDx, char *icon, QPtrList<dati_sorgente_multi> *ls, QPtrList<dati_ampli_multi> *la, diffSonora *ds)
+ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* IconaSx,char* IconaDx, char *icon, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
         : bannBut2Icon( parent, name )
         {       
 	    qDebug("ambDiffSon::ambDiffSon() : "
@@ -4589,43 +4600,22 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
 	    qDebug("zoneIcon = %s", zoneIcon);
     SetIcons(icon, zoneIcon, IconaDx);
     Draw();
-    //setAddress(indirizzo);
+    setAddress((char *)indirizzo);
     connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
-#if 0
-    lista_sorg = ls;
-    lista_ampli = la;
-#endif
+
     //diffson = new diffSonora(NULL, "Diff sonora ambiente");
     diffson = ds;
-    QPtrListIterator<dati_sorgente_multi> *lsi = 
-      new QPtrListIterator<dati_sorgente_multi>(*ls);
-    lsi->toFirst();
-    dati_sorgente_multi *sm;
-    while( ( sm = lsi->current() ) != 0) {
-	qDebug("Adding source (%s %s %s %s)", 
-	       sm->descr->at(0)->ascii(),
-	       sm->I1, sm->I2, sm->I3);
-	QString *dove = new QString(
-	      QString::number(100 + 
-			      QString((const char *)indirizzo).toInt() * 10 +
-			      QString((const char *)sm->indirizzo).toInt(),
-			      10));
-	qDebug("Source where = %s", dove->ascii());
-	diffson->addItem(sm->tipo, (char *)sm->descr->at(0)->ascii(), 
-			 (char *)dove->ascii(),
-			 sm->I1, sm->I2, sm->I3, "", sm->modo, 0, 
-			 (char *)name);
-	++(*lsi);
-    }
+    sorgenti = sorg;
+    diffmul = dm;
     QPtrListIterator<dati_ampli_multi> *lai = 
-      new QPtrListIterator<dati_ampli_multi>(*la);
+	new QPtrListIterator<dati_ampli_multi>(*la);
     lai->toFirst();
     dati_ampli_multi *am;
     while( ( am = lai->current() ) != 0) {
 	qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
 	       (char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
 	QString *dove = new QString(
-	      QString::number((QString((const char *)am->indirizzo).toInt())));
+	      QString::number(QString((const char *)am->indirizzo).toInt()));
 	qDebug("Amplifier where = %s", dove->ascii());
 	diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
 			 (char *)dove->ascii(),
@@ -4633,17 +4623,6 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
 	++(*lai);
     }
 }
-
-#if 0
-void ambDiffSon::addAmpli(char tipo, char *descrizione, void *indirizzo, 
-			  char *IconaSx, char *IconaDx, char *icon, 
-			  char *pressedIcon, int modo, int numframe)
-{
-    qDebug("ambDiffSon::addAmpli");
-    diffson->addItem(tipo, descrizione, indirizzo, IconaSx, IconaDx, icon,
-		     pressedIcon, modo, numframe);
-}
-#endif
 
 void ambDiffSon::Draw()
 {
@@ -4665,6 +4644,18 @@ void ambDiffSon::Draw()
 void ambDiffSon::configura()
 {
     qDebug("ambDiffSon::configura()");
+    emit(ambChanged((char *)name(), false, getAddress()));
+    qDebug("sorgenti->parent() = %p", sorgenti->parent());
+    qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
+    disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul,
+	       SIGNAL(sendFrame(char *)));
+    sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
+    connect(diffson, SIGNAL(sendFrame(char *)), 
+	    diffmul, SIGNAL(sendFrame(char *)));
+    qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
+    //connect(diffmul, SIGNAL(gestFrame(char *)), 
+    //diffson, SIGNAL(gestFrame(char *)));
+    diffson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
     diffson->forceDraw();
     diffson->showFullScreen();
 }
@@ -4673,7 +4664,7 @@ void ambDiffSon::configura()
 ** Insieme ambienti diffusione sonora multicanale
 ****************************************************************/
 
-insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *indirizzo,char* Icona1,char* Icona2, QPtrList<dati_sorgente_multi> *ls, QPtrList<dati_ampli_multi> *la, diffSonora *ds)
+insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *indirizzo,char* Icona1,char* Icona2, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
         : bannButIcon( parent, (char *)names->at(0)->ascii() )
         {       
 	    qDebug("insAmbDiffSon::insAmbDiffSon() : "
@@ -4683,25 +4674,15 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
     //setAddress(indirizzo);
     connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
     diffson = ds;
-    QPtrListIterator<dati_sorgente_multi> *lsi = 
-      new QPtrListIterator<dati_sorgente_multi>(*ls);
-    lsi->toFirst();
-    dati_sorgente_multi *sm;
-    while( ( sm = lsi->current() ) != 0) {
-	qDebug("Adding source (%s %s %s)", sm->I1, sm->I2, sm->I3);
-	diffson->addItem(sm->tipo, (char *)sm->descr->at(0)->ascii(), 
-			 sm->indirizzo,
-			 sm->I1, sm->I2, sm->I3, "", sm->modo, 0,
-			 (char *)names->at(0)->ascii());
-	++(*lsi);
-    }
+    sorgenti = sorg;
+    diffmul = dm;
+
     QPtrListIterator<dati_ampli_multi> *lai = 
       new QPtrListIterator<dati_ampli_multi>(*la);
     lai->toFirst();
     dati_ampli_multi *am;
     while( ( am = lai->current() ) != 0) {
 	qDebug("Adding amplifier group(%d)", am->tipo);
-#if 1
 	QPtrListIterator<QString> *lsi = 
 	  new QPtrListIterator<QString>(*(am->descr));
 	QPtrListIterator<QString> *lii =
@@ -4724,7 +4705,6 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 	    ++(*lsi);
 	    ++(*lii);
 	}
-#endif
 	++(*lai);
     }
 }
@@ -4745,8 +4725,16 @@ void insAmbDiffSon::Draw()
 
 void insAmbDiffSon::configura()
 {
-    qDebug("ambDiffSon::configura()");
-    hide();
+    qDebug("insAmbDiffSon::configura()");
+    emit(ambChanged((char *)name(), true, (void *)NULL));
+    qDebug("sorgenti->parent() = %p", sorgenti->parent());
+    qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
+    disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul,
+	       SIGNAL(sendFrame(char *)));
+    sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
+    connect(diffson, SIGNAL(sendFrame(char *)), 
+	    diffmul, SIGNAL(sendFrame(char *)));
+    qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
     diffson->forceDraw();
     diffson->showFullScreen();
 }
@@ -4761,16 +4749,59 @@ sorgenteMultiRadio::sorgenteMultiRadio( QWidget *parent,const char *name,char* i
 	   "%s %s %s", Icona1, Icona2, Icona3);
     SetIcons(Icona1, Icona2, NULL, Icona3);
     connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
+    indirizzo_semplice = QString(indirizzo);
+    indirizzi_ambienti.clear();
     //connect(this, SIGNAL(dxClick()), this, SLOT(configura()));
     //connect(this, SIGNAL(csxClick()), this, SLOT(cicla()));
+    multiamb = false;
 }
 
 void sorgenteMultiRadio::attiva()
 {
     qDebug("sorgenteMultiRadio::attiva()");
     openwebnet msg_open;
-    msg_open.CreateMsgOpen("16", "3", getAddress(), "");
-    emit sendFrame(msg_open.frame_open);   
+    if(!multiamb) {
+	msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+	emit sendFrame(msg_open.frame_open);   
+    } else {
+	qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI",
+	       indirizzi_ambienti.count());
+	for ( QStringList::Iterator it = indirizzi_ambienti.begin(); 
+	      it != indirizzi_ambienti.end(); ++it ) {
+	    QString dove = QString(
+		QString::number(100 + 
+				(*it).toInt() * 10 +
+				indirizzo_semplice.toInt(),
+				10));
+	    msg_open.CreateMsgOpen("16", "3", (char *)(dove.ascii()), "");
+	    emit sendFrame(msg_open.frame_open);   
+	}
+    }
+}
+
+void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
+{
+    // FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
+  qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad, multi, indamb);
+  if(!multi) {
+      multiamb = false;
+      QString *dove = new QString(
+	  QString::number(100 + 
+			  QString((const char *)indamb).toInt() * 10 +
+			  indirizzo_semplice.toInt(),
+			  10));
+      qDebug("Source where is now %s", dove->ascii());
+      setAddress((char *)dove->ascii());
+  } else {
+      multiamb = true;
+  }
+  myRadio->setAmbDescr(ad);
+}
+
+void sorgenteMultiRadio::addAmb(char *a)
+{
+    qDebug("sorgenteMultiRadio::addAmb(%s)", a);
+    indirizzi_ambienti += QString(a);
 }
 
 /*****************************************************************
@@ -4782,17 +4813,57 @@ sorgenteMultiAux::sorgenteMultiAux( QWidget *parent,const char *name,char* indir
     qDebug("sorgenteMultiAux::sorgenteMultiAux() : "
 	   "%s %s %s", Icona1, Icona2, Icona3);
     SetIcons(Icona1, Icona2, NULL, Icona3);
+    indirizzo_semplice = QString(indirizzo);
+    indirizzi_ambienti.clear();
     connect(this, SIGNAL(dxClick()), myAux, SLOT(showAux()));
     connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
     connect(myAux, SIGNAL(Closed()), myAux, SLOT(hide()));
     connect(myAux, SIGNAL(Closed()), this, SLOT(show()));
     connect(myAux, SIGNAL(Btnfwd()), this, SLOT(aumBrano()));
+    multiamb = false;
 }
 
 void sorgenteMultiAux::attiva()
 {
-    qDebug("sorgenteAuxRadio::attiva()");
+    qDebug("sorgenteMultiAux::attiva()");
     openwebnet msg_open;
-    msg_open.CreateMsgOpen("16", "3", getAddress(), "");
-    emit sendFrame(msg_open.frame_open);   
+    if(!multiamb) {
+	msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+	emit sendFrame(msg_open.frame_open);   
+    } else {
+	for ( QStringList::Iterator it = indirizzi_ambienti.begin(); 
+	      it != indirizzi_ambienti.end(); ++it ) {
+	    QString dove = QString(
+		QString::number(100 + 
+				(*it).toInt() * 10 +
+				indirizzo_semplice.toInt(),
+				10));
+	    msg_open.CreateMsgOpen("16", "3", (char *)(dove.ascii()), "");
+	    emit sendFrame(msg_open.frame_open);   
+	}
+    }
+}
+
+void sorgenteMultiAux::ambChanged(char *ad, bool multi, void *indamb)
+{
+    qDebug("sorgenteMultiAux::ambChanged(%s, %d, %s)", ad, multi, indamb);
+    if(!multi) {
+	multiamb = false;
+	QString *dove = new QString(
+	    QString::number(100 + 
+			    QString((const char *)indamb).toInt() * 10 +
+			    indirizzo_semplice.toInt(),
+			    10));
+	qDebug("Source where now = %s", dove->ascii());
+	setAddress((char *)dove->ascii());
+    } else {
+	multiamb = true;
+    }
+    myAux->setAmbDescr(ad);
+}
+
+void sorgenteMultiAux::addAmb(char *a)
+{
+    qDebug("sorgenteMultiAux::addAmb(%s)", a);
+    indirizzi_ambienti += QString(a);
 }

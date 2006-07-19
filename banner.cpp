@@ -913,10 +913,16 @@ void banner::setAnimationParams(int per ,int num)
     numFrame=num;
 }
 
+void banner::getAnimationParams(int& per, int& num)
+{
+    per = periodo;
+    num = numFrame;
+}
+
 void banner::setNumRighe( uchar n )
 {
 	numRighe=n;
- }
+}
 
 char* banner::getAddress( )
 {
@@ -989,3 +995,9 @@ void banner::setId(char i){id=i;}
 unsigned char banner::getState(){return (stato); }
 char* banner::getManIcon(){return NULL;}
 char* banner::getAutoIcon(){return NULL;}
+
+void banner::ambChanged(char *, bool, void *) { };
+
+void banner::parentChanged(QWidget *newParent) { };
+void banner::grandadChanged(QWidget *newGrandad) { };
+void banner::addAmb(char *) {};

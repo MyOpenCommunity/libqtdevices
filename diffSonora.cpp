@@ -19,7 +19,7 @@
 #include <qlabel.h>
 */
  
-diffSonora::diffSonora( QWidget *parent, const char *name )
+diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
         : QWidget( parent, name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -27,10 +27,15 @@ diffSonora::diffSonora( QWidget *parent, const char *name )
   //    showFullScreen();
 #endif  
    numRighe=NUM_RIGHE;  
-   sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, MAX_HEIGHT/numRighe,1); 
+   if(creasorgenti)
+       sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, 
+				MAX_HEIGHT/numRighe,1); 
+   else
+       sorgenti = NULL;
    amplificatori = new sottoMenu(this,"Amplificatori",3,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2); 
-
-   setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
+   
+   if(creasorgenti)
+       setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
    //sorgenti -> setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT/numRighe);
 //   amplificatori -> setGeometry (0, MAX_HEIGHT/numRighe, MAX_WIDTH, MAX_HEIGHT- MAX_HEIGHT/numRighe );
      	
@@ -38,14 +43,26 @@ diffSonora::diffSonora( QWidget *parent, const char *name )
     BtLabel* linea = new BtLabel(this,NULL,0);
     linea->setGeometry(0,77,240,3);
     linea->setPaletteForegroundColor(QColor::QColor(0,0,0));
-
-    connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
-    connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));
-    connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 
+    
+    if(creasorgenti) {
+      connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
+      connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+      connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));  
+    }
+    connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *))); 
     connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 	 
     
-    connect(this,SIGNAL(freezed(bool)),amplificatori,SLOT(freezed(bool)));
-    connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));    
+    connect(this,SIGNAL(freezed(bool)),amplificatori,SLOT(freezed(bool))); 
+    qDebug("diffSonora::diffSonora() END");
+}
+
+void diffSonora::setSorgenti(sottoMenu *s)
+{
+    sorgenti = s;
+    setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
+    connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
+    connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+    connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));
 }
 
 
@@ -193,11 +210,19 @@ void diffSonora::hide()
 
 void diffSonora::setGeom(int x,int y,int w,int h)
 {
+    qDebug("diffSonora::setGeom(%d, %d, %d, %d, numRighe = %d)",
+	   x, y, w, h, numRighe);
       QWidget::setGeometry(x,y,w,h);
-      if (sorgenti)
-	sorgenti->setGeometry(x,y,w,h/numRighe);
-    if(amplificatori)
-	amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
+      if (sorgenti) {
+	  qDebug("sorgenti->setGeometry(%d, %d, %d, %d)",
+		 x, y, w, h/numRighe);
+	  sorgenti->setGeometry(x,y,w,h/numRighe);
+      }
+      if(amplificatori) {
+	  qDebug("amplificatori->setGeometry(%d, %d, %d, %d)",
+		 x,h/numRighe,w,h/numRighe*(numRighe-1));
+	  amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
+      }
 }
 
 void diffSonora::setNavBarMode(uchar c)
@@ -210,6 +235,12 @@ void diffSonora::fineVis()
     isVisual=0;
     emit(Closed());
     emit(closed(this));
+}
+
+int diffSonora::addSource(banner *b)
+{
+    sorgenti->addItem(b);
+    connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 }
 
 

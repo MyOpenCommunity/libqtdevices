@@ -790,7 +790,7 @@ class banradio : public bannCiclaz
 {
         Q_OBJECT
 public:
-    banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, char *ambdescr="" );
+    banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, char *ambdescr="");
    void 	inizializza();
  /*!
   \brief Sets the background color for the banner.
@@ -838,6 +838,7 @@ protected slots:
     void	richFreq();
    void 	stopRDS();
    void	startRDS();    
+   void grandadChanged(QWidget *);
 signals:
    // void 	sendFrame(char *);          
 protected:    
@@ -1301,18 +1302,19 @@ class ambDiffSon : public bannBut2Icon
 {
     Q_OBJECT
  public:
-    ambDiffSon(QWidget *parent=0, const char *name=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", char *Icona3="", QPtrList<dati_sorgente_multi> *ls = NULL,
-	       QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL);
+    ambDiffSon(QWidget *parent=0, const char *name=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", char *Icona3="", 
+	       QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL,
+	       sottoMenu *sorg=NULL, diffmulti *dm=NULL);
     void Draw();
-#if 0
-    void addAmpli(char, char *, void *, char *, char *, char *, char *, int, 
-		  int);
-#endif
 public slots:
     void configura(); 
+ signals:
+ void ambChanged(char *, bool, void *); 
  private: 
 // QPtrList<sorgenteMulti> *lista_sorg;
  diffSonora *diffson;
+ diffmulti *diffmul;
+ sottoMenu *sorgenti;
 };
 
 #endif // AMB_DIFF_SON_H
@@ -1329,6 +1331,7 @@ public slots:
 
 //class sorgenteMulti;
 class diffSonora;
+class diffmulti;
 class dati_sorgente_multi;
 class dati_ampli_multi;
 
@@ -1342,12 +1345,16 @@ class insAmbDiffSon : public bannButIcon
 {
     Q_OBJECT
  public:
-    insAmbDiffSon(QWidget *parent=0, QPtrList<QString> *descrizioni=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", QPtrList<dati_sorgente_multi> *ls = NULL, QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL);
+    insAmbDiffSon(QWidget *parent=0, QPtrList<QString> *descrizioni=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
     void Draw();
+    signals:
+ void ambChanged(char *, bool, void *); 
 public slots:
     void configura(); 
  private:
  diffSonora *diffson;
+ diffmulti *diffmul;
+ sottoMenu *sorgenti;
 };
 
 #endif // INS_AMB_DIFF_SON_H
@@ -1376,7 +1383,13 @@ class sorgenteMultiRadio : public banradio
     sorgenteMultiRadio(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambDescr=""); 
 public slots:
 	void attiva();
+ void addAmb(char *); 
  private:
+ QString indirizzo_semplice; 
+ QStringList indirizzi_ambienti;
+ bool multiamb;
+ public slots:
+      void ambChanged(char *, bool, void *);
 };
 
 #endif // SORG_RADIO_DIFF_SON_H
@@ -1400,9 +1413,14 @@ class sorgenteMultiAux : public sorgente
     Q_OBJECT
  public:
     sorgenteMultiAux(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambdescr=""); 
+    void addAmb(char *); 
 public slots:
 	void attiva();
+ void ambChanged(char *, bool, void *); 
  private:
+ QString indirizzo_semplice;
+ QStringList indirizzi_ambienti;
+ bool multiamb;
 };
 
 #endif // SORG_AUX_DIFF_SON_H

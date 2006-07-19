@@ -195,6 +195,8 @@ QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<i
 #endif
     }
     connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
+    connect(this, SIGNAL(parentChanged(QWidget *)), 
+	    elencoBanner.getLast(), SLOT(grandadChanged(QWidget *)));
     connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
     connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
     connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , SIGNAL(freeze(bool))); 
@@ -203,6 +205,7 @@ QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<i
     //     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez())); 
     connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*))); 
     connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
+
     elencoBanner.getLast()->SetText(descrizione);
     elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
     elencoBanner.getLast()->setBGColor(backgroundColor());
@@ -220,6 +223,37 @@ QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<i
     //     draw();
     return(1);    
  }
+
+void sottoMenu::addItem(banner *b)
+{
+    elencoBanner.append(b);
+    connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
+    connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
+    connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
+    connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , SIGNAL(freeze(bool))); 
+    connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool))); 
+    connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));      
+    //     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez())); 
+    connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*))); 
+    connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
+    elencoBanner.getLast()->SetText(elencoBanner.getLast()->name());
+    int periodo, numFrame, tipo;
+    elencoBanner.getLast()->getAnimationParams(periodo, numFrame);
+    //tipo = elencoBanner.getLast()->getTipo();
+    elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
+    elencoBanner.getLast()->setBGColor(backgroundColor());
+    elencoBanner.getLast()->setFGColor(foregroundColor());
+    // BAH
+    //elencoBanner.getLast()->setId(tipo);
+    for (int idx=elencoBanner.count()-2;idx>=0;idx--)
+      {
+	if (elencoBanner.at(idx)->getId()==tipo)
+	  {
+	    elencoBanner.getLast()->setSerNum(elencoBanner.at(idx)->getSerNum()+1);
+	    idx=-1;
+	  }
+      }
+}
 
 void sottoMenu::draw()
 {
@@ -493,3 +527,20 @@ void  sottoMenu::setIndice(char c)
     draw();
     QWidget::show();
 }*/
+
+void sottoMenu::reparent ( QWidget * parent, WFlags f, const QPoint & p, 
+			   bool showIt)
+{
+    qDebug("sottoMenu::reparent()");
+    emit(parentChanged(parent));
+    //disconnect(QObject::parent(), SIGNAL(sendFrame(char *)), 0, 0);
+    QWidget::reparent(parent, f, p, showIt);
+}
+
+
+void sottoMenu::addAmb(char *a)
+{
+    qDebug("sottoMenu::addAmb(%s)", a);
+    for (int idx=elencoBanner.count()-1;idx>=0;idx--)
+	elencoBanner.at(idx)->addAmb(a);
+}
