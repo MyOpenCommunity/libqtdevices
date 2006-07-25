@@ -25,11 +25,12 @@
 #include <fcntl.h>
 
 
+#include "sottomenu.h"
 #include "sveglia.h"
 #include "genericfunz.h"
 
 
-sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, diffSonora* diso, char* f,char* descr1,char* descr2,char* descr3,char* descr4, char*h, char*m)
+sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdiff* diso, char* f,char* descr1,char* descr2,char* descr3,char* descr4, char*h, char*m)
         : QFrame( parent, name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -359,10 +360,11 @@ void sveglia::Closed()
         disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
         if(aggiornaDatiEEprom)
         {
-            difson->hide();
+            //difson->hide();
             difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
             difson->setNavBarMode(3);
-            difson->setNumRighe((uchar)4);	              
+            difson->ripristinaRighe();	              
+	    difson->restorewindows();
             difson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
             difson->forceDraw();
 
@@ -422,10 +424,13 @@ void sveglia::okTipo()
     {	
     this->bannNavigazione->hide();
     difson->setNumRighe((uchar)3);	
-    difson->setGeom(0,0,240,240);	
+    difson->setGeom(0,80,240,240);	
     difson->setNavBarMode(6);
-    difson->forceDraw();
     difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
+    //difson->setGeom(0,80,240,240);
+    difson->resizewindows();
+    difson->forceDraw();
+    
     
     aggiornaDatiEEprom=1;
     gesFrameAbil=TRUE;

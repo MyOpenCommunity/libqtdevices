@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: timescript.h,v 1.3 2006/07/17 12:48:34 cvs Exp $
+** $Id: timescript.h,v 1.4 2006/07/25 06:16:02 cvs Exp $
 **
 ** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
 **
@@ -30,6 +30,7 @@ public:
     timeScript( QWidget *parent=0, const char *name=0, uchar type=0,QDateTime* mioOrol=NULL);
    void	showDate();
    QDateTime getDataOra();  
+   void setDataOra(QDateTime);
 signals:   
 
       

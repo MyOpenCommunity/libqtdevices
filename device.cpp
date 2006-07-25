@@ -192,6 +192,7 @@ void device_status::force_initialized(void)
 	sv->force_initialized();
 	++(*svi);
     }
+    _initialized = true;
     delete svi;
 }
 
@@ -347,6 +348,7 @@ void device::init(void)
     device_status *ds ;
     while( ( ds = dsi->current() ) != 0) {
 	QString msg = "";
+	qDebug("ds = %p", ds);
 	if(ds->initialized()) {
 	    qDebug("device is already initialized");
 	    emit(initialized(ds));
@@ -354,10 +356,10 @@ void device::init(void)
 	    qDebug("getting init message");
 	    interpreter->get_init_message(ds, msg);
 	    qDebug("init message is %s", msg.ascii());
+	    // FIXME: METTI UN RITARDO E MARCA INIZIALIZZATO SOLO QUANDO LO E`
 	    if(msg != "")
 		emit(send_frame((char *)msg.ascii()));
-	    else
-		ds->force_initialized();
+	    ds->force_initialized();
 	}
 	++(*dsi);
     }

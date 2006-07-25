@@ -23,14 +23,14 @@
 ** Configurazione applicativo - path - verbosity - ecc
 *******************************************/
 // Variabili di inizializzazione
-char * My_File_Cfg= "-" ; //MY_FILE_CFG_DEFAULT;
+char * My_File_Cfg=MY_FILE_CFG_DEFAULT;
 char * My_File_User_Cfg=MY_FILE_USER_CFG_DEFAULT;
 char * My_File_Log=MY_FILE_LOG_DEFAULT;
 char * My_Parser=MY_PARSER_DEFAULT;
 char * Xml_File_In=XML_FILE_IN_DEFAULT;
 char * Xml_File_Out=XML_FILE_OUT_DEFAULT;
 FILE * StdLog = stdout;
-int  VERBOSITY_LEVEL=2 ; // VERBOSITY_LEVEL_DEFAULT;   // condiziona tutte le printf
+int  VERBOSITY_LEVEL=VERBOSITY_LEVEL_DEFAULT;   // condiziona tutte le printf
 char * Path_Var=NULL;
 char * bt_wd=NULL;
 char * My_Path=NULL;

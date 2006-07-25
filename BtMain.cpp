@@ -57,7 +57,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 v** Socket 
 *******************************************/
     qDebug("parte BtMain");
-    
+   
     client_comandi = new  Client("127.0.0.1",20000,0);
     client_monitor	 = new  Client("127.0.0.1",20000,1); 
     btouch_device_cache.set_clients(client_comandi, client_monitor);
@@ -236,7 +236,7 @@ void BtMain::hom()
     setBackgroundColor(QColor(255,255,255));
         
     tempo3 = new QTimer(this,"clock");
-    tempo3->start(10);
+    tempo3->start(2000);
     connect(tempo3,SIGNAL(timeout()),this,SLOT(myMain()));
     qDebug("OPPI");
 }
@@ -300,8 +300,10 @@ void BtMain::myMain()
     Home->showFullScreen();
     datiGen->hide();
     
-    connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(init()));
-    client_monitor->connetti();
+    //connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(init()));
+    //client_monitor->connetti();
+
+    btouch_device_cache.init_devices();
     
     tempo1 = new QTimer(this,"clock");
     tempo1->start(2000);

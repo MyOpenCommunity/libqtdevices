@@ -398,7 +398,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             {
                                     if  (par2==sveglia::DI_SON) 
                                     {
-                                        pnt=*difSon;        
+					// Use old or multichannel sd
+					if(*difSon)
+					    pnt = new contdiff(*difSon, NULL);
+					else if(*dm)
+					    pnt = new contdiff(NULL, *dm);
                                     }
                                     else
                                     {

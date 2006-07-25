@@ -40,7 +40,7 @@ setDataOra::setDataOra( sottoMenu *parent,const char *name )
 **impostaSveglia
 ****************************************************************/
 
-impostaSveglia::impostaSveglia( QWidget *parent,const char *name,diffSonora* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* descr1, char* descr2, char* descr3, char* descr4,char* frame, int tipo)
+impostaSveglia::impostaSveglia( QWidget *parent,const char *name, contdiff* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* descr1, char* descr2, char* descr3, char* descr4,char* frame, int tipo)
         : bann2But( parent, name )
 {   
  //   qDebug("-----1-----");
@@ -151,10 +151,10 @@ impBeep::impBeep( sottoMenu  *parent,const char *name ,char* val, const char * i
      SetIcons( &iconOn[0],1);
      bool on = !strcmp(val, "1");
      if (!on) {
-	 setBeep(FALSE,TRUE);
+	 setBeep(FALSE,FALSE);
 	 SetIcons(uchar(0), &iconOff[0]);
      } else {
-	 setBeep(TRUE,TRUE);
+	 setBeep(TRUE,FALSE);
 	 SetIcons(uchar(1), &iconOn[0]);
      }
      Draw();

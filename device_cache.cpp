@@ -7,6 +7,15 @@ device_cache::device_cache() : QMap<QString, deviceptr>()
     clear();
 }
 
+void device_cache::init_devices(void)
+{
+    qDebug("initializing devices");
+    device_cache::Iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+	it.data()->init();
+    }
+}
+
 void device_cache::connect_comm(deviceptr dev)
 {
     client_monitor->connect(client_monitor, SIGNAL(frameIn(char *)),
@@ -124,7 +133,7 @@ deviceptr device_cache::get_doorphone_device(QString w)
 	out = new doorphone_device(w);
 	qDebug("device is not there, creating device %p", out);
 	(*this)[k] = out;
-	connect_comm(out);
+	//connect_comm(out);
     }
     out->get();
     qDebug("device_cache::get_doorphone_device() returning %p", out);
@@ -301,6 +310,16 @@ void device_cache::set_clients(Client* com, Client* mon)
 {
     client_comandi = com;
     client_monitor = mon;
+}
+
+Client *device_cache::get_client_comandi()
+{
+    return client_comandi;
+}
+
+Client *device_cache::get_client_monitor()
+{
+    return client_monitor;
 }
 
 // Destructor

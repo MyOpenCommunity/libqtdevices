@@ -1777,7 +1777,10 @@ handle_frame(openwebnet_ext m, device_status_modscen *ds)
     int cosa = atoi(m.Extract_cosa());
     if(ds->initialized() && (curr_stat.get_val() == cosa)) 
 	return;
+    if((cosa != 41) && (cosa != 40) && (cosa != 44) && (cosa != 43))
+	return;
     curr_stat.set_val(cosa);
+    qDebug("new status is %d\n", curr_stat.get_val());
     ds->write_val((int)device_status_modscen::STAT_INDEX, curr_stat);
     evt_list.append(ds);
 }

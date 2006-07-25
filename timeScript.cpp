@@ -158,6 +158,11 @@ QDateTime timeScript::getDataOra()
     
 }
 
+void timeScript::setDataOra(QDateTime d)
+{
+    *mioClock = d;
+}
+
 
 
 

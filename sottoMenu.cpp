@@ -83,6 +83,7 @@ void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
             connect(bannNavigazione, SIGNAL(upClick()), this, SLOT(goUp()));
             connect(bannNavigazione, SIGNAL(downClick()), this, SLOT(goDown()));
             connect(bannNavigazione, SIGNAL(forwardClick()), this, SIGNAL(goDx()));
+
         }
         hasNavBar=navBarMode;
         strncpy(&iconName[0],IconBut4,sizeof(&iconName[0]));
@@ -166,7 +167,7 @@ QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<i
 #endif
     case SORGENTE_RADIO : elencoBanner.append(new banradio(this,descrizione ,(char*)indirizzo)); break;
     case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;  	
-    case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,descrizione ,(diffSonora*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,descr1,descr2,descr3,descr4,icoEx1,par3)); break;
+    case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,descr1,descr2,descr3,descr4,icoEx1,par3)); break;
     case CALIBRAZIONE: elencoBanner.append(new calibration(this,descrizione ,IconaSx)); break;
     case TERMO: elencoBanner.append(new termoPage(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,icoEx1,icoEx2,SecondForeground)); break;		       
     case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
@@ -258,9 +259,10 @@ void sottoMenu::addItem(banner *b)
 void sottoMenu::draw()
 {
     uint idx,idy;
+    //qDebug("sottoMenu::draw()");
     if (!(indicold==indice))
     {
-//        qDebug("indicold=%d - indice=%d",indicold,indice);
+      //qDebug("indicold=%d - indice=%d",indicold,indice);
 	for (idy=0;idy<elencoBanner.count();idy++)
 	    elencoBanner.at(idy)->hide();
 	if (hasNavBar)
@@ -274,6 +276,9 @@ void sottoMenu::draw()
 			elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
 		    }
 		}		
+		qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",
+		       0, height-MAX_HEIGHT/NUM_RIGHE,
+		       width, MAX_HEIGHT/NUM_RIGHE);
 		bannNavigazione  ->setGeometry( 0 ,height-MAX_HEIGHT/NUM_RIGHE,width , MAX_HEIGHT/NUM_RIGHE);		
         bannNavigazione->Draw();
 		bannNavigazione->show();	
@@ -312,6 +317,7 @@ void sottoMenu::goUp()
     
 void sottoMenu::goDown()
 {
+    qDebug("sottoMenu::goDown(), numRighe = %d", numRighe);
     if (elencoBanner.count()>(numRighe))
     {
 	indicold=indice;
@@ -468,6 +474,7 @@ void sottoMenu::freezed(bool f)
 void sottoMenu::setGeometry(int x, int y, int w, int h)
 {
     //purtroppo in QTE se da un figlio faccio height() o width() mi da le dimensioni del padre...
+    qDebug("sottoMenu::setGeometry(%d, %d, %d, %d)", x, y, w, h);
     height=h; 
     width=w;
     QWidget::setGeometry(x, y, w, h);

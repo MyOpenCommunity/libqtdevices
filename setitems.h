@@ -66,7 +66,7 @@ class impostaSveglia : public bann2But
 {
     Q_OBJECT
 public:
-     impostaSveglia( QWidget *, const char * ,diffSonora*, char* , char* , char*, char*, int, int, char* , char*, char* , char*, char*,int);     
+     impostaSveglia( QWidget *, const char * , contdiff*, char* , char* , char*, char*, int, int, char* , char*, char* , char*, char*,int);     
 /*!
   \brief changes the abilitation af the alarm set
 */      

@@ -121,6 +121,7 @@ int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* Icon
 void diffSonora::setNumRighe(uchar n)
 {
     numRighe=n;
+    qDebug("Invoking amplificatori->setNumRighe(%d)\n", n-2);
     amplificatori->setNumRighe(n-2);
     if(sorgenti)
       sorgenti->setNumRighe(1);
@@ -193,6 +194,7 @@ void diffSonora::draw()
 
 void diffSonora::forceDraw()
 {	
+    qDebug("diffSonora::forceDraw()");
       if (sorgenti)
 	sorgenti-> forceDraw();
       if (amplificatori)
@@ -218,7 +220,7 @@ void diffSonora::setGeom(int x,int y,int w,int h)
       if (sorgenti) {
 	  qDebug("sorgenti->setGeometry(%d, %d, %d, %d)",
 		 x, y, w, h/numRighe);
-	  sorgenti->setGeometry(x,y,w,10); //h/numRighe - 40);
+	  sorgenti->setGeometry(x,y,w,h/numRighe) ; // - 40);
       }
       if(amplificatori) {
 	  qDebug("amplificatori->setGeometry(%d, %d, %d, %d)",

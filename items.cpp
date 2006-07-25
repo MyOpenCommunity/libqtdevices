@@ -2431,9 +2431,8 @@ void banradio::status_changed(QPtrList<device_status> sl)
 }
 #endif
 
-void banradio::show()
+void banradio::pre_show()
 {
-    
     openwebnet msg_open;
     char    pippo[50];
     
@@ -2446,6 +2445,12 @@ void banradio::show()
     emit sendFrame(msg_open.frame_open);
     
     QWidget::show();
+}
+
+void banradio::show()
+{
+    
+    pre_show();
     
     if (parentWidget()->parentWidget()->parentWidget(TRUE))
         nascondi(BUT2);
@@ -3739,6 +3744,7 @@ gesModScen::gesModScen( QWidget *parent, const char *name ,char*indirizzo,char* 
     //   strcpy(&cosa[0], indirizzo);
     
     //   *strstr(&cosa[0],"*")='\000';
+    qDebug("gesModScen::gesModScen(): indirizzo = %s", indirizzo);
     if (strstr(indirizzo,"*"))
     {
         strncpy(&cosa[0], indirizzo, strstr(indirizzo,"*")-indirizzo);
@@ -3747,7 +3753,7 @@ gesModScen::gesModScen( QWidget *parent, const char *name ,char*indirizzo,char* 
     }
     sendInProgr=0;
     
-    setAddress(indirizzo);
+    setAddress(dove);
     impostaAttivo(2);   
     connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
     connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
@@ -3759,6 +3765,8 @@ gesModScen::gesModScen( QWidget *parent, const char *name ,char*indirizzo,char* 
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
+    // Will be initialized later
+    //dev->init();
 
 }
 
@@ -4018,7 +4026,8 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 #endif
 
 void gesModScen::inizializza()
-{   
+{
+#if 0   
     openwebnet msg_open;
     char    pippo[50];
     
@@ -4028,6 +4037,7 @@ void gesModScen::inizializza()
     strcat(pippo,"##");
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    	
+#endif
     nascondi(BUT2);     
 }
 
@@ -4122,6 +4132,7 @@ void scenEvo::nextCond(void)
 	    connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	    connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	    connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
+	    co->inizializza();
 	    co->mostra();
 	}
     } else {
@@ -4486,6 +4497,9 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 		this, SLOT(frame_captured_handler(call_notifier *)));
 	connect(cnm, SIGNAL(call_notifier_closed(call_notifier *)),
 		this, SLOT(call_notifier_closed(call_notifier *)));
+	connect(btouch_device_cache.get_client_monitor(), 
+		SIGNAL(frameIn(char *)),
+		cnm, SLOT(gestFrame(char *)));
     }
     cnm->add_call_notifier(cn);
     if(unknown && !unknown_notifier) {
@@ -4500,7 +4514,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 void postoExt::gestFrame(char *s)
 {
     qDebug("postoExt::gestFrame()");
-    // devices talk directly to comm clients
 }
 
 void postoExt::frame_captured_handler(call_notifier *cn)
@@ -4535,8 +4548,7 @@ void postoExt::stairlight_pressed(void)
     msg_open.CreateNullMsgOpen();  
     char tmp[100];
     sprintf(tmp, "*6*11*%s##", where.ascii());
-    msg_open.CreateMsgOpen(tmp, strlen(tmp));
-    emit sendFrame(msg_open.frame_open);   
+    msg_open.CreateMsgOpen(tmp, strlen(tmp));    emit sendFrame(msg_open.frame_open);   
 }
 
 void postoExt::stairlight_released(void)
@@ -4633,7 +4645,7 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
 
 void ambDiffSon::Draw()
 {
-    qDebug("ambDiffSon::Draw()");
+    qDebug("ORCOA CA CA SDS AL SambDiffSon::Draw()");
     sxButton->setPixmap(*Icon[0]);
     if (pressIcon[0])
 	sxButton->setPressedPixmap(*pressIcon[0]);
@@ -4718,7 +4730,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 
 void insAmbDiffSon::Draw()
 {
-    qDebug("insAmbDiffSon::Draw()");
+    qDebug("ORCOA CA CA SDS AL SinsAmbDiffSon::Draw()");
     sxButton->setPixmap(*Icon[1]);
     if (pressIcon[0])
 	sxButton->setPressedPixmap(*pressIcon[0]);
@@ -4809,6 +4821,11 @@ void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
       setAddress((char *)dove->ascii());
   }
   myRadio->setAmbDescr(ad);
+}
+
+void sorgenteMultiRadio::show()
+{
+    banradio::pre_show();
 }
 
 void sorgenteMultiRadio::addAmb(char *a)

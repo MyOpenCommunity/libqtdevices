@@ -85,6 +85,8 @@ class scenEvo_cond : public QFrame {
     virtual void setEnabled(bool);
     //! Save condition
     virtual void save();
+    //! Reset condition (on cancel)
+    virtual void reset();
     //! Set serial number
     void set_serial_number(int);
     //! Get serial number
@@ -194,6 +196,8 @@ class scenEvo_cond_h : public scenEvo_cond {
     void setEnabled(bool);
     //! Save condition
     void save();
+    //! Reset condition
+    void reset();
     //! Return true when condition is satisfied
     bool isTrue(void);
 public slots:
@@ -273,6 +277,8 @@ class device_condition : public QObject {
     void setBGColor(QColor c);
     //! Inits condition
     virtual void inizializza(void);
+    //! Resets condition
+    void reset(void);
     //! Checks condition
     //virtual void gestFrame(char *);
     /*
@@ -587,6 +593,8 @@ class scenEvo_cond_d : public scenEvo_cond {
     void SetIcons();
     //! Save condition
     virtual void save();
+    //! Reset condition
+    void reset();
     //! Return true when condition is satisfied
     bool isTrue(void);
 public slots:

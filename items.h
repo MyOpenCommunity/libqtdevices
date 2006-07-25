@@ -822,7 +822,7 @@ public slots:
 #else
     void        status_changed(QPtrList<device_status>);
 #endif
-    void	show();
+    virtual void	show();
     void	hide();
     void 	SetText(const char *);
 protected slots: 
@@ -842,6 +842,7 @@ protected slots:
 signals:
    // void 	sendFrame(char *);          
 protected:    
+   void pre_show();
     radio*	 myRadio;    
     device *dev;
 };
@@ -1390,6 +1391,7 @@ public slots:
  bool multiamb;
  public slots:
       void ambChanged(char *, bool, void *);
+      void show();
 };
 
 #endif // SORG_RADIO_DIFF_SON_H

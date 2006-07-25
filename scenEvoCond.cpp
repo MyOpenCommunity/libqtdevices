@@ -103,6 +103,7 @@ void scenEvo_cond::Prev()
 {
     qDebug("scenEvo_cond::Prev()");
     //emit(SwitchToPrev());
+    reset();
     emit(SwitchToFirst());
 }
 
@@ -121,6 +122,11 @@ void scenEvo_cond::setEnabled(bool e)
 void scenEvo_cond::save()
 {
     qDebug("scenEvo_cond::save()");
+}
+
+void scenEvo_cond::reset()
+{
+    qDebug("scenEvo_cond::reset()");
 }
 
 int scenEvo_cond::get_serial_number()
@@ -443,6 +449,14 @@ void scenEvo_cond_h::save()
     QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
 }
 
+void scenEvo_cond_h::reset()
+{
+    qDebug("scenEvo_cond_h::reset()");
+    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
+    ora->setDataOra(*cond_time);
+    ora->showTime();
+}
+
 bool scenEvo_cond_h::isTrue(void)
 {
     return 
@@ -683,11 +697,18 @@ void scenEvo_cond_d::OK(void)
 
 void scenEvo_cond_d::save()
 {
+    qDebug("scenEvo_cond_d::save()");
     QString s; actual_condition->get_condition_value(s);
     copyFile("cfg/conf.xml","cfg/conf1.lmx");
     setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "trigger", 
 		s.ascii(), get_serial_number());
     QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+}
+
+void scenEvo_cond_d::reset()
+{
+    qDebug("scenEvo_cond_d::reset()");
+    actual_condition->reset();
 }
 
 void scenEvo_cond_d::inizializza(void)
@@ -858,6 +879,13 @@ void device_condition::inizializza()
 {
     qDebug("device_condition::inizializza()");
     dev->init();
+}
+
+void device_condition::reset()
+{
+    qDebug("device_condition::reset()");
+    set_current_value(get_condition_value());
+    Draw();
 }
 
 bool device_condition::isTrue()

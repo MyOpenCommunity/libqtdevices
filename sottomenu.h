@@ -109,11 +109,11 @@ QString action="", QString light="", QString key="", QString unk="", QValueList<
   
   The drawn is always made
 */  
-   void 	forceDraw();   
+   virtual void 	forceDraw();   
 /*!
   \brief Set the row's number to be drawn in the screen
 */
-   void 	setNumRighe(uchar);
+   virtual void 	setNumRighe(uchar);
  /*!
   \brief Retrieves the last banner of the list
 */  
@@ -169,7 +169,7 @@ QString action="", QString light="", QString key="", QString unk="", QValueList<
 /*!
   \brief Changes the type of navigation bar present at the bsubtree (see bannFrecce)
 */  
-  void 	setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
+  virtual void 	setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
 /*!
   \brief Set the Geometry for the object.
 */ 
@@ -177,7 +177,7 @@ QString action="", QString light="", QString key="", QString unk="", QValueList<
 /*!
   \brief reparent implementation
 */
-  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
+  virtual void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
 /*!
   \brief add amb to all banners
 */
@@ -262,7 +262,7 @@ public slots:
  /*!
   \brief  Reimplements QWidget::Hide() and hides the page.
 */      
-  void 	hide();
+  virtual void 	hide();
 /*!
   \brief  Reimplements QWidget::mouseReleaseEvent( QMouseEvent * ), used to wake up from frozen state.
 */       

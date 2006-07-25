@@ -30,7 +30,7 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon)
   connect( socket, SIGNAL(error(int)),SLOT(socketError(int)) );
   
   // connect to the server
-//  connetti();
+  connetti();
   
 /*  if (ismonitor) 
       qDebug( "Monitor");      

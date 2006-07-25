@@ -23,6 +23,12 @@ class device_cache : public QMap<QString, deviceptr> {
  public:
     //! Constructor
     device_cache();
+    //! Inits all devices
+    void init_devices();
+    //! Returns pointer to client_comandi
+    Client *get_client_comandi();
+    //! Returns pointer to client_monitor
+    Client *get_client_monitor();
     //! Get device given key , create it if it doesn't exist
     device *get_device(QString k = "");
     //! Get simple light device
