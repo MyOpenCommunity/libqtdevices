@@ -381,18 +381,24 @@ void device::init(void)
     dsi->toFirst();
     device_status *ds ;
     while( ( ds = dsi->current() ) != 0) {
-	QString msg = "";
+	//QString msg = "";
+	QStringList msgl;
+	msgl.clear();
 	qDebug("ds = %p", ds);
 	if(ds->initialized()) {
 	    qDebug("device is already initialized");
 	    emit(initialized(ds));
 	} else {
 	    qDebug("getting init message");
-	    interpreter->get_init_message(ds, msg);
-	    qDebug("init message is %s", msg.ascii());
-	    // FIXME: METTI UN RITARDO E MARCA INIZIALIZZATO SOLO QUANDO LO E`
-	    if(msg != "")
-		emit(send_frame((char *)msg.ascii()));
+	    interpreter->get_init_messages(ds, msgl);
+	    for ( QStringList::Iterator it = msgl.begin(); 
+		  it != msgl.end(); ++it ) {
+		qDebug("init message is %s", (*it).ascii());
+		// FIXME: METTI UN RITARDO E MARCA INIZIALIZZATO 
+		// SOLO QUANDO LO E`
+		if((*it) != "")
+		    emit(send_frame((char *)((*it).ascii())));
+	    }
 	    ds->force_initialized();
 	}
 	++(*dsi);

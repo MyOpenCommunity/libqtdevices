@@ -2288,10 +2288,10 @@ sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo, bool vecch
 {
     SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
 
-	
+    vecchia = vecchio;
     setAddress(indirizzo);
     //     connect(this,SIGNAL(click()),this,SLOT(Attiva()));
-    if(vecchio) {
+    if(vecchia) {
 	connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
 	connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
 	connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
@@ -2310,7 +2310,6 @@ void sorgente::gestFrame(char*)
 void sorgente::ciclaSorg()
 {
     openwebnet msg_open;
-    
     msg_open.CreateMsgOpen("16","23","100","");	     
     emit sendFrame(msg_open.frame_open);      
 }
@@ -2358,10 +2357,12 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, 
     
     if(nbut == 4) {
 	// Old difson
+	old_diffson = true;
 	connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
 	connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
 	connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
-    }
+    } else
+	old_diffson = false;
     
     connect(this  ,SIGNAL(dxClick()),myRadio,SLOT(showRadio()));
     connect(this , SIGNAL(dxClick()),this,SLOT(startRDS()));
@@ -2507,14 +2508,16 @@ void banradio::pre_show()
 {
     openwebnet msg_open;
     char    pippo[50];
-    
-    memset(pippo,'\000',sizeof(pippo));
-    strcat(pippo,"*#16*");
-    strcat(pippo,getAddress());
-    strcat(pippo,"*6##");
-    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    
-    emit sendFrame(msg_open.frame_open);
+
+    if(old_diffson) {
+	memset(pippo,'\000',sizeof(pippo));
+	strcat(pippo,"*#16*");
+	strcat(pippo,getAddress());
+	strcat(pippo,"*6##");
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	
+	emit sendFrame(msg_open.frame_open);
+    }
     
     QWidget::show();
 }
@@ -4783,6 +4786,7 @@ void ambDiffSon::actSrcChanged(int a, int s)
     actSrc = 100 + a*10 + s;
 }
 
+
 /*****************************************************************
 ** Insieme ambienti diffusione sonora multicanale
 ****************************************************************/
@@ -4868,7 +4872,6 @@ void insAmbDiffSon::actSrcChanged(int a, int s)
     qDebug("ambDiffSon::actSrcChanged(%d, %d), ignored", a, s);
 }
 
-
 /*****************************************************************
  ** Sorgente radio diffusione sonora multicanale
 ****************************************************************/
@@ -4893,6 +4896,7 @@ void sorgenteMultiRadio::attiva()
     if(!multiamb) {
 	msg_open.CreateMsgOpen("16", "3", getAddress(), "");
 	emit sendFrame(msg_open.frame_open);   
+	emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
     } else {
 	qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI",
 	       indirizzi_ambienti.count());
@@ -4915,9 +4919,10 @@ void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
   qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad, multi, indamb);
   if(!multi) {
       multiamb = false;
+      indirizzo_ambiente = QString((const char *)indamb).toInt();
       QString *dove = new QString(
 	  QString::number(100 + 
-			  QString((const char *)indamb).toInt() * 10 +
+			  indirizzo_ambiente * 10 +
 			  indirizzo_semplice.toInt(),
 			  10));
       qDebug("Source where is now %s", dove->ascii());
@@ -4971,6 +4976,7 @@ void sorgenteMultiAux::attiva()
     if(!multiamb) {
 	msg_open.CreateMsgOpen("16", "3", getAddress(), "");
 	emit sendFrame(msg_open.frame_open);   
+	emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
     } else {
 	for ( QStringList::Iterator it = indirizzi_ambienti.begin(); 
 	      it != indirizzi_ambienti.end(); ++it ) {
@@ -4990,6 +4996,7 @@ void sorgenteMultiAux::ambChanged(char *ad, bool multi, void *indamb)
     qDebug("sorgenteMultiAux::ambChanged(%s, %d, %s)", ad, multi, indamb);
     if(!multi) {
 	multiamb = false;
+	indirizzo_ambiente = QString((const char *)indamb).toInt();
 	QString *dove = new QString(
 	    QString::number(100 + 
 			    QString((const char *)indamb).toInt() * 10 +

@@ -688,6 +688,8 @@ void sveglia::aumVol()
         aumVolTimer->stop();
         delete (aumVolTimer);
         aumVolTimer=NULL;
+
+#if 0
         // manda general OFF
         openwebnet msg_open;
         char    pippo[50];
@@ -696,6 +698,21 @@ void sveglia::aumVol()
         strcat(pippo,"*16*13*0##");
         msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
         emit sendFrame(msg_open.frame_open);    
+#else
+	openwebnet msg_open;
+        char    pippo[50];
+	for (uchar idx=0;idx<AMPLI_NUM;idx++)
+        {
+            if (volSveglia[idx]>0)
+            {		
+                memset(pippo,'\000',sizeof(pippo));
+		strcat(pippo,"*16*13*");
+		sprintf(&pippo[5],"%02d",idx);
+		strcat(pippo,"##");
+		emit sendFrame(msg_open.frame_open);    
+	    }
+        }
+#endif
 	emit(freeze(FALSE));        
         emit (svegl(FALSE));
     }

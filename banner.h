@@ -428,6 +428,8 @@ signals:
   \brief Emitted when the banner decide to die and to be removed from the list containig it.
 */    
  virtual void killMe(banner*);
+ // FIXMEEEEEEEE !!!!
+ virtual void active(int, int);
   
 protected:
 /*   QLabel * BannerIcon;

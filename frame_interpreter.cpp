@@ -195,9 +195,12 @@ bool frame_interpreter::is_frame_ours(openwebnet_ext m)
 
 void frame_interpreter::request_init(device_status *ds)
 {
-    QString msg;
-    get_init_message(ds, msg);
-    emit(init_requested(msg));
+    QStringList msgl;
+    msgl.clear();
+    get_init_messages(ds, msgl);
+    for ( QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it ) {
+	emit(init_requested(*it));
+    }
 }
 
 // This is reimplemented by children
@@ -206,11 +209,21 @@ void frame_interpreter::get_init_message(device_status *s, QString& out)
     out = "";
 }
 
+// This is reimplemented by some children only (those requiring more than 
+// one init message
+void frame_interpreter::get_init_messages(device_status *s, QStringList& out)
+{
+    out.clear();
+    QString m;
+    get_init_message(s, m);
+    out.append(m);
+}
+
 // This is reimplemented by children
 void frame_interpreter::handle_frame_handler(char *f, 
 					      QPtrList<device_status> *sl)
 {
-  qDebug("frame_interpreter::handle_frame_handler");
+    qDebug("frame_interpreter::handle_frame_handler");
 }
 
 // Set where
@@ -983,47 +996,46 @@ frame_interpreter_sound_device(QString w, bool p, int g) :
 }
 
 void frame_interpreter_sound_device::
-get_init_message(device_status *s, QString& out)
+get_init_messages(device_status *s, QStringList& out)
 {
     QString head = "*#16*";
     QString end = "##";
     QString what ;
-    switch(s->get_type()) {
-    case device_status::AMPLIFIER:
-	what = QString("*1");
-	break;
-    default:
-	qDebug("init message required for unknown device status");
-	out = "";
-	return;
-    }
-    out = head + where + what + end;
+
+    out.clear();
+    what = "*1";
+    out.append(head + where + what + end);
+    what = "*5";
+    out.append(head + where + what + end);
 }
 
 // Private methods
 void frame_interpreter_sound_device::
-set_status(device_status_amplifier *ds, int l, bool _on)
+set_status(device_status_amplifier *ds, int l, int _on)
 {
     qDebug("frame_interpreter_sound_device::set_status"
 	   "(device_status_amplifier, %d %d)", l, _on);
     stat_var curr_lev(stat_var::AUDIO_LEVEL);
     stat_var curr_status(stat_var::ON_OFF);
     bool do_event = false;
-    int on = _on ? 1 : 0;
-    // Read current level and status
-    ds->read((int)device_status_amplifier::ON_OFF_INDEX, curr_status);
-    if(!curr_status.initialized()) {
-	qDebug("Initializing ampli status");
-	curr_status.set_val(on);
-	ds->write_val((int)device_status_amplifier::ON_OFF_INDEX, curr_status);
-	do_event = true;
-    } else {
-	if(curr_status.get_val() != on) {
-	    qDebug("Ampli status changed to %d", on);
+    if(_on != -1) {
+	int on = _on ? 1 : 0;
+	// Read current level and status
+	ds->read((int)device_status_amplifier::ON_OFF_INDEX, curr_status);
+	if(!curr_status.initialized()) {
+	    qDebug("Initializing ampli status");
 	    curr_status.set_val(on);
 	    ds->write_val((int)device_status_amplifier::ON_OFF_INDEX, 
 			  curr_status);
 	    do_event = true;
+	} else {
+	    if(curr_status.get_val() != on) {
+		qDebug("Ampli status changed to %d", on);
+		curr_status.set_val(on);
+		ds->write_val((int)device_status_amplifier::ON_OFF_INDEX, 
+			      curr_status);
+		do_event = true;
+	    }
 	}
     }
     if(l >= 0) {
@@ -1061,7 +1073,8 @@ void frame_interpreter_sound_device::handle_frame(openwebnet_ext m,
 	switch(code) {
 	case 1:
 	    lev = atoi(m.Extract_valori(0));
-	    set_status(ds, lev, true);
+	    // Only set level, don't touch status
+	    set_status(ds, lev, -1);
 	    break;
 	default:
 	    qDebug("Unknown sound device meas frame, ignoring");
@@ -1071,11 +1084,11 @@ void frame_interpreter_sound_device::handle_frame(openwebnet_ext m,
 	int cosa = atoi(m.Extract_cosa());
 	switch(cosa) {
 	case 13:
-	    set_status(ds, -1, false);
+	    set_status(ds, -1, 0);
 	    break;
 	case 0:
 	case 3:
-	    set_status(ds, -1, true);
+	    set_status(ds, -1, 1);
 	    break;
 	default:
 	    qDebug("Unknown sound device norm frame, ignoring");

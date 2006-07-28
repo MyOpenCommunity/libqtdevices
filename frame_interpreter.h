@@ -90,7 +90,9 @@ class frame_interpreter : public QObject {
     bool get_pul(void);
     //! Returns group mask
     int get_group(void);
-    //! Returns init message given device status
+    //! Returns init messages given device status
+    virtual void get_init_messages(device_status *, QStringList&);
+    //! Returns single init message
     virtual void get_init_message(device_status *, QString&);
     //! Set where
     void set_where(QString);
@@ -180,14 +182,14 @@ class frame_interpreter_sound_device : public frame_interpreter {
     Q_OBJECT
  private:
     //! Set status, amplifier
-    void set_status(device_status_amplifier *ds, int s, bool on);
+    void set_status(device_status_amplifier *ds, int s, int on);
     //! Analyze a frame
     void handle_frame(openwebnet_ext, device_status_amplifier *);
  public:
     //! Constructor
     frame_interpreter_sound_device(QString, bool, int);
-    //! Returns init message given device status
-    void get_init_message(device_status *, QString&);
+    //! Returns init messages (more than one !!) given device status
+    void get_init_messages(device_status *, QStringList&);
  public slots:
     //! Receive a frame
     void handle_frame_handler(char *, QPtrList<device_status> *);

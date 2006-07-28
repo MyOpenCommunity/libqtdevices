@@ -844,6 +844,7 @@ signals:
 protected:    
    void pre_show();
     radio*	 myRadio;    
+    bool   old_diffson;
     device *dev;
 };
 
@@ -882,6 +883,7 @@ signals:
   //  void sendFrame(char *);          
  protected:
     aux *myAux;
+    bool vecchia;
 };
 
 #endif //SORGENTE_H
@@ -1310,6 +1312,7 @@ class ambDiffSon : public bannBut2Icon
     void Draw();
 public slots:
     void configura(); 
+    //! receives amb index and active source index
     void actSrcChanged(int, int);
  signals:
  void ambChanged(char *, bool, void *); 
@@ -1355,7 +1358,8 @@ class insAmbDiffSon : public bannButIcon
  void ambChanged(char *, bool, void *); 
 public slots:
     void configura();
-void actSrcChanged(int, int); 
+    //! receives amb index and active source index 
+    void actSrcChanged(int, int); 
  private:
  diffSonora *diffson;
  diffmulti *diffmul;
@@ -1393,9 +1397,12 @@ public slots:
  QString indirizzo_semplice; 
  QStringList indirizzi_ambienti;
  bool multiamb;
+ int indirizzo_ambiente;
  public slots:
       void ambChanged(char *, bool, void *);
       void show();
+ signals:
+      void active(int, int);
 };
 
 #endif // SORG_RADIO_DIFF_SON_H
@@ -1427,6 +1434,9 @@ public slots:
  QString indirizzo_semplice;
  QStringList indirizzi_ambienti;
  bool multiamb;
+ int indirizzo_ambiente;
+signals:
+      void active(int, int);
 };
 
 #endif // SORG_AUX_DIFF_SON_H
