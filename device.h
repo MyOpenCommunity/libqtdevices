@@ -29,6 +29,7 @@ class stat_var {
 	   RDS1,
 	   LOCAL,
 	   SP,
+	   ACTIVE_SOURCE,
       } type;
  private:
     type t;
@@ -45,8 +46,10 @@ class stat_var {
     bool _initialized;
  public:
     //! Constructor
-    stat_var(stat_var::type _t, int val = 0, int min = 0, int max = 0, 
-	     int step = 1, bool initialized = false);
+    stat_var(stat_var::type _t, int val, int min, int max, 
+	     int step, bool initialized = false);
+    //! Reduced constructor
+    stat_var(stat_var::type);
     //! Get value
     void get_val(int&);
     //! Get value again
@@ -94,6 +97,7 @@ class device_status {
 	   ZONANTI,
 	   THERMR,
 	   MODSCEN,
+	   SOUNDMATR,
       } type;
  private:
     //! Type
@@ -213,6 +217,22 @@ class device_status_radio : public device_status {
 	RDS1_INDEX,
     } ind;
     device_status_radio();
+};
+
+//! Sound matrix
+class device_status_sound_matr : public device_status {
+ public:
+    enum {
+	AMB1_INDEX = 0,
+	AMB2_INDEX,
+	AMB3_INDEX,
+	AMB4_INDEX,
+	AMB5_INDEX,
+	AMB6_INDEX,
+	AMB7_INDEX,
+	AMB8_INDEX
+    } ind;
+    device_status_sound_matr();
 };
 
 //! Doorphone status
@@ -386,6 +406,15 @@ class radio_device : public device
  public:
     //! Constructor
     radio_device(QString, bool p=false, int g=-1);
+};
+
+//! Sound matrix
+class sound_matr : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    sound_matr(QString, bool p=false, int g=-1);
 };
 
 //! Doorphone device

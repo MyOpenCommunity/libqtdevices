@@ -927,6 +927,7 @@ private slots:
 signals:
   // void 	sendFrame(char *);          
 private:     
+     device *dev;
      char 	manIco[50];
      char 	autoIco[50];
 };
@@ -1309,6 +1310,7 @@ class ambDiffSon : public bannBut2Icon
     void Draw();
 public slots:
     void configura(); 
+    void actSrcChanged(int, int);
  signals:
  void ambChanged(char *, bool, void *); 
  private: 
@@ -1316,6 +1318,7 @@ public slots:
  diffSonora *diffson;
  diffmulti *diffmul;
  sottoMenu *sorgenti;
+ int actSrc;
 };
 
 #endif // AMB_DIFF_SON_H
@@ -1351,7 +1354,8 @@ class insAmbDiffSon : public bannButIcon
     signals:
  void ambChanged(char *, bool, void *); 
 public slots:
-    void configura(); 
+    void configura();
+void actSrcChanged(int, int); 
  private:
  diffSonora *diffson;
  diffmulti *diffmul;

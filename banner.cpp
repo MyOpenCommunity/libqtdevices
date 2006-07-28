@@ -631,10 +631,7 @@ void banner::mostra(char item)
 		    SecondaryText->show();
 	       break;
 	}
-}
- 
-
-    
+}   
     
 void banner::Draw()
 {

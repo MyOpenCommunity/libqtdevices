@@ -174,6 +174,23 @@ deviceptr device_cache::get_sound_device(QString w)
     return out;
 }
 
+// Get sound matrix device
+deviceptr device_cache::get_sound_matr_device()
+{
+    QString k = get_device_key(QString("16"), QString("1000"));
+    qDebug("device_cache::get_sound_matr_device(%s)", k.ascii());
+    deviceptr out = (*this)[k];
+    if(!out) {
+	out = new sound_matr(QString("1000"));
+	qDebug("device is not there, creating device %p", out);
+	(*this)[k] = out;
+	connect_comm(out);
+    }
+    out->get();
+    qDebug("device_cache::get_sound_matr_device() returning %p", out);
+    return out;
+}
+
 // Get radio device
 deviceptr device_cache::get_radio_device(QString w)
 {

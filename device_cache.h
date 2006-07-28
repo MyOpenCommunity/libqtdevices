@@ -47,6 +47,8 @@ class device_cache : public QMap<QString, deviceptr> {
     device *get_autom_device(QString where);
     //! Get sound device
     device *get_sound_device(QString where);
+    //! Get sound matr device
+    device *get_sound_matr_device();
     //! Get radio
     device *get_radio_device(QString where);
     //! Get anti-intrusion system

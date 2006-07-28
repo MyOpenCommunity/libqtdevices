@@ -69,7 +69,9 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
     b1 = elencoButtons.getLast();
     
     if (function==SPECIAL)
-	b1->setGeometry(x, y, DIM_SPECBUT_HOME, DIM_BUT_HOME );
+	b1->setGeometry(x, y, DIM_SPECBUT_HOME, DIM_BUT_HOME_SMALL );
+    else if(function==BACK)
+	b1->setGeometry(x, y, DIM_BUT_HOME_SMALL, DIM_BUT_HOME_SMALL );
     else
 	b1->setGeometry(x, y, DIM_BUT_HOME, DIM_BUT_HOME );
     

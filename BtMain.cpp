@@ -244,6 +244,7 @@ void BtMain::hom()
 
 void BtMain::init()
 {
+  qDebug("BtMain::init()");
     connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
     connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
     
@@ -267,6 +268,8 @@ void BtMain::init()
 	scenari_evoluti->inizializza();
     if(videocitofonia)
 	videocitofonia->inizializza();
+    if(imposta)
+      imposta->inizializza();
     //    rearmWDT();
     
     struct sysinfo info;
@@ -303,6 +306,7 @@ void BtMain::myMain()
     //connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(init()));
     //client_monitor->connetti();
 
+    init();
     btouch_device_cache.init_devices();
     
     tempo1 = new QTimer(this,"clock");

@@ -357,6 +357,7 @@ banner* sottoMenu::getPrevious()
 
 void sottoMenu::inizializza()
 {
+  qDebug("sottoMenu::inizializza()");
     iniTim = new QTimer(this,"iniTimer");
     iniTim->start(300,TRUE);
      QObject::connect(iniTim,SIGNAL(timeout()), this,SLOT(init()));
@@ -365,6 +366,7 @@ void sottoMenu::inizializza()
 
 void sottoMenu::init()
 {
+  qDebug("sottoMenu::init()");
      for (char idx=0;idx<elencoBanner.count();idx++)     
 	elencoBanner.at (idx) -> inizializza();     
 }

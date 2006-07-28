@@ -623,13 +623,18 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 		request_init(ds);
 	    break;
 	default:
-	    if((cosa >=2) && (cosa <= 10))
+	    if(cosa == 2)
 		// Dimmer level
-#if 0
-		set_status(ds, (cosa - 1) * 10);
-#else
-         	set_status(ds, cosa * 10);
-#endif
+         	set_status(ds, 1);
+            else if((cosa >= 3) && (cosa <= 8))
+                // Dimmer level
+                set_status(ds, (cosa - 2) * 10 );
+            else if(cosa == 9)
+                // Dimmer level
+                set_status(ds, 75);
+            else if(cosa == 10)
+                // Dimmer level
+                set_status(ds, 100);
 	    else if((cosa >= 11) && (cosa <= 19)) {
 		// What shall we do here ?
 		set_status(ds, 1);
@@ -936,6 +941,7 @@ set_status(device_status_autom *ds, int t)
     qDebug("curr stat is %d\n", curr_stat.get_val());
     if(t != curr_stat.get_val()) {
 	qDebug("setting status to %d", t);
+	curr_stat.set_val(t);
 	ds->write_val((int)device_status_autom::STAT_INDEX, curr_stat);
 	do_event = 1;
     }
@@ -1107,6 +1113,87 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+}
+
+// Sound matrix frame interpreter
+frame_interpreter_sound_matr_device::
+frame_interpreter_sound_matr_device(QString w, bool p, int g) :
+    frame_interpreter(QString("16"), QString("1000"), p, g)
+{
+}
+
+void frame_interpreter_sound_matr_device::
+get_init_message(device_status *ds, QString& out)
+{
+  out = QString("*#16*1000*11##");
+}
+
+void frame_interpreter_sound_matr_device::
+handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+{
+    openwebnet_ext msg_open;
+    qDebug("frame_interpreter_sound_matr_device::handle_frame_handler");
+    qDebug("#### frame is %s ####", frame);
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+    if(!is_frame_ours(msg_open))
+	// Discard frame if not ours
+	return;
+    QPtrListIterator<device_status> *dsi = 
+	new QPtrListIterator<device_status>(*sl);
+    dsi->toFirst();
+    device_status *ds;
+    evt_list.clear();
+    while( ( ds = dsi->current() ) != 0) {
+	device_status::type type = ds->get_type();
+	switch (type) {
+	case device_status::SOUNDMATR:
+	    handle_frame(msg_open, (device_status_sound_matr *)ds);
+	    break;
+	default:
+	    // Do nothing
+	    break;
+	}
+	++(*dsi);
+    }    
+    if(!evt_list.isEmpty())
+	emit(frame_event(evt_list));
+}
+
+void frame_interpreter_sound_matr_device::
+handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
+{
+    int act;
+    bool do_event = false;
+    qDebug("frame_interpreter_sound_matr_device::handle_frame");
+    if(m.IsMeasureFrame()) {
+	// *#1*where*1*lev*speed##
+	int code = atoi(m.Extract_grandezza());
+	qDebug("frame_sound_matr_device::handle_frame, meas frame");
+	switch(code) {
+	case 11:
+	    for(int i=device_status_sound_matr::AMB1_INDEX; 
+		i<=device_status_sound_matr::AMB8_INDEX; i++) {
+		stat_var curr_act(stat_var::ACTIVE_SOURCE);
+		ds->read(i, curr_act);
+		qDebug("Curr active source for amb %d = %d", i, 
+		       curr_act.get_val());
+		act = atoi(m.Extract_valori(i));
+		qDebug("New active source = %d", act);
+		if(act != curr_act.get_val()) {
+		    curr_act.set_val(act);
+		    ds->write_val(i, curr_act);
+		    do_event = true;
+		}
+	    }
+	    break;
+	default:
+	    qDebug("frame_sound_matr_device::handle_frame"
+		   ", meas frame, code = %d", code);
+	    break;
+	}
+    }
+    if(do_event)
+	evt_list.append(ds);
 }
 
 
@@ -1585,8 +1672,11 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     ds->read((int)device_status_thermr::STAT_INDEX, curr_stat);
     ds->read((int)device_status_thermr::LOCAL_INDEX, curr_local);
     ds->read((int)device_status_thermr::SP_INDEX, curr_sp);
-    qDebug("curr status is %d\n", curr_stat.get_val());
+    qDebug("curr status is %d", curr_stat.get_val());
+    qDebug("curr local is %d", curr_local.get_val());
+    qDebug("curr sp is %d", curr_sp.get_val());
     int cosa = atoi(m.Extract_cosa());
+    qDebug("cosa = %d", cosa);
     switch(cosa) {
     case 110:
     case 210:
@@ -1597,6 +1687,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    do_event = true;
 	    stat = device_status_thermr::S_MAN;
 	}
+	elaborato = true;
 	break;
     case 111:
     case 211:
@@ -1607,6 +1698,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    do_event = true;
 	    stat = device_status_thermr::S_AUTO;
 	}
+	elaborato = true;
 	break;
     case 102:
 	// PROT. ANTIGELO
@@ -1615,6 +1707,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    do_event = true;
 	    stat = device_status_thermr::S_ANTIGELO;
 	}
+	elaborato = true;
 	break;
     case 202:
 	// PROT TERMICA
@@ -1623,6 +1716,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    do_event = true;
 	    stat = device_status_thermr::S_TERM;
 	}
+	elaborato = true;
 	break;
     case 302:
 	// PROT GENERICA
@@ -1631,6 +1725,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    do_event = true;
 	    stat = device_status_thermr::S_GEN;
 	}
+	elaborato = true;
 	break;
     case 103:
     case 203:
@@ -1641,18 +1736,22 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    do_event = true;
 	    stat = device_status_thermr::S_OFF;
 	}
+	elaborato = true;
 	break;
     default:
 	// Do nothing
 	break;
     }
     if(do_event) {
+        qDebug("setting new stat is %d", stat);
 	curr_stat.set_val(stat);
 	ds->write_val((int)device_status_thermr::STAT_INDEX, curr_stat);
 	evt_list.append(ds);
-	return;
     }
+    if(elaborato)
+	return;
     int g = atoi(m.Extract_grandezza());
+    qDebug("g = %d", g);
     int loc, sp;
     switch(g) {
     case 13:
@@ -1662,14 +1761,18 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    ds->write_val((int)device_status_thermr::LOCAL_INDEX, curr_local);
 	    evt_list.append(ds);
 	}
+	elaborato = true;
 	break;
     case 14:
 	sp = atoi(m.Extract_valori(0));
+	qDebug("sp = %d", sp);
 	if(!ds->initialized() || (curr_sp.get_val() != sp)) {
+	    qDebug("setting new sp");
 	    curr_sp.set_val(sp);
 	    ds->write_val((int)device_status_thermr::SP_INDEX, curr_sp);
 	    evt_list.append(ds);
 	}
+	elaborato = true;
 	break;
     default:
 	// Do nothing
@@ -1688,11 +1791,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
     ds->read((int)device_status_temperature_probe::TEMPERATURE_INDEX, 
 	     curr_temp);
     int g = atoi(m.Extract_grandezza());
+    qDebug("g = %d", g);
     if(g) 
 	return;
     int t = atoi(m.Extract_valori(0));
+    qDebug("t = %d", t);
     if(ds->initialized() && t == curr_temp.get_val()) 
 	return;
+    qDebug("setting temp to %d", t);
     curr_temp.set_val(t);
     ds->write_val((int)device_status_temperature_probe::TEMPERATURE_INDEX, 
 		  curr_temp);
@@ -1703,12 +1809,13 @@ void frame_interpreter_thermr_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
     openwebnet_ext msg_open;
-    qDebug("frame_interpreter_zonanti_device::handle_frame_handler");
+    qDebug("frame_interpreter_thermr_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
     if(!is_frame_ours(msg_open))
 	// Discard frame if not ours
 	return;
+    elaborato = false;
     QPtrListIterator<device_status> *dsi = 
 	new QPtrListIterator<device_status>(*sl);
     dsi->toFirst();
@@ -1727,10 +1834,14 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	    // Do nothing
 	    break;
 	}
+	if(elaborato)
+	    break;
 	++(*dsi);
     }    
-    if(!evt_list.isEmpty())
+    if(!evt_list.isEmpty()) {
+	qDebug("emit(evt_list)");
 	emit(frame_event(evt_list));
+    }
 }
 
 

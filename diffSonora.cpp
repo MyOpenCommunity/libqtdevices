@@ -247,6 +247,12 @@ int diffSonora::addSource(banner *b)
     connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 }
 
+int diffSonora::setFirstSource(int addr)
+{
+    qDebug("diffSonora::setFirstSource(%d)", addr);
+    sorgenti->setIndex((char *)QString::number(addr, 10).ascii());
+}
+
 
 #if 0
 // diffMulti implementation

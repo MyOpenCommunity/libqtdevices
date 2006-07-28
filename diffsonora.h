@@ -139,6 +139,10 @@ public slots:
       \brief adds a source
     */
     int addSource(banner *b);
+    /*!
+      \brief sets first source given address 
+    */
+    int setFirstSource(int addr);
 protected:
   uchar numRighe,isVisual;	
   sottoMenu* sorgenti;

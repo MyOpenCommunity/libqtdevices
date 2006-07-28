@@ -920,6 +920,7 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
 		qDebug("Unknown status in autom. message");
 		break;
 	    }
+	    break;
 	default:
 	    qDebug("Unknown device status type");
 	    break;
@@ -1321,6 +1322,10 @@ uchar attuatAutomTemp::ntempi()
 
 void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
 {
+    stat_var curr_hh(stat_var::HH);
+    stat_var curr_mm(stat_var::MM);
+    stat_var curr_ss(stat_var::SS);
+    int tmpval;
     bool aggiorna = false;
     qDebug("attuatAutomTemp::status_changed()");
     QPtrListIterator<device_status> *dsi = 
@@ -1334,10 +1339,12 @@ void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
 	    qDebug("Light status variation");
 	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
 	    qDebug("status = %d", curr_status.get_val());
-	    impostaAttivo(curr_status.get_val() != 0);
-	    if(!curr_status.get_val())
+	    aggiorna = true;
+	    if((isActive() && !curr_status.get_val()) ||
+	       (!isActive() && curr_status.get_val())) {
 		// Update 
-		aggiorna = true;
+		impostaAttivo(curr_status.get_val() != 0);
+	    }
 	    break;
 	case device_status::DIMMER:
 	    qDebug("dimmer status variation, ignored");
@@ -1347,8 +1354,34 @@ void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
 	    break;
 	case device_status::NEWTIMED:
 	    qDebug("new timed device status variation, ignored");
-	    //setValue(1);
-	    //aggiorna = true;
+	    ds->read(device_status_new_timed::HH_INDEX, curr_hh);
+	    ds->read(device_status_new_timed::MM_INDEX, curr_mm);
+	    ds->read(device_status_new_timed::SS_INDEX, curr_ss);
+	    if(!curr_hh.get_val() && !curr_mm.get_val() && !curr_ss.get_val()){
+		qDebug("hh == mm == ss == 0, ignoring");
+		if(isActive()) {
+		  impostaAttivo(false);
+		  aggiorna = true;
+		}
+		break;
+	    }
+	    if(curr_hh.get_val()==255 && curr_mm.get_val()==255 && 
+	       curr_ss.get_val()==255) {
+		qDebug("hh == mm == ss == 255, ignoring");
+		break;
+	    }
+	    uchar hnow, mnow, snow;
+	    hnow = curr_hh.get_val();
+	    mnow = curr_mm.get_val();
+	    snow = curr_ss.get_val();
+	    tmpval = (hnow * 3600) + (mnow * 60) + snow;
+	    if((isActive() && tmpval) || (!isActive() && !tmpval)) {
+		qDebug("already active, ignoring");
+		break;
+	    }
+	    impostaAttivo((tmpval != 0));
+	    qDebug("tempo = %d %d %d", hnow, mnow, snow);
+	    aggiorna = true;
 	    break;
 	default:
 	    qDebug("device status of unknown type (%d)", ds->get_type());
@@ -1421,40 +1454,76 @@ attuatAutomTempNuovoN::attuatAutomTempNuovoN( QWidget *parent,const char *name,c
 {     
     assegna_tempo_display();
     stato_noto = false ;
-    dev =  btouch_device_cache.get_newtimed(getAddress());
     SetSeconaryText(tempo_display);
+    disconnect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	this, SLOT(attuatAutomTemp::status_changed(QPtrList<device_status>)));
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 void attuatAutomTempNuovoN::status_changed(QPtrList<device_status> sl)
 {
     bool aggiorna = false;
-    qDebug("dimmer10::status_changed()");
+    stat_var curr_hh(stat_var::HH);
+    stat_var curr_mm(stat_var::MM);
+    stat_var curr_ss(stat_var::SS);
+    int tmpval;
+    qDebug("attuatAutomTempNuovoN::status_changed()");
     QPtrListIterator<device_status> *dsi = 
       new QPtrListIterator<device_status>(sl);
     dsi->toFirst();
     device_status *ds;
     stat_var curr_status(stat_var::ON_OFF);
-    stat_var curr_lev(stat_var::LEV);
     while( ( ds = dsi->current() ) != 0) {
 	switch (ds->get_type()) {
 	case device_status::LIGHTS:
 	    qDebug("Light status variation");
 	    ds->read(device_status_light::ON_OFF_INDEX, curr_status);
 	    qDebug("status = %d", curr_status.get_val());
-	    impostaAttivo(curr_status.get_val() != 0);
-	    if(!curr_status.get_val())
+	    aggiorna = true;
+	    if((isActive() && !curr_status.get_val()) ||
+	       (!isActive() && curr_status.get_val())) {
 		// Update 
-		aggiorna = true;
+		impostaAttivo(curr_status.get_val() != 0);
+	    }
 	    break;
 	case device_status::DIMMER:
-	    ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
 	    qDebug("dimmer status variation, ignored");
 	    break;
 	case device_status::DIMMER100:
 	    qDebug("dimmer 100 status variation, ignored");
 	    break;
 	case device_status::NEWTIMED:
-	    qDebug("new timed device status variation, ignored");
+	    qDebug("new timed device status variation");
+	    ds->read(device_status_new_timed::HH_INDEX, curr_hh);
+	    ds->read(device_status_new_timed::MM_INDEX, curr_mm);
+	    ds->read(device_status_new_timed::SS_INDEX, curr_ss);
+	    if(!curr_hh.get_val() && !curr_mm.get_val() && !curr_ss.get_val()){
+		qDebug("hh == mm == ss == 0, ignoring");
+		if(isActive()) {
+		  impostaAttivo(false);
+		  aggiorna = true;
+		}
+		break;
+	    }
+	    if(curr_hh.get_val()==255 && curr_mm.get_val()==255 && 
+	       curr_ss.get_val()==255) {
+		qDebug("hh == mm == ss == 255, ignoring");
+		break;
+	    }
+	    uchar hnow, mnow, snow;
+	    hnow = curr_hh.get_val();
+	    mnow = curr_mm.get_val();
+	    snow = curr_ss.get_val();
+	    tmpval = (hnow * 3600) + (mnow * 60) + snow;
+	    if((isActive() && tmpval) || (!isActive() && !tmpval)) {
+		qDebug("already active, ignoring");
+		break;
+	    }
+	    impostaAttivo((tmpval != 0));
+	    qDebug("tempo = %d %d %d", hnow, mnow, snow);
+	    aggiorna = true;
 	    break;
 	default:
 	    qDebug("device status of unknown type (%d)", ds->get_type());
@@ -1462,6 +1531,9 @@ void attuatAutomTempNuovoN::status_changed(QPtrList<device_status> sl)
 	}
 	++(*dsi);
     }
+    qDebug("aggiorna = %d", aggiorna);
+    if(aggiorna)
+      Draw();
 }
 
 void attuatAutomTempNuovoN::Attiva()
@@ -2692,7 +2764,12 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
     connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
     connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));    
     setChi("4");
-    stato=S_MAN;
+    stato=device_status_thermr::S_MAN;
+    // Crea o preleva il dispositivo dalla cache
+    dev = btouch_device_cache.get_thermr_device(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 
@@ -2879,6 +2956,12 @@ void termoPage::gestFrame(char* frame)
     if (aggiorna)
         Draw();
 }
+
+void termoPage::status_changed(QPtrList<device_status> sl)
+{
+    qDebug("termoPage::status_changed(): EMPTY");
+}
+
 #else
 void termoPage::status_changed(QPtrList<device_status> sl)
 {
@@ -2942,6 +3025,11 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		    tempImp->hide();
 		    impostaAttivo(1);
 		    aggiorna = true;
+                    if(isShown()) {
+                        ((sottoMenu*)parentWidget())->
+                            setNavBarMode(4,&manIco[0]);
+                        ((sottoMenu*)parentWidget())->forceDraw();
+                    }
 		    break;
 		case device_status_thermr::S_TERM:
 		    qDebug("stato S_TERM");
@@ -2950,8 +3038,13 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		    mostra(ICON);
 		    tempImp->hide();
 		    impostaAttivo(1);
-		    aggiorna=1;	       
+		    aggiorna= true;	       
 		    stato = device_status_thermr::S_TERM;
+                    if(isShown()) {
+                        ((sottoMenu*)parentWidget())->
+                            setNavBarMode(4,&manIco[0]);
+                        ((sottoMenu*)parentWidget())->forceDraw();
+                    }
 		    break;
 		case device_status_thermr::S_OFF:
 		    qDebug("stato S_OFF");
@@ -2960,8 +3053,13 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		    nascondi(BUT2);	       
 		    tempImp->hide();
 		    impostaAttivo(0);
-		    aggiorna=1;
+		    aggiorna= true;
 		    stato = device_status_thermr::S_OFF;
+                    if(isShown()) {
+                        ((sottoMenu*)parentWidget())->
+                            setNavBarMode(4,&manIco[0]);
+                        ((sottoMenu*)parentWidget())->forceDraw();
+                    }
 		    break;
 		default:
 		    qDebug("unk status");
@@ -2976,7 +3074,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		    isOff=0;
 		    isAntigelo=0;
 		    break;
-		case 1:	
+		case 1:
 		    val_imp=4;
 		    isOff=0;
 		    isAntigelo=0;
@@ -3037,6 +3135,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		aggiorna=1;	       
 		break;
 	    }
+	    break;
 	case device_status::TEMPERATURE_PROBE:
 	    ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, 
 		     curr_temp);
@@ -3087,6 +3186,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+
 }
 #endif
 
@@ -3114,7 +3214,7 @@ void termoPage::autoMan()
     memset(pippo,'\000',sizeof(pippo));
     
     
-    if    (stato==S_MAN)
+    if    (stato==device_status_thermr::S_MAN)
     {
         strcat(pippo,"*4*311*#");
         strcat(pippo,getAddress());
@@ -4623,29 +4723,21 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
 	new QPtrListIterator<dati_ampli_multi>(*la);
     lai->toFirst();
     dati_ampli_multi *am;
+    int i = 0;
     while( ( am = lai->current() ) != 0) {
 	qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
-	       (char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
-#if 0
-	QString *dove = new QString(
-	      QString::number((QString((const char *)am->indirizzo).toInt() +
-			       QString((const char *)indirizzo).toInt()), 10));
-	qDebug("Amplifier where = %s", dove->ascii());
-	diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
-			 (char *)dove->ascii(),
-			 am->I4, am->I3, am->I1, am->I2, am->modo);
-#else
-	diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
+	       (char *)am->indirizzo, (char *)am->descr->at(i)->ascii());
+	diffson->addItem(am->tipo, (char *)am->descr->at(i)->ascii(), 
 			 (char *)am->indirizzo,
 			 am->I1, am->I2, am->I4, am->I3, am->modo);
-#endif
 	++(*lai);
+	i++;
     }
 }
 
 void ambDiffSon::Draw()
 {
-    qDebug("ORCOA CA CA SDS AL SambDiffSon::Draw()");
+    qDebug("ambDiffSon::Draw()");
     sxButton->setPixmap(*Icon[0]);
     if (pressIcon[0])
 	sxButton->setPressedPixmap(*pressIcon[0]);
@@ -4675,8 +4767,20 @@ void ambDiffSon::configura()
     //connect(diffmul, SIGNAL(gestFrame(char *)), 
     //diffson, SIGNAL(gestFrame(char *)));
     //diffson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
+    diffson->setFirstSource(actSrc);
     diffson->forceDraw();
     diffson->showFullScreen();
+}
+
+void ambDiffSon::actSrcChanged(int a, int s)
+{
+    qDebug("ambDiffSon::actSrcChanged(%d, %d)", a, s);
+    if(a != atoi(getAddress())) {
+	qDebug("not my address, discarding event");
+	return;
+    }
+    qDebug("First source's where is %d", actSrc);
+    actSrc = 100 + a*10 + s;
 }
 
 /*****************************************************************
@@ -4730,7 +4834,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 
 void insAmbDiffSon::Draw()
 {
-    qDebug("ORCOA CA CA SDS AL SinsAmbDiffSon::Draw()");
+    qDebug("insAmbDiffSon::Draw()");
     sxButton->setPixmap(*Icon[1]);
     if (pressIcon[0])
 	sxButton->setPressedPixmap(*pressIcon[0]);
@@ -4757,6 +4861,13 @@ void insAmbDiffSon::configura()
     diffson->forceDraw();
     diffson->showFullScreen();
 }
+
+
+void insAmbDiffSon::actSrcChanged(int a, int s)
+{
+    qDebug("ambDiffSon::actSrcChanged(%d, %d), ignored", a, s);
+}
+
 
 /*****************************************************************
  ** Sorgente radio diffusione sonora multicanale

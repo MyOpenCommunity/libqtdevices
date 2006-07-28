@@ -166,7 +166,8 @@ int xClock,yClock,xTemp,yTemp;
 
 
 #define MAX_BUT_SOTMEN 	9
-#define DIM_BUT_HOME 		80 
+#define DIM_BUT_HOME 		80
+#define DIM_BUT_HOME_SMALL      60
 #define DIM_SPECBUT_HOME 	180 
 #define H_SCR_TEMP		20
 

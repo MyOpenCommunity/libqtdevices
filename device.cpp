@@ -20,6 +20,16 @@ stat_var::stat_var(stat_var::type _t, int _val, int _min, int _max, int _step,
     _initialized = _i;
 }
 
+stat_var::stat_var(stat_var::type _t)
+{
+    t = _t;
+    val = 0;
+    min = 0;
+    max = 0xffffffff;
+    step = 1;
+    _initialized = false;
+}
+
 void stat_var::get_val(int& out)
 {
     out = val;
@@ -244,7 +254,7 @@ device_status_autom::device_status_autom() :
     device_status(AUTOM)
 {
     add_var((int)device_status_autom::STAT_INDEX,
-	    new stat_var(stat_var::STAT, 0, 2, 1));
+	    new stat_var(stat_var::STAT, 0, 0, 2, 1));
 }
 
 // Device status for temperature probe devices
@@ -260,9 +270,9 @@ device_status_amplifier::device_status_amplifier() :
     device_status(AMPLIFIER)
 {
     add_var((int)device_status_amplifier::ON_OFF_INDEX,
-	    new stat_var(stat_var::ON_OFF, 0, 1, 1));
+	    new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
     add_var((int)device_status_amplifier::AUDIO_LEVEL_INDEX,
-	    new stat_var(stat_var::AUDIO_LEVEL, 1, 1, 31));
+	    new stat_var(stat_var::AUDIO_LEVEL, 1, 1, 31, 1));
 }
 
 // Device status for radios
@@ -311,6 +321,8 @@ device_status_thermr::device_status_thermr() :
 	    new stat_var(stat_var::STAT, 0, 0, 3, 1));
     add_var((int)device_status_thermr::LOCAL_INDEX,
 	    new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
+    add_var((int)device_status_thermr::SP_INDEX,
+	    new stat_var(stat_var::SP, 0, 0, 0x7fffffff, 1));
 }
 
 // Device status for modscen
@@ -321,6 +333,28 @@ device_status_modscen::device_status_modscen() :
 	    new stat_var(stat_var::STAT, 0, 
 			 device_status_modscen::PROGRAMMING_START, 
 			 device_status_modscen::FULL, 1));
+}
+
+// Device status for sound matrix
+device_status_sound_matr::device_status_sound_matr() :
+    device_status(SOUNDMATR)
+{
+    add_var((int)device_status_sound_matr::AMB1_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
+    add_var((int)device_status_sound_matr::AMB2_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
+    add_var((int)device_status_sound_matr::AMB3_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
+    add_var((int)device_status_sound_matr::AMB4_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
+    add_var((int)device_status_sound_matr::AMB5_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
+    add_var((int)device_status_sound_matr::AMB6_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
+    add_var((int)device_status_sound_matr::AMB7_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
+    add_var((int)device_status_sound_matr::AMB8_INDEX,
+	    new stat_var(stat_var::ACTIVE_SOURCE, 0, 1, 4, 1, false));
 }
 
 // Device implementation
@@ -525,6 +559,21 @@ device(QString("16"), w, p, g)
     interpreter = new frame_interpreter_radio_device(w, p, g);
     set_frame_interpreter(interpreter);
     stat->append(new device_status_radio());
+    connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
+	    interpreter, 
+	    SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+    connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
+	    SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
+// Sound matrix device implementation
+sound_matr::sound_matr(QString w, bool p, int g) :
+device(QString("16"), QString("1000"), p, g)
+{
+    interpreter = new frame_interpreter_sound_matr_device(
+	QString("1000"), p, g);
+    set_frame_interpreter(interpreter);
+    stat->append(new device_status_sound_matr());
     connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
 	    interpreter, 
 	    SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));

@@ -118,6 +118,9 @@ void versio::gestFrame(char* frame)
 void versio::inizializza()
 {
 //       openwebnet msg_open;
+
+    qDebug("*************** versio::inizializza() ***************");
+
       emit sendFrame("*#1013**6##"); 
        emit sendFrame("*#1013**3##");        
        emit sendFrame("*#13**16##");        

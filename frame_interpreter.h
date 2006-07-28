@@ -211,6 +211,24 @@ class frame_interpreter_radio_device : public frame_interpreter {
     void handle_frame_handler(char *, QPtrList<device_status> *);
 };
 
+//! Sound matr interpreter
+class frame_interpreter_sound_matr_device : public frame_interpreter {
+    Q_OBJECT
+ private:
+    //! Analyze a frame
+    void handle_frame(openwebnet_ext, device_status_sound_matr *);
+ public:
+    //! Constructor
+    frame_interpreter_sound_matr_device(QString, bool, int);
+    //! Returns init message given device status
+    void get_init_message(device_status *, QString&);
+    //! Returns true if frame is ours
+    //bool is_frame_ours(openwebnet_ext);
+ public slots:
+    //! Receive a frame
+    void handle_frame_handler(char *, QPtrList<device_status> *);
+};
+
 //! Doorphone device frame interpreter
 class frame_interpreter_doorphone_device : public frame_interpreter {
     Q_OBJECT
@@ -275,6 +293,8 @@ class frame_interpreter_thermr_device : public frame_interpreter {
     void handle_frame(openwebnet_ext, device_status_thermr *);
     //! As above, but for temperature status
     void handle_frame(openwebnet_ext, device_status_temperature_probe *);
+    //! True when frame has been analyzed
+    bool elaborato;
  protected:
     //! Returns true when frame is ours (reimplemented for thermr, device
     bool is_frame_ours(openwebnet_ext);
