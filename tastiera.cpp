@@ -28,10 +28,9 @@ tastiera::tastiera( QWidget *parent, const char *name, int line )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
-    showFullScreen();
 #endif
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);      
-
+    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
     
     unoBut = new BtButton(this,"Bottone uno");

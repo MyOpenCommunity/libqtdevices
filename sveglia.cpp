@@ -35,7 +35,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdi
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
- //  showFullScreen();
+    //showFullScreen();
 #endif    
 // qDebug("-----10-----");
     if(descr1)
@@ -56,6 +56,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdi
    QPixmap* Icon2 = NULL;
 	 
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT); 
+    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
     memset(iconName,'\000',sizeof(iconName));
     strcpy(iconName,ICON_FRECCIA_SU);
 // qDebug("-----13-----");
@@ -299,8 +300,7 @@ void sveglia::mostra()
  //   connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(okTime()));
     if (difson)
     {
-	disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
-	connect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+	difson->connectClosed(this);
     }
     connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
     connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
@@ -358,6 +358,7 @@ void sveglia::Closed()
     if (difson)
     {	
         disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+	difson->disconnectClosed(this);
         if(aggiornaDatiEEprom)
         {
             //difson->hide();
@@ -707,8 +708,10 @@ void sveglia::aumVol()
             {		
                 memset(pippo,'\000',sizeof(pippo));
 		strcat(pippo,"*16*13*");
-		sprintf(&pippo[5],"%02d",idx);
+		sprintf(&pippo[strlen(pippo)],"%02d",idx);
 		strcat(pippo,"##");
+		msg_open.CreateMsgOpen((char*)&pippo[0],
+				       strlen((char*)&pippo[0]));
 		emit sendFrame(msg_open.frame_open);    
 	    }
         }

@@ -200,6 +200,8 @@ class scenEvo_cond_h : public scenEvo_cond {
     void reset();
     //! Return true when condition is satisfied
     bool isTrue(void);
+    //! Just setup qt timer (based on cond_time)
+    void setupTimer();
 public slots:
     //! OK method
     void OK();

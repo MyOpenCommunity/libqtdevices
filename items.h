@@ -396,6 +396,7 @@ private slots:
      void upPres();
      void doRil();
      void upRil();
+     void sendStop();
 signals:
  //   void sendFrame(char *);           
 private:

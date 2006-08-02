@@ -519,7 +519,7 @@ void contdiff::connectClosed(sveglia *s)
 {
     disconnect(this, SIGNAL(Closed()), s, SLOT(Closed()));
     connect(this, SIGNAL(Closed()), s, SLOT(Closed()));
-#if 0
+#if 1
     if(dm)
 	connect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
 #endif
@@ -527,7 +527,7 @@ void contdiff::connectClosed(sveglia *s)
 
 void contdiff::disconnectClosed(sveglia *s)
 {
-#if 0
+#if 1
     if(dm)
 	disconnect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
 #endif

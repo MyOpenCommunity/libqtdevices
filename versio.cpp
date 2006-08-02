@@ -9,6 +9,7 @@
 ****************************************************************/
 
 #include "versio.h"
+#include "main.h"
 #include <qwidget.h>
 #include <qpixmap.h>
 #include <qcursor.h>
@@ -17,7 +18,8 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
         : BtLabel( parent, name,  f)
 { 
 
-     setGeometry(0,0,240,320);
+     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
+     setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
      
      datiGen = new BtLabel(this, "DG");
      
@@ -44,7 +46,7 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
 //     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");       
      
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor (QCursor (blankCursor));
+     setCursor (QCursor (blankCursor));
 #endif
      datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
      datiGen->setAlignment(AlignHCenter|AlignVCenter);

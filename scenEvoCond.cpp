@@ -161,6 +161,7 @@ bool scenEvo_cond::isTrue(void)
 scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) :
   scenEvo_cond(parent, name)
 {
+    qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
     h = new QString("");
     m = new QString("");
     s = new QString("");
@@ -169,24 +170,39 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) :
 #endif  
     ora=NULL;
     timer = NULL;
+
+    cond_time = new QDateTime(QDateTime::currentDateTime());
+    ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
 }
 
 void scenEvo_cond_h::set_h(const char *_h)
 {
     *h = _h;
     qDebug("scenEvo_cond_h::set_h : %s", h->ascii());
+#if 0
+    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
+    setupTimer();
+#endif
 }
 
 void scenEvo_cond_h::set_m(const char *_m)
 {
     *m = _m;
     qDebug("scenEvo_cond_h::set_m : %s", m->ascii());
+#if 1
+    cond_time->setTime(QTime(h->toInt(), m->toInt(), 0));
+    setupTimer();
+#endif
 }
 
 void scenEvo_cond_h::set_s(const char *_s)
 {
     *s = _s;
     qDebug("scenEvo_cond_h::set_s : %s", s->ascii());
+#if 0
+    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
+    setupTimer();
+#endif
 }
 
 const char *scenEvo_cond_h::getDescription(void)
@@ -203,6 +219,7 @@ void scenEvo_cond_h::SetIcons()
     for(int i=0; i<6; i++)
 	qDebug("icon[%d] = %s", i, getImg(i));
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
+    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
     memset(iconName, '\000', sizeof(iconName));
     strcpy(iconName, ICON_FRECCIA_SU);
     // Pulsanti su
@@ -316,9 +333,11 @@ void scenEvo_cond_h::SetIcons()
 	    delete Icon2;
     } else
 	but[A8_BUTTON_INDEX] = NULL;
+#if 0
     cond_time = new QDateTime(QDateTime::currentDateTime());
     cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
     ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
+#endif
     ora->setGeometry(40, 140, 160, 50);
     ora->setFrameStyle( QFrame::Plain );
     ora->setLineWidth(0);    
@@ -349,23 +368,31 @@ void scenEvo_cond_h::mostra()
     //disconnect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(Closed()));
     //disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(Closed()));
     //connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(Closed()));
-    if(but[A6_BUTTON_INDEX])
+    if(but[A6_BUTTON_INDEX]) {
+        disconnect( but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
 	connect( but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
+    }
     if(getImg(3)[0] == 0) {
 	// cimg4 is empty
 	if(but[A8_BUTTON_INDEX]) {
 	    qDebug("connecting A8 to Prev");
+	    disconnect( but[A8_BUTTON_INDEX], SIGNAL(released()), 
+			this, SLOT(Prev()));
 	    connect( but[A8_BUTTON_INDEX], SIGNAL(released()), 
 		     this, SLOT(Prev()));
 	}
     } else {
 	if(but[A7_BUTTON_INDEX]) {
 	    qDebug("connecting A7 to Prev");
+	    disconnect( but[A7_BUTTON_INDEX], SIGNAL(released()), 
+		     this, SLOT(Prev()));
 	    connect( but[A7_BUTTON_INDEX], SIGNAL(released()), 
 		     this, SLOT(Prev()));
 	}
 	if(but[A8_BUTTON_INDEX]) {
 	    qDebug("connecting A8 to Next");
+	    disconnect( but[A8_BUTTON_INDEX], SIGNAL(released()), 
+			this, SLOT(Next()));
 	    connect( but[A8_BUTTON_INDEX], SIGNAL(released()), 
 		     this, SLOT(Next()));
 	}
@@ -398,10 +425,8 @@ void scenEvo_cond_h::setFGColor(QColor c)
     //bannNavigazione->setFGColor(c);
 }
 
-void scenEvo_cond_h::OK()
+void scenEvo_cond_h::setupTimer()
 {
-    qDebug("scenEvo_cond_h::OK()");
-    *cond_time = ora->getDataOra();
     QDateTime now = QDateTime::currentDateTime();
     int secsto = now.secsTo(*cond_time);
     while(secsto <= 0)
@@ -409,6 +434,13 @@ void scenEvo_cond_h::OK()
       secsto += 24 * 60 * 60;
     qDebug("scheduling scaduta() after %d ms", secsto*1000);
     QTimer::singleShot(secsto*1000, this, SLOT(scaduta()) );
+}
+
+void scenEvo_cond_h::OK()
+{
+    qDebug("scenEvo_cond_h::OK()");
+    *cond_time = ora->getDataOra();
+    setupTimer();
     scenEvo_cond::OK();
 }
 
@@ -452,7 +484,7 @@ void scenEvo_cond_h::save()
 void scenEvo_cond_h::reset()
 {
     qDebug("scenEvo_cond_h::reset()");
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
+    //cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
     ora->setDataOra(*cond_time);
     ora->showTime();
 }
@@ -601,6 +633,7 @@ void scenEvo_cond_d::SetIcons()
     for(int i=0; i<6; i++)
 	qDebug("icon[%d] = %s", i, getImg(i));
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
+    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
     area1_ptr = new BtLabel(this, "Area1");
     area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
     area2_ptr = new BtLabel(this, "Area2");

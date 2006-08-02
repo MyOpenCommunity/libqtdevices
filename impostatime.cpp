@@ -43,6 +43,7 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
    QPixmap* Icon2 = NULL;
 	 
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT); 
+    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
     memset(iconName,'\000',sizeof(iconName));
     strcpy(iconName,ICON_FRECCIA_SU);
     Icon1->load(iconName);	

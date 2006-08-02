@@ -105,6 +105,7 @@ void call_notifier::close()
 void call_notifier::SetIcons(void)
 {
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
+    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
     area1_ptr = new BtLabel(this, "Area1");
     area1_ptr->setGeometry(0, (MAX_HEIGHT/4)-2*LABEL_HEIGHT, 
 			   MAX_WIDTH, LABEL_HEIGHT);

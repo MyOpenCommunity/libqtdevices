@@ -23,6 +23,7 @@ genPage::genPage( QWidget *parent,const char *name , unsigned char tipo,const ch
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
      setCursor (QCursor (blankCursor));
 #endif
+     setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
      switch (tipo){
      case RED:setPaletteBackgroundColor(QColor(255,0,0));break;
      case BLUE:setPaletteBackgroundColor(QColor(0,0,255));break;

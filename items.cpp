@@ -1147,7 +1147,7 @@ void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
 
 void attuatAutomIntSic::upPres()
 {
-    if (!dorunning)
+    if (!dorunning && !isActive())
     {
         openwebnet msg_open;
         
@@ -1159,7 +1159,7 @@ void attuatAutomIntSic::upPres()
 
 void attuatAutomIntSic::doPres()
 {
-    if (!uprunning)
+    if (!uprunning && !isActive())
     {
         openwebnet msg_open;
         
@@ -1168,27 +1168,46 @@ void attuatAutomIntSic::doPres()
         emit sendFrame(msg_open.frame_open);
     } 
 }
+
 void attuatAutomIntSic::upRil()
 {
     if (!dorunning)
     {
+#if 0
         openwebnet msg_open;
         
         msg_open.CreateNullMsgOpen();     
         msg_open.CreateMsgOpen("2", "0",getAddress(),"");
         emit sendFrame(msg_open.frame_open);
+#else // 500ms delay
+	QTimer::singleShot(500, this, SLOT(sendStop()) );
+#endif
     } 
 }
+
 void attuatAutomIntSic::doRil()
 {
     if (!uprunning)
     {
+#if 0
         openwebnet msg_open;
         
         msg_open.CreateNullMsgOpen();     
         msg_open.CreateMsgOpen("2", "0",getAddress(),"");
         emit sendFrame(msg_open.frame_open);
+#else // 500ms delay
+	QTimer::singleShot(500, this, SLOT(sendStop()) );
+#endif
     } 
+}
+
+void attuatAutomIntSic::sendStop()
+{
+    openwebnet msg_open;
+    
+    msg_open.CreateNullMsgOpen();     
+    msg_open.CreateMsgOpen("2", "0",getAddress(),"");
+    emit sendFrame(msg_open.frame_open);
 }
 
 void attuatAutomIntSic::inizializza()
@@ -2366,6 +2385,8 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, 
     
     connect(this  ,SIGNAL(dxClick()),myRadio,SLOT(showRadio()));
     connect(this , SIGNAL(dxClick()),this,SLOT(startRDS()));
+    if(!old_diffson)
+	connect(this, SIGNAL(dxClick()), this, SLOT(richFreq()));
 
     connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
     connect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
@@ -2394,10 +2415,10 @@ void banradio::grandadChanged(QWidget *newGrandad)
     qDebug("banradio::grandadChanged (%p)", newGrandad); 
     QWidget *grandad = this->parentWidget(FALSE)->parentWidget(FALSE);
     disconnect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
-    disconnect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
+    disconnect(myRadio,SIGNAL(Closed()), grandad, SLOT(showFullScreen()));
     grandad = newGrandad;
     connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
-    connect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
+    connect(myRadio,SIGNAL(Closed()), grandad, SLOT(showFullScreen()));
 }
 
 
@@ -2690,6 +2711,7 @@ void banradio::startRDS()
     
     emit sendFrame(msg_open.frame_open);   
 }
+
 void banradio::stopRDS()
 {
     openwebnet msg_open;
