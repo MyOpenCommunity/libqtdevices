@@ -2303,9 +2303,9 @@ void grAmplificatori::inizializza()
 
 
 sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
-    : bannCiclaz( parent, name, 3)
+    : bannCiclaz( parent, name, vecchio ? 4 : 3)
 {
-    SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
+    SetIcons( ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
 
     vecchia = vecchio;
     setAddress(indirizzo);
@@ -3709,9 +3709,14 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 
 void impAnti::Inserisci()
 {
-    bool s[MAX_ZONE];
+    int s[MAX_ZONE];
     for(int i=0; i<MAX_ZONE; i++)
-	s[i] = le_zone[i]->isActive() ;
+    {
+      if(le_zone[i] !=  NULL)
+	s[i] = le_zone[i]->isActive();
+      else
+        s[i] = -1;
+    }
     tasti = new tastiera_con_stati(s, NULL, "");
     connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
     tasti->setBGColor(backgroundColor());

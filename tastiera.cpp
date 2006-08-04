@@ -396,7 +396,7 @@ void tastiera::setMode(char m)
 
 
 // tastiera_con_stati implementation
-tastiera_con_stati::tastiera_con_stati(bool s[8], 
+tastiera_con_stati::tastiera_con_stati(int s[8], 
 				       QWidget *parent, const char *name) : 
     tastiera(parent, name, MAX_HEIGHT/6)
 {
@@ -407,14 +407,22 @@ tastiera_con_stati::tastiera_con_stati(bool s[8],
 	stati[i] = new BtButton(this, "bottone stato");	
 	stati[i]->setEnabled(0);
 	stati[i]->setFont( QFont( "helvetica", 16, QFont::Bold ) );
-	stati[i]->setText(tmp);
+	if(s[i] == -1)
+	{
+		stati[i]->setText("-");
+		st[i] = false;
+	}
+	else
+	{
+		stati[i]->setText(tmp);
+		st[i] = s[i];
+	}
 	//stati[i]->setAlignment(AlignHCenter|AlignVCenter);
 	tmp[0]++;
 	stati[i]->setGeometry(x, (MAX_HEIGHT/6)*4 + MAX_HEIGHT/12, 
 			      BUT_SMALL_DIM,  
 			      BUT_SMALL_DIM);
 	stati[i]->show();
-	st[i] = s[i];
     }
 
     scrittaLabel->setGeometry(0,(MAX_HEIGHT/6)*5,MAX_WIDTH/2,(MAX_HEIGHT/6));	       

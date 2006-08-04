@@ -157,7 +157,7 @@ class tastiera_con_stati : public tastiera {
     Q_OBJECT
  public:
     //! Constructor
-    tastiera_con_stati(bool s[8], QWidget *parent=0, const char *name=0);
+    tastiera_con_stati(int s[8], QWidget *parent=0, const char *name=0);
     void 	setBGColor(QColor);
     void 	setFGColor(QColor);
  public slots:
