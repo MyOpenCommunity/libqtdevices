@@ -83,10 +83,6 @@ class scenEvo_cond : public QFrame {
     virtual void SetIcons();
     //! Enable/disable
     virtual void setEnabled(bool);
-    //! Save condition
-    virtual void save();
-    //! Reset condition (on cancel)
-    virtual void reset();
     //! Set serial number
     void set_serial_number(int);
     //! Get serial number
@@ -98,9 +94,19 @@ class scenEvo_cond : public QFrame {
     //! Returns true when condition is satisfied
     virtual bool isTrue(void);
 public slots:
-     void Next();
-     void Prev();
+     //! Next button pressed
+     virtual void Next();
+     //! Prev button pressed
+     virtual void Prev();
+     //! OK button pressed
      virtual void OK(); 
+     //! Apply button pressed
+     virtual void Apply();
+     //! Save condition
+     virtual void save();
+     //! Reset condition (on cancel)
+     virtual void reset();
+     //! Frame received
      virtual void handle_frame(char *);
 signals:
     //! Emitted when user clicks Next icon
@@ -111,6 +117,10 @@ signals:
     void SwitchToFirst();
     //! Emitted when condition is true
     void verificata();
+    //! Emitted when all conditions in list must be reset
+    void resetAll();
+    //! Emitted when all conditions in list are OK (must be saved and applied)
+    void okAll();
     //! Status request
     void richStato(char *);
     //! A frame is available
@@ -196,8 +206,6 @@ class scenEvo_cond_h : public scenEvo_cond {
     void setEnabled(bool);
     //! Save condition
     void save();
-    //! Reset condition
-    void reset();
     //! Return true when condition is satisfied
     bool isTrue(void);
     //! Just setup qt timer (based on cond_time)
@@ -205,6 +213,10 @@ class scenEvo_cond_h : public scenEvo_cond {
 public slots:
     //! OK method
     void OK();
+    //! Apply method
+    void Apply();
+    //! Reset condition
+    void reset();
     //! Timer expired method
     void scaduta();
 };
@@ -595,19 +607,21 @@ class scenEvo_cond_d : public scenEvo_cond {
     void SetIcons();
     //! Save condition
     virtual void save();
-    //! Reset condition
-    void reset();
     //! Return true when condition is satisfied
     bool isTrue(void);
 public slots:
     //! OK method
     void OK();
+    //!  Apply method
+    void Apply(); 
     //! Up method
     void Up();
     //! Down method
     void Down();
     //! Invoked when actual device condition has been triggered by a frame
     //void device_condition_triggered(void);
+    //! Reset condition
+    void reset();
 signals:
 };
 

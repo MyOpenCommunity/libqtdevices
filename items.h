@@ -1152,6 +1152,8 @@ public slots:
  void firstCond();
  void trig(bool forced = false);
  void freezed(bool);
+ void saveAndApplyAll();
+ void resetAll();
 private slots:    
 signals:
  void frame_available(char *); 

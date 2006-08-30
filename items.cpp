@@ -4211,6 +4211,8 @@ scenEvo::scenEvo( QWidget *parent, const char *name,
       co->set_serial_number(serial_number);
       qDebug("connecting richStato and frame_available signals");
       connect(co, SIGNAL(verificata()), this, SLOT(trig()));
+      connect(co, SIGNAL(okAll()), this, SLOT(saveAndApplyAll()));
+      connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
       ++(*ci);
     }
     delete ci;
@@ -4321,6 +4323,35 @@ void scenEvo::firstCond(void)
     cond_iterator->toFirst();
     Draw();
     show();
+}
+
+void scenEvo::saveAndApplyAll(void)
+{
+    qDebug("scenEvo::saveAndApplyAll()");
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    scenEvo_cond *co;
+    while( ( co = ci->current() ) != 0) {
+	co->Apply();
+	co->save();
+	++(*ci);
+    }
+    delete ci;
+}
+
+void scenEvo::resetAll(void)
+{
+    qDebug("scenEvo::resetAll()");
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    scenEvo_cond *co;
+    while( ( co = ci->current() ) != 0) {
+	co->reset();
+	++(*ci);
+    }
+    delete ci;
 }
 
 void scenEvo::Draw()

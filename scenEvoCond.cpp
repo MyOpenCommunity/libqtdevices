@@ -104,6 +104,7 @@ void scenEvo_cond::Prev()
     qDebug("scenEvo_cond::Prev()");
     //emit(SwitchToPrev());
     reset();
+    emit(resetAll());
     emit(SwitchToFirst());
 }
 
@@ -112,6 +113,11 @@ void scenEvo_cond::OK()
     qDebug("scenEvo_cond::OK()");
     save();
     emit(SwitchToFirst());
+}
+
+void scenEvo_cond::Apply()
+{
+    qDebug("scenEvo_cond::Apply()");
 }
 
 void scenEvo_cond::setEnabled(bool e)
@@ -169,8 +175,8 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) :
     setCursor (QCursor (blankCursor));
 #endif  
     ora=NULL;
-    timer = NULL;
-
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
     cond_time = new QDateTime(QDateTime::currentDateTime());
     ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
 }
@@ -189,13 +195,11 @@ void scenEvo_cond_h::set_m(const char *_m)
 {
     *m = _m;
     qDebug("scenEvo_cond_h::set_m : %s", m->ascii());
-#if 1
     QTime t(h->toInt(), m->toInt(), 0);
     cond_time->setTime(t);
     ora->setDataOra(QDateTime(QDate::currentDate(), t));
     ora->showTime();
     setupTimer();
-#endif
 }
 
 void scenEvo_cond_h::set_s(const char *_s)
@@ -435,15 +439,27 @@ void scenEvo_cond_h::setupTimer()
     while(secsto <= 0)
       // Do it tomorrow 
       secsto += 24 * 60 * 60;
-    qDebug("scheduling scaduta() after %d ms", secsto*1000);
-    QTimer::singleShot(secsto*1000, this, SLOT(scaduta()) );
+    // According to QT doc, if timer is running, it is stopped and restarted
+    // with new interval. Otherwise it is just started.
+    qDebug("(re)starting timer with interval = %d", secsto * 1000);
+#if 0
+    timer->changeInterval(secsto * 1000);
+#else
+    timer->stop();
+    timer->start(secsto * 1000, true);
+#endif
+}
+
+void scenEvo_cond_h::Apply()
+{
+    *cond_time = ora->getDataOra();
+    setupTimer();
 }
 
 void scenEvo_cond_h::OK()
 {
     qDebug("scenEvo_cond_h::OK()");
-    *cond_time = ora->getDataOra();
-    setupTimer();
+    Apply();
     scenEvo_cond::OK();
 }
 
@@ -451,18 +467,7 @@ void scenEvo_cond_h::scaduta()
 {
     qDebug("scenEvo_cond_h::scaduta()");
     emit(verificata());
-    QDateTime now = QDateTime::currentDateTime();
-    int secsto = now.secsTo(*cond_time);
-    while(secsto <= 0)
-	// Do it tomorrow 
-	secsto += 24 * 60 * 60;
-#if 0
-    qDebug("restarting timer (%d)", secsto * 1000);
-    timer->start(secsto * 1000, true);
-#else
-    qDebug("scheduling scaduta() after %d ms", secsto*1000);
-    QTimer::singleShot(secsto*1000, this, SLOT(scaduta()) );
-#endif
+    setupTimer();
 }
 
 void scenEvo_cond_h::setEnabled(bool e)
@@ -724,11 +729,19 @@ void scenEvo_cond_d::Down(void)
     actual_condition->Down();
 }
 
+void scenEvo_cond_d::Apply(void)
+{
+    actual_condition->OK();
+}
+
 void scenEvo_cond_d::OK(void)
 {
     qDebug("scenEvo_cond_d::OK()");
-    actual_condition->OK();
-    scenEvo_cond::OK();
+    // Save ALL conditions here (not just this one)
+    //Apply();
+    //scenEvo_cond::OK();
+    emit(okAll());
+    emit(SwitchToFirst());
 }
 
 void scenEvo_cond_d::save()
@@ -1013,6 +1026,9 @@ void device_condition_light_status::status_changed(QPtrList<device_status> sl)
 	    if(trig_v == curr_status.get_val()) {
 		qDebug("light condition (%d) satisfied", trig_v);
 		satisfied = true;
+	    } else {
+		qDebug("light condition (%d) NOT satisfied", trig_v);
+		satisfied = false;
 	    }
 	    break;
 	case device_status::DIMMER:
