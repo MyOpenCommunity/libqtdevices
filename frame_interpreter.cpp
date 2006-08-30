@@ -309,6 +309,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	emit(frame_event(evt_list));
     } else
 	qDebug("**** NO event generated");
+    delete dsi;
     qDebug("frame_interpreter_lights::handle_frame_handler, end");
 }
 
@@ -322,8 +323,13 @@ void frame_interpreter_lights::set_status(device_status_light *ds, int s)
     bool do_event = false;
     // Read current status of ON OFF variable
     ds->read((int)device_status_light::ON_OFF_INDEX, curr_stat);
-    qDebug("curr status is %d\n", curr_stat.get_val());
-    if(s && (!curr_stat.get_val())) {
+    if(!curr_stat.initialized()) {
+	qDebug("initializing status var!!\n");
+	curr_stat.set_val(s);
+	ds->write_val((int)device_status_light::ON_OFF_INDEX, 
+		      curr_stat);
+	do_event = true;
+    }  else if(s && (!curr_stat.get_val())) {
 	int v = 1;
 	curr_stat.set_val(v);
 	qDebug("setting light status to on");
@@ -338,7 +344,7 @@ void frame_interpreter_lights::set_status(device_status_light *ds, int s)
 		      curr_stat);
 	do_event = true;
     }
-    if(do_event || !curr_stat.initialized()) {
+    if(do_event) {
 	qDebug("frame_interpreter_lights::set_status() (light), "
 	       "appending evt");
 	evt_list.append(ds);
@@ -915,6 +921,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	 qDebug("unknown temperature frame");
      if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+     delete dsi;
 }
 
 
@@ -982,6 +989,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     set_status((device_status_autom *)ds, cosa);
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 
 
@@ -1126,6 +1134,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 
 // Sound matrix frame interpreter
@@ -1170,6 +1179,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 
 void frame_interpreter_sound_matr_device::
@@ -1336,6 +1346,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 
 
@@ -1448,6 +1459,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 
 
@@ -1537,6 +1549,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 
 
@@ -1630,6 +1643,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 
 
@@ -1855,6 +1869,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	qDebug("emit(evt_list)");
 	emit(frame_event(evt_list));
     }
+    delete dsi;
 }
 
 
@@ -1938,5 +1953,6 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     }    
     if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
+    delete dsi;
 }
 

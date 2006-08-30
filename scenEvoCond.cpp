@@ -190,7 +190,10 @@ void scenEvo_cond_h::set_m(const char *_m)
     *m = _m;
     qDebug("scenEvo_cond_h::set_m : %s", m->ascii());
 #if 1
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), 0));
+    QTime t(h->toInt(), m->toInt(), 0);
+    cond_time->setTime(t);
+    ora->setDataOra(QDateTime(QDate::currentDate(), t));
+    ora->showTime();
     setupTimer();
 #endif
 }
@@ -1027,6 +1030,7 @@ void device_condition_light_status::status_changed(QPtrList<device_status> sl)
 	}
 	++(*dsi);
     }
+    delete dsi;
 }
 
 int device_condition_light_status::get_max()
@@ -1210,6 +1214,7 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
 	}
 	++(*dsi);
     }
+    delete dsi;
 }
 
 /*****************************************************************
@@ -1361,6 +1366,7 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
 	}
 	++(*dsi);
     }
+    delete dsi;
 }
 
 void device_condition_volume::get_unit(QString& out)
@@ -1487,4 +1493,5 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 	}
 	++(*dsi);
     }
+    delete dsi;
 }

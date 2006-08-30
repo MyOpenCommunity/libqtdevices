@@ -202,6 +202,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 	datimmulti->append(new dati_ampli_multi(tipo, descrizioni, 
 						indirizzo, IconaSx, IconaDx,
 						icon, pressedIcon, modo));
+	delete lsi;
 	break;
     }
 	
@@ -237,6 +238,7 @@ void diffmulti::setNavBarMode(uchar a, char* i)
 	ds->setNavBarMode(a);
 	++(*dsi);
     }
+    delete dsi;
 }
 
 void diffmulti::setNumRighe(uchar n)
@@ -250,6 +252,7 @@ void diffmulti::setNumRighe(uchar n)
 	ds->setNumRighe(n);
 	++(*dsi);
     }
+    delete dsi;
 }
 
 void diffmulti::reparent(QWidget *par, unsigned int f, QPoint p, 
@@ -266,6 +269,7 @@ void diffmulti::reparent(QWidget *par, unsigned int f, QPoint p,
 	//ds->setGeom(0, 80, 240, 240);
 	++(*dsi);
     }
+    delete dsi;
 #endif
 }
 
@@ -298,6 +302,7 @@ void diffmulti::ds_closed(diffSonora *ds)
 #endif
     forceDraw();
     showFullScreen();
+    delete lbi;
 }
 
 void diffmulti::hide()
@@ -312,6 +317,7 @@ void diffmulti::hide()
 	ds->hide();
 	++(*dsi);
     }
+    delete dsi;
 #endif
 }
 
@@ -327,6 +333,7 @@ void diffmulti::show()
 	ds->show();
 	++(*dsi);
     }
+    delete dsi;
 #endif
 }
 
@@ -345,6 +352,7 @@ void diffmulti::setGeom(int x, int y, int w,int h)
 	ds->setGeom(0,0,240,240);
 	++(*dsi);
     }
+    delete dsi;
 #endif
 }
 
@@ -362,6 +370,7 @@ void diffmulti::forceDraw()
 	ds->forceDraw();
 	++(*dsi);
     }
+    delete dsi;
 #endif
 }
 
@@ -376,6 +385,7 @@ void diffmulti::resizewindows(int x, int y, int w, int h)
 	ds->forceDraw();
 	++(*dsi);
     }
+    delete dsi;
 }
 
 void diffmulti::ripristinaRighe(void)
@@ -389,6 +399,7 @@ void diffmulti::ripristinaRighe(void)
 	ds->setNumRighe(4);
 	++(*dsi);
     }
+    delete dsi;
 }
 
 void diffmulti::status_changed(QPtrList<device_status> sl)
@@ -416,6 +427,7 @@ void diffmulti::status_changed(QPtrList<device_status> sl)
 	}
 	++(*dsi);
     }
+    delete dsi;
 }
 
 // contdiff implementation
@@ -519,7 +531,7 @@ void contdiff::connectClosed(sveglia *s)
 {
     disconnect(this, SIGNAL(Closed()), s, SLOT(Closed()));
     connect(this, SIGNAL(Closed()), s, SLOT(Closed()));
-#if 0
+#if 1
     if(dm)
 	connect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
 #endif
@@ -527,7 +539,7 @@ void contdiff::connectClosed(sveglia *s)
 
 void contdiff::disconnectClosed(sveglia *s)
 {
-#if 0
+#if 1
     if(dm)
 	disconnect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
 #endif

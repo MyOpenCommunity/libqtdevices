@@ -428,10 +428,8 @@ void sveglia::okTipo()
     difson->setGeom(0,80,240,240);	
     difson->setNavBarMode(6);
     difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);	
-    //difson->setGeom(0,80,240,240);
     difson->resizewindows();
     difson->forceDraw();
-    
     
     aggiornaDatiEEprom=1;
     gesFrameAbil=TRUE;

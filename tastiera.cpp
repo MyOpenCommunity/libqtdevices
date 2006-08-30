@@ -409,13 +409,13 @@ tastiera_con_stati::tastiera_con_stati(int s[8],
 	stati[i]->setFont( QFont( "helvetica", 16, QFont::Bold ) );
 	if(s[i] == -1)
 	{
-		stati[i]->setText("-");
-		st[i] = false;
+	    stati[i]->setText("-");
+	    st[i] = false;
 	}
 	else
 	{
-		stati[i]->setText(tmp);
-		st[i] = s[i];
+	    stati[i]->setText(tmp);
+	    st[i] = s[i];
 	}
 	//stati[i]->setAlignment(AlignHCenter|AlignVCenter);
 	tmp[0]++;

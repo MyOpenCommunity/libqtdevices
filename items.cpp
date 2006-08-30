@@ -180,6 +180,7 @@ void dimmer::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 
 void dimmer:: Accendi()
@@ -392,6 +393,7 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 
 void dimmer100::inizializza()
@@ -500,6 +502,7 @@ void attuatAutom::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 
 
@@ -929,6 +932,7 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 #endif
 
@@ -1142,6 +1146,7 @@ void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 #endif
 
@@ -1410,6 +1415,7 @@ void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 
 void attuatAutomTemp::Attiva()
@@ -1553,6 +1559,7 @@ void attuatAutomTempNuovoN::status_changed(QPtrList<device_status> sl)
     qDebug("aggiorna = %d", aggiorna);
     if(aggiorna)
       Draw();
+    delete dsi;
 }
 
 void attuatAutomTempNuovoN::Attiva()
@@ -1736,6 +1743,7 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	qDebug("invoco Draw con value = %d", value);
         Draw();
     }
+    delete dsi;
 }
 
 void attuatAutomTempNuovoF::update()
@@ -2150,6 +2158,7 @@ void amplificatore::status_changed(QPtrList<device_status>sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 #endif
 
@@ -2242,6 +2251,7 @@ void grAmplificatori::setAddress(void*indirizzi)
 	qDebug("INDIRIZZO = %s", s->ascii());
 	++(*lii);
     }
+    delete lii;
 #endif
 }
 
@@ -2303,9 +2313,9 @@ void grAmplificatori::inizializza()
 
 
 sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
-    : bannCiclaz( parent, name, vecchio ? 4 : 3)
+    : bannCiclaz( parent, name, 3)
 {
-    SetIcons( ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
+    SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
 
     vecchia = vecchio;
     setAddress(indirizzo);
@@ -2522,6 +2532,7 @@ void banradio::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	myRadio->draw();
+    delete dsi;
 }
 #endif
 
@@ -3211,7 +3222,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
-
+    delete dsi;
 }
 #endif
 
@@ -3510,6 +3521,7 @@ void zonaAnti::status_changed(QPtrList<device_status> sl)
 	setIcons();
 	Draw();
     }
+    delete dsi;
 }
 #endif
 
@@ -3704,18 +3716,19 @@ void impAnti::status_changed(QPtrList<device_status> sl)
     }
     if(aggiorna)
 	Draw();
+    delete dsi;
 }
 #endif
 
 void impAnti::Inserisci()
 {
     int s[MAX_ZONE];
-    for(int i=0; i<MAX_ZONE; i++)
+    for(int i=0; i<MAX_ZONE; i++) 
     {
       if(le_zone[i] !=  NULL)
 	s[i] = le_zone[i]->isActive();
       else
-        s[i] = -1;
+	s[i] = -1;
     }
     tasti = new tastiera_con_stati(s, NULL, "");
     connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
@@ -4152,6 +4165,7 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
             mostra(BUT2);
         Draw();
     }
+    delete dsi;
 }
 #endif
 
@@ -4386,6 +4400,7 @@ void scenEvo::trig(bool forced)
 	}
 	++(*ci);
     }
+    delete ci;
  do_send:
     qDebug("scenEvo::trig(), act = %s", action.ascii());
     openwebnet msg_open;
@@ -4404,6 +4419,7 @@ void scenEvo::freezed(bool f)
 	co->setEnabled(!f);
 	++(*ci);
     }
+    delete ci;
 }
 
 void scenEvo::gestFrame(char* frame)
@@ -4763,6 +4779,7 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
 	++(*lai);
 	i++;
     }
+    delete lai;
 }
 
 void ambDiffSon::Draw()
@@ -4861,6 +4878,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 	}
 	++(*lai);
     }
+    delete lai;
 }
 
 void insAmbDiffSon::Draw()

@@ -119,6 +119,7 @@ device_status::device_status(device_status::type _t)
     vars.clear();
     vars.setAutoDelete(true);
     _initialized = false;
+    _init_requested = false;
 }
 
 device_status::type device_status::get_type(void)
@@ -165,11 +166,15 @@ int device_status::write_val(int index, stat_var& in)
     svi->toFirst();
     stat_var *sv ; 
     while( ( sv = svi->current() ) != 0) {
-	if(!sv->initialized())
-	    return 0;
-	++(*svi);
+      if(!sv->initialized()) {
+	  delete svi;
+	  return 0;
+      }
+      ++(*svi);
     }
+    qDebug("device_status::write_val(): all device status initialized!!");
     _initialized = true ;
+    _init_requested = false ;
     delete svi;
     return 0;
 }
@@ -177,6 +182,16 @@ int device_status::write_val(int index, stat_var& in)
 bool device_status::initialized(void)
 {
     return _initialized;
+}
+
+bool device_status::init_requested(void)
+{
+    return _init_requested;
+}
+
+void device_status::mark_init_requested(void)
+{
+    _init_requested = true;
 }
 
 void device_status::invalidate(void)
@@ -376,18 +391,24 @@ device::device(QString _who, QString _where, bool p, int g)
 void device::init(void)
 {
     qDebug("device::init()");
+    // True if all device has already been initialized
     QPtrListIterator<device_status> *dsi = 
 	new QPtrListIterator<device_status>(*stat);
     dsi->toFirst();
     device_status *ds ;
+    QPtrList<device_status> dsl;
+    dsl.clear();
     while( ( ds = dsi->current() ) != 0) {
 	//QString msg = "";
 	QStringList msgl;
 	msgl.clear();
 	qDebug("ds = %p", ds);
 	if(ds->initialized()) {
-	    qDebug("device is already initialized");
+	    qDebug("device status hal already been initialized");
 	    emit(initialized(ds));
+	    dsl.append(ds);
+	} else if(ds->init_requested()) {
+	    qDebug("device status init already requested");
 	} else {
 	    qDebug("getting init message");
 	    interpreter->get_init_messages(ds, msgl);
@@ -399,10 +420,14 @@ void device::init(void)
 		if((*it) != "")
 		    emit(send_frame((char *)((*it).ascii())));
 	    }
-	    ds->force_initialized();
+	    //ds->force_initialized();
+	    ds->mark_init_requested();
 	}
 	++(*dsi);
     }
+    if(!dsl.isEmpty())
+	emit(status_changed(dsl));
+    delete dsi;
     qDebug("device::init() end");
 }
 
@@ -447,6 +472,7 @@ void device::add_device_status(device_status *_ds)
 	++(*dsi);
     }
     stat->append(_ds);
+    delete dsi;
 }
 
 QString device::get_key(void)
@@ -465,6 +491,7 @@ device::~device()
 	++(*dsi);
     }
     delete stat;
+    delete dsi;
 }
 
 void device::frame_rx_handler(char *s)

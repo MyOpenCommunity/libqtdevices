@@ -106,6 +106,8 @@ class device_status {
     QPtrList<stat_var> vars;
     //! True when initialized
     bool _initialized;
+    //! True when init requested
+    bool _init_requested;
  public:
     //! Constructor
     device_status(device_status::type);
@@ -121,6 +123,10 @@ class device_status {
     int write_val(int index, stat_var& val);
     //! Returns true when status initialized
     bool initialized(void);
+    //! Returns true when status initialize has already been requested
+    bool init_requested(void);
+    //! Sets init_requested flag
+    void mark_init_requested(void);
     //! Invalidate device status
     void invalidate(void);
     //! Force initialized status

@@ -121,8 +121,9 @@ int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* Icon
 void diffSonora::setNumRighe(uchar n)
 {
     numRighe=n;
-    qDebug("Invoking amplificatori->setNumRighe(%d)\n", n-2);
+    qDebug("Invoking amplificatori->setNumRighe(%d)", n-2);
     amplificatori->setNumRighe(n-2);
+    qDebug("sorgenti = %p", sorgenti);
     if(sorgenti)
       sorgenti->setNumRighe(1);
     if(sorgenti)
@@ -216,17 +217,17 @@ void diffSonora::setGeom(int x,int y,int w,int h)
 {
     qDebug("diffSonora::setGeom(%d, %d, %d, %d, numRighe = %d)",
 	   x, y, w, h, numRighe);
-      QWidget::setGeometry(x,y,w,h);
-      if (sorgenti) {
-	  qDebug("sorgenti->setGeometry(%d, %d, %d, %d)",
-		 x, y, w, h/numRighe);
-	  sorgenti->setGeometry(x,y,w,h/numRighe) ; // - 40);
-      }
-      if(amplificatori) {
-	  qDebug("amplificatori->setGeometry(%d, %d, %d, %d)",
-		 x,h/numRighe,w,h/numRighe*(numRighe-1));
-	  amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
-      }
+    QWidget::setGeometry(x,y,w,h);
+    if (sorgenti) {
+	qDebug("sorgenti->setGeometry(%d, %d, %d, %d)",
+	       x, 0, w, h/numRighe);
+	sorgenti->setGeometry(x,0,w,h/numRighe) ; // - 40);
+    }
+    if(amplificatori) {
+	qDebug("amplificatori->setGeometry(%d, %d, %d, %d)",
+	       x, h/numRighe,w,h/numRighe*(numRighe-1));
+	amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
+    }
 }
 
 void diffSonora::setNavBarMode(uchar c)
