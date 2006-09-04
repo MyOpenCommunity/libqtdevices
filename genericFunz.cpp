@@ -215,7 +215,7 @@ void setContrast(unsigned char c,bool b)
 	if (fd >= 0 )
 	{
 	    sprintf(&contr[0],"%d",c);
-//	    qDebug("setto il contrasto a : %d", c);
+	    qDebug("setto il contrasto a : %d", c);
 	    write(fd, &contr[0], 4);
 	    close(fd);
 	}

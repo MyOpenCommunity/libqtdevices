@@ -151,7 +151,7 @@ void contrPage::aumContr()
     uchar c;
     
     c=getContrast();
-    if (c<=240)
+    if (c<140)
 	setContrast(c+10,FALSE);    
 }
 

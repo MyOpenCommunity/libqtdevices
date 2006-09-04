@@ -64,7 +64,7 @@ v** Socket
     connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
     
     setBacklight(TRUE);
-    setContrast(0x80,FALSE);
+    //setContrast(0x80,FALSE);
     
     rearmWDT();
     

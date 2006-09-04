@@ -2313,9 +2313,9 @@ void grAmplificatori::inizializza()
 
 
 sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
-    : bannCiclaz( parent, name, 3)
+    : bannCiclaz( parent, name, vecchio ? 4 : 3)
 {
-    SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
+    SetIcons( ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
 
     vecchia = vecchio;
     setAddress(indirizzo);
