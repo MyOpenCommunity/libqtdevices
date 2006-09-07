@@ -78,6 +78,7 @@ public slots:
   \brief Draws the object.
 */    
     void 	mostra();
+ void        hide(); 
 private slots:
     void	OKTime();
     void    OKDate();    

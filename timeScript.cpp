@@ -110,6 +110,11 @@ void timeScript::stopDate()
 	showDate();	
 }
 
+void timeScript::reset()
+{
+    stopDate();
+}
+
 
 void timeScript::showTime()
 {

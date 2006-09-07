@@ -2363,6 +2363,15 @@ void sorgente::inizializza()
 { 
 }
 
+void sorgente::hide()
+{
+    qDebug("sorgente::hide()");
+    banner::hide();
+    if(vecchia)
+	return;
+    myAux->hide();
+}
+
 /*****************************************************************
 **sorgente_Radio
 ****************************************************************/
@@ -2398,7 +2407,7 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, 
     if(!old_diffson)
 	connect(this, SIGNAL(dxClick()), this, SLOT(richFreq()));
 
-    connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
+    //connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
     connect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
     connect(myRadio,SIGNAL(Closed()),myRadio,SLOT(hide()));
     connect(myRadio,SIGNAL(Closed()),this,SLOT(stopRDS()));     
@@ -2424,10 +2433,10 @@ void banradio::grandadChanged(QWidget *newGrandad)
 {
     qDebug("banradio::grandadChanged (%p)", newGrandad); 
     QWidget *grandad = this->parentWidget(FALSE)->parentWidget(FALSE);
-    disconnect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
+    //disconnect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
     disconnect(myRadio,SIGNAL(Closed()), grandad, SLOT(showFullScreen()));
     grandad = newGrandad;
-    connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
+    //connect(this  ,SIGNAL(dxClick()), grandad, SLOT(hide()));
     connect(myRadio,SIGNAL(Closed()), grandad, SLOT(showFullScreen()));
 }
 
@@ -2567,6 +2576,7 @@ void banradio::show()
 
 void banradio::hide()
 {
+    qDebug("banradio::hide()");
     if (myRadio->isShown())
         stopRDS();
     myRadio->hide();
@@ -3586,6 +3596,7 @@ impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn,
     char pippo[MAX_PATH];
     
     memset(pippo,'\000',sizeof(pippo));
+    tasti = NULL;
     if (IconActive)
         strncpy(&pippo[0],IconActive,strstr(IconActive,".")-IconActive-3);
     
@@ -3601,6 +3612,7 @@ impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn,
     impostaAttivo(2);
 #else
     impostaAttivo(0);
+    Draw();
 #endif
     // BUT2 and 4 are actually both on the left of the banner.
 #if 0
@@ -3736,7 +3748,7 @@ void impAnti::Inserisci()
     tasti->setFGColor(foregroundColor());
     tasti->setMode(tastiera::HIDDEN);
     tasti->showTastiera();
-    parentWidget()->hide();
+    //parentWidget()->hide();
     //    this->hide();
 }
 void impAnti::Disinserisci()
@@ -3747,7 +3759,7 @@ void impAnti::Disinserisci()
     tasti->setFGColor(foregroundColor());    
     tasti->setMode(tastiera::HIDDEN);
     tasti->showTastiera();
-    parentWidget()->hide();
+    //parentWidget()->hide();
     
     //    this->hide();    
 }
@@ -3863,6 +3875,16 @@ void impAnti::partChanged(zonaAnti *za)
 void impAnti::inizializza()
 { 
     emit sendFrame("*#5*0##");    
+}
+
+void impAnti::hide()
+{
+    qDebug("impAnti::hide()");
+    banner::hide();
+    if(tasti && tasti->isShown()) {
+	qDebug("HIDING KEYBOARD");
+	tasti->hide();
+    }
 }
 
 
@@ -4483,6 +4505,20 @@ void scenEvo::inizializza(void)
     ci->toFirst();
     while( ( co = ci->current() ) != 0) {
 	co->inizializza();
+	++(*ci);
+    }
+    delete ci;
+}
+
+void scenEvo::hide()
+{
+    qDebug("scenEvo::hide()");
+    scenEvo_cond *co;
+    QPtrListIterator<scenEvo_cond> *ci = 
+	new QPtrListIterator<scenEvo_cond>(*condList);
+    ci->toFirst();
+    while( ( co = ci->current() ) != 0) {
+	co->hide();
 	++(*ci);
     }
     delete ci;

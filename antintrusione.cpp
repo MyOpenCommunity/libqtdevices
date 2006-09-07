@@ -24,6 +24,7 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
    impianto = new sottoMenu(this,"impianto",0,MAX_WIDTH, MAX_HEIGHT/numRighe,1); 
    allarmi.clear();
    allarmi.setAutoDelete(true);
+   curr_alarm = NULL;
     setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
     connect(zone  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
     
@@ -54,7 +55,6 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(this,SIGNAL(freezed(bool)),allarmi,SLOT(freezed(bool)));           
     connect(allarmi,SIGNAL(itemKilled()),this,SLOT(testranpo()));
 #endif
-
 }
 
 void antintrusione::testranpo()
@@ -156,6 +156,7 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* I
 	    strncpy(&testoIntrusione[0],txt_intrusione,MAX_PATH);
 	if (txt_panic)
 	    strncpy(&testoPanic[0],txt_panic,MAX_PATH);
+	impianto->forceDraw();
     }
     else if (tipo== ZONANTINTRUS) {
 	zone->addItem(tipo , descrizione , indirizzo ,IconaSx,IconaDx, icon, 
@@ -170,6 +171,7 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* I
 	// one "impianto" could be configured, in real life only one 
 	// impianto can exist
 	((impAnti *)impianto->getLast())->setZona((zonaAnti *)zone->getLast());
+	zone->forceDraw();
     }
     return(1);    
  }
@@ -275,6 +277,8 @@ void antintrusione::gesFrame(char*frame)
 
 void antintrusione::setGeom(int x,int y,int w,int h)
 {
+    qDebug("antiintrusione::setGeom(%d, %d, %d, %d)",
+	   x, y, w, h);
       QWidget::setGeometry(x,y,w,h);
       if (impianto)
 	impianto->setGeometry(x,y,w,h/numRighe);
@@ -348,4 +352,21 @@ void antintrusione::showAlarms()
     impianto->hide();
     zone->hide();
     curr_alarm->show();
+}
+
+
+void antintrusione::show()
+{
+    qDebug("antintrusione::show()");
+    impianto->show();
+    zone->show();
+    QWidget::show();
+}
+
+void antintrusione::hide()
+{
+    qDebug("antiintrusione::hide()");
+    QWidget::hide();
+    impianto->hide();
+    zone->hide();
 }

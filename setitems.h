@@ -39,6 +39,7 @@ signals:
   //    void sendFrame(char *); 
 public slots:
 //     void Attiva();
+	void hide();
 private:
        impostaTime settalora;
 
@@ -182,6 +183,9 @@ public:
      impContr( sottoMenu  *, const char *,char *,const char *);     
 signals:
 
+public slots:
+	void hide();
+
 private slots:	
      void 	showContr();
      void 	contrMade();
@@ -263,6 +267,10 @@ public slots:
   \brief  Shows the banner
 */ 
       void	show();
+/*!
+  \brief Hides what has to be hidden
+*/
+      void      hide();
 /*!
   \brief  Shows the keypad to compose the password key
 */      

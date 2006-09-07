@@ -36,6 +36,12 @@ setDataOra::setDataOra( sottoMenu *parent,const char *name )
      connect(&settalora,SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 }
 
+void setDataOra::hide()
+{
+    banner::hide();
+    settalora.hide();
+}
+
 /*****************************************************************
 **impostaSveglia
 ****************************************************************/
@@ -91,7 +97,7 @@ void  impostaSveglia::show()
 {
     if (svegliolina->getActivation())
     {
-        qDebug("impostaSveglia mette icona ON");
+        qDebug("impostaSveglia mette icona ON (%p)", iconOn);
 	SetIcons(uchar(0),&iconOn[0]);
     }
    else
@@ -183,6 +189,7 @@ void impBeep::toggleBeep()
 impContr::impContr( sottoMenu  *parent,const char *name ,char* val, const char * icon1)
         : bannOnDx( parent, name )
 {   
+    contrasto = NULL;
      SetIcons( icon1,1);
      connect(this,SIGNAL(click()),this,SLOT(showContr()));      
      setContrast(atoi(val),FALSE);
@@ -205,6 +212,14 @@ void impContr::contrMade()
     contrasto->hide();
     setContrast(getContrast(),TRUE);
     delete(contrasto);
+    contrasto = NULL;
+}
+
+void impContr::hide()
+{
+    banner::hide();
+    if(contrasto)
+	contrasto->hide();
 }
 
 
@@ -378,4 +393,11 @@ void impPassword::setEnabled ( bool  b)
     if (!b)
 	starting=0;
     QWidget::setEnabled(b);
+}
+
+void impPassword::hide()
+{
+    banner::hide();
+    if(tasti)
+	tasti->hide();
 }

@@ -44,6 +44,18 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	 
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT); 
     setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
+    
+    QDateTime OroTemp = QDateTime(QDateTime::currentDateTime());
+    dataOra = new timeScript(this,"scrittaHomePage",1,&OroTemp);
+    
+    
+    
+    dataOra->setGeometry(10,120,220,80);
+    
+    dataOra->setFrameStyle( QFrame::Plain );
+    dataOra->setLineWidth(0);    
+    dataOra->hide();
+
     memset(iconName,'\000',sizeof(iconName));
     strcpy(iconName,ICON_FRECCIA_SU);
     Icon1->load(iconName);	
@@ -109,7 +121,7 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
     Immagine = new BtLabel(this, "immaginetta superiore");
     Immagine->setGeometry(90,0,120,60);
     
-    dataOra=NULL;
+    //dataOra=NULL;
 }
 
 void impostaTime::setFGColor(int r, int g, int b)
@@ -252,15 +264,17 @@ void impostaTime::OKDate()
      emit sendFrame(msg_open.frame_open);    
 #endif
      
-    delete (dataOra);
-    hide();
+     //delete (dataOra);
+     //dataOra = NULL;
+     hide();
 }
 
 void impostaTime::mostra()
 {
+#if 0
       QDateTime OroTemp = QDateTime(QDateTime::currentDateTime());
     // QTextOStream (stdout)<<"\nmostra";
-    
+
      dataOra = new timeScript(this,"scrittaHomePage",1,&OroTemp);
          
      
@@ -269,7 +283,20 @@ void impostaTime::mostra()
 
      dataOra->setFrameStyle( QFrame::Plain );
      dataOra->setLineWidth(0);    
-     
+#else
+     qDebug("impostaTime::mostra()");
+     //dataOra->stopDate();
+     dataOra->reset();
+     dataOra->showTime();
+     disconnect(but[0], 0, dataOra, 0);
+     disconnect(but[1], 0, dataOra, 0);
+     disconnect(but[2], 0, dataOra, 0);
+     disconnect(but[3], 0, dataOra, 0);
+     disconnect(but[4], 0, dataOra, 0);
+     disconnect(but[5], 0, dataOra, 0);
+     disconnect(but[6], 0, dataOra, 0);
+#endif
+
      QPixmap *Icon1 = new QPixmap();
      Icon1->load(ICON_OROLOGIO);
            
@@ -286,4 +313,13 @@ void impostaTime::mostra()
     connect( but[6] ,SIGNAL(clicked()),this,SLOT(OKTime()));
     
     show();
+    dataOra->show();
+}
+
+void impostaTime::hide()
+{
+    qDebug("impostaTime::hide()");
+    QFrame::hide();
+    if(dataOra)
+	dataOra->hide();
 }

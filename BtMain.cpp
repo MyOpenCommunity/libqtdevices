@@ -74,6 +74,7 @@ v** Socket
     illumino=scenari=carichi=imposta=automazioni=scenari_evoluti=videocitofonia=NULL;
     termo=NULL;
     difSon=NULL;
+    dm=NULL;
     antintr=NULL;
     screen=NULL;
     alreadyCalibrated=FALSE;
@@ -452,6 +453,8 @@ void BtMain::gesScrSav()
                         termo -> hide();
                     if (difSon)
                         difSon -> hide();
+		    if (dm)
+			dm -> hide();
                     if (antintr)
                         antintr -> hide();
                     if (specPage )

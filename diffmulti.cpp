@@ -307,8 +307,9 @@ void diffmulti::ds_closed(diffSonora *ds)
 
 void diffmulti::hide()
 {
+    qDebug("diffmulti::hide()");
     sottoMenu::hide();
-#if 0
+#if 1
     QPtrListIterator<diffSonora> *dsi = 
 	new QPtrListIterator<diffSonora>(*dslist);
     dsi->toFirst();

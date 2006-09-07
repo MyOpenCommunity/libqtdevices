@@ -155,6 +155,11 @@ must be displayed.
   \brief Invoked when alarm list must be shown
 */
     void        showAlarms();
+/*!
+  \brief Hides what has to be hidden
+*/
+    void        hide();
+    void        show();
 private:
 /*!
   \param <numRighe> row number of the object

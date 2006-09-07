@@ -876,6 +876,7 @@ public:
    void inizializza();
 public slots:
      void gestFrame(char*);
+    void hide(); 
 private slots:
     void ciclaSorg();
     void decBrano();
@@ -1026,6 +1027,7 @@ public slots:
      void setZona(zonaAnti*);
      void openAckRx();
      void openNakRx();
+     void hide();
 private slots:     
      void Inserisci();
      void Disinserisci();
@@ -1154,6 +1156,7 @@ public slots:
  void freezed(bool);
  void saveAndApplyAll();
  void resetAll();
+ void hide();
 private slots:    
 signals:
  void frame_available(char *); 

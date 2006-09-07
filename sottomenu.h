@@ -242,6 +242,10 @@ signals:
    \brief amb description changed (for diffmulti)
  */
  void ambChanged(char *newdescr, bool multiwhere, void *where);
+ /*!
+   \brief hide all children
+ */
+ void hideChildren();
 public slots:
 /*!
   \brief Slides the list upward.

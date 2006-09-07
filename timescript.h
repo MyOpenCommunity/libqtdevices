@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: timescript.h,v 1.7 2006/08/02 08:28:14 cvs Exp $
+** $Id: timescript.h,v 1.8 2006/09/07 09:20:23 cvs Exp $
 **
 ** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
 **
@@ -46,6 +46,10 @@ public slots:
   \brief Shows the time.
 */   
     void	showTime();
+/*!
+  \brief Goes back to time
+*/
+ void         reset(); 
 /*!
   \brief Decreases seconds value.
 */       

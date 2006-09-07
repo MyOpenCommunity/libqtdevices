@@ -178,10 +178,12 @@ void diffSonora::show()
      amplificatori->draw();
      isVisual=1;
 
-/*      if (sorgenti)
+#if 1
+      if (sorgenti)
 	sorgenti-> show();
       if (amplificatori)
-	amplificatori-> show();*/
+	  amplificatori-> show();
+#endif
      QWidget::show();
 }   
 
@@ -204,14 +206,17 @@ void diffSonora::forceDraw()
 
 void diffSonora::hide()
 {	
-/*      if (sorgenti)
+    qDebug("diffSonora::hide()");
+#if 1
+    if (sorgenti)
 	sorgenti-> hide();
-      if (amplificatori)
-	amplificatori-> hide();*/
+    if (amplificatori)
+	amplificatori-> hide();
+#endif
     if (amplificatori)
 	amplificatori->setIndice(0);
-      QWidget::hide();
-  }
+    QWidget::hide();
+}
 
 void diffSonora::setGeom(int x,int y,int w,int h)
 {

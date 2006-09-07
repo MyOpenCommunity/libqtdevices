@@ -237,6 +237,7 @@ void sottoMenu::addItem(banner *b)
     //     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez())); 
     connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*))); 
     connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
+    connect(this, SIGNAL(hideChildren()), elencoBanner.getLast(), SLOT(hide()));
     elencoBanner.getLast()->SetText(elencoBanner.getLast()->name());
     int periodo, numFrame, tipo;
     elencoBanner.getLast()->getAnimationParams(periodo, numFrame);
@@ -507,8 +508,10 @@ void  sottoMenu::killBanner(banner* b)
 
 void sottoMenu::hide()
 {
+    qDebug("sottoMenu::hide() (%s)", name());
     indice=0;
     QWidget::hide();
+    emit(hideChildren());
     forceDraw();
 }
 
