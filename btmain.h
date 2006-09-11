@@ -94,7 +94,9 @@ private slots:
     void testPwd(char*);
     void testFiles();
      void svegl(bool);
-    
+ public slots:
+    void startCalib();
+    void endCalib();
 private:
     QTimer  *  tempo1;
     QTimer  *  tempo2;
@@ -106,6 +108,7 @@ private:
     unsigned char firstTime,bloccato,backcol;
     genPage* screen;
     unsigned char tiposcreen;
+    bool calibrating;
      Calibrate* calib;
     QPixmap* Sfondo[12], *grab;
     BtLabel* screensav[12];//, *ball[10];

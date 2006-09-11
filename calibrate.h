@@ -40,6 +40,7 @@ private:
 private slots:
     void timeout();
 signals:
+ void inizioCalib();
 void fineCalib();
 
 private:

@@ -68,6 +68,7 @@ v** Socket
     
     rearmWDT();
     
+    calibrating = false;
     firstTime=1;
     pagDefault=NULL;
     Home=specPage=NULL;
@@ -433,7 +434,7 @@ void BtMain::gesScrSav()
             tempo1->changeInterval(2000);
             freezed(FALSE);
         }
-        if  ( (tiempo>=60) && (!svegliaIsOn) )
+        if  ( (tiempo>=60) && (!svegliaIsOn) && (!calibrating))
         {
             if (pagDefault)
             {
@@ -772,3 +773,15 @@ QPainter paint(this);
         paint.fillRect ( 0,0,width(),height(),QBrush ( backgroundColor(), Qt::SolidPattern ));
   }
 
+
+void BtMain::startCalib()
+{
+    qDebug("BtMain::startCalib()");
+    calibrating = true;
+}
+
+void BtMain::endCalib()
+{
+    qDebug("BtMain::endCalib()");
+    calibrating = false;
+}

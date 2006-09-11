@@ -127,6 +127,9 @@ signals:
 private slots:	
      void 	doCalib();
      void	fineCalib();
+ signals:
+     void       startCalib();
+     void       endCalib();
 private:
       Calibrate* calib;
 };

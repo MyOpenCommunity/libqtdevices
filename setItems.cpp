@@ -135,11 +135,17 @@ void calibration::doCalib()
     calib->show();
     hide();
     connect(calib,SIGNAL(fineCalib()), this, SLOT(fineCalib()));
+    //connect(calib,SIGNAL(fineCalib()), this, SIGNAL(endCalib()));
+#if 0
+    connect(calib,SIGNAL(inizioCalib()), this, SIGNAL(startCalib()));
+#endif
+    emit(startCalib());
 }
 void calibration::fineCalib()
 {
     show();
     delete(calib);
+    emit(endCalib());
 }
 
 /*****************************************************************

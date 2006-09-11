@@ -168,7 +168,14 @@ QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<i
     case SORGENTE_RADIO : elencoBanner.append(new banradio(this,descrizione ,(char*)indirizzo)); break;
     case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;  	
     case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,descr1,descr2,descr3,descr4,icoEx1,par3)); break;
-    case CALIBRAZIONE: elencoBanner.append(new calibration(this,descrizione ,IconaSx)); break;
+    case CALIBRAZIONE: 
+    {
+	calibration *c = new calibration(this,descrizione ,IconaSx);
+	elencoBanner.append(c); 
+	connect(c, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
+	connect(c, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
+	break;
+    }
     case TERMO: elencoBanner.append(new termoPage(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,icoEx1,icoEx2,SecondForeground)); break;		       
     case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
     case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;       

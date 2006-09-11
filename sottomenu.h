@@ -246,6 +246,14 @@ signals:
    \brief hide all children
  */
  void hideChildren();
+/*!
+   \brief emitted on calibration start
+*/
+ void startCalib();
+/*!
+  \brief emitted on calibration end
+*/
+ void endCalib();
 public slots:
 /*!
   \brief Slides the list upward.

@@ -685,6 +685,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
                             QObject::connect(*imposta,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*imposta,SLOT(freezed(bool)));
+			    
+			    QObject::connect(*imposta,SIGNAL(startCalib()),
+					     BtM, SLOT(startCalib()));
+			    QObject::connect(*imposta,SIGNAL(endCalib()),
+					     BtM, SLOT(endCalib()));
                             break;
 			case SCENARI_EVOLUTI:
 			  qDebug("******* scenari_evoluti = %p, "
