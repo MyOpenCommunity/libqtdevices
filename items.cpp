@@ -1814,29 +1814,34 @@ void attuatAutomTempNuovoF::SetIcons(char *i1, char *i2, char *i3)
     char tmp[MAX_PATH], tmp1[MAX_PATH] ;
     char *ptr;
     char pressIconName[MAX_PATH];
-    Icon[0] = new QPixmap();
+    if(!Icon[0])
+      Icon[0] = new QPixmap();
     strcpy(tmp1, i2);
     ptr = strtok(tmp1, ".");
     sprintf(tmp, "%soff.png", ptr);
     Icon[0]->load(tmp);
     qDebug("Icon[0] <- %s", tmp);
-    Icon[1] = new QPixmap();
+    if(!Icon[1])
+      Icon[1] = new QPixmap();
     strcpy(tmp1, i2);
     ptr = strtok(tmp1, ".");
     sprintf(tmp, "%son.png", ptr);
     Icon[1]->load(tmp);
     qDebug("Icon[1] <- %s", tmp);
-    Icon[2] = new QPixmap();
+    if(!Icon[2])
+      Icon[2] = new QPixmap();
     Icon[2]->load(i3);
     qDebug("Icon[2] <- %s", i3);
     getPressName(i3, pressIconName, sizeof(pressIconName));
     if (QFile::exists(pressIconName)) {
-	pressIcon[2] = new QPixmap();
+        if(!pressIcon[2])
+	  pressIcon[2] = new QPixmap();
 	pressIcon[2]->load(pressIconName);
 	qDebug("pressIcon[2] <- %s", pressIconName);
     }
     for(int i = 0; i < NTIMEICONS ; i++) {
-	Icon[3 + i] = new QPixmap();
+        if(!Icon[3 + i])
+	  Icon[3 + i] = new QPixmap();
 	strcpy(tmp1, i1);
 	ptr = strtok(tmp1, ".");
 	sprintf(tmp, "%s%d.png", ptr, i);
@@ -2803,7 +2808,8 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
         : bannTermo( parent, name, SecondForeground)
         {       
     //SetIcons( IconaMeno, IconaPiu , ICON_SONDAOFF,ICON_SONDAANTI);/*IconaMan, IconaAuto );*/
-    SetIcons( IconaMeno, IconaPiu, IconaOff, IconaAntigelo);
+    //SetIcons( IconaMeno, IconaPiu, IconaOff, IconaAntigelo);
+    SetIcons( IconaMeno, IconaPiu, IconaAntigelo, IconaOff);
     setAddress(indirizzo);
     strncpy(&manIco[0],IconaMan,sizeof(manIco));
     strncpy(&autoIco[0],IconaAuto, sizeof(autoIco));
@@ -3062,6 +3068,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 			((sottoMenu*)parentWidget())->forceDraw();
 		    }
 		    break;
+#if 0
 		case device_status_thermr::S_ANTIGELO:
 		    qDebug("stato S_ANTIGELO");
 		    stato = device_status_thermr::S_ANTIGELO;
@@ -3077,7 +3084,10 @@ void termoPage::status_changed(QPtrList<device_status> sl)
                         ((sottoMenu*)parentWidget())->forceDraw();
                     }
 		    break;
+#endif
+		case device_status_thermr::S_ANTIGELO:
 		case device_status_thermr::S_TERM:
+		case device_status_thermr::S_GEN:
 		    qDebug("stato S_TERM");
 		    nascondi(BUT1);
 		    nascondi(BUT2);
@@ -3087,8 +3097,13 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		    aggiorna= true;	       
 		    stato = device_status_thermr::S_TERM;
                     if(isShown()) {
+#if 0
                         ((sottoMenu*)parentWidget())->
                             setNavBarMode(4,&manIco[0]);
+#else
+			((sottoMenu*)parentWidget())->
+			  setNavBarMode(3, (char *)"");
+#endif
                         ((sottoMenu*)parentWidget())->forceDraw();
                     }
 		    break;
@@ -3102,8 +3117,13 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		    aggiorna= true;
 		    stato = device_status_thermr::S_OFF;
                     if(isShown()) {
+#if 0
                         ((sottoMenu*)parentWidget())->
                             setNavBarMode(4,&manIco[0]);
+#else
+			((sottoMenu*)parentWidget())->
+			  setNavBarMode(3, (char *)"");
+#endif
                         ((sottoMenu*)parentWidget())->forceDraw();
                     }
 		    break;
@@ -3214,7 +3234,8 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	    strcat(pippo,"##");
 	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	    emit sendFrame(msg_open.frame_open);         	       
-	    ////	       
+	    ////	
+#if 0       
 	    //Richiesta via centrale     
 	    memset(pippo,'\000',sizeof(pippo));
 	    strcat(pippo,"*#4*#");
@@ -3222,6 +3243,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	    strcat(pippo,"##");
 	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	    emit sendFrame(msg_open.frame_open);   
+#endif
 	    /////	       
 	    break;
 	default:
@@ -3357,6 +3379,8 @@ void termoPage::decSetpoint()
 
 void termoPage::inizializza()
 { 
+  // See frame_interpreter.cpp
+#if 0
     openwebnet msg_open;
     char    pippo[50];
     
@@ -3376,6 +3400,7 @@ void termoPage::inizializza()
     strcat(pippo,"##");
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
     emit sendFrame(msg_open.frame_open);   
+#endif
 }
 
 
@@ -3742,6 +3767,8 @@ void impAnti::Inserisci()
       else
 	s[i] = -1;
     }
+    if(tasti)
+      delete tasti;
     tasti = new tastiera_con_stati(s, NULL, "");
     connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
     tasti->setBGColor(backgroundColor());
@@ -3753,6 +3780,8 @@ void impAnti::Inserisci()
 }
 void impAnti::Disinserisci()
 {
+    if(tasti)
+      delete tasti;
     tasti = new tastiera(NULL, "");
     connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
     tasti->setBGColor(backgroundColor());
@@ -4693,6 +4722,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	light_icon = Icona3;
     } else
 	nascondi(BUT2);
+    connect(parent, SIGNAL(frez(bool)), this, SIGNAL(freezed(bool))); 
     close_icon = Icona4;
     impostaAttivo(2);
     Draw();
@@ -4713,6 +4743,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	connect(btouch_device_cache.get_client_monitor(), 
 		SIGNAL(frameIn(char *)),
 		cnm, SLOT(gestFrame(char *)));
+	connect(this, SIGNAL(freezed(bool)), cnm, SIGNAL(freezed(bool)));
     }
     cnm->add_call_notifier(cn);
     if(unknown && !unknown_notifier) {
@@ -4733,14 +4764,14 @@ void postoExt::frame_captured_handler(call_notifier *cn)
 {
     qDebug("postoExt::frame_captured_handler()");
     // Just unfreeze
-    emit(svegl(1));
+    //emit(svegl(1));
     emit(freeze(0));
 }
 
 void postoExt::call_notifier_closed(call_notifier *cn)
 {
     qDebug("postoExt::call_notifier_closed()");
-    emit(svegl(0));
+    //emit(svegl(0));
 }
 
 void postoExt::open_door_clicked(void)
@@ -4809,6 +4840,14 @@ void postoExt::get_close_icon(QString& out)
 {
     out = close_icon;
 }
+
+#if 0
+void postoExt::freezed(bool f)
+{
+
+
+}
+#endif
 
 
 /*****************************************************************
@@ -4943,6 +4982,8 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 	    ++(*lsi);
 	    ++(*lii);
 	}
+	delete lsi;
+	delete lii;
 	++(*lai);
     }
     delete lai;
@@ -5039,6 +5080,7 @@ void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
 			  10));
       qDebug("Source where is now %s", dove->ascii());
       setAddress((char *)dove->ascii());
+      delete dove;
   } else {
       multiamb = true;
       QString *dove = new QString(
@@ -5047,6 +5089,7 @@ void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
 						  10));
       qDebug("Source where is now %s", dove->ascii());
       setAddress((char *)dove->ascii());
+      delete dove;
   }
   myRadio->setAmbDescr(ad);
 }
@@ -5116,6 +5159,7 @@ void sorgenteMultiAux::ambChanged(char *ad, bool multi, void *indamb)
 			    10));
 	qDebug("Source where now = %s", dove->ascii());
 	setAddress((char *)dove->ascii());
+	delete dove;
     } else {
 	QString *dove = new QString(
 	    QString::number(100 + 
@@ -5123,6 +5167,7 @@ void sorgenteMultiAux::ambChanged(char *ad, bool multi, void *indamb)
 			    10));
 	qDebug("Source where is now %s", dove->ascii());
 	setAddress((char *)dove->ascii());
+	delete dove;
 	multiamb = true;
     }
     myAux->setAmbDescr(ad);

@@ -936,13 +936,14 @@ private:
      char 	autoIco[50];
 };
 
-
+#if 0 // See device.h
 enum statisonda{
                                  S_AUTO,
 		 S_MAN,
 		 S_ANTIGELO,
 		 S_OFF,
 		     };
+#endif
 #endif //THERMO_H
 
 /*****************************************************************
@@ -1283,6 +1284,8 @@ public  slots:
 signals:
     //! Emitted when a frame is available
     void frame_available(char *);
+    //! Emitted on freezed
+    void freezed(bool);
 };
 
 #endif // POSTO_EXT_H

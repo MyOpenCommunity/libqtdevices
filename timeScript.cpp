@@ -169,6 +169,11 @@ void timeScript::setDataOra(QDateTime d)
 }
 
 
+timeScript::~timeScript()
+{
+  if(mioClock) delete mioClock;
+}
+
 
 
 /* PER SCRIVERE VERAMENTE SUL CLOCK

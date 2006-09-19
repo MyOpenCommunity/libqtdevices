@@ -1680,9 +1680,20 @@ bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m)
 void frame_interpreter_thermr_device::
 get_init_message(device_status *s, QString& out)
 {
-    QString head = "*#4*";
-    QString end = "##";
-    out = head + where + end;
+    QString head, end;
+    switch(s->get_type()) {
+    case device_status::TEMPERATURE_PROBE:
+    {
+      head = "*#4*";
+      end = "##";
+      out = head + where + end;
+      break;
+    }
+    case device_status::THERMR:
+    default:
+      out = "";
+      break;
+    }
 }
 
 // Private methods
@@ -1704,6 +1715,12 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     qDebug("curr sp is %d", curr_sp.get_val());
     int cosa = atoi(m.Extract_cosa());
     qDebug("cosa = %d", cosa);
+    if((curr_stat.get_val() != device_status_thermr::S_MAN) &&
+       (curr_stat.get_val() != device_status_thermr::S_AUTO) && 
+       m.Extract_dove()[0] == '#') {
+      qDebug("Ignoring frame (status is %d)", curr_stat.get_val());
+      return;
+    }
     switch(cosa) {
     case 110:
     case 210:
@@ -1765,6 +1782,20 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	}
 	elaborato = true;
 	break;
+    case 0:
+    case 1:
+      {
+	if(!m.IsNormalFrame())
+	  break;
+	stat = device_status_thermr::S_MAN;
+	do_event = true;
+	elaborato = true;
+        QString head = "*#4*#";
+        QString end = "##";
+	QString m = head + where + end;
+	emit(init_requested(m));
+	break;
+      }
     default:
 	// Do nothing
 	break;
@@ -1814,6 +1845,10 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
     stat_var curr_temp(stat_var::TEMPERATURE);
     int stat;
     bool do_event = false;
+    if(m.IsNormalFrame()) {
+	qDebug("Normal frame, discarding");
+	return;
+    }
     // Read current status
     ds->read((int)device_status_temperature_probe::TEMPERATURE_INDEX, 
 	     curr_temp);

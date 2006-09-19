@@ -77,6 +77,8 @@ class call_notifier : public QFrame {
     void open_door_clicked();
     //! Close window 
     void close();
+    //! Received on freeze
+    void freezed(bool);
  signals:
     //! A frame is available
     void frame_available(char *);
@@ -115,6 +117,8 @@ class call_notifier_manager : public QObject {
     void frame_captured(call_notifier *);
     //! Emitted when a call notifier window is closed
     void call_notifier_closed(call_notifier *);
+    //! Emitted on freeze
+    void freezed(bool);
 };
 
 

@@ -8,6 +8,7 @@
 **
 ****************************************************************/
 
+#include <time.h>
 #include <qapplication.h>
 #include <qobject.h>
 #include <qaction.h>
@@ -69,6 +70,7 @@ v** Socket
     rearmWDT();
     
     calibrating = false;
+    event_unfreeze = false;
     firstTime=1;
     pagDefault=NULL;
     Home=specPage=NULL;
@@ -80,6 +82,7 @@ v** Socket
     screen=NULL;
     alreadyCalibrated=FALSE;
     svegliaIsOn=FALSE;
+    tiempo_last_ev = 0;
         
 backcol=0;
  tasti=NULL; 
@@ -403,14 +406,27 @@ void BtMain::testFiles()
     }
 }
 
+static unsigned long now()
+{
+  return time(NULL);
+}
+
+#ifndef min
+# define min(a, b) ((a) < (b)) ? (a) : (b)
+#endif
 
 void BtMain::gesScrSav()
 {
-    unsigned long tiempo;
+  unsigned long tiempo, tiempo_press;
     rearmWDT();  
     
-    tiempo= getTimePress();
-    
+    tiempo_press = getTimePress();
+    if(event_unfreeze) {
+      tiempo_last_ev = now();
+      event_unfreeze = false;
+    }
+    tiempo = min(tiempo_press, (now() - tiempo_last_ev));
+
     if (!firstTime)
     {
         if  ( (tiempo>=30) && (getBacklight())) 
@@ -475,7 +491,7 @@ void BtMain::gesScrSav()
                 {
                     if (Sfondo[idx])
                         delete(Sfondo[idx]);
-                        if (pagDefault)
+		    if (pagDefault)
                         {
                             Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(pagDefault,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4)); 
                     }
@@ -689,6 +705,7 @@ void BtMain::freezed(bool b)
     if  (!b) 
         
     {
+        event_unfreeze = 1;
         setBacklight(TRUE);
         //qDebug("BtMain freezed FALSE");
         hide();

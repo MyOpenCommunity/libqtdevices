@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: timescript.h,v 1.8 2006/09/07 09:20:23 cvs Exp $
+** $Id: timescript.h,v 1.9 2006/09/19 07:04:09 cvs Exp $
 **
 ** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
 **
@@ -99,7 +99,7 @@ public slots:
 */           
     void 	aumYear();    
     
-    
+    ~timeScript();
     
 private:					
 

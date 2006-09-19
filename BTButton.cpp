@@ -375,14 +375,18 @@ void BtButton::focusOutEvent( QFocusEvent *e )
 
 void BtButton::setPressedPixmap( const QPixmap &Icon)
 {
- prespixmap = new QPixmap( Icon );
+  if(prespixmap)
+    delete prespixmap;
+  prespixmap = new QPixmap( Icon );
 }
 
 void BtButton::setPixmap( const QPixmap &pixmap )
 {
-    rilpixmap = new QPixmap(pixmap);
-    QButton::setPixmap( pixmap );
-    }
+  if(rilpixmap)
+    delete rilpixmap;
+  rilpixmap = new QPixmap(pixmap);
+  QButton::setPixmap( pixmap );
+}
 //#endif
 
 

@@ -105,9 +105,12 @@ private:
     char	pwd[10];
     bool	pwdOn,svegliaIsOn,alreadyCalibrated;
     tastiera *tasti;
+    bool     event_unfreeze;
     unsigned char firstTime,bloccato,backcol;
     genPage* screen;
     unsigned char tiposcreen;
+    unsigned long tiempo_ev;
+    unsigned long tiempo_last_ev;
     bool calibrating;
      Calibrate* calib;
     QPixmap* Sfondo[12], *grab;

@@ -246,6 +246,12 @@ void call_notifier::setFGColor(QColor c)
 	area6_but->setPaletteForegroundColor(c);
 }
 
+void call_notifier::freezed(bool f)
+{
+  qDebug("call_notifier::freezed(%d)", f);
+
+}
+
 // Call notifier manager implementation
 call_notifier_manager::call_notifier_manager()
 {
@@ -264,6 +270,7 @@ void call_notifier_manager::add_call_notifier(call_notifier *cn)
 	    this, SLOT(frame_captured_handler(call_notifier *)));
     connect(cn, SIGNAL(closed(call_notifier *)), 
 	    this, SIGNAL(call_notifier_closed(call_notifier *)));
+    connect(this, SIGNAL(freezed(bool)), cn, SLOT(freezed(bool)));
 }
 
 void call_notifier_manager::set_unknown_call_notifier(call_notifier *cn)
@@ -303,3 +310,4 @@ void call_notifier_manager::frame_captured_handler(call_notifier *cn)
     cn->showFullScreen();
     emit(frame_captured(cn));
 }
+

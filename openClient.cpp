@@ -28,6 +28,8 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon)
   connect( socket, SIGNAL(connectionClosed()),SLOT(socketConnectionClosed()) );
   connect( socket, SIGNAL(readyRead()),SLOT(socketFrameRead()) );
   connect( socket, SIGNAL(error(int)),SLOT(socketError(int)) );
+
+  tick = NULL;
   
   // connect to the server
   connetti();
@@ -122,7 +124,7 @@ void Client::richStato(char* richiesta)
 *****************************************************************************/
 void Client::connetti()
 {    
-//   qDebug( "Trying to connect to the local openserver" );
+  //  qDebug( "Trying to connect to the local openserver" );
 //   socket->clearPendingData ();
    socket->connectToHost( "127.0.0.1", 20000 );  
 }
@@ -279,8 +281,10 @@ void Client::socketClosed()
 *****************************************************************************/
 void Client::socketError( int e )
 {
-//  qDebug( "Error number %d occurred",e);
+ qDebug( "Error number %d occurred",e);
   if (ismonitor) {
+    if(tick)
+      delete tick;
     tick = new QTimer(this,"tick");
     tick->start(500,TRUE);
   //  qDebug( "Monitor: riprovo a connettermi");

@@ -134,22 +134,27 @@ void banner::SetIcons( const char *actuallcon ,char tipo)
     }
      
     if (tipo==1)
-    {	Icon[0] = new QPixmap();
+      {	
+	if(!Icon[0])
+	  Icon[0] = new QPixmap();
 	Icon[0]->load(actuallcon);
 	if (QFile::exists(pressIconName))
-	{
-	    pressIcon[0] = new QPixmap();
+	  {
+	    if(!pressIcon[0])
+	      pressIcon[0] = new QPixmap();
 	    pressIcon[0]->load(pressIconName);
 	}
 	 
     }
     if (tipo==3)
     {
-	Icon[3] = new QPixmap();
+        if(!Icon[3])
+	    Icon[3] = new QPixmap();
 	Icon[3]->load(actuallcon);
 	if (QFile::exists(pressIconName))
 	{
-	    pressIcon[3] = new QPixmap();
+	    if(!pressIcon[3])
+	      pressIcon[3] = new QPixmap();
 	    pressIcon[3]->load(pressIconName);
 	}
     }
@@ -158,8 +163,10 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon)
 {
     char pressIconName[MAX_PATH];
     
-    Icon[0] = new QPixmap();
-    Icon[1] = new QPixmap();
+    if(!Icon[0])
+      Icon[0] = new QPixmap();
+    if(!Icon[1])
+      Icon[1] = new QPixmap();
  
  
     if (sxIcon)
@@ -169,7 +176,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon)
 	getPressName((char*)sxIcon, &pressIconName[0],sizeof(pressIconName));
 	if (QFile::exists(pressIconName))
 	{
-	    pressIcon[0] = new QPixmap();
+	    if(!pressIcon[0])
+	        pressIcon[0] = new QPixmap();
 	    pressIcon[0]->load(pressIconName);
 	}
     }
@@ -179,7 +187,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon)
 	Icon[1]->load(dxIcon);
 	if (QFile::exists(pressIconName))
 	{
-	    pressIcon[1] = new QPixmap();
+	    if(!pressIcon[1])
+	        pressIcon[1] = new QPixmap();
 	    pressIcon[1]->load(pressIconName);
 	}
     }
@@ -187,9 +196,12 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon)
 void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *centerIcon)
 {
     char pressIconName[MAX_PATH];
-    Icon[0] = new QPixmap();
-    Icon[1] = new QPixmap();
-    Icon[3] = new QPixmap();
+    if(!Icon[0])
+        Icon[0] = new QPixmap();
+    if(!Icon[1])
+        Icon[1] = new QPixmap();
+    if(!Icon[3])
+        Icon[3] = new QPixmap();
         
      if (sxIcon)
      {
@@ -198,7 +210,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *cente
 	getPressName((char*)sxIcon, &pressIconName[0],sizeof(pressIconName));
 	if (QFile::exists(pressIconName))
 	{
-	    pressIcon[0] = new QPixmap();
+	    if(!pressIcon[0])
+	        pressIcon[0] = new QPixmap();
 	    pressIcon[0]->load(pressIconName);
 	}
     }
@@ -209,7 +222,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *cente
 	getPressName((char*)dxIcon, &pressIconName[0],sizeof(pressIconName));
 	if (QFile::exists(pressIconName))
 	{
-	     pressIcon[1] = new QPixmap();
+	     if(!pressIcon[1])
+	         pressIcon[1] = new QPixmap();
 	     pressIcon[1]->load(pressIconName);
 	 }
     }
@@ -221,7 +235,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *cente
 	qDebug("pressIconName is %s", pressIconName);
 	if (QFile::exists(pressIconName))
 	{
-	    pressIcon[3] = new QPixmap();
+	    if(!pressIcon[3])
+	        pressIcon[3] = new QPixmap();
 	    pressIcon[3]->load(pressIconName);   
 	    qDebug("pressIcon[3] <- %s", pressIconName);
 	}
@@ -232,13 +247,14 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 {
     char pressIconName[MAX_PATH];
     
-    Icon[0] = new QPixmap();
-    Icon[1] = new QPixmap();
-    Icon[2] = new QPixmap();
-    Icon[3] = new QPixmap();
-   
-    
-    
+    if(!Icon[0])
+      Icon[0] = new QPixmap();
+    if(!Icon[1])
+      Icon[1] = new QPixmap();
+    if(!Icon[2])
+      Icon[2] = new QPixmap();
+    if(!Icon[3])
+      Icon[3] = new QPixmap();
   
      if (sxIcon)
     {
@@ -247,7 +263,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[0]->load(sxIcon);
 	if (QFile::exists(pressIconName))
 	{
-	    pressIcon[0] = new QPixmap(); 
+	    if(!pressIcon[0])
+	        pressIcon[0] = new QPixmap(); 
 	    pressIcon[0]->load(pressIconName);	
 	}
     }
@@ -258,7 +275,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[1]->load(dxIcon);
 	if (QFile::exists(pressIconName))
 	{
-	    pressIcon[1] = new QPixmap();
+	    if(!pressIcon[1])
+	        pressIcon[1] = new QPixmap();
 	    pressIcon[1]->load(pressIconName);	
 	}
     }     
@@ -269,8 +287,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[3]->load(centerActiveIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[3])
 	    pressIcon[3] = new QPixmap();
-	    pressIcon[3]->load(pressIconName);   	
+	  pressIcon[3]->load(pressIconName);   	
 	}
     }
        if (centerInactiveIcon)
@@ -280,8 +299,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[2]->load(centerInactiveIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[2])
 	    pressIcon[2] = new QPixmap();
-	    pressIcon[2]->load(pressIconName);   	
+	  pressIcon[2]->load(pressIconName);   	
 	}
     }
     
@@ -291,14 +311,16 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 {
     char pressIconName[MAX_PATH];
     
-    Icon[0] = new QPixmap();
-    Icon[1] = new QPixmap();
-    Icon[2] = new QPixmap();
-    Icon[3] = new QPixmap();
-    Icon[4] = new QPixmap();
-   
-    
- 
+    if(!Icon[0])
+      Icon[0] = new QPixmap();
+    if(!Icon[1])
+      Icon[1] = new QPixmap();
+    if(!Icon[2])
+      Icon[2] = new QPixmap();
+    if(!Icon[3])
+      Icon[3] = new QPixmap();
+    if(!Icon[4])
+      Icon[4] = new QPixmap();
   
      if (sxIcon)
     {
@@ -306,8 +328,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[0]->load(sxIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[0])
 	    pressIcon[0] = new QPixmap(); 
-	    pressIcon[0]->load(pressIconName);	
+	  pressIcon[0]->load(pressIconName);	
 	}
     }
      if (dxIcon)
@@ -316,8 +339,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[1]->load(dxIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[1])
 	    pressIcon[1] = new QPixmap();
-	    pressIcon[1]->load(pressIconName);	
+	  pressIcon[1]->load(pressIconName);	
 	}
     }     
        if (centerInactiveIcon)
@@ -326,8 +350,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[2]->load(centerInactiveIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[2])
 	    pressIcon[2] = new QPixmap();
-	    pressIcon[2]->load(pressIconName);   	
+	  pressIcon[2]->load(pressIconName);   	
 	}
     }
       if (centerUpIcon)
@@ -336,8 +361,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[3]->load(centerUpIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[3])
 	    pressIcon[3] = new QPixmap();
-	    pressIcon[3]->load(pressIconName);   	
+	  pressIcon[3]->load(pressIconName);   	
 	}
     }
   if (centerDownIcon)
@@ -346,8 +372,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[4]->load(centerDownIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[4])
 	    pressIcon[4] = new QPixmap();
-	    pressIcon[4]->load(pressIconName);   	
+	  pressIcon[4]->load(pressIconName);   	
 	}
     }
       
@@ -359,11 +386,12 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 {
 char pressIconName[MAX_PATH];
     
-    Icon[0] = new QPixmap();
-    Icon[1] = new QPixmap();
-    Icon[2] = new QPixmap();    
-   
-    
+    if(!Icon[0]) 
+        Icon[0] = new QPixmap();
+    if(!Icon[1])
+        Icon[1] = new QPixmap();
+    if(!Icon[2])
+        Icon[2] = new QPixmap();    
     
      if (sxIcon)
     {
@@ -371,8 +399,9 @@ char pressIconName[MAX_PATH];
 	Icon[0]->load(sxIcon);
 	if (QFile::exists(pressIconName))
 	{
-	     pressIcon[0] = new QPixmap();
-	    pressIcon[0]->load(pressIconName);	
+	  if(!pressIcon[0])
+	    pressIcon[0] = new QPixmap();
+	  pressIcon[0]->load(pressIconName);	
 	}
     }
      if (dxIcon)
@@ -381,8 +410,9 @@ char pressIconName[MAX_PATH];
 	Icon[1]->load(dxIcon);
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[1])
 	    pressIcon[1] = new QPixmap();
-	    pressIcon[1]->load(pressIconName);	
+	  pressIcon[1]->load(pressIconName);	
 	}
     }     
     if (centerInactiveIcon)
@@ -391,14 +421,16 @@ char pressIconName[MAX_PATH];
 	Icon[2]->load(centerInactiveIcon);	
 	if (QFile::exists(pressIconName))
 	{
+	  if(!pressIcon[2])
 	    pressIcon[2] = new QPixmap();
-	    pressIcon[2]->load(pressIconName);   	
+	  pressIcon[2]->load(pressIconName);   	
 	}
     } 
     if  ( (centerActiveIcon) && (number) )
      {
 	for (uchar idx=1;idx<=number;idx++)
 	{
+	  if(!Icon[2+idx])
 	    Icon[2+idx] = new QPixmap();
 	    memset(pressIconName,'\000',sizeof(pressIconName));
 	 
@@ -409,15 +441,17 @@ char pressIconName[MAX_PATH];
 	}	
     }
     else if (centerActiveIcon)
-	 {
+      {
+	   if(!Icon[3])
 	      Icon[3] = new QPixmap();
-	      Icon[3]->load(centerActiveIcon);
-	      getPressName((char*)centerActiveIcon, &pressIconName[0],sizeof(pressIconName));
-	      if (QFile::exists(pressIconName))
-	      {
-		  pressIcon[3] = new QPixmap();
-		  pressIcon[3]->load(pressIconName);   	
-	      }
+	   Icon[3]->load(centerActiveIcon);
+	   getPressName((char*)centerActiveIcon, &pressIconName[0],sizeof(pressIconName));
+	   if (QFile::exists(pressIconName))
+	     {
+	       if(!pressIcon[3])
+		 pressIcon[3] = new QPixmap();
+	       pressIcon[3]->load(pressIconName);   	
+	     }
     }
     periodo=period;
     numFrame=number;
@@ -432,8 +466,10 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 {
    char nomeFile[MAX_PATH];
 	
-    Icon[0] = new QPixmap();
-    Icon[1] = new QPixmap();
+   if(!Icon[0])
+     Icon[0] = new QPixmap();
+   if(!Icon[1])
+     Icon[1] = new QPixmap();
    
    
     if (sxIcon)
@@ -442,8 +478,9 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	getPressName((char*)sxIcon, &nomeFile[0],sizeof(nomeFile));
 	if (QFile::exists(nomeFile))
 	{
-	     pressIcon[0] = new QPixmap();
-	     pressIcon[0]->load(nomeFile);
+	  if(!pressIcon[0])
+	    pressIcon[0] = new QPixmap();
+	  pressIcon[0]->load(nomeFile);
 	 }
     }
     if (dxIcon)
@@ -452,14 +489,16 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	Icon[1]->load(dxIcon);
 	if (QFile::exists(nomeFile))
 	{
-	     pressIcon[1] = new QPixmap();
-	     pressIcon[1]->load(nomeFile);
+	  if(!pressIcon[1])
+	    pressIcon[1] = new QPixmap();
+	  pressIcon[1]->load(nomeFile);
 	 }
     }
     
-    
-    Icon[2] = new QPixmap();
-    Icon[3] = new QPixmap();
+    if(!Icon[2])
+      Icon[2] = new QPixmap();
+    if(!Icon[3])
+      Icon[3] = new QPixmap();
     memset(nomeFile,'\000',sizeof(nomeFile));
     strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
     strcat(nomeFile,"sxl0");
@@ -475,7 +514,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
  
     for (char idx=minValue;idx<=maxValue;idx+=step,idy++)
     {
-	Icon[4+idy*2]=new QPixmap();
+        if(!Icon[4+idy*2])
+	  Icon[4+idy*2]=new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
 	strncpy(nomeFile,centerActiveIcon,strstr(centerActiveIcon,".")-centerActiveIcon);
 	sprintf(&suff[0],"sxl%d",idx);
@@ -485,7 +525,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	qDebug("Lev = %d, Icon[%d] <- %s", idx, 4+idy*2, nomeFile);
 	if (inactiveLevel)
 	{
-	    Icon[22+idy*2]=new QPixmap();
+	    if(!Icon[22+idy*2])
+	      Icon[22+idy*2]=new QPixmap();
 	    memset(nomeFile,'\000',sizeof(nomeFile));
 	    strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
 	    sprintf(&suff[0],"sxl%d",idx);
@@ -497,7 +538,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
     }
     for (char idx=minValue,idy=0;idx<=maxValue;idx+=step,idy++)
     {
-	Icon[5+idy*2]=new QPixmap();
+        if(!Icon[5+idy*2])
+	  Icon[5+idy*2]=new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
 	strncpy(nomeFile,centerActiveIcon,strstr(centerActiveIcon,".")-centerActiveIcon);
 	sprintf(&suff[0],"dxl%d",idx);
@@ -507,7 +549,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	qDebug("Lev = %d, Icon[%d] <- %s", idx, 5+idy*2, nomeFile);
 	if (inactiveLevel)
 	{
-	    Icon[23+idy*2]=new QPixmap();
+	    if(!Icon[23+idy*2])
+	      Icon[23+idy*2]=new QPixmap();
 	    memset(nomeFile,'\000',sizeof(nomeFile));
 	    strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
 	    sprintf(&suff[0],"dxl%d",idx);
@@ -520,8 +563,10 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 
     if (breakIcon)
     {
-	Icon[44] = new QPixmap();
-	Icon[45] = new QPixmap();
+        if(!Icon[44])
+	    Icon[44] = new QPixmap();
+	if(!Icon[45])
+	    Icon[45] = new QPixmap();
 	memset(nomeFile,'\000',sizeof(nomeFile));
 	strncpy(nomeFile,breakIcon,strstr(breakIcon,".")-breakIcon);
 	strcat(nomeFile,"sx");

@@ -333,7 +333,7 @@ device_status_thermr::device_status_thermr() :
     device_status(THERMR)
 {
     add_var((int)device_status_thermr::STAT_INDEX,
-	    new stat_var(stat_var::STAT, 0, 0, 3, 1));
+	    new stat_var(stat_var::STAT, 0, 0, 5, 1));
     add_var((int)device_status_thermr::LOCAL_INDEX,
 	    new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
     add_var((int)device_status_thermr::SP_INDEX,

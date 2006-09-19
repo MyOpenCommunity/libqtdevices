@@ -138,6 +138,8 @@ void BtLabel::setText( const QString &text )
 	    t.prepend( "<div align=\"center\">");
 	if ( (align & WordBreak) == 0  )
 	    t.prepend( "<nobr>" );
+	if(doc)
+	  delete doc;
 	doc = new QSimpleRichText( t, font() );
     }
 #endif
@@ -162,6 +164,8 @@ void BtLabel::setPixmap( const QPixmap &pixmap )
 
     if ( !lpixmap || lpixmap->serialNumber() != pixmap.serialNumber() ) {
 	clearContents();
+	if(lpixmap)
+	  delete lpixmap;
 	lpixmap = new QPixmap( pixmap );
     }
 
@@ -178,6 +182,8 @@ void BtLabel::setPicture( const QPicture &picture )
 {
     QSize osh = sizeHint();
     clearContents();
+    if(lpicture)
+      delete lpicture;
     lpicture = new QPicture( picture );
 
     updateLabel( osh );
@@ -705,7 +711,9 @@ void BtLabel::setMovie( const QMovie& movie )
 {
     QSize osh = sizeHint();
     clearContents();
-
+    
+    if(lmovie)
+      delete lmovie;
     lmovie = new QMovie( movie );
 	lmovie->connectResize(this, SLOT(movieResized(const QSize&)));
 	lmovie->connectUpdate(this, SLOT(movieUpdated(const QRect&)));

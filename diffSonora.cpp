@@ -174,8 +174,8 @@ void diffSonora::show()
 {
      openwebnet msg_open;
      emit sendFrame("*16*53*100##"); 
-     sorgenti->draw();
-     amplificatori->draw();
+     sorgenti->forceDraw();
+     amplificatori->forceDraw();
      isVisual=1;
 
 #if 1
