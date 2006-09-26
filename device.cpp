@@ -415,8 +415,6 @@ void device::init(void)
 	    for ( QStringList::Iterator it = msgl.begin(); 
 		  it != msgl.end(); ++it ) {
 		qDebug("init message is %s", (*it).ascii());
-		// FIXME: METTI UN RITARDO E MARCA INIZIALIZZATO 
-		// SOLO QUANDO LO E`
 		if((*it) != "")
 		    emit(send_frame((char *)((*it).ascii())));
 	    }

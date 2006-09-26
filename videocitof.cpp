@@ -42,6 +42,8 @@ call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) :
 	qDebug("Bad thing, cannot create device");
 	return;
     }
+    myTimer = new QTimer(this, "idle timer");
+    connect(myTimer, SIGNAL(timeout()), this, SLOT(close()));
     // Pass incoming frames on to device
     connect(this, SIGNAL(frame_available(char *)), 
 	    station_dev, SLOT(frame_rx_handler(char *)));
@@ -66,6 +68,13 @@ void call_notifier::status_changed(QPtrList<device_status> dsl)
     emit(frame_captured(this));
 }
 
+void call_notifier::showFullScreen()
+{
+    qDebug("call_notifier::showFullScreen()");
+    QFrame::showFullScreen();
+    myTimer->start(30000, true);
+}
+
 // FIXME: direct connection ?
 void call_notifier::frame_available_handler(char *f)
 {
@@ -78,6 +87,7 @@ void call_notifier::stairlight_pressed()
     qDebug("call_notifier::stairlight_pressed()");
     if(my_station)
 	my_station->stairlight_pressed();
+    myTimer->start(30000, true);
 }
 
 void call_notifier::stairlight_released()
@@ -85,6 +95,7 @@ void call_notifier::stairlight_released()
     qDebug("call_notifier::stairlight_released()");
     if(my_station)
 	my_station->stairlight_released();
+    myTimer->start(30000);
 }
 
 void call_notifier::open_door_clicked()
@@ -92,11 +103,13 @@ void call_notifier::open_door_clicked()
     qDebug("call_notifier::open_door_clicked()");
     if(my_station)
 	my_station->open_door_clicked();
+    myTimer->start(30000);
 }
 
 void call_notifier::close()
 {
     qDebug("call_notifier::close()");
+    myTimer->stop();
     hide();
     emit(closed(this));
 }

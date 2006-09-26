@@ -35,6 +35,8 @@ class call_notifier : public QFrame {
     static const int LABEL_HEIGHT = 20;
     static const int BUTTON_DIM = 60;
     static const int LABEL_WIDTH = 180;
+    //! 30secs idle timer
+    QTimer *myTimer;
  public:
     //! Constructor
     call_notifier(QWidget *parent, char *name, postoExt *ms);
@@ -79,6 +81,8 @@ class call_notifier : public QFrame {
     void close();
     //! Received on freeze
     void freezed(bool);
+    //! Show full screen, reimplemented to restart 30secs timer
+    void showFullScreen();
  signals:
     //! A frame is available
     void frame_available(char *);

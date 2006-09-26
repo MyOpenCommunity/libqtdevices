@@ -1661,6 +1661,8 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
     stato_noto = false ;
     temp_nota = false ;
     connect(myTimer,SIGNAL(timeout()),this,SLOT(update()));
+    update_ok = false;
+    tentativi_update = 0;
     SetSeconaryText(tmp);
     connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
     // Crea o preleva il dispositivo dalla cache
@@ -1729,6 +1731,7 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	    if(tmpval == val) return;
 	    val = tmpval ;
 	    impostaAttivo((val != 0));
+	    update_ok = true;
 	    if(!val) 
 		myTimer->stop();
 	    else if(!myTimer->isActive())
@@ -1748,6 +1751,14 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 
 void attuatAutomTempNuovoF::update()
 {
+    if(!update_ok) {
+	if(tentativi_update++ > 2) {
+	    qDebug("Esauriti i tentativi di aggiornamento\n");
+	    myTimer->stop();
+	    return;
+	}
+	update_ok = false;
+    }
     openwebnet msg_open;
     char frame[100];
     sprintf(frame, "*#1*%s*2##", getAddress());
@@ -1770,6 +1781,7 @@ void attuatAutomTempNuovoF::Attiva()
     // Valore iniziale = il valore impostato
     int v = h * 3600 + m * 60 + s;
     // e programma un aggiornamento
+    tentativi_update = 1;
     myTimer->start((1000 * v) / NTIMEICONS );
     Draw();
 }
@@ -4703,7 +4715,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
     light = !strcmp(_light, "1");
     key = !strcmp(_key, "1");
     unknown = !strcmp(_unknown, "1");
-    qDebug("postoExt::postoExt()");
+    qDebug("postoExt::postoExt(), unknown = %s", _unknown);
     qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", 
 	   Icona1, Icona2, Icona3, Icona4);
     

@@ -537,6 +537,8 @@ protected slots:
  QTimer *myTimer;
  bool stato_noto;
  bool temp_nota;
+ bool update_ok;
+ int  tentativi_update;
 signals:
 //  void sendFrame(char *);           
 };
