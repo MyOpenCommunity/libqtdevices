@@ -507,6 +507,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 #endif
 				       pnt, 
 				       (char*)page_item_list_img_m->at(0)->ascii(), (char*)page_item_list_img_m->at(1)->ascii(), (char*)page_item_list_img_m->at(2)->ascii(), (char*)page_item_list_img_m->at(3)->ascii());
+			page_item_list_img_m->clear();
+			
 		    }
                     else if ( CurTagL3.startsWith("page") && CurTagL4.isEmpty() )
                     {

@@ -329,7 +329,7 @@ class device : public QObject {
  public:
     //! Constructor
     device(QString who, QString where, bool p=false, int g=-1);
-    //! Init device: send messages initializing data 
+    //! Init device: send messages initializing data
     void init();
     //! Set frame interpreter
     void set_frame_interpreter(frame_interpreter *fi);
