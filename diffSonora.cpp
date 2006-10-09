@@ -170,6 +170,12 @@ void diffSonora::gestFrame(char*frame)
     }
 }
 
+void diffSonora::freezed_handler(bool f)
+{
+    qDebug("diffSonora::freezed(%d)", f);
+    isVisual = f ? 0 : 1;
+}
+
 void diffSonora::show()
 {
      openwebnet msg_open;

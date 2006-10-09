@@ -143,6 +143,10 @@ public slots:
       \brief sets first source given address 
     */
     int setFirstSource(int addr);
+    /*! 
+      \brief sets isVisual to false and emits freezed signal
+    */
+    void freezed_handler(bool);
 protected:
   uchar numRighe,isVisual;	
   sottoMenu* sorgenti;

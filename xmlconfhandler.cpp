@@ -447,10 +447,14 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			       (page_item_id==SORG_AUX) ||
 			       (page_item_id==AMBIENTE) ||
 			       (page_item_id==INSIEME_AMBIENTI)) {
+			      qDebug("clearing descr list");
 				page_item_descr_m->clear();
+				qDebug("appending %s to descr list", 
+				       page_item_descr.ascii());
 				page_item_descr_m->append(new QString(page_item_descr));
 			    }
                             (*dm)->addItem ((char)page_item_id, page_item_descr_m,  pip/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, QColor(0,0,0))  ;
+			    qDebug("clearing descr list");
 			    page_item_descr_m->clear();
                             break;
 #endif
@@ -507,6 +511,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 #endif
 				       pnt, 
 				       (char*)page_item_list_img_m->at(0)->ascii(), (char*)page_item_list_img_m->at(1)->ascii(), (char*)page_item_list_img_m->at(2)->ascii(), (char*)page_item_list_img_m->at(3)->ascii());
+			qDebug("clearing descr list !!!\n");
+			page_item_descr_m->clear();
 			page_item_list_img_m->clear();
 			
 		    }
@@ -627,7 +633,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
                             QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
                             QObject::connect(*difSon,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-                            QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SIGNAL(freezed(bool)));
+                            QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SLOT(freezed_handler(bool)));
+			    QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SIGNAL(freezed(bool)));
                             //(*difSon)->inizializza();
                             break;
                         case DIFSON_MULTI:
@@ -1289,6 +1296,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 			qWarning("PAGEITEM:ID %d",page_item_id_m);
 		    } else if (CurTagL6.startsWith("descr")) {
 			page_item_descr_m->append(new QString(qValue));
+			qDebug("appending to descr list: ");
 			qDebug("DESCR = %s", qValue.ascii());
 		    } else if (CurTagL6.startsWith("where")) {
 			if(!CurTagL6.compare("where")) {

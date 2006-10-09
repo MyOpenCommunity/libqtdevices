@@ -55,10 +55,22 @@ dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
     descr = new QPtrList<QString>(*((QPtrList<QString> *)d));
     qDebug("dati_ampli_multi: descr = %s", descr->at(0)->ascii());
     if(t == AMPLIFICATORE) {
+	qDebug("Amplificatore (%s)", ind);
 	indirizzo = new(char[20]);
 	memcpy(indirizzo, ind, 20);
     } else {
+	qDebug("gruppo AMPLIFICATORI !!");
 	indirizzo = new QPtrList<QString>(*((QPtrList<QString> *)ind));
+	qDebug("indirizzo = %p", indirizzo);	
+	QPtrListIterator<QString> *lii =
+		new QPtrListIterator<QString>(*(QPtrList<QString> *)
+					  (indirizzo));
+	QString *bah;
+	lii->toFirst() ;
+	while ((bah = lii->current())) {
+	    qDebug("INDIRIZZO = %s", bah->ascii());
+	    ++(*lii);
+	}
     }
     strncpy(I1, _I1, sizeof(I1));
     strncpy(I2, _I2, sizeof(I2));
@@ -192,6 +204,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
     case GR_AMPLIFICATORI:
     {
 	qDebug("Gruppo amplificatori");
+	qDebug("%d elementi in descrizioni", descrizioni->count());
 	QPtrListIterator<QString> *lsi = 
 	    new QPtrListIterator<QString>(*(QPtrList<QString> *)indirizzo);
 	QString *s;
@@ -208,6 +221,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 	
     case AMPLIFICATORE:
 	qDebug("Amplificatore (%s)", (char *)indirizzo);
+	qDebug("%d elementi in descrizioni", descrizioni->count());
 	qDebug("Icone = %s - %s - %s - %s", IconaSx, IconaDx, pressedIcon,
 	       icon);
 	datimmulti->append(new dati_ampli_multi(tipo, descrizioni, 

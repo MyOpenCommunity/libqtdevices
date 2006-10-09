@@ -4888,43 +4888,35 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
 	new QPtrListIterator<dati_ampli_multi>(*la);
     lai->toFirst();
     dati_ampli_multi *am;
-    int j = 0;
     while( ( am = lai->current() ) != 0) {
 	if(am->tipo == AMPLIFICATORE) {
 	    qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
-		   (char *)am->indirizzo, (char *)am->descr->at(j)->ascii());
-	    diffson->addItem(am->tipo, (char *)am->descr->at(j)->ascii(), 
+		   (char *)am->indirizzo, am->descr->at(0)->ascii());
+	    diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
 			     (char *)am->indirizzo,
 			     am->I1, am->I2, am->I4, am->I3, am->modo);
 	} else {
 	    qDebug("Adding amplifier group");
-	    QPtrListIterator<QString> *lsi = 
-		new QPtrListIterator<QString>(*(am->descr));
+	    qDebug("indirizzo = %p", am->indirizzo);
 	    QPtrListIterator<QString> *lii =
 		new QPtrListIterator<QString>(*(QPtrList<QString> *)
-					  (am->indirizzo));
-	    QString *s, *i;
-	    while( ( s = lsi->current()) ) {
-		i = lii->current();
-		qDebug("DESCR = %s", s->ascii());
-		if(i)
-		    qDebug("INDIRIZZO = %s", i->ascii());
+					      (am->indirizzo));
+	    QString *i;
+	    lii->toFirst();
+	    while( ( i = lii->current()) ) {
 		QStringList qsl = QStringList::split(QChar(','), *i);
 		QPtrList<QString> *indirizzi = new QPtrList<QString>();
 		indirizzi->setAutoDelete(true);
 		for(int j=0; j<qsl.count(); j++)
 		    indirizzi->append(new QString(qsl[j]));
-		diffson->addItem(am->tipo, (char *)s->ascii(), 
+		diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
 				 indirizzi,
 				 am->I1, am->I2, am->I3, am->I4, am->modo);
-		++(*lsi);
 		++(*lii);
 	    }
-	    delete lsi;
 	    delete lii;
 	}
 	++(*lai);
-	j++;
     }
     delete lai;
 }
@@ -5000,31 +4992,33 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
     lai->toFirst();
     dati_ampli_multi *am;
     while( ( am = lai->current() ) != 0) {
-	qDebug("Adding amplifier group(%d)", am->tipo);
-	QPtrListIterator<QString> *lsi = 
-	  new QPtrListIterator<QString>(*(am->descr));
-	QPtrListIterator<QString> *lii =
-	    new QPtrListIterator<QString>(*(QPtrList<QString> *)
-					  (am->indirizzo));
-	QString *s, *i;
-	while( ( s = lsi->current()) ) {
-	    i = lii->current();
-	    qDebug("DESCR = %s", s->ascii());
-	    if(i)
-		qDebug("INDIRIZZO = %s", i->ascii());
-	    QStringList qsl = QStringList::split(QChar(','), *i);
-	    QPtrList<QString> *indirizzi = new QPtrList<QString>();
-	    indirizzi->setAutoDelete(true);
-	    for(int j=0; j<qsl.count(); j++)
-		indirizzi->append(new QString(qsl[j]));
-	    diffson->addItem(am->tipo, (char *)s->ascii(), 
-			     indirizzi,
-			     am->I1, am->I2, am->I3, am->I4, am->modo);
-	    ++(*lsi);
-	    ++(*lii);
+	if(am->tipo == AMPLIFICATORE) {
+	    qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
+		   (char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
+	    diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
+			     (char *)am->indirizzo,
+			     am->I1, am->I2, am->I4, am->I3, am->modo);
+	} else {
+	    qDebug("Adding amplifier group(%d)", am->tipo);
+	    qDebug("indirizzo = %p", am->indirizzo);
+	    QPtrListIterator<QString> *lii =
+		new QPtrListIterator<QString>(*(QPtrList<QString> *)
+					      (am->indirizzo));
+	    QString *i;
+	    lii->toFirst();
+	    while( ( i = lii->current()) ) {
+		QStringList qsl = QStringList::split(QChar(','), *i);
+		QPtrList<QString> *indirizzi = new QPtrList<QString>();
+		indirizzi->setAutoDelete(true);
+		for(int j=0; j<qsl.count(); j++)
+		    indirizzi->append(new QString(qsl[j]));
+		diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
+				 indirizzi,
+				 am->I1, am->I2, am->I3, am->I4, am->modo);
+		++(*lii);
+	    }
+	    delete lii;
 	}
-	delete lsi;
-	delete lii;
 	++(*lai);
     }
     delete lai;

@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: timescript.h,v 1.10 2006/09/29 06:17:59 cvs Exp $
+** $Id: timescript.h,v 1.11 2006/10/09 07:12:14 cvs Exp $
 **
 ** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
 **
