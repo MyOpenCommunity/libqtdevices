@@ -1821,6 +1821,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	}
 	elaborato = true;
 	break;
+    case 12:
     case 14:
 	sp = atoi(m.Extract_valori(0));
 	qDebug("sp = %d", sp);

@@ -1652,7 +1652,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
 	sprintf(tmp, "%d'", m);
     } else if(h < 10) {
 	// Time in hh:mm
-	sprintf(tmp, "%d:%d", h, m);
+	sprintf(tmp, "%d:%02d", h, m);
     } else {
 	// Time in hh h
 	sprintf(tmp, "%dh", h);
@@ -5028,8 +5028,8 @@ void insAmbDiffSon::Draw()
 {
     qDebug("insAmbDiffSon::Draw()");
     sxButton->setPixmap(*Icon[1]);
-    if (pressIcon[0])
-	sxButton->setPressedPixmap(*pressIcon[0]);
+    if (pressIcon[1])
+	sxButton->setPressedPixmap(*pressIcon[1]);
     BannerIcon->repaint();
     BannerIcon->setPixmap(*(Icon[0]));
     BannerIcon->repaint();

@@ -135,11 +135,23 @@ radio::radio( QWidget *parent, const char *name, const char *amb )
     }
     
     Icon->load(ICON_MANUAL_ON);
+    getPressName((char*)ICON_MANUAL_ON, &pressIconName[0],sizeof(pressIconName));
     manBut->setPixmap(*Icon);
-  
-    Icon->load(ICON_AUTO_OFF);
+    if (QFile::exists(pressIconName))
+    {
+        pressIcon->load(pressIconName);
+        manBut->setPressedPixmap(*pressIcon);
+    }
+
+    Icon->load(ICON_AUTO_ON);
+    getPressName((char*)ICON_AUTO_ON, &pressIconName[0],sizeof(pressIconName));
     autoBut->setPixmap(*Icon);
-  
+    if (QFile::exists(pressIconName))
+    {
+        pressIcon->load(pressIconName);
+        autoBut->setPressedPixmap(*pressIcon);
+    }
+
     Icon->load(ICON_UNO);
     getPressName((char*)ICON_UNO, &pressIconName[0],sizeof(pressIconName));    
     unoBut->setPixmap(*Icon);

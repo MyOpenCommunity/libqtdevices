@@ -83,6 +83,7 @@ v** Socket
     alreadyCalibrated=FALSE;
     svegliaIsOn=FALSE;
     tiempo_last_ev = 0;
+    pd_shown = false;
         
 backcol=0;
  tasti=NULL; 
@@ -448,14 +449,17 @@ void BtMain::gesScrSav()
             emit freeze(FALSE);
             bloccato=0;
             tempo1->changeInterval(2000);
+	    pd_shown = false;
             freezed(FALSE);
         }
         if  ( (tiempo>=60) && (!svegliaIsOn) && (!calibrating))
         {
+	    //qDebug("pagDefault = %p", pagDefault);
             if (pagDefault)
             {
-                if ( (pagDefault->isHidden ())/* && (scrsav->isHidden() )*/ ) 
+                if (!pd_shown) 
                 {
+		    pd_shown = true;
                     if (illumino)
                         illumino -> hide();
                     if (scenari)

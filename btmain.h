@@ -107,6 +107,7 @@ private:
     tastiera *tasti;
     bool     event_unfreeze;
     unsigned char firstTime,bloccato,backcol;
+    bool     pd_shown;
     genPage* screen;
     unsigned char tiposcreen;
     unsigned long tiempo_ev;

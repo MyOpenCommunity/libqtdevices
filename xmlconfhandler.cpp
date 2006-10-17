@@ -146,7 +146,7 @@ bool xmlconfhandler::startDocument()
     ok=0;
     hompage_isdefined=0;
     hompage_type=0;
-    hompage_id=0;
+    hompage_id=0xff;
     
     set_page_item_defaults();
 
@@ -225,9 +225,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
             {
                 if ( !CurTagL3.compare("homepage") && (CurTagL4.isEmpty()) )
                 {
-                    /*		qWarning("HOMEPAGE");
+                    		qWarning("HOMEPAGE");
                 qWarning("hompage_isdefined=%d",hompage_isdefined);
-                qWarning("hompage_id=%d",hompage_id);	*/
+                qWarning("hompage_id=%d",hompage_id);	
                     if (hompage_isdefined)
                     {
                         if (hompage_isdefined)
@@ -876,6 +876,8 @@ bool xmlconfhandler::characters( const QString & qValue)
                         (*home)->setBGColor(Background.red(),Background.green(),Background.blue());
                         (*home)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
                         QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*home,SLOT(gestFrame(char *)));
+			if((!hompage_id) && (hompage_isdefined))
+			    *pagDefault=*home;
                     }
                 
                 else if (CurTagL4.startsWith("item"))

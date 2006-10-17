@@ -39,6 +39,8 @@ diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
    //sorgenti -> setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT/numRighe);
 //   amplificatori -> setGeometry (0, MAX_HEIGHT/numRighe, MAX_WIDTH, MAX_HEIGHT- MAX_HEIGHT/numRighe );
      	
+    if(sorgenti)
+      connect(sorgenti, SIGNAL(Closed()), this, SLOT(fineVis()));
     connect(amplificatori  ,SIGNAL(Closed()),this,SLOT(fineVis()));
     BtLabel* linea = new BtLabel(this,NULL,0);
     linea->setGeometry(0,77,240,3);
@@ -143,6 +145,7 @@ void diffSonora::gestFrame(char*frame)
     emit gesFrame(frame);
     openwebnet msg_open;
     char aggiorna;
+    int w;
     
     aggiorna=0;
       
@@ -150,16 +153,35 @@ void diffSonora::gestFrame(char*frame)
    
     if (!strcmp(msg_open.Extract_chi(),"16"))
     {
+#if 0
 	if ( (! strncmp(msg_open.Extract_dove(),"100",2) ))     
+#else
+	w = strtoul(msg_open.Extract_dove(), NULL, 10);
+	if(w < 100)
+	  goto not_ours;
+	while(w >= 100)
+	  w-=100;
+	while(w >= 10)
+	  w-=10;
+#endif
 	{
 	    if ((!strcmp(msg_open.Extract_cosa(),"0")) || (!strcmp(msg_open.Extract_cosa(),"3")))
 		{
-		   sorgenti->setIndex(msg_open.Extract_dove());   
+#if 0
+		  sorgenti->setIndex(msg_open.Extract_dove());   
+#else
+		  sorgenti->setIndex((char *)QString::number(w+100, 10).ascii());
+#endif
 		   aggiorna=1;
+#if 0
 		   qDebug("accesa sorg:%s",msg_open.Extract_dove());
+#else
+		   qDebug("accesa sorg: %d", w);
+#endif
 		}	  
 	}
     }    
+    not_ours:
     if (aggiorna)
     {
 	sorgenti->draw();
@@ -174,6 +196,8 @@ void diffSonora::freezed_handler(bool f)
 {
     qDebug("diffSonora::freezed(%d)", f);
     isVisual = f ? 0 : 1;
+    if(isHidden())
+      isVisual = false;
 }
 
 void diffSonora::show()
@@ -221,6 +245,7 @@ void diffSonora::hide()
 #endif
     if (amplificatori)
 	amplificatori->setIndice(0);
+    isVisual = false;
     QWidget::hide();
 }
 
