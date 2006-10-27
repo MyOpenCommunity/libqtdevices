@@ -51,11 +51,12 @@ class openwebnet_ext : public openwebnet
     //! Returns target's extended where
     QString get_where();
     //! Returns true if frame_interpreter is a target for this message
-    bool is_target(frame_interpreter *);
+    bool is_target(frame_interpreter *, bool& request_status);
     //! As above, but receives who also (i.e. doesn't read it from fr.int)
-    bool is_target(frame_interpreter *fi, QString who);
+    bool is_target(frame_interpreter *fi, QString who, bool& request_status);
     //! As above, but discards message's where and considers wh instead
-    bool is_target(frame_interpreter *fi, QString who, QString wh);
+    bool is_target(frame_interpreter *fi, QString who, QString wh, 
+		   bool& request_status);
 };
 
 
@@ -74,7 +75,7 @@ class frame_interpreter : public QObject {
  private:
  protected:
     //! Returns true when frame is ours
-    virtual bool is_frame_ours(openwebnet_ext);
+    virtual bool is_frame_ours(openwebnet_ext, bool& request_status);
     //! Request initialization
     void request_init(device_status *);
     //! List of device_status objects to be passed on to clients
@@ -207,7 +208,7 @@ class frame_interpreter_radio_device : public frame_interpreter {
     //! Returns init message given device status
     void get_init_message(device_status *, QString&);
     //! Returns true if frame is ours
-    bool is_frame_ours(openwebnet_ext);
+    bool is_frame_ours(openwebnet_ext, bool& request_status);
  public slots:
     //! Receive a frame
     void handle_frame_handler(char *, QPtrList<device_status> *);
@@ -243,7 +244,7 @@ class frame_interpreter_doorphone_device : public frame_interpreter {
     //! Constructor
     frame_interpreter_doorphone_device(QString, bool, int);
     //! Returns true when frame is ours (reimplemented for doorphone dev.)
-    bool is_frame_ours(openwebnet_ext m);
+    bool is_frame_ours(openwebnet_ext m, bool& request_status);
     //! Returns init message given device status
     void get_init_message(device_status *, QString&);
  public slots:
@@ -261,7 +262,7 @@ class frame_interpreter_impanti_device : public frame_interpreter {
     //! Constructor
     frame_interpreter_impanti_device(QString, bool, int);
     //! Returns true when frame is ours (reimplemented for impanti dev.)
-    bool is_frame_ours(openwebnet_ext m);
+    bool is_frame_ours(openwebnet_ext m, bool& request_status);
     //! Returns init message given device status
     void get_init_message(device_status *, QString&);
  public slots:
@@ -279,7 +280,7 @@ class frame_interpreter_zonanti_device : public frame_interpreter {
     //! Constructor
     frame_interpreter_zonanti_device(QString, bool, int);
     //! Returns true when frame is ours (reimplemented for zonanti dev.)
-    bool is_frame_ours(openwebnet_ext m);
+    bool is_frame_ours(openwebnet_ext m, bool& request_status);
     //! Returns init message given device status
     void get_init_message(device_status *, QString&);
  public slots:
@@ -299,7 +300,7 @@ class frame_interpreter_thermr_device : public frame_interpreter {
     bool elaborato;
  protected:
     //! Returns true when frame is ours (reimplemented for thermr, device
-    bool is_frame_ours(openwebnet_ext);
+    bool is_frame_ours(openwebnet_ext, bool& request_status);
  public:
     //! Constructor
     frame_interpreter_thermr_device(QString, bool, int);

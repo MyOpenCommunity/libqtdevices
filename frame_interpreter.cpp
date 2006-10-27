@@ -41,6 +41,8 @@ bool openwebnet_where::amb(int& a)
 	a = 0; 
 	return true;
     }
+    //qDebug("amb(), this->ascii() = %s", ascii());
+    //qDebug("at(0) = %d, length() = %d", at(0).digitValue(), length());
     if((at(0) >= '1') && (at(0) <= '9') && length() == 1) {
 	a = QChar(at(0)) - '0';
 	return true;
@@ -68,41 +70,71 @@ openwebnet_ext::openwebnet_ext() : openwebnet()
 {
 }
 
-bool openwebnet_ext::is_target(frame_interpreter *fi, QString who)
+bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, 
+			       bool& request_status)
 {
+    request_status = false;
     if(fi->get_who() != who) return false;
     if(fi->get_pul()) return false;
-    if(gen()) return true;
+    if(gen()) {
+	qDebug("gen!!");
+	request_status = true;
+	return true;
+    }
     int addr;
-    if(pp(addr)) 
+    if(pp(addr)) {
+	qDebug("pp (%d)", addr);
 	return fi->get_where() == get_where();
+    }
     int a;
-    if(amb(a)) 
-	return a == fi->get_amb();
+    if(amb(a)) {
+	qDebug("amb(%d)", a);
+	if(a == fi->get_amb()) {
+	    request_status = true;
+	    return true;
+	}
+	return false;
+    }
     int g;
     gro(g);
-    return fi->belongs_to_group(g);
+    qDebug("gro(%d)", g);
+    // FIXME!!! : FIX belongs_to_group
+    request_status = true;
+    //return fi->belongs_to_group(g);
+    return true;
 }
 
-bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, QString wh)
+bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, QString wh,
+			       bool& request_status)
 {
+    request_status = false;
     if(fi->get_who() != who) return false;
     if(fi->get_pul()) return false;
-    if(gen()) return true;
+    if(gen()) {
+	request_status = true;
+	return true;
+    }
     int addr;
     if(pp(addr)) 
 	return fi->get_where() == wh;
     int a;
-    if(amb(a)) 
-	return a == fi->get_amb();
+    if(amb(a)) {
+	if(a == fi->get_amb()) {
+	    request_status = true;
+	    return true;
+	}
+    }
     int g;
     gro(g);
-    return fi->belongs_to_group(g);
+    // FIXME!!! : FIX belongs_to_group
+    request_status = true;
+    //return fi->belongs_to_group(g);
+    return true;
 }
 
-bool openwebnet_ext::is_target(frame_interpreter *fi)
+bool openwebnet_ext::is_target(frame_interpreter *fi, bool& request_status)
 {
-    return is_target(fi, fi->get_who());
+    return is_target(fi, fi->get_who(), request_status);
 }
 
 QString openwebnet_ext::get_where(void)
@@ -168,8 +200,11 @@ bool frame_interpreter::get_pul(void)
 
 int frame_interpreter::get_amb(void)
 {
-    int a ; openwebnet_where w(where);
-    if(w.amb(a)) return a;
+    int a ; openwebnet_where w(where.left(1));
+    if(w.amb(a)) {
+	qDebug("frame_interpreter::get_amb() returns %d", a);
+	return a;
+    }
     return -1;
 }
 
@@ -181,13 +216,13 @@ bool frame_interpreter::belongs_to_group(int g)
     return (group & (1 << g));
 }
 
-bool frame_interpreter::is_frame_ours(openwebnet_ext m)
+bool frame_interpreter::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
     qDebug("frame_interpreter::is_frame_ours");
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     qDebug("msg who = %s, msg where = %s", m.Extract_chi(), 
 	   m.get_where().ascii());
-    bool out = m.is_target(this);
+    bool out = m.is_target(this, request_status);
     if(out) 
 	qDebug("FRAME IS OURS !!");
     return out;
@@ -265,11 +300,12 @@ void frame_interpreter_lights::get_init_message(device_status *s, QString& out)
 void frame_interpreter_lights::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_lights::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     // Walk through list of device_status' and pass frame to relevant 
@@ -280,28 +316,37 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::LIGHTS:
-	    qDebug("**** LIGHTS *****");
-	    handle_frame(msg_open, (device_status_light *)ds);
-	    break;
-	case device_status::DIMMER:
-	    qDebug("**** DIMMER *****");
-	    handle_frame(msg_open, (device_status_dimmer *)ds);
-	    break;
-	case device_status::DIMMER100:
-	    qDebug("**** DIMMER100 *****");
-	    handle_frame(msg_open, (device_status_dimmer100 *)ds);
-	    break;
-	case device_status::NEWTIMED:
-	    qDebug("**** NEWTIMED *****");
-	    handle_frame(msg_open, (device_status_new_timed *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    // Frame could be ours, but we need to check device status 
+	    // and see if it really changed
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::LIGHTS:
+		qDebug("**** LIGHTS *****");
+		handle_frame(msg_open, (device_status_light *)ds);
+		break;
+	    case device_status::DIMMER:
+		qDebug("**** DIMMER *****");
+		handle_frame(msg_open, (device_status_dimmer *)ds);
+		break;
+	    case device_status::DIMMER100:
+		qDebug("**** DIMMER100 *****");
+		handle_frame(msg_open, (device_status_dimmer100 *)ds);
+		break;
+	    case device_status::NEWTIMED:
+		qDebug("**** NEWTIMED *****");
+		handle_frame(msg_open, (device_status_new_timed *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }
     if(!evt_list.isEmpty()) {
@@ -890,11 +935,12 @@ set_status(device_status_temperature_probe *ds, int t)
 void frame_interpreter_temperature_probe::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status = false;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_temperature::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -902,8 +948,14 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     dsi->toFirst();
     evt_list.clear();
     device_status *ds = dsi->current();
+    if(request_status) {
+	// Frame could be ours, but we need to check device status 
+	// and see if it really changed
+	request_init(ds);
+	goto end;
+    }
     // Just one device status at the moment
-     if(msg_open.IsMeasureFrame()) {
+    if(msg_open.IsMeasureFrame()) {
 	// *#4*where*what*???##
 	int code = atoi(msg_open.Extract_grandezza());
 	switch(code) {
@@ -919,6 +971,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	}
      } else
 	 qDebug("unknown temperature frame");
+ end:
      if(!evt_list.isEmpty())
 	emit(frame_event(evt_list));
      delete dsi;
@@ -973,11 +1026,12 @@ set_status(device_status_autom *ds, int t)
 void frame_interpreter_autom::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_autom::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -985,10 +1039,17 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     dsi->toFirst();
     evt_list.clear();
     device_status *ds = dsi->current();
-    int cosa = atoi(msg_open.Extract_cosa());
-    set_status((device_status_autom *)ds, cosa);
-    if(!evt_list.isEmpty())
-	emit(frame_event(evt_list));
+    if(request_status) {
+	request_init(ds);
+	goto end;
+    }
+    {
+	int cosa = atoi(msg_open.Extract_cosa());
+	set_status((device_status_autom *)ds, cosa);
+	if(!evt_list.isEmpty())
+	    emit(frame_event(evt_list));
+    }
+ end:
     delete dsi;
 }
 
@@ -1108,11 +1169,12 @@ void frame_interpreter_sound_device::handle_frame(openwebnet_ext m,
 void frame_interpreter_sound_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status = false;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_sound_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -1121,15 +1183,22 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::AMPLIFIER:
-	    handle_frame(msg_open, (device_status_amplifier *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::AMPLIFIER:
+		handle_frame(msg_open, (device_status_amplifier *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }    
     if(!evt_list.isEmpty())
@@ -1153,11 +1222,12 @@ get_init_message(device_status *ds, QString& out)
 void frame_interpreter_sound_matr_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status = false;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_sound_matr_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -1166,15 +1236,22 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::SOUNDMATR:
-	    handle_frame(msg_open, (device_status_sound_matr *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::SOUNDMATR:
+		handle_frame(msg_open, (device_status_sound_matr *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }    
     if(!evt_list.isEmpty())
@@ -1239,12 +1316,15 @@ get_init_message(device_status *s, QString& out)
     out = head + where + what + end;
 }
 
-bool frame_interpreter_radio_device::is_frame_ours(openwebnet_ext m)
+bool frame_interpreter_radio_device::is_frame_ours(openwebnet_ext m, 
+						   bool& request_status)
 {
     qDebug("frame_interpreter_radio_device::is_frame_ours");
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     qDebug("msg who = %s, msg where = %s", m.Extract_chi(), 
 	   m.get_where().ascii());
+    if(strcmp(who.ascii(), m.Extract_chi()))
+      return false;
     QString w = m.get_where();
     // Consider only "least significant part" of where, here
     int wh = w.toInt() ;
@@ -1252,7 +1332,8 @@ bool frame_interpreter_radio_device::is_frame_ours(openwebnet_ext m)
 	wh -= 100;
     while(wh >= 10)
 	wh -= 10;
-    bool out = m.is_target(this, get_who(), QString::number(wh, 10));
+    bool out = m.is_target(this, get_who(), QString::number(wh, 10), 
+			   request_status);
     if(out) 
 	qDebug("FRAME IS OURS !!");
     return out;
@@ -1320,11 +1401,12 @@ void frame_interpreter_radio_device::handle_frame(openwebnet_ext m,
 void frame_interpreter_radio_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status = false;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_radio_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -1333,15 +1415,22 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::RADIO:
-	    handle_frame(msg_open, (device_status_radio *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::RADIO:
+		handle_frame(msg_open, (device_status_radio *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }    
     if(!evt_list.isEmpty())
@@ -1368,8 +1457,10 @@ get_init_message(device_status *s, QString& out)
     out = QString("");
 }
 
-bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet_ext m)
+bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet_ext m, 
+						       bool& request_status)
 {
+    request_status = false;
     qDebug("frame_interpreter_doorphone_device::is_frame_ours");
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     char *c = m.Extract_chi();
@@ -1420,12 +1511,13 @@ handle_frame(openwebnet_ext m, device_status_doorphone *ds)
 void frame_interpreter_doorphone_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status = false;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_doorphone_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
 #if 1
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open)) {
+    if(!is_frame_ours(msg_open, request_status)) {
 	// Discard frame if not ours
 	qDebug("discarding frame");
 	return;
@@ -1446,15 +1538,22 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::DOORPHONE:
-	    handle_frame(msg_open, (device_status_doorphone *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::DOORPHONE:
+		handle_frame(msg_open, (device_status_doorphone *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }    
     if(!evt_list.isEmpty())
@@ -1480,8 +1579,11 @@ get_init_message(device_status *s, QString& out)
     out = QString("*#5*0##");
 }
 
-bool frame_interpreter_impanti_device::is_frame_ours(openwebnet_ext m)
+bool frame_interpreter_impanti_device::is_frame_ours(openwebnet_ext m, 
+						     bool& request_status)
 {
+    // FIXME: IS THIS OK ?
+    request_status = false;
     qDebug("frame_interpreter_impanti_device::is_frame_ours");
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     char *c = m.Extract_chi();
@@ -1523,11 +1625,12 @@ handle_frame(openwebnet_ext m, device_status_impanti *ds)
 void frame_interpreter_impanti_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_impanti_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -1536,15 +1639,22 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::IMPANTI:
-	    handle_frame(msg_open, (device_status_impanti *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::IMPANTI:
+		handle_frame(msg_open, (device_status_impanti *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }    
     if(!evt_list.isEmpty())
@@ -1572,8 +1682,11 @@ get_init_message(device_status *s, QString& out)
     out = head + where + end;
 }
 
-bool frame_interpreter_zonanti_device::is_frame_ours(openwebnet_ext m)
+bool frame_interpreter_zonanti_device::is_frame_ours(openwebnet_ext m,
+						     bool& request_status)
 {
+    // FIXME: IS THIS OK ?
+    request_status = false;
     qDebug("frame_interpreter_impanti_device::is_frame_ours");
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     char *c = m.Extract_chi();
@@ -1617,11 +1730,12 @@ handle_frame(openwebnet_ext m, device_status_zonanti *ds)
 void frame_interpreter_zonanti_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status = false;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_zonanti_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -1630,15 +1744,22 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::ZONANTI:
-	    handle_frame(msg_open, (device_status_zonanti *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::ZONANTI:
+		handle_frame(msg_open, (device_status_zonanti *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }    
     if(!evt_list.isEmpty())
@@ -1658,8 +1779,11 @@ frame_interpreter_thermr_device(QString w, bool p, int g) :
 	   "frame_interpreter_thermr_device()");
 }
 
-bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m)
+bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, 
+						    bool& request_status)
 {
+    // FIXME: IS THIS OK ?
+    request_status = false;
     if (strcmp(m.Extract_chi(),"4")) return false;
     char dove[30];
     strcpy(dove, m.Extract_dove());
@@ -1871,11 +1995,12 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
 void frame_interpreter_thermr_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_thermr_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     elaborato = false;
@@ -1885,18 +2010,25 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::THERMR:
-	    handle_frame(msg_open, (device_status_thermr *)ds);
-	    break;
-	case device_status::TEMPERATURE_PROBE:
-	    handle_frame(msg_open, (device_status_temperature_probe *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::THERMR:
+		handle_frame(msg_open, (device_status_thermr *)ds);
+		break;
+	    case device_status::TEMPERATURE_PROBE:
+		handle_frame(msg_open, (device_status_temperature_probe *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	if(elaborato)
 	    break;
 	++(*dsi);
@@ -1923,8 +2055,10 @@ frame_interpreter_modscen_device(QString w, bool p, int g) :
 
 #if 0
 // FIXME: CHECK WHETHER THIS IS NEEDED OR NOT
-bool frame_interpreter_modscen_device::is_frame_ours(openwebnet_ext m)
+bool frame_interpreter_modscen_device::is_frame_ours(openwebnet_ext m,
+						     bool& request_status)
 {
+    request_status = false;
     if (strcmp(m.Extract_chi(),"0")) return false;
 
 }
@@ -1963,11 +2097,12 @@ handle_frame(openwebnet_ext m, device_status_modscen *ds)
 void frame_interpreter_modscen_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
+    bool request_status = false;
     openwebnet_ext msg_open;
     qDebug("frame_interpreter_modscen_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open))
+    if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;
     QPtrListIterator<device_status> *dsi = 
@@ -1976,15 +2111,22 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     device_status *ds;
     evt_list.clear();
     while( ( ds = dsi->current() ) != 0) {
-	device_status::type type = ds->get_type();
-	switch (type) {
-	case device_status::MODSCEN:
-	    handle_frame(msg_open, (device_status_modscen *)ds);
-	    break;
-	default:
-	    // Do nothing
-	    break;
+	if(request_status) {
+	    request_init(ds);
+	    goto next;
 	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::MODSCEN:
+		handle_frame(msg_open, (device_status_modscen *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
 	++(*dsi);
     }    
     if(!evt_list.isEmpty())
