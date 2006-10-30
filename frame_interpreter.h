@@ -26,11 +26,15 @@ class openwebnet_where : public QString
     //! Returns true if where is a point to point one, outputs address
     bool pp(int& addr);
     //! Returns true if where is a general one
-    bool gen();
+    bool gen(int& l, int& i);
     //! Returns true if where is an amb. one. Outputs amb number
-    bool amb(int& a);
+    bool amb(int& a, int&l, int& i);
     //! Returns true if where is a gro. one. Outputs gro number
     bool gro(int& g);
+    //! Returns level
+    void lev(int& l);
+    //! Returns interface
+    void interf(int& l);
 };
 
 
@@ -40,10 +44,10 @@ class openwebnet_ext : public openwebnet
  public:
     //! Constructor
     openwebnet_ext();
-    //! Returns true if message is a general one
-    bool gen();
-    //! Returns true if message is an ambient one. Outputs amb. number
-    bool amb(int& a);
+    //! Returns true if message is a general one. Also sets level and interf.
+    bool gen(int& l, int& i);
+    //! Returns true if message is an ambient one. Outputs amb. number, lev and interf.
+    bool amb(int& a, int& l, int& i);
     //! Returns true if message is a group one. Outputs gr. number
     bool gro(int& g);
     //! Returns true if message is a point-to-point one. Outputs address
@@ -91,6 +95,10 @@ class frame_interpreter : public QObject {
     bool get_pul(void);
     //! Returns group mask
     int get_group(void);
+    //! Returns level
+    int get_lev(void);
+    //! Returns interface
+    int get_interface(void);
     //! Returns init messages given device status
     virtual void get_init_messages(device_status *, QStringList&);
     //! Returns single init message

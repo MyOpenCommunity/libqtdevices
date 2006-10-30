@@ -18,37 +18,73 @@ openwebnet_where::openwebnet_where(QString s) : QString(s)
 {
 }
 
+void openwebnet_where::lev(int& l)
+{
+    // Look for # from position 1
+    int i = find('#', 1);
+    l = i>=0 ? at(i + 1).digitValue() : 3;
+    qDebug("*** level is %d", l);
+}
+
+void openwebnet_where::interf(int& i)
+{
+    //  Look for # from position 1
+    int j = find('#', 1);
+    if(j<0) {
+	i = -1;
+	return;
+    }
+    int k = find('#', j+1);
+    i = k>=0 ? right(length() - k - 1).toInt() : -1;
+    qDebug("*** interface is %d", i);
+}
+
 bool openwebnet_where::pp(int& addr)
 {
     int trash;
-    if(gen() || amb(trash) || gro(trash))
+    if(gen(trash, trash) || amb(trash, trash, trash) || gro(trash))
 	return false;
     // Check this
     addr = strtoul(ascii(), NULL, 10);
     return true;
 }
 
-bool openwebnet_where::gen(void)
+bool openwebnet_where::gen(int& l, int& i)
 {
-    return (at(0)=='0' && length() == 1) ||
-	(at(0)=='0' && length() >= 3 && length() <= 6);
+    l = -1;
+    if((at(0)=='0' && length() == 1) || 
+       (at(0)=='0' && length() >= 3 && length() <= 6)) {
+	lev(l);
+	interf(i);
+	return true;
+    }
+    return false;
 }
-
-bool openwebnet_where::amb(int& a)
+bool openwebnet_where::amb(int& a, int& l, int& i)
 {
+    qDebug("openwebnet_where:amb. Where is %s", ascii());
     if(*this == "00") { 
 	// Diagnostic messages
 	a = 0; 
+	lev(l);
+	interf(i);
+	qDebug("amb00 !! (%d, %d)", l, i);
 	return true;
     }
     //qDebug("amb(), this->ascii() = %s", ascii());
     //qDebug("at(0) = %d, length() = %d", at(0).digitValue(), length());
     if((at(0) >= '1') && (at(0) <= '9') && length() == 1) {
 	a = QChar(at(0)) - '0';
+	l = 3;
+	i = -1;
+	qDebug("amb ! (%d, %d, %d)", a, l, i);
 	return true;
     }
     if((at(0) >= '1') && (at(0) <= '9') && (at(1) == '#')) {
 	a = QChar(at(0)) - '0';
+	lev(l);
+	interf(i);
+	qDebug("amb !! (%d, %d, %d)", a, l, i);
 	return true;
     }
     return false;
@@ -76,10 +112,15 @@ bool openwebnet_ext::is_target(frame_interpreter *fi, QString who,
     request_status = false;
     if(fi->get_who() != who) return false;
     if(fi->get_pul()) return false;
-    if(gen()) {
+    int l = 0, i = 0;
+    if(gen(l, i)) {
 	qDebug("gen!!");
-	request_status = true;
-	return true;
+	if((l == 3 && l == fi->get_lev()) || 
+	   ((l == 4) && fi->get_lev() == 4 && i == fi->get_interface())) {
+	    request_status = true;
+	    return true;
+	} else
+	    return false;
     }
     int addr;
     if(pp(addr)) {
@@ -87,9 +128,10 @@ bool openwebnet_ext::is_target(frame_interpreter *fi, QString who,
 	return fi->get_where() == get_where();
     }
     int a;
-    if(amb(a)) {
+    if(amb(a, l, i)) {
 	qDebug("amb(%d)", a);
-	if(a == fi->get_amb()) {
+	if(((l == 3 && l == fi->get_lev() && a == fi->get_amb()) || 
+	    (l == 4 && a == fi->get_amb() && i == fi->get_interface()))) {
 	    request_status = true;
 	    return true;
 	}
@@ -99,9 +141,8 @@ bool openwebnet_ext::is_target(frame_interpreter *fi, QString who,
     gro(g);
     qDebug("gro(%d)", g);
     // FIXME!!! : FIX belongs_to_group
-    request_status = true;
-    //return fi->belongs_to_group(g);
-    return true;
+    //request_status = true;
+    return fi->belongs_to_group(g);
 }
 
 bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, QString wh,
@@ -110,16 +151,20 @@ bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, QString wh,
     request_status = false;
     if(fi->get_who() != who) return false;
     if(fi->get_pul()) return false;
-    if(gen()) {
-	request_status = true;
+    int l, i;
+    if(gen(l, i)) {
+	if((l == 3 && l == fi->get_lev()) || ((l == 4) && fi->get_lev() == 4 && 
+			fi->get_interface() == i))
+	    request_status = true;
 	return true;
     }
     int addr;
     if(pp(addr)) 
 	return fi->get_where() == wh;
     int a;
-    if(amb(a)) {
-	if(a == fi->get_amb()) {
+    if(amb(a, l, i)) {
+	if((l == 3 && l == fi->get_lev() && a == fi->get_amb()) ||
+	   (l == 4 && a == fi->get_amb() && i == fi->get_interface())) {
 	    request_status = true;
 	    return true;
 	}
@@ -146,16 +191,16 @@ QString openwebnet_ext::get_where(void)
 
 
 // Private methods
-bool openwebnet_ext::gen()
+bool openwebnet_ext::gen(int& l, int& i)
 {
     openwebnet_where w(get_where());
-    return w.gen();
+    return w.gen(l, i);
 }
 
-bool openwebnet_ext::amb(int& a)
+bool openwebnet_ext::amb(int& a, int& l, int& i)
 {
     openwebnet_where w(get_where());
-    return w.amb(a);
+    return w.amb(a, l, i);
 }
 
 bool openwebnet_ext::gro(int& g)
@@ -200,12 +245,34 @@ bool frame_interpreter::get_pul(void)
 
 int frame_interpreter::get_amb(void)
 {
-    int a ; openwebnet_where w(where.left(1));
-    if(w.amb(a)) {
-	qDebug("frame_interpreter::get_amb() returns %d", a);
+    qDebug("frame_interpreter::get_amb");
+    int a, l, i, trash ;
+    openwebnet_where w(where);
+    if(where == "00") {
+	w.amb(a, l, i);
 	return a;
     }
-    return -1;
+    if(w.gro(trash))
+	return -1;
+    if(w.gen(l, i))
+	return -1;
+    return where.at(0).digitValue();
+}
+
+int frame_interpreter::get_lev(void)
+{
+    int l ;
+    openwebnet_where w(where);
+    w.lev(l);
+    return l;
+}
+
+int frame_interpreter::get_interface(void)
+{
+    int i;
+    openwebnet_where w(where);
+    w.interf(i);
+    return i;
 }
 
 bool frame_interpreter::belongs_to_group(int g)
@@ -1588,7 +1655,8 @@ bool frame_interpreter_impanti_device::is_frame_ours(openwebnet_ext m,
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     char *c = m.Extract_chi();
     qDebug("msg who = %s, msg where = %s", c, m.Extract_dove());
-    return ((QString(c) == who) && m.gen());
+    int l, i;
+    return ((QString(c) == who) && m.gen(l, i));
 }
 
 // Private methods
