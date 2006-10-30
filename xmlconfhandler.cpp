@@ -8,6 +8,7 @@
 **
 ****************************************************************/
 
+#include <qobject.h>
 
 #include "xmlconfhandler.h"
 #include "main.h"
@@ -69,6 +70,8 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu*
     page_item_descr_m = new QPtrList<QString>;
     page_item_unknown = "";
     //qDebug("scello3 %d",bg);
+    // Start counting for wd refresh
+    wdtime.start();
 }
 
 /*******************************************
@@ -215,6 +218,14 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 *******************************************/
 bool xmlconfhandler::endElement( const QString&, const QString&, const QString& )
 {
+  {
+    if(wdtime.elapsed() > 1000) {
+      wdtime.restart();
+      qDebug("Invoking rearmWDT()");
+      rearmWDT();
+    }
+  }
+
     if (!car)
         characters( QString("\000"));        // se ho un tag vuoto riempio con '\000' il suo campo 
     

@@ -146,6 +146,8 @@ private:
     BtMain * BtM;
     Client * client_comandi;
     Client *  client_monitor; 
+  // For watchdog refresh
+  QTime wdtime;
 };                   
 
 
