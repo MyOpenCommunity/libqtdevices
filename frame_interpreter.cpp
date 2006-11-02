@@ -185,7 +185,7 @@ bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, QString wh,
 
 bool openwebnet_ext::is_target(frame_interpreter *fi, bool& request_status)
 {
-    return is_target(fi, fi->get_who(), request_status);
+    return is_target(fi, QString(Extract_chi()), request_status);
 }
 
 QString openwebnet_ext::get_where(void)
