@@ -99,6 +99,11 @@ bool openwebnet_where::gro(int& g)
     return false;
 }
 
+bool openwebnet_where::extended(void)
+{
+    return find('#', 1) >= 0;
+}
+
 // Openwebnet extended class implementation
 // Public methods
 
@@ -115,7 +120,8 @@ bool openwebnet_ext::is_target(frame_interpreter *fi, QString who,
     int l = 0, i = 0;
     if(gen(l, i)) {
 	qDebug("gen!!");
-	if((l == 3 && l == fi->get_lev()) || 
+	if((!extended() && l == 3) ||
+	   (extended() && l == 3 && l == fi->get_lev()) || 
 	   ((l == 4) && fi->get_lev() == 4 && i == fi->get_interface())) {
 	    request_status = true;
 	    return true;
@@ -213,6 +219,12 @@ bool openwebnet_ext::pp(int& addr)
 {
     openwebnet_where w(get_where());
     return w.pp(addr);
+}
+
+bool openwebnet_ext::extended(void)
+{
+    openwebnet_where w(get_where());
+    return w.extended();
 }
 
 // Generic frame interpreter

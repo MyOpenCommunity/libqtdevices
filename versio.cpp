@@ -42,7 +42,8 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
     
 
      datiGen->setLineWidth(3);
-     datiGen->setText("H/L/N/NT4684");     
+     //datiGen->setText(" H/L/N/NT4684");     
+     datiGen->setText(model.ascii());
 //     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");       
      
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -110,7 +111,7 @@ void versio::gestFrame(char* frame)
 	datiGen->setFont( QFont( "helvetica", 14, QFont::Bold) );
 	datiGen-> setIndent(15);
 	datiGen->setAlignment(AlignLeft|AlignTop);    
-	sprintf(&scritta[100], "art. H/L/N/NT4684\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d\nT.S. n. %d", vers, release, build, pic_version, pic_release, pic_build, hw,indDisp);
+	sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d\nT.S. n. %d", model.ascii(), vers, release, build, pic_version, pic_release, pic_build, hw,indDisp);
 	
 	datiGen->setText(&scritta[100]);   
         qDebug("setta scritte versio");
@@ -132,4 +133,10 @@ void versio::inizializza()
 void versio::setAddr(int a)
 {
     indDisp=a;
+}
+
+void versio::setModel(const char *m)
+{
+    model = QString(m);
+    datiGen->setText(model.ascii());
 }

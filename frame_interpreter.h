@@ -35,6 +35,8 @@ class openwebnet_where : public QString
     void lev(int& l);
     //! Returns interface
     void interf(int& l);
+    //! Returns true if where is extended
+    bool extended(void);
 };
 
 
@@ -61,6 +63,8 @@ class openwebnet_ext : public openwebnet
     //! As above, but discards message's where and considers wh instead
     bool is_target(frame_interpreter *fi, QString who, QString wh, 
 		   bool& request_status);
+    //! Returns true if message is extended
+    bool extended(void);
 };
 
 

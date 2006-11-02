@@ -47,6 +47,10 @@ public:
   \brief Sets the serial number of the device among all the TouchScreens installed in the system
 */        
      void 	setAddr(int);
+/*!
+  \brief Sets model string
+*/
+     void   setModel(const char *);
 
 public slots:
 /*!
@@ -66,6 +70,7 @@ private:
      unsigned char pic_release;
      unsigned char pic_build;
      unsigned char hw;
+     QString model;
      BtLabel*datiGen, *bticino;
      int indDisp;
 };

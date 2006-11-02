@@ -1374,6 +1374,8 @@ bool xmlconfhandler::characters( const QString & qValue)
                                     tipoData=qValue.toInt( &ok, 10 );//FORMATO DATA
                                 }
                         }
+		if (!CurTagL4.compare("modello"))
+		    datiGen->setModel(qValue.ascii());
             }
         }
     } // if (!CurTagL1.startsWith("configuratore"))
