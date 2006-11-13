@@ -394,10 +394,19 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     dsi->toFirst();
     device_status *ds;
     evt_list.clear();
+    bool light_requested = false;
     while( ( ds = dsi->current() ) != 0) {
 	if(request_status) {
 	    // Frame could be ours, but we need to check device status 
 	    // and see if it really changed
+	    // Lights and old dimmers have the same status request message
+	    // Just avoid sending the same request twice
+	    if((ds->get_type() == device_status::LIGHTS) ||
+	       (ds->get_type() == device_status::DIMMER)) {
+		if(light_requested)
+		    goto next;
+		light_requested = true;
+	    }
 	    request_init(ds);
 	    goto next;
 	}

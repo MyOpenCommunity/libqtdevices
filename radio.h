@@ -196,6 +196,10 @@ public slots:
   \brief At the end of a manual search ask the frequency tuned to the tuner to align to the visualized frequency
 */                 
     void verTas();
+    /*!
+      \brief Disables/enables everything
+    */
+    void freezed(bool);
 
 private:
     float	frequenza;

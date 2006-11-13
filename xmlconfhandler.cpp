@@ -665,6 +665,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*dm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
                             QObject::connect(*dm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SIGNAL(freezed(bool)));
+			    QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SLOT(freezed_handler(bool)));
                             //(*difSon)->inizializza();
                             break;
                         case SCENARI:

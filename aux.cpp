@@ -135,3 +135,10 @@ char* aux::getName()
     return &nome[0];
 }
 #endif
+
+void aux::freezed(bool f)
+{
+  qDebug("aux::freezed()");
+  // Disable aux and all of its children
+  setDisabled(f);
+}

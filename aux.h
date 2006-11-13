@@ -86,6 +86,10 @@ public slots:
   \brief Shows the aux details page 
 */             
     void showAux();
+ /*!
+      \brief Disables/enables everything
+    */
+    void freezed(bool);
 private:
     char        amb[80];
     char 	nome[15];

@@ -101,6 +101,9 @@ diffmulti::diffmulti( QWidget *parent, const char *name, uchar navBarMode,int wi
     dslist = new QPtrList<diffSonora>;
     dslist->setAutoDelete(true);
     matr = btouch_device_cache.get_sound_matr_device();
+    connect(sorgenti, SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
+    connect(this, SIGNAL(frez(bool)), sorgenti, SIGNAL(freezed(bool)));
+
     // Get status changed events back
     connect(matr, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
@@ -152,6 +155,10 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 		this, SLOT(ds_closed(diffSonora*)));
 	connect(ds, SIGNAL(closed(diffSonora*)), 
 		this, SIGNAL(dsClosed()));
+	QObject::connect(ds,SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
+	QObject::connect(this,SIGNAL(frez(bool)), ds, 
+			 SLOT(freezed_handler(bool)));
+	QObject::connect(this,SIGNAL(frez(bool)), ds, SIGNAL(freezed(bool)));
 	ds->draw();
 	banner *b;
 	if(tipo == AMBIENTE) {
@@ -443,6 +450,12 @@ void diffmulti::status_changed(QPtrList<device_status> sl)
 	++(*dsi);
     }
     delete dsi;
+}
+
+void diffmulti::freezed_handler(bool f)
+{
+    qDebug("diffmulti::freezed(%d)", f);
+    sottoMenu::freezed(f);
 }
 
 // contdiff implementation

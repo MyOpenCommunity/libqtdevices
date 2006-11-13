@@ -90,9 +90,14 @@ class diffmulti : public sottoMenu {
       void hide();
       void show();
       void status_changed(QPtrList<device_status>);
+      /*! 
+      \brief sets isVisual to false and emits freezed signal
+      */
+    void freezed_handler(bool);
  signals:
       void actSrcChanged(int, int);
       void dsClosed();
+      void freezed(bool);
  private:
       QPtrList<diffSonora> *dslist;
       QPtrList<dati_ampli_multi> *datimmulti;

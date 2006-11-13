@@ -1611,7 +1611,7 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 	sprintf(tempo_display, "%d'", mm);
     } else if(hh < 10) {
 	// Time in hh:mm
-	sprintf(tempo_display, "%d:%d", hh, mm);
+	sprintf(tempo_display, "%d:%02d", hh, mm);
     } else {
 	// Time in hh h
 	sprintf(tempo_display, "%dh", hh);
@@ -2346,6 +2346,8 @@ sorgente::sorgente( QWidget *parent,const char *name,char* indirizzo, bool vecch
 	myAux = new aux(NULL, name, ambdescr);
 	myAux->setBGColor(parentWidget(TRUE)->backgroundColor() );
 	myAux->setFGColor(parentWidget(TRUE)->foregroundColor() );
+	// Get freezed events
+	connect(parent, SIGNAL(frez(bool)), myAux, SLOT(freezed(bool)));
     }
 }
 
@@ -2443,6 +2445,9 @@ banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, 
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
+
+    // Get freezed events
+    connect(parent, SIGNAL(frez(bool)), myRadio, SLOT(freezed(bool)));
 
 }
 
@@ -4804,7 +4809,7 @@ void postoExt::stairlight_pressed(void)
     openwebnet msg_open;
     msg_open.CreateNullMsgOpen();  
     char tmp[100];
-    sprintf(tmp, "*6*11*%s##", where.ascii());
+    sprintf(tmp, "*6*12*%s##", where.ascii());
     msg_open.CreateMsgOpen(tmp, strlen(tmp));    emit sendFrame(msg_open.frame_open);   
 }
 
@@ -4814,7 +4819,7 @@ void postoExt::stairlight_released(void)
     openwebnet msg_open;
     msg_open.CreateNullMsgOpen();  
     char tmp[100];
-    sprintf(tmp, "*6*12*%s##", where.ascii());
+    sprintf(tmp, "*6*11*%s##", where.ascii());
     msg_open.CreateMsgOpen(tmp, strlen(tmp));
     emit sendFrame(msg_open.frame_open);   
 }

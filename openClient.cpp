@@ -83,7 +83,8 @@ void Client::ApriInviaFrameChiudi(char* frame)
     }
     sendToServer(frame);
     qDebug("invio: %s",frame);
-    
+
+#if 0
     openwebnet msg_open;
     msg_open.CreateMsgOpen(frame,strlen(frame));	  
     if ( (!strcmp(msg_open.Extract_chi(),"1")) || (!strcmp(msg_open.Extract_chi(),"2")) )
@@ -91,7 +92,8 @@ void Client::ApriInviaFrameChiudi(char* frame)
 	QString s=msg_open.Extract_dove();
 	if (s.length()==1) 
 	    emit(frameToAutoread(msg_open.frame_open));
-    }    
+    }
+#endif    
 }
 
 void Client::ApriInviaFrameChiudiw(char *frame)

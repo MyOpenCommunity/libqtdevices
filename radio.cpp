@@ -475,3 +475,10 @@ void radio::verTas()
     if ( (!aumBut->isDown()) && (!decBut->isDown()) )
 	emit (richFreq());
 }
+
+void radio::freezed(bool f)
+{
+  qDebug("radio::freezed()");
+  // Disable radio and all of its children
+  setDisabled(f);
+}
