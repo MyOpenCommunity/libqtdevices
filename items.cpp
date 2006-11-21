@@ -891,6 +891,7 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
 	    ds->read(device_status_autom::STAT_INDEX, curr_status);
 	    v = curr_status.get_val();
 	    qDebug("status = %d", v);
+	    qDebug("isActive = %d", isActive());
 	    switch(v) {
 	    case 0:
 		if (isActive()) {
@@ -899,24 +900,32 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
 		    aggiorna=1;
 		    SetIcons((uchar)0,nomeFile1 );
                     SetIcons((uchar)1,nomeFile2 );
+		    sxButton->setEnabled(1);
+		    dxButton->setEnabled(1);
                 }
 		break;
 	    case 1:
-		if (!isActive()) {
+		if (!isActive() || (isActive() == 2)) {
                     impostaAttivo(1);
                     dorunning=0;
                     uprunning=1;
                     aggiorna=1;
                     SetIcons((uchar)0,nomeFile3 );
+		    SetIcons((uchar)1,nomeFile2 );
+		    dxButton->setDisabled(1);
+		    sxButton->setEnabled(1);
                 }
 		break;
 	    case 2:
-		if (!isActive()) {
+		if (!isActive() || (isActive() == 1)) {
                     impostaAttivo(2);
                     dorunning=1;
                     uprunning=0;
                     aggiorna=1;
+		    SetIcons((uchar)0,nomeFile1 );
                     SetIcons((uchar)1,nomeFile3 );
+		    sxButton->setDisabled(1);
+		    dxButton->setEnabled(1);
                 }
 		break;
 	    default:
@@ -1114,24 +1123,32 @@ void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
 		    aggiorna=1;
 		    SetIcons((uchar)0,nomeFile1 );
                     SetIcons((uchar)1,nomeFile2 );
+		    sxButton->setEnabled(1);
+		    dxButton->setEnabled(1);
                 }
 		break;
 	    case 1:
-		if (!isActive()) {
+		if (!isActive() || (isActive() == 2)) {
                     impostaAttivo(1);
                     dorunning=0;
                     uprunning=1;
                     aggiorna=1;
                     SetIcons((uchar)0,nomeFile3 );
+		    SetIcons((uchar)1,nomeFile2 );
+		    dxButton->setDisabled(1);
+		    sxButton->setEnabled(1);
                 }
 		break;
 	    case 2:
-		if (!isActive()) {
+		if (!isActive() || (isActive() == 1)) {
                     impostaAttivo(2);
                     dorunning=1;
                     uprunning=0;
                     aggiorna=1;
+		    SetIcons((uchar)0,nomeFile1 );
                     SetIcons((uchar)1,nomeFile3 );
+		    sxButton->setDisabled(1);
+		    dxButton->setEnabled(1);
                 }
 		break;
 	    default:
