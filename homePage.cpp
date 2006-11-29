@@ -186,7 +186,7 @@ void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QCo
 	case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];break;
     }
 
-     temperatura[tempCont] = new QLCDNumber(this,"0.00 C");
+     temperatura[tempCont] = new QLCDNumber(this,"0.00\272C");
      temperatura[tempCont] ->setGeometry(x,y,width,height-H_SCR_TEMP);
      temperatura[tempCont] ->setPaletteForegroundColor(fg);
      temperatura[tempCont] ->setPaletteBackgroundColor(bg);

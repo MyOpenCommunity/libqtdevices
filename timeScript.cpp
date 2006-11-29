@@ -32,7 +32,7 @@ timeScript::timeScript( QWidget *parent, const char *name, uchar tipo,QDateTime*
 	/*mioClock->setDate(mioOrol->date());
 	mioClock->setTime(mioOrol->time());*/
 	//qDebug("MIOCLOCK %s", mioClock->toString("h:mm:ss"));
-    }   
+    } 
     if (type!=25)	
 	showTime();	
     else
@@ -42,8 +42,17 @@ timeScript::timeScript( QWidget *parent, const char *name, uchar tipo,QDateTime*
 
 void timeScript::timerEvent( QTimerEvent *e )
 {
-    if (mioClock)
-	*mioClock=mioClock->addSecs(1);
+  //qDebug("timeScript::timerEvent");
+    if (mioClock) {
+	static QDateTime prevDateTime = QDateTime();
+	QDateTime now = QDateTime::currentDateTime(Qt::LocalTime);
+	if((prevDateTime.secsTo(now) > 2) || (prevDateTime.secsTo(now) < -2)) {
+	    qDebug("timeScript::timerEvent() : Updating mioClock");
+	    *mioClock = now;
+	} else
+	    *mioClock=mioClock->addSecs(1);
+	prevDateTime = now;
+    }
     if   ( e->timerId() == showDateTimer )
 	if (!type) 
 	    stopDate();
@@ -119,6 +128,7 @@ void timeScript::reset()
 void timeScript::showTime()
 {
     QString s;
+    //qDebug("timeScript::showTime()");
     if (mioClock)
     {
 	if (type==2)
@@ -157,7 +167,7 @@ void 	timeScript::aumYear(){*mioClock=mioClock->addYears(1);showDate();  }
 
 QDateTime timeScript::getDataOra()
 {
-    if  (type) 
+    if  (type)
 	return (* mioClock);
     return (QDateTime::currentDateTime(Qt::LocalTime));
     
@@ -167,7 +177,6 @@ void timeScript::setDataOra(QDateTime d)
 {
     *mioClock = d;
 }
-
 
 timeScript::~timeScript()
 {

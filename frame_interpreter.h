@@ -6,6 +6,7 @@
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>
+#include <qdatetime.h>
 #include <stdlib.h>
 #include "openclient.h"
 #include "device.h"
@@ -67,6 +68,10 @@ class openwebnet_ext : public openwebnet
     bool extended(void);
 };
 
+struct deferred_list_element {
+  QTime expires;
+  device_status *ds;
+};
 
 //! Generic frame interpreter
 class frame_interpreter : public QObject {
@@ -81,11 +86,15 @@ class frame_interpreter : public QObject {
     //! Device's group
     int group;
  private:
+    //! List of device status for which init request must be deferred
+    QPtrList<deferred_list_element> deferred_list;
+    //! Timer for deferred status request
+    QTimer deferred_timer;
+    //! Timer expiration time
+    QTime deferred_timer_expires;
  protected:
     //! Returns true when frame is ours
     virtual bool is_frame_ours(openwebnet_ext, bool& request_status);
-    //! Request initialization
-    void request_init(device_status *);
     //! List of device_status objects to be passed on to clients
     QPtrList<device_status> evt_list;
  public:
@@ -118,6 +127,11 @@ class frame_interpreter : public QObject {
     void frame_event(QPtrList<device_status>);
     //! Request device init
     void init_requested(QString);
+ protected slots:
+    //! Request initialization
+    void request_init(device_status *, int delay = 0);
+    //! Request initialization after deferred time
+    void deferred_request_init();
  public slots:
     //! Receive a frame
     virtual void handle_frame_handler(char *, QPtrList<device_status> *);

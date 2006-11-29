@@ -45,8 +45,8 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
     setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT); 
     setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
     
-    QDateTime OroTemp = QDateTime(QDateTime::currentDateTime());
-    dataOra = new timeScript(this,"scrittaHomePage",1,&OroTemp);
+    QDateTime OroTemp = QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
+    dataOra = new timeScript(this,"impostazioni",1,&OroTemp);
     
     
     

@@ -131,6 +131,8 @@ class device_status {
     void invalidate(void);
     //! Force initialized status
     void force_initialized(void);
+    //! Return delay for init request deferral (msecs)
+    virtual int init_request_delay() { return 0; }
     //! Destructor
     ~device_status();
 };
@@ -146,6 +148,10 @@ class device_status_light : public device_status {
     //~device_status_light();
 };
 
+#ifndef DIMMER_REQ_DELAY
+#define DIMMER_REQ_DELAY 5000
+#endif
+
 //! Dimmer status
 class device_status_dimmer : public device_status {
  private:
@@ -155,8 +161,14 @@ class device_status_dimmer : public device_status {
 	OLD_LEV_INDEX,
     } ind;
     device_status_dimmer();
+    //! Return delay for init request deferral (msecs)
+    virtual int init_request_delay() { return DIMMER_REQ_DELAY; }
     //~device_status_dimmer();
 };
+
+#ifndef DIMMER100_REQ_DELAY
+#define DIMMER100_REQ_DELAY 5000
+#endif
 
 //! Dimmer 100 status
 class device_status_dimmer100 : public device_status {
@@ -167,6 +179,8 @@ class device_status_dimmer100 : public device_status {
 	OLD_LEV_INDEX,
 	SPEED_INDEX,
     } ind;
+    //! Return delay for init request deferral (msecs)
+    virtual int init_request_delay() { return DIMMER100_REQ_DELAY; }
     device_status_dimmer100();
     //~device_status_dimmer100();
 };

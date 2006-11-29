@@ -156,6 +156,10 @@ must be displayed.
 */
     void        showAlarms();
 /*!
+  \brief clear alarm list
+*/
+    void        doClearAlarms();
+/*!
   \brief Hides what has to be hidden
 */
     void        hide();

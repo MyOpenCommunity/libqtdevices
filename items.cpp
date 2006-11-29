@@ -1282,7 +1282,7 @@ void automCancAttuatVC::Attiva()
 ** automCancAttuatIll
 ****************************************************************/
 
-automCancAttuatIll::automCancAttuatIll( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,int t)
+automCancAttuatIll::automCancAttuatIll( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx, QString *t)
         : bannButIcon( parent, name )
         {       	  
 	    qDebug("automCancAttuatIll::automCancAttuatIll() : "
@@ -1295,7 +1295,7 @@ automCancAttuatIll::automCancAttuatIll( QWidget *parent,const char *name,char* i
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
-    time = t;
+    time = t ? *t : QString("*0*0*18");
     Draw();
     //setChi("1");
 }
@@ -1303,13 +1303,18 @@ automCancAttuatIll::automCancAttuatIll( QWidget *parent,const char *name,char* i
 void automCancAttuatIll::Attiva()
 {
     openwebnet msg_open;
-    char cosa[10];
-    
-    sprintf(cosa, "%d", time);
-    
+    char val[100];
+    char *v[] = { val , };
+
+    strncpy(val, time.ascii(), sizeof(val));
+
     msg_open.CreateNullMsgOpen();  
-    // FIXME: CHECK FRAME !!
-    msg_open.CreateMsgOpen("1", cosa , getAddress(),"");
+//crea il messaggio open *#chi*dove*#grandezza*val_1*val_2*...val_n##
+    //void openwebnet::CreateWrDimensionMsgOpen(char who[MAX_LENGTH], char where[MAX_LENGTH],
+    //                                    char dimension[MAX_LENGTH],
+    //                                    char** value,
+    //                                    int numValue)
+    msg_open.CreateWrDimensionMsgOpen("1", getAddress(), "2", v, 1);
     emit sendFrame(msg_open.frame_open);
 }
 
@@ -3664,6 +3669,7 @@ impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn,
     SetIcons(  IconInfo,IconOff,&pippo[0],IconOn,IconActive);
     setChi("5");
     send_part_msg = false;
+    inserting = false;
     memset(le_zone, 0, sizeof(le_zone));
     nascondi(BUT2);
 #if 0
@@ -3803,6 +3809,7 @@ void impAnti::Inserisci()
     }
     if(tasti)
       delete tasti;
+    inserting = true;
     tasti = new tastiera_con_stati(s, NULL, "");
     connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
     tasti->setBGColor(backgroundColor());
@@ -3861,6 +3868,8 @@ void impAnti::Insert1(char* pwd)
 
 void impAnti::Insert2()
 {
+    if(!inserting)
+	return;
     // 5 seconds between first open ack and open insert messages
     connect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
     // single shot timer
@@ -3879,6 +3888,8 @@ void impAnti::Insert3()
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
     parentWidget()->show();       
+    emit(clearAlarms());
+    inserting = false;
 }
 
 void impAnti::DeInsert(char* pwd)
@@ -3903,6 +3914,10 @@ void impAnti::DeInsert(char* pwd)
 void impAnti::openAckRx()
 {
     qDebug("impAnti::openAckRx()");
+    if(!inserting) {
+        qDebug("Not inserting");
+        return;
+    }
     if(!part_msg_sent) return;
     part_msg_sent = false;
     qDebug("waiting 5 seconds before sending insert message");

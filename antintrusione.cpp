@@ -109,6 +109,7 @@ void antintrusione::draw()
 	a->draw();
 	++(*ai);
     }
+    delete ai;
 }
 
 
@@ -129,11 +130,8 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* I
     if (tipo== IMPIANTINTRUS)
     {
 	impianto -> addItem(tipo, descrizione,indirizzo,  IconaSx, IconaDx, icon, pressedIcon);
-#if 0
-	connect(impianto->getLast(),SIGNAL(impiantoInserito()),allarmi,SLOT(svuota(bool)));
-#else
-	// FIXME: SVUOTA LISTA ALLARMI
-#endif
+	connect(impianto->getLast(), SIGNAL(impiantoInserito()), this
+		,SLOT(doClearAlarms()));
 	connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),
 		this, SIGNAL(abilitaParz(bool)));
 	connect(impianto->getLast(), SIGNAL(clearChanged()),
@@ -190,6 +188,8 @@ void antintrusione::inizializza()
 {     
     zone-> inizializza();
     impianto->inizializza();
+    connect(((impAnti *)impianto->getLast()), SIGNAL(clearAlarms()),
+	    this, SLOT(doClearAlarms()));
 //     emit sendFrame("*16*53*100##");      frame per richiesta stato impianto
 }
 
@@ -264,10 +264,12 @@ void antintrusione::gesFrame(char*frame)
     {
     qDebug("ARRIVATO ALLARME!!!!");
 	allarmi.getLast()->show();
+#if 0
         impianto->hide();
         zone->hide();
         //this->showFullScreen();
 	hide();
+#endif
         ctrlAllarm();
     }
 }
@@ -338,8 +340,19 @@ void antintrusione::deleteAlarm()
 void antintrusione::closeAlarms()
 {
     qDebug("antiintrusione::closeAlarms()");
+#if 0
     if(curr_alarm)
 	curr_alarm->hide();
+#else
+    QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
+    ai->toFirst();
+    allarme *a;
+    while((a = ai->current())) {
+	a->hide();
+	++(*ai);
+    }
+    delete ai;
+#endif
     impianto->show();
     zone->show();
 }
@@ -352,6 +365,12 @@ void antintrusione::showAlarms()
     impianto->hide();
     zone->hide();
     curr_alarm->show();
+}
+
+void antintrusione::doClearAlarms()
+{
+  qDebug("antiintrusione::doClearAlarms()");
+  allarmi.clear();
 }
 
 
@@ -369,4 +388,6 @@ void antintrusione::hide()
     QWidget::hide();
     impianto->hide();
     zone->hide();
+    if(curr_alarm && curr_alarm->isShown())
+      curr_alarm->hide();
 }

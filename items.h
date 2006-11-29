@@ -673,7 +673,7 @@ class automCancAttuatIll : public bannButIcon
 {
     Q_OBJECT
 public:
-     automCancAttuatIll ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,int t=18);     
+     automCancAttuatIll ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL, QString *t = NULL);     
     //void inizializza();      
 public slots:
       //void gestFrame(char*);
@@ -684,7 +684,7 @@ signals:
  //   void sendFrame(char *);           
 private:
      device *dev;
-     int time;
+     QString time;
 };
 
 
@@ -1043,12 +1043,14 @@ signals:
      void impiantoInserito();
      void abilitaParz(bool);
      void clearChanged(void);
+     void clearAlarms(void);
 private:    
      static const int MAX_ZONE = 8;
      tastiera* tasti;
      zonaAnti *le_zone[MAX_ZONE];
      bool send_part_msg;
      bool part_msg_sent;
+     bool inserting;
      QTimer insert_timer;
      char *passwd;
      device *dev;

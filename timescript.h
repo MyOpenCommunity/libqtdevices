@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: timescript.h,v 1.12 2006/10/17 12:32:51 cvs Exp $
+** $Id: timescript.h,v 1.13 2006/11/29 06:44:07 cvs Exp $
 **
 ** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
 **
@@ -98,7 +98,6 @@ public slots:
   \brief Increases years value.
 */           
     void 	aumYear();    
-    
     ~timeScript();
     
 private:					

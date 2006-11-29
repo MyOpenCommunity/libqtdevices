@@ -236,6 +236,8 @@ frame_interpreter::frame_interpreter(QString _who, QString _where,
     where = _where;
     pul = p;
     group = g;
+    connect(&deferred_timer, SIGNAL(timeout()), this, 
+	    SLOT(deferred_request_init()));
     qDebug("frame_interpreter::frame_interpreter()");
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
 }
@@ -307,14 +309,73 @@ bool frame_interpreter::is_frame_ours(openwebnet_ext m, bool& request_status)
     return out;
 }
 
-void frame_interpreter::request_init(device_status *ds)
+void frame_interpreter::request_init(device_status *ds, int delay)
 {
+    if(delay) {
+      qDebug("delayed init request (%d) for %p", delay, ds);
+      deferred_list_element *de = new deferred_list_element;
+      de->ds = ds;
+      deferred_list.append(de);
+      de->expires = (QTime::currentTime()).addMSecs(delay);
+      if(!deferred_timer.isActive()) {
+	deferred_timer_expires = de->expires;
+	deferred_timer.start(delay, TRUE);
+	return;
+      }
+      if(de->expires < deferred_timer_expires) {
+	deferred_timer_expires = de->expires;
+	deferred_timer.changeInterval(delay);
+      }
+      return;
+    }
+    // No deferred timeout
     QStringList msgl;
     msgl.clear();
     get_init_messages(ds, msgl);
     for ( QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it ) {
 	emit(init_requested(*it));
     }
+}
+
+void frame_interpreter::deferred_request_init(void)
+{
+    qDebug("frame_interpreter::deferred_request_init()");
+    QPtrListIterator<deferred_list_element> *dli = 
+	new QPtrListIterator<deferred_list_element>(deferred_list);
+    device_status *ds;
+    deferred_list_element *de;
+    bool restart = false;
+    int ms = -1;
+    do {
+      dli->toFirst();
+      // Build an invalid time
+      QTime next_expires = QTime(25, 61);
+      while( ( de = dli->current() ) != 0) {
+	ds = de->ds;
+	if(QTime::currentTime().msecsTo(de->expires) <= 0) {
+	  qDebug("requesting status");
+	  request_init(de->ds, false);
+	  deferred_list.remove(de);
+	  delete de;
+	  continue;
+	}
+	if((!next_expires.isValid()) || de->expires < next_expires)
+	  next_expires = de->expires;
+	++(*dli);
+      }
+      if(!next_expires.isValid()) {
+	qDebug("no more deferred status requests");
+	ms = -1;
+      } else
+	ms = QTime::currentTime().msecsTo(next_expires);
+      // One more round if more deferred requests are ready
+      restart = (ms <= 0) ;
+    } while(!restart);
+    if(ms > 0) {
+      qDebug("restarting deferred request timer with %d ms delay", ms);
+      deferred_timer.start(ms);
+    }
+    delete dli;
 }
 
 // This is reimplemented by children
@@ -407,7 +468,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 		    goto next;
 		light_requested = true;
 	    }
-	    request_init(ds);
+	    request_init(ds, ds->init_request_delay());
 	    goto next;
 	}
 	{
@@ -1677,7 +1738,9 @@ bool frame_interpreter_impanti_device::is_frame_ours(openwebnet_ext m,
     char *c = m.Extract_chi();
     qDebug("msg who = %s, msg where = %s", c, m.Extract_dove());
     int l, i;
-    return ((QString(c) == who) && m.gen(l, i));
+    if(QString(c) != who)
+      return false;
+    return m.gen(l,i) || QString(m.Extract_dove()) == "";
 }
 
 // Private methods
