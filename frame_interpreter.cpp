@@ -455,20 +455,25 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     dsi->toFirst();
     device_status *ds;
     evt_list.clear();
-    bool light_requested = false;
+    bool light_request = false;
+    bool dimmer_request = false;
+    device_status *light_ds;
+    device_status *dimmer_ds;
     while( ( ds = dsi->current() ) != 0) {
 	if(request_status) {
 	    // Frame could be ours, but we need to check device status 
 	    // and see if it really changed
 	    // Lights and old dimmers have the same status request message
 	    // Just avoid sending the same request twice
-	    if((ds->get_type() == device_status::LIGHTS) ||
-	       (ds->get_type() == device_status::DIMMER)) {
-		if(light_requested)
-		    goto next;
-		light_requested = true;
+	    if((ds->get_type() == device_status::LIGHTS) && !dimmer_request) {
+		light_request = true;
+		light_ds = ds;
 	    }
-	    request_init(ds, ds->init_request_delay());
+	    if(ds->get_type() == device_status::DIMMER) {
+		dimmer_request = true;
+		light_request = false;
+		dimmer_ds = ds;
+	    }
 	    goto next;
 	}
 	{
@@ -498,6 +503,10 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     next:
 	++(*dsi);
     }
+    if(dimmer_request) 
+	request_init(dimmer_ds, dimmer_ds->init_request_delay());
+    else if(light_request)
+	request_init(light_ds, light_ds->init_request_delay());
     if(!evt_list.isEmpty()) {
 	qDebug("Event list is not empty, invoking emit(frame_event())");
 	emit(frame_event(evt_list));
@@ -506,7 +515,6 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     delete dsi;
     qDebug("frame_interpreter_lights::handle_frame_handler, end");
 }
-
 
 // Private methods
 void frame_interpreter_lights::set_status(device_status_light *ds, int s)
