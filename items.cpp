@@ -1656,6 +1656,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
     strncpy(tempo, t ? t : "0*0*0", sizeof(tempo));
     char *ptr ; 
     char tmp1[50];
+    ignore_status_changes = false;
     strcpy(tmp1, tempo);
     ptr = strtok(tmp1, "*");
     h = strtol(ptr, NULL, 10);
@@ -1688,7 +1689,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
     SetSeconaryText(tmp);
     connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
     // Crea o preleva il dispositivo dalla cache
-    device *dev = btouch_device_cache.get_newtimed(getAddress());
+    dev = btouch_device_cache.get_newtimed(getAddress());
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
@@ -1702,11 +1703,16 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
     stat_var curr_status(stat_var::ON_OFF);
     int val10;
     bool aggiorna = false;
+    if(ignore_status_changes) {
+      qDebug("Ignoring status change");
+      return;
+    }
     qDebug("attuatAutomTempNuovoF::status_changed()");
     QPtrListIterator<device_status> *dsi = 
       new QPtrListIterator<device_status>(sl);
     dsi->toFirst();
     device_status *ds;
+    bool lights_variation = false, newtimed_variation = false;
     while( ( ds = dsi->current() ) != 0) {
 	switch (ds->get_type()) {
 	case device_status::LIGHTS:
@@ -1720,8 +1726,8 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 		if(!isActive())
 		    myTimer->stop();
 		val = 0;
-
 	    }
+	    lights_variation = true;
 	    break;
 	case device_status::DIMMER:
 	    qDebug("dimmer status variation, ignored");
@@ -1731,6 +1737,7 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	    break;
 	case device_status::NEWTIMED:
 	    qDebug("new timed device status variation");
+	    newtimed_variation = true;
 	    ds->read(device_status_new_timed::HH_INDEX, curr_hh);
 	    ds->read(device_status_new_timed::MM_INDEX, curr_mm);
 	    ds->read(device_status_new_timed::SS_INDEX, curr_ss);
@@ -1759,10 +1766,16 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	    else if(!myTimer->isActive())
 		myTimer->start((1000 * val) / NTIMEICONS);
 	    qDebug("tempo = %d %d %d", hnow, mnow, snow);
-	    aggiorna = true;
+	    aggiorna = true;	    
 	    break;
 	}
 	++(*dsi);
+    }
+    if(lights_variation && !newtimed_variation) {
+      qDebug("aggiornamento solo luci, reinizializzo il device");
+      ignore_status_changes = true;
+      dev->reinit_ds(device_status::NEWTIMED);
+      ignore_status_changes = false;
     }
     if(aggiorna) {
 	qDebug("invoco Draw con value = %d", value);

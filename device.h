@@ -149,7 +149,7 @@ class device_status_light : public device_status {
 };
 
 #ifndef DIMMER_REQ_DELAY
-#define DIMMER_REQ_DELAY 5000
+#define DIMMER_REQ_DELAY 1000
 #endif
 
 //! Dimmer status
@@ -167,7 +167,7 @@ class device_status_dimmer : public device_status {
 };
 
 #ifndef DIMMER100_REQ_DELAY
-#define DIMMER100_REQ_DELAY 5000
+#define DIMMER100_REQ_DELAY 1000
 #endif
 
 //! Dimmer 100 status
@@ -361,6 +361,8 @@ class device : public QObject {
     int put();
     //! Returns cache key
     QString get_key(void);
+    //! Reinitializes device_status given type
+    void reinit_ds(device_status::type);
     //! Destructor
     virtual ~device();
  signals:

@@ -196,6 +196,7 @@ void device_status::mark_init_requested(void)
 
 void device_status::invalidate(void)
 {
+    _initialized = _init_requested = false;
     QPtrListIterator<stat_var> *svi = 
 	new QPtrListIterator<stat_var>(vars);
     svi->toFirst();
@@ -287,7 +288,7 @@ device_status_amplifier::device_status_amplifier() :
     add_var((int)device_status_amplifier::ON_OFF_INDEX,
 	    new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
     add_var((int)device_status_amplifier::AUDIO_LEVEL_INDEX,
-	    new stat_var(stat_var::AUDIO_LEVEL, 1, 1, 31, 1));
+	    new stat_var(stat_var::AUDIO_LEVEL, 0, 0, 31, 1));
 }
 
 // Device status for radios
@@ -476,6 +477,24 @@ void device::add_device_status(device_status *_ds)
 QString device::get_key(void)
 {
     return get_device_key(who, where);
+}
+
+void device::reinit_ds(device_status::type t)
+{
+    qDebug("device::reinit_ds()");
+    QPtrListIterator<device_status> *dsi = 
+	new QPtrListIterator<device_status>(*stat);
+    dsi->toFirst();
+    device_status *ds ;
+    while( ( ds = dsi->current() ) != 0) {
+	if(ds->get_type() == t) {
+	    qDebug("Invalidating status %p (type = %d)", ds, t);
+	    ds->invalidate();
+	}
+	++(*dsi);
+    }
+    delete dsi;
+    init();
 }
 
 device::~device()

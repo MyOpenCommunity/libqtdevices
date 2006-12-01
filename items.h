@@ -518,6 +518,9 @@ signals:
 class attuatAutomTempNuovoF : public bannOn2scr
 {
     Q_OBJECT ;
+private:
+    bool ignore_status_changes;
+    device *dev;
 public:
     attuatAutomTempNuovoF ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, const char *tempo=NULL);
     void inizializza();
