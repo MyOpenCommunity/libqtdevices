@@ -1257,7 +1257,7 @@ automCancAttuatVC::automCancAttuatVC( QWidget *parent,const char *name,char* ind
 		   "%s %s", IconaSx, IconaDx);
     SetIcons(IconaSx, NULL, IconaDx);
     setAddress(indirizzo);
-    connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
+    connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
     // Crea o preleva il dispositivo dalla cache
     dev = btouch_device_cache.get_autom_device(getAddress());
     // Get status changed events back
@@ -4776,7 +4776,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
     SetIcons (Icona2, Icona3, "", "", Icona1);
     if(key) {
 	key_icon = Icona2;
-	connect(this, SIGNAL(sxClick()), this, SLOT(open_door_clicked()));
+	connect(this, SIGNAL(sxPressed()), this, SLOT(open_door_clicked()));
     } else
 	nascondi(BUT1);
     if(light) {

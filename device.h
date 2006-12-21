@@ -394,6 +394,16 @@ class light : public device
     //virtual ~light();
 };
 
+//! Dimmer
+class dimm : public device
+{
+    Q_OBJECT
+ public:
+    //! Constructor
+    dimm(QString, bool p=false, int g=-1);
+};
+
+
 //! Automatismo
 class autom : public device
 {

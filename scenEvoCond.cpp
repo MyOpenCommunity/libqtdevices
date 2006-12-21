@@ -752,6 +752,8 @@ void scenEvo_cond_d::save()
     setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "trigger", 
 		s.ascii(), get_serial_number());
     QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+    reset();
+    inizializza();
 }
 
 void scenEvo_cond_d::reset()
@@ -1089,7 +1091,7 @@ device_condition_dimming::device_condition_dimming(QWidget *parent,
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
     // A dimmer is actually a light
-    dev = new light(QString(""));
+    dev = new dimm(QString(""));
     Draw();
 }
 

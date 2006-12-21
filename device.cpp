@@ -560,6 +560,19 @@ light::light(QString w, bool p, int g) : device(QString("1"), w, p, g)
 	    SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
+// Dimmer implementation
+dimm::dimm(QString w, bool p, int g) : device(QString("1"), w, p, g)
+{
+    interpreter = new frame_interpreter_lights(w, p, g);
+    set_frame_interpreter(interpreter);
+    stat->append(new device_status_dimmer());
+    connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+            interpreter,
+            SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+    connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this,
+            SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
 // Autom implementation
 autom::autom(QString w, bool p, int g) :
 device(QString("2"), w, p, g)
