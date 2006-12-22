@@ -196,7 +196,6 @@ void device_status::mark_init_requested(void)
 
 void device_status::invalidate(void)
 {
-    _initialized = _init_requested = false;
     QPtrListIterator<stat_var> *svi = 
 	new QPtrListIterator<stat_var>(vars);
     svi->toFirst();
@@ -241,6 +240,8 @@ device_status_dimmer::device_status_dimmer() : device_status(DIMMER)
 	    new stat_var(stat_var::LEV, 0, 0, 100, 10));
     add_var((int)device_status_dimmer::OLD_LEV_INDEX,
 	    new stat_var(stat_var::OLD_LEV, 0, 0, 100, 10));
+    add_var((int)device_status_dimmer::FAULT_INDEX,
+	    new stat_var(stat_var::FAULT, 0, 0, 1, 1));
 }
 
 // Device status for dimmer100
@@ -252,6 +253,8 @@ device_status_dimmer100::device_status_dimmer100() : device_status(DIMMER100)
 	    new stat_var(stat_var::OLD_LEV, 0, 0, 100, 5));
     add_var((int)device_status_dimmer100::SPEED_INDEX,
 	    new stat_var(stat_var::SPEED, 1, 1, 255, 1));
+    add_var((int)device_status_dimmer100::FAULT_INDEX,
+	    new stat_var(stat_var::FAULT, 0, 0, 1, 1));
 }
 
 // Device status for new timed devices
@@ -477,24 +480,6 @@ void device::add_device_status(device_status *_ds)
 QString device::get_key(void)
 {
     return get_device_key(who, where);
-}
-
-void device::reinit_ds(device_status::type t)
-{
-    qDebug("device::reinit_ds()");
-    QPtrListIterator<device_status> *dsi = 
-	new QPtrListIterator<device_status>(*stat);
-    dsi->toFirst();
-    device_status *ds ;
-    while( ( ds = dsi->current() ) != 0) {
-	if(ds->get_type() == t) {
-	    qDebug("Invalidating status %p (type = %d)", ds, t);
-	    ds->invalidate();
-	}
-	++(*dsi);
-    }
-    delete dsi;
-    init();
 }
 
 device::~device()

@@ -569,6 +569,10 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 	    // ON
 	    set_status(ds, 1);
 	    break;
+	case 19:
+	    // FAULT !!
+	    qDebug("DIMMER FAULT, IGNORING BECAUSE THIS IS A LIGHT STATUS");
+	    break;
 	default:
 	    // Dimmer, timed, ... FIXME: CHECK THESE
 	    if((cosa >=2) && (cosa <= 31))
@@ -611,15 +615,36 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 void frame_interpreter_lights::set_status(device_status_dimmer *ds, int lev)
 {
     bool do_event = false;
-    stat_var curr_lev(stat_var::LEV), curr_old_lev(stat_var::OLD_LEV);
+    bool reinit = false;
+    int fault_on = 1, fault_off = 0;
     // Read current status of variables
+    stat_var curr_lev(stat_var::LEV), curr_old_lev(stat_var::OLD_LEV), 
+      curr_fault(stat_var::FAULT);
     ds->read((int)device_status_dimmer::LEV_INDEX, curr_lev);
     ds->read((int)device_status_dimmer::OLD_LEV_INDEX, curr_old_lev);
-    if(!ds->initialized() && (lev!=1)) {
+    ds->read((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+    if((lev < 0) && !curr_fault.get_val()) {
+      // FAULT
+      qDebug("dimmer FAULT");
+      curr_fault.set_val(fault_on);
+      ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+      do_event = true;
+      goto end;
+    }
+    if((lev >= 0) && curr_fault.get_val()) {
+      // FAULT RECOVERY
+      qDebug("dimmer FAULT RECOVERY");
+      curr_fault.set_val(fault_off);
+      ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+      reinit = true;
+    }
+    if((!ds->initialized() && (lev!=1)) || reinit) {
 	curr_lev.set_val(lev);
 	curr_old_lev.set_val(lev);
 	ds->write_val((int)device_status_dimmer::LEV_INDEX, curr_lev);
 	ds->write_val((int)device_status_dimmer::OLD_LEV_INDEX, curr_old_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	qDebug("initializing dimmer");
 	do_event = true;
 	goto end;
@@ -630,6 +655,8 @@ void frame_interpreter_lights::set_status(device_status_dimmer *ds, int lev)
 	int old_lev = curr_old_lev.get_val();
 	curr_lev.set_val(old_lev);
 	ds->write_val((int)device_status_dimmer::LEV_INDEX, curr_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	do_event = true ;
     }
     if(lev != curr_lev.get_val()) {
@@ -638,6 +665,8 @@ void frame_interpreter_lights::set_status(device_status_dimmer *ds, int lev)
 	curr_lev.set_val(lev);
 	qDebug("setting dimmer status to %d", lev);
 	ds->write_val((int)device_status_dimmer::LEV_INDEX, curr_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	do_event = true ;
     }
  end:
@@ -673,6 +702,10 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 		qDebug("emit(request_init(ds))");
 		request_init(ds);
 	    }
+	    break;
+	case 19:
+	    // FAULT
+	    set_status(ds, -1);
 	    break;
 	case 30:
 	    // UP
@@ -751,24 +784,46 @@ void frame_interpreter_lights::set_status(device_status_dimmer100 *ds,
 					  int lev, int speed = -1)
 {
     bool do_event = false;
+    bool reinit = false;
+    int fault_on = 1, fault_off = 0;
     qDebug("frame_interpreter_lights::set_status, dimmer100");
     stat_var curr_lev(stat_var::LEV), curr_old_lev(stat_var::OLD_LEV);
-    stat_var curr_speed(stat_var::SPEED);
+    stat_var curr_speed(stat_var::SPEED), curr_fault(stat_var::FAULT);
     // Read current status of status variables
     ds->read((int)device_status_dimmer100::LEV_INDEX, curr_lev);
     ds->read((int)device_status_dimmer100::OLD_LEV_INDEX, curr_old_lev);
     ds->read((int)device_status_dimmer100::SPEED_INDEX, curr_speed);
+    ds->read((int)device_status_dimmer100::FAULT_INDEX, curr_fault);
+    if((lev < 0) && !curr_fault.get_val()) {
+      // FAULT
+      qDebug("dimmer 100 FAULT");
+      curr_fault.set_val(fault_on);
+      ds->write_val((int)device_status_dimmer100::FAULT_INDEX, curr_fault);
+      do_event = true;
+      goto end;
+    }
+    if((lev >= 0) && curr_fault.get_val()) {
+      // FAULT RECOVERY
+      qDebug("dimmer 100 FAULT RECOVERY");
+      curr_fault.set_val(fault_off);
+      ds->write_val((int)device_status_dimmer100::FAULT_INDEX, curr_fault);
+      reinit = true;
+    }
     if(!curr_lev.initialized()) {
 	curr_lev.set_val(lev);
 	curr_old_lev.set_val(lev);
 	ds->write_val((int)device_status_dimmer100::LEV_INDEX, curr_lev);
 	ds->write_val((int)device_status_dimmer100::OLD_LEV_INDEX, 
 		      curr_old_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	do_event = true;
     }
     if(!curr_speed.initialized() && speed >= 0) {
 	curr_speed.set_val(speed);
 	ds->write_val((int)device_status_dimmer100::SPEED_INDEX, curr_speed);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	qDebug("setting speed to %d", speed);
 	do_event = true;
     }
@@ -778,6 +833,8 @@ void frame_interpreter_lights::set_status(device_status_dimmer100 *ds,
 	qDebug("on, restoring old lev to %d", old_lev);
 	curr_lev.set_val(old_lev);
 	ds->write_val((int)device_status_dimmer100::LEV_INDEX, curr_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	do_event = true ;
     }
     if(lev != curr_lev.get_val()) {
@@ -786,14 +843,19 @@ void frame_interpreter_lights::set_status(device_status_dimmer100 *ds,
 	curr_lev.set_val(lev);
 	qDebug("setting dimmer100 level to %d", lev);
 	ds->write_val((int)device_status_dimmer::LEV_INDEX, curr_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	do_event = true ;
     }
     if((speed >= 0) && (speed != curr_speed.get_val())) {
 	curr_speed.set_val(speed);
 	qDebug("setting dimmer100 speed to %d", speed);
 	ds->write_val((int)device_status_dimmer100::SPEED_INDEX, curr_speed);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
 	do_event = true ;
     }
+ end:
     if(do_event) {
 	qDebug("frame_interpreter_lights::set_status() (dimmer100), "
 	       "appending evt");
@@ -826,6 +888,10 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 		qDebug("emit(request_init(ds))");
 		request_init(ds);
 	    }
+	    break;
+	case 19:
+	    // FAULT
+	    set_status(ds, -1);
 	    break;
 	case 30:
 	    // UP
@@ -992,11 +1058,15 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 	    if(!ds->initialized())
 		request_init(ds);
 	    break;
+	case 19:
+	    // FAULT !!
+	    qDebug("DIMMER FAULT, IGNORING BECAUSE THIS IS A LIGHT STATUS");
+	    break;
 	default:
 	    if((cosa >=2) && (cosa <= 10))
 		// Dimmer level
 		set_status(ds, -1, -1, -1, 1);
-	    else if((cosa >= 11) && (cosa <= 19)) {
+	    else if((cosa >= 11) && (cosa < 19)) {
 		// What shall we do here ?
 		set_status(ds, -1, -1, -1, 1);
 	    } else if((cosa >= 20) && (cosa <= 29)) {

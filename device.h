@@ -30,6 +30,7 @@ class stat_var {
 	   LOCAL,
 	   SP,
 	   ACTIVE_SOURCE,
+	   FAULT,
       } type;
  private:
     type t;
@@ -159,6 +160,7 @@ class device_status_dimmer : public device_status {
     enum {
 	LEV_INDEX = 0,
 	OLD_LEV_INDEX,
+	FAULT_INDEX,
     } ind;
     device_status_dimmer();
     //! Return delay for init request deferral (msecs)
@@ -178,6 +180,7 @@ class device_status_dimmer100 : public device_status {
 	LEV_INDEX = 0,
 	OLD_LEV_INDEX,
 	SPEED_INDEX,
+	FAULT_INDEX,
     } ind;
     //! Return delay for init request deferral (msecs)
     virtual int init_request_delay() { return DIMMER100_REQ_DELAY; }
@@ -361,8 +364,6 @@ class device : public QObject {
     int put();
     //! Returns cache key
     QString get_key(void);
-    //! Reinitializes device_status given type
-    void reinit_ds(device_status::type);
     //! Destructor
     virtual ~device();
  signals:

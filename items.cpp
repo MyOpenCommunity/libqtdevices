@@ -124,6 +124,7 @@ void dimmer::status_changed(QPtrList<device_status> sl)
     stat_var curr_lev(stat_var::LEV);
     stat_var curr_speed(stat_var::SPEED);
     stat_var curr_status(stat_var::ON_OFF);
+    stat_var curr_fault(stat_var::FAULT);
     int val10;
     bool aggiorna = false;
     qDebug("dimmer10::status_changed()");
@@ -147,14 +148,21 @@ void dimmer::status_changed(QPtrList<device_status> sl)
 	    break;
 	case device_status::DIMMER:
 	    ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-	    qDebug("dimmer status variation");
-	    qDebug("level = %d", curr_lev.get_val());
-	    setValue(curr_lev.get_val());
+	    ds->read(device_status_dimmer::FAULT_INDEX, curr_fault);
+	    if(curr_fault.get_val()) {
+	      qDebug("DIMMER FAULT !!");
+	      impostaAttivo(2);
+	    } else {
+	      qDebug("dimmer status variation");
+	      qDebug("level = %d", curr_lev.get_val());
+	      setValue(curr_lev.get_val());
+	    }
 	    aggiorna = true;
 	    break;
 	case device_status::DIMMER100:
 	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
 	    ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+	    ds->read(device_status_dimmer::FAULT_INDEX, curr_fault);
 	    qDebug("dimmer 100 status variation, ignored");
 #if 0
 	    qDebug("level = %d, speed = %d", curr_lev.get_val(), 
@@ -343,6 +351,7 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
     stat_var curr_lev(stat_var::LEV);
     stat_var curr_speed(stat_var::SPEED);
     stat_var curr_status(stat_var::ON_OFF);
+    stat_var curr_fault(stat_var::FAULT);
     int val10;
     bool aggiorna = false;
     qDebug("dimmer100::status_changed()");
@@ -372,12 +381,18 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
 	case device_status::DIMMER100:
 	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
 	    ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-	    qDebug("dimmer 100 status variation");
-	    qDebug("level = %d, speed = %d", curr_lev.get_val(), 
-		   curr_speed.get_val());
-	    setValue(curr_lev.get_val());
-	    //setValue(curr_lev.get_val());
-	    qDebug("value = %d", getValue());
+	    ds->read(device_status_dimmer100::FAULT_INDEX, curr_fault);
+	    if(curr_fault.get_val()) {
+	      qDebug("DIMMER 100 FAULT !!");
+	      impostaAttivo(2);
+	    } else {
+	      qDebug("dimmer 100 status variation");
+	      qDebug("level = %d, speed = %d", curr_lev.get_val(), 
+		     curr_speed.get_val());
+	      setValue(curr_lev.get_val());
+	      //setValue(curr_lev.get_val());
+	      qDebug("value = %d", getValue());
+	    }
 	    aggiorna = true ;
 	    break;
 	case device_status::NEWTIMED:
@@ -1656,7 +1671,6 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
     strncpy(tempo, t ? t : "0*0*0", sizeof(tempo));
     char *ptr ; 
     char tmp1[50];
-    ignore_status_changes = false;
     strcpy(tmp1, tempo);
     ptr = strtok(tmp1, "*");
     h = strtol(ptr, NULL, 10);
@@ -1689,7 +1703,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
     SetSeconaryText(tmp);
     connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
     // Crea o preleva il dispositivo dalla cache
-    dev = btouch_device_cache.get_newtimed(getAddress());
+    device *dev = btouch_device_cache.get_newtimed(getAddress());
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
@@ -1703,16 +1717,11 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
     stat_var curr_status(stat_var::ON_OFF);
     int val10;
     bool aggiorna = false;
-    if(ignore_status_changes) {
-      qDebug("Ignoring status change");
-      return;
-    }
     qDebug("attuatAutomTempNuovoF::status_changed()");
     QPtrListIterator<device_status> *dsi = 
       new QPtrListIterator<device_status>(sl);
     dsi->toFirst();
     device_status *ds;
-    bool lights_variation = false, newtimed_variation = false;
     while( ( ds = dsi->current() ) != 0) {
 	switch (ds->get_type()) {
 	case device_status::LIGHTS:
@@ -1727,7 +1736,6 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 		    myTimer->stop();
 		val = 0;
 	    }
-	    lights_variation = true;
 	    break;
 	case device_status::DIMMER:
 	    qDebug("dimmer status variation, ignored");
@@ -1737,7 +1745,6 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	    break;
 	case device_status::NEWTIMED:
 	    qDebug("new timed device status variation");
-	    newtimed_variation = true;
 	    ds->read(device_status_new_timed::HH_INDEX, curr_hh);
 	    ds->read(device_status_new_timed::MM_INDEX, curr_mm);
 	    ds->read(device_status_new_timed::SS_INDEX, curr_ss);
@@ -1766,16 +1773,10 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	    else if(!myTimer->isActive())
 		myTimer->start((1000 * val) / NTIMEICONS);
 	    qDebug("tempo = %d %d %d", hnow, mnow, snow);
-	    aggiorna = true;	    
+	    aggiorna = true;
 	    break;
 	}
 	++(*dsi);
-    }
-    if(lights_variation && !newtimed_variation) {
-      qDebug("aggiornamento solo luci, reinizializzo il device");
-      ignore_status_changes = true;
-      dev->reinit_ds(device_status::NEWTIMED);
-      ignore_status_changes = false;
     }
     if(aggiorna) {
 	qDebug("invoco Draw con value = %d", value);
