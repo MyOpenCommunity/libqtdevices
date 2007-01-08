@@ -47,6 +47,7 @@ Calibrate::~Calibrate()
 QPoint Calibrate::fromDevice( const QPoint &p )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	qWarning("inside Calibrate::fromDevice");
     return qt_screen->mapFromDevice( p,QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()) );
 #endif
 }
@@ -60,25 +61,36 @@ bool Calibrate::sanityCheck()
     QPoint bl = cd.devPoints[QWSPointerCalibrationData::BottomLeft];
     QPoint br = cd.devPoints[QWSPointerCalibrationData::BottomRight];
 
-    int vl = QABS( tl.y() - bl.y() );
-    int vr = QABS( tr.y() - br.y() );
+    int vl = QABS( tl.x() - bl.x() );
+    int vr = QABS( tr.x() - br.x() );
 
     int diff = QABS( vl - vr );
 
-    int avg = ( vl + vr ) / 2;
+    int avg1 = ( tl.x()+ bl.x()) / 2;
+    int avg2 = ( tr.x()+ br.x()) / 2;
+    if (avg1>avg2)
+        avg2=avg1;
 
-      if ( diff > avg /9 ) // era /20         5% leeway
-        return FALSE;
-
-    int ht = QABS( tl.x() - tr.x() );
-    int hb = QABS( br.x() - bl.x() );
-    diff = QABS( ht - hb );
-    avg = ( ht + hb ) / 2;
-	if ( diff > avg / 9 ) //era /20
+    if ((vl>avg2/10)||(vr>avg2/10))
 {
+        qWarning("err>10 per cento     ->  left: %d right: %d\n",vl/avg2*100 ,vr/avg2*100);
+        return FALSE;
+}
+    int ht = QABS( tl.y() - tr.y() );
+    int hb = QABS( br.y() - bl.y() );
+    diff = QABS( ht - hb );
+    avg1 = ( tl.y()+ tr.y()) / 2;
+    avg2 = ( br.y()+ bl.y()) / 2;
+    if (avg1>avg2)
+        avg2=avg1;
+    if ((ht>avg2/10)||(hb>avg2/10))
+{
+    qWarning("err>10 per cento top: %d bottom: %d\n",ht/avg2*100 ,hb/avg2*100);
 	return FALSE;
 }
+
 #endif	
+qWarning("return TRUE Calibrate::sanityCheck");
     return TRUE;
 }
 
@@ -127,9 +139,11 @@ void Calibrate::paintEvent( QPaintEvent * )
 void Calibrate::mousePressEvent( QMouseEvent *e )
 {
     // map to device coordinates
+	qWarning("Calibrate::mousePressEvent");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     QPoint devPos = qt_screen->mapToDevice( e->pos(),
                                             QSize(qt_screen->width(), qt_screen->height()) );
+
     if ( penPos.isNull() )
         penPos = devPos;
     else
@@ -154,11 +168,14 @@ void Calibrate::mouseReleaseEvent( QMouseEvent * )
 	lastLoc=QWSPointerCalibrationData::LastLocation;
     else
 	lastLoc=QWSPointerCalibrationData::LastLocation-1;
-    qDebug("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
+    qWarning("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
     //if ( location < QWSPointerCalibrationData::LastLocation ) {
     if ( location < lastLoc) {
+	qWarning("location < lastLoc    ovvero %d<%d",location,lastLoc);
 	location = (QWSPointerCalibrationData::Location)((int)location + 1);
+	qWarning("new location: %d", location);
     } else {
+	qWarning("sto per fare Sanity Chack");
 	if ( sanityCheck() ) {
 	    QWSServer::mouseHandler()->calibrate( &cd );
 	    releaseMouse();

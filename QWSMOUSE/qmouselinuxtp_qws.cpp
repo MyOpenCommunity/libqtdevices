@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouselinuxtp_qws.cpp,v 1.5 2005/06/30 13:38:33 cvs Exp $
+** $Id: qmouselinuxtp_qws.cpp,v 1.6 2007/01/08 08:04:11 cvs Exp $
 **
 ** Implementation of Qt/Embedded mouse drivers
 **
@@ -95,7 +95,7 @@ typedef struct {
   
 //ORIGINALE #define QT_QWS_TP_PRESSURE_THRESHOLD 500
 //ORIGINALE #define QT_QWS_TP_MOVE_LIMIT 25
-#define QT_QWS_TP_MOVE_LIMIT 100
+#define QT_QWS_TP_MOVE_LIMIT 500
 
 #define QT_QWS_TP_SAMPLE_SIZE 5
 //ENDBONF
