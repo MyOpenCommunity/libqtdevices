@@ -1204,6 +1204,27 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
      delete dsi;
 }
 
+bool frame_interpreter_temperature_probe::
+is_frame_ours(openwebnet_ext m, bool& request_status)
+{
+    // FIXME: IS THIS OK ?
+    request_status = false;
+    if (strcmp(m.Extract_chi(),"4")) return false;
+    char dove[30];
+    strcpy(dove, m.Extract_dove());
+    if (dove[0]=='#')
+            strcpy(&dove[0], &dove[1]);
+    if(!strcmp(dove, "0")) {
+	char pippo[50];
+	// Richiesta via centrale
+	memset(pippo,'\000',sizeof(pippo));
+	strcat(pippo,"*#4*#");
+	strcat(pippo, where.ascii());
+	strcat(pippo,"##");
+	emit init_requested(QString(pippo));
+    }
+    return !strcmp(dove, where.ascii());
+}
 
 // Autom frame interpreter
 
@@ -2044,6 +2065,12 @@ get_init_message(device_status *s, QString& out)
       break;
     }
     case device_status::THERMR:
+    {
+      head = "*#4*#";
+      end = "##";
+      out = head + where + end;
+      break;
+    }
     default:
       out = "";
       break;
@@ -2060,6 +2087,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     stat_var curr_sp(stat_var::SP);
     int stat;
     bool do_event = false;
+    char pippo[50];
     // Read current status
     ds->read((int)device_status_thermr::STAT_INDEX, curr_stat);
     ds->read((int)device_status_thermr::LOCAL_INDEX, curr_local);
@@ -2085,6 +2113,12 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    do_event = true;
 	    stat = device_status_thermr::S_MAN;
 	}
+        //Richiesta set-point
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*#4*");
+        strcat(pippo,m.Extract_dove()+1);
+        strcat(pippo,"*14##");
+        emit init_requested(QString(pippo));
 	elaborato = true;
 	break;
     case 111:
@@ -2095,6 +2129,11 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 				  device_status_thermr::S_AUTO)) {
 	    do_event = true;
 	    stat = device_status_thermr::S_AUTO;
+            memset(pippo,'\000',sizeof(pippo));
+            strcat(pippo,"*#4*");
+            strcat(pippo,m.Extract_dove()+1);
+            strcat(pippo,"##");
+            emit init_requested(QString(pippo));
 	}
 	elaborato = true;
 	break;
@@ -2136,6 +2175,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	}
 	elaborato = true;
 	break;
+#if 0
     case 0:
     case 1:
       {
@@ -2150,6 +2190,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	emit(init_requested(m));
 	break;
       }
+#endif
     default:
 	// Do nothing
 	break;
@@ -2175,7 +2216,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	}
 	elaborato = true;
 	break;
-    case 12:
+//    case 12:
     case 14:
 	sp = atoi(m.Extract_valori(0));
 	qDebug("sp = %d", sp);

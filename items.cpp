@@ -3386,11 +3386,9 @@ void termoPage::aumSetpoint()
     
     memset(pippo,'\000',sizeof(pippo));
     icx=atoi(strstr(&setpoint[0],".")+1);
-    if(setpoint[0]=='-')
-        icx=-icx;
     icx+=atoi(&setpoint[0])*10;
-    if (icx<0)
-        icx=(abs(icx))+995;
+    if (icx>395)
+        return;
     else
         icx=(abs(icx))+5;
     
@@ -3412,11 +3410,9 @@ void termoPage::decSetpoint()
     
     memset(pippo,'\000',sizeof(pippo));
     icx=atoi(strstr(&setpoint[0],".")+1);
-    if(setpoint[0]=='-')
-        icx=-icx;
     icx+=atoi(&setpoint[0])*10;
-    if (icx<0)
-        icx=(abs(icx))+1005;
+    if (icx<35)
+        return;
     else
         icx=(abs(icx))-5;
     

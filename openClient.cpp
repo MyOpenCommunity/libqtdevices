@@ -33,6 +33,10 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon)
   
   // connect to the server
   connetti();
+
+  // azzero la variabile last_msg_open_read e last_msg_open_write
+  last_msg_open_read.CreateNullMsgOpen();
+  last_msg_open_write.CreateNullMsgOpen();
   
 /*  if (ismonitor) 
       qDebug( "Monitor");      
@@ -75,15 +79,20 @@ void Client::socketConnected()
 *****************************************************************************/
 void Client::ApriInviaFrameChiudi(char* frame)
 {
-    if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
+    if(strcmp(frame, last_msg_open_read.frame_open) != 0)
     {
-	//strcpy(&fr[0],frame);
-	connetti();	
-	sendToServer(SOCKET_COMANDI ); //lo metto qui else mando prima frame di questo!
+        last_msg_open_read.CreateMsgOpen(frame,strlen(frame));
+        if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
+        {
+	    //strcpy(&fr[0],frame);
+	    connetti();
+	    sendToServer(SOCKET_COMANDI ); //lo metto qui else mando prima frame di questo!
+        }
+        sendToServer(frame);
+        qDebug("invio: %s",frame);
     }
-    sendToServer(frame);
-    qDebug("invio: %s",frame);
-
+    else
+       qDebug("Frame Open <%s> already send", frame);
 #if 0
     openwebnet msg_open;
     msg_open.CreateMsgOpen(frame,strlen(frame));	  
@@ -218,17 +227,23 @@ int Client::socketFrameRead()
          if  (ismonitor)
       {
 	  //qDebug( "letta monitor");
-	  openwebnet msg_open;
-	  msg_open.CreateMsgOpen(buf,strlen(buf));	  
-	  qDebug("letto: %s", msg_open.frame_open);
-	  emit frameIn(msg_open.frame_open);
+	  qDebug("letto: %s", buf);
+          if(strcmp(buf, last_msg_open_read.frame_open) !=0 )
+          {
+            last_msg_open_read.CreateMsgOpen(buf,strlen(buf));
+            emit frameIn(buf);
+          }
+          else
+            qDebug("Frame Open duplicated");
       } else {
 	  if(!strcmp(buf, "*#*1##")) {
 	      qDebug("ack received");
+              last_msg_open_write.CreateNullMsgOpen();
 	      emit openAckRx();
 	  }
 	  else if(!strcmp(buf, "*#*0##")) {
 	      qDebug("nak received");
+              last_msg_open_write.CreateNullMsgOpen();
 	      emit openNakRx();
 	  }
       }

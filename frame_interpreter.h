@@ -194,6 +194,9 @@ class frame_interpreter_temperature_probe : public frame_interpreter {
     void set_status(device_status_temperature_probe *ds, int s);
     //! Analyze a frame for a pl status
     void handle_frame(openwebnet_ext, device_status_temperature_probe *);
+ protected:
+    //! Returns true when frame is ours (reimplemented for thermr, device
+    bool is_frame_ours(openwebnet_ext, bool& request_status);
  public:
     //! Constructor
     frame_interpreter_temperature_probe(QString, bool, int);

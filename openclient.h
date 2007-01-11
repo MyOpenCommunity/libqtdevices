@@ -75,6 +75,8 @@ class Client  : public QSocket
     QTimer* tick;  
     void socketStateRead(char*);
     bool ackRx;
+    openwebnet last_msg_open_read;
+    openwebnet last_msg_open_write;
    // char fr[100];
 	    
      signals:
