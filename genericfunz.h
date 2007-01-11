@@ -90,4 +90,8 @@ bool setCfgValue(int , const char*, const char* ,int);
 */     
 bool copyFile(char*, char*);
 void  comChConf();
+ /*!
+  \brief Retrieves the name of the device.
+*/
+void  getName(char *name);
 

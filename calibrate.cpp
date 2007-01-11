@@ -21,11 +21,24 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
     logo.load("cfg/skin/my_home.png");
 //    bersaglio.load("cfg/skin/bersaglio.png");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
+  if(!strcmp(getenv("QWS_DISPLAY"), "Transformed:Rot180"))
+  {
+    cd.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint( offset, offset );
+    cd.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint( offset, qt_screen->deviceHeight() - offset );
+    cd.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint( qt_screen->deviceWidth() - offset, qt_screen->
+deviceHeight() - offset );
+    cd.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint( qt_screen->deviceWidth() - offset, offset );
+    cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint( qt_screen->deviceWidth()/2, qt_screen->deviceHeight
+()/2 );
+  }
+  else
+  {
     cd.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint( offset, offset );
     cd.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint( offset, qt_screen->deviceHeight() - offset );
     cd.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint( qt_screen->deviceWidth() - offset, qt_screen->deviceHeight() - offset );
     cd.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint( qt_screen->deviceWidth() - offset, offset );
     cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint( qt_screen->deviceWidth()/2, qt_screen->deviceHeight()/2 );
+  }
     crossPos = fromDevice( cd.screenPoints[QWSPointerCalibrationData::TopLeft] );
     location = QWSPointerCalibrationData::TopLeft;
    setCursor (QCursor (blankCursor));

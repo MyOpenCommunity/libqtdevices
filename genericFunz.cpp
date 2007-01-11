@@ -24,8 +24,6 @@
 
 #define CONFILENAME	"cfg/conf.xml"
 
-
-
 void getPressName(char* name, char* pressName,char len)
 {
     memset(pressName,'\000',len);
@@ -245,6 +243,36 @@ unsigned char getContrast()
 
 void setBacklight(bool b)
 {
+  char name[50];
+
+  getName(name);
+  if(!strncmp(name, "H4684_IP", strlen("H4684_IP")))
+  {
+    if ( QFile::exists("/proc/sys/dev/btweb/brightness") )
+    {
+	int fd = open("/proc/sys/dev/btweb/brightness", O_WRONLY);
+	if (fd >= 0 )
+	{
+	    if (b)
+		write(fd, "10", 2);
+	    else
+		write(fd, "220", 3);
+	    close(fd);
+	}
+    }
+    if ( QFile::exists("/proc/sys/dev/btweb/backlight") )
+    {
+        int fd = open("/proc/sys/dev/btweb/backlight", O_WRONLY);
+        if (fd >= 0 )
+        {
+            if (b)
+                write(fd, "1", 1);
+            close(fd);
+        }
+    }
+  }
+  else
+  {
     if ( QFile::exists("/proc/sys/dev/btweb/backlight") )
     {
 	int fd = open("/proc/sys/dev/btweb/backlight", O_WRONLY);
@@ -257,6 +285,7 @@ void setBacklight(bool b)
 	    close(fd);
 	}
     }
+  }
 }
 
 void setBeep(bool b,bool ab)
@@ -312,25 +341,40 @@ bool getBeep()
 
 bool getBacklight()
 {
-    unsigned char c;
+  char c[4];
+  char name[50];
+  int fd;
+
+  getName(name);
+  if(!strncmp(name, "H4684_IP", strlen("H4684_IP")))
+  {
+    if ( QFile::exists("/proc/sys/dev/btweb/brightness") )
+    {
+        fd = open("/proc/sys/dev/btweb/brightness", O_RDONLY);
+        if (fd >= 0 )
+        {
+            read(fd, &c[0], 4);
+            close(fd);
+            if (atoi(&c[0]) < 100)
+              return(TRUE);
+        }
+    }
+  }
+  else
+  {
     if ( QFile::exists("/proc/sys/dev/btweb/backlight") )
     {
-	FILE*fd = fopen("/proc/sys/dev/btweb/backlight",  "r");
-	if (fd >= 0 )
-	{	 	    
-	    fread (&c ,1, 1,fd);	 
-	    fclose(fd);
-	    if (c!='0')
-	    {
-		return(TRUE);
-	    }
-	    else
-	    {
-		return(FALSE);		
-	    }
-	}
+      fd = open("/proc/sys/dev/btweb/backlight", O_RDONLY);
+      if (fd >= 0 )
+      {	 	    
+        read (fd, &c[0], 1);	 
+        close(fd);
+        if (c[0]!='0')
+          return(TRUE);
+      }
     }
-    return(FALSE);    
+  }
+  return(FALSE);
 }
 
 
@@ -429,6 +473,22 @@ void  comChConf()
 	close(fd);
     }
     
+}
+
+void getName(char *name)
+{
+  memset(name, '\0', sizeof(name));
+  if (QFile::exists("/proc/sys/dev/btweb/name"))
+  {
+    int fd = open("/proc/sys/dev/btweb/name", O_RDONLY);
+    if (fd >= 0 )
+    {
+      read(fd, &name[0], 50);
+      close(fd);
+      return;
+    }
+  }
+  return;
 }
 
 #if 0
