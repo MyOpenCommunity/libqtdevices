@@ -79,9 +79,9 @@ void Client::socketConnected()
 *****************************************************************************/
 void Client::ApriInviaFrameChiudi(char* frame)
 {
-    if(strcmp(frame, last_msg_open_read.frame_open) != 0)
+    if(strcmp(frame, last_msg_open_write.frame_open) != 0)
     {
-        last_msg_open_read.CreateMsgOpen(frame,strlen(frame));
+        last_msg_open_write.CreateMsgOpen(frame,strlen(frame));
         if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
         {
 	    //strcpy(&fr[0],frame);
