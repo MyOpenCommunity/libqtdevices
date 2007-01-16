@@ -627,6 +627,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
                             QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
                             QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+			     QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
                             //(*termo)->inizializza();
                             break;
                         case DIFSON:
