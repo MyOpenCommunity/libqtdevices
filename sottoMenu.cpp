@@ -267,7 +267,7 @@ void sottoMenu::addItem(banner *b)
 void sottoMenu::draw()
 {
     uint idx,idy;
-    //qDebug("sottoMenu::draw()");
+    qDebug("sottoMenu::draw() (%s)", name());
     if (!(indicold==indice))
     {
       //qDebug("indicold=%d - indice=%d",indicold,indice);
@@ -388,6 +388,26 @@ void sottoMenu::init()
 	elencoBanner.at (idx) -> inizializza();     
 }
 
+void sottoMenu::init_dimmer()
+{
+	qDebug("sottoMenu::init_dimmer()");
+	for (char idx=0;idx<elencoBanner.count();idx++)
+	{
+		switch(elencoBanner.at(idx)->getId())
+		{
+			case DIMMER:
+			case DIMMER_100:
+			case ATTUAT_AUTOM:
+			case ATTUAT_AUTOM_TEMP:
+			case ATTUAT_AUTOM_TEMP_NUOVO_N:
+			case ATTUAT_AUTOM_TEMP_NUOVO_F:
+				elencoBanner.at (idx) -> inizializza(true);
+				break;
+			default:
+				break;
+		}
+	}
+}
 
 bool sottoMenu::setPul(char* chi, char* where)
 {
@@ -550,11 +570,13 @@ void  sottoMenu::setIndice(char c)
         indice=c;
 }
 
-/*void sottoMenu::show()
+void sottoMenu::show()
 {
-    draw();
+    qDebug("sottoMenu::show() (%s)", name());
+    if(strcmp(name(), "ILLUMINO")==0)
+		 init_dimmer();
     QWidget::show();
-}*/
+}
 
 void sottoMenu::reparent ( QWidget * parent, WFlags f, const QPoint & p, 
 			   bool showIt)

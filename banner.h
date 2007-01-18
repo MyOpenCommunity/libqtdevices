@@ -270,7 +270,7 @@ the arguments describe the images to put on the buttons and into the describing 
     QTimer *animationTimer;
     uchar 	numRighe;
     unsigned char stato;
-    virtual void inizializza();	
+    virtual void inizializza(bool forza=false);	
     //provvisoriamente per debug li metto public
     char testo[MAX_PATH*2],testoSecondario[MAX_TEXT_2];
 /*!

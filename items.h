@@ -36,7 +36,7 @@ class dimmer : public bannRegolaz
     Q_OBJECT
 public:
      dimmer( QWidget *, const char *,char*,char*,char*,char*,char*,char*);     
-     virtual void inizializza();
+     virtual void inizializza(bool forza = false);
      void Draw();
 public slots:
       //virtual void gestFrame(char*);
@@ -80,7 +80,7 @@ class dimmer100 : public dimmer
  public:
     dimmer100( QWidget *, const char *,char*,char*,char*,char*,char*,char*,
 	       int, int); 
-    void inizializza();
+    void inizializza(bool forza=false);
     //void Draw();
 #if 0
     public slots:
@@ -130,7 +130,7 @@ class attuatAutom : public bannOnOff
     Q_OBJECT
 public:
     attuatAutom( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0); 
-    void inizializza();
+    void inizializza(bool forza=false);
 public slots:
 	//void gestFrame(char*);
  void status_changed(QPtrList<device_status>); 
@@ -432,7 +432,7 @@ class attuatAutomTemp : public bannOnOff2scr
     Q_OBJECT
 public:
      attuatAutomTemp ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
-    virtual void inizializza();
+    virtual void inizializza(bool forza=false);
     ~attuatAutomTemp();
 public slots:
       //virtual void gestFrame(char*);
@@ -483,7 +483,7 @@ class attuatAutomTempNuovoN : public attuatAutomTemp
     Q_OBJECT ;
 public:
     attuatAutomTempNuovoN ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
-    void inizializza();
+    void inizializza(bool forza=false);
 public slots:
       //void gestFrame(char*);
     void status_changed(QPtrList<device_status>); 
@@ -520,7 +520,7 @@ class attuatAutomTempNuovoF : public bannOn2scr
     Q_OBJECT ;
 public:
     attuatAutomTempNuovoF ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, const char *tempo=NULL);
-    void inizializza();
+    void inizializza(bool forza=false);
     void SetIcons(char *, char *, char *);
     void Draw();
 public slots:
@@ -1453,5 +1453,3 @@ signals:
 };
 
 #endif // SORG_AUX_DIFF_SON_H
-
-

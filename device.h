@@ -201,6 +201,10 @@ class device_status_new_timed : public device_status {
     //~device_status_temp_new();
 };
 
+#ifndef AUTOM_REQ_DELAY
+#define AUTOM_REQ_DELAY 6000
+#endif
+
 //! Autom device status 
 class device_status_autom : public device_status {
  private:
@@ -209,6 +213,8 @@ class device_status_autom : public device_status {
 	STAT_INDEX = 0,
     } ind;
     device_status_autom();
+    //! Return delay for init request deferral (msecs)
+    virtual int init_request_delay() { return AUTOM_REQ_DELAY; }
 };
 
 //! Temperature probe status

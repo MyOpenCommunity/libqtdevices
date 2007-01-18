@@ -1288,7 +1288,12 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     evt_list.clear();
     device_status *ds = dsi->current();
     if(request_status) {
-	request_init(ds);
+      if(strcmp(msg_open.Extract_dove(), "0") == 0)
+		{
+			request_init(ds, ds->init_request_delay());
+		}
+		else
+			request_init(ds);
 	goto end;
     }
     {
@@ -2404,4 +2409,3 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	emit(frame_event(evt_list));
     delete dsi;
 }
-

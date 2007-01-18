@@ -268,6 +268,10 @@ public slots:
 */   
   void	init();    
 /*!
+  \brief  See inizializza().
+*/   
+  void	init_dimmer();    
+/*!
   \brief  Sets all the banners disabled.
 */     
   void 	freezed(bool);
@@ -291,6 +295,7 @@ public slots:
   \brief  Empties the banner list.
 */    
   void 	svuota();
+  void 	show();
 protected:
   QPtrList<banner> elencoBanner;
   QTimer* iniTim;

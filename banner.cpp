@@ -1013,7 +1013,7 @@ bool banner::isForMe(openwebnet& m)
 			   *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
 }
 
-void banner:: inizializza(){}
+void banner:: inizializza(bool forza){}
 
 //char* banner::getChi(){return(NULL);}
 void  banner::rispStato(char*){}

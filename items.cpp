@@ -223,7 +223,7 @@ void dimmer:: Diminuisci()
     emit sendFrame(msg_open.frame_open);   
 }
 
-void dimmer::inizializza()
+void dimmer::inizializza(bool forza)
 {   
     openwebnet msg_open;
     char    pippo[50];
@@ -234,7 +234,10 @@ void dimmer::inizializza()
     strcat(pippo,getAddress());
     strcat(pippo,"##");
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit richStato(msg_open.frame_open);    
+    if(!forza)
+      emit richStato(msg_open.frame_open);    
+    else
+      emit sendFrame(msg_open.frame_open);   
 }
 
 
@@ -411,16 +414,21 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
     delete dsi;
 }
 
-void dimmer100::inizializza()
+void dimmer100::inizializza(bool forza)
 {   
     openwebnet msg_open;
-    char    pippo[50];    
+    char    pippo[50];
+    qDebug("dimmer100::inizializza");
+
     memset(pippo,'\000',sizeof(pippo));
     strcat(pippo,"*#1*");
     strcat(pippo,getAddress());
     strcat(pippo,"*1##"); 
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0])); 
-    emit richStato(msg_open.frame_open);
+    if(!forza)
+      emit richStato(msg_open.frame_open);
+    else
+      emit sendFrame(msg_open.frame_open);
 }
 
 /*****************************************************************
@@ -546,7 +554,7 @@ char* attuatAutom::getChi()
     return("1");
 }
 
-void attuatAutom::inizializza()
+void attuatAutom::inizializza(bool forza)
 { 
     openwebnet msg_open;
     char    pippo[50];
@@ -556,7 +564,10 @@ void attuatAutom::inizializza()
     strcat(pippo,getAddress());
     strcat(pippo,"##");
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit richStato(msg_open.frame_open);    
+    if(!forza)
+      emit richStato(msg_open.frame_open);
+    else
+      emit sendFrame(msg_open.frame_open);    
 }
 
 /*****************************************************************
@@ -1478,7 +1489,7 @@ void attuatAutomTemp::CiclaTempo()
     Draw();
 }
 
-void attuatAutomTemp::inizializza()
+void attuatAutomTemp::inizializza(bool forza)
 { 
     openwebnet msg_open;
     char    pippo[50];
@@ -1611,7 +1622,7 @@ void attuatAutomTempNuovoN::Attiva()
 }
 
 // *#1*dove*2## 
-void attuatAutomTempNuovoN::inizializza()
+void attuatAutomTempNuovoN::inizializza(bool forza)
 { 
     openwebnet msg_open;
     char    pippo[50];
@@ -1823,7 +1834,7 @@ void attuatAutomTempNuovoF::Attiva()
 }
 
 // *#1*dove*2## 
-void attuatAutomTempNuovoF::inizializza()
+void attuatAutomTempNuovoF::inizializza(bool forza)
 { 
     openwebnet msg_open;
     char    pippo[50];
