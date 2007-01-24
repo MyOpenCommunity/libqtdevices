@@ -121,6 +121,13 @@ void timeScript::stopDate()
 
 void timeScript::reset()
 {
+    if(mioClock)
+    {
+        QDateTime OroTemp = QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
+        delete(mioClock);
+        mioClock = new QDateTime(OroTemp);
+    }
+
     stopDate();
 }
 

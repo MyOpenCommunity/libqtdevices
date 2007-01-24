@@ -284,6 +284,7 @@ void impostaTime::mostra()
      dataOra->setFrameStyle( QFrame::Plain );
      dataOra->setLineWidth(0);    
 #else
+
      qDebug("impostaTime::mostra()");
      //dataOra->stopDate();
      dataOra->reset();

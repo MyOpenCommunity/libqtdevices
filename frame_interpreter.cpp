@@ -2102,12 +2102,12 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     qDebug("curr sp is %d", curr_sp.get_val());
     int cosa = atoi(m.Extract_cosa());
     qDebug("cosa = %d", cosa);
-    if((curr_stat.get_val() != device_status_thermr::S_MAN) &&
+    /*if((curr_stat.get_val() != device_status_thermr::S_MAN) &&
        (curr_stat.get_val() != device_status_thermr::S_AUTO) && 
        m.Extract_dove()[0] == '#') {
       qDebug("Ignoring frame (status is %d)", curr_stat.get_val());
       return;
-    }
+    }*/
     switch(cosa) {
     case 110:
     case 210:
