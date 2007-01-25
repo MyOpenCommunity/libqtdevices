@@ -2218,6 +2218,18 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    curr_local.set_val(loc);
 	    ds->write_val((int)device_status_thermr::LOCAL_INDEX, curr_local);
 	    evt_list.append(ds);
+            if(!ds->initialized() || 
+             ((curr_stat.get_val() != device_status_thermr::S_AUTO) && 
+              (curr_stat.get_val() != device_status_thermr::S_MAN) &&
+             (loc == 13))) {
+                do_event = true;
+                memset(pippo,'\000',sizeof(pippo));
+                stat = device_status_thermr::S_MAN;
+                strcat(pippo,"*#4*#");
+                strcat(pippo,m.Extract_dove());
+                strcat(pippo,"##");
+                emit init_requested(QString(pippo));
+            }
 	}
 	elaborato = true;
 	break;
