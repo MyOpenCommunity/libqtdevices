@@ -806,3 +806,9 @@ void BtMain::endCalib()
     qDebug("BtMain::endCalib()");
     calibrating = false;
 }
+
+void BtMain::ResetTimer()
+{
+    qDebug("BtMain::ResetTimer()");
+    emit(resettimer());
+}
