@@ -1129,8 +1129,11 @@ bool xmlconfhandler::characters( const QString & qValue)
 			    else if(!CurTagL5.compare("condH"))
 			    {
 				if(!page_item_cond)
+				{
 				    page_item_cond = new scenEvo_cond_h(NULL,
 									"cond h s.evo.");
+					QObject::connect(BtM, SIGNAL(resettimer()), page_item_cond, SLOT(setupTimer()));
+				}
 				scenEvo_cond_h *ch = (scenEvo_cond_h *)
 				    page_item_cond;
 				// Hour condition

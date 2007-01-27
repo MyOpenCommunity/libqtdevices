@@ -19,6 +19,7 @@
 #include "genericfunz.h"
 #include "openclient.h"
 #include "main.h"
+#include "btmain.h"
 #include <qiodevice.h>
 #include <qdir.h>
 
@@ -491,6 +492,13 @@ void getName(char *name)
   return;
 }
 
+extern BtMain *BTouch;
+
+void ResetTimer(int signo)
+{
+    qDebug("ResetTimer()");
+    BTouch->ResetTimer();
+}
 #if 0
 bool isForMe(openwebnet& m, char *chi = "1")
 {

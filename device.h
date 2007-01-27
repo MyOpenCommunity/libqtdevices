@@ -150,7 +150,7 @@ class device_status_light : public device_status {
 };
 
 #ifndef DIMMER_REQ_DELAY
-#define DIMMER_REQ_DELAY 1000
+#define DIMMER_REQ_DELAY 4000
 #endif
 
 //! Dimmer status
@@ -169,7 +169,7 @@ class device_status_dimmer : public device_status {
 };
 
 #ifndef DIMMER100_REQ_DELAY
-#define DIMMER100_REQ_DELAY 1000
+#define DIMMER100_REQ_DELAY 4000
 #endif
 
 //! Dimmer 100 status

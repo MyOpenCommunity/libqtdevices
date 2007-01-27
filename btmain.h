@@ -77,12 +77,14 @@ public:
     Client * client_comandi;
     Client *  client_monitor; 
     versio* datiGen;
+    void ResetTimer();
 signals:
 /*!
   \brief Emitted to (de)freeze the console
 */  
     void freeze(bool);
 //    void sendFrame(char*);
+    void resettimer();
 private slots:    
     void hom();
     void myMain();

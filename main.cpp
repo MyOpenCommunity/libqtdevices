@@ -59,6 +59,8 @@ void myMessageOutput( QtMsgType type, const char *msg )
 }
 
 
+BtMain *BTouch;
+
 int main( int argc, char **argv )
 {
 /*******************************************
@@ -114,17 +116,15 @@ int main( int argc, char **argv )
     QApplication a( argc, argv );
     
     signal(SIGUSR1, MySignal);
-    signal(SIGUSR2, MySignal);    
-          
+    signal(SIGUSR2, ResetTimer);
+
     qDebug("Start BtMain");
     
+  #if 0
     BtMain mainprogr(NULL,"MAIN PROGRAM",&a);
+  #else
+    BTouch = new BtMain(NULL,"MAIN PROGRAM",&a);
+  #endif
 
     return a.exec();
 }
-
-
-
-
-
-

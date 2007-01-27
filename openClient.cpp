@@ -11,6 +11,7 @@
 #include <qsocket.h>
 #include <qtextstream.h>
 #include "openclient.h"
+#include "genericfunz.h"
 #include <unistd.h>
 
 
@@ -185,8 +186,9 @@ int Client::socketFrameRead()
   char * pnt;
   int num=0,n_read=0;
   
-  // read from the server
-   
+  //riarmo il WD
+  rearmWDT();
+  // read from the server 
   for(;;)
   {
       memset(buf,'\0',sizeof(buf));

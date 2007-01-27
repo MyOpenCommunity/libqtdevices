@@ -548,7 +548,7 @@ light::light(QString w, bool p, int g) : device(QString("1"), w, p, g)
 // Dimmer implementation
 dimm::dimm(QString w, bool p, int g) : device(QString("1"), w, p, g)
 {
-    interpreter = new frame_interpreter_lights(w, p, g);
+    interpreter = new frame_interpreter_dimmer(w, p, g);
     set_frame_interpreter(interpreter);
     stat->append(new device_status_dimmer());
     connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),

@@ -95,3 +95,4 @@ void  comChConf();
 */
 void  getName(char *name);
 
+void ResetTimer(int signo);

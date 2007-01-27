@@ -168,6 +168,24 @@ class frame_interpreter_lights : public frame_interpreter {
     void handle_frame_handler(char *, QPtrList<device_status> *);
 };
 
+//! Dimmer frame interpreter
+class frame_interpreter_dimmer : public frame_interpreter {
+    Q_OBJECT
+ private:
+    //! Set status, dimmer
+    void set_status(device_status_dimmer *ds, int s);
+    //! Analyze a frame for a dimmer status
+    void handle_frame(openwebnet_ext, device_status_dimmer *);
+ public:
+    //! Constructor
+    frame_interpreter_dimmer(QString, bool, int);
+    //! Returns init message given device status
+    void get_init_message(device_status *, QString&);
+ public slots:
+    //! Receive a frame
+    void handle_frame_handler(char *, QPtrList<device_status> *);
+};
+
 //! Autom frame interpreter
 class frame_interpreter_autom : public frame_interpreter {
     Q_OBJECT

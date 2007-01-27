@@ -1109,17 +1109,232 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
     }
 }
 
+
+// Dimmers frame interpreter
+
+// Public methods
+frame_interpreter_dimmer::frame_interpreter_dimmer(QString w, bool p, int g) :
+    frame_interpreter(QString("1"), w, p, g)
+{
+}
+
+void frame_interpreter_dimmer::get_init_message(device_status *s, QString& out)
+{
+  out = "*#1*" + where + "##";
+}
+
+void frame_interpreter_dimmer::
+handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+{
+    bool request_status;
+    openwebnet_ext msg_open;
+    qDebug("frame_interpreter_dimmer::handle_frame_handler");
+    qDebug("#### frame is %s ####", frame);
+    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+    if(!is_frame_ours(msg_open, request_status))
+	// Discard frame if not ours
+	return;
+    // Walk through list of device_status' and pass frame to relevant 
+    // handler method
+    QPtrListIterator<device_status> *dsi = 
+	new QPtrListIterator<device_status>(*sl);
+    dsi->toFirst();
+    device_status *ds;
+    evt_list.clear();
+    bool dimmer_request = false;
+    device_status *dimmer_ds;
+    while( ( ds = dsi->current() ) != 0) {
+	if(request_status) {
+	    // Frame could be ours, but we need to check device status 
+	    // and see if it really changed
+	    // Lights and old dimmers have the same status request message
+	    // Just avoid sending the same request twice
+	    if(ds->get_type() == device_status::DIMMER) {
+		dimmer_request = true;
+		dimmer_ds = ds;
+	    }
+	    goto next;
+	}
+	{
+	    device_status::type type = ds->get_type();
+	    switch (type) {
+	    case device_status::DIMMER:
+		qDebug("**** DIMMER *****");
+		handle_frame(msg_open, (device_status_dimmer *)ds);
+		break;
+	    default:
+		// Do nothing
+		break;
+	    }
+	}
+    next:
+	++(*dsi);
+    }
+    if(dimmer_request) 
+	request_init(dimmer_ds, dimmer_ds->init_request_delay());
+	if(!evt_list.isEmpty()) {
+	qDebug("Event list is not empty, invoking emit(frame_event())");
+	emit(frame_event(evt_list));
+    } else
+	qDebug("**** NO event generated");
+    delete dsi;
+    qDebug("frame_interpreter_lights::handle_frame_handler, end");
+}
+
+// Private methods
+void frame_interpreter_dimmer::set_status(device_status_dimmer *ds, int lev)
+{
+    bool do_event = false;
+    bool reinit = false;
+    int fault_on = 1, fault_off = 0;
+    // Read current status of variables
+    stat_var curr_lev(stat_var::LEV), curr_old_lev(stat_var::OLD_LEV), 
+      curr_fault(stat_var::FAULT);
+    ds->read((int)device_status_dimmer::LEV_INDEX, curr_lev);
+    ds->read((int)device_status_dimmer::OLD_LEV_INDEX, curr_old_lev);
+    ds->read((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+    if((lev < 0) && !curr_fault.get_val()) {
+      // FAULT
+      qDebug("dimmer FAULT");
+      curr_fault.set_val(fault_on);
+      ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+      do_event = true;
+      goto end;
+    }
+    if((lev >= 0) && curr_fault.get_val()) {
+      // FAULT RECOVERY
+      qDebug("dimmer FAULT RECOVERY");
+      curr_fault.set_val(fault_off);
+      ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+      reinit = true;
+    }
+    if((!ds->initialized() && (lev!=1)) || reinit) {
+	curr_lev.set_val(lev);
+	curr_old_lev.set_val(lev);
+	ds->write_val((int)device_status_dimmer::LEV_INDEX, curr_lev);
+	ds->write_val((int)device_status_dimmer::OLD_LEV_INDEX, curr_old_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+	qDebug("initializing dimmer");
+	do_event = true;
+	goto end;
+    }
+    if(((lev == 1) && !curr_lev.get_val())) {
+	// ON, restore old val
+	qDebug("dimmer ON, restoring old value for level");
+	int old_lev = curr_old_lev.get_val();
+	curr_lev.set_val(old_lev);
+	ds->write_val((int)device_status_dimmer::LEV_INDEX, curr_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+	do_event = true ;
+    }
+    if(lev != curr_lev.get_val()) {
+	int old_lev = curr_lev.get_val();
+	curr_old_lev.set_val(old_lev);
+	curr_lev.set_val(lev);
+	qDebug("setting dimmer status to %d", lev);
+	ds->write_val((int)device_status_dimmer::LEV_INDEX, curr_lev);
+	curr_fault.set_val(fault_off);
+	ds->write_val((int)device_status_dimmer::FAULT_INDEX, curr_fault);
+	do_event = true ;
+    }
+ end:
+    if(do_event) {
+	qDebug("frame_interpreter_lights::set_status() (dimmer), "
+	       "appending evt");
+	evt_list.append(ds);
+    }
+}
+
+void frame_interpreter_dimmer::handle_frame(openwebnet_ext m, 
+					    device_status_dimmer *ds)
+{
+    qDebug("frame_interpreter_lights::handle_frame(), dimmer");
+    stat_var sv(stat_var::LEV);
+    if(m.IsNormalFrame()) {
+	int cosa = atoi(m.Extract_cosa());
+	switch(cosa) {
+	case 0:
+	    // OFF , 
+	    set_status(ds, 0);
+	    break;
+	case 1:
+	    // ON
+	    if(ds->initialized()) {
+		stat_var curr_lev(stat_var::LEV);
+		ds->read((int)device_status_dimmer100::LEV_INDEX, curr_lev);
+		if(curr_lev.get_val())
+		    set_status(ds, 1);
+		else 
+		    request_init(ds);
+	    } else {
+		qDebug("emit(request_init(ds))");
+		request_init(ds);
+	    }
+	    break;
+	case 19:
+	    // FAULT
+	    set_status(ds, -1);
+	    break;
+	case 30:
+	    // UP
+	    ds->read((int)device_status_dimmer::LEV_INDEX, sv);
+	    if(ds->initialized())
+		set_status(ds, sv.get_val() + sv.get_step());
+	    else
+		request_init(ds);
+	    break;
+	case 31:
+	    // DOWN
+	    ds->read((int)device_status_dimmer::LEV_INDEX, sv);
+	    if(ds->initialized())
+		set_status(ds, sv.get_val() - sv.get_step());
+	    else
+		request_init(ds);
+	    break;
+	default:
+	  if((cosa >=2) && (cosa <= 10)) {
+		// Dimmer level
+#if 0
+		set_status(ds, (cosa - 1) * 10);
+#else
+	        qDebug("setting dimmer level to %d", cosa *10);
+	        set_status(ds, cosa * 10);
+#endif
+	    } else if((cosa >= 11) && (cosa <= 19)) {
+		// What shall we do here ?                
+	        set_status(ds, 1);
+	    } else if((cosa >= 20) && (cosa <= 29)) {
+		// What shall we do here ?
+	        set_status(ds, 1);
+	    }
+	    break;
+	} 
+    } else if(m.IsMeasureFrame()) {
+	// *#1*where*1*lev*speed##
+	int code = atoi(m.Extract_grandezza());
+	int lev, hh, mm, ss;
+	qDebug("frame_interpreter_lights::handle_frame, dimmer, meas frame");
+	qDebug("emit(request_init(ds))");
+	request_init(ds);
+    } else if(m.IsWriteFrame()) {
+	qDebug("frame_interpreter_lights::handle_frame, light, write frame");
+	qDebug("emit(request_init(ds))");
+	request_init(ds);
+
+    }
+}
+
 // Temperature probe frame interpreter
 
 // Public methods
-frame_interpreter_temperature_probe::
-frame_interpreter_temperature_probe(QString w, bool p, int g) :
+frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString w, bool p, int g) :
     frame_interpreter(QString("4"), w, p, g)
 {
 }
 
-void frame_interpreter_temperature_probe::
-get_init_message(device_status *s, QString& out)
+void frame_interpreter_temperature_probe::get_init_message(device_status *s, QString& out)
 {
     QString head = "*#4*";
     QString end = "##";
@@ -1127,8 +1342,7 @@ get_init_message(device_status *s, QString& out)
 }
 
 // Private methods
-void frame_interpreter_temperature_probe::
-set_status(device_status_temperature_probe *ds, int t)
+void frame_interpreter_temperature_probe::set_status(device_status_temperature_probe *ds, int t)
 {
     qDebug("frame_interpreter_temperature_probe::set_status"
 	   "(device_status_temperature_probe, %d)", t);
@@ -1159,12 +1373,11 @@ set_status(device_status_temperature_probe *ds, int t)
 	evt_list.append(ds);
 }
 
-void frame_interpreter_temperature_probe::
-handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+void frame_interpreter_temperature_probe::handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
     bool request_status = false;
     openwebnet_ext msg_open;
-    qDebug("frame_interpreter_temperature::handle_frame_handler");
+    qDebug("frame_interpreter_temperature_probe::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
     if(!is_frame_ours(msg_open, request_status))
@@ -1204,26 +1417,36 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
      delete dsi;
 }
 
-bool frame_interpreter_temperature_probe::
-is_frame_ours(openwebnet_ext m, bool& request_status)
+bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
-    // FIXME: IS THIS OK ?
-    request_status = false;
-    if (strcmp(m.Extract_chi(),"4")) return false;
-    char dove[30];
-    strcpy(dove, m.Extract_dove());
-    if (dove[0]=='#')
-            strcpy(&dove[0], &dove[1]);
-    if(!strcmp(dove, "0")) {
-	char pippo[50];
-	// Richiesta via centrale
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#4*#");
-	strcat(pippo, where.ascii());
-	strcat(pippo,"##");
-	emit init_requested(QString(pippo));
-    }
-    return !strcmp(dove, where.ascii());
+  // FIXME: IS THIS OK ?
+  qDebug("frame_interpreter_temperature_probe::is_frame_ours");
+  qDebug("who = %s, where = %s", who.ascii(), where.ascii());
+  qDebug("msg who = %s, msg where = %s", m.Extract_chi(), m.get_where().ascii());
+  request_status = false;
+  if (strcmp(m.Extract_chi(),"4"))
+    return false;
+  char dove[30];
+  strcpy(dove, m.Extract_dove());
+  if (dove[0]=='#')
+    strcpy(&dove[0], &dove[1]);
+  if(!strcmp(dove, "0"))
+  {
+    char pippo[50];
+    // Richiesta via centrale
+    memset(pippo,'\000',sizeof(pippo));
+    strcat(pippo,"*#4*#");
+    strcat(pippo, where.ascii());
+    strcat(pippo,"##");
+    emit init_requested(QString(pippo));
+  }
+  if(!strcmp(dove, where.ascii()))
+  {
+    qDebug("FRAME IS OURS !!");
+    return true;
+  }
+  else
+    return false;
 }
 
 // Autom frame interpreter

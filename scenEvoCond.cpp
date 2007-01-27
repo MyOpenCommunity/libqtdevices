@@ -598,7 +598,7 @@ void scenEvo_cond_d::setFGColor(QColor c)
 
 void scenEvo_cond_d::setEnabled(bool e)
 {
-    qDebug("scenEvo_cond_h::setEnabled(%d)", e);
+    qDebug("scenEvo_cond_d::setEnabled(%d)", e);
     for(int i=0; i<7; i++)
 	if(but[i])
 	    but[i]->setEnabled(e);
@@ -1196,7 +1196,7 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
 		satisfied = false;
 	    break;
 	case device_status::DIMMER:
-	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+	    ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
 	    qDebug("dimmer status variation");
 	    qDebug("level = %d", curr_lev.get_val());
 	    qDebug("trigger value is %d, val10 = %d", trig_v, curr_lev.get_val());
