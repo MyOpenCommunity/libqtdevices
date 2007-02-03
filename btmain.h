@@ -30,7 +30,7 @@
 #include <qmainwindow.h> 
 
 
-#define BALL_NUM	5
+#define BALL_NUM	10
 
 /*!
   \class palla
