@@ -206,6 +206,26 @@ void impostaTime::OKTime()
     connect( but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
     connect( but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
 }
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+     openwebnet msg_open;
+     char    pippo[50];
+     QString s;
+
+     memset(pippo,'\000',sizeof(pippo));
+     strcat(pippo,"*#13**#0*");
+     s=dataOra->getDataOra().toString("hh");
+     strcat(pippo,s.ascii());
+     strcat(pippo,"*");
+     s=dataOra->getDataOra().toString("mm");
+     strcat(pippo,s.ascii());
+     strcat(pippo,"*");
+     s=dataOra->getDataOra().toString("ss");
+     strcat(pippo,s.ascii());
+     strcat(pippo,"**##");
+
+     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+     emit sendFrame(msg_open.frame_open);
+#endif
 }
 
 void impostaTime::OKDate()
@@ -240,16 +260,7 @@ void impostaTime::OKDate()
      QString s;
      
      memset(pippo,'\000',sizeof(pippo));
-     strcat(pippo,"*#13**#22*");
-     s=dataOra->getDataOra().toString("hh");
-     strcat(pippo,s.ascii());     
-     strcat(pippo,"*");
-     s=dataOra->getDataOra().toString("mm");
-     strcat(pippo,s.ascii());     
-     strcat(pippo,"*");
-     s=dataOra->getDataOra().toString("ss");
-     strcat(pippo,s.ascii());     
-     strcat(pippo,"***");
+     strcat(pippo,"*#13**#1*00*");
      s=dataOra->getDataOra().toString("dd");
      strcat(pippo,s.ascii());     
      strcat(pippo,"*");
