@@ -62,6 +62,7 @@ signals:
   \brief Emitted to send \a Open \a frame to ask which are the versions mounted on the device
 */ 
      void sendFrame(char*);	
+     void	sendInit(char*);
 private:
      unsigned char vers;
      unsigned char release;

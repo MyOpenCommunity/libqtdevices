@@ -60,8 +60,9 @@ v** Socket
     qDebug("parte BtMain");
    
     client_comandi = new  Client("127.0.0.1",20000,0);
-    client_monitor	 = new  Client("127.0.0.1",20000,1); 
-    btouch_device_cache.set_clients(client_comandi, client_monitor);
+    client_monitor = new  Client("127.0.0.1",20000,1);
+    client_richieste = new Client("127.0.0.1",20000,0, true);
+    btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
     connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
     
     setBacklight(TRUE);
@@ -213,7 +214,7 @@ void BtMain::hom()
    if (QFile::exists("cfg/conf.xml"))
      { 
                     qDebug("scello %d",bg);
-    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &dm, &antintr,&pagDefault, client_comandi, client_monitor, datiGen,bg, fg1, fg2);
+    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &dm, &antintr,&pagDefault, client_comandi, client_monitor, client_richieste, datiGen,bg, fg1, fg2);
                 qDebug("scello %d",bg);
     setBackgroundColor(*bg);
      for (int idx=0;idx<12;idx++)
@@ -252,8 +253,11 @@ void BtMain::init()
 {
   qDebug("BtMain::init()");
     connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
-    connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));       
-    
+    connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+    connect(datiGen,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));       
+    connect(Home,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));       
+   
+    Home->inizializza(); 
     if (datiGen)
         datiGen->inizializza();
     if(illumino)

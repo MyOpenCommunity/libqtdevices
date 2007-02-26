@@ -237,7 +237,7 @@ void dimmer::inizializza(bool forza)
     if(!forza)
       emit richStato(msg_open.frame_open);    
     else
-      emit sendFrame(msg_open.frame_open);   
+      emit sendInit(msg_open.frame_open);   
 }
 
 
@@ -428,7 +428,7 @@ void dimmer100::inizializza(bool forza)
     if(!forza)
       emit richStato(msg_open.frame_open);
     else
-      emit sendFrame(msg_open.frame_open);
+      emit sendInit(msg_open.frame_open);
 }
 
 /*****************************************************************
@@ -567,7 +567,7 @@ void attuatAutom::inizializza(bool forza)
     if(!forza)
       emit richStato(msg_open.frame_open);
     else
-      emit sendFrame(msg_open.frame_open);    
+      emit sendInit(msg_open.frame_open);    
 }
 
 /*****************************************************************
@@ -1029,7 +1029,7 @@ void attuatAutomInt::inizializza()
     strcat(pippo,"##");
    // qDebug("mando frame attuat autom int %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
 }
 /*****************************************************************
 **attuatAutomIntSic
@@ -1269,7 +1269,7 @@ void attuatAutomIntSic::inizializza()
     strcat(pippo,"##");
  //   qDebug("mando frame attuat autom intSic %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
 }
 
 /*****************************************************************
@@ -1500,7 +1500,7 @@ void attuatAutomTemp::inizializza(bool forza)
     strcat(pippo,"##");
   //  qDebug("mando frame attuat autom Temp %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
 }
 
 void attuatAutomTemp::assegna_tempo_display()
@@ -1633,7 +1633,7 @@ void attuatAutomTempNuovoN::inizializza(bool forza)
     strcat(pippo,"*2##");
     //  qDebug("mando frame attuat autom Temp %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
 }
 
 void attuatAutomTempNuovoN::assegna_tempo_display()
@@ -1718,6 +1718,10 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF( QWidget *parent,const char *name,c
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
+    dev = btouch_device_cache.get_dimmer(getAddress());
+    // Get status changed events back
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
+            this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
@@ -1811,7 +1815,7 @@ void attuatAutomTempNuovoF::update()
     sprintf(frame, "*#1*%s*2##", getAddress());
     msg_open.CreateNullMsgOpen();     
     msg_open.CreateMsgOpen(frame, strlen(frame));
-    emit sendFrame(msg_open.frame_open);
+    emit sendInit(msg_open.frame_open);
 }
 
 void attuatAutomTempNuovoF::Attiva()
@@ -1845,7 +1849,7 @@ void attuatAutomTempNuovoF::inizializza(bool forza)
     strcat(pippo,"*2##");
     //  qDebug("mando frame attuat autom Temp %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
 }
 
 // Chiede lo stato dell'attuatore con una frame vecchia
@@ -2274,7 +2278,7 @@ void amplificatore::inizializza()
     strcat(pippo,"*1##");
  //   qDebug("mando frame ampli %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
     
     memset(pippo,'\000',sizeof(pippo));
     strcat(pippo,"*#16*");
@@ -2282,7 +2286,7 @@ void amplificatore::inizializza()
     strcat(pippo,"*5##");
  //   qDebug("mando frame ampli %s",pippo);
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
     
 }
 /*****************************************************************
@@ -2626,7 +2630,7 @@ void banradio::pre_show()
 	strcat(pippo,"*6##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	
-	emit sendFrame(msg_open.frame_open);
+	emit sendInit(msg_open.frame_open);
     }
     
     QWidget::show();
@@ -3297,7 +3301,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	    strcat(pippo,"*14");
 	    strcat(pippo,"##");
 	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	    emit sendFrame(msg_open.frame_open);         	       
+	    emit sendInit(msg_open.frame_open);         	       
 	    ////	
 #if 0       
 	    //Richiesta via centrale     
@@ -3666,7 +3670,7 @@ void zonaAnti::inizializza()
     strcat(pippo,getAddress());
     strcat(pippo,"##");
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-    emit sendFrame(msg_open.frame_open);    
+    emit sendInit(msg_open.frame_open);    
 }
 
 
@@ -3973,7 +3977,7 @@ void impAnti::partChanged(zonaAnti *za)
 
 void impAnti::inizializza()
 { 
-    emit sendFrame("*#5*0##");    
+    emit sendInit("*#5*0##");    
 }
 
 void impAnti::hide()
@@ -4863,7 +4867,8 @@ void postoExt::stairlight_pressed(void)
     msg_open.CreateNullMsgOpen();  
     char tmp[100];
     sprintf(tmp, "*6*12*%s##", where.ascii());
-    msg_open.CreateMsgOpen(tmp, strlen(tmp));    emit sendFrame(msg_open.frame_open);   
+    msg_open.CreateMsgOpen(tmp, strlen(tmp));
+    emit sendFrame(msg_open.frame_open);   
 }
 
 void postoExt::stairlight_released(void)
@@ -5002,11 +5007,11 @@ void ambDiffSon::configura()
     emit(ambChanged((char *)name(), false, getAddress()));
     qDebug("sorgenti->parent() = %p", sorgenti->parent());
     qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
-    disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul,
-	       SIGNAL(sendFrame(char *)));
+    disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
+    disconnect(sorgenti->parent(), SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
     sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-    connect(diffson, SIGNAL(sendFrame(char *)), 
-	    diffmul, SIGNAL(sendFrame(char *)));
+    connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
+    connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
     qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
     //connect(diffmul, SIGNAL(gestFrame(char *)), 
     //diffson, SIGNAL(gestFrame(char *)));
@@ -5102,11 +5107,11 @@ void insAmbDiffSon::configura()
     emit(ambChanged((char *)name(), true, (void *)NULL));
     qDebug("sorgenti->parent() = %p", sorgenti->parent());
     qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
-    disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul,
-	       SIGNAL(sendFrame(char *)));
+    disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
+    disconnect(sorgenti->parent(), SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
     sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-    connect(diffson, SIGNAL(sendFrame(char *)), 
-	    diffmul, SIGNAL(sendFrame(char *)));
+    connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
+    connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
     qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
     diffson->forceDraw();
     diffson->showFullScreen();

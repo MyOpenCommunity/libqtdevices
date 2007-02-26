@@ -94,6 +94,7 @@ signals:
   \brief emitted when there's the necessity to send an open frame
 */     
     void	sendFrame(char*);
+    void	sendInit(char*);
 /*!
   \brief as above, but wait for ack
 */

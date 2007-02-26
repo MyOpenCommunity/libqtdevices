@@ -20,7 +20,7 @@
 
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_COMANDI "*99*9##"
-//#define SOCKET_COMANDI "*99*0##"
+#define SOCKET_RICHIESTE "*99*0##"
 //#define SOCKET_MONITOR "*99*1##"
 
 
@@ -36,7 +36,7 @@ class Client  : public QSocket
 {
     Q_OBJECT
     public:
-    Client( const QString &host, Q_UINT16 port, int mon);
+    Client( const QString &host, Q_UINT16 port, int mon, bool richieste=false);
     ~Client(){};
 
 //    void ApriInviaFrameChiudi(char *);
@@ -72,6 +72,7 @@ class Client  : public QSocket
     private:
     QSocket *socket;
     int ismonitor;
+	 bool isrichiesta;
     QTimer* tick;  
     void socketStateRead(char*);
     bool ackRx;

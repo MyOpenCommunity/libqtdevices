@@ -207,9 +207,22 @@ void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QCo
 	 descrTemp[tempCont] ->setPaletteForegroundColor(fg);
 	 descrTemp[tempCont] ->setPaletteBackgroundColor(bg);
      }     
-     
      tempCont++;
  }    
+
+void homePage::inizializza()
+{
+   char Frame[50];
+
+   for(int idx=0; idx<tempCont; idx++)
+   {
+     strcpy(&Frame[0],"*#4*");
+     strcat(&Frame[0],zt[idx]);
+     strcat(&Frame[0],"*0##");
+     emit(sendInit(&Frame[0]));
+     printf("AGRE - send %s\n", Frame);
+   }
+}
 
 void homePage::addTemp(char *z, int x, int y)
 {
@@ -281,13 +294,15 @@ void homePage::gestFrame(char* frame)
     
     if (!strcmp(msg_open.Extract_chi(),"4"))
     {
+	qDebug("vedo temperatura per Temp: %s",msg_open.frame_open);
 	strcpy(&dovex[0], msg_open.Extract_dove());
-	if (dove[0]=='#')
+	if (dovex[0]=='#')
 	    strcpy(&dovex[0], &dovex[1]);
 	
 	for(int idx=0; idx<tempCont; idx++)
 	{
-	if ( (! strcmp(&dovex[0],zt[idx]) ) )
+	qDebug("dove frame %s dove oggetto %s",dovex, zt[idx]);
+	if ( (! strcmp(dovex,zt[idx]) ) )
 	{	 
 	     if   (!strcmp(msg_open.Extract_grandezza(),"0")) 
 	    {

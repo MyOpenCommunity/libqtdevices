@@ -323,10 +323,11 @@ deviceptr device_cache::add_device(deviceptr p)
     return p;
 }
 
-void device_cache::set_clients(Client* com, Client* mon)
+void device_cache::set_clients(Client* com, Client* mon, Client* ri)
 {
     client_comandi = com;
     client_monitor = mon;
+    client_richieste = ri;
 }
 
 Client *device_cache::get_client_comandi()

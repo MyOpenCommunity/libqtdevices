@@ -31,7 +31,9 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
     connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
     connect(zone,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 
+    connect(zone,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*))); 
     connect(impianto,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+    connect(impianto,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
 #if 0
     connect(impianto,SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
 #endif
@@ -248,7 +250,7 @@ void antintrusione::gesFrame(char*frame)
         allarmi->addItem(ALLARME, &descr[0], NULL, ICON_DEL);
 #else
 	allarmi.append(new allarme(NULL, descr, NULL, ICON_DEL, t));
-	curr_alarm = allarmi.getLast();
+	curr_alarm = allarmi.current();
 	curr_alarm->setFGColor(foregroundColor());
 	curr_alarm->setBGColor(backgroundColor());
 	connect(curr_alarm, SIGNAL(Back()), this, SLOT(closeAlarms()));
@@ -263,7 +265,7 @@ void antintrusione::gesFrame(char*frame)
     if (aggiorna)
     {
     qDebug("ARRIVATO ALLARME!!!!");
-	allarmi.getLast()->show();
+	curr_alarm->show();
 #if 0
         impianto->hide();
         zone->hide();
@@ -316,8 +318,10 @@ void antintrusione::prevAlarm()
     qDebug("antiintrusione::prevAlarm()");
     curr_alarm->hide();
     curr_alarm = allarmi.prev();
-    if(!curr_alarm)
+    if(!curr_alarm) {
+        qDebug("inizio");
 	curr_alarm = allarmi.last();
+    }
     curr_alarm->show();
 }
 
@@ -333,7 +337,7 @@ void antintrusione::deleteAlarm()
 	testranpo();
 	return;
     }
-    curr_alarm = allarmi.getLast();
+    curr_alarm = allarmi.current();
     curr_alarm->show();
 }
 
@@ -360,7 +364,7 @@ void antintrusione::closeAlarms()
 void antintrusione::showAlarms()
 {
     qDebug("antiintrusione::showAlarms()");
-    curr_alarm = allarmi.getLast();
+    curr_alarm = allarmi.last();
     if(!curr_alarm) return;
     impianto->hide();
     zone->hide();
@@ -388,6 +392,17 @@ void antintrusione::hide()
     QWidget::hide();
     impianto->hide();
     zone->hide();
+#if 0
     if(curr_alarm && curr_alarm->isShown())
       curr_alarm->hide();
+#else
+    QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
+    ai->toFirst();
+    allarme *a;
+    while((a = ai->current())) {
+        a->hide();
+        ++(*ai);
+    }
+    delete ai;
+#endif
 }

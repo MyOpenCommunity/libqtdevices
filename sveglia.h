@@ -109,6 +109,7 @@ signals:
   \brief Emitted to send \a Open \a Frame to the system.
 */     
    void 	sendFrame(char*);
+	void	sendInit(char*);
 /*!
   \brief Emitted when the object is closed.
 */      

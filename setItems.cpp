@@ -34,6 +34,7 @@ setDataOra::setDataOra( sottoMenu *parent,const char *name )
      settalora.setFGColor(foregroundColor()/*255-BG_R, 255-BG_G, 255-BG_B*/);  
      connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));      
      connect(&settalora,SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
+     connect(&settalora, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 }
 
 void setDataOra::hide()
@@ -70,6 +71,7 @@ impostaSveglia::impostaSveglia( QWidget *parent,const char *name, contdiff* diso
      
      connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*))); 
      connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));      
+     connect(svegliolina, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
      connect(svegliolina,SIGNAL(ImClosed()),parentWidget() , SLOT(showFullScreen()));      
      connect(svegliolina, SIGNAL(freeze(bool)),this , SIGNAL(freeze(bool)));     
      connect(svegliolina, SIGNAL(svegl(bool)),this , SIGNAL(svegl(bool)));          

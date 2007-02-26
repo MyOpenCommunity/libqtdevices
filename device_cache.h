@@ -15,7 +15,8 @@ typedef device *deviceptr;
 class device_cache : public QMap<QString, deviceptr> {
  private:
     Client * client_comandi;
-    Client *  client_monitor; 
+    Client *  client_monitor;
+    Client * client_richieste;
     //! Connect comm signals
     void connect_comm(device *);
     //! Disconnect comm signals
@@ -64,7 +65,7 @@ class device_cache : public QMap<QString, deviceptr> {
     //! Add already created device to cache. Key is device's who+where
     deviceptr add_device(deviceptr d);
     //! Set pointers to clients
-    void set_clients(Client* com, Client* mon);
+    void set_clients(Client* com, Client* mon, Client* ri);
     //! Destructor
     ~device_cache();
 };

@@ -49,11 +49,12 @@ diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
     if(creasorgenti) {
       connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
       connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+      connect(sorgenti,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
       connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));  
     }
     connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *))); 
-    connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 	 
-    
+    connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+    connect(amplificatori,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
     connect(this,SIGNAL(freezed(bool)),amplificatori,SLOT(freezed(bool))); 
     qDebug("diffSonora::diffSonora() END");
 }
@@ -64,6 +65,7 @@ void diffSonora::setSorgenti(sottoMenu *s)
     setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
     connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
     connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+    connect(sorgenti,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
     connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));
 }
 
@@ -203,7 +205,7 @@ void diffSonora::freezed_handler(bool f)
 void diffSonora::show()
 {
      openwebnet msg_open;
-     emit sendFrame("*16*53*100##"); 
+     emit sendInit("*16*53*100##"); 
      sorgenti->forceDraw();
      amplificatori->forceDraw();
      isVisual=1;

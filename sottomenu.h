@@ -195,6 +195,7 @@ signals:
   \brief Emitted to connect the \a Open \a Frame coming from to the banners in the list to the openClient.
 */  
   void 	sendFrame(char*);
+  void	sendInit(char*);
 /*!
   \brief Like sendFrame, but also ack is requested before proceeding
 */

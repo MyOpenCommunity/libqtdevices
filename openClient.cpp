@@ -16,11 +16,13 @@
 
 
 
-Client::Client( const QString &host, Q_UINT16 port, int ismon)
+Client::Client( const QString &host, Q_UINT16 port, int ismon, bool isri)
 {
 //   qDebug( "Creating Client");      
    
   ismonitor=ismon;
+	isrichiesta=isri;
+  
  //   memset(&fr[0],'\000',sizeof(fr));
  
   socket = new QSocket( this );
@@ -64,6 +66,9 @@ void Client::socketConnected()
     sendToServer(SOCKET_MONITOR);
     emit(monitorSu());
   }
+  else if(isrichiesta){
+    qDebug( "TRY TO START request");
+  }
   else {
     qDebug( "TRY TO START command");
     //socket->clearPendingData ();
@@ -71,6 +76,7 @@ void Client::socketConnected()
 
 //    memset(&fr[0],'\000',sizeof(fr));
   }
+
       
 }
 /****************************************************************************
@@ -87,7 +93,10 @@ void Client::ApriInviaFrameChiudi(char* frame)
         {
 	    //strcpy(&fr[0],frame);
 	    connetti();
-	    sendToServer(SOCKET_COMANDI ); //lo metto qui else mando prima frame di questo!
+			  if(isrichiesta)
+				  sendToServer(SOCKET_RICHIESTE);
+			  else
+	    			sendToServer(SOCKET_COMANDI ); //lo metto qui else mando prima frame di questo!
         }
         sendToServer(frame);
         qDebug("invio: %s",frame);
@@ -314,4 +323,3 @@ void Client::socketError( int e )
 //
 // EOF
 //
-

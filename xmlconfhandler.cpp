@@ -30,7 +30,7 @@ unsigned char tipoData=0;
 *
 *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
-                               diffSonora**dS, diffmulti**_dm, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m,versio* dG,\
+                               diffSonora**dS, diffmulti**_dm, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG,\
                                QColor* bg, QColor* fg1, QColor *fg2)
 {
     home=h;
@@ -50,6 +50,7 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu*
     BtM=BM;
     client_comandi=c_c;
     client_monitor=c_m;
+    client_richieste=c_r;
     datiGen=dG;
 
  //   bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
@@ -549,6 +550,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*automazioni,SIGNAL(Closed()),*automazioni,SLOT(hide()));
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*automazioni,SIGNAL(gestFrame(char *)));
                             QObject::connect(*automazioni,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*automazioni,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*automazioni,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*automazioni,SLOT(freezed(bool)));
                             //(*automazioni)->inizializza();
@@ -567,9 +569,10 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));			
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
                             QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             //     QObject::QObject::connect(client_comandi,SIGNAL(frameIn(char *)),&illumino,SIGNAL(gestFrame(char *)));
-                            QObject::connect(*illumino,SIGNAL(richStato(char *)),client_comandi,SLOT(richStato(char *)));
+                            QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*illumino,SLOT(freezed(bool)));
                             //(*illumino)->inizializza();
                             break;
@@ -585,6 +588,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*antintr,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                       
                             QObject::connect(*antintr,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*antintr,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
 			    QObject::connect(*antintr,SIGNAL(sendFramew(char*)),client_comandi,SLOT(ApriInviaFrameChiudiw(char*)));
 			    QObject::connect(client_comandi,SIGNAL(openAckRx()),*antintr,SIGNAL(openAckRx()));
 			    QObject::connect(client_comandi,SIGNAL(openNakRx()),*antintr,SIGNAL(openNakRx()));
@@ -608,6 +612,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 #endif                                        
                             QObject::connect(*carichi,SIGNAL(Closed()),*carichi,SLOT(hide()));			
                             QObject::connect(*carichi,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*carichi,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*carichi,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*carichi,SLOT(freezed(bool)));
                             break;
@@ -626,6 +631,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
                             QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 			     QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
                             //(*termo)->inizializza();
@@ -644,6 +650,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*difSon,SIGNAL(Closed()),*difSon,SLOT(hide()));
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
                             QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*difSon,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*difSon,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SLOT(freezed_handler(bool)));
 			    QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SIGNAL(freezed(bool)));
@@ -664,6 +671,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*dm,SIGNAL(Closed()),*dm,SLOT(hide()));
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*dm,SLOT(gestFrame(char *)));
                             QObject::connect(*dm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*dm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*dm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SIGNAL(freezed(bool)));
 			    QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SLOT(freezed_handler(bool)));
@@ -683,6 +691,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             QObject::connect(*scenari,SIGNAL(Closed()),*scenari,SLOT(hide()));
                             
                             QObject::connect(*scenari,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*scenari,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*scenari,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari,SLOT(freezed(bool)));
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari,SIGNAL(gestFrame(char *)));
@@ -703,6 +712,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             
                             QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
                             QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*imposta,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
                             QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
                             QObject::connect(*imposta,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
@@ -719,6 +729,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 				 *imposta);
 			     (*scenari_evoluti)->forceDraw();
 			     QObject::connect(*scenari_evoluti,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+           QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
 			     QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari_evoluti,SIGNAL(gestFrame(char *)));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
@@ -737,6 +748,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			    qDebug("******* videocitofonia = %p ", *videocitofonia);
 			    (*videocitofonia)->forceDraw();
 			    QObject::connect(*videocitofonia,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+          QObject::connect(*videocitofonia,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
 			     QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*videocitofonia,SIGNAL(gestFrame(char *)));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showFullScreen()));
@@ -757,7 +769,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             //(*specPage)->draw();
                             QObject::connect(BtM,SIGNAL(freeze(bool)),*specPage,SLOT(freezed(bool)));          
                             QObject::connect(*specPage,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));     
-                            QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));  
+                            QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+                            QObject::connect(*specPage,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
                             QObject::connect(*specPage,SIGNAL(Close()),*specPage,SLOT(hide()));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
                             QObject::connect(*specPage,SIGNAL(Close()),*home,SLOT(showFullScreen()));     
@@ -1318,6 +1331,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 			qDebug("DESCR = %s", qValue.ascii());
 		    } else if (CurTagL6.startsWith("where")) {
 			if(!CurTagL6.compare("where")) {
+                            page_item_list_group_m->clear();
 			    page_item_where_m = qValue;
 			    qDebug("WHERE = %s", qValue.ascii());
 			}  else {

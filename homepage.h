@@ -104,7 +104,7 @@ public:
                 CICLICO=1,		/*!< Clicking the \a special \a button the device one time make a \a ON command and then an \a OFF command an so on.*/
                 PULSANTE=2 	/*!<  Pushing the \a special \a button the device make a \a ON command while Releasing the button a \a OFF command is made.*/
    };
-  
+  void inizializza();  
 private slots:
   void 	mouseReleaseEvent ( QMouseEvent * );  
   void	freezed(bool);
@@ -140,6 +140,7 @@ private slots:
   void	freeze(bool);
 /*! \brief Emitted to send \a Open \a frame on the system.*/
   void 	sendFrame(char*);
+  void	sendInit(char*);
 /*! \brief Emitted when the \a schedulation subtree(sottoMenu) is required.*/
   void	Schedulazioni();
 /*! \brief Emitted when the \a advanced scenarios management(sottoMenu) is required */

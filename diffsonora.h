@@ -106,6 +106,7 @@ signals:
   \brief Emitted when there are \a Open \a frame outcoming from amplifiers or sources to make them arrive to openClient.
 */                  
     void	sendFrame(char*);
+    void	sendInit(char*);
  /*!
   \brief Emitted when there is a banner forcing (de)freezing state.
 */                      

@@ -72,6 +72,7 @@ signals:
   \brief Emitted to send \a Open \a frame on the system.
 */             
     void 	sendFrame(char*);
+	 void	sendInit(char*);
 
 public slots:
 /*!

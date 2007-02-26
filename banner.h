@@ -424,6 +424,7 @@ signals:
   \brief As above, but we want to wait for the relevant open ack message
 */
   virtual void sendFramew(char*);
+  virtual void sendInit(char*);
 /*!
   \brief Emitted when the banner decide to die and to be removed from the list containig it.
 */    

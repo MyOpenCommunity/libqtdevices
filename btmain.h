@@ -74,6 +74,7 @@ public:
     termoregolaz *termo;
     diffSonora *difSon;
     antintrusione* antintr;
+    Client * client_richieste;
     Client * client_comandi;
     Client *  client_monitor; 
     versio* datiGen;
