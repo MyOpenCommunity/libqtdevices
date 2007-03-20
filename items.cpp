@@ -392,6 +392,9 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
 	      qDebug("dimmer 100 status variation");
 	      qDebug("level = %d, speed = %d", curr_lev.get_val(), 
 		     curr_speed.get_val());
+            if(curr_lev.get_val() <=5)
+              setValue(5);
+            else
 	      setValue(curr_lev.get_val());
 	      //setValue(curr_lev.get_val());
 	      qDebug("value = %d", getValue());
@@ -3501,6 +3504,11 @@ zonaAnti::zonaAnti( QWidget *parent,const char *name,char* indirizzo,char* iconz
     //getZoneName(IconDisactive, &pluto[0], indirizzo, sizeof(pluto));
     qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
     zonaAnti::SetIcons(sparzIName, &pippo[0], IconDisactive);
+    if (BannerText) {
+        BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+        BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+        BannerText->setText(name);
+    }
     zonaAttiva = IconActive;
     zonaNonAttiva = IconDisactive;
     setChi("5");

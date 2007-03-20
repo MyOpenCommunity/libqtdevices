@@ -1255,7 +1255,7 @@ void frame_interpreter_dimmer::set_status(device_status_dimmer *ds, int lev)
 void frame_interpreter_dimmer::handle_frame(openwebnet_ext m, 
 					    device_status_dimmer *ds)
 {
-    qDebug("frame_interpreter_lights::handle_frame(), dimmer");
+    qDebug("frame_interpreter_dimmer::handle_frame(), dimmer");
     stat_var sv(stat_var::LEV);
     if(m.IsNormalFrame()) {
 	int cosa = atoi(m.Extract_cosa());
@@ -1320,11 +1320,11 @@ void frame_interpreter_dimmer::handle_frame(openwebnet_ext m,
 	// *#1*where*1*lev*speed##
 	int code = atoi(m.Extract_grandezza());
 	int lev, hh, mm, ss;
-	qDebug("frame_interpreter_lights::handle_frame, dimmer, meas frame");
+	qDebug("frame_interpreter_dimmer::handle_frame, dimmer, meas frame");
 	qDebug("emit(request_init(ds))");
 	request_init(ds);
     } else if(m.IsWriteFrame()) {
-	qDebug("frame_interpreter_lights::handle_frame, light, write frame");
+	qDebug("frame_interpreter_dimmer::handle_frame, light, write frame");
 	qDebug("emit(request_init(ds))");
 	request_init(ds);
 
