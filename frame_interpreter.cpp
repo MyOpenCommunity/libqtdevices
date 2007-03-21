@@ -1961,11 +1961,11 @@ bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet_ext m,
     QString w = &m.Extract_dove()[1];
     qDebug("w = %s, w.toInt = %d", w.ascii(), w.toInt());
     int p;
-    if((p = w.find('#')) >= 0) {
+    if((m.estesa) && (strcmp(m.Extract_livello(), "2") == 0)) {
 	// FIXME: CHECK THIS
-	d = 4000 + w.left(p).toInt();
+	d = 4000 + w.toInt();
 	char tmp[20];
-	sprintf(tmp, "%d%s", d, w.right(w.length() - p).ascii());
+	sprintf(tmp, "%d#2", d);
 	qDebug("BAH: %s", tmp);
 	return !where.compare(tmp) ;
     } else {
