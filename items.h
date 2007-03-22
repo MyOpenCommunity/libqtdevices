@@ -1018,7 +1018,6 @@ class impAnti : public  bann2butLab
     Q_OBJECT
 public:
      impAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);   
-          void inizializza();
 public slots:
 #if 0
      void gestFrame(char*);
@@ -1031,7 +1030,8 @@ public slots:
      void openAckRx();
      void openNakRx();
      void hide();
-private slots:     
+private slots:
+     void inizializza();
      void Inserisci();
      void Disinserisci();
      void Insert1(char*);

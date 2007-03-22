@@ -3807,6 +3807,8 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 		qDebug("IMPIANTO INSERITO !!");
 		emit(impiantoInserito());
 		emit(abilitaParz(false));
+                connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
+                insert_timer.start(5000);
 	    } else if(isActive() && !s) {
 		impostaAttivo(0);
 		nascondi(BUT2);
@@ -3906,7 +3908,7 @@ void impAnti::Insert2()
     // 5 seconds between first open ack and open insert messages
     connect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
     // single shot timer
-    insert_timer.start(5000, TRUE);
+    insert_timer.start(6000, TRUE);
 }
 
 void impAnti::Insert3()
@@ -3914,6 +3916,7 @@ void impAnti::Insert3()
     char *pwd = passwd;
     openwebnet msg_open;
     char    pippo[50];
+    emit(clearAlarms());
     memset(pippo,'\000',sizeof(pippo));
     strcat(pippo,"*5*36#");
     strcat(pippo,pwd);
@@ -3921,8 +3924,9 @@ void impAnti::Insert3()
     msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
     emit sendFrame(msg_open.frame_open);    
     parentWidget()->show();       
-    emit(clearAlarms());
     inserting = false;
+    connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
+    insert_timer.start(5000);
 }
 
 void impAnti::DeInsert(char* pwd)
@@ -3962,6 +3966,8 @@ void impAnti::openNakRx()
 {
     qDebug("impAnti::openNakRx()");
     if(!part_msg_sent) return;
+    //Agre - per sicurezza provo a continuare per evitare di non inserire l'impianto
+    openAckRx();
     part_msg_sent = false;
 }
 
@@ -3984,7 +3990,8 @@ void impAnti::partChanged(zonaAnti *za)
 }
 
 void impAnti::inizializza()
-{ 
+{
+    insert_timer.stop();
     emit sendInit("*#5*0##");    
 }
 

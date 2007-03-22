@@ -1946,7 +1946,9 @@ get_init_message(device_status *s, QString& out)
 bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet_ext m, 
 						       bool& request_status)
 {
+    char tmp[20];
     request_status = false;
+
     qDebug("frame_interpreter_doorphone_device::is_frame_ours");
     qDebug("who = %s, where = %s", who.ascii(), where.ascii());
     char *c = m.Extract_chi();
@@ -1960,19 +1962,14 @@ bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet_ext m,
     int d ;
     QString w = &m.Extract_dove()[1];
     qDebug("w = %s, w.toInt = %d", w.ascii(), w.toInt());
-    int p;
-    if((m.estesa) && (strcmp(m.Extract_livello(), "2") == 0)) {
-	// FIXME: CHECK THIS
-	d = 4000 + w.toInt();
-	char tmp[20];
-	sprintf(tmp, "%d#2", d);
-	qDebug("BAH: %s", tmp);
-	return !where.compare(tmp) ;
-    } else {
-	d = w.toInt() + 4000;
-	qDebug("d = %d, where.toInt() = %d", d, where.toInt());
-	return (d == where.toInt());
-    }
+    d = 4000 + w.toInt();
+    if(m.estesa) 
+        sprintf(tmp, "%d#%s", d, m.Extract_livello());
+    else 
+        sprintf(tmp, "%d", d);
+
+    qDebug("compare msg where = %s and  where = %s", tmp, where.ascii());
+    return !where.compare(tmp);
     // NEVER REACHED
 }
 
