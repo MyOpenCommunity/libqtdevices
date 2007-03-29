@@ -277,7 +277,7 @@ void diffmulti::setNumRighe(uchar n)
 }
 
 void diffmulti::reparent(QWidget *par, unsigned int f, QPoint p, 
-			 bool showIt= false)
+			 bool showIt)
 {
     sottoMenu::reparent(par, f, p, showIt);
 #if 1

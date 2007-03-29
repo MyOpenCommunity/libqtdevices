@@ -36,6 +36,11 @@ char * bt_wd=NULL;
 char * My_Path=NULL;
 char * Suffisso = "<BTo>";	//Per distinguere le stampe
 
+// Variabili SSL 
+int use_ssl = false;
+char *ssl_cert_key_path = NULL;
+char *ssl_certificate_path = NULL;
+
 void myMessageOutput( QtMsgType type, const char *msg )
 {
   switch ( type ) {
