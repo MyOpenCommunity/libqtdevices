@@ -3903,6 +3903,7 @@ void impAnti::Insert1(char* pwd)
 
 void impAnti::Insert2()
 {
+    qDebug("impAnti::Insert2()");
     if(!inserting)
 	return;
     // 5 seconds between first open ack and open insert messages
@@ -3913,6 +3914,7 @@ void impAnti::Insert2()
 
 void impAnti::Insert3()
 {
+    qDebug("impAnti::Insert3()");
     char *pwd = passwd;
     openwebnet msg_open;
     char    pippo[50];
@@ -3925,6 +3927,7 @@ void impAnti::Insert3()
     emit sendFrame(msg_open.frame_open);    
     parentWidget()->show();       
     inserting = false;
+    disconnect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
     connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
     insert_timer.start(5000);
 }
@@ -3991,7 +3994,9 @@ void impAnti::partChanged(zonaAnti *za)
 
 void impAnti::inizializza()
 {
+    qDebug("impAnti::inizializza()");
     insert_timer.stop();
+    disconnect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
     emit sendInit("*#5*0##");    
 }
 
