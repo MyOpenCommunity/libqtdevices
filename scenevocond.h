@@ -292,7 +292,7 @@ class device_condition : public QObject {
     //! Inits condition
     virtual void inizializza(void);
     //! Resets condition
-    void reset(void);
+    virtual void reset(void);
     //! Checks condition
     //virtual void gestFrame(char *);
     /*
@@ -315,7 +315,7 @@ public slots:
     //! Invoked when DOWN button is pressed
     virtual void Down();
     //! Invoked when OK button is pressed
-    void OK();
+    virtual void OK();
     //! Invoked by device when status changes
     virtual void status_changed(QPtrList<device_status>);
     //! Invoked when a frame is available
@@ -373,6 +373,10 @@ public slots:
 class device_condition_dimming : public device_condition {
     Q_OBJECT
  private:
+   int min_val;
+   int max_val;
+   int current_value_min;
+   int current_value_max;
  public:
     //! Constructor
     device_condition_dimming(QWidget *parent, char *name, QString *trigger); 
@@ -386,10 +390,20 @@ class device_condition_dimming : public device_condition {
     void get_unit(QString&);
     //! Returns true if OFF must be shown instead of 0
     bool show_OFF_on_zero();
-#if 0
+    void set_condition_value_min(int);
+    void set_condition_value_min(QString);
+    int get_condition_value_min();
+    void set_condition_value_max(int);
+    void set_condition_value_max(QString);
+    int get_condition_value_max();
+    int get_current_value_min();
+    void set_current_value_min(int min);
+    int get_current_value_max();
+    void set_current_value_max(int max);
+    QString get_current_value();
+    void reset();
     //! Draws condition
     void Draw();
-#endif
     //! Translates trigger condition from open encoding to int and sets val
     int set_condition_value(QString);
     //! Translates current trigger condition to open
@@ -401,6 +415,67 @@ class device_condition_dimming : public device_condition {
     void inizializza();
 #endif
 public slots:
+    void OK();
+    //! Invoked when UP button is pressed
+    void Up();
+    //! Invoked when DOWN button is pressed
+    void Down();
+    //! Invoked when status changes
+    void status_changed(QPtrList<device_status>);
+};
+
+/*!
+  \class device_condition_dimming_100
+  \brief This class represents a dimming 100 value based condition
+  \author Ciminaghi/Agresta
+  \date May 2006
+*/
+class device_condition_dimming_100 : public device_condition {
+    Q_OBJECT
+ private:
+   int min_val;
+   int max_val;
+   int current_value_min;
+   int current_value_max;
+ public:
+    //! Constructor
+    device_condition_dimming_100(QWidget *parent, char *name, QString *trigger); 
+    //! Returns min value
+    int get_min();
+    //! Returns max value
+    int get_max();
+    //! Returns step
+    int get_step();
+    //! Gets condition's meas unit
+    void get_unit(QString&);
+    //! Returns true if OFF must be shown instead of 0
+    bool show_OFF_on_zero();
+    void set_condition_value_min(int);
+    void set_condition_value_min(QString);
+    int get_condition_value_min();
+    void set_condition_value_max(int);
+    void set_condition_value_max(QString);
+    int get_condition_value_max();
+    int get_current_value_min();
+    void set_current_value_min(int min);
+    int get_current_value_max();
+    void set_current_value_max(int max);
+    QString get_current_value();
+    void reset();
+    //! Draws condition
+    void Draw();
+    //! Translates trigger condition from open encoding to int and sets val
+    int set_condition_value(QString);
+    //! Translates current trigger condition to open
+    void get_condition_value(QString&);
+    //! Decodes incoming frame
+    //void gestFrame(char*);
+#if 0
+    //! Inits condition
+    void inizializza();
+#endif
+public slots:
+    void OK();
     //! Invoked when UP button is pressed
     void Up();
     //! Invoked when DOWN button is pressed
@@ -419,6 +494,10 @@ class device_condition_volume : public device_condition
 {
     Q_OBJECT
  private:
+    int min_val;
+    int max_val;
+    int current_value_min;
+    int current_value_max;
  public:
     //! Constructor
     device_condition_volume(QWidget *parent, char *name, QString *trigger); 
@@ -428,6 +507,17 @@ class device_condition_volume : public device_condition
     //! Returns max value
     int get_max();
 #endif
+    void set_condition_value_min(int);
+    void set_condition_value_min(QString);
+    int get_condition_value_min();
+    void set_condition_value_max(int);
+    void set_condition_value_max(QString);
+    int get_condition_value_max();
+    int get_current_value_min();
+    void set_current_value_min(int min);
+    int get_current_value_max();
+    void set_current_value_max(int max);
+    void get_condition_value(QString& out);
     //! Returns step
     //int get_step();
     //! Draws condition
@@ -447,6 +537,7 @@ class device_condition_volume : public device_condition
     void inizializza();
 #endif
 public slots:
+    void OK();
     //! Invoked when status changes
     void status_changed(QPtrList<device_status>); 
     //! Invoked when UP button is pressed

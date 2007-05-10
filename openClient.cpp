@@ -18,6 +18,7 @@
 
 Client::Client( const QString &host, Q_UINT16 port, int ismon, bool isri)
 {
+   qDebug("Client::Client()");
 //   qDebug( "Creating Client");      
    
   ismonitor=ismon;
@@ -27,10 +28,10 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon, bool isri)
  
   socket = new QSocket( this );
  
-  connect( socket, SIGNAL(connected()),SLOT(socketConnected()) );
-  connect( socket, SIGNAL(connectionClosed()),SLOT(socketConnectionClosed()) );
-  connect( socket, SIGNAL(readyRead()),SLOT(socketFrameRead()) );
-  connect( socket, SIGNAL(error(int)),SLOT(socketError(int)) );
+  connect( socket, SIGNAL(connected()),this, SLOT(socketConnected()) );
+  connect( socket, SIGNAL(connectionClosed()),this, SLOT(socketConnectionClosed()) );
+  connect( socket, SIGNAL(readyRead()),this, SLOT(socketFrameRead()) );
+  connect( socket, SIGNAL(error(int)),this, SLOT(socketError(int)) );
 
   tick = NULL;
   
@@ -59,6 +60,7 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon, bool isri)
 *****************************************************************************/
 void Client::socketConnected()
 {
+  qDebug("Client::socketConnected()");
   qDebug( "Connected to server");
   if (ismonitor)  {
     qDebug( "TRY TO START monitor session");
@@ -86,6 +88,8 @@ void Client::socketConnected()
 *****************************************************************************/
 void Client::ApriInviaFrameChiudi(char* frame)
 {
+  qDebug("Client::ApriInviaFrameChiudi()");
+
     if(strcmp(frame, last_msg_open_write.frame_open) != 0)
     {
         last_msg_open_write.CreateMsgOpen(frame,strlen(frame));
@@ -131,6 +135,7 @@ void Client::ApriInviaFrameChiudiw(char *frame)
 *****************************************************************************/
 void Client::richStato(char* richiesta)
 {   
+    qDebug("Client::richStato()");
     if ( socket->state() == QSocket::Idle )
     {
 	connetti();
@@ -145,6 +150,8 @@ void Client::richStato(char* richiesta)
 *****************************************************************************/
 void Client::connetti()
 {    
+      qDebug("Client::connetti()");
+
   //  qDebug( "Trying to connect to the local openserver" );
 //   socket->clearPendingData ();
    socket->connectToHost( "127.0.0.1", 20000 );  
@@ -157,6 +164,7 @@ void Client::connetti()
 *****************************************************************************/
 void Client::closeConnection()
 {
+  qDebug("Client::closeConnection()");
   socket->close();
   if ( socket->state() == QSocket::Closing ) {
     // We have a delayed close.
@@ -174,6 +182,7 @@ void Client::closeConnection()
 *****************************************************************************/
 void Client::sendToServer(char * frame)
 {
+  qDebug("Client::sendToServer()");
  // qDebug( "Writing");
 //  qDebug( "Written %d bytes",socket->writeBlock( frame, strlen(frame) ));
   socket->writeBlock( frame, strlen(frame));
@@ -195,6 +204,7 @@ int Client::socketFrameRead()
   char * pnt;
   int num=0,n_read=0;
   
+    qDebug("Client::socketFrameRead()");
   //riarmo il WD
   rearmWDT();
   // read from the server 
@@ -265,6 +275,8 @@ return 0;
 // Aspetta ack
 int Client::socketWaitForAck()
 {
+      qDebug("Client::socketWaitForAck()");
+
     if(ismonitor) return -1;
     ackRx = false;
     connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
@@ -287,9 +299,34 @@ void Client::ackReceived()
 *****************************************************************************/
 void Client::socketConnectionClosed()
 {
+        qDebug("Client::socketConnectionClosed()");
   qDebug( "Connection closed by the server");    
   if (ismonitor)
-      connetti();
+  {
+    #if 0
+    if(socket)
+    {
+      delete socket;
+    }
+    
+    socket = new QSocket( this );
+ 
+    connect( socket, SIGNAL(connected()),SLOT(socketConnected()) );
+    connect( socket, SIGNAL(connectionClosed()),SLOT(socketConnectionClosed()) );
+    connect( socket, SIGNAL(readyRead()),SLOT(socketFrameRead()) );
+    connect( socket, SIGNAL(error(int)),SLOT(socketError(int)) );
+
+    tick = NULL;
+  
+    // connect to the server
+    connetti();
+
+    // azzero la variabile last_msg_open_read e last_msg_open_write
+    last_msg_open_read.CreateNullMsgOpen();
+    last_msg_open_write.CreateNullMsgOpen();
+    #endif
+    connetti();
+  }
 }
 
 /****************************************************************************
@@ -299,6 +336,8 @@ void Client::socketConnectionClosed()
 *****************************************************************************/
 void Client::socketClosed()
 {
+          qDebug("Client::socketClosed()");
+
 //  qDebug("Connection closed");    
 }
 
@@ -309,6 +348,8 @@ void Client::socketClosed()
 *****************************************************************************/
 void Client::socketError( int e )
 {
+            qDebug("Client::socketError()");
+
  qDebug( "Error number %d occurred",e);
   if (ismonitor) {
     if(tick)

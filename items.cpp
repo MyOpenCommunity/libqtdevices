@@ -3809,6 +3809,7 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 		emit(abilitaParz(false));
                 connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
                 insert_timer.start(5000);
+        send_part_msg = false;
 	    } else if(isActive() && !s) {
 		impostaAttivo(0);
 		nascondi(BUT2);
@@ -3832,8 +3833,22 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 }
 #endif
 
+int impAnti::getIsActive(int zona)
+{
+  if(le_zone[zona] !=  NULL)
+    return le_zone[zona]->isActive();
+  else
+    return -1;
+}
+
+void impAnti::ToSendParz(bool s)
+{
+  send_part_msg = s;
+}
+
 void impAnti::Inserisci()
 {
+    qDebug("impAnti::Inserisci()");
     int s[MAX_ZONE];
     for(int i=0; i<MAX_ZONE; i++) 
     {

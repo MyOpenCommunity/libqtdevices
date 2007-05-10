@@ -501,4 +501,4 @@ class modscen_device : public device
     modscen_device(QString, bool p=false, int g=-1);
 };
 
-#endif __DEVICE_H__
+#endif //__DEVICE_H__

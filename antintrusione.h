@@ -123,6 +123,9 @@ signals:
 */ 
     void        clearChanged();
 public slots:
+  void Parzializza();
+  void Parz(char* pwd);
+  void IsParz(bool);
 /*!
   \brief analyzes the open frame coming from the plant. If there are an allarm is added to the queue; if the plant is inserted the alarm queue is resetted
 */     
@@ -190,6 +193,8 @@ private:
   \param <testoIntrusione> text for a intrusion alarm  
 */    
   char testoManom[MAX_PATH], testoTecnico[MAX_PATH], testoIntrusione[MAX_PATH], testoPanic[MAX_PATH];
+  tastiera *tasti;
+  static const int MAX_ZONE = 8;
 };
 
 

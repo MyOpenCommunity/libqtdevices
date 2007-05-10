@@ -914,6 +914,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 		request_init(ds);
 	    break;
 	default:
+    #if 0
 	    if(cosa == 2)
 		// Dimmer level
          	set_status(ds, 1);
@@ -933,6 +934,9 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 		// What shall we do here ?
 		set_status(ds, 1);
 	    }
+      #else
+      request_init(ds);
+      #endif
 	    break;
 	} 
     } else if(m.IsMeasureFrame()) {
@@ -2207,8 +2211,11 @@ handle_frame(openwebnet_ext m, device_status_zonanti *ds)
 	break;
     }
     if(stat < 0) return;
+    #if 0
+    qDebug("new status is %d\n", stat);
     if(ds->initialized() && (stat == curr_stat.get_val()))
 	return;
+    #endif
     curr_stat.set_val(stat);
     ds->write_val((int)device_status_zonanti::ON_OFF_INDEX, curr_stat);
     qDebug("status changed, appending evt");
@@ -2413,22 +2420,42 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	}
 	elaborato = true;
 	break;
-#if 0
+  #if 0
+    case 0:
+      if(!m.IsNormalFrame())
+        break;
+      if((curr_stat.get_val() != device_status_thermr::S_MAN) && ((curr_local.get_val() != 4) || (curr_local.get_val() !=5)))
+      {
+        int i = -1;
+        curr_local.set_val(i);
+        ds->write_val((int)device_status_thermr::LOCAL_INDEX, curr_local);
+        evt_list.append(ds);
+      }
+    break;
+  #endif
+  #if 0
     case 0:
     case 1:
+      if(!m.IsNormalFrame())
+        return;
+      if(!ds->initialized() || (curr_stat.get_val() != device_status_thermr::S_MAN))
       {
-	if(!m.IsNormalFrame())
-	  break;
-	stat = device_status_thermr::S_MAN;
-	do_event = true;
-	elaborato = true;
-        QString head = "*#4*#";
-        QString end = "##";
-	QString m = head + where + end;
-	emit(init_requested(m));
-	break;
+        do_event = true;
+        stat = device_status_thermr::S_MAN;
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*#4*");
+        strcat(pippo,m.Extract_dove());
+        strcat(pippo,"##");
+        emit init_requested(QString(pippo));
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*#4*#");
+        strcat(pippo,m.Extract_dove());
+        strcat(pippo,"##");
+        emit init_requested(QString(pippo));
       }
-#endif
+      elaborato = true;
+    break;
+  #endif
     default:
 	// Do nothing
 	break;
@@ -2441,6 +2468,8 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     }
     if(elaborato)
 	return;
+    if(m.IsNormalFrame())
+      return;
     int g = atoi(m.Extract_grandezza());
     qDebug("g = %d", g);
     int loc, sp;
@@ -2451,18 +2480,29 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    curr_local.set_val(loc);
 	    ds->write_val((int)device_status_thermr::LOCAL_INDEX, curr_local);
 	    evt_list.append(ds);
-            if(!ds->initialized() || 
+            /*if(!ds->initialized() || 
              ((curr_stat.get_val() != device_status_thermr::S_AUTO) && 
               (curr_stat.get_val() != device_status_thermr::S_MAN) &&
-             (loc == 13))) {
+             (loc == 13))) {*/
                 do_event = true;
                 memset(pippo,'\000',sizeof(pippo));
-                stat = device_status_thermr::S_MAN;
+                strcat(pippo,"*#4*");
+                strcat(pippo,m.Extract_dove());
+                strcat(pippo,"##");
+                emit init_requested(QString(pippo));
+                memset(pippo,'\000',sizeof(pippo));
                 strcat(pippo,"*#4*#");
                 strcat(pippo,m.Extract_dove());
                 strcat(pippo,"##");
                 emit init_requested(QString(pippo));
-            }
+              if((loc != 4) && (loc !=5))
+              {
+                stat = device_status_thermr::S_MAN;
+                curr_stat.set_val(stat);
+                ds->write_val((int)device_status_thermr::STAT_INDEX, curr_stat);
+                evt_list.append(ds);
+              }
+            //}
 	}
 	elaborato = true;
 	break;

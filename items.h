@@ -1027,6 +1027,8 @@ public slots:
      char* getChi();
      void partChanged(zonaAnti*);
      void setZona(zonaAnti*);
+     int getIsActive(int zona);
+     void ToSendParz(bool s);
      void openAckRx();
      void openNakRx();
      void hide();

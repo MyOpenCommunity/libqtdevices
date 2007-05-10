@@ -18,10 +18,15 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
 //    showFullScreen();
-#endif     
+#endif
+   tasti = NULL;
    numRighe=NUM_RIGHE;  
-   zone = new sottoMenu(this,"Zone",3,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2); 
+   zone = new sottoMenu(this,"Zone",4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2); 
+   zone->setNavBarMode(4,"cfg/skin/btnparzializzazione.png");
    impianto = new sottoMenu(this,"impianto",0,MAX_WIDTH, MAX_HEIGHT/numRighe,1); 
+   connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
+   connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
+   //connect(zone, SIGNAL(goDx()), impianto->getLast(), SLOT(Inserisci()));
    allarmi.clear();
    allarmi.setAutoDelete(true);
    curr_alarm = NULL;
@@ -57,6 +62,64 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(this,SIGNAL(freezed(bool)),allarmi,SLOT(freezed(bool)));           
     connect(allarmi,SIGNAL(itemKilled()),this,SLOT(testranpo()));
 #endif
+}
+
+void antintrusione::IsParz(bool ab)
+{
+  qDebug("antintrusione::IsParz(%d)", ab);
+  if(ab) {
+    connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
+    zone->setNavBarMode(4,"cfg/skin/btnparzializzazione.png");
+  } else {
+    disconnect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
+    zone->setNavBarMode(3,"");
+  }
+  zone->forceDraw();
+  //zone->show();
+  //zone->getLast()->Draw();
+}
+
+void antintrusione::Parzializza()
+{
+   qDebug("antintrusione::Parzializza()");
+    int s[MAX_ZONE];
+    for(int i=0; i<MAX_ZONE; i++) 
+    {
+      s[i] = ((impAnti *)impianto->getLast())->getIsActive(i);
+    }
+    if(tasti)
+      delete tasti;
+    tasti = new tastiera_con_stati(s, NULL, "");
+    connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Parz(char*)));
+    tasti->setBGColor(backgroundColor());
+    tasti->setFGColor(foregroundColor());
+    tasti->setMode(tastiera::HIDDEN);
+    tasti->showTastiera();
+}
+
+void antintrusione::Parz(char* pwd)
+{
+  openwebnet msg_open;
+  char pippo[50];
+  
+  qDebug("antintrusione::Parz()");
+  if (!pwd) 
+    goto end;
+  
+  memset(pippo,'\000',sizeof(pippo));
+  strcat(pippo,"*5*50#");
+  strcat(pippo,pwd);
+  strcat(pippo,"#");
+  for(int i=0; i<MAX_ZONE; i++)
+    strcat(pippo, ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1");
+  strcat(pippo,"*0##");
+  msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+  qDebug("sending part frame %s", pippo);
+  emit sendFrame(msg_open.frame_open);
+end:
+  ((impAnti *)impianto->getLast())->ToSendParz(false);
+  impianto->show();
+  zone->show();
 }
 
 void antintrusione::testranpo()
