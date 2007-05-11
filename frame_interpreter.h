@@ -345,6 +345,7 @@ class frame_interpreter_thermr_device : public frame_interpreter {
     void handle_frame(openwebnet_ext, device_status_temperature_probe *);
     //! True when frame has been analyzed
     bool elaborato;
+    bool centrale;
  protected:
     //! Returns true when frame is ours (reimplemented for thermr, device
     bool is_frame_ours(openwebnet_ext, bool& request_status);

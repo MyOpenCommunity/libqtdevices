@@ -337,11 +337,13 @@ device_status_thermr::device_status_thermr() :
     device_status(THERMR)
 {
     add_var((int)device_status_thermr::STAT_INDEX,
-	    new stat_var(stat_var::STAT, 0, 0, 5, 1));
+	    new stat_var(stat_var::STAT, 5, 0, 5, 1));
     add_var((int)device_status_thermr::LOCAL_INDEX,
 	    new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
     add_var((int)device_status_thermr::SP_INDEX,
 	    new stat_var(stat_var::SP, 0, 0, 0x7fffffff, 1));
+    add_var((int)device_status_thermr::CRONO,
+	    new stat_var(stat_var::CRONO, 0, 0, 1, 1));
 }
 
 // Device status for modscen

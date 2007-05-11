@@ -31,6 +31,7 @@ class stat_var {
 	   SP,
 	   ACTIVE_SOURCE,
 	   FAULT,
+	   CRONO,
       } type;
  private:
     type t;
@@ -298,6 +299,7 @@ class device_status_thermr : public device_status {
 	STAT_INDEX = 0,
 	LOCAL_INDEX,
 	SP_INDEX,
+	CRONO,
     } ind;
     enum {
 	S_MAN = 0,

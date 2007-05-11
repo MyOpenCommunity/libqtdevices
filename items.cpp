@@ -2895,197 +2895,6 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
 	    this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
-
-#if 0
-void termoPage::gestFrame(char* frame)
-{    
-    openwebnet msg_open;
-    char aggiorna;
-    char dove[30];
-    char pippo[50];    
-    aggiorna=0;
-    
-    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    
-    
-    if (!strcmp(msg_open.Extract_chi(),"4"))
-    {
-        strcpy(&dove[0], msg_open.Extract_dove());
-        if (dove[0]=='#')
-            strcpy(&dove[0], &dove[1]);
-        
-        if ( (! strcmp(&dove[0],"0") ) )
-        {
-                
-                //Richiesta via centrale     
-                memset(pippo,'\000',sizeof(pippo));
-                strcat(pippo,"*#4*#");
-                strcat(pippo,getAddress());
-                strcat(pippo,"##");
-                msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-                emit sendFrame(msg_open.frame_open);   
-                
-                
-            }		
-        if ( (! strcmp(&dove[0],getAddress()) ) )
-        {
-                if ( (!strcmp(msg_open.Extract_cosa(),"110")) || (!strcmp(msg_open.Extract_cosa(),"210")) || (!strcmp(msg_open.Extract_cosa(),"310")) )
-                {
-                    if  (stato!=S_MAN) 
-                    {
-                        
-                        stato=S_MAN;
-                        mostra(BUT1);
-                        mostra(BUT2);
-                        nascondi(ICON);
-                        tempImp->show();
-                        aggiorna=1;
-                        if (isShown())
-                        {
-                            ((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
-                            ((sottoMenu*)parentWidget())->forceDraw();
-                        }
-                    }
-                }
-                else if  ( (!strcmp(msg_open.Extract_cosa(),"111")) || (!strcmp(msg_open.Extract_cosa(),"211")) || (!strcmp(msg_open.Extract_cosa(),"311")) )
-                {
-                    if  (stato!=S_AUTO) 
-                    {                 
-                        nascondi(BUT1);
-                        nascondi(BUT2);
-                        nascondi(ICON);
-                        tempImp->show();
-                        stato=S_AUTO;
-                        aggiorna=1;
-                        if(isShown())
-                        {
-                            ((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
-                            ((sottoMenu*)parentWidget())->forceDraw();
-                        }
-                    }
-                }
-                else if   (!strcmp(msg_open.Extract_cosa(),"102")) 
-                {
-                    //sonda in antigelo	       
-                    nascondi(BUT1);
-                    nascondi(BUT2);
-                    mostra(ICON);
-                    tempImp->hide();
-                    impostaAttivo(1);
-                    aggiorna=1;
-                    stato=S_ANTIGELO;
-                }
-                else if   (!strcmp(msg_open.Extract_cosa(),"202")) 
-                {
-                    //sonda in protezione termica
-                    nascondi(BUT1);
-                    nascondi(BUT2);
-                    mostra(ICON);
-                    tempImp->hide();
-                    impostaAttivo(1);
-                    aggiorna=1;	       
-                    stato=S_OFF;
-                }
-                else if   (!strcmp(msg_open.Extract_cosa(),"103")) 
-                {
-                    //sonda in OFF
-                    mostra(ICON);
-                    nascondi(BUT1);
-                    nascondi(BUT2);	       
-                    tempImp->hide();
-                    impostaAttivo(0);
-                    aggiorna=1;	       
-                }    
-                else if   (!strcmp(msg_open.Extract_grandezza(),"13")) 
-                {
-                    switch (atoi(msg_open.Extract_valori(0))){
-		    case 0:	val_imp=3;isOff=0;isAntigelo=0;break;
-		    case 1:	val_imp=4;isOff=0;isAntigelo=0;break;
-		    case 2:	val_imp=5;isOff=0;isAntigelo=0;break;
-		    case 3:	val_imp=6;isOff=0;isAntigelo=0;break;
-		    case 11:	val_imp=2;isOff=0;isAntigelo=0;break;
-		    case 12:	val_imp=1;isOff=0;isAntigelo=0;break;
-		    case 13:	val_imp=0;isOff=0;isAntigelo=0;break;
-		    case 4:	val_imp=0;isOff=1;isAntigelo=0;/*OFF*/break;
-		    case 5:	val_imp=0;isOff=0;isAntigelo=1;/*LOCAL PROTECTION*/break;			
-		    }
-                    aggiorna=1;
-                }
-                else if   (!strcmp(msg_open.Extract_grandezza(),"0")) 
-                {
-                    //Temperatura misurata
-                    float icx;
-                    char	tmp[10];   
-                    
-                    icx=atoi(msg_open.Extract_valori(0));
-                    qDebug("temperatura misurata: %d",(int)icx);
-                    memset(temp,'\000',sizeof(temp));
-                    if (icx>=1000)
-                    {
-                        strcat(temp,"-");
-                        icx=icx-1000;
-                    }
-                    icx/=10;
-                    sprintf(tmp,"%.1f",icx);
-                    qDebug("-1: tmp: %.1f - %s",icx, &tmp[0]);
-                    strcat(temp,tmp);
-                    qDebug("-1: temp: %s", &temp[0]);
-                    strcat(temp,"\272C");
-                    qDebug("-2: temp: %s", &temp[0]);
-                    aggiorna=1;	       
-                    
-                    memset(pippo,'\000',sizeof(pippo));
-                    strcat(pippo,"*#4*");
-                    strcat(pippo,getAddress());
-                    strcat(pippo,"*14");
-                    strcat(pippo,"##");
-                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-                    emit sendFrame(msg_open.frame_open);         	       
-                    ////	       
-                    //Richiesta via centrale     
-                    memset(pippo,'\000',sizeof(pippo));
-                    strcat(pippo,"*#4*#");
-                    strcat(pippo,getAddress());
-                    strcat(pippo,"##");
-                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-                    emit sendFrame(msg_open.frame_open);   
-                    /////	       
-                    
-                }
-                else if   (!strcmp(msg_open.Extract_grandezza(),"14")) 
-                {
-                    //Set Point
-                    float icx;
-                    char	tmp[10];   
-                    
-                    icx=atoi(msg_open.Extract_valori(0));
-                    qDebug("temperatura setpoint: %d",(int)icx);                    
-                    memset(setpoint,'\000',sizeof(setpoint));
-                    if (icx>=1000)
-                    {
-                        strcat(setpoint,"-");
-                        icx=icx-1000;
-                    }
-                    icx/=10;
-                    sprintf(tmp,"%.1f",icx);
-                    strcat(setpoint,tmp);
-                    strcat(setpoint,"\272C");
-                    aggiorna=1;	       
-                    
-                    
-                }
-            }
-    }    
-    if (aggiorna)
-        Draw();
-}
-
-void termoPage::status_changed(QPtrList<device_status> sl)
-{
-    qDebug("termoPage::status_changed(): EMPTY");
-}
-
-#else
 void termoPage::status_changed(QPtrList<device_status> sl)
 {
     stat_var curr_stat(stat_var::STAT);
@@ -3306,15 +3115,6 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	    emit sendInit(msg_open.frame_open);         	       
 	    ////	
-#if 0       
-	    //Richiesta via centrale     
-	    memset(pippo,'\000',sizeof(pippo));
-	    strcat(pippo,"*#4*#");
-	    strcat(pippo,getAddress());
-	    strcat(pippo,"##");
-	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	    emit sendFrame(msg_open.frame_open);   
-#endif
 	    /////	       
 	    break;
 	default:
@@ -3327,8 +3127,6 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	Draw();
     delete dsi;
 }
-#endif
-
 
 char* termoPage::getChi()
 {
@@ -3447,27 +3245,6 @@ void termoPage::decSetpoint()
 void termoPage::inizializza()
 { 
   // See frame_interpreter.cpp
-#if 0
-    openwebnet msg_open;
-    char    pippo[50];
-    
-    //Richiesta via centrale     
-    memset(pippo,'\000',sizeof(pippo));
-    strcat(pippo,"*#4*#");
-    strcat(pippo,getAddress());
-    strcat(pippo,"##");
-    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-    emit sendFrame(msg_open.frame_open);   
-    
-    
-    //Richiesta alla sonda 
-    memset(pippo,'\000',sizeof(pippo));
-    strcat(pippo,"*#4*");
-    strcat(pippo,getAddress());
-    strcat(pippo,"##");
-    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-    emit sendFrame(msg_open.frame_open);   
-#endif
 }
 
 
