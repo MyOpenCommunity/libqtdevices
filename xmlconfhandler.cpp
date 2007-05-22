@@ -70,6 +70,9 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu*
     page_item_cond_list = new QPtrList<scenEvo_cond>;
     page_item_descr_m = new QPtrList<QString>;
     page_item_unknown = "";
+    page_item_txt1 = "";
+    page_item_txt2 = "";
+    page_item_txt3 = "";
     //qDebug("scello3 %d",bg);
     // Start counting for wd refresh
     wdtime.start();
@@ -425,7 +428,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
                             {
                                     pnt=datiGen;
                                 }
-                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key, page_item_unknown, sstart, sstop)  ;
+                            pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key, page_item_unknown, sstart, sstop, page_item_txt1, page_item_txt2, page_item_txt3)  ;
 			    page_item_cond_list->clear();
                             break;			   
                         case ANTIINTRUSIONE:
@@ -937,7 +940,16 @@ bool xmlconfhandler::characters( const QString & qValue)
 		if(!CurTagL3.compare("pagevct") && 
 		   !CurTagL4.compare("unknown"))
 		    page_item_unknown = qValue;
-
+    
+    if(!CurTagL3.compare("pagevct") && CurTagL4.startsWith("txt"))
+    {
+      if(!page_item_txt1.compare(""))
+        page_item_txt1 = qValue;
+      else if(!page_item_txt2.compare(""))
+        page_item_txt2 = qValue;
+      else
+        page_item_txt3 = qValue;
+    }
                 if (!CurTagL4.compare("id"))
                 {
                             QWidget* pageAct=NULL;  

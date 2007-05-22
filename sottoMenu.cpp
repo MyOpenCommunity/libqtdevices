@@ -133,7 +133,7 @@ int sottoMenu::setBGPixmap(char* backImage)
 
 int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char*  IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame, \
 		       QColor SecondForeground,char* descr1,char* descr2,char* descr3,char* descr4, char* icoEx1, char* icoEx2, char* icoEx3,int par3,int par4, QPtrList<QString> *lt, QPtrList<scenEvo_cond> *lc, QString action, 
-QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<int>sstop)
+QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<int>sstop, QString txt1, QString txt2, QString txt3)
  {
      qDebug("sottoMenu::addItem (%p)", lt);
     switch (tipo){
@@ -192,7 +192,7 @@ QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<i
       break;
     case SCENARIO_SCHEDULATO: elencoBanner.append(new scenSched(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4)); break;							
       // FIXME: VERIFICA I PARAMETRI !!!
-    case POSTO_ESTERNO: elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, (char *)light.ascii(), (char *)key.ascii(), (char *)unknown.ascii())); break;
+    case POSTO_ESTERNO: elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, (char *)light.ascii(), (char *)key.ascii(), (char *)unknown.ascii(), (char *)txt1.ascii(), (char *)txt2.ascii(), (char *)txt3.ascii())); break;
 #if 1
     case SORG_RADIO:
 	elencoBanner.append(new sorgenteMultiRadio(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
@@ -449,19 +449,29 @@ bool sottoMenu::setGroup(char* chi, char* where, bool* group)
 
 void sottoMenu::setIndex(char* indiriz)
 {
-    int idx;
-     for (idx=0;idx<elencoBanner.count();idx++)     
+  int idx;
+  for (idx=0;idx<elencoBanner.count();idx++)
+  {
+    if (!strcmp(elencoBanner.at(idx)->getAddress(),indiriz))
     {
-	if (!strcmp(elencoBanner.at(idx)->getAddress(),indiriz))
-	{	    
-	    qDebug("setindex trovato %s",indiriz);
-	    break;
-	}
+      qDebug("setindex trovato %s",indiriz);
+      elencoBanner.at(idx)->mostra(banner::BUT2);
+      indice=idx;
     }
-     if  (idx<=elencoBanner.count())
-	 indice=idx;
+    else
+      elencoBanner.at(idx)->nascondi(banner::BUT2);
+  }
 }
 
+
+void sottoMenu::mostra_all(char but)
+{
+  int idx;
+  for (idx=0;idx<elencoBanner.count();idx++)
+  {
+    elencoBanner.at(idx)->mostra(but);
+  }
+}
 
 void sottoMenu::setNumRig(uchar n)
   {

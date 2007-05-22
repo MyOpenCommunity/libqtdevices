@@ -93,7 +93,7 @@ public:
 		char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
 		char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0, int par4=0, 
 QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, 
-QString action="", QString light="", QString key="", QString unk="", QValueList<int> sstart = QValueList<int>(), QValueList<int> sttop = QValueList<int>());
+QString action="", QString light="", QString key="", QString unk="", QValueList<int> sstart = QValueList<int>(), QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
 /*!
   \brief Initializes all the objects in the list calling init() after a certain time
 */      
@@ -146,6 +146,7 @@ QString action="", QString light="", QString key="", QString unk="", QValueList<
   \brief Sets the index of the list forcing it to the object having the address passed by argument.
 */     
   void 	setIndex(char*);
+  void mostra_all(char);
 /*!
   \brief Sets the index of the list forcing which is the first item to draw.
 */    

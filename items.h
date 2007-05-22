@@ -1255,7 +1255,7 @@ class postoExt : public bann4tasLab
     static call_notifier_manager *cnm;
     static call_notifier *unknown_notifier;
  public:
-    postoExt(QWidget *parent=0, const char *name=NULL, char* Icona1="",char *Icona2="", char *Icona3="", char* Icona4="", char *where="", char *light="", char *key="", char *unknown = "0");   
+    postoExt(QWidget *parent=0, const char *name=NULL, char* Icona1="",char *Icona2="", char *Icona3="", char* Icona4="", char *where="", char *light="", char *key="", char *unknown = "0", char *txt1 = "", char *txt2 = "", char *txt3 = "");
     /*!
       Reimplemented draw
     */
@@ -1325,6 +1325,9 @@ class ambDiffSon : public bannBut2Icon
 	       QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL,
 	       sottoMenu *sorg=NULL, diffmulti *dm=NULL);
     void Draw();
+    void hide();
+    void setDraw(bool d);
+    bool isDraw();
 public slots:
     void configura(); 
     //! receives amb index and active source index
@@ -1337,6 +1340,7 @@ public slots:
  diffmulti *diffmul;
  sottoMenu *sorgenti;
  int actSrc;
+ bool is_draw;
 };
 
 #endif // AMB_DIFF_SON_H

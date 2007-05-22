@@ -134,10 +134,9 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			  IconaSx, IconaDx, icon);
 	b = sorgenti->getLast();
 	connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
-	connect(sorgenti, SIGNAL(ambChanged(char *, bool, void *)),
-		b, SLOT(ambChanged(char *, bool, void *)));
-	connect(b, SIGNAL(active(int, int)), 
-		this, SIGNAL(actSrcChanged(int, int)));
+	connect(sorgenti, SIGNAL(ambChanged(char *, bool, void *)),b, SLOT(ambChanged(char *, bool, void *)));
+	connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
+      connect(b,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *))); 
 	break;
     case INSIEME_AMBIENTI:
     case AMBIENTE:

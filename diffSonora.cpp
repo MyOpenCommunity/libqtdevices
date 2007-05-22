@@ -143,7 +143,7 @@ void diffSonora::inizializza()
 
 
 void diffSonora::gestFrame(char*frame)
-{	
+{
     emit gesFrame(frame);
     openwebnet msg_open;
     char aggiorna;
@@ -205,7 +205,7 @@ void diffSonora::freezed_handler(bool f)
 void diffSonora::show()
 {
      openwebnet msg_open;
-     emit sendInit("*16*53*100##"); 
+     //emit sendInit("*16*53*100##"); 
      sorgenti->forceDraw();
      amplificatori->forceDraw();
      isVisual=1;

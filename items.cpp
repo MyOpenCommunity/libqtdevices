@@ -1359,7 +1359,7 @@ attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indiriz
     SetIcons( IconaDx, IconaSx ,icon, pressedIcon,period ,number );
     setAddress(indirizzo);
     cntTempi=0;
-    static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "10'", "15'" } ;
+    static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "15'", "30''" } ;
     tempi = new QPtrList<QString>;
     tempi->clear();
     int nt = lt->count() ? lt->count() : sizeof(t) / sizeof(char *) ;
@@ -4582,7 +4582,7 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
-postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown) : bann4tasLab( parent, name )
+postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown, char* _txt1, char* _txt2, char* _txt3) : bann4tasLab( parent, name )
 {
     char pressIconName[100];
     where = _where;
@@ -4596,7 +4596,8 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
     
     qDebug("light = %d, key = %d, unknown = %d", light, key, unknown);
     qDebug("descr = %s, where = %s", name, _where);
-    //SetIcons(Icona1, Icona3, Icona4, Icona2);
+    qDebug("txt1 = %s, txt2 = %s, txt3 = %s", _txt1, _txt2, _txt3);
+  //SetIcons(Icona1, Icona3, Icona4, Icona2);
     SetIcons (Icona2, Icona3, "", "", Icona1);
     if(key) {
 	key_icon = Icona2;
@@ -4615,7 +4616,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
     Draw();
     qDebug("creating call_notifier");
     call_notifier *cn = new call_notifier((QWidget *)NULL, 
-					  (char *)"call notifier", this);
+					  (char *)"call notifier", this, _txt1, _txt2, _txt3);
     qDebug("setting BG and FG colors");
     cn->setBGColor(backgroundColor());
     cn->setFGColor(foregroundColor());
@@ -4635,7 +4636,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
     cnm->add_call_notifier(cn);
     if(unknown && !unknown_notifier) {
 	qDebug("Creating unknown station notifier");
-	unknown_notifier = new call_notifier(NULL, "unk call notif", NULL);
+	unknown_notifier = new call_notifier(NULL, "unk call notif", NULL, _txt1, _txt2, _txt3);
 	cnm->set_unknown_call_notifier(unknown_notifier);
 	unknown_notifier->setBGColor(backgroundColor());
 	unknown_notifier->setFGColor(foregroundColor());
@@ -4794,6 +4795,7 @@ ambDiffSon::ambDiffSon( QWidget *parent,const char *name,void *indirizzo,char* I
 	++(*lai);
     }
     delete lai;
+    setDraw(false);
 }
 
 void ambDiffSon::Draw()
@@ -4801,7 +4803,7 @@ void ambDiffSon::Draw()
     qDebug("ambDiffSon::Draw()");
     sxButton->setPixmap(*Icon[0]);
     if (pressIcon[0])
-	sxButton->setPressedPixmap(*pressIcon[0]);
+      sxButton->setPressedPixmap(*pressIcon[0]);
     BannerIcon->repaint();
     BannerIcon->setPixmap(*(Icon[1]));
     BannerIcon->repaint();
@@ -4811,6 +4813,13 @@ void ambDiffSon::Draw()
     BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
     BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
     BannerText->setText(testo);
+}
+
+void ambDiffSon::hide()
+{
+  qDebug("ambDiffSon::hide()");
+  setDraw(false);
+  banner::hide();
 }
 
 void ambDiffSon::configura()
@@ -4831,20 +4840,38 @@ void ambDiffSon::configura()
     diffson->setFirstSource(actSrc);
     diffson->forceDraw();
     diffson->showFullScreen();
+    setDraw(true);
 }
 
 void ambDiffSon::actSrcChanged(int a, int s)
 {
-    qDebug("ambDiffSon::actSrcChanged(%d, %d)", a, s);
-    if(a != atoi(getAddress())) {
-	qDebug("not my address, discarding event");
-	return;
-    }
-    qDebug("First source's where is %d", actSrc);
+  qDebug("ambDiffSon::actSrcChanged(%d, %d)", a, s);
+  if(a != atoi(getAddress())) {
+    qDebug("not my address, discarding event");
+    return;
+  }
+  qDebug("First source's where is %d", actSrc);
+  if(actSrc != (100 + a*10 + s))
+  {
     actSrc = 100 + a*10 + s;
+    if(isDraw())
+    {
+      diffson->setFirstSource(actSrc);
+      sorgenti->draw();
+      //diffson->forceDraw();
+    }
+  }
 }
 
+void ambDiffSon::setDraw(bool d)
+{
+  is_draw = d;
+}
 
+bool ambDiffSon::isDraw()
+{
+  return is_draw;
+}
 /*****************************************************************
 ** Insieme ambienti diffusione sonora multicanale
 ****************************************************************/
@@ -4925,6 +4952,7 @@ void insAmbDiffSon::configura()
     connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
     connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
     qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
+    sorgenti->mostra_all(banner::BUT2);
     diffson->forceDraw();
     diffson->showFullScreen();
 }

@@ -23,7 +23,7 @@
 
 // Call notifier implementation
 
-call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) :
+call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms, char* _txt1, char* _txt2, char* _txt3) :
   QFrame(parent, name)
 {
     qDebug("call_notifier::call_notifier()");
@@ -51,7 +51,7 @@ call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) :
     connect(station_dev, SIGNAL(status_changed(QPtrList<device_status>)),
 	    this, SLOT(status_changed(QPtrList<device_status>)));
     station_dev->init();
-    SetIcons();
+    SetIcons(_txt1, _txt2, _txt3);
 }
 
 void call_notifier::get_where(QString& out)
@@ -115,7 +115,7 @@ void call_notifier::close()
 }
 
 // Private methods
-void call_notifier::SetIcons(void)
+void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
 {
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
     setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -128,7 +128,7 @@ void call_notifier::SetIcons(void)
     if(my_station)
 	my_station->get_descr(s);
     else
-	s = "CH. SCONOSCIUTO";
+	s = _txt1;
     area1_ptr->setText(s.ascii());
     if(my_station && my_station->get_light()) {
 	area2_but = new BtButton(this, "Area2");
@@ -143,7 +143,7 @@ void call_notifier::SetIcons(void)
 			       LABEL_WIDTH, LABEL_HEIGHT);
 	area3_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
 	area3_ptr->setAlignment(AlignHCenter|AlignVCenter);
-	s = "LUCE SCALE";
+	s = _txt2;
 	area3_ptr->setText(s.ascii());
     } else {
 	area2_but = NULL;
@@ -160,7 +160,7 @@ void call_notifier::SetIcons(void)
 			       LABEL_WIDTH, LABEL_HEIGHT);
 	area5_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
 	area5_ptr->setAlignment(AlignHCenter|AlignVCenter);
-	s = "SERRATURA";
+	s = _txt3;
 	area5_ptr->setText(s.ascii());
     } else {
 	area4_but = NULL;
@@ -323,4 +323,3 @@ void call_notifier_manager::frame_captured_handler(call_notifier *cn)
     cn->showFullScreen();
     emit(frame_captured(cn));
 }
-

@@ -1718,9 +1718,9 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     qDebug("frame_interpreter_sound_matr_device::handle_frame_handler");
     qDebug("#### frame is %s ####", frame);
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-    if(!is_frame_ours(msg_open, request_status))
+    /*if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
-	return;
+	return;*/
     QPtrListIterator<device_status> *dsi = 
 	new QPtrListIterator<device_status>(*sl);
     dsi->toFirst();
@@ -1782,6 +1782,25 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
 		   ", meas frame, code = %d", code);
 	    break;
 	}
+    }
+    else
+    {
+      if((atoi(m.Extract_cosa()) == 3) && ((atoi(m.Extract_dove()) >= 121)))
+      {
+        qDebug("frame_sound_matr_device::handle_frame, normal frame");
+        stat_var curr_act(stat_var::ACTIVE_SOURCE);
+        char ambiente[2];
+        sprintf(ambiente,"%d", ((atoi(m.Extract_dove())-100)/10)-1);
+        ds->read(atoi(ambiente), curr_act);
+        qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
+        act = atoi(m.Extract_dove())-110-(10*atoi(ambiente));
+        qDebug("New active source = %d", act);
+        if(act != curr_act.get_val()) {
+          curr_act.set_val(act);
+          ds->write_val(atoi(ambiente), curr_act);
+          do_event = true;
+        }
+      }
     }
     if(do_event)
 	evt_list.append(ds);
