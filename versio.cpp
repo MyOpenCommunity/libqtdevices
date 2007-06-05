@@ -100,9 +100,11 @@ void versio::gestFrame(char* frame)
 	}
 	if (!strcmp(msg_open.Extract_grandezza(),"3"))
 	{
-	    hw=atoi(msg_open.Extract_valori(1));
+	    hw_version=atoi(msg_open.Extract_valori(0));
+	    hw_release=atoi(msg_open.Extract_valori(1));
+	    hw_build=atoi(msg_open.Extract_valori(2));
 	    aggiorna=1;	    
-	    qDebug("presa vers HW = %d",hw);
+	    qDebug("presa vers HW = %d.%d.%d",hw_version, hw_release, hw_build);
 	}
     }
     if (aggiorna)
@@ -111,7 +113,7 @@ void versio::gestFrame(char* frame)
 	datiGen->setFont( QFont( "helvetica", 14, QFont::Bold) );
 	datiGen-> setIndent(15);
 	datiGen->setAlignment(AlignLeft|AlignTop);    
-	sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d\nT.S. n. %d", model.ascii(), vers, release, build, pic_version, pic_release, pic_build, hw,indDisp);
+	sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d", model.ascii(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);
 	
 	datiGen->setText(&scritta[100]);   
         qDebug("setta scritte versio");

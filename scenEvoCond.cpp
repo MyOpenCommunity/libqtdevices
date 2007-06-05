@@ -1646,10 +1646,10 @@ device_condition_volume::device_condition_volume(QWidget *parent,
     l->setAlignment(AlignHCenter|AlignVCenter);
     l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
     frame = l;
-      if(strcmp(c->ascii(), "-1") == 0)
+    if(strcmp(c->ascii(), "-1") == 0)
     {
-      set_condition_value_min(0);
-      set_condition_value_max(0);
+      set_condition_value_min(-1);
+      set_condition_value_max(-1);
     }
     else
     {

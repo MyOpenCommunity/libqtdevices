@@ -70,7 +70,9 @@ private:
      unsigned char pic_version;
      unsigned char pic_release;
      unsigned char pic_build;
-     unsigned char hw;
+     unsigned char hw_version;
+     unsigned char hw_release;
+     unsigned char hw_build;
      QString model;
      BtLabel*datiGen, *bticino;
      int indDisp;
