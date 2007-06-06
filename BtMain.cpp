@@ -44,7 +44,8 @@
 #include <math.h>
 #include <qbitmap.h>
 
-
+//#define SCREENSAVER_BALLS
+#define SCREENSAVER_LINE
 
 
 
@@ -86,9 +87,9 @@ v** Socket
     tiempo_last_ev = 0;
     pd_shown = false;
         
-backcol=0;
- tasti=NULL; 
-
+    backcol=0;
+    tasti=NULL; 
+    linea = NULL;
     for (int idx=0;idx<12;idx++)
     {
         screensav[idx]=new BtLabel("",/*NULLscrsav*/this,"g");
@@ -524,6 +525,7 @@ void BtMain::gesScrSav()
             
             if (isShown())
             {
+#ifdef SCREENSAVER_BALLS
         //        qDebug("tiempo: %d",tiempo);
                 if ( 0/*(tiempo/100)%2 */)
                 {                   
@@ -676,6 +678,49 @@ void BtMain::gesScrSav()
                }
                     }
                 }        
+#endif
+#ifdef SCREENSAVER_LINE
+     tempo1->changeInterval(100);
+    if (backcol>=5)
+    {
+             if (grab)
+                delete(grab);
+             if(pagDefault)
+                 grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
+             else
+                 grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
+             setPaletteBackgroundPixmap(*grab);
+             setPaletteBackgroundPixmap(*grab);
+         backcol=0;
+    }
+    backcol++;
+    if (y[0] > MAX_HEIGHT)
+    {
+        y[0] = MAX_HEIGHT;
+	y[1] = 1;
+    }
+    if (y[0] < 0)
+    {
+        y[0] = 0;   
+	y[1] = 0;
+    }
+    if (y[1] == 0)
+        y[0] += 3; 
+    else
+        y[0] -= 3;
+ 
+//    if (linea)
+//       delete linea;
+    if (!linea)
+     linea = new BtLabel(this,NULL,0);
+    linea->setGeometry(0,y[0],MAX_WIDTH,6);
+//     linea->setPaletteForegroundColor(QColor::QColor(Qt::black));
+    if (y[1])
+      linea->setPaletteBackgroundColor(QColor::QColor(Qt::black));
+    else
+      linea->setPaletteBackgroundColor(QColor::QColor(Qt::white));
+    linea->show();
+#endif
             }
         }	
         else
