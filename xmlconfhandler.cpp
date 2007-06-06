@@ -1061,7 +1061,7 @@ bool xmlconfhandler::characters( const QString & qValue)
                             pageAct->hide();
                             //	  pageAct->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
                             //	  pageAct->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
-                            if (idPageDefault==page_id)
+                            if ( (idPageDefault==page_id) && (hompage_isdefined) )
                                 *pagDefault=pageAct;	  
                             
                         } // if (!CurTagL4.compare("id"))

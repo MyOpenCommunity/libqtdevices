@@ -257,7 +257,7 @@ void setBacklight(bool b)
 	    if (b)
 		write(fd, "10", 2);
 	    else
-		write(fd, "220", 3);
+		write(fd, "210", 3);
 	    close(fd);
 	}
     }

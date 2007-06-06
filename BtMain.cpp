@@ -86,8 +86,12 @@ v** Socket
     svegliaIsOn=FALSE;
     tiempo_last_ev = 0;
     pd_shown = false;
-        
+#ifndef SCREENSAVER_LINE        
     backcol=0;
+    y[0] = 0;
+#else
+    backcol = 10;
+#endif
     tasti=NULL; 
     linea = NULL;
     for (int idx=0;idx<12;idx++)
@@ -690,7 +694,7 @@ void BtMain::gesScrSav()
              else
                  grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
              setPaletteBackgroundPixmap(*grab);
-             setPaletteBackgroundPixmap(*grab);
+//             setPaletteBackgroundPixmap(*grab);
          backcol=0;
     }
     backcol++;
