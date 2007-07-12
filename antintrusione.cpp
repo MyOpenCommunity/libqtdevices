@@ -467,5 +467,6 @@ void antintrusione::hide()
         ++(*ai);
     }
     delete ai;
+    emit(sendFrame("*#5*0##"));
 #endif
 }

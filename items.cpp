@@ -156,6 +156,8 @@ void dimmer::status_changed(QPtrList<device_status> sl)
 	      qDebug("dimmer status variation");
 	      qDebug("level = %d", curr_lev.get_val());
 	      setValue(curr_lev.get_val());
+              if((curr_lev.get_val() ==0))
+                impostaAttivo(0);
 	    }
 	    aggiorna = true;
 	    break;
@@ -392,7 +394,9 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
 	      qDebug("dimmer 100 status variation");
 	      qDebug("level = %d, speed = %d", curr_lev.get_val(), 
 		     curr_speed.get_val());
-            if(curr_lev.get_val() <=5)
+            if((curr_lev.get_val() ==0))
+                impostaAttivo(0);
+            if((curr_lev.get_val() <=5))
               setValue(5);
             else
 	      setValue(curr_lev.get_val());

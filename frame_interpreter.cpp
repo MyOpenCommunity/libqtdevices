@@ -813,7 +813,7 @@ void frame_interpreter_lights::set_status(device_status_dimmer100 *ds,
       ds->write_val((int)device_status_dimmer100::FAULT_INDEX, curr_fault);
       reinit = true;
     }
-    if(!curr_lev.initialized()) {
+    if((!curr_lev.initialized()) || (reinit)) {
 	curr_lev.set_val(lev);
 	curr_old_lev.set_val(lev);
 	ds->write_val((int)device_status_dimmer100::LEV_INDEX, curr_lev);
@@ -1524,12 +1524,16 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
     evt_list.clear();
     device_status *ds = dsi->current();
     if(request_status) {
+#if 0
       if(strcmp(msg_open.Extract_dove(), "0") == 0)
 		{
 			request_init(ds, ds->init_request_delay());
 		}
 		else
 			request_init(ds);
+#else
+                        request_init(ds, ds->init_request_delay());
+#endif
 	goto end;
     }
     {
@@ -1785,14 +1789,14 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
     }
     else
     {
-      if((atoi(m.Extract_cosa()) == 3) && ((atoi(m.Extract_dove()) >= 121)))
+      if((atoi(m.Extract_cosa()) == 3) && ((atoi(m.Extract_dove()) >= 111)))
       {
         qDebug("frame_sound_matr_device::handle_frame, normal frame");
         stat_var curr_act(stat_var::ACTIVE_SOURCE);
         char ambiente[2];
         sprintf(ambiente,"%d", ((atoi(m.Extract_dove())-100)/10)-1);
         ds->read(atoi(ambiente), curr_act);
-        qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
+        qDebug("Curr active source for amb %s = %d", ambiente+1, curr_act.get_val());
         act = atoi(m.Extract_dove())-110-(10*atoi(ambiente));
         qDebug("New active source = %d", act);
         if(act != curr_act.get_val()) {

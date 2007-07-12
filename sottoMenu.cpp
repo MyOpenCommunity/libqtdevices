@@ -62,7 +62,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 {   
-     
+    qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", IconBut4, &iconName[0]);     
     if(navBarMode!=hasNavBar)
     {
        if(bannNavigazione)
@@ -87,9 +87,12 @@ void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
         }
         hasNavBar=navBarMode;
         strncpy(&iconName[0],IconBut4,sizeof(&iconName[0]));
+        bannNavigazione -> SetIcons(1,&iconName[0]);
+        bannNavigazione -> Draw();
     }
     else if (strcmp(IconBut4,&iconName[0]))
-    {        
+    {       
+        qDebug("Agre - Penso sia qui!!!"); 
         strncpy(&iconName[0],IconBut4,MAX_PATH);
         qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", &iconName[0], IconBut4);
         bannNavigazione -> SetIcons(1,&iconName[0]);

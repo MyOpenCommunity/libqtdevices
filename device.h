@@ -139,6 +139,11 @@ class device_status {
     ~device_status();
 };
 
+#ifndef LIGHT_REQ_DELAY
+#define LIGHT_REQ_DELAY 1500
+#endif
+
+
 //! Simple light status
 class device_status_light : public device_status {
  private:
@@ -147,6 +152,7 @@ class device_status_light : public device_status {
 	ON_OFF_INDEX = 0,
     } ind;
     device_status_light(); //{ add_var(new stat_var(ON_OFF, 0, 1, 1)); } ;
+    virtual int init_request_delay() { return LIGHT_REQ_DELAY; }
     //~device_status_light();
 };
 

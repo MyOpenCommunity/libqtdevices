@@ -1111,8 +1111,10 @@ bool xmlconfhandler::characters( const QString & qValue)
 					qDebug("**** QUA %d", qValue.toInt());
 					sstart.append(qValue.toInt());
 				    }
-				    if (!CurTagL6.compare("softstop"))
-					sstop.append(qValue.toInt());
+				    if (!CurTagL6.compare("softstop")) {
+                                        qDebug("**** QUA %d", qValue.toInt());
+                                        sstop.append(qValue.toInt());
+                                    }
                                 }
                             else if ((CurTagL5.startsWith("cimg"))||(!CurTagL5.compare("value"))||(!CurTagL5.compare("hour"))||(!CurTagL5.compare("minute")))
                             {

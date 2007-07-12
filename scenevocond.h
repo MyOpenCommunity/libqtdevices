@@ -518,6 +518,7 @@ class device_condition_volume : public device_condition
     int get_current_value_max();
     void set_current_value_max(int max);
     void get_condition_value(QString& out);
+    void reset();
     //! Returns step
     //int get_step();
     //! Draws condition

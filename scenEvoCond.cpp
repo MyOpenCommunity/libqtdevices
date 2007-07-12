@@ -691,6 +691,8 @@ void scenEvo_cond_d::SetIcons()
 	break;
     case 3:
 	dc = new device_condition_temp(this, "temp_val", trigger);
+        but[A3_BUTTON_INDEX]->setAutoRepeat(true);
+        but[A4_BUTTON_INDEX]->setAutoRepeat(true);
 	break;
     case 4:
 	dc = new device_condition_volume(this, "audio_val", trigger);
@@ -1783,18 +1785,18 @@ void device_condition_volume::Up()
         v_M = 6;
       else
       {
-        v_m = 6;
+        v_m = 7;
         v_M = 12;
       }
     }
-    else if(v_m == 6)
+    else if(v_m == 7)
     {
-      v_m = 12;
+      v_m = 13;
       v_M = 22;
     }
     else
     {
-      v_m = 22;
+      v_m = 23;
       v_M = 31;
     }
     qDebug("new value m = %d - M = %d", v_m, v_M);
@@ -1810,17 +1812,17 @@ void device_condition_volume::Down()
     int v_m = get_current_value_min();
     int v_M = get_current_value_max();
     qDebug("v_m = %d - v_M = %d", v_m, v_M);
-    if(v_m == 22)
+    if(v_m == 23)
     {
-      v_m = 12;
+      v_m = 13;
       v_M = 22;
     }
-    else if(v_m == 12)
+    else if(v_m == 13)
     {
-      v_m = 6;
+      v_m = 7;
       v_M = 12;
     }
-    else if(v_m == 6)
+    else if(v_m == 7)
     {
       v_m = 0;
       v_M = 6;
@@ -1862,7 +1864,7 @@ void device_condition_volume::Draw()
     else if((val_min == 0) && (val_max == 31))
       sprintf(tmp, "ON");
     else
-      sprintf(tmp, "%d%s - %d%s", 10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3), u.ascii(), 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3), u.ascii());
+      sprintf(tmp, "%d%s - %d%s", (val_min == 0 ? 0 : (10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3) + 1)), u.ascii(), 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3), u.ascii());
     ((QLabel *)frame)->setText(tmp);
 }
 
@@ -1911,6 +1913,14 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
 void device_condition_volume::get_unit(QString& out)
 {
     out = "%";
+}
+
+void device_condition_volume::reset()
+{
+    qDebug("device_condition_volume::reset()");
+    set_current_value_min(get_condition_value_min());
+    set_current_value_max(get_condition_value_max());
+    Draw();
 }
 
 /*****************************************************************

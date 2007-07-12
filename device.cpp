@@ -237,9 +237,9 @@ device_status_light::device_status_light() : device_status(LIGHTS)
 device_status_dimmer::device_status_dimmer() : device_status(DIMMER)
 {
     add_var((int)device_status_dimmer::LEV_INDEX,
-	    new stat_var(stat_var::LEV, 0, 0, 100, 10));
+	    new stat_var(stat_var::LEV, 0, -1, 100, 10));
     add_var((int)device_status_dimmer::OLD_LEV_INDEX,
-	    new stat_var(stat_var::OLD_LEV, 0, 0, 100, 10));
+	    new stat_var(stat_var::OLD_LEV, 0, -1, 100, 10));
     add_var((int)device_status_dimmer::FAULT_INDEX,
 	    new stat_var(stat_var::FAULT, 0, 0, 1, 1));
 }
@@ -248,9 +248,9 @@ device_status_dimmer::device_status_dimmer() : device_status(DIMMER)
 device_status_dimmer100::device_status_dimmer100() : device_status(DIMMER100)
 {
     add_var((int)device_status_dimmer100::LEV_INDEX,
-	    new stat_var(stat_var::LEV, 0, 0, 100, 5));
+	    new stat_var(stat_var::LEV, 0, -1, 100, 5));
     add_var((int)device_status_dimmer100::OLD_LEV_INDEX,
-	    new stat_var(stat_var::OLD_LEV, 0, 0, 100, 5));
+	    new stat_var(stat_var::OLD_LEV, 0, -1, 100, 5));
     add_var((int)device_status_dimmer100::SPEED_INDEX,
 	    new stat_var(stat_var::SPEED, 1, 1, 255, 1));
     add_var((int)device_status_dimmer100::FAULT_INDEX,
