@@ -2362,8 +2362,10 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     stat_var curr_local(stat_var::LOCAL);
     stat_var curr_sp(stat_var::SP);
     stat_var curr_crono(stat_var::CRONO);
+    stat_var curr_delta(stat_var::DELTA);
     int stat;
     int cr;
+    int delta;
     bool do_event = false;
     char pippo[50];
     // Read current status
@@ -2371,10 +2373,12 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     ds->read((int)device_status_thermr::LOCAL_INDEX, curr_local);
     ds->read((int)device_status_thermr::SP_INDEX, curr_sp);
     ds->read((int)device_status_thermr::CRONO, curr_crono);
+    ds->read((int)device_status_thermr::DELTA, curr_delta);
     qDebug("curr status is %d", curr_stat.get_val());
     qDebug("curr local is %d", curr_local.get_val());
     qDebug("curr sp is %d", curr_sp.get_val());
     qDebug("curr crono is %d", curr_crono.get_val());
+    qDebug("curr delta is %d", curr_delta.get_val());
     int cosa = atoi(m.Extract_cosa());
     qDebug("cosa = %d", cosa);
     if((m.Extract_dove()[0]=='#') && (!curr_crono.get_val()))
@@ -2581,6 +2585,10 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
       strcat(pippo,m.Extract_dove());
       strcat(pippo,"*14##");
       emit init_requested(QString(pippo));
+      delta = 1;
+      curr_delta.set_val(delta);
+      ds->write_val((int)device_status_thermr::DELTA, curr_delta);
+      evt_list.append(ds);
       break;
     case 14:
 	sp = atoi(m.Extract_valori(0));

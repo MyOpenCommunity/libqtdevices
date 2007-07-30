@@ -2897,6 +2897,10 @@ termoPage::termoPage ( QWidget *parent, const char *name ,char*indirizzo,char* I
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
+    delta_setpoint = 0;
+  connect(&setpoint_timer, SIGNAL(timeout()), this, SLOT(sendSetpoint()));
+              sxButton->setAutoRepeat(true);
+    dxButton->setAutoRepeat(true);
 }
 
 void termoPage::status_changed(QPtrList<device_status> sl)
@@ -2905,6 +2909,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
     stat_var curr_local(stat_var::LOCAL);
     stat_var curr_sp(stat_var::SP);
     stat_var curr_temp(stat_var::TEMPERATURE);
+    stat_var curr_delta(stat_var::DELTA);
     openwebnet msg_open;
     bool aggiorna = false;
     qDebug("termoPage::status_changed()");
@@ -2919,6 +2924,21 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	    ds->read(device_status_thermr::STAT_INDEX, curr_stat);
 	    ds->read(device_status_thermr::LOCAL_INDEX, curr_local);
 	    ds->read(device_status_thermr::SP_INDEX, curr_sp);
+      ds->read((int)device_status_thermr::DELTA, curr_delta);
+      qDebug("delta = %d", curr_delta.get_val());
+      if(curr_delta.get_val() == 1)
+      {
+        if(delta_setpoint != 0)
+          delta_setpoint--;
+        int delta = 0;
+        curr_delta.set_val(delta);
+        ds->write_val((int)device_status_thermr::DELTA, curr_delta);
+        delta = atoi(strstr(&setpoint[0],".")+1);
+        delta+=atoi(&setpoint[0])*10;
+        curr_sp.set_val(delta);
+        ds->write_val((int)device_status_thermr::SP_INDEX, curr_sp);
+        ds->read(device_status_thermr::SP_INDEX, curr_sp);
+      }
 	    qDebug("stat = %d", curr_stat.get_val());
 	    qDebug("loc = %d", curr_local.get_val());
 	    qDebug("sp = %d", curr_sp.get_val());
@@ -3066,7 +3086,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 		    break;
 		}
 	    }
-	    if(curr_sp.initialized()) {
+	    if((curr_sp.initialized()) && (delta_setpoint == 0)) {
 		//Set Point
 		float icx;
 		char	tmp[10];   
@@ -3211,15 +3231,9 @@ void termoPage::aumSetpoint()
         return;
     else
         icx=(abs(icx))+5;
-    
-    memset(pippo,'\000',sizeof(pippo));
-    strcat(pippo,"*#4*#");
-    strcat(pippo,getAddress());
-    strcat(pippo,"*#14*");
-    sprintf(pippo,"%s%04d",&pippo[0],icx);
-    strcat(pippo,"*3##");
-    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));         
-    emit sendFrame(msg_open.frame_open);   
+    SetSetpoint(icx);
+    setpoint_timer.start(2000);
+    delta_setpoint = 1;
 }
 
 void termoPage::decSetpoint()
@@ -3235,16 +3249,49 @@ void termoPage::decSetpoint()
         return;
     else
         icx=(abs(icx))-5;
-    
-    memset(pippo,'\000',sizeof(pippo));
-    strcat(pippo,"*#4*#");
-    strcat(pippo,getAddress());
-    strcat(pippo,"*#14*");
-    sprintf(pippo,"%s%04d",&pippo[0],icx);
-    strcat(pippo,"*3##");
-    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));         
-    emit sendFrame(msg_open.frame_open);   
-}     
+    SetSetpoint(icx);
+    setpoint_timer.start(2000);
+    delta_setpoint = 1;
+}
+
+void termoPage::SetSetpoint(float icx)
+{
+  char tmp[10];
+  
+  qDebug("NEW temperatura setpoint: %d",(int)icx);
+  memset(setpoint,'\000',sizeof(setpoint));
+  if (icx>=1000)
+  {
+    strcat(setpoint,"-");
+    icx=icx-1000;
+  }
+  icx/=10;
+  sprintf(tmp,"%.1f",icx);
+  strcat(setpoint,tmp);
+  strcat(setpoint,"\272C");
+  Draw();
+}
+
+void termoPage::sendSetpoint()
+{
+  openwebnet msg_open;
+  char pippo[50];
+  int icx;
+
+  qDebug("termoPage::sendSetpoint()");
+  memset(pippo,'\000',sizeof(pippo));
+  icx=atoi(strstr(&setpoint[0],".")+1);
+  icx+=atoi(&setpoint[0])*10;
+  memset(pippo,'\000',sizeof(pippo));
+  strcat(pippo,"*#4*#");
+  strcat(pippo,getAddress());
+  strcat(pippo,"*#14*");
+  sprintf(pippo,"%s%04d",&pippo[0],icx);
+  strcat(pippo,"*3##");
+  msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+  emit sendFrame(msg_open.frame_open);
+  setpoint_timer.stop();
+}
 
 void termoPage::inizializza()
 { 

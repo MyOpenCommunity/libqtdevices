@@ -92,7 +92,6 @@ void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
     }
     else if (strcmp(IconBut4,&iconName[0]))
     {       
-        qDebug("Agre - Penso sia qui!!!"); 
         strncpy(&iconName[0],IconBut4,MAX_PATH);
         qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", &iconName[0], IconBut4);
         bannNavigazione -> SetIcons(1,&iconName[0]);

@@ -918,6 +918,8 @@ public:
    char* 	getChi();
    char*	getAutoIcon();
    char* 	getManIcon();
+  void SetSetpoint(float icx);
+    int delta_setpoint;
 public slots:
 #if 0
      void 	gestFrame(char*);
@@ -930,12 +932,14 @@ private slots:
      void	aumSetpoint();
      void	decSetpoint();
      void	autoMan();
+     void sendSetpoint();
 signals:
   // void 	sendFrame(char *);          
-private:     
+private:
      device *dev;
      char 	manIco[50];
      char 	autoIco[50];
+     QTimer setpoint_timer;
 };
 
 #if 0 // See device.h

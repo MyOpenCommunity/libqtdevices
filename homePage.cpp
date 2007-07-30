@@ -220,7 +220,6 @@ void homePage::inizializza()
      strcat(&Frame[0],zt[idx]);
      strcat(&Frame[0],"*0##");
      emit(sendInit(&Frame[0]));
-     printf("AGRE - send %s\n", Frame);
    }
 }
 

@@ -467,6 +467,14 @@ void antintrusione::hide()
         ++(*ai);
     }
     delete ai;
-    emit(sendFrame("*#5*0##"));
+    qDebug("Richiesta stato zone");    
+    emit(sendFrame("*#5*#1##"));
+    emit(sendFrame("*#5*#2##"));
+    emit(sendFrame("*#5*#3##"));
+    emit(sendFrame("*#5*#4##"));
+    emit(sendFrame("*#5*#5##"));
+    emit(sendFrame("*#5*#6##"));
+    emit(sendFrame("*#5*#7##"));
+    emit(sendFrame("*#5*#8##"));
 #endif
 }
