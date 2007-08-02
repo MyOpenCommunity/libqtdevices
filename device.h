@@ -32,7 +32,8 @@ class stat_var {
 	   ACTIVE_SOURCE,
 	   FAULT,
 	   CRONO,
-     DELTA,
+     INFO_SONDA,
+     INFO_CENTRALE,
       } type;
  private:
     type t;
@@ -307,7 +308,8 @@ class device_status_thermr : public device_status {
 	LOCAL_INDEX,
 	SP_INDEX,
 	CRONO,
-  DELTA,
+  INFO_SONDA,
+  INFO_CENTRALE,
     } ind;
     enum {
 	S_MAN = 0,

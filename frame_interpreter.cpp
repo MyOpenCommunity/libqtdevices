@@ -2316,6 +2316,7 @@ bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m,
       strcpy(&dove[0], &dove[1]);
     #if 1
     if((!strcmp(dove, "0")) && centrale) {
+      return true;
       char pippo[50];
       // Richiesta via centrale
       memset(pippo,'\000',sizeof(pippo));
@@ -2362,7 +2363,8 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     stat_var curr_local(stat_var::LOCAL);
     stat_var curr_sp(stat_var::SP);
     stat_var curr_crono(stat_var::CRONO);
-    stat_var curr_delta(stat_var::DELTA);
+    stat_var curr_info_sonda(stat_var::INFO_SONDA);
+    stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
     int stat;
     int cr;
     int delta;
@@ -2373,12 +2375,32 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     ds->read((int)device_status_thermr::LOCAL_INDEX, curr_local);
     ds->read((int)device_status_thermr::SP_INDEX, curr_sp);
     ds->read((int)device_status_thermr::CRONO, curr_crono);
-    ds->read((int)device_status_thermr::DELTA, curr_delta);
+    ds->read((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+    ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
     qDebug("curr status is %d", curr_stat.get_val());
     qDebug("curr local is %d", curr_local.get_val());
     qDebug("curr sp is %d", curr_sp.get_val());
     qDebug("curr crono is %d", curr_crono.get_val());
-    qDebug("curr delta is %d", curr_delta.get_val());
+    qDebug("curr info_sonda is %d", curr_info_sonda.get_val());
+    qDebug("curr info_centrale is %d", curr_info_centrale.get_val());
+    if((!strcmp(m.Extract_dove(), "#0")) && centrale  && (!curr_info_centrale.get_val()))
+    {
+      memset(pippo,'\000',sizeof(pippo));
+      strcat(pippo,"*#4*#");
+      strcat(pippo,get_where());
+      strcat(pippo,"##");
+      emit init_requested(QString(pippo));
+      delta = 1;
+      curr_info_centrale.set_val(delta);
+      ds->write_val((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+      evt_list.append(ds);
+      delta = 0;
+      curr_info_sonda.set_val(delta);
+      ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+      evt_list.append(ds);
+      return;
+    }
+
     int cosa = atoi(m.Extract_cosa());
     qDebug("cosa = %d", cosa);
     if((m.Extract_dove()[0]=='#') && (!curr_crono.get_val()))
@@ -2407,11 +2429,25 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    stat = device_status_thermr::S_MAN;
 	}
         //Richiesta set-point
-        memset(pippo,'\000',sizeof(pippo));
-        strcat(pippo,"*#4*");
-        strcat(pippo,m.Extract_dove()+1);
-        strcat(pippo,"##");
-        emit init_requested(QString(pippo));
+        if((ds->initialized()) && (!curr_info_sonda.get_val()))
+        {
+          memset(pippo,'\000',sizeof(pippo));
+          strcat(pippo,"*#4*");
+          strcat(pippo,m.Extract_dove()+1);
+          strcat(pippo,"##");
+          emit init_requested(QString(pippo));
+          delta = 1;
+          curr_info_sonda.set_val(delta);
+          ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+          evt_list.append(ds);
+        }
+	if(curr_info_centrale.get_val())
+        {
+          delta = 0;
+          curr_info_centrale.set_val(delta);
+          ds->write_val((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+          evt_list.append(ds);
+        }
 	elaborato = true;
 	break;
     case 111:
@@ -2423,12 +2459,26 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     (curr_local.get_val() != 4) && (curr_local.get_val() != 5))) {
 	    do_event = true;
 	    stat = device_status_thermr::S_AUTO;
-            memset(pippo,'\000',sizeof(pippo));
-            strcat(pippo,"*#4*");
-            strcat(pippo,m.Extract_dove()+1);
-            strcat(pippo,"##");
-            emit init_requested(QString(pippo));
 	}
+        if((ds->initialized()) && (!curr_info_sonda.get_val()))
+        {
+          memset(pippo,'\000',sizeof(pippo));
+          strcat(pippo,"*#4*");
+          strcat(pippo,m.Extract_dove()+1);
+          strcat(pippo,"##");
+          emit init_requested(QString(pippo));
+          delta = 1;
+          curr_info_sonda.set_val(delta);
+          ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+          evt_list.append(ds);
+        }
+        if(curr_info_centrale.get_val())
+        {
+          delta = 0;
+          curr_info_centrale.set_val(delta);
+          ds->write_val((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+          evt_list.append(ds);
+        }
 	elaborato = true;
 	break;
     case 102:
@@ -2482,7 +2532,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
       {
         do_event = true;
         stat = device_status_thermr::S_AUTO;
-        if(curr_crono.get_val())
+        if((curr_crono.get_val()) && (ds->initialized()) && (!curr_info_centrale.get_val()))
         {
           memset(pippo,'\000',sizeof(pippo));
           strcat(pippo,"*#4*#");
@@ -2496,6 +2546,10 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
           ds->write_val((int)device_status_thermr::CRONO, curr_crono);
           evt_list.append(ds);
           #endif
+          delta = 1;
+          curr_info_centrale.set_val(delta);
+          ds->write_val((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+          evt_list.append(ds);
         }
       }
       elaborato = true;
@@ -2517,30 +2571,37 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
     int g = atoi(m.Extract_grandezza());
     qDebug("g = %d", g);
     int loc, sp;
-    switch(g) {
-    #if 0
+    switch(g) { 
     case 0:
-      if(curr_crono.get_val())
+      if(!curr_info_sonda.get_val())
       {
         memset(pippo,'\000',sizeof(pippo));
-        strcat(pippo,"*#4*#");
+        strcat(pippo,"*#4*");
         strcat(pippo,m.Extract_dove());
-        strcat(pippo,"##");
+        strcat(pippo,"*14##");
         emit init_requested(QString(pippo));
-        #if 0
-        qDebug("new crono is 0");
-        cr = 0;
-        curr_crono.set_val(cr);
-        ds->write_val((int)device_status_thermr::CRONO, curr_crono);
+        delta = 1;
+        curr_info_sonda.set_val(delta);
+        ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
         evt_list.append(ds);
-        #endif
       }
       break;
-    #endif
     case 13:
 	loc = atoi(m.Extract_valori(0));
 	if(/*!ds->initialized() || */(curr_local.get_val() != loc)) {
-      qDebug("new local is %d, inizialized = %d", loc, ds->initialized());
+          qDebug("new local is %d, inizialized = %d", loc, ds->initialized());
+          if((curr_crono.get_val()) && (loc ==  13) && (curr_local.get_val() == 5) && (!curr_info_centrale.get_val()))
+          {
+            memset(pippo,'\000',sizeof(pippo));
+            strcat(pippo,"*#4*#");
+            strcat(pippo,m.Extract_dove());
+            strcat(pippo,"##");
+            emit init_requested(QString(pippo));
+            delta = 1;
+            curr_info_centrale.set_val(delta);
+            ds->write_val((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+            evt_list.append(ds);
+           }
 	    curr_local.set_val(loc);
 	    ds->write_val((int)device_status_thermr::LOCAL_INDEX, curr_local);
 	    evt_list.append(ds);
@@ -2548,18 +2609,29 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
              ((curr_stat.get_val() != device_status_thermr::S_AUTO) && 
               (curr_stat.get_val() != device_status_thermr::S_MAN) &&
              (loc == 13))) {*/
+             if((ds->initialized()) && (!curr_info_sonda.get_val()))
+             {
                 memset(pippo,'\000',sizeof(pippo));
                 strcat(pippo,"*#4*");
                 strcat(pippo,m.Extract_dove());
                 strcat(pippo,"##");
                 emit init_requested(QString(pippo));
-                if(curr_crono.get_val())
+                delta = 1;
+                curr_info_sonda.set_val(delta);
+                ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+                evt_list.append(ds);
+             }
+               if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
                 {
                   memset(pippo,'\000',sizeof(pippo));
                   strcat(pippo,"*#4*#");
                   strcat(pippo,m.Extract_dove());
                   strcat(pippo,"##");
                   emit init_requested(QString(pippo));
+                  delta = 1;
+                  curr_info_centrale.set_val(delta);
+                  ds->write_val((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+                  evt_list.append(ds);
                   #if 0
                   qDebug("new crono is 0");
                   cr = 0;
@@ -2580,15 +2652,18 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	elaborato = true;
 	break;
     case 12:
-      memset(pippo,'\000',sizeof(pippo));
-      strcat(pippo,"*#4*");
-      strcat(pippo,m.Extract_dove());
-      strcat(pippo,"*14##");
-      emit init_requested(QString(pippo));
-      delta = 1;
-      curr_delta.set_val(delta);
-      ds->write_val((int)device_status_thermr::DELTA, curr_delta);
-      evt_list.append(ds);
+      if((ds->initialized()) && (!curr_info_sonda.get_val()))
+      {
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*#4*");
+        strcat(pippo,m.Extract_dove());
+        strcat(pippo,"*14##");
+        emit init_requested(QString(pippo));
+        delta = 1;
+        curr_info_sonda.set_val(delta);
+        ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+        evt_list.append(ds);
+      }
       break;
     case 14:
 	sp = atoi(m.Extract_valori(0));
@@ -2598,7 +2673,14 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	    curr_sp.set_val(sp);
 	    ds->write_val((int)device_status_thermr::SP_INDEX, curr_sp);
 	    evt_list.append(ds);
-  }
+        }
+        if(curr_info_sonda.get_val())
+        {
+          delta = 0;
+          curr_info_sonda.set_val(delta);
+          ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+          evt_list.append(ds);
+        }
 	elaborato = true;
 	break;
     default:

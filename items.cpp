@@ -2909,8 +2909,10 @@ void termoPage::status_changed(QPtrList<device_status> sl)
     stat_var curr_local(stat_var::LOCAL);
     stat_var curr_sp(stat_var::SP);
     stat_var curr_temp(stat_var::TEMPERATURE);
-    stat_var curr_delta(stat_var::DELTA);
+    stat_var curr_info_sonda(stat_var::INFO_SONDA);
+    stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
     openwebnet msg_open;
+    int delta = 0;
     bool aggiorna = false;
     qDebug("termoPage::status_changed()");
     QPtrListIterator<device_status> *dsi = 
@@ -2924,20 +2926,18 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	    ds->read(device_status_thermr::STAT_INDEX, curr_stat);
 	    ds->read(device_status_thermr::LOCAL_INDEX, curr_local);
 	    ds->read(device_status_thermr::SP_INDEX, curr_sp);
-      ds->read((int)device_status_thermr::DELTA, curr_delta);
-      qDebug("delta = %d", curr_delta.get_val());
-      if(curr_delta.get_val() == 1)
+            ds->read((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
+            qDebug("info_sonda = %d", curr_info_sonda.get_val());
+            ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+            qDebug("info_centrale = %d", curr_info_centrale.get_val());
+      if(delta_setpoint == 1)
       {
-        if(delta_setpoint != 0)
-          delta_setpoint--;
-        int delta = 0;
-        curr_delta.set_val(delta);
-        ds->write_val((int)device_status_thermr::DELTA, curr_delta);
         delta = atoi(strstr(&setpoint[0],".")+1);
         delta+=atoi(&setpoint[0])*10;
         curr_sp.set_val(delta);
         ds->write_val((int)device_status_thermr::SP_INDEX, curr_sp);
         ds->read(device_status_thermr::SP_INDEX, curr_sp);
+	delta_setpoint = 0;
       }
 	    qDebug("stat = %d", curr_stat.get_val());
 	    qDebug("loc = %d", curr_local.get_val());
@@ -3129,15 +3129,17 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	    qDebug("-1: temp: %s", &temp[0]);
 	    strcat(temp,"\272C");
 	    qDebug("-2: temp: %s", &temp[0]);
-	    aggiorna=1;	       
-	    char pippo[50];
-	    memset(pippo,'\000',sizeof(pippo));
+	    aggiorna=1;
+            #if 0
+  	    char pippo[50];
+  	    memset(pippo,'\000',sizeof(pippo));
 	    strcat(pippo,"*#4*");
 	    strcat(pippo,getAddress());
 	    strcat(pippo,"*14");
 	    strcat(pippo,"##");
 	    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	    emit sendInit(msg_open.frame_open);         	       
+            #endif
 	    ////	
 	    /////	       
 	    break;

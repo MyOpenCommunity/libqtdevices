@@ -148,7 +148,7 @@ int device_status::read(int index, stat_var& out)
 int device_status::write_val(int index, stat_var& in)
 {
     stat_var *ptr = vars.at(index);
-#if 0
+#if 1
     qDebug("device_status::write_val(%d)", index);
 #endif
     if(!ptr) return -1;
@@ -344,8 +344,10 @@ device_status_thermr::device_status_thermr() :
 	    new stat_var(stat_var::SP, 0, 0, 0x7fffffff, 1));
     add_var((int)device_status_thermr::CRONO,
 	    new stat_var(stat_var::CRONO, 0, 0, 1, 1));
-    add_var((int)device_status_thermr::DELTA,
-	    new stat_var(stat_var::DELTA, 0, 0, 1, 1));
+    add_var((int)device_status_thermr::INFO_SONDA,
+	    new stat_var(stat_var::INFO_SONDA, 1, 0, 1, 1));
+    add_var((int)device_status_thermr::INFO_CENTRALE,
+            new stat_var(stat_var::INFO_CENTRALE, 1, 0, 1, 1));
 
 }
 
