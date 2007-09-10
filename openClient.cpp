@@ -252,6 +252,11 @@ int Client::socketFrameRead()
           if(strcmp(buf, last_msg_open_read.frame_open) !=0 )
           {
             last_msg_open_read.CreateMsgOpen(buf,strlen(buf));
+            if(Open_read)
+              delete Open_read;
+            Open_read = new QTimer(this,"tick");
+            Open_read->start(1000,TRUE);
+            connect(Open_read,SIGNAL(timeout()), this,SLOT(clear_last_msg_open_read()));
             emit frameIn(buf);
           }
           else
@@ -271,6 +276,13 @@ int Client::socketFrameRead()
 }
 return 0;  
 }
+
+void Client::clear_last_msg_open_read()
+{
+  qDebug("Delete last Frame Open read");
+  last_msg_open_read.CreateNullMsgOpen();
+}
+
 
 // Aspetta ack
 int Client::socketWaitForAck()

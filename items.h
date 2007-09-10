@@ -35,7 +35,7 @@ class dimmer : public bannRegolaz
 {
     Q_OBJECT
 public:
-     dimmer( QWidget *, const char *,char*,char*,char*,char*,char*,char*);     
+     dimmer( QWidget *, const char *,char*,char*,char*,char*,char*,char*, bool to_be_connect = true);     
      virtual void inizializza(bool forza = false);
      void Draw();
 public slots:

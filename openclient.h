@@ -69,11 +69,13 @@ class Client  : public QSocket
     void richStato(char*);
     void ackReceived(void);
 
+    void clear_last_msg_open_read();
     private:
     QSocket *socket;
     int ismonitor;
 	 bool isrichiesta;
     QTimer* tick;  
+    QTimer* Open_read;  
     void socketStateRead(char*);
     bool ackRx;
     openwebnet last_msg_open_read;

@@ -934,7 +934,7 @@ void device_condition::setBGColor(QColor c)
 void device_condition::inizializza()
 {
     qDebug("device_condition::inizializza()");
-    dev->init();
+    dev->init(true);
 }
 
 void device_condition::reset()
@@ -1338,8 +1338,10 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
           if((curr_lev.get_val()/10 >= trig_v_min) && (curr_lev.get_val()/10 <= trig_v_max)){
             qDebug("Condition triggered");
             satisfied = true;
-          } else
-           satisfied = false;
+          } else {
+            qDebug("Condition not triggered");
+            satisfied = false;
+          }
           break;
         case device_status::DIMMER100:
           qDebug("dimmer 100 status variation, ignored");
@@ -1385,7 +1387,7 @@ device_condition(parent, c)
     set_current_value_min(get_condition_value_min());
     set_current_value_max(get_condition_value_max());
     // A dimmer is actually a light
-    dev = new dimm(QString(""));
+    dev = new dimm100(QString(""));
     Draw();
 }
 
@@ -1609,7 +1611,6 @@ void device_condition_dimming_100::status_changed(QPtrList<device_status> sl)
         case device_status::DIMMER:
           ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
           qDebug("dimmer status variation, ignored");
-          break;
         case device_status::DIMMER100:
           qDebug("dimmer 100 status variation");
           ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
@@ -1621,8 +1622,10 @@ void device_condition_dimming_100::status_changed(QPtrList<device_status> sl)
           if((val10 >= trig_v_min) && (val10 <= trig_v_max)){
             qDebug("Condition triggered");
             satisfied = true;
-          } else
-           satisfied = false;
+          } else {
+            qDebug("Condition not triggered");
+            satisfied = false;
+          }
           break;
         case device_status::NEWTIMED:
           qDebug("new timed device status variation, ignored");
@@ -1897,9 +1900,10 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
         {
           qDebug("Condition triggered");
           satisfied = true;
-        }
-        else
+        } else {
+          qDebug("Condition not triggered");
           satisfied = false;
+        }
         break;
       default:
         qDebug("device status of unknown type (%d)", ds->get_type());
@@ -2032,10 +2036,12 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 		     curr_temp);
 	    qDebug("Current temperature %d", curr_temp.get_val());
 	    if((curr_temp.get_val() >= (trig_v-10)) &&  (curr_temp.get_val() <= (trig_v+10))){
-		qDebug("Condition triggered");
-		satisfied = true;
-	    } else
-		satisfied = false;
+              qDebug("Condition triggered");
+              satisfied = true;
+            } else {
+              qDebug("Condition not triggered");
+              satisfied = false;
+            }
 	    break;
 	default:
 	    qDebug("device status of unknown type (%d)", ds->get_type());

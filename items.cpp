@@ -25,7 +25,7 @@
 **dimmer
 ****************************************************************/
 
-dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon )
+dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon, bool to_be_connect )
         : bannRegolaz( parent, name )
         {
 	  //setRange(10,90);
@@ -39,11 +39,14 @@ dimmer::dimmer( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,c
     connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
     connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
     connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
-    // Crea o preleva il dispositivo dalla cache
-    dev = btouch_device_cache.get_dimmer(getAddress());
-    // Get status changed events back
-    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-	    this, SLOT(status_changed(QPtrList<device_status>)));
+    if(to_be_connect)
+    {
+      // Crea o preleva il dispositivo dalla cache
+      dev = btouch_device_cache.get_dimmer(getAddress());
+      // Get status changed events back
+      connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
+      this, SLOT(status_changed(QPtrList<device_status>)));
+    }
 }
 
 void dimmer::Draw()
@@ -250,7 +253,7 @@ void dimmer::inizializza(bool forza)
 dimmer100::dimmer100( QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon,
 		      int sstart, int sstop)
   : dimmer( parent, name, indirizzo, IconaSx, IconaDx, icon, 
-	    inactiveIcon, breakIcon)
+	    inactiveIcon, breakIcon, false)
 { 
     qDebug("costruttore dimmer100, name = %s", name);
     softstart = sstart;
@@ -267,6 +270,9 @@ dimmer100::dimmer100( QWidget *parent,const char *name,char* indirizzo,char* Ico
     qDebug("breakIcon = %s", breakIcon);
     SetIcons( IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0 );
     dev = btouch_device_cache.get_dimmer100(getAddress());
+    connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
+            this, SLOT(status_changed(QPtrList<device_status>)));
+
 }
 
 
@@ -326,7 +332,7 @@ void dimmer100:: Spegni()
 void dimmer100:: Aumenta()
 {
     qDebug("dimmer100::Aumenta()");
-    if(!isActive()) return;
+    //if(!isActive()) return;
     openwebnet msg_open;
     msg_open.CreateNullMsgOpen();     
     //msg_open.CreateMsgOpen("1", "30",getAddress(),"");
@@ -342,7 +348,7 @@ void dimmer100:: Aumenta()
 void dimmer100:: Diminuisci()	
 {
     qDebug("dimmer100::Diminuisci()");
-    if(!isActive()) return;
+    //if(!isActive()) return;
     openwebnet msg_open;
     char cosa[100];
     sprintf(cosa, "31#5#255", speed);
@@ -382,7 +388,6 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
 	case device_status::DIMMER:
 	    ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
 	    qDebug("dimmer status variation, ignored");
-	    break;
 	case device_status::DIMMER100:
 	    ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
 	    ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);

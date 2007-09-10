@@ -365,7 +365,7 @@ class device : public QObject {
     //! Constructor
     device(QString who, QString where, bool p=false, int g=-1);
     //! Init device: send messages initializing data
-    void init();
+    void init(bool force = false);
     //! Set frame interpreter
     void set_frame_interpreter(frame_interpreter *fi);
     //! Set where
@@ -422,6 +422,14 @@ class dimm : public device
     dimm(QString, bool p=false, int g=-1);
 };
 
+//! Dimmer
+class dimm100 : public device
+{
+    Q_OBJECT
+   public:
+    //! Constructor
+    dimm100(QString, bool p=false, int g=-1);
+};
 
 //! Automatismo
 class autom : public device

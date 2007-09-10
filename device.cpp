@@ -399,7 +399,7 @@ device::device(QString _who, QString _where, bool p, int g)
 #endif
 }
 
-void device::init(void)
+void device::init(bool force )
 {
     qDebug("device::init()");
     // True if all device has already been initialized
@@ -414,8 +414,18 @@ void device::init(void)
 	QStringList msgl;
 	msgl.clear();
 	qDebug("ds = %p", ds);
+	if(force){
+          qDebug("device status force initialize");
+          interpreter->get_init_messages(ds, msgl);
+          for ( QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it ) {
+            qDebug("init message is %s", (*it).ascii());
+            if((*it) != "")
+              emit(send_frame((char *)((*it).ascii())));
+          }
+        }
+        else
 	if(ds->initialized()) {
-	    qDebug("device status hal already been initialized");
+	    qDebug("device status has already been initialized");
 	    emit(initialized(ds));
 	    dsl.append(ds);
 	} else if(ds->init_requested()) {
@@ -563,6 +573,19 @@ dimm::dimm(QString w, bool p, int g) : device(QString("1"), w, p, g)
             SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
     connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this,
             SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
+// Dimmer100 implementation
+dimm100::dimm100(QString w, bool p, int g) : device(QString("1"), w, p, g)
+{
+  interpreter = new frame_interpreter_lights(w, p, g);
+  set_frame_interpreter(interpreter);
+  stat->append(new device_status_dimmer100());
+  connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+          interpreter,
+          SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+  connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this,
+          SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
 // Autom implementation
