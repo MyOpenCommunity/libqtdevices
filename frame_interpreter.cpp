@@ -533,14 +533,16 @@ void frame_interpreter_lights::set_status(device_status_light *ds, int s)
 	ds->write_val((int)device_status_light::ON_OFF_INDEX, 
 		      curr_stat);
 	do_event = true;
-    }  else if(s && (!curr_stat.get_val())) {
+    //}  else if(s && (!curr_stat.get_val())) {
+    }  else if(s) {
 	int v = 1;
 	curr_stat.set_val(v);
 	qDebug("setting light status to on");
 	ds->write_val((int)device_status_light::ON_OFF_INDEX, 
 		      curr_stat);
 	do_event = true;
-    } else if(!s && curr_stat.get_val()) {
+    //} else if(!s && curr_stat.get_val()) {
+    } else if(!s) {
 	int v = 0;
 	curr_stat.set_val(v);
 	qDebug("setting light status to off");
@@ -1369,14 +1371,14 @@ void frame_interpreter_temperature_probe::set_status(device_status_temperature_p
 	goto end;
     }
     qDebug("curr temp is %d\n", curr_temp.get_val());
-    if(t != curr_temp.get_val()) {
+    //if(t != curr_temp.get_val()) {
 	qDebug("setting temperature to %d", t);
 	curr_temp.set_val(t);
 	ds->write_val((int)device_status_temperature_probe::TEMPERATURE_INDEX, 
 		      curr_temp);
 	do_event = 1;
 	qDebug("new temp is %d\n", curr_temp.get_val());
-    }
+    //}
  end:
     if(do_event)
 	evt_list.append(ds);
@@ -1591,13 +1593,13 @@ set_status(device_status_amplifier *ds, int l, int _on)
 			  curr_status);
 	    do_event = true;
 	} else {
-	    if(curr_status.get_val() != on) {
+//	    if(curr_status.get_val() != on) {
 		qDebug("Ampli status changed to %d", on);
 		curr_status.set_val(on);
 		ds->write_val((int)device_status_amplifier::ON_OFF_INDEX, 
 			      curr_status);
 		do_event = true;
-	    }
+//	    }
 	}
     }
     if(l >= 0) {
@@ -1611,13 +1613,13 @@ set_status(device_status_amplifier *ds, int l, int _on)
 	    goto end;
 	}
 	qDebug("curr audio level is %d\n", curr_lev.get_val());
-	if(l != curr_lev.get_val()) {
+//	if(l != curr_lev.get_val()) {
 	    qDebug("setting audio level to %d", l);
 	    curr_lev.set_val(l);
 	    ds->write_val((int)device_status_amplifier::AUDIO_LEVEL_INDEX, 
 			  curr_lev);
 	    do_event = 1;
-	}
+//	}
     }
  end:
     if(do_event)
@@ -2709,8 +2711,8 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
 	return;
     int t = atoi(m.Extract_valori(0));
     qDebug("t = %d", t);
-    if(ds->initialized() && t == curr_temp.get_val()) 
-	return;
+    //if(ds->initialized() && t == curr_temp.get_val()) 
+	//return;
     qDebug("setting temp to %d", t);
     curr_temp.set_val(t);
     ds->write_val((int)device_status_temperature_probe::TEMPERATURE_INDEX, 
