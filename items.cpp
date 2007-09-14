@@ -2436,8 +2436,14 @@ void sorgente::decBrano()
 void sorgente::aumBrano()
 {
     openwebnet msg_open;
-    
-    msg_open.CreateMsgOpen("16","6001",getAddress(),"");	     
+    char amb[2];
+
+    sprintf(amb, getAddress());
+    if(!vecchia)
+      if(amb[1] == '0')
+        amb[1] = '1'; 
+
+    msg_open.CreateMsgOpen("16","6001",amb,"");	     
     emit sendFrame(msg_open.frame_open);      
 }
 
@@ -2768,8 +2774,14 @@ void banradio::decFreqMan()
 void banradio::changeStaz()
 {
     openwebnet msg_open;
-    
-    msg_open.CreateMsgOpen("16","6001",getAddress(),"");	     
+    char amb[2];
+   
+    sprintf(amb, getAddress());
+    if(!old_diffson)
+      if(amb[1] == '0')
+        amb[1] = '1';
+
+    msg_open.CreateMsgOpen("16","6001",amb,"");
     emit sendFrame(msg_open.frame_open);   
 }
 
@@ -5025,7 +5037,7 @@ void insAmbDiffSon::actSrcChanged(int a, int s)
  ** Sorgente radio diffusione sonora multicanale
 ****************************************************************/
 sorgenteMultiRadio::sorgenteMultiRadio( QWidget *parent,const char *name,char* indirizzo,char* Icona1,char* Icona2, char *Icona3, char *ambDescr)
-        : banradio( parent, name, indirizzo, 3, ambDescr )
+        : banradio( parent, name, indirizzo, 3, ambDescr)
 {       
     qDebug("sorgenteMultiRadio::sorgenteMultiRadio() : "
 	   "%s %s %s", Icona1, Icona2, Icona3);

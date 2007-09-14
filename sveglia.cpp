@@ -606,6 +606,13 @@ void sveglia::aumVol()
     {
         openwebnet msg_open;
         char    pippo[50];
+
+        memset(pippo,'\000',sizeof(pippo));
+        strcat(pippo,"*16*3*");
+        sprintf(&pippo[6],"%d",sorgente);
+        strcat(pippo,"##");
+        msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+        emit sendFrame(msg_open.frame_open);
         
         memset(pippo,'\000',sizeof(pippo));
         strcat(pippo,"*#16*");
@@ -616,13 +623,6 @@ void sveglia::aumVol()
         msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
         emit sendFrame(msg_open.frame_open);
         
-        memset(pippo,'\000',sizeof(pippo));
-        strcat(pippo,"*16*3*");
-        sprintf(&pippo[6],"%d",sorgente);
-        strcat(pippo,"##");
-        msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-        emit sendFrame(msg_open.frame_open);    
-                
         for (uchar idx=0;idx<AMPLI_NUM;idx++)
         {
             if (volSveglia[idx]>0)
