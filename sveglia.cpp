@@ -527,11 +527,22 @@ void sveglia::gestFrame(char* frame)
 	    if (!strcmp(msg_open.Extract_cosa(),"3")) 
 	    {
 		sorgente=deviceAddr;
+                if(sorgente > 109)
+                {
+                  sorgente=sorgente-((sorgente-100)/10)*10;
+                }
+                qDebug("Sorgente %d", sorgente);
 	    }
 	    if (msg_open.IsMeasureFrame() && ( !strcmp(msg_open.Extract_grandezza(),"7")) )
 	    {
 		stazione=atoi(msg_open.Extract_valori(1))&0x1F;
 		qDebug("Stazione %d",stazione);
+                sorgente=deviceAddr;
+                if(sorgente > 109)
+                {
+                  sorgente=sorgente-((sorgente-100)/10)*10;
+                }
+                qDebug("Sorgente %d", sorgente);
 	    }
 	}
     }    
@@ -602,18 +613,28 @@ bool sveglia::getActivation()
 
 void sveglia::aumVol()
 {
+  bool amb1 = false;
+  bool amb2 = false;
+  bool amb3 = false;
+  bool amb4 = false;
+  bool amb5 = false;
+  bool amb6 = false;
+  bool amb7 = false;
+  bool amb8 = false;
+
+
     if (conta2min==0)
     {
         openwebnet msg_open;
         char    pippo[50];
-
+       
         memset(pippo,'\000',sizeof(pippo));
         strcat(pippo,"*16*3*");
         sprintf(&pippo[6],"%d",sorgente);
         strcat(pippo,"##");
         msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
         emit sendFrame(msg_open.frame_open);
-        
+ 
         memset(pippo,'\000',sizeof(pippo));
         strcat(pippo,"*#16*");
         sprintf(&pippo[strlen(pippo)],"%d",sorgente);
@@ -627,7 +648,110 @@ void sveglia::aumVol()
         {
             if (volSveglia[idx]>0)
             {		
-                
+                if((idx>=10) && (idx<=19))
+                {
+                  if(!amb1)
+                  {
+                    amb1 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+10);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
+                if((idx>=20) && (idx<=29))
+                {
+                  if(!amb2)
+                  {
+                    amb2 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+20);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
+                if((idx>=30) && (idx<=39))
+                {
+                  if(!amb3)
+                  {
+                    amb3 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+30);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
+                if((idx>=40) && (idx<=49))
+                {
+                  if(!amb4)
+                  {
+                    amb4 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+40);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
+                if((idx>=50) && (idx<=59))
+                {
+                  if(!amb5)
+                  {
+                    amb5 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+50);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
+                if((idx>=60) && (idx<=69))
+                {
+                  if(!amb6)
+                  {
+                    amb6 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+60);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
+                if((idx>=70) && (idx<=79))
+                {
+                  if(!amb7)
+                  {
+                    amb7 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+70);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
+                if((idx>=80) && (idx<=89))
+                {
+                  if(!amb8)
+                  {
+                    amb8 = true;
+                    memset(pippo,'\000',sizeof(pippo));
+                    strcat(pippo,"*16*3*");
+                    sprintf(&pippo[6],"%d",sorgente+80);
+                    strcat(pippo,"##");
+                    msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+                    emit sendFrame(msg_open.frame_open);
+                  }
+                }
                 if (volSveglia[idx]<10)
                 {		
                     memset(pippo,'\000',sizeof(pippo));
