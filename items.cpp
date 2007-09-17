@@ -2658,11 +2658,15 @@ void banradio::show()
 {
     
     pre_show();
-    
-    if (parentWidget()->parentWidget()->parentWidget(TRUE))
-        nascondi(BUT2);
-    else
-        mostra(BUT2);
+
+    if(!old_diffson)
+    {
+      if (parentWidget()->parentWidget()->parentWidget(TRUE))
+          nascondi(BUT2);
+      else
+          mostra(BUT2);
+    }
+    mostra(BUT2);
 }
 
 void banradio::hide()
