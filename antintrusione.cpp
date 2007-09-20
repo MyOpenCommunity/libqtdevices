@@ -116,8 +116,8 @@ void antintrusione::Parz(char* pwd)
   msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
   qDebug("sending part frame %s", pippo);
   emit sendFrame(msg_open.frame_open);
-end:
   ((impAnti *)impianto->getLast())->ToSendParz(false);
+end:
   impianto->show();
   zone->show();
 }
