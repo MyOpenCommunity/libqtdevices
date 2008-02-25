@@ -1,0 +1,2384 @@
+\input texinfo @c -*-texinfo-*-
+@finalout
+@documentlanguage en
+@c %**start of header
+@setfilename tutorial_H4684IPSDK.pdf
+@settitle H4684IPSDK Customization
+@set machine H4684IPSDK
+@set server H4684IP Server
+@set reference H4684IP
+@copying
+@quotation
+This document is free; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
+@end quotation
+
+@end copying
+
+@titlepage
+@center @titlefont{@value{machine}}
+@image{L4684_IP,,10cm}@*
+@sp 1
+@center Manual for the implementation of EtLinux and a customized interface onto the @value{machine}
+@sp 1
+@center by BTicino S.p.A
+@c The folowing 2 commands start the copyright page
+@page
+
+@vskip 0pt plus 10filll
+@insertcopying
+@end titlepage
+
+@ifnottex
+@node Top, Introduction, , ,
+@top
+@comment Node, Intro, none, top
+@end ifnottex
+
+@menu
+* Introduction::
+* Required tools::
+* Hardware description of the TouchScreen and the @value{machine}::
+* Description of the development platform::
+* Description of the software architecture::
+* Flash partitions::
+* Snapgear toolchain::
+* JTAG/JFLASH::
+* U-Boot bootloader::
+* The kernel::
+* EtLinux distribution::
+* StackOpen::
+* Qt-Embedded and BTouch::
+* Conclusion::
+@end menu
+
+@setchapternewpage on
+@contents
+@node Introduction, Required tools, Top, Top
+@chapter Introduction
+This document is a tutorial to install a Linux distribution onto the @value{machine}. It is also a guide to specify to the final user how to develop and implement customized interfaces for the touchscreen used with this kind of server.@*
+NB: this document is not linear; it is designed to present every part by a dedicated chapter, so that the final user can refer to the one of his concerns, with all the information he will need for his application. However, they are not independent from each other; one chapter can refer to another one, according to the needs. That is why some applications explained in this document can require the completion of others in another chapter.@*
+
+@node Required tools,  Hardware description of the TouchScreen and the @value{machine}, Introduction, Top
+@chapter Required tools
+To perform your customized applications onto the @value{machine}, you will need the following tools:@*
+@itemize
+@item Qt Embedded Free 3.3.4
+@item The Qt configuration files for the @value{machine}
+@item EtLinux sources
+@item JFLASH
+@item the 2.4.19 kernel with the required patches
+@item The StackOpen binaries
+@item Snapgear_ssl toolchain
+@item Sg-3.4.4 toolchain
+@item The current document
+@end itemize
+You can find them all in the OpenWebNet Community. You must register at @url{www.myopen-bticino.it} to access all the resources and download the required tools.@*
+
+@node Hardware description of the TouchScreen and the @value{machine}, Description of the development platform, Required tools, Top
+@chapter Hardware description of the TouchScreen and the @value{machine}
+The touchscreen has the following characteristics:
+@itemize
+@item PXA255 Architecture by Intel
+@item 400Mhz Frequency
+@item 32Mb Flash
+@item 64Mb RAM
+@item SCS Bus
+@item USB Slave port
+@item Serial port
+@item Ethernet port
+@end itemize
+The @value{machine} has an ethernet interface in order to make the software development easier. The following scheme presents the Hardware architecture:@*
+@image{L4684_IPSDK_schema,,12cm}@*
+The grey blocks corrispond to the added parts of the @value{machine} compared to the original @code{H4684} TouchScreen.@*
+@node Description of the development platform, Description of the software architecture, Hardware description of the TouchScreen and the @value{machine}, Top
+@chapter Description of the development platform
+@c Your development platform must be a Linux distribution with a 2.4.21 kernel, with the following tools:@*
+We have performed all our consideration with this platform:@*
+@itemize @minus
+@item A PC with Ubuntu 7.04
+@item The Snapgear_ssl toolchain for the cross-compilation of the applications and the linux kernel@* 
+@item The Sg-3.4.4 toolchain for the cross-compilation of the bootloader.@*
+See @ref{Snapgear toolchain} for further information
+@item Qt Designer to program/modify the interface of the @value{machine}@*
+@item Qt Embedded Free 3.3.4 for the libraries required by the interface to work properly. @*
+See @ref{Qt-Embedded and BTouch} for further information.
+@item The NFS Server to perform the development via NFS before the installation into the flash memory of the @value{machine}
+@item The Etlinux sources to create the filesystem of the @value{machine}
+@item The StackOpen binaries to ensure the Open/SCS communication
+@item tftpd and xinetd
+@end itemize
+Their installations will be progressively explained, further in the documentation.@*
+@image{nfs_schema,,11cm}@*
+
+@node Description of the software architecture, Flash partitions, Description of the development platform, Top
+@chapter Description of the software architecture
+Here is a brief description of the software architecture of the @value{machine}:@*
+@image{levels_L4684_IPSDK,,7cm}@*
+
+@node Flash partitions, HardHat and X-scale toolchains, Description of the software architecture, Top
+@chapter Flash partitions of the @value{machine}
+Here you have the details of the flash partitions of the @value{machine}:@*
+@ifnothtml
+@multitable @columnfractions .55 .5
+@headitem  Partition @tab Description
+@item @code{mtd0: 00040000 00020000 "Bootloader"}
+@tab The partition of the bootloader
+@item @code{mtd1: 00060000 00020000 "conf"}
+@tab Partition dedicated to the configuration of the application
+@item @code{mtd2: 00060000 00020000 "conf_copy"}
+@tab Safecopy of the conf partition
+@item @code{mtd3: 00120000 00020000 "Kernel"}
+@tab Kernel partition
+@item @code{mtd4: 008a0000 00020000 "btweb_only"}
+@tab Filesystem partition
+@item @code{mtd5: 00280000 00020000 "btweb_app"}
+@tab Applications
+@item @code{mtd6: 00280000 00020000 "btweb_app_copy"}
+@tab Safecopy of the applications
+@item @code{mtd7: 00120000 00020000 "zImage1"}
+@tab Safecopy of the kernel partition
+@item @code{mtd8: 008a0000 00020000 "btweb_only1"}
+@tab Safecopy of the Filesystem partition
+@item @code{mtd9: 00640000 00020000 "extra"}
+@tab All the required files (pictures, skins) for the graphical interface
+@end multitable
+@sp 1
+@end ifnothtml
+
+@ifhtml
+@multitable @columnfractions .25 .5
+@headitem  Partition @tab Description
+@item @code{mtd0: 00040000 00020000 "Bootloader"}
+@tab The partition of the bootloader
+@item @code{mtd1: 00060000 00020000 "conf"}
+@tab Partition dedicated to the configuration of the application
+@item @code{mtd2: 00060000 00020000 "conf_copy"}
+@tab Safecopy of the conf partition
+@item @code{mtd3: 00120000 00020000 "Kernel"}
+@tab Kernel partition
+@item @code{mtd4: 008a0000 00020000 "btweb_only"}
+@tab Filesystem partition
+@item @code{mtd5: 00280000 00020000 "btweb_app"}
+@tab Applications
+@item @code{mtd6: 00280000 00020000 "btweb_app_copy"}
+@tab Safecopy of the applications
+@item @code{mtd7: 00120000 00020000 "zImage1"}
+@tab Safecopy of the kernel partition
+@item @code{mtd8: 008a0000 00020000 "btweb_only1"}
+@tab Safecopy of the Filesystem partition
+@item @code{mtd9: 00640000 00020000 "extra"}
+@tab All the required files (pictures, skins) for the graphical interface
+@end multitable
+@end ifhtml
+This information can be obtained by typing @code{cat /proc/mtd} at the prompt of EtTclSh, via the serial port, when the @value{machine} is switched on. How these partitions are created is explained in @ref{U-Boot bootloader}.@*
+
+Some partitions are exactly equal: @i{conf}/@i{conf_copy}, @i{btweb_appl}/@i{btweb_app_copy}, @i{btweb_only}/@i{btweb_only1}, @i{kernel}/@i{zImage1}. Indeed, during an update via the serial port of the applications and the configuration, the first partition is rewritten. When the update is finished, the second partition receives a copy of the first one. This mechanism is currently not really necessary because only the serial connection is used. It becomes useful when the download of the configuration and the update of the firmware are performed via the ethernet connection.@*
+
+@node Snapgear toolchain, JTAG/JFLASH, Flash partitions, Top
+@chapter Snapgear toolchain
+@menu
+* What is a toolchain?::
+* Installation of the required toolchains::
+@end menu
+
+@node What is a toolchain?, Installation of the required toolchains, , HardHat and X-scale toolchains
+@section What is a toolchain?
+A toolchain is the set of computer programs (tools) that are used to create a product (typically another computer program or system of programs). The tools may be used in a chain, so that the output of each tool becomes the input for the next, but the term is used widely to refer to any set of linked development tools.
+
+A simple software development toolchain consists of a text editor for entering source code, a compiler and linker to transform the source code into an executable program, and libraries to provide interfaces to the operating system. A complex product such as a video game needs tools for preparing sound effects, music, textures, 3-dimensional models, and animations, and further tools for combining these resources into the finished product.@*
+
+The GNU toolchain is a blanket term given to the programming tools produced by the GNU project. These projects form an integrated system that is used for programming both applications and operating systems.@*
+
+It is a vital component in Linux kernel development, BSD development and a standard tool when developing software for embedded systems.@*
+
+
+@node Installation of the required toolchains, , What is a toolchain?, HardHat and X-scale toolchains
+@section Installation of the required toolchains
+For the @value{machine}, three toolchains are used:@*
+@itemize
+@item   The Snapgear_ssl toolchain, used to compile the kernel and the applications
+@item   The Sg-3.4.4 toolchain for U-Boot
+@end itemize
+The Snapgear_ssl toolchain is the one to be used the more often.@*
+Their installation onto the development platform is very easy. After having recovered them from the website, just copy them into your @emph{/opt} folder. If you downloaded them into your @emph{home} directory:@*
+@code{user@@bt:user$ sudo cp snapgear-toolchain_ssl.tar.gz  /opt/}@*
+@code{user@@bt:user$ sudo cp sudo cp sg-toolchain-3.4.4.tgz /opt/}@*
+and uncompress them:@*
+@code{user@@bt:user$ cd /opt}@*
+@code{user@@bt:opt$ sudo tar -xzvf snapgear-toolchain_ssl.tar.gz}@*
+@code{user@@bt:opt$ sudo tar -xzvf sudo cp sg-toolchain-3.4.4.tgz}@*
+When you have to recompile either your kernel or your interface or U-Boot, you will have to specify their paths in the @file{Makefile} files dedicated to the compilation.@*
+
+@node JTAG/JFLASH, U-Boot bootloader, Snapgear toolchain, Top
+@chapter JTAG/JFLASH
+
+@menu
+* What is JTAG/JFLASH?::
+* Using JTAG/JFLASH::
+@end menu
+
+@node What is JTAG/JFLASH?, Using JTAG/JFLASH, , JTAG/JFLASH
+@section What is JTAG/JFLASH?
+
+@menu
+* About JTAG::
+* About JFLASH::
+* Brief description of the electrical characteristics of JTAG::
+@end menu
+
+@node About JTAG, About JFLASH, ,What is JTAG/JFLASH?
+@subsection About JTAG
+JTAG, an acronym for Joint Test Action Group, is the usual name used for the IEEE 1149.1 standard entitled Standard Test Access Port and Boundary-Scan Architecture for test access ports used for testing printed circuit boards using boundary scan. JTAG was standardized in 1990 as the IEEE Std. 1149.1-1990. In 1994, a supplement that contains a description of the boundary scan description language (BSDL) was added. Since then, this standard has been adopted by electronics companies all over the world. Boundary-scan is nowadays mostly synonymous with JTAG. While designed for printed circuit boards, it is nowadays primarily used for testing sub-blocks of integrated circuits, and is also useful as a mechanism for debugging embedded systems, providing a convenient "back door" into the system. When used as a debugging tool, an in-circuit emulator which in turn uses JTAG as the transport mechanism enables a programmer to access an on-chip debug module which is integrated into the CPU via JTAG. The debug module enables the programmer to debug the software of an embedded system.@*
+You can go to @uref{www.jtag.com} and @uref{http://hri.sourceforge.net/tools/jtag_faq_org.html} for further information@*
+
+@node About JFLASH, Brief description of the electrical characteristics of JTAG, About JTAG, What is JTAG/JFLASH?
+@subsection About JFLASH
+Jflash-Linux is a software that uses the JTAG port on a embedded device. It is a tool for directly writing to flash. It supports a wide range of flash chips. Jflash executes on the host machine and accesses the flash chip of the target using parallel port to enable it to communicate with the host.
+
+@node Brief description of the electrical characteristics of JTAG, , About JFLASH, What is JTAG/JFLASH?
+@subsection Brief description of the electrical characteristics of JTAG
+A JTAG interface is a special four/five-pin interface added to a chip, designed so that multiple chips on a board can have their JTAG lines daisy-chained together, and a test probe need only connect to a single "JTAG port" to have access to all chips on a circuit board. The connector pins are:@*
+@itemize
+@item 1. TDI (Test Data In)
+@item 2. TDO (Test Data Out)
+@item 3. TCK (Test Clock)
+@item 4. TMS (Test Mode Select)
+@item 5. TRST (Test Reset) optional.
+@end itemize
+Since only the one data line is available, the protocol is necessarily serial like SPI. The clock input is at the TCK pin. Configuration is performed by manipulating a state machine one bit at a time through a TMS pin. One bit of data is transferred in and out per TCK clock pulse at the TDI and TDO pins, respectively. Different instruction modes can be loaded to read the chip ID, sample input pins, drive (or float) output pins, manipulate chip functions, or bypass (pipe TDI to TDO to logically shorten chains of multiple chips). The operating frequency of TCK varies depending on the chip, but it is typically 10-100MHz (10-100ns per bit).
+
+When performing boundary scan on integrated circuits, the signals manipulated are between different functional blocks of the chip, rather than between different chips.
+
+The TRST pin is an optional reset to the test logic - usually asynchronous, but sometimes synchronous, depending on the chip. If the pin is not available, the test logic can be reset by clocking in a reset instruction synchronously.
+
+Even though few consumer products provide an explicit JTAG port connector, the connections are very often available on the printed circuit board as a remnant from development prototyping. When exploited, these connections often provide an excellent means for reverse engineering.@*
+
+@node Using JTAG/JFLASH, ,What is JTAG/JFLASH?,JTAG/JFLASH
+@section Using JTAG/JFLASH
+
+@menu
+* Installation of JFLASH::
+* JFLASH instructions::
+@end menu
+
+@node Installation of JFLASH,JFLASH instructions, ,Using JTAG/JFLASH
+@subsection Installation of JFLASH
+@c @subsection The BTicino connector
+@c Although there BTicino connector is enclosed with the @value{machine}, you can find here some specifications about it:@*
+@c In order to boot your @value{machine} at all, you first need to program some code into the flash memory. To this aim, the Jflash program comes to rescue, but it needs to be modified to act on the specific flash device used in the @value{machine} device. The directory @file{jflash} includes a version of the tool ported by Bticino staff, called @file{jflash-@value{machine}-BTSDK}. To connect the JTAG port of the @var{@value{machine}-BTSDK} to the parallel port of a personal computer, you'll need a cable with at least 5 wires (4 data plus GND), but the best choice is using a TP network cable to pair one ground line to each data line. The wires must be soldered to the ``@code{NM2B}'' 8-pin connector near the Ethernet connector. Pin 1 is marked, pins 1 to 4 are near the border of the PCB and pins 5 in the second row is near pin 1.
+@c The following pins of the parallel port must be connected for @file{jflash-@value{machine}-BTSDK} to work:
+
+@c @table @i
+@c @item PIN2 (data 0)
+@c     To pin 7 of ``@code{NM2B}''
+@c @item PIN3 (data 1)
+@c     To pin 3 of ``@code{NM2B}''
+@c @item PIN4 (data 2)
+@c     To pin 8 of ``@code{NM2B}''
+@c @item PIN11 (status 7)
+@c     To pin 4 of ``@code{NM2B}''
+@c @item PINS 18-25 (GND)
+@c     To pin 6 of ``@code{NM2B}''
+@c @end table
+
+@c The @file{jflash-@value{machine}-BTSDK} program receives a single argument on the command line and writes it to flash starting at offset 0.
+
+To install the @file{Jflash} programme, first download the file @file{jflash.tar.gz} form the website and unpack it into your home directory:@*
+@code{user@@bt:user$ tar -zxvf jflash_mm.tar.gz}@*
+Install the g++ compiler if you don't have it yet installed in your ubuntu distribution, otherwise skip this step:@*
+@code{user@@bt:user$ sudo apt-get install g++}@*
+Answer Y to any question the system asks you during this installation process.@* 
+Go to JFlash_MM sources directory:@*
+@code{user@@bt:user$ cd JFlash_MM/src}@*
+Remove the temporary files:@*
+@code{user@@bt:src$ sudo make clean}@*
+And type @code{make} to create the executable file:@*
+@code{user@@bt:src$ sudo make}@*
+You have now created the @file{jflashmm}@* executable file
+
+@node JFLASH instructions, ,Installation of JFLASH,Using JTAG/JFLASH
+@subsection JFLASH instructions
+The main @code{jflashmm} syntax is:@*
+jflashmm <platform> <image file> <P,V,E,N> <Address> <INS, PAR> <NOD, DEB> <A, D>
+where:@*
+@itemize
+@item @code{<platform>} is the file meaning the target platform without its extension
+@item @code{<image file>} is the name of the image file to be installed
+@item  @code{<P>}          : Programs and checks; this options is set by default
+@item  @code{<V>}          : Only verifies
+@item  @code{<E>}          : Completely erases the flash memory of the device (If you use this option we hope you know what you are doing...)
+@item  @code{<N>}          : Programs the flash without performing any verification
+@item  @code{<Address>}    : The hexadecimal address where to start the programming of the flash memory
+@item  @code{<INS, PAR>}   : Type of the used cable :INSight IJC cable, or passive PARallel (in the case of the enclosed cable it will be @code{par})
+@item  @code{<NOD, DEB>}   : if you want a debug or not (@code{NOD} to avoid the debug, @code{DEB} to activate it)
+@item  @code{<A, D>}       : (A)sk or (D)on't ask any questions
+@end itemize
+@emph{NB: Only the most used options are presented in this list.}@sp 1
+If you need to re-install U-Boot for example, first put the BTicino connector on the parallel port of the PC and on the JTAG port of the @value{machine}.@*
+
+Then copy the U-Boot image file @file{u-boot/u-boot.bin} into a temporary folder:@*
+@code{user@@bt:xxx$ cp -a u-boot/u-boot.bin /tmp}@*
+And run @file{jflashmm}:@*
+@code{user@@bt:src$ sudo ./jflashmm DBPXA255_BT /tmp/u-boot.bin p 0 par}@*
+where@*
+@itemize
+@item @code{DBPXA255_BT} designs the used platform (the @file{DBPXA255_BT.dat} file without its @file{.dat} extension)
+@item @code{/tmp/u-boot.bin} is the image of the bootloader
+@item @code{p 0 par}: we program and check from the address 0x0 with the passive parallel cable (so is the enclosed cable by BTicino)
+@end itemize
+
+@node U-Boot bootloader, The kernel, JTAG/JFLASH, Top
+@chapter U-Boot bootloader
+@c @menu
+@c * What is U-Boot?::
+@c * Downloading ECOS::
+@c * Creating an ECOS platform::
+@c * U-Boot main commands::
+@c @end menu
+@c * Specific Customizations::
+
+@c @node What is U-Boot?, Downloading ECOS, , U-Boot bootloader
+@menu
+* What is U-Boot?::
+* Creation of an U-Boot platform::
+* Creating the U-Boot image::
+* U-Boot main commands::
+@end menu
+
+@node What is U-Boot?, Creation of a U-Boot platform, , U-Boot bootloader
+@section What is U-Boot?
+U-Boot, the Universal Bootloader, is an open source monitor program which provides full source code under GPL license bootstrap firmware for embedded systems supporting many different CPU architectures and boards. U-Boot is used in both product development and in deployed products in the field.
+
+U-Boot allows download and execution of embedded applications via serial or Ethernet, including embedded Linux and applications. It provides debug support in conjunction with GDB to allow development and debugging of embedded applications. It also provides an interactive command line interface to allow management of the Flash images, image download, U-Boot configuration, etc., accessible via serial or ethernet. For unattended or automated startup, boot scripts can be stored in Flash allowing for example loading of images from Flash or a TFTP server.@*
+
+You can find more information at: @uref{http://www.denx.de/wiki/UBoot}@* and @uref{http://www.denx.de/wiki/UBootdoc/Presentation}@*.
+
+This chapter describes the U-Boot mains commands used on BtWeb. Note that BtWeb is how we call our platform.
+@c ==========================================================================
+
+@c @node Downloading ECOS, Creating an ECOS platform, What is U-Boot?, U-Boot bootloader
+
+@node Creation of an U-Boot platform, Creating the U-Boot image, What is U-Boot?, U-Boot bootloader
+@section Creation of an U-Boot platform
+In this section will be explained step by step how to create an U-Boot platform in your PC to create later a binary image for the @value{machine}@*.
+
+After having downloaded all the required files from @url{www.myopen-bticino.it} into your home directory, first create a @file{u-boot} work directory:@*
+@code{user@@bt:user$ mkdir u-boot}@*
+Copy the original u-boot tarball, that is, @file{u-boot-1.1.4-g7213859d.tar.bz2} and the personalization patch file for the @value{machine}, that is, @file{u-boot-btweb.patch}, in the work directory:@*
+@code{user@@bt:user$ cp u-boot-1.1.4-g7213859d.tar.bz2 ./u-boot/}@*
+@code{user@@bt:user$ cp u-boot-btweb.patch ./u-boot/}@*
+
+Then, untar your u-boot archive:@*
+@code{user@@bt:user$ cd ./u-boot}@*
+@code{user@@bt:u-boot$ tar -xjf u-boot-1.1.4-g7213859d.tar.bz2}@*
+Make a copy of the new directory and give a new name to it, as below:@*
+@code{user@@bt:u-boot$ cp -a u-boot-1.1.4-g7213859d u-boot-btweb}@*
+@code{user@@bt:u-boot$ cd u-boot-btweb}@*
+@code{user@@bt:u-boot-btweb$ patch -p1 < ../u-boot-btweb.patch }@*
+Install your new u-boot-btweb in your PC to let be used automatically to create uImage files for different kernel compilations:@*
+@code{user@@bt:u-boot-btweb$ cd ..}@* 
+@code{user@@bt:u-boot$ sudo mkdir /opt/sources}@*
+@code{user@@bt:u-boot$ sudo mkdir /opt/sources/u-boot}@*
+@code{user@@bt:u-boot$ sudo cp -a u-boot-btweb /opt/sources/u-boot/}@*
+Your kernel is now ready to be configured and compiled and it is also installed to create uImage files for different kernel compilations.@*
+
+
+@node Creating the U-Boot image, U-Boot main commands, Creation of a U-Boot platform, U-Boot bootloader
+@section Creating the U-Boot image for the @value{machine}
+@menu
+* U-Boot image for the H4684IPSDK to run from RAM::
+* U-Boot image for the H4684IPSDK to run from FLASH::
+@end menu
+In this section will be explained step by step how to create an U-Boot image file to be run from both RAM and FLASH Memory in the @value{machine}@*.
+
+@node U-Boot image for the H4684IPSDK to run from RAM, U-Boot image for the H4684IPSDK to run from FLASH, , Creating the U-Boot image
+@subsection U-Boot image for the H4684IPSDK to run from RAM
+You can create an U-Boot image file to be run in the @value{machine} from its RAM memory directly. This method it is normally used for easy debugging of new U-Boot versions in order not to save them in FLASH Memory without previous testing and validating processes.@*
+
+To create an U-Boot image file to run from RAM Memory, first configure the environment variables in your terminal as follows:@*
+@code{user@@bt:user$ cd ./u-boot/u-boot-btweb}@*
+@code{user@@bt:u-boot-btweb$ PATH=/opt/sg-toolchain-3.4.4/bin/:$PATH}@*
+@code{user@@bt:u-boot-btweb$ export F453_TORAM=yes}@*
+Then, compile U-Boot:@*
+@code{user@@bt:u-boot-btweb$ make distclean}@*
+@code{user@@bt:u-boot-btweb$ make f453av_config}@*
+@code{user@@bt:u-boot-btweb$ make CROSS_COMPILE=arm-linux-}@*
+Once, the new U-Boot image file has been comopiled and created you can procceed as follows to run it from RAM in the @value{machine} platform:@*
+@code{user@@bt:u-boot-btweb$ sudo cp -a u-boot.bin /tftpboot}@*
+Open your minicom terminal:@*
+@code{user@@bt:u-boot-btweb$ minicom}@*
+And configure the serial port through Minicom with the following parameters:@*
+@itemize @minus
+@item 115200-baud speed
+@item No parity
+@item 8 data bits, 1 stop bit 
+@end itemize
+Boot your @value{machine} and type 'stop' to have the prompt of U-Boot:@*
+@code{U-Boot 1.1.4 (DATE - TIME)}@*
+@code{DRAM:  64 MB}@*
+@code{Flash: 64 MB}@*
+@code{In:    serial}@*
+@code{Out:   serial}@*
+@code{Err:   serial}@*
+@code{autoboot in 5 seconds}@*
+@code{=>}@*
+Finally, launch your new U-Boot version using the following U-Boot commands that will use the previous U-Boot version already located in the FLASH memory of the @value{machine}:@*
+@code{=>tftpboot 0xa1d00000 u-boot.bin}@*
+@code{=>go 0xa1d00000}@*
+Once the new U-Boot version has been validated running from RAM, it can be saved in FLASH memory as a substitute of the original one. See @ref{U-Boot image for the H4684IPSDK to run from FLASH} for further information. 
+
+
+@node U-Boot image for the H4684IPSDK to run from FLASH, , U-Boot image for the H4684IPSDK to run from RAM, Creating the U-Boot image
+@subsection U-Boot image for the H4684IPSDK to run from FLASH
+Once you have validated your new U-Boot image file running it directly from RAM memory, you can try to run it from FLASH memory. This way of proceding assures that no faulty U-Boot images are saved in FLASH Memory. The only feature that is not checked for the new U-Boot image when you run it from RAM respect to when you run it from FLASH is the initial FLASH to RAM load process that obviously only takes place when U-Boot is run from FLASH.@*
+
+To create an U-Boot image file to run from FLASH Memory, first configure the environment variables in your terminal as follows:@*
+@code{user@@bt:user$ cd ./u-boot/u-boot-btweb}@*
+@code{user@@bt:u-boot-btweb$ PATH=/opt/sg-toolchain-3.4.4/bin/:$PATH}@*
+@code{user@@bt:u-boot-btweb$ export -n F453_TORAM}@*
+then, compile U-Boot:
+@code{user@@bt:u-boot-btweb$ make distclean}@*
+@code{user@@bt:u-boot-btweb$ make f453av_config}@*
+@code{user@@bt:u-boot-btweb$ make CROSS_COMPILE=arm-linux-}@*
+You have finally created your @file{u-boot.bin} image file to be run from FLASH. Please refer to @ref{JFLASH instructions} to install it in @value{machine} FLASH Memory.@*
+
+@node U-Boot main commands, ,Creating the U-Boot image, U-Boot bootloader
+@section U-Boot main commands
+@menu
+* Preliminaries::
+* Instructions to install the filesystem::
+* Instructions to install the applications::
+* Configuring the bootloader::
+* General U-Boot instructions::
+@end menu
+
+@node Preliminaries, Instructions to install the filesystem, , U-Boot main commands
+@subsection Preliminaries
+This part is dedicated to the complete installation of EtLinux and the graphical interface into the @value{machine}. We suppose you created, modified and compiled your filesystem to make it run onto the @value{machine}, as explained in @ref{EtLinux distribution}. First configure your @i{tftp} server as explained in @ref{Via the Tftp Server}.@*
+First copy your @file{ubtweb_only.gz} and the image of the applications and configuration in your @i{tftp} directory:@*
+@code{user@@bt:user$ cd sources/BUILD/H4684_IP_rel_1_1_0}@*
+@code{user@@bt:H4684_IP_rel_1_1_0$ sudo cp ubtweb_only.gz btweb_app.img conf.img /tftpboot}@*
+Open your minicom terminal:@*
+@code{user@@bt:H4684_IP_rel_1_1_0$ minicom}@*
+And configure the serial port through Minicom with the following parameters:@*
+@itemize @minus
+@item 115200-baud speed
+@item No parity
+@item 8 data bits, 1 stop bit 
+@end itemize
+Boot your @value{machine} and type 'stop' to have the prompt of U-Boot:@*
+@code{U-Boot 1.1.4 (DATE - TIME)}@*
+@code{DRAM:  64 MB}@*
+@code{Flash: 64 MB}@*
+@code{In:    serial}@*
+@code{Out:   serial}@*
+@code{Err:   serial}@*
+@code{autoboot in 5 seconds}@*
+@code{=>}@*
+Finally we activate the network parameters of the @value{machine}, by putting your own values, with U-Boot commands according to the following instruction:@*
+@code{=>setenv ipaddr <@value{machine} address>}@*
+@code{=>setenv serverip <PC address>}@*
+@code{=>setenv netmask <network mask>}@*
+use also save command to save the new parameters in flash:
+@code{=>save}@*
+
+@node Instructions to install the filesystem, Instructions to install the applications, Preliminaries, U-Boot main commands
+@subsection Instructions to install the filesystem
+There are two dedicated flash partitions for the filesystem, exactly equal: @i{btweb_only} and @i{btweb_only1}. If an interruption during the update occurs (the @value{machine} is accidentally switched off for example), the system can reboot with the other working partition.@*
+To update the filesystem partitions, first upload the filesystem into the RAM memory of the @value{machine}:@*
+@code{=>tftpboot a2000000 ubtweb_only.gz}@*
+@*
+then, to install the filesystem in its first FLASH partition erase the first filesystem partition in FLASH:@*
+@code{=>erase 220000 +8a0000}@*
+and transfer the filesystem data copied earlier in RAM to FLASH fisrt partition for the filesystem:@*
+@code{=>cp.b a2000000 220000 8a0000}@*
+@*
+However, to install the filesystem in its backup FLASH partiton erase the backup filesystem partition in FLASH:@*
+@code{=>erase 1120000 +8a0000}@*
+and transfer the filesystem data copied earlier in RAM to FLASH backup partition for the filesystem:@*
+@code{=>cp.b a2000000 1120000 8a0000}@*
+
+
+@node Instructions to install the applications, Instructions to install the configuration, Instructions to install the filesystem, U-Boot main commands
+@subsection Instructions to install the applications
+As it occurs for the filesystem case,here are two dedicated flash partitions for the applicatios, exactly equal: @i{btweb_app} and @i{btweb_app_copy}. However in this case during an update via the serial port of the applications, the first partition is rewritten. When the update is finished, the second partition receives a copy of the first one. If an interruption during the update occurs (the @value{machine} is accidentally switched off for example), the system can reboot with the last working partition.@*
+
+To update the application partitions, first upload the applications into the RAM memory of the @value{machine}:@*
+@code{=>tftpboot a2000000 btweb_app.img}@*
+
+then, to install the applications in its first FLASH partition erase the first application partition in FLASH:@*
+@code{=>erase ac0000 +280000}@*
+and transfer the application data copied earlier in RAM to FLASH fisrt partition for the applications:@*
+@code{=>cp.b a2000000 ac0000 280000}@*
+@*
+However, to install the applications in its backup FLASH partiton erase the backup application partition in FLASH:@*
+@code{=>erase d40000 +280000}@*
+and transfer the data copied earlier in RAM to FLASH backup partition for the applications:@*
+@code{=>cp.b a2000000 d40000 280000}@*
+
+@node Instructions to install the configuration, Configuring the bootloader, Instructions to install the applications, U-Boot main commands
+@subsection Instructions to install the configuration
+As it occurs for the applications case, there are two dedicated flash partitions for the configuration, exactly equal: @i{conf} and @i{conf_copy}. During an update via the serial port of the configuiration, the first partition is rewritten. When the update is finished, the second partition receives a copy of the first one. If an interruption during the update occurs (the @value{machine} is accidentally switched off for example), the system can reboot with the last working partition.@*
+
+To update the configuration partitions, first upload the configuration into the RAM memory of the @value{machine}:@*
+@code{=>tftpboot a2000000 conf.img}@*
+
+then, to install the configuration in its first FLASH partition erase the first configuration partition in FLASH:@*
+@code{=>erase 40000 +60000}@*
+and transfer the configuration data copied earlier in RAM to FLASH fisrt partition for the configuration:@*
+@code{=>cp.b a2000000 40000 60000}@*
+@*
+However, to install the configuration in its backup FLASH partiton erase the backup configuration partition in FLASH:@*
+@code{=>erase a0000 +60000}@*
+and transfer the data copied earlier in RAM to FLASH backup partition for the configuration:@*
+@code{=>cp.b a2000000 a0000 60000}@*
+ 
+@node Configuring the bootloader, General U-Boot instructions, Instructions to install the configuration, U-Boot main commands
+@subsection Configuring the bootloader with @code{fconfig}
+In this subsection will be explained how to configure the bootloader correctly to make the @value{machine} run from itself instead of via the NFS server. 
+At the prompt of U-Boot, type:@*
+@code{=> setenv bootargs smc_mode=0x4f root=/dev/ram ramdisk_size=14336 initrd=0xA09a0000,0x760000 console=ttyS0,115200 LD_LIBRARY_PATH=/usr/lib:/lib:/home/bticino/lib:/lib/QTlib QTDIR=/lib/QTlib sa1100_margin=30 HISTSIZE=0}@*
+This instruction allows to initialize the former parameters memorized in the configuration of the BootLoader. Finally, type:@*
+@code{=> save}@*
+in order to save this bootloader configuration parameters in FLASH memory.@*
+
+Your @value{machine} will now boot from itself automatically. If you need to reconfigure your bootloader so that the @value{machine} boots via the NFS server again, the procedure to follow is exactly the same, but in this case, you need to insert the following lines when you change the boot script (at the @code{=>}prompt ):@*
+@code{=> setenv bootargs smc_mode=0x4f ip=10.39.10.136:10.39.10.118::255.255.248.0:::root=/dev/nfs console=ttyS0,115200 nfsroot=10.39.10.118:/home/user/nfs_server LD_LIBRARY_PATH=/lib:/home/bticino/lib:/lib/QTlib QTDIR=/lib/QTlib MYIPNFS=10.39.10.136"
+}@*
+Do not forget, of course, to adapt these lines according to your configuration (IP address, nfs directory name etc...).@*
+NB: if you need to perform a debug and to see the complete execution of EtLinux at the boot of the @value{machine}, add @code{MYVERBOSITY=3} at the end of @code{setenv bootargs} line.@*
+
+@node General U-Boot instructions, , Configuring the bootloader, U-Boot main commands
+@subsection General U-Boot instructions for the @value{machine}
+@menu
+* Erasing a Flash partition::
+* Configuring the IP address::
+* Uploading a file via the Tftp server::
+* Uploading a file via the serial port::
+* Writing a flash partition::
+@end menu
+
+Here you can find the main instructions to manage the flash partitions of the @value{machine}. This list is not complete; we evoke the commands you will use the more often. If you seek the complete list of the U-Boot commands, please see the manual at @uref{http://www.denx.de/wiki/DULG/Manual}.
+
+@node Erasing a Flash partition, Configuring the IP address, ,General U-Boot instructions 
+@subsubsection Erasing a Flash partition
+@multitable @columnfractions .25 .9
+@headitem Partition @tab Commad line
+@item conf
+@tab @code{erase 40000 +60000}
+@item conf_copy
+@tab @code{erase a0000 +60000}
+@item Kernel
+@tab @code{erase 100000 +120000}
+@item btweb_only
+@tab @code{erase 220000 +8a0000}
+@item btweb_app
+@tab @code{erase ac0000 +280000}
+@item btweb_app_copy
+@tab @code{erase d40000 +280000}
+@item zImage1
+@tab @code{erase 1000000 +120000}
+@item btweb_only1
+@tab @code{erase 1120000 +8a0000}
+@item extra
+@tab @code{erase 19c0000 +640000}
+@end multitable
+
+@node Configuring the IP address, Uploading a file via the Tftp server, Erasing a Flash partition, General U-Boot instructions 
+@subsubsection Configuring the IP address
+@value{machine} IP address configuration: 
+@code{setenv ipaddr @emph{<@value{machine} IP address>}}@*
+@value{machine} network address configuration:
+@code{setenv netmask @emph{<@value{machine} network mask>}}@*
+@value{machine} NFS Server IP configuration:
+@code{setenv serverip @emph{<NFS Server IP address>}}@*
+All previous network parameter configuration in FLASH memory saving command:
+@code{save}@*
+
+@node Uploading a file via the Tftp server, Uploading a file via the serial port, Configuring the IP address, General U-Boot instructions
+@subsubsection Uploading a file into the @value{machine} via the Tftp server
+@multitable @columnfractions .25 .5
+@headitem File @tab Commad line
+@item conf
+@tab @code{tftpboot a2000000 conf.img}
+@item conf_copy
+@tab @code{tftpboot a2000000 conf.img}
+@item Kernel
+@tab @code{tftpboot a2000000 uImage}
+@item btweb_only
+@tab @code{tftpboot a2000000 ubtweb_only.gz}
+@item btweb_app
+@tab @code{tftpboot a2000000 btweb_app.img}
+@item btweb_app_copy
+@tab @code{tftpboot a2000000 btweb_app.img}
+@item zImage1
+@tab @code{tftpboot a2000000 uImage}
+@item btweb_only1
+@tab @code{tftpboot a2000000 ubtweb_only.gz}
+@end multitable
+
+@node Uploading a file via the serial port, Writing a flash partition, Uploading a file via the Tftp server, General U-Boot instructions
+@subsubsection Uploading a file into the @value{machine} via the serial port
+@multitable @columnfractions .25 .8
+@headitem File @tab Commad line
+@item conf
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{conf.img} file using Ymodem protocol)   
+@item conf_copy
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{conf.img} file using Ymodem protocol)
+@item Kernel
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{uImage} file using Ymodem protocol)
+@item btweb_only
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{ubtweb_only.gz} file using Ymodem protocol)
+@item btweb_app
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{btweb_app.img} file using Ymodem protocol)
+@item btweb_app_copy
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{btweb_app.img} file using Ymodem protocol)
+@item zImage1
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{uImage} file using Ymodem protocol)
+@item btweb_only1
+@tab @code{loady 0xa2000000} (select later from minicom main menu the transmission of @emph{ubtweb_only.gz} file using Ymodem protocol)
+@end multitable
+
+@node Writing a flash partition, , Uploading a file via the serial port, General U-Boot instructions
+@subsubsection Writing a flash partition
+@multitable @columnfractions .25 .8
+@headitem Partition Name @tab Commad line
+@item conf
+@tab @code{cp.b a2000000 40000 60000}
+@item conf_copy
+@tab @code{cp.b a2000000 a0000 60000}
+@item Kernel
+@tab @code{cp.b a2000000 100000 120000}
+@item btweb_only
+@tab @code{cp.b a2000000 220000 8a0000}
+@item btweb_app
+@tab @code{cp.b a2000000 ac0000 280000}
+@item btweb_app_copy
+@tab @code{cp.b a2000000 d40000 280000}
+@item zImage1
+@tab @code{cp.b a2000000 1000000 120000}
+@item btweb_only1
+@tab @code{cp.b a2000000 1120000 8a0000}
+@end multitable
+
+@node The kernel, EtLinux distribution, U-Boot bootloader, Top
+@chapter The kernel
+@menu
+* Customization of the kernel::
+* Installation of a new kernel::
+@end menu
+
+@node Customization of the kernel, Installation of a new kernel, , The kernel
+@section Customization of the kernel
+In this section will be explained how to create the kernel of the @value{machine} from the sources of the 2.4.19 kernel and the required patches.
+
+@menu
+* Creating the kernel::
+* Compiling the kernel::
+@end menu
+
+@node Creating the kernel, Compiling the kernel, , Customization of the kernel
+@subsection Creating the kernel for the @value{machine}
+@subsubsection Directly applying the @value{machine} patch
+The kernel we use is a 2.4.19 kernel modified to fit the configuration of the @value{machine}. Although it is available on the website, you can re-create it by directly applying the @file{2419_norm_to_L4684_IP.patch} patch onto the sources of the 2.4.19 kernel, as explained below:@*
+After having downloaded all the required files from @url{www.myopen-bticino.it} into your home directory, first create a @file{kernel} work directory:@*
+@code{user@@bt:user$ mkdir kernel}@*
+Copy the kernel tarball and the @file{2419_norm_to_L4684_IP.patch}, in the work directory:@*
+@code{user@@bt:user$ cp kernel/linux-2.4.19.tar.bz2 ./kernel/}@*
+@code{user@@bt:user$ cp 2419_norm_to_L4684_IP.patch ./kernel/}@*
+
+Then, untar your kernel archive:@*
+@code{user@@bt:user$ cd ./kernel}@*
+@code{user@@bt:kernel$ tar -xjf linux-2.4.19.tar.bz2}@*
+Make a copy of the new directory and give a new name to it, as below:@*
+@code{user@@bt:kernel$ cp -a linux-2.4.19 linux-2.4.19-rmk7-pxa2-L4684_IPSDK}@*
+@code{user@@bt:kernel$ cd !$}@*
+@code{user@@bt:linux-2.4.19-rmk7-pxa2-L4684_IPSDK$ patch -p1 < ../2419_norm_to_L4684_IP.patch }@*
+Finally, give execute permission to make-uImage:
+@example
+user@@bt:linux-2.4.19-rmk7-pxa2-L4684_IPSDK$ chmod a+x ./make-uImage
+@end example
+Your kernel is now ready to be configured and compiled. You can go to @ref{Compiling the kernel}@*
+
+@subsubsection Building the kernel from the arm patch to the BTWeb patch 
+If necessary, create a @file{kernel} work directory. Then copy the kernel tarball, with the @file{2.4.19-rmk7.patch}, @file{diff-2.4.19-rmk7-pxa2.gz} and @file{2419_pxa2_to_L4684_IP.patch} patches (also available on @url{www.myopen-bticino.it}, in the same work directory:@*
+@code{user@@bt:user$ mkdir kernel}@*
+@code{user@@bt:user$ cp -a linux-2.4.19.tar.bz2 ./kernel/}@*
+@code{user@@bt:user$ cp -a 2.4.19-rmk7.patch ./kernel/}@*
+@code{user@@bt:user$ cp -a diff-2.4.19-rmk7-pxa2.gz ./kernel/}@*
+@code{user@@bt:user$ cp -a 2419_pxa2_to_L4684_IP.patch ./kernel/}@*
+
+Uncompress also the patches if necessary, as below:@*
+@example 
+user@@bt:kernel$ zcat diff-2.4.19-rmk7-pxa2.gz > 2.4.19-rmk7-pxa2.patch 
+@end example
+Then, untar your kernel archive:@*
+@code{user@@bt:user$ cd kernel }@*
+@code{user@@bt:kernel$ tar -xjf linux-2.4.19.tar.bz2 }@*
+Make a copy of the sources directory by adding the -rmk7 extension:@*
+@code{user@@bt:kernel$ cp -a linux-2.4.19 linux-2.4.19-rmk7 }@*
+And apply the first patch:@*
+@example
+user@@bt:kernel$ cd linux-2.4.19-rmk7 
+user@@bt:linux-2.4.19-rmk7$ patch -p1 < ../2.4.19-rmk7.patch 
+user@@bt:linux-2.4.19-rmk7$ cd .. 
+@end example
+Perform the same operation with the second patch, as below: @*
+@example
+user@@bt:kernel$ cp -a linux-2.4.19-rmk7 linux-2.4.19-rmk7-pxa2 
+user@@bt:kernel$ cd linux-2.4.19-rmk7-pxa2 
+user@@bt:linux-2.4.19-rmk7-pxa2$ patch -p1 < ../2.4.19-rmk7-pxa2.patch 
+user@@bt:linux-2.4.19-rmk7-pxa2$ cd .. 
+@end example
+And one last time again with the @value{machine} patch: @*
+@example
+user@@bt:kernel$ cp -a linux-2.4.19-rmk7-pxa2 linux-2.4.19-rmk7-pxa2-@value{machine}n
+user@@bt:kernel$ cd !$ 
+user@@bt:linux-2.4.19-rmk7-pxa2-L4684_IPSDK$ patch -p1 < ../2419_pxa2_to_@value{reference}n.patch 
+@end example
+Finally, give execute permission to make-uImage:
+@example
+user@@bt:linux-2.4.19-rmk7-pxa2-L4684_IPSDK$ chmod a+x ./make-uImage
+@end example
+Your kernel is now ready to be configured. You can go to @ref{Compiling the kernel}@*
+
+@node Compiling the kernel, ,Creating the kernel, Customization of the kernel
+@subsection  Compiling the kernel 
+First specify the environment variables relative to the architecture and the toolchain of the @value{machine}: @*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ export ARCH=arm }@*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ export CROSS_COMPILE=/opt/snapgear-toolchain/bin/arm-linux- }@*
+In the tarball there is also a kernel configuration file (@file{confg_BTWEB_TSAPERTO}) which fits the @value{machine}. You must change its name into @file{.config} to make it be usable by the kernel:@*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ cp config_BTWEB_TSAPERTO .config}@*
+To launch the compilation, type:@*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ make CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH oldconfig dep zImage modules}@*
+Now, you should create the kernel image in the correct format for the U-Boot bootloader. First of all, if you have not installed yet the U-Boot utilities in your host PC, please follow the intructions from @ref{Creation of an U-Boot platform}.@*  
+Then, create the kernel image for U-Boot:
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ sudo ./make-uImage}@*
+
+Finally, install your linux kernel sources and binaries in your host PC to be able later to create your etlinux distribution as explained in @ref{EtLinux distribution}:@*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ sudo mkdir /opt/sources}@*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ sudo mkdir /opt/sources/kernel_BTEB}@*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ cd ..}@*
+@code{user@@bt:kernel$ sudo cp -a linux-2.4.19-L4684_IPSDK /opt/sources/kernel_BTWEB/}@*
+@code{user@@bt:kernel$ cd /opt/sources/kernel_BTWEB}@*
+@code{user@@bt:kernel_BTWEB$ sudo mv linux-2.4.19-L4684_IPSDK linux-btweb}@*
+
+
+@node Installation of a new kernel, ,Customization of the kernel , The kernel
+@section Installation of a new kernel
+@menu
+* Via telnet::
+* Via the Serial Port::
+* Via the Tftp Server::
+@end menu
+@node Via telnet, Via the Serial Port, , Installation of a new kernel
+@subsection Via telnet
+This is the traditional way to change the kernel. First make a copy of your kernel image in your nfs directory:@*
+@code{user@@bt:linux-2.4.19-L4684_IPSDK$ sudo cp arch/arm/boot/uImage ~/nfs_server}@*
+Then boot your @value{machine} and connect to it via Telnet.
+@code{user@@bt:user$ telnet touchscreen_ip_addr 23}. If you don't know  @emph{touchscreen_ip_addr} value, that is, the ip address of you touchscreen, then open a terminal via the serial port and at its prompt type: @code{% exec /sbin/ifconfig eth0}. The @emph{touchscreen_ip_addr} value is the one indicated by inet addr.@*
+
+At the prompt of the telnet terminal, run the bash script: @*
+@code{Connected to @emph{touchscreen_ip_addr} (@emph{touchscreen_ip_addr}).}@*
+@code{Escape character is '^]'.}@*
+@code{% bash }@*
+You should now have a new prompt:@*
+@code{bash#}@*
+First see the flash partitions on your @value{machine} to find the one dedicated to the kernel:@*
+@code{bash# cat /proc/mtd}@*
+@code{dev:    size   erasesize  name}@*
+
+@ifnothtml
+@multitable @columnfractions .55 .5
+@headitem  Partition @tab Description
+@item @code{mtd0: 00040000 00020000 "Bootloader"}
+@item @code{mtd1: 00060000 00020000 "conf"}
+@item @code{mtd2: 00060000 00020000 "conf_copy"}
+@item @code{mtd3: 00120000 00020000 "Kernel"}
+@item @code{mtd4: 008a0000 00020000 "btweb_only"}
+@item @code{mtd5: 00280000 00020000 "btweb_app"}
+@item @code{mtd6: 00280000 00020000 "btweb_app_copy"}
+@item @code{mtd7: 00120000 00020000 "zImage1"}
+@item @code{mtd8: 008a0000 00020000 "btweb_only1"}
+@item @code{mtd9: 00640000 00020000 "extra"}
+@end multitable
+@sp 1
+@end ifnothtml
+
+@ifhtml
+@multitable @columnfractions .25 .5
+@headitem  Partition @tab Description
+@item @code{mtd0: 00040000 00020000 "Bootloader"}
+@item @code{mtd1: 00060000 00020000 "conf"}
+@item @code{mtd2: 00060000 00020000 "conf_copy"}
+@item @code{mtd3: 00120000 00020000 "Kernel"}
+@item @code{mtd4: 008a0000 00020000 "btweb_only"}
+@item @code{mtd5: 00280000 00020000 "btweb_app"}
+@item @code{mtd6: 00280000 00020000 "btweb_app_copy"}
+@item @code{mtd7: 00120000 00020000 "zImage1"}
+@item @code{mtd8: 008a0000 00020000 "btweb_only1"}
+@item @code{mtd9: 00640000 00020000 "extra"}
+@end multitable
+@end ifhtml
+
+Here they are the @file{mtd3} partition and its safecopy @file{mtd7}.@*
+Then you must determine the number of blocks to be erased in these partitions according to the size of your new kernel, with this operation:@*
+@ifhtml
+blocks=(size of uImage)/(128*1024)@*
+@end ifhtml
+@tex
+$$ Blocks = {Size_{uImage} \over 128 \times 1024} $$
+@end tex
+You take the superior entire value. The resulting number of blocks must not exceed $$ {Size_{mtd3} \over 128 \times 1024} $$ and $$ {Size_{mtd7} \over 128 \times 1024} $$ respectively for mtd3 and mtd7 partitions. Size_{mtd3} and Size_{mtd7} can be found from the result of your previous @code{bash# cat /proc/mtd} command@*
+Then, from the telnet terminal, erase the kernel flash partition:@*
+@code{bash# erase /dev/mtd3 0 }@i{Blocks} (do not forget to replace @i{Blocks} by the value you found from above operations ):
+and copy your kernel image onto the flash partition:@*
+@code{bash# cat uImage > /dev/mtd3}@*
+You have successfully copied the image of your new kernel, you can reboot your machine by typing @code{/sbin/reboot} at the prompt of your telnet terminal.@*
+However, if you copied a wrong kernel (kernel panic) or if your upload was interrupted, there are two other ways to put a new kernel, via the serial port and via a tftp server.
+@node Via the Serial Port, Via the Tftp Server, Via telnet, Installation of a new kernel
+@subsection Via the Serial Port
+Your new kernel crashed into a Kernel panic? You had an interruption during the upload of the kernel? There are other possibilities to install it, with U-Boot. Here we will see how can it be done with the serial port. First of all, you will need to have installed and configured the Y modem file trasnsfer protocol for your minicom application. If you do not have installed yet the lrzsz application in your host PC, type:@*
+@code{user@@bt:user$ sudo apt-get install lrzsz}@*
+
+After having opened a minicom terminal, configured it properly (see @ref{Preliminaries} to find the parameters of the serial connection) and rebooting the @value{machine} device.@*
+Press stop to prevent the boot of EtLinux right after watching the following messages in the prompt of your serial console:@*
+@code{U-Boot 1.1.4 (DATE - TIME)}@*
+@code{DRAM:  64 MB}@*
+@code{Flash: 64 MB}@*
+@code{In:    serial}@*
+@code{Out:   serial}@*
+@code{Err:   serial}@*
+@code{autoboot in 5 seconds}@*
+Erase your primary kernel partition in flash:
+@code{=> erase 100000 +120000}@*
+Type the following instruction to send and copy in flahs your kernel image file through the serial port:@*
+@code{=> loady 0x100000}@*
+Then press Ctrl-A Z to display the minicom main menu. Press S to select the option @i{``Send a file''} choose Ymodem Protocol and navigate to the directory where your kernel @file{uImage} file is. (In the context of this document it is  @file{linux-2.4.19-@value{machine}n/arch/arm/boot/uImage}. Finally, wait until the uImage file transfer ends successfully@sp 1
+Now you have installed your kernel onto the @value{machine}. Type @code{=> re}@* to reboot your machine.@*
+
+@node Via the Tftp Server, , Via the Serial Port, Installation of a new kernel
+@subsection Via the Tftp Server
+The other possibility, much faster, is to install the kernel with the tftp server. For this, you must first configure properly your tftp server in your host PC. To install the tftp server in your Ubuntu distribution you have to install xinetd and tftpd as follows:@*
+@code{user@@bt:user$ sudo apt-get install xinetd tftpd}@*
+
+This service works with xinetd, Therefore you have to create and edit your tftp config file, as follows:@*
+@code{user@@bt:user$ vi /etc/xinetd.d/tftp}@*
+Add the following text to activate tftp with @emph{xinetd}.@*
+@code{service tftp}@*
+@code{@{}@*
+@code{        disable = no}@*
+@code{        socket_type             = dgram}@*
+@code{        protocol                = udp}@*
+@code{        wait                    = yes}@*
+@code{        user                    = root}@*
+@code{        server                  = /usr/sbin/in.tftpd}@*
+@code{        server_args             = -s /tftpboot}@*
+@code{@}}@*
+Then create your /tftpboot directory (used as the default folder by @i{tftp}):
+@code{[user@@bt:user$ sudo mkdir /tftpboot}@*
+Then reboot the xinetd service:@*
+@code{[user@@bt:user$ /etc/init.d/xinetd restart}@*@*
+
+Once the @emph{tftp server} service has been configured in your host PC,  make a copy of your kernel image (uImage) in your @code{/tftpboot} folder:@*
+@code{[user@@bt:user$ sudo cp -a /opt/sources/kernel_BTWEB/linux-btweb/arch/arm/boot/uImage /tftpboot/}@*
+Boot your @value{machine} and type stop after watching the U-Boot message @code{autoboot in 5 seconds} to have the prompt of U-Boot:@*
+@code{autoboot in 5 seconds}@*
+@code{=>}@*
+Define the ip adresses of the @value{machine} and your PC as follows:@*
+@code{=> setenv ipaddr <@value{machine} address>}@*
+@code{=> setenv serverip <PC adress>}@*
+In our example: 
+@code{=> setenv ipaddr 10.39.10.136}@*
+@code{=> setenv serverip 10.39.10.118}@*
+Save this new U-Boot configuration parameters in flash:
+@code{=> save}@*
+
+Now you can proceed to load the kernel image into the RAM memory: @*
+@code{=> tftpboot 0xa2000000 uImage}@*
+Wait until the uImage file tranfer ends successfully.
+@*
+To update the first kernel partition in Flash, erase the first flash partition for the kernel and copy the kernel image you have in RAM memory to that Flash partition:
+@code{=> erase 100000 +120000}@* 
+@code{=> cp.b 0xa2000000 100000 120000}@*
+@*
+@*
+Finally, once you have updated the desired kernel partitions in Flash you can proceed to reboot your @value{machine} typing:@*
+@code{=> re}@*
+
+Once you are sure that your new kernel works well from first kernel partition in flash you could want to update also the backup kernel partition in flash. To do that you just have to follow these steps from U-Boot prompt:@*
+@code{=> erase 1000000 +120000}@* 
+@code{=> cp.b 0xa2000000 1000000 120000}@*
+@*
+@*
+
+ 
+
+@node EtLinux distribution, StackOpen, The kernel, Top
+@chapter EtLinux distribution
+
+@menu
+* What is EtLinux?::
+* installation of Qt/Embedded::
+* Creation of the filesystem::
+* Installation in the Flash Memory::
+@end menu
+
+@node What is EtLinux?, installation of Qt/Embedded, , EtLinux distribution
+@section What is EtLinux?
+Etlinux is a complete Linux-based system designed to run on very small industrial computers. It has been designed to be small, modular, flexible and complete. Its reduced memory and disk requirements make it ideal for all cost-sensitive situations, while at the same time its modularity and completeness give the full power of unix even for embedded applications. You can find the official website here: @url{www.etlinux.org}@sp 1
+NB: we kept the denomination @code{H4684} to mean the TouchScreen of the @i{MyHome} system. That is why we still use this term as an argument in the scripts relative to EtLinux and the installation via NFS.
+
+@node installation of Qt/Embedded, Creation of the filesystem, What is EtLinux?, EtLinux distribution
+@section Prerequisites: installation of Qt/Embedded and linux kernel and U-Boot sources
+The creation of the filesystem requires to have in local PC the libraries of Qt/Embedded, the linux kernel compiled for the @value{machine}, the U-boot also compiled for the @value{machine} and bison and flex utilities installed in host PC. 
+For the installation of QT/Embedded-Free please refer to the
+@ifhtml
+ @ref{Installation of Qt Embedded} section.@*
+@end ifhtml
+@ifnothtml
+ @ref{Installation of Qt Embedded}
+@end ifnothtml
+.@*
+
+For the @value{machine} linux kernel installation in your host PC please refer to the:@*
+@ifhtml
+ @ref{Compiling the kernel} section.@*
+@end ifhtml
+@ifnothtml
+ @ref{Compiling the kernel}
+@end ifnothtml
+.@*
+
+For the @value{machine} U-Boot installation in your host PC please refer to the:@*
+@ifhtml
+ @ref{Creation of an U-Boot platform} section.@*
+@end ifhtml
+@ifnothtml
+ @ref{Creation of an U-Boot platform}
+@end ifnothtml
+.@*
+
+Finally to install bison and flex utilities in your Ubuntu host PC please proceed as follows:@*
+@code{user@@bt:user$ sudo apt-get install bison}@*
+and@*
+@code{user@@bt:user$ sudo apt-get install flex}@*
+
+@node Creation of the filesystem, Installation in the Flash Memory, installation of Qt/Embedded, EtLinux distribution
+@section Creation of the filesystem
+In this section will be explained how to create the EtLinux filesystem, compile the applications and configure the workstation to make the @value{machine} run through the NFS server.@*
+
+@menu
+* Copying the sources of EtLinux::
+* Running the crea_btweb script::
+* Configuration of the NFS Server::
+* Running the crea_btweb_nfs script::
+* Launch of EtLinux onto the machine::
+@end menu
+
+@node Copying the sources of EtLinux, Running the crea_btweb script, ,Creation of the filesystem
+@subsection Copying the sources of EtLinux
+In your home directory, create the @file{sources} directory in which you will untar the EtLinux sources:@*
+@code{user@@bt:user$ cd ~}@*
+@code{user@@bt:user$ mkdir sources}@*
+@code{user@@bt:user$ cd sources}@*
+Make a copy of the @file{etlinux-sources.tar.gz} tarball into it:@* 
+@code{user@@bt:sources$ cp ~/etlinux-sources.tar.gz ./}@*
+And untar it:@*
+@code{user@@bt:sources$ sudo tar -zxvf etlinux-sources.tar.gz}@*
+The EtLinux sources are now ready to be used to create the filesystem.@*
+
+@node  Running the crea_btweb script, Configuration of the NFS Server, Copying the sources of EtLinux, Creation of the filesystem
+@subsection Running the @i{crea_btweb} script:
+This script includes four other scripts:@*
+@itemize @minus
+@item @file{crea_btweb_only} dedicated to the compilation of EtLinux for the server @*
+@item @file{crea_btweb_app}, used to compile the applications and the graphical interface of the @value{machine}@*
+@item @file{crea_btweb_zip}, to create the full or incremental service pack (the incremental service pack only updates the applications)@*
+@c @item @file{crea_btweb_tools}, to test the version of the current UnZip; if it is different from the 5.50 version, required by the @file{crea_btweb_nfs} script, it performs its installation from the source tarball in a local folder inside your source directory.@*
+@end itemize
+Three arguments are required for this script:@*
+@itemize @minus
+@item The name of the server (in our case @code{H4684_IP})@*
+@item The Version, Build and Release numbers (in our example they will be 1,1 and 0) @*
+@item The method of creation for the service pack, either FULL or INCREMENTAL @*
+@end itemize
+Now, in our @file{sources} directory, without forgetting the root privileges, launch the @file{crea_btweb} script:@*
+@code{user@@bt:sources$ sudo ./crea_webserver/crea_btweb H4684_IP 1 1 0 FULL}@*
+The file @file{Info_Rel_H4684_IP.txt} will be open. It contains the informations about the memory and the adresses for the different elements to be installed in the server. Do NOT  modify any of these values unless it is necessary. Please, type @code{:q} to exit the text editor and to keep on running crea_btweb steps.@*
+Afterwards, just follow the instructions during the execution of the scripts. When they are finished, EtLinux and Qt Embedded will be compiled, the service pack will be created. 
+At this step you must check the number of blocks of the filesystem by performing the following operation:@*
+@ifhtml
+@emph{blocks=(size of btweb_only.gz)/(128*1024)}@*
+@end ifhtml
+@tex
+$$ Blocks = {Size_{btweb\_only.gz} \over 128 \times 1024} $$
+@end tex
+
+If the result is greater than 69, your filesystem is too big and will not be able to be uploaded into the Flash memory of the @value{machine} completely. You can solve this problem by removing some fonts of @file{qtlib.zip} (created in the @file{sources/BUILD/H4684_IP_rel_1_1_0/} directory) and by re-loading the @file{crea_btweb} script until the result becomes inferior to 69.@*
+At this step you have created your filesystem (@file{sources/BUILD/H4684_IP_rel_1_1_0/btweb_only.gz}) with the applications (@file{sources/BUILD/H4684_IP_rel_1_1_0/btweb_app.img}). If you want to install them (either you already customized them or you want to install the generic version), please refer to @ref{Instructions to install the filesystem} and @ref{Instructions to install the applications}. Otherwise, the next step will be to configure the NFS server, to mount the ``just compiled'' EtLinux system on it and to run it on the @value{machine}.@*
+
+@node Configuration of the NFS Server, Running the crea_btweb_nfs script, Running the crea_btweb script, Creation of the filesystem
+@subsection Configuration of the NFS Server
+I f you do not have yet installed an NFS server in your host PC please install it.@* 
+In case you are using an Ubuntu distribution in your PC you must follow these steps to do it:@*
+@code{user@@bt:user$ sudo apt-get install portmap nfs-kernel-server}@*
+@code{user@@bt:user$ sudo /etc/init.d/nfs-kernel-server restart}@*
+@code{user@@bt:user$ sudo /etc/init.d/portmap restart}@*
+After the NFS server installation if necessary, create the directory for NFS server in your home directory:@*
+@code{user@@bt:user$ mkdir nfs_server}@*
+
+Finally edit the NFS service configuration file as follows:@*
+Open @file{/etc/exports}, in which are stored the informations about the configuration of NFS:@*
+@code{user@@bt:user$ sudo vim /etc/exports}@*
+and make sure you have the folowing line inside:@*
+@code{/home/user/nfs_server         *(rw,insecure,sync,no_root_squash)}@*
+Of course the names of the user and the nfs directory must fit your own parameters.@*
+
+@node Running the crea_btweb_nfs script, Launch of EtLinux onto the machine, Configuration of the NFS Server, Creation of the filesystem
+@subsection Running the @file{crea_btweb_nfs} script
+Now return in the  @code{nfs_server} directory and launch the @i{crea_btweb_nfs} script. Please note that this script MUST be run from your @emph{nfs_server} directory, with the root privileges. Three arguments are required: the location of the service pack (in our case : @code{~/sources/BUILD/H4684_IP_rel_1_1_0}), the type of the machine (@value{reference}) and the path of the CVS sources (@code{~/sources} in our example).@*
+@code{user@@bt:nfs_server$ sudo ~/sources/crea_webserver/crea_btweb_nfs ~/sources/BUILD/H4684_IP_rel_1_1_0 H4684_IP ~/sources}@*
+This script will mount the filesystem, create the tree of EtLinux in @i{nfs_server}. The @file{option_nfs} file  will be opened. It contains different configuration parameters for the @value{machine} NFS server you are creating. It is not necessary to modify any of those parameters. Just type @code{:q} to exit the file editor and keep on creating the NFS server.@*
+
+
+@node Launch of EtLinux onto the machine, ,Running the crea_btweb_nfs script,Creation of the filesystem
+@subsection Launch of EtLinux onto the @value{machine}
+Now we have mounted the EtLinux distribution on the NFS directory. We can now use the invite of U-Boot, the bootloader of the @value{machine}, to launch EtLinux on it.@*
+@c Please refer to the dedicated file @i{readme-bootloader-H4684.txt} in your @file{sources} directory.
+Please see @ref{General U-Boot instructions} to find the exhaustive list of instructions
+U-boot commands that are accessible via the serial port. So, we have to open a new minicom terminal with the following configuration:@*
+See @ref{Preliminaries} for the appropriate configuration of the serial port.@*
+@code{[user@@bt:user$ sudo minicom}@*
+Once the port is open, you can switch your @value{machine} on. On the minicom terminal you can see the beginning of the U-Boot.@*
+@code{U-Boot 1.1.4 (DATE - TIME)}@*
+@code{DRAM:  64 MB}@*
+@code{Flash: 64 MB}@*
+@code{In:    serial}@*
+@code{Out:   serial}@*
+@code{Err:   serial}@*
+@code{autoboot in 5 seconds}@*
+Do not forget typing @code{stop} to get the U-Boot invite prompt:@*
+@code{=>}@*
+At this level we start by loading the kernel in Flash. To do that, please proceed to install your new kernel (@emph{~/sources/BUILD/H4684_IP_rel_1_1_0/uzImage}) in its first partition in flash as explained in @ref{Via the Tftp Server} except its final step to reboot your @value{machine}, it will be rebooted later. You could also skip the @emph{tftp server} configuration steps for your host PC if you have previously configured it. After that you must also install your new filesystem (@emph{~/sources/BUILD/H4684_IP_rel_1_1_0/btweb_only.gz}) in the first filesystem partion in flash. To install it you must follow the instructions in @ref{Instructions to install the filesystem} to load the new filesystem into the first filesystem flash partition. NOTE: At this step, the only thing we would actually need to have in the filesystem partition in flash is the QT library because the rest of the filesystem stuff is going to be used from the nfs_server directory you have just created.@*
+
+
+Finally configures U-Boot to use the Etlinux distribution from your nfs_server directory. Do not forget to use the right IP addresses and to change the directories if necessary in the following steps:@*
+@code{=> setenv ipaddr <@value{machine} IP ADDRESS>}
+@code{=> setenv netmask <YOUR NETWORK MASK>}
+@code{=> setenv serverip <HOST PC IP ADDRESS>}
+@code{=> setenv bootargs smc_mode=0x4f ip=<@value{machine} IP ADDRESS>:<HOST PC IP ADDRESS>::<YOUR NETWORK MASK>:::root=/dev/nfs console=ttyS0,115200 nfsroot=<HOST PC IP ADDRESS>:<YOUR nfs_server PATH> LD_LIBRARY_PATH=/lib:/home/bticino/lib:/lib/QTlib QTDIR=/lib/QTlib MYIPNFS=<@value{machine} IP ADDRESS> MYVERBOSITY=3 MYDBG=1}@*
+In our example:@*
+@code{=> setenv ipaddr <10.39.10.136>}@*
+@code{=> setenv netmask <255.255.248.0>}@*
+@code{=> setenv serverip <10.39.10.118>}@*
+@code{=> setenv bootargs smc_mode=0x4f ip=10.39.10.136:10.39.10.118::255.255.248.0:::root=/dev/nfs console=ttyS0,115200 nfsroot=10.39.10.118:/home/user/nfs_server LD_LIBRARY_PATH=/lib:/home/bticino/lib:/lib/QTlib QTDIR=/lib/QTlib MYIPNFS=10.39.10.136 MYVERBOSITY=3}@*
+Save your new U-boot configuration:@*
+@code{=> save}@*
+And finally reboot the @value{machine} to make it run using your EtLinux distribution:@*
+@code{=> re}@*
+
+At this step you should see now your graphical interface running on the touchscreen of the @value{machine} server.@*
+
+@node Installation in the Flash Memory, , Creation of the filesystem, EtLinux distribution
+@section Installation in the Flash Memory
+First make sure that your @emph{tftp server} is correctly configured. If not, the instructions relative to its configuration can be found in the kernel section, as the installation of a new kernel @ref{Via the Tftp Server} is performed exactly in the same way.@*
+@ifhtml
+Then follow the U-Boot instructions to full install the just-created Etlinux distribution on the following links:@*
+ @ref{Preliminaries} to configure the network parameters under U-Boot@*
+ @ref{Via the Tftp Server} to load the kernel into the dedicated flash partitions using @*
+ @ref{Instructions to install the filesystem} to load the filesystem into the dedicated flash partitions@*
+ @ref{Instructions to install the applications} to load the applications into the dedicated flash partitions@*
+ @ref{Instructions to install the configuration} to load the configuration into the dedicated flash partitions@*
+ @ref{Configuring the bootloader} to configure the boot sequence@*
+@end ifhtml
+@ifnothtml
+Then follow the U-Boot instructions to full install the just-created EtLinux distribution:@*
+@itemize
+@item @ref{Preliminaries} to configure the network parameters under U-Boot
+@item @ref{Via the Tftp Server} to load the kernel into the dedicated flash partitions
+@item @ref{Instructions to install the filesystem} to load the filesystem into the dedicated flash partitions
+@item @ref{Instructions to install the applications} to load the applications into the dedicated flash partition
+@item @ref{Instructions to install the configuration} to load the configuration into the dedicated flash partitions
+@item @ref{Configuring the bootloader} to configure the boot sequence
+@end itemize
+@end ifnothtml
+At this step you can use your @value{machine} without any ethernet connection as you don't need any more your nfs server directory.@*
+
+@node StackOpen, Qt-Embedded and BTouch, EtLinux distribution, Top
+@chapter StackOpen
+@menu
+* What is StackOpen?::
+* Main diagram::
+* Principle of working::
+* The WatchDog Timer::
+@end menu
+
+@node What is StackOpen?, Main diagram, ,StackOpen
+@section What is StackOpen?
+Stackopen regroups all the servers in charge of the translations between the OPEN commands and the SCS frames on the bus. These are in charge of translating the received SCS frames into OPEN commands, usable by the main interface. In the opposite way, they have also the role of translating the OPEN commands into SCS frames to be sent on the bus. There is one dedicated server according to the family. For example, light OPEN instructions and SCS frames relative to the light family are processed only by the @emph{bt_luci} server, dedicated to the light system.The next diagram present the main architecture of the StackOpen system:@*
+
+@node Main diagram, Principle of working, What is StackOpen?,StackOpen
+@section Main diagram
+@image{diagramme_stackopen,,14cm}
+
+@node Principle of working, The WatchDog Timer, Main diagram, StackOpen
+@section Principle of working
+When an OPEN command arrives at the level 1, the OPEN server (which acts as a multiplexer/demultiplexer) transmits it to the appropriate server according to its family. Then, at the level 2, the used server translates the command in the SCS protocol and sends it to the SCS server at the level 3, which transmits it via a serial connection to a microcontroller. The latter finally creates the appropriate SCS signal on the bus.@*
+In the opposite way, the microcontroller receives an SCS signal on the bus. It is processed and sent via the serial connection to the SCS server at the level 3. This server (which also acts as a multiplexer/demultiplexer) determines the type of signal and transmits it to the dedicated server, which translates the SCS message into an OPEN command. This command is sent to the OPEN server and finally transmitted to the @value{machine}.@*
+All the servers of the level 2 only communicate with the OPEN and SCS servers but cannot communicate between them. The used ports are defined in @file{/home/bticino/cfg/stackopen.xml}, in the EtLinux system. Although it is possible to modify them, it is strongly recommended not to change their values.
+StackOpen is included with the EtLinux sources. 
+
+
+@node The WatchDog Timer, , Principle of working, StackOpen
+@section The WatchDog Timer
+To ensure the full-working status of all the processes installed on the @value{machine}, StackOpen includes a watchdog timer activated at the boot of the @value{machine}. Once the original graphical interface and all the StackOpen servers are loaded, each of them periodically writes a dedicated empty file in a temporary folder (@file{/home/var/tmp/bticino/bt_wd} in the file structure of EtLinux).@*
+At the same time, another process regularly erases them all. The watchdog allows to check the presence of all the files. When one file is missing, it means that the process which should have written it is down and in this case, the watchdog reboots the machine.@*
+The WatchDog Timer will have to be considered when the graphical interface is re-designed.@*
+
+@node Qt-Embedded and BTouch, Conclusion, StackOpen, Top
+@chapter Qt-Embedded and BTouch
+This chapter has several goals. First of all it is set to present the BTouch graphical interface with its development tool, Qt. Besides it is also meant to give an example about the creation of a new graphical interface for the @value{machine}. Finally, the last goal is to exhibit how to create a new functionality in BTouch with the modifications to perform.@*
+
+@menu
+* About Qt::
+* Installation of Qt Embedded::
+* Example of a Qt program::
+* About BTouch::
+* Implementation in the @value{machine}::
+* Example of a modification in BTouch::
+* Installation of the modified BTouch in the Flash memory::
+@end menu
+
+@node About Qt, Installation of Qt Embedded, , Qt-Embedded and BTouch
+@section About Qt
+@subsection What is Qt?
+In computer programming, Qt is a cross-platform graphical widget toolkit for the development of GUI programs. Qt is most notably used in the K Desktop Environment. It is produced by the Norwegian company Trolltech, formerly Quasar Technologies. Trolltech insiders pronounce Qt as "cute".
+
+Qt uses an extended version of the C++ programming language, but bindings exist for Python, Ruby, C, Perl and Pascal. It runs on all major platforms, and has extensive internationalization support. Non-GUI features include SQL database access, XML parsing, thread management, and a unified cross-platform API for file handling.
+
+@subsection What is Qt-Embedded?
+Whereas the Qt applications use the X11 server of the computer to run, in embedded systems, they directly use the framebuffer, as there is no X11 server in this case. The framebuffer is a video output device that drives a video display from a memory buffer containing a complete frame of data. The information in the buffer typically consists of color values for every pixel (point that can be displayed) on the screen. Color values are commonly stored in 1-bit monochrome, 4-bit palletized, 8-bit palletized, 16-bit highcolor and 24-bit truecolor formats. An additional alpha channel is sometimes used to retain information about pixel transparency. The total amount of the memory required to drive the framebuffer is dependent on the resolution of the output signal, as well as the color depth and palette size.@*
+@image{diagramme_Qt,,5cm}@*
+Qt/Embedded is a special version if Qt which allows to use the framebuffer of the @value{machine} (like another embedded system with a screen) to run the BTouch graphical interface.@*
+
+@node Installation of Qt Embedded, Example of a Qt program, About Qt, Qt-Embedded and BTouch
+@section Installation of Qt Embedded
+@emph{NB: The original BTouch was created with the commercial version of Qt/Embedded-3.3.4. However it works also with the free version. If you wish to develop with the free version, then your application must:}@*
+@itemize
+@item   @emph{display the Qt logo}
+@item   @emph{be released under the GNU General Public License}
+@end itemize
+@emph{If you wish to develop for a commercial purpose, then you must get the license for the commercial version of Qt/Embedded. For further information, please refer to the TrollTech site: @uref{www.trolltech.com}.}@sp 1
+Now the installation and the compilation of Qt/Embedded which will be explained in this section. You first need to install Qt-X11-free-3.3.4 in your host PC in order to get the uic executable that will be used later during Qt/Embedded compilation. To install Qt-X11-free-3.3.4 first install the necessary development X11 librarys:
+@code{user@@bt:user$ sudo apt-get install libx11-dev}@*
+@code{user@@bt:user$ sudo apt-get install libxext-dev}@*
+and then download qt-x11-free-3.3.4.tar.bz2 from @url{www.myopen-bticino.it} and do as follows :
+@code{user@@bt:user$ sudo cp -a qt-x11-free-3.3.4.tar.bz2 /usr/local/}@*
+@code{user@@bt:user$ cd /usr/local/}@*
+@code{user@@bt:local$ sudo tar -xjf qt-x11-free-3.3.4.tar.bz2}@*
+@code{user@@bt:local$ export QTDIR=/usr/local/qt-x11-free-3.3.4}@*
+@code{user@@bt:local$ export PATH=$QTDIR/bin:$PATH}@*
+@code{user@@bt:local$ export MANPATH=$QTDIR/doc/man:$MANPATH}@*
+@code{user@@bt:local$ export LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH}@*
+@code{user@@bt:local$ cd qt-x11-free-3.3.4}@*
+@code{user@@bt:qt-x11-free-3.3.4$ sudo ./configure}@*
+@code{user@@bt:qt-x11-free-3.3.4$ sudo make}@*
+after that, create a symbolic link for uic executable to be used during Qt/Embedded compilation:
+@code{user@@bt:qt-x11-free-3.3.4$ sudo ln -sf /usr/local/qt-x11-free-3.3.4/bin/uic /bin/uic}@*
+
+Finally you can proceed with Qt/Embedded-Free compilation. First make a copy of  your Qt/Embedded-Free and the configuration files in your @file{/opt/qt-embedded} directory (after having downloaded them from @url{www.myopen-bticino.it} into your home directory):@*
+@code{user@@bt:user$ sudo mkdir /opt/qt-embedded}@*
+@code{user@@bt:user$ sudo cp qt-embedded-free.3.3.4.tar.gz /opt/qt-embedded/}@*
+@code{user@@bt:user$ sudo cp qt_config_files.zip /opt/qt-embedded/}@*
+@code{user@@bt:user$ cd /opt/qt-embedded/}@*
+
+Unpack your @file{qt-embedded-free-3.3.4.tar.gz}:@*
+@code{user@@bt:qt-embedded$ sudo tar -zxvf qt-embedded-free.3.3.4.tar.gz}@*
+Unzip the configuration files:@*
+@code{user@@bt:qt-embedded$ sudo unzip qt_config_files.zip}@*
+Make a copy of @file{qconfig-local.h} in the @code{src/tools/} directory of the @value{machine}:@*
+@code{user@@bt:qt-embedded$ sudo cp -a qt_config_files/qconfig-local.h qt-embedded-free-3.3.4/src/tools/}@*
+and place the @file{linux-H4684-g++} directory to the right place:@*
+@code{user@@bt:qt-embedded$ sudo cp -a qt_config_files/linux-H4684-g++ qt-embedded-free-3.3.4/mkspecs/qws/}@*
+Now you can run the configuration script for the compilation:@*
+@code{user@@bt:qt-embedded$ cd qt-embedded-free-3.3.4}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ export QTDIR=$(pwd)}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ export QMAKESPEC=qws/linux-H4684-g++}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ export PATH=$QTDIR/bin:$PATH}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ export LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ export qt_libpath=$QTDIR/lib}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ sudo rm qmake/*.o}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ sudo rm qmake/qmake}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ sudo ./configure -platform qws/linux-x86-g++ -xplatform qws/linux-H4684-g++ -qt-gfx-transformed -qconfig local -no-cups -qt-libpng -qt-mouse-linuxtp -release -fast -no-gif}@*
+When required, type @code{yes} to confirm you use @file{Qt/embedded Free} under the terms of the GNU General Public License (GPL) and select 16 bits per pixels for the pixel-depths.@*
+When the configuration is finished, launch the compilation with @code{gmake}:@*
+@code{user@@bt:qt-embedded-free-3.3.4$ sudo ln -s /usr/bin/make /usr/bin/gmake}@*
+@code{user@@bt:qt-embedded-free-3.3.4$ sudo gmake}@*
+You largely have the time to drink a coffee until the compilation is complete...@*
+When it is finished, perform a strip onto the just created @file{libqte.so.3.3.4} library with your Snapgear_ssl toolchain:@*
+@code{user@@bt:qt-embedded-dded-free-3.3.4$ cd lib/}@*
+@code{user@@bt:lib$ sudo cp libqte.so.3.3.4 libqte.so.3.3.4-nostrip}@*
+@code{user@@bt:lib$ sudo /opt/snapgear-toolchain/bin/arm-linux-strip libqte.so.3.3.4}@*
+You Qt library is now ready to be used for the creation of the filesystem with @file{crea_btweb} (See @ref{Running the crea_btweb script} if you were at this part).@*
+
+
+@node Example of a Qt program, Implementation in the @value{machine}, Installation of Qt Embedded, Qt-Embedded and BTouch
+@section Example of a Qt program
+@subsection Graphical Interface:
+For this part we take the example of the conversion program proposed by the Qt Tutorial. Please refer to the following link:@*
+@uref{http://doc.trolltech.com/3.3/designer-manual-2.html} or to the Quick Start of the Qt Designer Manual.@*
+However, some modifications have been made for the use with the @value{machine}, like the add of buttons for the numbers. Here is the new graphical interface:@*
+@image{interface,,10cm}@*
+The new buttons for the digits are called @i{cifro0}, @i{cifro1}, @i{cifro2}, @i{cifro3}, @i{cifro4}, @i{cifro5}, @i{cifro6}, @i{cifro7}, @i{cifro8}, @i{cifro9} and @i{dot}. Their associated functions, whose role is to display the digits in the field of @code{numberLineEdit}, are named from @code{n0()} to @code{n9()} and @code{punto()} is for the dot button.@*
+You can also find the source code of this example on @url{www.myopen-bticino.it}.@*
+
+@subsection Modified code in the program:
+Here are the created and/or modified functions to be added in the header file of the project.@*
+Do not forget to make the connections with the buttons in Qt Designer.@*
+
+@code{void ConversionForm::n0()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("0");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n1()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("1");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n2()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("2");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n3()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("3");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n4()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("4");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n5()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("5");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n6()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("6");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n7()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("7");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n8()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("8");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::n9()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append("9");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+@code{void ConversionForm::punto()}@*
+@code{@{ } @*
+@code{QString chaine="";}@*
+@code{chaine.append(numberLineEdit->text());}@*
+@code{chaine.append(".");}@*
+@code{numberLineEdit->setText(chaine);}@*
+@code{@}}@sp 1
+
+Here is the modified @i{convert()} function of the program: @*
+@code{void ConversionForm::convert()}@*
+@code{@{}@*
+@code{enum MetricUnits @{}@*
+@code{Kilometers,}@*
+@code{Meters,}@*
+@code{Centimeters,}@*
+@code{Millimeters}@*
+@code{@};}@*
+@code{enum OldUnits @{}@*
+@code{Miles,}@*
+@code{Yards,}@*
+@code{Feet,}@*
+@code{Inches}@*
+@code{@};}@*
+@i{ // Retrieve the input}@*
+@code{bool ok;}@*
+@code{double input = numberLineEdit->text().toDouble(&ok);}@*
+	
+@i{ /* switch(ok)@{}@*
+@i{ case false:}@*
+@i{	resultat->setText("false");}@*
+@i{ case true:}@*
+@i{	resultat->setText("true");}@*
+   
+@i{ @}*/}@*
+@code{   int decimals = decimalsSpinBox->value();}@*
+@i{  //chaine1.append(QString::number(input,'f',decimals));}@*
+@i{  //chaine2.append(QString::number(input,'f',decimals))}@*
+@i{  //numberLineEdit->setText(chaine2);}@*
+@code{  double scaledInput = input;}@*
+
+@i{// internally convert the input to millimeters}@*
+@code{switch ( fromComboBox->currentItem() ) @{}@*
+@code{case Kilometers:}@*
+@code{scaledInput *= 1000000;}@*
+@code{break;}@*
+@code{case Meters:}@*
+@code{scaledInput *= 1000;}@*
+@code{break;}@*
+@code{case Centimeters:}@*
+@code{scaledInput *= 10;}@*
+@code{break;}@*
+@code{@}}@*
+
+@i{ //convert to inches}@*
+@code{double result = scaledInput * 0.0393701;}@*
+@code{switch ( toComboBox->currentItem() ) @{}@*
+@code{case Miles:}@*
+@code{result /= 63360;}@*
+@code{break;}@*
+@code{case Yards:}@*
+@code{result /= 36;}@*
+@code{break;}@*
+@code{case Feet:}@*
+@code{result /= 12;}@*
+@code{break;}@*
+@code{@}}@*
+NB: the floating point of the StrongARM architecture used in the @value{machine} is not fully compliant with the IEEE standard. Please refer to the following
+bulletin by TrollTech for more details: @*
+@uref{http://www.trolltech.com/developer/platforms/embedded.html} @*
+We can turn around the problem by avoiding the use of @code{QString::number(double)} and its related functions to make the program work properly. Instead, we can use @code{sprintf} as below: @*
+@i{ // set the result}@*
+@code{char pippo[50];}@*
+@code{sprintf(&pippo[0],"%5.*f",decimals,result);}@*
+@code{QString chaine1=&pippo[0];}@*
+@code{resultLineEdit->setText(chaine1);}@*
+@}@*
+
+@subsection Tips and tricks for the debug
+If you are a novice in Qt, you can find here some tools to debug your Qt interface:@*
+@itemize
+@item @code{printf(``\nHello'');} to be inserted in your interface code at a location close to a bug in order to identify it.
+@item @code{strace /path/of/the/application/application}: strace is a useful diagnostic, instructional, and debugging tool. It runs the specified application until it  exits. It intercepts and records the system calls which are called by a process and the signals which are received by a process. Type @code{man strace} in a terminal for further information.
+@item @code{ls -al /proc/<PID number>/fd}: this instruction allows to see which file descriptors are opened by the application referred by the specified PID number.
+@end itemize
+
+
+@node Implementation in the @value{machine}, About BTouch, Example of a Qt program, Qt-Embedded and BTouch
+@section Implementation in the @value{machine}
+@subsection The WatchDog Timer
+For the reasons explained in @ref{The WatchDog Timer}, if you directly put your interface onto the @value{machine}, the system will reboot every minute because of the WatchDog Timer. There are two ways to pass this problem. First you edit the @code{stack_open.xml} file (in @code{nfs/home/bticino/cfg/} and disable the WatchDog Timer by putting @code{``1''} in its @code{disable} field:@*
+@code{<wdt>}@*
+@code{<disable> 1 </disable>}@*
+@code{</wdt>}@*
+This modification completely disables the watchdog timer. But in this case, when another server crashes, there will be no reboot and the system will not work properly. That is why this solution is not advised.@*
+The other solution is to modify the code of the Qt interface to program the creation of the missing @i{BTouch_qws} file periodically. It can be set with a timer in the main file:@*
+@code{@i{//Declaration of a new timer object} }@*
+@code{QTimer *timer = new QTimer(&w);}@*
+@code{@i{//Connection between the timer, the dedicated function, on the event "timeout"} }@*
+@code{QObject::connect( timer, SIGNAL(timeout()), &w, SLOT( missing_file() ));}@*
+@code{@i{//Activation of the timer. A timeout is sent every 2 seconds}}@*
+@code{timer->start( 2000, FALSE ); @i{// 2-second-periodic timer} }@*
+Afterwards, you have to create the function @i{missing_file()}:@*
+@code{void convertisseur::fichier()}@*
+@code{@{}@*
+@code{@i{//Declaraion of a new file}}@*
+@code{    QFile fic;}@*
+@code{@i{//Set of the name and the path where all the servers write their
+dedicated file}}@*
+@code{    fic.setName("/var/tmp/bticino/bt_wd/BTouch_qws");}@*
+@code{@i{//Opening of the file in WriteOnly mode, which allows to create
+the file if it does not exist}}@*
+@code{    fic.open( IO_WriteOnly );}@*
+@code{@i{//Closure of the file:}}@*
+@code{    fic.close();}@*
+@code{  @}}@*
+@subsection Options and paths to specify
+To make the compilation for the StrongARM architecture of the @value{machine}, we must redefine the environment variables relative to @emph{Qt} to the settings of @emph{Qt Embedded}, as following:@*
+@code{export QTDIR=/opt/qt-embedded/qt-embedded-free-3.3.4/}@*
+@code{export QMAKESPEC=qws/linux-H4684-g++}@*
+
+@subsection Compilation
+First we launch the creation of the project file. In your project folder:@*
+@code{[user@@bt:your_qt_project$ qmake -project}@*
+@code{[user@@bt:your_qt_project$ qmake}@*
+Before running the compilation, you must edit the just created Makefile and check that the paths of CC, CXX both refer to Qt Embedded.@*
+@code{[user@@bt:your_qt_project$ vi Makefile}@*
+Example: in our case the paths must be:@*
+@code{CC       = /opt/snapgear-toolchain/bin/arm-linux-gcc}@*
+@code{CXX      = /opt/snapgear-toolchain/bin/arm-linux-g++
+-DQT_QWS_EBX -DBT_EMBEDDED -DBTWEB}@*
+Check also that the path of UIC to compile the interface itself is correct:@*
+@code{UIC      = $(QTDIR)/bin/uic}@*
+And run the @code{make} instruction:@*
+@code{[user@@bt:your_qt_project$ make}@*
+@subsection Installation and running
+Copy the just compiled file into your @code{~/nfs/home/bticino/bin} folder:@*
+@code{[user@@bt:your_qt_project$ cp your_qt_project ~/nfs/home/bticino/bin}@*
+Then, in your @code{~/nfs/home/bticino/bin} directory (which contains
+all the scripts for the different servers), edit the following file:@*
+@code{[user@@bt:bin$ sudo vi BTouch_qws}@*
+and replace the @emph{BTouch} binary by yours:@*
+@code{#!/bin/ettclsh}@*
+@code{set env(QWS_MOUSE_PROTO) linuxtp}@*
+@code{exec bin/your_qt_project -qws &}@*
+Open your minicom terminal and launch your SDK platform. You should see your own interface instead of BTouch.@*
+
+@node About BTouch, Example of a modification in BTouch, Implementation in the @value{machine}, Qt-Embedded and BTouch
+@section About BTouch
+The BTouch interface allows the final user to control all the different parts of his house. These parts are regrouped in different families, as following:@*
+@multitable @columnfractions .25 .3 .5
+@headitem Family @tab BTouch name @tab Description
+@item Automation
+@tab AUTOMAZIONE
+@tab Control of the automatic shutters
+@item Illumination
+@tab  ILLUMINAZIONE
+@tab  Control of the lights
+@item Anti-intrusion
+@tab  ANTIINTRUZIONE
+@tab  Alarm system
+@item Loads
+@tab  CARICHI
+@tab  Management of the electrical consumption
+@item Thermal regulation
+@tab  TERMOREGOLAZIONE
+@tab  Control of the heating system
+@item Sound system
+@tab  DIFSON
+@tab  Control of the HiFi installation
+@item Scenarios
+@tab  SCENARI
+@tab  Creation of different customized actions to execute.
+@item Settings
+@tab  IMPOSTAZIONI
+@tab  Customization of the touchscreen
+@item Back
+@tab  BACK
+@tab  
+@item Special
+@tab  SPECIAL
+@tab  
+@item Schedulation
+@tab  SCHEDULAZIONI
+@tab  Scheduled tasks
+@item Enanched Scenarios
+@tab  SCENARI_EVOLUTI
+@tab  More customizable version of Scenarios
+@item Multi Channel Sound
+@tab  DIFSON_MULTI
+@tab  Control of multi channel Sound sources
+@end multitable
+@sp 1
+In BTouch, each of these families is represented by either by a submenu class or by their own class, containing all the related variables and methods. The following table presents the main different classes with their dedicated files:@*
+@multitable @columnfractions .25 .2 .2 .2
+@headitem Family @tab Class  @tab Object file @tab Methods file
+@item Automation
+@tab  sottoMenu
+@tab  sottomenu.h
+@tab  sottoMenu.cpp
+@item Illumination
+@tab  sottoMenu
+@tab  sottomenu.h
+@tab  sottoMenu.cpp
+@item Anti-intrusion
+@tab  antintrusione
+@tab  antintrusione.h
+@tab  antintrusione.cpp
+@item Loads
+@tab  sottoMenu
+@tab  sottomenu.h
+@tab  sottoMenu.cpp
+@item Thermal regulation
+@tab  termoregolaz
+@tab  termoregolaz.h
+@tab  termoregolaz.cpp
+@item Sound system
+@tab  diffSonora
+@tab  diffsonora.h
+@tab  diffSonora.cpp
+@item Scenarios
+@tab  sottoMenu
+@tab  sottomenu.h
+@tab  sottoMenu.cpp
+@item Settings
+@tab  sottoMenu
+@tab  sottomenu.h
+@tab  sottoMenu.cpp
+@item Schedulation
+@tab  sottoMenu
+@tab  sottomenu.h
+@tab  sottoMenu.cpp
+@item Enanched Scenarios
+@tab  sottoMenu
+@tab  sottomenu.h
+@tab  sottoMenu.cpp
+@item Multi Channel Sound
+@tab  diffmulti
+@tab  diffmulti.h
+@tab  diffmulti.cpp
+@end multitable
+@sp 2
+The configuration of the final user's house is indicated in an xml file, @i{/home/bticino/cfg/conf.xml} in the filesystem of the @value{machine}. When BTouch is executed, an XML handler (@code{xmlconfhandler} in the program) is then created. Its  role is to parse this @i{conf.xml} file, to create the home page (for the main menu of the interface) and the required submenus and/or the different objects from the family classes, with their appropriate attributes. This method allows to make BTouch fit the disposition of the house with only an XML file.
+
+Special classes:@*
+@ifnothtml
+@multitable @columnfractions .2 .2 .2 .2
+@headitem Name of the class @tab Description @tab Object file @tab Methods file
+@item  xmlcfghandler
+@tab Xml parser of the interface
+@tab xmlconfhandler.h
+@tab xmlconfhandler.cpp
+@item homePage
+@tab Main menu of BTouch
+@tab homepage.h
+@tab homePage.cpp
+@item BtMain
+@tab Class used for the boot sequence
+@tab btmain.h
+@tab BtMain.cpp
+@end multitable
+@end ifnothtml
+
+@ifhtml
+@multitable @columnfractions .15 .2 .15 .2
+@headitem Name of the class @tab Description @tab Object file @tab Methods file
+@item  xmlcfghandler
+@tab Xml parser of the interface
+@tab xmlconfhandler.h
+@tab xmlconfhandler.cpp
+@item homePage
+@tab Main menu of BTouch
+@tab homepage.h
+@tab homePage.cpp
+@item BtMain
+@tab Class used for the boot sequence
+@tab btmain.h
+@tab BtMain.cpp
+@end multitable
+@end ifhtml
+You can find the complete source code of the original BTouch interface in the CD (@code{/mnt/cdrom/interface/original_BTouch/original_BTouch.tar.gz} if your CD is mounted onto @code{/mnt/cdrom}, adapt the syntax if necessary).@*
+
+@node Example of a modification in BTouch, Installation of the modified BTouch in the Flash memory, About BTouch, Qt-Embedded and BTouch
+@section Example of a modification in BTouch
+
+@menu
+* Creation of a page with a photograph in background on which different commands are set::
+* Adding the photographs::
+* Modifying the conf.xml file::
+@end menu
+
+@node Creation of a page with a photograph in background on which different commands are set, Adding the photographs, , Example of a modification in BTouch
+@subsection Creation of a page with a photograph in background on which different commands are set
+Now we will exhibit the modifications to perform in BTouch to have a control page as below:@*
+@image{salone,,10cm}@*
+You can find the complete source code of the modified BTouch interface in the CD (@code{/mnt/cdrom/interface/modified_BTouch/modified_BTouch.tar.gz} if your CD is mounted onto @code{/mnt/cdrom}, adapt the syntax if necessary).@*
+
+@menu
+* ID number for the EXAMPLE family::
+* Relative signal to the EXAMPLE family::
+* Declaration of EXAMPLE in the BtMain class::
+* Creation of sottoMenu__addButton2::
+* Modification of the Xml parser::
+@end menu
+
+@node ID number for the EXAMPLE family, Relative signal to the EXAMPLE family, , Creation of a page with a photograph in background on which different commands are set
+@subsubsection ID number for the EXAMPLE family
+This example illustrates how to put controls from different families (in this case 2 light controls and an automation control for the shutters) to present the main architecture. @*
+As said before, all the commands of the domotic system are regrouped in different families. These families are first enumerated in the file @code{main.h} and have an ID number. This ID number is used in the @emph{conf.xml} file to determine what kind of object must be loaded to create the required family at the boot of BTouch.@*
+@code{This enum describes the various kind of pages*/}@*
+@code{    enum pagSecLiv@{}@*
+@code{        AUTOMAZIONE=1,		   		/*!< Automation system*/}@*
+@code{        ILLUMINAZIONE=2,				/*!< Lighting system*/}@*
+@code{        ANTIINTRUSIONE=3,				/*!< Anti-intrusion system*/}@*
+@code{        CARICHI=4,					/*!< Appliances managing system*/}@*
+@code{        TERMOREGOLAZIONE=5,			/*!< Thermoregulation system*/}@*
+@code{        DIFSON=6,						/*!< Sound diffusion system*/}@*
+@code{        SCENARI=7,					/*!< Scenarios managing*/}@*
+@code{        IMPOSTAZIONI=8,				/*!< Settings */}@*
+@code{        BACK=9,             			/*!< Back button - placed here for convenience*/}@*
+@code{        SPECIAL=10,          			/*!< Special button - placed here for convenience*/}@*
+@code{        //SCHEDULAZIONI=11,	  		/*!< Schedulations page */}@*
+@code{        VIDEOCITOFONIA=11,}@*
+@code{        SCENARI_EVOLUTI=12,           /*!< Advanced scenarios management */}@*
+@code{        DIFSON_MULTI=13,              /*!< Multichannel sound diffusion */}@*
+@code{    @};}@*
+Insert in this enumeration the ID number of your new family (number 12):@*
+@code{  EXAMPLE=14	// ID number for the new family}@*
+And insert in the following list the text which will be used for this family during the creation of the main menu. Do not forget to change the dimension of the list (one more family)@*
+@code{/*! pagTesti: text utilized during the initialization sequence when the menu is built up*/}@*
+@code{const char pagTesti[14][20] = @{"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE"}
+@code{"CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ","BACK","SPECIAL",}
+@code{"VIDEOCITOFONIA","SCENARI_EVOLUTI","DIFSON_MULTI","EXAMPLE"@};}@*
+
+@node Relative signal to the EXAMPLE family, Declaration of EXAMPLE in the BtMain class, ID number for the EXAMPLE family, Creation of a page with a photograph in background on which different commands are set
+@subsubsection Relative signal to the EXAMPLE family
+Now we will modify the homePage class, dedicated to the creation of the main menu of BTouch. It contains all the signals used to call the different submenus. We have to create one more for the EXAMPLE family. You have the complete list in the file @code{homepage.h}: @sp 1
+@code{signals:}@*
+@code{/*! \brief Emitted when the \a automation subtree(sottoMenu) is required.*/}@*
+@code{  void 	Automazione();}@*
+@code{/*! \brief Emitted when the \a lighting subtree(sottoMenu) is required.*/  }@*
+@code{  void 	Illuminazione(); }@*
+@code{/*! \brief Emitted when the \a anti-intrusion subtree(sottoMenu) is required.*/  }@*
+@code{  void 	Antiintrusione(); }@*
+@code{/*! \brief Emitted when the \a electrict control subtree(sottoMenu) is required.*/  }@*
+@code{  void 	Carichi(); }@*
+@code{/*! \brief Emitted when the \a thermoregulation subtree(sottoMenu) is required.*/  }@*
+@code{  void 	Termoregolazione(); }@*
+@code{/*! \brief Emitted when the \a sound \a diffusion subtree(sottoMenu) is required.*/  }@*
+@code{  void 	Difson(); }@*
+@code{/*! \brief Emitted when the \a multichannel \a diffusione subtree is required. */}@*
+@code{  void Difmulti();}@*
+@code{/*! \brief Emitted when the \a scenarios subtree(sottoMenu) is required.*/}@*  
+@code{  void 	Scenari();}@* 
+@code{/*! \brief Emitted when the \a settings subtree(sottoMenu) is required.*/  }@*
+@code{  void 	Settings(); }@*
+@code{/*! \brief Emitted when the \a special \a function is required.*/}@*
+@code{  void 	Special();}@*
+@code{/*! \brief Emitted when the the object is closed.*/}@*
+@code{  void	Close();}@*
+@code{/*! \brief Emitted when the objects composing the page has to be frozen.*/}@*
+@code{  void	freeze(bool);}@*
+@code{/*! \brief Emitted to send \a Open \a frame on the system.*/}@*
+@code{  void 	sendFrame(char*);}@*
+@code{  void	sendInit(char*);}@*
+@code{/*! \brief Emitted when the \a schedulation subtree(sottoMenu) is required.*/}@*
+@code{  void	Schedulazioni();}@*
+@code{/*! \brief Emitted when the \a advanced scenarios management(sottoMenu) is required */}@*
+@code{  void ScenariEvoluti();}@*
+@code{/*! \brief Emitted when the \a video door phone management(sottoMenu) is required */}@*
+@code{  void Videocitofonia();}@*
+Insert there the signal for your family:@*
+@code{//Signal for the EXAMPLE family}@*
+@code{  void Example();}@*
+
+
+@node Declaration of EXAMPLE in the BtMain class, Creation of sottoMenu__addButton2, Relative signal to the EXAMPLE family, Creation of a page with a photograph in background on which different commands are set
+@subsubsection Declaration of EXAMPLE in the BtMain class
+In @file{btmain.h}, the BtMain class is used to manage the starting sequence, call the xml handler that builds the configured objects, shunt the signals and control the screen-saver and special page displays (such as the configuration page, colored pages and so on). To make the EXAMPLE family be recognized at the boot sequence, it must be inserted in this class:@*
+@code{class  BtMain : public QWidget}@*
+@code{@{}@*
+@code{       Q_OBJECT}@*
+@code{public:}@*
+@code{    BtMain ( QWidget *parent=0, const char *name=0,QApplication*a=NULL);}@*
+@code{    homePage * Home, *specPage;}@*
+@code{    //Declaration of the EXAMPLE family as a submenu}@*
+@code{    sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evolutii,*example;}@*
+@code{    diffmulti *dm;}@*
+@code{    termoregolaz *termo;}@*
+@code{    diffSonora *difSon;}@*
+@code{    antintrusione* antintr;}@*
+@code{    Client * client_richieste;}@*
+@code{    Client * client_comandi;}@*
+@code{    Client *  client_monitor; }@*
+@code{    versio* datiGen;}@*
+Initialize also @code{example} at @code{NULL} in @emph{BtMain::BtMain} (@emph{BtMain.cpp} file):@*
+@code{//Initialization}@*
+@code{firstTime=1;}@*
+@code{pagDefault=NULL;}@*
+@code{Home=specPage=NULL;}@*
+@code{illumino=scenari=carichi=imposta=automazioni=scenari_evoluti=videocitofonia=example=NULL;}@*
+@code{termo=NULL;}@*
+@code{difSon=NULL;}@*
+@code{dm=NULL;}@*
+@code{antintr=NULL;}@*
+@code{screen=NULL;}@*
+@code{alreadyCalibrated=FALSE;}@*
+@code{svegliaIsOn=FALSE;}@*
+Insert its initialization method in @emph{BtMain::init()}:@*
+@code{    if (datiGen)}@*
+@code{        datiGen->inizializza();}@*
+@code{    if(illumino)}@*
+@code{        illumino->inizializza();}@*
+@code{    if(automazioni)}@*
+@code{        automazioni->inizializza();}@*
+@code{    if(antintr)}@*
+@code{        antintr->inizializza();}@*
+@code{    if(difSon)}@*
+@code{        difSon->inizializza();}@*     
+@code{    if(scenari)}@*
+@code{        scenari->inizializza();}@*
+@code{    if(imposta)}@*
+@code{        imposta->inizializza();}@*
+@code{    if(termo)}@*
+@code{        termo->inizializza();}@*
+@code{    if(scenari_evoluti)}@*
+@code{	      scenari_evoluti->inizializza();}@*
+@code{    if(videocitofonia)}@*
+@code{	      videocitofonia->inizializza();}@*
+@code{    if(imposta)}@*
+@code{        imposta->inizializza();}@*
+@code{    //Initialization of EXAMPLE}@*
+@code{    if(example)}@*
+@code{        example->inizializza();}@*
+Make the screensaver usable with it in @emph{BtMain::gesScrSav()}@*
+@code{                if (!pd_shown)}@*
+@code{                    @{}@*
+@code{		              pd_shown = true;}@*
+@code{                    if (illumino)}@*
+@code{                        illumino -> hide();}@*
+@code{                    if (scenari)}@*
+@code{                        scenari -> hide();}@*
+@code{                    if (carichi)}@*
+@code{                        carichi -> hide();}@*
+@code{                    if (imposta)}@*
+@code{                        imposta -> hide();}@*
+@code{                    if (automazioni)}@*
+@code{                        automazioni -> hide();}@*
+@code{                    if (termo)}@*
+@code{                        termo -> hide();}@*
+@code{                    if (difSon)}@*
+@code{                        difSon -> hide();}@*
+@code{		              //We mask the page of EXAMPLE when the screensaver is activated: }@*   
+@code{                    if (example)}@*
+@code{                        example -> hide();}@*
+@code{					  if (dm)}@*
+@code{						  dm -> hide();}@*
+@code{                    if (antintr)}@*
+@code{                        antintr -> hide();}@*
+@code{                    if (specPage )}@*
+@code{                        specPage -> hide();}@*
+@code{          		  if (scenari_evoluti)}@*
+@code{			              scenari_evoluti->hide();}@*
+@code{		              if (videocitofonia)}@*
+@code{			              videocitofonia->hide();}@*
+@code{                    if (pagDefault}@*)
+@code{                        pagDefault -> showFullScreen();}@*
+@code{                    @}}@*
+And add it in the arguments or the xml parser in @emph{BtMain::hom()}@*
+@code{if (QFile::exists("cfg/conf.xml"))}@*
+@code{    @{ }@*
+@code{    qDebug("scello %d",bg);}@*
+@code{    xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &example, &termo, &difSon, &dm, &antintr, &pagDefault, client_comandi, client_monitor, client_richieste, datiGen,bg, fg1, fg2);}@*
+@code{    qDebug("scello %d",bg);}@*
+
+
+@node Creation of sottoMenu__addButton2, Modification of the Xml parser, Declaration of EXAMPLE in the BtMain class, Creation of a page with a photograph in background on which different commands are set
+@subsubsection Creation of sottoMenu::addButton2
+Now there is to define a new function in the sottoMenu class to define what icon to put on a submenu and above all where to put it onto the background photo. It can be done by inserting the @emph{sottoMenu::addButton2} method. In @emph{sottomenu.h}, declare the function: @*
+@code{void addButton2(int x=0 , int y=0 , char* iconName=NULL, char* bgname=NULL, char function = 0,char* chi=NULL, char* cosa=NULL, char* dove=NULL, char tipo=0);}@*
+And define it in @emph{sottomenu.cpp}:@*
+@code{void sottoMenu::addButton2(int x=0 , int y=0 , char* iconName=NULL, char* bgname=NULL, char function = 0,char* chi=NULL, char* cosa=NULL, char* dove=NULL, char tipo=0)}@*
+@code{@{}@*
+Declaration of the different objects and variables:@*
+@code{    BtButton *b1;}@*
+@code{    QPixmap Icon;}@*
+@code{    QPixmap background;}@*
+@code{    QPixmap temp;}@*
+@code{    char nomeFile[MAX_PATH];}@*
+@code{    elencoButtons.append(new BtButton (this,"BelBottone"));}@*
+@code{    b1 = elencoButtons.getLast();}@*
+Set thedimensions of the button:@*
+@code{    b1->setGeometry(x, y, 60, 60 );}@*
+@code{    if (Icon.load(iconName)&&background.load(bgname))}@*
+@code{    @{	}@*
+Set the image of the icon and its dimensions at 60 pixels by 60:@*
+@code{	b1->setPixmap(Icon);}@*
+@code{	temp.resize(60, 60);}@*
+Select the zone of the background photo occupied by the button with @code{bitBlt}@*
+@code{	bitBlt(&temp, 0, 0, &background, x, y, 60, 60 );}@*
+so that the background image of the button fits the photo:@*
+@code{	b1->setBGPixmap(temp);}@*
+@code{    @}}@*
+@code{   getPressName((char*)iconName, &nomeFile[0],sizeof(nomeFile));}@* 
+@code{/*  memset(nomeFile,'\000',sizeof(nomeFile));}@*
+@code{    strncpy(nomeFile,iconName,strstr(iconName,".")-iconName);}@*
+@code{    strcat(nomeFile,"p");}@*
+@code{    strcat(nomeFile,strstr(iconName,"."));*/}@*
+And load the icon of the button when pressed:@*
+@code{    if (Icon.load(nomeFile))}@*
+@code{    b1->setPressedPixmap(Icon);}@*
+In this method there will be to add the part dedicated to the process of the different OpenWebNet commands according to the values of @emph{chi}, @emph{cosa} and @emph{dove}.@*
+@code{@}}@*
+Furthermore, in @emph{sottoMenu::addItem}, make sure that the background color is set with the following function. Otherwise it will not be applied to any buttons and banners of the submenus:@*
+@code{    elencoBanner.getLast()->setAnimationParams(periodo,numFrame);}@* 
+@code{    elencoBanner.getLast()->setBGColor(backgroundColor());}@*
+@code{    // elencoBanner.getLast()->setFGColor(foregroundColor());}@*
+
+
+@node Modification of the Xml parser, , Creation of sottoMenu__addButton2, Creation of a page with a photograph in background on which different commands are set
+@subsubsection Modification of the Xml parser
+Now you must adapt the @emph{xmlconfhandler} class, designed to parse the @emph{conf.xml} file, to allow the use of the EXAMPLE family from it with an XML flag. First add ``example'' as a sottoMenu argument in @emph{xmlconfhandler.h}:@*
+@code{    class xmlconfhandler : public QXmlDefaultHandler
+@code{    @{}@*
+@code{    public:}@*
+@code{    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, }@*
+@code{    sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, sottoMenu**example=NULL}@*
+@code{    termoregolaz** termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,}@*
+@code{    Client * client_comandi=NULL, Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,}@*
+@code{    QColor* fg1=NULL,QColor* fg2=NULL);}@*
+and in the private section of the class:@*
+@code{    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,}@*
+@code{	  **scenari_evoluti, **videocitofonia, **example;}@*
+Now, in @emph{xmlconfhandler.cpp}, we will perform the modifications to fit the XML flags. First update the arguments in @emph{xmlconfhandler::xmlconfhandler}:@*
+@code{    xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, sottoMenu**ex, termoregolaz** t,\}@*
+@code{    diffSonora**dS, diffmulti**_dm, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG,\}@*
+@code{    QColor* bg, QColor* fg1, QColor *fg2)}@*
+@code{    @{}@*
+@code{    home=h;}@*
+@code{    specPage=sP;}@*
+@code{    example=ex;}@*
+@code{    scenari_evoluti = se;}@*
+@code{    videocitofonia = vc;}@*
+@code{    illumino=i;}@*
+@code{    scenari=s;}@*
+@code{    carichi=c;}@*
+@code{    imposta=im;}@*
+@code{    automazioni=a;}@*
+@code{    termo=t;}@*
+@code{    difSon=dS;}@*
+@code{    dm=_dm;}@*
+@code{    antintr=ant;}@*
+@code{    pagDefault=pD;}@*
+@code{    BtM=BM;}@*
+@code{    client_comandi=c_c;}@*
+@code{    client_monitor=c_m;}@*
+@code{    client_richieste=c_r;}@*
+@code{    datiGen=dG;}@*
+Then, in the part dedicated to the parsing for the pagemenu:@*
+@code{    else if (!CurTagL3.compare("pagemenu"))}@*
+@code{    @{}@*
+@code{        if ( CurTagL4.startsWith("item") && CurTagL5.isEmpty() )}@*
+@code{        @{}@*
+In the submenu ID part:@*
+@code{            switch (sottomenu_id)}@*
+@code{            {}@*
+@code{            case AUTOMAZIONE:    }@*
+@code{            case ILLUMINAZIONE:
+@code{            case EXAMPLE:}@*
+@code{            case ANTIINTRUSIONE:
+@code{            case CARICHI:
+@code{            case TERMOREGOLAZIONE:
+@code{            case DIFSON:
+@code{			  case DIFSON_MULTI:
+@code{            case SCENARI:
+@code{            case IMPOSTAZIONI: 				  // addbutton normali
+@code{			  case SCENARI_EVOLUTI:
+In the page ID part:@*
+@code{            switch (  page_id )}@*
+@code{            @{}@*	    
+@code{            case AUTOMAZIONE:}@*
+@code{                pageAct= (*automazioni);}@*
+@code{                // qDebug("automaz");}@*
+@code{			  case  ILLUMINAZIONE:}@*
+@code{                if (!pageAct)}@*
+@code{                @{}@*
+@code{                    pageAct= (*illumino);}@*
+@code{				      par3 = page_item_softstart;}@*
+@code{				      par4 = page_item_softstop;}@*
+@code{                @}}@*	  
+@code{                // qDebug("illumino");}@*
+@code{            case  EXAMPLE:}@*
+@code{                if (!pageAct)}@*
+@code{                    pageAct= (*example); }@*
+@code{                // qDebug("example");}@*
+In the @emph{connect} part, create the links between the different signals and their appropriate slots:@*
+@code{//Here is configured the behaviour of the object according to the different signals from the mouse}@*
+@code{	       case EXAMPLE:}@*
+@code{                            //			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");}@*
+@code{                            (*example)->forceDraw();}@*
+@code{#if defined (BTWEB) ||  defined (BT_EMBEDDED)      }@*                 
+@code{                            QObject::connect(*home,SIGNAL(Example()),*example,SLOT(showFullScreen()));}@*
+@code{                            QObject::connect(*example,SIGNAL(Closed()),*home,SLOT(showFullScreen()));}@*
+@code{	            //QObject::connect(*example,SIGNAL(mousePressEvent(QMouseEvent *)),*home,SLOT(showFullScreen()));}@*
+@code{	            //QObject::connect(*example,SIGNAL(mousePressEvent(QMouseEvent *)),*example,SLOT(hide()));}@*	    		    
+@code{#endif                                          }@*
+@code{#if !defined (BTWEB) && !defined (BT_EMBEDDED)       }@*
+@code{                            QObject::connect(*home,SIGNAL(Example()),*example,SLOT(show()));}@*
+@code{                            QObject::connect(*example,SIGNAL(Closed()),*home,SLOT(show()));}@*
+@code{	            //QObject::connect(*example,SIGNAL(mousePressEvent(QMouseEvent *)),*home,SLOT(show()));	  }@*  
+@code{	            //QObject::connect(*example,SIGNAL(mousePressEvent(QMouseEvent *)),*example,SLOT(hide()));	}@*    
+@code{#endif       }@*  
+@code{	            //QObject::connect(*example,SIGNAL(mousePressEvent(QMouseEvent *)),*example,SLOT(hide()));}@*
+@code{	            //QObject::connect(*example,SIGNAL(mousePressEvent(QMouseEvent *)),*home,SLOT(show()));}@*	    		    
+@code{                            QObject::connect(*example,SIGNAL(Closed()),*example,SLOT(hide()));}@*
+@code{                            //QObject::connect(*example,SIGNAL(mousePressEvent(QMouseEvent *)),*example,SLOT(hide()));}@*			    
+@code{                            QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*example,SIGNAL(gestFrame(char *)));}@*
+@code{                            QObject::connect(*example,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));}@*
+@code{                            QObject::connect(*example,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));}@*
+@code{                            //     QObject::QObject::connect(client_comandi,SIGNAL(frameIn(char *)),&illumino,SIGNAL(gestFrame(char *)));}@*
+@code{                            QObject::connect(*example,SIGNAL(richStato(char *)),client_comandi,SLOT(richStato(char *)));}@*
+@code{                            QObject::connect(BtM,SIGNAL(freeze(bool)),*example,SLOT(freezed(bool)));}@*
+@code{                            //(*illumino)->inizializza();}@*
+@code{                            break;                            @{}@*
+@code{                                pageAct= (*example); }@*
+@code{                                      qDebug("example");}@*
+@code{                            @}}@*
+In the page creation part:@*
+@code{                        if (!CurTagL4.compare("id"))}@*
+@code{                        @{}@*
+@code{                            QWidget* pageAct=NULL;}@*
+@code{                            page_id = qValue.toInt( &ok, 10 );}@*
+@code{                            qDebug("INSERTING PAGE: %s",pagTesti[page_id-1]);}@*       
+@code{                            switch (page_id)}@*
+@code{                            @{}@*
+@code{                            case AUTOMAZIONE:}@*	      
+@code{                                *automazioni = new sottoMenu (NULL,"AUTOM");}@*
+@code{                                (*automazioni)->setBGColor(Background);}@*
+@code{                                (*automazioni)->setFGColor(Foreground);}@*
+@code{                                //              automazioni->hide();}@*
+@code{                                pageAct=*automazioni;}@*
+@code{                                //				qWarning("AUTOMAZIONE new.- . . .- -. -. .-");}@*
+@code{                                break;}@*
+@code{                            case ILLUMINAZIONE:}@*
+@code{                                *illumino = new sottoMenu (NULL,"ILLUMINO");}@*
+@code{                                (*illumino)->setBGColor(Background);}@*
+@code{                                (*illumino)->setFGColor(Foreground);}@*
+@code{                                //              illumino->hide();}@*
+@code{                                pageAct=*illumino;}@*
+@code{                                //				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");}@*
+@code{                                break;}@*
+Here is inserted the creation of the EXAMPLE object. By creating a new submenu with @emph{sottoMenu}, it is possible to configure the navigation bar wih the interger as the third argument (@code{3} by default). In our case, we put only one element in the navigation bar by initializing this integer at @code{1}:@*
+@code{                            ///////////////////////////////////////////////////////////////////////////}@*	
+@code{	                          case EXAMPLE:}@*
+@code{		                          // We create our object with only the return arrow of the navigation bar}@*
+@code{                                *example= new sottoMenu (NULL,"EXAMPLE",1);}@*
+@code{                                (*example)->setBGColor(Background);}@*
+@code{                                (*example)->setFGColor(Foreground);}@*
+@code{		                          // illumino->hide();}@*
+@code{                                pageAct=*example;}@*		      
+@code{                                // qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");}@*
+@code{		                          break;}@sp 1
+Now insert the part to make the XML file @emph{conf.xml} usable with our modifications and insertions:@*
+We first create a flag ``bgrd'' to identify our family:@*
+@code{else if (CurTagL4.startsWith("bgrd"))}@*
+@code{		@{         }@*
+@code{	    //Here is selected the Background picture in the tag "bgrd" of conf.xml}@*
+Then we create a flag ``photo'' to identify from @emph{conf.xml} the background image:@*
+@code{	              if (CurTagL5.startsWith("photo"))}@*
+@code{	              @{	QString sValue=qValue;}@*
+And we take the name of the file and we concatenate it with the path:@*
+@code{			  sottomenu_bg_name="";}@*
+@code{			  sValue.prepend(IMG_PATH);}@*
+@code{			  sottomenu_bg_name = sValue;}@*
+@code{		@}}@*
+We reuse the flag ``item'' (at the sixth level this time, instead of the fourth one) to separate the different commands:@*
+@code{		if (CurTagL5.startsWith("item"))}@*
+@code{		@{}@*
+We identify the different parameters:@*
+@code{			if (!CurTagL6.compare("id"))}@*
+@code{			    page_item_id = qValue.toInt( &ok, 10 );}@*
+The description if required:@*
+@code{			else if (!CurTagL6.compare("descr"))}@*
+@code{			    page_item_descr=qValue;}@*
+The name of the image:@*
+@code{			else if (CurTagL6.startsWith("cimg"))}@*
+@code{			@{}@*
+@code{			    QString sValue=qValue;}@*
+@code{			    sottomenu_icon_name="";}@*
+@code{			    sValue.prepend(IMG_PATH);}@*
+@code{			    sottomenu_icon_name = sValue;}@*
+@code{			@}}@*
+The coordinates @code{left} and @code{top} to position the icon onto the background photo:@*
+@code{			else if (!CurTagL6.compare("left"))}@*
+@code{			    sottomenu_left = qValue.toInt( &ok, 10 );  }@*
+@code{			else if (!CurTagL6.compare("top"))}@*
+@code{			@{	sottomenu_top = qValue.toInt( &ok, 10 );}@*
+In the @emph{top} flag we put the background photo:@*
+@code{			    printf("%d, %d, %s %d \n", sottomenu_left, sottomenu_top,(char *)sottomenu_icon_name.ascii(), page_item_id);}@*
+@code{			    char path1[PATH_MAX];}@*
+@code{			    strncpy(&path1[0],sottomenu_bg_name.ascii(),PATH_MAX);}@*
+@code{			    (*example)->setBGPixmap(&path1[0]);}@*
+For reasons of esthetics, you can adapt the background of the navigation bar:@*
+Create a new Pixmap object @emph{temp}:@*
+@code{			    QPixmap temp;}@*
+@code{			    QPixmap background;}@*
+@code{			    if(background.load(sottomenu_bg_name.ascii()))}@*
+Re-dimension the size of @emph{temp} and copy in it (with @code{bitBlt}) the background zone which is occupied by it:@*
+@code{			    @{	temp.resize(240, 80);}@*
+@code{				bitBlt(&temp, 0, 0, &background, 0, 240, 240, 80 );}@*
+Then set the background of the banner:@*
+@code{			     (*example)->bannNavigazione->setBGPixmap(temp);}@*
+And add the buttons with the @code{addButton2} function you created in the @code{sottoMenu} class:@*
+@code{			     (*example)->addButton2(sottomenu_left, sottomenu_top , (char *)sottomenu_icon_name.ascii(), (char *)sottomenu_bg_name.ascii(), page_item_id);}@*
+@code{			     @}}@*
+@code{			    else}@*
+@code{			    @{	}@*
+@code{				(*example)->setFGColor(Foreground);}@*
+@code{				(*example)->setBGColor(Background);}@*
+@code{			    @}}@*
+@code{		            @}}@*
+@code{		@}}@*
+@code{		@}}@sp 1
+This example is incomplete. The part dedicated to the activation of the functions according to the device is still missing. It can be done by inserting the command selection list according to the values of the arguments @code{chi}, @code{cosa} and  @code{dove} of the @code{sottoMenu::addButton2} method. @*
+
+
+@node Adding the photographs, Modifying the conf.xml file ,Creation of a page with a photograph in background on which different commands are set ,Example of a modification in BTouch
+@subsection Adding the photographs in the NFS folder
+To display the photographs you use, you must insert them, under the @emph{.png} format, in the EtLinux dedicated folder. In the NFS folder, it will be @emph{@code{your_nfs_directory}}@code{/home/bticino/cfg/skin}. @*
+There are some specifications to respect for the pictures. First of all, the resolution of the icons must fit 80x80 pixels for the main menu, 60x60 for the submenus. Each icon has its ``twin brother'', displayed when the button is pulsed, whose name is exactly the same with a @code{p} at the end. For example, if we use the @emph{btnon.png} icon, the name of its ``twin brother''  when the button is pulsed is @emph{btnonp.png}. This is why you have to define 2 pictures for a single button.
+Furthermore, the resolution for the background image must fit 240x320 pixels.@* 
+
+
+@node Modifying the conf.xml file, , Adding the photographs, Example of a modification in BTouch
+@subsection Modifying the @emph{conf.xml} file
+Now you can modify the @emph{conf.xml} file to make it fit with your new BTouch. First open it with your favourite editor in @code{sudo} mode:@*
+@code{[user @@ user$ cd nfs_server/home/bticino/cfg}@*
+In our case we use @emph{Anjuta} (@url{www.anjuta.org}).@*
+@code{[user @@ cfg$ sudo anjuta conf.xml}@*
+First, in the @emph{pagemenu} section:@*
+Create a new @emph{item} flag (adapt the number of the item according to the others):@*
+Add the @emph{ID} and @emph{CID} flags and put inside them the @code{14} value (the ID number of the EXAMPLE family):@*
+@code{<pagemenu>}@*
+@code{"}@*
+@code{"}@*
+@code{<item1>}@*
+@code{<id>14</id>}@*
+@code{<cid>14</cid>}@*
+Then insert the desired position on the main menu. The reference is the high-left corner of the touchscreen. @*
+@code{<left>160</left>}@*
+@code{<top>0</top>}@*
+Then insert the name of the icon picture in the @emph{cimg} flag:@*
+@code{<cimg1>Your_icon_picture.png</cimg1>}@*
+Now you close your item:@*
+@code{</item1>}@*
+@code{"}@*
+@code{"}@*
+@code{</pagemenu>}@sp 1
+@*
+Now you must specify the submenu pages for the EXAMPLE family.
+First insert a new page flag (respect its number in the file):@*
+@code{<page2>}@*
+Insert the @code{14} value for the ID and CID numbers:@*
+@code{<id>14</id>}@*
+@code{<cid>14</cid>}@*
+Insert the description:@*
+@code{<descr>Example</descr>}@*
+Now, in the background field, you give all the informations relative to the background picture and the buttons:@*
+@code{<bgrd>}@*
+You insert the ID number again:@*
+@code{<id>14</id>}@*
+The background picture in the @emph{photo} flag:@*
+@code{<photo>cucina.png</photo>}@sp 1
+@*
+Then, in the @emph{item} flags, you insert:@*
+@code{<item1>}@*
+The picture of the button:@*
+@code{<cimg1>btnon.png</cimg1>}@*
+and its position, according to the position of the device you want to control on the background picture:@*
+@code{<left>60</left>}@*
+@code{<top>60</top>}@*
+@code{</item1>}@sp 1
+@*
+Of course, you repeat these instructions as many times as there are devices to control.@*
+@code{<item2>}@*
+@code{<cimg1>btnon.png</cimg1>}@*
+@code{<left>180</left>}@*
+@code{<top>0</top>}@*
+@code{</item2>}@*
+@*
+@code{<item3>}@*
+@code{<cimg1>btnon.png</cimg1>}@*
+@code{<left>180</left>}@*
+@code{<top>120</top>}@*
+@code{</item3>}@*
+You close the background field:@*
+@code{</bgrd>}@*
+And you close the page:@*
+@code{</page2>}@*
+@*
+You repeat the same operations if you want to add other background images:@*
+@code{<page3>}@*
+@code{<id>14</id>}@*
+@code{<cid>14</cid>}@*
+@code{<descr>Example</descr>}@*
+@code{<bgrd>}@*
+@code{<id>14</id>}@*
+@code{<photo>salon.png</photo>}@*
+@*
+@code{<item1>}@*
+@code{<cimg1>btnon.png</cimg1>}@*
+@code{<left>60</left>}@*
+@code{<top>60</top>}@*
+@code{</item1>}@*
+@*
+@code{<item2>}@*
+@code{<cimg1>btnon.png</cimg1>}@*
+@code{<left>180</left>}@*
+@code{<top>160</top>}@*
+@code{</item2>}@*
+@*
+@code{</bgrd>}@*
+@code{</page3>}@*
+@sp 1
+Save the file in your @emph{home} directory and launch your @value{machine} via NFS. When BTouch is loaded, make a copy of your modified @file{conf.xml} into the @code{nfs_server/home/bticino/cfg} directory; say ``y'' to  overwrite:@*
+@code{user@@bt:user$ sudo cp conf.xml nfs_server/home/bticino/cfg/}@*
+The flash memory dedicated to the configuration file is rewritten and you can see your interface with all the added modifications.@*
+
+
+@node Installation of the modified BTouch in the Flash memory, ,Example of a modification in BTouch, Qt-Embedded and BTouch
+@section Installation of the modified BTouch in the Flash memory
+Once the modified BTouch is finalized, there is to implement it into the flash memory of the @value{machine}. This will be explained in these subsections, step by step
+@menu
+* Creation of the image file of the applications::
+* Creation of the image file of the configuration::
+* Add of the photographs in the skin partition::
+* U-Boot instructions to re-create the relative partitions::
+@end menu
+
+
+@node Creation of the image file of the applications, Creation of the image file of the configuration, , Installation of the modified BTouch in the Flash memory
+@subsection Creation of the image file of the applications
+First you have to re-create the image file of the applications, which will contain the new BTouch. This operation is performed with the @file{crea_btweb_app} script, already run in the @file{crea_btweb} script to make the original BTouch (see @ref{Creation of the filesystem}).@*
+Four arguments are required for this script:@*
+@itemize
+@item The name of the machine: H4684 (in the context of this document)
+@item The version number: 1 (in the context of this document)
+@item The release number: 1 (in the context of this document)
+@item The build number: 0 (in the context of this document)
+@end itemize
+Then, in your @file{sources} directory, type:@*
+@code{user@@bt:sources$ sudo crea_webserver/crea_btweb_app H4684 1 1 0}@*
+This will create in your service pack directory (in the case presented in this document: @file{sources/BUILD/H4684_rel_1_1_0}) the new @file{btweb_app.img} file containing the applications. 
+
+
+
+@node Creation of the image file of the configuration, Add of the photographs in the skin partition, Creation of the image file of the applications, Installation of the modified BTouch in the Flash memory
+@subsection Creation of the image file of the configuration
+To be received by the @value{machine} via U-Boot, the configuration file must be sent om a specific way; it must have the @file{.img} extension and must contain the checksum. Indeed, U-Boot includes for the uploads and downloads a control on the checksum. When a file is sent to the @value{machine}, the checksum is calculated at reception and compared with the one contained in the image file. If they are not equal, the file is rejected.@*
+
+We will explain here how to create such an image file from the @file{conf.xml} file.@*
+First make a copy of your @file{conf.xml} file in your home directory and compress it into the zip format:@*
+@code{user@@bt:user$ cp nfs_server/home/bticino/cfg/conf.xml ./}@*
+@code{user@@bt:user$ zip conf.zip conf.xml}@*
+Then determine the checksum on the @file{conf.zip} file:@*
+@example
+cksum conf.zip > sup
+sed s/' '/$'\011'/ ./sup > ./sup_1
+cut -f1 ./sup_1 > sup
+@end example
+Recover the dimension of the file:@*
+@example                                                                                                                                                             
+stat conf.zip | grep Size > sup_1
+sed s/"  Size: "/""/ ./sup_1 > ./sup_2
+cut -f1 sup_2 > sup_1
+sed s/"      "/""/ ./sup_1 > ./sup_2
+@end example
+The structure of the header for the configuration is the following:@*
+@code{":50*2*<archive.zip>*<password>*CHECKSUM*<Size of the archive>^CK"}@*
+It must NOT contain any spaces.@*
+Create the header of the future image file:@*
+@example
+echo ":50*2*conf.zip*bticino*"$(cat sup)"*"$(cat sup_2)"^CK" >  HEADER_conf.txt
+Dum=`stat HEADER_conf.txt | grep Size | sed s/"  Size: "/""/ | cut -f1`
+resto=$((1024-$Dum))
+dd if=/dev/zero of=HEADER_conf.txt  bs=1  seek=$Dum count=$resto
+@end example
+and remove the used temporary files:@*
+@example
+rm -f sup
+rm -f sup_1
+rm -f sup_2
+@end example
+Now you are able to create the image file itself:@*
+@example
+dd if=HEADER_conf.txt of=conf.img bs=1024 count=1
+dd if=conf.zip of=conf.img bs=1024 seek=1 conv=notrunc
+@end example
+For reasons of conveniency, you can insert these instructions into a shellscript:@*
+
+@example
+#!/bin/bash
+cksum conf.zip > sup
+sed s/' '/$'\011'/ sup > sup_1
+cut -f1 sup_1 > sup
+stat conf.zip | grep Size > sup_1
+sed s/"  Size: "/""/ ./sup_1 > ./sup_2
+cut -f1 sup_2 > sup_1
+sed s/"      "/""/ ./sup_1 > ./sup_2
+echo ":50*2*conf.zip*bticino*"$(cat sup)"*"$(cat sup_2)"^CK" >  HEADER_conf.txt
+Dum=`stat HEADER_conf.txt | grep Size | sed s/"  Size: "/""/ | cut -f1`
+resto=$((1024-$Dum))
+rm sup*
+dd if=/dev/zero of=HEADER_conf.txt  bs=1  seek=$Dum count=$resto
+dd if=HEADER_conf.txt of=conf.img bs=1024 count=1
+dd if=conf.zip of=conf.img bs=1024 seek=1 conv=notrunc
+@end example
+You have now an image file of the configuration ready to be uploaded into your @value{machine}@*
+Copy it into your @file{/tftpboot} directory:@*
+@example
+user@@bt:user$ sudo cp conf.img /tftpboot
+@end example
+
+@node Add of the photographs in the skin partition, U-Boot instructions to re-create the relative partitions, Creation of the image file of the configuration, Installation of the modified BTouch in the Flash memory
+@subsection Add of the photographs in the skin partition
+Until now, we explained how to include and use the photographs for the modified BTouch interface via NFS. Now we will explain how to include them in the image file dedicated to the skin.@*
+@subsubsection Preparation of the skin archive
+The skin file is a zip archive containing an Xml file (@file{extra.xml}) about the parameters of the skin itself and all the icons used or being able to be used by BTouch. Although its content is readable by the user, it is password-protected to prevent him from erasing any file by mistake. However, there is still the possibility for the user to add/remove his own pictures in the archive.@*
+First create a directory in which will be stored the skin archives:
+@code{user@@bt:user$ mkdir skindir}@*
+and make a copy of them into it:@*
+@code{user@@bt:user$ cp skin_glass.zip skindir/}@*
+@code{user@@bt:user$ cp skin_rainbow.zip skindir/}@*
+@code{user@@bt:user$ cp skin_default.zip skindir/}@*
+In the @file{skindir directory}, create a @file{skin} directory:@*
+@code{user@@bt:skindir$ cd skindir/}@*
+@code{user@@bt:skindir$ mkdir skin}@*
+Now, all the pictures you want to add to the archive must be first stored in the @file{skin}:@*
+@code{user@@bt:skindir$ cp ~/pictures/your_icon_picture.png skin/}@*
+@code{user@@bt:skindir$ cp ~/pictures/your_icon_picturep.png skin/}@*
+And you can insert them at the same level as the generic icons of the skin with the @code{zip} command:@*
+@code{user@@bt:skindir$ zip -r skin_glass.zip skin/your_icon_picture.png}@*
+@code{user@@bt:skindir$ zip -r skin_glass.zip skin/your_icon_picturep.png}@*
+The procedure is exactly the same with the background pictures:@*
+@code{user@@bt:skindir$ cp ~/pictures/background_picture.png skin/}@*
+@code{user@@bt:skindir$ zip -r skin010100_glass.zip skin/background_picture.png}@*
+@subsubsection Creation of the skin image file
+Like the configuration image file, there is also a checksum control when the skin is uploaded to the @value{machine}. That is why there is to create the image file containing the checksum also here. The principle is exactly the same as for the configuration image file:@*
+First rename your skin archive according to the following scheme:@file{skinvvrrbb.zip} where:@*
+@itemize
+@item vv is the version number
+@item rr is the release number
+@item bb is the build number
+@end itemize
+In the context of this dicument, it gives:@*
+@code{user@@bt:skindir$ mv skin_glass.zip skin010100.zip} (if you want to install the @emph{Glass} skin)@*
+Then, determine the checksum:@*
+@example
+user@@bt:skindir$ cksum skin010100.zip > sup
+user@@bt:skindir$ sed s/' '/$'\011'/ ./sup > ./sup_1
+user@@bt:skindir$ cut -f1 ./sup_1 > sup
+@end example
+Recover the dimension of the file:@*
+@example                                                                                                                                                             
+user@@bt:skindir$ stat skin010100.zip | grep Size > sup_1
+user@@bt:skindir$ sed s/"  Size: "/""/ ./sup_1 > ./sup_2
+user@@bt:skindir$ cut -f1 sup_2 > sup_1
+user@@bt:skindir$ sed s/"   "/""/ ./sup_1 > ./sup_2
+@end example
+The structure of the header for the skin image file is the following@*
+@code{":50*3*<archive.zip>*<password>*CHECKSUM*<Size of the archive>^CK"}@*
+It must NOT contain any spaces.@*
+Create the header of the future image file:@*
+@example
+user@@bt:skindir$ echo \ 
+":50*3*skin010100.zip*btdspskn*"$(cat sup)"*"$(cat sup_2)"^CK"\
+  >  HEADER_extra.txt
+user@@bt:skindir$ Dum=`stat HEADER_extra.txt \
+| grep Size | sed s/"  Size: "/""/ | cut -f1`
+user@@bt:skindir$ resto=$((1024-$Dum))
+user@@bt:skindir$ dd if=/dev/zero of=HEADER_extra.txt \
+ bs=1  seek=$Dum count=$resto
+
+@end example
+and remove the used temporary files:@*
+@example
+user@@bt:skindir$ rm -f sup
+user@@bt:skindir$ rm -f sup_1
+user@@bt:skindir$ rm -f sup_2
+@end example
+Now you are able to create the image file itself:@*
+@example
+user@@bt:skindir$ dd if=HEADER_extra.txt of=extra.img bs=1024 count=1
+user@@bt:skindir$ dd if=skin010100.zip of=extra.img bs=1024 seek=1 conv=notrunc
+@end example
+For reasons of conveniency, you can insert these instructions into a shellscript:@*
+@example
+#!/bin/bash
+cksum skin010100.zip > sup
+sed s/' '/$'\011'/ ./sup > ./sup_1
+cut -f1 ./sup_1 > sup
+stat skin010100.zip | grep Size > sup_1
+sed s/"  Size: "/""/ ./sup_1 > ./sup_2
+cut -f1 sup_2 > sup_1
+sed s/"   "/""/ ./sup_1 > ./sup_2
+echo ":50*3*skin010100.zip*btdspskn*"$(cat sup)"*"$(cat sup_2)"^CK" \
+ >  HEADER_extra.txt
+Dum=`stat HEADER_extra.txt | grep Size | sed s/"  Size: "/""/ | \
+cut -f1`
+resto=$((1024-$Dum))
+dd if=/dev/zero of=HEADER_conf.txt  bs=1  seek=$Dum count=$resto
+dd if=HEADER_extra.txt of=extra.img bs=1024 count=1
+dd if=skin010100.zip of=extra.img bs=1024 seek=1 conv=notrunc
+rm -f sup
+rm -f sup_1
+rm -f sup_2
+@end example
+You have now an image file of the configuration ready to be uploaded into your @value{machine}@*
+Copy it into your @file{/tftpboot} directory:@*
+@example
+user@@bt:skindir$ sudo cp extra.img /tftpboot
+@end example
+
+
+
+@node U-Boot instructions to re-create the relative partitions, ,Add of the photographs in the skin partition, Installation of the modified BTouch in the Flash memory
+@subsection U-Boot instructions to re-create the relative partitions
+@menu
+* Installation of the application file in the Flash memory::
+* Installation of the new configuration in the Flash memory::
+* Installation of the modified skin in the Flash memory::
+@end menu
+
+@node Installation of the application file in the Flash memory, Installation of the new configuration in the Flash memory, , U-Boot instructions to re-create the relative partitions
+@subsubsection Installation of the application file in the Flash memory
+Copy your btweb_app.img in @file{/tftpboot} directory of your PC:@*
+@code{user@@bt:user$ sudo cp btweb_app.img /tftpboot}@*
+Then, follow the instructions in @ref{Instructions to install the applications}.@*
+And finally, reset your @value{machine}.@* 
+
+@node Installation of the new configuration in the Flash memory, Installation of the modified skin in the Flash memory, Installation of the application file in the Flash memory, U-Boot instructions to re-create the relative partitions
+@subsubsection Installation of the new configuration in the Flash memory
+Copy your conf.img in @file{/tftpboot} directory of your PC:@*
+@code{user@@bt:user$ sudo cp conf.img /tftpboot}@*
+Then, follow the instructions in @ref{Instructions to install the configuration}.@*
+And finally, reset your @value{machine}.@* 
+
+
+@node Installation of the modified skin in the Flash memory, , Installation of the new configuration in the Flash memory, U-Boot instructions to re-create the relative partitions
+@subsubsection Installation of the modified skin in the Flash memory
+To update the modified skins in the FLASH memory, first copy your @file{extra.img} file in the @file{/tftpboot} directory in your PC:@*
+@code{user@@bt:user$ sudo cp extra.img /tftpboot}@*
+After having done that, transfer the previous file to the RAM memory in the @value{machine} using its U-Boot command line:@*
+@code{=>tftp a2000000 extra.img}@*
+then, to install the skins in its FLASH partition erase first that partition in FLASH:@*
+@code{=>erase 19c0000 +640000}@*
+and transfer the filesystem data copied earlier in RAM to skin FLASH partition:@*
+@code{=>cp.b a2000000 19c0000 640000}@*
+@*
+
+@node Conclusion, ,Qt-Embedded and BTouch, Top
+@chapter Conclusion
+In this document we exhibited all the main steps to start new applications and customizations for the @value{machine} on your own. If you need further information, do not hesitate to go to @url{www.myopen-bticino.it}, in the section of the touchscreen. Moreover we encourage you to actively participate in the forum, where you can share information, works, applications and ideas to feed the OpenWebNet Community. And remember:@*
+ @emph{``The sweet is never the sweet without the sour''}.@*
+
+@bye

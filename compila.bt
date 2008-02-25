@@ -1,0 +1,6 @@
+#!/bin/sh
+export QTDIR=$HOME/src/qt-embedded-free-3.3.4_bt-toolch-soft_32
+export QMAKESPEC=qws/linux-H4684_IP-g++
+$QTDIR/qmake/qmake -project
+$QTDIR/qmake/qmake
+make
