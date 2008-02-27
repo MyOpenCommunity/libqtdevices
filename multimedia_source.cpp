@@ -24,6 +24,7 @@
 #include <qfile.h>
 #include <qnamespace.h>
 #include <qpushbutton.h>
+#include <qevent.h>
 
 #include "multimedia_source.h"
 #include "mediaplayer.h"
@@ -160,6 +161,73 @@ void MultimediaSource::freezed(bool f)
 	setDisabled(f);
 }
 
+
+/// ***********************************************************************************************************************
+/// Methods for TitleLabel
+/// ***********************************************************************************************************************
+TitleLabel::TitleLabel(int w, int h, QWidget *parent, const char * name) :
+	QLabel("", parent, name)
+{
+	setFixedWidth(w);
+	setFixedHeight(h);
+	setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+	// init
+	time_per_step   = 500;
+	full_text_width = 0;
+	min_shift       = 0;
+	max_shift       = 0;
+	current_shift   = 0;
+	step_shift      = 0;
+
+	// connect timer to scroll text and start it
+	connect( &scrolling_timer, SIGNAL( timeout() ), this, SLOT( handleScrollingTimer() ) );
+	scrolling_timer.start( time_per_step );
+}
+
+void TitleLabel::drawContents( QPainter *p )
+{
+	p->translate(current_shift, 5);
+	QLabel::drawContents( p );
+}
+
+void TitleLabel::resetTextPosition()
+{
+	current_shift = 0;
+}
+
+void TitleLabel::setText( const QString & text_to_set )
+{
+	// Create temp label
+	QLabel *temp_label = new QLabel( "", this);
+	//temp_label->hide();
+
+	// copy the Font and Alignment to the temp_label, set Text and adjust Size
+	temp_label->setAlignment( alignment() );
+	temp_label->setFont( font() );
+	temp_label->setText( QString(text_to_set) );
+	temp_label->adjustSize();
+	
+	// set shifting parametrs
+	full_text_width = temp_label->width();
+	temp_label->setText(QString("%1").arg(full_text_width));
+	full_text_width-width() > 0 ? max_shift = full_text_width-width() : max_shift = 0;
+	
+	//delete temp_label;
+
+	// run method from ancestor
+	QLabel::setText( text_to_set );
+}
+
+void TitleLabel::handleScrollingTimer()
+{
+	//current_shift += step_shift;
+	current_shift -= 10;
+	setFixedWidth( width() + 10 );
+	repaint();
+}
+
 /// ***********************************************************************************************************************
 /// Methods for FileBrowser
 /// ***********************************************************************************************************************
@@ -186,12 +254,14 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	for (int i = 0; i < rows_per_page; i++)
 	{
 		// Create label
-		labels_list.insert( i, new QLabel("", this) );
+		labels_list.insert( i, new TitleLabel(MAX_WIDTH - 60, 50, this) );
 		// Set Geometry
+		/*
 		labels_list[i]->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
 		labels_list[i]->setFixedHeight(50);
 		labels_list[i]->setFixedWidth(MAX_WIDTH - 60);
 		labels_list[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+		*/
 		// Add to labels layout
 		labels_layout->addWidget( labels_list[i] );
 	}
@@ -239,6 +309,12 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	/// Connect signal to notify start and stop play and to send relative frames
 	connect(playing_window, SIGNAL(notifyStartPlay()), this, SIGNAL(notifyStartPlay()));
 	connect(playing_window, SIGNAL(notifyStopPlay()), this, SIGNAL(notifyStopPlay()));
+}
+
+void FileBrowser::showEvent( QShowEvent *event )
+{
+	for (int i = 0; i < rows_per_page; i++)
+		labels_list[i]->resetTextPosition();
 }
 
 void FileBrowser::itemIsClicked(int item)
@@ -375,11 +451,13 @@ QString FileBrowser::getTextRepresentation(QFileInfo *file_info)
 
 	QString name = file_info->fileName().latin1();
 
+	/*
 	if (name.length()>18)
 	{
 		name.truncate(18);
 		name += "...";
 	}
+	*/
 
 	return text_repr.arg(name);
 }

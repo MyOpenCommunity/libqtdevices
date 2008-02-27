@@ -32,16 +32,12 @@
 #include <qbuttongroup.h>
 #include <qtimer.h>
 #include <qlayout.h>
+#include <qpainter.h>
+#include <qtextedit.h>
 
 //#include "btbutton.h"
 #include "main.h"
 #include "btlabel.h"
-// FIXME banner.h viene incluso dalle classi che da lui ereditano (appunto le 2 che seguono)
-// la classe Banner contiene la cache per icone come suo membro statico. Forse sarebbe meglio
-// usare un oggetto distinto ma includere in main.h
-// alcune pagine che usano pulsanti in modo indipendente dai banner (tipo tastiera.cpp)
-// non usano la cache!
-//#include "banner.h"
 #include "bannfrecce.h"
 #include "bann3but.h"
 
@@ -135,10 +131,44 @@ public slots:
 private:
 	char amb[80];
 	char nome[15];
-	bannFrecce * bannNavigazione;
+	bannFrecce *bannNavigazione;
 	QLabel *label;
 	bool audio_initialized;
 	int where_address;
+};
+
+
+/** \class TitleLabel
+ *  this class is derived from QLabel
+ *  and reimplements drawContent to have scrolling text
+ */
+class TitleLabel : public QLabel
+{
+Q_OBJECT
+public:
+	TitleLabel( int w, int h, QWidget *parent = 0, const char * name = 0 );
+	void setText( const QString & text_to_set );
+	void drawContents ( QPainter *p );
+	void resetTextPosition();
+private:
+	/// setup data
+	QString _text;
+	int     _width;
+	int     _w_offset;
+	int     _h_offset;
+
+	/// text scrolling Timer
+	QTimer scrolling_timer;
+
+	/// text scrolling parameters
+	int time_per_step;
+	int full_text_width;
+	int min_shift;
+	int max_shift;
+	int current_shift;
+	int step_shift;
+public slots:
+	void handleScrollingTimer();
 };
 
 
@@ -163,6 +193,9 @@ public:
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
+	/// before to show itself some init is done.
+	void showEvent(QShowEvent *event);
+
 public slots:
 	void nextItem();
 	void prevItem();
@@ -172,6 +205,7 @@ public slots:
 	/// Show and hide playing windows
 	void showPlayingWindow();
 	void hidePlayingWindow();
+
 private:
 	void showFiles();
 	QString getTextRepresentation(QFileInfo *file_info);
@@ -188,7 +222,8 @@ private:
 
 	/// Widgets
 	// Pointer to labels used to visualize files
-	QPtrVector<QLabel>       labels_list;
+	//QPtrVector<QLabel>       labels_list;
+	QPtrVector<TitleLabel>       labels_list;
 	ButtonsBar               *buttons_bar;
 	AudioPlayingWindow       *playing_window;
 
