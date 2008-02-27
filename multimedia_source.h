@@ -146,14 +146,15 @@ class TitleLabel : public QLabel
 {
 Q_OBJECT
 public:
-	TitleLabel( int w, int h, QWidget *parent = 0, const char * name = 0 );
+	TitleLabel( int w, int h, int w_offset = 0, int h_offset = 0, QWidget *parent = 0, const char * name = 0 );
 	void setText( const QString & text_to_set );
 	void drawContents ( QPainter *p );
 	void resetTextPosition();
+
 private:
-	/// setup data
+	/// internal data
 	QString _text;
-	int     _width;
+	int     _text_length;
 	int     _w_offset;
 	int     _h_offset;
 
@@ -162,11 +163,14 @@ private:
 
 	/// text scrolling parameters
 	int time_per_step;
-	int full_text_width;
-	int min_shift;
-	int max_shift;
 	int current_shift;
 	int step_shift;
+	int visible_chars;
+	QString separator;
+	
+	/// refresh text
+	void refreshText();
+
 public slots:
 	void handleScrollingTimer();
 };

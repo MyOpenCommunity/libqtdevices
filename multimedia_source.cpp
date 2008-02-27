@@ -165,30 +165,33 @@ void MultimediaSource::freezed(bool f)
 /// ***********************************************************************************************************************
 /// Methods for TitleLabel
 /// ***********************************************************************************************************************
-TitleLabel::TitleLabel(int w, int h, QWidget *parent, const char * name) :
+TitleLabel::TitleLabel(int w, int h, int w_offset, int h_offset, QWidget *parent, const char * name) :
 	QLabel("", parent, name)
 {
+	// Style
 	setFixedWidth(w);
 	setFixedHeight(h);
 	setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
 	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 	// init
-	time_per_step   = 500;
-	full_text_width = 0;
-	min_shift       = 0;
-	max_shift       = 0;
-	current_shift   = 0;
-	step_shift      = 0;
+	time_per_step    = 333;
+	visible_chars    = 18;  // how many chars can be shown at the same time
+	_text_length     = 0;   // total chars
+	current_shift    = 0;   // current chars shifted
+	step_shift       = 1;   // char per step
+	_w_offset        = w_offset;
+	_h_offset        = h_offset;
 
-	// connect timer to scroll text and start it
+	separator        = "   --   ";
+
+	// connect timer to scroll text
 	connect( &scrolling_timer, SIGNAL( timeout() ), this, SLOT( handleScrollingTimer() ) );
-	scrolling_timer.start( time_per_step );
 }
 
 void TitleLabel::drawContents( QPainter *p )
 {
-	p->translate(current_shift, 5);
+	p->translate(_w_offset, _h_offset);
 	QLabel::drawContents( p );
 }
 
@@ -199,32 +202,39 @@ void TitleLabel::resetTextPosition()
 
 void TitleLabel::setText( const QString & text_to_set )
 {
-	// Create temp label
-	QLabel *temp_label = new QLabel( "", this);
-	//temp_label->hide();
-
-	// copy the Font and Alignment to the temp_label, set Text and adjust Size
-	temp_label->setAlignment( alignment() );
-	temp_label->setFont( font() );
-	temp_label->setText( QString(text_to_set) );
-	temp_label->adjustSize();
+	// store full string and full lenght
+	_text         = text_to_set;
+	_text_length  = text_to_set.length();
+	current_shift = 0;
 	
-	// set shifting parametrs
-	full_text_width = temp_label->width();
-	temp_label->setText(QString("%1").arg(full_text_width));
-	full_text_width-width() > 0 ? max_shift = full_text_width-width() : max_shift = 0;
-	
-	//delete temp_label;
-
-	// run method from ancestor
+	// call method of ancestor
 	QLabel::setText( text_to_set );
+
+	// start the timer if scroll is needed
+	if (_text_length>visible_chars)
+		scrolling_timer.start( time_per_step );
+	else
+		scrolling_timer.stop();
+}
+
+void TitleLabel::refreshText()
+{
+	QString banner_string = QString("%1%2").arg(_text).arg(separator);
+
+	QString head = banner_string.mid(current_shift, banner_string.length() - current_shift);
+	QString tail = banner_string.mid(0, current_shift);
+
+	QLabel::setText( QString("%1%2").arg(head).arg(tail) );
 }
 
 void TitleLabel::handleScrollingTimer()
 {
-	//current_shift += step_shift;
-	current_shift -= 10;
-	setFixedWidth( width() + 10 );
+	if (current_shift <_text_length + separator.length())
+		++current_shift;
+	else
+		current_shift = 0;
+
+	refreshText();
 	repaint();
 }
 
@@ -253,16 +263,8 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	labels_list.resize(rows_per_page);
 	for (int i = 0; i < rows_per_page; i++)
 	{
-		// Create label
-		labels_list.insert( i, new TitleLabel(MAX_WIDTH - 60, 50, this) );
-		// Set Geometry
-		/*
-		labels_list[i]->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-		labels_list[i]->setFixedHeight(50);
-		labels_list[i]->setFixedWidth(MAX_WIDTH - 60);
-		labels_list[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-		*/
-		// Add to labels layout
+		// Create label and add it to labels_layout
+		labels_list.insert( i, new TitleLabel(MAX_WIDTH - 60, 50, 0, 5, this) );
 		labels_layout->addWidget( labels_list[i] );
 	}
 
