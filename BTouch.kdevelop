@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Kemosh,,,</author>
-    <email>kemosh@Kemosh-VirtualU</email>
+    <email>kemosh@develer.com</email>
     <version>$VERSION$</version>
     <projectmanagement>KDevTrollProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
@@ -139,6 +139,7 @@
     <references/>
   </kdevcppsupport>
   <kdevfilecreate>
+    <filetypes/>
     <useglobaltypes>
       <type ext="ui" />
       <type ext="cpp" />

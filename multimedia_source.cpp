@@ -49,7 +49,6 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	where_address = _where_address;
-	qDebug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 	qDebug("MultimediaSource ctor: where_address is %d", _where_address);
 
 	/// Create filesWindow, Set geometry and Font Style
