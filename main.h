@@ -11,7 +11,8 @@
 #define MAIN_H
 
 #include "icondispatcher.h"
-
+#include "propertymap.h"
+#include "propertymap_xml.h"
 
 /****************************************************************
  ** ICONS LIBRARY
@@ -37,7 +38,16 @@
  * no need to destroy them in banner
  */
 /// We use a global object to handle icons_library because different classes need icons.
-extern IconDispatcher  icons_library;
+extern IconDispatcher icons_library;
+
+
+/****************************************************************
+ ** confXmlHandler
+ ****************************************************************/
+/** As alternative to xmlconfhandler we use PropertyMap from devlib
+ *  to open conf.xml and read xml tags.
+ */
+extern PropertyMap app_config;
 
 
 /****************************************************************
@@ -322,6 +332,7 @@ enum  bannerType {
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
 };
+
 
 /// banTesti: text utilized during the initialization sequence when the menu is built up
 const char banTesti[][20] =

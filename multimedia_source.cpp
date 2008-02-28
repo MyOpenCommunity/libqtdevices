@@ -10,6 +10,7 @@
 
 
 #include <algorithm>
+#include <string>
 
 #include <qfont.h>
 #include <qlabel.h>
@@ -491,6 +492,10 @@ void FileBrowser::setFGColor(QColor c)
 	playing_window->setFGColor(c);
 }
 
+/*
+ * Path in conf.xml where the configurable label texts are found.
+ */
+#define CFG_LABELS_MEDIAPLAYER "configuratore/setup/labels/mediaplayer/"
 
 /// ***********************************************************************************************************************
 /// Methods for AudioPlayingWindow
@@ -504,17 +509,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	/// set self Geometry
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
-	/// Create Labels
-#if 0
-	file_name_label   = new QLabel( "", this, 0, Qt::AlignLeft | Qt::AlignVCenter );
-	percent_pos_label = new QLabel( "", this, 0, Qt::AlignLeft | Qt::AlignVCenter );
-	time_length_label = new QLabel( "", this, 0, Qt::AlignLeft | Qt::AlignVCenter );
-	time_pos_label    = new QLabel( "", this, 0, AlignLeft | AlignVCenter );
-	meta_title_label  = new QLabel( "", this, 0, AlignLeft | AlignVCenter );
-	meta_artist_label = new QLabel( "", this, 0, AlignLeft | AlignVCenter );
-	meta_album_label  = new QLabel( "", this, 0, AlignLeft | AlignVCenter );
-	meta_track_label  = new QLabel( "", this, 0, AlignLeft | AlignVCenter );
-#endif
+	/// Create Labels (that contain tags)
  	QFont font( "helvetica", 18 );
 
 	// create Labels containing INFO
@@ -528,37 +523,50 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	meta_album_label->setFont(font);
 	time_pos_label->setFont(font);
 	// Set Fixed Width
-	
+	meta_title_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
+	meta_artist_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
+	meta_album_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
+	time_pos_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
 
 	/// Create Main Layout
 	// all others layout must have this as parent, this is not more needed in Qt4
 	// where we can use setMainLayout
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
-	QVBoxLayout *title_layout = new QVBoxLayout(main_layout);
-	QLabel *window_title_label = new QLabel("Playing audio", this);
+	QString audioplay_title = app_config.get(CFG_LABELS_MEDIAPLAYER "status", "Playing audio").c_str();
+	QLabel *window_title_label = new QLabel(audioplay_title, this);
 	window_title_label->setFont(font);
+
+	QVBoxLayout *title_layout  = new QVBoxLayout(main_layout);
 	title_layout->addWidget(window_title_label);
 
-	/// Create Labels
+	// layouts for both labels
 	QHBoxLayout *tags_layout = new QHBoxLayout(main_layout);
-
 	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
 
-	QLabel *name_label = new QLabel("Name: ", this);
-	QLabel *artist_label = new QLabel("Artist: ", this);
-	QLabel *album_label = new QLabel("Album: ", this);
-	QLabel *time_label = new QLabel("Time: ", this);
+	/// Create Labels (that contain tag names)
+	// Get label names from app_confif
+	QString label_a = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_title",  "Name: ").c_str();
+	QString label_b = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_artist", "Artist: ").c_str();
+	QString label_c = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_album",  "Album: ").c_str();
+	QString label_d = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_time",   "Time: ").c_str();
+	// Set label names
+	QLabel *name_label   = new QLabel( label_a, this );
+	QLabel *artist_label = new QLabel( label_b, this );
+	QLabel *album_label  = new QLabel( label_c, this );
+	QLabel *time_label   = new QLabel( label_d, this );
 	// set font
 	name_label->setFont(font);
 	artist_label->setFont(font);
 	album_label->setFont(font);
 	time_label->setFont(font);
+	// set width
+
+	// add all labels to layouts
 	tags_name_layout->addWidget(name_label);
 	tags_name_layout->addWidget(artist_label);
 	tags_name_layout->addWidget(album_label);
 	tags_name_layout->addWidget(time_label);
-
 	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
 	tags_text_layout->addWidget(meta_title_label);
 	tags_text_layout->addWidget(meta_artist_label);

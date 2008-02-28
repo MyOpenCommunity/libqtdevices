@@ -22,9 +22,15 @@
 
 
 /*******************************************
- ** Instancing global object to handle icons
+ ** Instance global object to handle icons
  *******************************************/
-IconDispatcher  icons_library;
+IconDispatcher icons_library;
+
+
+/*******************************************
+ ** Instance global object to handle conf.xml
+ *******************************************/
+PropertyMap app_config;
 
 
 /*******************************************
@@ -94,6 +100,9 @@ int main( int argc, char **argv )
 	logFile=new(char[MAX_PATH]);
 	strncpy(logFile, My_File_Log, MAX_PATH);
 
+	// load configuration from conf.xml to app_config
+	propertyMapLoadXML( app_config, MY_FILE_USER_CFG_DEFAULT );
+	
 	xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
 	xmlFile = new QFile(My_File_Cfg);
 	QXmlInputSource source( xmlFile );
