@@ -146,10 +146,13 @@ class TitleLabel : public QLabel
 {
 Q_OBJECT
 public:
-	TitleLabel( int w, int h, int w_offset = 0, int h_offset = 0, QWidget *parent = 0, const char * name = 0 );
+	TitleLabel( QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE );
+	
 	void setText( const QString & text_to_set );
 	void drawContents ( QPainter *p );
 	void resetTextPosition();
+
+	void setMaxVisibleChars(int n);
 
 private:
 	/// internal data
@@ -157,6 +160,7 @@ private:
 	int     _text_length;
 	int     _w_offset;
 	int     _h_offset;
+	bool    _scrolling;
 
 	/// text scrolling Timer
 	QTimer scrolling_timer;

@@ -26,6 +26,7 @@
 #include <qnamespace.h>
 #include <qpushbutton.h>
 #include <qevent.h>
+#include <qvaluevector.h>
 
 #include "multimedia_source.h"
 #include "mediaplayer.h"
@@ -166,8 +167,8 @@ void MultimediaSource::freezed(bool f)
 /// ***********************************************************************************************************************
 /// Methods for TitleLabel
 /// ***********************************************************************************************************************
-TitleLabel::TitleLabel(int w, int h, int w_offset, int h_offset, QWidget *parent, const char * name) :
-	QLabel("", parent, name)
+TitleLabel::TitleLabel(QWidget *parent, int w, int h, int w_offset, int h_offset, bool scrolling) :
+	QLabel("", parent)
 {
 	// Style
 	setFixedWidth(w);
@@ -184,8 +185,12 @@ TitleLabel::TitleLabel(int w, int h, int w_offset, int h_offset, QWidget *parent
 	_w_offset        = w_offset;
 	_h_offset        = h_offset;
 
+	// separator for ciclic text scrolling
 	separator        = "   --   ";
 
+	// define if it is scrolling label or not
+	_scrolling = scrolling;
+	
 	// connect timer to scroll text
 	connect( &scrolling_timer, SIGNAL( timeout() ), this, SLOT( handleScrollingTimer() ) );
 }
@@ -212,7 +217,7 @@ void TitleLabel::setText( const QString & text_to_set )
 	QLabel::setText( text_to_set );
 
 	// start the timer if scroll is needed
-	if (_text_length>visible_chars)
+	if ( _scrolling == TRUE && _text_length>visible_chars )
 		scrolling_timer.start( time_per_step );
 	else
 		scrolling_timer.stop();
@@ -226,6 +231,13 @@ void TitleLabel::refreshText()
 	QString tail = banner_string.mid(0, current_shift);
 
 	QLabel::setText( QString("%1%2").arg(head).arg(tail) );
+}
+
+void TitleLabel::setMaxVisibleChars(int n)
+{
+	visible_chars = n;
+	current_shift = 0;
+	refreshText();
 }
 
 void TitleLabel::handleScrollingTimer()
@@ -261,11 +273,17 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	labels_layout->setSpacing(0);
 
 	/// Create labels and add them to label_layout
+	// WARNING Quick and Dirty alignment using offsets of TitleLabel
+	QValueVector<int> h_offsets;
+	h_offsets.append(-4);
+	h_offsets.append(-2);
+	h_offsets.append(-1);
+	h_offsets.append(0);
 	labels_list.resize(rows_per_page);
 	for (int i = 0; i < rows_per_page; i++)
 	{
 		// Create label and add it to labels_layout
-		labels_list.insert( i, new TitleLabel(MAX_WIDTH - 60, 50, 0, 5, this) );
+		labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
 		labels_layout->addWidget( labels_list[i] );
 	}
 
