@@ -295,8 +295,8 @@ private:
 	MediaPlayer              *media_player;
 
 	/// Labels
-	QLabel                   *file_name_label,   *percent_pos_label, *time_length_label, *time_pos_label;
-	QLabel                   *meta_title_label,  *meta_artist_label, *meta_album_label,  *meta_track_label;
+	TitleLabel               *file_name_label,   *percent_pos_label, *time_length_label, *time_pos_label;
+	TitleLabel               *meta_title_label,  *meta_artist_label, *meta_album_label,  *meta_track_label;
 
 	/// Timer to refresh data from MediaPlayer
 	QTimer                   *data_refresh_timer;

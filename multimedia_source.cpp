@@ -531,20 +531,16 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
  	QFont font( "helvetica", 18 );
 
 	// create Labels containing INFO
-	meta_title_label  = new QLabel( "", this, 0 );
-	meta_artist_label = new QLabel( "", this, 0 );
-	meta_album_label  = new QLabel( "", this, 0 );
-	time_pos_label    = new QLabel( "", this, 0 );
+	//labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
+	meta_title_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
+	meta_artist_label = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
+	meta_album_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
+	time_pos_label    = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
 	// Set Font
 	meta_title_label->setFont(font);
 	meta_artist_label->setFont(font);
 	meta_album_label->setFont(font);
 	time_pos_label->setFont(font);
-	// Set Fixed Width
-	meta_title_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
-	meta_artist_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
-	meta_album_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
-	time_pos_label->setFixedWidth(MAX_WIDTH - MAX_WIDTH/3);
 
 	/// Create Main Layout
 	// all others layout must have this as parent, this is not more needed in Qt4
@@ -552,7 +548,8 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
 	QString audioplay_title = app_config.get(CFG_LABELS_MEDIAPLAYER "status", "Playing audio").c_str();
-	QLabel *window_title_label = new QLabel(audioplay_title, this);
+	TitleLabel *window_title_label = new TitleLabel( this, MAX_WIDTH, 120, 9, 0, TRUE );
+	window_title_label->setText( audioplay_title );
 	window_title_label->setFont(font);
 
 	QVBoxLayout *title_layout  = new QVBoxLayout(main_layout);
@@ -569,16 +566,20 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	QString label_c = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_album",  "Album: ").c_str();
 	QString label_d = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_time",   "Time: ").c_str();
 	// Set label names
-	QLabel *name_label   = new QLabel( label_a, this );
-	QLabel *artist_label = new QLabel( label_b, this );
-	QLabel *album_label  = new QLabel( label_c, this );
-	QLabel *time_label   = new QLabel( label_d, this );
+	TitleLabel *name_label   = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
+	TitleLabel *artist_label = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
+	TitleLabel *album_label  = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
+	TitleLabel *time_label   = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
 	// set font
 	name_label->setFont(font);
 	artist_label->setFont(font);
 	album_label->setFont(font);
 	time_label->setFont(font);
-	// set width
+	// set text
+	name_label->setText( label_a );
+	artist_label->setText( label_b );
+	album_label->setText( label_c );
+	time_label->setText( label_d );
 
 	// add all labels to layouts
 	tags_name_layout->addWidget(name_label);
