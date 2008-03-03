@@ -2937,9 +2937,6 @@ void banradio::inizializza()
 { 
 }
 
-/*****************************************************************
- ** TO DO: sorgente Multimediale
- ****************************************************************/
 
 
 /*****************************************************************
@@ -2949,7 +2946,6 @@ termoPage::termoPage ( QWidget *parent, const char *name , char* indirizzo, char
 : bannTermo( parent, name, SecondForeground )
 {
 	/// FIXTHERMO
-	/// Overrided method
 	/// this is to support new addressing for termo central
 	this->type = type;
 	this->ind_centrale = ind_centrale;
@@ -2996,12 +2992,13 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	int delta = 0;
 	bool aggiorna = false;
 	qDebug("termoPage::status_changed()");
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(sl);
+	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
-	while( ( ds = dsi->current() ) != 0) {
-		switch (ds->get_type()) {
+	while( ( ds = dsi->current() ) != 0) 
+	{
+		switch (ds->get_type()) 
+		{
 			case device_status::THERMR:
 				qDebug("Th. regulator status variation");
 				ds->read(device_status_thermr::STAT_INDEX, curr_stat);
@@ -3011,7 +3008,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				qDebug("info_sonda = %d", curr_info_sonda.get_val());
 				ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
 				qDebug("info_centrale = %d", curr_info_centrale.get_val());
-				if(delta_setpoint == 1)
+				if (delta_setpoint == 1)
 				{
 					delta = atoi(strstr(&setpoint[0],".")+1);
 					delta+=atoi(&setpoint[0])*10;
@@ -3023,7 +3020,8 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				qDebug("stat = %d", curr_stat.get_val());
 				qDebug("loc = %d", curr_local.get_val());
 				qDebug("sp = %d", curr_sp.get_val());
-				if (curr_stat.initialized()) {
+				if (curr_stat.initialized()) 
+				{
 					switch(curr_stat.get_val()) {
 						case device_status_thermr::S_MAN:
 							qDebug("stato S_MAN");
@@ -3033,9 +3031,9 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 							nascondi(ICON);
 							tempImp->show();
 							aggiorna = true;
-							if (isShown()) {
-								((sottoMenu*)parentWidget())->
-									setNavBarMode(4,&autoIco[0]);
+							if (isShown()) 
+							{
+								((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
 								((sottoMenu*)parentWidget())->forceDraw();
 							}
 							break;
@@ -3047,29 +3045,12 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 							nascondi(ICON);
 							tempImp->show();
 							aggiorna = true;
-							if(isShown()) {
-								((sottoMenu*)parentWidget())->
-									setNavBarMode(4,&manIco[0]);
+							if(isShown())
+							{
+								((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
 								((sottoMenu*)parentWidget())->forceDraw();
 							}
 							break;
-#if 0
-						case device_status_thermr::S_ANTIGELO:
-							qDebug("stato S_ANTIGELO");
-							stato = device_status_thermr::S_ANTIGELO;
-							nascondi(BUT1);
-							nascondi(BUT2);
-							mostra(ICON);
-							tempImp->hide();
-							impostaAttivo(1);
-							aggiorna = true;
-							if(isShown()) {
-								((sottoMenu*)parentWidget())->
-									setNavBarMode(4,&manIco[0]);
-								((sottoMenu*)parentWidget())->forceDraw();
-							}
-							break;
-#endif
 						case device_status_thermr::S_ANTIGELO:
 						case device_status_thermr::S_TERM:
 						case device_status_thermr::S_GEN:
@@ -3079,16 +3060,11 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 							mostra(ICON);
 							tempImp->hide();
 							impostaAttivo(1);
-							aggiorna= true;	       
+							aggiorna= true;
 							stato = device_status_thermr::S_TERM;
-							if(isShown()) {
-#if 0
-								((sottoMenu*)parentWidget())->
-									setNavBarMode(4,&manIco[0]);
-#else
-								((sottoMenu*)parentWidget())->
-									setNavBarMode(3, (char *)"");
-#endif
+							if(isShown())
+							{
+								((sottoMenu*)parentWidget())->setNavBarMode(3, (char *)"");
 								((sottoMenu*)parentWidget())->forceDraw();
 							}
 							break;
@@ -3096,19 +3072,15 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 							qDebug("stato S_OFF");
 							mostra(ICON);
 							nascondi(BUT1);
-							nascondi(BUT2);	       
+							nascondi(BUT2);
 							tempImp->hide();
 							impostaAttivo(0);
 							aggiorna= true;
 							stato = device_status_thermr::S_OFF;
-							if(isShown()) {
-#if 0
-								((sottoMenu*)parentWidget())->
-									setNavBarMode(4,&manIco[0]);
-#else
-								((sottoMenu*)parentWidget())->
-									setNavBarMode(3, (char *)"");
-#endif
+							if(isShown())
+							{
+
+								((sottoMenu*)parentWidget())->setNavBarMode(3, (char *)"");
 								((sottoMenu*)parentWidget())->forceDraw();
 							}
 							break;
@@ -3117,10 +3089,12 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 							break;
 					}
 				}
-				if(curr_local.initialized()) {
+				if(curr_local.initialized()) 
+				{
 					qDebug("loc = %d", curr_local.get_val());
-					switch(curr_local.get_val()) {
-						case 0:	
+					switch(curr_local.get_val()) 
+					{
+						case 0:
 							val_imp=3;
 							isOff=0;
 							isAntigelo=0;
@@ -3167,12 +3141,13 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 							break;
 					}
 				}
-				if((curr_sp.initialized()) && (delta_setpoint == 0)) {
+				if((curr_sp.initialized()) && (delta_setpoint == 0))
+				{
 					//Set Point
 					float icx;
 					char	tmp[10];   
 					icx = curr_sp.get_val();
-					qDebug("temperatura setpoint: %d",(int)icx);                    
+					qDebug("temperatura setpoint: %d",(int)icx);
 					memset(setpoint,'\000',sizeof(setpoint));
 					if (icx>=1000)
 					{
@@ -3183,17 +3158,16 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 					sprintf(tmp,"%.1f",icx);
 					strcat(setpoint,tmp);
 					strcat(setpoint,"\272C");
-					aggiorna=1;	       
+					aggiorna=1;
 					break;
 				}
 				break;
 			case device_status::TEMPERATURE_PROBE:
-				ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, 
-						curr_temp);
+				ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
 				qDebug("temperature probe status variation");
 				//Temperatura misurata
 				float icx;
-				char	tmp[10];   
+				char	tmp[10];
 
 				icx = curr_temp.get_val();
 				qDebug("temperatura misurata: %d",(int)icx);
@@ -3211,18 +3185,6 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				strcat(temp,"\272C");
 				qDebug("-2: temp: %s", &temp[0]);
 				aggiorna=1;
-#if 0
-				char pippo[50];
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*#4*");
-				strcat(pippo,getAddress());
-				strcat(pippo,"*14");
-				strcat(pippo,"##");
-				msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-				emit sendInit(msg_open.frame_open);         	       
-#endif
-				////	
-				/////	       
 				break;
 			default:
 				qDebug("device status of unknown type (%d)", ds->get_type());
@@ -3283,13 +3245,13 @@ void termoPage::autoMan()
 	}
 
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));     
-	emit sendFrame(msg_open.frame_open);   
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	emit sendFrame(msg_open.frame_open);
 }
 
 void termoPage::hide()
 {
-	disconnect(parentWidget(),SIGNAL(goDx()), this, SLOT(autoMan()));    
+	disconnect(parentWidget(),SIGNAL(goDx()), this, SLOT(autoMan()));
 	banner::hide();
 }
 
