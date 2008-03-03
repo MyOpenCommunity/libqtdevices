@@ -159,8 +159,13 @@ void MultimediaSource::draw()
 void MultimediaSource::freezed(bool f)
 {
 	qDebug("MultimediaSource::freezed()");
-	// Disable aux and all of its children
-	setDisabled(f);
+	
+	// FIXED by Kemosh:
+	// a removed setDisabled(f) to avoid the "Bold effect"
+	// when freezed
+
+	// Disable MultimediaSource and all of its children
+	//setDisabled(f);
 }
 
 
