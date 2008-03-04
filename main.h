@@ -88,7 +88,7 @@ extern PropertyMap app_config;
 /*! \def VERBOSITY_LEVEL_DEFAUL
  *  It defines the starting path for mediaserver
  */
-#define MEDIASERVER_PATH            "/home/bticino/mediaserver_prova/"
+#define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
 /*! \def XML_FILE_IN_DEFAULT 
  */
 #define XML_FILE_IN_DEFAULT        ".bto-to-xml"
