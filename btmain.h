@@ -103,7 +103,7 @@ private slots:
 private:
     QTimer  *  tempo1;
     QTimer  *  tempo2;
-    QTimer  *  tempo3;	
+//    QTimer  *  tempo3;
     QWidget* pagDefault;
     char	pwd[10];
     bool	pwdOn,svegliaIsOn,alreadyCalibrated;
