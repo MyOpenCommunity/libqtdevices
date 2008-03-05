@@ -149,7 +149,7 @@ class TitleLabel : public QLabel
 {
 Q_OBJECT
 public:
-	TitleLabel( QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE );
+	TitleLabel( QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE, WFlags f = 0 );
 	
 	void setText( const QString & text_to_set );
 	void drawContents ( QPainter *p );
@@ -234,9 +234,10 @@ private:
 	/// Widgets
 	// Pointer to labels used to visualize files
 	//QPtrVector<QLabel>       labels_list;
-	QPtrVector<TitleLabel>       labels_list;
+	QPtrVector<TitleLabel>   labels_list;
 	ButtonsBar               *buttons_bar;
 	AudioPlayingWindow       *playing_window;
+	TitleLabel               *no_files_label;
 
 signals:
 	void notifyStartPlay();

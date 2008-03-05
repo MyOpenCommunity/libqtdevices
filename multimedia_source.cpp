@@ -181,8 +181,8 @@ void MultimediaSource::freezed(bool f)
 /// ***********************************************************************************************************************
 /// Methods for TitleLabel
 /// ***********************************************************************************************************************
-TitleLabel::TitleLabel(QWidget *parent, int w, int h, int w_offset, int h_offset, bool scrolling) :
-	QLabel("", parent)
+TitleLabel::TitleLabel(QWidget *parent, int w, int h, int w_offset, int h_offset, bool scrolling, WFlags f) :
+	QLabel("", parent, 0, f)
 {
 	// Style
 	setFixedWidth(w);
@@ -273,6 +273,24 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	QWidget(parent, name, f),
 	level(0)
 {
+	/// Set Style
+	// Look QColorGroup Class Reference
+	QPalette current_color_palette = palette();
+	current_color_palette.setColor( QColorGroup::Text, Qt::white );
+	current_color_palette.setColor( QColorGroup::Base, Qt::black );
+	current_color_palette.setColor( QColorGroup::Background, Qt::black );
+	current_color_palette.setColor( QColorGroup::Foreground, Qt::white );
+	// 3D Effect
+	current_color_palette.setColor( QColorGroup::Shadow, Qt::black );
+	current_color_palette.setColor( QColorGroup::Midlight, Qt::black );
+	current_color_palette.setColor( QColorGroup::Dark, Qt::black );
+	setPalette(current_color_palette);
+
+	/// label that is shown when no file is present
+	//no_files_label = new TitleLabel(this, MAX_WIDTH, 200, 0, 0, FALSE, Qt::WStyle_StaysOnTop);
+	//no_files_label->setPalette(current_color_palette);
+	//no_files_label->hide();
+
 	/// Create main Layout
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setMargin(0);
@@ -317,19 +335,6 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	files_handler.setSorting(QDir::DirsFirst | QDir::Name);
 	files_handler.setMatchAllDirs(TRUE);
 	files_handler.setNameFilter("*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
-
-	/// Set Style
-	// Look QColorGroup Class Reference
-	QPalette current_color_palette = palette();
-	current_color_palette.setColor( QColorGroup::Text, Qt::white );
-	current_color_palette.setColor( QColorGroup::Base, Qt::black );
-	current_color_palette.setColor( QColorGroup::Background, Qt::black );
-	current_color_palette.setColor( QColorGroup::Foreground, Qt::white );
-	// 3D Effect
-	current_color_palette.setColor( QColorGroup::Shadow, Qt::black );
-	current_color_palette.setColor( QColorGroup::Midlight, Qt::black );
-	current_color_palette.setColor( QColorGroup::Dark, Qt::black );
-	setPalette(current_color_palette);
 
 	/// Create playing_window and set style
 	playing_window = new AudioPlayingWindow(this);
@@ -473,6 +478,18 @@ void FileBrowser::showFiles()
 			labels_list[i]->setText( "" );
 			buttons_bar->hideButton( i );
 		}
+		
+	}
+
+	
+	if (start==end)
+	{
+		buttons_bar->showButton( 0 );
+		buttons_bar->setEnabled( FALSE );
+	}
+	else
+	{
+		buttons_bar->setEnabled( TRUE );
 	}
 }
 
@@ -500,6 +517,10 @@ QString FileBrowser::getTextRepresentation(QFileInfo *file_info)
 
 void FileBrowser::nextItem()
 {
+	// FIX migliorabile, senza questo quando c'è un solo elemento crasha
+	if (files_list.count()<=rows_per_page)
+		return;
+
 	if (pages_indexes[current_path] < files_list.count()-rows_per_page)
 		pages_indexes[current_path] += rows_per_page;
 	showFiles();
@@ -507,6 +528,10 @@ void FileBrowser::nextItem()
 
 void FileBrowser::prevItem()
 {
+	// FIX migliorabile, senza questo quando c'è un solo elemento crasha
+	if (files_list.count()<=rows_per_page)
+		return;
+
 	if (pages_indexes[current_path] > rows_per_page)
 		pages_indexes[current_path] -= rows_per_page;
 	showFiles();
