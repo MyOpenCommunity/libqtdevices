@@ -26,7 +26,8 @@
 
 class diffSonora;
 
-class dati_sorgente_multi {
+class dati_sorgente_multi 
+{
 public:
 	char tipo;
 	QPtrList<QString> *descr;
@@ -39,7 +40,8 @@ public:
 	~dati_sorgente_multi();
 };
 
-class dati_ampli_multi {
+class dati_ampli_multi
+{
 public:
 	char tipo;
 	QPtrList<QString> *descr;
@@ -51,48 +53,49 @@ public:
 	~dati_ampli_multi();
 };
 
-class diffmulti : public sottoMenu {
+class diffmulti : public sottoMenu
+{
 Q_OBJECT
 public:
-	diffmulti( QWidget *parent=0, const char *name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
+	diffmulti( QWidget *parent=0, const char *name=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1 );
 	int addItem(char tipo, QPtrList<QString> *nomi=NULL , void* indirizzo=NULL ,
 			char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,
-			char* IconaDisattiva=NULL, int periodo=0, 
-			int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , 
+			char* IconaDisattiva=NULL, int periodo=0,
+			int numFrame=0, QColor  secondFroreground=QColor(0,0,0),
 			char* descr1=NULL, char* descr2=NULL, char* descr3=NULL,
-			char* descr4=NULL, char* IcoEx1=NULL, char* IcoEx2=NULL, 
-			char* IcoEx3=NULL, int par3=0, int par4=0, 
-			QPtrList<QString> *lt = NULL, 
-			QPtrList<scenEvo_cond> *lc = NULL, 
-			QString action="", QString light="", QString key="", 
-			QString unk="", 
-			QValueList<int> sstart = QValueList<int>(), 
+			char* descr4=NULL, char* IcoEx1=NULL, char* IcoEx2=NULL,
+			char* IcoEx3=NULL, int par3=0, int par4=0,
+			QPtrList<QString> *lt = NULL,
+			QPtrList<scenEvo_cond> *lc = NULL,
+			QString action="", QString light="", QString key="",
+			QString unk="",
+			QValueList<int> sstart = QValueList<int>(),
 			QValueList<int> sttop = QValueList<int>());
 	/*!
-	  \brief Changes the type of navigation bar present at the 
-	  bsubtree (see bannFrecce). Also calls downstream diffSonora setNavBarMode
-	  */  
-	void 	setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
-	void 	setNumRighe(uchar);
-	void  ripristinaRighe(void);
-	void	forceDraw();
+	 *  \brief Changes the type of navigation bar present at the
+	 *  bsubtree (see bannFrecce). Also calls downstream diffSonora setNavBarMode
+	 */
+	void setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
+	void setNumRighe(uchar);
+	void ripristinaRighe(void);
+	void forceDraw();
 	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
 	void resizewindows(int x, int y, int w, int h);
 
 	/*!
-	  \brief Sets the geometry passing x,y,w,h.
-	  */       
-	void	setGeom(int,int,int,int);
+	 *  \brief Sets the geometry passing x,y,w,h.
+	 */
+	void setGeom(int,int,int,int);
 	void inizializza();
 public slots:
-		//void freezed();
-		void ds_closed(diffSonora *);
+	//void freezed();
+	void ds_closed(diffSonora *);
 	void hide();
 	void show();
 	void status_changed(QPtrList<device_status>);
-	/*! 
-	  \brief sets isVisual to false and emits freezed signal
-	  */
+	/*!
+	 *  \brief sets isVisual to false and emits freezed signal
+	 */
 	void freezed_handler(bool);
 signals:
 	void actSrcChanged(int, int);
@@ -103,12 +106,15 @@ private:
 	QPtrList<dati_ampli_multi> *datimmulti;
 	sottoMenu *sorgenti;
 	device *matr;
+	/// kemosh FIX
+	int _where_address;
 };
 
 class sveglia ;
 
 //! Contenitore diffusione sonora/diffusione sonora multicanale per sveglia
-class contdiff : public QObject {
+class contdiff : public QObject 
+{
 Q_OBJECT
 private:
 	diffSonora *ds;
@@ -116,24 +122,24 @@ private:
 public:
 	contdiff(diffSonora *, diffmulti *);
 	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
-	void 	setNavBarMode(uchar);
-	void 	setNumRighe(uchar);
-	void	setGeom(int,int,int,int);
-	void	forceDraw();
-	void        ripristinaRighe();
-	void        resizewindows();
-	void        restorewindows();
-	void        connectClosed(sveglia *);
-	void        disconnectClosed(sveglia *);
-	public slots:
-		//! Invoke proper hide method
-		void 	hide();
-	void        show();
+	void setNavBarMode(uchar);
+	void setNumRighe(uchar);
+	void setGeom(int,int,int,int);
+	void forceDraw();
+	void ripristinaRighe();
+	void resizewindows();
+	void restorewindows();
+	void connectClosed(sveglia *);
+	void disconnectClosed(sveglia *);
+public slots:
+	//! Invoke proper hide method
+	void hide();
+	void show();
 signals:
 	/*!
-	  \brief Emitted when the object is closed.
-	  */          
-	void 	Closed();
+	 *  \brief Emitted when the object is closed.
+	 */
+	void Closed();
 
 };
 

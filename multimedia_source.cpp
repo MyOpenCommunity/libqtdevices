@@ -76,11 +76,21 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	connect( filesWindow, SIGNAL(notifyStartPlay()), this, SLOT(handleStartPlay()) );
 	connect( filesWindow, SIGNAL(notifyStopPlay()), this, SLOT(handleStopPlay()) );
 	connect( filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()) );
-
-	/// First audio initialization
-	emit sendFrame((char *)(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address).ascii()));
-	audio_initialized = true;
 }
+
+
+void MultimediaSource::initAudio()
+{
+	// Now init is done by BtMain.cpp calling dm->inizializza()
+	qDebug("MultimediaSource::initAudio()");
+	// perform Audio Init
+	if (!audio_initialized)
+	{
+		emit sendFrame((char *)(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address).ascii()));
+		audio_initialized = true;
+	}
+}
+
 
 void MultimediaSource::showAux()
 {
@@ -91,12 +101,7 @@ void MultimediaSource::showAux()
 	disconnect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
 	connect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
 
-	if (!audio_initialized)
-	{
-		emit sendFrame((char *)(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address).ascii()));
-		audio_initialized = true;
-	}
-
+	// draw and show itself
 	draw();
 	showFullScreen();
 }

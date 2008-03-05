@@ -98,7 +98,10 @@ public:
 	FileBrowser *filesWindow;
 
 	BtLabel *auxName, *ambDescr;
-	//BtButton *fwdBut, *prova_button;
+	
+	/// Init Audio System
+	void initAudio();
+
 signals:
 	/*!
 	 * \brief Emitted when the page is going to be closed

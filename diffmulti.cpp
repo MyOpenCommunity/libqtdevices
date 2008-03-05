@@ -85,7 +85,7 @@ dati_ampli_multi::~dati_ampli_multi()
 }
 
 
-	diffmulti::diffmulti( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
+diffmulti::diffmulti( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
 : sottoMenu(parent, name, navBarMode, wi, hei, n)
 {
 #if 0
@@ -93,8 +93,7 @@ dati_ampli_multi::~dati_ampli_multi()
 	datismulti->setAutoDelete(true);
 #else
 	//sorgMulti = new QPtrList<banner>;
-	sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, 
-			MAX_HEIGHT/4 - 3,1);
+	sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, MAX_HEIGHT/4 - 3,1);
 #endif
 	datimmulti = new QPtrList<dati_ampli_multi>;
 	datimmulti->setAutoDelete(true);
@@ -105,8 +104,7 @@ dati_ampli_multi::~dati_ampli_multi()
 	connect(this, SIGNAL(frez(bool)), sorgenti, SIGNAL(freezed(bool)));
 
 	// Get status changed events back
-	connect(matr, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(matr, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni, 
@@ -135,6 +133,8 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 		 */
 		case SORGENTE_MULTIM_MC:
 			qDebug("diffmulti::additem -> Entering SORGENTE_MULTIM_MC case...");
+			// Kemosh FIX: store indirizzo to emit the proper init frame
+			_where_address = numFrame;
 		case SORG_RADIO:
 			qDebug("diffmulti::additem -> Entering SORG_RADIO case...");
 		case SORG_AUX:
@@ -185,26 +185,18 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
 				connect(this, SIGNAL(actSrcChanged(int, int)), elencoBanner.getLast(), SLOT(actSrcChanged(int, int)));
 #if 0
-				connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), 
-						this , SIGNAL(sendFrame(char*)));
-				connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), 
-						this, SIGNAL(sendFramew(char*)));
+				connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
+				connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
 #endif
-				connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , 
-						SIGNAL(freeze(bool))); 
-				connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , 
-						SIGNAL(svegl(bool))); 
-				connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), 
-						SIGNAL(freezed(bool)));      
+				connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
+				connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
+				connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
 #if 0
 				connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, 
 						SIGNAL(richStato(char*))); 
 #endif
-				connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , 
-						SLOT(killBanner(banner*)));   
-				connect(elencoBanner.getLast(), 
-						SIGNAL(ambChanged(char *, bool, void *)),
-						sorgenti, SIGNAL(ambChanged(char *, bool, void *)));
+				connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
+				connect(elencoBanner.getLast(), SIGNAL(ambChanged(char *, bool, void *)), sorgenti, SIGNAL(ambChanged(char *, bool, void *)));
 				if(tipo == AMBIENTE) 
 					sorgenti->addAmb((char *)indirizzo);
 				datimmulti->clear();
@@ -214,26 +206,21 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 		case GR_AMPLIFICATORI:
 			{
 				qDebug("Gruppo amplificatori");
-				QPtrListIterator<QString> *lsi = 
-					new QPtrListIterator<QString>(*(QPtrList<QString> *)indirizzo);
+				QPtrListIterator<QString> *lsi = new QPtrListIterator<QString>(*(QPtrList<QString> *)indirizzo);
 				QString *s;
-				while( ( s = lsi->current()) ) {
+				while( ( s = lsi->current()) ) 
+				{
 					qDebug("ADDRESS = %s", s->ascii());
 					++(*lsi);
 				}
-				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, 
-							indirizzo, IconaSx, IconaDx,
-							icon, pressedIcon, modo));
+				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, IconaSx, IconaDx, icon, pressedIcon, modo));
 				delete lsi;
 				break;
 			}
 
 		case AMPLIFICATORE:
-			qDebug("Icone = %s - %s - %s - %s", IconaSx, IconaDx, pressedIcon,
-					icon);
-			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, 
-						indirizzo, IconaSx, IconaDx,
-						pressedIcon, icon, modo));
+			qDebug("Icone = %s - %s - %s - %s", IconaSx, IconaDx, pressedIcon, icon);
+			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, IconaSx, IconaDx, pressedIcon, icon, modo));
 			break;
 		default:
 			sottoMenu::addItem(tipo, (char *)descrizioni->at(0)->ascii(), 
@@ -296,14 +283,19 @@ void diffmulti::reparent(QWidget *par, unsigned int f, QPoint p,
 
 void diffmulti::inizializza()
 {
+	/**
+	 *  Kemosh FIX: initially this function was not called by BtMain.cpp
+	 *  also if it was present.
+	 */ 
 	qDebug("diffmulti::inizializza()");
-#if 0
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen("16","1000","11","");	     
-	emit sendFrame(msg_open.frame_open); 
-#else
-	matr->init();
-#endif
+
+	//openwebnet msg_open;
+	//msg_open.CreateMsgOpen("16","1000","11","");
+	//emit sendFrame(msg_open.frame_open);
+	// matr->init();
+	
+	QString indirizzo = QString("%1").arg(_where_address);
+	emit sendFrame((char *)(QString("*#22*7*#15*%1***4**0**1***0##").arg(indirizzo).ascii()));
 }
 
 void diffmulti::ds_closed(diffSonora *ds)

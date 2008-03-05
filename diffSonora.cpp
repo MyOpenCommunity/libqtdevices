@@ -138,7 +138,7 @@ void diffSonora::setNumRighe(uchar n)
 void diffSonora::inizializza()
 {
 	amplificatori-> inizializza();
-	emit sendInit("*16*53*100##"); 
+	emit sendInit("*16*53*100##");
 }
 
 

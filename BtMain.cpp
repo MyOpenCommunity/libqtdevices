@@ -154,8 +154,8 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 
 void BtMain::hom()
 {
-	if (tempo1)  
-		delete(tempo1);   
+	if (tempo1)
+		delete(tempo1);
 	else
 	{
 		tempo1 = new QTimer(this,"clock");
@@ -198,7 +198,7 @@ void BtMain::hom()
 	//    qDebug( "FONT RAWMODE=%d",(Home.font()).rawMode());
 	//    qDebug( "FONT EXACTMATCH=%d",(Home.font()).exactMatch());
 	*/	 
-	datiGen->inizializza();    	 
+	datiGen->inizializza();
 
 
 	//--------------------------------------------------
@@ -251,7 +251,7 @@ void BtMain::hom()
 		delete handler2;
 		delete xmlFile;
 
-		qApp->setMainWidget( Home);   
+		qApp->setMainWidget( Home);
 		hide();
 	}
 	setGeometry(0,0,240,320);
@@ -272,51 +272,53 @@ void BtMain::init()
 	qDebug("BtMain::init()");
 	connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
 	connect(datiGen,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-	connect(datiGen,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));       
-	connect(Home,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));       
+	connect(datiGen,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
+	connect(Home,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 
-	Home->inizializza(); 
+	Home->inizializza();
 	if (datiGen)
 		datiGen->inizializza();
-	if(illumino)
+	if (illumino)
 		illumino->inizializza();
-	if(automazioni)
+	if (automazioni)
 		automazioni->inizializza();
-	if(antintr)
+	if (antintr)
 		antintr->inizializza();
-	if(difSon)
-		difSon->inizializza();     
-	if(scenari)
+	if (difSon)
+		difSon->inizializza();
+	if (dm)
+		dm->inizializza();
+	if (scenari)
 		scenari->inizializza();
-	if(imposta)
+	if (imposta)
 		imposta->inizializza();
-	if(termo)
+	if (termo)
 		termo->inizializza();
-	if(scenari_evoluti)
+	if (scenari_evoluti)
 		scenari_evoluti->inizializza();
-	if(videocitofonia)
+	if (videocitofonia)
 		videocitofonia->inizializza();
-	if(imposta)
+	if (imposta)
 		imposta->inizializza();
 	//    rearmWDT();
 
 	struct sysinfo info;
 	sysinfo(&info);
 	//    qDebug("uptime= %d - timePress= %d", info.uptime, getTimePress() );
-	if ( (info.uptime<200) && ( (unsigned long)(info.uptime-1)>(unsigned long)getTimePress() )  && (!alreadyCalibrated)) 
-	{	
+	if ( (info.uptime<200) && ( (unsigned long)(info.uptime-1)>(unsigned long)getTimePress() )  && (!alreadyCalibrated))
+	{
 		calib = new Calibrate(NULL,"calibrazione",0,1);
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)          
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 		Home->hide();
 		calib->show();//FullScreen(); con fullscreen non va!
 		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showFullScreen()));
 #endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)    
-		calib->show(); 
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)
+		calib->show();
 		//  connect(calib, SIGNAL(fineCalib()), Home,SLOT(show()));
-#endif              
-	}         
+#endif
+	}
 }
 
 

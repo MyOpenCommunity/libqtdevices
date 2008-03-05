@@ -2480,7 +2480,6 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	QWidget *sotto_menu = this->parentWidget(FALSE)->parentWidget(FALSE);
 	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
 	connect(&source_menu, SIGNAL(Closed()), &source_menu, SLOT(hide()));
-
 	connect(&source_menu, SIGNAL(sendFrame(char *)), this, SIGNAL(sendFrame(char *)));
 }
 
@@ -2499,6 +2498,11 @@ void BannerSorgenteMultimedia::hide()
 	source_menu.hide();
 }
 
+
+// void BannerSorgenteMultimedia::inizializza()
+// {
+// 	source_menu.initAudio();
+// }
 
 /*****************************************************************
  **sorgente_Radio
