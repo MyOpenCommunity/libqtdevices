@@ -328,7 +328,7 @@ void BtMain::myMain()
 {
 	qDebug("entro MyMain");
 
-	delete(tempo3);
+//	delete(tempo3);
 	
 	init();
 

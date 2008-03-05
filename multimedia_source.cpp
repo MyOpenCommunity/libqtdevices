@@ -366,9 +366,9 @@ void FileBrowser::itemIsClicked(int item)
 	else
 		return;
 
-	if ( clicked_element->exists())
+	if (clicked_element->exists())
 	{
-		if (clicked_element->isDir() )
+		if (clicked_element->isDir())
 		{
 			level++;
 			browseFiles(clicked_element->absFilePath());
@@ -380,11 +380,13 @@ void FileBrowser::itemIsClicked(int item)
 			playing_window->show();
 		}
 	}
-	
-	// this is added to browse again the current path and verify if something is changed
-	// it is useful if some file is removed so the current directory is refreshed
-	qDebug( QString("Current absFilePath is %1").arg( QFileInfo(current_path).absFilePath() ) );
-	browseFiles();
+	else
+	{
+		// this is added to browse again the current path and verify if something is changed
+		// it is useful if some file is removed so the current directory is refreshed
+		qDebug( QString("Current absFilePath is %1").arg( QFileInfo(current_path).absFilePath() ) );
+		browseFiles();
+	}
 }
 
 void FileBrowser::browseUp()
@@ -418,7 +420,6 @@ void FileBrowser::browseFiles(QString new_path)
 		// change path
 		files_handler.setPath( new_path_string );
 		current_path = new_path_string;
-		
 	}
 	browseFiles();
 }
