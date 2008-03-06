@@ -763,7 +763,9 @@ private:
 	char autoIco[50];
 	QTimer setpoint_timer;
 public:
-	termoPage ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaMeno=NULL,char* IconaPiu=NULL,char*IconaMansx=NULL,char*IconaAuto=NULL,char*IconaAntigelo=NULL,char*IconaOff=NULL, QColor 	SecondForeground=QColor(0,0,0), int type = 0, const QString &ind_centrale = 0);
+	termoPage (QWidget *parent, int tipo_sottomenu, const char *name, char *indirizzo,
+		QPtrList<QString> &icon_names,
+		QColor SecondForeground = QColor(0,0,0), int type = 0, const QString &ind_centrale = 0);
 	void inizializza();
 	char* getChi();
 	char* getAutoIcon();

@@ -58,13 +58,12 @@ class diffmulti : public sottoMenu
 Q_OBJECT
 public:
 	diffmulti( QWidget *parent=0, const char *name=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1 );
-	int addItem(char tipo, QPtrList<QString> *nomi=NULL , void* indirizzo=NULL ,
-			char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,
-			char* IconaDisattiva=NULL, int periodo=0,
+	int addItem(char tipo, QPtrList<QString> *nomi, void* indirizzo,
+			QPtrList<QString> &icon_names,
+			int periodo=0,
 			int numFrame=0, QColor  secondFroreground=QColor(0,0,0),
 			char* descr1=NULL, char* descr2=NULL, char* descr3=NULL,
-			char* descr4=NULL, char* IcoEx1=NULL, char* IcoEx2=NULL,
-			char* IcoEx3=NULL, int par3=0, int par4=0,
+			char* descr4=NULL, int par3=0, int par4=0,
 			QPtrList<QString> *lt = NULL,
 			QPtrList<scenEvo_cond> *lc = NULL,
 			QString action="", QString light="", QString key="",

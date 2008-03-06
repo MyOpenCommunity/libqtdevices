@@ -308,8 +308,8 @@ class device_status_thermr : public device_status {
 	LOCAL_INDEX,
 	SP_INDEX,
 	CRONO,
-  INFO_SONDA,
-  INFO_CENTRALE,
+	INFO_SONDA,
+	INFO_CENTRALE,
     } ind;
     enum {
 	S_MAN = 0,

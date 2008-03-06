@@ -190,11 +190,13 @@ int antintrusione::setBGPixmap(char* backImage)
 }
 
 
-int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame, char* txt_tecnico, char* txt_intrusione, char* txt_manomissione, char* txt_panic)
+int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,
+	QPtrList<QString> &icon_names,
+	int periodo, int numFrame, char* txt_tecnico, char* txt_intrusione, char* txt_manomissione, char* txt_panic)
  {        
     if (tipo== IMPIANTINTRUS)
     {
-	impianto -> addItem(tipo, descrizione,indirizzo,  IconaSx, IconaDx, icon, pressedIcon);
+	impianto->addItem(tipo, descrizione, indirizzo, icon_names);
 	connect(impianto->getLast(), SIGNAL(impiantoInserito()), this
 		,SLOT(doClearAlarms()));
 	connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),
@@ -222,8 +224,7 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,char* I
 	impianto->forceDraw();
     }
     else if (tipo== ZONANTINTRUS) {
-	zone->addItem(tipo , descrizione , indirizzo ,IconaSx,IconaDx, icon, 
-		      pressedIcon);
+	zone->addItem(tipo, descrizione, indirizzo, icon_names);
 	connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), 
 		SLOT(abilitaParz(bool)));
 	connect(this, SIGNAL(clearChanged()), zone->getLast(),

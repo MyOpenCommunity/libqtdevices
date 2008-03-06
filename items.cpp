@@ -4,7 +4,7 @@
  **
  ** items.cpp
  **
- **
+ **f
  **definizione dei vari items
  ****************************************************************/
 #include "items.h"
@@ -2946,8 +2946,11 @@ void banradio::inizializza()
 /*****************************************************************
  **termoPage
  ****************************************************************/
-termoPage::termoPage ( QWidget *parent, const char *name , char* indirizzo, char* IconaMeno, char* IconaPiu, char* IconaMan, char* IconaAuto, char* IconaAntigelo, char* IconaOff, QColor SecondForeground, int type, const QString &ind_centrale )
-: bannTermo( parent, name, SecondForeground )
+termoPage::termoPage(QWidget *parent, int tipo_sottomenu, const char *name , char* indirizzo,
+		QPtrList<QString> &icon_names,
+		//char *IconaMeno, char *IconaPiu, char *IconaMan, char *IconaAuto, char *IconaAntigelo, char *IconaOff,
+		QColor SecondForeground, int type, const QString &ind_centrale)
+	: bannTermo( parent, name, SecondForeground )
 {
 	/// FIXTHERMO
 	/// this is to support new addressing for termo central
@@ -2965,11 +2968,10 @@ termoPage::termoPage ( QWidget *parent, const char *name , char* indirizzo, char
 	qDebug(QString(">>> returned address is %1 <<<").arg( getAddress() ));
 	/// FINE FIXTHERMO
 
-	//SetIcons( IconaMeno, IconaPiu , ICON_SONDAOFF,ICON_SONDAANTI);/*IconaMan, IconaAuto );*/
-	//SetIcons( IconaMeno, IconaPiu, IconaOff, IconaAntigelo);
-	SetIcons( IconaMeno, IconaPiu, IconaAntigelo, IconaOff);
-	strncpy(&manIco[0],IconaMan,sizeof(manIco));
-	strncpy(&autoIco[0],IconaAuto, sizeof(autoIco));
+	SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+		(char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
+	strncpy(&manIco[0], icon_names.at(2)->ascii(), sizeof(manIco));
+	strncpy(&autoIco[0], icon_names.at(3)->ascii(), sizeof(autoIco));
 	connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));
 	setChi("4");
@@ -3226,7 +3228,6 @@ void termoPage::autoMan()
 
 	if    (stato==device_status_thermr::S_MAN)
 	{
-		/// FRAME VERSO LA CENTRALE
 		strcat(pippo,"*4*311*#");
 		strcat(pippo,getAddress());
 	}
@@ -3240,7 +3241,6 @@ void termoPage::autoMan()
 		icx+=atoi(&setpoint[0])*10;
 		if (icx<0)
 			icx=(abs(icx))+1000;
-		/// FRAME VERSO LA CENTRALE (??????)
 		strcat(pippo,"*#4*#");
 		strcat(pippo,getAddress());
 		strcat(pippo,"*#14*");
@@ -4867,10 +4867,20 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 	dati_ampli_multi *am;
 	while( ( am = lai->current() ) != 0) 
 	{
+		QPtrList<QString> icons;
+		QString qI1(am->I1);
+		QString qI2(am->I2);
+		QString qI3(am->I3);
+		QString qI4(am->I4);
+		icons.append(&qI1);
+		icons.append(&qI2);
+		icons.append(&qI3);
+		icons.append(&qI4);
+
 		if(am->tipo == AMPLIFICATORE)
 		{
 			qDebug("Adding amplifier (%d, %s %s)", am->tipo, (char *)am->indirizzo, am->descr->at(0)->ascii());
-			diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), (char *)am->indirizzo, am->I1, am->I2, am->I4, am->I3, am->modo);
+			diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), (char *)am->indirizzo, icons, am->modo);
 		}
 		else 
 		{
@@ -4886,7 +4896,7 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 				indirizzi->setAutoDelete(true);
 				for(int j=0; j<qsl.count(); j++)
 					indirizzi->append(new QString(qsl[j]));
-				diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), indirizzi, am->I1, am->I2, am->I3, am->I4, am->modo);
+				diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), indirizzi, icons, am->modo);
 				++(*lii);
 			}
 			delete lii;
@@ -4990,13 +5000,24 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 	QPtrListIterator<dati_ampli_multi> *lai = new QPtrListIterator<dati_ampli_multi>(*la);
 	lai->toFirst();
 	dati_ampli_multi *am;
-	while( ( am = lai->current() ) != 0) {
+	while( ( am = lai->current() ) != 0)
+	{
+		QPtrList<QString> icons;
+		QString qI1(am->I1);
+		QString qI2(am->I2);
+		QString qI3(am->I3);
+		QString qI4(am->I4);
+		icons.append(&qI1);
+		icons.append(&qI2);
+		icons.append(&qI3);
+		icons.append(&qI4);
+
 		if(am->tipo == AMPLIFICATORE) {
 			qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
 					(char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
 			diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
 					(char *)am->indirizzo,
-					am->I1, am->I2, am->I4, am->I3, am->modo);
+					icons, am->modo);
 		} else {
 			qDebug("Adding amplifier group(%d)", am->tipo);
 			qDebug("indirizzo = %p", am->indirizzo);
@@ -5013,7 +5034,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 					indirizzi->append(new QString(qsl[j]));
 				diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
 						indirizzi,
-						am->I1, am->I2, am->I3, am->I4, am->modo);
+						icons, am->modo);
 				++(*lii);
 			}
 			delete lii;

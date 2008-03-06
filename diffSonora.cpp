@@ -98,25 +98,27 @@ int diffSonora::setBGPixmap(char* backImage)
 }
 
 
-int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int modo, int where, char *ambdescr)
+int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,
+		QPtrList<QString> &icon_names,
+		int modo, int where, char *ambdescr)
 {
 	if  ( (tipo==SORGENTE_AUX) || (tipo==SORGENTE_RADIO) || (tipo==SORGENTE_MULTIM) )
 	{
 		sorgenti-> setBGColor( backgroundColor() );
 		sorgenti-> setFGColor( foregroundColor() );
-		sorgenti-> addItem(tipo , descrizione , indirizzo , icon, pressedIcon, NULL, NULL, modo, where);
+		sorgenti-> addItem(tipo, descrizione, indirizzo, icon_names, modo, where);
 	}
 	else if ( (tipo == SORG_RADIO) || (tipo == SORG_AUX) || (tipo == SORGENTE_MULTIM_MC) )
 	{
 		sorgenti-> setBGColor(backgroundColor() );
 		sorgenti-> setFGColor(foregroundColor() );
-		sorgenti-> addItem(tipo , descrizione , indirizzo , IconaSx, IconaDx, icon, NULL, modo, 0, QColor(0,0,0), ambdescr);
+		sorgenti-> addItem(tipo, descrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 	}
 	else
 	{
-		amplificatori->addItem(tipo, descrizione, indirizzo, IconaSx, IconaDx, icon, pressedIcon);
+		amplificatori->addItem(tipo, descrizione, indirizzo, icon_names);
 	}
 	return(1);
 }

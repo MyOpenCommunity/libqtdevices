@@ -326,7 +326,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 					/*		    for ( QString * MyPnt = page_item_list_img->first(); MyPnt; MyPnt= page_item_list_img->next() )
 							    qWarning("IMG=%s su %d",MyPnt->ascii(),page_item_list_img->count());*/
 
-					for(int idx=page_item_list_img->count();idx<7;idx++)
+					for(int idx=page_item_list_img->count();idx<11;idx++)
 					{
 						page_item_list_img->append(new QString(""));
 					}
@@ -434,12 +434,25 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							{
 								pnt=datiGen;
 							}
-							pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt/*(char*)pip.ascii() (char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, SecondForeground,  (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii(),   (char*)page_item_list_img->at(4)->ascii(),    (char*)page_item_list_img->at(5)->ascii(),  (char*)page_item_list_img->at(6)->ascii() , par3, par4 , page_item_list_txt_times, page_item_cond_list, page_item_action, page_item_light, page_item_key, page_item_unknown, sstart, sstop, page_item_txt1, page_item_txt2, page_item_txt3)  ;
-							page_item_cond_list->clear();
+							pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),
+								pnt,
+								*page_item_list_img,
+								par1,  par2, SecondForeground,
+								(char*)page_item_list_txt->at(0)->ascii(),
+								(char*)page_item_list_txt->at(1)->ascii(),
+								(char*)page_item_list_txt->at(2)->ascii(),
+								(char*)page_item_list_txt->at(3)->ascii(),
+								par3, par4,
+								page_item_list_txt_times, page_item_cond_list, page_item_action,
+								page_item_light, page_item_key, page_item_unknown, sstart, sstop,
+								page_item_txt1, page_item_txt2, page_item_txt3);
+								page_item_cond_list->clear();
 							break;
 						case ANTIINTRUSIONE:
 							//     qDebug("antiintr");
-							(*antintr)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  (char*)page_item_where.ascii(), (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii())  ;
+							(*antintr)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),
+								(char*)page_item_where.ascii(),
+								*page_item_list_img, par1,  par2, (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii())  ;
 							break;
 						case DIFSON:
 							if ((!page_item_what.isNull()) &&
@@ -460,7 +473,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 								pnt=page_item_list_group;
 							}
 							par1 = page_item_mode.toInt();
-							(*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),  pnt/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2);
+							(*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt,
+								*page_item_list_img,
+								par1,  par2);
 							break;
 
 						case DIFSON_MULTI:
@@ -483,7 +498,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							
 							par2 = atoi(pip);
 
-							(*dm)->addItem ((char)page_item_id, page_item_descr_m,  pip/*(char*)page_item_where.ascii()*/, (char*)page_item_list_img->at(0)->ascii(), (char*)page_item_list_img->at(1)->ascii() ,  (char*)page_item_list_img->at(2)->ascii(),  (char*)page_item_list_img->at(3)->ascii(),  par1,  par2, QColor(0,0,0))  ;
+							(*dm)->addItem ((char)page_item_id, page_item_descr_m, pip,
+								*page_item_list_img, par1, par2, QColor(0,0,0));
 							qDebug("clearing descr list");
 							page_item_descr_m->clear();
 							break;
@@ -534,13 +550,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						pnt=page_item_list_group_m;
 					}
 					(*dm)->addItem((char)page_item_id_m, 
-#if 0
-							(char *)page_item_descr_m.ascii(),
-#else
-							page_item_descr_m,
-#endif
-							pnt, 
-							(char*)page_item_list_img_m->at(0)->ascii(), (char*)page_item_list_img_m->at(1)->ascii(), (char*)page_item_list_img_m->at(2)->ascii(), (char*)page_item_list_img_m->at(3)->ascii());
+						page_item_descr_m,
+						pnt, 
+						*page_item_list_img_m);
 					qDebug("clearing descr list !!!\n");
 					page_item_descr_m->clear();
 					page_item_list_img_m->clear();

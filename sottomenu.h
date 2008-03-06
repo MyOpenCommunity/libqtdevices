@@ -91,9 +91,11 @@ unknown : unknown field (for video door phone items
 sstart : soft start values list for dimmer 100 group
 sstop : soft stop values list vor dimmer 100 group
 */     
-		virtual int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,\
-				char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, QColor  secondFroreground=QColor(0,0,0) , char* descr1=NULL,\
-				char* descr2=NULL,char* descr3=NULL,char* descr4=NULL,char* IcoEx1=NULL,char* IcoEx2=NULL, char* IcoEx3=NULL, int par3=0, int par4=0, 
+		virtual int addItem(char tipo, char *nome, void *indirizzo,
+				QPtrList<QString> &icon_names,
+				int periodo = 0, int numFrame = 0, QColor secondFroreground = QColor(0,0,0),
+				char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
+				int par3=0, int par4=0, 
 				QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, 
 				QString action="", QString light="", QString key="", QString unk="", QValueList<int> sstart = QValueList<int>(), QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
 		/*!

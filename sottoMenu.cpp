@@ -141,26 +141,41 @@ int sottoMenu::setBGPixmap(char* backImage)
 }
 
 
-int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char*  IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame, \
-		QColor SecondForeground,char* descr1,char* descr2,char* descr3,char* descr4, char* icoEx1, char* icoEx2, char* icoEx3,int par3,int par4, QPtrList<QString> *lt, QPtrList<scenEvo_cond> *lc, QString action, 
-		QString light, QString key, QString unknown, QValueList<int>sstart, QValueList<int>sstop, QString txt1, QString txt2, QString txt3)
+int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
+		QPtrList<QString> &icon_names,
+		int periodo, int numFrame,
+		QColor SecondForeground,
+		char *descr1, char *descr2, char *descr3, char *descr4,
+		int par3, int par4,
+		QPtrList<QString> *lt, QPtrList<scenEvo_cond> *lc,
+		QString action, QString light, QString key, QString unknown,
+		QValueList<int> sstart, QValueList<int> sstop,
+		QString txt1, QString txt2, QString txt3)
 {
+	char *IconaSx = (char *)icon_names.at(0)->ascii();
+	char *IconaDx = (char *)icon_names.at(1)->ascii();
+	char *icon = (char *)icon_names.at(2)->ascii();
+	char *pressedIcon = (char *)icon_names.at(3)->ascii();
+	char *icoEx1 = (char *)icon_names.at(4)->ascii();
+	char *icoEx2 = (char *)icon_names.at(5)->ascii();
+	char *icoEx3 = (char *)icon_names.at(6)->ascii();
+
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo){
-		case ATTUAT_AUTOM:   elencoBanner.append(new attuatAutom(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame)); break;     
+		case ATTUAT_AUTOM:   elencoBanner.append(new attuatAutom(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame)); break;
 		case DIMMER:   elencoBanner.append(new dimmer(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon, icoEx1)); break;
 		case DIMMER_100: elencoBanner.append(new dimmer100(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon, icoEx1, par3, par4)); break;
 		case SCENARIO:   elencoBanner.append(new scenario(this,descrizione ,(char*)indirizzo,IconaSx)); break;
-		case GR_ATTUAT_AUTOM: elencoBanner.append(new grAttuatAutom(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,periodo,numFrame)); break;  
-		case GR_DIMMER: elencoBanner.append(new grDimmer(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;  			 
-		case GR_DIMMER100: elencoBanner.append(new grDimmer100(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon, periodo, numFrame, sstart, sstop)); break; 
-		case CARICO: elencoBanner.append(new carico(this,descrizione ,(char*)indirizzo,IconaSx)); break; 
+		case GR_ATTUAT_AUTOM: elencoBanner.append(new grAttuatAutom(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,periodo,numFrame)); break;
+		case GR_DIMMER: elencoBanner.append(new grDimmer(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;
+		case GR_DIMMER100: elencoBanner.append(new grDimmer100(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon, periodo, numFrame, sstart, sstop)); break;
+		case CARICO: elencoBanner.append(new carico(this,descrizione ,(char*)indirizzo,IconaSx)); break;
 		case ATTUAT_AUTOM_INT: elencoBanner.append(new attuatAutomInt(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame)); break;
 		case ATTUAT_AUTOM_INT_SIC: elencoBanner.append(new attuatAutomIntSic(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame)); break;
-		case ATTUAT_AUTOM_TEMP: elencoBanner.append(new attuatAutomTemp(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt)); break;     
-		case ATTUAT_AUTOM_TEMP_NUOVO_N: elencoBanner.append(new attuatAutomTempNuovoN(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame, lt)); break; 
-		case ATTUAT_AUTOM_TEMP_NUOVO_F: 
-						if(!lt->count()) 
+		case ATTUAT_AUTOM_TEMP: elencoBanner.append(new attuatAutomTemp(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt)); break;
+		case ATTUAT_AUTOM_TEMP_NUOVO_N: elencoBanner.append(new attuatAutomTempNuovoN(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame, lt)); break;
+		case ATTUAT_AUTOM_TEMP_NUOVO_F:
+						if(!lt->count())
 							lt->append(new QString(""));
 						elencoBanner.append(new attuatAutomTempNuovoF(this,descrizione, (char*)indirizzo,IconaSx, IconaDx, icon, lt->at(0)->ascii())); break;
 		case GR_ATTUAT_INT: elencoBanner.append(new grAttuatInt(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,periodo,numFrame)); break;
@@ -178,36 +193,39 @@ int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* Icona
 			elencoBanner.append(new BannerSorgenteMultimedia(this, descrizione, (char *)indirizzo, numFrame));
 			break;
 #if 0
-		case AMBIENTE: elencoBanner.append(new ambDiffSon(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, page_item_list_sorgentiMulti)); 
+		case AMBIENTE: elencoBanner.append(new ambDiffSon(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, page_item_list_sorgentiMulti));
 #endif
 		case SORGENTE_RADIO : elencoBanner.append(new banradio(this,descrizione ,(char*)indirizzo)); break;
-		case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;  	
+		case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;
 		case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,descr1,descr2,descr3,descr4,icoEx1,par3)); break;
-		case CALIBRAZIONE: 
+		case CALIBRAZIONE:
 				  {
 					  calibration *c = new calibration(this,descrizione ,IconaSx);
-					  elencoBanner.append(c); 
+					  elencoBanner.append(c);
 					  connect(c, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
 					  connect(c, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
 					  break;
 				  }
 		/// New parameters for termoPage (that is in items.cpp)
 		// WARNING! par3 is <type> tag of TERMO page, par4 is <ind_centrale>
-		case TERMO: elencoBanner.append(new termoPage(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,icoEx1,icoEx2,SecondForeground, par3, txt1)); break;
+		case TERMO:
+		case TERMO_FANCOIL:
+			elencoBanner.append(new termoPage(this, tipo, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			break;
 		case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
-		case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;       
+		case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
 		case SUONO: elencoBanner.append(new impBeep(this,descrizione , IconaSx,IconaDx, icon)); break;
 		case CONTRASTO: elencoBanner.append(new impContr(this,descrizione , IconaSx,IconaDx)); break;
 		case VERSIONE: elencoBanner.append(new machVers(this,descrizione , (versio*)indirizzo, IconaSx)); break;
 #if 0
 		case ALLARME: elencoBanner.append(new allarme(this,descrizione ,(char*)indirizzo, IconaSx));break;
 #endif
-			      //    case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione , (char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon)); break;		  		 
-		case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione ,IconaDx,icon,pressedIcon, IconaSx, periodo)); break;		  		 
+			      //    case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione , (char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon)); break;
+		case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione ,IconaDx,icon,pressedIcon, IconaSx, periodo)); break;
 		case MOD_SCENARI:  elencoBanner.append(new gesModScen(this, descrizione ,(char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon, icoEx1, icoEx2, icoEx3));break;
 		case SCENARIO_EVOLUTO: elencoBanner.append(new scenEvo(this, descrizione, lc, IconaSx, IconaDx, icon, pressedIcon, NULL, NULL, NULL, action, par3));
 				       break;
-		case SCENARIO_SCHEDULATO: elencoBanner.append(new scenSched(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4)); break;							
+		case SCENARIO_SCHEDULATO: elencoBanner.append(new scenSched(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4)); break;
 					  // FIXME: VERIFICA I PARAMETRI !!!
 		case POSTO_ESTERNO: elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, (char *)light.ascii(), (char *)key.ascii(), (char *)unknown.ascii(), (char *)txt1.ascii(), (char *)txt2.ascii(), (char *)txt3.ascii())); break;
 		case SORG_RADIO:
@@ -220,20 +238,20 @@ int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* Icona
 			qDebug("********** sottoMenu::addItem(): unknown item type!!! ************\n");
 			exit(1);
 	}
-	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
-	connect(this, SIGNAL(parentChanged(QWidget *)), 
+	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));
+	connect(this, SIGNAL(parentChanged(QWidget *)),
 			elencoBanner.getLast(), SLOT(grandadChanged(QWidget *)));
 	connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
 	connect(elencoBanner.getLast(), SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , SIGNAL(freeze(bool))); 
-	connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool))); 
-	connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));      
+	connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , SIGNAL(freeze(bool)));
+	connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
+	connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
 	//connect( this , SIGNAL(hide()), elencoBanner.getLast(), SIGNAL(hide()));
 
-	//     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez())); 
-	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*))); 
-	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
+	//     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez()));
+	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
+	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));
 
 	elencoBanner.getLast()->SetText(descrizione);
 	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
@@ -250,7 +268,7 @@ int sottoMenu::addItem(char tipo, char* descrizione, void* indirizzo,char* Icona
 	}
 
 	//     draw();
-	return(1);    
+	return(1);
 }
 
 void sottoMenu::addItem(banner *b)

@@ -107,15 +107,14 @@ diffmulti::diffmulti( QWidget *parent, const char *name, uchar navBarMode,int wi
 	connect(matr, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
-int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni, 
+int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 		void* indirizzo,
-		char* IconaSx, char*  IconaDx, char *icon ,
-		char *pressedIcon, int modo, int numFrame, 
+		QPtrList<QString> &icon_names,
+		int modo, int numFrame,
 		QColor SecondForeground, char* descr1, char* descr2,
-		char* descr3, char* descr4, char* icoEx1, char* icoEx2,
-		char* icoEx3,int par3,int par4, QPtrList<QString> *lt, 
-		QPtrList<scenEvo_cond> *lc, QString action, 
-		QString light, QString key, QString unknown, 
+		char* descr3, char* descr4, int par3,int par4, QPtrList<QString> *lt,
+		QPtrList<scenEvo_cond> *lc, QString action,
+		QString light, QString key, QString unknown,
 		QValueList<int>sstart, QValueList<int>sstop)
 {
 	qDebug("diffmulti::addItem (%d)", tipo);
@@ -144,8 +143,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			/*
 			 * NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
 			 */
-			sorgenti->addItem(tipo, (char *)descrizioni->at(0)->ascii(), (char *)indirizzo, IconaSx, IconaDx, icon,
-				NULL, 0, numFrame);
+			sorgenti->addItem(tipo, (char *)descrizioni->at(0)->ascii(), (char *)indirizzo, icon_names, 0, numFrame);
 			b = sorgenti->getLast();
 			connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
 			connect(sorgenti, SIGNAL(ambChanged(char *, bool, void *)),b, SLOT(ambChanged(char *, bool, void *)));
@@ -170,11 +168,16 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				banner *b;
 				if(tipo == AMBIENTE) 
 				{
-					b = new ambDiffSon(this, descrizioni->at(0)->ascii(), indirizzo, IconaSx, IconaDx, icon,  datimmulti, ds, sorgenti, this);
+					b = new ambDiffSon(this, descrizioni->at(0)->ascii(), indirizzo,
+						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+						(char *)icon_names.at(2)->ascii(),
+						datimmulti, ds, sorgenti, this);
 				}
 				else
 				{
-					b = new insAmbDiffSon(this, descrizioni, indirizzo, IconaSx, IconaDx, datimmulti, ds,  sorgenti, this);
+					b = new insAmbDiffSon(this, descrizioni, indirizzo,
+						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+						datimmulti, ds,  sorgenti, this);
 				}
 				elencoBanner.append(b);
 				dslist->append(ds);
@@ -213,21 +216,28 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 					qDebug("ADDRESS = %s", s->ascii());
 					++(*lsi);
 				}
-				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, IconaSx, IconaDx, icon, pressedIcon, modo));
+				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
+						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+						(char *)icon_names.at(2)->ascii(), (char *)icon_names.at(3)->ascii(),
+						modo));
 				delete lsi;
 				break;
 			}
 
 		case AMPLIFICATORE:
-			qDebug("Icone = %s - %s - %s - %s", IconaSx, IconaDx, pressedIcon, icon);
-			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, IconaSx, IconaDx, pressedIcon, icon, modo));
+			qDebug("Icone = %s - %s - %s - %s",
+						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+						(char *)icon_names.at(2)->ascii(), (char *)icon_names.at(3)->ascii());
+			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
+						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+						(char *)icon_names.at(2)->ascii(), (char *)icon_names.at(3)->ascii(),
+						modo));
 			break;
 		default:
 			sottoMenu::addItem(tipo, (char *)descrizioni->at(0)->ascii(), 
-					indirizzo, IconaSx,
-					IconaDx, icon, pressedIcon, modo, numFrame,
+					indirizzo, icon_names, modo, numFrame,
 					SecondForeground, descr1, descr2,
-					descr3, descr4, icoEx1, icoEx2, icoEx3, par3, 
+					descr3, descr4, par3, 
 					par4, lt, lc, action, light, key, unknown,
 					sstart, sstop);
 			break;

@@ -48,7 +48,9 @@ public:
 /*!
   \brief inserts a new item in the antintrusione class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
 */    
-   int 	addItem(char tipo= 0, char* nome=NULL , void* indirizzo=NULL ,char* IconaSx=NULL,char* IconaDx=NULL,char* IconaAttiva=NULL,char* IconaDisattiva=NULL,int periodo=0 , int numFrame=0, char* txt_tecnico=NULL, char* txt_intrusione=NULL, char* txt_manomissione=NULL, char* txt_panic=NULL );
+   int 	addItem(char tipo, char* nome , void* indirizzo,
+	QPtrList<QString> &icon_names,
+	int periodo=0 , int numFrame=0, char* txt_tecnico=NULL, char* txt_intrusione=NULL, char* txt_manomissione=NULL, char* txt_panic=NULL );
 /*!
   \brief sets the rows number fot the object. This method automatically give the exact row number to the \a sottomenu: impianto-zone-allarmi
   arguments:
