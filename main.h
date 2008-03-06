@@ -331,6 +331,11 @@ enum  bannerType {
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
+	TERMO_FANCOIL=52,                             /*!< Thermoregulation zone with fan-coil control */
+	TERMO_4Z=53,                                  /*!< 4 Zones Thermoregulation */
+	TERMO_4Z_FANCOIL=54,                          /*!< 4 Zones Thermoregulation with fan-coil control */
+	TERMO_EXTPROBE=55,                            /*!< External not-controlled probe */
+	TERMO_PROBE=56,                               /*!< Not-controlled probe */
 };
 
 
@@ -362,7 +367,11 @@ const char banTesti[][20] =
 	/*    44                           45                          46                        47                   */
 	"GR_DIMMER100",               "SORG_RADIO",              "SORG_AUX",                  "AMBIENTE",
 	/*    48                           49                          50                        51                   */
-	"INSIEME_AMBIENTI",           "POSTO_ESTERNO" ,          "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
+	"INSIEME_AMBIENTI",           "POSTO_ESTERNO",           "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
+	/*    52                           53                          54                        55                   */
+	"TERMO_FANCOIL",              "TERMO_4Z",                "TERMO_4Z_FANCOIL",          "TERMO_EXTPROBE",
+	/*    56                                                                                                      */
+	"TERMO_PROBE"
 };
 
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up */
