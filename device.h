@@ -10,31 +10,32 @@
 //! State variable
 class stat_var {
  public:
-    typedef enum { 
-	   SPEED = 0,
-	   LEV ,
-	   OLD_LEV,
-	   TEMP ,
-	   ON_OFF ,
-	   STAT,
-	   HH,
-	   MM,
-	   SS,
-	   TEMPERATURE,
-	   AUDIO_LEVEL,
-	   PENDING_CALL,
-	   FREQ,
-	   STAZ,
-	   RDS0,
-	   RDS1,
-	   LOCAL,
-	   SP,
-	   ACTIVE_SOURCE,
-	   FAULT,
-	   CRONO,
-     INFO_SONDA,
-     INFO_CENTRALE,
-      } type;
+     typedef enum {
+         SPEED = 0,
+         LEV ,
+         OLD_LEV,
+         TEMP ,
+         ON_OFF ,
+         STAT,
+         HH,
+         MM,
+         SS,
+         TEMPERATURE,
+         AUDIO_LEVEL,
+         PENDING_CALL,
+         FREQ,
+         STAZ,
+         RDS0,
+         RDS1,
+         LOCAL,
+         SP,
+         ACTIVE_SOURCE,
+         FAULT,
+         CRONO,
+         INFO_SONDA,
+         INFO_CENTRALE,
+         FANCOIL_SPEED,
+     } type;
  private:
     type t;
     //QString descr;
@@ -100,6 +101,7 @@ class device_status {
 	   IMPANTI,
 	   ZONANTI,
 	   THERMR,
+           FANCOIL,
 	   MODSCEN,
 	   SOUNDMATR,
       } type;
@@ -303,6 +305,17 @@ class device_status_zonanti : public device_status {
 //! Thermal regulator status
 class device_status_thermr : public device_status {
  public:
+    /*
+     * Not ideal here, better in thermr_device, but
+     * that would imply major code shuffling or strange
+     * forward declarations.
+     */
+    enum type_t
+    {
+        Z99,  // 99 zones thermal regulator
+        Z4,   // 4 zones thermal regulator
+    };
+
     enum {
 	STAT_INDEX = 0,
 	LOCAL_INDEX,
@@ -319,7 +332,17 @@ class device_status_thermr : public device_status {
 	S_GEN,
 	S_OFF,
     } val;
-    device_status_thermr();
+
+    device_status_thermr(type_t);
+};
+
+//! Fancoil status
+class device_status_fancoil : public device_status {
+ public:
+    enum {
+        SPEED_INDEX = 0,
+    } ind;
+    device_status_fancoil();
 };
 
 //! Modscen status
@@ -509,7 +532,7 @@ class thermr_device : public device
     Q_OBJECT
  public:
     //! Constructor
-    thermr_device(QString, bool p=false, int g=-1);
+    thermr_device(QString, device_status_thermr::type_t, bool fancoil, bool p=false, int g=-1);
 };
 
 //! Modscen device

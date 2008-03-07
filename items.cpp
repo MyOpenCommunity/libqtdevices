@@ -2946,7 +2946,7 @@ void banradio::inizializza()
 /*****************************************************************
  **termoPage
  ****************************************************************/
-termoPage::termoPage(QWidget *parent, int tipo_sottomenu, const char *name , char* indirizzo,
+termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char* indirizzo,
 		QPtrList<QString> &icon_names,
 		//char *IconaMeno, char *IconaPiu, char *IconaMan, char *IconaAuto, char *IconaAntigelo, char *IconaOff,
 		QColor SecondForeground, int type, const QString &ind_centrale)
@@ -2969,15 +2969,33 @@ termoPage::termoPage(QWidget *parent, int tipo_sottomenu, const char *name , cha
 	/// FINE FIXTHERMO
 
 	SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-		(char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
+	         (char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
 	strncpy(&manIco[0], icon_names.at(2)->ascii(), sizeof(manIco));
 	strncpy(&autoIco[0], icon_names.at(3)->ascii(), sizeof(autoIco));
 	connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));
 	setChi("4");
 	stato=device_status_thermr::S_MAN;
+
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_thermr_device( getAddress() );
+	bool fancoil = (devtype == THERMO_99_ZONES_FANCOIL || devtype == THERMO_4_ZONES_FANCOIL);
+
+	switch (devtype)
+	{
+	case THERMO_99_ZONES:
+	case THERMO_99_ZONES_FANCOIL:
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99, fancoil);
+		break;
+	case THERMO_4_ZONES:
+	case THERMO_4_ZONES_FANCOIL:
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4, fancoil);
+		break;
+	case SINGLE_PROBE:
+	case EXT_SINGLE_PROBE:
+	default:
+		qDebug("termoPage::termoPage(): Unknown devtype_t!");
+	}
+
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
 	delta_setpoint = 0;
@@ -3001,9 +3019,9 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
-	while( ( ds = dsi->current() ) != 0) 
+	while( ( ds = dsi->current() ) != 0)
 	{
-		switch (ds->get_type()) 
+		switch (ds->get_type())
 		{
 			case device_status::THERMR:
 				qDebug("Th. regulator status variation");
@@ -3026,7 +3044,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				qDebug("stat = %d", curr_stat.get_val());
 				qDebug("loc = %d", curr_local.get_val());
 				qDebug("sp = %d", curr_sp.get_val());
-				if (curr_stat.initialized()) 
+				if (curr_stat.initialized())
 				{
 					switch(curr_stat.get_val()) {
 						case device_status_thermr::S_MAN:

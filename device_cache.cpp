@@ -252,14 +252,14 @@ deviceptr device_cache::get_zonanti_device(QString w)
 }
 
 // Get thermal regulator device
-deviceptr device_cache::get_thermr_device(QString w)
+deviceptr device_cache::get_thermr_device(QString w, device_status_thermr::type_t type, bool fancoil)
 {
 	QString k = get_device_key(QString("4"), w);
 	qDebug("device_cache::get_thermr_device(%s)", k.ascii());
 	deviceptr out = (*this)[k];
 	if(!out)
 	{
-		out = new thermr_device(w);
+		out = new thermr_device(w, type, fancoil);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
 		connect_comm(out);

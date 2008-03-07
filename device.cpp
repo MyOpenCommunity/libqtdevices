@@ -333,7 +333,7 @@ device_status_zonanti::device_status_zonanti() :
 }
 
 // Device status for thermal regulator
-device_status_thermr::device_status_thermr() :
+device_status_thermr::device_status_thermr(type_t type) :
     device_status(THERMR)
 {
     add_var((int)device_status_thermr::STAT_INDEX,
@@ -349,6 +349,14 @@ device_status_thermr::device_status_thermr() :
     add_var((int)device_status_thermr::INFO_CENTRALE,
             new stat_var(stat_var::INFO_CENTRALE, 1, 0, 1, 1));
 
+}
+
+// Device status for fancoil
+device_status_fancoil::device_status_fancoil() :
+    device_status(FANCOIL)
+{
+    add_var((int)device_status_fancoil::SPEED_INDEX,
+	    new stat_var(stat_var::FANCOIL_SPEED, 0, 0, 3, 1));
 }
 
 // Device status for modscen
@@ -705,19 +713,22 @@ device(QString("5"), w, p, g)
 }
 
 // thermal regulator device
-thermr_device::thermr_device(QString w, bool p, int g) :
-device(QString("4"), w, p, g)
+thermr_device::thermr_device(QString w, device_status_thermr::type_t type, bool fancoil, bool p, int g) :
+	device(QString("4"), w, p, g)
 {
-    qDebug("thermr_device::thermr_device()");
+    qDebug("thermr_device::thermr_device(), type=%d, fancoil=%s",
+           type, fancoil ? "true" : "false");
     interpreter = new frame_interpreter_thermr_device(w, p, g);
     set_frame_interpreter(interpreter);
-    stat->append(new device_status_thermr());
+    stat->append(new device_status_thermr(type));
     stat->append(new device_status_temperature_probe());
-    connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-	    interpreter, 
-	    SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-    connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-	    SLOT(frame_event_handler(QPtrList<device_status>)));
+    if (fancoil)
+        stat->append(new device_status_fancoil());
+
+    connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+	    interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+    connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
+            this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
 // modscen device

@@ -209,8 +209,10 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 		/// New parameters for termoPage (that is in items.cpp)
 		// WARNING! par3 is <type> tag of TERMO page, par4 is <ind_centrale>
 		case TERMO:
+			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			break;
 		case TERMO_FANCOIL:
-			elencoBanner.append(new termoPage(this, tipo, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES_FANCOIL, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
 		case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
 		case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
