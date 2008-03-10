@@ -763,19 +763,6 @@ private:
 	char autoIco[50];
 	QTimer setpoint_timer;
 public:
-	/*
-	 * Which type of device this object controls.
-	 */
-	enum devtype_t
-	{
-		THERMO_99_ZONES,
-		THERMO_99_ZONES_FANCOIL,
-		THERMO_4_ZONES,
-		THERMO_4_ZONES_FANCOIL,
-		SINGLE_PROBE,
-		EXT_SINGLE_PROBE,
-	};
-
 	termoPage (QWidget *parent, devtype_t devtype, const char *name, char *indirizzo,
 		QPtrList<QString> &icon_names,
 		QColor SecondForeground = QColor(0,0,0), int type = 0, const QString &ind_centrale = 0);

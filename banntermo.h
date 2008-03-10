@@ -31,7 +31,20 @@ class bannTermo : public banner
 {
 Q_OBJECT
 public:
-	bannTermo( QWidget *, const char *,QColor );
+	/**
+	 * Which type of device this object controls.
+	 */
+	enum devtype_t
+	{
+		THERMO_99_ZONES,
+		THERMO_99_ZONES_FANCOIL,
+		THERMO_4_ZONES,
+		THERMO_4_ZONES_FANCOIL,
+		SINGLE_PROBE,
+		EXT_SINGLE_PROBE,
+	};
+
+	bannTermo( QWidget *, const char *, QColor, devtype_t devtype );
 	// void setIcons(const char *IconaMeno=0, const char *IconaPiu=0, const char * IconaMan, const char * IconaAuto);
 	void Draw();
 
@@ -39,17 +52,17 @@ public:
 	// anche se bannTermo e termoPage sono strettamente legati
 	// perché bannTermo è usato solo da termoPage!!
 
-	char	temp[10];
-	char	setpoint[10];
-	uchar  val_imp, isOff, isAntigelo;
-	BtLabel * tempImp;
+	char    temp[10];
+	char    setpoint[10];
+	uchar   val_imp, isOff, isAntigelo;
+	BtLabel *tempImp;
 public slots:
 signals:
 private:
-	BtLabel * texts[7];	
-	BtLabel * sondoffanti;
-	BtLabel * tempMis;
-	QColor   secondForeground;
+	BtLabel *texts[7];	
+	BtLabel *sondoffanti;
+	BtLabel *tempMis;
+	QColor  secondForeground;
 };
 
 

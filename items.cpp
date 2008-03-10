@@ -2950,7 +2950,7 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 		QPtrList<QString> &icon_names,
 		//char *IconaMeno, char *IconaPiu, char *IconaMan, char *IconaAuto, char *IconaAntigelo, char *IconaOff,
 		QColor SecondForeground, int type, const QString &ind_centrale)
-	: bannTermo( parent, name, SecondForeground )
+	: bannTermo( parent, name, SecondForeground, devtype )
 {
 	/// FIXTHERMO
 	/// this is to support new addressing for termo central
