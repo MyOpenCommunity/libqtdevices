@@ -18,11 +18,7 @@
 #define BUTTONS_BAR_H
 
 #include <qframe.h>
-
 #include <qlcdnumber.h>
-
-
-
 #include <qmap.h>
 #include <qptrvector.h>
 #include <qbuttongroup.h>
@@ -30,8 +26,7 @@
 #include <qlayout.h>
 #include <qpainter.h>
 
-
-//#include "btbutton.h"
+#include "btbutton.h"
 #include "main.h"
 #include "btlabel.h"
 #include "bannfrecce.h"

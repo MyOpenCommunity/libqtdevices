@@ -8,9 +8,13 @@
  **
  ****************************************************************/
 
+#include "buttons_bar.h"
 
 #include <algorithm>
 #include <string>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include <qfont.h>
 #include <qlabel.h>
@@ -28,16 +32,11 @@
 #include <qevent.h>
 #include <qvaluevector.h>
 
-#include "multimedia_source.h"
-#include "mediaplayer.h"
 #include "banner.h"
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
 
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 
 /// ***********************************************************************************************************************
@@ -45,7 +44,7 @@
 /// ***********************************************************************************************************************
 
 ButtonsBar::ButtonsBar(QWidget *parent, int number_of_buttons, Orientation orientation) :
-QWidget(parent, 0, WStyle_NoBorder | WStyle_Customize)
+	QWidget(parent, 0, WStyle_NoBorder | WStyle_Customize)
 //,  WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
 {
 	/// Create ButtonGroup, this can handle QButton objects
@@ -111,6 +110,7 @@ void ButtonsBar::hideButton(int idx)
 void ButtonsBar::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
+	setBackgroundColor(c);
 	buttons_group->setPaletteBackgroundColor(c);
 
 	for (uint i = 0; i < buttons_list.size(); i++)

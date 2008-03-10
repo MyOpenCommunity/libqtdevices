@@ -40,12 +40,11 @@
 #include "btlabel.h"
 #include "bannfrecce.h"
 #include "bann3but.h"
-
+#include "buttons_bar.h"
 
 
 class FileBrowser;
 class AudioPlayingWindow;
-class ButtonsBar;
 class MediaPlayer;
 class AudioPlayingWindow;
 
@@ -314,28 +313,6 @@ private:
 signals:
 	void notifyStartPlay();
 	void notifyStopPlay();
-};
-
-
-/** \class ButtonsBar
- *  this class implements a buttons bar
- */
-class ButtonsBar : public QWidget
-{
-Q_OBJECT
-public:
-	ButtonsBar(QWidget *parent = 0, int number_of_buttons = 1, Orientation orientation = Horizontal);
-	bool setButtonIcons(int button_number, const QPixmap &icon, const QPixmap &pressed_icon);
-	void showButton(int idx);
-	void hideButton(int idx);
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
-private:
-	QPtrVector<BtButton>  buttons_list;
-	QButtonGroup         *buttons_group;
-signals:
-	/// The signal pressed(int ) of QButton group is connected to the following by the constructor
-	void clicked(int button_number);
 };
 
 #endif // MULTIMEDIA_SOURCE_H
