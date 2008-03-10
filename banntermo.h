@@ -1,12 +1,12 @@
 /****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** banntermo.h
-**
-**Pagina termoregolazione
-**
-****************************************************************/
+ **
+ ** BTicino Touch scren Colori art. H4686
+ **
+ ** banntermo.h
+ **
+ **Pagina termoregolazione
+ **
+ ****************************************************************/
 
 #ifndef BANNTERMO_H
 #define BANNTERMO_H
