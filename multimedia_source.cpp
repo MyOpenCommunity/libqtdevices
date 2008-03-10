@@ -572,10 +572,10 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 
 	// create Labels containing INFO
 	//labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
-	meta_title_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
-	meta_artist_label = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
-	meta_album_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
-	time_pos_label    = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, TRUE );
+	meta_title_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
+	meta_artist_label = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
+	meta_album_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
+	time_pos_label    = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
 	// Set Font
 	meta_title_label->setFont(font);
 	meta_artist_label->setFont(font);
@@ -588,7 +588,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
 	QString audioplay_title = app_config.get(CFG_LABELS_MEDIAPLAYER "status", "Playing audio").c_str();
-	TitleLabel *window_title_label = new TitleLabel( this, MAX_WIDTH, 120, 9, 0, TRUE );
+	TitleLabel *window_title_label = new TitleLabel( this, MAX_WIDTH, 120, 9, 0, FALSE );
 	window_title_label->setText( audioplay_title );
 	window_title_label->setFont(font);
 
