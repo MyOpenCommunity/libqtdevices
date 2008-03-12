@@ -28,6 +28,8 @@ class timeScript : public QLCDNumber
 public:
    // timeScript( QWidget *parent=0, const char *name=0 );
     timeScript( QWidget *parent=0, const char *name=0, uchar type=0,QDateTime* mioOrol=NULL);
+    ~timeScript();
+
    void	showDate();
    QDateTime getDataOra();  
    void setDataOra(QDateTime);
@@ -98,7 +100,6 @@ public slots:
   \brief Increases years value.
 */           
     void 	aumYear();    
-    ~timeScript();
     
 private:					
 

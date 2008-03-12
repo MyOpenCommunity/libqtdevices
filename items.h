@@ -777,6 +777,7 @@ private slots:
 	void decSetpoint();
 	void autoMan();
 	void sendSetpoint();
+	void handleFancoilCommands(int button_number);
 public slots:
 	void status_changed(QPtrList<device_status>);
 	void show();

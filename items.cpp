@@ -2983,12 +2983,18 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	switch (devtype)
 	{
 	case THERMO_99_ZONES:
-	case THERMO_99_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99, fancoil);
 		break;
+	case THERMO_99_ZONES_FANCOIL:
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99, fancoil);
+		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
+		break;
 	case THERMO_4_ZONES:
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4, fancoil);
+		break;
 	case THERMO_4_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4, fancoil);
+		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
 		break;
 	case SINGLE_PROBE:
 	case EXT_SINGLE_PROBE:
@@ -3003,6 +3009,39 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	sxButton->setAutoRepeat(true);
 	dxButton->setAutoRepeat(true);
 }
+
+void termoPage::handleFancoilCommands(int button_number)
+{
+	openwebnet msg_open;
+
+	// FIXME: magic numbers below should be define in OpenMsg class
+	int speed;		
+	switch (button_number == 0)
+	{
+	case 0: // MIN SPEED
+		speed = 1;
+		break;
+	case 1: // MEDIUM_SPEED
+		speed = 2;
+		break;
+	case 2: // MAXIMUM SPEED
+		speed = 3;
+		break;
+	case 3: // AUTO SPEED
+		speed = 0;
+		break;
+	default:
+		qDebug("bannTermo::handleFancoilCommands --> Errore, ID pulsante NON definito!");
+		break;
+	}
+
+	QString command = QString("*#4*%1*#11*%2##").arg(getAddress()).arg(speed);
+	
+	msg_open.CreateMsgOpen((char*)command.ascii(), command.length());
+	emit sendFrame(msg_open.frame_open);
+	
+}
+
 
 void termoPage::status_changed(QPtrList<device_status> sl)
 {

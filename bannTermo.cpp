@@ -43,7 +43,7 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		// set position for Set Temp Panel
 		// set_temp_buttons_y = h*3+DESCR_DIM_Y+TEMPMIS_Y;
 
-		ButtonsBar *fancoil_buttons = new ButtonsBar(this, 4);
+		fancoil_buttons = new ButtonsBar(this, 4);
 		fancoil_buttons->setGeometry(0, set_buttons_y+OFFSET_Y, MAX_WIDTH, 100);
 		QPixmap *icon;
 		QPixmap *pressed_icon;
@@ -65,6 +65,7 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		fancoil_buttons->setButtonIcons(3, *icon, *pressed_icon);
 		// set Style
 		fancoil_buttons->setBGColor(tempMis->backgroundColor());
+		// connect Fancoil Buttons to the Handler
 		break;
 
 	case THERMO_99_ZONES:
@@ -159,6 +160,7 @@ void bannTermo::Draw()
 
 	banner::Draw();
 }
+
 
 
 

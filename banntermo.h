@@ -57,8 +57,9 @@ public:
 	char    setpoint[10];
 	uchar   val_imp, isOff, isAntigelo;
 	BtLabel *tempImp;
-public slots:
-signals:
+
+	/// Fancoil banner. It is created only if needed
+	ButtonsBar *fancoil_buttons;	
 private:
 	BtLabel *texts[7];	
 	BtLabel *sondoffanti;

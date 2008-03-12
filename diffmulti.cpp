@@ -15,6 +15,7 @@
 #include "btbutton.h"
 #include "device_cache.h"
 #include "diffmulti.h"
+#include "xmlconfhandler.h"
 #include <qfont.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -169,14 +170,14 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				if(tipo == AMBIENTE) 
 				{
 					b = new ambDiffSon(this, descrizioni->at(0)->ascii(), indirizzo,
-						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-						(char *)icon_names.at(2)->ascii(),
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(),
 						datimmulti, ds, sorgenti, this);
 				}
 				else
 				{
 					b = new insAmbDiffSon(this, descrizioni, indirizzo,
-						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
 						datimmulti, ds,  sorgenti, this);
 				}
 				elencoBanner.append(b);
@@ -217,8 +218,8 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 					++(*lsi);
 				}
 				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
-						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-						(char *)icon_names.at(2)->ascii(), (char *)icon_names.at(3)->ascii(),
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
 						modo));
 				delete lsi;
 				break;
@@ -226,11 +227,11 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 
 		case AMPLIFICATORE:
 			qDebug("Icone = %s - %s - %s - %s",
-						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-						(char *)icon_names.at(2)->ascii(), (char *)icon_names.at(3)->ascii());
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii());
 			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
-						(char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-						(char *)icon_names.at(2)->ascii(), (char *)icon_names.at(3)->ascii(),
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
 						modo));
 			break;
 		default:

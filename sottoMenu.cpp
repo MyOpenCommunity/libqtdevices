@@ -15,6 +15,7 @@
 #include "btbutton.h"
 #include "diffsonora.h"
 #include "versio.h"
+#include "xmlconfhandler.h"
 #include <qfont.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -152,13 +153,13 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 		QValueList<int> sstart, QValueList<int> sstop,
 		QString txt1, QString txt2, QString txt3)
 {
-	char *IconaSx = (char *)icon_names.at(0)->ascii();
-	char *IconaDx = (char *)icon_names.at(1)->ascii();
-	char *icon = (char *)icon_names.at(2)->ascii();
-	char *pressedIcon = (char *)icon_names.at(3)->ascii();
-	char *icoEx1 = (char *)icon_names.at(4)->ascii();
-	char *icoEx2 = (char *)icon_names.at(5)->ascii();
-	char *icoEx3 = (char *)icon_names.at(6)->ascii();
+	char *IconaSx = (char *)safeAt(icon_names, 0)->ascii();
+	char *IconaDx = (char *)safeAt(icon_names, 1)->ascii();
+	char *icon = (char *)safeAt(icon_names, 2)->ascii();
+	char *pressedIcon = (char *)safeAt(icon_names, 3)->ascii();
+	char *icoEx1 = (char *)safeAt(icon_names, 4)->ascii();
+	char *icoEx2 = (char *)safeAt(icon_names, 5)->ascii();
+	char *icoEx3 = (char *)safeAt(icon_names, 6)->ascii();
 
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo){
