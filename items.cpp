@@ -2987,7 +2987,7 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 		break;
 	case THERMO_99_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99, fancoil);
-		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
+		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilCommands(int)) );
 		break;
 	case THERMO_4_ZONES:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4, fancoil);
@@ -3012,11 +3012,11 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 
 void termoPage::handleFancoilCommands(int button_number)
 {
-	openwebnet msg_open;
+	qDebug("termoPage::handleFancoilCommands()");
 
 	// FIXME: magic numbers below should be define in OpenMsg class
-	int speed;		
-	switch (button_number == 0)
+	int speed;
+	switch (button_number)
 	{
 	case 0: // MIN SPEED
 		speed = 1;
@@ -3037,6 +3037,7 @@ void termoPage::handleFancoilCommands(int button_number)
 
 	QString command = QString("*#4*%1*#11*%2##").arg(getAddress()).arg(speed);
 	
+	openwebnet msg_open;
 	msg_open.CreateMsgOpen((char*)command.ascii(), command.length());
 	emit sendFrame(msg_open.frame_open);
 	

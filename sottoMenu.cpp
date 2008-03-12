@@ -209,9 +209,20 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 				  }
 		/// New parameters for termoPage (that is in items.cpp)
 		// WARNING! par3 is <type> tag of TERMO page, par4 is <ind_centrale>
+		/* Ecco i nuovi Componenti
+		TERMO_FANCOIL=52,           Thermoregulation zone with fan-coil control
+		TERMO_4Z=53,                4 Zones Thermoregulation
+		TERMO_4Z_FANCOIL=54,        4 Zones Thermoregulation with fan-coil control
+		TERMO_EXTPROBE=55,          External not-controlled probe
+		TERMO_PROBE=56,             Not-controlled probe
+		*/
+		//case TERMO_EXTPROBE:   //TODO
+		//case TERMO_PROBE:      //TODO
+		//case TERMO_4Z:         //TODO
 		case TERMO:
 			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
+		//case TERMO_4Z_FANCOIL: //TODO
 		case TERMO_FANCOIL:
 			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES_FANCOIL, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
@@ -239,7 +250,7 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 				    break;
 		default:
 			qDebug("********** sottoMenu::addItem(): unknown item type!!! ************\n");
-			exit(1);
+			return 0;
 	}
 	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));
 	connect(this, SIGNAL(parentChanged(QWidget *)),
