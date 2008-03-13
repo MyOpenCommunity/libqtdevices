@@ -2968,8 +2968,17 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	qDebug(QString(">>> returned address is %1 <<<").arg( getAddress() ));
 	/// FINE FIXTHERMO
 
-	SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-	         (char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
+	if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL)
+	{
+		SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+		         (char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
+	}
+	else
+	{
+		SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+			  (char *)icon_names.at(4)->ascii(), NULL);
+	}
+		
 	strncpy(&manIco[0], icon_names.at(2)->ascii(), sizeof(manIco));
 	strncpy(&autoIco[0], icon_names.at(3)->ascii(), sizeof(autoIco));
 	connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
@@ -2977,7 +2986,6 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	setChi("4");
 	stato=device_status_thermr::S_MAN;
 
-	// Crea o preleva il dispositivo dalla cache
 	bool fancoil = (devtype == THERMO_99_ZONES_FANCOIL || devtype == THERMO_4_ZONES_FANCOIL);
 
 	switch (devtype)
@@ -3250,8 +3258,17 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				qDebug("-2: temp: %s", &temp[0]);
 				aggiorna=1;
 				break;
+			case device_status::FANCOIL:
+			{
+				stat_var speed_var(stat_var::FANCOIL_SPEED);
+				ds->read(device_status_fancoil::FANCOIL, speed_var);
+				qDebug("termoPage::status_changed: fancoil speed variation");
+
+				break;
+			}
 			default:
 				qDebug("device status of unknown type (%d)", ds->get_type());
+				
 				break;
 		}
 		++(*dsi);

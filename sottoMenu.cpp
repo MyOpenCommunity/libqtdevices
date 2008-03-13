@@ -446,8 +446,8 @@ void sottoMenu::inizializza()
 void sottoMenu::init()
 {
 	qDebug("sottoMenu::init()");
-	for (char idx=0;idx<elencoBanner.count();idx++)     
-		elencoBanner.at (idx) -> inizializza();     
+	for (char idx=0;idx<elencoBanner.count();idx++)
+		elencoBanner.at (idx) -> inizializza();
 }
 
 void sottoMenu::init_dimmer()
@@ -475,7 +475,7 @@ bool sottoMenu::setPul(char* chi, char* where)
 {
 	unsigned char p=0;
 
-	for (char idx=0;idx<elencoBanner.count();idx++)     
+	for (char idx=0;idx<elencoBanner.count();idx++)
 	{
 		if ( (!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)) )
 		{
@@ -492,17 +492,17 @@ bool sottoMenu::setGroup(char* chi, char* where, bool* group)
 {
 	unsigned char p=0;
 
-	for (char idx=0;idx<elencoBanner.count();idx++)     
+	for (char idx=0;idx<elencoBanner.count();idx++)
 	{	
 		if ( (!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)) )
 		{
-			elencoBanner.at(idx)->setGroup(group); 
+			elencoBanner.at(idx)->setGroup(group);
 			p=1;
 		}
 	}
 	if (p)
 		return TRUE;
-	return FALSE;  
+	return FALSE;
 }
 
 void sottoMenu::setIndex(char* indiriz)
@@ -533,7 +533,7 @@ void sottoMenu::mostra_all(char but)
 
 void sottoMenu::setNumRig(uchar n)
 {
-	numRighe=n;       
+	numRighe=n;
 }
 void sottoMenu::setHeight(int h)
 {
@@ -541,7 +541,7 @@ void sottoMenu::setHeight(int h)
 }
 uchar sottoMenu::getNumRig()
 {
-	return(numRighe);       
+	return(numRighe);
 }
 int sottoMenu::getHeight()
 {
@@ -550,11 +550,11 @@ int sottoMenu::getHeight()
 
 void sottoMenu::mouseReleaseEvent ( QMouseEvent *  e)	
 {
-	qDebug("Released");   
+	qDebug("Released");
 	if (freez)
 	{
 		freez=FALSE;
-		emit(freeze(freez));    
+		emit(freeze(freez));
 	}
 	QWidget::mouseReleaseEvent ( e );
 }
@@ -594,8 +594,8 @@ void sottoMenu::setGeometry(int x, int y, int w, int h)
 
 void  sottoMenu::killBanner(banner* b)
 {
-	int icx=elencoBanner.findRef( b ) ;
-	//    int icx=elencoBanner.find( b ) ;    
+	int icx=elencoBanner.findRef( b );
+	//    int icx=elencoBanner.find( b );
 
 	if ( icx  != -1 )
 	{

@@ -2427,30 +2427,22 @@ frame_interpreter_thermr_device(QString w, bool p, int g) :
 bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, 
 		bool& request_status)
 {
-	// FIXME: IS THIS OK ?
+	// FIXME: WHERE CHECK with new addr type (4 zones)
 	qDebug("frame_interpreter_thermr_device::is_frame_ours");
 	request_status = false;
 	if (strcmp(m.Extract_chi(),"4")) return false;
 	char dove[30];
 	strcpy(dove, m.Extract_dove());
+
 	if ((dove[0]=='#') && (strcmp(dove, "#0")))
 		centrale = true;
 
 	if (dove[0]=='#')
 		strcpy(&dove[0], &dove[1]);
-#if 1
-	if((!strcmp(dove, "0")) && centrale) {
+
+	if((!strcmp(dove, "0")) && centrale)
 		return true;
-		char pippo[50];
-		// Richiesta via centrale
-		/// FRAME VERSO LA CENTRALE
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*#4*#");
-		strcat(pippo, where.ascii());
-		strcat(pippo,"##");
-		emit init_requested(QString(pippo));
-	}
-#endif
+
 	return !strcmp(dove, where.ascii());
 }
 
@@ -2458,24 +2450,29 @@ void frame_interpreter_thermr_device::
 get_init_message(device_status *s, QString& out)
 {
 	QString head, end;
-	switch(s->get_type()) {
+	switch(s->get_type()) 
+	{
 		case device_status::TEMPERATURE_PROBE:
-			{
-				head = "*#4*";
-				end = "##";
-				out = head + where + end;
-				break;
-			}
+			qDebug("frame_interpreter_thermr_device::get_init_message -> TEMPERATURE_PROBE")
+			head = "*#4*";
+			end  = "##";
+			out  = head + where + end;
+			break;
 		case device_status::THERMR:
-			{
-				/// FRAME VERSO LA CENTRALE
-				head = "*#4*#";
-				end = "##";
-				out = head + where + end;
-				break;
-			}
+			qDebug("frame_interpreter_thermr_device::get_init_message -> THERMR")
+			/// FRAME VERSO LA CENTRALE
+			head = "*#4*#";
+			end  = "##";
+			out  = head + where + end;
+			break;
+		case device_status::FANCOIL:
+			qDebug("frame_interpreter_thermr_device::get_init_message -> FANCOIL")
+			head = "*#4*";
+			end  = "*11##";
+			out  = head + where + end;
+			break;
 		default:
-			out = "";
+			out  = "";
 			break;
 	}
 }
@@ -2849,6 +2846,29 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
 }
 
 void frame_interpreter_thermr_device::
+handle_frame(openwebnet_ext m, device_status_fancoil *ds)
+{
+	qDebug("frame_interpreter_thermr_device::handle_frame, fancoil");
+
+	if (m.IsNormalFrame()) 
+	{
+		qDebug("Normal frame, discarding");
+		return;
+	}
+
+	stat_var speed_var(stat_var::FANCOIL_SPEED);
+
+	ds->read((int)device_status_fancoil::FANCOIL, speed_var);
+
+	int speed = atoi(m.Extract_grandezza());
+	speed_var.set_val(speed);
+
+	ds->write_val((int)device_status_fancoil::FANCOIL, speed_var);
+
+	evt_list.append(ds);
+}
+
+void frame_interpreter_thermr_device::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
 	bool request_status;
@@ -2879,6 +2899,9 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 					break;
 				case device_status::TEMPERATURE_PROBE:
 					handle_frame(msg_open, (device_status_temperature_probe *)ds);
+					break;
+				case device_status::FANCOIL:
+					handle_frame(msg_open, (device_status_fancoil *)ds);
 					break;
 				default:
 					// Do nothing

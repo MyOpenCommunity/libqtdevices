@@ -97,6 +97,14 @@ bool ButtonsBar::setButtonIcons(int button_number, const QPixmap &icon, const QP
 	return true;
 }
 
+void ButtonsBar::setToggleButtons(bool enable)
+{
+	for (uint i = 0; i < buttons_list.count(); i++)
+		buttons_list.at(i)->setToggleButton(enable);
+	
+	isToggleBar = enable;
+}
+
 void ButtonsBar::showButton(int idx)
 {
 	buttons_list[idx]->show();

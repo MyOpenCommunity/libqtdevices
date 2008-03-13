@@ -355,6 +355,9 @@ private:
 	void handle_frame(openwebnet_ext, device_status_thermr *);
 	//! As above, but for temperature status
 	void handle_frame(openwebnet_ext, device_status_temperature_probe *);
+	//! Analyze fancoil frame
+	void handle_frame(openwebnet_ext m, device_status_fancoil *ds);
+
 	//! True when frame has been analyzed
 	bool elaborato;
 	bool centrale;

@@ -64,6 +64,7 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("fancoilAoff.png") );
 		pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("fancoilAon.png") );
 		fancoil_buttons->setButtonIcons(3, *icon, *pressed_icon);
+		fancoil_buttons->setToggleButtons(true);
 		// set Style
 		fancoil_buttons->setBGColor(tempMis->backgroundColor());
 		// connect Fancoil Buttons to the Handler
@@ -103,7 +104,6 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	case THERMO_4_ZONES_FANCOIL:
 		nascondi(BUT1);
 		nascondi(BUT2);
-		nascondi();
 		break;
 	}
 
