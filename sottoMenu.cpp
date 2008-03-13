@@ -218,13 +218,21 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 		*/
 		//case TERMO_EXTPROBE:   //TODO
 		//case TERMO_PROBE:      //TODO
-		//case TERMO_4Z:         //TODO
 		case TERMO:
-			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione,
+				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
-		//case TERMO_4Z_FANCOIL: //TODO
+		case TERMO_4Z:
+			elencoBanner.append(new termoPage(this, termoPage::THERMO_4_ZONES, descrizione,
+				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			break;
 		case TERMO_FANCOIL:
-			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES_FANCOIL, descrizione, (char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES_FANCOIL, descrizione,
+				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			break;
+		case TERMO_4Z_FANCOIL:
+			elencoBanner.append(new termoPage(this, termoPage::THERMO_4_ZONES_FANCOIL, descrizione,
+				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
 		case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
 		case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
