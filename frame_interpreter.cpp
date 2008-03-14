@@ -2450,7 +2450,7 @@ void frame_interpreter_thermr_device::
 get_init_message(device_status *s, QString& out)
 {
 	QString head, end;
-	switch(s->get_type()) 
+	switch (s->get_type())
 	{
 		case device_status::TEMPERATURE_PROBE:
 			qDebug("frame_interpreter_thermr_device::get_init_message -> TEMPERATURE_PROBE");

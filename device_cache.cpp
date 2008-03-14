@@ -255,7 +255,8 @@ deviceptr device_cache::get_zonanti_device(QString w)
 deviceptr device_cache::get_thermr_device(QString w, device_status_thermr::type_t type, bool fancoil)
 {
 	QString k = get_device_key(QString("4"), w);
-	qDebug("device_cache::get_thermr_device(%s)", k.ascii());
+	qDebug("device_cache::get_thermr_device(), where=%s type=%d fancoil=%s",
+		k.ascii(), type, fancoil ? "yes" : "no");
 	deviceptr out = (*this)[k];
 	if(!out)
 	{

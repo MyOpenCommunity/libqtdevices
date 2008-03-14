@@ -2990,7 +2990,7 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 		break;
 	case THERMO_99_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99, fancoil);
-		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilCommands(int)) );
+		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
 		break;
 	case THERMO_4_ZONES:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4, fancoil);
@@ -3013,9 +3013,9 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	dxButton->setAutoRepeat(true);
 }
 
-void termoPage::handleFancoilCommands(int button_number)
+void termoPage::handleFancoilButtons(int button_number)
 {
-	qDebug("termoPage::handleFancoilCommands()");
+	qDebug("termoPage::handleFancoilButtons()");
 
 	// FIXME: magic numbers below should be define in OpenMsg class
 	int speed;
@@ -3034,7 +3034,7 @@ void termoPage::handleFancoilCommands(int button_number)
 		speed = 0;
 		break;
 	default:
-		qDebug("bannTermo::handleFancoilCommands --> Errore, ID pulsante NON definito!");
+		qDebug("bannTermo::handleFancoilButtons --> Errore, ID pulsante NON definito!");
 		break;
 	}
 

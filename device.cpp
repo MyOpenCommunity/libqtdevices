@@ -716,8 +716,7 @@ zonanti_device::zonanti_device(QString w, bool p, int g) :
 thermr_device::thermr_device(QString w, device_status_thermr::type_t type, bool fancoil, bool p, int g) :
 	device(QString("4"), w, p, g)
 {
-	qDebug("thermr_device::thermr_device(), type=%d, fancoil=%s",
-			type, fancoil ? "true" : "false");
+	qDebug("thermr_device::thermr_device(), type=%d, fancoil=%s", type, fancoil ? "true" : "false");
 	interpreter = new frame_interpreter_thermr_device(w, p, g);
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_thermr(type));
