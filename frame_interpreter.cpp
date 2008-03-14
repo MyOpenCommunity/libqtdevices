@@ -2453,20 +2453,20 @@ get_init_message(device_status *s, QString& out)
 	switch(s->get_type()) 
 	{
 		case device_status::TEMPERATURE_PROBE:
-			qDebug("frame_interpreter_thermr_device::get_init_message -> TEMPERATURE_PROBE")
+			qDebug("frame_interpreter_thermr_device::get_init_message -> TEMPERATURE_PROBE");
 			head = "*#4*";
 			end  = "##";
 			out  = head + where + end;
 			break;
 		case device_status::THERMR:
-			qDebug("frame_interpreter_thermr_device::get_init_message -> THERMR")
+			qDebug("frame_interpreter_thermr_device::get_init_message -> THERMR");
 			/// FRAME VERSO LA CENTRALE
 			head = "*#4*#";
 			end  = "##";
 			out  = head + where + end;
 			break;
 		case device_status::FANCOIL:
-			qDebug("frame_interpreter_thermr_device::get_init_message -> FANCOIL")
+			qDebug("frame_interpreter_thermr_device::get_init_message -> FANCOIL");
 			head = "*#4*";
 			end  = "*11##";
 			out  = head + where + end;
