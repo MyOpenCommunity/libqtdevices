@@ -2948,7 +2948,6 @@ void banradio::inizializza()
  ****************************************************************/
 termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char* indirizzo,
 		QPtrList<QString> &icon_names,
-		//char *IconaMeno, char *IconaPiu, char *IconaMan, char *IconaAuto, char *IconaAntigelo, char *IconaOff,
 		QColor SecondForeground, int type, const QString &ind_centrale)
 	: bannTermo( parent, name, SecondForeground, devtype )
 {
@@ -2968,23 +2967,19 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	qDebug(QString(">>> returned address is %1 <<<").arg( getAddress() ));
 	/// FINE FIXTHERMO
 
-	if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL)
-	{
-		SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-		         (char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
-	}
-	else
-	{
-		SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
-			  (char *)icon_names.at(4)->ascii(), NULL);
-	}
-		
+	SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
+	         (char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
+
 	strncpy(&manIco[0], icon_names.at(2)->ascii(), sizeof(manIco));
 	strncpy(&autoIco[0], icon_names.at(3)->ascii(), sizeof(autoIco));
 	connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));
 	setChi("4");
-	stato=device_status_thermr::S_MAN;
+
+	if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL)
+		stato = device_status_thermr::S_MAN;
+	else
+		stato = device_status_thermr::S_NONE;
 
 	bool fancoil = (devtype == THERMO_99_ZONES_FANCOIL || devtype == THERMO_4_ZONES_FANCOIL);
 

@@ -341,6 +341,7 @@ public:
 		S_TERM,
 		S_GEN,
 		S_OFF,
+		S_NONE,  // 4 zones: no status
 	} val;
 
 	device_status_thermr(type_t);

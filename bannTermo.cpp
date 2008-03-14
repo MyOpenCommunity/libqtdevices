@@ -18,7 +18,7 @@
 bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t devtype )
 	: banner( parent, name )
 {
-	qDebug(QString("bannTermo::bannTermo --> DEVICE TYPE = %1").arg(devtype));
+	qDebug("bannTermo::bannTermo --> DEVICE TYPE = %d", devtype);
 
 	int h = (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-BUTMENPLUS_DIM_Y-DESCR_DIM_Y-TEMPMIS_Y-OFFSET_Y)/5;
 	int set_buttons_y = h*3+DESCR_DIM_Y+TEMPMIS_Y;
@@ -31,7 +31,7 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		//texts[idx]->setGeometry(idx*MAX_WIDTH/7,h+DESCR_DIM_Y+TEMPMIS_Y,MAX_WIDTH/7,OFFSET_Y);
 		texts[idx]->setGeometry(idx*MAX_WIDTH/7, 95, MAX_WIDTH/7, OFFSET_Y);
 	}
-	
+
 	// Misured Temperature Label
 	tempMis = new BtLabel(this,NULL);
 	tempMis->setGeometry(0,h+DESCR_DIM_Y,MAX_WIDTH,TEMPMIS_Y);
@@ -72,7 +72,7 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	case THERMO_4_ZONES:
 	case THERMO_99_ZONES:
 		break;
-		
+
 	case SINGLE_PROBE:
 	case EXT_SINGLE_PROBE:
 
