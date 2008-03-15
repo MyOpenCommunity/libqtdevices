@@ -15,11 +15,12 @@
 #include <qpixmap.h>
 
 
-bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t devtype )
+bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t _devtype )
 	: banner( parent, name )
 {
 	qDebug("bannTermo::bannTermo --> DEVICE TYPE = %d", devtype);
-
+	
+	devtype = _devtype;
 	int h = (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-BUTMENPLUS_DIM_Y-DESCR_DIM_Y-TEMPMIS_Y-OFFSET_Y)/5;
 	int set_buttons_y = h*3+DESCR_DIM_Y+TEMPMIS_Y;
 	//int set_temp_text_y;
@@ -28,7 +29,6 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	for (int idx=0;idx<7;idx++)
 	{
 		texts[idx] = new BtLabel(this, "");
-		//texts[idx]->setGeometry(idx*MAX_WIDTH/7,h+DESCR_DIM_Y+TEMPMIS_Y,MAX_WIDTH/7,OFFSET_Y);
 		texts[idx]->setGeometry(idx*MAX_WIDTH/7, 95, MAX_WIDTH/7, OFFSET_Y);
 	}
 
@@ -105,6 +105,18 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		nascondi(BUT1);
 		nascondi(BUT2);
 		break;
+	case SINGLE_PROBE:
+		// Hide PLUS/MINUS buttons
+		nascondi(BUT1);
+		nascondi(BUT2);
+		// Hide label to set Temperature
+		tempImp->hide();
+		// Hide what ???
+		sondoffanti->hide();
+		// Hide Temperature Increment Labels
+		for (int idx=0;idx<7;idx++)
+			texts[idx]->hide();
+		break;
 	}
 
 	val_imp    = 3;
@@ -148,7 +160,7 @@ void bannTermo::Draw()
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
 		sondoffanti -> setFont( QFont( "Times", 40, QFont::Bold ) );
 	}
-	else
+	else if (devtype != SINGLE_PROBE && devtype != EXT_SINGLE_PROBE)
 	{
 		for (int idx=0;idx<7;idx++)
 		{

@@ -2488,6 +2488,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	stat_var curr_crono(stat_var::CRONO);
 	stat_var curr_info_sonda(stat_var::INFO_SONDA);
 	stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
+	stat_var curr_fancoil_speed(stat_var::FANCOIL_SPEED);
 	int stat;
 	int cr;
 	int delta;
@@ -2500,12 +2501,15 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	ds->read((int)device_status_thermr::CRONO, curr_crono);
 	ds->read((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
 	ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+	
+	
 	qDebug("curr status is %d", curr_stat.get_val());
 	qDebug("curr local is %d", curr_local.get_val());
 	qDebug("curr sp is %d", curr_sp.get_val());
 	qDebug("curr crono is %d", curr_crono.get_val());
 	qDebug("curr info_sonda is %d", curr_info_sonda.get_val());
 	qDebug("curr info_centrale is %d", curr_info_centrale.get_val());
+	qDebug("curr fancoil_speed is %d", curr_fancoil_speed.get_val());
 	if((!strcmp(m.Extract_dove(), "#0")) && centrale  && (!curr_info_centrale.get_val()))
 	{
 		/// FRAME VERSO LA CENTRALE
@@ -2696,7 +2700,8 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	int g = atoi(m.Extract_grandezza());
 	qDebug("g = %d", g);
 	int loc, sp;
-	switch(g) { 
+	switch(g)
+	{
 		case 0:
 			if(!curr_info_sonda.get_val())
 			{
@@ -2809,6 +2814,17 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 				evt_list.append(ds);
 			}
 			elaborato = true;
+			break;
+		case 11:
+			ds->read((int)device_status_thermr::FANCOIL, curr_fancoil_speed);
+			int fancoil_speed = atoi(m.Extract_valori(0));
+			if(curr_fancoil_speed.get_val() != fancoil_speed)
+			{
+				qDebug(QString("setting new fancoil_speed to %1").arg(curr_fancoil_speed.get_val()));
+				curr_fancoil_speed.set_val(fancoil_speed);
+				ds->write_val((int)device_status_thermr::FANCOIL, curr_fancoil_speed);
+				evt_list.append(ds);
+			}
 			break;
 		default:
 			// Do nothing

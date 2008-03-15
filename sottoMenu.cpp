@@ -217,7 +217,7 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 		TERMO_PROBE=56,             Not-controlled probe
 		*/
 		//case TERMO_EXTPROBE:   //TODO
-		//case TERMO_PROBE:      //TODO
+		
 		case TERMO:
 			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione,
 				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
@@ -234,11 +234,25 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 			elencoBanner.append(new termoPage(this, termoPage::THERMO_4_ZONES_FANCOIL, descrizione,
 				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
-		case ZONANTINTRUS: elencoBanner.append(new zonaAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
-		case IMPIANTINTRUS:  elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon)); break;
-		case SUONO: elencoBanner.append(new impBeep(this,descrizione , IconaSx,IconaDx, icon)); break;
-		case CONTRASTO: elencoBanner.append(new impContr(this,descrizione , IconaSx,IconaDx)); break;
-		case VERSIONE: elencoBanner.append(new machVers(this,descrizione , (versio*)indirizzo, IconaSx)); break;
+		case TERMO_PROBE:
+			elencoBanner.append(new termoPage(this, termoPage::SINGLE_PROBE, descrizione,
+				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			break;
+		case ZONANTINTRUS:
+			elencoBanner.append(new zonaAnti(this,descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+			break;
+		case IMPIANTINTRUS:
+			elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+			break;
+		case SUONO:
+			elencoBanner.append(new impBeep(this,descrizione , IconaSx,IconaDx, icon));
+			break;
+		case CONTRASTO:
+			elencoBanner.append(new impContr(this,descrizione , IconaSx,IconaDx));
+			break;
+		case VERSIONE:
+			elencoBanner.append(new machVers(this,descrizione , (versio*)indirizzo, IconaSx));
+			break;
 #if 0
 		case ALLARME: elencoBanner.append(new allarme(this,descrizione ,(char*)indirizzo, IconaSx));break;
 #endif

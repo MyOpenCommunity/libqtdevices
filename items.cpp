@@ -3000,6 +3000,8 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
 		break;
 	case SINGLE_PROBE:
+		dev = new temperature_probe(getAddress());
+		break;
 	case EXT_SINGLE_PROBE:
 	default:
 		qDebug("termoPage::termoPage(): Unknown devtype_t!");
@@ -3258,7 +3260,24 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				stat_var speed_var(stat_var::FANCOIL_SPEED);
 				ds->read(device_status_fancoil::FANCOIL, speed_var);
 				qDebug("termoPage::status_changed: fancoil speed variation");
-
+				// Set the fancoil Button in the buttons bar
+				int button_to_set_up;
+				switch (stat_var::FANCOIL_SPEED)
+				{
+				case 0: // MIN SPEED
+					button_to_set_up = 1;
+					break;
+				case 1: // MEDIUM_SPEED
+					button_to_set_up = 2;
+					break;
+				case 2: // MAXIMUM SPEED
+					button_to_set_up = 3;
+					break;
+				case 3: // AUTO SPEED
+					button_to_set_up = 0;
+					break;
+				}
+				fancoil_buttons->setToggleStatus(button_to_set_up);
 				break;
 			}
 			default:

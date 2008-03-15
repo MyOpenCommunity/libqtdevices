@@ -105,6 +105,16 @@ void ButtonsBar::setToggleButtons(bool enable)
 	isToggleBar = enable;
 }
 
+void ButtonsBar::setToggleStatus(int button_up_index)
+{
+	if (button_up_index < buttons_list.count() || isToggleBar)
+	{
+		for (uint i = 0; i < buttons_list.count(); i++)
+			buttons_list.at(i)->setOn(FALSE);
+		buttons_list.at(button_up_index)->setOn(TRUE);
+	}
+}
+
 void ButtonsBar::showButton(int idx)
 {
 	buttons_list[idx]->show();

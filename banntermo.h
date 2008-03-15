@@ -61,6 +61,7 @@ public:
 	/// Fancoil banner. It is created only if needed
 	ButtonsBar *fancoil_buttons;	
 private:
+	devtype_t devtype;
 	BtLabel *texts[7];	
 	BtLabel *sondoffanti;
 	BtLabel *tempMis;
