@@ -1482,76 +1482,63 @@ void frame_interpreter_temperature_probe::set_status(device_status_temperature_p
 {
 	qDebug("frame_interpreter_temperature_probe::set_status"
 			"(device_status_temperature_probe, %d)", t);
+
 	stat_var curr_temp(stat_var::TEMPERATURE);
-	bool do_event = false;
+
 	// Read current temperature
-	ds->read((int)device_status_temperature_probe::TEMPERATURE_INDEX, 
-			curr_temp);
-	if(!curr_temp.initialized()) {
+	ds->read((int)device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
+
+	if (curr_temp.initialized())
+		qDebug("curr temp is %d\n", curr_temp.get_val());
+	else
 		qDebug("Initializing temperature");
-		curr_temp.set_val(t);
-		ds->write_val((int)device_status_temperature_probe::TEMPERATURE_INDEX,
-				curr_temp);
-		do_event = true;
-		goto end;
-	}
-	qDebug("curr temp is %d\n", curr_temp.get_val());
-	//if(t != curr_temp.get_val()) {
+
 	qDebug("setting temperature to %d", t);
 	curr_temp.set_val(t);
-	ds->write_val((int)device_status_temperature_probe::TEMPERATURE_INDEX, 
-			curr_temp);
-	do_event = 1;
-	qDebug("new temp is %d\n", curr_temp.get_val());
-	//}
-end:
-	if(do_event)
-		evt_list.append(ds);
+	ds->write_val((int)device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
+
+	evt_list.append(ds);
 }
 
 void frame_interpreter_temperature_probe::handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
-	bool request_status = false;
-	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_temperature_probe::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
+
+	rearmWDT();
+	openwebnet_ext msg_open;
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+
+	bool request_status;
 	if(!is_frame_ours(msg_open, request_status))
-		// Discard frame if not ours
 		return;
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(*sl);
-	dsi->toFirst();
+
 	evt_list.clear();
-	device_status *ds = dsi->current();
-	if(request_status) {
-		// Frame could be ours, but we need to check device status 
-		// and see if it really changed
-		request_init(ds);
-		goto end;
-	}
-	// Just one device status at the moment
-	if(msg_open.IsMeasureFrame()) {
+	if (msg_open.IsMeasureFrame()) {
+		// Just one device status at the moment
 		// *#4*where*what*???##
 		int code = atoi(msg_open.Extract_grandezza());
 		switch(code) {
 			case 0:
+			{
 				int temperature;
-				char t[20]; strcpy(t, msg_open.Extract_valori(0));
-				temperature = t[0]=='1' ? -atoi(&t[1]) : atoi(t);
+				char t[20];
+				strcpy(t, msg_open.Extract_valori(0));
+				temperature = (t[0] == '1' ? -atoi(&t[1]) : atoi(t));
 				qDebug("temperature probe frame, t is %d", temperature);
-				set_status((device_status_temperature_probe *)ds, temperature);
+
+				QPtrListIterator<device_status> dsi(*sl);
+				set_status((device_status_temperature_probe *)dsi.current(), temperature);
 				break;
+			}
 			default:
 				qDebug("temperature probe frame with unknown code %d", code);
 		}
 	} else
 		qDebug("unknown temperature frame");
-end:
+
 	if(!evt_list.isEmpty())
 		emit(frame_event(evt_list));
-	delete dsi;
 }
 
 bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& request_status)
