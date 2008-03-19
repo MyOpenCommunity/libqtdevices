@@ -611,17 +611,17 @@ autom::autom(QString w, bool p, int g) :
 }
 
 // Temperature probe implementation
-temperature_probe::temperature_probe(QString w, bool p, int g) : 
-	device(QString("4"), w, p, g) 
+temperature_probe::temperature_probe(QString w, bool external, bool p, int g) :
+	device(QString("4"), w, p, g)
 {
-	interpreter = new frame_interpreter_temperature_probe(w, p, g);
+	interpreter = new frame_interpreter_temperature_probe(w, external, p, g);
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_temperature_probe());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+
+	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+	        interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
+	        this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
 // Sound device implementation

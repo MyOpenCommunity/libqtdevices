@@ -3000,9 +3000,11 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
 		break;
 	case SINGLE_PROBE:
-		dev = new temperature_probe(getAddress());
+		dev = new temperature_probe(getAddress(), false);
 		break;
 	case EXT_SINGLE_PROBE:
+		dev = new temperature_probe(getAddress(), true);
+		break;
 	default:
 		qDebug("termoPage::termoPage(): Unknown devtype_t!");
 	}

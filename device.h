@@ -480,7 +480,7 @@ class temperature_probe : public device
 Q_OBJECT
 public:
 	//! Constructor
-	temperature_probe(QString, bool p=false, int g=-1);
+	temperature_probe(QString, bool external, bool p=false, int g=-1);
 };
 
 //! Sound device (ampli)

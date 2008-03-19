@@ -217,12 +217,18 @@ private:
 	void set_status(device_status_temperature_probe *ds, int s);
 	//! Analyze a frame for a pl status
 	void handle_frame(openwebnet_ext, device_status_temperature_probe *);
+
+	//! Whether the probe is of external (uncontrolled) type.
+	bool external;
 protected:
 	//! Returns true when frame is ours (reimplemented for thermr, device
 	bool is_frame_ours(openwebnet_ext, bool& request_status);
 public:
-	//! Constructor
-	frame_interpreter_temperature_probe(QString, bool, int);
+	/**
+	 * Constructor
+	 * if \a external is true, the probe is of external (uncontrolled) type.
+	 */
+	frame_interpreter_temperature_probe(QString, bool external, bool, int);
 	//! Returns init message given device status
 	void get_init_message(device_status *, QString&);
 public slots:

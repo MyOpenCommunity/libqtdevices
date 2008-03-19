@@ -1465,15 +1465,17 @@ void frame_interpreter_dimmer::handle_frame(openwebnet_ext m,
 // Temperature probe frame interpreter
 
 // Public methods
-frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString w, bool p, int g) :
+frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString w, bool _external, bool p, int g) :
 	frame_interpreter(QString("4"), w, p, g)
 {
+	external = _external;
 }
 
 void frame_interpreter_temperature_probe::get_init_message(device_status *s, QString& out)
 {
 	QString head = "*#4*";
-	QString end = "##";
+	// FIXME: has to be external input 0?
+	QString end = (external ? "*15#0##" : "##");
 	out = head + where + end;
 }
 
@@ -1515,25 +1517,25 @@ void frame_interpreter_temperature_probe::handle_frame_handler(char *frame, QPtr
 
 	evt_list.clear();
 	if (msg_open.IsMeasureFrame()) {
-		// Just one device status at the moment
-		// *#4*where*what*???##
+		/*
+		 * external probe: *#4*where*15*SENSOR*1111*TEMP##
+		 * controlled probe: *#4*where*0*TEMP##
+		 */
 		int code = atoi(msg_open.Extract_grandezza());
-		switch(code) {
-			case 0:
-			{
-				int temperature;
-				char t[20];
-				strcpy(t, msg_open.Extract_valori(0));
-				temperature = (t[0] == '1' ? -atoi(&t[1]) : atoi(t));
-				qDebug("temperature probe frame, t is %d", temperature);
 
-				QPtrListIterator<device_status> dsi(*sl);
-				set_status((device_status_temperature_probe *)dsi.current(), temperature);
-				break;
-			}
-			default:
-				qDebug("temperature probe frame with unknown code %d", code);
+		if ((external && code == 15) || (!external && code == 0))
+		{
+			int temperature;
+			char t[20];
+			strcpy(t, msg_open.Extract_valori(external ? 2 : 0));
+			temperature = (t[0] == '1' ? -atoi(&t[1]) : atoi(t));
+			qDebug("temperature probe frame, t is %d", temperature);
+
+			QPtrListIterator<device_status> dsi(*sl);
+			set_status((device_status_temperature_probe *)dsi.current(), temperature);
 		}
+		else
+			qDebug("temperature probe frame with wrong code %d", code);
 	} else
 		qDebug("unknown temperature frame");
 
@@ -1543,7 +1545,6 @@ void frame_interpreter_temperature_probe::handle_frame_handler(char *frame, QPtr
 
 bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
-	// FIXME: IS THIS OK ?
 	qDebug("frame_interpreter_temperature_probe::is_frame_ours");
 	qDebug("who = %s, where = %s", who.ascii(), where.ascii());
 	qDebug("msg who = %s, msg where = %s", m.Extract_chi(), m.get_where().ascii());
@@ -1551,6 +1552,7 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 	if (strcmp(m.Extract_chi(),"4"))
 		return false;
 	char dove[30];
+	// FIXME: check Extract_level() too!
 	strcpy(dove, m.Extract_dove());
 	if (dove[0]=='#')
 		strcpy(&dove[0], &dove[1]);
@@ -2414,11 +2416,11 @@ frame_interpreter_thermr_device(QString w, bool p, int g) :
 bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, 
 		bool& request_status)
 {
-	// FIXME: WHERE CHECK with new addr type (4 zones)
 	qDebug("frame_interpreter_thermr_device::is_frame_ours");
 	request_status = false;
 	if (strcmp(m.Extract_chi(),"4")) return false;
 	char dove[30];
+	// FIXME: check Extract_level() too!
 	strcpy(dove, m.Extract_dove());
 
 	if ((dove[0]=='#') && (strcmp(dove, "#0")))

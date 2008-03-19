@@ -216,8 +216,7 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 		TERMO_EXTPROBE=55,          External not-controlled probe
 		TERMO_PROBE=56,             Not-controlled probe
 		*/
-		//case TERMO_EXTPROBE:   //TODO
-		
+
 		case TERMO:
 			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione,
 				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
@@ -236,6 +235,10 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 			break;
 		case TERMO_PROBE:
 			elencoBanner.append(new termoPage(this, termoPage::SINGLE_PROBE, descrizione,
+				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
+			break;
+		case TERMO_EXTPROBE:
+			elencoBanner.append(new termoPage(this, termoPage::EXT_SINGLE_PROBE, descrizione,
 				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
 		case ZONANTINTRUS:
