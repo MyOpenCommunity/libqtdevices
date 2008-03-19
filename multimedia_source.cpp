@@ -156,15 +156,6 @@ int MultimediaSource::setBGPixmap(char* backImage)
 	return (1);
 }
 
-void MultimediaSource::setAmbDescr(char *d)
-{
-	ambDescr->setText(d);
-}
-
-void MultimediaSource::draw()
-{
-}
-
 void MultimediaSource::freezed(bool f)
 {
 	qDebug("MultimediaSource::freezed()");

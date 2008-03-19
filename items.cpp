@@ -2398,7 +2398,7 @@ sorgente_aux::sorgente_aux( QWidget *parent,const char *name,char* indirizzo, bo
 	vecchia = vecchio;
 	setAddress(indirizzo);
 	//     connect(this,SIGNAL(click()),this,SLOT(Attiva()));
-	if(vecchia) {
+	if(vecchio) {
 		connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
 		connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
 		connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
@@ -2460,8 +2460,8 @@ void sorgente_aux::hide()
 /*****************************************************************
  **SorgenteMultimedia
  ****************************************************************/
-BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where) :
-	bannCiclaz(parent, name, 4),
+BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbut) :
+	bannCiclaz(parent, name, nbut),
 	source_menu(NULL, name, indirizzo, where)
 {
 	SetIcons(ICON_CICLA, ICON_IMPOSTA, ICON_FFWD, ICON_REW);
@@ -2499,10 +2499,71 @@ void BannerSorgenteMultimedia::hide()
 }
 
 
-// void BannerSorgenteMultimedia::inizializza()
-// {
-// 	source_menu.initAudio();
-// }
+/*
+ * Banner Sorgente Multimediale Multicanale
+ */
+BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
+		const char *icon_onoff, const char *icon_cycle, const char *icon_settings) :
+	BannerSorgenteMultimedia(parent, name, indirizzo, where, 3)
+{
+	SetIcons(icon_onoff, NULL, icon_cycle, icon_settings);
+
+	indirizzo_semplice = QString(indirizzo);
+	indirizzi_ambienti.clear();
+
+	connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
+	multiamb = false;
+}
+
+void BannerSorgenteMultimediaMC::attiva()
+{
+	openwebnet msg_open;
+
+	if (!multiamb)
+	{
+		msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+		emit sendFrame(msg_open.frame_open);
+		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
+	}
+	else
+	{
+		QStringList::Iterator it;
+		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		{
+			QString dove = QString::number(100 + (*it).toInt() * 10 + indirizzo_semplice.toInt(), 10);
+			msg_open.CreateMsgOpen("16", "3", (char *)(dove.ascii()), "");
+			emit sendFrame(msg_open.frame_open);
+		}
+	}
+}
+
+void BannerSorgenteMultimediaMC::ambChanged(char *ad, bool multi, void *indamb)
+{
+	// FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
+	qDebug("BannerSorgenteMultimediaMC::ambChanged(%s, %d, %s)", ad, multi, indamb);
+	QString dove;
+
+	if (!multi)
+	{
+		multiamb = false;
+		indirizzo_ambiente = QString((const char *)indamb).toInt();
+		dove = QString::number(100 + indirizzo_ambiente * 10 + indirizzo_semplice.toInt(), 10);
+	}
+	else
+	{
+		multiamb = true;
+		dove = QString::number(100 + indirizzo_semplice.toInt(), 10);
+	}
+	setAddress((char *)dove.ascii());
+	source_menu.setAmbDescr(ad);
+
+	qDebug("Source where is now %s", dove.ascii());
+}
+
+void BannerSorgenteMultimediaMC::addAmb(char *a)
+{
+	indirizzi_ambienti += QString(a);
+}
 
 /*****************************************************************
  **sorgente_Radio

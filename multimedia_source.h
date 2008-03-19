@@ -86,18 +86,16 @@ public:
 	/*!
 	 * \brief Sets amb. description
 	 */
-	void setAmbDescr(char *);
+	void setAmbDescr(char *) {}
 	/*!
 	 * \brief Draws the page
 	 */
-	void draw();
+	void draw() {};
 	/*!
 	 * File Browsing Windows
 	 */
 	FileBrowser *filesWindow;
 
-	BtLabel *auxName, *ambDescr;
-	
 	/// Init Audio System
 	void initAudio();
 

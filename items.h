@@ -708,23 +708,14 @@ public slots:
 };
 
 
-/*****************************************************************
- **SorgenteMultimedia
- ****************************************************************/
-/*!
- * \class SorgenteMultimedia
- * \brief This class is made to manage an auxiliary sound source.
- *
- * This particoular banner is composed by 2 buttons from which is possible: change the sound source,  go to the next track.
- * \author Davide
- * \date lug 2005
+/**
+ * \brief This class is made to manage a multimedia source.
  */
 class BannerSorgenteMultimedia : public bannCiclaz
 {
 Q_OBJECT
 public:
-	BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where);
-	//virtual void inizializza();
+	BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbutt);
 public slots:
 	void gestFrame(char *);
 	void hide();
@@ -735,6 +726,30 @@ private slots:
 	void menu();
 protected:
 	MultimediaSource source_menu;
+};
+
+/**
+ * \brief This class is made to manage a multichannel multimedia source.
+ */
+class BannerSorgenteMultimediaMC : public BannerSorgenteMultimedia
+{
+Q_OBJECT
+public:
+	BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
+		const char *icon_onoff, const char *icon_cycle, const char *icon_settings);
+
+public slots:
+	void attiva();
+	void addAmb(char *);
+	void ambChanged(char *, bool, void *);
+signals:
+	void active(int, int);
+
+private:
+	QString indirizzo_semplice;
+	QStringList indirizzi_ambienti;
+	bool multiamb;
+	int indirizzo_ambiente;
 };
 
 /*****************************************************************
