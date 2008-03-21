@@ -200,7 +200,7 @@ void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QCo
      if (text)
      {
 	 descrTemp[tempCont] = new BtLabel(this,text);
-	 descrTemp[tempCont] ->setFont( QFont( "helvetica", 14, QFont::Bold ));
+	 descrTemp[tempCont] ->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ));
 	 descrTemp[tempCont] ->setAlignment(AlignHCenter|AlignVCenter);
 	 descrTemp[tempCont] ->setText(text);
 	 descrTemp[tempCont] ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
@@ -232,7 +232,7 @@ void homePage::addTemp(char *z, int x, int y)
 void homePage::addDescr(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
 {
     descrizione = new BtLabel(this,z);
-    descrizione->setFont( QFont( "helvetica", 14, QFont::Bold ));
+    descrizione->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ));
     descrizione->setAlignment(AlignHCenter|AlignVCenter);
     descrizione->setText(z);
     descrizione->setGeometry(x,y,width,height);

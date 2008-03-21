@@ -137,7 +137,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdi
 	testiChoice[idx] = new BtLabel(this,"choiceLabel"+QString::number(idx));
 	testiChoice[idx] -> setGeometry( 80,idx*60,120,60);
 	testiChoice[idx] -> setAlignment(AlignHCenter|AlignVCenter);
-	testiChoice[idx] -> setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	testiChoice[idx] -> setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 	testiChoice[idx] -> hide();
     }	
     dataOra=NULL;

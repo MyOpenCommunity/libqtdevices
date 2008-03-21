@@ -89,13 +89,13 @@ extern PropertyMap app_config;
  *  It defines the starting path for mediaserver
  */
 #define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
-/*! \def XML_FILE_IN_DEFAULT 
+/*! \def XML_FILE_IN_DEFAULT
  */
 #define XML_FILE_IN_DEFAULT        ".bto-to-xml"
-/*! \def XML_FILE_OUT_DEFAULT 
+/*! \def XML_FILE_OUT_DEFAULT
  */
 #define XML_FILE_OUT_DEFAULT       ".xml-to-bto"
-/*! \def PATH_VAR_DEFAULT 
+/*! \def PATH_VAR_DEFAULT
  */
 #define PATH_VAR_DEFAULT           "/var"
 /*!  \def FILE_TEST1
@@ -127,7 +127,7 @@ extern PropertyMap app_config;
 /****************************************************************
  **  definizione dimensioni schermo
  ****************************************************************/
-/*! \def MAX_WIDTH 
+/*! \def MAX_WIDTH
  *  Maximum width of the screen
  */
 #define MAX_WIDTH                  240
@@ -135,10 +135,12 @@ extern PropertyMap app_config;
  *  Maximum height of the screen
  */
 #define MAX_HEIGHT                 320
-/*! \def NUM_RIGHE 
+/*! \def NUM_RIGHE
  *  Number of lines shown on the screen
  */
 #define NUM_RIGHE                  4
+
+#define DEFAULT_FONT  		"simsun"
 
 
 /****************************************************************
@@ -379,7 +381,7 @@ const char pagTesti[13][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CA
 	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI" };
 
 /*! \enum pulsType
- * differentiate various type of pulse banner 
+ * differentiate various type of pulse banner
  */
 enum pulsType
 {

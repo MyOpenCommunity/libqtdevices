@@ -110,14 +110,14 @@ void dimmer::Draw()
 	if (BannerText)
 	{
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 		BannerText->setText(testo);
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
 		SecondaryText->setText(testoSecondario);
 	}
 }
@@ -1960,12 +1960,12 @@ void attuatAutomTempNuovoF::Draw()
 	}
 	if (BannerText) {
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 		BannerText->setText(testo);
 	}
 	if (SecondaryText) {	
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
 		SecondaryText->setText(testoSecondario);
 	} 
 }
@@ -3538,7 +3538,7 @@ void zonaAnti::setIcons()
 	zonaAnti::SetIcons(sparzIName, &pippo[0], IconDisactive);
 	if (BannerText) {
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 		BannerText->setText(name);
 	}
 	zonaAttiva = IconActive;
@@ -4576,13 +4576,13 @@ void scenEvo::Draw()
 	}
 	if (BannerText) {
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 		BannerText->setText(testo);
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText) {	
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
 		SecondaryText->setText(testoSecondario);
 	}
 }
@@ -4814,14 +4814,14 @@ void scenSched::Draw()
 	}
 	if (BannerText) {
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 		BannerText->setText(testo);
 		//     qDebug("TESTO: %s", testo);
 	}
 #if 0
 	if (SecondaryText) {	
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
 		SecondaryText->setText(testoSecondario);
 	}
 #endif
@@ -5072,7 +5072,7 @@ void ambDiffSon::Draw()
 	BannerIcon2->setPixmap(*(Icon[3]));
 	BannerIcon2->repaint();
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 	BannerText->setText(testo);
 }
 
@@ -5206,7 +5206,7 @@ void insAmbDiffSon::Draw()
 	BannerIcon->setPixmap(*(Icon[0]));
 	BannerIcon->repaint();
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 	BannerText->setText(testo);
 }
 

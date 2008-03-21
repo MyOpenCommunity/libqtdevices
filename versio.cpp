@@ -52,7 +52,7 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
      datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
      datiGen->setAlignment(AlignHCenter|AlignVCenter);
        
-     datiGen->setFont( QFont( "helvetica", 24, QFont::Black,TRUE) );
+     datiGen->setFont( QFont( DEFAULT_FONT, 24, QFont::Black,TRUE) );
      indDisp=0;
 }
 
@@ -110,7 +110,7 @@ void versio::gestFrame(char* frame)
     if (aggiorna)
     {
 	char scritta[100];
-	datiGen->setFont( QFont( "helvetica", 14, QFont::Bold) );
+	datiGen->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold) );
 	datiGen-> setIndent(15);
 	datiGen->setAlignment(AlignLeft|AlignTop);    
 	sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d", model.ascii(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);

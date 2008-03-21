@@ -762,14 +762,14 @@ void banner::Draw()
 	if (BannerText)
 	{
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
 		BannerText->setText(testo);
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
+		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
 		SecondaryText->setText(testoSecondario);
 	}
 }

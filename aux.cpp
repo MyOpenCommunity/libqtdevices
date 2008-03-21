@@ -46,11 +46,11 @@ aux::aux( QWidget *parent, const char *name, const char *amb )
 	auxName = new BtLabel(this,"Nome della sorgente");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
-	ambDescr->setFont( QFont( "Helvetica", 24, QFont::Bold ) );
+	ambDescr->setFont( QFont( DEFAULT_FONT, 24, QFont::Bold ) );
 	ambDescr->setText(amb);
 	auxName->setGeometry(0,30,240,40);
 	auxName->setAlignment(AlignHCenter|AlignTop);
-	auxName->setFont( QFont( "Helvetica", 24, QFont::Bold ) );
+	auxName->setFont( QFont( DEFAULT_FONT, 24, QFont::Bold ) );
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
 	fwdBut = new BtButton(this, "bottone fwd");

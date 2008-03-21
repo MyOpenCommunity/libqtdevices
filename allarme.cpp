@@ -69,7 +69,7 @@ void allarme::SetIcons(char *icon)
 			  ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
     delete(Icon1);
     descr = new BtLabel(this, "descr_alarm");
-    descr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    descr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
     descr->setAlignment(AlignHCenter|AlignVCenter);
     descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2, 
 		       MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);

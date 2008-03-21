@@ -122,7 +122,7 @@ void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
     area1_ptr = new BtLabel(this, "Area1");
     area1_ptr->setGeometry(0, (MAX_HEIGHT/4)-2*LABEL_HEIGHT, 
 			   MAX_WIDTH, LABEL_HEIGHT);
-    area1_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    area1_ptr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
     area1_ptr->setAlignment(AlignHCenter|AlignVCenter);
     QString s; 
     if(my_station)
@@ -141,7 +141,7 @@ void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
 	area3_ptr->setGeometry(BUTTON_DIM,
 			       (MAX_HEIGHT/2)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
 			       LABEL_WIDTH, LABEL_HEIGHT);
-	area3_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+	area3_ptr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
 	area3_ptr->setAlignment(AlignHCenter|AlignVCenter);
 	s = _txt2;
 	area3_ptr->setText(s.ascii());
@@ -158,7 +158,7 @@ void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
 	area5_ptr->setGeometry(BUTTON_DIM,
 			       ((3*MAX_HEIGHT)/4)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
 			       LABEL_WIDTH, LABEL_HEIGHT);
-	area5_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+	area5_ptr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
 	area5_ptr->setAlignment(AlignHCenter|AlignVCenter);
 	s = _txt3;
 	area5_ptr->setText(s.ascii());

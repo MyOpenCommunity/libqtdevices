@@ -293,10 +293,10 @@ int tastiera::setBGPixmap(char* backImage)
 void tastiera::draw()
 {
      scrittaLabel->setAlignment(AlignHCenter|AlignVCenter);
-     scrittaLabel->setFont( QFont( "helvetica", 14, QFont::Bold ) );
+     scrittaLabel->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
      scrittaLabel->setText("PASSWORD:");
      digitLabel->setAlignment(AlignLeft|AlignVCenter);
-     digitLabel->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+     digitLabel->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
      qDebug("tastiera::draw(), mode = %d", mode);
      if (mode==CLEAN)
 	 digitLabel->setText(&pwd[0]);
@@ -406,7 +406,7 @@ tastiera_con_stati::tastiera_con_stati(int s[8],
 	// Create button
 	stati[i] = new BtButton(this, "bottone stato");	
 	stati[i]->setEnabled(0);
-	stati[i]->setFont( QFont( "helvetica", 16, QFont::Bold ) );
+	stati[i]->setFont( QFont( DEFAULT_FONT, 16, QFont::Bold ) );
 	if(s[i] == -1)
 	{
 	    stati[i]->setText("-");

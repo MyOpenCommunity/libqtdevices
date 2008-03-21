@@ -137,13 +137,13 @@ void Calibrate::paintEvent( QPaintEvent * )
     y = height() / 2 + 15;
 
 //    QString text( "Schermata di calibrazione" );
- //   p.setFont( QFont( "helvetica", 20, QFont::Bold ) );
+ //   p.setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
 //    p.drawText( 0, y, width(), height() - y, AlignHCenter, text );
 
 //    y += 40;
 /*    text = "Tocca il vetro\n"
 	    "in modo fermo e sicuro per calibrarlo.";	//traduzioni!!!
-    p.setFont( QFont( "helvetica", 12 ) );
+    p.setFont( QFont( DEFAULT_FONT, 12 ) );
     p.drawText( 0, y, width(), height() - y, AlignHCenter, text );*/
 
     saveUnder = QPixmap::grabWindow( winId(), crossPos.x()-8, crossPos.y()-8, 16, 16 );

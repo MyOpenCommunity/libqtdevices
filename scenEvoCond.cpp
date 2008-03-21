@@ -647,7 +647,7 @@ void scenEvo_cond_d::SetIcons()
     area2_ptr = new BtLabel(this, "Area2");
     area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, 
 			   TEXT_X_DIM, TEXT_Y_DIM);
-    area2_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    area2_ptr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
     area2_ptr->setAlignment(AlignHCenter|AlignVCenter);
     BtButton *b = new BtButton(this, "Up button");
     but[A3_BUTTON_INDEX] = b;
@@ -995,7 +995,7 @@ device_condition_light_status(QWidget *parent, char *name, QString *c) :
 {
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
     frame = l;
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
@@ -1091,7 +1091,7 @@ device_condition_dimming::device_condition_dimming(QWidget *parent,
 	   c->ascii());
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
     frame = l;
     if(strcmp(c->ascii(), "0") == 0)
     {
@@ -1368,7 +1368,7 @@ device_condition(parent, c)
     qDebug("device_condition_dimming_100::device_condition_dimming_100(%s)", c->ascii());
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
     frame = l;
     if(strcmp(c->ascii(), "0") == 0)
     {
@@ -1649,7 +1649,7 @@ device_condition_volume::device_condition_volume(QWidget *parent,
     char sup[10];
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
     frame = l;
     if(strcmp(c->ascii(), "-1") == 0)
     {
@@ -1943,7 +1943,7 @@ device_condition_temp::device_condition_temp(QWidget *parent,
 #else
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
 #endif
     frame = l;
     set_condition_value(*c);

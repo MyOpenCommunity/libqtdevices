@@ -60,7 +60,7 @@ radio::radio( QWidget *parent, const char *name, const char *amb )
 	radioName = new BtLabel(this,"Bottone di sinistra");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
-	ambDescr->setFont( QFont( "Helvetica", 12, QFont::Bold ) );
+	ambDescr->setFont( QFont( DEFAULT_FONT, 12, QFont::Bold ) );
 	ambDescr->setText(amb);
 	freq = new QLCDNumber(this,"pippo");
 	progrText = new BtLabel(this,"progressivo stazione");
@@ -341,9 +341,9 @@ void radio::setAmbDescr(char *d)
 void radio::draw()
 {
 	rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
-	rdsLabel->setFont( QFont( "Helvetica", 26, QFont::Bold ) );
+	rdsLabel->setFont( QFont( DEFAULT_FONT, 26, QFont::Bold ) );
 	radioName->setAlignment(AlignHCenter|AlignTop);
-	radioName->setFont( QFont( "Helvetica", 12, QFont::Bold ) );
+	radioName->setFont( QFont( DEFAULT_FONT, 12, QFont::Bold ) );
 	radioName->setText(&nome[0]);
 	rdsLabel->setText(&rds[0]);
 	char fr[10];
@@ -367,7 +367,7 @@ void radio::draw()
 	wasManual=manual;
 
 	progrText ->setAlignment(AlignHCenter|AlignVCenter);
-	progrText ->setFont( QFont( "Helvetica", 20, QFont::Bold ) );
+	progrText ->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
 	progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");
 }
 

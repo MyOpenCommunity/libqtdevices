@@ -57,7 +57,7 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	/// Create filesWindow, Set geometry and Font Style
 	filesWindow = new FileBrowser(this, 4 /* this means number of rows for the browser */);
 	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	filesWindow->setFont( QFont( "Helvetica", 18 ) );
+	filesWindow->setFont( QFont( DEFAULT_FONT, 18 ) );
 
 	/// Start to Browse Files
 	filesWindow->browseFiles(MEDIASERVER_PATH);
@@ -559,7 +559,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
 	/// Create Labels (that contain tags)
- 	QFont font( "helvetica", 18 );
+ 	QFont font( DEFAULT_FONT, 18 );
 
 	// create Labels containing INFO
 	//labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );

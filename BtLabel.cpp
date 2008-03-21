@@ -571,8 +571,11 @@ void BtLabel::drawContents( QPainter *p )
 	int alignment = align;
 	//if ((align & ShowPrefix) && !style().styleHint(QStyle::SH_UnderlineAccelerator, this))
 	 //   alignment |= NoAccel;
-	
-	
+
+	//toma debug!!!!!!! stringa in cinese
+    //ltext  =  QString::fromUtf8 ("\346\210\221\350\246\201\344\270\200\345\200\213\345\225\244\351\205\222", -1 );
+
+
 	// ordinary text or pixmap label
 	style().drawItem( p, cr, alignment, colorGroup(),TRUE/* isEnabled()*/,
 			  pix, ltext );
@@ -711,7 +714,7 @@ void BtLabel::setMovie( const QMovie& movie )
 {
     QSize osh = sizeHint();
     clearContents();
-    
+
     if(lmovie)
       delete lmovie;
     lmovie = new QMovie( movie );
