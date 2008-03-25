@@ -190,7 +190,7 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 		case SORGENTE_AUX : elencoBanner.append(new sorgente_aux(this,descrizione ,(char*)indirizzo)); break;
 		/// New Multimedia Audio Source.  NOTE: numFrame parametere name is not significative: it's the (cut down) where address
 		case SORGENTE_MULTIM:
-			elencoBanner.append(new BannerSorgenteMultimedia(this, descrizione, (char *)indirizzo, numFrame, 3));
+			elencoBanner.append(new BannerSorgenteMultimedia(this, descrizione, (char *)indirizzo, numFrame, 4));
 			break;
 		case SORGENTE_MULTIM_MC:
 			elencoBanner.append(new BannerSorgenteMultimediaMC(this, descrizione, (char *)indirizzo, numFrame, IconaSx, IconaDx, icon));
