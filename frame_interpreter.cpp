@@ -1,4 +1,4 @@
- //! Implementation of frame interpreter classes
+//! Implementation of frame interpreter classes
 
 #include <qstring.h>
 #include <qptrlist.h>
@@ -11,7 +11,7 @@
 #include "genericfunz.h"
 
 // Openwebnet where class
-openwebnet_where::openwebnet_where(char *s) : QString(s)
+openwebnet_where::openwebnet_where(char *s) : QString(s) 
 {
 }
 
@@ -24,7 +24,7 @@ void openwebnet_where::lev(int& l)
 	// Look for # from position 1
 	int i = find('#', 1);
 	l = i>=0 ? at(i + 1).digitValue() : 3;
-	qDebug("openwebnet_where::lev -> level is %d", l);
+	qDebug("*** level is %d", l);
 }
 
 void openwebnet_where::interf(int& i)
@@ -37,91 +37,34 @@ void openwebnet_where::interf(int& i)
 	}
 	int k = find('#', j+1);
 	i = k>=0 ? right(length() - k - 1).toInt() : -1;
-	qDebug("openwebnet_where::interf -> interface is %d", i);
-}
-
-
-QString openwebnet_where::address()
-{
-	QString root_address;
-	/// The address may be "addrress" or "address#something_else" this method return address in both cases
-	find("#",0) > -1 ? root_address = mid(0, find("#",0)) : root_address = *this;
-	qDebug("openwebnet_where::address -> address is %s", root_address.ascii());
-	return root_address;
+	qDebug("*** interface is %d", i);
 }
 
 bool openwebnet_where::pp(int& addr)
 {
-	/// Comandi PUNTO-PUNTO
-	/// prima erano del tipo 01, 02, .., 99 escluse le decine (10, 20, .., 90)
-	/// ora sono come prima oppure di 4 cifre (2 gruppi da 2) da 00-10 a 01-15
-	/// le prime 2 sono l'ambiente le altre il punto luce
-	#if 0
 	int trash;
 	if(gen(trash, trash) || amb(trash, trash, trash) || gro(trash))
 		return false;
 	// Check this
 	addr = strtoul(ascii(), NULL, 10);
 	return true;
-	#endif
-	qDebug(QString("\n\n**********************************************************************************************"));
-	qDebug(QString("                                Running openwebnet_where::pp (POINT to POINT)                     "));
-	qDebug(QString("                                address is %1").arg(address()));
-	qDebug(QString("**********************************************************************************************\n\n"));
-	bool ok = FALSE;
-	int  trash;
-	if ( !gen(trash, trash) && !amb(trash, trash, trash) && !gro(trash) )
-	{
-		addr = toInt( &ok, 10 );
-		qDebug(QString(">>> openwebnet_where::pp --> addr PUNTO-PUNTO: %1 <<<").arg(addr));
-	}
-	
-	return ok;
 }
 
-bool openwebnet_where::gen( int &l, int &i )
+bool openwebnet_where::gen(int& l, int& i)
 {
-	/// Comandi GENERALI
-	/// contengono solo '0'
-	#if 0 // ORIGINALE
 	l = -1;
-	if((at(0)=='0' && length() == 1) || (at(0)=='0' && length() >= 3 && length() <= 6)) 
-	{
+	if((at(0)=='0' && length() == 1) || 
+			(at(0)=='0' && length() >= 3 && length() <= 6)) {
 		lev(l);
 		interf(i);
 		return true;
 	}
 	return false;
-	#endif // ORIGINALE
-
-	qDebug(QString("\n\n**********************************************************************************************"));
-	qDebug(QString("                                Running openwebnet_where::gen (GENERAL)                           "));
-	qDebug(QString("                                address is %1").arg(address()));
-	qDebug(QString("**********************************************************************************************\n\n"));
-
-	if ( address() == "0" )
-	{
-		lev(l);
-		interf(i);
-		qDebug(QString(">>> openwebnet_where::gen --> livello: %1, interfaccia %2 <<<").arg(l).arg(i));
-		return TRUE;
-	}
-	else
-	{
-		l = -1;
-		return FALSE;
-	}
 }
-
-bool openwebnet_where::amb( int &a, int &l, int &i )
+bool openwebnet_where::amb(int& a, int& l, int& i)
 {
-	/// Comandi verso gli AMBIENTI
-	/// per questi comandi il where può essere 00, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-	/// per i casi 1,..,9 può esserci un '#' in fondo
-	#if 0
 	qDebug("openwebnet_where:amb. Where is %s", ascii());
-	if ( *this == "00" )
-	{ 
+	if(*this == "00") { 
 		// Diagnostic messages
 		a = 0; 
 		lev(l);
@@ -131,16 +74,14 @@ bool openwebnet_where::amb( int &a, int &l, int &i )
 	}
 	//qDebug("amb(), this->ascii() = %s", ascii());
 	//qDebug("at(0) = %d, length() = %d", at(0).digitValue(), length());
-	if ( (at(0) >= '1') && (at(0) <= '9') && length() == 1 ) 
-	{
+	if((at(0) >= '1') && (at(0) <= '9') && length() == 1) {
 		a = QChar(at(0)) - '0';
 		l = 3;
 		i = -1;
 		qDebug("amb ! (%d, %d, %d)", a, l, i);
 		return true;
 	}
-	if ( (at(0) >= '1') && (at(0) <= '9') && ( at(1) == '#') )
-	{
+	if((at(0) >= '1') && (at(0) <= '9') && (at(1) == '#')) {
 		a = QChar(at(0)) - '0';
 		lev(l);
 		interf(i);
@@ -148,59 +89,15 @@ bool openwebnet_where::amb( int &a, int &l, int &i )
 		return true;
 	}
 	return false;
-	#endif
-
-	qDebug(QString("\n\n**********************************************************************************************"));
-	qDebug(QString("                                Running openwebnet_where::amb (AMBIENT)                           "));
-	qDebug(QString("                                address is %1").arg(address()));
-	qDebug(QString("**********************************************************************************************\n\n"));
-	bool ok      = FALSE;
-	QString addr = address();
-
-	if ( addr == "00" || addr == "10" || ( addr.length() == 1 && addr.at(0).isDigit() ) )
-	{
-		lev(l);
-		interf(i);
-		a = addr.toInt( &ok, 10 );
-		qDebug(QString(">>> openwebnet_where::amb --> livello: %1, interfaccia %2, ambiente %3 <<<").arg(l).arg(i).arg(a));
-	}
-	
-	return ok;
 }
 
 bool openwebnet_where::gro(int& g)
 {
-	/// Comandi verso i GRUPPI
-	// FIXME: il gruppo e' un #int (0-255)
-	#if 0
-	if ( (at(0) == '#') && (at(1) >= '1') && (at(1) <= '9') )
-	{
+	if((at(0) == '#') && (at(1) >= '1') && (at(1) <= '9')) {
 		g = QChar(at(1)) - 0x30;
 		return true;
 	}
 	return false;
-	#endif
-
-	qDebug(QString("\n\n**********************************************************************************************"));
-	qDebug(QString("                                Running openwebnet_where::gro (GROUP)                             "));
-	qDebug(QString("                                address is %1").arg(address()));
-	qDebug(QString("**********************************************************************************************\n\n"));
-
-	int  group;
-	bool ok;
-
-	if ( at(0) == '#' )
-	{
-		// build the string containing the group (as substring) and set ok to TRUE is success
-		group = mid( 1, this->length() ).toInt( &ok, 10 );	
-		if ( ok == TRUE )
-		{
-			g = group;
-			qDebug(QString(">>> openwebnet_where::gro --> il gruppo è: %1 <<<").arg(g));
-			return TRUE;
-		}
-	}
-	return FALSE;
 }
 
 bool openwebnet_where::extended(void)
@@ -215,17 +112,14 @@ openwebnet_ext::openwebnet_ext() : openwebnet()
 {
 }
 
-bool openwebnet_ext::is_target( frame_interpreter *fi, QString who, bool &request_status )
+bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, 
+		bool& request_status)
 {
-	qDebug("openwebnet_ext::is_target( frame_interpreter *fi, QString who, bool &request_status )");
 	request_status = false;
 	if(fi->get_who() != who) return false;
 	if(fi->get_pul()) return false;
 	int l = 0, i = 0;
-	qDebug("openwebnet_ext::is_target( frame_interpreter *fi, QString who, bool &request_status ):");
-	qDebug(QString("GENERALE %1 (l=%2, i=%3)").arg(gen(l,i)).arg(l).arg(i));
-	if (gen(l, i))
-	{
+	if(gen(l, i)) {
 		qDebug("gen!!");
 		if((!extended() && l == 3) ||
 				(extended() && l == 3 && l == fi->get_lev()) || 
@@ -236,14 +130,12 @@ bool openwebnet_ext::is_target( frame_interpreter *fi, QString who, bool &reques
 			return false;
 	}
 	int addr;
-	if (pp(addr)) 
-	{
+	if(pp(addr)) {
 		qDebug("pp (%d)", addr);
 		return fi->get_where() == get_where();
 	}
 	int a;
-	if(amb(a, l, i)) 
-	{
+	if(amb(a, l, i)) {
 		qDebug("amb(%d)", a);
 		if(((l == 3 && l == fi->get_lev() && a == fi->get_amb()) || 
 					(l == 4 && a == fi->get_amb() && i == fi->get_interface()))) {
@@ -260,27 +152,26 @@ bool openwebnet_ext::is_target( frame_interpreter *fi, QString who, bool &reques
 	return fi->belongs_to_group(g);
 }
 
-bool openwebnet_ext::is_target( frame_interpreter *fi, QString who, QString wh, bool& request_status )
+bool openwebnet_ext::is_target(frame_interpreter *fi, QString who, QString wh,
+		bool& request_status)
 {
-	qDebug("openwebnet_ext::is_target( frame_interpreter *fi, QString who, QString wh, bool& request_status )");
 	request_status = false;
 	if(fi->get_who() != who) return false;
 	if(fi->get_pul()) return false;
 	int l, i;
-	if(gen(l, i)) 
-	{
-		if ((l == 3 && l == fi->get_lev()) || ((l == 4) && fi->get_lev() == 4 && fi->get_interface() == i))
+	if(gen(l, i)) {
+		if((l == 3 && l == fi->get_lev()) || ((l == 4) && fi->get_lev() == 4 && 
+					fi->get_interface() == i))
 			request_status = true;
 		return true;
 	}
 	int addr;
-	if(pp(addr))
+	if(pp(addr)) 
 		return fi->get_where() == wh;
 	int a;
-	if (amb(a, l, i))
-	{
-		if((l == 3 && l == fi->get_lev() && a == fi->get_amb()) || (l == 4 && a == fi->get_amb() && i == fi->get_interface()))
-		{
+	if(amb(a, l, i)) {
+		if((l == 3 && l == fi->get_lev() && a == fi->get_amb()) ||
+				(l == 4 && a == fi->get_amb() && i == fi->get_interface())) {
 			request_status = true;
 			return true;
 		}
@@ -307,50 +198,47 @@ QString openwebnet_ext::get_where(void)
 
 
 // Private methods
-bool openwebnet_ext::gen( int &l, int &i )
+bool openwebnet_ext::gen(int& l, int& i)
 {
-	qDebug("openwebnet_ext::gen( int &l, int &i )");
 	openwebnet_where w(get_where());
 	return w.gen(l, i);
 }
 
-bool openwebnet_ext::amb( int &a, int &l, int &i )
+bool openwebnet_ext::amb(int& a, int& l, int& i)
 {
-	qDebug("openwebnet_ext::amb( int &a, int &l, int &i )");
 	openwebnet_where w(get_where());
 	return w.amb(a, l, i);
 }
 
-bool openwebnet_ext::gro( int &g )
+bool openwebnet_ext::gro(int& g)
 {
-	qDebug("openwebnet_ext::gro( int &g )");
 	openwebnet_where w(get_where());
 	return w.gro(g);
 }
 
-bool openwebnet_ext::pp( int &addr )
+bool openwebnet_ext::pp(int& addr)
 {
-	qDebug("openwebnet_ext::pp( int &addr )");
 	openwebnet_where w(get_where());
 	return w.pp(addr);
 }
 
 bool openwebnet_ext::extended(void)
 {
-	qDebug("bool openwebnet_ext::extended()");
 	openwebnet_where w(get_where());
 	return w.extended();
 }
 
-/// Generic frame interpreter
+// Generic frame interpreter
 
-frame_interpreter::frame_interpreter(QString _who, QString _where, bool p, int g)
+frame_interpreter::frame_interpreter(QString _who, QString _where, 
+		bool p, int g)
 {
 	who = _who;
 	where = _where;
 	pul = p;
 	group = g;
-	connect(&deferred_timer, SIGNAL(timeout()), this, SLOT(deferred_request_init()));
+	connect(&deferred_timer, SIGNAL(timeout()), this, 
+			SLOT(deferred_request_init()));
 	qDebug("frame_interpreter::frame_interpreter()");
 	qDebug("who = %s, where = %s", who.ascii(), where.ascii());
 }
@@ -375,8 +263,7 @@ int frame_interpreter::get_amb(void)
 	qDebug("frame_interpreter::get_amb");
 	int a, l, i, trash ;
 	openwebnet_where w(where);
-	if(where == "00") 
-	{
+	if(where == "00") {
 		w.amb(a, l, i);
 		return a;
 	}
@@ -415,31 +302,28 @@ bool frame_interpreter::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
 	qDebug("frame_interpreter::is_frame_ours");
 	qDebug("who = %s, where = %s", who.ascii(), where.ascii());
-	qDebug("msg who = %s, msg where = %s", m.Extract_chi(), m.get_where().ascii());
+	qDebug("msg who = %s, msg where = %s", m.Extract_chi(), 
+			m.get_where().ascii());
 	bool out = m.is_target(this, request_status);
-	if (out) 
-		qDebug("frame_interpreter::is_frame_ours -> FRAME IS OURS!");
-	else
-		qDebug("frame_interpreter::is_frame_ours -> FRAME IS NOT OURS!!!");
+	if(out) 
+		qDebug("FRAME IS OURS !!");
 	return out;
 }
 
 void frame_interpreter::request_init(device_status *ds, int delay)
 {
-	if (delay)
-	{
-		qDebug("frame_interpreter::request_init -> delayed init request (%d) for %p", delay, ds);
+	if(delay) {
+		qDebug("delayed init request (%d) for %p", delay, ds);
 		deferred_list_element *de = new deferred_list_element;
 		de->ds = ds;
 		deferred_list.append(de);
 		de->expires = (QTime::currentTime()).addMSecs(delay);
-		if (!deferred_timer.isActive()) {
+		if(!deferred_timer.isActive()) {
 			deferred_timer_expires = de->expires;
 			deferred_timer.start(delay, TRUE);
 			return;
 		}
-		if (de->expires < deferred_timer_expires)
-		{
+		if(de->expires < deferred_timer_expires) {
 			deferred_timer_expires = de->expires;
 			deferred_timer.changeInterval(delay);
 		}
@@ -449,16 +333,16 @@ void frame_interpreter::request_init(device_status *ds, int delay)
 	QStringList msgl;
 	msgl.clear();
 	get_init_messages(ds, msgl);
-	for ( QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it )
-	{
+	for ( QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it ) {
 		emit(init_requested(*it));
 	}
 }
 
 void frame_interpreter::deferred_request_init(void)
 {
-	qDebug("frame_interpreter::deferred_request_init");
-	QPtrListIterator<deferred_list_element> *dli = new QPtrListIterator<deferred_list_element>(deferred_list);
+	qDebug("frame_interpreter::deferred_request_init()");
+	QPtrListIterator<deferred_list_element> *dli = 
+		new QPtrListIterator<deferred_list_element>(deferred_list);
 	device_status *ds;
 	deferred_list_element *de;
 	bool restart = false;
@@ -467,11 +351,9 @@ void frame_interpreter::deferred_request_init(void)
 		dli->toFirst();
 		// Build an invalid time
 		QTime next_expires = QTime(25, 61);
-		while ( (de = dli->current()) != 0 ) 
-		{
+		while( ( de = dli->current() ) != 0) {
 			ds = de->ds;
-			if(QTime::currentTime().msecsTo(de->expires) <= 0) 
-			{
+			if(QTime::currentTime().msecsTo(de->expires) <= 0) {
 				qDebug("requesting status");
 				request_init(de->ds, false);
 				deferred_list.remove(de);
@@ -482,12 +364,10 @@ void frame_interpreter::deferred_request_init(void)
 				next_expires = de->expires;
 			++(*dli);
 		}
-		if(!next_expires.isValid())
-		{
+		if(!next_expires.isValid()) {
 			qDebug("no more deferred status requests");
 			ms = -1;
-		} 
-		else
+		} else
 			ms = QTime::currentTime().msecsTo(next_expires);
 		// One more round if more deferred requests are ready
 		restart = (ms <= 0) ;
@@ -516,7 +396,8 @@ void frame_interpreter::get_init_messages(device_status *s, QStringList& out)
 }
 
 // This is reimplemented by children
-void frame_interpreter::handle_frame_handler(char *f, QPtrList<device_status> *sl)
+void frame_interpreter::handle_frame_handler(char *f, 
+		QPtrList<device_status> *sl)
 {
 	qDebug("frame_interpreter::handle_frame_handler");
 }
@@ -528,7 +409,7 @@ void frame_interpreter::set_where(QString s)
 	where = s;
 }
 
-/// Lights frame interpreter
+// Lights frame interpreter
 
 // Public methods
 frame_interpreter_lights::frame_interpreter_lights(QString w, bool p, int g) :
@@ -557,7 +438,8 @@ void frame_interpreter_lights::get_init_message(device_status *s, QString& out)
 	out = head + where + end;
 }
 
-void frame_interpreter_lights::handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+void frame_interpreter_lights::
+handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
 	bool request_status;
 	openwebnet_ext msg_open;
@@ -565,13 +447,13 @@ void frame_interpreter_lights::handle_frame_handler(char *frame, QPtrList<device
 	qDebug("frame_interpreter_lights::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-	if (!is_frame_ours(msg_open, request_status))
+	if(!is_frame_ours(msg_open, request_status))
 		// Discard frame if not ours
 		return;
-	qDebug("frame_interpreter_lights::handle_frame_handler -> FRAME IS OURS");
 	// Walk through list of device_status' and pass frame to relevant 
 	// handler method
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(*sl);
+	QPtrListIterator<device_status> *dsi = 
+		new QPtrListIterator<device_status>(*sl);
 	dsi->toFirst();
 	device_status *ds;
 	evt_list.clear();
@@ -579,21 +461,17 @@ void frame_interpreter_lights::handle_frame_handler(char *frame, QPtrList<device
 	bool dimmer_request = false;
 	device_status *light_ds;
 	device_status *dimmer_ds;
-	while( ( ds = dsi->current() ) != 0)
-	{
-		if (request_status)
-		{
+	while( ( ds = dsi->current() ) != 0) {
+		if(request_status) {
 			// Frame could be ours, but we need to check device status 
 			// and see if it really changed
 			// Lights and old dimmers have the same status request message
 			// Just avoid sending the same request twice
-			if ((ds->get_type() == device_status::LIGHTS) && !dimmer_request)
-			{
+			if((ds->get_type() == device_status::LIGHTS) && !dimmer_request) {
 				light_request = true;
 				light_ds = ds;
 			}
-			if (ds->get_type() == device_status::DIMMER)
-			{
+			if(ds->get_type() == device_status::DIMMER) {
 				dimmer_request = true;
 				light_request = false;
 				dimmer_ds = ds;
@@ -624,19 +502,17 @@ void frame_interpreter_lights::handle_frame_handler(char *frame, QPtrList<device
 					break;
 			}
 		}
-		next:
+next:
 		++(*dsi);
 	}
 	if(dimmer_request) 
 		request_init(dimmer_ds, dimmer_ds->init_request_delay());
 	else if(light_request)
 		request_init(light_ds, light_ds->init_request_delay());
-	if(!evt_list.isEmpty()) 
-	{
+	if(!evt_list.isEmpty()) {
 		qDebug("Event list is not empty, invoking emit(frame_event())");
 		emit(frame_event(evt_list));
-	} 
-	else
+	} else
 		qDebug("**** NO event generated");
 	delete dsi;
 	qDebug("frame_interpreter_lights::handle_frame_handler, end");
@@ -651,36 +527,34 @@ void frame_interpreter_lights::set_status(device_status_light *ds, int s)
 	bool do_event = false;
 	// Read current status of ON OFF variable
 	ds->read((int)device_status_light::ON_OFF_INDEX, curr_stat);
-	if(!curr_stat.initialized()) 
-	{
+	if(!curr_stat.initialized()) {
 		qDebug("initializing status var!!\n");
 		curr_stat.set_val(s);
-		ds->write_val((int)device_status_light::ON_OFF_INDEX, curr_stat);
+		ds->write_val((int)device_status_light::ON_OFF_INDEX, 
+				curr_stat);
 		do_event = true;
 		//}  else if(s && (!curr_stat.get_val())) {
-	}
-	else if(s) 
-	{
-		int v = 1;
-		curr_stat.set_val(v);
-		qDebug("setting light status to on");
-		ds->write_val((int)device_status_light::ON_OFF_INDEX, curr_stat);
-		do_event = true;
-		//} else if(!s && curr_stat.get_val()) {
-	} 
-	else if(!s) 
-	{
+}  else if(s) {
+	int v = 1;
+	curr_stat.set_val(v);
+	qDebug("setting light status to on");
+	ds->write_val((int)device_status_light::ON_OFF_INDEX, 
+			curr_stat);
+	do_event = true;
+	//} else if(!s && curr_stat.get_val()) {
+	} else if(!s) {
 		int v = 0;
 		curr_stat.set_val(v);
 		qDebug("setting light status to off");
-		ds->write_val((int)device_status_light::ON_OFF_INDEX, curr_stat);
+		ds->write_val((int)device_status_light::ON_OFF_INDEX, 
+				curr_stat);
 		do_event = true;
 	}
-	if(do_event) 
-	{
-		qDebug("frame_interpreter_lights::set_status() (light), appending evt");
-		evt_list.append(ds);
-	}
+if(do_event) {
+	qDebug("frame_interpreter_lights::set_status() (light), "
+			"appending evt");
+	evt_list.append(ds);
+}
 }
 
 
@@ -1259,7 +1133,8 @@ void frame_interpreter_dimmer::get_init_message(device_status *s, QString& out)
 	out = "*#1*" + where + "##";
 }
 
-void frame_interpreter_dimmer::handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+void frame_interpreter_dimmer::
+handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
 	bool request_status;
 	openwebnet_ext msg_open;
@@ -1267,7 +1142,7 @@ void frame_interpreter_dimmer::handle_frame_handler(char *frame, QPtrList<device
 	qDebug("frame_interpreter_dimmer::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-	if (!is_frame_ours(msg_open, request_status))
+	if(!is_frame_ours(msg_open, request_status))
 		// Discard frame if not ours
 		return;
 	// Walk through list of device_status' and pass frame to relevant 
@@ -1622,7 +1497,8 @@ end:
 		evt_list.append(ds);
 }
 
-void frame_interpreter_autom::handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+void frame_interpreter_autom::
+handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
 	bool request_status;
 	openwebnet_ext msg_open;
@@ -1828,7 +1704,8 @@ get_init_message(device_status *ds, QString& out)
 	out = QString("*#16*1000*11##");
 }
 
-void frame_interpreter_sound_matr_device::handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+void frame_interpreter_sound_matr_device::
+handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
@@ -1944,7 +1821,8 @@ get_init_message(device_status *s, QString& out)
 	out = head + where + what + end;
 }
 
-bool frame_interpreter_radio_device::is_frame_ours(openwebnet_ext m, bool& request_status)
+bool frame_interpreter_radio_device::is_frame_ours(openwebnet_ext m, 
+		bool& request_status)
 {
 	qDebug("frame_interpreter_radio_device::is_frame_ours");
 	qDebug("who = %s, where = %s", who.ascii(), where.ascii());

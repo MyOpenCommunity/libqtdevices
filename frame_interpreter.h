@@ -36,8 +36,6 @@ public:
 	void lev(int& l);
 	//! Returns interface
 	void interf(int& l);
-	//! Returns address (the address is the first part before "#" if it is present)
-	QString address();
 	//! Returns true if where is extended
 	bool extended(void);
 };
@@ -75,8 +73,7 @@ struct deferred_list_element {
 };
 
 //! Generic frame interpreter
-class frame_interpreter : public QObject
-{
+class frame_interpreter : public QObject {
 Q_OBJECT
 protected:
 	//! Who
