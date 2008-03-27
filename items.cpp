@@ -3018,9 +3018,9 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	this->ind_centrale = ind_centrale;
 	QString new_address;
 	if (type == 0)
-		new_address = QString("%1").arg( indirizzo );
+		new_address = QString(indirizzo);
 	else
-		new_address = QString("%1#%2").arg( indirizzo ).arg( ind_centrale );
+		new_address = QString("%1#%2").arg(ind_centrale).arg(indirizzo);
 	setAddress( const_cast<char *>(new_address.ascii()) );
 
 	qDebug(QString(">>> thermoPage -> INDIRIZZO VECCHIO: %1 <<<").arg(indirizzo));
