@@ -3062,9 +3062,11 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 		break;
 	case SINGLE_PROBE:
 		dev = new temperature_probe(getAddress(), false);
+		btouch_device_cache.connect_comm(dev);
 		break;
 	case EXT_SINGLE_PROBE:
 		dev = new temperature_probe(getAddress(), true);
+		btouch_device_cache.connect_comm(dev);
 		break;
 	default:
 		qDebug("termoPage::termoPage(): Unknown devtype_t!");

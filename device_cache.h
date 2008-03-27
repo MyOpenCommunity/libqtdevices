@@ -18,15 +18,15 @@ private:
 	Client * client_comandi;
 	Client *  client_monitor;
 	Client * client_richieste;
-	//! Connect comm signals
-	void connect_comm(device *);
-	//! Disconnect comm signals
-	void disconnect_comm(device *);
 public:
 	//! Constructor
 	device_cache();
 	//! Inits all devices
 	void init_devices();
+	//! Connect comm signals
+	void connect_comm(device *);
+	//! Disconnect comm signals
+	void disconnect_comm(device *);
 	//! Returns pointer to client_comandi
 	Client *get_client_comandi();
 	//! Returns pointer to client_monitor
