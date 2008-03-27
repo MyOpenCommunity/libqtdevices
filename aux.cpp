@@ -30,8 +30,8 @@
 
 //#include "ban.h"
 
-aux::aux( QWidget *parent, const char *name, const char *amb )
-: QWidget( parent, name )
+aux::aux( QWidget *parent, const QString & name, const QString & amb )
+: QWidget( parent, name.ascii() )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	setCursor (QCursor (blankCursor));
@@ -122,7 +122,7 @@ int aux::setBGPixmap(char* backImage)
 }
 
 
-void aux::setAmbDescr(char *d)
+void aux::setAmbDescr( const QString & d)
 {
 	ambDescr->setText(d);
 }

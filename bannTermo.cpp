@@ -93,9 +93,8 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	sondoffanti = new BtLabel(this, "");
 	sondoffanti->setGeometry(0,h+DESCR_DIM_Y+TEMPMIS_Y,MAX_WIDTH,OFFSET_Y);
 
-	memset(temp,'\000',sizeof(temp));
-	strcpy(&temp[0],"-23.5\272C");
-	strcpy(&setpoint[0],&temp[0]);
+	qtemp = "-23.5\272C";
+	qsetpoint = qtemp;
 	secondForeground=QColor(SecondForeground);
 
 	switch (devtype)
@@ -129,11 +128,11 @@ void bannTermo::Draw()
 {
 	tempMis -> setFont( QFont( "Times", 40, QFont::Bold ) );
 	tempMis -> setAlignment(AlignHCenter|AlignVCenter);
-	tempMis -> setText(&temp[0]);
+	tempMis -> setText( qtemp );
 	tempImp -> setFont( QFont( "Times", 25, QFont::Bold ) );
 	tempImp -> setPaletteForegroundColor(secondForeground);
 	tempImp -> setAlignment(AlignHCenter|AlignVCenter);
-	tempImp -> setText(&setpoint[0]);
+	tempImp -> setText( qsetpoint );
 	if (isOff)
 	{
 		for (int idx=0;idx<7;idx++)
@@ -142,7 +141,7 @@ void bannTermo::Draw()
 		}
 		sondoffanti -> setAlignment(AlignHCenter|AlignVCenter);
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
-		sondoffanti -> setText("OFF");
+		sondoffanti -> setText("OFF"); // FIXME da tradurre?
 		sondoffanti -> show();
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
 		sondoffanti -> setFont( QFont( "Times", 20, QFont::Bold ) );
@@ -164,10 +163,9 @@ void bannTermo::Draw()
 	{
 		for (int idx=0;idx<7;idx++)
 		{
-			char app[3];
-			memset(app,'\000',sizeof(app));
-			sprintf(&app[0],"%+d",idx-3);
-			texts[idx] -> setText((char*)&app[0]);
+			QString q_app;
+			q_app.sprintf("%+d", idx-3);
+			texts[idx] -> setText( q_app );
 			texts[idx] -> setFont( QFont( "Times", 20, QFont::Bold ) );
 			texts[idx] -> setAlignment(AlignHCenter|AlignVCenter);
 			texts[idx] -> show();

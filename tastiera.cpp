@@ -294,7 +294,7 @@ void tastiera::draw()
 {
      scrittaLabel->setAlignment(AlignHCenter|AlignVCenter);
      scrittaLabel->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
-     scrittaLabel->setText("PASSWORD:");
+     scrittaLabel->setText("PASSWORD:"); // FIXME tradurre????
      digitLabel->setAlignment(AlignLeft|AlignVCenter);
      digitLabel->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
      qDebug("tastiera::draw(), mode = %d", mode);

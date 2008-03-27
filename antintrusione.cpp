@@ -9,6 +9,8 @@
 ****************************************************************/
 
 #include "antintrusione.h"
+#include "tastiera.h"
+
 extern unsigned char tipoData;
 
 antintrusione::antintrusione( QWidget *parent, const char *name )
@@ -190,13 +192,13 @@ int antintrusione::setBGPixmap(char* backImage)
 }
 
 
-int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,
+int antintrusione::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
 	QPtrList<QString> &icon_names,
 	int periodo, int numFrame, char* txt_tecnico, char* txt_intrusione, char* txt_manomissione, char* txt_panic)
  {        
     if (tipo== IMPIANTINTRUS)
     {
-	impianto->addItem(tipo, descrizione, indirizzo, icon_names);
+	impianto->addItemU(tipo, qdescrizione, indirizzo, icon_names);
 	connect(impianto->getLast(), SIGNAL(impiantoInserito()), this
 		,SLOT(doClearAlarms()));
 	connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),
@@ -224,7 +226,7 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,
 	impianto->forceDraw();
     }
     else if (tipo== ZONANTINTRUS) {
-	zone->addItem(tipo, descrizione, indirizzo, icon_names);
+	zone->addItemU(tipo, qdescrizione, indirizzo, icon_names);
 	connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), 
 		SLOT(abilitaParz(bool)));
 	connect(this, SIGNAL(clearChanged()), zone->getLast(),

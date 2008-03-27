@@ -142,7 +142,7 @@ int sottoMenu::setBGPixmap(char* backImage)
 }
 
 
-int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
+int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo,
 		QPtrList<QString> &icon_names,
 		int periodo, int numFrame,
 		QColor SecondForeground,
@@ -153,6 +153,8 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 		QValueList<int> sstart, QValueList<int> sstop,
 		QString txt1, QString txt2, QString txt3)
 {
+	const char * descrizione = qdescrizione.ascii();
+
 	char *IconaSx = (char *)safeAt(icon_names, 0)->ascii();
 	char *IconaDx = (char *)safeAt(icon_names, 1)->ascii();
 	char *icon = (char *)safeAt(icon_names, 2)->ascii();
@@ -294,7 +296,7 @@ int sottoMenu::addItem(char tipo, char *descrizione, void *indirizzo,
 	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
 	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));
 
-	elencoBanner.getLast()->SetText(descrizione);
+	elencoBanner.getLast()->SetTextU( qdescrizione );
 	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
 	elencoBanner.getLast()->setBGColor(backgroundColor());
 	elencoBanner.getLast()->setFGColor(foregroundColor());
@@ -326,7 +328,7 @@ void sottoMenu::addItem(banner *b)
 	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*))); 
 	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
 	connect(this, SIGNAL(hideChildren()), elencoBanner.getLast(), SLOT(hide()));
-	elencoBanner.getLast()->SetText(elencoBanner.getLast()->name());
+	elencoBanner.getLast()->SetTextU(elencoBanner.getLast()->name()); // name() torna il nome passato alla classe QWidget. non verra' tradotto...
 	int periodo, numFrame, tipo;
 	elencoBanner.getLast()->getAnimationParams(periodo, numFrame);
 	//tipo = elencoBanner.getLast()->getTipo();

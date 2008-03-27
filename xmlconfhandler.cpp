@@ -229,7 +229,16 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			rearmWDT();
 		}
 	}
+	
+	
+	//DEBUG
 
+	char tom[] = "TOM";
+	if ( 	page_item_descr.startsWith(tom)  )
+			CurTagL1 =CurTagL1;	//mettere breakpoint qui
+	//DEBUG
+	
+	
 	if (!car)
 		characters( QString("\000"));        // se ho un tag vuoto riempio con '\000' il suo campo 
 
@@ -434,7 +443,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							{
 								pnt=datiGen;
 							}
-							pageAct->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),
+							pageAct->addItemU ((char)page_item_id, page_item_descr,
 								pnt,
 								*page_item_list_img,
 								par1,  par2, SecondForeground,
@@ -450,7 +459,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 						case ANTIINTRUSIONE:
 							//     qDebug("antiintr");
-							(*antintr)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(),
+							(*antintr)->addItemU ((char)page_item_id, page_item_descr,
 								(char*)page_item_where.ascii(),
 								*page_item_list_img, par1,  par2, (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii())  ;
 							break;
@@ -473,7 +482,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 								pnt=page_item_list_group;
 							}
 							par1 = page_item_mode.toInt();
-							(*difSon)->addItem ((char)page_item_id, (char*)page_item_descr.ascii(), pnt,
+							(*difSon)->addItemU ((char)page_item_id, page_item_descr, pnt,
 								*page_item_list_img,
 								par1,  par2);
 							break;
@@ -522,7 +531,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 								case CMDSPECIAL:
 
 									(*specPage) ->addButton(60,260,(char*)page_item_list_img->at(0)->ascii(),SPECIAL,(char*)page_item_who.ascii(),(char*)page_item_what.ascii(),(char*)page_item_where.ascii(),(char)page_item_type.toInt( &ok, 10 ));
-									(*specPage) ->addDescr((char*)page_item_descr.ascii(), 60,240,180,20,Background,Foreground,QFrame::Plain,3);
+									(*specPage) ->addDescrU(page_item_descr, 60,240,180,20,Background,Foreground,QFrame::Plain,3);
 									pageAct=NULL;
 									break;
 							}
@@ -1443,7 +1452,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 					}
 				}
 				if (!CurTagL4.compare("modello"))
-					datiGen->setModel(qValue.ascii());
+					datiGen->setModelU( qValue );
 			}
 		}
 	} // if (!CurTagL1.startsWith("configuratore"))

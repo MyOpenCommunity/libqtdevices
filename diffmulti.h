@@ -12,9 +12,7 @@
 #define DIFFMULTI_H
 
 #include <qwidget.h>
-//#include "banner.h"
 #include "items.h"
-//#include "main.h"
 #include "device.h"
 #include "frame_interpreter.h"
 #include "diffsonora.h"

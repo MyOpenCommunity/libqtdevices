@@ -555,13 +555,12 @@ const char *scenEvo_cond_d::getDescription(void)
 void scenEvo_cond_d::mostra()
 {
     qDebug("scenEvo_cond_d::mostra()");
-    char tmp[100];
     for (uchar idx=0; idx < 8; idx++)
 	if(but[idx])
-	    but[idx]->show();   
+	    but[idx]->show();
+
     area1_ptr->show();
-    sprintf(tmp, "%s", descr->ascii());
-    area2_ptr->setText(tmp);
+    area2_ptr->setText( *descr );
     area2_ptr->show();
     if(actual_condition)
 	actual_condition->show();

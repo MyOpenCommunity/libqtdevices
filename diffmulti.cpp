@@ -144,7 +144,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			/*
 			 * NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
 			 */
-			sorgenti->addItem(tipo, (char *)descrizioni->at(0)->ascii(), (char *)indirizzo, icon_names, 0, numFrame);
+			sorgenti->addItemU(tipo, *descrizioni->at(0), (char *)indirizzo, icon_names, 0, numFrame);
 			b = sorgenti->getLast();
 			connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
 			connect(sorgenti, SIGNAL(ambChanged(char *, bool, void *)),b, SLOT(ambChanged(char *, bool, void *)));
@@ -182,7 +182,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				}
 				elencoBanner.append(b);
 				dslist->append(ds);
-				elencoBanner.getLast()->SetText(descrizioni->at(0)->ascii());
+				elencoBanner.getLast()->SetTextU( *(descrizioni->at(0)) );
 				elencoBanner.getLast()->setBGColor(backgroundColor());
 				elencoBanner.getLast()->setFGColor(foregroundColor());
 				elencoBanner.getLast()->setId(tipo);
@@ -235,7 +235,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 						modo));
 			break;
 		default:
-			sottoMenu::addItem(tipo, (char *)descrizioni->at(0)->ascii(), 
+			sottoMenu::addItemU(tipo, *descrizioni->at(0), 
 					indirizzo, icon_names, modo, numFrame,
 					SecondForeground, descr1, descr2,
 					descr3, descr4, par3, 

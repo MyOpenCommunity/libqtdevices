@@ -30,7 +30,7 @@
 
 //#include "ban.h"
 
-radio::radio( QWidget *parent, const char *name, const char *amb )
+radio::radio( QWidget *parent, const char *name, const QString & amb )
 : QWidget( parent, name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -61,7 +61,7 @@ radio::radio( QWidget *parent, const char *name, const char *amb )
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
 	ambDescr->setFont( QFont( DEFAULT_FONT, 12, QFont::Bold ) );
-	ambDescr->setText(amb);
+	ambDescr->setText( amb );
 	freq = new QLCDNumber(this,"pippo");
 	progrText = new BtLabel(this,"progressivo stazione");
 	freq->setSegmentStyle(QLCDNumber::Flat); 
@@ -310,14 +310,14 @@ float radio::getFreq()
 {
 	return(frequenza);
 }
-void radio::setRDS(char* s)
+void radio::setRDS( const QString & s)
 {
-	strncpy(rds,s,8);
-	rds[8]='\000';
+	qrds = s;
+	qrds.truncate( 8 );
 }
-char* radio::getRDS()
+QString * radio::getRDS()
 {
-	return(&rds[0]);
+	return & qrds;
 }
 void radio::setStaz(uchar st)
 {
@@ -333,9 +333,9 @@ bool radio::isManual()
 	return (manual);
 }
 
-void radio::setAmbDescr(char *d)
+void radio::setAmbDescr(const QString & d)
 {
-	ambDescr->setText(d);
+	ambDescr->setText( d );
 }
 
 void radio::draw()
@@ -344,8 +344,8 @@ void radio::draw()
 	rdsLabel->setFont( QFont( DEFAULT_FONT, 26, QFont::Bold ) );
 	radioName->setAlignment(AlignHCenter|AlignTop);
 	radioName->setFont( QFont( DEFAULT_FONT, 12, QFont::Bold ) );
-	radioName->setText(&nome[0]);
-	rdsLabel->setText(&rds[0]);
+	radioName->setText( qnome );
+	rdsLabel->setText( qrds );
 	char fr[10];
 	sprintf(fr,"%.2f",frequenza);
 	freq->display(&fr[0]);
@@ -371,15 +371,14 @@ void radio::draw()
 	progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");
 }
 
-void radio::setName(char* s)
+void radio::setNameU( const QString & s)
 {
-	strncpy(&nome[0],s,sizeof(nome));
-	nome[sizeof(nome)]='\000';
+	qnome = s;
 }
 
-char* radio::getName()
+QString * radio::getNameU()
 {
-	return &nome[0];
+	return &qnome;
 }
 
 void radio::setAuto()

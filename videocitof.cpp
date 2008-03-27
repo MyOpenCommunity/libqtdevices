@@ -129,7 +129,7 @@ void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
 	my_station->get_descr(s);
     else
 	s = _txt1;
-    area1_ptr->setText(s.ascii());
+    area1_ptr->setText( s );
     if(my_station && my_station->get_light()) {
 	area2_but = new BtButton(this, "Area2");
 	area2_but->setGeometry(0, (MAX_HEIGHT/2)-BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
@@ -144,7 +144,7 @@ void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
 	area3_ptr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
 	area3_ptr->setAlignment(AlignHCenter|AlignVCenter);
 	s = _txt2;
-	area3_ptr->setText(s.ascii());
+	area3_ptr->setText( s );
     } else {
 	area2_but = NULL;
 	area3_ptr = NULL;
@@ -161,7 +161,7 @@ void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
 	area5_ptr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
 	area5_ptr->setAlignment(AlignHCenter|AlignVCenter);
 	s = _txt3;
-	area5_ptr->setText(s.ascii());
+	area5_ptr->setText( s );
     } else {
 	area4_but = NULL;
 	area5_ptr = NULL;

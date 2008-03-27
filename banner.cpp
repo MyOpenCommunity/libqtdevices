@@ -87,16 +87,16 @@ banner::~banner()
 }
 
 
-void banner::SetText( const char *text )
+void banner::SetTextU( const QString & text )
 {
-	memset(testo,'\000',sizeof(testo));
-	strncpy(testo,text,MAX_PATH*2-1);
+	qtesto = text;
+	qtesto.truncate( MAX_PATH*2-1 );
 }
 
-void banner::SetSeconaryText( const char *text )
+void banner::SetSecondaryTextU( const QString & text )
 {
-	memset(testoSecondario,'\000',sizeof(testoSecondario));
-	strncpy(testoSecondario,text,MAX_TEXT_2-1);
+	qtestoSecondario = text;
+	qtestoSecondario.truncate ( MAX_TEXT_2-1 );
 }
 
 QString banner::getPressedIconName( const char *iconname )
@@ -763,14 +763,14 @@ void banner::Draw()
 	{
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
 		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
-		BannerText->setText(testo);
+		BannerText->setText(qtesto);
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
 		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
-		SecondaryText->setText(testoSecondario);
+		SecondaryText->setText(qtestoSecondario);
 	}
 }
 

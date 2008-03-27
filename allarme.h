@@ -5,6 +5,8 @@
 #include "device.h"
 #include "frame_interpreter.h"
 
+class banner;
+
 /*!
   \class allarme
   \brief This class represents an alarm condition
@@ -30,7 +32,7 @@ class allarme : public QFrame {
     void SetIcons(char*);
     altype type;
  public:
-    allarme(QWidget *parent, char *name, char *indirizzo, char *IconaDx, 
+    allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, 
 	    altype t) ;
     /*!
       \brief Sets the background color for the banner.

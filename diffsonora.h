@@ -62,7 +62,14 @@ public:
 	 * If it is a source it is added to the sources subtree otherwise it's added to the amplifiers one.
 	 * This method reproduce the one implemented in sottoMenù in similar manner.
 	 */
-	virtual int addItem(char tipo, char* nome, void* indirizzo, QPtrList<QString> &icon_names, int periodo=0 , int where=0, char *ambdescr="");
+	virtual int addItemU(
+			char tipo, 
+			const QString & nome, 
+			void* indirizzo, 
+			QPtrList<QString> &icon_names, 
+			int periodo=0 , 
+			int where=0, 
+			char *ambdescr="");
 	/*!
 	 * \brief Sets the row's number.
 	 */

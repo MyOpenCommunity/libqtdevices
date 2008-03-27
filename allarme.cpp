@@ -27,9 +27,9 @@
 ** Generic alarm
 ****************************************************************/	
 
-allarme::allarme(QWidget *parent, char *name, char *indirizzo, char *IconaDx,
+allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx,
 		 altype t): 
-    QFrame(parent, name)
+    QFrame(parent, name.ascii())
 {
     qDebug("allarme::allarme()");
     qDebug("indirizzo = %s, IconaDx = %s, tipo = %d", indirizzo, IconaDx, t);

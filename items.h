@@ -35,7 +35,6 @@
 #include "banntermo.h"
 #include "bannonicons.h"
 #include "bann2butlab.h"
-#include "tastiera.h"
 #include "bann4taslab.h"
 #include "scenevocond.h" // era incluso nell'item scenario evoluto, probabilmente può essere sostituito da forward declarations
 #include "bann4but.h"
@@ -51,6 +50,7 @@ class diffSonora;
 class diffmulti; //aggiunta da me per far compilare
 class dati_sorgente_multi;
 class dati_ampli_multi;
+class tastiera;
 
 /*****************************************************************
  **Dimmer
@@ -630,7 +630,7 @@ protected:
 	bool old_diffson;
 	device *dev;
 public:
-	banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, char *ambdescr="");
+	banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, const QString & ambdescr="");
 	void inizializza();
 	/*!
 	  \brief Sets the background color for the banner.
@@ -674,7 +674,7 @@ public slots:
 	void status_changed(QPtrList<device_status>);
 	virtual void	show();
 	void hide();
-	void SetText(const char *);
+	void SetTextU( const QString & );
 };
 
 
@@ -823,7 +823,7 @@ private:
 	bool already_changed;
 	device *dev;
 public:
-	zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
+	zonaAnti( QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
 	void inizializza();
 	void SetIcons(char *, char *, char *);
 	void Draw();
@@ -1167,7 +1167,7 @@ public:
 public slots:
 	void attiva();
 	void addAmb(char *);
-	void ambChanged(char *, bool, void *);
+	void ambChanged( const QString &, bool, void *);
 	void show();
 signals:
 	void active(int, int);
@@ -1196,7 +1196,7 @@ public:
 	void addAmb(char *);
 public slots:
 	void attiva();
-	void ambChanged(char *, bool, void *);
+	void ambChanged(const QString &, bool, void *);
 signals:
 	void active(int, int);
 };

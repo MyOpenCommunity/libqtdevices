@@ -12,13 +12,14 @@
 #define RADIO_H
 
 #include <qframe.h>
-#include "btlabel.h"
 #include <qprocess.h>
 #include "btbutton.h"
 #include "main.h"
 #include "bannfrecce.h"
 #include <qlcdnumber.h>
 #include <qcursor.h>
+
+class BtLabel;
 
 /*!
  * \class radio
@@ -31,7 +32,7 @@ class  radio : public QWidget
 {
 Q_OBJECT
 public:
-	radio( QWidget *parent=0, const char *name=0, const char *amb="" );
+	radio( QWidget *parent=0, const char *name=0, const QString & amb="" );
 	/*!
 	 * \brief Sets the background color for the banner.
 	 * The arguments are RGB components for the color.
@@ -63,11 +64,11 @@ public:
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file
 	 */
-	void setName(char*);
+	void setNameU( const QString & );
 	/*!
 	 * \brief Gets the name of the tuner found in user configuration file
 	 */
-	char* getName();
+	QString * getNameU();
 	/*!
 	 * \brief Sets the frequency of the syntonized station
 	 */
@@ -79,15 +80,15 @@ public:
 	/*!
 	 * \brief Sets the RDS message of the syntonized station
 	 */
-	void setRDS(char*);
+	void setRDS( const QString & );
 	/*!
 	 * \brief Sets amb. description
 	 */
-	void setAmbDescr(char *);
+	void setAmbDescr( const QString & );
 	/*!
 	 * \brief Gets the RDS message of the syntonized station
 	 */
-	char* getRDS();
+	QString * getRDS();
 	/*!
 	 * \brief Sets the station number of the syntonized station
 	 */
@@ -197,9 +198,9 @@ public slots:
 private:
 	float frequenza;
 	uchar stazione;
-	char rds[9];
+	QString qrds;
 	char amb[80];
-	char nome[15];
+	QString qnome;
 	bool manual, wasManual;
 	bannFrecce *bannNavigazione;
 };

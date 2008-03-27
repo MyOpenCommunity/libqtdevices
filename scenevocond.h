@@ -5,7 +5,6 @@
 #include <qdatetime.h>
 #include "timescript.h"
 #include "bannfrecce.h"
-#include "device.h"
 #include "frame_interpreter.h"
 
 /*!

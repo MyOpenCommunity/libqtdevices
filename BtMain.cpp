@@ -45,6 +45,8 @@
 #include <qbitmap.h>
 #include <qwindowsystem_qws.h>
 
+#include "tastiera.h"
+
 #if 0 // kemosh
 #include <bt_upnp.h>
 #endif

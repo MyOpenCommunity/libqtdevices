@@ -14,11 +14,10 @@
 #include <qwidget.h>
 #include "items.h"
 #include "allarme.h"
-#include "sottomenu.h"
 #include "openclient.h"
-#include "banner.h"
 #include <qptrlist.h> 
 
+class sottoMenu;
 
 /*!
   \class antintrusione
@@ -48,7 +47,7 @@ public:
 /*!
   \brief inserts a new item in the antintrusione class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
 */    
-   int 	addItem(char tipo, char* nome , void* indirizzo,
+   int 	addItemU(char tipo, const QString & nome , void* indirizzo,
 	QPtrList<QString> &icon_names,
 	int periodo=0 , int numFrame=0, char* txt_tecnico=NULL, char* txt_intrusione=NULL, char* txt_manomissione=NULL, char* txt_panic=NULL );
 /*!

@@ -53,13 +53,16 @@ public:
 	// anche se bannTermo e termoPage sono strettamente legati
 	// perché bannTermo è usato solo da termoPage!!
 
-	char    temp[10];
-	char    setpoint[10];
 	uchar   val_imp, isOff, isAntigelo;
 	BtLabel *tempImp;
 
 	/// Fancoil banner. It is created only if needed
 	ButtonsBar *fancoil_buttons;	
+
+protected:
+	QString qtemp;
+	QString qsetpoint;
+
 private:
 	devtype_t devtype;
 	BtLabel *texts[7];	

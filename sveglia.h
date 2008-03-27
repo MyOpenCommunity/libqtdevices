@@ -37,7 +37,18 @@ class  sveglia : public QFrame
 {
    Q_OBJECT
 public:
-    sveglia( QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, contdiff* diso=NULL, char* frame=NULL, char* descr1=NULL,char* descr2=NULL,char* descr3=NULL,char* descr4=NULL, char*h="12",char* m="0");
+    sveglia( QWidget *parent=0, 
+	const char *name=0, 
+	uchar freq=1,
+	uchar t=0,
+	contdiff* diso=NULL, 
+	char* frame=NULL, 
+	const QString & descr1="",
+	const QString & descr2="",
+	const QString & descr3="",
+	const QString & descr4="",
+	char*h="12",
+	char* m="0");
 /*!
   \brief Sets the background color for the banner.
   
@@ -190,10 +201,6 @@ private:
    bool	gesFrameAbil,svegliaAbil,onceToGest;
    QTimer   *minuTimer,*aumVolTimer;
    char*	frame;
-   char text1[50]; 
-   char text2[50]; 
-   char text3[50]; 
-   char text4[50];       
 };
 
 
