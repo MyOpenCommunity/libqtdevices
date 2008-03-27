@@ -19,7 +19,7 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	: banner( parent, name )
 {
 	qDebug("bannTermo::bannTermo --> DEVICE TYPE = %d", devtype);
-	
+
 	devtype = _devtype;
 	int h = (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-BUTMENPLUS_DIM_Y-DESCR_DIM_Y-TEMPMIS_Y-OFFSET_Y)/5;
 	int set_buttons_y = h*3+DESCR_DIM_Y+TEMPMIS_Y;
@@ -91,7 +91,7 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	tempImp->setGeometry(BUTMENPLUS_DIM_X, set_buttons_y, MAX_WIDTH-2*BUTMENPLUS_DIM_X, BUTMENPLUS_DIM_Y);
 
 	sondoffanti = new BtLabel(this, "");
-	sondoffanti->setGeometry(0,h+DESCR_DIM_Y+TEMPMIS_Y,MAX_WIDTH,OFFSET_Y);
+	sondoffanti->setGeometry(0, 95, MAX_WIDTH, 35);
 
 	memset(temp,'\000',sizeof(temp));
 	strcpy(&temp[0],"-23.5\272C");
