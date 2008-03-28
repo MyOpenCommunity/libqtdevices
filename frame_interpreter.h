@@ -364,12 +364,16 @@ private:
 	//! True when frame has been analyzed
 	bool elaborato;
 	bool centrale;
+
+	QString ind_centrale;
+	QString indirizzo;
 protected:
 	//! Returns true when frame is ours (reimplemented for thermr, device
 	bool is_frame_ours(openwebnet_ext, bool& request_status);
 public:
 	//! Constructor
-	frame_interpreter_thermr_device(QString, bool, int);
+	frame_interpreter_thermr_device(QString,
+		const char *ind_centrale, const char *indirizzo, bool, int);
 	//! Returns init message given device status
 	void get_init_message(device_status *, QString&);
 public slots:

@@ -543,7 +543,8 @@ class thermr_device : public device
 Q_OBJECT
 public:
 	//! Constructor
-	thermr_device(QString, device_status_thermr::type_t, bool fancoil, bool p=false, int g=-1);
+	thermr_device(QString, device_status_thermr::type_t, bool fancoil,
+		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
 };
 
 //! Modscen device

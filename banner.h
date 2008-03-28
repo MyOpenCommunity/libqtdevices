@@ -137,7 +137,7 @@ public:
 	 *
 	 *  The argument  describe the Open What of the object controlled by the banner.
 	 */
-	void setAddress(char* );
+	void setAddress(const char *);
 	/*!
 	 *  \brief Retrieves the address of what is controlled by the banner.
 	 *

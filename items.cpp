@@ -3007,26 +3007,30 @@ void banradio::inizializza()
 /*****************************************************************
  **termoPage
  ****************************************************************/
-termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char* indirizzo,
+termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const char *_indirizzo,
 		QPtrList<QString> &icon_names,
-		QColor SecondForeground, int type, const QString &ind_centrale)
-	: bannTermo( parent, name, SecondForeground, devtype )
+		QColor SecondForeground, int _type, const char *_ind_centrale) :
+	bannTermo(parent, name, SecondForeground, devtype),
+	type(_type),
+	ind_centrale(_ind_centrale),
+	indirizzo(_indirizzo)
 {
-	/// FIXTHERMO
-	/// this is to support new addressing for termo central
-	this->type = type;
-	this->ind_centrale = ind_centrale;
-	QString new_address;
+	/*
+	 * Determine where address for this component.
+	 * 
+	 * If type is 0, the address if simple, as in 99 zones there is only
+	 * one regulator.  When type == 1, setup for 4 zones.
+	 */
 	if (type == 0)
-		new_address = QString(indirizzo);
+		setAddress(indirizzo.ascii());
 	else
-		new_address = QString("%1#%2").arg(ind_centrale).arg(indirizzo);
-	setAddress( const_cast<char *>(new_address.ascii()) );
+	{
+		QString new_address = ind_centrale + "#" + indirizzo;
+		setAddress(const_cast<char *>(new_address.ascii()));
+	}
 
-	qDebug(QString(">>> thermoPage -> INDIRIZZO VECCHIO: %1 <<<").arg(indirizzo));
-	qDebug(QString(">>> Creating TermoPage Item with type=%1 and ind_centrale=%2 <<<").arg(type).arg(ind_centrale));
-	qDebug(QString(">>> returned address is %1 <<<").arg( getAddress() ));
-	/// FINE FIXTHERMO
+	qDebug("termoPage::termoPage: type=%d, ind_centrale=%s, indirizzo=%s, where=%s",
+	       type, ind_centrale.ascii(), indirizzo.ascii(), getAddress());
 
 	SetIcons((char *)icon_names.at(0)->ascii(), (char *)icon_names.at(1)->ascii(),
 	         (char *)icon_names.at(4)->ascii(), (char *)icon_names.at(5)->ascii());
@@ -3047,17 +3051,21 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name , char
 	switch (devtype)
 	{
 	case THERMO_99_ZONES:
-		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99, fancoil);
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99,
+			fancoil, ind_centrale.ascii(), indirizzo.ascii());
 		break;
 	case THERMO_99_ZONES_FANCOIL:
-		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99, fancoil);
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99,
+			fancoil, ind_centrale.ascii(), indirizzo.ascii());
 		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
 		break;
 	case THERMO_4_ZONES:
-		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4, fancoil);
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4,
+			fancoil, ind_centrale.ascii(), indirizzo.ascii());
 		break;
 	case THERMO_4_ZONES_FANCOIL:
-		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4, fancoil);
+		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4,
+			fancoil, ind_centrale.ascii(), indirizzo.ascii());
 		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
 		break;
 	case SINGLE_PROBE:
@@ -3105,12 +3113,11 @@ void termoPage::handleFancoilButtons(int button_number)
 		break;
 	}
 
-	QString command = QString("*#4*%1*#11*%2##").arg(getAddress()).arg(speed);
-	
+	QString command = QString("*#4*%1*#11*%2##").arg(ind_centrale).arg(speed);
+
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen((char*)command.ascii(), command.length());
 	emit sendFrame(msg_open.frame_open);
-	
 }
 
 

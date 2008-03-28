@@ -58,7 +58,8 @@ public:
 	//! Get anti-intrusion system zone
 	device *get_zonanti_device(QString where);
 	//! Get 99 zones thermal regulator
-	device *get_thermr_device(QString where, device_status_thermr::type_t type, bool fancoil);
+	device *get_thermr_device(QString where, device_status_thermr::type_t type,
+		bool fancoil, const char *ind_centrale, const char *indirizzo);
 	//! Get modscen
 	device *get_modscen_device(QString where);
 	//! Destroy device given key

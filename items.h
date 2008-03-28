@@ -771,16 +771,18 @@ Q_OBJECT
 private:
 	/// Tipo Centrale: 0=3550 (99 zone), 1=4695 (4 zone)
 	int type;
-	/// Se type=1 allora indirizzo centrale BASIC (da 01 a 99)
+
 	QString ind_centrale;
+	QString indirizzo;
+
 	device *dev;
 	char manIco[50];
 	char autoIco[50];
 	QTimer setpoint_timer;
 public:
-	termoPage (QWidget *parent, devtype_t devtype, const char *name, char *indirizzo,
+	termoPage (QWidget *parent, devtype_t devtype, const char *name, const char *indirizzo,
 		QPtrList<QString> &icon_names,
-		QColor SecondForeground = QColor(0,0,0), int type = 0, const QString &ind_centrale = 0);
+		QColor SecondForeground = QColor(0,0,0), int type = 0, const char *ind_centrale = 0);
 	void inizializza();
 	char* getChi();
 	char* getAutoIcon();

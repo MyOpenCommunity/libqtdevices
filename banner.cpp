@@ -784,11 +784,9 @@ void banner::impostaAttivo(char Attivo)
 	}
 }
 
-void banner::setAddress(char* indirizzo)
+void banner::setAddress(const char *indirizzo)
 {
 	strncpy (address,indirizzo,sizeof(address));
-	//  address=new char (*indirizzo);
-	//    address=indirizzo;
 }
 
 void banner::gestFrame(char*){}

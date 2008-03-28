@@ -2283,34 +2283,41 @@ next:
 
 // Public methods
 frame_interpreter_thermr_device::
-frame_interpreter_thermr_device(QString w, bool p, int g) :
-	frame_interpreter(QString("4"), w, p, g)
+frame_interpreter_thermr_device(QString w, const char *_ind_centrale, const char *_indirizzo, bool p, int g) :
+	frame_interpreter(QString("4"), w, p, g),
+	ind_centrale(_ind_centrale),
+	indirizzo(_indirizzo)
 {
-	qDebug("frame_interpreter_thermr_device::"
-			"frame_interpreter_thermr_device()");
 	centrale = false;
 }
 
-bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, 
-		bool& request_status)
+bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
-	qDebug("frame_interpreter_thermr_device::is_frame_ours");
 	request_status = false;
-	if (strcmp(m.Extract_chi(),"4")) return false;
-	char dove[30];
-	// FIXME: check Extract_level() too!
-	strcpy(dove, m.Extract_dove());
+	bool is_our = false;
 
-	if ((dove[0]=='#') && (strcmp(dove, "#0")))
-		centrale = true;
+	if (!strcmp(m.Extract_chi(), "4"))
+	{
+		char dove[30];
+		strcpy(dove, m.Extract_dove());
 
-	if (dove[0]=='#')
-		strcpy(&dove[0], &dove[1]);
+		if ((dove[0]=='#') && (strcmp(dove, "#0")) && (strlen(m.Extract_livello()) == 0))
+			centrale = true;
 
-	if((!strcmp(dove, "0")) && centrale)
-		return true;
+		if (dove[0]=='#')
+			strcpy(&dove[0], &dove[1]);
 
-	return !strcmp(dove, where.ascii());
+		if ((!strcmp(dove, "0")) && centrale)
+			is_our = true;
+		else if (strlen(m.Extract_livello()) == 0)
+			is_our = (ind_centrale == dove);
+		else
+			is_our = (ind_centrale == dove) && (indirizzo == m.Extract_livello());
+	}
+
+	qDebug("frame_interpreter_thermr_device::is_frame_ours, %s: %s",
+		m.frame_open, is_our ? "YES" : "NO");
+	return is_our;
 }
 
 void frame_interpreter_thermr_device::
@@ -2336,7 +2343,7 @@ get_init_message(device_status *s, QString& out)
 			qDebug("frame_interpreter_thermr_device::get_init_message -> FANCOIL");
 			head = "*#4*";
 			end  = "*11##";
-			out  = head + where + end;
+			out  = head + ind_centrale + end;
 			break;
 		default:
 			out  = "";
