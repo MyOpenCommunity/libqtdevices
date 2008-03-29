@@ -1,13 +1,3 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** MultimediaSource.cpp
- **
- ** finestra di dati sulla sorgente MultimediaSource
- **
- ****************************************************************/
-
 
 #include <algorithm>
 #include <string>
@@ -186,7 +176,7 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int w_offset, int h_offset
 
 	// define if it is scrolling label or not
 	_scrolling = scrolling;
-	
+
 	// connect timer to scroll text
 	connect( &scrolling_timer, SIGNAL( timeout() ), this, SLOT( handleScrollingTimer() ) );
 }
@@ -208,7 +198,7 @@ void TitleLabel::setText( const QString & text_to_set )
 	_text         = text_to_set;
 	_text_length  = text_to_set.length();
 	current_shift = 0;
-	
+
 	// call method of ancestor
 	QLabel::setText( text_to_set );
 
@@ -460,10 +450,9 @@ void FileBrowser::showFiles()
 			labels_list[i]->setText( "" );
 			buttons_bar->hideButton( i );
 		}
-		
+
 	}
 
-	
 	if (start==end)
 	{
 		buttons_bar->showButton( 0 );
@@ -550,7 +539,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
 	/// Create Labels (that contain tags)
- 	QFont font( "helvetica", 18 );
+	QFont font( "helvetica", 18 );
 
 	// create Labels containing INFO
 	//labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
@@ -705,7 +694,7 @@ void AudioPlayingWindow::turnOnAudioSystem()
 
 	int rc;
 	if ((rc = system(start_play_script)) != 0)
-		qDebug("[AUDIO] Error on start play script, exit code %d", rc);
+		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
 
 	emit notifyStartPlay();
 }
@@ -861,7 +850,7 @@ void AudioPlayingWindow::handle_playing_terminated()
 		cleanPlayingInfo();
 		media_player->play(play_list[current_track]);
 		// una volta lanciata una traccia si posiziona sulla successiva
-		// se quella appena mandata in play è l'ultima la prossima volta 
+		// se quella appena mandata in play è l'ultima la prossima volta
 		// che viene lanciata questa funzione non verrà eseguito il play
 		current_track++;
 	}

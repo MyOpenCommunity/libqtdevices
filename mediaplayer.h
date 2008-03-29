@@ -1,15 +1,3 @@
-//
-// C++ Interface: mediaplayer
-//
-// Description: 
-//
-//
-// Author: Kemosh,,, <kemosh@Kemosh-VirtualU>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
@@ -47,7 +35,7 @@ public:
 
 	/// Checks if MPlayer is playing checking mplayer_pid
 	bool isPlaying();
-	
+
 	/// Read ASYNCHRONOUSLY the output from the PIPE and parse it to get INFO
 	QMap<QString, QString> getPlayingInfo();
 
@@ -64,7 +52,7 @@ private:
 	/// File Descriptors
 	int control_fd;
 	int output_fd;
-	
+
 	/// File Handlers
 	FILE *ctrlf;
 	FILE *outf;

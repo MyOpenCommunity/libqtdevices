@@ -1,14 +1,4 @@
-//
-// C++ Implementation: mediaplayer
-//
-// Description:
-//
-//
-// Author: Kemosh,,, <kemosh@Kemosh-VirtualU>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+
 #include "mediaplayer.h"
 
 #include <qregexp.h>
