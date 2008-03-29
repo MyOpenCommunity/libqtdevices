@@ -1349,8 +1349,7 @@ frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString
 void frame_interpreter_temperature_probe::get_init_message(device_status *s, QString& out)
 {
 	QString head = "*#4*";
-	// FIXME: has to be external input 0?
-	QString end = (external ? "*15#0##" : "##");
+	QString end = (external ? "*15##" : "##");
 	out = head + where + end;
 }
 
