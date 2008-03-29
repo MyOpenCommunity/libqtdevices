@@ -2473,10 +2473,6 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showAux()));
 
-	// Get freezed events
-	// FIXME: what's this?
-	connect(parent, SIGNAL(frez(bool)), &source_menu, SLOT(freezed(bool)));
-
 	QWidget *sotto_menu = this->parentWidget(FALSE)->parentWidget(FALSE);
 	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
 	connect(&source_menu, SIGNAL(Closed()), &source_menu, SLOT(hide()));

@@ -18,6 +18,8 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 
@@ -26,8 +28,11 @@ static MediaPlayer *_globalMediaPlayer;
 
 static void mplayerExited(int signo, siginfo_t *info, void *)
 {
-	if (_globalMediaPlayer && signo == SIGCHLD)
-		_globalMediaPlayer->sigChildReceived(info->si_pid);
+	int status;
+	wait(&status);
+
+	if (_globalMediaPlayer)
+		_globalMediaPlayer->sigChildReceived(info->si_pid, status);
 }
 
 MediaPlayer::MediaPlayer( QObject *parent, const char *name ) : QObject(parent, name)
@@ -101,6 +106,8 @@ bool MediaPlayer::play(QString track)
 
 		ctrlf = fdopen(control_fd, "w");
 		outf  = fdopen(output_fd, "r");
+
+		qDebug("[AUDIO] playing track '%s'", track.ascii());
 	}
 }
 
@@ -182,33 +189,41 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 		QRegExp rx( it.data() );
 
 		if ( rx.search( row_data ) > -1 )
-		{
 			info_data[it.key()] = rx.cap(1); //matches[matches.count()-1];
-			qDebug(QString("FOUND PLAYING INFO %1 = %2").arg( it.key() ).arg( rx.cap(1) ));
-		}
 	}
 
 	return info_data;
 }
 
 
-void MediaPlayer::killMPlayer()
+void MediaPlayer::quitMPlayer()
 {
 	/// kill the MPlayer process
-	kill(mplayer_pid, SIGKILL);
+	kill(mplayer_pid, SIGINT);
 }
 
-void MediaPlayer::sigChildReceived(int dead_pid)
+void MediaPlayer::sigChildReceived(int dead_pid, int status)
 {
-	qDebug("sigChildReceived()");
+	qDebug("[AUDIO] Signal SIGCHLD received, pid %d", dead_pid);
+
+	if (WIFEXITED(status))
+		qDebug("[AUDIO] child exited, with code %d", WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		qDebug("[AUDIO] child terminated by signal %d", WTERMSIG(status));
+	else
+		qDebug("[AUDIO] child quit for unknown reason");
 
 	/// Check if the dead child is mplayer or not
 	if (dead_pid == mplayer_pid)
 	{
+		qDebug("[AUDIO] Child was my mplayer");
+
 		mplayer_pid = 0;
 
 		// Notify to audio playing window that mplayer is terminated
 		emit mplayerTerminated();
 	}
+	else
+		qDebug("[AUDIO] Child was *not* my mplayer, probably start/stop script");
 }
 

@@ -51,11 +51,11 @@ public:
 	/// Read ASYNCHRONOUSLY the output from the PIPE and parse it to get INFO
 	QMap<QString, QString> getPlayingInfo();
 
-	/// Kill mplayer process avoiding to emit the mplayerTerminated() signal
-	void killMPlayer();
+	/// Quit nicely mplayer process avoiding to emit the mplayerTerminated() signal
+	void quitMPlayer();
 
 	/// Need to be public because called by signal handler
-	void sigChildReceived(int dead_pid);
+	void sigChildReceived(int dead_pid, int status);
 
 private:
 	/// mplayer PID

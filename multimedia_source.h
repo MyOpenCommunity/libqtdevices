@@ -118,10 +118,6 @@ public slots:
 	 */
 	void showAux();
 	/*!
-	 * \brief Disables/enables everything
-	 */
-	void freezed(bool);
-	/*!
 	 * \brief Handle long pression of back key.
 	 */
 	void handleLongBackPress();
