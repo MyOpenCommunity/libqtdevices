@@ -39,7 +39,7 @@ public:
 	/// Read ASYNCHRONOUSLY the output from the PIPE and parse it to get INFO
 	QMap<QString, QString> getPlayingInfo();
 
-	/// Quit nicely mplayer process avoiding to emit the mplayerTerminated() signal
+	/// Quit nicely mplayer process
 	void quitMPlayer();
 
 	/// Need to be public because called by signal handler
@@ -66,7 +66,11 @@ private:
 	bool paused;
 
 signals:
-	void mplayerTerminated();
+	/// mplayer child process quit gracefully and done it's work.
+	void mplayerDone();
+
+	/// mplayer exited with error or aborted
+	void mplayerAborted();
 };
 
 #endif // MEDIAPLAYER_H

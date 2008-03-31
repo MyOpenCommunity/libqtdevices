@@ -53,7 +53,10 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	filesWindow->setFont( QFont( "Helvetica", 18 ) );
 
 	/// Start to Browse Files
-	filesWindow->browseFiles(MEDIASERVER_PATH);
+	if (!filesWindow->browseFiles(MEDIASERVER_PATH))
+	{
+		// FIXME display error?
+	}
 
 	/// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro )
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",4);
@@ -327,6 +330,12 @@ void FileBrowser::showEvent( QShowEvent *event )
 {
 	for (int i = 0; i < rows_per_page; i++)
 		labels_list[i]->resetTextPosition();
+
+	if (!browseFiles())
+	{
+		// FIXME display error?
+		emit notifyExit();
+	}
 }
 
 void FileBrowser::itemIsClicked(int item)
@@ -348,7 +357,11 @@ void FileBrowser::itemIsClicked(int item)
 		if (clicked_element->isDir())
 		{
 			level++;
-			browseFiles(clicked_element->absFilePath());
+			if (!browseFiles(clicked_element->absFilePath()))
+			{
+				// FIXME display error?
+				emit notifyExit();
+			}
 		}
 		else
 		{
@@ -362,7 +375,11 @@ void FileBrowser::itemIsClicked(int item)
 		// this is added to browse again the current path and verify if something is changed
 		// it is useful if some file is removed so the current directory is refreshed
 		qDebug( QString("[AUDIO] Current absFilePath is %1").arg( QFileInfo(current_path).absFilePath() ) );
-		browseFiles();
+		if (!browseFiles())
+		{
+			// FIXME display error?
+			emit notifyExit();
+		}
 	}
 }
 
@@ -371,8 +388,11 @@ void FileBrowser::browseUp()
 	if (level)
 	{
 		level--;
-		//browseFiles(current_path + "/..");
-		browseFiles( QFileInfo(current_path + "/..").absFilePath() );
+		if (!browseFiles(QFileInfo(current_path + "/..").absFilePath()))
+		{
+			// FIXME display error?
+			emit notifyExit();
+		}
 	}
 	else
 		emit notifyExit();
@@ -388,7 +408,7 @@ void FileBrowser::hidePlayingWindow()
 	playing_window->hide();
 }
 
-void FileBrowser::browseFiles(QString new_path)
+bool FileBrowser::browseFiles(QString new_path)
 {
 	// if new_path is valid changes the path and run browsFiles()
 	if ( QFileInfo(new_path).exists() )
@@ -397,11 +417,16 @@ void FileBrowser::browseFiles(QString new_path)
 		// change path
 		files_handler.setPath( new_path_string );
 		current_path = new_path_string;
+		return browseFiles();
 	}
-	browseFiles();
+	else
+	{
+		qDebug("[AUDIO] browseFiles(): path '%s' doesn't exist", new_path.ascii());
+		return false;
+	}
 }
 
-void FileBrowser::browseFiles()
+bool FileBrowser::browseFiles()
 {
 	// refresh QDir information
 	files_handler.refresh();
@@ -411,6 +436,12 @@ void FileBrowser::browseFiles()
 
 	// Create fileslist from files
 	const QFileInfoList *temp_files_list = files_handler.entryInfoList();
+	if (!temp_files_list)
+	{
+		qDebug("[AUDIO] Error retrieving file list!");
+		return false;
+	}
+
 	// Create Iterator
 	QFileInfoListIterator it( *temp_files_list );
 	QFileInfo *file;
@@ -431,6 +462,7 @@ void FileBrowser::browseFiles()
 		pages_indexes[current_path] = 2;
 
 	showFiles();
+	return true;
 }
 
 void FileBrowser::showFiles()
@@ -639,13 +671,13 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	media_player = new MediaPlayer(this);
 
 	/// Connect buttons_bar to the handler
-	connect( buttons_bar, SIGNAL(clicked(int )), this, SLOT(handle_buttons(int )) );
+	connect(buttons_bar, SIGNAL(clicked(int )), this, SLOT(handle_buttons(int )));
 
 	/// Connect the timer to the handler, the timer get and displays data from mplayer
-	connect( data_refresh_timer, SIGNAL(timeout()), this, SLOT(handle_data_refresh_timer()) );
+	connect(data_refresh_timer, SIGNAL(timeout()), this, SLOT(handle_data_refresh_timer()));
 
-	/// Connect the mplayerTerminated signal from Mediaplayer to AudioPlayingWindow
-	connect( media_player, SIGNAL(mplayerTerminated()), this, SLOT(handle_playing_terminated()) );
+	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
+	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
 	/// Set Timer
 	refresh_time = 500;
@@ -659,6 +691,8 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 	/// fill play_list and set current track
 	int     track_number = 0;
 	QString track_name;
+	play_list.clear();
+
 	for (int i = 0; i < files_list.count(); i++)
 	{
 		if (files_list[i]->isDir())
@@ -765,7 +799,7 @@ void AudioPlayingWindow::prevTrack()
 		current_track = 0;
 		media_player->quitMPlayer();
 	}
-	qDebug(QString("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %2/%3").arg(current_track-1).arg(play_list.count()));
+	qDebug(QString("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %1/%2").arg(current_track-1).arg(play_list.count()));
 }
 
 
@@ -780,14 +814,12 @@ void AudioPlayingWindow::nextTrack()
 		//current_track++;
 		media_player->quitMPlayer();
 	}
-	qDebug(QString("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %2/%3").arg(current_track-1).arg(play_list.count()));
+	qDebug(QString("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %1/%2").arg(current_track-1).arg(play_list.count()));
 }
 
 
 void AudioPlayingWindow::handle_buttons(int button_number)
 {
-	qDebug(QString("[AUDIO] AudioPlayingWindow::handle_buttons() BUTTON %1 PRESSED").arg(button_number));
-
 	data_refresh_timer->stop();
 
 	switch (button_number)
@@ -839,9 +871,9 @@ void AudioPlayingWindow::handle_data_refresh_timer()
 }
 
 
-void AudioPlayingWindow::handle_playing_terminated()
+void AudioPlayingWindow::handlePlayingDone()
 {
-	// mplayer is terminated because the track is finished or because some error occurs
+	// mplayer has terminated because the track is finished
 	// so we go to the next track if exists
 	int rc;
 
@@ -862,6 +894,16 @@ void AudioPlayingWindow::handle_playing_terminated()
 		// Hide playing_window
 		hide();
 	}
+}
+
+void AudioPlayingWindow::handlePlayingAborted()
+{
+	turnOffAudioSystem();
+
+	hide();
+
+	// FIXME display error?
+	qDebug("[AUDIO] Error in mplayer, stopping playlist");
 }
 
 void AudioPlayingWindow::setBGColor(QColor c)

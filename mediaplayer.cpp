@@ -19,7 +19,7 @@ static MediaPlayer *_globalMediaPlayer;
 static void mplayerExited(int signo, siginfo_t *info, void *)
 {
 	int status;
-	wait(&status);
+	waitpid(-1, &status, WNOHANG);
 
 	if (_globalMediaPlayer)
 		_globalMediaPlayer->sigChildReceived(info->si_pid, status);
@@ -131,11 +131,11 @@ void MediaPlayer::execCmd(QString command)
 
 QString MediaPlayer::readOutput()
 {
-	char line[100];
+	char line[1024];
 	QString result;
 
-	while (fgets(line, 100, outf) != NULL)
-		result += QString(line);
+	while (fgets(line, sizeof(line), outf))
+		result += line;
 
 	return result;
 }
@@ -196,24 +196,33 @@ void MediaPlayer::sigChildReceived(int dead_pid, int status)
 {
 	qDebug("[AUDIO] Signal SIGCHLD received, pid %d", dead_pid);
 
-	if (WIFEXITED(status))
-		qDebug("[AUDIO] child exited, with code %d", WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-		qDebug("[AUDIO] child terminated by signal %d", WTERMSIG(status));
-	else
-		qDebug("[AUDIO] child quit for unknown reason");
-
 	/// Check if the dead child is mplayer or not
 	if (dead_pid == mplayer_pid)
 	{
-		qDebug("[AUDIO] Child was my mplayer");
-
 		mplayer_pid = 0;
 
-		// Notify to audio playing window that mplayer is terminated
-		emit mplayerTerminated();
-	}
-	else
-		qDebug("[AUDIO] Child was *not* my mplayer, probably start/stop script");
-}
+		if (WIFEXITED(status))
+		{
+			int rc = WEXITSTATUS(status);
+			qDebug("[AUDIO] mplayer exited, with code %d", rc);
+			if (rc == 0 || rc == 1)
+			{
+				emit mplayerDone();
+				return;
+			}
+		}
+		else if (WIFSIGNALED(status))
+		{
+			qDebug("[AUDIO] mplayer terminated by signal %d", WTERMSIG(status));
+			if (WTERMSIG(status) == SIGINT)
+			{
+				emit mplayerDone();
+				return;
+			}
+		}
+		else
+			qDebug("[AUDIO] mplayer aborted for unknown reason");
 
+		emit mplayerAborted();
+	}
+}

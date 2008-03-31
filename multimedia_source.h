@@ -35,7 +35,6 @@
 #include <qpainter.h>
 #include <qtextedit.h>
 
-//#include "btbutton.h"
 #include "main.h"
 #include "btlabel.h"
 #include "bannfrecce.h"
@@ -57,8 +56,8 @@ class  MultimediaSource : public QWidget
 {
 Q_OBJECT
 public:
-	MultimediaSource( QWidget *parent=0, const char *name=0, const char *amb="", int where_address=0);
-	//void browseFiles(QString);
+	MultimediaSource(QWidget *parent=0, const char *name=0, const char *amb="", int where_address=0);
+
 	/*!
 	 * \brief Sets the background color for the banner.
 	 * The arguments are RGB components for the color.
@@ -114,7 +113,7 @@ signals:
 	void sendFrame(char *);
 public slots:
 	/*!
-	 * \brief Shows the aux details page 
+	 * \brief Shows the aux details page
 	 */
 	void showAux();
 	/*!
@@ -143,7 +142,7 @@ class TitleLabel : public QLabel
 Q_OBJECT
 public:
 	TitleLabel( QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE, WFlags f = 0 );
-	
+
 	void setText( const QString & text_to_set );
 	void drawContents ( QPainter *p );
 	void resetTextPosition();
@@ -167,7 +166,7 @@ private:
 	int step_shift;
 	int visible_chars;
 	QString separator;
-	
+
 	/// refresh text
 	void refreshText();
 
@@ -185,10 +184,16 @@ class  FileBrowser : public QWidget
 Q_OBJECT
 public:
 	FileBrowser(QWidget *parent=0, unsigned rows_per_page=3, const char *name=0, WFlags f=0);
-	
-	/// Browse given path
-	void browseFiles(QString new_path);
-	void browseFiles();
+
+	/**
+	 * Browse given path, return false in case of error.
+	 */
+	bool browseFiles(QString new_path);
+
+	/**
+	 * Browse current path, return false in case of error.
+	 */
+	bool browseFiles();
 
 	/// Store current path
 	QString current_path;
@@ -251,7 +256,7 @@ Q_OBJECT
 public:
 	AudioPlayingWindow(QWidget *parent = 0, const char * name = 0);
 	~AudioPlayingWindow() {};
-	
+
 	/// Apply Style
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
@@ -262,18 +267,19 @@ public:
 
 	/// Stores current playing info
 	QMap<QString, QString> playing_info;
-	
+
 	/// Start PLAY, begins to play a given track and sets the play_list
 	void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 
 	/// Run script and send frame to turn on and off Audio System
 	void turnOnAudioSystem();
 	void turnOffAudioSystem();
-	
+
 public slots:
 	void handle_buttons(int);
 	void handle_data_refresh_timer();
-	void handle_playing_terminated();
+	void handlePlayingDone();
+	void handlePlayingAborted();
 
 private:
 	/// refreshing info time interval
