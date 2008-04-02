@@ -27,8 +27,11 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
+#include "btbutton.h"
+#include "btlabel.h"
+#include "genericfunz.h"
 
-//#include "ban.h"
+#include "openclient.h"
 
 aux::aux( QWidget *parent, const QString & name, const QString & amb )
 : QWidget( parent, name.ascii() )

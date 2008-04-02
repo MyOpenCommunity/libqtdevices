@@ -11,12 +11,12 @@
 #include <time.h>
 #include <qapplication.h>
 #include <qobject.h>
-#include <qaction.h>
-//#include <qcursor.h>
+// #include <qaction.h>
+
 #include <qwidget.h>
 #include <qptrlist.h> 
 #include <qcursor.h>
-#include "qwaitcondition.h"
+// #include "qwaitcondition.h"
 
 #include "main.h"
 #include "btmain.h"
@@ -34,6 +34,10 @@
 #include "btlabel.h"
 #include "genpage.h"
 #include "device_cache.h"
+#include "openclient.h"
+#include "antintrusione.h"
+#include "termoregolaz.h"
+#include "versio.h"
 
 #include <sys/sysinfo.h>
 #include <qfontdatabase.h>

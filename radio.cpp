@@ -27,8 +27,8 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
-
-//#include "ban.h"
+#include "btlabel.h"
+#include "genericfunz.h"
 
 radio::radio( QWidget *parent, const char *name, const QString & amb )
 : QWidget( parent, name )

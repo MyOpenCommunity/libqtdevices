@@ -140,8 +140,8 @@ extern PropertyMap app_config;
  */
 #define NUM_RIGHE                  4
 
-#define DEFAULT_FONT  		"simsun"
-
+// cinese  #define DEFAULT_FONT  		"simsun"
+#define DEFAULT_FONT  		"KacstLetter"
 
 /****************************************************************
  **  definizione dei sottomenù

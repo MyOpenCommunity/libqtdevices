@@ -11,12 +11,8 @@
 #ifndef AUX_H
 #define AUX_H
 
-// #include <qframe.h>
-// #include "btlabel.h"
 #include <qprocess.h>
-// #include "btbutton.h"
 #include "main.h"
-// #include "bannfrecce.h"
 #include <qlcdnumber.h>
 #include <qcursor.h>
 

@@ -12,19 +12,21 @@
 #define XMLCONFHANDLER_H   
 
 #include <qxml.h>
-#include "homepage.h"
-#include "sottomenu.h"
-#include "diffsonora.h"
-#include "diffmulti.h"
-#include "antintrusione.h"
-#include "genericfunz.h"
-#include "termoregolaz.h"
-#include "btmain.h"
-#include "versio.h"
-//#include "openclient.h"
-
+#include <qcolor.h>
+#include <qdatetime.h>
 #include <qstring.h>
-//class QString;
+
+class homePage;
+class sottoMenu;
+class diffSonora;
+class diffmulti;
+class antintrusione;
+class termoregolaz;
+class versio;
+class BtMain;
+class ambDiffSon;
+class scenEvo_cond;
+class Client;
 
 // Obscene hack, see function below...
 static QString empty_string("");

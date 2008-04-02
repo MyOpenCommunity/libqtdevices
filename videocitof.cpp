@@ -20,6 +20,7 @@
 #include "device_cache.h"
 #include "videocitof.h"
 #include "items.h"
+#include "genericfunz.h"
 
 // Call notifier implementation
 

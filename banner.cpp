@@ -16,7 +16,9 @@
 #include "btlabel.h"
 #include <qpixmap.h>
 #include <qfile.h>
-#include <qapplication.h>
+// #include <qapplication.h>
+#include "genericfunz.h"
+#include "openclient.h"
 
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;

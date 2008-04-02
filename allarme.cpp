@@ -16,12 +16,12 @@
 
 #include "openclient.h"
 #include "device.h"
-#include "xmlconfhandler.h"
 #include "frame_interpreter.h"
 #include "device_cache.h"
 #include "banner.h"
 #include "allarme.h"
-
+#include "bannfrecce.h"
+#include "btlabel.h"
 
 /*****************************************************************
 ** Generic alarm

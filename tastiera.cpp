@@ -17,7 +17,7 @@
 #include <qprocess.h>
 #include <qstring.h>
 
-
+#include "genericfunz.h"
 #include "tastiera.h"
 #include "banner.h"
 #include "main.h"

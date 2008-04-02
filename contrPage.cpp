@@ -17,10 +17,10 @@
 #include <qprocess.h>
 #include <qstring.h>
 
-
 #include "contrpage.h"
 #include "banner.h"
 #include "main.h"
+#include "genericfunz.h"
 
 contrPage::contrPage( QWidget *parent, const char *name )
         : QWidget( parent, name )

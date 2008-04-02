@@ -15,12 +15,11 @@
 #include "device_cache.h"
 #include "tastiera.h"
 
-//#include "btbutton.h"
 #include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
 #include <stdlib.h>
-
+#include "genericfunz.h"
 
 /*****************************************************************
  **dimmer

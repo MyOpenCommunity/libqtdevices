@@ -10,6 +10,8 @@
 
 #include "antintrusione.h"
 #include "tastiera.h"
+#include "allarme.h"
+#include "items.h"
 
 extern unsigned char tipoData;
 

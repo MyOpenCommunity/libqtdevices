@@ -17,13 +17,13 @@
 #define MAX_TEXT_2      11
 
 #include "openclient.h"
-#include "btbutton.h"
-#include "genericfunz.h"
 #include <qwidget.h>
-#include "btlabel.h"
 #include "main.h"
 #include <qpixmap.h>
 #include <qtimer.h>
+
+class BtLabel;
+class BtButton;
 
 // Vecchia cache delle icone:
 //#include <icondispatcher.h>

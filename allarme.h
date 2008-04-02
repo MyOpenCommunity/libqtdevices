@@ -1,11 +1,10 @@
 #ifndef _ALLARME_H_
 #define _ALLARME_H_
 
-#include "bannfrecce.h"
-#include "device.h"
-#include "frame_interpreter.h"
+#include <qframe.h>
 
 class banner;
+class BtLabel;
 
 /*!
   \class allarme

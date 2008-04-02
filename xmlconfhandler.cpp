@@ -19,7 +19,10 @@
 #include "diffmulti.h"
 #include "sveglia.h"
 #include "genericfunz.h"
-
+#include "versio.h"
+#include "antintrusione.h"
+#include "termoregolaz.h"
+#include "btmain.h"
 
 #include <stdio.h>
 #include <qstring.h>

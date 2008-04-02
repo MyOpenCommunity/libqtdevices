@@ -20,6 +20,9 @@
 #include "device.h"
 #include "frame_interpreter.h"
 #include "device_cache.h"
+#include "genericfunz.h"
+#include "btbutton.h"
+#include "btlabel.h"
 
 /*****************************************************************
 ** Advanced scenario management generic condition

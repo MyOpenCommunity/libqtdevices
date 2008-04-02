@@ -13,24 +13,26 @@
 #define BTMAIN_H
 
 #include <qwidget.h>
-#include "homepage.h"
-#include "sottomenu.h"
-#include "diffsonora.h"
-#include "diffmulti.h"
-#include "openclient.h"
-#include "antintrusione.h"
-#include "termoregolaz.h"
-#include "versio.h"
-#include "genpage.h"
-#include "calibrate.h"
 #include "btlabel.h"
 
-#include "../bt_stackopen/common_files/openwebnet.h"
+// #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
-#include <qmainwindow.h> 
+// #include <qmainwindow.h> 
 
 
 #define BALL_NUM	5
+
+class sottoMenu;
+class diffSonora;
+class diffmulti;
+class antintrusione;
+class termoregolaz;
+class versio;
+class homePage;
+class Calibrate;
+class genPage;
+class Client;
+class tastiera;
 
 /*!
   \class palla

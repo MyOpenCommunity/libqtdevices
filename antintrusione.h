@@ -12,12 +12,15 @@
 #define ANTINTRUS_H
 
 #include <qwidget.h>
-#include "items.h"
-#include "allarme.h"
-#include "openclient.h"
 #include <qptrlist.h> 
 
+#include "main.h" // MAX_PATH
+
 class sottoMenu;
+class allarme;
+class zonaAnti;
+class tastiera;
+
 
 /*!
   \class antintrusione
