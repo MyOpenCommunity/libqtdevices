@@ -1,14 +1,11 @@
-//#include "btbutton.h"
-#include <qfont.h>
-#include <qlayout.h>
-#include <qpixmap.h>
 #include <stdlib.h>
+
+#include <qfont.h>
+#include <qpixmap.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
 
-#include <qfile.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -22,6 +19,7 @@
 #include "allarme.h"
 #include "bannfrecce.h"
 #include "btlabel.h"
+#include "main.h"
 
 /*****************************************************************
 ** Generic alarm

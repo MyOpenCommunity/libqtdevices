@@ -13,6 +13,7 @@
 #include <qwidget.h>
 #include <qpixmap.h>
 #include <qcursor.h>
+#include "openclient.h"
 
 versio::versio( QWidget *parent,const char *name , unsigned int f)
         : BtLabel( parent, name,  f)

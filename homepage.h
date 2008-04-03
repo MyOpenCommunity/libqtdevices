@@ -7,17 +7,15 @@
 #ifndef BT_HOMEPAGE
 #define BT_HOMEPAGE
 
-#include "btbutton.h"
-#include "timescript.h"
-#include "openclient.h"
-#include "btlabel.h"
-
-#include <qlcdnumber.h>
 #include <qwidget.h>
-#include <qlabel.h>
 #include <qcolor.h>
-#include <qpainter.h>
 #include <qptrlist.h>
+
+#include "btbutton.h"
+
+class QLCDNumber;
+class BtLabel;
+class timeScript;
 
 /*!
   \class homePage

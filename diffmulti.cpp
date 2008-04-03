@@ -8,22 +8,14 @@
 **
 ****************************************************************/
 
+#include <qwidget.h>
 
-#include "sottomenu.h"
 #include "items.h"
-#include "setitems.h"
-#include "btbutton.h"
 #include "device_cache.h"
 #include "diffmulti.h"
-#include "xmlconfhandler.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <stdlib.h>
-#include <qwidget.h>
-#include <qcursor.h>
-#include <unistd.h>
+#include "xmlconfhandler.h" // per safeAt()
+#include "sveglia.h"
+#include "diffsonora.h"
 
 dati_sorgente_multi::dati_sorgente_multi(char t, QPtrList<QString> *d, 
 		void *ind,

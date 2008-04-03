@@ -19,7 +19,8 @@
 #include <qdatetime.h>
 #include <qprocess.h>
 #include <qstring.h>
-
+#include <qlcdnumber.h>
+#include <qcursor.h>
 #include <qfile.h>
 
 #include "radio.h"
@@ -29,6 +30,7 @@
 #include "main.h"
 #include "btlabel.h"
 #include "genericfunz.h"
+#include "btbutton.h"
 
 radio::radio( QWidget *parent, const char *name, const QString & amb )
 : QWidget( parent, name )

@@ -8,16 +8,13 @@
  **
  ****************************************************************/
 
+#include <qcursor.h>
+
 #include "diffsonora.h"
-/*#include "sottomenu.h"
-#include "items.h"
-#include "main.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qlabel.h>
-*/
+#include "sottomenu.h"
+#include "btlabel.h"
+#include "openclient.h"
+#include "banner.h"
 
 diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
 : QWidget( parent, name )
@@ -282,13 +279,13 @@ void diffSonora::fineVis()
 	emit(closed(this));
 }
 
-int diffSonora::addSource(banner *b)
+void diffSonora::addSource(banner *b)
 {
 	sorgenti->addItem(b);
 	connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 }
 
-int diffSonora::setFirstSource(int addr)
+void diffSonora::setFirstSource(int addr)
 {
 	qDebug("diffSonora::setFirstSource(%d)", addr);
 	sorgenti->setIndex((char *)QString::number(addr, 10).ascii());

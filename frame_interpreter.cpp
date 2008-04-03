@@ -1,9 +1,11 @@
  //! Implementation of frame interpreter classes
 
+#include <stdlib.h>
+
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>
-#include <stdlib.h>
+#include <qstringlist.h>
 
 #include "openclient.h"
 #include "device.h"

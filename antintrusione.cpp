@@ -9,8 +9,8 @@
 ****************************************************************/
 
 #include "antintrusione.h"
+#include "openclient.h"
 #include "tastiera.h"
-#include "allarme.h"
 #include "items.h"
 
 extern unsigned char tipoData;

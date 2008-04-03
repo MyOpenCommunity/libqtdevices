@@ -8,7 +8,6 @@
 **
 ****************************************************************/
 
-
 #include <qfont.h>
 #include <qlayout.h>
 #include <qpixmap.h>
@@ -24,11 +23,15 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-
 #include "sottomenu.h"
 #include "sveglia.h"
 #include "genericfunz.h"
-
+#include "diffmulti.h"
+#include "btbutton.h"
+#include "btlabel.h"
+#include "openclient.h"
+#include "timescript.h"
+#include "bannfrecce.h"
 
 sveglia::sveglia( QWidget *parent,
 	const char *name,

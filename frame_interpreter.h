@@ -7,7 +7,7 @@
 #include <qptrlist.h>
 #include <qobject.h>
 #include <qdatetime.h>
-#include <stdlib.h>
+
 #include "openclient.h"
 #include "device.h"
 

@@ -21,6 +21,8 @@
 #include "videocitof.h"
 #include "items.h"
 #include "genericfunz.h"
+#include "btlabel.h"
+#include "btbutton.h"
 
 // Call notifier implementation
 

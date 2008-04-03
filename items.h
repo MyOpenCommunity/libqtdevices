@@ -11,16 +11,12 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
-#include <qwidget.h>
 #include <qptrlist.h>
-#include "openclient.h"
 #include "banner.h"
 #include "main.h"
 
-// Includes for sigle Items
 #include "bannregolaz.h"
 #include "device.h"
-#include "frame_interpreter.h"
 #include "bannonoff.h"
 #include "bannondx.h" // Scenario e Carico includevano questo ma ereditano da bannOnSx
 #include "bannonoff2scr.h"
@@ -29,28 +25,25 @@
 #include "bannpuls.h"
 #include "bannbuticon.h"
 #include "bannciclaz.h"
-#include "radio.h"
-#include "aux.h"
 #include "multimedia_source.h"
 #include "banntermo.h"
 #include "bannonicons.h"
 #include "bann2butlab.h"
 #include "bann4taslab.h"
-#include "scenevocond.h" // era incluso nell'item scenario evoluto, probabilmente può essere sostituito da forward declarations
 #include "bann4but.h"
-#include "videocitof.h"
 #include "bannbut2icon.h"
-#include "diffmulti.h"
-
-
-#include "diffsonora.h"
 
 /// Forward Declarations
 class diffSonora;
-class diffmulti; //aggiunta da me per far compilare
+class diffmulti;
 class dati_sorgente_multi;
 class dati_ampli_multi;
 class tastiera;
+class radio;
+class aux;
+class call_notifier_manager;
+class call_notifier;
+class QWidget;
 
 /*****************************************************************
  **Dimmer

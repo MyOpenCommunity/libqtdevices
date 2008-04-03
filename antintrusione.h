@@ -15,9 +15,9 @@
 #include <qptrlist.h> 
 
 #include "main.h" // MAX_PATH
+#include "allarme.h" 
 
 class sottoMenu;
-class allarme;
 class zonaAnti;
 class tastiera;
 

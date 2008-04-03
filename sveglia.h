@@ -12,19 +12,15 @@
 #define SVEGLIA_H
 
 #include <qframe.h>
-#include <qlabel.h>
-#include <qprocess.h>
-#include <qpushbutton.h>
-#include "btbutton.h"
-#include "main.h"
-#include "timescript.h"
-#include "bannfrecce.h"
-#include "diffsonora.h"
-#include "btlabel.h"
-#include <qcheckbox.h>
-
 
 #define 	AMPLI_NUM 	100
+
+class contdiff;
+class BtLabel;
+class BtButton;
+class bannFrecce;
+class timeScript;
+class QDateTime;
 
 /*!
   \class sveglia

@@ -8,17 +8,19 @@
  **
  ****************************************************************/
 
-#include <stdlib.h>
+#include <qfont.h>
+#include <qpixmap.h>
+#include <qfile.h>
+#include <qtimer.h>
+#include <qapplication.h> //qapp
+
 #include "banner.h"
 #include "btbutton.h"
 #include "main.h"
-#include <qfont.h>
 #include "btlabel.h"
-#include <qpixmap.h>
-#include <qfile.h>
-// #include <qapplication.h>
 #include "genericfunz.h"
 #include "openclient.h"
+
 
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;
@@ -263,8 +265,6 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon, const char*cente
 
 void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,int period, int number)
 {
-	char pressIconName[MAX_PATH];
-
 	if (sxIcon)
 	{
 		Icon[0]      = icons_library.getIcon( sxIcon );
@@ -289,6 +289,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	if  ( (centerActiveIcon) && (number) )
 	{
 		#if 0
+		char pressIconName[MAX_PATH];
 		for (uchar idx=1;idx<=number;idx++)
 		{
 			memset(pressIconName,'\000',sizeof(pressIconName));
@@ -954,16 +955,18 @@ bool banner::getPul( )
 	return(pul);
 }
 
-bool banner::isForMe(openwebnet& m)
+bool banner::isForMe(openwebnet * m)
 {
-	if(strcmp(m.Extract_chi(), "1")) return false ;
-	if(!strcmp(m.Extract_dove(),getAddress())) return true;
+	if( strcmp( m->Extract_chi(), "1") )
+		 return false ;
+	if( ! strcmp( m->Extract_dove(), getAddress()) )
+		 return true;
 	// BAH
-	return (!getPul() && ((!strcmp(m.Extract_dove(),"0")) ||
-				((strlen(m.Extract_dove())==1) && 
-				 (!strncmp(m.Extract_dove(), getAddress(), 1)) ) || 
-				((!strncmp(m.Extract_dove(),"#",1)) && 
-				 *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
+	return ( ! getPul() && ((!strcmp(m->Extract_dove(),"0")) ||
+			((strlen(m->Extract_dove())==1) && 
+			(!strncmp(m->Extract_dove(), getAddress(), 1)) ) || 
+			((!strncmp(m->Extract_dove(),"#",1)) && 
+			*(getGroup()+(atoi(m->Extract_dove()+1))-1))));
 }
 
 void banner:: inizializza(bool forza){}

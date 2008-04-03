@@ -12,15 +12,11 @@
 #define DIFFMULTI_H
 
 #include <qwidget.h>
-#include "items.h"
-#include "device.h"
-#include "frame_interpreter.h"
-#include "diffsonora.h"
-#include "sottomenu.h"
-#include "openclient.h"
 #include <qptrlist.h> 
 
-#include <qcursor.h>
+#include "device.h"
+#include "scenevocond.h" // per la connect
+#include "sottomenu.h" // per la connect
 
 class diffSonora;
 

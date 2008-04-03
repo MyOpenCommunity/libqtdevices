@@ -7,6 +7,10 @@
  **f
  **definizione dei vari items
  ****************************************************************/
+#include <qfont.h>
+#include <qlabel.h>
+#include <qpixmap.h>
+
 #include "items.h"
 #include "openclient.h"
 #include "sottomenu.h"
@@ -14,11 +18,12 @@
 #include "frame_interpreter.h"
 #include "device_cache.h"
 #include "tastiera.h"
-
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <stdlib.h>
+#include "diffmulti.h"
+#include "aux.h"
+#include "scenevocond.h"
+#include "videocitof.h"
+#include "radio.h"
+#include "diffsonora.h"
 #include "genericfunz.h"
 
 /*****************************************************************

@@ -6,9 +6,10 @@
 #include <qmap.h>
 #include <qstring.h>
 #include "device.h"
-#include "frame_interpreter.h"
+// #include "frame_interpreter.h"
 
 class Client;
+class device;
 
 typedef device *deviceptr;
 

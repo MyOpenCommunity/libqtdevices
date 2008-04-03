@@ -14,15 +14,11 @@
 #undef IPHONE_MODE
 
 #include <qwidget.h>
-//#include <qlabel.h>
-#include "banner.h"
 #include <qptrlist.h> 
 #include "main.h"
-#include "bannfrecce.h"
-#include <stdlib.h>
+#include "banner.h"
 
-//class QPushButton;
-
+class bannFrecce;
 class scenEvo_cond;
 
 /*!

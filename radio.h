@@ -11,15 +11,13 @@
 #ifndef RADIO_H
 #define RADIO_H
 
-#include <qframe.h>
-#include <qprocess.h>
-#include "btbutton.h"
-#include "main.h"
-#include "bannfrecce.h"
-#include <qlcdnumber.h>
-#include <qcursor.h>
+#include <qwidget.h>
 
 class BtLabel;
+class BtButton;
+class bannFrecce;
+class QLCDNumber;
+
 
 /*!
  * \class radio

@@ -8,26 +8,26 @@
  **
  ****************************************************************/
 
-#include <time.h>
+#include <sys/sysinfo.h>
+
 #include <qapplication.h>
 #include <qobject.h>
-// #include <qaction.h>
-
 #include <qwidget.h>
 #include <qptrlist.h> 
 #include <qcursor.h>
-// #include "qwaitcondition.h"
+#include <qxml.h>
+#include <qwindowdefs.h>
+#include <qbitmap.h>
+#include <qwindowsystem_qws.h>
 
 #include "main.h"
 #include "btmain.h"
 #include "homepage.h"
 #include "sottomenu.h"
-#include "impostatime.h"
 #include "diffsonora.h"
 #include "diffmulti.h"
-#include "sveglia.h"
+#include "antintrusione.h"
 #include "genericfunz.h"
-//#include "structureparser.h"
 #include "xmlconfhandler.h"
 #include "xmlvarihandler.h"
 #include "calibrate.h"
@@ -35,31 +35,12 @@
 #include "genpage.h"
 #include "device_cache.h"
 #include "openclient.h"
-#include "antintrusione.h"
-#include "termoregolaz.h"
 #include "versio.h"
-
-#include <sys/sysinfo.h>
-#include <qfontdatabase.h>
-#include <qfile.h>
-#include <qxml.h>
-#include <qwindowdefs.h>
-#include <stdlib.h>
-#include <math.h>
-#include <qbitmap.h>
-#include <qwindowsystem_qws.h>
-
+#include "termoregolaz.h"
 #include "tastiera.h"
-
-#if 0 // kemosh
-#include <bt_upnp.h>
-#endif
 
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
-
-
-
 
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 : QWidget( parent, name )

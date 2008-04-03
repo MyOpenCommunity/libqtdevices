@@ -16,17 +16,13 @@
 #define MAX_TEXT        21
 #define MAX_TEXT_2      11
 
-#include "openclient.h"
 #include <qwidget.h>
-#include "main.h"
-#include <qpixmap.h>
-#include <qtimer.h>
 
 class BtLabel;
 class BtButton;
-
-// Vecchia cache delle icone:
-//#include <icondispatcher.h>
+class QPixmap;
+class QTimer;
+class openwebnet;
 
 /*!
  * \class banner
@@ -521,7 +517,7 @@ protected:
 	/**
 	 *  \brief Returns true if the object is a target for message
 	 */
-	bool isForMe(openwebnet& message);
+	bool isForMe(openwebnet * message);
 };
 
 

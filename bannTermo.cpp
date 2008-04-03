@@ -13,7 +13,7 @@
 #include "sottomenu.h"
 #include <qfont.h>
 #include <qpixmap.h>
-
+#include "buttons_bar.h"
 
 bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t _devtype )
 	: banner( parent, name )

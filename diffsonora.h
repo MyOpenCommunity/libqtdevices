@@ -12,15 +12,14 @@
 #define DIFFSONORA_H
 
 #include <qwidget.h>
-//#include "banner.h"
-#include "items.h"
-//#include "main.h"
-#include "sottomenu.h"
-#include "openclient.h"
 #include <qptrlist.h> 
 
-#include <qcursor.h>
+class banner;
 
+// #include "items.h"
+// #include "openclient.h"
+
+class sottoMenu;
 
 /*!
  * \class diffSonora
@@ -147,11 +146,11 @@ public slots:
 	/*!
 	 * \brief adds a source
 	 */
-	int addSource(banner *b);
+	void addSource(banner *b);
 	/*!
 	 * \brief sets first source given address 
 	 */
-	int setFirstSource(int addr);
+	void setFirstSource(int addr);
 	/*!
 	 * \brief sets isVisual to false and emits freezed signal
 	 */

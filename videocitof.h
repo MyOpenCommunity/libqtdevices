@@ -2,11 +2,13 @@
 #ifndef _VIDEOCITOF_H_
 #define _VIDEOCITOF_H_
 
-#include "bannfrecce.h"
+#include <qframe.h>
+
 #include "device.h"
-#include "frame_interpreter.h"
 
 class postoExt;
+class BtLabel;
+class BtButton;
 
 class call_notifier : public QFrame {
     Q_OBJECT

@@ -11,15 +11,12 @@
 
 #include <qfont.h>
 #include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
 #include <stdlib.h>
 #include <qwidget.h>
-#include <qframe.h>
 #include <qdatetime.h>
-#include <qprocess.h>
 #include <qstring.h>
-
+#include <qcursor.h>
 #include <qfile.h>
 
 #include "aux.h"

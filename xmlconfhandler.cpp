@@ -23,9 +23,8 @@
 #include "antintrusione.h"
 #include "termoregolaz.h"
 #include "btmain.h"
-
-#include <stdio.h>
-#include <qstring.h>
+#include "scenevocond.h"
+#include "openclient.h"
 
 unsigned char tipoData=0;
 

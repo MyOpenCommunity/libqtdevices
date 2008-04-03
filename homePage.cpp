@@ -8,32 +8,18 @@
 **
 ****************************************************************/
 
-#include "homepage.h"
-#include "main.h"
-#include "btbutton.h"
-#include "timescript.h"
-#include "genericfunz.h"
-
 #include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qtimer.h>
-
 #include <qpixmap.h>
 #include <qdatetime.h>
-#include <qtimer.h>
-#include <qstyle.h>
-
-#include <stdlib.h>
-#include <qrect.h>
-#include <qstatusbar.h>
-#include <qapplication.h>
 #include <qcursor.h>
-#include <qmessagebox.h>
-#include <qimage.h>
-#include <qfile.h>
+#include <qlcdnumber.h>
 
-#include <qwidget.h>
+#include "homepage.h"
+#include "main.h"
+#include "timescript.h"
+#include "genericfunz.h"
+#include "openclient.h"
+#include "btlabel.h"
 
 homePage::homePage( QWidget *parent, const char *name, WFlags f )
         : QWidget( parent, name )

@@ -12,10 +12,9 @@
 #define BANNTERMO_H
 
 #include "banner.h"
-#include <qwidget.h>
-#include "btlabel.h"
-#include <qpixmap.h>
-#include "buttons_bar.h"
+
+class BtLabel;
+class ButtonsBar;
 
 /*!
  *

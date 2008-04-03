@@ -8,14 +8,8 @@
  **
  ****************************************************************/
 
+#include <stdlib.h>
 
-#include "sottomenu.h"
-#include "items.h"
-#include "setitems.h"
-#include "btbutton.h"
-#include "diffsonora.h"
-#include "versio.h"
-#include "xmlconfhandler.h"
 #include <qfont.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -25,6 +19,14 @@
 #include <qcursor.h>
 #include <unistd.h>
 
+#include "sottomenu.h"
+#include "items.h"
+#include "setitems.h"
+#include "btbutton.h"
+#include "diffsonora.h"
+#include "versio.h"
+#include "xmlconfhandler.h"
+#include "bannfrecce.h"
 
 sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
 : QWidget( parent, name )

@@ -10,13 +10,8 @@
 #ifndef  GENERIC_CLASSES_H
 #define GENERIC_CLASSES_H
 
-#include "qlabel.h"
-#include "openclient.h"
 #include "btlabel.h"
 
-#include <qfont.h>
-#include <stdlib.h>
-#include <string.h>
 /*!
   \class versio
   \brief This class shows the device versions.

@@ -7,6 +7,7 @@
 #include <qcursor.h>
 #include <qdatetime.h>
 #include <qprocess.h>
+#include <qlabel.h>
 
 #include <qfile.h>
 #include <sys/types.h>
@@ -23,6 +24,7 @@
 #include "genericfunz.h"
 #include "btbutton.h"
 #include "btlabel.h"
+#include "timescript.h"
 
 /*****************************************************************
 ** Advanced scenario management generic condition
@@ -928,7 +930,7 @@ void device_condition::setFGColor(QColor c)
 
 void device_condition::setBGColor(QColor c)
 {
-    qDebug("device_condition::setBGColor", c.red(), c.green(),
+	qDebug("device_condition::setBGColor (%d, %d, %d)", c.red(), c.green(),
 	   c.blue());
     frame->setPaletteBackgroundColor(c);
 }
@@ -1072,7 +1074,7 @@ int device_condition_light_status::set_condition_value(QString s)
     else if(s == "0")
 	v = 0;
     else 
-	qDebug("Unknown condition value %s for device_condition_light_status");
+	qDebug("Unknown condition value %s for device_condition_light_status", s.ascii());
     return device_condition::set_condition_value(v);
 }
 

@@ -2,6 +2,7 @@
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>
+#include <qstringlist.h>
 
 #include "openclient.h"
 #include "device.h"

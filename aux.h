@@ -11,10 +11,7 @@
 #ifndef AUX_H
 #define AUX_H
 
-#include <qprocess.h>
-#include "main.h"
-#include <qlcdnumber.h>
-#include <qcursor.h>
+#include <qwidget.h>
 
 class BtLabel;
 class BtButton;
