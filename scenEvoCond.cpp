@@ -1,14 +1,11 @@
-//#include "btbutton.h"
 #include <qfont.h>
-#include <qlayout.h>
 #include <qpixmap.h>
 #include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
 #include <qlabel.h>
-
+#include <qdir.h>
 #include <qfile.h>
 #include <sys/types.h>
 #include <unistd.h>

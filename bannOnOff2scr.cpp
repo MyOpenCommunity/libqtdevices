@@ -10,11 +10,6 @@
 
 #include "bannonoff2scr.h"
 #include "main.h"
-//#include "btbutton.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-
 
 bannOnOff2scr::bannOnOff2scr( QWidget *parent,const char *name )
         : banner( parent, name )

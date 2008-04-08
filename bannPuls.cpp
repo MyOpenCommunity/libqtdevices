@@ -10,10 +10,6 @@
 
 #include "bannpuls.h"
 #include "main.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-
 
 bannPuls::bannPuls( QWidget *parent,const char *name )
         : banner( parent, name )

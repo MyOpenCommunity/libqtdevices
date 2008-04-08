@@ -13,7 +13,6 @@
 
 #include "btlabel.h"
 
-#include <qfont.h>
 #include <stdlib.h>
 #include <string.h>
 

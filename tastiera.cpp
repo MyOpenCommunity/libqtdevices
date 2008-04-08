@@ -10,13 +10,12 @@
 
 
 #include <qfont.h>
-#include <qlayout.h>
 #include <stdlib.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include <qprocess.h>
 #include <qstring.h>
 #include <qcursor.h>
+#include <qfile.h>
 
 #include "genericfunz.h"
 #include "tastiera.h"

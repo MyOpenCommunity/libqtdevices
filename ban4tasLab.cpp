@@ -10,8 +10,6 @@
 
 #include "bannfrecce.h"
 #include "main.h"
-//#include "btbutton.h"
-#include <qpixmap.h>
 #include "bann4taslab.h"
 
 bann4tasLab::bann4tasLab( QWidget *parent,const char *name )

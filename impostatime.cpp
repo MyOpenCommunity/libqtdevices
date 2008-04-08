@@ -8,21 +8,10 @@
 **
 ****************************************************************/
 
-
-
-
-/*#include "btbutton.h"
-#include "main.h"*/
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-//#include <qtime.h>
 
 #include <qfile.h>
 

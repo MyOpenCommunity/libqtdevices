@@ -10,10 +10,6 @@
 
 #include "bannbuticon.h"
 #include "main.h"
-//#include "btbutton.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
 
 
 bannButIcon::bannButIcon( QWidget *parent,const char *name )

@@ -10,9 +10,6 @@
 
 #include <stdlib.h>
 
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
 #include <stdlib.h>
 #include <qwidget.h>

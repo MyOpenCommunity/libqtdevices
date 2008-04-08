@@ -12,13 +12,10 @@
 #define IMPOSTA_TIME_H
 
 #include <qframe.h>
-//#include <qlabel.h>
-#include <qprocess.h>
 #include "btbutton.h"
 #include "main.h"
 #include "timescript.h"
 #include "btlabel.h"
-//#include <qobject.h>
 
 /*!
   \class impostaTime
@@ -86,7 +83,6 @@ private slots:
 private:
    timeScript* dataOra;
    BtLabel* Immagine;
-   //   QProcess* dateChange;
 };
 
 

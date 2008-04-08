@@ -781,21 +781,6 @@ void BtLabel::setTextFormat( Qt::TextFormat format )
     }
 }
 
-/*!
-  \reimp
-*/
-
-void BtLabel::fontChange( const QFont & )
-{
-    if ( !ltext.isEmpty() ) {
-#ifndef QT_NO_RICHTEXT
-	if ( doc )
-	    doc->setDefaultFont( font() );
-#endif
-	updateLabel( QSize( -1, -1 ) );
-    }
-}
-
 #ifndef QT_NO_IMAGE_SMOOTHSCALE
 /*!
     \property BtLabel::scaledContents

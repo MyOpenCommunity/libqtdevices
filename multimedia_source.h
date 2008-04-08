@@ -18,7 +18,6 @@
 #define MULTIMEDIA_SOURCE_H
 
 #include <qframe.h>
-#include <qprocess.h>
 #include <qlcdnumber.h>
 #include <qcursor.h>
 #include <qlistbox.h>
@@ -31,7 +30,6 @@
 #include <qslider.h>
 #include <qbuttongroup.h>
 #include <qtimer.h>
-#include <qlayout.h>
 #include <qpainter.h>
 #include <qtextedit.h>
 

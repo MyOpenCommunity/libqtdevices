@@ -1,11 +1,9 @@
 #include <qfont.h>
-#include <qlayout.h>
 #include <qpixmap.h>
 #include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
 
 #include <qfile.h>
 #include <sys/types.h>

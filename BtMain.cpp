@@ -151,40 +151,6 @@ void BtMain::hom()
 		return;
 	}
 
-	/*   QFontInfo(Home->font());
-
-	     qDebug( "FONT FAMILY=%s",(Home->font()).family().ascii());
-	     qDebug( "FONT PIXEL SIZE=%d",(Home->font()).pixelSize());
-	     qDebug( "FONT POINT SIZE=%d",(Home->font()).pointSize());
-	     qDebug( "FONT ITALIC=%d",(Home->font()).italic());
-	     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
-	     qDebug( "FONT BOLD=%d",(Home->font()).bold());
-	     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
-
-	     QFontDatabase fdb;
-	     QStringList families = fdb.families();
-	     for ( QStringList::Iterator f = families.begin(); f != families.end(); ++f ) {
-	     QString family = *f;
-	     qDebug( family );
-	     QStringList styles = fdb.styles( family );
-	     for ( QStringList::Iterator s = styles.begin(); s != styles.end(); ++s ) {
-	     QString style = *s;
-	     QString dstyle = "\t" + style + " (";
-	     QValueList<int> smoothies = fdb.smoothSizes( family, style );
-	     for ( QValueList<int>::Iterator points = smoothies.begin();
-	     points != smoothies.end(); ++points ) {
-	     dstyle += QString::number( *points ) + " ";
-	     }
-	     dstyle = dstyle.left( dstyle.length() - 1 ) + ")";
-	     qDebug( dstyle );
-	     }
-	     }
-	     qDebug( "FINE ANALISI FONT");
-
-	//    qDebug( "FONT FIXED PITCH=%d",(Home.font()).fixedPitch());
-	//    qDebug( "FONT RAWMODE=%d",(Home.font()).rawMode());
-	//    qDebug( "FONT EXACTMATCH=%d",(Home.font()).exactMatch());
-	*/	 
 	datiGen->inizializza();
 
 
