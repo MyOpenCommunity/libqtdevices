@@ -15,18 +15,19 @@ typedef device *deviceptr;
 class device_cache : public QMap<QString, deviceptr>
 {
 private:
+	//! Connect comm signals
+	void connect_comm(device *);
+	//! Disconnect comm signals
+	void disconnect_comm(device *);
+
 	Client * client_comandi;
-	Client *  client_monitor;
+	Client * client_monitor;
 	Client * client_richieste;
 public:
 	//! Constructor
 	device_cache();
 	//! Inits all devices
 	void init_devices();
-	//! Connect comm signals
-	void connect_comm(device *);
-	//! Disconnect comm signals
-	void disconnect_comm(device *);
 	//! Returns pointer to client_comandi
 	Client *get_client_comandi();
 	//! Returns pointer to client_monitor
@@ -60,6 +61,8 @@ public:
 	//! Get 99 zones thermal regulator
 	device *get_thermr_device(QString where, device_status_thermr::type_t type,
 		bool fancoil, const char *ind_centrale, const char *indirizzo);
+	//! Get stand-alone or external temperature probe
+	device *get_temperature_probe(QString w, bool external);
 	//! Get modscen
 	device *get_modscen_device(QString where);
 	//! Destroy device given key

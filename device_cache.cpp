@@ -256,7 +256,7 @@ deviceptr device_cache::get_thermr_device(QString w, device_status_thermr::type_
 		bool fancoil, const char *ind_centrale, const char *indirizzo)
 {
 	QString k = get_device_key(QString("4"), w);
-	qDebug("device_cache::get_thermr_device(), where=%s type=%d fancoil=%s",
+	qDebug("device_cache::get_thermr_device(), key=%s type=%d fancoil=%s",
 		k.ascii(), type, fancoil ? "yes" : "no");
 	deviceptr out = (*this)[k];
 	if(!out)
@@ -268,6 +268,25 @@ deviceptr device_cache::get_thermr_device(QString w, device_status_thermr::type_
 	}
 	out->get();
 	qDebug("device_cache::get_thermr_device() returning %p", out);
+	return out;
+}
+
+// Get temperature probe device
+deviceptr device_cache::get_temperature_probe(QString w, bool external)
+{
+	QString k = get_device_key(QString("4"), w);
+	qDebug("device_cache::get_temperature_probe(), key=%s external=%s",
+		k.ascii(), external ? "true" : "false");
+	deviceptr out = (*this)[k];
+	if(!out)
+	{
+		out = new temperature_probe(w, external);
+		qDebug("device is not there, creating device %p", out);
+		(*this)[k] = out;
+		connect_comm(out);
+	}
+	out->get();
+	qDebug("device_cache::get_temperature_probe() returning %p", out);
 	return out;
 }
 

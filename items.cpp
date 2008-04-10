@@ -3065,12 +3065,10 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const
 		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
 		break;
 	case SINGLE_PROBE:
-		dev = new temperature_probe(getAddress(), false);
-		btouch_device_cache.connect_comm(dev);
+		dev = btouch_device_cache.get_temperature_probe(getAddress(), false);
 		break;
 	case EXT_SINGLE_PROBE:
-		dev = new temperature_probe(getAddress(), true);
-		btouch_device_cache.connect_comm(dev);
+		dev = btouch_device_cache.get_temperature_probe(getAddress(), true);
 		break;
 	default:
 		qDebug("termoPage::termoPage(): Unknown devtype_t!");
@@ -3109,7 +3107,7 @@ void termoPage::handleFancoilButtons(int button_number)
 		break;
 	}
 
-	QString command = QString("*#4*%1*#11*%2##").arg(ind_centrale).arg(speed);
+	QString command = QString("*#4*%1*#11*%2##").arg(indirizzo).arg(speed);
 
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen((char*)command.ascii(), command.length());
@@ -3326,11 +3324,11 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 			case device_status::FANCOIL:
 			{
 				stat_var speed_var(stat_var::FANCOIL_SPEED);
-				ds->read(device_status_fancoil::FANCOIL, speed_var);
+				ds->read(device_status_fancoil::SPEED_INDEX, speed_var);
 				qDebug("termoPage::status_changed: fancoil speed variation");
 				// Set the fancoil Button in the buttons bar
-				int button_to_set_up;
-				switch (stat_var::FANCOIL_SPEED)
+				int button_to_set_up = -1;
+				switch (speed_var.get_val())
 				{
 				case 0: // MIN SPEED
 					button_to_set_up = 1;
@@ -3344,13 +3342,15 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				case 3: // AUTO SPEED
 					button_to_set_up = 0;
 					break;
+				default:
+					qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
 				}
-				fancoil_buttons->setToggleStatus(button_to_set_up);
+				if (button_to_set_up != -1)
+					fancoil_buttons->setToggleStatus(button_to_set_up);
 				break;
 			}
 			default:
 				qDebug("device status of unknown type (%d)", ds->get_type());
-				
 				break;
 		}
 		++(*dsi);

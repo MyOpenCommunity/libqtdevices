@@ -365,6 +365,7 @@ private:
 	bool elaborato;
 	bool centrale;
 
+	device_status_thermr::type_t type;
 	QString ind_centrale;
 	QString indirizzo;
 protected:
@@ -373,6 +374,7 @@ protected:
 public:
 	//! Constructor
 	frame_interpreter_thermr_device(QString,
+		device_status_thermr::type_t type,
 		const char *ind_centrale, const char *indirizzo, bool, int);
 	//! Returns init message given device status
 	void get_init_message(device_status *, QString&);

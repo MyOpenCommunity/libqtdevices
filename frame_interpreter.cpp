@@ -1349,7 +1349,7 @@ frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString
 void frame_interpreter_temperature_probe::get_init_message(device_status *s, QString& out)
 {
 	QString head = "*#4*";
-	QString end = (external ? "*15##" : "##");
+	QString end = (external ? "00*15#" + where + "##" : "*0##");
 	out = head + where + end;
 }
 
@@ -1401,7 +1401,7 @@ void frame_interpreter_temperature_probe::handle_frame_handler(char *frame, QPtr
 		{
 			int temperature;
 			char t[20];
-			strcpy(t, msg_open.Extract_valori(external ? 2 : 0));
+			strcpy(t, msg_open.Extract_valori(external ? 1 : 0));
 			temperature = (t[0] == '1' ? -atoi(&t[1]) : atoi(t));
 			qDebug("temperature probe frame, t is %d", temperature);
 
@@ -1427,7 +1427,15 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 		return false;
 	char dove[30];
 	// FIXME: check Extract_level() too!
-	strcpy(dove, m.Extract_dove());
+	if (external && m.IsMeasureFrame() && !strcmp(m.Extract_grandezza(), "15"))
+	{
+		// Address is of type x00, with x >= 1 & x <= 9
+		strncpy(dove, m.Extract_dove(), 1);
+		dove[1] = 0;
+	}
+	else
+		strcpy(dove, m.Extract_dove());
+
 	if (dove[0]=='#')
 		strcpy(&dove[0], &dove[1]);
 #if 0
@@ -2282,8 +2290,10 @@ next:
 
 // Public methods
 frame_interpreter_thermr_device::
-frame_interpreter_thermr_device(QString w, const char *_ind_centrale, const char *_indirizzo, bool p, int g) :
+frame_interpreter_thermr_device(QString w, device_status_thermr::type_t _type,
+		const char *_ind_centrale, const char *_indirizzo, bool p, int g) :
 	frame_interpreter(QString("4"), w, p, g),
+	type(_type),
 	ind_centrale(_ind_centrale),
 	indirizzo(_indirizzo)
 {
@@ -2294,6 +2304,8 @@ bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, bool& requ
 {
 	request_status = false;
 	bool is_our = false;
+
+	// FIXME: type, need it??
 
 	if (!strcmp(m.Extract_chi(), "4"))
 	{
@@ -2309,9 +2321,9 @@ bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, bool& requ
 		if ((!strcmp(dove, "0")) && centrale)
 			is_our = true;
 		else if (strlen(m.Extract_livello()) == 0)
-			is_our = (ind_centrale == dove);
+			is_our = (indirizzo == dove);
 		else
-			is_our = (ind_centrale == dove) && (indirizzo == m.Extract_livello());
+			is_our = (indirizzo == dove) && (ind_centrale == m.Extract_livello());
 	}
 
 	qDebug("frame_interpreter_thermr_device::is_frame_ours, %s: %s",
@@ -2342,7 +2354,7 @@ get_init_message(device_status *s, QString& out)
 			qDebug("frame_interpreter_thermr_device::get_init_message -> FANCOIL");
 			head = "*#4*";
 			end  = "*11##";
-			out  = head + ind_centrale + end;
+			out  = head + where + end;
 			break;
 		default:
 			out  = "";
@@ -2374,6 +2386,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	ds->read((int)device_status_thermr::CRONO, curr_crono);
 	ds->read((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
 	ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
+	ds->read((int)device_status_fancoil::SPEED_INDEX, curr_fancoil_speed);
 	
 	
 	qDebug("curr status is %d", curr_stat.get_val());
@@ -2689,13 +2702,13 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 			elaborato = true;
 			break;
 		case 11:
-			ds->read((int)device_status_thermr::FANCOIL, curr_fancoil_speed);
+			ds->read((int)device_status_fancoil::SPEED_INDEX, curr_fancoil_speed);
 			int fancoil_speed = atoi(m.Extract_valori(0));
 			if(curr_fancoil_speed.get_val() != fancoil_speed)
 			{
-				qDebug(QString("setting new fancoil_speed to %1").arg(curr_fancoil_speed.get_val()));
+				qDebug(QString("setting new fancoil_speed to %1").arg(fancoil_speed));
 				curr_fancoil_speed.set_val(fancoil_speed);
-				ds->write_val((int)device_status_thermr::FANCOIL, curr_fancoil_speed);
+				ds->write_val((int)device_status_fancoil::SPEED_INDEX, curr_fancoil_speed);
 				evt_list.append(ds);
 			}
 			break;
@@ -2747,12 +2760,12 @@ handle_frame(openwebnet_ext m, device_status_fancoil *ds)
 
 	stat_var speed_var(stat_var::FANCOIL_SPEED);
 
-	ds->read((int)device_status_fancoil::FANCOIL, speed_var);
+	ds->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
 
 	int speed = atoi(m.Extract_grandezza());
 	speed_var.set_val(speed);
 
-	ds->write_val((int)device_status_fancoil::FANCOIL, speed_var);
+	ds->write_val((int)device_status_fancoil::SPEED_INDEX, speed_var);
 
 	evt_list.append(ds);
 }

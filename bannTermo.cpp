@@ -15,12 +15,12 @@
 #include <qpixmap.h>
 
 
-bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t _devtype )
-	: banner( parent, name )
+bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t _devtype ) :
+	banner(parent, name),
+	devtype(_devtype)
 {
 	qDebug("bannTermo::bannTermo --> DEVICE TYPE = %d", devtype);
 
-	devtype = _devtype;
 	int h = (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-BUTMENPLUS_DIM_Y-DESCR_DIM_Y-TEMPMIS_Y-OFFSET_Y)/5;
 	int set_buttons_y = h*3+DESCR_DIM_Y+TEMPMIS_Y;
 	//int set_temp_text_y;
@@ -105,7 +105,9 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		nascondi(BUT1);
 		nascondi(BUT2);
 		break;
+	// FIXME: could we simply _not_ add these buttons?
 	case SINGLE_PROBE:
+	case EXT_SINGLE_PROBE:
 		// Hide PLUS/MINUS buttons
 		nascondi(BUT1);
 		nascondi(BUT2);
