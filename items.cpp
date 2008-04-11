@@ -3112,6 +3112,8 @@ void termoPage::handleFancoilButtons(int button_number)
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen((char*)command.ascii(), command.length());
 	emit sendFrame(msg_open.frame_open);
+
+	fancoil_buttons->setToggleStatus(button_number);
 }
 
 
@@ -3324,29 +3326,31 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 			case device_status::FANCOIL:
 			{
 				stat_var speed_var(stat_var::FANCOIL_SPEED);
-				ds->read(device_status_fancoil::SPEED_INDEX, speed_var);
-				qDebug("termoPage::status_changed: fancoil speed variation");
+				ds->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
+
 				// Set the fancoil Button in the buttons bar
 				int button_to_set_up = -1;
 				switch (speed_var.get_val())
 				{
-				case 0: // MIN SPEED
-					button_to_set_up = 1;
-					break;
-				case 1: // MEDIUM_SPEED
-					button_to_set_up = 2;
-					break;
-				case 2: // MAXIMUM SPEED
+				case 0: // auto
 					button_to_set_up = 3;
 					break;
-				case 3: // AUTO SPEED
+				case 1: // min
 					button_to_set_up = 0;
+					break;
+				case 2: // medium
+					button_to_set_up = 1;
+					break;
+				case 3: // max
+					button_to_set_up = 2;
 					break;
 				default:
 					qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
 				}
 				if (button_to_set_up != -1)
 					fancoil_buttons->setToggleStatus(button_to_set_up);
+
+				qDebug("termoPage::status_changed: fancoil new speed=%d", speed_var.get_val());
 				break;
 			}
 			default:

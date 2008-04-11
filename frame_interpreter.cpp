@@ -2373,7 +2373,6 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	stat_var curr_crono(stat_var::CRONO);
 	stat_var curr_info_sonda(stat_var::INFO_SONDA);
 	stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
-	stat_var curr_fancoil_speed(stat_var::FANCOIL_SPEED);
 	int stat;
 	int cr;
 	int delta;
@@ -2386,7 +2385,6 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	ds->read((int)device_status_thermr::CRONO, curr_crono);
 	ds->read((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
 	ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
-	ds->read((int)device_status_fancoil::SPEED_INDEX, curr_fancoil_speed);
 	
 	
 	qDebug("curr status is %d", curr_stat.get_val());
@@ -2395,7 +2393,6 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 	qDebug("curr crono is %d", curr_crono.get_val());
 	qDebug("curr info_sonda is %d", curr_info_sonda.get_val());
 	qDebug("curr info_centrale is %d", curr_info_centrale.get_val());
-	qDebug("curr fancoil_speed is %d", curr_fancoil_speed.get_val());
 	if((!strcmp(m.Extract_dove(), "#0")) && centrale  && (!curr_info_centrale.get_val()))
 	{
 		/// FRAME VERSO LA CENTRALE
@@ -2701,17 +2698,6 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 			}
 			elaborato = true;
 			break;
-		case 11:
-			ds->read((int)device_status_fancoil::SPEED_INDEX, curr_fancoil_speed);
-			int fancoil_speed = atoi(m.Extract_valori(0));
-			if(curr_fancoil_speed.get_val() != fancoil_speed)
-			{
-				qDebug(QString("setting new fancoil_speed to %1").arg(fancoil_speed));
-				curr_fancoil_speed.set_val(fancoil_speed);
-				ds->write_val((int)device_status_fancoil::SPEED_INDEX, curr_fancoil_speed);
-				evt_list.append(ds);
-			}
-			break;
 		default:
 			// Do nothing
 			break;
@@ -2752,9 +2738,9 @@ handle_frame(openwebnet_ext m, device_status_fancoil *ds)
 {
 	qDebug("frame_interpreter_thermr_device::handle_frame, fancoil");
 
-	if (m.IsNormalFrame()) 
+	if (m.IsNormalFrame() || strcmp(m.Extract_grandezza(), "11")) 
 	{
-		qDebug("Normal frame, discarding");
+		qDebug("Normal frame or dimension != 11, ignoring");
 		return;
 	}
 
@@ -2762,12 +2748,17 @@ handle_frame(openwebnet_ext m, device_status_fancoil *ds)
 
 	ds->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
 
-	int speed = atoi(m.Extract_grandezza());
-	speed_var.set_val(speed);
+	int speed = atoi(m.Extract_valori(0));
 
-	ds->write_val((int)device_status_fancoil::SPEED_INDEX, speed_var);
+	if (speed != speed_var.get_val())
+	{
+		speed_var.set_val(speed);
+		qDebug("setting fancoil speed to %d", speed);
 
-	evt_list.append(ds);
+		ds->write_val((int)device_status_fancoil::SPEED_INDEX, speed_var);
+
+		evt_list.append(ds);
+	}
 }
 
 void frame_interpreter_thermr_device::
@@ -2789,10 +2780,10 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	device_status *ds;
 	evt_list.clear();
 	while( ( ds = dsi->current() ) != 0) {
-		if(request_status) {
+		if (request_status) {
 			request_init(ds);
-			goto next;
 		}
+		else
 		{
 			device_status::type type = ds->get_type();
 			switch (type) {
@@ -2810,7 +2801,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 					break;
 			}
 		}
-next:
+
 		if(elaborato)
 			break;
 		++(*dsi);

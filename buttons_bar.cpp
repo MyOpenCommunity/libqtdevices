@@ -81,6 +81,8 @@ ButtonsBar::ButtonsBar(QWidget *parent, int number_of_buttons, Orientation orien
 		main_layout->addStretch();
 	}
 
+	isToggleBar = false;
+
 	/// Connect Signal
 	connect( buttons_group, SIGNAL(clicked(int)), this, SIGNAL(clicked(int)) );
 }
@@ -107,11 +109,11 @@ void ButtonsBar::setToggleButtons(bool enable)
 
 void ButtonsBar::setToggleStatus(int button_up_index)
 {
-	if (button_up_index < buttons_list.count() || isToggleBar)
+	if (isToggleBar && button_up_index < buttons_list.count())
 	{
 		for (uint i = 0; i < buttons_list.count(); i++)
-			buttons_list.at(i)->setOn(FALSE);
-		buttons_list.at(button_up_index)->setOn(TRUE);
+			buttons_list.at(i)->setOn(false);
+		buttons_list.at(button_up_index)->setOn(true);
 	}
 }
 
