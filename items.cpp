@@ -3016,12 +3016,13 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const
 	 * 
 	 * If type is 0, the address if simple, as in 99 zones there is only
 	 * one regulator.  When type == 1, setup for 4 zones.
+	 * The address if simple even for stand alone temp probes.
 	 */
-	if (type == 0)
+	if (devtype == SINGLE_PROBE || devtype == EXT_SINGLE_PROBE || type == 0)
 		setAddress(indirizzo.ascii());
 	else
 	{
-		QString new_address = ind_centrale + "#" + indirizzo;
+		QString new_address = indirizzo + "#" + ind_centrale;
 		setAddress(const_cast<char *>(new_address.ascii()));
 	}
 

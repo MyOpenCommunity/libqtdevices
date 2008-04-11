@@ -1351,6 +1351,7 @@ void frame_interpreter_temperature_probe::get_init_message(device_status *s, QSt
 	QString head = "*#4*";
 	QString end = (external ? "00*15#" + where + "##" : "*0##");
 	out = head + where + end;
+	qDebug("temperature_probe init message: %s", out.ascii());
 }
 
 // Private methods
@@ -2306,9 +2307,11 @@ bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, bool& requ
 	bool is_our = false;
 
 	// FIXME: type, need it??
-
 	if (!strcmp(m.Extract_chi(), "4"))
 	{
+		qDebug("[INTRP TERMO] is_frame_ours: msg %s, ind %s, ind_centr %s",
+			m.frame_open, indirizzo.ascii(), ind_centrale.ascii());
+
 		char dove[30];
 		strcpy(dove, m.Extract_dove());
 
@@ -2321,13 +2324,18 @@ bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, bool& requ
 		if ((!strcmp(dove, "0")) && centrale)
 			is_our = true;
 		else if (strlen(m.Extract_livello()) == 0)
+		{
+			qDebug("[INTRP TERMO] simple where");
 			is_our = (indirizzo == dove);
+		}
 		else
+		{
+			qDebug("[INTRP TERMO] complex where");
 			is_our = (indirizzo == dove) && (ind_centrale == m.Extract_livello());
+		}
 	}
 
-	qDebug("frame_interpreter_thermr_device::is_frame_ours, %s: %s",
-		m.frame_open, is_our ? "YES" : "NO");
+	qDebug("[INTRP TERMO] is_our: %s", is_our ? "YES" : "NO");
 	return is_our;
 }
 
