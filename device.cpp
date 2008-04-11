@@ -25,7 +25,7 @@ stat_var::stat_var(stat_var::type _t)
 	t = _t;
 	val = 0;
 	min = 0;
-	max = 0xffffffff;
+	max = 0x7fffffff;
 	step = 1;
 	_initialized = false;
 }
@@ -42,8 +42,16 @@ int stat_var::get_val(void)
 
 void stat_var::set_val(int& in)
 {
-	if(in > max) in = max;
-	if(in < min) in = min;
+	if (in > max)
+	{
+		qDebug("stat_var::set_val(): clamping value to max (%d)", max);
+		in = max;
+	}
+	if (in < min)
+	{
+		qDebug("stat_var::set_val(): clamping value to min (%d)", min);
+		in = min;
+	}
 	_initialized = true ;
 	val = in;
 #if 0
@@ -140,7 +148,11 @@ bool device_status::add_var(int index, stat_var *v)
 int device_status::read(int index, stat_var& out)
 {
 	stat_var *ptr = vars.at(index);
-	if(!ptr) return -1;
+	if(!ptr)
+	{
+		qDebug("device_status::read failed!");
+		return -1;
+	}
 	out = *ptr;
 	return 0;
 }
