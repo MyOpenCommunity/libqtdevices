@@ -203,6 +203,9 @@ enum pagSecLiv{
 /*!  \def ICON_REW
   The file name for \a rewind icon*/
 #define ICON_REW			(IMG_PATH "btnbackward.png")
+/*!  \def ICON_DIFFSON
+  The file name for \a diffson icon*/
+#define ICON_DIFFSON			(IMG_PATH "audiosetting.png")
 /*!  \def ICON_OROLOGIO
   The file name for \a clock icon*/
 #define ICON_OROLOGIO		(IMG_PATH "orologio.png")

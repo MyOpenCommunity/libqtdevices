@@ -45,7 +45,6 @@
 
 ButtonsBar::ButtonsBar(QWidget *parent, int number_of_buttons, Orientation orientation) :
 	QWidget(parent, 0, WStyle_NoBorder | WStyle_Customize)
-//,  WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
 {
 	/// Create ButtonGroup, this can handle QButton objects
 	buttons_group = new QButtonGroup(number_of_buttons, orientation, this);

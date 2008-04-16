@@ -116,10 +116,7 @@ public slots:
 	 * \brief Shows the aux details page
 	 */
 	void showAux();
-	/*!
-	 * \brief Handle long pression of back key.
-	 */
-	void handleLongBackPress();
+
 	/// handles to receive play and stop notifications
 	void handleStartPlay();
 	void handleStopPlay();

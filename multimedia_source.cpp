@@ -59,19 +59,19 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	}
 
 	/// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro )
-	bannNavigazione = new bannFrecce(this,"bannerfrecce",4);
-	bannNavigazione->setGeometry(0, MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
+	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
 	/// Pulsanti up, down e back
-	connect( bannNavigazione, SIGNAL(downClick()), filesWindow, SLOT(prevItem()) );
-	connect( bannNavigazione, SIGNAL(upClick()), filesWindow, SLOT(nextItem()) );
-	connect( bannNavigazione, SIGNAL(longBackPress()), SLOT(handleLongBackPress()) );
-	connect( bannNavigazione, SIGNAL(forwardClick()),  filesWindow, SLOT(showPlayingWindow()) );
+	connect(bannNavigazione, SIGNAL(downClick()), filesWindow, SLOT(prevItem()));
+	connect(bannNavigazione, SIGNAL(upClick()), filesWindow, SLOT(nextItem()));
+	connect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
+	connect(bannNavigazione, SIGNAL(forwardClick()), filesWindow, SIGNAL(notifyExit()));
 
 	/// Connection to be notified about Start and Stop Play
-	connect( filesWindow, SIGNAL(notifyStartPlay()), this, SLOT(handleStartPlay()) );
-	connect( filesWindow, SIGNAL(notifyStopPlay()), this, SLOT(handleStopPlay()) );
-	connect( filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()) );
+	connect(filesWindow, SIGNAL(notifyStartPlay()), this, SLOT(handleStartPlay()));
+	connect(filesWindow, SIGNAL(notifyStopPlay()), this, SLOT(handleStopPlay()));
+	connect(filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()));
 }
 
 
@@ -90,13 +90,6 @@ void MultimediaSource::initAudio()
 
 void MultimediaSource::showAux()
 {
-	/*
-	 * Disconnect first because showAux is called serveral times in the object lifetime
-	 * and we do not want duplicate connections.
-	 */
-	disconnect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
-	connect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
-
 	// draw and show itself
 	draw();
 	showFullScreen();
@@ -110,12 +103,6 @@ void MultimediaSource::handleStartPlay()
 void MultimediaSource::handleStopPlay()
 {
 	emit sendFrame((char *)(QString("*22*0#4#1*2#%1##").arg(where_address).ascii()));
-}
-
-void MultimediaSource::handleLongBackPress()
-{
-	disconnect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
-	emit(Closed());
 }
 
 void MultimediaSource::setBGColor(int r, int g, int b)
