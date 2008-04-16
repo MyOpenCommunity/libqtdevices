@@ -202,6 +202,8 @@ public:
 	/// before to show itself some init is done.
 	void showEvent(QShowEvent *event);
 
+	void FileBrowser::showPlayingStatusIfPlaying();
+
 public slots:
 	void nextItem();
 	void prevItem();
@@ -254,11 +256,11 @@ public:
 	AudioPlayingWindow(QWidget *parent = 0, const char * name = 0);
 	~AudioPlayingWindow() {};
 
-	/// Apply Style
+	// Apply Style
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
-	/// Change Track
+	// Change Track
 	void nextTrack();
 	void prevTrack();
 
@@ -268,12 +270,16 @@ public:
 	/// Start PLAY, begins to play a given track and sets the play_list
 	void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 
-	/// Run script and send frame to turn on and off Audio System
+	// Run script and send frame to turn on and off Audio System
 	void turnOnAudioSystem();
 	void turnOffAudioSystem();
 
+	bool isPlaying();
+
 public slots:
 	void handle_buttons(int);
+	void handleBackBtn();
+	void handleSettingsBtn();
 	void handle_data_refresh_timer();
 	void handlePlayingDone();
 	void handlePlayingAborted();
@@ -286,20 +292,22 @@ private:
 	 *     - play_list contains QString with the full path
 	 *     - play_list does not contain dirs
 	 */
-	QValueVector<QString>    play_list;
-	int                      current_track;
+	QValueVector<QString> play_list;
+	int                   current_track;
 
 	/// Widgets
-	QSlider                  *time_slider;
-	ButtonsBar               *buttons_bar;
-	MediaPlayer              *media_player;
+	ButtonsBar  *play_controls;
+	MediaPlayer *media_player;
+	BtButton    *back_btn, *settings_btn;
 
 	/// Labels
-	TitleLabel               *file_name_label,   *percent_pos_label, *time_length_label, *time_pos_label;
-	TitleLabel               *meta_title_label,  *meta_artist_label, *meta_album_label,  *meta_track_label;
+	TitleLabel *file_name_label,   *percent_pos_label,
+	           *time_length_label, *time_pos_label,
+	           *meta_title_label,  *meta_artist_label,
+	           *meta_album_label,  *meta_track_label;
 
 	/// Timer to refresh data from MediaPlayer
-	QTimer                   *data_refresh_timer;
+	QTimer *data_refresh_timer;
 
 	/// Method to Get and Visualize playing INFO from MPlayer
 	void refreshPlayingInfo();
@@ -310,6 +318,9 @@ private:
 signals:
 	void notifyStartPlay();
 	void notifyStopPlay();
+
+	// User released settings button
+	void settingsBtn();
 };
 
 #endif // MULTIMEDIA_SOURCE_H

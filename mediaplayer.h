@@ -33,7 +33,7 @@ public:
 	/// Wheather the player is on pause
 	bool isPaused()  { return paused; }
 
-	/// Checks if MPlayer is playing checking mplayer_pid
+	/// Retrun true if music is playing
 	bool isPlaying();
 
 	/// Read ASYNCHRONOUSLY the output from the PIPE and parse it to get INFO

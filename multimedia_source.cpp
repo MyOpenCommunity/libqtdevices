@@ -93,6 +93,8 @@ void MultimediaSource::showAux()
 	// draw and show itself
 	draw();
 	showFullScreen();
+
+	filesWindow->showPlayingStatusIfPlaying();
 }
 
 void MultimediaSource::handleStartPlay()
@@ -235,7 +237,7 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	QWidget(parent, name, f),
 	level(0)
 {
-	/// Set Style
+	// Set Style
 	// Look QColorGroup Class Reference
 	QPalette current_color_palette = palette();
 	current_color_palette.setColor( QColorGroup::Text, Qt::white );
@@ -248,25 +250,25 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	current_color_palette.setColor( QColorGroup::Dark, Qt::black );
 	setPalette(current_color_palette);
 
-	/// label that is shown when no file is present
+	// label that is shown when no file is present
 	//no_files_label = new TitleLabel(this, MAX_WIDTH, 200, 0, 0, FALSE, Qt::WStyle_StaysOnTop);
 	//no_files_label->setPalette(current_color_palette);
 	//no_files_label->hide();
 
-	/// Create main Layout
+	// Create main Layout
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setMargin(0);
 	main_layout->setSpacing(0);
 
-	/// Set the number of elements shown
+	// Set the number of elements shown
 	this->rows_per_page = rows_per_page;
 
-	/// Create labels_layout
+	// Create labels_layout
 	QVBoxLayout *labels_layout = new QVBoxLayout( main_layout );
 	labels_layout->setMargin(0);
 	labels_layout->setSpacing(0);
 
-	/// Create labels and add them to label_layout
+	// Create labels and add them to label_layout
 	// WARNING Quick and Dirty alignment using offsets of TitleLabel
 	QValueVector<int> h_offsets;
 	h_offsets.append(-4);
@@ -281,36 +283,37 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 		labels_layout->addWidget( labels_list[i] );
 	}
 
-	/// Create buttons_bar
+	// Create buttons_bar
 	buttons_bar = new ButtonsBar(this, rows_per_page, Qt::Vertical);
 
-	/// Set Icons for buttons_bar (using icons_library cache)
+	// Set Icons for buttons_bar (using icons_library cache)
 	QPixmap *icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrrg.png") );
 	QPixmap *pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrrgp.png") );
 	for (int i = 0; i < rows_per_page; i++)
 		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
 
-	/// Add buttons_bar to main_layout
+	// Add buttons_bar to main_layout
 	main_layout->addWidget( buttons_bar );
 
-	/// Create Set File Browsing Props
+	// Create Set File Browsing Props
 	files_handler.setSorting(QDir::DirsFirst | QDir::Name);
 	files_handler.setMatchAllDirs(TRUE);
 	files_handler.setNameFilter("*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
 
-	/// Create playing_window and set style
+	// Create playing_window and set style
 	playing_window = new AudioPlayingWindow(this);
 	playing_window->setBGColor(paletteBackgroundColor());
 	playing_window->setFGColor(paletteForegroundColor());
 	playing_window->setPalette(palette());
 	playing_window->setFont(font());
 
-	/// Connette il FilesBrowser con se stesso per il CLICK
+	// Connette il FilesBrowser con se stesso per il CLICK
 	connect(buttons_bar, SIGNAL(clicked(int)), this, SLOT(itemIsClicked(int)));
 
-	/// Connect signal to notify start and stop play and to send relative frames
-	connect(playing_window, SIGNAL(notifyStartPlay()), this, SIGNAL(notifyStartPlay()));
-	connect(playing_window, SIGNAL(notifyStopPlay()), this, SIGNAL(notifyStopPlay()));
+	// Signal from playing window
+	connect(playing_window, SIGNAL(notifyStartPlay()), SIGNAL(notifyStartPlay()));
+	connect(playing_window, SIGNAL(notifyStopPlay()), SIGNAL(notifyStopPlay()));
+	connect(playing_window, SIGNAL(settingsBtn()), SIGNAL(notifyExit()));
 }
 
 void FileBrowser::showEvent( QShowEvent *event )
@@ -323,6 +326,12 @@ void FileBrowser::showEvent( QShowEvent *event )
 		// FIXME display error?
 		emit notifyExit();
 	}
+}
+
+void FileBrowser::showPlayingStatusIfPlaying()
+{
+	if (playing_window->isPlaying())
+		playing_window->show();
 }
 
 void FileBrowser::itemIsClicked(int item)
@@ -576,18 +585,12 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	// all others layout must have this as parent, this is not more needed in Qt4
 	// where we can use setMainLayout
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
-
-	QString audioplay_title = app_config.get(CFG_LABELS_MEDIAPLAYER "status", "Playing audio").c_str();
-	TitleLabel *window_title_label = new TitleLabel( this, MAX_WIDTH, 120, 9, 0, FALSE );
-	window_title_label->setText( audioplay_title );
-	window_title_label->setFont(font);
-
-	QVBoxLayout *title_layout  = new QVBoxLayout(main_layout);
-	title_layout->addWidget(window_title_label);
+	main_layout->addSpacing(20);
 
 	// layouts for both labels
 	QHBoxLayout *tags_layout = new QHBoxLayout(main_layout);
 	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
+	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
 
 	/// Create Labels (that contain tag names)
 	// Get label names from app_confif
@@ -616,66 +619,81 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	tags_name_layout->addWidget(artist_label);
 	tags_name_layout->addWidget(album_label);
 	tags_name_layout->addWidget(time_label);
-	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
 	tags_text_layout->addWidget(meta_title_label);
 	tags_text_layout->addWidget(meta_artist_label);
 	tags_text_layout->addWidget(meta_album_label);
 	tags_text_layout->addWidget(time_pos_label);
 
 
-	/// Create ButtonsBar and set its geometry
-	buttons_bar = new ButtonsBar(this, 4, Qt::Horizontal);
-	buttons_bar->setGeometry(0, MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
-
-
-	/// Set Icons for ButtonsBar (using icons_library cache)
+	/*
+	 * Create Buttons and set their geometry
+	 */
 	QPixmap *icon;
 	QPixmap *pressed_icon;
 
-	icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrlf.png") );
-	pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrlfp.png") );
-	buttons_bar->setButtonIcons(0, *icon, *pressed_icon);
+	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
+	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnbackward.png") );
-	pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnbackwardp.png") );
-	buttons_bar->setButtonIcons(1, *icon, *pressed_icon);
+	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnplay.png");
+	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnplayp.png");
+	play_controls->setButtonIcons(0, *icon, *pressed_icon);
 
-	icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnforward.png") );
-	pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnforwardp.png") );
-	buttons_bar->setButtonIcons(2, *icon, *pressed_icon);
+	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnsdstop.png");
+	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnsdstopp.png");
+	play_controls->setButtonIcons(1, *icon, *pressed_icon);
 
-	icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstop.png") );
-	pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstopp.png") );
-	buttons_bar->setButtonIcons(3, *icon, *pressed_icon);
+	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnbackward.png");
+	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnbackwardp.png");
+	play_controls->setButtonIcons(2, *icon, *pressed_icon);
 
-	/// add ButtonsBar to main_layout
-	main_layout->addWidget(buttons_bar);
+	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnforward.png");
+	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnforwardp.png");
+	play_controls->setButtonIcons(3, *icon, *pressed_icon);
 
-	/// Create Timer
+	main_layout->addWidget(play_controls);
+
+	/*
+	 * Main controls
+	 */
+	QHBoxLayout *main_controls_layout = new QHBoxLayout(main_layout);
+
+	back_btn = new BtButton(this, "back_btn");
+	settings_btn = new BtButton(this, "settings_btn");
+	main_controls_layout->addWidget(back_btn);
+	main_controls_layout->addStretch();
+	main_controls_layout->addWidget(settings_btn);
+
+	back_btn->setPixmap(*icons_library.getIcon(QString(IMG_PATH) + "arrlf.png"));
+	back_btn->setPressedPixmap(*icons_library.getIcon(QString(IMG_PATH) + "arrlfp.png"));
+
+	settings_btn->setPixmap(*icons_library.getIcon(QString(IMG_PATH) + "audiosetting.png"));
+	settings_btn->setPressedPixmap(*icons_library.getIcon(QString(IMG_PATH) + "audiosettingp.png"));
+
+
 	data_refresh_timer = new QTimer(this);
 
-	/// Create MediaPlayer Object (to Handle MPLAYER Process)
 	media_player = new MediaPlayer(this);
 
-	/// Connect buttons_bar to the handler
-	connect(buttons_bar, SIGNAL(clicked(int )), this, SLOT(handle_buttons(int )));
+	connect(play_controls, SIGNAL(clicked(int)), SLOT(handle_buttons(int)));
+	connect(back_btn, SIGNAL(released()), SLOT(handleBackBtn()));
+	connect(settings_btn, SIGNAL(released()), SLOT(handleSettingsBtn()));
 
-	/// Connect the timer to the handler, the timer get and displays data from mplayer
-	connect(data_refresh_timer, SIGNAL(timeout()), this, SLOT(handle_data_refresh_timer()));
+	// Connect the timer to the handler, the timer get and displays data from mplayer
+	connect(data_refresh_timer, SIGNAL(timeout()), SLOT(handle_data_refresh_timer()));
 
 	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
 	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
-	/// Set Timer
+	// Set Timer
 	refresh_time = 500;
 }
 
 void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
-	/// send the quit command to mediaplayer to stop and terminate it if it is already playing
+	// send the quit command to mediaplayer to stop and terminate it if it is already playing
 	media_player->quit();
 
-	/// fill play_list and set current track
+	// fill play_list and set current track
 	int     track_number = 0;
 	QString track_name;
 	play_list.clear();
@@ -692,21 +710,16 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 		track_number++;
 	}
 
-	/// Turn On Audio System
+	// Turn On Audio System
 	turnOnAudioSystem();
 
-	/// Start playing and point next Track
+	// Start playing and point next Track
 	cleanPlayingInfo();
 	media_player->play(play_list[current_track]);
 	current_track++;
 
-	/// Start Timer
+	// Start Timer
 	data_refresh_timer->start(refresh_time);
-
-	// Change Button Icon
-	QPixmap *icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstop.png") );
-	QPixmap *pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstopp.png") );
-	buttons_bar->setButtonIcons(3, *icon, *pressed_icon);
 }
 
 void AudioPlayingWindow::turnOnAudioSystem()
@@ -729,6 +742,11 @@ void AudioPlayingWindow::turnOffAudioSystem()
 		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
 
 	emit notifyStopPlay();
+}
+
+bool AudioPlayingWindow::isPlaying()
+{
+	return media_player->isPlaying();
 }
 
 void AudioPlayingWindow::refreshPlayingInfo()
@@ -812,44 +830,43 @@ void AudioPlayingWindow::handle_buttons(int button_number)
 	switch (button_number)
 	{
 	case 0:
-		// don't stop, just go back
-		hide();
-		break;
-	case 1:
-		// go to prev track
-		prevTrack();
-		break;
-	case 2:
-		// go to next track
-		nextTrack();
-		break;
-	case 3:
 		if (media_player->isPaused())
 		{
 			qDebug("[AUDIO] media_player: resume play");
 			turnOnAudioSystem();
 			media_player->resume();
-
-			// Change Button Icon
-			QPixmap *icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstop.png") );
-			QPixmap *pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstopp.png") );
-			buttons_bar->setButtonIcons(3, *icon, *pressed_icon);
 		}
-		else
+		break;
+	case 1:
+		if (!media_player->isPaused())
 		{
 			qDebug("[AUDIO] media_player: pause play");
 			turnOffAudioSystem();
 			media_player->pause();
-
-			// Change Button Icon
-			QPixmap *icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstart.png") );
-			QPixmap *pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("btnstartp.png") );
-			buttons_bar->setButtonIcons(3, *icon, *pressed_icon);
 		}
+		break;
+	case 2:
+		// go to prev track
+		prevTrack();
+		break;
+	case 3:
+		// go to next track
+		nextTrack();
 		break;
 	}
 
 	data_refresh_timer->start(refresh_time);
+}
+
+void AudioPlayingWindow::handleBackBtn()
+{
+	hide();
+}
+
+void AudioPlayingWindow::handleSettingsBtn()
+{
+	hide();
+	emit settingsBtn();
 }
 
 void AudioPlayingWindow::handle_data_refresh_timer()
@@ -896,13 +913,17 @@ void AudioPlayingWindow::handlePlayingAborted()
 void AudioPlayingWindow::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	buttons_bar->setBGColor(c);
+	play_controls->setBGColor(c);
+	back_btn->setPaletteBackgroundColor(c);
+	settings_btn->setPaletteBackgroundColor(c);
 }
 
 void AudioPlayingWindow::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
-	buttons_bar->setFGColor(c);
+	play_controls->setFGColor(c);
+	back_btn->setPaletteForegroundColor(c);
+	settings_btn->setPaletteForegroundColor(c);
 }
 
 

@@ -70,12 +70,12 @@ ButtonsBar::ButtonsBar(QWidget *parent, int number_of_buttons, Orientation orien
 	// Senza il seguente Layout la barra non viene visualizzata in modo corretto
 	if (orientation == Horizontal)
 	{
-		QHBoxLayout *main_layout = new QHBoxLayout(this);//, 0, 0);
+		QHBoxLayout *main_layout = new QHBoxLayout(this);
 		main_layout->addWidget(buttons_group);
 	}
-	if (orientation == Vertical)
+	else if (orientation == Vertical)
 	{
-		QVBoxLayout *main_layout = new QVBoxLayout(this);//, 0, 0);
+		QVBoxLayout *main_layout = new QVBoxLayout(this);
 		main_layout->addWidget(buttons_group);
 		main_layout->addStretch();
 	}
