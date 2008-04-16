@@ -45,6 +45,7 @@ public:
 	 * to manually remove the image from cache.
 	 */
 	QPixmap* getIcon(const char *name, const char * format = 0, QPixmap::ColorMode mode = QPixmap::Auto);
+	QPixmap* getIcon(QString name) { return getIcon(name.ascii()); };
 	QPixmap* getIcon(const char *name, const char * format, int conversion_flags);
 };
 

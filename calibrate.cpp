@@ -11,6 +11,7 @@
 #include <qfile.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include "main.h"
 
 Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned char m) :
     QWidget( parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose )
@@ -18,8 +19,8 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
     const int offset = 30;
     QRect desk = qApp->desktop()->geometry();
     setGeometry( 0, 0, desk.width(), desk.height() );
-    logo.load("cfg/skin/my_home.png");
-//    bersaglio.load("cfg/skin/bersaglio.png");
+    logo.load(IMG_PATH "my_home.png");
+//    bersaglio.load(IMG_PATH "bersaglio.png");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
   if(!strcmp(getenv("QWS_DISPLAY"), "Transformed:Rot180"))
   {

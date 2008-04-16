@@ -22,6 +22,7 @@
   \date lug 2005
 */  
 
+
 class Calibrate : public QWidget
 {
     Q_OBJECT

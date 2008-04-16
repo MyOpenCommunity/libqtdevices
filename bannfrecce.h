@@ -48,13 +48,29 @@ public:
      bannFrecce( QWidget * parent=NULL, const char *name=NULL ,uchar num=3,char* IconBut4=ICON_FRECCIA_DX);
      
 signals:
-  void  backClick(); 
-  void  upClick(); 
-  void  downClick(); 
-  void  forwardClick(); 
+	void backClick();
+	void upClick();
+	void downClick();
+	void forwardClick();
+
+	void backPress();
+	void upPress();
+	void downPress();
+	void forwardPress();
+
+	void backRelease();
+	void upRelease();
+	void downRelease();
+	void forwardRelease();
+
+	void longBackPress();
+
+private slots:
+	void handleBackPress();
+	void handleBackRelease();
 
 private:
-
+	QTimer press_timer;
 };
 
 

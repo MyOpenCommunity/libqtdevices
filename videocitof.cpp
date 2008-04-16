@@ -201,9 +201,9 @@ void call_notifier::SetButtonsIcons()
     QString a2_icon, a4_icon, a6_icon;
     if(!my_station) {
 	// FIXME !!, BAH
-	a2_icon = "cfg/skin/btnlucescale.png"; 
-	a4_icon = "cfg/skin/btnserratura.png";
-	a6_icon = "cfg/skin/arrlf.png";
+	a2_icon = IMG_PATH "btnlucescale.png"; 
+	a4_icon = IMG_PATH "btnserratura.png";
+	a6_icon = IMG_PATH "arrlf.png";
     } else {
 	my_station->get_light_icon(a2_icon);
 	my_station->get_key_icon(a4_icon);

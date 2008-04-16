@@ -48,12 +48,12 @@ contrPage::contrPage( QWidget *parent, const char *name )
     paintLabel->setGeometry((MAX_WIDTH-IMG_X)/2, (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-2*IMG_Y)/2, IMG_X, IMG_Y);    
     paintLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
     paintLabel->setAutoResize(TRUE);
-    paintLabel->setPixmap(QPixmap("cfg/skin/my_home.png"));
+    paintLabel->setPixmap(QPixmap(IMG_PATH "my_home.png"));
     
     colorBar ->setGeometry((MAX_WIDTH-IMG_X)/2, (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-2*IMG_Y)/2+IMG_Y, IMG_X, IMG_Y);    
     colorBar ->setFrameStyle(QFrame::Panel | QFrame::Raised);
     colorBar ->setAutoResize(TRUE);
-    colorBar ->setPixmap(QPixmap("cfg/skin/colorbar.png"));
+    colorBar ->setPixmap(QPixmap(IMG_PATH "colorbar.png"));
     
     
     QPixmap *Icon, *pressIcon;

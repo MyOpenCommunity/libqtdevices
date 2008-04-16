@@ -22,6 +22,9 @@
 #include "btmain.h"
 #include <qiodevice.h>
 #include <qdir.h>
+#include <qwidget.h>
+#include <qpixmap.h>
+#include <qstring.h>
 
 #define CONFILENAME	"cfg/conf.xml"
 
@@ -512,3 +515,21 @@ bool isForMe(openwebnet& m, char *chi = "1")
 			   *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
 }
 #endif
+
+void grabScreen(void* pWidget, char* filename)
+{
+  qDebug("=============== I'm going to grab the screen ===============");
+  
+  if (!QDir::current().exists(QString("grabs")))
+  {
+    qDebug("=============== Create the grabs directory ===============");
+    QDir::current().mkdir(QString("grabs"));
+  }
+  
+  QPixmap grabbedScreen = QPixmap::grabWidget((QWidget*)pWidget, 0, 0, -1, -1);
+  QString fn(filename);
+  if (grabbedScreen.save(fn.prepend("grabs/").ascii(), "PNG"))
+    qDebug("=============== Screen grabbed ===============");
+  else
+    qDebug("=============== Screen grab error ===============");
+}

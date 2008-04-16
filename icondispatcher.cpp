@@ -15,6 +15,9 @@
 
 #include "icondispatcher.h"
 
+#include "qfile.h"
+#include "main.h"
+
 IconDispatcher::IconDispatcher(QObject *parent, const char *name)
  : QObject(parent, name)
 {
@@ -57,20 +60,22 @@ IconDispatcher::~IconDispatcher()
 
 QPixmap* IconDispatcher::getIconPointer(const char *name)
 {
-	if (cache->find(name, FALSE))
+	QPixmap *icon = cache->find(name, FALSE);
+
+	if (icon)
 	{
 		/*
 		 * If already exist in cache a pointer to QPixmap with hash=name
 		 * a pointer to this image is returned
 		 */
-		return cache->find(name, FALSE);
+		return icon;
 	}
 	else
 	{
 		// QPixmap object is created, (name, pointer) is stored in cache
 		QPixmap* image_pointer;
 		image_pointer = new QPixmap();
-		
+
 		cache->insert(name, image_pointer, 0, 0);
 		return image_pointer;
 	}
@@ -79,16 +84,30 @@ QPixmap* IconDispatcher::getIconPointer(const char *name)
 
 QPixmap* IconDispatcher::getIcon(const char *name, const char * format, QPixmap::ColorMode mode)
 {
+	/// return NULL if file does not exist or if name == NULL
+	if (name == NULL)
+		return NULL;
+
 	QPixmap* image_pointer = getIconPointer(name);
 	// a QPixmap is null when has zero width, zero height and no contents.
 	if (image_pointer->isNull())
-		image_pointer->load(name, format, mode);
+	{
+		if (!image_pointer->load(name, format, mode))
+		{
+			qDebug("Error loading icon '%s', using empty icon", name);
+			if (!image_pointer->load(ICON_VUOTO, format, mode))
+				qDebug("*** FATAL ***: empty icon not found!");
+		}
+	}
 	return image_pointer;
 }
 
 
 QPixmap* IconDispatcher::getIcon(const char *name, const char * format, int conversion_flags)
 {
+	/// return NULL if file does not exist or if name == NULL
+	if (  name == NULL || !QFile::exists(name) ) return NULL;
+
 	QPixmap* image_pointer = getIconPointer(name);
 	// a QPixmap is null when has zero width, zero height and no contents.
 	if (image_pointer->isNull())

@@ -18,39 +18,28 @@
 
 Client::Client( const QString &host, Q_UINT16 port, int ismon, bool isri)
 {
-   qDebug("Client::Client()");
-//   qDebug( "Creating Client");      
-   
+  qDebug("Client::Client()");
+
   ismonitor=ismon;
-	isrichiesta=isri;
-  
- //   memset(&fr[0],'\000',sizeof(fr));
- 
+    isrichiesta=isri;
+
   socket = new QSocket( this );
- 
+
   connect( socket, SIGNAL(connected()),this, SLOT(socketConnected()) );
   connect( socket, SIGNAL(connectionClosed()),this, SLOT(socketConnectionClosed()) );
   connect( socket, SIGNAL(readyRead()),this, SLOT(socketFrameRead()) );
   connect( socket, SIGNAL(error(int)),this, SLOT(socketError(int)) );
 
   tick = NULL;
-  
+
   // connect to the server
   connetti();
 
   // azzero la variabile last_msg_open_read e last_msg_open_write
   last_msg_open_read.CreateNullMsgOpen();
   last_msg_open_write.CreateNullMsgOpen();
-  
-/*  if (ismonitor) 
-      qDebug( "Monitor");      
-  else 
-     qDebug( "Command");      
-*/      
-  /* if (ismonitor) 
-   {
-       connetti();
-   }*/  
+
+  connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
 /****************************************************************************
@@ -251,12 +240,9 @@ int Client::socketFrameRead()
 	  qDebug("letto: %s", buf);
           if(strcmp(buf, last_msg_open_read.frame_open) !=0 )
           {
+            Open_read.stop();
             last_msg_open_read.CreateMsgOpen(buf,strlen(buf));
-            if(Open_read)
-              delete Open_read;
-            Open_read = new QTimer(this,"tick");
-            Open_read->start(1000,TRUE);
-            connect(Open_read,SIGNAL(timeout()), this,SLOT(clear_last_msg_open_read()));
+            Open_read.start(1000, TRUE);
             emit frameIn(buf);
           }
           else

@@ -30,13 +30,13 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
      myHome->setGeometry(30, 12, 181, 128);     
      myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
      myHome->setAutoResize(TRUE);
-     myHome->setPixmap(QPixmap("cfg/skin/my_home.png"));
+     myHome->setPixmap(QPixmap(IMG_PATH "my_home.png"));
      
      bticino = new BtLabel(this, "BT");
      bticino->setGeometry(129, 258, 92, 42);
      bticino->setFrameStyle( QFrame::Plain);
      bticino->setAutoResize(TRUE);
-     bticino->setPixmap(QPixmap("cfg/skin/bticino.png"));
+     bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
 
     
     

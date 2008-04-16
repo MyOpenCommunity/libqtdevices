@@ -1,12 +1,12 @@
 /****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**xmlconfhandler.h
-**
-**definizioni per classe per il parsing SAX di conf.xml
-**
-****************************************************************/
+ **
+ ** BTicino Touch scren Colori art. H4686
+ **
+ **xmlconfhandler.h
+ **
+ **definizioni per classe per il parsing SAX di conf.xml
+ **
+ ****************************************************************/
 
 #ifndef XMLCONFHANDLER_H
 #define XMLCONFHANDLER_H   
@@ -25,6 +25,21 @@
 
 #include <qstring.h>
 //class QString;
+
+// Obscene hack, see function below...
+static QString empty_string("");
+
+/**
+ * Utility function to access a list of string: if no element is present
+ * at position \a idx, return empty string.
+ */
+extern inline QString *safeAt(QPtrList<QString> &list, int idx)
+{
+	if (idx < list.count())
+		return list.at(idx);
+	else
+		return &empty_string;
+}
 
 /*!
   \class xmlconfhandler
@@ -54,107 +69,105 @@
   20. pointer to \a foreground color;    
   21. pointer to \a second \a foreground color;    
   22. pointer to a multichannel sound \a diffusion subtree (sottoMenu) pointer;
-  
+
   \author Davide
   \date lug 2005
-*/  
+  */  
 class xmlconfhandler : public QXmlDefaultHandler
 {
-public:
-    xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
-    
-    ~xmlconfhandler();
-/*!
-  \brief Reset and initialize values
-*/  
-    bool startDocument();
-/*!
-  \brief take memory of the name of the tag which is actually parsed. It is also possible understand which is the level actually parsed (seek the firs empty tag!)
-*/    
-    bool startElement( const QString&, const QString&, const QString& , 
-                       const QXmlAttributes& );
-/*!
-  \brief Saves the values read during the parsing in variables
-*/      
-    bool characters( const QString & ch );
- /*!
-  \brief Makes the "sottoMenu", populate them and make connections and makes a certain number of initalization
-*/      
-    bool endElement( const QString&, const QString&, const QString& );
+	public:
+		xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
 
-private:
-    QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6,CurTagL7;
-    bool ok;
+		~xmlconfhandler();
+		/*!
+		  \brief Reset and initialize values
+		  */  
+		bool startDocument();
+		/*!
+		  \brief take memory of the name of the tag which is actually parsed. It is also possible understand which is the level actually parsed (seek the firs empty tag!)
+		  */    
+		bool startElement( const QString&, const QString&, const QString& , 
+				const QXmlAttributes& );
+		/*!
+		  \brief Saves the values read during the parsing in variables
+		  */      
+		bool characters( const QString & ch );
+		/*!
+		  \brief Makes the "sottoMenu", populate them and make connections and makes a certain number of initalization
+		  */      
+		bool endElement( const QString&, const QString&, const QString& );
 
-    int hompage_isdefined;
-    int hompage_type;
-    int hompage_id;
+	private:
+		QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6,CurTagL7;
+		bool ok;
 
-    int sottomenu_id;
-    QString sottomenu_descr;
-    int sottomenu_left;
-    int sottomenu_top;
-    QString sottomenu_icon_name;
-    QString sottomenu_where;
+		int hompage_isdefined;
+		int hompage_type;
+		int hompage_id;
 
-    int page_id;
-    QString page_descr;
+		int sottomenu_id;
+		QString sottomenu_descr;
+		int sottomenu_left;
+		int sottomenu_top;
+		QString sottomenu_icon_name;
+		QString sottomenu_where;
 
-    int page_item_id, page_item_id_m;
-    QString page_item_descr;
-    QPtrList<QString> *page_item_descr_m;
-    QString page_item_what;
-    QString page_item_where, page_item_where_m;
-    QString page_item_mode;
-    QString page_item_key;
-    QString page_item_light;
-    QString page_item_unknown;
-    QString page_item_txt1;
-    QString page_item_txt2;
-    QString page_item_txt3;
-    QString page_icon, page_item_who, page_item_type, page_item_action;
-    int page_item_softstart, page_item_softstop;
+		int page_id;
+		QString page_descr;
 
-    void * page_item_indirizzo;
-    
-    QPtrList<QString> * page_item_list_img, *page_item_list_img_m;
-    QPtrList<QString> * page_item_list_group, *page_item_list_group_m;
-    QPtrList<QString> * page_item_list_txt;
-    QPtrList<QString> * page_item_list_txt_times;
-    QValueList<int>sstart;
-    QValueList<int>sstop;
-    ambDiffSon *curr_amb;
-    
-    scenEvo_cond *page_item_cond;
-    QPtrList<scenEvo_cond> *page_item_cond_list;
-      int	par1, par2,par3, par4;
-      unsigned int itemNum;
-      QString CurTagL4_copy, CurTagL5_copy;
-    QColor Background, Foreground,SecondForeground;    
-    unsigned char idPageDefault,car;
+		int page_item_id, page_item_id_m;
+		QString page_item_descr;
+		QPtrList<QString> *page_item_descr_m;
+		QString page_item_what;
+		QString page_item_where, page_item_where_m;
+		QString page_item_mode;
+		QString page_item_key;
+		QString page_item_light;
+		QString page_item_unknown;
+		QString page_item_txt1;
+		QString page_item_txt2;
+		QString page_item_txt3;
+		QString page_icon, page_item_who, page_item_type, page_item_action;
+		int page_item_softstart, page_item_softstop;
 
-    void set_page_item_defaults();
-    
-    homePage **home;
-    homePage **specPage;
-    sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,
-	**scenari_evoluti, **videocitofonia;
-    diffmulti **dm;
-    termoregolaz **termo;
-    diffSonora **difSon;
-    antintrusione** antintr;
-    QWidget ** pagDefault;
-    versio *datiGen ;
+		void * page_item_indirizzo;
 
-    BtMain * BtM;
-    Client * client_comandi;
-    Client *  client_monitor;
-    Client * client_richieste;
-  // For watchdog refresh
-  QTime wdtime;
+		QPtrList<QString> * page_item_list_img, *page_item_list_img_m;
+		QPtrList<QString> * page_item_list_group, *page_item_list_group_m;
+		QPtrList<QString> * page_item_list_txt;
+		QPtrList<QString> * page_item_list_txt_times;
+		QValueList<int>sstart;
+		QValueList<int>sstop;
+		ambDiffSon *curr_amb;
+
+		scenEvo_cond *page_item_cond;
+		QPtrList<scenEvo_cond> *page_item_cond_list;
+		int	par1, par2,par3, par4;
+		unsigned int itemNum;
+		QString CurTagL4_copy, CurTagL5_copy;
+		QColor Background, Foreground,SecondForeground;    
+		unsigned char idPageDefault,car;
+
+		void set_page_item_defaults();
+
+		homePage **home;
+		homePage **specPage;
+		sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,
+			  **scenari_evoluti, **videocitofonia;
+		diffmulti **dm;
+		termoregolaz **termo;
+		diffSonora **difSon;
+		antintrusione** antintr;
+		QWidget ** pagDefault;
+		versio *datiGen ;
+
+		BtMain * BtM;
+		Client * client_comandi;
+		Client *  client_monitor;
+		Client * client_richieste;
+		// For watchdog refresh
+		QTime wdtime;
 };                   
 
 
-
-#define IMG_PATH "cfg/skin/"
 #endif

@@ -96,3 +96,5 @@ void  comChConf();
 void  getName(char *name);
 
 void ResetTimer(int signo);
+
+void grabScreen(void* pWidget, char* filename);

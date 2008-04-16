@@ -75,7 +75,7 @@ class Client  : public QSocket
     int ismonitor;
 	 bool isrichiesta;
     QTimer* tick;  
-    QTimer* Open_read;  
+    QTimer Open_read;
     void socketStateRead(char*);
     bool ackRx;
     openwebnet last_msg_open_read;

@@ -206,7 +206,7 @@ void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QCo
 	 descrTemp[tempCont] ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
 	 descrTemp[tempCont] ->setPaletteForegroundColor(fg);
 	 descrTemp[tempCont] ->setPaletteBackgroundColor(bg);
-     }     
+     }    
      tempCont++;
  }    
 
