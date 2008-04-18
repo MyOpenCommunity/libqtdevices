@@ -144,7 +144,7 @@ public:
 	//! Return delay for init request deferral (msecs)
 	virtual int init_request_delay() { return 0; }
 	//! Destructor
-	~device_status();
+	virtual ~device_status();
 };
 
 #ifndef LIGHT_REQ_DELAY

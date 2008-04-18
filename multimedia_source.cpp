@@ -145,7 +145,7 @@ int MultimediaSource::setBGPixmap(char* backImage)
 /// ***********************************************************************************************************************
 /// Methods for TitleLabel
 /// ***********************************************************************************************************************
-TitleLabel::TitleLabel(QWidget *parent, int w, int h, int w_offset, int h_offset, bool scrolling, WFlags f) :
+TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, WFlags f) :
 	QLabel("", parent, 0, f)
 {
 	// Style
@@ -155,19 +155,18 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int w_offset, int h_offset
 	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 	// init
-	time_per_step    = 333;
-	visible_chars    = 18;  // how many chars can be shown at the same time
-	_text_length     = 0;   // total chars
-	current_shift    = 0;   // current chars shifted
-	step_shift       = 1;   // char per step
-	_w_offset        = w_offset;
-	_h_offset        = h_offset;
+	time_per_step   = 333;
+	visible_chars   = 18;
+	text_length     = 0;
+	current_shift   = 0;
+	w_offset        = _w_offset;
+	h_offset        = _h_offset;
 
 	// separator for ciclic text scrolling
 	separator        = "   --   ";
 
 	// define if it is scrolling label or not
-	_scrolling = scrolling;
+	scrolling = _scrolling;
 
 	// connect timer to scroll text
 	connect( &scrolling_timer, SIGNAL( timeout() ), this, SLOT( handleScrollingTimer() ) );
@@ -175,7 +174,7 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int w_offset, int h_offset
 
 void TitleLabel::drawContents( QPainter *p )
 {
-	p->translate(_w_offset, _h_offset);
+	p->translate(w_offset, h_offset);
 	QLabel::drawContents( p );
 }
 
@@ -184,26 +183,26 @@ void TitleLabel::resetTextPosition()
 	current_shift = 0;
 }
 
-void TitleLabel::setText( const QString & text_to_set )
+void TitleLabel::setText(const QString & text_to_set)
 {
 	// store full string and full lenght
-	_text         = text_to_set;
-	_text_length  = text_to_set.length();
+	text         = text_to_set;
+	text_length  = text_to_set.length();
 	current_shift = 0;
 
 	// call method of ancestor
 	QLabel::setText( text_to_set );
 
 	// start the timer if scroll is needed
-	if ( _scrolling == TRUE && _text_length>visible_chars )
-		scrolling_timer.start( time_per_step );
+	if (scrolling == TRUE && text_length > visible_chars)
+		scrolling_timer.start(time_per_step);
 	else
 		scrolling_timer.stop();
 }
 
 void TitleLabel::refreshText()
 {
-	QString banner_string = QString("%1%2").arg(_text).arg(separator);
+	QString banner_string = QString("%1%2").arg(text).arg(separator);
 
 	QString head = banner_string.mid(current_shift, banner_string.length() - current_shift);
 	QString tail = banner_string.mid(0, current_shift);
@@ -220,7 +219,7 @@ void TitleLabel::setMaxVisibleChars(int n)
 
 void TitleLabel::handleScrollingTimer()
 {
-	if (current_shift <_text_length + separator.length())
+	if (current_shift < text_length + separator.length())
 		++current_shift;
 	else
 		current_shift = 0;
@@ -276,7 +275,7 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	h_offsets.append(-1);
 	h_offsets.append(0);
 	labels_list.resize(rows_per_page);
-	for (int i = 0; i < rows_per_page; i++)
+	for (unsigned i = 0; i < rows_per_page; i++)
 	{
 		// Create label and add it to labels_layout
 		labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
@@ -289,7 +288,7 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	// Set Icons for buttons_bar (using icons_library cache)
 	QPixmap *icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrrg.png") );
 	QPixmap *pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrrgp.png") );
-	for (int i = 0; i < rows_per_page; i++)
+	for (unsigned i = 0; i < rows_per_page; i++)
 		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
 
 	// Add buttons_bar to main_layout
@@ -318,7 +317,7 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 
 void FileBrowser::showEvent( QShowEvent *event )
 {
-	for (int i = 0; i < rows_per_page; i++)
+	for (unsigned i = 0; i < rows_per_page; i++)
 		labels_list[i]->resetTextPosition();
 
 	if (!browseFiles())
@@ -336,9 +335,10 @@ void FileBrowser::showPlayingStatusIfPlaying()
 
 void FileBrowser::itemIsClicked(int item)
 {
-	qDebug(QString("[AUDIO] FileBrowser::itemIsClicked -> %1 is clicked and index is %2").arg(item).arg(pages_indexes[current_path]));
+	qDebug("[AUDIO] FileBrowser::itemIsClicked -> %d is clicked and index is %d",
+		item, pages_indexes[current_path]);
 	QFileInfo *clicked_element;
-	int absolute_position_item;
+	unsigned absolute_position_item;
 
 	/// REVERSE SEARCH
 	// we have the number of the pressed button we want the file
@@ -466,7 +466,7 @@ void FileBrowser::showFiles()
 	unsigned start = pages_indexes[current_path];
 	unsigned end   = std::min(start+rows_per_page, files_list.count());
 
-	for (int i = 0; i < labels_list.size(); ++i)
+	for (unsigned i = 0; i < labels_list.size(); ++i)
 	{
 		if (i < end-start)
 		{
@@ -698,14 +698,14 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 	QString track_name;
 	play_list.clear();
 
-	for (int i = 0; i < files_list.count(); i++)
+	for (unsigned i = 0; i < files_list.count(); i++)
 	{
 		if (files_list[i]->isDir())
 			continue;
 
 		track_name = files_list[i]->absFilePath().latin1();
 		play_list.append(track_name);
-		if (clicked_element->absFilePath().latin1()==track_name)
+		if (clicked_element->absFilePath().latin1() == track_name)
 			current_track = track_number;
 		track_number++;
 	}
@@ -786,40 +786,41 @@ void AudioPlayingWindow::cleanPlayingInfo()
 
 void AudioPlayingWindow::prevTrack()
 {
-	/// go to prev track
-	/// We set new current track and we just kill the process
-	// ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
-	// necessario tornare indietro di due tracce se possibile
-	if (current_track>1)
+	/*
+	 * We set new current track and we just kill the process.
+	 * ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
+	 * necessario tornare indietro di due tracce se possibile.
+	 */
+	if (current_track >= 2)
 	{
-		current_track--;
-		current_track--;
+		current_track -= 2;
 		media_player->quitMPlayer();
 	}
-
-	// Se la current_track è uguale a 1 vuol dire che stiamo suonando la traccia zero
-	// il questo caso la riportiamo all'inizio
-	else if ( current_track==1 )
+	else if (current_track == 1)
 	{
+		/*
+		 * Se la current_track è uguale a 1 vuol dire che stiamo suonando la traccia zero
+		 * il questo caso la riportiamo all'inizio.
+		 */
 		current_track = 0;
 		media_player->quitMPlayer();
 	}
-	qDebug(QString("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %1/%2").arg(current_track-1).arg(play_list.count()));
+	qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %d/%d", current_track-1, play_list.count());
 }
 
 
 void AudioPlayingWindow::nextTrack()
 {
-	/// go to next track
-	/// We set new current track and we just kill the process
-	// ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
-	// necessario uccidere il processo se esiste una traccia successiva
-	if ( current_track<play_list.count() )
+	/*
+	 * We set new current track and we just kill the process.
+	 * ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
+	 * necessario uccidere il processo se esiste una traccia successiva.
+	 */
+	if (current_track < play_list.count())
 	{
-		//current_track++;
 		media_player->quitMPlayer();
 	}
-	qDebug(QString("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %1/%2").arg(current_track-1).arg(play_list.count()));
+	qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %d/%d", current_track-1, play_list.count());
 }
 
 
@@ -877,17 +878,19 @@ void AudioPlayingWindow::handle_data_refresh_timer()
 
 void AudioPlayingWindow::handlePlayingDone()
 {
-	// mplayer has terminated because the track is finished
-	// so we go to the next track if exists
-	int rc;
-
-	if ( current_track > -1 && current_track < play_list.count() )
+	/*
+	 * mplayer has terminated because the track is finished
+	 * so we go to the next track if exists.
+	 */
+	if (current_track < play_list.count())
 	{
 		cleanPlayingInfo();
 		media_player->play(play_list[current_track]);
-		// una volta lanciata una traccia si posiziona sulla successiva
-		// se quella appena mandata in play è l'ultima la prossima volta
-		// che viene lanciata questa funzione non verrà eseguito il play
+		/*
+		 * una volta lanciata una traccia si posiziona sulla successiva
+		 * se quella appena mandata in play è l'ultima la prossima volta
+		 * che viene lanciata questa funzione non verrà eseguito il play.
+		 */
 		current_track++;
 	}
 	else

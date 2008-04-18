@@ -147,21 +147,28 @@ public:
 	void setMaxVisibleChars(int n);
 
 private:
-	/// internal data
-	QString _text;
-	int     _text_length;
-	int     _w_offset;
-	int     _h_offset;
-	bool    _scrolling;
+	// internal data
+	QString text;
 
-	/// text scrolling Timer
+	// Total chars
+	unsigned text_length;
+
+	int     w_offset;
+	int     h_offset;
+	bool    scrolling;
+
+	// Text scrolling Timer
 	QTimer scrolling_timer;
 
-	/// text scrolling parameters
+	/*
+	 * Text scrolling parameters.
+	 */
 	int time_per_step;
-	int current_shift;
-	int step_shift;
-	int visible_chars;
+	// current chars shifted
+	unsigned current_shift;
+	// how many chars can be shown at the same time_shift
+	unsigned visible_chars;
+
 	QString separator;
 
 	/// refresh text
@@ -226,7 +233,7 @@ private:
 	// The followinw Vector stores pointers to QfileInfo objects.
 	// (the Qt class: QPtrVector contains pointers so it is not needed to define it as QPtrVector<QFileInfo*>)
 	QPtrVector<QFileInfo>    files_list;
-	QMap<QString, int>       pages_indexes;
+	QMap<QString, unsigned>  pages_indexes;
 
 	/// Widgets
 	// Pointer to labels used to visualize files
@@ -288,12 +295,13 @@ private:
 	/// refreshing info time interval
 	int refresh_time;
 
-	/** The differences between files_list and play_list are:
-	 *     - play_list contains QString with the full path
-	 *     - play_list does not contain dirs
+	/**
+	 * The differences between files_list and play_list are:
+	 *  - play_list contains QString with the full path
+	 *  - files_list does not contain dirs
 	 */
 	QValueVector<QString> play_list;
-	int                   current_track;
+	unsigned              current_track;
 
 	/// Widgets
 	ButtonsBar  *play_controls;
