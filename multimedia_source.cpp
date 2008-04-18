@@ -35,6 +35,28 @@
 static const char *start_play_script = "/bin/audio_on.tcl";
 static const char *stop_play_script = "/bin/audio_off.tcl";
 
+/*
+ * Interface icon paths.
+ */
+static const char *IMG_PLAY = IMG_PATH "btnplay.png"; 
+static const char *IMG_STOP = IMG_PATH "btnsdstop.png";
+static const char *IMG_PAUSE = IMG_PATH "btnpause.png";
+static const char *IMG_NEXT = IMG_PATH "btnforward.png";
+static const char *IMG_PREV = IMG_PATH "btnbackward.png";
+static const char *IMG_BACK = IMG_PATH "arrlf.png";
+static const char *IMG_SELECT = IMG_PATH "arrrg.png";
+static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
+
+static const char *IMG_PLAY_P = IMG_PATH "btnplayp.png"; 
+static const char *IMG_STOP_P = IMG_PATH "btnsdstopp.png";
+static const char *IMG_PAUSE_P = IMG_PATH "btnpausep.png";
+static const char *IMG_NEXT_P = IMG_PATH "btnforwardp.png";
+static const char *IMG_PREV_P = IMG_PATH "btnbackwardp.png";
+static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
+static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
+static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
+
+
 
 MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const char *amb, int _where_address ) :
 	QWidget( parent, name ),
@@ -286,8 +308,8 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	buttons_bar = new ButtonsBar(this, rows_per_page, Qt::Vertical);
 
 	// Set Icons for buttons_bar (using icons_library cache)
-	QPixmap *icon         = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrrg.png") );
-	QPixmap *pressed_icon = icons_library.getIcon( QString("%1%2").arg(IMG_PATH).arg("arrrgp.png") );
+	QPixmap *icon         = icons_library.getIcon(IMG_SELECT);
+	QPixmap *pressed_icon = icons_library.getIcon(IMG_SELECT_P);
 	for (unsigned i = 0; i < rows_per_page; i++)
 		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
 
@@ -634,20 +656,18 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnplay.png");
-	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnplayp.png");
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+	showPauseBtn();
 
-	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnsdstop.png");
-	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnsdstopp.png");
+	icon         = icons_library.getIcon(IMG_STOP);
+	pressed_icon = icons_library.getIcon(IMG_STOP_P);
 	play_controls->setButtonIcons(1, *icon, *pressed_icon);
 
-	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnbackward.png");
-	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnbackwardp.png");
+	icon         = icons_library.getIcon(IMG_PREV);
+	pressed_icon = icons_library.getIcon(IMG_PREV_P);
 	play_controls->setButtonIcons(2, *icon, *pressed_icon);
 
-	icon         = icons_library.getIcon(QString(IMG_PATH) + "btnforward.png");
-	pressed_icon = icons_library.getIcon(QString(IMG_PATH) + "btnforwardp.png");
+	icon         = icons_library.getIcon(IMG_NEXT);
+	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
 	play_controls->setButtonIcons(3, *icon, *pressed_icon);
 
 	main_layout->addWidget(play_controls);
@@ -663,11 +683,11 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	main_controls_layout->addStretch();
 	main_controls_layout->addWidget(settings_btn);
 
-	back_btn->setPixmap(*icons_library.getIcon(QString(IMG_PATH) + "arrlf.png"));
-	back_btn->setPressedPixmap(*icons_library.getIcon(QString(IMG_PATH) + "arrlfp.png"));
+	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
+	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
 
-	settings_btn->setPixmap(*icons_library.getIcon(QString(IMG_PATH) + "audiosetting.png"));
-	settings_btn->setPressedPixmap(*icons_library.getIcon(QString(IMG_PATH) + "audiosettingp.png"));
+	settings_btn->setPixmap(*icons_library.getIcon(IMG_SETTINGS));
+	settings_btn->setPressedPixmap(*icons_library.getIcon(IMG_SETTINGS_P));
 
 
 	data_refresh_timer = new QTimer(this);
@@ -690,7 +710,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 
 void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
-	// send the quit command to mediaplayer to stop and terminate it if it is already playing
+	// quit mplayer if it is already playing
 	media_player->quit();
 
 	// fill play_list and set current track
@@ -773,7 +793,6 @@ void AudioPlayingWindow::refreshPlayingInfo()
 		time_pos_label->setText(QString("%1 of %2").arg(current[0]).arg(total[0]));
 }
 
-
 void AudioPlayingWindow::cleanPlayingInfo()
 {
 	meta_title_label->setText(QString("-"));
@@ -783,6 +802,19 @@ void AudioPlayingWindow::cleanPlayingInfo()
 	playing_info.clear();
 }
 
+void AudioPlayingWindow::showPlayBtn()
+{
+	QPixmap *icon         = icons_library.getIcon(IMG_PLAY);
+	QPixmap *pressed_icon = icons_library.getIcon(IMG_PLAY_P);
+	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+}
+
+void AudioPlayingWindow::showPauseBtn()
+{
+	QPixmap *icon         = icons_library.getIcon(IMG_PAUSE);
+	QPixmap *pressed_icon = icons_library.getIcon(IMG_PAUSE_P);
+	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+}
 
 void AudioPlayingWindow::prevTrack()
 {
@@ -794,7 +826,7 @@ void AudioPlayingWindow::prevTrack()
 	if (current_track >= 2)
 	{
 		current_track -= 2;
-		media_player->quitMPlayer();
+		media_player->quit();
 	}
 	else if (current_track == 1)
 	{
@@ -803,11 +835,10 @@ void AudioPlayingWindow::prevTrack()
 		 * il questo caso la riportiamo all'inizio.
 		 */
 		current_track = 0;
-		media_player->quitMPlayer();
+		media_player->quit();
 	}
 	qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %d/%d", current_track-1, play_list.count());
 }
-
 
 void AudioPlayingWindow::nextTrack()
 {
@@ -818,11 +849,18 @@ void AudioPlayingWindow::nextTrack()
 	 */
 	if (current_track < play_list.count())
 	{
-		media_player->quitMPlayer();
+		media_player->quit();
 	}
 	qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %d/%d", current_track-1, play_list.count());
 }
 
+void AudioPlayingWindow::stop()
+{
+	// That's all folks
+	qDebug("[AUDIO] AudioPlayingWindow::stop()");
+	current_track = CURRENT_TRACK_NONE;
+	media_player->quit();
+}
 
 void AudioPlayingWindow::handle_buttons(int button_number)
 {
@@ -831,32 +869,53 @@ void AudioPlayingWindow::handle_buttons(int button_number)
 	switch (button_number)
 	{
 	case 0:
-		if (media_player->isPaused())
+		// play/pause
+		if (current_track == CURRENT_TRACK_NONE)
+		{
+			// Restart play after previous stop
+			media_player->play(play_list[0]);
+			current_track = 1;  // next due
+			data_refresh_timer->start(refresh_time);
+		}
+		else if (media_player->isPaused())
 		{
 			qDebug("[AUDIO] media_player: resume play");
 			turnOnAudioSystem();
 			media_player->resume();
+			data_refresh_timer->start(refresh_time);
 		}
-		break;
-	case 1:
-		if (!media_player->isPaused())
+		else
 		{
 			qDebug("[AUDIO] media_player: pause play");
 			turnOffAudioSystem();
 			media_player->pause();
 		}
 		break;
+	case 1:
+		stop();
+		break;
 	case 2:
 		// go to prev track
-		prevTrack();
+		if (current_track != CURRENT_TRACK_NONE)
+		{
+			prevTrack();
+			data_refresh_timer->start(refresh_time);
+		}
 		break;
 	case 3:
 		// go to next track
-		nextTrack();
+		if (current_track != CURRENT_TRACK_NONE)
+		{
+			nextTrack();
+			data_refresh_timer->start(refresh_time);
+		}
 		break;
 	}
 
-	data_refresh_timer->start(refresh_time);
+	if (media_player->isPlaying() && !media_player->isPaused())
+		showPauseBtn();
+	else
+		showPlayBtn();
 }
 
 void AudioPlayingWindow::handleBackBtn()
@@ -882,9 +941,10 @@ void AudioPlayingWindow::handlePlayingDone()
 	 * mplayer has terminated because the track is finished
 	 * so we go to the next track if exists.
 	 */
+	cleanPlayingInfo();
+
 	if (current_track < play_list.count())
 	{
-		cleanPlayingInfo();
 		media_player->play(play_list[current_track]);
 		/*
 		 * una volta lanciata una traccia si posiziona sulla successiva
@@ -895,11 +955,9 @@ void AudioPlayingWindow::handlePlayingDone()
 	}
 	else
 	{
-		// In questo caso ha finito di suonare l'ultimo pezzo e si chiude
+		// In questo caso ha finito di suonare l'ultimo pezzo
 		turnOffAudioSystem();
-
-		// Hide playing_window
-		hide();
+		showPlayBtn();
 	}
 }
 

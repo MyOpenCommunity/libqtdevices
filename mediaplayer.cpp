@@ -25,7 +25,8 @@ static void mplayerExited(int signo, siginfo_t *info, void *)
 		_globalMediaPlayer->sigChildReceived(info->si_pid, status);
 }
 
-MediaPlayer::MediaPlayer( QObject *parent, const char *name ) : QObject(parent, name)
+MediaPlayer::MediaPlayer(QObject *parent, const char *name) :
+	QObject(parent, name)
 {
 	struct sigaction sa;
 
@@ -61,9 +62,9 @@ bool MediaPlayer::play(QString track)
 	if (mplayer_pid == -1)
 		return false;
 
-	// CHILD
 	if (mplayer_pid == 0)
 	{
+		// CHILD
 		// Close unused write end
 		close(control_pipe[1]);
 		close(output_pipe[0]);
@@ -78,9 +79,9 @@ bool MediaPlayer::play(QString track)
 
 		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
 	}
-	// PARENT
 	else
 	{
+		// PARENT
 		_isPlaying = true;
 		paused = false;
 
@@ -99,6 +100,8 @@ bool MediaPlayer::play(QString track)
 
 		qDebug("[AUDIO] playing track '%s'", track.ascii());
 	}
+
+	return true;
 }
 
 void MediaPlayer::pause()
@@ -111,15 +114,6 @@ void MediaPlayer::resume()
 {
 	execCmd(" ");
 	paused = false;
-}
-
-void MediaPlayer::quit()
-{
-	if (mplayer_pid)
-	{
-		mplayer_pid = 0;
-		execCmd("q");
-	}
 }
 
 void MediaPlayer::execCmd(QString command)
@@ -143,7 +137,7 @@ QString MediaPlayer::readOutput()
 
 bool MediaPlayer::isPlaying()
 {
-	return (_isPlaying && !paused);
+	return _isPlaying;
 }
 
 
@@ -167,11 +161,6 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 	/// Create output Map
 	QMap<QString, QString> info_data;
 
-	// row data visualization
-	// qDebug("\n____________________________________________________________________________");
-	// qDebug(row_data);
-	// qDebug("____________________________________________________________________________\n");
-
 	/// Parse ROW data to get info
 	QMap<QString, QString>::Iterator it;
 	for ( it = data_search.begin(); it != data_search.end(); ++it )
@@ -186,20 +175,19 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 }
 
 
-void MediaPlayer::quitMPlayer()
+void MediaPlayer::quit()
 {
-	/// kill the MPlayer process
-	kill(mplayer_pid, SIGINT);
+	if (mplayer_pid)
+		kill(mplayer_pid, SIGINT);
 }
 
 void MediaPlayer::sigChildReceived(int dead_pid, int status)
 {
-	qDebug("[AUDIO] Signal SIGCHLD received, pid %d", dead_pid);
-
 	/// Check if the dead child is mplayer or not
 	if (dead_pid == mplayer_pid)
 	{
 		mplayer_pid = 0;
+		_isPlaying = false;
 
 		if (WIFEXITED(status))
 		{

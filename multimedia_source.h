@@ -17,40 +17,28 @@
 #ifndef MULTIMEDIA_SOURCE_H
 #define MULTIMEDIA_SOURCE_H
 
-#include <qframe.h>
-#include <qprocess.h>
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qlistbox.h>
 #include <qdir.h>
 #include <qmap.h>
 #include <qptrvector.h>
 #include <qvaluevector.h>
-#include <qdialog.h>
 #include <qlabel.h>
-#include <qslider.h>
-#include <qbuttongroup.h>
 #include <qtimer.h>
-#include <qlayout.h>
 #include <qpainter.h>
-#include <qtextedit.h>
+#include <limits>
 
 #include "main.h"
-#include "btlabel.h"
-#include "bannfrecce.h"
-#include "bann3but.h"
 #include "buttons_bar.h"
 
 
 class FileBrowser;
 class AudioPlayingWindow;
 class MediaPlayer;
-class AudioPlayingWindow;
 
 
-/** \class MultimediaSource
- *  This class implemets the Page for MULTIMEDIA SOURCE
+/**
+ * \class MultimediaSource
  *
+ * This class implemets the Page for MULTIMEDIA SOURCE
  */
 class  MultimediaSource : public QWidget
 {
@@ -130,9 +118,11 @@ private:
 };
 
 
-/** \class TitleLabel
- *  this class is derived from QLabel
- *  and reimplements drawContent to have scrolling text
+/**
+ * \class TitleLabel
+ *
+ * this class is derived from QLabel
+ * and reimplements drawContent to have scrolling text
  */
 class TitleLabel : public QLabel
 {
@@ -179,9 +169,11 @@ public slots:
 };
 
 
-/** \class FileBrowser
- *  This class implemets a File Browsing Windows (derived from QListBox) with special methods
- *  to navigate and to play files
+/**
+ * \class FileBrowser
+ *
+ * implements a File Browsing Windows with special methods
+ * to navigate and to play files.
  */
 class  FileBrowser : public QWidget
 {
@@ -250,11 +242,12 @@ signals:
 };
 
 
-/** \class AudioPlayingWindow
- *  This class implemets the Playing Window,
- *  it is called from fileBrowser (that is part of MultimediaSource Page)
- *  when file (song) is clicked
+/**
+ * \class AudioPlayingWindow
  *
+ * This class implemets the Playing Window,
+ * it is called from fileBrowser (that is part of MultimediaSource Page)
+ * when file (song) is clicked
  */
 class  AudioPlayingWindow : public QWidget
 {
@@ -267,9 +260,10 @@ public:
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
-	// Change Track
+	// Play control
 	void nextTrack();
 	void prevTrack();
+	void stop();
 
 	/// Stores current playing info
 	QMap<QString, QString> playing_info;
@@ -292,6 +286,16 @@ public slots:
 	void handlePlayingAborted();
 
 private:
+	/// Method to Get and Visualize playing INFO from MPlayer
+	void refreshPlayingInfo();
+
+	/// Clean playing INFO from MPlayer
+	void cleanPlayingInfo();
+
+	// Change status of play/pause button in control bar
+	void showPlayBtn();
+	void showPauseBtn();
+
 	/// refreshing info time interval
 	int refresh_time;
 
@@ -301,7 +305,13 @@ private:
 	 *  - files_list does not contain dirs
 	 */
 	QValueVector<QString> play_list;
-	unsigned              current_track;
+
+	/*
+	 * Track to be played by next mplayer instance.
+	 * CURRENT_TRACK_NONE means no track has to be played.
+	 */
+	unsigned int current_track;
+	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
 
 	/// Widgets
 	ButtonsBar  *play_controls;
@@ -316,12 +326,6 @@ private:
 
 	/// Timer to refresh data from MediaPlayer
 	QTimer *data_refresh_timer;
-
-	/// Method to Get and Visualize playing INFO from MPlayer
-	void refreshPlayingInfo();
-
-	/// Clean playing INFO from MPlayer
-	void cleanPlayingInfo();
 
 signals:
 	void notifyStartPlay();
