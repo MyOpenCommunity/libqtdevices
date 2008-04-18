@@ -66,14 +66,10 @@ bannFrecce::bannFrecce( QWidget *parent,const char *name ,uchar num,char* IconBu
 
 void bannFrecce::handleBackPress()
 {
-	qDebug("***************handleBackPress");
-
 	press_timer.start(3000, TRUE);
 }
 
 void bannFrecce::handleBackRelease()
 {
-	qDebug("***************handleBackRelease");
-
 	press_timer.stop();
 }

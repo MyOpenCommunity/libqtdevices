@@ -143,7 +143,7 @@ QString MediaPlayer::readOutput()
 
 bool MediaPlayer::isPlaying()
 {
-	return _isPlaying;
+	return (_isPlaying && !paused);
 }
 
 
