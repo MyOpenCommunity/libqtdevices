@@ -2349,7 +2349,7 @@ get_init_message(device_status *s, QString& out)
 			qDebug("frame_interpreter_thermr_device::get_init_message -> TEMPERATURE_PROBE");
 			head = "*#4*";
 			end  = "##";
-			out  = head + where + end;
+			out  = head + indirizzo + end;
 			break;
 		case device_status::THERMR:
 			qDebug("frame_interpreter_thermr_device::get_init_message -> THERMR");
@@ -2362,7 +2362,7 @@ get_init_message(device_status *s, QString& out)
 			qDebug("frame_interpreter_thermr_device::get_init_message -> FANCOIL");
 			head = "*#4*";
 			end  = "*11##";
-			out  = head + where + end;
+			out  = head + indirizzo + end;
 			break;
 		default:
 			out  = "";
