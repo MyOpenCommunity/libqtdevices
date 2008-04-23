@@ -36,11 +36,9 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	tempMis = new BtLabel(this,NULL);
 	tempMis->setGeometry(0,h+DESCR_DIM_Y,MAX_WIDTH,TEMPMIS_Y);
 
-	// Specific Widgets
-	switch (devtype)
+	// Fancoil widgets
+	if (devtype == THERMO_4_ZONES_FANCOIL || devtype == THERMO_99_ZONES_FANCOIL)
 	{
-	case THERMO_4_ZONES_FANCOIL:
-	case THERMO_99_ZONES_FANCOIL:
 		fancoil_buttons = new ButtonsBar(this, 4);
 		fancoil_buttons->setGeometry(0, set_buttons_y+OFFSET_Y, MAX_WIDTH, 100);
 		QPixmap *icon;
@@ -64,17 +62,6 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		fancoil_buttons->setToggleButtons(true);
 
 		fancoil_buttons->setBGColor(tempMis->backgroundColor());
-		break;
-
-	case THERMO_4_ZONES:
-	case THERMO_99_ZONES:
-		break;
-
-	case SINGLE_PROBE:
-	case EXT_SINGLE_PROBE:
-
-	default:
-		qDebug("bannTermo::bannTermo(): Unknown devtype_t!");
 	}
 
 	// Panel to SET TEMPERATURE (button PLUS, MINUS, Set Temp Label
