@@ -8,6 +8,8 @@
 #include <qobject.h>
 #include <qdatetime.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <time.h>
 #include "openclient.h"
 #include "device.h"
 
@@ -363,11 +365,27 @@ private:
 
 	//! True when frame has been analyzed
 	bool elaborato;
-	bool centrale;
 
+	//! Type of thermal regulator
 	device_status_thermr::type_t type;
+
 	QString ind_centrale;
 	QString indirizzo;
+
+	/*
+	 * Functions for using a stat_var like a timer.
+	 * Used to set INFO_SONDA var and clear it after STAT_VAR_TIMEOUT seconds.
+	 *
+	 * checkTimeoutVar: Return true if the var is set and timeout is not elapsed.
+	 */
+	bool checkTimeoutVar(const stat_var &var);
+	// Set to true
+	void setTimeoutVar(stat_var &var);
+	// Set to false
+	void clearTimeoutVar(stat_var &var);
+	// Timeout value, in seconds
+	static const int STAT_VAR_TIMEOUT = 60;
+
 protected:
 	//! Returns true when frame is ours (reimplemented for thermr, device
 	bool is_frame_ours(openwebnet_ext, bool& request_status);

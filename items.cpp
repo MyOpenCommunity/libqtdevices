@@ -3124,8 +3124,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	stat_var curr_local(stat_var::LOCAL);
 	stat_var curr_sp(stat_var::SP);
 	stat_var curr_temp(stat_var::TEMPERATURE);
-	stat_var curr_info_sonda(stat_var::INFO_SONDA);
-	stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
+
 	openwebnet msg_open;
 	int delta = 0;
 	bool aggiorna = false;
@@ -3142,10 +3141,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				ds->read(device_status_thermr::STAT_INDEX, curr_stat);
 				ds->read(device_status_thermr::LOCAL_INDEX, curr_local);
 				ds->read(device_status_thermr::SP_INDEX, curr_sp);
-				ds->read((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
-				qDebug("info_sonda = %d", curr_info_sonda.get_val());
-				ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
-				qDebug("info_centrale = %d", curr_info_centrale.get_val());
+
 				if (delta_setpoint == 1)
 				{
 					delta = atoi(strstr(&setpoint[0],".")+1);

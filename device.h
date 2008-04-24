@@ -60,7 +60,7 @@ public:
 	//! Get value
 	void get_val(int&);
 	//! Get value again
-	int get_val(void);
+	int get_val(void) const;
 	//! Set value
 	void set_val(int&);
 	//! Get min value
