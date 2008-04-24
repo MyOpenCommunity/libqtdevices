@@ -690,6 +690,9 @@ void scenEvo_cond_d::SetIcons()
 	dc = new device_condition_dimming(this, "dimming_val", trigger);
 	break;
     case 3:
+    case 7:
+    case 8:
+    case 9:
 	dc = new device_condition_temp(this, "temp_val", trigger);
         but[A3_BUTTON_INDEX]->setAutoRepeat(true);
         but[A4_BUTTON_INDEX]->setAutoRepeat(true);
@@ -1974,7 +1977,7 @@ int device_condition_temp::get_divisor()
 
 void device_condition_temp::get_unit(QString& out)
 {
-    out = "°C ±1°C" ;
+    out = "Â°C Â±1Â°C" ;
 }
 
 #if 0

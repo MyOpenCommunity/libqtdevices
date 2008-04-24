@@ -295,9 +295,14 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						//			qWarning("ADDBUTTON OROLOGIO");
 						break;
 					case TEMPERATURA:
+					case TERMO_HOME_PROBE:
 						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
 						//			qWarning("ADDBUTTON TEMPERATURA");
 						break;
+					case TERMO_HOME_EXTPROBE:
+						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"", "1");
+						break;
+
 					} // switch (sottomenu_id)
 
 
@@ -509,7 +514,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							switch(page_item_id)
 							{
 								case TEMPERATURA:
+								case TERMO_HOME_PROBE:
 									(*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii());
+									break;
+								case TERMO_HOME_EXTPROBE:
+									(*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii(), "1");
 									break;
 								case DATA:
 									//sottomenu_left,sottomenu_top,

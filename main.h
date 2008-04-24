@@ -205,7 +205,7 @@ enum pagSecLiv{
 #define ICON_REW			(IMG_PATH "btnbackward.png")
 /*!  \def ICON_DIFFSON
   The file name for \a diffson icon*/
-#define ICON_DIFFSON			(IMG_PATH "audiosetting.png")
+#define ICON_DIFFSON			(IMG_PATH "appdiffsmall.png")
 /*!  \def ICON_OROLOGIO
   The file name for \a clock icon*/
 #define ICON_OROLOGIO		(IMG_PATH "orologio.png")
@@ -339,6 +339,8 @@ enum  bannerType {
 	TERMO_4Z_FANCOIL=54,                          /*!< 4 Zones Thermoregulation with fan-coil control */
 	TERMO_EXTPROBE=55,                            /*!< External not-controlled probe */
 	TERMO_PROBE=56,                               /*!< Not-controlled probe */
+        TERMO_HOME_EXTPROBE=57,                       /*!< Home page external not-controlled probe */
+        TERMO_HOME_PROBE=58                           /*!< Home page not-controlled probe */
 };
 
 
@@ -373,8 +375,8 @@ const char banTesti[][20] =
 	"INSIEME_AMBIENTI",           "POSTO_ESTERNO",           "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
 	/*    52                           53                          54                        55                   */
 	"TERMO_FANCOIL",              "TERMO_4Z",                "TERMO_4Z_FANCOIL",          "TERMO_EXTPROBE",
-	/*    56                                                                                                      */
-	"TERMO_PROBE"
+	/*    56                           57                          58                                             */
+	"TERMO_PROBE",                "TERMO_HOME_EXTPROBE",     "TERMO_HOME_PROBE"
 };
 
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up */
@@ -409,4 +411,5 @@ enum pulsType
 
 
 #endif //MAIN_H
+
 
