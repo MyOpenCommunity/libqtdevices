@@ -348,8 +348,13 @@ device_status_zonanti::device_status_zonanti() :
 device_status_thermr::device_status_thermr(type_t type) :
 	device_status(THERMR)
 {
+	/*
+	 * Initial value -1: not a possible one, so when the probe is
+	 * read the first time, we are sure the previous value is different
+	 * and the relevant display item is refreshed.
+	 */
 	add_var((int)device_status_thermr::STAT_INDEX,
-			new stat_var(stat_var::STAT, 5, 0, 5, 1));
+			new stat_var(stat_var::STAT, -1, 0, 5, 1));
 	add_var((int)device_status_thermr::LOCAL_INDEX,
 			new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
 	add_var((int)device_status_thermr::SP_INDEX,
@@ -367,8 +372,13 @@ device_status_thermr::device_status_thermr(type_t type) :
 device_status_fancoil::device_status_fancoil() :
 	device_status(FANCOIL)
 {
+	/*
+	 * Initial value -1: not a possible one, so when the probe is
+	 * read the first time, we are sure the previous value is different
+	 * and the relevant display item is refreshed.
+	 */
 	add_var((int)device_status_fancoil::SPEED_INDEX,
-			new stat_var(stat_var::FANCOIL_SPEED, 0, 0, 3, 1));
+			new stat_var(stat_var::FANCOIL_SPEED, -1, 0, 3, 1));
 }
 
 // Device status for modscen
