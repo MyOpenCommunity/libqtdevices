@@ -782,7 +782,6 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 		}
 	} else if(m.IsWriteFrame()) {
 		qDebug("frame_interpreter_lights::handle_frame, light, write frame");
-		int lev = atoi(m.Extract_valori(0)) - 100;
 	}
 }
 
@@ -1090,7 +1089,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 	} else if(m.IsMeasureFrame()) {
 		// *#1*where*1*lev*speed##
 		int code = atoi(m.Extract_grandezza());
-		int lev, speed, hh, mm, ss;
+		int hh, mm, ss;
 		qDebug("frame_interpreter_lights::handle_frame, timed, meas frame");
 		switch(code) {
 			case 1:
@@ -1324,8 +1323,6 @@ void frame_interpreter_dimmer::handle_frame(openwebnet_ext m,
 		} 
 	} else if(m.IsMeasureFrame()) {
 		// *#1*where*1*lev*speed##
-		int code = atoi(m.Extract_grandezza());
-		int lev, hh, mm, ss;
 		qDebug("frame_interpreter_dimmer::handle_frame, dimmer, meas frame");
 		qDebug("emit(request_init(ds))");
 		request_init(ds);
@@ -2733,8 +2730,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
 {
 	qDebug("frame_interpreter_thermr_device::handle_frame, temp status");
 	stat_var curr_temp(stat_var::TEMPERATURE);
-	int stat;
-	bool do_event = false;
 	if(m.IsNormalFrame()) {
 		qDebug("Normal frame, discarding");
 		return;
@@ -2875,8 +2870,6 @@ handle_frame(openwebnet_ext m, device_status_modscen *ds)
 {
 	qDebug("frame_interpreter_modscen_device::handle_frame");
 	stat_var curr_stat(stat_var::STAT);
-	int stat;
-	bool do_event = false;
 	// Read current status
 	ds->read((int)device_status_modscen::STAT_INDEX, curr_stat);
 	qDebug("curr status is %d\n", curr_stat.get_val());
