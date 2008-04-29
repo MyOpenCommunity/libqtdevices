@@ -2291,14 +2291,22 @@ bool frame_interpreter_thermr_device::checkTimeoutVar(const stat_var &var)
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 
-	if ((var.get_val() == 0) && ((int)(tv.tv_sec) <= var.get_val()))
+	if ((var.get_val() == 0) || ((int)(tv.tv_sec) <= var.get_val()))
+	{
+		//qDebug("[TMOUTVAR] checkTimeoutVar() tv_sec=%d, val=%d: TRUE", (int)tv.tv_sec, var.get_val());
 		return true;
+	}
 	else
+	{
+		//qDebug("[TMOUTVAR] checkTimeoutVar() tv_sec=%d, val=%d: FALSE", (int)tv.tv_sec, var.get_val());
 		return false;
+	}
 }
 
 void frame_interpreter_thermr_device::setTimeoutVar(stat_var &var)
 {
+	//qDebug("[TMOUTVAR] setTimeoutVar()");
+
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	int n = static_cast<int>(tv.tv_sec + STAT_VAR_TIMEOUT);
@@ -2307,6 +2315,8 @@ void frame_interpreter_thermr_device::setTimeoutVar(stat_var &var)
 
 void frame_interpreter_thermr_device::clearTimeoutVar(stat_var &var)
 {
+	//qDebug("[TMOUTVAR] clearTimeoutVar()");
+
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	int n = static_cast<int>(tv.tv_sec - 1);
