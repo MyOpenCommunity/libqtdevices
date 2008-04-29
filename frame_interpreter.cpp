@@ -2532,7 +2532,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 				break;
 			// PROT. ANTIGELO
 			if(/*!ds->initialized() ||*/
-					((curr_stat.get_val() != device_status_thermr::S_ANTIGELO) && (curr_local.get_val() != 5))) {
+					((curr_stat.get_val() != device_status_thermr::S_ANTIGELO) && (curr_local.get_val() != 4))) {
 				do_event = true;
 				stat = device_status_thermr::S_ANTIGELO;
 			}

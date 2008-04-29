@@ -700,7 +700,7 @@ void grDimmer::Diminuisci()
 	}
 }
 
-void grDimmer::inizializza(){}
+void grDimmer::inizializza(bool forza){}
 
 /*****************************************************************
  **gruppo di dimmer100
@@ -795,7 +795,7 @@ void scenario::Attiva()
 		emit sendFrame(msg_open.frame_open);    
 	}
 }
-void scenario::inizializza(){}
+void scenario::inizializza(bool forza){}
 /*****************************************************************
  **carico
  ****************************************************************/
@@ -822,7 +822,7 @@ void carico::Attiva()
 	emit sendFrame(msg_open.frame_open);
 }
 
-void carico::inizializza(){}
+void carico::inizializza(bool forza){}
 /*****************************************************************
  **attuatAutomInt
  ****************************************************************/
@@ -1030,7 +1030,7 @@ void attuatAutomInt::analizzaDown()
 }
 
 
-void attuatAutomInt::inizializza()
+void attuatAutomInt::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -1270,7 +1270,7 @@ void attuatAutomIntSic::sendStop()
 	emit sendFrame(msg_open.frame_open);
 }
 
-void attuatAutomIntSic::inizializza()
+void attuatAutomIntSic::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -2029,7 +2029,7 @@ void grAttuatInt::Ferma()
 	}
 }
 
-void grAttuatInt::inizializza()
+void grAttuatInt::inizializza(bool forza)
 { 
 }
 /*****************************************************************
@@ -2093,7 +2093,7 @@ void attuatPuls::Disattiva()
 	}  
 }
 
-void attuatPuls::inizializza()
+void attuatPuls::inizializza(bool forza)
 { 
 }
 /*****************************************************************
@@ -2279,7 +2279,7 @@ void amplificatore:: Diminuisci()
 	msg_open.CreateMsgOpen("16", "1101",getAddress(),"");
 	emit sendFrame(msg_open.frame_open);     
 }
-void amplificatore::inizializza()
+void amplificatore::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -2383,7 +2383,7 @@ void grAmplificatori::Diminuisci()
 		emit sendFrame(msg_open.frame_open);
 	}
 }
-void grAmplificatori::inizializza()
+void grAmplificatori::inizializza(bool forza)
 { 
 }
 
@@ -2419,7 +2419,13 @@ void sorgente_aux::gestFrame(char*)
 void sorgente_aux::ciclaSorg()
 {
 	openwebnet msg_open;
-	msg_open.CreateMsgOpen("16","23","100","");
+	char pippo[50];
+	char amb[3];
+
+	sprintf(amb, getAddress());
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);
 }
 
@@ -2443,7 +2449,7 @@ void sorgente_aux::aumBrano()
 	emit sendFrame(msg_open.frame_open);
 }
 
-void sorgente_aux::inizializza()
+void sorgente_aux::inizializza(bool forza)
 {
 }
 
@@ -2472,6 +2478,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	source_menu.setFGColor(parentWidget(TRUE)->foregroundColor());
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showAux()));
+	connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
 
 	QWidget *sotto_menu = this->parentWidget(FALSE)->parentWidget(FALSE);
 	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
@@ -2481,6 +2488,16 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 
 void BannerSorgenteMultimedia::ciclaSorg()
 {
+	openwebnet msg_open;
+	qDebug("BannerSorgenteMultimedia::ciclaSorg()");
+	char pippo[50];
+	char amb[3];
+
+	sprintf(amb, getAddress());
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	emit sendFrame(msg_open.frame_open);
 }
 
 void BannerSorgenteMultimedia::decBrano() {}
@@ -2490,11 +2507,20 @@ void BannerSorgenteMultimedia::gestFrame(char *) {}
 
 void BannerSorgenteMultimedia::hide() 
 {
+	qDebug("BannerSorgenteMultimedia::hide()");
 	banner::hide();
 	source_menu.hide();
 }
 
+void BannerSorgenteMultimedia::inizializza(bool forza)
+{
+	qDebug("BannerSorgenteMultimedia::inizializza()");
+	openwebnet msg_open;
+	char amb[3];
 
+	sprintf(amb, getAddress());
+	emit sendInit((char *)(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(amb[2]).ascii()));
+}
 /*
  * Banner Sorgente Multimediale Multicanale
  */
@@ -2513,11 +2539,16 @@ BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const ch
 
 void BannerSorgenteMultimediaMC::attiva()
 {
+	char    pippo[50];
 	openwebnet msg_open;
 
+	qDebug("BannerSorgenteMultimediaMC::attiva()");
 	if (!multiamb)
 	{
-		msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(pippo,"*22*1#4#%d*2#%d##",indirizzo_ambiente, indirizzo_semplice.toInt());
+		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+		//msg_open.CreateMsgOpen("16", "3", getAddress(), "");
 		emit sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
@@ -2526,8 +2557,14 @@ void BannerSorgenteMultimediaMC::attiva()
 		QStringList::Iterator it;
 		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			QString dove = QString::number(100 + (*it).toInt() * 10 + indirizzo_semplice.toInt(), 10);
-			msg_open.CreateMsgOpen("16", "3", (char *)(dove.ascii()), "");
+			//QString dove = QString::number(100 + (*it).toInt() * 10 + indirizzo_semplice.toInt(), 10);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*22*1#4#");
+			strcat(pippo,(*it));
+			strcat(pippo,"*2#");
+			strcat(pippo,indirizzo_semplice);
+			strcat(pippo,"##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 			emit sendFrame(msg_open.frame_open);
 		}
 	}
@@ -2790,7 +2827,13 @@ void banradio::ciclaSorg()
 {
 	openwebnet msg_open;
 	qDebug("banradio::ciclaSorg()");
-	msg_open.CreateMsgOpen("16","23","100","");
+	char pippo[50];
+	char amb[3];
+
+	sprintf(amb, getAddress());
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);
 }
 
@@ -2994,7 +3037,7 @@ void banradio::setFGColor(QColor c)
 
 
 
-void banradio::inizializza()
+void banradio::inizializza(bool forza)
 { 
 }
 
@@ -3503,7 +3546,7 @@ void termoPage::sendSetpoint()
 }
 
 
-void termoPage::inizializza()
+void termoPage::inizializza(bool forza)
 { 
 	// See frame_interpreter.cpp
 }
@@ -3707,7 +3750,7 @@ void zonaAnti::clearChanged()
 }
 
 
-void zonaAnti::inizializza()
+void zonaAnti::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -4045,7 +4088,7 @@ void impAnti::partChanged(zonaAnti *za)
 	send_part_msg = true;
 }
 
-void impAnti::inizializza()
+void impAnti::inizializza(bool forza)
 {
 	qDebug("impAnti::inizializza()");
 	insert_timer.stop();
@@ -4367,7 +4410,7 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 }
 #endif
 
-void gesModScen::inizializza()
+void gesModScen::inizializza(bool forza)
 {
 #if 0   
 	openwebnet msg_open;
@@ -4672,7 +4715,7 @@ void scenEvo::gestFrame(char* frame)
 #endif
 }
 
-void scenEvo::inizializza(void)
+void scenEvo::inizializza(bool forza)
 {
 	qDebug("scenEvo::inizializza()");
 	scenEvo_cond *co;

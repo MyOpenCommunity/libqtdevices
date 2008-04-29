@@ -32,14 +32,18 @@
  *
  * \brief Save/load a property map through a XML file (using Qt's QDom).
  *
- * \version $Id: propertymap_xml.cpp 942 2007-10-08 17:21:31Z marco $
+ * \version $Id: propertymap_xml.cpp,v 1.1 2008/04/16 08:53:12 cvs Exp $
  *
  * \author Giovanni Bajo <rasky@develer.com>
  *
  */
 
 /*#*
- *#* $Log$
+ *#* $Log: propertymap_xml.cpp,v $
+ *#* Revision 1.1  2008/04/16 08:53:12  cvs
+ *#* Agresta:
+ *#*  # versione data da Develer il 10 Aprile 2008 e consegnata a Mac per iniziare lo sviluppo dello Stop & Go
+ *#*
  *#* Revision 1.1  2006/10/25 14:23:16  bernie
  *#* Merge too many PropertyMap enhancements to list here.
  *#*
