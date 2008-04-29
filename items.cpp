@@ -2496,7 +2496,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	source_menu.setFGColor(parentWidget(TRUE)->foregroundColor());
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showAux()));
-	connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
+	connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));
 
 	QWidget *sotto_menu = this->parentWidget(FALSE)->parentWidget(FALSE);
 	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));

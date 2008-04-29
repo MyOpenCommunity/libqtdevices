@@ -78,6 +78,13 @@ public:
 	 * \brief Draws the page
 	 */
 	void draw() {};
+
+	/*
+	 * \brief Enable/Disable audio source
+	 */
+	void enableSource();
+	void disableSource();
+
 	/*!
 	 * File Browsing Windows
 	 */
@@ -201,7 +208,13 @@ public:
 	/// before to show itself some init is done.
 	void showEvent(QShowEvent *event);
 
-	void FileBrowser::showPlayingStatusIfPlaying();
+	void showPlayingStatusIfPlaying();
+
+	/*
+	 * Enable/Disable audio source
+	 */
+	void enableSource();
+	void disableSource();
 
 public slots:
 	void nextItem();

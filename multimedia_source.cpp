@@ -163,6 +163,15 @@ int MultimediaSource::setBGPixmap(char* backImage)
 	return (1);
 }
 
+void MultimediaSource::enableSource()
+{
+	filesWindow->enableSource();
+}
+
+void MultimediaSource::disableSource()
+{
+	filesWindow->disableSource();
+}
 
 /// ***********************************************************************************************************************
 /// Methods for TitleLabel
@@ -353,6 +362,16 @@ void FileBrowser::showPlayingStatusIfPlaying()
 {
 	if (playing_window->isPlaying())
 		playing_window->show();
+}
+
+void FileBrowser::enableSource()
+{
+	playing_window->turnOnAudioSystem();
+}
+
+void FileBrowser::disableSource()
+{
+	playing_window->turnOffAudioSystem();
 }
 
 void FileBrowser::itemIsClicked(int item)
