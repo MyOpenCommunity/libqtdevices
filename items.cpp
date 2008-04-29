@@ -2245,21 +2245,25 @@ void amplificatore::status_changed(QPtrList<device_status>sl)
 
 void amplificatore:: Accendi()
 {
-	openwebnet msg_open;
+	char    pippo[50];
+	char ind[3];
 
 	qDebug("amplificatore::Accendi()");
-	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "3",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);     
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(ind, "%s", getAddress());
+	sprintf(pippo,"*22*1#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
+	emit sendFrame(pippo);     
 }
 void amplificatore:: Spegni()
 {
-	openwebnet msg_open;
+	char    pippo[50];
+	char ind[3];
 
 	qDebug("amplificatore::Spegni()");
-	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "13",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);     
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(ind, "%s", getAddress());
+	sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
+	emit sendFrame(pippo);
 }
 void amplificatore:: Aumenta()
 {
@@ -2338,25 +2342,39 @@ void grAmplificatori::setAddress(void*indirizzi)
 
 void grAmplificatori::Attiva()
 {
-	openwebnet msg_open;
+	char pippo[50];
+	char ind[3];
 
 	for(uchar idx=0; idx<elencoDisp.count();idx++)
 	{
-		msg_open.CreateNullMsgOpen();     
-		msg_open.CreateMsgOpen("16", "3",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
+		if(strcmp(ind, "0") == 0)
+			sprintf(pippo,"*22*1#4#%c*5#3#%c##",ind[0], ind[0]);
+		else if(ind[0] == '#')
+			sprintf(pippo,"*22*1#4#%c*4#%c##",ind[1], ind[1]);
+		else
+			sprintf(pippo,"*22*1#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]); 
+		emit sendFrame(pippo);
 	}
 }
 
 void grAmplificatori::Disattiva()
 {
-	openwebnet msg_open;
+	char pippo[50];
+	char ind[3];
 
 	for(uchar idx=0; idx<elencoDisp.count();idx++)
 	{
-		msg_open.CreateNullMsgOpen();     
-		msg_open.CreateMsgOpen("16", "13",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
+		if(strcmp(ind, "0") == 0)
+			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
+		else if(ind[0] == '#')
+			sprintf(pippo,"*22*0#4#%c*4#%c##",ind[1], ind[1]);
+		else
+			sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
+		emit sendFrame(pippo);
 	}
 }
 

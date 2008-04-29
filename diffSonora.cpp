@@ -188,9 +188,9 @@ void diffSonora::gestFrame(char*frame)
 	}
         else if (!strcmp(msg_open.Extract_chi(),"22")) 
 	{
-		if (!strncmp(msg_open.Extract_cosa(),"1", 1) && (!strcmp(msg_open.Extract_dove(),"2")))
+		if (!strncmp(msg_open.Extract_cosa(),"2", 1) && (!strcmp(msg_open.Extract_dove(),"5") && (!strcmp(msg_open.Extract_livello(),"2"))))
 		{
-			w=strtoul(msg_open.Extract_livello(), NULL, 10);
+			w=strtoul(msg_open.Extract_interfaccia(), NULL, 10);
 			sorgenti->setIndex((char *)QString::number(w+100, 10).ascii());
 			aggiorna=1;
 			qDebug("accesa sorg(WHO=22): %d", w);

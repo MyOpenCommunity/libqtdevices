@@ -161,7 +161,7 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdi
 	 difson->hide();
     }
     for (uchar idx=0;idx<AMPLI_NUM;idx++)
-	volSveglia[idx]=0;
+	volSveglia[idx]=-1;
     minuTimer=NULL;
     tipoSveglia=freq ;
     tipo=t;
@@ -437,7 +437,7 @@ void sveglia::okTipo()
     stazione=0;	    
     for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
     {
-        volSveglia[idx]=0;
+        volSveglia[idx]=-1;
     }
    difson->show();	
 }
@@ -488,13 +488,13 @@ void sveglia::gestFrame(char* frame)
 	    {
 		if (!strcmp(msg_open.Extract_cosa(),"13")) 		
 		{
-		    volSveglia[deviceAddr]=0;				
+		    volSveglia[deviceAddr]=-1;
 		    if (deviceAddr==0)
 		    for (uchar idx=0;idx<AMPLI_NUM;idx++)
-			volSveglia[idx]=0;
+			volSveglia[idx]=-1;
 		    if (deviceAddr<10)
 		    for (uchar idx=0;idx<10;idx++)
-			volSveglia[deviceAddr*10+idx]=0;		    
+			volSveglia[deviceAddr*10+idx]=-1; 
 		}
 		if (!strcmp(msg_open.Extract_cosa(),"3")) 		
 		{
@@ -518,7 +518,7 @@ void sveglia::gestFrame(char* frame)
 		    vol=atoi(msg_open.Extract_valori(0))&0x1F;
 		 //   vol=trasformaVol(vol);
 		    volSveglia[deviceAddr]=vol;
-		    qDebug("o visto un volume di %d",deviceAddr);
+		    qDebug("o visto un volume di %d pari a %d",deviceAddr, vol);
 		}
 	    }
 	}
@@ -646,7 +646,7 @@ void sveglia::aumVol()
         
         for (uchar idx=0;idx<AMPLI_NUM;idx++)
         {
-            if (volSveglia[idx]>0)
+            if (volSveglia[idx]>-1)
             {		
                 if((idx>=10) && (idx<=19))
                 {
@@ -826,7 +826,7 @@ void sveglia::aumVol()
         char    pippo[50];
 	for (uchar idx=0;idx<AMPLI_NUM;idx++)
         {
-            if (volSveglia[idx]>0)
+            if (volSveglia[idx]>-1)
             {		
                 memset(pippo,'\000',sizeof(pippo));
 		strcat(pippo,"*16*13*");
@@ -922,7 +922,7 @@ void sveglia::inizializza()
 	    for(unsigned int idx=0; idx<AMPLI_NUM;idx++)
 	    {
 		write(eeprom,"\000",1 );
-		volSveglia[idx]=0;
+		volSveglia[idx]=-1;
 	    }
 	}
 	else
