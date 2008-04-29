@@ -384,7 +384,7 @@ private:
 	// Set to false
 	void clearTimeoutVar(stat_var &var);
 	// Timeout value, in seconds
-	static const int STAT_VAR_TIMEOUT = 60;
+	static const int STAT_VAR_TIMEOUT = 1;
 
 protected:
 	//! Returns true when frame is ours (reimplemented for thermr, device
