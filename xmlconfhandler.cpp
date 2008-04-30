@@ -9,6 +9,7 @@
  ****************************************************************/
 
 #include <qobject.h>
+#include <qtimer.h>
 
 #include "xmlconfhandler.h"
 #include "main.h"

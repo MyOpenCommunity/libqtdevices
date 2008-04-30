@@ -1,15 +1,8 @@
-#include <stdlib.h>
 
-#include <qfont.h>
 #include <qpixmap.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 #include "openclient.h"
 #include "device.h"
@@ -20,6 +13,7 @@
 #include "bannfrecce.h"
 #include "btlabel.h"
 #include "main.h"
+#include "fontmanager.h"
 
 /*****************************************************************
 ** Generic alarm
@@ -66,8 +60,10 @@ void allarme::SetIcons(char *icon)
     Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE), 
 			  ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
     delete(Icon1);
-    descr = new BtLabel(this, "descr_alarm");
-    descr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
+    descr = new BtLabel(this, "descr_alarm"); 
+    QFont aFont;
+    FontManager::instance()->getFont( font_allarme_descr, aFont );
+    descr->setFont( aFont );
     descr->setAlignment(AlignHCenter|AlignVCenter);
     descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2, 
 		       MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);

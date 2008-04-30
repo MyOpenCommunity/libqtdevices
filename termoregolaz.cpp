@@ -8,12 +8,13 @@
  **
  ****************************************************************/
 
+#include <qtimer.h>
+
 #include "termoregolaz.h"
 #include "main.h"
 #include "items.h"
 #include "device.h"
 #include "banner.h"
-
 
 termoregolaz::termoregolaz( QWidget *parent, const char *name, uchar withNavBar ,int width,int  height,uchar n)
 : sottoMenu( parent, name ,withNavBar , width,height, n)

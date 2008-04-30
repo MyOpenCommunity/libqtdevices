@@ -9,15 +9,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "mediaplayer.h"
 
 #include <qregexp.h>
 
 #include <unistd.h>
-#include <stdio.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <stdlib.h>
+
+#include "mediaplayer.h"
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 

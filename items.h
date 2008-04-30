@@ -11,6 +11,7 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
+#include <qtimer.h> // serve al moc
 #include <qptrlist.h>
 #include "banner.h"
 #include "main.h"

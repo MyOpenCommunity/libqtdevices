@@ -8,7 +8,6 @@
  **
  ****************************************************************/
 
-#include <qfont.h>
 #include <qpixmap.h>
 #include <qfile.h>
 #include <qtimer.h>
@@ -20,7 +19,7 @@
 #include "btlabel.h"
 #include "genericfunz.h"
 #include "openclient.h"
-
+#include "fontmanager.h"
 
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;
@@ -763,16 +762,20 @@ void banner::Draw()
 
 
 	if (BannerText)
-	{
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+	{ 
+		QFont aFont;
+		FontManager::instance()->getFont( font_banner_BannerText, aFont );
+		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setFont( aFont );
 		BannerText->setText(qtesto);
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
+		QFont aFont;
+		FontManager::instance()->getFont( font_banner_SecondaryText, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
+		SecondaryText->setFont( aFont );
 		SecondaryText->setText(qtestoSecondario);
 	}
 }

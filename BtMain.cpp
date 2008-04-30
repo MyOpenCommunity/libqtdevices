@@ -19,6 +19,7 @@
 #include <qwindowdefs.h>
 #include <qbitmap.h>
 #include <qwindowsystem_qws.h>
+#include <qpainter.h>
 
 #include "main.h"
 #include "btmain.h"

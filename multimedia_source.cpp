@@ -8,23 +8,14 @@
  **
  ****************************************************************/
 
-
-#include <algorithm>
-#include <string>
-
-#include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
-#include <qframe.h>
 #include <qdatetime.h>
-#include <qstring.h>
 #include <qfile.h>
-#include <qpushbutton.h>
-#include <qevent.h>
-#include <qvaluevector.h>
 #include <qlayout.h>
+#include <qslider.h>
+#include <qpainter.h>
 
 #include "multimedia_source.h"
 #include "mediaplayer.h"
@@ -32,10 +23,8 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
-
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include "fontmanager.h"
+#include "buttons_bar.h"
 
 /// ***********************************************************************************************************************
 /// Methods for MultimediaSource
@@ -55,7 +44,9 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	/// Create filesWindow, Set geometry and Font Style
 	filesWindow = new FileBrowser(this, 4 /* this means number of rows for the browser */);
 	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	filesWindow->setFont( QFont( DEFAULT_FONT, 18 ) );
+	QFont aFont;
+	FontManager::instance()->getFont( font_multimedia_source_filesWindow, aFont );
+	filesWindow->setFont( aFont );
 
 	/// Start to Browse Files
 	filesWindow->browseFiles(MEDIASERVER_PATH);
@@ -157,13 +148,6 @@ int MultimediaSource::setBGPixmap(char* backImage)
 void MultimediaSource::freezed(bool f)
 {
 	qDebug("MultimediaSource::freezed()");
-	
-	// FIXED by Kemosh:
-	// a removed setDisabled(f) to avoid the "Bold effect"
-	// when freezed
-
-	// Disable MultimediaSource and all of its children
-	//setDisabled(f);
 }
 
 
@@ -557,7 +541,8 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
 	/// Create Labels (that contain tags)
- 	QFont font( DEFAULT_FONT, 18 );
+ 	QFont aFont;
+	FontManager::instance()->getFont( font_multimedia_source_AudioPlayingWindow, aFont );
 
 	// create Labels containing INFO
 	//labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
@@ -566,10 +551,10 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	meta_album_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
 	time_pos_label    = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
 	// Set Font
-	meta_title_label->setFont(font);
-	meta_artist_label->setFont(font);
-	meta_album_label->setFont(font);
-	time_pos_label->setFont(font);
+	meta_title_label->setFont( aFont );
+	meta_artist_label->setFont( aFont );
+	meta_album_label->setFont( aFont );
+	time_pos_label->setFont( aFont );
 
 	/// Create Main Layout
 	// all others layout must have this as parent, this is not more needed in Qt4
@@ -579,7 +564,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	QString audioplay_title = app_config.get(CFG_LABELS_MEDIAPLAYER "status", "Playing audio").c_str();
 	TitleLabel *window_title_label = new TitleLabel( this, MAX_WIDTH, 120, 9, 0, FALSE );
 	window_title_label->setText( audioplay_title );
-	window_title_label->setFont(font);
+	window_title_label->setFont( aFont );
 
 	QVBoxLayout *title_layout  = new QVBoxLayout(main_layout);
 	title_layout->addWidget(window_title_label);
@@ -600,10 +585,10 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	TitleLabel *album_label  = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
 	TitleLabel *time_label   = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
 	// set font
-	name_label->setFont(font);
-	artist_label->setFont(font);
-	album_label->setFont(font);
-	time_label->setFont(font);
+	name_label->setFont( aFont );
+	artist_label->setFont( aFont );
+	album_label->setFont( aFont );
+	time_label->setFont( aFont );
 	// set text
 	name_label->setText( label_a );
 	artist_label->setText( label_b );

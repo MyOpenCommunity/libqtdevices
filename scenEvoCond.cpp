@@ -1,16 +1,10 @@
-#include <qfont.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
 #include <qlabel.h>
 #include <qdir.h>
 #include <qfile.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 #include "openclient.h"
 #include "sottomenu.h"
@@ -22,6 +16,7 @@
 #include "btbutton.h"
 #include "btlabel.h"
 #include "timescript.h"
+#include "fontmanager.h"
 
 /*****************************************************************
 ** Advanced scenario management generic condition
@@ -635,6 +630,7 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 
 void scenEvo_cond_d::SetIcons() 
 {
+	QFont aFont;
     qDebug("scenEvo_cond_d::SetIcons()");
     QPixmap* Icon1 = new QPixmap();
     QPixmap* Icon2 = NULL;
@@ -648,7 +644,8 @@ void scenEvo_cond_d::SetIcons()
     area2_ptr = new BtLabel(this, "Area2");
     area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, 
 			   TEXT_X_DIM, TEXT_Y_DIM);
-    area2_ptr->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
+    FontManager::instance()->getFont( font_scenEvoCond_Area2, aFont );
+    area2_ptr->setFont( aFont );
     area2_ptr->setAlignment(AlignHCenter|AlignVCenter);
     BtButton *b = new BtButton(this, "Up button");
     but[A3_BUTTON_INDEX] = b;
@@ -996,7 +993,10 @@ device_condition_light_status(QWidget *parent, char *name, QString *c) :
 {
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
+    
     frame = l;
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
@@ -1092,7 +1092,10 @@ device_condition_dimming::device_condition_dimming(QWidget *parent,
 	   c->ascii());
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_device_condition_dimming, aFont );
+    l->setFont( aFont );
+
     frame = l;
     if(strcmp(c->ascii(), "0") == 0)
     {
@@ -1369,7 +1372,9 @@ device_condition(parent, c)
     qDebug("device_condition_dimming_100::device_condition_dimming_100(%s)", c->ascii());
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
     frame = l;
     if(strcmp(c->ascii(), "0") == 0)
     {
@@ -1650,7 +1655,9 @@ device_condition_volume::device_condition_volume(QWidget *parent,
     char sup[10];
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
     frame = l;
     if(strcmp(c->ascii(), "-1") == 0)
     {
@@ -1935,17 +1942,11 @@ device_condition_temp::device_condition_temp(QWidget *parent,
 					     char *name, QString *c) :
     device_condition(parent, c)
 {
-#if 0
-    QLCDNumber *l = new QLCDNumber(parent, name);
-    l->setFrameStyle( QFrame::Plain );
-    l->setLineWidth(0);
-    l->setNumDigits(3);
-    l->setSegmentStyle(QLCDNumber::Flat);    
-#else
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
-#endif
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
     frame = l;
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
@@ -1978,16 +1979,6 @@ void device_condition_temp::get_unit(QString& out)
     out = "°C ±1°C" ;
 }
 
-#if 0
-void device_condition_temp::Draw()
-{
-    QLCDNumber *l = (QLCDNumber *)frame;
-    int val = get_current_value();
-    char tmp[100] ;
-    sprintf(tmp, "%d.%d", val/10, val%10);
-    l->display(tmp);
-}
-#else
 void device_condition_temp::Draw()
 {
     char tmp[50];
@@ -2001,7 +1992,6 @@ void device_condition_temp::Draw()
       sprintf(tmp, "%d.%d%s", val/10, val >= 0 ? val%10 : -val%10, u.ascii());
     ((QLabel *)frame)->setText(tmp);
 }
-#endif
 
 int device_condition_temp::set_condition_value(QString s)
 {

@@ -8,18 +8,12 @@
 **
 ****************************************************************/
 
-#include <qfont.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-
 #include <qdir.h>
 #include <qfile.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 
 #include "sottomenu.h"
@@ -31,6 +25,7 @@
 #include "openclient.h"
 #include "timescript.h"
 #include "bannfrecce.h"
+#include "fontmanager.h"
 
 sveglia::sveglia( QWidget *parent,
 	const char *name,
@@ -126,6 +121,9 @@ sveglia::sveglia( QWidget *parent,
 	Icon2 = new QPixmap();
 	Icon2->load(iconName);
     }
+
+	QFont aFont;
+	FontManager::instance()->getFont( font_sveglia_scelta, aFont );
     for (uchar idx=0;idx<4;idx++)
     {
 	choice[idx] = new BtButton (this,"choice"+QString::number(idx));
@@ -141,7 +139,7 @@ sveglia::sveglia( QWidget *parent,
 	testiChoice[idx] = new BtLabel(this,"choiceLabel"+QString::number(idx));
 	testiChoice[idx] -> setGeometry( 80,idx*60,120,60);
 	testiChoice[idx] -> setAlignment(AlignHCenter|AlignVCenter);
-	testiChoice[idx] -> setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+	testiChoice[idx] -> setFont( aFont );
 	testiChoice[idx] -> hide();
     }	
     dataOra=NULL;

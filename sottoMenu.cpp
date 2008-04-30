@@ -8,13 +8,10 @@
  **
  ****************************************************************/
 
-#include <stdlib.h>
-
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
-#include <unistd.h>
+#include <qtimer.h>
 
 #include "sottomenu.h"
 #include "items.h"

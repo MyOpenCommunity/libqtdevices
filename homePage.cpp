@@ -8,7 +8,6 @@
 **
 ****************************************************************/
 
-#include <qfont.h>
 #include <qpixmap.h>
 #include <qdatetime.h>
 #include <qcursor.h>
@@ -20,6 +19,7 @@
 #include "genericfunz.h"
 #include "openclient.h"
 #include "btlabel.h"
+#include "fontmanager.h"
 
 homePage::homePage( QWidget *parent, const char *name, WFlags f )
         : QWidget( parent, name )
@@ -188,14 +188,16 @@ void homePage::addTemp(
      
      if ( ! qtext.isEmpty() )
      {
-	 descrTemp[tempCont] = new BtLabel( this, qtext.ascii() );
-	 descrTemp[tempCont] ->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ));
-	 descrTemp[tempCont] ->setAlignment(AlignHCenter|AlignVCenter);
-	 descrTemp[tempCont] ->setText( qtext );
-	 descrTemp[tempCont] ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
-	 descrTemp[tempCont] ->setPaletteForegroundColor(fg);
-	 descrTemp[tempCont] ->setPaletteBackgroundColor(bg);
-     }    
+	QFont aFont;
+	FontManager::instance()->getFont( font_homepage_bottoni_label, aFont );
+	descrTemp[tempCont] = new BtLabel( this, qtext.ascii() );
+	descrTemp[tempCont] ->setFont( aFont );
+	descrTemp[tempCont] ->setAlignment(AlignHCenter|AlignVCenter);
+	descrTemp[tempCont] ->setText( qtext );
+	descrTemp[tempCont] ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
+	descrTemp[tempCont] ->setPaletteForegroundColor(fg);
+	descrTemp[tempCont] ->setPaletteBackgroundColor(bg);
+     }
      tempCont++;
  }    
 
@@ -229,16 +231,18 @@ void homePage::addDescrU(
 	int style, 
 	int line)
 {
-    descrizione = new BtLabel( this, qz.ascii() );
-    descrizione->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ));
-    descrizione->setAlignment(AlignHCenter|AlignVCenter);
-    descrizione->setText( qz );
-    descrizione->setGeometry(x,y,width,height);
-    descrizione->setPaletteForegroundColor(fg);
-    descrizione->setPaletteBackgroundColor(bg);
-    descrizione->setFrameStyle( style );
-    descrizione->setLineWidth(line);       
- }    
+	QFont aFont;
+	FontManager::instance()->getFont( font_homepage_bottoni_descrizione, aFont );
+	descrizione = new BtLabel( this, qz.ascii() );
+	descrizione->setFont( aFont );
+	descrizione->setAlignment(AlignHCenter|AlignVCenter);
+	descrizione->setText( qz );
+	descrizione->setGeometry(x,y,width,height);
+	descrizione->setPaletteForegroundColor(fg);
+	descrizione->setPaletteBackgroundColor(bg);
+	descrizione->setFrameStyle( style );
+	descrizione->setLineWidth(line);
+}
 
 void homePage::addDescrU(const QString & qz, int x, int y)
 {

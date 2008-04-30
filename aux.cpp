@@ -8,11 +8,8 @@
  **
  ****************************************************************/
 
-
-#include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qdatetime.h>
 #include <qstring.h>
@@ -29,6 +26,7 @@
 #include "genericfunz.h"
 
 #include "openclient.h"
+#include "fontmanager.h"
 
 aux::aux( QWidget *parent, const QString & name, const QString & amb )
 : QWidget( parent, name.ascii() )
@@ -46,11 +44,15 @@ aux::aux( QWidget *parent, const QString & name, const QString & amb )
 	auxName = new BtLabel(this,"Nome della sorgente");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
-	ambDescr->setFont( QFont( DEFAULT_FONT, 24, QFont::Bold ) );
+	QFont aFont;
+	FontManager::instance()->getFont( font_aux_descr_ambiente, aFont );
+	ambDescr->setFont( aFont );
 	ambDescr->setText(amb);
 	auxName->setGeometry(0,30,240,40);
 	auxName->setAlignment(AlignHCenter|AlignTop);
-	auxName->setFont( QFont( DEFAULT_FONT, 24, QFont::Bold ) );
+
+	FontManager::instance()->getFont( font_aux_nome_sorgente, aFont );
+	auxName->setFont( aFont );
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
 	fwdBut = new BtButton(this, "bottone fwd");

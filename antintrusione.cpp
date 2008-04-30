@@ -7,6 +7,7 @@
 **Sottomenù antiintrusione
 **
 ****************************************************************/
+#include <qcursor.h>
 
 #include "antintrusione.h"
 #include "openclient.h"

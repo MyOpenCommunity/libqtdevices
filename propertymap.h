@@ -64,7 +64,7 @@
  * as strings.  This is useful to pass around application
  * settings fetched from configuration files.
  *
- * PopertyMap provides several ways to lookup values associated
+ * PropertyMap provides several ways to lookup values associated
  * with keys and convert these values from raw strings to specific
  * data types such as int or float.
  *

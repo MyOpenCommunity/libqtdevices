@@ -17,35 +17,22 @@
 #ifndef MULTIMEDIA_SOURCE_H
 #define MULTIMEDIA_SOURCE_H
 
-#include <qframe.h>
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qlistbox.h>
 #include <qdir.h>
-#include <qmap.h>
 #include <qptrvector.h>
 #include <qvaluevector.h>
-#include <qdialog.h>
+#include <qwidget.h>
 #include <qlabel.h>
-#include <qslider.h>
-#include <qbuttongroup.h>
 #include <qtimer.h>
-#include <qpainter.h>
-#include <qtextedit.h>
-
-//#include "btbutton.h"
-#include "main.h"
-#include "btlabel.h"
-#include "bannfrecce.h"
-#include "bann3but.h"
-#include "buttons_bar.h"
-
 
 class FileBrowser;
 class AudioPlayingWindow;
 class MediaPlayer;
 class AudioPlayingWindow;
-
+class QSlider;
+class QPainter;
+class QFileInfo;
+class bannFrecce;
+class ButtonsBar;
 
 /** \class MultimediaSource
  *  This class implemets the Page for MULTIMEDIA SOURCE

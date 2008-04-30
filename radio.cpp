@@ -8,15 +8,11 @@
  **
  ****************************************************************/
 
-
-#include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qframe.h>
 #include <qdatetime.h>
-#include <qstring.h>
 #include <qlcdnumber.h>
 #include <qcursor.h>
 #include <qfile.h>
@@ -29,6 +25,7 @@
 #include "btlabel.h"
 #include "genericfunz.h"
 #include "btbutton.h"
+#include "fontmanager.h"
 
 radio::radio( QWidget *parent, const char *name, const QString & amb )
 : QWidget( parent, name )
@@ -60,7 +57,9 @@ radio::radio( QWidget *parent, const char *name, const QString & amb )
 	radioName = new BtLabel(this,"Bottone di sinistra");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
-	ambDescr->setFont( QFont( DEFAULT_FONT, 12, QFont::Bold ) );
+ 	QFont aFont;
+	FontManager::instance()->getFont( font_radio_descrizione_ambiente, aFont );
+	ambDescr->setFont( aFont );
 	ambDescr->setText( amb );
 	freq = new QLCDNumber(this,"pippo");
 	progrText = new BtLabel(this,"progressivo stazione");
@@ -340,10 +339,13 @@ void radio::setAmbDescr(const QString & d)
 
 void radio::draw()
 {
+	QFont aFont;
 	rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
-	rdsLabel->setFont( QFont( DEFAULT_FONT, 26, QFont::Bold ) );
+	FontManager::instance()->getFont( font_radio_rdsLabel, aFont );
+	rdsLabel->setFont( aFont );
 	radioName->setAlignment(AlignHCenter|AlignTop);
-	radioName->setFont( QFont( DEFAULT_FONT, 12, QFont::Bold ) );
+	FontManager::instance()->getFont( font_radio_radioName, aFont );
+	radioName->setFont( aFont );
 	radioName->setText( qnome );
 	rdsLabel->setText( qrds );
 	char fr[10];
@@ -367,7 +369,8 @@ void radio::draw()
 	wasManual=manual;
 
 	progrText ->setAlignment(AlignHCenter|AlignVCenter);
-	progrText ->setFont( QFont( DEFAULT_FONT, 20, QFont::Bold ) );
+	FontManager::instance()->getFont( font_radio_progrText, aFont );
+	progrText ->setFont( aFont );
 	progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");
 }
 

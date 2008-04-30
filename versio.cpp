@@ -14,6 +14,7 @@
 #include <qpixmap.h>
 #include <qcursor.h>
 #include "openclient.h"
+#include "fontmanager.h"
 
 versio::versio( QWidget *parent,const char *name , unsigned int f)
         : BtLabel( parent, name,  f)
@@ -39,9 +40,6 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
      bticino->setAutoResize(TRUE);
      bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
 
-    
-    
-
      datiGen->setLineWidth(3);
      //datiGen->setText(" H/L/N/NT4684");     
      datiGen->setText( model );
@@ -52,9 +50,10 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
 #endif
      datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
      datiGen->setAlignment(AlignHCenter|AlignVCenter);
-       
-     datiGen->setFont( QFont( DEFAULT_FONT, 24, QFont::Black,TRUE) );
-     indDisp=0;
+	QFont aFont;
+	FontManager::instance()->getFont( font_versio_datiGen, aFont );
+	datiGen->setFont( aFont );
+	indDisp=0;
 }
 
 void   versio::setPaletteForegroundColor( const QColor & c )
@@ -111,7 +110,10 @@ void versio::gestFrame(char* frame)
     if (aggiorna)
     {
 	char scritta[100];
-	datiGen->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold) );
+	QFont aFont;
+	FontManager::instance()->getFont( font_versio_datiGenFw, aFont );
+
+	datiGen->setFont( aFont );
 	datiGen-> setIndent(15);
 	datiGen->setAlignment(AlignLeft|AlignTop);    
 	sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d", model.ascii(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);

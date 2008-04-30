@@ -7,7 +7,6 @@
  **f
  **definizione dei vari items
  ****************************************************************/
-#include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
 
@@ -25,6 +24,10 @@
 #include "radio.h"
 #include "diffsonora.h"
 #include "genericfunz.h"
+#include "fontmanager.h"
+#include "btlabel.h"
+#include "btbutton.h"
+#include "buttons_bar.h"
 
 /*****************************************************************
  **dimmer
@@ -102,27 +105,31 @@ void dimmer::Draw()
 	{
 		if ( (Icon[44]) && (csxButton) )
 		{
-			csxButton->setPixmap(*Icon[44]);		    
+			csxButton->setPixmap(*Icon[44]);
 			qDebug("******* Icon[%d]", 44);
 		}
 
 		if ( (cdxButton) && (Icon[45]) )
 		{
-			cdxButton->setPixmap(*Icon[45]);    
+			cdxButton->setPixmap(*Icon[45]);
 			qDebug("******* Icon[%d]", 45);
 		}
 	}
 	if (BannerText)
 	{
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
+		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setFont( aFont );
 		BannerText->setText( qtesto );
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_secondarytext, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
+		SecondaryText->setFont( aFont );
 		SecondaryText->setText( qtestoSecondario );
 	}
 }
@@ -1964,13 +1971,17 @@ void attuatAutomTempNuovoF::Draw()
 			dxButton->setPressedPixmap(*pressIcon[2]);
 	}
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+		BannerText->setFont( aFont );
 		BannerText->setText( qtesto );
 	}
-	if (SecondaryText) {	
+	if (SecondaryText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_secondarytext, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
+		SecondaryText->setFont( aFont );
 		SecondaryText->setText( qtestoSecondario );
 	} 
 }
@@ -3539,8 +3550,10 @@ void zonaAnti::setIcons()
 	qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
 	zonaAnti::SetIcons(sparzIName, &pippo[0], IconDisactive);
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+		BannerText->setFont( aFont );
 		BannerText->setText( name );
 	}
 	zonaAttiva = IconActive;
@@ -4577,14 +4590,18 @@ void scenEvo::Draw()
 			csxButton->setPressedPixmap(*pressIcon[3]);
 	}
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+		BannerText->setFont( aFont );
 		BannerText->setText( qtesto );
 		//     qDebug("TESTO: %s", testo);
 	}
-	if (SecondaryText) {	
+	if (SecondaryText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_secondarytext, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
+		SecondaryText->setFont( aFont );
 		SecondaryText->setText( qtestoSecondario );
 	}
 }
@@ -4815,18 +4832,13 @@ void scenSched::Draw()
 			dxButton->setPressedPixmap(*pressIcon[2]);
 	}
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+		BannerText->setFont( aFont );
 		BannerText->setText( qtesto );
 		//     qDebug("TESTO: %s", testo);
 	}
-#if 0
-	if (SecondaryText) {	
-		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( DEFAULT_FONT, 18, QFont::Bold ) );
-		SecondaryText->setText(testoSecondario);
-	}
-#endif
 }
 
 /*****************************************************************
@@ -5073,8 +5085,10 @@ void ambDiffSon::Draw()
 	BannerIcon2->repaint();
 	BannerIcon2->setPixmap(*(Icon[3]));
 	BannerIcon2->repaint();
+	QFont aFont;
+	FontManager::instance()->getFont( font_items_bannertext, aFont );
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+	BannerText->setFont( aFont );
 	BannerText->setText( qtesto );
 }
 
@@ -5207,8 +5221,10 @@ void insAmbDiffSon::Draw()
 	BannerIcon->repaint();
 	BannerIcon->setPixmap(*(Icon[0]));
 	BannerIcon->repaint();
+	QFont aFont;
+	FontManager::instance()->getFont( font_items_bannertext, aFont );
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( QFont( DEFAULT_FONT, 14, QFont::Bold ) );
+	BannerText->setFont( aFont );
 	BannerText->setText( qtesto );
 }
 

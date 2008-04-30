@@ -7,24 +7,18 @@
 **funzioni generiche usate qua e là
 **
 ****************************************************************/
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <qapplication.h>
-#include <qfile.h>
-#include "genericfunz.h"
-#include "openclient.h"
-#include "main.h"
-#include "btmain.h"
-#include <qiodevice.h>
 #include <qdir.h>
 #include <qwidget.h>
 #include <qpixmap.h>
 #include <qstring.h>
+
+#include <fcntl.h>
+
+#include "genericfunz.h"
+#include "openclient.h"
+#include "main.h"
+#include "btmain.h"
+
 
 #define CONFILENAME	"cfg/conf.xml"
 

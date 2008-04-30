@@ -84,6 +84,10 @@ extern PropertyMap app_config;
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
+#define MY_FILE_CFG_FONT        "cfg/font.xml"
+/*! \def MY_FILE_CFG_FONT
+ *  The font configuration file
+ */
 #define VERBOSITY_LEVEL_DEFAULT    0
 /*! \def VERBOSITY_LEVEL_DEFAUL
  *  It defines the starting path for mediaserver
@@ -139,10 +143,6 @@ extern PropertyMap app_config;
  *  Number of lines shown on the screen
  */
 #define NUM_RIGHE                  4
-
-// cinese  #define DEFAULT_FONT  		"simsun"
-// #define DEFAULT_FONT  		"KacstLetter"
-#define DEFAULT_FONT  		"arial"
 
 /****************************************************************
  **  definizione dei sottomenù

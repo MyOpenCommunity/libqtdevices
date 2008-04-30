@@ -8,12 +8,13 @@
  **
  ****************************************************************/
 
+#include <qpixmap.h>
+
 #include "banntermo.h"
 #include "main.h"
 #include "sottomenu.h"
-#include <qfont.h>
-#include <qpixmap.h>
 #include "buttons_bar.h"
+#include "fontmanager.h"
 
 bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t _devtype )
 	: banner( parent, name )
@@ -126,10 +127,13 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 
 void bannTermo::Draw()
 {
-	tempMis -> setFont( QFont( "Times", 40, QFont::Bold ) );
+	QFont aFont;
+	FontManager::instance()->getFont( font_banTermo_tempMis, aFont );
+	tempMis -> setFont( aFont );
 	tempMis -> setAlignment(AlignHCenter|AlignVCenter);
 	tempMis -> setText( qtemp );
-	tempImp -> setFont( QFont( "Times", 25, QFont::Bold ) );
+	FontManager::instance()->getFont( font_banTermo_tempImp, aFont );
+	tempImp -> setFont( aFont );
 	tempImp -> setPaletteForegroundColor(secondForeground);
 	tempImp -> setAlignment(AlignHCenter|AlignVCenter);
 	tempImp -> setText( qsetpoint );
@@ -144,7 +148,8 @@ void bannTermo::Draw()
 		sondoffanti -> setText("OFF"); // FIXME da tradurre?
 		sondoffanti -> show();
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
-		sondoffanti -> setFont( QFont( "Times", 20, QFont::Bold ) );
+		FontManager::instance()->getFont( font_banTermo_sondoffanti, aFont );
+		sondoffanti -> setFont( aFont );
 	}
 	else   if (isAntigelo)
 	{
@@ -157,7 +162,8 @@ void bannTermo::Draw()
 		sondoffanti -> setText("*");
 		sondoffanti -> show();   
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
-		sondoffanti -> setFont( QFont( "Times", 40, QFont::Bold ) );
+		FontManager::instance()->getFont( font_banTermo_sondoffanti2, aFont );
+		sondoffanti -> setFont( aFont );
 	}
 	else if (devtype != SINGLE_PROBE && devtype != EXT_SINGLE_PROBE)
 	{
@@ -166,7 +172,10 @@ void bannTermo::Draw()
 			QString q_app;
 			q_app.sprintf("%+d", idx-3);
 			texts[idx] -> setText( q_app );
-			texts[idx] -> setFont( QFont( "Times", 20, QFont::Bold ) );
+			FontManager::instance()->getFont( font_banTermo_testo, aFont );
+
+			texts[idx] -> setFont( aFont );
+
 			texts[idx] -> setAlignment(AlignHCenter|AlignVCenter);
 			texts[idx] -> show();
 			if (val_imp==idx)

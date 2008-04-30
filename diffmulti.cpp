@@ -9,6 +9,7 @@
 ****************************************************************/
 
 #include <qwidget.h>
+#include <qtimer.h>
 
 #include "items.h"
 #include "device_cache.h"
