@@ -39,7 +39,7 @@ FontManager::FontManager( )
 	loadFonts();
 }
 
-#define PRINT_ON_CONSOLE
+//#define PRINT_ON_CONSOLE
 /**
  * \brief colleziona gli elementi di un font (id, family, size...) 
  *          e quando la descrizione e' completa salva il font nella mappa
