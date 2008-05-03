@@ -2251,7 +2251,7 @@ void amplificatore:: Accendi()
 	qDebug("amplificatore::Accendi()");
 	memset(pippo,'\000',sizeof(pippo));
 	sprintf(ind, "%s", getAddress());
-	sprintf(pippo,"*22*1#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
+	sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
 	emit sendFrame(pippo);     
 }
 void amplificatore:: Spegni()
@@ -2350,11 +2350,11 @@ void grAmplificatori::Attiva()
 		memset(pippo,'\000',sizeof(pippo));
 		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
 		if(strcmp(ind, "0") == 0)
-			sprintf(pippo,"*22*1#4#%c*5#3#%c##",ind[0], ind[0]);
+			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
 		else if(ind[0] == '#')
-			sprintf(pippo,"*22*1#4#%c*4#%c##",ind[1], ind[1]);
+			sprintf(pippo,"*22*34#4#%c*4#%c##",ind[1], ind[1]);
 		else
-			sprintf(pippo,"*22*1#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]); 
+			sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]); 
 		emit sendFrame(pippo);
 	}
 }
