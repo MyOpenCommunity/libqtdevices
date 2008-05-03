@@ -2517,10 +2517,18 @@ void BannerSorgenteMultimedia::ciclaSorg()
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);
 }
+void BannerSorgenteMultimedia::decBrano()
+{
+	source_menu.prevTrack();
+}
 
-void BannerSorgenteMultimedia::decBrano() {}
-void BannerSorgenteMultimedia::aumBrano() {}
+void BannerSorgenteMultimedia::aumBrano()
+{
+	source_menu.nextTrack();
+}
+
 void BannerSorgenteMultimedia::menu() {}
+
 void BannerSorgenteMultimedia::gestFrame(char *frame)
 {
 	openwebnet msg_open;
@@ -2535,9 +2543,15 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 	    (!strcmp(msg_open.Extract_livello(),"2")))
 	{
 		if (!strcmp(msg_open.Extract_interfaccia(), amb+2))
+		{
 			source_menu.enableSource(false);
+			source_menu.resume();
+		}
 		else
+		{
 			source_menu.disableSource(false);
+			source_menu.pause();
+		}
 	}
 }
 

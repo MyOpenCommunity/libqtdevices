@@ -62,40 +62,46 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	QWidget( parent, name ),
 	audio_initialized(true)
 {
-	/// Set main geometry
+	// Set main geometry
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	where_address = _where_address;
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
-	/// Create filesWindow, Set geometry and Font Style
-	filesWindow = new FileBrowser(this, 4 /* this means number of rows for the browser */);
+	// Create playing_window and set style
+	playing_window = new AudioPlayingWindow(this);
+	playing_window->setBGColor(paletteBackgroundColor());
+	playing_window->setFGColor(paletteForegroundColor());
+	playing_window->setPalette(palette());
+	playing_window->setFont(font());
+
+	// Create filesWindow, Set geometry and Font Style
+	filesWindow = new FileBrowser(this, playing_window, 4 /* this means number of rows for the browser */);
 	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	filesWindow->setFont( QFont( "Helvetica", 18 ) );
 
-	/// Start to Browse Files
+	// Start to Browse Files
 	if (!filesWindow->browseFiles(MEDIASERVER_PATH))
 	{
 		// FIXME display error?
 	}
 
-	/// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro )
+	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro )
 	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
 	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	/// Pulsanti up, down e back
+	// Pulsanti up, down e back
 	connect(bannNavigazione, SIGNAL(downClick()), filesWindow, SLOT(prevItem()));
 	connect(bannNavigazione, SIGNAL(upClick()), filesWindow, SLOT(nextItem()));
 	connect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
 	connect(bannNavigazione, SIGNAL(forwardClick()), filesWindow, SIGNAL(notifyExit()));
 
-	/// Connection to be notified about Start and Stop Play
+	// Connection to be notified about Start and Stop Play
 	connect(filesWindow, SIGNAL(notifyStartPlay()), this, SLOT(handleStartPlay()));
 	connect(filesWindow, SIGNAL(notifyStopPlay()), this, SLOT(handleStopPlay()));
 	connect(filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()));
 }
-
 
 void MultimediaSource::initAudio()
 {
@@ -109,6 +115,21 @@ void MultimediaSource::initAudio()
 	}
 }
 
+void MultimediaSource::nextTrack()      { playing_window->nextTrack(); }
+void MultimediaSource::prevTrack()      { playing_window->prevTrack(); }
+void MultimediaSource::stop()           { playing_window->stop(); }
+
+void MultimediaSource::pause()
+{
+	if (!playing_window->isPaused())
+		playing_window->pauseOrResume();
+}
+
+void MultimediaSource::resume()
+{
+	if (playing_window->isPaused())
+		playing_window->pauseOrResume();
+}
 
 void MultimediaSource::showAux()
 {
@@ -116,7 +137,8 @@ void MultimediaSource::showAux()
 	draw();
 	showFullScreen();
 
-	filesWindow->showPlayingStatusIfPlaying();
+	if (playing_window->isPlaying())
+		playing_window->show();
 }
 
 void MultimediaSource::handleStartPlay()
@@ -165,12 +187,12 @@ int MultimediaSource::setBGPixmap(char* backImage)
 
 void MultimediaSource::enableSource(bool send_frame)
 {
-	filesWindow->enableSource(send_frame);
+	playing_window->turnOnAudioSystem(send_frame);
 }
 
 void MultimediaSource::disableSource(bool send_frame)
 {
-	filesWindow->disableSource(send_frame);
+	playing_window->turnOffAudioSystem(send_frame);
 }
 
 /// ***********************************************************************************************************************
@@ -263,8 +285,10 @@ void TitleLabel::handleScrollingTimer()
 /// Methods for FileBrowser
 /// ***********************************************************************************************************************
 
-FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *name, WFlags f) :
+FileBrowser::FileBrowser(QWidget *parent, AudioPlayingWindow *_playing_window,
+		unsigned rows_per_page, const char *name, WFlags f) :
 	QWidget(parent, name, f),
+	playing_window(_playing_window),
 	level(0)
 {
 	// Set Style
@@ -330,13 +354,6 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 	files_handler.setMatchAllDirs(TRUE);
 	files_handler.setNameFilter("*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
 
-	// Create playing_window and set style
-	playing_window = new AudioPlayingWindow(this);
-	playing_window->setBGColor(paletteBackgroundColor());
-	playing_window->setFGColor(paletteForegroundColor());
-	playing_window->setPalette(palette());
-	playing_window->setFont(font());
-
 	// Connette il FilesBrowser con se stesso per il CLICK
 	connect(buttons_bar, SIGNAL(clicked(int)), this, SLOT(itemIsClicked(int)));
 
@@ -356,22 +373,6 @@ void FileBrowser::showEvent( QShowEvent *event )
 		// FIXME display error?
 		emit notifyExit();
 	}
-}
-
-void FileBrowser::showPlayingStatusIfPlaying()
-{
-	if (playing_window->isPlaying())
-		playing_window->show();
-}
-
-void FileBrowser::enableSource(bool send_frame)
-{
-	playing_window->turnOnAudioSystem(send_frame);
-}
-
-void FileBrowser::disableSource(bool send_frame)
-{
-	playing_window->turnOffAudioSystem(send_frame);
 }
 
 void FileBrowser::itemIsClicked(int item)
@@ -790,6 +791,11 @@ bool AudioPlayingWindow::isPlaying()
 	return media_player->isPlaying();
 }
 
+bool AudioPlayingWindow::isPaused()
+{
+	return media_player->isPaused();
+}
+
 void AudioPlayingWindow::refreshPlayingInfo()
 {
 	QMap<QString, QString> updated_playing_info;
@@ -844,21 +850,34 @@ void AudioPlayingWindow::prevTrack()
 	 * ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
 	 * necessario tornare indietro di due tracce se possibile.
 	 */
-	if (current_track >= 2)
+	data_refresh_timer->stop();
+
+	if (current_track != CURRENT_TRACK_NONE)
 	{
-		current_track -= 2;
-		media_player->quit();
+		if (current_track >= 2)
+		{
+			current_track -= 2;
+			media_player->quit();
+		}
+		else if (current_track == 1)
+		{
+			/*
+			 * Se la current_track è uguale a 1 vuol dire che stiamo suonando la traccia zero
+			 * il questo caso la riportiamo all'inizio.
+			 */
+			current_track = 0;
+			media_player->quit();
+		}
+
+		data_refresh_timer->start(refresh_time);
+
+		qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %d/%d", current_track-1, play_list.count());
 	}
-	else if (current_track == 1)
-	{
-		/*
-		 * Se la current_track è uguale a 1 vuol dire che stiamo suonando la traccia zero
-		 * il questo caso la riportiamo all'inizio.
-		 */
-		current_track = 0;
-		media_player->quit();
-	}
-	qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %d/%d", current_track-1, play_list.count());
+
+	if (media_player->isPlaying() && !media_player->isPaused())
+		showPauseBtn();
+	else
+		showPlayBtn();
 }
 
 void AudioPlayingWindow::nextTrack()
@@ -868,75 +887,88 @@ void AudioPlayingWindow::nextTrack()
 	 * ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
 	 * necessario uccidere il processo se esiste una traccia successiva.
 	 */
-	if (current_track < play_list.count())
-	{
-		media_player->quit();
-	}
-	qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %d/%d", current_track-1, play_list.count());
-}
-
-void AudioPlayingWindow::stop()
-{
-	// That's all folks
-	qDebug("[AUDIO] AudioPlayingWindow::stop()");
-	current_track = CURRENT_TRACK_NONE;
-	media_player->quit();
-}
-
-void AudioPlayingWindow::handle_buttons(int button_number)
-{
 	data_refresh_timer->stop();
 
-	switch (button_number)
+	if (current_track != CURRENT_TRACK_NONE)
 	{
-	case 0:
-		// play/pause
-		if (current_track == CURRENT_TRACK_NONE)
-		{
-			// Restart play after previous stop
-			media_player->play(play_list[0]);
-			current_track = 1;  // next due
-			data_refresh_timer->start(refresh_time);
-		}
-		else if (media_player->isPaused())
-		{
-			qDebug("[AUDIO] media_player: resume play");
-			//turnOnAudioSystem(false);
-			media_player->resume();
-			data_refresh_timer->start(refresh_time);
-		}
-		else
-		{
-			qDebug("[AUDIO] media_player: pause play");
-			//turnOffAudioSystem(false);
-			media_player->pause();
-		}
-		break;
-	case 1:
-		stop();
-		break;
-	case 2:
-		// go to prev track
-		if (current_track != CURRENT_TRACK_NONE)
-		{
-			prevTrack();
-			data_refresh_timer->start(refresh_time);
-		}
-		break;
-	case 3:
-		// go to next track
-		if (current_track != CURRENT_TRACK_NONE)
-		{
-			nextTrack();
-			data_refresh_timer->start(refresh_time);
-		}
-		break;
+		if (current_track < play_list.count())
+			media_player->quit();
+
+		data_refresh_timer->start(refresh_time);
+
+		qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %d/%d", current_track-1, play_list.count());
 	}
 
 	if (media_player->isPlaying() && !media_player->isPaused())
 		showPauseBtn();
 	else
 		showPlayBtn();
+}
+
+void AudioPlayingWindow::pauseOrResume()
+{
+	data_refresh_timer->stop();
+
+	if (current_track == CURRENT_TRACK_NONE)
+	{
+		// Restart play after previous stop
+		media_player->play(play_list[0]);
+		current_track = 1;  // next due
+		data_refresh_timer->start(refresh_time);
+	}
+	else if (media_player->isPaused())
+	{
+		qDebug("[AUDIO] media_player: resume play");
+		//turnOnAudioSystem(false);
+		media_player->resume();
+		data_refresh_timer->start(refresh_time);
+	}
+	else
+	{
+		qDebug("[AUDIO] media_player: pause play");
+		//turnOffAudioSystem(false);
+		media_player->pause();
+	}
+
+	if (media_player->isPlaying() && !media_player->isPaused())
+		showPauseBtn();
+	else
+		showPlayBtn();
+}
+
+void AudioPlayingWindow::stop()
+{
+	// That's all folks
+	qDebug("[AUDIO] AudioPlayingWindow::stop()");
+
+	data_refresh_timer->stop();
+
+	current_track = CURRENT_TRACK_NONE;
+	media_player->quit();
+
+	if (media_player->isPlaying() && !media_player->isPaused())
+		showPauseBtn();
+	else
+		showPlayBtn();
+}
+
+void AudioPlayingWindow::handle_buttons(int button_number)
+{
+	switch (button_number)
+	{
+	case 0:
+		pauseOrResume();
+		break;
+	case 1:
+		stop();
+		break;
+	case 2:
+		prevTrack();
+		break;
+	case 3:
+		nextTrack();
+		break;
+	}
 }
 
 void AudioPlayingWindow::handleBackBtn()

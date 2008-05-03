@@ -85,13 +85,17 @@ public:
 	void enableSource(bool send_frame);
 	void disableSource(bool send_frame);
 
-	/*!
-	 * File Browsing Windows
-	 */
-	FileBrowser *filesWindow;
-
 	/// Init Audio System
 	void initAudio();
+
+	/*
+	 * Play control
+	 */
+	void nextTrack();
+	void prevTrack();
+	void pause();
+	void resume();
+	void stop();
 
 signals:
 	/*!
@@ -116,6 +120,13 @@ public slots:
 	void handleStartPlay();
 	void handleStopPlay();
 private:
+	/// Player screen
+	AudioPlayingWindow *playing_window;
+
+	/// Filer browser
+	FileBrowser *filesWindow;
+
+
 	char amb[80];
 	char nome[15];
 	bannFrecce *bannNavigazione;
@@ -186,7 +197,7 @@ class  FileBrowser : public QWidget
 {
 Q_OBJECT
 public:
-	FileBrowser(QWidget *parent=0, unsigned rows_per_page=3, const char *name=0, WFlags f=0);
+	FileBrowser(QWidget *parent, AudioPlayingWindow *, unsigned rows_per_page, const char *name=0, WFlags f=0);
 
 	/**
 	 * Browse given path, return false in case of error.
@@ -207,14 +218,6 @@ public:
 
 	/// before to show itself some init is done.
 	void showEvent(QShowEvent *event);
-
-	void showPlayingStatusIfPlaying();
-
-	/*
-	 * Enable/Disable audio source
-	 */
-	void enableSource(bool send_frame);
-	void disableSource(bool send_frame);
 
 public slots:
 	void nextItem();
@@ -276,6 +279,7 @@ public:
 	// Play control
 	void nextTrack();
 	void prevTrack();
+	void pauseOrResume();
 	void stop();
 
 	/// Stores current playing info
@@ -288,7 +292,11 @@ public:
 	void turnOnAudioSystem(bool send_frame);
 	void turnOffAudioSystem(bool send_frame);
 
+	/// Return true if a song is currently active, even if in pause.
 	bool isPlaying();
+
+	/// Return true if a song is in pause.
+	bool isPaused();
 
 public slots:
 	void handle_buttons(int);
