@@ -82,8 +82,8 @@ public:
 	/*
 	 * \brief Enable/Disable audio source
 	 */
-	void enableSource();
-	void disableSource();
+	void enableSource(bool send_frame);
+	void disableSource(bool send_frame);
 
 	/*!
 	 * File Browsing Windows
@@ -213,8 +213,8 @@ public:
 	/*
 	 * Enable/Disable audio source
 	 */
-	void enableSource();
-	void disableSource();
+	void enableSource(bool send_frame);
+	void disableSource(bool send_frame);
 
 public slots:
 	void nextItem();
@@ -285,8 +285,8 @@ public:
 	void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 
 	// Run script and send frame to turn on and off Audio System
-	void turnOnAudioSystem();
-	void turnOffAudioSystem();
+	void turnOnAudioSystem(bool send_frame);
+	void turnOffAudioSystem(bool send_frame);
 
 	bool isPlaying();
 

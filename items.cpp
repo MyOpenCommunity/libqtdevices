@@ -2521,7 +2521,25 @@ void BannerSorgenteMultimedia::ciclaSorg()
 void BannerSorgenteMultimedia::decBrano() {}
 void BannerSorgenteMultimedia::aumBrano() {}
 void BannerSorgenteMultimedia::menu() {}
-void BannerSorgenteMultimedia::gestFrame(char *) {}
+void BannerSorgenteMultimedia::gestFrame(char *frame)
+{
+	openwebnet msg_open;
+	char amb[3];
+	qDebug("BannerSorgenteMultimedia::gestFrame()");
+
+	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+	sprintf(amb, getAddress());
+	if ((!strcmp(msg_open.Extract_chi(),"22")) &&
+	    (!strncmp(msg_open.Extract_cosa(),"2", 1)) &&
+	    (!strcmp(msg_open.Extract_dove(),"5")) && 
+	    (!strcmp(msg_open.Extract_livello(),"2")))
+	{
+		if (!strcmp(msg_open.Extract_interfaccia(), amb+2))
+			source_menu.enableSource(false);
+		else
+			source_menu.disableSource(false);
+	}
+}
 
 void BannerSorgenteMultimedia::hide() 
 {

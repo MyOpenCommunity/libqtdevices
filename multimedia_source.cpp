@@ -60,7 +60,7 @@ static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
 
 MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const char *amb, int _where_address ) :
 	QWidget( parent, name ),
-	audio_initialized(false)
+	audio_initialized(true)
 {
 	/// Set main geometry
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
@@ -163,14 +163,14 @@ int MultimediaSource::setBGPixmap(char* backImage)
 	return (1);
 }
 
-void MultimediaSource::enableSource()
+void MultimediaSource::enableSource(bool send_frame)
 {
-	filesWindow->enableSource();
+	filesWindow->enableSource(send_frame);
 }
 
-void MultimediaSource::disableSource()
+void MultimediaSource::disableSource(bool send_frame)
 {
-	filesWindow->disableSource();
+	filesWindow->disableSource(send_frame);
 }
 
 /// ***********************************************************************************************************************
@@ -364,14 +364,14 @@ void FileBrowser::showPlayingStatusIfPlaying()
 		playing_window->show();
 }
 
-void FileBrowser::enableSource()
+void FileBrowser::enableSource(bool send_frame)
 {
-	playing_window->turnOnAudioSystem();
+	playing_window->turnOnAudioSystem(send_frame);
 }
 
-void FileBrowser::disableSource()
+void FileBrowser::disableSource(bool send_frame)
 {
-	playing_window->turnOffAudioSystem();
+	playing_window->turnOffAudioSystem(send_frame);
 }
 
 void FileBrowser::itemIsClicked(int item)
@@ -750,7 +750,7 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 	}
 
 	// Turn On Audio System
-	turnOnAudioSystem();
+	turnOnAudioSystem(false);
 
 	// Start playing and point next Track
 	cleanPlayingInfo();
@@ -761,7 +761,7 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 	data_refresh_timer->start(refresh_time);
 }
 
-void AudioPlayingWindow::turnOnAudioSystem()
+void AudioPlayingWindow::turnOnAudioSystem(bool send_frame)
 {
 	qDebug("[AUDIO] Running start play script: %s", start_play_script);
 
@@ -769,10 +769,11 @@ void AudioPlayingWindow::turnOnAudioSystem()
 	if ((rc = system(start_play_script)) != 0)
 		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
 
-	emit notifyStartPlay();
+	if(send_frame)
+		emit notifyStartPlay();
 }
 
-void AudioPlayingWindow::turnOffAudioSystem()
+void AudioPlayingWindow::turnOffAudioSystem(bool send_frame)
 {
 	qDebug("[AUDIO] Running stop play script: %s", stop_play_script);
 
@@ -780,7 +781,8 @@ void AudioPlayingWindow::turnOffAudioSystem()
 	if ((rc = system(stop_play_script)) != 0)
 		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
 
-	emit notifyStopPlay();
+	if(send_frame)
+		emit notifyStopPlay();
 }
 
 bool AudioPlayingWindow::isPlaying()
@@ -899,14 +901,14 @@ void AudioPlayingWindow::handle_buttons(int button_number)
 		else if (media_player->isPaused())
 		{
 			qDebug("[AUDIO] media_player: resume play");
-			turnOnAudioSystem();
+			//turnOnAudioSystem(false);
 			media_player->resume();
 			data_refresh_timer->start(refresh_time);
 		}
 		else
 		{
 			qDebug("[AUDIO] media_player: pause play");
-			turnOffAudioSystem();
+			//turnOffAudioSystem(false);
 			media_player->pause();
 		}
 		break;
@@ -975,14 +977,14 @@ void AudioPlayingWindow::handlePlayingDone()
 	else
 	{
 		// In questo caso ha finito di suonare l'ultimo pezzo
-		turnOffAudioSystem();
+		//turnOffAudioSystem(false);
 		showPlayBtn();
 	}
 }
 
 void AudioPlayingWindow::handlePlayingAborted()
 {
-	turnOffAudioSystem();
+	turnOffAudioSystem(false);
 
 	hide();
 
