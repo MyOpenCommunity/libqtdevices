@@ -3127,8 +3127,8 @@ termoPage::termoPage(QWidget *parent, devtype_t _devtype, const char *name, cons
 
 	strncpy(&manIco[0], icon_names.at(2)->ascii(), sizeof(manIco));
 	strncpy(&autoIco[0], icon_names.at(3)->ascii(), sizeof(autoIco));
-	connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
-	connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));
+	connect(this, SIGNAL(dxClick()), SLOT(aumSetpoint()));
+	connect(this, SIGNAL(sxClick()), SLOT(decSetpoint()));
 	setChi("4");
 
 	stato = device_status_thermr::S_MAN;
@@ -3144,7 +3144,7 @@ termoPage::termoPage(QWidget *parent, devtype_t _devtype, const char *name, cons
 	case THERMO_99_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99,
 			fancoil, ind_centrale.ascii(), indirizzo.ascii());
-		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
+		connect(fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 		break;
 	case THERMO_4_ZONES:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4,
@@ -3153,7 +3153,7 @@ termoPage::termoPage(QWidget *parent, devtype_t _devtype, const char *name, cons
 	case THERMO_4_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4,
 			fancoil, ind_centrale.ascii(), indirizzo.ascii());
-		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
+		connect(fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 		break;
 	case SINGLE_PROBE:
 		dev = btouch_device_cache.get_temperature_probe(getAddress(), false);
@@ -3166,9 +3166,9 @@ termoPage::termoPage(QWidget *parent, devtype_t _devtype, const char *name, cons
 	}
 
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 	delta_setpoint = 0;
-	connect(&setpoint_timer, SIGNAL(timeout()), this, SLOT(sendSetpoint()));
+	connect(&setpoint_timer, SIGNAL(timeout()), SLOT(sendSetpoint()));
 	sxButton->setAutoRepeat(true);
 	dxButton->setAutoRepeat(true);
 }
@@ -3177,7 +3177,7 @@ void termoPage::handleFancoilButtons(int button_number)
 {
 	qDebug("termoPage::handleFancoilButtons()");
 
-	// FIXME: magic numbers below should be define in OpenMsg class
+	// FIXME: magic numbers below should be defined in OpenMsg class
 	int speed;
 	switch (button_number)
 	{
@@ -3199,10 +3199,18 @@ void termoPage::handleFancoilButtons(int button_number)
 	}
 
 	QString command = QString("*#4*%1*#11*%2##").arg(indirizzo).arg(speed);
+	openwebnet open_cmd;
+	open_cmd.CreateMsgOpen((char *)command.ascii(), command.length());
+	emit sendFrame(open_cmd.frame_open);
 
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen((char*)command.ascii(), command.length());
-	emit sendFrame(msg_open.frame_open);
+	/*
+	 * Read back the set value to force an update to other devices
+	 * monitoring this dimension.
+	 */
+	command = QString("*#4*%1*11##").arg(indirizzo);
+	openwebnet open_query;
+	open_query.CreateMsgOpen((char *)command.ascii(), command.length());
+	emit sendFrame(open_query.frame_open);
 
 	fancoil_buttons->setToggleStatus(button_number);
 }
