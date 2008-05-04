@@ -3096,10 +3096,10 @@ void banradio::inizializza(bool forza)
 /*****************************************************************
  **termoPage
  ****************************************************************/
-termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const char *_indirizzo,
+termoPage::termoPage(QWidget *parent, devtype_t _devtype, const char *name, const char *_indirizzo,
 		QPtrList<QString> &icon_names,
 		QColor SecondForeground, int _type, const char *_ind_centrale) :
-	bannTermo(parent, name, SecondForeground, devtype),
+	bannTermo(parent, name, SecondForeground, _devtype),
 	type(_type),
 	ind_centrale(_ind_centrale),
 	indirizzo(_indirizzo)
@@ -3131,10 +3131,7 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const
 	connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));
 	setChi("4");
 
-	if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL)
-		stato = device_status_thermr::S_MAN;
-	else
-		stato = device_status_thermr::S_NONE;
+	stato = device_status_thermr::S_MAN;
 
 	bool fancoil = (devtype == THERMO_99_ZONES_FANCOIL || devtype == THERMO_4_ZONES_FANCOIL);
 
@@ -3253,43 +3250,56 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 						case device_status_thermr::S_MAN:
 							qDebug("stato S_MAN");
 							stato = device_status_thermr::S_MAN;
-							mostra(BUT1);
-							mostra(BUT2);
 							nascondi(ICON);
 							tempImp->show();
 							aggiorna = true;
-							if (isShown()) 
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
 							{
-								((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
-								((sottoMenu*)parentWidget())->forceDraw();
+								mostra(BUT1);
+								mostra(BUT2);
+
+								if (isShown())
+								{
+									((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
+									((sottoMenu*)parentWidget())->forceDraw();
+								}
 							}
 							break;
 						case device_status_thermr::S_AUTO:
 							qDebug("stato S_AUTO");
 							stato = device_status_thermr::S_AUTO;
-							nascondi(BUT1);
-							nascondi(BUT2);
 							nascondi(ICON);
 							tempImp->show();
 							aggiorna = true;
-							if(isShown())
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
 							{
-								((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
-								((sottoMenu*)parentWidget())->forceDraw();
+								nascondi(BUT1);
+								nascondi(BUT2);
+
+								if (isShown())
+								{
+									((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
+									((sottoMenu*)parentWidget())->forceDraw();
+								}
 							}
 							break;
 						case device_status_thermr::S_ANTIGELO:
 						case device_status_thermr::S_TERM:
 						case device_status_thermr::S_GEN:
 							qDebug("stato S_TERM");
-							nascondi(BUT1);
-							nascondi(BUT2);
 							mostra(ICON);
 							tempImp->hide();
 							impostaAttivo(1);
 							aggiorna= true;
 							stato = device_status_thermr::S_TERM;
-							if(isShown())
+							
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
+							{
+								nascondi(BUT1);
+								nascondi(BUT2);
+							}
+
+							if (isShown())
 							{
 								((sottoMenu*)parentWidget())->setNavBarMode(3, (char *)"");
 								((sottoMenu*)parentWidget())->forceDraw();
@@ -3298,13 +3308,18 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 						case device_status_thermr::S_OFF:
 							qDebug("stato S_OFF");
 							mostra(ICON);
-							nascondi(BUT1);
-							nascondi(BUT2);
 							tempImp->hide();
 							impostaAttivo(0);
 							aggiorna= true;
 							stato = device_status_thermr::S_OFF;
-							if(isShown())
+
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
+							{
+								nascondi(BUT1);
+								nascondi(BUT2);
+							}
+
+							if (isShown())
 							{
 
 								((sottoMenu*)parentWidget())->setNavBarMode(3, (char *)"");

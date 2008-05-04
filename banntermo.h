@@ -45,9 +45,11 @@ public:
 		EXT_SINGLE_PROBE,
 	};
 
-	bannTermo( QWidget *, const char *, QColor, devtype_t devtype );
-	// void setIcons(const char *IconaMeno=0, const char *IconaPiu=0, const char * IconaMan, const char * IconaAuto);
+	bannTermo(QWidget *, const char *, QColor, devtype_t devtype);
+
 	void Draw();
+
+	devtype_t devtype;
 
 	// andrebbero resi privati e fare metodi per leggerli e scriverli
 	// anche se bannTermo e termoPage sono strettamente legati
@@ -60,8 +62,8 @@ public:
 
 	/// Fancoil banner. It is created only if needed
 	ButtonsBar *fancoil_buttons;	
+
 private:
-	devtype_t devtype;
 	BtLabel *texts[7];	
 	BtLabel *sondoffanti;
 	BtLabel *tempMis;
