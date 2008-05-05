@@ -2497,6 +2497,8 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showAux()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));
+	connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
+	connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
 
 	QWidget *sotto_menu = this->parentWidget(FALSE)->parentWidget(FALSE);
 	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
