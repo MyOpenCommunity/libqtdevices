@@ -676,8 +676,6 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	showPauseBtn();
-
 	icon         = icons_library.getIcon(IMG_STOP);
 	pressed_icon = icons_library.getIcon(IMG_STOP_P);
 	play_controls->setButtonIcons(1, *icon, *pressed_icon);
@@ -731,7 +729,18 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
 	// quit mplayer if it is already playing
-	media_player->quit();
+	if (media_player->isPlaying())
+	{
+		/*
+		 * After stop() and before starting a new istance,  we should wait
+		 * for the SIGCHLD signal emitted after quits.
+		 * usleep() exits immediately with EINTR error in case of signal.
+		 */
+		stop();
+		qDebug("[AUDIO] AudioPlayingWindow: waiting for mplayer to exit...");
+		usleep(1000000);
+		qDebug("[AUDIO] Ok");
+	}
 
 	// fill play_list and set current track
 	int     track_number = 0;
@@ -760,6 +769,8 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 
 	// Start Timer
 	data_refresh_timer->start(refresh_time);
+
+	showPauseBtn();
 }
 
 void AudioPlayingWindow::turnOnAudioSystem(bool send_frame)
