@@ -729,7 +729,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
 	qDebug("[AUDIO] startPlay()");
-	stopMediaPlayer();
+	stop();
 	generatePlaylist(files_list, clicked_element);
 	startMediaPlayer();
 }
@@ -780,7 +780,7 @@ void AudioPlayingWindow::stopMediaPlayer()
 		 * for the SIGCHLD signal emitted after quits.
 		 * usleep() exits immediately with EINTR error in case of signal.
 		 */
-		stop();
+		media_player->quit();
 		qDebug("[AUDIO] AudioPlayingWindow: waiting for mplayer to exit...");
 		usleep(1000000);
 		qDebug("[AUDIO] Ok");
@@ -970,7 +970,7 @@ void AudioPlayingWindow::stop()
 	data_refresh_timer->stop();
 
 	current_track = CURRENT_TRACK_NONE;
-	media_player->quit();
+	stopMediaPlayer();
 
 	if (media_player->isPlaying() && !media_player->isPaused())
 		showPauseBtn();
