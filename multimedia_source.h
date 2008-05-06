@@ -315,7 +315,7 @@ private:
 
 	// Change status of play/pause button in control bar
 	void generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
-	void startMediaPlayer();
+	void startMediaPlayer(unsigned int);
 	void stopMediaPlayer();
 	void showPlayBtn();
 	void showPauseBtn();

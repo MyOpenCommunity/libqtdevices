@@ -731,18 +731,17 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 	qDebug("[AUDIO] startPlay()");
 	stop();
 	generatePlaylist(files_list, clicked_element);
-	startMediaPlayer();
+	startMediaPlayer(current_track);
 }
 
-void AudioPlayingWindow::startMediaPlayer()
+void AudioPlayingWindow::startMediaPlayer(unsigned int track)
 {
-	// Turn On Audio System
 	turnOnAudioSystem(false);
 
 	// Start playing and point next Track
 	cleanPlayingInfo();
-	media_player->play(play_list[current_track]);
-	current_track++;
+	media_player->play(play_list[track]);
+	current_track = track++;
 
 	// Start Timer
 	data_refresh_timer->start(refresh_time);
@@ -936,11 +935,8 @@ void AudioPlayingWindow::pauseOrResume()
 
 	if (current_track == CURRENT_TRACK_NONE)
 	{
-		// TODO: turnOnAudioSystem(): questo blocco e' una brutta copia di startPlay()
-		// Restart play after previous stop
-		media_player->play(play_list[0]);
-		current_track = 1;  // next due
-		data_refresh_timer->start(refresh_time);
+		qDebug("[AUDIO] media_player: start from track 0");
+		startMediaPlayer(0);
 	}
 	else if (media_player->isPaused())
 	{
