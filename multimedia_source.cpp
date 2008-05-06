@@ -728,20 +728,30 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 
 void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
-	// quit mplayer if it is already playing
-	if (media_player->isPlaying())
-	{
-		/*
-		 * After stop() and before starting a new istance,  we should wait
-		 * for the SIGCHLD signal emitted after quits.
-		 * usleep() exits immediately with EINTR error in case of signal.
-		 */
-		stop();
-		qDebug("[AUDIO] AudioPlayingWindow: waiting for mplayer to exit...");
-		usleep(1000000);
-		qDebug("[AUDIO] Ok");
-	}
+	qDebug("[AUDIO] startPlay()");
+	stopMediaPlayer();
+	generatePlaylist(files_list, clicked_element);
+	startMediaPlayer();
+}
 
+void AudioPlayingWindow::startMediaPlayer()
+{
+	// Turn On Audio System
+	turnOnAudioSystem(false);
+
+	// Start playing and point next Track
+	cleanPlayingInfo();
+	media_player->play(play_list[current_track]);
+	current_track++;
+
+	// Start Timer
+	data_refresh_timer->start(refresh_time);
+
+	showPauseBtn();
+}
+
+void AudioPlayingWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
+{
 	// fill play_list and set current track
 	int     track_number = 0;
 	QString track_name;
@@ -758,19 +768,23 @@ void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *
 			current_track = track_number;
 		track_number++;
 	}
+}
 
-	// Turn On Audio System
-	turnOnAudioSystem(false);
-
-	// Start playing and point next Track
-	cleanPlayingInfo();
-	media_player->play(play_list[current_track]);
-	current_track++;
-
-	// Start Timer
-	data_refresh_timer->start(refresh_time);
-
-	showPauseBtn();
+void AudioPlayingWindow::stopMediaPlayer()
+{
+	// quit mplayer if it is already playing
+	if (media_player->isPlaying())
+	{
+		/*
+		 * After stop() and before starting a new istance,  we should wait
+		 * for the SIGCHLD signal emitted after quits.
+		 * usleep() exits immediately with EINTR error in case of signal.
+		 */
+		stop();
+		qDebug("[AUDIO] AudioPlayingWindow: waiting for mplayer to exit...");
+		usleep(1000000);
+		qDebug("[AUDIO] Ok");
+	}
 }
 
 void AudioPlayingWindow::turnOnAudioSystem(bool send_frame)
@@ -922,6 +936,7 @@ void AudioPlayingWindow::pauseOrResume()
 
 	if (current_track == CURRENT_TRACK_NONE)
 	{
+		// TODO: turnOnAudioSystem(): questo blocco e' una brutta copia di startPlay()
 		// Restart play after previous stop
 		media_player->play(play_list[0]);
 		current_track = 1;  // next due
