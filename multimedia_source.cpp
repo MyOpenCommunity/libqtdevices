@@ -404,7 +404,7 @@ void FileBrowser::itemIsClicked(int item)
 		else
 		{
 			/// Load play list in playing window and show it
-			playing_window->startPlay(files_list, clicked_element);
+			playing_window->startNewPlaylist(files_list, clicked_element);
 			playing_window->show();
 		}
 	}
@@ -726,7 +726,7 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	refresh_time = 500;
 }
 
-void AudioPlayingWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
+void AudioPlayingWindow::startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
 	qDebug("[AUDIO] startPlay()");
 	stop();
@@ -772,7 +772,7 @@ void AudioPlayingWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFil
 void AudioPlayingWindow::stopMediaPlayer()
 {
 	// quit mplayer if it is already playing
-	if (media_player->isPlaying())
+	if (media_player->isInstanceRunning())
 	{
 		/*
 		 * After stop() and before starting a new istance,  we should wait
@@ -812,7 +812,7 @@ void AudioPlayingWindow::turnOffAudioSystem(bool send_frame)
 
 bool AudioPlayingWindow::isPlaying()
 {
-	return media_player->isPlaying();
+	return media_player->isInstanceRunning();
 }
 
 bool AudioPlayingWindow::isPaused()
@@ -898,7 +898,7 @@ void AudioPlayingWindow::prevTrack()
 		qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %d/%d", current_track-1, play_list.count());
 	}
 
-	if (media_player->isPlaying() && !media_player->isPaused())
+	if (media_player->isInstanceRunning() && !media_player->isPaused())
 		showPauseBtn();
 	else
 		showPlayBtn();
@@ -923,7 +923,7 @@ void AudioPlayingWindow::nextTrack()
 		qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %d/%d", current_track-1, play_list.count());
 	}
 
-	if (media_player->isPlaying() && !media_player->isPaused())
+	if (media_player->isInstanceRunning() && !media_player->isPaused())
 		showPauseBtn();
 	else
 		showPlayBtn();
@@ -952,7 +952,7 @@ void AudioPlayingWindow::pauseOrResume()
 		media_player->pause();
 	}
 
-	if (media_player->isPlaying() && !media_player->isPaused())
+	if (media_player->isInstanceRunning() && !media_player->isPaused())
 		showPauseBtn();
 	else
 		showPlayBtn();
@@ -968,7 +968,7 @@ void AudioPlayingWindow::stop()
 	current_track = CURRENT_TRACK_NONE;
 	stopMediaPlayer();
 
-	if (media_player->isPlaying() && !media_player->isPaused())
+	if (media_player->isInstanceRunning() && !media_player->isPaused())
 		showPauseBtn();
 	else
 		showPlayBtn();

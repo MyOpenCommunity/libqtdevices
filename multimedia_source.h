@@ -286,7 +286,7 @@ public:
 	QMap<QString, QString> playing_info;
 
 	/// Start PLAY, begins to play a given track and sets the play_list
-	void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
+	void startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 
 	// Run script and send frame to turn on and off Audio System
 	void turnOnAudioSystem(bool send_frame);

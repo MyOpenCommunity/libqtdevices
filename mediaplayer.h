@@ -34,7 +34,7 @@ public:
 	bool isPaused()  { return paused; }
 
 	/// Retrun true if music is playing
-	bool isPlaying();
+	bool isInstanceRunning();
 
 	/// Read ASYNCHRONOUSLY the output from the PIPE and parse it to get INFO
 	QMap<QString, QString> getPlayingInfo();

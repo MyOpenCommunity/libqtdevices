@@ -135,7 +135,7 @@ QString MediaPlayer::readOutput()
 }
 
 
-bool MediaPlayer::isPlaying()
+bool MediaPlayer::isInstanceRunning()
 {
 	return _isPlaying;
 }
