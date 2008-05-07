@@ -2579,7 +2579,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 			{
 				do_event = true;
 				stat = device_status_thermr::S_AUTO;
-				if((curr_crono.get_val()) && (ds->initialized()) && (!curr_info_centrale.get_val()))
+				if((curr_crono.get_val()) && (ds->initialized()) && (!curr_info_centrale.get_val()) && (type == device_status_thermr::Z99))
 				{
 					/// FRAME VERSO LA CENTRALE
 					memset(pippo,'\000',sizeof(pippo));
@@ -2638,7 +2638,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 			loc = atoi(m.Extract_valori(0));
 			if(/*!ds->initialized() || */(curr_local.get_val() != loc)) {
 				qDebug("new local is %d, inizialized = %d", loc, ds->initialized());
-				if((curr_crono.get_val()) && (loc ==  13) && (curr_local.get_val() == 5) && (!curr_info_centrale.get_val()))
+				if((curr_crono.get_val()) && (loc ==  13) && (curr_local.get_val() == 5) && (!curr_info_centrale.get_val()) && (type == device_status_thermr::Z99))
 				{
 					/// FRAME VERSO LA CENTRALE
 					memset(pippo,'\000',sizeof(pippo));
@@ -2669,7 +2669,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 					ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
 					evt_list.append(ds);
 				}
-				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
+				if(curr_crono.get_val() && (!curr_info_centrale.get_val()) && (type == device_status_thermr::Z99))
 				{
 					/// FRAME VERSO LA CENTRALE
 					memset(pippo,'\000',sizeof(pippo));
