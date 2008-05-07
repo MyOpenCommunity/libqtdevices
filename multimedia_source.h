@@ -279,7 +279,8 @@ public:
 	// Play control
 	void nextTrack();
 	void prevTrack();
-	void pauseOrResume();
+	void pause();
+	void resume();
 	void stop();
 
 	/// Stores current playing info
@@ -294,9 +295,6 @@ public:
 
 	/// Return true if a song is currently active, even if in pause.
 	bool isPlaying();
-
-	/// Return true if a song is in pause.
-	bool isPaused();
 
 public slots:
 	void handle_buttons(int);

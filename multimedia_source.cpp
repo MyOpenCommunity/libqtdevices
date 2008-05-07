@@ -121,14 +121,12 @@ void MultimediaSource::stop()           { playing_window->stop(); }
 
 void MultimediaSource::pause()
 {
-	if (!playing_window->isPaused())
-		playing_window->pauseOrResume();
+	playing_window->pause();
 }
 
 void MultimediaSource::resume()
 {
-	if (playing_window->isPaused())
-		playing_window->pauseOrResume();
+	playing_window->resume();
 }
 
 void MultimediaSource::showAux()
@@ -287,10 +285,11 @@ void TitleLabel::handleScrollingTimer()
 
 FileBrowser::FileBrowser(QWidget *parent, AudioPlayingWindow *_playing_window,
 		unsigned rows_per_page, const char *name, WFlags f) :
-	QWidget(parent, name, f),
-	playing_window(_playing_window),
-	level(0)
+	QWidget(parent, name, f)
 {
+	playing_window = _playing_window;
+	level = 0;
+
 	// Set Style
 	// Look QColorGroup Class Reference
 	QPalette current_color_palette = palette();
@@ -724,6 +723,8 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 
 	// Set Timer
 	refresh_time = 500;
+	//initialize current_track
+	current_track = CURRENT_TRACK_NONE;
 }
 
 void AudioPlayingWindow::startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
@@ -813,11 +814,6 @@ void AudioPlayingWindow::turnOffAudioSystem(bool send_frame)
 bool AudioPlayingWindow::isPlaying()
 {
 	return media_player->isInstanceRunning();
-}
-
-bool AudioPlayingWindow::isPaused()
-{
-	return media_player->isPaused();
 }
 
 void AudioPlayingWindow::refreshPlayingInfo()
@@ -929,33 +925,25 @@ void AudioPlayingWindow::nextTrack()
 		showPlayBtn();
 }
 
-void AudioPlayingWindow::pauseOrResume()
+void AudioPlayingWindow::pause()
 {
-	data_refresh_timer->stop();
+	qDebug("[AUDIO] media_player: pause play");
 
-	if (current_track == CURRENT_TRACK_NONE)
-	{
-		qDebug("[AUDIO] media_player: start from track 0");
-		startMediaPlayer(0);
-	}
-	else if (media_player->isPaused())
+	data_refresh_timer->stop();
+	media_player->pause();
+	showPlayBtn();
+}
+
+void AudioPlayingWindow::resume()
+{
+	if (media_player->isInstanceRunning())
 	{
 		qDebug("[AUDIO] media_player: resume play");
-		//turnOnAudioSystem(false);
+
 		media_player->resume();
 		data_refresh_timer->start(refresh_time);
-	}
-	else
-	{
-		qDebug("[AUDIO] media_player: pause play");
-		//turnOffAudioSystem(false);
-		media_player->pause();
-	}
-
-	if (media_player->isInstanceRunning() && !media_player->isPaused())
 		showPauseBtn();
-	else
-		showPlayBtn();
+	}
 }
 
 void AudioPlayingWindow::stop()
@@ -979,7 +967,15 @@ void AudioPlayingWindow::handle_buttons(int button_number)
 	switch (button_number)
 	{
 	case 0:
-		pauseOrResume();
+		if (!media_player->isInstanceRunning())
+		{
+			qDebug("[AUDIO] media_player: start from track 0");
+			startMediaPlayer(0);
+		}
+		else if (media_player->isPaused())
+			resume();
+		else
+			pause();
 		break;
 	case 1:
 		stop();

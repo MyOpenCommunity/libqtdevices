@@ -41,6 +41,9 @@ MediaPlayer::MediaPlayer(QObject *parent, const char *name) :
 	paused = false;
 	_isPlaying = false;
 	_globalMediaPlayer = this;
+
+	ctrlf = NULL;
+	outf = NULL;
 }
 
 MediaPlayer::~MediaPlayer()
@@ -106,30 +109,45 @@ bool MediaPlayer::play(QString track)
 
 void MediaPlayer::pause()
 {
-	execCmd(" ");
-	paused = true;
+	if (!paused)
+	{
+		execCmd(" ");
+		paused = true;
+	}
 }
 
 void MediaPlayer::resume()
 {
-	execCmd(" ");
-	paused = false;
+	if (paused)
+	{
+		execCmd(" ");
+		paused = false;
+	}
 }
 
 void MediaPlayer::execCmd(QString command)
 {
-	fprintf(ctrlf, command.latin1());
-	fflush(ctrlf);
+	if (ctrlf)
+	{
+		fprintf(ctrlf, command.latin1());
+		fflush(ctrlf);
+	}
+	else
+		qDebug("[AUDIO] MediaPlayer::execCmd(): mplayer not running");
 }
-
 
 QString MediaPlayer::readOutput()
 {
 	char line[1024];
 	QString result;
 
-	while (fgets(line, sizeof(line), outf))
-		result += line;
+	if (outf)
+	{
+		while (fgets(line, sizeof(line), outf))
+			result += line;
+	}
+	else
+		qDebug("[AUDIO] MediaPlayer::readOutput(): mplayer not running");
 
 	return result;
 }
@@ -188,6 +206,8 @@ void MediaPlayer::sigChildReceived(int dead_pid, int status)
 	{
 		mplayer_pid = 0;
 		_isPlaying = false;
+		ctrlf = NULL;
+		outf = NULL;
 
 		if (WIFEXITED(status))
 		{
