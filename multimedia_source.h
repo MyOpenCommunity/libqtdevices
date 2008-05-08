@@ -302,6 +302,7 @@ public slots:
 	void handleSettingsBtn();
 	void handle_data_refresh_timer();
 	void handlePlayingDone();
+	void handlePlayingKilled();
 	void handlePlayingAborted();
 
 private:
@@ -315,6 +316,7 @@ private:
 	void generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 	void startMediaPlayer(unsigned int);
 	void stopMediaPlayer();
+	void playNextTrack();
 	void showPlayBtn();
 	void showPauseBtn();
 
@@ -329,10 +331,12 @@ private:
 	QValueVector<QString> play_list;
 
 	/*
-	 * Track to be played by next mplayer instance.
+	 * current_track is the track played by mplayer.
+	 * next_track is the track to be played by next mplayer instance.
 	 * CURRENT_TRACK_NONE means no track has to be played.
 	 */
 	unsigned int current_track;
+	unsigned int next_track;
 	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
 
 	/// Widgets

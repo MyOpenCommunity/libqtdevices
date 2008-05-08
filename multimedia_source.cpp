@@ -719,17 +719,19 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	connect(data_refresh_timer, SIGNAL(timeout()), SLOT(handle_data_refresh_timer()));
 
 	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
+	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
 	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
 	// Set Timer
 	refresh_time = 500;
-	//initialize current_track
+
 	current_track = CURRENT_TRACK_NONE;
+	next_track = CURRENT_TRACK_NONE;
 }
 
 void AudioPlayingWindow::startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
-	qDebug("[AUDIO] startPlay()");
+	qDebug("[AUDIO] startNewPlaylist()");
 	stop();
 	generatePlaylist(files_list, clicked_element);
 	startMediaPlayer(current_track);
@@ -737,12 +739,12 @@ void AudioPlayingWindow::startNewPlaylist(QPtrVector<QFileInfo> files_list, QFil
 
 void AudioPlayingWindow::startMediaPlayer(unsigned int track)
 {
-	turnOnAudioSystem(false);
-
-	// Start playing and point next Track
 	cleanPlayingInfo();
-	media_player->play(play_list[track]);
-	current_track = track++;
+	// Start playing and point next Track
+	current_track = track;
+	next_track = current_track + 1;
+	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
+	media_player->play(play_list[current_track]);
 
 	// Start Timer
 	data_refresh_timer->start(refresh_time);
@@ -772,6 +774,8 @@ void AudioPlayingWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFil
 
 void AudioPlayingWindow::stopMediaPlayer()
 {
+	data_refresh_timer->stop();
+
 	// quit mplayer if it is already playing
 	if (media_player->isInstanceRunning())
 	{
@@ -865,64 +869,39 @@ void AudioPlayingWindow::showPauseBtn()
 
 void AudioPlayingWindow::prevTrack()
 {
-	/*
-	 * We set new current track and we just kill the process.
-	 * ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
-	 * necessario tornare indietro di due tracce se possibile.
-	 */
-	data_refresh_timer->stop();
-
-	if (current_track != CURRENT_TRACK_NONE)
+	if (media_player->isInstanceRunning())
 	{
-		if (current_track >= 2)
+		if (current_track != 0)
 		{
-			current_track -= 2;
-			media_player->quit();
-		}
-		else if (current_track == 1)
-		{
-			/*
-			 * Se la current_track è uguale a 1 vuol dire che stiamo suonando la traccia zero
-			 * il questo caso la riportiamo all'inizio.
-			 */
-			current_track = 0;
-			media_player->quit();
-		}
+			stopMediaPlayer();
+			next_track = current_track - 1;
+			startMediaPlayer(next_track);
 
-		data_refresh_timer->start(refresh_time);
-
-		qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %d/%d", current_track-1, play_list.count());
+			qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+			showPauseBtn();
+		}
 	}
-
-	if (media_player->isInstanceRunning() && !media_player->isPaused())
-		showPauseBtn();
-	else
-		showPlayBtn();
 }
 
 void AudioPlayingWindow::nextTrack()
 {
-	/*
-	 * We set new current track and we just kill the process.
-	 * ATTENZIONE, dato che dopo il play ci posizioniamo già sulla traccia successiva, è
-	 * necessario uccidere il processo se esiste una traccia successiva.
-	 */
-	data_refresh_timer->stop();
-
-	if (current_track != CURRENT_TRACK_NONE)
+	if (media_player->isInstanceRunning())
 	{
-		if (current_track < play_list.count())
-			media_player->quit();
-
-		data_refresh_timer->start(refresh_time);
-
-		qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %d/%d", current_track-1, play_list.count());
+		if (current_track < (play_list.count() - 1))
+		{
+			playNextTrack();
+			qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+		}
 	}
+}
 
-	if (media_player->isInstanceRunning() && !media_player->isPaused())
-		showPauseBtn();
-	else
-		showPlayBtn();
+void AudioPlayingWindow::playNextTrack()
+{
+	stopMediaPlayer();
+	next_track = current_track + 1;
+	startMediaPlayer(next_track);
+	
+	showPauseBtn();
 }
 
 void AudioPlayingWindow::pause()
@@ -948,18 +927,13 @@ void AudioPlayingWindow::resume()
 
 void AudioPlayingWindow::stop()
 {
-	// That's all folks
 	qDebug("[AUDIO] AudioPlayingWindow::stop()");
 
-	data_refresh_timer->stop();
-
 	current_track = CURRENT_TRACK_NONE;
+	next_track = CURRENT_TRACK_NONE;
 	stopMediaPlayer();
 
-	if (media_player->isInstanceRunning() && !media_player->isPaused())
-		showPauseBtn();
-	else
-		showPlayBtn();
+	showPlayBtn();
 }
 
 void AudioPlayingWindow::handle_buttons(int button_number)
@@ -1013,28 +987,26 @@ void AudioPlayingWindow::handlePlayingDone()
 	 * so we go to the next track if exists.
 	 */
 	cleanPlayingInfo();
+	data_refresh_timer->stop();
 
-	if (current_track < play_list.count())
+	if (current_track < (play_list.count() - 1))
 	{
-		media_player->play(play_list[current_track]);
-		/*
-		 * una volta lanciata una traccia si posiziona sulla successiva
-		 * se quella appena mandata in play è l'ultima la prossima volta
-		 * che viene lanciata questa funzione non verrà eseguito il play.
-		 */
-		current_track++;
+		playNextTrack();
 	}
 	else
 	{
-		// In questo caso ha finito di suonare l'ultimo pezzo
-		//turnOffAudioSystem(false);
 		showPlayBtn();
 	}
+}
+void AudioPlayingWindow::handlePlayingKilled()
+{
+	cleanPlayingInfo();
+	data_refresh_timer->stop();
 }
 
 void AudioPlayingWindow::handlePlayingAborted()
 {
-	turnOffAudioSystem(false);
+	//turnOffAudioSystem(false);
 
 	hide();
 
