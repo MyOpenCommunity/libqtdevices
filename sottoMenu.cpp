@@ -71,7 +71,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 
 void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 {
-	qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", IconBut4, &iconName[0]);
+	qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", IconBut4, iconName);
 	if(navBarMode!=hasNavBar)
 	{
 		if(bannNavigazione)
@@ -95,17 +95,20 @@ void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
 
 		}
 		hasNavBar=navBarMode;
-		strncpy(&iconName[0],IconBut4,sizeof(&iconName[0]));
-		bannNavigazione -> SetIcons(1,&iconName[0]);
-		bannNavigazione -> Draw();
+		setModeIcon(IconBut4);
 	}
-	else if (strcmp(IconBut4,&iconName[0]))
+	else if (strcmp(IconBut4,iconName))
 	{
-		strncpy(&iconName[0],IconBut4,MAX_PATH);
-		qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", &iconName[0], IconBut4);
-		bannNavigazione -> SetIcons(1,&iconName[0]);
-		bannNavigazione -> Draw();
+		qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", iconName, IconBut4);
+		setModeIcon(IconBut4);
 	}
+}
+
+void sottoMenu::setModeIcon(char* iconBut4)
+{
+	strncpy(iconName, iconBut4, MAX_PATH);
+	bannNavigazione -> SetIcons(1, iconName);
+	bannNavigazione -> Draw();
 }
 
 void sottoMenu::setBGColor(int r, int g, int b)

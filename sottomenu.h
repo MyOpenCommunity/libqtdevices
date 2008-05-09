@@ -316,6 +316,8 @@ signals:
 		bannFrecce * bannNavigazione;
 		bool 	freez;
 		char	iconName[MAX_PATH];
+	private:
+		void setModeIcon(char*);
 };
 
 

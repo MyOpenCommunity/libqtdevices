@@ -23,8 +23,6 @@ termoregolaz::termoregolaz( QWidget *parent, const char *name, uchar withNavBar 
 
 void termoregolaz::goUp()
 {
-	qDebug("goUp");
-
 	bannTermo *bn = (bannTermo *)getNext();
 
 	if (bn->devtype == bannTermo::THERMO_99_ZONES || bn->devtype == bannTermo::THERMO_99_ZONES_FANCOIL)
@@ -52,8 +50,6 @@ void termoregolaz::goUp()
 
 void termoregolaz::goDown()
 {
-	qDebug("goDown");
-
 	bannTermo *bn = (bannTermo *)getPrevious();
 
 	if (bn->devtype == bannTermo::THERMO_99_ZONES || bn->devtype == bannTermo::THERMO_99_ZONES_FANCOIL)
