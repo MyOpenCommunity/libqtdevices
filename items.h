@@ -716,7 +716,7 @@ class BannerSorgenteMultimedia : public bannCiclaz
 Q_OBJECT
 public:
 	BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbutt);
-	void inizializza(bool forza = false);
+	virtual void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
 	void hide();
@@ -738,8 +738,9 @@ Q_OBJECT
 public:
 	BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
 		const char *icon_onoff, const char *icon_cycle, const char *icon_settings);
-
+	void inizializza(bool forza = false);
 public slots:
+	void gestFrame(char *);
 	void attiva();
 	void addAmb(char *);
 	void ambChanged(char *, bool, void *);
