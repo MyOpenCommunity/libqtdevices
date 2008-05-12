@@ -11,10 +11,7 @@
 #ifndef  OPENCLIENT_H
 #define OPENCLIENT_H
 
-
 #include <qsocket.h>
-#include <qapplication.h>
-#include <qtextstream.h>
 #include <qtimer.h>
 #include "../bt_stackopen/common_files/openwebnet.h"
 

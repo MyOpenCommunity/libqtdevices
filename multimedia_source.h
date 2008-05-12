@@ -18,22 +18,21 @@
 #define MULTIMEDIA_SOURCE_H
 
 #include <qdir.h>
-#include <qmap.h>
 #include <qptrvector.h>
 #include <qvaluevector.h>
 #include <qlabel.h>
 #include <qtimer.h>
-#include <qpainter.h>
-#include <limits>
-
-#include "main.h"
-#include "buttons_bar.h"
-
 
 class FileBrowser;
 class AudioPlayingWindow;
 class MediaPlayer;
-
+class AudioPlayingWindow;
+class QSlider;
+class QPainter;
+class QFileInfo;
+class bannFrecce;
+class ButtonsBar;
+class BtButton;
 
 /**
  * \class MultimediaSource

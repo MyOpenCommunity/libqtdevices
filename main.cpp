@@ -20,6 +20,7 @@
 #include <qdatetime.h>
 #endif
 
+#include "main.h"
 
 /*******************************************
  ** Instance global object to handle icons

@@ -7,19 +7,27 @@
  **f
  **definizione dei vari items
  ****************************************************************/
+#include <qlabel.h>
+#include <qpixmap.h>
+
 #include "items.h"
 #include "openclient.h"
 #include "sottomenu.h"
 #include "device.h"
 #include "frame_interpreter.h"
 #include "device_cache.h"
-
-//#include "btbutton.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <stdlib.h>
-
+#include "tastiera.h"
+#include "diffmulti.h"
+#include "aux.h"
+#include "scenevocond.h"
+#include "videocitof.h"
+#include "radio.h"
+#include "diffsonora.h"
+#include "genericfunz.h"
+#include "fontmanager.h"
+#include "btlabel.h"
+#include "btbutton.h"
+#include "buttons_bar.h"
 
 /*****************************************************************
  **dimmer
@@ -97,28 +105,32 @@ void dimmer::Draw()
 	{
 		if ( (Icon[44]) && (csxButton) )
 		{
-			csxButton->setPixmap(*Icon[44]);		    
+			csxButton->setPixmap(*Icon[44]);
 			qDebug("******* Icon[%d]", 44);
 		}
 
 		if ( (cdxButton) && (Icon[45]) )
 		{
-			cdxButton->setPixmap(*Icon[45]);    
+			cdxButton->setPixmap(*Icon[45]);
 			qDebug("******* Icon[%d]", 45);
 		}
 	}
 	if (BannerText)
 	{
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-		BannerText->setText(testo);
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
+		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setFont( aFont );
+		BannerText->setText( qtesto );
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_secondarytext, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
-		SecondaryText->setText(testoSecondario);
+		SecondaryText->setFont( aFont );
+		SecondaryText->setText( qtestoSecondario );
 	}
 }
 
@@ -1380,9 +1392,9 @@ attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indiriz
 			s = new QString(t[i]) ;
 		tempi->append(s);
 	}
-	//SetSeconaryText((tempi->at(cntTempi))->ascii());
+
 	assegna_tempo_display();
-	SetSeconaryText(tempo_display);
+	SetSecondaryTextU( tempo_display );
 	dev = btouch_device_cache.get_light(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
@@ -1497,7 +1509,7 @@ void attuatAutomTemp::CiclaTempo()
 	qDebug("ntempi = %d", ntempi());
 	qDebug("cntTempi = %d", cntTempi);
 	assegna_tempo_display();
-	SetSeconaryText(tempo_display);
+	SetSecondaryTextU( tempo_display );
 	Draw();
 }
 
@@ -1539,7 +1551,7 @@ attuatAutomTemp::~attuatAutomTemp()
 {     
 	assegna_tempo_display();
 	stato_noto = false ;
-	SetSeconaryText(tempo_display);
+	SetSecondaryTextU( tempo_display );
 	disconnect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			this, SLOT(attuatAutomTemp::status_changed(QPtrList<device_status>)));
 	// Get status changed events back
@@ -1690,7 +1702,7 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 {     
 	attuatAutomTempNuovoF::SetIcons( IconaCentroSx, IconaCentroDx, IconaDx );
 	setAddress(indirizzo);
-	SetSeconaryText("????");
+	SetSecondaryTextU( "????" );
 	strncpy(tempo, t ? t : "0*0*0", sizeof(tempo));
 	char *ptr ; 
 	char tmp1[50];
@@ -1723,7 +1735,7 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 	connect(myTimer,SIGNAL(timeout()),this,SLOT(update()));
 	update_ok = false;
 	tentativi_update = 0;
-	SetSeconaryText(tmp);
+	SetSecondaryTextU( tmp );
 	connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
 	// Crea o preleva il dispositivo dalla cache
 	device *dev = btouch_device_cache.get_newtimed(getAddress());
@@ -1959,14 +1971,18 @@ void attuatAutomTempNuovoF::Draw()
 			dxButton->setPressedPixmap(*pressIcon[2]);
 	}
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-		BannerText->setText(testo);
+		BannerText->setFont( aFont );
+		BannerText->setText( qtesto );
 	}
-	if (SecondaryText) {	
+	if (SecondaryText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_secondarytext, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
-		SecondaryText->setText(testoSecondario);
+		SecondaryText->setFont( aFont );
+		SecondaryText->setText( qtestoSecondario );
 	} 
 }
 
@@ -2702,7 +2718,7 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 /*****************************************************************
  **sorgente_Radio
  ****************************************************************/
-banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, char *ambdescr)
+banradio::banradio( QWidget *parent,const char *name,char* indirizzo, int nbut, const QString & ambdescr)
 : bannCiclaz( parent, name, nbut )
 {
 	SetIcons( ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
@@ -2843,6 +2859,7 @@ void banradio::status_changed(QPtrList<device_status> sl)
 	while( ( ds = dsi->current() ) != 0) {
 		switch (ds->get_type()) {
 			case device_status::RADIO:
+			{
 				qDebug("Radio status variation");
 				ds->read(device_status_radio::FREQ_INDEX, curr_freq);
 				ds->read(device_status_radio::STAZ_INDEX, curr_staz);
@@ -2851,17 +2868,20 @@ void banradio::status_changed(QPtrList<device_status> sl)
 				freq = (float)curr_freq.get_val()/1000.0F;
 				myRadio->setFreq(freq);
 				myRadio->setStaz((uchar)curr_staz.get_val());
-				char rds[9];
+				QString qrds;
 				tmp = curr_rds0.get_val();
 				qDebug("rds0 = 0x%08x", tmp);
-				memcpy((void *)rds, (void *)&tmp, 4);
+				qrds = tmp;
+				qrds.truncate (4);
 				tmp = curr_rds1.get_val();
 				qDebug("rds1 = 0x%08x", tmp);
-				memcpy((void *)&rds[4], (void *)&tmp, 4);
-				qDebug("*** setting rds to %s", rds);
-				myRadio->setRDS(rds);
+				qrds += tmp;
+				qrds.truncate (8);
+				qDebug("*** setting rds to %s", qrds.ascii());
+				myRadio->setRDS( qrds );
 				aggiorna=1;
 				break;
+			}
 			default:
 				qDebug("device status of unknown type (%d)", ds->get_type());
 				break;
@@ -2916,12 +2936,10 @@ void banradio::hide()
 	QWidget::hide();
 }
 
-void banradio::SetText( const char *text )
+void banradio::SetTextU( const QString & qtext )
 {
-	/*    memset(testo,'\000',sizeof(testo));
-	      strncpy(testo,text,MAX_TEXT-1);*/
-	banner::SetText(text);
-	myRadio->setName((char*)text);
+	banner::SetTextU( qtext );
+	myRadio->setNameU( qtext );
 }
 
 void banradio::ciclaSorg()
@@ -2976,10 +2994,6 @@ void banradio::decFreqAuto()
 
 void banradio::aumFreqMan()
 {
-	/*   static bool flag;
-
-	     if (flag)
-	     {*/
 	openwebnet msg_open;
 	float f;
 
@@ -2992,18 +3006,10 @@ void banradio::aumFreqMan()
 	myRadio->draw();
 	msg_open.CreateMsgOpen("16","5001",getAddress(),"");
 	emit sendFrame(msg_open.frame_open);
-	/*	flag=FALSE;
-		}
-		else
-		flag=TRUE;*/
 }
 
 void banradio::decFreqMan()
 {
-	/*  static bool flag;
-
-	    if (flag)
-	    {*/
 	openwebnet msg_open;
 	float f;
 
@@ -3016,10 +3022,6 @@ void banradio::decFreqMan()
 	myRadio->draw();
 	msg_open.CreateMsgOpen("16","5101",getAddress(),"");
 	emit sendFrame(msg_open.frame_open);
-	/* 	flag=FALSE;
-		}
-		else
-		flag=TRUE;*/
 }
 void banradio::changeStaz()
 {
@@ -3293,8 +3295,12 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 
 				if (delta_setpoint == 1)
 				{
-					delta = atoi(strstr(&setpoint[0],".")+1);
-					delta+=atoi(&setpoint[0])*10;
+					//delta = atoi(strstr(&setpoint[0],".")+1);
+					//delta+=atoi(&setpoint[0])*10;
+					int idx = qsetpoint.find(".");
+					const char *ptr = qsetpoint.ascii() + idx +1;
+					delta = atoi( ptr ) ;
+					delta+=atoi( qsetpoint.ascii() ) * 10;
 					curr_sp.set_val(delta);
 					ds->write_val((int)device_status_thermr::SP_INDEX, curr_sp);
 					ds->read(device_status_thermr::SP_INDEX, curr_sp);
@@ -3449,16 +3455,16 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 					char	tmp[10];   
 					icx = curr_sp.get_val();
 					qDebug("temperatura setpoint: %d",(int)icx);
-					memset(setpoint,'\000',sizeof(setpoint));
+					qsetpoint = "";
 					if (icx>=1000)
 					{
-						strcat(setpoint,"-");
+						qsetpoint = "-";
 						icx=icx-1000;
 					}
 					icx/=10;
 					sprintf(tmp,"%.1f",icx);
-					strcat(setpoint,tmp);
-					strcat(setpoint,"\272C");
+					qsetpoint += tmp;
+					qsetpoint += "\272C";
 					aggiorna=1;
 					break;
 				}
@@ -3472,19 +3478,19 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 
 				icx = curr_temp.get_val();
 				qDebug("temperatura misurata: %d",(int)icx);
-				memset(temp,'\000',sizeof(temp));
+				qtemp = "";
 				if (icx>=1000)
 				{
-					strcat(temp,"-");
+					qtemp = "-";
 					icx=icx-1000;
 				}
 				icx/=10;
 				sprintf(tmp,"%.1f",icx);
 				qDebug("-1: tmp: %.1f - %s",icx, &tmp[0]);
-				strcat(temp,tmp);
-				qDebug("-1: temp: %s", &temp[0]);
-				strcat(temp,"\272C");
-				qDebug("-2: temp: %s", &temp[0]);
+				qtemp += tmp;
+				qDebug("-1: temp: %s", qtemp.ascii());
+				qtemp +="\272C";
+				qDebug("-2: temp: %s", qtemp.ascii());
 				aggiorna=1;
 				break;
 			case device_status::FANCOIL:
@@ -3558,12 +3564,15 @@ void termoPage::autoMan()
 	}
 	else 
 	{
-		int icx;
-
-		icx=atoi(strstr(&setpoint[0],".")+1);
-		if(setpoint[0]=='-')
+		int idx = qsetpoint.find(".");
+		const char *ptr = qsetpoint.ascii() + idx +1;
+		int icx = atoi( ptr );
+		
+		QChar qc = qsetpoint.ref(0);
+		if( qc == '-')
 			icx=-icx;
-		icx+=atoi(&setpoint[0])*10;
+		
+		icx+=atoi( qsetpoint.ascii() ) * 10;
 		if (icx<0)
 			icx=(abs(icx))+1000;
 		strcat(pippo,"*#4*#");
@@ -3595,13 +3604,11 @@ void termoPage::show()
 
 void termoPage::aumSetpoint()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-	int 	icx;
-
-	memset(pippo,'\000',sizeof(pippo));
-	icx=atoi(strstr(&setpoint[0],".")+1);
-	icx+=atoi(&setpoint[0])*10;
+	int idx = qsetpoint.find(".");
+	const char *ptr = qsetpoint.ascii() + idx +1;
+	int icx = atoi( ptr );
+	icx+=atoi( qsetpoint.ascii() ) * 10;
+	
 	if (icx>395)
 		return;
 	else
@@ -3613,13 +3620,11 @@ void termoPage::aumSetpoint()
 
 void termoPage::decSetpoint()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-	int 	icx;
-
-	memset(pippo,'\000',sizeof(pippo));
-	icx=atoi(strstr(&setpoint[0],".")+1);
-	icx+=atoi(&setpoint[0])*10;
+	int idx = qsetpoint.find(".");
+	const char *ptr = qsetpoint.ascii() + idx +1;
+	int icx = atoi( ptr );
+	icx+=atoi( qsetpoint.ascii() ) * 10;
+	
 	if (icx<35)
 		return;
 	else
@@ -3634,16 +3639,16 @@ void termoPage::SetSetpoint(float icx)
 	char tmp[10];
 
 	qDebug("NEW temperatura setpoint: %d",(int)icx);
-	memset(setpoint,'\000',sizeof(setpoint));
+	qsetpoint = "";
 	if (icx>=1000)
 	{
-		strcat(setpoint,"-");
+		qsetpoint = "-";
 		icx=icx-1000;
 	}
 	icx/=10;
 	sprintf(tmp,"%.1f",icx);
-	strcat(setpoint,tmp);
-	strcat(setpoint,"\272C");
+	qsetpoint += tmp;
+	qsetpoint +="\272C";
 	Draw();
 }
 
@@ -3651,15 +3656,17 @@ void termoPage::sendSetpoint()
 {
 	openwebnet msg_open;
 	char pippo[50];
-	int icx;
 
 	qDebug("termoPage::sendSetpoint()");
 	memset(pippo,'\000',sizeof(pippo));
-	icx=atoi(strstr(&setpoint[0],".")+1);
-	icx+=atoi(&setpoint[0])*10;
+	int idx = qsetpoint.find(".");
+	const char *ptr = qsetpoint.ascii() + idx +1;
+	int icx = atoi( ptr );
+	icx+=atoi( qsetpoint.ascii() ) * 10;
+	
 	memset(pippo,'\000',sizeof(pippo));
 	/// FRAME VERSO LA CENTRALE
-	strcat(pippo,"*#4*#");
+// 	strcat(pippo,"*#4*#");
 	strcat(pippo,getAddress());
 	strcat(pippo,"*#14*");
 	sprintf(pippo,"%s%04d",&pippo[0],icx);
@@ -3692,13 +3699,19 @@ void zonaAnti::setIcons()
 }
 
 
-	zonaAnti::zonaAnti( QWidget *parent,const char *name,char* indirizzo,char* iconzona, char* IconDisactive, char *IconActive, char *iconSparz, /*char *icon ,char *pressedIcon ,*/int period,int number )
-: bannOnIcons ( parent, name )
-{       
+	zonaAnti::zonaAnti( QWidget *parent, 
+			 	const QString & name,
+				char* indirizzo,
+				char* iconzona, 
+				char* IconDisactive, 
+				char *IconActive, 
+				char *iconSparz, /*char *icon ,char *pressedIcon ,*/
+				int period,
+				int number )
+		: bannOnIcons ( parent, name.ascii() )
+{
 	char    pippo[MAX_PATH];
 	char    pluto[MAX_PATH];
-
-
 
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");
@@ -3710,9 +3723,11 @@ void zonaAnti::setIcons()
 	qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
 	zonaAnti::SetIcons(sparzIName, &pippo[0], IconDisactive);
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-		BannerText->setText(name);
+		BannerText->setFont( aFont );
+		BannerText->setText( name );
 	}
 	zonaAttiva = IconActive;
 	zonaNonAttiva = IconDisactive;
@@ -4748,15 +4763,19 @@ void scenEvo::Draw()
 			csxButton->setPressedPixmap(*pressIcon[3]);
 	}
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-		BannerText->setText(testo);
+		BannerText->setFont( aFont );
+		BannerText->setText( qtesto );
 		//     qDebug("TESTO: %s", testo);
 	}
-	if (SecondaryText) {	
+	if (SecondaryText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_secondarytext, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
-		SecondaryText->setText(testoSecondario);
+		SecondaryText->setFont( aFont );
+		SecondaryText->setText( qtestoSecondario );
 	}
 }
 
@@ -4986,18 +5005,13 @@ void scenSched::Draw()
 			dxButton->setPressedPixmap(*pressIcon[2]);
 	}
 	if (BannerText) {
+		QFont aFont;
+		FontManager::instance()->getFont( font_items_bannertext, aFont );
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-		BannerText->setText(testo);
+		BannerText->setFont( aFont );
+		BannerText->setText( qtesto );
 		//     qDebug("TESTO: %s", testo);
 	}
-#if 0
-	if (SecondaryText) {	
-		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
-		SecondaryText->setText(testoSecondario);
-	}
-#endif
 }
 
 /*****************************************************************
@@ -5205,7 +5219,7 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 		if(am->tipo == AMPLIFICATORE)
 		{
 			qDebug("Adding amplifier (%d, %s %s)", am->tipo, (char *)am->indirizzo, am->descr->at(0)->ascii());
-			diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), (char *)am->indirizzo, icons, am->modo);
+			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);
 		}
 		else 
 		{
@@ -5221,7 +5235,7 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 				indirizzi->setAutoDelete(true);
 				for(int j=0; j<qsl.count(); j++)
 					indirizzi->append(new QString(qsl[j]));
-				diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), indirizzi, icons, am->modo);
+				diffson->addItemU(am->tipo, *am->descr->at(0), indirizzi, icons, am->modo);
 				++(*lii);
 			}
 			delete lii;
@@ -5244,9 +5258,11 @@ void ambDiffSon::Draw()
 	BannerIcon2->repaint();
 	BannerIcon2->setPixmap(*(Icon[3]));
 	BannerIcon2->repaint();
+	QFont aFont;
+	FontManager::instance()->getFont( font_items_bannertext, aFont );
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-	BannerText->setText(testo);
+	BannerText->setFont( aFont );
+	BannerText->setText( qtesto );
 }
 
 void ambDiffSon::hide()
@@ -5340,7 +5356,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 		if(am->tipo == AMPLIFICATORE) {
 			qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
 					(char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
-			diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
+			diffson->addItemU(am->tipo, *am->descr->at(0), 
 					(char *)am->indirizzo,
 					icons, am->modo);
 		} else {
@@ -5357,7 +5373,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 				indirizzi->setAutoDelete(true);
 				for(int j=0; j<qsl.count(); j++)
 					indirizzi->append(new QString(qsl[j]));
-				diffson->addItem(am->tipo, (char *)am->descr->at(0)->ascii(), 
+				diffson->addItemU(am->tipo, *am->descr->at(0), 
 						indirizzi,
 						icons, am->modo);
 				++(*lii);
@@ -5378,9 +5394,11 @@ void insAmbDiffSon::Draw()
 	BannerIcon->repaint();
 	BannerIcon->setPixmap(*(Icon[0]));
 	BannerIcon->repaint();
+	QFont aFont;
+	FontManager::instance()->getFont( font_items_bannertext, aFont );
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-	BannerText->setText(testo);
+	BannerText->setFont( aFont );
+	BannerText->setText( qtesto );
 }
 
 void insAmbDiffSon::configura()
@@ -5467,10 +5485,10 @@ void sorgenteMultiRadio::attiva()
 	}
 }
 
-void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
+void sorgenteMultiRadio::ambChanged(const QString & ad, bool multi, void *indamb)
 {
 	// FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
-	qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad, multi, indamb);
+	qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
 	if(!multi) {
 		multiamb = false;
 		indirizzo_ambiente = QString((const char *)indamb).toInt();
@@ -5492,7 +5510,7 @@ void sorgenteMultiRadio::ambChanged(char *ad, bool multi, void *indamb)
 		setAddress((char *)dove->ascii());
 		delete dove;
 	}
-	myRadio->setAmbDescr(ad);
+	myRadio->setAmbDescr( ad );
 }
 
 void sorgenteMultiRadio::show()
@@ -5568,9 +5586,9 @@ void sorgenteMultiAux::attiva()
 	}
 }
 
-void sorgenteMultiAux::ambChanged(char *ad, bool multi, void *indamb)
+void sorgenteMultiAux::ambChanged(const QString & ad, bool multi, void *indamb)
 {
-	qDebug("sorgenteMultiAux::ambChanged(%s, %d, %s)", ad, multi, indamb);
+	qDebug("sorgenteMultiAux::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
 	if(!multi) {
 		multiamb = false;
 		indirizzo_ambiente = QString((const char *)indamb).toInt();
@@ -5592,7 +5610,7 @@ void sorgenteMultiAux::ambChanged(char *ad, bool multi, void *indamb)
 		delete dove;
 		multiamb = true;
 	}
-	myAux->setAmbDescr(ad);
+	myAux->setAmbDescr( ad );
 }
 
 void sorgenteMultiAux::addAmb(char *a)

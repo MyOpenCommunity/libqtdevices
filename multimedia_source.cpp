@@ -1,22 +1,25 @@
+/****************************************************************
+ **
+ ** BTicino Touch scren Colori art. H4686
+ **
+ ** MultimediaSource.cpp
+ **
+ ** finestra di dati sulla sorgente MultimediaSource
+ **
+ ****************************************************************/
 
 #include <algorithm>
 #include <string>
 
 #include <qfont.h>
 #include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
-#include <qframe.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-#include <qstring.h>
 #include <qfile.h>
-#include <qnamespace.h>
-#include <qpushbutton.h>
-#include <qevent.h>
-#include <qvaluevector.h>
+#include <qlayout.h>
+#include <qslider.h>
+#include <qpainter.h>
 
 #include "multimedia_source.h"
 #include "mediaplayer.h"
@@ -24,10 +27,8 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
-
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include "fontmanager.h"
+#include "buttons_bar.h"
 
 /*
  * Scripts launched before and after a track is played.
@@ -79,7 +80,9 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	// Create filesWindow, Set geometry and Font Style
 	filesWindow = new FileBrowser(this, playing_window, 4 /* this means number of rows for the browser */);
 	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	filesWindow->setFont( QFont( "Helvetica", 18 ) );
+	QFont aFont;
+	FontManager::instance()->getFont( font_multimedia_source_filesWindow, aFont );
+	filesWindow->setFont( aFont );
 
 	// Start to Browse Files
 	if (!filesWindow->browseFiles(MEDIASERVER_PATH))
@@ -608,7 +611,8 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
 	/// Create Labels (that contain tags)
-	QFont font( "helvetica", 18 );
+ 	QFont aFont;
+	FontManager::instance()->getFont( font_multimedia_source_AudioPlayingWindow, aFont );
 
 	// create Labels containing INFO
 	//labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
@@ -617,10 +621,10 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	meta_album_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
 	time_pos_label    = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
 	// Set Font
-	meta_title_label->setFont(font);
-	meta_artist_label->setFont(font);
-	meta_album_label->setFont(font);
-	time_pos_label->setFont(font);
+	meta_title_label->setFont( aFont );
+	meta_artist_label->setFont( aFont );
+	meta_album_label->setFont( aFont );
+	time_pos_label->setFont( aFont );
 
 	/// Create Main Layout
 	// all others layout must have this as parent, this is not more needed in Qt4
@@ -645,10 +649,10 @@ AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
 	TitleLabel *album_label  = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
 	TitleLabel *time_label   = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
 	// set font
-	name_label->setFont(font);
-	artist_label->setFont(font);
-	album_label->setFont(font);
-	time_label->setFont(font);
+	name_label->setFont( aFont );
+	artist_label->setFont( aFont );
+	album_label->setFont( aFont );
+	time_label->setFont( aFont );
 	// set text
 	name_label->setText( label_a );
 	artist_label->setText( label_b );

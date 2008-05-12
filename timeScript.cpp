@@ -189,21 +189,3 @@ timeScript::~timeScript()
 {
   if(mioClock) delete mioClock;
 }
-
-
-
-/* PER SCRIVERE VERAMENTE SUL CLOCK
-    
-    QDateTime data;    
-    QStringList comando=QStringList ("date");
-    QProcess* dateChange;
-
-    data=    QDateTime::currentDateTime();
-    data.setTime(QTime(data.time().hour()+1,data.time().minute(),data.time().second()));
-    QTextOStream (stdout)<<"\n"<<data.time().toString()<<"\n";  
-    comando.append("-s "+data.time().toString());
-    dateChange = new QProcess(comando,this);
-    dateChange->start();
-    while (dateChange->isRunning()) {}
-    QTextOStream (stdout)<<"\nfinito Running";
-    */

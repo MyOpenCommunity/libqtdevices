@@ -8,16 +8,13 @@
  **
  ****************************************************************/
 
+#include <qcursor.h>
+
 #include "diffsonora.h"
-/*#include "sottomenu.h"
-#include "items.h"
-#include "main.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qlabel.h>
-*/
+#include "sottomenu.h"
+#include "btlabel.h"
+#include "openclient.h"
+#include "banner.h"
 
 diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
 : QWidget( parent, name )
@@ -98,7 +95,7 @@ int diffSonora::setBGPixmap(char* backImage)
 }
 
 
-int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,
+int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
 		QPtrList<QString> &icon_names,
 		int modo, int where, char *ambdescr)
 {
@@ -106,19 +103,19 @@ int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,
 	{
 		sorgenti-> setBGColor( backgroundColor() );
 		sorgenti-> setFGColor( foregroundColor() );
-		sorgenti-> addItem(tipo, descrizione, indirizzo, icon_names, modo, where);
+		sorgenti-> addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, where);
 	}
 	else if ( (tipo == SORG_RADIO) || (tipo == SORG_AUX) || (tipo == SORGENTE_MULTIM_MC) )
 	{
 		sorgenti-> setBGColor(backgroundColor() );
 		sorgenti-> setFGColor(foregroundColor() );
-		sorgenti-> addItem(tipo, descrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
+		sorgenti-> addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 	}
 	else
 	{
-		amplificatori->addItem(tipo, descrizione, indirizzo, icon_names);
+		amplificatori->addItemU(tipo, qdescrizione, indirizzo, icon_names);
 	}
 	return(1);
 }
@@ -293,13 +290,13 @@ void diffSonora::fineVis()
 	emit(closed(this));
 }
 
-int diffSonora::addSource(banner *b)
+void diffSonora::addSource(banner *b)
 {
 	sorgenti->addItem(b);
 	connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 }
 
-int diffSonora::setFirstSource(int addr)
+void diffSonora::setFirstSource(int addr)
 {
 	qDebug("diffSonora::setFirstSource(%d)", addr);
 	sorgenti->setIndex((char *)QString::number(addr, 10).ascii());

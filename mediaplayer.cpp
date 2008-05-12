@@ -1,15 +1,15 @@
 
-#include "mediaplayer.h"
 
 #include <qregexp.h>
 
 #include <unistd.h>
-#include <stdio.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+#include "mediaplayer.h"
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 

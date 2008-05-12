@@ -11,10 +11,7 @@
 #include "bannregolaz.h"
 #include "main.h"
 
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-
+#include <qtimer.h>
 
 bannRegolaz::bannRegolaz( QWidget *parent,const char *name )
         : banner( parent, name )

@@ -2,11 +2,14 @@
 #ifndef _SCENEVOCOND_H_
 #define _SCENEVOCOND_H_
 
-#include <qdatetime.h>
-#include "timescript.h"
-#include "bannfrecce.h"
+#include <qframe.h>
+
 #include "device.h"
-#include "frame_interpreter.h"
+
+class QDateTime;
+class BtButton;
+class BtLabel;
+class timeScript;
 
 /*!
   \class scenEvo_cond

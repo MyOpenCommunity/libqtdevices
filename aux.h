@@ -11,14 +11,11 @@
 #ifndef AUX_H
 #define AUX_H
 
-#include <qframe.h>
-#include "btlabel.h"
-#include <qprocess.h>
-#include "btbutton.h"
-#include "main.h"
-#include "bannfrecce.h"
-#include <qlcdnumber.h>
-#include <qcursor.h>
+#include <qwidget.h>
+
+class BtLabel;
+class BtButton;
+class bannFrecce;
 
 /*!
   \class aux
@@ -31,7 +28,7 @@ class  aux : public QWidget
 {
 	Q_OBJECT
 	public:
-		aux( QWidget *parent=0, const char *name=0, const char *amb="" );
+		aux( QWidget *parent=0, const QString & name="", const QString & amb="" );
 		/*!
 		  \brief Sets the background color for the banner.
 
@@ -66,7 +63,7 @@ class  aux : public QWidget
 		/*!
 		  \brief Sets amb. description
 		  */
-		void         setAmbDescr(char *);
+		void         setAmbDescr( const QString &);
 		/*!
 		  \brief Draws the page
 		  */     

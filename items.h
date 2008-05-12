@@ -11,16 +11,13 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
-#include <qwidget.h>
+#include <qtimer.h> // serve al moc
 #include <qptrlist.h>
-#include "openclient.h"
 #include "banner.h"
 #include "main.h"
 
-// Includes for sigle Items
 #include "bannregolaz.h"
 #include "device.h"
-#include "frame_interpreter.h"
 #include "bannonoff.h"
 #include "bannondx.h" // Scenario e Carico includevano questo ma ereditano da bannOnSx
 #include "bannonoff2scr.h"
@@ -29,28 +26,25 @@
 #include "bannpuls.h"
 #include "bannbuticon.h"
 #include "bannciclaz.h"
-#include "radio.h"
-#include "aux.h"
 #include "multimedia_source.h"
 #include "banntermo.h"
 #include "bannonicons.h"
 #include "bann2butlab.h"
-#include "tastiera.h"
 #include "bann4taslab.h"
-#include "scenevocond.h" // era incluso nell'item scenario evoluto, probabilmente può essere sostituito da forward declarations
 #include "bann4but.h"
-#include "videocitof.h"
 #include "bannbut2icon.h"
-#include "diffmulti.h"
-
-
-#include "diffsonora.h"
 
 /// Forward Declarations
 class diffSonora;
-class diffmulti; //aggiunta da me per far compilare
+class diffmulti;
 class dati_sorgente_multi;
 class dati_ampli_multi;
+class tastiera;
+class radio;
+class aux;
+class call_notifier_manager;
+class call_notifier;
+class QWidget;
 
 /*****************************************************************
  **Dimmer
@@ -630,7 +624,7 @@ protected:
 	bool old_diffson;
 	device *dev;
 public:
-	banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, char *ambdescr="");
+	banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, const QString & ambdescr="");
 	void inizializza(bool forza = false);
 	/*!
 	  \brief Sets the background color for the banner.
@@ -674,7 +668,7 @@ public slots:
 	void status_changed(QPtrList<device_status>);
 	virtual void	show();
 	void hide();
-	void SetText(const char *);
+	void SetTextU( const QString & );
 };
 
 
@@ -827,7 +821,7 @@ private:
 	bool already_changed;
 	device *dev;
 public:
-	zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
+	zonaAnti( QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
 	void inizializza(bool forza = false);
 	void SetIcons(char *, char *, char *);
 	void Draw();
@@ -1171,7 +1165,7 @@ public:
 public slots:
 	void attiva();
 	void addAmb(char *);
-	void ambChanged(char *, bool, void *);
+	void ambChanged( const QString &, bool, void *);
 	void show();
 signals:
 	void active(int, int);
@@ -1200,7 +1194,7 @@ public:
 	void addAmb(char *);
 public slots:
 	void attiva();
-	void ambChanged(char *, bool, void *);
+	void ambChanged(const QString &, bool, void *);
 signals:
 	void active(int, int);
 };

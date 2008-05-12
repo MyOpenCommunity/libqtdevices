@@ -22,8 +22,6 @@
 #include <qmap.h>
 #include <qptrvector.h>
 #include <qbuttongroup.h>
-
-#include <qlayout.h>
 #include <qpainter.h>
 
 #include "btbutton.h"

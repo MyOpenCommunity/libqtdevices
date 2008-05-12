@@ -8,45 +8,44 @@
 **
 ****************************************************************/
 
-
-#include <qfont.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-
+#include <qdir.h>
 #include <qfile.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-
 
 #include "sottomenu.h"
 #include "sveglia.h"
 #include "genericfunz.h"
+#include "diffmulti.h"
+#include "btbutton.h"
+#include "btlabel.h"
+#include "openclient.h"
+#include "timescript.h"
+#include "bannfrecce.h"
+#include "fontmanager.h"
 
-
-sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdiff* diso, char* f,char* descr1,char* descr2,char* descr3,char* descr4, char*h, char*m)
-        : QFrame( parent, name )
+sveglia::sveglia( QWidget *parent,
+	const char *name,
+	uchar t,
+	uchar freq,
+	contdiff* diso,
+	char* f,
+	const QString & qdescr1,
+	const QString & qdescr2,
+	const QString & qdescr3,
+	const QString & qdescr4,
+	char*h,
+	char*m)
+        	: QFrame( parent, name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
     //showFullScreen();
 #endif    
 // qDebug("-----10-----");
-    if(descr1)
-	strncpy(&text1[0], descr1, sizeof(text1));
-    if(descr2)
-	strncpy(&text2[0], descr2, sizeof(text2));
-    if(descr3)    
-	strncpy(&text3[0], descr3, sizeof(text3));
-    if(descr4)	
-	strncpy(&text4[0], descr4, sizeof(text4));  
-// qDebug("-----11-----");
    bannNavigazione  = new bannFrecce(this,"bannerfrecce",9);
    bannNavigazione  ->setGeometry( 0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE );
 // qDebug("-----12-----");
@@ -122,6 +121,9 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdi
 	Icon2 = new QPixmap();
 	Icon2->load(iconName);
     }
+
+	QFont aFont;
+	FontManager::instance()->getFont( font_sveglia_scelta, aFont );
     for (uchar idx=0;idx<4;idx++)
     {
 	choice[idx] = new BtButton (this,"choice"+QString::number(idx));
@@ -137,15 +139,20 @@ sveglia::sveglia( QWidget *parent, const char *name ,uchar t, uchar freq, contdi
 	testiChoice[idx] = new BtLabel(this,"choiceLabel"+QString::number(idx));
 	testiChoice[idx] -> setGeometry( 80,idx*60,120,60);
 	testiChoice[idx] -> setAlignment(AlignHCenter|AlignVCenter);
-	testiChoice[idx] -> setFont( QFont( "helvetica", 14, QFont::Bold ) );
+	testiChoice[idx] -> setFont( aFont );
 	testiChoice[idx] -> hide();
     }	
     dataOra=NULL;
-//    qDebug("-----17-----");
-    testiChoice[0]  -> setText(&text1[0]);
-    testiChoice[1]  -> setText(&text2[0]);
-    testiChoice[2]  -> setText(&text3[0]);
-    testiChoice[3]  -> setText(&text4[0]);        
+
+	if ( ! qdescr1.isEmpty() )
+		testiChoice[0]  -> setText( qdescr1 );
+	if ( ! qdescr2.isEmpty() )
+		testiChoice[1]  -> setText( qdescr2 );
+	if ( ! qdescr3.isEmpty() )
+		testiChoice[2]  -> setText( qdescr3 );
+	if ( ! qdescr4.isEmpty() )
+		testiChoice[3]  -> setText( qdescr4 );
+
    // OroTemp = QDateTime(QDateTime::currentDateTime());
      oraSveglia =  new QDateTime();//QDate(),QTime(12,0));
      oraSveglia->setTime(QTime(atoi(h),atoi(m)));

@@ -9,10 +9,6 @@
 ****************************************************************/
 
 #include "bannfrecce.h"
-#include "main.h"
-//#include "btbutton.h"
-#include <qpixmap.h>
-
 
 bannFrecce::bannFrecce( QWidget *parent,const char *name ,uchar num,char* IconBut4)
         : banner( parent, name )

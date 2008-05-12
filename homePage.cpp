@@ -8,32 +8,18 @@
 **
 ****************************************************************/
 
-#include "homepage.h"
-#include "main.h"
-#include "btbutton.h"
-#include "timescript.h"
-#include "genericfunz.h"
-
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qtimer.h>
-
 #include <qpixmap.h>
 #include <qdatetime.h>
-#include <qtimer.h>
-#include <qstyle.h>
-
-#include <stdlib.h>
-#include <qrect.h>
-#include <qstatusbar.h>
-#include <qapplication.h>
 #include <qcursor.h>
-#include <qmessagebox.h>
-#include <qimage.h>
-#include <qfile.h>
+#include <qlcdnumber.h>
 
-#include <qwidget.h>
+#include "homepage.h"
+#include "main.h"
+#include "timescript.h"
+#include "genericfunz.h"
+#include "openclient.h"
+#include "btlabel.h"
+#include "fontmanager.h"
 
 homePage::homePage( QWidget *parent, const char *name, WFlags f )
         : QWidget( parent, name )
@@ -62,7 +48,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 {
     BtButton *b1;
     QPixmap Icon;
- //  b1 = new BtButton (this,"BelBottone");
+
     char nomeFile[MAX_PATH];
     
     
@@ -82,17 +68,9 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
     
     
     getPressName((char*)iconName, &nomeFile[0],sizeof(nomeFile));
-/*   memset(nomeFile,'\000',sizeof(nomeFile));
-    
-    strncpy(nomeFile,iconName,strstr(iconName,".")-iconName);
-    strcat(nomeFile,"p");
-    strcat(nomeFile,strstr(iconName,"."));*/
-
    
     if (Icon.load(nomeFile))
     	 b1->setPressedPixmap(Icon);     
-
-    
 
     switch (function){
 //	case USCITA:   connect(b1,SIGNAL(clicked()), qApp, SLOT(quit()) );       break;
@@ -111,7 +89,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
                                                qDebug("tipoSpecial= %d",tipoSpecial);
 			     strcpy(&chi[0],chix);
 			     strcpy(&cosa[0],cosax);
-			     strcpy(&dove[0],dovex);			     
+			     strcpy(&dove[0],dovex);
 			     if (tipoSpecial==PULSANTE)
 			     {
 				 qDebug("tipoSpecial= PULSANTE");
@@ -178,13 +156,26 @@ void homePage::addDate(int x, int y)
     addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
 }	
 
-void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line, char* text, char* Ext)
+void homePage::addTemp(
+	char *z,
+	int x,
+	int y,
+	int width,
+	int height,
+	QColor bg, 
+	QColor fg, 
+	int style, 
+	int line, 
+	const QString & qtext,
+	char *Ext)
 {
-    switch(tempCont){
-	case 0: strcpy(zonaTermo1,z);zt[0]=&zonaTermo1[0];strcpy(ext1,Ext);ext[0]=&ext1[0];break;
-	case 1: strcpy(zonaTermo2,z);zt[1]=&zonaTermo2[0];strcpy(ext2,Ext);ext[1]=&ext2[0];break;
-	case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];strcpy(ext3,Ext);ext[2]=&ext3[0];break;
-    }
+	switch(tempCont)
+	{
+#warning TOM: controlla l'i18n per Ext
+		case 0: strcpy(zonaTermo1,z);zt[0]=&zonaTermo1[0];strcpy(ext1,Ext);ext[0]=ext1;break;
+		case 1: strcpy(zonaTermo2,z);zt[1]=&zonaTermo2[0];strcpy(ext2,Ext);ext[1]=ext2;break;
+		case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];strcpy(ext3,Ext);ext[2]=ext3;break;
+	}
 
      temperatura[tempCont] = new QLCDNumber(this,"0.00\272C");
      temperatura[tempCont] ->setGeometry(x,y,width,height-H_SCR_TEMP);
@@ -197,16 +188,18 @@ void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QCo
      temperatura[tempCont] -> display("0.00\272C");
      temperatura[tempCont] -> setSegmentStyle(QLCDNumber::Flat);    
      
-     if (text)
+     if ( ! qtext.isEmpty() )
      {
-	 descrTemp[tempCont] = new BtLabel(this,text);
-	 descrTemp[tempCont] ->setFont( QFont( "helvetica", 14, QFont::Bold ));
-	 descrTemp[tempCont] ->setAlignment(AlignHCenter|AlignVCenter);
-	 descrTemp[tempCont] ->setText(text);
-	 descrTemp[tempCont] ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
-	 descrTemp[tempCont] ->setPaletteForegroundColor(fg);
-	 descrTemp[tempCont] ->setPaletteBackgroundColor(bg);
-     }    
+	QFont aFont;
+	FontManager::instance()->getFont( font_homepage_bottoni_label, aFont );
+	descrTemp[tempCont] = new BtLabel( this, qtext.ascii() );
+	descrTemp[tempCont] ->setFont( aFont );
+	descrTemp[tempCont] ->setAlignment(AlignHCenter|AlignVCenter);
+	descrTemp[tempCont] ->setText( qtext );
+	descrTemp[tempCont] ->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
+	descrTemp[tempCont] ->setPaletteForegroundColor(fg);
+	descrTemp[tempCont] ->setPaletteBackgroundColor(bg);
+     }
      tempCont++;
  }    
 
@@ -239,22 +232,33 @@ void homePage::addTemp(char *z, int x, int y)
 }    
 
 
-void homePage::addDescr(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
+void homePage::addDescrU(
+	const QString & qz, 
+	int x, 
+	int y,
+	int width,
+	int height,
+	QColor bg, 
+	QColor fg, 
+	int style, 
+	int line)
 {
-    descrizione = new BtLabel(this,z);
-    descrizione->setFont( QFont( "helvetica", 14, QFont::Bold ));
-    descrizione->setAlignment(AlignHCenter|AlignVCenter);
-    descrizione->setText(z);
-    descrizione->setGeometry(x,y,width,height);
-    descrizione->setPaletteForegroundColor(fg);
-    descrizione->setPaletteBackgroundColor(bg);
-    descrizione->setFrameStyle( style );
-    descrizione->setLineWidth(line);       
- }    
+	QFont aFont;
+	FontManager::instance()->getFont( font_homepage_bottoni_descrizione, aFont );
+	descrizione = new BtLabel( this, qz.ascii() );
+	descrizione->setFont( aFont );
+	descrizione->setAlignment(AlignHCenter|AlignVCenter);
+	descrizione->setText( qz );
+	descrizione->setGeometry(x,y,width,height);
+	descrizione->setPaletteForegroundColor(fg);
+	descrizione->setPaletteBackgroundColor(bg);
+	descrizione->setFrameStyle( style );
+	descrizione->setLineWidth(line);
+}
 
-void homePage::addDescr(char *z, int x, int y)
+void homePage::addDescrU(const QString & qz, int x, int y)
 {
-     addDescr(z,x,y,160, 20, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0);
+     addDescrU(qz,x,y,160, 20, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0);
 }    
 
 

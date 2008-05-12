@@ -16,17 +16,13 @@
 #define MAX_TEXT        21
 #define MAX_TEXT_2      11
 
-#include "openclient.h"
-#include "btbutton.h"
-#include "genericfunz.h"
 #include <qwidget.h>
-#include "btlabel.h"
-#include "main.h"
-#include <qpixmap.h>
-#include <qtimer.h>
 
-// Vecchia cache delle icone:
-//#include <icondispatcher.h>
+class BtLabel;
+class BtButton;
+class QPixmap;
+class QTimer;
+class openwebnet;
 
 /*!
  * \class banner
@@ -49,11 +45,11 @@ public:
 	/*!
 	 * \brief sets the foundamental text one can see on the banner
 	 */
-	virtual void SetText(const char *);
+	virtual void SetTextU( const QString & );
 	/*!
 	 * \brief sets a possible additional text one can see on the banner
 	 */
-	void SetSeconaryText( const char * );
+	void SetSecondaryTextU( const QString &  );
 	/*!
 	 *  \brief return the Pressed Icon Name
 	 *  for a given IconName return the pressed status IconName
@@ -300,8 +296,6 @@ public:
 	uchar numRighe;
 	unsigned char stato;
 	virtual void inizializza(bool forza=false);
-	//provvisoriamente per debug li metto public
-	char testo[MAX_PATH*2],testoSecondario[MAX_TEXT_2];
 	/*!
 	 *  \brief Force an object of the banner to be hided.
 	 *
@@ -349,6 +343,7 @@ public:
 	};
 	virtual void addAmb(char *);
 private:
+	
 	/**
 	 *   Utility functions to get icon name root. For istance
 	 *   from "ondimmer.png" we can get "ondimmer" in a generic way
@@ -477,9 +472,7 @@ signals:
 	  virtual void active(int, int);*/
 
 protected:
-	/*   QLabel * BannerIcon;
-	     QLabel * BannerText;
-	     QLabel * SecondaryText;*/
+
 	BtLabel * BannerIcon;
 	BtLabel * BannerIcon2;
 	BtLabel * BannerText;
@@ -513,7 +506,8 @@ protected:
 	 */
 	//static IconDispatcher icons_library;
 
-	//   char testo[MAX_TEXT],testoSecondario[MAX_TEXT_2];
+	QString qtesto, qtestoSecondario;
+
 	char attivo,value,maxValue,minValue,id,step;
 	int periodo, numFrame,contFrame,serNum;
 	char address[20];
@@ -523,7 +517,7 @@ protected:
 	/**
 	 *  \brief Returns true if the object is a target for message
 	 */
-	bool isForMe(openwebnet& message);
+	bool isForMe(openwebnet * message);
 };
 
 

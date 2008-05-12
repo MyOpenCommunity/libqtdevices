@@ -12,15 +12,14 @@
 #define DIFFSONORA_H
 
 #include <qwidget.h>
-//#include "banner.h"
-#include "items.h"
-//#include "main.h"
-#include "sottomenu.h"
-#include "openclient.h"
 #include <qptrlist.h> 
 
-#include <qcursor.h>
+class banner;
 
+// #include "items.h"
+// #include "openclient.h"
+
+class sottoMenu;
 
 /*!
  * \class diffSonora
@@ -62,7 +61,14 @@ public:
 	 * If it is a source it is added to the sources subtree otherwise it's added to the amplifiers one.
 	 * This method reproduce the one implemented in sottoMenù in similar manner.
 	 */
-	virtual int addItem(char tipo, char* nome, void* indirizzo, QPtrList<QString> &icon_names, int periodo=0 , int where=0, char *ambdescr="");
+	virtual int addItemU(
+			char tipo, 
+			const QString & nome, 
+			void* indirizzo, 
+			QPtrList<QString> &icon_names, 
+			int periodo=0 , 
+			int where=0, 
+			char *ambdescr="");
 	/*!
 	 * \brief Sets the row's number.
 	 */
@@ -140,11 +146,11 @@ public slots:
 	/*!
 	 * \brief adds a source
 	 */
-	int addSource(banner *b);
+	void addSource(banner *b);
 	/*!
 	 * \brief sets first source given address 
 	 */
-	int setFirstSource(int addr);
+	void setFirstSource(int addr);
 	/*!
 	 * \brief sets isVisual to false and emits freezed signal
 	 */

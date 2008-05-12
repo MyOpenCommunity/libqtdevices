@@ -1,5 +1,7 @@
 #include <qwidget.h>
 #include "device_cache.h"
+#include "frame_interpreter.h"
+
 
 // Constructor
 device_cache::device_cache() : QMap<QString, deviceptr>() 

@@ -16,21 +16,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qframe.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-#include <qstring.h>
 #include <qfile.h>
-#include <qnamespace.h>
 #include <qpushbutton.h>
 #include <qevent.h>
 #include <qvaluevector.h>
+#include <qlayout.h>
 
 #include "banner.h"
 #include "bannondx.h"

@@ -11,12 +11,10 @@
 #ifndef BANNFRECCE
 #define BANNFRECCE
 
+#include <qtimer.h>
+
 #include "banner.h"
 #include "main.h"
-
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qpixmap.h>
 
 /*!
   \class bannFrecce

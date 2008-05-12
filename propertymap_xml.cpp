@@ -38,7 +38,6 @@
 
 #include "propertymap_xml.h"
 #include "propertymap.h"
-#include <string>
 
 #include <qdom.h>
 #include <qfile.h>

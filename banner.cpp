@@ -8,15 +8,18 @@
  **
  ****************************************************************/
 
-#include <stdlib.h>
+#include <qpixmap.h>
+#include <qfile.h>
+#include <qtimer.h>
+#include <qapplication.h> //qapp
+
 #include "banner.h"
 #include "btbutton.h"
 #include "main.h"
-#include <qfont.h>
 #include "btlabel.h"
-#include <qpixmap.h>
-#include <qfile.h>
-#include <qapplication.h>
+#include "genericfunz.h"
+#include "openclient.h"
+#include "fontmanager.h"
 
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;
@@ -87,16 +90,16 @@ banner::~banner()
 }
 
 
-void banner::SetText( const char *text )
+void banner::SetTextU( const QString & text )
 {
-	memset(testo,'\000',sizeof(testo));
-	strncpy(testo,text,MAX_PATH*2-1);
+	qtesto = text;
+	qtesto.truncate( MAX_PATH*2-1 );
 }
 
-void banner::SetSeconaryText( const char *text )
+void banner::SetSecondaryTextU( const QString & text )
 {
-	memset(testoSecondario,'\000',sizeof(testoSecondario));
-	strncpy(testoSecondario,text,MAX_TEXT_2-1);
+	qtestoSecondario = text;
+	qtestoSecondario.truncate ( MAX_TEXT_2-1 );
 }
 
 QString banner::getPressedIconName( const char *iconname )
@@ -261,8 +264,6 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon, const char*cente
 
 void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,int period, int number)
 {
-	char pressIconName[MAX_PATH];
-
 	if (sxIcon)
 	{
 		Icon[0]      = icons_library.getIcon( sxIcon );
@@ -287,6 +288,7 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	if  ( (centerActiveIcon) && (number) )
 	{
 		#if 0
+		char pressIconName[MAX_PATH];
 		for (uchar idx=1;idx<=number;idx++)
 		{
 			memset(pressIconName,'\000',sizeof(pressIconName));
@@ -760,17 +762,21 @@ void banner::Draw()
 
 
 	if (BannerText)
-	{
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-		BannerText->setText(testo);
+	{ 
+		QFont aFont;
+		FontManager::instance()->getFont( font_banner_BannerText, aFont );
+		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setFont( aFont );
+		BannerText->setText(qtesto);
 		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
+		QFont aFont;
+		FontManager::instance()->getFont( font_banner_SecondaryText, aFont );
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( QFont( "helvetica", 18, QFont::Bold ) );
-		SecondaryText->setText(testoSecondario);
+		SecondaryText->setFont( aFont );
+		SecondaryText->setText(qtestoSecondario);
 	}
 }
 
@@ -950,16 +956,18 @@ bool banner::getPul( )
 	return(pul);
 }
 
-bool banner::isForMe(openwebnet& m)
+bool banner::isForMe(openwebnet * m)
 {
-	if(strcmp(m.Extract_chi(), "1")) return false ;
-	if(!strcmp(m.Extract_dove(),getAddress())) return true;
+	if( strcmp( m->Extract_chi(), "1") )
+		 return false ;
+	if( ! strcmp( m->Extract_dove(), getAddress()) )
+		 return true;
 	// BAH
-	return (!getPul() && ((!strcmp(m.Extract_dove(),"0")) ||
-				((strlen(m.Extract_dove())==1) && 
-				 (!strncmp(m.Extract_dove(), getAddress(), 1)) ) || 
-				((!strncmp(m.Extract_dove(),"#",1)) && 
-				 *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
+	return ( ! getPul() && ((!strcmp(m->Extract_dove(),"0")) ||
+			((strlen(m->Extract_dove())==1) && 
+			(!strncmp(m->Extract_dove(), getAddress(), 1)) ) || 
+			((!strncmp(m->Extract_dove(),"#",1)) && 
+			*(getGroup()+(atoi(m->Extract_dove()+1))-1))));
 }
 
 void banner:: inizializza(bool forza){}

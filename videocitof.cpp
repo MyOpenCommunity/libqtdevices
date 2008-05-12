@@ -1,17 +1,7 @@
-#include <qfont.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-
-#include <qfile.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 #include "openclient.h"
 #include "sottomenu.h"
@@ -20,6 +10,10 @@
 #include "device_cache.h"
 #include "videocitof.h"
 #include "items.h"
+#include "genericfunz.h"
+#include "btlabel.h"
+#include "btbutton.h"
+#include "fontmanager.h"
 
 // Call notifier implementation
 
@@ -117,59 +111,70 @@ void call_notifier::close()
 // Private methods
 void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
 {
-    setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
-    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-    area1_ptr = new BtLabel(this, "Area1");
-    area1_ptr->setGeometry(0, (MAX_HEIGHT/4)-2*LABEL_HEIGHT, 
-			   MAX_WIDTH, LABEL_HEIGHT);
-    area1_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
-    area1_ptr->setAlignment(AlignHCenter|AlignVCenter);
-    QString s; 
-    if(my_station)
-	my_station->get_descr(s);
-    else
-	s = _txt1;
-    area1_ptr->setText(s.ascii());
-    if(my_station && my_station->get_light()) {
-	area2_but = new BtButton(this, "Area2");
-	area2_but->setGeometry(0, (MAX_HEIGHT/2)-BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-	connect(area2_but, SIGNAL(pressed()), this, 
-		SLOT(stairlight_pressed()));
-	connect(area2_but, SIGNAL(released()), this, 
-		SLOT(stairlight_released()));
-	area3_ptr = new BtLabel(this, "Area3");
-	area3_ptr->setGeometry(BUTTON_DIM,
-			       (MAX_HEIGHT/2)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
-			       LABEL_WIDTH, LABEL_HEIGHT);
-	area3_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
-	area3_ptr->setAlignment(AlignHCenter|AlignVCenter);
-	s = _txt2;
-	area3_ptr->setText(s.ascii());
-    } else {
-	area2_but = NULL;
-	area3_ptr = NULL;
-    }
-    if(my_station && my_station->get_key()) {
-	area4_but = new BtButton(this, "Area4");
-	area4_but->setGeometry(0, ((3*MAX_HEIGHT)/4)-BUTTON_DIM, 
-			       BUTTON_DIM, BUTTON_DIM);
-	connect(area4_but, SIGNAL(clicked()), this, SLOT(open_door_clicked()));
-	area5_ptr = new BtLabel(this, "Area5");
-	area5_ptr->setGeometry(BUTTON_DIM,
-			       ((3*MAX_HEIGHT)/4)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
-			       LABEL_WIDTH, LABEL_HEIGHT);
-	area5_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
-	area5_ptr->setAlignment(AlignHCenter|AlignVCenter);
-	s = _txt3;
-	area5_ptr->setText(s.ascii());
-    } else {
-	area4_but = NULL;
-	area5_ptr = NULL;
-    }
-    area6_but = new BtButton(this, "Area6");
-    area6_but->setGeometry(0, MAX_HEIGHT-BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-    connect(area6_but, SIGNAL(clicked()), this, SLOT(close()));
-    SetButtonsIcons();
+	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
+	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
+	area1_ptr = new BtLabel(this, "Area1");
+	area1_ptr->setGeometry(0, (MAX_HEIGHT/4)-2*LABEL_HEIGHT, 
+				MAX_WIDTH, LABEL_HEIGHT);
+	QFont aFont;
+	FontManager::instance()->getFont( font_videocitof_area1, aFont );
+	area1_ptr->setFont( aFont );
+	area1_ptr->setAlignment(AlignHCenter|AlignVCenter);
+	QString s; 
+	if(my_station)
+		my_station->get_descr(s);
+	else
+		s = _txt1;
+	area1_ptr->setText( s );
+	if(my_station && my_station->get_light()) 
+	{
+		area2_but = new BtButton(this, "Area2");
+		area2_but->setGeometry(0, (MAX_HEIGHT/2)-BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+		connect(area2_but, SIGNAL(pressed()), this, 
+			SLOT(stairlight_pressed()));
+		connect(area2_but, SIGNAL(released()), this, 
+			SLOT(stairlight_released()));
+		area3_ptr = new BtLabel(this, "Area3");
+		area3_ptr->setGeometry(BUTTON_DIM,
+				(MAX_HEIGHT/2)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
+				LABEL_WIDTH, LABEL_HEIGHT);
+		FontManager::instance()->getFont( font_videocitof_area3, aFont );
+		area3_ptr->setFont( aFont );
+		area3_ptr->setAlignment(AlignHCenter|AlignVCenter);
+		s = _txt2;
+		area3_ptr->setText( s );
+	}
+	else
+	{
+		area2_but = NULL;
+		area3_ptr = NULL;
+	}
+
+	if(my_station && my_station->get_key()) 
+	{
+		area4_but = new BtButton(this, "Area4");
+		area4_but->setGeometry(0, ((3*MAX_HEIGHT)/4)-BUTTON_DIM, 
+				BUTTON_DIM, BUTTON_DIM);
+		connect(area4_but, SIGNAL(clicked()), this, SLOT(open_door_clicked()));
+		area5_ptr = new BtLabel(this, "Area5");
+		area5_ptr->setGeometry(BUTTON_DIM,
+				((3*MAX_HEIGHT)/4)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
+				LABEL_WIDTH, LABEL_HEIGHT);
+		FontManager::instance()->getFont( font_videocitof_area5, aFont );
+		area5_ptr->setFont( aFont );
+		area5_ptr->setAlignment(AlignHCenter|AlignVCenter);
+		s = _txt3;
+		area5_ptr->setText( s );
+	} 
+	else 
+	{
+		area4_but = NULL;
+		area5_ptr = NULL;
+	}
+	area6_but = new BtButton(this, "Area6");
+	area6_but->setGeometry(0, MAX_HEIGHT-BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	connect(area6_but, SIGNAL(clicked()), this, SLOT(close()));
+	SetButtonsIcons();
 }
 
 void call_notifier::SetButtonIcon(const char *ic, BtButton *b)

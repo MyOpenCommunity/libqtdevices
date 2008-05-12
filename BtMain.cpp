@@ -8,52 +8,40 @@
  **
  ****************************************************************/
 
-#include <time.h>
+#include <sys/sysinfo.h>
+
 #include <qapplication.h>
 #include <qobject.h>
-#include <qaction.h>
-//#include <qcursor.h>
 #include <qwidget.h>
 #include <qptrlist.h> 
 #include <qcursor.h>
-#include "qwaitcondition.h"
+#include <qxml.h>
+#include <qwindowdefs.h>
+#include <qbitmap.h>
+#include <qwindowsystem_qws.h>
+#include <qpainter.h>
 
 #include "main.h"
 #include "btmain.h"
 #include "homepage.h"
 #include "sottomenu.h"
-#include "impostatime.h"
 #include "diffsonora.h"
 #include "diffmulti.h"
-#include "sveglia.h"
+#include "antintrusione.h"
 #include "genericfunz.h"
-//#include "structureparser.h"
 #include "xmlconfhandler.h"
 #include "xmlvarihandler.h"
 #include "calibrate.h"
 #include "btlabel.h"
 #include "genpage.h"
 #include "device_cache.h"
-
-#include <sys/sysinfo.h>
-#include <qfontdatabase.h>
-#include <qfile.h>
-#include <qxml.h>
-#include <qwindowdefs.h>
-#include <stdlib.h>
-#include <math.h>
-#include <qbitmap.h>
-#include <qwindowsystem_qws.h>
-
-#if 0 // kemosh
-#include <bt_upnp.h>
-#endif
+#include "openclient.h"
+#include "versio.h"
+#include "termoregolaz.h"
+#include "tastiera.h"
 
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
-
-
-
 
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 : QWidget( parent, name )
@@ -164,40 +152,6 @@ void BtMain::hom()
 		return;
 	}
 
-	/*   QFontInfo(Home->font());
-
-	     qDebug( "FONT FAMILY=%s",(Home->font()).family().ascii());
-	     qDebug( "FONT PIXEL SIZE=%d",(Home->font()).pixelSize());
-	     qDebug( "FONT POINT SIZE=%d",(Home->font()).pointSize());
-	     qDebug( "FONT ITALIC=%d",(Home->font()).italic());
-	     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
-	     qDebug( "FONT BOLD=%d",(Home->font()).bold());
-	     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
-
-	     QFontDatabase fdb;
-	     QStringList families = fdb.families();
-	     for ( QStringList::Iterator f = families.begin(); f != families.end(); ++f ) {
-	     QString family = *f;
-	     qDebug( family );
-	     QStringList styles = fdb.styles( family );
-	     for ( QStringList::Iterator s = styles.begin(); s != styles.end(); ++s ) {
-	     QString style = *s;
-	     QString dstyle = "\t" + style + " (";
-	     QValueList<int> smoothies = fdb.smoothSizes( family, style );
-	     for ( QValueList<int>::Iterator points = smoothies.begin();
-	     points != smoothies.end(); ++points ) {
-	     dstyle += QString::number( *points ) + " ";
-	     }
-	     dstyle = dstyle.left( dstyle.length() - 1 ) + ")";
-	     qDebug( dstyle );
-	     }
-	     }
-	     qDebug( "FINE ANALISI FONT");
-
-	//    qDebug( "FONT FIXED PITCH=%d",(Home.font()).fixedPitch());
-	//    qDebug( "FONT RAWMODE=%d",(Home.font()).rawMode());
-	//    qDebug( "FONT EXACTMATCH=%d",(Home.font()).exactMatch());
-	*/	 
 	datiGen->inizializza();
 
 

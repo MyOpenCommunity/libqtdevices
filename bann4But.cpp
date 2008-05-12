@@ -10,8 +10,6 @@
 
 #include "bannfrecce.h"
 #include "main.h"
-//#include "btbutton.h"
-#include <qpixmap.h>
 #include "bann4but.h"
 
 bann4But::bann4But( QWidget *parent,const char *name )

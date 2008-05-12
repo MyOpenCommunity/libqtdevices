@@ -14,15 +14,11 @@
 #undef IPHONE_MODE
 
 #include <qwidget.h>
-//#include <qlabel.h>
-#include "banner.h"
 #include <qptrlist.h> 
 #include "main.h"
-#include "bannfrecce.h"
-#include <stdlib.h>
+#include "banner.h"
 
-//class QPushButton;
-
+class bannFrecce;
 class scenEvo_cond;
 
 /*!
@@ -91,13 +87,15 @@ unknown : unknown field (for video door phone items
 sstart : soft start values list for dimmer 100 group
 sstop : soft stop values list vor dimmer 100 group
 */     
-		virtual int addItem(char tipo, char *nome, void *indirizzo,
+		virtual int addItemU(char tipo, const QString & nome, void *indirizzo,
 				QPtrList<QString> &icon_names,
 				int periodo = 0, int numFrame = 0, QColor secondFroreground = QColor(0,0,0),
 				char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
 				int par3=0, int par4=0, 
 				QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, 
-				QString action="", QString light="", QString key="", QString unk="", QValueList<int> sstart = QValueList<int>(), QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
+				QString action="", QString light="", QString key="", QString unk="", 
+				QValueList<int> sstart = QValueList<int>(), 
+				QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
 		/*!
 		  \brief Initializes all the objects in the list calling init() after a certain time
 		  */      

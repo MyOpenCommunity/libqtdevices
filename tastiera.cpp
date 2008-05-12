@@ -8,21 +8,28 @@
 **
 ****************************************************************/
 
-
-#include <qfont.h>
-#include <qlayout.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include <qprocess.h>
 #include <qstring.h>
+#include <qcursor.h>
+#include <qfile.h>
 
-
+#include "genericfunz.h"
 #include "tastiera.h"
 #include "banner.h"
-#include "main.h"
+#include "fontmanager.h"
 
- 
+#include "btlabel.h"
+#include "btbutton.h"
+
+#define BUT_DIM	60
+#define POSX1		(MAX_WIDTH-BUT_DIM*3)/6
+#define POSX2		POSX1*3+BUT_DIM
+#define POSX3		POSX2+POSX1*2+BUT_DIM
+
+#define BUT_SMALL_DIM   (MAX_WIDTH-POSX1*2)/8
+#define POSX1_SMALL     POSX1
+
 tastiera::tastiera( QWidget *parent, const char *name, int line )
         : QWidget( parent, name )
 {
@@ -293,10 +300,14 @@ int tastiera::setBGPixmap(char* backImage)
 void tastiera::draw()
 {
      scrittaLabel->setAlignment(AlignHCenter|AlignVCenter);
-     scrittaLabel->setFont( QFont( "helvetica", 14, QFont::Bold ) );
-     scrittaLabel->setText("PASSWORD:");
+     QFont aFont;
+     FontManager::instance()->getFont( font_tastiera_scritta_label, aFont );
+     scrittaLabel->setFont( aFont );
+     scrittaLabel->setText("PASSWORD:"); // FIXME tradurre????
      digitLabel->setAlignment(AlignLeft|AlignVCenter);
-     digitLabel->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+
+     FontManager::instance()->getFont( font_tastiera_digit_label, aFont );
+     digitLabel->setFont( aFont );
      qDebug("tastiera::draw(), mode = %d", mode);
      if (mode==CLEAN)
 	 digitLabel->setText(&pwd[0]);
@@ -400,13 +411,17 @@ tastiera_con_stati::tastiera_con_stati(int s[8],
 				       QWidget *parent, const char *name) : 
     tastiera(parent, name, MAX_HEIGHT/6)
 {
-    int i, x;
-    char tmp[2] = "1";
-    for(i=0, x=POSX1_SMALL; i<8; i++, x+=BUT_SMALL_DIM) {
+	int i, x;
+	char tmp[2] = "1";
+	QFont aFont;
+	FontManager::instance()->getFont( font_tastiera_bottoni_stati, aFont );
+	
+	for(i=0, x=POSX1_SMALL; i<8; i++, x+=BUT_SMALL_DIM) {
 	// Create button
 	stati[i] = new BtButton(this, "bottone stato");	
 	stati[i]->setEnabled(0);
-	stati[i]->setFont( QFont( "helvetica", 16, QFont::Bold ) );
+	
+	stati[i]->setFont( aFont );
 	if(s[i] == -1)
 	{
 	    stati[i]->setText("-");

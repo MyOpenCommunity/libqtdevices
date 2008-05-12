@@ -2,13 +2,7 @@
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
-#include <qnamespace.h>
-#include <qptrvector.h>
-#include <qvaluevector.h>
-#include <qstring.h>
 #include <qmap.h>
-#include <qdir.h>
-
 #include <qobject.h>
 
 class MediaPlayer : public QObject
