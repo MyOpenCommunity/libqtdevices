@@ -149,7 +149,8 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
 			connect(sorgenti, SIGNAL(ambChanged(char *, bool, void *)),b, SLOT(ambChanged(char *, bool, void *)));
 			connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
-			connect(b,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
+			connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
+			connect(b,SIGNAL(sendInit(char*)),this, SIGNAL(sendInit(char*)));
 			break;
 		case INSIEME_AMBIENTI:
 		case AMBIENTE:
@@ -294,19 +295,9 @@ void diffmulti::reparent(QWidget *par, unsigned int f, QPoint p,
 
 void diffmulti::inizializza()
 {
-	/**
-	 *  Kemosh FIX: initially this function was not called by BtMain.cpp
-	 *  also if it was present.
-	 */ 
 	qDebug("diffmulti::inizializza()");
-
-	//openwebnet msg_open;
-	//msg_open.CreateMsgOpen("16","1000","11","");
-	//emit sendFrame(msg_open.frame_open);
-	// matr->init();
-	
-	QString indirizzo = QString("%1").arg(_where_address);
-	emit sendFrame((char *)(QString("*#22*7*#15*%1***4**0**1***0##").arg(indirizzo).ascii()));
+	sorgenti->inizializza();
+	matr->init();
 }
 
 void diffmulti::ds_closed(diffSonora *ds)
@@ -461,6 +452,10 @@ void diffmulti::freezed_handler(bool f)
 	sottoMenu::freezed(f);
 }
 
+void diffmulti::gestFrame(char*frame)
+{
+	emit gesFrame(frame);
+}
 // contdiff implementation
 
 contdiff::contdiff(diffSonora *_ds, diffmulti *_dm) : 

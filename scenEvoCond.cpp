@@ -1977,7 +1977,7 @@ int device_condition_temp::get_divisor()
 
 void device_condition_temp::get_unit(QString& out)
 {
-    out = "°C ±1°C" ;
+    out = "\272C \2611\272C" ; 
 }
 
 #if 0

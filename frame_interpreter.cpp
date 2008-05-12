@@ -1718,6 +1718,8 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	qDebug("frame_interpreter_sound_matr_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+	if(atoi(msg_open.Extract_chi()) != 16)
+		return;
 	/*if(!is_frame_ours(msg_open, request_status))
 	// Discard frame if not ours
 	return;*/
@@ -2291,7 +2293,7 @@ bool frame_interpreter_thermr_device::checkTimeoutVar(const stat_var &var)
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 
-	if ((var.get_val() == 0) || ((int)(tv.tv_sec) <= var.get_val()))
+	if ((var.get_val() != 0) && ((int)(tv.tv_sec) <= var.get_val()))
 	{
 		//qDebug("[TMOUTVAR] checkTimeoutVar() tv_sec=%d, val=%d: TRUE", (int)tv.tv_sec, var.get_val());
 		return true;
@@ -2488,7 +2490,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 				ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
 				evt_list.append(ds);
 			}
-			if(curr_info_centrale.get_val())
+			if(curr_info_centrale.get_val() && (type == device_status_thermr::Z99))
 			{
 				delta = 0;
 				curr_info_centrale.set_val(delta);
@@ -2518,7 +2520,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 				ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
 				evt_list.append(ds);
 			}
-			if(curr_info_centrale.get_val())
+			if(curr_info_centrale.get_val() && (type == device_status_thermr::Z99))
 			{
 				delta = 0;
 				curr_info_centrale.set_val(delta);
@@ -2579,7 +2581,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 			{
 				do_event = true;
 				stat = device_status_thermr::S_AUTO;
-				if((curr_crono.get_val()) && (ds->initialized()) && (!curr_info_centrale.get_val()) && (type == device_status_thermr::Z99))
+				if((curr_crono.get_val()) && (ds->initialized()) && (!curr_info_centrale.get_val()))
 				{
 					/// FRAME VERSO LA CENTRALE
 					memset(pippo,'\000',sizeof(pippo));
@@ -2638,7 +2640,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 			loc = atoi(m.Extract_valori(0));
 			if(/*!ds->initialized() || */(curr_local.get_val() != loc)) {
 				qDebug("new local is %d, inizialized = %d", loc, ds->initialized());
-				if((curr_crono.get_val()) && (loc ==  13) && (curr_local.get_val() == 5) && (!curr_info_centrale.get_val()) && (type == device_status_thermr::Z99))
+				if((curr_crono.get_val()) && (loc ==  13) && (curr_local.get_val() == 5) && (!curr_info_centrale.get_val()))
 				{
 					/// FRAME VERSO LA CENTRALE
 					memset(pippo,'\000',sizeof(pippo));
@@ -2669,7 +2671,7 @@ handle_frame(openwebnet_ext m, device_status_thermr *ds)
 					ds->write_val((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
 					evt_list.append(ds);
 				}
-				if(curr_crono.get_val() && (!curr_info_centrale.get_val()) && (type == device_status_thermr::Z99))
+				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
 				{
 					/// FRAME VERSO LA CENTRALE
 					memset(pippo,'\000',sizeof(pippo));
