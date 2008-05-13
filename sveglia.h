@@ -186,7 +186,7 @@ private:
    unsigned int contaBuzzer;
    QDateTime* oraSveglia;
    contdiff* difson;
-   uchar	volSveglia[AMPLI_NUM];
+   int	volSveglia[AMPLI_NUM];
    bool	gesFrameAbil,svegliaAbil,onceToGest;
    QTimer   *minuTimer,*aumVolTimer;
    char*	frame;

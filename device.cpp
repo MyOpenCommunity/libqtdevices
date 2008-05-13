@@ -25,7 +25,7 @@ stat_var::stat_var(stat_var::type _t)
 	t = _t;
 	val = 0;
 	min = 0;
-	max = 0x7fffffff;
+	max = INT_MAX;
 	step = 1;
 	_initialized = false;
 }
@@ -35,7 +35,7 @@ void stat_var::get_val(int& out)
 	out = val;
 }
 
-int stat_var::get_val(void)
+int stat_var::get_val(void) const
 {
 	return val;
 }
@@ -311,13 +311,13 @@ device_status_radio::device_status_radio() :
 	device_status(RADIO)
 {
 	add_var((int)device_status_radio::FREQ_INDEX,
-			new stat_var(stat_var::FREQ, 0, 0, 0x7fffffff, 1));
+			new stat_var(stat_var::FREQ, 0, 0, INT_MAX, 1));
 	add_var((int)device_status_radio::STAZ_INDEX,
 			new stat_var(stat_var::STAZ, 0, 0, 0xf, 1));
 	add_var((int)device_status_radio::RDS0_INDEX,
-			new stat_var(stat_var::RDS0, 0, 0, 0x7fffffff, 1));
+			new stat_var(stat_var::RDS0, 0, 0, INT_MAX, 1));
 	add_var((int)device_status_radio::RDS1_INDEX,
-			new stat_var(stat_var::RDS1, 0, 0, 0x7fffffff, 1));
+			new stat_var(stat_var::RDS1, 0, 0, INT_MAX, 1));
 }
 
 //! Device status for doorphone devices
@@ -348,16 +348,21 @@ device_status_zonanti::device_status_zonanti() :
 device_status_thermr::device_status_thermr(type_t type) :
 	device_status(THERMR)
 {
+	/*
+	 * Initial value -1: not a possible one, so when the probe is
+	 * read the first time, we are sure the previous value is different
+	 * and the relevant display item is refreshed.
+	 */
 	add_var((int)device_status_thermr::STAT_INDEX,
-			new stat_var(stat_var::STAT, 5, 0, 5, 1));
+			new stat_var(stat_var::STAT, -1, 0, 5, 1));
 	add_var((int)device_status_thermr::LOCAL_INDEX,
 			new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
 	add_var((int)device_status_thermr::SP_INDEX,
-			new stat_var(stat_var::SP, 0, 0, 0x7fffffff, 1));
+			new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
 	add_var((int)device_status_thermr::CRONO,
 			new stat_var(stat_var::CRONO, 0, 0, 1, 1));
 	add_var((int)device_status_thermr::INFO_SONDA,
-			new stat_var(stat_var::INFO_SONDA, 1, 0, 1, 1));
+			new stat_var(stat_var::INFO_SONDA, 0, 0, INT_MAX, 1));
 	add_var((int)device_status_thermr::INFO_CENTRALE,
 			new stat_var(stat_var::INFO_CENTRALE, 1, 0, 1, 1));
 
@@ -367,8 +372,13 @@ device_status_thermr::device_status_thermr(type_t type) :
 device_status_fancoil::device_status_fancoil() :
 	device_status(FANCOIL)
 {
+	/*
+	 * Initial value -1: not a possible one, so when the probe is
+	 * read the first time, we are sure the previous value is different
+	 * and the relevant display item is refreshed.
+	 */
 	add_var((int)device_status_fancoil::SPEED_INDEX,
-			new stat_var(stat_var::FANCOIL_SPEED, 0, 0, 3, 1));
+			new stat_var(stat_var::FANCOIL_SPEED, -1, 0, 3, 1));
 }
 
 // Device status for modscen

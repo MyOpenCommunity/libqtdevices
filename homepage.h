@@ -77,7 +77,7 @@ public:
   
   The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel and the text describing the zone.
 */      
-   void	addTemp(char*, int, int, int, int, QColor, QColor, int, int, char* );   
+   void	addTemp(char*, int, int, int, int, QColor, QColor, int, int, char*, char * Ext="0");   
   /*!
   \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame, line and text.
 */     
@@ -155,6 +155,8 @@ int xClock,yClock,xTemp,yTemp;
   bool	freez;
   char 	zonaTermo1[50],zonaTermo2[50],zonaTermo3[50];
   char * zt[3];
+  char  ext1[2],ext2[2],ext3[2];
+  char * ext[3];
   QLCDNumber 	*temperatura[3];
   char specialFrame[50];
   char chi[10];

@@ -17,40 +17,28 @@
 #ifndef MULTIMEDIA_SOURCE_H
 #define MULTIMEDIA_SOURCE_H
 
-#include <qframe.h>
-#include <qprocess.h>
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qlistbox.h>
 #include <qdir.h>
 #include <qmap.h>
 #include <qptrvector.h>
 #include <qvaluevector.h>
-#include <qdialog.h>
 #include <qlabel.h>
-#include <qslider.h>
-#include <qbuttongroup.h>
 #include <qtimer.h>
-#include <qlayout.h>
 #include <qpainter.h>
-#include <qtextedit.h>
+#include <limits>
 
 #include "main.h"
-#include "btlabel.h"
-#include "bannfrecce.h"
-#include "bann3but.h"
 #include "buttons_bar.h"
 
 
 class FileBrowser;
 class AudioPlayingWindow;
 class MediaPlayer;
-class AudioPlayingWindow;
 
 
-/** \class MultimediaSource
- *  This class implemets the Page for MULTIMEDIA SOURCE
+/**
+ * \class MultimediaSource
  *
+ * This class implemets the Page for MULTIMEDIA SOURCE
  */
 class  MultimediaSource : public QWidget
 {
@@ -90,13 +78,24 @@ public:
 	 * \brief Draws the page
 	 */
 	void draw() {};
-	/*!
-	 * File Browsing Windows
+
+	/*
+	 * \brief Enable/Disable audio source
 	 */
-	FileBrowser *filesWindow;
+	void enableSource(bool send_frame);
+	void disableSource(bool send_frame);
 
 	/// Init Audio System
 	void initAudio();
+
+	/*
+	 * Play control
+	 */
+	void nextTrack();
+	void prevTrack();
+	void pause();
+	void resume();
+	void stop();
 
 signals:
 	/*!
@@ -121,6 +120,13 @@ public slots:
 	void handleStartPlay();
 	void handleStopPlay();
 private:
+	/// Player screen
+	AudioPlayingWindow *playing_window;
+
+	/// Filer browser
+	FileBrowser *filesWindow;
+
+
 	char amb[80];
 	char nome[15];
 	bannFrecce *bannNavigazione;
@@ -130,9 +136,11 @@ private:
 };
 
 
-/** \class TitleLabel
- *  this class is derived from QLabel
- *  and reimplements drawContent to have scrolling text
+/**
+ * \class TitleLabel
+ *
+ * this class is derived from QLabel
+ * and reimplements drawContent to have scrolling text
  */
 class TitleLabel : public QLabel
 {
@@ -147,21 +155,28 @@ public:
 	void setMaxVisibleChars(int n);
 
 private:
-	/// internal data
-	QString _text;
-	int     _text_length;
-	int     _w_offset;
-	int     _h_offset;
-	bool    _scrolling;
+	// internal data
+	QString text;
 
-	/// text scrolling Timer
+	// Total chars
+	unsigned text_length;
+
+	int     w_offset;
+	int     h_offset;
+	bool    scrolling;
+
+	// Text scrolling Timer
 	QTimer scrolling_timer;
 
-	/// text scrolling parameters
+	/*
+	 * Text scrolling parameters.
+	 */
 	int time_per_step;
-	int current_shift;
-	int step_shift;
-	int visible_chars;
+	// current chars shifted
+	unsigned current_shift;
+	// how many chars can be shown at the same time_shift
+	unsigned visible_chars;
+
 	QString separator;
 
 	/// refresh text
@@ -172,15 +187,17 @@ public slots:
 };
 
 
-/** \class FileBrowser
- *  This class implemets a File Browsing Windows (derived from QListBox) with special methods
- *  to navigate and to play files
+/**
+ * \class FileBrowser
+ *
+ * implements a File Browsing Windows with special methods
+ * to navigate and to play files.
  */
 class  FileBrowser : public QWidget
 {
 Q_OBJECT
 public:
-	FileBrowser(QWidget *parent=0, unsigned rows_per_page=3, const char *name=0, WFlags f=0);
+	FileBrowser(QWidget *parent, AudioPlayingWindow *, unsigned rows_per_page, const char *name=0, WFlags f=0);
 
 	/**
 	 * Browse given path, return false in case of error.
@@ -201,8 +218,6 @@ public:
 
 	/// before to show itself some init is done.
 	void showEvent(QShowEvent *event);
-
-	void FileBrowser::showPlayingStatusIfPlaying();
 
 public slots:
 	void nextItem();
@@ -226,7 +241,7 @@ private:
 	// The followinw Vector stores pointers to QfileInfo objects.
 	// (the Qt class: QPtrVector contains pointers so it is not needed to define it as QPtrVector<QFileInfo*>)
 	QPtrVector<QFileInfo>    files_list;
-	QMap<QString, int>       pages_indexes;
+	QMap<QString, unsigned>  pages_indexes;
 
 	/// Widgets
 	// Pointer to labels used to visualize files
@@ -243,11 +258,12 @@ signals:
 };
 
 
-/** \class AudioPlayingWindow
- *  This class implemets the Playing Window,
- *  it is called from fileBrowser (that is part of MultimediaSource Page)
- *  when file (song) is clicked
+/**
+ * \class AudioPlayingWindow
  *
+ * This class implemets the Playing Window,
+ * it is called from fileBrowser (that is part of MultimediaSource Page)
+ * when file (song) is clicked
  */
 class  AudioPlayingWindow : public QWidget
 {
@@ -260,20 +276,24 @@ public:
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
-	// Change Track
+	// Play control
 	void nextTrack();
 	void prevTrack();
+	void pause();
+	void resume();
+	void stop();
 
 	/// Stores current playing info
 	QMap<QString, QString> playing_info;
 
 	/// Start PLAY, begins to play a given track and sets the play_list
-	void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
+	void startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 
 	// Run script and send frame to turn on and off Audio System
-	void turnOnAudioSystem();
-	void turnOffAudioSystem();
+	void turnOnAudioSystem(bool send_frame);
+	void turnOffAudioSystem(bool send_frame);
 
+	/// Return true if a song is currently active, even if in pause.
 	bool isPlaying();
 
 public slots:
@@ -282,18 +302,42 @@ public slots:
 	void handleSettingsBtn();
 	void handle_data_refresh_timer();
 	void handlePlayingDone();
+	void handlePlayingKilled();
 	void handlePlayingAborted();
 
 private:
+	/// Method to Get and Visualize playing INFO from MPlayer
+	void refreshPlayingInfo();
+
+	/// Clean playing INFO from MPlayer
+	void cleanPlayingInfo();
+
+	// Change status of play/pause button in control bar
+	void generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
+	void startMediaPlayer(unsigned int);
+	void stopMediaPlayer();
+	void playNextTrack();
+	void showPlayBtn();
+	void showPauseBtn();
+
 	/// refreshing info time interval
 	int refresh_time;
 
-	/** The differences between files_list and play_list are:
-	 *     - play_list contains QString with the full path
-	 *     - play_list does not contain dirs
+	/**
+	 * The differences between files_list and play_list are:
+	 *  - play_list contains QString with the full path
+	 *  - files_list does not contain dirs
 	 */
 	QValueVector<QString> play_list;
-	int                   current_track;
+
+	/*
+	 * current_track is the track played by mplayer.
+	 * next_track is the track to be played by next mplayer instance.
+	 * CURRENT_TRACK_NONE means no track has to be played.
+	 */
+	unsigned int current_track;
+	unsigned int next_track;
+	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
 
 	/// Widgets
 	ButtonsBar  *play_controls;
@@ -308,12 +352,6 @@ private:
 
 	/// Timer to refresh data from MediaPlayer
 	QTimer *data_refresh_timer;
-
-	/// Method to Get and Visualize playing INFO from MPlayer
-	void refreshPlayingInfo();
-
-	/// Clean playing INFO from MPlayer
-	void cleanPlayingInfo();
 
 signals:
 	void notifyStartPlay();

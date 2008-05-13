@@ -32,33 +32,9 @@
  *
  * \brief Save/load a property map through a XML file (using Qt's QDom).
  *
- * \version $Id: propertymap_xml.h,v 1.1 2008/04/16 08:53:12 cvs Exp $
- *
  * \author Giovanni Bajo <rasky@develer.com>
  *
  */
-
-/*#*
- *#* $Log: propertymap_xml.h,v $
- *#* Revision 1.1  2008/04/16 08:53:12  cvs
- *#* Agresta:
- *#*  # versione data da Develer il 10 Aprile 2008 e consegnata a Mac per iniziare lo sviluppo dello Stop & Go
- *#*
- *#* Revision 1.2  2007/09/25 16:00:25  aleph
- *#* Fix comment typo
- *#*
- *#* Revision 1.1  2006/10/25 14:23:16  bernie
- *#* Merge too many PropertyMap enhancements to list here.
- *#*
- *#* Revision 1.2  2005/09/19 16:36:05  chad
- *#* Fix doxygen autobrief
- *#*
- *#* Revision 1.1  2005/06/22 16:11:18  rasky
- *#* Add supporto for loading a property map from a XML file
- *#*
- *#* Revision 1.1  2005/04/12 02:00:44  bernie
- *#* Import in DevLib.
- *#*/
 
 #ifndef DEVLIB_PROPERTYMAP_XML_H
 #define DEVLIB_PROPERTYMAP_XML_H

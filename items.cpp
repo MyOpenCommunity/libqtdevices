@@ -700,7 +700,7 @@ void grDimmer::Diminuisci()
 	}
 }
 
-void grDimmer::inizializza(){}
+void grDimmer::inizializza(bool forza){}
 
 /*****************************************************************
  **gruppo di dimmer100
@@ -795,7 +795,7 @@ void scenario::Attiva()
 		emit sendFrame(msg_open.frame_open);    
 	}
 }
-void scenario::inizializza(){}
+void scenario::inizializza(bool forza){}
 /*****************************************************************
  **carico
  ****************************************************************/
@@ -822,7 +822,7 @@ void carico::Attiva()
 	emit sendFrame(msg_open.frame_open);
 }
 
-void carico::inizializza(){}
+void carico::inizializza(bool forza){}
 /*****************************************************************
  **attuatAutomInt
  ****************************************************************/
@@ -1030,7 +1030,7 @@ void attuatAutomInt::analizzaDown()
 }
 
 
-void attuatAutomInt::inizializza()
+void attuatAutomInt::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -1270,7 +1270,7 @@ void attuatAutomIntSic::sendStop()
 	emit sendFrame(msg_open.frame_open);
 }
 
-void attuatAutomIntSic::inizializza()
+void attuatAutomIntSic::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -2029,7 +2029,7 @@ void grAttuatInt::Ferma()
 	}
 }
 
-void grAttuatInt::inizializza()
+void grAttuatInt::inizializza(bool forza)
 { 
 }
 /*****************************************************************
@@ -2093,7 +2093,7 @@ void attuatPuls::Disattiva()
 	}  
 }
 
-void attuatPuls::inizializza()
+void attuatPuls::inizializza(bool forza)
 { 
 }
 /*****************************************************************
@@ -2245,21 +2245,25 @@ void amplificatore::status_changed(QPtrList<device_status>sl)
 
 void amplificatore:: Accendi()
 {
-	openwebnet msg_open;
+	char    pippo[50];
+	char ind[3];
 
 	qDebug("amplificatore::Accendi()");
-	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "3",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);     
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(ind, "%s", getAddress());
+	sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
+	emit sendFrame(pippo);     
 }
 void amplificatore:: Spegni()
 {
-	openwebnet msg_open;
+	char    pippo[50];
+	char ind[3];
 
 	qDebug("amplificatore::Spegni()");
-	msg_open.CreateNullMsgOpen();     
-	msg_open.CreateMsgOpen("16", "13",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);     
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(ind, "%s", getAddress());
+	sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
+	emit sendFrame(pippo);
 }
 void amplificatore:: Aumenta()
 {
@@ -2279,7 +2283,7 @@ void amplificatore:: Diminuisci()
 	msg_open.CreateMsgOpen("16", "1101",getAddress(),"");
 	emit sendFrame(msg_open.frame_open);     
 }
-void amplificatore::inizializza()
+void amplificatore::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -2338,25 +2342,39 @@ void grAmplificatori::setAddress(void*indirizzi)
 
 void grAmplificatori::Attiva()
 {
-	openwebnet msg_open;
+	char pippo[50];
+	char ind[3];
 
 	for(uchar idx=0; idx<elencoDisp.count();idx++)
 	{
-		msg_open.CreateNullMsgOpen();     
-		msg_open.CreateMsgOpen("16", "3",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
+		if(strcmp(ind, "0") == 0)
+			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
+		else if(ind[0] == '#')
+			sprintf(pippo,"*22*34#4#%c*4#%c##",ind[1], ind[1]);
+		else
+			sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]); 
+		emit sendFrame(pippo);
 	}
 }
 
 void grAmplificatori::Disattiva()
 {
-	openwebnet msg_open;
+	char pippo[50];
+	char ind[3];
 
 	for(uchar idx=0; idx<elencoDisp.count();idx++)
 	{
-		msg_open.CreateNullMsgOpen();     
-		msg_open.CreateMsgOpen("16", "13",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
+		if(strcmp(ind, "0") == 0)
+			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
+		else if(ind[0] == '#')
+			sprintf(pippo,"*22*0#4#%c*4#%c##",ind[1], ind[1]);
+		else
+			sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
+		emit sendFrame(pippo);
 	}
 }
 
@@ -2383,7 +2401,7 @@ void grAmplificatori::Diminuisci()
 		emit sendFrame(msg_open.frame_open);
 	}
 }
-void grAmplificatori::inizializza()
+void grAmplificatori::inizializza(bool forza)
 { 
 }
 
@@ -2419,7 +2437,13 @@ void sorgente_aux::gestFrame(char*)
 void sorgente_aux::ciclaSorg()
 {
 	openwebnet msg_open;
-	msg_open.CreateMsgOpen("16","23","100","");
+	char pippo[50];
+	char amb[3];
+
+	sprintf(amb, getAddress());
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);
 }
 
@@ -2443,7 +2467,7 @@ void sorgente_aux::aumBrano()
 	emit sendFrame(msg_open.frame_open);
 }
 
-void sorgente_aux::inizializza()
+void sorgente_aux::inizializza(bool forza)
 {
 }
 
@@ -2472,6 +2496,12 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	source_menu.setFGColor(parentWidget(TRUE)->foregroundColor());
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showAux()));
+	if(nbut == 4)
+	{
+		connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));
+		connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
+		connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+	}
 
 	QWidget *sotto_menu = this->parentWidget(FALSE)->parentWidget(FALSE);
 	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
@@ -2481,20 +2511,72 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 
 void BannerSorgenteMultimedia::ciclaSorg()
 {
+	openwebnet msg_open;
+	qDebug("BannerSorgenteMultimedia::ciclaSorg()");
+	char pippo[50];
+	char amb[3];
+
+	sprintf(amb, getAddress());
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	emit sendFrame(msg_open.frame_open);
 }
 
-void BannerSorgenteMultimedia::decBrano() {}
-void BannerSorgenteMultimedia::aumBrano() {}
+void BannerSorgenteMultimedia::decBrano()
+{
+	source_menu.prevTrack();
+}
+
+void BannerSorgenteMultimedia::aumBrano()
+{
+	source_menu.nextTrack();
+}
+
 void BannerSorgenteMultimedia::menu() {}
-void BannerSorgenteMultimedia::gestFrame(char *) {}
+
+void BannerSorgenteMultimedia::gestFrame(char *frame)
+{
+	openwebnet msg_open;
+	char amb[3];
+	qDebug("BannerSorgenteMultimedia::gestFrame()");
+
+	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+	sprintf(amb, getAddress());
+	if ((!strcmp(msg_open.Extract_chi(),"22")) &&
+	    (!strncmp(msg_open.Extract_cosa(),"2", 1)) &&
+	    (!strcmp(msg_open.Extract_dove(),"5")) && 
+	    (!strcmp(msg_open.Extract_livello(),"2")))
+	{
+		if (!strcmp(msg_open.Extract_interfaccia(), amb+2))
+		{
+			source_menu.enableSource(false);
+			source_menu.resume();
+		}
+		else
+		{
+			source_menu.disableSource(false);
+			source_menu.pause();
+		}
+	}
+}
 
 void BannerSorgenteMultimedia::hide() 
 {
+	qDebug("BannerSorgenteMultimedia::hide()");
 	banner::hide();
 	source_menu.hide();
 }
 
+void BannerSorgenteMultimedia::inizializza(bool forza)
+{
+	qDebug("BannerSorgenteMultimedia::inizializza()");
+	openwebnet msg_open;
+	char amb[3];
 
+	sprintf(amb, getAddress());
+	emit sendInit((char *)(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(amb[2]).ascii()));
+}
 /*
  * Banner Sorgente Multimediale Multicanale
  */
@@ -2513,23 +2595,52 @@ BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const ch
 
 void BannerSorgenteMultimediaMC::attiva()
 {
+	char    pippo[50];
 	openwebnet msg_open;
 
+	qDebug("BannerSorgenteMultimediaMC::attiva()");
 	if (!multiamb)
 	{
-		msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
+		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+		//msg_open.CreateMsgOpen("16", "3", getAddress(), "");
 		emit sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
+		source_menu.enableSource(false);
+		source_menu.resume();
 	}
 	else
 	{
 		QStringList::Iterator it;
 		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			QString dove = QString::number(100 + (*it).toInt() * 10 + indirizzo_semplice.toInt(), 10);
-			msg_open.CreateMsgOpen("16", "3", (char *)(dove.ascii()), "");
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*22*0#4#");
+			strcat(pippo,(*it));
+			strcat(pippo,"*6");
+			strcat(pippo,"##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*#16*1000*11##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*22*1#4#");
+			strcat(pippo,(*it));
+			strcat(pippo,"*2#");
+			strcat(pippo, indirizzo_semplice);
+			strcat(pippo,"##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*#16*1000*11##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 			emit sendFrame(msg_open.frame_open);
 		}
+		source_menu.enableSource(false);
+		source_menu.resume();
 	}
 }
 
@@ -2559,6 +2670,33 @@ void BannerSorgenteMultimediaMC::ambChanged(char *ad, bool multi, void *indamb)
 void BannerSorgenteMultimediaMC::addAmb(char *a)
 {
 	indirizzi_ambienti += QString(a);
+}
+
+void BannerSorgenteMultimediaMC::inizializza(bool forza)
+{
+	qDebug("BannerSorgenteMultimediaMC::inizializza()");
+
+	emit sendInit((char *)(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice.ascii()).arg(indirizzo_semplice.ascii()).ascii()));
+}
+
+void BannerSorgenteMultimediaMC::gestFrame(char *frame)
+{
+	openwebnet msg_open;
+	qDebug("BannerSorgenteMultimediaMC::gestFrame()");
+
+	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+	if ((!strcmp(msg_open.Extract_chi(),"22")) &&
+	    (!strcmp(msg_open.Extract_grandezza(),"12")) &&
+	    (!strcmp(msg_open.Extract_dove(),"5")) && 
+	    (!strcmp(msg_open.Extract_livello(),"2")))
+	{
+		if (!strcmp(msg_open.Extract_interfaccia(), indirizzo_semplice) &&
+		    !strcmp(msg_open.Extract_valori(0), "0"))
+		{
+			source_menu.disableSource(false);
+			source_menu.pause();
+		}
+	}
 }
 
 /*****************************************************************
@@ -2790,7 +2928,13 @@ void banradio::ciclaSorg()
 {
 	openwebnet msg_open;
 	qDebug("banradio::ciclaSorg()");
-	msg_open.CreateMsgOpen("16","23","100","");
+	char pippo[50];
+	char amb[3];
+
+	sprintf(amb, getAddress());
+	memset(pippo,'\000',sizeof(pippo));
+	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit sendFrame(msg_open.frame_open);
 }
 
@@ -2994,7 +3138,7 @@ void banradio::setFGColor(QColor c)
 
 
 
-void banradio::inizializza()
+void banradio::inizializza(bool forza)
 { 
 }
 
@@ -3003,10 +3147,10 @@ void banradio::inizializza()
 /*****************************************************************
  **termoPage
  ****************************************************************/
-termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const char *_indirizzo,
+termoPage::termoPage(QWidget *parent, devtype_t _devtype, const char *name, const char *_indirizzo,
 		QPtrList<QString> &icon_names,
 		QColor SecondForeground, int _type, const char *_ind_centrale) :
-	bannTermo(parent, name, SecondForeground, devtype),
+	bannTermo(parent, name, SecondForeground, _devtype),
 	type(_type),
 	ind_centrale(_ind_centrale),
 	indirizzo(_indirizzo)
@@ -3034,14 +3178,11 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const
 
 	strncpy(&manIco[0], icon_names.at(2)->ascii(), sizeof(manIco));
 	strncpy(&autoIco[0], icon_names.at(3)->ascii(), sizeof(autoIco));
-	connect(this,SIGNAL(dxClick()),this,SLOT(aumSetpoint()));
-	connect(this,SIGNAL(sxClick()),this,SLOT(decSetpoint()));
+	connect(this, SIGNAL(dxClick()), SLOT(aumSetpoint()));
+	connect(this, SIGNAL(sxClick()), SLOT(decSetpoint()));
 	setChi("4");
 
-	if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL)
-		stato = device_status_thermr::S_MAN;
-	else
-		stato = device_status_thermr::S_NONE;
+	stato = device_status_thermr::S_MAN;
 
 	bool fancoil = (devtype == THERMO_99_ZONES_FANCOIL || devtype == THERMO_4_ZONES_FANCOIL);
 
@@ -3054,7 +3195,7 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const
 	case THERMO_99_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z99,
 			fancoil, ind_centrale.ascii(), indirizzo.ascii());
-		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
+		connect(fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 		break;
 	case THERMO_4_ZONES:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4,
@@ -3063,7 +3204,7 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const
 	case THERMO_4_ZONES_FANCOIL:
 		dev = btouch_device_cache.get_thermr_device(getAddress(), device_status_thermr::Z4,
 			fancoil, ind_centrale.ascii(), indirizzo.ascii());
-		connect( fancoil_buttons, SIGNAL(clicked(int)), this, SLOT(handleFancoilButtons(int)) );
+		connect(fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 		break;
 	case SINGLE_PROBE:
 		dev = btouch_device_cache.get_temperature_probe(getAddress(), false);
@@ -3076,9 +3217,9 @@ termoPage::termoPage(QWidget *parent, devtype_t devtype, const char *name, const
 	}
 
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 	delta_setpoint = 0;
-	connect(&setpoint_timer, SIGNAL(timeout()), this, SLOT(sendSetpoint()));
+	connect(&setpoint_timer, SIGNAL(timeout()), SLOT(sendSetpoint()));
 	sxButton->setAutoRepeat(true);
 	dxButton->setAutoRepeat(true);
 }
@@ -3087,7 +3228,7 @@ void termoPage::handleFancoilButtons(int button_number)
 {
 	qDebug("termoPage::handleFancoilButtons()");
 
-	// FIXME: magic numbers below should be define in OpenMsg class
+	// FIXME: magic numbers below should be defined in OpenMsg class
 	int speed;
 	switch (button_number)
 	{
@@ -3109,10 +3250,18 @@ void termoPage::handleFancoilButtons(int button_number)
 	}
 
 	QString command = QString("*#4*%1*#11*%2##").arg(indirizzo).arg(speed);
+	openwebnet open_cmd;
+	open_cmd.CreateMsgOpen((char *)command.ascii(), command.length());
+	emit sendFrame(open_cmd.frame_open);
 
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen((char*)command.ascii(), command.length());
-	emit sendFrame(msg_open.frame_open);
+	/*
+	 * Read back the set value to force an update to other devices
+	 * monitoring this dimension.
+	 */
+	command = QString("*#4*%1*11##").arg(indirizzo);
+	openwebnet open_query;
+	open_query.CreateMsgOpen((char *)command.ascii(), command.length());
+	emit sendFrame(open_query.frame_open);
 
 	fancoil_buttons->setToggleStatus(button_number);
 }
@@ -3124,8 +3273,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 	stat_var curr_local(stat_var::LOCAL);
 	stat_var curr_sp(stat_var::SP);
 	stat_var curr_temp(stat_var::TEMPERATURE);
-	stat_var curr_info_sonda(stat_var::INFO_SONDA);
-	stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
+
 	openwebnet msg_open;
 	int delta = 0;
 	bool aggiorna = false;
@@ -3142,10 +3290,7 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 				ds->read(device_status_thermr::STAT_INDEX, curr_stat);
 				ds->read(device_status_thermr::LOCAL_INDEX, curr_local);
 				ds->read(device_status_thermr::SP_INDEX, curr_sp);
-				ds->read((int)device_status_thermr::INFO_SONDA, curr_info_sonda);
-				qDebug("info_sonda = %d", curr_info_sonda.get_val());
-				ds->read((int)device_status_thermr::INFO_CENTRALE, curr_info_centrale);
-				qDebug("info_centrale = %d", curr_info_centrale.get_val());
+
 				if (delta_setpoint == 1)
 				{
 					delta = atoi(strstr(&setpoint[0],".")+1);
@@ -3164,43 +3309,56 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 						case device_status_thermr::S_MAN:
 							qDebug("stato S_MAN");
 							stato = device_status_thermr::S_MAN;
-							mostra(BUT1);
-							mostra(BUT2);
 							nascondi(ICON);
 							tempImp->show();
 							aggiorna = true;
-							if (isShown()) 
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
 							{
-								((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
-								((sottoMenu*)parentWidget())->forceDraw();
+								mostra(BUT1);
+								mostra(BUT2);
+
+								if (isShown())
+								{
+									((sottoMenu*)parentWidget())->setNavBarMode(4,&autoIco[0]);
+									((sottoMenu*)parentWidget())->forceDraw();
+								}
 							}
 							break;
 						case device_status_thermr::S_AUTO:
 							qDebug("stato S_AUTO");
 							stato = device_status_thermr::S_AUTO;
-							nascondi(BUT1);
-							nascondi(BUT2);
 							nascondi(ICON);
 							tempImp->show();
 							aggiorna = true;
-							if(isShown())
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
 							{
-								((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
-								((sottoMenu*)parentWidget())->forceDraw();
+								nascondi(BUT1);
+								nascondi(BUT2);
+
+								if (isShown())
+								{
+									((sottoMenu*)parentWidget())->setNavBarMode(4,&manIco[0]);
+									((sottoMenu*)parentWidget())->forceDraw();
+								}
 							}
 							break;
 						case device_status_thermr::S_ANTIGELO:
 						case device_status_thermr::S_TERM:
 						case device_status_thermr::S_GEN:
 							qDebug("stato S_TERM");
-							nascondi(BUT1);
-							nascondi(BUT2);
 							mostra(ICON);
 							tempImp->hide();
 							impostaAttivo(1);
 							aggiorna= true;
 							stato = device_status_thermr::S_TERM;
-							if(isShown())
+							
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
+							{
+								nascondi(BUT1);
+								nascondi(BUT2);
+							}
+
+							if (isShown())
 							{
 								((sottoMenu*)parentWidget())->setNavBarMode(3, (char *)"");
 								((sottoMenu*)parentWidget())->forceDraw();
@@ -3209,13 +3367,18 @@ void termoPage::status_changed(QPtrList<device_status> sl)
 						case device_status_thermr::S_OFF:
 							qDebug("stato S_OFF");
 							mostra(ICON);
-							nascondi(BUT1);
-							nascondi(BUT2);
 							tempImp->hide();
 							impostaAttivo(0);
 							aggiorna= true;
 							stato = device_status_thermr::S_OFF;
-							if(isShown())
+
+							if (devtype == THERMO_99_ZONES || devtype == THERMO_99_ZONES_FANCOIL) 
+							{
+								nascondi(BUT1);
+								nascondi(BUT2);
+							}
+
+							if (isShown())
 							{
 
 								((sottoMenu*)parentWidget())->setNavBarMode(3, (char *)"");
@@ -3507,7 +3670,7 @@ void termoPage::sendSetpoint()
 }
 
 
-void termoPage::inizializza()
+void termoPage::inizializza(bool forza)
 { 
 	// See frame_interpreter.cpp
 }
@@ -3711,7 +3874,7 @@ void zonaAnti::clearChanged()
 }
 
 
-void zonaAnti::inizializza()
+void zonaAnti::inizializza(bool forza)
 { 
 	openwebnet msg_open;
 	char    pippo[50];
@@ -4049,7 +4212,7 @@ void impAnti::partChanged(zonaAnti *za)
 	send_part_msg = true;
 }
 
-void impAnti::inizializza()
+void impAnti::inizializza(bool forza)
 {
 	qDebug("impAnti::inizializza()");
 	insert_timer.stop();
@@ -4371,7 +4534,7 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 }
 #endif
 
-void gesModScen::inizializza()
+void gesModScen::inizializza(bool forza)
 {
 #if 0   
 	openwebnet msg_open;
@@ -4676,7 +4839,7 @@ void scenEvo::gestFrame(char* frame)
 #endif
 }
 
-void scenEvo::inizializza(void)
+void scenEvo::inizializza(bool forza)
 {
 	qDebug("scenEvo::inizializza()");
 	scenEvo_cond *co;
@@ -5264,23 +5427,42 @@ sorgenteMultiRadio::sorgenteMultiRadio( QWidget *parent, const char *name, char*
 void sorgenteMultiRadio::attiva()
 {
 	qDebug("sorgenteMultiRadio::attiva()");
+	char pippo[50];
 	openwebnet msg_open;
+  
 	if(!multiamb) {
-		msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
+		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		emit sendFrame(msg_open.frame_open);   
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	} else {
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI",
 				indirizzi_ambienti.count());
-		for ( QStringList::Iterator it = indirizzi_ambienti.begin(); 
-				it != indirizzi_ambienti.end(); ++it ) {
-			QString dove = QString(
-					QString::number(100 + 
-						(*it).toInt() * 10 +
-						indirizzo_semplice.toInt(),
-						10));
-			msg_open.CreateMsgOpen("16", "3", (char *)(dove.ascii()), "");
-			emit sendFrame(msg_open.frame_open);   
+		for ( QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it ) {
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*22*0#4#");
+			strcat(pippo,(*it));
+			strcat(pippo,"*6");
+			strcat(pippo,"##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*#16*1000*11##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*22*1#4#");
+			strcat(pippo,(*it));
+			strcat(pippo,"*2#");
+			strcat(pippo, indirizzo_semplice);
+			strcat(pippo,"##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*#16*1000*11##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
 		}
 	}
 }
@@ -5346,21 +5528,42 @@ void sorgenteMultiRadio::addAmb(char *a)
 void sorgenteMultiAux::attiva()
 {
 	qDebug("sorgenteMultiAux::attiva()");
+	char pippo[50];
 	openwebnet msg_open;
+  
 	if(!multiamb) {
-		msg_open.CreateMsgOpen("16", "3", getAddress(), "");
+		memset(pippo,'\000',sizeof(pippo));
+		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
+		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		emit sendFrame(msg_open.frame_open);   
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	} else {
-		for ( QStringList::Iterator it = indirizzi_ambienti.begin(); 
-				it != indirizzi_ambienti.end(); ++it ) {
-			QString dove = QString(
-					QString::number(100 + 
-						(*it).toInt() * 10 +
-						indirizzo_semplice.toInt(),
-						10));
-			msg_open.CreateMsgOpen("16", "3", (char *)(dove.ascii()), "");
-			emit sendFrame(msg_open.frame_open);   
+		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI",
+				indirizzi_ambienti.count());
+		for ( QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it ) {
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*22*0#4#");
+			strcat(pippo,(*it));
+			strcat(pippo,"*6");
+			strcat(pippo,"##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*#16*1000*11##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*22*1#4#");
+			strcat(pippo,(*it));
+			strcat(pippo,"*2#");
+			strcat(pippo, indirizzo_semplice);
+			strcat(pippo,"##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
+			memset(pippo,'\000',sizeof(pippo));
+			strcat(pippo,"*#16*1000*11##");
+			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			emit sendFrame(msg_open.frame_open);
 		}
 	}
 }

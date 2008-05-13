@@ -25,7 +25,8 @@ static void mplayerExited(int signo, siginfo_t *info, void *)
 		_globalMediaPlayer->sigChildReceived(info->si_pid, status);
 }
 
-MediaPlayer::MediaPlayer( QObject *parent, const char *name ) : QObject(parent, name)
+MediaPlayer::MediaPlayer(QObject *parent, const char *name) :
+	QObject(parent, name)
 {
 	struct sigaction sa;
 
@@ -40,6 +41,9 @@ MediaPlayer::MediaPlayer( QObject *parent, const char *name ) : QObject(parent, 
 	paused = false;
 	_isPlaying = false;
 	_globalMediaPlayer = this;
+
+	ctrlf = NULL;
+	outf = NULL;
 }
 
 MediaPlayer::~MediaPlayer()
@@ -61,9 +65,9 @@ bool MediaPlayer::play(QString track)
 	if (mplayer_pid == -1)
 		return false;
 
-	// CHILD
 	if (mplayer_pid == 0)
 	{
+		// CHILD
 		// Close unused write end
 		close(control_pipe[1]);
 		close(output_pipe[0]);
@@ -78,9 +82,9 @@ bool MediaPlayer::play(QString track)
 
 		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
 	}
-	// PARENT
 	else
 	{
+		// PARENT
 		_isPlaying = true;
 		paused = false;
 
@@ -99,51 +103,59 @@ bool MediaPlayer::play(QString track)
 
 		qDebug("[AUDIO] playing track '%s'", track.ascii());
 	}
+
+	return true;
 }
 
 void MediaPlayer::pause()
 {
-	execCmd(" ");
-	paused = true;
+	if (!paused)
+	{
+		execCmd(" ");
+		paused = true;
+	}
 }
 
 void MediaPlayer::resume()
 {
-	execCmd(" ");
-	paused = false;
-}
-
-void MediaPlayer::quit()
-{
-	if (mplayer_pid)
+	if (paused)
 	{
-		mplayer_pid = 0;
-		execCmd("q");
+		execCmd(" ");
+		paused = false;
 	}
 }
 
 void MediaPlayer::execCmd(QString command)
 {
-	fprintf(ctrlf, command.latin1());
-	fflush(ctrlf);
+	if (ctrlf)
+	{
+		fprintf(ctrlf, command.latin1());
+		fflush(ctrlf);
+	}
+	else
+		qDebug("[AUDIO] MediaPlayer::execCmd(): mplayer not running");
 }
-
 
 QString MediaPlayer::readOutput()
 {
 	char line[1024];
 	QString result;
 
-	while (fgets(line, sizeof(line), outf))
-		result += line;
+	if (outf)
+	{
+		while (fgets(line, sizeof(line), outf))
+			result += line;
+	}
+	else
+		qDebug("[AUDIO] MediaPlayer::readOutput(): mplayer not running");
 
 	return result;
 }
 
 
-bool MediaPlayer::isPlaying()
+bool MediaPlayer::isInstanceRunning()
 {
-	return (_isPlaying && !paused);
+	return _isPlaying;
 }
 
 
@@ -167,11 +179,6 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 	/// Create output Map
 	QMap<QString, QString> info_data;
 
-	// row data visualization
-	// qDebug("\n____________________________________________________________________________");
-	// qDebug(row_data);
-	// qDebug("____________________________________________________________________________\n");
-
 	/// Parse ROW data to get info
 	QMap<QString, QString>::Iterator it;
 	for ( it = data_search.begin(); it != data_search.end(); ++it )
@@ -186,28 +193,35 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 }
 
 
-void MediaPlayer::quitMPlayer()
+void MediaPlayer::quit()
 {
-	/// kill the MPlayer process
-	kill(mplayer_pid, SIGINT);
+	if (mplayer_pid)
+		kill(mplayer_pid, SIGINT);
 }
 
 void MediaPlayer::sigChildReceived(int dead_pid, int status)
 {
-	qDebug("[AUDIO] Signal SIGCHLD received, pid %d", dead_pid);
-
 	/// Check if the dead child is mplayer or not
 	if (dead_pid == mplayer_pid)
 	{
 		mplayer_pid = 0;
+		_isPlaying = false;
+		ctrlf = NULL;
+		outf = NULL;
 
 		if (WIFEXITED(status))
 		{
 			int rc = WEXITSTATUS(status);
 			qDebug("[AUDIO] mplayer exited, with code %d", rc);
-			if (rc == 0 || rc == 1)
+			if (rc == 0) //end of song
 			{
 				emit mplayerDone();
+				return;
+				
+			}
+			else if(rc == 1) //signal received
+			{
+				emit mplayerKilled();
 				return;
 			}
 		}
@@ -216,7 +230,7 @@ void MediaPlayer::sigChildReceived(int dead_pid, int status)
 			qDebug("[AUDIO] mplayer terminated by signal %d", WTERMSIG(status));
 			if (WTERMSIG(status) == SIGINT)
 			{
-				emit mplayerDone();
+				emit mplayerKilled();
 				return;
 			}
 		}

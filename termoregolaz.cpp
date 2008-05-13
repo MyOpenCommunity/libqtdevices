@@ -23,21 +23,26 @@ termoregolaz::termoregolaz( QWidget *parent, const char *name, uchar withNavBar 
 
 void termoregolaz::goUp()
 {
-	qDebug("goUp");
+	bannTermo *bn = (bannTermo *)getNext();
 
-	switch(getNext() ->getState()) 
+	if (bn->devtype == bannTermo::THERMO_99_ZONES || bn->devtype == bannTermo::THERMO_99_ZONES_FANCOIL)
 	{
-	case device_status_thermr::S_MAN:
-		setNavBarMode(4,getNext()->getAutoIcon());
-		break;
-	case device_status_thermr::S_AUTO:
-		setNavBarMode(4,getNext()->getManIcon());
-		break;
-	case device_status_thermr::S_TERM:
-	default:
-		setNavBarMode(3, (char *)"");
-		break;
+		switch (bn->getState())
+		{
+		case device_status_thermr::S_MAN:
+			setNavBarMode(4, bn->getAutoIcon());
+			break;
+		case device_status_thermr::S_AUTO:
+			setNavBarMode(4, bn->getManIcon());
+			break;
+		case device_status_thermr::S_TERM:
+		default:
+			setNavBarMode(3, (char *)"");
+			break;
+		}
 	}
+	else
+		setNavBarMode(3, (char *)"");
 
 	sottoMenu::goUp();
 }
@@ -45,21 +50,26 @@ void termoregolaz::goUp()
 
 void termoregolaz::goDown()
 {
-	qDebug("goDown");
+	bannTermo *bn = (bannTermo *)getPrevious();
 
-	switch(getPrevious() ->getState()) 
+	if (bn->devtype == bannTermo::THERMO_99_ZONES || bn->devtype == bannTermo::THERMO_99_ZONES_FANCOIL)
 	{
-	case device_status_thermr::S_MAN:
-		setNavBarMode(4,getPrevious()->getAutoIcon());
-		break;
-	case device_status_thermr::S_AUTO:
-		setNavBarMode(4,getPrevious()->getManIcon());
-		break;
-	case device_status_thermr::S_TERM:
-	default:
-		setNavBarMode(3, (char *)"");
-		break;
+		switch (bn->getState())
+		{
+		case device_status_thermr::S_MAN:
+			setNavBarMode(4, bn->getAutoIcon());
+			break;
+		case device_status_thermr::S_AUTO:
+			setNavBarMode(4, bn->getManIcon());
+			break;
+		case device_status_thermr::S_TERM:
+		default:
+			setNavBarMode(3, (char *)"");
+			break;
+		}
 	}
+	else
+		setNavBarMode(3, (char *)"");
 
 	sottoMenu::goDown();
 }
@@ -69,19 +79,26 @@ void termoregolaz::show()
 {
 	qDebug("TermoShow");
 
-	switch(getCurrent() ->getState()) 
+	bannTermo *bn = (bannTermo *)getCurrent();
+
+	if (bn->devtype == bannTermo::THERMO_99_ZONES || bn->devtype == bannTermo::THERMO_99_ZONES_FANCOIL)
 	{
-	case device_status_thermr::S_MAN:
-		setNavBarMode(4,getCurrent()->getAutoIcon());
-		break;
-	case device_status_thermr::S_AUTO:
-		setNavBarMode(4,getCurrent()->getManIcon());
-		break;
-	case device_status_thermr::S_TERM:
-	default:
-		setNavBarMode(3, (char *)"");
-		break;
+		switch (bn->getState())
+		{
+		case device_status_thermr::S_MAN:
+			setNavBarMode(4, bn->getAutoIcon());
+			break;
+		case device_status_thermr::S_AUTO:
+			setNavBarMode(4, bn->getManIcon());
+			break;
+		case device_status_thermr::S_TERM:
+		default:
+			setNavBarMode(3, (char *)"");
+			break;
+		}
 	}
+	else
+		setNavBarMode(3, (char *)"");
 
 	forceDraw();
 	QWidget::show();

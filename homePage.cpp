@@ -178,12 +178,12 @@ void homePage::addDate(int x, int y)
     addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
 }	
 
-void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line, char* text)
+void homePage::addTemp(char *z, int x, int y,int width,int height,QColor bg, QColor fg, int style, int line, char* text, char* Ext)
 {
     switch(tempCont){
-	case 0: strcpy(zonaTermo1,z);zt[0]=&zonaTermo1[0];break;
-	case 1: strcpy(zonaTermo2,z);zt[1]=&zonaTermo2[0];break;
-	case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];break;
+	case 0: strcpy(zonaTermo1,z);zt[0]=&zonaTermo1[0];strcpy(ext1,Ext);ext[0]=&ext1[0];break;
+	case 1: strcpy(zonaTermo2,z);zt[1]=&zonaTermo2[0];strcpy(ext2,Ext);ext[1]=&ext2[0];break;
+	case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];strcpy(ext3,Ext);ext[2]=&ext3[0];break;
     }
 
      temperatura[tempCont] = new QLCDNumber(this,"0.00\272C");
@@ -217,8 +217,18 @@ void homePage::inizializza()
    for(int idx=0; idx<tempCont; idx++)
    {
      strcpy(&Frame[0],"*#4*");
-     strcat(&Frame[0],zt[idx]);
-     strcat(&Frame[0],"*0##");
+     if(!strcmp(ext[idx], "0"))
+     {
+       strcat(&Frame[0],zt[idx]);
+       strcat(&Frame[0],"*0##");
+     }
+     else
+     {
+       strcat(&Frame[0],zt[idx]);
+       strcat(&Frame[0],"00*15#");
+       strcat(&Frame[0],zt[idx]);
+       strcat(&Frame[0],"##");
+     }
      emit(sendInit(&Frame[0]));
    }
 }
@@ -286,6 +296,9 @@ void homePage::gestFrame(char* frame)
     openwebnet msg_open;
 //    char aggiorna;
     char dovex[30];
+    float icx;
+    bool my_frame;
+
 
     
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -300,30 +313,35 @@ void homePage::gestFrame(char* frame)
 	
 	for(int idx=0; idx<tempCont; idx++)
 	{
+        my_frame = false;
 	qDebug("dove frame %s dove oggetto %s",dovex, zt[idx]);
-	if ( (! strcmp(dovex,zt[idx]) ) )
-	{	 
-	     if   (!strcmp(msg_open.Extract_grandezza(),"0")) 
-	    {
-	       //Temperatura misurata
-	       float icx;
-	       char	tmp[10], temp[10];   
-	       
-	       icx=atoi(msg_open.Extract_valori(0));
-	      qDebug("vedo temperatura per Temp in Homepage: %d",(int)icx);
-	       memset(temp,'\000',sizeof(temp));
-	       if (icx>=1000)
-	       {
-		   strcat(temp,"-");
-		   icx=icx-1000;
-	       }
-	       icx/=10;
-	       sprintf(tmp,"%.1f",icx);
-	       strcat(temp,tmp);
-       	       strcat(temp,"\272C");
-	       temperatura[idx]->display(&temp[0]);
-	   }
+	if(!strcmp(ext[idx], "0") && !strcmp(dovex,zt[idx]) && !strcmp(msg_open.Extract_grandezza(),"0")) 
+	{
+          //Temperatura misurata
+	  icx=atoi(msg_open.Extract_valori(0));
+          my_frame = true;
 	 }
+         else if(!strcmp(ext[idx], "1") && !strcmp(msg_open.Extract_grandezza(),"15") && !strncmp(dovex,zt[idx], 1))
+         {
+           icx=atoi(msg_open.Extract_valori(1));
+           my_frame = true;
+         }
+         if(my_frame)
+         {
+           char     tmp[10], temp[10];
+           qDebug("vedo temperatura per Temp in Homepage: %d",(int)icx);
+           memset(temp,'\000',sizeof(temp));
+           if (icx>=1000)
+           {
+             strcat(temp,"-");
+             icx=icx-1000;
+           }
+           icx/=10;
+           sprintf(tmp,"%.1f",icx);
+           strcat(temp,tmp);
+           strcat(temp,"\272C");
+           temperatura[idx]->display(&temp[0]);
+         }
     }
     }
      if ( (!strcmp(msg_open.Extract_chi(),&chi[0])) && (tipoSpecial==CICLICO) )

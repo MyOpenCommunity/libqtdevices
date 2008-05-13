@@ -196,7 +196,7 @@ public:
 	grDimmer  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 	void setAddress(void*);
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	virtual void Attiva();
 	virtual void Disattiva();
@@ -247,7 +247,7 @@ class scenario : public bannOnSx
 Q_OBJECT
 public:
 	scenario( sottoMenu  *, const char *, char *, char *);
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
 };
@@ -268,7 +268,7 @@ class carico : public bannOnSx
 Q_OBJECT
 public:
 	carico(sottoMenu  *, const char * ,char*,char*);
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
 public slots:
@@ -298,7 +298,7 @@ private:
 	device *dev;
 public:
 	attuatAutomInt ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	void analizzaUp();
 	void analizzaDown();
@@ -329,7 +329,7 @@ private:
 	device *dev;
 public:
 	attuatAutomIntSic ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	void doPres();
 	void upPres();
@@ -471,7 +471,7 @@ public:
 	grAttuatInt(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 	void setAddress(void*);
-	void inizializza();
+	void inizializza(bool forza = false);
 public slots:
 	void Alza();
 	void Abbassa();
@@ -498,7 +498,7 @@ private:
 	char type;
 public:
 	attuatPuls( QWidget *parent=0, const char *name=NULL ,char*indirizzi=NULL,char* IconaSx=NULL,/*char* IconaDx=NULL,*/char*IconActive=NULL,char tipo=0,int periodo=0,int numFrame=0); 
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
 	void Disattiva();
@@ -567,7 +567,7 @@ private:
 	device *dev;
 public:
 	amplificatore( QWidget *, const char *,char*,char*,char*,char*,char*);
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	void Accendi();
 	void Spegni();
@@ -597,7 +597,7 @@ private:
 	QPtrList<QString> elencoDisp;
 public:
 	grAmplificatori  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
-	void inizializza();
+	void inizializza(bool forza = false);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 	void setAddress(void*);
 private slots:
@@ -631,7 +631,7 @@ protected:
 	device *dev;
 public:
 	banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, char *ambdescr="");
-	void inizializza();
+	void inizializza(bool forza = false);
 	/*!
 	  \brief Sets the background color for the banner.
 
@@ -697,7 +697,7 @@ protected:
 	bool vecchia;
 public:
 	sorgente_aux( QWidget *parent,const char *name,char* indirizzo, bool vecchio=true, char *ambdescr="");
-	void inizializza();
+	void inizializza(bool forza = false);
 private slots:
 	void ciclaSorg();
 	void decBrano();
@@ -716,6 +716,7 @@ class BannerSorgenteMultimedia : public bannCiclaz
 Q_OBJECT
 public:
 	BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbutt);
+	virtual void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
 	void hide();
@@ -737,8 +738,9 @@ Q_OBJECT
 public:
 	BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
 		const char *icon_onoff, const char *icon_cycle, const char *icon_settings);
-
+	void inizializza(bool forza = false);
 public slots:
+	void gestFrame(char *);
 	void attiva();
 	void addAmb(char *);
 	void ambChanged(char *, bool, void *);
@@ -783,7 +785,7 @@ public:
 	termoPage (QWidget *parent, devtype_t devtype, const char *name, const char *indirizzo,
 		QPtrList<QString> &icon_names,
 		QColor SecondForeground = QColor(0,0,0), int type = 0, const char *ind_centrale = 0);
-	void inizializza();
+	void inizializza(bool forza = false);
 	char* getChi();
 	char* getAutoIcon();
 	char* getManIcon();
@@ -826,7 +828,7 @@ private:
 	device *dev;
 public:
 	zonaAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
-	void inizializza();
+	void inizializza(bool forza = false);
 	void SetIcons(char *, char *, char *);
 	void Draw();
 public slots:
@@ -869,7 +871,7 @@ private:
 public:
 	impAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 private slots:
-	void inizializza();
+	void inizializza(bool forza = false);
 	void Inserisci();
 	void Disinserisci();
 	void Insert1(char*);
@@ -928,7 +930,7 @@ private slots:
 	void cancScen();
 public slots:
 	void status_changed(QPtrList<device_status>);
-	void inizializza();
+	void inizializza(bool forza = false);
 };
 
 
@@ -974,7 +976,7 @@ private slots:
 	void hide();
 public slots:
 	void gestFrame(char*);
-	void inizializza();
+	void inizializza(bool forza = false);
 signals:
 	void frame_available(char *);
 };
