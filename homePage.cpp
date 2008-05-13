@@ -171,7 +171,6 @@ void homePage::addTemp(
 {
 	switch(tempCont)
 	{
-#warning TOM: controlla l'i18n per Ext
 		case 0: strcpy(zonaTermo1,z);zt[0]=&zonaTermo1[0];strcpy(ext1,Ext);ext[0]=ext1;break;
 		case 1: strcpy(zonaTermo2,z);zt[1]=&zonaTermo2[0];strcpy(ext2,Ext);ext[1]=ext2;break;
 		case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];strcpy(ext3,Ext);ext[2]=ext3;break;

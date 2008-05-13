@@ -8,8 +8,6 @@
  **
  ****************************************************************/
 
-#include <algorithm>
-#include <string>
 
 #include <qfont.h>
 #include <qlabel.h>
@@ -332,6 +330,7 @@ FileBrowser::FileBrowser(QWidget *parent, AudioPlayingWindow *_playing_window,
 	h_offsets.append(-1);
 	h_offsets.append(0);
 	labels_list.resize(rows_per_page);
+	labels_list.setAutoDelete(TRUE);
 	for (unsigned i = 0; i < rows_per_page; i++)
 	{
 		// Create label and add it to labels_layout
