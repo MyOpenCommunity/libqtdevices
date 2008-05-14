@@ -75,7 +75,6 @@ public:
   
   The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel and the text describing the zone.
 */      
-#warning TOM: controlla i18n per nuovo parametro Ext
    void	addTemp(char*, int, int, int, int, QColor, QColor, int, int, const QString &, char * Ext="0");   
   /*!
   \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame, line and text.
