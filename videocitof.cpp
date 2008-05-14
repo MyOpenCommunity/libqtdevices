@@ -2,6 +2,7 @@
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
+#include <qfile.h>
 
 #include "openclient.h"
 #include "sottomenu.h"
@@ -9,7 +10,7 @@
 #include "frame_interpreter.h"
 #include "device_cache.h"
 #include "videocitof.h"
-#include "items.h"
+#include "postoext.h"
 #include "genericfunz.h"
 #include "btlabel.h"
 #include "btbutton.h"

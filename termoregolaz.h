@@ -11,8 +11,6 @@
 #ifndef TERMOREGOLAZ_H
 #define TERMOREGOLAZ_H
 
-#include "main.h"
-#include "items.h"
 #include "sottomenu.h"
 
 /*!

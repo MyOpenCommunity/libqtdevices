@@ -7,12 +7,15 @@
 **Sottomenù antiintrusione
 **
 ****************************************************************/
-#include <qcursor.h>
 
 #include "antintrusione.h"
-#include "openclient.h"
+#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
 #include "tastiera.h"
-#include "items.h"
+#include "bann_antintrusione.h"
+#include "sottomenu.h"
+
+#include <qdatetime.h>
+#include <qcursor.h>
 
 extern unsigned char tipoData;
 

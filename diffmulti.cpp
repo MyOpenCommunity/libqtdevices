@@ -8,15 +8,16 @@
 **
 ****************************************************************/
 
-#include <qwidget.h>
-#include <qtimer.h>
 
-#include "items.h"
-#include "device_cache.h"
 #include "diffmulti.h"
+#include "ambdiffson.h"
+#include "device_cache.h"
 #include "xmlconfhandler.h" // per safeAt()
 #include "sveglia.h"
 #include "diffsonora.h"
+
+#include <qwidget.h>
+#include <qtimer.h>
 
 dati_sorgente_multi::dati_sorgente_multi(char t, QPtrList<QString> *d, 
 		void *ind,
@@ -82,13 +83,8 @@ dati_ampli_multi::~dati_ampli_multi()
 diffmulti::diffmulti( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
 : sottoMenu(parent, name, navBarMode, wi, hei, n)
 {
-#if 0
-	datismulti = new QPtrList<dati_sorgente_multi>;
-	datismulti->setAutoDelete(true);
-#else
 	//sorgMulti = new QPtrList<banner>;
 	sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, MAX_HEIGHT/4 - 3,1);
-#endif
 	datimmulti = new QPtrList<dati_ampli_multi>;
 	datimmulti->setAutoDelete(true);
 	dslist = new QPtrList<diffSonora>;
@@ -182,17 +178,9 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				elencoBanner.getLast()->setId(tipo);
 				connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
 				connect(this, SIGNAL(actSrcChanged(int, int)), elencoBanner.getLast(), SLOT(actSrcChanged(int, int)));
-#if 0
-				connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
-				connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-#endif
 				connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
 				connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
 				connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
-#if 0
-				connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, 
-						SIGNAL(richStato(char*))); 
-#endif
 				connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 				connect(elencoBanner.getLast(), SIGNAL(ambChanged(char *, bool, void *)), sorgenti, SIGNAL(ambChanged(char *, bool, void *)));
 				if(tipo == AMBIENTE) 
@@ -333,17 +321,6 @@ void diffmulti::hide()
 void diffmulti::show()
 {
 	QWidget::show();
-#if 0
-	QPtrListIterator<diffSonora> *dsi = 
-		new QPtrListIterator<diffSonora>(*dslist);
-	dsi->toFirst();
-	diffSonora *ds;
-	while( ( ds = dsi->current() ) != 0) {
-		ds->show();
-		++(*dsi);
-	}
-	delete dsi;
-#endif
 }
 
 
@@ -351,36 +328,12 @@ void diffmulti::setGeom(int x, int y, int w,int h)
 {
 	qDebug("diffmulti::setGeom(%d, %d, %d, %d)", x, y, w, h);
 	setGeometry(x, y, w, h);
-#if 0
-	QPtrListIterator<diffSonora> *dsi = 
-		new QPtrListIterator<diffSonora>(*dslist);
-	dsi->toFirst();
-	diffSonora *ds;
-	while( ( ds = dsi->current() ) != 0) {
-		//ds->setGeom(x, y, w, h);
-		ds->setGeom(0,0,240,240);
-		++(*dsi);
-	}
-	delete dsi;
-#endif
 }
 
 void diffmulti::forceDraw()
 {
 	qDebug("diffmulti::forceDraw()");
 	sottoMenu::forceDraw();
-#if 0
-	QPtrListIterator<diffSonora> *dsi = 
-		new QPtrListIterator<diffSonora>(*dslist);
-	dsi->toFirst();
-	diffSonora *ds;
-	while( ( ds = dsi->current() ) != 0) {
-		ds->hide();
-		ds->forceDraw();
-		++(*dsi);
-	}
-	delete dsi;
-#endif
 }
 
 void diffmulti::resizewindows(int x, int y, int w, int h)

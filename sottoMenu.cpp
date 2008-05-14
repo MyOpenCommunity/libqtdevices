@@ -14,13 +14,25 @@
 #include <qtimer.h>
 
 #include "sottomenu.h"
-#include "items.h"
+#include "postoext.h"
 #include "setitems.h"
 #include "btbutton.h"
 #include "diffsonora.h"
 #include "versio.h"
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
+#include "dimmers.h"
+#include "actuators.h"
+#include "scenari.h"
+#include "amplificatori.h"
+#include "automatismi.h"
+#include "sorgentiradio.h"
+#include "sorgentiaux.h"
+#include "sorgentimedia.h"
+#include "termopage.h"
+#include "carico.h"
+#include "bann_antintrusione.h"
+
 
 sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
 : QWidget( parent, name )

@@ -1,3 +1,4 @@
+
 /****************************************************************
 **
 ** BTicino Touch scren Colori art. H4686
@@ -12,10 +13,11 @@
 #define ANTINTRUS_H
 
 #include <qwidget.h>
-#include <qptrlist.h> 
+#include <qptrlist.h>
+#include <qstring.h>
 
 #include "main.h" // MAX_PATH
-#include "allarme.h" 
+#include "allarme.h"
 
 class sottoMenu;
 class zonaAnti;
