@@ -32,7 +32,7 @@ unsigned char tipoData=0;
 /*******************************************
  *
  *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu**i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz** t,\
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu *i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz* t,\
 		diffSonora**dS, diffmulti**_dm, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG,\
 		QColor* bg, QColor* fg1, QColor *fg2)
 {
@@ -217,6 +217,77 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 	return TRUE;
 }
 
+void *xmlconfhandler::getAddr()
+{
+	char pip[50];
+	pip[0] = 0;
+	void *pnt = 0;
+
+	if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
+	{			       
+		strcpy(pip, page_item_what.ascii());
+		strcat(pip,"*");
+		strcat(pip,page_item_where.ascii());
+	}
+	else
+		strcpy(pip, page_item_where.ascii());
+
+	if (page_item_list_group->isEmpty())
+	{
+		pnt=pip;
+	}
+	else
+	{
+		pnt=page_item_list_group;
+	}
+
+	return pnt;
+}
+
+void *xmlconfhandler::computeAddress()
+{
+	void *pnt = getAddr();
+
+	if ((char)page_item_id==SET_SVEGLIA) 
+	{
+		if  (par2==sveglia::DI_SON) 
+		{
+			// Use old or multichannel sd
+			if(*difSon)
+				pnt = new contdiff(*difSon, NULL);
+			else if(*dm)
+				pnt = new contdiff(NULL, *dm);
+		}
+		else
+		{
+			pnt=NULL;
+		}
+	} 
+	else if ((char)page_item_id==VERSIONE) 
+	{
+		pnt=datiGen;
+	}
+
+	return pnt;
+}
+
+void xmlconfhandler::addItemU(sottoMenu *pageAct, void *address)
+{
+	pageAct->addItemU ((char)page_item_id, page_item_descr,
+			address,
+			*page_item_list_img,
+			par1,  par2, SecondForeground,
+			(char*)page_item_list_txt->at(0)->ascii(),
+			(char*)page_item_list_txt->at(1)->ascii(),
+			(char*)page_item_list_txt->at(2)->ascii(),
+			(char*)page_item_list_txt->at(3)->ascii(),
+			par3, par4,
+			page_item_list_txt_times, page_item_cond_list, page_item_action,
+			page_item_light, page_item_key, page_item_unknown, sstart, sstop,
+			page_item_txt1, page_item_txt2, page_item_txt3);
+	page_item_cond_list->clear();
+}
+
 /*******************************************
  *
  * Esco da un livello
@@ -327,7 +398,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 				//
 				if ( (( CurTagL4.startsWith("device") || CurTagL4.startsWith("item") || !CurTagL4.compare("command") ) && CurTagL5.isEmpty()))
 				{
-					sottoMenu *pageAct=NULL;
 					qDebug("INSERTED ITEM:ID %d",page_item_id);
 					qDebug("INS ITEM: %s",banTesti[page_item_id]);
 					qDebug("DESCR: %s", page_item_descr.ascii());
@@ -353,112 +423,64 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 					/*		    for (QString * MyPnt = page_item_list_group->first(); MyPnt; MyPnt = page_item_list_group->next() )
 							    qWarning("GROUP=%s",MyPnt->ascii());	*/
 
-					// QString* pip;   
+					sottoMenu *pageAct = NULL;
+					void *addr = 0;
 					char pip[50];
-					memset(&pip[0],'\000',sizeof(pip));
-					void* pnt;
+					pip[0] = 0;
+					void *pnt = 0;
 					switch (  page_id )
 					{
 						case AUTOMAZIONE:
-							pageAct= (*automazioni);
-							//         qDebug("automaz");
+							pageAct = *automazioni;
+							addr = computeAddress();
+							addItemU(pageAct, addr);
+							break;
 
 						case  ILLUMINAZIONE:
-							if (!pageAct)
-							{
-								pageAct= (*illumino); 
-								par3 = page_item_softstart; 
-								par4 = page_item_softstop;
-								//       qDebug("illumino");
-							}
-						case CARICHI:
-							if (!pageAct)
-							{
-								pageAct=(*carichi); 		
-								//          qDebug("carichi");
-							}
-						case TERMOREGOLAZIONE:
-							if (!pageAct)
-							{
-								pageAct=(*termo);
-								//         qDebug("termo");
-							}
-						case  SCENARI:
-							if (!pageAct)
-							{
-								pageAct=(*scenari); 		
-								//             qDebug("scenari");
-							}
-						case SCENARI_EVOLUTI:
-							if(!pageAct)
-								pageAct= (*scenari_evoluti);
-						case VIDEOCITOFONIA:
-							if(!pageAct)
-								pageAct = (*videocitofonia);
-#if 0
-						case DIFSON_MULTI:
-							if(!pageAct)
-								pageAct = (*dm);
-#endif
-						case IMPOSTAZIONI:
-							if (!pageAct)
-							{
-								pageAct=(*imposta);
-								//             qDebug("imposta");
-							}
-
-							if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
-							{			       
-								strcpy(&pip[0], page_item_what.ascii());
-								strcat(pip,"*");
-								strcat(pip,page_item_where.ascii());
-							}
-							else
-								strcpy(&pip[0], page_item_where.ascii());
-
-							if (page_item_list_group->isEmpty())
-							{
-								pnt=pip;
-							}
-							else
-							{
-								pnt=page_item_list_group;
-							}
-							if ((char)page_item_id==SET_SVEGLIA) 
-							{
-								if  (par2==sveglia::DI_SON) 
-								{
-									// Use old or multichannel sd
-									if(*difSon)
-										pnt = new contdiff(*difSon, NULL);
-									else if(*dm)
-										pnt = new contdiff(NULL, *dm);
-								}
-								else
-								{
-									pnt=NULL;
-								}
-							} 
-							else if ((char)page_item_id==VERSIONE) 
-							{
-								pnt=datiGen;
-							}
-							pageAct->addItemU ((char)page_item_id, page_item_descr,
-								pnt,
-								*page_item_list_img,
-								par1,  par2, SecondForeground,
-								(char*)page_item_list_txt->at(0)->ascii(),
-								(char*)page_item_list_txt->at(1)->ascii(),
-								(char*)page_item_list_txt->at(2)->ascii(),
-								(char*)page_item_list_txt->at(3)->ascii(),
-								par3, par4,
-								page_item_list_txt_times, page_item_cond_list, page_item_action,
-								page_item_light, page_item_key, page_item_unknown, sstart, sstop,
-								page_item_txt1, page_item_txt2, page_item_txt3);
-								page_item_cond_list->clear();
+							pageAct= illumino; 
+							par3 = page_item_softstart; 
+							par4 = page_item_softstop;
+							addr = computeAddress();
+							addItemU(pageAct, addr);
 							break;
+
+						case CARICHI:
+							pageAct=(*carichi); 		
+							addr = computeAddress();
+							addItemU(pageAct, addr);
+							break;
+
+						case TERMOREGOLAZIONE:
+							pageAct=termo;
+							addr = computeAddress();
+							addItemU(pageAct, addr);
+							break;
+
+						case  SCENARI:
+							pageAct=(*scenari); 		
+							addr = computeAddress();
+							addItemU(pageAct, addr);
+							break;
+
+						case SCENARI_EVOLUTI:
+							pageAct= (*scenari_evoluti);
+							addr = computeAddress();
+							addItemU(pageAct, addr);
+							break;
+
+						case VIDEOCITOFONIA:
+							pageAct = (*videocitofonia);
+							addr = computeAddress();
+							addItemU(pageAct, addr);
+							break;
+
+						case IMPOSTAZIONI:
+							pageAct=(*imposta);
+							addr = computeAddress();
+							addItemU(pageAct, addr);
+							break;
+
 						case ANTIINTRUSIONE:
-							//     qDebug("antiintr");
 							(*antintr)->addItemU ((char)page_item_id, page_item_descr,
 								(char*)page_item_where.ascii(),
 								*page_item_list_img, par1,  par2, (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii())  ;
@@ -466,21 +488,23 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						case DIFSON:
 							if ((!page_item_what.isNull()) &&
 									(!page_item_what.isEmpty())) {
-								strcpy(&pip[0], page_item_what.ascii());
+								strcpy(pip, page_item_what.ascii());
 								strcat(pip,"*");
 								strcat(pip,page_item_where.ascii());
 							} else
-								strcpy(&pip[0], page_item_where.ascii());
+								strcpy(pip, page_item_where.ascii());
 
-							// Use third digit of where for audio player frames
-							// FIXME aleph: better place for this
-							par2 = pip[2] - '0';
 
 							if (page_item_list_group->isEmpty()) {
 								pnt=pip;
 							} else {
 								pnt=page_item_list_group;
 							}
+
+							// Use third digit of where for audio player frames
+							// FIXME aleph: better place for this
+							par2 = pip[2] - '0';
+
 							par1 = page_item_mode.toInt();
 							(*difSon)->addItemU ((char)page_item_id, page_item_descr, pnt,
 								*page_item_list_img,
@@ -488,10 +512,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 
 						case DIFSON_MULTI:
-							strcpy(&pip[0], page_item_where.ascii());
-							qDebug("**** DIFSON_MULTI address = %s", pip);
-							qDebug("id = %d, page_item_descr = %s",
-									page_item_id, page_item_descr.ascii());
 							if((page_item_id == SORG_RADIO)                      ||
 									(page_item_id==SORG_AUX)             ||
 									(page_item_id==AMBIENTE)             ||
@@ -505,7 +525,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 								page_item_descr_m->append(new QString(page_item_descr));
 							}
 							
-							par2 = atoi(pip);
+							par2 = atoi(page_item_where.ascii());
 
 							(*dm)->addItem ((char)page_item_id, page_item_descr_m, pip,
 								*page_item_list_img, par1, par2, QColor(0,0,0));
@@ -539,6 +559,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 									pageAct=NULL;
 									break;
 							}
+						default:
+							qDebug("xmlconfhandler: sottoMenu type unknown!!");
 					}
 
 					set_page_item_defaults();
@@ -600,24 +622,23 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 						case ILLUMINAZIONE:
 							//			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
-							(*illumino)->forceDraw();
+							illumino->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
-							QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
-							QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+							QObject::connect(*home,SIGNAL(Illuminazione()),illumino,SLOT(showFullScreen()));
+							QObject::connect(illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif                                          
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)       
-							QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
-							QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(show()));
+							QObject::connect(*home,SIGNAL(Illuminazione()),illumino,SLOT(show()));
+							QObject::connect(illumino,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                          
-							QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));			
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
-							QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(*illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-							//     QObject::QObject::connect(client_comandi,SIGNAL(frameIn(char *)),&illumino,SIGNAL(gestFrame(char *)));
-							QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
-							QObject::connect(BtM,SIGNAL(freeze(bool)),*illumino,SLOT(freezed(bool)));
-							//(*illumino)->inizializza();
+							QObject::connect(illumino,SIGNAL(Closed()),illumino,SLOT(hide()));			
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),illumino,SIGNAL(gestFrame(char *)));
+							QObject::connect(illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),illumino,SLOT(freezed(bool)));
+							//(illumino)->inizializza();
 							break;
 						case ANTIINTRUSIONE:
 							//			qWarning(".- .- .- .- .-.- - -.QObject::connect ANTIINTRUSIONE");
@@ -661,22 +682,22 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 						case TERMOREGOLAZIONE:
 							//			qWarning(" - -  .     .- . . .- .-QObject::connect TERMOREGOLAZIONE ");
-							(*termo)->forceDraw();
+							termo->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
-							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showFullScreen()));
-							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(showFullScreen()));
+							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif                                          
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)    
-							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(show()));
-							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(show()));
+							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(show()));
+							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                    
-							QObject::connect(*termo,SIGNAL(Closed()),*termo,SLOT(hide()));
+							QObject::connect(termo,SIGNAL(Closed()),termo,SLOT(hide()));
 
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
-							QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-							QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),termo,SIGNAL(gestFrame(char *)));
+							QObject::connect(termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),termo,SLOT(freezed(bool)));
 							//(*termo)->inizializza();
 							break;
 						case DIFSON:
@@ -1008,11 +1029,10 @@ bool xmlconfhandler::characters( const QString & qValue)
 							//				qWarning("AUTOMAZIONE new.- . . .- -. -. .-");
 							break;
 						case ILLUMINAZIONE:
-							*illumino = new sottoMenu (NULL,"ILLUMINO");
-							(*illumino)->setBGColor(Background);
-							(*illumino)->setFGColor(Foreground);
-							//              illumino->hide();
-							pageAct=*illumino;
+							illumino = new sottoMenu (NULL,"ILLUMINO");
+							illumino->setBGColor(Background);
+							illumino->setFGColor(Foreground);
+							pageAct=illumino;
 							//				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");
 							break;
 						case DIFSON_MULTI:
@@ -1058,11 +1078,11 @@ bool xmlconfhandler::characters( const QString & qValue)
 							//				qWarning("ANTIINTRUSIONE new.- - ..- -.  .- .- .-");
 							break;
 						case TERMOREGOLAZIONE:
-							*termo = new termoregolaz( NULL,"TERMO", 4, MAX_WIDTH, MAX_HEIGHT,1);
-							(*termo)->setBGColor(Background);
-							(*termo)->setFGColor(Foreground);
+							termo = new termoregolaz( NULL,"TERMO", 4, MAX_WIDTH, MAX_HEIGHT,1);
+							termo->setBGColor(Background);
+							termo->setFGColor(Foreground);
 							//              termo->hide();
-							pageAct=*termo;
+							pageAct=termo;
 							//				qWarning("TERMOREGOLAZIONE new.- .- - .. -. -. -. . ");
 							break;
 						case IMPOSTAZIONI:

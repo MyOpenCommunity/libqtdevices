@@ -184,7 +184,9 @@ void BtMain::hom()
 	if (QFile::exists("cfg/conf.xml"))
 	{ 
 		qDebug("scello %d",bg);
-		xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &dm, &antintr,&pagDefault, client_comandi, client_monitor, client_richieste, datiGen,bg, fg1, fg2);
+		xmlconfhandler  * handler2=new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, illumino, &scenari,\
+				&carichi, &imposta, &automazioni, termo, &difSon, &dm, &antintr, &pagDefault, client_comandi, \
+				client_monitor, client_richieste, datiGen, bg, fg1, fg2);
 		qDebug("scello %d",bg);
 		setBackgroundColor(*bg);
 		for (int idx=0;idx<12;idx++)

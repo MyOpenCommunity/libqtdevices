@@ -78,7 +78,7 @@ extern inline QString *safeAt(QPtrList<QString> &list, int idx)
 class xmlconfhandler : public QXmlDefaultHandler
 {
 	public:
-		xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
+		xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu *illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz* termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
 
 		~xmlconfhandler();
 		/*!
@@ -100,6 +100,10 @@ class xmlconfhandler : public QXmlDefaultHandler
 		bool endElement( const QString&, const QString&, const QString& );
 
 	private:
+		void *computeAddress();
+		void *getAddr();
+		void addItemU(sottoMenu *pageAct, void *address);
+
 		QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6,CurTagL7;
 		bool ok;
 
@@ -154,10 +158,10 @@ class xmlconfhandler : public QXmlDefaultHandler
 
 		homePage **home;
 		homePage **specPage;
-		sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,
+		sottoMenu *illumino, **scenari, **carichi, **imposta, **automazioni, **sched,
 			  **scenari_evoluti, **videocitofonia;
 		diffmulti **dm;
-		termoregolaz **termo;
+		termoregolaz *termo;
 		diffSonora **difSon;
 		antintrusione** antintr;
 		QWidget ** pagDefault;
