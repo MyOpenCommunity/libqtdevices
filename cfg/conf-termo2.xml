@@ -1,0 +1,1703 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--ATTENZIONE: il file xml NON deve essere indentato, NON ha più di sei livelli (radice compresa) -->
+<!--e non deve avere carattere a capo a fine file-->
+<!--In tutti i campi where che seguono nella versione attuale il livello L4 è gestito -->
+<configuratore>
+  <!-- ver_xml: versione del file di configurazione -->
+  <ver_xml>4.0.4</ver_xml>
+  <!--4.0.0: - Prima versione per Firmweare 4.0.X, Il conf.xml ver. 3.0.X non esiste! (codifica UTF-8)-->
+  <!--# Diffusione Sonora / Diffusione Sonora Multicanale: Aggiunta sorgente Multimediale (TS con funzioni IP) (nuovi ID 50 e 51)-->
+  <!--# Scenari Evoluti e Schedulati: Tolto obbligo condizione oraria-->
+  <!--# Termoregolazione: Aggiunta tipologia Centrale Termoregolazione-->
+  <!--# Termoregolazione: Aggiunto indirizzo Centrale di Termoregolazione Associata-->
+  <!--# setup/generale: aggiunto campo nome-->
+  <!--#setup/scs/coordinate_scs: aggiunto campo ind_mm_source-->
+  <!--4.0.1: - Termoregolazione: spostati campi type e ind_centrale sotto il ramo della zona item1-->
+  <!--4.0.2: - aggiunta formattazione 01..99#01..99 per gestire la centrale termo 4 zone in home page, scenari evoluti e page default-->
+  <!--4.0.3: - Termoregolazione: rispostati i campi type e ind_centrale sotto il nodo principale, aggiunti item nuovi nella pagina di termoregolazione-->
+  <!--# pagemenu: aggiunti nuovi item9 per sonda esterna e zona non controllata-->
+  <!--4.0.4: - Supervisione impianto: aggiunto sistema-->
+  <!--# Termoregolazione: configurazione a livelli-->
+  <!--# Scenari evoluti: aggiunta condizione=ausiliario-->
+  <creator_sw>
+    <name>tidisplaycolorip</name>
+    <ver_sw>2.0.x</ver_sw>
+  </creator_sw>
+  <setup>
+    <generale>
+      <!--max length: 20-->
+      <modello>H/L4684</modello>
+      <serie>H4684</serie>
+      <!--lingua: Valori ammessi: 0 italiano, 1 francese, 2 inglese, 3 tedesco, 4 spagnolo, 5 olandese, 6 portoghese-->
+      <lingua>0</lingua>
+      <!--Nome del dispositivo (friendlyname) -->
+      <nome>Touch Screen IP</nome>
+      <clock>
+        <!-- master: 0 se il dispositivo non funziona da orologio master, 3600 se funziona da orologio master-->
+        <master>0</master>
+        <!-- dateformat: formato della data, 0 gg.mm.aa, 1 mm.gg.aa, 2 aa.mm.gg -->
+        <dateformat>0</dateformat>
+      </clock>
+    </generale>
+    <ethernet>
+      <lan>
+        <!--Modalità di indirizzamento IP: 0=non definito, 1=DHCP, 2=Ipfisso-->
+        <mode>2</mode>
+        <!--URL numerica:192.168.1.xx dove xx=50 + numero progressivo del touch sull'impianto -->
+        <addressip>192.168.1.50</addressip>
+        <!--netmask, sempre questa!-->
+        <netmask>255.255.255.0</netmask>
+        <!--router, sempre questo!-->
+        <router>192.168.1.1</router>
+        <!--dnspri, sempre questo!-->
+        <dnspri>192.168.1.1</dnspri>
+        <!--dnssec, sempre questo!-->
+        <dnssec>192.168.1.1</dnssec>
+      </lan>
+    </ethernet>
+    <scs>
+      <coordinate_scs>
+        <!--valori ammessi 0-1-->
+        <ack_scs>0</ack_scs>
+        <!--max length: 2; numero in rappresentazione esadecimale-->
+        <scs_addr>00</scs_addr>
+        <!--Indirizzo posto interno associato al dispositivo: da 0 a 3999-->
+        <indirizzo_pi>256</indirizzo_pi>
+        <!--Livello di appartenenza del TS: 3, 4-->
+        <mylevel>4</mylevel>
+        <!--Interfaccia di livello: AP (vuoto se mylevel=3) Valori ammessi:01..99-->
+        <int_mylevel>99</int_mylevel>
+        <!-- diag_addr: indirizzo diagnostica, valori ammessi da 300 a 3FF esadicimale-->
+        <diag_addr>300</diag_addr>
+        <!--Indirizzo del dispositivo in funzionamento come sorgente multimediale: da 1 a 9-->
+        <ind_mm_source>1</ind_mm_source>
+      </coordinate_scs>
+    </scs>
+    <sicurezza>
+      <!--min length:5; max length: 9; solo digit-->
+      <pwd_open>12345</pwd_open>
+    </sicurezza>
+    <servizi>
+      <!--valori ammessi 0-1-->
+      <abil_pagine_web>0</abil_pagine_web>
+      <!--valori ammessi 0-1-->
+      <abil_portale>0</abil_portale>
+      <!--valori ammessi 0-1-->
+      <abil_centrale_domotica>0</abil_centrale_domotica>
+      <!--valori ammessi 0-1-->
+      <abil_displaypages>1</abil_displaypages>
+    </servizi>
+  </setup>
+  <displaypages>
+    <!-- orientamento del display 0/1 -->
+    <orientation>0</orientation>
+    <!-- pagina di default che viene caricata dopo un periodo di inattività -->
+    <homepage>
+      <!-- isdefined: 0 pagina di default disabilitata, 1 pagina di default abilitata -->
+      <isdefined>1</isdefined>
+      <!-- id: id della pagina da caricare come default -->
+      <id>2</id>
+      <!-- cid: id della pagina da caricare come default per il configuratore -->
+      <cid>2</cid>
+    </homepage>
+    <!-- pagemenu: pagina col menù; delle applicazioni presenti, composta da N item: item1..itemN -->
+    <pagemenu>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>0</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>0</cid>
+      <item1>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>7</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>7</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>scenari</descr>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>0</top>
+        <!-- lista immagini -->
+        <cimg1>appscen.png</cimg1>
+      </item1>
+      <item2>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>2</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>2</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>illuminazione</descr>
+        <!--coordinata x della posizione-->
+        <left>80</left>
+        <!--coordinata y della posizione-->
+        <top>0</top>
+        <!-- lista immagini -->
+        <cimg1>appillum.png</cimg1>
+      </item2>
+      <item3>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>1</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>1</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>automazione</descr>
+        <!--coordinata x della posizione-->
+        <left>160</left>
+        <!--coordinata y della posizione-->
+        <top>0</top>
+        <!-- lista immagini -->
+        <cimg1>appmov.png</cimg1>
+      </item3>
+      <item4>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>4</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>4</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>controllo carichi</descr>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>80</top>
+        <!-- lista immagini -->
+        <cimg1>appccar.png</cimg1>
+      </item4>
+      <item5>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>5</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>5</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>termoregolazione</descr>
+        <!--coordinata x della posizione-->
+        <left>80</left>
+        <!--coordinata y della posizione-->
+        <top>80</top>
+        <!-- lista immagini -->
+        <cimg1>appterm.png</cimg1>
+      </item5>
+      <item6>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>3</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>3</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>antifurto</descr>
+        <!--coordinata x della posizione-->
+        <left>160</left>
+        <!--coordinata y della posizione-->
+        <top>80</top>
+        <!-- lista immagini -->
+        <cimg1>appant.png</cimg1>
+      </item6>
+      <item7>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>6</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>6</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>diffusione sonora</descr>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>160</top>
+        <!-- lista immagini -->
+        <cimg1>appdiff.png</cimg1>
+      </item7>
+      <item8>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>8</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>8</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>configurazione</descr>
+        <!--coordinata x della posizione-->
+        <left>80</left>
+        <!--coordinata y della posizione-->
+        <top>160</top>
+        <!-- lista immagini -->
+        <cimg1>appconf.png</cimg1>
+      </item8>
+      <item11>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>11</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>11</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>videocitofonia</descr>
+        <!--coordinata x della posizione-->
+        <left>80</left>
+        <!--coordinata y della posizione-->
+        <top>0</top>
+        <!-- lista immagini -->
+        <cimg1>appvct.png</cimg1>
+      </item11>
+      <item12>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>12</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>12</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>scenari evoluti e schedulazioni</descr>
+        <!--coordinata x della posizione-->
+        <left>80</left>
+        <!--coordinata y della posizione-->
+        <top>0</top>
+        <!-- lista immagini -->
+        <cimg1>appscev.png</cimg1>
+      </item12>
+      <item13>
+        <!-- id: corrisponde all'identificativo del tipo di applicazione (vedi tabella skinObj) -->
+        <id>13</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>13</cid>
+        <!--nome descrittivo dell'applicazione -->
+        <descr>diffusione sonora multicanale</descr>
+        <!--coordinata x della posizione-->
+        <left>80</left>
+        <!--coordinata y della posizione-->
+        <top>0</top>
+        <!-- lista immagini -->
+        <cimg1>appdiff.png</cimg1>
+      </item13>
+      <!-- Gli item seguenti sono item speciali larghi 240px x 80px. Vista la configurazione precedente -->
+      <!-- ci sarebbe lo spazio disponibile per inserirne solo uno ma sono elencati tutti e due per -->
+      <!-- esemplificare le tipologie che possono presentarsi-->
+      <item9>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>30</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>900</cid>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>240</top>
+      </item9>
+      <item9>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>32</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>901</cid>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>240</top>
+      </item9>
+      <item9>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>31</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>902</cid>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>240</top>
+        <!-- indirizzo della sonda. Valori possibili: 1..99-->
+        <where>43</where>
+      </item9>
+      <item9>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>57</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>905</cid>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>240</top>
+        <!-- indirizzo della sonda. Valori possibili: 1..9-->
+        <where>1</where>
+      </item9>
+      <item9>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>58</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>906</cid>
+        <!--coordinata x della posizione-->
+        <left>0</left>
+        <!--coordinata y della posizione-->
+        <top>240</top>
+        <!-- indirizzo della sonda. Valori possibili: 1..99-->
+        <where>43</where>
+      </item9>
+    </pagemenu>
+    <!-- pageX: contiene tutti gli item (righe) presenti nella pagina di un dato applicativo-->
+    <page1>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>7</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>7</cid>
+      <descr>scenari</descr>
+      <item1>
+        <!-- identifica la tipologia dell'item -->
+        <id>4</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>700</cid>
+        <!-- descr: contiene il testo da mostrare nell'item, vedi tab. skinObj -->
+        <descr>SCENARIO</descr>
+        <!-- corrisponde al pulsante per lo scenario. Valori ammessi: 1..4 -->
+        <what>2</what>
+        <!-- indirizzo della centralina (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>11</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>scen.png</cimg2>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia dell'item, vedi tab. skinObj -->
+        <id>29</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>701</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>MODULO SCENARI</descr>
+        <!-- corrisponde allo scenario per il mudulo scenari. Valori ammessi: 1..32 -->
+        <what>14</what>
+        <!-- indirizzo del modulo scenari (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>12</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>setscen.png</cimg2>
+        <cimg3>progscen.png</cimg3>
+        <cimg4>delscen.png</cimg4>
+        <cimg5>scen.png</cimg5>
+        <cimg6>btnstop.png</cimg6>
+        <cimg7>arrrg.png</cimg7>
+      </item2>
+    </page1>
+    <!-- pageX: contiene tutti gli item (righe) presenti nella pagina di un dato applicativo-->
+    <page2>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>2</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>2</cid>
+      <descr>illuminazione</descr>
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>1</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>200</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>DIMMER 10</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>21</where>
+        <!-- lista immagini. N.B. le immagini cimg1 e cimg2 presentano solo la 'base' del nome (escludendo -->
+        <!-- il valore del livello di accensione) -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>ondimmer.png</cimg3>
+        <cimg4>ondimmer.png</cimg4>
+        <cimg5>dimow.png</cimg5>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>0</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>201</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>ATTUATORE</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>22</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>lampon.png</cimg3>
+        <cimg4>lampoff.png</cimg4>
+      </item2>
+      <item3>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>6</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>202</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>INSIEME DIMMER</descr>
+        <!-- saranno presenti N indirizzi per attuatori contenuti nei tag element1..elementN -->
+        <!-- gli elementi contengono indirizzo dell'attuatore (where # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: punto-punto 11..99(#4#01..99)-->
+        <!--		  		 generale 0(#4#01..99) -->
+        <!--				 ambienti 1..9(#4#01..99) -->
+        <!-- 				 gruppo #1..#9(#4#01..99) -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <element1>
+          <where>#1</where>
+        </element1>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>ondimgrpsx.png</cimg3>
+        <cimg4>ondimgrpdx.png</cimg4>
+      </item3>
+      <item4>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>5</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>203</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>INSIEME LUCI</descr>
+        <!-- saranno presenti N indirizzi per attuatori contenuti nei tag element1..elementN -->
+        <!-- gli elementi contengono indirizzo dell'attuatore (where # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: punto-punto 11..99(#4#01..99)-->
+        <!-- 				 generale 0(#4#01..99) -->
+        <!--				 ambienti 1..9(#4#01..99) -->
+        <!--				 gruppo #1..#9(#4#01..99) -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <element1>
+          <where>1</where>
+        </element1>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>lampgrpon.png</cimg3>
+      </item4>
+      <item5>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>9</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>205</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>LUCE TEMPORIZZATA A 6 TEMPI</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>37</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btncycle.png</cimg2>
+        <cimg3>lamptime.png</cimg3>
+        <cimg4>lamptimeoff.png</cimg4>
+      </item5>
+      <item6>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>12</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>207</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>LUCE SCALE</descr>
+        <!--Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 2 (montante pubblico) -->
+        <where>4038</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>lampstair.png</cimg2>
+      </item6>
+      <item7>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>35</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>200</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>DIMMER 100</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 1..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>38</where>
+        <!--Tempo di softstart:valori ammessi: 1-254-->
+        <softstart>25</softstart>
+        <!--Tempo di softstop:valori ammessi:1-254-->
+        <softstop>26</softstop>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>ondimmer.png</cimg3>
+        <cimg4>ondimmer.png</cimg4>
+        <cimg5>dimow.png</cimg5>
+      </item7>
+      <item8>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>36</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>205</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>LUCE TEMPORIZZATA A N TEMPI</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 1..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>38</where>
+        <!--Tempo prefissato 1 (hh*mm*ss): ce ne possono essere fino n-->
+        <time1>5*25*7</time1>
+        <!--Tempo prefissato n (hh*mm*ss), max_n=20-->
+        <timen>5*25*7</timen>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btncycle.png</cimg2>
+        <cimg3>lamptime.png</cimg3>
+        <cimg4>lamptimeoff.png</cimg4>
+      </item8>
+      <item9>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>37</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>209</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>LUCE TEMPORIZZATA A T FISSO</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 1..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>38</where>
+        <!--Tempo fisso (hh*mm*ss) -->
+        <time>5*25*7</time>
+        <!-- lista immagini -->
+        <cimg1>time.png</cimg1>
+        <cimg2>lampt.png</cimg2>
+        <cimg3>btnon.png</cimg3>
+      </item9>
+      <item10>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>44</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>202</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>INSIEME DIMMER</descr>
+        <!-- saranno presenti N indirizzi per attuatori contenuti nei tag element1..elementN -->
+        <!-- gli elementi contengono indirizzo dell'attuatore (where # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: punto-punto 11..99(#4#01..99)-->
+        <!--		  		 generale 0(#4#01..99) -->
+        <!--				 ambienti 1..9(#4#01..99) -->
+        <!-- 				 gruppo #1..#9(#4#01..99) -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <element1>
+          <where>#1</where>
+          <softstart>25</softstart>
+          <softstop>26</softstop>
+        </element1>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>ondimgrpsx.png</cimg3>
+        <cimg4>ondimgrpdx.png</cimg4>
+      </item10>
+    </page2>
+    <!-- pageX: contiene tutti gli item (righe) presenti nella pagina di un dato applicativo-->
+    <page3>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>1</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>1</cid>
+      <descr>automazione</descr>
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- 2 se mode 0 (normale), 8 se mode 1 (sicura)-->
+        <id>8</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>101</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>SERRANDA</descr>
+        <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>42</where>
+        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <mode>1</mode>
+        <!-- lista immagini -->
+        <cimg1>arrup.png</cimg1>
+        <cimg2>arrdw.png</cimg2>
+        <cimg3>tappa.png</cimg3>
+        <cimg4>btnstop.png</cimg4>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- 2 se mode 0 (normale), 8 se mode 1 (sicura)-->
+        <id>8</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>102</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>TENDA</descr>
+        <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>43</where>
+        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <mode>1</mode>
+        <!-- lista immagini -->
+        <cimg1>btnopen.png</cimg1>
+        <cimg2>btnclose.png</cimg2>
+        <cimg3>tenda.png</cimg3>
+        <cimg4>btnstop.png</cimg4>
+      </item2>
+      <item3>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- 2 se mode 0 (normale), 8 se mode 1 (sicura)-->
+        <id>2</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>103</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>BASCULANTE</descr>
+        <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>44</where>
+        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <mode>0</mode>
+        <!-- lista immagini -->
+        <cimg1>arrup.png</cimg1>
+        <cimg2>arrdw.png</cimg2>
+        <cimg3>garage.png</cimg3>
+        <cimg4>btnstop.png</cimg4>
+      </item3>
+      <item4>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- 2 se mode 0 (normale), 8 se mode 1 (sicura)-->
+        <id>8</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>104</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>CANCELLO</descr>
+        <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>45</where>
+        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <mode>1</mode>
+        <!-- lista immagini -->
+        <cimg1>btnopen.png</cimg1>
+        <cimg2>btnclose.png</cimg2>
+        <cimg3>canc.png</cimg3>
+        <cimg4>btnstop.png</cimg4>
+      </item4>
+      <item5>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>0</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>105</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>VENTILATORE</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>23</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>venton.png</cimg3>
+        <cimg4>ventoff.png</cimg4>
+      </item5>
+      <item6>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>0</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>106</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>IRRIGAZIONE</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>24</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>idroon.png</cimg3>
+        <cimg4>idrooff.png</cimg4>
+      </item6>
+      <item7>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>0</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>107</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>PRESA COMANDATA</descr>
+        <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>25</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>caricoon.png</cimg3>
+        <cimg4>caricooff.png</cimg4>
+      </item7>
+      <item8>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- se mode 0 (automazione) allora 11, se mode 1 (videocitofonia) allora 13-->
+        <id>13</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>108</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>SERRATURA</descr>
+        <!-- indirizzo della funzione automazione-->
+        <!--mode = 0 ->  where rappresenta a e pl, (where # level # interface - where+lev+interface open).  Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <!--mode = 1 -> where rappresenta p1 e p2. Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo-->
+        <where>4046</where>
+        <!-- mode: sistema dell'attuatore, 0 automazione, 1 videocitofonico -->
+        <mode>1</mode>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>funcautom.png</cimg2>
+      </item8>
+      <item9>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>10</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>113</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>INSIEME AUTOMAZIONE</descr>
+        <!-- saranno presenti N indirizzi per attuatori contenuti nei tag element1..elementN -->
+        <!-- gli elementi contengono l'indirizzo (where # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: generale 0(#4#01..99) -->
+        <!--				 ambienti 1..9(#4#01..99) -->
+        <!--				 gruppo #1..#9(#4#01..99) -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <element1>
+          <where>2</where>
+        </element1>
+        <!-- lista immagini -->
+        <cimg1>arrup.png</cimg1>
+        <cimg2>arrdw.png</cimg2>
+        <cimg3>stopmovs.png</cimg3>
+      </item9>
+      <item10>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!--cancello con attuatore di illuminazione-->
+        <id>40</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>118</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>CANCELLO </descr>
+        <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
+        <!-- Valori ammessi: 11..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 4 -->
+        <where>45</where>
+        <!--time: valore di temporizzazione: 0*0*1 oppure 0*0*2-->
+        <time>0*0*2</time>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>canc.png</cimg2>
+      </item10>
+      <item11>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- cancello con attuatore videocitofonia-->
+        <id>41</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>118</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>CANCELLO </descr>
+        <!-- indirizzo del movimentatore (P e N # level  - where+lev). -->
+        <!-- Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo -->
+        <!-- se l'oggetto è su livello SCS 2 (montante pubblico) -->
+        <where>4045#2</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>canc.png</cimg2>
+      </item11>
+    </page3>
+    <page4>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>4</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>4</cid>
+      <descr>controllo carichi</descr>
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>7</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>400</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>CARICO</descr>
+        <!-- priorità carico (where OPEN). Valori ammessi: #1...#8 -->
+        <where>#1</where>
+        <!-- lista immagini -->
+        <cimg1>btnbigon.png</cimg1>
+      </item1>
+    </page4>
+    <page5>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>5</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>5</cid>
+      <descr>termoregolazione 99 zone</descr>
+      <plant>
+        <id>63</id>
+        <cid>507</cid>
+        <descr>Impianto 99 zone</descr>
+        <item1>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>22</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>500</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 3550 senza fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item1>
+        <item2>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>52</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>501</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 3550 con fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item2>
+        <item3>
+          <id>66</id>
+          <cid>510</cid>
+          <descr>Centrale 99 zone</descr>
+          <summer>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </summer>
+          <winter>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </winter>
+        </item3>
+      </plant>
+      <extprobe>
+        <id>64</id>
+        <cid>508</cid>
+        <descr>Sonde esterne</descr>
+        <item5>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>55</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>504</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>SONDA ESTERNA</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..9 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item5>
+      </extprobe>
+      <tempprobe>
+        <id>65</id>
+        <cid>509</cid>
+        <descr>Zone non controllate</descr>
+        <item6>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>505</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Master)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item6>
+        <item7>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>506</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Slave)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where è formattato nel seguente modo: [SLAVE][ZaZb])-->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item7>
+      </tempprobe>
+    </page5>
+    <page6>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>3</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>3</cid>
+      <descr>antifurto</descr>
+      <!-- Questo item (id 301) sarà, quanto meno nella versione 1.0 sempre presente poiché identifica -->
+      <!-- l'inserimento/disinserimento del sistema antifurto -->
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>24</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>301</cid>
+        <!-- lingue per gli allarmi -->
+        <txt1>tecnico</txt1>
+        <txt2>intrusione</txt2>
+        <txt3>manomissione</txt3>
+        <txt4>antipanico</txt4>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>btninfo.png</cimg3>
+        <cimg4>antifurtoins.png</cimg4>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>23</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>300</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>ZONA 1</descr>
+        <!-- indirizzo. Valori possibili: (Zone) #1..#8-->
+        <where>#1</where>
+        <!-- lista immagini -->
+        <cimg1>imgzona.png</cimg1>
+        <cimg2>imgantintrusioneoff.png</cimg2>
+        <cimg3>imgantintrusione.png</cimg3>
+      </item2>
+    </page6>
+    <page7>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>6</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>6</cid>
+      <descr>diffusione sonora</descr>
+      <!-- ce ne sono quante sono le sorgenti! -->
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- se mode 0 (radio) allora 17, se mode 1 (AUX) allora 16, se mode 2 (Multimediale) allora 50-->
+        <id>17</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>600</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>SORGENTE1</descr>
+        <!-- mode: radio 0, aux 1, multimediale 2-->
+        <mode>0</mode>
+        <!-- indirizzo. Valori possibili: 101..109  -->
+        <where>101</where>
+        <!-- lista immagini -->
+        <cimg1>btncycle.png</cimg1>
+        <cimg2>audiosetting.png</cimg2>
+        <cimg3>btnforward.png</cimg3>
+        <cimg4>btnbackward.png</cimg4>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>18</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>601</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>AMPLIFICATORE</descr>
+        <!-- indirizzo. Valori possibili: 01..99 (a pf)  -->
+        <where>10</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>onampl.png</cimg3>
+        <cimg4>offampl.png</cimg4>
+      </item2>
+      <item3>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>19</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>602</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>INSIEME AMPL.</descr>
+        <!-- saranno presenti N indirizzi per amplificatori contenuti nei tag element1..elementN -->
+        <!-- gli elementi possono rappresentare punto-punto (a e pf)01..99, generale 0, ambienti #0..#9, (contengono -->
+        <!-- in pratica il where OPEN). Attenzione: i tre tipi (punto-punto, generale e ambiente) sono esclusivi, non -->
+        <!-- si presenteranno mai contemporaneamente -->
+        <element1>
+          <where>0</where>
+        </element1>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>onamplgrpsx.png</cimg3>
+        <cimg4>onamplgrpdx.png</cimg4>
+      </item3>
+    </page7>
+    <page8>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>12</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>12</cid>
+      <descr>scenari e schedulazioni</descr>
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>38</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>1000</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>SCENARIO EVOLUTO</descr>
+        <enable>0=disabilitato, 1=abilitato</enable>
+        <!-- condH: condizione oraria-->
+        <condH>
+          <!--Presenza condizione-value: 1=presente, 0=non presente -->
+          <value>1</value>
+          <!--Hour: 00-23-->
+          <hour>15</hour>
+          <!--Minute: 00-59-->
+          <minute>30</minute>
+          <cimg1>orologio.png</cimg1>
+          <cimg2>btnok.png</cimg2>
+          <!--cimg3: arrlf.png se non c'è condizione device, arrrg.png se c'è condizione device-->
+          <cimg3>arrrg.png</cimg3>
+          <!--cimg4: vuota se non c'è condizione device, arrlf.png se c'è condizione device-->
+          <cimg4>arrlf.png</cimg4>
+        </condH>
+        <!--condDevice: condizione legata allo stato di un dispositivo SCS-->
+        <condDevice>
+          <!--Presenza condizione-value:  0=non presente, 1=attuatore luce, 2=dimmer 10, 3=termoregolazione, 4=amplificatore diffusione sonora, 5=illuminotecnica, 6=dimmer 100, 7= sonda esterna, 8=zona non controllata, 9=ausiliario-->
+          <value>1</value>
+          <!--descrizione del parametro rilevato dal dispositivo-->
+          <descr>Luce salotto</descr>
+          <!--where: posizione del dispositivo-->
+          <!-- Se value=1 o 2: where è l'indirizzo dell'attuatore Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+          <!--Se value=3: where è l'indirizzo della zona controllata. Valori ammessi: 01..99-->
+          <!--Se value=4: where è l'indirizzo dell'amplificatore. Valori ammessi: 01..99 (a pf)  -->
+          <!-- Se value=6: where è l'indirizzo dell'attuatore Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+          <!--Se value=7: where è l'indirizzo della sonda esterna. Valori ammessi: 1..9-->
+          <!--Se value=8: where è l'indirizzo della zona non controllata. Valori ammessi: 01..99 se Master, [Slave][ZaZb] se slave.-->
+          <!--Se value=9: where è l'indirizzo dell'ausiliario. Valori ammessi: 1..9.-->
+          <where>30</where>
+          <!--trigger: valore del parametro espresso in termini OPEN, dipende da value-->
+          <!--Se value=1: valori ammessi: 0 (OFF), 1 (ON)-->
+          <!--Se value=2: valori ammessi: 2(20%),3,4,5,6,7,8,9,10, 0(OFF), 2-4(ON dal 20% al 40%), 5-7(ON dal 50% al 70%), 8-10(ON dal 70% al 100%)-->
+          <!--Se value=3, 7 o 8: valore in OPEN che esprime una temperatura in °C. es: 0215=+21,5°C, 1030=-3°C (discrezione di mezzo grado)-->
+          <!--Se value=4:valori ammessi: 1..31, 0-31(ON), -1(OFF), 0-6(ON dal 0% al 20%), 7-12(ON dal 21% al 40%), 13-22(ON dal 41% al 70%), 23-31(ON dal 41% al 100%)-->
+          <!--Se value=6: valori ammessi: 2(20%),3,4,5,6,7,8,9,10, 0(OFF), 1-20(ON dal 1% al 20%), 21-40(ON dal 21% al 40%), 41-70(ON dal 41% al 70%), 71-100(ON dal 71% al 100%)-->
+          <!--Se value=9: valori ammessi: 1 (ON), 0 (OFF)-->
+          <trigger>1</trigger>
+          <!--cimg1: immagine del tipo di condizione-->
+          <cimg1>imgluce.png</cimg1>
+          <!--cimg2: immagine +: btnon.png per value=1, btnplus.png per gli altri valori-->
+          <cimg2>btnon.png</cimg2>
+          <!--cimg3: immagine -: btnoff.png per value=1, btnmin.png per gli altri valori-->
+          <cimg3>btnoff.png</cimg3>
+          <!--cimg4: ok-->
+          <cimg4>btnok.png</cimg4>
+          <!--cmg5: annulla-->
+          <cimg5>arrlf.png</cimg5>
+        </condDevice>
+        <action>
+          <!--action: azione da eseguire a seguito del verificarsi delle condizioni-->
+          <open>*2*2*35##</open>
+          <!--id: identifica la tipologia dell'oggetto secondo la tabella nelle specifiche (server per TiDisplayColor)-->
+          <id />
+          <!--id_cmd: identifica il tipo di comando OPEN (serve per TiDisplayColor)-->
+          <id_cmd />
+          <!--where: rappresentazione OPEN del dove (Es: 11#4#45) (serve per TiDisplayColor)-->
+          <where />
+        </action>
+        <!-- lista immagini -->
+        <cimg1>btnscevab.png</cimg1>
+        <cimg2>btnscevdis.png</cimg2>
+        <cimg3>btnstart120.png</cimg3>
+        <cimg4>progscen.png</cimg4>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>39</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>1001</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>SCENARIO SCHEDULATO</descr>
+        <!--Unable: trigger di abilitazione-->
+        <unable>
+          <!--Presenza trigger-value: 1=presente, 0=non presente-->
+          <value>1</value>
+          <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4-->
+          <open>*15*02*56##</open>
+          <cimg1>btnscevab.png</cimg1>
+        </unable>
+        <disable>
+          <!--Presenza trigger-value: 1=presente, 0=non presente (legato al value di unable)-->
+          <value>1</value>
+          <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4-->
+          <open>*15*02*56##</open>
+          <cimg1>btnscevdis.png</cimg1>
+        </disable>
+        <start>
+          <!--Presenza trigger-value: 1=presente, 0=non presente-->
+          <value>1</value>
+          <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4-->
+          <open>*15*02*56##</open>
+          <cimg1>btnstart.png</cimg1>
+        </start>
+        <stop>
+          <!--Presenza trigger-value: 1=presente, 0=non presente-->
+          <value>1</value>
+          <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+          <open>*15*02*56##</open>
+          <cimg1>btnstopred.png</cimg1>
+        </stop>
+      </item2>
+    </page8>
+    <page9>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>13</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>13</cid>
+      <descr>diffusione sonora multicanale</descr>
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <!-- se mode 0 (radio) allora 45, se mode 1 (AUX) allora 46, se mode 2 (multimediale) allora 51-->
+        <id>45</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>1200</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>SORGENTE1</descr>
+        <!-- mode: radio 0, aux 1, multimediale 2-->
+        <mode>0</mode>
+        <!-- indirizzo. Valori possibili: 1 .. 4-->
+        <where>1</where>
+        <!-- lista immagini: cimg1 dipende da mode: mode=0 -> cimg1=btnradioon.png,  mode=1 -> cimg1=btnauxon.png-->
+        <cimg1>btnradioon.png</cimg1>
+        <cimg2>audiosetting.png</cimg2>
+        <cimg3>btnavanti.png</cimg3>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>47</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>1201</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>Ambiente 1</descr>
+        <!-- indirizzo. Valori possibili: 1 .. 8-->
+        <where>1</where>
+        <!--deviceN: amplificatori appartenenti all'ambiente-->
+        <deviceN>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>18</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>601</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>AMPLIFICATORE</descr>
+          <!--where: A,PF degli amplificatori: valori possibili: 11...89, possono essercene fino a 9 per ambiente A-->
+          <where>11</where>
+          <!--lista immagini che compongono l'item amplificatore-->
+          <cimg1>btnon.png</cimg1>
+          <cimg2>btnoff.png</cimg2>
+          <cimg3>onampl.png</cimg3>
+          <cimg4>offampl.png</cimg4>
+        </deviceN>
+        <!--diviceM: oggetto insieme amplificatori configurato come comando Ambiente-->
+        <deviceM>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>19</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>602</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>AMBIENTE</descr>
+          <!--where: #n, dove n è l'indirizzo di ambiente-->
+          <where1>#1</where1>
+          <!--lista immagini che compongono l'item insieme amplificatori-->
+          <cimg1>btnon.png</cimg1>
+          <cimg2>btnoff.png</cimg2>
+          <cimg3>onamplgrpsx.png</cimg3>
+          <cimg4>onamplgrpdx.png</cimg4>
+        </deviceM>
+        <!-- lista immagini che compongono l'oggetto ambiente-->
+        <cimg1>imgamb.png</cimg1>
+        <cimg2>imgdiffson.png</cimg2>
+        <cimg3>arrrg.png</cimg3>
+      </item2>
+      <item3>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>48</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>1202</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>Insieme</descr>
+        <!--device1: elenco degli insiemi amplificatori (di id=19 e cid=602 ) appartenenti alla pagina (eventuali nuovi tipi di insiemi amplificatori -->
+        <!--o oggetti che andranno in questa pagina avranno un loro nodo deviceN)-->
+        <device1>
+          <id>19</id>
+          <cid>602</cid>
+          <!--possono essere inserite fino a 20  coppie descr-where-->
+          <!--descrN: descrizione dell'insieme N-esimo-->
+          <descr1>sala</descr1>
+          <!--whereN: dove dell'insieme N-esimo-->
+          <!--where: DOVE dei comandi degli item Insiemi amplificatori: valori possibili: 0=singolo comando di GEN-->
+          <where1>0</where1>
+          <!--lista immagini che compongono l'item insieme amplificatori-->
+          <cimg1>btnon.png</cimg1>
+          <cimg2>btnoff.png</cimg2>
+          <cimg3>onamplgrpsx.png</cimg3>
+          <cimg4>onamplgrpdx.png</cimg4>
+        </device1>
+        <!-- lista immagini che compongono l'oggetto Insieme-->
+        <cimg1>imginsampl.png</cimg1>
+        <cimg2>arrrg.png</cimg2>
+      </item3>
+    </page9>
+    <page10>
+      <id>14</id>
+      <cid>14</cid>
+      <descr>supervisione impianto</descr>
+      <class>
+        <id>59</id>
+        <cid>1300</cid>
+        <descr>Stop&amp;Go</descr>
+        <itemx>
+          <id>60</id>
+          <cid>1301</cid>
+          <descr>Stop&amp;Go</descr>
+          <!--where: indirizzo composto dai seguenti campi: 2 e X, dove X va da 1 a 999.-->
+          <where>2X</where>
+        </itemx>
+        <itemy>
+          <id>61</id>
+          <cid>1302</cid>
+          <descr>Stop&amp;Go plus</descr>
+          <!--where: indirizzo composto dai seguenti campi: 2 e X, dove X va da 1 a 999.-->
+          <where />
+        </itemy>
+        <itemz>
+          <id>62</id>
+          <cid>1303</cid>
+          <descr>Stop&amp;Go BTest</descr>
+          <!--where: indirizzo composto dai seguenti campi: 2 e X, dove X va da 1 a 999.-->
+          <where />
+        </itemz>
+      </class>
+    </page10>
+    <page11>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>15</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>15</cid>
+      <descr>termoregolazione 4 zone</descr>
+      <plant1>
+        <id>67</id>
+        <cid>511</cid>
+        <descr>Impianto 4 zone</descr>
+        <ind_centrale>14</ind_centrale>
+        <item1>
+          <id>68</id>
+          <cid>512</cid>
+          <descr>Centrale 4 zone</descr>
+          <summer>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </summer>
+          <winter>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </winter>
+        </item1>
+        <item2>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>54</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>503</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 4695 con fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item2>
+        <item3>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>53</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>502</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 4695 senza fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item3>
+      </plant1>
+      <extprobe>
+        <id>64</id>
+        <cid>508</cid>
+        <descr>Sonde esterne</descr>
+        <item5>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>55</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>504</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>SONDA ESTERNA</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..9 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item5>
+      </extprobe>
+      <tempprobe>
+        <id>65</id>
+        <cid>509</cid>
+        <descr>Zone non controllate</descr>
+        <item6>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>505</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Master)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item6>
+        <item7>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>506</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Slave)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where è formattato nel seguente modo: [SLAVE][ZaZb])-->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item7>
+      </tempprobe>
+    </page11>
+    <pagespecial>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>10</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>10</cid>
+      <!-- command: impostazioni del comando speciale -->
+      <command>
+        <!-- identificativo della pagina, vedi tab. skinObj -->
+        <id>34</id>
+        <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+        <cid>904</cid>
+        <!-- descr: contiene il nome descrittivo del comando -->
+        <descr>COMANDO</descr>
+        <!-- type: 0 comando semplice, 1 comando ciclico, 2 comando accendi/spegni-->
+        <type>0</type>
+        <!-- subtype: 0 illuminazione, 1 ausiliari, 2 centralina scenari, 3 modulo scenari-->
+        <subtype>0</subtype>
+        <!-- who: contiene l'who OPEN -->
+        <who>1</who>
+        <!-- what: contiene il what OPEN -->
+        <what>0</what>
+        <!-- where: contiene il where OPEN, Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <where>33</where>
+        <!-- lista immagini -->
+        <cimg1>btnspecial.png</cimg1>
+      </command>
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>30</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>900</cid>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>32</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>901</cid>
+      </item2>
+      <item3>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>31</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>902</cid>
+        <!-- descr: contiene il nome descrittivo dell'item -->
+        <descr>TESTO</descr>
+        <!-- indirizzo della sonda. Valori possibili: 1..99 centrale 3550) oppure 1..99#01..99 (centrale 4695)-->
+        <where>43</where>
+      </item3>
+    </pagespecial>
+    <pagevct>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>11</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>11</cid>
+      <descr>videocitofonia</descr>
+      <!--Unknown: 0=solo posti esterni configurati, 1=tutti i posti esterni-->
+      <unknown>0</unknown>
+      <txt1>sconosciuto</txt1>
+      <txt2>luce scale</txt2>
+      <txt3>serratura</txt3>
+      <device1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>49</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>1100</cid>
+        <!-- descr: contiene il nome descrittivo del posto esterno-->
+        <descr>PORTONE</descr>
+        <!--Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo-->
+        <!--se l'oggetto è su livello SCS 2 (montante pubblico) -->
+        <where>4033</where>
+        <!--light: 0= luce scale non presente, 1=luce scale presente-->
+        <light>1</light>
+        <!--key: 0=apri porta non presente, 1=apri porta presente-->
+        <key>1</key>
+        <!-- lista immagini -->
+        <cimg1>imgPE.png</cimg1>
+        <cimg2>btnserratura.png</cimg2>
+        <cimg3>btnlucescale.png</cimg3>
+        <cimg4>arrlf.png</cimg4>
+      </device1>
+    </pagevct>
+    <page0>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <!-- nella seguente pagina sarà possibile avere un solo item per gli -->
+      <!-- id 25, 14, 28, 21, 26 e 27 mentre tre al massimo per gli id 20 -->
+      <id>8</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>8</cid>
+      <descr>impostazioni</descr>
+      <item1>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>25</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>800</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>BEEP</descr>
+        <!-- value: 0 non attivo, 1 attivo-->
+        <value>0</value>
+        <!-- lista immagini -->
+        <cimg1>beepon.png</cimg1>
+        <cimg2>beepoff.png</cimg2>
+      </item1>
+      <item2>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>20</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>801</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>SVEGLIA</descr>
+        <!-- type: contiene il tipo di sveglia: 0 buzzer, 1 diffusione sonora, 2 schedulazione -->
+        <type>0</type>
+        <!-- enabled: la sveglia è attiva 1,  disattivata 0-->
+        <enabled>0</enabled>
+        <!-- alarmSet: codice per il giorno in cui la sveglia deve suonare -->
+        <!-- 0 una volta, 1 sempre, 2 lun-ven, 3 sab-dom -->
+        <alarmSet>1</alarmSet>
+        <!-- testi da mostrare per alarmSet -->
+        <txt1>una volta</txt1>
+        <txt2>sempre</txt2>
+        <txt3>lun-ven</txt3>
+        <txt4>sab-dom</txt4>
+        <!-- hour: ora in cui la sveglia deve suonare 0..23 -->
+        <hour>08</hour>
+        <!-- minute: minuto in cui la sveglia deve suonare 0..59 -->
+        <minute>40</minute>
+        <!-- lista immagini -->
+        <cimg1>svegliaon.png</cimg1>
+        <cimg2>svegliaoff.png</cimg2>
+        <cimg3>btninfo.png</cimg3>
+      </item2>
+      <item3>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>14</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>802</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>OROLOGIO</descr>
+        <!-- lista immagini -->
+        <cimg1>btninfo.png</cimg1>
+      </item3>
+      <item4>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>28</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>803</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>CONTRASTO</descr>
+        <!-- value: valore del contrasto 0-255 -->
+        <value>0</value>
+        <!-- lista immagini -->
+        <cimg1>btninfo.png</cimg1>
+      </item4>
+      <item5>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>21</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>804</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>TARATURA</descr>
+        <!-- lista immagini -->
+        <cimg1>btninfo.png</cimg1>
+      </item5>
+      <item6>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>26</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>805</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>PASSWORD</descr>
+        <!-- value: vuoto se disattiva, con il valore password (max 5 caratteri se attiva, ammessi solo caratteri numerici 0..9) -->
+        <value />
+        <!-- 1 se attiva, 0 se disattiva-->
+        <enabled>0</enabled>
+        <!-- lista immagini -->
+        <cimg1>pswon.png</cimg1>
+        <cimg2>pswoff.png</cimg2>
+        <cimg3>btnpswchg.png</cimg3>
+      </item6>
+      <item7>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>27</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>806</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>VERSIONE</descr>
+        <!-- lista immagini -->
+        <cimg1>btninfo.png</cimg1>
+      </item7>
+    </page0>
+  </displaypages>
+  <!-- Nota: Attualmente la foglia impianto rimarrà in realtà sempre vuota poiché il dispositivo -->
+  <!-- richiederà ogni volta lo stato, si è solo su livello 3 e non ci si appoggerà al sinottico -->
+  <impianto>
+    <!-- max length 40; digit,* -->
+    <!-- In questo campo vanno inseriti separati da un asterisco gli indirizzi (I3 e I4) delle -->
+    <!-- interfacce di livello tra Lev 3 e Lev 4 delle interfacce di livello tra Lev 3 e Lev 4 -->
+    <livello4>27*14</livello4>
+    <!-- max length 30; digit,#,* -->
+    <!-- in questi campi vanno elencati gli attuatori che sono in modalità PUL e/o che hanno configurato un Gruppo (max 3) e/o che sono dimmer -->
+    <!-- alcuni esempi (attenzioni i codici inseriti non sono protocollo open) -->
+    <!-- attuatore posto su livello 3, di indirizzo 11 (A=1, PL=1), in modalità PUL (15), con gruppo 2 configurato, non dimmer -->
+    <disp1>11#3*15*2,0</disp1>
+    <!-- attuatore di indirizzo 23 su livello 3 in modalità PUL appartenente a gruppo 1, dimmer -->
+    <disp2>23#3*15*2,1</disp2>
+    <!-- attuatore di indirizzo 11 su livello 4 via interfaccia di ind 27, PUL, gruppi 1 e 3 configurati, dimmer -->
+    <disp3>11#4#27*15*1*3,1</disp3>
+    <!-- attuatore di in 73 su livello 4 via interfaccia di ind 27, no PUL (0), gruppi 2, 7,8, non dimmer -->
+    <disp4>73#4#27*0*2*7*8, 0</disp4>
+    <!-- attuatore di ind 15 su livello 4 via interfaccia 14, no PUL, appartenente a gruppo 1, non dimmer -->
+    <disp5>15#4#14*0*1,0</disp5>
+    <!-- attuatore dimmer di indirizzo 87 su livello 3 -->
+    <disp6>87#3,1</disp6>
+    <!-- attuatore dimmer di indirizzo 87 su livello 4 via interfaccia 27 -->
+    <disp7>87#4#27,1</disp7>
+    <!-- dove XY = indirizzo del dispositivo -->
+    <!-- LIV = livello di appartenenza del dispositivo -->
+    <!-- M = valore del configuratore MOD (15=PUL) -->
+    <!-- INTERFACCIA = indirizzo dell'interfaccia SCS/SCS sul livello del dispositivo -->
+    <!-- g1*g2*g3 = lista dei gruppi (ognuno separato da '*' e max 3) configurato sul dispositivo -->
+    <!-- D=0 no dimmer; D=1 dimmer -->
+    <dispn>XY#LIV#INTERFACCIA*M*g1*g2*g3,D</dispn>
+  </impianto>
+</configuratore>
