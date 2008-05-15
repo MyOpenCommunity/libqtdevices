@@ -592,7 +592,6 @@ void scenEvo::hide()
  ****************************************************************/	
 scenSched::scenSched(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *aen, char *adis, char *astart, char *astop) : bann4But( parent, name )
 {
-	char pressIconName[100];
 	action_enable = aen;
 	action_disable = adis;
 	action_start = astart;

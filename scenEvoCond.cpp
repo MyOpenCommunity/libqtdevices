@@ -182,10 +182,6 @@ void scenEvo_cond_h::set_h(const char *_h)
 {
     *h = _h;
     qDebug("scenEvo_cond_h::set_h : %s", h->ascii());
-#if 0
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
-    setupTimer();
-#endif
 }
 
 void scenEvo_cond_h::set_m(const char *_m)
@@ -203,10 +199,6 @@ void scenEvo_cond_h::set_s(const char *_s)
 {
     *s = _s;
     qDebug("scenEvo_cond_h::set_s : %s", s->ascii());
-#if 0
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
-    setupTimer();
-#endif
 }
 
 const char *scenEvo_cond_h::getDescription(void)
@@ -337,11 +329,6 @@ void scenEvo_cond_h::SetIcons()
 	    delete Icon2;
     } else
 	but[A8_BUTTON_INDEX] = NULL;
-#if 0
-    cond_time = new QDateTime(QDateTime::currentDateTime());
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
-    ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
-#endif
     ora->setGeometry(40, 140, 160, 50);
     ora->setFrameStyle( QFrame::Plain );
     ora->setLineWidth(0);    
@@ -439,12 +426,8 @@ void scenEvo_cond_h::setupTimer()
     // According to QT doc, if timer is running, it is stopped and restarted
     // with new interval. Otherwise it is just started.
     qDebug("(re)starting timer with interval = %d", secsto * 1000);
-#if 0
-    timer->changeInterval(secsto * 1000);
-#else
     timer->stop();
     timer->start(secsto * 1000, true);
-#endif
 }
 
 void scenEvo_cond_h::Apply()
@@ -633,8 +616,6 @@ void scenEvo_cond_d::SetIcons()
 	QFont aFont;
     qDebug("scenEvo_cond_d::SetIcons()");
     QPixmap* Icon1 = new QPixmap();
-    QPixmap* Icon2 = NULL;
-    char iconName[MAX_PATH];
     for(int i=0; i<6; i++)
 	qDebug("icon[%d] = %s", i, getImg(i));
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
@@ -709,12 +690,6 @@ void scenEvo_cond_d::SetIcons()
 	dc->setGeometry(40,140,160,50);
 	connect(dc, SIGNAL(richStato(char *)), this, 
 		SIGNAL(richStato(char *)));
-#if 0
-	// Non mandiamo + segnali quando la condizione sul device e` verificata
-	// E` solo la condizione oraria che manda un segnale. Questa 
-	// condizione dice solo se e` verificata o meno con isTrue()
-	connect(dc, SIGNAL(verificata()), this, SIGNAL(verificata()));
-#endif
 	connect(this, SIGNAL(frame_available(char *)),
 		dc, SLOT(handle_frame(char *)));
 	dc->set_where(*where);
@@ -819,7 +794,7 @@ int device_condition::get_condition_value(void)
     return cond_value;
 }
 
-int device_condition::set_condition_value(int v)
+void device_condition::set_condition_value(int v)
 {
     if(v > get_max())
 	v = get_max();
@@ -828,7 +803,7 @@ int device_condition::set_condition_value(int v)
     cond_value = v;
 }
 
-int device_condition::set_condition_value(QString s)
+void device_condition::set_condition_value(QString s)
 {
     qDebug("device_condition::set_condition_value (%s)", s.ascii());
     set_condition_value(s.toInt());
@@ -956,11 +931,6 @@ void device_condition::set_where(QString s)
     dev->set_where(s);
     // Aggiunge il nodo alla cache
     dev = btouch_device_cache.add_device(dev) ;
-#if 0
-    // Pass frames on to device for analysis
-    connect(this, SIGNAL(frame_available(char *)), 
-	    dev, SLOT(frame_rx_handler(char *)));
-#endif
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
@@ -1065,7 +1035,7 @@ int device_condition_light_status::get_max()
     return 1;
 }
 
-int device_condition_light_status::set_condition_value(QString s)
+void device_condition_light_status::set_condition_value(QString s)
 {
     qDebug("device_condition_light_status::set_condition_value");
     int v = 0;
@@ -1075,7 +1045,7 @@ int device_condition_light_status::set_condition_value(QString s)
 	v = 0;
     else 
 	qDebug("Unknown condition value %s for device_condition_light_status", s.ascii());
-    return device_condition::set_condition_value(v);
+    device_condition::set_condition_value(v);
 }
 
 void device_condition_light_status::get_condition_value(QString& out)
@@ -1292,18 +1262,9 @@ void device_condition_dimming::set_current_value_max(int max)
     current_value_max = max;
 }
 
-#if 0
-void device_condition_dimming::Draw()
+void device_condition_dimming::set_condition_value(QString s)
 {
-    QLCDNumber *l = (QLCDNumber *)frame;
-    l->display(get_current_value());
-    show();
-}
-#endif
-
-int device_condition_dimming::set_condition_value(QString s)
-{
-    return device_condition::set_condition_value(s.toInt() * 10);
+    device_condition::set_condition_value(s.toInt() * 10);
 }
 
 void device_condition_dimming::get_condition_value(QString& out)
@@ -1322,11 +1283,10 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
     //device_status::type t = ds->get_type();
     int trig_v_min = get_condition_value_min();
     int trig_v_max = get_condition_value_max();
-    int trig_v = -1;
     stat_var curr_lev(stat_var::LEV);
     stat_var curr_speed(stat_var::SPEED);
     stat_var curr_status(stat_var::ON_OFF);
-    int val10;
+
     QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
     dsi->toFirst();
     device_status *ds;
@@ -1582,9 +1542,9 @@ void device_condition_dimming_100::set_current_value_max(int max)
     current_value_max = max;
 }
 
-int device_condition_dimming_100::set_condition_value(QString s)
+void device_condition_dimming_100::set_condition_value(QString s)
 {
-    return device_condition::set_condition_value(s.toInt() * 10);
+    device_condition::set_condition_value(s.toInt() * 10);
 }
 
 void device_condition_dimming_100::get_condition_value(QString& out)
@@ -1745,30 +1705,12 @@ int device_condition_volume::get_max()
     return 31;
 }
 
-#if 0
-int device_condition_volume::get_step()
-{
-    return 10;
-}
-#endif
 
-int device_condition_volume::set_condition_value(QString s)
+void device_condition_volume::set_condition_value(QString s)
 {
-#if 0
-    // Mail di agresta del 29/05/2006
-    static const int trans_table[] = 
-    { 0, 3, 6, 9, 12, 15, 19, 22, 25, 28, 31 };
-    int v = s.toInt()/get_step() - 1;
-    qDebug("device_condition_volume::set_condition_value()");
-    if(v < 0)
-	v = 0;
-    if(v > 10)
-	v = sizeof(trans_table) / sizeof(v);
-#endif
-    // FIXME: USE device_condition::set_condition_value
     int v = s.toInt();
     qDebug("setting condition value to %d", v);
-    return device_condition::set_condition_value(v);
+    device_condition::set_condition_value(v);
 }
 
 void device_condition_volume::get_condition_value(QString& out)
@@ -1996,11 +1938,11 @@ void device_condition_temp::Draw()
     ((QLabel *)frame)->setText(tmp);
 }
 
-int device_condition_temp::set_condition_value(QString s)
+void device_condition_temp::set_condition_value(QString s)
 {
     bool neg = s[0] == '1';
     int val = (s.right(3)).toInt();
-    return device_condition::set_condition_value(neg ? -val : val);
+    device_condition::set_condition_value(neg ? -val : val);
 }
 
 void device_condition_temp::get_condition_value(QString& out)

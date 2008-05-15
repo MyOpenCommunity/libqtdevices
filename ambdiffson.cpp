@@ -24,7 +24,7 @@
 ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char* IconaSx, char* IconaDx, char *icon, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
 : bannBut2Icon( parent, name )
 {
-	qDebug("ambDiffSon::ambDiffSon() : %s %s %s %s", indirizzo, IconaSx, IconaDx, icon);
+	qDebug("ambDiffSon::ambDiffSon() : %s %s %s %s", (char *)indirizzo, IconaSx, IconaDx, icon);
 	char zoneIcon[50];
 	getAmbName(IconaSx, zoneIcon, (char *)indirizzo, sizeof(zoneIcon));
 	qDebug("zoneIcon = %s", zoneIcon);
@@ -69,7 +69,7 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 				QStringList qsl = QStringList::split(QChar(','), *i);
 				QPtrList<QString> *indirizzi = new QPtrList<QString>();
 				indirizzi->setAutoDelete(true);
-				for(int j=0; j<qsl.count(); j++)
+				for(unsigned int j=0; j<qsl.count(); j++)
 					indirizzi->append(new QString(qsl[j]));
 				diffson->addItemU(am->tipo, *am->descr->at(0), indirizzi, icons, am->modo);
 				++(*lii);
@@ -165,7 +165,7 @@ bool ambDiffSon::isDraw()
 insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *indirizzo,char* Icona1,char* Icona2, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
 : bannButIcon( parent, (char *)names->at(0)->ascii() )
 {
-	qDebug("insAmbDiffSon::insAmbDiffSon() : %s %s %s", indirizzo, Icona1, Icona2);
+	qDebug("insAmbDiffSon::insAmbDiffSon() : %s %s %s", (char *)indirizzo, Icona1, Icona2);
 	SetIcons(Icona1, Icona2);
 	Draw();
 	//setAddress(indirizzo);
@@ -207,7 +207,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 				QStringList qsl = QStringList::split(QChar(','), *i);
 				QPtrList<QString> *indirizzi = new QPtrList<QString>();
 				indirizzi->setAutoDelete(true);
-				for(int j=0; j<qsl.count(); j++)
+				for(unsigned int j=0; j<qsl.count(); j++)
 					indirizzi->append(new QString(qsl[j]));
 				diffson->addItemU(am->tipo, *am->descr->at(0), 
 						indirizzi,
@@ -240,7 +240,7 @@ void insAmbDiffSon::Draw()
 void insAmbDiffSon::configura()
 {
 	qDebug("insAmbDiffSon::configura()");
-	emit(ambChanged((char *)name(), true, (void *)NULL));
+	emit(ambChanged((char *)name(), true, (char *)NULL));
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
 	qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
 	disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));

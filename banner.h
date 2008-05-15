@@ -382,7 +382,7 @@ public slots:
 	 *  \brief Invoked on open nak reception
 	 */
 	virtual void openNakRx();
-	virtual void ambChanged(char *, bool, void *);
+	virtual void ambChanged(char *, bool, char *);
 	/*!
 	 *  \brief Parent of my parent changed
 	 */

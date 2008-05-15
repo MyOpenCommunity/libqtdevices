@@ -82,16 +82,14 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	qsetpoint = qtemp;
 	secondForeground=QColor(SecondForeground);
 
-	switch (devtype)
+
+	if (devtype == THERMO_4_ZONES || devtype == THERMO_4_ZONES_FANCOIL) 
 	{
-	case THERMO_4_ZONES:
-	case THERMO_4_ZONES_FANCOIL:
 		nascondi(BUT1);
 		nascondi(BUT2);
-		break;
-	// FIXME: could we simply _not_ add these buttons?
-	case SINGLE_PROBE:
-	case EXT_SINGLE_PROBE:
+	}
+	else if (devtype == SINGLE_PROBE || devtype == EXT_SINGLE_PROBE) 
+	{
 		// Hide PLUS/MINUS buttons
 		nascondi(BUT1);
 		nascondi(BUT2);
@@ -102,7 +100,6 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		// Hide Temperature Increment Labels
 		for (int idx=0;idx<7;idx++)
 			texts[idx]->hide();
-		break;
 	}
 
 	val_imp    = 3;

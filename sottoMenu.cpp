@@ -208,9 +208,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		case SORGENTE_MULTIM_MC:
 			elencoBanner.append(new BannerSorgenteMultimediaMC(this, descrizione, (char *)indirizzo, numFrame, IconaSx, IconaDx, icon));
 			break;
-#if 0
-		case AMBIENTE: elencoBanner.append(new ambDiffSon(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, page_item_list_sorgentiMulti));
-#endif
 		case SORGENTE_RADIO : elencoBanner.append(new banradio(this,descrizione ,(char*)indirizzo)); break;
 		case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;
 		case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,descr1,descr2,descr3,descr4,icoEx1,par3)); break;
@@ -453,8 +450,8 @@ banner* sottoMenu::getCurrent()
 }
 
 banner* sottoMenu::getNext()
-{        
-	if (indice==(elencoBanner.count()-1))
+{
+	if (indice==((int)elencoBanner.count()-1))
 		return(elencoBanner.at(0));
 	return(elencoBanner.at(indice+1));
 }
@@ -539,8 +536,7 @@ bool sottoMenu::setGroup(char* chi, char* where, bool* group)
 
 void sottoMenu::setIndex(char* indiriz)
 {
-	int idx;
-	for (idx=0;idx<elencoBanner.count();idx++)
+	for (unsigned int idx=0;idx<elencoBanner.count();idx++)
 	{
 		if (!strcmp(elencoBanner.at(idx)->getAddress(),indiriz))
 		{
@@ -556,8 +552,7 @@ void sottoMenu::setIndex(char* indiriz)
 
 void sottoMenu::mostra_all(char but)
 {
-	int idx;
-	for (idx=0;idx<elencoBanner.count();idx++)
+	for (unsigned int idx=0;idx<elencoBanner.count();idx++)
 	{
 		elencoBanner.at(idx)->mostra(but);
 	}

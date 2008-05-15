@@ -46,7 +46,6 @@ void zonaAnti::setIcons()
 		: bannOnIcons ( parent, name.ascii() )
 {
 	char    pippo[MAX_PATH];
-	char    pluto[MAX_PATH];
 
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");

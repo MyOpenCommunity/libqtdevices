@@ -502,8 +502,8 @@ attuatAutomTemp::attuatAutomTemp( QWidget *parent,const char *name,char* indiriz
 	static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "15'", "30''" } ;
 	tempi = new QPtrList<QString>;
 	tempi->clear();
-	int nt = lt->count() ? lt->count() : sizeof(t) / sizeof(char *) ;
-	for(int i = 0; i < nt ; i++) {
+	unsigned int nt = lt->count() ? lt->count() : sizeof(t) / sizeof(char *) ;
+	for(unsigned int i = 0; i < nt ; i++) {
 		QString *s;
 		if(lt->count() && i < lt->count())
 			s = lt->at(i);
@@ -654,8 +654,7 @@ void attuatAutomTemp::assegna_tempo_display()
 
 attuatAutomTemp::~attuatAutomTemp()
 {
-	int i;
-	for(i=0; i<tempi->count(); i++)
+	for(unsigned int i=0; i<tempi->count(); i++)
 		delete tempi->at(i);
 	delete tempi;
 }
@@ -873,7 +872,6 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	stat_var curr_mm(stat_var::MM);
 	stat_var curr_ss(stat_var::SS);
 	stat_var curr_status(stat_var::ON_OFF);
-	int val10;
 	bool aggiorna = false;
 	qDebug("attuatAutomTempNuovoF::status_changed()");
 	QPtrListIterator<device_status> *dsi = 
@@ -933,6 +931,8 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 				qDebug("tempo = %d %d %d", hnow, mnow, snow);
 				aggiorna = true;
 				break;
+			default:
+				qDebug("WARNING: tipo non previsto");
 		}
 		++(*dsi);
 	}

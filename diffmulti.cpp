@@ -50,7 +50,7 @@ dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
 	descr = new QPtrList<QString>(*((QPtrList<QString> *)d));
 	qDebug("dati_ampli_multi: descr = %s", descr->at(0)->ascii());
 	if(t == AMPLIFICATORE) {
-		qDebug("Amplificatore (%s)", ind);
+		qDebug("Amplificatore (%s)", (char *)ind);
 		indirizzo = new(char[20]);
 		memcpy(indirizzo, ind, 20);
 	} else {
@@ -111,7 +111,6 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 	qDebug("Amplificatore (%s)", (char *)indirizzo);
 	qDebug("%d elementi in descrizioni", descrizioni->count());
 
-	ambDiffSon *a;
 	banner *b;
 	switch (tipo)
 	{
@@ -136,7 +135,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			sorgenti->addItemU(tipo, *descrizioni->at(0), (char *)indirizzo, icon_names, 0, numFrame);
 			b = sorgenti->getLast();
 			connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
-			connect(sorgenti, SIGNAL(ambChanged(char *, bool, void *)),b, SLOT(ambChanged(char *, bool, void *)));
+			connect(sorgenti, SIGNAL(ambChanged(char *, bool, char *)),b, SLOT(ambChanged(char *, bool, char *)));
 			connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 			connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
 			connect(b,SIGNAL(sendInit(char*)),this, SIGNAL(sendInit(char*)));
@@ -159,7 +158,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				banner *b;
 				if(tipo == AMBIENTE) 
 				{
-					b = new ambDiffSon(this, descrizioni->at(0)->ascii(), indirizzo,
+					b = new ambDiffSon(this, descrizioni->at(0)->ascii(), (char *)indirizzo,
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
 						(char *)safeAt(icon_names, 2)->ascii(),
 						datimmulti, ds, sorgenti, this);
@@ -182,7 +181,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
 				connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
 				connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
-				connect(elencoBanner.getLast(), SIGNAL(ambChanged(char *, bool, void *)), sorgenti, SIGNAL(ambChanged(char *, bool, void *)));
+				connect(elencoBanner.getLast(), SIGNAL(ambChanged(char *, bool, char *)), sorgenti, SIGNAL(ambChanged(char *, bool, char *)));
 				if(tipo == AMBIENTE) 
 					sorgenti->addAmb((char *)indirizzo);
 				datimmulti->clear();

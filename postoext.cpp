@@ -25,7 +25,6 @@ call_notifier *postoExt::unknown_notifier = NULL;
 
 postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown, char* _txt1, char* _txt2, char* _txt3) : bann4tasLab( parent, name )
 {
-	char pressIconName[100];
 	where = _where;
 	descr = name;
 	light = !strcmp(_light, "1");

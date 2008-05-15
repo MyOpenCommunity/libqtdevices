@@ -128,7 +128,6 @@ void dimmer::status_changed(QPtrList<device_status> sl)
 	stat_var curr_speed(stat_var::SPEED);
 	stat_var curr_status(stat_var::ON_OFF);
 	stat_var curr_fault(stat_var::FAULT);
-	int val10;
 	bool aggiorna = false;
 	qDebug("dimmer10::status_changed()");
 	QPtrListIterator<device_status> *dsi = 
@@ -337,7 +336,7 @@ void dimmer100:: Diminuisci()
 	//if(!isActive()) return;
 	openwebnet msg_open;
 	char cosa[100];
-	sprintf(cosa, "31#5#255", speed);
+	sprintf(cosa, "31#5#255");
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("1", cosa ,getAddress(),"");
 	emit sendFrame(msg_open.frame_open);
@@ -349,7 +348,6 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
 	stat_var curr_speed(stat_var::SPEED);
 	stat_var curr_status(stat_var::ON_OFF);
 	stat_var curr_fault(stat_var::FAULT);
-	int val10;
 	bool aggiorna = false;
 	qDebug("dimmer100::status_changed()");
 	QPtrListIterator<device_status> *dsi = 

@@ -91,7 +91,6 @@ void banradio::status_changed(QPtrList<device_status> sl)
 	stat_var curr_staz(stat_var::STAZ);
 	stat_var curr_rds0(stat_var::RDS0);
 	stat_var curr_rds1(stat_var::RDS1);
-	int val10;
 	bool aggiorna = false;
 	qDebug("bannradio::status_changed()");
 	QPtrListIterator<device_status> *dsi = 
@@ -452,7 +451,7 @@ void sorgenteMultiRadio::attiva()
 void sorgenteMultiRadio::ambChanged(const QString & ad, bool multi, void *indamb)
 {
 	// FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
-	qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
+	qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad.ascii(), multi, (char *)indamb);
 	if(!multi) {
 		multiamb = false;
 		indirizzo_ambiente = QString((const char *)indamb).toInt();
