@@ -37,8 +37,8 @@
 #include "device_cache.h"
 #include "openclient.h"
 #include "versio.h"
-#include "termoregolaz.h"
 #include "tastiera.h"
+#include "thermalmenu.h"
 
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
@@ -204,14 +204,6 @@ void BtMain::hom()
 		qDebug("finito parsing");
 		delete handler2;
 		delete xmlFile;
-		// TODO: [LUCA] finito il parsing, cancella termo e ricrearlo con la nuova classe
-		// tutte le informazioni relative a termo vanno lette da app_config
-		//
-		// FIXME: Ricordarsi di fare le connessioni:
-		// QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(showFullScreen()));
-		// QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(show()));
-		// override di termo completato
-
 		qApp->setMainWidget( Home);
 		hide();
 	}

@@ -21,7 +21,7 @@ class sottoMenu;
 class diffSonora;
 class diffmulti;
 class antintrusione;
-class termoregolaz;
+class ThermalMenu;
 class versio;
 class BtMain;
 class ambDiffSon;
@@ -78,7 +78,12 @@ extern inline QString *safeAt(QPtrList<QString> &list, unsigned int idx)
 class xmlconfhandler : public QXmlDefaultHandler
 {
 	public:
-		xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu *illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz* termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
+		xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL,
+				sottoMenu**videocitofonia=NULL, sottoMenu *illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL,
+				sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, ThermalMenu* termo=NULL, diffSonora**difSon=NULL,
+				diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL,
+				Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,
+				QColor* fg1=NULL,QColor* fg2=NULL);
 
 		~xmlconfhandler();
 		/*!
@@ -161,7 +166,7 @@ class xmlconfhandler : public QXmlDefaultHandler
 		sottoMenu *illumino, **scenari, **carichi, **imposta, **automazioni, **sched,
 			  **scenari_evoluti, **videocitofonia;
 		diffmulti **dm;
-		termoregolaz *termo;
+		ThermalMenu *termo;
 		diffSonora **difSon;
 		antintrusione** antintr;
 		QWidget ** pagDefault;

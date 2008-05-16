@@ -22,7 +22,7 @@
 #include "genericfunz.h"
 #include "versio.h"
 #include "antintrusione.h"
-#include "termoregolaz.h"
+#include "thermalmenu.h"
 #include "btmain.h"
 #include "scenevocond.h"
 #include "openclient.h"
@@ -32,9 +32,9 @@ unsigned char tipoData=0;
 /*******************************************
  *
  *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu *i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz* t,\
-		diffSonora**dS, diffmulti**_dm, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG,\
-		QColor* bg, QColor* fg1, QColor *fg2)
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu *i, sottoMenu**s,
+		sottoMenu**c, sottoMenu**im,  sottoMenu**a, ThermalMenu *t, diffSonora**dS, diffmulti**_dm, antintrusione** ant,
+		QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG, QColor* bg, QColor* fg1, QColor *fg2)
 {
 	home=h;
 	specPage=sP;
@@ -271,9 +271,9 @@ void *xmlconfhandler::computeAddress()
 	return pnt;
 }
 
-void xmlconfhandler::addItemU(sottoMenu *pageAct, void *address)
+void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 {
-	pageAct->addItemU ((char)page_item_id, page_item_descr,
+	sm->addItemU ((char)page_item_id, page_item_descr,
 			address,
 			*page_item_list_img,
 			par1,  par2, SecondForeground,
@@ -453,7 +453,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						case TERMOREGOLAZIONE:
 							pageAct=termo;
 							addr = computeAddress();
-							addItemU(pageAct, addr);
+							//addItemU(pageAct, addr);
 							break;
 
 						case  SCENARI:
@@ -1023,17 +1023,16 @@ bool xmlconfhandler::characters( const QString & qValue)
 							*automazioni = new sottoMenu (NULL,"AUTOM");
 							(*automazioni)->setBGColor(Background);
 							(*automazioni)->setFGColor(Foreground);
-							//              automazioni->hide();
 							pageAct=*automazioni;
-							//				qWarning("AUTOMAZIONE new.- . . .- -. -. .-");
 							break;
+
 						case ILLUMINAZIONE:
 							illumino = new sottoMenu (NULL,"ILLUMINO");
 							illumino->setBGColor(Background);
 							illumino->setFGColor(Foreground);
 							pageAct=illumino;
-							//				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");
 							break;
+
 						case DIFSON_MULTI:
 							*dm = new diffmulti(NULL, "DIFSON_MULTI");
 							(*dm)->setBGColor(Background);
@@ -1044,82 +1043,74 @@ bool xmlconfhandler::characters( const QString & qValue)
 							page_item_where_m = "";
 							page_item_list_img_m->clear();
 							break;
+
 						case SCENARI:
 							*scenari = new sottoMenu (NULL,"SCENARI");
 							(*scenari)->setBGColor(Background);
 							(*scenari)->setFGColor(Foreground);
-							//              scenari->hide();
 							pageAct=*scenari;
-							//				qWarning("SCENARI new.- .- -. -. . -. -");
 							break;
+
 						case CARICHI:
 							*carichi = new sottoMenu (NULL,"CARICHI");
 							(*carichi)->setBGColor(Background);
 							(*carichi)->setFGColor(Foreground);
-							//              carichi->hide();
 							pageAct=*carichi;
-							//				qWarning("CARICHI new-. -. .- .-");
 							break;
+
 						case DIFSON:
 							*difSon = new diffSonora (NULL,"DIFSON");
 							(*difSon)->setBGColor(Background.red(),Background.green(),Background.blue());
 							(*difSon)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
-							//              difSon->hide();
 							pageAct=*difSon;
-							//				qWarning("DIFSON new.- .- .- .--. ");
 							break;
+
 						case ANTIINTRUSIONE:
 							*antintr = new antintrusione(NULL,"ANTI");
 							(*antintr)->setBGColor(Background.red(),Background.green(),Background.blue());
 							(*antintr)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
-							//              automazioni->hide();
 							pageAct=*antintr;
-							//				qWarning("ANTIINTRUSIONE new.- - ..- -.  .- .- .-");
 							break;
+
 						case TERMOREGOLAZIONE:
-							termo = new termoregolaz( NULL,"TERMO", 4, MAX_WIDTH, MAX_HEIGHT,1);
+							termo = new ThermalMenu(NULL, "TERMO");
 							termo->setBGColor(Background);
 							termo->setFGColor(Foreground);
-							//              termo->hide();
 							pageAct=termo;
-							//				qWarning("TERMOREGOLAZIONE new.- .- - .. -. -. -. . ");
 							break;
+
 						case IMPOSTAZIONI:
 							*imposta = new sottoMenu (NULL,"IMPOSTA");
 							(*imposta) ->setBGColor(Background);
 							(*imposta) ->setFGColor(Foreground);
 							QObject::connect(*imposta,SIGNAL(setPwd(bool,char*)), BtM, SLOT (setPwd(bool,char*)));
-							//              imposta->hide();
 							pageAct=*imposta;
-							//				qWarning("IMPOSTAZIONI new.- .- . -. -.- .- -. .-.");
 							break;
+
 						case SCENARI_EVOLUTI:
 							*scenari_evoluti = new sottoMenu (NULL,"SCENARI_EVOLUTI");
 							(*scenari_evoluti) ->setBGColor(Background);
 							(*scenari_evoluti) ->setFGColor(Foreground);
 							pageAct=*scenari_evoluti;
-							//				qWarning("SCENARI_EVOLUTI new.- .- . -. -.- .- -. .-.");
 							break;
+
 						case VIDEOCITOFONIA:
 							*videocitofonia = new sottoMenu (NULL, "VIDEOCITOFONIA");
 							(*videocitofonia)->setBGColor(Background);
 							(*videocitofonia)->setFGColor(Foreground);
 							pageAct=*videocitofonia;
 							break;
+
 						case SPECIAL:
 							qDebug("!");
 							(*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
-							//              specPage ->hide();
 							pageAct=*specPage;
 							(*specPage) ->setBGColor(Background.red(),Background.green(),Background.blue());
 							(*specPage) ->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
 							(*specPage) ->addButton(0,260,ICON_FRECCIA_SX ,BACK);
-							//				qWarning("SPECIAL new.- .- . -.-  .- .-");
 							break;
 					} // switch (page_id)
 					pageAct->hide();
-					//	  pageAct->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-					//	  pageAct->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 					if ( (idPageDefault==page_id) && (hompage_isdefined) )
 						*pagDefault=pageAct;
 
