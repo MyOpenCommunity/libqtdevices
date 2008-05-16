@@ -161,7 +161,7 @@ int xClock,yClock,xTemp,yTemp;
   char cosa[10];
   char dove[10];
   char tipoSpecial;
-  unsigned char tempCont;
+  unsigned int tempCont;
   BtLabel *descrizione, *descrTemp[3];
 };
 

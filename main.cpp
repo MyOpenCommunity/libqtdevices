@@ -142,11 +142,7 @@ int main( int argc, char **argv )
 
 	qDebug("Start BtMain");
 
-	#if 0
-	BtMain mainprogr(NULL,"MAIN PROGRAM",&a);
-	#else
 	BTouch = new BtMain(NULL,"MAIN PROGRAM",&a);
-	#endif
 
 	return a.exec();
 }

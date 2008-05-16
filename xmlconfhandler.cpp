@@ -998,20 +998,19 @@ bool xmlconfhandler::characters( const QString & qValue)
 			*/
 			else if (CurTagL3.startsWith("page"))
 			{
-				if(!CurTagL3.compare("pagevct") && 
-						!CurTagL4.compare("unknown"))
+				if ((CurTagL3 == "pagevct") && (CurTagL4 == "unknown"))
 					page_item_unknown = qValue;
 
-				if(!CurTagL3.compare("pagevct") && CurTagL4.startsWith("txt"))
+				if ((CurTagL3 == "pagevct") && (CurTagL4.startsWith("txt")))
 				{
-					if(!page_item_txt1.compare(""))
+					if (page_item_txt1 == "")
 						page_item_txt1 = qValue;
-					else if(!page_item_txt2.compare(""))
+					else if (page_item_txt2 == "")
 						page_item_txt2 = qValue;
 					else
 						page_item_txt3 = qValue;
 				}
-				if (!CurTagL4.compare("id"))
+				if (CurTagL4 == "id")
 				{
 					QWidget* pageAct=NULL;
 					page_id = qValue.toInt( &ok, 10 );
