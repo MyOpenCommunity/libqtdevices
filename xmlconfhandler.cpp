@@ -10,6 +10,7 @@
 
 #include <qobject.h>
 #include <qtimer.h>
+#include <qregexp.h>
 
 #include "xmlconfhandler.h"
 #include "main.h"
@@ -919,6 +920,40 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	return TRUE;
 }
 
+QDomNode getThermRootNode()
+{
+	QDomElement root = configuration.documentElement();
+
+	QDomNode n = root.firstChild();
+	while (!n.isNull())
+	{
+		if (n.nodeName() == "displaypages")
+			break;
+		n = n.nextSibling();
+	}
+
+	n = n.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(QRegExp("page\\d\\d?")))
+		{
+			QDomNode child = n.firstChild();
+			while (child.nodeName() != "id")
+			{
+				child = child.nextSibling();
+			}
+			
+			QDomElement e = child.toElement();
+			if (e.text() == "5" || e.text() == "15")
+			{
+				return n;
+			}
+		}
+		n = n.nextSibling();
+	}
+}
+	
+
 /*******************************************
  *
  * Letto nuovo valore
@@ -1015,6 +1050,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 					QWidget* pageAct=NULL;
 					page_id = qValue.toInt( &ok, 10 );
 					qDebug("INSERTING PAGE: %s",pagTesti[page_id-1]);
+					QDomNode n;
 
 
 					switch (page_id)
@@ -1073,7 +1109,16 @@ bool xmlconfhandler::characters( const QString & qValue)
 							break;
 
 						case TERMOREGOLAZIONE:
-							termo = new ThermalMenu(NULL, "TERMO");
+							n = getThermRootNode();
+							termo = new ThermalMenu(NULL, "TERMO", n);
+							termo->setBGColor(Background);
+							termo->setFGColor(Foreground);
+							pageAct=termo;
+							break;
+
+						case TERMOREG_MULTI_PLANT:
+							n = getThermRootNode();
+							termo = new ThermalMenu(NULL, "TERMO", n);
 							termo->setBGColor(Background);
 							termo->setFGColor(Foreground);
 							pageAct=termo;

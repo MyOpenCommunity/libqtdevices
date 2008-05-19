@@ -14,6 +14,8 @@
 #include "propertymap.h"
 #include "propertymap_xml.h"
 
+#include <qdom.h>
+
 /****************************************************************
  ** ICONS LIBRARY
  ****************************************************************/
@@ -48,6 +50,8 @@ extern IconDispatcher icons_library;
  *  to open conf.xml and read xml tags.
  */
 extern PropertyMap app_config;
+
+extern QDomDocument configuration;
 
 
 /****************************************************************
@@ -164,6 +168,7 @@ enum pagSecLiv{
 	VIDEOCITOFONIA=11,
 	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
+	TERMOREG_MULTI_PLANT=15                       /*!< Thermoregulation system with one or more 4-zones plants */
 };
 
 

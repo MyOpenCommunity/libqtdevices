@@ -5,12 +5,11 @@
  * All rights reserved.
  * -->
  *
- * \brief  TODO: briefly describe module 
+ * \brief  A class to handle thermal regulation menu
  *
  *  TODO: detailed description (optional) 
  *
- * \author xxxx
- * \author xxxx
+ * \author Luca Ottaviano
  */
 
 #ifndef BTOUCH_THERMALMENU_H
@@ -18,12 +17,19 @@
 
 #include "sottomenu.h"
 
+#include <qdom.h>
+
 class ThermalMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	ThermalMenu(QWidget *parent, const char *name);
+	ThermalMenu(QWidget *parent, const char *name, QDomNode n);
+private:
+	void addItems();
+	void createPlantMenu();
+	void addBanners();
 
+	QDomNode root;
 
 
 

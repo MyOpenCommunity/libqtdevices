@@ -9,18 +9,18 @@
  ****************************************************************/
 
 #include "btmain.h"
-#include <qapplication.h>
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
 #include "xmlvarihandler.h"
-#include <signal.h>
+#include "main.h"
 
 #define	TIMESTAMP
 #ifdef TIMESTAMP
 #include <qdatetime.h>
 #endif
 
-#include "main.h"
+#include <qapplication.h>
+#include <signal.h>
 
 /*******************************************
  ** Instance global object to handle icons
@@ -32,6 +32,13 @@ IconDispatcher icons_library;
  ** Instance global object to handle conf.xml
  *******************************************/
 PropertyMap app_config;
+
+/*******************************************
+ * Instance DOM global object to handle
+ * configuration. This will eventually
+ * replace app_config
+ * ****************************************/
+QDomDocument configuration;
 
 
 /*******************************************
@@ -103,6 +110,15 @@ int main( int argc, char **argv )
 
 	// load configuration from conf.xml to app_config
 	propertyMapLoadXML( app_config, MY_FILE_USER_CFG_DEFAULT );
+
+	QFile file(MY_FILE_USER_CFG_DEFAULT);
+
+	if (!configuration.setContent(&file))
+	{
+		file.close();
+		qFatal("Error in configuration file, exiting");
+	}
+	file.close();
 	
 	xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
 	xmlFile = new QFile(My_File_Cfg);
