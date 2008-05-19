@@ -12,7 +12,7 @@
 
 #include "icondispatcher.h"
 #include "propertymap.h"
-#include "propertymap_xml.h"
+//#include "propertymap_xml.h"
 
 /****************************************************************
  ** ICONS LIBRARY
