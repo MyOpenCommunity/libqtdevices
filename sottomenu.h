@@ -306,6 +306,7 @@ signals:
 		void 	svuota();
 		void 	show();
 	protected:
+		void connectLastBanner();
 		QPtrList<banner> elencoBanner;
 		QTimer* iniTim;
 		int	indice, indicold;

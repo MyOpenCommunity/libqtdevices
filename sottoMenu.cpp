@@ -289,20 +289,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 			qDebug("********** sottoMenu::addItem(): unknown item type!!! ************\n");
 			return 0;
 	}
-	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));
-	connect(this, SIGNAL(parentChanged(QWidget *)),
-			elencoBanner.getLast(), SLOT(grandadChanged(QWidget *)));
-	connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
-	connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , SIGNAL(freeze(bool)));
-	connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
-	connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
-	//connect( this , SIGNAL(hide()), elencoBanner.getLast(), SIGNAL(hide()));
-
-	//     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez()));
-	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));
+	this->connectLastBanner();
 
 	elencoBanner.getLast()->SetTextU( qdescrizione );
 	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
@@ -320,6 +307,21 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 
 	//     draw();
 	return(1);
+}
+
+void sottoMenu::connectLastBanner()
+{
+	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));
+	connect(this, SIGNAL(parentChanged(QWidget *)),
+			elencoBanner.getLast(), SLOT(grandadChanged(QWidget *)));
+	connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
+	connect(elencoBanner.getLast(), SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
+	connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
+	connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
+	connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this, SIGNAL(svegl(bool)));
+	connect(this, SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
+	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
+	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 }
 
 void sottoMenu::addItem(banner *b)
@@ -345,12 +347,13 @@ void sottoMenu::addItem(banner *b)
 	elencoBanner.getLast()->setFGColor(foregroundColor());
 	// BAH
 	//elencoBanner.getLast()->setId(tipo);
-	for (int idx=elencoBanner.count()-2;idx>=0;idx--)
+	for (int idx = elencoBanner.count() - 2; idx >= 0; --idx)
 	{
-		if (elencoBanner.at(idx)->getId()==tipo)
+		if (elencoBanner.at(idx)->getId() == tipo)
 		{
-			elencoBanner.getLast()->setSerNum(elencoBanner.at(idx)->getSerNum()+1);
-			idx=-1;
+			elencoBanner.getLast()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
+			//idx = -1;
+			break;
 		}
 	}
 }

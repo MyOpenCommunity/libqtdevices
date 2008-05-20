@@ -13,7 +13,7 @@
  */
 
 #include "thermalmenu.h"
-#include "main.h"
+#include "bannpuls.h"
 
 #include <qregexp.h>
 
@@ -64,8 +64,19 @@ void ThermalMenu::addBanners()
 			else if (e.tagName() == "extprobe")
 			{
 				// create extprobe banner
-				//elencoBanner.append(new ProbeBanner());
 				qDebug("[TERMO] thermalmenu: add extprobe banner");
+				char *descr = "extprobe";
+				bannPuls *bp = new bannPuls(this, descr);
+
+				QString leftIcon(IMG_PATH + QString("arrrg.png"));
+				QString centralIcon(IMG_PATH + QString("termo/sonda_esterna.png"));
+
+				bp->SetIcons(leftIcon.ascii(), 0, centralIcon.ascii());
+				QString addr = getDeviceAddress(e);
+				bp->setAddress(addr.ascii());
+				elencoBanner.append(bp);
+
+				this->connectLastBanner();
 				// also create termopage
 			}
 			else if (e.tagName() == "tempprobe")
@@ -79,4 +90,36 @@ void ThermalMenu::addBanners()
 
 		n = n.nextSibling();
 	}
+}
+
+QDomNode ThermalMenu::findNamedNode(QDomNode root, QString name)
+{
+	QValueList<QDomNode> nodes;
+	nodes.append(root);
+	while (!nodes.isEmpty())
+	{
+		QDomNode n = nodes.first();
+		QDomNode item = n.namedItem(name);
+		qDebug("[TERMO] findNamedNode: item = %s", item.nodeName().ascii());
+		if (item.isNull())
+		{
+			QDomNodeList list = n.childNodes();
+			for (unsigned i = 0; i < list.length(); ++i)
+				nodes.append(list.item(i));
+			nodes.pop_front();
+		}
+		else
+		{
+			return item;
+		}
+	}
+}
+
+QString ThermalMenu::getDeviceAddress(QDomNode root)
+{
+	QDomNode n = findNamedNode(root, "where");
+	QDomElement where = n.toElement();
+	//FIXME: should we also check for `what'?
+	//from conf.xml: used only by pagespecial and scenarios
+	return where.text();
 }

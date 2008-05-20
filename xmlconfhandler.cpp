@@ -922,7 +922,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 
 QDomNode getThermRootNode()
 {
-	QDomElement root = configuration.documentElement();
+	QDomElement root = qdom_appconfig.documentElement();
 
 	QDomNode n = root.firstChild();
 	while (!n.isNull())

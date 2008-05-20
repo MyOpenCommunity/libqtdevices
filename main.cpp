@@ -38,7 +38,7 @@ PropertyMap app_config;
  * configuration. This will eventually
  * replace app_config
  * ****************************************/
-QDomDocument configuration;
+QDomDocument qdom_appconfig;
 
 
 /*******************************************
@@ -113,10 +113,10 @@ int main( int argc, char **argv )
 
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
 
-	if (!configuration.setContent(&file))
+	if (!qdom_appconfig.setContent(&file))
 	{
 		file.close();
-		qFatal("Error in configuration file, exiting");
+		qFatal("Error in qdom_appconfig file, exiting");
 	}
 	file.close();
 	

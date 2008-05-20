@@ -16,15 +16,18 @@
 #define BTOUCH_THERMALMENU_H
 
 #include "sottomenu.h"
-
-#include <qdom.h>
+#include "main.h"
 
 class ThermalMenu : public sottoMenu
 {
 Q_OBJECT
 public:
 	ThermalMenu(QWidget *parent, const char *name, QDomNode n);
+
 private:
+	QString getDeviceAddress(QDomNode root);
+	QDomNode findNamedNode(QDomNode root, QString name);
+
 	void addItems();
 	void createPlantMenu();
 	void addBanners();

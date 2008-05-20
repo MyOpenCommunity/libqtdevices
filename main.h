@@ -51,7 +51,7 @@ extern IconDispatcher icons_library;
  */
 extern PropertyMap app_config;
 
-extern QDomDocument configuration;
+extern QDomDocument qdom_appconfig;
 
 
 /****************************************************************
