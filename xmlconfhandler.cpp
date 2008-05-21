@@ -34,7 +34,7 @@ unsigned char tipoData=0;
  *
  *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu *i, sottoMenu**s,
-		sottoMenu**c, sottoMenu**im,  sottoMenu**a, ThermalMenu *t, diffSonora**dS, diffmulti**_dm, antintrusione** ant,
+		sottoMenu**c, sottoMenu**im,  sottoMenu **a, ThermalMenu *t, diffSonora**dS, diffmulti**_dm, antintrusione** ant,
 		QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG, QColor* bg, QColor* fg1, QColor *fg2)
 {
 	home=h;
@@ -694,15 +694,20 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						case TERMOREGOLAZIONE:
 						case TERMOREG_MULTI_PLANT:
 							termo->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(showFullScreen()));
 							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
-#endif                                          
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)    
+#endif
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)
 							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(show()));
 							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(show()));
-#endif                                    
-							createSottoMenuConnections(termo);
+#endif
+							QObject::connect(termo,SIGNAL(Closed()),termo,SLOT(hide()));
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),termo,SIGNAL(gestFrame(char *)));
+							QObject::connect(termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),termo,SLOT(freezed(bool)));
 							break;
 						case DIFSON:
 							//	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");

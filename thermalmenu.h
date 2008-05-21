@@ -16,6 +16,7 @@
 #define BTOUCH_THERMALMENU_H
 
 #include "sottomenu.h"
+#include "bannpuls.h"
 #include "main.h"
 
 class ThermalMenu : public sottoMenu
@@ -28,7 +29,7 @@ private:
 	QString getDeviceAddress(QDomNode);
 	QDomNode findNamedNode(QDomNode, QString);
 	void create2ButBanner(QDomElement, QString, QString);
-	void createProbeMenu(QDomNode);
+	void createProbeMenu(QDomNode, bannPuls*);
 
 	void addItems();
 	void createPlantMenu();

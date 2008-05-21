@@ -13,7 +13,6 @@
  */
 
 #include "thermalmenu.h"
-#include "bannpuls.h"
 
 #include <qregexp.h>
 
@@ -35,7 +34,7 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor b
 
 void ThermalMenu::addItems()
 {
-	createPlantMenu();
+	//createPlantMenu();
 	addBanners();
 }
 
@@ -71,7 +70,8 @@ void ThermalMenu::addBanners()
 				// create extprobe banner
 				create2ButBanner(e, I_EXT_PROBE, "extprobe");
 				// also create termopage
-				createProbeMenu(e);
+				bannPuls* b = static_cast<bannPuls*>(elencoBanner.getLast());
+				createProbeMenu(e, b);
 			}
 			else if (e.tagName() == "tempprobe")
 			{
@@ -85,16 +85,23 @@ void ThermalMenu::addBanners()
 	}
 }
 
-void ThermalMenu::createProbeMenu(QDomNode node)
+void ThermalMenu::createProbeMenu(QDomNode node, bannPuls *bann)
 {
 	sottoMenu *sm = new sottoMenu(this, "sottomenu extprobe");
+	sm->setBGColor(paletteBackgroundColor());
+	sm->setFGColor(paletteForegroundColor());
+	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));
+	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+	QObject::connect(sm,SIGNAL(Closed()),sm,SLOT(hide()));
+	sm->forceDraw();
+	//how do we create connections with the rest of the application??????
 	
 	QDomNode n = node;
-	while(!n.isNull())
+	while (!n.isNull())
 	{
-		if(n.nodeName().contains(QRegExp("item(\\d\\d?)")))
+		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
-			banner *bp = new banner(sm, "banner");
+			/*banner *bp = new banner(sm, "banner");
 			bp->SetTextU(n.toElement().text());
 			bp->setAnimationParams(0, 0);
 			bp->setBGColor(paletteBackgroundColor());
@@ -102,11 +109,12 @@ void ThermalMenu::createProbeMenu(QDomNode node)
 			QDomNode id = findNamedNode(n, "id");
 			bp->setId(id.toElement().text().toInt());
 
-			sm->appendBanner(bp);
+			sm->appendBanner(bp);*/
 		}
 		n = n.nextSibling();
 	}
 }
+
 void ThermalMenu::create2ButBanner(QDomElement e, QString ci, QString descr)
 {	
 	bannPuls *bp = new bannPuls(this, descr.ascii());
