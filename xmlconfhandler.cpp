@@ -289,6 +289,16 @@ void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 	page_item_cond_list->clear();
 }
 
+void xmlconfhandler::createSottoMenuConnections(sottoMenu *sm)
+{
+	QObject::connect(sm,SIGNAL(Closed()),sm,SLOT(hide()));
+	QObject::connect(client_monitor,SIGNAL(frameIn(char *)),sm,SIGNAL(gestFrame(char *)));
+	QObject::connect(sm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+	QObject::connect(sm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+	QObject::connect(sm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+	QObject::connect(BtM,SIGNAL(freeze(bool)),sm,SLOT(freezed(bool)));
+}
+
 /*******************************************
  *
  * Esco da un livello
@@ -682,7 +692,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*carichi,SLOT(freezed(bool)));
 							break;
 						case TERMOREGOLAZIONE:
-							//			qWarning(" - -  .     .- . . .- .-QObject::connect TERMOREGOLAZIONE ");
+						case TERMOREG_MULTI_PLANT:
 							termo->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
 							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(showFullScreen()));
@@ -692,14 +702,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(show()));
 							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                    
-							QObject::connect(termo,SIGNAL(Closed()),termo,SLOT(hide()));
-
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),termo,SIGNAL(gestFrame(char *)));
-							QObject::connect(termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-							QObject::connect(BtM,SIGNAL(freeze(bool)),termo,SLOT(freezed(bool)));
-							//(*termo)->inizializza();
+							createSottoMenuConnections(termo);
 							break;
 						case DIFSON:
 							//	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
@@ -1110,17 +1113,13 @@ bool xmlconfhandler::characters( const QString & qValue)
 
 						case TERMOREGOLAZIONE:
 							n = getThermRootNode();
-							termo = new ThermalMenu(NULL, "TERMO", n);
-							termo->setBGColor(Background);
-							termo->setFGColor(Foreground);
+							termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
 							pageAct=termo;
 							break;
 
 						case TERMOREG_MULTI_PLANT:
 							n = getThermRootNode();
-							termo = new ThermalMenu(NULL, "TERMO", n);
-							termo->setBGColor(Background);
-							termo->setFGColor(Foreground);
+							termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
 							pageAct=termo;
 							break;
 

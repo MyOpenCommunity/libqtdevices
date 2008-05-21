@@ -96,6 +96,7 @@ sstop : soft stop values list vor dimmer 100 group
 				QString action="", QString light="", QString key="", QString unk="", 
 				QValueList<int> sstart = QValueList<int>(), 
 				QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
+		void appendBanner(banner *b);
 		/*!
 		  \brief Initializes all the objects in the list calling init() after a certain time
 		  */      
@@ -263,11 +264,11 @@ signals:
 		  \brief emitted on calibration end
 		  */
 		void endCalib();
-		public slots:
-			/*!
-			  \brief Slides the list upward.
-			  */      
-			virtual void 	goUp();	
+public slots:
+		/*!
+		  \brief Slides the list upward.
+		  */      
+		virtual void 	goUp();	
 		/*!
 		  \brief Slides the list downward.
 		  */ 

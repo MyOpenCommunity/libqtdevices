@@ -17,11 +17,17 @@
 
 #include <qregexp.h>
 
-ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n) :
+#define I_EXT_PROBE                  "sonda_esterna.png"
+#define I_RIGHT_ARROW                "arrrg.png"
+#define I_PLANT                      "impianto.png"
+
+ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg) :
 	sottoMenu(parent, name)
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");
-	this->root = n;
+	subtreeRoot = n;
+	setBGColor(bg);
+	setFGColor(fg);
 	addItems();
 	qDebug("[TERMO] thermalmenu: end adding items.");
 	// check if plant menus are created?
@@ -35,7 +41,7 @@ void ThermalMenu::addItems()
 
 void ThermalMenu::createPlantMenu()
 {
-	QDomNode n = this->root.firstChild();
+	QDomNode n = subtreeRoot.firstChild();
 	while (!n.isNull())
 	{
 		if (n.isElement() && n.nodeName().contains(QRegExp("plant(\\d*)")))
@@ -49,47 +55,81 @@ void ThermalMenu::createPlantMenu()
 
 void ThermalMenu::addBanners()
 {
-	QDomNode n = this->root.firstChild();
-	while (!n.isNull())
+	QDomNode node = subtreeRoot.firstChild();
+	while (!node.isNull())
 	{
-		QDomElement e = n.toElement();
+		QDomElement e = node.toElement();
 		if (!e.isNull())
 		{
 			if (e.tagName().contains(QRegExp("plant(\\d*)")))
 			{
 				// create plant banner
-				//elencoBanner.append(new PlantBanner());
-				qDebug("[TERMO] thermalmenu: add plant banner");
+				create2ButBanner(e, I_PLANT, e.text());
 			}
 			else if (e.tagName() == "extprobe")
 			{
 				// create extprobe banner
-				qDebug("[TERMO] thermalmenu: add extprobe banner");
-				char *descr = "extprobe";
-				bannPuls *bp = new bannPuls(this, descr);
-
-				QString leftIcon(IMG_PATH + QString("arrrg.png"));
-				QString centralIcon(IMG_PATH + QString("termo/sonda_esterna.png"));
-
-				bp->SetIcons(leftIcon.ascii(), 0, centralIcon.ascii());
-				QString addr = getDeviceAddress(e);
-				bp->setAddress(addr.ascii());
-				elencoBanner.append(bp);
-
-				this->connectLastBanner();
+				create2ButBanner(e, I_EXT_PROBE, "extprobe");
 				// also create termopage
+				createProbeMenu(e);
 			}
 			else if (e.tagName() == "tempprobe")
 			{
 				//create tempprobe banner
-				//elencoBanner.append(new ProbeBanner());
-				qDebug("[TERMO] thermalmenu: add extprobe banner");
+				create2ButBanner(e, I_EXT_PROBE, "tempprobe");
 				// also create termopage
 			}
 		}
 
+		node = node.nextSibling();
+	}
+}
+
+void ThermalMenu::createProbeMenu(QDomNode node)
+{
+	sottoMenu *sm = new sottoMenu(this, "sottomenu extprobe");
+	
+	QDomNode n = node;
+	while(!n.isNull())
+	{
+		if(n.nodeName().contains(QRegExp("item(\\d\\d?)")))
+		{
+			banner *bp = new banner(sm, "banner");
+			bp->SetTextU(n.toElement().text());
+			bp->setAnimationParams(0, 0);
+			bp->setBGColor(paletteBackgroundColor());
+			bp->setFGColor(paletteForegroundColor());
+			QDomNode id = findNamedNode(n, "id");
+			bp->setId(id.toElement().text().toInt());
+
+			sm->appendBanner(bp);
+		}
 		n = n.nextSibling();
 	}
+}
+void ThermalMenu::create2ButBanner(QDomElement e, QString ci, QString descr)
+{	
+	bannPuls *bp = new bannPuls(this, descr.ascii());
+	QString leftIcon(IMG_PATH + QString(I_RIGHT_ARROW));
+	QString centralIcon(IMG_PATH + ci);
+
+	bp->SetIcons(leftIcon.ascii(), 0, centralIcon.ascii());
+	QString addr = getDeviceAddress(e);
+	bp->setAddress(addr.ascii());
+	elencoBanner.append(bp);
+
+	connectLastBanner();
+	QDomNode n = findNamedNode(e, "descr");
+	elencoBanner.getLast()->SetTextU(n.toElement().text());
+	// we are ignoring animationParams
+	elencoBanner.getLast()->setAnimationParams(0, 0);
+
+	elencoBanner.getLast()->setBGColor(paletteBackgroundColor());
+	elencoBanner.getLast()->setFGColor(paletteForegroundColor());
+	n = findNamedNode(e, "id");
+	elencoBanner.getLast()->setId(n.toElement().text().toInt());
+	// note: we are ignoring the serial number...
+	// seems not used for thermal regulation
 }
 
 QDomNode ThermalMenu::findNamedNode(QDomNode root, QString name)
@@ -113,6 +153,7 @@ QDomNode ThermalMenu::findNamedNode(QDomNode root, QString name)
 			return item;
 		}
 	}
+	throw ;
 }
 
 QString ThermalMenu::getDeviceAddress(QDomNode root)

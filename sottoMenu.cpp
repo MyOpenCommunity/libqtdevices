@@ -309,6 +309,12 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	return(1);
 }
 
+void sottoMenu::appendBanner(banner *b)
+{
+	elencoBanner.append(b);
+	connectLastBanner();
+}
+
 void sottoMenu::connectLastBanner()
 {
 	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));

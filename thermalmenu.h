@@ -22,20 +22,19 @@ class ThermalMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	ThermalMenu(QWidget *parent, const char *name, QDomNode n);
+	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg);
 
 private:
-	QString getDeviceAddress(QDomNode root);
-	QDomNode findNamedNode(QDomNode root, QString name);
+	QString getDeviceAddress(QDomNode);
+	QDomNode findNamedNode(QDomNode, QString);
+	void create2ButBanner(QDomElement, QString, QString);
+	void createProbeMenu(QDomNode);
 
 	void addItems();
 	void createPlantMenu();
 	void addBanners();
 
-	QDomNode root;
-
-
-
+	QDomNode subtreeRoot;
 };
 
 #endif
