@@ -19,14 +19,11 @@
 
 #include <qdir.h>
 #include <qptrvector.h>
-#include <qvaluevector.h>
 #include <qlabel.h>
 #include <qtimer.h>
 
 class FileBrowser;
-class AudioPlayingWindow;
-class MediaPlayer;
-class AudioPlayingWindow;
+class PlayWindow;
 class QSlider;
 class QPainter;
 class QFileInfo;
@@ -118,13 +115,14 @@ public slots:
 	/// handles to receive play and stop notifications
 	void handleStartPlay();
 	void handleStopPlay();
+
+	void startPlaylist(QPtrVector<QFileInfo> list, QFileInfo *element);
 private:
 	/// Player screen
-	AudioPlayingWindow *playing_window;
+	PlayWindow *play_window;
 
-	/// Filer browser
+	/// Browser
 	FileBrowser *filesWindow;
-
 
 	char amb[80];
 	char nome[15];
@@ -196,7 +194,7 @@ class  FileBrowser : public QWidget
 {
 Q_OBJECT
 public:
-	FileBrowser(QWidget *parent, AudioPlayingWindow *, unsigned rows_per_page, const char *name=0, WFlags f=0);
+	FileBrowser(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
 
 	/**
 	 * Browse given path, return false in case of error.
@@ -224,10 +222,6 @@ public slots:
 	void itemIsClicked(int);
 	void browseUp();
 
-	/// Show and hide playing windows
-	void showPlayingWindow();
-	void hidePlayingWindow();
-
 private:
 	void showFiles();
 	QString getTextRepresentation(QFileInfo *file_info);
@@ -247,117 +241,13 @@ private:
 	//QPtrVector<QLabel>       labels_list;
 	QPtrVector<TitleLabel>   labels_list;
 	ButtonsBar               *buttons_bar;
-	AudioPlayingWindow       *playing_window;
 	TitleLabel               *no_files_label;
 
 signals:
 	void notifyStartPlay();
 	void notifyStopPlay();
 	void notifyExit();
-};
-
-
-/**
- * \class AudioPlayingWindow
- *
- * This class implemets the Playing Window,
- * it is called from fileBrowser (that is part of MultimediaSource Page)
- * when file (song) is clicked
- */
-class  AudioPlayingWindow : public QWidget
-{
-Q_OBJECT
-public:
-	AudioPlayingWindow(QWidget *parent = 0, const char * name = 0);
-	~AudioPlayingWindow() {};
-
-	// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
-
-	// Play control
-	void nextTrack();
-	void prevTrack();
-	void pause();
-	void resume();
-	void stop();
-
-	/// Stores current playing info
-	QMap<QString, QString> playing_info;
-
-	/// Start PLAY, begins to play a given track and sets the play_list
-	void startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
-
-	// Run script and send frame to turn on and off Audio System
-	void turnOnAudioSystem(bool send_frame);
-	void turnOffAudioSystem(bool send_frame);
-
-	/// Return true if a song is currently active, even if in pause.
-	bool isPlaying();
-
-public slots:
-	void handle_buttons(int);
-	void handleBackBtn();
-	void handleSettingsBtn();
-	void handle_data_refresh_timer();
-	void handlePlayingDone();
-	void handlePlayingKilled();
-	void handlePlayingAborted();
-
-private:
-	/// Method to Get and Visualize playing INFO from MPlayer
-	void refreshPlayingInfo();
-
-	/// Clean playing INFO from MPlayer
-	void cleanPlayingInfo();
-
-	// Change status of play/pause button in control bar
-	void generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
-	void startMediaPlayer(unsigned int);
-	void stopMediaPlayer();
-	void playNextTrack();
-	void showPlayBtn();
-	void showPauseBtn();
-
-	/// refreshing info time interval
-	int refresh_time;
-
-	/**
-	 * The differences between files_list and play_list are:
-	 *  - play_list contains QString with the full path
-	 *  - files_list does not contain dirs
-	 */
-	QValueVector<QString> play_list;
-
-	/*
-	 * current_track is the track played by mplayer.
-	 * next_track is the track to be played by next mplayer instance.
-	 * CURRENT_TRACK_NONE means no track has to be played.
-	 */
-	unsigned int current_track;
-	unsigned int next_track;
-	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
-
-	/// Widgets
-	ButtonsBar  *play_controls;
-	MediaPlayer *media_player;
-	BtButton    *back_btn, *settings_btn;
-
-	/// Labels
-	TitleLabel *file_name_label,   *percent_pos_label,
-	           *time_length_label, *time_pos_label,
-	           *meta_title_label,  *meta_artist_label,
-	           *meta_album_label,  *meta_track_label;
-
-	/// Timer to refresh data from MediaPlayer
-	QTimer *data_refresh_timer;
-
-signals:
-	void notifyStartPlay();
-	void notifyStopPlay();
-
-	// User released settings button
-	void settingsBtn();
+	void startPlaylist(QPtrVector<QFileInfo> list, QFileInfo *element);
 };
 
 #endif // MULTIMEDIA_SOURCE_H

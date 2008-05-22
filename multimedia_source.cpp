@@ -9,78 +9,44 @@
  ****************************************************************/
 
 
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qdatetime.h>
-#include <qfile.h>
 #include <qlayout.h>
-#include <qslider.h>
-#include <qpainter.h>
 
 #include "multimedia_source.h"
-#include "mediaplayer.h"
-#include "banner.h"
-#include "bannondx.h"
-#include "bannfrecce.h"
-#include "main.h"
+#include "playwindow.h"
 #include "fontmanager.h"
 #include "buttons_bar.h"
 
 /*
- * Scripts launched before and after a track is played.
- */
-static const char *start_play_script = "/bin/audio_on.tcl";
-static const char *stop_play_script = "/bin/audio_off.tcl";
-
-/*
  * Interface icon paths.
  */
-static const char *IMG_PLAY = IMG_PATH "btnplay.png"; 
-static const char *IMG_STOP = IMG_PATH "btnsdstop.png";
-static const char *IMG_PAUSE = IMG_PATH "btnpause.png";
-static const char *IMG_NEXT = IMG_PATH "btnforward.png";
-static const char *IMG_PREV = IMG_PATH "btnbackward.png";
-static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
-
-static const char *IMG_PLAY_P = IMG_PATH "btnplayp.png"; 
-static const char *IMG_STOP_P = IMG_PATH "btnsdstopp.png";
-static const char *IMG_PAUSE_P = IMG_PATH "btnpausep.png";
-static const char *IMG_NEXT_P = IMG_PATH "btnforwardp.png";
-static const char *IMG_PREV_P = IMG_PATH "btnbackwardp.png";
-static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
-static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
 
 
-
-MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const char *amb, int _where_address ) :
-	QWidget( parent, name ),
+MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
+	QWidget(parent, name),
 	audio_initialized(true)
 {
 	// Set main geometry
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
+	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	where_address = _where_address;
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
-	// Create playing_window and set style
-	playing_window = new AudioPlayingWindow(this);
-	playing_window->setBGColor(paletteBackgroundColor());
-	playing_window->setFGColor(paletteForegroundColor());
-	playing_window->setPalette(palette());
-	playing_window->setFont(font());
+	// Create play_window and set style
+	play_window = new MediaPlayWindow(this);
+	play_window->setBGColor(paletteBackgroundColor());
+	play_window->setFGColor(paletteForegroundColor());
+	play_window->setPalette(palette());
+	play_window->setFont(font());
 
 	// Create filesWindow, Set geometry and Font Style
-	filesWindow = new FileBrowser(this, playing_window, 4 /* this means number of rows for the browser */);
+	filesWindow = new FileBrowser(this, 4 /* this means number of rows for the browser */);
 	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	QFont aFont;
-	FontManager::instance()->getFont( font_multimedia_source_filesWindow, aFont );
-	filesWindow->setFont( aFont );
+	FontManager::instance()->getFont(font_multimedia_source_filesWindow, aFont);
+	filesWindow->setFont(aFont);
 
 	// Start to Browse Files
 	if (!filesWindow->browseFiles(MEDIASERVER_PATH))
@@ -88,7 +54,7 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 		// FIXME display error?
 	}
 
-	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro )
+	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
 	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
 	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
@@ -99,9 +65,13 @@ MultimediaSource::MultimediaSource( QWidget *parent, const char *name, const cha
 	connect(bannNavigazione, SIGNAL(forwardClick()), filesWindow, SIGNAL(notifyExit()));
 
 	// Connection to be notified about Start and Stop Play
-	connect(filesWindow, SIGNAL(notifyStartPlay()), this, SLOT(handleStartPlay()));
-	connect(filesWindow, SIGNAL(notifyStopPlay()), this, SLOT(handleStopPlay()));
+	connect(play_window, SIGNAL(notifyStartPlay()), this, SLOT(handleStartPlay()));
+	connect(play_window, SIGNAL(notifyStopPlay()), this, SLOT(handleStopPlay()));
+	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
 	connect(filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()));
+
+	connect(filesWindow, SIGNAL(startPlaylist(QPtrVector<QFileInfo>, QFileInfo *)),
+			this, SLOT(startPlaylist(QPtrVector<QFileInfo>, QFileInfo *)));
 }
 
 void MultimediaSource::initAudio()
@@ -116,18 +86,18 @@ void MultimediaSource::initAudio()
 	}
 }
 
-void MultimediaSource::nextTrack()      { playing_window->nextTrack(); }
-void MultimediaSource::prevTrack()      { playing_window->prevTrack(); }
-void MultimediaSource::stop()           { playing_window->stop(); }
+void MultimediaSource::nextTrack() { play_window->nextTrack(); }
+void MultimediaSource::prevTrack() { play_window->prevTrack(); }
+void MultimediaSource::stop()      { play_window->stop(); }
 
 void MultimediaSource::pause()
 {
-	playing_window->pause();
+	play_window->pause();
 }
 
 void MultimediaSource::resume()
 {
-	playing_window->resume();
+	play_window->resume();
 }
 
 void MultimediaSource::showAux()
@@ -136,8 +106,8 @@ void MultimediaSource::showAux()
 	draw();
 	showFullScreen();
 
-	if (playing_window->isPlaying())
-		playing_window->show();
+	if (play_window->isPlaying())
+		play_window->show();
 }
 
 void MultimediaSource::handleStartPlay()
@@ -152,12 +122,12 @@ void MultimediaSource::handleStopPlay()
 
 void MultimediaSource::setBGColor(int r, int g, int b)
 {
-	setBGColor( QColor :: QColor(r,g,b));
+	setBGColor(QColor::QColor(r,g,b));
 }
 
 void MultimediaSource::setFGColor(int r, int g, int b)
 {
-	setFGColor( QColor :: QColor(r,g,b));
+	setFGColor(QColor::QColor(r,g,b));
 }
 
 void MultimediaSource::setBGColor(QColor c)
@@ -165,12 +135,14 @@ void MultimediaSource::setBGColor(QColor c)
 	setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
 	filesWindow->setBGColor(c);
+	play_window->setBGColor(c);
 }
 void MultimediaSource::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
 	filesWindow->setFGColor(c);
+	play_window->setFGColor(c);
 }
 
 int MultimediaSource::setBGPixmap(char* backImage)
@@ -179,19 +151,25 @@ int MultimediaSource::setBGPixmap(char* backImage)
 	if(Back.load(backImage))
 	{
 		setPaletteBackgroundPixmap(Back);
-		return (0);
+		return 0;
 	}
-	return (1);
+	return 1;
 }
 
 void MultimediaSource::enableSource(bool send_frame)
 {
-	playing_window->turnOnAudioSystem(send_frame);
+	play_window->turnOnAudioSystem(send_frame);
 }
 
 void MultimediaSource::disableSource(bool send_frame)
 {
-	playing_window->turnOffAudioSystem(send_frame);
+	play_window->turnOffAudioSystem(send_frame);
+}
+
+void MultimediaSource::startPlaylist(QPtrVector<QFileInfo> list, QFileInfo *element)
+{
+	play_window->startNewPlaylist(list, element);
+	play_window->show();
 }
 
 /// ***********************************************************************************************************************
@@ -224,10 +202,10 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offs
 	connect( &scrolling_timer, SIGNAL( timeout() ), this, SLOT( handleScrollingTimer() ) );
 }
 
-void TitleLabel::drawContents( QPainter *p )
+void TitleLabel::drawContents(QPainter *p)
 {
 	p->translate(w_offset, h_offset);
-	QLabel::drawContents( p );
+	QLabel::drawContents(p);
 }
 
 void TitleLabel::resetTextPosition()
@@ -284,11 +262,9 @@ void TitleLabel::handleScrollingTimer()
 /// Methods for FileBrowser
 /// ***********************************************************************************************************************
 
-FileBrowser::FileBrowser(QWidget *parent, AudioPlayingWindow *_playing_window,
-		unsigned rows_per_page, const char *name, WFlags f) :
+FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *name, WFlags f) :
 	QWidget(parent, name, f)
 {
-	playing_window = _playing_window;
 	level = 0;
 
 	// Set Style
@@ -358,13 +334,9 @@ FileBrowser::FileBrowser(QWidget *parent, AudioPlayingWindow *_playing_window,
 	// Connette il FilesBrowser con se stesso per il CLICK
 	connect(buttons_bar, SIGNAL(clicked(int)), this, SLOT(itemIsClicked(int)));
 
-	// Signal from playing window
-	connect(playing_window, SIGNAL(notifyStartPlay()), SIGNAL(notifyStartPlay()));
-	connect(playing_window, SIGNAL(notifyStopPlay()), SIGNAL(notifyStopPlay()));
-	connect(playing_window, SIGNAL(settingsBtn()), SIGNAL(notifyExit()));
 }
 
-void FileBrowser::showEvent( QShowEvent *event )
+void FileBrowser::showEvent(QShowEvent *event)
 {
 	for (unsigned i = 0; i < rows_per_page; i++)
 		labels_list[i]->resetTextPosition();
@@ -404,9 +376,8 @@ void FileBrowser::itemIsClicked(int item)
 		}
 		else
 		{
-			/// Load play list in playing window and show it
-			playing_window->startNewPlaylist(files_list, clicked_element);
-			playing_window->show();
+			emit startPlaylist(files_list, clicked_element);
+			/// Load play list in play window and show it
 		}
 	}
 	else
@@ -437,24 +408,14 @@ void FileBrowser::browseUp()
 		emit notifyExit();
 }
 
-void FileBrowser::showPlayingWindow()
-{
-	playing_window->show();
-}
-
-void FileBrowser::hidePlayingWindow()
-{
-	playing_window->hide();
-}
-
 bool FileBrowser::browseFiles(QString new_path)
 {
-	// if new_path is valid changes the path and run browsFiles()
-	if ( QFileInfo(new_path).exists() )
+	// if new_path is valid changes the path and run browseFiles()
+	if (QFileInfo(new_path).exists())
 	{
 		QString new_path_string = QFileInfo(new_path).absFilePath();
 		// change path
-		files_handler.setPath( new_path_string );
+		files_handler.setPath(new_path_string);
 		current_path = new_path_string;
 		return browseFiles();
 	}
@@ -513,25 +474,25 @@ void FileBrowser::showFiles()
 	{
 		if (i < end-start)
 		{
-			labels_list[i]->setText( getTextRepresentation(files_list[start+i]) );
-			buttons_bar->showButton( i );
+			labels_list[i]->setText(getTextRepresentation(files_list[start+i]));
+			buttons_bar->showButton(i);
 		}
 		else
 		{
-			labels_list[i]->setText( "" );
-			buttons_bar->hideButton( i );
+			labels_list[i]->setText("");
+			buttons_bar->hideButton(i);
 		}
 
 	}
 
 	if (start==end)
 	{
-		buttons_bar->showButton( 0 );
-		buttons_bar->setEnabled( FALSE );
+		buttons_bar->showButton(0);
+		buttons_bar->setEnabled(FALSE);
 	}
 	else
 	{
-		buttons_bar->setEnabled( TRUE );
+		buttons_bar->setEnabled(TRUE);
 	}
 }
 
@@ -583,454 +544,9 @@ void FileBrowser::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
 	buttons_bar->setBGColor(c);
-	playing_window->setBGColor(c);
 }
 void FileBrowser::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	buttons_bar->setFGColor(c);
-	playing_window->setFGColor(c);
 }
-
-/*
- * Path in conf.xml where the configurable label texts are found.
- */
-#define CFG_LABELS_MEDIAPLAYER "configuratore/setup/labels/mediaplayer/"
-
-/// ***********************************************************************************************************************
-/// Methods for AudioPlayingWindow
-/// ***********************************************************************************************************************
-
-AudioPlayingWindow::AudioPlayingWindow(QWidget *parent, const char * name) :
-	QWidget(parent, name, WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
-{
-	qDebug("[AUDIO] AudioPlayingWindow costructor");
-
-	/// set self Geometry
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-
-	/// Create Labels (that contain tags)
- 	QFont aFont;
-	FontManager::instance()->getFont( font_multimedia_source_AudioPlayingWindow, aFont );
-
-	// create Labels containing INFO
-	//labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
-	meta_title_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
-	meta_artist_label = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
-	meta_album_label  = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
-	time_pos_label    = new TitleLabel( this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE );
-	// Set Font
-	meta_title_label->setFont( aFont );
-	meta_artist_label->setFont( aFont );
-	meta_album_label->setFont( aFont );
-	time_pos_label->setFont( aFont );
-
-	/// Create Main Layout
-	// all others layout must have this as parent, this is not more needed in Qt4
-	// where we can use setMainLayout
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->addSpacing(20);
-
-	// layouts for both labels
-	QHBoxLayout *tags_layout = new QHBoxLayout(main_layout);
-	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
-	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
-
-	/// Create Labels (that contain tag names)
-	// Get label names from app_confif
-	QString label_a = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_title",  "Name: ").c_str();
-	QString label_b = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_artist", "Artist: ").c_str();
-	QString label_c = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_album",  "Album: ").c_str();
-	QString label_d = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_time",   "Time: ").c_str();
-	// Set label names
-	TitleLabel *name_label   = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
-	TitleLabel *artist_label = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
-	TitleLabel *album_label  = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
-	TitleLabel *time_label   = new TitleLabel( this, MAX_WIDTH/3, 30, 9, 0 );
-	// set font
-	name_label->setFont( aFont );
-	artist_label->setFont( aFont );
-	album_label->setFont( aFont );
-	time_label->setFont( aFont );
-	// set text
-	name_label->setText( label_a );
-	artist_label->setText( label_b );
-	album_label->setText( label_c );
-	time_label->setText( label_d );
-
-	// add all labels to layouts
-	tags_name_layout->addWidget(name_label);
-	tags_name_layout->addWidget(artist_label);
-	tags_name_layout->addWidget(album_label);
-	tags_name_layout->addWidget(time_label);
-	tags_text_layout->addWidget(meta_title_label);
-	tags_text_layout->addWidget(meta_artist_label);
-	tags_text_layout->addWidget(meta_album_label);
-	tags_text_layout->addWidget(time_pos_label);
-
-
-	/*
-	 * Create Buttons and set their geometry
-	 */
-	QPixmap *icon;
-	QPixmap *pressed_icon;
-
-	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
-	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
-
-	icon         = icons_library.getIcon(IMG_STOP);
-	pressed_icon = icons_library.getIcon(IMG_STOP_P);
-	play_controls->setButtonIcons(1, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_PREV);
-	pressed_icon = icons_library.getIcon(IMG_PREV_P);
-	play_controls->setButtonIcons(2, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_NEXT);
-	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
-	play_controls->setButtonIcons(3, *icon, *pressed_icon);
-
-	main_layout->addWidget(play_controls);
-
-	/*
-	 * Main controls
-	 */
-	QHBoxLayout *main_controls_layout = new QHBoxLayout(main_layout);
-
-	back_btn = new BtButton(this, "back_btn");
-	settings_btn = new BtButton(this, "settings_btn");
-	main_controls_layout->addWidget(back_btn);
-	main_controls_layout->addStretch();
-	main_controls_layout->addWidget(settings_btn);
-
-	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
-	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
-
-	settings_btn->setPixmap(*icons_library.getIcon(IMG_SETTINGS));
-	settings_btn->setPressedPixmap(*icons_library.getIcon(IMG_SETTINGS_P));
-
-
-	data_refresh_timer = new QTimer(this);
-
-	media_player = new MediaPlayer(this);
-
-	connect(play_controls, SIGNAL(clicked(int)), SLOT(handle_buttons(int)));
-	connect(back_btn, SIGNAL(released()), SLOT(handleBackBtn()));
-	connect(settings_btn, SIGNAL(released()), SLOT(handleSettingsBtn()));
-
-	// Connect the timer to the handler, the timer get and displays data from mplayer
-	connect(data_refresh_timer, SIGNAL(timeout()), SLOT(handle_data_refresh_timer()));
-
-	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
-	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
-	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
-
-	// Set Timer
-	refresh_time = 500;
-
-	current_track = CURRENT_TRACK_NONE;
-	next_track = CURRENT_TRACK_NONE;
-}
-
-void AudioPlayingWindow::startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
-{
-	qDebug("[AUDIO] startNewPlaylist()");
-	stop();
-	generatePlaylist(files_list, clicked_element);
-	startMediaPlayer(current_track);
-}
-
-void AudioPlayingWindow::startMediaPlayer(unsigned int track)
-{
-	cleanPlayingInfo();
-	// Start playing and point next Track
-	current_track = track;
-	next_track = current_track + 1;
-	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
-	media_player->play(play_list[current_track]);
-
-	// Start Timer
-	data_refresh_timer->start(refresh_time);
-
-	showPauseBtn();
-}
-
-void AudioPlayingWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
-{
-	// fill play_list and set current track
-	int     track_number = 0;
-	QString track_name;
-	play_list.clear();
-
-	for (unsigned i = 0; i < files_list.count(); i++)
-	{
-		if (files_list[i]->isDir())
-			continue;
-
-		track_name = files_list[i]->absFilePath().latin1();
-		play_list.append(track_name);
-		if (clicked_element->absFilePath().latin1() == track_name)
-			current_track = track_number;
-		track_number++;
-	}
-}
-
-void AudioPlayingWindow::stopMediaPlayer()
-{
-	data_refresh_timer->stop();
-
-	// quit mplayer if it is already playing
-	if (media_player->isInstanceRunning())
-	{
-		/*
-		 * After stop() and before starting a new istance,  we should wait
-		 * for the SIGCHLD signal emitted after quits.
-		 * usleep() exits immediately with EINTR error in case of signal.
-		 */
-		media_player->quit();
-		qDebug("[AUDIO] AudioPlayingWindow: waiting for mplayer to exit...");
-		usleep(1000000);
-		qDebug("[AUDIO] Ok");
-	}
-}
-
-void AudioPlayingWindow::turnOnAudioSystem(bool send_frame)
-{
-	qDebug("[AUDIO] Running start play script: %s", start_play_script);
-
-	int rc;
-	if ((rc = system(start_play_script)) != 0)
-		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
-
-	if(send_frame)
-		emit notifyStartPlay();
-}
-
-void AudioPlayingWindow::turnOffAudioSystem(bool send_frame)
-{
-	qDebug("[AUDIO] Running stop play script: %s", stop_play_script);
-
-	int rc;
-	if ((rc = system(stop_play_script)) != 0)
-		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
-
-	if(send_frame)
-		emit notifyStopPlay();
-}
-
-bool AudioPlayingWindow::isPlaying()
-{
-	return media_player->isInstanceRunning();
-}
-
-void AudioPlayingWindow::refreshPlayingInfo()
-{
-	QMap<QString, QString> updated_playing_info;
-	updated_playing_info = media_player->getPlayingInfo();
-
-	// Now we iterate on updated_playing_info and import new entries in playing_info
-	QMap<QString, QString>::Iterator it;
-	for ( it = updated_playing_info.begin(); it != updated_playing_info.end(); ++it )
-		playing_info[it.key()] = it.data();
-
-	// Extract Time Data
-	QStringList total   = QStringList::split(".", playing_info["total_time"]);
-	QStringList current = QStringList::split(".", playing_info["current_time"]);
-
-	// Set INFO in Labels
-	meta_title_label->setText(playing_info["meta_title"]);
-	meta_artist_label->setText(playing_info["meta_artist"]);
-	meta_album_label->setText(playing_info["meta_album"]);
-	if (playing_info["total_time"] == "" || playing_info["current_time"] == "")
-		time_pos_label->setText(QString("- of -"));
-	else
-		time_pos_label->setText(QString("%1 of %2").arg(current[0]).arg(total[0]));
-}
-
-void AudioPlayingWindow::cleanPlayingInfo()
-{
-	meta_title_label->setText(QString("-"));
-	meta_artist_label->setText(QString("-"));
-	meta_album_label->setText(QString("-"));
-	time_pos_label->setText(QString("- of -"));
-	playing_info.clear();
-}
-
-void AudioPlayingWindow::showPlayBtn()
-{
-	QPixmap *icon         = icons_library.getIcon(IMG_PLAY);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PLAY_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
-}
-
-void AudioPlayingWindow::showPauseBtn()
-{
-	QPixmap *icon         = icons_library.getIcon(IMG_PAUSE);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PAUSE_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
-}
-
-void AudioPlayingWindow::prevTrack()
-{
-	if (media_player->isInstanceRunning())
-	{
-		if (current_track != 0)
-		{
-			stopMediaPlayer();
-			next_track = current_track - 1;
-			startMediaPlayer(next_track);
-
-			qDebug("[AUDIO] AudioPlayingWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
-			showPauseBtn();
-		}
-	}
-}
-
-void AudioPlayingWindow::nextTrack()
-{
-	if (media_player->isInstanceRunning())
-	{
-		if (current_track < (play_list.count() - 1))
-		{
-			playNextTrack();
-			qDebug("[AUDIO] AudioPlayingWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
-		}
-	}
-}
-
-void AudioPlayingWindow::playNextTrack()
-{
-	stopMediaPlayer();
-	next_track = current_track + 1;
-	startMediaPlayer(next_track);
-	
-	showPauseBtn();
-}
-
-void AudioPlayingWindow::pause()
-{
-	qDebug("[AUDIO] media_player: pause play");
-
-	data_refresh_timer->stop();
-	media_player->pause();
-	showPlayBtn();
-}
-
-void AudioPlayingWindow::resume()
-{
-	if (media_player->isInstanceRunning())
-	{
-		qDebug("[AUDIO] media_player: resume play");
-
-		media_player->resume();
-		data_refresh_timer->start(refresh_time);
-		showPauseBtn();
-	}
-}
-
-void AudioPlayingWindow::stop()
-{
-	qDebug("[AUDIO] AudioPlayingWindow::stop()");
-
-	current_track = CURRENT_TRACK_NONE;
-	next_track = CURRENT_TRACK_NONE;
-	stopMediaPlayer();
-
-	showPlayBtn();
-}
-
-void AudioPlayingWindow::handle_buttons(int button_number)
-{
-	switch (button_number)
-	{
-	case 0:
-		if (!media_player->isInstanceRunning())
-		{
-			qDebug("[AUDIO] media_player: start from track 0");
-			startMediaPlayer(0);
-		}
-		else if (media_player->isPaused())
-			resume();
-		else
-			pause();
-		break;
-	case 1:
-		stop();
-		break;
-	case 2:
-		prevTrack();
-		break;
-	case 3:
-		nextTrack();
-		break;
-	}
-}
-
-void AudioPlayingWindow::handleBackBtn()
-{
-	hide();
-}
-
-void AudioPlayingWindow::handleSettingsBtn()
-{
-	hide();
-	emit settingsBtn();
-}
-
-void AudioPlayingWindow::handle_data_refresh_timer()
-{
-	refreshPlayingInfo();
-}
-
-
-void AudioPlayingWindow::handlePlayingDone()
-{
-	/*
-	 * mplayer has terminated because the track is finished
-	 * so we go to the next track if exists.
-	 */
-	cleanPlayingInfo();
-	data_refresh_timer->stop();
-
-	if (current_track < (play_list.count() - 1))
-	{
-		playNextTrack();
-	}
-	else
-	{
-		showPlayBtn();
-	}
-}
-void AudioPlayingWindow::handlePlayingKilled()
-{
-	cleanPlayingInfo();
-	data_refresh_timer->stop();
-}
-
-void AudioPlayingWindow::handlePlayingAborted()
-{
-	//turnOffAudioSystem(false);
-
-	hide();
-
-	// FIXME display error?
-	qDebug("[AUDIO] Error in mplayer, stopping playlist");
-}
-
-void AudioPlayingWindow::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	play_controls->setBGColor(c);
-	back_btn->setPaletteBackgroundColor(c);
-	settings_btn->setPaletteBackgroundColor(c);
-}
-
-void AudioPlayingWindow::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	play_controls->setFGColor(c);
-	back_btn->setPaletteForegroundColor(c);
-	settings_btn->setPaletteForegroundColor(c);
-}
-
-
