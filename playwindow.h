@@ -44,6 +44,65 @@ public:
 	~PlayWindow() {};
 
 	// Apply Style
+	virtual void setBGColor(QColor c);
+	virtual void setFGColor(QColor c);
+	
+	// Play control
+	virtual void nextTrack();
+	virtual void prevTrack();
+	virtual void pause();
+	virtual void resume();
+	virtual void stop();
+
+	/// Return true if a song is currently active, even if in pause.
+	bool isPlaying();
+
+	// Run script and send frame to turn on and off Audio System
+	void turnOnAudioSystem(bool send_frame);
+	void turnOffAudioSystem(bool send_frame);
+
+	virtual void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element) = 0;
+
+public slots:
+	void handleBackBtn();
+	void handleSettingsBtn();
+
+protected:
+	void addMainControls(QBoxLayout* layout);
+
+	/// Media player
+	MediaPlayer *media_player;
+
+	/// Main control
+	BtButton    *back_btn, *settings_btn;
+
+	/// Main layout
+	QBoxLayout *main_layout;
+
+	void stopPlayer();
+
+protected slots:
+	// MediaPlayer Handlers
+	virtual void handlePlayingDone();
+	virtual void handlePlayingKilled();
+	virtual void handlePlayingAborted();
+
+signals:
+	// User released settings button
+	void settingsBtn();
+	void notifyStartPlay();
+	void notifyStopPlay();
+};
+
+
+class MediaPlayWindow : public PlayWindow
+{
+Q_OBJECT
+public:
+	MediaPlayWindow(QWidget *parent = 0, const char * name = 0);
+	~MediaPlayWindow() {};
+
+	// Apply Style
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
@@ -58,29 +117,31 @@ public:
 	QMap<QString, QString> playing_info;
 
 	/// Start PLAY, begins to play a given track and sets the play_list
-	void startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
-
-	// Run script and send frame to turn on and off Audio System
-	void turnOnAudioSystem(bool send_frame);
-	void turnOffAudioSystem(bool send_frame);
-
-	/// Return true if a song is currently active, even if in pause.
-	bool isPlaying();
+	void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 
 public slots:
-	void handle_buttons(int);
-	void handleBackBtn();
-	void handleSettingsBtn();
-	void handle_data_refresh_timer();
+	// MediaPlayer Handlers
 	void handlePlayingDone();
 	void handlePlayingKilled();
 	void handlePlayingAborted();
 
+private slots:
+	void handle_data_refresh_timer();
+	void handle_buttons(int);
+	
 protected:
-	// FIX: temporaneamente qui, da spostare
+	void stopPlayer();
+
+private:
 	void addTextLabels(QBoxLayout *layout, QFont& aFont);
 	void addNameLabels(QBoxLayout *layout, QFont& aFont);
-	
+
+	/// Play buttons
+	ButtonsBar  *play_controls;
+
+	void showPlayBtn();
+	void showPauseBtn();
+
 	/// Clean play INFO from MPlayer
 	void cleanPlayInfo();
 
@@ -90,11 +151,7 @@ protected:
 	// Change status of play/pause button in control bar
 	void generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 	void startMediaPlayer(unsigned int);
-	virtual void startPlayer(QString track);
-	void stopMediaPlayer();
 	void playNextTrack();
-	void showPlayBtn();
-	void showPauseBtn();
 
 	/// refreshing info time interval
 	int refresh_time;
@@ -115,11 +172,6 @@ protected:
 	unsigned int next_track;
 	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
 
-	/// Widgets
-	ButtonsBar  *play_controls;
-	MediaPlayer *media_player;
-	BtButton    *back_btn, *settings_btn;
-
 	/// Labels
 	TitleLabel *file_name_label,   *percent_pos_label,
 	           *time_length_label, *time_pos_label,
@@ -128,35 +180,6 @@ protected:
 
 	/// Timer to refresh data from MediaPlayer
 	QTimer *data_refresh_timer;
-
-signals:
-	void notifyStartPlay();
-	void notifyStopPlay();
-
-	// User released settings button
-	void settingsBtn();
 };
-
-
-class MediaPlayWindow : public PlayWindow
-{
-public:
-	MediaPlayWindow(QWidget *parent = 0, const char * name = 0) : PlayWindow(parent, name) {}
-	~MediaPlayWindow() {};
-
-};
-
-
-class RadioPlayWindow : public PlayWindow
-{
-public:
-	RadioPlayWindow(QWidget *parent = 0, const char * name = 0) : PlayWindow(parent, name) {}
-	~RadioPlayWindow() {};
-	void startPlayer(QString track);
-private:
-	/// Start a radio stream
-	void startRadioStream(QString name, QString url);
-};
-
 
 #endif

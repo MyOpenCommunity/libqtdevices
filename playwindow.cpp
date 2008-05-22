@@ -44,12 +44,11 @@ static const char *IMG_PREV_P = IMG_PATH "btnbackwardp.png";
 static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
 
-
-
 /*
  * Path in conf.xml where the configurable label texts are found.
  */
 #define CFG_LABELS_MEDIAPLAYER "configuratore/setup/labels/mediaplayer/"
+
 
 /// ***********************************************************************************************************************
 /// Methods for PlayWindow
@@ -63,32 +62,186 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 	/// set self Geometry
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
+	/// Create Main Layout
+	// all others layout must have this as parent, this is not more needed in Qt4
+	// where we can use setMainLayout
+	main_layout = new QVBoxLayout(this);
+	media_player = new MediaPlayer(this);
+
+	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
+	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
+	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
+
+	QHBoxLayout *main_controls_layout = new QHBoxLayout(main_layout);
+	addMainControls(main_controls_layout);
+}
+
+void PlayWindow::addMainControls(QBoxLayout* layout)
+{
+	back_btn = new BtButton(this, "back_btn");
+	settings_btn = new BtButton(this, "settings_btn");
+	layout->addWidget(back_btn);
+	layout->addStretch();
+	layout->addWidget(settings_btn);
+
+	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
+	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
+
+	settings_btn->setPixmap(*icons_library.getIcon(IMG_SETTINGS));
+	settings_btn->setPressedPixmap(*icons_library.getIcon(IMG_SETTINGS_P));
+
+	connect(back_btn, SIGNAL(released()), SLOT(handleBackBtn()));
+	connect(settings_btn, SIGNAL(released()), SLOT(handleSettingsBtn()));
+}
+
+void PlayWindow::setBGColor(QColor c)
+{
+	setPaletteBackgroundColor(c);
+	back_btn->setPaletteBackgroundColor(c);
+	settings_btn->setPaletteBackgroundColor(c);
+}
+
+void PlayWindow::setFGColor(QColor c)
+{
+	setPaletteForegroundColor(c);
+	back_btn->setPaletteForegroundColor(c);
+	settings_btn->setPaletteForegroundColor(c);
+}
+
+void PlayWindow::prevTrack()
+{
+}
+
+void PlayWindow::nextTrack()
+{
+}
+
+void PlayWindow::pause()
+{
+	qDebug("[AUDIO] media_player: pause play");
+	if (media_player->isInstanceRunning())
+		media_player->pause();
+}
+
+void PlayWindow::stop()
+{
+	qDebug("[AUDIO] MediaPlayWindow::stop()");
+	stopPlayer();
+}
+
+void PlayWindow::resume()
+{
+	qDebug("[AUDIO] media_player: resume play");
+	if (media_player->isInstanceRunning())
+		media_player->resume();
+}
+
+bool PlayWindow::isPlaying()
+{
+	return media_player->isInstanceRunning();
+}
+
+void PlayWindow::handleBackBtn()
+{
+	hide();
+}
+
+void PlayWindow::handleSettingsBtn()
+{
+	hide();
+	emit settingsBtn();
+}
+
+void PlayWindow::handlePlayingDone()
+{
+}
+
+void PlayWindow::handlePlayingKilled()
+{
+}
+
+void PlayWindow::handlePlayingAborted()
+{
+	//turnOffAudioSystem(false);
+
+	hide();
+
+	// FIXME display error?
+	qDebug("[AUDIO] Error in mplayer, stopping playlist");
+}
+
+void PlayWindow::turnOnAudioSystem(bool send_frame)
+{
+	qDebug("[AUDIO] Running start play script: %s", start_play_script);
+
+	int rc;
+	if ((rc = system(start_play_script)) != 0)
+		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
+
+	if(send_frame)
+		emit notifyStartPlay();
+}
+
+void PlayWindow::turnOffAudioSystem(bool send_frame)
+{
+	qDebug("[AUDIO] Running stop play script: %s", stop_play_script);
+
+	int rc;
+	if ((rc = system(stop_play_script)) != 0)
+		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
+
+	if(send_frame)
+		emit notifyStopPlay();
+}
+
+void PlayWindow::stopPlayer()
+{
+	// quit mplayer if it is already playing
+	if (media_player->isInstanceRunning())
+	{
+		/*
+		 * After stop() and before starting a new istance,  we should wait
+		 * for the SIGCHLD signal emitted after quits.
+		 * usleep() exits immediately with EINTR error in case of signal.
+		 */
+		media_player->quit();
+		qDebug("[AUDIO] PlayWindow: waiting for mplayer to exit...");
+		usleep(1000000);
+		qDebug("[AUDIO] Ok");
+	}
+}
+
+/// ***********************************************************************************************************************
+/// Methods for MediaPlayWindow
+/// ***********************************************************************************************************************
+
+MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
+	PlayWindow(parent, name)
+{
+	main_layout->addSpacing(20);
+
 	/// Create Labels (that contain tags)
  	QFont aFont;
 	FontManager::instance()->getFont(font_multimedia_source_AudioPlayingWindow, aFont);
 
-	/// Create Main Layout
-	// all others layout must have this as parent, this is not more needed in Qt4
-	// where we can use setMainLayout
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->addSpacing(20);
+	// layouts for media
+	QHBoxLayout *tags_layout = new QHBoxLayout();
+	main_layout->insertLayout(0, tags_layout);
 
-	// layouts for both labels
-	QHBoxLayout *tags_layout = new QHBoxLayout(main_layout);
 	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
 	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
 
 	addNameLabels(tags_name_layout, aFont);
 	addTextLabels(tags_text_layout, aFont);
 
+	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
+	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+
 	/*
 	 * Create Buttons and set their geometry
 	 */
 	QPixmap *icon;
 	QPixmap *pressed_icon;
-
-	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
-	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
 	icon         = icons_library.getIcon(IMG_STOP);
 	pressed_icon = icons_library.getIcon(IMG_STOP_P);
@@ -102,40 +255,13 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
 	play_controls->setButtonIcons(3, *icon, *pressed_icon);
 
-	main_layout->addWidget(play_controls);
-
-	/*
-	 * Main controls
-	 */
-	QHBoxLayout *main_controls_layout = new QHBoxLayout(main_layout);
-
-	back_btn = new BtButton(this, "back_btn");
-	settings_btn = new BtButton(this, "settings_btn");
-	main_controls_layout->addWidget(back_btn);
-	main_controls_layout->addStretch();
-	main_controls_layout->addWidget(settings_btn);
-
-	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
-	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
-
-	settings_btn->setPixmap(*icons_library.getIcon(IMG_SETTINGS));
-	settings_btn->setPressedPixmap(*icons_library.getIcon(IMG_SETTINGS_P));
-
+	main_layout->insertWidget(1, play_controls);
+	connect(play_controls, SIGNAL(clicked(int)), SLOT(handle_buttons(int)));
 
 	data_refresh_timer = new QTimer(this);
 
-	media_player = new MediaPlayer(this);
-
-	connect(play_controls, SIGNAL(clicked(int)), SLOT(handle_buttons(int)));
-	connect(back_btn, SIGNAL(released()), SLOT(handleBackBtn()));
-	connect(settings_btn, SIGNAL(released()), SLOT(handleSettingsBtn()));
-
 	// Connect the timer to the handler, the timer get and displays data from mplayer
 	connect(data_refresh_timer, SIGNAL(timeout()), SLOT(handle_data_refresh_timer()));
-
-	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
-	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
-	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
 	// Set Timer
 	refresh_time = 500;
@@ -144,7 +270,33 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 	next_track = CURRENT_TRACK_NONE;
 }
 
-void PlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
+void MediaPlayWindow::showPlayBtn()
+{
+	QPixmap *icon         = icons_library.getIcon(IMG_PLAY);
+	QPixmap *pressed_icon = icons_library.getIcon(IMG_PLAY_P);
+	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+}
+
+void MediaPlayWindow::showPauseBtn()
+{
+	QPixmap *icon         = icons_library.getIcon(IMG_PAUSE);
+	QPixmap *pressed_icon = icons_library.getIcon(IMG_PAUSE_P);
+	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+}
+
+void MediaPlayWindow::setBGColor(QColor c)
+{
+	PlayWindow::setBGColor(c);
+	play_controls->setBGColor(c);
+}
+
+void MediaPlayWindow::setFGColor(QColor c)
+{
+	PlayWindow::setFGColor(c);
+	play_controls->setFGColor(c);
+}
+
+void MediaPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
 {
 	/// Create Labels (that contain tag names)
 	// Get label names from app_config
@@ -178,7 +330,7 @@ void PlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
 	layout->addWidget(time_label);
 }
 
-void PlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
+void MediaPlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
 {
 	// create Labels containing INFO
 	meta_title_label  = new TitleLabel(this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE);
@@ -198,29 +350,24 @@ void PlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
 	layout->addWidget(time_pos_label);
 }
 
-void PlayWindow::startNewPlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
+void MediaPlayWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
-	qDebug("[AUDIO] startNewPlaylist()");
+	qDebug("[AUDIO] startPlay()");
 	stop();
 	generatePlaylist(files_list, clicked_element);
 	startMediaPlayer(current_track);
 }
 
-void PlayWindow::startMediaPlayer(unsigned int track)
+void MediaPlayWindow::startMediaPlayer(unsigned int track)
 {
 	// Start playing and point next Track
 	current_track = track;
 	next_track = current_track + 1;
+
 	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
-	startPlayer(play_list[current_track]);
-}
 
-void PlayWindow::startPlayer(QString track)
-{
 	cleanPlayInfo();
-
-	// Play the music!!
-	media_player->play(track);
+	media_player->play(play_list[current_track]);
 	
 	// Start Timer
 	data_refresh_timer->start(refresh_time);
@@ -228,14 +375,14 @@ void PlayWindow::startPlayer(QString track)
 	showPauseBtn();
 }
 
-void PlayWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
+void MediaPlayWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
 {
 	// fill play_list and set current track
 	int     track_number = 0;
 	QString track_name;
 	play_list.clear();
 
-	for (unsigned i = 0; i < files_list.count(); i++)
+	for (unsigned i = 0; i < files_list.count(); ++i)
 	{
 		if (files_list[i]->isDir())
 			continue;
@@ -244,66 +391,24 @@ void PlayWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *c
 		play_list.append(track_name);
 		if (clicked_element->absFilePath().latin1() == track_name)
 			current_track = track_number;
-		track_number++;
+		++track_number;
 	}
 }
 
-void PlayWindow::stopMediaPlayer()
+void MediaPlayWindow::stopPlayer()
 {
+	PlayWindow::stopPlayer();
 	data_refresh_timer->stop();
-
-	// quit mplayer if it is already playing
-	if (media_player->isInstanceRunning())
-	{
-		/*
-		 * After stop() and before starting a new istance,  we should wait
-		 * for the SIGCHLD signal emitted after quits.
-		 * usleep() exits immediately with EINTR error in case of signal.
-		 */
-		media_player->quit();
-		qDebug("[AUDIO] PlayWindow: waiting for mplayer to exit...");
-		usleep(1000000);
-		qDebug("[AUDIO] Ok");
-	}
 }
 
-void PlayWindow::turnOnAudioSystem(bool send_frame)
-{
-	qDebug("[AUDIO] Running start play script: %s", start_play_script);
-
-	int rc;
-	if ((rc = system(start_play_script)) != 0)
-		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
-
-	if(send_frame)
-		emit notifyStartPlay();
-}
-
-void PlayWindow::turnOffAudioSystem(bool send_frame)
-{
-	qDebug("[AUDIO] Running stop play script: %s", stop_play_script);
-
-	int rc;
-	if ((rc = system(stop_play_script)) != 0)
-		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
-
-	if(send_frame)
-		emit notifyStopPlay();
-}
-
-bool PlayWindow::isPlaying()
-{
-	return media_player->isInstanceRunning();
-}
-
-void PlayWindow::refreshPlayInfo()
+void MediaPlayWindow::refreshPlayInfo()
 {
 	QMap<QString, QString> updated_playing_info;
 	updated_playing_info = media_player->getPlayingInfo();
 
 	// Now we iterate on updated_playing_info and import new entries in playing_info
 	QMap<QString, QString>::Iterator it;
-	for ( it = updated_playing_info.begin(); it != updated_playing_info.end(); ++it )
+	for (it = updated_playing_info.begin(); it != updated_playing_info.end(); ++it)
 		playing_info[it.key()] = it.data();
 
 	// Extract Time Data
@@ -320,7 +425,7 @@ void PlayWindow::refreshPlayInfo()
 		time_pos_label->setText(QString("%1 of %2").arg(current[0]).arg(total[0]));
 }
 
-void PlayWindow::cleanPlayInfo()
+void MediaPlayWindow::cleanPlayInfo()
 {
 	meta_title_label->setText(QString("-"));
 	meta_artist_label->setText(QString("-"));
@@ -329,98 +434,115 @@ void PlayWindow::cleanPlayInfo()
 	playing_info.clear();
 }
 
-void PlayWindow::showPlayBtn()
+void MediaPlayWindow::prevTrack()
 {
-	QPixmap *icon         = icons_library.getIcon(IMG_PLAY);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PLAY_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
-}
-
-void PlayWindow::showPauseBtn()
-{
-	QPixmap *icon         = icons_library.getIcon(IMG_PAUSE);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PAUSE_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
-}
-
-void PlayWindow::prevTrack()
-{
-	if (media_player->isInstanceRunning())
+	if (isPlaying())
 	{
 		if (current_track != 0)
 		{
-			stopMediaPlayer();
-			next_track = current_track - 1;
+			stopPlayer();
+			current_track = current_track - 1;
 			startMediaPlayer(next_track);
 
-			qDebug("[AUDIO] PlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+			qDebug("[AUDIO] MediaPlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 			showPauseBtn();
 		}
 	}
 }
 
-void PlayWindow::nextTrack()
+void MediaPlayWindow::nextTrack()
 {
-	if (media_player->isInstanceRunning())
+	if (isPlaying())
 	{
 		if (current_track < (play_list.count() - 1))
 		{
 			playNextTrack();
-			qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+			qDebug("[AUDIO] MediaPlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 		}
 	}
 }
 
-void PlayWindow::playNextTrack()
+void MediaPlayWindow::playNextTrack()
 {
-	stopMediaPlayer();
+	stopPlayer();
 	next_track = current_track + 1;
 	startMediaPlayer(next_track);
-	
 	showPauseBtn();
 }
 
-void PlayWindow::pause()
+void MediaPlayWindow::pause()
 {
-	qDebug("[AUDIO] media_player: pause play");
-
-	data_refresh_timer->stop();
-	media_player->pause();
-	showPlayBtn();
+	if (isPlaying())
+	{
+		PlayWindow::pause();
+		data_refresh_timer->stop();
+		showPlayBtn();
+	}
 }
 
-void PlayWindow::resume()
+void MediaPlayWindow::resume()
 {
-	if (media_player->isInstanceRunning())
+	if (isPlaying())
 	{
-		qDebug("[AUDIO] media_player: resume play");
-
-		media_player->resume();
+		PlayWindow::resume();
 		data_refresh_timer->start(refresh_time);
 		showPauseBtn();
 	}
 }
 
-void PlayWindow::stop()
+void MediaPlayWindow::stop()
 {
-	qDebug("[AUDIO] PlayWindow::stop()");
-
+	PlayWindow::stop();
+	showPlayBtn();
 	current_track = CURRENT_TRACK_NONE;
 	next_track = CURRENT_TRACK_NONE;
-	stopMediaPlayer();
-
-	showPlayBtn();
 }
 
-void PlayWindow::handle_buttons(int button_number)
+void MediaPlayWindow::handle_data_refresh_timer()
+{
+	refreshPlayInfo();
+}
+
+void MediaPlayWindow::handlePlayingDone()
+{
+	/*
+	 * mplayer has terminated because the track is finished
+	 * so we go to the next track if exists.
+	 */
+	PlayWindow::handlePlayingDone();
+	cleanPlayInfo();
+	data_refresh_timer->stop();
+	showPlayBtn();
+
+	if (current_track < (play_list.count() - 1))
+	{
+		playNextTrack();
+	}
+}
+
+void MediaPlayWindow::handlePlayingKilled()
+{
+	PlayWindow::handlePlayingKilled();
+	cleanPlayInfo();
+	data_refresh_timer->stop();
+}
+
+void MediaPlayWindow::handlePlayingAborted()
+{
+	PlayWindow::handlePlayingAborted();
+}
+
+void MediaPlayWindow::handle_buttons(int button_number)
 {
 	switch (button_number)
 	{
 	case 0:
-		if (!media_player->isInstanceRunning())
+		if (!isPlaying())
 		{
 			qDebug("[AUDIO] media_player: start from track 0");
 			startMediaPlayer(0);
+			// viene eseguito se dopo aver fatto lo stop su una canzone rimango
+			// sulla finestra di playing e ripigio il pulsante del play.
 		}
 		else if (media_player->isPaused())
 			resume();
@@ -437,88 +559,4 @@ void PlayWindow::handle_buttons(int button_number)
 		nextTrack();
 		break;
 	}
-}
-
-void PlayWindow::handleBackBtn()
-{
-	hide();
-}
-
-void PlayWindow::handleSettingsBtn()
-{
-	hide();
-	emit settingsBtn();
-}
-
-void PlayWindow::handle_data_refresh_timer()
-{
-	refreshPlayInfo();
-}
-
-void PlayWindow::handlePlayingDone()
-{
-	/*
-	 * mplayer has terminated because the track is finished
-	 * so we go to the next track if exists.
-	 */
-	cleanPlayInfo();
-	data_refresh_timer->stop();
-
-	if (current_track < (play_list.count() - 1))
-	{
-		playNextTrack();
-	}
-	else
-	{
-		showPlayBtn();
-	}
-}
-void PlayWindow::handlePlayingKilled()
-{
-	cleanPlayInfo();
-	data_refresh_timer->stop();
-}
-
-void PlayWindow::handlePlayingAborted()
-{
-	//turnOffAudioSystem(false);
-
-	hide();
-
-	// FIXME display error?
-	qDebug("[AUDIO] Error in mplayer, stopping playlist");
-}
-
-void PlayWindow::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	play_controls->setBGColor(c);
-	back_btn->setPaletteBackgroundColor(c);
-	settings_btn->setPaletteBackgroundColor(c);
-}
-
-void PlayWindow::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	play_controls->setFGColor(c);
-	back_btn->setPaletteForegroundColor(c);
-	settings_btn->setPaletteForegroundColor(c);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-void RadioPlayWindow::startPlayer(QString track)
-{
-	// Prova prova
-	startRadioStream("Rete Toscana classica", "mms://192.106.107.138/fst01");
-}
-
-void RadioPlayWindow::startRadioStream(QString name, QString url)
-{
-	qDebug("[AUDIO] startRadioStream()");
-	cleanPlayInfo();
-	media_player->play(url);
-
-	showPauseBtn();
 }

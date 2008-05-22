@@ -70,8 +70,8 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
 	connect(filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()));
 
-	connect(filesWindow, SIGNAL(startPlaylist(QPtrVector<QFileInfo>, QFileInfo *)),
-			this, SLOT(startPlaylist(QPtrVector<QFileInfo>, QFileInfo *)));
+	connect(filesWindow, SIGNAL(startPlay(QPtrVector<QFileInfo>, QFileInfo *)),
+			this, SLOT(startPlay(QPtrVector<QFileInfo>, QFileInfo *)));
 }
 
 void MultimediaSource::initAudio()
@@ -166,9 +166,9 @@ void MultimediaSource::disableSource(bool send_frame)
 	play_window->turnOffAudioSystem(send_frame);
 }
 
-void MultimediaSource::startPlaylist(QPtrVector<QFileInfo> list, QFileInfo *element)
+void MultimediaSource::startPlay(QPtrVector<QFileInfo> list, QFileInfo *element)
 {
-	play_window->startNewPlaylist(list, element);
+	play_window->startPlay(list, element);
 	play_window->show();
 }
 
@@ -376,7 +376,7 @@ void FileBrowser::itemIsClicked(int item)
 		}
 		else
 		{
-			emit startPlaylist(files_list, clicked_element);
+			emit startPlay(files_list, clicked_element);
 			/// Load play list in play window and show it
 		}
 	}

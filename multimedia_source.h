@@ -116,7 +116,7 @@ public slots:
 	void handleStartPlay();
 	void handleStopPlay();
 
-	void startPlaylist(QPtrVector<QFileInfo> list, QFileInfo *element);
+	void startPlay(QPtrVector<QFileInfo> list, QFileInfo *element);
 private:
 	/// Player screen
 	PlayWindow *play_window;
@@ -247,7 +247,7 @@ signals:
 	void notifyStartPlay();
 	void notifyStopPlay();
 	void notifyExit();
-	void startPlaylist(QPtrVector<QFileInfo> list, QFileInfo *element);
+	void startPlay(QPtrVector<QFileInfo> list, QFileInfo *element);
 };
 
 #endif // MULTIMEDIA_SOURCE_H
