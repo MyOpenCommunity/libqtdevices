@@ -352,11 +352,12 @@ void MediaPlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
 	layout->addWidget(time_pos_label);
 }
 
-void MediaPlayWindow::startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
+void MediaPlayWindow::startPlay(QValueVector<QString> _play_list, unsigned element)
 {
 	qDebug("[AUDIO] startPlay()");
 	stop();
-	generatePlaylist(files_list, clicked_element);
+	play_list = _play_list;
+	current_track = element;
 	startMediaPlayer(current_track);
 }
 
@@ -375,26 +376,6 @@ void MediaPlayWindow::startMediaPlayer(unsigned int track)
 	data_refresh_timer->start(refresh_time);
 
 	showPauseBtn();
-}
-
-void MediaPlayWindow::generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element)
-{
-	// fill play_list and set current track
-	int     track_number = 0;
-	QString track_name;
-	play_list.clear();
-
-	for (unsigned i = 0; i < files_list.count(); ++i)
-	{
-		if (files_list[i]->isDir())
-			continue;
-
-		track_name = files_list[i]->absFilePath().latin1();
-		play_list.append(track_name);
-		if (clicked_element->absFilePath().latin1() == track_name)
-			current_track = track_number;
-		++track_number;
-	}
 }
 
 void MediaPlayWindow::stopPlayer()

@@ -19,6 +19,7 @@
 
 #include <qdir.h>
 #include <qptrvector.h>
+#include <qvaluevector.h>
 #include <qlabel.h>
 #include <qtimer.h>
 
@@ -116,7 +117,7 @@ public slots:
 	void handleStartPlay();
 	void handleStopPlay();
 
-	void startPlay(QPtrVector<QFileInfo> list, QFileInfo *element);
+	void startPlay(QValueVector<QString> play_list, unsigned element);
 private:
 	/// Player screen
 	PlayWindow *play_window;
@@ -247,7 +248,7 @@ signals:
 	void notifyStartPlay();
 	void notifyStopPlay();
 	void notifyExit();
-	void startPlay(QPtrVector<QFileInfo> list, QFileInfo *element);
+	void startPlay(QValueVector<QString> play_list, unsigned element);
 };
 
 #endif // MULTIMEDIA_SOURCE_H

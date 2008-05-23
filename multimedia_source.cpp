@@ -70,8 +70,9 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
 	connect(filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()));
 
-	connect(filesWindow, SIGNAL(startPlay(QPtrVector<QFileInfo>, QFileInfo *)),
-			this, SLOT(startPlay(QPtrVector<QFileInfo>, QFileInfo *)));
+
+	connect(filesWindow, SIGNAL(startPlay(QValueVector<QString>, unsigned)),
+			this, SLOT(startPlay(QValueVector<QString>, unsigned)));
 }
 
 void MultimediaSource::initAudio()
@@ -166,7 +167,7 @@ void MultimediaSource::disableSource(bool send_frame)
 	play_window->turnOffAudioSystem(send_frame);
 }
 
-void MultimediaSource::startPlay(QPtrVector<QFileInfo> list, QFileInfo *element)
+void MultimediaSource::startPlay(QValueVector<QString> list, unsigned element)
 {
 	play_window->startPlay(list, element);
 	play_window->show();
@@ -376,8 +377,25 @@ void FileBrowser::itemIsClicked(int item)
 		}
 		else
 		{
-			emit startPlay(files_list, clicked_element);
-			/// Load play list in play window and show it
+			QValueVector<QString> play_list;
+			unsigned element = 0;
+			unsigned track_number = 0;
+			QString track_name;
+
+			for (unsigned i = 0; i < files_list.count(); ++i)
+			{
+				if (files_list[i]->isDir())
+					continue;
+
+				track_name = files_list[i]->absFilePath().latin1();
+				play_list.append(track_name);
+				if (clicked_element->absFilePath().latin1() == track_name)
+					element = track_number;
+
+				++track_number;
+			}
+
+			emit startPlay(play_list, element);
 		}
 	}
 	else

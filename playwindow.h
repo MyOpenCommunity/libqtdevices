@@ -19,11 +19,9 @@
 #define PLAY_WINDOW_H
 
 #include <qwidget.h>
-#include <qptrvector.h>
 #include <qvaluevector.h>
 
 class MediaPlayer;
-class QFileInfo;
 class ButtonsBar;
 class BtButton;
 class TitleLabel;
@@ -61,7 +59,7 @@ public:
 	void turnOnAudioSystem(bool send_frame);
 	void turnOffAudioSystem(bool send_frame);
 
-	virtual void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element) = 0;
+	virtual void startPlay(QValueVector<QString> _play_list, unsigned element) = 0;
 
 public slots:
 	void handleBackBtn();
@@ -117,7 +115,7 @@ public:
 	QMap<QString, QString> playing_info;
 
 	/// Start PLAY, begins to play a given track and sets the play_list
-	void startPlay(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
+	void startPlay(QValueVector<QString> list, unsigned element);
 
 public slots:
 	// MediaPlayer Handlers
@@ -148,19 +146,12 @@ private:
 	/// Method to Get and Visualize playing INFO from MPlayer
 	void refreshPlayInfo();
 
-	// Change status of play/pause button in control bar
-	void generatePlaylist(QPtrVector<QFileInfo> files_list, QFileInfo *clicked_element);
 	void startMediaPlayer(unsigned int);
 	void playNextTrack();
 
 	/// refreshing info time interval
 	int refresh_time;
 
-	/**
-	 * The differences between files_list and play_list are:
-	 *  - play_list contains QString with the full path
-	 *  - files_list does not contain dirs
-	 */
 	QValueVector<QString> play_list;
 
 	/*
