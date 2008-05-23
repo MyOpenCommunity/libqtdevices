@@ -33,9 +33,9 @@ unsigned char tipoData=0;
 /*******************************************
  *
  *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu *i, sottoMenu**s,
-		sottoMenu**c, sottoMenu**im,  sottoMenu **a, ThermalMenu *t, diffSonora**dS, diffmulti**_dm, antintrusione** ant,
-		QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG, QColor* bg, QColor* fg1, QColor *fg2)
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
+		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, diffSonora **dS, diffmulti **_dm, antintrusione **ant,
+		QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG, QColor *bg, QColor *fg1, QColor *fg2)
 {
 	home=h;
 	specPage=sP;
@@ -448,7 +448,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 
 						case  ILLUMINAZIONE:
-							pageAct= illumino; 
+							pageAct= *illumino; 
 							par3 = page_item_softstart; 
 							par4 = page_item_softstop;
 							addr = computeAddress();
@@ -462,7 +462,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 
 						case TERMOREGOLAZIONE:
-							pageAct=termo;
+							pageAct=*termo;
 							addr = computeAddress();
 							//addItemU(pageAct, addr);
 							break;
@@ -633,22 +633,22 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 						case ILLUMINAZIONE:
 							//			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
-							illumino->forceDraw();
+							(*illumino)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
-							QObject::connect(*home,SIGNAL(Illuminazione()),illumino,SLOT(showFullScreen()));
-							QObject::connect(illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+							QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
+							QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif                                          
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)       
-							QObject::connect(*home,SIGNAL(Illuminazione()),illumino,SLOT(show()));
-							QObject::connect(illumino,SIGNAL(Closed()),*home,SLOT(show()));
+							QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
+							QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                          
-							QObject::connect(illumino,SIGNAL(Closed()),illumino,SLOT(hide()));			
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),illumino,SIGNAL(gestFrame(char *)));
-							QObject::connect(illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-							QObject::connect(illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
-							QObject::connect(BtM,SIGNAL(freeze(bool)),illumino,SLOT(freezed(bool)));
+							QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));			
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
+							QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(*illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),*illumino,SLOT(freezed(bool)));
 							//(illumino)->inizializza();
 							break;
 						case ANTIINTRUSIONE:
@@ -693,21 +693,21 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 						case TERMOREGOLAZIONE:
 						case TERMOREG_MULTI_PLANT:
-							termo->forceDraw();
+							(*termo)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(showFullScreen()));
-							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showFullScreen()));
+							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
-							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(show()));
-							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(show()));
+							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(show()));
+							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-							QObject::connect(termo,SIGNAL(Closed()),termo,SLOT(hide()));
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),termo,SIGNAL(gestFrame(char *)));
-							QObject::connect(termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-							QObject::connect(BtM,SIGNAL(freeze(bool)),termo,SLOT(freezed(bool)));
+							QObject::connect(*termo,SIGNAL(Closed()),*termo,SLOT(hide()));
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
+							QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
 							break;
 						case DIFSON:
 							//	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
@@ -1071,10 +1071,10 @@ bool xmlconfhandler::characters( const QString & qValue)
 							break;
 
 						case ILLUMINAZIONE:
-							illumino = new sottoMenu (NULL,"ILLUMINO");
-							illumino->setBGColor(Background);
-							illumino->setFGColor(Foreground);
-							pageAct=illumino;
+							*illumino = new sottoMenu (NULL,"ILLUMINO");
+							(*illumino)->setBGColor(Background);
+							(*illumino)->setFGColor(Foreground);
+							pageAct=*illumino;
 							break;
 
 						case DIFSON_MULTI:
@@ -1118,14 +1118,14 @@ bool xmlconfhandler::characters( const QString & qValue)
 
 						case TERMOREGOLAZIONE:
 							n = getThermRootNode();
-							termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
-							pageAct=termo;
+							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
+							pageAct=*termo;
 							break;
 
 						case TERMOREG_MULTI_PLANT:
 							n = getThermRootNode();
-							termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
-							pageAct=termo;
+							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
+							pageAct=*termo;
 							break;
 
 						case IMPOSTAZIONI:
