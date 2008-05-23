@@ -218,15 +218,15 @@ void PlayWindow::stopPlayer()
 MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
 	PlayWindow(parent, name)
 {
-	main_layout->addSpacing(20);
+	main_layout->insertSpacing(0, 20);
 
 	/// Create Labels (that contain tags)
- 	QFont aFont;
+	QFont aFont;
 	FontManager::instance()->getFont(font_multimedia_source_AudioPlayingWindow, aFont);
 
 	// layouts for media
 	QHBoxLayout *tags_layout = new QHBoxLayout();
-	main_layout->insertLayout(0, tags_layout);
+	main_layout->insertLayout(1, tags_layout);
 
 	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
 	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
@@ -255,7 +255,9 @@ MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
 	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
 	play_controls->setButtonIcons(3, *icon, *pressed_icon);
 
-	main_layout->insertWidget(1, play_controls);
+	main_layout->insertWidget(2, play_controls);
+	// Add space to the end of layout to align buttons with previus page
+	main_layout->addSpacing(10);
 	connect(play_controls, SIGNAL(clicked(int)), SLOT(handle_buttons(int)));
 
 	data_refresh_timer = new QTimer(this);
@@ -541,8 +543,6 @@ void MediaPlayWindow::handle_buttons(int button_number)
 		{
 			qDebug("[AUDIO] media_player: start from track 0");
 			startMediaPlayer(0);
-			// viene eseguito se dopo aver fatto lo stop su una canzone rimango
-			// sulla finestra di playing e ripigio il pulsante del play.
 		}
 		else if (media_player->isPaused())
 			resume();
