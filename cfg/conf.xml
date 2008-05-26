@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!--ATTENZIONE: il file xml NON deve essere indentato, NON ha più di sei livelli (radice compresa) -->
 <!--e non deve avere carattere a capo a fine file-->
 <!--In tutti i campi where che seguono nella versione attuale il livello L4 è gestito -->
 <configuratore>
   <!-- ver_xml: versione del file di configurazione -->
-  <ver_xml>4.0.2</ver_xml>
+  <ver_xml>4.0.4</ver_xml>
   <!--4.0.0: - Prima versione per Firmweare 4.0.X, Il conf.xml ver. 3.0.X non esiste! (codifica UTF-8)-->
   <!--# Diffusione Sonora / Diffusione Sonora Multicanale: Aggiunta sorgente Multimediale (TS con funzioni IP) (nuovi ID 50 e 51)-->
   <!--# Scenari Evoluti e Schedulati: Tolto obbligo condizione oraria-->
@@ -16,6 +16,10 @@
   <!--4.0.2: - aggiunta formattazione 01..99#01..99 per gestire la centrale termo 4 zone in home page, scenari evoluti e page default-->
   <!--4.0.3: - Termoregolazione: rispostati i campi type e ind_centrale sotto il nodo principale, aggiunti item nuovi nella pagina di termoregolazione-->
   <!--# pagemenu: aggiunti nuovi item9 per sonda esterna e zona non controllata-->
+  <!--4.0.4: - Supervisione impianto: aggiunto sistema-->
+  <!--# Termoregolazione: configurazione a livelli-->
+  <!--# Scenari evoluti: aggiunta condizione=ausiliario-->
+  <!--4.0.5: - Diffusione sonora e Diffusione sonora multicanale: aggiunto amplificatore di potenza e web_radio per sorgente multimediale-->
   <creator_sw>
     <name>tidisplaycolorip</name>
     <ver_sw>2.0.x</ver_sw>
@@ -805,130 +809,162 @@
       <id>5</id>
       <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
       <cid>5</cid>
-      <descr>termoregolazione</descr>
-      <!--Tipo Centrale: 0=3550(99 zone), 1=4695(4 zone)-->
-      <type>1</type>
-      <!--Se type=1 allora indirizzo centrale BASIC (da 01 a 99)-->
-      <ind_centrale>14</ind_centrale>
-      <item1>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>22</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>500</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>ZONA 3550 senza fan coil</descr>
-        <!-- indirizzo della sonda. Valori possibili: 1..99 -->
-        <where>1</where>
-        <!-- lista immagini -->
-        <cimg1>btnmin.png</cimg1>
-        <cimg2>btnplus.png</cimg2>
-        <cimg3>btnman.png</cimg3>
-        <cimg4>btnauto.png</cimg4>
-        <cimg5>sondaantigelo.png</cimg5>
-        <cimg6>sondaoff.png</cimg6>
-      </item1>
-      <item2>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>52</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>501</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>ZONA 3550 con fan coil</descr>
-        <!-- indirizzo della sonda. Valori possibili: 1..99 -->
-        <where>1</where>
-        <!-- lista immagini -->
-        <cimg1>btnmin.png</cimg1>
-        <cimg2>btnplus.png</cimg2>
-        <cimg3>btnman.png</cimg3>
-        <cimg4>btnauto.png</cimg4>
-        <cimg5>sondaantigelo.png</cimg5>
-        <cimg6>sondaoff.png</cimg6>
-      </item2>
-      <item3>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>53</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>502</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>ZONA 4695 senza fan coil</descr>
-        <!-- indirizzo della sonda. Valori possibili: 1..99 -->
-        <where>1</where>
-        <!-- lista immagini -->
-        <cimg1>btnmin.png</cimg1>
-        <cimg2>btnplus.png</cimg2>
-        <cimg3>btnman.png</cimg3>
-        <cimg4>btnauto.png</cimg4>
-        <cimg5>sondaantigelo.png</cimg5>
-        <cimg6>sondaoff.png</cimg6>
-      </item3>
-      <item4>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>54</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>503</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>ZONA 4695 con fan coil</descr>
-        <!-- indirizzo della sonda. Valori possibili: 1..99 -->
-        <where>1</where>
-        <!-- lista immagini -->
-        <cimg1>btnmin.png</cimg1>
-        <cimg2>btnplus.png</cimg2>
-        <cimg3>btnman.png</cimg3>
-        <cimg4>btnauto.png</cimg4>
-        <cimg5>sondaantigelo.png</cimg5>
-        <cimg6>sondaoff.png</cimg6>
-      </item4>
-      <item5>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>55</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>504</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>SONDA ESTERNA</descr>
-        <!-- indirizzo della sonda. Valori possibili: 1..9 -->
-        <where>1</where>
-        <!-- lista immagini -->
-        <cimg1>btnmin.png</cimg1>
-        <cimg2>btnplus.png</cimg2>
-        <cimg3>btnman.png</cimg3>
-        <cimg4>btnauto.png</cimg4>
-        <cimg5>sondaantigelo.png</cimg5>
-        <cimg6>sondaoff.png</cimg6>
-      </item5>
-      <item6>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>56</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>505</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>ZONA NON CONTROLLATA (Master)</descr>
-        <!-- indirizzo della sonda. Valori possibili: 1..99 -->
-        <where>1</where>
-        <!-- lista immagini -->
-        <cimg1>btnmin.png</cimg1>
-        <cimg2>btnplus.png</cimg2>
-        <cimg3>btnman.png</cimg3>
-        <cimg4>btnauto.png</cimg4>
-        <cimg5>sondaantigelo.png</cimg5>
-        <cimg6>sondaoff.png</cimg6>
-      </item6>
-      <item7>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>56</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>506</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>ZONA NON CONTROLLATA (Slave)</descr>
-        <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where è formattato nel seguente modo: [SLAVE][ZaZb])-->
-        <where>1</where>
-        <!-- lista immagini -->
-        <cimg1>btnmin.png</cimg1>
-        <cimg2>btnplus.png</cimg2>
-        <cimg3>btnman.png</cimg3>
-        <cimg4>btnauto.png</cimg4>
-        <cimg5>sondaantigelo.png</cimg5>
-        <cimg6>sondaoff.png</cimg6>
-      </item7>
+      <descr>termoregolazione 99 zone</descr>
+      <plant>
+        <id>63</id>
+        <cid>507</cid>
+        <descr>Impianto 99 zone</descr>
+        <item1>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>22</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>500</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 3550 senza fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item1>
+        <item2>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>52</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>501</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 3550 con fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item2>
+        <item3>
+          <id>66</id>
+          <cid>510</cid>
+          <descr>Centrale 99 zone</descr>
+          <summer>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </summer>
+          <winter>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </winter>
+        </item3>
+      </plant>
+      <extprobe>
+        <id>64</id>
+        <cid>508</cid>
+        <descr>Sonde esterne</descr>
+        <item5>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>55</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>504</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>SONDA ESTERNA</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..9 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item5>
+      </extprobe>
+      <tempprobe>
+        <id>65</id>
+        <cid>509</cid>
+        <descr>Zone non controllate</descr>
+        <item6>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>505</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Master)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item6>
+        <item7>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>506</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Slave)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where è formattato nel seguente modo: [SLAVE][ZaZb])-->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item7>
+      </tempprobe>
     </page5>
     <page6>
       <!-- identificativo della pagina, vedi tab. skinObj -->
@@ -988,6 +1024,13 @@
         <mode>0</mode>
         <!-- indirizzo. Valori possibili: 101..109  -->
         <where>101</where>
+        <!--web_radio: elenco delle radio IP. Utilizzato solo se mode=2-->
+        <web_radio>
+          <item1>
+            <descr>RTL</descr>
+            <url>http://www.rtl.it</url>
+          </item1>
+        </web_radio>
         <!-- lista immagini -->
         <cimg1>btncycle.png</cimg1>
         <cimg2>audiosetting.png</cimg2>
@@ -1029,6 +1072,24 @@
         <cimg3>onamplgrpsx.png</cimg3>
         <cimg4>onamplgrpdx.png</cimg4>
       </item3>
+      <item4>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>69</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>603</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>AMPLIFICATORE DI POTENZA</descr>
+        <!-- indirizzo. Valori possibili: 01..99 (a pf)  -->
+        <where>10</where>
+        <!--preX: nomi dei preset modificati dall'utente-->
+        <pre11>liscio</pre11>
+        <pre14>latino americano</pre14>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>onampl.png</cimg3>
+        <cimg4>offampl.png</cimg4>
+      </item4>
     </page7>
     <page8>
       <!-- identificativo della pagina, vedi tab. skinObj -->
@@ -1061,7 +1122,7 @@
         </condH>
         <!--condDevice: condizione legata allo stato di un dispositivo SCS-->
         <condDevice>
-          <!--Presenza condizione-value:  0=non presente, 1=attuatore luce, 2=dimmer 10, 3=termoregolazione, 4=amplificatore diffusione sonora, 5=illuminotecnica, 6=dimmer 100-->
+          <!--Presenza condizione-value:  0=non presente, 1=attuatore luce, 2=dimmer 10, 3=termoregolazione, 4=amplificatore diffusione sonora, 5=illuminotecnica, 6=dimmer 100, 7= sonda esterna, 8=zona non controllata, 9=ausiliario-->
           <value>1</value>
           <!--descrizione del parametro rilevato dal dispositivo-->
           <descr>Luce salotto</descr>
@@ -1072,6 +1133,7 @@
           <!-- Se value=6: where è l'indirizzo dell'attuatore Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
           <!--Se value=7: where è l'indirizzo della sonda esterna. Valori ammessi: 1..9-->
           <!--Se value=8: where è l'indirizzo della zona non controllata. Valori ammessi: 01..99 se Master, [Slave][ZaZb] se slave.-->
+          <!--Se value=9: where è l'indirizzo dell'ausiliario. Valori ammessi: 1..9.-->
           <where>30</where>
           <!--trigger: valore del parametro espresso in termini OPEN, dipende da value-->
           <!--Se value=1: valori ammessi: 0 (OFF), 1 (ON)-->
@@ -1079,6 +1141,7 @@
           <!--Se value=3, 7 o 8: valore in OPEN che esprime una temperatura in °C. es: 0215=+21,5°C, 1030=-3°C (discrezione di mezzo grado)-->
           <!--Se value=4:valori ammessi: 1..31, 0-31(ON), -1(OFF), 0-6(ON dal 0% al 20%), 7-12(ON dal 21% al 40%), 13-22(ON dal 41% al 70%), 23-31(ON dal 41% al 100%)-->
           <!--Se value=6: valori ammessi: 2(20%),3,4,5,6,7,8,9,10, 0(OFF), 1-20(ON dal 1% al 20%), 21-40(ON dal 21% al 40%), 41-70(ON dal 41% al 70%), 71-100(ON dal 71% al 100%)-->
+          <!--Se value=9: valori ammessi: 1 (ON), 0 (OFF)-->
           <trigger>1</trigger>
           <!--cimg1: immagine del tipo di condizione-->
           <cimg1>imgluce.png</cimg1>
@@ -1246,7 +1309,216 @@
         <cimg1>imginsampl.png</cimg1>
         <cimg2>arrrg.png</cimg2>
       </item3>
+      <item4>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>69</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>603</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>AMPLIFICATORE DI POTENZA</descr>
+        <!-- indirizzo. Valori possibili: 01..99 (a pf)  -->
+        <where>10</where>
+        <!-- lista immagini -->
+        <cimg1>btnon.png</cimg1>
+        <cimg2>btnoff.png</cimg2>
+        <cimg3>onampl.png</cimg3>
+        <cimg4>offampl.png</cimg4>
+      </item4>
     </page9>
+    <page10>
+      <id>14</id>
+      <cid>14</cid>
+      <descr>supervisione impianto</descr>
+      <class>
+        <id>59</id>
+        <cid>1300</cid>
+        <descr>Stop&amp;Go</descr>
+        <itemx>
+          <id>60</id>
+          <cid>1301</cid>
+          <descr>Stop&amp;Go</descr>
+          <!--where: indirizzo composto dai seguenti campi: 2 e X, dove X va da 1 a 999.-->
+          <where>2X</where>
+        </itemx>
+        <itemy>
+          <id>61</id>
+          <cid>1302</cid>
+          <descr>Stop&amp;Go plus</descr>
+          <!--where: indirizzo composto dai seguenti campi: 2 e X, dove X va da 1 a 999.-->
+          <where />
+        </itemy>
+        <itemz>
+          <id>62</id>
+          <cid>1303</cid>
+          <descr>Stop&amp;Go BTest</descr>
+          <!--where: indirizzo composto dai seguenti campi: 2 e X, dove X va da 1 a 999.-->
+          <where />
+        </itemz>
+      </class>
+    </page10>
+    <page11>
+      <!-- identificativo della pagina, vedi tab. skinObj -->
+      <id>15</id>
+      <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
+      <cid>15</cid>
+      <descr>termoregolazione 4 zone</descr>
+      <plant1>
+        <id>67</id>
+        <cid>511</cid>
+        <descr>Impianto 4 zone</descr>
+        <ind_centrale>14</ind_centrale>
+        <item1>
+          <id>68</id>
+          <cid>512</cid>
+          <descr>Centrale 4 zone</descr>
+          <summer>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </summer>
+          <winter>
+            <prog>
+              <p2 />
+              <p3 />
+              <p1 />
+            </prog>
+            <scen>
+              <s1 />
+              <s2></s2>
+              <s3 />
+              <s4 />
+              <s5 />
+              <s6 />
+              <s7 />
+              <s8></s8>
+              <s9 />
+              <s10 />
+              <s11 />
+              <s12 />
+              <s13 />
+              <s14 />
+              <s15 />
+              <s16 />
+            </scen>
+          </winter>
+        </item1>
+        <item2>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>54</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>503</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 4695 con fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item2>
+        <item3>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>53</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>502</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA 4695 senza fan coil</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item3>
+      </plant1>
+      <extprobe>
+        <id>64</id>
+        <cid>508</cid>
+        <descr>Sonde esterne</descr>
+        <item5>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>55</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>504</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>SONDA ESTERNA</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..9 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item5>
+      </extprobe>
+      <tempprobe>
+        <id>65</id>
+        <cid>509</cid>
+        <descr>Zone non controllate</descr>
+        <item6>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>505</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Master)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 1..99 -->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item6>
+        <item7>
+          <!-- identifica la tipologia di item, vedi tab. skinObj -->
+          <id>56</id>
+          <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+          <cid>506</cid>
+          <!-- descr: contiene il testo da mostrare nell'item -->
+          <descr>ZONA NON CONTROLLATA (Slave)</descr>
+          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where è formattato nel seguente modo: [SLAVE][ZaZb])-->
+          <where>1</where>
+          <!-- lista immagini -->
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item7>
+      </tempprobe>
+    </page11>
     <pagespecial>
       <!-- identificativo della pagina, vedi tab. skinObj -->
       <id>10</id>
