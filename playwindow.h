@@ -121,9 +121,6 @@ public:
 	void pause();
 	void resume();
 
-	/// Stores current playing info
-	QMap<QString, QString> playing_info;
-
 protected slots:
 	// MediaPlayer Handlers
 	void handlePlayingDone();
@@ -134,8 +131,9 @@ protected:
 	void startPlayer(unsigned int);
 
 private slots:
-	void handle_data_refresh_timer();
-	void handle_buttons(int);
+	/// Method to Get and Visualize playing INFO from MPlayer
+	void refreshPlayInfo();
+	void handleButtons(int);
 
 private:
 	void addTextLabels(QBoxLayout *layout, QFont& aFont);
@@ -150,8 +148,8 @@ private:
 	/// Clean play INFO from MPlayer
 	void cleanPlayInfo();
 
-	/// Method to Get and Visualize playing INFO from MPlayer
-	void refreshPlayInfo();
+	/// Stores current playing info
+	QMap<QString, QString> playing_info;
 
 	/// refreshing info time interval
 	int refresh_time;

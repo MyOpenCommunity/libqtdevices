@@ -306,12 +306,12 @@ MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
 	main_layout->insertWidget(2, play_controls);
 	// Add space to the end of layout to align buttons with previus page
 	main_layout->addSpacing(10);
-	connect(play_controls, SIGNAL(clicked(int)), SLOT(handle_buttons(int)));
+	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
 
 	data_refresh_timer = new QTimer(this);
 
 	// Connect the timer to the handler, the timer get and displays data from mplayer
-	connect(data_refresh_timer, SIGNAL(timeout()), SLOT(handle_data_refresh_timer()));
+	connect(data_refresh_timer, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 
 	// Set Timer
 	refresh_time = 500;
@@ -465,11 +465,6 @@ void MediaPlayWindow::resume()
 	}
 }
 
-void MediaPlayWindow::handle_data_refresh_timer()
-{
-	refreshPlayInfo();
-}
-
 void MediaPlayWindow::handlePlayingDone()
 {
 	cleanPlayInfo();
@@ -484,7 +479,7 @@ void MediaPlayWindow::handlePlayingKilled()
 	PlayWindow::handlePlayingKilled();
 }
 
-void MediaPlayWindow::handle_buttons(int button_number)
+void MediaPlayWindow::handleButtons(int button_number)
 {
 	switch (button_number)
 	{
