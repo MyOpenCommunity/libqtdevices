@@ -30,12 +30,12 @@ MediaPlayer::MediaPlayer(QObject *parent, const char *name) :
 {
 	struct sigaction sa;
 
-	memset( &sa, 0, sizeof ( sa ) );
-	sigemptyset( &sa.sa_mask );
-	sigaddset( &sa.sa_mask, SIGCHLD );
+	memset( &sa, 0, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sigaddset(&sa.sa_mask, SIGCHLD);
 	sa.sa_flags = SA_SIGINFO | SA_RESTART;
 	sa.sa_sigaction = ::mplayerExited;
-	sigaction( SIGCHLD, &sa, NULL );
+	sigaction(SIGCHLD, &sa, NULL);
 
 	mplayer_pid = 0;
 	paused = false;
@@ -76,7 +76,7 @@ bool MediaPlayer::play(QString track)
 		dup2(output_pipe[1], STDOUT_FILENO);
 
 		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
-		const char *mplayer_args[] = { "mplayer", NULL, NULL };
+		const char *mplayer_args[] = {"mplayer", NULL, NULL};
 
 		mplayer_args[1] = track.latin1();
 
@@ -181,11 +181,11 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 
 	/// Parse ROW data to get info
 	QMap<QString, QString>::Iterator it;
-	for ( it = data_search.begin(); it != data_search.end(); ++it )
+	for (it = data_search.begin(); it != data_search.end(); ++it)
 	{
-		QRegExp rx( it.data() );
+		QRegExp rx(it.data());
 
-		if ( rx.search( row_data ) > -1 )
+		if (rx.search(row_data) > -1)
 			info_data[it.key()] = rx.cap(1); //matches[matches.count()-1];
 	}
 
