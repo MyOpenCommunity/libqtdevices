@@ -38,19 +38,16 @@ class  PlayWindow : public QWidget
 {
 Q_OBJECT
 public:
-	PlayWindow(QWidget *parent = 0, const char * name = 0);
-	~PlayWindow() {};
-
 	// Apply Style
 	virtual void setBGColor(QColor c);
 	virtual void setFGColor(QColor c);
 	
 	// Play control
-	virtual void nextTrack();
-	virtual void prevTrack();
+	void nextTrack();
+	void prevTrack();
 	virtual void pause();
 	virtual void resume();
-	virtual void stop();
+	void stop();
 
 	/// Return true if a song is currently active, even if in pause.
 	bool isPlaying();
@@ -59,13 +56,20 @@ public:
 	void turnOnAudioSystem(bool send_frame);
 	void turnOffAudioSystem(bool send_frame);
 
-	virtual void startPlay(QValueVector<QString> _play_list, unsigned element) = 0;
+	/// Start PLAY, begins to play and sets the play_list
+	void startPlayer(QValueVector<QString> _play_list, unsigned element);
 
 public slots:
 	void handleBackBtn();
 	void handleSettingsBtn();
 
 protected:
+	// To make PlayWindow an abstract class.
+	PlayWindow(QWidget *parent = 0, const char * name = 0);
+	virtual void startPlayer(unsigned int);
+	virtual void stopPlayer();
+	void playNextTrack();
+
 	void addMainControls(QBoxLayout* layout);
 
 	/// Media player
@@ -77,19 +81,29 @@ protected:
 	/// Main layout
 	QBoxLayout *main_layout;
 
-	void stopPlayer();
-
 protected slots:
 	// MediaPlayer Handlers
 	virtual void handlePlayingDone();
-	virtual void handlePlayingKilled();
-	virtual void handlePlayingAborted();
+	virtual void handlePlayingKilled() {}
+	void handlePlayingAborted();
 
 signals:
 	// User released settings button
 	void settingsBtn();
 	void notifyStartPlay();
 	void notifyStopPlay();
+
+private:
+	QValueVector<QString> play_list;
+
+	/*
+	 * current_track is the track played by mplayer.
+	 * next_track is the track to be played by next mplayer instance.
+	 * CURRENT_TRACK_NONE means no track has to be played.
+	 */
+	unsigned int current_track;
+	unsigned int next_track;
+	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
 };
 
 
@@ -98,37 +112,30 @@ class MediaPlayWindow : public PlayWindow
 Q_OBJECT
 public:
 	MediaPlayWindow(QWidget *parent = 0, const char * name = 0);
-	~MediaPlayWindow() {};
 
 	// Apply Style
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
 	// Play control
-	void nextTrack();
-	void prevTrack();
 	void pause();
 	void resume();
-	void stop();
 
 	/// Stores current playing info
 	QMap<QString, QString> playing_info;
 
-	/// Start PLAY, begins to play a given track and sets the play_list
-	void startPlay(QValueVector<QString> list, unsigned element);
-
-public slots:
+protected slots:
 	// MediaPlayer Handlers
 	void handlePlayingDone();
 	void handlePlayingKilled();
-	void handlePlayingAborted();
+
+protected:
+	void stopPlayer();
+	void startPlayer(unsigned int);
 
 private slots:
 	void handle_data_refresh_timer();
 	void handle_buttons(int);
-	
-protected:
-	void stopPlayer();
 
 private:
 	void addTextLabels(QBoxLayout *layout, QFont& aFont);
@@ -146,22 +153,8 @@ private:
 	/// Method to Get and Visualize playing INFO from MPlayer
 	void refreshPlayInfo();
 
-	void startMediaPlayer(unsigned int);
-	void playNextTrack();
-
 	/// refreshing info time interval
 	int refresh_time;
-
-	QValueVector<QString> play_list;
-
-	/*
-	 * current_track is the track played by mplayer.
-	 * next_track is the track to be played by next mplayer instance.
-	 * CURRENT_TRACK_NONE means no track has to be played.
-	 */
-	unsigned int current_track;
-	unsigned int next_track;
-	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
 
 	/// Labels
 	TitleLabel *file_name_label,   *percent_pos_label,

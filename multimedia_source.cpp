@@ -71,8 +71,8 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	connect(filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()));
 
 
-	connect(filesWindow, SIGNAL(startPlay(QValueVector<QString>, unsigned)),
-			this, SLOT(startPlay(QValueVector<QString>, unsigned)));
+	connect(filesWindow, SIGNAL(startPlayer(QValueVector<QString>, unsigned)),
+			this, SLOT(startPlayer(QValueVector<QString>, unsigned)));
 }
 
 void MultimediaSource::initAudio()
@@ -167,9 +167,9 @@ void MultimediaSource::disableSource(bool send_frame)
 	play_window->turnOffAudioSystem(send_frame);
 }
 
-void MultimediaSource::startPlay(QValueVector<QString> list, unsigned element)
+void MultimediaSource::startPlayer(QValueVector<QString> list, unsigned element)
 {
-	play_window->startPlay(list, element);
+	play_window->startPlayer(list, element);
 	play_window->show();
 }
 
@@ -395,7 +395,7 @@ void FileBrowser::itemIsClicked(int item)
 				++track_number;
 			}
 
-			emit startPlay(play_list, element);
+			emit startPlayer(play_list, element);
 		}
 	}
 	else

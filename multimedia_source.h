@@ -117,7 +117,7 @@ public slots:
 	void handleStartPlay();
 	void handleStopPlay();
 
-	void startPlay(QValueVector<QString> play_list, unsigned element);
+	void startPlayer(QValueVector<QString> play_list, unsigned element);
 private:
 	/// Player screen
 	PlayWindow *play_window;
@@ -248,7 +248,7 @@ signals:
 	void notifyStartPlay();
 	void notifyStopPlay();
 	void notifyExit();
-	void startPlay(QValueVector<QString> play_list, unsigned element);
+	void startPlayer(QValueVector<QString> play_list, unsigned element);
 };
 
 #endif // MULTIMEDIA_SOURCE_H

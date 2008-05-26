@@ -59,6 +59,9 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 {
 	qDebug("[AUDIO] PlayWindow costructor");
 
+	current_track = CURRENT_TRACK_NONE;
+	next_track = CURRENT_TRACK_NONE;
+
 	/// set self Geometry
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
@@ -110,10 +113,30 @@ void PlayWindow::setFGColor(QColor c)
 
 void PlayWindow::prevTrack()
 {
+	if (media_player->isInstanceRunning() && current_track != 0)
+	{
+		stopPlayer();
+		next_track = current_track - 1;
+		startPlayer(next_track);
+
+		qDebug("[AUDIO] MediaPlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+	}
 }
 
 void PlayWindow::nextTrack()
 {
+	if (media_player->isInstanceRunning() && current_track < (play_list.count() - 1))
+	{
+		playNextTrack();
+		qDebug("[AUDIO] MediaPlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+	}
+}
+
+void PlayWindow::playNextTrack()
+{
+	stopPlayer();
+	next_track = current_track + 1;
+	startPlayer(next_track);
 }
 
 void PlayWindow::pause()
@@ -127,6 +150,8 @@ void PlayWindow::stop()
 {
 	qDebug("[AUDIO] MediaPlayWindow::stop()");
 	stopPlayer();
+	current_track = CURRENT_TRACK_NONE;
+	next_track = CURRENT_TRACK_NONE;
 }
 
 void PlayWindow::resume()
@@ -154,10 +179,14 @@ void PlayWindow::handleSettingsBtn()
 
 void PlayWindow::handlePlayingDone()
 {
-}
-
-void PlayWindow::handlePlayingKilled()
-{
+	/*
+	 * mplayer has terminated because the track is finished
+	 * so we go to the next track if exists.
+	 */
+	if (current_track < (play_list.count() - 1))
+	{
+		playNextTrack();
+	}
 }
 
 void PlayWindow::handlePlayingAborted()
@@ -192,6 +221,25 @@ void PlayWindow::turnOffAudioSystem(bool send_frame)
 
 	if(send_frame)
 		emit notifyStopPlay();
+}
+
+void PlayWindow::startPlayer(QValueVector<QString> _play_list, unsigned element)
+{
+	qDebug("[AUDIO] startPlay()");
+	stop();
+	play_list = _play_list;
+	current_track = element;
+	startPlayer(current_track);
+}
+
+void PlayWindow::startPlayer(unsigned int track)
+{
+	// Start playing and point next Track
+	current_track = track;
+	next_track = current_track + 1;
+
+	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
+	media_player->play(play_list[current_track]);
 }
 
 void PlayWindow::stopPlayer()
@@ -267,9 +315,6 @@ MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
 
 	// Set Timer
 	refresh_time = 500;
-
-	current_track = CURRENT_TRACK_NONE;
-	next_track = CURRENT_TRACK_NONE;
 }
 
 void MediaPlayWindow::showPlayBtn()
@@ -352,35 +397,18 @@ void MediaPlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
 	layout->addWidget(time_pos_label);
 }
 
-void MediaPlayWindow::startPlay(QValueVector<QString> _play_list, unsigned element)
+void MediaPlayWindow::startPlayer(unsigned int track)
 {
-	qDebug("[AUDIO] startPlay()");
-	stop();
-	play_list = _play_list;
-	current_track = element;
-	startMediaPlayer(current_track);
-}
-
-void MediaPlayWindow::startMediaPlayer(unsigned int track)
-{
-	// Start playing and point next Track
-	current_track = track;
-	next_track = current_track + 1;
-
-	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
-
+	PlayWindow::startPlayer(track);
 	cleanPlayInfo();
-	media_player->play(play_list[current_track]);
-	
-	// Start Timer
-	data_refresh_timer->start(refresh_time);
-
 	showPauseBtn();
+	data_refresh_timer->start(refresh_time);
 }
 
 void MediaPlayWindow::stopPlayer()
 {
 	PlayWindow::stopPlayer();
+	showPlayBtn();
 	data_refresh_timer->stop();
 }
 
@@ -417,42 +445,6 @@ void MediaPlayWindow::cleanPlayInfo()
 	playing_info.clear();
 }
 
-void MediaPlayWindow::prevTrack()
-{
-	if (isPlaying())
-	{
-		if (current_track != 0)
-		{
-			stopPlayer();
-			current_track = current_track - 1;
-			startMediaPlayer(next_track);
-
-			qDebug("[AUDIO] MediaPlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
-			showPauseBtn();
-		}
-	}
-}
-
-void MediaPlayWindow::nextTrack()
-{
-	if (isPlaying())
-	{
-		if (current_track < (play_list.count() - 1))
-		{
-			playNextTrack();
-			qDebug("[AUDIO] MediaPlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
-		}
-	}
-}
-
-void MediaPlayWindow::playNextTrack()
-{
-	stopPlayer();
-	next_track = current_track + 1;
-	startMediaPlayer(next_track);
-	showPauseBtn();
-}
-
 void MediaPlayWindow::pause()
 {
 	if (isPlaying())
@@ -473,14 +465,6 @@ void MediaPlayWindow::resume()
 	}
 }
 
-void MediaPlayWindow::stop()
-{
-	PlayWindow::stop();
-	showPlayBtn();
-	current_track = CURRENT_TRACK_NONE;
-	next_track = CURRENT_TRACK_NONE;
-}
-
 void MediaPlayWindow::handle_data_refresh_timer()
 {
 	refreshPlayInfo();
@@ -488,31 +472,16 @@ void MediaPlayWindow::handle_data_refresh_timer()
 
 void MediaPlayWindow::handlePlayingDone()
 {
-	/*
-	 * mplayer has terminated because the track is finished
-	 * so we go to the next track if exists.
-	 */
-	PlayWindow::handlePlayingDone();
 	cleanPlayInfo();
 	data_refresh_timer->stop();
-	showPlayBtn();
-
-	if (current_track < (play_list.count() - 1))
-	{
-		playNextTrack();
-	}
+	PlayWindow::handlePlayingDone();
 }
 
 void MediaPlayWindow::handlePlayingKilled()
 {
-	PlayWindow::handlePlayingKilled();
 	cleanPlayInfo();
 	data_refresh_timer->stop();
-}
-
-void MediaPlayWindow::handlePlayingAborted()
-{
-	PlayWindow::handlePlayingAborted();
+	PlayWindow::handlePlayingKilled();
 }
 
 void MediaPlayWindow::handle_buttons(int button_number)
@@ -523,7 +492,7 @@ void MediaPlayWindow::handle_buttons(int button_number)
 		if (!isPlaying())
 		{
 			qDebug("[AUDIO] media_player: start from track 0");
-			startMediaPlayer(0);
+			startPlayer(0);
 		}
 		else if (media_player->isPaused())
 			resume();
