@@ -23,7 +23,7 @@
 #include <qlabel.h>
 #include <qtimer.h>
 
-class FileBrowser;
+class FileSelector;
 class PlayWindow;
 class QSlider;
 class QPainter;
@@ -37,7 +37,7 @@ class BtButton;
  *
  * This class implemets the Page for MULTIMEDIA SOURCE
  */
-class  MultimediaSource : public QWidget
+class MultimediaSource : public QWidget
 {
 Q_OBJECT
 public:
@@ -122,8 +122,7 @@ private:
 	/// Player screen
 	PlayWindow *play_window;
 
-	/// Browser
-	FileBrowser *filesWindow;
+	FileSelector *filesWindow;
 
 	char amb[80];
 	char nome[15];
@@ -186,16 +185,16 @@ public slots:
 
 
 /**
- * \class FileBrowser
+ * \class FileSelector
  *
- * implements a File Browsing Windows with special methods
+ * implements a File Selector Windows with special methods
  * to navigate and to play files.
  */
-class  FileBrowser : public QWidget
+class  FileSelector : public QWidget
 {
 Q_OBJECT
 public:
-	FileBrowser(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
+	FileSelector(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
 
 	/**
 	 * Browse given path, return false in case of error.

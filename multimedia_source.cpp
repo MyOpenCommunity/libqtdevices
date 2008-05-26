@@ -42,7 +42,7 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	play_window->setFont(font());
 
 	// Create filesWindow, Set geometry and Font Style
-	filesWindow = new FileBrowser(this, 4 /* this means number of rows for the browser */);
+	filesWindow = new FileSelector(this, 4 /* this means number of rows for the browser */);
 	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	QFont aFont;
 	FontManager::instance()->getFont(font_multimedia_source_filesWindow, aFont);
@@ -260,10 +260,10 @@ void TitleLabel::handleScrollingTimer()
 }
 
 /// ***********************************************************************************************************************
-/// Methods for FileBrowser
+/// Methods for FileSelector
 /// ***********************************************************************************************************************
 
-FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *name, WFlags f) :
+FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *name, WFlags f) :
 	QWidget(parent, name, f)
 {
 	level = 0;
@@ -337,7 +337,7 @@ FileBrowser::FileBrowser(QWidget *parent, unsigned rows_per_page, const char *na
 
 }
 
-void FileBrowser::showEvent(QShowEvent *event)
+void FileSelector::showEvent(QShowEvent *event)
 {
 	for (unsigned i = 0; i < rows_per_page; i++)
 		labels_list[i]->resetTextPosition();
@@ -349,9 +349,9 @@ void FileBrowser::showEvent(QShowEvent *event)
 	}
 }
 
-void FileBrowser::itemIsClicked(int item)
+void FileSelector::itemIsClicked(int item)
 {
-	qDebug("[AUDIO] FileBrowser::itemIsClicked -> %d is clicked and index is %d",
+	qDebug("[AUDIO] FileSelector::itemIsClicked -> %d is clicked and index is %d",
 		item, pages_indexes[current_path]);
 	QFileInfo *clicked_element;
 	unsigned absolute_position_item;
@@ -411,7 +411,7 @@ void FileBrowser::itemIsClicked(int item)
 	}
 }
 
-void FileBrowser::browseUp()
+void FileSelector::browseUp()
 {
 	if (level)
 	{
@@ -426,7 +426,7 @@ void FileBrowser::browseUp()
 		emit notifyExit();
 }
 
-bool FileBrowser::browseFiles(QString new_path)
+bool FileSelector::browseFiles(QString new_path)
 {
 	// if new_path is valid changes the path and run browseFiles()
 	if (QFileInfo(new_path).exists())
@@ -444,7 +444,7 @@ bool FileBrowser::browseFiles(QString new_path)
 	}
 }
 
-bool FileBrowser::browseFiles()
+bool FileSelector::browseFiles()
 {
 	// refresh QDir information
 	files_handler.refresh();
@@ -483,7 +483,7 @@ bool FileBrowser::browseFiles()
 	return true;
 }
 
-void FileBrowser::showFiles()
+void FileSelector::showFiles()
 {
 	unsigned start = pages_indexes[current_path];
 	unsigned end   = std::min(start+rows_per_page, files_list.count());
@@ -514,7 +514,7 @@ void FileBrowser::showFiles()
 	}
 }
 
-QString FileBrowser::getTextRepresentation(QFileInfo *file_info)
+QString FileSelector::getTextRepresentation(QFileInfo *file_info)
 {
 	QString text_repr;
 
@@ -536,7 +536,7 @@ QString FileBrowser::getTextRepresentation(QFileInfo *file_info)
 	return text_repr.arg(name);
 }
 
-void FileBrowser::nextItem()
+void FileSelector::nextItem()
 {
 	// FIX migliorabile, senza questo quando c'è un solo elemento crasha
 	if (files_list.count()<=rows_per_page)
@@ -547,7 +547,7 @@ void FileBrowser::nextItem()
 	showFiles();
 }
 
-void FileBrowser::prevItem()
+void FileSelector::prevItem()
 {
 	// FIX migliorabile, senza questo quando c'è un solo elemento crasha
 	if (files_list.count()<=rows_per_page)
@@ -558,12 +558,12 @@ void FileBrowser::prevItem()
 	showFiles();
 }
 
-void FileBrowser::setBGColor(QColor c)
+void FileSelector::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
 	buttons_bar->setBGColor(c);
 }
-void FileBrowser::setFGColor(QColor c)
+void FileSelector::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	buttons_bar->setFGColor(c);
