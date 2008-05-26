@@ -61,6 +61,7 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 
 	current_track = CURRENT_TRACK_NONE;
 	next_track = CURRENT_TRACK_NONE;
+	read_player_output = true;
 
 	/// set self Geometry
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
@@ -119,7 +120,7 @@ void PlayWindow::prevTrack()
 		next_track = current_track - 1;
 		startPlayer(next_track);
 
-		qDebug("[AUDIO] MediaPlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+		qDebug("[AUDIO] PlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 	}
 }
 
@@ -128,7 +129,7 @@ void PlayWindow::nextTrack()
 	if (media_player->isInstanceRunning() && current_track < (play_list.count() - 1))
 	{
 		playNextTrack();
-		qDebug("[AUDIO] MediaPlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 	}
 }
 
@@ -148,7 +149,7 @@ void PlayWindow::pause()
 
 void PlayWindow::stop()
 {
-	qDebug("[AUDIO] MediaPlayWindow::stop()");
+	qDebug("[AUDIO] PlayWindow::stop()");
 	stopPlayer();
 	current_track = CURRENT_TRACK_NONE;
 	next_track = CURRENT_TRACK_NONE;
@@ -225,7 +226,7 @@ void PlayWindow::turnOffAudioSystem(bool send_frame)
 
 void PlayWindow::startPlayer(QValueVector<QString> _play_list, unsigned element)
 {
-	qDebug("[AUDIO] startPlay()");
+	qDebug("[AUDIO] startPlayer()");
 	stop();
 	play_list = _play_list;
 	current_track = element;
@@ -239,7 +240,7 @@ void PlayWindow::startPlayer(unsigned int track)
 	next_track = current_track + 1;
 
 	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
-	media_player->play(play_list[current_track]);
+	media_player->play(play_list[current_track], read_player_output);
 }
 
 void PlayWindow::stopPlayer()
@@ -493,6 +494,116 @@ void MediaPlayWindow::handleButtons(int button_number)
 			resume();
 		else
 			pause();
+		break;
+	case 1:
+		stop();
+		break;
+	case 2:
+		prevTrack();
+		break;
+	case 3:
+		nextTrack();
+		break;
+	}
+}
+
+/// ***********************************************************************************************************************
+/// Methods for RadioPlayWindow
+/// ***********************************************************************************************************************
+
+RadioPlayWindow::RadioPlayWindow(QWidget *parent, const char * name) :
+	PlayWindow(parent, name)
+{
+	read_player_output = false;
+	main_layout->insertSpacing(0, 20);
+
+	/// Create Labels (that contain tags)
+	QFont aFont;
+	FontManager::instance()->getFont(font_multimedia_source_AudioPlayingWindow, aFont);
+
+	// layouts for media
+	QHBoxLayout *tags_layout = new QHBoxLayout();
+	main_layout->insertLayout(1, tags_layout);
+
+	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
+	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
+
+	addNameLabels(tags_name_layout, aFont);
+	addTextLabels(tags_text_layout, aFont);
+
+	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
+	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+
+	 // Create Buttons and set their geometry
+	QPixmap *icon;
+	QPixmap *pressed_icon;
+
+	icon         = icons_library.getIcon(IMG_PLAY);
+	pressed_icon = icons_library.getIcon(IMG_PLAY_P);
+	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+
+	icon         = icons_library.getIcon(IMG_STOP);
+	pressed_icon = icons_library.getIcon(IMG_STOP_P);
+	play_controls->setButtonIcons(1, *icon, *pressed_icon);
+
+	icon         = icons_library.getIcon(IMG_PREV);
+	pressed_icon = icons_library.getIcon(IMG_PREV_P);
+	play_controls->setButtonIcons(2, *icon, *pressed_icon);
+
+	icon         = icons_library.getIcon(IMG_NEXT);
+	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
+	play_controls->setButtonIcons(3, *icon, *pressed_icon);
+
+	main_layout->insertWidget(2, play_controls);
+	// Add space to the end of layout to align buttons with previus page
+	main_layout->addSpacing(10);
+	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
+}
+
+void RadioPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
+{
+	QString label_a = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_title",  "Radio: ").c_str();
+	TitleLabel *name_label = new TitleLabel(this, MAX_WIDTH/3, 30, 9, 0);
+	name_label->setFont(aFont);
+	name_label->setText(label_a);
+	layout->addWidget(name_label);
+}
+
+void RadioPlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
+{
+	meta_title_label = new TitleLabel(this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE);
+	meta_title_label->setFont(aFont);
+	layout->addWidget(meta_title_label);
+}
+
+void RadioPlayWindow::setBGColor(QColor c)
+{
+	PlayWindow::setBGColor(c);
+	play_controls->setBGColor(c);
+}
+
+void RadioPlayWindow::setFGColor(QColor c)
+{
+	PlayWindow::setFGColor(c);
+	play_controls->setFGColor(c);
+}
+
+void RadioPlayWindow::startPlayer(unsigned int track)
+{
+	PlayWindow::startPlayer(track);
+	meta_title_label->setText("Prova!!");
+}
+
+void RadioPlayWindow::handleButtons(int button_number)
+{
+	switch (button_number)
+	{
+	case 0:
+		if (!isPlaying())
+		{
+			qDebug("[AUDIO] radio_player: start from track 0");
+			startPlayer(0);
+		}
 		break;
 	case 1:
 		stop();

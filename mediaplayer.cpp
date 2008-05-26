@@ -51,7 +51,7 @@ MediaPlayer::~MediaPlayer()
 	_globalMediaPlayer = NULL;
 }
 
-bool MediaPlayer::play(QString track)
+bool MediaPlayer::play(QString track, bool write_output)
 {
 	int control_pipe[2];
 	int output_pipe[2];
@@ -73,7 +73,17 @@ bool MediaPlayer::play(QString track)
 		close(output_pipe[0]);
 
 		dup2(control_pipe[0], STDIN_FILENO);
-		dup2(output_pipe[1], STDOUT_FILENO);
+
+		if (write_output)
+			dup2(output_pipe[1], STDOUT_FILENO);
+		else
+		{
+			int nullfd = open("/dev/null", O_WRONLY);
+			if (nullfd != -1)
+				dup2(nullfd, STDOUT_FILENO);
+			else
+				qDebug("[AUDIO] unable to open /dev/null");
+		}
 
 		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
 		const char *mplayer_args[] = {"mplayer", NULL, NULL};

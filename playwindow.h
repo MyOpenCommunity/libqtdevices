@@ -81,6 +81,9 @@ protected:
 	/// Main layout
 	QBoxLayout *main_layout;
 
+	/// To read media player output
+	bool read_player_output;
+
 protected slots:
 	// MediaPlayer Handlers
 	virtual void handlePlayingDone();
@@ -162,6 +165,32 @@ private:
 
 	/// Timer to refresh data from MediaPlayer
 	QTimer *data_refresh_timer;
+};
+
+
+class RadioPlayWindow : public PlayWindow
+{
+Q_OBJECT
+public:
+	RadioPlayWindow(QWidget *parent = 0, const char * name = 0);
+
+	// Apply Style
+	void setBGColor(QColor c);
+	void setFGColor(QColor c);
+
+protected:
+	void startPlayer(unsigned int);
+
+private slots:
+	void handleButtons(int);
+
+private:
+	void addTextLabels(QBoxLayout *layout, QFont& aFont);
+	void addNameLabels(QBoxLayout *layout, QFont& aFont);
+
+	/// Play buttons
+	ButtonsBar  *play_controls;
+	TitleLabel *meta_title_label;
 };
 
 #endif
