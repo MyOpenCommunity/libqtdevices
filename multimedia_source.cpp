@@ -200,7 +200,7 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offs
 	scrolling = _scrolling;
 
 	// connect timer to scroll text
-	connect( &scrolling_timer, SIGNAL( timeout() ), this, SLOT( handleScrollingTimer() ) );
+	connect(&scrolling_timer, SIGNAL(timeout()), this, SLOT(handleScrollingTimer()));
 }
 
 void TitleLabel::drawContents(QPainter *p)
@@ -222,7 +222,7 @@ void TitleLabel::setText(const QString & text_to_set)
 	current_shift = 0;
 
 	// call method of ancestor
-	QLabel::setText( text_to_set );
+	QLabel::setText(text_to_set);
 
 	// start the timer if scroll is needed
 	if (scrolling == TRUE && text_length > visible_chars)
@@ -238,7 +238,7 @@ void TitleLabel::refreshText()
 	QString head = banner_string.mid(current_shift, banner_string.length() - current_shift);
 	QString tail = banner_string.mid(0, current_shift);
 
-	QLabel::setText( QString("%1%2").arg(head).arg(tail) );
+	QLabel::setText(QString("%1%2").arg(head).arg(tail));
 }
 
 void TitleLabel::setMaxVisibleChars(int n)
@@ -271,14 +271,14 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *
 	// Set Style
 	// Look QColorGroup Class Reference
 	QPalette current_color_palette = palette();
-	current_color_palette.setColor( QColorGroup::Text, Qt::white );
-	current_color_palette.setColor( QColorGroup::Base, Qt::black );
-	current_color_palette.setColor( QColorGroup::Background, Qt::black );
-	current_color_palette.setColor( QColorGroup::Foreground, Qt::white );
+	current_color_palette.setColor(QColorGroup::Text, Qt::white);
+	current_color_palette.setColor(QColorGroup::Base, Qt::black);
+	current_color_palette.setColor(QColorGroup::Background, Qt::black);
+	current_color_palette.setColor(QColorGroup::Foreground, Qt::white);
 	// 3D Effect
-	current_color_palette.setColor( QColorGroup::Shadow, Qt::black );
-	current_color_palette.setColor( QColorGroup::Midlight, Qt::black );
-	current_color_palette.setColor( QColorGroup::Dark, Qt::black );
+	current_color_palette.setColor(QColorGroup::Shadow, Qt::black);
+	current_color_palette.setColor(QColorGroup::Midlight, Qt::black);
+	current_color_palette.setColor(QColorGroup::Dark, Qt::black);
 	setPalette(current_color_palette);
 
 	// label that is shown when no file is present
@@ -295,7 +295,7 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *
 	this->rows_per_page = rows_per_page;
 
 	// Create labels_layout
-	QVBoxLayout *labels_layout = new QVBoxLayout( main_layout );
+	QVBoxLayout *labels_layout = new QVBoxLayout(main_layout);
 	labels_layout->setMargin(0);
 	labels_layout->setSpacing(0);
 
@@ -308,11 +308,11 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *
 	h_offsets.append(0);
 	labels_list.resize(rows_per_page);
 	labels_list.setAutoDelete(TRUE);
-	for (unsigned i = 0; i < rows_per_page; i++)
+	for (unsigned i = 0; i < rows_per_page; ++i)
 	{
 		// Create label and add it to labels_layout
-		labels_list.insert( i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE) );
-		labels_layout->addWidget( labels_list[i] );
+		labels_list.insert(i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], TRUE));
+		labels_layout->addWidget(labels_list[i]);
 	}
 
 	// Create buttons_bar
@@ -321,11 +321,11 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *
 	// Set Icons for buttons_bar (using icons_library cache)
 	QPixmap *icon         = icons_library.getIcon(IMG_SELECT);
 	QPixmap *pressed_icon = icons_library.getIcon(IMG_SELECT_P);
-	for (unsigned i = 0; i < rows_per_page; i++)
+	for (unsigned i = 0; i < rows_per_page; ++i)
 		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
 
 	// Add buttons_bar to main_layout
-	main_layout->addWidget( buttons_bar );
+	main_layout->addWidget(buttons_bar);
 
 	// Create Set File Browsing Props
 	files_handler.setSorting(QDir::DirsFirst | QDir::Name);
@@ -339,7 +339,7 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *
 
 void FileSelector::showEvent(QShowEvent *event)
 {
-	for (unsigned i = 0; i < rows_per_page; i++)
+	for (unsigned i = 0; i < rows_per_page; ++i)
 		labels_list[i]->resetTextPosition();
 
 	if (!browseFiles())
@@ -359,7 +359,7 @@ void FileSelector::itemIsClicked(int item)
 	/// REVERSE SEARCH
 	// we have the number of the pressed button we want the file
 	absolute_position_item = pages_indexes[current_path] + item;
-	if ( absolute_position_item < files_list.count() )
+	if (absolute_position_item < files_list.count())
 		clicked_element = files_list[pages_indexes[current_path] + item];
 	else
 		return;
@@ -368,7 +368,7 @@ void FileSelector::itemIsClicked(int item)
 	{
 		if (clicked_element->isDir())
 		{
-			level++;
+			++level;
 			if (!browseFiles(clicked_element->absFilePath()))
 			{
 				// FIXME display error?
@@ -402,7 +402,7 @@ void FileSelector::itemIsClicked(int item)
 	{
 		// this is added to browse again the current path and verify if something is changed
 		// it is useful if some file is removed so the current directory is refreshed
-		qDebug( QString("[AUDIO] Current absFilePath is %1").arg( QFileInfo(current_path).absFilePath() ) );
+		qDebug(QString("[AUDIO] Current absFilePath is %1").arg(QFileInfo(current_path).absFilePath()));
 		if (!browseFiles())
 		{
 			// FIXME display error?
@@ -461,13 +461,13 @@ bool FileSelector::browseFiles()
 	}
 
 	// Create Iterator
-	QFileInfoListIterator it( *temp_files_list );
+	QFileInfoListIterator it(*temp_files_list);
 	QFileInfo *file;
 
 	// Build files list dictionary
 	files_list.resize(temp_files_list->count());
 	int index = 0;
-	while ( (file = it.current()) != 0 )
+	while ((file = it.current()) != 0)
 	{
 		files_list.insert(index, file);
 		++index;
