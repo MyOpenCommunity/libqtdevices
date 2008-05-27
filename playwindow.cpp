@@ -12,7 +12,7 @@
 #include <qlayout.h>
 
 #include "playwindow.h"
-#include "multimedia_source.h"
+#include "titlelabel.h"
 #include "mediaplayer.h"
 #include "bannondx.h"
 #include "fontmanager.h"

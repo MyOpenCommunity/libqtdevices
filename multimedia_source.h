@@ -18,19 +18,14 @@
 #define MULTIMEDIA_SOURCE_H
 
 #include <qdir.h>
-#include <qptrvector.h>
 #include <qvaluevector.h>
-#include <qlabel.h>
-#include <qtimer.h>
+#include <qwidget.h>
 
+class ListBrowser;
 class FileSelector;
 class PlayWindow;
-class QSlider;
-class QPainter;
-class QFileInfo;
+class QLabel;
 class bannFrecce;
-class ButtonsBar;
-class BtButton;
 
 /**
  * \class MultimediaSource
@@ -134,57 +129,6 @@ private:
 
 
 /**
- * \class TitleLabel
- *
- * this class is derived from QLabel
- * and reimplements drawContent to have scrolling text
- */
-class TitleLabel : public QLabel
-{
-Q_OBJECT
-public:
-	TitleLabel(QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE, WFlags f = 0);
-
-	void setText(const QString & text_to_set);
-	void drawContents(QPainter *p);
-	void resetTextPosition();
-
-	void setMaxVisibleChars(int n);
-
-private:
-	// internal data
-	QString text;
-
-	// Total chars
-	unsigned text_length;
-
-	int     w_offset;
-	int     h_offset;
-	bool    scrolling;
-
-	// Text scrolling Timer
-	QTimer scrolling_timer;
-
-	/*
-	 * Text scrolling parameters.
-	 */
-	int time_per_step;
-	// current chars shifted
-	unsigned current_shift;
-	// how many chars can be shown at the same time_shift
-	unsigned visible_chars;
-
-	QString separator;
-
-	/// refresh text
-	void refreshText();
-
-public slots:
-	void handleScrollingTimer();
-};
-
-
-/**
  * \class FileSelector
  *
  * implements a File Selector Windows with special methods
@@ -196,52 +140,41 @@ Q_OBJECT
 public:
 	FileSelector(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
 
-	/**
-	 * Browse given path, return false in case of error.
-	 */
+	/// Browse given path, return false in case of error.
 	bool browseFiles(QString new_path);
-
-	/**
-	 * Browse current path, return false in case of error.
-	 */
-	bool browseFiles();
-
-	/// Store current path
-	QString current_path;
 
 	/// Apply Style
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
-	/// before to show itself some init is done.
-	void showEvent(QShowEvent *event);
-
 public slots:
 	void nextItem();
 	void prevItem();
-	void itemIsClicked(int);
+
+	void itemIsClicked(QString item);
 	void browseUp();
 
 private:
+	/// before to show itself some init is done.
+	void showEvent(QShowEvent *event);
+
 	void showFiles();
-	QString getTextRepresentation(QFileInfo *file_info);
-	unsigned                 rows_per_page;
-	QDir                     files_handler;
+
+	/// The handler of current directory
+	QDir current_dir;
 
 	// How many subdirs we are descending from root.
-	unsigned                 level;
+	unsigned level;
 
-	// The followinw Vector stores pointers to QfileInfo objects.
-	// (the Qt class: QPtrVector contains pointers so it is not needed to define it as QPtrVector<QFileInfo*>)
-	QPtrVector<QFileInfo>    files_list;
+	QValueVector<QString>    files_list;
+
 	QMap<QString, unsigned>  pages_indexes;
 
-	/// Widgets
-	// Pointer to labels used to visualize files
-	//QPtrVector<QLabel>       labels_list;
-	QPtrVector<TitleLabel>   labels_list;
-	ButtonsBar               *buttons_bar;
-	TitleLabel               *no_files_label;
+	/// The listBrowser instance, used to display files.
+	ListBrowser *list_browser;
+
+	/// Browse current path, return false in case of error.
+	bool browseFiles();
 
 signals:
 	void notifyStartPlay();
@@ -250,4 +183,4 @@ signals:
 	void startPlayer(QValueVector<QString> play_list, unsigned element);
 };
 
-#endif // MULTIMEDIA_SOURCE_H
+#endif
