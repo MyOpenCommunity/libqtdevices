@@ -10,6 +10,7 @@
 
 #include "listbrowser.h"
 #include "buttons_bar.h"
+#include "fontmanager.h"
 
 #include <qlayout.h>
 
@@ -22,6 +23,10 @@ static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *name, WFlags f) :
 	QWidget(parent, name, f)
 {
+	QFont aFont;
+	FontManager::instance()->getFont(font_listbrowser, aFont);
+	setFont(aFont);
+
 	// Set Style
 	// Look QColorGroup Class Reference
 	QPalette current_color_palette = palette();

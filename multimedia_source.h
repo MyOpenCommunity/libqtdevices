@@ -117,7 +117,7 @@ private:
 	/// Player screen
 	PlayWindow *play_window;
 
-	FileSelector *filesWindow;
+	FileSelector *selector;
 
 	char amb[80];
 	char nome[15];
@@ -138,10 +138,7 @@ class  FileSelector : public QWidget
 {
 Q_OBJECT
 public:
-	FileSelector(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
-
-	/// Browse given path, return false in case of error.
-	bool browseFiles(QString new_path);
+	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name=0, WFlags f=0);
 
 	/// Apply Style
 	void setBGColor(QColor c);
@@ -175,6 +172,9 @@ private:
 
 	/// Browse current path, return false in case of error.
 	bool browseFiles();
+
+	/// Browse given path, return false in case of error.
+	bool browseFiles(QString new_path);
 
 signals:
 	void notifyStartPlay();

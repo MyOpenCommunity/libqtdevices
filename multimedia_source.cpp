@@ -12,7 +12,6 @@
 
 #include "multimedia_source.h"
 #include "playwindow.h"
-#include "fontmanager.h"
 #include "bannfrecce.h"
 #include "listbrowser.h"
 
@@ -36,36 +35,25 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	play_window->setPalette(palette());
 	play_window->setFont(font());
 
-	// Create filesWindow, Set geometry and Font Style
-	filesWindow = new FileSelector(this, BROWSER_ROWS_PER_PAGE);
-	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	QFont aFont;
-	FontManager::instance()->getFont(font_listbrowser, aFont);
-	filesWindow->setFont(aFont);
-
-	// Start to Browse Files
-	if (!filesWindow->browseFiles(MEDIASERVER_PATH))
-	{
-		// FIXME display error?
-	}
+	selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
 
 	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
 	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
 	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
 	// Pulsanti up, down e back
-	connect(bannNavigazione, SIGNAL(downClick()), filesWindow, SLOT(prevItem()));
-	connect(bannNavigazione, SIGNAL(upClick()), filesWindow, SLOT(nextItem()));
-	connect(bannNavigazione, SIGNAL(backClick()), filesWindow, SLOT(browseUp()));
-	connect(bannNavigazione, SIGNAL(forwardClick()), filesWindow, SIGNAL(notifyExit()));
+	connect(bannNavigazione, SIGNAL(downClick()), selector, SLOT(prevItem()));
+	connect(bannNavigazione, SIGNAL(upClick()), selector, SLOT(nextItem()));
+	connect(bannNavigazione, SIGNAL(backClick()), selector, SLOT(browseUp()));
+	connect(bannNavigazione, SIGNAL(forwardClick()), selector, SIGNAL(notifyExit()));
 
 	// Connection to be notified about Start and Stop Play
 	connect(play_window, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
 	connect(play_window, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
 	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
-	connect(filesWindow, SIGNAL(notifyExit()), SIGNAL(Closed()));
+	connect(selector, SIGNAL(notifyExit()), SIGNAL(Closed()));
 
-	connect(filesWindow, SIGNAL(startPlayer(QValueVector<QString>, unsigned)),
+	connect(selector, SIGNAL(startPlayer(QValueVector<QString>, unsigned)),
 			SLOT(startPlayer(QValueVector<QString>, unsigned)));
 }
 
@@ -129,14 +117,14 @@ void MultimediaSource::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
-	filesWindow->setBGColor(c);
+	selector->setBGColor(c);
 	play_window->setBGColor(c);
 }
 void MultimediaSource::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
-	filesWindow->setFGColor(c);
+	selector->setFGColor(c);
 	play_window->setFGColor(c);
 }
 
@@ -171,12 +159,12 @@ void MultimediaSource::startPlayer(QValueVector<QString> list, unsigned element)
 /// Methods for FileSelector
 /// ***********************************************************************************************************************
 
-FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *name, WFlags f) :
+FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name, WFlags f) :
 	QWidget(parent, name, f)
 {
 	level = 0;
 	list_browser = new ListBrowser(this, rows_per_page, name, f);
-
+	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->addWidget(list_browser);
 
@@ -185,6 +173,13 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, const char *
 	current_dir.setNameFilter("*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
 
 	connect(list_browser, SIGNAL(itemIsClicked(QString)), SLOT(itemIsClicked(QString)));
+
+	// Start to Browse Files
+	if (!browseFiles(start_path))
+	{
+		// FIXME display error?
+	}
+
 }
 
 void FileSelector::showEvent(QShowEvent *event)
