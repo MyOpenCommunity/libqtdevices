@@ -13,8 +13,8 @@
  */
 
 #include "thermalmenu.h"
-#include "bannextprobe.h"
-#include "bannsingleprobe.h"
+#include "banntemperature.h"
+#include "device_cache.h"
 
 #include <qregexp.h>
 
@@ -30,26 +30,49 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor b
 	conf_root = n;
 	setBGColor(bg);
 	setFGColor(fg);
-	addItems();
+	addBanners();
+
 	qDebug("[TERMO] thermalmenu: end adding items.");
 	// check if plant menus are created?
 }
 
 void ThermalMenu::addItems()
 {
-	//createPlantMenu();
-	addBanners();
 }
 
-void ThermalMenu::createPlantMenu()
+void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	QDomNode n = conf_root.firstChild();
+	sottoMenu *sm = new sottoMenu(this, "sottomenu extprobe");
+	sm->setBGColor(paletteBackgroundColor());
+	sm->setFGColor(paletteForegroundColor());
+	//sm->show();
+	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));
+	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+	QObject::connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+
+	QDomNode n = config.firstChild();
 	while (!n.isNull())
 	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("plant(\\d*)")))
+		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
-			//PlantMenu pm = new PlantMenu(this, n.nodeName().ascii(), n);
-			qDebug("[TERMO] ThermalMenu: create new PlantMenu");
+			//QDomNode item = findNamedNode(n, "descr");
+			//QString descr = item.toElement().text();
+			banner *b = new bannPuls(sm, "");
+			qDebug("[TERMO] createPlantMenu: item = %s", n.nodeName().ascii());
+
+			initBanner(b, n);
+
+			QString leftIcon(IMG_PATH + QString(I_RIGHT_ARROW));
+			QString central_icon;
+			int id = n.namedItem("id").toElement().text().toInt();
+			if (id == TERMO || id == TERMO_FANCOIL)
+				central_icon = QString(IMG_PATH) + I_TEMP_PROBE;
+			else
+				central_icon = QString(IMG_PATH) + I_PLANT;
+			b->SetIcons(leftIcon.ascii(), 0, central_icon.ascii());
+
+
+			sm->appendBanner(b);
 		}
 		n = n.nextSibling();
 	}
@@ -57,7 +80,6 @@ void ThermalMenu::createPlantMenu()
 
 void ThermalMenu::addBanners()
 {
-	sottoMenu *sm = NULL;
 	bannPuls *b = NULL;
 
 	QDomNode node = conf_root.firstChild();
@@ -68,76 +90,24 @@ void ThermalMenu::addBanners()
 		{
 			if (e.tagName().contains(QRegExp("plant(\\d*)")))
 			{
-				// create plant banner
 				QString descr = findNamedNode(e, "descr").toElement().text();
-				addMenuItem(e, I_PLANT, descr);
+				b = addMenuItem(e, I_PLANT, descr);
+				createPlantMenu(e, b);
 			}
 			else if (e.tagName() == "extprobe")
 			{
-				// create extprobe banner
 				b = addMenuItem(e, I_EXT_PROBE, "extprobe");
-				// also create termopage
-				sm = createProbeMenu(e, b);
+				createProbeMenu(e, b, true);
 			}
 			else if (e.tagName() == "tempprobe")
 			{
-				//create tempprobe banner
-				addMenuItem(e, I_TEMP_PROBE, "tempprobe");
-				// also create termopage
+				b = addMenuItem(e, I_TEMP_PROBE, "tempprobe");
+				createProbeMenu(e, b, false);
 			}
 		}
 
 		node = node.nextSibling();
 	}
-
-	if (sm)
-		sm->forceDraw();
-#if 0
-	if (b)
-	{
-		qDebug("[TERMO] ci sono!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		sottoMenu *s = new sottoMenu(0, "sottomenu extprobe");
-		s->setBGColor(paletteBackgroundColor());
-		s->setFGColor(paletteForegroundColor());
-		QObject::connect(b, SIGNAL(sxClick()), s, SLOT(showFullScreen()));
-		QObject::connect(b, SIGNAL(sxClick()), s, SLOT(show()));
-		QObject::connect(b, SIGNAL(sxClick()), this, SLOT(hide()));
-
-		QObject::connect(s, SIGNAL(Closed()), this, SLOT(showFullScreen()));
-		QObject::connect(s, SIGNAL(Closed()), s, SLOT(hide()));
-	}
-#endif
-}
-
-sottoMenu *ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann)
-{
-	sottoMenu *sm = new sottoMenu(this, "sottomenu extprobe");
-	sm->setBGColor(paletteBackgroundColor());
-	sm->setFGColor(paletteForegroundColor());
-	sm->show();
-	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));
-	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
-	QObject::connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-	//how do we create connections with the rest of the application??????
-	QDomNode n = config.firstChild();
-	while (!n.isNull())
-	{
-		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
-		{
-			banner *b = new BannExtProbe(sm, "banner", n);
-			b->SetTextU(n.toElement().text());
-			b->setAnimationParams(0, 0);
-			b->setBGColor(paletteBackgroundColor());
-			b->setFGColor(paletteForegroundColor());
-			QDomNode id = findNamedNode(n, "id");
-			b->setId(id.toElement().text().toInt());
-
-			sm->appendBanner(b);
-		}
-		n = n.nextSibling();
-	}
-
-	return sm;
 }
 
 bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString descr)
@@ -145,32 +115,70 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 	bannPuls *bp = new bannPuls(this, descr.ascii());
 	qDebug("[TERMO] addBanners1: %s", descr.ascii());
 	item_list.append(bp);
+
 	QString leftIcon(IMG_PATH + QString(I_RIGHT_ARROW));
 	central_icon = QString(IMG_PATH) + central_icon;
 	bp->SetIcons(leftIcon.ascii(), 0, central_icon.ascii());
 
-	QString addr = getDeviceAddress(e);
-	//qDebug("[TERMO] addBanners2: %s", addr.ascii());
+	initBanner(bp, e);
 
-	bp->setAddress(addr.ascii());
 	elencoBanner.append(bp);
-
 	connectLastBanner();
 	// boh?
 	//connect(this, SIGNAL(hideChildren()), elencoBanner.getLast(), SLOT(hide()));
 
-	QDomNode n = findNamedNode(e, "descr");
-	elencoBanner.getLast()->SetTextU(n.toElement().text());
-	// we are ignoring animationParams
-	elencoBanner.getLast()->setAnimationParams(0, 0);
+	return bp;
+}
 
-	elencoBanner.getLast()->setBGColor(paletteBackgroundColor());
-	elencoBanner.getLast()->setFGColor(paletteForegroundColor());
-	n = findNamedNode(e, "id");
-	elencoBanner.getLast()->setId(n.toElement().text().toInt());
+void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
+{
+	sottoMenu *sm = new sottoMenu(this, "sottomenu extprobe");
+	sm->setBGColor(paletteBackgroundColor());
+	sm->setFGColor(paletteForegroundColor());
+	//sm->show();
+	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));
+	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+	QObject::connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+	QDomNode n = config.firstChild();
+	while (!n.isNull())
+	{
+		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
+		{
+			device *dev;
+			QString addr = n.namedItem("addr").toElement().text();
+			if (external)
+				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), true);
+			else
+				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), false);
+
+
+			banner *b = new BannTemperature(sm, "banner", n, dev);
+			initBanner(b, n);
+
+			sm->appendBanner(b);
+		}
+		n = n.nextSibling();
+	}
+}
+
+void ThermalMenu::initBanner(banner *bann, QDomNode conf)
+{
+	bann->setBGColor(paletteBackgroundColor());
+	bann->setFGColor(paletteForegroundColor());
+
+	//QString addr = getDeviceAddress(conf);
+	//bann->setAddress(addr.ascii());
+	qDebug("[TERMO] initBanner: remeber to set the address of the device (if applicable)");
+
+	QDomNode n = findNamedNode(conf, "descr");
+	bann->SetTextU(n.toElement().text());
+
+	n = findNamedNode(conf, "id");
+	bann->setId(n.toElement().text().toInt());
+
+	bann->setAnimationParams(0, 0);
 	// note: we are ignoring the serial number...
 	// seems not used for thermal regulation
-	return bp;
 }
 
 QDomNode ThermalMenu::findNamedNode(QDomNode root, QString name)
@@ -181,7 +189,6 @@ QDomNode ThermalMenu::findNamedNode(QDomNode root, QString name)
 	{
 		QDomNode n = nodes.first();
 		QDomNode item = n.namedItem(name);
-		//qDebug("[TERMO] findNamedNode: item = %s", item.nodeName().ascii());
 		if (item.isNull())
 		{
 			QDomNodeList list = n.childNodes();
@@ -194,27 +201,24 @@ QDomNode ThermalMenu::findNamedNode(QDomNode root, QString name)
 			return item;
 		}
 	}
-	throw;
+	QDomNode null;
+	return null;
 }
 
 QString ThermalMenu::getDeviceAddress(QDomNode root)
 {
+	QString where = "";
 	QDomNode n = findNamedNode(root, "where");
-	QDomElement where = n.toElement();
+	if (!n.isNull())
+	{
+		where = n.toElement().text();
+	}
+	else
+	{
+		qDebug("[TERMO] getDeviceAddress: `where' not found, defaulting to `\"0\"' ");
+		where = "0";
+	}
 	//FIXME: should we also check for `what'?
 	//from conf.xml: used only by pagespecial and scenarios
-	qDebug("[TERMO] getDeviceAddress: where = %s", where.text().ascii());
-	return where.text();
-}
-
-void ThermalMenu::hideEvent(QHideEvent *e)
-{
-	qDebug("[TERMO] hideEvent received");
-	QPtrListIterator<banner> it(item_list);
-	banner *bann;
-	while ((bann = it.current()) != 0)
-	{
-		++it;
-		bann->hide();
-	}
+	return where;
 }

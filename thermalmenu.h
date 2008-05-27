@@ -31,21 +31,33 @@ public:
 	 * 
 	 */
 	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg);
-protected:
-	/**
-	 * This function is called after a hide event is triggered
-	 * by Qt.
-	 */
-	void hideEvent(QHideEvent *e);
 
 private:
 	QString getDeviceAddress(QDomNode);
 	QDomNode findNamedNode(QDomNode, QString);
 	bannPuls *addMenuItem(QDomElement, QString, QString);
-	sottoMenu *createProbeMenu(QDomNode, bannPuls*);
+	/**
+	 * Create a sottoMenu to show external and not controlled probes
+	 *
+	 * \param config    The node in the Dom tree that holds the `probe' section
+	 * \param bann      A pointer to the banner that gives access to the
+	 * sottoMenu
+	 * \param external  True if the probe is external, false otherwise
+	 */
+	void createProbeMenu(QDomNode config, bannPuls *bann, bool external);
+
+	/**
+	 * Set BG and FG color, address, id, text, animation params
+	 * in a banner.
+	 *
+	 * \param bann The banner being set
+	 * \param conf The node in the Dom tree that holds a reference
+	 * to an `item' tag (that is the root node of an item configuration)
+	 */
+	void initBanner(banner *bann, QDomNode conf);
 
 	void addItems();
-	void createPlantMenu();
+	void createPlantMenu(QDomNode config, bannPuls *bann);
 	void addBanners();
 
 	QDomNode conf_root;
