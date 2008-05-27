@@ -271,7 +271,7 @@ MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
 
 	/// Create Labels (that contain tags)
 	QFont aFont;
-	FontManager::instance()->getFont(font_multimedia_source_AudioPlayingWindow, aFont);
+	FontManager::instance()->getFont(font_playwindow, aFont);
 
 	// layouts for media
 	QHBoxLayout *tags_layout = new QHBoxLayout();
@@ -519,7 +519,7 @@ RadioPlayWindow::RadioPlayWindow(QWidget *parent, const char * name) :
 
 	/// Create Labels (that contain tags)
 	QFont aFont;
-	FontManager::instance()->getFont(font_multimedia_source_AudioPlayingWindow, aFont);
+	FontManager::instance()->getFont(font_playwindow, aFont);
 
 	// layouts for media
 	QHBoxLayout *tags_layout = new QHBoxLayout();

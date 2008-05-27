@@ -16,6 +16,8 @@
 #include "bannfrecce.h"
 #include "listbrowser.h"
 
+#define BROWSER_ROWS_PER_PAGE 4
+
 MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
 	QWidget(parent, name),
 	audio_initialized(true)
@@ -35,10 +37,10 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	play_window->setFont(font());
 
 	// Create filesWindow, Set geometry and Font Style
-	filesWindow = new FileSelector(this, 4 /* this means number of rows for the browser */);
+	filesWindow = new FileSelector(this, BROWSER_ROWS_PER_PAGE);
 	filesWindow->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	QFont aFont;
-	FontManager::instance()->getFont(font_multimedia_source_filesWindow, aFont);
+	FontManager::instance()->getFont(font_listbrowser, aFont);
 	filesWindow->setFont(aFont);
 
 	// Start to Browse Files

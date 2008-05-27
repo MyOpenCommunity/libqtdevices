@@ -27,8 +27,8 @@ enum eFontID
 	font_tastiera_bottoni_stati, 					// 16, QFont::Bold )
 	font_aux_descr_ambiente,					// 24, QFont::Bold )
 	font_aux_nome_sorgente,					// 24, QFont::Bold )
-	font_multimedia_source_filesWindow, 			//  18 )
-	font_multimedia_source_AudioPlayingWindow,	//  18 );
+	font_listbrowser, 							//  18 )
+	font_playwindow,							//  18 );
 	font_items_bannertext, 						// 14, QFont::Bold )
 	font_items_secondarytext,					// 18, QFont::Bold )
 	font_versio_datiGen,						// 24, QFont::Black,TRUE)
