@@ -16,25 +16,28 @@
 #include "fontmanager.h"
 #include <qlabel.h>
 
-BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode n)
+BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev)
 	: banner(parent, name)
 {
-	conf_root = n;
+	conf_root = config;
 	probe_descr = conf_root.namedItem("descr").toElement().text();
 	temperature = "";
 	setChi("4");
 
-	QDomNode addr = n.namedItem("where");
+	QDomNode addr = conf_root.namedItem("where");
 	if (!addr.isNull())
 		setAddress(addr.toElement().text().ascii());
 	else
 		qFatal("[TERMO] obj: %s, no where in configuration", probe_descr.ascii());
 	temperature = "45";
 
-	temp_label = new QLabel(this);
-	temp_label->setGeometry(DESCR_LABEL_WIDTH, 0, BANPULS_BUT_DIM, BANPULS_ICON_DIM_Y);
 	descr_label = new QLabel(this);
-	descr_label->setGeometry(0, 0, DESCR_LABEL_WIDTH, BANPULS_ICON_DIM_Y);
+	descr_label->setGeometry(BORDER_WIDTH, 0, DESCRIPTION_WIDTH, BANPULS_ICON_DIM_Y);
+	temp_label = new QLabel(this);
+	temp_label->setGeometry(DESCRIPTION_WIDTH, 0, TEMPERATURE_WIDTH, BANPULS_ICON_DIM_Y);
+
+	QObject::connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
+			SLOT(status_changed(QPtrList<device_status>)));
 //rember to set bg and fg colors to temp_label
 }
 
@@ -75,9 +78,9 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 void BannTemperature::Draw()
 {
 	QFont aFont;
-	FontManager::instance()->getFont(font_tastiera_scritta_label, aFont);
+	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
 	descr_label->setFont(aFont);
-	descr_label->setAlignment(AlignCenter);
+	descr_label->setAlignment(AlignAuto | AlignVCenter);
 	descr_label->setText(probe_descr);
 
 	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
