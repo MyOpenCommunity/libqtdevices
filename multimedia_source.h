@@ -47,12 +47,12 @@ public:
 	 * \brief Sets the background color for the banner.
 	 * The arguments are RGB components for the color.
 	 */
-	void setBGColor(int, int , int );
+	void setBGColor(int, int, int);
 	/*!
 	 * \brief Sets the foreground color for the banner.
 	 * The arguments are RGB components for the color.
 	 */
-	void setFGColor(int , int , int );
+	void setFGColor(int, int, int);
 	/*!
 	 * \brief Sets the background color for the banner.
 	 * The argument is the QColor description of the color.
@@ -66,7 +66,7 @@ public:
 	/*!
 	 * \brief Sets the background pixmap for the banner.
 	 */
-	int setBGPixmap(char* );
+	int setBGPixmap(char*);
 	/*!
 	 * \brief Sets amb. description
 	 */
@@ -143,10 +143,10 @@ class TitleLabel : public QLabel
 {
 Q_OBJECT
 public:
-	TitleLabel( QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE, WFlags f = 0 );
+	TitleLabel(QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE, WFlags f = 0);
 
-	void setText( const QString & text_to_set );
-	void drawContents ( QPainter *p );
+	void setText(const QString & text_to_set);
+	void drawContents(QPainter *p);
 	void resetTextPosition();
 
 	void setMaxVisibleChars(int n);
