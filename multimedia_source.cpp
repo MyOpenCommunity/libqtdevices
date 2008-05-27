@@ -53,8 +53,8 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
 	connect(selector, SIGNAL(notifyExit()), SIGNAL(Closed()));
 
-	connect(selector, SIGNAL(startPlayer(QValueVector<QString>, unsigned)),
-			SLOT(startPlayer(QValueVector<QString>, unsigned)));
+	connect(selector, SIGNAL(startPlayer(QValueVector<AudioData>, unsigned)),
+			SLOT(startPlayer(QValueVector<AudioData>, unsigned)));
 }
 
 void MultimediaSource::initAudio()
@@ -149,7 +149,7 @@ void MultimediaSource::disableSource(bool send_frame)
 	play_window->turnOffAudioSystem(send_frame);
 }
 
-void MultimediaSource::startPlayer(QValueVector<QString> list, unsigned element)
+void MultimediaSource::startPlayer(QValueVector<AudioData> list, unsigned element)
 {
 	play_window->startPlayer(list, element);
 	play_window->show();
@@ -211,7 +211,7 @@ void FileSelector::itemIsClicked(QString item)
 	}
 	else
 	{
-		QValueVector<QString> play_list;
+		QValueVector<AudioData> play_list;
 		unsigned element = 0;
 		unsigned track_number = 0;
 
@@ -221,7 +221,7 @@ void FileSelector::itemIsClicked(QString item)
 			if (fn.isDir())
 				continue;
 
-			play_list.append(fn.absFilePath().latin1());
+			play_list.append(AudioData(fn.absFilePath().latin1()));
 			if (clicked_element.absFilePath() == fn.absFilePath())
 				element = track_number;
 

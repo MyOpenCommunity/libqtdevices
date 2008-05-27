@@ -27,6 +27,14 @@ class PlayWindow;
 class QLabel;
 class bannFrecce;
 
+
+struct AudioData {
+	QString path;
+	QString desc;
+	AudioData(QString p = "", QString d = "") { path = p; desc = d; }
+};
+
+
 /**
  * \class MultimediaSource
  *
@@ -112,7 +120,7 @@ public slots:
 	void handleStartPlay();
 	void handleStopPlay();
 
-	void startPlayer(QValueVector<QString> play_list, unsigned element);
+	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 private:
 	/// Player screen
 	PlayWindow *play_window;
@@ -180,7 +188,7 @@ signals:
 	void notifyStartPlay();
 	void notifyStopPlay();
 	void notifyExit();
-	void startPlayer(QValueVector<QString> play_list, unsigned element);
+	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 };
 
 #endif

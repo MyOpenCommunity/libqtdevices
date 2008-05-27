@@ -224,7 +224,7 @@ void PlayWindow::turnOffAudioSystem(bool send_frame)
 		emit notifyStopPlay();
 }
 
-void PlayWindow::startPlayer(QValueVector<QString> _play_list, unsigned element)
+void PlayWindow::startPlayer(QValueVector<AudioData> _play_list, unsigned element)
 {
 	qDebug("[AUDIO] startPlayer()");
 	stop();
@@ -240,7 +240,7 @@ void PlayWindow::startPlayer(unsigned int track)
 	next_track = current_track + 1;
 
 	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
-	media_player->play(play_list[current_track], read_player_output);
+	media_player->play(play_list[current_track].path, read_player_output);
 }
 
 void PlayWindow::stopPlayer()

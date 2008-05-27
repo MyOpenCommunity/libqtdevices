@@ -18,6 +18,8 @@
 #ifndef PLAY_WINDOW_H
 #define PLAY_WINDOW_H
 
+#include "multimedia_source.h"
+
 #include <qwidget.h>
 #include <qvaluevector.h>
 
@@ -57,7 +59,7 @@ public:
 	void turnOffAudioSystem(bool send_frame);
 
 	/// Start PLAY, begins to play and sets the play_list
-	void startPlayer(QValueVector<QString> _play_list, unsigned element);
+	void startPlayer(QValueVector<AudioData> _play_list, unsigned element);
 
 public slots:
 	void handleBackBtn();
@@ -97,7 +99,7 @@ signals:
 	void notifyStopPlay();
 
 private:
-	QValueVector<QString> play_list;
+	QValueVector<AudioData> play_list;
 
 	/*
 	 * current_track is the track played by mplayer.
