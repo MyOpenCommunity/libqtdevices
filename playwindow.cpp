@@ -260,6 +260,11 @@ void PlayWindow::stopPlayer()
 	}
 }
 
+QString PlayWindow::getCurrentDescription()
+{
+	return play_list[current_track].desc;
+}
+
 /// ***********************************************************************************************************************
 /// Methods for MediaPlayWindow
 /// ***********************************************************************************************************************
@@ -591,7 +596,7 @@ void RadioPlayWindow::setFGColor(QColor c)
 void RadioPlayWindow::startPlayer(unsigned int track)
 {
 	PlayWindow::startPlayer(track);
-	meta_title_label->setText("Prova!!");
+	meta_title_label->setText(getCurrentDescription());
 }
 
 void RadioPlayWindow::handleButtons(int button_number)

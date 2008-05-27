@@ -74,6 +74,9 @@ protected:
 
 	void addMainControls(QBoxLayout* layout);
 
+	/// Return the description of current song/radio played.
+	QString getCurrentDescription();
+
 	/// Media player
 	MediaPlayer *media_player;
 
