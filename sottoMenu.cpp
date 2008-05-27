@@ -337,22 +337,11 @@ void sottoMenu::addItem(banner *b)
 	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
 	connect(this, SIGNAL(hideChildren()), elencoBanner.getLast(), SLOT(hide()));
 	elencoBanner.getLast()->SetTextU(elencoBanner.getLast()->name()); // name() torna il nome passato alla classe QWidget. non verra' tradotto...
-	int periodo, numFrame, tipo;
+	int periodo, numFrame;
 	elencoBanner.getLast()->getAnimationParams(periodo, numFrame);
-	//tipo = elencoBanner.getLast()->getTipo();
 	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
 	elencoBanner.getLast()->setBGColor(backgroundColor());
 	elencoBanner.getLast()->setFGColor(foregroundColor());
-	// BAH
-	//elencoBanner.getLast()->setId(tipo);
-	for (int idx=elencoBanner.count()-2;idx>=0;idx--)
-	{
-		if (elencoBanner.at(idx)->getId()==tipo)
-		{
-			elencoBanner.getLast()->setSerNum(elencoBanner.at(idx)->getSerNum()+1);
-			idx=-1;
-		}
-	}
 }
 
 void sottoMenu::draw()
