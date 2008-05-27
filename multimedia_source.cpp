@@ -13,7 +13,7 @@
 #include "multimedia_source.h"
 #include "playwindow.h"
 #include "fontmanager.h"
-#include "buttons_bar.h"
+#include "bannfrecce.h"
 #include "listbrowser.h"
 
 MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
@@ -58,14 +58,13 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	connect(bannNavigazione, SIGNAL(forwardClick()), filesWindow, SIGNAL(notifyExit()));
 
 	// Connection to be notified about Start and Stop Play
-	connect(play_window, SIGNAL(notifyStartPlay()), this, SLOT(handleStartPlay()));
-	connect(play_window, SIGNAL(notifyStopPlay()), this, SLOT(handleStopPlay()));
+	connect(play_window, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
+	connect(play_window, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
 	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
-	connect(filesWindow, SIGNAL(notifyExit()), this, SIGNAL(Closed()));
-
+	connect(filesWindow, SIGNAL(notifyExit()), SIGNAL(Closed()));
 
 	connect(filesWindow, SIGNAL(startPlayer(QValueVector<QString>, unsigned)),
-			this, SLOT(startPlayer(QValueVector<QString>, unsigned)));
+			SLOT(startPlayer(QValueVector<QString>, unsigned)));
 }
 
 void MultimediaSource::initAudio()
@@ -287,7 +286,6 @@ bool FileSelector::browseFiles()
 
 	files_list.clear();
 
-	// Create Iterator
 	QFileInfoListIterator it(*temp_files_list);
 	QFileInfo *file;
 
