@@ -27,7 +27,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	source_menu.setBGColor(parentWidget(TRUE)->backgroundColor());
 	source_menu.setFGColor(parentWidget(TRUE)->foregroundColor());
 
-	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showAux()));
+	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showPage()));
 	if(nbut == 4)
 	{
 		connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));

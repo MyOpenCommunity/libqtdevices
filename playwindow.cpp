@@ -57,8 +57,6 @@ static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
 PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 	QWidget(parent, name, WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
 {
-	qDebug("[AUDIO] PlayWindow costructor");
-
 	current_track = CURRENT_TRACK_NONE;
 	next_track = CURRENT_TRACK_NONE;
 	read_player_output = true;
@@ -272,6 +270,7 @@ QString PlayWindow::getCurrentDescription()
 MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
 	PlayWindow(parent, name)
 {
+	qDebug("[AUDIO] MediaPlayWindow costructor");
 	main_layout->insertSpacing(0, 20);
 
 	/// Create Labels (that contain tags)
@@ -519,6 +518,7 @@ void MediaPlayWindow::handleButtons(int button_number)
 RadioPlayWindow::RadioPlayWindow(QWidget *parent, const char * name) :
 	PlayWindow(parent, name)
 {
+	qDebug("[AUDIO] RadioPlayWindow costructor");
 	read_player_output = false;
 	main_layout->insertSpacing(0, 20);
 

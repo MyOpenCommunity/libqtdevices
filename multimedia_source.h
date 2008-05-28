@@ -28,6 +28,13 @@ class QLabel;
 class bannFrecce;
 
 
+enum AudioSourceType
+{
+	RADIO_SOURCE,
+	FILE_SOURCE
+};
+
+
 struct AudioData {
 	QString path;
 	QString desc;
@@ -48,16 +55,6 @@ public:
 
 	/*!
 	 * \brief Sets the background color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setBGColor(int, int, int);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setFGColor(int, int, int);
-	/*!
-	 * \brief Sets the background color for the banner.
 	 * The argument is the QColor description of the color.
 	 */
 	void setBGColor(QColor);
@@ -67,17 +64,9 @@ public:
 	 */
 	void setFGColor(QColor);
 	/*!
-	 * \brief Sets the background pixmap for the banner.
-	 */
-	int setBGPixmap(char*);
-	/*!
 	 * \brief Sets amb. description
 	 */
 	void setAmbDescr(char *) {}
-	/*!
-	 * \brief Draws the page
-	 */
-	void draw() {};
 
 	/*
 	 * \brief Enable/Disable audio source
@@ -111,10 +100,7 @@ signals:
 	 */
 	void sendFrame(char *);
 public slots:
-	/*!
-	 * \brief Shows the aux details page
-	 */
-	void showAux();
+	void showPage();
 
 	/// handles to receive play and stop notifications
 	void handleStartPlay();
@@ -133,6 +119,26 @@ private:
 	QLabel *label;
 	bool audio_initialized;
 	int where_address;
+
+	void sourceMenu(AudioSourceType t);
+	/*!
+	 * \brief Sets the background color for the banner.
+	 * The arguments are RGB components for the color.
+	 */
+	void setBGColor(int, int, int);
+	/*!
+	 * \brief Sets the foreground color for the banner.
+	 * The arguments are RGB components for the color.
+	 */
+	void setFGColor(int, int, int);
+	/*!
+	 * \brief Sets the background pixmap for the banner.
+	 */
+	int setBGPixmap(char*);
+	/*!
+	 * \brief Draws the page
+	 */
+	void draw() {};
 };
 
 

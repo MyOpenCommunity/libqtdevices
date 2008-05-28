@@ -17,6 +17,33 @@
 
 #define BROWSER_ROWS_PER_PAGE 4
 
+
+class AudioSourceFactory
+{
+public:
+	AudioSourceFactory(QWidget *p, AudioSourceType t) { parent = p; type = t; }
+	PlayWindow *buildPlayWindow()
+	{
+		if (type == RADIO_SOURCE)
+			return new RadioPlayWindow(parent);
+		else
+			return new MediaPlayWindow(parent);
+	}
+
+	Selector *buildSelector()
+	{
+		if (type == RADIO_SOURCE)
+			return new RadioSelector(parent, BROWSER_ROWS_PER_PAGE);
+		else
+			return new FileSelector(parent, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
+	}
+
+private:
+	AudioSourceType type;
+	QWidget *parent;
+};
+
+
 MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
 	QWidget(parent, name),
 	audio_initialized(true)
@@ -28,19 +55,33 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	where_address = _where_address;
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
-	// Create play_window and set style
-	play_window = new RadioPlayWindow(this);
+	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
+	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
+	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+
+	play_window = 0;
+	selector = 0;
+}
+
+void MultimediaSource::sourceMenu(AudioSourceType t)
+{
+	AudioSourceFactory factory(this, t);
+
+	if (play_window)
+		play_window->deleteLater();
+
+	play_window = factory.buildPlayWindow();
 	play_window->setBGColor(paletteBackgroundColor());
 	play_window->setFGColor(paletteForegroundColor());
 	play_window->setPalette(palette());
 	play_window->setFont(font());
 
-	//selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
-	selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE);
+	if (selector)
+		selector->deleteLater();
 
-	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
-	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
-	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	selector = factory.buildSelector();
+	selector->setBGColor(paletteBackgroundColor());
+	selector->setFGColor(paletteForegroundColor());
 
 	// Pulsanti up, down e back
 	connect(bannNavigazione, SIGNAL(downClick()), selector, SLOT(prevItem()));
@@ -84,8 +125,10 @@ void MultimediaSource::resume()
 	play_window->resume();
 }
 
-void MultimediaSource::showAux()
+void MultimediaSource::showPage()
 {
+	sourceMenu(FILE_SOURCE);
+
 	// draw and show itself
 	draw();
 	showFullScreen();
@@ -118,15 +161,11 @@ void MultimediaSource::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
-	selector->setBGColor(c);
-	play_window->setBGColor(c);
 }
 void MultimediaSource::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
-	selector->setFGColor(c);
-	play_window->setFGColor(c);
 }
 
 int MultimediaSource::setBGPixmap(char* backImage)
