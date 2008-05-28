@@ -47,6 +47,7 @@ ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *n
 
 	// Set the number of elements shown
 	rows_per_page = _rows_per_page;
+	current_page = 0;
 
 	// Create labels_layout
 	QVBoxLayout *labels_layout = new QVBoxLayout(main_layout);

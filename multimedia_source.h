@@ -185,8 +185,6 @@ private:
 	bool browseFiles(QString new_path);
 
 signals:
-	void notifyStartPlay();
-	void notifyStopPlay();
 	void notifyExit();
 	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 };
