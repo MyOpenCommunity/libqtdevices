@@ -81,7 +81,7 @@ ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *n
 
 	// Add buttons_bar to main_layout
 	main_layout->addWidget(buttons_bar);
-	connect(buttons_bar, SIGNAL(clicked(int)), SLOT(itemIsClicked(int)));
+	connect(buttons_bar, SIGNAL(clicked(int)), SLOT(clicked(int)));
 }
 
 void ListBrowser::setBGColor(QColor c)
@@ -157,8 +157,7 @@ void ListBrowser::prevItem()
 	showList();
 }
 
-void ListBrowser::itemIsClicked(int item)
+void ListBrowser::clicked(int item)
 {
-	QString clicked_element = item_list[current_page * rows_per_page + item];
-	emit itemIsClicked(clicked_element);
+	emit itemIsClicked(current_page * rows_per_page + item);
 }

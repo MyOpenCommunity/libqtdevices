@@ -29,14 +29,14 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
 	// Create play_window and set style
-	play_window = new MediaPlayWindow(this);
+	play_window = new RadioPlayWindow(this);
 	play_window->setBGColor(paletteBackgroundColor());
 	play_window->setFGColor(paletteForegroundColor());
 	play_window->setPalette(palette());
 	play_window->setFont(font());
 
-	selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
-	//selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE);
+	//selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
+	selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE);
 
 	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
 	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
@@ -173,7 +173,7 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 	current_dir.setMatchAllDirs(true);
 	current_dir.setNameFilter("*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
 
-	connect(list_browser, SIGNAL(itemIsClicked(QString)), SLOT(itemIsClicked(QString)));
+	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
 	// Start to Browse Files
 	if (!browseFiles(start_path))
@@ -192,14 +192,13 @@ void FileSelector::showEvent(QShowEvent *event)
 	}
 }
 
-void FileSelector::itemIsClicked(QString item)
+void FileSelector::itemIsClicked(int item)
 {
-	qDebug("[AUDIO] FileSelector::itemIsClicked -> %s", item.ascii());
-	QFileInfo clicked_element(current_dir, item);
+	QString filename = files_list[item];
+	qDebug("[AUDIO] FileSelector::itemIsClicked %d -> %s", item, filename.ascii());
+	QFileInfo clicked_element(current_dir, filename);
 	if (!clicked_element.exists())
-	{
-		qDebug("[AUDIO] Error retrieving file by name: %s", item.ascii());
-	}
+		qDebug("[AUDIO] Error retrieving file by name: %s", filename.ascii());
 
 	if (clicked_element.isDir())
 	{
@@ -228,7 +227,6 @@ void FileSelector::itemIsClicked(QString item)
 
 			++track_number;
 		}
-
 		emit startPlayer(play_list, element);
 	}
 }
@@ -335,7 +333,7 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, const char
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->addWidget(list_browser);
 
-	connect(list_browser, SIGNAL(itemIsClicked(QString)), SLOT(itemIsClicked(QString)));
+	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
 	// GIANNI -> Temporaneo: creazione struttura
 	radio_list.append(AudioData("http://mediasrv.musicradio.com/ClassicFM", "Classic FM"));
@@ -350,22 +348,10 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, const char
 	list_browser->showList();
 }
 
-void RadioSelector::itemIsClicked(QString item)
+void RadioSelector::itemIsClicked(int item)
 {
-	qDebug("[AUDIO] RadioSelector::itemIsClicked -> %s", item.ascii());
-
-	unsigned element = 0;
-	unsigned track_number = 0;
-
-	for (unsigned i = 0; i < radio_list.count(); ++i)
-	{
-		if (item == radio_list[i].desc)
-			element = track_number;
-
-		++track_number;
-	}
-
-	emit startPlayer(radio_list, element);
+	qDebug("[AUDIO] RadioSelector::itemIsClicked %d -> %s", item, radio_list[item].path.ascii());
+	emit startPlayer(radio_list, item);
 }
 
 void RadioSelector::browseUp()

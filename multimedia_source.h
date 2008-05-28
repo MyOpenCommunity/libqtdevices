@@ -148,7 +148,7 @@ public slots:
 	virtual void nextItem() = 0;
 	virtual void prevItem() = 0;
 
-	virtual void itemIsClicked(QString item) = 0;
+	virtual void itemIsClicked(int item) = 0;
 	virtual void browseUp() = 0;
 
 signals:
@@ -177,7 +177,7 @@ public slots:
 	void nextItem();
 	void prevItem();
 
-	void itemIsClicked(QString item);
+	void itemIsClicked(int item);
 	void browseUp();
 
 private:
@@ -225,7 +225,7 @@ public slots:
 	void nextItem();
 	void prevItem();
 
-	void itemIsClicked(QString item);
+	void itemIsClicked(int item);
 	void browseUp();
 
 private:

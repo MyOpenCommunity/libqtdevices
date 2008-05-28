@@ -39,7 +39,7 @@ public:
 	unsigned getCurrentPage();
 
 signals:
-	void itemIsClicked(QString item);
+	void itemIsClicked(int item);
 
 public slots:
 	void nextItem();
@@ -60,7 +60,7 @@ private:
 	void showEvent(QShowEvent *event);
 
 private slots:
-	void itemIsClicked(int item);
+	void clicked(int item);
 };
 
 #endif
