@@ -36,6 +36,7 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	play_window->setFont(font());
 
 	selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
+	//selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE);
 
 	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
 	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
@@ -160,7 +161,7 @@ void MultimediaSource::startPlayer(QValueVector<AudioData> list, unsigned elemen
 /// ***********************************************************************************************************************
 
 FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name, WFlags f) :
-	QWidget(parent, name, f)
+	Selector(parent, name, f)
 {
 	level = 0;
 	list_browser = new ListBrowser(this, rows_per_page, name, f);
@@ -318,6 +319,76 @@ void FileSelector::setBGColor(QColor c)
 }
 
 void FileSelector::setFGColor(QColor c)
+{
+	list_browser->setFGColor(c);
+}
+
+/// ***********************************************************************************************************************
+/// Methods for RadioSelector
+/// ***********************************************************************************************************************
+
+RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, const char *name, WFlags f) :
+	Selector(parent, name, f)
+{
+	list_browser = new ListBrowser(this, rows_per_page, name, f);
+	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
+	QHBoxLayout *main_layout = new QHBoxLayout(this);
+	main_layout->addWidget(list_browser);
+
+	connect(list_browser, SIGNAL(itemIsClicked(QString)), SLOT(itemIsClicked(QString)));
+
+	// GIANNI -> Temporaneo: creazione struttura
+	radio_list.append(AudioData("http://mediasrv.musicradio.com/ClassicFM", "Classic FM"));
+	radio_list.append(AudioData("http://mediasrv.musicradio.com/PlanetRock", "Planet Rock"));
+	radio_list.append(AudioData("http://www.smgradio.com/core/audio/ogg/live.pls?service=vrbb", "Virgin Radio"));
+
+	QValueVector<QString> list;
+	for (unsigned i = 0; i < radio_list.count(); ++i)
+		list.append(radio_list[i].desc);
+
+	list_browser->setList(list);
+	list_browser->showList();
+}
+
+void RadioSelector::itemIsClicked(QString item)
+{
+	qDebug("[AUDIO] RadioSelector::itemIsClicked -> %s", item.ascii());
+
+	unsigned element = 0;
+	unsigned track_number = 0;
+
+	for (unsigned i = 0; i < radio_list.count(); ++i)
+	{
+		if (item == radio_list[i].desc)
+			element = track_number;
+
+		++track_number;
+	}
+
+	emit startPlayer(radio_list, element);
+}
+
+void RadioSelector::browseUp()
+{
+	emit notifyExit();
+}
+
+void RadioSelector::nextItem()
+{
+	list_browser->nextItem();
+}
+
+void RadioSelector::prevItem()
+{
+	list_browser->prevItem();
+}
+
+void RadioSelector::setBGColor(QColor c)
+{
+	list_browser->setBGColor(c);
+}
+
+void RadioSelector::setFGColor(QColor c)
 {
 	list_browser->setFGColor(c);
 }

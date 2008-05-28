@@ -22,7 +22,7 @@
 #include <qwidget.h>
 
 class ListBrowser;
-class FileSelector;
+class Selector;
 class PlayWindow;
 class QLabel;
 class bannFrecce;
@@ -125,7 +125,7 @@ private:
 	/// Player screen
 	PlayWindow *play_window;
 
-	FileSelector *selector;
+	Selector *selector;
 
 	char amb[80];
 	char nome[15];
@@ -136,13 +136,34 @@ private:
 };
 
 
+class Selector : public QWidget
+{
+Q_OBJECT
+public:
+	Selector(QWidget *parent, const char *name=0, WFlags f=0) : QWidget(parent, name, f) {}
+	virtual void setBGColor(QColor c) = 0;
+	virtual void setFGColor(QColor c) = 0;
+
+public slots:
+	virtual void nextItem() = 0;
+	virtual void prevItem() = 0;
+
+	virtual void itemIsClicked(QString item) = 0;
+	virtual void browseUp() = 0;
+
+signals:
+	virtual void notifyExit() = 0;
+	virtual void startPlayer(QValueVector<AudioData> play_list, unsigned element) = 0;
+};
+
+
 /**
  * \class FileSelector
  *
  * implements a File Selector Windows with special methods
  * to navigate and to play files.
  */
-class  FileSelector : public QWidget
+class  FileSelector : public Selector
 {
 Q_OBJECT
 public:
@@ -183,6 +204,35 @@ private:
 
 	/// Browse given path, return false in case of error.
 	bool browseFiles(QString new_path);
+
+signals:
+	void notifyExit();
+	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
+};
+
+
+class RadioSelector : public Selector
+{
+Q_OBJECT
+public:
+	RadioSelector(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
+
+	/// Apply Style
+	void setBGColor(QColor c);
+	void setFGColor(QColor c);
+
+public slots:
+	void nextItem();
+	void prevItem();
+
+	void itemIsClicked(QString item);
+	void browseUp();
+
+private:
+	QValueVector<AudioData> radio_list;
+
+	/// The listBrowser instance, used to display files.
+	ListBrowser *list_browser;
 
 signals:
 	void notifyExit();
