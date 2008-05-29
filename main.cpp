@@ -14,6 +14,7 @@
 #include "../bt_stackopen/common_files/common_functions.h"
 #include "xmlvarihandler.h"
 #include <signal.h>
+#include <qregexp.h>
 
 #define	TIMESTAMP
 #ifdef TIMESTAMP
@@ -32,6 +33,13 @@ IconDispatcher icons_library;
  ** Instance global object to handle conf.xml
  *******************************************/
 PropertyMap app_config;
+
+/*******************************************
+ * Instance DOM global object to handle
+ * configuration. This will eventually
+ * replace app_config
+ * ****************************************/
+QDomDocument qdom_appconfig;
 
 
 /*******************************************
@@ -82,6 +90,35 @@ void myMessageOutput( QtMsgType type, const char *msg )
 	}
 }
 
+QDomNode getPageNode(int id)
+{
+	QString node_id;
+	node_id.setNum(id);
+	QDomElement root = qdom_appconfig.documentElement();
+
+	QDomNode n = root.firstChild();
+	while (!n.isNull() && n.nodeName() != "displaypages")
+		n = n.nextSibling();
+
+	if (n.isNull())
+		return QDomNode();
+
+	n = n.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(QRegExp("page\\d{1,2}")))
+		{
+			QDomNode child = n.firstChild();
+			while (!child.isNull() && child.nodeName() != "id")
+				child = child.nextSibling();
+
+			if (child.toElement().text() == node_id)
+				return n;
+		}
+		n = n.nextSibling();
+	}
+	return QDomNode();
+}
 
 BtMain *BTouch;
 
@@ -104,6 +141,15 @@ int main( int argc, char **argv )
 	// load configuration from conf.xml to app_config
 	propertyMapLoadXML( app_config, MY_FILE_USER_CFG_DEFAULT );
 	
+	QFile file(MY_FILE_USER_CFG_DEFAULT);
+
+	if (!qdom_appconfig.setContent(&file))
+	{
+		file.close();
+		qFatal("Error in qdom_appconfig file, exiting");
+	}
+	file.close();
+
 	xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
 	xmlFile = new QFile(My_File_Cfg);
 	QXmlInputSource source( xmlFile );

@@ -14,6 +14,10 @@
 #include "propertymap.h"
 #include "propertymap_xml.h"
 
+#include <qdom.h>
+
+QDomNode getPageNode(int id);
+
 /****************************************************************
  ** ICONS LIBRARY
  ****************************************************************/
@@ -48,6 +52,8 @@ extern IconDispatcher icons_library;
  *  to open conf.xml and read xml tags.
  */
 extern PropertyMap app_config;
+
+extern QDomDocument qdom_appconfig;
 
 
 /****************************************************************
