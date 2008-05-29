@@ -30,6 +30,51 @@
 
 unsigned char tipoData=0;
 
+/// banTesti: text utilized during the initialization sequence when the menu is built up
+static const char *banTesti[] =
+{
+	/*    0                            1                           2                         3                    */
+	"ATTUAT_AUTOM",               "DIMMER 10",               "ATTUAT_AUTOM_INT",          "VUOTO",
+	/*    4                            5                           6                         7                    */
+	"SCENARIO",                   "GR_ATT_INT",              "GR_DIMMER",                 "CARICO",
+	/*    8                            9                           10                        11                   */
+	"ATT_AUT_INT_SIC",            "ATT_AUT_TEMP",            "GR_ATT_INT",                "ATT_AUT_PULS",
+	/*    12                           13                          14                        15                   */
+	"ATT_VCT_LS",                 "ATT_VCT_SER",             "SET_DATA",                  "VUOTO",
+	/*    16                           17                          18                        19                   */
+	"SORGENTE_AUX",               "SORG_RADIO",              "AMPLI",                     "GR_AMPLI",
+	/*    20                           21                          22                        23                   */
+	"SET_SVEGLIA",                "CALIB",                   "TERMO_99Z_PROBE",           "ZONANTI",
+	/*    24                           25                          26                        27                   */
+	"IMPANTI",                    "SUONO",                   "PROT",                      "VERS",
+	/*    28                           29                          30                        31                   */
+	"CONTR",                      "MOD_SCEN",                "DATA",                      "TEMP",
+	/*    32                           33                          34                        35                   */
+	"TIME",                       "ALL",                     "SPECIAL",                   "DIMMER 100",
+	/*    36                           37                          38                        39                   */
+	"ATT_AUT_TEMP_N",             "ATT_AUT_TEMP_F",          "SCENARIO EVOLUTO",          "SCENARIO SCHEDULATO",
+	/*    40                           41                          42                        43                   */
+	"VUOTO",                      "VUOTO",                   "VUOTO",                     "VUOTO",
+	/*    44                           45                          46                        47                   */
+	"GR_DIMMER100",               "SORG_RADIO",              "SORG_AUX",                  "AMBIENTE",
+	/*    48                           49                          50                        51                   */
+	"INSIEME_AMBIENTI",           "POSTO_ESTERNO",           "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
+	/*    52                           53                          54                        55                   */
+	"TERMO_99Z_PROBE_FANCOIL",    "TERMO_4Z_PROBE",          "TERMO_4Z_PROBE_FANCOIL",    "TERMO_NC_EXTPROBE",
+	/*    56                           57                          58                                             */
+	"TERMO_NC_PROBE",             "TERMO_HOME_NC_EXTPROBE",  "TERMO_HOME_NC_PROBE",       "ARGH, empty!!!",
+	//    60-63
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    64-67
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    68-71
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+};
+
+/*! pagTesti: text utilized during the initialization sequence when the menu is built up */
+static const char pagTesti[13][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
+	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI" };
+
 /*******************************************
  *
  *******************************************/
@@ -381,11 +426,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						//			qWarning("ADDBUTTON OROLOGIO");
 						break;
 					case TEMPERATURA:
-					case TERMO_HOME_PROBE:
+					case TERMO_HOME_NC_PROBE:
 						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
 						//			qWarning("ADDBUTTON TEMPERATURA");
 						break;
-					case TERMO_HOME_EXTPROBE:
+					case TERMO_HOME_NC_EXTPROBE:
 						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"", "1");
 						break;
 
@@ -549,10 +594,10 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							switch(page_item_id)
 							{
 								case TEMPERATURA:
-								case TERMO_HOME_PROBE:
+								case TERMO_HOME_NC_PROBE:
 									(*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii());
 									break;
-								case TERMO_HOME_EXTPROBE:
+								case TERMO_HOME_NC_EXTPROBE:
 									(*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii(), "1");
 									break;
 								case DATA:
@@ -1118,13 +1163,15 @@ bool xmlconfhandler::characters( const QString & qValue)
 
 						case TERMOREGOLAZIONE:
 							n = getThermRootNode();
-							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
+							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground,
+									SecondForeground);
 							pageAct=*termo;
 							break;
 
 						case TERMOREG_MULTI_PLANT:
 							n = getThermRootNode();
-							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground);
+							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground,
+									SecondForeground);
 							pageAct=*termo;
 							break;
 

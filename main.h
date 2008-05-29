@@ -314,7 +314,6 @@ enum  bannerType {
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
 	CALIBRAZIONE=21,                              /*!<  Calibration */
-	TERMO=22,                                     /*!<  Thermoregulation zone */
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
 	SUONO=25,                                     /*!<  Beep */
@@ -342,54 +341,17 @@ enum  bannerType {
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
-	TERMO_FANCOIL=52,                             /*!< Thermoregulation zone with fan-coil control */
-	TERMO_4Z=53,                                  /*!< 4 Zones Thermoregulation */
-	TERMO_4Z_FANCOIL=54,                          /*!< 4 Zones Thermoregulation with fan-coil control */
-	TERMO_EXTPROBE=55,                            /*!< External not-controlled probe */
-	TERMO_PROBE=56,                               /*!< Not-controlled probe */
-        TERMO_HOME_EXTPROBE=57,                       /*!< Home page external not-controlled probe */
-        TERMO_HOME_PROBE=58                           /*!< Home page not-controlled probe */
+	TERMO_99Z_PROBE=22,                           /*!< Probe controlled by 99 zones thermal regulator */
+	TERMO_99Z_PROBE_FANCOIL=52,                   /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
+	TERMO_4Z_PROBE=53,                            /*!< Probe controlled by 4 zones thermal regulator */
+	TERMO_4Z_PROBE_FANCOIL=54,                    /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
+	TERMO_NC_EXTPROBE=55,                         /*!< External not-controlled probe */
+	TERMO_NC_PROBE=56,                            /*!< Not-controlled probe */
+        TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
+        TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
+	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
+	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 };
-
-
-/// banTesti: text utilized during the initialization sequence when the menu is built up
-const char banTesti[][20] =
-{
-	/*    0                            1                           2                         3                    */
-	"ATTUAT_AUTOM",               "DIMMER 10",               "ATTUAT_AUTOM_INT",          "VUOTO",
-	/*    4                            5                           6                         7                    */
-	"SCENARIO",                   "GR_ATT_INT",              "GR_DIMMER",                 "CARICO",
-	/*    8                            9                           10                        11                   */
-	"ATT_AUT_INT_SIC",            "ATT_AUT_TEMP",            "GR_ATT_INT",                "ATT_AUT_PULS",
-	/*    12                           13                          14                        15                   */
-	"ATT_VCT_LS",                 "ATT_VCT_SER",             "SET_DATA",                  "VUOTO",
-	/*    16                           17                          18                        19                   */
-	"SORGENTE_AUX",               "SORG_RADIO",              "AMPLI",                     "GR_AMPLI",
-	/*    20                           21                          22                        23                   */
-	"SET_SVEGLIA",                "CALIB",                   "TERMO",                     "ZONANTI",
-	/*    24                           25                          26                        27                   */
-	"IMPANTI",                    "SUONO",                   "PROT",                      "VERS",
-	/*    28                           29                          30                        31                   */
-	"CONTR",                      "MOD_SCEN",                "DATA",                      "TEMP",
-	/*    32                           33                          34                        35                   */
-	"TIME",                       "ALL",                     "SPECIAL",                   "DIMMER 100",
-	/*    36                           37                          38                        39                   */
-	"ATT_AUT_TEMP_N",             "ATT_AUT_TEMP_F",          "SCENARIO EVOLUTO",          "SCENARIO SCHEDULATO",
-	/*    40                           41                          42                        43                   */
-	"VUOTO",                      "VUOTO",                   "VUOTO",                     "VUOTO",
-	/*    44                           45                          46                        47                   */
-	"GR_DIMMER100",               "SORG_RADIO",              "SORG_AUX",                  "AMBIENTE",
-	/*    48                           49                          50                        51                   */
-	"INSIEME_AMBIENTI",           "POSTO_ESTERNO",           "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
-	/*    52                           53                          54                        55                   */
-	"TERMO_FANCOIL",              "TERMO_4Z",                "TERMO_4Z_FANCOIL",          "TERMO_EXTPROBE",
-	/*    56                           57                          58                                             */
-	"TERMO_PROBE",                "TERMO_HOME_EXTPROBE",     "TERMO_HOME_PROBE"
-};
-
-/*! pagTesti: text utilized during the initialization sequence when the menu is built up */
-const char pagTesti[13][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
-	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI" };
 
 /*! \enum pulsType
  * differentiate various type of pulse banner
@@ -415,7 +377,7 @@ enum pulsType
 /*! \def BEEP
  * if not defined it's impossible to have a beep when pressing a button
  */
-#define BEEP
+//#define BEEP
 
 
 #endif //MAIN_H
