@@ -358,7 +358,6 @@ void sottoMenu::addItem(banner *b)
 
 void sottoMenu::showItem(int id)
 {
-	show();
 	indice = id;
 	// FIXME: dirty way to set the last button of the navBar in case of full screen banners
 	if (numRighe == 1)

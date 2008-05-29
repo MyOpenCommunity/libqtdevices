@@ -21,7 +21,7 @@ class PlantMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor fg2);
+	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2);
 private:
 	bannPuls *addMenuItem(QDomNode n, const char *central_icon, QString descr);
 	/// Node in the Dom tree that is a `plant' tag
