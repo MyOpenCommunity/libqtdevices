@@ -78,6 +78,11 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 	addMainControls(main_controls_layout);
 }
 
+PlayWindow::~PlayWindow()
+{
+	stopPlayer();
+}
+
 void PlayWindow::addMainControls(QBoxLayout* layout)
 {
 	back_btn = new BtButton(this, "back_btn");
@@ -92,8 +97,8 @@ void PlayWindow::addMainControls(QBoxLayout* layout)
 	settings_btn->setPixmap(*icons_library.getIcon(IMG_SETTINGS));
 	settings_btn->setPressedPixmap(*icons_library.getIcon(IMG_SETTINGS_P));
 
-	connect(back_btn, SIGNAL(released()), SLOT(handleBackBtn()));
-	connect(settings_btn, SIGNAL(released()), SLOT(handleSettingsBtn()));
+	connect(back_btn, SIGNAL(released()), SIGNAL(backBtn()));
+	connect(settings_btn, SIGNAL(released()), SIGNAL(settingsBtn()));
 }
 
 void PlayWindow::setBGColor(QColor c)
@@ -165,17 +170,6 @@ bool PlayWindow::isPlaying()
 	return media_player->isInstanceRunning();
 }
 
-void PlayWindow::handleBackBtn()
-{
-	hide();
-}
-
-void PlayWindow::handleSettingsBtn()
-{
-	hide();
-	emit settingsBtn();
-}
-
 void PlayWindow::handlePlayingDone()
 {
 	/*
@@ -191,8 +185,7 @@ void PlayWindow::handlePlayingDone()
 void PlayWindow::handlePlayingAborted()
 {
 	//turnOffAudioSystem(false);
-
-	hide();
+	emit notifyStopPlay();
 
 	// FIXME display error?
 	qDebug("[AUDIO] Error in mplayer, stopping playlist");

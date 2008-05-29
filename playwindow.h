@@ -40,6 +40,7 @@ class  PlayWindow : public QWidget
 {
 Q_OBJECT
 public:
+	virtual ~PlayWindow();
 	// Apply Style
 	virtual void setBGColor(QColor c);
 	virtual void setFGColor(QColor c);
@@ -60,10 +61,6 @@ public:
 
 	/// Start PLAY, begins to play and sets the play_list
 	void startPlayer(QValueVector<AudioData> _play_list, unsigned element);
-
-public slots:
-	void handleBackBtn();
-	void handleSettingsBtn();
 
 protected:
 	// To make PlayWindow an abstract class.
@@ -96,8 +93,8 @@ protected slots:
 	void handlePlayingAborted();
 
 signals:
-	// User released settings button
 	void settingsBtn();
+	void backBtn();
 	void notifyStartPlay();
 	void notifyStopPlay();
 

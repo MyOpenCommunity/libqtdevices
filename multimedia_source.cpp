@@ -14,8 +14,81 @@
 #include "playwindow.h"
 #include "bannfrecce.h"
 #include "listbrowser.h"
+#include "buttons_bar.h"
+#include "fontmanager.h"
+#include "btbutton.h"
 
 #define BROWSER_ROWS_PER_PAGE 4
+
+// Interface icon paths.
+static const char *IMG_SELECT = IMG_PATH "arrrg.png";
+static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
+static const char *IMG_BACK = IMG_PATH "arrlf.png";
+static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
+
+
+SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent, name)
+{
+	QFont aFont;
+	FontManager::instance()->getFont(font_listbrowser, aFont); // GIANNI: cambiare!!
+	setFont(aFont);
+
+	unsigned num_choices = 2;
+	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
+
+	// Create labels_layout
+	QVBoxLayout *labels_layout = new QVBoxLayout();
+	labels_layout->setMargin(0);
+	labels_layout->setSpacing(0);
+
+	TitleLabel *l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 5);
+	l->setText("RADIO IP");
+	labels_layout->addWidget(l);
+
+	l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 15);
+	l->setText("MEDIA SERVER");
+	labels_layout->addWidget(l);
+	labels_layout->addStretch();
+
+	// Create buttons_bar
+	buttons_bar = new ButtonsBar(this, num_choices, Qt::Vertical);
+
+	// Set Icons for buttons_bar (using icons_library cache)
+	QPixmap *icon         = icons_library.getIcon(IMG_SELECT);
+	QPixmap *pressed_icon = icons_library.getIcon(IMG_SELECT_P);
+	for (unsigned i = 0; i < num_choices; ++i)
+		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
+
+	QHBoxLayout *main_controls = new QHBoxLayout();
+	back_btn = new BtButton(this, "back_btn");
+	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
+	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
+	main_controls->addWidget(back_btn);
+
+	QGridLayout *main_layout = new QGridLayout(this, 4, 2, 1);
+	main_layout->addMultiCell(new QSpacerItem(MAX_WIDTH, 20), 0, 0, 0, 1);
+	main_layout->addLayout(labels_layout, 1, 0);
+	main_layout->addWidget(buttons_bar, 1, 1);
+	main_layout->addMultiCellLayout(main_controls, 2, 2, 0, 1, Qt::AlignLeft);
+	main_layout->addMultiCell(new QSpacerItem(MAX_WIDTH, 10), 3, 3, 0, 1);
+
+	connect(back_btn, SIGNAL(released()), SIGNAL(Closed()));
+	connect(buttons_bar, SIGNAL(clicked(int)), SIGNAL(clicked(int)));
+}
+
+void SourceChoice::setBGColor(QColor c)
+{
+	setPaletteBackgroundColor(c);
+	buttons_bar->setBGColor(c);
+	back_btn->setPaletteBackgroundColor(c);
+}
+
+void SourceChoice::setFGColor(QColor c)
+{
+	setPaletteForegroundColor(c);
+	buttons_bar->setFGColor(c);
+	back_btn->setPaletteForegroundColor(c);
+}
 
 
 class AudioSourceFactory
@@ -59,12 +132,19 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
 	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
+	source_choice = new SourceChoice(this, name);
+	source_choice->hide();
+	source_type = NONE_SOURCE;
 	play_window = 0;
 	selector = 0;
+
+	connect(source_choice, SIGNAL(Closed()), SLOT(handleClose()));
+	connect(source_choice, SIGNAL(clicked(int)), SLOT(handleChoiceSource(int)));
 }
 
 void MultimediaSource::sourceMenu(AudioSourceType t)
 {
+	source_type = t;
 	AudioSourceFactory factory(this, t);
 
 	if (play_window)
@@ -87,16 +167,29 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 	connect(bannNavigazione, SIGNAL(downClick()), selector, SLOT(prevItem()));
 	connect(bannNavigazione, SIGNAL(upClick()), selector, SLOT(nextItem()));
 	connect(bannNavigazione, SIGNAL(backClick()), selector, SLOT(browseUp()));
-	connect(bannNavigazione, SIGNAL(forwardClick()), selector, SIGNAL(notifyExit()));
+	connect(bannNavigazione, SIGNAL(forwardClick()), SLOT(handleClose()));
 
 	// Connection to be notified about Start and Stop Play
 	connect(play_window, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
 	connect(play_window, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
-	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
-	connect(selector, SIGNAL(notifyExit()), SIGNAL(Closed()));
+	connect(play_window, SIGNAL(settingsBtn()), SLOT(handleClose()));
+	connect(play_window, SIGNAL(backBtn()), SLOT(handlePlayerExit()));
+
+	connect(selector, SIGNAL(notifyExit()), SLOT(handleSelectorExit()));
 
 	connect(selector, SIGNAL(startPlayer(QValueVector<AudioData>, unsigned)),
 			SLOT(startPlayer(QValueVector<AudioData>, unsigned)));
+}
+
+void MultimediaSource::handleClose()
+{
+	source_choice->hide();
+	if (source_type != NONE_SOURCE)
+	{
+		play_window->hide();
+		selector->hide();
+	}
+	emit Closed();
 }
 
 void MultimediaSource::initAudio()
@@ -127,14 +220,61 @@ void MultimediaSource::resume()
 
 void MultimediaSource::showPage()
 {
-	sourceMenu(FILE_SOURCE);
+	bool non_ci_sono_radio = false;
 
 	// draw and show itself
 	draw();
 	showFullScreen();
 
-	if (play_window->isPlaying())
+	if (source_type != NONE_SOURCE && play_window->isPlaying())
+	{
+		qDebug("play window: %d", (int) play_window->isShown());
 		play_window->show();
+	}
+	else if (non_ci_sono_radio)
+	{
+		sourceMenu(FILE_SOURCE);
+		selector->show();
+	}
+	else
+		source_choice->show();
+}
+
+void MultimediaSource::handlePlayerExit()
+{
+	play_window->hide();
+	selector->show();
+}
+
+void MultimediaSource::handleSelectorExit()
+{
+	bool non_ci_sono_radio = false;
+	if (non_ci_sono_radio)
+	{
+		handleClose();
+	}
+	else
+	{
+		selector->hide();
+		source_choice->show();
+	}
+}
+
+void MultimediaSource::handleChoiceSource(int button_id)
+{
+	qDebug("Chiamato handleChoiceSource su %d", button_id);
+	// GIANNI: temporanei, fare un enum!
+	int BUTTON_RADIO = 0;
+	int BUTTON_MEDIA = 1;
+
+	// Create the instances only if change the source type
+	if (button_id == BUTTON_RADIO && source_type != RADIO_SOURCE)
+		sourceMenu(RADIO_SOURCE);
+	else if (button_id == BUTTON_MEDIA && source_type != FILE_SOURCE)
+		sourceMenu(FILE_SOURCE);
+
+	source_choice->hide();
+	selector->show();
 }
 
 void MultimediaSource::handleStartPlay()
@@ -161,11 +301,13 @@ void MultimediaSource::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
+	source_choice->setBGColor(c);
 }
 void MultimediaSource::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
+	source_choice->setFGColor(c);
 }
 
 int MultimediaSource::setBGPixmap(char* backImage)
@@ -191,6 +333,7 @@ void MultimediaSource::disableSource(bool send_frame)
 
 void MultimediaSource::startPlayer(QValueVector<AudioData> list, unsigned element)
 {
+	selector->hide();
 	play_window->startPlayer(list, element);
 	play_window->show();
 }
@@ -219,7 +362,6 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 	{
 		// FIXME display error?
 	}
-
 }
 
 void FileSelector::showEvent(QShowEvent *event)

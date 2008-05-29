@@ -26,12 +26,14 @@ class Selector;
 class PlayWindow;
 class QLabel;
 class bannFrecce;
-
+class ButtonsBar;
+class BtButton;
 
 enum AudioSourceType
 {
 	RADIO_SOURCE,
-	FILE_SOURCE
+	FILE_SOURCE,
+	NONE_SOURCE // Only for inizialization
 };
 
 
@@ -40,6 +42,25 @@ struct AudioData {
 	QString desc;
 	AudioData(QString p = "", QString d = "") { path = p; desc = d; }
 };
+
+
+class SourceChoice : public QWidget
+{
+Q_OBJECT
+public:
+	SourceChoice(QWidget *parent, const char *name);
+	void setBGColor(QColor c);
+	void setFGColor(QColor c);
+
+signals:
+	void clicked(int);
+	void Closed();
+
+private:
+	ButtonsBar *buttons_bar;
+	BtButton   *back_btn;
+};
+
 
 /**
  * \class MultimediaSource
@@ -135,11 +156,19 @@ private:
 	bool audio_initialized;
 	int where_address;
 
+	AudioSourceType source_type;
+	SourceChoice *source_choice;
+
 private slots:
 	/// handles to receive play and stop notifications
 	void handleStartPlay();
 	void handleStopPlay();
 	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
+
+	void handleChoiceSource(int button_id);
+	void handleSelectorExit();
+	void handlePlayerExit();
+	void handleClose();
 };
 
 
