@@ -41,7 +41,6 @@ struct AudioData {
 	AudioData(QString p = "", QString d = "") { path = p; desc = d; }
 };
 
-
 /**
  * \class MultimediaSource
  *
@@ -99,27 +98,11 @@ signals:
 	 * \brief Send open frame.
 	 */
 	void sendFrame(char *);
+
 public slots:
 	void showPage();
 
-	/// handles to receive play and stop notifications
-	void handleStartPlay();
-	void handleStopPlay();
-
-	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 private:
-	/// Player screen
-	PlayWindow *play_window;
-
-	Selector *selector;
-
-	char amb[80];
-	char nome[15];
-	bannFrecce *bannNavigazione;
-	QLabel *label;
-	bool audio_initialized;
-	int where_address;
-
 	void sourceMenu(AudioSourceType t);
 	/*!
 	 * \brief Sets the background color for the banner.
@@ -139,6 +122,24 @@ private:
 	 * \brief Draws the page
 	 */
 	void draw() {};
+
+	/// Player screen
+	PlayWindow *play_window;
+
+	Selector *selector;
+
+	char amb[80];
+	char nome[15];
+	bannFrecce *bannNavigazione;
+	QLabel *label;
+	bool audio_initialized;
+	int where_address;
+
+private slots:
+	/// handles to receive play and stop notifications
+	void handleStartPlay();
+	void handleStopPlay();
+	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 };
 
 
@@ -158,8 +159,8 @@ public slots:
 	virtual void browseUp() = 0;
 
 signals:
-	virtual void notifyExit() = 0;
-	virtual void startPlayer(QValueVector<AudioData> play_list, unsigned element) = 0;
+	virtual void notifyExit();
+	virtual void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 };
 
 
@@ -210,10 +211,6 @@ private:
 
 	/// Browse given path, return false in case of error.
 	bool browseFiles(QString new_path);
-
-signals:
-	void notifyExit();
-	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 };
 
 
@@ -239,10 +236,6 @@ private:
 
 	/// The listBrowser instance, used to display files.
 	ListBrowser *list_browser;
-
-signals:
-	void notifyExit();
-	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
 };
 
 #endif
