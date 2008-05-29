@@ -15,6 +15,7 @@
 #include "thermalmenu.h"
 #include "banntemperature.h"
 #include "device_cache.h"
+#include "plantmenu.h"
 
 #include <qregexp.h>
 
@@ -23,13 +24,14 @@
 #define I_RIGHT_ARROW                "arrrg.png"
 #define I_PLANT                      "impianto.png"
 
-ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg) :
+ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2) :
 	sottoMenu(parent, name)
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");
 	conf_root = n;
 	setBGColor(bg);
 	setFGColor(fg);
+	second_fg = fg2;
 	addBanners();
 
 	qDebug("[TERMO] thermalmenu: end adding items.");
@@ -42,40 +44,12 @@ void ThermalMenu::addItems()
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new sottoMenu(this, "sottomenu extprobe");
+	sottoMenu *sm = new PlantMenu(this, "plant menu", config, second_fg);
 	sm->setBGColor(paletteBackgroundColor());
 	sm->setFGColor(paletteForegroundColor());
-	//sm->show();
-	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));
-	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
+	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(show()));
 	QObject::connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-
-	QDomNode n = config.firstChild();
-	while (!n.isNull())
-	{
-		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
-		{
-			//QDomNode item = findNamedNode(n, "descr");
-			//QString descr = item.toElement().text();
-			banner *b = new bannPuls(sm, "");
-			qDebug("[TERMO] createPlantMenu: item = %s", n.nodeName().ascii());
-
-			initBanner(b, n);
-
-			QString leftIcon(IMG_PATH + QString(I_RIGHT_ARROW));
-			QString central_icon;
-			int id = n.namedItem("id").toElement().text().toInt();
-			if (id == TERMO || id == TERMO_FANCOIL)
-				central_icon = QString(IMG_PATH) + I_TEMP_PROBE;
-			else
-				central_icon = QString(IMG_PATH) + I_PLANT;
-			b->SetIcons(leftIcon.ascii(), 0, central_icon.ascii());
-
-
-			sm->appendBanner(b);
-		}
-		n = n.nextSibling();
-	}
 }
 
 void ThermalMenu::addBanners()
@@ -114,7 +88,6 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 {	
 	bannPuls *bp = new bannPuls(this, descr.ascii());
 	qDebug("[TERMO] addBanners1: %s", descr.ascii());
-	item_list.append(bp);
 
 	QString leftIcon(IMG_PATH + QString(I_RIGHT_ARROW));
 	central_icon = QString(IMG_PATH) + central_icon;
@@ -136,8 +109,8 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	sm->setBGColor(paletteBackgroundColor());
 	sm->setFGColor(paletteForegroundColor());
 	//sm->show();
-	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));
-	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
+	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(show()));
 	QObject::connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 	QDomNode n = config.firstChild();
 	while (!n.isNull())
@@ -159,50 +132,6 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		}
 		n = n.nextSibling();
 	}
-}
-
-void ThermalMenu::initBanner(banner *bann, QDomNode conf)
-{
-	bann->setBGColor(paletteBackgroundColor());
-	bann->setFGColor(paletteForegroundColor());
-
-	//QString addr = getDeviceAddress(conf);
-	//bann->setAddress(addr.ascii());
-	qDebug("[TERMO] initBanner: remeber to set the address of the device (if applicable)");
-
-	QDomNode n = findNamedNode(conf, "descr");
-	bann->SetTextU(n.toElement().text());
-
-	n = findNamedNode(conf, "id");
-	bann->setId(n.toElement().text().toInt());
-
-	bann->setAnimationParams(0, 0);
-	// note: we are ignoring the serial number...
-	// seems not used for thermal regulation
-}
-
-QDomNode ThermalMenu::findNamedNode(QDomNode root, QString name)
-{
-	QValueList<QDomNode> nodes;
-	nodes.append(root);
-	while (!nodes.isEmpty())
-	{
-		QDomNode n = nodes.first();
-		QDomNode item = n.namedItem(name);
-		if (item.isNull())
-		{
-			QDomNodeList list = n.childNodes();
-			for (unsigned i = 0; i < list.length(); ++i)
-				nodes.append(list.item(i));
-			nodes.pop_front();
-		}
-		else
-		{
-			return item;
-		}
-	}
-	QDomNode null;
-	return null;
 }
 
 QString ThermalMenu::getDeviceAddress(QDomNode root)

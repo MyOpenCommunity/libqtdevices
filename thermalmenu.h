@@ -30,11 +30,10 @@ public:
 	/**
 	 * 
 	 */
-	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg);
+	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2);
 
 private:
 	QString getDeviceAddress(QDomNode);
-	QDomNode findNamedNode(QDomNode, QString);
 	bannPuls *addMenuItem(QDomElement, QString, QString);
 	/**
 	 * Create a sottoMenu to show external and not controlled probes
@@ -46,16 +45,6 @@ private:
 	 */
 	void createProbeMenu(QDomNode config, bannPuls *bann, bool external);
 
-	/**
-	 * Set BG and FG color, address, id, text, animation params
-	 * in a banner.
-	 *
-	 * \param bann The banner being set
-	 * \param conf The node in the Dom tree that holds a reference
-	 * to an `item' tag (that is the root node of an item configuration)
-	 */
-	void initBanner(banner *bann, QDomNode conf);
-
 	void addItems();
 	void createPlantMenu(QDomNode config, bannPuls *bann);
 	void addBanners();
@@ -63,7 +52,7 @@ private:
 	QDomNode conf_root;
 	/// do NOT setAutoDelete(true), since banners are children of
 	/// ThermalMenu and will be deleted by Qt
-	QPtrList<banner> item_list;
+	QColor second_fg;
 };
 
 #endif

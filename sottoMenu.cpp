@@ -77,7 +77,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 	#endif
 }
 
-void sottoMenu::setNavBarMode(uchar navBarMode,char* IconBut4)
+void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
 {
 	qDebug("strcmp(IconBut4,&iconName[0]) : %s - %s", IconBut4, iconName);
 	if(navBarMode!=hasNavBar)
@@ -228,7 +228,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		TERMO_EXTPROBE=55,          External not-controlled probe
 		TERMO_PROBE=56,             Not-controlled probe
 		*/
-
+#if 0
 		case TERMO:
 			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione,
 				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
@@ -253,6 +253,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 			elencoBanner.append(new termoPage(this, termoPage::EXT_SINGLE_PROBE, descrizione,
 				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
 			break;
+#endif
 		case ZONANTINTRUS:
 			elencoBanner.append(new zonaAnti(this,descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 			break;
@@ -289,7 +290,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 			qDebug("********** sottoMenu::addItem(): unknown item type!!! ************\n");
 			return 0;
 	}
-	this->connectLastBanner();
+	connectLastBanner();
 
 	elencoBanner.getLast()->SetTextU( qdescrizione );
 	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
@@ -318,8 +319,7 @@ void sottoMenu::appendBanner(banner *b)
 void sottoMenu::connectLastBanner()
 {
 	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));
-	connect(this, SIGNAL(parentChanged(QWidget *)),
-			elencoBanner.getLast(), SLOT(grandadChanged(QWidget *)));
+	connect(this, SIGNAL(parentChanged(QWidget *)), elencoBanner.getLast(), SLOT(grandadChanged(QWidget *)));
 	connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	connect(elencoBanner.getLast(), SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
@@ -333,16 +333,8 @@ void sottoMenu::connectLastBanner()
 void sottoMenu::addItem(banner *b)
 {
 	elencoBanner.append(b);
-	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
-	connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
-	connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this , SIGNAL(freeze(bool))); 
-	connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool))); 
-	connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));      
-	//     connect(this, SIGNAL(deFreez()), elencoBanner.getLast(), SLOT(deFreez())); 
-	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*))); 
-	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this , SLOT(killBanner(banner*)));      
+	connectLastBanner();
+
 	connect(this, SIGNAL(hideChildren()), elencoBanner.getLast(), SLOT(hide()));
 	elencoBanner.getLast()->SetTextU(elencoBanner.getLast()->name()); // name() torna il nome passato alla classe QWidget. non verra' tradotto...
 	int periodo, numFrame, tipo;
@@ -362,6 +354,21 @@ void sottoMenu::addItem(banner *b)
 			break;
 		}
 	}
+}
+
+void sottoMenu::showItem(int id)
+{
+	show();
+	indice = id;
+	// FIXME: dirty way to set the last button of the navBar in case of full screen banners
+	if (numRighe == 1)
+	{
+		qDebug("[TERMO] sottoMenu::draw() calling banner function...");
+		banner *bann = getCurrent();
+		bann->postDisplay();
+	}
+
+	forceDraw();
 }
 
 void sottoMenu::draw()
@@ -396,6 +403,7 @@ void sottoMenu::draw()
 					0, height-MAX_HEIGHT/NUM_RIGHE,
 					width, MAX_HEIGHT/NUM_RIGHE);
 			bannNavigazione  ->setGeometry( 0 ,height-MAX_HEIGHT/NUM_RIGHE,width , MAX_HEIGHT/NUM_RIGHE);		
+
 			bannNavigazione->Draw();
 			bannNavigazione->show();	
 		}
@@ -413,6 +421,7 @@ void sottoMenu::draw()
 		}
 		indicold=indice;
 	}
+
 }
 
 void sottoMenu::forceDraw()
@@ -652,7 +661,7 @@ void  sottoMenu::killBanner(banner* b)
 
 void sottoMenu::hide(bool index)
 {
-	qDebug("sottoMenu::hide() (%s)", name());
+	qDebug("[TERMO] sottoMenu::hide() (%s)", name());
 	QWidget::hide();
 	emit(hideChildren());
 	if(index)
@@ -684,8 +693,10 @@ void  sottoMenu::setIndice(char c)
 void sottoMenu::show()
 {
 	qDebug("sottoMenu::show() (%s)", name());
+
 	if(strcmp(name(), "ILLUMINO")==0)
 		init_dimmer();
+	forceDraw();
 	QWidget::show();
 }
 
@@ -704,6 +715,50 @@ void sottoMenu::addAmb(char *a)
 	qDebug("sottoMenu::addAmb(%s)", a);
 	for (int idx=elencoBanner.count()-1;idx>=0;idx--)
 		elencoBanner.at(idx)->addAmb(a);
+}
+
+void sottoMenu::initBanner(banner *bann, QDomNode conf)
+{
+	bann->setBGColor(paletteBackgroundColor());
+	bann->setFGColor(paletteForegroundColor());
+
+	//QString addr = getDeviceAddress(conf);
+	//bann->setAddress(addr.ascii());
+	//qDebug("[TERMO] initBanner: remeber to set the address of the device (if applicable)");
+
+	QDomNode n = findNamedNode(conf, "descr");
+	bann->SetTextU(n.toElement().text());
+
+	n = findNamedNode(conf, "id");
+	bann->setId(n.toElement().text().toInt());
+
+	bann->setAnimationParams(0, 0);
+	// note: we are ignoring the serial number...
+	// seems not used for thermal regulation
+}
+
+QDomNode sottoMenu::findNamedNode(QDomNode root, QString name)
+{
+	QValueList<QDomNode> nodes;
+	nodes.append(root);
+	while (!nodes.isEmpty())
+	{
+		QDomNode n = nodes.first();
+		QDomNode item = n.namedItem(name);
+		if (item.isNull())
+		{
+			QDomNodeList list = n.childNodes();
+			for (unsigned i = 0; i < list.length(); ++i)
+				nodes.append(list.item(i));
+			nodes.pop_front();
+		}
+		else
+		{
+			return item;
+		}
+	}
+	QDomNode null;
+	return null;
 }
 
 #ifdef IPHONE_MODE

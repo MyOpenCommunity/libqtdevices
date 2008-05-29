@@ -13,10 +13,13 @@
 
 #undef IPHONE_MODE
 
-#include <qwidget.h>
-#include <qptrlist.h> 
 #include "main.h"
 #include "banner.h"
+
+#include <qwidget.h>
+#include <qptrlist.h> 
+#include <qdom.h>
+#include <qvaluelist.h>
 
 class bannFrecce;
 class scenEvo_cond;
@@ -96,6 +99,10 @@ sstop : soft stop values list vor dimmer 100 group
 				QString action="", QString light="", QString key="", QString unk="", 
 				QValueList<int> sstart = QValueList<int>(), 
 				QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
+
+		/**
+		 * Add a new banner.
+		 */
 		void appendBanner(banner *b);
 		/*!
 		  \brief Initializes all the objects in the list calling init() after a certain time
@@ -306,8 +313,27 @@ public slots:
 		  */    
 		void 	svuota();
 		void 	show();
+		void showItem(int id);
 	protected:
 		void connectLastBanner();
+		/**
+		 * Set BG and FG color, address, id, text, animation params
+		 * in a banner.
+		 *
+		 * \param bann The banner being set
+		 * \param conf The node in the Dom tree that holds a reference
+		 * to an `item' tag (that is the root node of an item configuration)
+		 */
+		void initBanner(banner *bann, QDomNode conf);
+		/**
+		 * Finds a node with tag name equal to the parameter
+		 * using a breadth-first search.
+		 *
+		 * \param root    The node where the search starts
+		 * \param name    The tag name to find
+		 * \return        A null node if no tag was found, the node otherwise
+		 */
+		QDomNode findNamedNode(QDomNode root, QString name);
 		QPtrList<banner> elencoBanner;
 		QTimer* iniTim;
 		int	indice, indicold;
