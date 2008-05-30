@@ -123,19 +123,41 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 
 void MultimediaSource::loadRadioNode()
 {
-	QDomNode node = getPageNode(DIFSON_MULTI);
-	if (node.isNull())
-		node = getPageNode(DIFSON);
+	bool diff_multi = true;
+	QDomNode node_page = getPageNode(DIFSON_MULTI);
+	if (node_page.isNull())
+	{
+		node_page = getPageNode(DIFSON);
+		diff_multi = false;
+	}
 
-	if (node.isNull())
+	if (node_page.isNull())
 		qDebug("[AUDIO] ERROR loading configuration");
 
-	QDomNode n = node.firstChild();
-	while (!n.isNull() && n.nodeName() != "web_radio") // GIANNI: boh.. web_radio di chi è figlio?
-		n = n.nextSibling();
+	QString item_id;
+	item_id.setNum(diff_multi ? 51 : 50);
 
-	if (!n.isNull())
-		radio_node = n;
+	QDomNode n = node_page.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(QRegExp("item\\d{1,2}")))
+		{
+			QDomNode child = n.firstChild();
+			while (!child.isNull() && child.nodeName() != "id")
+				child = child.nextSibling();
+
+			if (!child.isNull() && child.toElement().text() == item_id)
+			{
+				QDomNode node = n.firstChild();
+				while (!node.isNull() && node.nodeName() != "web_radio")
+					node = node.nextSibling();
+
+				if (!node.isNull())
+					radio_node = node;
+			}
+		}
+		n = n.nextSibling();
+	}
 }
 
 void MultimediaSource::sourceMenu(AudioSourceType t)
