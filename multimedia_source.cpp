@@ -238,7 +238,10 @@ void MultimediaSource::showPage()
 		selector->show();
 	}
 	else
+	{
+		bannNavigazione->setHidden(true);
 		source_choice->show();
+	}
 }
 
 void MultimediaSource::handlePlayerExit()
@@ -254,6 +257,7 @@ void MultimediaSource::handleSelectorExit()
 	else
 	{
 		selector->hide();
+		bannNavigazione->setHidden(true);
 		source_choice->show();
 	}
 }
@@ -271,6 +275,7 @@ void MultimediaSource::handleChoiceSource(int button_id)
 	else if (button_id == BUTTON_MEDIA && source_type != FILE_SOURCE)
 		sourceMenu(FILE_SOURCE);
 
+	bannNavigazione->setHidden(false);
 	source_choice->hide();
 	selector->show();
 }
