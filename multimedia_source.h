@@ -20,6 +20,7 @@
 #include <qdir.h>
 #include <qvaluevector.h>
 #include <qwidget.h>
+#include <qdom.h>
 
 class ListBrowser;
 class Selector;
@@ -144,6 +145,8 @@ private:
 	 */
 	void draw() {};
 
+	void loadRadioNode();
+
 	/// Player screen
 	PlayWindow *play_window;
 
@@ -158,6 +161,7 @@ private:
 
 	AudioSourceType source_type;
 	SourceChoice *source_choice;
+	QDomNode radio_node;
 
 private slots:
 	/// handles to receive play and stop notifications
@@ -247,7 +251,7 @@ class RadioSelector : public Selector
 {
 Q_OBJECT
 public:
-	RadioSelector(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
+	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name=0, WFlags f=0);
 
 	/// Apply Style
 	void setBGColor(QColor c);

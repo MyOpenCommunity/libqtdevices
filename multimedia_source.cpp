@@ -9,6 +9,7 @@
  ****************************************************************/
 
 #include <qlayout.h>
+#include <qregexp.h>
 
 #include "multimedia_source.h"
 #include "playwindow.h"
@@ -17,6 +18,7 @@
 #include "buttons_bar.h"
 #include "fontmanager.h"
 #include "btbutton.h"
+#include "main.h"
 
 #define BROWSER_ROWS_PER_PAGE 4
 
@@ -91,31 +93,6 @@ void SourceChoice::setFGColor(QColor c)
 }
 
 
-class AudioSourceFactory
-{
-public:
-	AudioSourceFactory(QWidget *p, AudioSourceType t) { parent = p; type = t; }
-	PlayWindow *buildPlayWindow()
-	{
-		if (type == RADIO_SOURCE)
-			return new RadioPlayWindow(parent);
-		else
-			return new MediaPlayWindow(parent);
-	}
-
-	Selector *buildSelector()
-	{
-		if (type == RADIO_SOURCE)
-			return new RadioSelector(parent, BROWSER_ROWS_PER_PAGE);
-		else
-			return new FileSelector(parent, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
-	}
-
-private:
-	AudioSourceType type;
-	QWidget *parent;
-};
-
 
 MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
 	QWidget(parent, name),
@@ -140,17 +117,39 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 
 	connect(source_choice, SIGNAL(Closed()), SLOT(handleClose()));
 	connect(source_choice, SIGNAL(clicked(int)), SLOT(handleChoiceSource(int)));
+
+	loadRadioNode();
+}
+
+void MultimediaSource::loadRadioNode()
+{
+	QDomNode node = getPageNode(DIFSON_MULTI);
+	if (node.isNull())
+		node = getPageNode(DIFSON);
+
+	if (node.isNull())
+		qDebug("[AUDIO] ERROR loading configuration");
+
+	QDomNode n = node.firstChild();
+	while (!n.isNull() && n.nodeName() != "web_radio") // GIANNI: boh.. web_radio di chi è figlio?
+		n = n.nextSibling();
+
+	if (!n.isNull())
+		radio_node = n;
 }
 
 void MultimediaSource::sourceMenu(AudioSourceType t)
 {
 	source_type = t;
-	AudioSourceFactory factory(this, t);
 
 	if (play_window)
 		play_window->deleteLater();
 
-	play_window = factory.buildPlayWindow();
+	if (source_type == RADIO_SOURCE)
+		play_window = new RadioPlayWindow(this);
+	else
+		play_window = new MediaPlayWindow(this);
+
 	play_window->setBGColor(paletteBackgroundColor());
 	play_window->setFGColor(paletteForegroundColor());
 	play_window->setPalette(palette());
@@ -159,7 +158,11 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 	if (selector)
 		selector->deleteLater();
 
-	selector = factory.buildSelector();
+	if (source_type == RADIO_SOURCE)
+		selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE, radio_node);
+	else
+		selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
+
 	selector->setBGColor(paletteBackgroundColor());
 	selector->setFGColor(paletteForegroundColor());
 
@@ -220,8 +223,6 @@ void MultimediaSource::resume()
 
 void MultimediaSource::showPage()
 {
-	bool non_ci_sono_radio = false;
-
 	// draw and show itself
 	draw();
 	showFullScreen();
@@ -231,7 +232,7 @@ void MultimediaSource::showPage()
 		qDebug("play window: %d", (int) play_window->isShown());
 		play_window->show();
 	}
-	else if (non_ci_sono_radio)
+	else if (radio_node.isNull())
 	{
 		sourceMenu(FILE_SOURCE);
 		selector->show();
@@ -248,11 +249,8 @@ void MultimediaSource::handlePlayerExit()
 
 void MultimediaSource::handleSelectorExit()
 {
-	bool non_ci_sono_radio = false;
-	if (non_ci_sono_radio)
-	{
+	if (radio_node.isNull())
 		handleClose();
-	}
 	else
 	{
 		selector->hide();
@@ -506,7 +504,7 @@ void FileSelector::setFGColor(QColor c)
 /// Methods for RadioSelector
 /// ***********************************************************************************************************************
 
-RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, const char *name, WFlags f) :
+RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name, WFlags f) :
 	Selector(parent, name, f)
 {
 	list_browser = new ListBrowser(this, rows_per_page, name, f);
@@ -516,10 +514,31 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, const char
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
-	// GIANNI -> Temporaneo: creazione struttura
-	radio_list.append(AudioData("http://mediasrv.musicradio.com/ClassicFM", "Classic FM"));
-	radio_list.append(AudioData("http://mediasrv.musicradio.com/PlanetRock", "Planet Rock"));
-	radio_list.append(AudioData("http://www.smgradio.com/core/audio/ogg/live.pls?service=vrbb", "Virgin Radio"));
+	QDomNode n = config.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(QRegExp("item\\d{1,2}")))
+		{
+			QString descr, url;
+			QDomNode child = n.firstChild();
+			while (!child.isNull())
+			{
+				if (child.nodeName() == "descr")
+					descr = child.toElement().text();
+				else if (child.nodeName() == "url")
+					url = child.toElement().text();
+
+				if (descr.length() > 0 && url.length() > 0)
+					break;
+				child = child.nextSibling();
+			}
+			if (descr.length() > 0 && url.length() > 0)
+				radio_list.append(AudioData(url, descr));
+			else
+				qDebug("[AUDIO] Error loading radio item %s", n.nodeName().ascii());
+		}
+		n = n.nextSibling();
+	}
 
 	QValueVector<QString> list;
 	for (unsigned i = 0; i < radio_list.count(); ++i)
