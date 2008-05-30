@@ -132,20 +132,13 @@ void ListBrowser::showList()
 		}
 	}
 
-	if (start==end)
-	{
-		buttons_bar->showButton(0);
-		buttons_bar->setEnabled(false);
-	}
-	else
-	{
+	if (start!=end)
 		buttons_bar->setEnabled(true);
-	}
 }
 
 void ListBrowser::nextItem()
 {
-	if ((current_page + 1) * rows_per_page <= item_list.count())
+	if ((current_page + 1) * rows_per_page < item_list.count())
 		++current_page;
 	showList();
 }
