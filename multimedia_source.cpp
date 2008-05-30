@@ -93,7 +93,6 @@ void SourceChoice::setFGColor(QColor c)
 }
 
 
-
 MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
 	QWidget(parent, name),
 	audio_initialized(true)
@@ -250,10 +249,7 @@ void MultimediaSource::showPage()
 	showFullScreen();
 
 	if (source_type != NONE_SOURCE && play_window->isPlaying())
-	{
-		qDebug("play window: %d", (int) play_window->isShown());
 		play_window->show();
-	}
 	else if (radio_node.isNull())
 	{
 		sourceMenu(FILE_SOURCE);
@@ -286,7 +282,6 @@ void MultimediaSource::handleSelectorExit()
 
 void MultimediaSource::handleChoiceSource(int button_id)
 {
-	qDebug("Chiamato handleChoiceSource su %d", button_id);
 	// GIANNI: temporanei, fare un enum!
 	int BUTTON_RADIO = 0;
 	int BUTTON_MEDIA = 1;
@@ -299,7 +294,11 @@ void MultimediaSource::handleChoiceSource(int button_id)
 
 	bannNavigazione->setHidden(false);
 	source_choice->hide();
-	selector->show();
+
+	if (play_window->isPlaying())
+		play_window->show();
+	else
+		selector->show();
 }
 
 void MultimediaSource::handleStartPlay()
@@ -454,7 +453,6 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
-	qDebug("[AUDIO] browseFiles on %s", new_path.ascii());
 	// if new_path is valid changes the path and run browseFiles()
 	if (QFileInfo(new_path).exists())
 	{
