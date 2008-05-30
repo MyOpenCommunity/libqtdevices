@@ -112,7 +112,7 @@ QDomNode getPageNode(int id)
 			while (!child.isNull() && child.nodeName() != "id")
 				child = child.nextSibling();
 
-			if (child.toElement().text() == node_id)
+			if (!child.isNull() && child.toElement().text() == node_id)
 				return n;
 		}
 		n = n.nextSibling();
