@@ -9,7 +9,6 @@
  */
 
 #include "plantmenu.h"
-#include "bannfullscreen.h"
 
 #include <qregexp.h>
 
@@ -30,7 +29,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	second_fg = fg2;
 	// FIXME: bisogna ricordarsi che per C4z ind_centrale != ""
 	ind_centrale = conf_root.namedItem("ind_centrale").toElement().text();
-	
+
 	items_submenu.setBGColor(paletteBackgroundColor());
 	items_submenu.setFGColor(paletteForegroundColor());
 
@@ -46,30 +45,37 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 			// create full screen banner
 			int id = n.namedItem("id").toElement().text().toInt();
 			const char *icon;
+			BannID bann_type;
 			switch (id)
 			{
 			case TERMO_99Z:
 				icon = I_PLANT;
+				bann_type = fs_99z;
 				break;
 			case TERMO_4Z:
 				icon = I_PLANT;
+				bann_type = fs_nc_probe;
 				break;
 			case TERMO_99Z_PROBE:
 				icon = I_ZONE;
+				bann_type = fs_99z_probe;
 				break;
 			case TERMO_99Z_PROBE_FANCOIL:
 				icon = I_ZONE;
+				bann_type = fs_99z_fancoil;
 				break;
 			case TERMO_4Z_PROBE:
 				icon = I_ZONE;
+				bann_type = fs_4z_probe;
 				break;
 			case TERMO_4Z_PROBE_FANCOIL:
 				icon = I_ZONE;
+				bann_type = fs_4z_fancoil;
 				break;
 			}
 
 			QString descr = findNamedNode(n, "descr").toElement().text();
-			bannPuls *bp = addMenuItem(n, icon, descr);
+			bannPuls *bp = addMenuItem(n, icon, descr, bann_type);
 
 			signal_mapper.setMapping(bp, banner_id);
 			connect(bp, SIGNAL(sxClick()), &signal_mapper, SLOT(map()));
@@ -84,8 +90,8 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	items_submenu.show();
 }
 
-bannPuls *PlantMenu::addMenuItem(QDomNode n, const char *central_icon, QString descr)
-{	
+bannPuls *PlantMenu::addMenuItem(QDomNode n, const char *central_icon, QString descr, BannID type)
+{
 	/*
 	 * Create little banner in selection menu.
 	 */
@@ -97,8 +103,11 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, const char *central_icon, QString d
 	/*
 	 * Create full screen banner in detail menu.
 	 */
-	BannFullScreen *fsb = new BannFullScreen(&items_submenu, descr.ascii(), paletteBackgroundColor(), paletteForegroundColor(), second_fg);
+	qDebug("[TERMO] addMenuItem: before factory");
+	BannFullScreen *fsb = FSBannFactory::getInstance()->getBanner(type, &items_submenu);
+	qDebug("[TERMO] addMenuItem: factory done");
 	initBanner(fsb, n);
+	fsb->setSecondForeground(second_fg);
 	items_submenu.appendBanner(fsb);
 
 	return bp;

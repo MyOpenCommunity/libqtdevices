@@ -44,7 +44,7 @@ void ThermalMenu::addItems()
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new PlantMenu(parentWidget(), "plant menu", config, 
+	sottoMenu *sm = new PlantMenu(parentWidget(), "plant menu", config,
 			paletteBackgroundColor(), paletteForegroundColor(), second_fg);
 	sm->show();
 	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(raise()));
@@ -84,7 +84,7 @@ void ThermalMenu::addBanners()
 }
 
 bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString descr)
-{	
+{
 	bannPuls *bp = new bannPuls(this, descr.ascii());
 	qDebug("[TERMO] addBanners1: %s", descr.ascii());
 

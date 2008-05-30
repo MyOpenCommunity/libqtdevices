@@ -12,6 +12,7 @@
 
 #include "sottomenu.h"
 #include "bannpuls.h"
+#include "bannfullscreen.h"
 
 #include <qdom.h>
 #include <qptrvector.h>
@@ -23,7 +24,7 @@ Q_OBJECT
 public:
 	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2);
 private:
-	bannPuls *addMenuItem(QDomNode n, const char *central_icon, QString descr);
+	bannPuls *addMenuItem(QDomNode n, const char *central_icon, QString descr, BannID type);
 	/// Node in the Dom tree that is a `plant' tag
 	QDomNode conf_root;
 	/// Address of the thermal regulation device
