@@ -54,7 +54,7 @@ static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
 /// Methods for PlayWindow
 /// ***********************************************************************************************************************
 
-PlayWindow::PlayWindow(QWidget *parent, const char * name) :
+PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
 	QWidget(parent, name, WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
 {
 	current_track = CURRENT_TRACK_NONE;
@@ -68,7 +68,7 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 	// all others layout must have this as parent, this is not more needed in Qt4
 	// where we can use setMainLayout
 	main_layout = new QVBoxLayout(this);
-	media_player = new MediaPlayer(this);
+	media_player = player;
 
 	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
 	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
@@ -76,11 +76,6 @@ PlayWindow::PlayWindow(QWidget *parent, const char * name) :
 
 	QHBoxLayout *main_controls_layout = new QHBoxLayout(main_layout);
 	addMainControls(main_controls_layout);
-}
-
-PlayWindow::~PlayWindow()
-{
-	stopPlayer();
 }
 
 void PlayWindow::addMainControls(QBoxLayout* layout)
@@ -260,8 +255,8 @@ QString PlayWindow::getCurrentDescription()
 /// Methods for MediaPlayWindow
 /// ***********************************************************************************************************************
 
-MediaPlayWindow::MediaPlayWindow(QWidget *parent, const char * name) :
-	PlayWindow(parent, name)
+MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
+	PlayWindow(player, parent, name)
 {
 	qDebug("[AUDIO] MediaPlayWindow costructor");
 	main_layout->insertSpacing(0, 20);
@@ -508,8 +503,8 @@ void MediaPlayWindow::handleButtons(int button_number)
 /// Methods for RadioPlayWindow
 /// ***********************************************************************************************************************
 
-RadioPlayWindow::RadioPlayWindow(QWidget *parent, const char * name) :
-	PlayWindow(parent, name)
+RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
+	PlayWindow(player, parent, name)
 {
 	qDebug("[AUDIO] RadioPlayWindow costructor");
 	read_player_output = false;

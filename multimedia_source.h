@@ -25,6 +25,7 @@
 class ListBrowser;
 class Selector;
 class PlayWindow;
+class MediaPlayer;
 class QLabel;
 class bannFrecce;
 class ButtonsBar;
@@ -38,7 +39,8 @@ enum AudioSourceType
 };
 
 
-struct AudioData {
+struct AudioData
+{
 	QString path;
 	QString desc;
 	AudioData(QString p = "", QString d = "") { path = p; desc = d; }
@@ -147,10 +149,9 @@ private:
 
 	void loadRadioNode();
 
-	/// Player screen
 	PlayWindow *play_window;
-
 	Selector *selector;
+	MediaPlayer *media_player;
 
 	char amb[80];
 	char nome[15];

@@ -17,8 +17,10 @@
 #include "listbrowser.h"
 #include "buttons_bar.h"
 #include "fontmanager.h"
+#include "mediaplayer.h"
 #include "btbutton.h"
 #include "main.h"
+
 
 #define BROWSER_ROWS_PER_PAGE 4
 
@@ -32,7 +34,7 @@ static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent, name)
 {
 	QFont aFont;
-	FontManager::instance()->getFont(font_listbrowser, aFont); // GIANNI: cambiare!!
+	FontManager::instance()->getFont(font_listbrowser, aFont);
 	setFont(aFont);
 
 	unsigned num_choices = 2;
@@ -111,6 +113,7 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	source_choice = new SourceChoice(this, name);
 	source_choice->hide();
 	source_type = NONE_SOURCE;
+	media_player = new MediaPlayer(this);
 	play_window = 0;
 	selector = 0;
 
@@ -167,9 +170,9 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 		play_window->deleteLater();
 
 	if (source_type == RADIO_SOURCE)
-		play_window = new RadioPlayWindow(this);
+		play_window = new RadioPlayWindow(media_player, this);
 	else
-		play_window = new MediaPlayWindow(this);
+		play_window = new MediaPlayWindow(media_player, this);
 
 	play_window->setBGColor(paletteBackgroundColor());
 	play_window->setFGColor(paletteForegroundColor());
@@ -288,9 +291,15 @@ void MultimediaSource::handleChoiceSource(int button_id)
 
 	// Create the instances only if change the source type
 	if (button_id == BUTTON_RADIO && source_type != RADIO_SOURCE)
+	{
 		sourceMenu(RADIO_SOURCE);
+		play_window->stop();
+	}
 	else if (button_id == BUTTON_MEDIA && source_type != FILE_SOURCE)
+	{
 		sourceMenu(FILE_SOURCE);
+		play_window->stop();
+	}
 
 	bannNavigazione->setHidden(false);
 	source_choice->hide();

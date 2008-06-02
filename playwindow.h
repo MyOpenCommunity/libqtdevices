@@ -40,7 +40,6 @@ class  PlayWindow : public QWidget
 {
 Q_OBJECT
 public:
-	virtual ~PlayWindow();
 	// Apply Style
 	virtual void setBGColor(QColor c);
 	virtual void setFGColor(QColor c);
@@ -64,7 +63,7 @@ public:
 
 protected:
 	// To make PlayWindow an abstract class.
-	PlayWindow(QWidget *parent = 0, const char * name = 0);
+	PlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
 	virtual void startPlayer(unsigned int);
 	virtual void stopPlayer();
 	void playNextTrack();
@@ -116,7 +115,7 @@ class MediaPlayWindow : public PlayWindow
 {
 Q_OBJECT
 public:
-	MediaPlayWindow(QWidget *parent = 0, const char * name = 0);
+	MediaPlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
 
 	// Apply Style
 	void setBGColor(QColor c);
@@ -174,7 +173,7 @@ class RadioPlayWindow : public PlayWindow
 {
 Q_OBJECT
 public:
-	RadioPlayWindow(QWidget *parent = 0, const char * name = 0);
+	RadioPlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
 
 	// Apply Style
 	void setBGColor(QColor c);
