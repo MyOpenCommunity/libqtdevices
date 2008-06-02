@@ -159,10 +159,7 @@ private:
 	int refresh_time;
 
 	/// Labels
-	TitleLabel *file_name_label,   *percent_pos_label,
-	           *time_length_label, *time_pos_label,
-	           *meta_title_label,  *meta_artist_label,
-	           *meta_album_label,  *meta_track_label;
+	TitleLabel *time_pos_label, *meta_title_label, *meta_artist_label, *meta_album_label;
 
 	/// Timer to refresh data from MediaPlayer
 	QTimer *data_refresh_timer;
