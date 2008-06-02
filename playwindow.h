@@ -5,10 +5,7 @@
  * All rights reserved.
  * -->
  *
- * \brief This class implements the management of the multimedia source page (interface)
- *
- * This class defines the visualization properties for MULTIMEDIA Audio Source page
- * it has been done starting from the aux audio source class, done by Cimiagi
+ * \brief This file contains all classes related to PlayWindow class.
  *
  * \author Alessandro Della Villa <kemosh@develer.com>
  * \author Gianni Valdambrini <aleister@develer.com>
@@ -32,9 +29,8 @@ class QBoxLayout;
 /**
  * \class PlayWindow
  *
- * This class implemets the Play Window,
- * it is called from fileBrowser (that is part of MultimediaSource Page)
- * when file (song) is clicked
+ * This (abstract) class realize the Play Window, called by MultimediaSource
+ * when an item is clicked.
  */
 class  PlayWindow : public QWidget
 {
@@ -58,7 +54,6 @@ public:
 	void turnOnAudioSystem(bool send_frame);
 	void turnOffAudioSystem(bool send_frame);
 
-	/// Start PLAY, begins to play and sets the play_list
 	void startPlayer(QValueVector<AudioData> _play_list, unsigned element);
 
 protected:
@@ -111,6 +106,11 @@ private:
 };
 
 
+/**
+ * \class MediaPlayWindow
+ *
+ * This class inherits from PlayWindow class to implements the playing of files.
+ */
 class MediaPlayWindow : public PlayWindow
 {
 Q_OBJECT
@@ -169,6 +169,11 @@ private:
 };
 
 
+/**
+ * \class RadioPlayWindow
+ *
+ * This class inherits from PlayWindow class to implements the playing of radio.
+ */
 class RadioPlayWindow : public PlayWindow
 {
 Q_OBJECT

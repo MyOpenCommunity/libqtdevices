@@ -23,6 +23,12 @@
 
 class ButtonsBar;
 
+/**
+ * \class ListBrowser
+ *
+ * This class show a list of item and supply a list of signal/slot for handling
+ * the user choices.
+ */
 class ListBrowser : public QWidget
 {
 Q_OBJECT

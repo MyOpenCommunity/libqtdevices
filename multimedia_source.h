@@ -68,7 +68,7 @@ private:
 /**
  * \class MultimediaSource
  *
- * This class implemets the Page for MULTIMEDIA SOURCE
+ * This class implements the logic for MULTIMEDIA SOURCE
  */
 class MultimediaSource : public QWidget
 {
@@ -201,8 +201,8 @@ signals:
 /**
  * \class FileSelector
  *
- * implements a File Selector Windows with special methods
- * to navigate and to play files.
+ * implements a File Selector Windows with special methods to navigate and
+ * play files.
  */
 class  FileSelector : public Selector
 {
@@ -248,6 +248,12 @@ private:
 };
 
 
+/**
+ * \class RadioSelector
+ *
+ * implements a Radio Selector Windows with special methods to navigate and
+ * play radio.
+ */
 class RadioSelector : public Selector
 {
 Q_OBJECT
