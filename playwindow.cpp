@@ -58,7 +58,6 @@ PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent, const char * name) 
 	QWidget(parent, name, WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
 {
 	current_track = CURRENT_TRACK_NONE;
-	next_track = CURRENT_TRACK_NONE;
 	read_player_output = true;
 
 	/// set self Geometry
@@ -115,8 +114,7 @@ void PlayWindow::prevTrack()
 	if (media_player->isInstanceRunning() && current_track != 0)
 	{
 		stopPlayer();
-		next_track = current_track - 1;
-		startPlayer(next_track);
+		startPlayer(current_track - 1);
 
 		qDebug("[AUDIO] PlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 	}
@@ -134,8 +132,7 @@ void PlayWindow::nextTrack()
 void PlayWindow::playNextTrack()
 {
 	stopPlayer();
-	next_track = current_track + 1;
-	startPlayer(next_track);
+	startPlayer(current_track + 1);
 }
 
 void PlayWindow::pause()
@@ -150,7 +147,6 @@ void PlayWindow::stop()
 	qDebug("[AUDIO] PlayWindow::stop()");
 	stopPlayer();
 	current_track = CURRENT_TRACK_NONE;
-	next_track = CURRENT_TRACK_NONE;
 }
 
 void PlayWindow::resume()
@@ -215,17 +211,15 @@ void PlayWindow::startPlayer(QValueVector<AudioData> _play_list, unsigned elemen
 	qDebug("[AUDIO] startPlayer()");
 	stop();
 	play_list = _play_list;
-	current_track = element;
-	startPlayer(current_track);
+	startPlayer(element);
 }
 
 void PlayWindow::startPlayer(unsigned int track)
 {
 	// Start playing and point next Track
 	current_track = track;
-	next_track = current_track + 1;
 
-	qDebug("[AUDIO] start new mplayer instance with current_track=%u and next_track=%u", current_track, next_track);
+	qDebug("[AUDIO] start new mplayer instance with current_track=%u", current_track);
 	media_player->play(play_list[current_track].path, read_player_output);
 }
 

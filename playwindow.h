@@ -97,11 +97,9 @@ private:
 
 	/*
 	 * current_track is the track played by mplayer.
-	 * next_track is the track to be played by next mplayer instance.
 	 * CURRENT_TRACK_NONE means no track has to be played.
 	 */
 	unsigned int current_track;
-	unsigned int next_track;
 	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
 };
 
