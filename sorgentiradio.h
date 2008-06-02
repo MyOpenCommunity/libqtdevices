@@ -109,7 +109,7 @@ public:
 public slots:
 	void attiva();
 	void addAmb(char *);
-	void ambChanged( const QString &, bool, void *);
+	void ambChanged( const QString &, bool, char *);
 	void show();
 signals:
 	void active(int, int);

@@ -448,10 +448,10 @@ void sorgenteMultiRadio::attiva()
 	}
 }
 
-void sorgenteMultiRadio::ambChanged(const QString & ad, bool multi, void *indamb)
+void sorgenteMultiRadio::ambChanged(const QString & ad, bool multi, char *indamb)
 {
 	// FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
-	qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad.ascii(), multi, (char *)indamb);
+	qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
 	if(!multi) {
 		multiamb = false;
 		indirizzo_ambiente = QString((const char *)indamb).toInt();

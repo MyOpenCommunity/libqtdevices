@@ -68,7 +68,7 @@ public:
 	void addAmb(char *);
 public slots:
 	void attiva();
-	void ambChanged(const QString &, bool, void *);
+	void ambChanged(const QString &, bool, char *);
 signals:
 	void active(int, int);
 };
