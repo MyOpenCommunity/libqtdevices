@@ -211,6 +211,7 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 void MultimediaSource::handleClose()
 {
 	source_choice->hide();
+	bannNavigazione->setHidden(false);
 	if (source_type != NONE_SOURCE)
 	{
 		play_window->hide();
