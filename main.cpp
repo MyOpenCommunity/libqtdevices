@@ -9,6 +9,7 @@
  ****************************************************************/
 
 #include "btmain.h"
+#include "propertymap_xml.h"
 #include <qapplication.h>
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
