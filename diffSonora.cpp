@@ -8,6 +8,8 @@
  **
  ****************************************************************/
 
+#include <qcursor.h>
+
 #include "diffsonora.h"
 #include "sottomenu.h"
 #include "btlabel.h"

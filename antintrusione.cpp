@@ -7,7 +7,6 @@
 **Sottomenù antiintrusione
 **
 ****************************************************************/
-
 #include "antintrusione.h"
 #include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
 #include "tastiera.h"

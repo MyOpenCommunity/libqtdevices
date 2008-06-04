@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 
+#include <stdlib.h>
+
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>

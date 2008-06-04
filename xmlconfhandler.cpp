@@ -303,8 +303,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 			rearmWDT();
 		}
 	}
-	
-	
+
+
 	if (!car)
 		characters( QString("\000"));        // se ho un tag vuoto riempio con '\000' il suo campo 
 

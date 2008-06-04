@@ -8,7 +8,6 @@
 **
 ****************************************************************/
 
-
 #include "diffmulti.h"
 #include "ambdiffson.h"
 #include "device_cache.h"
