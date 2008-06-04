@@ -524,7 +524,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 								qDebug("appending %s to descr list", page_item_descr.ascii());
 								page_item_descr_m->append(new QString(page_item_descr));
 							}
-							
+
+							strcpy(&pip[0], page_item_where.ascii());
 							par2 = atoi(page_item_where.ascii());
 
 							(*dm)->addItem ((char)page_item_id, page_item_descr_m, pip,
