@@ -478,14 +478,12 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 	FontManager::instance()->getFont(font_playwindow, aFont);
 
 	// layouts for media
-	QHBoxLayout *tags_layout = new QHBoxLayout();
+	QVBoxLayout *tags_layout = new QVBoxLayout();
 	main_layout->insertLayout(1, tags_layout);
-
-	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
-	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
-
-	addNameLabels(tags_name_layout, aFont);
-	addTextLabels(tags_text_layout, aFont);
+	meta_title_label = new TitleLabel(this, MAX_WIDTH, 30, 0, 0, TRUE);
+	meta_title_label->setFont(aFont);
+	meta_title_label->setAlignment(Qt::AlignHCenter);
+	tags_layout->addWidget(meta_title_label);
 
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
@@ -514,22 +512,6 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 	// Add space to the end of layout to align buttons with previus page
 	main_layout->addSpacing(10);
 	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
-}
-
-void RadioPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
-{
-	QString label_a = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_title",  "Radio: ").c_str();
-	TitleLabel *name_label = new TitleLabel(this, MAX_WIDTH/3, 30, 9, 0);
-	name_label->setFont(aFont);
-	name_label->setText(label_a);
-	layout->addWidget(name_label);
-}
-
-void RadioPlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
-{
-	meta_title_label = new TitleLabel(this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE);
-	meta_title_label->setFont(aFont);
-	layout->addWidget(meta_title_label);
 }
 
 void RadioPlayWindow::setBGColor(QColor c)

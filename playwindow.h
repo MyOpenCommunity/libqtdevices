@@ -181,9 +181,6 @@ private slots:
 	void handleButtons(int);
 
 private:
-	void addTextLabels(QBoxLayout *layout, QFont& aFont);
-	void addNameLabels(QBoxLayout *layout, QFont& aFont);
-
 	/// Play buttons
 	ButtonsBar  *play_controls;
 	TitleLabel *meta_title_label;
