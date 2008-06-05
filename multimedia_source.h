@@ -1,17 +1,28 @@
 /**
  * \file
  * <!--
- * Copyright 2007 Develer S.r.l. (http://www.develer.com/)
+ * Copyright 2007, 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
  * -->
  *
- * \brief This class implements the management of the multimedia source page (interface)
+ * \brief This class implements the management of the multimedia part
  *
- * This class defines the visualization properties for MULTIMEDIA Audio Source page
- * it has been done starting from the aux audio source class, done by Cimiagi
+ * This class is the manager of the multimedia part, that is used to choose and
+ * play music (internet radio or song through upnp server). The classes involved
+ * are:
+ * - SourceChoice, that shows a menu to choose between radio or media server
+ *   sources.
+ *
+ * - the interface Selector, implemented by RadioSelector and FileSelector, to
+ *   choose the radio/file to play.
+ *
+ * - the abstract class PlayWindow, implemented by RadioPlayWindow and
+ *   MediaPlayWindow, to play music using the MediaPlayer class.
+ *
+ * - the MediaPlayer, a wrapper around mplayer.
  *
  * \author Alessandro Della Villa <kemosh@develer.com>
- * \date December 2007
+ * \author Gianni Valdambrini <aleister@develer.com>
  */
 
 #ifndef MULTIMEDIA_SOURCE_H
@@ -46,7 +57,11 @@ struct AudioData
 	AudioData(QString p = "", QString d = "") { path = p; desc = d; }
 };
 
-
+/**
+ * \class SourceChoice
+ *
+ * This class show the menu to choice from Radio Over Ip and Media Server
+ */
 class SourceChoice : public QWidget
 {
 Q_OBJECT
@@ -176,7 +191,12 @@ private slots:
 	void handleClose();
 };
 
-
+/**
+ * \class Selector
+ *
+ * Realize a common interface for all selector classes.
+ *
+ */
 class Selector : public QWidget
 {
 Q_OBJECT
@@ -201,8 +221,7 @@ signals:
 /**
  * \class FileSelector
  *
- * implements a File Selector Windows with special methods to navigate and
- * play files.
+ * implements a File Selector Windows with methods to navigate and play files.
  */
 class  FileSelector : public Selector
 {
@@ -251,8 +270,7 @@ private:
 /**
  * \class RadioSelector
  *
- * implements a Radio Selector Windows with special methods to navigate and
- * play radio.
+ * implements a Radio Selector Windows with methods to navigate and play radio.
  */
 class RadioSelector : public Selector
 {
