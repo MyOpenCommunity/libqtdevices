@@ -20,12 +20,6 @@
 
 
 /*
- * Scripts launched before and after a track is played.
- */
-static const char *start_play_script = "/bin/audio_on.tcl";
-static const char *stop_play_script = "/bin/audio_off.tcl";
-
-/*
  * Interface icon paths.
  */
 static const char *IMG_PLAY = IMG_PATH "btnplay.png"; 
@@ -175,35 +169,10 @@ void PlayWindow::handlePlayingDone()
 
 void PlayWindow::handlePlayingAborted()
 {
-	//turnOffAudioSystem(false);
 	emit notifyStopPlay();
 
 	// FIXME display error?
 	qDebug("[AUDIO] Error in mplayer, stopping playlist");
-}
-
-void PlayWindow::turnOnAudioSystem(bool send_frame)
-{
-	qDebug("[AUDIO] Running start play script: %s", start_play_script);
-
-	int rc;
-	if ((rc = system(start_play_script)) != 0)
-		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
-
-	if(send_frame)
-		emit notifyStartPlay();
-}
-
-void PlayWindow::turnOffAudioSystem(bool send_frame)
-{
-	qDebug("[AUDIO] Running stop play script: %s", stop_play_script);
-
-	int rc;
-	if ((rc = system(stop_play_script)) != 0)
-		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
-
-	if(send_frame)
-		emit notifyStopPlay();
 }
 
 void PlayWindow::startPlayer(QValueVector<AudioData> _play_list, unsigned element)

@@ -50,10 +50,6 @@ public:
 	/// Return true if a song is currently active, even if in pause.
 	bool isPlaying();
 
-	// Run script and send frame to turn on and off Audio System
-	void turnOnAudioSystem(bool send_frame);
-	void turnOffAudioSystem(bool send_frame);
-
 	void startPlayer(QValueVector<AudioData> _play_list, unsigned element);
 
 protected:
@@ -89,7 +85,6 @@ protected slots:
 signals:
 	void settingsBtn();
 	void backBtn();
-	void notifyStartPlay();
 	void notifyStopPlay();
 
 private:

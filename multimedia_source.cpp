@@ -24,6 +24,13 @@
 
 #define BROWSER_ROWS_PER_PAGE 4
 
+/*
+ * Scripts launched before and after a track is played.
+ */
+static const char *start_play_script = "/bin/audio_on.tcl";
+static const char *stop_play_script = "/bin/audio_off.tcl";
+
+
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
 static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
@@ -197,8 +204,9 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 	connect(bannNavigazione, SIGNAL(forwardClick()), SLOT(handleClose()));
 
 	// Connection to be notified about Start and Stop Play
-	connect(play_window, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
-	connect(play_window, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
+	connect(this, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
+	connect(this, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
+	connect(play_window, SIGNAL(notifyStopPlay()), SIGNAL(notifyStopPlay()));
 	connect(play_window, SIGNAL(settingsBtn()), SLOT(handleClose()));
 	connect(play_window, SIGNAL(backBtn()), SLOT(handlePlayerExit()));
 
@@ -232,18 +240,34 @@ void MultimediaSource::initAudio()
 	}
 }
 
-void MultimediaSource::nextTrack() { play_window->nextTrack(); }
-void MultimediaSource::prevTrack() { play_window->prevTrack(); }
-void MultimediaSource::stop()      { play_window->stop(); }
+void MultimediaSource::nextTrack()
+{
+	if (source_type != NONE_SOURCE)
+		play_window->nextTrack();
+}
+
+void MultimediaSource::prevTrack()
+{
+	if (source_type != NONE_SOURCE)
+		play_window->prevTrack();
+}
+
+void MultimediaSource::stop()
+{
+	if (source_type != NONE_SOURCE)
+		play_window->stop();
+}
 
 void MultimediaSource::pause()
 {
-	play_window->pause();
+	if (source_type != NONE_SOURCE)
+		play_window->pause();
 }
 
 void MultimediaSource::resume()
 {
-	play_window->resume();
+	if (source_type != NONE_SOURCE)
+		play_window->resume();
 }
 
 void MultimediaSource::showPage()
@@ -357,12 +381,26 @@ int MultimediaSource::setBGPixmap(char* backImage)
 
 void MultimediaSource::enableSource(bool send_frame)
 {
-	play_window->turnOnAudioSystem(send_frame);
+	qDebug("[AUDIO] Running start play script: %s", start_play_script);
+
+	int rc;
+	if ((rc = system(start_play_script)) != 0)
+		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
+
+	if(send_frame)
+		emit notifyStartPlay();
 }
 
 void MultimediaSource::disableSource(bool send_frame)
 {
-	play_window->turnOffAudioSystem(send_frame);
+	qDebug("[AUDIO] Running stop play script: %s", stop_play_script);
+
+	int rc;
+	if ((rc = system(stop_play_script)) != 0)
+		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
+
+	if(send_frame)
+		emit notifyStopPlay();
 }
 
 void MultimediaSource::startPlayer(QValueVector<AudioData> list, unsigned element)

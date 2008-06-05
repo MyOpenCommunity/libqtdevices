@@ -138,6 +138,9 @@ signals:
 	 */
 	void sendFrame(char *);
 
+	void notifyStartPlay();
+	void notifyStopPlay();
+
 public slots:
 	void showPage();
 
