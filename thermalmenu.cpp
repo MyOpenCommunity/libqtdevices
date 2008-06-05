@@ -46,9 +46,12 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
 	sottoMenu *sm = new PlantMenu(parentWidget(), "plant menu", config,
 			paletteBackgroundColor(), paletteForegroundColor(), second_fg);
-	sm->show();
-	QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(raise()));
-	QObject::connect(sm, SIGNAL(Closed()), this, SLOT(raise()));
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(raise()));
+	connect(bann, SIGNAL(sxClick()), this, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), this, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 }
 
 void ThermalMenu::addBanners()
@@ -108,16 +111,18 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	/**
 	 * Now submenus work. To fix this:
 	 *  - make all the submenus children of the same parent (home page), so that they are all siblings.
-	 *  - after creating the submenu, use the show() method on it,
-	 *       ie:
-	 *         sottoMenu *sm = new sottoMenu(...);
-	 *         // create sm children
-	 *         // ...
-	 *         sm->show();
-	 *  - connect the relevant signal with the raise() slot of the menu that must be on top
+	 *  - create the submenu as usual, ie. make all banners children of the sottoMenu class.
+	 *  - connect the clicked() signal with show() and raise() slots of the submenu to be shown,
+	 *      and to the hide() slot of the submenu that is now showing.
+	 *  - connect the Closed() signal of the submenu now created with its hide() slot and the show() 
+	 *      slot of the submenu that is creating it
 	 */
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(raise()));
-	connect(sm, SIGNAL(Closed()), this, SLOT(raise()));
+	connect(bann, SIGNAL(sxClick()), this, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), this, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 
 	QDomNode n = config.firstChild();
 	while (!n.isNull())
@@ -139,7 +144,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		}
 		n = n.nextSibling();
 	}
-	sm->show();
+	//sm->show();
 }
 
 QString ThermalMenu::getDeviceAddress(QDomNode root)

@@ -38,7 +38,6 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 
 	QObject::connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
 			SLOT(status_changed(QPtrList<device_status>)));
-//rember to set bg and fg colors to temp_label
 }
 
 void BannTemperature::status_changed(QPtrList<device_status> list)

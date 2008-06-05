@@ -10,13 +10,16 @@
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
-#ifndef SMFULLSCREEN_H
-#define SMFULLSCREEN_H
+#ifndef BANNFULLSCREEN_H
+#define BANNFULLSCREEN_H
 
 #include "banner.h"
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qbuttongroup.h>
+#include <qdom.h>
+
+class device_status;
 
 class BannFullScreen : public banner
 {
@@ -24,11 +27,13 @@ Q_OBJECT
 public:
 	// mi manca di sicuro la descrizione della zona e il device da cui prendo le modifiche
 	// forse posso spostare il set dei vari *ground in alcuni membri?
-	BannFullScreen(QWidget *parent, const char *name = 0);
+	BannFullScreen(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	// void callmeBack() call this from sottoMenu to setNavBarMode with the correct icon
 	virtual void postDisplay();
 	void setSecondForeground(QColor fg2);
+public slots:
+	virtual void status_changed(QPtrList<device_status> list);
 
 protected:
 	QVBoxLayout main_layout;
@@ -46,14 +51,17 @@ class FSBann4zProbe : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBann4zProbe(QWidget *parent, const char *name = 0);
+	FSBann4zProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	virtual void postDisplay();
 protected:
-	QString setup_temp;
-	QLabel  *setup_temp_label;
 	QString setpoint;
-	QLabel *setpoint_label;
+	QLabel  *setpoint_label;
+	// FIXME: setpoint e' la temperatura impostata mentre la rotellina e' `locale'
+	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
+	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
+	QString local_temp;
+	QLabel *local_temp_label;
 };
 
 // FIXME: Use decorator !!
@@ -63,9 +71,10 @@ class FSBann4zFancoil : public FSBann4zProbe
 {
 Q_OBJECT
 public:
-	FSBann4zFancoil(QWidget *parent, const char *name = 0);
+	FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	virtual void postDisplay();
+	virtual void status_changed(QPtrList<device_status> list);
 private:
 	/**
 	 * Creates fancoil buttons and loads icons
@@ -90,11 +99,11 @@ class FSBannFactory
 {
 public:
 	static FSBannFactory *getInstance();
-	BannFullScreen *getBanner(BannID id, QWidget *parent);
+	BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n);
 private:
 	static FSBannFactory *instance;
 	FSBannFactory();
 	FSBannFactory(const FSBannFactory &);
 	FSBannFactory &operator= (const FSBannFactory&);
 };
-#endif // SMFULLSCREEN_H
+#endif // BANNFULLSCREEN_H

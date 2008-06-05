@@ -7,8 +7,8 @@
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
-#ifndef HEADER_NAME_H
-#define HEADER_NAME_H
+#ifndef PLANTMENU_H
+#define PLANTMENU_H
 
 #include "sottomenu.h"
 #include "bannpuls.h"
@@ -18,13 +18,16 @@
 #include <qptrvector.h>
 #include <qsignalmapper.h>
 
+class device;
+
 class PlantMenu : public sottoMenu
 {
 Q_OBJECT
 public:
 	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2);
 private:
-	bannPuls *addMenuItem(QDomNode n, const char *central_icon, QString descr, BannID type);
+	bannPuls *addMenuItem(QDomNode n, const char *central_icon, QString descr, BannID type,
+			QString addr, device *dev);
 	/// Node in the Dom tree that is a `plant' tag
 	QDomNode conf_root;
 	/// Address of the thermal regulation device
@@ -45,4 +48,4 @@ private:
 	 */
 	sottoMenu items_submenu;
 };
-#endif // HEADER_NAME_H
+#endif // PLANTMENU_H
