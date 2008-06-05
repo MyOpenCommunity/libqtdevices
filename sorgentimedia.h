@@ -49,7 +49,7 @@ public slots:
 	void gestFrame(char *);
 	void attiva();
 	void addAmb(char *);
-	void ambChanged(char *, bool, char *);
+	void ambChanged(const QString &, bool, char *);
 signals:
 	void active(int, int);
 

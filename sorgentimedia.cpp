@@ -176,10 +176,10 @@ void BannerSorgenteMultimediaMC::attiva()
 	}
 }
 
-void BannerSorgenteMultimediaMC::ambChanged(char *ad, bool multi, char *indamb)
+void BannerSorgenteMultimediaMC::ambChanged(const QString & ad, bool multi, char *indamb)
 {
 	// FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
-	qDebug("BannerSorgenteMultimediaMC::ambChanged(%s, %d, %s)", ad, multi, indamb);
+	qDebug("BannerSorgenteMultimediaMC::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
 	QString dove;
 
 	if (!multi)

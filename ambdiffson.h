@@ -49,7 +49,7 @@ public slots:
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
 signals:
-	void ambChanged(char *, bool, char *);
+	void ambChanged(const QString &, bool, char *);
 };
 
 
@@ -77,7 +77,7 @@ public slots:
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
 signals:
-	void ambChanged(char *, bool, char *);
+	void ambChanged(const QString &, bool, char *);
 };
 
 #endif

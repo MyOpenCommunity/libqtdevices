@@ -995,7 +995,10 @@ unsigned char banner::getState(){return (stato); }
 char* banner::getManIcon(){return NULL;}
 char* banner::getAutoIcon(){return NULL;}
 
-void banner::ambChanged(char *, bool, char *) { };
+void banner::ambChanged(const QString &, bool, char *)
+{
+	qDebug("[WARNING] empty slot ambChanged called!");
+};
 
 void banner::parentChanged(QWidget *newParent) { };
 void banner::grandadChanged(QWidget *newGrandad) { };

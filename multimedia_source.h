@@ -104,7 +104,7 @@ public:
 	/*!
 	 * \brief Sets amb. description
 	 */
-	void setAmbDescr(char *) {}
+	void setAmbDescr(const QString &) {}
 
 	/*
 	 * \brief Enable/Disable audio source

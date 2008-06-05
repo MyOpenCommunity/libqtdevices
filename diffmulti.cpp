@@ -134,7 +134,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			sorgenti->addItemU(tipo, *descrizioni->at(0), (char *)indirizzo, icon_names, 0, numFrame);
 			b = sorgenti->getLast();
 			connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
-			connect(sorgenti, SIGNAL(ambChanged(char *, bool, char *)),b, SLOT(ambChanged(char *, bool, char *)));
+			connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)),b, SLOT(ambChanged(const QString &, bool, char *)));
 			connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 			connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
 			connect(b,SIGNAL(sendInit(char*)),this, SIGNAL(sendInit(char*)));
@@ -180,7 +180,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
 				connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
 				connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
-				connect(elencoBanner.getLast(), SIGNAL(ambChanged(char *, bool, char *)), sorgenti, SIGNAL(ambChanged(char *, bool, char *)));
+				connect(elencoBanner.getLast(), SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 				if(tipo == AMBIENTE) 
 					sorgenti->addAmb((char *)indirizzo);
 				datimmulti->clear();

@@ -111,7 +111,7 @@ void ambDiffSon::hide()
 void ambDiffSon::configura()
 {
 	qDebug("ambDiffSon::configura()");
-	emit(ambChanged((char *)name(), false, getAddress()));
+	emit(ambChanged(QString(name()), false, getAddress()));
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
 	qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
 	disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
@@ -240,7 +240,7 @@ void insAmbDiffSon::Draw()
 void insAmbDiffSon::configura()
 {
 	qDebug("insAmbDiffSon::configura()");
-	emit(ambChanged((char *)name(), true, (char *)NULL));
+	emit(ambChanged(QString(name()), true, (char *)NULL));
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
 	qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
 	disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
