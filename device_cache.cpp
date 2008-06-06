@@ -263,7 +263,7 @@ deviceptr device_cache::get_thermr_device(QString w, thermo_type_t type,
 	deviceptr out = (*this)[k];
 	if(!out)
 	{
-		out = new thermr_device(w, type, fancoil, ind_centrale, indirizzo);
+		out = new temperature_probe_controlled(w, type, fancoil, ind_centrale, indirizzo);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
 		connect_comm(out);
@@ -282,7 +282,7 @@ deviceptr device_cache::get_temperature_probe(QString w, bool external)
 	deviceptr out = (*this)[k];
 	if(!out)
 	{
-		out = new temperature_probe(w, external);
+		out = new temperature_probe_notcontrolled(w, external);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
 		connect_comm(out);

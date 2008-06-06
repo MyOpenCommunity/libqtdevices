@@ -2406,7 +2406,7 @@ get_init_message(device_status *s, QString& out)
 
 // Private methods
 void frame_interpreter_thermr_device::
-handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
+handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 {
 	qDebug("frame_interpreter_thermr_device::handle_frame");
 	stat_var curr_stat(stat_var::STAT);
@@ -2421,12 +2421,12 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 	bool do_event = false;
 	char pippo[50];
 	// Read current status
-	ds->read((int)device_status_temperature_probe_controlled::STAT_INDEX, curr_stat);
-	ds->read((int)device_status_temperature_probe_controlled::LOCAL_INDEX, curr_local);
-	ds->read((int)device_status_temperature_probe_controlled::SP_INDEX, curr_sp);
-	ds->read((int)device_status_temperature_probe_controlled::CRONO, curr_crono);
-	ds->read((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
-	ds->read((int)device_status_temperature_probe_controlled::INFO_CENTRALE, curr_info_centrale);
+	ds->read((int)device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
+	ds->read((int)device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
+	ds->read((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
+	ds->read((int)device_status_temperature_probe_extra::CRONO, curr_crono);
+	ds->read((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
+	ds->read((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 	
 	
 	qDebug("curr status is %d", curr_stat.get_val());
@@ -2445,10 +2445,10 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 		emit init_requested(QString(pippo));
 		delta = 1;
 		curr_info_centrale.set_val(delta);
-		ds->write_val((int)device_status_temperature_probe_controlled::INFO_CENTRALE, curr_info_centrale);
+		ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 		evt_list.append(ds);
 		clearTimeoutVar(curr_info_sonda);
-		ds->write_val((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
+		ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 		evt_list.append(ds);
 		return;
 	}
@@ -2460,25 +2460,19 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 		qDebug("new crono is 1");
 		cr = 1;
 		curr_crono.set_val(cr);
-		ds->write_val((int)device_status_temperature_probe_controlled::CRONO, curr_crono);
+		ds->write_val((int)device_status_temperature_probe_extra::CRONO, curr_crono);
 		evt_list.append(ds);
 	}
-	/*if((curr_stat.get_val() != device_status_temperature_probe_controlled::S_MAN) &&
-	  (curr_stat.get_val() != device_status_temperature_probe_controlled::S_AUTO) && 
-	  m.Extract_dove()[0] == '#') {
-	  qDebug("Ignoring frame (status is %d)", curr_stat.get_val());
-	  return;
-	  }*/
 	switch(cosa) {
 		case 110:
 		case 210:
 		case 310:
 			// MANUALE
 			if(/*!ds->initialized() ||*/
-					((curr_stat.get_val() != device_status_temperature_probe_controlled::S_MAN) &&
+					((curr_stat.get_val() != device_status_temperature_probe_extra::S_MAN) &&
 					 (curr_local.get_val() != 4) && (curr_local.get_val() != 5))) {
 				do_event = true;
-				stat = device_status_temperature_probe_controlled::S_MAN;
+				stat = device_status_temperature_probe_extra::S_MAN;
 			}
 			//Richiesta set-point
 			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
@@ -2489,14 +2483,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
+				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 				evt_list.append(ds);
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
 				delta = 0;
 				curr_info_centrale.set_val(delta);
-				ds->write_val((int)device_status_temperature_probe_controlled::INFO_CENTRALE, curr_info_centrale);
+				ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 				evt_list.append(ds);
 			}
 			elaborato = true;
@@ -2506,10 +2500,10 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 		case 311:
 			// AUTOMATICO
 			if(/*!ds->initialized() ||*/
-					((curr_stat.get_val() != device_status_temperature_probe_controlled::S_AUTO) &&
+					((curr_stat.get_val() != device_status_temperature_probe_extra::S_AUTO) &&
 					 (curr_local.get_val() != 4) && (curr_local.get_val() != 5))) {
 				do_event = true;
-				stat = device_status_temperature_probe_controlled::S_AUTO;
+				stat = device_status_temperature_probe_extra::S_AUTO;
 			}
 			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
 			{
@@ -2519,14 +2513,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
+				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 				evt_list.append(ds);
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
 				delta = 0;
 				curr_info_centrale.set_val(delta);
-				ds->write_val((int)device_status_temperature_probe_controlled::INFO_CENTRALE, curr_info_centrale);
+				ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 				evt_list.append(ds);
 			}
 			elaborato = true;
@@ -2536,29 +2530,29 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 				break;
 			// PROT. ANTIGELO
 			if(/*!ds->initialized() ||*/
-					((curr_stat.get_val() != device_status_temperature_probe_controlled::S_ANTIGELO) &&
+					((curr_stat.get_val() != device_status_temperature_probe_extra::S_ANTIGELO) &&
 					((curr_local.get_val() != 4) || (curr_local.get_val() != 5)))) {
 				do_event = true;
-				stat = device_status_temperature_probe_controlled::S_ANTIGELO;
+				stat = device_status_temperature_probe_extra::S_ANTIGELO;
 			}
 			elaborato = true;
 			break;
 		case 202:
 			// PROT TERMICA
 			if(/*!ds->initialized() || */(curr_stat.get_val() != 
-						device_status_temperature_probe_controlled::S_TERM)) {
+						device_status_temperature_probe_extra::S_TERM)) {
 				do_event = true;
-				stat = device_status_temperature_probe_controlled::S_TERM;
+				stat = device_status_temperature_probe_extra::S_TERM;
 			}
 			elaborato = true;
 			break;
 		case 302:
 			// PROT GENERICA
 			if(/*!ds->initialized() ||*/
-					((curr_stat.get_val() != device_status_temperature_probe_controlled::S_GEN) &&
+					((curr_stat.get_val() != device_status_temperature_probe_extra::S_GEN) &&
 					 (curr_local.get_val() != 4) && (curr_local.get_val() != 5))) {
 				do_event = true;
-				stat = device_status_temperature_probe_controlled::S_GEN;
+				stat = device_status_temperature_probe_extra::S_GEN;
 			}
 			elaborato = true;
 			break;
@@ -2569,9 +2563,9 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 		case 303:
 			// OFF
 			if(/*!ds->initialized() ||*/
-					(curr_stat.get_val() != device_status_temperature_probe_controlled::S_OFF)) {
+					(curr_stat.get_val() != device_status_temperature_probe_extra::S_OFF)) {
 				do_event = true;
-				stat = device_status_temperature_probe_controlled::S_OFF;
+				stat = device_status_temperature_probe_extra::S_OFF;
 			}
 			elaborato = true;
 			break;
@@ -2579,10 +2573,10 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 		case 1:
 			if(!m.IsNormalFrame())
 				break;
-			if(/*!ds->initialized() || */((curr_stat.get_val() != device_status_temperature_probe_controlled::S_MAN) && (curr_stat.get_val() != device_status_temperature_probe_controlled::S_AUTO)))
+			if(/*!ds->initialized() || */((curr_stat.get_val() != device_status_temperature_probe_extra::S_MAN) && (curr_stat.get_val() != device_status_temperature_probe_extra::S_AUTO)))
 			{
 				do_event = true;
-				stat = device_status_temperature_probe_controlled::S_AUTO;
+				stat = device_status_temperature_probe_extra::S_AUTO;
 				if((curr_crono.get_val()) && (ds->initialized()) && (!curr_info_centrale.get_val()))
 				{
 					/// FRAME VERSO LA CENTRALE
@@ -2595,12 +2589,12 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 					qDebug("new crono is 0");
 					cr = 0;
 					curr_crono.set_val(cr);
-					ds->write_val((int)device_status_temperature_probe_controlled::CRONO, curr_crono);
+					ds->write_val((int)device_status_temperature_probe_extra::CRONO, curr_crono);
 					evt_list.append(ds);
 #endif
 					delta = 1;
 					curr_info_centrale.set_val(delta);
-					ds->write_val((int)device_status_temperature_probe_controlled::INFO_CENTRALE, curr_info_centrale);
+					ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 					evt_list.append(ds);
 				}
 			}
@@ -2613,7 +2607,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 	if(do_event) {
 		qDebug("setting new stat is %d", stat);
 		curr_stat.set_val(stat);
-		ds->write_val((int)device_status_temperature_probe_controlled::STAT_INDEX, curr_stat);
+		ds->write_val((int)device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
 		evt_list.append(ds);
 	}
 	if(elaborato)
@@ -2634,7 +2628,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
+				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 				evt_list.append(ds);
 			}
 			break;
@@ -2652,15 +2646,15 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 					emit init_requested(QString(pippo));
 					delta = 1;
 					curr_info_centrale.set_val(delta);
-					ds->write_val((int)device_status_temperature_probe_controlled::INFO_CENTRALE, curr_info_centrale);
+					ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 					evt_list.append(ds);
 				}
 				curr_local.set_val(loc);
-				ds->write_val((int)device_status_temperature_probe_controlled::LOCAL_INDEX, curr_local);
+				ds->write_val((int)device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
 				evt_list.append(ds);
 				/*if(!ds->initialized() || 
-				  ((curr_stat.get_val() != device_status_temperature_probe_controlled::S_AUTO) && 
-				  (curr_stat.get_val() != device_status_temperature_probe_controlled::S_MAN) &&
+				  ((curr_stat.get_val() != device_status_temperature_probe_extra::S_AUTO) && 
+				  (curr_stat.get_val() != device_status_temperature_probe_extra::S_MAN) &&
 				  (loc == 13))) {*/
 				if((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
 				{
@@ -2670,7 +2664,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 					strcat(pippo,"##");
 					emit init_requested(QString(pippo));
 					setTimeoutVar(curr_info_sonda);
-					ds->write_val((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
+					ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 					evt_list.append(ds);
 				}
 				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
@@ -2683,21 +2677,21 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 					emit init_requested(QString(pippo));
 					delta = 1;
 					curr_info_centrale.set_val(delta);
-					ds->write_val((int)device_status_temperature_probe_controlled::INFO_CENTRALE, curr_info_centrale);
+					ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 					evt_list.append(ds);
 #if 0
 					qDebug("new crono is 0");
 					cr = 0;
 					curr_crono.set_val(cr);
-					ds->write_val((int)device_status_temperature_probe_controlled::CRONO, curr_crono);
+					ds->write_val((int)device_status_temperature_probe_extra::CRONO, curr_crono);
 					evt_list.append(ds);
 #endif
 				}
 				/*if((loc != 4) && (loc !=5))
 				  {
-				  stat = device_status_temperature_probe_controlled::S_AUTO;
+				  stat = device_status_temperature_probe_extra::S_AUTO;
 				  curr_stat.set_val(stat);
-				  ds->write_val((int)device_status_temperature_probe_controlled::STAT_INDEX, curr_stat);
+				  ds->write_val((int)device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
 				  evt_list.append(ds);
 				  }*/
 				//}
@@ -2713,7 +2707,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
+				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 				evt_list.append(ds);
 			}
 			break;
@@ -2723,13 +2717,13 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_controlled *ds)
 			if(/*!ds->initialized() || */(curr_sp.get_val() != sp)) {
 				qDebug("setting new sp");
 				curr_sp.set_val(sp);
-				ds->write_val((int)device_status_temperature_probe_controlled::SP_INDEX, curr_sp);
+				ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				evt_list.append(ds);
 			}
 			if (checkTimeoutVar(curr_info_sonda))
 			{
 				clearTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_controlled::INFO_SONDA, curr_info_sonda);
+				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 				evt_list.append(ds);
 			}
 			elaborato = true;
@@ -2822,7 +2816,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 			device_status::type type = ds->get_type();
 			switch (type) {
 				case device_status::THERMR:
-					handle_frame(msg_open, (device_status_temperature_probe_controlled *)ds);
+					handle_frame(msg_open, (device_status_temperature_probe_extra *)ds);
 					break;
 				case device_status::TEMPERATURE_PROBE:
 					handle_frame(msg_open, (device_status_temperature_probe *)ds);

@@ -29,7 +29,6 @@
 #include "sorgentiradio.h"
 #include "sorgentiaux.h"
 #include "sorgentimedia.h"
-#include "termopage.h"
 #include "carico.h"
 #include "bann_antintrusione.h"
 

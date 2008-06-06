@@ -249,13 +249,52 @@ public:
 	virtual int init_request_delay() { return AUTOM_REQ_DELAY; }
 };
 
-//! Temperature probe status
+/**
+ * Device status for extra thermal information present only in a controlled probe.
+ */
+class device_status_temperature_probe_extra : public device_status {
+public:
+	enum {
+		STAT_INDEX = 0,
+		LOCAL_INDEX,
+		SP_INDEX,
+		CRONO,
+		INFO_SONDA,
+		INFO_CENTRALE,
+	} ind;
+	enum {
+		S_MAN = 0,
+		S_AUTO,
+		S_ANTIGELO,
+		S_TERM,
+		S_GEN,
+		S_OFF,
+		S_NONE,  // 4 zones: no status
+	} val;
+
+	device_status_temperature_probe_extra(thermo_type_t);
+};
+
+/**
+ * Device status for temperature measured by temperature probes, thermal regulators, etc.
+ */
 class device_status_temperature_probe : public device_status {
 public:
 	enum {
 		TEMPERATURE_INDEX = 0,
 	} ind;
 	device_status_temperature_probe();
+};
+
+/**
+ * Fancoil element present in some controlled temperature probes.
+ */
+class device_status_fancoil : public device_status {
+public:
+	enum {
+		SPEED_INDEX = 0,
+	} ind;
+	device_status_fancoil();
 };
 
 //! Amplifier status
@@ -321,42 +360,6 @@ public:
 		ON_OFF_INDEX = 0,
 	} ind;
 	device_status_zonanti();
-};
-
-/*
- * Device status for thermal regulator controlled probe, extra information
- * present only in a controlled probe.
- */
-class device_status_temperature_probe_controlled : public device_status {
-public:
-	enum {
-		STAT_INDEX = 0,
-		LOCAL_INDEX,
-		SP_INDEX,
-		CRONO,
-		INFO_SONDA,
-		INFO_CENTRALE,
-	} ind;
-	enum {
-		S_MAN = 0,
-		S_AUTO,
-		S_ANTIGELO,
-		S_TERM,
-		S_GEN,
-		S_OFF,
-		S_NONE,  // 4 zones: no status
-	} val;
-
-	device_status_temperature_probe_controlled(thermo_type_t);
-};
-
-//! Fancoil status
-class device_status_fancoil : public device_status {
-public:
-	enum {
-		SPEED_INDEX = 0,
-	} ind;
-	device_status_fancoil();
 };
 
 //! Modscen status
@@ -442,6 +445,8 @@ private:
 	int refcount;
 };
 
+/********************* Specific class device children classes **********************/
+
 //! Light (might be a simple light, a dimmer or a dimmer 100)
 class light : public device
 {
@@ -480,13 +485,27 @@ class autom : public device
 		autom(QString, bool p=false, int g=-1);
 };
 
-//! Temperature probe
-class temperature_probe : public device
+/**
+ * Controlled temperature probe device.
+ */
+class temperature_probe_controlled : public device
 {
 Q_OBJECT
 public:
 	//! Constructor
-	temperature_probe(QString, bool external, bool p=false, int g=-1);
+	temperature_probe_controlled(QString, thermo_type_t, bool fancoil,
+		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
+};
+
+/**
+ * Not controlled temperature probe device (external or internal).
+ */
+class temperature_probe_notcontrolled : public device
+{
+Q_OBJECT
+public:
+	//! Constructor
+	temperature_probe_notcontrolled(QString, bool external, bool p=false, int g=-1);
 };
 
 //! Sound device (ampli)
@@ -541,16 +560,6 @@ Q_OBJECT
 public:
 	//! Constructor
 	zonanti_device(QString, bool p=false, int g=-1);
-};
-
-//! Thermal regulator device
-class thermr_device : public device
-{
-Q_OBJECT
-public:
-	//! Constructor
-	thermr_device(QString, thermo_type_t, bool fancoil,
-		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
 };
 
 //! Modscen device

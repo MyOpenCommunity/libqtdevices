@@ -358,7 +358,7 @@ class frame_interpreter_thermr_device : public frame_interpreter
 Q_OBJECT
 private:
 	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_temperature_probe_controlled *);
+	void handle_frame(openwebnet_ext, device_status_temperature_probe_extra *);
 	//! As above, but for temperature status
 	void handle_frame(openwebnet_ext, device_status_temperature_probe *);
 	//! Analyze fancoil frame

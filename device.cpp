@@ -289,14 +289,6 @@ device_status_autom::device_status_autom() :
 			new stat_var(stat_var::STAT, 0, 0, 2, 1));
 }
 
-// Device status for temperature probe devices
-device_status_temperature_probe::device_status_temperature_probe() : 
-	device_status(TEMPERATURE_PROBE)
-{
-	add_var((int)device_status_temperature_probe::TEMPERATURE_INDEX,
-			new stat_var(stat_var::TEMPERATURE, 0, -999, 999, 1));
-}
-
 // Device status for amplifiers
 device_status_amplifier::device_status_amplifier() : 
 	device_status(AMPLIFIER)
@@ -345,7 +337,13 @@ device_status_zonanti::device_status_zonanti() :
 			new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
 }
 
-device_status_temperature_probe_controlled::device_status_temperature_probe_controlled(thermo_type_t type) :
+device_status_temperature_probe::device_status_temperature_probe() :
+	device_status(TEMPERATURE_PROBE)
+{
+	add_var((int)TEMPERATURE_INDEX, new stat_var(stat_var::TEMPERATURE, 0, -999, 999, 1));
+}
+
+device_status_temperature_probe_extra::device_status_temperature_probe_extra(thermo_type_t type) :
 	device_status(THERMR)
 {
 	/*
@@ -370,8 +368,7 @@ device_status_fancoil::device_status_fancoil() :
 	 * read the first time, we are sure the previous value is different
 	 * and the relevant display item is refreshed.
 	 */
-	add_var((int)device_status_fancoil::SPEED_INDEX,
-			new stat_var(stat_var::FANCOIL_SPEED, -1, 0, 3, 1));
+	add_var((int)SPEED_INDEX, new stat_var(stat_var::FANCOIL_SPEED, -1, 0, 3, 1));
 }
 
 // Device status for modscen
@@ -625,20 +622,6 @@ autom::autom(QString w, bool p, int g) :
 			SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
-// Temperature probe implementation
-temperature_probe::temperature_probe(QString w, bool external, bool p, int g) :
-	device(QString("4"), w, p, g)
-{
-	interpreter = new frame_interpreter_temperature_probe(w, external, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_temperature_probe());
-
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-	        interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-	        this, SLOT(frame_event_handler(QPtrList<device_status>)));
-}
-
 // Sound device implementation
 sound_device::sound_device(QString w, bool p, int g) : 
 	device(QString("16"), w, p, g) 
@@ -727,15 +710,15 @@ zonanti_device::zonanti_device(QString w, bool p, int g) :
 			SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
-// thermal regulator controlled probe device
-thermr_device::thermr_device(QString w, thermo_type_t type, bool fancoil,
+// Controlled temperature probe implementation
+temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_type_t type, bool fancoil,
 		const char *ind_centrale, const char *indirizzo, bool p, int g) :
 	device(QString("4"), w, p, g)
 {
-	qDebug("thermr_device::thermr_device(), type=%d, fancoil=%s", type, fancoil ? "true" : "false");
+	qDebug("temperature_probe_controlled::temperature_probe_controlled(), type=%d, fancoil=%s", type, fancoil ? "true" : "false");
 	interpreter = new frame_interpreter_thermr_device(w, type, ind_centrale, indirizzo, p, g);
 	set_frame_interpreter(interpreter);
-	stat->append(new device_status_temperature_probe_controlled(type));
+	stat->append(new device_status_temperature_probe_extra(type));
 	stat->append(new device_status_temperature_probe());
 	if (fancoil)
 		stat->append(new device_status_fancoil());
@@ -744,6 +727,20 @@ thermr_device::thermr_device(QString w, thermo_type_t type, bool fancoil,
 			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
+// Not controlled temperature probe implementation
+temperature_probe_notcontrolled::temperature_probe_notcontrolled(QString w, bool external, bool p, int g) :
+	device(QString("4"), w, p, g)
+{
+	interpreter = new frame_interpreter_temperature_probe(w, external, p, g);
+	set_frame_interpreter(interpreter);
+	stat->append(new device_status_temperature_probe());
+
+	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+	        interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
+	        this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
 // modscen device
