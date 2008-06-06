@@ -64,9 +64,16 @@ protected:
 	QLabel *local_temp_label;
 };
 
-// FIXME: Use decorator !!
-// I need the interface but how do I store the decorated object?
-//
+class FSBannTermoReg4z : public FSBann4zProbe
+{
+Q_OBJECT
+public:
+	FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name = 0);
+	virtual void Draw();
+	virtual void postDisplay();
+protected:
+};
+
 class FSBann4zFancoil : public FSBann4zProbe
 {
 Q_OBJECT
@@ -87,10 +94,10 @@ private:
 enum BannID
 {
 	fs_nc_probe = 1,                      // not controlled probe
-	fs_4z,                                // 4 zones thermal regulator device
+	fs_4z_thermal_regulator,              // 4 zones thermal regulator device
 	fs_4z_probe,                          // 4 zones controlled probe
 	fs_4z_fancoil,                        // 4 zones controlled probe with fancoil
-	fs_99z,                               // 99 zones thermal regulator device
+	fs_99z_thermal_regulator,             // 99 zones thermal regulator device
 	fs_99z_probe,                         // 99 zones controlled probe
 	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
 };

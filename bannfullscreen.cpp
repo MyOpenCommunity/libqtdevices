@@ -16,6 +16,8 @@
 #include "btbutton.h"
 #include "device.h"
 
+#define I_SETTINGS IMG_PATH"setscen.png"
+
 BannFullScreen::BannFullScreen(QWidget *parent, QDomNode n, const char *name)
 	: banner(parent, name),
 	main_layout(this)
@@ -134,6 +136,22 @@ void FSBann4zProbe::postDisplay()
 	parent->setNavBarMode(3, "");
 }
 
+FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name)
+	: FSBann4zProbe(parent, n)
+{
+}
+
+void FSBannTermoReg4z::Draw()
+{
+	FSBann4zProbe::Draw();
+}
+
+void FSBannTermoReg4z::postDisplay()
+{
+	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
+	parent->setNavBarMode(4, I_SETTINGS);
+}
+
 FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
 	: FSBann4zProbe(parent, n),
 	fancoil_buttons(4, Qt::Horizontal, this)
@@ -241,6 +259,9 @@ BannFullScreen *FSBannFactory::getBanner(BannID id, QWidget *parent, QDomNode n)
 			break;
 		case fs_4z_fancoil:
 			bfs = new FSBann4zFancoil(parent, n);
+			break;
+		case fs_4z_thermal_regulator:
+			bfs = new FSBannTermoReg4z(parent, n);
 			break;
 	}
 	return bfs;

@@ -59,8 +59,11 @@ public:
 	device *get_impanti_device();
 	//! Get anti-intrusion system zone
 	device *get_zonanti_device(QString where);
-	//! Get 99 zones thermal regulator
-	device *get_thermr_device(QString where, thermo_type_t type,
+	/// Get a thermal regulator device
+	device *get_thermal_regulator(QString where, thermo_type_t type, const char *ind_centrale,
+			const char *indirizzo);
+	//! Get a controlled temperature probe
+	device *get_temperature_probe_controlled(QString where, thermo_type_t type,
 		bool fancoil, const char *ind_centrale, const char *indirizzo);
 	//! Get stand-alone or external temperature probe
 	device *get_temperature_probe(QString w, bool external);

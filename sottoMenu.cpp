@@ -434,6 +434,7 @@ void sottoMenu::goUp()
 	{
 		indicold=indice;
 		indice=(++indice)%(elencoBanner.count());
+		elencoBanner.at(indice)->postDisplay();
 		draw();
 	}
 }
@@ -447,6 +448,7 @@ void sottoMenu::goDown()
 		if (--indice<0)
 			indice=elencoBanner.count()-1;
 		qDebug("indice = %d\n", indice);
+		elencoBanner.at(indice)->postDisplay();
 		draw();
 	}
 }

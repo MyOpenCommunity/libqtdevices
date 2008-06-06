@@ -130,11 +130,11 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
 			device *dev;
-			QString addr = n.namedItem("addr").toElement().text();
+			QString addr = n.namedItem("where").toElement().text();
 			if (external)
-				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), true);
+				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), external);
 			else
-				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), false);
+				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), external);
 
 
 			banner *b = new BannTemperature(sm, "banner", n, dev);
