@@ -7,6 +7,17 @@
 #include <qptrlist.h>
 #include <qobject.h>
 
+/*
+ * Not ideal here, thermo specific stuff, but
+ * that would imply major code shuffling or strange
+ * forward declarations.
+ */
+enum thermo_type_t
+{
+	THERMO_Z99,  // 99 zones thermal regulator
+	THERMO_Z4,   // 4 zones thermal regulator
+};
+
 //! State variable
 class stat_var
 {
@@ -18,7 +29,7 @@ public:
 		OLD_LEV,
 		TEMP ,
 		ON_OFF ,
-		STAT,
+		STAT,    // Device dependent status
 		HH,
 		MM,
 		SS,
@@ -29,11 +40,11 @@ public:
 		STAZ,
 		RDS0,
 		RDS1,
-		LOCAL,
-		SP,
+		LOCAL,   // Temperature probe personal setpoint delta
+		SP,      // Temperature probe setpoint
 		ACTIVE_SOURCE,
 		FAULT,
-		CRONO,
+		CRONO,   // Secret, who knows?
 		INFO_SONDA,
 		INFO_CENTRALE,
 		FANCOIL_SPEED,
@@ -312,20 +323,12 @@ public:
 	device_status_zonanti();
 };
 
-//! Thermal regulator status
-class device_status_thermr : public device_status {
+/*
+ * Device status for thermal regulator controlled probe, extra information
+ * present only in a controlled probe.
+ */
+class device_status_temperature_probe_controlled : public device_status {
 public:
-	/*
-	 * Not ideal here, better in thermr_device, but
-	 * that would imply major code shuffling or strange
-	 * forward declarations.
-	 */
-	enum type_t
-	{
-		Z99,  // 99 zones thermal regulator
-		Z4,   // 4 zones thermal regulator
-	};
-
 	enum {
 		STAT_INDEX = 0,
 		LOCAL_INDEX,
@@ -344,7 +347,7 @@ public:
 		S_NONE,  // 4 zones: no status
 	} val;
 
-	device_status_thermr(type_t);
+	device_status_temperature_probe_controlled(thermo_type_t);
 };
 
 //! Fancoil status
@@ -379,22 +382,7 @@ class frame_interpreter;
 //! Generic device
 class device : public QObject {
 Q_OBJECT
-private:
-	//! Node's who
-	QString who;
-	//! Node's where
-	QString where;
-	//! Pul status
-	bool pul;
-	//! Device's group
-	int group;
-	//! Number of users
-	int refcount;
-protected:
-	//! Interpreter
-	frame_interpreter *interpreter;
-	//! List of device stats
-	QPtrList<device_status> *stat;
+
 public:
 	//! Constructor
 	device(QString who, QString where, bool p=false, int g=-1);
@@ -418,6 +406,7 @@ public:
 	QString get_key(void);
 	//! Destructor
 	virtual ~device();
+
 signals:
 	//! Status changed
 	void status_changed(QPtrList<device_status>);
@@ -434,6 +423,23 @@ public slots:
 	void frame_event_handler(QPtrList<device_status>);
 	//! Initialization requested by frame interpreter
 	void init_requested_handler(QString msg);
+
+protected:
+	//! Interpreter
+	frame_interpreter *interpreter;
+	//! List of device stats
+	QPtrList<device_status> *stat;
+private:
+	//! Node's who
+	QString who;
+	//! Node's where
+	QString where;
+	//! Pul status
+	bool pul;
+	//! Device's group
+	int group;
+	//! Number of users
+	int refcount;
 };
 
 //! Light (might be a simple light, a dimmer or a dimmer 100)
@@ -543,7 +549,7 @@ class thermr_device : public device
 Q_OBJECT
 public:
 	//! Constructor
-	thermr_device(QString, device_status_thermr::type_t, bool fancoil,
+	thermr_device(QString, thermo_type_t, bool fancoil,
 		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
 };
 

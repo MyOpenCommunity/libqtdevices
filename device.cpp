@@ -345,8 +345,7 @@ device_status_zonanti::device_status_zonanti() :
 			new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
 }
 
-// Device status for thermal regulator
-device_status_thermr::device_status_thermr(type_t type) :
+device_status_temperature_probe_controlled::device_status_temperature_probe_controlled(thermo_type_t type) :
 	device_status(THERMR)
 {
 	/*
@@ -354,19 +353,12 @@ device_status_thermr::device_status_thermr(type_t type) :
 	 * read the first time, we are sure the previous value is different
 	 * and the relevant display item is refreshed.
 	 */
-	add_var((int)device_status_thermr::STAT_INDEX,
-			new stat_var(stat_var::STAT, -1, 0, 5, 1));
-	add_var((int)device_status_thermr::LOCAL_INDEX,
-			new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
-	add_var((int)device_status_thermr::SP_INDEX,
-			new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
-	add_var((int)device_status_thermr::CRONO,
-			new stat_var(stat_var::CRONO, 0, 0, 1, 1));
-	add_var((int)device_status_thermr::INFO_SONDA,
-			new stat_var(stat_var::INFO_SONDA, 0, 0, INT_MAX, 1));
-	add_var((int)device_status_thermr::INFO_CENTRALE,
-			new stat_var(stat_var::INFO_CENTRALE, 1, 0, 1, 1));
-
+	add_var((int)STAT_INDEX, new stat_var(stat_var::STAT, -1, 0, 5, 1));
+	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
+	add_var((int)SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
+	add_var((int)CRONO, new stat_var(stat_var::CRONO, 0, 0, 1, 1));
+	add_var((int)INFO_SONDA, new stat_var(stat_var::INFO_SONDA, 0, 0, INT_MAX, 1));
+	add_var((int)INFO_CENTRALE, new stat_var(stat_var::INFO_CENTRALE, 1, 0, 1, 1));
 }
 
 // Device status for fancoil
@@ -735,15 +727,15 @@ zonanti_device::zonanti_device(QString w, bool p, int g) :
 			SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
-// thermal regulator device
-thermr_device::thermr_device(QString w, device_status_thermr::type_t type, bool fancoil,
+// thermal regulator controlled probe device
+thermr_device::thermr_device(QString w, thermo_type_t type, bool fancoil,
 		const char *ind_centrale, const char *indirizzo, bool p, int g) :
 	device(QString("4"), w, p, g)
 {
 	qDebug("thermr_device::thermr_device(), type=%d, fancoil=%s", type, fancoil ? "true" : "false");
 	interpreter = new frame_interpreter_thermr_device(w, type, ind_centrale, indirizzo, p, g);
 	set_frame_interpreter(interpreter);
-	stat->append(new device_status_thermr(type));
+	stat->append(new device_status_temperature_probe_controlled(type));
 	stat->append(new device_status_temperature_probe());
 	if (fancoil)
 		stat->append(new device_status_fancoil());

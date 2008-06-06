@@ -358,7 +358,7 @@ class frame_interpreter_thermr_device : public frame_interpreter
 Q_OBJECT
 private:
 	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_thermr *);
+	void handle_frame(openwebnet_ext, device_status_temperature_probe_controlled *);
 	//! As above, but for temperature status
 	void handle_frame(openwebnet_ext, device_status_temperature_probe *);
 	//! Analyze fancoil frame
@@ -368,7 +368,7 @@ private:
 	bool elaborato;
 
 	//! Type of thermal regulator
-	device_status_thermr::type_t type;
+	thermo_type_t type;
 
 	QString ind_centrale;
 	QString indirizzo;
@@ -393,7 +393,7 @@ protected:
 public:
 	//! Constructor
 	frame_interpreter_thermr_device(QString,
-		device_status_thermr::type_t type,
+		thermo_type_t type,
 		const char *ind_centrale, const char *indirizzo, bool, int);
 	//! Returns init message given device status
 	void get_init_message(device_status *, QString&);

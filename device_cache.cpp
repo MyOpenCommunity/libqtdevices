@@ -254,7 +254,7 @@ deviceptr device_cache::get_zonanti_device(QString w)
 }
 
 // Get thermal regulator device
-deviceptr device_cache::get_thermr_device(QString w, device_status_thermr::type_t type,
+deviceptr device_cache::get_thermr_device(QString w, thermo_type_t type,
 		bool fancoil, const char *ind_centrale, const char *indirizzo)
 {
 	QString k = get_device_key(QString("4"), w);
