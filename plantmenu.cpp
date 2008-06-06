@@ -1,5 +1,5 @@
 /*!
- * \file
+ * \plantmenu.cpp
  * <!--
  * Copyright 2007 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
@@ -45,66 +45,72 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 			// create full screen banner
 			int id = n.namedItem("id").toElement().text().toInt();
 			const char *icon;
-			QString addr = "";
-			QString new_addr = "";
+			QString item_addr, where_composed;
 			BannID bann_type;
 			device *dev = 0;
 			bool fancoil = false;
 			switch (id)
 			{
 			case TERMO_99Z:
+				// FIXME: set the correct address when the device is implemented
 				icon = I_PLANT;
 				bann_type = fs_99z;
-				addr = n.namedItem("addr").toElement().text();
+				item_addr = "0";
+				where_composed = item_addr;
 				fancoil = false;
-				dev = btouch_device_cache.get_thermr_device(addr.ascii(), device_status_thermr::Z99,
-						fancoil, ind_centrale.ascii(), addr.ascii());
+				//dev = btouch_device_cache.get_thermr_device(where_composed, device_status_thermr::Z99,
+				//		fancoil, ind_centrale.ascii(), item_addr.ascii());
 				break;
 			case TERMO_4Z:
+				// FIXME: set the correct address when the device is implemented
 				icon = I_PLANT;
 				bann_type = fs_nc_probe;
-				new_addr = addr + "#" + ind_centrale;
+				item_addr = "0";
+				where_composed = item_addr;
 				fancoil = false;
-				dev = btouch_device_cache.get_thermr_device(addr.ascii(), device_status_thermr::Z4,
-						fancoil, ind_centrale.ascii(), new_addr.ascii());
+				//dev = btouch_device_cache.get_thermr_device(where_composed, device_status_thermr::Z4,
+				//		fancoil, ind_centrale.ascii(), item_addr.ascii());
 				break;
 			case TERMO_99Z_PROBE:
 				icon = I_ZONE;
 				bann_type = fs_99z_probe;
-				addr = n.namedItem("addr").toElement().text();
+				item_addr = n.namedItem("where").toElement().text();
+				where_composed = item_addr;
 				fancoil = false;
-				dev = btouch_device_cache.get_thermr_device(addr.ascii(), device_status_thermr::Z99,
-						fancoil, ind_centrale.ascii(), addr.ascii());
+				dev = btouch_device_cache.get_thermr_device(item_addr.ascii(), device_status_thermr::Z99,
+						fancoil, ind_centrale.ascii(), item_addr.ascii());
 				break;
 			case TERMO_99Z_PROBE_FANCOIL:
 				icon = I_ZONE;
 				bann_type = fs_99z_fancoil;
-				addr = n.namedItem("addr").toElement().text();
+				item_addr = n.namedItem("where").toElement().text();
+				where_composed = item_addr;
 				fancoil = true;
-				dev = btouch_device_cache.get_thermr_device(addr.ascii(), device_status_thermr::Z99,
-						fancoil, ind_centrale.ascii(), addr.ascii());
+				dev = btouch_device_cache.get_thermr_device(item_addr.ascii(), device_status_thermr::Z99,
+						fancoil, ind_centrale.ascii(), item_addr.ascii());
 				break;
 			case TERMO_4Z_PROBE:
 				icon = I_ZONE;
 				bann_type = fs_4z_probe;
-				addr = n.namedItem("addr").toElement().text();
-				new_addr = addr + "#" + ind_centrale;
+				item_addr = n.namedItem("where").toElement().text();
+				where_composed = item_addr + "#" + ind_centrale;
 				fancoil = false;
-				dev = btouch_device_cache.get_thermr_device(addr.ascii(), device_status_thermr::Z4,
-						fancoil, ind_centrale.ascii(), new_addr.ascii());
+				dev = btouch_device_cache.get_thermr_device(where_composed.ascii(), device_status_thermr::Z4,
+						fancoil, ind_centrale.ascii(), item_addr.ascii());
 				break;
 			case TERMO_4Z_PROBE_FANCOIL:
 				icon = I_ZONE;
 				bann_type = fs_4z_fancoil;
-				new_addr = addr + "#" + ind_centrale;
+				item_addr = n.namedItem("where").toElement().text();
+				where_composed = item_addr + "#" + ind_centrale;
 				fancoil = true;
-				dev = btouch_device_cache.get_thermr_device(addr.ascii(), device_status_thermr::Z4,
-						fancoil, ind_centrale.ascii(), new_addr.ascii());
+				dev = btouch_device_cache.get_thermr_device(where_composed.ascii(), device_status_thermr::Z4,
+						fancoil, ind_centrale.ascii(), item_addr.ascii());
 				break;
 			}
 
 			QString descr = findNamedNode(n, "descr").toElement().text();
-			bannPuls *bp = addMenuItem(n, icon, descr, bann_type, addr, dev);
+			bannPuls *bp = addMenuItem(n, icon, descr, bann_type, where_composed, dev);
 
 			signal_mapper.setMapping(bp, banner_id);
 			connect(bp, SIGNAL(sxClick()), &signal_mapper, SLOT(map()));
@@ -120,7 +126,6 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	connect(&items_submenu, SIGNAL(Closed()), this, SLOT(show()));
 	connect(&items_submenu, SIGNAL(Closed()), this, SLOT(raise()));
 	connect(&items_submenu, SIGNAL(Closed()), &items_submenu, SLOT(hide()));
-	//items_submenu.show();
 }
 
 bannPuls *PlantMenu::addMenuItem(QDomNode n, const char *central_icon, QString descr, BannID type, 
@@ -139,13 +144,13 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, const char *central_icon, QString d
 	 */
 	qDebug("[TERMO] addMenuItem: before factory");
 	BannFullScreen *fsb = FSBannFactory::getInstance()->getBanner(type, &items_submenu, n);
-	qDebug("[TERMO] addMenuItem: factory done");
 	initBanner(fsb, n);
 	fsb->setSecondForeground(second_fg);
 	items_submenu.appendBanner(fsb);
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			fsb, SLOT(status_changed(QPtrList<device_status>)));
-	fsb->setAddress(addr);
+	fsb->setAddress(addr.ascii());
+	qDebug("[TERMO] addMenuItem: factory done");
 
 	return bp;
 }

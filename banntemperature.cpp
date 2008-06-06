@@ -1,12 +1,9 @@
 /*!
- * \file
+ * \banntemperature.cpp
  * <!--
  * Copyright 2007 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
  * -->
- *
- * \brief 
- *
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
@@ -14,6 +11,7 @@
 #include "banntemperature.h"
 #include "bannpuls.h"
 #include "fontmanager.h"
+
 #include <qlabel.h>
 
 BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev)
@@ -21,7 +19,8 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 {
 	conf_root = config;
 	probe_descr = conf_root.namedItem("descr").toElement().text();
-	temperature = "";
+	temperature = "-23.5\272C";
+
 	setChi("4");
 
 	QDomNode addr = conf_root.namedItem("where");
@@ -29,7 +28,6 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 		setAddress(addr.toElement().text().ascii());
 	else
 		qFatal("[TERMO] obj: %s, no where in configuration", probe_descr.ascii());
-	temperature = "45";
 
 	descr_label = new QLabel(this);
 	descr_label->setGeometry(BORDER_WIDTH, 0, DESCRIPTION_WIDTH, BANPULS_ICON_DIM_Y);
@@ -48,7 +46,7 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 
 	while ((dev = it.current()) != 0)
 	{
-		++it;	
+		++it;
 		if (dev->get_type() == device_status::TEMPERATURE_PROBE)
 		{
 			stat_var curr_temp(stat_var::TEMPERATURE);

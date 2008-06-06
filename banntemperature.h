@@ -5,9 +5,12 @@
  * All rights reserved.
  * -->
  *
- * \brief 
+ * \brief Banner to display zone description and temperature in one row
  *
- * 
+ * BannTemperature is a banner to display information about not controlled
+ * probes in a single row.
+ * The class contains both the logic to update the status of the device and
+ * the drawing logic.
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
@@ -40,19 +43,21 @@ public:
 	BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev);
 	virtual void Draw();
 public slots:
-	void status_changed(QPtrList<device_status>);
-private:
 	/**
-	 * \brief Dummy function to avoid instantiation 
+	 * Manages a change in status, like temperature change.
 	 *
-	 * BannTemperature has no address so it shouldn't be possible to
-	 * instatiate.
+	 * \param list A list of device_status objects
 	 */
-	//virtual void dummy() = 0;
+	void status_changed(QPtrList<device_status> list);
+private:
 	QDomNode conf_root;
+	/// Name of the zone where the probe is installed (read from config)
 	QString  probe_descr;
+	/// Probed temperature
 	QString  temperature;
+	/// Temperature label
 	QLabel  *temp_label;
+	/// Zone name label
 	QLabel  *descr_label;
 };
 

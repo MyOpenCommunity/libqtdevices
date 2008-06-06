@@ -22,12 +22,14 @@ BannFullScreen::BannFullScreen(QWidget *parent, QDomNode n, const char *name)
 {
 	descr_label = new QLabel(this, 0);
 	main_layout.addWidget(descr_label);
+	main_layout.setStretchFactor(descr_label, 1);
 
 	temp_label = new QLabel(this, 0);
 	main_layout.addWidget(temp_label);
+	main_layout.setStretchFactor(temp_label, 1);
 
 	temp = "-23.5\272C";
-	descr = "Zone";
+	descr = n.namedItem("descr").toElement().text();
 }
 
 
@@ -35,13 +37,14 @@ void BannFullScreen::Draw()
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
-	temp_label -> setFont(aFont);
-	temp_label -> setAlignment(AlignHCenter);
-	temp_label -> setText(temp);
+	temp_label->setFont(aFont);
+	temp_label->setAlignment(AlignHCenter);
+	temp_label->setText(temp);
+
 	FontManager::instance()->getFont(font_banTermo_testo, aFont);
-	descr_label -> setFont(aFont);
-	descr_label -> setAlignment(AlignHCenter);
-	descr_label -> setText(descr);
+	descr_label->setFont(aFont);
+	descr_label->setAlignment(AlignHCenter);
+	descr_label->setText(descr);
 
 	banner::Draw();
 }
@@ -97,8 +100,11 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 {
 	setpoint_label = new QLabel(this, 0);
 	main_layout.addWidget(setpoint_label);
+	main_layout.setStretchFactor(setpoint_label, 1);
+
 	local_temp_label = new QLabel(this, 0);
 	main_layout.addWidget(local_temp_label);
+	main_layout.setStretchFactor(local_temp_label, 1);
 
 	setpoint = "-23.5\272C";
 	local_temp = "0";
@@ -136,6 +142,7 @@ FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
 	//main_layout.addWidget(&fancoil_buttons);
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
+	main_layout.setStretchFactor(&fancoil_buttons, 1);
 	fancoil_status = 0;
 }
 
