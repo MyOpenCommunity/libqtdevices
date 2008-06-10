@@ -20,9 +20,10 @@
  * convenzione usata per i nomi: font_nomedelfile_descrizione
  *
 */
+#define first_font 1
 enum eFontID
 {
-	font_tastiera_scritta_label =1, 					// 14 QFont::Bold
+	font_tastiera_scritta_label =first_font, 					// 14 QFont::Bold
 	font_tastiera_digit_label, 					// 20 QFont::Bold
 	font_tastiera_bottoni_stati, 					// 16, QFont::Bold )
 	font_aux_descr_ambiente,					// 24, QFont::Bold )
