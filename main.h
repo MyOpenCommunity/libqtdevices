@@ -17,6 +17,7 @@
 #include <qdom.h>
 
 QDomNode getPageNode(int id);
+QString getLanguage();
 
 /****************************************************************
  ** ICONS LIBRARY
@@ -90,7 +91,7 @@ extern QDomDocument qdom_appconfig;
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
-#define MY_FILE_CFG_FONT        "cfg/font.xml"
+#define MY_FILE_CFG_FONT        "cfg/font_%s.xml"
 /*! \def MY_FILE_CFG_FONT
  *  The font configuration file
  */
@@ -136,6 +137,10 @@ extern QDomDocument qdom_appconfig;
 #define LANGUAGE_FILE_TMPL        "cfg/extra/2/btouch_%s.qm"
 /*! \def LANGUAGE_FILE_TMPL
  *  The template path to find the language file.
+ */
+#define DEFAULT_LANGUAGE          "en"
+/*! \def DEFAULT_LANGUAGE
+ *  Default language used in BTouch
  */
 
 /****************************************************************

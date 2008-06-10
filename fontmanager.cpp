@@ -101,7 +101,12 @@ int FontManager::addElement( int nElement, FontInfo & fi, const char * tagName, 
 int FontManager::loadFonts()
 {
 	QDomDocument doc( "mydocument" );
-	QFile file( MY_FILE_CFG_FONT );
+	QString language_suffix = getLanguage();
+
+	QString font_file;
+	font_file.sprintf(MY_FILE_CFG_FONT, language_suffix.ascii());
+
+	QFile file(font_file);
 	if ( !file.open( IO_ReadOnly ) )
 		return -1;
 	if ( !doc.setContent( &file ) ) 

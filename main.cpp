@@ -123,7 +123,7 @@ QDomNode getPageNode(int id)
 
 QString getLanguage()
 {
-	QString default_language;
+	QString default_language(DEFAULT_LANGUAGE);
 	QDomNode node = qdom_appconfig.documentElement();
 
 	QValueVector<QString> node_names(3);
@@ -194,7 +194,7 @@ int main( int argc, char **argv )
 	qInstallMsgHandler( myMessageOutput );
 
 	QString language_suffix = getLanguage();
-	if (!language_suffix.isNull())
+	if (language_suffix != QString(DEFAULT_LANGUAGE))
 	{
 		QString language_file;
 		language_file.sprintf(LANGUAGE_FILE_TMPL, language_suffix.ascii());
