@@ -28,7 +28,7 @@ class call_notifier : public QFrame {
     //! Pointer to area 6 button
     BtButton *area6_but;
     //! Set icons in frame
-    void SetIcons(char* _txt1, char* _txt2, char* _txt3);
+    void SetIcons(QString _txt1, QString _txt2, QString _txt3);
     //! Set buttons' icons
     void SetButtonsIcons();
     //! Set single button icon
@@ -41,7 +41,7 @@ class call_notifier : public QFrame {
     QTimer *myTimer;
  public:
     //! Constructor
-    call_notifier(QWidget *parent, char *name, postoExt *ms, char* _txt1, char* _txt2, char* _txt3);
+    call_notifier(QWidget *parent, char *name, postoExt *ms);
     //! Get station's where
     void get_where(QString&);
     /*!

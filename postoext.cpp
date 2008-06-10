@@ -23,7 +23,7 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
-postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown, char* _txt1, char* _txt2, char* _txt3) : bann4tasLab( parent, name )
+postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown) : bann4tasLab( parent, name )
 {
 	where = _where;
 	descr = name;
@@ -36,7 +36,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 
 	qDebug("light = %d, key = %d, unknown = %d", light, key, unknown);
 	qDebug("descr = %s, where = %s", name, _where);
-	qDebug("txt1 = %s, txt2 = %s, txt3 = %s", _txt1, _txt2, _txt3);
 	//SetIcons(Icona1, Icona3, Icona4, Icona2);
 	SetIcons (Icona2, Icona3, "", "", Icona1);
 	if(key) {
@@ -55,8 +54,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	impostaAttivo(2);
 	Draw();
 	qDebug("creating call_notifier");
-	call_notifier *cn = new call_notifier((QWidget *)NULL, 
-			(char *)"call notifier", this, _txt1, _txt2, _txt3);
+	call_notifier *cn = new call_notifier((QWidget *)NULL, (char *)"call notifier", this);
 	qDebug("setting BG and FG colors");
 	cn->setBGColor(backgroundColor());
 	cn->setFGColor(foregroundColor());
@@ -76,7 +74,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	cnm->add_call_notifier(cn);
 	if(unknown && !unknown_notifier) {
 		qDebug("Creating unknown station notifier");
-		unknown_notifier = new call_notifier(NULL, "unk call notif", NULL, _txt1, _txt2, _txt3);
+		unknown_notifier = new call_notifier(NULL, "unk call notif", NULL);
 		cnm->set_unknown_call_notifier(unknown_notifier);
 		unknown_notifier->setBGColor(backgroundColor());
 		unknown_notifier->setFGColor(foregroundColor());

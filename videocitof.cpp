@@ -18,13 +18,13 @@
 
 // Call notifier implementation
 
-call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms, char* _txt1, char* _txt2, char* _txt3) :
+call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) :
   QFrame(parent, name)
 {
     qDebug("call_notifier::call_notifier()");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
-#endif  
+#endif
     QString where;
     my_station = ms;
     if(ms)
@@ -46,6 +46,10 @@ call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms, char* _t
     connect(station_dev, SIGNAL(status_changed(QPtrList<device_status>)),
 	    this, SLOT(status_changed(QPtrList<device_status>)));
     station_dev->init();
+
+	QString _txt1(tr("Unknown"));
+	QString _txt2(tr("Staircase light"));
+	QString _txt3(tr("Door lock"));
     SetIcons(_txt1, _txt2, _txt3);
 }
 
@@ -110,7 +114,7 @@ void call_notifier::close()
 }
 
 // Private methods
-void call_notifier::SetIcons(char* _txt1, char* _txt2, char* _txt3)
+void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 {
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));

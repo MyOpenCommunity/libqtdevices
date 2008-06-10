@@ -39,10 +39,6 @@ public:
 	uchar t=0,
 	contdiff* diso=NULL, 
 	char* frame=NULL, 
-	const QString & descr1="",
-	const QString & descr2="",
-	const QString & descr3="",
-	const QString & descr4="",
 	char*h="12",
 	char* m="0");
 /*!

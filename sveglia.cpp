@@ -33,10 +33,6 @@ sveglia::sveglia( QWidget *parent,
 	uchar freq,
 	contdiff* diso,
 	char* f,
-	const QString & qdescr1,
-	const QString & qdescr2,
-	const QString & qdescr3,
-	const QString & qdescr4,
 	char*h,
 	char*m)
         	: QFrame( parent, name )
@@ -144,14 +140,10 @@ sveglia::sveglia( QWidget *parent,
     }	
     dataOra=NULL;
 
-	if ( ! qdescr1.isEmpty() )
-		testiChoice[0]  -> setText( qdescr1 );
-	if ( ! qdescr2.isEmpty() )
-		testiChoice[1]  -> setText( qdescr2 );
-	if ( ! qdescr3.isEmpty() )
-		testiChoice[2]  -> setText( qdescr3 );
-	if ( ! qdescr4.isEmpty() )
-		testiChoice[3]  -> setText( qdescr4 );
+    testiChoice[0]->setText(tr("once"));
+    testiChoice[1]->setText(tr("always"));
+    testiChoice[2]->setText(tr("mon-fri"));
+    testiChoice[3]->setText(tr("sat-sun"));
 
    // OroTemp = QDateTime(QDateTime::currentDateTime());
      oraSveglia =  new QDateTime();//QDate(),QTime(12,0));

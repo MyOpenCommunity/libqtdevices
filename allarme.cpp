@@ -21,7 +21,7 @@
 
 allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx,
 		 altype t): 
-    QFrame(parent, name.ascii())
+    QFrame(parent)
 {
     qDebug("allarme::allarme()");
     qDebug("indirizzo = %s, IconaDx = %s, tipo = %d", indirizzo, IconaDx, t);

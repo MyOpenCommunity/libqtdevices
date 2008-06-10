@@ -53,11 +53,11 @@ SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent, 
 	labels_layout->setSpacing(0);
 
 	TitleLabel *l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 5);
-	l->setText("RADIO IP");
+	l->setText(tr("IP Radio"));
 	labels_layout->addWidget(l);
 
 	l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 15);
-	l->setText("MEDIA SERVER");
+	l->setText(tr("Servers"));
 	labels_layout->addWidget(l);
 	labels_layout->addStretch();
 

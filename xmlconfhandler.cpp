@@ -483,7 +483,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						case ANTIINTRUSIONE:
 							(*antintr)->addItemU ((char)page_item_id, page_item_descr,
 								(char*)page_item_where.ascii(),
-								*page_item_list_img, par1,  par2, (char*)page_item_list_txt->at(0)->ascii(),   (char*)page_item_list_txt->at(1)->ascii(),  (char*)page_item_list_txt->at(2)->ascii(),  (char*)page_item_list_txt->at(3)->ascii())  ;
+								*page_item_list_img, par1,  par2);
 							break;
 						case DIFSON:
 							if ((!page_item_what.isNull()) &&

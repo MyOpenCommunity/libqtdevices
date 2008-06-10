@@ -121,6 +121,26 @@ QDomNode getPageNode(int id)
 	return QDomNode();
 }
 
+QString getLanguage()
+{
+	QString default_language;
+	QDomNode node = qdom_appconfig.documentElement();
+
+	QValueVector<QString> node_names(3);
+	node_names[0] = "setup";
+	node_names[1] = "generale";
+	node_names[2] = "language";
+
+	for (QValueVector<QString>::iterator It = node_names.begin(); It != node_names.end(); ++It)
+	{
+		node = node.namedItem(*It);
+		if (node.isNull())
+			return default_language;
+	}
+
+	return node.toElement().text();
+}
+
 BtMain *BTouch;
 
 int main( int argc, char **argv )
@@ -128,10 +148,6 @@ int main( int argc, char **argv )
 	/*******************************************
 	 ** Inizio Lettura configurazione applicativo
 	 *******************************************/
-	//    qDebug("<BTo> BTouch release");
-	//    Leggi_logfile_name(My_File_Cfg,MYPROCESSNAME,&My_File_Log,Xml_File_In,Xml_File_Out);
-	//    Leggi_logverbosity(My_File_Cfg,MYPROCESSNAME,&VERBOSITY_LEVEL,Xml_File_In,Xml_File_Out);
-	//---
 
 	QFile * xmlFile;
 	char *logFile;
@@ -151,6 +167,8 @@ int main( int argc, char **argv )
 	}
 	file.close();
 
+	QApplication a(argc, argv);
+
 	xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
 	xmlFile = new QFile(My_File_Cfg);
 	QXmlInputSource source( xmlFile );
@@ -159,10 +177,6 @@ int main( int argc, char **argv )
 	reader.parse( source );
 	delete handler;
 	delete xmlFile;
-	//-----
-	/*   qDebug("<BTo> logfile=%s",My_File_Log);
-	     qDebug("<BTo> logfile=%s",logFile);
-	     qDebug("<BTo> logverbosity=%d",VERBOSITY_LEVEL);*/
 
 	if (strcmp(logFile,"")&&strcmp(logFile,"-"))
 		// Settato il file di log
@@ -179,10 +193,21 @@ int main( int argc, char **argv )
 	// D'ora in avanti qDebug, ... scrivono dove gli ho detto io
 	qInstallMsgHandler( myMessageOutput );
 
+	QString language_suffix = getLanguage();
+	if (!language_suffix.isNull())
+	{
+		QString language_file;
+		language_file.sprintf(LANGUAGE_FILE_TMPL, language_suffix.ascii());
+		QTranslator *translator = new QTranslator(0);
+		if (translator->load(language_file))
+			a.installTranslator(translator);
+		else
+			qWarning("File %s not found for language %s", language_file.ascii(), language_suffix.ascii());
+	}
+
 	/*******************************************
 	 ** Fine Lettura configurazione applicativo
 	 *******************************************/
-	QApplication a( argc, argv );
 
 	signal(SIGUSR1, MySignal);
 	signal(SIGUSR2, ResetTimer);

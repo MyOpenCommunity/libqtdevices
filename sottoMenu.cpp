@@ -210,7 +210,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 			break;
 		case SORGENTE_RADIO : elencoBanner.append(new banradio(this,descrizione ,(char*)indirizzo)); break;
 		case GR_AMPLIFICATORI: elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon)); break;
-		case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,descr1,descr2,descr3,descr4,icoEx1,par3)); break;
+		case SET_SVEGLIA: elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,icoEx1,par3)); break;
 		case CALIBRAZIONE:
 				  {
 					  calibration *c = new calibration(this,descrizione ,IconaSx);
@@ -278,7 +278,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 				       break;
 		case SCENARIO_SCHEDULATO: elencoBanner.append(new scenSched(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4)); break;
 					  // FIXME: VERIFICA I PARAMETRI !!!
-		case POSTO_ESTERNO: elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, (char *)light.ascii(), (char *)key.ascii(), (char *)unknown.ascii(), (char *)txt1.ascii(), (char *)txt2.ascii(), (char *)txt3.ascii())); break;
+		case POSTO_ESTERNO: elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, (char *)light.ascii(), (char *)key.ascii(), (char *)unknown.ascii())); break;
 		case SORG_RADIO:
 				    elencoBanner.append(new sorgenteMultiRadio(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 				    break;
