@@ -83,15 +83,15 @@ extern QDomDocument qdom_appconfig;
 /*! \def IMG_PATH
  *  Define path for Icons
  */
-#define IMG_PATH                    "cfg/skin/"
+#define IMG_PATH                    "cfg/extra/1/skin/"
 /*! \def EXTRA_FILE
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
-#define EXTRA_FILE                  "cfg/extra.xml"
+#define EXTRA_FILE                  "cfg/extra/1/extra.xml"
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
-#define MY_FILE_CFG_FONT        "cfg/font_%s.xml"
+#define MY_FILE_CFG_FONT        "cfg/extra/3/font_%s.xml"
 /*! \def MY_FILE_CFG_FONT
  *  The font configuration file
  */
