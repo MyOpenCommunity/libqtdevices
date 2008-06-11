@@ -206,7 +206,7 @@ void homePage::inizializza()
 {
    char Frame[50];
 
-   for(int idx=0; idx<tempCont; idx++)
+   for(unsigned idx=0; idx<tempCont; idx++)
    {
      strcpy(&Frame[0],"*#4*");
      if(!strcmp(ext[idx], "0"))
@@ -314,7 +314,7 @@ void homePage::gestFrame(char* frame)
 	if (dovex[0]=='#')
 	    strcpy(&dovex[0], &dovex[1]);
 	
-	for(int idx=0; idx<tempCont; idx++)
+	for(unsigned idx=0; idx<tempCont; idx++)
 	{
         my_frame = false;
 	qDebug("dove frame %s dove oggetto %s",dovex, zt[idx]);
