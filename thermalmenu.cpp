@@ -1,13 +1,11 @@
 /*!
- * \file
+ * \thermalmenu.cpp
  * <!--
  * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
  * -->
  *
  * \brief  A class to handle thermal regulation menu
- *
- *  TODO: detailed description (optional) 
  *
  * \author Luca Ottaviano
  */
@@ -19,10 +17,10 @@
 
 #include <qregexp.h>
 
-#define I_EXT_PROBE                  "sonda_esterna.png"
-#define I_TEMP_PROBE                 "zona.png"
-#define I_RIGHT_ARROW                "arrrg.png"
-#define I_PLANT                      "impianto.png"
+static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
+static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png");
+static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
+static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
 ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2) :
 	sottoMenu(parent, name)
@@ -67,17 +65,17 @@ void ThermalMenu::addBanners()
 			if (e.tagName().contains(QRegExp("plant(\\d*)")))
 			{
 				QString descr = findNamedNode(e, "descr").toElement().text();
-				b = addMenuItem(e, I_PLANT, descr);
+				b = addMenuItem(e, i_plant, descr);
 				createPlantMenu(e, b);
 			}
 			else if (e.tagName() == "extprobe")
 			{
-				b = addMenuItem(e, I_EXT_PROBE, "extprobe");
+				b = addMenuItem(e, i_ext_probe, "extprobe");
 				createProbeMenu(e, b, true);
 			}
 			else if (e.tagName() == "tempprobe")
 			{
-				b = addMenuItem(e, I_TEMP_PROBE, "tempprobe");
+				b = addMenuItem(e, i_temp_probe, "tempprobe");
 				createProbeMenu(e, b, false);
 			}
 		}
@@ -91,9 +89,7 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 	bannPuls *bp = new bannPuls(this, descr.ascii());
 	qDebug("[TERMO] addBanners1: %s", descr.ascii());
 
-	QString leftIcon(IMG_PATH + QString(I_RIGHT_ARROW));
-	central_icon = QString(IMG_PATH) + central_icon;
-	bp->SetIcons(leftIcon.ascii(), 0, central_icon.ascii());
+	bp->SetIcons(i_right_arrow.ascii(), 0, central_icon.ascii());
 
 	initBanner(bp, e);
 
