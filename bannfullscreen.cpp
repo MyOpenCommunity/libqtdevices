@@ -110,6 +110,8 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 
 	setpoint = "-23.5\272C";
 	local_temp = "0";
+	isOff = false;
+	isAntigelo = false;
 }
 
 void FSBann4zProbe::Draw()
@@ -134,6 +136,107 @@ void FSBann4zProbe::postDisplay()
 {
 	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(3, "");
+}
+
+void FSBann4zProbe::status_changed(QPtrList<device_status> list)
+{
+	QPtrListIterator<device_status> it (list);
+	device_status *dev;
+	bool update = false;
+
+	while ((dev = it.current()) != 0)
+	{
+		++it;
+		if (dev->get_type() == device_status::THERMR)
+		{
+			stat_var curr_local(stat_var::LOCAL);
+			stat_var curr_sp(stat_var::SP);
+
+			qDebug("Th. regulator status variation");
+			dev->read(device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
+			dev->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
+
+			qDebug("loc = %d", curr_local.get_val());
+			qDebug("sp = %d", curr_sp.get_val());
+			if(curr_local.initialized())
+			{
+				switch(curr_local.get_val())
+				{
+					case 0:
+						local_temp = "0";
+						isOff = false;
+						isAntigelo = false;
+						break;
+					case 1:
+						local_temp = "+1";
+						isOff = false;
+						isAntigelo = false;
+						break;
+					case 2:
+						local_temp = "+2";
+						isOff = false;
+						isAntigelo = false;
+						break;
+					case 3:
+						local_temp = "+3";
+						isOff = false;
+						isAntigelo = false;
+						break;
+					case 11:
+						local_temp = "-1";
+						isOff = false;
+						isAntigelo = false;
+						break;
+					case 12:
+						local_temp = "-2";
+						isOff = false;
+						isAntigelo = false;
+						break;
+					case 13:
+						local_temp = "-3";
+						isOff = false;
+						isAntigelo = false;
+						break;
+					case 4:
+						local_temp = "0";
+						isOff = true;
+						isAntigelo = false;
+						break;
+					case 5:
+						local_temp = "0";
+						isOff = false;
+						isAntigelo = true;
+						break;
+					default:
+						qDebug("[TERMO] FSBann4zProbe::status_changed(): local status case not handled!");
+				}
+				update = true;
+			}
+			if(curr_sp.initialized())
+			{
+				float icx;
+				char tmp[10];
+				icx = curr_sp.get_val();
+				qDebug("temperatura setpoint: %d",(int)icx);
+				setpoint = "";
+				if (icx>=1000)
+				{
+					setpoint = "-";
+					icx=icx-1000;
+				}
+				icx/=10;
+				sprintf(tmp,"%.1f",icx);
+				setpoint += tmp;
+				setpoint += "\272C";
+				update = true;
+				break;
+			}
+		}
+	}
+	BannFullScreen::status_changed(list);
+
+	if (update)
+		Draw();
 }
 
 FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name)
@@ -233,6 +336,7 @@ void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 				fancoil_buttons.setButton(fancoil_status);
 		}
 	}
+	FSBann4zProbe::status_changed(list);
 }
 
 FSBannFactory *FSBannFactory::instance = 0;

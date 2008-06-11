@@ -54,6 +54,8 @@ public:
 	FSBann4zProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	virtual void postDisplay();
+public slots:
+	virtual void status_changed(QPtrList<device_status> list);
 protected:
 	QString setpoint;
 	QLabel  *setpoint_label;
@@ -62,6 +64,8 @@ protected:
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	QLabel *local_temp_label;
+private:
+	bool isOff, isAntigelo;
 };
 
 class FSBannTermoReg4z : public FSBann4zProbe
