@@ -47,12 +47,15 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 		QString qI2(am->I2);
 		QString qI3(am->I3);
 		QString qI4(am->I4);
+		QString qI5(am->I5);
 		icons.append(&qI1);
 		icons.append(&qI2);
 		icons.append(&qI3);
 		icons.append(&qI4);
+		icons.append(&qI4);
+		icons.append(&qI5);
 
-		if(am->tipo == AMPLIFICATORE)
+		if(am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
 		{
 			qDebug("Adding amplifier (%d, %s %s)", am->tipo, (char *)am->indirizzo, am->descr->at(0)->ascii());
 			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);

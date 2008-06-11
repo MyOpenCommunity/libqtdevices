@@ -357,8 +357,9 @@ enum  bannerType {
 	TERMO_4Z_FANCOIL=54,                          /*!< 4 Zones Thermoregulation with fan-coil control */
 	TERMO_EXTPROBE=55,                            /*!< External not-controlled probe */
 	TERMO_PROBE=56,                               /*!< Not-controlled probe */
-        TERMO_HOME_EXTPROBE=57,                       /*!< Home page external not-controlled probe */
-        TERMO_HOME_PROBE=58                           /*!< Home page not-controlled probe */
+	TERMO_HOME_EXTPROBE=57,                       /*!< Home page external not-controlled probe */
+	TERMO_HOME_PROBE=58,                           /*!< Home page not-controlled probe */
+	POWER_AMPLIFIER=69                            /*!< Power amplifier*/
 };
 
 

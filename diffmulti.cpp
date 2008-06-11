@@ -42,17 +42,20 @@ dati_sorgente_multi::~dati_sorgente_multi()
 }
 
 dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
-		char *_I1, char *_I2, char *_I3, char *_I4,
-		int p1)
+		int p1, char *_I1, char *_I2, char *_I3, char *_I4, char *_I5)
 {
 	tipo = t;
 	descr = new QPtrList<QString>(*((QPtrList<QString> *)d));
 	qDebug("dati_ampli_multi: descr = %s", descr->at(0)->ascii());
-	if(t == AMPLIFICATORE) {
-		qDebug("Amplificatore (%s)", (char *)ind);
+	if(t == AMPLIFICATORE || t == POWER_AMPLIFIER) {
+		if (t == AMPLIFICATORE)
+			qDebug("Amplificatore (%s)", (char *)ind);
+		else
+			qDebug("Power amplifier (%s)", (char *)ind);
 		indirizzo = new(char[20]);
 		memcpy(indirizzo, ind, 20);
-	} else {
+	}
+	else {
 		qDebug("gruppo AMPLIFICATORI !!");
 		indirizzo = new QPtrList<QString>(*((QPtrList<QString> *)ind));
 		qDebug("indirizzo = %p", indirizzo);	
@@ -66,10 +69,11 @@ dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
 			++(*lii);
 		}
 	}
-	strncpy(I1, _I1, sizeof(I1));
-	strncpy(I2, _I2, sizeof(I2));
-	strncpy(I3, _I3, sizeof(I3));
-	strncpy(I4, _I4, sizeof(I4));
+	I1 = QString(_I1);
+	I2 = QString(_I2);
+	I3 = QString(_I3);
+	I4 = QString(_I4);
+	I5 = QString(_I5);
 	modo = p1;
 }
 
@@ -197,10 +201,9 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 					qDebug("ADDRESS = %s", s->ascii());
 					++(*lsi);
 				}
-				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
+				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
-						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
-						modo));
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii()));
 				delete lsi;
 				break;
 			}
@@ -209,11 +212,22 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			qDebug("Icone = %s - %s - %s - %s",
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
 						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii());
-			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
+			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii()));
+			break;
+
+		case POWER_AMPLIFIER:
+			qDebug("Icone Power Multi = %s - %s - %s - %s - %s",
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
 						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
-						modo));
+						(char *)safeAt(icon_names, 4)->ascii());
+			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
+						(char *)safeAt(icon_names, 4)->ascii()));
 			break;
+
 		default:
 			sottoMenu::addItemU(tipo, *descrizioni->at(0), 
 					indirizzo, icon_names, modo, numFrame,

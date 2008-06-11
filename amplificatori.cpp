@@ -254,3 +254,45 @@ void grAmplificatori::Diminuisci()
 void grAmplificatori::inizializza(bool forza)
 { 
 }
+
+/*****************************************************************
+ ** PowerAmplifier
+ ****************************************************************/
+
+PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, char *icon, char *inactiveIcon, char* settingIcon)
+: bannRegolaz(parent, name)
+{
+	qDebug("PowerAmplifier::PowerAmplifier()");
+	setRange(1,9); // ?
+	SetIcons( IconaSx, IconaDx ,icon, inactiveIcon,(char)1 );
+	qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
+	setAddress(indirizzo);
+	connect(this, SIGNAL(sxClick()), SLOT(showSetup()));
+	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
+	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
+	connect(this, SIGNAL(csxClick()), SLOT(turnDown()));
+	setValue(1); // ?
+	impostaAttivo(0); // ?
+}
+
+void PowerAmplifier::showSetup()
+{
+	// Mostra la pagina delle impostazioni
+	qDebug("PowerAmplifier::showSetup()");
+}
+
+void PowerAmplifier::toggleStatus()
+{
+	// Passa da on a off e viceversa
+	qDebug("PowerAmplifier::toggleStatus()");
+}
+
+void PowerAmplifier::turnUp()
+{
+	qDebug("PowerAmplifier::turnUp()");
+}
+
+void PowerAmplifier::turnDown()
+{
+	qDebug("PowerAmplifier::turnDown()");
+}

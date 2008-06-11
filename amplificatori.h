@@ -73,4 +73,24 @@ private slots:
 	void Diminuisci();
 };
 
+/*****************************************************************
+ **Power amplifier
+ ****************************************************************/
+/*!
+ * \class PowerAmplifier
+ * \brief This class is made to manage a power audio amplifier.
+ *
+ */
+class PowerAmplifier : public bannRegolaz
+{
+Q_OBJECT
+public:
+	PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, char *icon, char *inactiveIcon, char *settingIcon);
+private slots:
+	void showSetup();
+	void toggleStatus();
+	void turnUp();
+	void turnDown();
+};
+
 #endif
