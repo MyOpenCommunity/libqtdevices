@@ -27,6 +27,16 @@ public:
 	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2);
 private:
 	/**
+	 * Utility function to create the settings menu for a 99z thermal regulator.
+	 */
+	void create99zSettings(sottoMenu *sm);
+
+	/**
+	 * Utility function to create the settings menu for a 4z thermal regulator.
+	 */
+	void create4zSettings(sottoMenu *sm);
+
+	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
 	 * screen banner.
 	 * \param n             The node in the configuration DOM which is a `item' tag

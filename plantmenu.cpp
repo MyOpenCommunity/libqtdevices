@@ -67,7 +67,8 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					icon = i_thermr;
 					bann_type = fs_4z_thermal_regulator;
 					item_addr = "0";
-					where_composed = QString("#") + item_addr + "#" + ind_centrale;
+					//where_composed = QString("#") + item_addr + "#" + ind_centrale;
+					where_composed = item_addr + "#" + ind_centrale;
 					fancoil = false;
 					qDebug("[TERMO] TERMO_4Z PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4,
@@ -97,7 +98,8 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					icon = i_zone;
 					bann_type = fs_4z_probe;
 					item_addr = n.namedItem("where").toElement().text();
-					where_composed = QString("#") + item_addr + "#" + ind_centrale;
+					//where_composed = QString("#") + item_addr + "#" + ind_centrale;
+					where_composed = item_addr + "#" + ind_centrale;
 					fancoil = false;
 					qDebug("[TERMO] TERMO_4Z_PROBE PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z4,
@@ -107,6 +109,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					icon = i_zone;
 					bann_type = fs_4z_fancoil;
 					item_addr = n.namedItem("where").toElement().text();
+					//where_composed = QString("#") + item_addr + "#" + ind_centrale;
 					where_composed = item_addr + "#" + ind_centrale;
 					fancoil = true;
 					qDebug("[TERMO] TERMO_4Z_PROBE_FANCOIL PlantMenu, where=%s", where_composed.ascii());
@@ -155,5 +158,73 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			fsb, SLOT(status_changed(QPtrList<device_status>)));
 	fsb->setAddress(addr.ascii());
+	if (type == fs_4z_thermal_regulator)
+		create4zSettings(&items_submenu);
+	if (type == fs_99z_thermal_regulator)
+		create99zSettings(&items_submenu);
+
 	return bp;
+}
+
+void PlantMenu::create4zSettings(sottoMenu *sm)
+{
+	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
+	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
+	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
+	const QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
+	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
+	const QString i_summer_winter = QString("%1%2").arg(IMG_PATH).arg("estate.png");
+
+	sottoMenu *modes = new sottoMenu(0, "modes");
+	modes->setBGColor(paletteBackgroundColor());
+	modes->setFGColor(paletteForegroundColor());
+	connect(sm, SIGNAL(goDx()), modes, SLOT(show()));
+	connect(sm, SIGNAL(goDx()), modes, SLOT(raise()));
+	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
+
+	connect(modes, SIGNAL(Closed()), sm, SLOT(show()));
+	connect(modes, SIGNAL(Closed()), modes, SLOT(hide()));
+
+	// week banner
+	bannPuls *weekly = new bannPuls(modes, "weekly");
+	weekly->SetIcons(i_right_arrow.ascii(), 0, i_weekly.ascii());
+	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
+	modes->appendBanner(weekly);
+
+	// manual banner
+	bannPuls *manual = new bannPuls(modes, "Manual");
+	manual->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
+	manual->SetTextU(tr("Manual operation", "manual settings in thermal regulation"));
+	modes->appendBanner(manual);
+
+	// scenario banner
+	bannPuls *scenarios = new bannPuls(modes, "scenarios");
+	scenarios->SetIcons(i_right_arrow.ascii(), 0, i_scenarios.ascii());
+	scenarios->SetTextU(tr("Scenarios", "scenario menu in thermal regulation"));
+	modes->appendBanner(scenarios);
+
+	// TODO: feriale e festivo
+
+	// off banner
+	// FIXME: change banner type, this needs to be a big button in the center
+	bannPuls *off = new bannPuls(modes, "OFF");
+	off->SetIcons(0, 0, i_off.ascii());
+	off->SetTextU(tr("OFF", "Set thermal regulator device to off"));
+	modes->appendBanner(off);
+
+	// antifreeze banner
+	bannPuls *antifreeze = new bannPuls(modes, "antifreeze");
+	antifreeze->SetIcons(0, 0, i_antifreeze.ascii());
+	antifreeze->SetTextU(tr("antifreeze", "Set thermal regulator in anti freeze mode"));
+	modes->appendBanner(antifreeze);
+
+	// summer_winter banner
+	bannPuls *summer_winter = new bannPuls(modes, "Summer/Winter");
+	summer_winter->SetIcons(0, 0, i_summer_winter.ascii());
+	summer_winter->SetTextU(tr("Summer/Winter", "Set thermal regulator in summer/winter mode"));
+	modes->appendBanner(summer_winter);
+}
+
+void PlantMenu::create99zSettings(sottoMenu *sm)
+{
 }
