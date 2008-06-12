@@ -85,12 +85,15 @@ class PowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
 public:
-	PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, char *icon, char *inactiveIcon, char *settingIcon);
+	PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* onIcon, char* offIcon, char *onAmpl, char *offAmpl, char* settingIcon);
 private slots:
 	void showSetup();
 	void toggleStatus();
 	void turnUp();
 	void turnDown();
+private:
+	QString off_icon, on_icon;
+	bool status;
 };
 
 #endif

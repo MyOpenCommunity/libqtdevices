@@ -21,6 +21,7 @@
  ** Ambiente diffusione sonora multicanale
  ****************************************************************/
 
+
 ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char* IconaSx, char* IconaDx, char *icon, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
 : bannBut2Icon( parent, name )
 {
@@ -51,7 +52,6 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 		icons.append(&qI1);
 		icons.append(&qI2);
 		icons.append(&qI3);
-		icons.append(&qI4);
 		icons.append(&qI4);
 		icons.append(&qI5);
 

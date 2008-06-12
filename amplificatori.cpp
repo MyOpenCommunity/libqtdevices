@@ -259,20 +259,23 @@ void grAmplificatori::inizializza(bool forza)
  ** PowerAmplifier
  ****************************************************************/
 
-PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, char *icon, char *inactiveIcon, char* settingIcon)
+PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* onIcon, char* offIcon, char *onAmpl, char *offAmpl, char* settingIcon)
 : bannRegolaz(parent, name)
 {
 	qDebug("PowerAmplifier::PowerAmplifier()");
-	setRange(1,9); // ?
-	SetIcons( IconaSx, IconaDx ,icon, inactiveIcon,(char)1 );
-	qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
+	setRange(1,9);
+	setValue(1);
+	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl,(char)1);
+	qDebug("%s - %s - %s - %s - %s", onIcon, offIcon, onAmpl, offAmpl, settingIcon);
 	setAddress(indirizzo);
 	connect(this, SIGNAL(sxClick()), SLOT(showSetup()));
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
 	connect(this, SIGNAL(csxClick()), SLOT(turnDown()));
-	setValue(1); // ?
-	impostaAttivo(0); // ?
+
+	off_icon = offIcon;
+	on_icon = onIcon;
+	status = false;
 }
 
 void PowerAmplifier::showSetup()
@@ -283,8 +286,9 @@ void PowerAmplifier::showSetup()
 
 void PowerAmplifier::toggleStatus()
 {
-	// Passa da on a off e viceversa
-	qDebug("PowerAmplifier::toggleStatus()");
+	SetIcons(1, status ? off_icon.ascii() : on_icon.ascii());
+	status = !status;
+	Draw();
 }
 
 void PowerAmplifier::turnUp()
