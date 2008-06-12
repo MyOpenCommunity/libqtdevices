@@ -25,6 +25,7 @@
 #include "actuators.h"
 #include "scenari.h"
 #include "amplificatori.h"
+#include "poweramplifier.h"
 #include "automatismi.h"
 #include "sorgentiradio.h"
 #include "sorgentiaux.h"
