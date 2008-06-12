@@ -142,6 +142,26 @@ void sottoMenu::setFGColor(QColor c)
 		bannNavigazione->setFGColor(c);
 }
 
+void sottoMenu::setAllBGColor(QColor c)
+{
+	setPaletteBackgroundColor(c);
+	if ( bannNavigazione)
+		bannNavigazione->setBGColor(c);
+
+    for (banner *b = elencoBanner.first(); b; b = elencoBanner.next())
+		b->setBGColor(c);
+}
+
+void sottoMenu::setAllFGColor(QColor c)
+{
+	setPaletteForegroundColor(c);
+	if ( bannNavigazione)
+		bannNavigazione->setFGColor(c);
+
+    for (banner *b = elencoBanner.first(); b; b = elencoBanner.next())
+		b->setFGColor(c);
+}
+
 int sottoMenu::setBGPixmap(char* backImage)
 {
 	QPixmap Back; 
