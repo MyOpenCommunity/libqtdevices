@@ -18,8 +18,11 @@
 #define BANNTEMPERATURE_H
 
 #include "banner.h"
+#include "bann3but.h"
+#include "bann4but.h"
 #include "device.h"
-#include "qdom.h"
+
+#include <qdom.h>
 
 #define DESCR_LABEL_WIDTH 180
 #define BORDER_WIDTH        5
@@ -59,6 +62,32 @@ private:
 	QLabel  *temp_label;
 	/// Zone name label
 	QLabel  *descr_label;
+};
+
+class BannOff : public bann3But
+{
+Q_OBJECT
+public:
+	BannOff(QWidget *parent, const char *name);
+public slots:
+	/**
+	 * Shut down the thermal regulator
+	 */
+	void performAction();
+private:
+};
+
+class BannSummerWinter : public bann4But
+{
+Q_OBJECT
+public:
+	BannSummerWinter(QWidget *parent, const char *name);
+	enum seasons {WINTER, SUMMER};
+public slots:
+	void setSummer();
+	void setWinter();
+private:
+	seasons status;
 };
 
 #endif // BANNTEMPERATURE_H
