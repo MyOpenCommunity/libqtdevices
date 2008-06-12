@@ -2,6 +2,7 @@
 #define POWER_AMPLIFIER_H
 
 #include "bannregolaz.h"
+#include "bannonoff.h"
 
 class sottoMenu;
 
@@ -30,6 +31,18 @@ private:
 	QString off_icon, on_icon;
 	bool status;
 	sottoMenu *settings_page;
+};
+
+
+class PowerAmplifierPreset : public bannOnOff
+{
+Q_OBJECT
+public:
+	PowerAmplifierPreset(QWidget *parent=0, const char *name=NULL);
+
+private slots:
+	void nextPreset();
+	void prevPreset();
 };
 
 #endif

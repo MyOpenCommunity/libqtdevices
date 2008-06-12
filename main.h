@@ -359,7 +359,8 @@ enum  bannerType {
 	TERMO_PROBE=56,                               /*!< Not-controlled probe */
 	TERMO_HOME_EXTPROBE=57,                       /*!< Home page external not-controlled probe */
 	TERMO_HOME_PROBE=58,                           /*!< Home page not-controlled probe */
-	POWER_AMPLIFIER=69                            /*!< Power amplifier*/
+	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
+	POWER_AMPLIFIER_PRESET=70
 };
 
 
