@@ -60,7 +60,19 @@ class sottoMenu : public QWidget
 
 		  The argument is the QColor description of the color.
 		  */          
-		void 	setFGColor(QColor );	
+		void 	setFGColor(QColor );
+		/*!
+		  \brief Sets the background color for the banner and all its child.
+
+		  The argument is the QColor description of the color.
+		  */
+		void 	setAllBGColor(QColor);
+		/*!
+		  \brief Sets the foreground color for the banner and all its child.
+
+		  The argument is the QColor description of the color.
+		  */
+		void 	setAllFGColor(QColor);
 		/*!
 		  \brief Sets the background pixmap for the banner.
 		  */  
