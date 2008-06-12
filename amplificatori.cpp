@@ -11,7 +11,7 @@
 #include "amplificatori.h"
 #include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
 #include "device_cache.h" // btouch_device_cache
-
+#include "sottomenu.h"
 
 /*****************************************************************
  **amplificatore
@@ -268,7 +268,7 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl,(char)1);
 	qDebug("%s - %s - %s - %s - %s", onIcon, offIcon, onAmpl, offAmpl, settingIcon);
 	setAddress(indirizzo);
-	connect(this, SIGNAL(sxClick()), SLOT(showSetup()));
+	connect(this, SIGNAL(sxClick()), SLOT(showSettings()));
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
 	connect(this, SIGNAL(csxClick()), SLOT(turnDown()));
@@ -276,12 +276,26 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	off_icon = offIcon;
 	on_icon = onIcon;
 	status = false;
+	settings_page = new sottoMenu(NULL, "Settings");
+	settings_page->hide();
+	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
 }
 
-void PowerAmplifier::showSetup()
+void PowerAmplifier::setBGColor(QColor c)
 {
-	// Mostra la pagina delle impostazioni
-	qDebug("PowerAmplifier::showSetup()");
+	banner::setBGColor(c);
+	settings_page->setBGColor(c);
+}
+
+void PowerAmplifier::setFGColor(QColor c)
+{
+	banner::setFGColor(c);
+	settings_page->setFGColor(c);
+}
+
+void PowerAmplifier::showSettings()
+{
+	settings_page->show();
 }
 
 void PowerAmplifier::toggleStatus()
