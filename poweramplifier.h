@@ -3,6 +3,7 @@
 
 #include "bannregolaz.h"
 #include "bannonoff.h"
+#include "bannonoff2scr.h"
 
 class sottoMenu;
 
@@ -44,5 +45,21 @@ private slots:
 	void nextPreset();
 	void prevPreset();
 };
+
+class PowerAmplifierTreble : public bannOnOff2scr
+{
+Q_OBJECT
+public:
+	PowerAmplifierTreble(QWidget *parent=0, const char *name=NULL);
+
+private slots:
+	void up();
+	void down();
+
+private:
+	int level;
+	void showLevel();
+};
+
 
 #endif
