@@ -70,4 +70,19 @@ private:
 };
 
 
+class PowerAmplifierBass : public bannOnOff2scr
+{
+Q_OBJECT
+public:
+	PowerAmplifierBass(QWidget *parent=0, const char *name=NULL);
+
+private slots:
+	void up();
+	void down();
+
+private:
+	int level;
+	void showLevel();
+};
+
 #endif

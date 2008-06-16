@@ -5,6 +5,8 @@ static const char *IMG_PLUS = IMG_PATH "btnplus.png";
 static const char *IMG_MINUS = IMG_PATH "btnmin.png";
 static const char *IMG_PRESET = IMG_PATH "preset.png";
 static const char *IMG_TREBLE = IMG_PATH "louds.png";
+static const char *IMG_BASS = IMG_PATH "lows.png";
+
 
 /*****************************************************************
  ** PowerAmplifier
@@ -30,8 +32,9 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	settings_page = new sottoMenu(NULL, "PowerAmplifierSettings");
 
 	QPtrList<QString> icons;
-	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, "Preset", NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, "Treble", NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons);
 	settings_page->hide();
 	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
 }
@@ -152,6 +155,45 @@ void PowerAmplifierTreble::down()
 }
 
 void PowerAmplifierTreble::showLevel()
+{
+	QString desc;
+	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
+	SetSecondaryTextU(desc.ascii());
+}
+
+
+/*****************************************************************
+ ** PowerAmplifierBass
+ ****************************************************************/
+
+PowerAmplifierBass::PowerAmplifierBass(QWidget *parent, const char *name)
+ : bannOnOff2scr(parent, name)
+{
+	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_BASS);
+	level = 0;
+	showLevel();
+	qDebug("PowerAmplifierBass::PowerAmplifierTreble()");
+	connect(this, SIGNAL(sxClick()), SLOT(down()));
+	connect(this, SIGNAL(dxClick()), SLOT(up()));
+}
+
+void PowerAmplifierBass::up()
+{
+	qDebug("PowerAmplifierBass::up()");
+	level += 10;
+	showLevel();
+	Draw();
+}
+
+void PowerAmplifierBass::down()
+{
+	qDebug("PowerAmplifierBass::down()");
+	level -= 10;
+	showLevel();
+	Draw();
+}
+
+void PowerAmplifierBass::showLevel()
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
