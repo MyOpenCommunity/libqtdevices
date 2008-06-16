@@ -361,9 +361,7 @@ void sottoMenu::showItem(int id)
 	// FIXME: dirty way to set the last button of the navBar in case of full screen banners
 	if (numRighe == 1)
 	{
-		qDebug("[TERMO] sottoMenu::draw() calling banner function...");
 		banner *bann = getCurrent();
-		bann->postDisplay();
 	}
 
 	forceDraw();
@@ -395,6 +393,7 @@ void sottoMenu::draw()
 
 					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
 					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->postDisplay();
 				}
 			}		
 			qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",
@@ -434,7 +433,6 @@ void sottoMenu::goUp()
 	{
 		indicold=indice;
 		indice=(++indice)%(elencoBanner.count());
-		elencoBanner.at(indice)->postDisplay();
 		draw();
 	}
 }
@@ -448,7 +446,6 @@ void sottoMenu::goDown()
 		if (--indice<0)
 			indice=elencoBanner.count()-1;
 		qDebug("indice = %d\n", indice);
-		elencoBanner.at(indice)->postDisplay();
 		draw();
 	}
 }
