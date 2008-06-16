@@ -29,12 +29,12 @@ private:
 	/**
 	 * Utility function to create the settings menu for a 99z thermal regulator.
 	 */
-	void create99zSettings(sottoMenu *sm);
+	sottoMenu *create99zSettings(QDomNode conf);
 
 	/**
 	 * Utility function to create the settings menu for a 4z thermal regulator.
 	 */
-	void create4zSettings(sottoMenu *sm);
+	sottoMenu *create4zSettings(QDomNode conf);
 
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full

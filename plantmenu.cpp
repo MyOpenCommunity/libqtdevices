@@ -159,15 +159,25 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			fsb, SLOT(status_changed(QPtrList<device_status>)));
 	fsb->setAddress(addr.ascii());
+	sottoMenu *settings = 0;
 	if (type == fs_4z_thermal_regulator)
-		create4zSettings(&items_submenu);
+		settings = create4zSettings(n);
 	if (type == fs_99z_thermal_regulator)
-		create99zSettings(&items_submenu);
+		settings = create99zSettings(n);
+	if (settings)
+	{
+		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
+		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
+		connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
+
+		connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
+		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+	}
 
 	return bp;
 }
 
-void PlantMenu::create4zSettings(sottoMenu *sm)
+sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 {
 	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
 	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
@@ -176,12 +186,6 @@ void PlantMenu::create4zSettings(sottoMenu *sm)
 	sottoMenu *modes = new sottoMenu(0, "modes");
 	modes->setBGColor(paletteBackgroundColor());
 	modes->setFGColor(paletteForegroundColor());
-	connect(sm, SIGNAL(goDx()), modes, SLOT(show()));
-	connect(sm, SIGNAL(goDx()), modes, SLOT(raise()));
-	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
-
-	connect(modes, SIGNAL(Closed()), sm, SLOT(show()));
-	connect(modes, SIGNAL(Closed()), modes, SLOT(hide()));
 
 	// week banner
 	bannPuls *weekly = new bannPuls(modes, "weekly");
@@ -220,9 +224,11 @@ void PlantMenu::create4zSettings(sottoMenu *sm)
 	summer_winter->setBGColor(paletteBackgroundColor());
 	summer_winter->setFGColor(paletteForegroundColor());
 	modes->appendBanner(summer_winter);
+
+	return modes;
 }
 
-void PlantMenu::create99zSettings(sottoMenu *sm)
+sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 {
 	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
 
