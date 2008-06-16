@@ -16,10 +16,26 @@
 #include "btbutton.h"
 #include "device.h"
 
+#define I_OK IMG_PATH"btnok.png"
 #define I_SETTINGS IMG_PATH"setscen.png"
 
-BannFullScreen::BannFullScreen(QWidget *parent, QDomNode n, const char *name)
-	: banner(parent, name),
+BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
+	: banner(parent, name)
+{
+}
+
+void BannFullScreen::setSecondForeground(QColor fg2)
+{
+	second_fg = fg2;
+}
+
+void BannFullScreen::Draw()
+{
+	banner::Draw();
+}
+
+FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name)
+	: BannFullScreen(parent, name),
 	main_layout(this)
 {
 	descr_label = new QLabel(this, 0);
@@ -35,7 +51,7 @@ BannFullScreen::BannFullScreen(QWidget *parent, QDomNode n, const char *name)
 }
 
 
-void BannFullScreen::Draw()
+void FSBannSimpleProbe::Draw()
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
@@ -51,19 +67,14 @@ void BannFullScreen::Draw()
 	banner::Draw();
 }
 
-void BannFullScreen::postDisplay()
+void FSBannSimpleProbe::postDisplay()
 {
 	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(3, "");
 	qDebug("[TERMO] bfs::postDisplay() done");
 }
 
-void BannFullScreen::setSecondForeground(QColor fg2)
-{
-	second_fg = fg2;
-}
-
-void BannFullScreen::status_changed(QPtrList<device_status> list)
+void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
 	device_status *dev;
@@ -98,7 +109,7 @@ void BannFullScreen::status_changed(QPtrList<device_status> list)
 }
 
 FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
-	: BannFullScreen(parent, n)
+	: FSBannSimpleProbe(parent, n)
 {
 	setpoint_label = new QLabel(this, 0);
 	main_layout.addWidget(setpoint_label);
@@ -129,7 +140,7 @@ void FSBann4zProbe::Draw()
 	local_temp_label->setAlignment(AlignHCenter);
 	local_temp_label->setText(local_temp);
 
-	BannFullScreen::Draw();
+	FSBannSimpleProbe::Draw();
 }
 
 void FSBann4zProbe::postDisplay()
@@ -233,7 +244,7 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 			}
 		}
 	}
-	BannFullScreen::status_changed(list);
+	FSBannSimpleProbe::status_changed(list);
 
 	if (update)
 		Draw();
@@ -333,7 +344,10 @@ void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 					qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
 			}
 			if (fancoil_status != -1)
+			{
+				qDebug("[TERMO] New fancoil status: %d", fancoil_status);
 				fancoil_buttons.setButton(fancoil_status);
+			}
 		}
 	}
 	FSBann4zProbe::status_changed(list);
@@ -356,7 +370,7 @@ BannFullScreen *FSBannFactory::getBanner(BannID id, QWidget *parent, QDomNode n)
 	switch (id)
 	{
 		case fs_nc_probe:
-			bfs = new BannFullScreen(parent, n);
+			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
 			bfs = new FSBann4zProbe(parent, n);
@@ -367,6 +381,12 @@ BannFullScreen *FSBannFactory::getBanner(BannID id, QWidget *parent, QDomNode n)
 		case fs_4z_thermal_regulator:
 			bfs = new FSBannTermoReg4z(parent, n);
 			break;
+		case fs_manual:
+			bfs = new FSBannManual(parent, 0);
+			break;
+		case fs_manual_timed:
+			bfs = new FSBannManualTimed(parent, 0);
+			break;
 	}
 	return bfs;
 }
@@ -375,3 +395,197 @@ FSBannFactory::FSBannFactory()
 {
 }
 
+FSBannManual::FSBannManual(QWidget *parent, const char *name)
+	: BannFullScreen(parent, "manual"),
+	main_layout(this)
+{
+	temp = 200;
+	temp_label = new QLabel(this);
+	QHBoxLayout *hbox = new QHBoxLayout();
+
+	QPixmap *icon, *pressed_icon;
+	BtButton *btn;
+	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
+	const QString btn_min_img_press = QString("%1%2").arg(IMG_PATH).arg("btnminp.png");
+	icon         = icons_library.getIcon(btn_min_img);
+	pressed_icon = icons_library.getIcon(btn_min_img_press);
+	btn = new BtButton(this, 0);
+	btn->setPixmap(*icon);
+	btn->setPressedPixmap(*pressed_icon);
+	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
+	hbox->addWidget(btn);
+
+	hbox->addWidget(temp_label);
+
+	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
+	const QString btn_plus_img_press = QString("%1%2").arg(IMG_PATH).arg("btnplusp.png");
+	icon         = icons_library.getIcon(btn_plus_img);
+	pressed_icon = icons_library.getIcon(btn_plus_img_press);
+	btn = new BtButton(this, 0);
+	btn->setPixmap(*icon);
+	btn->setPressedPixmap(*pressed_icon);
+	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
+	hbox->addWidget(btn);
+
+	main_layout.addLayout(hbox);
+
+	//main_layout.addWidget(new QLabel("Manuale", this));
+}
+
+void FSBannManual::setThermalRegulator()
+{
+	// send Open frame
+}
+
+void FSBannManual::incSetpoint()
+{
+	temp += 5;
+	Draw();
+}
+
+void FSBannManual::decSetpoint()
+{
+	temp -= 5;
+	Draw();
+}
+
+void FSBannManual::Draw()
+{
+	QFont aFont;
+	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
+	temp_label->setFont(aFont);
+	temp_label->setAlignment(AlignHCenter|AlignVCenter);
+	QString temp_string;
+
+	int temp_format = temp;
+	if (temp_format >= 1000)
+	{
+		temp_string.append("-");
+		temp_format = temp_format - 1000;
+	}
+	// FIXME: use string::fromUtf8("%1°C")
+	temp_string = temp_string.append("%1").arg(temp_format);
+	temp_string.insert(temp_string.length() - 1, ".");
+	temp_string.append("\272C");
+	temp_label->setText(temp_string);
+	temp_label->setPaletteForegroundColor(second_fg);
+	BannFullScreen::Draw();
+}
+
+void FSBannManual::postDisplay()
+{
+	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
+	parent->setNavBarMode(10, I_OK);
+}
+
+void FSBannManual::status_changed(QPtrList<device_status> list)
+{
+}
+
+FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name)
+	: FSBannManual(parent, name)
+{
+	hours = 0;
+	minutes = 1;
+	QPixmap *icon, *pressed_icon;
+	BtButton *btn1, *btn2;
+
+	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
+	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
+	icon         = icons_library.getIcon(btn_up_img);
+	pressed_icon = icons_library.getIcon(btn_up_img_press);
+	btn1 = new BtButton(this, 0);
+	btn2 = new BtButton(this, 0);
+	btn1->setPixmap(*icon);
+	btn1->setPressedPixmap(*pressed_icon);
+	btn2->setPixmap(*icon);
+	btn2->setPressedPixmap(*pressed_icon);
+	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
+	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
+	QHBoxLayout *hbox = new QHBoxLayout();
+	hbox->addWidget(btn1);
+	hbox->addWidget(btn2);
+	main_layout.addLayout(hbox);
+
+	num = new QLCDNumber(this);
+	num->setSegmentStyle(QLCDNumber::Flat);
+	num->setNumDigits(5);
+	num->display(QString("%1:%2").arg(hours).arg(minutes));
+	num->setFrameStyle(QFrame::NoFrame);
+	main_layout.addWidget(num);
+
+	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
+	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
+	icon         = icons_library.getIcon(btn_down_img);
+	pressed_icon = icons_library.getIcon(btn_down_img_press);
+	btn1 = new BtButton(this, 0);
+	btn2 = new BtButton(this, 0);
+	btn1->setPixmap(*icon);
+	btn1->setPressedPixmap(*pressed_icon);
+	btn2->setPixmap(*icon);
+	btn2->setPressedPixmap(*pressed_icon);
+	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
+	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
+	hbox = new QHBoxLayout();
+	hbox->addWidget(btn1);
+	hbox->addWidget(btn2);
+	main_layout.addLayout(hbox);
+}
+
+void FSBannManualTimed::incHours()
+{
+	if (hours < 100) // avoid overflow of qlcdnumber
+	{
+		hours++;
+		qDebug("[TERMO] about to display %s", QString("%1:%2").arg(hours).arg(minutes).ascii());
+		num->display(QString("%1:%2").arg(hours).arg(minutes));
+	}
+}
+
+void FSBannManualTimed::incMin()
+{
+	if (minutes < 100)
+	{
+		minutes++;
+		qDebug("[TERMO] about to display %s", QString("%1:%2").arg(hours).arg(minutes).ascii());
+		num->display(QString("%1:%2").arg(hours).arg(minutes));
+	}
+}
+
+void FSBannManualTimed::decHours()
+{
+	if (hours > 0)
+	{
+		hours--;
+		num->display(QString("%1:%2").arg(hours).arg(minutes));
+	}
+}
+
+void FSBannManualTimed::decMin()
+{
+	if (minutes > 0)
+	{
+		minutes--;
+		num->display(QString("%1:%2").arg(hours).arg(minutes));
+	}
+}
+
+void FSBannManualTimed::Draw()
+{
+	FSBannManual::Draw();
+}
+
+void FSBannManualTimed::postDisplay()
+{
+	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
+	parent->setNavBarMode(10, I_OK);
+}
+
+void FSBannManualTimed::status_changed(QPtrList<device_status> list)
+{
+}
+
+void FSBannManualTimed::setThermalRegulator()
+{
+	// send Open frame
+}

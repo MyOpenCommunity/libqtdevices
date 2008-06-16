@@ -6,7 +6,6 @@
  * -->
  *
  * \brief A set of full screen banners
- * Right now there is no logic included.
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
@@ -18,6 +17,7 @@
 #include <qlayout.h>
 #include <qbuttongroup.h>
 #include <qdom.h>
+#include <qlcdnumber.h>
 
 class device_status;
 
@@ -25,9 +25,23 @@ class BannFullScreen : public banner
 {
 Q_OBJECT
 public:
+	BannFullScreen(QWidget *parent, const char *name);
+	virtual void Draw();
+	virtual void postDisplay() = 0;
+	void setSecondForeground(QColor fg2);
+public slots:
+	virtual void status_changed(QPtrList<device_status> list) = 0;
+protected:
+	QColor second_fg;
+};
+
+class FSBannSimpleProbe : public BannFullScreen
+{
+Q_OBJECT
+public:
 	// mi manca di sicuro la descrizione della zona e il device da cui prendo le modifiche
 	// forse posso spostare il set dei vari *ground in alcuni membri?
-	BannFullScreen(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	// void callmeBack() call this from sottoMenu to setNavBarMode with the correct icon
 	virtual void postDisplay();
@@ -43,11 +57,10 @@ protected:
 	/// Zone description label and string
 	QLabel *descr_label;
 	QString descr;
-	QColor second_fg;
 };
 
 
-class FSBann4zProbe : public BannFullScreen
+class FSBann4zProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
@@ -104,6 +117,8 @@ enum BannID
 	fs_99z_thermal_regulator,             // 99 zones thermal regulator device
 	fs_99z_probe,                         // 99 zones controlled probe
 	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
+	fs_manual,                            // settings: manual operation
+	fs_manual_timed,                      // settings: timed manual operation
 };
 
 class FSBannFactory
@@ -116,5 +131,46 @@ private:
 	FSBannFactory();
 	FSBannFactory(const FSBannFactory &);
 	FSBannFactory &operator= (const FSBannFactory&);
+};
+
+
+class FSBannManual : public BannFullScreen
+{
+Q_OBJECT
+public:
+	FSBannManual(QWidget *parent, const char *name);
+	virtual void Draw();
+	void postDisplay();
+public slots:
+	void setThermalRegulator();
+	void status_changed(QPtrList<device_status> list);
+protected:
+	QVBoxLayout main_layout;
+private:
+	int temp;
+	QLabel *temp_label;
+private slots:
+	void incSetpoint();
+	void decSetpoint();
+};
+
+class FSBannManualTimed : public FSBannManual
+{
+Q_OBJECT
+public:
+	FSBannManualTimed(QWidget *parent, const char *name);
+	virtual void Draw();
+	void postDisplay();
+public slots:
+	void setThermalRegulator();
+	void status_changed(QPtrList<device_status> list);
+private slots:
+	void incHours();
+	void decHours();
+	void incMin();
+	void decMin();
+private:
+	int hours, minutes;
+	QLCDNumber *num;
 };
 #endif // BANNFULLSCREEN_H
