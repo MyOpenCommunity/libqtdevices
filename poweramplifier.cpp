@@ -77,20 +77,47 @@ void PowerAmplifier::turnDown()
 PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent, const char *name)
  : bannOnOff(parent, name)
 {
-	SetIcons(IMG_PLUS, IMG_MINUS, NULL, IMG_PRESET);
 	qDebug("PowerAmplifierPreset::PowerAmplifierPreset()");
+	SetIcons(IMG_PLUS, IMG_MINUS, NULL, IMG_PRESET);
+	preset = 0;
+	num_preset = 20;
 	connect(this, SIGNAL(sxClick()), SLOT(nextPreset()));
 	connect(this, SIGNAL(dxClick()), SLOT(prevPreset()));
+}
+
+void PowerAmplifierPreset::showEvent(QShowEvent *event)
+{
+	showPreset();
+	Draw();
 }
 
 void PowerAmplifierPreset::prevPreset()
 {
 	qDebug("PowerAmplifierPreset::prevPreset()");
+	if (!preset)
+		preset = num_preset;
+	else
+		--preset;
+	showPreset();
+	Draw();
 }
 
 void PowerAmplifierPreset::nextPreset()
 {
 	qDebug("PowerAmplifierPreset::nextPreset()");
+	if (preset + 1 > num_preset)
+		preset = 0;
+	else
+		++preset;
+	showPreset();
+	Draw();
+}
+
+void PowerAmplifierPreset::showPreset()
+{
+	QString desc;
+	desc.sprintf("Preset %d", preset);
+	SetTextU(desc.ascii());
 }
 
 /*****************************************************************

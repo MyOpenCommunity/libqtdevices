@@ -41,10 +41,18 @@ Q_OBJECT
 public:
 	PowerAmplifierPreset(QWidget *parent=0, const char *name=NULL);
 
+protected:
+	void showEvent(QShowEvent *event);
+
 private slots:
 	void nextPreset();
 	void prevPreset();
+
+private:
+	unsigned preset, num_preset;
+	void showPreset();
 };
+
 
 class PowerAmplifierTreble : public bannOnOff2scr
 {
