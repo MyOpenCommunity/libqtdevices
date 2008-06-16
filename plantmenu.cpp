@@ -202,6 +202,32 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 	manual->setBGColor(paletteBackgroundColor());
 	manual->setFGColor(paletteForegroundColor());
 	modes->appendBanner(manual);
+	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+	banner *bann = FSBannFactory::getInstance()->getBanner(fs_manual, sm, conf);
+	sm->appendBanner(bann);
+	connect(manual, SIGNAL(sxClick()), sm, SLOT(show()));
+	connect(manual, SIGNAL(sxClick()), sm, SLOT(raise()));
+	connect(manual, SIGNAL(sxClick()), modes, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), modes, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+
+	// timed manual banner
+	bannPuls *manual_timed = new bannPuls(modes, "manual_timed");
+	manual_timed->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
+	manual_timed->SetTextU(tr("Manual timed operation", "manual_timed settings in thermal regulation"));
+	manual_timed->setBGColor(paletteBackgroundColor());
+	manual_timed->setFGColor(paletteForegroundColor());
+	modes->appendBanner(manual_timed);
+	sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+	bann = FSBannFactory::getInstance()->getBanner(fs_manual_timed, sm, conf);
+	sm->appendBanner(bann);
+	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(show()));
+	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(raise()));
+	connect(manual_timed, SIGNAL(sxClick()), modes, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), modes, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 
 	// TODO: feriale e festivo
 
