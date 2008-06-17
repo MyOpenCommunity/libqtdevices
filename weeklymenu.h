@@ -15,8 +15,10 @@
 #define WEEKLYMENU_H
 
 #include "sottomenu.h"
+#include "device.h"
 
 #include <qdom.h>
+
 
 class WeeklyMenu : public sottoMenu
 {
@@ -27,8 +29,8 @@ public slots:
 	void status_changed(QPtrList<device_status> list);
 private:
 	void createSummerBanners();
-	enum {SUMMER, WINTER} season;
-	season status;
+	enum Season {SUMMER, WINTER};
+	Season status;
 	QDomNode conf_root;
 };
 #endif // WEEKLYMENU_H

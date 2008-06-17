@@ -7,12 +7,16 @@
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
+#include "weeklymenu.h"
 #include "main.h"
+#include "bannpuls.h"
+
+#include <qregexp.h>
 
 WeeklyMenu::WeeklyMenu(QWidget *parent, const char *name, QDomNode conf)
 	: sottoMenu(parent, name)
 {
-	status = season::SUMMER;
+	status = SUMMER;
 	conf_root = conf;
 	createSummerBanners();
 }
@@ -36,7 +40,7 @@ void WeeklyMenu::createSummerBanners()
 			p = programs.firstChild();
 		while (!p.isNull())
 		{
-			bannPuls *bp = new bannPuls(this, descr.ascii());
+			bannPuls *bp = new bannPuls(this, 0);
 			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
 			elencoBanner.append(bp);
 			// connect clicked() signal
@@ -48,4 +52,5 @@ void WeeklyMenu::createSummerBanners()
 
 void WeeklyMenu::status_changed(QPtrList<device_status> list)
 {
+	// send frame Open
 }
