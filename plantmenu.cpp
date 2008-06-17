@@ -180,83 +180,59 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 {
 	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
-	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
 	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
 
-	sottoMenu *modes = new sottoMenu(0, "modes");
-	modes->setBGColor(paletteBackgroundColor());
-	modes->setFGColor(paletteForegroundColor());
+	sottoMenu *settings = new sottoMenu(0, "settings");
 
 	// week banner
-	bannPuls *weekly = new bannPuls(modes, "weekly");
+	bannPuls *weekly = new bannPuls(settings, "weekly");
 	weekly->SetIcons(i_right_arrow.ascii(), 0, i_weekly.ascii());
 	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
 	weekly->setBGColor(paletteBackgroundColor());
 	weekly->setFGColor(paletteForegroundColor());
-	modes->appendBanner(weekly);
+	settings->appendBanner(weekly);
 
-	// manual banner
-	bannPuls *manual = new bannPuls(modes, "Manual");
-	manual->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
-	manual->SetTextU(tr("Manual operation", "manual settings in thermal regulation"));
-	manual->setBGColor(paletteBackgroundColor());
-	manual->setFGColor(paletteForegroundColor());
-	modes->appendBanner(manual);
-	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	banner *bann = FSBannFactory::getInstance()->getBanner(fs_manual, sm, conf);
-	sm->appendBanner(bann);
-	connect(manual, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(manual, SIGNAL(sxClick()), sm, SLOT(raise()));
-	connect(manual, SIGNAL(sxClick()), modes, SLOT(hide()));
+	manualSettings(settings);
 
-	connect(sm, SIGNAL(Closed()), modes, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-
-	// timed manual banner
-	bannPuls *manual_timed = new bannPuls(modes, "manual_timed");
-	manual_timed->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
-	manual_timed->SetTextU(tr("Manual timed operation", "manual_timed settings in thermal regulation"));
-	manual_timed->setBGColor(paletteBackgroundColor());
-	manual_timed->setFGColor(paletteForegroundColor());
-	modes->appendBanner(manual_timed);
-	sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	bann = FSBannFactory::getInstance()->getBanner(fs_manual_timed, sm, conf);
-	sm->appendBanner(bann);
-	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(raise()));
-	connect(manual_timed, SIGNAL(sxClick()), modes, SLOT(hide()));
-
-	connect(sm, SIGNAL(Closed()), modes, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+	timedManualSettings(settings);
 
 	// TODO: feriale e festivo
 
 	// off banner
-	BannOff *off = new BannOff(modes, "OFF");
+	BannOff *off = new BannOff(settings, "OFF");
 	off->setBGColor(paletteBackgroundColor());
 	off->setFGColor(paletteForegroundColor());
-	modes->appendBanner(off);
+	settings->appendBanner(off);
 
 	// antifreeze banner
-	bann3But *antifreeze = new bann3But(modes, "antifreeze");
+	bann3But *antifreeze = new bann3But(settings, "antifreeze");
 	antifreeze->SetIcons(0, 0, 0, i_antifreeze.ascii());
 	antifreeze->SetTextU(tr("Antifreeze", "Set thermal regulator in anti freeze mode"));
 	antifreeze->setBGColor(paletteBackgroundColor());
 	antifreeze->setFGColor(paletteForegroundColor());
-	modes->appendBanner(antifreeze);
+	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(modes, "Summer/Winter");
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter");
 	summer_winter->setBGColor(paletteBackgroundColor());
 	summer_winter->setFGColor(paletteForegroundColor());
-	modes->appendBanner(summer_winter);
+	settings->appendBanner(summer_winter);
 
-	return modes;
+	settings->setAllFGColor(paletteForegroundColor());
+	settings->setAllBGColor(paletteBackgroundColor());
+
+	return settings;
 }
 
 sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 {
 	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
+
+	sottoMenu *settings = new sottoMenu(0, "settings");
+	settings->setBGColor(paletteBackgroundColor());
+	settings->setFGColor(paletteForegroundColor());
+
+	manualSettings(settings);
 
 	// scenario banner
 	bannPuls *scenarios = new bannPuls(0, "scenarios");//modes, "scenarios");
@@ -265,4 +241,52 @@ sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 	scenarios->setBGColor(paletteBackgroundColor());
 	scenarios->setFGColor(paletteForegroundColor());
 	//modes->appendBanner(scenarios);
+}
+
+void Plantmenu::manualSettings(sottoMenu *settings)
+{
+	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
+	// manual banner
+	bannPuls *manual = new bannPuls(settings, "Manual");
+	manual->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
+	manual->SetTextU(tr("Manual operation", "manual settings in thermal regulation"));
+
+	settings->appendBanner(manual);
+	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+	banner *bann = FSBannFactory::getInstance()->getBanner(fs_manual, sm, conf);
+
+	sm->appendBanner(bann);
+	sm->setAllFGColor(paletteForegroundColor());
+	sm->setAllBGColor(paletteBackgroundColor());
+
+	connect(manual, SIGNAL(sxClick()), sm, SLOT(show()));
+	connect(manual, SIGNAL(sxClick()), sm, SLOT(raise()));
+	connect(manual, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+}
+
+void PlantMenu::timedManualSettings(sottoMenu *settings)
+{
+	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
+	// timed manual banner
+	bannPuls *manual_timed = new bannPuls(settings, "manual_timed");
+	manual_timed->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
+	manual_timed->SetTextU(tr("Manual timed operation", "manual_timed settings in thermal regulation"));
+
+	settings->appendBanner(manual_timed);
+	sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+	bann = FSBannFactory::getInstance()->getBanner(fs_manual_timed, sm, conf);
+
+	sm->appendBanner(bann);
+	sm->setAllFGColor(paletteForegroundColor());
+	sm->setAllBGColor(paletteBackgroundColor());
+
+	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(show()));
+	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(raise()));
+	connect(manual_timed, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 }
