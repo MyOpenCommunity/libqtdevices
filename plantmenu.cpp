@@ -161,9 +161,17 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	fsb->setAddress(addr.ascii());
 	sottoMenu *settings = 0;
 	if (type == fs_4z_thermal_regulator)
+	{
 		settings = create4zSettings(n);
+		if (!settings)
+			qFatal("[TERMO] could not create settings menu");
+	}
 	if (type == fs_99z_thermal_regulator)
+	{
 		settings = create99zSettings(n);
+		if (!settings)
+			qFatal("[TERMO] could not create settings menu");
+	}
 	if (settings)
 	{
 		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
@@ -179,18 +187,19 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 
 sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 {
-	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
 	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
 
 	sottoMenu *settings = new sottoMenu(0, "settings");
+	settings->setAllFGColor(paletteForegroundColor());
+	settings->setAllBGColor(paletteBackgroundColor());
 
 	// week banner
+	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
 	bannPuls *weekly = new bannPuls(settings, "weekly");
 	weekly->SetIcons(i_right_arrow.ascii(), 0, i_weekly.ascii());
 	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
-	weekly->setBGColor(paletteBackgroundColor());
-	weekly->setFGColor(paletteForegroundColor());
 	settings->appendBanner(weekly);
+
 
 	manualSettings(settings);
 
@@ -200,26 +209,18 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF");
-	off->setBGColor(paletteBackgroundColor());
-	off->setFGColor(paletteForegroundColor());
 	settings->appendBanner(off);
 
 	// antifreeze banner
 	bann3But *antifreeze = new bann3But(settings, "antifreeze");
 	antifreeze->SetIcons(0, 0, 0, i_antifreeze.ascii());
 	antifreeze->SetTextU(tr("Antifreeze", "Set thermal regulator in anti freeze mode"));
-	antifreeze->setBGColor(paletteBackgroundColor());
-	antifreeze->setFGColor(paletteForegroundColor());
 	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter");
-	summer_winter->setBGColor(paletteBackgroundColor());
-	summer_winter->setFGColor(paletteForegroundColor());
 	settings->appendBanner(summer_winter);
 
-	settings->setAllFGColor(paletteForegroundColor());
-	settings->setAllBGColor(paletteBackgroundColor());
 
 	return settings;
 }
@@ -243,7 +244,7 @@ sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 	//modes->appendBanner(scenarios);
 }
 
-void Plantmenu::manualSettings(sottoMenu *settings)
+void PlantMenu::manualSettings(sottoMenu *settings)
 {
 	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
 	// manual banner
@@ -253,11 +254,13 @@ void Plantmenu::manualSettings(sottoMenu *settings)
 
 	settings->appendBanner(manual);
 	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	banner *bann = FSBannFactory::getInstance()->getBanner(fs_manual, sm, conf);
-
-	sm->appendBanner(bann);
 	sm->setAllFGColor(paletteForegroundColor());
 	sm->setAllBGColor(paletteBackgroundColor());
+
+	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_manual, sm, QDomNode());
+	bann->setSecondForeground(second_fg);
+
+	sm->appendBanner(bann);
 
 	connect(manual, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(manual, SIGNAL(sxClick()), sm, SLOT(raise()));
@@ -276,12 +279,14 @@ void PlantMenu::timedManualSettings(sottoMenu *settings)
 	manual_timed->SetTextU(tr("Manual timed operation", "manual_timed settings in thermal regulation"));
 
 	settings->appendBanner(manual_timed);
-	sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	bann = FSBannFactory::getInstance()->getBanner(fs_manual_timed, sm, conf);
-
-	sm->appendBanner(bann);
+	sottoMenu *sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 	sm->setAllFGColor(paletteForegroundColor());
 	sm->setAllBGColor(paletteBackgroundColor());
+
+	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_manual_timed, sm, QDomNode());
+	bann->setSecondForeground(second_fg);
+
+	sm->appendBanner(bann);
 
 	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(raise()));

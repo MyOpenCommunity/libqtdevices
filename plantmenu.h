@@ -37,6 +37,18 @@ private:
 	sottoMenu *create4zSettings(QDomNode conf);
 
 	/**
+	 * Utility function to create the submenu to set manually the temperature
+	 * for the thermal regulator device.
+	 */
+	void manualSettings(sottoMenu *settings);
+
+	/**
+	 * Utility function to create the submenu for timed manual operation mode.
+	 * This is used only with 4 zones thermal regulators
+	 */
+	void timedManualSettings(sottoMenu *settings);
+
+	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
 	 * screen banner.
 	 * \param n             The node in the configuration DOM which is a `item' tag
