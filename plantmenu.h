@@ -37,6 +37,12 @@ private:
 	sottoMenu *create4zSettings(QDomNode conf);
 
 	/**
+	 * Utility function to create the submenu to set the weekly program in thermal
+	 * regulator device.
+	 */
+	void weekSettings(sottoMenu *settings, QDomNode conf);
+
+	/**
 	 * Utility function to create the submenu to set manually the temperature
 	 * for the thermal regulator device.
 	 */

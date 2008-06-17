@@ -192,21 +192,7 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 
 	sottoMenu *settings = new sottoMenu(0, "settings");
 
-	// week banner
-	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
-	bannPuls *weekly = new bannPuls(settings, "weekly");
-	weekly->SetIcons(i_right_arrow.ascii(), 0, i_weekly.ascii());
-	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
-	settings->appendBanner(weekly);
-	sottoMenu *week = new WeeklyMenu(0, "weekly", conf);
-	connect(weekly, SIGNAL(sxClick()), week, SLOT(show()));
-	connect(weekly, SIGNAL(sxClick()), week, SLOT(raise()));
-	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
-
-	connect(week, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(week, SIGNAL(Closed()), week, SLOT(hide()));
-
-
+	weekSettings(settings, conf);
 	manualSettings(settings);
 
 	timedManualSettings(settings);
@@ -238,9 +224,8 @@ sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
 
 	sottoMenu *settings = new sottoMenu(0, "settings");
-	settings->setBGColor(paletteBackgroundColor());
-	settings->setFGColor(paletteForegroundColor());
 
+	weekSettings(settings, conf);
 	manualSettings(settings);
 
 	// scenario banner
@@ -250,6 +235,9 @@ sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 	scenarios->setBGColor(paletteBackgroundColor());
 	scenarios->setFGColor(paletteForegroundColor());
 	//modes->appendBanner(scenarios);
+
+	settings->setAllFGColor(paletteForegroundColor());
+	settings->setAllBGColor(paletteBackgroundColor());
 }
 
 void PlantMenu::manualSettings(sottoMenu *settings)
@@ -262,13 +250,14 @@ void PlantMenu::manualSettings(sottoMenu *settings)
 
 	settings->appendBanner(manual);
 	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	sm->setAllFGColor(paletteForegroundColor());
-	sm->setAllBGColor(paletteBackgroundColor());
 
 	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_manual, sm, QDomNode());
 	bann->setSecondForeground(second_fg);
 
 	sm->appendBanner(bann);
+
+	sm->setAllFGColor(paletteForegroundColor());
+	sm->setAllBGColor(paletteBackgroundColor());
 
 	connect(manual, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(manual, SIGNAL(sxClick()), sm, SLOT(raise()));
@@ -288,13 +277,14 @@ void PlantMenu::timedManualSettings(sottoMenu *settings)
 
 	settings->appendBanner(manual_timed);
 	sottoMenu *sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	sm->setAllFGColor(paletteForegroundColor());
-	sm->setAllBGColor(paletteBackgroundColor());
 
 	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_manual_timed, sm, QDomNode());
 	bann->setSecondForeground(second_fg);
 
 	sm->appendBanner(bann);
+
+	sm->setAllFGColor(paletteForegroundColor());
+	sm->setAllBGColor(paletteBackgroundColor());
 
 	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(raise()));
@@ -302,4 +292,25 @@ void PlantMenu::timedManualSettings(sottoMenu *settings)
 
 	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+}
+
+void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
+{
+	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
+
+	bannPuls *weekly = new bannPuls(settings, "weekly");
+	weekly->SetIcons(i_right_arrow.ascii(), 0, i_weekly.ascii());
+	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
+	settings->appendBanner(weekly);
+
+	sottoMenu *weekmenu = new WeeklyMenu(0, "weekly", conf);
+	weekmenu->setAllBGColor(paletteBackgroundColor());
+	weekmenu->setAllFGColor(paletteForegroundColor());
+
+	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(show()));
+	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(raise()));
+	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
 }
