@@ -1,7 +1,7 @@
 /*!
  * \plantmenu.cpp
  * <!--
- * Copyright 2007 Develer S.r.l. (http://www.develer.com/)
+ * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
  * -->
  *
@@ -12,6 +12,7 @@
 #include "device.h"
 #include "device_cache.h"
 #include "banntemperature.h"
+#include "weeklymenu.h"
 
 #include <qregexp.h>
 
@@ -199,6 +200,13 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 	weekly->SetIcons(i_right_arrow.ascii(), 0, i_weekly.ascii());
 	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
 	settings->appendBanner(weekly);
+	sottoMenu *week = new WeeklyMenu(0, "weekly", conf);
+	connect(weekly, SIGNAL(sxClick()), week, SLOT(show()));
+	connect(weekly, SIGNAL(sxClick()), week, SLOT(raise()));
+	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(week, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(week, SIGNAL(Closed()), week, SLOT(hide()));
 
 
 	manualSettings(settings);
