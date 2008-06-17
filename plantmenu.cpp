@@ -11,7 +11,7 @@
 #include "plantmenu.h"
 #include "device.h"
 #include "device_cache.h"
-#include "banntemperature.h"
+#include "bannsettings.h"
 #include "weeklymenu.h"
 
 #include <qregexp.h>
@@ -191,8 +191,6 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
 
 	sottoMenu *settings = new sottoMenu(0, "settings");
-	settings->setAllFGColor(paletteForegroundColor());
-	settings->setAllBGColor(paletteBackgroundColor());
 
 	// week banner
 	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
@@ -229,6 +227,8 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter");
 	settings->appendBanner(summer_winter);
 
+	settings->setAllFGColor(paletteForegroundColor());
+	settings->setAllBGColor(paletteBackgroundColor());
 
 	return settings;
 }
