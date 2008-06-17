@@ -15,6 +15,7 @@
 
 #include "bann3but.h"
 #include "bann4but.h"
+#include "bannpuls.h"
 
 class BannOff : public bann3But
 {
@@ -40,6 +41,18 @@ public slots:
 	void setWinter();
 private:
 	seasons status;
+};
+
+class BannWeekly : public bannPuls
+{
+Q_OBJECT
+public:
+	BannWeekly(QWidget *parent, const char *name);
+	void setProgram(QString prog);
+public slots:
+	void performAction();
+private:
+	QString program;
 };
 
 #endif // BANNSETTINGS_H
