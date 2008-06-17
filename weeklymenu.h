@@ -29,6 +29,7 @@ public slots:
 	void status_changed(QPtrList<device_status> list);
 private:
 	void createSummerBanners();
+	void createWinterBanners();
 	enum Season {SUMMER, WINTER};
 	Season status;
 	QDomNode conf_root;
