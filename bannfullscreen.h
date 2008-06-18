@@ -14,6 +14,7 @@
 
 #include "banner.h"
 #include "device.h"
+#include "btwidgets.h"
 
 #include <qlabel.h>
 #include <qlayout.h>
@@ -171,14 +172,8 @@ public:
 public slots:
 	void setThermalRegulator();
 	void status_changed(QPtrList<device_status> list);
-private slots:
-	void incHours();
-	void decHours();
-	void incMin();
-	void decMin();
 private:
-	int hours, minutes;
-	QLCDNumber *num;
+	BtTimeEdit *time_edit;
 };
 
 class FSBannDate : public BannFullScreen

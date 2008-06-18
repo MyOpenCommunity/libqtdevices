@@ -519,90 +519,12 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name)
 	: FSBannManual(parent, name)
 {
-	hours = 0;
-	minutes = 1;
-	QPixmap *icon, *pressed_icon;
-	BtButton *btn1, *btn2;
-
-	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
-	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
-	icon         = icons_library.getIcon(btn_up_img);
-	pressed_icon = icons_library.getIcon(btn_up_img_press);
-	btn1 = new BtButton(this, 0);
-	btn2 = new BtButton(this, 0);
-	btn1->setPixmap(*icon);
-	btn1->setPressedPixmap(*pressed_icon);
-	btn2->setPixmap(*icon);
-	btn2->setPressedPixmap(*pressed_icon);
-	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
-	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
-	QHBoxLayout *hbox = new QHBoxLayout();
-	hbox->addWidget(btn1);
-	hbox->addWidget(btn2);
-	main_layout.addLayout(hbox);
-
-	num = new QLCDNumber(this);
-	num->setSegmentStyle(QLCDNumber::Flat);
-	num->setNumDigits(5);
-	num->display(QString("%1:%2").arg(hours).arg(minutes));
-	num->setFrameStyle(QFrame::NoFrame);
-	main_layout.addWidget(num);
-
-	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
-	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
-	icon         = icons_library.getIcon(btn_down_img);
-	pressed_icon = icons_library.getIcon(btn_down_img_press);
-	btn1 = new BtButton(this, 0);
-	btn2 = new BtButton(this, 0);
-	btn1->setPixmap(*icon);
-	btn1->setPressedPixmap(*pressed_icon);
-	btn2->setPixmap(*icon);
-	btn2->setPressedPixmap(*pressed_icon);
-	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
-	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
-	hbox = new QHBoxLayout();
-	hbox->addWidget(btn1);
-	hbox->addWidget(btn2);
-	main_layout.addLayout(hbox);
+	time_edit = new BtTimeEdit(this, 0);
+	time_edit->setMaxHours(9);
+	time_edit->setMaxMins(9);
+	main_layout.addWidget(time_edit);
 }
 
-void FSBannManualTimed::incHours()
-{
-	if (hours < 100) // avoid overflow of qlcdnumber
-	{
-		hours++;
-		qDebug("[TERMO] about to display %s", QString("%1:%2").arg(hours).arg(minutes).ascii());
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-	}
-}
-
-void FSBannManualTimed::incMin()
-{
-	if (minutes < 100)
-	{
-		minutes++;
-		qDebug("[TERMO] about to display %s", QString("%1:%2").arg(hours).arg(minutes).ascii());
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-	}
-}
-
-void FSBannManualTimed::decHours()
-{
-	if (hours > 0)
-	{
-		hours--;
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-	}
-}
-
-void FSBannManualTimed::decMin()
-{
-	if (minutes > 0)
-	{
-		minutes--;
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-	}
-}
 
 void FSBannManualTimed::Draw()
 {
