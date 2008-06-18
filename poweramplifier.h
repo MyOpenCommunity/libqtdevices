@@ -58,7 +58,8 @@ class PowerAmplifierTreble : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-	PowerAmplifierTreble(QWidget *parent=0, const char *name=NULL);
+	PowerAmplifierTreble(QWidget *parent=0, const char *name=NULL, QColor SecondForeground=QColor(0,0,0));
+	void setFGColor(QColor);
 
 private slots:
 	void up();
@@ -66,6 +67,7 @@ private slots:
 
 private:
 	int level;
+	QColor secondary_fg;
 	void showLevel();
 };
 
@@ -74,7 +76,8 @@ class PowerAmplifierBass : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-	PowerAmplifierBass(QWidget *parent=0, const char *name=NULL);
+	PowerAmplifierBass(QWidget *parent=0, const char *name=NULL, QColor SecondForeground=QColor(0,0,0));
+	void setFGColor(QColor);
 
 private slots:
 	void up();
@@ -82,6 +85,7 @@ private slots:
 
 private:
 	int level;
+	QColor secondary_fg;
 	void showLevel();
 };
 

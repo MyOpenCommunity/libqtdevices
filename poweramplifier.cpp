@@ -1,5 +1,7 @@
 #include "poweramplifier.h"
 #include "sottomenu.h"
+#include "btlabel.h"
+#include "main.h"
 
 static const char *IMG_PLUS = IMG_PATH "btnplus.png";
 static const char *IMG_MINUS = IMG_PATH "btnmin.png";
@@ -31,12 +33,19 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	status = false;
 	settings_page = new sottoMenu(NULL, "PowerAmplifierSettings");
 
+	QColor *bg, *fg1, *fg2;
+	readExtraConf(&bg, &fg1, &fg2);
+
 	QPtrList<QString> icons;
 	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons, 0, 0, *fg2);
+	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons, 0, 0, *fg2);
 	settings_page->hide();
 	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
+
+	delete bg;
+	delete fg1;
+	delete fg2;
 }
 
 void PowerAmplifier::setBGColor(QColor c)
@@ -127,15 +136,16 @@ void PowerAmplifierPreset::showPreset()
  ** PowerAmplifierTreble
  ****************************************************************/
 
-PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent, const char *name)
+PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent, const char *name, QColor SecondForeground)
  : bannOnOff2scr(parent, name)
 {
 	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_TREBLE);
 	level = 0;
-	showLevel();
 	qDebug("PowerAmplifierTreble::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
+	secondary_fg = SecondForeground;
+	showLevel();
 }
 
 void PowerAmplifierTreble::up()
@@ -161,20 +171,26 @@ void PowerAmplifierTreble::showLevel()
 	SetSecondaryTextU(desc.ascii());
 }
 
+void PowerAmplifierTreble::setFGColor(QColor c)
+{
+	banner::setFGColor(c);
+	SecondaryText->setPaletteForegroundColor(secondary_fg);
+}
 
 /*****************************************************************
  ** PowerAmplifierBass
  ****************************************************************/
 
-PowerAmplifierBass::PowerAmplifierBass(QWidget *parent, const char *name)
+PowerAmplifierBass::PowerAmplifierBass(QWidget *parent, const char *name, QColor SecondForeground)
  : bannOnOff2scr(parent, name)
 {
 	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_BASS);
 	level = 0;
-	showLevel();
 	qDebug("PowerAmplifierBass::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
+	secondary_fg = SecondForeground;
+	showLevel();
 }
 
 void PowerAmplifierBass::up()
@@ -198,4 +214,10 @@ void PowerAmplifierBass::showLevel()
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
 	SetSecondaryTextU(desc.ascii());
+}
+
+void PowerAmplifierBass::setFGColor(QColor c)
+{
+	banner::setFGColor(c);
+	SecondaryText->setPaletteForegroundColor(secondary_fg);
 }
