@@ -70,5 +70,5 @@ void BannWeekly::setProgram(QString prog)
 
 void BannWeekly::performAction()
 {
-	// send frame Open
+	emit programNumber(program.toInt());
 }

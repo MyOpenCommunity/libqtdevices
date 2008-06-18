@@ -312,8 +312,8 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(raise()));
 	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
 
-	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
+	connect(weekmenu, SIGNAL(programClicked(int)), settings, SLOT(show()));
+	connect(weekmenu, SIGNAL(programClicked(int)), weekmenu, SLOT(hide()));
 }
 
 void PlantMenu::holidaySettings(sottoMenu *settings)

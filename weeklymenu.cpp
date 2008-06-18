@@ -13,10 +13,20 @@
 
 #include <qregexp.h>
 
-WeeklyMenu::WeeklyMenu(QWidget *parent, const char *name, QDomNode conf)
+ProgramMenu::ProgramMenu(QWidget *parent, const char *name, QDomNode conf)
 	: sottoMenu(parent, name)
 {
 	conf_root = conf;
+}
+
+void ProgramMenu::status_changed(QPtrList<device_status> list)
+{
+	// change menus
+}
+
+WeeklyMenu::WeeklyMenu(QWidget *parent, const char *name, QDomNode conf)
+	: ProgramMenu(parent, name, conf)
+{
 	status = SUMMER;
 	createSummerBanners();
 }
@@ -42,6 +52,7 @@ void WeeklyMenu::createSummerBanners()
 		{
 			BannWeekly *bp = new BannWeekly(this, 0);
 			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
@@ -78,6 +89,7 @@ void WeeklyMenu::createWinterBanners()
 		{
 			BannWeekly *bp = new BannWeekly(this, 0);
 			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
@@ -91,9 +103,4 @@ void WeeklyMenu::createWinterBanners()
 			p = p.nextSibling();
 		}
 	}
-}
-
-void WeeklyMenu::status_changed(QPtrList<device_status> list)
-{
-	// send frame Open
 }

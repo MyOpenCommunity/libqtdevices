@@ -53,6 +53,8 @@ public slots:
 	void performAction();
 private:
 	QString program;
+signals:
+	void programNumber(int);
 };
 
 #endif // BANNSETTINGS_H

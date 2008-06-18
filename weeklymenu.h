@@ -20,18 +20,29 @@
 #include <qdom.h>
 
 
-class WeeklyMenu : public sottoMenu
+class ProgramMenu : public sottoMenu
+{
+Q_OBJECT
+public:
+	ProgramMenu(QWidget *parent, const char *name, QDomNode conf);
+	virtual void createSummerBanners() = 0;
+	virtual void createWinterBanners() = 0;
+public slots:
+	void status_changed(QPtrList<device_status> list);
+protected:
+	enum Season {SUMMER, WINTER};
+	Season status;
+	QDomNode conf_root;
+signals:
+	void programClicked(int);
+};
+
+class WeeklyMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
 	WeeklyMenu(QWidget *parent, const char *name, QDomNode conf);
-public slots:
-	void status_changed(QPtrList<device_status> list);
-private:
-	void createSummerBanners();
-	void createWinterBanners();
-	enum Season {SUMMER, WINTER};
-	Season status;
-	QDomNode conf_root;
+	virtual void createSummerBanners();
+	virtual void createWinterBanners();
 };
 #endif // WEEKLYMENU_H
