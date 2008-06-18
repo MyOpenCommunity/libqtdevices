@@ -318,14 +318,15 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 
 void PlantMenu::holidaySettings(sottoMenu *settings)
 {
-	// TODO: feriale e festivo
 	const QString i_holiday = QString("%1%2").arg(IMG_PATH).arg("feriale.png");
-	bannPuls *hol = new bannPuls(0, "holiday");//modes, "scenarios");
+
+	bannPuls *hol = new bannPuls(settings, "holiday");
 	hol->SetIcons(i_right_arrow.ascii(), 0, i_holiday.ascii());
 	hol->SetTextU(tr("Holiday"));
-	sottoMenu *holiday = new HolidayMenu(0, "holiday");
-	banner *belBanner = new FSBannDate(holiday, 0);
-	holiday->appendBanner(belBanner);
+
+	HolidayMenu *holiday = new HolidayMenu(0, "holiday");
+	banner *bann = FSBannFactory::getInstance()->getBanner(fs_date, holiday, QDomNode());
+	holiday->appendBanner(bann);
 	holiday->setAllBGColor(paletteBackgroundColor());
 	holiday->setAllFGColor(paletteForegroundColor());
 
@@ -336,5 +337,4 @@ void PlantMenu::holidaySettings(sottoMenu *settings)
 	connect(holiday, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(holiday, SIGNAL(Closed()), holiday, SLOT(hide()));
 	settings->appendBanner(hol);
-	// end feriale festivo
 }
