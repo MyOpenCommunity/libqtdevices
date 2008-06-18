@@ -13,11 +13,13 @@
 #define BANNFULLSCREEN_H
 
 #include "banner.h"
+
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qbuttongroup.h>
 #include <qdom.h>
 #include <qlcdnumber.h>
+#include <qdatetime.h>
 
 class device_status;
 
@@ -50,6 +52,7 @@ public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 
 protected:
+	/// Global layout for the banner
 	QVBoxLayout main_layout;
 	/// Measured temperature label and string
 	QLabel *temp_label;
@@ -119,6 +122,7 @@ enum BannID
 	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
 	fs_manual,                            // settings: manual operation
 	fs_manual_timed,                      // settings: timed manual operation
+	fs_date,                              // settings: date edit
 };
 
 class FSBannFactory
@@ -172,5 +176,35 @@ private slots:
 private:
 	int hours, minutes;
 	QLCDNumber *num;
+};
+
+class FSBannDate : public BannFullScreen
+{
+Q_OBJECT
+public:
+	FSBannDate(QWidget *parent, const char *name);
+	virtual void Draw();
+	void postDisplay();
+	QDate getDate();
+public slots:
+	//void setThermalRegulator();
+	void status_changed(QPtrList<device_status> list);
+private:
+	int day, month, year;
+	/// Buttons to increase day, month, year
+	BtButton *btn_up_day, *btn_up_month, *btn_up_year;
+	/// Buttons to decrease day, month, year
+	BtButton *btn_down_day, *btn_down_month, *btn_down_year;
+	/// display date set
+	QLCDNumber *date_display;
+	QVBoxLayout main_layout;
+	QDate date;
+private slots:
+	void incDay();
+	void incMonth();
+	void incYear();
+	void decDay();
+	void decMonth();
+	void decYear();
 };
 #endif // BANNFULLSCREEN_H
