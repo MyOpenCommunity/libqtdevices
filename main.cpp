@@ -67,6 +67,34 @@ int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
 
+
+void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2)
+{
+	QFile *xmlFile;
+	*bg = *fg1 = *fg2 = NULL;
+
+	if (QFile::exists(EXTRA_FILE))
+	{
+		xmlskinhandler *handler1 = new xmlskinhandler(bg, fg1, fg2);
+		xmlFile = new QFile(EXTRA_FILE);
+		QXmlInputSource source1(xmlFile);
+		QXmlSimpleReader reader1;
+		reader1.setContentHandler(handler1);
+		reader1.parse(source1);
+		delete handler1;
+		delete xmlFile;
+	}
+
+	if (!*bg)
+		*bg = new QColor(77,61,66);
+
+	if (!*fg1)
+		*fg1 = new QColor(205,205,205);
+
+	if (!*fg2)
+		*fg2 = new QColor(7,151,254);
+}
+
 void myMessageOutput( QtMsgType type, const char *msg )
 {
 	switch ( type ) 

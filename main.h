@@ -18,6 +18,7 @@
 
 QDomNode getPageNode(int id);
 QString getLanguage();
+void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
 
 /****************************************************************
  ** ICONS LIBRARY
