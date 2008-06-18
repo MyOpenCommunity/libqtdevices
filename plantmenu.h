@@ -55,6 +55,11 @@ private:
 	void timedManualSettings(sottoMenu *settings);
 
 	/**
+	 * Utility function to create the submenu for holiday settings.
+	 */
+	void holidaySettings(sottoMenu *settings);
+
+	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
 	 * screen banner.
 	 * \param n             The node in the configuration DOM which is a `item' tag

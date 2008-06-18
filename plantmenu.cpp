@@ -13,6 +13,7 @@
 #include "device_cache.h"
 #include "bannsettings.h"
 #include "weeklymenu.h"
+#include "holidaymenu.h"
 
 #include <qregexp.h>
 
@@ -197,7 +198,7 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 
 	timedManualSettings(settings);
 
-	// TODO: feriale e festivo
+	holidaySettings(settings);
 
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF");
@@ -313,4 +314,27 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 
 	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
+}
+
+void PlantMenu::holidaySettings(sottoMenu *settings)
+{
+	// TODO: feriale e festivo
+	const QString i_holiday = QString("%1%2").arg(IMG_PATH).arg("feriale.png");
+	bannPuls *hol = new bannPuls(0, "holiday");//modes, "scenarios");
+	hol->SetIcons(i_right_arrow.ascii(), 0, i_holiday.ascii());
+	hol->SetTextU(tr("Holiday"));
+	sottoMenu *holiday = new HolidayMenu(0, "holiday");
+	banner *belBanner = new FSBannDate(holiday, 0);
+	holiday->appendBanner(belBanner);
+	holiday->setAllBGColor(paletteBackgroundColor());
+	holiday->setAllFGColor(paletteForegroundColor());
+
+	connect(hol, SIGNAL(sxClick()), holiday, SLOT(show()));
+	connect(hol, SIGNAL(sxClick()), holiday, SLOT(raise()));
+	connect(hol, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(holiday, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(holiday, SIGNAL(Closed()), holiday, SLOT(hide()));
+	settings->appendBanner(hol);
+	// end feriale festivo
 }
