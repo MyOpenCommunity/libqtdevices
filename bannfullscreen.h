@@ -13,6 +13,7 @@
 #define BANNFULLSCREEN_H
 
 #include "banner.h"
+#include "device.h"
 
 #include <qlabel.h>
 #include <qlayout.h>
@@ -31,6 +32,8 @@ public:
 	virtual void Draw();
 	virtual void postDisplay() = 0;
 	void setSecondForeground(QColor fg2);
+	virtual void setBGColor(QColor bg);
+	virtual void setFGColor(QColor bg);
 public slots:
 	virtual void status_changed(QPtrList<device_status> list) = 0;
 protected:
@@ -190,11 +193,6 @@ public slots:
 	//void setThermalRegulator();
 	void status_changed(QPtrList<device_status> list);
 private:
-	int day, month, year;
-	/// Buttons to increase day, month, year
-	BtButton *btn_up_day, *btn_up_month, *btn_up_year;
-	/// Buttons to decrease day, month, year
-	BtButton *btn_down_day, *btn_down_month, *btn_down_year;
 	/// display date set
 	QLCDNumber *date_display;
 	QVBoxLayout main_layout;

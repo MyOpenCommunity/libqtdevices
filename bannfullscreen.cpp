@@ -16,6 +16,8 @@
 #include "btbutton.h"
 #include "device.h"
 
+#include <qobjectlist.h>
+
 #define I_OK IMG_PATH"btnok.png"
 #define I_SETTINGS IMG_PATH"setscen.png"
 
@@ -32,6 +34,36 @@ void BannFullScreen::setSecondForeground(QColor fg2)
 void BannFullScreen::Draw()
 {
 	banner::Draw();
+}
+
+void BannFullScreen::setBGColor(QColor bg)
+{
+	QObjectList *l = queryList("QWidget");
+	QObjectListIt iter(*l);
+	QObject *obj;
+
+	while ( (obj = iter.current()) != 0 )
+	{
+		++iter;
+		((QWidget*)obj)->setPaletteBackgroundColor(bg);
+	}
+	delete l;
+	banner::setBGColor(bg);
+}
+
+void BannFullScreen::setFGColor(QColor fg)
+{
+	QObjectList *l = queryList("QWidget");
+	QObjectListIt iter(*l);
+	QObject *obj;
+
+	while ( (obj = iter.current()) != 0 )
+	{
+		++iter;
+		((QWidget*)obj)->setPaletteForegroundColor(fg);
+	}
+	delete l;
+	banner::setFGColor(fg);
 }
 
 FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name)
@@ -270,10 +302,9 @@ FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
 	: FSBann4zProbe(parent, n),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
-	// set fancoil icons
-	//main_layout.addWidget(&fancoil_buttons);
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
+	fancoil_buttons.hide(); // do not show QButtonGroup frame
 	main_layout.setStretchFactor(&fancoil_buttons, 1);
 	fancoil_status = 0;
 }
@@ -598,6 +629,11 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	main_layout(this),
 	date(QDate::currentDate())
 {
+	// Buttons to increase day, month, year
+	BtButton *btn_up_day, *btn_up_month, *btn_up_year;
+	// Buttons to decrease day, month, year
+	BtButton *btn_down_day, *btn_down_month, *btn_down_year;
+
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	BtButton *top = new BtButton(this, 0);
 	top->setPixmap(top_img);
@@ -605,9 +641,6 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	main_layout.addWidget(top);
 
 	QDate current = QDate::currentDate();
-	day = current.day();
-	month = current.month();
-	year = current.year();
 
 	QPixmap *icon, *pressed_icon;
 	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
@@ -640,7 +673,7 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	date_display = new QLCDNumber(this);
 	date_display->setSegmentStyle(QLCDNumber::Flat);
 	date_display->setNumDigits(10);
-	date_display->display(QString("%1:%2:%3").arg(day).arg(month).arg(year));
+	date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
 	date_display->setFrameStyle(QFrame::NoFrame);
 	main_layout.addWidget(date_display);
 

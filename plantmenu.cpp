@@ -324,9 +324,14 @@ void PlantMenu::holidaySettings(sottoMenu *settings)
 	hol->SetIcons(i_right_arrow.ascii(), 0, i_holiday.ascii());
 	hol->SetTextU(tr("Holiday"));
 
+	settings->appendBanner(hol);
 	HolidayMenu *holiday = new HolidayMenu(0, "holiday");
-	banner *bann = FSBannFactory::getInstance()->getBanner(fs_date, holiday, QDomNode());
+
+	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_date, holiday, QDomNode());
+	bann->setSecondForeground(second_fg);
+
 	holiday->appendBanner(bann);
+
 	holiday->setAllBGColor(paletteBackgroundColor());
 	holiday->setAllFGColor(paletteForegroundColor());
 
@@ -336,5 +341,4 @@ void PlantMenu::holidaySettings(sottoMenu *settings)
 
 	connect(holiday, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(holiday, SIGNAL(Closed()), holiday, SLOT(hide()));
-	settings->appendBanner(hol);
 }
