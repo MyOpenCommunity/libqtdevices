@@ -418,8 +418,11 @@ BannFullScreen *FSBannFactory::getBanner(BannID id, QWidget *parent, QDomNode n)
 		case fs_manual_timed:
 			bfs = new FSBannManualTimed(parent, 0);
 			break;
-		case fs_date:
+		case fs_date_edit:
 			bfs = new FSBannDate(parent, 0);
+			break;
+		case fs_time_edit:
+			bfs = new FSBannTime(parent, 0);
 			break;
 	}
 	return bfs;
@@ -520,8 +523,8 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name)
 	: FSBannManual(parent, name)
 {
 	time_edit = new BtTimeEdit(this, 0);
-	time_edit->setMaxHours(9);
-	time_edit->setMaxMins(9);
+	time_edit->setMaxHours(99);
+	time_edit->setMaxMins(99);
 	main_layout.addWidget(time_edit);
 }
 
@@ -548,13 +551,8 @@ void FSBannManualTimed::setThermalRegulator()
 
 FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
-	main_layout(this),
-	date(QDate::currentDate())
+	main_layout(this)
 {
-	// Buttons to increase day, month, year
-	BtButton *btn_up_day, *btn_up_month, *btn_up_year;
-	// Buttons to decrease day, month, year
-	BtButton *btn_down_day, *btn_down_month, *btn_down_year;
 
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	BtButton *top = new BtButton(this, 0);
@@ -562,119 +560,15 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	top->setDown(true);
 	main_layout.addWidget(top);
 
-	QDate current = QDate::currentDate();
+	date_edit = new BtDateEdit(this, 0);
+	main_layout.addWidget(date_edit);
 
-	QPixmap *icon, *pressed_icon;
-	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
-	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
-	icon         = icons_library.getIcon(btn_up_img);
-	pressed_icon = icons_library.getIcon(btn_up_img_press);
-	if (!icon)
-		qDebug("[TERMO] FSBannDate: could not get icon, prepare for strangeness");
-	if (!pressed_icon)
-		qDebug("[TERMO] FSBannDate: could not get pressed icon, prepare for strangeness");
-	btn_up_day = new BtButton(this, 0);
-	btn_up_month = new BtButton(this, 0);
-	btn_up_year = new BtButton(this, 0);
-	btn_up_day->setPixmap(*icon);
-	btn_up_day->setPressedPixmap(*pressed_icon);
-	btn_up_month->setPixmap(*icon);
-	btn_up_month->setPressedPixmap(*pressed_icon);
-	btn_up_year->setPixmap(*icon);
-	btn_up_year->setPressedPixmap(*pressed_icon);
-
-	connect(btn_up_day, SIGNAL(clicked()), this, SLOT(incDay()));
-	connect(btn_up_month, SIGNAL(clicked()), this, SLOT(incMonth()));
-	connect(btn_up_year, SIGNAL(clicked()), this, SLOT(incYear()));
-
-	QHBoxLayout *h_up_box = new QHBoxLayout(&main_layout);
-	h_up_box->addWidget(btn_up_day);
-	h_up_box->addWidget(btn_up_month);
-	h_up_box->addWidget(btn_up_year);
-
-	date_display = new QLCDNumber(this);
-	date_display->setSegmentStyle(QLCDNumber::Flat);
-	date_display->setNumDigits(10);
-	date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
-	date_display->setFrameStyle(QFrame::NoFrame);
-	main_layout.addWidget(date_display);
-
-	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
-	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
-	icon         = icons_library.getIcon(btn_down_img);
-	pressed_icon = icons_library.getIcon(btn_down_img_press);
-	if (!icon)
-		qDebug("[TERMO] FSBannDate: could not get icon, prepare for strangeness");
-	if (!pressed_icon)
-		qDebug("[TERMO] FSBannDate: could not get pressed icon, prepare for strangeness");
-	btn_down_day = new BtButton(this, 0);
-	btn_down_month = new BtButton(this, 0);
-	btn_down_year = new BtButton(this, 0);
-	btn_down_day->setPixmap(*icon);
-	btn_down_day->setPressedPixmap(*pressed_icon);
-	btn_down_month->setPixmap(*icon);
-	btn_down_month->setPressedPixmap(*pressed_icon);
-	btn_down_year->setPixmap(*icon);
-	btn_down_year->setPressedPixmap(*pressed_icon);
-
-	connect(btn_down_day, SIGNAL(clicked()), this, SLOT(decDay()));
-	connect(btn_down_month, SIGNAL(clicked()), this, SLOT(decMonth()));
-	connect(btn_down_year, SIGNAL(clicked()), this, SLOT(decYear()));
-
-	QHBoxLayout *h_down_box = new QHBoxLayout(&main_layout);
-	h_down_box->addWidget(btn_down_day);
-	h_down_box->addWidget(btn_down_month);
-	h_down_box->addWidget(btn_down_year);
+	connect(date_edit, SIGNAL(valueChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
 }
 
 QDate FSBannDate::getDate()
 {
 	return date;
-}
-
-void FSBannDate::incDay()
-{
-	date = date.addDays(1);
-	date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
-}
-
-void FSBannDate::incMonth()
-{
-	date = date.addMonths(1);
-	date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
-}
-
-void FSBannDate::incYear()
-{
-	date = date.addYears(1);
-	date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
-}
-
-void FSBannDate::decDay()
-{
-	if (date.addDays(-1) >= QDate::currentDate())
-	{
-		date = date.addDays(-1);
-		date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
-	}
-}
-
-void FSBannDate::decMonth()
-{
-	if (date.addMonths(-1) >= QDate::currentDate())
-	{
-		date = date.addMonths(-1);
-		date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
-	}
-}
-
-void FSBannDate::decYear()
-{
-	if (date.addYears(-1) >= QDate::currentDate())
-	{
-		date = date.addYears(-1);
-		date_display->display(QString("%1:%2:%3").arg(date.day()).arg(date.month()).arg(date.year()));
-	}
 }
 
 void FSBannDate::Draw()
@@ -690,4 +584,50 @@ void FSBannDate::postDisplay()
 
 void FSBannDate::status_changed(QPtrList<device_status> list)
 {
+}
+
+FSBannTime::FSBannTime(QWidget *parent, const char *name)
+	: BannFullScreen(parent, name),
+	main_layout(this)
+{
+	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
+	BtButton *top = new BtButton(this, 0);
+	top->setPixmap(i_top_img);
+	top->setDown(true);
+	main_layout.addWidget(top);
+
+	time_edit = new BtTimeEdit(this, 0);
+	time_edit->setMaxHours(24);
+	time_edit->setMaxMins(60);
+	main_layout.addWidget(time_edit);
+
+	connect(time_edit, SIGNAL(valueChanged(int, int)), this, SLOT(setTime(int, int)));
+}
+
+void FSBannTime::Draw()
+{
+	BannFullScreen::Draw();
+}
+
+void FSBannTime::postDisplay()
+{
+	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
+	parent->setNavBarMode(10, I_OK);
+}
+
+void FSBannTime::status_changed(QPtrList<device_status> list)
+{
+}
+
+void FSBannTime::setTime(int hrs, int mins)
+{
+	hours = hrs;
+	minutes = mins;
+	if (QTime::isValid(hours, minutes, 0))
+		emit timeChanged(QTime(hours, minutes));
+}
+
+QTime FSBannTime::getTime()
+{
+	return QTime(hours, minutes);
 }

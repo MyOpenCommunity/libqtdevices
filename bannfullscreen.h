@@ -126,7 +126,8 @@ enum BannID
 	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
 	fs_manual,                            // settings: manual operation
 	fs_manual_timed,                      // settings: timed manual operation
-	fs_date,                              // settings: date edit
+	fs_date_edit,                         // settings: date edit
+	fs_time_edit,                         // settings: time edit
 };
 
 class FSBannFactory
@@ -188,16 +189,29 @@ public slots:
 	//void setThermalRegulator();
 	void status_changed(QPtrList<device_status> list);
 private:
-	/// display date set
-	QLCDNumber *date_display;
 	QVBoxLayout main_layout;
 	QDate date;
-private slots:
-	void incDay();
-	void incMonth();
-	void incYear();
-	void decDay();
-	void decMonth();
-	void decYear();
+	BtDateEdit *date_edit;
+signals:
+	void dateChanged(QDate);
+};
+
+class FSBannTime : public BannFullScreen
+{
+Q_OBJECT
+public:
+	FSBannTime(QWidget *parent, const char *name);
+	virtual void Draw();
+	void postDisplay();
+	QTime getTime();
+public slots:
+	void status_changed(QPtrList<device_status> list);
+	void setTime(int hrs, int mins);
+private:
+	QVBoxLayout main_layout;
+	BtTimeEdit *time_edit;
+	int hours, minutes;
+signals:
+	void timeChanged(QTime);
 };
 #endif // BANNFULLSCREEN_H
