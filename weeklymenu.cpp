@@ -104,3 +104,29 @@ void WeeklyMenu::createWinterBanners()
 		}
 	}
 }
+
+TimeEditMenu::TimeEditMenu(QWidget *parent, const char *name)
+	: sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
+{
+	time_edit = new FSBannTime(this, 0);
+	elencoBanner.append(time_edit);
+	connect(time_edit, SIGNAL(timeChanged(QTime)), this, SIGNAL(timeChanged(QTime)));
+}
+
+QTime TimeEditMenu::time()
+{
+	return time_edit->time();
+}
+
+DateEditMenu::DateEditMenu(QWidget *parent, const char *name)
+	: sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
+{
+	date_edit = new FSBannDate(this, 0);
+	elencoBanner.append(date_edit);
+	connect(date_edit, SIGNAL(dateChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
+}
+
+QDate DateEditMenu::date()
+{
+	return date_edit->date();
+}

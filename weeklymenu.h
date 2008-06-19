@@ -16,6 +16,7 @@
 
 #include "sottomenu.h"
 #include "device.h"
+#include "bannfullscreen.h"
 
 #include <qdom.h>
 
@@ -44,5 +45,29 @@ public:
 	WeeklyMenu(QWidget *parent, const char *name, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
+};
+
+class TimeEditMenu : public sottoMenu
+{
+Q_OBJECT
+public:
+	TimeEditMenu(QWidget *parent, const char *name);
+	QTime time();
+private:
+	FSBannTime *time_edit;
+signals:
+	void timeChanged(QTime);
+};
+
+class DateEditMenu : public sottoMenu
+{
+Q_OBJECT
+public:
+	DateEditMenu(QWidget *parent, const char *name);
+	QDate date();
+private:
+	FSBannDate *date_edit;
+signals:
+	void dateChanged(QDate);
 };
 #endif // WEEKLYMENU_H
