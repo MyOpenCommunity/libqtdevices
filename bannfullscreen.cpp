@@ -39,14 +39,9 @@ void BannFullScreen::Draw()
 void BannFullScreen::setBGColor(QColor bg)
 {
 	QObjectList *l = queryList("QWidget");
-	QObjectListIt iter(*l);
-	QObject *obj;
 
-	while ( (obj = iter.current()) != 0 )
-	{
-		++iter;
+	for (QObjectListIt iter(*l); QObject *obj = iter.current(); ++iter)
 		((QWidget*)obj)->setPaletteBackgroundColor(bg);
-	}
 	delete l;
 	banner::setBGColor(bg);
 }
@@ -54,14 +49,9 @@ void BannFullScreen::setBGColor(QColor bg)
 void BannFullScreen::setFGColor(QColor fg)
 {
 	QObjectList *l = queryList("QWidget");
-	QObjectListIt iter(*l);
-	QObject *obj;
 
-	while ( (obj = iter.current()) != 0 )
-	{
-		++iter;
+	for (QObjectListIt iter(*l); QObject *obj = iter.current(); ++iter)
 		((QWidget*)obj)->setPaletteForegroundColor(fg);
-	}
 	delete l;
 	banner::setFGColor(fg);
 }
@@ -566,9 +556,9 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	connect(date_edit, SIGNAL(valueChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
 }
 
-QDate FSBannDate::getDate()
+QDate FSBannDate::date()
 {
-	return date;
+	return _date;
 }
 
 void FSBannDate::Draw()
@@ -597,8 +587,8 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout.addWidget(top);
 
 	time_edit = new BtTimeEdit(this, 0);
-	time_edit->setMaxHours(24);
-	time_edit->setMaxMins(60);
+	time_edit->setMaxHours(23);
+	time_edit->setMaxMins(59);
 	main_layout.addWidget(time_edit);
 
 	connect(time_edit, SIGNAL(valueChanged(int, int)), this, SLOT(setTime(int, int)));
@@ -627,7 +617,7 @@ void FSBannTime::setTime(int hrs, int mins)
 		emit timeChanged(QTime(hours, minutes));
 }
 
-QTime FSBannTime::getTime()
+QTime FSBannTime::time()
 {
 	return QTime(hours, minutes);
 }

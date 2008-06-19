@@ -184,13 +184,13 @@ public:
 	FSBannDate(QWidget *parent, const char *name);
 	virtual void Draw();
 	void postDisplay();
-	QDate getDate();
+	QDate date();
 public slots:
 	//void setThermalRegulator();
 	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
-	QDate date;
+	QDate _date;
 	BtDateEdit *date_edit;
 signals:
 	void dateChanged(QDate);
@@ -203,7 +203,7 @@ public:
 	FSBannTime(QWidget *parent, const char *name);
 	virtual void Draw();
 	void postDisplay();
-	QTime getTime();
+	QTime time();
 public slots:
 	void status_changed(QPtrList<device_status> list);
 	void setTime(int hrs, int mins);
