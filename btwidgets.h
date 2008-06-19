@@ -15,6 +15,7 @@
 
 #include <qwidget.h>
 #include <qlcdnumber.h>
+#include <qdatetime.h>
 
 /**
  * A widget that emulates QTimeEdit
@@ -42,6 +43,8 @@ public:
 	 * \param m The maximum value allowed for the minutes field.
 	 */
 	void setMaxMins(int m);
+
+	QTime time();
 private slots:
 	void incHours();
 	void decHours();
@@ -59,6 +62,27 @@ signals:
 	 * \param The value for minutes.
 	 */
 	void valueChanged(int, int);
+};
+
+class BtDateEdit : public QWidget
+{
+Q_OBJECT
+public:
+	BtDateEdit(QWidget *parent, const char *name);
+	QDate date();
+private:
+	/// display date set
+	QLCDNumber *date_display;
+	QDate _date;
+private slots:
+	void incDay();
+	void incMonth();
+	void incYear();
+	void decDay();
+	void decMonth();
+	void decYear();
+signals:
+	void valueChanged(QDate);
 };
 #endif // BTWIDGETS_H
 
