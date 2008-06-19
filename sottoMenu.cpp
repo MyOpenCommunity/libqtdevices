@@ -224,6 +224,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		case POWER_AMPLIFIER_PRESET: elencoBanner.append(new PowerAmplifierPreset(this, descrizione)); break;
 		case POWER_AMPLIFIER_TREBLE: elencoBanner.append(new PowerAmplifierTreble(this, descrizione, SecondForeground)); break;
 		case POWER_AMPLIFIER_BASS: elencoBanner.append(new PowerAmplifierBass(this, descrizione, SecondForeground)); break;
+		case POWER_AMPLIFIER_BALANCE: elencoBanner.append(new PowerAmplifierBalance(this, descrizione, SecondForeground)); break;
 		case AMPLIFICATORE:   elencoBanner.append(new amplificatore(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon)); break;
 		case SORGENTE_AUX : elencoBanner.append(new sorgente_aux(this,descrizione ,(char*)indirizzo)); break;
 		/// New Multimedia Audio Source.  NOTE: numFrame parametere name is not significative: it's the (cut down) where address

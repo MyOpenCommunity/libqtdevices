@@ -8,7 +8,9 @@ static const char *IMG_MINUS = IMG_PATH "btnmin.png";
 static const char *IMG_PRESET = IMG_PATH "preset.png";
 static const char *IMG_TREBLE = IMG_PATH "louds.png";
 static const char *IMG_BASS = IMG_PATH "lows.png";
-
+static const char *IMG_BALANCE = IMG_PATH "balance_0.png";
+static const char *IMG_BALANCE_SX = IMG_PATH "balance_sx.png";
+static const char *IMG_BALANCE_DX = IMG_PATH "balance_dx.png";
 
 /*****************************************************************
  ** PowerAmplifier
@@ -40,6 +42,7 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), NULL, icons);
 	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons, 0, 0, *fg2);
 	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons, 0, 0, *fg2);
+	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), NULL, icons, 0, 0, *fg2);
 	settings_page->hide();
 	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
 
@@ -217,6 +220,56 @@ void PowerAmplifierBass::showLevel()
 }
 
 void PowerAmplifierBass::setFGColor(QColor c)
+{
+	banner::setFGColor(c);
+	SecondaryText->setPaletteForegroundColor(secondary_fg);
+}
+
+/*****************************************************************
+ ** PowerAmplifierBalance
+ ****************************************************************/
+
+PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent, const char *name, QColor SecondForeground)
+ : BannOnOffCombo(parent, name)
+{
+	qDebug("PowerAmplifierBalance::PowerAmplifierBalance()");
+	SetIcons(IMG_PLUS, IMG_MINUS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
+	secondary_fg = SecondForeground;
+	balance = 0;
+	connect(this, SIGNAL(sxClick()), SLOT(dx()));
+	connect(this, SIGNAL(dxClick()), SLOT(sx()));
+}
+
+void PowerAmplifierBalance::sx()
+{
+	qDebug("PowerAmplifierBalance::sx()");
+	if (balance >= 0 && balance - 10 <= 0)
+		changeStatus(balance - 10 ? SX : CENTER);
+
+	balance -= 10;
+	showBalance();
+	Draw();
+}
+
+void PowerAmplifierBalance::dx()
+{
+	qDebug("PowerAmplifierBalance::dx()");
+	if (balance <= 0 && balance + 10 >= 0)
+		changeStatus(balance + 10 ? DX : CENTER);
+
+	balance += 10;
+	showBalance();
+	Draw();
+}
+
+void PowerAmplifierBalance::showBalance()
+{
+	QString desc;
+	desc.sprintf("%d", abs(balance));
+	SetSecondaryTextU(desc.ascii());
+}
+
+void PowerAmplifierBalance::setFGColor(QColor c)
 {
 	banner::setFGColor(c);
 	SecondaryText->setPaletteForegroundColor(secondary_fg);

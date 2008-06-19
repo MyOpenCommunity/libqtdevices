@@ -4,6 +4,7 @@
 #include "bannregolaz.h"
 #include "bannonoff.h"
 #include "bannonoff2scr.h"
+#include "bannonoffcombo.h"
 
 class sottoMenu;
 
@@ -87,6 +88,24 @@ private:
 	int level;
 	QColor secondary_fg;
 	void showLevel();
+};
+
+
+class PowerAmplifierBalance : public BannOnOffCombo
+{
+Q_OBJECT
+public:
+	PowerAmplifierBalance(QWidget *parent=0, const char *name=NULL, QColor SecondForeground=QColor(0,0,0));
+	void setFGColor(QColor c);
+
+private slots:
+	void dx();
+	void sx();
+
+private:
+	int balance;
+	QColor secondary_fg;
+	void showBalance();
 };
 
 #endif
