@@ -19,8 +19,6 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 {
 	hours = 0;
 	minutes = 1;
-	max_hours = 9;
-	max_minutes = 9;
 
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
@@ -65,6 +63,9 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	hbox = new QHBoxLayout(main_layout);
 	hbox->addWidget(btn1);
 	hbox->addWidget(btn2);
+
+	setMaxHours(23);
+	setMaxMins(59);
 }
 
 QTime BtTimeEdit::time()

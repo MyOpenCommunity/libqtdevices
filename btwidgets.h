@@ -21,7 +21,9 @@
  * A widget that emulates QTimeEdit
  *
  * This widget allows the user to edit 2 time values (hours and minutes).
- * Maximum values for hours and minutes can be set using appropriate functions.
+ * Maximum values for hours and minutes can be set using appropriate functions; by default
+ * it's possible to insert any value between 00:00 and 23:59 (inclusive), i.e. maximum hours are 23 and
+ * maximun minutes are 59.
  * Whenever the value displayed changes, the signal valueChanged(int, int) is emitted
  */
 class BtTimeEdit : public QWidget
