@@ -13,7 +13,6 @@
 #include "device_cache.h"
 #include "bannsettings.h"
 #include "weeklymenu.h"
-#include "holidaymenu.h"
 
 #include <qregexp.h>
 
@@ -198,7 +197,7 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 
 	timedManualSettings(settings);
 
-	holidaySettings(settings);
+	holidaySettings(settings, conf);
 
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF");
@@ -304,7 +303,7 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
 	settings->appendBanner(weekly);
 
-	sottoMenu *weekmenu = new WeeklyMenu(0, "weekly", conf);
+	WeeklyMenu *weekmenu = new WeeklyMenu(0, "weekly", conf);
 	weekmenu->setAllBGColor(paletteBackgroundColor());
 	weekmenu->setAllFGColor(paletteForegroundColor());
 
@@ -314,31 +313,59 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 
 	connect(weekmenu, SIGNAL(programClicked(int)), settings, SLOT(show()));
 	connect(weekmenu, SIGNAL(programClicked(int)), weekmenu, SLOT(hide()));
+	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
+
 }
 
-void PlantMenu::holidaySettings(sottoMenu *settings)
+void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
 {
 	const QString i_holiday = QString("%1%2").arg(IMG_PATH).arg("feriale.png");
 
-	bannPuls *hol = new bannPuls(settings, "holiday");
-	hol->SetIcons(i_right_arrow.ascii(), 0, i_holiday.ascii());
-	hol->SetTextU(tr("Holiday"));
+	bannPuls *holiday = new bannPuls(settings, "holiday");
+	holiday->SetIcons(i_right_arrow.ascii(), 0, i_holiday.ascii());
+	holiday->SetTextU(tr("Holiday"));
+	settings->appendBanner(holiday);
 
-	settings->appendBanner(hol);
-	HolidayMenu *holiday = new HolidayMenu(0, "holiday");
+	// the banner inside date_edit does not have second foreground set
+	DateEditMenu *date_edit = new DateEditMenu(0, "date edit");
+	date_edit->setAllBGColor(paletteBackgroundColor());
+	date_edit->setAllFGColor(paletteForegroundColor());
 
-	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_date, holiday, QDomNode());
-	bann->setSecondForeground(second_fg);
+	connect(holiday, SIGNAL(sxClick()), date_edit, SLOT(show()));
+	connect(holiday, SIGNAL(sxClick()), date_edit, SLOT(raise()));
+	connect(holiday, SIGNAL(sxClick()), settings, SLOT(hide()));
 
-	holiday->appendBanner(bann);
+	connect(date_edit, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(date_edit, SIGNAL(Closed()), date_edit, SLOT(hide()));
 
-	holiday->setAllBGColor(paletteBackgroundColor());
-	holiday->setAllFGColor(paletteForegroundColor());
 
-	connect(hol, SIGNAL(sxClick()), holiday, SLOT(show()));
-	connect(hol, SIGNAL(sxClick()), holiday, SLOT(raise()));
-	connect(hol, SIGNAL(sxClick()), settings, SLOT(hide()));
+	TimeEditMenu *time_edit = new TimeEditMenu(0, "time edit");
+	time_edit->setAllBGColor(paletteBackgroundColor());
+	time_edit->setAllFGColor(paletteForegroundColor());
 
-	connect(holiday, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(holiday, SIGNAL(Closed()), holiday, SLOT(hide()));
+	connect(date_edit, SIGNAL(goDx()), time_edit, SLOT(show()));
+	connect(date_edit, SIGNAL(goDx()), time_edit, SLOT(raise()));
+	connect(date_edit, SIGNAL(goDx()), date_edit, SLOT(hide()));
+
+	connect(time_edit, SIGNAL(Closed()), date_edit, SLOT(show()));
+	connect(time_edit, SIGNAL(Closed()), date_edit, SLOT(raise()));
+	connect(time_edit, SIGNAL(Closed()), time_edit, SLOT(hide()));
+
+	WeeklyMenu *weekly = new WeeklyMenu(0, "weekly program edit", conf);
+	weekly->setAllBGColor(paletteBackgroundColor());
+	weekly->setAllFGColor(paletteForegroundColor());
+
+	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(show()));
+	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(raise()));
+	connect(time_edit, SIGNAL(goDx()), time_edit, SLOT(hide()));
+
+	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(show()));
+	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(raise()));
+	connect(weekly, SIGNAL(Closed()), weekly, SLOT(hide()));
+
+	connect(weekly, SIGNAL(programClicked(int)), this, SLOT(show()));
+	connect(weekly, SIGNAL(programClicked(int)), this, SLOT(raise()));
+	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
+
 }

@@ -13,6 +13,7 @@
 #include "sottomenu.h"
 #include "bannpuls.h"
 #include "bannfullscreen.h"
+#include "weeklymenu.h"
 
 #include <qdom.h>
 #include <qptrvector.h>
@@ -57,7 +58,7 @@ private:
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(sottoMenu *settings);
+	void holidaySettings(sottoMenu *settings, QDomNode conf);
 
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
