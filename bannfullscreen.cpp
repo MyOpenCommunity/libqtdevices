@@ -89,9 +89,8 @@ void FSBannSimpleProbe::Draw()
 	banner::Draw();
 }
 
-void FSBannSimpleProbe::postDisplay()
+void FSBannSimpleProbe::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(3, "");
 	qDebug("[TERMO] bfs::postDisplay() done");
 }
@@ -165,9 +164,8 @@ void FSBann4zProbe::Draw()
 	FSBannSimpleProbe::Draw();
 }
 
-void FSBann4zProbe::postDisplay()
+void FSBann4zProbe::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(3, "");
 }
 
@@ -282,9 +280,8 @@ void FSBannTermoReg4z::Draw()
 	FSBann4zProbe::Draw();
 }
 
-void FSBannTermoReg4z::postDisplay()
+void FSBannTermoReg4z::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(4, I_SETTINGS);
 }
 
@@ -325,9 +322,8 @@ void FSBann4zFancoil::Draw()
 	FSBann4zProbe::Draw();
 }
 
-void FSBann4zFancoil::postDisplay()
+void FSBann4zFancoil::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(3, "");
 }
 
@@ -499,9 +495,8 @@ void FSBannManual::Draw()
 	BannFullScreen::Draw();
 }
 
-void FSBannManual::postDisplay()
+void FSBannManual::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(10, I_OK);
 }
 
@@ -526,9 +521,8 @@ void FSBannManualTimed::Draw()
 	FSBannManual::Draw();
 }
 
-void FSBannManualTimed::postDisplay()
+void FSBannManualTimed::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(10, I_OK);
 }
 
@@ -568,9 +562,8 @@ void FSBannDate::Draw()
 	BannFullScreen::Draw();
 }
 
-void FSBannDate::postDisplay()
+void FSBannDate::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(10, I_OK);
 }
 
@@ -599,9 +592,8 @@ void FSBannTime::Draw()
 	BannFullScreen::Draw();
 }
 
-void FSBannTime::postDisplay()
+void FSBannTime::postDisplay(sottoMenu *parent)
 {
-	sottoMenu *parent = static_cast<sottoMenu *> (parentWidget());
 	parent->setNavBarMode(10, I_OK);
 }
 

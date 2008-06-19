@@ -31,7 +31,7 @@ Q_OBJECT
 public:
 	BannFullScreen(QWidget *parent, const char *name);
 	virtual void Draw();
-	virtual void postDisplay() = 0;
+	virtual void postDisplay(sottoMenu *parent) = 0;
 	void setSecondForeground(QColor fg2);
 	virtual void setBGColor(QColor bg);
 	virtual void setFGColor(QColor bg);
@@ -50,7 +50,7 @@ public:
 	FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	// void callmeBack() call this from sottoMenu to setNavBarMode with the correct icon
-	virtual void postDisplay();
+	virtual void postDisplay(sottoMenu *parent);
 	void setSecondForeground(QColor fg2);
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
@@ -73,7 +73,7 @@ Q_OBJECT
 public:
 	FSBann4zProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
-	virtual void postDisplay();
+	virtual void postDisplay(sottoMenu *parent);
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 	FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
-	virtual void postDisplay();
+	virtual void postDisplay(sottoMenu *parent);
 protected:
 };
 
@@ -104,7 +104,7 @@ Q_OBJECT
 public:
 	FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
-	virtual void postDisplay();
+	virtual void postDisplay(sottoMenu *parent);
 	virtual void status_changed(QPtrList<device_status> list);
 private:
 	/**
@@ -149,7 +149,7 @@ Q_OBJECT
 public:
 	FSBannManual(QWidget *parent, const char *name);
 	virtual void Draw();
-	void postDisplay();
+	void postDisplay(sottoMenu *parent);
 public slots:
 	void setThermalRegulator();
 	void status_changed(QPtrList<device_status> list);
@@ -169,7 +169,7 @@ Q_OBJECT
 public:
 	FSBannManualTimed(QWidget *parent, const char *name);
 	virtual void Draw();
-	void postDisplay();
+	void postDisplay(sottoMenu *parent);
 public slots:
 	void setThermalRegulator();
 	void status_changed(QPtrList<device_status> list);
@@ -183,7 +183,7 @@ Q_OBJECT
 public:
 	FSBannDate(QWidget *parent, const char *name);
 	virtual void Draw();
-	void postDisplay();
+	void postDisplay(sottoMenu *parent);
 	QDate date();
 public slots:
 	//void setThermalRegulator();
@@ -202,7 +202,7 @@ Q_OBJECT
 public:
 	FSBannTime(QWidget *parent, const char *name);
 	virtual void Draw();
-	void postDisplay();
+	void postDisplay(sottoMenu *parent);
 	QTime time();
 public slots:
 	void status_changed(QPtrList<device_status> list);
