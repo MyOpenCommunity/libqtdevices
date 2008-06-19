@@ -11,6 +11,8 @@ static const char *IMG_BASS = IMG_PATH "lows.png";
 static const char *IMG_BALANCE = IMG_PATH "balance_0.png";
 static const char *IMG_BALANCE_SX = IMG_PATH "balance_sx.png";
 static const char *IMG_BALANCE_DX = IMG_PATH "balance_dx.png";
+static const char *IMG_LOUD_ON = IMG_PATH "loud.png";
+static const char *IMG_LOUD_OFF = IMG_PATH "loud_off.png";
 
 /*****************************************************************
  ** PowerAmplifier
@@ -43,6 +45,7 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons, 0, 0, *fg2);
 	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons, 0, 0, *fg2);
 	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), NULL, icons, 0, 0, *fg2);
+	settings_page->addItemU((char)POWER_AMPLIFIER_LOUD, tr("Loud"), NULL, icons, 0, 0, *fg2);
 	settings_page->hide();
 	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
 
@@ -273,4 +276,32 @@ void PowerAmplifierBalance::setFGColor(QColor c)
 {
 	banner::setFGColor(c);
 	SecondaryText->setPaletteForegroundColor(secondary_fg);
+}
+
+/*****************************************************************
+ ** PowerAmplifierLoud
+ ****************************************************************/
+
+PowerAmplifierLoud::PowerAmplifierLoud(QWidget *parent, const char *name)
+ : bannOnOff(parent, name)
+{
+	qDebug("PowerAmplifierLoud::PowerAmplifierLoud()");
+	SetIcons(ICON_ON, ICON_OFF, IMG_LOUD_ON, IMG_LOUD_OFF);
+	impostaAttivo(0);
+	connect(this, SIGNAL(sxClick()), SLOT(loudOn()));
+	connect(this, SIGNAL(dxClick()), SLOT(loudOff()));
+}
+
+void PowerAmplifierLoud::loudOff()
+{
+	qDebug("PowerAmplifierLoud::loudOff()");
+	impostaAttivo(0);
+	Draw();
+}
+
+void PowerAmplifierLoud::loudOn()
+{
+	qDebug("PowerAmplifierLoud::loudOn()");
+	impostaAttivo(1);
+	Draw();
 }

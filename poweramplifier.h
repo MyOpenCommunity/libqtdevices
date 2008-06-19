@@ -108,4 +108,16 @@ private:
 	void showBalance();
 };
 
+
+class PowerAmplifierLoud : public bannOnOff
+{
+Q_OBJECT
+public:
+	PowerAmplifierLoud(QWidget *parent=0, const char *name=NULL);
+
+private slots:
+	void loudOn();
+	void loudOff();
+};
+
 #endif
