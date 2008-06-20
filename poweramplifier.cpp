@@ -3,6 +3,8 @@
 #include "btlabel.h"
 #include "main.h"
 
+#include <qregexp.h>
+
 static const char *IMG_PLUS = IMG_PATH "btnplus.png";
 static const char *IMG_MINUS = IMG_PATH "btnmin.png";
 static const char *IMG_PRESET = IMG_PATH "preset.png";
@@ -25,7 +27,6 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	setRange(1,9);
 	setValue(1);
 	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl,(char)1);
-	qDebug("%s - %s - %s - %s - %s", onIcon, offIcon, onAmpl, offAmpl, settingIcon);
 	setAddress(indirizzo);
 	connect(this, SIGNAL(sxClick()), SLOT(showSettings()));
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
@@ -99,13 +100,69 @@ PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent, const char *name)
 	SetIcons(IMG_PLUS, IMG_MINUS, NULL, IMG_PRESET);
 	preset = 0;
 	num_preset = 20;
+	fillPresetDesc();
 	connect(this, SIGNAL(sxClick()), SLOT(nextPreset()));
 	connect(this, SIGNAL(dxClick()), SLOT(prevPreset()));
 }
 
+void PowerAmplifierPreset::fillPresetDesc()
+{
+	preset_desc.reserve(num_preset);
+	preset_desc.append(tr("Normal"));
+	preset_desc.append(tr("Dance"));
+	preset_desc.append(tr("Pop"));
+	preset_desc.append(tr("Rock"));
+	preset_desc.append(tr("Classical"));
+	preset_desc.append(tr("Jazz"));
+	preset_desc.append(tr("Party"));
+	preset_desc.append(tr("Soft"));
+	preset_desc.append(tr("Full Bass"));
+	preset_desc.append(tr("Full Treble"));
+
+	for (unsigned i=10; i < num_preset; ++i)
+	{
+		QString desc;
+		desc.sprintf("%s %d", tr("Preset").ascii(), i + 1);
+		preset_desc.append(desc);
+	}
+
+	QDomNode n = getPowerAmplifierNode();
+	QDomNode node = n.firstChild();
+	while (!node.isNull())
+	{
+		QRegExp reg("pre\\d{1,2}");
+		int pos = reg.search(node.nodeName());
+		if (pos != -1)
+		{
+			int preset_id = node.nodeName().mid(pos + 3, reg.matchedLength()).toInt();
+			if (preset_id > 0 && preset_id <= (int)num_preset)
+				preset_desc[preset_id - 1] = node.toElement().text();
+			else
+				qWarning("[AUDIO] Preset %d is not a valid preset number", preset_id);
+		}
+		node = node.nextSibling();
+	}
+}
+
+QDomNode PowerAmplifierPreset::getPowerAmplifierNode()
+{
+	QDomNode node_page = getPageNode(DIFSON_MULTI);
+	if (!node_page.isNull())
+	{
+		QDomNode node_item = getChildWithId(node_page, QRegExp("item\\d{1,2}"), AMBIENTE);
+		if (!node_item.isNull())
+			return getChildWithId(node_item, QRegExp("device\\d{1,2}"), POWER_AMPLIFIER);
+	}
+
+	node_page = getPageNode(DIFSON);
+	if (!node_page.isNull())
+		return getChildWithId(node_page, QRegExp("item\\d{1,2}"), POWER_AMPLIFIER);
+	return QDomNode();
+}
+
 void PowerAmplifierPreset::showEvent(QShowEvent *event)
 {
-	showPreset();
+	SetTextU(preset_desc[preset].ascii());
 	Draw();
 }
 
@@ -113,29 +170,22 @@ void PowerAmplifierPreset::prevPreset()
 {
 	qDebug("PowerAmplifierPreset::prevPreset()");
 	if (!preset)
-		preset = num_preset;
+		preset = num_preset - 1;
 	else
 		--preset;
-	showPreset();
+	SetTextU(preset_desc[preset].ascii());
 	Draw();
 }
 
 void PowerAmplifierPreset::nextPreset()
 {
 	qDebug("PowerAmplifierPreset::nextPreset()");
-	if (preset + 1 > num_preset)
+	if (preset + 1 >= num_preset)
 		preset = 0;
 	else
 		++preset;
-	showPreset();
+	SetTextU(preset_desc[preset].ascii());
 	Draw();
-}
-
-void PowerAmplifierPreset::showPreset()
-{
-	QString desc;
-	desc.sprintf("Preset %d", preset);
-	SetTextU(desc.ascii());
 }
 
 /*****************************************************************

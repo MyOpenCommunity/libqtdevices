@@ -6,6 +6,9 @@
 #include "bannonoff2scr.h"
 #include "bannonoffcombo.h"
 
+#include <qvaluevector.h>
+#include <qdom.h>
+
 class sottoMenu;
 
 /*****************************************************************
@@ -51,7 +54,9 @@ private slots:
 
 private:
 	unsigned preset, num_preset;
-	void showPreset();
+	QValueVector <QString> preset_desc;
+	void fillPresetDesc();
+	QDomNode getPowerAmplifierNode();
 };
 
 
