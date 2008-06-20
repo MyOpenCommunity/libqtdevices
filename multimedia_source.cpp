@@ -141,31 +141,21 @@ void MultimediaSource::loadRadioNode()
 	}
 
 	if (node_page.isNull())
-		qDebug("[AUDIO] ERROR loading configuration");
-
-	QString item_id;
-	item_id.setNum(diff_multi ? 51 : 50);
-
-	QDomNode n = node_page.firstChild();
-	while (!n.isNull())
 	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("item\\d{1,2}")))
-		{
-			QDomNode child = n.firstChild();
-			while (!child.isNull() && child.nodeName() != "id")
-				child = child.nextSibling();
+		qDebug("[AUDIO] ERROR loading configuration");
+		return;
+	}
 
-			if (!child.isNull() && child.toElement().text() == item_id)
-			{
-				QDomNode node = n.firstChild();
-				while (!node.isNull() && node.nodeName() != "web_radio")
-					node = node.nextSibling();
+	int id = diff_multi ? SORGENTE_MULTIM_MC : SORGENTE_MULTIM;
+	QDomNode n = getChildWithId(node_page, QRegExp("item\\d{1,2}"), id);
+	if (!n.isNull())
+	{
+		QDomNode node = n.firstChild();
+		while (!node.isNull() && node.nodeName() != "web_radio")
+			node = node.nextSibling();
 
-				if (!node.isNull())
-					radio_node = node;
-			}
-		}
-		n = n.nextSibling();
+		if (!node.isNull())
+			radio_node = node;
 	}
 }
 
