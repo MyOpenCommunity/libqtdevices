@@ -29,7 +29,7 @@
   \date lug 2005
 */  
 
-class Client  : public QSocket
+class Client  : public QObject
 {
     Q_OBJECT
     public:
