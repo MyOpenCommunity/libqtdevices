@@ -265,6 +265,10 @@ void PlantMenu::manualSettings(sottoMenu *settings)
 
 	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+
+	connect(sm, SIGNAL(goDx()), settings, SLOT(show()));
+	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
+
 }
 
 void PlantMenu::timedManualSettings(sottoMenu *settings)
@@ -292,6 +296,9 @@ void PlantMenu::timedManualSettings(sottoMenu *settings)
 
 	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+
+	connect(sm, SIGNAL(goDx()), settings, SLOT(show()));
+	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
 }
 
 void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
@@ -365,8 +372,8 @@ void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
 	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(raise()));
 	connect(weekly, SIGNAL(Closed()), weekly, SLOT(hide()));
 
-	connect(weekly, SIGNAL(programClicked(int)), this, SLOT(show()));
-	connect(weekly, SIGNAL(programClicked(int)), this, SLOT(raise()));
+	connect(weekly, SIGNAL(programClicked(int)), settings, SLOT(show()));
+	connect(weekly, SIGNAL(programClicked(int)), settings, SLOT(raise()));
 	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
 
 	OpenFrameSender *frame_sender = new OpenFrameSender(date_edit, time_edit, weekly, this);
