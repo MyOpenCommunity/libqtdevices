@@ -7,6 +7,76 @@
     </message>
 </context>
 <context>
+    <name>PowerAmplifier</name>
+    <message>
+        <source>Preset</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Alti</translation>
+    </message>
+    <message>
+        <source>Bass</source>
+        <translation>Bassi</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Bilanciamento</translation>
+    </message>
+    <message>
+        <source>Loud</source>
+        <translation>Loud</translation>
+    </message>
+</context>
+<context>
+    <name>PowerAmplifierPreset</name>
+    <message>
+        <source>Normal</source>
+        <translation>Normale</translation>
+    </message>
+    <message>
+        <source>Dance</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Rock</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Classical</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Jazz</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Full Bass</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Full Treble</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Preset</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
