@@ -20,7 +20,6 @@ BannOff::BannOff(QWidget *parent, const char *name)
 	const QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
 
 	SetIcons(0, 0, 0, i_off.ascii());
-	SetTextU(tr("OFF", "Set thermal regulator device to off"));
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
 }
 
@@ -62,7 +61,6 @@ BannSummerWinter::BannSummerWinter(QWidget *parent, const char *name)
 	//SetIcons(BUT3, i_winter.ascii());
 	// BUT4 = central right button
 	//SetIcons(BUT4, i_summer.ascii());
-	SetTextU(tr("Winter/Summer", "Set thermal regulator in summer/winter mode"));
 
 	connect(this, SIGNAL(csxClick()), this, SLOT(setWinter()));
 	connect(this, SIGNAL(cdxClick()), this, SLOT(setSummer()));

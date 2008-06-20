@@ -204,9 +204,7 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 	settings->appendBanner(off);
 
 	// antifreeze banner
-	bann3But *antifreeze = new bann3But(settings, "antifreeze");
-	antifreeze->SetIcons(0, 0, 0, i_antifreeze.ascii());
-	antifreeze->SetTextU(tr("Antifreeze", "Set thermal regulator in anti freeze mode"));
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze");
 	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
@@ -231,7 +229,6 @@ sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 	// scenario banner
 	bannPuls *scenarios = new bannPuls(0, "scenarios");//modes, "scenarios");
 	scenarios->SetIcons(i_right_arrow.ascii(), 0, i_scenarios.ascii());
-	scenarios->SetTextU(tr("Scenarios", "scenario menu in thermal regulation"));
 	scenarios->setBGColor(paletteBackgroundColor());
 	scenarios->setFGColor(paletteForegroundColor());
 	//modes->appendBanner(scenarios);
@@ -246,7 +243,6 @@ void PlantMenu::manualSettings(sottoMenu *settings)
 	// manual banner
 	bannPuls *manual = new bannPuls(settings, "Manual");
 	manual->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
-	manual->SetTextU(tr("Manual operation", "manual settings in thermal regulation"));
 
 	settings->appendBanner(manual);
 	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
@@ -273,11 +269,10 @@ void PlantMenu::manualSettings(sottoMenu *settings)
 
 void PlantMenu::timedManualSettings(sottoMenu *settings)
 {
-	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
+	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale_temporizzato.png");
 	// timed manual banner
 	bannPuls *manual_timed = new bannPuls(settings, "manual_timed");
 	manual_timed->SetIcons(i_right_arrow.ascii(), 0, i_manual.ascii());
-	manual_timed->SetTextU(tr("Manual timed operation", "manual_timed settings in thermal regulation"));
 
 	settings->appendBanner(manual_timed);
 	sottoMenu *sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
@@ -307,7 +302,6 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 
 	bannPuls *weekly = new bannPuls(settings, "weekly");
 	weekly->SetIcons(i_right_arrow.ascii(), 0, i_weekly.ascii());
-	weekly->SetTextU(tr("Weekly operation", "weekly program in thermal regulation"));
 	settings->appendBanner(weekly);
 
 	WeeklyMenu *weekmenu = new WeeklyMenu(0, "weekly", conf);
@@ -332,7 +326,6 @@ void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
 
 	bannPuls *holiday = new bannPuls(settings, "holiday");
 	holiday->SetIcons(i_right_arrow.ascii(), 0, i_holiday.ascii());
-	holiday->SetTextU(tr("Holiday"));
 	settings->appendBanner(holiday);
 
 	// the banner inside date_edit does not have second foreground set
