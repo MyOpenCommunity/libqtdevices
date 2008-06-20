@@ -17,6 +17,7 @@
 #include <qdom.h>
 
 QDomNode getPageNode(int id);
+QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
 QString getLanguage();
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
 

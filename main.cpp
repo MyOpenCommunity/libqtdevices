@@ -119,10 +119,27 @@ void myMessageOutput( QtMsgType type, const char *msg )
 	}
 }
 
+QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id)
+{
+	QDomNode n = parent.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(node_regexp))
+		{
+			QDomNode child = n.firstChild();
+			while (!child.isNull() && child.nodeName() != "id")
+				child = child.nextSibling();
+
+			if (!child.isNull() && child.toElement().text().toInt() == id)
+				return n;
+		}
+		n = n.nextSibling();
+	}
+	return QDomNode();
+}
+
 QDomNode getPageNode(int id)
 {
-	QString node_id;
-	node_id.setNum(id);
 	QDomElement root = qdom_appconfig.documentElement();
 
 	QDomNode n = root.firstChild();
@@ -132,21 +149,7 @@ QDomNode getPageNode(int id)
 	if (n.isNull())
 		return QDomNode();
 
-	n = n.firstChild();
-	while (!n.isNull())
-	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("page\\d{1,2}")))
-		{
-			QDomNode child = n.firstChild();
-			while (!child.isNull() && child.nodeName() != "id")
-				child = child.nextSibling();
-
-			if (!child.isNull() && child.toElement().text() == node_id)
-				return n;
-		}
-		n = n.nextSibling();
-	}
-	return QDomNode();
+	return getChildWithId(n, QRegExp("page\\d{1,2}"), id);
 }
 
 QString getLanguage()
