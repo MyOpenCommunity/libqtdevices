@@ -87,11 +87,11 @@ void BannSummerWinter::setWinter()
 BannWeekly::BannWeekly(QWidget *parent, const char *name)
 	: bannPuls(parent, name)
 {
-	program = "1";
+	program = 1;
 	connect(this, SIGNAL(click()), this, SLOT(performAction()));
 }
 
-void BannWeekly::setProgram(QString prog)
+void BannWeekly::setProgram(int prog)
 {
 	// TODO: check if program number is correct?
 	program = prog;
@@ -99,5 +99,5 @@ void BannWeekly::setProgram(QString prog)
 
 void BannWeekly::performAction()
 {
-	emit programNumber(program.toInt());
+	emit programNumber(program);
 }

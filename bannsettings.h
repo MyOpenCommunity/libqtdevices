@@ -17,6 +17,11 @@
 #include "bann4but.h"
 #include "bannpuls.h"
 
+/**
+ * This banner shuts the thermal regulator off when clicked. Before using it, be sure to
+ * set the address of the thermal regulator.
+ * It displays a button in the center with icon "OFF".
+ */
 class BannOff : public bann3But
 {
 Q_OBJECT
@@ -30,6 +35,11 @@ public slots:
 private:
 };
 
+/**
+ * This banner sets the thermal regulator in antifreeze protection. Be sure to set the
+ * address of the device.
+ * It displays one button at the center with icon antifreeze on it.
+ */
 class BannAntifreeze : public bann3But
 {
 Q_OBJECT
@@ -43,6 +53,11 @@ public slots:
 private:
 };
 
+/**
+ * This banner sets the thermal regulator in summer or winter status, depending on the
+ * button pressed.
+ * It displays two buttons at the center, one with the summer icon and one with the winter icon.
+ */
 class BannSummerWinter : public bann4But
 {
 Q_OBJECT
@@ -56,16 +71,22 @@ private:
 	seasons status;
 };
 
+/**
+ * This banner emits a signal with an int, corresponding to the program set with setProgram(). Default
+ * program is 1, so be sure to set the program you want to be set before using it.
+ * It displays a not clickable image on the center, an ok button on the right and program description
+ * below.
+ */
 class BannWeekly : public bannPuls
 {
 Q_OBJECT
 public:
 	BannWeekly(QWidget *parent, const char *name);
-	void setProgram(QString prog);
+	void setProgram(int prog);
 public slots:
 	void performAction();
 private:
-	QString program;
+	int program;
 signals:
 	void programNumber(int);
 };
