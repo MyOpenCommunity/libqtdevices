@@ -30,6 +30,19 @@ public slots:
 private:
 };
 
+class BannAntifreeze : public bann3But
+{
+Q_OBJECT
+public:
+	BannAntifreeze(QWidget *parent, const char *name);
+public slots:
+	/**
+	 * Set thermal regulator in antifreeze protection
+	 */
+	void performAction();
+private:
+};
+
 class BannSummerWinter : public bann4But
 {
 Q_OBJECT
