@@ -94,4 +94,21 @@ private:
 	 */
 	sottoMenu items_submenu;
 };
+
+class OpenFrameSender : public QObject
+{
+Q_OBJECT
+public:
+	OpenFrameSender(DateEditMenu *_date_edit, TimeEditMenu *_time_edit, WeeklyMenu *_program_menu, QObject *parent = 0);
+	OpenFrameSender(WeeklyMenu *_program_menu, QObject *parent = 0);
+	void setAddress(QString where);
+public slots:
+	void holidaySettingsEnd(int program);
+	void weekSettingsEnd(int program);
+private:
+	QString th_regulator_where;
+	DateEditMenu *date_edit;
+	TimeEditMenu *time_edit;
+	WeeklyMenu   *program_menu;
+};
 #endif // PLANTMENU_H

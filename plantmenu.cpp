@@ -316,6 +316,7 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
 
+	OpenFrameSender *frame_sender = new OpenFrameSender(weekmenu, this);
 }
 
 void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
@@ -368,4 +369,43 @@ void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
 	connect(weekly, SIGNAL(programClicked(int)), this, SLOT(raise()));
 	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
 
+	OpenFrameSender *frame_sender = new OpenFrameSender(date_edit, time_edit, weekly, this);
+}
+
+OpenFrameSender::OpenFrameSender(DateEditMenu *_date_edit, TimeEditMenu *_time_edit, WeeklyMenu *_program_menu, QObject *parent)
+	: QObject(parent)
+{
+	date_edit = _date_edit;
+	time_edit = _time_edit;
+	program_menu = _program_menu;
+	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(holidaySettingsEnd(int)));
+}
+
+OpenFrameSender::OpenFrameSender(WeeklyMenu *_program_menu, QObject *parent)
+{
+	program_menu = _program_menu;
+	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(weekSettingsEnd(int)));
+}
+
+void OpenFrameSender::holidaySettingsEnd(int program)
+{
+	QDate date = date_edit->date();
+	QTime time = time_edit->time();
+	if (!th_regulator_where.isEmpty())
+	{
+		// TODO: send frame Open
+		//
+	}
+	else
+		qDebug("[TERMO] You are trying to send a frame with no address!!");
+}
+
+void OpenFrameSender::weekSettingsEnd(int program)
+{
+	// TODO: send fram Open
+}
+
+void OpenFrameSender::setAddress(QString where)
+{
+	th_regulator_where = where;
 }
