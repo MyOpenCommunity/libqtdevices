@@ -60,7 +60,7 @@ void WeeklyMenu::createSummerBanners()
 				QRegExp re("(\\d)");
 				int index = re.search(p.nodeName());
 				if (index != -1)
-					bp->setProgram(re.cap(1));
+					bp->setProgram(re.cap(1).toInt());
 			}
 			elencoBanner.append(bp);
 			p = p.nextSibling();
@@ -97,7 +97,7 @@ void WeeklyMenu::createWinterBanners()
 				QRegExp re("(\\d)");
 				int index = re.search(p.nodeName());
 				if (index != -1)
-					bp->setProgram(re.cap(1));
+					bp->setProgram(re.cap(1).toInt());
 			}
 			elencoBanner.append(bp);
 			p = p.nextSibling();
