@@ -25,6 +25,7 @@
  * it's possible to insert any value between 00:00 and 23:59 (inclusive), i.e. maximum hours are 23 and
  * maximun minutes are 59.
  * Whenever the value displayed changes, the signal valueChanged(int, int) is emitted
+ * The default value is 0:0.
  */
 class BtTimeEdit : public QWidget
 {
@@ -53,7 +54,7 @@ private slots:
 	void incMin();
 	void decMin();
 private:
-	int hours, minutes;
+	QTime _time;
 	int max_hours, max_minutes;
 	QLCDNumber *num;
 signals:
@@ -66,6 +67,11 @@ signals:
 	void valueChanged(int, int);
 };
 
+/**
+ * A widget that emulates QDateEdit
+ *
+ * The default value for date is currentDate + 1 day.
+ */
 class BtDateEdit : public QWidget
 {
 Q_OBJECT

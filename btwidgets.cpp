@@ -15,11 +15,9 @@
 #include <qlayout.h>
 
 BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
-	: QWidget(parent, name)
+	: QWidget(parent, name),
+	_time(0, 0)
 {
-	hours = 0;
-	minutes = 1;
-
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
 	QPixmap *icon, *pressed_icon;
@@ -43,8 +41,8 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 
 	num = new QLCDNumber(this);
 	num->setSegmentStyle(QLCDNumber::Flat);
-	num->setNumDigits(3);
-	num->display(QString("%1:%2").arg(hours).arg(minutes));
+	num->setNumDigits(5);
+	num->display(_time.toString("h:mm"));
 	num->setFrameStyle(QFrame::NoFrame);
 	main_layout->addWidget(num);
 
@@ -70,7 +68,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 
 QTime BtTimeEdit::time()
 {
-	return QTime(hours, minutes);
+	return _time;
 }
 
 void BtTimeEdit::setMaxHours(int h)
@@ -93,50 +91,53 @@ void BtTimeEdit::setMaxMins(int m)
 
 void BtTimeEdit::incHours()
 {
-	if (hours < max_hours)
+	if (_time.hour() < max_hours)
 	{
-		hours++;
-		qDebug("[TERMO] about to display %s", QString("%1:%2").arg(hours).arg(minutes).ascii());
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-		emit valueChanged(hours, minutes);
+		_time.setHMS(_time.hour() + 1, _time.minute(), _time.second());
+		num->display(_time.toString("h:mm"));
+		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
+		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
 void BtTimeEdit::incMin()
 {
-	if (minutes < max_minutes)
+	if (_time.minute() < max_minutes)
 	{
-		minutes++;
-		qDebug("[TERMO] about to display %s", QString("%1:%2").arg(hours).arg(minutes).ascii());
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-		emit valueChanged(hours, minutes);
+		_time.setHMS(_time.hour(), _time.minute() + 1, _time.second());
+		num->display(_time.toString("h:mm"));
+		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
+		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
 void BtTimeEdit::decHours()
 {
-	if (hours > 0)
+	if (_time.hour() > 0)
 	{
-		hours--;
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-		emit valueChanged(hours, minutes);
+		_time.setHMS(_time.hour() - 1, _time.minute(), _time.second());
+		num->display(_time.toString("h:mm"));
+		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
+		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
 void BtTimeEdit::decMin()
 {
-	if (minutes > 0)
+	if (_time.minute() > 0)
 	{
-		minutes--;
-		num->display(QString("%1:%2").arg(hours).arg(minutes));
-		emit valueChanged(hours, minutes);
+		_time.setHMS(_time.hour(), _time.minute() - 1, _time.second());
+		num->display(_time.toString("h:mm"));
+		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
+		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
 BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
-	: QWidget(parent, name),
-	_date(QDate::currentDate())
+	: QWidget(parent, name)
 {
+	_date = QDate::currentDate();
+	_date = _date.addDays(1);
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	// Buttons to increase day, month, year
 	BtButton *btn_up_day, *btn_up_month, *btn_up_year;
