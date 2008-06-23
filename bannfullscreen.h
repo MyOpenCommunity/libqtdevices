@@ -79,6 +79,8 @@ public slots:
 protected:
 	QString setpoint;
 	QLabel  *setpoint_label;
+
+	BtButton *btn_off, *btn_antifreeze;
 	// FIXME: setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
@@ -88,14 +90,25 @@ private:
 	bool isOff, isAntigelo;
 };
 
-class FSBannTermoReg4z : public FSBann4zProbe
+class FSBannTermoReg4z : public BannFullScreen
 {
 Q_OBJECT
 public:
 	FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	virtual void postDisplay(sottoMenu *parent);
-protected:
+public slots:
+	virtual void status_changed(QPtrList<device_status> list);
+private:
+	QVBoxLayout main_layout;
+	/// Program description label and string
+	QLabel *program_label;
+	QString program;
+	/// Setpoint temperature
+	QLabel *setpoint_label;
+	QString setpoint;
+	/// Status button (summer/winter)
+	BtButton *season;
 };
 
 class FSBann4zFancoil : public FSBann4zProbe

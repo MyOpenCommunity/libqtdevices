@@ -62,11 +62,10 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *na
 {
 	descr_label = new QLabel(this, 0);
 	main_layout.addWidget(descr_label);
-	main_layout.setStretchFactor(descr_label, 1);
 
 	temp_label = new QLabel(this, 0);
 	main_layout.addWidget(temp_label);
-	main_layout.setStretchFactor(temp_label, 1);
+	main_layout.setAlignment(Qt::AlignHCenter);
 
 	temp = "-23.5\272C";
 	descr = n.namedItem("descr").toElement().text();
@@ -133,8 +132,35 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	: FSBannSimpleProbe(parent, n)
 {
 	setpoint_label = new QLabel(this, 0);
-	main_layout.addWidget(setpoint_label);
-	main_layout.setStretchFactor(setpoint_label, 1);
+	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
+	hbox->addWidget(setpoint_label);
+
+	btn_off = new BtButton(this, 0);
+	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
+	const QString i_antifreeze_p = QString("%1%2").arg(IMG_PATH).arg("antigelop.png");
+	QPixmap *icon         = icons_library.getIcon(i_antifreeze.ascii());
+	QPixmap *pressed_icon = icons_library.getIcon(i_antifreeze_p.ascii());
+	btn_off->setPixmap(*pressed_icon);
+	btn_off->setPressedPixmap(*pressed_icon);
+	btn_off->setDown(true);
+	btn_off->setEnabled(false);
+	btn_off->hide();
+	hbox->addWidget(btn_off);
+
+	btn_antifreeze = new BtButton(this, 0);
+	const QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
+	const QString i_off_p = QString("%1%2").arg(IMG_PATH).arg("offp.png");
+	icon         = icons_library.getIcon(i_off.ascii());
+	pressed_icon = icons_library.getIcon(i_off_p.ascii());
+	btn_antifreeze->setPixmap(*pressed_icon);
+	btn_antifreeze->setPressedPixmap(*pressed_icon);
+	btn_antifreeze->setDown(true);
+	btn_antifreeze->setEnabled(false);
+	btn_antifreeze->hide();
+	hbox->addWidget(btn_antifreeze);
+
+	main_layout.addLayout(hbox);
+	main_layout.setStretchFactor(hbox, 1);
 
 	local_temp_label = new QLabel(this, 0);
 	main_layout.addWidget(local_temp_label);
@@ -148,7 +174,30 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 
 void FSBann4zProbe::Draw()
 {
+	if (isOff)
+	{
+		setpoint_label->hide();
+		//local_temp = "";
+		local_temp_label->hide();
+		btn_off->show();
+		btn_antifreeze->hide();
+	}
+	else if (isAntigelo)
+	{
+		setpoint_label->hide();
+		//local_temp = "";
+		local_temp_label->hide();
+		btn_off->hide();
+		btn_antifreeze->show();
+	}
+	else
+	{
+		setpoint_label->show();
+		local_temp_label->show();
+		btn_off->hide();
+		btn_antifreeze->hide();
 
+	}
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	setpoint_label->setFont(aFont);
@@ -230,13 +279,13 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 						break;
 					case 4:
 						local_temp = "0";
-						isOff = true;
-						isAntigelo = false;
+						isOff = false;
+						isAntigelo = true;
 						break;
 					case 5:
 						local_temp = "0";
-						isOff = false;
-						isAntigelo = true;
+						isOff = true;
+						isAntigelo = false;
 						break;
 					default:
 						qDebug("[TERMO] FSBann4zProbe::status_changed(): local status case not handled!");
@@ -271,18 +320,47 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 }
 
 FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name)
-	: FSBann4zProbe(parent, n)
+	: BannFullScreen(parent, name),
+	main_layout(this)
 {
+	program = "Program [number]";
+	program_label = new QLabel(this, 0);
+	main_layout.addWidget(program_label);
+
+	setpoint = "-23.5\272C";
+	setpoint_label = new QLabel(this, 0);
+	main_layout.addWidget(setpoint_label);
+
+	season = new BtButton(this, 0);
+	season->setDown(true);
+	season->setEnabled(false);
+	main_layout.addWidget(season);
+
+	main_layout.setAlignment(Qt::AlignHCenter);
 }
 
 void FSBannTermoReg4z::Draw()
 {
-	FSBann4zProbe::Draw();
+	QFont aFont;
+	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
+	setpoint_label->setFont(aFont);
+	setpoint_label->setText(setpoint);
+	setpoint_label->setPaletteForegroundColor(second_fg);
+
+	FontManager::instance()->getFont(font_banTermo_testo, aFont);
+	program_label->setFont(aFont);
+	program_label->setText(program);
+
+	BannFullScreen::Draw();
 }
 
 void FSBannTermoReg4z::postDisplay(sottoMenu *parent)
 {
 	parent->setNavBarMode(4, I_SETTINGS);
+}
+
+void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
+{
 }
 
 FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
@@ -292,7 +370,6 @@ FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
 	fancoil_buttons.hide(); // do not show QButtonGroup frame
-	main_layout.setStretchFactor(&fancoil_buttons, 1);
 	fancoil_status = 0;
 }
 
@@ -315,6 +392,7 @@ void FSBann4zFancoil::createFancoilButtons()
 		btn->setToggleButton(true);
 	}
 	main_layout.insertLayout(-1, hbox);
+	main_layout.setStretchFactor(&fancoil_buttons, 2);
 }
 
 void FSBann4zFancoil::Draw()
@@ -544,7 +622,8 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	BtButton *top = new BtButton(this, 0);
 	top->setPixmap(top_img);
 	top->setDown(true);
-	main_layout.addWidget(top);
+	top->setEnabled(false);
+	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	date_edit = new BtDateEdit(this, 0);
 	main_layout.addWidget(date_edit);
@@ -579,7 +658,8 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	BtButton *top = new BtButton(this, 0);
 	top->setPixmap(i_top_img);
 	top->setDown(true);
-	main_layout.addWidget(top);
+	top->setEnabled(false);
+	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	time_edit = new BtTimeEdit(this, 0);
 	main_layout.addWidget(time_edit);
