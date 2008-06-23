@@ -8,21 +8,21 @@
  **
  ****************************************************************/
 
+#include "main.h"
 #include "btmain.h"
 #include "propertymap_xml.h"
-#include <qapplication.h>
+#include "xmlvarihandler.h"
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
-#include "xmlvarihandler.h"
+
+#include <qapplication.h>
 #include <signal.h>
 #include <qregexp.h>
-
 #define	TIMESTAMP
 #ifdef TIMESTAMP
 #include <qdatetime.h>
 #endif
 
-#include "main.h"
 
 /*******************************************
  ** Instance global object to handle icons
@@ -188,7 +188,7 @@ int main( int argc, char **argv )
 
 	// load configuration from conf.xml to app_config
 	propertyMapLoadXML( app_config, MY_FILE_USER_CFG_DEFAULT );
-	
+
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
 
 	if (!qdom_appconfig.setContent(&file))

@@ -26,7 +26,7 @@ class sottoMenu;
 class diffSonora;
 class diffmulti;
 class antintrusione;
-class termoregolaz;
+class ThermalMenu;
 class versio;
 class homePage;
 class Calibrate;
@@ -73,7 +73,7 @@ public:
     homePage * Home, *specPage;
     sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
     diffmulti *dm;
-    termoregolaz *termo;
+    ThermalMenu *termo;
     diffSonora *difSon;
     antintrusione* antintr;
     Client * client_richieste;

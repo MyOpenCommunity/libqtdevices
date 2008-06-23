@@ -23,6 +23,7 @@ class BtButton;
 class QPixmap;
 class QTimer;
 class openwebnet;
+class sottoMenu;
 
 /*!
  * \class banner
@@ -342,6 +343,11 @@ public:
 		TEXT2,
 	};
 	virtual void addAmb(char *);
+
+	/**
+	 * Called from sottoMenu at the end of draw().
+	 */
+	virtual void postDisplay(sottoMenu *parent) {};
 private:
 	
 	/**

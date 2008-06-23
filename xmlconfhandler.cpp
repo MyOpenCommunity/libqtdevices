@@ -10,6 +10,7 @@
 
 #include <qobject.h>
 #include <qtimer.h>
+#include <qregexp.h>
 
 #include "xmlconfhandler.h"
 #include "main.h"
@@ -22,19 +23,64 @@
 #include "genericfunz.h"
 #include "versio.h"
 #include "antintrusione.h"
-#include "termoregolaz.h"
+#include "thermalmenu.h"
 #include "btmain.h"
 #include "scenevocond.h"
 #include "openclient.h"
 
 unsigned char tipoData=0;
 
+/// banTesti: text utilized during the initialization sequence when the menu is built up
+static const char *banTesti[] =
+{
+	/*    0                            1                           2                         3                    */
+	"ATTUAT_AUTOM",               "DIMMER 10",               "ATTUAT_AUTOM_INT",          "VUOTO",
+	/*    4                            5                           6                         7                    */
+	"SCENARIO",                   "GR_ATT_INT",              "GR_DIMMER",                 "CARICO",
+	/*    8                            9                           10                        11                   */
+	"ATT_AUT_INT_SIC",            "ATT_AUT_TEMP",            "GR_ATT_INT",                "ATT_AUT_PULS",
+	/*    12                           13                          14                        15                   */
+	"ATT_VCT_LS",                 "ATT_VCT_SER",             "SET_DATA",                  "VUOTO",
+	/*    16                           17                          18                        19                   */
+	"SORGENTE_AUX",               "SORG_RADIO",              "AMPLI",                     "GR_AMPLI",
+	/*    20                           21                          22                        23                   */
+	"SET_SVEGLIA",                "CALIB",                   "TERMO_99Z_PROBE",           "ZONANTI",
+	/*    24                           25                          26                        27                   */
+	"IMPANTI",                    "SUONO",                   "PROT",                      "VERS",
+	/*    28                           29                          30                        31                   */
+	"CONTR",                      "MOD_SCEN",                "DATA",                      "TEMP",
+	/*    32                           33                          34                        35                   */
+	"TIME",                       "ALL",                     "SPECIAL",                   "DIMMER 100",
+	/*    36                           37                          38                        39                   */
+	"ATT_AUT_TEMP_N",             "ATT_AUT_TEMP_F",          "SCENARIO EVOLUTO",          "SCENARIO SCHEDULATO",
+	/*    40                           41                          42                        43                   */
+	"VUOTO",                      "VUOTO",                   "VUOTO",                     "VUOTO",
+	/*    44                           45                          46                        47                   */
+	"GR_DIMMER100",               "SORG_RADIO",              "SORG_AUX",                  "AMBIENTE",
+	/*    48                           49                          50                        51                   */
+	"INSIEME_AMBIENTI",           "POSTO_ESTERNO",           "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
+	/*    52                           53                          54                        55                   */
+	"TERMO_99Z_PROBE_FANCOIL",    "TERMO_4Z_PROBE",          "TERMO_4Z_PROBE_FANCOIL",    "TERMO_NC_EXTPROBE",
+	/*    56                           57                          58                                             */
+	"TERMO_NC_PROBE",             "TERMO_HOME_NC_EXTPROBE",  "TERMO_HOME_NC_PROBE",       "ARGH, empty!!!",
+	//    60-63
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    64-67
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    68-71
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+};
+
+/*! pagTesti: text utilized during the initialization sequence when the menu is built up */
+static const char pagTesti[13][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
+	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI" };
+
 /*******************************************
  *
  *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage**h, homePage**sP, sottoMenu**se, sottoMenu **vc, sottoMenu *i, sottoMenu**s,sottoMenu**c, sottoMenu**im,  sottoMenu**a, termoregolaz* t,\
-		diffSonora**dS, diffmulti**_dm, antintrusione** ant,QWidget** pD,Client * c_c, Client *  c_m ,Client *  c_r,versio* dG,\
-		QColor* bg, QColor* fg1, QColor *fg2)
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
+		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, diffSonora **dS, diffmulti **_dm, antintrusione **ant,
+		QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG, QColor *bg, QColor *fg1, QColor *fg2)
 {
 	home=h;
 	specPage=sP;
@@ -271,9 +317,9 @@ void *xmlconfhandler::computeAddress()
 	return pnt;
 }
 
-void xmlconfhandler::addItemU(sottoMenu *pageAct, void *address)
+void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 {
-	pageAct->addItemU ((char)page_item_id, page_item_descr,
+	sm->addItemU ((char)page_item_id, page_item_descr,
 			address,
 			*page_item_list_img,
 			par1,  par2, SecondForeground,
@@ -286,6 +332,16 @@ void xmlconfhandler::addItemU(sottoMenu *pageAct, void *address)
 			page_item_light, page_item_key, page_item_unknown, sstart, sstop,
 			page_item_txt1, page_item_txt2, page_item_txt3);
 	page_item_cond_list->clear();
+}
+
+void xmlconfhandler::createSottoMenuConnections(sottoMenu *sm)
+{
+	QObject::connect(sm,SIGNAL(Closed()),sm,SLOT(hide()));
+	QObject::connect(client_monitor,SIGNAL(frameIn(char *)),sm,SIGNAL(gestFrame(char *)));
+	QObject::connect(sm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+	QObject::connect(sm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+	QObject::connect(sm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+	QObject::connect(BtM,SIGNAL(freeze(bool)),sm,SLOT(freezed(bool)));
 }
 
 /*******************************************
@@ -370,11 +426,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						//			qWarning("ADDBUTTON OROLOGIO");
 						break;
 					case TEMPERATURA:
-					case TERMO_HOME_PROBE:
+					case TERMO_HOME_NC_PROBE:
 						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
 						//			qWarning("ADDBUTTON TEMPERATURA");
 						break;
-					case TERMO_HOME_EXTPROBE:
+					case TERMO_HOME_NC_EXTPROBE:
 						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"", "1");
 						break;
 
@@ -437,7 +493,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 
 						case  ILLUMINAZIONE:
-							pageAct= illumino; 
+							pageAct= *illumino; 
 							par3 = page_item_softstart; 
 							par4 = page_item_softstop;
 							addr = computeAddress();
@@ -451,9 +507,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 
 						case TERMOREGOLAZIONE:
-							pageAct=termo;
+							pageAct=*termo;
 							addr = computeAddress();
-							addItemU(pageAct, addr);
+							//addItemU(pageAct, addr);
 							break;
 
 						case  SCENARI:
@@ -539,10 +595,10 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							switch(page_item_id)
 							{
 								case TEMPERATURA:
-								case TERMO_HOME_PROBE:
+								case TERMO_HOME_NC_PROBE:
 									(*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii());
 									break;
-								case TERMO_HOME_EXTPROBE:
+								case TERMO_HOME_NC_EXTPROBE:
 									(*specPage) ->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii(), "1");
 									break;
 								case DATA:
@@ -623,22 +679,22 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							break;
 						case ILLUMINAZIONE:
 							//			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
-							illumino->forceDraw();
+							(*illumino)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
-							QObject::connect(*home,SIGNAL(Illuminazione()),illumino,SLOT(showFullScreen()));
-							QObject::connect(illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+							QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
+							QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif                                          
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)       
-							QObject::connect(*home,SIGNAL(Illuminazione()),illumino,SLOT(show()));
-							QObject::connect(illumino,SIGNAL(Closed()),*home,SLOT(show()));
+							QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
+							QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(show()));
 #endif                                          
-							QObject::connect(illumino,SIGNAL(Closed()),illumino,SLOT(hide()));			
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),illumino,SIGNAL(gestFrame(char *)));
-							QObject::connect(illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-							QObject::connect(illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
-							QObject::connect(BtM,SIGNAL(freeze(bool)),illumino,SLOT(freezed(bool)));
+							QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));			
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
+							QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(*illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),*illumino,SLOT(freezed(bool)));
 							//(illumino)->inizializza();
 							break;
 						case ANTIINTRUSIONE:
@@ -682,24 +738,22 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*carichi,SLOT(freezed(bool)));
 							break;
 						case TERMOREGOLAZIONE:
-							//			qWarning(" - -  .     .- . . .- .-QObject::connect TERMOREGOLAZIONE ");
-							termo->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
-							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(showFullScreen()));
-							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
-#endif                                          
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)    
-							QObject::connect(*home,SIGNAL(Termoregolazione()),termo,SLOT(show()));
-							QObject::connect(termo,SIGNAL(Closed()),*home,SLOT(show()));
-#endif                                    
-							QObject::connect(termo,SIGNAL(Closed()),termo,SLOT(hide()));
-
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),termo,SIGNAL(gestFrame(char *)));
-							QObject::connect(termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-							QObject::connect(BtM,SIGNAL(freeze(bool)),termo,SLOT(freezed(bool)));
-							//(*termo)->inizializza();
+						case TERMOREG_MULTI_PLANT:
+							(*termo)->forceDraw();
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showFullScreen()));
+							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)
+							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(show()));
+							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(show()));
+#endif
+							QObject::connect(*termo,SIGNAL(Closed()),*termo,SLOT(hide()));
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
+							QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
 							break;
 						case DIFSON:
 							//	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
@@ -920,6 +974,40 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	return TRUE;
 }
 
+QDomNode getThermRootNode()
+{
+	QDomElement root = qdom_appconfig.documentElement();
+
+	QDomNode n = root.firstChild();
+	while (!n.isNull())
+	{
+		if (n.nodeName() == "displaypages")
+			break;
+		n = n.nextSibling();
+	}
+
+	n = n.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(QRegExp("page\\d\\d?")))
+		{
+			QDomNode child = n.firstChild();
+			while (child.nodeName() != "id")
+			{
+				child = child.nextSibling();
+			}
+			
+			QDomElement e = child.toElement();
+			if (e.text() == "5" || e.text() == "15")
+			{
+				return n;
+			}
+		}
+		n = n.nextSibling();
+	}
+}
+	
+
 /*******************************************
  *
  * Letto nuovo valore
@@ -1016,6 +1104,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 					QWidget* pageAct=NULL;
 					page_id = qValue.toInt( &ok, 10 );
 					qDebug("INSERTING PAGE: %s",pagTesti[page_id-1]);
+					QDomNode n;
 
 
 					switch (page_id)
@@ -1024,17 +1113,16 @@ bool xmlconfhandler::characters( const QString & qValue)
 							*automazioni = new sottoMenu (NULL,"AUTOM");
 							(*automazioni)->setBGColor(Background);
 							(*automazioni)->setFGColor(Foreground);
-							//              automazioni->hide();
 							pageAct=*automazioni;
-							//				qWarning("AUTOMAZIONE new.- . . .- -. -. .-");
 							break;
+
 						case ILLUMINAZIONE:
-							illumino = new sottoMenu (NULL,"ILLUMINO");
-							illumino->setBGColor(Background);
-							illumino->setFGColor(Foreground);
-							pageAct=illumino;
-							//				qWarning("ILLUMINAZIONE new.- .- .- .-  .--. ");
+							*illumino = new sottoMenu (NULL,"ILLUMINO");
+							(*illumino)->setBGColor(Background);
+							(*illumino)->setFGColor(Foreground);
+							pageAct=*illumino;
 							break;
+
 						case DIFSON_MULTI:
 							*dm = new diffmulti(NULL, "DIFSON_MULTI");
 							(*dm)->setBGColor(Background);
@@ -1045,82 +1133,81 @@ bool xmlconfhandler::characters( const QString & qValue)
 							page_item_where_m = "";
 							page_item_list_img_m->clear();
 							break;
+
 						case SCENARI:
 							*scenari = new sottoMenu (NULL,"SCENARI");
 							(*scenari)->setBGColor(Background);
 							(*scenari)->setFGColor(Foreground);
-							//              scenari->hide();
 							pageAct=*scenari;
-							//				qWarning("SCENARI new.- .- -. -. . -. -");
 							break;
+
 						case CARICHI:
 							*carichi = new sottoMenu (NULL,"CARICHI");
 							(*carichi)->setBGColor(Background);
 							(*carichi)->setFGColor(Foreground);
-							//              carichi->hide();
 							pageAct=*carichi;
-							//				qWarning("CARICHI new-. -. .- .-");
 							break;
+
 						case DIFSON:
 							*difSon = new diffSonora (NULL,"DIFSON");
 							(*difSon)->setBGColor(Background.red(),Background.green(),Background.blue());
 							(*difSon)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
-							//              difSon->hide();
 							pageAct=*difSon;
-							//				qWarning("DIFSON new.- .- .- .--. ");
 							break;
+
 						case ANTIINTRUSIONE:
 							*antintr = new antintrusione(NULL,"ANTI");
 							(*antintr)->setBGColor(Background.red(),Background.green(),Background.blue());
 							(*antintr)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
-							//              automazioni->hide();
 							pageAct=*antintr;
-							//				qWarning("ANTIINTRUSIONE new.- - ..- -.  .- .- .-");
 							break;
+
 						case TERMOREGOLAZIONE:
-							termo = new termoregolaz( NULL,"TERMO", 4, MAX_WIDTH, MAX_HEIGHT,1);
-							termo->setBGColor(Background);
-							termo->setFGColor(Foreground);
-							//              termo->hide();
-							pageAct=termo;
-							//				qWarning("TERMOREGOLAZIONE new.- .- - .. -. -. -. . ");
+							n = getThermRootNode();
+							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground,
+									SecondForeground);
+							pageAct=*termo;
 							break;
+
+						case TERMOREG_MULTI_PLANT:
+							n = getThermRootNode();
+							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground,
+									SecondForeground);
+							pageAct=*termo;
+							break;
+
 						case IMPOSTAZIONI:
 							*imposta = new sottoMenu (NULL,"IMPOSTA");
 							(*imposta) ->setBGColor(Background);
 							(*imposta) ->setFGColor(Foreground);
 							QObject::connect(*imposta,SIGNAL(setPwd(bool,char*)), BtM, SLOT (setPwd(bool,char*)));
-							//              imposta->hide();
 							pageAct=*imposta;
-							//				qWarning("IMPOSTAZIONI new.- .- . -. -.- .- -. .-.");
 							break;
+
 						case SCENARI_EVOLUTI:
 							*scenari_evoluti = new sottoMenu (NULL,"SCENARI_EVOLUTI");
 							(*scenari_evoluti) ->setBGColor(Background);
 							(*scenari_evoluti) ->setFGColor(Foreground);
 							pageAct=*scenari_evoluti;
-							//				qWarning("SCENARI_EVOLUTI new.- .- . -. -.- .- -. .-.");
 							break;
+
 						case VIDEOCITOFONIA:
 							*videocitofonia = new sottoMenu (NULL, "VIDEOCITOFONIA");
 							(*videocitofonia)->setBGColor(Background);
 							(*videocitofonia)->setFGColor(Foreground);
 							pageAct=*videocitofonia;
 							break;
+
 						case SPECIAL:
 							qDebug("!");
 							(*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
-							//              specPage ->hide();
 							pageAct=*specPage;
 							(*specPage) ->setBGColor(Background.red(),Background.green(),Background.blue());
 							(*specPage) ->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
 							(*specPage) ->addButton(0,260,ICON_FRECCIA_SX ,BACK);
-							//				qWarning("SPECIAL new.- .- . -.-  .- .-");
 							break;
 					} // switch (page_id)
 					pageAct->hide();
-					//	  pageAct->setBGColor((int)bg_r, (int)bg_g, (int)bg_b);
-					//	  pageAct->setFGColor((int)fg_r,(int)fg_g,(int)fg_b);
 					if ( (idPageDefault==page_id) && (hompage_isdefined) )
 						*pagDefault=pageAct;
 

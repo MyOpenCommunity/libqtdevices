@@ -7,6 +7,17 @@
 #include <qptrlist.h>
 #include <qobject.h>
 
+/*
+ * Not ideal here, thermo specific stuff, but
+ * that would imply major code shuffling or strange
+ * forward declarations.
+ */
+enum thermo_type_t
+{
+	THERMO_Z99,  // 99 zones thermal regulator
+	THERMO_Z4,   // 4 zones thermal regulator
+};
+
 //! State variable
 class stat_var
 {
@@ -18,7 +29,7 @@ public:
 		OLD_LEV,
 		TEMP ,
 		ON_OFF ,
-		STAT,
+		STAT,    // Device dependent status
 		HH,
 		MM,
 		SS,
@@ -29,11 +40,11 @@ public:
 		STAZ,
 		RDS0,
 		RDS1,
-		LOCAL,
-		SP,
+		LOCAL,   // Temperature probe personal setpoint delta
+		SP,      // Temperature probe setpoint
 		ACTIVE_SOURCE,
 		FAULT,
-		CRONO,
+		CRONO,   // Secret, who knows?
 		INFO_SONDA,
 		INFO_CENTRALE,
 		FANCOIL_SPEED,
@@ -238,13 +249,52 @@ public:
 	virtual int init_request_delay() { return AUTOM_REQ_DELAY; }
 };
 
-//! Temperature probe status
+/**
+ * Device status for extra thermal information present only in a controlled probe.
+ */
+class device_status_temperature_probe_extra : public device_status {
+public:
+	enum {
+		STAT_INDEX = 0,
+		LOCAL_INDEX,
+		SP_INDEX,
+		CRONO,
+		INFO_SONDA,
+		INFO_CENTRALE,
+	} ind;
+	enum {
+		S_MAN = 0,
+		S_AUTO,
+		S_ANTIGELO,
+		S_TERM,
+		S_GEN,
+		S_OFF,
+		S_NONE,  // 4 zones: no status
+	} val;
+
+	device_status_temperature_probe_extra(thermo_type_t);
+};
+
+/**
+ * Device status for temperature measured by temperature probes, thermal regulators, etc.
+ */
 class device_status_temperature_probe : public device_status {
 public:
 	enum {
 		TEMPERATURE_INDEX = 0,
 	} ind;
 	device_status_temperature_probe();
+};
+
+/**
+ * Fancoil element present in some controlled temperature probes.
+ */
+class device_status_fancoil : public device_status {
+public:
+	enum {
+		SPEED_INDEX = 0,
+	} ind;
+	device_status_fancoil();
 };
 
 //! Amplifier status
@@ -312,50 +362,6 @@ public:
 	device_status_zonanti();
 };
 
-//! Thermal regulator status
-class device_status_thermr : public device_status {
-public:
-	/*
-	 * Not ideal here, better in thermr_device, but
-	 * that would imply major code shuffling or strange
-	 * forward declarations.
-	 */
-	enum type_t
-	{
-		Z99,  // 99 zones thermal regulator
-		Z4,   // 4 zones thermal regulator
-	};
-
-	enum {
-		STAT_INDEX = 0,
-		LOCAL_INDEX,
-		SP_INDEX,
-		CRONO,
-		INFO_SONDA,
-		INFO_CENTRALE,
-	} ind;
-	enum {
-		S_MAN = 0,
-		S_AUTO,
-		S_ANTIGELO,
-		S_TERM,
-		S_GEN,
-		S_OFF,
-		S_NONE,  // 4 zones: no status
-	} val;
-
-	device_status_thermr(type_t);
-};
-
-//! Fancoil status
-class device_status_fancoil : public device_status {
-public:
-	enum {
-		SPEED_INDEX = 0,
-	} ind;
-	device_status_fancoil();
-};
-
 //! Modscen status
 class device_status_modscen : public device_status {
 public:
@@ -379,22 +385,7 @@ class frame_interpreter;
 //! Generic device
 class device : public QObject {
 Q_OBJECT
-private:
-	//! Node's who
-	QString who;
-	//! Node's where
-	QString where;
-	//! Pul status
-	bool pul;
-	//! Device's group
-	int group;
-	//! Number of users
-	int refcount;
-protected:
-	//! Interpreter
-	frame_interpreter *interpreter;
-	//! List of device stats
-	QPtrList<device_status> *stat;
+
 public:
 	//! Constructor
 	device(QString who, QString where, bool p=false, int g=-1);
@@ -418,6 +409,7 @@ public:
 	QString get_key(void);
 	//! Destructor
 	virtual ~device();
+
 signals:
 	//! Status changed
 	void status_changed(QPtrList<device_status>);
@@ -434,7 +426,26 @@ public slots:
 	void frame_event_handler(QPtrList<device_status>);
 	//! Initialization requested by frame interpreter
 	void init_requested_handler(QString msg);
+
+protected:
+	//! Interpreter
+	frame_interpreter *interpreter;
+	//! List of device stats
+	QPtrList<device_status> *stat;
+private:
+	//! Node's who
+	QString who;
+	//! Node's where
+	QString where;
+	//! Pul status
+	bool pul;
+	//! Device's group
+	int group;
+	//! Number of users
+	int refcount;
 };
+
+/********************* Specific class device children classes **********************/
 
 //! Light (might be a simple light, a dimmer or a dimmer 100)
 class light : public device
@@ -474,13 +485,27 @@ class autom : public device
 		autom(QString, bool p=false, int g=-1);
 };
 
-//! Temperature probe
-class temperature_probe : public device
+/**
+ * Controlled temperature probe device.
+ */
+class temperature_probe_controlled : public device
 {
 Q_OBJECT
 public:
 	//! Constructor
-	temperature_probe(QString, bool external, bool p=false, int g=-1);
+	temperature_probe_controlled(QString, thermo_type_t, bool fancoil,
+		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
+};
+
+/**
+ * Not controlled temperature probe device (external or internal).
+ */
+class temperature_probe_notcontrolled : public device
+{
+Q_OBJECT
+public:
+	//! Constructor
+	temperature_probe_notcontrolled(QString, bool external, bool p=false, int g=-1);
 };
 
 //! Sound device (ampli)
@@ -535,16 +560,6 @@ Q_OBJECT
 public:
 	//! Constructor
 	zonanti_device(QString, bool p=false, int g=-1);
-};
-
-//! Thermal regulator device
-class thermr_device : public device
-{
-Q_OBJECT
-public:
-	//! Constructor
-	thermr_device(QString, device_status_thermr::type_t, bool fancoil,
-		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
 };
 
 //! Modscen device

@@ -1896,7 +1896,7 @@ device_condition_temp::device_condition_temp(QWidget *parent,
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
     Draw();
-    dev = new temperature_probe(QString(""), false);
+    dev = new temperature_probe_notcontrolled(QString(""), false);
 }
 
 int device_condition_temp::get_min()
