@@ -47,6 +47,15 @@ public:
 	virtual void createWinterBanners();
 };
 
+class ScenarioMenu : public ProgramMenu
+{
+Q_OBJECT
+public:
+	ScenarioMenu(QWidget *parent, const char *name, QDomNode conf);
+	virtual void createSummerBanners();
+	virtual void createWinterBanners();
+};
+
 class TimeEditMenu : public sottoMenu
 {
 Q_OBJECT

@@ -105,6 +105,87 @@ void WeeklyMenu::createWinterBanners()
 	}
 }
 
+ScenarioMenu::ScenarioMenu(QWidget *parent, const char *name, QDomNode conf)
+	: ProgramMenu(parent, name, conf)
+{
+	status = SUMMER;
+	createSummerBanners();
+}
+
+void ScenarioMenu::createSummerBanners()
+{
+	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
+	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_estivo.png");
+
+	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
+	{
+		qFatal("[TERMO] ScenarioMenu: wrong node in config file");
+	}
+
+	QDomNode summer = conf_root.namedItem("summer");
+	if (!summer.isNull())
+	{
+		QDomNode programs = summer.namedItem("scen");
+		QDomNode p;
+		if (!programs.isNull())
+			p = programs.firstChild();
+		while (!p.isNull())
+		{
+			BannWeekly *bp = new BannWeekly(this, 0);
+			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
+			// set Text taken from conf.xml
+			if (p.isElement())
+			{
+				bp->SetTextU(p.toElement().text());
+				QRegExp re("(\\d)");
+				int index = re.search(p.nodeName());
+				if (index != -1)
+					bp->setProgram(re.cap(1).toInt());
+			}
+			elencoBanner.append(bp);
+			p = p.nextSibling();
+		}
+	}
+}
+
+void ScenarioMenu::createWinterBanners()
+{
+	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
+	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_invernale.png");
+
+	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
+	{
+		qFatal("[TERMO] ScenarioMenu: wrong node in config file");
+	}
+
+	QDomNode winter = conf_root.namedItem("winter");
+	if (!winter.isNull())
+	{
+		QDomNode programs = winter.namedItem("scen");
+		QDomNode p;
+		if (!programs.isNull())
+			p = programs.firstChild();
+		while (!p.isNull())
+		{
+			BannWeekly *bp = new BannWeekly(this, 0);
+			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
+			// set Text taken from conf.xml
+			if (p.isElement())
+			{
+				bp->SetTextU(p.toElement().text());
+				QRegExp re("(\\d)");
+				int index = re.search(p.nodeName());
+				if (index != -1)
+					bp->setProgram(re.cap(1).toInt());
+			}
+			elencoBanner.append(bp);
+			p = p.nextSibling();
+		}
+	}
+}
+
 TimeEditMenu::TimeEditMenu(QWidget *parent, const char *name)
 	: sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
