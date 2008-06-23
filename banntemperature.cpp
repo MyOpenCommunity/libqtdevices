@@ -75,7 +75,7 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 void BannTemperature::Draw()
 {
 	QFont aFont;
-	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
+	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
 	descr_label->setFont(aFont);
 	descr_label->setAlignment(AlignAuto | AlignVCenter);
 	descr_label->setText(probe_descr);
