@@ -30,18 +30,24 @@ private:
 	/**
 	 * Utility function to create the settings menu for a 99z thermal regulator.
 	 */
-	sottoMenu *create99zSettings(QDomNode conf);
+	sottoMenu *create99zSettings(QDomNode conf, QString where);
 
 	/**
 	 * Utility function to create the settings menu for a 4z thermal regulator.
 	 */
-	sottoMenu *create4zSettings(QDomNode conf);
+	sottoMenu *create4zSettings(QDomNode conf, QString where);
 
 	/**
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
 	void weekSettings(sottoMenu *settings, QDomNode conf);
+
+	/**
+	 * Utility function to create the submenu to set the scenario program in thermal
+	 * regulator device.
+	 */
+	void scenarioSettings(sottoMenu *settings, QDomNode conf);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature

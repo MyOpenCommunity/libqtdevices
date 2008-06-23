@@ -163,13 +163,13 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	sottoMenu *settings = 0;
 	if (type == fs_4z_thermal_regulator)
 	{
-		settings = create4zSettings(n);
+		settings = create4zSettings(n, addr);
 		if (!settings)
 			qFatal("[TERMO] could not create settings menu");
 	}
 	if (type == fs_99z_thermal_regulator)
 	{
-		settings = create99zSettings(n);
+		settings = create99zSettings(n, addr);
 		if (!settings)
 			qFatal("[TERMO] could not create settings menu");
 	}
@@ -186,10 +186,8 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	return bp;
 }
 
-sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
+sottoMenu *PlantMenu::create4zSettings(QDomNode conf, QString where)
 {
-	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
-
 	sottoMenu *settings = new sottoMenu(0, "settings");
 
 	weekSettings(settings, conf);
@@ -201,14 +199,17 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF");
+	off->setAddress(where.ascii());
 	settings->appendBanner(off);
 
 	// antifreeze banner
 	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze");
+	antifreeze->setAddress(where.ascii());
 	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter");
+	summer_winter->setAddress(where.ascii());
 	settings->appendBanner(summer_winter);
 
 	settings->setAllFGColor(paletteForegroundColor());
@@ -217,7 +218,7 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf)
 	return settings;
 }
 
-sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
+sottoMenu *PlantMenu::create99zSettings(QDomNode conf, QString where)
 {
 	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
 
@@ -226,12 +227,30 @@ sottoMenu *PlantMenu::create99zSettings(QDomNode conf)
 	weekSettings(settings, conf);
 	manualSettings(settings);
 
+	scenarioSettings(settings, conf);
 	// scenario banner
 	bannPuls *scenarios = new bannPuls(0, "scenarios");//modes, "scenarios");
 	scenarios->SetIcons(i_right_arrow.ascii(), 0, i_scenarios.ascii());
 	scenarios->setBGColor(paletteBackgroundColor());
 	scenarios->setFGColor(paletteForegroundColor());
 	//modes->appendBanner(scenarios);
+
+	holidaySettings(settings, conf);
+
+	// off banner
+	BannOff *off = new BannOff(settings, "OFF");
+	off->setAddress(where.ascii());
+	settings->appendBanner(off);
+
+	// antifreeze banner
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze");
+	antifreeze->setAddress(where.ascii());
+	settings->appendBanner(antifreeze);
+
+	// summer_winter banner
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter");
+	summer_winter->setAddress(where.ascii());
+	settings->appendBanner(summer_winter);
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
@@ -318,6 +337,30 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
 
 	OpenFrameSender *frame_sender = new OpenFrameSender(weekmenu, this);
+}
+
+void PlantMenu::scenarioSettings(sottoMenu *settings, QDomNode conf)
+{
+	const QString i_scenario = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
+
+	bannPuls *scenario = new bannPuls(settings, "scenario");
+	scenario->SetIcons(i_right_arrow.ascii(), 0, i_scenario.ascii());
+	settings->appendBanner(scenario);
+
+	ScenarioMenu *scenariomenu = new ScenarioMenu(0, "weekly", conf);
+	scenariomenu->setAllBGColor(paletteBackgroundColor());
+	scenariomenu->setAllFGColor(paletteForegroundColor());
+
+	connect(scenario, SIGNAL(sxClick()), scenariomenu, SLOT(show()));
+	connect(scenario, SIGNAL(sxClick()), scenariomenu, SLOT(raise()));
+	connect(scenario, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(scenariomenu, SIGNAL(programClicked(int)), settings, SLOT(show()));
+	connect(scenariomenu, SIGNAL(programClicked(int)), scenariomenu, SLOT(hide()));
+	connect(scenariomenu, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(scenariomenu, SIGNAL(Closed()), scenariomenu, SLOT(hide()));
+
+	//OpenFrameSender *frame_sender = new OpenFrameSender(scenariomenu, this);
 }
 
 void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
