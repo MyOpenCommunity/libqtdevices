@@ -25,6 +25,8 @@ void device_cache::connect_comm(deviceptr dev)
 	client_comandi->connect(dev, SIGNAL(send_frame(char *)),
 			client_comandi, 
 			SLOT(ApriInviaFrameChiudi(char *)));
+
+	dev->setClients(client_comandi, client_monitor, client_richieste);
 }
 
 void device_cache::disconnect_comm(deviceptr dev)

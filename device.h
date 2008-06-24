@@ -381,6 +381,7 @@ public:
 };
 
 class frame_interpreter;
+class Client;
 
 //! Generic device
 class device : public QObject {
@@ -407,8 +408,14 @@ public:
 	int put();
 	//! Returns cache key
 	QString get_key(void);
+
+	void setClients(Client *comandi, Client *monitor, Client *richieste);
+
 	//! Destructor
 	virtual ~device();
+
+	void sendFrame(char *frame);
+	void sendInit(char *frame);
 
 signals:
 	//! Status changed
@@ -443,6 +450,10 @@ private:
 	int group;
 	//! Number of users
 	int refcount;
+
+	Client *client_comandi;
+	Client *client_monitor;
+	Client *client_richieste;
 };
 
 /********************* Specific class device children classes **********************/

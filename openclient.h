@@ -41,6 +41,7 @@ class Client  : public QObject
 /*! Connects to the socket
 */  
        void connetti();
+	void ApriInviaFrameChiudi(char *);
     private slots:
 /*! Closes the socket
 */          
@@ -60,7 +61,7 @@ class Client  : public QObject
     void socketError(int e );
 /*! Send an \a Open \aFrame throught the socket
 */   
-    void ApriInviaFrameChiudi(char *);
+    
     /*! Send an \a Open \aFrame through the socket and wait for ack */
     void ApriInviaFrameChiudiw(char*);
     void richStato(char*);

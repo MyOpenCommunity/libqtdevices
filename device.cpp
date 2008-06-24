@@ -400,6 +400,23 @@ device::device(QString _who, QString _where, bool p, int g)
 	stat = new QPtrList<device_status>;
 }
 
+void device::setClients(Client *comandi, Client *monitor, Client *richieste)
+{
+	client_comandi = comandi;
+	client_monitor = monitor;
+	client_richieste = richieste;
+}
+
+void device::sendFrame(char *frame)
+{
+	client_comandi->ApriInviaFrameChiudi(frame);
+}
+
+void device::sendInit(char *frame)
+{
+	client_richieste->ApriInviaFrameChiudi(frame);
+}
+
 void device::init(bool force )
 {
 	qDebug("device::init()");
