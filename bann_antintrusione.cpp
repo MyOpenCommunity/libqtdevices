@@ -191,7 +191,7 @@ void zonaAnti::inizializza(bool forza)
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);
+	dev->sendInit(msg_open.frame_open);
 }
 
 
@@ -360,7 +360,7 @@ void impAnti::Insert1(char* pwd)
 	strcat(pippo,"*0##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	qDebug("sending part frame %s", pippo);
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 	send_part_msg = false;
 	part_msg_sent = true;
 end:
@@ -390,7 +390,7 @@ void impAnti::Insert3()
 	strcat(pippo,pwd);
 	strcat(pippo,"*0##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 	parentWidget()->show();
 	inserting = false;
 	disconnect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
@@ -411,7 +411,7 @@ void impAnti::DeInsert(char* pwd)
 		strcat(pippo,pwd);
 		strcat(pippo,"*0##");
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}    
 	parentWidget()->show();
 	//    qDebug("disinserisco con %s", pwd);
@@ -463,7 +463,7 @@ void impAnti::inizializza(bool forza)
 	qDebug("impAnti::inizializza()");
 	insert_timer.stop();
 	disconnect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
-	emit sendInit("*#5*0##");
+	dev->sendInit("*#5*0##");
 }
 
 void impAnti::hide()

@@ -62,6 +62,7 @@ class grAmplificatori : public bannRegolaz
 Q_OBJECT
 private:
 	QPtrList<QString> elencoDisp;
+	device *dev;
 public:
 	grAmplificatori  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
 	void inizializza(bool forza = false);

@@ -81,7 +81,7 @@ void attuatAutom::Attiva()
 
 	msg_open.CreateNullMsgOpen();     
 	msg_open.CreateMsgOpen("1", "1",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void attuatAutom::Disattiva()
@@ -90,7 +90,7 @@ void attuatAutom::Disattiva()
 
 	msg_open.CreateNullMsgOpen();     
 	msg_open.CreateMsgOpen("1", "0",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 
@@ -113,7 +113,7 @@ void attuatAutom::inizializza(bool forza)
 	if(!forza)
 		emit richStato(msg_open.frame_open);
 	else
-		emit sendInit(msg_open.frame_open);    
+		dev->sendInit(msg_open.frame_open);
 }
 
 /*****************************************************************
@@ -125,6 +125,7 @@ void attuatAutom::inizializza(bool forza)
 {     
 	SetIcons( IconaDx, IconaSx,NULL,icon,period ,number );
 	setAddress(indirizzi);
+	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 }
@@ -146,7 +147,7 @@ void grAttuatAutom::Attiva()
 	{
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("1", "1",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -158,7 +159,7 @@ void grAttuatAutom::Disattiva()
 	{
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("1", "0",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -273,7 +274,7 @@ void attuatAutomInt::analizzaUp()
 
 			msg_open.CreateNullMsgOpen();     
 			msg_open.CreateMsgOpen("2", "0",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 		}
 		else
 		{
@@ -281,7 +282,7 @@ void attuatAutomInt::analizzaUp()
 
 			msg_open.CreateNullMsgOpen();     
 			msg_open.CreateMsgOpen("2", "1",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);	 
+			dev->sendFrame(msg_open.frame_open);
 		}
 	}
 }
@@ -296,7 +297,7 @@ void attuatAutomInt::analizzaDown()
 
 			msg_open.CreateNullMsgOpen();     
 			msg_open.CreateMsgOpen("2", "0",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 		}
 		else
 		{
@@ -304,7 +305,7 @@ void attuatAutomInt::analizzaDown()
 
 			msg_open.CreateNullMsgOpen();     
 			msg_open.CreateMsgOpen("2", "2",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 		}
 	}
 }
@@ -321,7 +322,7 @@ void attuatAutomInt::inizializza(bool forza)
 	strcat(pippo,"##");
 	// qDebug("mando frame attuat autom int %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);    
+	dev->sendInit(msg_open.frame_open);
 }
 /*****************************************************************
  **attuatAutomIntSic
@@ -434,7 +435,7 @@ void attuatAutomIntSic::upPres()
 
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("2", "1",getAddress(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	} 
 }
 
@@ -446,7 +447,7 @@ void attuatAutomIntSic::doPres()
 
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("2", "2",getAddress(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	} 
 }
 
@@ -472,7 +473,7 @@ void attuatAutomIntSic::sendStop()
 
 	msg_open.CreateNullMsgOpen();     
 	msg_open.CreateMsgOpen("2", "0",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void attuatAutomIntSic::inizializza(bool forza)
@@ -486,7 +487,7 @@ void attuatAutomIntSic::inizializza(bool forza)
 	strcat(pippo,"##");
 	//   qDebug("mando frame attuat autom intSic %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);    
+	dev->sendInit(msg_open.frame_open);
 }
 
 /*****************************************************************
@@ -619,7 +620,7 @@ void attuatAutomTemp::Attiva()
 
 	msg_open.CreateNullMsgOpen();     
 	msg_open.CreateMsgOpen("1",&cosa[0],getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void attuatAutomTemp::CiclaTempo()
@@ -643,7 +644,7 @@ void attuatAutomTemp::inizializza(bool forza)
 	strcat(pippo,"##");
 	//  qDebug("mando frame attuat autom Temp %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);    
+	dev->sendInit(msg_open.frame_open);
 }
 
 void attuatAutomTemp::assegna_tempo_display()
@@ -760,7 +761,7 @@ void attuatAutomTempNuovoN::Attiva()
 	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), t);
 	msg_open.CreateNullMsgOpen();     
 	msg_open.CreateMsgOpen(frame, strlen(frame));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 // *#1*dove*2## 
@@ -775,7 +776,7 @@ void attuatAutomTempNuovoN::inizializza(bool forza)
 	strcat(pippo,"*2##");
 	//  qDebug("mando frame attuat autom Temp %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);    
+	dev->sendInit(msg_open.frame_open);
 }
 
 void attuatAutomTempNuovoN::assegna_tempo_display()
@@ -856,7 +857,7 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 	SetSecondaryTextU( tmp );
 	connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
 	// Crea o preleva il dispositivo dalla cache
-	device *dev = btouch_device_cache.get_newtimed(getAddress());
+	dev = btouch_device_cache.get_newtimed(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			this, SLOT(status_changed(QPtrList<device_status>)));
@@ -958,7 +959,7 @@ void attuatAutomTempNuovoF::update()
 	sprintf(frame, "*#1*%s*2##", getAddress());
 	msg_open.CreateNullMsgOpen();     
 	msg_open.CreateMsgOpen(frame, strlen(frame));
-	emit sendInit(msg_open.frame_open);
+	dev->sendInit(msg_open.frame_open);
 }
 
 void attuatAutomTempNuovoF::Attiva()
@@ -969,7 +970,7 @@ void attuatAutomTempNuovoF::Attiva()
 	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), t);
 	msg_open.CreateNullMsgOpen();     
 	msg_open.CreateMsgOpen(frame, strlen(frame));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 	// Chiede subito la temporizzazione
 	update();
 	// Valore iniziale = il valore impostato
@@ -992,7 +993,7 @@ void attuatAutomTempNuovoF::inizializza(bool forza)
 	strcat(pippo,"*2##");
 	//  qDebug("mando frame attuat autom Temp %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);    
+	dev->sendInit(msg_open.frame_open);
 }
 
 // Chiede lo stato dell'attuatore con una frame vecchia
@@ -1115,6 +1116,7 @@ void attuatAutomTempNuovoF::Draw()
 {     
 	SetIcons(  IconaDx,IconaSx ,NULL,icon,period ,number );
 	setAddress(indirizzi);
+	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(dxClick()),this,SLOT(Alza()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(Abbassa()));
 	connect(this,SIGNAL(centerClick()),this,SLOT(Ferma()));
@@ -1136,7 +1138,7 @@ void grAttuatInt::Alza()
 	{
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("2", "1",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -1148,7 +1150,7 @@ void grAttuatInt::Abbassa()
 	{
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("2", "2",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -1160,7 +1162,7 @@ void grAttuatInt::Ferma()
 	{
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("2", "0",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -1176,6 +1178,7 @@ void grAttuatInt::inizializza(bool forza)
 {               
 	SetIcons(  IconaSx,NULL,icon,NULL,period ,number );
 	setAddress(indirizzo);
+	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(sxReleased()),this,SLOT(Disattiva()));
 	type=tipo;
@@ -1191,17 +1194,17 @@ void attuatPuls::Attiva()
 		case  AUTOMAZ: 
 			msg_open.CreateNullMsgOpen();
 			msg_open.CreateMsgOpen("1", "1",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			break;
 		case  VCT_SERR:
 			msg_open.CreateNullMsgOpen();
 			msg_open.CreateMsgOpen("6", "10",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			break;	 
 		case  VCT_LS:
 			msg_open.CreateNullMsgOpen();
 			msg_open.CreateMsgOpen("6", "12",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			break;
 	}
 }
@@ -1213,17 +1216,14 @@ void attuatPuls::Disattiva()
 		case  AUTOMAZ:
 			msg_open.CreateNullMsgOpen();     
 			msg_open.CreateMsgOpen("1", "0",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			break;	 
 		case  VCT_SERR: 
-			/*  msg_open.CreateNullMsgOpen();     
-			    msg_open.CreateMsgOpen("6", "1",getAddress(),"");
-			    emit sendFrame(msg_open.frame_open);*/
-			break;	 
+			break;
 		case  VCT_LS: 
 			msg_open.CreateNullMsgOpen();     
 			msg_open.CreateMsgOpen("6", "11",getAddress(),"");
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			break;	 
 	}  
 }

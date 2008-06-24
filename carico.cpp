@@ -10,6 +10,8 @@
 
 #include "carico.h"
 #include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+#include "device_cache.h"
+#include "device.h"
 
 /*****************************************************************
  **carico
@@ -21,6 +23,7 @@ carico::carico( sottoMenu *parent,const char *name,char* indirizzo ,char* IconaS
 
 	SetIcons( IconaSx,1);
 	setAddress(indirizzo);
+	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
@@ -34,7 +37,7 @@ void carico::Attiva()
 
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("3", "2",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void carico::inizializza(bool forza){}

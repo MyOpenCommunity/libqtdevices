@@ -110,6 +110,8 @@ private slots:
 	virtual void Disattiva();
 	virtual void Aumenta();
 	virtual void Diminuisci();
+private:
+	device *dev;
 };
 
 
@@ -137,6 +139,8 @@ private slots:
 	void Disattiva();
 	void Aumenta();
 	void Diminuisci();
+private:
+	device *dev;
 };
 
 #endif

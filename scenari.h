@@ -35,6 +35,8 @@ public:
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
+private:
+	device *dev;
 };
 
 /*****************************************************************

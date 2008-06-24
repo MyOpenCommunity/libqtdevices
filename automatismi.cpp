@@ -41,7 +41,7 @@ void automCancAttuatVC::Attiva()
 	msg_open.CreateNullMsgOpen();
 	// FIXME: CHECK FRAME !!
 	msg_open.CreateMsgOpen("6", "10",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 
@@ -82,5 +82,5 @@ void automCancAttuatIll::Attiva()
 	//                                    char** value,
 	//                                    int numValue)
 	msg_open.CreateWrDimensionMsgOpen("1", getAddress(), "2", v, 1);
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }

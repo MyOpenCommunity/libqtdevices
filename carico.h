@@ -13,6 +13,8 @@
 
 #include "bannondx.h" // class bannOnSx
 
+class device;
+
 /*****************************************************************
  **carico
  ****************************************************************/
@@ -33,6 +35,8 @@ private slots:
 	void Attiva();
 public slots:
 	void gestFrame(char*);
+private:
+	device *dev;	
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include "bannpuls.h"
 #include "main.h" // MAX_PATH
 
+
 /*****************************************************************
  **Attuatore Automazione
  ****************************************************************/
@@ -64,6 +65,7 @@ class grAttuatAutom : public bannOnOff
 Q_OBJECT
 private:
 	QPtrList<QString> elencoDisp;
+	device *dev;
 public:
 	grAttuatAutom  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
@@ -246,6 +248,8 @@ protected slots:
 public slots:
 
 	void status_changed(QPtrList<device_status>);
+private:
+	device *dev;
 };
 
 
@@ -266,6 +270,7 @@ class grAttuatInt : public bann3But
 Q_OBJECT
 private:
 	QPtrList<QString> elencoDisp;
+	device *dev;
 public:
 	grAttuatInt(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
@@ -295,6 +300,7 @@ class attuatPuls : public bannPuls
 Q_OBJECT
 private:
 	char type;
+	device *dev;
 public:
 	attuatPuls( QWidget *parent=0, const char *name=NULL ,char*indirizzi=NULL,char* IconaSx=NULL,/*char* IconaDx=NULL,*/char*IconActive=NULL,char tipo=0,int periodo=0,int numFrame=0); 
 	void inizializza(bool forza = false);

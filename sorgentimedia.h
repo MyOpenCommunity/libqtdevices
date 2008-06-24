@@ -14,6 +14,8 @@
 #include "bannciclaz.h"
 #include "multimedia_source.h"
 
+class device;
+
 /**
  * \brief This class is made to manage a multimedia source.
  */
@@ -33,6 +35,7 @@ private slots:
 	void menu();
 protected:
 	MultimediaSource source_menu;
+	device *dev;
 };
 
 /**

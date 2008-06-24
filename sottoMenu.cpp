@@ -254,32 +254,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		TERMO_EXTPROBE=55,          External not-controlled probe
 		TERMO_PROBE=56,             Not-controlled probe
 		*/
-#if 0
-		case TERMO:
-			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES, descrizione,
-				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
-			break;
-		case TERMO_4Z:
-			elencoBanner.append(new termoPage(this, termoPage::THERMO_4_ZONES, descrizione,
-				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
-			break;
-		case TERMO_FANCOIL:
-			elencoBanner.append(new termoPage(this, termoPage::THERMO_99_ZONES_FANCOIL, descrizione,
-				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
-			break;
-		case TERMO_4Z_FANCOIL:
-			elencoBanner.append(new termoPage(this, termoPage::THERMO_4_ZONES_FANCOIL, descrizione,
-				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
-			break;
-		case TERMO_PROBE:
-			elencoBanner.append(new termoPage(this, termoPage::SINGLE_PROBE, descrizione,
-				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
-			break;
-		case TERMO_EXTPROBE:
-			elencoBanner.append(new termoPage(this, termoPage::EXT_SINGLE_PROBE, descrizione,
-				(char*)indirizzo, icon_names, SecondForeground, par3, txt1));
-			break;
-#endif
 		case ZONANTINTRUS:
 			elencoBanner.append(new zonaAnti(this,descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 			break;
@@ -295,9 +269,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		case VERSIONE:
 			elencoBanner.append(new machVers(this,descrizione , (versio*)indirizzo, IconaSx));
 			break;
-#if 0
-		case ALLARME: elencoBanner.append(new allarme(this,descrizione ,(char*)indirizzo, IconaSx));break;
-#endif
 			      //    case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione , (char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon)); break;
 		case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione ,IconaDx,icon,pressedIcon, IconaSx, periodo)); break;
 		case MOD_SCENARI:  elencoBanner.append(new gesModScen(this, descrizione ,(char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon, icoEx1, icoEx2, icoEx3));break;
@@ -373,12 +344,6 @@ void sottoMenu::addItem(banner *b)
 void sottoMenu::showItem(int id)
 {
 	indice = id;
-	// FIXME: dirty way to set the last button of the navBar in case of full screen banners
-	if (numRighe == 1)
-	{
-		banner *bann = getCurrent();
-	}
-
 	forceDraw();
 }
 

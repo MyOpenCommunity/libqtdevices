@@ -11,7 +11,8 @@
 #include "sorgentimedia.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
 #include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
-
+#include "device_cache.h"
+#include "device.h"
 
 /*****************************************************************
  **SorgenteMultimedia
@@ -23,7 +24,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	SetIcons(ICON_CICLA, ICON_IMPOSTA, ICON_FFWD, ICON_REW);
 
 	setAddress(indirizzo);
-
+	dev = btouch_device_cache.get_device(getAddress());
 	source_menu.setBGColor(parentWidget(TRUE)->backgroundColor());
 	source_menu.setFGColor(parentWidget(TRUE)->foregroundColor());
 
@@ -52,7 +53,7 @@ void BannerSorgenteMultimedia::ciclaSorg()
 	memset(pippo,'\000',sizeof(pippo));
 	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void BannerSorgenteMultimedia::decBrano()
@@ -107,7 +108,7 @@ void BannerSorgenteMultimedia::inizializza(bool forza)
 	char amb[3];
 
 	sprintf(amb, getAddress());
-	emit sendInit((char *)(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(amb[2]).ascii()));
+	dev->sendInit((char *)(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(amb[2]).ascii()));
 }
 /*
  * Banner Sorgente Multimediale Multicanale
@@ -137,7 +138,7 @@ void BannerSorgenteMultimediaMC::attiva()
 		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		//msg_open.CreateMsgOpen("16", "3", getAddress(), "");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 		source_menu.enableSource(false);
 		source_menu.resume();
@@ -153,11 +154,11 @@ void BannerSorgenteMultimediaMC::attiva()
 			strcat(pippo,"*6");
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*22*1#4#");
 			strcat(pippo,(*it));
@@ -165,11 +166,11 @@ void BannerSorgenteMultimediaMC::attiva()
 			strcat(pippo, indirizzo_semplice);
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 		}
 		source_menu.enableSource(false);
 		source_menu.resume();
@@ -208,7 +209,7 @@ void BannerSorgenteMultimediaMC::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimediaMC::inizializza()");
 
-	emit sendInit((char *)(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice.ascii()).arg(indirizzo_semplice.ascii()).ascii()));
+	dev->sendInit((char *)(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice.ascii()).arg(indirizzo_semplice.ascii()).ascii()));
 }
 
 void BannerSorgenteMultimediaMC::gestFrame(char *frame)

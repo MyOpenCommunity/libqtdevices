@@ -191,7 +191,7 @@ void dimmer:: Accendi()
 
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("1", "1",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void dimmer:: Spegni()
 {
@@ -199,7 +199,7 @@ void dimmer:: Spegni()
 
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("1", "0",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void dimmer:: Aumenta()
 {
@@ -207,14 +207,14 @@ void dimmer:: Aumenta()
 
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("1", "30",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void dimmer:: Diminuisci()	
 {
 	openwebnet msg_open;
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("1", "31",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void dimmer::inizializza(bool forza)
@@ -231,7 +231,7 @@ void dimmer::inizializza(bool forza)
 	if(!forza)
 		emit richStato(msg_open.frame_open);
 	else
-		emit sendInit(msg_open.frame_open);
+		dev->sendInit(msg_open.frame_open);
 }
 
 
@@ -297,7 +297,7 @@ void dimmer100:: Accendi()
 	//*1*0#velocita*dove## 
 	sprintf(s, "*1*1#%d*%s##", softstart, getAddress());
 	msg_open.CreateMsgOpen(s, strlen(s));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void dimmer100:: Spegni()
@@ -311,7 +311,7 @@ void dimmer100:: Spegni()
 	//*1*0#velocita*dove## 
 	sprintf(s, "*1*0#%d*%s##", softstop, getAddress());
 	msg_open.CreateMsgOpen(s, strlen(s));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void dimmer100:: Aumenta()
@@ -327,7 +327,7 @@ void dimmer100:: Aumenta()
 	// default 255.
 	sprintf(cosa, "30#5#255");
 	msg_open.CreateMsgOpen("1", cosa, getAddress(), "");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void dimmer100:: Diminuisci()	
@@ -339,7 +339,7 @@ void dimmer100:: Diminuisci()
 	sprintf(cosa, "31#5#255");
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("1", cosa ,getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void dimmer100::status_changed(QPtrList<device_status> sl)
@@ -424,7 +424,7 @@ void dimmer100::inizializza(bool forza)
 	if(!forza)
 		emit richStato(msg_open.frame_open);
 	else
-		emit sendInit(msg_open.frame_open);
+		dev->sendInit(msg_open.frame_open);
 }
 
 /*****************************************************************
@@ -437,6 +437,7 @@ void dimmer100::inizializza(bool forza)
 	//     setRange(1,1);
 	SetIcons(  IconaSx, IconaDx ,icondx,iconsx );
 	setAddress(indirizzi);
+	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
@@ -459,7 +460,7 @@ void grDimmer::Attiva()
 	{
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("1", "1",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -471,7 +472,7 @@ void grDimmer::Disattiva()
 	{
 		msg_open.CreateNullMsgOpen();     
 		msg_open.CreateMsgOpen("1", "0",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -483,7 +484,7 @@ void grDimmer::Aumenta()
 	{
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("1", "30",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -495,7 +496,7 @@ void grDimmer::Diminuisci()
 	{
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("1", "31",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -511,6 +512,8 @@ void grDimmer::inizializza(bool forza){}
 { 
 	qDebug("grDimmer100::grDimmer100()");
 	qDebug("sstart[0] = %d", sstart[0]);
+	setAddress(indirizzi);
+	dev = btouch_device_cache.get_device(getAddress());
 	soft_start = sstart;
 	soft_stop = sstop;
 }
@@ -525,7 +528,7 @@ void grDimmer100::Attiva()
 		sprintf(s, "*1*1#%d*%s##", soft_start[idx], 
 				(elencoDisp.at(idx))->ascii());
 		msg_open.CreateMsgOpen(s, strlen(s));
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -539,7 +542,7 @@ void grDimmer100::Disattiva()
 		sprintf(s, "*1*0#%d*%s##", soft_stop[idx], 
 				(elencoDisp.at(idx))->ascii());
 		msg_open.CreateMsgOpen(s, strlen(s));
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 
 }
@@ -551,7 +554,7 @@ void grDimmer100::Aumenta()
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("1", "30#5#255",
 				(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -562,6 +565,6 @@ void grDimmer100::Diminuisci()
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("1", "31#5#255",
 				(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }

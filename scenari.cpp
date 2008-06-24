@@ -28,6 +28,7 @@
 {   
 	SetIcons( IconaSx,1);
 	setAddress(indirizzo);
+	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
@@ -42,7 +43,7 @@ void scenario::Attiva()
 		memset(index(&cosa[0],'*'),'\000',sizeof(cosa)-(index(&cosa[0],'*')-&cosa[0]));
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("0",&cosa[0],strstr(getAddress(),"*")+1,"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 void scenario::inizializza(bool forza){}
@@ -107,7 +108,7 @@ void gesModScen::attivaScenario()
 	strcat(pippo,&dove[0]);
 	strcat(pippo,"##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void gesModScen::enterInfo()
 {
@@ -143,7 +144,7 @@ void gesModScen::startProgScen()
 	strcat(pippo,&dove[0]);
 	strcat(pippo,"##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 	sendInProgr=1;
 }
 void gesModScen::stopProgScen()
@@ -158,7 +159,7 @@ void gesModScen::stopProgScen()
 	strcat(pippo,&dove[0]);
 	strcat(pippo,"##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 	sendInProgr=0;
 }
 void gesModScen::cancScen()
@@ -173,7 +174,7 @@ void gesModScen::cancScen()
 	strcat(pippo,&dove[0]);
 	strcat(pippo,"##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void gesModScen::status_changed(QPtrList<device_status> sl)

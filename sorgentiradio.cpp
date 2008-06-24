@@ -148,7 +148,7 @@ void banradio::pre_show()
 		strcat(pippo,"*6##");
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 
-		emit sendInit(msg_open.frame_open);
+		dev->sendInit(msg_open.frame_open);
 	}
 
 	QWidget::show();
@@ -195,7 +195,7 @@ void banradio::ciclaSorg()
 	memset(pippo,'\000',sizeof(pippo));
 	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::decBrano()
@@ -203,7 +203,7 @@ void banradio::decBrano()
 	openwebnet msg_open;
 
 	msg_open.CreateMsgOpen("16","6101",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::aumBrano()
@@ -211,7 +211,7 @@ void banradio::aumBrano()
 	openwebnet msg_open;
 
 	msg_open.CreateMsgOpen("16","6001",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void banradio::aumFreqAuto()
 {
@@ -221,7 +221,7 @@ void banradio::aumFreqAuto()
 	myRadio->setRDS("- - - - ");
 	myRadio->draw();
 	msg_open.CreateMsgOpen("16","5000",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void banradio::decFreqAuto()
 {
@@ -231,7 +231,7 @@ void banradio::decFreqAuto()
 	myRadio->setRDS("- - - - ");
 	myRadio->draw();
 	msg_open.CreateMsgOpen("16","5100",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::aumFreqMan()
@@ -247,7 +247,7 @@ void banradio::aumFreqMan()
 	myRadio->setFreq(f);
 	myRadio->draw();
 	msg_open.CreateMsgOpen("16","5001",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::decFreqMan()
@@ -263,7 +263,7 @@ void banradio::decFreqMan()
 	myRadio->setFreq(f);
 	myRadio->draw();
 	msg_open.CreateMsgOpen("16","5101",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void banradio::changeStaz()
 {
@@ -276,7 +276,7 @@ void banradio::changeStaz()
 			amb[1] = '1';
 
 	msg_open.CreateMsgOpen("16","6001",amb,"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::memoStaz(uchar st)
@@ -305,7 +305,7 @@ void banradio::memoStaz(uchar st)
 	qDebug(msg_open.frame_open);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void banradio::startRDS()
 {
@@ -321,7 +321,7 @@ void banradio::startRDS()
 	qDebug(msg_open.frame_open);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::stopRDS()
@@ -337,7 +337,7 @@ void banradio::stopRDS()
 	qDebug(msg_open.frame_open);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::richFreq()
@@ -352,7 +352,7 @@ void banradio::richFreq()
 
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 
 void banradio::setBGColor(int r, int g , int b)
@@ -415,7 +415,7 @@ void sorgenteMultiRadio::attiva()
 		memset(pippo,'\000',sizeof(pippo));
 		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	} else {
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI",
@@ -427,11 +427,11 @@ void sorgenteMultiRadio::attiva()
 			strcat(pippo,"*6");
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*22*1#4#");
 			strcat(pippo,(*it));
@@ -439,11 +439,11 @@ void sorgenteMultiRadio::attiva()
 			strcat(pippo, indirizzo_semplice);
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			emit sendFrame(msg_open.frame_open);
+			dev->sendFrame(msg_open.frame_open);
 		}
 	}
 }

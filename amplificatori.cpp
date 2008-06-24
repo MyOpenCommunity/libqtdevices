@@ -113,7 +113,7 @@ void amplificatore:: Accendi()
 	memset(pippo,'\000',sizeof(pippo));
 	sprintf(ind, "%s", getAddress());
 	sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-	emit sendFrame(pippo);
+	dev->sendFrame(pippo);
 }
 void amplificatore:: Spegni()
 {
@@ -124,7 +124,7 @@ void amplificatore:: Spegni()
 	memset(pippo,'\000',sizeof(pippo));
 	sprintf(ind, "%s", getAddress());
 	sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-	emit sendFrame(pippo);
+	dev->sendFrame(pippo);
 }
 void amplificatore:: Aumenta()
 {
@@ -133,7 +133,7 @@ void amplificatore:: Aumenta()
 	qDebug("amplificatore::Aumenta()");
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("16", "1001",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void amplificatore:: Diminuisci()	
 {
@@ -142,7 +142,7 @@ void amplificatore:: Diminuisci()
 	qDebug("amplificatore::Diminuisci()");
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("16", "1101",getAddress(),"");
-	emit sendFrame(msg_open.frame_open);
+	dev->sendFrame(msg_open.frame_open);
 }
 void amplificatore::inizializza(bool forza)
 { 
@@ -155,7 +155,7 @@ void amplificatore::inizializza(bool forza)
 	strcat(pippo,"*1##");
 	//   qDebug("mando frame ampli %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);
+	dev->sendInit(msg_open.frame_open);
 
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*#16*");
@@ -163,7 +163,7 @@ void amplificatore::inizializza(bool forza)
 	strcat(pippo,"*5##");
 	//   qDebug("mando frame ampli %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	emit sendInit(msg_open.frame_open);
+	dev->sendInit(msg_open.frame_open);
 
 }
 /*****************************************************************
@@ -176,6 +176,7 @@ void amplificatore::inizializza(bool forza)
 	//     setRange(1,1);
 	SetIcons(IconaSx,IconaDx ,icondx,iconsx );
 	setAddress(indirizzi);
+	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
@@ -205,7 +206,7 @@ void grAmplificatori::Attiva()
 			sprintf(pippo,"*22*34#4#%c*4#%c##",ind[1], ind[1]);
 		else
 			sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-		emit sendFrame(pippo);
+		dev->sendFrame(pippo);
 	}
 }
 
@@ -224,7 +225,7 @@ void grAmplificatori::Disattiva()
 			sprintf(pippo,"*22*0#4#%c*4#%c##",ind[1], ind[1]);
 		else
 			sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-		emit sendFrame(pippo);
+		dev->sendFrame(pippo);
 	}
 }
 
@@ -236,7 +237,7 @@ void grAmplificatori::Aumenta()
 	{
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("16", "1001",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -248,7 +249,7 @@ void grAmplificatori::Diminuisci()
 	{
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("16", "1101",(char*)elencoDisp.at(idx)->ascii(),"");
-		emit sendFrame(msg_open.frame_open);
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 void grAmplificatori::inizializza(bool forza)
