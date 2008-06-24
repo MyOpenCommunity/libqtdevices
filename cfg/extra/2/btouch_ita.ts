@@ -1,5 +1,12 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>FSBannManual</name>
+    <message>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>of</source>

@@ -500,6 +500,10 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name)
 	: BannFullScreen(parent, "manual"),
 	main_layout(this)
 {
+	descr = tr("Manual");
+	descr_label = new QLabel(this);
+	main_layout.addWidget(descr_label);
+
 	temp = 200;
 	temp_label = new QLabel(this);
 	QHBoxLayout *hbox = new QHBoxLayout();
@@ -529,8 +533,6 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name)
 	hbox->addWidget(btn);
 
 	main_layout.addLayout(hbox);
-
-	//main_layout.addWidget(new QLabel("Manuale", this));
 }
 
 void FSBannManual::setThermalRegulator()
@@ -553,11 +555,16 @@ void FSBannManual::decSetpoint()
 void FSBannManual::Draw()
 {
 	QFont aFont;
+	FontManager::instance()->getFont(font_banTermo_testo, aFont);
+	descr_label->setFont(aFont);
+	descr_label->setAlignment(AlignTop|AlignHCenter);
+	descr_label->setText(descr);
+
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	temp_label->setFont(aFont);
 	temp_label->setAlignment(AlignHCenter|AlignVCenter);
-	QString temp_string;
 
+	QString temp_string;
 	int temp_format = temp;
 	if (temp_format >= 1000)
 	{

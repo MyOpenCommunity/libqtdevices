@@ -169,6 +169,8 @@ public slots:
 protected:
 	QVBoxLayout main_layout;
 private:
+	QString descr;
+	QLabel *descr_label;
 	int temp;
 	QLabel *temp_label;
 private slots:
