@@ -227,7 +227,7 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 	while ((dev = it.current()) != 0)
 	{
 		++it;
-		if (dev->get_type() == device_status::THERMR)
+		if (dev->get_type() == device_status::TEMPERATURE_PROBE_EXTRA)
 		{
 			stat_var curr_local(stat_var::LOCAL);
 			stat_var curr_sp(stat_var::SP);

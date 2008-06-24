@@ -329,7 +329,7 @@ device_status_temperature_probe::device_status_temperature_probe() :
 }
 
 device_status_temperature_probe_extra::device_status_temperature_probe_extra(thermo_type_t type) :
-	device_status(THERMR)
+	device_status(TEMPERATURE_PROBE_EXTRA)
 {
 	/*
 	 * Initial value -1: not a possible one, so when the probe is
@@ -709,7 +709,7 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 	device(QString("4"), w, p, g)
 {
 	qDebug("temperature_probe_controlled::temperature_probe_controlled(), type=%d, fancoil=%s", type, fancoil ? "true" : "false");
-	interpreter = new frame_interpreter_thermr_device(w, type, ind_centrale, indirizzo, p, g);
+	interpreter = new frame_interpreter_temperature_probe_controlled(w, type, ind_centrale, indirizzo, p, g);
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_temperature_probe_extra(type));
 	stat->append(new device_status_temperature_probe());

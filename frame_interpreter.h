@@ -353,7 +353,7 @@ public slots:
 };
 
 //! Thermal regulator device frame interpreter
-class frame_interpreter_thermr_device : public frame_interpreter
+class frame_interpreter_temperature_probe_controlled : public frame_interpreter
 {
 Q_OBJECT
 private:
@@ -392,7 +392,7 @@ protected:
 	bool is_frame_ours(openwebnet_ext, bool& request_status);
 public:
 	//! Constructor
-	frame_interpreter_thermr_device(QString,
+	frame_interpreter_temperature_probe_controlled(QString,
 		thermo_type_t type,
 		const char *ind_centrale, const char *indirizzo, bool, int);
 	//! Returns init message given device status
