@@ -172,15 +172,15 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 {
 	/// Define Search Data Map
 	QMap<QString, QString> data_search;
-	data_search["file_name"]    = "Playing [^\\n]*([^/\\n]+)\\.\\n";
-	data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
-	data_search["meta_artist"]  = "Artist: ([^\\n]*)\\n";
-	data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
-	data_search["meta_year"]    = "Year: ([^\\n]*)\\n";
-	data_search["meta_comment"] = "Comment: ([^\\n]*)\\n";
-	data_search["meta_genre"]   = "Genre: ([^\\n]*)\\n";
+	data_search["file_name"]    = tr("Playing") + " [^\\n]*([^/\\n]+)\\.\\n";
+	data_search["meta_title"]   = tr("Title") + ": ([^\\n]*)\\n";
+	data_search["meta_artist"]  = tr("Artist") + ": ([^\\n]*)\\n";
+	data_search["meta_album"]   = tr("Album") + ": ([^\\n]*)\\n";
+	data_search["meta_year"]    = tr("Year") + ": ([^\\n]*)\\n";
+	data_search["meta_comment"] = tr("Comment") + ": ([^\\n]*)\\n";
+	data_search["meta_genre"]   = tr("Genre") + ": ([^\\n]*)\\n";
 	data_search["total_time"]   = "[(](\\d+:\\d+\\.\\d+)[)] \\d+\\.\\d+";
-	data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
+	data_search["current_time"] = tr("A") + ":\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
 
 	/// READ ROW output from MPlayer
 	QString row_data = readOutput();
