@@ -48,6 +48,9 @@ public:
 		INFO_SONDA,
 		INFO_CENTRALE,
 		FANCOIL_SPEED,
+		PROGRAM, // weekly program currently set in the thermal regulator
+		SCENARIO, // scenario currentrly set in thermal regulator (99 zones only)
+		SEASON,   // summer / winter
 	};
 private:
 	type t;
@@ -115,10 +118,11 @@ public:
 		DOORPHONE,
 		IMPANTI,
 		ZONANTI,
-		THERMR,
+		TEMPERATURE_PROBE_EXTRA,
 		FANCOIL,
 		MODSCEN,
 		SOUNDMATR,
+		THERMAL_REGULATOR,
 	} type;
 private:
 	//! Type

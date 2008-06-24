@@ -2292,7 +2292,7 @@ next:
 
 // Thermal regulator device frame interpreter
 
-bool frame_interpreter_thermr_device::checkTimeoutVar(const stat_var &var)
+bool frame_interpreter_temperature_probe_controlled::checkTimeoutVar(const stat_var &var)
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
@@ -2309,7 +2309,7 @@ bool frame_interpreter_thermr_device::checkTimeoutVar(const stat_var &var)
 	}
 }
 
-void frame_interpreter_thermr_device::setTimeoutVar(stat_var &var)
+void frame_interpreter_temperature_probe_controlled::setTimeoutVar(stat_var &var)
 {
 	//qDebug("[TMOUTVAR] setTimeoutVar()");
 
@@ -2319,7 +2319,7 @@ void frame_interpreter_thermr_device::setTimeoutVar(stat_var &var)
 	var.set_val(n);
 }
 
-void frame_interpreter_thermr_device::clearTimeoutVar(stat_var &var)
+void frame_interpreter_temperature_probe_controlled::clearTimeoutVar(stat_var &var)
 {
 	//qDebug("[TMOUTVAR] clearTimeoutVar()");
 
@@ -2330,8 +2330,8 @@ void frame_interpreter_thermr_device::clearTimeoutVar(stat_var &var)
 }
 
 // Public methods
-frame_interpreter_thermr_device::
-frame_interpreter_thermr_device(QString w, thermo_type_t _type,
+frame_interpreter_temperature_probe_controlled::
+frame_interpreter_temperature_probe_controlled(QString w, thermo_type_t _type,
 		const char *_ind_centrale, const char *_indirizzo, bool p, int g) :
 	frame_interpreter(QString("4"), w, p, g)
 {
@@ -2340,7 +2340,7 @@ frame_interpreter_thermr_device(QString w, thermo_type_t _type,
 	indirizzo = _indirizzo;
 }
 
-bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, bool& request_status)
+bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
 	request_status = false;
 	bool is_our = false;
@@ -2375,27 +2375,27 @@ bool frame_interpreter_thermr_device::is_frame_ours(openwebnet_ext m, bool& requ
 	return is_our;
 }
 
-void frame_interpreter_thermr_device::
+void frame_interpreter_temperature_probe_controlled::
 get_init_message(device_status *s, QString& out)
 {
 	QString head, end;
 	switch (s->get_type())
 	{
 		case device_status::TEMPERATURE_PROBE:
-			qDebug("frame_interpreter_thermr_device::get_init_message -> TEMPERATURE_PROBE");
+			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> TEMPERATURE_PROBE");
 			head = "*#4*";
 			end  = "##";
 			out  = head + indirizzo + end;
 			break;
-		case device_status::THERMR:
-			qDebug("frame_interpreter_thermr_device::get_init_message -> THERMR");
+		case device_status::TEMPERATURE_PROBE_EXTRA:
+			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> TEMPERATURE_PROBE_EXTRA");
 			/// FRAME VERSO LA CENTRALE
 			head = "*#4*#";
 			end  = "##";
 			out  = head + where + end;
 			break;
 		case device_status::FANCOIL:
-			qDebug("frame_interpreter_thermr_device::get_init_message -> FANCOIL");
+			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> FANCOIL");
 			head = "*#4*";
 			end  = "*11##";
 			out  = head + indirizzo + end;
@@ -2407,10 +2407,10 @@ get_init_message(device_status *s, QString& out)
 }
 
 // Private methods
-void frame_interpreter_thermr_device::
+void frame_interpreter_temperature_probe_controlled::
 handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 {
-	qDebug("frame_interpreter_thermr_device::handle_frame");
+	qDebug("frame_interpreter_temperature_probe_controlled::handle_frame");
 	stat_var curr_stat(stat_var::STAT);
 	stat_var curr_local(stat_var::LOCAL);
 	stat_var curr_sp(stat_var::SP);
@@ -2736,10 +2736,10 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	}
 }
 
-void frame_interpreter_thermr_device::
+void frame_interpreter_temperature_probe_controlled::
 handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
 {
-	qDebug("frame_interpreter_thermr_device::handle_frame, temp status");
+	qDebug("frame_interpreter_temperature_probe_controlled::handle_frame, temp status");
 	stat_var curr_temp(stat_var::TEMPERATURE);
 	if(m.IsNormalFrame()) {
 		qDebug("Normal frame, discarding");
@@ -2763,10 +2763,10 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe *ds)
 	evt_list.append(ds);
 }
 
-void frame_interpreter_thermr_device::
+void frame_interpreter_temperature_probe_controlled::
 handle_frame(openwebnet_ext m, device_status_fancoil *ds)
 {
-	qDebug("frame_interpreter_thermr_device::handle_frame, fancoil");
+	qDebug("frame_interpreter_temperature_probe_controlled::handle_frame, fancoil");
 
 	if (m.IsNormalFrame() || strcmp(m.Extract_grandezza(), "11")) 
 	{
@@ -2791,13 +2791,13 @@ handle_frame(openwebnet_ext m, device_status_fancoil *ds)
 	}
 }
 
-void frame_interpreter_thermr_device::
+void frame_interpreter_temperature_probe_controlled::
 handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 {
 	bool request_status;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_thermr_device::handle_frame_handler");
+	qDebug("frame_interpreter_temperature_probe_controlled::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if(!is_frame_ours(msg_open, request_status))
@@ -2817,7 +2817,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 		{
 			device_status::type type = ds->get_type();
 			switch (type) {
-				case device_status::THERMR:
+				case device_status::TEMPERATURE_PROBE_EXTRA:
 					handle_frame(msg_open, (device_status_temperature_probe_extra *)ds);
 					break;
 				case device_status::TEMPERATURE_PROBE:
