@@ -104,11 +104,8 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 
 	//   bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
 	Background=*bg;
-	//qDebug("scello %d",bg);
 	Foreground=*fg1;
-	//qDebug("scello1 %d",bg);
 	SecondForeground=*fg2;//QColor(255,0,0);
-	//qDebug("scello2 %d",bg);
 	page_item_list_img = new QPtrList<QString>;
 	page_item_list_img_m = new QPtrList<QString>;
 	page_item_list_group = new QPtrList<QString>;
@@ -122,7 +119,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	page_item_txt1 = "";
 	page_item_txt2 = "";
 	page_item_txt3 = "";
-	//qDebug("scello3 %d",bg);
 	// Start counting for wd refresh
 	wdtime.start();
 }
@@ -223,41 +219,33 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 {
 	car=0;
 
-	//  qDebug("%s\n",(const char*)qName );
 	if (CurTagL1.isEmpty())
 	{
 		CurTagL1 = qName;
-		//	qDebug("ENTRO-1:%s",(const char*)CurTagL1);
 	}
 	else if (CurTagL2.isEmpty())
 	{
 		CurTagL2 = qName;
-		//	qDebug("ENTRO-2:%s",(const char*)CurTagL2);
 	}
 	else if (CurTagL3.isEmpty()) 
 	{
 		CurTagL3 = qName;
-		//	qDebug("ENTRO-3:%s",(const char*)CurTagL3);
 	}
 	else if (CurTagL4.isEmpty()) 
 	{
 		CurTagL4 = qName;
-		//	qDebug("ENTRO-4:%s",(const char*)CurTagL4);
 	}
 	else if (CurTagL5.isEmpty()) 
 	{
 		CurTagL5 = qName;
-		//	qDebug("ENTRO-5:%s",(const char*)CurTagL5);
 	}
 	else if (CurTagL6.isEmpty()) 
 	{
 		CurTagL6 = qName;
-		//	qDebug("ENTRO-6:%s",(const char*)CurTagL6);
 	}
 	else if (CurTagL7.isEmpty())
 	{
 		CurTagL7 = qName;
-		//    qDebug("ENTRO-7:%s\n",(const char*)CurTagL7);
 	}
 
 	return TRUE;
@@ -391,14 +379,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 				 */
 				if ( CurTagL4.startsWith("item") && CurTagL5.isEmpty() )
 				{
-					/*
-					qWarning("sottomenu_id=%d",sottomenu_id);
-					qWarning("sottomenu_descr=%s",(const char*)sottomenu_descr);
-					qWarning("sottomenu_left=%d",sottomenu_left);
-					qWarning("sottomenu_top=%d",sottomenu_top);
-					qWarning("sottomenu_icon_where=%s",(const char*)sottomenu_where);
-					qWarning("sottomenu_icon_name=%s",(const char*)sottomenu_icon_name);
-					*/
 					switch (sottomenu_id)
 					{
 					case AUTOMAZIONE:
@@ -414,21 +394,16 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 					case VIDEOCITOFONIA:
 						(*home)->addButton(sottomenu_left,sottomenu_top,(char *)sottomenu_icon_name.ascii(), (char)sottomenu_id);
 						break;
-						//  Home->addButton(160,125,ICON_IMPOSTAZIONI_80 ,IMPOSTAZIONI);
-						//			qWarning("ADDBUTTON NORMALE");
 						break;
 					case DATA:
 						(*home)->addDate(sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3);
-						//			qWarning("ADDBUTTON DATA");
 						break;
 					case OROLOGIO:
 						(*home)->addClock(sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3);
-						//			qWarning("ADDBUTTON OROLOGIO");
 						break;
 					case TEMPERATURA:
 					case TERMO_HOME_NC_PROBE:
 						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
-						//			qWarning("ADDBUTTON TEMPERATURA");
 						break;
 					case TERMO_HOME_NC_EXTPROBE:
 						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"", "1");
@@ -458,9 +433,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 					qDebug("INS ITEM: %s",banTesti[page_item_id]);
 					qDebug("DESCR: %s", page_item_descr.ascii());
 
-					/*		    for ( QString * MyPnt = page_item_list_img->first(); MyPnt; MyPnt= page_item_list_img->next() )
-							    qWarning("IMG=%s su %d",MyPnt->ascii(),page_item_list_img->count());*/
-
 					for(int idx=page_item_list_img->count();idx<11;idx++)
 					{
 						page_item_list_img->append(new QString(""));
@@ -469,15 +441,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 					{
 						page_item_list_txt->append(new QString(""));
 					}		     
-#if 0
-					for(int idx=page_item_list_txt_times->count(); 
-							idx < 20; idx++)
-					{
-						page_item_list_txt_times->append(new QString(""));
-					}
-#endif
-					/*		    for (QString * MyPnt = page_item_list_group->first(); MyPnt; MyPnt = page_item_list_group->next() )
-							    qWarning("GROUP=%s",MyPnt->ascii());	*/
 
 					sottoMenu *pageAct = NULL;
 					void *addr = 0;
@@ -509,7 +472,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						case TERMOREGOLAZIONE:
 							pageAct=*termo;
 							addr = computeAddress();
-							//addItemU(pageAct, addr);
 							break;
 
 						case  SCENARI:
@@ -653,13 +615,10 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 				else if ( CurTagL3.startsWith("page") && CurTagL4.isEmpty() )
 				{
 					// Esco dalla pagina
-					//		    qWarning("DRAW %s",(const char*)page_descr);
-
 
 					switch (page_id)
 					{
 						case AUTOMAZIONE:
-							//			qWarning(".- .- .- -. -.  .- -.QObject::connect AUTOMAZIONE");
 							(*automazioni)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                    
 							QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
@@ -675,10 +634,9 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*automazioni,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
 							QObject::connect(*automazioni,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*automazioni,SLOT(freezed(bool)));
-							//(*automazioni)->inizializza();
+
 							break;
 						case ILLUMINAZIONE:
-							//			qWarning("-. .- . -. - -. .-. -QObject::connect ILLUMINAZIONE");
 							(*illumino)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
 							QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
@@ -695,10 +653,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*illumino,SLOT(freezed(bool)));
-							//(illumino)->inizializza();
 							break;
 						case ANTIINTRUSIONE:
-							//			qWarning(".- .- .- .- .-.- - -.QObject::connect ANTIINTRUSIONE");
 							(*antintr)->draw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
 							QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(showFullScreen()));
@@ -756,8 +712,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
 							break;
 						case DIFSON:
-							//	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
-							(*difSon)->draw(); 
+							(*difSon)->draw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
 							QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showFullScreen()));
 							QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
@@ -773,11 +728,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*difSon,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SLOT(freezed_handler(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SIGNAL(freezed(bool)));
-							//(*difSon)->inizializza();
 							break;
 						case DIFSON_MULTI:
-							//	qWarning("- - -. .-  .- .- .- .- .- QObject::connect DIFSON");
-							//(*dm)->draw(); 
 							(*dm)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                       
 							QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(showFullScreen()));
@@ -794,10 +746,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*dm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SIGNAL(freezed(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SLOT(freezed_handler(bool)));
-							//(*difSon)->inizializza();
 							break;
 						case SCENARI:
-							//			qWarning("- - -  - - - - - - - -QObject::connect ");
 							(*scenari)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
 							QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showFullScreen()));
@@ -814,10 +764,8 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*scenari,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari,SLOT(freezed(bool)));
 							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari,SIGNAL(gestFrame(char *)));
-							//(*scenari)->inizializza();
 							break;
 						case IMPOSTAZIONI:    
-							//    qWarning("- - - - - - - - - - - QObject::connect IMPOSTAZIONI");
 							(*imposta)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
 							QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
@@ -884,9 +832,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*videocitofonia,SLOT(freezed(bool)));
 							break;
 						case SPECIAL:    
-							//	qWarning("-- - - - - - -- - - QObject::connect SPECIAL");
-							//(*specPage)->draw();
-							QObject::connect(BtM,SIGNAL(freeze(bool)),*specPage,SLOT(freezed(bool)));          
+							QObject::connect(BtM,SIGNAL(freeze(bool)),*specPage,SLOT(freezed(bool)));
 							QObject::connect(*specPage,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));     
 							QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 							QObject::connect(*specPage,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
@@ -936,37 +882,30 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	//
 	if (!CurTagL7.isEmpty())
 	{
-		//    qDebug("ESCO-7:%s\n",(const char*)CurTagL7);
 		CurTagL7 = "";
 	}
 	else if (!CurTagL6.isEmpty())
 	{
-		//	qDebug("ESCO-6:%s",(const char*)CurTagL6);
 		CurTagL6 = "";
 	}
 	else if (!CurTagL5.isEmpty())
 	{
-		//	qDebug("ESCO-5:%s",(const char*)CurTagL5);
 		CurTagL5 = "";
 	}
 	else if (!CurTagL4.isEmpty())
 	{
-		//	qDebug("ESCO-4:%s",(const char*)CurTagL4);
 		CurTagL4 = "";
 	}
 	else if (!CurTagL3.isEmpty())
 	{
-		//	qDebug("ESCO-3:%s",(const char*)CurTagL3);
 		CurTagL3 = "";
 	}
 	else if (!CurTagL2.isEmpty())
 	{
-		//	qDebug("ESCO-2:%s",(const char*)CurTagL2);
 		CurTagL2 = "";
 	}
 	else if (!CurTagL1.isEmpty())
 	{
-		//	qDebug("ESCO-1:%s",(const char*)CurTagL1);
 		CurTagL1 = "";
 	}
 
@@ -1024,8 +963,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 		{
 			if (!CurTagL3.compare("orientation"))
 			{   	    
-				// qDebug(qValue.ascii());
-				setOrientation((char*)qValue.ascii()); 	
+				setOrientation((char*)qValue.ascii());
 			}
 
 			//
@@ -1045,7 +983,6 @@ bool xmlconfhandler::characters( const QString & qValue)
 			//
 			else if (!CurTagL3.compare("pagemenu"))
 			{
-				//        qDebug( "SONO DENTRO PAGEMENU: %s\n",(const char*)CurTagL4);
 				//
 				// Leggo tutti i tag che iniziano per item
 				//
@@ -1064,7 +1001,6 @@ bool xmlconfhandler::characters( const QString & qValue)
 					if (!CurTagL5.compare("id"))
 					{
 						sottomenu_id = qValue.toInt( &ok, 10 );  
-						//			    qWarning("PAGEMENU:ID %d",sottomenu_id);
 
 					} else if (!CurTagL5.compare("descr"))
 						sottomenu_descr = qValue;
@@ -1272,28 +1208,20 @@ bool xmlconfhandler::characters( const QString & qValue)
 					}
 					else if (CurTagL5.startsWith("txt"))
 					{
-						//				    qDebug("FOR PAGEITEM:TXT=%s",qValue.ascii());
 						page_item_list_txt->append(new QString(qValue));
 					}
 					else if (!CurTagL5.compare("type"))
 					{
-						//				    qDebug("FOR PAGEITEM:TYPE=%s",qValue.ascii());
 						par2=qValue.toInt( &ok, 10 );
 					}
 					else if (!CurTagL5.compare("alarmset"))
 					{
-						//				    qDebug("FOR PAGEITEM:ALARMSET=%s",qValue.ascii());
 						par3=qValue.toInt( &ok, 10 );
 					}
 					else if (!CurTagL5.compare("enabled"))
 					{
-						//				    qDebug("FOR PAGEITEM:PASSWORD ENABLED=%s",qValue.ascii());
 						par1=qValue.toInt( &ok, 10 );
 					}
-					/*			    else if (!CurTagL5.compare("value"))
-								    {
-								    par2=qValue.toInt( &ok, 10 );
-								    }   */
 					else if(!CurTagL5.compare("enable"))
 					{
 						par3 = qValue.toInt(&ok, 10);
@@ -1477,7 +1405,6 @@ bool xmlconfhandler::characters( const QString & qValue)
 				else if (CurTagL4.startsWith("item") && 
 						CurTagL5.startsWith("device")) {
 					// Multichannel sound system
-					//qDebug("MULTI CHANNEL START ELEMENT");
 					CurTagL5_copy=CurTagL5;
 					CurTagL5_copy.remove("device");
 					itemNum=CurTagL5_copy.toInt( &ok, 10 );
@@ -1509,7 +1436,6 @@ bool xmlconfhandler::characters( const QString & qValue)
 					if (!CurTagL5.compare("id"))
 					{
 						page_item_id = qValue.toInt( &ok, 10 );
-						//				qWarning("PAGEITEM:ID %d",page_item_id);
 					}
 					else if (!CurTagL5.compare("descr"))
 						page_item_descr=qValue;
@@ -1523,7 +1449,6 @@ bool xmlconfhandler::characters( const QString & qValue)
 						page_item_where=qValue;
 					else if (CurTagL5.startsWith("cimg"))
 					{
-						//				    qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
 						QString sValue=qValue;
 						sValue.prepend(IMG_PATH);
 						page_item_list_img->append(new QString(sValue));

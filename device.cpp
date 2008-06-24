@@ -55,10 +55,6 @@ void stat_var::set_val(int& in)
 	}
 	_initialized = true ;
 	val = in;
-#if 0
-	qDebug("stat_var::min = %d, stat_var::max = %d, stat_var::val = %d", 
-			min, max, val);
-#endif
 }
 
 void stat_var::get_min(int& out)
@@ -68,7 +64,6 @@ void stat_var::get_min(int& out)
 
 void stat_var::set_min(int& in)
 {
-	//if(in > max) in = max;
 	min = in;
 }
 
@@ -79,7 +74,6 @@ void stat_var::get_max(int& out)
 
 void stat_var::set_max(int& in)
 {
-	//if(in < min) in = max;
 	max = in;
 }
 
@@ -95,10 +89,6 @@ int stat_var::get_step(void)
 
 void stat_var::set_step(int& in)
 {
-#if 0
-	if(in > (max - min))
-		in = max - min;
-#endif
 	step = in;
 }
 
@@ -161,14 +151,9 @@ int device_status::read(int index, stat_var& out)
 int device_status::write_val(int index, stat_var& in)
 {
 	stat_var *ptr = vars.at(index);
-#if 1
 	qDebug("device_status::write_val(%d)", index);
-#endif
 	if(!ptr) return -1;
 	int v ; in.get_val(v);
-#if 0
-	qDebug("input value = %d", v);
-#endif
 	ptr->set_val(v);
 	in.set_val(v);
 	if(_initialized) 
@@ -413,10 +398,6 @@ device::device(QString _who, QString _where, bool p, int g)
 	group = g;
 	refcount = 0;
 	stat = new QPtrList<device_status>;
-#if 0
-	qDebug("device::device(), who = %s, where = %s", who.ascii(),
-			where.ascii());
-#endif
 }
 
 void device::init(bool force )
@@ -570,12 +551,7 @@ light::light(QString w, bool p, int g) : device(QString("1"), w, p, g)
 	interpreter = new frame_interpreter_lights(w, p, g);
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_light());
-#if 0
-	stat->append(new device_status_dimmer());
-	stat->append(new device_status_new_timed());
-	stat->append(new device_status_dimmer100());
-#endif
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
+	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
