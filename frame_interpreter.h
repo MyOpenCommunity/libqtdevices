@@ -12,9 +12,9 @@
 #include <time.h>
 
 #include "openclient.h"
-#include "device.h"
+#include "device_status.h"
 
-class device_status;
+
 class frame_interpreter;
 
 //! Openwebnet where

@@ -11,6 +11,7 @@
 #include "diffmulti.h"
 #include "ambdiffson.h"
 #include "device_cache.h"
+#include "device.h"
 #include "xmlconfhandler.h" // per safeAt()
 #include "sveglia.h"
 #include "diffsonora.h"

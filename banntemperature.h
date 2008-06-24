@@ -18,7 +18,7 @@
 #define BANNTEMPERATURE_H
 
 #include "banner.h"
-#include "device.h"
+#include "device_status.h"
 
 #include <qdom.h>
 
@@ -26,7 +26,9 @@
 #define BORDER_WIDTH        5
 #define DESCRIPTION_WIDTH 120
 #define TEMPERATURE_WIDTH 120
+	
 class QLabel;
+class device;
 
 class BannTemperature : public banner
 {

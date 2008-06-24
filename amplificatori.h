@@ -12,8 +12,9 @@
 #define AMPLIFICATORI_H
 
 #include "bannregolaz.h"
-#include "device.h"
+#include "device_status.h"
 
+class device;
 
 /*****************************************************************
  **Amplificatore

@@ -4,12 +4,13 @@
 
 #include <qframe.h>
 
-#include "device.h"
+#include "device_status.h"
 
 class QDateTime;
 class BtButton;
 class BtLabel;
 class timeScript;
+class device;
 
 /*!
   \class scenEvo_cond

@@ -11,7 +11,7 @@
 #ifndef ACTUATORS_H
 #define ACTUATORS_H
 
-#include "device.h" // device, device_status
+#include "device_status.h" // device, device_status
 #include "bannonoff.h"
 #include "bannonoff2scr.h"
 #include "bannon2scr.h"
@@ -19,6 +19,7 @@
 #include "bannpuls.h"
 #include "main.h" // MAX_PATH
 
+class device;
 
 /*****************************************************************
  **Attuatore Automazione

@@ -11,6 +11,7 @@
 #include "amplificatori.h"
 #include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
 #include "device_cache.h" // btouch_device_cache
+#include "device.h"
 #include "sottomenu.h"
 
 /*****************************************************************

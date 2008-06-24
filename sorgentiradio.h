@@ -12,10 +12,11 @@
 #define SORGENTI_RADIO_H
 
 #include "bannciclaz.h"
-#include "device.h"
+#include "device_status.h"
 
 /// Forward Declarations
 class radio;
+class device;
 
 /*****************************************************************
  **Sorgente_Radio

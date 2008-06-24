@@ -15,7 +15,9 @@
 #include "bann4taslab.h"
 #include "bann3but.h"
 #include "bann4but.h"
-#include "device.h"
+#include "device_status.h"
+
+class device;
 
 /*****************************************************************
  **scenario

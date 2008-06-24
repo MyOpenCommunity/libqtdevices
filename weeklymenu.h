@@ -15,7 +15,7 @@
 #define WEEKLYMENU_H
 
 #include "sottomenu.h"
-#include "device.h"
+#include "device_status.h"
 #include "bannfullscreen.h"
 
 #include <qdom.h>

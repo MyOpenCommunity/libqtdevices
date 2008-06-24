@@ -4,11 +4,12 @@
 
 #include <qframe.h>
 
-#include "device.h"
+#include "device_status.h"
 
 class postoExt;
 class BtLabel;
 class BtButton;
+class device;
 
 class call_notifier : public QFrame {
     Q_OBJECT

@@ -14,11 +14,12 @@
 #include <qwidget.h>
 #include <qptrlist.h> 
 
-#include "device.h"
+#include "device_status.h"
 #include "scenevocond.h" // per la connect
 #include "sottomenu.h" // per la connect
 
 class diffSonora;
+class device;
 
 class dati_sorgente_multi 
 {

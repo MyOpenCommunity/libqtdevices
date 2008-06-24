@@ -11,6 +11,7 @@
 #include "banntemperature.h"
 #include "bannpuls.h"
 #include "fontmanager.h"
+#include "device.h"
 
 #include <qlabel.h>
 

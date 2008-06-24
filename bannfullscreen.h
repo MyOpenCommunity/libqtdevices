@@ -13,7 +13,7 @@
 #define BANNFULLSCREEN_H
 
 #include "banner.h"
-#include "device.h"
+#include "device_status.h"
 #include "btwidgets.h"
 
 #include <qlabel.h>
@@ -23,7 +23,7 @@
 #include <qlcdnumber.h>
 #include <qdatetime.h>
 
-class device_status;
+class device;
 
 class BannFullScreen : public banner
 {

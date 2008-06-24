@@ -13,12 +13,13 @@
 
 #include "bannonicons.h"
 #include "bann2butlab.h"
-#include "device.h"
+#include "device_status.h"
 
 #include <qtimer.h>
 
 /// Forward Declarations
 class tastiera;
+class device;
 
 /*****************************************************************
  **Zona Antiintrusione

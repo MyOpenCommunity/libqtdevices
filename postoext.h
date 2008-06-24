@@ -11,7 +11,6 @@
 #ifndef POSTOEXT_H
 #define POSTOEXT_H
 
-#include "device.h"
 #include "bann4taslab.h"
 
 #include <qstring.h>

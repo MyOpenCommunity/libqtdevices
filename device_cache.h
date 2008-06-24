@@ -5,8 +5,8 @@
 
 #include <qmap.h>
 #include <qstring.h>
-#include "device.h"
-// #include "frame_interpreter.h"
+
+#include "device_status.h"
 
 class Client;
 class device;

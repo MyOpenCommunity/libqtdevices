@@ -11,9 +11,11 @@
 #ifndef DIMMERS_H
 #define DIMMERS_H
 
-#include "device.h"
+#include "device_status.h"
 #include "bannregolaz.h"
 
+
+class device;
 
 /*****************************************************************
  **Dimmer
