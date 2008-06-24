@@ -302,11 +302,10 @@ void MediaPlayWindow::setFGColor(QColor c)
 void MediaPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
 {
 	/// Create Labels (that contain tag names)
-	// Get label names from app_config
-	QString label_a = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_title",  "Track:").c_str();
-	QString label_b = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_artist", "Artist:").c_str();
-	QString label_c = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_album",  "Album:").c_str();
-	QString label_d = app_config.get(CFG_LABELS_MEDIAPLAYER "meta_time",   "Length:").c_str();
+	QString label_a = tr("Track:");
+	QString label_b = tr("Artist:");
+	QString label_c = tr("Album:");
+	QString label_d = tr("Length:");
 
 	// Set label names
 	TitleLabel *name_label   = new TitleLabel(this, MAX_WIDTH/3, 30, 9, 0);
