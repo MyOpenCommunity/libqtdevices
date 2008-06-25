@@ -118,7 +118,8 @@ public:
 		FANCOIL,
 		MODSCEN,
 		SOUNDMATR,
-		THERMAL_REGULATOR,
+		THERMAL_REGULATOR_4Z,
+		THERMAL_REGULATOR_99Z,
 	} type;
 private:
 	//! Type
@@ -247,6 +248,39 @@ public:
 	device_status_autom();
 	//! Return delay for init request deferral (msecs)
 	virtual int init_request_delay() { return AUTOM_REQ_DELAY; }
+};
+
+/**
+ * Device status for thermal regulator device
+ */
+class device_status_thermal_regulator_4z : public device_status
+{
+public:
+	enum
+	{
+		SP_INDEX = 0,
+		SEASON_INDEX,
+		PROGRAM_INDEX,
+	} ind;
+
+	device_status_thermal_regulator_4z();
+};
+
+/**
+ * Device status for thermal regulator device
+ */
+class device_status_thermal_regulator_99z : public device_status
+{
+public:
+	enum
+	{
+		SP_INDEX = 0,
+		SEASON_INDEX,
+		PROGRAM_INDEX,
+		SCENARIO_INDEX,
+	} ind;
+
+	device_status_thermal_regulator_99z();
 };
 
 /**
