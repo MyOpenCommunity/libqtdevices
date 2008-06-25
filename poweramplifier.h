@@ -10,6 +10,7 @@
 #include <qdom.h>
 
 class sottoMenu;
+class poweramplifier_device;
 
 /*****************************************************************
  **Power amplifier
@@ -36,6 +37,7 @@ private:
 	QString off_icon, on_icon;
 	bool status;
 	sottoMenu *settings_page;
+	poweramplifier_device *dev;
 };
 
 

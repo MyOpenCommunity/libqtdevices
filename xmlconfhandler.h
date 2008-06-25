@@ -107,7 +107,6 @@ class xmlconfhandler : public QXmlDefaultHandler
 	private:
 		void *computeAddress();
 		void *getAddr();
-		void createSottoMenuConnections(sottoMenu *sm);
 		void addItemU(sottoMenu *pageAct, void *address);
 
 		QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6,CurTagL7;

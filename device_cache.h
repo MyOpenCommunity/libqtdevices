@@ -11,9 +11,8 @@
 class Client;
 class device;
 
-typedef device *deviceptr;
 
-class device_cache : public QMap<QString, deviceptr>
+class device_cache : public QMap<QString, device*>
 {
 private:
 	//! Connect comm signals
@@ -61,6 +60,9 @@ public:
 	device *get_zonanti_device(QString where);
 	/// Get a thermal regulator device
 	device *get_thermal_regulator(QString where, thermo_type_t type);
+
+	device *get_poweramplifier_device(QString w);
+
 	//! Get a controlled temperature probe
 	device *get_temperature_probe_controlled(QString where, thermo_type_t type,
 		bool fancoil, const char *ind_centrale, const char *indirizzo);
@@ -71,7 +73,7 @@ public:
 	//! Destroy device given key
 	void put_device(QString k);
 	//! Add already created device to cache. Key is device's who+where
-	deviceptr add_device(deviceptr d);
+	device * add_device(device * d);
 	//! Set pointers to clients
 	void set_clients(Client* com, Client* mon, Client* ri);
 	//! Destructor

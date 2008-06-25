@@ -43,8 +43,8 @@ public:
 	//! Destructor
 	virtual ~device();
 
-	void sendFrame(char *frame);
-	void sendInit(char *frame);
+	void sendFrame(const char *frame);
+	void sendInit(const char *frame);
 
 signals:
 	//! Status changed
@@ -68,11 +68,13 @@ protected:
 	frame_interpreter *interpreter;
 	//! List of device stats
 	QPtrList<device_status> *stat;
-private:
+
 	//! Node's who
 	QString who;
 	//! Node's where
 	QString where;
+
+private:
 	//! Pul status
 	bool pul;
 	//! Device's group
@@ -223,6 +225,13 @@ Q_OBJECT
 public:
 	//! Constructor
 	modscen_device(QString, bool p=false, int g=-1);
+};
+
+class poweramplifier_device : public device
+{
+Q_OBJECT
+public:
+	poweramplifier_device(QString, bool p=false, int g=-1);
 };
 
 #endif //__DEVICE_H__

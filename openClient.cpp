@@ -62,26 +62,20 @@ void Client::socketConnected()
   }
   else {
     qDebug( "TRY TO START command");
-    //socket->clearPendingData ();
-//    sendToServer(SOCKET_COMANDI ); 
-
-//    memset(&fr[0],'\000',sizeof(fr));
   }
-
-      
 }
 /****************************************************************************
 **
 ** connetto all'openserver
 **
 *****************************************************************************/
-void Client::ApriInviaFrameChiudi(char* frame)
+void Client::ApriInviaFrameChiudi(const char* frame)
 {
   qDebug("Client::ApriInviaFrameChiudi()");
 
     if(strcmp(frame, last_msg_open_write.frame_open) != 0)
     {
-        last_msg_open_write.CreateMsgOpen(frame,strlen(frame));
+        last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
         if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
         {
 	    //strcpy(&fr[0],frame);
@@ -96,16 +90,6 @@ void Client::ApriInviaFrameChiudi(char* frame)
     }
     else
        qDebug("Frame Open <%s> already send", frame);
-#if 0
-    openwebnet msg_open;
-    msg_open.CreateMsgOpen(frame,strlen(frame));	  
-    if ( (!strcmp(msg_open.Extract_chi(),"1")) || (!strcmp(msg_open.Extract_chi(),"2")) )
-    {
-	QString s=msg_open.Extract_dove();
-	if (s.length()==1) 
-	    emit(frameToAutoread(msg_open.frame_open));
-    }
-#endif    
 }
 
 void Client::ApriInviaFrameChiudiw(char *frame)
@@ -140,10 +124,7 @@ void Client::richStato(char* richiesta)
 void Client::connetti()
 {    
       qDebug("Client::connetti()");
-
-  //  qDebug( "Trying to connect to the local openserver" );
-//   socket->clearPendingData ();
-   socket->connectToHost( "127.0.0.1", 20000 );  
+   socket->connectToHost( "127.0.0.1", 20000 );
 }
 
 /****************************************************************************
@@ -158,9 +139,6 @@ void Client::closeConnection()
   if ( socket->state() == QSocket::Closing ) {
     // We have a delayed close.
     connect( socket, SIGNAL(delayedCloseFinished()),SLOT(socketClosed()) );
-  } else {
-    // The socket is closed.
-    //  socketClosed();
   }
 }
 	
@@ -169,17 +147,10 @@ void Client::closeConnection()
 ** invio all'openserver
 **
 *****************************************************************************/
-void Client::sendToServer(char * frame)
+void Client::sendToServer(const char * frame)
 {
   qDebug("Client::sendToServer()");
- // qDebug( "Writing");
-//  qDebug( "Written %d bytes",socket->writeBlock( frame, strlen(frame) ));
   socket->writeBlock( frame, strlen(frame));
-//  QTextStream os(socket);
-//  os << "\n";
-//  os << frame;
-//  os << "\n";
-//  qDebug( "End");
 }
 
 /****************************************************************************
@@ -300,31 +271,7 @@ void Client::socketConnectionClosed()
         qDebug("Client::socketConnectionClosed()");
   qDebug( "Connection closed by the server");    
   if (ismonitor)
-  {
-    #if 0
-    if(socket)
-    {
-      delete socket;
-    }
-    
-    socket = new QSocket( this );
- 
-    connect( socket, SIGNAL(connected()),SLOT(socketConnected()) );
-    connect( socket, SIGNAL(connectionClosed()),SLOT(socketConnectionClosed()) );
-    connect( socket, SIGNAL(readyRead()),SLOT(socketFrameRead()) );
-    connect( socket, SIGNAL(error(int)),SLOT(socketError(int)) );
-
-    tick = NULL;
-  
-    // connect to the server
     connetti();
-
-    // azzero la variabile last_msg_open_read e last_msg_open_write
-    last_msg_open_read.CreateNullMsgOpen();
-    last_msg_open_write.CreateNullMsgOpen();
-    #endif
-    connetti();
-  }
 }
 
 /****************************************************************************
@@ -334,9 +281,7 @@ void Client::socketConnectionClosed()
 *****************************************************************************/
 void Client::socketClosed()
 {
-          qDebug("Client::socketClosed()");
-
-//  qDebug("Connection closed");    
+	qDebug("Client::socketClosed()");
 }
 
 /****************************************************************************
@@ -346,19 +291,14 @@ void Client::socketClosed()
 *****************************************************************************/
 void Client::socketError( int e )
 {
-            qDebug("Client::socketError()");
+	qDebug("Client::socketError()");
 
- qDebug( "Error number %d occurred",e);
-  if (ismonitor) {
-    if(tick)
-      delete tick;
-    tick = new QTimer(this,"tick");
-    tick->start(500,TRUE);
-  //  qDebug( "Monitor: riprovo a connettermi");
-    connect(tick,SIGNAL(timeout()), this,SLOT(connetti()));  
+	qDebug( "Error number %d occurred",e);
+	if (ismonitor) {
+		if(tick)
+			delete tick;
+		tick = new QTimer(this,"tick");
+		tick->start(500,TRUE);
+		connect(tick,SIGNAL(timeout()), this,SLOT(connetti()));
   }
 }
-
-//
-// EOF
-//

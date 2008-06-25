@@ -28,12 +28,12 @@ void device::setClients(Client *comandi, Client *monitor, Client *richieste)
 	client_richieste = richieste;
 }
 
-void device::sendFrame(char *frame)
+void device::sendFrame(const char *frame)
 {
 	client_comandi->ApriInviaFrameChiudi(frame);
 }
 
-void device::sendInit(char *frame)
+void device::sendInit(const char *frame)
 {
 	client_richieste->ApriInviaFrameChiudi(frame);
 }
@@ -396,4 +396,10 @@ modscen_device::modscen_device(QString w, bool p, int g) :
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
 			SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
+poweramplifier_device::poweramplifier_device(QString w, bool p, int g) :
+	device(QString("22"), w, p, g)
+{
+	qDebug("poweramplifier_device::poweramplifier_device()");
 }
