@@ -324,6 +324,32 @@ zonanti_device::zonanti_device(QString w, bool p, int g) :
 			SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
+thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
+	: device(QString("4"), where, p, g)
+{
+	interpreter = new frame_interpreter_thermal_regulator(where, p, g);
+	set_frame_interpreter(interpreter);
+	stat->append(new device_status_thermal_regulator_4z());
+
+	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
+			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
+thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
+	: device(QString("4"), where, p, g)
+{
+	interpreter = new frame_interpreter_thermal_regulator(where, p, g);
+	set_frame_interpreter(interpreter);
+	stat->append(new device_status_thermal_regulator_99z());
+
+	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
+			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
 // Controlled temperature probe implementation
 temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_type_t type, bool fancoil,
 		const char *ind_centrale, const char *indirizzo, bool p, int g) :

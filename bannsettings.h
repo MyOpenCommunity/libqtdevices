@@ -17,6 +17,8 @@
 #include "bann4but.h"
 #include "bannpuls.h"
 
+class device;
+
 /**
  * This banner shuts the thermal regulator off when clicked. Before using it, be sure to
  * set the address of the thermal regulator.
@@ -33,6 +35,8 @@ public slots:
 	 */
 	void performAction();
 private:
+	/// The device that this banner sends commands to
+	device *controlled_device;
 };
 
 /**
@@ -51,6 +55,8 @@ public slots:
 	 */
 	void performAction();
 private:
+	/// The device that this banner sends commands to
+	device *controlled_device;
 };
 
 /**
@@ -69,6 +75,8 @@ public slots:
 	void setWinter();
 private:
 	seasons status;
+	/// The device that this banner sends commands to
+	device *controlled_device;
 };
 
 /**

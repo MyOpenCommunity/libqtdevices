@@ -315,6 +315,23 @@ device_status_zonanti::device_status_zonanti() :
 			new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
 }
 
+device_status_thermal_regulator_4z::device_status_thermal_regulator_4z()
+	: device_status(THERMAL_REGULATOR_4Z)
+{
+	add_var(SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
+	add_var(SEASON_INDEX, new stat_var(stat_var::SEASON, 0, 0, 1, 1));
+	add_var(PROGRAM_INDEX, new stat_var(stat_var::PROGRAM, 0, 0, 3, 1));
+}
+
+device_status_thermal_regulator_99z::device_status_thermal_regulator_99z()
+	: device_status(THERMAL_REGULATOR_99Z)
+{
+	add_var(SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
+	add_var(SEASON_INDEX, new stat_var(stat_var::SEASON, 0, 0, 1, 1));
+	add_var(PROGRAM_INDEX, new stat_var(stat_var::PROGRAM, 0, 0, 3, 1));
+	add_var(SCENARIO_INDEX, new stat_var(stat_var::SCENARIO, 0, 0, 16, 1));
+}
+
 device_status_temperature_probe::device_status_temperature_probe() :
 	device_status(TEMPERATURE_PROBE)
 {

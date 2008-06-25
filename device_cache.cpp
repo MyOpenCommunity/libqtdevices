@@ -262,13 +262,21 @@ deviceptr device_cache::get_thermal_regulator(QString where, thermo_type_t type,
 	deviceptr out = (*this)[k];
 	if(!out)
 	{
-		out = new temperature_probe_controlled(where, type, false, ind_centrale, indirizzo);
+		switch(type)
+		{
+			case THERMO_Z4:
+				out = new thermal_regulator_4z(where);
+				break;
+			case THERMO_Z99:
+				out = new thermal_regulator_99z(where);
+				break;
+		}
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
 		connect_comm(out);
 	}
 	out->get();
-	qDebug("device_cache::get_temperature_probe_controlled() returning %p", out);
+	qDebug("device_cache::get_thermal_regulator() returning %p", out);
 	return out;
 }
 
