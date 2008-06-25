@@ -322,16 +322,6 @@ void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 	page_item_cond_list->clear();
 }
 
-void xmlconfhandler::createSottoMenuConnections(sottoMenu *sm)
-{
-	QObject::connect(sm,SIGNAL(Closed()),sm,SLOT(hide()));
-	QObject::connect(client_monitor,SIGNAL(frameIn(char *)),sm,SIGNAL(gestFrame(char *)));
-	QObject::connect(sm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-	QObject::connect(sm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-	QObject::connect(sm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-	QObject::connect(BtM,SIGNAL(freeze(bool)),sm,SLOT(freezed(bool)));
-}
-
 /*******************************************
  *
  * Esco da un livello
@@ -913,40 +903,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	return TRUE;
 }
 
-QDomNode getThermRootNode()
-{
-	QDomElement root = qdom_appconfig.documentElement();
-
-	QDomNode n = root.firstChild();
-	while (!n.isNull())
-	{
-		if (n.nodeName() == "displaypages")
-			break;
-		n = n.nextSibling();
-	}
-
-	n = n.firstChild();
-	while (!n.isNull())
-	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("page\\d\\d?")))
-		{
-			QDomNode child = n.firstChild();
-			while (child.nodeName() != "id")
-			{
-				child = child.nextSibling();
-			}
-			
-			QDomElement e = child.toElement();
-			if (e.text() == "5" || e.text() == "15")
-			{
-				return n;
-			}
-		}
-		n = n.nextSibling();
-	}
-}
-	
-
 /*******************************************
  *
  * Letto nuovo valore
@@ -1099,16 +1055,20 @@ bool xmlconfhandler::characters( const QString & qValue)
 							break;
 
 						case TERMOREGOLAZIONE:
-							n = getThermRootNode();
-							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground,
-									SecondForeground);
+							n = getPageNode(TERMOREGOLAZIONE);
+							if (!n.isNull())
+								*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground, SecondForeground);
+							else
+								qWarning("TERMOREGOLAZIONE configuration not found!");
 							pageAct=*termo;
 							break;
 
 						case TERMOREG_MULTI_PLANT:
-							n = getThermRootNode();
-							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground,
-									SecondForeground);
+							n = getPageNode(TERMOREG_MULTI_PLANT);
+							if (!n.isNull())
+								*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground, SecondForeground);
+							else
+								qWarning("TERMOREG_MULTI_PLANT configuration not found!");
 							pageAct=*termo;
 							break;
 
