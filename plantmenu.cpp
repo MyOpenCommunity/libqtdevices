@@ -55,14 +55,14 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 				case TERMO_99Z:
 					// FIXME: set the correct address when the device is implemented
 					item_addr = "0";
-					where_composed = QString("#") + item_addr;
+					where_composed = item_addr;
 					//dev = btouch_device_cache.get_thermal_regulator(where_composed, THERMO_Z99);
 					//bp = addMenuItem(n, i_thermr, descr, fs_99z_thermal_regulator, where_composed, dev);
 					//create4zSettings(n, static_cast<thermal_regulator_99z *>(dev));
 					break;
 				case TERMO_4Z:
 					item_addr = "0";
-					where_composed = QString("#") + item_addr + "#" + ind_centrale;
+					where_composed = item_addr + "#" + ind_centrale;
 					qDebug("[TERMO] TERMO_4Z PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4);
 					bp = addMenuItem(n, i_thermr, descr, fs_4z_thermal_regulator, where_composed, dev);
@@ -70,7 +70,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					break;
 				case TERMO_99Z_PROBE:
 					item_addr = n.namedItem("where").toElement().text();
-					where_composed = QString("#") + item_addr;
+					where_composed = item_addr;
 					qDebug("[TERMO] TERMO_99Z_PROBE PlantMenu, where=%s", item_addr.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(item_addr.ascii(), THERMO_Z99,
 							false, ind_centrale.ascii(), item_addr.ascii());
@@ -78,7 +78,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					break;
 				case TERMO_99Z_PROBE_FANCOIL:
 					item_addr = n.namedItem("where").toElement().text();
-					where_composed = QString("#") + item_addr;
+					where_composed = item_addr;
 					qDebug("[TERMO] TERMO_99Z_PROBE_FANCOIL PlantMenu, where=%s", item_addr.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(item_addr.ascii(), THERMO_Z99,
 							true, ind_centrale.ascii(), item_addr.ascii());
@@ -86,7 +86,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					break;
 				case TERMO_4Z_PROBE:
 					item_addr = n.namedItem("where").toElement().text();
-					where_composed = QString("#") + item_addr + "#" + ind_centrale;
+					where_composed = item_addr + "#" + ind_centrale;
 					qDebug("[TERMO] TERMO_4Z_PROBE PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z4,
 							false, ind_centrale.ascii(), item_addr.ascii());
@@ -94,7 +94,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					break;
 				case TERMO_4Z_PROBE_FANCOIL:
 					item_addr = n.namedItem("where").toElement().text();
-					where_composed = QString("#") + item_addr + "#" + ind_centrale;
+					where_composed = item_addr + "#" + ind_centrale;
 					qDebug("[TERMO] TERMO_4Z_PROBE_FANCOIL PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z4,
 							true, ind_centrale.ascii(), item_addr.ascii());
