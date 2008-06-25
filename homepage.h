@@ -145,6 +145,8 @@ private slots:
   void ScenariEvoluti();
 /*! \brief Emitted when the \a video door phone management(sottoMenu) is required */
   void Videocitofonia();
+/*! \brief Emitted when the \a supervision management is required */
+  void Supervisione();
 private:
 // QTimer 	 *orologio;
   timeScript* dataOra;

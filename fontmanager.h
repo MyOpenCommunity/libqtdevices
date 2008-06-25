@@ -55,6 +55,8 @@ enum eFontID
 	font_videocitof_area1,						//, 20, QFont::Bold )
 	font_videocitof_area3,						//  20, QFont::Bold )
 	font_videocitof_area5,						//, 20, QFont::Bold )
+	font_stopngo_page_title,					// 14, QFont::Bold
+	font_stopngo_page_labels,					// 14, QFont::Bold 
 	invalid_font
 };
 

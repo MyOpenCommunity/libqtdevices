@@ -352,6 +352,24 @@ device *device_cache::get_modscen_device(QString w)
 	return out;
 }
 
+// Get MCI device
+device *device_cache::get_mci_device(QString w)
+{
+	QString k = get_device_key(QString("18"), w);
+	qDebug("device_cache::get_mci_device(%s)", k.ascii());
+	device *out = (*this)[k];
+	if(!out)
+	{
+		out = new mci_device(w);
+		qDebug("device is not there, creating device %p", out);
+		(*this)[k] = out;
+		connect_comm(out);
+	}
+	out->get();
+	qDebug("device_cache::get_mci_device() returning %p", out);
+	return out;
+}
+
 // Destroy device given key
 void device_cache::put_device(QString k)
 {

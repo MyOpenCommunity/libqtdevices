@@ -217,6 +217,65 @@ device_status::~device_status()
 	// Val list is in auto-delete mode, nothing to do
 }
 
+// Device status for SUPERVISION MCI
+device_status_mci::device_status_mci() : device_status(SUPERVISION_MCI)
+{
+  add_var((int)device_status_mci::MCI_STATUS_INDEX, new stat_var(stat_var::INFO_MCI, 0, 0, 0xFFFF, 1));
+  add_var((int)device_status_mci::MCI_AUTOTEST_FREQ_INDEX, new stat_var(stat_var::WORD, 0, 0, 0xFFFF, 1));
+}
+
+bool device_status_mci::GetMciStatusBit(int bit)
+{
+  stat_var curr_stat(stat_var::INFO_MCI, 0, 0, 0xFFFF, 1); 
+  
+	read((int)MCI_STATUS_INDEX, curr_stat);
+
+	return (((curr_stat.get_val()>>bit)&1)==0)?false:true;
+}
+
+int device_status_mci::GetMciAutotestFreq()
+{
+  stat_var curr_freq(stat_var::WORD, 0, 0, 0xFFFF, 1); 
+  
+	read((int)MCI_AUTOTEST_FREQ_INDEX, curr_freq);
+
+	return curr_freq.get_val();
+}
+
+bool device_status_mci::SetMciStatus(int s)
+{
+  qDebug("device_status_mci::SetMciStatus"
+	       "(device_status_mci, %d)", s);
+  stat_var curr_stat(stat_var::INFO_MCI);
+  
+	read((int)device_status_mci::MCI_STATUS_INDEX, curr_stat);
+  if (!curr_stat.initialized() || (curr_stat.get_val() != s))
+  {
+	  qDebug("Updating MCI status: %d", s);
+	  curr_stat.set_val(s);
+	  write_val((int)device_status_mci::MCI_STATUS_INDEX, curr_stat);
+	  return true;
+  }
+	return false;
+}
+
+bool device_status_mci::SetMciAutotestFreq(int s)
+{
+  qDebug("device_status_mci::SetMciAutotestFreq"
+	       "(device_status_mci, %d)", s);
+  stat_var curr_freq(stat_var::WORD);
+  
+	read((int)device_status_mci::MCI_AUTOTEST_FREQ_INDEX, curr_freq);
+  if (!curr_freq.initialized() || (curr_freq.get_val() != s))
+  {
+	  qDebug("Updating MCI autotest freq: %d", s);
+	  curr_freq.set_val(s);
+	  write_val((int)device_status_mci::MCI_AUTOTEST_FREQ_INDEX, curr_freq);
+	  return true;
+  }
+	return false;
+}
+
 // Device status for lights
 device_status_light::device_status_light() : device_status(LIGHTS)
 {

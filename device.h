@@ -89,6 +89,15 @@ private:
 
 /********************* Specific class device children classes **********************/
 
+//! MCI
+class mci_device : public device
+{
+Q_OBJECT
+public:
+	//! Constructor
+	mci_device(QString, bool p=false, int g=-1);
+};
+
 //! Light (might be a simple light, a dimmer or a dimmer 100)
 class light : public device
 {

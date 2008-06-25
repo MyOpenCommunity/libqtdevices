@@ -101,6 +101,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 			     break;
     case SCENARI_EVOLUTI: connect(b1, SIGNAL(clicked()), this, SIGNAL(ScenariEvoluti())); break;
     case VIDEOCITOFONIA: connect(b1,SIGNAL(clicked()),this, SIGNAL(Videocitofonia() )); break;
+    case SUPERVISIONE: connect(b1, SIGNAL(clicked()), this, SIGNAL(Supervisione() )); break;
 	case BACK: connect(b1, SIGNAL(clicked()), this, SIGNAL(Close()));break;			
     }
 }

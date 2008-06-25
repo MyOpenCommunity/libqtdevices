@@ -14,6 +14,7 @@
 
 #include <qwidget.h>
 #include "btlabel.h"
+#include "supervisionMenu.h"
 
 // #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
@@ -76,6 +77,7 @@ public:
     ThermalMenu *termo;
     diffSonora *difSon;
     antintrusione* antintr;
+    SupervisionMenu *supervisione;
     Client * client_richieste;
     Client * client_comandi;
     Client *  client_monitor; 
