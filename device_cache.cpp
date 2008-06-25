@@ -255,8 +255,7 @@ deviceptr device_cache::get_zonanti_device(QString w)
 	return out;
 }
 
-deviceptr device_cache::get_thermal_regulator(QString where, thermo_type_t type, const char *ind_centrale,
-		const char *indirizzo)
+deviceptr device_cache::get_thermal_regulator(QString where, thermo_type_t type)
 {
 	QString k = get_device_key(QString("4"), where);
 	deviceptr out = (*this)[k];
