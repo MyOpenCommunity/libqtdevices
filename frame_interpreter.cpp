@@ -734,12 +734,8 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 			default:
 				if((cosa >=2) && (cosa <= 10)) {
 					// Dimmer level
-#if 0
-					set_status(ds, (cosa - 1) * 10);
-#else
 					qDebug("setting dimmer level to %d", cosa *10);
 					set_status(ds, cosa * 10);
-#endif
 				} else if((cosa >= 11) && (cosa <= 19)) {
 					// What shall we do here ?                
 					set_status(ds, 1);
@@ -919,29 +915,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 					request_init(ds);
 				break;
 			default:
-#if 0
-				if(cosa == 2)
-					// Dimmer level
-					set_status(ds, 1);
-				else if((cosa >= 3) && (cosa <= 8))
-					// Dimmer level
-					set_status(ds, (cosa - 2) * 10 );
-				else if(cosa == 9)
-					// Dimmer level
-					set_status(ds, 75);
-				else if(cosa == 10)
-					// Dimmer level
-					set_status(ds, 100);
-				else if((cosa >= 11) && (cosa <= 19)) {
-					// What shall we do here ?
-					set_status(ds, 1);
-				} else if((cosa >= 20) && (cosa <= 29)) {
-					// What shall we do here ?
-					set_status(ds, 1);
-				}
-#else
 				request_init(ds);
-#endif
 				break;
 		} 
 	} else if(m.IsMeasureFrame()) {
@@ -987,12 +961,6 @@ void frame_interpreter_lights::set_status(device_status_new_timed *ds,
 	bool do_event = false;
 	stat_var curr_hh(stat_var::HH), curr_mm(stat_var::MM), 
 		 curr_ss(stat_var::SS);
-#if 0
-	if(!hh && !mm && !ss) {
-		qDebug("Not an interesting message");
-		goto end ;
-	}
-#endif
 	// Read current status
 	ds->read((int)device_status_new_timed::HH_INDEX, curr_hh);
 	ds->read((int)device_status_new_timed::MM_INDEX, curr_mm);
@@ -1310,12 +1278,8 @@ void frame_interpreter_dimmer::handle_frame(openwebnet_ext m,
 			default:
 				if((cosa >=2) && (cosa <= 10)) {
 					// Dimmer level
-#if 0
-					set_status(ds, (cosa - 1) * 10);
-#else
 					qDebug("setting dimmer level to %d", cosa *10);
 					set_status(ds, cosa * 10);
-#endif
 				} else if((cosa >= 11) && (cosa <= 19)) {
 					// What shall we do here ?                
 					set_status(ds, 1);
@@ -1440,18 +1404,6 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 
 	if (dove[0]=='#')
 		strcpy(&dove[0], &dove[1]);
-#if 0
-	if(!strcmp(dove, "0"))
-	{
-		char pippo[50];
-		// Richiesta via centrale
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*#4*#");
-		strcat(pippo, where.ascii());
-		strcat(pippo,"##");
-		emit init_requested(QString(pippo));
-	}
-#endif
 	if(!strcmp(dove, where.ascii()))
 	{
 		qDebug("FRAME IS OURS !!");
@@ -1524,16 +1476,7 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	evt_list.clear();
 	device_status *ds = dsi->current();
 	if(request_status) {
-#if 0
-		if(strcmp(msg_open.Extract_dove(), "0") == 0)
-		{
-			request_init(ds, ds->init_request_delay());
-		}
-		else
-			request_init(ds);
-#else
 		request_init(ds, ds->init_request_delay());
-#endif
 		goto end;
 	}
 	{
@@ -2030,24 +1973,13 @@ handle_frame_handler(char *frame, QPtrList<device_status> *sl)
 	rearmWDT();
 	qDebug("frame_interpreter_doorphone_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
-#if 1
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if(!is_frame_ours(msg_open, request_status)) {
 		// Discard frame if not ours
 		qDebug("discarding frame");
 		return;
 	}
-#else
-	// PER DEBUG !!!!!!
-	//frame = "*6*9*4000#2##"
-	//frame = "*8*9#1#1*20#2##";
-	frame = "*8*9#1#1*21#2##" ;
-	//frame = "*8*1#1#4*11##";
-	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-	if(!is_frame_ours(msg_open))
-		return;
-#endif
-	QPtrListIterator<device_status> *dsi = 
+	QPtrListIterator<device_status> *dsi =
 		new QPtrListIterator<device_status>(*sl);
 	dsi->toFirst();
 	device_status *ds;
@@ -2238,11 +2170,6 @@ handle_frame(openwebnet_ext m, device_status_zonanti *ds)
 			break;
 	}
 	if(stat < 0) return;
-#if 0
-	qDebug("new status is %d\n", stat);
-	if(ds->initialized() && (stat == curr_stat.get_val()))
-		return;
-#endif
 	curr_stat.set_val(stat);
 	ds->write_val((int)device_status_zonanti::ON_OFF_INDEX, curr_stat);
 	qDebug("status changed, appending evt");
@@ -2614,13 +2541,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 					strcat(pippo,m.Extract_dove());
 					strcat(pippo,"##");
 					emit init_requested(QString(pippo));
-#if 0
-					qDebug("new crono is 0");
-					cr = 0;
-					curr_crono.set_val(cr);
-					ds->write_val((int)device_status_temperature_probe_extra::CRONO, curr_crono);
-					evt_list.append(ds);
-#endif
 					delta = 1;
 					curr_info_centrale.set_val(delta);
 					ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
@@ -2708,22 +2628,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 					curr_info_centrale.set_val(delta);
 					ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 					evt_list.append(ds);
-#if 0
-					qDebug("new crono is 0");
-					cr = 0;
-					curr_crono.set_val(cr);
-					ds->write_val((int)device_status_temperature_probe_extra::CRONO, curr_crono);
-					evt_list.append(ds);
-#endif
 				}
-				/*if((loc != 4) && (loc !=5))
-				  {
-				  stat = device_status_temperature_probe_extra::S_AUTO;
-				  curr_stat.set_val(stat);
-				  ds->write_val((int)device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
-				  evt_list.append(ds);
-				  }*/
-				//}
 			}
 			elaborato = true;
 			break;
@@ -2882,17 +2787,6 @@ frame_interpreter_modscen_device(QString w, bool p, int g) :
 	qDebug("frame_interpreter_modscen_device::"
 			"frame_interpreter_modscen_device()");
 }
-
-#if 0
-// FIXME: CHECK WHETHER THIS IS NEEDED OR NOT
-bool frame_interpreter_modscen_device::is_frame_ours(openwebnet_ext m,
-		bool& request_status)
-{
-	request_status = false;
-	if (strcmp(m.Extract_chi(),"0")) return false;
-
-}
-#endif
 
 void frame_interpreter_modscen_device::
 get_init_message(device_status *s, QString& out)
