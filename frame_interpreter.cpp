@@ -2289,8 +2289,35 @@ next:
 	delete dsi;
 }
 
+frame_interpreter_thermal_regulator::frame_interpreter_thermal_regulator(QString addr, bool p, int g)
+	: frame_interpreter("4", addr, p, g)
+{
+	where = addr;
+}
 
-// Thermal regulator device frame interpreter
+void frame_interpreter_thermal_regulator::get_init_message(device_status *ds, QString& out)
+{
+	out = "*#4*";
+	out +=  where + "##";
+}
+
+void frame_interpreter_thermal_regulator::handle_frame_handler(char *frame, QPtrList<device_status> *list)
+{
+}
+
+bool frame_interpreter_thermal_regulator::is_frame_ours(openwebnet_ext msg, bool& request_status)
+{
+}
+
+void frame_interpreter_thermal_regulator::handle_frame(openwebnet_ext msg, device_status_thermal_regulator_4z *ds)
+{
+}
+
+void frame_interpreter_thermal_regulator::handle_frame(openwebnet_ext msg, device_status_thermal_regulator_99z *ds)
+{
+}
+
+// Temperature probe device frame interpreter
 
 bool frame_interpreter_temperature_probe_controlled::checkTimeoutVar(const stat_var &var)
 {

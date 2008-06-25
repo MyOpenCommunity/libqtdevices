@@ -352,7 +352,28 @@ public slots:
 	void handle_frame_handler(char *, QPtrList<device_status> *);
 };
 
-//! Thermal regulator device frame interpreter
+/**
+ * An interpreter for both 4z and 99z thermal regulator devices
+ */
+class frame_interpreter_thermal_regulator : public frame_interpreter
+{
+Q_OBJECT
+public:
+	//! Constructor
+	frame_interpreter_thermal_regulator(QString addr, bool p, int g);
+	//! Returns init message given device status
+	void get_init_message(device_status *ds, QString& out);
+public slots:
+	//! Receive a frame
+	void handle_frame_handler(char *frame, QPtrList<device_status> *list);
+private:
+	void handle_frame(openwebnet_ext msg, device_status_thermal_regulator_4z *ds);
+	void handle_frame(openwebnet_ext msg, device_status_thermal_regulator_99z *ds);
+	QString where;
+	bool is_frame_ours(openwebnet_ext msg, bool& request_status);
+};
+
+//! Temperature probe device frame interpreter
 class frame_interpreter_temperature_probe_controlled : public frame_interpreter
 {
 Q_OBJECT
