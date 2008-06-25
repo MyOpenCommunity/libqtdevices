@@ -64,6 +64,13 @@ void Client::socketConnected()
     qDebug( "TRY TO START command");
   }
 }
+
+// FIX: remove this slot!
+void Client::ApriInviaFrameChiudi(char* frame)
+{
+	ApriInviaFrameChiudi(const_cast<const char*>(frame));
+}
+
 /****************************************************************************
 **
 ** connetto all'openserver

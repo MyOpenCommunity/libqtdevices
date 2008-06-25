@@ -42,6 +42,8 @@ class Client  : public QObject
 */  
        void connetti();
 	void ApriInviaFrameChiudi(const char *);
+	void ApriInviaFrameChiudi(char *);
+
     private slots:
 /*! Closes the socket
 */          
