@@ -43,8 +43,8 @@ public:
 	//! Destructor
 	virtual ~device();
 
-	void sendFrame(char *frame);
-	void sendInit(char *frame);
+	void sendFrame(const char *frame);
+	void sendInit(const char *frame);
 
 signals:
 	//! Status changed
@@ -68,11 +68,13 @@ protected:
 	frame_interpreter *interpreter;
 	//! List of device stats
 	QPtrList<device_status> *stat;
-private:
+
 	//! Node's who
 	QString who;
 	//! Node's where
 	QString where;
+
+private:
 	//! Pul status
 	bool pul;
 	//! Device's group

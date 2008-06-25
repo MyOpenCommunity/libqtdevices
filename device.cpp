@@ -28,12 +28,12 @@ void device::setClients(Client *comandi, Client *monitor, Client *richieste)
 	client_richieste = richieste;
 }
 
-void device::sendFrame(char *frame)
+void device::sendFrame(const char *frame)
 {
 	client_comandi->ApriInviaFrameChiudi(frame);
 }
 
-void device::sendInit(char *frame)
+void device::sendInit(const char *frame)
 {
 	client_richieste->ApriInviaFrameChiudi(frame);
 }

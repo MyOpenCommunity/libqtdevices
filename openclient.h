@@ -41,14 +41,11 @@ class Client  : public QObject
 /*! Connects to the socket
 */  
        void connetti();
-	void ApriInviaFrameChiudi(char *);
+	void ApriInviaFrameChiudi(const char *);
     private slots:
 /*! Closes the socket
 */          
     void closeConnection(void);
-/*! Sends messages throught the socket
-*/      
-    void sendToServer(char *);    
 /*! Reads messages from the socket
 */      
     int socketFrameRead(void);
@@ -69,6 +66,9 @@ class Client  : public QObject
 
     void clear_last_msg_open_read();
     private:
+/*! Sends messages throught the socket */
+    void sendToServer(const char *);
+
     QSocket *socket;
     int ismonitor;
 	 bool isrichiesta;
