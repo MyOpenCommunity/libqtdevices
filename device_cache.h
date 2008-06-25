@@ -60,8 +60,7 @@ public:
 	//! Get anti-intrusion system zone
 	device *get_zonanti_device(QString where);
 	/// Get a thermal regulator device
-	device *get_thermal_regulator(QString where, thermo_type_t type, const char *ind_centrale,
-			const char *indirizzo);
+	device *get_thermal_regulator(QString where, thermo_type_t type);
 	//! Get a controlled temperature probe
 	device *get_temperature_probe_controlled(QString where, thermo_type_t type,
 		bool fancoil, const char *ind_centrale, const char *indirizzo);

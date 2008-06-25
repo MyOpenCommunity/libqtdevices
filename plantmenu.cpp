@@ -58,8 +58,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					item_addr = "0";
 					where_composed = QString("#") + item_addr;
 					fancoil = false;
-					//dev = btouch_device_cache.get_temperature_probe_controlled(where_composed, THERMO_Z99,
-					//		fancoil, ind_centrale.ascii(), item_addr.ascii());
+					//dev = btouch_device_cache.get_thermal_regulator(where_composed, THERMO_Z99);
 					break;
 				case TERMO_4Z:
 					// FIXME: create 2 banners for each thermal regulator device
@@ -72,8 +71,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 					where_composed = QString("#") + item_addr + "#" + ind_centrale;
 					fancoil = false;
 					qDebug("[TERMO] TERMO_4Z PlantMenu, where=%s", where_composed.ascii());
-					dev = btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4,
-							ind_centrale.ascii(), item_addr.ascii());
+					dev = btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4);
 					break;
 				case TERMO_99Z_PROBE:
 					icon = i_zone;
