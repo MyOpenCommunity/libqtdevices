@@ -44,6 +44,8 @@ public:
 		INFO_SONDA,
 		INFO_CENTRALE,
 		FANCOIL_SPEED,
+		INFO_MCI,
+		WORD, 				//0-65535
 		PROGRAM, // weekly program currently set in the thermal regulator
 		SCENARIO, // scenario currentrly set in thermal regulator (99 zones only)
 		SEASON,   // summer / winter
@@ -118,6 +120,7 @@ public:
 		FANCOIL,
 		MODSCEN,
 		SOUNDMATR,
+ 		SUPERVISION_MCI,
 		THERMAL_REGULATOR_4Z,
 		THERMAL_REGULATOR_99Z,
 	} type;
@@ -163,6 +166,22 @@ public:
 #define LIGHT_REQ_DELAY 1500
 #endif
 
+
+//! SUPERVISION MCI status
+class device_status_mci : public device_status {
+ private:
+ public:
+   enum {
+     MCI_STATUS_INDEX = 0,
+     MCI_AUTOTEST_FREQ_INDEX = 1,
+   } ind;
+   device_status_mci(); 
+   //~device_status_mci();
+	 bool GetMciStatusBit(int bit);
+	 int GetMciAutotestFreq();
+	 bool SetMciStatus(int s);
+	 bool SetMciAutotestFreq(int s);
+};
 
 //! Simple light status
 class device_status_light : public device_status

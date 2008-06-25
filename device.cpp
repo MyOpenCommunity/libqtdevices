@@ -183,6 +183,18 @@ int device::put(void)
 	return refcount;
 }
 
+// MCI implementation
+mci_device::mci_device(QString w, bool p, int g) : device(QString("18"), w, p, g)
+{
+	interpreter = new frame_interpreter_mci(w, p, g);
+	set_frame_interpreter(interpreter);
+	stat->append(new device_status_mci());
+	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
+			    interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
+	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), 
+					this, SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
 // Light implementation
 light::light(QString w, bool p, int g) : device(QString("1"), w, p, g) 
 {

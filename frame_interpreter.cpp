@@ -2856,3 +2856,134 @@ next:
 		emit(frame_event(evt_list));
 	delete dsi;
 }
+
+//=================================================================================================================
+// MCI frame interpreter
+
+// Public methods
+frame_interpreter_mci::frame_interpreter_mci(QString w, bool p, int g) :
+	frame_interpreter(QString("18"), w, p, g)
+{
+}
+
+void frame_interpreter_mci::get_init_messages(device_status *s, QStringList& out)
+{
+  QString head = "*#18*";
+  QString end = "##";
+
+  out.clear();
+  switch (s->get_type())
+  {
+    case device_status::SUPERVISION_MCI:
+      out.append(head + where + "*250" + end);
+      out.append(head + where + "*212" + end);
+      break;
+    default:
+      qDebug("frame_interpreter_mci: unhandled device status type");
+  }
+}
+
+void frame_interpreter_mci::handle_frame_handler(char *frame, QPtrList<device_status> *sl)
+{
+  bool request_status;
+  openwebnet_ext msg_open;
+  
+  rearmWDT();
+  
+  qDebug("frame_interpreter_mci::handle_frame_handler");
+  qDebug("#### frame is %s ####", frame);
+  
+  msg_open.CreateMsgOpen(frame, strstr(frame, "##")-frame+2);
+  if(!is_frame_ours(msg_open, request_status)) // Discard frame if not ours
+    return;
+  
+  // Walk through list of device_status' and pass frame to relevant 
+  // handler method
+  QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(*sl);
+  dsi->toFirst();
+  device_status *ds;
+  evt_list.clear();
+
+  while( ( ds = dsi->current() ) != 0) 
+  {
+    /*
+	  if(request_status) 
+    {
+	    request_init(ds);
+	    goto next;
+	  }
+    */
+	  {
+	    device_status::type type = ds->get_type();
+	    switch (type) 
+      {
+	      case device_status::SUPERVISION_MCI:
+		      handle_frame(msg_open, (device_status_mci *)ds);
+          break;
+	      default:
+		      // Do nothing
+		      break;
+	    }
+	  }
+    //next:
+	  ++(*dsi);
+  }    
+	if(!evt_list.isEmpty()) 
+  {
+	  qDebug("Event list is not empty, invoking emit(frame_event())");
+	  emit(frame_event(evt_list));
+  } 
+  else
+	  qDebug("**** NO event generated");
+  delete dsi;
+  qDebug("frame_interpreter_mci::handle_frame_handler, end");
+}
+
+void frame_interpreter_mci::handle_frame(openwebnet_ext m, device_status_mci *ds)
+{
+  qDebug("frame_interpreter_mci::handle_frame(device_status_mci)");
+
+  if(m.IsNormalFrame()) 
+  {
+    qDebug("frame_interpreter_mci::handle_frame - IsNormalFrame");
+  } 
+  else if(m.IsMeasureFrame()) 
+  {
+    qDebug("frame_interpreter_mci::handle_frame - IsMeasureFrame");
+		int code = atoi(m.Extract_grandezza());
+	  bool doEvent = false;
+		char* s = m.Extract_valori(0);
+		int val = 0;
+	  switch(code) 
+    {
+      case 250:   //MCI Status
+        for (int i=0; i<13; i++)
+				  val = (val<<1)|(s[i]-0x30);
+		    qDebug("set_status() - MCI Status");
+        if (ds->SetMciStatus(val))        
+          doEvent = true;
+        break;
+      case 212:   //Autotest freq
+			  val = atoi(s);
+		    qDebug("set_status() - Autotest freq");
+        if (ds->SetMciAutotestFreq(val))
+          doEvent = true;
+        break;
+      default:
+        //do nothing
+        break;
+	  } 
+    if(doEvent)
+	    evt_list.append(ds);
+  } 
+  else if(m.IsWriteFrame()) 
+  {
+    qDebug("frame_interpreter_mci::handle_frame - IsWriteFrame");
+  }
+}
+
+//=================================================================================================================
+
+
+
+

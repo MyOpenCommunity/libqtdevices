@@ -70,6 +70,8 @@ public:
 	device *get_temperature_probe(QString w, bool external);
 	//! Get modscen
 	device *get_modscen_device(QString where);
+	//! Get modscen
+	device *get_mci_device(QString where);
 	//! Destroy device given key
 	void put_device(QString k);
 	//! Add already created device to cache. Key is device's who+where

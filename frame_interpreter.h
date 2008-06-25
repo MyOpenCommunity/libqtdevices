@@ -443,4 +443,22 @@ public slots:
 	void handle_frame_handler(char *, QPtrList<device_status> *);
 };
 
+//! MCI frame interpreter
+class frame_interpreter_mci : public frame_interpreter
+{
+Q_OBJECT
+private:
+	//! Analyze a frame for a dimmer status
+	void handle_frame(openwebnet_ext, device_status_mci *);
+public:
+	//! Constructor
+	frame_interpreter_mci(QString, bool, int);
+	//! Returns init message given device status
+  void get_init_messages(device_status *, QStringList&);
+public slots:
+	//! Receive a frame
+	void handle_frame_handler(char *, QPtrList<device_status> *);
+};
+
+
 #endif //__FRAME_INTERPRETER_H__

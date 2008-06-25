@@ -76,6 +76,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 	pagDefault=NULL;
 	Home=specPage=NULL;
 	illumino=scenari=carichi=imposta=automazioni=scenari_evoluti=videocitofonia=NULL;
+	supervisione=NULL;
 	termo=NULL;
 	difSon=NULL;
 	dm=NULL;
@@ -161,7 +162,7 @@ void BtMain::hom()
 	if (QFile::exists("cfg/conf.xml"))
 	{ 
 		xmlconfhandler  *handler2 = new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
-				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &pagDefault,
+				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
 				client_comandi, client_monitor, client_richieste, datiGen, bg, fg1, fg2);
 		setBackgroundColor(*bg);
 		for (int idx=0;idx<12;idx++)
@@ -230,6 +231,8 @@ void BtMain::init()
 		videocitofonia->inizializza();
 	if (imposta)
 		imposta->inizializza();
+	if (supervisione)
+		supervisione->inizializza();
 	//    rearmWDT();
 
 	struct sysinfo info;
@@ -439,6 +442,8 @@ void BtMain::gesScrSav()
 						scenari_evoluti->hide();
 					if (videocitofonia)
 						videocitofonia->hide();
+					if (supervisione)
+						supervisione->hide();
 					if (pagDefault)
 						pagDefault -> showFullScreen();
 				}

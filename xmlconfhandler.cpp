@@ -80,7 +80,7 @@ static const char pagTesti[13][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIO
  *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
 		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, diffSonora **dS, diffmulti **_dm, antintrusione **ant,
-		QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG, QColor *bg, QColor *fg1, QColor *fg2)
+		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG, QColor *bg, QColor *fg1, QColor *fg2)
 {
 	home=h;
 	specPage=sP;
@@ -95,6 +95,7 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	difSon=dS;
 	dm=_dm;
 	antintr=ant;
+	supervisione=sup;
 	pagDefault=pD;
 	BtM=BM;
 	client_comandi=c_c;
@@ -382,6 +383,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 					case IMPOSTAZIONI: 				  // addbutton normali
 					case SCENARI_EVOLUTI:
 					case VIDEOCITOFONIA:
+					case SUPERVISIONE:
 						(*home)->addButton(sottomenu_left,sottomenu_top,(char *)sottomenu_icon_name.ascii(), (char)sottomenu_id);
 						break;
 						break;
@@ -608,6 +610,26 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 
 					switch (page_id)
 					{
+						case SUPERVISIONE:
+							(*supervisione)->forceDraw();
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+							QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showFullScreen()));
+							QObject::connect(*supervisione,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
+#endif
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)
+							QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(show()));
+							QObject::connect(*supervisione,SIGNAL(Closed()),*home,SLOT(show()));
+#endif
+							QObject::connect(*supervisione,SIGNAL(Closed()),*supervisione,SLOT(hide()));			
+							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
+							QObject::connect(*supervisione,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
+							QObject::connect(*supervisione,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
+							QObject::connect(*supervisione,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
+							QObject::connect(*supervisione,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
+							QObject::connect(*supervisione,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
+							QObject::connect(*supervisione,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
+							QObject::connect(BtM,SIGNAL(freeze(bool)),*supervisione,SLOT(freezed(bool)));
+							break;
 						case AUTOMAZIONE:
 							(*automazioni)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                    
@@ -902,6 +924,44 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 
 	return TRUE;
 }
+QDomNode GetRootNodeById(int id)
+{
+  qDebug("xmlconfhandler: GetRootNodeById() ID=%d", id);
+	QDomElement root = qdom_appconfig.documentElement();
+
+	QDomNode n = root.firstChild();
+	while (!n.isNull())
+	{
+		if (n.nodeName() == "displaypages")
+    {
+      qDebug("xmlconfhandler: displaypages found.");
+      break;
+    }
+		n = n.nextSibling();
+	}
+
+	n = n.firstChild();
+	while (!n.isNull())
+	{
+    qDebug("xmlconfhandler: scanning %s.", n.nodeName().ascii());
+		if (n.isElement() && n.nodeName().startsWith("page"))
+		{
+      qDebug("xmlconfhandler: page found: %s.", n.nodeName().ascii());
+			QDomNode child = n.firstChild();
+			while (child.nodeName() != "id")
+				child = child.nextSibling();
+			
+			QDomElement e = child.toElement();
+			if (atoi(e.text()) == id)
+      {	
+        qDebug("xmlconfhandler: ID found.");
+        return n;
+      }
+		}
+		n = n.nextSibling();
+	}
+}
+
 
 /*******************************************
  *
@@ -1092,6 +1152,12 @@ bool xmlconfhandler::characters( const QString & qValue)
 							(*videocitofonia)->setBGColor(Background);
 							(*videocitofonia)->setFGColor(Foreground);
 							pageAct=*videocitofonia;
+							break;
+
+						case SUPERVISIONE:
+							n = GetRootNodeById(page_id);
+							*supervisione = new SupervisionMenu(NULL, "SUPERVISIONE", n, Background, Foreground);
+							pageAct=*supervisione;
 							break;
 
 						case SPECIAL:

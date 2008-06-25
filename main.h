@@ -182,6 +182,7 @@ enum pagSecLiv{
 	VIDEOCITOFONIA=11,
 	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
+	SUPERVISIONE=14,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=15                       /*!< Thermoregulation system with one or more 4-zones plants */
 };
 
@@ -297,6 +298,46 @@ enum pagSecLiv{
 /*!  \def ICON_DEL
   The file name for \a delete icon*/
 #define ICON_DEL			(IMG_PATH "btndel.png")
+/*!  \def ICON_SUPERVISIONE
+  The file name for \a plant supervision icon*/
+#define ICON_SUPERVISIONE (IMG_PATH "supervisione_impianto.png")
+/*!  \def ICON_STOPNGO_APERTO
+  The file name for \a open stopngo icon*/
+#define ICON_STOPNGO_APERTO (IMG_PATH "S&G_Aperto.png")
+/*!  \def ICON_STOPNGO_CHIUSO
+  The file name for \a closed stopngo icon*/
+#define ICON_STOPNGO_CHIUSO (IMG_PATH "S&G_Chiuso.png")
+/*!  \def ICON_STOPNGO_BLOCCO
+  The file name for \a locked stopngo icon*/
+#define ICON_STOPNGO_BLOCCO (IMG_PATH "S&G_Aperto_Blocco.png")
+/*!  \def ICON_STOPNGO_CORTOCIRCUITO
+  The file name for \a short circuit stopngo icon*/
+#define ICON_STOPNGO_CORTOCIRCUITO (IMG_PATH "S&G_Aperto_Cortocircuito.png")
+/*!  \def ICON_STOPNGO_GUASTO_TERRA
+  The file name for \a earth failure stopngo icon*/
+#define ICON_STOPNGO_GUASTO_TERRA (IMG_PATH "S&G_Aperto_Guastoversoterra.png")
+/*!  \def ICON_STOPNGO_SOVRATENSIONE
+  The file name for \a out of Vmax stopngo icon*/
+#define ICON_STOPNGO_SOVRATENSIONE (IMG_PATH "S&G_Aperto_Sovratensione.png")
+/*!  \def ICON_STOPNGO_A_RIARMO
+  The file name for \a stopngo enabled arm icon*/
+#define ICON_STOPNGO_A_RIARMO (IMG_PATH "a_riarmo.png")
+/*!  \def ICON_STOPNGO_D_RIARMO
+  The file name for \a stopngo disabled arm icon*/
+#define ICON_STOPNGO_D_RIARMO (IMG_PATH "d_riarmo.png")
+/*!  \def ICON_STOPNGO_A_VERIFICA_IMPIANTO
+  The file name for \a stopngo verify icon*/
+#define ICON_STOPNGO_A_VERIFICA_IMPIANTO (IMG_PATH "a_verifica_impianto.png")
+/*!  \def ICON_STOPNGO_D_VERIFICA_IMPIANTO
+  The file name for \a stopngo disabled verify icon*/
+#define ICON_STOPNGO_D_VERIFICA_IMPIANTO (IMG_PATH "d_verifica_impianto.png")
+/*!  \def ICON_STOPNGO_A_AUTOTEST
+  The file name for \a stopngo autotest icon*/
+#define ICON_STOPNGO_A_AUTOTEST (IMG_PATH "a_autotest.png")
+/*!  \def ICON_STOPNGO_D_AUTOTEST
+  The file name for \a stopngo disabled autotest icon*/
+#define ICON_STOPNGO_D_AUTOTEST (IMG_PATH "d_autotest.png")
+
 
 
 /****************************************************************
@@ -363,6 +404,10 @@ enum  bannerType {
 	TERMO_NC_PROBE=56,                            /*!< Not-controlled probe */
         TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
         TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
+	CLASS_STOPNGO=59,                             /*!< StopnGo devices class */
+	STOPNGO=60,                                   /*!< StopnGo device */
+	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
+	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
 	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
@@ -397,7 +442,7 @@ enum pulsType
 /*! \def BEEP
  * if not defined it's impossible to have a beep when pressing a button
  */
-//#define BEEP
+#define BEEP
 
 
 #endif //MAIN_H

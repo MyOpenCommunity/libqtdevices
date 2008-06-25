@@ -15,6 +15,7 @@
 #include <qcolor.h>
 #include <qdatetime.h>
 #include <qstring.h>
+#include "supervisionMenu.h"
 
 class homePage;
 class sottoMenu;
@@ -81,7 +82,7 @@ class xmlconfhandler : public QXmlDefaultHandler
 		xmlconfhandler(BtMain *BtM=NULL, homePage **home=NULL,  homePage **specPage=NULL,  sottoMenu **scenari_evoluti=NULL,
 				sottoMenu **videocitofonia=NULL, sottoMenu **illumino=NULL, sottoMenu **scenari=NULL, sottoMenu **carichi=NULL,
 				sottoMenu **imposta=NULL, sottoMenu **automazioni=NULL, ThermalMenu **termo=NULL, diffSonora **difSon=NULL,
-				diffmulti **dm=NULL, antintrusione **antintr=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
+				diffmulti **dm=NULL, antintrusione **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
 				Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL, QColor *bg=NULL,
 				QColor *fg1=NULL, QColor *fg2=NULL);
 
@@ -169,6 +170,7 @@ class xmlconfhandler : public QXmlDefaultHandler
 		ThermalMenu **termo;
 		diffSonora **difSon;
 		antintrusione** antintr;
+		SupervisionMenu** supervisione;
 		QWidget ** pagDefault;
 		versio *datiGen ;
 
