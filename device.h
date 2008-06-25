@@ -125,6 +125,20 @@ class autom : public device
 		autom(QString, bool p=false, int g=-1);
 };
 
+class thermal_regulator_4z : public device
+{
+Q_OBJECT
+public:
+	thermal_regulator_4z(QString where, bool p=false, int g=-1);
+};
+
+class thermal_regulator_99z : public device
+{
+Q_OBJECT
+public:
+	thermal_regulator_99z(QString where, bool p=false, int g=-1);
+};
+
 /**
  * Controlled temperature probe device.
  */
