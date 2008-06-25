@@ -42,83 +42,65 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
 			qDebug("[TERMO] createPlantMenu: item = %s", n.nodeName().ascii());
-			// create full screen banner
+			bannPuls *bp = 0;
+			QString descr = findNamedNode(n, "descr").toElement().text();
+			if (descr.isNull())
+				qDebug("[TERMO] PlantMenu::PlantMenu, ``descr'' is null, prepare for strangeness...");
+
 			int id = n.namedItem("id").toElement().text().toInt();
-			QString icon;
 			QString item_addr, where_composed;
-			BannID bann_type;
 			device *dev = 0;
-			bool fancoil = false;
 			switch (id)
 			{
 				case TERMO_99Z:
 					// FIXME: set the correct address when the device is implemented
-					icon = i_thermr;
-					bann_type = fs_99z_thermal_regulator;
 					item_addr = "0";
 					where_composed = QString("#") + item_addr;
-					fancoil = false;
 					//dev = btouch_device_cache.get_thermal_regulator(where_composed, THERMO_Z99);
+					//bp = addMenuItem(n, i_thermr, descr, fs_99z_thermal_regulator, where_composed, dev);
+					//create4zSettings(n, static_cast<thermal_regulator_99z *>(dev));
 					break;
 				case TERMO_4Z:
-					// FIXME: create 2 banners for each thermal regulator device
-					// - one for the thermal regulator
-					// - one for information about the internal probe
-					// FIXME: the address of the internal probe is #ind_centrale#ind_centrale
-					icon = i_thermr;
-					bann_type = fs_4z_thermal_regulator;
 					item_addr = "0";
 					where_composed = QString("#") + item_addr + "#" + ind_centrale;
-					fancoil = false;
 					qDebug("[TERMO] TERMO_4Z PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4);
+					bp = addMenuItem(n, i_thermr, descr, fs_4z_thermal_regulator, where_composed, dev);
+					create4zSettings(n, static_cast<thermal_regulator_4z *>(dev));
 					break;
 				case TERMO_99Z_PROBE:
-					icon = i_zone;
-					bann_type = fs_99z_probe;
 					item_addr = n.namedItem("where").toElement().text();
 					where_composed = QString("#") + item_addr;
-					fancoil = false;
 					qDebug("[TERMO] TERMO_99Z_PROBE PlantMenu, where=%s", item_addr.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(item_addr.ascii(), THERMO_Z99,
-							fancoil, ind_centrale.ascii(), item_addr.ascii());
+							false, ind_centrale.ascii(), item_addr.ascii());
+					bp = addMenuItem(n, i_zone, descr, fs_99z_probe, where_composed, dev);
 					break;
 				case TERMO_99Z_PROBE_FANCOIL:
-					icon = i_zone;
-					bann_type = fs_99z_fancoil;
 					item_addr = n.namedItem("where").toElement().text();
 					where_composed = QString("#") + item_addr;
-					fancoil = true;
 					qDebug("[TERMO] TERMO_99Z_PROBE_FANCOIL PlantMenu, where=%s", item_addr.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(item_addr.ascii(), THERMO_Z99,
-							fancoil, ind_centrale.ascii(), item_addr.ascii());
+							true, ind_centrale.ascii(), item_addr.ascii());
+					bp = addMenuItem(n, i_zone, descr, fs_99z_fancoil, where_composed, dev);
 					break;
 				case TERMO_4Z_PROBE:
-					icon = i_zone;
-					bann_type = fs_4z_probe;
 					item_addr = n.namedItem("where").toElement().text();
 					where_composed = QString("#") + item_addr + "#" + ind_centrale;
-					fancoil = false;
 					qDebug("[TERMO] TERMO_4Z_PROBE PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z4,
-							fancoil, ind_centrale.ascii(), item_addr.ascii());
+							false, ind_centrale.ascii(), item_addr.ascii());
+					bp = addMenuItem(n, i_zone, descr, fs_4z_probe, where_composed, dev);
 					break;
 				case TERMO_4Z_PROBE_FANCOIL:
-					icon = i_zone;
-					bann_type = fs_4z_fancoil;
 					item_addr = n.namedItem("where").toElement().text();
 					where_composed = QString("#") + item_addr + "#" + ind_centrale;
-					fancoil = true;
 					qDebug("[TERMO] TERMO_4Z_PROBE_FANCOIL PlantMenu, where=%s", where_composed.ascii());
 					dev = btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z4,
-							fancoil, ind_centrale.ascii(), item_addr.ascii());
+							true, ind_centrale.ascii(), item_addr.ascii());
+					bp = addMenuItem(n, i_zone, descr, fs_4z_fancoil, where_composed, dev);
 					break;
 			}
-
-			QString descr = findNamedNode(n, "descr").toElement().text();
-			if (descr.isNull())
-				qDebug("[TERMO] PlantMenu::PlantMenu, ``descr'' is null, prepare for strangeness...");
-			bannPuls *bp = addMenuItem(n, icon, descr, bann_type, where_composed, dev);
 
 			signal_mapper.setMapping(bp, banner_id);
 			connect(bp, SIGNAL(sxClick()), &signal_mapper, SLOT(map()));
@@ -157,33 +139,11 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			fsb, SLOT(status_changed(QPtrList<device_status>)));
 	fsb->setAddress(addr.ascii());
-	sottoMenu *settings = 0;
-	if (type == fs_4z_thermal_regulator)
-	{
-		settings = create4zSettings(n, addr);
-		if (!settings)
-			qFatal("[TERMO] could not create settings menu");
-	}
-	if (type == fs_99z_thermal_regulator)
-	{
-		settings = create99zSettings(n, addr);
-		if (!settings)
-			qFatal("[TERMO] could not create settings menu");
-	}
-	if (settings)
-	{
-		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
-		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
-		connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
-
-		connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
-		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
-	}
 
 	return bp;
 }
 
-sottoMenu *PlantMenu::create4zSettings(QDomNode conf, QString where)
+void PlantMenu::create4zSettings(QDomNode conf, thermal_regulator_4z *dev)
 {
 	sottoMenu *settings = new sottoMenu(0, "settings");
 
@@ -195,27 +155,34 @@ sottoMenu *PlantMenu::create4zSettings(QDomNode conf, QString where)
 	holidaySettings(settings, conf);
 
 	// off banner
-	BannOff *off = new BannOff(settings, "OFF");
-	off->setAddress(where.ascii());
+	BannOff *off = new BannOff(settings, "OFF", dev);
 	settings->appendBanner(off);
 
 	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze");
-	antifreeze->setAddress(where.ascii());
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", dev);
 	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter");
-	summer_winter->setAddress(where.ascii());
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", dev);
 	settings->appendBanner(summer_winter);
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
 
-	return settings;
+	if (settings)
+	{
+		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
+		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
+		connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
+
+		connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
+		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+	}
+	else
+		qFatal("[TERMO] could not create settings menu");
 }
 
-sottoMenu *PlantMenu::create99zSettings(QDomNode conf, QString where)
+void PlantMenu::create99zSettings(QDomNode conf, thermal_regulator_99z *dev)
 {
 	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
 
@@ -235,22 +202,31 @@ sottoMenu *PlantMenu::create99zSettings(QDomNode conf, QString where)
 	holidaySettings(settings, conf);
 
 	// off banner
-	BannOff *off = new BannOff(settings, "OFF");
-	off->setAddress(where.ascii());
+	BannOff *off = new BannOff(settings, "OFF", dev);
 	settings->appendBanner(off);
 
 	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze");
-	antifreeze->setAddress(where.ascii());
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", dev);
 	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter");
-	summer_winter->setAddress(where.ascii());
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", dev);
 	settings->appendBanner(summer_winter);
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
+
+	if (settings)
+	{
+		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
+		connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
+		connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
+
+		connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
+		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+	}
+	else
+		qFatal("[TERMO] could not create settings menu");
 }
 
 void PlantMenu::manualSettings(sottoMenu *settings)

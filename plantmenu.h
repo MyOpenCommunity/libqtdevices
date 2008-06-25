@@ -20,6 +20,8 @@
 #include <qsignalmapper.h>
 
 class device;
+class thermal_regulator_99z;
+class thermal_regulator_4z;
 
 class PlantMenu : public sottoMenu
 {
@@ -30,12 +32,12 @@ private:
 	/**
 	 * Utility function to create the settings menu for a 99z thermal regulator.
 	 */
-	sottoMenu *create99zSettings(QDomNode conf, QString where);
+	void create99zSettings(QDomNode conf, thermal_regulator_99z *dev);
 
 	/**
 	 * Utility function to create the settings menu for a 4z thermal regulator.
 	 */
-	sottoMenu *create4zSettings(QDomNode conf, QString where);
+	void create4zSettings(QDomNode conf, thermal_regulator_4z *dev);
 
 	/**
 	 * Utility function to create the submenu to set the weekly program in thermal
@@ -89,16 +91,17 @@ private:
 	/// The second foreground color
 	QColor second_fg;
 
-	/*
-	 * Used to call show(int) on SottoMenu based on which banner is clicked.
-	 */
-	QSignalMapper signal_mapper;
 
 	/*
 	 * Sub-sub menu used to show the full screen banners corresponding to the
 	 * same small banners present in the plant menu.
 	 */
 	sottoMenu items_submenu;
+
+	/*
+	 * Used to call show(int) on SottoMenu based on which banner is clicked.
+	 */
+	QSignalMapper signal_mapper;
 };
 
 class OpenFrameSender : public QObject
