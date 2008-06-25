@@ -279,6 +279,22 @@ device *device_cache::get_thermal_regulator(QString where, thermo_type_t type)
 	return out;
 }
 
+device *device_cache::get_poweramplifier_device(QString w)
+{
+	QString k = get_device_key(QString("22"), w);
+	qDebug("device_cache::get_poweramplifier_device(%s)", k.ascii());
+	device *out = (*this)[k];
+	if(!out) {
+		out = new poweramplifier_device(w);
+		qDebug("device is not there, creating device %p", out);
+		(*this)[k] = out;
+		connect_comm(out);
+	}
+	out->get();
+	qDebug("device_cache::get_poweramplifier_device() returning %p", out);
+	return out;
+}
+
 device *device_cache::get_temperature_probe_controlled(QString w, thermo_type_t type,
 		bool fancoil, const char *ind_centrale, const char *indirizzo)
 {

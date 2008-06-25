@@ -225,4 +225,11 @@ public:
 	modscen_device(QString, bool p=false, int g=-1);
 };
 
+class poweramplifier_device : public device
+{
+Q_OBJECT
+public:
+	poweramplifier_device(QString, bool p=false, int g=-1);
+};
+
 #endif //__DEVICE_H__

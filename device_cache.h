@@ -60,6 +60,9 @@ public:
 	device *get_zonanti_device(QString where);
 	/// Get a thermal regulator device
 	device *get_thermal_regulator(QString where, thermo_type_t type);
+
+	device *get_poweramplifier_device(QString w);
+
 	//! Get a controlled temperature probe
 	device *get_temperature_probe_controlled(QString where, thermo_type_t type,
 		bool fancoil, const char *ind_centrale, const char *indirizzo);

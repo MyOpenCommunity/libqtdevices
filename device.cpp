@@ -397,3 +397,9 @@ modscen_device::modscen_device(QString w, bool p, int g) :
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
 			SLOT(frame_event_handler(QPtrList<device_status>)));
 }
+
+poweramplifier_device::poweramplifier_device(QString w, bool p, int g) :
+	device(QString("22"), w, p, g)
+{
+	qDebug("poweramplifier_device::poweramplifier_device()");
+}
