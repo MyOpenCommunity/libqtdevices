@@ -18,6 +18,7 @@
 #include "bannpuls.h"
 
 class device;
+class thermal_regulator;
 
 /**
  * This banner shuts the thermal regulator off when clicked. Before using it, be sure to
@@ -28,7 +29,7 @@ class BannOff : public bann3But
 {
 Q_OBJECT
 public:
-	BannOff(QWidget *parent, const char *name, device *dev);
+	BannOff(QWidget *parent, const char *name, thermal_regulator *_dev);
 public slots:
 	/**
 	 * Shut down the thermal regulator
@@ -36,7 +37,7 @@ public slots:
 	void performAction();
 private:
 	/// The device that this banner sends commands to
-	device *controlled_device;
+	thermal_regulator *dev;
 };
 
 /**
@@ -48,7 +49,7 @@ class BannAntifreeze : public bann3But
 {
 Q_OBJECT
 public:
-	BannAntifreeze(QWidget *parent, const char *name, device *dev);
+	BannAntifreeze(QWidget *parent, const char *name, thermal_regulator *_dev);
 public slots:
 	/**
 	 * Set thermal regulator in antifreeze protection
@@ -56,7 +57,7 @@ public slots:
 	void performAction();
 private:
 	/// The device that this banner sends commands to
-	device *controlled_device;
+	thermal_regulator *dev;
 };
 
 /**
@@ -68,7 +69,7 @@ class BannSummerWinter : public bann4But
 {
 Q_OBJECT
 public:
-	BannSummerWinter(QWidget *parent, const char *name, device *dev);
+	BannSummerWinter(QWidget *parent, const char *name, thermal_regulator *_dev);
 	enum seasons {WINTER, SUMMER};
 public slots:
 	void setSummer();
@@ -76,7 +77,7 @@ public slots:
 private:
 	seasons status;
 	/// The device that this banner sends commands to
-	device *controlled_device;
+	thermal_regulator *dev;
 };
 
 /**

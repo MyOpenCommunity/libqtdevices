@@ -136,14 +136,34 @@ class autom : public device
 		autom(QString, bool p=false, int g=-1);
 };
 
-class thermal_regulator_4z : public device
+class thermal_regulator : public device
+{
+Q_OBJECT
+public:
+	void setOff();
+	void setSummer();
+	void setWinter();
+	void setProtection();
+protected:
+	thermal_regulator(QString where, bool p=false, int g=-1);
+private:
+	enum
+	{
+		SUMMER = 0,
+		WINTER = 1,
+		GENERIC_PROTECTION = 302,
+		GENERIC_OFF = 303,
+	};
+};
+
+class thermal_regulator_4z : public thermal_regulator
 {
 Q_OBJECT
 public:
 	thermal_regulator_4z(QString where, bool p=false, int g=-1);
 };
 
-class thermal_regulator_99z : public device
+class thermal_regulator_99z : public thermal_regulator
 {
 Q_OBJECT
 public:

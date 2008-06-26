@@ -336,10 +336,47 @@ zonanti_device::zonanti_device(QString w, bool p, int g) :
 			SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
-thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
+thermal_regulator::thermal_regulator(QString where, bool p, int g)
 	: device(QString("4"), where, p, g)
 {
-	interpreter = new frame_interpreter_thermal_regulator(where, p, g);
+}
+
+void thermal_regulator::setOff()
+{
+	openwebnet msg_open;
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_OFF)).arg(QString("#") + where);
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
+}
+
+void thermal_regulator::setProtection()
+{
+	openwebnet msg_open;
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_PROTECTION)).arg(QString("#") + where);
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
+}
+
+void thermal_regulator::setSummer()
+{
+	openwebnet msg_open;
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(SUMMER)).arg(QString("#") + where);
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
+}
+
+void thermal_regulator::setWinter()
+{
+	openwebnet msg_open;
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(WINTER)).arg(QString("#") + where);
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
+}
+
+thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
+	: thermal_regulator(where, p, g)
+{
+	interpreter = new frame_interpreter_thermal_regulator(who, where, p, g);
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_thermal_regulator_4z());
 
@@ -350,9 +387,9 @@ thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 }
 
 thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
-	: device(QString("4"), where, p, g)
+	: thermal_regulator(where, p, g)
 {
-	interpreter = new frame_interpreter_thermal_regulator(where, p, g);
+	interpreter = new frame_interpreter_thermal_regulator(who, where, p, g);
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_thermal_regulator_99z());
 
