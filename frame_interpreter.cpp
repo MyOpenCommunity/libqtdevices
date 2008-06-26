@@ -2216,8 +2216,8 @@ next:
 	delete dsi;
 }
 
-frame_interpreter_thermal_regulator::frame_interpreter_thermal_regulator(QString addr, bool p, int g)
-	: frame_interpreter("4", addr, p, g)
+frame_interpreter_thermal_regulator::frame_interpreter_thermal_regulator(QString who, QString addr, bool p, int g)
+	: frame_interpreter(who, addr, p, g)
 {
 	where = addr;
 }
@@ -2225,23 +2225,122 @@ frame_interpreter_thermal_regulator::frame_interpreter_thermal_regulator(QString
 void frame_interpreter_thermal_regulator::get_init_message(device_status *ds, QString& out)
 {
 	out = "*#4*";
-	out +=  where + "##";
+	out +=  QString("#") + where + "##";
 }
 
 void frame_interpreter_thermal_regulator::handle_frame_handler(char *frame, QPtrList<device_status> *list)
 {
+	bool request_status;
+	openwebnet msg_open;
+	rearmWDT();
+	qDebug("[TERMO] frame_interpreter_thermal_regulator::handle_frame_handler");
+	qDebug("[TERMO] #### frame is %s ####", frame);
+	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+	if(!is_frame_ours(msg_open, request_status))
+		return;
+
+	bool elaborato = false;
+	evt_list.clear();
+
+	for (QPtrListIterator<device_status> dsi(*list); device_status *ds = dsi.current(); ++dsi)
+	{
+		if (request_status)
+		{
+			request_init(ds);
+		}
+		else
+		{
+			device_status::type type = ds->get_type();
+			switch (type)
+			{
+				case device_status::THERMAL_REGULATOR_4Z:
+					handle_frame(msg_open, (device_status_thermal_regulator_4z *)ds);
+					break;
+				case device_status::THERMAL_REGULATOR_99Z:
+					handle_frame(msg_open, (device_status_thermal_regulator_99z *)ds);
+					break;
+				default:
+					break;
+			}
+		}
+
+		if (elaborato)
+			break;
+	}
+
+	if(!evt_list.isEmpty()) {
+		qDebug("emit(evt_list)");
+		emit(frame_event(evt_list));
+	}
 }
 
-bool frame_interpreter_thermal_regulator::is_frame_ours(openwebnet_ext msg, bool& request_status)
+bool frame_interpreter_thermal_regulator::is_frame_ours(openwebnet msg, bool& request_status)
 {
+	request_status = false;
+	bool is_our = false;
+
+	if (who == msg.Extract_chi())
+	{
+		qDebug("[INTRP TERMO] is_frame_ours: msg %s, indirizzo centrale %s", msg.frame_open, where.ascii());
+
+		QString dove = msg.Extract_dove();
+		if (msg.Extract_livello())
+			dove += QString("#") + msg.Extract_livello();
+
+		QString sharp_where = QString("#") + where;
+		qDebug("[TERMO] Thermal regulator: msg.get_where() = %s =====", dove.ascii());
+		qDebug("[TERMO] Thermal regulator: where = %s =====", where.ascii());
+		qDebug("[TERMO] Thermal regulator: sharp_where = %s =====", sharp_where.ascii());
+		is_our = (dove == sharp_where);
+		qDebug("[TERMO] Gli indizzi sono uguali? %s =====", is_our ? "si" : "no");
+	}
+
+	qDebug("[INTRP TERMO] is_our: %s", is_our ? "YES" : "NO");
+	return is_our;
 }
 
-void frame_interpreter_thermal_regulator::handle_frame(openwebnet_ext msg, device_status_thermal_regulator_4z *ds)
+void frame_interpreter_thermal_regulator::handle_frame(openwebnet msg, device_status_thermal_regulator_4z *ds)
 {
+	qDebug("[TERMO] frame_interpreter_thermal_regulator_4z::handle_frame");
+
+	stat_var curr_setpoint(stat_var::SP);
+	stat_var curr_season(stat_var::SEASON);
+	stat_var curr_program(stat_var::PROGRAM);
+
+	ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
+	ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+	ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+	// TODO:
+	// - gestire le frame di cambio programma settimanale (par. 2.3.5)
+	// - gestire le frame di cambio temperatura setpoint (par. 2.3.2)
+	// - gestire le frame di cambio stagione (par. 2.3.1)
+	//
+	// Cosa fare di una frame
+	//  1. leggi lo stato corrente
+	//  2. estrai il comando dalla frame e guarda cos'e'
+	//  3. scrivi un aggiornamento dello stato
+	//  4. appendi il device status a evt_list.
+	int what = atoi(msg.Extract_cosa());
+	// following the KISS principle, interpret only the things we are interested into (sp temp, season, program)
+	switch (what)
+	{
+		case 21: // remote control enabled
+		case 30: // malfunctioning found
+		case 31: // battery ko
+			break;
+		case 202:
+		case 204:
+			//sono in estate
+		default:
+			qDebug("[LUCA] Extract_cosa ha restituito %d", what);
+	}
 }
 
-void frame_interpreter_thermal_regulator::handle_frame(openwebnet_ext msg, device_status_thermal_regulator_99z *ds)
+void frame_interpreter_thermal_regulator::handle_frame(openwebnet msg, device_status_thermal_regulator_99z *ds)
 {
+	qDebug("frame_interpreter_thermal_regulator_99z::handle_frame");
+
+	stat_var curr_scenario(stat_var::SCENARIO);
 }
 
 // Temperature probe device frame interpreter
