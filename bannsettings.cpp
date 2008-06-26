@@ -28,6 +28,7 @@ BannOff::BannOff(QWidget *parent, const char *name, thermal_regulator *_dev)
 void BannOff::performAction()
 {
 	qDebug("[TERMO] BannOff::performAction: action performed");
+	dev->setOff();
 }
 
 BannAntifreeze::BannAntifreeze(QWidget *parent, const char *name, thermal_regulator *_dev)
@@ -43,6 +44,7 @@ BannAntifreeze::BannAntifreeze(QWidget *parent, const char *name, thermal_regula
 void BannAntifreeze::performAction()
 {
 	qDebug("[TERMO] BannAntifreeze::performAction: action performed");
+	dev->setProtection();
 }
 
 BannSummerWinter::BannSummerWinter(QWidget *parent, const char *name, thermal_regulator *_dev)
@@ -62,11 +64,13 @@ BannSummerWinter::BannSummerWinter(QWidget *parent, const char *name, thermal_re
 void BannSummerWinter::setSummer()
 {
 	qDebug("[TERMO] BannSummerWinter::setSummer(): summer is very hot indeed!");
+	dev->setSummer();
 }
 
 void BannSummerWinter::setWinter()
 {
 	qDebug("[TERMO]BannSummerWinter::setWinter(): winter is cold...");
+	dev->setWinter();
 }
 
 BannWeekly::BannWeekly(QWidget *parent, const char *name)
