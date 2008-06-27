@@ -52,50 +52,31 @@ public:
 	};
 private:
 	type t;
-	//QString descr;
-	//! Value
 	int val;
-	//! Minimum
 	int min;
-	//! Maximum
 	int max;
-	//! Step
 	int step;
 	//! True when initialized
 	bool _initialized;
 public:
-	//! Constructor
 	stat_var(stat_var::type _t, int val, int min, int max, 
 			int step, bool initialized = false);
-	//! Reduced constructor
 	stat_var(stat_var::type);
-	//! Get value
 	void get_val(int&);
-	//! Get value again
 	int get_val(void) const;
-	//! Set value
 	void set_val(int&);
-	//! Get min value
 	void get_min(int&);
-	//! Set min value
 	void set_min(int&);
-	//! Get max value
 	void get_max(int&);
-	//! Set max value
 	void set_max(int&);
-	//! Get step
 	void get_step(int&);
-	//! Get step, alternate form
 	int get_step(void);
-	//! Set step
 	void set_step(int&);
-	//! Get initialized status
 	bool initialized(void);
 	//! Invalidate variable contents
 	void invalidate(void);
 	//! Force initialized state
 	void force_initialized(void);
-	//! Destructor
 	~stat_var();
 };
 
@@ -125,26 +106,20 @@ public:
 		THERMAL_REGULATOR_99Z,
 	} type;
 private:
-	//! Type
 	type t;
-	//! Variables
 	QPtrList<stat_var> vars;
 	//! True when initialized
 	bool _initialized;
 	//! True when init requested
 	bool _init_requested;
 public:
-	//! Constructor
 	device_status(device_status::type);
 	//! Read type
 	device_status::type get_type(void);
 	//! Set type
 	void set_type(device_status::type& t);
-	//! Add variable
 	bool add_var(int index, stat_var *);
-	//! Read variable
 	int read(int index, stat_var& out);
-	//! Write variable's value
 	int write_val(int index, stat_var& val);
 	//! Returns true when status initialized
 	bool initialized(void);
@@ -152,13 +127,11 @@ public:
 	bool init_requested(void);
 	//! Sets init_requested flag
 	void mark_init_requested(void);
-	//! Invalidate device status
 	void invalidate(void);
 	//! Force initialized status
 	void force_initialized(void);
 	//! Return delay for init request deferral (msecs)
 	virtual int init_request_delay() { return 0; }
-	//! Destructor
 	virtual ~device_status();
 };
 
