@@ -12,7 +12,6 @@
 #include "device.h"
 #include "device_cache.h"
 #include "bannsettings.h"
-#include "weeklymenu.h"
 
 #include <qregexp.h>
 
