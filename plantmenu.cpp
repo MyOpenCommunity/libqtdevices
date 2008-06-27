@@ -152,7 +152,7 @@ void PlantMenu::create4zSettings(QDomNode conf, thermal_regulator_4z *dev)
 
 	timedManualSettings(settings);
 
-	holidaySettings(settings, conf);
+	holidaySettings(settings, conf, dev);
 
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF", dev);
@@ -199,7 +199,7 @@ void PlantMenu::create99zSettings(QDomNode conf, thermal_regulator_99z *dev)
 	scenarios->setFGColor(paletteForegroundColor());
 	//modes->appendBanner(scenarios);
 
-	holidaySettings(settings, conf);
+	holidaySettings(settings, conf, dev);
 
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF", dev);
@@ -336,7 +336,7 @@ void PlantMenu::scenarioSettings(sottoMenu *settings, QDomNode conf)
 	//OpenFrameSender *frame_sender = new OpenFrameSender(scenariomenu, this);
 }
 
-void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
+void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *_dev)
 {
 	const QString i_holiday = QString("%1%2").arg(IMG_PATH).arg("feriale.png");
 
@@ -385,15 +385,17 @@ void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf)
 	connect(weekly, SIGNAL(programClicked(int)), settings, SLOT(raise()));
 	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
 
-	OpenFrameSender *frame_sender = new OpenFrameSender(date_edit, time_edit, weekly, this);
+	OpenFrameSender *frame_sender = new OpenFrameSender(_dev, date_edit, time_edit, weekly, this);
 }
 
-OpenFrameSender::OpenFrameSender(DateEditMenu *_date_edit, TimeEditMenu *_time_edit, WeeklyMenu *_program_menu, QObject *parent)
+OpenFrameSender::OpenFrameSender(thermal_regulator *_dev, DateEditMenu *_date_edit, TimeEditMenu *_time_edit,
+		WeeklyMenu *_program_menu, QObject *parent)
 	: QObject(parent)
 {
 	date_edit = _date_edit;
 	time_edit = _time_edit;
 	program_menu = _program_menu;
+	dev = _dev;
 	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(holidaySettingsEnd(int)));
 }
 
@@ -407,21 +409,15 @@ void OpenFrameSender::holidaySettingsEnd(int program)
 {
 	QDate date = date_edit->date();
 	QTime time = time_edit->time();
-	if (!th_regulator_where.isEmpty())
+	if (dev)
 	{
-		// TODO: send frame Open
-		//
+		dev->setHolidayDateTime(date, time, program);
 	}
 	else
-		qDebug("[TERMO] You are trying to send a frame with no address!!");
+		qDebug("[TERMO] OpenFrameSender::holidaySettingsEnd(): device not set, no frame sent");
 }
 
 void OpenFrameSender::weekSettingsEnd(int program)
 {
 	// TODO: send fram Open
-}
-
-void OpenFrameSender::setAddress(QString where)
-{
-	th_regulator_where = where;
 }

@@ -22,6 +22,7 @@
 class device;
 class thermal_regulator_99z;
 class thermal_regulator_4z;
+class thermal_regulator;
 
 class PlantMenu : public sottoMenu
 {
@@ -66,7 +67,7 @@ private:
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(sottoMenu *settings, QDomNode conf);
+	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *_dev);
 
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
@@ -104,18 +105,22 @@ private:
 	QSignalMapper signal_mapper;
 };
 
+/**
+ * This class will hold the state of settings that need more than one submenu to accept user input.
+ * For example, to set program, date and hour in thermal regulator, 3 submenus are needed.
+ */
 class OpenFrameSender : public QObject
 {
 Q_OBJECT
 public:
-	OpenFrameSender(DateEditMenu *_date_edit, TimeEditMenu *_time_edit, WeeklyMenu *_program_menu, QObject *parent = 0);
+	OpenFrameSender(thermal_regulator *_dev, DateEditMenu *_date_edit, TimeEditMenu *_time_edit,
+			WeeklyMenu *_program_menu, QObject *parent = 0);
 	OpenFrameSender(WeeklyMenu *_program_menu, QObject *parent = 0);
-	void setAddress(QString where);
 public slots:
 	void holidaySettingsEnd(int program);
 	void weekSettingsEnd(int program);
 private:
-	QString th_regulator_where;
+	thermal_regulator *dev;
 	DateEditMenu *date_edit;
 	TimeEditMenu *time_edit;
 	WeeklyMenu   *program_menu;
