@@ -147,10 +147,10 @@ void PlantMenu::create4zSettings(QDomNode conf, thermal_regulator_4z *dev)
 {
 	sottoMenu *settings = new sottoMenu(0, "settings");
 
-	weekSettings(settings, conf);
-	manualSettings(settings);
+	weekSettings(settings, conf, dev);
+	manualSettings(settings, dev);
 
-	timedManualSettings(settings);
+	timedManualSettings(settings, dev);
 
 	holidaySettings(settings, conf, dev);
 
@@ -188,10 +188,10 @@ void PlantMenu::create99zSettings(QDomNode conf, thermal_regulator_99z *dev)
 
 	sottoMenu *settings = new sottoMenu(0, "settings");
 
-	weekSettings(settings, conf);
-	manualSettings(settings);
+	weekSettings(settings, conf, dev);
+	manualSettings(settings, dev);
 
-	scenarioSettings(settings, conf);
+	scenarioSettings(settings, conf, dev);
 	// scenario banner
 	bannPuls *scenarios = new bannPuls(0, "scenarios");//modes, "scenarios");
 	scenarios->SetIcons(i_right_arrow.ascii(), 0, i_scenarios.ascii());
@@ -229,7 +229,7 @@ void PlantMenu::create99zSettings(QDomNode conf, thermal_regulator_99z *dev)
 		qFatal("[TERMO] could not create settings menu");
 }
 
-void PlantMenu::manualSettings(sottoMenu *settings)
+void PlantMenu::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 {
 	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
 	// manual banner
@@ -239,7 +239,7 @@ void PlantMenu::manualSettings(sottoMenu *settings)
 	settings->appendBanner(manual);
 	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
-	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_manual, sm, QDomNode());
+	FSBannManual *bann = new FSBannManual(sm, 0, dev);
 	bann->setSecondForeground(second_fg);
 
 	sm->appendBanner(bann);
@@ -256,10 +256,10 @@ void PlantMenu::manualSettings(sottoMenu *settings)
 
 	connect(sm, SIGNAL(goDx()), settings, SLOT(show()));
 	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
-
+	connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
 }
 
-void PlantMenu::timedManualSettings(sottoMenu *settings)
+void PlantMenu::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
 {
 	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale_temporizzato.png");
 	// timed manual banner
@@ -269,7 +269,7 @@ void PlantMenu::timedManualSettings(sottoMenu *settings)
 	settings->appendBanner(manual_timed);
 	sottoMenu *sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
-	BannFullScreen *bann = FSBannFactory::getInstance()->getBanner(fs_manual_timed, sm, QDomNode());
+	FSBannManualTimed *bann = new FSBannManualTimed(sm, 0, dev);
 	bann->setSecondForeground(second_fg);
 
 	sm->appendBanner(bann);
@@ -286,9 +286,10 @@ void PlantMenu::timedManualSettings(sottoMenu *settings)
 
 	connect(sm, SIGNAL(goDx()), settings, SLOT(show()));
 	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
+	connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
 }
 
-void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
+void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
 {
 	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
 
@@ -309,10 +310,10 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf)
 	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
 
-	OpenFrameSender *frame_sender = new OpenFrameSender(weekmenu, this);
+	new OpenFrameSender(dev, weekmenu, this);
 }
 
-void PlantMenu::scenarioSettings(sottoMenu *settings, QDomNode conf)
+void PlantMenu::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
 {
 	const QString i_scenario = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
 
@@ -336,7 +337,7 @@ void PlantMenu::scenarioSettings(sottoMenu *settings, QDomNode conf)
 	//OpenFrameSender *frame_sender = new OpenFrameSender(scenariomenu, this);
 }
 
-void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *_dev)
+void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
 {
 	const QString i_holiday = QString("%1%2").arg(IMG_PATH).arg("feriale.png");
 
@@ -385,7 +386,7 @@ void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regu
 	connect(weekly, SIGNAL(programClicked(int)), settings, SLOT(raise()));
 	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
 
-	OpenFrameSender *frame_sender = new OpenFrameSender(_dev, date_edit, time_edit, weekly, this);
+	new OpenFrameSender(dev, date_edit, time_edit, weekly, this);
 }
 
 OpenFrameSender::OpenFrameSender(thermal_regulator *_dev, DateEditMenu *_date_edit, TimeEditMenu *_time_edit,
@@ -399,9 +400,10 @@ OpenFrameSender::OpenFrameSender(thermal_regulator *_dev, DateEditMenu *_date_ed
 	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(holidaySettingsEnd(int)));
 }
 
-OpenFrameSender::OpenFrameSender(WeeklyMenu *_program_menu, QObject *parent)
+OpenFrameSender::OpenFrameSender(thermal_regulator *_dev, WeeklyMenu *_program_menu, QObject *parent)
 {
 	program_menu = _program_menu;
+	dev = _dev;
 	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(weekSettingsEnd(int)));
 }
 
@@ -419,5 +421,8 @@ void OpenFrameSender::holidaySettingsEnd(int program)
 
 void OpenFrameSender::weekSettingsEnd(int program)
 {
-	// TODO: send fram Open
+	if (dev)
+		dev->setWeekProgram(program);
+	else
+		qDebug("[TERMO] OpenFrameSender::holidaySettingsEnd(): device not set, no frame sent");
 }

@@ -44,30 +44,30 @@ private:
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
-	void weekSettings(sottoMenu *settings, QDomNode conf);
+	void weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
 
 	/**
 	 * Utility function to create the submenu to set the scenario program in thermal
 	 * regulator device.
 	 */
-	void scenarioSettings(sottoMenu *settings, QDomNode conf);
+	void scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature
 	 * for the thermal regulator device.
 	 */
-	void manualSettings(sottoMenu *settings);
+	void manualSettings(sottoMenu *settings, thermal_regulator *dev);
 
 	/**
 	 * Utility function to create the submenu for timed manual operation mode.
 	 * This is used only with 4 zones thermal regulators
 	 */
-	void timedManualSettings(sottoMenu *settings);
+	void timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev);
 
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *_dev);
+	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
 
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
@@ -115,7 +115,7 @@ Q_OBJECT
 public:
 	OpenFrameSender(thermal_regulator *_dev, DateEditMenu *_date_edit, TimeEditMenu *_time_edit,
 			WeeklyMenu *_program_menu, QObject *parent = 0);
-	OpenFrameSender(WeeklyMenu *_program_menu, QObject *parent = 0);
+	OpenFrameSender(thermal_regulator *_dev, WeeklyMenu *_program_menu, QObject *parent = 0);
 public slots:
 	void holidaySettingsEnd(int program);
 	void weekSettingsEnd(int program);

@@ -438,6 +438,7 @@ void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 				default:
 					qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
 			}
+			update = true;
 			if (fancoil_status != -1)
 			{
 				qDebug("[TERMO] New fancoil status: %d", fancoil_status);
@@ -445,6 +446,8 @@ void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 			}
 		}
 	}
+	if (update)
+		Draw();
 	FSBann4zProbe::status_changed(list);
 }
 
@@ -476,12 +479,6 @@ BannFullScreen *FSBannFactory::getBanner(BannID id, QWidget *parent, QDomNode n)
 		case fs_4z_thermal_regulator:
 			bfs = new FSBannTermoReg4z(parent, n);
 			break;
-		case fs_manual:
-			bfs = new FSBannManual(parent, 0);
-			break;
-		case fs_manual_timed:
-			bfs = new FSBannManualTimed(parent, 0);
-			break;
 		case fs_date_edit:
 			bfs = new FSBannDate(parent, 0);
 			break;
@@ -496,9 +493,10 @@ FSBannFactory::FSBannFactory()
 {
 }
 
-FSBannManual::FSBannManual(QWidget *parent, const char *name)
+FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
 	: BannFullScreen(parent, "manual"),
-	main_layout(this)
+	main_layout(this),
+	dev(_dev)
 {
 	descr = tr("Manual");
 	descr_label = new QLabel(this);
@@ -535,7 +533,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name)
 	main_layout.addLayout(hbox);
 }
 
-void FSBannManual::setThermalRegulator()
+void FSBannManual::sendFrameOpen()
 {
 	// send Open frame
 }
@@ -589,8 +587,9 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 {
 }
 
-FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name)
-	: FSBannManual(parent, name)
+FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev)
+	: FSBannManual(parent, name, _dev),
+	dev(_dev)
 {
 	const int bt_max_hours = 99;
 	const int bt_max_mins = 99;
@@ -615,7 +614,7 @@ void FSBannManualTimed::status_changed(QPtrList<device_status> list)
 {
 }
 
-void FSBannManualTimed::setThermalRegulator()
+void FSBannManualTimed::sendFrameOpen()
 {
 	// send Open frame
 }
