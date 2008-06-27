@@ -8,6 +8,7 @@
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>
+#include <qdatetime.h>
 
 class frame_interpreter;
 class Client;
@@ -144,15 +145,21 @@ public:
 	void setSummer();
 	void setWinter();
 	void setProtection();
+	void setHolidayDateTime(QDate date, QTime time, int program);
 protected:
 	thermal_regulator(QString where, bool p=false, int g=-1);
-private:
 	enum
 	{
 		SUMMER = 0,
 		WINTER = 1,
 		GENERIC_PROTECTION = 302,
 		GENERIC_OFF = 303,
+		HOLIDAY_NUM_DAYS = 33000,        // command to set the number of days of holiday mode (generic mode)
+		                                 // remember to add the number of days to this number
+		PROGRAM_AT_HOLIDAY_END = 3100,   // command to set the program to be executed at the end of holiday mode (generic mode)
+		                                 // remember to add the program number to this number
+		HOLIDAY_DATE_END = 30,           // set the end date of holiday mode, this is a dimension (grandezza)
+		HOLIDAY_TIME_END = 31,           // set the end time of holiday mode, this is a dimension (grandezza)
 	};
 };
 
