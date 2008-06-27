@@ -5,9 +5,7 @@
  * All rights reserved.
  * -->
  *
- * \brief
- *
- *
+ * \brief A collection of specialized menus.
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
@@ -20,7 +18,12 @@
 
 #include <qdom.h>
 
-
+/**
+ * A base class for submenus that allow to choose one program in a list. The list changes
+ * when season changes (summer/winter).
+ * This class emits a signal when a program is clicked. This signal should be used to close
+ * the submenu and to take further action, for example sending a frame to the thermal regulator.
+ */
 class ProgramMenu : public sottoMenu
 {
 Q_OBJECT
@@ -38,6 +41,10 @@ signals:
 	void programClicked(int);
 };
 
+/**
+ * This is a specialized version of ProgramMenu to select week programs. The list
+ * of programs is read from DOM.
+ */
 class WeeklyMenu : public ProgramMenu
 {
 Q_OBJECT
@@ -47,6 +54,10 @@ public:
 	virtual void createWinterBanners();
 };
 
+/**
+ * This is a specialized version of ProgramMenu to select scenarios. The list
+ * of scenarios is read from DOM and updated when season changes
+ */
 class ScenarioMenu : public ProgramMenu
 {
 Q_OBJECT
