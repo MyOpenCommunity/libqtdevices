@@ -373,6 +373,20 @@ void thermal_regulator::setWinter()
 	sendFrame(msg_open.frame_open);
 }
 
+void thermal_regulator::setManualTemp(int temperature)
+{
+	if (temperature < 50 || temperature > 400)
+		return;
+
+	const QString sharp_where = QString("#") + where;
+	const QString what = QString::number(TEMPERATURE_SET) + "*" + QString::number(temperature) + "*" + QString::number(GENERIC_MODE);
+	QString msg = QString("*#") + who + "*" + sharp_where + "*#" + what + "##";
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO] thermal_regulator::setManualTemp, frame sent: %s", msg_open.frame_open);
+	sendFrame(msg_open.frame_open);
+}
+
 void thermal_regulator::setWeekProgram(int program)
 {
 	const QString what = QString::number(WEEK_PROGRAM + program);
@@ -438,6 +452,11 @@ thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
+void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
+{
+	qWarning("[TERMO] Feature not (yet) implemented!!");
+}
+
 thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
 	: thermal_regulator(where, p, g)
 {
@@ -449,6 +468,17 @@ thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
 			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
+void thermal_regulator_99z::setScenario(int scenario)
+{
+	const QString what = QString::number(SCENARIO_PROGRAM + scenario);
+	const QString sharp_where = QString("#") + where;
+	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO] thermal_regulator::setWeekProgram, frame sent: %s", msg_open.frame_open);
+	sendFrame(msg_open.frame_open);
 }
 
 // Controlled temperature probe implementation
