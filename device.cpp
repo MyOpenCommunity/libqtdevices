@@ -373,6 +373,72 @@ void thermal_regulator::setWinter()
 	sendFrame(msg_open.frame_open);
 }
 
+void thermal_regulator::setManualTemp(int temperature)
+{
+	if (temperature < 50 || temperature > 400)
+		return;
+
+	const QString sharp_where = QString("#") + where;
+	const QString what = QString::number(TEMPERATURE_SET) + "*" + QString::number(temperature) + "*" + QString::number(GENERIC_MODE);
+	QString msg = QString("*#") + who + "*" + sharp_where + "*#" + what + "##";
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO] thermal_regulator::setManualTemp, frame sent: %s", msg_open.frame_open);
+	sendFrame(msg_open.frame_open);
+}
+
+void thermal_regulator::setWeekProgram(int program)
+{
+	const QString what = QString::number(WEEK_PROGRAM + program);
+	const QString sharp_where = QString("#") + where;
+	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO] thermal_regulator::setWeekProgram, frame sent: %s", msg_open.frame_open);
+	sendFrame(msg_open.frame_open);
+}
+
+void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
+{
+	qDebug("[TERMO] thermal_regulator::setHolidayDateTime()");
+	const QString sharp_where = QString("#") + where;
+
+	// we need to send 3 frames, as written in bug #44
+	// - frame at par. 2.3.10, with number_of_days = 2, to set what program has to be executed at the end
+	// of holiday mode
+	// - frame at par. 2.3.16 to set date
+	// - frame at par. 2.3.17 to set time
+	//
+	// First frame: set program
+	openwebnet msg_open;
+	const int number_of_days = 2;
+	const int what_days = HOLIDAY_NUM_DAYS + number_of_days;
+	const int what_program = WEEK_PROGRAM + program;
+	QString msg = QString("*%1*%2#%3*%4##").arg(who).arg(what_days).arg(what_program).arg(sharp_where);
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO]\t\t Frame 1: %s", msg_open.frame_open);
+	sendFrame(msg_open.frame_open);
+	// Second frame: set date
+	const QString day = QString::number(date.day());
+	const QString month = QString::number(date.month());
+	const QString year = QString::number(date.year());
+	const QString date_end = QString::number(HOLIDAY_DATE_END);
+	openwebnet msg_open_2;
+	msg = QString("*#") + who + "*" + sharp_where + "*#" + date_end + "*" + day + "*" + month + "*" + year + "##";
+	msg_open_2.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO]\t\t Frame 2: %s", msg_open_2.frame_open);
+	sendFrame(msg_open_2.frame_open);
+	// Third frame: set time
+	const QString time_end = QString::number(HOLIDAY_TIME_END);
+	const QString hour = QString::number(time.hour());
+	const QString minute = QString::number(time.minute());
+	openwebnet msg_open_3;
+	msg = QString("*#%1*%2*#%3*%4*%5##").arg(who).arg(sharp_where).arg(time_end).arg(hour).arg(minute);
+	msg_open_3.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO]\t\t Frame 3: %s", msg_open_3.frame_open);
+	sendFrame(msg_open_3.frame_open);
+}
+
 thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 	: thermal_regulator(where, p, g)
 {
@@ -386,6 +452,11 @@ thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
+void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
+{
+	qWarning("[TERMO] Feature not (yet) implemented!!");
+}
+
 thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
 	: thermal_regulator(where, p, g)
 {
@@ -397,6 +468,17 @@ thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
 			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+}
+
+void thermal_regulator_99z::setScenario(int scenario)
+{
+	const QString what = QString::number(SCENARIO_PROGRAM + scenario);
+	const QString sharp_where = QString("#") + where;
+	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO] thermal_regulator::setWeekProgram, frame sent: %s", msg_open.frame_open);
+	sendFrame(msg_open.frame_open);
 }
 
 // Controlled temperature probe implementation

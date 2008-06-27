@@ -24,6 +24,8 @@
 #include <qdatetime.h>
 
 class device;
+class thermal_regulator;
+class thermal_regulator_4z;
 
 class BannFullScreen : public banner
 {
@@ -137,8 +139,6 @@ enum BannID
 	fs_99z_thermal_regulator,             // 99 zones thermal regulator device
 	fs_99z_probe,                         // 99 zones controlled probe
 	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
-	fs_manual,                            // settings: manual operation
-	fs_manual_timed,                      // settings: timed manual operation
 	fs_date_edit,                         // settings: date edit
 	fs_time_edit,                         // settings: time edit
 };
@@ -160,11 +160,11 @@ class FSBannManual : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannManual(QWidget *parent, const char *name);
+	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev);
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 public slots:
-	void setThermalRegulator();
+	void sendFrameOpen();
 	void status_changed(QPtrList<device_status> list);
 protected:
 	QVBoxLayout main_layout;
@@ -173,22 +173,28 @@ private:
 	QLabel *descr_label;
 	int temp;
 	QLabel *temp_label;
+	thermal_regulator *dev;
 private slots:
 	void incSetpoint();
 	void decSetpoint();
 };
 
+/**
+ * A fullscreen banner to edit setpoint temperature and the duration of manual settings
+ */
 class FSBannManualTimed : public FSBannManual
 {
 Q_OBJECT
 public:
-	FSBannManualTimed(QWidget *parent, const char *name);
+	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 public slots:
-	void setThermalRegulator();
+	void sendFrameOpen();
 	void status_changed(QPtrList<device_status> list);
 private:
+	thermal_regulator_4z *dev;
+	/// TimeEdit widget
 	BtTimeEdit *time_edit;
 };
 
@@ -201,7 +207,6 @@ public:
 	void postDisplay(sottoMenu *parent);
 	QDate date();
 public slots:
-	//void setThermalRegulator();
 	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;

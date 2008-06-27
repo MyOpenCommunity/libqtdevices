@@ -8,6 +8,7 @@
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>
+#include <qdatetime.h>
 
 class frame_interpreter;
 class Client;
@@ -144,15 +145,33 @@ public:
 	void setSummer();
 	void setWinter();
 	void setProtection();
+	void setHolidayDateTime(QDate date, QTime time, int program);
+	void setWeekProgram(int program);
+
+	/**
+	 * Sends a frame to the thermal regulator to set the temperature in manual mode.
+	 * The frame sent is generic (not winter nor summer).
+	 * \param temperature The temperature to be set, ranges from 50 to 400, step is 5.
+	 */
+	void setManualTemp(int temperature);
 protected:
 	thermal_regulator(QString where, bool p=false, int g=-1);
-private:
 	enum
 	{
 		SUMMER = 0,
 		WINTER = 1,
+		GENERIC_MODE = 3,
+		TEMPERATURE_SET = 14,            // set the temperature in manual operation, this is a dimension
+		HOLIDAY_DATE_END = 30,           // set the end date of holiday mode, this is a dimension (grandezza)
+		HOLIDAY_TIME_END = 31,           // set the end time of holiday mode, this is a dimension (grandezza)
 		GENERIC_PROTECTION = 302,
 		GENERIC_OFF = 303,
+		WEEK_PROGRAM = 3100,             // command to set the program to be executed (generic mode)
+		                                 // remember to add the program number to this number
+		SCENARIO_PROGRAM = 3200,         // command to set the scenario to be executed (generic mode)
+		                                 // remember to add the program number to this number
+		HOLIDAY_NUM_DAYS = 33000,        // command to set the number of days of holiday mode (generic mode)
+		                                 // remember to add the number of days to this number
 	};
 };
 
@@ -161,6 +180,13 @@ class thermal_regulator_4z : public thermal_regulator
 Q_OBJECT
 public:
 	thermal_regulator_4z(QString where, bool p=false, int g=-1);
+
+	/**
+	 * Sets the temperature for a limited time.
+	 * \param temperature The temperature to be set
+	 * \param time The duration of the manual setting (24 hours max?)
+	 */
+	void setManualTempTimed(int temperature, QTime time);
 };
 
 class thermal_regulator_99z : public thermal_regulator
@@ -168,6 +194,12 @@ class thermal_regulator_99z : public thermal_regulator
 Q_OBJECT
 public:
 	thermal_regulator_99z(QString where, bool p=false, int g=-1);
+
+	/**
+	 * Sets the scenario on the thermal regulator.
+	 * \param scenario The scenario to be activated (16 max).
+	 */
+	void setScenario(int scenario);
 };
 
 /**
