@@ -702,10 +702,6 @@ void sottoMenu::initBanner(banner *bann, QDomNode conf)
 	bann->setBGColor(paletteBackgroundColor());
 	bann->setFGColor(paletteForegroundColor());
 
-	//QString addr = getDeviceAddress(conf);
-	//bann->setAddress(addr.ascii());
-	//qDebug("[TERMO] initBanner: remeber to set the address of the device (if applicable)");
-
 	QDomNode n = findNamedNode(conf, "descr");
 	bann->SetTextU(n.toElement().text());
 
@@ -714,7 +710,6 @@ void sottoMenu::initBanner(banner *bann, QDomNode conf)
 
 	bann->setAnimationParams(0, 0);
 	// note: we are ignoring the serial number...
-	// seems not used for thermal regulation
 }
 
 QDomNode sottoMenu::findNamedNode(QDomNode root, QString name)
