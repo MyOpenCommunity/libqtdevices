@@ -924,44 +924,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 
 	return TRUE;
 }
-QDomNode GetRootNodeById(int id)
-{
-  qDebug("xmlconfhandler: GetRootNodeById() ID=%d", id);
-	QDomElement root = qdom_appconfig.documentElement();
-
-	QDomNode n = root.firstChild();
-	while (!n.isNull())
-	{
-		if (n.nodeName() == "displaypages")
-    {
-      qDebug("xmlconfhandler: displaypages found.");
-      break;
-    }
-		n = n.nextSibling();
-	}
-
-	n = n.firstChild();
-	while (!n.isNull())
-	{
-    qDebug("xmlconfhandler: scanning %s.", n.nodeName().ascii());
-		if (n.isElement() && n.nodeName().startsWith("page"))
-		{
-      qDebug("xmlconfhandler: page found: %s.", n.nodeName().ascii());
-			QDomNode child = n.firstChild();
-			while (child.nodeName() != "id")
-				child = child.nextSibling();
-			
-			QDomElement e = child.toElement();
-			if (atoi(e.text()) == id)
-      {	
-        qDebug("xmlconfhandler: ID found.");
-        return n;
-      }
-		}
-		n = n.nextSibling();
-	}
-}
-
 
 /*******************************************
  *
@@ -1155,7 +1117,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 							break;
 
 						case SUPERVISIONE:
-							n = GetRootNodeById(page_id);
+							n = getPageNode(page_id);
 							*supervisione = new SupervisionMenu(NULL, "SUPERVISIONE", n, Background, Foreground);
 							pageAct=*supervisione;
 							break;
