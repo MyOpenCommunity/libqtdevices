@@ -13,7 +13,6 @@
 #include "sottomenu.h"
 #include "bannpuls.h"
 #include "bannfullscreen.h"
-#include "weeklymenu.h"
 
 #include <qdom.h>
 #include <qptrvector.h>
