@@ -17,6 +17,8 @@
 #include "sottomenu.h"
 #include "fontmanager.h"
 
+#include <stdlib.h>
+
 /*****************************************************************
  ** Ambiente diffusione sonora multicanale
  ****************************************************************/

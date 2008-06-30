@@ -8,11 +8,6 @@
  **
  ****************************************************************/
 
-#include <qpixmap.h>
-#include <qfile.h>
-#include <qtimer.h>
-#include <qapplication.h> //qapp
-
 #include "banner.h"
 #include "btbutton.h"
 #include "main.h"
@@ -20,6 +15,12 @@
 #include "genericfunz.h"
 #include "openclient.h"
 #include "fontmanager.h"
+
+#include <qpixmap.h>
+#include <qfile.h>
+#include <qtimer.h>
+#include <qapplication.h> //qapp
+#include <stdlib.h>
 
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;

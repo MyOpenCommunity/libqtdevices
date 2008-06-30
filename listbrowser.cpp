@@ -13,7 +13,7 @@
 #include "fontmanager.h"
 
 #include <qlayout.h>
-
+#include <algorithm>
 
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";

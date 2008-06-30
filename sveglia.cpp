@@ -8,14 +8,6 @@
 **
 ****************************************************************/
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
-#include <qdatetime.h>
-#include <qdir.h>
-#include <qfile.h>
-#include <fcntl.h>
-
 #include "sottomenu.h"
 #include "sveglia.h"
 #include "genericfunz.h"
@@ -26,6 +18,16 @@
 #include "timescript.h"
 #include "bannfrecce.h"
 #include "fontmanager.h"
+
+#include <qpixmap.h>
+#include <qwidget.h>
+#include <qcursor.h>
+#include <qdatetime.h>
+#include <qdir.h>
+#include <qfile.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 sveglia::sveglia( QWidget *parent,
 	const char *name,

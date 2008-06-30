@@ -8,9 +8,6 @@
  **
  ****************************************************************/
 
-#include <qlayout.h>
-#include <qregexp.h>
-
 #include "multimedia_source.h"
 #include "playwindow.h"
 #include "bannfrecce.h"
@@ -21,6 +18,9 @@
 #include "btbutton.h"
 #include "main.h"
 
+#include <qlayout.h>
+#include <qregexp.h>
+#include <stdlib.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
 

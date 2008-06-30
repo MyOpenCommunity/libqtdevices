@@ -8,11 +8,6 @@
 **
 ****************************************************************/
 
-#include <qpixmap.h>
-#include <qdatetime.h>
-#include <qcursor.h>
-#include <qlcdnumber.h>
-
 #include "homepage.h"
 #include "main.h"
 #include "timescript.h"
@@ -20,6 +15,12 @@
 #include "openclient.h"
 #include "btlabel.h"
 #include "fontmanager.h"
+
+#include <qpixmap.h>
+#include <qdatetime.h>
+#include <qcursor.h>
+#include <qlcdnumber.h>
+#include <stdlib.h>
 
 homePage::homePage( QWidget *parent, const char *name, WFlags f )
         : QWidget( parent, name )

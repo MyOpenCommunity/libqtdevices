@@ -19,6 +19,7 @@
 
 #include <qfile.h>
 #include <qtimer.h>
+#include <stdlib.h>
 
 /*****************************************************************
  **attuatAutom

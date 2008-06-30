@@ -38,8 +38,8 @@ dati_sorgente_multi::dati_sorgente_multi(char t, QPtrList<QString> *d,
 
 dati_sorgente_multi::~dati_sorgente_multi()
 {
-	free(indirizzo);
-	free(descr);
+	delete descr;
+	// We should delete indirizzo but is problematic because it is a void*
 }
 
 dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
@@ -80,7 +80,7 @@ dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
 
 dati_ampli_multi::~dati_ampli_multi()
 {
-	free(indirizzo);
+	// We should delete indirizzo but is problematic because it is a void*
 }
 
 

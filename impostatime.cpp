@@ -68,8 +68,8 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	    but[idx] -> setPressedPixmap(*Icon2);
 	}
     }
-    free (Icon1);
-    free (Icon2);
+    delete Icon1;
+    delete Icon2;
     Icon2=NULL;
     Icon1 = new QPixmap();
     Icon1->load(ICON_FRECCIA_GIU);	
@@ -89,8 +89,8 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	if (Icon2)
 	    but[idx] -> setPressedPixmap(*Icon2);
     }	
-     free (Icon1);
-     free (Icon2);
+     delete Icon1;
+     delete Icon2;
      Icon2=NULL;
      Icon1 = new QPixmap();
      Icon1->load(ICON_OK);

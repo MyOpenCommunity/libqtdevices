@@ -10,11 +10,13 @@
 
 #include "versio.h"
 #include "main.h"
+#include "openclient.h"
+#include "fontmanager.h"
+
 #include <qwidget.h>
 #include <qpixmap.h>
 #include <qcursor.h>
-#include "openclient.h"
-#include "fontmanager.h"
+#include <stdlib.h>
 
 versio::versio( QWidget *parent,const char *name , unsigned int f)
         : BtLabel( parent, name,  f)

@@ -6,6 +6,7 @@
 #include "main.h"
 
 #include <qregexp.h>
+#include <stdlib.h>
 
 static const char *IMG_PLUS = IMG_PATH "btnplus.png";
 static const char *IMG_MINUS = IMG_PATH "btnmin.png";

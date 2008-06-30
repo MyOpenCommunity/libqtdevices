@@ -19,6 +19,8 @@
 #include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
 #include "tastiera.h"
 
+#include <stdlib.h>
+
 /*****************************************************************
  **zonaAnti
  ****************************************************************/

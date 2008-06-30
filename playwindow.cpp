@@ -9,8 +9,6 @@
  ****************************************************************/
 
 
-#include <qlayout.h>
-
 #include "playwindow.h"
 #include "titlelabel.h"
 #include "mediaplayer.h"
@@ -18,6 +16,8 @@
 #include "fontmanager.h"
 #include "buttons_bar.h"
 
+#include <qlayout.h>
+#include <unistd.h>
 
 /*
  * Interface icon paths.

@@ -13,6 +13,8 @@
 #include "genericfunz.h"
 #include "sottomenu.h"
 
+#include <stdlib.h>
+
 extern unsigned char tipoData;
 /*****************************************************************
 **setdataOra

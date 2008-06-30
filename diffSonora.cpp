@@ -16,6 +16,7 @@
 #include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
 
 #include <qcursor.h>
+#include <stdlib.h>
 
 diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
 : QWidget( parent, name )

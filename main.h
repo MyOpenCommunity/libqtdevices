@@ -11,7 +11,6 @@
 #define MAIN_H
 
 #include "icondispatcher.h"
-#include "propertymap.h"
 
 #include <qdom.h>
 
@@ -48,15 +47,7 @@ void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
 /// We use a global object to handle icons_library because different classes need icons.
 extern IconDispatcher icons_library;
 
-
-/****************************************************************
- ** confXmlHandler
- ****************************************************************/
-/** As alternative to xmlconfhandler we use PropertyMap from devlib
- *  to open conf.xml and read xml tags.
- */
-extern PropertyMap app_config;
-
+/// Global application config built using QDom
 extern QDomDocument qdom_appconfig;
 
 
