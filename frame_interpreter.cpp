@@ -1,13 +1,11 @@
 //! Implementation of frame interpreter classes
 
 #include <stdlib.h>
-
-#include <stdlib.h>
-
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>
 #include <qstringlist.h>
+#include "../bt_stackopen/common_files/openmsg.h"
 
 #include "openclient.h"
 #include "device.h"
@@ -2224,8 +2222,7 @@ frame_interpreter_thermal_regulator::frame_interpreter_thermal_regulator(QString
 
 void frame_interpreter_thermal_regulator::get_init_message(device_status *ds, QString& out)
 {
-	out = "*#4*";
-	out +=  QString("#") + where + "##";
+	out = QString("*#") + who + "#" + where + "##";
 }
 
 void frame_interpreter_thermal_regulator::handle_frame_handler(char *frame, QPtrList<device_status> *list)
@@ -2299,17 +2296,13 @@ bool frame_interpreter_thermal_regulator::is_frame_ours(openwebnet msg, bool& re
 	return is_our;
 }
 
-void frame_interpreter_thermal_regulator::handle_frame(openwebnet msg, device_status_thermal_regulator_4z *ds)
+void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_status_thermal_regulator_4z *ds)
 {
+	OpenMsg msg;
+        msg.CreateMsgOpen(_msg.frame_open, strlen(_msg.frame_open));
+
 	qDebug("[TERMO] frame_interpreter_thermal_regulator_4z::handle_frame");
-
-	stat_var curr_setpoint(stat_var::SP);
-	stat_var curr_season(stat_var::SEASON);
-	stat_var curr_program(stat_var::PROGRAM);
-
-	ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
-	ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
-	ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+	qDebug("[LUCA] frame is: %s", msg.frame_open);
 	// TODO:
 	// - gestire le frame di cambio programma settimanale (par. 2.3.5)
 	// - gestire le frame di cambio temperatura setpoint (par. 2.3.2)
@@ -2321,19 +2314,112 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet msg, device_st
 	//  3. scrivi un aggiornamento dello stato
 	//  4. appendi il device status a evt_list.
 	int what = atoi(msg.Extract_cosa());
-	// following the KISS principle, interpret only the things we are interested into (sp temp, season, program)
-	switch (what)
+	int command = commandRange(what);
+	int program = what - command;
+	switch (command)
 	{
 		case 21: // remote control enabled
 		case 30: // malfunctioning found
 		case 31: // battery ko
 			break;
-		case 202:
-		case 204:
-			//sono in estate
+		case thermal_regulator::SUM_PROTECTION:
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::PROTECTION);
+			checkAndSetSummer(ds);
+			break;
+		case thermal_regulator::SUM_OFF:
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::OFF);
+			checkAndSetSummer(ds);
+			break;
+		case thermal_regulator::SUM_MANUAL:
+		case thermal_regulator::SUM_MANUAL_TIMED:
+			{
+				stat_var curr_setpoint(stat_var::SP);
+				ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
+
+				// non funziona, bisogna dividere a mano il cosa
+				// sp va inizializzato dividendo a mano il cosa
+				unsigned arg_count = msg.whatArgCnt();
+				if (arg_count < 1)
+					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
+				int sp = msg.whatArgN(0);
+				if (curr_setpoint.get_val() != sp)
+				{
+					curr_setpoint.set_val(sp);
+					ds->write_val((int)device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
+					evt_list.append(ds);
+				}
+
+				checkAndSetStatus(ds, device_status_thermal_regulator_4z::MANUAL);
+				checkAndSetSummer(ds);
+			}
+			break;
+		case thermal_regulator::SUM_WEEKEND:
+			// what's the difference between ferie and festivo???
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEKEND);
+			checkAndSetSummer(ds);
+			break;
+		case thermal_regulator::SUM_HOLIDAY:
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::HOLIDAY);
+			checkAndSetSummer(ds);
+			break;
+		case thermal_regulator::SUM_PROGRAM:
+			{
+				checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEK_PROGRAM);
+				checkAndSetSummer(ds);
+
+				stat_var curr_program(stat_var::PROGRAM);
+				ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+				if (curr_program.get_val() != program)
+				{
+					curr_program.set_val(program);
+					ds->write_val(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+					evt_list.append(ds);
+				}
+			}
+			break;
+		case thermal_regulator::WIN_PROTECTION:
+		case thermal_regulator::WIN_OFF:
+		case thermal_regulator::WIN_MANUAL:
+
 		default:
-			qDebug("[LUCA] Extract_cosa ha restituito %d", what);
+			break;
 	}
+}
+
+void frame_interpreter_thermal_regulator::checkAndSetStatus(device_status_thermal_regulator_4z *ds, int status)
+{
+	stat_var curr_status(stat_var::THERMR);
+	ds->read(device_status_thermal_regulator_4z::STATUS_INDEX, curr_status);
+	if (curr_status.get_val() != status)
+	{
+		curr_status.set_val(status);
+		ds->write_val(device_status_thermal_regulator_4z::STATUS_INDEX, curr_status);
+		evt_list.append(ds);
+	}
+}
+
+void frame_interpreter_thermal_regulator::checkAndSetSummer(device_status_thermal_regulator_4z *ds)
+{
+	stat_var curr_season(stat_var::SEASON);
+	ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+	if (curr_season.get_val() != thermal_regulator::SUMMER)
+	{
+		// this is needed by curr_season.set_val() that takes a parameter int&
+		int val = static_cast<int>(thermal_regulator::SUMMER);
+		curr_season.set_val(val);
+		ds->write_val(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+		evt_list.append(ds);
+	}
+}
+
+int frame_interpreter_thermal_regulator::commandRange(int what)
+{
+	if (what > 10000)
+		return (what/1000) * 1000;
+	else if (what > 1000)
+		return (what/100) * 100;
+	else
+		return what;
 }
 
 void frame_interpreter_thermal_regulator::handle_frame(openwebnet msg, device_status_thermal_regulator_99z *ds)
