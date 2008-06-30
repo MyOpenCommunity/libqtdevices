@@ -147,6 +147,7 @@ public:
 	void setProtection();
 	void setHolidayDateTime(QDate date, QTime time, int program);
 	void setWeekProgram(int program);
+	void requestStatus();
 
 	/**
 	 * Sends a frame to the thermal regulator to set the temperature in manual mode.
@@ -154,8 +155,7 @@ public:
 	 * \param temperature The temperature to be set, ranges from 50 to 400, step is 5.
 	 */
 	void setManualTemp(int temperature);
-protected:
-	thermal_regulator(QString where, bool p=false, int g=-1);
+
 	enum
 	{
 		SUMMER = 0,
@@ -164,6 +164,28 @@ protected:
 		TEMPERATURE_SET = 14,            // set the temperature in manual operation, this is a dimension
 		HOLIDAY_DATE_END = 30,           // set the end date of holiday mode, this is a dimension (grandezza)
 		HOLIDAY_TIME_END = 31,           // set the end time of holiday mode, this is a dimension (grandezza)
+
+		// summer specific identifiers
+		SUM_PROTECTION = 202,            // protection
+		SUM_OFF = 203,                   // off
+		SUM_MANUAL = 210,                // manual operation (all zones in setpoint temperature)
+		SUM_MANUAL_TIMED = 212,          // manual operation (24h maximum)
+		SUM_WEEKEND = 215,               // weekend operation (festivo)
+		SUM_PROGRAM = 2100,              // weekly program (1 out of 3)
+		SUM_SCENARIO = 2200,             // scenario (1 out of 16, 99zones thermal regulator only)
+		SUM_HOLIDAY = 23000,             // holiday operation (programma ferie)
+
+		// winter specific identifiers
+		WIN_PROTECTION = 102,
+		WIN_OFF = 103,                   // off
+		WIN_MANUAL = 110,                // manual operation (all zones in setpoint temperature)
+		WIN_MANUAL_TIMED = 112,          // manual operation (24h maximum)
+		WIN_WEEKEND = 115,               // weekend operation (festivo)
+		WIN_PROGRAM = 1100,              // weekly program (1 out of 3)
+		WIN_SCENARIO = 1200,             // scenario (1 out of 16, 99zones thermal regulator only)
+		WIN_HOLIDAY = 13000,             // holiday operation (programma ferie)
+
+		// generic identifiers (useful for issuing commands)
 		GENERIC_PROTECTION = 302,
 		GENERIC_OFF = 303,
 		WEEK_PROGRAM = 3100,             // command to set the program to be executed (generic mode)
@@ -173,6 +195,8 @@ protected:
 		HOLIDAY_NUM_DAYS = 33000,        // command to set the number of days of holiday mode (generic mode)
 		                                 // remember to add the number of days to this number
 	};
+protected:
+	thermal_regulator(QString where, bool p=false, int g=-1);
 };
 
 class thermal_regulator_4z : public thermal_regulator
