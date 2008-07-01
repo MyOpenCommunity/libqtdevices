@@ -331,30 +331,29 @@ FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name
 		description = descr.toElement().text();
 	else
 	{
-		qDebug("[TERMO] FSBannTermoReg4z ctor: no descritpion found, maybe wrong node conf?");
+		qDebug("[TERMO] FSBannTermoReg4z ctor: no description found, maybe wrong node conf?");
 		description = "Wrong node";
 	}
-	description_label = new QLabel(this, 0);
+	description_label = new QLabel(this);
 
 	const QString i_summer = QString(IMG_PATH) + "estate_s.png";
 	QPixmap *icon = icons_library.getIcon(i_summer.ascii());
-	season = new BtButton(this, 0);
-	season->setPixmap(*icon);
-	//season->setPressedPixmap(*icon);
-	season->setDown(true);
-	season->setEnabled(false);
+	season_btn = new BtButton(this);
+	season_btn->setPixmap(*icon);
+	season_btn->setDown(true);
+	season_btn->setEnabled(false);
 
 	// is this a sensible default for mode icon?
 	const QString i_thermal_reg = QString(IMG_PATH) + "centrale.png";
 	icon = icons_library.getIcon(i_thermal_reg.ascii());
-	mode = new BtButton(this, 0);
-	mode->setPixmap(*icon);
-	mode->setDown(true);
-	mode->setEnabled(false);
+	mode_btn = new BtButton(this);
+	mode_btn->setPixmap(*icon);
+	mode_btn->setDown(true);
+	mode_btn->setEnabled(false);
 
-	main_layout.addWidget(mode);
+	main_layout.addWidget(mode_btn);
 	main_layout.addWidget(description_label);
-	main_layout.addWidget(season);
+	main_layout.addWidget(season_btn);
 	main_layout.setAlignment(Qt::AlignHCenter);
 }
 
@@ -390,10 +389,20 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 			switch (curr_season.get_val())
 			{
 				case thermal_regulator::SUMMER:
-					season = thermal_regulator::SUMMER;
+					{
+						const QString img = QString(IMG_PATH) + "estate_s.png";
+						QPixmap *icon = icons_library.getIcon(img.ascii());
+						season_btn->setPixmap(*icon);
+						season = thermal_regulator::SUMMER;
+					}
 					break;
 				case thermal_regulator::WINTER:
-					season = thermal_regulator::WINTER;
+					{
+						const QString img = QString(IMG_PATH) + "inverno_s.png";
+						QPixmap *icon = icons_library.getIcon(img.ascii());
+						season_btn->setPixmap(*icon);
+						season = thermal_regulator::WINTER;
+					}
 					break;
 			}
 
@@ -405,7 +414,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "offp.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -413,7 +422,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "antigelop.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -421,7 +430,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "manuale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						stat_var curr_sp(stat_var::SP);
 						ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_sp);
 						// remember: stat_var::get_val() returns an int
@@ -442,7 +451,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "settimanale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 
 						stat_var curr_program(stat_var::PROGRAM);
 						ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
@@ -466,7 +475,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "feriale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -474,7 +483,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "festivo.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;

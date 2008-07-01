@@ -130,14 +130,22 @@ public:
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 private:
+	/**
+	 * Utility function to find in the DOM the program description to be displayed on screen.
+	 * \param season The season we are interested into. It must be either "summer" or "winter".
+	 * \param program_number The number of the program we are looking the description of.
+	 * \return The description of the program as written in DOM.
+	 */
+	QString lookupProgramDescription(QString season, int program_number);
+
 	QVBoxLayout main_layout;
 	/// Label and string that may be visualized
 	QLabel *description_label;
 	QString description;
 	/// Status icon (summer/winter)
-	BtButton *season;
+	BtButton *season_btn;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
-	BtButton *mode;
+	BtButton *mode_btn;
 	/// A reference to the configuration of the thermal regulator
 	QDomNode conf_root;
 };
@@ -197,7 +205,6 @@ public:
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 public slots:
-	void sendFrameOpen();
 	void status_changed(QPtrList<device_status> list);
 protected:
 	QVBoxLayout main_layout;
@@ -223,7 +230,6 @@ public:
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 public slots:
-	void sendFrameOpen();
 	void status_changed(QPtrList<device_status> list);
 private:
 	thermal_regulator_4z *dev;
