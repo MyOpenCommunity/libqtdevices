@@ -12,6 +12,7 @@
 #include "bannpuls.h"
 #include "fontmanager.h"
 #include "device.h"
+#include "main.h"
 
 #include <qlabel.h>
 
@@ -20,7 +21,7 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 {
 	conf_root = config;
 	probe_descr = conf_root.namedItem("descr").toElement().text();
-	temperature = "-23.5\272C";
+	temperature = "-23.5"TEMP_DEGREES"C";
 
 	setChi("4");
 
@@ -63,7 +64,7 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 			icx /= 10;
 			sprintf(tmp, "%.1f", icx);
 			qtemp += tmp;
-			qtemp +="\272C";
+			qtemp += TEMP_DEGREES"C";
 			temperature = qtemp;
 			update = true;
 		}

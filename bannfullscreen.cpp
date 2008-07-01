@@ -67,7 +67,7 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *na
 	main_layout.addWidget(temp_label);
 	main_layout.setAlignment(Qt::AlignHCenter);
 
-	temp = "-23.5\272C";
+	temp = "-23.5"TEMP_DEGREES"C";
 	descr = n.namedItem("descr").toElement().text();
 }
 
@@ -118,7 +118,7 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 			icx /= 10;
 			sprintf(tmp, "%.1f", icx);
 			qtemp += tmp;
-			qtemp +="\272C";
+			qtemp += TEMP_DEGREES"C";
 			temp = qtemp;
 			update = true;
 		}
@@ -166,7 +166,7 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
-	setpoint = "-23.5\272C";
+	setpoint = "-23.5"TEMP_DEGREES"C";
 	local_temp = "0";
 	isOff = false;
 	isAntigelo = false;
@@ -307,7 +307,7 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 				icx/=10;
 				sprintf(tmp,"%.1f",icx);
 				setpoint += tmp;
-				setpoint += "\272C";
+				setpoint += TEMP_DEGREES"C";
 				update = true;
 				break;
 			}
@@ -434,7 +434,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						}
 						description += QString::number(temp);
 						description.insert(description.length() - 1, ".");
-						description += "\272C";
+						description += TEMP_DEGREES"C";
 						update = true;
 					}
 					break;
@@ -727,7 +727,7 @@ void FSBannManual::Draw()
 	// FIXME: use string::fromUtf8("%1°C")
 	temp_string = temp_string.append("%1").arg(temp_format);
 	temp_string.insert(temp_string.length() - 1, ".");
-	temp_string.append("\272C");
+	temp_string.append(TEMP_DEGREES"C");
 	temp_label->setText(temp_string);
 	temp_label->setPaletteForegroundColor(second_fg);
 	BannFullScreen::Draw();

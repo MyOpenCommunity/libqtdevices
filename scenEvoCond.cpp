@@ -1921,7 +1921,7 @@ int device_condition_temp::get_divisor()
 
 void device_condition_temp::get_unit(QString& out)
 {
-    out = "\272C \2611\272C" ; 
+    out = TEMP_DEGREES"C \2611"TEMP_DEGREES"C" ; 
 }
 
 void device_condition_temp::Draw()
