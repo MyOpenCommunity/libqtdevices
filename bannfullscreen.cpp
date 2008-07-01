@@ -761,6 +761,8 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_
 	time_edit->setMaxHours(bt_max_hours);
 	time_edit->setMaxMins(bt_max_mins);
 	main_layout.addWidget(time_edit);
+
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 
@@ -776,11 +778,7 @@ void FSBannManualTimed::postDisplay(sottoMenu *parent)
 
 void FSBannManualTimed::status_changed(QPtrList<device_status> list)
 {
-}
-
-void FSBannManualTimed::sendFrameOpen()
-{
-	// send Open frame
+	FSBannManual::status_changed(list);
 }
 
 FSBannDate::FSBannDate(QWidget *parent, const char *name)
