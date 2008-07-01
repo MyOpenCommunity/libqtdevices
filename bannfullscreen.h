@@ -114,6 +114,12 @@ private:
 	bool isOff, isAntigelo;
 };
 
+/**
+ * Displays information about the thermal regulator device. Information may be: operation mode, label
+ * describing more information about mode (for example, the program name), current season.
+ * Operation mode and current season are icons and are always present. The label is optional and depends
+ * on the active mode: it is present for manual (setpoint temperature) and week program (program name).
+ */
 class FSBannTermoReg4z : public BannFullScreen
 {
 Q_OBJECT
@@ -125,14 +131,15 @@ public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
-	/// Program description label and string
-	QLabel *program_label;
-	QString program;
-	/// Setpoint temperature
-	QLabel *setpoint_label;
-	QString setpoint;
-	/// Status button (summer/winter)
+	/// Label and string that may be visualized
+	QLabel *description_label;
+	QString description;
+	/// Status icon (summer/winter)
 	BtButton *season;
+	/// Mode icon (off, protection, manual, week program, holiday, weekend)
+	BtButton *mode;
+	/// A reference to the configuration of the thermal regulator
+	QDomNode conf_root;
 };
 
 /**

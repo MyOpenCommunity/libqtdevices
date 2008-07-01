@@ -238,9 +238,9 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 
 			qDebug("loc = %d", curr_local.get_val());
 			qDebug("sp = %d", curr_sp.get_val());
-			if(curr_local.initialized())
+			if (curr_local.initialized())
 			{
-				switch(curr_local.get_val())
+				switch (curr_local.get_val())
 				{
 					case 0:
 						local_temp = "0";
@@ -292,7 +292,7 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 				}
 				update = true;
 			}
-			if(curr_sp.initialized())
+			if (curr_sp.initialized())
 			{
 				float icx;
 				char tmp[10];
@@ -323,19 +323,38 @@ FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	program = "Program [number]";
-	program_label = new QLabel(this, 0);
-	main_layout.addWidget(program_label);
+	conf_root = n;
 
-	setpoint = "-23.5\272C";
-	setpoint_label = new QLabel(this, 0);
-	main_layout.addWidget(setpoint_label);
+	// Put a sensible default for the description
+	QDomNode descr = conf_root.namedItem("descr");
+	if (!descr.isNull())
+		description = descr.toElement().text();
+	else
+	{
+		qDebug("[TERMO] FSBannTermoReg4z ctor: no descritpion found, maybe wrong node conf?");
+		description = "Wrong node";
+	}
+	description_label = new QLabel(this, 0);
 
+	const QString i_summer = QString(IMG_PATH) + "estate_s.png";
+	QPixmap *icon = icons_library.getIcon(i_summer.ascii());
 	season = new BtButton(this, 0);
+	season->setPixmap(*icon);
+	//season->setPressedPixmap(*icon);
 	season->setDown(true);
 	season->setEnabled(false);
-	main_layout.addWidget(season);
 
+	// is this a sensible default for mode icon?
+	const QString i_thermal_reg = QString(IMG_PATH) + "centrale.png";
+	icon = icons_library.getIcon(i_thermal_reg.ascii());
+	mode = new BtButton(this, 0);
+	mode->setPixmap(*icon);
+	mode->setDown(true);
+	mode->setEnabled(false);
+
+	main_layout.addWidget(mode);
+	main_layout.addWidget(description_label);
+	main_layout.addWidget(season);
 	main_layout.setAlignment(Qt::AlignHCenter);
 }
 
@@ -343,13 +362,11 @@ void FSBannTermoReg4z::Draw()
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	setpoint_label->setFont(aFont);
-	setpoint_label->setText(setpoint);
-	setpoint_label->setPaletteForegroundColor(second_fg);
-
-	FontManager::instance()->getFont(font_banTermo_testo, aFont);
-	program_label->setFont(aFont);
-	program_label->setText(program);
+	description_label->setFont(aFont);
+	description_label->setText(description);
+	// should I color text only if it is a setpoint temperature?
+	description_label->setPaletteForegroundColor(second_fg);
+	description_label->show();
 
 	BannFullScreen::Draw();
 }
@@ -361,6 +378,147 @@ void FSBannTermoReg4z::postDisplay(sottoMenu *parent)
 
 void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 {
+	bool update = false;
+	int season = thermal_regulator::SUMMER;
+
+	for (QPtrListIterator<device_status> it(list); device_status *ds = it.current(); ++it)
+	{
+		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
+		{
+			stat_var curr_season(stat_var::SEASON);
+			ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+			switch (curr_season.get_val())
+			{
+				case thermal_regulator::SUMMER:
+					season = thermal_regulator::SUMMER;
+					break;
+				case thermal_regulator::WINTER:
+					season = thermal_regulator::WINTER;
+					break;
+			}
+
+			stat_var curr_status(stat_var::THERMR);
+			ds->read(device_status_thermal_regulator_4z::STATUS_INDEX, curr_status);
+			switch (curr_status.get_val())
+			{
+				case device_status_thermal_regulator_4z::OFF:
+					{
+						const QString i_img = QString(IMG_PATH) + "offp.png";
+						QPixmap *icon = icons_library.getIcon(i_img.ascii());
+						mode->setPixmap(*icon);
+						description_label->hide();
+					}
+					break;
+				case device_status_thermal_regulator_4z::PROTECTION:
+					{
+						const QString i_img = QString(IMG_PATH) + "antigelop.png";
+						QPixmap *icon = icons_library.getIcon(i_img.ascii());
+						mode->setPixmap(*icon);
+						description_label->hide();
+					}
+					break;
+				case device_status_thermal_regulator_4z::MANUAL:
+					{
+						const QString i_img = QString(IMG_PATH) + "manuale.png";
+						QPixmap *icon = icons_library.getIcon(i_img.ascii());
+						mode->setPixmap(*icon);
+						stat_var curr_sp(stat_var::SP);
+						ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_sp);
+						// remember: stat_var::get_val() returns an int
+						int temp = curr_sp.get_val();
+						description = "";
+						if (temp > 1000)
+						{
+							description = "-";
+							temp -= 1000;
+						}
+						description += QString::number(temp);
+						description.insert(description.length() - 1, ".");
+						description += "\272C";
+						update = true;
+					}
+					break;
+				case device_status_thermal_regulator_4z::WEEK_PROGRAM:
+					{
+						const QString i_img = QString(IMG_PATH) + "settimanale.png";
+						QPixmap *icon = icons_library.getIcon(i_img.ascii());
+						mode->setPixmap(*icon);
+
+						stat_var curr_program(stat_var::PROGRAM);
+						ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+
+						// now search the description in the DOM
+						int program = curr_program.get_val();
+
+						switch (season)
+						{
+							case thermal_regulator::SUMMER:
+								{
+									QDomNode prog = conf_root.namedItem("summer");
+									if (!prog.isNull())
+									{
+										prog = prog.namedItem("prog");
+										if (!prog.isNull())
+										{
+											QDomNode iter = prog.firstChild();
+											for (int i = 1; i != program;
+													iter = iter.nextSibling(), ++i)
+												;
+											if (!iter.isNull())
+												description = iter.toElement().text();
+										}
+									}
+									else
+										qDebug("[TERMO] FSBannTermoReg4z::status_changed WEEK PROGRAM: wrong node");
+								}
+								break;
+							case thermal_regulator::WINTER:
+								{
+									QDomNode prog = conf_root.namedItem("winter");
+									if (!prog.isNull())
+									{
+										prog = prog.namedItem("prog");
+										if (!prog.isNull())
+										{
+											QDomNode iter = prog.firstChild();
+											for (int i = 1; i != program;
+													iter = iter.nextSibling(), ++i)
+												;
+											if (!iter.isNull())
+												description = iter.toElement().text();
+										}
+									}
+									else
+										qDebug("[TERMO] FSBannTermoReg4z::status_changed WEEK PROGRAM: wrong node");
+								}
+								break;
+						}
+					}
+					update = true;
+					break;
+				case device_status_thermal_regulator_4z::HOLIDAY:
+					{
+						const QString i_img = QString(IMG_PATH) + "feriale.png";
+						QPixmap *icon = icons_library.getIcon(i_img.ascii());
+						mode->setPixmap(*icon);
+						description_label->hide();
+					}
+					break;
+				case device_status_thermal_regulator_4z::WEEKEND:
+					{
+						const QString i_img = QString(IMG_PATH) + "festivo.png";
+						QPixmap *icon = icons_library.getIcon(i_img.ascii());
+						mode->setPixmap(*icon);
+						description_label->hide();
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	if (update)
+		Draw();
 }
 
 FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
