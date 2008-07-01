@@ -689,11 +689,8 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	hbox->addWidget(btn);
 
 	main_layout.addLayout(hbox);
-}
 
-void FSBannManual::sendFrameOpen()
-{
-	// send Open frame
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 void FSBannManual::incSetpoint()
@@ -743,6 +740,15 @@ void FSBannManual::postDisplay(sottoMenu *parent)
 
 void FSBannManual::status_changed(QPtrList<device_status> list)
 {
+	for (QPtrListIterator<device_status> iter(list); device_status *ds = iter.current(); ++iter)
+	{
+		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
+		{
+			stat_var curr_sp(stat_var::SP);
+			ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_sp);
+			temp = curr_sp.get_val();
+		}
+	}
 }
 
 FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev)
