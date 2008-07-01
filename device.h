@@ -21,7 +21,7 @@ public:
 	//! Constructor
 	device(QString who, QString where, bool p=false, int g=-1);
 	//! Init device: send messages initializing data
-	void init(bool force = false);
+	virtual void init(bool force = false);
 	//! Set frame interpreter
 	void set_frame_interpreter(frame_interpreter *fi);
 	//! Set where
@@ -58,7 +58,7 @@ signals:
 	void handle_frame(char *, QPtrList<device_status> *);
 public slots:
 	//! receive a frame
-	void frame_rx_handler(char *);
+	virtual void frame_rx_handler(char *);
 	//! Deal with frame event
 	void frame_event_handler(QPtrList<device_status>);
 	//! Initialization requested by frame interpreter
@@ -69,7 +69,6 @@ protected:
 	frame_interpreter *interpreter;
 	//! List of device stats
 	QPtrList<device_status> *stat;
-
 	//! Node's who
 	QString who;
 	//! Node's where
@@ -288,11 +287,5 @@ public:
 	modscen_device(QString, bool p=false, int g=-1);
 };
 
-class poweramplifier_device : public device
-{
-Q_OBJECT
-public:
-	poweramplifier_device(QString, bool p=false, int g=-1);
-};
 
 #endif //__DEVICE_H__

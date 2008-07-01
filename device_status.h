@@ -20,6 +20,7 @@ class stat_var
 public:
 	enum type
 	{
+		NONE = -1,
 		SPEED = 0,
 		LEV ,
 		OLD_LEV,
@@ -61,7 +62,7 @@ private:
 public:
 	stat_var(stat_var::type _t, int val, int min, int max, 
 			int step, bool initialized = false);
-	stat_var(stat_var::type);
+	stat_var(stat_var::type=NONE);
 	void get_val(int&);
 	int get_val(void) const;
 	void set_val(int&);

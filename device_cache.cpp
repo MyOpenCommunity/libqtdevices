@@ -2,6 +2,7 @@
 #include "device_cache.h"
 #include "frame_interpreter.h"
 #include "device.h"
+#include "poweramplifier_device.h"
 
 // Constructor
 device_cache::device_cache() : QMap<QString, device*>()

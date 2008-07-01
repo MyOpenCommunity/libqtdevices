@@ -2,7 +2,7 @@
 #include "device_cache.h" // btouch_device_cache
 #include "sottomenu.h"
 #include "btlabel.h"
-#include "device.h"
+#include "poweramplifier_device.h"
 #include "main.h"
 
 #include <qregexp.h>
