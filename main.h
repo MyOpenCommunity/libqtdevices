@@ -19,8 +19,6 @@ QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
 QString getLanguage();
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
 
-#include <qdom.h>
-
 /****************************************************************
  ** ICONS LIBRARY
  ****************************************************************/
@@ -434,6 +432,9 @@ enum pulsType
  * if not defined it's impossible to have a beep when pressing a button
  */
 #define BEEP
+
+/// The simbol of temperature degrees
+#define TEMP_DEGREES "\272"
 
 
 #endif //MAIN_H

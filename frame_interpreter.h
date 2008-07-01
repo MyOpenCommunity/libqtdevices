@@ -376,10 +376,30 @@ private:
 	bool is_frame_ours(openwebnet msg, bool& request_status);
 
 	/**
+	 * Sets the new program number in the device status.
+	 * \param ds A pointer to a thermal regulator device_status
+	 * \param program  The new program to be set.
+	 */
+	void setProgramNumber(device_status_thermal_regulator_4z *ds, int program);
+
+	/**
+	 * Sets manual status and temperature passed as paramenter.
+	 * \param ds A pointer to the device status
+	 * \param temp The new temperature to be set
+	 */
+	void setManualTemperature(device_status_thermal_regulator_4z *ds, int temp);
+
+	/**
 	 * If current status is not summer, sets it.
 	 * \param ds  A pointer to a thermal regulator device_status
 	 */
 	void checkAndSetSummer(device_status_thermal_regulator_4z *ds);
+
+	/**
+	 * If current status is not winter, sets it.
+	 * \param ds  A pointer to a thermal regulator device_status
+	 */
+	void checkAndSetWinter(device_status_thermal_regulator_4z *ds);
 
 	/**
 	 * Utility function to check if the status is changed.

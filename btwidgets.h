@@ -31,7 +31,7 @@ class BtTimeEdit : public QWidget
 {
 Q_OBJECT
 public:
-	BtTimeEdit(QWidget *parent, const char *name);
+	BtTimeEdit(QWidget *parent, const char *name = 0);
 
 	/**
 	 * Set the maximum value for hours. If \a h is negative, no action is performed.
@@ -76,7 +76,7 @@ class BtDateEdit : public QWidget
 {
 Q_OBJECT
 public:
-	BtDateEdit(QWidget *parent, const char *name);
+	BtDateEdit(QWidget *parent, const char *name = 0);
 	QDate date();
 private:
 	/// display date set

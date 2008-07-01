@@ -178,7 +178,7 @@ void homePage::addTemp(
 		case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];strcpy(ext3,Ext);ext[2]=ext3;break;
 	}
 
-     temperatura[tempCont] = new QLCDNumber(this,"0.00\272C");
+     temperatura[tempCont] = new QLCDNumber(this,"0.00"TEMP_DEGREES"C");
      temperatura[tempCont] ->setGeometry(x,y,width,height-H_SCR_TEMP);
      temperatura[tempCont] ->setPaletteForegroundColor(fg);
      temperatura[tempCont] ->setPaletteBackgroundColor(bg);
@@ -186,7 +186,7 @@ void homePage::addTemp(
      temperatura[tempCont] ->setFrameStyle( style );
      temperatura[tempCont] ->setLineWidth(line);    
      temperatura[tempCont] ->setNumDigits(6);
-     temperatura[tempCont] -> display("0.00\272C");
+     temperatura[tempCont] -> display("0.00"TEMP_DEGREES"C");
      temperatura[tempCont] -> setSegmentStyle(QLCDNumber::Flat);    
      
      if ( ! qtext.isEmpty() )
@@ -344,7 +344,7 @@ void homePage::gestFrame(char* frame)
            icx/=10;
            sprintf(tmp,"%.1f",icx);
            strcat(temp,tmp);
-           strcat(temp,"\272C");
+           strcat(temp,TEMP_DEGREES"C");
            temperatura[idx]->display(&temp[0]);
          }
     }

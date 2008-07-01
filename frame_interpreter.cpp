@@ -2278,21 +2278,13 @@ bool frame_interpreter_thermal_regulator::is_frame_ours(openwebnet msg, bool& re
 
 	if (who == msg.Extract_chi())
 	{
-		qDebug("[INTRP TERMO] is_frame_ours: msg %s, indirizzo centrale %s", msg.frame_open, where.ascii());
-
 		QString dove = msg.Extract_dove();
 		if (msg.Extract_livello())
 			dove += QString("#") + msg.Extract_livello();
 
 		QString sharp_where = QString("#") + where;
-		qDebug("[TERMO] Thermal regulator: msg.get_where() = %s =====", dove.ascii());
-		qDebug("[TERMO] Thermal regulator: where = %s =====", where.ascii());
-		qDebug("[TERMO] Thermal regulator: sharp_where = %s =====", sharp_where.ascii());
 		is_our = (dove == sharp_where);
-		qDebug("[TERMO] Gli indizzi sono uguali? %s =====", is_our ? "si" : "no");
 	}
-
-	qDebug("[INTRP TERMO] is_our: %s", is_our ? "YES" : "NO");
 	return is_our;
 }
 
@@ -2301,7 +2293,6 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 	OpenMsg msg;
         msg.CreateMsgOpen(_msg.frame_open, strlen(_msg.frame_open));
 
-	qDebug("[TERMO] frame_interpreter_thermal_regulator_4z::handle_frame");
 	qDebug("[LUCA] frame is: %s", msg.frame_open);
 	// TODO:
 	// - gestire le frame di cambio programma settimanale (par. 2.3.5)
@@ -2322,67 +2313,127 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 		case 30: // malfunctioning found
 		case 31: // battery ko
 			break;
+
 		case thermal_regulator::SUM_PROTECTION:
 			checkAndSetStatus(ds, device_status_thermal_regulator_4z::PROTECTION);
 			checkAndSetSummer(ds);
 			break;
+
 		case thermal_regulator::SUM_OFF:
 			checkAndSetStatus(ds, device_status_thermal_regulator_4z::OFF);
 			checkAndSetSummer(ds);
 			break;
+
 		case thermal_regulator::SUM_MANUAL:
 		case thermal_regulator::SUM_MANUAL_TIMED:
 			{
-				stat_var curr_setpoint(stat_var::SP);
-				ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
-
-				// non funziona, bisogna dividere a mano il cosa
-				// sp va inizializzato dividendo a mano il cosa
 				unsigned arg_count = msg.whatArgCnt();
 				if (arg_count < 1)
 					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
 				int sp = msg.whatArgN(0);
-				if (curr_setpoint.get_val() != sp)
+				// debug
+				if (command == thermal_regulator::SUM_MANUAL_TIMED)
 				{
-					curr_setpoint.set_val(sp);
-					ds->write_val((int)device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
-					evt_list.append(ds);
+					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
+					qDebug("[LUCA] frame is: %s", msg.frame_open);
+					qDebug("[LUCA] temperatura setpoint: %d", sp);
 				}
-
-				checkAndSetStatus(ds, device_status_thermal_regulator_4z::MANUAL);
-				checkAndSetSummer(ds);
+				// end debug
+				setManualTemperature(ds, sp);
 			}
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::MANUAL);
+			checkAndSetSummer(ds);
 			break;
+
 		case thermal_regulator::SUM_WEEKEND:
-			// what's the difference between ferie and festivo???
 			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEKEND);
 			checkAndSetSummer(ds);
 			break;
+
+		case thermal_regulator::SUM_PROGRAM:
+			setProgramNumber(ds, program);
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEK_PROGRAM);
+			checkAndSetSummer(ds);
+			break;
+
 		case thermal_regulator::SUM_HOLIDAY:
 			checkAndSetStatus(ds, device_status_thermal_regulator_4z::HOLIDAY);
 			checkAndSetSummer(ds);
 			break;
-		case thermal_regulator::SUM_PROGRAM:
-			{
-				checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEK_PROGRAM);
-				checkAndSetSummer(ds);
 
-				stat_var curr_program(stat_var::PROGRAM);
-				ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
-				if (curr_program.get_val() != program)
-				{
-					curr_program.set_val(program);
-					ds->write_val(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
-					evt_list.append(ds);
-				}
-			}
-			break;
 		case thermal_regulator::WIN_PROTECTION:
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::PROTECTION);
+			checkAndSetWinter(ds);
+			break;
+
 		case thermal_regulator::WIN_OFF:
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::OFF);
+			checkAndSetWinter(ds);
+			break;
+
 		case thermal_regulator::WIN_MANUAL:
+		case thermal_regulator::WIN_MANUAL_TIMED:
+			{
+				unsigned arg_count = msg.whatArgCnt();
+				if (arg_count < 1)
+					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
+				int sp = msg.whatArgN(0);
+				// debug
+				if (command == thermal_regulator::SUM_MANUAL_TIMED)
+				{
+					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
+					qDebug("[LUCA] frame is: %s", msg.frame_open);
+					qDebug("[LUCA] temperatura setpoint: %d", sp);
+				}
+				// end debug
+				setManualTemperature(ds, sp);
+			}
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::MANUAL);
+			checkAndSetWinter(ds);
+			break;
+
+		case thermal_regulator::WIN_WEEKEND:
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEKEND);
+			checkAndSetWinter(ds);
+			break;
+
+		case thermal_regulator::WIN_PROGRAM:
+			setProgramNumber(ds, program);
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEK_PROGRAM);
+			checkAndSetWinter(ds);
+			break;
+
+		case thermal_regulator::WIN_HOLIDAY:
+			checkAndSetStatus(ds, device_status_thermal_regulator_4z::HOLIDAY);
+			checkAndSetWinter(ds);
+			break;
 
 		default:
 			break;
+	}
+}
+
+void frame_interpreter_thermal_regulator::setProgramNumber(device_status_thermal_regulator_4z *ds, int program)
+{
+	stat_var curr_program(stat_var::PROGRAM);
+	ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+	if (curr_program.get_val() != program)
+	{
+		curr_program.set_val(program);
+		ds->write_val(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+		evt_list.append(ds);
+	}
+}
+
+void frame_interpreter_thermal_regulator::setManualTemperature(device_status_thermal_regulator_4z *ds, int temp)
+{
+	stat_var curr_setpoint(stat_var::SP);
+	ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
+	if (curr_setpoint.get_val() != temp)
+	{
+		curr_setpoint.set_val(temp);
+		ds->write_val((int)device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
+		evt_list.append(ds);
 	}
 }
 
@@ -2406,6 +2457,20 @@ void frame_interpreter_thermal_regulator::checkAndSetSummer(device_status_therma
 	{
 		// this is needed by curr_season.set_val() that takes a parameter int&
 		int val = static_cast<int>(thermal_regulator::SUMMER);
+		curr_season.set_val(val);
+		ds->write_val(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+		evt_list.append(ds);
+	}
+}
+
+void frame_interpreter_thermal_regulator::checkAndSetWinter(device_status_thermal_regulator_4z *ds)
+{
+	stat_var curr_season(stat_var::SEASON);
+	ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+	if (curr_season.get_val() != thermal_regulator::WINTER)
+	{
+		// this is needed by curr_season.set_val() that takes a parameter int&
+		int val = static_cast<int>(thermal_regulator::WINTER);
 		curr_season.set_val(val);
 		ds->write_val(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
 		evt_list.append(ds);

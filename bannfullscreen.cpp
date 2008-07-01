@@ -60,14 +60,14 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *na
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	descr_label = new QLabel(this, 0);
+	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
 
-	temp_label = new QLabel(this, 0);
+	temp_label = new QLabel(this);
 	main_layout.addWidget(temp_label);
 	main_layout.setAlignment(Qt::AlignHCenter);
 
-	temp = "-23.5\272C";
+	temp = "-23.5"TEMP_DEGREES"C";
 	descr = n.namedItem("descr").toElement().text();
 }
 
@@ -118,7 +118,7 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 			icx /= 10;
 			sprintf(tmp, "%.1f", icx);
 			qtemp += tmp;
-			qtemp +="\272C";
+			qtemp += TEMP_DEGREES"C";
 			temp = qtemp;
 			update = true;
 		}
@@ -131,11 +131,11 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	: FSBannSimpleProbe(parent, n)
 {
-	setpoint_label = new QLabel(this, 0);
+	setpoint_label = new QLabel(this);
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
 	hbox->addWidget(setpoint_label);
 
-	btn_off = new BtButton(this, 0);
+	btn_off = new BtButton(this);
 	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
 	const QString i_antifreeze_p = QString("%1%2").arg(IMG_PATH).arg("antigelop.png");
 	QPixmap *icon         = icons_library.getIcon(i_antifreeze.ascii());
@@ -147,7 +147,7 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	btn_off->hide();
 	hbox->addWidget(btn_off);
 
-	btn_antifreeze = new BtButton(this, 0);
+	btn_antifreeze = new BtButton(this);
 	const QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
 	const QString i_off_p = QString("%1%2").arg(IMG_PATH).arg("offp.png");
 	icon         = icons_library.getIcon(i_off.ascii());
@@ -162,11 +162,11 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	main_layout.addLayout(hbox);
 	main_layout.setStretchFactor(hbox, 1);
 
-	local_temp_label = new QLabel(this, 0);
+	local_temp_label = new QLabel(this);
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
-	setpoint = "-23.5\272C";
+	setpoint = "-23.5"TEMP_DEGREES"C";
 	local_temp = "0";
 	isOff = false;
 	isAntigelo = false;
@@ -307,7 +307,7 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 				icx/=10;
 				sprintf(tmp,"%.1f",icx);
 				setpoint += tmp;
-				setpoint += "\272C";
+				setpoint += TEMP_DEGREES"C";
 				update = true;
 				break;
 			}
@@ -331,30 +331,29 @@ FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name
 		description = descr.toElement().text();
 	else
 	{
-		qDebug("[TERMO] FSBannTermoReg4z ctor: no descritpion found, maybe wrong node conf?");
+		qDebug("[TERMO] FSBannTermoReg4z ctor: no description found, maybe wrong node conf?");
 		description = "Wrong node";
 	}
-	description_label = new QLabel(this, 0);
+	description_label = new QLabel(this);
 
 	const QString i_summer = QString(IMG_PATH) + "estate_s.png";
 	QPixmap *icon = icons_library.getIcon(i_summer.ascii());
-	season = new BtButton(this, 0);
-	season->setPixmap(*icon);
-	//season->setPressedPixmap(*icon);
-	season->setDown(true);
-	season->setEnabled(false);
+	season_btn = new BtButton(this);
+	season_btn->setPixmap(*icon);
+	season_btn->setDown(true);
+	season_btn->setEnabled(false);
 
 	// is this a sensible default for mode icon?
 	const QString i_thermal_reg = QString(IMG_PATH) + "centrale.png";
 	icon = icons_library.getIcon(i_thermal_reg.ascii());
-	mode = new BtButton(this, 0);
-	mode->setPixmap(*icon);
-	mode->setDown(true);
-	mode->setEnabled(false);
+	mode_btn = new BtButton(this);
+	mode_btn->setPixmap(*icon);
+	mode_btn->setDown(true);
+	mode_btn->setEnabled(false);
 
-	main_layout.addWidget(mode);
+	main_layout.addWidget(mode_btn);
 	main_layout.addWidget(description_label);
-	main_layout.addWidget(season);
+	main_layout.addWidget(season_btn);
 	main_layout.setAlignment(Qt::AlignHCenter);
 }
 
@@ -390,10 +389,20 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 			switch (curr_season.get_val())
 			{
 				case thermal_regulator::SUMMER:
-					season = thermal_regulator::SUMMER;
+					{
+						const QString img = QString(IMG_PATH) + "estate_s.png";
+						QPixmap *icon = icons_library.getIcon(img.ascii());
+						season_btn->setPixmap(*icon);
+						season = thermal_regulator::SUMMER;
+					}
 					break;
 				case thermal_regulator::WINTER:
-					season = thermal_regulator::WINTER;
+					{
+						const QString img = QString(IMG_PATH) + "inverno_s.png";
+						QPixmap *icon = icons_library.getIcon(img.ascii());
+						season_btn->setPixmap(*icon);
+						season = thermal_regulator::WINTER;
+					}
 					break;
 			}
 
@@ -405,7 +414,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "offp.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -413,7 +422,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "antigelop.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -421,7 +430,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "manuale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						stat_var curr_sp(stat_var::SP);
 						ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_sp);
 						// remember: stat_var::get_val() returns an int
@@ -434,7 +443,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						}
 						description += QString::number(temp);
 						description.insert(description.length() - 1, ".");
-						description += "\272C";
+						description += TEMP_DEGREES"C";
 						update = true;
 					}
 					break;
@@ -442,7 +451,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "settimanale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 
 						stat_var curr_program(stat_var::PROGRAM);
 						ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
@@ -453,44 +462,10 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						switch (season)
 						{
 							case thermal_regulator::SUMMER:
-								{
-									QDomNode prog = conf_root.namedItem("summer");
-									if (!prog.isNull())
-									{
-										prog = prog.namedItem("prog");
-										if (!prog.isNull())
-										{
-											QDomNode iter = prog.firstChild();
-											for (int i = 1; i != program;
-													iter = iter.nextSibling(), ++i)
-												;
-											if (!iter.isNull())
-												description = iter.toElement().text();
-										}
-									}
-									else
-										qDebug("[TERMO] FSBannTermoReg4z::status_changed WEEK PROGRAM: wrong node");
-								}
+								description = lookupProgramDescription("summer", program);
 								break;
 							case thermal_regulator::WINTER:
-								{
-									QDomNode prog = conf_root.namedItem("winter");
-									if (!prog.isNull())
-									{
-										prog = prog.namedItem("prog");
-										if (!prog.isNull())
-										{
-											QDomNode iter = prog.firstChild();
-											for (int i = 1; i != program;
-													iter = iter.nextSibling(), ++i)
-												;
-											if (!iter.isNull())
-												description = iter.toElement().text();
-										}
-									}
-									else
-										qDebug("[TERMO] FSBannTermoReg4z::status_changed WEEK PROGRAM: wrong node");
-								}
+								description = lookupProgramDescription("winter", program);
 								break;
 						}
 					}
@@ -500,7 +475,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "feriale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -508,7 +483,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "festivo.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode->setPixmap(*icon);
+						mode_btn->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -519,6 +494,29 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 	}
 	if (update)
 		Draw();
+}
+
+QString FSBannTermoReg4z::lookupProgramDescription(QString season, int program_number)
+{
+	QDomNode prog = conf_root.namedItem(season);
+	if (!prog.isNull())
+	{
+		prog = prog.namedItem("prog");
+		if (!prog.isNull())
+		{
+			QDomNode iter = prog.firstChild();
+			for (int i = 1; i != program_number && !(iter.isNull()); iter = iter.nextSibling(), ++i)
+				;
+			if (!iter.isNull())
+				return iter.toElement().text();
+			else
+				qWarning("[TERMO] FSBannTermoReg4z::lookupProgramDescription WEEK PROGRAM: wrong node");
+		}
+		else
+			qWarning("[TERMO] FSBannTermoReg4z::lookupProgramDescription WEEK PROGRAM: wrong node");
+	}
+	qDebug("FSBannTermoReg4z::lookupProgramDescription: You did not supply the correct season.");
+	return "";
 }
 
 FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
@@ -542,7 +540,7 @@ void FSBann4zFancoil::createFancoilButtons()
 		BtButton *btn;
 		icon         = icons_library.getIcon(QString(IMG_PATH) + icon_path[i]);
 		pressed_icon = icons_library.getIcon(QString(IMG_PATH) + icon_path[i+1]);
-		btn = new BtButton(this, 0);
+		btn = new BtButton(this);
 		hbox->addWidget(btn);
 		btn->setPixmap(*icon);
 		btn->setPressedPixmap(*pressed_icon);
@@ -670,7 +668,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	const QString btn_min_img_press = QString("%1%2").arg(IMG_PATH).arg("btnminp.png");
 	icon         = icons_library.getIcon(btn_min_img);
 	pressed_icon = icons_library.getIcon(btn_min_img_press);
-	btn = new BtButton(this, 0);
+	btn = new BtButton(this);
 	btn->setPixmap(*icon);
 	btn->setPressedPixmap(*pressed_icon);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
@@ -682,18 +680,15 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	const QString btn_plus_img_press = QString("%1%2").arg(IMG_PATH).arg("btnplusp.png");
 	icon         = icons_library.getIcon(btn_plus_img);
 	pressed_icon = icons_library.getIcon(btn_plus_img_press);
-	btn = new BtButton(this, 0);
+	btn = new BtButton(this);
 	btn->setPixmap(*icon);
 	btn->setPressedPixmap(*pressed_icon);
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
 
 	main_layout.addLayout(hbox);
-}
 
-void FSBannManual::sendFrameOpen()
-{
-	// send Open frame
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 void FSBannManual::incSetpoint()
@@ -730,7 +725,7 @@ void FSBannManual::Draw()
 	// FIXME: use string::fromUtf8("%1°C")
 	temp_string = temp_string.append("%1").arg(temp_format);
 	temp_string.insert(temp_string.length() - 1, ".");
-	temp_string.append("\272C");
+	temp_string.append(TEMP_DEGREES"C");
 	temp_label->setText(temp_string);
 	temp_label->setPaletteForegroundColor(second_fg);
 	BannFullScreen::Draw();
@@ -743,6 +738,15 @@ void FSBannManual::postDisplay(sottoMenu *parent)
 
 void FSBannManual::status_changed(QPtrList<device_status> list)
 {
+	for (QPtrListIterator<device_status> iter(list); device_status *ds = iter.current(); ++iter)
+	{
+		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
+		{
+			stat_var curr_sp(stat_var::SP);
+			ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_sp);
+			temp = curr_sp.get_val();
+		}
+	}
 }
 
 FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev)
@@ -751,10 +755,12 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_
 {
 	const int bt_max_hours = 99;
 	const int bt_max_mins = 99;
-	time_edit = new BtTimeEdit(this, 0);
+	time_edit = new BtTimeEdit(this);
 	time_edit->setMaxHours(bt_max_hours);
 	time_edit->setMaxMins(bt_max_mins);
 	main_layout.addWidget(time_edit);
+
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
 }
 
 
@@ -770,11 +776,7 @@ void FSBannManualTimed::postDisplay(sottoMenu *parent)
 
 void FSBannManualTimed::status_changed(QPtrList<device_status> list)
 {
-}
-
-void FSBannManualTimed::sendFrameOpen()
-{
-	// send Open frame
+	FSBannManual::status_changed(list);
 }
 
 FSBannDate::FSBannDate(QWidget *parent, const char *name)
@@ -783,13 +785,13 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 {
 
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
-	BtButton *top = new BtButton(this, 0);
+	BtButton *top = new BtButton(this);
 	top->setPixmap(top_img);
 	top->setDown(true);
 	top->setEnabled(false);
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
-	date_edit = new BtDateEdit(this, 0);
+	date_edit = new BtDateEdit(this);
 	main_layout.addWidget(date_edit);
 
 	connect(date_edit, SIGNAL(valueChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
@@ -819,13 +821,13 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout(this)
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
-	BtButton *top = new BtButton(this, 0);
+	BtButton *top = new BtButton(this);
 	top->setPixmap(i_top_img);
 	top->setDown(true);
 	top->setEnabled(false);
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
-	time_edit = new BtTimeEdit(this, 0);
+	time_edit = new BtTimeEdit(this);
 	main_layout.addWidget(time_edit);
 
 	connect(time_edit, SIGNAL(valueChanged(int, int)), this, SLOT(setTime(int, int)));

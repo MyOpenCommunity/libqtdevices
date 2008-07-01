@@ -27,8 +27,8 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
 	icon         = icons_library.getIcon(btn_up_img);
 	pressed_icon = icons_library.getIcon(btn_up_img_press);
-	btn1 = new BtButton(this, 0);
-	btn2 = new BtButton(this, 0);
+	btn1 = new BtButton(this);
+	btn2 = new BtButton(this);
 	btn1->setPixmap(*icon);
 	btn1->setPressedPixmap(*pressed_icon);
 	btn2->setPixmap(*icon);
@@ -50,8 +50,8 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
 	icon         = icons_library.getIcon(btn_down_img);
 	pressed_icon = icons_library.getIcon(btn_down_img_press);
-	btn1 = new BtButton(this, 0);
-	btn2 = new BtButton(this, 0);
+	btn1 = new BtButton(this);
+	btn2 = new BtButton(this);
 	btn1->setPixmap(*icon);
 	btn1->setPressedPixmap(*pressed_icon);
 	btn2->setPixmap(*icon);
@@ -153,9 +153,9 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 		qDebug("[TERMO] BtDateEdit: could not get icon, prepare for strangeness");
 	if (!pressed_icon)
 		qDebug("[TERMO] BtDateEdit: could not get pressed icon, prepare for strangeness");
-	btn_up_day = new BtButton(this, 0);
-	btn_up_month = new BtButton(this, 0);
-	btn_up_year = new BtButton(this, 0);
+	btn_up_day = new BtButton(this);
+	btn_up_month = new BtButton(this);
+	btn_up_year = new BtButton(this);
 	btn_up_day->setPixmap(*icon);
 	btn_up_day->setPressedPixmap(*pressed_icon);
 	btn_up_month->setPixmap(*icon);
@@ -187,9 +187,9 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 		qDebug("[TERMO] BtDateEdit: could not get icon, prepare for strangeness");
 	if (!pressed_icon)
 		qDebug("[TERMO] BtDateEdit: could not get pressed icon, prepare for strangeness");
-	btn_down_day = new BtButton(this, 0);
-	btn_down_month = new BtButton(this, 0);
-	btn_down_year = new BtButton(this, 0);
+	btn_down_day = new BtButton(this);
+	btn_down_month = new BtButton(this);
+	btn_down_year = new BtButton(this);
 	btn_down_day->setPixmap(*icon);
 	btn_down_day->setPressedPixmap(*pressed_icon);
 	btn_down_month->setPixmap(*icon);

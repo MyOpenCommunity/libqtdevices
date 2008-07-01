@@ -253,8 +253,9 @@ void PlantMenu::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 
-	connect(sm, SIGNAL(goDx()), settings, SLOT(show()));
+	connect(sm, SIGNAL(goDx()), &items_submenu, SLOT(show()));
 	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
+	//FIXME: this is not correct, use OpenFrameSender
 	connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
 }
 
@@ -283,7 +284,7 @@ void PlantMenu::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *d
 	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 
-	connect(sm, SIGNAL(goDx()), settings, SLOT(show()));
+	connect(sm, SIGNAL(goDx()), &items_submenu, SLOT(show()));
 	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
 	connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
 }
@@ -304,7 +305,7 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulat
 	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(raise()));
 	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
 
-	connect(weekmenu, SIGNAL(programClicked(int)), settings, SLOT(show()));
+	connect(weekmenu, SIGNAL(programClicked(int)), &items_submenu, SLOT(show()));
 	connect(weekmenu, SIGNAL(programClicked(int)), weekmenu, SLOT(hide()));
 	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
@@ -328,7 +329,7 @@ void PlantMenu::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_reg
 	connect(scenario, SIGNAL(sxClick()), scenariomenu, SLOT(raise()));
 	connect(scenario, SIGNAL(sxClick()), settings, SLOT(hide()));
 
-	connect(scenariomenu, SIGNAL(programClicked(int)), settings, SLOT(show()));
+	connect(scenariomenu, SIGNAL(programClicked(int)), &items_submenu, SLOT(show()));
 	connect(scenariomenu, SIGNAL(programClicked(int)), scenariomenu, SLOT(hide()));
 	connect(scenariomenu, SIGNAL(Closed()), settings, SLOT(show()));
 	connect(scenariomenu, SIGNAL(Closed()), scenariomenu, SLOT(hide()));
@@ -381,8 +382,8 @@ void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regu
 	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(raise()));
 	connect(weekly, SIGNAL(Closed()), weekly, SLOT(hide()));
 
-	connect(weekly, SIGNAL(programClicked(int)), settings, SLOT(show()));
-	connect(weekly, SIGNAL(programClicked(int)), settings, SLOT(raise()));
+	connect(weekly, SIGNAL(programClicked(int)), &items_submenu, SLOT(show()));
+	connect(weekly, SIGNAL(programClicked(int)), &items_submenu, SLOT(raise()));
 	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
 
 	new OpenFrameSender(dev, date_edit, time_edit, weekly, this);
