@@ -18,6 +18,8 @@ static const char *IMG_BALANCE_SX = IMG_PATH "balance_sx.png";
 static const char *IMG_BALANCE_DX = IMG_PATH "balance_dx.png";
 static const char *IMG_LOUD_ON = IMG_PATH "loud.png";
 static const char *IMG_LOUD_OFF = IMG_PATH "loud_off.png";
+static const char *IMG_MORE = IMG_PATH "more.png";
+static const char *IMG_LESS = IMG_PATH "less.png";
 
 /*****************************************************************
  ** PowerAmplifier
@@ -290,7 +292,7 @@ PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent, const char *name, 
  : BannOnOffCombo(parent, name)
 {
 	qDebug("PowerAmplifierBalance::PowerAmplifierBalance()");
-	SetIcons(IMG_PLUS, IMG_MINUS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
+	SetIcons(IMG_MORE, IMG_LESS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
 	secondary_fg = SecondForeground;
 	balance = 0;
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
