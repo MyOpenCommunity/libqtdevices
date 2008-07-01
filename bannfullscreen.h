@@ -27,31 +27,49 @@ class device;
 class thermal_regulator;
 class thermal_regulator_4z;
 
+/**
+ * An interface class for all full screen banners.
+ */
 class BannFullScreen : public banner
 {
 Q_OBJECT
 public:
 	BannFullScreen(QWidget *parent, const char *name);
 	virtual void Draw();
+
+	/**
+	 * A function called by sottoMenu to request the banner which type of navbar it needs.
+	 */
 	virtual void postDisplay(sottoMenu *parent) = 0;
+
 	void setSecondForeground(QColor fg2);
+
+	/**
+	 * This function is reimplemented from banner because fullscreen banners don't use
+	 * the same items as banners (BUT1, BUT2, TEXT and so on).
+	 */
 	virtual void setBGColor(QColor bg);
 	virtual void setFGColor(QColor bg);
 public slots:
+	/**
+	 * Called whenever the status of the device associated with the banner changes, so that
+	 * the banner can display the variations.
+	 */
 	virtual void status_changed(QPtrList<device_status> list) = 0;
 protected:
 	QColor second_fg;
 };
 
+/**
+ * A base class for banners that represent a probe. It displays a label with zone name on top
+ * and the measured temperature.
+ */
 class FSBannSimpleProbe : public BannFullScreen
 {
 Q_OBJECT
 public:
-	// mi manca di sicuro la descrizione della zona e il device da cui prendo le modifiche
-	// forse posso spostare il set dei vari *ground in alcuni membri?
 	FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
-	// void callmeBack() call this from sottoMenu to setNavBarMode with the correct icon
 	virtual void postDisplay(sottoMenu *parent);
 	void setSecondForeground(QColor fg2);
 public slots:
@@ -68,7 +86,11 @@ protected:
 	QString descr;
 };
 
-
+/**
+ * Displays information about a probe controlled by a 4 zones thermal regulator.
+ * It has a label with setpoint temperature and local status. In case the status is
+ * protection or off, it displays the relative icon.
+ */
 class FSBann4zProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
@@ -113,6 +135,10 @@ private:
 	BtButton *season;
 };
 
+/**
+ * Displays information about a controlled probe with fancoil. In addition to FSBann4zProbe, it displays
+ * at the bottom of the page 4 buttons to set the speed of fancoil.
+ */
 class FSBann4zFancoil : public FSBann4zProbe
 {
 Q_OBJECT
