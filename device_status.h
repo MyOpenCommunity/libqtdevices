@@ -50,6 +50,7 @@ public:
 		PROGRAM, // weekly program currently set in the thermal regulator
 		SCENARIO, // scenario currentrly set in thermal regulator (99 zones only)
 		SEASON,   // summer / winter
+		THERMR,   // status of thermal regulation (off, protection, manual, week program, scenario, holiday)
 	};
 private:
 	type t;
@@ -254,7 +255,19 @@ public:
 		SP_INDEX = 0,
 		SEASON_INDEX,
 		PROGRAM_INDEX,
+		STATUS_INDEX,           // status may be: off, protection, manual, week program, scenario, holiday
 	} ind;
+
+	enum
+	{
+		OFF = 0,
+		PROTECTION,
+		MANUAL,                 // manual temperature
+		WEEK_PROGRAM,           // weekly program
+		SCENARIO,               // scenario
+		HOLIDAY,                // festivo
+		WEEKEND,                // ferie
+	} status;
 
 	device_status_thermal_regulator_4z();
 };

@@ -359,18 +359,46 @@ class frame_interpreter_thermal_regulator : public frame_interpreter
 {
 Q_OBJECT
 public:
-	//! Constructor
 	frame_interpreter_thermal_regulator(QString who, QString addr, bool p, int g);
-	//! Returns init message given device status
 	void get_init_message(device_status *ds, QString& out);
 public slots:
-	//! Receive a frame
+	/**
+	 * Called whenever there is a new frame to be parsed
+	 *
+	 * \param frame  The frame to be parsed
+	 * \param list   A list of device_status
+	 */
 	void handle_frame_handler(char *frame, QPtrList<device_status> *list);
 private:
 	void handle_frame(openwebnet msg, device_status_thermal_regulator_4z *ds);
 	void handle_frame(openwebnet msg, device_status_thermal_regulator_99z *ds);
 	QString where;
 	bool is_frame_ours(openwebnet msg, bool& request_status);
+
+	/**
+	 * If current status is not summer, sets it.
+	 * \param ds  A pointer to a thermal regulator device_status
+	 */
+	void checkAndSetSummer(device_status_thermal_regulator_4z *ds);
+
+	/**
+	 * Utility function to check if the status is changed.
+	 *
+	 * \param ds  A pointer to a thermal regulator device_status
+	 * \param status  The new status that must be set in the device
+	 */
+	void checkAndSetStatus(device_status_thermal_regulator_4z *ds, int status);
+
+	/**
+	 * Utility function to check if `what' is a program or scenario command. This type of commands are in this form:
+	 * xynn (where x={1,2}, y={1,2,3}) where nn is the program or scenario command, or xynnn (where x={1,2}, y={1,2,3}) and
+	 * nnn are the number of days.
+	 * We need to take action based on xy00-type of command, this function returns the command in that form.
+	 *
+	 * \param what  The command to be checked
+	 * \return The command in xy00 form.
+	 */
+	int commandRange(int what);
 };
 
 //! Temperature probe device frame interpreter

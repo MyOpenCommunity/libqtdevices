@@ -439,6 +439,16 @@ void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
 	sendFrame(msg_open_3.frame_open);
 }
 
+void thermal_regulator::requestStatus()
+{
+	const QString sharp_where = QString("#") + where;
+	QString msg = QString("*#%1*%2##").arg(who).arg(sharp_where);
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	qDebug("[TERMO] requestStatus frame: %s", msg_open.frame_open);
+	sendFrame(msg_open.frame_open);
+}
+
 thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 	: thermal_regulator(where, p, g)
 {
