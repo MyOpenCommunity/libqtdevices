@@ -60,10 +60,10 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *na
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	descr_label = new QLabel(this, 0);
+	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
 
-	temp_label = new QLabel(this, 0);
+	temp_label = new QLabel(this);
 	main_layout.addWidget(temp_label);
 	main_layout.setAlignment(Qt::AlignHCenter);
 
@@ -131,11 +131,11 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	: FSBannSimpleProbe(parent, n)
 {
-	setpoint_label = new QLabel(this, 0);
+	setpoint_label = new QLabel(this);
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
 	hbox->addWidget(setpoint_label);
 
-	btn_off = new BtButton(this, 0);
+	btn_off = new BtButton(this);
 	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
 	const QString i_antifreeze_p = QString("%1%2").arg(IMG_PATH).arg("antigelop.png");
 	QPixmap *icon         = icons_library.getIcon(i_antifreeze.ascii());
@@ -147,7 +147,7 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	btn_off->hide();
 	hbox->addWidget(btn_off);
 
-	btn_antifreeze = new BtButton(this, 0);
+	btn_antifreeze = new BtButton(this);
 	const QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
 	const QString i_off_p = QString("%1%2").arg(IMG_PATH).arg("offp.png");
 	icon         = icons_library.getIcon(i_off.ascii());
@@ -162,7 +162,7 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	main_layout.addLayout(hbox);
 	main_layout.setStretchFactor(hbox, 1);
 
-	local_temp_label = new QLabel(this, 0);
+	local_temp_label = new QLabel(this);
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
@@ -542,7 +542,7 @@ void FSBann4zFancoil::createFancoilButtons()
 		BtButton *btn;
 		icon         = icons_library.getIcon(QString(IMG_PATH) + icon_path[i]);
 		pressed_icon = icons_library.getIcon(QString(IMG_PATH) + icon_path[i+1]);
-		btn = new BtButton(this, 0);
+		btn = new BtButton(this);
 		hbox->addWidget(btn);
 		btn->setPixmap(*icon);
 		btn->setPressedPixmap(*pressed_icon);
@@ -670,7 +670,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	const QString btn_min_img_press = QString("%1%2").arg(IMG_PATH).arg("btnminp.png");
 	icon         = icons_library.getIcon(btn_min_img);
 	pressed_icon = icons_library.getIcon(btn_min_img_press);
-	btn = new BtButton(this, 0);
+	btn = new BtButton(this);
 	btn->setPixmap(*icon);
 	btn->setPressedPixmap(*pressed_icon);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
@@ -682,7 +682,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	const QString btn_plus_img_press = QString("%1%2").arg(IMG_PATH).arg("btnplusp.png");
 	icon         = icons_library.getIcon(btn_plus_img);
 	pressed_icon = icons_library.getIcon(btn_plus_img_press);
-	btn = new BtButton(this, 0);
+	btn = new BtButton(this);
 	btn->setPixmap(*icon);
 	btn->setPressedPixmap(*pressed_icon);
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
@@ -757,7 +757,7 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_
 {
 	const int bt_max_hours = 99;
 	const int bt_max_mins = 99;
-	time_edit = new BtTimeEdit(this, 0);
+	time_edit = new BtTimeEdit(this);
 	time_edit->setMaxHours(bt_max_hours);
 	time_edit->setMaxMins(bt_max_mins);
 	main_layout.addWidget(time_edit);
@@ -787,13 +787,13 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 {
 
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
-	BtButton *top = new BtButton(this, 0);
+	BtButton *top = new BtButton(this);
 	top->setPixmap(top_img);
 	top->setDown(true);
 	top->setEnabled(false);
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
-	date_edit = new BtDateEdit(this, 0);
+	date_edit = new BtDateEdit(this);
 	main_layout.addWidget(date_edit);
 
 	connect(date_edit, SIGNAL(valueChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
@@ -823,13 +823,13 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout(this)
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
-	BtButton *top = new BtButton(this, 0);
+	BtButton *top = new BtButton(this);
 	top->setPixmap(i_top_img);
 	top->setDown(true);
 	top->setEnabled(false);
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
-	time_edit = new BtTimeEdit(this, 0);
+	time_edit = new BtTimeEdit(this);
 	main_layout.addWidget(time_edit);
 
 	connect(time_edit, SIGNAL(valueChanged(int, int)), this, SLOT(setTime(int, int)));

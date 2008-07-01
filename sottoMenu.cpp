@@ -839,7 +839,7 @@ void WeeklyMenu::createSummerBanners()
 			p = programs.firstChild();
 		while (!p.isNull())
 		{
-			BannWeekly *bp = new BannWeekly(this, 0);
+			BannWeekly *bp = new BannWeekly(this);
 			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
@@ -876,7 +876,7 @@ void WeeklyMenu::createWinterBanners()
 			p = programs.firstChild();
 		while (!p.isNull())
 		{
-			BannWeekly *bp = new BannWeekly(this, 0);
+			BannWeekly *bp = new BannWeekly(this);
 			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
@@ -920,7 +920,7 @@ void ScenarioMenu::createSummerBanners()
 			p = programs.firstChild();
 		while (!p.isNull())
 		{
-			BannWeekly *bp = new BannWeekly(this, 0);
+			BannWeekly *bp = new BannWeekly(this);
 			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
@@ -957,7 +957,7 @@ void ScenarioMenu::createWinterBanners()
 			p = programs.firstChild();
 		while (!p.isNull())
 		{
-			BannWeekly *bp = new BannWeekly(this, 0);
+			BannWeekly *bp = new BannWeekly(this);
 			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
@@ -978,7 +978,7 @@ void ScenarioMenu::createWinterBanners()
 TimeEditMenu::TimeEditMenu(QWidget *parent, const char *name)
 	: sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
-	time_edit = new FSBannTime(this, 0);
+	time_edit = new FSBannTime(this);
 	elencoBanner.append(time_edit);
 	connect(time_edit, SIGNAL(timeChanged(QTime)), this, SIGNAL(timeChanged(QTime)));
 }
@@ -991,7 +991,7 @@ QTime TimeEditMenu::time()
 DateEditMenu::DateEditMenu(QWidget *parent, const char *name)
 	: sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
-	date_edit = new FSBannDate(this, 0);
+	date_edit = new FSBannDate(this);
 	elencoBanner.append(date_edit);
 	connect(date_edit, SIGNAL(dateChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
 }
