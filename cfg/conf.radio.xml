@@ -105,6 +105,8 @@
 <id>51</id>
 <cid>1200</cid>
 <descr>Sorgente Multim</descr>
+<radiooip>1</radiooip>
+<mediaserver>1</mediaserver>
 <web_radio>
 <item1>
 <descr>Fox FM</descr>

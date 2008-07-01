@@ -37,6 +37,12 @@ static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 
+enum ChoiceButtons
+{
+	BUTTON_RADIO = 0,
+	BUTTON_MEDIA
+};
+
 
 SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent, name)
 {
@@ -127,10 +133,10 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	connect(source_choice, SIGNAL(Closed()), SLOT(handleClose()));
 	connect(source_choice, SIGNAL(clicked(int)), SLOT(handleChoiceSource(int)));
 
-	loadRadioNode();
+	loadSources();
 }
 
-void MultimediaSource::loadRadioNode()
+void MultimediaSource::loadSources()
 {
 	bool diff_multi = true;
 	QDomNode node_page = getPageNode(DIFSON_MULTI);
@@ -148,15 +154,34 @@ void MultimediaSource::loadRadioNode()
 
 	int id = diff_multi ? SORGENTE_MULTIM_MC : SORGENTE_MULTIM;
 	QDomNode n = getChildWithId(node_page, QRegExp("item\\d{1,2}"), id);
+
+	radio_enabled = false;
+	mediaserver_enabled = false;
+
 	if (!n.isNull())
 	{
 		QDomNode node = n.firstChild();
-		while (!node.isNull() && node.nodeName() != "web_radio")
-			node = node.nextSibling();
+		while (!node.isNull())
+		{
+			if (node.nodeName() == "web_radio")
+				radio_node = node;
 
-		if (!node.isNull())
-			radio_node = node;
+			if (node.nodeName() == "radiooip")
+				radio_enabled = node.toElement().text().toInt() == 1;
+
+			if (node.nodeName() == "mediaserver")
+				mediaserver_enabled = node.toElement().text().toInt() == 1;
+
+			node = node.nextSibling();
+		}
 	}
+
+	// Check for correctness
+	if (radio_enabled && radio_node.isNull())
+		radio_enabled = false;
+
+	if (!radio_enabled && !mediaserver_enabled)
+		mediaserver_enabled = true;
 }
 
 void MultimediaSource::sourceMenu(AudioSourceType t)
@@ -268,9 +293,14 @@ void MultimediaSource::showPage()
 
 	if (source_type != NONE_SOURCE && play_window->isPlaying())
 		play_window->show();
-	else if (radio_node.isNull())
+	else if (mediaserver_enabled && !radio_enabled)
 	{
 		sourceMenu(FILE_SOURCE);
+		selector->show();
+	}
+	else if (radio_enabled && !mediaserver_enabled)
+	{
+		sourceMenu(RADIO_SOURCE);
 		selector->show();
 	}
 	else
@@ -288,7 +318,7 @@ void MultimediaSource::handlePlayerExit()
 
 void MultimediaSource::handleSelectorExit()
 {
-	if (radio_node.isNull())
+	if (!radio_enabled || !mediaserver_enabled)
 		handleClose();
 	else
 	{
@@ -300,9 +330,6 @@ void MultimediaSource::handleSelectorExit()
 
 void MultimediaSource::handleChoiceSource(int button_id)
 {
-	// GIANNI: temporanei, fare un enum!
-	int BUTTON_RADIO = 0;
-	int BUTTON_MEDIA = 1;
 
 	// Create the instances only if change the source type
 	if (button_id == BUTTON_RADIO && source_type != RADIO_SOURCE)

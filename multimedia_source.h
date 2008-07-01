@@ -165,7 +165,7 @@ private:
 	 */
 	void draw() {};
 
-	void loadRadioNode();
+	void loadSources();
 
 	PlayWindow *play_window;
 	Selector *selector;
@@ -181,6 +181,7 @@ private:
 	AudioSourceType source_type;
 	SourceChoice *source_choice;
 	QDomNode radio_node;
+	bool radio_enabled, mediaserver_enabled;
 
 private slots:
 	/// handles to receive play and stop notifications
