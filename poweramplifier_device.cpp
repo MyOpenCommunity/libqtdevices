@@ -35,15 +35,20 @@ void poweramplifier_device::frame_rx_handler(char *frame)
 {
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
-	return;
-	// FIX!
+
 	if (who != msg.who() || where != msg.where())
 		return;
 
 	qDebug("poweramplifier_device::frame_rx_handler");
 	qDebug("frame read:%s", frame);
-}
 
+	QMap<status_key_t, stat_var> st;
+
+	// FIX: Add code here!
+
+	if (st.size())
+		emit status_changed(st);
+}
 
 void poweramplifier_device::turn_on()
 {

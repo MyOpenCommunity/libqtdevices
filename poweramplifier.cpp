@@ -2,7 +2,6 @@
 #include "device_cache.h" // btouch_device_cache
 #include "sottomenu.h"
 #include "btlabel.h"
-#include "poweramplifier_device.h"
 #include "main.h"
 
 #include <qregexp.h>
@@ -34,6 +33,9 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl,(char)1);
 	setAddress(indirizzo);
 	dev = static_cast<poweramplifier_device*>(btouch_device_cache.get_poweramplifier_device(getAddress()));
+	connect(dev, SIGNAL(status_changed(QMap<status_key_t, stat_var>)),
+			SLOT(status_changed(QMap<status_key_t, stat_var>)));
+
 	connect(this, SIGNAL(sxClick()), SLOT(showSettings()));
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
@@ -93,6 +95,11 @@ void PowerAmplifier::turnUp()
 void PowerAmplifier::turnDown()
 {
 	qDebug("PowerAmplifier::turnDown()");
+}
+
+void PowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st)
+{
+
 }
 
 /*****************************************************************

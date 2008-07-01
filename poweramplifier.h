@@ -5,12 +5,12 @@
 #include "bannonoff.h"
 #include "bannonoff2scr.h"
 #include "bannonoffcombo.h"
+#include "poweramplifier_device.h"
 
 #include <qvaluevector.h>
 #include <qdom.h>
 
 class sottoMenu;
-class poweramplifier_device;
 
 /*****************************************************************
  **Power amplifier
@@ -33,6 +33,8 @@ private slots:
 	void toggleStatus();
 	void turnUp();
 	void turnDown();
+	void status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st);
+
 private:
 	QString off_icon, on_icon;
 	bool status;
