@@ -235,7 +235,7 @@ class FSBannDate : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannDate(QWidget *parent, const char *name);
+	FSBannDate(QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 	QDate date();
@@ -253,7 +253,7 @@ class FSBannTime : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannTime(QWidget *parent, const char *name);
+	FSBannTime(QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 	QTime time();

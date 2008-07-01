@@ -90,7 +90,7 @@ class BannWeekly : public bannPuls
 {
 Q_OBJECT
 public:
-	BannWeekly(QWidget *parent, const char *name);
+	BannWeekly(QWidget *parent, const char *name = 0);
 	void setProgram(int prog);
 public slots:
 	void performAction();
