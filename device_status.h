@@ -46,11 +46,11 @@ public:
 		INFO_CENTRALE,
 		FANCOIL_SPEED,
 		INFO_MCI,
-		WORD, 				//0-65535
-		PROGRAM, // weekly program currently set in the thermal regulator
-		SCENARIO, // scenario currentrly set in thermal regulator (99 zones only)
-		SEASON,   // summer / winter
-		THERMR,   // status of thermal regulation (off, protection, manual, week program, scenario, holiday)
+		WORD,      //0-65535
+		PROGRAM,   // weekly program currently set in the thermal regulator
+		SCENARIO,  // scenario currentrly set in thermal regulator (99 zones only)
+		SEASON,    // summer / winter
+		THERMR,    // status of thermal regulation (off, protection, manual, week program, scenario, holiday, weekend)
 	};
 private:
 	type t;
@@ -255,7 +255,7 @@ public:
 		SP_INDEX = 0,
 		SEASON_INDEX,
 		PROGRAM_INDEX,
-		STATUS_INDEX,           // status may be: off, protection, manual, week program, scenario, holiday
+		STATUS_INDEX,           // status may be: off, protection, manual, week program, scenario, holiday, weekend
 	} ind;
 
 	enum
