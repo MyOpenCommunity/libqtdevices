@@ -453,44 +453,10 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						switch (season)
 						{
 							case thermal_regulator::SUMMER:
-								{
-									QDomNode prog = conf_root.namedItem("summer");
-									if (!prog.isNull())
-									{
-										prog = prog.namedItem("prog");
-										if (!prog.isNull())
-										{
-											QDomNode iter = prog.firstChild();
-											for (int i = 1; i != program;
-													iter = iter.nextSibling(), ++i)
-												;
-											if (!iter.isNull())
-												description = iter.toElement().text();
-										}
-									}
-									else
-										qDebug("[TERMO] FSBannTermoReg4z::status_changed WEEK PROGRAM: wrong node");
-								}
+								description = lookupProgramDescription("summer", program);
 								break;
 							case thermal_regulator::WINTER:
-								{
-									QDomNode prog = conf_root.namedItem("winter");
-									if (!prog.isNull())
-									{
-										prog = prog.namedItem("prog");
-										if (!prog.isNull())
-										{
-											QDomNode iter = prog.firstChild();
-											for (int i = 1; i != program;
-													iter = iter.nextSibling(), ++i)
-												;
-											if (!iter.isNull())
-												description = iter.toElement().text();
-										}
-									}
-									else
-										qDebug("[TERMO] FSBannTermoReg4z::status_changed WEEK PROGRAM: wrong node");
-								}
+								description = lookupProgramDescription("winter", program);
 								break;
 						}
 					}
@@ -519,6 +485,29 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 	}
 	if (update)
 		Draw();
+}
+
+QString FSBannTermoReg4z::lookupProgramDescription(QString season, int program_number)
+{
+	QDomNode prog = conf_root.namedItem(season);
+	if (!prog.isNull())
+	{
+		prog = prog.namedItem("prog");
+		if (!prog.isNull())
+		{
+			QDomNode iter = prog.firstChild();
+			for (int i = 1; i != program_number && !(iter.isNull()); iter = iter.nextSibling(), ++i)
+				;
+			if (!iter.isNull())
+				return iter.toElement().text();
+			else
+				qWarning("[TERMO] FSBannTermoReg4z::lookupProgramDescription WEEK PROGRAM: wrong node");
+		}
+		else
+			qWarning("[TERMO] FSBannTermoReg4z::lookupProgramDescription WEEK PROGRAM: wrong node");
+	}
+	qDebug("FSBannTermoReg4z::lookupProgramDescription: You did not supply the correct season.");
+	return "";
 }
 
 FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
