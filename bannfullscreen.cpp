@@ -382,7 +382,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 
 	for (QPtrListIterator<device_status> it(list); device_status *ds = it.current(); ++it)
 	{
-		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
+		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z || ds->get_type() == device_status::THERMAL_REGULATOR_99Z)
 		{
 			stat_var curr_season(stat_var::SEASON);
 			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
