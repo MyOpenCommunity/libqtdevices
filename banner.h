@@ -123,6 +123,15 @@ public:
 	 * This method automatically detects what compose the banner, which is its state and draws it in the right manner.
 	 */
 	virtual void  Draw();
+
+	/**
+	 * Returns a custom button, controlled by the banner, to be shown on the navBar.
+	 * This button is completely under control of the banner which may decide to connect to the signal
+	 * emitted, change the pixmap and so on.
+	 * \return Returns a pointer to a \a BtButton if present, 0 otherwise.
+	 */
+	virtual BtButton *customButton();
+
 	/*!
 	 *  \brief Changes the banner state.
 	 *

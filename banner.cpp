@@ -103,6 +103,11 @@ void banner::SetSecondaryTextU( const QString & text )
 	qtestoSecondario.truncate ( MAX_TEXT_2-1 );
 }
 
+BtButton *customButton()
+{
+	return 0;
+}
+
 QString banner::getPressedIconName( const char *iconname )
 {
 	/** This method wraps the previous pressIconName function.
