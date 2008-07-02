@@ -382,10 +382,10 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 
 	for (QPtrListIterator<device_status> it(list); device_status *ds = it.current(); ++it)
 	{
-		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
+		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z || ds->get_type() == device_status::THERMAL_REGULATOR_99Z)
 		{
 			stat_var curr_season(stat_var::SEASON);
-			ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
 			switch (curr_season.get_val())
 			{
 				case thermal_regulator::SUMMER:
@@ -407,10 +407,10 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 			}
 
 			stat_var curr_status(stat_var::THERMR);
-			ds->read(device_status_thermal_regulator_4z::STATUS_INDEX, curr_status);
+			ds->read(device_status_thermal_regulator::STATUS_INDEX, curr_status);
 			switch (curr_status.get_val())
 			{
-				case device_status_thermal_regulator_4z::OFF:
+				case device_status_thermal_regulator::OFF:
 					{
 						const QString i_img = QString(IMG_PATH) + "offp.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
@@ -418,7 +418,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						description_label->hide();
 					}
 					break;
-				case device_status_thermal_regulator_4z::PROTECTION:
+				case device_status_thermal_regulator::PROTECTION:
 					{
 						const QString i_img = QString(IMG_PATH) + "antigelop.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
@@ -426,13 +426,13 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						description_label->hide();
 					}
 					break;
-				case device_status_thermal_regulator_4z::MANUAL:
+				case device_status_thermal_regulator::MANUAL:
 					{
 						const QString i_img = QString(IMG_PATH) + "manuale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
 						mode_btn->setPixmap(*icon);
 						stat_var curr_sp(stat_var::SP);
-						ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_sp);
+						ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
 						// remember: stat_var::get_val() returns an int
 						int temp = curr_sp.get_val();
 						description = "";
@@ -447,14 +447,14 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						update = true;
 					}
 					break;
-				case device_status_thermal_regulator_4z::WEEK_PROGRAM:
+				case device_status_thermal_regulator::WEEK_PROGRAM:
 					{
 						const QString i_img = QString(IMG_PATH) + "settimanale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
 						mode_btn->setPixmap(*icon);
 
 						stat_var curr_program(stat_var::PROGRAM);
-						ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+						ds->read(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
 
 						// now search the description in the DOM
 						int program = curr_program.get_val();
@@ -471,7 +471,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 					}
 					update = true;
 					break;
-				case device_status_thermal_regulator_4z::HOLIDAY:
+				case device_status_thermal_regulator::HOLIDAY:
 					{
 						const QString i_img = QString(IMG_PATH) + "feriale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
@@ -479,7 +479,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 						description_label->hide();
 					}
 					break;
-				case device_status_thermal_regulator_4z::WEEKEND:
+				case device_status_thermal_regulator::WEEKEND:
 					{
 						const QString i_img = QString(IMG_PATH) + "festivo.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
@@ -743,7 +743,7 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
 		{
 			stat_var curr_sp(stat_var::SP);
-			ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_sp);
+			ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
 			temp = curr_sp.get_val();
 		}
 	}

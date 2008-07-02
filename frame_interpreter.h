@@ -370,6 +370,7 @@ public slots:
 	 */
 	void handle_frame_handler(char *frame, QPtrList<device_status> *list);
 private:
+	void handle_frame(openwebnet msg, device_status_thermal_regulator *ds);
 	void handle_frame(openwebnet msg, device_status_thermal_regulator_4z *ds);
 	void handle_frame(openwebnet msg, device_status_thermal_regulator_99z *ds);
 	QString where;
@@ -380,26 +381,26 @@ private:
 	 * \param ds A pointer to a thermal regulator device_status
 	 * \param program  The new program to be set.
 	 */
-	void setProgramNumber(device_status_thermal_regulator_4z *ds, int program);
+	void setProgramNumber(device_status_thermal_regulator *ds, int program);
 
 	/**
 	 * Sets manual status and temperature passed as paramenter.
 	 * \param ds A pointer to the device status
 	 * \param temp The new temperature to be set
 	 */
-	void setManualTemperature(device_status_thermal_regulator_4z *ds, int temp);
+	void setManualTemperature(device_status_thermal_regulator *ds, int temp);
 
 	/**
 	 * If current status is not summer, sets it.
 	 * \param ds  A pointer to a thermal regulator device_status
 	 */
-	void checkAndSetSummer(device_status_thermal_regulator_4z *ds);
+	void checkAndSetSummer(device_status_thermal_regulator *ds);
 
 	/**
 	 * If current status is not winter, sets it.
 	 * \param ds  A pointer to a thermal regulator device_status
 	 */
-	void checkAndSetWinter(device_status_thermal_regulator_4z *ds);
+	void checkAndSetWinter(device_status_thermal_regulator *ds);
 
 	/**
 	 * Utility function to check if the status is changed.
@@ -407,7 +408,7 @@ private:
 	 * \param ds  A pointer to a thermal regulator device_status
 	 * \param status  The new status that must be set in the device
 	 */
-	void checkAndSetStatus(device_status_thermal_regulator_4z *ds, int status);
+	void checkAndSetStatus(device_status_thermal_regulator *ds, int status);
 
 	/**
 	 * Utility function to check if `what' is a program or scenario command. This type of commands are in this form:
