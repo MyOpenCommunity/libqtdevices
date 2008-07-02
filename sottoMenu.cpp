@@ -87,7 +87,6 @@ void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
 	{
 		if(bannNavigazione)
 		{
-			//free( bannNavigazione );
 			bannNavigazione->hide();
 			delete( bannNavigazione );
 			bannNavigazione=NULL;
@@ -272,7 +271,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		case VERSIONE:
 			elencoBanner.append(new machVers(this,descrizione , (versio*)indirizzo, IconaSx));
 			break;
-			      //    case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione , (char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon)); break;
 		case PROTEZIONE: elencoBanner.append(new impPassword(this,descrizione ,IconaDx,icon,pressedIcon, IconaSx, periodo)); break;
 		case MOD_SCENARI:  elencoBanner.append(new gesModScen(this, descrizione ,(char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon, icoEx1, icoEx2, icoEx3));break;
 		case SCENARIO_EVOLUTO: elencoBanner.append(new scenEvo(this, descrizione, lc, IconaSx, IconaDx, icon, pressedIcon, NULL, NULL, NULL, action, par3));

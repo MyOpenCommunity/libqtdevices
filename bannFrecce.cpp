@@ -1,12 +1,8 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bannFrecce.cpp
-**
-**Riga con tasto ON OFF, icona centrale e scritta sotto
-**
-****************************************************************/
+/*
+ * BTicino Touch scren Colori art. H4686
+ *
+ * Riga con tasto ON OFF, icona centrale e scritta sotto
+ */
 
 #include "bannfrecce.h"
 

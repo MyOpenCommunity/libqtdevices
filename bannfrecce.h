@@ -19,11 +19,11 @@
 /*!
   \class bannFrecce
   \brief This is a class that describes the navigation bar which can have up to 4 buttons.
-  
+
   There can be 9 different kind of banner combinig the necessities of the various pages.
   \author Davide
   \date lug 2005
-*/   
+*/
 
 class bannFrecce : public banner
 {
@@ -75,8 +75,8 @@ private:
 };
 
 
-#define BUTFRECCE_DIM_X 		60
-#define BUTFRECCE_DIM_Y		60	
+#define BUTFRECCE_DIM_X 60
+#define BUTFRECCE_DIM_Y 60
 
 
 #endif //BANNFRECCE
