@@ -25,8 +25,8 @@
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;
 
-banner::banner( QWidget *parent,const char *name )
-: QWidget( parent, name )
+banner::banner(QWidget *parent,const char *name)
+: QWidget(parent, name)
 {
 	BannerIcon = NULL;
 	BannerText = NULL;
@@ -58,25 +58,19 @@ banner::banner( QWidget *parent,const char *name )
 banner::~banner()
 {
 	if (BannerIcon)
-		delete (BannerIcon);
+		delete BannerIcon;
 	if (BannerText)
-		delete (BannerText);
+		delete BannerText;
 	if (SecondaryText)
-		delete (SecondaryText);
+		delete SecondaryText;
 	if (dxButton)
-		delete (dxButton);
+		delete dxButton;
 	if (csxButton)
-	{
-		/*       disconnect(csxButton,SIGNAL(clicked()),this,SIGNAL(csxClick()));
-			 disconnect(csxButton,SIGNAL(pressed()),this,SIGNAL(csxPressed()));
-			 disconnect(csxButton,SIGNAL(released()),this,SIGNAL(csxReleased()));*/
-		delete(csxButton);
-	}
+		delete csxButton;
 	if (cdxButton)
-
-		delete (cdxButton);
+		delete cdxButton;
 	if (sxButton)
-		delete (sxButton);
+		delete sxButton;
 	BannerIcon = NULL;
 	BannerText = NULL;
 	SecondaryText = NULL;
@@ -91,19 +85,19 @@ banner::~banner()
 }
 
 
-void banner::SetTextU( const QString & text )
+void banner::SetTextU(const QString & text)
 {
 	qtesto = text;
-	qtesto.truncate( MAX_PATH*2-1 );
+	qtesto.truncate(MAX_PATH*2-1);
 }
 
-void banner::SetSecondaryTextU( const QString & text )
+void banner::SetSecondaryTextU(const QString & text)
 {
 	qtestoSecondario = text;
-	qtestoSecondario.truncate ( MAX_TEXT_2-1 );
+	qtestoSecondario.truncate (MAX_TEXT_2-1);
 }
 
-QString banner::getPressedIconName( const char *iconname )
+QString banner::getPressedIconName(const char *iconname)
 {
 	/** This method wraps the previous pressIconName function.
 	 *  The main fix introduced is to return the NOT-Pressed Icon Name if
@@ -113,12 +107,11 @@ QString banner::getPressedIconName( const char *iconname )
 		return NULL;
 
 	char pressIconName[MAX_PATH];
-	//getPressName( (char*)iconname, &pressIconName[0], MAX_PATH );
-	getPressName( (char*)iconname, &pressIconName[0], sizeof(pressIconName) );
+	getPressName((char*)iconname, &pressIconName[0], sizeof(pressIconName));
 	
 	/// If pressIconName file exists, return the press icon name
 	/// otherwise the the same name of the NOT PRESSED icon is returned
-	if ( pressIconName == NULL || !QFile::exists(pressIconName) )
+	if (pressIconName == NULL || !QFile::exists(pressIconName))
 	{	
 		qDebug("could not get pressed icon %s, using: %s", pressIconName, iconname);
 		return QString(iconname);
@@ -130,183 +123,168 @@ QString banner::getPressedIconName( const char *iconname )
 	}
 }
 
-void banner::SetIcons( uchar idIcon, const char *actuallcon )
+void banner::SetIcons(uchar idIcon, const char *actuallcon)
 {
-	Icon[idIcon]      = icons_library.getIcon( actuallcon );
-	pressIcon[idIcon] = icons_library.getIcon( getPressedIconName(actuallcon) );
+	Icon[idIcon]      = icons_library.getIcon(actuallcon);
+	pressIcon[idIcon] = icons_library.getIcon(getPressedIconName(actuallcon));
 }
 
-void banner::SetIcons( const char *actuallcon ,char tipo)
+void banner::SetIcons(const char *actuallcon ,char tipo)
 {
 	if (tipo==1)
 	{	
-		Icon[0]      = icons_library.getIcon( actuallcon );
-		pressIcon[0] = icons_library.getIcon( getPressedIconName(actuallcon) );
+		Icon[0]      = icons_library.getIcon(actuallcon);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(actuallcon));
 	}
 	if (tipo==3)
 	{
-		Icon[3]      = icons_library.getIcon( actuallcon );
-		pressIcon[3] = icons_library.getIcon( getPressedIconName(actuallcon) );
+		Icon[3]      = icons_library.getIcon(actuallcon);
+		pressIcon[3] = icons_library.getIcon(getPressedIconName(actuallcon));
 	}
 }
 
-void banner::SetIcons( const char *sxIcon , const char *dxIcon)
+void banner::SetIcons(const char *sxIcon , const char *dxIcon)
 {
 	if (sxIcon)
 	{
-		Icon[0]      = icons_library.getIcon( sxIcon );
-		pressIcon[0] = icons_library.getIcon( getPressedIconName(sxIcon) );
+		Icon[0]      = icons_library.getIcon(sxIcon);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
 		qDebug("Icon[0] <- %s", sxIcon);
 	}
 
 	if (dxIcon)
 	{
-		Icon[1]      = icons_library.getIcon( dxIcon );
-		pressIcon[1] = icons_library.getIcon( getPressedIconName(dxIcon) );
+		Icon[1]      = icons_library.getIcon(dxIcon);
+		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
 		qDebug("Icon[1] <- %s", dxIcon);
 	}
 }
 
-void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char *centerIcon)
+void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char *centerIcon)
 {
 	if (sxIcon)
 	{
-		Icon[0]      = icons_library.getIcon( sxIcon );
-		pressIcon[0] = icons_library.getIcon( getPressedIconName(sxIcon) );
+		Icon[0]      = icons_library.getIcon(sxIcon);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
 		qDebug("Icon[0] <- %s", sxIcon);
 	}
 
 	if (dxIcon)
 	{
-		Icon[1]      = icons_library.getIcon( dxIcon );
-		pressIcon[1] = icons_library.getIcon( getPressedIconName(dxIcon) );
+		Icon[1]      = icons_library.getIcon(dxIcon);
+		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
 		qDebug("Icon[1] <- %s", dxIcon);
 	}
 
 	if (centerIcon)
 	{
-		Icon[3]      = icons_library.getIcon( centerIcon );
-		pressIcon[3] = icons_library.getIcon( getPressedIconName(centerIcon) );
+		Icon[3]      = icons_library.getIcon(centerIcon);
+		pressIcon[3] = icons_library.getIcon(getPressedIconName(centerIcon));
 		qDebug("Icon[3] <- %s", centerIcon);
 	}
 
 	impostaAttivo(1);
 }
 
-void banner::SetIcons( const char *sxIcon, const char *dxIcon, const char*centerActiveIcon, const char*centerInactiveIcon )
+void banner::SetIcons(const char *sxIcon, const char *dxIcon, const char*centerActiveIcon, const char*centerInactiveIcon)
 {
 	if (sxIcon)
 	{
-		Icon[0]      = icons_library.getIcon( sxIcon );
-		pressIcon[0] = icons_library.getIcon( getPressedIconName(sxIcon) );
+		Icon[0]      = icons_library.getIcon(sxIcon);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
 		qDebug("Icon[0] <- %s", sxIcon);
 	}
 
 	if (dxIcon)
 	{
-		Icon[1]      = icons_library.getIcon( dxIcon );
-		pressIcon[1] = icons_library.getIcon( getPressedIconName(dxIcon) );
+		Icon[1]      = icons_library.getIcon(dxIcon);
+		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
 		qDebug("Icon[1] <- %s", dxIcon);
 	}
 
 	if (centerActiveIcon)
 	{
-		Icon[3]      = icons_library.getIcon( centerActiveIcon );
-		pressIcon[3] = icons_library.getIcon( getPressedIconName(centerActiveIcon) );
+		Icon[3]      = icons_library.getIcon(centerActiveIcon);
+		pressIcon[3] = icons_library.getIcon(getPressedIconName(centerActiveIcon));
 		qDebug("Icon[3] <- %s", centerActiveIcon);
 	}
 
 	if (centerInactiveIcon)
 	{
-		Icon[2]      = icons_library.getIcon( centerInactiveIcon );
-		pressIcon[2] = icons_library.getIcon( getPressedIconName(centerInactiveIcon) );
+		Icon[2]      = icons_library.getIcon(centerInactiveIcon);
+		pressIcon[2] = icons_library.getIcon(getPressedIconName(centerInactiveIcon));
 		qDebug("Icon[2] <- %s", centerInactiveIcon);
 	}
 }
 
-void banner::SetIcons( const char *sxIcon , const char *dxIcon, const char*centerInactiveIcon, const char*centerUpIcon, const char*centerDownIcon)
+void banner::SetIcons(const char *sxIcon , const char *dxIcon, const char*centerInactiveIcon, const char*centerUpIcon, const char*centerDownIcon)
 {
 	if (sxIcon)
 	{
-		Icon[0]      = icons_library.getIcon( sxIcon );
-		pressIcon[0] = icons_library.getIcon( getPressedIconName(sxIcon) );
+		Icon[0]      = icons_library.getIcon(sxIcon);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
 		qDebug("Icon[0] <- %s", sxIcon);
 	}
 
 	if (dxIcon)
 	{
-		Icon[1]      = icons_library.getIcon( dxIcon );
-		pressIcon[1] = icons_library.getIcon( getPressedIconName(dxIcon) );
+		Icon[1]      = icons_library.getIcon(dxIcon);
+		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
 		qDebug("Icon[1] <- %s", dxIcon);
 	}
 
 	if (centerInactiveIcon)
 	{
-		Icon[2]      = icons_library.getIcon( centerInactiveIcon );
-		pressIcon[2] = icons_library.getIcon( getPressedIconName(centerInactiveIcon) );
+		Icon[2]      = icons_library.getIcon(centerInactiveIcon);
+		pressIcon[2] = icons_library.getIcon(getPressedIconName(centerInactiveIcon));
 		qDebug("Icon[2] <- %s", centerInactiveIcon);
 	}
 
 	if (centerUpIcon)
 	{
-		Icon[3]      = icons_library.getIcon( centerUpIcon );
-		pressIcon[3] = icons_library.getIcon( getPressedIconName(centerUpIcon) );
+		Icon[3]      = icons_library.getIcon(centerUpIcon);
+		pressIcon[3] = icons_library.getIcon(getPressedIconName(centerUpIcon));
 		qDebug("Icon[3] <- %s", centerUpIcon);
 	}
 
 	if (centerDownIcon)
 	{
-		Icon[4]      = icons_library.getIcon( centerDownIcon );
-		pressIcon[4] = icons_library.getIcon( getPressedIconName(centerDownIcon) );
+		Icon[4]      = icons_library.getIcon(centerDownIcon);
+		pressIcon[4] = icons_library.getIcon(getPressedIconName(centerDownIcon));
 		qDebug("Icon[4] <- %s", centerDownIcon);
 	}
 }
 
 
-void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,int period, int number)
+void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,int period, int number)
 {
 	if (sxIcon)
 	{
-		Icon[0]      = icons_library.getIcon( sxIcon );
-		pressIcon[0] = icons_library.getIcon( getPressedIconName(sxIcon) );
+		Icon[0]      = icons_library.getIcon(sxIcon);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
 		qDebug("Icon[0] <- %s", sxIcon);
 	}
 
 	if (dxIcon)
 	{
-		Icon[1]      = icons_library.getIcon( dxIcon );
-		pressIcon[1] = icons_library.getIcon( getPressedIconName(dxIcon) );
+		Icon[1]      = icons_library.getIcon(dxIcon);
+		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
 		qDebug("Icon[1] <- %s", dxIcon);
 	}
 
 	if (centerInactiveIcon)
 	{
-		Icon[2]      = icons_library.getIcon( centerInactiveIcon );
-		pressIcon[2] = icons_library.getIcon( getPressedIconName(centerInactiveIcon) );
+		Icon[2]      = icons_library.getIcon(centerInactiveIcon);
+		pressIcon[2] = icons_library.getIcon(getPressedIconName(centerInactiveIcon));
 		qDebug("Icon[2] <- %s", centerInactiveIcon);
 	}
 
-	if  ( (centerActiveIcon) && (number) )
+	if  ((centerActiveIcon) && (number))
 	{
-		#if 0
-		char pressIconName[MAX_PATH];
-		for (uchar idx=1;idx<=number;idx++)
-		{
-			memset(pressIconName,'\000',sizeof(pressIconName));
-
-			strncpy(pressIconName,centerActiveIcon,strstr(centerActiveIcon,".")-centerActiveIcon);
-			strcat(pressIconName,QString::number(idx));
-			strcat(pressIconName,strstr(centerActiveIcon,"."));
-
-			if (!Icon[2+idx])
-				Icon[2+idx] = icons_library.getIcon(pressIconName, "PNG", Qt::ThresholdDither | Qt::DitherMode_Mask | Qt::AvoidDither);
-		}
-		#endif
 		for (int i = 1; i <= number; i++)
 		{
-			//QString root_of_name = QString(centerActiveIcon).section(".", 0);
 			QString root_of_name = getNameRoot(centerActiveIcon, ".png");
-			QString name = QString("%1%2.png").arg( root_of_name ).arg( i );
+			QString name = QString("%1%2.png").arg(root_of_name).arg(i);
 			Icon[2+i] = icons_library.getIcon(name, "PNG", Qt::ThresholdDither | Qt::DitherMode_Mask | Qt::AvoidDither);
 		}
 			
@@ -315,8 +293,8 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	}
 	else if (centerActiveIcon)
 	{
-		Icon[3]      = icons_library.getIcon( centerActiveIcon );
-		pressIcon[3] = icons_library.getIcon( getPressedIconName(centerActiveIcon) );
+		Icon[3]      = icons_library.getIcon(centerActiveIcon);
+		pressIcon[3] = icons_library.getIcon(getPressedIconName(centerActiveIcon));
 		qDebug("Icon[3] <- %s", centerActiveIcon);
 	}
 
@@ -324,64 +302,27 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	numFrame=number;
 }
 
-void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,char inactiveLevel)
+void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,char inactiveLevel)
 {
-	SetIcons( sxIcon , dxIcon, centerActiveIcon, centerInactiveIcon, (const char*)NULL, inactiveLevel );
+	SetIcons(sxIcon , dxIcon, centerActiveIcon, centerInactiveIcon, (const char*)NULL, inactiveLevel);
 }
 
-void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon, const char*breakIcon, char inactiveLevel)
+void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon, const char*breakIcon, char inactiveLevel)
 {
-	//char nomeFile[MAX_PATH];
 
 	if (sxIcon)
 	{
-		Icon[0]      = icons_library.getIcon( sxIcon );
-		pressIcon[0] = icons_library.getIcon( getPressedIconName(sxIcon) );
+		Icon[0]      = icons_library.getIcon(sxIcon);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
 		qDebug("Icon[0] <- %s", sxIcon);
-		/*
-		if (!Icon[0])
-			Icon[0] = icons_library.getIcon(sxIcon);
-
-		getPressName((char*)sxIcon, &nomeFile[0],sizeof(nomeFile));
-
-		if (QFile::exists(nomeFile) && !pressIcon[0])
-			pressIcon[0] = icons_library.getIcon(nomeFile);
-		*/
 	}
 
 	if (dxIcon)
 	{
-		Icon[1]      = icons_library.getIcon( dxIcon );
-		pressIcon[1] = icons_library.getIcon( getPressedIconName(dxIcon) );
+		Icon[1]      = icons_library.getIcon(dxIcon);
+		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
 		qDebug("Icon[1] <- %s", dxIcon);
-		
-		/*
-		getPressName((char*)dxIcon, &nomeFile[0],sizeof(nomeFile));
-
-		if (!Icon[1])
-			Icon[1] = icons_library.getIcon(dxIcon);
-
-		if (QFile::exists(nomeFile) && !pressIcon[1])
-			pressIcon[1] = icons_library.getIcon(nomeFile);
-		*/
 	}
-
-	
-	/* OLD WAY
-	memset(nomeFile,'\000',sizeof(nomeFile));
-	strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
-	strcat(nomeFile,"sxl0");
-	strcat(nomeFile,strstr(centerInactiveIcon,"."));
-
-	if (!Icon[2])
-		Icon[2] = icons_library.getIcon(nomeFile);
-	qDebug("Icon[2] <- %s", nomeFile);
-	nomeFile[strstr(nomeFile,".")-nomeFile-4]='d';
-
-	if (!Icon[3])
-		Icon[3] = icons_library.getIcon(nomeFile);
-	qDebug("Icon[3] <- %s", nomeFile);
-	*/
 	
 	// Load base Icon that can be *sxl0 or *dxl0
 	//FIXME FIXME FIXME (anche sopra)
@@ -395,43 +336,11 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	qDebug("________________________________________________________________________________");
 
 	// Set first 2 icons from inactive root
-	Icon[2] = icons_library.getIcon( QString("%1sxl0.png").arg(inactive_root_of_name) );
-	Icon[3] = icons_library.getIcon( QString("%1dxl0.png").arg(inactive_root_of_name) );
+	Icon[2] = icons_library.getIcon(QString("%1sxl0.png").arg(inactive_root_of_name));
+	Icon[3] = icons_library.getIcon(QString("%1dxl0.png").arg(inactive_root_of_name));
 	
 	qDebug("New Icon[2] <- "+QString("%1sxl0.png").arg(inactive_root_of_name));
 	qDebug("New Icon[3] <- "+QString("%1dxl0.png").arg(inactive_root_of_name));
-	/*
-	char idy=0;
-	char suff[10];
-
-	for (char idx=minValue;idx<=maxValue;idx+=step,idy++)
-	{
-		memset(nomeFile,'\000',sizeof(nomeFile));
-		strncpy(nomeFile,centerActiveIcon,strstr(centerActiveIcon,".")-centerActiveIcon);
-		sprintf(&suff[0],"sxl%d",idx);
-		strcat(nomeFile,&suff[0]);
-		strcat(nomeFile,strstr(centerActiveIcon,"."));
-
-		if (!Icon[4+idy*2])
-			Icon[4+idy*2] = icons_library.getIcon(nomeFile);
-		//ok
-		qDebug("Lev = %d, Icon[%d] <- %s", idx, 4+idy*2, nomeFile);
-
-		if (inactiveLevel)
-		{
-			memset(nomeFile,'\000',sizeof(nomeFile));
-			strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
-			sprintf(&suff[0],"sxl%d",idx);
-			strcat(nomeFile,&suff[0]);
-			strcat(nomeFile,strstr(centerInactiveIcon,"."));
-
-			if (!Icon[22+idy*2])
-				Icon[22+idy*2] = icons_library.getIcon(nomeFile);
-
-			qDebug("Icon[%d] <- %s", 22+idy*2, nomeFile);
-		}
-	}
-	*/
 	for (int i = minValue, y = 0; i <= maxValue; i+=step, y++)
 	{
 		nomeFile = QString("%1sxl%2.png").arg(active_root_of_name).arg(i);
@@ -445,36 +354,6 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 		}
 	}
 
-	
-	/*
-	for (char idx=minValue,idy=0;idx<=maxValue;idx+=step,idy++)
-	{
-		memset(nomeFile,'\000',sizeof(nomeFile));
-		strncpy(nomeFile,centerActiveIcon,strstr(centerActiveIcon,".")-centerActiveIcon);
-		sprintf(&suff[0],"dxl%d",idx);
-		strcat(nomeFile,&suff[0]);
-		strcat(nomeFile,strstr(centerActiveIcon,"."));
-
-		if (!Icon[5+idy*2])
-			Icon[5+idy*2] = icons_library.getIcon(nomeFile);
-
-		qDebug("Lev = %d, Icon[%d] <- %s", idx, 5+idy*2, nomeFile);
-
-		if (inactiveLevel)
-		{
-			memset(nomeFile,'\000',sizeof(nomeFile));
-			strncpy(nomeFile,centerInactiveIcon,strstr(centerInactiveIcon,".")-centerInactiveIcon);
-			sprintf(&suff[0],"dxl%d",idx);
-			strcat(nomeFile,&suff[0]);
-			strcat(nomeFile,strstr(centerInactiveIcon,"."));
-
-			if (!Icon[23+idy*2])
-				Icon[23+idy*2] = icons_library.getIcon(nomeFile);
-
-			qDebug("Icon[%d] <- %s", 23+idy*2, nomeFile);
-		}
-	}
-	*/
 	for (int i = minValue, y = 0; i <= maxValue; i+=step, y++)
 	{
 		nomeFile = QString("%1dxl%2.png").arg(active_root_of_name).arg(i);
@@ -490,24 +369,6 @@ void banner::SetIcons( const char *sxIcon , const char *dxIcon,const char*center
 	
 	if (breakIcon)
 	{
-		/*
-		memset(nomeFile,'\000',sizeof(nomeFile));
-		strncpy(nomeFile,breakIcon,strstr(breakIcon,".")-breakIcon);
-		strcat(nomeFile,"sx");
-		strcat(nomeFile,strstr(breakIcon,"."));
-
-		if (!Icon[44])
-			Icon[44] = icons_library.getIcon(nomeFile);
-
-		qDebug("Icon[%d] <- %s", 44, nomeFile);
-		nomeFile[strstr(nomeFile,".")-nomeFile-2]='d';
-
-		if (!Icon[45])
-			Icon[45] = icons_library.getIcon(nomeFile);
-
-		qDebug("Icon[%d] <- %s", 45, nomeFile);
-		*/
-		//QString break_root_of_name = QString(breakIcon).section( ".", 0);
 		QString break_root_of_name = getNameRoot(breakIcon, ".png");
 	
 		nomeFile = QString("%1sx.png").arg(break_root_of_name);
@@ -571,12 +432,6 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 		break;
 	}
 	Item->setGeometry(x,y,dimX,dimY);
-	//   Item->setPaletteBackgroundColor( QColor :: QColor(BG_R,BG_G,BG_B));
-	/*   if ((parentWidget(FALSE)  ->parentWidget(FALSE) ))
-	     {
-	     Item -> setPaletteBackgroundColor( (parentWidget(FALSE)  -> parentWidget(FALSE) ) -> backgroundColor());
-	     Item -> setPaletteForegroundColor( (parentWidget(FALSE)  -> parentWidget(FALSE) ) -> foregroundColor());
-	     }*/
 }
 
 void banner::nascondi(char item)
@@ -594,7 +449,7 @@ void banner::nascondi(char item)
 		case ICON: if(BannerIcon)
 				   BannerIcon->hide();
 			   break;
-		case BUT3: if(csxButton )
+		case BUT3: if(csxButton)
 				   csxButton->hide();
 			   break;
 		case BUT4: if(cdxButton)
@@ -620,7 +475,7 @@ void banner::mostra(char item)
 		case ICON: if(BannerIcon)
 				   BannerIcon->show();
 			   break;
-		case BUT3: if(csxButton )
+		case BUT3: if(csxButton)
 				   csxButton->show();
 			   break;
 		case BUT4: if(cdxButton)
@@ -635,14 +490,14 @@ void banner::mostra(char item)
 void banner::Draw()
 {
 	qDebug("banner::Draw(), attivo = %d, value = %d", attivo, value);
-	if ( (sxButton) && (Icon[0]) )
+	if ((sxButton) && (Icon[0]))
 	{
 		sxButton->setPixmap(*Icon[0]);
 		if (pressIcon[0])
 			sxButton->setPressedPixmap(*pressIcon[0]);
 	}
 
-	if ( (dxButton) && (Icon[1]) )
+	if ((dxButton) && (Icon[1]))
 	{
 		dxButton->setPixmap(*Icon[1]);
 		if (pressIcon[1])
@@ -660,21 +515,21 @@ void banner::Draw()
 		}
 		else if (!attivo)
 			pntIcon=Icon[2];
-		if ( (pntIcon) && (BannerIcon) )
+		if ((pntIcon) && (BannerIcon))
 		{
 			BannerIcon->repaint();
 			BannerIcon->setPixmap(*pntIcon);
 			BannerIcon->repaint();
 		}
 
-		if ( (Icon[2]) && (csxButton) )
+		if ((Icon[2]) && (csxButton))
 		{
 			csxButton->setPixmap(*Icon[2]);
 			if (pressIcon[2])
 				csxButton->setPressedPixmap(*pressIcon[2]);
 		}
 
-		if ( (cdxButton) && (Icon[3]) )
+		if ((cdxButton) && (Icon[3]))
 		{
 			cdxButton->setPixmap(*Icon[3]);
 			if (pressIcon[3])
@@ -686,12 +541,12 @@ void banner::Draw()
 	{
 		if (attivo==1)
 		{
-			if ( (Icon[4+((value-step)/step)*2]) && (csxButton) )
+			if ((Icon[4+((value-step)/step)*2]) && (csxButton))
 			{
 				csxButton->setPixmap(*Icon[4+((value-step)/step)*2]);
 				qDebug("* Icon[%d]", 4+((value-step)/step)*2);
 			}
-			if ( (cdxButton) && (Icon[5+((value-step)/step)*2]) )
+			if ((cdxButton) && (Icon[5+((value-step)/step)*2]))
 			{
 				cdxButton->setPixmap(*Icon[5+((value-step)/step)*2]);
 				qDebug("** Icon[%d]", 5+((value-step)/step)*2);
@@ -701,13 +556,13 @@ void banner::Draw()
 		{
 			if (Icon[22])
 			{
-				if ( (Icon[22+(value-step)/step*2]) && (csxButton) )
+				if ((Icon[22+(value-step)/step*2]) && (csxButton))
 				{
 					csxButton->setPixmap(*Icon[22+((value-step)/step)*2]);			
 					qDebug("*** Icon[%d]", 22+((value-step)/step)*2);
 				}
 
-				if ( (cdxButton) && (Icon[23+((value-step)/step)*2]) )
+				if ((cdxButton) && (Icon[23+((value-step)/step)*2]))
 				{
 					cdxButton->setPixmap(*Icon[23+((value-step)/step)*2]);    				
 					qDebug("**** Icon[%d]", 23+((value-step)/step)*2);
@@ -715,13 +570,13 @@ void banner::Draw()
 			}	  	
 			else
 			{
-				if ( (Icon[2]) && (csxButton) )
+				if ((Icon[2]) && (csxButton))
 				{
 					csxButton->setPixmap(*Icon[2]);	
 					qDebug("***** Icon[%d]", 2);
 				}
 
-				if ( (cdxButton) && (Icon[3]) )
+				if ((cdxButton) && (Icon[3]))
 				{
 					cdxButton->setPixmap(*Icon[3]); 
 					qDebug("****** Icon[%d]", 3);
@@ -730,13 +585,13 @@ void banner::Draw()
 		}
 		else if (attivo==2)
 		{
-			if ( (Icon[44]) && (csxButton) )
+			if ((Icon[44]) && (csxButton))
 			{
 				csxButton->setPixmap(*Icon[44]);		    
 				qDebug("******* Icon[%d]", 44);
 			}
 
-			if ( (cdxButton) && (Icon[45]) )
+			if ((cdxButton) && (Icon[45]))
 			{
 				cdxButton->setPixmap(*Icon[45]);    
 				qDebug("******* Icon[%d]", 45);
@@ -748,16 +603,15 @@ void banner::Draw()
 	/*TODO
 	  icona animata -> armare timer per cambiare centerActiveIcon
 	  qui devo copiare period e number e in draw attivare il timer*/
-	if ( (periodo) && (numFrame) )
+	if ((periodo) && (numFrame))
 	{	   
 		if (!animationTimer)
 		{
 			animationTimer = new QTimer(this,"clock");
 			connect(animationTimer,SIGNAL(timeout()),this,SLOT(animate()));
 		}
-		if ( !(animationTimer->isActive() ) && (attivo))
+		if (!(animationTimer->isActive()) && (attivo))
 			animationTimer->start(periodo);
-		/* connect(animationTimer,SIGNAL(timeout()),this,SLOT(animate()));*/
 	}
 
 
@@ -765,18 +619,17 @@ void banner::Draw()
 	if (BannerText)
 	{ 
 		QFont aFont;
-		FontManager::instance()->getFont( font_banner_BannerText, aFont );
+		FontManager::instance()->getFont(font_banner_BannerText, aFont);
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);
-		BannerText->setFont( aFont );
+		BannerText->setFont(aFont);
 		BannerText->setText(qtesto);
-		//     qDebug("TESTO: %s", testo);
 	}
 	if (SecondaryText)
 	{	
 		QFont aFont;
-		FontManager::instance()->getFont( font_banner_SecondaryText, aFont );
+		FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
-		SecondaryText->setFont( aFont );
+		SecondaryText->setFont(aFont);
 		SecondaryText->setText(qtestoSecondario);
 	}
 }
@@ -784,7 +637,7 @@ void banner::Draw()
 void banner::impostaAttivo(char Attivo)
 {
 	attivo=Attivo;
-	if ( (animationTimer) && (!Attivo) )
+	if ((animationTimer) && (!Attivo))
 	{
 		animationTimer->stop();
 		qDebug("KILLanimationTimer");   
@@ -801,7 +654,7 @@ void banner::gestFrame(char*){}
 
 void banner::setBGColor(int r, int g, int b)
 {	
-	setBGColor( QColor :: QColor(r,g,b));    
+	setBGColor(QColor :: QColor(r,g,b));
 }
 void banner::setFGColor(int r, int g, int b)
 {
@@ -811,7 +664,7 @@ void banner::setFGColor(int r, int g, int b)
 void banner::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	if (BannerIcon )
+	if (BannerIcon)
 		BannerIcon ->setPaletteBackgroundColor(c) ;
 	if (BannerText)
 		BannerText->setPaletteBackgroundColor(c);
@@ -829,7 +682,7 @@ void banner::setBGColor(QColor c)
 void banner::setFGColor(QColor c)	
 {
 	setPaletteForegroundColor(c);
-	if (BannerIcon )
+	if (BannerIcon)
 		BannerIcon ->setPaletteForegroundColor(c) ;
 	if (BannerText)
 		BannerText->setPaletteForegroundColor(c);
@@ -845,13 +698,9 @@ void banner::setFGColor(QColor c)
 		cdxButton->setPaletteForegroundColor(c);  
 }
 
-
-
-
-
 void banner::setValue(char val)
 {
-	if ( (val>=minValue) && (val<=maxValue) )
+	if ((val>=minValue) && (val<=maxValue))
 		value=val;
 }
 void banner::aumValue()
@@ -887,9 +736,6 @@ void banner::setStep(char s)
 unsigned char banner::isActive()
 {
 	return attivo;
-	/*    if (attivo)
-	      return(TRUE);
-	      return(FALSE);*/
 }
 
 char banner::getValue()
@@ -917,12 +763,12 @@ void banner::getAnimationParams(int& per, int& num)
 	num = numFrame;
 }
 
-void banner::setNumRighe( uchar n )
+void banner::setNumRighe(uchar n)
 {
 	numRighe=n;
 }
 
-char* banner::getAddress( )
+char* banner::getAddress()
 {
 	return (&address[0]);
 }
@@ -931,7 +777,7 @@ void banner::setChi(char* indirizzo)
 {
 	strncpy(&chi[0],indirizzo,sizeof(chi));
 }
-char* banner::getChi( )
+char* banner::getChi()
 {
 	return (&chi[0]);
 }
@@ -943,40 +789,37 @@ void banner::setGroup(bool* gr)
 		group[idx]=gr[idx];
 	}
 }
-bool* banner::getGroup( )
+bool* banner::getGroup()
 {
 	return (&group[0]);
 }
-void banner::setPul( )
+void banner::setPul()
 {
 	pul=TRUE;
 	qDebug("%s setted PUL",getAddress());
 }
-bool banner::getPul( )
+bool banner::getPul()
 {
 	return(pul);
 }
 
 bool banner::isForMe(openwebnet * m)
 {
-	if( strcmp( m->Extract_chi(), "1") )
+	if(strcmp(m->Extract_chi(), "1"))
 		 return false ;
-	if( ! strcmp( m->Extract_dove(), getAddress()) )
+	if(! strcmp(m->Extract_dove(), getAddress()))
 		 return true;
 	// BAH
-	return ( ! getPul() && ((!strcmp(m->Extract_dove(),"0")) ||
+	return (! getPul() && ((!strcmp(m->Extract_dove(),"0")) ||
 			((strlen(m->Extract_dove())==1) && 
-			(!strncmp(m->Extract_dove(), getAddress(), 1)) ) || 
+			(!strncmp(m->Extract_dove(), getAddress(), 1))) ||
 			((!strncmp(m->Extract_dove(),"#",1)) && 
 			*(getGroup()+(atoi(m->Extract_dove()+1))-1))));
 }
 
 void banner:: inizializza(bool forza){}
 
-//char* banner::getChi(){return(NULL);}
 void  banner::rispStato(char*){}
-
-
 
 void banner::hide(){QWidget::hide(); }
 void banner::show(){QWidget::show();}
