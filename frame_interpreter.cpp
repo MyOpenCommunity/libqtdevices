@@ -2242,30 +2242,16 @@ void frame_interpreter_thermal_regulator::handle_frame_handler(char *frame, QPtr
 	for (QPtrListIterator<device_status> dsi(*list); device_status *ds = dsi.current(); ++dsi)
 	{
 		if (request_status)
-		{
 			request_init(ds);
-		}
 		else
-		{
-			device_status::type type = ds->get_type();
-			switch (type)
-			{
-				case device_status::THERMAL_REGULATOR_4Z:
-					handle_frame(msg_open, (device_status_thermal_regulator_4z *)ds);
-					break;
-				case device_status::THERMAL_REGULATOR_99Z:
-					handle_frame(msg_open, (device_status_thermal_regulator_99z *)ds);
-					break;
-				default:
-					break;
-			}
-		}
+			handle_frame(msg_open, static_cast<device_status_thermal_regulator *>(ds));
 
 		if (elaborato)
 			break;
 	}
 
-	if(!evt_list.isEmpty()) {
+	if(!evt_list.isEmpty())
+	{
 		qDebug("emit(evt_list)");
 		emit(frame_event(evt_list));
 	}
@@ -2288,7 +2274,7 @@ bool frame_interpreter_thermal_regulator::is_frame_ours(openwebnet msg, bool& re
 	return is_our;
 }
 
-void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_status_thermal_regulator_4z *ds)
+void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_status_thermal_regulator *ds)
 {
 	OpenMsg msg;
         msg.CreateMsgOpen(_msg.frame_open, strlen(_msg.frame_open));
@@ -2315,12 +2301,12 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 			break;
 
 		case thermal_regulator::SUM_PROTECTION:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::PROTECTION);
+			checkAndSetStatus(ds, device_status_thermal_regulator::PROTECTION);
 			checkAndSetSummer(ds);
 			break;
 
 		case thermal_regulator::SUM_OFF:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::OFF);
+			checkAndSetStatus(ds, device_status_thermal_regulator::OFF);
 			checkAndSetSummer(ds);
 			break;
 
@@ -2341,33 +2327,33 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				// end debug
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::MANUAL);
+			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
 			checkAndSetSummer(ds);
 			break;
 
 		case thermal_regulator::SUM_WEEKEND:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEKEND);
+			checkAndSetStatus(ds, device_status_thermal_regulator::WEEKEND);
 			checkAndSetSummer(ds);
 			break;
 
 		case thermal_regulator::SUM_PROGRAM:
 			setProgramNumber(ds, program);
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEK_PROGRAM);
+			checkAndSetStatus(ds, device_status_thermal_regulator::WEEK_PROGRAM);
 			checkAndSetSummer(ds);
 			break;
 
 		case thermal_regulator::SUM_HOLIDAY:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::HOLIDAY);
+			checkAndSetStatus(ds, device_status_thermal_regulator::HOLIDAY);
 			checkAndSetSummer(ds);
 			break;
 
 		case thermal_regulator::WIN_PROTECTION:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::PROTECTION);
+			checkAndSetStatus(ds, device_status_thermal_regulator::PROTECTION);
 			checkAndSetWinter(ds);
 			break;
 
 		case thermal_regulator::WIN_OFF:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::OFF);
+			checkAndSetStatus(ds, device_status_thermal_regulator::OFF);
 			checkAndSetWinter(ds);
 			break;
 
@@ -2388,23 +2374,23 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				// end debug
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::MANUAL);
+			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
 			checkAndSetWinter(ds);
 			break;
 
 		case thermal_regulator::WIN_WEEKEND:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEKEND);
+			checkAndSetStatus(ds, device_status_thermal_regulator::WEEKEND);
 			checkAndSetWinter(ds);
 			break;
 
 		case thermal_regulator::WIN_PROGRAM:
 			setProgramNumber(ds, program);
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::WEEK_PROGRAM);
+			checkAndSetStatus(ds, device_status_thermal_regulator::WEEK_PROGRAM);
 			checkAndSetWinter(ds);
 			break;
 
 		case thermal_regulator::WIN_HOLIDAY:
-			checkAndSetStatus(ds, device_status_thermal_regulator_4z::HOLIDAY);
+			checkAndSetStatus(ds, device_status_thermal_regulator::HOLIDAY);
 			checkAndSetWinter(ds);
 			break;
 
@@ -2413,66 +2399,66 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 	}
 }
 
-void frame_interpreter_thermal_regulator::setProgramNumber(device_status_thermal_regulator_4z *ds, int program)
+void frame_interpreter_thermal_regulator::setProgramNumber(device_status_thermal_regulator *ds, int program)
 {
 	stat_var curr_program(stat_var::PROGRAM);
-	ds->read(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+	ds->read(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
 	if (curr_program.get_val() != program)
 	{
 		curr_program.set_val(program);
-		ds->write_val(device_status_thermal_regulator_4z::PROGRAM_INDEX, curr_program);
+		ds->write_val(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
 		evt_list.append(ds);
 	}
 }
 
-void frame_interpreter_thermal_regulator::setManualTemperature(device_status_thermal_regulator_4z *ds, int temp)
+void frame_interpreter_thermal_regulator::setManualTemperature(device_status_thermal_regulator *ds, int temp)
 {
 	stat_var curr_setpoint(stat_var::SP);
-	ds->read(device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
+	ds->read(device_status_thermal_regulator::SP_INDEX, curr_setpoint);
 	if (curr_setpoint.get_val() != temp)
 	{
 		curr_setpoint.set_val(temp);
-		ds->write_val((int)device_status_thermal_regulator_4z::SP_INDEX, curr_setpoint);
+		ds->write_val((int)device_status_thermal_regulator::SP_INDEX, curr_setpoint);
 		evt_list.append(ds);
 	}
 }
 
-void frame_interpreter_thermal_regulator::checkAndSetStatus(device_status_thermal_regulator_4z *ds, int status)
+void frame_interpreter_thermal_regulator::checkAndSetStatus(device_status_thermal_regulator *ds, int status)
 {
 	stat_var curr_status(stat_var::THERMR);
-	ds->read(device_status_thermal_regulator_4z::STATUS_INDEX, curr_status);
+	ds->read(device_status_thermal_regulator::STATUS_INDEX, curr_status);
 	if (curr_status.get_val() != status)
 	{
 		curr_status.set_val(status);
-		ds->write_val(device_status_thermal_regulator_4z::STATUS_INDEX, curr_status);
+		ds->write_val(device_status_thermal_regulator::STATUS_INDEX, curr_status);
 		evt_list.append(ds);
 	}
 }
 
-void frame_interpreter_thermal_regulator::checkAndSetSummer(device_status_thermal_regulator_4z *ds)
+void frame_interpreter_thermal_regulator::checkAndSetSummer(device_status_thermal_regulator *ds)
 {
 	stat_var curr_season(stat_var::SEASON);
-	ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+	ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
 	if (curr_season.get_val() != thermal_regulator::SUMMER)
 	{
 		// this is needed by curr_season.set_val() that takes a parameter int&
 		int val = static_cast<int>(thermal_regulator::SUMMER);
 		curr_season.set_val(val);
-		ds->write_val(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+		ds->write_val(device_status_thermal_regulator::SEASON_INDEX, curr_season);
 		evt_list.append(ds);
 	}
 }
 
-void frame_interpreter_thermal_regulator::checkAndSetWinter(device_status_thermal_regulator_4z *ds)
+void frame_interpreter_thermal_regulator::checkAndSetWinter(device_status_thermal_regulator *ds)
 {
 	stat_var curr_season(stat_var::SEASON);
-	ds->read(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+	ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
 	if (curr_season.get_val() != thermal_regulator::WINTER)
 	{
 		// this is needed by curr_season.set_val() that takes a parameter int&
 		int val = static_cast<int>(thermal_regulator::WINTER);
 		curr_season.set_val(val);
-		ds->write_val(device_status_thermal_regulator_4z::SEASON_INDEX, curr_season);
+		ds->write_val(device_status_thermal_regulator::SEASON_INDEX, curr_season);
 		evt_list.append(ds);
 	}
 }
