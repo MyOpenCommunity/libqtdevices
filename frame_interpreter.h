@@ -371,8 +371,6 @@ public slots:
 	void handle_frame_handler(char *frame, QPtrList<device_status> *list);
 private:
 	void handle_frame(openwebnet msg, device_status_thermal_regulator *ds);
-	void handle_frame(openwebnet msg, device_status_thermal_regulator_4z *ds);
-	void handle_frame(openwebnet msg, device_status_thermal_regulator_99z *ds);
 	QString where;
 	bool is_frame_ours(openwebnet msg, bool& request_status);
 

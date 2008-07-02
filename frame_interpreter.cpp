@@ -2473,13 +2473,6 @@ int frame_interpreter_thermal_regulator::commandRange(int what)
 		return what;
 }
 
-void frame_interpreter_thermal_regulator::handle_frame(openwebnet msg, device_status_thermal_regulator_99z *ds)
-{
-	qDebug("frame_interpreter_thermal_regulator_99z::handle_frame");
-
-	stat_var curr_scenario(stat_var::SCENARIO);
-}
-
 // Temperature probe device frame interpreter
 
 bool frame_interpreter_temperature_probe_controlled::checkTimeoutVar(const stat_var &var)
