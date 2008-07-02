@@ -104,15 +104,15 @@ protected:
 };
 
 /**
- * Displays information about a probe controlled by a 4 zones thermal regulator.
+ * Displays information about a probe controlled by a thermal regulator.
  * It has a label with setpoint temperature and local status. In case the status is
  * protection or off, it displays the relative icon.
  */
-class FSBann4zProbe : public FSBannSimpleProbe
+class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBann4zProbe(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBannProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
 	virtual void postDisplay(sottoMenu *parent);
 public slots:
@@ -170,10 +170,10 @@ private:
 };
 
 /**
- * Displays information about a controlled probe with fancoil. In addition to FSBann4zProbe, it displays
+ * Displays information about a controlled probe with fancoil. In addition to FSBannProbe, it displays
  * at the bottom of the page 4 buttons to set the speed of fancoil.
  */
-class FSBann4zFancoil : public FSBann4zProbe
+class FSBann4zFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:

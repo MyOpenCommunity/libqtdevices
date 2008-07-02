@@ -66,7 +66,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n)
 			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
-			bfs = new FSBann4zProbe(parent, n);
+			bfs = new FSBannProbe(parent, n);
 			break;
 		case fs_4z_fancoil:
 			bfs = new FSBann4zFancoil(parent, n);
@@ -156,7 +156,7 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
+FSBannProbe::FSBannProbe(QWidget *parent, QDomNode n, const char *name)
 	: FSBannSimpleProbe(parent, n)
 {
 	setpoint_label = new QLabel(this);
@@ -182,7 +182,7 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	isAntigelo = false;
 }
 
-BtButton *FSBann4zProbe::getIcon(const char *img)
+BtButton *FSBannProbe::getIcon(const char *img)
 {
 	// FIX: use QLabel and QPixmap instead of QButton!!
 	BtButton *btn = new BtButton(this);
@@ -195,7 +195,7 @@ BtButton *FSBann4zProbe::getIcon(const char *img)
 	return btn;
 }
 
-void FSBann4zProbe::Draw()
+void FSBannProbe::Draw()
 {
 	if (isOff)
 	{
@@ -236,12 +236,12 @@ void FSBann4zProbe::Draw()
 	FSBannSimpleProbe::Draw();
 }
 
-void FSBann4zProbe::postDisplay(sottoMenu *parent)
+void FSBannProbe::postDisplay(sottoMenu *parent)
 {
 	parent->setNavBarMode(3, "");
 }
 
-void FSBann4zProbe::status_changed(QPtrList<device_status> list)
+void FSBannProbe::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
 	device_status *dev;
@@ -311,7 +311,7 @@ void FSBann4zProbe::status_changed(QPtrList<device_status> list)
 						isAntigelo = false;
 						break;
 					default:
-						qDebug("[TERMO] FSBann4zProbe::status_changed(): local status case not handled!");
+						qDebug("[TERMO] FSBannProbe::status_changed(): local status case not handled!");
 				}
 				update = true;
 			}
@@ -543,7 +543,7 @@ QString FSBannTermoReg4z::lookupProgramDescription(QString season, int program_n
 }
 
 FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
-	: FSBann4zProbe(parent, n),
+	: FSBannProbe(parent, n),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
 	createFancoilButtons();
@@ -576,7 +576,7 @@ void FSBann4zFancoil::createFancoilButtons()
 
 void FSBann4zFancoil::Draw()
 {
-	FSBann4zProbe::Draw();
+	FSBannProbe::Draw();
 }
 
 void FSBann4zFancoil::postDisplay(sottoMenu *parent)
@@ -627,7 +627,7 @@ void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 	}
 	if (update)
 		Draw();
-	FSBann4zProbe::status_changed(list);
+	FSBannProbe::status_changed(list);
 }
 
 FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
