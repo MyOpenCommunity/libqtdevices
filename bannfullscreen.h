@@ -129,6 +129,8 @@ protected:
 	QLabel *local_temp_label;
 private:
 	bool isOff, isAntigelo;
+
+	BtButton *getIcon(const char *img);
 };
 
 /**

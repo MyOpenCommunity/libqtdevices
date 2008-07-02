@@ -163,29 +163,11 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
 	hbox->addWidget(setpoint_label);
 
-	btn_off = new BtButton(this);
-	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
-	const QString i_antifreeze_p = QString("%1%2").arg(IMG_PATH).arg("antigelop.png");
-	QPixmap *icon         = icons_library.getIcon(i_antifreeze.ascii());
-	QPixmap *pressed_icon = icons_library.getIcon(i_antifreeze_p.ascii());
-	btn_off->setPixmap(*pressed_icon);
-	btn_off->setPressedPixmap(*pressed_icon);
-	btn_off->setDown(true);
-	btn_off->setEnabled(false);
-	btn_off->hide();
-	hbox->addWidget(btn_off);
-
-	btn_antifreeze = new BtButton(this);
-	const QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
-	const QString i_off_p = QString("%1%2").arg(IMG_PATH).arg("offp.png");
-	icon         = icons_library.getIcon(i_off.ascii());
-	pressed_icon = icons_library.getIcon(i_off_p.ascii());
-	btn_antifreeze->setPixmap(*pressed_icon);
-	btn_antifreeze->setPressedPixmap(*pressed_icon);
-	btn_antifreeze->setDown(true);
-	btn_antifreeze->setEnabled(false);
-	btn_antifreeze->hide();
+	btn_antifreeze = getIcon("antigelop.png");
 	hbox->addWidget(btn_antifreeze);
+
+	btn_off = getIcon("offp.png");
+	hbox->addWidget(btn_off);
 
 	main_layout.addLayout(hbox);
 	main_layout.setStretchFactor(hbox, 1);
@@ -198,6 +180,19 @@ FSBann4zProbe::FSBann4zProbe(QWidget *parent, QDomNode n, const char *name)
 	local_temp = "0";
 	isOff = false;
 	isAntigelo = false;
+}
+
+BtButton *FSBann4zProbe::getIcon(const char *img)
+{
+	// FIX: use QLabel and QPixmap instead of QButton!!
+	BtButton *btn = new BtButton(this);
+	QPixmap *icon = icons_library.getIcon(QString("%1%2").arg(IMG_PATH).arg(img).ascii());
+	btn->setPixmap(*icon);
+	btn->setPressedPixmap(*icon);
+	btn->setDown(true);
+	btn->setEnabled(false);
+	btn->hide();
+	return btn;
 }
 
 void FSBann4zProbe::Draw()
