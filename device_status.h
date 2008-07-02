@@ -247,6 +247,35 @@ public:
 /**
  * Device status for thermal regulator device
  */
+class device_status_thermal_regulator : public device_status
+{
+public:
+	enum
+	{
+		SP_INDEX = 0,
+		SEASON_INDEX,
+		PROGRAM_INDEX,
+		SCENARIO_INDEX,
+		STATUS_INDEX,           // status may be: off, protection, manual, week program, scenario, holiday, weekend
+	} ind;
+
+	enum
+	{
+		OFF = 0,
+		PROTECTION,
+		MANUAL,                 // manual temperature
+		WEEK_PROGRAM,           // weekly program
+		SCENARIO,               // scenario
+		HOLIDAY,                // festivo
+		WEEKEND,                // ferie
+	} status;
+
+	device_status_thermal_regulator(device_status::type _type);
+};
+
+/**
+ * Device status for thermal regulator device
+ */
 class device_status_thermal_regulator_4z : public device_status
 {
 public:
