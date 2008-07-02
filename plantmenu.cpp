@@ -131,7 +131,7 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	/*
 	 * Create full screen banner in detail menu.
 	 */
-	BannFullScreen *fsb = FSBannFactory::getInstance()->getBanner(type, &items_submenu, n);
+	BannFullScreen *fsb = getBanner(type, &items_submenu, n);
 	initBanner(fsb, n);
 	fsb->setSecondForeground(second_fg);
 	items_submenu.appendBanner(fsb);

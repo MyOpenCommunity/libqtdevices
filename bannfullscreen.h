@@ -27,6 +27,7 @@ class device;
 class thermal_regulator;
 class thermal_regulator_4z;
 
+
 /**
  * An interface class for all full screen banners.
  */
@@ -59,6 +60,22 @@ public slots:
 protected:
 	QColor second_fg;
 };
+
+enum BannID
+{
+	fs_nc_probe = 1,                      // not controlled probe
+	fs_4z_thermal_regulator,              // 4 zones thermal regulator device
+	fs_4z_probe,                          // 4 zones controlled probe
+	fs_4z_fancoil,                        // 4 zones controlled probe with fancoil
+	fs_99z_thermal_regulator,             // 99 zones thermal regulator device
+	fs_99z_probe,                         // 99 zones controlled probe
+	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
+	fs_date_edit,                         // settings: date edit
+	fs_time_edit,                         // settings: time edit
+};
+
+/// Factory function to get banners
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n);
 
 /**
  * A base class for banners that represent a probe. It displays a label with zone name on top
@@ -170,32 +187,6 @@ private:
 	QButtonGroup fancoil_buttons;
 	int fancoil_status;
 };
-
-enum BannID
-{
-	fs_nc_probe = 1,                      // not controlled probe
-	fs_4z_thermal_regulator,              // 4 zones thermal regulator device
-	fs_4z_probe,                          // 4 zones controlled probe
-	fs_4z_fancoil,                        // 4 zones controlled probe with fancoil
-	fs_99z_thermal_regulator,             // 99 zones thermal regulator device
-	fs_99z_probe,                         // 99 zones controlled probe
-	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
-	fs_date_edit,                         // settings: date edit
-	fs_time_edit,                         // settings: time edit
-};
-
-class FSBannFactory
-{
-public:
-	static FSBannFactory *getInstance();
-	BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n);
-private:
-	static FSBannFactory *instance;
-	FSBannFactory();
-	FSBannFactory(const FSBannFactory &);
-	FSBannFactory &operator= (const FSBannFactory&);
-};
-
 
 class FSBannManual : public BannFullScreen
 {

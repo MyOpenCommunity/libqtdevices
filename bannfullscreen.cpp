@@ -21,6 +21,7 @@
 #define I_OK IMG_PATH"btnok.png"
 #define I_SETTINGS IMG_PATH"setscen.png"
 
+
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
 	: banner(parent, name)
 {
@@ -54,6 +55,33 @@ void BannFullScreen::setFGColor(QColor fg)
 		((QWidget*)obj)->setPaletteForegroundColor(fg);
 	delete l;
 	banner::setFGColor(fg);
+}
+
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n)
+{
+	BannFullScreen *bfs = 0;
+	switch (id)
+	{
+		case fs_nc_probe:
+			bfs = new FSBannSimpleProbe(parent, n);
+			break;
+		case fs_4z_probe:
+			bfs = new FSBann4zProbe(parent, n);
+			break;
+		case fs_4z_fancoil:
+			bfs = new FSBann4zFancoil(parent, n);
+			break;
+		case fs_4z_thermal_regulator:
+			bfs = new FSBannTermoReg4z(parent, n);
+			break;
+		case fs_date_edit:
+			bfs = new FSBannDate(parent, 0);
+			break;
+		case fs_time_edit:
+			bfs = new FSBannTime(parent, 0);
+			break;
+	}
+	return bfs;
 }
 
 FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name)
@@ -605,48 +633,6 @@ void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 	if (update)
 		Draw();
 	FSBann4zProbe::status_changed(list);
-}
-
-FSBannFactory *FSBannFactory::instance = 0;
-
-FSBannFactory *FSBannFactory::getInstance()
-{
-	if (instance == 0)
-	{
-		instance = new FSBannFactory;
-	}
-	return instance;
-}
-
-BannFullScreen *FSBannFactory::getBanner(BannID id, QWidget *parent, QDomNode n)
-{
-	BannFullScreen *bfs = 0;
-	switch (id)
-	{
-		case fs_nc_probe:
-			bfs = new FSBannSimpleProbe(parent, n);
-			break;
-		case fs_4z_probe:
-			bfs = new FSBann4zProbe(parent, n);
-			break;
-		case fs_4z_fancoil:
-			bfs = new FSBann4zFancoil(parent, n);
-			break;
-		case fs_4z_thermal_regulator:
-			bfs = new FSBannTermoReg4z(parent, n);
-			break;
-		case fs_date_edit:
-			bfs = new FSBannDate(parent, 0);
-			break;
-		case fs_time_edit:
-			bfs = new FSBannTime(parent, 0);
-			break;
-	}
-	return bfs;
-}
-
-FSBannFactory::FSBannFactory()
-{
 }
 
 FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
