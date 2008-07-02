@@ -300,6 +300,7 @@ void PlantMenu::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulat
 	WeeklyMenu *weekmenu = new WeeklyMenu(0, "weekly", conf);
 	weekmenu->setAllBGColor(paletteBackgroundColor());
 	weekmenu->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), weekmenu, SLOT(status_changed(QPtrList<device_status>)));
 
 	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(show()));
 	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(raise()));
@@ -373,6 +374,7 @@ void PlantMenu::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regu
 	WeeklyMenu *weekly = new WeeklyMenu(0, "weekly program edit", conf);
 	weekly->setAllBGColor(paletteBackgroundColor());
 	weekly->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), weekly, SLOT(status_changed(QPtrList<device_status>)));
 
 	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(show()));
 	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(raise()));

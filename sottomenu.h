@@ -379,8 +379,7 @@ public:
 public slots:
 	void status_changed(QPtrList<device_status> list);
 protected:
-	enum Season {SUMMER, WINTER};
-	Season status;
+	int season;
 	QDomNode conf_root;
 signals:
 	void programClicked(int);

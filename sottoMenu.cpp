@@ -810,18 +810,53 @@ ProgramMenu::ProgramMenu(QWidget *parent, const char *name, QDomNode conf)
 
 void ProgramMenu::status_changed(QPtrList<device_status> list)
 {
-	// change menus
+	bool update = false;
+	for (QPtrListIterator<device_status> it(list); device_status *ds = it.current(); ++it)
+	{
+		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z || ds->get_type() == device_status::THERMAL_REGULATOR_99Z)
+		{
+			stat_var curr_season(stat_var::SEASON);
+			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
+			switch (curr_season.get_val())
+			{
+				case thermal_regulator::SUMMER:
+					if (season == thermal_regulator::WINTER)
+					{
+						season = thermal_regulator::SUMMER;
+						createSummerBanners();
+						update = true;
+					}
+					break;
+				case thermal_regulator::WINTER:
+					if (season == thermal_regulator::SUMMER)
+					{
+						season = thermal_regulator::WINTER;
+						createWinterBanners();
+						update = true;
+					}
+					break;
+
+			}
+		}
+	}
+	if (update)
+	{
+		setAllBGColor(paletteBackgroundColor());
+		setAllFGColor(paletteForegroundColor());
+		forceDraw();
+	}
 }
 
 WeeklyMenu::WeeklyMenu(QWidget *parent, const char *name, QDomNode conf)
 	: ProgramMenu(parent, name, conf)
 {
-	status = SUMMER;
+	season = thermal_regulator::SUMMER;
 	createSummerBanners();
 }
 
 void WeeklyMenu::createSummerBanners()
 {
+	elencoBanner.clear();
 	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
 	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_estivo.png");
 
@@ -859,6 +894,7 @@ void WeeklyMenu::createSummerBanners()
 
 void WeeklyMenu::createWinterBanners()
 {
+	elencoBanner.clear();
 	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
 	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_invernale.png");
 
@@ -897,12 +933,13 @@ void WeeklyMenu::createWinterBanners()
 ScenarioMenu::ScenarioMenu(QWidget *parent, const char *name, QDomNode conf)
 	: ProgramMenu(parent, name, conf)
 {
-	status = SUMMER;
+	season = thermal_regulator::SUMMER;
 	createSummerBanners();
 }
 
 void ScenarioMenu::createSummerBanners()
 {
+	elencoBanner.clear();
 	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
 	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_estivo.png");
 
@@ -940,6 +977,7 @@ void ScenarioMenu::createSummerBanners()
 
 void ScenarioMenu::createWinterBanners()
 {
+	elencoBanner.clear();
 	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
 	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_invernale.png");
 
