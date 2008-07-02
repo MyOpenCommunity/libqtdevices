@@ -71,3 +71,14 @@ void bannFrecce::handleBackRelease()
 {
 	press_timer.stop();
 }
+
+void bannFrecce::setCustomButton(BtButton *btn)
+{
+	if (btn)
+	{
+		originalDxButton = dxButton;
+		dxButton = btn;
+	}
+	else
+		dxButton = originalDxButton;
+}
