@@ -16,15 +16,18 @@
 #include "main.h"
 #include "banner.h"
 #include "device_status.h"
-#include "bannfullscreen.h"
 
 #include <qwidget.h>
 #include <qptrlist.h> 
 #include <qdom.h>
 #include <qvaluelist.h>
+#include <qdatetime.h>
+
 
 class bannFrecce;
 class scenEvo_cond;
+class FSBannTime;
+class FSBannDate;
 
 /*!
   \class sottoMenu

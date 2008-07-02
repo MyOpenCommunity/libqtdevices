@@ -35,7 +35,7 @@
 #include "sorgentimedia.h"
 #include "carico.h"
 #include "bann_antintrusione.h"
-
+#include "bannfullscreen.h"
 
 sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
 : QWidget( parent, name )
