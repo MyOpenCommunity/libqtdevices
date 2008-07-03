@@ -18,11 +18,10 @@
 
 #include <qobjectlist.h>
 
-#define I_OK IMG_PATH"btnok.png"
+#define I_OK  IMG_PATH"btnok.png"
 #define I_SETTINGS IMG_PATH"setscen.png"
 #define IMG_PLUS IMG_PATH "btnplus.png"
 #define IMG_MINUS IMG_PATH "btnmin.png"
-
 
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
 	: banner(parent, name)
@@ -37,6 +36,14 @@ void BannFullScreen::setSecondForeground(QColor fg2)
 void BannFullScreen::Draw()
 {
 	banner::Draw();
+}
+
+BtButton *BannFullScreen::getButton(const char *img)
+{
+	BtButton *btn = new BtButton(this);
+	btn->setPixmap(*icons_library.getIcon(img));
+	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(img)));
+	return btn;
 }
 
 void BannFullScreen::setBGColor(QColor bg)
@@ -166,12 +173,14 @@ FSBannProbe::FSBannProbe(QWidget *parent, QDomNode n, const char *name)
 	status = AUTOMATIC;
 
 	btn_minus = getButton(IMG_MINUS);
+	btn_minus->hide();
 	hbox->addWidget(btn_minus);
 
 	setpoint_label = new QLabel(this);
 	hbox->addWidget(setpoint_label);
 
 	btn_plus = getButton(IMG_PLUS);
+	btn_plus->hide();
 	hbox->addWidget(btn_plus);
 
 	btn_antifreeze = getIcon("antigelop.png");
@@ -191,15 +200,6 @@ FSBannProbe::FSBannProbe(QWidget *parent, QDomNode n, const char *name)
 	local_temp = "0";
 	isOff = false;
 	isAntigelo = false;
-}
-
-BtButton *FSBannProbe::getButton(const char *img)
-{
-	BtButton *btn = new BtButton(this);
-	btn->setPixmap(*icons_library.getIcon(img));
-	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(img)));
-	btn->hide();
-	return btn;
 }
 
 BtButton *FSBannProbe::getIcon(const char *img)
@@ -322,6 +322,7 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 					case 13:
 						local_temp = "-3";
 						break;
+						//FIXME: maybe this is broken, case 4 should be off (check documentation)
 					case 4:
 						local_temp = "0";
 						break;
@@ -664,31 +665,21 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
 
+	navbar_button = getButton(I_OK);
+
 	temp = 200;
 	temp_label = new QLabel(this);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
-	QPixmap *icon, *pressed_icon;
-	BtButton *btn;
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
-	const QString btn_min_img_press = QString("%1%2").arg(IMG_PATH).arg("btnminp.png");
-	icon         = icons_library.getIcon(btn_min_img);
-	pressed_icon = icons_library.getIcon(btn_min_img_press);
-	btn = new BtButton(this);
-	btn->setPixmap(*icon);
-	btn->setPressedPixmap(*pressed_icon);
+	BtButton *btn = getButton(btn_min_img.ascii());
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
 
 	hbox->addWidget(temp_label);
 
 	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
-	const QString btn_plus_img_press = QString("%1%2").arg(IMG_PATH).arg("btnplusp.png");
-	icon         = icons_library.getIcon(btn_plus_img);
-	pressed_icon = icons_library.getIcon(btn_plus_img_press);
-	btn = new BtButton(this);
-	btn->setPixmap(*icon);
-	btn->setPressedPixmap(*pressed_icon);
+	btn = getButton(btn_plus_img.ascii());
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
 
@@ -737,6 +728,11 @@ void FSBannManual::Draw()
 	BannFullScreen::Draw();
 }
 
+BtButton *FSBannManual::customButton()
+{
+	return navbar_button;
+}
+
 void FSBannManual::postDisplay(sottoMenu *parent)
 {
 	parent->setNavBarMode(10, I_OK);
@@ -744,6 +740,7 @@ void FSBannManual::postDisplay(sottoMenu *parent)
 
 void FSBannManual::status_changed(QPtrList<device_status> list)
 {
+	bool update = false;
 	for (QPtrListIterator<device_status> iter(list); device_status *ds = iter.current(); ++iter)
 	{
 		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
@@ -751,8 +748,11 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 			stat_var curr_sp(stat_var::SP);
 			ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
 			temp = curr_sp.get_val();
+			update = true;
 		}
 	}
+	if (update)
+		Draw();
 }
 
 FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev)
@@ -789,6 +789,7 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
+	navbar_button = getButton(I_OK);
 
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	BtButton *top = new BtButton(this);
@@ -801,6 +802,11 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	main_layout.addWidget(date_edit);
 
 	connect(date_edit, SIGNAL(valueChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
+}
+
+BtButton *FSBannDate::customButton()
+{
+	return navbar_button;
 }
 
 QDate FSBannDate::date()
@@ -826,6 +832,8 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
+	navbar_button = getButton(I_OK);
+
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	BtButton *top = new BtButton(this);
 	top->setPixmap(i_top_img);
@@ -837,6 +845,11 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout.addWidget(time_edit);
 
 	connect(time_edit, SIGNAL(valueChanged(int, int)), this, SLOT(setTime(int, int)));
+}
+
+BtButton *FSBannTime::customButton()
+{
+	return navbar_button;
 }
 
 void FSBannTime::Draw()
@@ -865,3 +878,4 @@ QTime FSBannTime::time()
 {
 	return QTime(hours, minutes);
 }
+

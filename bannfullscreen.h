@@ -59,6 +59,7 @@ public slots:
 	virtual void status_changed(QPtrList<device_status> list) = 0;
 protected:
 	QColor second_fg;
+	BtButton *getButton(const char *img);
 };
 
 enum BannID
@@ -138,7 +139,6 @@ private:
 	probe_status status;
 
 	BtButton *getIcon(const char *img);
-	BtButton *getButton(const char *img);
 };
 
 /**
@@ -205,10 +205,13 @@ public:
 	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev);
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
+	virtual BtButton *customButton();
 public slots:
 	void status_changed(QPtrList<device_status> list);
 protected:
 	QVBoxLayout main_layout;
+	/// The button to be set on the navbar
+	BtButton *navbar_button;
 private:
 	QString descr;
 	QLabel *descr_label;
@@ -246,12 +249,14 @@ public:
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 	QDate date();
+	virtual BtButton *customButton();
 public slots:
 	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
 	QDate _date;
 	BtDateEdit *date_edit;
+	BtButton *navbar_button;
 signals:
 	void dateChanged(QDate);
 };
@@ -264,6 +269,7 @@ public:
 	virtual void Draw();
 	void postDisplay(sottoMenu *parent);
 	QTime time();
+	virtual BtButton *customButton();
 public slots:
 	void status_changed(QPtrList<device_status> list);
 	void setTime(int hrs, int mins);
@@ -271,6 +277,7 @@ private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;
 	int hours, minutes;
+	BtButton *navbar_button;
 signals:
 	void timeChanged(QTime);
 };

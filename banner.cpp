@@ -97,7 +97,7 @@ void banner::SetSecondaryTextU(const QString & text)
 	qtestoSecondario.truncate (MAX_TEXT_2-1);
 }
 
-BtButton *customButton()
+BtButton *banner::customButton()
 {
 	return 0;
 }
