@@ -37,12 +37,6 @@ Q_OBJECT
 public:
 	BannFullScreen(QWidget *parent, const char *name);
 	virtual void Draw();
-
-	/**
-	 * A function called by sottoMenu to request the banner which type of navbar it needs.
-	 */
-	virtual void postDisplay(sottoMenu *parent) = 0;
-
 	void setSecondForeground(QColor fg2);
 
 	/**
@@ -88,7 +82,6 @@ Q_OBJECT
 public:
 	FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
-	virtual void postDisplay(sottoMenu *parent);
 	void setSecondForeground(QColor fg2);
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
@@ -115,7 +108,6 @@ Q_OBJECT
 public:
 	FSBannProbe(QDomNode n, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
-	virtual void postDisplay(sottoMenu *parent);
 	BtButton *customButton();
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
@@ -157,7 +149,6 @@ Q_OBJECT
 public:
 	FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name = 0);
 	virtual void Draw();
-	virtual void postDisplay(sottoMenu *parent);
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -191,7 +182,6 @@ Q_OBJECT
 public:
 	FSBann4zFancoil(QDomNode n, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
-	virtual void postDisplay(sottoMenu *parent);
 	virtual void status_changed(QPtrList<device_status> list);
 private:
 	/**
@@ -208,7 +198,6 @@ Q_OBJECT
 public:
 	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev);
 	virtual void Draw();
-	void postDisplay(sottoMenu *parent);
 	virtual BtButton *customButton();
 public slots:
 	void status_changed(QPtrList<device_status> list);
@@ -236,7 +225,6 @@ Q_OBJECT
 public:
 	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
 	virtual void Draw();
-	void postDisplay(sottoMenu *parent);
 public slots:
 	void status_changed(QPtrList<device_status> list);
 private:
@@ -251,7 +239,6 @@ Q_OBJECT
 public:
 	FSBannDate(QWidget *parent, const char *name = 0);
 	virtual void Draw();
-	void postDisplay(sottoMenu *parent);
 	QDate date();
 	virtual BtButton *customButton();
 public slots:
@@ -271,7 +258,6 @@ Q_OBJECT
 public:
 	FSBannTime(QWidget *parent, const char *name = 0);
 	virtual void Draw();
-	void postDisplay(sottoMenu *parent);
 	QTime time();
 	virtual BtButton *customButton();
 public slots:

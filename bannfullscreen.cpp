@@ -133,12 +133,6 @@ void FSBannSimpleProbe::Draw()
 	banner::Draw();
 }
 
-void FSBannSimpleProbe::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(3, "");
-	qDebug("[TERMO] bfs::postDisplay() done");
-}
-
 void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
@@ -288,11 +282,6 @@ void FSBannProbe::Draw()
 	FSBannSimpleProbe::Draw();
 }
 
-void FSBannProbe::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(3, "");
-}
-
 void FSBannProbe::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
@@ -434,11 +423,6 @@ void FSBannTermoReg4z::Draw()
 	description_label->show();
 
 	BannFullScreen::Draw();
-}
-
-void FSBannTermoReg4z::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(4, I_SETTINGS);
 }
 
 void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
@@ -622,11 +606,6 @@ void FSBann4zFancoil::Draw()
 	FSBannProbe::Draw();
 }
 
-void FSBann4zFancoil::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(3, "");
-}
-
 void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
@@ -750,11 +729,6 @@ BtButton *FSBannManual::customButton()
 	return navbar_button;
 }
 
-void FSBannManual::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(10, I_OK);
-}
-
 void FSBannManual::status_changed(QPtrList<device_status> list)
 {
 	bool update = false;
@@ -790,11 +764,6 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_
 void FSBannManualTimed::Draw()
 {
 	FSBannManual::Draw();
-}
-
-void FSBannManualTimed::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(10, I_OK);
 }
 
 void FSBannManualTimed::status_changed(QPtrList<device_status> list)
@@ -836,11 +805,6 @@ void FSBannDate::Draw()
 	BannFullScreen::Draw();
 }
 
-void FSBannDate::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(10, I_OK);
-}
-
 void FSBannDate::status_changed(QPtrList<device_status> list)
 {
 }
@@ -872,11 +836,6 @@ BtButton *FSBannTime::customButton()
 void FSBannTime::Draw()
 {
 	BannFullScreen::Draw();
-}
-
-void FSBannTime::postDisplay(sottoMenu *parent)
-{
-	parent->setNavBarMode(10, I_OK);
 }
 
 void FSBannTime::status_changed(QPtrList<device_status> list)

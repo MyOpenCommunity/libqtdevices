@@ -375,7 +375,6 @@ void sottoMenu::draw()
 
 					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
 					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->postDisplay(this);
 				}
 			}		
 			qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",

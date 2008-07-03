@@ -352,11 +352,6 @@ public:
 		TEXT2,
 	};
 	virtual void addAmb(char *);
-
-	/**
-	 * Called from sottoMenu at the end of draw().
-	 */
-	virtual void postDisplay(sottoMenu *parent) {};
 private:
 	
 	/**
