@@ -113,9 +113,10 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBannProbe(QDomNode n, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void postDisplay(sottoMenu *parent);
+	BtButton *customButton();
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
@@ -137,6 +138,9 @@ private:
 
 	bool isOff, isAntigelo;
 	probe_status status;
+	bool status_change_enabled;
+
+	BtButton *navbar_button;
 
 	BtButton *getIcon(const char *img);
 };
@@ -185,7 +189,7 @@ class FSBann4zFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBann4zFancoil(QDomNode n, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void postDisplay(sottoMenu *parent);
 	virtual void status_changed(QPtrList<device_status> list);

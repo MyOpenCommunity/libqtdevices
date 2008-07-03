@@ -22,6 +22,8 @@
 #define I_SETTINGS IMG_PATH"setscen.png"
 #define IMG_PLUS IMG_PATH "btnplus.png"
 #define IMG_MINUS IMG_PATH "btnmin.png"
+#define IMG_AUTO IMG_PATH "btnauto.png"
+#define IMG_MAN IMG_PATH "btnman.png"
 
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
 	: banner(parent, name)
@@ -75,10 +77,16 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n)
 			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
-			bfs = new FSBannProbe(parent, n);
+			bfs = new FSBannProbe(n, false, parent);
+			break;
+		case fs_99z_probe:
+			bfs = new FSBannProbe(n, true, parent);
 			break;
 		case fs_4z_fancoil:
-			bfs = new FSBann4zFancoil(parent, n);
+			bfs = new FSBann4zFancoil(n, false, parent);
+			break;
+		case fs_99z_fancoil:
+			bfs = new FSBann4zFancoil(n, true, parent);
 			break;
 		case fs_4z_thermal_regulator:
 			bfs = new FSBannTermoReg4z(parent, n);
@@ -165,12 +173,14 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBannProbe::FSBannProbe(QWidget *parent, QDomNode n, const char *name)
+FSBannProbe::FSBannProbe(QDomNode n, bool change_status, QWidget *parent,const char *name)
 	: FSBannSimpleProbe(parent, n)
 {
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
 
 	status = AUTOMATIC;
+	status_change_enabled = change_status;
+	navbar_button = getButton(status == AUTOMATIC ? IMG_MAN : IMG_AUTO);
 
 	btn_minus = getButton(IMG_MINUS);
 	btn_minus->hide();
@@ -200,6 +210,13 @@ FSBannProbe::FSBannProbe(QWidget *parent, QDomNode n, const char *name)
 	local_temp = "0";
 	isOff = false;
 	isAntigelo = false;
+}
+
+BtButton *FSBannProbe::customButton()
+{
+	if (status_change_enabled)
+		return navbar_button;
+	return 0;
 }
 
 BtButton *FSBannProbe::getIcon(const char *img)
@@ -568,8 +585,8 @@ QString FSBannTermoReg4z::lookupProgramDescription(QString season, int program_n
 	return "";
 }
 
-FSBann4zFancoil::FSBann4zFancoil(QWidget *parent, QDomNode n, const char *name)
-	: FSBannProbe(parent, n),
+FSBann4zFancoil::FSBann4zFancoil(QDomNode n, bool change_status, QWidget *parent, const char *name)
+	: FSBannProbe(n, change_status, parent),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
 	createFancoilButtons();
