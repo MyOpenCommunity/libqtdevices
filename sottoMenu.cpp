@@ -359,6 +359,7 @@ void sottoMenu::draw()
 			elencoBanner.at(idy)->hide();
 		if (hasNavBar)
 		{
+			bannNavigazione->setCustomButton(elencoBanner.at(indice)->customButton());
 			for (idx=0;idx<numRighe;idx++)
 			{
 				if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>numRighe) ) 
