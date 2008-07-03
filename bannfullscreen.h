@@ -121,16 +121,24 @@ protected:
 	QString setpoint;
 	QLabel  *setpoint_label;
 
-	BtButton *btn_off, *btn_antifreeze;
+	BtButton *btn_off, *btn_antifreeze, *btn_minus, *btn_plus;
 	// FIXME: setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	QLabel *local_temp_label;
 private:
+	enum probe_status
+	{
+		AUTOMATIC,
+		MANUAL
+	};
+
 	bool isOff, isAntigelo;
+	probe_status status;
 
 	BtButton *getIcon(const char *img);
+	BtButton *getButton(const char *img);
 };
 
 /**
