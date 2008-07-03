@@ -20,6 +20,8 @@
 
 #define I_OK IMG_PATH"btnok.png"
 #define I_SETTINGS IMG_PATH"setscen.png"
+#define IMG_PLUS IMG_PATH "btnplus.png"
+#define IMG_MINUS IMG_PATH "btnmin.png"
 
 
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
@@ -159,9 +161,18 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 FSBannProbe::FSBannProbe(QWidget *parent, QDomNode n, const char *name)
 	: FSBannSimpleProbe(parent, n)
 {
-	setpoint_label = new QLabel(this);
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
+
+	status = AUTOMATIC;
+
+	btn_minus = getButton(IMG_MINUS);
+	hbox->addWidget(btn_minus);
+
+	setpoint_label = new QLabel(this);
 	hbox->addWidget(setpoint_label);
+
+	btn_plus = getButton(IMG_PLUS);
+	hbox->addWidget(btn_plus);
 
 	btn_antifreeze = getIcon("antigelop.png");
 	hbox->addWidget(btn_antifreeze);
@@ -182,6 +193,15 @@ FSBannProbe::FSBannProbe(QWidget *parent, QDomNode n, const char *name)
 	isAntigelo = false;
 }
 
+BtButton *FSBannProbe::getButton(const char *img)
+{
+	BtButton *btn = new BtButton(this);
+	btn->setPixmap(*icons_library.getIcon(img));
+	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(img)));
+	btn->hide();
+	return btn;
+}
+
 BtButton *FSBannProbe::getIcon(const char *img)
 {
 	// FIX: use QLabel and QPixmap instead of QButton!!
@@ -199,6 +219,11 @@ void FSBannProbe::Draw()
 {
 	if (isOff)
 	{
+		if (status == MANUAL)
+		{
+			btn_minus->hide();
+			btn_plus->hide();
+		}
 		setpoint_label->hide();
 		//local_temp = "";
 		local_temp_label->hide();
@@ -207,6 +232,11 @@ void FSBannProbe::Draw()
 	}
 	else if (isAntigelo)
 	{
+		if (status == MANUAL)
+		{
+			btn_minus->hide();
+			btn_plus->hide();
+		}
 		setpoint_label->hide();
 		//local_temp = "";
 		local_temp_label->hide();
@@ -215,6 +245,11 @@ void FSBannProbe::Draw()
 	}
 	else
 	{
+		if (status == MANUAL)
+		{
+			btn_minus->show();
+			btn_plus->show();
+		}
 		setpoint_label->show();
 		local_temp_label->show();
 		btn_off->hide();
@@ -263,58 +298,48 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			qDebug("sp = %d", curr_sp.get_val());
 			if (curr_local.initialized())
 			{
+				update = true;
 				switch (curr_local.get_val())
 				{
 					case 0:
 						local_temp = "0";
-						isOff = false;
-						isAntigelo = false;
 						break;
 					case 1:
 						local_temp = "+1";
-						isOff = false;
-						isAntigelo = false;
 						break;
 					case 2:
 						local_temp = "+2";
-						isOff = false;
-						isAntigelo = false;
 						break;
 					case 3:
 						local_temp = "+3";
-						isOff = false;
-						isAntigelo = false;
 						break;
 					case 11:
 						local_temp = "-1";
-						isOff = false;
-						isAntigelo = false;
 						break;
 					case 12:
 						local_temp = "-2";
-						isOff = false;
-						isAntigelo = false;
 						break;
 					case 13:
 						local_temp = "-3";
-						isOff = false;
-						isAntigelo = false;
 						break;
 					case 4:
 						local_temp = "0";
-						isOff = false;
-						isAntigelo = true;
 						break;
 					case 5:
 						local_temp = "0";
-						isOff = true;
-						isAntigelo = false;
 						break;
 					default:
+						update = false;
 						qDebug("[TERMO] FSBannProbe::status_changed(): local status case not handled!");
 				}
-				update = true;
+
+				if (update)
+				{
+					isOff = true;
+					isAntigelo = false;
+				}
 			}
+
 			if (curr_sp.initialized())
 			{
 				float icx;
