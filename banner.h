@@ -127,7 +127,7 @@ public:
 	/**
 	 * Returns a custom button, controlled by the banner, to be shown on the navBar.
 	 * This button is completely under control of the banner which may decide to connect to the signal
-	 * emitted, change the pixmap and so on.
+	 * emitted by the button, change the pixmap and so on.
 	 * \return Returns a pointer to a \a BtButton if present, 0 otherwise.
 	 */
 	virtual BtButton *customButton();
@@ -528,6 +528,11 @@ protected:
 	 *  \brief Returns true if the object is a target for message
 	 */
 	bool isForMe(openwebnet * message);
+
+	/**
+	 * Utility function to draw all buttons except the rightmost one
+	 */
+	void drawAllButRightButton();
 };
 
 

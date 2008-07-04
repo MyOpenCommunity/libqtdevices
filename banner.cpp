@@ -492,9 +492,8 @@ void banner::mostra(char item)
 	}
 }   
 
-void banner::Draw()
+void banner::drawAllButRightButton()
 {
-	qDebug("banner::Draw(), attivo = %d, value = %d", attivo, value);
 	if ((sxButton) && (Icon[0]))
 	{
 		sxButton->setPixmap(*Icon[0]);
@@ -502,12 +501,6 @@ void banner::Draw()
 			sxButton->setPressedPixmap(*pressIcon[0]);
 	}
 
-	if ((dxButton) && (Icon[1]))
-	{
-		dxButton->setPixmap(*Icon[1]);
-		if (pressIcon[1])
-			dxButton->setPressedPixmap(*pressIcon[1]);
-	}
 	if (minValue==maxValue)
 	{
 		QPixmap *pntIcon=NULL;
@@ -636,6 +629,19 @@ void banner::Draw()
 		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
 		SecondaryText->setFont(aFont);
 		SecondaryText->setText(qtestoSecondario);
+	}
+}
+
+void banner::Draw()
+{
+	qDebug("banner::Draw(), attivo = %d, value = %d", attivo, value);
+	drawAllButRightButton();
+
+	if ((dxButton) && (Icon[1]))
+	{
+		dxButton->setPixmap(*Icon[1]);
+		if (pressIcon[1])
+			dxButton->setPressedPixmap(*pressIcon[1]);
 	}
 }
 
