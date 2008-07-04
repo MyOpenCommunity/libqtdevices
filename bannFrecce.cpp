@@ -5,6 +5,7 @@
  */
 
 #include "bannfrecce.h"
+#include "btbutton.h"
 
 bannFrecce::bannFrecce(QWidget *parent, const char *name, uchar num, char* IconBut4)
 	: banner(parent, name)
@@ -55,6 +56,7 @@ bannFrecce::bannFrecce(QWidget *parent, const char *name, uchar num, char* IconB
     connect(this, SIGNAL(sxReleased()), this, SLOT(handleBackRelease()));
     connect(&press_timer, SIGNAL(timeout()), SIGNAL(longBackPress()));
 
+    originalDxButton = dxButton;
     Draw();
 }
 
@@ -68,13 +70,39 @@ void bannFrecce::handleBackRelease()
 	press_timer.stop();
 }
 
+void bannFrecce::Draw()
+{
+	drawAllButRightButton();
+	if (dxButton && dxButton == originalDxButton)
+	{
+		dxButton->setPixmap(*Icon[1]);
+		if (pressIcon[1])
+			dxButton->setPressedPixmap(*pressIcon[1]);
+	}
+}
+
+
 void bannFrecce::setCustomButton(BtButton *btn)
 {
 	if (btn)
 	{
-		originalDxButton = dxButton;
+		if (dxButton)
+			dxButton->hide();
 		dxButton = btn;
+		// the coordinates are the same as BUT2 in the constructor (above)
+		// it is required by Qt when calling reparent
+		QPoint p = QPoint(MAX_WIDTH*3/4+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2, (MAX_HEIGHT/numRighe-BUTFRECCE_DIM_Y)/2);
+		// Custom buttons may not have the correct size expected by bannFrecce, so we need to resize it
+		btn->setGeometry(p.x(), p.y(), BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
+		// The custom button is created with no parent, so we need to set bannFrecce as the new parent
+		btn->reparent(this, 0, p, true);
 	}
 	else
+	{
+		if (dxButton)
+			dxButton->hide();
 		dxButton = originalDxButton;
+		if (dxButton)
+			dxButton->show();
+	}
 }
