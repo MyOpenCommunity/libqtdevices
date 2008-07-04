@@ -34,39 +34,7 @@ private:
 	 */
 	void create99zSettings(QDomNode conf, thermal_regulator_99z *dev);
 
-	/**
-	 * Utility function to create the settings menu for a 4z thermal regulator.
-	 */
-	void create4zSettings(QDomNode conf, thermal_regulator_4z *dev);
 
-	/**
-	 * Utility function to create the submenu to set the weekly program in thermal
-	 * regulator device.
-	 */
-	void weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
-
-	/**
-	 * Utility function to create the submenu to set the scenario program in thermal
-	 * regulator device.
-	 */
-	void scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev);
-
-	/**
-	 * Utility function to create the submenu to set manually the temperature
-	 * for the thermal regulator device.
-	 */
-	void manualSettings(sottoMenu *settings, thermal_regulator *dev);
-
-	/**
-	 * Utility function to create the submenu for timed manual operation mode.
-	 * This is used only with 4 zones thermal regulators
-	 */
-	void timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev);
-
-	/**
-	 * Utility function to create the submenu for holiday settings.
-	 */
-	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
 
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
@@ -77,9 +45,10 @@ private:
 	 * \param type          The type of full screen banner that is linked to the banner in plant menu
 	 * \param addr          The address of the device observed by the banner
 	 * \param dev           A pointer to the device observed by the banner
+	 * \param bannfullscreen The full screen banner that is created with the call to \a addMenuItem
+	 * \return A pointer to the small banner that will show the corresponding full screen banner.
 	 */
-	bannPuls *addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type,
-			QString addr, device *dev);
+	bannPuls *addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type);
 
 	/// Node in the Dom tree that is a `plant' tag
 	QDomNode conf_root;
