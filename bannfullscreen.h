@@ -26,6 +26,8 @@
 class device;
 class thermal_regulator;
 class thermal_regulator_4z;
+class thermal_regulator_99z;
+class temperature_probe_controlled;
 
 
 /**
@@ -45,6 +47,13 @@ public:
 	 */
 	virtual void setBGColor(QColor bg);
 	virtual void setFGColor(QColor bg);
+
+	/**
+	 * Extract the address from the DOM node passed as parameter.
+	 * \param n The node where the configuration of this item starts.
+	 * \return The simple address if this item
+	 */
+	QString extractAddress(QDomNode n);
 public slots:
 	/**
 	 * Called whenever the status of the device associated with the banner changes, so that
@@ -53,7 +62,7 @@ public slots:
 	virtual void status_changed(QPtrList<device_status> list) = 0;
 protected:
 	QColor second_fg;
-	BtButton *getButton(const char *img);
+	BtButton *getButton(const char *img, QWidget *parent);
 };
 
 enum BannID
@@ -70,7 +79,7 @@ enum BannID
 };
 
 /// Factory function to get banners
-BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n);
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale);
 
 /**
  * A base class for banners that represent a probe. It displays a label with zone name on top
@@ -106,7 +115,7 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -121,6 +130,9 @@ protected:
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	QLabel *local_temp_label;
+
+	QDomNode conf_root;
+	temperature_probe_controlled *dev;
 private:
 	enum probe_status
 	{
@@ -138,20 +150,23 @@ private:
 };
 
 /**
- * Displays information about the thermal regulator device. Information may be: operation mode, label
- * describing more information about mode (for example, the program name), current season.
- * Operation mode and current season are icons and are always present. The label is optional and depends
- * on the active mode: it is present for manual (setpoint temperature) and week program (program name).
+ *
  */
-class FSBannTermoReg4z : public BannFullScreen
+class FSBannTermoReg : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBannTermoReg(QDomNode n, QWidget *parent = 0, const char *name = 0);
 	virtual void Draw();
+	BtButton *customButton();
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
-private:
+protected:
+	/**
+	 * Utility function to create settings menu for the thermal regulator device.
+	 */
+	virtual void createSettingsMenu() = 0;
+
 	/**
 	 * Utility function to find in the DOM the program description to be displayed on screen.
 	 * \param season The season we are interested into. It must be either "summer" or "winter".
@@ -160,6 +175,42 @@ private:
 	 */
 	QString lookupProgramDescription(QString season, int program_number);
 
+	/**
+	 * Utility function to create the submenu to set the weekly program in thermal
+	 * regulator device.
+	 */
+	void weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
+
+	/**
+	 * Utility function to create the submenu to set the scenario program in thermal
+	 * regulator device.
+	 */
+	void scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev);
+
+	/**
+	 * Utility function to create the submenu to set manually the temperature
+	 * for the thermal regulator device.
+	 */
+	void manualSettings(sottoMenu *settings, thermal_regulator *dev);
+
+	/**
+	 * Utility function to create the submenu for timed manual operation mode.
+	 * This is used only with 4 zones thermal regulators
+	 */
+	void timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev);
+
+	/**
+	 * Utility function to create the submenu for holiday settings.
+	 */
+	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
+
+	/// The settings menu of the thermal regulator
+	sottoMenu *settings;
+	/// A reference to the configuration of the thermal regulator
+	QDomNode conf_root;
+
+	BtButton *navbar_button;
+private:
 	QVBoxLayout main_layout;
 	/// Label and string that may be visualized
 	QLabel *description_label;
@@ -168,8 +219,23 @@ private:
 	BtButton *season_btn;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
 	BtButton *mode_btn;
-	/// A reference to the configuration of the thermal regulator
-	QDomNode conf_root;
+};
+
+/**
+ * Displays information about the thermal regulator device. Information may be: operation mode, label
+ * describing more information about mode (for example, the program name), current season.
+ * Operation mode and current season are icons and are always present. The label is optional and depends
+ * on the active mode: it is present for manual (setpoint temperature) and week program (program name).
+ */
+class FSBannTermoReg4z : public FSBannTermoReg
+{
+Q_OBJECT
+public:
+	FSBannTermoReg4z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name = 0);
+protected:
+	virtual void createSettingsMenu();
+private:
+	thermal_regulator_4z *dev;
 };
 
 /**
@@ -180,7 +246,7 @@ class FSBann4zFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBann4zFancoil(QDomNode n, bool change_status, QWidget *parent, const char *name = 0);
+	FSBann4zFancoil(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -271,4 +337,5 @@ private:
 signals:
 	void timeChanged(QTime);
 };
+
 #endif // BANNFULLSCREEN_H

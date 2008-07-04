@@ -15,15 +15,18 @@
 #include "sottomenu.h"
 #include "btbutton.h"
 #include "device.h"
+#include "bannsettings.h"
+#include "device_cache.h"
 
 #include <qobjectlist.h>
 
 #define I_OK  IMG_PATH"btnok.png"
-#define I_SETTINGS IMG_PATH"setscen.png"
+#define IMG_SETTINGS IMG_PATH"setscen.png"
 #define IMG_PLUS IMG_PATH "btnplus.png"
 #define IMG_MINUS IMG_PATH "btnmin.png"
 #define IMG_AUTO IMG_PATH "btnauto.png"
 #define IMG_MAN IMG_PATH "btnman.png"
+#define IMG_RIGHT_ARROW IMG_PATH "arrrg.png"
 
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
 	: banner(parent, name)
@@ -40,7 +43,7 @@ void BannFullScreen::Draw()
 	banner::Draw();
 }
 
-BtButton *BannFullScreen::getButton(const char *img)
+BtButton *BannFullScreen::getButton(const char *img, QWidget *parent)
 {
 	BtButton *btn = new BtButton(this);
 	btn->setPixmap(*icons_library.getIcon(img));
@@ -68,7 +71,18 @@ void BannFullScreen::setFGColor(QColor fg)
 	banner::setFGColor(fg);
 }
 
-BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n)
+QString BannFullScreen::extractAddress(QDomNode n)
+{
+	if (!n.isNull())
+	{
+		QDomNode where = n.namedItem("where");
+		if (!where.isNull() && where.isElement())
+			return where.toElement().text();
+	}
+	return QString();
+}
+
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale)
 {
 	BannFullScreen *bfs = 0;
 	switch (id)
@@ -77,19 +91,22 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n)
 			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
-			bfs = new FSBannProbe(n, false, parent);
+			bfs = new FSBannProbe(n, ind_centrale, true, parent, ind_centrale);
 			break;
 		case fs_99z_probe:
-			bfs = new FSBannProbe(n, true, parent);
+			bfs = new FSBannProbe(n, ind_centrale, true, parent, ind_centrale);
 			break;
 		case fs_4z_fancoil:
-			bfs = new FSBann4zFancoil(n, false, parent);
+			bfs = new FSBann4zFancoil(n, ind_centrale, true, parent, ind_centrale);
 			break;
 		case fs_99z_fancoil:
-			bfs = new FSBann4zFancoil(n, true, parent);
+			bfs = new FSBann4zFancoil(n, ind_centrale, true, parent, ind_centrale);
 			break;
 		case fs_4z_thermal_regulator:
-			bfs = new FSBannTermoReg4z(parent, n);
+			bfs = new FSBannTermoReg4z(n, ind_centrale, parent);
+			break;
+		case fs_99z_thermal_regulator:
+			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_date_edit:
 			bfs = new FSBannDate(parent, 0);
@@ -167,23 +184,38 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBannProbe::FSBannProbe(QDomNode n, bool change_status, QWidget *parent,const char *name)
+FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent,const char *name)
 	: FSBannSimpleProbe(parent, n)
 {
-	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
-
 	status = AUTOMATIC;
 	status_change_enabled = change_status;
-	navbar_button = getButton(status == AUTOMATIC ? IMG_MAN : IMG_AUTO);
+	navbar_button = getButton(IMG_MAN, this);
+	conf_root = n;
 
-	btn_minus = getButton(IMG_MINUS);
+	QString simple_address = extractAddress(conf_root);
+	if (simple_address.isNull())
+		qFatal("FSBannProbe ctor: wrong address, configuration is wrong");
+	QString where_composed = simple_address + "#" + ind_centrale;
+	if (status_change_enabled)
+		dev = static_cast<temperature_probe_controlled *> (btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z99,
+				false, ind_centrale.ascii(), simple_address.ascii()));
+	else
+		dev = static_cast<temperature_probe_controlled *> (btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z4,
+				false, ind_centrale.ascii(), simple_address.ascii()));
+
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
+
+	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
+
+
+	btn_minus = getButton(IMG_MINUS, this);
 	btn_minus->hide();
 	hbox->addWidget(btn_minus);
 
 	setpoint_label = new QLabel(this);
 	hbox->addWidget(setpoint_label);
 
-	btn_plus = getButton(IMG_PLUS);
+	btn_plus = getButton(IMG_PLUS, this);
 	btn_plus->hide();
 	hbox->addWidget(btn_plus);
 
@@ -374,11 +406,12 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name)
+FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
 	conf_root = n;
+	navbar_button = getButton(IMG_SETTINGS, this);
 
 	// Put a sensible default for the description
 	QDomNode descr = conf_root.namedItem("descr");
@@ -386,7 +419,7 @@ FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name
 		description = descr.toElement().text();
 	else
 	{
-		qDebug("[TERMO] FSBannTermoReg4z ctor: no description found, maybe wrong node conf?");
+		qDebug("[TERMO] FSBannTermoReg ctor: no description found, maybe wrong node conf?");
 		description = "Wrong node";
 	}
 	description_label = new QLabel(this);
@@ -412,7 +445,12 @@ FSBannTermoReg4z::FSBannTermoReg4z(QWidget *parent, QDomNode n, const char *name
 	main_layout.setAlignment(Qt::AlignHCenter);
 }
 
-void FSBannTermoReg4z::Draw()
+BtButton *FSBannTermoReg::customButton()
+{
+	return navbar_button;
+}
+
+void FSBannTermoReg::Draw()
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
@@ -425,7 +463,7 @@ void FSBannTermoReg4z::Draw()
 	BannFullScreen::Draw();
 }
 
-void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
+void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 {
 	bool update = false;
 	int season = thermal_regulator::SUMMER;
@@ -546,7 +584,7 @@ void FSBannTermoReg4z::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-QString FSBannTermoReg4z::lookupProgramDescription(QString season, int program_number)
+QString FSBannTermoReg::lookupProgramDescription(QString season, int program_number)
 {
 	QDomNode prog = conf_root.namedItem(season);
 	if (!prog.isNull())
@@ -560,17 +598,111 @@ QString FSBannTermoReg4z::lookupProgramDescription(QString season, int program_n
 			if (!iter.isNull())
 				return iter.toElement().text();
 			else
-				qWarning("[TERMO] FSBannTermoReg4z::lookupProgramDescription WEEK PROGRAM: wrong node");
+				qWarning("[TERMO] FSBannTermoReg::lookupProgramDescription WEEK PROGRAM: wrong node");
 		}
 		else
-			qWarning("[TERMO] FSBannTermoReg4z::lookupProgramDescription WEEK PROGRAM: wrong node");
+			qWarning("[TERMO] FSBannTermoReg::lookupProgramDescription WEEK PROGRAM: wrong node");
 	}
-	qDebug("FSBannTermoReg4z::lookupProgramDescription: You did not supply the correct season.");
+	qDebug("FSBannTermoReg::lookupProgramDescription: You did not supply the correct season.");
 	return "";
 }
 
-FSBann4zFancoil::FSBann4zFancoil(QDomNode n, bool change_status, QWidget *parent, const char *name)
-	: FSBannProbe(n, change_status, parent),
+
+FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name)
+	: FSBannTermoReg(n, parent, name)
+{
+	QString where_composed = QString("0#") + ind_centrale;
+	dev = static_cast<thermal_regulator_4z *>(btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4));
+
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
+
+	createSettingsMenu();
+}
+
+void FSBannTermoReg4z::createSettingsMenu()
+{
+	settings = new sottoMenu(0, "settings");
+	if (settings)
+	{
+		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
+		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(raise()));
+		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
+		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
+		//connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
+
+		//connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
+		//connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+	}
+	else
+		qFatal("[TERMO] could not create settings menu");
+
+	weekSettings(settings, conf_root, dev);
+	manualSettings(settings, dev);
+
+	timedManualSettings(settings, dev);
+
+	holidaySettings(settings, conf_root, dev);
+
+	// off banner
+	BannOff *off = new BannOff(settings, "OFF", dev);
+	settings->appendBanner(off);
+
+	// antifreeze banner
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", dev);
+	settings->appendBanner(antifreeze);
+
+	// summer_winter banner
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", dev);
+	settings->appendBanner(summer_winter);
+
+	settings->setAllFGColor(paletteForegroundColor());
+	settings->setAllBGColor(paletteBackgroundColor());
+}
+#if 0
+void create99zSettings(QDomNode conf, thermal_regulator_99z *dev)
+{
+	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
+
+	sottoMenu *settings = new sottoMenu(0, "settings");
+	if (settings)
+	{
+		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
+		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
+		//connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
+
+		//connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
+		//connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+	}
+	else
+		qFatal("[TERMO] could not create settings menu");
+
+	weekSettings(settings, conf, dev);
+	manualSettings(settings, dev);
+
+	scenarioSettings(settings, conf, dev);
+
+	holidaySettings(settings, conf, dev);
+
+	// off banner
+	BannOff *off = new BannOff(settings, "OFF", dev);
+	settings->appendBanner(off);
+
+	// antifreeze banner
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", dev);
+	settings->appendBanner(antifreeze);
+
+	// summer_winter banner
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", dev);
+	settings->appendBanner(summer_winter);
+
+	settings->setAllFGColor(paletteForegroundColor());
+	settings->setAllBGColor(paletteBackgroundColor());
+}
+#endif
+
+FSBann4zFancoil::FSBann4zFancoil(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent, const char *name)
+	: FSBannProbe(n, ind_centrale, change_status, parent),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
 	createFancoilButtons();
@@ -661,21 +793,21 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
 
-	navbar_button = getButton(I_OK);
+	navbar_button = getButton(I_OK, this);
 
 	temp = 200;
 	temp_label = new QLabel(this);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
-	BtButton *btn = getButton(btn_min_img.ascii());
+	BtButton *btn = getButton(btn_min_img.ascii(), this);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
 
 	hbox->addWidget(temp_label);
 
 	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
-	btn = getButton(btn_plus_img.ascii());
+	btn = getButton(btn_plus_img.ascii(), this);
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
 
@@ -775,7 +907,7 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	navbar_button = getButton(I_OK);
+	navbar_button = getButton(I_OK, this);
 
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	BtButton *top = new BtButton(this);
@@ -813,7 +945,7 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	navbar_button = getButton(I_OK);
+	navbar_button = getButton(I_OK, this);
 
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	BtButton *top = new BtButton(this);
@@ -855,3 +987,176 @@ QTime FSBannTime::time()
 	return QTime(hours, minutes);
 }
 
+//
+// ------------- Utility functions to create thermal regulator settings menus -------------------
+//
+void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
+{
+	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale.png");
+	// manual banner
+	bannPuls *manual = new bannPuls(settings, "Manual");
+	manual->SetIcons(IMG_RIGHT_ARROW, 0, i_manual.ascii());
+
+	settings->appendBanner(manual);
+	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+
+	FSBannManual *bann = new FSBannManual(sm, 0, dev);
+	//bann->setSecondForeground(second_fg);
+
+	sm->appendBanner(bann);
+
+	sm->setAllFGColor(paletteForegroundColor());
+	sm->setAllBGColor(paletteBackgroundColor());
+
+	connect(manual, SIGNAL(sxClick()), sm, SLOT(show()));
+	connect(manual, SIGNAL(sxClick()), sm, SLOT(raise()));
+	connect(manual, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+
+	// FIXME: non funziona!! bisogna connettere il custom button
+	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
+	connect(sm, SIGNAL(goDx()), parent, SLOT(show()));
+	connect(sm, SIGNAL(goDx()), parent, SLOT(raise()));
+	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
+	//FIXME: this is not correct, use OpenFrameSender
+	//connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
+}
+
+void FSBannTermoReg::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
+{
+	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale_temporizzato.png");
+	// timed manual banner
+	bannPuls *manual_timed = new bannPuls(settings, "manual_timed");
+	manual_timed->SetIcons(IMG_RIGHT_ARROW, 0, i_manual.ascii());
+
+	settings->appendBanner(manual_timed);
+	sottoMenu *sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+
+	FSBannManualTimed *bann = new FSBannManualTimed(sm, 0, dev);
+	//bann->setSecondForeground(second_fg);
+
+	sm->appendBanner(bann);
+
+	sm->setAllFGColor(paletteForegroundColor());
+	sm->setAllBGColor(paletteBackgroundColor());
+
+	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(show()));
+	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(raise()));
+	connect(manual_timed, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+
+	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
+	connect(sm, SIGNAL(goDx()), parent, SLOT(show()));
+	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
+	connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
+}
+
+void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
+{
+	const QString i_weekly = QString("%1%2").arg(IMG_PATH).arg("settimanale.png");
+
+	bannPuls *weekly = new bannPuls(settings, "weekly");
+	weekly->SetIcons(IMG_RIGHT_ARROW, 0, i_weekly.ascii());
+	settings->appendBanner(weekly);
+
+	WeeklyMenu *weekmenu = new WeeklyMenu(0, "weekly", conf);
+	weekmenu->setAllBGColor(paletteBackgroundColor());
+	weekmenu->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), weekmenu, SLOT(status_changed(QPtrList<device_status>)));
+
+	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(show()));
+	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(raise()));
+	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
+	connect(weekmenu, SIGNAL(programClicked(int)), parent, SLOT(show()));
+	connect(weekmenu, SIGNAL(programClicked(int)), weekmenu, SLOT(hide()));
+	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
+
+	//new OpenFrameSender(dev, weekmenu, this);
+}
+
+void FSBannTermoReg::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
+{
+	const QString i_scenario = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
+
+	bannPuls *scenario = new bannPuls(settings, "scenario");
+	scenario->SetIcons(IMG_RIGHT_ARROW, 0, i_scenario.ascii());
+	settings->appendBanner(scenario);
+
+	ScenarioMenu *scenariomenu = new ScenarioMenu(0, "weekly", conf);
+	scenariomenu->setAllBGColor(paletteBackgroundColor());
+	scenariomenu->setAllFGColor(paletteForegroundColor());
+
+	connect(scenario, SIGNAL(sxClick()), scenariomenu, SLOT(show()));
+	connect(scenario, SIGNAL(sxClick()), scenariomenu, SLOT(raise()));
+	connect(scenario, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	//connect(scenariomenu, SIGNAL(programClicked(int)), &items_submenu, SLOT(show()));
+	connect(scenariomenu, SIGNAL(programClicked(int)), scenariomenu, SLOT(hide()));
+	connect(scenariomenu, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(scenariomenu, SIGNAL(Closed()), scenariomenu, SLOT(hide()));
+
+	//OpenFrameSender *frame_sender = new OpenFrameSender(scenariomenu, this);
+}
+
+void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
+{
+	const QString i_holiday = QString("%1%2").arg(IMG_PATH).arg("feriale.png");
+
+	bannPuls *holiday = new bannPuls(settings, "holiday");
+	holiday->SetIcons(IMG_RIGHT_ARROW, 0, i_holiday.ascii());
+	settings->appendBanner(holiday);
+
+	// the banner inside date_edit does not have second foreground set
+	DateEditMenu *date_edit = new DateEditMenu(0, "date edit");
+	date_edit->setAllBGColor(paletteBackgroundColor());
+	date_edit->setAllFGColor(paletteForegroundColor());
+
+	connect(holiday, SIGNAL(sxClick()), date_edit, SLOT(show()));
+	connect(holiday, SIGNAL(sxClick()), date_edit, SLOT(raise()));
+	connect(holiday, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(date_edit, SIGNAL(Closed()), settings, SLOT(show()));
+	connect(date_edit, SIGNAL(Closed()), date_edit, SLOT(hide()));
+
+
+	TimeEditMenu *time_edit = new TimeEditMenu(0, "time edit");
+	time_edit->setAllBGColor(paletteBackgroundColor());
+	time_edit->setAllFGColor(paletteForegroundColor());
+
+	connect(date_edit, SIGNAL(goDx()), time_edit, SLOT(show()));
+	connect(date_edit, SIGNAL(goDx()), time_edit, SLOT(raise()));
+	connect(date_edit, SIGNAL(goDx()), date_edit, SLOT(hide()));
+
+	connect(time_edit, SIGNAL(Closed()), date_edit, SLOT(show()));
+	connect(time_edit, SIGNAL(Closed()), date_edit, SLOT(raise()));
+	connect(time_edit, SIGNAL(Closed()), time_edit, SLOT(hide()));
+
+	WeeklyMenu *weekly = new WeeklyMenu(0, "weekly program edit", conf);
+	weekly->setAllBGColor(paletteBackgroundColor());
+	weekly->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), weekly, SLOT(status_changed(QPtrList<device_status>)));
+
+	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(show()));
+	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(raise()));
+	connect(time_edit, SIGNAL(goDx()), time_edit, SLOT(hide()));
+
+	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(show()));
+	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(raise()));
+	connect(weekly, SIGNAL(Closed()), weekly, SLOT(hide()));
+
+	//connect(weekly, SIGNAL(programClicked(int)), &items_submenu, SLOT(show()));
+	//connect(weekly, SIGNAL(programClicked(int)), &items_submenu, SLOT(raise()));
+	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
+	connect(weekly, SIGNAL(programClicked(int)), parent, SLOT(show()));
+	connect(weekly, SIGNAL(programClicked(int)), parent, SLOT(raise()));
+	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
+
+	//new OpenFrameSender(dev, date_edit, time_edit, weekly, this);
+}
