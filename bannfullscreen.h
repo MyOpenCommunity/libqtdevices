@@ -306,16 +306,12 @@ public:
 	FSBannDate(QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	QDate date();
-	virtual BtButton *customButton();
 public slots:
 	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
 	QDate _date;
 	BtDateEdit *date_edit;
-	BtButton *navbar_button;
-signals:
-	void dateChanged(QDate);
 };
 
 class FSBannTime : public BannFullScreen
@@ -325,7 +321,6 @@ public:
 	FSBannTime(QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	QTime time();
-	virtual BtButton *customButton();
 public slots:
 	void status_changed(QPtrList<device_status> list);
 	void setTime(int hrs, int mins);
@@ -333,9 +328,6 @@ private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;
 	int hours, minutes;
-	BtButton *navbar_button;
-signals:
-	void timeChanged(QTime);
 };
 
 #endif // BANNFULLSCREEN_H

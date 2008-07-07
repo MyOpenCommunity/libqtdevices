@@ -411,6 +411,9 @@ public:
 	virtual void createWinterBanners();
 };
 
+/**
+ * A submenu that let the user choose the time.
+ */
 class TimeEditMenu : public sottoMenu
 {
 Q_OBJECT
@@ -419,10 +422,16 @@ public:
 	QTime time();
 private:
 	FSBannTime *time_edit;
+private slots:
+	void performAction();
 signals:
-	void timeChanged(QTime);
+	void timeSelected(QTime);
 };
 
+/**
+ * A submenu that let the users choose a date and emits a signal with the selected date when the user
+ * confirms the choice.
+ */
 class DateEditMenu : public sottoMenu
 {
 Q_OBJECT
@@ -431,7 +440,9 @@ public:
 	QDate date();
 private:
 	FSBannDate *date_edit;
+private slots:
+	void performAction();
 signals:
-	void dateChanged(QDate);
+	void dateSelected(QDate);
 };
 #endif // SOTTOMENU_H

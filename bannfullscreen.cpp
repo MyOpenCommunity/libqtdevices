@@ -908,8 +908,6 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	navbar_button = getButton(I_OK, this);
-
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	BtButton *top = new BtButton(this);
 	top->setPixmap(top_img);
@@ -919,13 +917,6 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 
 	date_edit = new BtDateEdit(this);
 	main_layout.addWidget(date_edit);
-
-	connect(date_edit, SIGNAL(valueChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
-}
-
-BtButton *FSBannDate::customButton()
-{
-	return navbar_button;
 }
 
 QDate FSBannDate::date()
@@ -946,8 +937,6 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	navbar_button = getButton(I_OK, this);
-
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	BtButton *top = new BtButton(this);
 	top->setPixmap(i_top_img);
@@ -957,13 +946,6 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 
 	time_edit = new BtTimeEdit(this);
 	main_layout.addWidget(time_edit);
-
-	connect(time_edit, SIGNAL(valueChanged(int, int)), this, SLOT(setTime(int, int)));
-}
-
-BtButton *FSBannTime::customButton()
-{
-	return navbar_button;
 }
 
 void FSBannTime::Draw()

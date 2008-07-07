@@ -1017,7 +1017,12 @@ TimeEditMenu::TimeEditMenu(QWidget *parent, const char *name)
 {
 	time_edit = new FSBannTime(this);
 	elencoBanner.append(time_edit);
-	connect(time_edit, SIGNAL(timeChanged(QTime)), this, SIGNAL(timeChanged(QTime)));
+	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
+}
+
+void TimeEditMenu::performAction()
+{
+	emit(timeSelected(time()));
 }
 
 QTime TimeEditMenu::time()
@@ -1030,9 +1035,13 @@ DateEditMenu::DateEditMenu(QWidget *parent, const char *name)
 {
 	date_edit = new FSBannDate(this);
 	elencoBanner.append(date_edit);
-	connect(date_edit, SIGNAL(dateChanged(QDate)), this, SIGNAL(dateChanged(QDate)));
+	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
 }
 
+void DateEditMenu::performAction()
+{
+	emit(dateSelected(date()));
+}
 QDate DateEditMenu::date()
 {
 	return date_edit->date();
