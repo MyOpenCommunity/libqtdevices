@@ -46,6 +46,7 @@ public:
 */
 	bannFrecce( QWidget * parent=NULL, const char *name=NULL ,uchar num=3,char* IconBut4=ICON_FRECCIA_DX);
 
+	~bannFrecce();
 	/**
 	 * Sets the button on the right (BUT2 in banner terminology) to \a btn, allowing each banner to set
 	 * the rightmost button on the navbar of its sottoMenu.
@@ -91,8 +92,13 @@ private slots:
 
 private:
 	QTimer press_timer;
-	/// The button set with the \a num parameter in the constructor
-	BtButton *originalDxButton;
+	/// The original button set with the \a num parameter in the constructor
+	BtButton *original_dx_button;
+
+	QRect dx_button_coord;
+
+	/// The parent of custom button set with setCustomButton method
+	QWidget *dx_button_parent;
 };
 
 

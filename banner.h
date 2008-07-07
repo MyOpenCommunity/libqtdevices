@@ -42,7 +42,7 @@ class banner : public QWidget
 Q_OBJECT
 public:
 	banner( QWidget *, const char *);
-	~banner();
+	virtual ~banner();
 	/*!
 	 * \brief sets the foundamental text one can see on the banner
 	 */

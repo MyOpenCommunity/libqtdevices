@@ -45,7 +45,7 @@ void BannFullScreen::Draw()
 
 BtButton *BannFullScreen::getButton(const char *img, QWidget *parent)
 {
-	BtButton *btn = new BtButton(this);
+	BtButton *btn = new BtButton(parent);
 	btn->setPixmap(*icons_library.getIcon(img));
 	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(img)));
 	return btn;
@@ -91,7 +91,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
-			bfs = new FSBannProbe(n, ind_centrale, true, parent, ind_centrale);
+			bfs = new FSBannProbe(n, ind_centrale, false, parent, ind_centrale);
 			break;
 		case fs_99z_probe:
 			bfs = new FSBannProbe(n, ind_centrale, true, parent, ind_centrale);
@@ -190,6 +190,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	status = AUTOMATIC;
 	status_change_enabled = change_status;
 	navbar_button = getButton(IMG_MAN, this);
+	navbar_button->hide();
 	conf_root = n;
 
 	QString simple_address = extractAddress(conf_root);
