@@ -72,25 +72,4 @@ private:
 	 */
 	QSignalMapper signal_mapper;
 };
-
-/**
- * This class will hold the state of settings that need more than one submenu to accept user input.
- * For example, to set program, date and hour in thermal regulator, 3 submenus are needed.
- */
-class OpenFrameSender : public QObject
-{
-Q_OBJECT
-public:
-	OpenFrameSender(thermal_regulator *_dev, DateEditMenu *_date_edit, TimeEditMenu *_time_edit,
-			WeeklyMenu *_program_menu, QObject *parent = 0);
-	OpenFrameSender(thermal_regulator *_dev, WeeklyMenu *_program_menu, QObject *parent = 0);
-public slots:
-	void holidaySettingsEnd(int program);
-	void weekSettingsEnd(int program);
-private:
-	thermal_regulator *dev;
-	DateEditMenu *date_edit;
-	TimeEditMenu *time_edit;
-	WeeklyMenu   *program_menu;
-};
 #endif // PLANTMENU_H
