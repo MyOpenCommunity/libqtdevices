@@ -382,6 +382,13 @@ private:
 	void setProgramNumber(device_status_thermal_regulator *ds, int program);
 
 	/**
+	 * Sets a new scenario number in the device status.
+	 * \param ds A pointer to a thermal regulator device_status.
+	 * \param scenario The new scenario to be set.
+	 */
+	void setScenarioNumber(device_status_thermal_regulator *ds, int scenario);
+
+	/**
 	 * Sets manual status and temperature passed as paramenter.
 	 * \param ds A pointer to the device status
 	 * \param temp The new temperature to be set

@@ -2342,6 +2342,12 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 			checkAndSetSummer(ds);
 			break;
 
+		case thermal_regulator::SUM_SCENARIO:
+			setScenarioNumber(ds, program);
+			checkAndSetStatus(ds, device_status_thermal_regulator::SCENARIO);
+			checkAndSetSummer(ds);
+			break;
+
 		case thermal_regulator::SUM_HOLIDAY:
 			checkAndSetStatus(ds, device_status_thermal_regulator::HOLIDAY);
 			checkAndSetSummer(ds);
@@ -2389,6 +2395,12 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 			checkAndSetWinter(ds);
 			break;
 
+		case thermal_regulator::WIN_SCENARIO:
+			setScenarioNumber(ds, program);
+			checkAndSetStatus(ds, device_status_thermal_regulator::SCENARIO);
+			checkAndSetWinter(ds);
+			break;
+
 		case thermal_regulator::WIN_HOLIDAY:
 			checkAndSetStatus(ds, device_status_thermal_regulator::HOLIDAY);
 			checkAndSetWinter(ds);
@@ -2407,6 +2419,18 @@ void frame_interpreter_thermal_regulator::setProgramNumber(device_status_thermal
 	{
 		curr_program.set_val(program);
 		ds->write_val(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
+		evt_list.append(ds);
+	}
+}
+
+void frame_interpreter_thermal_regulator::setScenarioNumber(device_status_thermal_regulator *ds, int scenario)
+{
+	stat_var curr_scenario(stat_var::SCENARIO);
+	ds->read(device_status_thermal_regulator::SCENARIO_INDEX, curr_scenario);
+	if (curr_scenario.get_val() != scenario)
+	{
+		curr_scenario.set_val(scenario);
+		ds->write_val(device_status_thermal_regulator::SCENARIO_INDEX, curr_scenario);
 		evt_list.append(ds);
 	}
 }
