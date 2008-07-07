@@ -795,6 +795,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	main_layout.addWidget(descr_label);
 
 	navbar_button = getButton(I_OK, this);
+	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 
 	temp = 200;
 	temp_label = new QLabel(this);
@@ -815,6 +816,11 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	main_layout.addLayout(hbox);
 
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
+}
+
+void FSBannManual::performAction()
+{
+	emit(temperatureSelected(temp));
 }
 
 void FSBannManual::incSetpoint()
@@ -891,8 +897,13 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_
 	main_layout.addWidget(time_edit);
 
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 }
 
+void FSBannManualTimed::performAction()
+{
+	emit(timeAndTempSelected(time_edit->time(), temp));
+}
 
 void FSBannManualTimed::Draw()
 {
@@ -955,14 +966,6 @@ void FSBannTime::Draw()
 
 void FSBannTime::status_changed(QPtrList<device_status> list)
 {
-}
-
-void FSBannTime::setTime(int hrs, int mins)
-{
-	hours = hrs;
-	minutes = mins;
-	if (QTime::isValid(hours, minutes, 0))
-		emit timeChanged(QTime(hours, minutes));
 }
 
 QTime FSBannTime::time()

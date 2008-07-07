@@ -271,15 +271,19 @@ protected:
 	QVBoxLayout main_layout;
 	/// The button to be set on the navbar
 	BtButton *navbar_button;
+	/// The setpoint temperature set on the interface
+	int temp;
 private:
 	QString descr;
 	QLabel *descr_label;
-	int temp;
 	QLabel *temp_label;
 	thermal_regulator *dev;
 private slots:
 	void incSetpoint();
 	void decSetpoint();
+	void performAction();
+signals:
+	void temperatureSelected(int);
 };
 
 /**
@@ -297,6 +301,10 @@ private:
 	thermal_regulator_4z *dev;
 	/// TimeEdit widget
 	BtTimeEdit *time_edit;
+private slots:
+	void performAction();
+signals:
+	void timeAndTempSelected(QTime, int);
 };
 
 class FSBannDate : public BannFullScreen
@@ -323,7 +331,6 @@ public:
 	QTime time();
 public slots:
 	void status_changed(QPtrList<device_status> list);
-	void setTime(int hrs, int mins);
 private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;
