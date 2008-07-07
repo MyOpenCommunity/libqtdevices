@@ -613,11 +613,16 @@ FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, QString ind_centrale, QWidget *pa
 	: FSBannTermoReg(n, parent, name)
 {
 	QString where_composed = QString("0#") + ind_centrale;
-	dev = static_cast<thermal_regulator_4z *>(btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4));
+	_dev = static_cast<thermal_regulator_4z *>(btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4));
 
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
+	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 
 	createSettingsMenu();
+}
+
+thermal_regulator *FSBannTermoReg4z::dev()
+{
+	return _dev;
 }
 
 void FSBannTermoReg4z::createSettingsMenu()
@@ -628,79 +633,80 @@ void FSBannTermoReg4z::createSettingsMenu()
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(raise()));
 		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
-		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
-		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
-		//connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
-
-		//connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
-		//connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");
 
-	weekSettings(settings, conf_root, dev);
-	manualSettings(settings, dev);
+	weekSettings(settings, conf_root, _dev);
+	manualSettings(settings, _dev);
 
-	timedManualSettings(settings, dev);
+	timedManualSettings(settings, _dev);
 
-	holidaySettings(settings, conf_root, dev);
+	holidaySettings(settings, conf_root, _dev);
 
 	// off banner
-	BannOff *off = new BannOff(settings, "OFF", dev);
+	BannOff *off = new BannOff(settings, "OFF", _dev);
 	settings->appendBanner(off);
 
 	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", dev);
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", _dev);
 	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", dev);
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
 	settings->appendBanner(summer_winter);
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
 }
-#if 0
-void create99zSettings(QDomNode conf, thermal_regulator_99z *dev)
-{
-	const QString i_scenarios = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
 
-	sottoMenu *settings = new sottoMenu(0, "settings");
+FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name)
+	: FSBannTermoReg(n, parent, name)
+{
+	_dev = static_cast<thermal_regulator_99z *>(btouch_device_cache.get_thermal_regulator(ind_centrale.ascii(), THERMO_Z99));
+	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
+	createSettingsMenu();
+}
+
+thermal_regulator *FSBannTermoReg99z::dev()
+{
+	return _dev;
+}
+
+void FSBannTermoReg99z::createSettingsMenu()
+{
+	settings = new sottoMenu(0, "settings");
 	if (settings)
 	{
-		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(show()));
-		//connect(&items_submenu, SIGNAL(goDx()), settings, SLOT(raise()));
-		//connect(&items_submenu, SIGNAL(goDx()), &items_submenu, SLOT(hide()));
-
-		//connect(settings, SIGNAL(Closed()), &items_submenu, SLOT(show()));
-		//connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
+		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(raise()));
+		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");
 
-	weekSettings(settings, conf, dev);
-	manualSettings(settings, dev);
+	weekSettings(settings, conf_root, _dev);
+	manualSettings(settings, _dev);
 
-	scenarioSettings(settings, conf, dev);
+	scenarioSettings(settings, conf_root, _dev);
 
-	holidaySettings(settings, conf, dev);
+	holidaySettings(settings, conf_root, _dev);
 
 	// off banner
-	BannOff *off = new BannOff(settings, "OFF", dev);
+	BannOff *off = new BannOff(settings, "OFF", _dev);
 	settings->appendBanner(off);
 
 	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", dev);
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", _dev);
 	settings->appendBanner(antifreeze);
 
 	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", dev);
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
 	settings->appendBanner(summer_winter);
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
 }
-#endif
 
 FSBann4zFancoil::FSBann4zFancoil(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent, const char *name)
 	: FSBannProbe(n, ind_centrale, change_status, parent),
@@ -984,61 +990,36 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	manual->SetIcons(IMG_RIGHT_ARROW, 0, i_manual.ascii());
 
 	settings->appendBanner(manual);
-	sottoMenu *sm = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-
-	FSBannManual *bann = new FSBannManual(sm, 0, dev);
-	//bann->setSecondForeground(second_fg);
-
-	sm->appendBanner(bann);
-
-	sm->setAllFGColor(paletteForegroundColor());
-	sm->setAllBGColor(paletteBackgroundColor());
-
-	connect(manual, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(manual, SIGNAL(sxClick()), sm, SLOT(raise()));
+	manual_menu = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(show()));
+	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(raise()));
 	connect(manual, SIGNAL(sxClick()), settings, SLOT(hide()));
 
-	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-
-	// FIXME: non funziona!! bisogna connettere il custom button
-	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	connect(sm, SIGNAL(goDx()), parent, SLOT(show()));
-	connect(sm, SIGNAL(goDx()), parent, SLOT(raise()));
-	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
-	//FIXME: this is not correct, use OpenFrameSender
-	//connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
-}
-
-void FSBannTermoReg::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
-{
-	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale_temporizzato.png");
-	// timed manual banner
-	bannPuls *manual_timed = new bannPuls(settings, "manual_timed");
-	manual_timed->SetIcons(IMG_RIGHT_ARROW, 0, i_manual.ascii());
-
-	settings->appendBanner(manual_timed);
-	sottoMenu *sm = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
-
-	FSBannManualTimed *bann = new FSBannManualTimed(sm, 0, dev);
+	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev);
 	//bann->setSecondForeground(second_fg);
 
-	sm->appendBanner(bann);
+	manual_menu->appendBanner(bann);
+	manual_menu->setAllFGColor(paletteForegroundColor());
+	manual_menu->setAllBGColor(paletteBackgroundColor());
 
-	sm->setAllFGColor(paletteForegroundColor());
-	sm->setAllBGColor(paletteBackgroundColor());
+	connect(bann, SIGNAL(temperatureSelected(int)), this, SLOT(manualSelected(int)));
+	connect(manual_menu, SIGNAL(Closed()), this, SLOT(manualCancelled()));
+}
 
-	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(manual_timed, SIGNAL(sxClick()), sm, SLOT(raise()));
-	connect(manual_timed, SIGNAL(sxClick()), settings, SLOT(hide()));
+void FSBannTermoReg::manualCancelled()
+{
+	manual_menu->hide();
+	settings->show();
+	settings->raise();
+}
 
-	connect(sm, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-
+void FSBannTermoReg::manualSelected(int temp)
+{
+	dev()->setManualTemp(temp);
+	manual_menu->hide();
 	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	connect(sm, SIGNAL(goDx()), parent, SLOT(show()));
-	connect(sm, SIGNAL(goDx()), sm, SLOT(hide()));
-	connect(sm, SIGNAL(goDx()), bann, SLOT(sendFrameOpen()));
+	parent->show();
+	parent->raise();
 }
 
 void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
@@ -1049,46 +1030,33 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 	weekly->SetIcons(IMG_RIGHT_ARROW, 0, i_weekly.ascii());
 	settings->appendBanner(weekly);
 
-	WeeklyMenu *weekmenu = new WeeklyMenu(0, "weekly", conf);
-	weekmenu->setAllBGColor(paletteBackgroundColor());
-	weekmenu->setAllFGColor(paletteForegroundColor());
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), weekmenu, SLOT(status_changed(QPtrList<device_status>)));
+	program_menu = new WeeklyMenu(0, "weekly", conf);
+	program_menu->setAllBGColor(paletteBackgroundColor());
+	program_menu->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), program_menu, SLOT(status_changed(QPtrList<device_status>)));
 
-	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(show()));
-	connect(weekly, SIGNAL(sxClick()), weekmenu, SLOT(raise()));
+	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
+	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(raise()));
 	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
 
-	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	connect(weekmenu, SIGNAL(programClicked(int)), parent, SLOT(show()));
-	connect(weekmenu, SIGNAL(programClicked(int)), weekmenu, SLOT(hide()));
-	connect(weekmenu, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(weekmenu, SIGNAL(Closed()), weekmenu, SLOT(hide()));
-
-	//new OpenFrameSender(dev, weekmenu, this);
+	connect(program_menu, SIGNAL(Closed()), this, SLOT(weekProgramCancelled()));
+	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(weekProgramSelected(int)));
 }
 
-void FSBannTermoReg::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
+void FSBannTermoReg::weekProgramCancelled()
 {
-	const QString i_scenario = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
+	program_menu->hide();
+	settings->show();
+	settings->raise();
+}
 
-	bannPuls *scenario = new bannPuls(settings, "scenario");
-	scenario->SetIcons(IMG_RIGHT_ARROW, 0, i_scenario.ascii());
-	settings->appendBanner(scenario);
-
-	ScenarioMenu *scenariomenu = new ScenarioMenu(0, "weekly", conf);
-	scenariomenu->setAllBGColor(paletteBackgroundColor());
-	scenariomenu->setAllFGColor(paletteForegroundColor());
-
-	connect(scenario, SIGNAL(sxClick()), scenariomenu, SLOT(show()));
-	connect(scenario, SIGNAL(sxClick()), scenariomenu, SLOT(raise()));
-	connect(scenario, SIGNAL(sxClick()), settings, SLOT(hide()));
-
-	//connect(scenariomenu, SIGNAL(programClicked(int)), &items_submenu, SLOT(show()));
-	connect(scenariomenu, SIGNAL(programClicked(int)), scenariomenu, SLOT(hide()));
-	connect(scenariomenu, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(scenariomenu, SIGNAL(Closed()), scenariomenu, SLOT(hide()));
-
-	//OpenFrameSender *frame_sender = new OpenFrameSender(scenariomenu, this);
+void FSBannTermoReg::weekProgramSelected(int program)
+{
+	dev()->setWeekProgram(program);
+	program_menu->hide();
+	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
+	parent->show();
+	parent->raise();
 }
 
 void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
@@ -1098,51 +1066,151 @@ void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal
 	bannPuls *holiday = new bannPuls(settings, "holiday");
 	holiday->SetIcons(IMG_RIGHT_ARROW, 0, i_holiday.ascii());
 	settings->appendBanner(holiday);
+	connect(holiday, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
 
 	// the banner inside date_edit does not have second foreground set
-	DateEditMenu *date_edit = new DateEditMenu(0, "date edit");
+	date_edit = new DateEditMenu(0, "date edit");
 	date_edit->setAllBGColor(paletteBackgroundColor());
 	date_edit->setAllFGColor(paletteForegroundColor());
+	connect(date_edit, SIGNAL(Closed()), this, SLOT(dateCancelled()));
+	connect(date_edit, SIGNAL(dateSelected(QDate)), this, SLOT(dateSelected(QDate)));
 
-	connect(holiday, SIGNAL(sxClick()), date_edit, SLOT(show()));
-	connect(holiday, SIGNAL(sxClick()), date_edit, SLOT(raise()));
-	connect(holiday, SIGNAL(sxClick()), settings, SLOT(hide()));
-
-	connect(date_edit, SIGNAL(Closed()), settings, SLOT(show()));
-	connect(date_edit, SIGNAL(Closed()), date_edit, SLOT(hide()));
-
-
-	TimeEditMenu *time_edit = new TimeEditMenu(0, "time edit");
+	time_edit = new TimeEditMenu(0, "time edit");
 	time_edit->setAllBGColor(paletteBackgroundColor());
 	time_edit->setAllFGColor(paletteForegroundColor());
+	connect(time_edit, SIGNAL(timeSelected(QTime)), this, SLOT(timeSelected(QTime)));
+	connect(time_edit, SIGNAL(Closed()), this, SLOT(timeCancelled()));
 
-	connect(date_edit, SIGNAL(goDx()), time_edit, SLOT(show()));
-	connect(date_edit, SIGNAL(goDx()), time_edit, SLOT(raise()));
-	connect(date_edit, SIGNAL(goDx()), date_edit, SLOT(hide()));
+	program_choice = new WeeklyMenu(0, "weekly program edit", conf);
+	program_choice->setAllBGColor(paletteBackgroundColor());
+	program_choice->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), program_choice, SLOT(status_changed(QPtrList<device_status>)));
+	connect(program_choice, SIGNAL(programClicked(int)), this, SLOT(holidaySettingsEnd(int)));
+	connect(program_choice, SIGNAL(Closed()), this, SLOT(programCancelled()));
+}
 
-	connect(time_edit, SIGNAL(Closed()), date_edit, SLOT(show()));
-	connect(time_edit, SIGNAL(Closed()), date_edit, SLOT(raise()));
-	connect(time_edit, SIGNAL(Closed()), time_edit, SLOT(hide()));
+void FSBannTermoReg::holidaySettingsStart()
+{
+	settings->hide();
+	date_edit->show();
+	date_edit->raise();
+}
 
-	WeeklyMenu *weekly = new WeeklyMenu(0, "weekly program edit", conf);
-	weekly->setAllBGColor(paletteBackgroundColor());
-	weekly->setAllFGColor(paletteForegroundColor());
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), weekly, SLOT(status_changed(QPtrList<device_status>)));
+void FSBannTermoReg::dateCancelled()
+{
+	date_edit->hide();
+	settings->show();
+}
 
-	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(show()));
-	connect(time_edit, SIGNAL(goDx()), weekly, SLOT(raise()));
-	connect(time_edit, SIGNAL(goDx()), time_edit, SLOT(hide()));
+void FSBannTermoReg::dateSelected(QDate d)
+{
+	holiday_date_end = d;
+	date_edit->hide();
+	time_edit->show();
+	time_edit->raise();
+}
 
-	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(show()));
-	connect(weekly, SIGNAL(Closed()), time_edit, SLOT(raise()));
-	connect(weekly, SIGNAL(Closed()), weekly, SLOT(hide()));
+void FSBannTermoReg::timeCancelled()
+{
+	time_edit->hide();
+	date_edit->show();
+}
 
-	//connect(weekly, SIGNAL(programClicked(int)), &items_submenu, SLOT(show()));
-	//connect(weekly, SIGNAL(programClicked(int)), &items_submenu, SLOT(raise()));
+void FSBannTermoReg::timeSelected(QTime t)
+{
+	holiday_time_end = t;
+	time_edit->hide();
+	program_choice->show();
+	program_choice->raise();
+}
+
+void FSBannTermoReg::programCancelled()
+{
+	program_choice->hide();
+	time_edit->show();
+}
+
+void FSBannTermoReg::holidaySettingsEnd(int program)
+{
+	dev()->setHolidayDateTime(holiday_date_end, holiday_time_end, program);
+	program_choice->hide();
 	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	connect(weekly, SIGNAL(programClicked(int)), parent, SLOT(show()));
-	connect(weekly, SIGNAL(programClicked(int)), parent, SLOT(raise()));
-	connect(weekly, SIGNAL(programClicked(int)), weekly, SLOT(hide()));
+	parent->show();
+}
 
-	//new OpenFrameSender(dev, date_edit, time_edit, weekly, this);
+void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
+{
+	const QString i_manual = QString("%1%2").arg(IMG_PATH).arg("manuale_temporizzato.png");
+	// timed manual banner
+	bannPuls *manual_timed = new bannPuls(settings, "manual_timed");
+	manual_timed->SetIcons(IMG_RIGHT_ARROW, 0, i_manual.ascii());
+
+	settings->appendBanner(manual_timed);
+	timed_manual_menu = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+
+	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
+	//bann->setSecondForeground(second_fg);
+
+	timed_manual_menu->appendBanner(bann);
+	timed_manual_menu->setAllFGColor(paletteForegroundColor());
+	timed_manual_menu->setAllBGColor(paletteBackgroundColor());
+
+	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(show()));
+	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(raise()));
+	connect(manual_timed, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(timed_manual_menu, SIGNAL(Closed()), this, SLOT(manualTimedCancelled()));
+	connect(bann, SIGNAL(timeAndTempSelected(QTime, int)), this, SLOT(manualTimedSelected(QTime, int)));
+}
+
+void FSBannTermoReg4z::manualTimedCancelled()
+{
+	timed_manual_menu->hide();
+	settings->show();
+	settings->raise();
+}
+
+void FSBannTermoReg4z::manualTimedSelected(QTime time, int temp)
+{
+	_dev->setManualTempTimed(temp, time);
+	timed_manual_menu->hide();
+	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
+	parent->show();
+	parent->raise();
+}
+
+void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
+{
+	const QString i_scenario = QString("%1%2").arg(IMG_PATH).arg("scenari.png");
+
+	bannPuls *scenario = new bannPuls(settings, "scenario");
+	scenario->SetIcons(IMG_RIGHT_ARROW, 0, i_scenario.ascii());
+	settings->appendBanner(scenario);
+
+	scenario_menu = new ScenarioMenu(0, "weekly", conf);
+	scenario_menu->setAllBGColor(paletteBackgroundColor());
+	scenario_menu->setAllFGColor(paletteForegroundColor());
+
+	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
+	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));
+	connect(scenario, SIGNAL(sxClick()), settings, SLOT(hide()));
+
+	connect(scenario_menu, SIGNAL(Closed()), this, SLOT(scenarioCancelled()));
+	connect(scenario_menu, SIGNAL(programClicked(int)), this, SLOT(scenarioSelected(int)));
+}
+
+void FSBannTermoReg99z::scenarioCancelled()
+{
+	scenario_menu->hide();
+	settings->show();
+	settings->raise();
+}
+
+void FSBannTermoReg99z::scenarioSelected(int scenario)
+{
+	_dev->setScenario(scenario);
+	scenario_menu->hide();
+	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
+	parent->show();
+	parent->raise();
 }

@@ -1,7 +1,7 @@
 /*!
  * \bannfullscreen.h
  * <!--
- * Copyright 2007 Develer S.r.l. (http://www.develer.com/)
+ * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
  * -->
  *
@@ -28,6 +28,11 @@ class thermal_regulator;
 class thermal_regulator_4z;
 class thermal_regulator_99z;
 class temperature_probe_controlled;
+class TimeEditMenu;
+class DateEditMenu;
+class ProgramMenu;
+class WeeklyMenu;
+class ScenarioMenu;
 
 
 /**
@@ -159,6 +164,7 @@ public:
 	FSBannTermoReg(QDomNode n, QWidget *parent = 0, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
+	virtual thermal_regulator *dev() = 0;
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
@@ -194,12 +200,6 @@ protected:
 	void manualSettings(sottoMenu *settings, thermal_regulator *dev);
 
 	/**
-	 * Utility function to create the submenu for timed manual operation mode.
-	 * This is used only with 4 zones thermal regulators
-	 */
-	void timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev);
-
-	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
 	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
@@ -210,6 +210,47 @@ protected:
 	QDomNode conf_root;
 
 	BtButton *navbar_button;
+private slots:
+	/**
+	 * Show the first submenu of holiday settings (date_edit)
+	 */
+	void holidaySettingsStart();
+
+	/**
+	 * User cancelled date editing, go back to main settings menu.
+	 */
+	void dateCancelled();
+
+	/**
+	 * User confirmed date, go to time editing.
+	 */
+	void dateSelected(QDate d);
+
+	/**
+	 * User cancelled time editing, go back to date editing.
+	 */
+	void timeCancelled();
+
+	/**
+	 * User confirmed time editing, go on with program selection.
+	 */
+	void timeSelected(QTime t);
+
+	/**
+	 * User cancelled program selection, go back to time editing.
+	 */
+	void programCancelled();
+
+	/**
+	 * User confirmed program. Send the relevant frames through the device.
+	 */
+	void holidaySettingsEnd(int program);
+
+	void manualCancelled();
+	void manualSelected(int temp);
+
+	void weekProgramCancelled();
+	void weekProgramSelected(int program);
 private:
 	QVBoxLayout main_layout;
 	/// Label and string that may be visualized
@@ -219,6 +260,13 @@ private:
 	BtButton *season_btn;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
 	BtButton *mode_btn;
+	QDate holiday_date_end;
+	QTime holiday_time_end;
+	TimeEditMenu *time_edit;
+	DateEditMenu *date_edit;
+	ProgramMenu *program_choice;
+	sottoMenu *manual_menu;
+	WeeklyMenu *program_menu;
 };
 
 /**
@@ -232,10 +280,39 @@ class FSBannTermoReg4z : public FSBannTermoReg
 Q_OBJECT
 public:
 	FSBannTermoReg4z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name = 0);
+	virtual thermal_regulator *dev();
 protected:
 	virtual void createSettingsMenu();
 private:
-	thermal_regulator_4z *dev;
+	/**
+	 * Utility function to create the submenu for timed manual operation mode.
+	 * This is used only with 4 zones thermal regulators
+	 */
+	void timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev);
+
+	thermal_regulator_4z *_dev;
+	sottoMenu *timed_manual_menu;
+private slots:
+	void manualTimedSelected(QTime time, int temp);
+	void manualTimedCancelled();
+};
+
+class FSBannTermoReg99z : public FSBannTermoReg
+{
+Q_OBJECT
+public:
+	FSBannTermoReg99z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name = 0);
+	virtual thermal_regulator *dev();
+protected:
+	virtual void createSettingsMenu();
+private:
+	void scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev);
+
+	thermal_regulator_99z *_dev;
+	ScenarioMenu *scenario_menu;
+private slots:
+	void scenarioCancelled();
+	void scenarioSelected(int scenario);
 };
 
 /**
