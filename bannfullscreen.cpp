@@ -206,17 +206,15 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	if (simple_address.isNull())
 		qFatal("FSBannProbe ctor: wrong address, configuration is wrong");
 	QString where_composed = simple_address + "#" + ind_centrale;
-	if (status_change_enabled)
-		dev = static_cast<temperature_probe_controlled *> (btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z99,
-				false, ind_centrale.ascii(), simple_address.ascii()));
-	else
-		dev = static_cast<temperature_probe_controlled *> (btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), THERMO_Z4,
-				false, ind_centrale.ascii(), simple_address.ascii()));
+
+	thermo_type_t probe_type = status_change_enabled ? THERMO_Z99 : THERMO_Z4;
+
+	dev = static_cast<temperature_probe_controlled *>
+		(btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), probe_type, false, ind_centrale.ascii(), simple_address.ascii()));
 
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
-
 
 	btn_minus = getButton(IMG_MINUS, this);
 	btn_minus->hide();
