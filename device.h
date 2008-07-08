@@ -236,7 +236,7 @@ public:
 	temperature_probe_controlled(QString, thermo_type_t, bool fancoil,
 		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
 
-	void setManual(int setpoint);
+	void setManual(unsigned setpoint);
 	void setAutomatic();
 };
 

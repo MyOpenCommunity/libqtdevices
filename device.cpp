@@ -510,15 +510,13 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
-void temperature_probe_controlled::setManual(int setpoint)
+void temperature_probe_controlled::setManual(unsigned setpoint)
 {
-
-	QString temp = QString::number(setpoint < 0 ? setpoint + 1000 : setpoint);
 	unsigned dimension = 14;
 	unsigned mode = 3; // generic mode
 
 	QString msg = QString("*#") + who + QString("*#") + where + QString("*") + QString("#") +
-		QString::number(dimension) + QString("*") + temp + QString("*") + QString::number(mode) + QString("##");
+		QString::number(dimension) + QString("*") + QString::number(setpoint) + QString("*") + QString::number(mode) + QString("##");
 
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
