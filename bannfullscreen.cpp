@@ -401,7 +401,7 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			}
 
 			stat_var curr_stat(stat_var::STAT);
-			ds->read(device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
+			dev->read(device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
 			if (curr_stat.initialized())
 			{
 				switch (curr_stat.get_val())
