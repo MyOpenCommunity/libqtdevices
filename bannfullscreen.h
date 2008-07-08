@@ -127,7 +127,7 @@ public:
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
-	int setpoint;
+	unsigned setpoint;
 	QLabel  *setpoint_label;
 
 	BtButton *btn_off, *btn_antifreeze, *btn_minus, *btn_plus;
@@ -152,13 +152,23 @@ private:
 
 	/// Send a setpoint frame only if 2 seconds are elapsed
 	QTimer setpoint_timer;
-	void setSetpoint();
 	BtButton *navbar_button;
 
 	BtButton *getIcon(const char *img);
 
 private slots:
 	void changeStatus();
+	void setSetpoint();
+
+	/**
+	 * Called when the user press on the plus button to increase setpoint temperature.
+	 */
+	void incSetpoint();
+
+	/**
+	 * Called when the user press on the minus button to decrease setpoint temperature.
+	 */
+	void decSetpoint();
 };
 
 /**

@@ -217,7 +217,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 	connect(navbar_button, SIGNAL(clicked()), SLOT(changeStatus()));
 
-	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
+	QHBoxLayout *hbox = new QHBoxLayout();
 
 	btn_minus = getButton(IMG_MINUS, this);
 	btn_minus->hide();
@@ -264,6 +264,28 @@ BtButton *FSBannProbe::customButton()
 	if (status_change_enabled)
 		return navbar_button;
 	return 0;
+}
+
+void FSBannProbe::incSetpoint()
+{
+	if (setpoint > 395)
+		return;
+	else
+		setpoint += 5;
+	Draw();
+	setpoint_timer.start(2000);
+	//delta_setpoint = 1;
+}
+
+void FSBannProbe::decSetpoint()
+{
+	if (setpoint < 35)
+		return;
+	else
+		setpoint -= 5;
+	Draw();
+	setpoint_timer.start(2000);
+	//delta_setpoint = 1;
 }
 
 void FSBannProbe::setSetpoint()
