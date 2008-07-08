@@ -215,7 +215,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 		(btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), probe_type, false, ind_centrale.ascii(), simple_address.ascii()));
 
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
-	connect(navbar_button, SIGNAL(clicked()), SLOT(change_status()));
+	connect(navbar_button, SIGNAL(clicked()), SLOT(changeStatus()));
 
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
 
