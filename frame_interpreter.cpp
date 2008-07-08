@@ -2222,7 +2222,7 @@ frame_interpreter_thermal_regulator::frame_interpreter_thermal_regulator(QString
 
 void frame_interpreter_thermal_regulator::get_init_message(device_status *ds, QString& out)
 {
-	out = QString("*#") + who + "#" + where + "##";
+	out = QString("*#") + who + "*#" + where + "##";
 }
 
 void frame_interpreter_thermal_regulator::handle_frame_handler(char *frame, QPtrList<device_status> *list)
