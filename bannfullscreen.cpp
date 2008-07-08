@@ -28,6 +28,15 @@
 #define IMG_MAN IMG_PATH "btnman.png"
 #define IMG_RIGHT_ARROW IMG_PATH "arrrg.png"
 
+
+void setVisible(QWidget *w, bool visible)
+{
+	if (visible)
+		w->show();
+	else
+		w->hide();
+}
+
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
 	: banner(parent, name)
 {
@@ -261,45 +270,13 @@ BtButton *FSBannProbe::getIcon(const char *img)
 
 void FSBannProbe::Draw()
 {
-	if (isOff)
-	{
-		if (status == MANUAL)
-		{
-			btn_minus->hide();
-			btn_plus->hide();
-		}
-		setpoint_label->hide();
-		//local_temp = "";
-		local_temp_label->hide();
-		btn_off->show();
-		btn_antifreeze->hide();
-	}
-	else if (isAntigelo)
-	{
-		if (status == MANUAL)
-		{
-			btn_minus->hide();
-			btn_plus->hide();
-		}
-		setpoint_label->hide();
-		//local_temp = "";
-		local_temp_label->hide();
-		btn_off->hide();
-		btn_antifreeze->show();
-	}
-	else
-	{
-		if (status == MANUAL)
-		{
-			btn_minus->show();
-			btn_plus->show();
-		}
-		setpoint_label->show();
-		local_temp_label->show();
-		btn_off->hide();
-		btn_antifreeze->hide();
+	setVisible(btn_minus, status == MANUAL);
+	setVisible(btn_plus, status == MANUAL);
+	setVisible(setpoint_label, !isOff && !isAntigelo);
+	setVisible(local_temp_label, !isOff && !isAntigelo);
+	setVisible(btn_off, isOff);
+	setVisible(btn_antifreeze, isAntigelo);
 
-	}
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	setpoint_label->setFont(aFont);
