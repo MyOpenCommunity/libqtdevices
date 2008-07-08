@@ -22,6 +22,7 @@
 #include <qdom.h>
 #include <qlcdnumber.h>
 #include <qdatetime.h>
+#include <qtimer.h>
 
 class device;
 class thermal_regulator;
@@ -126,7 +127,7 @@ public:
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
-	QString setpoint;
+	int setpoint;
 	QLabel  *setpoint_label;
 
 	BtButton *btn_off, *btn_antifreeze, *btn_minus, *btn_plus;
@@ -149,6 +150,9 @@ private:
 	probe_status status;
 	bool status_change_enabled;
 
+	/// Send a setpoint frame only if 2 seconds are elapsed
+	QTimer setpoint_timer;
+	void setSetpoint();
 	BtButton *navbar_button;
 
 	BtButton *getIcon(const char *img);
@@ -319,11 +323,11 @@ private slots:
  * Displays information about a controlled probe with fancoil. In addition to FSBannProbe, it displays
  * at the bottom of the page 4 buttons to set the speed of fancoil.
  */
-class FSBann4zFancoil : public FSBannProbe
+class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBann4zFancoil(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, QString ind_centrale, thermo_type_t type, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -332,7 +336,13 @@ private:
 	 */
 	void createFancoilButtons();
 	QButtonGroup fancoil_buttons;
+	/// A mapping between speed values and fancoil buttons
+	QMap<int, int> speed_to_btn_tbl;
+	QMap<int, int> btn_to_speed_tbl;
 	int fancoil_status;
+	temperature_probe_controlled *dev;
+private slots:
+	void handleFancoilButtons(int pressedButton);
 };
 
 class FSBannManual : public BannFullScreen

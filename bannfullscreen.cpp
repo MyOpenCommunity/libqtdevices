@@ -28,7 +28,6 @@
 #define IMG_MAN IMG_PATH "btnman.png"
 #define IMG_RIGHT_ARROW IMG_PATH "arrrg.png"
 
-
 void setVisible(QWidget *w, bool visible)
 {
 	if (visible)
@@ -36,6 +35,9 @@ void setVisible(QWidget *w, bool visible)
 	else
 		w->hide();
 }
+
+static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
+	"fancoil3off.png", "fancoil3on.png", "fancoilAoff.png", "fancoilAon.png"};
 
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
 	: banner(parent, name)
@@ -106,10 +108,10 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			bfs = new FSBannProbe(n, ind_centrale, true, parent, ind_centrale);
 			break;
 		case fs_4z_fancoil:
-			bfs = new FSBann4zFancoil(n, ind_centrale, true, parent, ind_centrale);
+			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z4, false, parent, ind_centrale);
 			break;
 		case fs_99z_fancoil:
-			bfs = new FSBann4zFancoil(n, ind_centrale, true, parent, ind_centrale);
+			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z99, true, parent, ind_centrale);
 			break;
 		case fs_4z_thermal_regulator:
 			bfs = new FSBannTermoReg4z(n, ind_centrale, parent);
@@ -242,10 +244,12 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
-	setpoint = "-23.5"TEMP_DEGREES"C";
+	setpoint = 1235;
 	local_temp = "0";
 	isOff = false;
 	isAntigelo = false;
+
+	connect(&setpoint_timer, SIGNAL(timeout()), this, SLOT(setSetpoint()));
 }
 
 BtButton *FSBannProbe::customButton()
@@ -254,6 +258,14 @@ BtButton *FSBannProbe::customButton()
 		return navbar_button;
 	return 0;
 }
+
+void FSBannProbe::setSetpoint()
+{
+	setpoint_timer.stop();
+	//dev->setManualTemp();
+}
+
+
 
 BtButton *FSBannProbe::getIcon(const char *img)
 {
@@ -279,9 +291,26 @@ void FSBannProbe::Draw()
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
+
+	QString str;
+	float icx;
+	char tmp[10];
+	icx = setpoint;
+	qDebug("temperatura setpoint: %d",(int)icx);
+	str = "";
+	if (icx>=1000)
+	{
+		str = "-";
+		icx=icx-1000;
+	}
+	icx/=10;
+	sprintf(tmp,"%.1f",icx);
+	str += tmp;
+	str += TEMP_DEGREES"C";
+	setpoint_label->setText(str);
+
 	setpoint_label->setFont(aFont);
 	setpoint_label->setAlignment(AlignHCenter);
-	setpoint_label->setText(setpoint);
 	setpoint_label->setPaletteForegroundColor(second_fg);
 
 	FontManager::instance()->getFont(font_banTermo_testo, aFont);
@@ -348,20 +377,7 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 
 			if (curr_sp.initialized())
 			{
-				float icx;
-				char tmp[10];
-				icx = curr_sp.get_val();
-				qDebug("temperatura setpoint: %d",(int)icx);
-				setpoint = "";
-				if (icx>=1000)
-				{
-					setpoint = "-";
-					icx=icx-1000;
-				}
-				icx/=10;
-				sprintf(tmp,"%.1f",icx);
-				setpoint += tmp;
-				setpoint += TEMP_DEGREES"C";
+				setpoint = curr_sp.get_val();
 				update = true;
 				break;
 			}
@@ -695,44 +711,57 @@ void FSBannTermoReg99z::createSettingsMenu()
 	settings->setAllBGColor(paletteBackgroundColor());
 }
 
-FSBann4zFancoil::FSBann4zFancoil(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent, const char *name)
+FSBannFancoil::FSBannFancoil(QDomNode n, QString ind_centrale, thermo_type_t type, bool change_status, QWidget *parent, const char *name)
 	: FSBannProbe(n, ind_centrale, change_status, parent),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
+	QString simple_address = extractAddress(conf_root);
+	if (simple_address.isNull())
+		qFatal("FSBannProbe ctor: wrong address, configuration is wrong");
+	QString where_composed = simple_address + "#" + ind_centrale;
+	dev = static_cast<temperature_probe_controlled *> (btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), type,
+				true, ind_centrale.ascii(), simple_address.ascii()));
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
+
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
 	fancoil_buttons.hide(); // do not show QButtonGroup frame
 	fancoil_status = 0;
 }
 
-void FSBann4zFancoil::createFancoilButtons()
+void FSBannFancoil::createFancoilButtons()
 {
-	const char *icon_path[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
-		"fancoil3off.png", "fancoil3on.png", "fancoilAoff.png", "fancoilAon.png"};
 	QHBoxLayout *hbox = new QHBoxLayout();
-	for (int i = 0, id = 0; i < 8; i = i+2, ++id)
+	for (int i = 0, id = 0; i < 8; i += 2, ++id)
 	{
-		QPixmap *icon, *pressed_icon;
-		BtButton *btn;
-		icon         = icons_library.getIcon(QString(IMG_PATH) + icon_path[i]);
-		pressed_icon = icons_library.getIcon(QString(IMG_PATH) + icon_path[i+1]);
-		btn = new BtButton(this);
-		hbox->addWidget(btn);
-		btn->setPixmap(*icon);
-		btn->setPressedPixmap(*pressed_icon);
-		fancoil_buttons.insert(btn, id);
+		QString path = QString(IMG_PATH) + FANCOIL_ICONS[i];
+		QString path_pressed = QString(IMG_PATH) + FANCOIL_ICONS[i+1];
+		BtButton *btn = new BtButton(this);
+		btn->setPixmap(*icons_library.getIcon(path.ascii()));
+		btn->setPressedPixmap(*icons_library.getIcon(path_pressed.ascii()));
 		btn->setToggleButton(true);
+
+		hbox->addWidget(btn);
+		fancoil_buttons.insert(btn, i);
+
+		speed_to_btn_tbl[(id + 1) % 4] = id;
+		btn_to_speed_tbl[id] = (id + 1) % 4;
 	}
 	main_layout.insertLayout(-1, hbox);
 	main_layout.setStretchFactor(&fancoil_buttons, 2);
 }
 
-void FSBann4zFancoil::Draw()
+void FSBannFancoil::Draw()
 {
 	FSBannProbe::Draw();
 }
 
-void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
+void FSBannFancoil::handleFancoilButtons(int pressedButton)
+{
+	//dev->setSpeed(btn_to_speed_tbl[pressedButton]);
+}
+
+void FSBannFancoil::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
 	device_status *dev;
@@ -747,32 +776,16 @@ void FSBann4zFancoil::status_changed(QPtrList<device_status> list)
 			dev->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
 
 			// Set the fancoil Button in the buttons bar
-			fancoil_status = -1;
-			switch (speed_var.get_val())
+			if (speed_to_btn_tbl.contains(speed_var.get_val()))
 			{
-				case 0: // auto
-					fancoil_status = 3;
-					break;
-				case 1: // min
-					fancoil_status = 0;
-					break;
-				case 2: // medium
-					fancoil_status = 1;
-					break;
-				case 3: // max
-					fancoil_status = 2;
-					break;
-				default:
-					qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
+				fancoil_status = speed_to_btn_tbl[speed_var.get_val()];
+				update = true;
 			}
-			update = true;
-			if (fancoil_status != -1)
-			{
-				qDebug("[TERMO] New fancoil status: %d", fancoil_status);
-				fancoil_buttons.setButton(fancoil_status);
-			}
+			else
+				qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
 		}
 	}
+
 	if (update)
 		Draw();
 	FSBannProbe::status_changed(list);
