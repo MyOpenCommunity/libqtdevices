@@ -399,6 +399,23 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 				update = true;
 				break;
 			}
+
+			stat_var curr_stat(stat_var::STAT);
+			ds->read(device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
+			if (curr_stat.initialized())
+			{
+				switch (curr_stat.get_val())
+				{
+					case device_status_temperature_probe_extra::S_MAN:
+						status = MANUAL;
+						break;
+					case device_status_temperature_probe_extra::S_AUTO:
+						status = AUTOMATIC;
+						break;
+					default:
+						break;
+				}
+			}
 		}
 	}
 	FSBannSimpleProbe::status_changed(list);
@@ -413,6 +430,10 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 {
 	conf_root = n;
 	navbar_button = getButton(IMG_SETTINGS, this);
+
+	QColor *bg, *fg1, *fg2;
+	readExtraConf(&bg, &fg1, &fg2);
+	setSecondForeground(*fg2);
 
 	// Put a sensible default for the description
 	QDomNode descr = conf_root.namedItem("descr");
@@ -996,7 +1017,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	connect(manual, SIGNAL(sxClick()), settings, SLOT(hide()));
 
 	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev);
-	//bann->setSecondForeground(second_fg);
+	bann->setSecondForeground(second_fg);
 
 	manual_menu->appendBanner(bann);
 	manual_menu->setAllFGColor(paletteForegroundColor());
@@ -1149,7 +1170,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	timed_manual_menu = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
 	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
-	//bann->setSecondForeground(second_fg);
+	bann->setSecondForeground(second_fg);
 
 	timed_manual_menu->appendBanner(bann);
 	timed_manual_menu->setAllFGColor(paletteForegroundColor());
