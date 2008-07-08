@@ -156,6 +156,9 @@ private:
 	BtButton *navbar_button;
 
 	BtButton *getIcon(const char *img);
+
+private slots:
+	void changeStatus();
 };
 
 /**

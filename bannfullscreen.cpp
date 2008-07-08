@@ -215,6 +215,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 		(btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), probe_type, false, ind_centrale.ascii(), simple_address.ascii()));
 
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
+	connect(navbar_button, SIGNAL(clicked()), SLOT(change_status()));
 
 	QHBoxLayout *hbox = new QHBoxLayout(&main_layout);
 
@@ -250,6 +251,14 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	connect(&setpoint_timer, SIGNAL(timeout()), this, SLOT(setSetpoint()));
 }
 
+void FSBannProbe::changeStatus()
+{
+	if (status == AUTOMATIC)
+		dev->setManual(setpoint);
+	else
+		dev->setAutomatic();
+}
+
 BtButton *FSBannProbe::customButton()
 {
 	if (status_change_enabled)
@@ -260,10 +269,8 @@ BtButton *FSBannProbe::customButton()
 void FSBannProbe::setSetpoint()
 {
 	setpoint_timer.stop();
-	//dev->setManualTemp();
+	dev->setManual(setpoint);
 }
-
-
 
 BtButton *FSBannProbe::getIcon(const char *img)
 {
