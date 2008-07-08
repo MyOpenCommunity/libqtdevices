@@ -260,7 +260,7 @@ BtButton *FSBannProbe::customButton()
 void FSBannProbe::setSetpoint()
 {
 	setpoint_timer.stop();
-	dev->setManualTemp();
+	//dev->setManualTemp();
 }
 
 
@@ -293,7 +293,7 @@ void FSBannProbe::Draw()
 	QString str;
 	float icx;
 	char tmp[10];
-	icx = curr_sp.get_val();
+	icx = setpoint;
 	qDebug("temperatura setpoint: %d",(int)icx);
 	str = "";
 	if (icx>=1000)
@@ -756,7 +756,7 @@ void FSBannFancoil::Draw()
 
 void FSBannFancoil::handleFancoilButtons(int pressedButton)
 {
-	dev->setSpeed(btn_to_speed_tbl[pressedButton]);
+	//dev->setSpeed(btn_to_speed_tbl[pressedButton]);
 }
 
 void FSBannFancoil::status_changed(QPtrList<device_status> list)
