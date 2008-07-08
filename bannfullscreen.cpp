@@ -338,45 +338,34 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			if (curr_local.initialized())
 			{
 				update = true;
-				switch (curr_local.get_val())
+				if (curr_local.get_val() >= 0  && curr_local.get_val() <= 3 ||
+					curr_local.get_val() >= 11 && curr_local.get_val() <= 13)
 				{
-					case 0:
-						local_temp = "0";
-						break;
-					case 1:
-						local_temp = "+1";
-						break;
-					case 2:
-						local_temp = "+2";
-						break;
-					case 3:
-						local_temp = "+3";
-						break;
-					case 11:
-						local_temp = "-1";
-						break;
-					case 12:
-						local_temp = "-2";
-						break;
-					case 13:
-						local_temp = "-3";
-						break;
-						//FIXME: maybe this is broken, case 4 should be off (check documentation)
-					case 4:
-						local_temp = "0";
-						break;
-					case 5:
-						local_temp = "0";
-						break;
-					default:
-						update = false;
-						qDebug("[TERMO] FSBannProbe::status_changed(): local status case not handled!");
-				}
+					local_temp = QString::number(curr_local.get_val() % 10);
+					if (curr_local.get_val() >= 11)
+						local_temp = local_temp.insert(0, "-");
+					else if (curr_local.get_val() >= 1)
+						local_temp = local_temp.insert(0, "+");
 
-				if (update)
+					isOff = false;
+					isAntigelo = false;
+				}
+				else if (curr_local.get_val() == 4)
 				{
+					local_temp = "0";
+					isOff = false;
+					isAntigelo = true;
+				}
+				else if (curr_local.get_val() == 5)
+				{
+					local_temp = "0";
 					isOff = true;
 					isAntigelo = false;
+				}
+				else
+				{
+					update = false;
+					qDebug("[TERMO] FSBannProbe::status_changed(): local status case not handled!");
 				}
 			}
 
