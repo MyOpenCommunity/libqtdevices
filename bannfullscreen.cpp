@@ -364,14 +364,14 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 				else if (curr_local.get_val() == 4)
 				{
 					local_temp = "0";
-					isOff = false;
-					isAntigelo = true;
+					isOff = true;
+					isAntigelo = false;
 				}
 				else if (curr_local.get_val() == 5)
 				{
 					local_temp = "0";
-					isOff = true;
-					isAntigelo = false;
+					isOff = false;
+					isAntigelo = true;
 				}
 				else
 				{
