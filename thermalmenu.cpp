@@ -36,10 +36,6 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor b
 	// check if plant menus are created?
 }
 
-void ThermalMenu::addItems()
-{
-}
-
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
 	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config,
@@ -119,13 +115,8 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	{
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
-			device *dev;
 			QString addr = n.namedItem("where").toElement().text();
-			if (external)
-				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), external);
-			else
-				dev = btouch_device_cache.get_temperature_probe(addr.ascii(), external);
-
+			device *dev = btouch_device_cache.get_temperature_probe(addr.ascii(), external);
 
 			banner *b = new BannTemperature(sm, "banner", n, dev);
 			initBanner(b, n);
@@ -134,7 +125,6 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		}
 		n = n.nextSibling();
 	}
-	//sm->show();
 }
 
 QString ThermalMenu::getDeviceAddress(QDomNode root)

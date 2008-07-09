@@ -45,7 +45,6 @@ private:
 	 */
 	void createProbeMenu(QDomNode config, bannPuls *bann, bool external);
 
-	void addItems();
 	void createPlantMenu(QDomNode config, bannPuls *bann);
 	void addBanners();
 
