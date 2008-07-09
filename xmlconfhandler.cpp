@@ -195,8 +195,6 @@ bool xmlconfhandler::startDocument()
 	CurTagL6 = "";
 	CurTagL7 = "";
 	CurTagL8 = "";
-	CurTagL9 = "";
-	CurTagL10 = "";
 	sottomenu_icon_name = "";
 	sottomenu_id=0;
 	ok=0;
@@ -255,13 +253,9 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 	{
 		CurTagL8 = qName;
 	}
-	else if (CurTagL9.isEmpty())
+	else
 	{
-		CurTagL9 = qName;
-	}
-	else if (CurTagL10.isEmpty())
-	{
-		CurTagL10 = qName;
+		qFatal("Too many level on xml conf file!!");
 	}
 	return TRUE;
 }
@@ -906,15 +900,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	//
 	//
 	//
-	if (!CurTagL10.isEmpty())
-	{
-		CurTagL10 = "";
-	}
-	else if (!CurTagL9.isEmpty())
-	{
-		CurTagL9 = "";
-	}
-	else if (!CurTagL8.isEmpty())
+	if (!CurTagL8.isEmpty())
 	{
 		CurTagL8 = "";
 	}
