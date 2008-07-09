@@ -249,7 +249,6 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, AlignHCenter);
 	hbox->addWidget(icon_antifreeze);
 
-	icon_off = new QLabel(this);
 	icon_off = getLabelWithPixmap(IMG_OFF_S, this, AlignHCenter);
 	hbox->addWidget(icon_off);
 
@@ -790,7 +789,14 @@ void FSBannFancoil::Draw()
 
 void FSBannFancoil::handleFancoilButtons(int pressedButton)
 {
-	//dev->setSpeed(btn_to_speed_tbl[pressedButton]);
+	dev->setFancoilSpeed(btn_to_speed_tbl[pressedButton]);
+	/*
+	 * Read back the set value to force an update to other devices
+	 * monitoring this dimension.
+	 *
+	 * This code was present in the original termopage. I leave it here to avoid breaking something.
+	 */
+	dev->requestFancoilStatus();
 }
 
 void FSBannFancoil::status_changed(QPtrList<device_status> list)
