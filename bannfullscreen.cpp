@@ -926,11 +926,7 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_
 	: FSBannManual(parent, name, _dev),
 	dev(_dev)
 {
-	const int bt_max_hours = 99;
-	const int bt_max_mins = 99;
 	time_edit = new BtTimeEdit(this);
-	time_edit->setMaxHours(bt_max_hours);
-	time_edit->setMaxMins(bt_max_mins);
 	main_layout.addWidget(time_edit);
 
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
