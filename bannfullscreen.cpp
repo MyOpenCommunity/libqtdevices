@@ -914,8 +914,11 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 		{
 			stat_var curr_sp(stat_var::SP);
 			ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
-			temp = curr_sp.get_val();
-			update = true;
+			if (curr_sp.initialized())
+			{
+				temp = curr_sp.get_val();
+				update = true;
+			}
 		}
 	}
 	if (update)
