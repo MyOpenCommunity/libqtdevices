@@ -132,7 +132,8 @@ protected:
 	unsigned setpoint;
 	QLabel  *setpoint_label;
 
-	BtButton *btn_off, *btn_antifreeze, *btn_minus, *btn_plus;
+	BtButton *btn_minus, *btn_plus;
+	QLabel *icon_off, *icon_antifreeze;
 	// FIXME: setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
@@ -286,9 +287,9 @@ private:
 	QLabel *description_label;
 	QString description;
 	/// Status icon (summer/winter)
-	BtButton *season_btn;
+	QLabel *season_icon;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
-	BtButton *mode_btn;
+	QLabel *mode_icon;
 	QDate holiday_date_end;
 	QTime holiday_time_end;
 	TimeEditMenu *time_edit;

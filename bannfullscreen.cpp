@@ -27,6 +27,10 @@
 #define IMG_AUTO IMG_PATH "btnauto.png"
 #define IMG_MAN IMG_PATH "btnman.png"
 #define IMG_RIGHT_ARROW IMG_PATH "arrrg.png"
+#define IMG_SUMMER_S IMG_PATH "estate_s.png"
+#define IMG_THERMR IMG_PATH "centrale.png"
+#define IMG_OFF_S IMG_PATH "sondaoff.png"
+#define IMG_ANTIFREEZE_S IMG_PATH "sondaantigelo.png"
 
 void setVisible(QWidget *w, bool visible)
 {
@@ -34,6 +38,14 @@ void setVisible(QWidget *w, bool visible)
 		w->show();
 	else
 		w->hide();
+}
+
+QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
+{
+	QLabel *tmp = new QLabel(parent);
+	tmp->setPixmap(*icons_library.getIcon(img));
+	tmp->setAlignment(alignment);
+	return tmp;
 }
 
 static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
@@ -234,11 +246,12 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	btn_plus->hide();
 	hbox->addWidget(btn_plus);
 
-	btn_antifreeze = getIcon("antigelop.png");
-	hbox->addWidget(btn_antifreeze);
+	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, AlignHCenter);
+	hbox->addWidget(icon_antifreeze);
 
-	btn_off = getIcon("offp.png");
-	hbox->addWidget(btn_off);
+	icon_off = new QLabel(this);
+	icon_off = getLabelWithPixmap(IMG_OFF_S, this, AlignHCenter);
+	hbox->addWidget(icon_off);
 
 	main_layout.addLayout(hbox);
 	main_layout.setStretchFactor(hbox, 1);
@@ -316,9 +329,9 @@ void FSBannProbe::Draw()
 	setVisible(btn_minus, status == MANUAL);
 	setVisible(btn_plus, status == MANUAL);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
-	setVisible(local_temp_label, !isOff && !isAntigelo);
-	setVisible(btn_off, isOff);
-	setVisible(btn_antifreeze, isAntigelo);
+	setVisible(local_temp_label, !isOff && !isAntigelo && (local_temp != "0"));
+	setVisible(icon_off, isOff);
+	setVisible(icon_antifreeze, isAntigelo);
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
@@ -458,25 +471,15 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 		description = "Wrong node";
 	}
 	description_label = new QLabel(this);
+	description_label->setAlignment(AlignHCenter);
 
-	const QString i_summer = QString(IMG_PATH) + "estate_s.png";
-	QPixmap *icon = icons_library.getIcon(i_summer.ascii());
-	season_btn = new BtButton(this);
-	season_btn->setPixmap(*icon);
-	season_btn->setDown(true);
-	season_btn->setEnabled(false);
+	season_icon = getLabelWithPixmap(IMG_SUMMER_S, this, AlignHCenter);
 
-	// is this a sensible default for mode icon?
-	const QString i_thermal_reg = QString(IMG_PATH) + "centrale.png";
-	icon = icons_library.getIcon(i_thermal_reg.ascii());
-	mode_btn = new BtButton(this);
-	mode_btn->setPixmap(*icon);
-	mode_btn->setDown(true);
-	mode_btn->setEnabled(false);
+	mode_icon = getLabelWithPixmap(IMG_THERMR, this, AlignHCenter);
 
-	main_layout.addWidget(mode_btn);
+	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
-	main_layout.addWidget(season_btn);
+	main_layout.addWidget(season_icon);
 	main_layout.setAlignment(Qt::AlignHCenter);
 }
 
@@ -515,7 +518,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					{
 						const QString img = QString(IMG_PATH) + "estate_s.png";
 						QPixmap *icon = icons_library.getIcon(img.ascii());
-						season_btn->setPixmap(*icon);
+						season_icon->setPixmap(*icon);
 						season = thermal_regulator::SUMMER;
 					}
 					break;
@@ -523,7 +526,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					{
 						const QString img = QString(IMG_PATH) + "inverno_s.png";
 						QPixmap *icon = icons_library.getIcon(img.ascii());
-						season_btn->setPixmap(*icon);
+						season_icon->setPixmap(*icon);
 						season = thermal_regulator::WINTER;
 					}
 					break;
@@ -535,17 +538,15 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 			{
 				case device_status_thermal_regulator::OFF:
 					{
-						const QString i_img = QString(IMG_PATH) + "offp.png";
-						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_btn->setPixmap(*icon);
+						QPixmap *icon = icons_library.getIcon(IMG_OFF_S);
+						mode_icon->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
 				case device_status_thermal_regulator::PROTECTION:
 					{
-						const QString i_img = QString(IMG_PATH) + "antigelop.png";
-						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_btn->setPixmap(*icon);
+						QPixmap *icon = icons_library.getIcon(IMG_ANTIFREEZE_S);
+						mode_icon->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -553,7 +554,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "manuale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_btn->setPixmap(*icon);
+						mode_icon->setPixmap(*icon);
 						stat_var curr_sp(stat_var::SP);
 						ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
 						// remember: stat_var::get_val() returns an int
@@ -574,7 +575,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "settimanale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_btn->setPixmap(*icon);
+						mode_icon->setPixmap(*icon);
 
 						stat_var curr_program(stat_var::PROGRAM);
 						ds->read(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
@@ -598,7 +599,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "feriale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_btn->setPixmap(*icon);
+						mode_icon->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -606,7 +607,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					{
 						const QString i_img = QString(IMG_PATH) + "festivo.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_btn->setPixmap(*icon);
+						mode_icon->setPixmap(*icon);
 						description_label->hide();
 					}
 					break;
@@ -885,13 +886,13 @@ void FSBannManual::Draw()
 	temp_label->setAlignment(AlignHCenter|AlignVCenter);
 
 	QString temp_string;
+
 	int temp_format = temp;
 	if (temp_format >= 1000)
 	{
 		temp_string.append("-");
 		temp_format = temp_format - 1000;
 	}
-	// FIXME: use string::fromUtf8("%1°C")
 	temp_string = temp_string.append("%1").arg(temp_format);
 	temp_string.insert(temp_string.length() - 1, ".");
 	temp_string.append(TEMP_DEGREES"C");
