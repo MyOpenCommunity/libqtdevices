@@ -42,14 +42,12 @@ void ThermalMenu::addItems()
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new PlantMenu(parentWidget(), "plant menu", config,
+	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config,
 			paletteBackgroundColor(), paletteForegroundColor(), second_fg);
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(raise()));
-	connect(bann, SIGNAL(sxClick()), this, SLOT(hide()));
 
-	connect(sm, SIGNAL(Closed()), this, SLOT(show()));
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+	sm->hide();
 }
 
 void ThermalMenu::addBanners()
@@ -101,24 +99,20 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 
 void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
 {
-	sottoMenu *sm = new sottoMenu(parentWidget(), "sottomenu extprobe");
+	sottoMenu *sm = new sottoMenu(NULL, "sottomenu extprobe");
 	sm->setBGColor(paletteBackgroundColor());
 	sm->setFGColor(paletteForegroundColor());
+
 	/**
-	 * Now submenus work. To fix this:
-	 *  - make all the submenus children of the same parent (home page), so that they are all siblings.
+	 * Now submenus work. To add another submenu:
+	 *  - make all the submenus children of the same parent (NULL), so that they are all siblings.
 	 *  - create the submenu as usual, ie. make all banners children of the sottoMenu class.
-	 *  - connect the clicked() signal with show() and raise() slots of the submenu to be shown,
-	 *      and to the hide() slot of the submenu that is now showing.
-	 *  - connect the Closed() signal of the submenu now created with its hide() slot and the show() 
-	 *      slot of the submenu that is creating it
+	 *  - connect the clicked() signal with show() slot of the submenu to be shown.
+	 *  - connect the Closed() signal of the submenu now created with its hide() slot.
 	 */
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(raise()));
-	connect(bann, SIGNAL(sxClick()), this, SLOT(hide()));
-
-	connect(sm, SIGNAL(Closed()), this, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+	sm->hide();
 
 	QDomNode n = config.firstChild();
 	while (!n.isNull())
