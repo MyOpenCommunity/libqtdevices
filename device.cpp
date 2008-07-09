@@ -492,7 +492,7 @@ void thermal_regulator_99z::setScenario(int scenario)
 }
 
 // Controlled temperature probe implementation
-temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_type_t type, bool fancoil,
+temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_type_t type, bool _fancoil,
 		const char *ind_centrale, const char *indirizzo, bool p, int g) :
 	device(QString("4"), w, p, g)
 {
@@ -501,6 +501,7 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_temperature_probe_extra(type));
 	stat->append(new device_status_temperature_probe());
+	fancoil = _fancoil;
 	if (fancoil)
 		stat->append(new device_status_fancoil());
 
@@ -531,6 +532,33 @@ void temperature_probe_controlled::setAutomatic()
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
 	sendFrame(msg_open.frame_open);
+}
+
+void temperature_probe_controlled::setFancoilSpeed(int speed)
+{
+	const unsigned dimension = 11;
+	QString sharp_where = QString("#") + where;
+	if (fancoil)
+	{
+		QString msg = QString("*#") + who + "*" + sharp_where + "*#" + QString::number(dimension) + "*" +
+			QString::number(speed) + "##";
+		openwebnet msg_open;
+		msg_open.CreateMsgOpen(const_cast<char *>(msg.ascii()), msg.length());
+		sendFrame(msg_open.frame_open);
+	}
+}
+
+void temperature_probe_controlled::requestFancoilStatus()
+{
+	const unsigned dimension = 11;
+	QString sharp_where = QString("#") + where;
+	if (fancoil)
+	{
+		QString msg = QString("*#") + who + "*" + sharp_where + "*" + QString::number(dimension) + "##";
+		openwebnet msg_open;
+		msg_open.CreateMsgOpen(const_cast<char *>(msg.ascii()), msg.length());
+		sendFrame(msg_open.frame_open);
+	}
 }
 
 // Not controlled temperature probe implementation

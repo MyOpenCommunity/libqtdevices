@@ -232,12 +232,20 @@ class temperature_probe_controlled : public device
 {
 Q_OBJECT
 public:
-	//! Constructor
-	temperature_probe_controlled(QString, thermo_type_t, bool fancoil,
+	temperature_probe_controlled(QString, thermo_type_t, bool _fancoil,
 		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
 
 	void setManual(unsigned setpoint);
 	void setAutomatic();
+
+	/**
+	 * Sets fancoil speed, if present. The values for the parameters are defined in the protocol.
+	 * \param speed 0 = auto, 1 = min, 2 = med, 3 = max
+	 */
+	void setFancoilSpeed(int speed);
+	void requestFancoilStatus();
+private:
+	bool fancoil;
 };
 
 /**
