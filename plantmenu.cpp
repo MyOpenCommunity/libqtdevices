@@ -106,6 +106,7 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	bp->SetIcons(i_right_arrow.ascii(), 0, central_icon.ascii());
 	initBanner(bp, n);
 	elencoBanner.append(bp);
+	connectLastBanner();
 
 	/*
 	 * Create full screen banner in detail menu.
