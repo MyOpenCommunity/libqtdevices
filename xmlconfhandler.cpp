@@ -194,6 +194,9 @@ bool xmlconfhandler::startDocument()
 	CurTagL5 = "";
 	CurTagL6 = "";
 	CurTagL7 = "";
+	CurTagL8 = "";
+	CurTagL9 = "";
+	CurTagL10 = "";
 	sottomenu_icon_name = "";
 	sottomenu_id=0;
 	ok=0;
@@ -248,7 +251,18 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 	{
 		CurTagL7 = qName;
 	}
-
+	else if (CurTagL8.isEmpty())
+	{
+		CurTagL8 = qName;
+	}
+	else if (CurTagL9.isEmpty())
+	{
+		CurTagL9 = qName;
+	}
+	else if (CurTagL10.isEmpty())
+	{
+		CurTagL10 = qName;
+	}
 	return TRUE;
 }
 
@@ -892,7 +906,19 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 	//
 	//
 	//
-	if (!CurTagL7.isEmpty())
+	if (!CurTagL10.isEmpty())
+	{
+		CurTagL10 = "";
+	}
+	else if (!CurTagL9.isEmpty())
+	{
+		CurTagL9 = "";
+	}
+	else if (!CurTagL8.isEmpty())
+	{
+		CurTagL8 = "";
+	}
+	else if (!CurTagL7.isEmpty())
 	{
 		CurTagL7 = "";
 	}
