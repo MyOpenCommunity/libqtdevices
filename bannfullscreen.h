@@ -127,6 +127,8 @@ public:
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
+	/// Setpoint temperature. All temperatures are expressed in 1/10 of degrees, temperatures > 1000 are negative.
+	/// Example: 1295 is -23.5 (Celsius degrees), 395 is 39.5. Precision is generally 5.
 	unsigned setpoint;
 	QLabel  *setpoint_label;
 
@@ -152,9 +154,19 @@ private:
 
 	/// Send a setpoint frame only if 2 seconds are elapsed
 	QTimer setpoint_timer;
+	/// Time to wait (in msec) before sending a frame when the user presses on plus or minus buttons to modify setpoint temperature
+	/// \sa setpoint
+	const unsigned setpoint_delay;
+	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
+	const unsigned setpoint_delta;
+	/// The minimum temperature that can be set with manual operation
+	const unsigned minimum_manual_temp;
+	/// The maximum temperature that can be set with manual operation
+	const unsigned maximum_manual_temp;
 	BtButton *navbar_button;
 
 	BtButton *getIcon(const char *img);
+
 
 private slots:
 	void changeStatus();

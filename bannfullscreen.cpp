@@ -196,7 +196,11 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 }
 
 FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent,const char *name)
-	: FSBannSimpleProbe(parent, n)
+	: FSBannSimpleProbe(parent, n),
+	setpoint_delay(2000),
+	setpoint_delta(5),
+	minimum_manual_temp(35),
+	maximum_manual_temp(395)
 {
 	status = AUTOMATIC;
 	status_change_enabled = change_status;
@@ -268,23 +272,23 @@ BtButton *FSBannProbe::customButton()
 
 void FSBannProbe::incSetpoint()
 {
-	if (setpoint > 395)
+	if (setpoint > maximum_manual_temp)
 		return;
 	else
-		setpoint += 5;
+		setpoint += setpoint_delta;
 	Draw();
-	setpoint_timer.start(2000);
+	setpoint_timer.start(setpoint_delay);
 	//delta_setpoint = 1;
 }
 
 void FSBannProbe::decSetpoint()
 {
-	if (setpoint < 35)
+	if (setpoint < minimum_manual_temp)
 		return;
 	else
-		setpoint -= 5;
+		setpoint -= setpoint_delta;
 	Draw();
-	setpoint_timer.start(2000);
+	setpoint_timer.start(setpoint_delay);
 	//delta_setpoint = 1;
 }
 
