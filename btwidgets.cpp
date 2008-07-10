@@ -14,25 +14,35 @@
 
 #include <qlayout.h>
 
+BtButton *getButton(const char *img, const char *imgp, QWidget *parent, bool autorepeat)
+{
+	QPixmap *icon         = icons_library.getIcon(img);
+	QPixmap *pressed_icon = icons_library.getIcon(imgp);
+	if (!icon)
+		qDebug("[TERMO] BtDateEdit: could not get icon, prepare for strangeness");
+	if (!pressed_icon)
+		qDebug("[TERMO] BtDateEdit: could not get pressed icon, prepare for strangeness");
+
+	BtButton *btn = new BtButton(parent);
+	btn->setPixmap(*icon);
+	btn->setPressedPixmap(*pressed_icon);
+	if (autorepeat)
+		btn->setAutoRepeat(true);
+	return btn;
+}
+
 BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	: QWidget(parent, name),
 	_time(0, 0)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
-	QPixmap *icon, *pressed_icon;
 	BtButton *btn1, *btn2;
-
 	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
 	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
-	icon         = icons_library.getIcon(btn_up_img);
-	pressed_icon = icons_library.getIcon(btn_up_img_press);
-	btn1 = new BtButton(this);
-	btn2 = new BtButton(this);
-	btn1->setPixmap(*icon);
-	btn1->setPressedPixmap(*pressed_icon);
-	btn2->setPixmap(*icon);
-	btn2->setPressedPixmap(*pressed_icon);
+	btn1 = getButton(btn_up_img, btn_up_img_press, this, true);
+	btn2 = getButton(btn_up_img, btn_up_img_press, this, true);
+
 	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
 	QHBoxLayout *hbox = new QHBoxLayout(main_layout);
@@ -48,14 +58,9 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 
 	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
 	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
-	icon         = icons_library.getIcon(btn_down_img);
-	pressed_icon = icons_library.getIcon(btn_down_img_press);
-	btn1 = new BtButton(this);
-	btn2 = new BtButton(this);
-	btn1->setPixmap(*icon);
-	btn1->setPressedPixmap(*pressed_icon);
-	btn2->setPixmap(*icon);
-	btn2->setPressedPixmap(*pressed_icon);
+	btn1 = getButton(btn_down_img, btn_down_img_press, this, true);
+	btn2 = getButton(btn_down_img, btn_down_img_press, this, true);
+
 	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
 	hbox = new QHBoxLayout(main_layout);
@@ -140,24 +145,11 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 	// Buttons to decrease day, month, year
 	BtButton *btn_down_day, *btn_down_month, *btn_down_year;
 
-	QPixmap *icon, *pressed_icon;
 	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
 	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
-	icon         = icons_library.getIcon(btn_up_img);
-	pressed_icon = icons_library.getIcon(btn_up_img_press);
-	if (!icon)
-		qDebug("[TERMO] BtDateEdit: could not get icon, prepare for strangeness");
-	if (!pressed_icon)
-		qDebug("[TERMO] BtDateEdit: could not get pressed icon, prepare for strangeness");
-	btn_up_day = new BtButton(this);
-	btn_up_month = new BtButton(this);
-	btn_up_year = new BtButton(this);
-	btn_up_day->setPixmap(*icon);
-	btn_up_day->setPressedPixmap(*pressed_icon);
-	btn_up_month->setPixmap(*icon);
-	btn_up_month->setPressedPixmap(*pressed_icon);
-	btn_up_year->setPixmap(*icon);
-	btn_up_year->setPressedPixmap(*pressed_icon);
+	btn_up_day = getButton(btn_up_img, btn_up_img_press, this, true);
+	btn_up_month = getButton(btn_up_img, btn_up_img_press, this, true);
+	btn_up_year = getButton(btn_up_img, btn_up_img_press, this, true);
 
 	connect(btn_up_day, SIGNAL(clicked()), this, SLOT(incDay()));
 	connect(btn_up_month, SIGNAL(clicked()), this, SLOT(incMonth()));
@@ -177,21 +169,10 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 
 	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
 	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
-	icon         = icons_library.getIcon(btn_down_img);
-	pressed_icon = icons_library.getIcon(btn_down_img_press);
-	if (!icon)
-		qDebug("[TERMO] BtDateEdit: could not get icon, prepare for strangeness");
-	if (!pressed_icon)
-		qDebug("[TERMO] BtDateEdit: could not get pressed icon, prepare for strangeness");
-	btn_down_day = new BtButton(this);
-	btn_down_month = new BtButton(this);
-	btn_down_year = new BtButton(this);
-	btn_down_day->setPixmap(*icon);
-	btn_down_day->setPressedPixmap(*pressed_icon);
-	btn_down_month->setPixmap(*icon);
-	btn_down_month->setPressedPixmap(*pressed_icon);
-	btn_down_year->setPixmap(*icon);
-	btn_down_year->setPressedPixmap(*pressed_icon);
+
+	btn_down_day = getButton(btn_down_img, btn_down_img_press, this, true);
+	btn_down_month = getButton(btn_down_img, btn_down_img_press, this, true);
+	btn_down_year = getButton(btn_down_img, btn_down_img_press, this, true);
 
 	connect(btn_down_day, SIGNAL(clicked()), this, SLOT(decDay()));
 	connect(btn_down_month, SIGNAL(clicked()), this, SLOT(decMonth()));
