@@ -758,6 +758,7 @@ FSBannFancoil::FSBannFancoil(QDomNode n, QString ind_centrale, thermo_type_t typ
 	fancoil_buttons.setExclusive(true);
 	fancoil_buttons.hide(); // do not show QButtonGroup frame
 	fancoil_status = 0;
+	connect(&fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 }
 
 void FSBannFancoil::createFancoilButtons()
@@ -773,7 +774,7 @@ void FSBannFancoil::createFancoilButtons()
 		btn->setToggleButton(true);
 
 		hbox->addWidget(btn);
-		fancoil_buttons.insert(btn, i);
+		fancoil_buttons.insert(btn, id);
 
 		speed_to_btn_tbl[(id + 1) % 4] = id;
 		btn_to_speed_tbl[id] = (id + 1) % 4;
@@ -784,6 +785,7 @@ void FSBannFancoil::createFancoilButtons()
 
 void FSBannFancoil::Draw()
 {
+	fancoil_buttons.setButton(fancoil_status);
 	FSBannProbe::Draw();
 }
 
