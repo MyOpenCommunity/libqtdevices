@@ -551,10 +551,9 @@ void temperature_probe_controlled::setFancoilSpeed(int speed)
 void temperature_probe_controlled::requestFancoilStatus()
 {
 	const unsigned dimension = 11;
-	QString sharp_where = QString("#") + where;
 	if (fancoil)
 	{
-		QString msg = QString("*#") + who + "*" + sharp_where + "*" + QString::number(dimension) + "##";
+		QString msg = QString("*#") + who + "*" + simple_where + "*" + QString::number(dimension) + "##";
 		openwebnet msg_open;
 		msg_open.CreateMsgOpen(const_cast<char *>(msg.ascii()), msg.length());
 		sendFrame(msg_open.frame_open);
