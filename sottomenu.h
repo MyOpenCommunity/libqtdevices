@@ -248,6 +248,13 @@ signals:
 		  \brief Emitted to signal to BtMain that a banner requires to freeze the device.
 		  */    
 		void	freeze(bool);
+
+		/**
+		 * This signal can be used to propagate the freeze signal to other submenus. It should be connected with
+		 * freeze() slot and freezePropagate() signal of the following submenus.
+		 */
+		void freezePropagate(bool);
+
 		/*!
 		  \brief Emitted to tell to banners in the list that the device was frozen.
 		  */  
