@@ -114,16 +114,16 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
-			bfs = new FSBannProbe(n, ind_centrale, false, parent, ind_centrale);
+			bfs = new FSBannProbe(n, ind_centrale, false, parent);
 			break;
 		case fs_99z_probe:
-			bfs = new FSBannProbe(n, ind_centrale, true, parent, ind_centrale);
+			bfs = new FSBannProbe(n, ind_centrale, true, parent);
 			break;
 		case fs_4z_fancoil:
-			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z4, false, parent, ind_centrale);
+			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z4, false, parent);
 			break;
 		case fs_99z_fancoil:
-			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z99, true, parent, ind_centrale);
+			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z99, true, parent);
 			break;
 		case fs_4z_thermal_regulator:
 			bfs = new FSBannTermoReg4z(n, ind_centrale, parent);
