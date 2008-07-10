@@ -114,16 +114,16 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
-			bfs = new FSBannProbe(n, ind_centrale, false, parent, ind_centrale);
+			bfs = new FSBannProbe(n, ind_centrale, false, parent);
 			break;
 		case fs_99z_probe:
-			bfs = new FSBannProbe(n, ind_centrale, true, parent, ind_centrale);
+			bfs = new FSBannProbe(n, ind_centrale, true, parent);
 			break;
 		case fs_4z_fancoil:
-			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z4, false, parent, ind_centrale);
+			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z4, false, parent);
 			break;
 		case fs_99z_fancoil:
-			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z99, true, parent, ind_centrale);
+			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z99, true, parent);
 			break;
 		case fs_4z_thermal_regulator:
 			bfs = new FSBannTermoReg4z(n, ind_centrale, parent);
@@ -325,8 +325,8 @@ BtButton *FSBannProbe::getIcon(const char *img)
 
 void FSBannProbe::Draw()
 {
-	setVisible(btn_minus, status == MANUAL);
-	setVisible(btn_plus, status == MANUAL);
+	setVisible(btn_minus, status == MANUAL && status_change_enabled);
+	setVisible(btn_plus, status == MANUAL && status_change_enabled);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
 	setVisible(local_temp_label, !isOff && !isAntigelo && (local_temp != "0"));
 	setVisible(icon_off, isOff);
@@ -758,6 +758,7 @@ FSBannFancoil::FSBannFancoil(QDomNode n, QString ind_centrale, thermo_type_t typ
 	fancoil_buttons.setExclusive(true);
 	fancoil_buttons.hide(); // do not show QButtonGroup frame
 	fancoil_status = 0;
+	connect(&fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 }
 
 void FSBannFancoil::createFancoilButtons()
@@ -773,7 +774,7 @@ void FSBannFancoil::createFancoilButtons()
 		btn->setToggleButton(true);
 
 		hbox->addWidget(btn);
-		fancoil_buttons.insert(btn, i);
+		fancoil_buttons.insert(btn, id);
 
 		speed_to_btn_tbl[(id + 1) % 4] = id;
 		btn_to_speed_tbl[id] = (id + 1) % 4;
@@ -784,6 +785,7 @@ void FSBannFancoil::createFancoilButtons()
 
 void FSBannFancoil::Draw()
 {
+	fancoil_buttons.setButton(fancoil_status);
 	FSBannProbe::Draw();
 }
 

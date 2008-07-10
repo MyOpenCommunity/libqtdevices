@@ -502,6 +502,7 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 	stat->append(new device_status_temperature_probe_extra(type));
 	stat->append(new device_status_temperature_probe());
 	fancoil = _fancoil;
+	simple_where = indirizzo;
 	if (fancoil)
 		stat->append(new device_status_fancoil());
 
@@ -537,10 +538,9 @@ void temperature_probe_controlled::setAutomatic()
 void temperature_probe_controlled::setFancoilSpeed(int speed)
 {
 	const unsigned dimension = 11;
-	QString sharp_where = QString("#") + where;
 	if (fancoil)
 	{
-		QString msg = QString("*#") + who + "*" + sharp_where + "*#" + QString::number(dimension) + "*" +
+		QString msg = QString("*#") + who + "*" + simple_where + "*#" + QString::number(dimension) + "*" +
 			QString::number(speed) + "##";
 		openwebnet msg_open;
 		msg_open.CreateMsgOpen(const_cast<char *>(msg.ascii()), msg.length());

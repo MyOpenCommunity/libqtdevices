@@ -245,6 +245,8 @@ public:
 	void setFancoilSpeed(int speed);
 	void requestFancoilStatus();
 private:
+	/// This is the address of the device as read from configuration file (ie. if where= #15#14, simple_where = 15)
+	QString simple_where;
 	bool fancoil;
 };
 
