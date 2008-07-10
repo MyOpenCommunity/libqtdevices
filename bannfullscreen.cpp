@@ -1051,7 +1051,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	manual_menu->setAllFGColor(paletteForegroundColor());
 	manual_menu->setAllBGColor(paletteBackgroundColor());
 
-	connect(bann, SIGNAL(temperatureSelected(int)), this, SLOT(manualSelected(int)));
+	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
 	connect(manual_menu, SIGNAL(Closed()), this, SLOT(manualCancelled()));
 }
 
@@ -1062,7 +1062,7 @@ void FSBannTermoReg::manualCancelled()
 	settings->raise();
 }
 
-void FSBannTermoReg::manualSelected(int temp)
+void FSBannTermoReg::manualSelected(unsigned temp)
 {
 	dev()->setManualTemp(temp);
 	manual_menu->hide();

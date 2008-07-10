@@ -373,13 +373,25 @@ void thermal_regulator::setWinter()
 	sendFrame(msg_open.frame_open);
 }
 
-void thermal_regulator::setManualTemp(int temperature)
+void thermal_regulator::setManualTemp(unsigned temperature)
 {
-	if (temperature < 50 || temperature > 400)
-		return;
+	// temperature is 4 digits wide
+	unsigned temp_width = 4;
+	// prepend some 0 if temperature is positive
+	QString padded_temperature = QString::number(temperature).rightJustify(temp_width, '0');
+
+	// sanity check on input
+	if (temperature > 1000)
+	{
+		unsigned tmp = temperature - 1000;
+		if (tmp < 50 || tmp > 400)
+			return;
+	}
 
 	const QString sharp_where = QString("#") + where;
-	const QString what = QString::number(TEMPERATURE_SET) + "*" + QString::number(temperature) + "*" + QString::number(GENERIC_MODE);
+	QString what = QString::number(TEMPERATURE_SET) + "*";
+	what += padded_temperature + "*" + QString::number(GENERIC_MODE);
+
 	QString msg = QString("*#") + who + "*" + sharp_where + "*#" + what + "##";
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
