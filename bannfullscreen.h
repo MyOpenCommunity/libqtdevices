@@ -274,7 +274,7 @@ private slots:
 	void holidaySettingsEnd(int program);
 
 	void manualCancelled();
-	void manualSelected(int temp);
+	void manualSelected(unsigned temp);
 
 	void weekProgramCancelled();
 	void weekProgramSelected(int program);
@@ -382,7 +382,7 @@ protected:
 	/// The button to be set on the navbar
 	BtButton *navbar_button;
 	/// The setpoint temperature set on the interface
-	int temp;
+	unsigned temp;
 private:
 	QString descr;
 	QLabel *descr_label;
@@ -393,7 +393,7 @@ private slots:
 	void decSetpoint();
 	void performAction();
 signals:
-	void temperatureSelected(int);
+	void temperatureSelected(unsigned);
 };
 
 /**
@@ -428,7 +428,6 @@ public slots:
 	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
-	QDate _date;
 	BtDateEdit *date_edit;
 };
 

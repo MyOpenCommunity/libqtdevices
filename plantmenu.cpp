@@ -29,6 +29,9 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	second_fg = fg2;
 	// FIXME: bisogna ricordarsi che per C4z ind_centrale != ""
 	ind_centrale = conf_root.namedItem("ind_centrale").toElement().text();
+	// propagate freeze
+	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SLOT(freezed(bool)));
+	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SIGNAL(freezePropagate(bool)));
 
 	items_submenu.setBGColor(paletteBackgroundColor());
 	items_submenu.setFGColor(paletteForegroundColor());

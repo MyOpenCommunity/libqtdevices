@@ -43,7 +43,13 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+
 	sm->hide();
+	// propagate freeze signal
+	connect(this, SIGNAL(freezePropagate(bool)), sm, SLOT(freezed(bool)));
+	connect(this, SIGNAL(freezePropagate(bool)), sm, SIGNAL(freezePropagate(bool)));
+	// do we need this?
+	//connect(sm, SIGNAL(freeze(bool)), BtM, SIGNAL(freeze(bool)));
 }
 
 void ThermalMenu::addBanners()

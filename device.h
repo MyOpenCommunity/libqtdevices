@@ -153,9 +153,9 @@ public:
 	 * The frame sent is generic (not winter nor summer).
 	 * \param temperature The temperature to be set, ranges from 50 to 400, step is 5.
 	 */
-	void setManualTemp(int temperature);
+	void setManualTemp(unsigned temperature);
 
-	enum
+	enum what_t
 	{
 		SUMMER = 0,
 		WINTER = 1,

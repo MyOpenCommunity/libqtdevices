@@ -373,13 +373,25 @@ void thermal_regulator::setWinter()
 	sendFrame(msg_open.frame_open);
 }
 
-void thermal_regulator::setManualTemp(int temperature)
+void thermal_regulator::setManualTemp(unsigned temperature)
 {
-	if (temperature < 50 || temperature > 400)
-		return;
+	// temperature is 4 digits wide
+	unsigned temp_width = 4;
+	// prepend some 0 if temperature is positive
+	QString padded_temperature = QString::number(temperature).rightJustify(temp_width, '0');
+
+	// sanity check on input
+	if (temperature > 1000)
+	{
+		unsigned tmp = temperature - 1000;
+		if (tmp < 50 || tmp > 400)
+			return;
+	}
 
 	const QString sharp_where = QString("#") + where;
-	const QString what = QString::number(TEMPERATURE_SET) + "*" + QString::number(temperature) + "*" + QString::number(GENERIC_MODE);
+	QString what = QString::number(TEMPERATURE_SET) + "*";
+	what += padded_temperature + "*" + QString::number(GENERIC_MODE);
+
 	QString msg = QString("*#") + who + "*" + sharp_where + "*#" + what + "##";
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
@@ -404,38 +416,43 @@ void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
 	const QString sharp_where = QString("#") + where;
 
 	// we need to send 3 frames, as written in bug #44
-	// - frame at par. 2.3.10, with number_of_days = 2, to set what program has to be executed at the end
-	// of holiday mode
+	// - frame at par. 2.3.10, with number_of_days = 2 (dummy number, we set end date and time explicitly with
+	// next frames), to set what program has to be executed at the end of holiday mode
 	// - frame at par. 2.3.16 to set date
 	// - frame at par. 2.3.17 to set time
 	//
 	// First frame: set program
-	openwebnet msg_open;
 	const int number_of_days = 2;
 	const int what_days = HOLIDAY_NUM_DAYS + number_of_days;
 	const int what_program = WEEK_PROGRAM + program;
+
+	openwebnet msg_open;
 	QString msg = QString("*%1*%2#%3*%4##").arg(who).arg(what_days).arg(what_program).arg(sharp_where);
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	qDebug("[TERMO]\t\t Frame 1: %s", msg_open.frame_open);
 	sendFrame(msg_open.frame_open);
+
 	// Second frame: set date
-	const QString day = QString::number(date.day());
-	const QString month = QString::number(date.month());
+	const unsigned date_width = 2;
+	const QString day = QString::number(date.day()).rightJustify(date_width, '0');
+	const QString month = QString::number(date.month()).rightJustify(date_width, '0');
 	const QString year = QString::number(date.year());
 	const QString date_end = QString::number(HOLIDAY_DATE_END);
+
 	openwebnet msg_open_2;
 	msg = QString("*#") + who + "*" + sharp_where + "*#" + date_end + "*" + day + "*" + month + "*" + year + "##";
 	msg_open_2.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	qDebug("[TERMO]\t\t Frame 2: %s", msg_open_2.frame_open);
 	sendFrame(msg_open_2.frame_open);
+
 	// Third frame: set time
+	// Time numbers are 2 digits wide
+	const unsigned time_width = 2;
+	const QString hour = QString::number(time.hour()).rightJustify(time_width, '0');
+	const QString minute = QString::number(time.minute()).rightJustify(time_width, '0');
 	const QString time_end = QString::number(HOLIDAY_TIME_END);
-	const QString hour = QString::number(time.hour());
-	const QString minute = QString::number(time.minute());
+
 	openwebnet msg_open_3;
 	msg = QString("*#%1*%2*#%3*%4*%5##").arg(who).arg(sharp_where).arg(time_end).arg(hour).arg(minute);
 	msg_open_3.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	qDebug("[TERMO]\t\t Frame 3: %s", msg_open_3.frame_open);
 	sendFrame(msg_open_3.frame_open);
 }
 
@@ -551,10 +568,9 @@ void temperature_probe_controlled::setFancoilSpeed(int speed)
 void temperature_probe_controlled::requestFancoilStatus()
 {
 	const unsigned dimension = 11;
-	QString sharp_where = QString("#") + where;
 	if (fancoil)
 	{
-		QString msg = QString("*#") + who + "*" + sharp_where + "*" + QString::number(dimension) + "##";
+		QString msg = QString("*#") + who + "*" + simple_where + "*" + QString::number(dimension) + "##";
 		openwebnet msg_open;
 		msg_open.CreateMsgOpen(const_cast<char *>(msg.ascii()), msg.length());
 		sendFrame(msg_open.frame_open);
