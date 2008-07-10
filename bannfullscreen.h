@@ -128,9 +128,12 @@ public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
 	/// Setpoint temperature. All temperatures are expressed in 1/10 of degrees, temperatures > 1000 are negative.
-	/// Example: 1295 is -23.5 (Celsius degrees), 395 is 39.5. Precision is generally 5.
+	/// Example: 1235 is -23.5 (Celsius degrees), 395 is 39.5. Precision is generally 5.
 	unsigned setpoint;
 	QLabel  *setpoint_label;
+	/// This flag is used to syncrhonize with other devices in the home. True when setpoint temperature is modified
+	/// by this BTouch, false otherwise
+	bool delta_setpoint;
 
 	BtButton *btn_minus, *btn_plus;
 	QLabel *icon_off, *icon_antifreeze;

@@ -211,8 +211,9 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	: FSBannSimpleProbe(parent, n),
 	setpoint_delay(2000),
 	setpoint_delta(5),
+	delta_setpoint(false)
 	minimum_manual_temp(35),
-	maximum_manual_temp(395)
+	maximum_manual_temp(395),
 {
 	status = AUTOMATIC;
 	status_change_enabled = change_status;
@@ -290,7 +291,7 @@ void FSBannProbe::incSetpoint()
 		setpoint += setpoint_delta;
 	Draw();
 	setpoint_timer.start(setpoint_delay);
-	//delta_setpoint = 1;
+	delta_setpoint = true;
 }
 
 void FSBannProbe::decSetpoint()
@@ -301,7 +302,7 @@ void FSBannProbe::decSetpoint()
 		setpoint -= setpoint_delta;
 	Draw();
 	setpoint_timer.start(setpoint_delay);
-	//delta_setpoint = 1;
+	delta_setpoint = true;
 }
 
 void FSBannProbe::setSetpoint()
@@ -362,20 +363,23 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 		++it;
 		if (dev->get_type() == device_status::TEMPERATURE_PROBE_EXTRA)
 		{
-			stat_var curr_local(stat_var::LOCAL);
 			stat_var curr_sp(stat_var::SP);
-
-			qDebug("Th. regulator status variation");
-			dev->read(device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
 			dev->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
+			if (delta_setpoint)
+			{
+				curr_sp.set_val(setpoint);
+				ds->write_val(device_status_thermr::SP_INDEX, curr_sp);
+				ds->read(device_status_thermr::SP_INDEX, curr_sp);
+				delta_setpoint = false;
+			}
 
-			qDebug("loc = %d", curr_local.get_val());
-			qDebug("sp = %d", curr_sp.get_val());
+			stat_var curr_local(stat_var::LOCAL);
+			dev->read(device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
 			if (curr_local.initialized())
 			{
 				update = true;
 				if (curr_local.get_val() >= 0  && curr_local.get_val() <= 3 ||
-					curr_local.get_val() >= 11 && curr_local.get_val() <= 13)
+						curr_local.get_val() >= 11 && curr_local.get_val() <= 13)
 				{
 					local_temp = QString::number(curr_local.get_val() % 10);
 					if (curr_local.get_val() >= 11)
@@ -405,7 +409,7 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 				}
 			}
 
-			if (curr_sp.initialized())
+			if (curr_sp.initialized() && !delta_setpoint)
 			{
 				setpoint = curr_sp.get_val();
 				update = true;
