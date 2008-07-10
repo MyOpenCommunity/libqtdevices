@@ -66,9 +66,9 @@ void BannFullScreen::Draw()
 	banner::Draw();
 }
 
-BtButton *BannFullScreen::getButton(const char *img, QWidget *parent)
+BtButton *BannFullScreen::getButton(const char *img)
 {
-	BtButton *btn = new BtButton(parent);
+	BtButton *btn = new BtButton(this);
 	btn->setPixmap(*icons_library.getIcon(img));
 	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(img)));
 	return btn;
@@ -216,7 +216,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 {
 	status = AUTOMATIC;
 	status_change_enabled = change_status;
-	navbar_button = getButton(IMG_MAN, this);
+	navbar_button = getButton(IMG_MAN);
 	navbar_button->hide();
 	conf_root = n;
 
@@ -235,14 +235,14 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
-	btn_minus = getButton(IMG_MINUS, this);
+	btn_minus = getButton(IMG_MINUS);
 	btn_minus->hide();
 	hbox->addWidget(btn_minus);
 
 	setpoint_label = new QLabel(this);
 	hbox->addWidget(setpoint_label);
 
-	btn_plus = getButton(IMG_PLUS, this);
+	btn_plus = getButton(IMG_PLUS);
 	btn_plus->hide();
 	hbox->addWidget(btn_plus);
 
@@ -454,7 +454,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	main_layout(this)
 {
 	conf_root = n;
-	navbar_button = getButton(IMG_SETTINGS, this);
+	navbar_button = getButton(IMG_SETTINGS);
 
 	QColor *bg, *fg1, *fg2;
 	readExtraConf(&bg, &fg1, &fg2);
@@ -840,7 +840,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
 
-	navbar_button = getButton(I_OK, this);
+	navbar_button = getButton(I_OK);
 	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 
 	temp = 200;
@@ -848,14 +848,14 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
-	BtButton *btn = getButton(btn_min_img.ascii(), this);
+	BtButton *btn = getButton(btn_min_img.ascii());
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
 
 	hbox->addWidget(temp_label);
 
 	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
-	btn = getButton(btn_plus_img.ascii(), this);
+	btn = getButton(btn_plus_img.ascii());
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
 

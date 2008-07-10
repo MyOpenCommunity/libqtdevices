@@ -68,7 +68,7 @@ public slots:
 	virtual void status_changed(QPtrList<device_status> list) = 0;
 protected:
 	QColor second_fg;
-	BtButton *getButton(const char *img, QWidget *parent);
+	BtButton *getButton(const char *img);
 };
 
 enum BannID
