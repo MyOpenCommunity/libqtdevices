@@ -325,8 +325,8 @@ BtButton *FSBannProbe::getIcon(const char *img)
 
 void FSBannProbe::Draw()
 {
-	setVisible(btn_minus, status == MANUAL);
-	setVisible(btn_plus, status == MANUAL);
+	setVisible(btn_minus, status == MANUAL && status_change_enabled);
+	setVisible(btn_plus, status == MANUAL && status_change_enabled);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
 	setVisible(local_temp_label, !isOff && !isAntigelo && (local_temp != "0"));
 	setVisible(icon_off, isOff);
