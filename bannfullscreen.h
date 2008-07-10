@@ -431,7 +431,6 @@ public slots:
 	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
-	QDate _date;
 	BtDateEdit *date_edit;
 };
 

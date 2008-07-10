@@ -984,7 +984,7 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 
 QDate FSBannDate::date()
 {
-	return _date;
+	return date_edit->date();
 }
 
 void FSBannDate::Draw()
@@ -1022,7 +1022,7 @@ void FSBannTime::status_changed(QPtrList<device_status> list)
 
 QTime FSBannTime::time()
 {
-	return QTime(hours, minutes);
+	return time_edit->time();
 }
 
 //
