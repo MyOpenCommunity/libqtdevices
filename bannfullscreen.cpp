@@ -310,19 +310,6 @@ void FSBannProbe::setSetpoint()
 	dev->setManual(setpoint);
 }
 
-BtButton *FSBannProbe::getIcon(const char *img)
-{
-	// FIX: use QLabel and QPixmap instead of QButton!!
-	BtButton *btn = new BtButton(this);
-	QPixmap *icon = icons_library.getIcon(QString("%1%2").arg(IMG_PATH).arg(img).ascii());
-	btn->setPixmap(*icon);
-	btn->setPressedPixmap(*icon);
-	btn->setDown(true);
-	btn->setEnabled(false);
-	btn->hide();
-	return btn;
-}
-
 void FSBannProbe::Draw()
 {
 	setVisible(btn_minus, status == MANUAL && status_change_enabled);

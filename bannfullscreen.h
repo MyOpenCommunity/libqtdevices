@@ -166,9 +166,6 @@ private:
 	const unsigned maximum_manual_temp;
 	BtButton *navbar_button;
 
-	BtButton *getIcon(const char *img);
-
-
 private slots:
 	void changeStatus();
 	void setSetpoint();
