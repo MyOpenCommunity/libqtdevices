@@ -20,7 +20,7 @@ static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png"
 
 PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2) :
 	sottoMenu(parent, name),
-	items_submenu(parent, "items submenu", 4, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
+	items_submenu(parent, "items submenu", 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
 	signal_mapper(0, "")
 {
 	conf_root = conf;
