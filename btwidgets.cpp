@@ -63,7 +63,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	hbox->addWidget(btn2);
 
 	setMaxHours(23);
-	setMaxMins(59);
+	setMaxMinutes(59);
 }
 
 QTime BtTimeEdit::time()
@@ -80,7 +80,7 @@ void BtTimeEdit::setMaxHours(int h)
 	}
 }
 
-void BtTimeEdit::setMaxMins(int m)
+void BtTimeEdit::setMaxMinutes(int m)
 {
 	if (m > 0)
 	{
@@ -96,7 +96,6 @@ void BtTimeEdit::incHours()
 		_time.setHMS(_time.hour() + 1, _time.minute(), _time.second());
 		num->display(_time.toString("h:mm"));
 		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
@@ -107,7 +106,6 @@ void BtTimeEdit::incMin()
 		_time.setHMS(_time.hour(), _time.minute() + 1, _time.second());
 		num->display(_time.toString("h:mm"));
 		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
@@ -118,7 +116,6 @@ void BtTimeEdit::decHours()
 		_time.setHMS(_time.hour() - 1, _time.minute(), _time.second());
 		num->display(_time.toString("h:mm"));
 		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
@@ -129,7 +126,6 @@ void BtTimeEdit::decMin()
 		_time.setHMS(_time.hour(), _time.minute() - 1, _time.second());
 		num->display(_time.toString("h:mm"));
 		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-		emit valueChanged(_time.hour(), _time.minute());
 	}
 }
 
@@ -216,21 +212,18 @@ void BtDateEdit::incDay()
 {
 	_date = _date.addDays(1);
 	date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
-	emit valueChanged(_date);
 }
 
 void BtDateEdit::incMonth()
 {
 	_date = _date.addMonths(1);
 	date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
-	emit valueChanged(_date);
 }
 
 void BtDateEdit::incYear()
 {
 	_date = _date.addYears(1);
 	date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
-	emit valueChanged(_date);
 }
 
 void BtDateEdit::decDay()
@@ -239,7 +232,6 @@ void BtDateEdit::decDay()
 	{
 		_date = _date.addDays(-1);
 		date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
-		emit valueChanged(_date);
 	}
 }
 
@@ -249,7 +241,6 @@ void BtDateEdit::decMonth()
 	{
 		_date = _date.addMonths(-1);
 		date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
-		emit valueChanged(_date);
 	}
 }
 
@@ -259,6 +250,5 @@ void BtDateEdit::decYear()
 	{
 		_date = _date.addYears(-1);
 		date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
-		emit valueChanged(_date);
 	}
 }

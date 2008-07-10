@@ -45,7 +45,7 @@ public:
 	 *
 	 * \param m The maximum value allowed for the minutes field.
 	 */
-	void setMaxMins(int m);
+	void setMaxMinutes(int m);
 
 	QTime time();
 private slots:
@@ -57,14 +57,6 @@ private:
 	QTime _time;
 	int max_hours, max_minutes;
 	QLCDNumber *num;
-signals:
-	/**
-	 * This signal is emitted whenever the value changes.
-	 *
-	 * \param The value for hours.
-	 * \param The value for minutes.
-	 */
-	void valueChanged(int, int);
 };
 
 /**
@@ -89,8 +81,6 @@ private slots:
 	void decDay();
 	void decMonth();
 	void decYear();
-signals:
-	void valueChanged(QDate);
 };
 #endif // BTWIDGETS_H
 
