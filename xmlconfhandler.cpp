@@ -730,6 +730,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
 							QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
+							QObject::connect(BtM, SIGNAL(freeze(bool)), *termo, SIGNAL(freezePropagate(bool)));
 							break;
 						case DIFSON:
 							(*difSon)->draw();
