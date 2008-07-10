@@ -85,15 +85,13 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 			connect(bp, SIGNAL(sxClick()), &signal_mapper, SLOT(map()));
 			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(show()));
 			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(raise()));
-			connect(bp, SIGNAL(sxClick()), this, SLOT(hide()));
+
 			connect(&signal_mapper, SIGNAL(mapped(int)), &items_submenu, SLOT(showItem(int)));
 
 			++ banner_id;
 		}
 		n = n.nextSibling();
 	}
-	connect(&items_submenu, SIGNAL(Closed()), this, SLOT(show()));
-	connect(&items_submenu, SIGNAL(Closed()), this, SLOT(raise()));
 	connect(&items_submenu, SIGNAL(Closed()), &items_submenu, SLOT(hide()));
 }
 
