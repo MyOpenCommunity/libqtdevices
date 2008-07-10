@@ -395,7 +395,6 @@ void thermal_regulator::setManualTemp(unsigned temperature)
 	QString msg = QString("*#") + who + "*" + sharp_where + "*#" + what + "##";
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	qDebug("[TERMO] thermal_regulator::setManualTemp, frame sent: %s", msg_open.frame_open);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -406,13 +405,11 @@ void thermal_regulator::setWeekProgram(int program)
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	qDebug("[TERMO] thermal_regulator::setWeekProgram, frame sent: %s", msg_open.frame_open);
 	sendFrame(msg_open.frame_open);
 }
 
 void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
 {
-	qDebug("[TERMO] thermal_regulator::setHolidayDateTime()");
 	const QString sharp_where = QString("#") + where;
 
 	// we need to send 3 frames, as written in bug #44
@@ -462,7 +459,6 @@ void thermal_regulator::requestStatus()
 	QString msg = QString("*#%1*%2##").arg(who).arg(sharp_where);
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	qDebug("[TERMO] requestStatus frame: %s", msg_open.frame_open);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -504,7 +500,6 @@ void thermal_regulator_99z::setScenario(int scenario)
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	qDebug("[TERMO] thermal_regulator::setWeekProgram, frame sent: %s", msg_open.frame_open);
 	sendFrame(msg_open.frame_open);
 }
 
