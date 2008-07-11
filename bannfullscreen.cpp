@@ -137,6 +137,8 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 		case fs_time_edit:
 			bfs = new FSBannTime(parent, 0);
 			break;
+		default:
+			qFatal("Unknown banner type %d on bannfullscreen", id);
 	}
 	return bfs;
 }
