@@ -29,12 +29,6 @@ Q_OBJECT
 public:
 	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2);
 private:
-	/**
-	 * Utility function to create the settings menu for a 99z thermal regulator.
-	 */
-	void create99zSettings(QDomNode conf, thermal_regulator_99z *dev);
-
-
 
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
