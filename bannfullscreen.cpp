@@ -209,11 +209,11 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 
 FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent,const char *name)
 	: FSBannSimpleProbe(parent, n),
+	delta_setpoint(false),
 	setpoint_delay(2000),
 	setpoint_delta(5),
-	delta_setpoint(false)
 	minimum_manual_temp(35),
-	maximum_manual_temp(395),
+	maximum_manual_temp(395)
 {
 	status = AUTOMATIC;
 	status_change_enabled = change_status;
@@ -367,9 +367,10 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			dev->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 			if (delta_setpoint)
 			{
-				curr_sp.set_val(setpoint);
-				ds->write_val(device_status_thermr::SP_INDEX, curr_sp);
-				ds->read(device_status_thermr::SP_INDEX, curr_sp);
+				int sp = static_cast<int>(setpoint);
+				curr_sp.set_val(sp);
+				dev->write_val(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
+				dev->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				delta_setpoint = false;
 			}
 
