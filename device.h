@@ -163,6 +163,7 @@ public:
 		TEMPERATURE_SET = 14,            // set the temperature in manual operation, this is a dimension
 		HOLIDAY_DATE_END = 30,           // set the end date of holiday mode, this is a dimension (grandezza)
 		HOLIDAY_TIME_END = 31,           // set the end time of holiday mode, this is a dimension (grandezza)
+		MANUAL_TIMED_END = 32,           // set the end time of timed manual mode
 
 		// summer specific identifiers
 		SUM_PROTECTION = 202,            // protection
@@ -187,6 +188,7 @@ public:
 		// generic identifiers (useful for issuing commands)
 		GENERIC_PROTECTION = 302,
 		GENERIC_OFF = 303,
+		GENERIC_MANUAL_TIMED = 312,      // timed manual operation (generic mode)
 		WEEK_PROGRAM = 3100,             // command to set the program to be executed (generic mode)
 		                                 // remember to add the program number to this number
 		SCENARIO_PROGRAM = 3200,         // command to set the scenario to be executed (generic mode)

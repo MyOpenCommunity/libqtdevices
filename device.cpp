@@ -477,7 +477,35 @@ thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 
 void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
 {
-	qWarning("[TERMO] Feature not (yet) implemented!!");
+	const QString sharp_where = QString("#") + where;
+
+	// we need to send 2 frames
+	// - frame at par. 2.3.13, with number_of_hours = 2 (dummy number, we set end time explicitly with
+	// next frame), to set the temperature of timed manual operation
+	// - frame at par. 2.3.18 to set hours and minutes of mode end. Timed manual operation can't last longer
+	// than 24 hours.
+	//
+	// First frame: set temperature
+	const QString number_of_hours = "02";
+	const unsigned temp_width = 4;
+	const QString padded_temp = QString::number(temperature).rightJustify(temp_width, '0');
+	const QString what = QString::number(GENERIC_MANUAL_TIMED) + "#" + padded_temp + "#" + number_of_hours;
+
+	openwebnet msg_open;
+	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
+
+	// Second frame: set end time
+	const unsigned time_width = 2;
+	const QString hour = QString::number(time.hour()).rightJustify(time_width, '0');
+	const QString minute = QString::number(time.minute()).rightJustify(time_width, '0');
+
+	const QString what2 = QString("#") + QString::number(MANUAL_TIMED_END) + "*" + hour + "*" + minute;
+	openwebnet msg_open_2;
+	msg = QString("*#") + who + "*" + sharp_where + "*" + what2 + "##";
+	msg_open_2.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open_2.frame_open);
 }
 
 thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
