@@ -318,7 +318,7 @@ void FSBannProbe::Draw()
 	setVisible(btn_minus, status == MANUAL && status_change_enabled);
 	setVisible(btn_plus, status == MANUAL && status_change_enabled);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
-	setVisible(local_temp_label, !isOff && !isAntigelo && (local_temp != "0"));
+	setVisible(local_temp_label, local_temp != "0");
 	setVisible(icon_off, isOff);
 	setVisible(icon_antifreeze, isAntigelo);
 
