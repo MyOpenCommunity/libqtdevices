@@ -17,6 +17,7 @@
 #include "device.h"
 #include "bannsettings.h"
 #include "device_cache.h"
+#include "btlabelevo.h"
 
 #include <qobjectlist.h>
 
@@ -40,9 +41,9 @@ void setVisible(QWidget *w, bool visible)
 		w->hide();
 }
 
-QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
+BtLabelEvo *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 {
-	QLabel *tmp = new QLabel(parent);
+	BtLabelEvo *tmp = new BtLabelEvo(parent);
 	tmp->setPixmap(*icons_library.getIcon(img));
 	tmp->setAlignment(alignment);
 	return tmp;
@@ -147,10 +148,10 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *na
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
-	descr_label = new QLabel(this);
+	descr_label = new BtLabelEvo(this);
 	main_layout.addWidget(descr_label);
 
-	temp_label = new QLabel(this);
+	temp_label = new BtLabelEvo(this);
 	main_layout.addWidget(temp_label);
 	main_layout.setAlignment(Qt::AlignHCenter);
 
@@ -243,7 +244,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	btn_minus->setAutoRepeat(true);
 	hbox->addWidget(btn_minus);
 
-	setpoint_label = new QLabel(this);
+	setpoint_label = new BtLabelEvo(this);
 	hbox->addWidget(setpoint_label);
 
 	btn_plus = getButton(IMG_PLUS);
@@ -260,7 +261,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	main_layout.addLayout(hbox);
 	main_layout.setStretchFactor(hbox, 1);
 
-	local_temp_label = new QLabel(this);
+	local_temp_label = new BtLabelEvo(this);
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
@@ -465,7 +466,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 		qDebug("[TERMO] FSBannTermoReg ctor: no description found, maybe wrong node conf?");
 		description = "Wrong node";
 	}
-	description_label = new QLabel(this);
+	description_label = new BtLabelEvo(this);
 	description_label->setAlignment(AlignHCenter);
 
 	season_icon = getLabelWithPixmap(IMG_SUMMER_S, this, AlignHCenter);
@@ -842,14 +843,14 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	dev(_dev)
 {
 	descr = tr("Manual");
-	descr_label = new QLabel(this);
+	descr_label = new BtLabelEvo(this);
 	main_layout.addWidget(descr_label);
 
 	navbar_button = getButton(I_OK);
 	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 
 	temp = 200;
-	temp_label = new QLabel(this);
+	temp_label = new BtLabelEvo(this);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");

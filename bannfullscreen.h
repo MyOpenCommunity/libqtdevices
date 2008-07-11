@@ -16,7 +16,6 @@
 #include "device_status.h"
 #include "btwidgets.h"
 
-#include <qlabel.h>
 #include <qlayout.h>
 #include <qbuttongroup.h>
 #include <qdom.h>
@@ -34,6 +33,7 @@ class DateEditMenu;
 class ProgramMenu;
 class WeeklyMenu;
 class ScenarioMenu;
+class BtLabelEvo;
 
 
 /**
@@ -105,10 +105,10 @@ protected:
 	/// Global layout for the banner
 	QVBoxLayout main_layout;
 	/// Measured temperature label and string
-	QLabel *temp_label;
+	BtLabelEvo *temp_label;
 	QString temp;
 	/// Zone description label and string
-	QLabel *descr_label;
+	BtLabelEvo *descr_label;
 	QString descr;
 };
 
@@ -130,18 +130,18 @@ protected:
 	/// Setpoint temperature. All temperatures are expressed in 1/10 of degrees, temperatures > 1000 are negative.
 	/// Example: 1235 is -23.5 (Celsius degrees), 395 is 39.5. Precision is generally 5.
 	unsigned setpoint;
-	QLabel  *setpoint_label;
+	BtLabelEvo  *setpoint_label;
 	/// This flag is used to syncrhonize with other devices in the home. True when setpoint temperature is modified
 	/// by this BTouch, false otherwise
 	bool delta_setpoint;
 
 	BtButton *btn_minus, *btn_plus;
-	QLabel *icon_off, *icon_antifreeze;
+	BtLabelEvo *icon_off, *icon_antifreeze;
 	// FIXME: setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
-	QLabel *local_temp_label;
+	BtLabelEvo *local_temp_label;
 
 	QDomNode conf_root;
 	temperature_probe_controlled *dev;
@@ -284,12 +284,12 @@ private slots:
 private:
 	QVBoxLayout main_layout;
 	/// Label and string that may be visualized
-	QLabel *description_label;
+	BtLabelEvo *description_label;
 	QString description;
 	/// Status icon (summer/winter)
-	QLabel *season_icon;
+	BtLabelEvo *season_icon;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
-	QLabel *mode_icon;
+	BtLabelEvo *mode_icon;
 	QDate holiday_date_end;
 	QTime holiday_time_end;
 	TimeEditMenu *time_edit;
@@ -388,8 +388,8 @@ protected:
 	unsigned temp;
 private:
 	QString descr;
-	QLabel *descr_label;
-	QLabel *temp_label;
+	BtLabelEvo *descr_label;
+	BtLabelEvo *temp_label;
 	thermal_regulator *dev;
 private slots:
 	void incSetpoint();
