@@ -1040,7 +1040,6 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	manual_menu = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(show()));
 	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(raise()));
-	connect(manual, SIGNAL(sxClick()), settings, SLOT(hide()));
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SIGNAL(freezePropagate(bool)));
@@ -1060,17 +1059,13 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 void FSBannTermoReg::manualCancelled()
 {
 	manual_menu->hide();
-	settings->show();
-	settings->raise();
 }
 
 void FSBannTermoReg::manualSelected(unsigned temp)
 {
 	dev()->setManualTemp(temp);
 	manual_menu->hide();
-	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	parent->show();
-	parent->raise();
+	settings->hide();
 }
 
 void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
@@ -1088,7 +1083,6 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(raise()));
-	connect(weekly, SIGNAL(sxClick()), settings, SLOT(hide()));
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), program_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), program_menu, SIGNAL(freezePropagate(bool)));
@@ -1101,17 +1095,13 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 void FSBannTermoReg::weekProgramCancelled()
 {
 	program_menu->hide();
-	settings->show();
-	settings->raise();
 }
 
 void FSBannTermoReg::weekProgramSelected(int program)
 {
 	dev()->setWeekProgram(program);
 	program_menu->hide();
-	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	parent->show();
-	parent->raise();
+	settings->hide();
 }
 
 void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
@@ -1158,7 +1148,6 @@ void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal
 
 void FSBannTermoReg::holidaySettingsStart()
 {
-	settings->hide();
 	date_edit->show();
 	date_edit->raise();
 }
@@ -1166,13 +1155,11 @@ void FSBannTermoReg::holidaySettingsStart()
 void FSBannTermoReg::dateCancelled()
 {
 	date_edit->hide();
-	settings->show();
 }
 
 void FSBannTermoReg::dateSelected(QDate d)
 {
 	holiday_date_end = d;
-	date_edit->hide();
 	time_edit->show();
 	time_edit->raise();
 }
@@ -1180,13 +1167,11 @@ void FSBannTermoReg::dateSelected(QDate d)
 void FSBannTermoReg::timeCancelled()
 {
 	time_edit->hide();
-	date_edit->show();
 }
 
 void FSBannTermoReg::timeSelected(QTime t)
 {
 	holiday_time_end = t;
-	time_edit->hide();
 	program_choice->show();
 	program_choice->raise();
 }
@@ -1194,15 +1179,15 @@ void FSBannTermoReg::timeSelected(QTime t)
 void FSBannTermoReg::programCancelled()
 {
 	program_choice->hide();
-	time_edit->show();
 }
 
 void FSBannTermoReg::holidaySettingsEnd(int program)
 {
 	dev()->setHolidayDateTime(holiday_date_end, holiday_time_end, program);
 	program_choice->hide();
-	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	parent->show();
+	time_edit->hide();
+	date_edit->hide();
+	settings->hide();
 }
 
 void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
@@ -1224,7 +1209,6 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 
 	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(show()));
 	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(raise()));
-	connect(manual_timed, SIGNAL(sxClick()), settings, SLOT(hide()));
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SIGNAL(freezePropagate(bool)));
@@ -1237,17 +1221,13 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 void FSBannTermoReg4z::manualTimedCancelled()
 {
 	timed_manual_menu->hide();
-	settings->show();
-	settings->raise();
 }
 
 void FSBannTermoReg4z::manualTimedSelected(QTime time, int temp)
 {
 	_dev->setManualTempTimed(temp, time);
 	timed_manual_menu->hide();
-	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	parent->show();
-	parent->raise();
+	settings->hide();
 }
 
 void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
@@ -1264,7 +1244,6 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));
-	connect(scenario, SIGNAL(sxClick()), settings, SLOT(hide()));
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), scenario_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), scenario_menu, SIGNAL(freezePropagate(bool)));
@@ -1276,15 +1255,11 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 void FSBannTermoReg99z::scenarioCancelled()
 {
 	scenario_menu->hide();
-	settings->show();
-	settings->raise();
 }
 
 void FSBannTermoReg99z::scenarioSelected(int scenario)
 {
 	_dev->setScenario(scenario);
 	scenario_menu->hide();
-	sottoMenu *parent = static_cast<sottoMenu *>(parentWidget());
-	parent->show();
-	parent->raise();
+	settings->hide();
 }
