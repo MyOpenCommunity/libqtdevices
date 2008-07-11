@@ -690,6 +690,7 @@ void FSBannTermoReg4z::createSettingsMenu()
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
+	settings->hide();
 }
 
 FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name)
@@ -741,6 +742,7 @@ void FSBannTermoReg99z::createSettingsMenu()
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
+	settings->hide();
 }
 
 FSBannFancoil::FSBannFancoil(QDomNode n, QString ind_centrale, thermo_type_t type, bool change_status, QWidget *parent, const char *name)
@@ -1047,6 +1049,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 
 	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
 	connect(manual_menu, SIGNAL(Closed()), this, SLOT(manualCancelled()));
+	manual_menu->hide();
 }
 
 void FSBannTermoReg::manualCancelled()
@@ -1087,6 +1090,7 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 
 	connect(program_menu, SIGNAL(Closed()), this, SLOT(weekProgramCancelled()));
 	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(weekProgramSelected(int)));
+	program_menu->hide();
 }
 
 void FSBannTermoReg::weekProgramCancelled()
@@ -1142,6 +1146,9 @@ void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal
 	// propagate freeze signal
 	connect(time_edit, SIGNAL(freezePropagate(bool)), program_choice, SLOT(freezed(bool)));
 	connect(time_edit, SIGNAL(freezePropagate(bool)), program_choice, SIGNAL(freezePropagate(bool)));
+	date_edit->hide();
+	time_edit->hide();
+	program_choice->hide();
 }
 
 void FSBannTermoReg::holidaySettingsStart()
@@ -1219,6 +1226,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 
 	connect(timed_manual_menu, SIGNAL(Closed()), this, SLOT(manualTimedCancelled()));
 	connect(bann, SIGNAL(timeAndTempSelected(QTime, int)), this, SLOT(manualTimedSelected(QTime, int)));
+	timed_manual_menu->hide();
 }
 
 void FSBannTermoReg4z::manualTimedCancelled()
