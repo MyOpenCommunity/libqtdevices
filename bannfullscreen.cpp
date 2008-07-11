@@ -240,6 +240,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 
 	btn_minus = getButton(IMG_MINUS);
 	btn_minus->hide();
+	btn_minus->setAutoRepeat(true);
 	hbox->addWidget(btn_minus);
 
 	setpoint_label = new QLabel(this);
@@ -247,6 +248,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 
 	btn_plus = getButton(IMG_PLUS);
 	btn_plus->hide();
+	btn_plus->setAutoRepeat(true);
 	hbox->addWidget(btn_plus);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, AlignHCenter);
@@ -852,6 +854,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
 	BtButton *btn = getButton(btn_min_img.ascii());
+	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
 
@@ -859,6 +862,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 
 	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
 	btn = getButton(btn_plus_img.ascii());
+	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
 
