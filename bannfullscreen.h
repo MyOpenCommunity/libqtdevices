@@ -53,13 +53,6 @@ public:
 	 */
 	virtual void setBGColor(QColor bg);
 	virtual void setFGColor(QColor bg);
-
-	/**
-	 * Extract the address from the DOM node passed as parameter.
-	 * \param n The node where the configuration of this item starts.
-	 * \return The simple address if this item
-	 */
-	QString extractAddress(QDomNode n);
 public slots:
 	/**
 	 * Called whenever the status of the device associated with the banner changes, so that
@@ -121,7 +114,7 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -309,7 +302,7 @@ class FSBannTermoReg4z : public FSBannTermoReg
 {
 Q_OBJECT
 public:
-	FSBannTermoReg4z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name = 0);
+	FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, const char *name = 0);
 	virtual thermal_regulator *dev();
 protected:
 	virtual void createSettingsMenu();
@@ -331,7 +324,7 @@ class FSBannTermoReg99z : public FSBannTermoReg
 {
 Q_OBJECT
 public:
-	FSBannTermoReg99z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name = 0);
+	FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, const char *name = 0);
 	virtual thermal_regulator *dev();
 protected:
 	virtual void createSettingsMenu();
@@ -353,7 +346,7 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, QString ind_centrale, thermo_type_t type, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -366,7 +359,6 @@ private:
 	QMap<int, int> speed_to_btn_tbl;
 	QMap<int, int> btn_to_speed_tbl;
 	int fancoil_status;
-	temperature_probe_controlled *dev;
 private slots:
 	void handleFancoilButtons(int pressedButton);
 };

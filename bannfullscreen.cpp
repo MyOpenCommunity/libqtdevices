@@ -95,7 +95,12 @@ void BannFullScreen::setFGColor(QColor fg)
 	banner::setFGColor(fg);
 }
 
-QString BannFullScreen::extractAddress(QDomNode n)
+/**
+ * Extract the address from the DOM node passed as parameter.
+ * \param n The node where the configuration of this item starts.
+ * \return The simple address if this item
+ */
+QString extractAddress(QDomNode n)
 {
 	if (!n.isNull())
 	{
@@ -109,28 +114,63 @@ QString BannFullScreen::extractAddress(QDomNode n)
 BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale)
 {
 	BannFullScreen *bfs = 0;
+	QString simple_address = extractAddress(n);
+	QString where_composed;
+	if (!simple_address.isNull())
+		where_composed = simple_address + "#" + ind_centrale;
+
 	switch (id)
 	{
 		case fs_nc_probe:
 			bfs = new FSBannSimpleProbe(parent, n);
 			break;
 		case fs_4z_probe:
-			bfs = new FSBannProbe(n, ind_centrale, false, parent);
+			{
+				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+						btouch_device_cache.get_temperature_probe_controlled(
+							where_composed.ascii(), THERMO_Z4, false, ind_centrale.ascii(), simple_address.ascii()));
+				bfs = new FSBannProbe(n, dev, false, parent);
+			}
 			break;
 		case fs_99z_probe:
-			bfs = new FSBannProbe(n, ind_centrale, true, parent);
+			{
+				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+						btouch_device_cache.get_temperature_probe_controlled(
+							where_composed.ascii(), THERMO_Z99, false, ind_centrale.ascii(), simple_address.ascii()));
+				bfs = new FSBannProbe(n, dev, true, parent);
+			}
 			break;
 		case fs_4z_fancoil:
-			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z4, false, parent);
+			{
+				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+						btouch_device_cache.get_temperature_probe_controlled(
+							where_composed.ascii(), THERMO_Z4, true, ind_centrale.ascii(), simple_address.ascii()));
+				bfs = new FSBannFancoil(n, dev, false, parent);
+			}
 			break;
 		case fs_99z_fancoil:
-			bfs = new FSBannFancoil(n, ind_centrale, THERMO_Z99, true, parent);
+			{
+				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+						btouch_device_cache.get_temperature_probe_controlled(
+							where_composed.ascii(), THERMO_Z99, true, ind_centrale.ascii(), simple_address.ascii()));
+				bfs = new FSBannFancoil(n, dev, true, parent);
+			}
 			break;
 		case fs_4z_thermal_regulator:
-			bfs = new FSBannTermoReg4z(n, ind_centrale, parent);
+			{
+				where_composed = QString("0#") + ind_centrale;
+				thermal_regulator_4z *dev = static_cast<thermal_regulator_4z *>(
+						btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4));
+				bfs = new FSBannTermoReg4z(n, dev, parent);
+			}
 			break;
 		case fs_99z_thermal_regulator:
-			bfs = new FSBannTermoReg99z(n, ind_centrale, parent);
+			{
+				where_composed = ind_centrale;
+				thermal_regulator_99z *dev = static_cast<thermal_regulator_99z *>(
+						btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z99));
+				bfs = new FSBannTermoReg99z(n, dev, parent);
+			}
 			break;
 		case fs_date_edit:
 			bfs = new FSBannDate(parent, 0);
@@ -210,7 +250,7 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, QWidget *parent,const char *name)
+FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent,const char *name)
 	: FSBannSimpleProbe(parent, n),
 	delta_setpoint(false),
 	setpoint_delay(2000),
@@ -223,16 +263,7 @@ FSBannProbe::FSBannProbe(QDomNode n, QString ind_centrale, bool change_status, Q
 	navbar_button = getButton(IMG_MAN);
 	navbar_button->hide();
 	conf_root = n;
-
-	QString simple_address = extractAddress(conf_root);
-	if (simple_address.isNull())
-		qFatal("FSBannProbe ctor: wrong address, configuration is wrong");
-	QString where_composed = simple_address + "#" + ind_centrale;
-
-	thermo_type_t probe_type = status_change_enabled ? THERMO_Z99 : THERMO_Z4;
-
-	dev = static_cast<temperature_probe_controlled *>
-		(btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), probe_type, false, ind_centrale.ascii(), simple_address.ascii()));
+	dev = _dev;
 
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 	connect(navbar_button, SIGNAL(clicked()), SLOT(changeStatus()));
@@ -640,14 +671,11 @@ QString FSBannTermoReg::lookupProgramDescription(QString season, int program_num
 }
 
 
-FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name)
+FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, const char *name)
 	: FSBannTermoReg(n, parent, name)
 {
-	QString where_composed = QString("0#") + ind_centrale;
-	_dev = static_cast<thermal_regulator_4z *>(btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4));
-
+	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
-
 	createSettingsMenu();
 }
 
@@ -696,10 +724,10 @@ void FSBannTermoReg4z::createSettingsMenu()
 	settings->hide();
 }
 
-FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, QString ind_centrale, QWidget *parent, const char *name)
+FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, const char *name)
 	: FSBannTermoReg(n, parent, name)
 {
-	_dev = static_cast<thermal_regulator_99z *>(btouch_device_cache.get_thermal_regulator(ind_centrale.ascii(), THERMO_Z99));
+	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 	createSettingsMenu();
 }
@@ -748,16 +776,11 @@ void FSBannTermoReg99z::createSettingsMenu()
 	settings->hide();
 }
 
-FSBannFancoil::FSBannFancoil(QDomNode n, QString ind_centrale, thermo_type_t type, bool change_status, QWidget *parent, const char *name)
-	: FSBannProbe(n, ind_centrale, change_status, parent),
+FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name)
+	: FSBannProbe(n, _dev, change_status, parent),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
-	QString simple_address = extractAddress(conf_root);
-	if (simple_address.isNull())
-		qFatal("FSBannProbe ctor: wrong address, configuration is wrong");
-	QString where_composed = simple_address + "#" + ind_centrale;
-	dev = static_cast<temperature_probe_controlled *> (btouch_device_cache.get_temperature_probe_controlled(where_composed.ascii(), type,
-				true, ind_centrale.ascii(), simple_address.ascii()));
+	dev = _dev;
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
 
 	createFancoilButtons();
@@ -810,16 +833,17 @@ void FSBannFancoil::handleFancoilButtons(int pressedButton)
 void FSBannFancoil::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
-	device_status *dev;
+	device_status *ds;
 	bool update = false;
 
-	while ((dev = it.current()) != 0)
+	while ((ds = it.current()) != 0)
 	{
 		++it;
-		if (dev->get_type() == device_status::FANCOIL)
+		if (ds->get_type() == device_status::FANCOIL)
 		{
+
 			stat_var speed_var(stat_var::FANCOIL_SPEED);
-			dev->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
+			ds->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
 
 			// Set the fancoil Button in the buttons bar
 			if (speed_to_btn_tbl.contains(speed_var.get_val()))
