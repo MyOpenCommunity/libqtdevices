@@ -55,51 +55,6 @@ void getAmbName(char *name, char *out, char *amb, char len)
     }
 }
 
-/*
-bool setCfgValue(char* file, int id, const char* campo, const char* valore,int serNumId)
-{
-    char appoggio[100];
-    QString Line;
-    int count;
-    
-    comChConf();
-    count=1;    
-    QFile *fil=new QFile(file);
-    if ( !fil->open( IO_WriteOnly | IO_ReadOnly) )
-	return(FALSE);
-    QTextStream t( fil);
-    do{     
-	Line= t.readLine();
-	sprintf(&appoggio[0], "<id>%d</id>",id);
-	
-	if  (Line.contains(&appoggio[0],TRUE)) 
-	{
-	    if  (count==serNumId)
-	    {
-		sprintf(&appoggio[0], "<%s>",campo);
-		QIODevice::Offset ofs;
-		do{
-		    ofs=t.device()->at();
-		    Line= t.readLine();
-		}while( (!Line.isNull()) && !Line.contains(&appoggio[0],TRUE));
-		if (!Line.isNull())
-		{
-		     t.device()->at(ofs);
-		     Line.sprintf("<%s>%s</%s>",campo,valore,campo);
-		     t.writeRawBytes(Line.ascii(), Line.length());
-		     fil->flush();
-		     fil->close();
-		     return(TRUE);
-		 }		
-	    }
-	    else
-		count++;
-	}
-    }while  (!Line.isNull());
-    fil->close();    
-    return(FALSE);
-}   
-*/
 bool setCfgValue(char* file, int id, const char* campo, const char* valore,int serNumId)
 {
     char app1[100];
@@ -163,10 +118,6 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
     fil2->close();	
     return(FALSE);
 }   
-
-
-
-
 
 bool setCfgValue(int id, const char* campo, const char* valore)
 {
@@ -496,19 +447,6 @@ void ResetTimer(int signo)
     qDebug("ResetTimer()");
     BTouch->ResetTimer();
 }
-#if 0
-bool isForMe(openwebnet& m, char *chi = "1")
-{
-    if(strcmp(m.Extract_chi(), chi)) return false ;
-    if(!strcmp(m.Extract_dove(),getAddress())) return true;
-    // BAH
-    return (!getPul() && ((!strcmp(m.Extract_dove(),"0")) ||
-			  ((strlen(m.Extract_dove())==1) && 
-			   (!strncmp(m.Extract_dove(), getAddress(), 1)) ) || 
-			  ((!strncmp(m.Extract_dove(),"#",1)) && 
-			   *(getGroup()+(atoi(m.Extract_dove()+1))-1))));
-}
-#endif
 
 void grabScreen(void* pWidget, char* filename)
 {

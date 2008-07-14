@@ -539,22 +539,6 @@ void scenEvo::freezed(bool f)
 void scenEvo::gestFrame(char* frame)
 {
 	qDebug("scenEvo::gestFrame()");
-#if 1
-#if 0
-	// devices talk directly to comm clients
-	emit(frame_available(frame));
-#endif
-#else
-	scenEvo_cond *co;
-	QPtrListIterator<scenEvo_cond> *ci = 
-		new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	while( ( co = ci->current() ) != 0) {
-		co->gestFrame(frame);
-		++(*ci);
-	}
-	delete ci;
-#endif
 }
 
 void scenEvo::inizializza(bool forza)
