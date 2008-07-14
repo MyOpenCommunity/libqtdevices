@@ -23,6 +23,7 @@ BannOff::BannOff(QWidget *parent, const char *name, thermal_regulator *_dev)
 	SetIcons(0, 0, 0, i_off.ascii());
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
+	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
 }
 
 void BannOff::performAction()
@@ -39,6 +40,7 @@ BannAntifreeze::BannAntifreeze(QWidget *parent, const char *name, thermal_regula
 	SetIcons(0, 0, 0, i_antifreeze.ascii());
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
+	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
 }
 
 void BannAntifreeze::performAction()
@@ -59,6 +61,8 @@ BannSummerWinter::BannSummerWinter(QWidget *parent, const char *name, thermal_re
 
 	connect(this, SIGNAL(csxClick()), this, SLOT(setWinter()));
 	connect(this, SIGNAL(cdxClick()), this, SLOT(setSummer()));
+	connect(this, SIGNAL(csxClick()), this, SIGNAL(clicked()));
+	connect(this, SIGNAL(cdxClick()), this, SIGNAL(clicked()));
 }
 
 void BannSummerWinter::setSummer()

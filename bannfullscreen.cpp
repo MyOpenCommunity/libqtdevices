@@ -710,14 +710,17 @@ void FSBannTermoReg4z::createSettingsMenu()
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF", _dev);
 	settings->appendBanner(off);
+	connect(off, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// antifreeze banner
 	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", _dev);
 	settings->appendBanner(antifreeze);
+	connect(antifreeze, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// summer_winter banner
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
 	settings->appendBanner(summer_winter);
+	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
@@ -762,14 +765,17 @@ void FSBannTermoReg99z::createSettingsMenu()
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF", _dev);
 	settings->appendBanner(off);
+	connect(off, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// antifreeze banner
 	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", _dev);
 	settings->appendBanner(antifreeze);
+	connect(antifreeze, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// summer_winter banner
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
 	settings->appendBanner(summer_winter);
+	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());

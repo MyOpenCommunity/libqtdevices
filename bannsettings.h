@@ -38,6 +38,8 @@ public slots:
 private:
 	/// The device that this banner sends commands to
 	thermal_regulator *dev;
+signals:
+	void clicked();
 };
 
 /**
@@ -58,6 +60,8 @@ public slots:
 private:
 	/// The device that this banner sends commands to
 	thermal_regulator *dev;
+signals:
+	void clicked();
 };
 
 /**
@@ -78,6 +82,8 @@ private:
 	seasons status;
 	/// The device that this banner sends commands to
 	thermal_regulator *dev;
+signals:
+	void clicked();
 };
 
 /**
