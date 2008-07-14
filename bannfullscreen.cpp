@@ -130,7 +130,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			bfs = new FSBannTermoReg4z(n, ind_centrale, parent);
 			break;
 		case fs_99z_thermal_regulator:
-			bfs = new FSBannSimpleProbe(parent, n);
+			bfs = new FSBannTermoReg99z(n, ind_centrale, parent);
 			break;
 		case fs_date_edit:
 			bfs = new FSBannDate(parent, 0);

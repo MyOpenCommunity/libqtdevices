@@ -27,8 +27,13 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	setBGColor(bg);
 	setFGColor(fg);
 	second_fg = fg2;
-	// FIXME: bisogna ricordarsi che per C4z ind_centrale != ""
-	ind_centrale = conf_root.namedItem("ind_centrale").toElement().text();
+
+	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
+	if (thermr_address.isNull())
+		ind_centrale = "0";
+	else
+		ind_centrale = thermr_address.toElement().text();
+
 	// propagate freeze
 	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SLOT(freezed(bool)));
 	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SIGNAL(freezePropagate(bool)));
@@ -42,7 +47,6 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	{
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
-			qDebug("[TERMO] createPlantMenu: item = %s", n.nodeName().ascii());
 			bannPuls *bp = 0;
 			QString descr = findNamedNode(n, "descr").toElement().text();
 			if (descr.isNull())
@@ -52,7 +56,6 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 			switch (id)
 			{
 				case TERMO_99Z:
-					// FIXME: set the correct address when the device is implemented
 					bp = addMenuItem(n, i_thermr, descr, fs_99z_thermal_regulator);
 					break;
 				case TERMO_4Z:
