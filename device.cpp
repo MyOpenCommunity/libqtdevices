@@ -536,7 +536,7 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 		const char *ind_centrale, const char *indirizzo, bool p, int g) :
 	device(QString("4"), w, p, g)
 {
-	qDebug("temperature_probe_controlled::temperature_probe_controlled(), type=%d, fancoil=%s", type, fancoil ? "true" : "false");
+	qDebug("temperature_probe_controlled::temperature_probe_controlled(), type=%d, fancoil=%s", type, _fancoil ? "true" : "false");
 	interpreter = new frame_interpreter_temperature_probe_controlled(w, type, ind_centrale, indirizzo, p, g);
 	set_frame_interpreter(interpreter);
 	stat->append(new device_status_temperature_probe_extra(type));
