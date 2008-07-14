@@ -37,6 +37,8 @@
 #include "bann_antintrusione.h"
 #include "bannfullscreen.h"
 
+#define IMG_OK IMG_PATH "btnok.png"
+
 sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
 : QWidget( parent, name )
 {
@@ -1015,6 +1017,7 @@ void ScenarioMenu::createWinterBanners()
 TimeEditMenu::TimeEditMenu(QWidget *parent, const char *name)
 	: sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
+	setNavBarMode(10, IMG_OK);
 	time_edit = new FSBannTime(this);
 	elencoBanner.append(time_edit);
 	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
@@ -1033,6 +1036,7 @@ QTime TimeEditMenu::time()
 DateEditMenu::DateEditMenu(QWidget *parent, const char *name)
 	: sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
+	setNavBarMode(10, IMG_OK);
 	date_edit = new FSBannDate(this);
 	elencoBanner.append(date_edit);
 	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));

@@ -66,9 +66,6 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	hbox = new QHBoxLayout(main_layout);
 	hbox->addWidget(btn1);
 	hbox->addWidget(btn2);
-
-	setMaxHours(23);
-	setMaxMinutes(59);
 }
 
 QTime BtTimeEdit::time()
@@ -76,62 +73,28 @@ QTime BtTimeEdit::time()
 	return _time;
 }
 
-void BtTimeEdit::setMaxHours(int h)
-{
-	if (h > 0)
-	{
-		max_hours = h;
-		num->setNumDigits(QString::number(max_hours).length() + QString::number(max_minutes).length() + 1);
-	}
-}
-
-void BtTimeEdit::setMaxMinutes(int m)
-{
-	if (m > 0)
-	{
-		max_minutes = m;
-		num->setNumDigits(QString::number(max_hours).length() + QString::number(max_minutes).length() + 1);
-	}
-}
-
 void BtTimeEdit::incHours()
 {
-	if (_time.hour() < max_hours)
-	{
-		_time.setHMS(_time.hour() + 1, _time.minute(), _time.second());
-		num->display(_time.toString("h:mm"));
-		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-	}
+	_time = _time.addSecs(3600);
+	num->display(_time.toString("h:mm"));
 }
 
 void BtTimeEdit::incMin()
 {
-	if (_time.minute() < max_minutes)
-	{
-		_time.setHMS(_time.hour(), _time.minute() + 1, _time.second());
-		num->display(_time.toString("h:mm"));
-		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-	}
+	_time = _time.addSecs(60);
+	num->display(_time.toString("h:mm"));
 }
 
 void BtTimeEdit::decHours()
 {
-	if (_time.hour() > 0)
-	{
-		_time.setHMS(_time.hour() - 1, _time.minute(), _time.second());
-		num->display(_time.toString("h:mm"));
-		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-	}
+	_time = _time.addSecs(-3600);
+	num->display(_time.toString("h:mm"));
 }
 
 void BtTimeEdit::decMin()
 {
-	if (_time.minute() > 0)
-	{
-		_time.setHMS(_time.hour(), _time.minute() - 1, _time.second());
-		num->display(_time.toString("h:mm"));
-		qDebug("[TERMO] about to display %s", _time.toString("h:mm").ascii());
-	}
+	_time = _time.addSecs(-60);
+	num->display(_time.toString("h:mm"));
 }
 
 BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
@@ -162,8 +125,8 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 
 	date_display = new QLCDNumber(this);
 	date_display->setSegmentStyle(QLCDNumber::Flat);
-	date_display->setNumDigits(10);
-	date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
+	date_display->setNumDigits(8);
+	date_display->display(_date.toString("dd.MM.yy"));
 	date_display->setFrameStyle(QFrame::NoFrame);
 	main_layout->addWidget(date_display);
 
@@ -192,19 +155,19 @@ QDate BtDateEdit::date()
 void BtDateEdit::incDay()
 {
 	_date = _date.addDays(1);
-	date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
+	date_display->display(_date.toString("dd.MM.yy"));
 }
 
 void BtDateEdit::incMonth()
 {
 	_date = _date.addMonths(1);
-	date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
+	date_display->display(_date.toString("dd.MM.yy"));
 }
 
 void BtDateEdit::incYear()
 {
 	_date = _date.addYears(1);
-	date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
+	date_display->display(_date.toString("dd.MM.yy"));
 }
 
 void BtDateEdit::decDay()
@@ -212,7 +175,7 @@ void BtDateEdit::decDay()
 	if (_date.addDays(-1) >= QDate::currentDate())
 	{
 		_date = _date.addDays(-1);
-		date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
+		date_display->display(_date.toString("dd.MM.yy"));
 	}
 }
 
@@ -221,7 +184,7 @@ void BtDateEdit::decMonth()
 	if (_date.addMonths(-1) >= QDate::currentDate())
 	{
 		_date = _date.addMonths(-1);
-		date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
+		date_display->display(_date.toString("dd.MM.yy"));
 	}
 }
 
@@ -230,6 +193,6 @@ void BtDateEdit::decYear()
 	if (_date.addYears(-1) >= QDate::currentDate())
 	{
 		_date = _date.addYears(-1);
-		date_display->display(QString("%1:%2:%3").arg(_date.day()).arg(_date.month()).arg(_date.year()));
+		date_display->display(_date.toString("dd.MM.yy"));
 	}
 }

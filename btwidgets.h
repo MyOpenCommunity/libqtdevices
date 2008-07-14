@@ -20,12 +20,9 @@
 /**
  * A widget that emulates QTimeEdit
  *
- * This widget allows the user to edit 2 time values (hours and minutes).
- * Maximum values for hours and minutes can be set using appropriate functions; by default
- * it's possible to insert any value between 00:00 and 23:59 (inclusive), i.e. maximum hours are 23 and
- * maximun minutes are 59.
- * Whenever the value displayed changes, the signal valueChanged(int, int) is emitted
- * The default value is 0:0.
+ * This widget allows the user to edit a time value in the day, ie. between
+ * 0:00 and 23:59. The current time set can be retrieved with the time() function.
+ * The default value for time is 0:00.
  */
 class BtTimeEdit : public QWidget
 {
@@ -34,19 +31,8 @@ public:
 	BtTimeEdit(QWidget *parent, const char *name = 0);
 
 	/**
-	 * Set the maximum value for hours. If \a h is negative, no action is performed.
-	 *
-	 * \param h The maximum value allowed for the hours field.
+	 * Returns the time set on the widget.
 	 */
-	void setMaxHours(int h);
-
-	/**
-	 * Set the maximum value for minutes. If \a m is negative, no action is performed.
-	 *
-	 * \param m The maximum value allowed for the minutes field.
-	 */
-	void setMaxMinutes(int m);
-
 	QTime time();
 private slots:
 	void incHours();
@@ -55,13 +41,13 @@ private slots:
 	void decMin();
 private:
 	QTime _time;
-	int max_hours, max_minutes;
 	QLCDNumber *num;
 };
 
 /**
  * A widget that emulates QDateEdit
  *
+ * The current date set can be retrived with the function date().
  * The default value for date is currentDate + 1 day.
  */
 class BtDateEdit : public QWidget
@@ -69,6 +55,9 @@ class BtDateEdit : public QWidget
 Q_OBJECT
 public:
 	BtDateEdit(QWidget *parent, const char *name = 0);
+	/**
+	 * Returns the date set on the widget.
+	 */
 	QDate date();
 private:
 	/// display date set
