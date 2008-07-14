@@ -1312,7 +1312,7 @@ frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString
 void frame_interpreter_temperature_probe::get_init_message(device_status *s, QString& out)
 {
 	QString head = "*#4*";
-	QString end = (external ? "00*15#" + where + "##" : "*0##");
+	QString end = (external ? "00*15#1##" : "*0##");
 	out = head + where + end;
 	qDebug("temperature_probe init message: %s", out.ascii());
 }
