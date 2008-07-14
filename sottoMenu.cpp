@@ -965,7 +965,7 @@ void ScenarioMenu::createSummerBanners()
 			if (p.isElement())
 			{
 				bp->SetTextU(p.toElement().text());
-				QRegExp re("(\\d)");
+				QRegExp re("(\\d+)");
 				int index = re.search(p.nodeName());
 				if (index != -1)
 					bp->setProgram(re.cap(1).toInt());
@@ -1003,7 +1003,7 @@ void ScenarioMenu::createWinterBanners()
 			if (p.isElement())
 			{
 				bp->SetTextU(p.toElement().text());
-				QRegExp re("(\\d)");
+				QRegExp re("(\\d+)");
 				int index = re.search(p.nodeName());
 				if (index != -1)
 					bp->setProgram(re.cap(1).toInt());
