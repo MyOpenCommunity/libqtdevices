@@ -205,6 +205,14 @@ protected:
 	QString lookupProgramDescription(QString season, int program_number);
 
 	/**
+	 * Utility function to find in the DOM the program description to be displayed on screen.
+	 * \param season The season we are interested into. It must be either "summer" or "winter".
+	 * \param scenario_number The number of the scenario we are looking the description of.
+	 * \return The description of the program as written in DOM.
+	 */
+	QString lookupScenarioDescription(QString season, int scenario_number);
+
+	/**
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
