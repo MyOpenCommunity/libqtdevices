@@ -2230,8 +2230,6 @@ void frame_interpreter_thermal_regulator::handle_frame_handler(char *frame, QPtr
 	bool request_status;
 	openwebnet msg_open;
 	rearmWDT();
-	qDebug("[TERMO] frame_interpreter_thermal_regulator::handle_frame_handler");
-	qDebug("[TERMO] #### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if(!is_frame_ours(msg_open, request_status))
 		return;
@@ -2265,9 +2263,9 @@ bool frame_interpreter_thermal_regulator::is_frame_ours(openwebnet msg, bool& re
 	if (who == msg.Extract_chi())
 	{
 		QString dove = msg.Extract_dove();
-		if (msg.Extract_livello())
+		// FIXME: verify that this check is ok also for 4 zones thermal regulator
+		if (strcmp(msg.Extract_livello(), ""))
 			dove += QString("#") + msg.Extract_livello();
-
 		QString sharp_where = QString("#") + where;
 		is_our = (dove == sharp_where);
 	}
