@@ -5,7 +5,7 @@
 #include <qptrlist.h>
 #include <qobject.h>
 #include <qstringlist.h>
-#include "../bt_stackopen/common_files/openmsg.h"
+#include <openmsg.h>
 
 #include "openclient.h"
 #include "device.h"

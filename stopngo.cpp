@@ -71,7 +71,9 @@
 #define OPEN_GRANDEZZA_TR_AG             "213"
 #define OPEN_GRANDEZZA_TR_EG             "214"
 #define OPEN_GRANDEZZA_CONT_PER_AUTOTEST "213"
+#define OPEN_GRANDEZZA_STATO             "250"
 
+#define MIN_AUTOTEST_FREQ 1
 #define MAX_AUTOTEST_FREQ 180
 #define AUTOTEST_SEND_TIMEOUT 2000
 
@@ -688,6 +690,8 @@ void StopngoPage::FireFreqFrame()
   sprintf(frameOpen, "*#%s*%s*#%s*%d##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_FREQ_AUTOTEST, autotestFreq);
 	qDebug("StopngoPage::FireFreqFrame() fire frame: %s", frameOpen);
 	emit(sendFrame(frameOpen));
+  sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_FREQ_AUTOTEST);
+	emit(sendFrame(frameOpen));
 }
 	
 void StopngoPage::AutoArmClick()
@@ -695,6 +699,8 @@ void StopngoPage::AutoArmClick()
   char frameOpen[30];
   sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, 
 					(statusBmp & STATUS_BIT_AUTOREARM_DISABLED)?OPEN_WHAT_AUTOARM_ON:OPEN_WHAT_AUTOARM_OFF, where.ascii());
+	emit(sendFrame(frameOpen));
+  sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
 	emit(sendFrame(frameOpen));
 }
 
@@ -724,6 +730,8 @@ void StopngoPage::VerifyClick()
   sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, 
 					(statusBmp & STATUS_BIT_VERIFY_DISABLED)?OPEN_WHAT_VERIFY_ON:OPEN_WHAT_VERIFY_OFF, where.ascii());
 	emit(sendFrame(frameOpen));
+  sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
+	emit(sendFrame(frameOpen));
 }
 
 void StopngoPage::AutotestClick()
@@ -732,11 +740,13 @@ void StopngoPage::AutotestClick()
   sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, 
 					(statusBmp & STATUS_BIT_AUTOTEST_DISABLED)?OPEN_WHAT_AUTOTEST_ON:OPEN_WHAT_AUTOTEST_OFF, where.ascii());
 	emit(sendFrame(frameOpen));
+  sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
+	emit(sendFrame(frameOpen));
 }
 
 void StopngoPage::MinusClick()
 {
-	if (autotestFreq)
+	if (autotestFreq > MIN_AUTOTEST_FREQ)
 		SetFreqValue(--autotestFreq);
 }
 

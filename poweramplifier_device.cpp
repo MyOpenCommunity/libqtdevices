@@ -1,6 +1,6 @@
 #include "poweramplifier_device.h"
 #include "device_status.h"
-#include "../bt_stackopen/common_files/openmsg.h"
+#include <openmsg.h>
 
 #define MM_TYPE 4
 
