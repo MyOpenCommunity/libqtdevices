@@ -97,8 +97,8 @@
         <item1>
           <id>22</id>
           <cid>500</cid>
-          <descr>ZONA 3550 senza fan coil</descr>
-          <where>1</where>
+          <descr>Zona 14</descr>
+          <where>14</where>
           <cimg1>btnmin.png</cimg1>
           <cimg2>btnplus.png</cimg2>
           <cimg3>btnman.png</cimg3>
@@ -109,8 +109,8 @@
         <item2>
           <id>52</id>
           <cid>501</cid>
-          <descr>ZONA 3550 con fan coil</descr>
-          <where>1</where>
+          <descr>Zona 15</descr>
+          <where>15</where>
           <cimg1>btnmin.png</cimg1>
           <cimg2>btnplus.png</cimg2>
           <cimg3>btnman.png</cimg3>
@@ -123,6 +123,11 @@
           <cid>510</cid>
           <descr>Centrale 99 zone</descr>
           <summer>
+                  <prog>
+                     <p1>Prog E 1</p1>
+                     <p2>Prog E 2</p2>
+                     <p3>Prog E 3</p3>
+                  </prog>
                   <scen>
                      <s1>Scen E 1</s1>
                      <s2>Scen E 2</s2>
@@ -143,6 +148,11 @@
                   </scen>
           </summer>
           <winter>
+                  <prog>
+                     <p1>Prog I 1</p1>
+                     <p2>Prog I 2</p2>
+                     <p3>Prog I 3</p3>
+                  </prog>
                   <scen>
                      <s1>Scen I 1</s1>
                      <s2>Scen I 2</s2>
@@ -163,6 +173,18 @@
                   </scen>
           </winter>
         </item3>
+        <item4>
+          <id>22</id>
+          <cid>500</cid>
+          <descr>Zona 16</descr>
+          <where>16</where>
+          <cimg1>btnmin.png</cimg1>
+          <cimg2>btnplus.png</cimg2>
+          <cimg3>btnman.png</cimg3>
+          <cimg4>btnauto.png</cimg4>
+          <cimg5>sondaantigelo.png</cimg5>
+          <cimg6>sondaoff.png</cimg6>
+        </item4>
       </plant>
       <extprobe>
         <id>64</id>
