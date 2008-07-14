@@ -27,7 +27,7 @@
 #define DESCRIPTION_WIDTH 120
 #define TEMPERATURE_WIDTH 120
 	
-class QLabel;
+class BtLabelEvo;
 class device;
 
 class BannTemperature : public banner
@@ -59,9 +59,9 @@ private:
 	/// Probed temperature
 	QString  temperature;
 	/// Temperature label
-	QLabel  *temp_label;
+	BtLabelEvo  *temp_label;
 	/// Zone name label
-	QLabel  *descr_label;
+	BtLabelEvo  *descr_label;
 };
 
 #endif // BANNTEMPERATURE_H

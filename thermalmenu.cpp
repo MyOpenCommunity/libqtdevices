@@ -115,6 +115,9 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 	sm->hide();
+	// propagate freeze signal
+	connect(this, SIGNAL(freezePropagate(bool)), sm, SLOT(freezed(bool)));
+	connect(this, SIGNAL(freezePropagate(bool)), sm, SIGNAL(freezePropagate(bool)));
 
 	QDomNode n = config.firstChild();
 	while (!n.isNull())
