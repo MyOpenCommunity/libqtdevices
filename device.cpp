@@ -554,11 +554,13 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 
 void temperature_probe_controlled::setManual(unsigned setpoint)
 {
-	unsigned dimension = 14;
-	unsigned mode = 3; // generic mode
+	const unsigned dimension = 14;
+	const unsigned mode = 3; // generic mode
+	const unsigned temp_width = 4;
+	const QString temp = QString::number(setpoint).rightJustify(temp_width, '0');
 
 	QString msg = QString("*#") + who + QString("*#") + where + QString("*") + QString("#") +
-		QString::number(dimension) + QString("*") + QString::number(setpoint) + QString("*") + QString::number(mode) + QString("##");
+		QString::number(dimension) + QString("*") + temp + QString("*") + QString::number(mode) + QString("##");
 
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
