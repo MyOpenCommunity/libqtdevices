@@ -290,6 +290,7 @@ scenEvo::scenEvo( QWidget *parent, const char *name,
 		co->set_serial_number(serial_number);
 		qDebug("connecting richStato and frame_available signals");
 		connect(co, SIGNAL(verificata()), this, SLOT(trig()));
+		connect(co, SIGNAL(condSatisfied()), this, SLOT(trigOnStatusChanged()));
 		connect(co, SIGNAL(okAll()), this, SLOT(saveAndApplyAll()));
 		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
 		++(*ci);
@@ -488,6 +489,19 @@ void scenEvo::setAction(const char *a)
 	action = a ;
 }
 
+void scenEvo::trigOnStatusChanged()
+{
+	qDebug("scenEvo::trigOnStatusChanged()");
+	QPtrListIterator<scenEvo_cond> ci(*condList);
+	scenEvo_cond *co;
+	while((co = ci.current()) != 0)
+	{
+		++ci;
+		if (co->hasTimeCondition)
+			return;
+	}
+	trig();
+}
 
 void scenEvo::trig(bool forced)
 {

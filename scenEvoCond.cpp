@@ -28,6 +28,7 @@ scenEvo_cond::scenEvo_cond(QWidget *parent, char *name)  :
     val = -1;
     for(int i = 0; i < MAX_EVO_COND_IMG; i++)
 	img[i] = new QString("");
+	hasTimeCondition = false;
 }
 
 const char *scenEvo_cond::getImg(int index)
@@ -176,6 +177,7 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) :
     connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
     cond_time = new QDateTime(QDateTime::currentDateTime());
     ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
+	hasTimeCondition = true;
 }
 
 void scenEvo_cond_h::set_h(const char *_h)
@@ -688,10 +690,9 @@ void scenEvo_cond_d::SetIcons()
     }
     if(dc) {
 	dc->setGeometry(40,140,160,50);
-	connect(dc, SIGNAL(richStato(char *)), this, 
-		SIGNAL(richStato(char *)));
-	connect(this, SIGNAL(frame_available(char *)),
-		dc, SLOT(handle_frame(char *)));
+	connect(dc, SIGNAL(richStato(char *)), this, SIGNAL(richStato(char *)));
+	connect(this, SIGNAL(frame_available(char *)), dc, SLOT(handle_frame(char *)));
+	connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
 	dc->set_where(*where);
     }
     actual_condition = dc;
@@ -1006,7 +1007,11 @@ void device_condition_light_status::status_changed(QPtrList<device_status> sl)
 		   curr_status.get_val());
 	    if(trig_v == curr_status.get_val()) {
 		qDebug("light condition (%d) satisfied", trig_v);
-		satisfied = true;
+		if (!satisfied)
+		{
+			satisfied = true;
+			emit(condSatisfied());
+		}
 	    } else {
 		qDebug("light condition (%d) NOT satisfied", trig_v);
 		satisfied = false;
@@ -1304,7 +1309,11 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
           qDebug("trigger value min is %d - max is %d, val10 = %d", trig_v_min, trig_v_max, curr_lev.get_val()/10);
           if((curr_lev.get_val()/10 >= trig_v_min) && (curr_lev.get_val()/10 <= trig_v_max)){
             qDebug("Condition triggered");
-            satisfied = true;
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
           } else {
             qDebug("Condition not triggered");
             satisfied = false;
@@ -1590,7 +1599,11 @@ void device_condition_dimming_100::status_changed(QPtrList<device_status> sl)
           qDebug("trigger value min is %d - max is %d, val = %d", trig_v_min, trig_v_max, val10);
           if((val10 >= trig_v_min) && (val10 <= trig_v_max)){
             qDebug("Condition triggered");
-            satisfied = true;
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
           } else {
             qDebug("Condition not triggered");
             satisfied = false;
@@ -1846,14 +1859,23 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
         qDebug("volume = %d - stato = %d", curr_volume.get_val(), curr_stato.get_val());
         if((trig_v_min == -1) && (curr_stato.get_val() == 0))
         {
-          qDebug("Condition triggered");
-          satisfied = true;
+			qDebug("Condition triggered");
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
         }
         else if((curr_stato.get_val() == 1) && (curr_volume.get_val() >= trig_v_min) && (curr_volume.get_val() <= trig_v_max))
         {
-          qDebug("Condition triggered");
-          satisfied = true;
-        } else {
+			qDebug("Condition triggered");
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
+        }
+		else {
           qDebug("Condition not triggered");
           satisfied = false;
         }
@@ -1972,9 +1994,14 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 		     curr_temp);
 	    qDebug("Current temperature %d", curr_temp.get_val());
 	    if((curr_temp.get_val() >= (trig_v-10)) &&  (curr_temp.get_val() <= (trig_v+10))){
-              qDebug("Condition triggered");
-              satisfied = true;
-            } else {
+                qDebug("Condition triggered");
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit(condSatisfied());
+				}
+            }
+			else {
               qDebug("Condition not triggered");
               satisfied = false;
             }
