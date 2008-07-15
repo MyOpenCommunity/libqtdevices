@@ -291,6 +291,9 @@ private:
 	BtLabelEvo *season_icon;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
 	BtLabelEvo *mode_icon;
+
+	bool description_visible;
+
 	QDate holiday_date_end;
 	QTime holiday_time_end;
 	TimeEditMenu *time_edit;

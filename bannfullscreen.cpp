@@ -509,6 +509,8 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	description_label = new BtLabelEvo(this);
 	description_label->setAlignment(AlignHCenter);
 
+	description_visible = true;
+
 	season_icon = getLabelWithPixmap(IMG_SUMMER_S, this, AlignHCenter);
 
 	mode_icon = getLabelWithPixmap(IMG_THERMR, this, AlignHCenter);
@@ -528,18 +530,17 @@ void FSBannTermoReg::Draw()
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
+	setVisible(description_label, description_visible);
 	description_label->setFont(aFont);
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
 	description_label->setPaletteForegroundColor(second_fg);
-	description_label->show();
 
 	BannFullScreen::Draw();
 }
 
 void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 {
-	bool update = false;
 	int season = thermal_regulator::SUMMER;
 
 	for (QPtrListIterator<device_status> it(list); device_status *ds = it.current(); ++it)
@@ -576,14 +577,14 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					{
 						QPixmap *icon = icons_library.getIcon(IMG_OFF_S);
 						mode_icon->setPixmap(*icon);
-						description_label->hide();
+						description_visible = false;
 					}
 					break;
 				case device_status_thermal_regulator::PROTECTION:
 					{
 						QPixmap *icon = icons_library.getIcon(IMG_ANTIFREEZE_S);
 						mode_icon->setPixmap(*icon);
-						description_label->hide();
+						description_visible = false;
 					}
 					break;
 				case device_status_thermal_regulator::MANUAL:
@@ -604,7 +605,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 						description += QString::number(temp);
 						description.insert(description.length() - 1, ".");
 						description += TEMP_DEGREES"C";
-						update = true;
+						description_visible = true;
 					}
 					break;
 				case device_status_thermal_regulator::WEEK_PROGRAM:
@@ -628,8 +629,8 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 								description = lookupProgramDescription("winter", program);
 								break;
 						}
+						description_visible = true;
 					}
-					update = true;
 					break;
 				case device_status_thermal_regulator::SCENARIO:
 					{
@@ -650,15 +651,15 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 								description = lookupScenarioDescription("winter", scenario);
 								break;
 						}
+						description_visible = true;
 					}
-					update = true;
 					break;
 				case device_status_thermal_regulator::HOLIDAY:
 					{
 						const QString i_img = QString(IMG_PATH) + "feriale.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
 						mode_icon->setPixmap(*icon);
-						description_label->hide();
+						description_visible = false;
 					}
 					break;
 				case device_status_thermal_regulator::WEEKEND:
@@ -666,7 +667,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 						const QString i_img = QString(IMG_PATH) + "festivo.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
 						mode_icon->setPixmap(*icon);
-						description_label->hide();
+						description_visible = false;
 					}
 					break;
 				default:
@@ -674,8 +675,8 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 			}
 		}
 	}
-	if (update)
-		Draw();
+
+	Draw();
 }
 
 QString FSBannTermoReg::lookupProgramDescription(QString season, int program_number)
