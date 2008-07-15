@@ -136,7 +136,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			{
 				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
 						btouch_device_cache.get_temperature_probe_controlled(
-							where_composed.ascii(), THERMO_Z99, false, ind_centrale.ascii(), simple_address.ascii()));
+							simple_address.ascii(), THERMO_Z99, false, ind_centrale.ascii(), simple_address.ascii()));
 				bfs = new FSBannProbe(n, dev, true, parent);
 			}
 			break;
@@ -152,7 +152,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			{
 				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
 						btouch_device_cache.get_temperature_probe_controlled(
-							where_composed.ascii(), THERMO_Z99, true, ind_centrale.ascii(), simple_address.ascii()));
+							simple_address.ascii(), THERMO_Z99, true, ind_centrale.ascii(), simple_address.ascii()));
 				bfs = new FSBannFancoil(n, dev, true, parent);
 			}
 			break;
@@ -273,6 +273,7 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, bool ch
 	btn_minus = getButton(IMG_MINUS);
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
+	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
 	hbox->addWidget(btn_minus);
 
 	setpoint_label = new BtLabelEvo(this);
@@ -281,6 +282,7 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, bool ch
 	btn_plus = getButton(IMG_PLUS);
 	btn_plus->hide();
 	btn_plus->setAutoRepeat(true);
+	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
 	hbox->addWidget(btn_plus);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, AlignHCenter);
@@ -349,8 +351,8 @@ void FSBannProbe::setSetpoint()
 
 void FSBannProbe::Draw()
 {
-	setVisible(btn_minus, status == MANUAL && status_change_enabled);
-	setVisible(btn_plus, status == MANUAL && status_change_enabled);
+	setVisible(btn_minus, status == MANUAL);
+	setVisible(btn_plus, status == MANUAL);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
 	setVisible(local_temp_label, local_temp != "0");
 	setVisible(icon_off, isOff);
@@ -450,7 +452,6 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			{
 				setpoint = curr_sp.get_val();
 				update = true;
-				break;
 			}
 
 			stat_var curr_stat(stat_var::STAT);
@@ -461,9 +462,15 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 				{
 					case device_status_temperature_probe_extra::S_MAN:
 						status = MANUAL;
+						navbar_button->setPixmap(*icons_library.getIcon(IMG_AUTO));
+						navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_AUTO)));
+						update = true;
 						break;
 					case device_status_temperature_probe_extra::S_AUTO:
 						status = AUTOMATIC;
+						navbar_button->setPixmap(*icons_library.getIcon(IMG_MAN));
+						navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_MAN)));
+						update = true;
 						break;
 					default:
 						break;
@@ -471,10 +478,12 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			}
 		}
 	}
-	FSBannSimpleProbe::status_changed(list);
 
 	if (update)
 		Draw();
+
+	FSBannSimpleProbe::status_changed(list);
+
 }
 
 FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
