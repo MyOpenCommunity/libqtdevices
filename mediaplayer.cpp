@@ -85,9 +85,15 @@ bool MediaPlayer::play(QString track, bool write_output)
 		}
 
 		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
-		const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL};
+		const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
 
-		mplayer_args[3] = track.latin1();
+		if (track.endsWith(".m3u", false))
+		{
+			mplayer_args[3] = "-playlist";
+			mplayer_args[4] = track.latin1();
+		}
+		else
+			mplayer_args[3] = track.latin1();
 
 		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
 	}

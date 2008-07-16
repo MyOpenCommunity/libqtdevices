@@ -442,7 +442,7 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setMatchAllDirs(true);
-	current_dir.setNameFilter("*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
+	current_dir.setNameFilter("*.[mM]3[uU];*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
