@@ -410,7 +410,7 @@ device_status_temperature_probe_extra::device_status_temperature_probe_extra(the
 	 * and the relevant display item is refreshed.
 	 */
 	add_var((int)STAT_INDEX, new stat_var(stat_var::STAT, -1, 0, 5, 1));
-	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
+	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, -1, 0, 13, 1));
 	add_var((int)SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
 	add_var((int)CRONO, new stat_var(stat_var::CRONO, 0, 0, 1, 1));
 	add_var((int)INFO_SONDA, new stat_var(stat_var::INFO_SONDA, 0, 0, INT_MAX, 1));
