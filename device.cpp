@@ -408,6 +408,31 @@ void thermal_regulator::setWeekProgram(int program)
 	sendFrame(msg_open.frame_open);
 }
 
+void thermal_regulator::setWeekendDateTime(QDate date, QTime time, int program)
+{
+	const QString sharp_where = QString("#") + where;
+
+	// we need to send 3 frames
+	// - frame at par. 2.3.9, to set what program has to be executed at the end of weekend mode
+	// - frame at par. 2.3.16 to set date
+	// - frame at par. 2.3.17 to set time
+	//
+	// First frame: set program
+	const int what_program = WEEK_PROGRAM + program;
+	QString what = QString::number(GENERIC_WEEKEND) + "#" + QString::number(what_program);
+
+	openwebnet msg_open;
+	QString msg = QString("*") + who + "*" + what + sharp_where + "##";
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
+
+	// Second frame: set date
+	setHolidayEndDate(date);
+
+	// Third frame: set time
+	setHolidayEndTime(time);
+}
+
 void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
 {
 	const QString sharp_where = QString("#") + where;
@@ -429,28 +454,42 @@ void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
 	sendFrame(msg_open.frame_open);
 
 	// Second frame: set date
+	setHolidayEndDate(date);
+
+	// Third frame: set time
+	setHolidayEndTime(time);
+}
+
+void thermal_regulator::setHolidayEndDate(QDate date)
+{
+	const QString sharp_where = QString("#") + where;
+
 	const unsigned date_width = 2;
 	const QString day = QString::number(date.day()).rightJustify(date_width, '0');
 	const QString month = QString::number(date.month()).rightJustify(date_width, '0');
 	const QString year = QString::number(date.year());
 	const QString date_end = QString::number(HOLIDAY_DATE_END);
 
-	openwebnet msg_open_2;
-	msg = QString("*#") + who + "*" + sharp_where + "*#" + date_end + "*" + day + "*" + month + "*" + year + "##";
-	msg_open_2.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	sendFrame(msg_open_2.frame_open);
+	openwebnet msg_open;
+	QString msg = QString("*#") + who + "*" + sharp_where + "*#" + date_end + "*" + day + "*" + month + "*" + year + "##";
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
+}
 
-	// Third frame: set time
+void thermal_regulator::setHolidayEndTime(QTime time)
+{
+	const QString sharp_where = QString("#") + where;
+
 	// Time numbers are 2 digits wide
 	const unsigned time_width = 2;
 	const QString hour = QString::number(time.hour()).rightJustify(time_width, '0');
 	const QString minute = QString::number(time.minute()).rightJustify(time_width, '0');
 	const QString time_end = QString::number(HOLIDAY_TIME_END);
 
-	openwebnet msg_open_3;
-	msg = QString("*#%1*%2*#%3*%4*%5##").arg(who).arg(sharp_where).arg(time_end).arg(hour).arg(minute);
-	msg_open_3.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
-	sendFrame(msg_open_3.frame_open);
+	openwebnet msg_open;
+	QString msg = QString("*#%1*%2*#%3*%4*%5##").arg(who).arg(sharp_where).arg(time_end).arg(hour).arg(minute);
+	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	sendFrame(msg_open.frame_open);
 }
 
 void thermal_regulator::requestStatus()
