@@ -250,27 +250,27 @@ private slots:
 	/**
 	 * User cancelled date editing, go back to main settings menu.
 	 */
-	void dateCancelled();
+	void holidayDateCancelled();
 
 	/**
 	 * User confirmed date, go to time editing.
 	 */
-	void dateSelected(QDate d);
+	void holidayDateSelected(QDate d);
 
 	/**
 	 * User cancelled time editing, go back to date editing.
 	 */
-	void timeCancelled();
+	void holidayTimeCancelled();
 
 	/**
 	 * User confirmed time editing, go on with program selection.
 	 */
-	void timeSelected(QTime t);
+	void holidayTimeSelected(QTime t);
 
 	/**
 	 * User cancelled program selection, go back to time editing.
 	 */
-	void programCancelled();
+	void holidayProgramCancelled();
 
 	/**
 	 * User confirmed program. Send the relevant frames through the device.
@@ -283,6 +283,17 @@ private slots:
 	void weekProgramCancelled();
 	void weekProgramSelected(int program);
 private:
+	/**
+	 * Utility function to create the submenu structure needed for holiday and weekend mode.
+	 * \param icon The icon to be visualized on the banner
+	 * \return The banner that will open the date edit menu
+	 */
+	banner *createHolidayWeekendBanner(sottoMenu *settings, QString icon);
+
+	DateEditMenu *createDateEdit(sottoMenu *settings);
+	TimeEditMenu *createTimeEdit(sottoMenu *settings);
+	WeeklyMenu *createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev);
+
 	QVBoxLayout main_layout;
 	/// Label and string that may be visualized
 	BtLabelEvo *description_label;
@@ -296,9 +307,9 @@ private:
 
 	QDate holiday_date_end;
 	QTime holiday_time_end;
-	TimeEditMenu *time_edit;
-	DateEditMenu *date_edit;
-	ProgramMenu *program_choice;
+	TimeEditMenu *holiday_time_edit, *weekend_time_edit;
+	DateEditMenu *holiday_date_edit, *weekend_date_edit;
+	ProgramMenu *holiday_program_choice, *weekend_program_choice;
 	sottoMenu *manual_menu;
 	WeeklyMenu *program_menu;
 };

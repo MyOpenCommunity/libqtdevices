@@ -1207,87 +1207,110 @@ void FSBannTermoReg::weekProgramSelected(int program)
 
 void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
 {
-	const QString i_holiday = QString("%1%2").arg(IMG_PATH).arg("feriale.png");
+	banner *bann = createHolidayWeekendBanner(settings, "feriale.png");
+	connect(bann, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
 
-	bannPuls *holiday = new bannPuls(settings, "holiday");
-	holiday->SetIcons(IMG_RIGHT_ARROW, 0, i_holiday.ascii());
-	settings->appendBanner(holiday);
-	connect(holiday, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
+	holiday_date_edit = createDateEdit(settings);
+	connect(holiday_date_edit, SIGNAL(Closed()), this, SLOT(holidayDateCancelled()));
+	connect(holiday_date_edit, SIGNAL(dateSelected(QDate)), this, SLOT(holidayDateSelected(QDate)));
 
-	// the banner inside date_edit does not have second foreground set
-	date_edit = new DateEditMenu(0, "date edit");
+	holiday_time_edit = createTimeEdit(settings);
+	connect(holiday_time_edit, SIGNAL(timeSelected(QTime)), this, SLOT(holidayTimeSelected(QTime)));
+	connect(holiday_time_edit, SIGNAL(Closed()), this, SLOT(holidayTimeCancelled()));
+
+	holiday_program_choice = createProgramChoice(settings, conf, dev);
+	connect(holiday_program_choice, SIGNAL(programClicked(int)), this, SLOT(holidaySettingsEnd(int)));
+	connect(holiday_program_choice, SIGNAL(Closed()), this, SLOT(holidayProgramCancelled()));
+}
+
+banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString icon)
+{
+	const QString bann_img = QString(IMG_PATH) + icon;
+
+	bannPuls *bann = new bannPuls(settings, 0);
+	bann->SetIcons(IMG_RIGHT_ARROW, 0, bann_img.ascii());
+	settings->appendBanner(bann);
+	return bann;
+}
+
+DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
+{
+	DateEditMenu *date_edit = new DateEditMenu(0, "date edit");
 	date_edit->setAllBGColor(paletteBackgroundColor());
 	date_edit->setAllFGColor(paletteForegroundColor());
-	connect(date_edit, SIGNAL(Closed()), this, SLOT(dateCancelled()));
-	connect(date_edit, SIGNAL(dateSelected(QDate)), this, SLOT(dateSelected(QDate)));
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SIGNAL(freezePropagate(bool)));
+	date_edit->hide();
+	return date_edit;
+}
 
-	time_edit = new TimeEditMenu(0, "time edit");
+TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
+{
+	TimeEditMenu *time_edit = new TimeEditMenu(0, "time edit");
 	time_edit->setAllBGColor(paletteBackgroundColor());
 	time_edit->setAllFGColor(paletteForegroundColor());
-	connect(time_edit, SIGNAL(timeSelected(QTime)), this, SLOT(timeSelected(QTime)));
-	connect(time_edit, SIGNAL(Closed()), this, SLOT(timeCancelled()));
 	// propagate freeze signal
-	connect(date_edit, SIGNAL(freezePropagate(bool)), time_edit, SLOT(freezed(bool)));
-	connect(date_edit, SIGNAL(freezePropagate(bool)), time_edit, SIGNAL(freezePropagate(bool)));
+	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SLOT(freezed(bool)));
+	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SIGNAL(freezePropagate(bool)));
+	time_edit->hide();
+	return time_edit;
+}
 
-	program_choice = new WeeklyMenu(0, "weekly program edit", conf);
+WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
+{
+	WeeklyMenu *program_choice = new WeeklyMenu(0, "weekly program edit", conf);
 	program_choice->setAllBGColor(paletteBackgroundColor());
 	program_choice->setAllFGColor(paletteForegroundColor());
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), program_choice, SLOT(status_changed(QPtrList<device_status>)));
-	connect(program_choice, SIGNAL(programClicked(int)), this, SLOT(holidaySettingsEnd(int)));
-	connect(program_choice, SIGNAL(Closed()), this, SLOT(programCancelled()));
 	// propagate freeze signal
-	connect(time_edit, SIGNAL(freezePropagate(bool)), program_choice, SLOT(freezed(bool)));
-	connect(time_edit, SIGNAL(freezePropagate(bool)), program_choice, SIGNAL(freezePropagate(bool)));
-	date_edit->hide();
-	time_edit->hide();
+	connect(settings, SIGNAL(freezePropagate(bool)), program_choice, SLOT(freezed(bool)));
+	connect(settings, SIGNAL(freezePropagate(bool)), program_choice, SIGNAL(freezePropagate(bool)));
 	program_choice->hide();
+	return program_choice;
 }
 
 void FSBannTermoReg::holidaySettingsStart()
 {
-	date_edit->show();
-	date_edit->raise();
+	holiday_date_edit->show();
+	holiday_date_edit->raise();
 }
 
-void FSBannTermoReg::dateCancelled()
+void FSBannTermoReg::holidayDateCancelled()
 {
-	date_edit->hide();
+	holiday_date_edit->hide();
 }
 
-void FSBannTermoReg::dateSelected(QDate d)
+void FSBannTermoReg::holidayDateSelected(QDate d)
 {
 	holiday_date_end = d;
-	time_edit->show();
-	time_edit->raise();
+	holiday_time_edit->show();
+	holiday_time_edit->raise();
 }
 
-void FSBannTermoReg::timeCancelled()
+void FSBannTermoReg::holidayTimeCancelled()
 {
-	time_edit->hide();
+	holiday_time_edit->hide();
 }
 
-void FSBannTermoReg::timeSelected(QTime t)
+void FSBannTermoReg::holidayTimeSelected(QTime t)
 {
 	holiday_time_end = t;
-	program_choice->show();
-	program_choice->raise();
+	holiday_program_choice->show();
+	holiday_program_choice->raise();
 }
 
-void FSBannTermoReg::programCancelled()
+void FSBannTermoReg::holidayProgramCancelled()
 {
-	program_choice->hide();
+	holiday_program_choice->hide();
 }
 
 void FSBannTermoReg::holidaySettingsEnd(int program)
 {
 	dev()->setHolidayDateTime(holiday_date_end, holiday_time_end, program);
-	program_choice->hide();
-	time_edit->hide();
-	date_edit->hide();
+	holiday_program_choice->hide();
+	holiday_time_edit->hide();
+	holiday_date_edit->hide();
 	settings->hide();
 }
 
