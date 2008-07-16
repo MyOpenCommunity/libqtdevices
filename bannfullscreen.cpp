@@ -778,6 +778,8 @@ void FSBannTermoReg4z::createSettingsMenu()
 
 	holidaySettings(settings, conf_root, _dev);
 
+	weekendSettings(settings, conf_root, _dev);
+
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF", _dev);
 	settings->appendBanner(off);
@@ -832,6 +834,8 @@ void FSBannTermoReg99z::createSettingsMenu()
 	scenarioSettings(settings, conf_root, _dev);
 
 	holidaySettings(settings, conf_root, _dev);
+
+	weekendSettings(settings, conf_root, _dev);
 
 	// off banner
 	BannOff *off = new BannOff(settings, "OFF", _dev);
@@ -1311,6 +1315,68 @@ void FSBannTermoReg::holidaySettingsEnd(int program)
 	holiday_program_choice->hide();
 	holiday_time_edit->hide();
 	holiday_date_edit->hide();
+	settings->hide();
+}
+
+void FSBannTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
+{
+	banner *bann = createHolidayWeekendBanner(settings, "festivo.png");
+	connect(bann, SIGNAL(sxClick()), this, SLOT(weekendSettingsStart()));
+
+	weekend_date_edit = createDateEdit(settings);
+	connect(weekend_date_edit, SIGNAL(Closed()), this, SLOT(weekendDateCancelled()));
+	connect(weekend_date_edit, SIGNAL(dateSelected(QDate)), this, SLOT(weekendDateSelected(QDate)));
+
+	weekend_time_edit = createTimeEdit(settings);
+	connect(weekend_time_edit, SIGNAL(timeSelected(QTime)), this, SLOT(weekendTimeSelected(QTime)));
+	connect(weekend_time_edit, SIGNAL(Closed()), this, SLOT(weekendTimeCancelled()));
+
+	weekend_program_choice = createProgramChoice(settings, conf, dev);
+	connect(weekend_program_choice, SIGNAL(programClicked(int)), this, SLOT(weekendSettingsEnd(int)));
+	connect(weekend_program_choice, SIGNAL(Closed()), this, SLOT(weekendProgramCancelled()));
+}
+
+void FSBannTermoReg::weekendSettingsStart()
+{
+	weekend_date_edit->show();
+	weekend_date_edit->raise();
+}
+
+void FSBannTermoReg::weekendDateCancelled()
+{
+	weekend_date_edit->hide();
+}
+
+void FSBannTermoReg::weekendDateSelected(QDate d)
+{
+	weekend_date_end = d;
+	weekend_time_edit->show();
+	weekend_time_edit->raise();
+}
+
+void FSBannTermoReg::weekendTimeCancelled()
+{
+	weekend_time_edit->hide();
+}
+
+void FSBannTermoReg::weekendTimeSelected(QTime t)
+{
+	weekend_time_end = t;
+	weekend_program_choice->show();
+	weekend_program_choice->raise();
+}
+
+void FSBannTermoReg::weekendProgramCancelled()
+{
+	weekend_program_choice->hide();
+}
+
+void FSBannTermoReg::weekendSettingsEnd(int program)
+{
+	dev()->setWeekendDateTime(weekend_date_end, weekend_time_end, program);
+	weekend_program_choice->hide();
+	weekend_time_edit->hide();
+	weekend_date_edit->hide();
 	settings->hide();
 }
 

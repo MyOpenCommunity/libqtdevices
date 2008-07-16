@@ -235,6 +235,11 @@ protected:
 	 */
 	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
 
+	/**
+	 * Utility function to create the submenu for weekend settings.
+	 */
+	void weekendSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
+
 	/// The settings menu of the thermal regulator
 	sottoMenu *settings;
 	/// A reference to the configuration of the thermal regulator
@@ -277,6 +282,14 @@ private slots:
 	 */
 	void holidaySettingsEnd(int program);
 
+	void weekendSettingsStart();
+	void weekendDateCancelled();
+	void weekendDateSelected(QDate d);
+	void weekendTimeCancelled();
+	void weekendTimeSelected(QTime t);
+	void weekendProgramCancelled();
+	void weekendSettingsEnd(int program);
+
 	void manualCancelled();
 	void manualSelected(unsigned temp);
 
@@ -305,8 +318,8 @@ private:
 
 	bool description_visible;
 
-	QDate holiday_date_end;
-	QTime holiday_time_end;
+	QDate holiday_date_end, weekend_date_end;
+	QTime holiday_time_end, weekend_time_end;
 	TimeEditMenu *holiday_time_edit, *weekend_time_edit;
 	DateEditMenu *holiday_date_edit, *weekend_date_edit;
 	ProgramMenu *holiday_program_choice, *weekend_program_choice;
