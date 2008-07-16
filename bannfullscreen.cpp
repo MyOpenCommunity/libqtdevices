@@ -351,10 +351,10 @@ void FSBannProbe::setSetpoint()
 
 void FSBannProbe::Draw()
 {
-	setVisible(btn_minus, status == MANUAL);
-	setVisible(btn_plus, status == MANUAL);
+	setVisible(btn_minus, status == MANUAL && !isOff && !isAntigelo);
+	setVisible(btn_plus, status == MANUAL && !isOff && !isAntigelo);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
-	setVisible(local_temp_label, local_temp != "0");
+	setVisible(local_temp_label, !isOff && !isAntigelo && local_temp != "0");
 	setVisible(icon_off, isOff);
 	setVisible(icon_antifreeze, isAntigelo);
 
@@ -472,7 +472,24 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 						navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_MAN)));
 						update = true;
 						break;
+					case device_status_temperature_probe_extra::S_ANTIGELO:
+					case device_status_temperature_probe_extra::S_TERM:
+					case device_status_temperature_probe_extra::S_GEN:
+						isOff = false;
+						isAntigelo = true;
+						update = true;
+						break;
+					case device_status_temperature_probe_extra::S_OFF:
+						isOff = true;
+						isAntigelo = false;
+						update = true;
+						break;
+					case device_status_temperature_probe_extra::S_NONE:
+						status = AUTOMATIC;
+						update = true;
+						break;
 					default:
+						update = false;
 						break;
 				}
 			}
