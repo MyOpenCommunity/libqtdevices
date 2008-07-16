@@ -422,7 +422,7 @@ void thermal_regulator::setWeekendDateTime(QDate date, QTime time, int program)
 	QString what = QString::number(GENERIC_WEEKEND) + "#" + QString::number(what_program);
 
 	openwebnet msg_open;
-	QString msg = QString("*") + who + "*" + what + sharp_where + "##";
+	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
 	sendFrame(msg_open.frame_open);
 
