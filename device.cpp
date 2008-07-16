@@ -525,7 +525,7 @@ void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
 	// than 24 hours.
 	//
 	// First frame: set temperature
-	const QString number_of_hours = "02";
+	const QString number_of_hours = "2";
 	const unsigned temp_width = 4;
 	const QString padded_temp = QString::number(temperature).rightJustify(temp_width, '0');
 	const QString what = QString::number(GENERIC_MANUAL_TIMED) + "#" + padded_temp + "#" + number_of_hours;
