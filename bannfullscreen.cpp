@@ -651,7 +651,7 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					break;
 				case device_status_thermal_regulator::SCENARIO:
 					{
-						const QString i_img = QString(IMG_PATH) + "scen.png";
+						const QString i_img = QString(IMG_PATH) + "scenari.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
 						mode_icon->setPixmap(*icon);
 
