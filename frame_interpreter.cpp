@@ -2595,9 +2595,15 @@ get_init_message(device_status *s, QString& out)
 		case device_status::TEMPERATURE_PROBE_EXTRA:
 			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> TEMPERATURE_PROBE_EXTRA");
 			/// FRAME VERSO LA CENTRALE
-			head = "*#4*#";
-			end  = "##";
-			out  = head + where + end;
+			// init frame to the thermal regulator must be sent only for 99 zones probe type
+			if (type == THERMO_Z99)
+			{
+				head = "*#4*#";
+				end  = "##";
+				out  = head + where + end;
+			}
+			else
+				out = "";
 			break;
 		case device_status::FANCOIL:
 			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> FANCOIL");
