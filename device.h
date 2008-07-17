@@ -154,7 +154,6 @@ public:
 	 */
 	void setWeekendDateTime(QDate date, QTime time, int program);
 	void setWeekProgram(int program);
-	void requestStatus();
 
 	/**
 	 * Sends a frame to the thermal regulator to set the temperature in manual mode.
