@@ -1402,6 +1402,7 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 
 	if (dove[0]=='#')
 		strcpy(&dove[0], &dove[1]);
+
 	if(!strcmp(dove, where.ascii()))
 	{
 		qDebug("FRAME IS OURS !!");
@@ -2539,7 +2540,17 @@ bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ex
 	if (!strcmp(m.Extract_chi(), "4"))
 	{
 		qDebug("[INTRP TERMO] is_frame_ours: msg %s, ind %s, ind_centr %s",
-			m.frame_open, indirizzo.ascii(), ind_centrale.ascii());
+				m.frame_open, indirizzo.ascii(), ind_centrale.ascii());
+
+		// Do not handle frames that are of the form *4*what*where##, in which `where' is in the form `#zona#centrale',
+		// if we are controlled by a 4 zones thermal regulator.
+		if (m.IsNormalFrame() && m.Extract_dove() && m.Extract_livello() && type == THERMO_Z4)
+		{
+			//FIXME: delete this warning when codition above is tested
+			qWarning("[TERMO] Refusing command frame %s because I'm 4 zones", m.frame_open);
+			return false;
+		}
+
 
 		char dove[30];
 		strcpy(dove, m.Extract_dove());
