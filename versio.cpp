@@ -75,7 +75,7 @@ void versio::gestFrame(char* frame)
  {
     openwebnet msg_open;
     char aggiorna;
-    
+
     aggiorna=0;
       
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
