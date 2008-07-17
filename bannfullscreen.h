@@ -114,7 +114,7 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -147,7 +147,7 @@ private:
 
 	bool isOff, isAntigelo;
 	probe_status status;
-	bool status_change_enabled;
+	thermo_type_t probe_type;
 
 	/// Send a setpoint frame only if 2 seconds are elapsed
 	QTimer setpoint_timer;
@@ -381,7 +381,7 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
