@@ -879,8 +879,13 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 					}
 					break;
 				case device_status_thermal_regulator::MANUAL:
+				case device_status_thermal_regulator::MANUAL_TIMED:
 					{
-						const QString i_img = QString(IMG_PATH) + "manuale.png";
+						QString i_img = QString(IMG_PATH);
+						if (curr_status.get_val() == device_status_thermal_regulator::MANUAL)
+							i_img += "manuale.png";
+						else
+							i_img += "manuale_temporizzato.png";
 						QPixmap *icon = icons_library.getIcon(i_img.ascii());
 						mode_icon->setPixmap(*icon);
 						stat_var curr_sp(stat_var::SP);
