@@ -503,6 +503,280 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 
 }
 
+FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name)
+	: FSBannProbe(n, _dev, change_status, parent),
+	fancoil_buttons(4, Qt::Horizontal, this)
+{
+	dev = _dev;
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
+
+	createFancoilButtons();
+	fancoil_buttons.setExclusive(true);
+	fancoil_buttons.hide(); // do not show QButtonGroup frame
+	fancoil_status = 0;
+	connect(&fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
+}
+
+void FSBannFancoil::createFancoilButtons()
+{
+	QHBoxLayout *hbox = new QHBoxLayout();
+	for (int i = 0, id = 0; i < 8; i += 2, ++id)
+	{
+		QString path = QString(IMG_PATH) + FANCOIL_ICONS[i];
+		QString path_pressed = QString(IMG_PATH) + FANCOIL_ICONS[i+1];
+		BtButton *btn = new BtButton(this);
+		btn->setPixmap(*icons_library.getIcon(path.ascii()));
+		btn->setPressedPixmap(*icons_library.getIcon(path_pressed.ascii()));
+		btn->setToggleButton(true);
+
+		hbox->addWidget(btn);
+		fancoil_buttons.insert(btn, id);
+
+		speed_to_btn_tbl[(id + 1) % 4] = id;
+		btn_to_speed_tbl[id] = (id + 1) % 4;
+	}
+	main_layout.insertLayout(-1, hbox);
+	main_layout.setStretchFactor(&fancoil_buttons, 2);
+}
+
+void FSBannFancoil::Draw()
+{
+	fancoil_buttons.setButton(fancoil_status);
+	FSBannProbe::Draw();
+}
+
+void FSBannFancoil::handleFancoilButtons(int pressedButton)
+{
+	dev->setFancoilSpeed(btn_to_speed_tbl[pressedButton]);
+	/*
+	 * Read back the set value to force an update to other devices
+	 * monitoring this dimension.
+	 *
+	 * This code was present in the original termopage. I leave it here to avoid breaking something.
+	 */
+	dev->requestFancoilStatus();
+}
+
+void FSBannFancoil::status_changed(QPtrList<device_status> list)
+{
+	QPtrListIterator<device_status> it (list);
+	device_status *ds;
+	bool update = false;
+
+	while ((ds = it.current()) != 0)
+	{
+		++it;
+		if (ds->get_type() == device_status::FANCOIL)
+		{
+
+			stat_var speed_var(stat_var::FANCOIL_SPEED);
+			ds->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
+
+			// Set the fancoil Button in the buttons bar
+			if (speed_to_btn_tbl.contains(speed_var.get_val()))
+			{
+				fancoil_status = speed_to_btn_tbl[speed_var.get_val()];
+				update = true;
+			}
+			else
+				qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
+		}
+	}
+
+	if (update)
+		Draw();
+	FSBannProbe::status_changed(list);
+}
+
+FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
+	: BannFullScreen(parent, "manual"),
+	main_layout(this),
+	dev(_dev)
+{
+	descr = tr("Manual");
+	descr_label = new BtLabelEvo(this);
+	main_layout.addWidget(descr_label);
+
+	navbar_button = getButton(I_OK);
+	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
+
+	temp = 200;
+	temp_label = new BtLabelEvo(this);
+	QHBoxLayout *hbox = new QHBoxLayout();
+
+	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
+	BtButton *btn = getButton(btn_min_img.ascii());
+	btn->setAutoRepeat(true);
+	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
+	hbox->addWidget(btn);
+
+	hbox->addWidget(temp_label);
+
+	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
+	btn = getButton(btn_plus_img.ascii());
+	btn->setAutoRepeat(true);
+	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
+	hbox->addWidget(btn);
+
+	main_layout.addLayout(hbox);
+
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
+}
+
+void FSBannManual::performAction()
+{
+	emit(temperatureSelected(temp));
+}
+
+void FSBannManual::incSetpoint()
+{
+	temp += 5;
+	Draw();
+}
+
+void FSBannManual::decSetpoint()
+{
+	temp -= 5;
+	Draw();
+}
+
+void FSBannManual::Draw()
+{
+	QFont aFont;
+	FontManager::instance()->getFont(font_banTermo_testo, aFont);
+	descr_label->setFont(aFont);
+	descr_label->setAlignment(AlignTop|AlignHCenter);
+	descr_label->setText(descr);
+
+	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
+	temp_label->setFont(aFont);
+	temp_label->setAlignment(AlignHCenter|AlignVCenter);
+
+	QString temp_string;
+
+	int temp_format = temp;
+	if (temp_format >= 1000)
+	{
+		temp_string.append("-");
+		temp_format = temp_format - 1000;
+	}
+	temp_string = temp_string.append("%1").arg(temp_format);
+	temp_string.insert(temp_string.length() - 1, ".");
+	temp_string.append(TEMP_DEGREES"C");
+	temp_label->setText(temp_string);
+	temp_label->setPaletteForegroundColor(second_fg);
+	BannFullScreen::Draw();
+}
+
+BtButton *FSBannManual::customButton()
+{
+	return navbar_button;
+}
+
+void FSBannManual::status_changed(QPtrList<device_status> list)
+{
+	bool update = false;
+	for (QPtrListIterator<device_status> iter(list); device_status *ds = iter.current(); ++iter)
+	{
+		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
+		{
+			stat_var curr_sp(stat_var::SP);
+			ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
+			if (curr_sp.initialized())
+			{
+				temp = curr_sp.get_val();
+				update = true;
+			}
+		}
+	}
+	if (update)
+		Draw();
+}
+
+FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev)
+	: FSBannManual(parent, name, _dev),
+	dev(_dev)
+{
+	time_edit = new BtTimeEdit(this);
+	main_layout.addWidget(time_edit);
+
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
+}
+
+void FSBannManualTimed::performAction()
+{
+	emit(timeAndTempSelected(time_edit->time(), temp));
+}
+
+void FSBannManualTimed::Draw()
+{
+	FSBannManual::Draw();
+}
+
+void FSBannManualTimed::status_changed(QPtrList<device_status> list)
+{
+	FSBannManual::status_changed(list);
+}
+
+FSBannDate::FSBannDate(QWidget *parent, const char *name)
+	: BannFullScreen(parent, name),
+	main_layout(this)
+{
+	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
+	BtButton *top = new BtButton(this);
+	top->setPixmap(top_img);
+	top->setDown(true);
+	top->setEnabled(false);
+	main_layout.addWidget(top, 0, Qt::AlignHCenter);
+
+	date_edit = new BtDateEdit(this);
+	main_layout.addWidget(date_edit);
+}
+
+QDate FSBannDate::date()
+{
+	return date_edit->date();
+}
+
+void FSBannDate::Draw()
+{
+	BannFullScreen::Draw();
+}
+
+void FSBannDate::status_changed(QPtrList<device_status> list)
+{
+}
+
+FSBannTime::FSBannTime(QWidget *parent, const char *name)
+	: BannFullScreen(parent, name),
+	main_layout(this)
+{
+	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
+	BtButton *top = new BtButton(this);
+	top->setPixmap(i_top_img);
+	top->setDown(true);
+	top->setEnabled(false);
+	main_layout.addWidget(top, 0, Qt::AlignHCenter);
+
+	time_edit = new BtTimeEdit(this);
+	main_layout.addWidget(time_edit);
+}
+
+void FSBannTime::Draw()
+{
+	BannFullScreen::Draw();
+}
+
+void FSBannTime::status_changed(QPtrList<device_status> list)
+{
+}
+
+QTime FSBannTime::time()
+{
+	return time_edit->time();
+}
+
 FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
@@ -855,280 +1129,6 @@ void FSBannTermoReg99z::createSettingsMenu()
 	settings->setAllFGColor(paletteForegroundColor());
 	settings->setAllBGColor(paletteBackgroundColor());
 	settings->hide();
-}
-
-FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name)
-	: FSBannProbe(n, _dev, change_status, parent),
-	fancoil_buttons(4, Qt::Horizontal, this)
-{
-	dev = _dev;
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
-
-	createFancoilButtons();
-	fancoil_buttons.setExclusive(true);
-	fancoil_buttons.hide(); // do not show QButtonGroup frame
-	fancoil_status = 0;
-	connect(&fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
-}
-
-void FSBannFancoil::createFancoilButtons()
-{
-	QHBoxLayout *hbox = new QHBoxLayout();
-	for (int i = 0, id = 0; i < 8; i += 2, ++id)
-	{
-		QString path = QString(IMG_PATH) + FANCOIL_ICONS[i];
-		QString path_pressed = QString(IMG_PATH) + FANCOIL_ICONS[i+1];
-		BtButton *btn = new BtButton(this);
-		btn->setPixmap(*icons_library.getIcon(path.ascii()));
-		btn->setPressedPixmap(*icons_library.getIcon(path_pressed.ascii()));
-		btn->setToggleButton(true);
-
-		hbox->addWidget(btn);
-		fancoil_buttons.insert(btn, id);
-
-		speed_to_btn_tbl[(id + 1) % 4] = id;
-		btn_to_speed_tbl[id] = (id + 1) % 4;
-	}
-	main_layout.insertLayout(-1, hbox);
-	main_layout.setStretchFactor(&fancoil_buttons, 2);
-}
-
-void FSBannFancoil::Draw()
-{
-	fancoil_buttons.setButton(fancoil_status);
-	FSBannProbe::Draw();
-}
-
-void FSBannFancoil::handleFancoilButtons(int pressedButton)
-{
-	dev->setFancoilSpeed(btn_to_speed_tbl[pressedButton]);
-	/*
-	 * Read back the set value to force an update to other devices
-	 * monitoring this dimension.
-	 *
-	 * This code was present in the original termopage. I leave it here to avoid breaking something.
-	 */
-	dev->requestFancoilStatus();
-}
-
-void FSBannFancoil::status_changed(QPtrList<device_status> list)
-{
-	QPtrListIterator<device_status> it (list);
-	device_status *ds;
-	bool update = false;
-
-	while ((ds = it.current()) != 0)
-	{
-		++it;
-		if (ds->get_type() == device_status::FANCOIL)
-		{
-
-			stat_var speed_var(stat_var::FANCOIL_SPEED);
-			ds->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
-
-			// Set the fancoil Button in the buttons bar
-			if (speed_to_btn_tbl.contains(speed_var.get_val()))
-			{
-				fancoil_status = speed_to_btn_tbl[speed_var.get_val()];
-				update = true;
-			}
-			else
-				qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
-		}
-	}
-
-	if (update)
-		Draw();
-	FSBannProbe::status_changed(list);
-}
-
-FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
-	: BannFullScreen(parent, "manual"),
-	main_layout(this),
-	dev(_dev)
-{
-	descr = tr("Manual");
-	descr_label = new BtLabelEvo(this);
-	main_layout.addWidget(descr_label);
-
-	navbar_button = getButton(I_OK);
-	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
-
-	temp = 200;
-	temp_label = new BtLabelEvo(this);
-	QHBoxLayout *hbox = new QHBoxLayout();
-
-	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
-	BtButton *btn = getButton(btn_min_img.ascii());
-	btn->setAutoRepeat(true);
-	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
-	hbox->addWidget(btn);
-
-	hbox->addWidget(temp_label);
-
-	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
-	btn = getButton(btn_plus_img.ascii());
-	btn->setAutoRepeat(true);
-	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
-	hbox->addWidget(btn);
-
-	main_layout.addLayout(hbox);
-
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
-}
-
-void FSBannManual::performAction()
-{
-	emit(temperatureSelected(temp));
-}
-
-void FSBannManual::incSetpoint()
-{
-	temp += 5;
-	Draw();
-}
-
-void FSBannManual::decSetpoint()
-{
-	temp -= 5;
-	Draw();
-}
-
-void FSBannManual::Draw()
-{
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_testo, aFont);
-	descr_label->setFont(aFont);
-	descr_label->setAlignment(AlignTop|AlignHCenter);
-	descr_label->setText(descr);
-
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	temp_label->setFont(aFont);
-	temp_label->setAlignment(AlignHCenter|AlignVCenter);
-
-	QString temp_string;
-
-	int temp_format = temp;
-	if (temp_format >= 1000)
-	{
-		temp_string.append("-");
-		temp_format = temp_format - 1000;
-	}
-	temp_string = temp_string.append("%1").arg(temp_format);
-	temp_string.insert(temp_string.length() - 1, ".");
-	temp_string.append(TEMP_DEGREES"C");
-	temp_label->setText(temp_string);
-	temp_label->setPaletteForegroundColor(second_fg);
-	BannFullScreen::Draw();
-}
-
-BtButton *FSBannManual::customButton()
-{
-	return navbar_button;
-}
-
-void FSBannManual::status_changed(QPtrList<device_status> list)
-{
-	bool update = false;
-	for (QPtrListIterator<device_status> iter(list); device_status *ds = iter.current(); ++iter)
-	{
-		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
-		{
-			stat_var curr_sp(stat_var::SP);
-			ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
-			if (curr_sp.initialized())
-			{
-				temp = curr_sp.get_val();
-				update = true;
-			}
-		}
-	}
-	if (update)
-		Draw();
-}
-
-FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev)
-	: FSBannManual(parent, name, _dev),
-	dev(_dev)
-{
-	time_edit = new BtTimeEdit(this);
-	main_layout.addWidget(time_edit);
-
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
-	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
-}
-
-void FSBannManualTimed::performAction()
-{
-	emit(timeAndTempSelected(time_edit->time(), temp));
-}
-
-void FSBannManualTimed::Draw()
-{
-	FSBannManual::Draw();
-}
-
-void FSBannManualTimed::status_changed(QPtrList<device_status> list)
-{
-	FSBannManual::status_changed(list);
-}
-
-FSBannDate::FSBannDate(QWidget *parent, const char *name)
-	: BannFullScreen(parent, name),
-	main_layout(this)
-{
-	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
-	BtButton *top = new BtButton(this);
-	top->setPixmap(top_img);
-	top->setDown(true);
-	top->setEnabled(false);
-	main_layout.addWidget(top, 0, Qt::AlignHCenter);
-
-	date_edit = new BtDateEdit(this);
-	main_layout.addWidget(date_edit);
-}
-
-QDate FSBannDate::date()
-{
-	return date_edit->date();
-}
-
-void FSBannDate::Draw()
-{
-	BannFullScreen::Draw();
-}
-
-void FSBannDate::status_changed(QPtrList<device_status> list)
-{
-}
-
-FSBannTime::FSBannTime(QWidget *parent, const char *name)
-	: BannFullScreen(parent, name),
-	main_layout(this)
-{
-	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
-	BtButton *top = new BtButton(this);
-	top->setPixmap(i_top_img);
-	top->setDown(true);
-	top->setEnabled(false);
-	main_layout.addWidget(top, 0, Qt::AlignHCenter);
-
-	time_edit = new BtTimeEdit(this);
-	main_layout.addWidget(time_edit);
-}
-
-void FSBannTime::Draw()
-{
-	BannFullScreen::Draw();
-}
-
-void FSBannTime::status_changed(QPtrList<device_status> list)
-{
-}
-
-QTime FSBannTime::time()
-{
-	return time_edit->time();
 }
 
 //
