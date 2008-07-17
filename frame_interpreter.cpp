@@ -2316,7 +2316,8 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				int sp = msg.whatArgN(0);
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
+			checkAndSetStatus(ds, command == thermal_regulator::SUM_MANUAL ?
+					device_status_thermal_regulator::MANUAL : device_status_thermal_regulator::MANUAL_TIMED);
 			checkAndSetSummer(ds);
 			break;
 
@@ -2361,7 +2362,8 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				int sp = msg.whatArgN(0);
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
+			checkAndSetStatus(ds, command == thermal_regulator::WIN_MANUAL ?
+					device_status_thermal_regulator::MANUAL : device_status_thermal_regulator::MANUAL_TIMED);
 			checkAndSetWinter(ds);
 			break;
 
