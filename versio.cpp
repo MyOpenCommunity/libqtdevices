@@ -46,7 +46,7 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
      //datiGen->setText(" H/L/N/NT4684");
      datiGen->setText( model );
 //     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");
-     
+
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
      setCursor (QCursor (blankCursor));
 #endif
