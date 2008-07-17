@@ -2277,7 +2277,6 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 	OpenMsg msg;
         msg.CreateMsgOpen(_msg.frame_open, strlen(_msg.frame_open));
 
-	qDebug("[LUCA] frame is: %s", msg.frame_open);
 	// TODO:
 	// - gestire le frame di cambio programma settimanale (par. 2.3.5)
 	// - gestire le frame di cambio temperatura setpoint (par. 2.3.2)
@@ -2315,14 +2314,6 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				if (arg_count < 1)
 					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
 				int sp = msg.whatArgN(0);
-				// debug
-				if (command == thermal_regulator::SUM_MANUAL_TIMED)
-				{
-					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
-					qDebug("[LUCA] frame is: %s", msg.frame_open);
-					qDebug("[LUCA] temperatura setpoint: %d", sp);
-				}
-				// end debug
 				setManualTemperature(ds, sp);
 			}
 			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
@@ -2368,14 +2359,6 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				if (arg_count < 1)
 					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
 				int sp = msg.whatArgN(0);
-				// debug
-				if (command == thermal_regulator::SUM_MANUAL_TIMED)
-				{
-					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
-					qDebug("[LUCA] frame is: %s", msg.frame_open);
-					qDebug("[LUCA] temperatura setpoint: %d", sp);
-				}
-				// end debug
 				setManualTemperature(ds, sp);
 			}
 			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
