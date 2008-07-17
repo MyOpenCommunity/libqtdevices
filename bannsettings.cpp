@@ -12,8 +12,9 @@
  */
 #include "bannsettings.h"
 #include "main.h"
-#include "../bt_stackopen/common_files/openwebnet.h"
 #include "device.h"
+
+#include <openwebnet.h>
 
 BannOff::BannOff(QWidget *parent, const char *name, thermal_regulator *_dev)
 	: bann3But(parent, name)
