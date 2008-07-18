@@ -304,12 +304,13 @@ private:
 	/// Label and string that may be visualized
 	BtLabelEvo *description_label;
 	QString description;
+	/// Set visibility status for description (in off, antifreeze, holiday and weekend description should not be visible)
+	bool description_visible;
 	/// Status icon (summer/winter)
 	BtLabelEvo *season_icon;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
 	BtLabelEvo *mode_icon;
 
-	bool description_visible;
 
 	QDate holiday_date_end, weekend_date_end;
 	QTime holiday_time_end, weekend_time_end;
@@ -348,6 +349,10 @@ private slots:
 	void manualTimedCancelled();
 };
 
+/**
+ * The difference with FSBannTermoReg4z is in settings menu. 99 zones thermal regulators allow the user
+ * to set the scenario and do not have a manual timed mode
+ */
 class FSBannTermoReg99z : public FSBannTermoReg
 {
 Q_OBJECT
