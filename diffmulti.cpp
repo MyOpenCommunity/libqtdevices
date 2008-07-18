@@ -8,22 +8,16 @@
 **
 ****************************************************************/
 
-
-#include "sottomenu.h"
-#include "items.h"
-#include "setitems.h"
-#include "btbutton.h"
-#include "device_cache.h"
 #include "diffmulti.h"
-#include "xmlconfhandler.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <stdlib.h>
+#include "ambdiffson.h"
+#include "device_cache.h"
+#include "device.h"
+#include "xmlconfhandler.h" // per safeAt()
+#include "sveglia.h"
+#include "diffsonora.h"
+
 #include <qwidget.h>
-#include <qcursor.h>
-#include <unistd.h>
+#include <qtimer.h>
 
 dati_sorgente_multi::dati_sorgente_multi(char t, QPtrList<QString> *d, 
 		void *ind,
@@ -44,22 +38,25 @@ dati_sorgente_multi::dati_sorgente_multi(char t, QPtrList<QString> *d,
 
 dati_sorgente_multi::~dati_sorgente_multi()
 {
-	free(indirizzo);
-	free(descr);
+	delete descr;
+	// We should delete indirizzo but is problematic because it is a void*
 }
 
 dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
-		char *_I1, char *_I2, char *_I3, char *_I4,
-		int p1)
+		int p1, char *_I1, char *_I2, char *_I3, char *_I4, char *_I5)
 {
 	tipo = t;
 	descr = new QPtrList<QString>(*((QPtrList<QString> *)d));
 	qDebug("dati_ampli_multi: descr = %s", descr->at(0)->ascii());
-	if(t == AMPLIFICATORE) {
-		qDebug("Amplificatore (%s)", ind);
+	if(t == AMPLIFICATORE || t == POWER_AMPLIFIER) {
+		if (t == AMPLIFICATORE)
+			qDebug("Amplificatore (%s)", (char *)ind);
+		else
+			qDebug("Power amplifier (%s)", (char *)ind);
 		indirizzo = new(char[20]);
 		memcpy(indirizzo, ind, 20);
-	} else {
+	}
+	else {
 		qDebug("gruppo AMPLIFICATORI !!");
 		indirizzo = new QPtrList<QString>(*((QPtrList<QString> *)ind));
 		qDebug("indirizzo = %p", indirizzo);	
@@ -73,29 +70,25 @@ dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
 			++(*lii);
 		}
 	}
-	strncpy(I1, _I1, sizeof(I1));
-	strncpy(I2, _I2, sizeof(I2));
-	strncpy(I3, _I3, sizeof(I3));
-	strncpy(I4, _I4, sizeof(I4));
+	I1 = QString(_I1);
+	I2 = QString(_I2);
+	I3 = QString(_I3);
+	I4 = QString(_I4);
+	I5 = QString(_I5);
 	modo = p1;
 }
 
 dati_ampli_multi::~dati_ampli_multi()
 {
-	free(indirizzo);
+	// We should delete indirizzo but is problematic because it is a void*
 }
 
 
 diffmulti::diffmulti( QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
 : sottoMenu(parent, name, navBarMode, wi, hei, n)
 {
-#if 0
-	datismulti = new QPtrList<dati_sorgente_multi>;
-	datismulti->setAutoDelete(true);
-#else
 	//sorgMulti = new QPtrList<banner>;
 	sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, MAX_HEIGHT/4 - 3,1);
-#endif
 	datimmulti = new QPtrList<dati_ampli_multi>;
 	datimmulti->setAutoDelete(true);
 	dslist = new QPtrList<diffSonora>;
@@ -122,7 +115,6 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 	qDebug("Amplificatore (%s)", (char *)indirizzo);
 	qDebug("%d elementi in descrizioni", descrizioni->count());
 
-	ambDiffSon *a;
 	banner *b;
 	switch (tipo)
 	{
@@ -144,10 +136,10 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			/*
 			 * NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
 			 */
-			sorgenti->addItem(tipo, (char *)descrizioni->at(0)->ascii(), (char *)indirizzo, icon_names, 0, numFrame);
+			sorgenti->addItemU(tipo, *descrizioni->at(0), (char *)indirizzo, icon_names, 0, numFrame);
 			b = sorgenti->getLast();
 			connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
-			connect(sorgenti, SIGNAL(ambChanged(char *, bool, void *)),b, SLOT(ambChanged(char *, bool, void *)));
+			connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)),b, SLOT(ambChanged(const QString &, bool, char *)));
 			connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 			connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
 			connect(b,SIGNAL(sendInit(char*)),this, SIGNAL(sendInit(char*)));
@@ -170,7 +162,7 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				banner *b;
 				if(tipo == AMBIENTE) 
 				{
-					b = new ambDiffSon(this, descrizioni->at(0)->ascii(), indirizzo,
+					b = new ambDiffSon(this, descrizioni->at(0)->ascii(), (char *)indirizzo,
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
 						(char *)safeAt(icon_names, 2)->ascii(),
 						datimmulti, ds, sorgenti, this);
@@ -183,25 +175,17 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 				}
 				elencoBanner.append(b);
 				dslist->append(ds);
-				elencoBanner.getLast()->SetText(descrizioni->at(0)->ascii());
+				elencoBanner.getLast()->SetTextU( *(descrizioni->at(0)) );
 				elencoBanner.getLast()->setBGColor(backgroundColor());
 				elencoBanner.getLast()->setFGColor(foregroundColor());
 				elencoBanner.getLast()->setId(tipo);
 				connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*))); 
 				connect(this, SIGNAL(actSrcChanged(int, int)), elencoBanner.getLast(), SLOT(actSrcChanged(int, int)));
-#if 0
-				connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this , SIGNAL(sendFrame(char*)));
-				connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-#endif
 				connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
 				connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
 				connect( this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
-#if 0
-				connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, 
-						SIGNAL(richStato(char*))); 
-#endif
 				connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
-				connect(elencoBanner.getLast(), SIGNAL(ambChanged(char *, bool, void *)), sorgenti, SIGNAL(ambChanged(char *, bool, void *)));
+				connect(elencoBanner.getLast(), SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 				if(tipo == AMBIENTE) 
 					sorgenti->addAmb((char *)indirizzo);
 				datimmulti->clear();
@@ -218,10 +202,9 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 					qDebug("ADDRESS = %s", s->ascii());
 					++(*lsi);
 				}
-				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
+				datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
-						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
-						modo));
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii()));
 				delete lsi;
 				break;
 			}
@@ -230,13 +213,24 @@ int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni,
 			qDebug("Icone = %s - %s - %s - %s",
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
 						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii());
-			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo,
+			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii()));
+			break;
+
+		case POWER_AMPLIFIER:
+			qDebug("Icone Power Multi = %s - %s - %s - %s - %s",
 						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
 						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
-						modo));
+						(char *)safeAt(icon_names, 4)->ascii());
+			datimmulti->append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+						(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
+						(char *)safeAt(icon_names, 2)->ascii(), (char *)safeAt(icon_names, 3)->ascii(),
+						(char *)safeAt(icon_names, 4)->ascii()));
 			break;
+
 		default:
-			sottoMenu::addItem(tipo, (char *)descrizioni->at(0)->ascii(), 
+			sottoMenu::addItemU(tipo, *descrizioni->at(0), 
 					indirizzo, icon_names, modo, numFrame,
 					SecondForeground, descr1, descr2,
 					descr3, descr4, par3, 
@@ -340,17 +334,6 @@ void diffmulti::hide()
 void diffmulti::show()
 {
 	QWidget::show();
-#if 0
-	QPtrListIterator<diffSonora> *dsi = 
-		new QPtrListIterator<diffSonora>(*dslist);
-	dsi->toFirst();
-	diffSonora *ds;
-	while( ( ds = dsi->current() ) != 0) {
-		ds->show();
-		++(*dsi);
-	}
-	delete dsi;
-#endif
 }
 
 
@@ -358,36 +341,12 @@ void diffmulti::setGeom(int x, int y, int w,int h)
 {
 	qDebug("diffmulti::setGeom(%d, %d, %d, %d)", x, y, w, h);
 	setGeometry(x, y, w, h);
-#if 0
-	QPtrListIterator<diffSonora> *dsi = 
-		new QPtrListIterator<diffSonora>(*dslist);
-	dsi->toFirst();
-	diffSonora *ds;
-	while( ( ds = dsi->current() ) != 0) {
-		//ds->setGeom(x, y, w, h);
-		ds->setGeom(0,0,240,240);
-		++(*dsi);
-	}
-	delete dsi;
-#endif
 }
 
 void diffmulti::forceDraw()
 {
 	qDebug("diffmulti::forceDraw()");
 	sottoMenu::forceDraw();
-#if 0
-	QPtrListIterator<diffSonora> *dsi = 
-		new QPtrListIterator<diffSonora>(*dslist);
-	dsi->toFirst();
-	diffSonora *ds;
-	while( ( ds = dsi->current() ) != 0) {
-		ds->hide();
-		ds->forceDraw();
-		++(*dsi);
-	}
-	delete dsi;
-#endif
 }
 
 void diffmulti::resizewindows(int x, int y, int w, int h)

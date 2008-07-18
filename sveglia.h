@@ -12,19 +12,15 @@
 #define SVEGLIA_H
 
 #include <qframe.h>
-#include <qlabel.h>
-#include <qprocess.h>
-#include <qpushbutton.h>
-#include "btbutton.h"
-#include "main.h"
-#include "timescript.h"
-#include "bannfrecce.h"
-#include "diffsonora.h"
-#include "btlabel.h"
-#include <qcheckbox.h>
-
 
 #define 	AMPLI_NUM 	100
+
+class contdiff;
+class BtLabel;
+class BtButton;
+class bannFrecce;
+class timeScript;
+class QDateTime;
 
 /*!
   \class sveglia
@@ -37,7 +33,14 @@ class  sveglia : public QFrame
 {
    Q_OBJECT
 public:
-    sveglia( QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, contdiff* diso=NULL, char* frame=NULL, char* descr1=NULL,char* descr2=NULL,char* descr3=NULL,char* descr4=NULL, char*h="12",char* m="0");
+    sveglia( QWidget *parent=0, 
+	const char *name=0, 
+	uchar freq=1,
+	uchar t=0,
+	contdiff* diso=NULL, 
+	char* frame=NULL, 
+	char*h="12",
+	char* m="0");
 /*!
   \brief Sets the background color for the banner.
   
@@ -190,10 +193,6 @@ private:
    bool	gesFrameAbil,svegliaAbil,onceToGest;
    QTimer   *minuTimer,*aumVolTimer;
    char*	frame;
-   char text1[50]; 
-   char text2[50]; 
-   char text3[50]; 
-   char text4[50];       
 };
 
 

@@ -12,19 +12,14 @@
 #define DIFFMULTI_H
 
 #include <qwidget.h>
-//#include "banner.h"
-#include "items.h"
-//#include "main.h"
-#include "device.h"
-#include "frame_interpreter.h"
-#include "diffsonora.h"
-#include "sottomenu.h"
-#include "openclient.h"
 #include <qptrlist.h> 
 
-#include <qcursor.h>
+#include "device_status.h"
+#include "scenevocond.h" // per la connect
+#include "sottomenu.h" // per la connect
 
 class diffSonora;
+class device;
 
 class dati_sorgente_multi 
 {
@@ -46,10 +41,10 @@ public:
 	char tipo;
 	QPtrList<QString> *descr;
 	void *indirizzo;
-	char I1[50], I2[50], I3[50], I4[50];
+	QString I1, I2, I3, I4, I5;
 	int modo;
-	dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
-			char *I1, char *I2, char *I3, char *I4, int p1);
+	dati_ampli_multi(char t, QPtrList<QString> *d, void *ind, int p1,
+			char *I1, char *I2, char *I3, char *I4, char *I5 = NULL);
 	~dati_ampli_multi();
 };
 

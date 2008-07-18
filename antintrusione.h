@@ -1,3 +1,4 @@
+
 /****************************************************************
 **
 ** BTicino Touch scren Colori art. H4686
@@ -12,12 +13,15 @@
 #define ANTINTRUS_H
 
 #include <qwidget.h>
-#include "items.h"
+#include <qptrlist.h>
+#include <qstring.h>
+
+#include "main.h" // MAX_PATH
 #include "allarme.h"
-#include "sottomenu.h"
-#include "openclient.h"
-#include "banner.h"
-#include <qptrlist.h> 
+
+class sottoMenu;
+class zonaAnti;
+class tastiera;
 
 
 /*!
@@ -48,9 +52,9 @@ public:
 /*!
   \brief inserts a new item in the antintrusione class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
 */    
-   int 	addItem(char tipo, char* nome , void* indirizzo,
+   int 	addItemU(char tipo, const QString & nome , void* indirizzo,
 	QPtrList<QString> &icon_names,
-	int periodo=0 , int numFrame=0, char* txt_tecnico=NULL, char* txt_intrusione=NULL, char* txt_manomissione=NULL, char* txt_panic=NULL );
+	int periodo=0 , int numFrame=0);
 /*!
   \brief sets the rows number fot the object. This method automatically give the exact row number to the \a sottomenu: impianto-zone-allarmi
   arguments:
@@ -193,8 +197,8 @@ private:
   \param <testoTecnico> text for a tecnical alarm
   \param <testoPanic> text for a panic alarm  
   \param <testoIntrusione> text for a intrusion alarm  
-*/    
-  char testoManom[MAX_PATH], testoTecnico[MAX_PATH], testoIntrusione[MAX_PATH], testoPanic[MAX_PATH];
+*/
+  QString testoManom, testoTecnico, testoIntrusione, testoPanic;
   tastiera *tasti;
   static const int MAX_ZONE = 8;
 };

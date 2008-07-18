@@ -11,7 +11,6 @@
 #include "bannciclaz.h"
 #include "main.h"
 
-#include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
 

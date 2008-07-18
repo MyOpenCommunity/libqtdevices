@@ -10,13 +10,7 @@
 #ifndef  GENERIC_PAGES_H
 #define GENERIC_PAGES_H
 
-
 #include "btlabel.h"
-
-#include <qfont.h>
-#include <stdlib.h>
-#include <string.h>
-
 
 /*!
   \class genPage

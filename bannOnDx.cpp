@@ -11,9 +11,6 @@
 #include "bannondx.h"
 #include "main.h"
 #include "sottomenu.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
 
 
 bannOnDx::bannOnDx(sottoMenu *parent,const char *name )

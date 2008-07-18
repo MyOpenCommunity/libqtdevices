@@ -10,8 +10,6 @@
 
 #include "bannonicons.h"
 #include "main.h"
-//#include "btbutton.h"
-#include <qfont.h>
 #include <qlabel.h>
 #include <qpixmap.h>
 

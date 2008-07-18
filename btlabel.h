@@ -85,7 +85,6 @@ public slots:
 
 protected:
     void	 drawContents( QPainter * );
-    void	 fontChange( const QFont & );
    void	 resizeEvent( QResizeEvent* );
 
 private slots:

@@ -8,18 +8,13 @@
  **
  ****************************************************************/
 
-
-#include <qfont.h>
 #include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qframe.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-#include <qstring.h>
-
+#include <qlcdnumber.h>
+#include <qcursor.h>
 #include <qfile.h>
 
 #include "radio.h"
@@ -27,10 +22,12 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
+#include "btlabel.h"
+#include "genericfunz.h"
+#include "btbutton.h"
+#include "fontmanager.h"
 
-//#include "ban.h"
-
-radio::radio( QWidget *parent, const char *name, const char *amb )
+radio::radio( QWidget *parent, const char *name, const QString & amb )
 : QWidget( parent, name )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -60,8 +57,10 @@ radio::radio( QWidget *parent, const char *name, const char *amb )
 	radioName = new BtLabel(this,"Bottone di sinistra");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
-	ambDescr->setFont( QFont( "Helvetica", 12, QFont::Bold ) );
-	ambDescr->setText(amb);
+ 	QFont aFont;
+	FontManager::instance()->getFont( font_radio_descrizione_ambiente, aFont );
+	ambDescr->setFont( aFont );
+	ambDescr->setText( amb );
 	freq = new QLCDNumber(this,"pippo");
 	progrText = new BtLabel(this,"progressivo stazione");
 	freq->setSegmentStyle(QLCDNumber::Flat); 
@@ -310,14 +309,14 @@ float radio::getFreq()
 {
 	return(frequenza);
 }
-void radio::setRDS(char* s)
+void radio::setRDS( const QString & s)
 {
-	strncpy(rds,s,8);
-	rds[8]='\000';
+	qrds = s;
+	qrds.truncate( 8 );
 }
-char* radio::getRDS()
+QString * radio::getRDS()
 {
-	return(&rds[0]);
+	return & qrds;
 }
 void radio::setStaz(uchar st)
 {
@@ -333,19 +332,22 @@ bool radio::isManual()
 	return (manual);
 }
 
-void radio::setAmbDescr(char *d)
+void radio::setAmbDescr(const QString & d)
 {
-	ambDescr->setText(d);
+	ambDescr->setText( d );
 }
 
 void radio::draw()
 {
+	QFont aFont;
 	rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
-	rdsLabel->setFont( QFont( "Helvetica", 26, QFont::Bold ) );
+	FontManager::instance()->getFont( font_radio_rdsLabel, aFont );
+	rdsLabel->setFont( aFont );
 	radioName->setAlignment(AlignHCenter|AlignTop);
-	radioName->setFont( QFont( "Helvetica", 12, QFont::Bold ) );
-	radioName->setText(&nome[0]);
-	rdsLabel->setText(&rds[0]);
+	FontManager::instance()->getFont( font_radio_radioName, aFont );
+	radioName->setFont( aFont );
+	radioName->setText( qnome );
+	rdsLabel->setText( qrds );
 	char fr[10];
 	sprintf(fr,"%.2f",frequenza);
 	freq->display(&fr[0]);
@@ -367,19 +369,19 @@ void radio::draw()
 	wasManual=manual;
 
 	progrText ->setAlignment(AlignHCenter|AlignVCenter);
-	progrText ->setFont( QFont( "Helvetica", 20, QFont::Bold ) );
+	FontManager::instance()->getFont( font_radio_progrText, aFont );
+	progrText ->setFont( aFont );
 	progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");
 }
 
-void radio::setName(char* s)
+void radio::setNameU( const QString & s)
 {
-	strncpy(&nome[0],s,sizeof(nome));
-	nome[sizeof(nome)]='\000';
+	qnome = s;
 }
 
-char* radio::getName()
+QString * radio::getNameU()
 {
-	return &nome[0];
+	return &qnome;
 }
 
 void radio::setAuto()

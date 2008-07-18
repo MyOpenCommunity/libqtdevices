@@ -1,12 +1,16 @@
-
 #ifndef _SCENEVOCOND_H_
 #define _SCENEVOCOND_H_
 
-#include <qdatetime.h>
-#include "timescript.h"
-#include "bannfrecce.h"
-#include "device.h"
-#include "frame_interpreter.h"
+#include <qframe.h>
+
+#include "device_status.h"
+
+class QDateTime;
+class BtButton;
+class BtLabel;
+class timeScript;
+class device;
+
 
 /*!
   \class scenEvo_cond
@@ -22,6 +26,9 @@ class scenEvo_cond : public QFrame {
     int val;
     int serial_number;
  public:
+	//! A type flag, used because RTTI is disabled.
+	bool hasTimeCondition;
+
     scenEvo_cond(QWidget *parent, char *name) ;
     /*!
       \brief: Returns image path for a certain index
@@ -125,6 +132,8 @@ signals:
     void richStato(char *);
     //! A frame is available
     void frame_available(char *);
+	//! After a status changed, a condition is satisfied
+	void condSatisfied();
 };
 
 /*!
@@ -266,9 +275,9 @@ class device_condition : public QObject {
     //! Returns pointer to parent scenEvo_cond_d
     scenEvo_cond_d *get_parent(void);
     //! Sets condition value
-    int set_condition_value(int);
+    void set_condition_value(int);
     //! Translates trigger condition from open encoding to int and sets val
-    virtual int set_condition_value(QString);
+    virtual void set_condition_value(QString);
     //! Translates current trigger condition to open
     virtual void get_condition_value(QString&);
     //! Gets condition value
@@ -327,6 +336,8 @@ signals:
     void richStato(char *);
     //! Emitted when a frame is received
     void frame_available(char *);
+	//! Emitted when the condition on device is satisfied
+	void condSatisfied();
 };
 
 /*!
@@ -350,15 +361,11 @@ class device_condition_light_status : public device_condition
     //! Returns max value
     int get_max();
     //! Translates trigger condition from open encoding to int and sets val
-    int set_condition_value(QString);
+    void set_condition_value(QString);
     //! Translates current trigger condition to open
     void get_condition_value(QString&);
     //! Decodes incoming frame
     //void gestFrame(char*);
-#if 0
-    //! Inits condition
-    void inizializza();
-#endif
 public slots:
     //! Invoked when status changes
     void status_changed(QPtrList<device_status>);
@@ -405,15 +412,11 @@ class device_condition_dimming : public device_condition {
     //! Draws condition
     void Draw();
     //! Translates trigger condition from open encoding to int and sets val
-    int set_condition_value(QString);
+    void set_condition_value(QString);
     //! Translates current trigger condition to open
     void get_condition_value(QString&);
     //! Decodes incoming frame
     //void gestFrame(char*);
-#if 0
-    //! Inits condition
-    void inizializza();
-#endif
 public slots:
     void OK();
     //! Invoked when UP button is pressed
@@ -465,15 +468,11 @@ class device_condition_dimming_100 : public device_condition {
     //! Draws condition
     void Draw();
     //! Translates trigger condition from open encoding to int and sets val
-    int set_condition_value(QString);
+    void set_condition_value(QString);
     //! Translates current trigger condition to open
     void get_condition_value(QString&);
     //! Decodes incoming frame
     //void gestFrame(char*);
-#if 0
-    //! Inits condition
-    void inizializza();
-#endif
 public slots:
     void OK();
     //! Invoked when UP button is pressed
@@ -501,12 +500,11 @@ class device_condition_volume : public device_condition
  public:
     //! Constructor
     device_condition_volume(QWidget *parent, char *name, QString *trigger); 
-#if 1
+
     //! Returns min value
     int get_min();
     //! Returns max value
     int get_max();
-#endif
     void set_condition_value_min(int);
     void set_condition_value_min(QString);
     int get_condition_value_min();
@@ -524,7 +522,7 @@ class device_condition_volume : public device_condition
     //! Draws condition
     void Draw();
     //! Translates trigger condition from open encoding to int and sets val
-    int set_condition_value(QString);
+    void set_condition_value(QString);
     //! Translates current trigger condition to open
     //void get_condition_value(QString&);
     //! Read current value (%)
@@ -533,10 +531,6 @@ class device_condition_volume : public device_condition
     //void gestFrame(char*);
     //! Gets condition's meas unit
     void get_unit(QString&);
-#if 0
-    //! Inits condition
-    void inizializza();
-#endif
 public slots:
     void OK();
     //! Invoked when status changes
@@ -570,22 +564,18 @@ class device_condition_temp : public device_condition
     int get_divisor();
     //! Gets condition's meas unit
     void get_unit(QString&);
-#if 1
+
     //! Draws condition
     void Draw();
-#endif
+
     //! Returns value
     int intValue();
     //! Translates trigger condition from open encoding to int and sets val
-    int set_condition_value(QString);
+    void set_condition_value(QString);
     //! Translates current trigger condition to open
     void get_condition_value(QString&);
     //! Decodes incoming frame
     void gestFrame(char*);
-#if 0
-    //! Inits condition
-    void inizializza();
-#endif
 public slots:
     //! Invoked when status changes
     void status_changed(QPtrList<device_status>);

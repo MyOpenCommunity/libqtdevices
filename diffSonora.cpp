@@ -8,16 +8,15 @@
  **
  ****************************************************************/
 
+#include <qcursor.h>
+
 #include "diffsonora.h"
-/*#include "sottomenu.h"
-#include "items.h"
-#include "main.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qlabel.h>
-*/
+#include "sottomenu.h"
+#include "btlabel.h"
+#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+
+#include <qcursor.h>
+#include <stdlib.h>
 
 diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
 : QWidget( parent, name )
@@ -98,7 +97,7 @@ int diffSonora::setBGPixmap(char* backImage)
 }
 
 
-int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,
+int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
 		QPtrList<QString> &icon_names,
 		int modo, int where, char *ambdescr)
 {
@@ -106,19 +105,19 @@ int diffSonora::addItem(char tipo, char* descrizione, void* indirizzo,
 	{
 		sorgenti-> setBGColor( backgroundColor() );
 		sorgenti-> setFGColor( foregroundColor() );
-		sorgenti-> addItem(tipo, descrizione, indirizzo, icon_names, modo, where);
+		sorgenti-> addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, where);
 	}
 	else if ( (tipo == SORG_RADIO) || (tipo == SORG_AUX) || (tipo == SORGENTE_MULTIM_MC) )
 	{
 		sorgenti-> setBGColor(backgroundColor() );
 		sorgenti-> setFGColor(foregroundColor() );
-		sorgenti-> addItem(tipo, descrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
+		sorgenti-> addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 	}
 	else
 	{
-		amplificatori->addItem(tipo, descrizione, indirizzo, icon_names);
+		amplificatori->addItemU(tipo, qdescrizione, indirizzo, icon_names);
 	}
 	return(1);
 }
@@ -158,9 +157,6 @@ void diffSonora::gestFrame(char*frame)
 
 	if (!strcmp(msg_open.Extract_chi(),"16"))
 	{
-#if 0
-		if ( (! strncmp(msg_open.Extract_dove(),"100",2) ))     
-#else
 			w = strtoul(msg_open.Extract_dove(), NULL, 10);
 		if(w < 100)
 			goto not_ours;
@@ -168,21 +164,12 @@ void diffSonora::gestFrame(char*frame)
 			w-=100;
 		while(w >= 10)
 			w-=10;
-#endif
 		{
 			if ((!strcmp(msg_open.Extract_cosa(),"0")) || (!strcmp(msg_open.Extract_cosa(),"3")))
 			{
-#if 0
-				sorgenti->setIndex(msg_open.Extract_dove());   
-#else
 				sorgenti->setIndex((char *)QString::number(w+100, 10).ascii());
-#endif
 				aggiorna=1;
-#if 0
-				qDebug("accesa sorg:%s",msg_open.Extract_dove());
-#else
 				qDebug("accesa sorg: %d", w);
-#endif
 			}	  
 		}
 	}
@@ -293,29 +280,14 @@ void diffSonora::fineVis()
 	emit(closed(this));
 }
 
-int diffSonora::addSource(banner *b)
+void diffSonora::addSource(banner *b)
 {
 	sorgenti->addItem(b);
 	connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 }
 
-int diffSonora::setFirstSource(int addr)
+void diffSonora::setFirstSource(int addr)
 {
 	qDebug("diffSonora::setFirstSource(%d)", addr);
 	sorgenti->setIndex((char *)QString::number(addr, 10).ascii());
 }
-
-
-#if 0
-// diffMulti implementation
-diffMulti::diffMulti( QWidget *parent, const char *name ) : 
-	diffSonora(parent, name)
-{  
-}
-
-int diffMulti::addItem(char tipo, char* descrizione, void* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon,int periodo, int numFrame)
-{
-
-
-}
-#endif

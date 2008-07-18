@@ -8,13 +8,15 @@
  **
  ****************************************************************/
 
+#include "main.h"
 #include "btmain.h"
-#include <qapplication.h>
+#include "xmlvarihandler.h"
 #include "../bt_stackopen/common_files/openwebnet.h"
 #include "../bt_stackopen/common_files/common_functions.h"
-#include "xmlvarihandler.h"
-#include <signal.h>
 
+#include <qapplication.h>
+#include <signal.h>
+#include <qregexp.h>
 #define	TIMESTAMP
 #ifdef TIMESTAMP
 #include <qdatetime.h>
@@ -28,9 +30,10 @@ IconDispatcher icons_library;
 
 
 /*******************************************
- ** Instance global object to handle conf.xml
- *******************************************/
-PropertyMap app_config;
+ * Instance DOM global object to handle
+ * configuration.
+ * ****************************************/
+QDomDocument qdom_appconfig;
 
 
 /*******************************************
@@ -57,6 +60,34 @@ int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
 
+
+void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2)
+{
+	QFile *xmlFile;
+	*bg = *fg1 = *fg2 = NULL;
+
+	if (QFile::exists(EXTRA_FILE))
+	{
+		xmlskinhandler *handler1 = new xmlskinhandler(bg, fg1, fg2);
+		xmlFile = new QFile(EXTRA_FILE);
+		QXmlInputSource source1(xmlFile);
+		QXmlSimpleReader reader1;
+		reader1.setContentHandler(handler1);
+		reader1.parse(source1);
+		delete handler1;
+		delete xmlFile;
+	}
+
+	if (!*bg)
+		*bg = new QColor(77,61,66);
+
+	if (!*fg1)
+		*fg1 = new QColor(205,205,205);
+
+	if (!*fg2)
+		*fg2 = new QColor(7,151,254);
+}
+
 void myMessageOutput( QtMsgType type, const char *msg )
 {
 	switch ( type ) 
@@ -81,6 +112,58 @@ void myMessageOutput( QtMsgType type, const char *msg )
 	}
 }
 
+QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id)
+{
+	QDomNode n = parent.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(node_regexp))
+		{
+			QDomNode child = n.firstChild();
+			while (!child.isNull() && child.nodeName() != "id")
+				child = child.nextSibling();
+
+			if (!child.isNull() && child.toElement().text().toInt() == id)
+				return n;
+		}
+		n = n.nextSibling();
+	}
+	return QDomNode();
+}
+
+QDomNode getPageNode(int id)
+{
+	QDomElement root = qdom_appconfig.documentElement();
+
+	QDomNode n = root.firstChild();
+	while (!n.isNull() && n.nodeName() != "displaypages")
+		n = n.nextSibling();
+
+	if (n.isNull())
+		return QDomNode();
+
+	return getChildWithId(n, QRegExp("page\\d{1,2}"), id);
+}
+
+QString getLanguage()
+{
+	QString default_language(DEFAULT_LANGUAGE);
+	QDomNode node = qdom_appconfig.documentElement();
+
+	QValueVector<QString> node_names(3);
+	node_names[0] = "setup";
+	node_names[1] = "generale";
+	node_names[2] = "language";
+
+	for (QValueVector<QString>::iterator It = node_names.begin(); It != node_names.end(); ++It)
+	{
+		node = node.namedItem(*It);
+		if (node.isNull())
+			return default_language;
+	}
+
+	return node.toElement().text();
+}
 
 BtMain *BTouch;
 
@@ -89,10 +172,6 @@ int main( int argc, char **argv )
 	/*******************************************
 	 ** Inizio Lettura configurazione applicativo
 	 *******************************************/
-	//    qDebug("<BTo> BTouch release");
-	//    Leggi_logfile_name(My_File_Cfg,MYPROCESSNAME,&My_File_Log,Xml_File_In,Xml_File_Out);
-	//    Leggi_logverbosity(My_File_Cfg,MYPROCESSNAME,&VERBOSITY_LEVEL,Xml_File_In,Xml_File_Out);
-	//---
 
 	QFile * xmlFile;
 	char *logFile;
@@ -100,9 +179,17 @@ int main( int argc, char **argv )
 	logFile=new(char[MAX_PATH]);
 	strncpy(logFile, My_File_Log, MAX_PATH);
 
-	// load configuration from conf.xml to app_config
-	propertyMapLoadXML( app_config, MY_FILE_USER_CFG_DEFAULT );
-	
+	QFile file(MY_FILE_USER_CFG_DEFAULT);
+
+	if (!qdom_appconfig.setContent(&file))
+	{
+		file.close();
+		qFatal("Error in qdom_appconfig file, exiting");
+	}
+	file.close();
+
+	QApplication a(argc, argv);
+
 	xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
 	xmlFile = new QFile(My_File_Cfg);
 	QXmlInputSource source( xmlFile );
@@ -111,10 +198,6 @@ int main( int argc, char **argv )
 	reader.parse( source );
 	delete handler;
 	delete xmlFile;
-	//-----
-	/*   qDebug("<BTo> logfile=%s",My_File_Log);
-	     qDebug("<BTo> logfile=%s",logFile);
-	     qDebug("<BTo> logverbosity=%d",VERBOSITY_LEVEL);*/
 
 	if (strcmp(logFile,"")&&strcmp(logFile,"-"))
 		// Settato il file di log
@@ -131,21 +214,28 @@ int main( int argc, char **argv )
 	// D'ora in avanti qDebug, ... scrivono dove gli ho detto io
 	qInstallMsgHandler( myMessageOutput );
 
+	QString language_suffix = getLanguage();
+	if (language_suffix != QString(DEFAULT_LANGUAGE))
+	{
+		QString language_file;
+		language_file.sprintf(LANGUAGE_FILE_TMPL, language_suffix.ascii());
+		QTranslator *translator = new QTranslator(0);
+		if (translator->load(language_file))
+			a.installTranslator(translator);
+		else
+			qWarning("File %s not found for language %s", language_file.ascii(), language_suffix.ascii());
+	}
+
 	/*******************************************
 	 ** Fine Lettura configurazione applicativo
 	 *******************************************/
-	QApplication a( argc, argv );
 
 	signal(SIGUSR1, MySignal);
 	signal(SIGUSR2, ResetTimer);
 
 	qDebug("Start BtMain");
 
-	#if 0
-	BtMain mainprogr(NULL,"MAIN PROGRAM",&a);
-	#else
 	BTouch = new BtMain(NULL,"MAIN PROGRAM",&a);
-	#endif
 
 	return a.exec();
 }

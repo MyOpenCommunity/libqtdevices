@@ -13,8 +13,6 @@
 
 #include "banner.h"
 #include <qwidget.h>
-#include <qlabel.h>
-#include <qpixmap.h>
 
 /*!
   \class bannOnOff

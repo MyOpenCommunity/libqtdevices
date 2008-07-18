@@ -16,21 +16,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qframe.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-#include <qstring.h>
 #include <qfile.h>
-#include <qnamespace.h>
 #include <qpushbutton.h>
 #include <qevent.h>
 #include <qvaluevector.h>
+#include <qlayout.h>
 
 #include "banner.h"
 #include "bannondx.h"
@@ -43,7 +36,7 @@
 /// Methods for ButtonsBar
 /// ***********************************************************************************************************************
 
-ButtonsBar::ButtonsBar(QWidget *parent, int number_of_buttons, Orientation orientation) :
+ButtonsBar::ButtonsBar(QWidget *parent, unsigned int number_of_buttons, Orientation orientation) :
 	QWidget(parent, 0, WStyle_NoBorder | WStyle_Customize)
 {
 	/// Create ButtonGroup, this can handle QButton objects
@@ -86,7 +79,7 @@ ButtonsBar::ButtonsBar(QWidget *parent, int number_of_buttons, Orientation orien
 	connect( buttons_group, SIGNAL(clicked(int)), this, SIGNAL(clicked(int)) );
 }
 
-bool ButtonsBar::setButtonIcons(int button_number, const QPixmap &icon, const QPixmap &pressed_icon)
+bool ButtonsBar::setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon)
 {
 	if (!buttons_list.at(button_number))
 		return false;
@@ -106,7 +99,7 @@ void ButtonsBar::setToggleButtons(bool enable)
 	isToggleBar = enable;
 }
 
-void ButtonsBar::setToggleStatus(int button_up_index)
+void ButtonsBar::setToggleStatus(unsigned int button_up_index)
 {
 	if (isToggleBar && button_up_index < buttons_list.count())
 	{

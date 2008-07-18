@@ -1,0 +1,181 @@
+<!DOCTYPE TS><TS>
+<context>
+    <name>FSBannManual</name>
+    <message>
+        <source>Manual</source>
+        <translation>Manueel</translation>
+    </message>
+</context>
+<context>
+    <name>MediaPlayWindow</name>
+    <message>
+        <source>of</source>
+        <translation>van</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Tune:</translation>
+    </message>
+    <message>
+        <source>Artist:</source>
+        <translation>Artiest:</translation>
+    </message>
+    <message>
+        <source>Album:</source>
+        <translation>Album:</translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation>Tijdsd.:</translation>
+    </message>
+</context>
+<context>
+    <name>PowerAmplifier</name>
+    <message>
+        <source>Preset</source>
+        <translation>Preset</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Hoge</translation>
+    </message>
+    <message>
+        <source>Bass</source>
+        <translation>Lage</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Balansregeling</translation>
+    </message>
+    <message>
+        <source>Loud</source>
+        <translation>Loud</translation>
+    </message>
+</context>
+<context>
+    <name>PowerAmplifierPreset</name>
+    <message>
+        <source>Normal</source>
+        <translation>Normaal</translation>
+    </message>
+    <message>
+        <source>Dance</source>
+        <translation>Dance</translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation>Pop</translation>
+    </message>
+    <message>
+        <source>Rock</source>
+        <translation>Rock</translation>
+    </message>
+    <message>
+        <source>Classical</source>
+        <translation>Classical</translation>
+    </message>
+    <message>
+        <source>Jazz</source>
+        <translation>Jazz</translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation>Party</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>Soft</translation>
+    </message>
+    <message>
+        <source>Full Bass</source>
+        <translation>Full Bass</translation>
+    </message>
+    <message>
+        <source>Full Treble</source>
+        <translation>Full Treble</translation>
+    </message>
+    <message>
+        <source>Preset</source>
+        <translation>Preset</translation>
+    </message>
+</context>
+<context>
+    <name>SourceChoice</name>
+    <message>
+        <source>IP Radio</source>
+        <translation>Radio IP</translation>
+    </message>
+    <message>
+        <source>Servers</source>
+        <translation>Servers</translation>
+    </message>
+</context>
+<context>
+    <name>StopngoPage</name>
+    <message>
+        <source>Self-recluser</source>
+        <translation>Herstel</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Nazicht</translation>
+    </message>
+    <message>
+        <source>Self-test</source>
+        <translation>Autotest</translation>
+    </message>
+</context>
+<context>
+    <name>antintrusione</name>
+    <message>
+        <source>technical</source>
+        <translation>technisch</translation>
+    </message>
+    <message>
+        <source>intrusion</source>
+        <translation>inbraak</translation>
+    </message>
+    <message>
+        <source>tamper</source>
+        <translation>sabotage</translation>
+    </message>
+    <message>
+        <source>anti-panic</source>
+        <translation>paniek</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Unknown</source>
+        <translation>Onbekend</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Licht trap</translation>
+    </message>
+    <message>
+        <source>Door lock</source>
+        <translation>Vergrendeling</translation>
+    </message>
+</context>
+<context>
+    <name>sveglia</name>
+    <message>
+        <source>once</source>
+        <translation>een keer</translation>
+    </message>
+    <message>
+        <source>always</source>
+        <translation>altijd</translation>
+    </message>
+    <message>
+        <source>mon-fri</source>
+        <translation>maan-vrij</translation>
+    </message>
+    <message>
+        <source>sat-sun</source>
+        <translation>za-zon</translation>
+    </message>
+</context>
+</TS>

@@ -11,8 +11,13 @@
 #define MAIN_H
 
 #include "icondispatcher.h"
-#include "propertymap.h"
-#include "propertymap_xml.h"
+
+#include <qdom.h>
+
+QDomNode getPageNode(int id);
+QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
+QString getLanguage();
+void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
 
 /****************************************************************
  ** ICONS LIBRARY
@@ -40,14 +45,8 @@
 /// We use a global object to handle icons_library because different classes need icons.
 extern IconDispatcher icons_library;
 
-
-/****************************************************************
- ** confXmlHandler
- ****************************************************************/
-/** As alternative to xmlconfhandler we use PropertyMap from devlib
- *  to open conf.xml and read xml tags.
- */
-extern PropertyMap app_config;
+/// Global application config built using QDom
+extern QDomDocument qdom_appconfig;
 
 
 /****************************************************************
@@ -76,26 +75,30 @@ extern PropertyMap app_config;
 /*! \def IMG_PATH
  *  Define path for Icons
  */
-#define IMG_PATH                    "cfg/skin/"
+#define IMG_PATH                    "cfg/extra/1/skin/"
 /*! \def EXTRA_FILE
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
-#define EXTRA_FILE                  "cfg/extra.xml"
+#define EXTRA_FILE                  "cfg/extra/1/extra.xml"
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
+ */
+#define MY_FILE_CFG_FONT        "cfg/extra/3/font_%s.xml"
+/*! \def MY_FILE_CFG_FONT
+ *  The font configuration file
  */
 #define VERBOSITY_LEVEL_DEFAULT    0
 /*! \def VERBOSITY_LEVEL_DEFAUL
  *  It defines the starting path for mediaserver
  */
 #define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
-/*! \def XML_FILE_IN_DEFAULT 
+/*! \def XML_FILE_IN_DEFAULT
  */
 #define XML_FILE_IN_DEFAULT        ".bto-to-xml"
-/*! \def XML_FILE_OUT_DEFAULT 
+/*! \def XML_FILE_OUT_DEFAULT
  */
 #define XML_FILE_OUT_DEFAULT       ".xml-to-bto"
-/*! \def PATH_VAR_DEFAULT 
+/*! \def PATH_VAR_DEFAULT
  */
 #define PATH_VAR_DEFAULT           "/var"
 /*!  \def FILE_TEST1
@@ -123,11 +126,19 @@ extern PropertyMap app_config;
  */
 #define FILE_WDT                   "/var/tmp/bticino/bt_wd/BTouch_qws"
 
+#define LANGUAGE_FILE_TMPL        "cfg/extra/2/btouch_%s.qm"
+/*! \def LANGUAGE_FILE_TMPL
+ *  The template path to find the language file.
+ */
+#define DEFAULT_LANGUAGE          "en"
+/*! \def DEFAULT_LANGUAGE
+ *  Default language used in BTouch
+ */
 
 /****************************************************************
  **  definizione dimensioni schermo
  ****************************************************************/
-/*! \def MAX_WIDTH 
+/*! \def MAX_WIDTH
  *  Maximum width of the screen
  */
 #define MAX_WIDTH                  240
@@ -135,11 +146,10 @@ extern PropertyMap app_config;
  *  Maximum height of the screen
  */
 #define MAX_HEIGHT                 320
-/*! \def NUM_RIGHE 
+/*! \def NUM_RIGHE
  *  Number of lines shown on the screen
  */
 #define NUM_RIGHE                  4
-
 
 /****************************************************************
  **  definizione dei sottomenù
@@ -161,6 +171,8 @@ enum pagSecLiv{
 	VIDEOCITOFONIA=11,
 	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
+	SUPERVISIONE=14,                              /*!< Supervision system */
+	TERMOREG_MULTI_PLANT=15                       /*!< Thermoregulation system with one or more 4-zones plants */
 };
 
 
@@ -275,6 +287,46 @@ enum pagSecLiv{
 /*!  \def ICON_DEL
   The file name for \a delete icon*/
 #define ICON_DEL			(IMG_PATH "btndel.png")
+/*!  \def ICON_SUPERVISIONE
+  The file name for \a plant supervision icon*/
+#define ICON_SUPERVISIONE (IMG_PATH "supervisione_impianto.png")
+/*!  \def ICON_STOPNGO_APERTO
+  The file name for \a open stopngo icon*/
+#define ICON_STOPNGO_APERTO (IMG_PATH "S&G_Aperto.png")
+/*!  \def ICON_STOPNGO_CHIUSO
+  The file name for \a closed stopngo icon*/
+#define ICON_STOPNGO_CHIUSO (IMG_PATH "S&G_Chiuso.png")
+/*!  \def ICON_STOPNGO_BLOCCO
+  The file name for \a locked stopngo icon*/
+#define ICON_STOPNGO_BLOCCO (IMG_PATH "S&G_Aperto_Blocco.png")
+/*!  \def ICON_STOPNGO_CORTOCIRCUITO
+  The file name for \a short circuit stopngo icon*/
+#define ICON_STOPNGO_CORTOCIRCUITO (IMG_PATH "S&G_Aperto_Cortocircuito.png")
+/*!  \def ICON_STOPNGO_GUASTO_TERRA
+  The file name for \a earth failure stopngo icon*/
+#define ICON_STOPNGO_GUASTO_TERRA (IMG_PATH "S&G_Aperto_Guastoversoterra.png")
+/*!  \def ICON_STOPNGO_SOVRATENSIONE
+  The file name for \a out of Vmax stopngo icon*/
+#define ICON_STOPNGO_SOVRATENSIONE (IMG_PATH "S&G_Aperto_Sovratensione.png")
+/*!  \def ICON_STOPNGO_A_RIARMO
+  The file name for \a stopngo enabled arm icon*/
+#define ICON_STOPNGO_A_RIARMO (IMG_PATH "a_riarmo.png")
+/*!  \def ICON_STOPNGO_D_RIARMO
+  The file name for \a stopngo disabled arm icon*/
+#define ICON_STOPNGO_D_RIARMO (IMG_PATH "d_riarmo.png")
+/*!  \def ICON_STOPNGO_A_VERIFICA_IMPIANTO
+  The file name for \a stopngo verify icon*/
+#define ICON_STOPNGO_A_VERIFICA_IMPIANTO (IMG_PATH "a_verifica_impianto.png")
+/*!  \def ICON_STOPNGO_D_VERIFICA_IMPIANTO
+  The file name for \a stopngo disabled verify icon*/
+#define ICON_STOPNGO_D_VERIFICA_IMPIANTO (IMG_PATH "d_verifica_impianto.png")
+/*!  \def ICON_STOPNGO_A_AUTOTEST
+  The file name for \a stopngo autotest icon*/
+#define ICON_STOPNGO_A_AUTOTEST (IMG_PATH "a_autotest.png")
+/*!  \def ICON_STOPNGO_D_AUTOTEST
+  The file name for \a stopngo disabled autotest icon*/
+#define ICON_STOPNGO_D_AUTOTEST (IMG_PATH "d_autotest.png")
+
 
 
 /****************************************************************
@@ -306,7 +358,6 @@ enum  bannerType {
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
 	CALIBRAZIONE=21,                              /*!<  Calibration */
-	TERMO=22,                                     /*!<  Thermoregulation zone */
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
 	SUONO=25,                                     /*!<  Beep */
@@ -334,57 +385,30 @@ enum  bannerType {
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
-	TERMO_FANCOIL=52,                             /*!< Thermoregulation zone with fan-coil control */
-	TERMO_4Z=53,                                  /*!< 4 Zones Thermoregulation */
-	TERMO_4Z_FANCOIL=54,                          /*!< 4 Zones Thermoregulation with fan-coil control */
-	TERMO_EXTPROBE=55,                            /*!< External not-controlled probe */
-	TERMO_PROBE=56,                               /*!< Not-controlled probe */
-        TERMO_HOME_EXTPROBE=57,                       /*!< Home page external not-controlled probe */
-        TERMO_HOME_PROBE=58                           /*!< Home page not-controlled probe */
+	TERMO_99Z_PROBE=22,                           /*!< Probe controlled by 99 zones thermal regulator */
+	TERMO_99Z_PROBE_FANCOIL=52,                   /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
+	TERMO_4Z_PROBE=53,                            /*!< Probe controlled by 4 zones thermal regulator */
+	TERMO_4Z_PROBE_FANCOIL=54,                    /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
+	TERMO_NC_EXTPROBE=55,                         /*!< External not-controlled probe */
+	TERMO_NC_PROBE=56,                            /*!< Not-controlled probe */
+        TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
+        TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
+	CLASS_STOPNGO=59,                             /*!< StopnGo devices class */
+	STOPNGO=60,                                   /*!< StopnGo device */
+	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
+	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
+	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
+	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
+	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
+	POWER_AMPLIFIER_PRESET=70,
+	POWER_AMPLIFIER_TREBLE=71,
+	POWER_AMPLIFIER_BASS=72,
+	POWER_AMPLIFIER_BALANCE=73,
+	POWER_AMPLIFIER_LOUD=74
 };
-
-
-/// banTesti: text utilized during the initialization sequence when the menu is built up
-const char banTesti[][20] =
-{
-	/*    0                            1                           2                         3                    */
-	"ATTUAT_AUTOM",               "DIMMER 10",               "ATTUAT_AUTOM_INT",          "VUOTO",
-	/*    4                            5                           6                         7                    */
-	"SCENARIO",                   "GR_ATT_INT",              "GR_DIMMER",                 "CARICO",
-	/*    8                            9                           10                        11                   */
-	"ATT_AUT_INT_SIC",            "ATT_AUT_TEMP",            "GR_ATT_INT",                "ATT_AUT_PULS",
-	/*    12                           13                          14                        15                   */
-	"ATT_VCT_LS",                 "ATT_VCT_SER",             "SET_DATA",                  "VUOTO",
-	/*    16                           17                          18                        19                   */
-	"SORGENTE_AUX",               "SORG_RADIO",              "AMPLI",                     "GR_AMPLI",
-	/*    20                           21                          22                        23                   */
-	"SET_SVEGLIA",                "CALIB",                   "TERMO",                     "ZONANTI",
-	/*    24                           25                          26                        27                   */
-	"IMPANTI",                    "SUONO",                   "PROT",                      "VERS",
-	/*    28                           29                          30                        31                   */
-	"CONTR",                      "MOD_SCEN",                "DATA",                      "TEMP",
-	/*    32                           33                          34                        35                   */
-	"TIME",                       "ALL",                     "SPECIAL",                   "DIMMER 100",
-	/*    36                           37                          38                        39                   */
-	"ATT_AUT_TEMP_N",             "ATT_AUT_TEMP_F",          "SCENARIO EVOLUTO",          "SCENARIO SCHEDULATO",
-	/*    40                           41                          42                        43                   */
-	"VUOTO",                      "VUOTO",                   "VUOTO",                     "VUOTO",
-	/*    44                           45                          46                        47                   */
-	"GR_DIMMER100",               "SORG_RADIO",              "SORG_AUX",                  "AMBIENTE",
-	/*    48                           49                          50                        51                   */
-	"INSIEME_AMBIENTI",           "POSTO_ESTERNO",           "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
-	/*    52                           53                          54                        55                   */
-	"TERMO_FANCOIL",              "TERMO_4Z",                "TERMO_4Z_FANCOIL",          "TERMO_EXTPROBE",
-	/*    56                           57                          58                                             */
-	"TERMO_PROBE",                "TERMO_HOME_EXTPROBE",     "TERMO_HOME_PROBE"
-};
-
-/*! pagTesti: text utilized during the initialization sequence when the menu is built up */
-const char pagTesti[13][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
-	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI" };
 
 /*! \enum pulsType
- * differentiate various type of pulse banner 
+ * differentiate various type of pulse banner
  */
 enum pulsType
 {
@@ -408,6 +432,9 @@ enum pulsType
  * if not defined it's impossible to have a beep when pressing a button
  */
 #define BEEP
+
+/// The simbol of temperature degrees
+#define TEMP_DEGREES "\272"
 
 
 #endif //MAIN_H

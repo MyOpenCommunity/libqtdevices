@@ -12,19 +12,22 @@
 #define XMLCONFHANDLER_H   
 
 #include <qxml.h>
-#include "homepage.h"
-#include "sottomenu.h"
-#include "diffsonora.h"
-#include "diffmulti.h"
-#include "antintrusione.h"
-#include "genericfunz.h"
-#include "termoregolaz.h"
-#include "btmain.h"
-#include "versio.h"
-//#include "openclient.h"
-
+#include <qcolor.h>
+#include <qdatetime.h>
 #include <qstring.h>
-//class QString;
+#include "supervisionMenu.h"
+
+class homePage;
+class sottoMenu;
+class diffSonora;
+class diffmulti;
+class antintrusione;
+class ThermalMenu;
+class versio;
+class BtMain;
+class ambDiffSon;
+class scenEvo_cond;
+class Client;
 
 // Obscene hack, see function below...
 static QString empty_string("");
@@ -33,7 +36,7 @@ static QString empty_string("");
  * Utility function to access a list of string: if no element is present
  * at position \a idx, return empty string.
  */
-extern inline QString *safeAt(QPtrList<QString> &list, int idx)
+extern inline QString *safeAt(QPtrList<QString> &list, unsigned int idx)
 {
 	if (idx < list.count())
 		return list.at(idx);
@@ -76,7 +79,12 @@ extern inline QString *safeAt(QPtrList<QString> &list, int idx)
 class xmlconfhandler : public QXmlDefaultHandler
 {
 	public:
-		xmlconfhandler(BtMain *BtM=NULL, homePage**home=NULL,  homePage**specPage=NULL,  sottoMenu**scenari_evoluti=NULL, sottoMenu**videocitofonia=NULL, sottoMenu**illumino=NULL, sottoMenu**scenari=NULL, sottoMenu**carichi=NULL, sottoMenu**imposta=NULL, sottoMenu**automazioni=NULL, termoregolaz** termo=NULL, diffSonora**difSon=NULL, diffmulti**dm=NULL, antintrusione** antintr=NULL, QWidget** pagDefault=NULL,Client * client_comandi=NULL, Client *  client_monitor=NULL, Client *  client_richieste=NULL, versio* datiGen=NULL,QColor* bg=NULL,QColor* fg1=NULL,QColor* fg2=NULL);
+		xmlconfhandler(BtMain *BtM=NULL, homePage **home=NULL,  homePage **specPage=NULL,  sottoMenu **scenari_evoluti=NULL,
+				sottoMenu **videocitofonia=NULL, sottoMenu **illumino=NULL, sottoMenu **scenari=NULL, sottoMenu **carichi=NULL,
+				sottoMenu **imposta=NULL, sottoMenu **automazioni=NULL, ThermalMenu **termo=NULL, diffSonora **difSon=NULL,
+				diffmulti **dm=NULL, antintrusione **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
+				Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL, QColor *bg=NULL,
+				QColor *fg1=NULL, QColor *fg2=NULL);
 
 		~xmlconfhandler();
 		/*!
@@ -98,7 +106,12 @@ class xmlconfhandler : public QXmlDefaultHandler
 		bool endElement( const QString&, const QString&, const QString& );
 
 	private:
-		QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6,CurTagL7;
+		void *computeAddress();
+		void *getAddr();
+		void addItemU(sottoMenu *pageAct, void *address);
+
+		QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6;
+		QString CurTagL7,CurTagL8; // Only to avoid abnormal behaviour
 		bool ok;
 
 		int hompage_isdefined;
@@ -152,12 +165,13 @@ class xmlconfhandler : public QXmlDefaultHandler
 
 		homePage **home;
 		homePage **specPage;
-		sottoMenu **illumino,**scenari,**carichi,**imposta,**automazioni,**sched,
+		sottoMenu **illumino, **scenari, **carichi, **imposta, **automazioni, **sched,
 			  **scenari_evoluti, **videocitofonia;
 		diffmulti **dm;
-		termoregolaz **termo;
+		ThermalMenu **termo;
 		diffSonora **difSon;
 		antintrusione** antintr;
+		SupervisionMenu** supervisione;
 		QWidget ** pagDefault;
 		versio *datiGen ;
 

@@ -10,10 +10,11 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
-#include "openclient.h"
-#include "device.h"
 
-class device_status;
+#include "openclient.h"
+#include "device_status.h"
+
+
 class frame_interpreter;
 
 //! Openwebnet where
@@ -351,13 +352,88 @@ public slots:
 	void handle_frame_handler(char *, QPtrList<device_status> *);
 };
 
-//! Thermal regulator device frame interpreter
-class frame_interpreter_thermr_device : public frame_interpreter
+/**
+ * An interpreter for both 4z and 99z thermal regulator devices
+ */
+class frame_interpreter_thermal_regulator : public frame_interpreter
+{
+Q_OBJECT
+public:
+	frame_interpreter_thermal_regulator(QString who, QString addr, bool p, int g);
+	void get_init_message(device_status *ds, QString& out);
+public slots:
+	/**
+	 * Called whenever there is a new frame to be parsed
+	 *
+	 * \param frame  The frame to be parsed
+	 * \param list   A list of device_status
+	 */
+	void handle_frame_handler(char *frame, QPtrList<device_status> *list);
+private:
+	void handle_frame(openwebnet msg, device_status_thermal_regulator *ds);
+	QString where;
+	bool is_frame_ours(openwebnet msg, bool& request_status);
+
+	/**
+	 * Sets the new program number in the device status.
+	 * \param ds A pointer to a thermal regulator device_status
+	 * \param program  The new program to be set.
+	 */
+	void setProgramNumber(device_status_thermal_regulator *ds, int program);
+
+	/**
+	 * Sets a new scenario number in the device status.
+	 * \param ds A pointer to a thermal regulator device_status.
+	 * \param scenario The new scenario to be set.
+	 */
+	void setScenarioNumber(device_status_thermal_regulator *ds, int scenario);
+
+	/**
+	 * Sets manual status and temperature passed as paramenter.
+	 * \param ds A pointer to the device status
+	 * \param temp The new temperature to be set
+	 */
+	void setManualTemperature(device_status_thermal_regulator *ds, int temp);
+
+	/**
+	 * If current status is not summer, sets it.
+	 * \param ds  A pointer to a thermal regulator device_status
+	 */
+	void checkAndSetSummer(device_status_thermal_regulator *ds);
+
+	/**
+	 * If current status is not winter, sets it.
+	 * \param ds  A pointer to a thermal regulator device_status
+	 */
+	void checkAndSetWinter(device_status_thermal_regulator *ds);
+
+	/**
+	 * Utility function to check if the status is changed.
+	 *
+	 * \param ds  A pointer to a thermal regulator device_status
+	 * \param status  The new status that must be set in the device
+	 */
+	void checkAndSetStatus(device_status_thermal_regulator *ds, int status);
+
+	/**
+	 * Utility function to check if `what' is a program or scenario command. This type of commands are in this form:
+	 * xynn (where x={1,2}, y={1,2,3}) where nn is the program or scenario command, or xynnn (where x={1,2}, y={1,2,3}) and
+	 * nnn are the number of days.
+	 * We need to take action based on xy00-type of command, this function returns the command in that form.
+	 *
+	 * \param what  The command to be checked
+	 * \return The command in xy00 form.
+	 */
+	int commandRange(int what);
+};
+
+//! Temperature probe device frame interpreter
+class frame_interpreter_temperature_probe_controlled : public frame_interpreter
 {
 Q_OBJECT
 private:
 	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_thermr *);
+	void handle_frame(openwebnet_ext, device_status_temperature_probe_extra *);
 	//! As above, but for temperature status
 	void handle_frame(openwebnet_ext, device_status_temperature_probe *);
 	//! Analyze fancoil frame
@@ -367,7 +443,7 @@ private:
 	bool elaborato;
 
 	//! Type of thermal regulator
-	device_status_thermr::type_t type;
+	thermo_type_t type;
 
 	QString ind_centrale;
 	QString indirizzo;
@@ -391,8 +467,8 @@ protected:
 	bool is_frame_ours(openwebnet_ext, bool& request_status);
 public:
 	//! Constructor
-	frame_interpreter_thermr_device(QString,
-		device_status_thermr::type_t type,
+	frame_interpreter_temperature_probe_controlled(QString,
+		thermo_type_t type,
 		const char *ind_centrale, const char *indirizzo, bool, int);
 	//! Returns init message given device status
 	void get_init_message(device_status *, QString&);
@@ -420,5 +496,23 @@ public slots:
 	//! Receive a frame
 	void handle_frame_handler(char *, QPtrList<device_status> *);
 };
+
+//! MCI frame interpreter
+class frame_interpreter_mci : public frame_interpreter
+{
+Q_OBJECT
+private:
+	//! Analyze a frame for a dimmer status
+	void handle_frame(openwebnet_ext, device_status_mci *);
+public:
+	//! Constructor
+	frame_interpreter_mci(QString, bool, int);
+	//! Returns init message given device status
+  void get_init_messages(device_status *, QStringList&);
+public slots:
+	//! Receive a frame
+	void handle_frame_handler(char *, QPtrList<device_status> *);
+};
+
 
 #endif //__FRAME_INTERPRETER_H__

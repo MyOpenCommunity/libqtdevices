@@ -13,17 +13,21 @@
 
 #undef IPHONE_MODE
 
-#include <qwidget.h>
-//#include <qlabel.h>
-#include "banner.h"
-#include <qptrlist.h> 
 #include "main.h"
-#include "bannfrecce.h"
-#include <stdlib.h>
+#include "banner.h"
+#include "device_status.h"
 
-//class QPushButton;
+#include <qwidget.h>
+#include <qptrlist.h> 
+#include <qdom.h>
+#include <qvaluelist.h>
+#include <qdatetime.h>
 
+
+class bannFrecce;
 class scenEvo_cond;
+class FSBannTime;
+class FSBannDate;
 
 /*!
   \class sottoMenu
@@ -61,7 +65,19 @@ class sottoMenu : public QWidget
 
 		  The argument is the QColor description of the color.
 		  */          
-		void 	setFGColor(QColor );	
+		void 	setFGColor(QColor );
+		/*!
+		  \brief Sets the background color for the banner and all its child.
+
+		  The argument is the QColor description of the color.
+		  */
+		void 	setAllBGColor(QColor);
+		/*!
+		  \brief Sets the foreground color for the banner and all its child.
+
+		  The argument is the QColor description of the color.
+		  */
+		void 	setAllFGColor(QColor);
 		/*!
 		  \brief Sets the background pixmap for the banner.
 		  */  
@@ -91,13 +107,20 @@ unknown : unknown field (for video door phone items
 sstart : soft start values list for dimmer 100 group
 sstop : soft stop values list vor dimmer 100 group
 */     
-		virtual int addItem(char tipo, char *nome, void *indirizzo,
+		virtual int addItemU(char tipo, const QString & nome, void *indirizzo,
 				QPtrList<QString> &icon_names,
 				int periodo = 0, int numFrame = 0, QColor secondFroreground = QColor(0,0,0),
 				char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
 				int par3=0, int par4=0, 
 				QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, 
-				QString action="", QString light="", QString key="", QString unk="", QValueList<int> sstart = QValueList<int>(), QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
+				QString action="", QString light="", QString key="", QString unk="", 
+				QValueList<int> sstart = QValueList<int>(), 
+				QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
+
+		/**
+		 * Add a new banner.
+		 */
+		void appendBanner(banner *b);
 		/*!
 		  \brief Initializes all the objects in the list calling init() after a certain time
 		  */      
@@ -225,6 +248,13 @@ signals:
 		  \brief Emitted to signal to BtMain that a banner requires to freeze the device.
 		  */    
 		void	freeze(bool);
+
+		/**
+		 * This signal can be used to propagate the freeze signal to other submenus. It should be connected with
+		 * freeze() slot and freezePropagate() signal of the following submenus.
+		 */
+		void freezePropagate(bool);
+
 		/*!
 		  \brief Emitted to tell to banners in the list that the device was frozen.
 		  */  
@@ -252,7 +282,7 @@ signals:
 		/*!
 		  \brief amb description changed (for diffmulti)
 		  */
-		void ambChanged(char *newdescr, bool multiwhere, void *where);
+		void ambChanged(const QString & newdescr, bool multiwhere, char *where);
 		/*!
 		  \brief hide all children
 		  */
@@ -265,11 +295,11 @@ signals:
 		  \brief emitted on calibration end
 		  */
 		void endCalib();
-		public slots:
-			/*!
-			  \brief Slides the list upward.
-			  */      
-			virtual void 	goUp();	
+public slots:
+		/*!
+		  \brief Slides the list upward.
+		  */      
+		virtual void 	goUp();	
 		/*!
 		  \brief Slides the list downward.
 		  */ 
@@ -307,7 +337,27 @@ signals:
 		  */    
 		void 	svuota();
 		void 	show();
+		void showItem(int id);
 	protected:
+		void connectLastBanner();
+		/**
+		 * Set BG and FG color, address, id, text, animation params
+		 * in a banner.
+		 *
+		 * \param bann The banner being set
+		 * \param conf The node in the Dom tree that holds a reference
+		 * to an `item' tag (that is the root node of an item configuration)
+		 */
+		void initBanner(banner *bann, QDomNode conf);
+		/**
+		 * Finds a node with tag name equal to the parameter
+		 * using a breadth-first search.
+		 *
+		 * \param root    The node where the search starts
+		 * \param name    The tag name to find
+		 * \return        A null node if no tag was found, the node otherwise
+		 */
+		QDomNode findNamedNode(QDomNode root, QString name);
 		QPtrList<banner> elencoBanner;
 		QTimer* iniTim;
 		int	indice, indicold;
@@ -320,5 +370,86 @@ signals:
 		void setModeIcon(char*);
 };
 
+/**
+ * A base class for submenus that allow to choose one program in a list. The list changes
+ * when season changes (summer/winter).
+ * This class emits a signal when a program is clicked. This signal should be used to close
+ * the submenu and to take further action, for example sending a frame to the thermal regulator.
+ */
+class ProgramMenu : public sottoMenu
+{
+Q_OBJECT
+public:
+	ProgramMenu(QWidget *parent, const char *name, QDomNode conf);
+	virtual void createSummerBanners() = 0;
+	virtual void createWinterBanners() = 0;
+public slots:
+	void status_changed(QPtrList<device_status> list);
+protected:
+	int season;
+	QDomNode conf_root;
+signals:
+	void programClicked(int);
+};
 
+/**
+ * This is a specialized version of ProgramMenu to select week programs. The list
+ * of programs is read from DOM.
+ */
+class WeeklyMenu : public ProgramMenu
+{
+Q_OBJECT
+public:
+	WeeklyMenu(QWidget *parent, const char *name, QDomNode conf);
+	virtual void createSummerBanners();
+	virtual void createWinterBanners();
+};
+
+/**
+ * This is a specialized version of ProgramMenu to select scenarios. The list
+ * of scenarios is read from DOM and updated when season changes
+ */
+class ScenarioMenu : public ProgramMenu
+{
+Q_OBJECT
+public:
+	ScenarioMenu(QWidget *parent, const char *name, QDomNode conf);
+	virtual void createSummerBanners();
+	virtual void createWinterBanners();
+};
+
+/**
+ * A submenu that let the user choose the time.
+ */
+class TimeEditMenu : public sottoMenu
+{
+Q_OBJECT
+public:
+	TimeEditMenu(QWidget *parent, const char *name);
+	QTime time();
+private:
+	FSBannTime *time_edit;
+private slots:
+	void performAction();
+signals:
+	void timeSelected(QTime);
+};
+
+/**
+ * A submenu that let the users choose a date and emits a signal with the selected date when the user
+ * confirms the choice.
+ */
+class DateEditMenu : public sottoMenu
+{
+Q_OBJECT
+public:
+	DateEditMenu(QWidget *parent, const char *name);
+	QDate date();
+private:
+	FSBannDate *date_edit;
+private slots:
+	void performAction();
+signals:
+	void dateSelected(QDate);
+};
 #endif // SOTTOMENU_H

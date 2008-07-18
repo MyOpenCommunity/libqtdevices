@@ -8,19 +8,15 @@
 **
 ****************************************************************/
 
-
-#include <qfont.h>
-#include <qlayout.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include <qprocess.h>
 #include <qstring.h>
-
+#include <qfile.h>
 
 #include "contrpage.h"
 #include "banner.h"
 #include "main.h"
+#include "genericfunz.h"
 
 contrPage::contrPage( QWidget *parent, const char *name )
         : QWidget( parent, name )

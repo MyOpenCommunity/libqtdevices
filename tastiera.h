@@ -11,15 +11,15 @@
 #ifndef TASTIERA_H
 #define TASTIERA_H
 
-#include <qframe.h>
-#include "btlabel.h"
-#include <qprocess.h>
-#include "btbutton.h"
+#include <qwidget.h>
+
 #include "main.h"
-#include <qcursor.h>
+
+class BtLabel;
+class BtButton;
 
 #define LINE 		MAX_HEIGHT/5
-    
+
 /*!
   \class tastiera
   \brief This class is the implementation of a keypad intended for password inserting.
@@ -140,16 +140,6 @@ private:
     char 	pwd[6];
     char mode;
 };
-
-
-
-#define BUT_DIM	60
-#define POSX1		(MAX_WIDTH-BUT_DIM*3)/6
-#define POSX2		POSX1*3+BUT_DIM
-#define POSX3		POSX2+POSX1*2+BUT_DIM
-
-#define BUT_SMALL_DIM   (MAX_WIDTH-POSX1*2)/8
-#define POSX1_SMALL     POSX1
 
 
 //! Normal keyboard with a line containing 8 disabled buttons representing 8 status bits

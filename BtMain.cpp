@@ -8,52 +8,40 @@
  **
  ****************************************************************/
 
-#include <time.h>
+#include <sys/sysinfo.h>
+
 #include <qapplication.h>
 #include <qobject.h>
-#include <qaction.h>
-//#include <qcursor.h>
 #include <qwidget.h>
 #include <qptrlist.h> 
 #include <qcursor.h>
-#include "qwaitcondition.h"
+#include <qxml.h>
+#include <qwindowdefs.h>
+#include <qbitmap.h>
+#include <qwindowsystem_qws.h>
+#include <qpainter.h>
 
 #include "main.h"
 #include "btmain.h"
 #include "homepage.h"
 #include "sottomenu.h"
-#include "impostatime.h"
 #include "diffsonora.h"
 #include "diffmulti.h"
-#include "sveglia.h"
+#include "antintrusione.h"
 #include "genericfunz.h"
-//#include "structureparser.h"
 #include "xmlconfhandler.h"
 #include "xmlvarihandler.h"
 #include "calibrate.h"
 #include "btlabel.h"
 #include "genpage.h"
 #include "device_cache.h"
-
-#include <sys/sysinfo.h>
-#include <qfontdatabase.h>
-#include <qfile.h>
-#include <qxml.h>
-#include <qwindowdefs.h>
-#include <stdlib.h>
-#include <math.h>
-#include <qbitmap.h>
-#include <qwindowsystem_qws.h>
-
-#if 0 // kemosh
-#include <bt_upnp.h>
-#endif
+#include "openclient.h"
+#include "versio.h"
+#include "tastiera.h"
+#include "thermalmenu.h"
 
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
-
-
-
 
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 : QWidget( parent, name )
@@ -88,6 +76,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 	pagDefault=NULL;
 	Home=specPage=NULL;
 	illumino=scenari=carichi=imposta=automazioni=scenari_evoluti=videocitofonia=NULL;
+	supervisione=NULL;
 	termo=NULL;
 	difSon=NULL;
 	dm=NULL;
@@ -164,74 +153,17 @@ void BtMain::hom()
 		return;
 	}
 
-	/*   QFontInfo(Home->font());
-
-	     qDebug( "FONT FAMILY=%s",(Home->font()).family().ascii());
-	     qDebug( "FONT PIXEL SIZE=%d",(Home->font()).pixelSize());
-	     qDebug( "FONT POINT SIZE=%d",(Home->font()).pointSize());
-	     qDebug( "FONT ITALIC=%d",(Home->font()).italic());
-	     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
-	     qDebug( "FONT BOLD=%d",(Home->font()).bold());
-	     qDebug( "FONT WEIGHT=%d",(Home->font()).weight());
-
-	     QFontDatabase fdb;
-	     QStringList families = fdb.families();
-	     for ( QStringList::Iterator f = families.begin(); f != families.end(); ++f ) {
-	     QString family = *f;
-	     qDebug( family );
-	     QStringList styles = fdb.styles( family );
-	     for ( QStringList::Iterator s = styles.begin(); s != styles.end(); ++s ) {
-	     QString style = *s;
-	     QString dstyle = "\t" + style + " (";
-	     QValueList<int> smoothies = fdb.smoothSizes( family, style );
-	     for ( QValueList<int>::Iterator points = smoothies.begin();
-	     points != smoothies.end(); ++points ) {
-	     dstyle += QString::number( *points ) + " ";
-	     }
-	     dstyle = dstyle.left( dstyle.length() - 1 ) + ")";
-	     qDebug( dstyle );
-	     }
-	     }
-	     qDebug( "FINE ANALISI FONT");
-
-	//    qDebug( "FONT FIXED PITCH=%d",(Home.font()).fixedPitch());
-	//    qDebug( "FONT RAWMODE=%d",(Home.font()).rawMode());
-	//    qDebug( "FONT EXACTMATCH=%d",(Home.font()).exactMatch());
-	*/	 
 	datiGen->inizializza();
 
-
-	//--------------------------------------------------
 	QColor *bg, *fg1, *fg2;
-	QFile * xmlFile;
-	bg=fg1=fg2=NULL;
-
-	if (QFile::exists(EXTRA_FILE))
-	{
-		xmlskinhandler *handler1 = new xmlskinhandler(&bg, &fg1, &fg2);
-		xmlFile = new QFile(EXTRA_FILE);
-		QXmlInputSource source1( xmlFile );
-		QXmlSimpleReader reader1;
-		reader1.setContentHandler( handler1 );
-		reader1.parse( source1 );
-		delete handler1;
-		delete xmlFile;
-	}
-	/*  if ( (bg) && (fg1) && (fg2) )
-	    qDebug("COLORI:\n%d - %d - %d\n%d - %d - %d\n%d - %d - %d",bg->red(),bg->green(),bg-> blue(),fg1->red(), fg1->green(), fg1-> blue(),fg2->red(), fg2->green(), fg2-> blue());*/
-	if (!bg)
-		bg=new QColor(77,61,66);
-	if (!fg1)
-		fg1=new QColor(205,205,205);
-	if (!fg2)
-		fg2=new QColor(7,151,254);
+	readExtraConf(&bg, &fg1, &fg2);
 
 	//-----------------------------------------------
 	if (QFile::exists("cfg/conf.xml"))
 	{ 
-		qDebug("scello %d",bg);
-		xmlconfhandler  * handler2=new xmlconfhandler(this, &Home,&specPage, &scenari_evoluti, &videocitofonia, &illumino,&scenari,&carichi,&imposta, &automazioni, &termo,&difSon, &dm, &antintr,&pagDefault, client_comandi, client_monitor, client_richieste, datiGen,bg, fg1, fg2);
-		qDebug("scello %d",bg);
+		xmlconfhandler  *handler2 = new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
+				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
+				client_comandi, client_monitor, client_richieste, datiGen, bg, fg1, fg2);
 		setBackgroundColor(*bg);
 		for (int idx=0;idx<12;idx++)
 		{
@@ -241,7 +173,7 @@ void BtMain::hom()
 		//setForegroundColor(*fg1);
 
 
-		xmlFile = new QFile("cfg/conf.xml");
+		QFile *xmlFile = new QFile("cfg/conf.xml");
 		QXmlInputSource source2( xmlFile );
 		QXmlSimpleReader reader2;
 		qDebug("parte parsing");
@@ -250,7 +182,6 @@ void BtMain::hom()
 		qDebug("finito parsing");
 		delete handler2;
 		delete xmlFile;
-
 		qApp->setMainWidget( Home);
 		hide();
 	}
@@ -300,6 +231,8 @@ void BtMain::init()
 		videocitofonia->inizializza();
 	if (imposta)
 		imposta->inizializza();
+	if (supervisione)
+		supervisione->inizializza();
 	//    rearmWDT();
 
 	struct sysinfo info;
@@ -509,6 +442,8 @@ void BtMain::gesScrSav()
 						scenari_evoluti->hide();
 					if (videocitofonia)
 						videocitofonia->hide();
+					if (supervisione)
+						supervisione->hide();
 					if (pagDefault)
 						pagDefault -> showFullScreen();
 				}

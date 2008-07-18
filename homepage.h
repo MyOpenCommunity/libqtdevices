@@ -7,17 +7,15 @@
 #ifndef BT_HOMEPAGE
 #define BT_HOMEPAGE
 
-#include "btbutton.h"
-#include "timescript.h"
-#include "openclient.h"
-#include "btlabel.h"
-
-#include <qlcdnumber.h>
 #include <qwidget.h>
-#include <qlabel.h>
 #include <qcolor.h>
-#include <qpainter.h>
 #include <qptrlist.h>
+
+#include "btbutton.h"
+
+class QLCDNumber;
+class BtLabel;
+class timeScript;
 
 /*!
   \class homePage
@@ -77,7 +75,7 @@ public:
   
   The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel and the text describing the zone.
 */      
-   void	addTemp(char*, int, int, int, int, QColor, QColor, int, int, char*, char * Ext="0");   
+   void	addTemp(char*, int, int, int, int, QColor, QColor, int, int, const QString &, char * Ext="0");   
   /*!
   \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame, line and text.
 */     
@@ -87,11 +85,11 @@ public:
   
   The arguments are the text, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel.
 */   
-   void	addDescr(char*, int, int, int, int, QColor, QColor, int, int );      
+   void	addDescrU( const QString &, int, int, int, int, QColor, QColor, int, int );
  /*!
   \brief Same as above. Dimension is assumed 160x20, the colors used are the same of the entire page, with no frame, line and text.
 */        
-   void 	addDescr(char*, int , int );
+   void 	addDescrU( const QString &, int , int );
 /*!
   \brief Sets the background pixmap for the banner.
 */     
@@ -147,6 +145,8 @@ private slots:
   void ScenariEvoluti();
 /*! \brief Emitted when the \a video door phone management(sottoMenu) is required */
   void Videocitofonia();
+/*! \brief Emitted when the \a supervision management is required */
+  void Supervisione();
 private:
 // QTimer 	 *orologio;
   timeScript* dataOra;
@@ -162,7 +162,8 @@ int xClock,yClock,xTemp,yTemp;
   char chi[10];
   char cosa[10];
   char dove[10];
-  char tipoSpecial,tempCont;
+  char tipoSpecial;
+  unsigned int tempCont;
   BtLabel *descrizione, *descrTemp[3];
 };
 

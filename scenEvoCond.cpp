@@ -1,18 +1,10 @@
-//#include "btbutton.h"
-#include <qfont.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-
+#include <qlabel.h>
+#include <qdir.h>
 #include <qfile.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 #include "openclient.h"
 #include "sottomenu.h"
@@ -20,6 +12,11 @@
 #include "device.h"
 #include "frame_interpreter.h"
 #include "device_cache.h"
+#include "genericfunz.h"
+#include "btbutton.h"
+#include "btlabel.h"
+#include "timescript.h"
+#include "fontmanager.h"
 
 /*****************************************************************
 ** Advanced scenario management generic condition
@@ -31,6 +28,7 @@ scenEvo_cond::scenEvo_cond(QWidget *parent, char *name)  :
     val = -1;
     for(int i = 0; i < MAX_EVO_COND_IMG; i++)
 	img[i] = new QString("");
+	hasTimeCondition = false;
 }
 
 const char *scenEvo_cond::getImg(int index)
@@ -179,16 +177,13 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) :
     connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
     cond_time = new QDateTime(QDateTime::currentDateTime());
     ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
+	hasTimeCondition = true;
 }
 
 void scenEvo_cond_h::set_h(const char *_h)
 {
     *h = _h;
     qDebug("scenEvo_cond_h::set_h : %s", h->ascii());
-#if 0
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
-    setupTimer();
-#endif
 }
 
 void scenEvo_cond_h::set_m(const char *_m)
@@ -206,10 +201,6 @@ void scenEvo_cond_h::set_s(const char *_s)
 {
     *s = _s;
     qDebug("scenEvo_cond_h::set_s : %s", s->ascii());
-#if 0
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
-    setupTimer();
-#endif
 }
 
 const char *scenEvo_cond_h::getDescription(void)
@@ -340,11 +331,6 @@ void scenEvo_cond_h::SetIcons()
 	    delete Icon2;
     } else
 	but[A8_BUTTON_INDEX] = NULL;
-#if 0
-    cond_time = new QDateTime(QDateTime::currentDateTime());
-    cond_time->setTime(QTime(h->toInt(), m->toInt(), s->toInt()));
-    ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
-#endif
     ora->setGeometry(40, 140, 160, 50);
     ora->setFrameStyle( QFrame::Plain );
     ora->setLineWidth(0);    
@@ -442,12 +428,8 @@ void scenEvo_cond_h::setupTimer()
     // According to QT doc, if timer is running, it is stopped and restarted
     // with new interval. Otherwise it is just started.
     qDebug("(re)starting timer with interval = %d", secsto * 1000);
-#if 0
-    timer->changeInterval(secsto * 1000);
-#else
     timer->stop();
     timer->start(secsto * 1000, true);
-#endif
 }
 
 void scenEvo_cond_h::Apply()
@@ -555,13 +537,12 @@ const char *scenEvo_cond_d::getDescription(void)
 void scenEvo_cond_d::mostra()
 {
     qDebug("scenEvo_cond_d::mostra()");
-    char tmp[100];
     for (uchar idx=0; idx < 8; idx++)
 	if(but[idx])
-	    but[idx]->show();   
+	    but[idx]->show();
+
     area1_ptr->show();
-    sprintf(tmp, "%s", descr->ascii());
-    area2_ptr->setText(tmp);
+    area2_ptr->setText( *descr );
     area2_ptr->show();
     if(actual_condition)
 	actual_condition->show();
@@ -634,10 +615,9 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 
 void scenEvo_cond_d::SetIcons() 
 {
+	QFont aFont;
     qDebug("scenEvo_cond_d::SetIcons()");
     QPixmap* Icon1 = new QPixmap();
-    QPixmap* Icon2 = NULL;
-    char iconName[MAX_PATH];
     for(int i=0; i<6; i++)
 	qDebug("icon[%d] = %s", i, getImg(i));
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT); 
@@ -647,7 +627,8 @@ void scenEvo_cond_d::SetIcons()
     area2_ptr = new BtLabel(this, "Area2");
     area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, 
 			   TEXT_X_DIM, TEXT_Y_DIM);
-    area2_ptr->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    FontManager::instance()->getFont( font_scenEvoCond_Area2, aFont );
+    area2_ptr->setFont( aFont );
     area2_ptr->setAlignment(AlignHCenter|AlignVCenter);
     BtButton *b = new BtButton(this, "Up button");
     but[A3_BUTTON_INDEX] = b;
@@ -709,16 +690,9 @@ void scenEvo_cond_d::SetIcons()
     }
     if(dc) {
 	dc->setGeometry(40,140,160,50);
-	connect(dc, SIGNAL(richStato(char *)), this, 
-		SIGNAL(richStato(char *)));
-#if 0
-	// Non mandiamo + segnali quando la condizione sul device e` verificata
-	// E` solo la condizione oraria che manda un segnale. Questa 
-	// condizione dice solo se e` verificata o meno con isTrue()
-	connect(dc, SIGNAL(verificata()), this, SIGNAL(verificata()));
-#endif
-	connect(this, SIGNAL(frame_available(char *)),
-		dc, SLOT(handle_frame(char *)));
+	connect(dc, SIGNAL(richStato(char *)), this, SIGNAL(richStato(char *)));
+	connect(this, SIGNAL(frame_available(char *)), dc, SLOT(handle_frame(char *)));
+	connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
 	dc->set_where(*where);
     }
     actual_condition = dc;
@@ -821,7 +795,7 @@ int device_condition::get_condition_value(void)
     return cond_value;
 }
 
-int device_condition::set_condition_value(int v)
+void device_condition::set_condition_value(int v)
 {
     if(v > get_max())
 	v = get_max();
@@ -830,7 +804,7 @@ int device_condition::set_condition_value(int v)
     cond_value = v;
 }
 
-int device_condition::set_condition_value(QString s)
+void device_condition::set_condition_value(QString s)
 {
     qDebug("device_condition::set_condition_value (%s)", s.ascii());
     set_condition_value(s.toInt());
@@ -929,7 +903,7 @@ void device_condition::setFGColor(QColor c)
 
 void device_condition::setBGColor(QColor c)
 {
-    qDebug("device_condition::setBGColor", c.red(), c.green(),
+	qDebug("device_condition::setBGColor (%d, %d, %d)", c.red(), c.green(),
 	   c.blue());
     frame->setPaletteBackgroundColor(c);
 }
@@ -958,11 +932,6 @@ void device_condition::set_where(QString s)
     dev->set_where(s);
     // Aggiunge il nodo alla cache
     dev = btouch_device_cache.add_device(dev) ;
-#if 0
-    // Pass frames on to device for analysis
-    connect(this, SIGNAL(frame_available(char *)), 
-	    dev, SLOT(frame_rx_handler(char *)));
-#endif
     // Get status changed events back
     connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 	    this, SLOT(status_changed(QPtrList<device_status>)));
@@ -998,7 +967,10 @@ device_condition_light_status(QWidget *parent, char *name, QString *c) :
 {
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
+    
     frame = l;
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
@@ -1035,7 +1007,11 @@ void device_condition_light_status::status_changed(QPtrList<device_status> sl)
 		   curr_status.get_val());
 	    if(trig_v == curr_status.get_val()) {
 		qDebug("light condition (%d) satisfied", trig_v);
-		satisfied = true;
+		if (!satisfied)
+		{
+			satisfied = true;
+			emit(condSatisfied());
+		}
 	    } else {
 		qDebug("light condition (%d) NOT satisfied", trig_v);
 		satisfied = false;
@@ -1064,7 +1040,7 @@ int device_condition_light_status::get_max()
     return 1;
 }
 
-int device_condition_light_status::set_condition_value(QString s)
+void device_condition_light_status::set_condition_value(QString s)
 {
     qDebug("device_condition_light_status::set_condition_value");
     int v = 0;
@@ -1073,8 +1049,8 @@ int device_condition_light_status::set_condition_value(QString s)
     else if(s == "0")
 	v = 0;
     else 
-	qDebug("Unknown condition value %s for device_condition_light_status");
-    return device_condition::set_condition_value(v);
+	qDebug("Unknown condition value %s for device_condition_light_status", s.ascii());
+    device_condition::set_condition_value(v);
 }
 
 void device_condition_light_status::get_condition_value(QString& out)
@@ -1094,7 +1070,10 @@ device_condition_dimming::device_condition_dimming(QWidget *parent,
 	   c->ascii());
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_device_condition_dimming, aFont );
+    l->setFont( aFont );
+
     frame = l;
     if(strcmp(c->ascii(), "0") == 0)
     {
@@ -1288,18 +1267,9 @@ void device_condition_dimming::set_current_value_max(int max)
     current_value_max = max;
 }
 
-#if 0
-void device_condition_dimming::Draw()
+void device_condition_dimming::set_condition_value(QString s)
 {
-    QLCDNumber *l = (QLCDNumber *)frame;
-    l->display(get_current_value());
-    show();
-}
-#endif
-
-int device_condition_dimming::set_condition_value(QString s)
-{
-    return device_condition::set_condition_value(s.toInt() * 10);
+    device_condition::set_condition_value(s.toInt() * 10);
 }
 
 void device_condition_dimming::get_condition_value(QString& out)
@@ -1318,11 +1288,10 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
     //device_status::type t = ds->get_type();
     int trig_v_min = get_condition_value_min();
     int trig_v_max = get_condition_value_max();
-    int trig_v = -1;
     stat_var curr_lev(stat_var::LEV);
     stat_var curr_speed(stat_var::SPEED);
     stat_var curr_status(stat_var::ON_OFF);
-    int val10;
+
     QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
     dsi->toFirst();
     device_status *ds;
@@ -1340,7 +1309,11 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
           qDebug("trigger value min is %d - max is %d, val10 = %d", trig_v_min, trig_v_max, curr_lev.get_val()/10);
           if((curr_lev.get_val()/10 >= trig_v_min) && (curr_lev.get_val()/10 <= trig_v_max)){
             qDebug("Condition triggered");
-            satisfied = true;
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
           } else {
             qDebug("Condition not triggered");
             satisfied = false;
@@ -1371,7 +1344,9 @@ device_condition(parent, c)
     qDebug("device_condition_dimming_100::device_condition_dimming_100(%s)", c->ascii());
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
     frame = l;
     if(strcmp(c->ascii(), "0") == 0)
     {
@@ -1576,9 +1551,9 @@ void device_condition_dimming_100::set_current_value_max(int max)
     current_value_max = max;
 }
 
-int device_condition_dimming_100::set_condition_value(QString s)
+void device_condition_dimming_100::set_condition_value(QString s)
 {
-    return device_condition::set_condition_value(s.toInt() * 10);
+    device_condition::set_condition_value(s.toInt() * 10);
 }
 
 void device_condition_dimming_100::get_condition_value(QString& out)
@@ -1624,7 +1599,11 @@ void device_condition_dimming_100::status_changed(QPtrList<device_status> sl)
           qDebug("trigger value min is %d - max is %d, val = %d", trig_v_min, trig_v_max, val10);
           if((val10 >= trig_v_min) && (val10 <= trig_v_max)){
             qDebug("Condition triggered");
-            satisfied = true;
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
           } else {
             qDebug("Condition not triggered");
             satisfied = false;
@@ -1652,7 +1631,9 @@ device_condition_volume::device_condition_volume(QWidget *parent,
     char sup[10];
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
     frame = l;
     if(strcmp(c->ascii(), "-1") == 0)
     {
@@ -1737,30 +1718,12 @@ int device_condition_volume::get_max()
     return 31;
 }
 
-#if 0
-int device_condition_volume::get_step()
-{
-    return 10;
-}
-#endif
 
-int device_condition_volume::set_condition_value(QString s)
+void device_condition_volume::set_condition_value(QString s)
 {
-#if 0
-    // Mail di agresta del 29/05/2006
-    static const int trans_table[] = 
-    { 0, 3, 6, 9, 12, 15, 19, 22, 25, 28, 31 };
-    int v = s.toInt()/get_step() - 1;
-    qDebug("device_condition_volume::set_condition_value()");
-    if(v < 0)
-	v = 0;
-    if(v > 10)
-	v = sizeof(trans_table) / sizeof(v);
-#endif
-    // FIXME: USE device_condition::set_condition_value
     int v = s.toInt();
     qDebug("setting condition value to %d", v);
-    return device_condition::set_condition_value(v);
+    device_condition::set_condition_value(v);
 }
 
 void device_condition_volume::get_condition_value(QString& out)
@@ -1896,14 +1859,23 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
         qDebug("volume = %d - stato = %d", curr_volume.get_val(), curr_stato.get_val());
         if((trig_v_min == -1) && (curr_stato.get_val() == 0))
         {
-          qDebug("Condition triggered");
-          satisfied = true;
+			qDebug("Condition triggered");
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
         }
         else if((curr_stato.get_val() == 1) && (curr_volume.get_val() >= trig_v_min) && (curr_volume.get_val() <= trig_v_max))
         {
-          qDebug("Condition triggered");
-          satisfied = true;
-        } else {
+			qDebug("Condition triggered");
+			if (!satisfied)
+			{
+				satisfied = true;
+				emit(condSatisfied());
+			}
+        }
+		else {
           qDebug("Condition not triggered");
           satisfied = false;
         }
@@ -1937,22 +1909,16 @@ device_condition_temp::device_condition_temp(QWidget *parent,
 					     char *name, QString *c) :
     device_condition(parent, c)
 {
-#if 0
-    QLCDNumber *l = new QLCDNumber(parent, name);
-    l->setFrameStyle( QFrame::Plain );
-    l->setLineWidth(0);
-    l->setNumDigits(3);
-    l->setSegmentStyle(QLCDNumber::Flat);    
-#else
     QLabel *l = new QLabel(parent, name);
     l->setAlignment(AlignHCenter|AlignVCenter);
-    l->setFont( QFont( "helvetica", 20, QFont::Bold ) );
-#endif
+    QFont aFont;
+    FontManager::instance()->getFont( font_scenEvoCond_light_status, aFont );
+    l->setFont( aFont );
     frame = l;
     set_condition_value(*c);
     set_current_value(device_condition::get_condition_value());
     Draw();
-    dev = new temperature_probe(QString(""), false);
+    dev = new temperature_probe_notcontrolled(QString(""), false);
 }
 
 int device_condition_temp::get_min()
@@ -1977,19 +1943,9 @@ int device_condition_temp::get_divisor()
 
 void device_condition_temp::get_unit(QString& out)
 {
-    out = "\272C \2611\272C" ; 
+    out = TEMP_DEGREES"C \2611"TEMP_DEGREES"C" ; 
 }
 
-#if 0
-void device_condition_temp::Draw()
-{
-    QLCDNumber *l = (QLCDNumber *)frame;
-    int val = get_current_value();
-    char tmp[100] ;
-    sprintf(tmp, "%d.%d", val/10, val%10);
-    l->display(tmp);
-}
-#else
 void device_condition_temp::Draw()
 {
     char tmp[50];
@@ -2003,13 +1959,12 @@ void device_condition_temp::Draw()
       sprintf(tmp, "%d.%d%s", val/10, val >= 0 ? val%10 : -val%10, u.ascii());
     ((QLabel *)frame)->setText(tmp);
 }
-#endif
 
-int device_condition_temp::set_condition_value(QString s)
+void device_condition_temp::set_condition_value(QString s)
 {
     bool neg = s[0] == '1';
     int val = (s.right(3)).toInt();
-    return device_condition::set_condition_value(neg ? -val : val);
+    device_condition::set_condition_value(neg ? -val : val);
 }
 
 void device_condition_temp::get_condition_value(QString& out)
@@ -2039,9 +1994,14 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 		     curr_temp);
 	    qDebug("Current temperature %d", curr_temp.get_val());
 	    if((curr_temp.get_val() >= (trig_v-10)) &&  (curr_temp.get_val() <= (trig_v+10))){
-              qDebug("Condition triggered");
-              satisfied = true;
-            } else {
+                qDebug("Condition triggered");
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit(condSatisfied());
+				}
+            }
+			else {
               qDebug("Condition not triggered");
               satisfied = false;
             }

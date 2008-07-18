@@ -2,24 +2,18 @@
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
-#include <qnamespace.h>
-#include <qptrvector.h>
-#include <qvaluevector.h>
-#include <qstring.h>
 #include <qmap.h>
-#include <qdir.h>
-
 #include <qobject.h>
 
 class MediaPlayer : public QObject
 {
 Q_OBJECT
 public:
-	MediaPlayer( QObject *parent = 0, const char *name = 0 );
+	MediaPlayer(QObject *parent = 0, const char *name = 0);
 	~MediaPlayer();
 
 	/// Starts MPlayer playing a single track
-	bool play(QString track);
+	bool play(QString track, bool write_output = true);
 
 	/// Pause playing of current song
 	void pause();
@@ -31,7 +25,7 @@ public:
 	void quit();
 
 	/// Wheather the player is on pause
-	bool isPaused()  { return paused; }
+	bool isPaused() { return paused; }
 
 	/// Retrun true if music is playing
 	bool isInstanceRunning();
@@ -73,5 +67,5 @@ signals:
 	void mplayerAborted();
 };
 
-#endif // MEDIAPLAYER_H
+#endif
 

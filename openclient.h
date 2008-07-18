@@ -11,10 +11,7 @@
 #ifndef  OPENCLIENT_H
 #define OPENCLIENT_H
 
-
 #include <qsocket.h>
-#include <qapplication.h>
-#include <qtextstream.h>
 #include <qtimer.h>
 #include "../bt_stackopen/common_files/openwebnet.h"
 
@@ -32,7 +29,7 @@
   \date lug 2005
 */  
 
-class Client  : public QSocket
+class Client  : public QObject
 {
     Q_OBJECT
     public:
@@ -44,13 +41,13 @@ class Client  : public QSocket
 /*! Connects to the socket
 */  
        void connetti();
+	void ApriInviaFrameChiudi(const char *);
+	void ApriInviaFrameChiudi(char *);
+
     private slots:
 /*! Closes the socket
 */          
     void closeConnection(void);
-/*! Sends messages throught the socket
-*/      
-    void sendToServer(char *);    
 /*! Reads messages from the socket
 */      
     int socketFrameRead(void);
@@ -63,7 +60,7 @@ class Client  : public QSocket
     void socketError(int e );
 /*! Send an \a Open \aFrame throught the socket
 */   
-    void ApriInviaFrameChiudi(char *);
+    
     /*! Send an \a Open \aFrame through the socket and wait for ack */
     void ApriInviaFrameChiudiw(char*);
     void richStato(char*);
@@ -71,6 +68,9 @@ class Client  : public QSocket
 
     void clear_last_msg_open_read();
     private:
+/*! Sends messages throught the socket */
+    void sendToServer(const char *);
+
     QSocket *socket;
     int ismonitor;
 	 bool isrichiesta;

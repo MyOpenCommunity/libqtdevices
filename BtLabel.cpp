@@ -101,12 +101,14 @@ void BtLabel::setText( const QString &text )
 {
     if ( ltext == text )
 	return;
+
     QSize osh = sizeHint();
 #ifndef QT_NO_RICHTEXT
     bool hadRichtext = doc != 0;
 #endif
     clearContents();
-    ltext = text;
+    ltext = text; 
+
 #ifndef QT_NO_RICHTEXT
     bool useRichText = (textformat == RichText ||
       ( ( textformat == AutoText ) && QStyleSheet::mightBeRichText(ltext) ) );
@@ -509,12 +511,6 @@ void BtLabel::drawContents( QPainter *p )
 	    yo = (cr.height()-rh)/2;
 	else if ( align & AlignBottom )
 	    yo = cr.height()-rh;
-	/*if (! isEnabled() &&
-	    style().styleHint(QStyle::SH_EtchDisabledText, this)) {
-	    QColorGroup cg = colorGroup();
-	    cg.setColor( QColorGroup::Text, cg.light() );
-	    doc->draw(p, cr.x()+1, cr.y()+yo+1, cr, cg, 0);
-	}*/
 
 	// QSimpleRichText always draws with QColorGroup::Text as with
 	// background mode PaletteBase. BtLabel typically has
@@ -568,14 +564,9 @@ void BtLabel::drawContents( QPainter *p )
 	    pix = d->pix;
 	}
 #endif
-	int alignment = align;
-	//if ((align & ShowPrefix) && !style().styleHint(QStyle::SH_UnderlineAccelerator, this))
-	 //   alignment |= NoAccel;
-	
 	
 	// ordinary text or pixmap label
-	style().drawItem( p, cr, alignment, colorGroup(),TRUE/* isEnabled()*/,
-			  pix, ltext );
+	style().drawItem( p, cr, align, colorGroup(),TRUE,  pix, ltext );
     }
 }
 
@@ -711,7 +702,7 @@ void BtLabel::setMovie( const QMovie& movie )
 {
     QSize osh = sizeHint();
     clearContents();
-    
+
     if(lmovie)
       delete lmovie;
     lmovie = new QMovie( movie );
@@ -787,21 +778,6 @@ void BtLabel::setTextFormat( Qt::TextFormat format )
 	    ltext = QString::null;
 	    setText( t );
 	}
-    }
-}
-
-/*!
-  \reimp
-*/
-
-void BtLabel::fontChange( const QFont & )
-{
-    if ( !ltext.isEmpty() ) {
-#ifndef QT_NO_RICHTEXT
-	if ( doc )
-	    doc->setDefaultFont( font() );
-#endif
-	updateLabel( QSize( -1, -1 ) );
     }
 }
 

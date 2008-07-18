@@ -1,9 +1,10 @@
 #ifndef _ALLARME_H_
 #define _ALLARME_H_
 
-#include "bannfrecce.h"
-#include "device.h"
-#include "frame_interpreter.h"
+#include <qframe.h>
+
+class banner;
+class BtLabel;
 
 /*!
   \class allarme
@@ -30,7 +31,7 @@ class allarme : public QFrame {
     void SetIcons(char*);
     altype type;
  public:
-    allarme(QWidget *parent, char *name, char *indirizzo, char *IconaDx, 
+    allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, 
 	    altype t) ;
     /*!
       \brief Sets the background color for the banner.

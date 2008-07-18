@@ -22,8 +22,6 @@
 #include <qmap.h>
 #include <qptrvector.h>
 #include <qbuttongroup.h>
-
-#include <qlayout.h>
 #include <qpainter.h>
 
 #include "btbutton.h"
@@ -40,14 +38,13 @@ class ButtonsBar : public QWidget
 {
 Q_OBJECT
 public:
-	ButtonsBar(QWidget *parent = 0, int number_of_buttons = 1, Orientation orientation = Horizontal);
-	bool setButtonIcons(int button_number, const QPixmap &icon, const QPixmap &pressed_icon);
+	ButtonsBar(QWidget *parent = 0, unsigned int number_of_buttons = 1, Orientation orientation = Horizontal);
+	bool setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon);
 	
 	/// Set toggle state on all buttons
 	void setToggleButtons(bool enable);
 	/// If Toggle Status has been enabled, set the given button on;
-	void setToggleStatus(int button_up_index);
-			;
+	void setToggleStatus(unsigned int button_up_index);
 	void showButton(int idx);
 	void hideButton(int idx);
 	void setBGColor(QColor c);

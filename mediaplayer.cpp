@@ -1,15 +1,14 @@
 
-#include "mediaplayer.h"
-
 #include <qregexp.h>
 
 #include <unistd.h>
-#include <stdio.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+#include "mediaplayer.h"
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 
@@ -30,12 +29,12 @@ MediaPlayer::MediaPlayer(QObject *parent, const char *name) :
 {
 	struct sigaction sa;
 
-	memset( &sa, 0, sizeof ( sa ) );
-	sigemptyset( &sa.sa_mask );
-	sigaddset( &sa.sa_mask, SIGCHLD );
+	memset( &sa, 0, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sigaddset(&sa.sa_mask, SIGCHLD);
 	sa.sa_flags = SA_SIGINFO | SA_RESTART;
 	sa.sa_sigaction = ::mplayerExited;
-	sigaction( SIGCHLD, &sa, NULL );
+	sigaction(SIGCHLD, &sa, NULL);
 
 	mplayer_pid = 0;
 	paused = false;
@@ -51,7 +50,7 @@ MediaPlayer::~MediaPlayer()
 	_globalMediaPlayer = NULL;
 }
 
-bool MediaPlayer::play(QString track)
+bool MediaPlayer::play(QString track, bool write_output)
 {
 	int control_pipe[2];
 	int output_pipe[2];
@@ -73,12 +72,28 @@ bool MediaPlayer::play(QString track)
 		close(output_pipe[0]);
 
 		dup2(control_pipe[0], STDIN_FILENO);
-		dup2(output_pipe[1], STDOUT_FILENO);
+
+		if (write_output)
+			dup2(output_pipe[1], STDOUT_FILENO);
+		else
+		{
+			int nullfd = open("/dev/null", O_WRONLY);
+			if (nullfd != -1)
+				dup2(nullfd, STDOUT_FILENO);
+			else
+				qDebug("[AUDIO] unable to open /dev/null");
+		}
 
 		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
-		const char *mplayer_args[] = { "mplayer", NULL, NULL };
+		const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
 
-		mplayer_args[1] = track.latin1();
+		if (track.endsWith(".m3u", false))
+		{
+			mplayer_args[3] = "-playlist";
+			mplayer_args[4] = track.latin1();
+		}
+		else
+			mplayer_args[3] = track.latin1();
 
 		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
 	}
@@ -163,15 +178,15 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 {
 	/// Define Search Data Map
 	QMap<QString, QString> data_search;
-	data_search["file_name"]    = "Playing [^\\n]*([^/\\n]+)\\.\\n";
-	data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
-	data_search["meta_artist"]  = "Artist: ([^\\n]*)\\n";
-	data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
-	data_search["meta_year"]    = "Year: ([^\\n]*)\\n";
-	data_search["meta_comment"] = "Comment: ([^\\n]*)\\n";
-	data_search["meta_genre"]   = "Genre: ([^\\n]*)\\n";
+	data_search["file_name"]    = tr("Playing") + " [^\\n]*([^/\\n]+)\\.\\n";
+	data_search["meta_title"]   = tr("Title") + ": ([^\\n]*)\\n";
+	data_search["meta_artist"]  = tr("Artist") + ": ([^\\n]*)\\n";
+	data_search["meta_album"]   = tr("Album") + ": ([^\\n]*)\\n";
+	data_search["meta_year"]    = tr("Year") + ": ([^\\n]*)\\n";
+	data_search["meta_comment"] = tr("Comment") + ": ([^\\n]*)\\n";
+	data_search["meta_genre"]   = tr("Genre") + ": ([^\\n]*)\\n";
 	data_search["total_time"]   = "[(](\\d+:\\d+\\.\\d+)[)] \\d+\\.\\d+";
-	data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
+	data_search["current_time"] = tr("A") + ":\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
 
 	/// READ ROW output from MPlayer
 	QString row_data = readOutput();
@@ -181,11 +196,11 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 
 	/// Parse ROW data to get info
 	QMap<QString, QString>::Iterator it;
-	for ( it = data_search.begin(); it != data_search.end(); ++it )
+	for (it = data_search.begin(); it != data_search.end(); ++it)
 	{
-		QRegExp rx( it.data() );
+		QRegExp rx(it.data());
 
-		if ( rx.search( row_data ) > -1 )
+		if (rx.search(row_data) > -1)
 			info_data[it.key()] = rx.cap(1); //matches[matches.count()-1];
 	}
 

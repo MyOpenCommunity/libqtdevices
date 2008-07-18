@@ -8,12 +8,13 @@
  **
  ****************************************************************/
 
+#include <qpixmap.h>
+
 #include "banntermo.h"
 #include "main.h"
 #include "sottomenu.h"
-#include <qfont.h>
-#include <qpixmap.h>
-
+#include "buttons_bar.h"
+#include "fontmanager.h"
 
 bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground, devtype_t _devtype ) :
 	banner(parent, name),
@@ -77,21 +78,18 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 	sondoffanti = new BtLabel(this, "");
 	sondoffanti->setGeometry(0, 95, MAX_WIDTH, 35);
 
-	memset(temp,'\000',sizeof(temp));
-	strcpy(&temp[0],"-23.5\272C");
-	strcpy(&setpoint[0],&temp[0]);
+	qtemp = "-23.5\272C";
+	qsetpoint = qtemp;
 	secondForeground=QColor(SecondForeground);
 
-	switch (devtype)
+
+	if (devtype == THERMO_4_ZONES || devtype == THERMO_4_ZONES_FANCOIL) 
 	{
-	case THERMO_4_ZONES:
-	case THERMO_4_ZONES_FANCOIL:
 		nascondi(BUT1);
 		nascondi(BUT2);
-		break;
-	// FIXME: could we simply _not_ add these buttons?
-	case SINGLE_PROBE:
-	case EXT_SINGLE_PROBE:
+	}
+	else if (devtype == SINGLE_PROBE || devtype == EXT_SINGLE_PROBE) 
+	{
 		// Hide PLUS/MINUS buttons
 		nascondi(BUT1);
 		nascondi(BUT2);
@@ -102,7 +100,6 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 		// Hide Temperature Increment Labels
 		for (int idx=0;idx<7;idx++)
 			texts[idx]->hide();
-		break;
 	}
 
 	val_imp    = 3;
@@ -113,13 +110,16 @@ bannTermo::bannTermo( QWidget *parent, const char *name, QColor SecondForeground
 
 void bannTermo::Draw()
 {
-	tempMis -> setFont( QFont( "Times", 40, QFont::Bold ) );
+	QFont aFont;
+	FontManager::instance()->getFont( font_banTermo_tempMis, aFont );
+	tempMis -> setFont( aFont );
 	tempMis -> setAlignment(AlignHCenter|AlignVCenter);
-	tempMis -> setText(&temp[0]);
-	tempImp -> setFont( QFont( "Times", 25, QFont::Bold ) );
+	tempMis -> setText( qtemp );
+	FontManager::instance()->getFont( font_banTermo_tempImp, aFont );
+	tempImp -> setFont( aFont );
 	tempImp -> setPaletteForegroundColor(secondForeground);
 	tempImp -> setAlignment(AlignHCenter|AlignVCenter);
-	tempImp -> setText(&setpoint[0]);
+	tempImp -> setText( qsetpoint );
 	if (isOff)
 	{
 		for (int idx=0;idx<7;idx++)
@@ -128,10 +128,11 @@ void bannTermo::Draw()
 		}
 		sondoffanti -> setAlignment(AlignHCenter|AlignVCenter);
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
-		sondoffanti -> setText("OFF");
+		sondoffanti -> setText("OFF"); // FIXME da tradurre?
 		sondoffanti -> show();
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
-		sondoffanti -> setFont( QFont( "Times", 20, QFont::Bold ) );
+		FontManager::instance()->getFont( font_banTermo_sondoffanti, aFont );
+		sondoffanti -> setFont( aFont );
 	}
 	else   if (isAntigelo)
 	{
@@ -144,17 +145,20 @@ void bannTermo::Draw()
 		sondoffanti -> setText("*");
 		sondoffanti -> show();   
 		sondoffanti ->setPaletteForegroundColor(foregroundColor());
-		sondoffanti -> setFont( QFont( "Times", 40, QFont::Bold ) );
+		FontManager::instance()->getFont( font_banTermo_sondoffanti2, aFont );
+		sondoffanti -> setFont( aFont );
 	}
 	else if (devtype != SINGLE_PROBE && devtype != EXT_SINGLE_PROBE)
 	{
 		for (int idx=0;idx<7;idx++)
 		{
-			char app[3];
-			memset(app,'\000',sizeof(app));
-			sprintf(&app[0],"%+d",idx-3);
-			texts[idx] -> setText((char*)&app[0]);
-			texts[idx] -> setFont( QFont( "Times", 20, QFont::Bold ) );
+			QString q_app;
+			q_app.sprintf("%+d", idx-3);
+			texts[idx] -> setText( q_app );
+			FontManager::instance()->getFont( font_banTermo_testo, aFont );
+
+			texts[idx] -> setFont( aFont );
+
 			texts[idx] -> setAlignment(AlignHCenter|AlignVCenter);
 			texts[idx] -> show();
 			if (val_imp==idx)

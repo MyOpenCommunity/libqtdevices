@@ -8,21 +8,10 @@
 **
 ****************************************************************/
 
-
-
-
-/*#include "btbutton.h"
-#include "main.h"*/
-#include <qfont.h>
-#include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
 #include <qcursor.h>
 #include <qdatetime.h>
-#include <qprocess.h>
-//#include <qtime.h>
 
 #include <qfile.h>
 
@@ -79,8 +68,8 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	    but[idx] -> setPressedPixmap(*Icon2);
 	}
     }
-    free (Icon1);
-    free (Icon2);
+    delete Icon1;
+    delete Icon2;
     Icon2=NULL;
     Icon1 = new QPixmap();
     Icon1->load(ICON_FRECCIA_GIU);	
@@ -100,8 +89,8 @@ impostaTime::impostaTime( QWidget *parent, const char *name )
 	if (Icon2)
 	    but[idx] -> setPressedPixmap(*Icon2);
     }	
-     free (Icon1);
-     free (Icon2);
+     delete Icon1;
+     delete Icon2;
      Icon2=NULL;
      Icon1 = new QPixmap();
      Icon1->load(ICON_OK);

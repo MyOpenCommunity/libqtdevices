@@ -13,10 +13,7 @@
 #include "genericfunz.h"
 #include "sottomenu.h"
 
-//#include "btbutton.h"
-#include <qfont.h>
-#include <qlabel.h>
-#include <qpixmap.h>
+#include <stdlib.h>
 
 extern unsigned char tipoData;
 /*****************************************************************
@@ -47,7 +44,7 @@ void setDataOra::hide()
 **impostaSveglia
 ****************************************************************/
 
-impostaSveglia::impostaSveglia( QWidget *parent,const char *name, contdiff* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* descr1, char* descr2, char* descr3, char* descr4,char* frame, int tipo)
+impostaSveglia::impostaSveglia( QWidget *parent,const char *name, contdiff* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* frame, int tipo)
         : bann2But( parent, name )
 {   
  //   qDebug("-----1-----");
@@ -57,7 +54,7 @@ impostaSveglia::impostaSveglia( QWidget *parent,const char *name, contdiff* diso
      strncpy(&iconOff[0], icon2, sizeof(iconOff));*/
      SetIcons( &iconOff[0] ,ICON_INFO);
   //    qDebug("-----2-----");
-     svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame,descr1,descr2,descr3,descr4,h,m);
+     svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, h, m);
      svegliolina->setBGColor(backgroundColor());  
      svegliolina->setFGColor(foregroundColor());  
      svegliolina->hide();

@@ -8,18 +8,12 @@
  **
  ****************************************************************/
 
-
-#include <qfont.h>
 #include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
-#include <stdlib.h>
 #include <qwidget.h>
-#include <qframe.h>
 #include <qdatetime.h>
-#include <qprocess.h>
 #include <qstring.h>
-
+#include <qcursor.h>
 #include <qfile.h>
 
 #include "aux.h"
@@ -27,11 +21,15 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
+#include "btbutton.h"
+#include "btlabel.h"
+#include "genericfunz.h"
 
-//#include "ban.h"
+#include "openclient.h"
+#include "fontmanager.h"
 
-aux::aux( QWidget *parent, const char *name, const char *amb )
-: QWidget( parent, name )
+aux::aux( QWidget *parent, const QString & name, const QString & amb )
+: QWidget( parent, name.ascii() )
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	setCursor (QCursor (blankCursor));
@@ -46,11 +44,15 @@ aux::aux( QWidget *parent, const char *name, const char *amb )
 	auxName = new BtLabel(this,"Nome della sorgente");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
-	ambDescr->setFont( QFont( "Helvetica", 24, QFont::Bold ) );
+	QFont aFont;
+	FontManager::instance()->getFont( font_aux_descr_ambiente, aFont );
+	ambDescr->setFont( aFont );
 	ambDescr->setText(amb);
 	auxName->setGeometry(0,30,240,40);
 	auxName->setAlignment(AlignHCenter|AlignTop);
-	auxName->setFont( QFont( "Helvetica", 24, QFont::Bold ) );
+
+	FontManager::instance()->getFont( font_aux_nome_sorgente, aFont );
+	auxName->setFont( aFont );
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
 	fwdBut = new BtButton(this, "bottone fwd");
@@ -122,7 +124,7 @@ int aux::setBGPixmap(char* backImage)
 }
 
 
-void aux::setAmbDescr(char *d)
+void aux::setAmbDescr( const QString & d)
 {
 	ambDescr->setText(d);
 }

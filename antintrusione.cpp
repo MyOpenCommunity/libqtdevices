@@ -7,8 +7,15 @@
 **Sottomenù antiintrusione
 **
 ****************************************************************/
-
 #include "antintrusione.h"
+#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+#include "tastiera.h"
+#include "bann_antintrusione.h"
+#include "sottomenu.h"
+
+#include <qdatetime.h>
+#include <qcursor.h>
+
 extern unsigned char tipoData;
 
 antintrusione::antintrusione( QWidget *parent, const char *name )
@@ -17,7 +24,6 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
     setCursor (QCursor (blankCursor));
-//    showFullScreen();
 #endif
    tasti = NULL;
    numRighe=NUM_RIGHE;  
@@ -39,29 +45,12 @@ antintrusione::antintrusione( QWidget *parent, const char *name )
     connect(zone,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*))); 
     connect(impianto,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
     connect(impianto,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
-#if 0
-    connect(impianto,SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-#endif
     connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
     connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
-//    connect(allarmi,SIGNAL(Closed()),this , SLOT(show())); 	 
-    
-#if 0
-    connect(allarmi,SIGNAL(Closed()),allarmi , SLOT(hide())); 	     
-    connect(allarmi,SIGNAL(Closed()),zone, SLOT(show())); 	     
-    connect(allarmi,SIGNAL(Closed()),impianto , SLOT(show())); 	         
-    connect(impianto, SIGNAL(goDx()), allarmi,SLOT(show())); 	 
-#else
     connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
-#endif
-//    connect(impianto, SIGNAL(goDx()), this,SLOT(hide())); 	     
     
     connect(this,SIGNAL(freezed(bool)),zone,SLOT(freezed(bool)));
     connect(this,SIGNAL(freezed(bool)),impianto,SLOT(freezed(bool)));        
-#if 0
-    connect(this,SIGNAL(freezed(bool)),allarmi,SLOT(freezed(bool)));           
-    connect(allarmi,SIGNAL(itemKilled()),this,SLOT(testranpo()));
-#endif
 }
 
 void antintrusione::IsParz(bool ab)
@@ -190,13 +179,13 @@ int antintrusione::setBGPixmap(char* backImage)
 }
 
 
-int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,
+int antintrusione::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
 	QPtrList<QString> &icon_names,
-	int periodo, int numFrame, char* txt_tecnico, char* txt_intrusione, char* txt_manomissione, char* txt_panic)
+	int periodo, int numFrame)
  {        
     if (tipo== IMPIANTINTRUS)
     {
-	impianto->addItem(tipo, descrizione, indirizzo, icon_names);
+	impianto->addItemU(tipo, qdescrizione, indirizzo, icon_names);
 	connect(impianto->getLast(), SIGNAL(impiantoInserito()), this
 		,SLOT(doClearAlarms()));
 	connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),
@@ -209,22 +198,21 @@ int antintrusione::addItem(char tipo, char* descrizione, void* indirizzo,
 		SLOT(openAckRx()));
 	connect(impianto, SIGNAL(openNakRx()), impianto->getLast(),
 		SLOT(openNakRx()));
-	memset(&testoManom[0],'\000',MAX_PATH);
-	memset(&testoTecnico[0],'\000',MAX_PATH);
-	memset(&testoIntrusione[0],'\000',MAX_PATH);
-	memset(&testoPanic[0],'\000',MAX_PATH);  
-	if (txt_manomissione)
-	    strncpy(&testoManom[0],txt_manomissione,MAX_PATH);
-	if (txt_tecnico)
-	    strncpy(&testoTecnico[0],txt_tecnico,MAX_PATH);
-	if (txt_intrusione)
-	    strncpy(&testoIntrusione[0],txt_intrusione,MAX_PATH);
-	if (txt_panic)
-	    strncpy(&testoPanic[0],txt_panic,MAX_PATH);
+
+	testoTecnico = tr("technical");
+	testoIntrusione = tr("intrusion");
+	testoManom = tr("tamper");
+	testoPanic = tr("anti-panic");
+
+	// To simulate old behaviour
+	testoTecnico.truncate(MAX_PATH);
+	testoIntrusione.truncate(MAX_PATH);
+	testoManom.truncate(MAX_PATH);
+	testoPanic.truncate(MAX_PATH);
 	impianto->forceDraw();
     }
     else if (tipo== ZONANTINTRUS) {
-	zone->addItem(tipo, descrizione, indirizzo, icon_names);
+	zone->addItemU(tipo, qdescrizione, indirizzo, icon_names);
 	connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), 
 		SLOT(abilitaParz(bool)));
 	connect(this, SIGNAL(clearChanged()), zone->getLast(),
@@ -272,70 +260,69 @@ void antintrusione::gesFrame(char*frame)
    
     if (!strcmp(msg_open.Extract_chi(),"5"))
     {
-	if ( (! strncmp(msg_open.Extract_cosa(),"12",2) ) || (! strncmp(msg_open.Extract_cosa(),"15",2) ) || \
-	     (! strncmp(msg_open.Extract_cosa(),"16",2) ) || (! strncmp(msg_open.Extract_cosa(),"17",2) ) )     
-	{
-            
-	    char descr[2*MAX_PATH],time[MAX_PATH];
-	    char zona[3];       
-	    char *tipo = "Z";
-	    allarme::altype t;
-        
-        memset(&descr[0],'\000',2*MAX_PATH);
-        
-            if  ( (! strncmp(msg_open.Extract_cosa(),"12",2)) && 
-		  (testoTecnico[0]) ) {
-                strncpy(&descr[0],&testoTecnico[0],MAX_PATH);
-		t = allarme::TECNICO;
-		tipo = "AUX";
-	    }
-	    if  ( (! strncmp(msg_open.Extract_cosa(),"15",2)) && 
-		  (testoIntrusione[0]) ) {
-                strncpy(&descr[0],&testoIntrusione[0],MAX_PATH);
-		t = allarme::INTRUSIONE;
-	    }
-	    if  ( (! strncmp(msg_open.Extract_cosa(),"16",2)) && 
-		  (testoManom[0]) ) {
-                strncpy(&descr[0],&testoManom[0],MAX_PATH);
-		t = allarme::MANOMISSIONE;
-	    }
-	    if  ( (! strncmp(msg_open.Extract_cosa(),"17",2)) && 
-		  (testoPanic[0]) ) {
-                strncpy(&descr[0],&testoPanic[0],MAX_PATH);
-		t = allarme::PANIC;
-	    }
-	    strcpy(&zona[0],msg_open.Extract_dove());
-	    sprintf(&time[0], "\n%s   %s    %s %s", 
-		    QDateTime::currentDateTime().toString("hh:mm").ascii(),
-		    QDateTime::currentDateTime().toString("dd.MM").ascii(), 
-		    tipo, &zona[1]);	
-        strncat(&descr[0],&time[0],MAX_PATH);
-#if 0
-        allarmi->addItem(ALLARME, &descr[0], NULL, ICON_DEL);
-#else
-	allarmi.append(new allarme(NULL, descr, NULL, ICON_DEL, t));
-	curr_alarm = allarmi.current();
-	curr_alarm->setFGColor(foregroundColor());
-	curr_alarm->setBGColor(backgroundColor());
-	connect(curr_alarm, SIGNAL(Back()), this, SLOT(closeAlarms()));
-	connect(curr_alarm, SIGNAL(Next()), this, SLOT(nextAlarm()));
-	connect(curr_alarm, SIGNAL(Prev()), this, SLOT(prevAlarm()));
-	connect(curr_alarm, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
-	connect(this, SIGNAL(freezed(bool)), curr_alarm, SLOT(freezed(bool)));
-#endif
-        aggiorna=1;
-	}
+		if ( (! strncmp(msg_open.Extract_cosa(),"12",2) ) || (! strncmp(msg_open.Extract_cosa(),"15",2) ) || \
+	     	(! strncmp(msg_open.Extract_cosa(),"16",2) ) || (! strncmp(msg_open.Extract_cosa(),"17",2) ) )
+		{
+			QString descr;
+			char zona[3];
+			char *tipo = "Z";
+			allarme::altype t;
+
+			if  (!strncmp(msg_open.Extract_cosa(),"12",2) && !testoTecnico.isNull())
+			{
+				descr = testoTecnico;
+				t = allarme::TECNICO;
+				tipo = "AUX";
+			}
+
+			if  (!strncmp(msg_open.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
+			{
+				descr = testoIntrusione;
+				t = allarme::INTRUSIONE;
+			}
+
+			if  (!strncmp(msg_open.Extract_cosa(),"16",2) && !testoManom.isNull())
+			{
+				descr = testoManom;
+				t = allarme::MANOMISSIONE;
+			}
+
+			if  (!strncmp(msg_open.Extract_cosa(),"17",2) && !testoPanic.isNull())
+			{
+				descr = testoPanic;
+				t = allarme::PANIC;
+			}
+
+			// To simulate old behaviour
+			descr.truncate(MAX_PATH);
+
+			strcpy(&zona[0],msg_open.Extract_dove());
+
+			QString time;
+			time.sprintf("\n%s   %s    %s %s",
+				QDateTime::currentDateTime().toString("hh:mm").ascii(),
+				QDateTime::currentDateTime().toString("dd.MM").ascii(),
+				tipo, &zona[1]);
+
+			descr += time;
+			descr.truncate(2 * MAX_PATH);
+
+			allarmi.append(new allarme(NULL, descr, NULL, ICON_DEL, t));
+			curr_alarm = allarmi.current();
+			curr_alarm->setFGColor(foregroundColor());
+			curr_alarm->setBGColor(backgroundColor());
+			connect(curr_alarm, SIGNAL(Back()), this, SLOT(closeAlarms()));
+			connect(curr_alarm, SIGNAL(Next()), this, SLOT(nextAlarm()));
+			connect(curr_alarm, SIGNAL(Prev()), this, SLOT(prevAlarm()));
+			connect(curr_alarm, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
+			connect(this, SIGNAL(freezed(bool)), curr_alarm, SLOT(freezed(bool)));
+			aggiorna=1;
+		}
 	}
     if (aggiorna)
     {
-    qDebug("ARRIVATO ALLARME!!!!");
-	curr_alarm->show();
-#if 0
-        impianto->hide();
-        zone->hide();
-        //this->showFullScreen();
-	hide();
-#endif
+	    qDebug("ARRIVATO ALLARME!!!!");
+		curr_alarm->show();
         ctrlAllarm();
     }
 }
@@ -352,12 +339,6 @@ void antintrusione::setGeom(int x,int y,int w,int h)
 	impianto->setGeometry(x,y,w,h/numRighe);
     if(zone)
 	zone->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
-#if 0
-    if (allarmi)
-	allarmi->setGeometry(x,y,w,h);
-#else
-    // Nothing here
-#endif
 }
 
 void antintrusione::setNavBarMode(uchar c)
@@ -408,10 +389,6 @@ void antintrusione::deleteAlarm()
 void antintrusione::closeAlarms()
 {
     qDebug("antiintrusione::closeAlarms()");
-#if 0
-    if(curr_alarm)
-	curr_alarm->hide();
-#else
     QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
     ai->toFirst();
     allarme *a;
@@ -420,7 +397,6 @@ void antintrusione::closeAlarms()
 	++(*ai);
     }
     delete ai;
-#endif
     impianto->show();
     zone->show();
 }
@@ -456,10 +432,6 @@ void antintrusione::hide()
     QWidget::hide();
     impianto->hide();
     zone->hide();
-#if 0
-    if(curr_alarm && curr_alarm->isShown())
-      curr_alarm->hide();
-#else
     QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
     ai->toFirst();
     allarme *a;
@@ -477,5 +449,4 @@ void antintrusione::hide()
     emit(sendFrame("*#5*#6##"));
     emit(sendFrame("*#5*#7##"));
     emit(sendFrame("*#5*#8##"));
-#endif
 }

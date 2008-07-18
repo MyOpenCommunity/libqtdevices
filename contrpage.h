@@ -13,7 +13,6 @@
 
 #include <qframe.h>
 #include "btlabel.h"
-#include <qprocess.h>
 #include "btbutton.h"
 #include "main.h"
 #include <qcursor.h>
