@@ -43,8 +43,6 @@ class BannFullScreen : public banner
 {
 Q_OBJECT
 public:
-	BannFullScreen(QWidget *parent, const char *name);
-	virtual void Draw();
 	void setSecondForeground(QColor fg2);
 
 	/**
@@ -53,13 +51,8 @@ public:
 	 */
 	virtual void setBGColor(QColor bg);
 	virtual void setFGColor(QColor bg);
-public slots:
-	/**
-	 * Called whenever the status of the device associated with the banner changes, so that
-	 * the banner can display the variations.
-	 */
-	virtual void status_changed(QPtrList<device_status> list) = 0;
 protected:
+	BannFullScreen(QWidget *parent, const char *name);
 	QColor second_fg;
 	BtButton *getButton(const char *img);
 };
@@ -434,9 +427,6 @@ class FSBannManualTimed : public FSBannManual
 Q_OBJECT
 public:
 	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
-	virtual void Draw();
-public slots:
-	void status_changed(QPtrList<device_status> list);
 private:
 	thermal_regulator_4z *dev;
 	/// TimeEdit widget
@@ -452,10 +442,7 @@ class FSBannDate : public BannFullScreen
 Q_OBJECT
 public:
 	FSBannDate(QWidget *parent, const char *name = 0);
-	virtual void Draw();
 	QDate date();
-public slots:
-	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
 	BtDateEdit *date_edit;
@@ -466,10 +453,7 @@ class FSBannTime : public BannFullScreen
 Q_OBJECT
 public:
 	FSBannTime(QWidget *parent, const char *name = 0);
-	virtual void Draw();
 	QTime time();
-public slots:
-	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;

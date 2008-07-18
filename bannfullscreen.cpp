@@ -62,11 +62,6 @@ void BannFullScreen::setSecondForeground(QColor fg2)
 	second_fg = fg2;
 }
 
-void BannFullScreen::Draw()
-{
-	banner::Draw();
-}
-
 BtButton *BannFullScreen::getButton(const char *img)
 {
 	BtButton *btn = new BtButton(this);
@@ -212,8 +207,6 @@ void FSBannSimpleProbe::Draw()
 	descr_label->setFont(aFont);
 	descr_label->setAlignment(AlignHCenter);
 	descr_label->setText(descr);
-
-	banner::Draw();
 }
 
 void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
@@ -665,7 +658,6 @@ void FSBannManual::Draw()
 	temp_string.append(TEMP_DEGREES"C");
 	temp_label->setText(temp_string);
 	temp_label->setPaletteForegroundColor(second_fg);
-	BannFullScreen::Draw();
 }
 
 BtButton *FSBannManual::customButton()
@@ -709,16 +701,6 @@ void FSBannManualTimed::performAction()
 	emit(timeAndTempSelected(time_edit->time(), temp));
 }
 
-void FSBannManualTimed::Draw()
-{
-	FSBannManual::Draw();
-}
-
-void FSBannManualTimed::status_changed(QPtrList<device_status> list)
-{
-	FSBannManual::status_changed(list);
-}
-
 FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
@@ -739,15 +721,6 @@ QDate FSBannDate::date()
 	return date_edit->date();
 }
 
-void FSBannDate::Draw()
-{
-	BannFullScreen::Draw();
-}
-
-void FSBannDate::status_changed(QPtrList<device_status> list)
-{
-}
-
 FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
@@ -761,15 +734,6 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 
 	time_edit = new BtTimeEdit(this);
 	main_layout.addWidget(time_edit);
-}
-
-void FSBannTime::Draw()
-{
-	BannFullScreen::Draw();
-}
-
-void FSBannTime::status_changed(QPtrList<device_status> list)
-{
 }
 
 QTime FSBannTime::time()
@@ -826,8 +790,6 @@ void FSBannTermoReg::Draw()
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
 	description_label->setPaletteForegroundColor(second_fg);
-
-	BannFullScreen::Draw();
 }
 
 void FSBannTermoReg::status_changed(QPtrList<device_status> list)
