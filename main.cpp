@@ -11,8 +11,8 @@
 #include "main.h"
 #include "btmain.h"
 #include "xmlvarihandler.h"
-#include "../bt_stackopen/common_files/openwebnet.h"
-#include "../bt_stackopen/common_files/common_functions.h"
+#include <openwebnet.h>
+#include <common_functions.h>
 
 #include <qapplication.h>
 #include <signal.h>

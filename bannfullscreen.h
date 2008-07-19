@@ -43,8 +43,6 @@ class BannFullScreen : public banner
 {
 Q_OBJECT
 public:
-	BannFullScreen(QWidget *parent, const char *name);
-	virtual void Draw();
 	void setSecondForeground(QColor fg2);
 
 	/**
@@ -53,13 +51,8 @@ public:
 	 */
 	virtual void setBGColor(QColor bg);
 	virtual void setFGColor(QColor bg);
-public slots:
-	/**
-	 * Called whenever the status of the device associated with the banner changes, so that
-	 * the banner can display the variations.
-	 */
-	virtual void status_changed(QPtrList<device_status> list) = 0;
 protected:
+	BannFullScreen(QWidget *parent, const char *name);
 	QColor second_fg;
 	BtButton *getButton(const char *img);
 };
@@ -114,7 +107,7 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -147,7 +140,7 @@ private:
 
 	bool isOff, isAntigelo;
 	probe_status status;
-	bool status_change_enabled;
+	thermo_type_t probe_type;
 
 	/// Send a setpoint frame only if 2 seconds are elapsed
 	QTimer setpoint_timer;
@@ -235,6 +228,11 @@ protected:
 	 */
 	void holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
 
+	/**
+	 * Utility function to create the submenu for weekend settings.
+	 */
+	void weekendSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
+
 	/// The settings menu of the thermal regulator
 	sottoMenu *settings;
 	/// A reference to the configuration of the thermal regulator
@@ -250,32 +248,40 @@ private slots:
 	/**
 	 * User cancelled date editing, go back to main settings menu.
 	 */
-	void dateCancelled();
+	void holidayDateCancelled();
 
 	/**
 	 * User confirmed date, go to time editing.
 	 */
-	void dateSelected(QDate d);
+	void holidayDateSelected(QDate d);
 
 	/**
 	 * User cancelled time editing, go back to date editing.
 	 */
-	void timeCancelled();
+	void holidayTimeCancelled();
 
 	/**
 	 * User confirmed time editing, go on with program selection.
 	 */
-	void timeSelected(QTime t);
+	void holidayTimeSelected(QTime t);
 
 	/**
 	 * User cancelled program selection, go back to time editing.
 	 */
-	void programCancelled();
+	void holidayProgramCancelled();
 
 	/**
 	 * User confirmed program. Send the relevant frames through the device.
 	 */
 	void holidaySettingsEnd(int program);
+
+	void weekendSettingsStart();
+	void weekendDateCancelled();
+	void weekendDateSelected(QDate d);
+	void weekendTimeCancelled();
+	void weekendTimeSelected(QTime t);
+	void weekendProgramCancelled();
+	void weekendSettingsEnd(int program);
 
 	void manualCancelled();
 	void manualSelected(unsigned temp);
@@ -283,22 +289,34 @@ private slots:
 	void weekProgramCancelled();
 	void weekProgramSelected(int program);
 private:
+	/**
+	 * Utility function to create the submenu structure needed for holiday and weekend mode.
+	 * \param icon The icon to be visualized on the banner
+	 * \return The banner that will open the date edit menu
+	 */
+	banner *createHolidayWeekendBanner(sottoMenu *settings, QString icon);
+
+	DateEditMenu *createDateEdit(sottoMenu *settings);
+	TimeEditMenu *createTimeEdit(sottoMenu *settings);
+	WeeklyMenu *createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev);
+
 	QVBoxLayout main_layout;
 	/// Label and string that may be visualized
 	BtLabelEvo *description_label;
 	QString description;
+	/// Set visibility status for description (in off, antifreeze, holiday and weekend description should not be visible)
+	bool description_visible;
 	/// Status icon (summer/winter)
 	BtLabelEvo *season_icon;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
 	BtLabelEvo *mode_icon;
 
-	bool description_visible;
 
-	QDate holiday_date_end;
-	QTime holiday_time_end;
-	TimeEditMenu *time_edit;
-	DateEditMenu *date_edit;
-	ProgramMenu *program_choice;
+	QDate holiday_date_end, weekend_date_end;
+	QTime holiday_time_end, weekend_time_end;
+	TimeEditMenu *holiday_time_edit, *weekend_time_edit;
+	DateEditMenu *holiday_date_edit, *weekend_date_edit;
+	ProgramMenu *holiday_program_choice, *weekend_program_choice;
 	sottoMenu *manual_menu;
 	WeeklyMenu *program_menu;
 };
@@ -331,6 +349,10 @@ private slots:
 	void manualTimedCancelled();
 };
 
+/**
+ * The difference with FSBannTermoReg4z is in settings menu. 99 zones thermal regulators allow the user
+ * to set the scenario and do not have a manual timed mode
+ */
 class FSBannTermoReg99z : public FSBannTermoReg
 {
 Q_OBJECT
@@ -357,7 +379,7 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, bool change_status, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -410,9 +432,6 @@ class FSBannManualTimed : public FSBannManual
 Q_OBJECT
 public:
 	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
-	virtual void Draw();
-public slots:
-	void status_changed(QPtrList<device_status> list);
 private:
 	thermal_regulator_4z *dev;
 	/// TimeEdit widget
@@ -428,10 +447,7 @@ class FSBannDate : public BannFullScreen
 Q_OBJECT
 public:
 	FSBannDate(QWidget *parent, const char *name = 0);
-	virtual void Draw();
 	QDate date();
-public slots:
-	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
 	BtDateEdit *date_edit;
@@ -442,10 +458,7 @@ class FSBannTime : public BannFullScreen
 Q_OBJECT
 public:
 	FSBannTime(QWidget *parent, const char *name = 0);
-	virtual void Draw();
 	QTime time();
-public slots:
-	void status_changed(QPtrList<device_status> list);
 private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;

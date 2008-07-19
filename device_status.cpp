@@ -383,7 +383,7 @@ device_status_thermal_regulator::device_status_thermal_regulator(device_status::
 	add_var(PROGRAM_INDEX, new stat_var(stat_var::PROGRAM, 0, 1, 3, 1));
 	// scenarios start at 1 and end at 16
 	add_var(SCENARIO_INDEX, new stat_var(stat_var::SCENARIO, 0, 1, 16, 1));
-	add_var(STATUS_INDEX, new stat_var(stat_var::THERMR, 0, OFF, WEEKEND, 1));
+	add_var(STATUS_INDEX, new stat_var(stat_var::THERMR, -1, OFF, WEEKEND, 1));
 }
 
 device_status_thermal_regulator_4z::device_status_thermal_regulator_4z()
@@ -410,7 +410,7 @@ device_status_temperature_probe_extra::device_status_temperature_probe_extra(the
 	 * and the relevant display item is refreshed.
 	 */
 	add_var((int)STAT_INDEX, new stat_var(stat_var::STAT, -1, 0, 5, 1));
-	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, 0, 0, 13, 1));
+	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, -1, 0, 13, 1));
 	add_var((int)SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
 	add_var((int)CRONO, new stat_var(stat_var::CRONO, 0, 0, 1, 1));
 	add_var((int)INFO_SONDA, new stat_var(stat_var::INFO_SONDA, 0, 0, INT_MAX, 1));

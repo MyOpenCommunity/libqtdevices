@@ -264,6 +264,7 @@ public:
 		OFF = 0,
 		PROTECTION,
 		MANUAL,                 // manual temperature
+		MANUAL_TIMED,           // manual temperature, with timer
 		WEEK_PROGRAM,           // weekly program
 		SCENARIO,               // scenario
 		HOLIDAY,                // festivo

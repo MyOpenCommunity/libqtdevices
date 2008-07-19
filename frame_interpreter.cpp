@@ -1402,6 +1402,7 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 
 	if (dove[0]=='#')
 		strcpy(&dove[0], &dove[1]);
+
 	if(!strcmp(dove, where.ascii()))
 	{
 		qDebug("FRAME IS OURS !!");
@@ -2277,7 +2278,6 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 	OpenMsg msg;
         msg.CreateMsgOpen(_msg.frame_open, strlen(_msg.frame_open));
 
-	qDebug("[LUCA] frame is: %s", msg.frame_open);
 	// TODO:
 	// - gestire le frame di cambio programma settimanale (par. 2.3.5)
 	// - gestire le frame di cambio temperatura setpoint (par. 2.3.2)
@@ -2315,17 +2315,10 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				if (arg_count < 1)
 					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
 				int sp = msg.whatArgN(0);
-				// debug
-				if (command == thermal_regulator::SUM_MANUAL_TIMED)
-				{
-					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
-					qDebug("[LUCA] frame is: %s", msg.frame_open);
-					qDebug("[LUCA] temperatura setpoint: %d", sp);
-				}
-				// end debug
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
+			checkAndSetStatus(ds, command == thermal_regulator::SUM_MANUAL ?
+					device_status_thermal_regulator::MANUAL : device_status_thermal_regulator::MANUAL_TIMED);
 			checkAndSetSummer(ds);
 			break;
 
@@ -2368,17 +2361,10 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				if (arg_count < 1)
 					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
 				int sp = msg.whatArgN(0);
-				// debug
-				if (command == thermal_regulator::SUM_MANUAL_TIMED)
-				{
-					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
-					qDebug("[LUCA] frame is: %s", msg.frame_open);
-					qDebug("[LUCA] temperatura setpoint: %d", sp);
-				}
-				// end debug
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
+			checkAndSetStatus(ds, command == thermal_regulator::WIN_MANUAL ?
+					device_status_thermal_regulator::MANUAL : device_status_thermal_regulator::MANUAL_TIMED);
 			checkAndSetWinter(ds);
 			break;
 
@@ -2554,7 +2540,8 @@ bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ex
 	if (!strcmp(m.Extract_chi(), "4"))
 	{
 		qDebug("[INTRP TERMO] is_frame_ours: msg %s, ind %s, ind_centr %s",
-			m.frame_open, indirizzo.ascii(), ind_centrale.ascii());
+				m.frame_open, indirizzo.ascii(), ind_centrale.ascii());
+
 
 		char dove[30];
 		strcpy(dove, m.Extract_dove());
@@ -2595,9 +2582,15 @@ get_init_message(device_status *s, QString& out)
 		case device_status::TEMPERATURE_PROBE_EXTRA:
 			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> TEMPERATURE_PROBE_EXTRA");
 			/// FRAME VERSO LA CENTRALE
-			head = "*#4*#";
-			end  = "##";
-			out  = head + where + end;
+			// init frame to the thermal regulator must be sent only for 99 zones probe type
+			if (type == THERMO_Z99)
+			{
+				head = "*#4*#";
+				end  = "##";
+				out  = head + where + end;
+			}
+			else
+				out = "";
 			break;
 		case device_status::FANCOIL:
 			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> FANCOIL");
@@ -2615,6 +2608,15 @@ get_init_message(device_status *s, QString& out)
 void frame_interpreter_temperature_probe_controlled::
 handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 {
+	// Do not handle frames that are of the form *4*what*where##, in which `where' is in the form `#zona#centrale',
+	// if we are controlled by a 4 zones thermal regulator.
+	if (m.IsNormalFrame() && (strlen(m.Extract_dove()) > 0) && (strlen(m.Extract_livello()) > 0) && type == THERMO_Z4)
+	{
+		//FIXME: delete this warning when codition above is tested
+		qWarning("[TERMO] Refusing command frame %s because I'm 4 zones", m.frame_open);
+		return;
+	}
+
 	qDebug("frame_interpreter_temperature_probe_controlled::handle_frame");
 	stat_var curr_stat(stat_var::STAT);
 	stat_var curr_local(stat_var::LOCAL);

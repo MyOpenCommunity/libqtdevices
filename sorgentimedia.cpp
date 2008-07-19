@@ -10,7 +10,7 @@
 
 #include "sorgentimedia.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
-#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+#include <openwebnet.h> // class openwebnet
 #include "device_cache.h"
 #include "device.h"
 
