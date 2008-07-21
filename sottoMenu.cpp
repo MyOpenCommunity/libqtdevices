@@ -358,8 +358,7 @@ void sottoMenu::draw()
 	qDebug("sottoMenu::draw() (%s)", name());
 	if (!(indicold==indice))
 	{
-		//qDebug("indicold=%d - indice=%d",indicold,indice);
-		for (idy=0;idy<elencoBanner.count();idy++)
+		for (idy = 0; idy < elencoBanner.count(); ++idy)
 			elencoBanner.at(idy)->hide();
 		if (hasNavBar)
 		{
@@ -377,42 +376,37 @@ void sottoMenu::draw()
 
 			for (idx = 0; idx < end; ++idx)
 			{
-				if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>numRighe) ) 
-				{   			
-					int tmp = (indice+idx) %(elencoBanner.count());
-					int y = idx*(height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
-					int h = (height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
-					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d",
-							tmp, 0, y, width, h);
-					elencoBanner.at(tmp)->setGeometry(0, y, width, h); 
-
+				if  ((elencoBanner.at(indice + idx)) || (elencoBanner.count() > numRighe))
+				{
+					int tmp = (indice + idx) % elencoBanner.count();
+					int y = idx * (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
+					int h = (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
+					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d", tmp, 0, y, width, h);
+					elencoBanner.at(tmp)->setGeometry(0, y, width, h);
 					elencoBanner.at(tmp)->Draw();
 					elencoBanner.at(tmp)->show();
 				}
-			}		
+			}
 			qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",
-					0, height-MAX_HEIGHT/NUM_RIGHE,
-					width, MAX_HEIGHT/NUM_RIGHE);
-			bannNavigazione  ->setGeometry( 0 ,height-MAX_HEIGHT/NUM_RIGHE,width , MAX_HEIGHT/NUM_RIGHE);		
-
+					0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
+			bannNavigazione->setGeometry(0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
 			bannNavigazione->Draw();
-			bannNavigazione->show();	
+			bannNavigazione->show();
 		}
 		else
 		{
-			for (idx=0;idx<numRighe;idx++)
+			for (idx = 0; idx < numRighe; ++idx)
 			{
-				if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>=numRighe) ) 
-				{   
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->setGeometry(0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+				if  ((elencoBanner.at(indice + idx)) || (elencoBanner.count() >= numRighe))
+				{
+					elencoBanner.at((indice+idx) % elencoBanner.count())->setGeometry(0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
+					elencoBanner.at((indice+idx) % elencoBanner.count())->Draw();
+					elencoBanner.at((indice+idx) % elencoBanner.count())->show();
 				}
 			}
 		}
 		indicold=indice;
 	}
-
 }
 
 void sottoMenu::forceDraw()
