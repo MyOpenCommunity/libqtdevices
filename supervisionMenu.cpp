@@ -46,7 +46,8 @@ SupervisionMenu::~SupervisionMenu()
 {
 	stopngoList.clear();
 	stopngoPages.clear();
-	delete stopngoSubmenu;
+	if (this != stopngoSubmenu)
+		delete stopngoSubmenu;
 }
 
 
@@ -58,6 +59,7 @@ void SupervisionMenu::AddItems()
 
 void SupervisionMenu::AddBanners()
 {
+	classesCount = 0;
 	QDomNode level1Node = subtreeRoot.firstChild();
 	while (!level1Node.isNull())
 	{
@@ -76,10 +78,36 @@ void SupervisionMenu::AddBanners()
 					CreateStopnGoMenu(l1Element, b);
 					break;
       }
+			classesCount++;
 		}
 
     level1Node = level1Node.nextSibling();
 	}
+	
+	if (classesCount == 1) //Only one class has been defined in the supervision section of conf.xml
+	{
+		bannPuls* bann = static_cast<bannPuls*>(elencoBanner.getLast());
+		connect(this, SIGNAL(quickOpen()), bann, SIGNAL(sxClick()));
+	
+		if (stopngoSubmenu) //Check is the only submenu is a stopngo menu
+		{
+			if (this == stopngoSubmenu)		//Only one Stop&Go devise is mapped
+			{
+				StopngoPage* pg = stopngoPages.getFirst();
+				if (pg)
+				{
+					disconnect(pg, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+					connect(pg, SIGNAL(Closed()), this, SIGNAL(Closed()));
+				}
+			}
+			else													//A Stop&Go submenu instance has been created
+			{
+				disconnect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+				connect(stopngoSubmenu, SIGNAL(Closed()), this, SIGNAL(Closed()));
+			}
+		}
+	}
+	
 }
 
 
@@ -164,7 +192,8 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 	if (stopngoList.count() > 1)   //more than one device
 	{
 		//Show a submenu listing the devices to control
-		sottoMenu *sm = new sottoMenu(this, "StopnGo Group");                   //Create submenu
+		sottoMenu *sm = new sottoMenu(NULL, "StopnGo Group");                   //Create submenu
+		sm->hide();
 		sm->setBGColor(paletteBackgroundColor());
 		sm->setFGColor(paletteForegroundColor());
 		QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));  //Connect submenu
@@ -229,4 +258,12 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 }
 
 
+void SupervisionMenu::showPg()
+{    
+	qDebug("SupervisionMenu::showPg()");
+	if (classesCount == 1)
+		emit(quickOpen());
+	else
+		showFullScreen();
+}
 

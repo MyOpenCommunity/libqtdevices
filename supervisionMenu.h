@@ -45,6 +45,7 @@ class SupervisionMenu : public sottoMenu
 		sottoMenu* stopngoSubmenu;
 		QPtrList<StopngoItem> stopngoList;
 		QPtrList<StopngoPage> stopngoPages;
+		int classesCount;
 
 		void Create2ButBanner(QDomElement, QString, QString);
   	QString GetDeviceAddress(QDomNode);
@@ -53,6 +54,12 @@ class SupervisionMenu : public sottoMenu
 		void AddItems();
 		void AddBanners();
 		void LinkBanner2Page(bannPuls*, StopngoItem*);
+
+  public slots:
+	  void showPg();
+	  
+	signals:
+		void quickOpen();
 };
 
 

@@ -61,10 +61,10 @@ static const char *banTesti[] =
 	"INSIEME_AMBIENTI",           "POSTO_ESTERNO",           "SORGENTE_MULTIM",           "SORGENTE_MULTIM_MC",
 	/*    52                           53                          54                        55                   */
 	"TERMO_99Z_PROBE_FANCOIL",    "TERMO_4Z_PROBE",          "TERMO_4Z_PROBE_FANCOIL",    "TERMO_NC_EXTPROBE",
-	/*    56                           57                          58                                             */
-	"TERMO_NC_PROBE",             "TERMO_HOME_NC_EXTPROBE",  "TERMO_HOME_NC_PROBE",       "ARGH, empty!!!",
-	//    60-63
-	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	/*    56                           57                          58                        59                   */
+	"TERMO_NC_PROBE",             "TERMO_HOME_NC_EXTPROBE",  "TERMO_HOME_NC_PROBE",       "STOPNGO_CLASS",
+  /*    60                           61                          62                                             */
+  "STOPNGO",                    "STOPNGO_PLUS",            "STOPNGO_BTEST",							"ARGH, empty!!!",
 	//    64-67
 	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
 	//    68-71
@@ -72,8 +72,10 @@ static const char *banTesti[] =
 };
 
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up */
-static const char pagTesti[13][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
-	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI" };
+static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
+	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI", "SUPERVISIONE" };
+
+
 
 /*******************************************
  *
@@ -621,7 +623,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						case SUPERVISIONE:
 							(*supervisione)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-							QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showFullScreen()));
+							QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showPg()));
 							QObject::connect(*supervisione,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
