@@ -1302,6 +1302,8 @@ void FSBannTermoReg::weekendHolidaySettingsEnd(int program)
 		dev()->setWeekendDateTime(date_end, time_end, program);
 	else if (weekendHolidayStatus == HOLIDAY)
 		dev()->setHolidayDateTime(date_end, time_end, program);
+	else
+		qWarning("FSBannTermoReg::weekendHolidaySettingsEnd: unknown status");
 	program_choice->hide();
 	time_edit->hide();
 	date_edit->hide();
