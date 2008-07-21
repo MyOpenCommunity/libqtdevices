@@ -43,6 +43,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 : QWidget( parent, name )
 {
 	numRighe=n;
+	scroll_step = 1;
 	hasNavBar=navBarMode;
 	width=wi;
 	height=hei;
@@ -416,7 +417,7 @@ void sottoMenu::goUp()
 	if (elencoBanner.count()>(numRighe))
 	{
 		indicold=indice;
-		indice=(++indice)%(elencoBanner.count());
+		indice=(indice + scroll_step)%(elencoBanner.count());
 		draw();
 	}
 }
@@ -427,8 +428,8 @@ void sottoMenu::goDown()
 	if (elencoBanner.count()>(numRighe))
 	{
 		indicold=indice;
-		if (--indice<0)
-			indice=elencoBanner.count()-1;
+		if ((indice = indice - scroll_step) < 0)
+			indice = elencoBanner.count() - indice;
 		qDebug("indice = %d\n", indice);
 		draw();
 	}
@@ -436,6 +437,11 @@ void sottoMenu::goDown()
 void sottoMenu::setNumRighe(uchar n)
 {
 	numRighe=n;
+}
+
+void sottoMenu::setScrollStep(unsigned step)
+{
+	scroll_step = step;
 }
 
 banner* sottoMenu::getLast()
