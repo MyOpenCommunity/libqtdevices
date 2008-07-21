@@ -428,8 +428,9 @@ void sottoMenu::goDown()
 	if (elencoBanner.count()>(numRighe))
 	{
 		indicold=indice;
-		if ((indice = indice - scroll_step) < 0)
-			indice = elencoBanner.count() - indice;
+		indice = indice - scroll_step;
+		if (indice < 0)
+			indice = elencoBanner.count() + indice;
 		qDebug("indice = %d\n", indice);
 		draw();
 	}
