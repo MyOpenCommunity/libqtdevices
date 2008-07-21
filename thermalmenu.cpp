@@ -104,6 +104,10 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	sottoMenu *sm = new sottoMenu(NULL, "sottomenu extprobe");
 	sm->setBGColor(paletteBackgroundColor());
 	sm->setFGColor(paletteForegroundColor());
+	// we want to scroll external probes per pages and not per probes
+	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)
+	unsigned submenu_scroll_step = NUM_RIGHE - 1;
+	sm->setScrollStep(submenu_scroll_step);
 
 	/**
 	 * Now submenus work. To add another submenu:
