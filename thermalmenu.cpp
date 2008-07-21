@@ -139,21 +139,3 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		n = n.nextSibling();
 	}
 }
-
-QString ThermalMenu::getDeviceAddress(QDomNode root)
-{
-	QString where = "";
-	QDomNode n = findNamedNode(root, "where");
-	if (!n.isNull())
-	{
-		where = n.toElement().text();
-	}
-	else
-	{
-		qDebug("[TERMO] getDeviceAddress: `where' not found, defaulting to `\"0\"' ");
-		where = "0";
-	}
-	//FIXME: should we also check for `what'?
-	//from conf.xml: used only by pagespecial and scenarios
-	return where;
-}
