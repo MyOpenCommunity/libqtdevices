@@ -15,6 +15,7 @@
 #include <qcursor.h>
 #include <qtimer.h>
 #include <qregexp.h>
+#include <algorithm>
 
 #include "sottomenu.h"
 #include "postoext.h"
@@ -364,7 +365,17 @@ void sottoMenu::draw()
 		{
 			if (banner *bann = elencoBanner.at(indice))
 				bannNavigazione->setCustomButton(bann->customButton());
-			for (idx=0;idx<numRighe;idx++)
+
+			unsigned end = numRighe;
+			if (scroll_step != 1)
+			{
+				// next line takes care of the case when we have to draw 1 or 2 banners only
+				// see also ListBrowser::showList()
+				unsigned tmp = std::min((unsigned) indice + numRighe, elencoBanner.count());
+				end = tmp - indice;
+			}
+
+			for (idx = 0; idx < end; ++idx)
 			{
 				if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>numRighe) ) 
 				{   			
@@ -414,10 +425,19 @@ void sottoMenu::forceDraw()
 
 void sottoMenu::goUp()
 {
-	if (elencoBanner.count()>(numRighe))
+	if (elencoBanner.count() > numRighe)
 	{
 		indicold=indice;
-		indice=(indice + scroll_step)%(elencoBanner.count());
+		// This should work with both scroll_step = 1 (default) and scroll_step = 3
+		// Suppose we have 5 banners, 3 banners per page, scroll_step = 3
+		//  . first page, indice == 0, banners shown: 0,1,2
+		//  . second page, indice == 3, banners shown: 3,4
+		//  . when user presses arrow down again: (indice == 6) > (5 banners) => show first page
+		// Suppose we have scroll_step = 1
+		//  . when indice == 4, user presses arrow down: indice == 5 >= 5 banners => indice = 0 (same as previous code)
+		indice = indice + scroll_step;
+		if ((unsigned) indice >= elencoBanner.count())
+			indice = 0;
 		draw();
 	}
 }
@@ -425,12 +445,22 @@ void sottoMenu::goUp()
 void sottoMenu::goDown()
 {
 	qDebug("sottoMenu::goDown(), numRighe = %d", numRighe);
-	if (elencoBanner.count()>(numRighe))
+	if (elencoBanner.count() > numRighe)
 	{
 		indicold=indice;
 		indice = indice - scroll_step;
 		if (indice < 0)
-			indice = elencoBanner.count() + indice;
+		{
+			// Suppose we have 5 banners, 3 banners per page, scroll_step = 3
+			// when indice == 0 and the user presses arrow up: we must display banner 3,4 only
+			unsigned remainder = elencoBanner.count() % scroll_step;
+			// remainder == 0 if scroll_step == 1, so this should work with scroll_step default value
+			if (remainder)
+				indice = elencoBanner.count() - remainder;
+			else
+				// remember: indice is negative
+				indice = elencoBanner.count() + indice;
+		}
 		qDebug("indice = %d\n", indice);
 		draw();
 	}
