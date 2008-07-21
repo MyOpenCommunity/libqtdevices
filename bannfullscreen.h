@@ -241,47 +241,50 @@ protected:
 	BtButton *navbar_button;
 private slots:
 	/**
+	 * The following slots are used to control the status of input for holiday/weekend mode.
+	 * Three submenus are shown in sequence: date input, time input and program selection. The slots
+	 * are used to go forward and backwards in this sequence. At the beginning a flag is set to determine,
+	 * at the end, whenever the user started a holiday or weekend selection and to issue the correct frames.
 	 * Show the first submenu of holiday settings (date_edit)
 	 */
 	void holidaySettingsStart();
 
 	/**
+	 * Show the first submenu of weekend settings (date_edit)
+	 */
+	void weekendSettingsStart();
+
+	/**
 	 * User cancelled date editing, go back to main settings menu.
 	 */
-	void holidayDateCancelled();
+	void dateCancelled();
 
 	/**
 	 * User confirmed date, go to time editing.
 	 */
-	void holidayDateSelected(QDate d);
+	void dateSelected(QDate d);
 
 	/**
 	 * User cancelled time editing, go back to date editing.
 	 */
-	void holidayTimeCancelled();
+	void timeCancelled();
 
 	/**
 	 * User confirmed time editing, go on with program selection.
 	 */
-	void holidayTimeSelected(QTime t);
+	void timeSelected(QTime t);
 
 	/**
 	 * User cancelled program selection, go back to time editing.
 	 */
-	void holidayProgramCancelled();
+	void programCancelled();
 
 	/**
 	 * User confirmed program. Send the relevant frames through the device.
 	 */
-	void holidaySettingsEnd(int program);
+	void weekendHolidaySettingsEnd(int program);
+	// End of holiday/weekend related functions
 
-	void weekendSettingsStart();
-	void weekendDateCancelled();
-	void weekendDateSelected(QDate d);
-	void weekendTimeCancelled();
-	void weekendTimeSelected(QTime t);
-	void weekendProgramCancelled();
-	void weekendSettingsEnd(int program);
 
 	void manualCancelled();
 	void manualSelected(unsigned temp);
@@ -289,6 +292,13 @@ private slots:
 	void weekProgramCancelled();
 	void weekProgramSelected(int program);
 private:
+	enum weekend_t
+	{
+		WEEKEND = 0,
+		HOLIDAY,
+	};
+	/// A flag to determine if the user started a weekend or holiday selection
+	weekend_t weekendHolidayStatus;
 	/**
 	 * Utility function to create the submenu structure needed for holiday and weekend mode.
 	 * \param icon The icon to be visualized on the banner
@@ -312,11 +322,11 @@ private:
 	BtLabelEvo *mode_icon;
 
 
-	QDate holiday_date_end, weekend_date_end;
-	QTime holiday_time_end, weekend_time_end;
-	TimeEditMenu *holiday_time_edit, *weekend_time_edit;
-	DateEditMenu *holiday_date_edit, *weekend_date_edit;
-	ProgramMenu *holiday_program_choice, *weekend_program_choice;
+	QDate date_end;
+	QTime time_end;
+	TimeEditMenu *time_edit;
+	DateEditMenu *date_edit;
+	ProgramMenu *program_choice;
 	sottoMenu *manual_menu;
 	WeeklyMenu *program_menu;
 };
