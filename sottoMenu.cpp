@@ -380,16 +380,14 @@ void sottoMenu::draw()
 				if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>numRighe) ) 
 				{   			
 					int tmp = (indice+idx) %(elencoBanner.count());
-					int x, y, h;
-					x = 0;
-					y = idx*(height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
-					h = (height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
+					int y = idx*(height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
+					int h = (height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
 					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d",
-							tmp, x, y, width, h);
+							tmp, 0, y, width, h);
 					elencoBanner.at(tmp)->setGeometry(0, y, width, h); 
 
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+					elencoBanner.at(tmp)->Draw();
+					elencoBanner.at(tmp)->show();
 				}
 			}		
 			qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",
