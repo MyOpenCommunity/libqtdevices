@@ -42,7 +42,6 @@ public:
 		ACTIVE_SOURCE,
 		FAULT,
 		CRONO,   // Secret, who knows?
-		INFO_SONDA,
 		INFO_CENTRALE,
 		FANCOIL_SPEED,
 		INFO_MCI,
@@ -303,7 +302,6 @@ public:
 		LOCAL_INDEX,
 		SP_INDEX,
 		CRONO,
-		INFO_SONDA,
 		INFO_CENTRALE,
 	} ind;
 	enum {

@@ -2529,6 +2529,14 @@ frame_interpreter_temperature_probe_controlled(QString w, thermo_type_t _type,
 	type = _type;
 	ind_centrale = _ind_centrale;
 	indirizzo = _indirizzo;
+	new_request_allowed = true;
+	connect(&new_request_timer, SIGNAL(timeout()), SLOT(timeoutElapsed()));
+}
+
+void frame_interpreter_temperature_probe_controlled::timeoutElapsed()
+{
+	new_request_allowed = true;
+	new_request_timer.stop();
 }
 
 bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ext m, bool& request_status)
@@ -2622,7 +2630,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	stat_var curr_local(stat_var::LOCAL);
 	stat_var curr_sp(stat_var::SP);
 	stat_var curr_crono(stat_var::CRONO);
-	stat_var curr_info_sonda(stat_var::INFO_SONDA);
 	stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
 	int stat;
 	int cr;
@@ -2634,7 +2641,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	ds->read((int)device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
 	ds->read((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 	ds->read((int)device_status_temperature_probe_extra::CRONO, curr_crono);
-	ds->read((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 	ds->read((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 	
 	
@@ -2642,7 +2648,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	qDebug("curr local is %d", curr_local.get_val());
 	qDebug("curr sp is %d", curr_sp.get_val());
 	qDebug("curr crono is %d", curr_crono.get_val());
-	qDebug("curr info_sonda is %d", checkTimeoutVar(curr_info_sonda) ? 1 : 0);
+	qDebug("curr info_sonda is %d", new_request_allowed);
 	qDebug("curr info_centrale is %d", curr_info_centrale.get_val());
 	if((!strcmp(m.Extract_dove(), "#0")) && (type == THERMO_Z99) && (!curr_info_centrale.get_val()))
 	{
@@ -2656,9 +2662,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 		curr_info_centrale.set_val(delta);
 		ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 		evt_list.append(ds);
-		clearTimeoutVar(curr_info_sonda);
-		ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-		evt_list.append(ds);
+		new_request_allowed = true;
 		return;
 	}
 
@@ -2684,16 +2688,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				stat = device_status_temperature_probe_extra::S_MAN;
 			}
 			//Richiesta set-point
-			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+			if ((ds->initialized()) && (new_request_allowed))
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove()+1);
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2714,16 +2716,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				do_event = true;
 				stat = device_status_temperature_probe_extra::S_AUTO;
 			}
-			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+			if ((ds->initialized()) && new_request_allowed)
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove()+1);
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2822,16 +2822,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	switch(g)
 	{
 		case 0:
-			if (!checkTimeoutVar(curr_info_sonda))
+			if (new_request_allowed)
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove());
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			break;
 		case 13:
@@ -2858,16 +2856,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				  ((curr_stat.get_val() != device_status_temperature_probe_extra::S_AUTO) && 
 				  (curr_stat.get_val() != device_status_temperature_probe_extra::S_MAN) &&
 				  (loc == 13))) {*/
-				if((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+				if((ds->initialized()) && new_request_allowed)
 				{
 					memset(pippo,'\000',sizeof(pippo));
 					strcat(pippo,"*#4*");
 					strcat(pippo,m.Extract_dove());
 					strcat(pippo,"##");
 					emit init_requested(QString(pippo));
-					setTimeoutVar(curr_info_sonda);
-					ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-					evt_list.append(ds);
+					new_request_timer.start(TIMEOUT_TIME);
 				}
 				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
 				{
@@ -2886,16 +2882,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 			elaborato = true;
 			break;
 		case 12:
-			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+			if ((ds->initialized()) && new_request_allowed)
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove());
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			break;
 		case 14:
@@ -2907,12 +2901,8 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				evt_list.append(ds);
 			}
-			if (checkTimeoutVar(curr_info_sonda))
-			{
-				clearTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
-			}
+			if (!new_request_allowed) //timer is active
+				timeoutElapsed();
 			elaborato = true;
 			break;
 		default:

@@ -413,7 +413,6 @@ device_status_temperature_probe_extra::device_status_temperature_probe_extra(the
 	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, -1, 0, 13, 1));
 	add_var((int)SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
 	add_var((int)CRONO, new stat_var(stat_var::CRONO, 0, 0, 1, 1));
-	add_var((int)INFO_SONDA, new stat_var(stat_var::INFO_SONDA, 0, 0, INT_MAX, 1));
 	add_var((int)INFO_CENTRALE, new stat_var(stat_var::INFO_CENTRALE, 1, 0, 1, 1));
 }
 
