@@ -511,6 +511,20 @@ void StopngoPage::status_changed(QPtrList<device_status> sl)
 				{
 			  	qDebug("StopngoPage: Change banner icon to CLOSED");
 					SetStatusIcon(ICON_STOPNGO_CHIUSO);
+					if (onBut)
+						onBut->show();
+					if (offBut)
+						offBut->show();
+					if (verifyBut)
+					{
+						verifyBut->hide();
+						labelVerify->hide();
+					}
+					if (autotestBut)
+					{
+						autotestBut->show();
+						labelVerify->show();
+					}
 				}
 				else                                           //Opened
 				{
@@ -518,26 +532,56 @@ void StopngoPage::status_changed(QPtrList<device_status> sl)
 					{
 			  		qDebug("StopngoPage: Change banner icon to LOCKED");
 						SetStatusIcon(ICON_STOPNGO_BLOCCO);
+						if (onBut)
+							onBut->hide();
+						if (offBut)
+							offBut->hide();
 					}
 					else if (statusBmp & STATUS_BIT_CC)          //Open because of short circuit between L and N
 					{
 			  		qDebug("StopngoPage: Change banner icon to short circuit");
 						SetStatusIcon(ICON_STOPNGO_CORTOCIRCUITO);
+						if (onBut)
+							onBut->hide();
+						if (offBut)
+							offBut->hide();
 					}
 					else if (statusBmp & STATUS_BIT_EARTH_FAIL)  //Open because of earth failure
 					{
 			  		qDebug("StopngoPage: Change banner icon to EARTH FAILURE");
 						SetStatusIcon(ICON_STOPNGO_GUASTO_TERRA);
+						if (onBut)
+							onBut->hide();
+						if (offBut)
+							offBut->hide();
 					}
 					else if (statusBmp & STATUS_BIT_VMAX)        //Open because of out of Vmax
 					{
 			  		qDebug("StopngoPage: Change banner icon to VMAX");
 						SetStatusIcon(ICON_STOPNGO_SOVRATENSIONE);
+						if (onBut)
+							onBut->hide();
+						if (offBut)
+							offBut->hide();
 					}
 					else
 					{
 			  		qDebug("StopngoPage: Change banner icon to OPENED");
 						SetStatusIcon(ICON_STOPNGO_APERTO);
+						if (onBut)
+							onBut->show();
+						if (offBut)
+							offBut->show();
+					}
+					if (verifyBut)
+					{
+						verifyBut->show();
+						labelVerify->show();
+					}
+					if (autotestBut)
+					{
+						autotestBut->hide();
+						labelVerify->hide();
 					}
 				}
 			

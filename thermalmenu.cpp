@@ -104,6 +104,10 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	sottoMenu *sm = new sottoMenu(NULL, "sottomenu extprobe");
 	sm->setBGColor(paletteBackgroundColor());
 	sm->setFGColor(paletteForegroundColor());
+	// we want to scroll external probes per pages and not per probes
+	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)
+	unsigned submenu_scroll_step = NUM_RIGHE - 1;
+	sm->setScrollStep(submenu_scroll_step);
 
 	/**
 	 * Now submenus work. To add another submenu:
@@ -134,22 +138,4 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		}
 		n = n.nextSibling();
 	}
-}
-
-QString ThermalMenu::getDeviceAddress(QDomNode root)
-{
-	QString where = "";
-	QDomNode n = findNamedNode(root, "where");
-	if (!n.isNull())
-	{
-		where = n.toElement().text();
-	}
-	else
-	{
-		qDebug("[TERMO] getDeviceAddress: `where' not found, defaulting to `\"0\"' ");
-		where = "0";
-	}
-	//FIXME: should we also check for `what'?
-	//from conf.xml: used only by pagespecial and scenarios
-	return where;
 }

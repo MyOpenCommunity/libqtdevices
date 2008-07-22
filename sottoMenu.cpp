@@ -15,6 +15,7 @@
 #include <qcursor.h>
 #include <qtimer.h>
 #include <qregexp.h>
+#include <algorithm>
 
 #include "sottomenu.h"
 #include "postoext.h"
@@ -43,6 +44,7 @@ sottoMenu::sottoMenu( QWidget *parent, const char *name, uchar navBarMode,int wi
 : QWidget( parent, name )
 {
 	numRighe=n;
+	scroll_step = 1;
 	hasNavBar=navBarMode;
 	width=wi;
 	height=hei;
@@ -356,53 +358,55 @@ void sottoMenu::draw()
 	qDebug("sottoMenu::draw() (%s)", name());
 	if (!(indicold==indice))
 	{
-		//qDebug("indicold=%d - indice=%d",indicold,indice);
-		for (idy=0;idy<elencoBanner.count();idy++)
+		for (idy = 0; idy < elencoBanner.count(); ++idy)
 			elencoBanner.at(idy)->hide();
 		if (hasNavBar)
 		{
 			if (banner *bann = elencoBanner.at(indice))
 				bannNavigazione->setCustomButton(bann->customButton());
-			for (idx=0;idx<numRighe;idx++)
+
+			unsigned end = numRighe;
+			if (scroll_step != 1)
 			{
-				if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>numRighe) ) 
-				{   			
-					int tmp = (indice+idx) %(elencoBanner.count());
-					int x, y, h;
-					x = 0;
-					y = idx*(height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
-					h = (height-MAX_HEIGHT/NUM_RIGHE)/numRighe; 
-					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d",
-							tmp, x, y, width, h);
-					elencoBanner.at(tmp)->setGeometry(0, y, width, h); 
+				// next line takes care of the case when we have to draw 1 or 2 banners only
+				// see also ListBrowser::showList()
+				unsigned tmp = std::min((unsigned) indice + numRighe, elencoBanner.count());
+				end = tmp - indice;
+			}
 
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+			for (idx = 0; idx < end; ++idx)
+			{
+				if  ((elencoBanner.at(indice + idx)) || (elencoBanner.count() > numRighe))
+				{
+					int tmp = (indice + idx) % elencoBanner.count();
+					int y = idx * (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
+					int h = (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
+					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d", tmp, 0, y, width, h);
+					elencoBanner.at(tmp)->setGeometry(0, y, width, h);
+					elencoBanner.at(tmp)->Draw();
+					elencoBanner.at(tmp)->show();
 				}
-			}		
+			}
 			qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",
-					0, height-MAX_HEIGHT/NUM_RIGHE,
-					width, MAX_HEIGHT/NUM_RIGHE);
-			bannNavigazione  ->setGeometry( 0 ,height-MAX_HEIGHT/NUM_RIGHE,width , MAX_HEIGHT/NUM_RIGHE);		
-
+					0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
+			bannNavigazione->setGeometry(0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
 			bannNavigazione->Draw();
-			bannNavigazione->show();	
+			bannNavigazione->show();
 		}
 		else
 		{
-			for (idx=0;idx<numRighe;idx++)
+			for (idx = 0; idx < numRighe; ++idx)
 			{
-				if  ( (elencoBanner.at(indice+idx)) || (elencoBanner.count()>=numRighe) ) 
-				{   
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->setGeometry(0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->Draw();
-					elencoBanner.at( (indice+idx) %(elencoBanner.count()))->show();
+				if  ((elencoBanner.at(indice + idx)) || (elencoBanner.count() >= numRighe))
+				{
+					elencoBanner.at((indice+idx) % elencoBanner.count())->setGeometry(0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
+					elencoBanner.at((indice+idx) % elencoBanner.count())->Draw();
+					elencoBanner.at((indice+idx) % elencoBanner.count())->show();
 				}
 			}
 		}
 		indicold=indice;
 	}
-
 }
 
 void sottoMenu::forceDraw()
@@ -413,10 +417,19 @@ void sottoMenu::forceDraw()
 
 void sottoMenu::goUp()
 {
-	if (elencoBanner.count()>(numRighe))
+	if (elencoBanner.count() > numRighe)
 	{
 		indicold=indice;
-		indice=(++indice)%(elencoBanner.count());
+		// This should work with both scroll_step = 1 (default) and scroll_step = 3
+		// Suppose we have 5 banners, 3 banners per page, scroll_step = 3
+		//  . first page, indice == 0, banners shown: 0,1,2
+		//  . second page, indice == 3, banners shown: 3,4
+		//  . when user presses arrow down again: (indice == 6) > (5 banners) => show first page
+		// Suppose we have scroll_step = 1
+		//  . when indice == 4, user presses arrow down: indice == 5 >= 5 banners => indice = 0 (same as previous code)
+		indice = indice + scroll_step;
+		if ((unsigned) indice >= elencoBanner.count())
+			indice = 0;
 		draw();
 	}
 }
@@ -424,11 +437,22 @@ void sottoMenu::goUp()
 void sottoMenu::goDown()
 {
 	qDebug("sottoMenu::goDown(), numRighe = %d", numRighe);
-	if (elencoBanner.count()>(numRighe))
+	if (elencoBanner.count() > numRighe)
 	{
 		indicold=indice;
-		if (--indice<0)
-			indice=elencoBanner.count()-1;
+		indice = indice - scroll_step;
+		if (indice < 0)
+		{
+			// Suppose we have 5 banners, 3 banners per page, scroll_step = 3
+			// when indice == 0 and the user presses arrow up: we must display banner 3,4 only
+			unsigned remainder = elencoBanner.count() % scroll_step;
+			// remainder == 0 if scroll_step == 1, so this should work with scroll_step default value
+			if (remainder)
+				indice = elencoBanner.count() - remainder;
+			else
+				// remember: indice is negative
+				indice = elencoBanner.count() + indice;
+		}
 		qDebug("indice = %d\n", indice);
 		draw();
 	}
@@ -436,6 +460,11 @@ void sottoMenu::goDown()
 void sottoMenu::setNumRighe(uchar n)
 {
 	numRighe=n;
+}
+
+void sottoMenu::setScrollStep(unsigned step)
+{
+	scroll_step = step;
 }
 
 banner* sottoMenu::getLast()

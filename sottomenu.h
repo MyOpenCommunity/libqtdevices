@@ -141,6 +141,13 @@ sstop : soft stop values list vor dimmer 100 group
 		  \brief Set the row's number to be drawn in the screen
 		  */
 		virtual void 	setNumRighe(uchar);
+
+		/**
+		 * Set the number of rows to scroll up or down at each goUp() or goDown() call
+		 * \param step The number of rows to scroll up or down
+		 */
+		void setScrollStep(unsigned step);
+
 		/*!
 		  \brief Retrieves the last banner of the list
 		  */  
@@ -367,6 +374,9 @@ public slots:
 		bool 	freez;
 		char	iconName[MAX_PATH];
 	private:
+		/// Number of banners to scroll at each goUp() or goDown() call. Default value is 1, to avoid
+		/// breaking existing code.
+		unsigned scroll_step;
 		void setModeIcon(char*);
 };
 

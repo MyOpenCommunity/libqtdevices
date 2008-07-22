@@ -33,7 +33,6 @@ public:
 	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2);
 
 private:
-	QString getDeviceAddress(QDomNode);
 	bannPuls *addMenuItem(QDomElement, QString, QString);
 	/**
 	 * Create a sottoMenu to show external and not controlled probes
