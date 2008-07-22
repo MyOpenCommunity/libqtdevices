@@ -448,20 +448,6 @@ private:
 	QString ind_centrale;
 	QString indirizzo;
 
-	/*
-	 * Functions for using a stat_var like a timer.
-	 * Used to set INFO_SONDA var and clear it after STAT_VAR_TIMEOUT seconds.
-	 *
-	 * checkTimeoutVar: Return true if the var is set and timeout is not elapsed.
-	 */
-	bool checkTimeoutVar(const stat_var &var);
-	// Set to true
-	void setTimeoutVar(stat_var &var);
-	// Set to false
-	void clearTimeoutVar(stat_var &var);
-	// Timeout value, in seconds
-	static const int STAT_VAR_TIMEOUT = 1;
-
 	/// Time to wait (in msec) before allowing another status request on the bus
 	static const int TIMEOUT_TIME = 1000;
 	/// This timer is used to compact all status requests done in TIMEOUT_TIME milliseconds in one frame only

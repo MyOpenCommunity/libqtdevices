@@ -2483,41 +2483,10 @@ int frame_interpreter_thermal_regulator::commandRange(int what)
 
 // Temperature probe device frame interpreter
 
-bool frame_interpreter_temperature_probe_controlled::checkTimeoutVar(const stat_var &var)
+void frame_interpreter_temperature_probe_controlled::timeoutElapsed()
 {
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-
-	if ((var.get_val() != 0) && ((int)(tv.tv_sec) <= var.get_val()))
-	{
-		//qDebug("[TMOUTVAR] checkTimeoutVar() tv_sec=%d, val=%d: TRUE", (int)tv.tv_sec, var.get_val());
-		return true;
-	}
-	else
-	{
-		//qDebug("[TMOUTVAR] checkTimeoutVar() tv_sec=%d, val=%d: FALSE", (int)tv.tv_sec, var.get_val());
-		return false;
-	}
-}
-
-void frame_interpreter_temperature_probe_controlled::setTimeoutVar(stat_var &var)
-{
-	//qDebug("[TMOUTVAR] setTimeoutVar()");
-
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	int n = static_cast<int>(tv.tv_sec + STAT_VAR_TIMEOUT);
-	var.set_val(n);
-}
-
-void frame_interpreter_temperature_probe_controlled::clearTimeoutVar(stat_var &var)
-{
-	//qDebug("[TMOUTVAR] clearTimeoutVar()");
-
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	int n = static_cast<int>(tv.tv_sec - 1);
-	var.set_val(n);
+	new_request_allowed = true;
+	new_request_timer.stop();
 }
 
 // Public methods
@@ -2531,12 +2500,6 @@ frame_interpreter_temperature_probe_controlled(QString w, thermo_type_t _type,
 	indirizzo = _indirizzo;
 	new_request_allowed = true;
 	connect(&new_request_timer, SIGNAL(timeout()), SLOT(timeoutElapsed()));
-}
-
-void frame_interpreter_temperature_probe_controlled::timeoutElapsed()
-{
-	new_request_allowed = true;
-	new_request_timer.stop();
 }
 
 bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ext m, bool& request_status)
