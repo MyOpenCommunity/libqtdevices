@@ -16,7 +16,7 @@
 /// Methods for TitleLabel
 /// ***********************************************************************************************************************
 TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, WFlags f) :
-	QLabel("", parent, 0, f)
+	BtLabelEvo(parent, 0, f)
 {
 	// Style
 	setFixedWidth(w);
