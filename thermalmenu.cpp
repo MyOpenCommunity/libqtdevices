@@ -30,10 +30,15 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor b
 	setBGColor(bg);
 	setFGColor(fg);
 	second_fg = fg2;
+	bann_number = 0;
 	addBanners();
 
 	qDebug("[TERMO] thermalmenu: end adding items.");
 	// check if plant menus are created?
+	if (bann_number == 1)
+	{
+		connect(single_submenu, SIGNAL(Closed()), SIGNAL(Closed()));
+	}
 }
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
@@ -43,6 +48,7 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+	single_submenu = sm;
 
 	sm->hide();
 	// propagate freeze signal
@@ -96,6 +102,7 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 	elencoBanner.append(bp);
 	connectLastBanner();
 
+	++bann_number;
 	return bp;
 }
 
@@ -104,6 +111,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	sottoMenu *sm = new sottoMenu(NULL, "sottomenu extprobe");
 	sm->setBGColor(paletteBackgroundColor());
 	sm->setFGColor(paletteForegroundColor());
+	single_submenu = sm;
 	// we want to scroll external probes per pages and not per probes
 	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)
 	unsigned submenu_scroll_step = NUM_RIGHE - 1;
@@ -138,4 +146,12 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		}
 		n = n.nextSibling();
 	}
+}
+
+void ThermalMenu::showPage()
+{
+	if (bann_number == 1)
+		single_submenu->show();
+	else
+		show();
 }

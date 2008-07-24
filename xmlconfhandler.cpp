@@ -719,11 +719,11 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 						case TERMOREG_MULTI_PLANT:
 							(*termo)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showFullScreen()));
+							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showPage()));
 							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
-							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(show()));
+							QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showPage()));
 							QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
 							QObject::connect(*termo,SIGNAL(Closed()),*termo,SLOT(hide()));

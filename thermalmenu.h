@@ -32,6 +32,13 @@ public:
 	 */
 	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2);
 
+public slots:
+	/**
+	 * Show ThermalMenu if there are two or more banners, show the only submenu below us
+	 * otherwise.
+	 */
+	void showPage();
+
 private:
 	bannPuls *addMenuItem(QDomElement, QString, QString);
 	/**
@@ -51,6 +58,10 @@ private:
 	/// do NOT setAutoDelete(true), since banners are children of
 	/// ThermalMenu and will be deleted by Qt
 	QColor second_fg;
+
+	unsigned bann_number;
+	/// A reference to the only submenu below us
+	sottoMenu *single_submenu;
 };
 
 #endif
