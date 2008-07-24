@@ -350,6 +350,7 @@ void FSBannProbe::Draw()
 	setVisible(local_temp_label, !isOff && !isAntigelo && local_temp != "0");
 	setVisible(icon_off, isOff);
 	setVisible(icon_antifreeze, isAntigelo);
+	setVisible(navbar_button, !isOff && !isAntigelo);
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
