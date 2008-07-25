@@ -775,6 +775,10 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	main_layout.addWidget(description_label);
 	main_layout.addWidget(season_icon);
 	main_layout.setAlignment(Qt::AlignHCenter);
+
+	date_edit = 0;
+	time_edit = 0;
+	program_choice = 0;
 }
 
 BtButton *FSBannTermoReg::customButton()
