@@ -1389,13 +1389,13 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 	request_status = false;
 	if (strcmp(m.Extract_chi(),"4"))
 		return false;
-	char dove[30];
+#define MAX_LENGTH 30
+	char dove[MAX_LENGTH];
 	// FIXME: check Extract_level() too!
 	if (external && m.IsMeasureFrame() && !strcmp(m.Extract_grandezza(), "15"))
 	{
 		// Address is of type x00, with x >= 1 & x <= 9
-		strncpy(dove, m.Extract_dove(), 1);
-		dove[1] = 0;
+		strncpy(dove, m.Extract_dove(), MAX_LENGTH);
 	}
 	else
 		strcpy(dove, m.Extract_dove());
