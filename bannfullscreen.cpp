@@ -1366,6 +1366,7 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	scenario_menu = new ScenarioMenu(0, "weekly", conf);
 	scenario_menu->setAllBGColor(paletteBackgroundColor());
 	scenario_menu->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), scenario_menu, SLOT(status_changed(QPtrList<device_status>)));
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));
