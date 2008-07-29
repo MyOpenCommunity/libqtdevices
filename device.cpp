@@ -446,7 +446,7 @@ void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
 	what.sprintf("%d#%d", HOLIDAY_NUM_DAYS + number_of_days, WEEK_PROGRAM + program);
 
 	openwebnet msg_open;
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where;
+	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
 	sendFrame(msg_open.frame_open);
 
