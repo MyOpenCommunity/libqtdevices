@@ -2659,6 +2659,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2687,6 +2688,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2793,6 +2795,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			break;
 		case 13:
@@ -2827,6 +2830,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 					strcat(pippo,"##");
 					emit init_requested(QString(pippo));
 					new_request_timer.start(TIMEOUT_TIME);
+					new_request_allowed = false;
 				}
 				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
 				{
@@ -2853,6 +2857,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			break;
 		case 14:
