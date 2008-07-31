@@ -2869,8 +2869,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				evt_list.append(ds);
 			}
-			if (!new_request_allowed) //timer is active
-				timeoutElapsed();
 			elaborato = true;
 			break;
 		default:
