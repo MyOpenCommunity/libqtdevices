@@ -16,7 +16,7 @@
 #include "btlabel.h"
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
-#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+#include <openwebnet.h> // class openwebnet
 #include "tastiera.h"
 
 #include <stdlib.h>

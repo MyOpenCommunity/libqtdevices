@@ -95,7 +95,7 @@ diffmulti::diffmulti( QWidget *parent, const char *name, uchar navBarMode,int wi
 	dslist->setAutoDelete(true);
 	matr = btouch_device_cache.get_sound_matr_device();
 	connect(sorgenti, SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
-	connect(this, SIGNAL(frez(bool)), sorgenti, SIGNAL(freezed(bool)));
+	connect(this, SIGNAL(frez(bool)), sorgenti, SLOT(freezed(bool)));
 
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));

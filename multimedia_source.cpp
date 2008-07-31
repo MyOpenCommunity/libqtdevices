@@ -243,6 +243,16 @@ void MultimediaSource::handleClose()
 	emit Closed();
 }
 
+void MultimediaSource::freezed(bool f)
+{
+	source_choice->setEnabled(!f);
+	if (source_type != NONE_SOURCE)
+	{
+		selector->setEnabled(!f);
+		play_window->setEnabled(!f);
+	}
+}
+
 void MultimediaSource::initAudio()
 {
 	// Now init is done by BtMain.cpp calling dm->inizializza()

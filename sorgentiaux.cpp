@@ -13,7 +13,7 @@
 #include "sorgentiaux.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
 #include "aux.h" // class myAux
-#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+#include <openwebnet.h> // class openwebnet
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
 

@@ -145,8 +145,15 @@ public:
 	void setWinter();
 	void setProtection();
 	void setHolidayDateTime(QDate date, QTime time, int program);
+
+	/**
+	 * Function to set weekend mode (giorno festivo) with end date and time, and program to be executed at the end of weekend mode.
+	 * \param date The end date of weekend mode.
+	 * \param time The end time of weekend mode.
+	 * \param program The program to be executed at the end of weekend mode.
+	 */
+	void setWeekendDateTime(QDate date, QTime time, int program);
 	void setWeekProgram(int program);
-	void requestStatus();
 
 	/**
 	 * Sends a frame to the thermal regulator to set the temperature in manual mode.
@@ -189,6 +196,7 @@ public:
 		GENERIC_PROTECTION = 302,
 		GENERIC_OFF = 303,
 		GENERIC_MANUAL_TIMED = 312,      // timed manual operation (generic mode)
+		GENERIC_WEEKEND = 315,           // command to set weekend mode
 		WEEK_PROGRAM = 3100,             // command to set the program to be executed (generic mode)
 		                                 // remember to add the program number to this number
 		SCENARIO_PROGRAM = 3200,         // command to set the scenario to be executed (generic mode)
@@ -198,6 +206,18 @@ public:
 	};
 protected:
 	thermal_regulator(QString where, bool p=false, int g=-1);
+private:
+	/**
+	 * Utility function to set end date for both holiday and weekend mode
+	 * \param date The end date of the mode.
+	 */
+	void setHolidayEndDate(QDate date);
+
+	/**
+	 * Utility function to set end time for both holiday and weekend mode
+	 * \param time The end time of the mode.
+	 */
+	void setHolidayEndTime(QTime time);
 };
 
 class thermal_regulator_4z : public thermal_regulator

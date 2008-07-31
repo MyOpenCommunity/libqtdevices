@@ -42,7 +42,6 @@ public:
 		ACTIVE_SOURCE,
 		FAULT,
 		CRONO,   // Secret, who knows?
-		INFO_SONDA,
 		INFO_CENTRALE,
 		FANCOIL_SPEED,
 		INFO_MCI,
@@ -264,6 +263,7 @@ public:
 		OFF = 0,
 		PROTECTION,
 		MANUAL,                 // manual temperature
+		MANUAL_TIMED,           // manual temperature, with timer
 		WEEK_PROGRAM,           // weekly program
 		SCENARIO,               // scenario
 		HOLIDAY,                // festivo
@@ -302,7 +302,6 @@ public:
 		LOCAL_INDEX,
 		SP_INDEX,
 		CRONO,
-		INFO_SONDA,
 		INFO_CENTRALE,
 	} ind;
 	enum {

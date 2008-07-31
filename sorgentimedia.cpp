@@ -10,7 +10,7 @@
 
 #include "sorgentimedia.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
-#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+#include <openwebnet.h> // class openwebnet
 #include "device_cache.h"
 #include "device.h"
 
@@ -27,6 +27,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	dev = btouch_device_cache.get_device(getAddress());
 	source_menu.setBGColor(parentWidget(TRUE)->backgroundColor());
 	source_menu.setFGColor(parentWidget(TRUE)->foregroundColor());
+	connect(parentWidget(TRUE), SIGNAL(frez(bool)), &source_menu, SLOT(freezed(bool)));
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showPage()));
 	if(nbut == 4)

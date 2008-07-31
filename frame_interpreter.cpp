@@ -1402,6 +1402,7 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 
 	if (dove[0]=='#')
 		strcpy(&dove[0], &dove[1]);
+
 	if(!strcmp(dove, where.ascii()))
 	{
 		qDebug("FRAME IS OURS !!");
@@ -2277,7 +2278,6 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 	OpenMsg msg;
         msg.CreateMsgOpen(_msg.frame_open, strlen(_msg.frame_open));
 
-	qDebug("[LUCA] frame is: %s", msg.frame_open);
 	// TODO:
 	// - gestire le frame di cambio programma settimanale (par. 2.3.5)
 	// - gestire le frame di cambio temperatura setpoint (par. 2.3.2)
@@ -2315,17 +2315,10 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				if (arg_count < 1)
 					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
 				int sp = msg.whatArgN(0);
-				// debug
-				if (command == thermal_regulator::SUM_MANUAL_TIMED)
-				{
-					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
-					qDebug("[LUCA] frame is: %s", msg.frame_open);
-					qDebug("[LUCA] temperatura setpoint: %d", sp);
-				}
-				// end debug
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
+			checkAndSetStatus(ds, command == thermal_regulator::SUM_MANUAL ?
+					device_status_thermal_regulator::MANUAL : device_status_thermal_regulator::MANUAL_TIMED);
 			checkAndSetSummer(ds);
 			break;
 
@@ -2368,17 +2361,10 @@ void frame_interpreter_thermal_regulator::handle_frame(openwebnet _msg, device_s
 				if (arg_count < 1)
 					qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
 				int sp = msg.whatArgN(0);
-				// debug
-				if (command == thermal_regulator::SUM_MANUAL_TIMED)
-				{
-					qDebug("[LUCA] === MANUAL_TIMED FOUND! ===");
-					qDebug("[LUCA] frame is: %s", msg.frame_open);
-					qDebug("[LUCA] temperatura setpoint: %d", sp);
-				}
-				// end debug
 				setManualTemperature(ds, sp);
 			}
-			checkAndSetStatus(ds, device_status_thermal_regulator::MANUAL);
+			checkAndSetStatus(ds, command == thermal_regulator::WIN_MANUAL ?
+					device_status_thermal_regulator::MANUAL : device_status_thermal_regulator::MANUAL_TIMED);
 			checkAndSetWinter(ds);
 			break;
 
@@ -2497,41 +2483,10 @@ int frame_interpreter_thermal_regulator::commandRange(int what)
 
 // Temperature probe device frame interpreter
 
-bool frame_interpreter_temperature_probe_controlled::checkTimeoutVar(const stat_var &var)
+void frame_interpreter_temperature_probe_controlled::timeoutElapsed()
 {
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-
-	if ((var.get_val() != 0) && ((int)(tv.tv_sec) <= var.get_val()))
-	{
-		//qDebug("[TMOUTVAR] checkTimeoutVar() tv_sec=%d, val=%d: TRUE", (int)tv.tv_sec, var.get_val());
-		return true;
-	}
-	else
-	{
-		//qDebug("[TMOUTVAR] checkTimeoutVar() tv_sec=%d, val=%d: FALSE", (int)tv.tv_sec, var.get_val());
-		return false;
-	}
-}
-
-void frame_interpreter_temperature_probe_controlled::setTimeoutVar(stat_var &var)
-{
-	//qDebug("[TMOUTVAR] setTimeoutVar()");
-
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	int n = static_cast<int>(tv.tv_sec + STAT_VAR_TIMEOUT);
-	var.set_val(n);
-}
-
-void frame_interpreter_temperature_probe_controlled::clearTimeoutVar(stat_var &var)
-{
-	//qDebug("[TMOUTVAR] clearTimeoutVar()");
-
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	int n = static_cast<int>(tv.tv_sec - 1);
-	var.set_val(n);
+	new_request_allowed = true;
+	new_request_timer.stop();
 }
 
 // Public methods
@@ -2543,6 +2498,8 @@ frame_interpreter_temperature_probe_controlled(QString w, thermo_type_t _type,
 	type = _type;
 	ind_centrale = _ind_centrale;
 	indirizzo = _indirizzo;
+	new_request_allowed = true;
+	connect(&new_request_timer, SIGNAL(timeout()), SLOT(timeoutElapsed()));
 }
 
 bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ext m, bool& request_status)
@@ -2554,7 +2511,8 @@ bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ex
 	if (!strcmp(m.Extract_chi(), "4"))
 	{
 		qDebug("[INTRP TERMO] is_frame_ours: msg %s, ind %s, ind_centr %s",
-			m.frame_open, indirizzo.ascii(), ind_centrale.ascii());
+				m.frame_open, indirizzo.ascii(), ind_centrale.ascii());
+
 
 		char dove[30];
 		strcpy(dove, m.Extract_dove());
@@ -2573,6 +2531,15 @@ bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ex
 		{
 			qDebug("[INTRP TERMO] complex where");
 			is_our = (indirizzo == dove) && (ind_centrale == m.Extract_livello());
+		}
+
+		// Do not handle frames that are of the form *4*what*where##, in which `where' is in the form `#zona#centrale',
+		// if we are controlled by a 4 zones thermal regulator.
+		if (m.IsNormalFrame() && (strlen(m.Extract_dove()) > 0) && (strlen(m.Extract_livello()) > 0) && type == THERMO_Z4)
+		{
+			//FIXME: delete this warning when codition above is tested
+			qWarning("[TERMO] Refusing command frame %s because I'm 4 zones", m.frame_open);
+			is_our = false;
 		}
 	}
 
@@ -2595,9 +2562,15 @@ get_init_message(device_status *s, QString& out)
 		case device_status::TEMPERATURE_PROBE_EXTRA:
 			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> TEMPERATURE_PROBE_EXTRA");
 			/// FRAME VERSO LA CENTRALE
-			head = "*#4*#";
-			end  = "##";
-			out  = head + where + end;
+			// init frame to the thermal regulator must be sent only for 99 zones probe type
+			if (type == THERMO_Z99)
+			{
+				head = "*#4*#";
+				end  = "##";
+				out  = head + where + end;
+			}
+			else
+				out = "";
 			break;
 		case device_status::FANCOIL:
 			qDebug("frame_interpreter_temperature_probe_controlled::get_init_message -> FANCOIL");
@@ -2620,7 +2593,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	stat_var curr_local(stat_var::LOCAL);
 	stat_var curr_sp(stat_var::SP);
 	stat_var curr_crono(stat_var::CRONO);
-	stat_var curr_info_sonda(stat_var::INFO_SONDA);
 	stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
 	int stat;
 	int cr;
@@ -2632,7 +2604,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	ds->read((int)device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
 	ds->read((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 	ds->read((int)device_status_temperature_probe_extra::CRONO, curr_crono);
-	ds->read((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
 	ds->read((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 	
 	
@@ -2640,7 +2611,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	qDebug("curr local is %d", curr_local.get_val());
 	qDebug("curr sp is %d", curr_sp.get_val());
 	qDebug("curr crono is %d", curr_crono.get_val());
-	qDebug("curr info_sonda is %d", checkTimeoutVar(curr_info_sonda) ? 1 : 0);
+	qDebug("curr info_sonda is %d", new_request_allowed);
 	qDebug("curr info_centrale is %d", curr_info_centrale.get_val());
 	if((!strcmp(m.Extract_dove(), "#0")) && (type == THERMO_Z99) && (!curr_info_centrale.get_val()))
 	{
@@ -2654,9 +2625,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 		curr_info_centrale.set_val(delta);
 		ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
 		evt_list.append(ds);
-		clearTimeoutVar(curr_info_sonda);
-		ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-		evt_list.append(ds);
+		new_request_allowed = true;
 		return;
 	}
 
@@ -2682,16 +2651,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				stat = device_status_temperature_probe_extra::S_MAN;
 			}
 			//Richiesta set-point
-			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+			if ((ds->initialized()) && (new_request_allowed))
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove()+1);
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2712,16 +2679,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				do_event = true;
 				stat = device_status_temperature_probe_extra::S_AUTO;
 			}
-			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+			if ((ds->initialized()) && new_request_allowed)
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove()+1);
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2820,16 +2785,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 	switch(g)
 	{
 		case 0:
-			if (!checkTimeoutVar(curr_info_sonda))
+			if (new_request_allowed)
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove());
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			break;
 		case 13:
@@ -2856,16 +2819,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				  ((curr_stat.get_val() != device_status_temperature_probe_extra::S_AUTO) && 
 				  (curr_stat.get_val() != device_status_temperature_probe_extra::S_MAN) &&
 				  (loc == 13))) {*/
-				if((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+				if((ds->initialized()) && new_request_allowed)
 				{
 					memset(pippo,'\000',sizeof(pippo));
 					strcat(pippo,"*#4*");
 					strcat(pippo,m.Extract_dove());
 					strcat(pippo,"##");
 					emit init_requested(QString(pippo));
-					setTimeoutVar(curr_info_sonda);
-					ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-					evt_list.append(ds);
+					new_request_timer.start(TIMEOUT_TIME);
 				}
 				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
 				{
@@ -2884,16 +2845,14 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 			elaborato = true;
 			break;
 		case 12:
-			if ((ds->initialized()) && (!checkTimeoutVar(curr_info_sonda)))
+			if ((ds->initialized()) && new_request_allowed)
 			{
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*#4*");
 				strcat(pippo,m.Extract_dove());
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
-				setTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
+				new_request_timer.start(TIMEOUT_TIME);
 			}
 			break;
 		case 14:
@@ -2905,12 +2864,8 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				evt_list.append(ds);
 			}
-			if (checkTimeoutVar(curr_info_sonda))
-			{
-				clearTimeoutVar(curr_info_sonda);
-				ds->write_val((int)device_status_temperature_probe_extra::INFO_SONDA, curr_info_sonda);
-				evt_list.append(ds);
-			}
+			if (!new_request_allowed) //timer is active
+				timeoutElapsed();
 			elaborato = true;
 			break;
 		default:

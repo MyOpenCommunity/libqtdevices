@@ -13,7 +13,7 @@
 #include "diffsonora.h"
 #include "sottomenu.h"
 #include "btlabel.h"
-#include "../bt_stackopen/common_files/openwebnet.h" // class openwebnet
+#include <openwebnet.h> // class openwebnet
 
 #include <qcursor.h>
 #include <stdlib.h>
