@@ -485,6 +485,11 @@ void thermal_regulator::setHolidayEndTime(QTime time)
 	sendFrame(msg_open.frame_open);
 }
 
+unsigned thermal_regulator::minimumTemp() const
+{
+	return 30;
+}
+
 thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 	: thermal_regulator(where, p, g)
 {
@@ -528,6 +533,16 @@ void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
 	sendFrame(msg_open_2.frame_open);
 }
 
+unsigned thermal_regulator_4z::maximumTemp() const
+{
+	return 350;
+}
+
+thermo_type_t thermal_regulator_4z::type() const
+{
+	return THERMO_Z4;
+}
+
 thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
 	: thermal_regulator(where, p, g)
 {
@@ -549,6 +564,16 @@ void thermal_regulator_99z::setScenario(int scenario)
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
 	sendFrame(msg_open.frame_open);
+}
+
+unsigned thermal_regulator_99z::maximumTemp() const
+{
+	return 400;
+}
+
+thermo_type_t thermal_regulator_99z::type() const
+{
+	return THERMO_Z99;
 }
 
 // Controlled temperature probe implementation

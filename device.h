@@ -162,6 +162,23 @@ public:
 	 */
 	void setManualTemp(unsigned temperature);
 
+	/**
+	 * Getter methods that return the maximum temperature allowed by the thermal regulator.
+	 * \return The maximum temperature allowed by the thermal regulator, in 10th of Celsius degrees.
+	 */
+	virtual unsigned maximumTemp() const = 0;
+	/**
+	 * Getter method that return the minimum temperature allowed by the thermal regulator.
+	 * \return The minimum temperature allowed by the thermal regulator , in 10th of Celsius degrees.
+	 */
+	virtual unsigned minimumTemp() const;
+
+	/**
+	 * Getter method for thermal regulator type.
+	 * \return The type of thermal regulator.
+	 */
+	virtual thermo_type_t type() const = 0;
+
 	enum what_t
 	{
 		SUMMER = 0,
@@ -232,6 +249,9 @@ public:
 	 * \param time The duration of the manual setting (24 hours max?)
 	 */
 	void setManualTempTimed(int temperature, QTime time);
+
+	virtual unsigned maximumTemp() const;
+	virtual thermo_type_t type() const;
 };
 
 class thermal_regulator_99z : public thermal_regulator
@@ -245,6 +265,9 @@ public:
 	 * \param scenario The scenario to be activated (16 max).
 	 */
 	void setScenario(int scenario);
+
+	virtual unsigned maximumTemp() const;
+	virtual thermo_type_t type() const;
 };
 
 /**
