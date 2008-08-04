@@ -107,7 +107,7 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -150,9 +150,9 @@ private:
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
 	/// The minimum temperature that can be set with manual operation
-	const unsigned minimum_manual_temp;
+	unsigned minimum_manual_temp;
 	/// The maximum temperature that can be set with manual operation
-	const unsigned maximum_manual_temp;
+	unsigned maximum_manual_temp;
 	BtButton *navbar_button;
 
 private slots:
@@ -389,7 +389,7 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -426,6 +426,8 @@ private:
 	BtLabelEvo *descr_label;
 	BtLabelEvo *temp_label;
 	thermal_regulator *dev;
+	unsigned maximum_manual_temp;
+	unsigned minimum_manual_temp;
 private slots:
 	void incSetpoint();
 	void decSetpoint();
