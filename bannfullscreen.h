@@ -428,6 +428,7 @@ private:
 	thermal_regulator *dev;
 	unsigned maximum_manual_temp;
 	unsigned minimum_manual_temp;
+	unsigned setpoint_delta;
 private slots:
 	void incSetpoint();
 	void decSetpoint();

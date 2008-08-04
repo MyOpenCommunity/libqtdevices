@@ -597,7 +597,8 @@ void FSBannFancoil::status_changed(QPtrList<device_status> list)
 FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
 	: BannFullScreen(parent, "manual"),
 	main_layout(this),
-	dev(_dev)
+	dev(_dev),
+	setpoint_delta(5)
 {
 	descr = tr("Manual");
 	descr_label = new BtLabelEvo(this);
@@ -642,7 +643,7 @@ void FSBannManual::incSetpoint()
 	if (temp >= maximum_manual_temp)
 		return;
 	else
-		temp += 5;
+		temp += setpoint_delta;
 	Draw();
 }
 
@@ -651,7 +652,7 @@ void FSBannManual::decSetpoint()
 	if (temp <= minimum_manual_temp)
 		return;
 	else
-		temp -= 5;
+		temp -= setpoint_delta;
 	Draw();
 }
 
