@@ -724,6 +724,16 @@ void FSBannManualTimed::performAction()
 	emit(timeAndTempSelected(time_edit->time(), temp));
 }
 
+void FSBannManualTimed::setMaxHours(int max)
+{
+	time_edit->setMaxHours(max);
+}
+
+void FSBannManualTimed::setMaxMinutes(int max)
+{
+	time_edit->setMaxMinutes(max);
+}
+
 FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
@@ -1349,6 +1359,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 
 	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
 	bann->setSecondForeground(second_fg);
+	bann->setMaxHours(25);
 
 	timed_manual_menu->appendBanner(bann);
 	timed_manual_menu->setAllFGColor(paletteForegroundColor());

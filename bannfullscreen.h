@@ -445,6 +445,8 @@ class FSBannManualTimed : public FSBannManual
 Q_OBJECT
 public:
 	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
+	void setMaxHours(int max);
+	void setMaxMinutes(int max);
 private:
 	thermal_regulator_4z *dev;
 	/// TimeEdit widget
