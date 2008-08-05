@@ -13,6 +13,8 @@
 #ifndef BTWIDGETS_H
 #define BTWIDGETS_H
 
+#include "bttime.h"
+
 #include <qwidget.h>
 #include <qlcdnumber.h>
 #include <qdatetime.h>
@@ -33,14 +35,17 @@ public:
 	/**
 	 * Returns the time set on the widget.
 	 */
-	QTime time();
+	BtTime time();
+
+	void setMaxHours(int hours);
+	void setMaxMinutes(int minutes);
 private slots:
 	void incHours();
 	void decHours();
 	void incMin();
 	void decMin();
 private:
-	QTime _time;
+	BtTime _time;
 	QLCDNumber *num;
 };
 

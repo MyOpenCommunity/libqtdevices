@@ -405,7 +405,7 @@ void thermal_regulator::setWeekProgram(int program)
 	sendFrame(msg_open.frame_open);
 }
 
-void thermal_regulator::setWeekendDateTime(QDate date, QTime time, int program)
+void thermal_regulator::setWeekendDateTime(QDate date, BtTime time, int program)
 {
 	const QString sharp_where = QString("#") + where;
 
@@ -430,7 +430,7 @@ void thermal_regulator::setWeekendDateTime(QDate date, QTime time, int program)
 	setHolidayEndTime(time);
 }
 
-void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
+void thermal_regulator::setHolidayDateTime(QDate date, BtTime time, int program)
 {
 	const QString sharp_where = QString("#") + where;
 
@@ -471,7 +471,7 @@ void thermal_regulator::setHolidayEndDate(QDate date)
 	sendFrame(msg_open.frame_open);
 }
 
-void thermal_regulator::setHolidayEndTime(QTime time)
+void thermal_regulator::setHolidayEndTime(BtTime time)
 {
 	const QString sharp_where = QString("#") + where;
 
@@ -503,7 +503,7 @@ thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
-void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
+void thermal_regulator_4z::setManualTempTimed(int temperature, BtTime time)
 {
 	const QString sharp_where = QString("#") + where;
 

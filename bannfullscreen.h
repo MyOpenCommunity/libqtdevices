@@ -15,12 +15,12 @@
 #include "banner.h"
 #include "device_status.h"
 #include "btwidgets.h"
+#include "bttime.h"
 
 #include <qlayout.h>
 #include <qbuttongroup.h>
 #include <qdom.h>
 #include <qlcdnumber.h>
-#include <qdatetime.h>
 #include <qtimer.h>
 
 class device;
@@ -272,7 +272,7 @@ private slots:
 	/**
 	 * User confirmed time editing, go on with program selection.
 	 */
-	void timeSelected(QTime t);
+	void timeSelected(BtTime t);
 
 	/**
 	 * User cancelled program selection, go back to time editing.
@@ -323,7 +323,7 @@ private:
 
 
 	QDate date_end;
-	QTime time_end;
+	BtTime time_end;
 	TimeEditMenu *time_edit;
 	DateEditMenu *date_edit;
 	ProgramMenu *program_choice;
@@ -355,7 +355,7 @@ private:
 	thermal_regulator_4z *_dev;
 	sottoMenu *timed_manual_menu;
 private slots:
-	void manualTimedSelected(QTime time, int temp);
+	void manualTimedSelected(BtTime time, int temp);
 	void manualTimedCancelled();
 };
 
@@ -452,7 +452,7 @@ private:
 private slots:
 	void performAction();
 signals:
-	void timeAndTempSelected(QTime, int);
+	void timeAndTempSelected(BtTime, int);
 };
 
 class FSBannDate : public BannFullScreen
@@ -471,7 +471,7 @@ class FSBannTime : public BannFullScreen
 Q_OBJECT
 public:
 	FSBannTime(QWidget *parent, const char *name = 0);
-	QTime time();
+	BtTime time();
 private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;

@@ -759,7 +759,7 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout.addWidget(time_edit);
 }
 
-QTime FSBannTime::time()
+BtTime FSBannTime::time()
 {
 	return time_edit->time();
 }
@@ -1260,7 +1260,7 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SIGNAL(freezePropagate(bool)));
 	time_edit->hide();
-	connect(time_edit, SIGNAL(timeSelected(QTime)), this, SLOT(timeSelected(QTime)));
+	connect(time_edit, SIGNAL(timeSelected(BtTime)), this, SLOT(timeSelected(BtTime)));
 	connect(time_edit, SIGNAL(Closed()), this, SLOT(timeCancelled()));
 	return time_edit;
 }
@@ -1311,7 +1311,7 @@ void FSBannTermoReg::timeCancelled()
 	time_edit->hide();
 }
 
-void FSBannTermoReg::timeSelected(QTime t)
+void FSBannTermoReg::timeSelected(BtTime t)
 {
 	time_end = t;
 	program_choice->show();
@@ -1361,7 +1361,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SIGNAL(freezePropagate(bool)));
 
 	connect(timed_manual_menu, SIGNAL(Closed()), this, SLOT(manualTimedCancelled()));
-	connect(bann, SIGNAL(timeAndTempSelected(QTime, int)), this, SLOT(manualTimedSelected(QTime, int)));
+	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), this, SLOT(manualTimedSelected(BtTime, int)));
 	timed_manual_menu->hide();
 }
 
@@ -1370,7 +1370,7 @@ void FSBannTermoReg4z::manualTimedCancelled()
 	timed_manual_menu->hide();
 }
 
-void FSBannTermoReg4z::manualTimedSelected(QTime time, int temp)
+void FSBannTermoReg4z::manualTimedSelected(BtTime time, int temp)
 {
 	_dev->setManualTempTimed(temp, time);
 	timed_manual_menu->hide();
