@@ -501,7 +501,7 @@ void FileSelector::itemIsClicked(int item)
 			if (fn.isDir())
 				continue;
 
-			play_list.append(AudioData(fn.absFilePath().latin1()));
+			play_list.append(AudioData(fn.absFilePath(), fn.baseName(true)));
 			if (clicked_element.absFilePath() == fn.absFilePath())
 				element = track_number;
 
