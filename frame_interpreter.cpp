@@ -1312,7 +1312,7 @@ frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString
 void frame_interpreter_temperature_probe::get_init_message(device_status *s, QString& out)
 {
 	QString head = "*#4*";
-	QString end = (external ? "00*15#1##" : "*0##");
+	QString end = (external ? "*15#1##" : "*0##");
 	out = head + where + end;
 	qDebug("temperature_probe init message: %s", out.ascii());
 }
@@ -1389,13 +1389,13 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 	request_status = false;
 	if (strcmp(m.Extract_chi(),"4"))
 		return false;
-	char dove[30];
+#define MAX_LENGTH 30
+	char dove[MAX_LENGTH];
 	// FIXME: check Extract_level() too!
 	if (external && m.IsMeasureFrame() && !strcmp(m.Extract_grandezza(), "15"))
 	{
 		// Address is of type x00, with x >= 1 & x <= 9
-		strncpy(dove, m.Extract_dove(), 1);
-		dove[1] = 0;
+		strncpy(dove, m.Extract_dove(), MAX_LENGTH);
 	}
 	else
 		strcpy(dove, m.Extract_dove());
@@ -2659,6 +2659,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2687,6 +2688,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2793,6 +2795,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			break;
 		case 13:
@@ -2827,6 +2830,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 					strcat(pippo,"##");
 					emit init_requested(QString(pippo));
 					new_request_timer.start(TIMEOUT_TIME);
+					new_request_allowed = false;
 				}
 				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
 				{
@@ -2853,6 +2857,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			break;
 		case 14:
@@ -2864,8 +2869,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				evt_list.append(ds);
 			}
-			if (!new_request_allowed) //timer is active
-				timeoutElapsed();
 			elaborato = true;
 			break;
 		default:

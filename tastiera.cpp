@@ -54,7 +54,7 @@ tastiera::tastiera( QWidget *parent, const char *name, int line )
     cancBut = new BtButton(this,"Bottone di canc");
     
     digitLabel = new BtLabel(this,"");
-    scrittaLabel = new BtLabel(this,"PASSWORD:");
+    scrittaLabel = new BtLabel(this, tr("PASSWORD:"));
 
 
     unoBut->setGeometry(POSX1,line*0,BUT_DIM,BUT_DIM);
@@ -303,7 +303,7 @@ void tastiera::draw()
      QFont aFont;
      FontManager::instance()->getFont( font_tastiera_scritta_label, aFont );
      scrittaLabel->setFont( aFont );
-     scrittaLabel->setText("PASSWORD:"); // FIXME tradurre????
+     scrittaLabel->setText(tr("PASSWORD:"));
      digitLabel->setAlignment(AlignLeft|AlignVCenter);
 
      FontManager::instance()->getFont( font_tastiera_digit_label, aFont );

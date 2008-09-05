@@ -124,7 +124,10 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
 						btouch_device_cache.get_temperature_probe_controlled(
 							where_composed.ascii(), THERMO_Z4, false, ind_centrale.ascii(), simple_address.ascii()));
-				bfs = new FSBannProbe(n, dev, THERMO_Z4, parent);
+				QString thermr_where = QString("0#") + ind_centrale;
+				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
+				bfs = new FSBannProbe(n, dev, thermo_reg, parent);
 			}
 			break;
 		case fs_99z_probe:
@@ -132,7 +135,10 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
 						btouch_device_cache.get_temperature_probe_controlled(
 							simple_address.ascii(), THERMO_Z99, false, ind_centrale.ascii(), simple_address.ascii()));
-				bfs = new FSBannProbe(n, dev, THERMO_Z99, parent);
+				QString thermr_where = ind_centrale;
+				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
+				bfs = new FSBannProbe(n, dev, thermo_reg, parent);
 			}
 			break;
 		case fs_4z_fancoil:
@@ -140,7 +146,10 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
 						btouch_device_cache.get_temperature_probe_controlled(
 							where_composed.ascii(), THERMO_Z4, true, ind_centrale.ascii(), simple_address.ascii()));
-				bfs = new FSBannFancoil(n, dev, THERMO_Z4, parent);
+				QString thermr_where = QString("0#") + ind_centrale;
+				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
+				bfs = new FSBannFancoil(n, dev, thermo_reg, parent);
 			}
 			break;
 		case fs_99z_fancoil:
@@ -148,7 +157,10 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
 						btouch_device_cache.get_temperature_probe_controlled(
 							simple_address.ascii(), THERMO_Z99, true, ind_centrale.ascii(), simple_address.ascii()));
-				bfs = new FSBannFancoil(n, dev, THERMO_Z99, parent);
+				QString thermr_where = ind_centrale;
+				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
+				bfs = new FSBannFancoil(n, dev, thermo_reg, parent);
 			}
 			break;
 		case fs_4z_thermal_regulator:
@@ -243,16 +255,16 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent,const char *name)
+FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,const char *name)
 	: FSBannSimpleProbe(parent, n),
 	delta_setpoint(false),
 	setpoint_delay(2000),
-	setpoint_delta(5),
-	minimum_manual_temp(35),
-	maximum_manual_temp(395)
+	setpoint_delta(5)
 {
 	status = AUTOMATIC;
-	probe_type = type;
+	probe_type = thermo_reg->type();
+	maximum_manual_temp = thermo_reg->maximumTemp();
+	minimum_manual_temp = thermo_reg->minimumTemp();
 	navbar_button = getButton(IMG_MAN);
 	navbar_button->hide();
 	conf_root = n;
@@ -316,7 +328,7 @@ BtButton *FSBannProbe::customButton()
 
 void FSBannProbe::incSetpoint()
 {
-	if (setpoint > maximum_manual_temp)
+	if (setpoint >= maximum_manual_temp)
 		return;
 	else
 		setpoint += setpoint_delta;
@@ -327,7 +339,7 @@ void FSBannProbe::incSetpoint()
 
 void FSBannProbe::decSetpoint()
 {
-	if (setpoint < minimum_manual_temp)
+	if (setpoint <= minimum_manual_temp)
 		return;
 	else
 		setpoint -= setpoint_delta;
@@ -497,8 +509,8 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 
 }
 
-FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name)
-	: FSBannProbe(n, _dev, type, parent),
+FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent, const char *name)
+	: FSBannProbe(n, _dev, thermo_reg, parent),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
 	dev = _dev;
@@ -585,11 +597,15 @@ void FSBannFancoil::status_changed(QPtrList<device_status> list)
 FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
 	: BannFullScreen(parent, "manual"),
 	main_layout(this),
-	dev(_dev)
+	dev(_dev),
+	setpoint_delta(5)
 {
 	descr = tr("Manual");
 	descr_label = new BtLabelEvo(this);
 	main_layout.addWidget(descr_label);
+
+	maximum_manual_temp = dev->maximumTemp();
+	minimum_manual_temp = dev->minimumTemp();
 
 	navbar_button = getButton(I_OK);
 	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
@@ -624,13 +640,19 @@ void FSBannManual::performAction()
 
 void FSBannManual::incSetpoint()
 {
-	temp += 5;
+	if (temp >= maximum_manual_temp)
+		return;
+	else
+		temp += setpoint_delta;
 	Draw();
 }
 
 void FSBannManual::decSetpoint()
 {
-	temp -= 5;
+	if (temp <= minimum_manual_temp)
+		return;
+	else
+		temp -= setpoint_delta;
 	Draw();
 }
 
@@ -702,6 +724,16 @@ void FSBannManualTimed::performAction()
 	emit(timeAndTempSelected(time_edit->time(), temp));
 }
 
+void FSBannManualTimed::setMaxHours(int max)
+{
+	time_edit->setMaxHours(max);
+}
+
+void FSBannManualTimed::setMaxMinutes(int max)
+{
+	time_edit->setMaxMinutes(max);
+}
+
 FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
@@ -737,7 +769,7 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout.addWidget(time_edit);
 }
 
-QTime FSBannTime::time()
+BtTime FSBannTime::time()
 {
 	return time_edit->time();
 }
@@ -1238,7 +1270,7 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SIGNAL(freezePropagate(bool)));
 	time_edit->hide();
-	connect(time_edit, SIGNAL(timeSelected(QTime)), this, SLOT(timeSelected(QTime)));
+	connect(time_edit, SIGNAL(timeSelected(BtTime)), this, SLOT(timeSelected(BtTime)));
 	connect(time_edit, SIGNAL(Closed()), this, SLOT(timeCancelled()));
 	return time_edit;
 }
@@ -1289,7 +1321,7 @@ void FSBannTermoReg::timeCancelled()
 	time_edit->hide();
 }
 
-void FSBannTermoReg::timeSelected(QTime t)
+void FSBannTermoReg::timeSelected(BtTime t)
 {
 	time_end = t;
 	program_choice->show();
@@ -1327,6 +1359,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 
 	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
 	bann->setSecondForeground(second_fg);
+	bann->setMaxHours(25);
 
 	timed_manual_menu->appendBanner(bann);
 	timed_manual_menu->setAllFGColor(paletteForegroundColor());
@@ -1339,7 +1372,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SIGNAL(freezePropagate(bool)));
 
 	connect(timed_manual_menu, SIGNAL(Closed()), this, SLOT(manualTimedCancelled()));
-	connect(bann, SIGNAL(timeAndTempSelected(QTime, int)), this, SLOT(manualTimedSelected(QTime, int)));
+	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), this, SLOT(manualTimedSelected(BtTime, int)));
 	timed_manual_menu->hide();
 }
 
@@ -1348,7 +1381,7 @@ void FSBannTermoReg4z::manualTimedCancelled()
 	timed_manual_menu->hide();
 }
 
-void FSBannTermoReg4z::manualTimedSelected(QTime time, int temp)
+void FSBannTermoReg4z::manualTimedSelected(BtTime time, int temp)
 {
 	_dev->setManualTempTimed(temp, time);
 	timed_manual_menu->hide();
@@ -1366,6 +1399,7 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	scenario_menu = new ScenarioMenu(0, "weekly", conf);
 	scenario_menu->setAllBGColor(paletteBackgroundColor());
 	scenario_menu->setAllFGColor(paletteForegroundColor());
+	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), scenario_menu, SLOT(status_changed(QPtrList<device_status>)));
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));

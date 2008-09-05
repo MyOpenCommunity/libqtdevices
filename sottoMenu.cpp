@@ -1057,7 +1057,7 @@ void TimeEditMenu::performAction()
 	emit(timeSelected(time()));
 }
 
-QTime TimeEditMenu::time()
+BtTime TimeEditMenu::time()
 {
 	return time_edit->time();
 }

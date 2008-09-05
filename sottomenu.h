@@ -16,6 +16,7 @@
 #include "main.h"
 #include "banner.h"
 #include "device_status.h"
+#include "bttime.h"
 
 #include <qwidget.h>
 #include <qptrlist.h> 
@@ -436,13 +437,13 @@ class TimeEditMenu : public sottoMenu
 Q_OBJECT
 public:
 	TimeEditMenu(QWidget *parent, const char *name);
-	QTime time();
+	BtTime time();
 private:
 	FSBannTime *time_edit;
 private slots:
 	void performAction();
 signals:
-	void timeSelected(QTime);
+	void timeSelected(BtTime);
 };
 
 /**
