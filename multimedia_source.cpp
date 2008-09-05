@@ -528,8 +528,13 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
+	QString old_path = current_dir.absPath();
 	if (changePath(new_path))
+	{
+		if (current_dir.count() <= 2) // empty directory
+			changePath(old_path);
 		return browseFiles();
+	}
 	else
 	{
 		qDebug("[AUDIO] browseFiles(): path '%s' doesn't exist", new_path.ascii());
