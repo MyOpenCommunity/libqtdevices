@@ -269,6 +269,9 @@ private:
 
 	/// Browse given path, return false in case of error.
 	bool browseFiles(QString new_path);
+
+	/// Change the current dir, return false in case of error.
+	bool changePath(QString new_path);
 };
 
 
