@@ -111,17 +111,16 @@ void banradio::status_changed(QPtrList<device_status> sl)
 				freq = (float)curr_freq.get_val()/1000.0F;
 				myRadio->setFreq(freq);
 				myRadio->setStaz((uchar)curr_staz.get_val());
-				QString qrds;
+
+				byte rds[9];
 				tmp = curr_rds0.get_val();
 				qDebug("rds0 = 0x%08x", tmp);
-				qrds = tmp;
-				qrds.truncate (4);
+				memcpy((void *)rds, (void *)&tmp, 4);
 				tmp = curr_rds1.get_val();
 				qDebug("rds1 = 0x%08x", tmp);
-				qrds += tmp;
-				qrds.truncate (8);
-				qDebug("*** setting rds to %s", qrds.ascii());
-				myRadio->setRDS( qrds );
+				memcpy((void *)&rds[4], (void *)&tmp, 4);
+				qDebug("*** setting rds to %s", rds);
+				myRadio->setRDS(rds);
 				aggiorna=1;
 				break;
 			}
