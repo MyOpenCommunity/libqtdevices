@@ -37,6 +37,12 @@ public:
 		STAZ,
 		RDS0,
 		RDS1,
+		RDS2,
+		RDS3,
+		RDS4,
+		RDS5,
+		RDS6,
+		RDS7,
 		LOCAL,   // Temperature probe personal setpoint delta
 		SP,      // Temperature probe setpoint
 		ACTIVE_SOURCE,
@@ -357,6 +363,12 @@ public:
 		STAZ_INDEX,
 		RDS0_INDEX,
 		RDS1_INDEX,
+		RDS2_INDEX,
+		RDS3_INDEX,
+		RDS4_INDEX,
+		RDS5_INDEX,
+		RDS6_INDEX,
+		RDS7_INDEX
 	} ind;
 	device_status_radio();
 };

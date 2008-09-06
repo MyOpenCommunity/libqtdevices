@@ -87,17 +87,23 @@ void banradio::grandadChanged(QWidget *newGrandad)
 
 void banradio::status_changed(QPtrList<device_status> sl)
 {
+	// TODO: remove duplicate code from RDS stat var!!
 	stat_var curr_freq(stat_var::FREQ);
 	stat_var curr_staz(stat_var::STAZ);
 	stat_var curr_rds0(stat_var::RDS0);
 	stat_var curr_rds1(stat_var::RDS1);
+	stat_var curr_rds2(stat_var::RDS2);
+	stat_var curr_rds3(stat_var::RDS3);
+	stat_var curr_rds4(stat_var::RDS4);
+	stat_var curr_rds5(stat_var::RDS5);
+	stat_var curr_rds6(stat_var::RDS6);
+	stat_var curr_rds7(stat_var::RDS7);
 	bool aggiorna = false;
 	qDebug("bannradio::status_changed()");
 	QPtrListIterator<device_status> *dsi = 
 		new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
-	int tmp;
 	float freq;
 	while( ( ds = dsi->current() ) != 0) {
 		switch (ds->get_type()) {
@@ -108,19 +114,27 @@ void banradio::status_changed(QPtrList<device_status> sl)
 				ds->read(device_status_radio::STAZ_INDEX, curr_staz);
 				ds->read(device_status_radio::RDS0_INDEX, curr_rds0);
 				ds->read(device_status_radio::RDS1_INDEX, curr_rds1);
+				ds->read(device_status_radio::RDS2_INDEX, curr_rds2);
+				ds->read(device_status_radio::RDS3_INDEX, curr_rds3);
+				ds->read(device_status_radio::RDS4_INDEX, curr_rds4);
+				ds->read(device_status_radio::RDS5_INDEX, curr_rds5);
+				ds->read(device_status_radio::RDS6_INDEX, curr_rds6);
+				ds->read(device_status_radio::RDS7_INDEX, curr_rds7);
 				freq = (float)curr_freq.get_val()/1000.0F;
 				myRadio->setFreq(freq);
 				myRadio->setStaz((uchar)curr_staz.get_val());
 
-				byte rds[9];
-				tmp = curr_rds0.get_val();
-				qDebug("rds0 = 0x%08x", tmp);
-				memcpy((void *)rds, (void *)&tmp, 4);
-				tmp = curr_rds1.get_val();
-				qDebug("rds1 = 0x%08x", tmp);
-				memcpy((void *)&rds[4], (void *)&tmp, 4);
-				qDebug("*** setting rds to %s", rds);
-				myRadio->setRDS(rds);
+				QString qrds;
+				qrds += QChar(curr_rds0.get_val());
+				qrds += QChar(curr_rds1.get_val());
+				qrds += QChar(curr_rds2.get_val());
+				qrds += QChar(curr_rds3.get_val());
+				qrds += QChar(curr_rds4.get_val());
+				qrds += QChar(curr_rds5.get_val());
+				qrds += QChar(curr_rds6.get_val());
+				qrds += QChar(curr_rds7.get_val());
+				qDebug("*** setting rds to %s", qrds.ascii());
+				myRadio->setRDS(qrds);
 				aggiorna=1;
 				break;
 			}
