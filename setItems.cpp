@@ -236,7 +236,11 @@ void machVers::showVers()
 {
 	v->setPaletteBackgroundColor(backgroundColor());
 	v->setPaletteForegroundColor(foregroundColor());
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	v->showFullScreen();
+#else
 	v->show();
+#endif
 
 	tiempo = new QTimer(this,"clock");
 	tiempo->start(10000,TRUE);
