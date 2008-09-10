@@ -12,6 +12,7 @@
 //class QTimer;
 #include <qtimer.h>
 
+class QPushButton;
 
 /*!
   \class calibrate
@@ -36,9 +37,15 @@ private:
 	void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
 	void mouseReleaseEvent(QMouseEvent *);
+	QPushButton *drawButton(int x, int y);
+	void showButton1();
 
 private slots:
 	void timeout();
+	void endCalibration();
+	void rollbackCalibration();
+	void showButton2();
+
 signals:
 	void inizioCalib();
 	void fineCalib();
@@ -56,6 +63,7 @@ private:
 	unsigned char manut;
 	int dx;
 	int dy;
+	bool show_crosshair;
 };
 
 

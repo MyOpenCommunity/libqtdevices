@@ -1,6 +1,7 @@
 
 #include "calibrate.h"
 #include "main.h"
+#include "fontmanager.h"
 
 #include <qpainter.h>
 #include <qtimer.h>
@@ -11,10 +12,14 @@
 #include <qfile.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qpushbutton.h>
+
+#define BUTTON_SEC_TIMEOUT 10
+
 
 
 Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned char m) :
-	QWidget(parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose)
+	QWidget(parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose), show_crosshair(true)
 {
 	const int offset = 30;
 	QRect desk = qApp->desktop()->geometry();
@@ -45,6 +50,9 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	if (QFile::exists("/etc/pointercal"))
+		system("cp /etc/pointercal /etc/pointercal.calibrated");
+
 	QWSServer::mouseHandler()->clearCalibration();
 #endif
 	grabMouse();
@@ -111,10 +119,13 @@ void Calibrate::moveCrosshair(QPoint pt)
 	QPainter p(this);
 	p.drawPixmap(crossPos.x()-8, crossPos.y()-8, saveUnder);
 	saveUnder = QPixmap::grabWindow(winId(), pt.x()-8, pt.y()-8, 16, 16);
-	p.drawRect(pt.x()-1, pt.y()-8, 2, 7);
-	p.drawRect(pt.x()-1, pt.y()+1, 2, 7);
-	p.drawRect(pt.x()-8, pt.y()-1, 7, 2);
-	p.drawRect(pt.x()+1, pt.y()-1, 7, 2);
+	if (show_crosshair)
+	{
+		p.drawRect(pt.x()-1, pt.y()-8, 2, 7);
+		p.drawRect(pt.x()-1, pt.y()+1, 2, 7);
+		p.drawRect(pt.x()-8, pt.y()-1, 7, 2);
+		p.drawRect(pt.x()+1, pt.y()-1, 7, 2);
+	}
 	crossPos = pt;
 }
 
@@ -153,6 +164,67 @@ void Calibrate::mousePressEvent(QMouseEvent *e)
 #endif
 }
 
+QPushButton *Calibrate::drawButton(int x, int y)
+{
+	QFont aFont;
+	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
+
+	QPushButton *b = new QPushButton(this);
+	b->setText(tr("Click here!"));
+	b->setFont(aFont);
+	b->setGeometry(x, y, 100, 50);
+	b->show();
+	return b;
+}
+
+void Calibrate::showButton1()
+{
+	qWarning("Calibrate::showButton1");
+	timer->stop();
+	timer->disconnect();
+	timer->start(BUTTON_SEC_TIMEOUT * 1000, true);
+	connect(timer, SIGNAL(timeout()), SLOT(rollbackCalibration()));
+
+	QPushButton *b = drawButton(20, 20);
+	connect(b, SIGNAL(clicked()), SLOT(showButton2()));
+	connect(b, SIGNAL(clicked()), b, SLOT(hide()));
+	show_crosshair = false;
+	update();
+}
+
+void Calibrate::showButton2()
+{
+	qWarning("Calibrate::showButton2");
+
+	QPushButton *b = drawButton(120, 250);
+	connect(b, SIGNAL(clicked()), SLOT(endCalibration()));
+}
+
+void Calibrate::rollbackCalibration()
+{
+	qWarning("Calibrate::rollbackCalibration");
+	if (QFile::exists("/etc/pointercal.calibrated"))
+		system("cp /etc/pointercal.calibrated /etc/pointercal");
+	else
+		qWarning("Cannot found backup calibration!");
+
+	endCalibration();
+}
+
+void Calibrate::endCalibration()
+{
+	qWarning("Calibrate::endCalibration");
+	if (QFile::exists("/etc/pointercal.calibrated"))
+		system("rm /etc/pointercal.calibrated");
+
+	hide();
+	close();
+
+	emit (fineCalib());
+	if (manut==1)
+		delete(this);
+}
+
 void Calibrate::mouseReleaseEvent(QMouseEvent *)
 {
 	if (timer->isActive())
@@ -182,14 +254,13 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 		qWarning("sto per fare Sanity Chack");
 		if (sanityCheck())
 		{
-			QWSServer::mouseHandler()->calibrate(&cd);
 			releaseMouse();
-			hide();
-			close();
+			QWSServer::mouseHandler()->calibrate(&cd);
 			doMove = FALSE;
-			emit (fineCalib());
-			if (manut==1)
-				delete(this);
+			if (!manut)
+				showButton1();
+			else
+				endCalibration();
 		}
 		else
 			location = QWSPointerCalibrationData::TopLeft;

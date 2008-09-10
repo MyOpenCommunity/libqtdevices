@@ -183,4 +183,15 @@ SOURCES += actuators.cpp \
            ../bt_stackopen/common_files/openwebnet.cpp \
            ../bt_stackopen/common_files/common_functions.cpp \
            ../bt_stackopen/common_files/gestione_socket.cpp
-TRANSLATIONS += cfg/extra/2/btouch_ita.ts
+
+TRANSLATIONS += cfg/extra/2/btouch_it.ts \
+                cfg/extra/2/btouch_de.ts \
+                cfg/extra/2/btouch_es.ts \
+                cfg/extra/2/btouch_fr.ts \
+                cfg/extra/2/btouch_nl.ts \
+                cfg/extra/2/btouch_pt.ts \
+                cfg/extra/2/btouch_ru.ts \
+                cfg/extra/2/btouch_ar.ts \
+                cfg/extra/2/btouch_zh_CN.ts \
+                cfg/extra/2/btouch_zh_TW.ts
+

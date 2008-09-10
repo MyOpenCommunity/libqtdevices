@@ -1,86 +1,58 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>Calibrate</name>
+    <message>
+        <source>Click here!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuell</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>of</source>
-        <translation>di</translation>
+        <translation>von</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Musikst.:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Künstler:</translation>
     </message>
     <message>
         <source>Album:</source>
-        <translation type="unfinished"></translation>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>MediaPlayer</name>
-    <message>
-        <source>Playing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Artist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Album</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Year</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Genre</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>Dauer:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Preset</source>
-        <translation></translation>
+        <translation>Preset</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>Alti</translation>
+        <translation>Hoch</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Bassi</translation>
+        <translation>Teif</translation>
     </message>
     <message>
         <source>Balance</source>
-        <translation>Bilanciamento</translation>
+        <translation>Ausgleich</translation>
     </message>
     <message>
         <source>Loud</source>
@@ -91,47 +63,47 @@
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Normal</source>
-        <translation>Normale</translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation></translation>
+        <translation>Dance</translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation></translation>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation></translation>
+        <translation>Rock</translation>
     </message>
     <message>
         <source>Classical</source>
-        <translation></translation>
+        <translation>Classical</translation>
     </message>
     <message>
         <source>Jazz</source>
-        <translation></translation>
+        <translation>Jazz</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation></translation>
+        <translation>Party</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation></translation>
+        <translation>Soft</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation></translation>
+        <translation>Full Bass</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation></translation>
+        <translation>Full Treble</translation>
     </message>
     <message>
         <source>Preset</source>
-        <translation></translation>
+        <translation>Preset</translation>
     </message>
 </context>
 <context>
@@ -142,60 +114,82 @@
     </message>
     <message>
         <source>Servers</source>
-        <translation>Mediaserver</translation>
+        <translation>Servers</translation>
+    </message>
+</context>
+<context>
+    <name>StopngoPage</name>
+    <message>
+        <source>Self-recluser</source>
+        <translation>Reset</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <source>Self-test</source>
+        <translation>Auto Test</translation>
     </message>
 </context>
 <context>
     <name>antintrusione</name>
     <message>
         <source>technical</source>
-        <translation>tecnico</translation>
+        <translation>Technik</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>intrusione</translation>
+        <translation>Einbruch</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>manomissione</translation>
+        <translation>Aufbruch</translation>
     </message>
     <message>
         <source>anti-panic</source>
-        <translation>antipanico</translation>
+        <translation>Antipanik</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Unknown</source>
-        <translation>Sconosciuto</translation>
+        <translation>Unbekannt</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Luce scale</translation>
+        <translation>Treppenlicht</translation>
     </message>
     <message>
         <source>Door lock</source>
-        <translation>Serratura</translation>
+        <translation>Schloss</translation>
     </message>
 </context>
 <context>
     <name>sveglia</name>
     <message>
         <source>once</source>
-        <translation>una volta</translation>
+        <translation>ein Mal</translation>
     </message>
     <message>
         <source>always</source>
-        <translation>sempre</translation>
+        <translation>immer</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>lun-ven</translation>
+        <translation>Mon-Fr</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>sab-dom</translation>
+        <translation>Sam-Son</translation>
+    </message>
+</context>
+<context>
+    <name>tastiera</name>
+    <message>
+        <source>PASSWORD:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

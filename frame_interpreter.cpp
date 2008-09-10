@@ -1745,11 +1745,11 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
 			qDebug("Curr active source for amb %s = %d", ambiente+1, curr_act.get_val());
 			act = atoi(m.Extract_dove())-110-(10*atoi(ambiente));
 			qDebug("New active source = %d", act);
-			if(act != curr_act.get_val()) {
+			//if(act != curr_act.get_val()) {
 				curr_act.set_val(act);
 				ds->write_val(atoi(ambiente), curr_act);
 				do_event = true;
-			}
+			//}
 		}
 	}
 	if(do_event)
