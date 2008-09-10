@@ -1,3 +1,4 @@
+
 /****************************************************************
 **
 ** BTicino Touch scren Colori art. H4686
@@ -280,8 +281,12 @@ void sveglia::mostra()
     {
 	choice[idx]  -> hide();
 	testiChoice[idx] -> hide();
-    }	
-    show();     
+    }
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	showFullScreen();
+#else
+	show();
+#endif
     disconnect( but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
     disconnect( but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
     disconnect( but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));

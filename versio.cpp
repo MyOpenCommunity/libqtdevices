@@ -20,22 +20,22 @@
 
 versio::versio( QWidget *parent,const char *name , unsigned int f)
         : BtLabel( parent, name,  f)
-{ 
+{
 
      setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
      setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-     
+
      datiGen = new BtLabel(this, "DG");
-     
+
      datiGen->setGeometry(15, 150, 210, 160);
      datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
-     
+
      BtLabel* myHome = new BtLabel(this, "MH");
-     myHome->setGeometry(30, 12, 181, 128);     
+     myHome->setGeometry(30, 12, 181, 128);
      myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
      myHome->setAutoResize(TRUE);
      myHome->setPixmap(QPixmap(IMG_PATH "my_home.png"));
-     
+
      bticino = new BtLabel(this, "BT");
      bticino->setGeometry(129, 258, 92, 42);
      bticino->setFrameStyle( QFrame::Plain);
@@ -43,10 +43,10 @@ versio::versio( QWidget *parent,const char *name , unsigned int f)
      bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
 
      datiGen->setLineWidth(3);
-     //datiGen->setText(" H/L/N/NT4684");     
+     //datiGen->setText(" H/L/N/NT4684");
      datiGen->setText( model );
-//     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");       
-     
+//     datiGen->setText("art. H4684\n\nFIRMWARE\nPIC_REL\nHARDWARE");
+
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
      setCursor (QCursor (blankCursor));
 #endif
@@ -75,7 +75,7 @@ void versio::gestFrame(char* frame)
  {
     openwebnet msg_open;
     char aggiorna;
-    
+
     aggiorna=0;
       
     msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
