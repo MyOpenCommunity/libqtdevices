@@ -405,7 +405,7 @@ void thermal_regulator::setWeekProgram(int program)
 	sendFrame(msg_open.frame_open);
 }
 
-void thermal_regulator::setWeekendDateTime(QDate date, QTime time, int program)
+void thermal_regulator::setWeekendDateTime(QDate date, BtTime time, int program)
 {
 	const QString sharp_where = QString("#") + where;
 
@@ -430,7 +430,7 @@ void thermal_regulator::setWeekendDateTime(QDate date, QTime time, int program)
 	setHolidayEndTime(time);
 }
 
-void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
+void thermal_regulator::setHolidayDateTime(QDate date, BtTime time, int program)
 {
 	const QString sharp_where = QString("#") + where;
 
@@ -446,7 +446,7 @@ void thermal_regulator::setHolidayDateTime(QDate date, QTime time, int program)
 	what.sprintf("%d#%d", HOLIDAY_NUM_DAYS + number_of_days, WEEK_PROGRAM + program);
 
 	openwebnet msg_open;
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where;
+	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
 	sendFrame(msg_open.frame_open);
 
@@ -471,7 +471,7 @@ void thermal_regulator::setHolidayEndDate(QDate date)
 	sendFrame(msg_open.frame_open);
 }
 
-void thermal_regulator::setHolidayEndTime(QTime time)
+void thermal_regulator::setHolidayEndTime(BtTime time)
 {
 	const QString sharp_where = QString("#") + where;
 
@@ -483,6 +483,11 @@ void thermal_regulator::setHolidayEndTime(QTime time)
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
 	sendFrame(msg_open.frame_open);
+}
+
+unsigned thermal_regulator::minimumTemp() const
+{
+	return 30;
 }
 
 thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
@@ -498,7 +503,7 @@ thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 			this, SLOT(frame_event_handler(QPtrList<device_status>)));
 }
 
-void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
+void thermal_regulator_4z::setManualTempTimed(int temperature, BtTime time)
 {
 	const QString sharp_where = QString("#") + where;
 
@@ -528,6 +533,16 @@ void thermal_regulator_4z::setManualTempTimed(int temperature, QTime time)
 	sendFrame(msg_open_2.frame_open);
 }
 
+unsigned thermal_regulator_4z::maximumTemp() const
+{
+	return 350;
+}
+
+thermo_type_t thermal_regulator_4z::type() const
+{
+	return THERMO_Z4;
+}
+
 thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
 	: thermal_regulator(where, p, g)
 {
@@ -549,6 +564,16 @@ void thermal_regulator_99z::setScenario(int scenario)
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
 	sendFrame(msg_open.frame_open);
+}
+
+unsigned thermal_regulator_99z::maximumTemp() const
+{
+	return 400;
+}
+
+thermo_type_t thermal_regulator_99z::type() const
+{
+	return THERMO_Z99;
 }
 
 // Controlled temperature probe implementation

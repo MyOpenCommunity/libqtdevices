@@ -4,6 +4,7 @@
 #define __DEVICE_H__
 
 #include "device_status.h"
+#include "bttime.h"
 
 #include <qstring.h>
 #include <qptrlist.h>
@@ -144,7 +145,7 @@ public:
 	void setSummer();
 	void setWinter();
 	void setProtection();
-	void setHolidayDateTime(QDate date, QTime time, int program);
+	void setHolidayDateTime(QDate date, BtTime time, int program);
 
 	/**
 	 * Function to set weekend mode (giorno festivo) with end date and time, and program to be executed at the end of weekend mode.
@@ -152,7 +153,7 @@ public:
 	 * \param time The end time of weekend mode.
 	 * \param program The program to be executed at the end of weekend mode.
 	 */
-	void setWeekendDateTime(QDate date, QTime time, int program);
+	void setWeekendDateTime(QDate date, BtTime time, int program);
 	void setWeekProgram(int program);
 
 	/**
@@ -161,6 +162,23 @@ public:
 	 * \param temperature The temperature to be set, ranges from 50 to 400, step is 5.
 	 */
 	void setManualTemp(unsigned temperature);
+
+	/**
+	 * Getter methods that return the maximum temperature allowed by the thermal regulator.
+	 * \return The maximum temperature allowed by the thermal regulator, in 10th of Celsius degrees.
+	 */
+	virtual unsigned maximumTemp() const = 0;
+	/**
+	 * Getter method that return the minimum temperature allowed by the thermal regulator.
+	 * \return The minimum temperature allowed by the thermal regulator , in 10th of Celsius degrees.
+	 */
+	virtual unsigned minimumTemp() const;
+
+	/**
+	 * Getter method for thermal regulator type.
+	 * \return The type of thermal regulator.
+	 */
+	virtual thermo_type_t type() const = 0;
 
 	enum what_t
 	{
@@ -217,7 +235,7 @@ private:
 	 * Utility function to set end time for both holiday and weekend mode
 	 * \param time The end time of the mode.
 	 */
-	void setHolidayEndTime(QTime time);
+	void setHolidayEndTime(BtTime time);
 };
 
 class thermal_regulator_4z : public thermal_regulator
@@ -231,7 +249,10 @@ public:
 	 * \param temperature The temperature to be set
 	 * \param time The duration of the manual setting (24 hours max?)
 	 */
-	void setManualTempTimed(int temperature, QTime time);
+	void setManualTempTimed(int temperature, BtTime time);
+
+	virtual unsigned maximumTemp() const;
+	virtual thermo_type_t type() const;
 };
 
 class thermal_regulator_99z : public thermal_regulator
@@ -245,6 +266,9 @@ public:
 	 * \param scenario The scenario to be activated (16 max).
 	 */
 	void setScenario(int scenario);
+
+	virtual unsigned maximumTemp() const;
+	virtual thermo_type_t type() const;
 };
 
 /**

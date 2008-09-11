@@ -382,6 +382,9 @@ void MediaPlayWindow::refreshPlayInfo()
 	QStringList current = QStringList::split(".", playing_info["current_time"]);
 
 	// Set INFO in Labels
+	if (playing_info["meta_title"].isNull())
+		playing_info["meta_title"] = getCurrentDescription();
+
 	meta_title_label->setText(playing_info["meta_title"]);
 	meta_artist_label->setText(playing_info["meta_artist"]);
 	meta_album_label->setText(playing_info["meta_album"]);

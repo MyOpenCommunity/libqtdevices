@@ -52,7 +52,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	num = new QLCDNumber(this);
 	num->setSegmentStyle(QLCDNumber::Flat);
 	num->setNumDigits(5);
-	num->display(_time.toString("h:mm"));
+	num->display(_time.toString());
 	num->setFrameStyle(QFrame::NoFrame);
 	main_layout->addWidget(num);
 
@@ -68,33 +68,43 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 	hbox->addWidget(btn2);
 }
 
-QTime BtTimeEdit::time()
+void BtTimeEdit::setMaxHours(int hours)
+{
+	_time.setMaxHours(hours);
+}
+
+void BtTimeEdit::setMaxMinutes(int minutes)
+{
+	_time.setMaxMinutes(minutes);
+}
+
+BtTime BtTimeEdit::time()
 {
 	return _time;
 }
 
 void BtTimeEdit::incHours()
 {
-	_time = _time.addSecs(3600);
-	num->display(_time.toString("h:mm"));
+	_time = _time.addHour(1);
+	num->display(_time.toString());
 }
 
 void BtTimeEdit::incMin()
 {
-	_time = _time.addSecs(60);
-	num->display(_time.toString("h:mm"));
+	_time = _time.addMinute(1);
+	num->display(_time.toString());
 }
 
 void BtTimeEdit::decHours()
 {
-	_time = _time.addSecs(-3600);
-	num->display(_time.toString("h:mm"));
+	_time = _time.addHour(-1);
+	num->display(_time.toString());
 }
 
 void BtTimeEdit::decMin()
 {
-	_time = _time.addSecs(-60);
-	num->display(_time.toString("h:mm"));
+	_time = _time.addMinute(-1);
+	num->display(_time.toString());
 }
 
 BtDateEdit::BtDateEdit(QWidget *parent, const char *name)

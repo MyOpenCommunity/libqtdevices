@@ -21,6 +21,7 @@
 #include <qlayout.h>
 #include <qregexp.h>
 #include <stdlib.h>
+#include <qapplication.h> //qapp
 
 #define BROWSER_ROWS_PER_PAGE 4
 
@@ -36,6 +37,9 @@ static const char *IMG_SELECT = IMG_PATH "arrrg.png";
 static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
+
+static const char *IMG_WAIT = IMG_PATH "dwnpage.png";
+
 
 enum ChoiceButtons
 {
@@ -456,11 +460,7 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
-	// Start to Browse Files
-	if (!browseFiles(start_path))
-	{
-		// FIXME display error?
-	}
+	changePath(start_path);
 }
 
 void FileSelector::showEvent(QShowEvent *event)
@@ -501,7 +501,7 @@ void FileSelector::itemIsClicked(int item)
 			if (fn.isDir())
 				continue;
 
-			play_list.append(AudioData(fn.absFilePath().latin1()));
+			play_list.append(AudioData(fn.absFilePath(), fn.baseName(true)));
 			if (clicked_element.absFilePath() == fn.absFilePath())
 				element = track_number;
 
@@ -528,15 +528,11 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
-	// if new_path is valid changes the path and run browseFiles()
-	if (QFileInfo(new_path).exists())
+	QString old_path = current_dir.absPath();
+	if (changePath(new_path))
 	{
-		// save the info of old directory
-		pages_indexes[current_dir.absPath()] = list_browser->getCurrentPage();
-
-		QString new_path_string = QFileInfo(new_path).absFilePath();
-		// change path
-		current_dir.setPath(new_path_string);
+		if (current_dir.count() <= 2) // empty directory
+			changePath(old_path);
 		return browseFiles();
 	}
 	else
@@ -546,8 +542,31 @@ bool FileSelector::browseFiles(QString new_path)
 	}
 }
 
+bool FileSelector::changePath(QString new_path)
+{
+	// if new_path is valid changes the path and run browseFiles()
+	if (QFileInfo(new_path).exists())
+	{
+		// save the info of old directory
+		pages_indexes[current_dir.absPath()] = list_browser->getCurrentPage();
+
+		QString new_path_string = QFileInfo(new_path).absFilePath();
+		// change path
+		current_dir.setPath(new_path_string);
+		return true;
+	}
+	return false;
+}
+
 bool FileSelector::browseFiles()
 {
+	QLabel* l = new QLabel((QWidget*)parent());
+	l->setPixmap(QPixmap(IMG_WAIT));
+	l->setGeometry(0,0, MAX_WIDTH, MAX_HEIGHT);
+	l->setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
+	l->show();
+	qApp->processEvents();
+
 	// refresh QDir information
 	current_dir.refresh();
 
@@ -577,6 +596,9 @@ bool FileSelector::browseFiles()
 
 	list_browser->setList(files_list, page);
 	list_browser->showList();
+
+	l->hide();
+	l->deleteLater();
 	return true;
 }
 

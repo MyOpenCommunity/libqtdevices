@@ -348,6 +348,18 @@ device_status_radio::device_status_radio() :
 			new stat_var(stat_var::RDS0, 0, 0, INT_MAX, 1));
 	add_var((int)device_status_radio::RDS1_INDEX,
 			new stat_var(stat_var::RDS1, 0, 0, INT_MAX, 1));
+	add_var((int)device_status_radio::RDS2_INDEX,
+			new stat_var(stat_var::RDS2, 0, 0, INT_MAX, 1));
+	add_var((int)device_status_radio::RDS3_INDEX,
+			new stat_var(stat_var::RDS3, 0, 0, INT_MAX, 1));
+	add_var((int)device_status_radio::RDS4_INDEX,
+			new stat_var(stat_var::RDS4, 0, 0, INT_MAX, 1));
+	add_var((int)device_status_radio::RDS5_INDEX,
+			new stat_var(stat_var::RDS5, 0, 0, INT_MAX, 1));
+	add_var((int)device_status_radio::RDS6_INDEX,
+			new stat_var(stat_var::RDS6, 0, 0, INT_MAX, 1));
+	add_var((int)device_status_radio::RDS7_INDEX,
+			new stat_var(stat_var::RDS7, 0, 0, INT_MAX, 1));
 }
 
 //! Device status for doorphone devices

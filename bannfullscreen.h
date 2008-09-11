@@ -15,12 +15,12 @@
 #include "banner.h"
 #include "device_status.h"
 #include "btwidgets.h"
+#include "bttime.h"
 
 #include <qlayout.h>
 #include <qbuttongroup.h>
 #include <qdom.h>
 #include <qlcdnumber.h>
-#include <qdatetime.h>
 #include <qtimer.h>
 
 class device;
@@ -107,7 +107,7 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -150,9 +150,9 @@ private:
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
 	/// The minimum temperature that can be set with manual operation
-	const unsigned minimum_manual_temp;
+	unsigned minimum_manual_temp;
 	/// The maximum temperature that can be set with manual operation
-	const unsigned maximum_manual_temp;
+	unsigned maximum_manual_temp;
 	BtButton *navbar_button;
 
 private slots:
@@ -272,7 +272,7 @@ private slots:
 	/**
 	 * User confirmed time editing, go on with program selection.
 	 */
-	void timeSelected(QTime t);
+	void timeSelected(BtTime t);
 
 	/**
 	 * User cancelled program selection, go back to time editing.
@@ -323,7 +323,7 @@ private:
 
 
 	QDate date_end;
-	QTime time_end;
+	BtTime time_end;
 	TimeEditMenu *time_edit;
 	DateEditMenu *date_edit;
 	ProgramMenu *program_choice;
@@ -355,7 +355,7 @@ private:
 	thermal_regulator_4z *_dev;
 	sottoMenu *timed_manual_menu;
 private slots:
-	void manualTimedSelected(QTime time, int temp);
+	void manualTimedSelected(BtTime time, int temp);
 	void manualTimedCancelled();
 };
 
@@ -389,7 +389,7 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermo_type_t type, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -426,6 +426,9 @@ private:
 	BtLabelEvo *descr_label;
 	BtLabelEvo *temp_label;
 	thermal_regulator *dev;
+	unsigned maximum_manual_temp;
+	unsigned minimum_manual_temp;
+	unsigned setpoint_delta;
 private slots:
 	void incSetpoint();
 	void decSetpoint();
@@ -442,6 +445,8 @@ class FSBannManualTimed : public FSBannManual
 Q_OBJECT
 public:
 	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
+	void setMaxHours(int max);
+	void setMaxMinutes(int max);
 private:
 	thermal_regulator_4z *dev;
 	/// TimeEdit widget
@@ -449,7 +454,7 @@ private:
 private slots:
 	void performAction();
 signals:
-	void timeAndTempSelected(QTime, int);
+	void timeAndTempSelected(BtTime, int);
 };
 
 class FSBannDate : public BannFullScreen
@@ -468,7 +473,7 @@ class FSBannTime : public BannFullScreen
 Q_OBJECT
 public:
 	FSBannTime(QWidget *parent, const char *name = 0);
-	QTime time();
+	BtTime time();
 private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;

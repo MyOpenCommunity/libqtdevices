@@ -5,6 +5,8 @@
 #include <qptrlist.h>
 #include <qobject.h>
 #include <qstringlist.h>
+#include <qmap.h>
+
 #include <openmsg.h>
 
 #include "openclient.h"
@@ -1312,7 +1314,7 @@ frame_interpreter_temperature_probe::frame_interpreter_temperature_probe(QString
 void frame_interpreter_temperature_probe::get_init_message(device_status *s, QString& out)
 {
 	QString head = "*#4*";
-	QString end = (external ? "00*15#1##" : "*0##");
+	QString end = (external ? "*15#1##" : "*0##");
 	out = head + where + end;
 	qDebug("temperature_probe init message: %s", out.ascii());
 }
@@ -1389,13 +1391,13 @@ bool frame_interpreter_temperature_probe::is_frame_ours(openwebnet_ext m, bool& 
 	request_status = false;
 	if (strcmp(m.Extract_chi(),"4"))
 		return false;
-	char dove[30];
+#define MAX_LENGTH 30
+	char dove[MAX_LENGTH];
 	// FIXME: check Extract_level() too!
 	if (external && m.IsMeasureFrame() && !strcmp(m.Extract_grandezza(), "15"))
 	{
 		// Address is of type x00, with x >= 1 & x <= 9
-		strncpy(dove, m.Extract_dove(), 1);
-		dove[1] = 0;
+		strncpy(dove, m.Extract_dove(), MAX_LENGTH);
 	}
 	else
 		strcpy(dove, m.Extract_dove());
@@ -1743,11 +1745,11 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
 			qDebug("Curr active source for amb %s = %d", ambiente+1, curr_act.get_val());
 			act = atoi(m.Extract_dove())-110-(10*atoi(ambiente));
 			qDebug("New active source = %d", act);
-			if(act != curr_act.get_val()) {
+			//if(act != curr_act.get_val()) {
 				curr_act.set_val(act);
 				ds->write_val(atoi(ambiente), curr_act);
 				do_event = true;
-			}
+			//}
 		}
 	}
 	if(do_event)
@@ -1804,10 +1806,19 @@ void frame_interpreter_radio_device::handle_frame(openwebnet_ext m,
 	qDebug("frame_interpreter_radio_device::handle_frame");
 	int freq, staz;
 	bool do_event = false;
+
+	// TODO: remove duplicate code from RDS stat var!!
 	stat_var curr_freq(stat_var::FREQ);
 	stat_var curr_staz(stat_var::STAZ);
 	stat_var curr_rds0(stat_var::RDS0);
 	stat_var curr_rds1(stat_var::RDS1);
+	stat_var curr_rds2(stat_var::RDS2);
+	stat_var curr_rds3(stat_var::RDS3);
+	stat_var curr_rds4(stat_var::RDS4);
+	stat_var curr_rds5(stat_var::RDS5);
+	stat_var curr_rds6(stat_var::RDS6);
+	stat_var curr_rds7(stat_var::RDS7);
+
 	if(m.IsMeasureFrame()) {
 		int code = atoi(m.Extract_grandezza());
 		switch(code) {
@@ -1829,22 +1840,45 @@ void frame_interpreter_radio_device::handle_frame(openwebnet_ext m,
 				do_event = true;
 				break;
 			case 8:
-				union {
-					char rds[8];
-					int tmp[2];
-				} tmpu;
+				int rds[8];
+
 				for(int idx=0;idx<8;idx++) {
-					tmpu.rds[idx] = strtol(m.Extract_valori(idx), NULL, 10);
-					qDebug("RDS: char[%d] = %c", idx, tmpu.rds[idx]);
+					rds[idx] = strtol(m.Extract_valori(idx), NULL, 10);
+					qDebug("RDS: char[%d] = chr(%d)", idx, rds[idx]);
 				}
+
 				ds->read((int)device_status_radio::RDS0_INDEX, curr_rds0);
-				qDebug("setting rds0 to 0x%08x", tmpu.tmp[0]);
-				curr_rds0.set_val(tmpu.tmp[0]);
+				curr_rds0.set_val(rds[0]);
 				ds->write_val((int)device_status_radio::RDS0_INDEX, curr_rds0);
+
 				ds->read((int)device_status_radio::RDS1_INDEX, curr_rds1);
-				qDebug("setting rds1 to 0x%08x", tmpu.tmp[1]);
-				curr_rds1.set_val(tmpu.tmp[1]);
+				curr_rds1.set_val(rds[1]);
 				ds->write_val((int)device_status_radio::RDS1_INDEX, curr_rds1);
+
+				ds->read((int)device_status_radio::RDS2_INDEX, curr_rds2);
+				curr_rds2.set_val(rds[2]);
+				ds->write_val((int)device_status_radio::RDS2_INDEX, curr_rds2);
+
+				ds->read((int)device_status_radio::RDS3_INDEX, curr_rds3);
+				curr_rds3.set_val(rds[3]);
+				ds->write_val((int)device_status_radio::RDS3_INDEX, curr_rds3);
+
+				ds->read((int)device_status_radio::RDS4_INDEX, curr_rds4);
+				curr_rds4.set_val(rds[4]);
+				ds->write_val((int)device_status_radio::RDS4_INDEX, curr_rds4);
+
+				ds->read((int)device_status_radio::RDS5_INDEX, curr_rds5);
+				curr_rds5.set_val(rds[5]);
+				ds->write_val((int)device_status_radio::RDS5_INDEX, curr_rds5);
+
+				ds->read((int)device_status_radio::RDS6_INDEX, curr_rds6);
+				curr_rds6.set_val(rds[6]);
+				ds->write_val((int)device_status_radio::RDS6_INDEX, curr_rds6);
+
+				ds->read((int)device_status_radio::RDS7_INDEX, curr_rds7);
+				curr_rds7.set_val(rds[7]);
+				ds->write_val((int)device_status_radio::RDS7_INDEX, curr_rds7);
+
 				do_event = true;
 				break;
 			default:
@@ -2659,6 +2693,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2687,6 +2722,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			if(curr_info_centrale.get_val() && (type == THERMO_Z99))
 			{
@@ -2793,6 +2829,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			break;
 		case 13:
@@ -2827,6 +2864,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 					strcat(pippo,"##");
 					emit init_requested(QString(pippo));
 					new_request_timer.start(TIMEOUT_TIME);
+					new_request_allowed = false;
 				}
 				if(curr_crono.get_val() && (!curr_info_centrale.get_val()))
 				{
@@ -2853,6 +2891,7 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				strcat(pippo,"*14##");
 				emit init_requested(QString(pippo));
 				new_request_timer.start(TIMEOUT_TIME);
+				new_request_allowed = false;
 			}
 			break;
 		case 14:
@@ -2864,8 +2903,6 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 				ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				evt_list.append(ds);
 			}
-			if (!new_request_allowed) //timer is active
-				timeoutElapsed();
 			elaborato = true;
 			break;
 		default:
