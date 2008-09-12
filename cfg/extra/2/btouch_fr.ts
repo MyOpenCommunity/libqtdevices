@@ -2,7 +2,11 @@
 <context>
     <name>Calibrate</name>
     <message>
-        <source>Click here!</source>
+        <source>Click the crosshair</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click the OK button</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

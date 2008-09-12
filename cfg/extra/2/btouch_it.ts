@@ -2,8 +2,12 @@
 <context>
     <name>Calibrate</name>
     <message>
-        <source>Click here!</source>
-        <translation>Clicca qui!</translation>
+        <source>Click the crosshair</source>
+        <translation>Premi la croce</translation>
+    </message>
+    <message>
+        <source>Click the OK button</source>
+        <translation>Premi OK</translation>
     </message>
 </context>
 <context>
