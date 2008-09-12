@@ -359,7 +359,7 @@ static unsigned long now()
 void BtMain::gesScrSav()
 {
 	unsigned long tiempo, tiempo_press;
-	rearmWDT();  
+	rearmWDT();
 
 	tiempo_press = getTimePress();
 	if (event_unfreeze) {
@@ -374,7 +374,7 @@ void BtMain::gesScrSav()
 		{
 			if (!svegliaIsOn)
 			{
-#ifndef BACKLIGHT_SEMPRE_ON  
+#ifndef BACKLIGHT_SEMPRE_ON
 				setBacklight(FALSE);
 				qDebug("***** freeze(TRUE) ***** ");
 				emit freeze(TRUE);
@@ -446,15 +446,24 @@ void BtMain::gesScrSav()
 					}
 					screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
 					screensav[idx]->setPixmap(*Sfondo[idx]);
-					screensav[idx]->hide();show();
+					screensav[idx]->hide();
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+					showFullScreen();
+#else
+					show();
+#endif
 				}
 				if (grab)
 					delete(grab);
 				if (pagDefault)
 					grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT)); 
 				else
-					grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT)); 
+					grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+				showFullScreen();
+#else
 				show();
+#endif
 				countScrSav=0;
 			}
 
