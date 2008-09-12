@@ -44,13 +44,13 @@
 #define SCREENSAVER_LINE
 
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
-: QWidget( parent, name )
+: QWidget(parent, name)
 {
 
 
 	/*******************************************
-	  v** Socket 
-	 *******************************************/
+	v** Socket
+	*******************************************/
 	qDebug("parte BtMain");
 
 	// If not compiled for Desktop, turns OFF mouse pointer
@@ -66,7 +66,6 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 
 	setBacklight(TRUE);
-	//setContrast(0x80,FALSE);
 
 	rearmWDT();
 
@@ -96,7 +95,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 	linea = NULL;
 	for (int idx=0;idx<12;idx++)
 	{
-		screensav[idx]=new BtLabel("",/*NULLscrsav*/this,"g");
+		screensav[idx]=new BtLabel("",this,"g");
 		screensav[idx]->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		screensav[idx]-> hide();
 		Sfondo[idx]=NULL;
@@ -104,8 +103,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 	for (int idx=0;idx<12;idx++)
 	{
 		ball[idx]=new BtLabel(this,"",0);
-		//              ball[idx]=new palla/*BtLabel*/(/*NULLscrsav*/this,"",0);
-		ball[idx]->hide();       
+		ball[idx]->hide();
 	}
 	grab=NULL;
 
@@ -118,23 +116,23 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 	qDebug("touch ago: %d",(int)getTimePress());
 
 
-	if (   (QFile::exists("/etc/pointercal")) && ( (info.uptime>200) || ( (unsigned long)(info.uptime-1)<=(unsigned long)getTimePress() )  ) )
+	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
 		tempo1 = new QTimer(this,"clock");
 		tempo1->start(200);
 		connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
-		datiGen->show();            
+		datiGen->show();
 	}
 	else
 	{
 		tempo1=NULL;
-		/*Calibrate**/ calib = new Calibrate(NULL,"calibrazione",(unsigned char)0,(unsigned char)1);
+		calib = new Calibrate(NULL,"calibrazione",(unsigned char)0,(unsigned char)1);
 		calib->show(); 
 		connect(calib, SIGNAL(fineCalib()), this,SLOT(hom()));
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)              
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(showFullScreen()));
 #endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)    
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)
 		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
 #endif
 		alreadyCalibrated=TRUE;
@@ -167,33 +165,28 @@ void BtMain::hom()
 		setBackgroundColor(*bg);
 		for (int idx=0;idx<12;idx++)
 		{
-			ball[idx] -> setBackgroundColor(*bg);  
-			ball[idx] -> setBackgroundMode(Qt::NoBackground);
+			ball[idx]->setBackgroundColor(*bg);
+			ball[idx]->setBackgroundMode(Qt::NoBackground);
 		}
-		//setForegroundColor(*fg1);
-
 
 		QFile *xmlFile = new QFile("cfg/conf.xml");
-		QXmlInputSource source2( xmlFile );
+		QXmlInputSource source2(xmlFile);
 		QXmlSimpleReader reader2;
 		qDebug("parte parsing");
-		reader2.setContentHandler( handler2 );
-		reader2.parse( source2 );
+		reader2.setContentHandler(handler2);
+		reader2.parse(source2);
 		qDebug("finito parsing");
 		delete handler2;
 		delete xmlFile;
-		qApp->setMainWidget( Home);
+		qApp->setMainWidget(Home);
 		hide();
 	}
 	setGeometry(0,0,240,320);
 	setCursor (QCursor (blankCursor));
 	setBackgroundColor(QColor(255,255,255));
 
-//	tempo3 = new QTimer(this,"clock");
-//	tempo3->start(2000);
-//	connect(tempo3,SIGNAL(timeout()),this,SLOT(myMain()));
 	connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(myMain()));
-        client_monitor->connetti();
+	client_monitor->connetti();
 	qDebug("OPPI");
 }
 
@@ -233,36 +226,28 @@ void BtMain::init()
 		imposta->inizializza();
 	if (supervisione)
 		supervisione->inizializza();
-	//    rearmWDT();
 
 	struct sysinfo info;
 	sysinfo(&info);
-	//    qDebug("uptime= %d - timePress= %d", info.uptime, getTimePress() );
-	if ( (info.uptime<200) && ( (unsigned long)(info.uptime-1)>(unsigned long)getTimePress() )  && (!alreadyCalibrated))
+	if ((info.uptime<200) && ((unsigned long)(info.uptime-1)>(unsigned long)getTimePress())  && (!alreadyCalibrated))
 	{
 		calib = new Calibrate(NULL,"calibrazione",0,1);
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 		Home->hide();
-		calib->show();//FullScreen(); con fullscreen non va!
+		calib->show();
 		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 		calib->show();
-		//  connect(calib, SIGNAL(fineCalib()), Home,SLOT(show()));
 #endif
 	}
 }
-
-
-
 
 void BtMain::myMain()
 {
 	qDebug("entro MyMain");
 
-//	delete(tempo3);
-	
 	init();
 
 	Home->showFullScreen();
@@ -277,17 +262,14 @@ void BtMain::myMain()
 
 	tempo2 = new QTimer(this,"clock");
 	tempo2->start(3000);
-	connect(tempo2,SIGNAL(timeout()),this,SLOT(testFiles()));     
-#if 0 // kemosh
-	bt_upnp *btupnp = bt_upnp::instance(bt_upnp::H4684_IP); 
-#endif
+	connect(tempo2,SIGNAL(timeout()),this,SLOT(testFiles()));
 }
 
 void BtMain::testFiles()
 {
 	if (QFile::exists(FILE_TEST1))
 	{ 
-		if ( (screen) && (tiposcreen!=genPage::RED))
+		if ((screen) && (tiposcreen!=genPage::RED))
 		{
 			delete(screen);
 			screen=NULL;
@@ -299,12 +281,12 @@ void BtMain::testFiles()
 			screen->show();
 			qDebug("TEST1");
 			setBacklight(TRUE);
-			tempo1->stop();                
+			tempo1->stop();
 		}
 	}
 	else if (QFile::exists(FILE_TEST2))
 	{
-		if ( (screen)&& (tiposcreen!=genPage::GREEN))	
+		if ((screen)&& (tiposcreen!=genPage::GREEN))
 		{
 			delete(screen);
 			screen=NULL;
@@ -315,13 +297,13 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"green",genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			setBacklight(TRUE);	
-			tempo1->stop();                
+			setBacklight(TRUE);
+			tempo1->stop();
 		}
 	}
 	else if (QFile::exists(FILE_TEST3))
 	{
-		if ( (screen)&& (tiposcreen!=genPage::BLUE))	
+		if ((screen)&& (tiposcreen!=genPage::BLUE))
 		{
 			delete(screen);
 			screen=NULL;
@@ -346,10 +328,10 @@ void BtMain::testFiles()
 		else if (!screen)
 		{
 			screen = new genPage(NULL,"blu",genPage::IMAGE, IMG_PATH "dwnpage.png");
-			tiposcreen=genPage::IMAGE;	    
+			tiposcreen=genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			setBacklight(TRUE);	
+			setBacklight(TRUE);
 			tempo1->stop();
 		}	
 	}
@@ -388,7 +370,7 @@ void BtMain::gesScrSav()
 
 	if (!firstTime)
 	{
-		if  ( (tiempo>=30) && (getBacklight())) 
+		if  ((tiempo>=30) && (getBacklight()))
 		{
 			if (!svegliaIsOn)
 			{
@@ -398,10 +380,10 @@ void BtMain::gesScrSav()
 				emit freeze(TRUE);
 				bloccato=01;
 				tempo1->changeInterval(500);
-#endif		    
-			}            
+#endif
+			}
 		}
-		else if ( (tiempo<=5) && (bloccato) )
+		else if ((tiempo<=5) && (bloccato))
 		{
 			qDebug("***** freeze(FALSE) ***** ");
 			emit freeze(FALSE);
@@ -410,9 +392,8 @@ void BtMain::gesScrSav()
 			pd_shown = false;
 			freezed(FALSE);
 		}
-		if  ( (tiempo>=60) && (!svegliaIsOn) && (!calibrating))
+		if  ((tiempo>=60) && (!svegliaIsOn) && (!calibrating))
 		{
-			//qDebug("pagDefault = %p", pagDefault);
 			if (pagDefault)
 			{
 				if (!pd_shown) 
@@ -436,7 +417,7 @@ void BtMain::gesScrSav()
 						dm -> hide();
 					if (antintr)
 						antintr -> hide();
-					if (specPage )
+					if (specPage)
 						specPage -> hide();
 					if (scenari_evoluti)
 						scenari_evoluti->hide();
@@ -447,9 +428,9 @@ void BtMain::gesScrSav()
 					if (pagDefault)
 						pagDefault -> showFullScreen();
 				}
-			}  
+			}
 
-			if  ( (tiempo>=65) && isHidden())
+			if  ((tiempo>=65) && isHidden())
 			{
 				for (int idx=0;idx<12;idx++)
 				{
@@ -457,33 +438,31 @@ void BtMain::gesScrSav()
 						delete(Sfondo[idx]);
 					if (pagDefault)
 					{
-						Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(pagDefault,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4)); 
+						Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(pagDefault,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4));
 					}
 					else
 					{
-						Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(Home,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4));     
+						Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(Home,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4));
 					}
 					screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
 					screensav[idx]->setPixmap(*Sfondo[idx]);
 					screensav[idx]->hide();show();
-				}                           
+				}
 				if (grab)
 					delete(grab);
 				if(pagDefault)
 					grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT)); 
 				else
 					grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT)); 
-				//grab= new QPixmap(QPixmap::grabWindow(pagDefault->winId(),0,0,MAX_WIDTH,MAX_HEIGHT)); 
-				show();   
+				show();
 				countScrSav=0;
-			}  
+			}
 
 			if (isShown())
 			{
 #ifdef SCREENSAVER_BALLS
-				//        qDebug("tiempo: %d",tiempo);
-				if ( 0/*(tiempo/100)%2 */)
-				{                   
+				if (0)
+				{
 					if(backcol>2)
 					{
 						tempo1->changeInterval(500);
@@ -509,7 +488,7 @@ void BtMain::gesScrSav()
 						case 3:
 							setBackgroundColor(QColor(255,0,0));
 							break;
-						case 4:                  
+						case 4:
 							QRect r;
 							r=screensav[icx]->geometry();
 							screensav[icx]->setGeometry(screensav[icy]->geometry());
@@ -523,7 +502,7 @@ void BtMain::gesScrSav()
 							screensav[icy]->show(); 
 							break;
 							repaint();
-							show();                               
+							show();
 					}
 				}
 				else
@@ -535,7 +514,7 @@ void BtMain::gesScrSav()
 						{
 							screensav[idx]->hide();
 						}
-						setPaletteBackgroundPixmap(*grab);        
+						setPaletteBackgroundPixmap(*grab);
 						for (int idx=0;idx<BALL_NUM;idx++)
 						{
 							x[idx]=(int) (200.0*rand() / (RAND_MAX+1.0));
@@ -545,21 +524,15 @@ void BtMain::gesScrSav()
 							if (!vy[idx])
 								vy[idx]=1;
 							if (!vx[idx])
-								vx[idx]=1;                            
+								vx[idx]=1;
 							dim[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+15;
 
 							QBitmap Maschera=QBitmap(dim[idx],dim[idx],TRUE);
-							QPainter p( &Maschera );
-							p.setBrush(QBrush ( Qt::color1/*Qt::black*/, Qt::SolidPattern ));
+							QPainter p(&Maschera);
+							p.setBrush(QBrush (Qt::color1, Qt::SolidPattern));
 							for(int idy=2;idy<=dim[idx];idy++)
-								p.drawEllipse ( (dim[idx]-idy)/2,(dim[idx]-idy)/2,idy,idy);
+								p.drawEllipse ((dim[idx]-idy)/2,(dim[idx]-idy)/2,idy,idy);
 							ball[idx]->setMask(Maschera);
-
-							//    ball[idx]->setPaletteBackgroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
-							//    ball[idx]->setPaletteBackgroundColor(backgroundColor());
-							//       ball[idx]->hide();
-							//       ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
-							//      ball[idx]->show();
 						}
 						tempo1->changeInterval(100);
 					}
@@ -572,67 +545,50 @@ void BtMain::gesScrSav()
 							if (grab)
 								delete(grab);
 							if(pagDefault)
-								grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT)); 
+								grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
 							else
-								grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT)); 
-							setPaletteBackgroundPixmap(*grab);   
+								grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
+							setPaletteBackgroundPixmap(*grab);
 						}
-
 
 						for (int idx=0;idx<BALL_NUM;idx++)
 						{
-							//        ball[idx] -> setBackgroundMode(Qt::NoBackground);
 							x[idx]+=vx[idx];
 							y[idx]+=vy[idx];
 
 							if  (x[idx]<=0) 
 							{
-								vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5 ;
+								vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
 								x[idx]=0;
-								//                        dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0));
 								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-
-								//                          ball[idx]->setPaletteForegroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
-								// repaint(0,0,width(),height(),TRUE);
 							}
 							if  (y[idx]>(MAX_HEIGHT-dim[idx])) 
 							{
 								vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;
-								//                         dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0));
 								y[idx]=MAX_HEIGHT-dim[idx];
 								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-								//                       ball[idx]->setPaletteForegroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
-								//   repaint(0,0,width(),height(),TRUE);
 							}
 							if   (y[idx]<=0) 
-							{                         
-								vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5 ;
+							{
+								vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
 								if (!vy[idx])
 									vy[idx]=1;
 								y[idx]=0;
-								//                         dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
 								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-
-								//                        ball[idx]->setPaletteForegroundColor(QColor((int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0)),(int) (256.0*rand() / (RAND_MAX+1.0))));
-								//    repaint(0,0,width(),height(),TRUE);
 							}
 							if  (x[idx]>(MAX_WIDTH-dim[idx])) 
 							{
-								vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;         
+								vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;
 								if (!vx[idx])
 									vx[idx]=1;
-								//                     dim[idx]=(int) (20.0*rand() / (RAND_MAX+1.0))+5;
 								x[idx]=MAX_WIDTH-dim[idx];
 								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-								//                          ball[idx]->setPaletteForegroundColor(QColor((int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56,(int) (200.0*rand() / (RAND_MAX+1.0))+56));
-
-								//       repaint(0,0,width(),height(),TRUE);
 							}
 							ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
 							ball[idx]->show();
 						}
 					}
-				}        
+				}
 #endif
 #ifdef SCREENSAVER_LINE
 				tempo1->changeInterval(100);
@@ -645,7 +601,6 @@ void BtMain::gesScrSav()
 					else
 						grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
 					setPaletteBackgroundPixmap(*grab);
-					//             setPaletteBackgroundPixmap(*grab);
 					backcol=0;
 				}
 				backcol++;
@@ -656,20 +611,17 @@ void BtMain::gesScrSav()
 				}
 				if (y[0] < 0)
 				{
-					y[0] = 0;   
+					y[0] = 0;
 					y[1] = 0;
 				}
 				if (y[1] == 0)
-					y[0] += 3; 
+					y[0] += 3;
 				else
 					y[0] -= 3;
 
-				//    if (linea)
-				//       delete linea;
 				if (!linea)
 					linea = new BtLabel(this,NULL,0);
 				linea->setGeometry(0,y[0],MAX_WIDTH,6);
-				//     linea->setPaletteForegroundColor(QColor::QColor(Qt::black));
 				if (y[1])
 					linea->setPaletteBackgroundColor(QColor::QColor(Qt::black));
 				else
@@ -682,21 +634,21 @@ void BtMain::gesScrSav()
 			hide();
 
 	}
-	else if  ( (tiempo>=120)  )
+	else if  ((tiempo>=120) )
 	{
-#ifndef BACKLIGHT_SEMPRE_ON 	    
+#ifndef BACKLIGHT_SEMPRE_ON
 		setBacklight(FALSE);
 		qDebug("***** freeze(TRUE) ***** ");
-		emit freeze(TRUE);	   
+		emit freeze(TRUE);
 		tempo1->changeInterval(500);
-#endif	    
+#endif
 		firstTime=0;
-		bloccato=1;	
+		bloccato=1;
 	}
 	else  if  (tiempo<=5)
 	{
 		firstTime=0;
-		setBacklight(TRUE);    
+		setBacklight(TRUE);
 		tempo1->changeInterval(2000);
 		bloccato=0;
 	}
@@ -708,21 +660,20 @@ void BtMain::freezed(bool b)
 	bloccato=0;
 	if (b)
 		bloccato=1;
-	//qDebug("BLOCCATO   : %d",bloccato);
+
 	qDebug("BtMain::freezed(%d)", b);
 	if  (!b) 
 
 	{
 		event_unfreeze = 1;
 		setBacklight(TRUE);
-		//qDebug("BtMain freezed FALSE");
 		hide();
 		if (pwdOn)
 		{
 			if(!tasti) {
 				tasti = new tastiera(NULL,"tast");
-				tasti->setBGColor(Home->backgroundColor());     
-				tasti->setFGColor(Home->foregroundColor()); 
+				tasti->setBGColor(Home->backgroundColor());
+				tasti->setFGColor(Home->foregroundColor());
 				tasti->setMode(tastiera::HIDDEN);
 				tasti -> showTastiera();
 				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
@@ -731,12 +682,11 @@ void BtMain::freezed(bool b)
 	}
 }
 
-
 void BtMain::setPwd(bool b ,char* p)
 {
 	pwdOn=b;
 	strcpy(&pwd[0],p);
-	qDebug("BtMain nuova pwd = %s - %d",&pwd[0],pwdOn );
+	qDebug("BtMain nuova pwd = %s - %d",&pwd[0],pwdOn);
 }
 
 void BtMain::testPwd(char* p)
@@ -769,33 +719,14 @@ palla::palla(QWidget*parent, const char* name,unsigned int f) : BtLabel(parent, 
 
 void palla::paintEvent(QPaintEvent *)  {
 	QPainter paint(this);
-
-	//        paint.fillRect ( 0,0,width(),height(),QBrush ( backgroundColor(), Qt::SolidPattern ));
-
-	/*     rx+=(int)(3.0*rand() / (RAND_MAX+1.0)) -1;
-	       if (rx<8)
-	       rx=8;
-	       if (rx>width())
-	       rx=width();
-
-	       ry+=(int) (3.0*rand() / (RAND_MAX+1.0)) -1;
-	       if (ry<8)
-	       ry=8;
-	       if (ry>height())
-	       ry=height();
-
-	//  setFixedSize(rx,ry);
-	*/
-	paint.setBrush(QBrush ( foregroundColor(), Qt::SolidPattern ));
-
-	//       paint.drawEllipse ( 0,0,rx,ry);
-	paint.drawEllipse ( 0,0,width(),height());
-	//ball[idx]->height(),ball[idx]->width());
+	paint.setBrush(QBrush (foregroundColor(), Qt::SolidPattern));
+	paint.drawEllipse (0,0,width(),height());
 };
+
 void palla ::clear()
 {
 	QPainter paint(this);
-	paint.fillRect ( 0,0,width(),height(),QBrush ( backgroundColor(), Qt::SolidPattern ));
+	paint.fillRect (0,0,width(),height(),QBrush (backgroundColor(), Qt::SolidPattern));
 }
 
 
