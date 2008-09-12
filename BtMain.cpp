@@ -461,132 +461,85 @@ void BtMain::gesScrSav()
 			if (isShown())
 			{
 #ifdef SCREENSAVER_BALLS
-				if (0)
+				if (backcol<3)
 				{
-					if(backcol>2)
+					backcol=4;
+					for (int idx=0;idx<12;idx++)
 					{
-						tempo1->changeInterval(500);
-						for (int idx=0;idx<12;idx++)
-						{
-							screensav[idx]->show();
-						}
-						for (int idx=0;idx<BALL_NUM;idx++)
-						{
-							ball[idx]->hide();
-						}
+						screensav[idx]->hide();
 					}
-					countScrSav=(countScrSav+1)%8;
-					switch (countScrSav){
-						case 1:
-							icx=(int) (12.0*rand() / (RAND_MAX+1.0));
-							icy=(int) (12.0*rand() / (RAND_MAX+1.0));
-							screensav[icx]->hide();
-							break;
-						case 2:
-							screensav[icy]->hide();
-							break;
-						case 3:
-							setBackgroundColor(QColor(255,0,0));
-							break;
-						case 4:
-							QRect r;
-							r=screensav[icx]->geometry();
-							screensav[icx]->setGeometry(screensav[icy]->geometry());
-							screensav[icy]->setGeometry(r);
-							if (backcol)
-								setBackgroundColor(QColor(0,255,0));
-							else
-								setBackgroundColor(QColor(0,0,255));
-							backcol=(backcol+1)%2;
-							screensav[icx]->show(); 
-							screensav[icy]->show(); 
-							break;
-							repaint();
-							show();
+					setPaletteBackgroundPixmap(*grab);
+					for (int idx=0;idx<BALL_NUM;idx++)
+					{
+						x[idx]=(int) (200.0*rand() / (RAND_MAX+1.0));
+						y[idx]=(int) (200.0*rand() / (RAND_MAX+1.0));
+						vx[idx]=(int) (30.0*rand() / (RAND_MAX+1.0)) -15;
+						vy[idx]=(int) (30.0*rand() / (RAND_MAX+1.0)) -15;
+						if (!vy[idx])
+							vy[idx]=1;
+						if (!vx[idx])
+							vx[idx]=1;
+						dim[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+15;
+
+						QBitmap Maschera=QBitmap(dim[idx],dim[idx],TRUE);
+						QPainter p(&Maschera);
+						p.setBrush(QBrush (Qt::color1, Qt::SolidPattern));
+						for(int idy=2;idy<=dim[idx];idy++)
+							p.drawEllipse ((dim[idx]-idy)/2,(dim[idx]-idy)/2,idy,idy);
+						ball[idx]->setMask(Maschera);
 					}
+					tempo1->changeInterval(100);
 				}
 				else
 				{
-					if (backcol<3)
+					backcol++;
+					if (backcol==9)
 					{
 						backcol=4;
-						for (int idx=0;idx<12;idx++)
-						{
-							screensav[idx]->hide();
-						}
+						if (grab)
+							delete(grab);
+						if(pagDefault)
+							grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
+						else
+							grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
 						setPaletteBackgroundPixmap(*grab);
-						for (int idx=0;idx<BALL_NUM;idx++)
+					}
+
+					for (int idx=0;idx<BALL_NUM;idx++)
+					{
+						x[idx]+=vx[idx];
+						y[idx]+=vy[idx];
+
+						if  (x[idx]<=0)
 						{
-							x[idx]=(int) (200.0*rand() / (RAND_MAX+1.0));
-							y[idx]=(int) (200.0*rand() / (RAND_MAX+1.0));
-							vx[idx]=(int) (30.0*rand() / (RAND_MAX+1.0)) -15;
-							vy[idx]=(int) (30.0*rand() / (RAND_MAX+1.0)) -15;
+							vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
+							x[idx]=0;
+							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
+						}
+						if  (y[idx]>(MAX_HEIGHT-dim[idx]))
+						{
+							vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;
+							y[idx]=MAX_HEIGHT-dim[idx];
+							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
+						}
+						if   (y[idx]<=0)
+						{
+							vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
 							if (!vy[idx])
 								vy[idx]=1;
+							y[idx]=0;
+							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
+						}
+						if  (x[idx]>(MAX_WIDTH-dim[idx]))
+						{
+							vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;
 							if (!vx[idx])
 								vx[idx]=1;
-							dim[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+15;
-
-							QBitmap Maschera=QBitmap(dim[idx],dim[idx],TRUE);
-							QPainter p(&Maschera);
-							p.setBrush(QBrush (Qt::color1, Qt::SolidPattern));
-							for(int idy=2;idy<=dim[idx];idy++)
-								p.drawEllipse ((dim[idx]-idy)/2,(dim[idx]-idy)/2,idy,idy);
-							ball[idx]->setMask(Maschera);
+							x[idx]=MAX_WIDTH-dim[idx];
+							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
 						}
-						tempo1->changeInterval(100);
-					}
-					else
-					{
-						backcol++;
-						if (backcol==9)
-						{
-							backcol=4;
-							if (grab)
-								delete(grab);
-							if(pagDefault)
-								grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
-							else
-								grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
-							setPaletteBackgroundPixmap(*grab);
-						}
-
-						for (int idx=0;idx<BALL_NUM;idx++)
-						{
-							x[idx]+=vx[idx];
-							y[idx]+=vy[idx];
-
-							if  (x[idx]<=0) 
-							{
-								vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
-								x[idx]=0;
-								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-							}
-							if  (y[idx]>(MAX_HEIGHT-dim[idx])) 
-							{
-								vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;
-								y[idx]=MAX_HEIGHT-dim[idx];
-								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-							}
-							if   (y[idx]<=0) 
-							{
-								vy[idx]=(int) (10.0*rand() / (RAND_MAX+1.0))+5;
-								if (!vy[idx])
-									vy[idx]=1;
-								y[idx]=0;
-								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-							}
-							if  (x[idx]>(MAX_WIDTH-dim[idx])) 
-							{
-								vx[idx]=(int) (10.0*rand() / (RAND_MAX+1.0)) -15;
-								if (!vx[idx])
-									vx[idx]=1;
-								x[idx]=MAX_WIDTH-dim[idx];
-								ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-							}
-							ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
-							ball[idx]->show();
-						}
+						ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
+						ball[idx]->show();
 					}
 				}
 #endif
