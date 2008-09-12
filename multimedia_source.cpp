@@ -23,7 +23,11 @@
 #include <stdlib.h>
 #include <qapplication.h> //qapp
 
+#include <unistd.h>
+
 #define BROWSER_ROWS_PER_PAGE 4
+
+#define MEDIASERVER_MSEC_WAIT_TIME 2000
 
 /*
  * Scripts launched before and after a track is played.
@@ -38,7 +42,7 @@ static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 
-static const char *IMG_WAIT = IMG_PATH "dwnpage.png";
+static const char *IMG_WAIT = IMG_PATH "loading.png";
 
 
 enum ChoiceButtons
@@ -561,11 +565,20 @@ bool FileSelector::changePath(QString new_path)
 bool FileSelector::browseFiles()
 {
 	QLabel* l = new QLabel((QWidget*)parent());
-	l->setPixmap(QPixmap(IMG_WAIT));
-	l->setGeometry(0,0, MAX_WIDTH, MAX_HEIGHT);
-	l->setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
+	QPixmap *icon = icons_library.getIcon(IMG_WAIT);
+	l->setPixmap(*icon);
+
+	QRect r = icon->rect();
+	r.moveCenter(QPoint(MAX_WIDTH / 2, MAX_HEIGHT / 2));
+	l->setGeometry(r);
+
 	l->show();
 	qApp->processEvents();
+
+	//list_browser->setEnabled(false);
+
+	QTime time_counter;
+	time_counter.start();
 
 	// refresh QDir information
 	current_dir.refresh();
@@ -594,8 +607,14 @@ bool FileSelector::browseFiles()
 	if (pages_indexes.contains(current_dir.absPath()))
 		page = pages_indexes[current_dir.absPath()];
 
+	int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
+	if (wait_time > 0)
+		usleep(wait_time * 1000);
+
 	list_browser->setList(files_list, page);
 	list_browser->showList();
+
+	//list_browser->setEnabled(true);
 
 	l->hide();
 	l->deleteLater();
