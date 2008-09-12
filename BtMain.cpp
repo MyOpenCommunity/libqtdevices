@@ -97,7 +97,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a)
 	{
 		screensav[idx]=new BtLabel("",this,"g");
 		screensav[idx]->setFrameStyle(QFrame::Panel | QFrame::Raised);
-		screensav[idx]-> hide();
+		screensav[idx]->hide();
 		Sfondo[idx]=NULL;
 	}
 	for (int idx=0;idx<12;idx++)
@@ -308,7 +308,7 @@ void BtMain::testFiles()
 			delete(screen);
 			screen=NULL;
 		}
-		else if(!screen)
+		else if (!screen)
 		{
 			tiposcreen=genPage::BLUE;
 			screen = new genPage(NULL,"blu",genPage::BLUE);
@@ -362,7 +362,7 @@ void BtMain::gesScrSav()
 	rearmWDT();  
 
 	tiempo_press = getTimePress();
-	if(event_unfreeze) {
+	if (event_unfreeze) {
 		tiempo_last_ev = now();
 		event_unfreeze = false;
 	}
@@ -400,25 +400,25 @@ void BtMain::gesScrSav()
 				{
 					pd_shown = true;
 					if (illumino)
-						illumino -> hide();
+						illumino->hide();
 					if (scenari)
-						scenari -> hide();
+						scenari->hide();
 					if (carichi)
-						carichi -> hide();
+						carichi->hide();
 					if (imposta)
-						imposta -> hide();
+						imposta->hide();
 					if (automazioni)
-						automazioni -> hide();
+						automazioni->hide();
 					if (termo)
-						termo -> hide();
+						termo->hide();
 					if (difSon)
-						difSon -> hide();
+						difSon->hide();
 					if (dm)
-						dm -> hide();
+						dm->hide();
 					if (antintr)
-						antintr -> hide();
+						antintr->hide();
 					if (specPage)
-						specPage -> hide();
+						specPage->hide();
 					if (scenari_evoluti)
 						scenari_evoluti->hide();
 					if (videocitofonia)
@@ -426,7 +426,7 @@ void BtMain::gesScrSav()
 					if (supervisione)
 						supervisione->hide();
 					if (pagDefault)
-						pagDefault -> showFullScreen();
+						pagDefault->showFullScreen();
 				}
 			}
 
@@ -450,7 +450,7 @@ void BtMain::gesScrSav()
 				}
 				if (grab)
 					delete(grab);
-				if(pagDefault)
+				if (pagDefault)
 					grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT)); 
 				else
 					grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT)); 
@@ -484,7 +484,7 @@ void BtMain::gesScrSav()
 						QBitmap Maschera=QBitmap(dim[idx],dim[idx],TRUE);
 						QPainter p(&Maschera);
 						p.setBrush(QBrush (Qt::color1, Qt::SolidPattern));
-						for(int idy=2;idy<=dim[idx];idy++)
+						for (int idy=2;idy<=dim[idx];idy++)
 							p.drawEllipse ((dim[idx]-idy)/2,(dim[idx]-idy)/2,idy,idy);
 						ball[idx]->setMask(Maschera);
 					}
@@ -498,7 +498,7 @@ void BtMain::gesScrSav()
 						backcol=4;
 						if (grab)
 							delete(grab);
-						if(pagDefault)
+						if (pagDefault)
 							grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
 						else
 							grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
@@ -549,7 +549,7 @@ void BtMain::gesScrSav()
 				{
 					if (grab)
 						delete(grab);
-					if(pagDefault)
+					if (pagDefault)
 						grab= new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
 					else
 						grab= new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
@@ -587,7 +587,7 @@ void BtMain::gesScrSav()
 			hide();
 
 	}
-	else if  ((tiempo>=120) )
+	else if  ((tiempo>=120))
 	{
 #ifndef BACKLIGHT_SEMPRE_ON
 		setBacklight(FALSE);
@@ -623,12 +623,12 @@ void BtMain::freezed(bool b)
 		hide();
 		if (pwdOn)
 		{
-			if(!tasti) {
+			if (!tasti) {
 				tasti = new tastiera(NULL,"tast");
 				tasti->setBGColor(Home->backgroundColor());
 				tasti->setFGColor(Home->foregroundColor());
 				tasti->setMode(tastiera::HIDDEN);
-				tasti -> showTastiera();
+				tasti->showTastiera();
 				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
 			}
 		}
@@ -644,11 +644,11 @@ void BtMain::setPwd(bool b ,char* p)
 
 void BtMain::testPwd(char* p)
 {
-	if(p)
+	if (p)
 	{
 		if (strcmp(p,&pwd[0]))
 		{
-			tasti -> showTastiera();
+			tasti->showTastiera();
 			qDebug("pwd ko %s  doveva essere %s",p,&pwd[0]);
 		}
 		else
@@ -658,12 +658,12 @@ void BtMain::testPwd(char* p)
 		}
 	}
 	else
-		tasti -> showTastiera();
+		tasti->showTastiera();
 }
 
 void BtMain::svegl(bool b)
 {
-	qDebug("BtMain::svegl -> %d",b);
+	qDebug("BtMain::svegl->%d",b);
 	svegliaIsOn=b;
 }
 
