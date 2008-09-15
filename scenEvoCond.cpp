@@ -489,9 +489,9 @@ scenEvo_cond(parent, name)
 	qDebug("scenEvo_cond_d::scenEvo_cond_d(), end");
 }
 
-void scenEvo_cond_d::set_descr(const char *d)
+void scenEvo_cond_d::set_descr(QString d)
 {
-	qDebug("scenEvo_cond_d::set_descr(%s)", d);
+	qDebug("scenEvo_cond_d::set_descr(%s)", d.ascii());
 	*descr = d;
 }
 
@@ -804,14 +804,12 @@ void device_condition::show()
 
 void device_condition::Draw()
 {
-	char tmp[50];
-	QString u;
-	get_unit(u);
+	QString tmp;
 	int v = get_current_value();
 	if (show_OFF_on_zero() && !v)
-		sprintf(tmp, "OFF");
+		tmp = tr("OFF");
 	else
-		sprintf(tmp, "%d%s", v, u.ascii());
+		tmp = QString("%1%2").arg(v).arg(get_unit());
 	((QLabel *)frame)->setText(tmp);
 }
 
@@ -867,9 +865,9 @@ scenEvo_cond_d *device_condition::get_parent()
 	return (scenEvo_cond_d *)parent;
 }
 
-void device_condition::get_unit(QString& out)
+QString device_condition::get_unit()
 {
-	out = QString("");
+	return "";
 }
 
 void device_condition::setFGColor(QColor c)
@@ -951,16 +949,14 @@ device_condition_light_status(QWidget *parent, char *name, QString *c) :
 	Draw();
 }
 
-void device_condition_light_status::get_string(QString& out)
+QString device_condition_light_status::get_string()
 {
-	out = get_current_value() ? "ON" : "OFF";
+	return get_current_value() ? tr("ON") : tr("OFF");
 }
 
 void device_condition_light_status::Draw()
 {
-	QString s;
-	get_string(s);
-	((QLabel *)frame)->setText(s.ascii());
+	((QLabel *)frame)->setText(get_string());
 }
 
 void device_condition_light_status::status_changed(QPtrList<device_status> sl)
@@ -1146,17 +1142,16 @@ void device_condition_dimming::Down()
 
 void device_condition_dimming::Draw()
 {
-	char tmp[50];
-	QString u;
-	qDebug("device_condition_dimming::Down()");
-	get_unit(u);
+	QString tmp;
+	qDebug("device_condition_dimming::Draw()");
 	int v = get_current_value_min();
 	if (!v)
-		sprintf(tmp, "OFF");
+		tmp = tr("OFF");
 	else
 	{
+		QString u = get_unit();
 		int M = get_current_value_max();
-		sprintf(tmp, "%d%s - %d%s", v*10, u.ascii(), M*10, u.ascii());
+		tmp = QString("%1%2 - %3%4").arg(v*10).arg(u).arg(M*10).arg(u);
 	}
 	((QLabel *)frame)->setText(tmp);
 }
@@ -1176,9 +1171,9 @@ void device_condition_dimming::reset()
 	Draw();
 }
 
-void device_condition_dimming::get_unit(QString& out)
+QString device_condition_dimming::get_unit()
 {
-	out = "%";
+	return "%";
 }
 
 bool device_condition_dimming::show_OFF_on_zero()
@@ -1429,17 +1424,16 @@ void device_condition_dimming_100::Down()
 
 void device_condition_dimming_100::Draw()
 {
-	char tmp[50];
-	QString u;
-	qDebug("device_condition_dimming_100::Down()");
-	get_unit(u);
+	QString tmp;
+	qDebug("device_condition_dimming_100::Draw()");
+	QString u = get_unit();
 	int v = get_current_value_min();
 	if (!v)
-		sprintf(tmp, "OFF");
+		tmp = tr("OFF");
 	else
 	{
 		int M = get_current_value_max();
-		sprintf(tmp, "%d%s - %d%s", v, u.ascii(), M, u.ascii());
+		tmp = QString("%1%2 - %3%4").arg(v).arg(u).arg(M).arg(u);
 	}
 	((QLabel *)frame)->setText(tmp);
 }
@@ -1459,9 +1453,9 @@ void device_condition_dimming_100::reset()
 	Draw();
 }
 
-void device_condition_dimming_100::get_unit(QString& out)
+QString device_condition_dimming_100::get_unit()
 {
-	out = "%";
+	return "%";
 }
 
 bool device_condition_dimming_100::show_OFF_on_zero()
@@ -1798,18 +1792,22 @@ void device_condition_volume::OK()
 
 void device_condition_volume::Draw()
 {
-	char tmp[50];
-	QString u;
-	get_unit(u);
+	QString tmp;
+	QString u = get_unit();
 	int val_min = get_current_value_min();
 	int val_max = get_current_value_max();
 	qDebug("device_condition_volume::Draw(), val_min = %d - val_max = %d", val_min, val_max);
 	if (val_min == -1)
-		sprintf(tmp, "OFF");
+		tmp = tr("OFF");
 	else if ((val_min == 0) && (val_max == 31))
-		sprintf(tmp, "ON");
+		tmp = tr("ON");
 	else
-		sprintf(tmp, "%d%s - %d%s", (val_min == 0 ? 0 : (10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3) + 1)), u.ascii(), 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3), u.ascii());
+	{
+		int vmin = (val_min == 0 ? 0 : (10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3) + 1));
+		int vmax = 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3);
+
+		tmp = QString("%1%2 - %3%4").arg(vmin).arg(u).arg(vmax).arg(u);
+	}
 	((QLabel *)frame)->setText(tmp);
 }
 
@@ -1867,9 +1865,9 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
 	delete dsi;
 }
 
-void device_condition_volume::get_unit(QString& out)
+QString device_condition_volume::get_unit()
 {
-	out = "%";
+	return "%";
 }
 
 void device_condition_volume::reset()
@@ -1919,22 +1917,21 @@ int device_condition_temp::get_divisor()
 	return 10;
 }
 
-void device_condition_temp::get_unit(QString& out)
+QString device_condition_temp::get_unit()
 {
-	out = TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
+	return TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
 }
 
 void device_condition_temp::Draw()
 {
-	char tmp[50];
-	QString u;
-	get_unit(u);
+	QString tmp;
+	QString u = get_unit();
 	int val = get_current_value();
 	qDebug("device_condition_temp::Draw(), val = %d", val);
 	if (val == -5)
-		sprintf(tmp, "-0.5%s ", u.ascii());
+		 tmp = QString("-0.5%1 ").arg(u);
 	else
-		sprintf(tmp, "%d.%d%s", val/10, val >= 0 ? val%10 : -val%10, u.ascii());
+		tmp = QString("%1.%2%3").arg(val/10).arg(val >= 0 ? val%10 : -val%10).arg(u);
 	((QLabel *)frame)->setText(tmp);
 }
 

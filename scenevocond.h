@@ -277,7 +277,7 @@ class device_condition : public QObject {
     //! Gets condition value
     virtual int get_condition_value(void);
     //! Gets condition's meas unit
-    virtual void get_unit(QString&);
+    virtual QString get_unit();
     //! Shows condition
     void show();
     //! Sets geometry
@@ -339,7 +339,7 @@ class device_condition_light_status : public device_condition
     Q_OBJECT 
  private:
     //! Returns string to be displayed as a function of value
-    void get_string(QString&);
+    QString get_string();
  public:
     //! Constructor
     device_condition_light_status(QWidget *parent, char *name, 
@@ -382,7 +382,7 @@ class device_condition_dimming : public device_condition {
     //! Returns step
     int get_step();
     //! Gets condition's meas unit
-    void get_unit(QString&);
+    virtual QString get_unit();
     //! Returns true if OFF must be shown instead of 0
     bool show_OFF_on_zero();
     void set_condition_value_min(int);
@@ -438,7 +438,7 @@ class device_condition_dimming_100 : public device_condition {
     //! Returns step
     int get_step();
     //! Gets condition's meas unit
-    void get_unit(QString&);
+    virtual QString get_unit();
     //! Returns true if OFF must be shown instead of 0
     bool show_OFF_on_zero();
     void set_condition_value_min(int);
@@ -518,7 +518,7 @@ class device_condition_volume : public device_condition
     //! Decodes incoming frame
     //void gestFrame(char*);
     //! Gets condition's meas unit
-    void get_unit(QString&);
+    virtual QString get_unit();
 public slots:
     void OK();
     //! Invoked when status changes
@@ -551,7 +551,7 @@ class device_condition_temp : public device_condition
     //! Returns divisor
     int get_divisor();
     //! Gets condition's meas unit
-    void get_unit(QString&);
+    virtual QString get_unit();
 
     //! Draws condition
     void Draw();
@@ -628,7 +628,7 @@ class scenEvo_cond_d : public scenEvo_cond {
       \brief Set description
       \param d new description
     */
-    void set_descr(const char *d);
+    void set_descr(QString d);
     /*
       \brief get <descr> value
       \param output <descr>

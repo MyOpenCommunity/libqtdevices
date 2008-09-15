@@ -1290,7 +1290,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 							int v = qValue.toInt();
 							cd->setVal(v);
 						} else if(!CurTagL6.compare("descr")) {
-							cd->set_descr(qValue.ascii());
+							cd->set_descr(qValue);
 						} else if(!CurTagL6.compare("where")) {
 							cd->set_where(qValue.ascii());
 						} else if(!CurTagL6.compare("trigger")){
