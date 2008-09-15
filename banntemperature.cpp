@@ -20,7 +20,8 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 {
 	conf_root = config;
 	probe_descr = conf_root.namedItem("descr").toElement().text();
-	temperature = "-23.5"TEMP_DEGREES"C";
+	temperature = 1235;
+	temp_scale = readTemperatureScale();
 
 	setChi("4");
 
@@ -39,6 +40,50 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 			SLOT(status_changed(QPtrList<device_status>)));
 }
 
+float toFahrenheit(float temperature)
+{
+	return ((temperature * 9. / 5.) + 32);
+}
+
+QString celsiusString(unsigned temperature)
+{
+	float icx = temperature;
+	QString qtemp = "";
+	char tmp[10];
+	if (icx >= 1000)
+	{
+		icx = icx - 1000;
+		qtemp = "-";
+	}
+	icx /= 10;
+	sprintf(tmp, "%.1f", icx);
+	qtemp += tmp;
+	qtemp += TEMP_DEGREES"C";
+	return qtemp;
+}
+
+QString fahrenheitString(unsigned temperature)
+{
+	bool isNegative = false;
+	if (temperature > 1000)
+	{
+		isNegative = true;
+		temperature -= 1000;
+	}
+	float fahr = temperature;
+	if (isNegative)
+		fahr = -fahr;
+	fahr = toFahrenheit(fahr / 10);
+	char tmp[15];
+	// conversion to string
+	snprintf(tmp, 15, "%.1f", fahr);
+
+	QString temp;
+	temp = tmp;
+	temp += TEMP_DEGREES"F";
+	return temp;
+}
+
 void BannTemperature::status_changed(QPtrList<device_status> list)
 {
 	QPtrListIterator<device_status> it (list);
@@ -52,19 +97,7 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 		{
 			stat_var curr_temp(stat_var::TEMPERATURE);
 			dev->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			float icx = curr_temp.get_val();
-			QString qtemp = "";
-			char tmp[10];
-			if (icx >= 1000)
-			{
-				icx = icx - 1000;
-				qtemp = "-";
-			}
-			icx /= 10;
-			sprintf(tmp, "%.1f", icx);
-			qtemp += tmp;
-			qtemp += TEMP_DEGREES"C";
-			temperature = qtemp;
+			temperature = curr_temp.get_val();
 			update = true;
 		}
 	}
@@ -84,6 +117,16 @@ void BannTemperature::Draw()
 	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
 	temp_label->setFont(aFont);
 	temp_label->setAlignment(AlignCenter);
-	temp_label->setText(temperature);
+	switch (temp_scale)
+	{
+		case CELSIUS:
+			temp_label->setText(celsiusString(temperature));
+			break;
+		case FAHRENHEIT:
+			temp_label->setText(fahrenheitString(temperature));
+			break;
+		default:
+			qWarning("BannTemperature: unknown scale");
+	}
 	banner::Draw();
 }
