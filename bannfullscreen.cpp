@@ -106,7 +106,7 @@ QString extractAddress(QDomNode n)
 	return QString();
 }
 
-BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale)
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale)
 {
 	BannFullScreen *bfs = 0;
 	QString simple_address = extractAddress(n);
@@ -117,7 +117,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 	switch (id)
 	{
 		case fs_nc_probe:
-			bfs = new FSBannSimpleProbe(parent, n);
+			bfs = new FSBannSimpleProbe(parent, n, scale);
 			break;
 		case fs_4z_probe:
 			{
@@ -127,7 +127,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 				QString thermr_where = QString("0#") + ind_centrale;
 				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
 						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-				bfs = new FSBannProbe(n, dev, thermo_reg, parent);
+				bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
 			}
 			break;
 		case fs_99z_probe:
@@ -138,7 +138,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 				QString thermr_where = ind_centrale;
 				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
 						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-				bfs = new FSBannProbe(n, dev, thermo_reg, parent);
+				bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
 			}
 			break;
 		case fs_4z_fancoil:
@@ -149,7 +149,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 				QString thermr_where = QString("0#") + ind_centrale;
 				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
 						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-				bfs = new FSBannFancoil(n, dev, thermo_reg, parent);
+				bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
 			}
 			break;
 		case fs_99z_fancoil:
@@ -191,9 +191,10 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 	return bfs;
 }
 
-FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name)
+FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale, const char *name)
 	: BannFullScreen(parent, name),
-	main_layout(this)
+	main_layout(this),
+	temp_scale(scale)
 {
 	descr_label = new BtLabelEvo(this);
 	main_layout.addWidget(descr_label);
@@ -255,8 +256,9 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,const char *name)
-	: FSBannSimpleProbe(parent, n),
+FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+		TemperatureScale scale, const char *name)
+	: FSBannSimpleProbe(parent, n, scale),
 	delta_setpoint(false),
 	setpoint_delay(2000),
 	setpoint_delta(5)
@@ -509,8 +511,9 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 
 }
 
-FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent, const char *name)
-	: FSBannProbe(n, _dev, thermo_reg, parent),
+FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+		TemperatureScale scale, const char *name)
+	: FSBannProbe(n, _dev, thermo_reg, parent, scale),
 	fancoil_buttons(4, Qt::Horizontal, this)
 {
 	dev = _dev;
@@ -594,7 +597,7 @@ void FSBannFancoil::status_changed(QPtrList<device_status> list)
 	FSBannProbe::status_changed(list);
 }
 
-FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev)
+FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev, TemperatureScale scale)
 	: BannFullScreen(parent, "manual"),
 	main_layout(this),
 	dev(_dev),
@@ -708,8 +711,8 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 		Draw();
 }
 
-FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev)
-	: FSBannManual(parent, name, _dev),
+FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev, TemperatureScale scale)
+	: FSBannManual(parent, name, _dev, scale),
 	dev(_dev)
 {
 	time_edit = new BtTimeEdit(this);
@@ -774,7 +777,7 @@ BtTime FSBannTime::time()
 	return time_edit->time();
 }
 
-FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
+FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, TemperatureScale scale, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
@@ -1020,8 +1023,8 @@ QString FSBannTermoReg::lookupScenarioDescription(QString season, int scenario_n
 	return "";
 }
 
-FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, const char *name)
-	: FSBannTermoReg(n, parent, name)
+FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, TemperatureScale scale, const char *name)
+	: FSBannTermoReg(n, parent, scale, name)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
@@ -1078,8 +1081,8 @@ void FSBannTermoReg4z::createSettingsMenu()
 	settings->hide();
 }
 
-FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, const char *name)
-	: FSBannTermoReg(n, parent, name)
+FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, TemperatureScale scale, const char *name)
+	: FSBannTermoReg(n, parent, scale, name)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));

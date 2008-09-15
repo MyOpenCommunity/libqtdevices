@@ -70,8 +70,14 @@ enum BannID
 	fs_time_edit,                         // settings: time edit
 };
 
+enum TemperatureScale
+{
+	CELSIUS = 0,
+	FAHRENHEIT,
+};
+
 /// Factory function to get banners
-BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale);
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale = CELSIUS);
 
 /**
  * A base class for banners that represent a probe. It displays a label with zone name on top
@@ -81,7 +87,7 @@ class FSBannSimpleProbe : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	void setSecondForeground(QColor fg2);
 public slots:
@@ -96,6 +102,8 @@ protected:
 	/// Zone description label and string
 	BtLabelEvo *descr_label;
 	QString descr;
+	/// Temperature scale
+	TemperatureScale temp_scale;
 };
 
 /**
@@ -107,7 +115,8 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+			TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -177,7 +186,7 @@ class FSBannTermoReg : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannTermoReg(QDomNode n, QWidget *parent = 0, const char *name = 0);
+	FSBannTermoReg(QDomNode n, QWidget *parent = 0, TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 	virtual thermal_regulator *dev() = 0;
@@ -341,7 +350,7 @@ class FSBannTermoReg4z : public FSBannTermoReg
 {
 Q_OBJECT
 public:
-	FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, const char *name = 0);
+	FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual thermal_regulator *dev();
 protected:
 	virtual void createSettingsMenu();
@@ -367,7 +376,7 @@ class FSBannTermoReg99z : public FSBannTermoReg
 {
 Q_OBJECT
 public:
-	FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, const char *name = 0);
+	FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual thermal_regulator *dev();
 protected:
 	virtual void createSettingsMenu();
@@ -389,7 +398,8 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+			TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -410,7 +420,7 @@ class FSBannManual : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev);
+	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev, TemperatureScale scale = CELSIUS);
 	virtual void Draw();
 	virtual BtButton *customButton();
 public slots:
@@ -444,7 +454,7 @@ class FSBannManualTimed : public FSBannManual
 {
 Q_OBJECT
 public:
-	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
+	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 private:
