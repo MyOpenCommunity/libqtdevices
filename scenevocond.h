@@ -113,8 +113,6 @@ public slots:
      virtual void save();
      //! Reset condition (on cancel)
      virtual void reset();
-     //! Frame received
-     virtual void handle_frame(char *);
 signals:
     //! Emitted when user clicks Next icon
     void SwitchToNext();
@@ -128,10 +126,6 @@ signals:
     void resetAll();
     //! Emitted when all conditions in list are OK (must be saved and applied)
     void okAll();
-    //! Status request
-    void richStato(char *);
-    //! A frame is available
-    void frame_available(char *);
 	//! After a status changed, a condition is satisfied
 	void condSatisfied();
 };
@@ -327,15 +321,9 @@ public slots:
     virtual void OK();
     //! Invoked by device when status changes
     virtual void status_changed(QPtrList<device_status>);
-    //! Invoked when a frame is available
-    void handle_frame(char *s);
 signals:
     //! No more emitted when condition is true
     // void verificata();
-    //! Status request
-    void richStato(char *);
-    //! Emitted when a frame is received
-    void frame_available(char *);
 	//! Emitted when the condition on device is satisfied
 	void condSatisfied();
 };

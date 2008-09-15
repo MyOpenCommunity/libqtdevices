@@ -288,7 +288,6 @@ scenEvo::scenEvo( QWidget *parent, const char *name,
 	while( ( co = ci->current() ) != 0) {
 		qDebug(co->getDescription());
 		co->set_serial_number(serial_number);
-		qDebug("connecting richStato and frame_available signals");
 		connect(co, SIGNAL(verificata()), this, SLOT(trig()));
 		connect(co, SIGNAL(condSatisfied()), this, SLOT(trigOnStatusChanged()));
 		connect(co, SIGNAL(okAll()), this, SLOT(saveAndApplyAll()));

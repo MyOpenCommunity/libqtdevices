@@ -148,12 +148,6 @@ void scenEvo_cond::inizializza(void)
 {
 }
 
-void scenEvo_cond::handle_frame(char *s)
-{
-	qDebug("scenEvo_cond::handle_frame()");
-	emit(frame_available(s));
-}
-
 bool scenEvo_cond::isTrue(void)
 {
 	return false;
@@ -679,8 +673,6 @@ void scenEvo_cond_d::SetIcons()
 
 	if (dc) {
 		dc->setGeometry(40,140,160,50);
-		connect(dc, SIGNAL(richStato(char *)), this, SIGNAL(richStato(char *)));
-		connect(this, SIGNAL(frame_available(char *)), dc, SLOT(handle_frame(char *)));
 		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
 		dc->set_where(*where);
 	}
@@ -938,11 +930,6 @@ void device_condition::status_changed(QPtrList<device_status>)
 	qDebug("device_condition::status_changed()");
 }
 
-void device_condition::handle_frame(char *s)
-{
-	qDebug("device_condition::handle_frame()");
-	emit(frame_available(s));
-}
 
 /*****************************************************************
 ** Actual light status device condition

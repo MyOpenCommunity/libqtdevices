@@ -123,8 +123,6 @@ private slots:
 public slots:
 	void gestFrame(char*);
 	void inizializza(bool forza = false);
-signals:
-	void frame_available(char *);
 };
 
 
