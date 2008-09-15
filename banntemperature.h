@@ -19,6 +19,7 @@
 
 #include "banner.h"
 #include "device_status.h"
+#include "main.h"
 
 #include <qdom.h>
 
@@ -57,11 +58,12 @@ private:
 	/// Name of the zone where the probe is installed (read from config)
 	QString  probe_descr;
 	/// Probed temperature
-	QString  temperature;
+	unsigned  temperature;
 	/// Temperature label
 	BtLabelEvo  *temp_label;
 	/// Zone name label
 	BtLabelEvo  *descr_label;
+	TemperatureScale temp_scale;
 };
 
 #endif // BANNTEMPERATURE_H

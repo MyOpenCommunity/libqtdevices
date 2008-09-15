@@ -16,6 +16,7 @@
 #include "device_status.h"
 #include "btwidgets.h"
 #include "bttime.h"
+#include "main.h"
 
 #include <qlayout.h>
 #include <qbuttongroup.h>
@@ -55,6 +56,46 @@ protected:
 	BannFullScreen(QWidget *parent, const char *name);
 	QColor second_fg;
 	BtButton *getButton(const char *img);
+	/**
+	 * Creates a string to visualize the temperature.
+	 * \param temperature The temperature in BTicino form, Celsius degrees.
+	 * \return A string with that rapresents the temperature in Celsius degrees.
+	 */
+	QString celsiusString(unsigned temperature);
+
+	/**
+	 * Creates a string to visualize the temperature.
+	 * \param temperature The temperature in BTicino form, Celsius degrees.
+	 * \return A string with that rapresents the temperature in Fahrenheit degrees.
+	 */
+	QString fahrenheitString(unsigned temperature);
+
+	/**
+	 * Creates a string from an unsigned in fahrenheit degrees.
+	 * \param temperature The temperature in Fahrenheit degrees, in 1/10 of degrees. Be careful: we can't use BTicino form
+	 * because we can go up to 104 fahr degrees, which overflows BTicino representation.
+	 * \return A string with that rapresents the temperature in Fahrenheit degrees.
+	 */
+	QString convertFahrenheitToString(unsigned temperature);
+
+	/**
+	 * Convert celsius degrees to fahrenheit
+	 */
+	float toFahrenheit(float temperature);
+	float toCelsius(float temperature);
+	/**
+	 * Convert fahrenheit to celsius. Convert to BTicino 4-digit format if needed.
+	 * \param temperature A fahrenheit temperature in 1/10 of degrees (ie. 99.4 -> 994)
+	 * \return A temperature in BTicino 4-digit format
+	 */
+	unsigned toCelsius(unsigned temperature);
+	/**
+	 * Convert celsius to fahrenheit.
+	 * \param temperature A celsius temperature in BTicino 4-digit format
+	 * \return A temperature in fahrenheit degrees. Watch out that this CAN'T be expressed in 4-digit format
+	 * since 104 degrees (-> 40 Celsius) is meaningful.
+	 */
+	unsigned toFahrenheit(unsigned temperature);
 };
 
 enum BannID
@@ -71,7 +112,7 @@ enum BannID
 };
 
 /// Factory function to get banners
-BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale);
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale = CELSIUS);
 
 /**
  * A base class for banners that represent a probe. It displays a label with zone name on top
@@ -81,7 +122,7 @@ class FSBannSimpleProbe : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	void setSecondForeground(QColor fg2);
 public slots:
@@ -92,10 +133,12 @@ protected:
 	QVBoxLayout main_layout;
 	/// Measured temperature label and string
 	BtLabelEvo *temp_label;
-	QString temp;
+	unsigned temp;
 	/// Zone description label and string
 	BtLabelEvo *descr_label;
 	QString descr;
+	/// Temperature scale
+	TemperatureScale temp_scale;
 };
 
 /**
@@ -107,7 +150,8 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+			TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
@@ -132,6 +176,11 @@ protected:
 	QDomNode conf_root;
 	temperature_probe_controlled *dev;
 private:
+	/**
+	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
+	 */
+	void setDeviceToManual();
+
 	enum probe_status
 	{
 		AUTOMATIC,
@@ -239,6 +288,7 @@ protected:
 	QDomNode conf_root;
 
 	BtButton *navbar_button;
+	TemperatureScale temp_scale;
 private slots:
 	/**
 	 * The following slots are used to control the status of input for holiday/weekend mode.
@@ -389,7 +439,8 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+			TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -410,7 +461,7 @@ class FSBannManual : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev);
+	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev, TemperatureScale scale = CELSIUS);
 	virtual void Draw();
 	virtual BtButton *customButton();
 public slots:
@@ -419,8 +470,9 @@ protected:
 	QVBoxLayout main_layout;
 	/// The button to be set on the navbar
 	BtButton *navbar_button;
-	/// The setpoint temperature set on the interface
+	/// The setpoint temperature set on the interface. The scale is given by temp_scale
 	unsigned temp;
+	TemperatureScale temp_scale;
 private:
 	QString descr;
 	BtLabelEvo *descr_label;
@@ -444,7 +496,7 @@ class FSBannManualTimed : public FSBannManual
 {
 Q_OBJECT
 public:
-	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
+	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 private:
