@@ -23,6 +23,7 @@ enum TemperatureScale
 {
 	CELSIUS = 0,
 	FAHRENHEIT,
+	NONE,
 };
 TemperatureScale readTemperatureScale();
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);

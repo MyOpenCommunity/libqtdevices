@@ -62,6 +62,11 @@ char *ssl_certificate_path = NULL;
 
 TemperatureScale readTemperatureScale()
 {
+	static TemperatureScale scale = NONE;
+	// cache the value
+	if (scale != NONE)
+		return scale;
+
 	QDomElement root = qdom_appconfig.documentElement();
 
 	QDomNode n = root.firstChild();
@@ -85,7 +90,8 @@ TemperatureScale readTemperatureScale()
 								if (temp_child.isElement() && temp_child.nodeName() == "format")
 								{
 									QDomElement e = temp_child.toElement();
-									return static_cast<TemperatureScale>(e.text().toInt());
+									scale = static_cast<TemperatureScale>(e.text().toInt());
+									return scale;
 								}
 								temp_child = temp_child.nextSibling();
 							}
