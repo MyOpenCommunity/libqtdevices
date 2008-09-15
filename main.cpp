@@ -60,6 +60,45 @@ int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
 
+TemperatureScale readTemperatureScale()
+{
+	QDomElement root = qdom_appconfig.documentElement();
+
+	QDomNode n = root.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName() == "setup")
+		{
+			QDomNode setup_child = n.firstChild();
+			while (!setup_child.isNull())
+			{
+				if (setup_child.isElement() && setup_child.nodeName() == "generale")
+				{
+					QDomNode gen_child = setup_child.firstChild();
+					while (!gen_child.isNull())
+					{
+						if (gen_child.isElement() && gen_child.nodeName() == "temperature")
+						{
+							QDomNode temp_child = gen_child.firstChild();
+							while (!temp_child.isNull())
+							{
+								if (temp_child.isElement() && temp_child.nodeName() == "format")
+								{
+									QDomElement e = temp_child.toElement();
+									return static_cast<TemperatureScale>(e.text().toInt());
+								}
+								temp_child = temp_child.nextSibling();
+							}
+						}
+						gen_child = gen_child.nextSibling();
+					}
+				}
+				setup_child = setup_child.nextSibling();
+			}
+		}
+		n = n.nextSibling();
+	}
+}
 
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2)
 {

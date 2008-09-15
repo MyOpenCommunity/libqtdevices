@@ -17,6 +17,14 @@
 QDomNode getPageNode(int id);
 QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
 QString getLanguage();
+
+// FIXME: next time a global function is needed, create an object that stores global configuration
+enum TemperatureScale
+{
+	CELSIUS = 0,
+	FAHRENHEIT,
+};
+TemperatureScale readTemperatureScale();
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
 
 /****************************************************************
