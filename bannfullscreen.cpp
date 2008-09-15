@@ -203,7 +203,7 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureSca
 	main_layout.addWidget(temp_label);
 	main_layout.setAlignment(Qt::AlignHCenter);
 
-	temp = "-23.5"TEMP_DEGREES"C";
+	temp = 1235;
 	descr = n.namedItem("descr").toElement().text();
 }
 
@@ -214,7 +214,20 @@ void FSBannSimpleProbe::Draw()
 	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
 	temp_label->setFont(aFont);
 	temp_label->setAlignment(AlignHCenter);
-	temp_label->setText(temp);
+
+	float icx = temp;
+	QString qtemp = "";
+	char tmp[10];
+	if (icx >= 1000)
+	{
+		icx = icx - 1000;
+		qtemp = "-";
+	}
+	icx /= 10;
+	sprintf(tmp, "%.1f", icx);
+	qtemp += tmp;
+	qtemp += TEMP_DEGREES"C";
+	temp_label->setText(qtemp);
 
 	FontManager::instance()->getFont(font_banTermo_testo, aFont);
 	descr_label->setFont(aFont);
@@ -235,19 +248,7 @@ void FSBannSimpleProbe::status_changed(QPtrList<device_status> list)
 		{
 			stat_var curr_temp(stat_var::TEMPERATURE);
 			dev->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			float icx = curr_temp.get_val();
-			QString qtemp = "";
-			char tmp[10];
-			if (icx >= 1000)
-			{
-				icx = icx - 1000;
-				qtemp = "-";
-			}
-			icx /= 10;
-			sprintf(tmp, "%.1f", icx);
-			qtemp += tmp;
-			qtemp += TEMP_DEGREES"C";
-			temp = qtemp;
+			temp = curr_temp.get_val();
 			update = true;
 		}
 	}

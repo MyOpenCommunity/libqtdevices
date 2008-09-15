@@ -98,7 +98,7 @@ protected:
 	QVBoxLayout main_layout;
 	/// Measured temperature label and string
 	BtLabelEvo *temp_label;
-	QString temp;
+	unsigned temp;
 	/// Zone description label and string
 	BtLabelEvo *descr_label;
 	QString descr;
