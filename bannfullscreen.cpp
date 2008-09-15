@@ -11,7 +11,6 @@
 
 #include "bannfullscreen.h"
 #include "fontmanager.h"
-#include "main.h"
 #include "sottomenu.h"
 #include "btbutton.h"
 #include "device.h"
@@ -88,6 +87,90 @@ void BannFullScreen::setFGColor(QColor fg)
 		((QWidget*)obj)->setPaletteForegroundColor(fg);
 	delete l;
 	banner::setFGColor(fg);
+}
+
+QString BannFullScreen::celsiusString(unsigned temperature)
+{
+	float icx = temperature;
+	QString qtemp = "";
+	char tmp[10];
+	if (icx >= 1000)
+	{
+		icx = icx - 1000;
+		qtemp = "-";
+	}
+	icx /= 10;
+	sprintf(tmp, "%.1f", icx);
+	qtemp += tmp;
+	qtemp += TEMP_DEGREES"C";
+	return qtemp;
+}
+
+QString BannFullScreen::fahrenheitString(unsigned temperature)
+{
+	bool isNegative = false;
+	if (temperature > 1000)
+	{
+		isNegative = true;
+		temperature -= 1000;
+	}
+	float fahr = temperature;
+	if (isNegative)
+		fahr = -fahr;
+	fahr = toFahrenheit(fahr / 10);
+	char tmp[15];
+	// conversion to string
+	snprintf(tmp, 15, "%.1f", fahr);
+
+	QString temp;
+	temp = tmp;
+	temp += TEMP_DEGREES"F";
+	return temp;
+}
+
+QString BannFullScreen::convertFahrenheitToString(unsigned temperature)
+{
+	float fahr = temperature;
+	fahr /= 10;
+	char tmp[15];
+	// conversion to string
+	snprintf(tmp, 15, "%.1f", fahr);
+
+	QString temp;
+	temp = tmp;
+	temp += TEMP_DEGREES"F";
+	return temp;
+}
+
+float BannFullScreen::toFahrenheit(float temperature)
+{
+	return ((temperature * 9. / 5.) + 32);
+}
+
+float BannFullScreen::toCelsius(float temperature)
+{
+	return ((temperature - 32) * 5. / 9.);
+}
+
+unsigned BannFullScreen::toCelsius(unsigned temperature)
+{
+	float tmp = temperature;
+	tmp = toCelsius(tmp / 10);
+	unsigned new_temperature = 0;
+	if (tmp < 0)
+	{
+		new_temperature = 1000;
+		tmp = -tmp;
+	}
+	new_temperature += static_cast<unsigned>(tmp * 10);
+	return new_temperature;
+}
+
+unsigned BannFullScreen::toFahrenheit(unsigned temperature)
+{
+	float tmp = temperature;
+	tmp /= 10;
+	return static_cast<unsigned>(toFahrenheit(tmp) * 10);
 }
 
 /**
@@ -214,20 +297,18 @@ void FSBannSimpleProbe::Draw()
 	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
 	temp_label->setFont(aFont);
 	temp_label->setAlignment(AlignHCenter);
-
-	float icx = temp;
-	QString qtemp = "";
-	char tmp[10];
-	if (icx >= 1000)
+	switch (temp_scale)
 	{
-		icx = icx - 1000;
-		qtemp = "-";
+		case CELSIUS:
+			temp_label->setText(celsiusString(temp));
+			break;
+		case FAHRENHEIT:
+			temp_label->setText(fahrenheitString(temp));
+			break;
+		default:
+			qWarning("BannSimpleProbe: unknown temperature scale");
 	}
-	icx /= 10;
-	sprintf(tmp, "%.1f", icx);
-	qtemp += tmp;
-	qtemp += TEMP_DEGREES"C";
-	temp_label->setText(qtemp);
+
 
 	FontManager::instance()->getFont(font_banTermo_testo, aFont);
 	descr_label->setFont(aFont);
@@ -314,10 +395,28 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	connect(&setpoint_timer, SIGNAL(timeout()), this, SLOT(setSetpoint()));
 }
 
+void FSBannProbe::setDeviceToManual()
+{
+	unsigned new_temperature;
+	switch (temp_scale)
+	{
+		case CELSIUS:
+			new_temperature = temp;
+			break;
+		case FAHRENHEIT:
+			new_temperature = toCelsius(temp);
+			qDebug("LUCA new temperature in bannManual: %u", new_temperature);
+			break;
+		default:
+			qWarning("BannProbe::setDeviceToManual: unknown scale");
+	}
+	dev->setManual(new_temperature);
+}
+
 void FSBannProbe::changeStatus()
 {
 	if (status == AUTOMATIC)
-		dev->setManual(setpoint);
+		setDeviceToManual();
 	else
 		dev->setAutomatic();
 }
@@ -354,7 +453,7 @@ void FSBannProbe::decSetpoint()
 void FSBannProbe::setSetpoint()
 {
 	setpoint_timer.stop();
-	dev->setManual(setpoint);
+	setDeviceToManual();
 }
 
 void FSBannProbe::Draw()
@@ -370,22 +469,17 @@ void FSBannProbe::Draw()
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 
-	QString str;
-	float icx;
-	char tmp[10];
-	icx = setpoint;
-	qDebug("temperatura setpoint: %d",(int)icx);
-	str = "";
-	if (icx>=1000)
+	switch (temp_scale)
 	{
-		str = "-";
-		icx=icx-1000;
+		case CELSIUS:
+			setpoint_label->setText(celsiusString(setpoint));
+			break;
+		case FAHRENHEIT:
+			setpoint_label->setText(fahrenheitString(setpoint));
+			break;
+		default:
+			qWarning("BannProbe: unknown temperature scale");
 	}
-	icx/=10;
-	sprintf(tmp,"%.1f",icx);
-	str += tmp;
-	str += TEMP_DEGREES"C";
-	setpoint_label->setText(str);
 
 	setpoint_label->setFont(aFont);
 	setpoint_label->setAlignment(AlignHCenter);
@@ -601,6 +695,7 @@ void FSBannFancoil::status_changed(QPtrList<device_status> list)
 FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev, TemperatureScale scale)
 	: BannFullScreen(parent, "manual"),
 	main_layout(this),
+	temp_scale(scale),
 	dev(_dev),
 	setpoint_delta(5)
 {
@@ -608,13 +703,30 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	descr_label = new BtLabelEvo(this);
 	main_layout.addWidget(descr_label);
 
-	maximum_manual_temp = dev->maximumTemp();
-	minimum_manual_temp = dev->minimumTemp();
+	switch (temp_scale)
+	{
+		case CELSIUS:
+			maximum_manual_temp = dev->maximumTemp();
+			minimum_manual_temp = dev->minimumTemp();
+			temp = 200;
+			break;
+		case FAHRENHEIT:
+			{
+				maximum_manual_temp = toFahrenheit(dev->maximumTemp());
+				minimum_manual_temp = toFahrenheit(dev->minimumTemp());
+				temp = 680;
+				qDebug("LUCA maximum temp: %u", maximum_manual_temp);
+				qDebug("LUCA minimum_manual_temp: %u", minimum_manual_temp);
+				break;
+			}
+		default:
+			qWarning("BannManual ctor: wrong scale");
+	}
+
 
 	navbar_button = getButton(I_OK);
 	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 
-	temp = 200;
 	temp_label = new BtLabelEvo(this);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
@@ -639,11 +751,24 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 
 void FSBannManual::performAction()
 {
-	emit(temperatureSelected(temp));
+	// convert temperature to celsius
+	unsigned new_temperature;
+	switch (temp_scale)
+	{
+		case CELSIUS:
+			new_temperature = temp;
+			break;
+		case FAHRENHEIT:
+			new_temperature = toCelsius(temp);
+			qDebug("LUCA new temperature in bannManual: %u", new_temperature);
+			break;
+	}
+	emit(temperatureSelected(new_temperature));
 }
 
 void FSBannManual::incSetpoint()
 {
+	// FIXME: forse c'e' da modificare i controlli in caso di fahrenheit
 	if (temp >= maximum_manual_temp)
 		return;
 	else
@@ -672,18 +797,19 @@ void FSBannManual::Draw()
 	temp_label->setFont(aFont);
 	temp_label->setAlignment(AlignHCenter|AlignVCenter);
 
-	QString temp_string;
-
-	int temp_format = temp;
-	if (temp_format >= 1000)
+	switch (temp_scale)
 	{
-		temp_string.append("-");
-		temp_format = temp_format - 1000;
+		case CELSIUS:
+			temp_label->setText(celsiusString(temp));
+			break;
+		case FAHRENHEIT:
+			qDebug("LUCA temp = %u", temp);
+			temp_label->setText(convertFahrenheitToString(temp));
+			break;
+		default:
+			qWarning("BannSimpleProbe: unknown temperature scale");
 	}
-	temp_string = temp_string.append("%1").arg(temp_format);
-	temp_string.insert(temp_string.length() - 1, ".");
-	temp_string.append(TEMP_DEGREES"C");
-	temp_label->setText(temp_string);
+
 	temp_label->setPaletteForegroundColor(second_fg);
 }
 
@@ -703,7 +829,18 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 			ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
 			if (curr_sp.initialized())
 			{
-				temp = curr_sp.get_val();
+				switch (temp_scale)
+				{
+					case CELSIUS:
+						temp = curr_sp.get_val();
+						break;
+					case FAHRENHEIT:
+						// curr_sp is in celsius in BTicino form
+						temp = toFahrenheit(static_cast<unsigned>(curr_sp.get_val()));
+						break;
+					default:
+						qWarning("BannSimpleProbe: unknown temperature scale");
+				}
 				update = true;
 			}
 		}
@@ -778,7 +915,7 @@ BtTime FSBannTime::time()
 	return time_edit->time();
 }
 
-FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, TemperatureScale scale, const char *name)
+FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	: BannFullScreen(parent, name),
 	main_layout(this)
 {
@@ -815,6 +952,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, TemperatureScale sca
 	date_edit = 0;
 	time_edit = 0;
 	program_choice = 0;
+	temp_scale = readTemperatureScale();
 }
 
 BtButton *FSBannTermoReg::customButton()
@@ -894,16 +1032,18 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 						stat_var curr_sp(stat_var::SP);
 						ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
 						// remember: stat_var::get_val() returns an int
-						int temp = curr_sp.get_val();
-						description = "";
-						if (temp > 1000)
+						switch (temp_scale)
 						{
-							description = "-";
-							temp -= 1000;
+							case CELSIUS:
+								description = celsiusString(curr_sp.get_val());
+								break;
+							case FAHRENHEIT:
+								description = fahrenheitString(curr_sp.get_val());
+								qDebug("LUCA %s", description.ascii());
+								break;
+							default:
+								qWarning("TermoReg status_changed: unknown scale");
 						}
-						description += QString::number(temp);
-						description.insert(description.length() - 1, ".");
-						description += TEMP_DEGREES"C";
 						description_visible = true;
 					}
 					break;
@@ -1024,8 +1164,8 @@ QString FSBannTermoReg::lookupScenarioDescription(QString season, int scenario_n
 	return "";
 }
 
-FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, TemperatureScale scale, const char *name)
-	: FSBannTermoReg(n, parent, scale, name)
+FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, const char *name)
+	: FSBannTermoReg(n, parent, name)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
@@ -1082,8 +1222,8 @@ void FSBannTermoReg4z::createSettingsMenu()
 	settings->hide();
 }
 
-FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, TemperatureScale scale, const char *name)
-	: FSBannTermoReg(n, parent, scale, name)
+FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, const char *name)
+	: FSBannTermoReg(n, parent, name)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QPtrList<device_status>)), SLOT(status_changed(QPtrList<device_status>)));
@@ -1157,7 +1297,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SIGNAL(freezePropagate(bool)));
 
-	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev);
+	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev, temp_scale);
 	bann->setSecondForeground(second_fg);
 
 	manual_menu->appendBanner(bann);

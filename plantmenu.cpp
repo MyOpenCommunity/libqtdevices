@@ -103,7 +103,8 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	/*
 	 * Create full screen banner in detail menu.
 	 */
-	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale);
+	TemperatureScale scale = readTemperatureScale();
+	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale, scale);
 	initBanner(fsb, n);
 	fsb->setSecondForeground(second_fg);
 	items_submenu.appendBanner(fsb);
