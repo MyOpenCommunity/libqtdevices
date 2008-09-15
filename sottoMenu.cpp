@@ -671,7 +671,7 @@ void  sottoMenu::killBanner(banner* b)
 
 void sottoMenu::hide(bool index)
 {
-	qDebug("[TERMO] sottoMenu::hide() (%s)", name());
+	qDebug("sottoMenu::hide() (%s)", name());
 	QWidget::hide();
 	emit(hideChildren());
 	if(index)
