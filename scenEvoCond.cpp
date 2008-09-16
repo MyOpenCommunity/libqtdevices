@@ -6,6 +6,8 @@
 #include <qdir.h>
 #include <qfile.h>
 
+#include <assert.h>
+
 #include "openclient.h"
 #include "sottomenu.h"
 #include "scenevocond.h"
@@ -655,10 +657,12 @@ void scenEvo_cond_d::SetIcons()
 	case 3:
 	case 7:
 	case 8:
-	case 9:
 		dc = new device_condition_temp(this, "temp_val", trigger);
 		but[A3_BUTTON_INDEX]->setAutoRepeat(true);
 		but[A4_BUTTON_INDEX]->setAutoRepeat(true);
+		break;
+	case 9:
+		dc = new device_condition_aux(this, "aux_val", trigger);
 		break;
 	case 4:
 		dc = new device_condition_volume(this, "audio_val", trigger);
@@ -823,8 +827,8 @@ void device_condition::Up()
 	qDebug("device_condition::Up()");
 	int val = get_current_value();
 	val += get_step();
-	qDebug("val = %d", val);
 	set_current_value(val);
+	qDebug("val = %d", get_current_value());
 	Draw();
 	show();
 }
@@ -1985,4 +1989,74 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 		++(*dsi);
 	}
 	delete dsi;
+}
+
+
+/*****************************************************************
+** Aux device condition
+****************************************************************/
+
+device_condition_aux::device_condition_aux(QWidget *parent, char *name, QString *c) :
+	device_condition(parent, c)
+{
+	QLabel *l = new QLabel(parent, name);
+	l->setAlignment(AlignHCenter|AlignVCenter);
+	QFont aFont;
+	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
+	l->setFont(aFont);
+
+	frame = l;
+	set_condition_value(*c);
+	set_current_value(device_condition::get_condition_value());
+	dev = new aux_device(QString(""));
+
+	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
+	Draw();
+}
+
+void device_condition_aux::Draw()
+{
+	((QLabel *)frame)->setText(get_current_value() ? tr("ON") : tr("OFF"));
+}
+
+void device_condition_aux::status_changed(stat_var status)
+{
+	int trig_v = device_condition::get_condition_value();
+	if (trig_v == status.get_val())
+	{
+		qDebug("aux condition (%d) satisfied", trig_v);
+		if (!satisfied)
+		{
+			satisfied = true;
+			emit(condSatisfied());
+		}
+	}
+	else
+	{
+		qDebug("aux condition (%d) NOT satisfied", trig_v);
+		satisfied = false;
+	}
+}
+
+int device_condition_aux::get_max()
+{
+	return 1;
+}
+
+void device_condition_aux::set_condition_value(QString s)
+{
+	qDebug("device_condition_aux::set_condition_value");
+	int v = 0;
+	if (s == "1")
+		v = 1;
+	else if (s == "0")
+		v = 0;
+	else
+		qDebug("Unknown condition value %s for device_condition_aux", s.ascii());
+	device_condition::set_condition_value(v);
+}
+
+void device_condition_aux::status_changed(QPtrList<device_status> sl)
+{
+	assert(!"Old status changed on device_condition_aux not implemented!");
 }

@@ -345,13 +345,13 @@ class device_condition_light_status : public device_condition
     device_condition_light_status(QWidget *parent, char *name, 
 				  QString *trigger); 
     //! Draws frame
-    void Draw();
+    virtual void Draw();
     //! Returns max value
-    int get_max();
+    virtual int get_max();
     //! Translates trigger condition from open encoding to int and sets val
-    void set_condition_value(QString);
+    virtual void set_condition_value(QString);
     //! Translates current trigger condition to open
-    void get_condition_value(QString&);
+    virtual void get_condition_value(QString&);
     //! Decodes incoming frame
     //void gestFrame(char*);
 public slots:
@@ -378,7 +378,7 @@ class device_condition_dimming : public device_condition {
     //! Returns min value
     int get_min();
     //! Returns max value
-    int get_max();
+    virtual int get_max();
     //! Returns step
     int get_step();
     //! Gets condition's meas unit
@@ -398,11 +398,11 @@ class device_condition_dimming : public device_condition {
     QString get_current_value();
     void reset();
     //! Draws condition
-    void Draw();
+    virtual void Draw();
     //! Translates trigger condition from open encoding to int and sets val
-    void set_condition_value(QString);
+    virtual void set_condition_value(QString);
     //! Translates current trigger condition to open
-    void get_condition_value(QString&);
+    virtual void get_condition_value(QString&);
     //! Decodes incoming frame
     //void gestFrame(char*);
 public slots:
@@ -434,7 +434,7 @@ class device_condition_dimming_100 : public device_condition {
     //! Returns min value
     int get_min();
     //! Returns max value
-    int get_max();
+    virtual int get_max();
     //! Returns step
     int get_step();
     //! Gets condition's meas unit
@@ -454,11 +454,11 @@ class device_condition_dimming_100 : public device_condition {
     QString get_current_value();
     void reset();
     //! Draws condition
-    void Draw();
+    virtual void Draw();
     //! Translates trigger condition from open encoding to int and sets val
-    void set_condition_value(QString);
+    virtual void set_condition_value(QString);
     //! Translates current trigger condition to open
-    void get_condition_value(QString&);
+    virtual void get_condition_value(QString&);
     //! Decodes incoming frame
     //void gestFrame(char*);
 public slots:
@@ -492,7 +492,7 @@ class device_condition_volume : public device_condition
     //! Returns min value
     int get_min();
     //! Returns max value
-    int get_max();
+    virtual int get_max();
     void set_condition_value_min(int);
     void set_condition_value_min(QString);
     int get_condition_value_min();
@@ -508,9 +508,9 @@ class device_condition_volume : public device_condition
     //! Returns step
     //int get_step();
     //! Draws condition
-    void Draw();
+    virtual void Draw();
     //! Translates trigger condition from open encoding to int and sets val
-    void set_condition_value(QString);
+    virtual void set_condition_value(QString);
     //! Translates current trigger condition to open
     //void get_condition_value(QString&);
     //! Read current value (%)
@@ -545,7 +545,7 @@ class device_condition_temp : public device_condition
     //! Returns min value
     int get_min();
     //! Returns max value
-    int get_max();
+    virtual int get_max();
     //! Returns step
     int get_step();
     //! Returns divisor
@@ -554,14 +554,14 @@ class device_condition_temp : public device_condition
     virtual QString get_unit();
 
     //! Draws condition
-    void Draw();
+    virtual void Draw();
 
     //! Returns value
     int intValue();
     //! Translates trigger condition from open encoding to int and sets val
-    void set_condition_value(QString);
+    virtual void set_condition_value(QString);
     //! Translates current trigger condition to open
-    void get_condition_value(QString&);
+    virtual void get_condition_value(QString&);
     //! Decodes incoming frame
     void gestFrame(char*);
 public slots:
@@ -695,5 +695,26 @@ public slots:
 signals:
 };
 
+/*!
+  \class device_condition_aux
+  \brief This class represent a condition on a aux device
+  \author Gianni Valdambrini <aleister@develer.com>
+*/
+class device_condition_aux : public device_condition
+{
+    Q_OBJECT
+ public:
+    device_condition_aux(QWidget *parent, char *name, QString *trigger);
+    virtual void Draw();
+    virtual int get_max();
+    virtual void set_condition_value(QString);
+
+protected slots:
+	virtual void status_changed(QPtrList<device_status> sl);
+
+private slots:
+	// TODO: use a more generic approach!
+    void status_changed(stat_var status);
+};
 
 #endif // _SCENEVOCOND_H_

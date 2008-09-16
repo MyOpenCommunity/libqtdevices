@@ -368,5 +368,23 @@ public:
 	modscen_device(QString, bool p=false, int g=-1);
 };
 
+//! Aux device
+class aux_device : public device
+{
+Q_OBJECT
+public:
+	aux_device(QString w, bool p=false, int g=-1);
+	virtual void init(bool force = false);
+
+public slots:
+	virtual void frame_rx_handler(char *);
+
+private:
+	stat_var status;
+
+signals:
+	void status_changed(stat_var);
+};
+
 
 #endif //__DEVICE_H__

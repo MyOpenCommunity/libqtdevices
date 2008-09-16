@@ -4,6 +4,8 @@
 #include <qobject.h>
 #include <qstringlist.h>
 
+#include <openmsg.h>
+
 #include "openclient.h"
 #include "device.h"
 #include "frame_interpreter.h"
@@ -670,4 +672,39 @@ modscen_device::modscen_device(QString w, bool p, int g) :
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
 			SIGNAL(status_changed(QPtrList<device_status>)));
+}
+
+
+aux_device::aux_device(QString w, bool p, int g) : device(QString("9"), w, p, g)
+{
+	status = stat_var(stat_var::NONE, 0, 0, 1, 1);
+}
+
+void aux_device::init(bool force)
+{
+	OpenMsg msg = OpenMsg::createReadDim(who.ascii(), where.ascii());
+	qDebug("aux_device::init message: %s", msg.frame_open);
+	sendInit(msg.frame_open);
+}
+
+void aux_device::frame_rx_handler(char *frame)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame, strlen(frame));
+
+	if (who != msg.who() || where != msg.where())
+		return;
+
+	qDebug("aux_device::frame_rx_handler");
+	qDebug("frame read:%s", frame);
+
+	if (msg.IsNormalFrame())
+	{
+		int cosa = atoi(msg.Extract_cosa());
+		if (status.get_val() != cosa)
+		{
+			status.set_val(cosa);
+			emit status_changed(status);
+		}
+	}
 }
