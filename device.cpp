@@ -158,12 +158,6 @@ void device::frame_rx_handler(char *s)
 	emit(handle_frame(s, stat));
 }
 
-void device::frame_event_handler(QPtrList<device_status> ds)
-{
-	qDebug("device::frame_event_handler");
-	emit(status_changed(ds));
-}
-
 void device::set_frame_interpreter(frame_interpreter *fi)
 {
 	interpreter = fi;
@@ -192,7 +186,7 @@ mci_device::mci_device(QString w, bool p, int g) : device(QString("18"), w, p, g
 	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
 			    interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), 
-					this, SLOT(frame_event_handler(QPtrList<device_status>)));
+					this, SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Light implementation
@@ -205,7 +199,7 @@ light::light(QString w, bool p, int g) : device(QString("1"), w, p, g)
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Dimmer implementation
@@ -218,7 +212,7 @@ dimm::dimm(QString w, bool p, int g) : device(QString("1"), w, p, g)
 			interpreter,
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this,
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Dimmer100 implementation
@@ -231,7 +225,7 @@ dimm100::dimm100(QString w, bool p, int g) : device(QString("1"), w, p, g)
 			interpreter,
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this,
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Autom implementation
@@ -245,7 +239,7 @@ autom::autom(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Sound device implementation
@@ -259,7 +253,7 @@ sound_device::sound_device(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Radio device implementation
@@ -273,7 +267,7 @@ radio_device::radio_device(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Sound matrix device implementation
@@ -288,7 +282,7 @@ sound_matr::sound_matr(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Doorphone device implementation
@@ -303,7 +297,7 @@ doorphone_device::doorphone_device(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Imp.anti device
@@ -318,7 +312,7 @@ impanti_device::impanti_device(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // Zon.anti device
@@ -333,7 +327,7 @@ zonanti_device::zonanti_device(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 thermal_regulator::thermal_regulator(QString where, bool p, int g)
@@ -500,7 +494,7 @@ thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
 	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
 			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+			this, SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 void thermal_regulator_4z::setManualTempTimed(int temperature, BtTime time)
@@ -553,7 +547,7 @@ thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g)
 	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
 			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+			this, SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 void thermal_regulator_99z::setScenario(int scenario)
@@ -594,7 +588,7 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
 			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-			this, SLOT(frame_event_handler(QPtrList<device_status>)));
+			this, SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 void temperature_probe_controlled::setManual(unsigned setpoint)
@@ -660,7 +654,7 @@ temperature_probe_notcontrolled::temperature_probe_notcontrolled(QString w, bool
 	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
 	        interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-	        this, SLOT(frame_event_handler(QPtrList<device_status>)));
+	        this, SIGNAL(status_changed(QPtrList<device_status>)));
 }
 
 // modscen device
@@ -675,5 +669,5 @@ modscen_device::modscen_device(QString w, bool p, int g) :
 			interpreter, 
 			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
 	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SLOT(frame_event_handler(QPtrList<device_status>)));
+			SIGNAL(status_changed(QPtrList<device_status>)));
 }

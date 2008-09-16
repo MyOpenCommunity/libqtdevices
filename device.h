@@ -60,8 +60,6 @@ signals:
 public slots:
 	//! receive a frame
 	virtual void frame_rx_handler(char *);
-	//! Deal with frame event
-	void frame_event_handler(QPtrList<device_status>);
 	//! Initialization requested by frame interpreter
 	void init_requested_handler(QString msg);
 
