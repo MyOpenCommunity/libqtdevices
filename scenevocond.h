@@ -320,7 +320,7 @@ public slots:
     //! Invoked when OK button is pressed
     virtual void OK();
     //! Invoked by device when status changes
-    virtual void status_changed(QPtrList<device_status>);
+    virtual void status_changed(QPtrList<device_status>) = 0;
 signals:
     //! No more emitted when condition is true
     // void verificata();
@@ -356,7 +356,7 @@ class device_condition_light_status : public device_condition
     //void gestFrame(char*);
 public slots:
     //! Invoked when status changes
-    void status_changed(QPtrList<device_status>);
+    virtual void status_changed(QPtrList<device_status>);
 };
 
 /*!
@@ -412,7 +412,7 @@ public slots:
     //! Invoked when DOWN button is pressed
     void Down();
     //! Invoked when status changes
-    void status_changed(QPtrList<device_status>);
+    virtual void status_changed(QPtrList<device_status>);
 };
 
 /*!
@@ -468,7 +468,7 @@ public slots:
     //! Invoked when DOWN button is pressed
     void Down();
     //! Invoked when status changes
-    void status_changed(QPtrList<device_status>);
+    virtual void status_changed(QPtrList<device_status>);
 };
 
 /*!
@@ -522,7 +522,7 @@ class device_condition_volume : public device_condition
 public slots:
     void OK();
     //! Invoked when status changes
-    void status_changed(QPtrList<device_status>); 
+    virtual void status_changed(QPtrList<device_status>);
     //! Invoked when UP button is pressed
     void Up();
     //! Invoked when DOWN button is pressed
@@ -566,7 +566,7 @@ class device_condition_temp : public device_condition
     void gestFrame(char*);
 public slots:
     //! Invoked when status changes
-    void status_changed(QPtrList<device_status>);
+    virtual void status_changed(QPtrList<device_status>);
 };
 
 /*!

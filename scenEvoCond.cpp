@@ -923,11 +923,6 @@ void device_condition::set_group(int g)
 	dev->set_group(g);
 }
 
-void device_condition::status_changed(QPtrList<device_status>)
-{
-	qDebug("device_condition::status_changed()");
-}
-
 
 /*****************************************************************
 ** Actual light status device condition
