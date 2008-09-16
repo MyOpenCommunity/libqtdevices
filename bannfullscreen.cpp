@@ -17,6 +17,7 @@
 #include "bannsettings.h"
 #include "device_cache.h"
 #include "btlabelevo.h"
+#include "scaleconversion.h"
 
 #include <qobjectlist.h>
 
@@ -87,90 +88,6 @@ void BannFullScreen::setFGColor(QColor fg)
 		((QWidget*)obj)->setPaletteForegroundColor(fg);
 	delete l;
 	banner::setFGColor(fg);
-}
-
-QString BannFullScreen::celsiusString(unsigned temperature)
-{
-	float icx = temperature;
-	QString qtemp = "";
-	char tmp[10];
-	if (icx >= 1000)
-	{
-		icx = icx - 1000;
-		qtemp = "-";
-	}
-	icx /= 10;
-	sprintf(tmp, "%.1f", icx);
-	qtemp += tmp;
-	qtemp += TEMP_DEGREES"C";
-	return qtemp;
-}
-
-QString BannFullScreen::fahrenheitString(unsigned temperature)
-{
-	bool isNegative = false;
-	if (temperature > 1000)
-	{
-		isNegative = true;
-		temperature -= 1000;
-	}
-	float fahr = temperature;
-	if (isNegative)
-		fahr = -fahr;
-	fahr = toFahrenheit(fahr / 10);
-	char tmp[15];
-	// conversion to string
-	snprintf(tmp, 15, "%.1f", fahr);
-
-	QString temp;
-	temp = tmp;
-	temp += TEMP_DEGREES"F";
-	return temp;
-}
-
-QString BannFullScreen::convertFahrenheitToString(unsigned temperature)
-{
-	float fahr = temperature;
-	fahr /= 10;
-	char tmp[15];
-	// conversion to string
-	snprintf(tmp, 15, "%.1f", fahr);
-
-	QString temp;
-	temp = tmp;
-	temp += TEMP_DEGREES"F";
-	return temp;
-}
-
-float BannFullScreen::toFahrenheit(float temperature)
-{
-	return ((temperature * 9. / 5.) + 32);
-}
-
-float BannFullScreen::toCelsius(float temperature)
-{
-	return ((temperature - 32) * 5. / 9.);
-}
-
-unsigned BannFullScreen::toCelsius(unsigned temperature)
-{
-	float tmp = temperature;
-	tmp = toCelsius(tmp / 10);
-	unsigned new_temperature = 0;
-	if (tmp < 0)
-	{
-		new_temperature = 1000;
-		tmp = -tmp;
-	}
-	new_temperature += static_cast<unsigned>(tmp * 10);
-	return new_temperature;
-}
-
-unsigned BannFullScreen::toFahrenheit(unsigned temperature)
-{
-	float tmp = temperature;
-	tmp /= 10;
-	return static_cast<unsigned>(toFahrenheit(tmp) * 10);
 }
 
 /**

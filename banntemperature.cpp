@@ -14,6 +14,7 @@
 #include "device.h"
 #include "main.h"
 #include "btlabelevo.h"
+#include "scaleconversion.h"
 
 BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev)
 	: banner(parent, name)
@@ -38,50 +39,6 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 
 	QObject::connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
 			SLOT(status_changed(QPtrList<device_status>)));
-}
-
-float toFahrenheit(float temperature)
-{
-	return ((temperature * 9. / 5.) + 32);
-}
-
-QString celsiusString(unsigned temperature)
-{
-	float icx = temperature;
-	QString qtemp = "";
-	char tmp[10];
-	if (icx >= 1000)
-	{
-		icx = icx - 1000;
-		qtemp = "-";
-	}
-	icx /= 10;
-	sprintf(tmp, "%.1f", icx);
-	qtemp += tmp;
-	qtemp += TEMP_DEGREES"C";
-	return qtemp;
-}
-
-QString fahrenheitString(unsigned temperature)
-{
-	bool isNegative = false;
-	if (temperature > 1000)
-	{
-		isNegative = true;
-		temperature -= 1000;
-	}
-	float fahr = temperature;
-	if (isNegative)
-		fahr = -fahr;
-	fahr = toFahrenheit(fahr / 10);
-	char tmp[15];
-	// conversion to string
-	snprintf(tmp, 15, "%.1f", fahr);
-
-	QString temp;
-	temp = tmp;
-	temp += TEMP_DEGREES"F";
-	return temp;
 }
 
 void BannTemperature::status_changed(QPtrList<device_status> list)

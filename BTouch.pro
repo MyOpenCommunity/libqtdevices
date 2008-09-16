@@ -80,6 +80,7 @@ HEADERS += actuators.h \
            poweramplifier.h \
            poweramplifier_device.h \
            radio.h \
+	   scaleconversion.h \
            scenari.h \
            scenevocond.h \
            setitems.h \
@@ -162,6 +163,7 @@ SOURCES += actuators.cpp \
            poweramplifier.cpp \
            poweramplifier_device.cpp \
            radio.cpp \
+	   scaleconversion.cpp \
            scenari.cpp \
            scenEvoCond.cpp \
            setItems.cpp \
