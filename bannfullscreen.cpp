@@ -223,7 +223,8 @@ void FSBannSimpleProbe::Draw()
 			temp_label->setText(fahrenheitString(temp));
 			break;
 		default:
-			qWarning("BannSimpleProbe: unknown temperature scale");
+			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
+			temp_label->setText(celsiusString(temp));
 	}
 
 
@@ -325,7 +326,8 @@ void FSBannProbe::setDeviceToManual()
 			qDebug("LUCA new temperature in bannManual: %u", new_temperature);
 			break;
 		default:
-			qWarning("BannProbe::setDeviceToManual: unknown scale");
+			qWarning("BannProbe::setDeviceToManual: unknown scale, defaulting to celsius");
+			new_temperature = temp;
 	}
 	dev->setManual(new_temperature);
 }
@@ -395,7 +397,8 @@ void FSBannProbe::Draw()
 			setpoint_label->setText(fahrenheitString(setpoint));
 			break;
 		default:
-			qWarning("BannProbe: unknown temperature scale");
+			qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+			setpoint_label->setText(celsiusString(setpoint));
 	}
 
 	setpoint_label->setFont(aFont);
@@ -637,7 +640,11 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 				break;
 			}
 		default:
-			qWarning("BannManual ctor: wrong scale");
+			qWarning("BannManual ctor: wrong scale, defaulting to celsius");
+			maximum_manual_temp = dev->maximumTemp();
+			minimum_manual_temp = dev->minimumTemp();
+			temp = 200;
+			temp_scale = CELSIUS;
 	}
 
 
@@ -679,6 +686,9 @@ void FSBannManual::performAction()
 			new_temperature = toCelsius(temp);
 			qDebug("LUCA new temperature in bannManual: %u", new_temperature);
 			break;
+		default:
+			qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
+			new_temperature = temp;
 	}
 	emit(temperatureSelected(new_temperature));
 }
@@ -724,7 +734,8 @@ void FSBannManual::Draw()
 			temp_label->setText(convertFahrenheitToString(temp));
 			break;
 		default:
-			qWarning("BannSimpleProbe: unknown temperature scale");
+			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to Celsius");
+			temp_label->setText(celsiusString(temp));
 	}
 
 	temp_label->setPaletteForegroundColor(second_fg);
@@ -756,7 +767,8 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 						temp = toFahrenheit(static_cast<unsigned>(curr_sp.get_val()));
 						break;
 					default:
-						qWarning("BannSimpleProbe: unknown temperature scale");
+						qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
+						temp = curr_sp.get_val();
 				}
 				update = true;
 			}
@@ -959,7 +971,8 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 								qDebug("LUCA %s", description.ascii());
 								break;
 							default:
-								qWarning("TermoReg status_changed: unknown scale");
+								qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
+								description = celsiusString(curr_sp.get_val());
 						}
 						description_visible = true;
 					}
