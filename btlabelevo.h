@@ -1,3 +1,7 @@
+#ifndef BTLABELEVO_H
+#define BTLABELEVO_H
+
+
 #include <qlabel.h>
 
 class BtLabelEvo : public QLabel
@@ -9,3 +13,5 @@ public:
 public slots:
 	virtual void setEnabled(bool) {}
 };
+
+#endif
