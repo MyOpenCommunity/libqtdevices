@@ -52,8 +52,8 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
 	connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
 
 	button_timer = new QTimer(this);
-	b1 = createButton(IMG_OK, 20, 20);
-	b2 = createButton(IMG_OK, 160, 240);
+	b1 = createButton(IMG_OK, 10, 10);
+	b2 = createButton(IMG_OK, 170, 250);
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
@@ -61,7 +61,7 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
 	box_text = new QLabel(this);
 	box_text->setFont(aFont);
 	box_text->setAlignment(Qt::AlignHCenter);
-	box_text->setGeometry(0, 180, desk.width(), 30);
+	box_text->setGeometry(0, 205, desk.width(), 45);
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	if (QFile::exists("/etc/pointercal"))
@@ -178,7 +178,7 @@ void Calibrate::paintEvent(QPaintEvent *)
 
 	if (!logo.isNull())
 	{
-		y = height() / 2 - logo.height() - 15;
+		y = height() / 2 - logo.height() + 55;
 		p.drawPixmap((width() - logo.width())/2, y, logo);
 	}
 	else
