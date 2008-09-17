@@ -41,28 +41,28 @@ class banner : public QWidget
 {
 Q_OBJECT
 public:
-	banner( QWidget *, const char *);
+	banner(QWidget *, const char *);
 	virtual ~banner();
 	/*!
 	 * \brief sets the foundamental text one can see on the banner
 	 */
-	virtual void SetTextU( const QString & );
+	virtual void SetTextU(const QString &);
 	/*!
 	 * \brief sets a possible additional text one can see on the banner
 	 */
-	void SetSecondaryTextU( const QString &  );
+	void SetSecondaryTextU(const QString & );
 	/*!
 	 *  \brief return the Pressed Icon Name
 	 *  for a given IconName return the pressed status IconName
 	 *  we added this to wrap GetPressName of genericFunz.cpp
 	 */
-	QString getPressedIconName( const char * );
+	QString getPressedIconName(const char *);
 	/*!
 	 * \brief sets the Icon of a item in the banner
 	 *
 	 * the arguments describe the item as defined in the oggettinoDelBanner, the image is passed thought the file name
 	 */
-	void SetIcons( uchar , const char * );
+	void SetIcons(uchar , const char *);
 	/*!
 	 * \brief sets the Icon of a item in the banner
 	 */
@@ -92,7 +92,7 @@ public:
 	 * The 5° and 6° argument descrive respectively the period and the number of frame considering that the label 
 	 * is rapresented by a animated image when the banner is in active state
 	 */
-	void SetIcons( const char *, const char *, const char *, const char *, int, int );
+	void SetIcons(const char *, const char *, const char *, const char *, int, int);
 	/*!
 	 *  \brief sets the Icon of left and right button and the central variable in different levels label when the banner is active or not
 	 *
@@ -100,9 +100,9 @@ public:
 	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has
 	 * to visualize when the banner is in active state
 	 */
-	void SetIcons( const char *, const char *, const char *, const char *, char );
+	void SetIcons(const char *, const char *, const char *, const char *, char);
 
-	void SetIcons( const char *, const char *, const char *, const char *, const char * );
+	void SetIcons(const char *, const char *, const char *, const char *, const char *);
 	/*!
 	 *  \brief sets the Icon of left and right button and the central variable in different levels label when the banner is active or not. Also an image representing broken state is passed.
 	 *
@@ -110,13 +110,13 @@ public:
 	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has 
 	 * to visualize when the banner is in active state. The 5° argument represent the broken state image path.
 	 */
-	void SetIcons( const char *, const char *, const char *, const char *, const char *, char );
+	void SetIcons(const char *, const char *, const char *, const char *, const char *, char);
 	/*!
 	 * \brief Inserts an object in the banner.
 	 *
 	 * The arguments describe the object to insert (as described in oggettinoDelBanner), the position (x,y) and the dimension (w,h)
 	 */
-	void addItem( char, int, int, int, int );
+	void addItem(char, int, int, int, int);
 	/*!
 	 * \brief Draws all the objects composing the banner.
 	 *
@@ -149,33 +149,33 @@ public:
 	 *
 	 *  The returned value is the Open What of the object controlled by the banner.
 	 */
-	char *getAddress( );
+	char *getAddress();
 	/*!
 	 *  \brief Changes the function of what is controlled by the banner.
 	 *
 	 *  he argument  describe the Open Who of the object controlled by the banner.
 	 */
-	void setChi(char* );
+	void setChi(char*);
 	/*!
 	 *  \brief Retrieves the function of what is controlled by the banner.
 	 *
 	 *  The returned value is the Open Who of the object controlled by the banner.
 	 */
-	char *getChi( );
+	char *getChi();
 	/*!
 	 *  \brief Changes the group list of the object controlled by the banner.
 	 *
 	 *  The group list is an array of 9 bool varibles.
 	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
 	 */
-	void setGroup(bool* );
+	void setGroup(bool*);
 	/*!
 	 *  \brief Retrieves the group list of the object controlled by the banner.
 	 *
 	 *  The group list is an array of 9 bool varibles. 
 	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
 	 */
-	bool *getGroup( );
+	bool *getGroup();
 	/*!
 	 *  \brief Force the object controlled being PUL.
 	 *
@@ -216,25 +216,25 @@ public:
 	 *
 	 *  The arguments are RGB components for the color.
 	 */
-	virtual void setBGColor( int, int, int );
+	virtual void setBGColor(int, int, int);
 	/*!
 	 *  \brief Sets the foreground color for the banner.
 	 *
 	 *  The arguments are RGB components for the color.
 	 */
-	virtual void setFGColor(int , int , int );
+	virtual void setFGColor(int , int , int);
 	/*!
 	 *  \brief Sets the background color for the banner.
 	 *
 	 *  The argument is the QColor description of the color.
 	 */
-	virtual void setBGColor( QColor );
+	virtual void setBGColor(QColor);
 	/*!
 	 *  \brief Sets the foreground color for the banner.
 	 *
 	 *  The argument is the QColor description of the color.
 	 */
-	virtual void setFGColor( QColor );
+	virtual void setFGColor(QColor);
 	/*!
 	 *  \brief Sets the Value for the object controlled by the banner.
 	 *
@@ -358,15 +358,8 @@ private:
 	 *   Utility functions to get icon name root. For istance
 	 *   from "ondimmer.png" we can get "ondimmer" in a generic way
 	 */
-	QString getNameRoot(QString full_string, QString text_to_strip)
-	{
-		return full_string.mid(0, full_string.findRev('.', -1));
-	
-	};
-	QString getNameRoot(char *full_string, QString text_to_strip) 
-	{ 
-		return getNameRoot(QString(full_string), text_to_strip);
-	};
+	QString getNameRoot(QString full_string, QString text_to_strip);
+	QString getNameRoot(char *full_string, QString text_to_strip);
 public slots:
 	/*!
 	 *  \brief Must be reimplemented to analyze the \a Open \a Frame incoming.
@@ -401,8 +394,10 @@ public slots:
 	 *  \brief Parent changed
 	 */
 	virtual void parentChanged(QWidget *newParent);
+
 private slots:
 	void animate();
+
 signals:
 	/*!
 	 *  \brief Emitted when the right button is clicked.
@@ -478,8 +473,6 @@ signals:
 	 *  \brief Emitted when the banner decide to die and to be removed from the list containig it.
 	 */
 	virtual void killMe(banner*);
-	/*// FIXMEEEEEEEE !!!!
-	  virtual void active(int, int);*/
 
 protected:
 
