@@ -1,7 +1,7 @@
 /*!
  * \banntemperature.h
  * <!--
- * Copyright 2007 Develer S.r.l. (http://www.develer.com/)
+ * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
  * -->
  *

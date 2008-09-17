@@ -117,9 +117,10 @@ public:
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
-	/// Setpoint temperature. All temperatures are expressed in 1/10 of degrees, temperatures > 1000 are negative.
-	/// Example: 1235 is -23.5 (Celsius degrees), 395 is 39.5. Precision is generally 5.
-	unsigned setpoint;
+	/// Setpoint temperature. The scale of the temperature may be Celsius or Fahrenheit, depending on the value
+	/// of FSBannSimpleProbe::temp_scale. Units represent 1/10 of degree, for example -23.5 Celsius degrees
+	/// are represented as -235 if temp_scale == CELSIUS, or -103 if temp_scale == FAHRENHEIT
+	int setpoint;
 	BtLabelEvo  *setpoint_label;
 	/// This flag is used to syncrhonize with other devices in the home. True when setpoint temperature is modified
 	/// by this BTouch, false otherwise
@@ -159,9 +160,9 @@ private:
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
 	/// The minimum temperature that can be set with manual operation
-	unsigned minimum_manual_temp;
+	int minimum_manual_temp;
 	/// The maximum temperature that can be set with manual operation
-	unsigned maximum_manual_temp;
+	int maximum_manual_temp;
 	BtButton *navbar_button;
 
 private slots:
@@ -431,15 +432,15 @@ protected:
 	/// The button to be set on the navbar
 	BtButton *navbar_button;
 	/// The setpoint temperature set on the interface. The scale is given by temp_scale
-	unsigned temp;
+	int temp;
 	TemperatureScale temp_scale;
 private:
 	QString descr;
 	BtLabelEvo *descr_label;
 	BtLabelEvo *temp_label;
 	thermal_regulator *dev;
-	unsigned maximum_manual_temp;
-	unsigned minimum_manual_temp;
+	int maximum_manual_temp;
+	int minimum_manual_temp;
 	unsigned setpoint_delta;
 private slots:
 	void incSetpoint();
