@@ -1,4 +1,6 @@
 #include "btbutton.h"
+
+/*
 #include "main.h"
 #include "genericfunz.h"
 
@@ -17,8 +19,9 @@
 #include <qaccessible.h>
 #endif
 #include <unistd.h>
+*/
 
-
+#if 0
 static const int autoRepeatDelay  = 2300;
 static const int autoRepeatPeriod = 100;
 
@@ -388,6 +391,8 @@ void BtButton::setPixmap( const QPixmap &pixmap )
 	rilpixmap = new QPixmap(pixmap);
 	QButton::setPixmap( pixmap );
 }
+
+#endif
 //#endif
 
 

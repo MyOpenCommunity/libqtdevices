@@ -130,7 +130,7 @@ SOURCES += actuators.cpp \
            bannsettings.cpp \
            banntemperature.cpp \
            bannTermo.cpp \
-           BTButton.cpp \
+           btbutton.cpp \
            btlabel.cpp \
            BtMain.cpp \
            bttime.cpp \

@@ -1,16 +1,31 @@
-
-
 #ifndef BTBUTTON_H
 #define BTBUTTON_H
-
+/*
 #ifndef QT_H
 #include <qbutton.h>
 #include <qiconset.h>
-#endif // QT_H
+#endif // QT_H*/
 
+/*
 #ifndef QT_NO_PUSHBUTTON
 class BtButtonPrivate;
-class QPopupMenu;
+class QPopupMenu;*/
+
+#include <qpushbutton.h>
+
+class BtButton : public QPushButton
+{
+Q_OBJECT
+public:
+	BtButton( QWidget *parent, const char* name=0 ) {}
+	BtButton( const QString &text, QWidget *parent, const char* name=0 ) {}
+
+	virtual void setPressedPixmap( const QPixmap & ) {}
+	void setPixmap( const QPixmap & ) {}
+};
+
+
+
 
 /*!
   \class BtButton
@@ -26,7 +41,7 @@ class QPopupMenu;
   \date lug 2005
   */   
 
-
+/*
 
 class Q_EXPORT BtButton : public QButton
 {
@@ -104,8 +119,8 @@ private:
 	BtButton &operator=( const BtButton & );
 #endif
 };
+*/
 
-
-#endif // QT_NO_PUSHBUTTON
+// #endif // QT_NO_PUSHBUTTON
 
 #endif // BtButton_H
