@@ -8,6 +8,7 @@ CONFIG+= qt debug warn_on
 DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB
 LIBS+= -L../common_files -lcommon -lssl
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
+QT += network xml
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
