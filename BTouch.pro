@@ -148,7 +148,7 @@ SOURCES += actuators.cpp \
            dimmers.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
-           genericFunz.cpp \
+           genericfunz.cpp \
            genPage.cpp \
            homePage.cpp \
            icondispatcher.cpp \

@@ -413,7 +413,6 @@ void rearmWDT()
 	}
 }
 
-
 void  comChConf()
 {
 	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
