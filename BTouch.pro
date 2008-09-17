@@ -131,7 +131,7 @@ SOURCES += actuators.cpp \
            banntemperature.cpp \
            bannTermo.cpp \
            BTButton.cpp \
-           BtLabel.cpp \
+           btlabel.cpp \
            BtMain.cpp \
            bttime.cpp \
            btwidgets.cpp \
