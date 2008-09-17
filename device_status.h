@@ -1,7 +1,7 @@
 #ifndef __DEVICE_STATUS_H__
 #define __DEVICE_STATUS_H__
 
-#include <qptrlist.h>
+#include <QList>
 
 /*
  * Not ideal here, thermo specific stuff, but
@@ -114,7 +114,7 @@ public:
 	} type;
 private:
 	type t;
-	QPtrList<stat_var> vars;
+	QList<stat_var*> vars;
 	//! True when initialized
 	bool _initialized;
 	//! True when init requested
@@ -125,7 +125,7 @@ public:
 	device_status::type get_type(void);
 	//! Set type
 	void set_type(device_status::type& t);
-	bool add_var(int index, stat_var *);
+	void add_var(int index, stat_var *v);
 	int read(int index, stat_var& out);
 	int write_val(int index, stat_var& val);
 	//! Returns true when status initialized

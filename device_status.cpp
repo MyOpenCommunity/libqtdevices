@@ -2,6 +2,8 @@
 #include "device_status.h"
 #include "device_cache.h"
 
+#include <limits.h>
+
 // Status variable implementation
 stat_var::stat_var(stat_var::type _t, int _val, int _min, int _max, int _step,
 		bool _i)
@@ -108,8 +110,9 @@ stat_var::~stat_var()
 device_status::device_status(device_status::type _t)
 {
 	t = _t;
-	vars.clear();
-	vars.setAutoDelete(true);
+	while (!vars.isEmpty())
+		delete vars.takeFirst();
+
 	_initialized = false;
 	_init_requested = false;
 }
@@ -124,9 +127,9 @@ void device_status::set_type(device_status::type& _t)
 	t = _t;
 }
 
-bool device_status::add_var(int index, stat_var *v)
+void device_status::add_var(int index, stat_var *v)
 {
-	return vars.insert(index, v);
+	vars.insert(index, v);
 }
 
 int device_status::read(int index, stat_var& out)
@@ -145,28 +148,23 @@ int device_status::write_val(int index, stat_var& in)
 {
 	stat_var *ptr = vars.at(index);
 	qDebug("device_status::write_val(%d)", index);
-	if(!ptr) return -1;
-	int v ; in.get_val(v);
+	if (!ptr)
+		return -1;
+
+	int v;
+	in.get_val(v);
 	ptr->set_val(v);
 	in.set_val(v);
-	if(_initialized) 
+	if (_initialized) 
 		return 0;
-	// Fixme: do this better
-	QPtrListIterator<stat_var> *svi = 
-		new QPtrListIterator<stat_var>(vars);
-	svi->toFirst();
-	stat_var *sv ; 
-	while( ( sv = svi->current() ) != 0) {
-		if(!sv->initialized()) {
-			delete svi;
+
+  	for (int i = 0; i < vars.size(); ++i)
+		if (!vars.at(i)->initialized())
 			return 0;
-		}
-		++(*svi);
-	}
+
 	qDebug("device_status::write_val(): all device status initialized!!");
 	_initialized = true ;
 	_init_requested = false ;
-	delete svi;
 	return 0;
 }
 
@@ -187,35 +185,22 @@ void device_status::mark_init_requested(void)
 
 void device_status::invalidate(void)
 {
-	QPtrListIterator<stat_var> *svi = 
-		new QPtrListIterator<stat_var>(vars);
-	svi->toFirst();
-	stat_var *sv ; 
-	while( ( sv = svi->current() ) != 0) {
-		sv->invalidate();
-		++(*svi);
-	}
-	delete svi;
+  	for (int i = 0; i < vars.size(); ++i)
+		vars.at(i)->invalidate();
 }
 
 void device_status::force_initialized(void)
 {
-	QPtrListIterator<stat_var> *svi = 
-		new QPtrListIterator<stat_var>(vars);
-	svi->toFirst();
-	stat_var *sv ; 
-	while( ( sv = svi->current() ) != 0) {
-		sv->force_initialized();
-		++(*svi);
-	}
-	_initialized = true;
-	delete svi;
+  	for (int i = 0; i < vars.size(); ++i)
+		vars.at(i)->force_initialized();
 }
 
 device_status::~device_status()
 {
-	// Val list is in auto-delete mode, nothing to do
+	while (!vars.isEmpty())
+		delete vars.takeFirst();
 }
+
 
 // Device status for SUPERVISION MCI
 device_status_mci::device_status_mci() : device_status(SUPERVISION_MCI)
