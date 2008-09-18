@@ -27,6 +27,7 @@
 #include "btmain.h"
 #include "scenevocond.h"
 #include "openclient.h"
+#include "supervisionMenu.h"
 
 unsigned char tipoData=0;
 

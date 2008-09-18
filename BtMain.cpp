@@ -39,6 +39,7 @@
 #include "versio.h"
 #include "tastiera.h"
 #include "thermalmenu.h"
+#include "supervisionMenu.h"
 
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE

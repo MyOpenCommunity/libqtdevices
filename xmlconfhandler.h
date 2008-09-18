@@ -15,7 +15,7 @@
 #include <qcolor.h>
 #include <qdatetime.h>
 #include <qstring.h>
-#include "supervisionMenu.h"
+
 
 class homePage;
 class sottoMenu;
@@ -28,6 +28,7 @@ class BtMain;
 class ambDiffSon;
 class scenEvo_cond;
 class Client;
+class SupervisionMenu;
 
 // Obscene hack, see function below...
 static QString empty_string("");
