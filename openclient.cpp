@@ -89,6 +89,11 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 	}
 	else
 		qDebug("Frame Open <%s> already send", frame);
+
+	// TODO: questa funzione dovra' gestire anche i Nak e ack (e la sua versione "w"
+	// dovra' sparire), attendendo che arrivi o un ack o un nack con un ciclo tipo:
+	// while (socketWaitForAck() < 0 || socketWaitForNak() < 0);
+	// restituendo quindi un booleano che vale true se e' un ack, false altrimenti.
 }
 
 void Client::ApriInviaFrameChiudiw(char *frame)
@@ -126,21 +131,6 @@ void Client::connetti()
 	socket->connectToHost("127.0.0.1", port);
 }
 
-/****************************************************************************
-**
-** chiudo
-**
-*****************************************************************************/
-void Client::closeConnection()
-{
-	qDebug("Client::closeConnection()");
-	socket->close();
-	if (socket->state() == QAbstractSocket::ClosingState)
-	{
-		// We have a delayed close.
-		connect(socket, SIGNAL(delayedCloseFinished()),SLOT(socketClosed()));
-	}
-}
 
 /****************************************************************************
 **
@@ -259,16 +249,6 @@ void Client::socketConnectionClosed()
 	qDebug("Connection closed by the server");
 	if (ismonitor)
 		connetti();
-}
-
-/****************************************************************************
-**
-** chiusa da me ??
-**
-*****************************************************************************/
-void Client::socketClosed()
-{
-	qDebug("Client::socketClosed()");
 }
 
 /****************************************************************************

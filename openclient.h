@@ -44,23 +44,17 @@ public slots:
 	void ApriInviaFrameChiudi(char *);
 
 private slots:
- 	/// Closes the socket
-	void closeConnection(void);
-	
 	/// Reads messages from the socket
 	int socketFrameRead(void);
-	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
-	int socketWaitForAck(void);
 
-	void socketConnected(void);
-	void socketConnectionClosed(void);
-	void socketClosed(void);
+	void socketConnected();
+	void socketConnectionClosed();
 	void socketError(QAbstractSocket::SocketError e);
 
 	/// Send an \a Open \aFrame through the socket and wait for ack
 	void ApriInviaFrameChiudiw(char*);
 	void richStato(char*);
-	void ackReceived(void);
+	void ackReceived();
 
 	void clear_last_msg_open_read();
 
@@ -73,13 +67,16 @@ private:
 	QTimer Open_read;
 	openwebnet last_msg_open_read;
 	openwebnet last_msg_open_write;
+	bool ackRx;
 
 	/// Sends messages throught the socket
 	void sendToServer(const char *);
 	void socketStateRead(char*);
-	bool ackRx;
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();
+
+	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
+	int socketWaitForAck();
 
 signals:
 	void frameIn(char*);
