@@ -118,7 +118,7 @@ SOURCES += actuators.cpp \
            bannciclaz.cpp \
            bannciclaz3but.cpp \
            banner.cpp \
-           bannFrecce.cpp \
+           bannfrecce.cpp \
            bannfullscreen.cpp \
            bannOn2scr.cpp \
            bannOnDx.cpp \

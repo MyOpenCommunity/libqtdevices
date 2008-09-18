@@ -67,7 +67,8 @@ bannFrecce::bannFrecce(QWidget *parent, const char *name, uchar num, char* IconB
 
 void bannFrecce::handleBackPress()
 {
-	press_timer.start(3000, TRUE);
+	press_timer.setSingleShot(true);
+	press_timer.start(3000);
 }
 
 void bannFrecce::handleBackRelease()
@@ -86,7 +87,10 @@ void bannFrecce::Draw()
 void bannFrecce::setCustomButton(BtButton *btn)
 {
 	if (dxButton != original_dx_button)
-		dxButton->reparent(dx_button_parent, 0, dx_button_coord.topLeft(), false);
+	{
+		dxButton->setParent(dx_button_parent);
+		dxButton->move(dx_button_coord.topLeft());
+	}
 
 	if (btn)
 	{
@@ -94,7 +98,9 @@ void bannFrecce::setCustomButton(BtButton *btn)
 		// Custom buttons may not have the correct size expected by bannFrecce, so we need to resize it
 		btn->setGeometry(dx_button_coord.left(), dx_button_coord.top(), dx_button_coord.width(), dx_button_coord.height());
 		// The custom button is created with no parent, so we need to set bannFrecce as the new parent
-		btn->reparent(this, 0, dx_button_coord.topLeft(), true);
+		btn->setParent(this);
+		btn->move(dx_button_coord.topLeft());
+		btn->show();
 		btn->setPaletteBackgroundColor(paletteBackgroundColor());
 		btn->setPaletteForegroundColor(paletteForegroundColor());
 		dxButton = btn;
@@ -108,5 +114,8 @@ bannFrecce::~bannFrecce()
 	// This istruction is required to avoid destroying of dxButton when the
 	// navbar is destroyed.
 	if (dxButton != original_dx_button)
-		dxButton->reparent(dx_button_parent, 0, dx_button_coord.topLeft(), false);
+	{
+		dxButton->setParent(dx_button_parent);
+		dxButton->move(dx_button_coord.topLeft());
+	}
 }
