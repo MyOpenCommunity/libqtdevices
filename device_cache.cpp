@@ -1,8 +1,9 @@
-#include <qwidget.h>
 #include "device_cache.h"
-#include "frame_interpreter.h"
+#include "openclient.h"
 #include "device.h"
 #include "poweramplifier_device.h"
+
+#include <qwidget.h>
 
 // Constructor
 device_cache::device_cache() : QMap<QString, device*>()
@@ -14,7 +15,7 @@ void device_cache::init_devices(void)
 {
 	qDebug("initializing devices");
 	device_cache::Iterator it;
-	for ( it = begin(); it != end(); ++it ) {
+	for (it = begin(); it != end(); ++it) {
 		it.data()->init();
 	}
 }
@@ -430,14 +431,13 @@ Client *device_cache::get_client_monitor()
 device_cache::~device_cache()
 {
 	QMap<QString, device *>::Iterator it;
-	for ( it = begin(); it != end(); ++it )
+	for (it = begin(); it != end(); ++it)
 	{
 		erase(it);
 		disconnect_comm(*it);
 		delete *it;
 	}
 }
-
 
 // Extern functions
 QString get_device_key(QString who, QString where)
