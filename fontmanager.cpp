@@ -1,3 +1,4 @@
+
 /****************************************************************
 **
 ** Develer S.r.l
@@ -10,9 +11,11 @@
 
 #include "fontmanager.h"
 #include "main.h" // MY_FILE_CFG_FONT
-#include <qdom.h>
-#include <qfile.h>
+
+#include <QFile>
+
 #include <stdlib.h>
+
 
 /**
  * \brief inizializzazione del membro statico
@@ -22,9 +25,9 @@ FontManager* FontManager::m_pinstance = 0;
 /**
  * \brief implementazione del singleton
  */
-FontManager* FontManager::instance ( )
+FontManager* FontManager::instance ()
 {
-	if ( m_pinstance == 0 )
+	if (m_pinstance == 0)
 	{
 		m_pinstance = new FontManager;
 	}
@@ -34,7 +37,7 @@ FontManager* FontManager::instance ( )
 /**
  * \brief costruttore di default
 */
-FontManager::FontManager( )
+FontManager::FontManager()
 {
 	loadFonts();
 }
@@ -44,50 +47,51 @@ FontManager::FontManager( )
  * \brief colleziona gli elementi di un font (id, family, size...) 
  *          e quando la descrizione e' completa salva il font nella mappa
  */
-int FontManager::addElement( int nElement, FontInfo & fi, const char * tagName,  const char * text )
+int FontManager::addElement(int nElement, FontInfo & fi, QString tagName, QString text)
 {
 	static int testCounter = 0;
 	
-#ifdef PRINT_ON_CONSOLE 
-	printf ("\t%s\t%s\n", tagName ,text  );
-#endif
 	
-	if ( strcasecmp ( tagName, XMLfieldNames[ eId ] ) == 0 )
+	if (tagName.compare(XMLfieldNames[eId], Qt::CaseInsensitive) == 0)
 	{
-		fi.id = atoi( text );
-		testCounter ++;
+		fi.id = text.toInt();
+		testCounter++;
 	}
-	else if ( strcasecmp ( tagName, XMLfieldNames[ eFamily ] ) == 0 )
+	else if (tagName.compare(XMLfieldNames[eFamily], Qt::CaseInsensitive) == 0)
 	{
-		strncpy ( fi._family, text, maxFamilyLen );
-		testCounter ++;
+		QByteArray t = text.toAscii();
+		if (!t.isEmpty())
+		{
+			strncpy(fi._family, t.constData(), maxFamilyLen);
+			testCounter++;
+		}
 	}
-	else if ( strcasecmp ( tagName,  XMLfieldNames[ eSize ] ) == 0 )
+	else if (tagName.compare(XMLfieldNames[eSize], Qt::CaseInsensitive) == 0)
 	{
-		fi.size = atoi( text );
-		testCounter ++;
+		fi.size = text.toInt();
+		testCounter++;
 	}
-	else if ( strcasecmp ( tagName,  XMLfieldNames[ eWeight ] ) == 0 )
+	else if (tagName.compare(XMLfieldNames[eWeight], Qt::CaseInsensitive) == 0)
 	{
-		fi.weight = (QFont::Weight) atoi( text );
-		testCounter ++;
+		fi.weight = (QFont::Weight) text.toInt();
+		testCounter++;
 	}
-	else if ( strcasecmp ( tagName,  XMLfieldNames[ eDescr ] ) == 0 )
+	else if (tagName.compare(XMLfieldNames[eDescr], Qt::CaseInsensitive) == 0)
 	{
-		testCounter ++;
+		testCounter++;
 	}
 
-	if ( testCounter != nElement )
+	if (testCounter != nElement)
 	{
 		return -1;
 	}
 
-	if ( testCounter == nFontInfoFields )
+	if (testCounter == nFontInfoFields)
 	{
 #ifdef PRINT_ON_CONSOLE 
-		printf ("added %d %s %d %d\n", fi.id, fi._family, fi.size, fi.weight );
+		printf("added %d %s %d %d\n", fi.id, fi._family, fi.size, fi.weight);
 #endif
-		m_map.insert( (eFontID) fi.id, fi);
+		m_map.insert((eFontID) fi.id, fi);
 		testCounter = 0;
 	}
 	return 0;
@@ -100,16 +104,15 @@ int FontManager::addElement( int nElement, FontInfo & fi, const char * tagName, 
  */
 int FontManager::loadFonts()
 {
-	QDomDocument doc( "mydocument" );
+	QDomDocument doc("mydocument");
 	QString language_suffix = getLanguage();
 
-	QString font_file;
-	font_file.sprintf(MY_FILE_CFG_FONT, language_suffix.ascii());
+	QString font_file = QString("%1%2").arg(MY_FILE_CFG_FONT).arg(language_suffix);
 
 	QFile file(font_file);
-	if ( !file.open( IO_ReadOnly ) )
+	if (!file.open(QIODevice::ReadOnly))
 		return -1;
-	if ( !doc.setContent( &file ) ) 
+	if (!doc.setContent(&file))
 	{
 		file.close();
 		return -2;
@@ -121,24 +124,24 @@ int FontManager::loadFonts()
 	QDomElement docElem = doc.documentElement();
 
 	QDomNode n = docElem.firstChild();
-	while( !n.isNull() ) 
+	while (!n.isNull())
 	{
 		QDomElement e = n.toElement(); // try to convert the node to an element.
-		if( !e.isNull() )
+		if (!e.isNull())
 		{
-			// printf ("%s",  e.tagName().ascii() );
+			// printf("%s",  e.tagName().ascii());
 			int nElement = 0;
 			FontInfo fi;
-			for( QDomNode n = e.firstChild(); !n.isNull(); n = n.nextSibling() )
+			for (QDomNode n = e.firstChild(); !n.isNull(); n = n.nextSibling())
 			{
-				if ( n.isElement() ) 
+				if (n.isElement())
 				{
-					nElement ++;
+					nElement++;
 					QDomElement e = n.toElement();
-					int err = addElement( nElement , fi, e.tagName().ascii() , e.text().ascii() );
-					if (  err  != 0 )
+					int err = addElement(nElement, fi, e.tagName(), e.text());
+					if (err  != 0)
 					{
-						printf ("%d %s %d",  err, __FILE__, __LINE__);
+						printf("%d %s %d",  err, __FILE__, __LINE__);
 						// todo log errore
 						return -3;
 					}
@@ -156,13 +159,13 @@ int FontManager::loadFonts()
  * 
  * \return 0=tutto bene, -1=font non esistente nel file di configurazione
  */
-int FontManager::getFont( eFontID fontID, QFont & font)
+int FontManager::getFont(eFontID fontID, QFont & font)
 {
 	FontInfo fi;
-	int ret = getFontInfo ( fontID, fi );
-	font.setFamily( fi.family() );
-	font.setPointSize ( fi.size );
-	font.setWeight ( fi.weight );
+	int ret = getFontInfo (fontID, fi);
+	font.setFamily(fi.family());
+	font.setPointSize (fi.size);
+	font.setWeight (fi.weight);
 	return ret;
 }
 
@@ -172,15 +175,15 @@ int FontManager::getFont( eFontID fontID, QFont & font)
  * 
  * \return 0=tutto bene, -1=font non esistente nel file di configurazione
  */
-int FontManager::getFontInfo( eFontID fontID, FontInfo & fi)
+int FontManager::getFontInfo(eFontID fontID, FontInfo & fi)
 {
-	QMap <eFontID, FontInfo>::iterator it = m_map.find( fontID );
-	if ( it != m_map.end() )
+	QMap <eFontID, FontInfo>::iterator it = m_map.find(fontID);
+	if (it != m_map.end())
 	{
 		fi = *it;
 		return 0;
 	}
-	strcpy ( fi._family, "arial" ); // default font
+	strcpy (fi._family, "arial"); // default font
 	fi.size= 24;
 	fi.weight = QFont::Normal ;
 	return -1;
