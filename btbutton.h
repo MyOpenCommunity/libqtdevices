@@ -22,6 +22,11 @@ public:
 
 	virtual void setPressedPixmap( const QPixmap & ) {}
 	void setPixmap( const QPixmap & ) {}
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c) {}
+	void setPaletteBackgroundColor(const QColor &c) {}
+	
 };
 
 
