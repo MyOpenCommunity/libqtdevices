@@ -16,7 +16,7 @@
 #define MAX_TEXT        21
 #define MAX_TEXT_2      11
 
-#include <qwidget.h>
+#include <QWidget>
 
 class BtLabel;
 class BtButton;
@@ -352,6 +352,14 @@ public:
 		TEXT2,
 	};
 	virtual void addAmb(char *);
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+
+	const QColor& paletteBackgroundColor();
+	const QColor& paletteForegroundColor();
+
 private:
 	
 	/**

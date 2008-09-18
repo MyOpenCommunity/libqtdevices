@@ -16,10 +16,11 @@
 #include "openclient.h"
 #include "fontmanager.h"
 
-#include <qpixmap.h>
-#include <qfile.h>
-#include <qtimer.h>
-#include <qapplication.h> //qapp
+#include <QPixmap>
+#include <QFile>
+#include <QTimer>
+#include <QDebug>
+#include <QApplication> //qapp
 
 #include <stdlib.h>
 
@@ -27,7 +28,7 @@
 // IconDispatcher  banner::icons_library;
 
 banner::banner(QWidget *parent,const char *name)
-: QWidget(parent, name)
+: QWidget(parent)
 {
 	BannerIcon = NULL;
 	BannerText = NULL;
@@ -330,27 +331,27 @@ void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerA
 	QString active_root_of_name   = getNameRoot(centerActiveIcon, ".png");
 	QString nomeFile;
 
-	qDebug("________________________________________________________________________________");
-	qDebug(inactive_root_of_name);
-	qDebug(active_root_of_name);
-	qDebug("________________________________________________________________________________");
+	qDebug() << "________________________________________________________________________________";
+	qDebug() << inactive_root_of_name;
+	qDebug() << active_root_of_name;
+	qDebug() << "________________________________________________________________________________";
 
 	// Set first 2 icons from inactive root
 	Icon[2] = icons_library.getIcon(QString("%1sxl0.png").arg(inactive_root_of_name));
 	Icon[3] = icons_library.getIcon(QString("%1dxl0.png").arg(inactive_root_of_name));
 	
-	qDebug("New Icon[2] <- "+QString("%1sxl0.png").arg(inactive_root_of_name));
-	qDebug("New Icon[3] <- "+QString("%1dxl0.png").arg(inactive_root_of_name));
+	qDebug() << "New Icon[2] <- " << QString("%1sxl0.png").arg(inactive_root_of_name);
+	qDebug() << "New Icon[3] <- " << QString("%1dxl0.png").arg(inactive_root_of_name);
 	for (int i = minValue, y = 0; i <= maxValue; i+=step, y++)
 	{
 		nomeFile = QString("%1sxl%2.png").arg(active_root_of_name).arg(i);
 		Icon[4+y*2] = icons_library.getIcon(nomeFile);
-		qDebug("New Icon[%d] <- %s", 4+y*2, nomeFile.ascii());
+		qDebug() << "New Icon[" << 4+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1sxl%2.png").arg(inactive_root_of_name).arg(i);
 			Icon[22+y*2] = icons_library.getIcon(nomeFile);
-			qDebug("New Icon[%d] <- %s", 22+y*2, nomeFile.ascii());
+			qDebug() << "New Icon[" << 22+y*2 << "] <- " << nomeFile;
 		}
 	}
 
@@ -358,12 +359,12 @@ void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerA
 	{
 		nomeFile = QString("%1dxl%2.png").arg(active_root_of_name).arg(i);
 		Icon[5+y*2] = icons_library.getIcon(nomeFile);
-		qDebug("New Icon[%d] <- %s", 5+y*2, nomeFile.ascii());
+		qDebug() << "New Icon[" << 5+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1dxl%2.png").arg(inactive_root_of_name).arg(i);
 			Icon[23+y*2] = icons_library.getIcon(nomeFile);
-			qDebug("New Icon[%d] <- %s", 23+y*2, nomeFile.ascii());
+			qDebug() << "New Icon[" << 23+y*2 << "] <- " << nomeFile;
 		}
 	}
 	
@@ -373,11 +374,11 @@ void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerA
 	
 		nomeFile = QString("%1sx.png").arg(break_root_of_name);
 		Icon[44] = icons_library.getIcon(nomeFile);
-		qDebug("New Icon[%d] <- %s", 44, nomeFile.ascii());
+		qDebug() << "New Icon[" << 44 << "] <- " << nomeFile;
 
 		nomeFile = QString("%1dx.png").arg(break_root_of_name);
 		Icon[45] = icons_library.getIcon(nomeFile);
-		qDebug("New Icon[%d] <- %s", 45, nomeFile.ascii());
+		qDebug() << "New Icon[" << 45 << "] <- " << nomeFile;
 		
 	}
 }
@@ -611,7 +612,7 @@ void banner::drawAllButRightButton()
 	{	   
 		if (!animationTimer)
 		{
-			animationTimer = new QTimer(this,"clock");
+			animationTimer = new QTimer(this);
 			connect(animationTimer,SIGNAL(timeout()),this,SLOT(animate()));
 		}
 		if (!(animationTimer->isActive()) &&(attivo))
@@ -622,7 +623,7 @@ void banner::drawAllButRightButton()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_banner_BannerText, aFont);
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		BannerText->setFont(aFont);
 		BannerText->setText(qtesto);
 	}
@@ -630,7 +631,7 @@ void banner::drawAllButRightButton()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
-		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		SecondaryText->setFont(aFont);
 		SecondaryText->setText(qtestoSecondario);
 	}
@@ -886,11 +887,35 @@ void banner::addAmb(char *) {}
 
 QString banner::getNameRoot(QString full_string, QString text_to_strip)
 {
-	return full_string.mid(0, full_string.findRev('.', -1));
+	return full_string.mid(0, full_string.lastIndexOf('.'));
 
 }
 
 QString banner::getNameRoot(char *full_string, QString text_to_strip)
 {
 	return getNameRoot(QString(full_string), text_to_strip);
+}
+
+void banner::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void banner::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+const QColor& banner::paletteBackgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& banner::paletteForegroundColor()
+{
+	return palette().color(foregroundRole());
 }
