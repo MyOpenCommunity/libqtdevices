@@ -20,93 +20,100 @@
   The argument are the pointer to the parent Widget, the pointer to the name, the type (0=shows the local time with hh:mm:ss, 1=, 2=shows a stopped time with hh:mm, 25= shows the date), 
   \author Davide
   \date lug 2005
-*/  
-class timeScript : public QLCDNumber		
+*/
+class timeScript : public QLCDNumber
 {
     Q_OBJECT
 public:
-   // timeScript( QWidget *parent=0, const char *name=0 );
-    timeScript( QWidget *parent=0, const char *name=0, uchar type=0,QDateTime* mioOrol=NULL);
-    ~timeScript();
+	timeScript(QWidget *parent=0, const char *name=0, uchar type=0,QDateTime* mioOrol=NULL);
+	~timeScript();
 
-   void	showDate();
-   QDateTime getDataOra();  
-   void setDataOra(QDateTime);
-signals:   
+	void showDate();
+	QDateTime getDataOra();
+	void setDataOra(QDateTime);
 
-      
-protected:					
-    void	timerEvent( QTimerEvent * );
-    void	mousePressEvent( QMouseEvent * );
- 
-	
-private slots:					
-    void	stopDate();
+protected:
+	void timerEvent(QTimerEvent *);
+	void mousePressEvent(QMouseEvent *);
+
+private slots:
+    void stopDate();
 public slots:
 /*!
   \brief Shows the time.
-*/   
-    void	showTime();
+*/
+	void showTime();
+
 /*!
   \brief Goes back to time
 */
- void         reset(); 
+	void reset();
+
 /*!
   \brief Decreases seconds value.
-*/       
-    void 	diminSec();	
+*/
+	void diminSec();
+
 /*!
   \brief Decreases minuts value.
-*/           
-    void 	diminMin();
+*/
+	void diminMin();
+
 /*!
   \brief Decreases hours value.
-*/           
-    void 	diminOra();
+*/
+	void diminOra();
+
 /*!
   \brief Decreases days value.
-*/           
-    void 	diminDay();
+*/
+	void diminDay();
+
 /*!
   \brief Decreases months value.
-*/           
-    void 	diminMonth();
+*/
+	void diminMonth();
+
 /*!
   \brief Decreases years value.
-*/           
-    void 	diminYear();
+*/
+	void diminYear();
+
 /*!
   \brief Increases seconds value.
-*/           
-    void 	aumSec();	
+*/
+	void aumSec();
+
 /*!
   \brief Increases minutes value.
-*/           
-    void 	aumMin();
+*/
+	void aumMin();
+
 /*!
   \brief Increases hours value.
-*/           
-    void 	aumOra();
+*/
+	void aumOra();
+
 /*!
   \brief Increases days value.
-*/           
-    void 	aumDay();
+*/
+	void aumDay();
+
 /*!
   \brief Increases months value.
-*/               
-    void 	aumMonth();
+*/
+	void aumMonth();
+
 /*!
   \brief Increases years value.
-*/           
-    void 	aumYear();    
-    
-private:					
+*/
+	void aumYear();
 
-    int	normalTimer;
-    int	showDateTimer;
-    uchar	type;
+private:
+    int normalTimer;
+    int showDateTimer;
+    uchar type;
     QDateTime* mioClock;
-    
 };
 
 
