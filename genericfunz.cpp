@@ -13,10 +13,12 @@
 #include "main.h"
 #include "btmain.h"
 
-#include <qdir.h>
-#include <qwidget.h>
-#include <qpixmap.h>
-#include <qstring.h>
+#include <QDir>
+#include <QWidget>
+#include <QPixmap>
+#include <QString>
+#include <QTextStream>
+
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -59,7 +61,6 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 {
 	char app1[100];
 	char app2[100];
-	QString Line;
 	int count;
 
 	comChConf();
@@ -69,10 +70,10 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 
 	QFile *fil1 = new QFile(file);
 	QFile *fil2 = new QFile("cfg/appoggio.xml");
-	if (!fil1->open(IO_WriteOnly | IO_ReadOnly))
+	if (!fil1->open(QIODevice::WriteOnly | QIODevice::ReadOnly))
 		return (FALSE);
 
-	if (!fil2->open(IO_WriteOnly))
+	if (!fil2->open(QIODevice::WriteOnly))
 	{
 		fil1->close();
 		return (FALSE);
@@ -81,47 +82,53 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 	QTextStream t1(fil1);
 	QTextStream t2(fil2);
 	sprintf(&app1[0], "<id>%d</id>",id);
-    do
+
+    while (true)
 	{
-		Line = t1.readLine().append('\n');
-		t2.writeRawBytes(Line.ascii(), Line.length());
-		if (Line.contains(&app1[0],TRUE))
+		QString Line = t1.readLine().append('\n');
+		if (Line.compare("\n"))
+			break;
+
+		t2 << Line;
+
+		if (Line.contains(&app1[0]))
 		{
 			if  (count == serNumId)
 			{
 				sprintf(&app2[0], "<%s>",campo);
-				do
+				while (true)
 				{
 					Line = t1.readLine().append('\n');
-					if (!Line.contains(&app2[0],TRUE))
-						t2.writeRawBytes(Line.ascii(), Line.length());
-					else
-					break;
-				}
-				while (Line.compare("\n"));
+					if (Line.compare("\n"))
+						break;
 
-				if (!Line.isNull())
-				{
-					Line.sprintf("<%s>%s</%s>\n",campo,valore,campo);
-					t2.writeRawBytes(Line.ascii(), Line.length());
-					do
-					{
-						Line = t1.readLine().append('\n');
-						t2.writeRawBytes(Line.ascii(), Line.length());
-					}
-					while (Line.compare("\n"));
-					fil2->flush();
-					fil1->close();
-					fil2->close();
-					QDir::current().rename("cfg/appoggio.xml",file,FALSE);
-					return (TRUE);
+					if (!Line.contains(&app2[0]))
+						t2 << Line;
+					else
+						break;
 				}
+
+				Line.sprintf("<%s>%s</%s>\n",campo,valore,campo);
+				t2 << Line;
+				while (true)
+				{
+					Line = t1.readLine().append('\n');
+					if (Line.compare("\n"))
+						break;
+					t2 << Line;
+				}
+				t2.flush();
+				fil2->flush();
+				fil1->close();
+				fil2->close();
+				QDir::current().rename("cfg/appoggio.xml",file);
+				return (TRUE);
 			}
 			else
-			count++;
+				count++;
 		}
     }
-	while (Line.compare("\n"));
+
 	fil1->close();
 	fil2->close();
 	return (FALSE);
@@ -140,7 +147,7 @@ bool setCfgValue(int id, const char* campo, const char* valore,int serNumId)
 bool copyFile(char* orig, char* dest)
 {
 	QFile *filIN = new QFile(orig);
-	if (!filIN->open(IO_ReadOnly))
+	if (!filIN->open(QIODevice::ReadOnly))
 		return (FALSE);
 
 	if (QFile::exists(dest))
@@ -148,7 +155,7 @@ bool copyFile(char* orig, char* dest)
 
 	QFile *filOUT = new QFile(dest);
 
-	if (!filOUT->open(IO_WriteOnly))
+	if (!filOUT->open(QIODevice::WriteOnly))
 		return (FALSE);
 
 	QDataStream tIN(filIN);
@@ -458,7 +465,7 @@ void grabScreen(void* pWidget, char* filename)
 
 	QPixmap grabbedScreen = QPixmap::grabWidget((QWidget*)pWidget, 0, 0, -1, -1);
 	QString fn(filename);
-	if (grabbedScreen.save(fn.prepend("grabs/").ascii(), "PNG"))
+	if (grabbedScreen.save(fn.prepend("grabs/"), "PNG"))
 		qDebug("=============== Screen grabbed ===============");
 	else
 		qDebug("=============== Screen grab error ===============");
