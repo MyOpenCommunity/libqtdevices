@@ -13,9 +13,9 @@
 
 #include <openwebnet.h>
 
-#include <qsocket.h>
-#include <qtimer.h>
-
+#include <QTimer>
+#include <QTcpSocket>
+#include <QByteArray>
 
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_COMANDI "*99*9##"
@@ -30,12 +30,12 @@
   \date lug 2005
 */
 
-class Client  : public QObject
+class Client : public QObject
 {
 Q_OBJECT
 public:
-	Client( const QString &host, Q_UINT16 port, int mon, bool richieste=false);
-	~Client(){};
+	Client(const QString &host, unsigned _port, int mon, bool richieste=false);
+	~Client() {};
 
 public slots:
 	/// Connects to the socket
@@ -55,7 +55,7 @@ private slots:
 	void socketConnected(void);
 	void socketConnectionClosed(void);
 	void socketClosed(void);
-	void socketError(int e );
+	void socketError(QAbstractSocket::SocketError e);
 
 	/// Send an \a Open \aFrame through the socket and wait for ack
 	void ApriInviaFrameChiudiw(char*);
@@ -65,21 +65,24 @@ private slots:
 	void clear_last_msg_open_read();
 
 private:
-	/// Sends messages throught the socket
-	void sendToServer(const char *);
-
-	QSocket *socket;
+	QTcpSocket *socket;
 	int ismonitor;
 	bool isrichiesta;
-	QTimer* tick;
+	unsigned port;
+	QByteArray data_read;
 	QTimer Open_read;
-	void socketStateRead(char*);
-	bool ackRx;
 	openwebnet last_msg_open_read;
 	openwebnet last_msg_open_write;
 
+	/// Sends messages throught the socket
+	void sendToServer(const char *);
+	void socketStateRead(char*);
+	bool ackRx;
+	void manageFrame(QByteArray frame);
+	QByteArray readFromServer();
+
 signals:
-	void  frameIn(char*);
+	void frameIn(char*);
 	void rispStato(char*);
 	void monitorSu();
 	void frameToAutoread(char*);

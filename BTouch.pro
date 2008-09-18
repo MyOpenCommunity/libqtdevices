@@ -157,7 +157,7 @@ SOURCES += actuators.cpp \
            main.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
-           openClient.cpp \
+           openclient.cpp \
            plantmenu.cpp \
            playwindow.cpp \
            postoext.cpp \
