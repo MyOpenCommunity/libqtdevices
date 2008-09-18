@@ -1,9 +1,10 @@
-
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
-#include <qmap.h>
-#include <qobject.h>
+#include <QMap>
+#include <QObject>
+
+#include <stdio.h>
 
 class MediaPlayer : public QObject
 {

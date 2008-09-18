@@ -1,5 +1,8 @@
 
-#include <qregexp.h>
+#include "mediaplayer.h"
+
+#include <QRegExp>
+#include <QDebug>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -8,7 +11,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include "mediaplayer.h"
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 
@@ -24,8 +26,7 @@ static void mplayerExited(int signo, siginfo_t *info, void *)
 		_globalMediaPlayer->sigChildReceived(info->si_pid, status);
 }
 
-MediaPlayer::MediaPlayer(QObject *parent, const char *name) :
-	QObject(parent, name)
+MediaPlayer::MediaPlayer(QObject *parent, const char *name) : QObject(parent)
 {
 	struct sigaction sa;
 
@@ -87,13 +88,14 @@ bool MediaPlayer::play(QString track, bool write_output)
 		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
 		const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
 
-		if (track.endsWith(".m3u", false))
+		QByteArray t = track.toLatin1();
+		if (track.endsWith(".m3u", Qt::CaseInsensitive))
 		{
 			mplayer_args[3] = "-playlist";
-			mplayer_args[4] = track.latin1();
+			mplayer_args[4] = t.constData();
 		}
 		else
-			mplayer_args[3] = track.latin1();
+			mplayer_args[3] = t.constData();
 
 		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
 	}
@@ -116,7 +118,7 @@ bool MediaPlayer::play(QString track, bool write_output)
 		ctrlf = fdopen(control_fd, "w");
 		outf  = fdopen(output_fd, "r");
 
-		qDebug("[AUDIO] playing track '%s'", track.ascii());
+		qDebug() << "[AUDIO] playing track: "<< track;
 	}
 
 	return true;
@@ -144,7 +146,8 @@ void MediaPlayer::execCmd(QString command)
 {
 	if (ctrlf)
 	{
-		fprintf(ctrlf, command.latin1());
+		QByteArray c = command.toLatin1();
+		fprintf(ctrlf, c.constData());
 		fflush(ctrlf);
 	}
 	else
@@ -198,10 +201,10 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 	QMap<QString, QString>::Iterator it;
 	for (it = data_search.begin(); it != data_search.end(); ++it)
 	{
-		QRegExp rx(it.data());
+		QRegExp rx(it.value());
 
-		if (rx.search(row_data) > -1)
-			info_data[it.key()] = rx.cap(1); //matches[matches.count()-1];
+		if (rx.indexIn(row_data) > -1)
+			info_data[it.key()] = rx.cap(1);
 	}
 
 	return info_data;
