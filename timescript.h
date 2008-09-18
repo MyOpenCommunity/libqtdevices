@@ -10,8 +10,8 @@
 #ifndef TIMESCRIPT_H
 #define TIMESCRIPT_H
 
-#include <qlcdnumber.h>
-#include <qdatetime.h>
+#include <QLCDNumber>
+#include <QDateTime>
 
 /*!
   \class timeScript
@@ -25,7 +25,7 @@ class timeScript : public QLCDNumber
 {
     Q_OBJECT
 public:
-	timeScript(QWidget *parent=0, const char *name=0, uchar type=0,QDateTime* mioOrol=NULL);
+	timeScript(QWidget *parent=0, const char *name=0, uchar type=0, QDateTime* mioOrol=NULL);
 	~timeScript();
 
 	void showDate();

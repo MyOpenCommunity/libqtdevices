@@ -10,12 +10,12 @@
 
 #include "timescript.h"
 
-#include <qdatetime.h>
+#include <QTimerEvent>
 
 extern unsigned char tipoData;
 
 timeScript::timeScript(QWidget *parent, const char *name, uchar tipo, QDateTime* mioOrol)
-    : QLCDNumber(parent, name)
+    : QLCDNumber(parent)
 {
 	type = tipo;
 	if (tipo != 2)
@@ -29,9 +29,8 @@ timeScript::timeScript(QWidget *parent, const char *name, uchar tipo, QDateTime*
 	mioClock = NULL;
 
 	if (mioOrol)
-	{
 		mioClock = new QDateTime(*mioOrol);
-	}
+
 	if (type != 25)
 		showTime();
 	else
@@ -43,7 +42,7 @@ void timeScript::timerEvent(QTimerEvent *e)
 	if (mioClock)
 	{
 		static QDateTime prevDateTime = QDateTime();
-		QDateTime now = QDateTime::currentDateTime(Qt::LocalTime);
+		QDateTime now = QDateTime::currentDateTime();
 		if ((prevDateTime.secsTo(now) > 2) || (prevDateTime.secsTo(now) < -2))
 		{
 			qDebug("timeScript::timerEvent() : Updating mioClock");
@@ -61,9 +60,7 @@ void timeScript::timerEvent(QTimerEvent *e)
 	else
 	{
 		if (showDateTimer == -1)
-		{
 			showTime();
-		}
 	}
 }
 
@@ -80,7 +77,7 @@ void timeScript::showDate()
 	if (mioClock)
 		date = mioClock->date();
 	else
-		date = QDate::currentDate(Qt::LocalTime);
+		date = QDate::currentDate();
 
 	QString s;
 	if (tipoData == 1)
@@ -105,10 +102,10 @@ void timeScript::stopDate()
 	killTimer(showDateTimer);
 	showDateTimer = -1;
 
-	if (type!=25)
+	if (type != 25)
 	{
 		showTime();
-		if (type!=2)
+		if (type != 2)
 			setNumDigits(8);
 		else
 			setNumDigits(5);
@@ -121,8 +118,8 @@ void timeScript::reset()
 {
 	if (mioClock)
 	{
-		QDateTime OroTemp = QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
-		delete(mioClock);
+		QDateTime OroTemp = QDateTime::currentDateTime();
+		delete mioClock;
 		mioClock = new QDateTime(OroTemp);
 	}
 
@@ -143,9 +140,9 @@ void timeScript::showTime()
 	else
 	{
 		if (type == 2)
-			s = QTime::currentTime(Qt::LocalTime).toString("h:mm");
+			s = QTime::currentTime().toString("h:mm");
 		else
-			s = QTime::currentTime(Qt::LocalTime).toString("h:mm:ss");
+			s = QTime::currentTime().toString("h:mm:ss");
 	}
 	display(s);
 }
@@ -225,8 +222,8 @@ void timeScript::aumYear()
 QDateTime timeScript::getDataOra()
 {
 	if (type)
-		return (* mioClock);
-	return (QDateTime::currentDateTime(Qt::LocalTime));
+		return *mioClock;
+	return QDateTime::currentDateTime();
 }
 
 void timeScript::setDataOra(QDateTime d)
