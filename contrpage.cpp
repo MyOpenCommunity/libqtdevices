@@ -8,20 +8,23 @@
 **
 ****************************************************************/
 
-#include <qwidget.h>
-#include <qframe.h>
-#include <qstring.h>
-#include <qfile.h>
-
 #include "contrpage.h"
 #include "banner.h"
 #include "main.h"
 #include "genericfunz.h"
+#include "btlabel.h"
+#include "btbutton.h"
 
-contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent, name)
+#include <QWidget>
+#include <QFrame>
+#include <QString>
+#include <QFile>
+
+
+contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 	showFullScreen();
 #endif
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
@@ -32,7 +35,7 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent, name)
 	okBut = new BtButton(this,"Bottone di canc");
 
 	paintLabel = new BtLabel(this,"PL");
-    colorBar = new BtLabel(this,"CB");
+	colorBar = new BtLabel(this,"CB");
 
 	decBut->setGeometry(0,MAX_HEIGHT-BUT_DIM, BUT_DIM, BUT_DIM);
 	aumBut->setGeometry(MAX_WIDTH-BUT_DIM, MAX_HEIGHT-BUT_DIM, BUT_DIM, BUT_DIM);
@@ -40,12 +43,14 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent, name)
 
 	paintLabel->setGeometry((MAX_WIDTH-IMG_X)/2, (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-2*IMG_Y)/2, IMG_X, IMG_Y);
 	paintLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	paintLabel->setAutoResize(TRUE);
+	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!
+	//paintLabel->setAutoResize(TRUE);
 	paintLabel->setPixmap(QPixmap(IMG_PATH "my_home.png"));
 
 	colorBar ->setGeometry((MAX_WIDTH-IMG_X)/2, (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-2*IMG_Y)/2+IMG_Y, IMG_X, IMG_Y);
 	colorBar ->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	colorBar ->setAutoResize(TRUE);
+	// TODO: vedi sopra!!
+	//colorBar ->setAutoResize(TRUE);
 	colorBar ->setPixmap(QPixmap(IMG_PATH "colorbar.png"));
 
 	QPixmap *Icon, *pressIcon;
@@ -137,7 +142,7 @@ int contrPage::setBGPixmap(char* backImage)
 void contrPage::aumContr()
 {
 	uchar c;
-	
+
 	c = getContrast();
 	if (c < 140)
 		setContrast(c+10, FALSE);
@@ -146,8 +151,30 @@ void contrPage::aumContr()
 void contrPage::decContr()
 {
 	uchar c;
-	
+
 	c = getContrast();
 	if (c >= 10)
 		setContrast(c-10,FALSE);
+}
+
+// TODO: funzioni di compatibilita' qt3.. da rimuovere!!
+void contrPage::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void contrPage::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void contrPage::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
 }

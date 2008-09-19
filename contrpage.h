@@ -11,12 +11,10 @@
 #ifndef CONTRPAGE_H
 #define CONTRPAGE_H
 
-#include "btlabel.h"
-#include "btbutton.h"
-#include "main.h"
+#include <QWidget>
 
-#include <qframe.h>
-#include <qcursor.h>
+class BtLabel;
+class BtButton;
 
 /*!
   \class contrPage
@@ -78,6 +76,10 @@ private slots:
 	void aumContr();
 	void decContr();
 
+private:
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 #define BUT_DIM 60

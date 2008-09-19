@@ -138,7 +138,7 @@ SOURCES += actuators.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
            carico.cpp \
-           contrPage.cpp \
+           contrpage.cpp \
            device.cpp \
            device_cache.cpp \
            device_status.cpp \
