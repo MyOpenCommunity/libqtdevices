@@ -15,44 +15,61 @@
 #include <qstring.h>
 
 /**
- * Creates a string to visualize the temperature.
- * \param temperature The temperature in BTicino form, Celsius degrees.
- * \return A string with that rapresents the temperature in Celsius degrees.
+ * Creates a string from an integer that represents Celsius degrees.
+ * \param celsius_temp The temperature to be converted.
+ * \return A string with the temperature.
  */
-QString celsiusString(unsigned temperature);
+QString celsiusString(int celsius_temp);
 
 /**
- * Creates a string to visualize the temperature.
- * \param temperature The temperature in BTicino form, Celsius degrees.
- * \param needsConversionToFahrenheit True if temperature is in Celsius and must be converted to Fahrenheit
- * \return A string with that rapresents the temperature in Fahrenheit degrees.
+ * Creates a string from an integer that represents Fahrenheit degrees.
+ * \param fahr_temp The temperature to be converted.
+ * \return A string with the temperature.
  */
-QString fahrenheitString(unsigned temperature);
-
-/**
- * Creates a string from an unsigned in fahrenheit degrees.
- * \param temperature The temperature in Fahrenheit degrees, in 1/10 of degrees. Be careful: we can't use BTicino form
- * because we can go up to 104 fahr degrees, which overflows BTicino representation.
- * \return A string with that rapresents the temperature in Fahrenheit degrees.
- */
-QString convertFahrenheitToString(unsigned temperature);
+QString fahrenheitString(int fahr_temp);
 
 /**
  * Convert celsius degrees to fahrenheit
  */
 float toFahrenheit(float temperature);
 float toCelsius(float temperature);
+
 /**
- * Convert fahrenheit to celsius. Convert to BTicino 4-digit format if needed.
- * \param temperature A fahrenheit temperature in 1/10 of degrees (ie. 99.4 -> 994)
- * \return A temperature in BTicino 4-digit format
+ * Convert a temperature in BTicino 4-digit format to a signed integer in Celsius degrees.
+ * Bticino 4-digit format is as follows:
+ * sDDd
+ * - s: the sign digit, 1 means negative.
+ * - DD: the integral part of the temperature.
+ * - d: the decimal part of the temperature.
+ * For example, 1235 (that means -23.5 Celsius degrees) will be transformed as -235.
+ * \param bt_temp A temperature in BTicino 4-digit format.
+ * \return A temperature in Celsius degrees, with precision of 1/10 of degree.
  */
-unsigned toCelsius(unsigned temperature);
+int bt2Celsius(unsigned bt_temp);
+
 /**
- * Convert celsius to fahrenheit.
- * \param temperature A celsius temperature in BTicino 4-digit format
- * \return A temperature in fahrenheit degrees. Watch out that this CAN'T be expressed in 4-digit format
- * since 104 degrees (-> 40 Celsius) is meaningful.
+ * Convert a temperature in BTicino 4-digit format to a signed integer in Fahrenheit degrees.
+ * This is very similar to bt2Celsius. This function uses truncation so it may have rounding
+ * problems.
+ * \param bt_temp A temperature in BTicino 4-digit format
+ * \return A temperature in Fahrenheit degrees, with precision of 1/10 of degree.
  */
-unsigned toFahrenheit(unsigned temperature);
+int bt2Fahrenheit(unsigned bt_temp);
+
+/**
+ * Convert a temperature in a signed integer with precision of 1/10 of degree in BTicino 4-digit
+ * format.
+ * For example, -134 (that represent -13.4 Celsius) become 1134 in BTicino 4-digit format.
+ * \param celsius_temp A temperature in Celsius degrees where unit digit represent 1/10 of degree.
+ * \return A BTicino 4-digit format temperature.
+ */
+unsigned celsius2Bt(int celsius_temp);
+
+/**
+ * Convert a temperature in Fahrenheit to BTicino 4-digit format. It is very similar to celsius2Bt.
+ * Be carefull that this function is lossy, ie. uses rounding for its computation.
+ * \param fahr_temp A temperature in Fahrenheit degrees.
+ * \return A BTicino 4-digit format temperature.
+ */
+unsigned fahrenheit2Bt(int fahr_temp);
 #endif // SCALECONVERSION_H

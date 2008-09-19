@@ -217,10 +217,10 @@ void FSBannSimpleProbe::Draw()
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			temp_label->setText(celsiusString(temp));
+			temp_label->setText(celsiusString(bt2Celsius(temp)));
 			break;
 		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(temp));
+			temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
 			break;
 		default:
 			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
@@ -265,8 +265,6 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 {
 	status = AUTOMATIC;
 	probe_type = thermo_reg->type();
-	maximum_manual_temp = thermo_reg->maximumTemp();
-	minimum_manual_temp = thermo_reg->minimumTemp();
 	navbar_button = getButton(IMG_MAN);
 	navbar_button->hide();
 	conf_root = n;
@@ -305,7 +303,27 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
-	setpoint = 1235;
+	switch (temp_scale)
+	{
+		case CELSIUS:
+			maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
+			minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
+			// bticino absolute minimum temperature is -23.5 Celsius
+			setpoint = -235;
+			break;
+		case FAHRENHEIT:
+			maximum_manual_temp = bt2Fahrenheit(thermo_reg->maximumTemp());
+			minimum_manual_temp = bt2Fahrenheit(thermo_reg->minimumTemp());
+			setpoint = -103;
+			break;
+		default:
+			qWarning("BannProbe ctor: wrong scale, defaulting to celsius");
+			maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
+			minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
+			setpoint = -235;
+			temp_scale = CELSIUS;
+	}
+
 	local_temp = "0";
 	isOff = false;
 	isAntigelo = false;
@@ -315,21 +333,20 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 
 void FSBannProbe::setDeviceToManual()
 {
-	unsigned new_temperature;
+	unsigned bt_temp;
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			new_temperature = temp;
+			bt_temp = celsius2Bt(setpoint);
 			break;
 		case FAHRENHEIT:
-			new_temperature = toCelsius(temp);
-			qDebug("LUCA new temperature in bannManual: %u", new_temperature);
+			bt_temp = fahrenheit2Bt(setpoint);
 			break;
 		default:
 			qWarning("BannProbe::setDeviceToManual: unknown scale, defaulting to celsius");
-			new_temperature = temp;
+			bt_temp = celsius2Bt(setpoint);
 	}
-	dev->setManual(new_temperature);
+	dev->setManual(bt_temp);
 }
 
 void FSBannProbe::changeStatus()
@@ -473,7 +490,18 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 
 			if (curr_sp.initialized() && !delta_setpoint)
 			{
-				setpoint = curr_sp.get_val();
+				switch (temp_scale)
+				{
+					case CELSIUS:
+						setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+						break;
+					case FAHRENHEIT:
+						setpoint = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
+						break;
+					default:
+						qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+						setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+				}
 				update = true;
 			}
 
@@ -626,23 +654,19 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			maximum_manual_temp = dev->maximumTemp();
-			minimum_manual_temp = dev->minimumTemp();
+			maximum_manual_temp = bt2Celsius(dev->maximumTemp());
+			minimum_manual_temp = bt2Celsius(dev->minimumTemp());
 			temp = 200;
 			break;
 		case FAHRENHEIT:
-			{
-				maximum_manual_temp = toFahrenheit(dev->maximumTemp());
-				minimum_manual_temp = toFahrenheit(dev->minimumTemp());
-				temp = 680;
-				qDebug("LUCA maximum temp: %u", maximum_manual_temp);
-				qDebug("LUCA minimum_manual_temp: %u", minimum_manual_temp);
-				break;
-			}
+			maximum_manual_temp = bt2Fahrenheit(dev->maximumTemp());
+			minimum_manual_temp = bt2Fahrenheit(dev->minimumTemp());
+			temp = 680;
+			break;
 		default:
 			qWarning("BannManual ctor: wrong scale, defaulting to celsius");
-			maximum_manual_temp = dev->maximumTemp();
-			minimum_manual_temp = dev->minimumTemp();
+			maximum_manual_temp = bt2Celsius(dev->maximumTemp());
+			minimum_manual_temp = bt2Celsius(dev->minimumTemp());
 			temp = 200;
 			temp_scale = CELSIUS;
 	}
@@ -675,22 +699,20 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 
 void FSBannManual::performAction()
 {
-	// convert temperature to celsius
-	unsigned new_temperature;
+	unsigned bt_temp;
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			new_temperature = temp;
+			bt_temp = celsius2Bt(temp);
 			break;
 		case FAHRENHEIT:
-			new_temperature = toCelsius(temp);
-			qDebug("LUCA new temperature in bannManual: %u", new_temperature);
+			bt_temp = fahrenheit2Bt(temp);
 			break;
 		default:
 			qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
-			new_temperature = temp;
+			bt_temp = celsius2Bt(temp);
 	}
-	emit(temperatureSelected(new_temperature));
+	emit(temperatureSelected(bt_temp));
 }
 
 void FSBannManual::incSetpoint()
@@ -730,8 +752,7 @@ void FSBannManual::Draw()
 			temp_label->setText(celsiusString(temp));
 			break;
 		case FAHRENHEIT:
-			qDebug("LUCA temp = %u", temp);
-			temp_label->setText(convertFahrenheitToString(temp));
+			temp_label->setText(fahrenheitString(temp));
 			break;
 		default:
 			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to Celsius");
@@ -760,15 +781,14 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 				switch (temp_scale)
 				{
 					case CELSIUS:
-						temp = curr_sp.get_val();
+						temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
 						break;
 					case FAHRENHEIT:
-						// curr_sp is in celsius in BTicino form
-						temp = toFahrenheit(static_cast<unsigned>(curr_sp.get_val()));
+						temp = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
 						break;
 					default:
 						qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-						temp = curr_sp.get_val();
+						temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
 				}
 				update = true;
 			}
@@ -964,11 +984,12 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 						switch (temp_scale)
 						{
 							case CELSIUS:
-								description = celsiusString(curr_sp.get_val());
+								description = celsiusString(bt2Celsius(
+											static_cast<unsigned>(curr_sp.get_val())));
 								break;
 							case FAHRENHEIT:
-								description = fahrenheitString(curr_sp.get_val());
-								qDebug("LUCA %s", description.ascii());
+								description = fahrenheitString(bt2Fahrenheit(
+											static_cast<unsigned>(curr_sp.get_val())));
 								break;
 							default:
 								qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");

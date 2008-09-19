@@ -13,57 +13,24 @@
 #include "scaleconversion.h"
 #include "main.h"
 
-QString celsiusString(unsigned temperature)
+#include <cmath>
+
+QString celsiusString(int celsius_temp)
 {
-	float icx = temperature;
-	QString qtemp = "";
-	char tmp[10];
-	if (icx >= 1000)
-	{
-		icx = icx - 1000;
-		qtemp = "-";
-	}
-	icx /= 10;
-	sprintf(tmp, "%.1f", icx);
-	qtemp += tmp;
-	qtemp += TEMP_DEGREES"C";
-	return qtemp;
+	QString str;
+	str.sprintf("%d", celsius_temp);
+	str.insert(str.length() -1, ".");
+	str += TEMP_DEGREES"C";
+	return str;
 }
 
-QString fahrenheitString(unsigned temperature)
+QString fahrenheitString(int fahr_temp)
 {
-	bool isNegative = false;
-	if (temperature > 1000)
-	{
-		isNegative = true;
-		temperature -= 1000;
-	}
-	float fahr = temperature;
-	if (isNegative)
-		fahr = -fahr;
-	fahr = toFahrenheit(fahr / 10);
-	char tmp[15];
-	// conversion to string
-	snprintf(tmp, 15, "%.1f", fahr);
-
-	QString temp;
-	temp = tmp;
-	temp += TEMP_DEGREES"F";
-	return temp;
-}
-
-QString convertFahrenheitToString(unsigned temperature)
-{
-	float fahr = temperature;
-	fahr /= 10;
-	char tmp[15];
-	// conversion to string
-	snprintf(tmp, 15, "%.1f", fahr);
-
-	QString temp;
-	temp = tmp;
-	temp += TEMP_DEGREES"F";
-	return temp;
+	QString str;
+	str.sprintf("%d", fahr_temp);
+	str.insert(str.length() -1, ".");
+	str += TEMP_DEGREES"F";
+	return str;
 }
 
 float toFahrenheit(float temperature)
@@ -76,24 +43,54 @@ float toCelsius(float temperature)
 	return ((temperature - 32) * 5. / 9.);
 }
 
-unsigned toCelsius(unsigned temperature)
+int bt2Celsius(unsigned bt_temp)
 {
-	float tmp = temperature;
-	tmp = toCelsius(tmp / 10);
-	unsigned new_temperature = 0;
-	if (tmp < 0)
+	bool isNegative = false;
+	if (bt_temp > 1000)
 	{
-		new_temperature = 1000;
-		tmp = -tmp;
+		isNegative = true;
+		bt_temp -= 1000;
 	}
-	new_temperature += static_cast<unsigned>(tmp * 10);
-	return new_temperature;
+	int return_value = static_cast<int>(bt_temp);
+	return (isNegative ? -return_value : return_value);
 }
 
-unsigned toFahrenheit(unsigned temperature)
+int bt2Fahrenheit(unsigned bt_temp)
 {
-	float tmp = temperature;
-	tmp /= 10;
-	return static_cast<unsigned>(toFahrenheit(tmp) * 10);
+	bool isNegative = false;
+	if (bt_temp > 1000)
+	{
+		isNegative = true;
+		bt_temp -= 1000;
+	}
+	// conversion
+	float fahr = bt_temp;
+	if (isNegative)
+		fahr = -fahr;
+	fahr /= 10;
+	fahr = toFahrenheit(fahr);
+	return static_cast<int>(round(fahr * 10));
 }
 
+unsigned celsius2Bt(int celsius_temp)
+{
+	unsigned bt_temp = 0;
+	if (celsius_temp < 0)
+	{
+		bt_temp += 1000;
+		celsius_temp = -celsius_temp;
+	}
+	bt_temp += static_cast<unsigned>(celsius_temp);
+	return bt_temp;
+}
+
+unsigned fahrenheit2Bt(int fahr_temp)
+{
+	// use floats to convert to celsius
+	float tmp = fahr_temp;
+	tmp /= 10;
+	tmp = toCelsius(tmp);
+	// now create bticino form
+	int celsius_temp = static_cast<int>(round(tmp * 10));
+	return celsius2Bt(celsius_temp);
+}

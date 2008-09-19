@@ -77,10 +77,10 @@ void BannTemperature::Draw()
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			temp_label->setText(celsiusString(temperature));
+			temp_label->setText(celsiusString(bt2Celsius(temperature)));
 			break;
 		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(temperature));
+			temp_label->setText(fahrenheitString(bt2Fahrenheit(temperature)));
 			break;
 		default:
 			qWarning("BannTemperature: unknown scale");
