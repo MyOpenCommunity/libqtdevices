@@ -109,7 +109,7 @@ SOURCES += actuators.cpp \
            ban4tasLab.cpp \
            bann2But.cpp \
            bann2butLab.cpp \
-           bann3But.cpp \
+           bann3but.cpp \
            bann4But.cpp \
            bann_antintrusione.cpp \
            bannBut2Icon.cpp \
@@ -119,13 +119,13 @@ SOURCES += actuators.cpp \
            banner.cpp \
            bannfrecce.cpp \
            bannfullscreen.cpp \
-           bannOn2scr.cpp \
+           bannon2scr.cpp \
            bannOnDx.cpp \
            bannOnIcons.cpp \
-           bannOnOff.cpp \
-           bannOnOff2scr.cpp \
+           bannonoff.cpp \
+           bannonoff2scr.cpp \
            bannonoffcombo.cpp \
-           bannPuls.cpp \
+           bannpuls.cpp \
            bannRegolaz.cpp \
            bannsettings.cpp \
            banntemperature.cpp \
