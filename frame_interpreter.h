@@ -3,16 +3,16 @@
 #ifndef __FRAME_INTERPRETER_H__
 #define __FRAME_INTERPRETER_H__
 
+#include "openclient.h"
+#include "device_status.h"
+
 #include <qstring.h>
 #include <qptrlist.h>
 #include <qobject.h>
 #include <qdatetime.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <time.h>
+#include <qtimer.h>
 
-#include "openclient.h"
-#include "device_status.h"
+#include <stdlib.h>
 
 
 class frame_interpreter;
