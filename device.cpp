@@ -1,18 +1,24 @@
 
-// Device implementation
-#include <qstring.h>
-#include <qptrlist.h>
-#include <qobject.h>
-#include <qstringlist.h>
-
-#include <openmsg.h>
-
 #include "openclient.h"
 #include "device.h"
 #include "frame_interpreter.h"
 #include "device_cache.h"
 
+#include <openmsg.h>
+
+#include <QStringList>
+
 // Device implementation
+
+
+openwebnet createMsgOpen(QString msg)
+{
+	QByteArray buf = msg.toAscii();
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(const_cast<char*> (buf.constData()), buf.size());
+	return msg_open;
+}
+
 
 device::device(QString _who, QString _where, bool p, int g)
 {
@@ -21,7 +27,6 @@ device::device(QString _who, QString _where, bool p, int g)
 	pul = p;
 	group = g;
 	refcount = 0;
-	stat = new QPtrList<device_status>;
 }
 
 void device::setClients(Client *comandi, Client *monitor, Client *richieste)
@@ -29,6 +34,12 @@ void device::setClients(Client *comandi, Client *monitor, Client *richieste)
 	client_comandi = comandi;
 	client_monitor = monitor;
 	client_richieste = richieste;
+}
+
+void device::sendFrame(QString frame)
+{
+	QByteArray buf = frame.toAscii();
+	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendFrame(const char *frame)
@@ -45,13 +56,12 @@ void device::init(bool force)
 {
 	qDebug("device::init()");
 	// True if all device has already been initialized
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(*stat);
-	dsi->toFirst();
-	device_status *ds;
-	QPtrList<device_status> dsl;
-	dsl.clear();
-	while ((ds = dsi->current()) != 0)
+
+	QList<device_status*> dsl;
+	for (int i = 0; i < stat.size(); ++i)
 	{
+		device_status *ds = stat.at(i);
+
 		QStringList msgl;
 		msgl.clear();
 		qDebug("ds = %p", ds);
@@ -61,39 +71,37 @@ void device::init(bool force)
 			interpreter->get_init_messages(ds, msgl);
 			for (QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it)
 			{
-				qDebug("init message is %s", (*it).ascii());
-				if ((*it) != "")
-					emit(send_frame((char *)((*it).ascii())));
+				qDebug() << "init message is " << *it;
+				if (*it != "")
+					sendFrame(*it);
 			}
 		}
 		else
+		{
 			if (ds->initialized())
 			{
 				qDebug("device status has already been initialized");
-				emit(initialized(ds));
+				emit initialized(ds);
 				dsl.append(ds);
 			}
 			else if (ds->init_requested())
-			{
 				qDebug("device status init already requested");
-			}
 			else
 			{
 				qDebug("getting init message");
 				interpreter->get_init_messages(ds, msgl);
 				for (QStringList::Iterator it = msgl.begin();it != msgl.end(); ++it)
 				{
-					qDebug("init message is %s", (*it).ascii());
-					if ((*it) != "")
-						emit(send_frame((char *)((*it).ascii())));
+					qDebug() << "init message is %s" << *it;
+					if (*it != "")
+						sendFrame(*it);
 				}
 				ds->mark_init_requested();
 			}
-		++(*dsi);
+		}
 	}
 	if (!dsl.isEmpty())
-		emit(status_changed(dsl));
-	delete dsi;
+		emit status_changed(dsl);
 	qDebug("device::init() end");
 }
 
@@ -101,12 +109,12 @@ void device::init_requested_handler(QString msg)
 {
 	qDebug("device::init_requested_handler()");
 	if (msg != "")
-		emit(send_frame((char *)msg.ascii()));
+		sendFrame(msg);
 }
 
 void device::set_where(QString w)
 {
-	qDebug("device::set_where(%s)", w.ascii());
+	qDebug() << "device::set_where(" << w << ")";
 	where = w;
 	if (interpreter)
 		interpreter->set_where(w);
@@ -125,20 +133,17 @@ void device::set_group(int g)
 void device::add_device_status(device_status *_ds)
 {
 	qDebug("device::add_device_status()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(*stat);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < stat.size(); ++i)
 	{
+		device_status *ds = stat.at(i);
 		if (ds->get_type() == _ds->get_type())
 		{
 			qDebug("Status already there, skip");
 			return;
 		}
-		++(*dsi);
 	}
-	stat->append(_ds);
-	delete dsi;
+	stat.append(_ds);
 }
 
 QString device::get_key(void)
@@ -148,186 +153,119 @@ QString device::get_key(void)
 
 device::~device()
 {
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(*stat);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
-	{
-		delete ds;
-		++(*dsi);
-	}
-	delete stat;
-	delete dsi;
+	while (!stat.isEmpty())
+		delete stat.takeFirst();
 }
 
 void device::frame_rx_handler(char *s)
 {
 	qDebug("device::frame_rx_handler");
-	emit(handle_frame(s, stat));
-}
-
-void device::set_frame_interpreter(frame_interpreter *fi)
-{
-	interpreter = fi;
-	// Pass init_requested signals 
-	connect(fi, SIGNAL(init_requested(QString)), 
-			this, SLOT(init_requested_handler(QString)));
+	emit handle_frame(s, stat);
 }
 
 void device::get(void)
 {
-	refcount++;
+	++refcount;
 }
 
 int device::put(void)
 {
-	refcount--;
+	--refcount;
 	return refcount;
 }
+
+void device::setup_frame_interpreter(frame_interpreter* i)
+{
+	interpreter = i;
+
+	connect(this, SIGNAL(handle_frame(char *, QList<device_status*>)),
+			i, SLOT(handle_frame_handler(char *, QList<device_status*>)));
+
+	connect(i, SIGNAL(frame_event(QList<device_status*>)),
+			SIGNAL(status_changed(QList<device_status*>)));
+
+	connect(i, SIGNAL(init_requested(QString)), SLOT(init_requested_handler(QString)));
+}
+
 
 // MCI implementation
 mci_device::mci_device(QString w, bool p, int g) : device(QString("18"), w, p, g)
 {
-	interpreter = new frame_interpreter_mci(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_mci());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-			    interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), 
-					this, SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_mci());
+	setup_frame_interpreter(new frame_interpreter_mci(w, p, g));
 }
 
 // Light implementation
 light::light(QString w, bool p, int g) : device(QString("1"), w, p, g) 
 {
-	interpreter = new frame_interpreter_lights(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_light());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_light());
+	setup_frame_interpreter(new frame_interpreter_lights(w, p, g));
 }
 
 // Dimmer implementation
 dimm::dimm(QString w, bool p, int g) : device(QString("1"), w, p, g)
 {
-	interpreter = new frame_interpreter_dimmer(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_dimmer());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-			interpreter,
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this,
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_dimmer());
+	setup_frame_interpreter(new frame_interpreter_dimmer(w, p, g));
 }
 
 // Dimmer100 implementation
 dimm100::dimm100(QString w, bool p, int g) : device(QString("1"), w, p, g)
 {
-	interpreter = new frame_interpreter_lights(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_dimmer100());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-			interpreter,
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this,
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_dimmer100());
+	setup_frame_interpreter(new frame_interpreter_lights(w, p, g));
 }
 
 // Autom implementation
 autom::autom(QString w, bool p, int g) : device(QString("2"), w, p, g)
 {
-	interpreter = new frame_interpreter_autom(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_autom());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_autom());
+	setup_frame_interpreter(new frame_interpreter_autom(w, p, g));
 }
 
 // Sound device implementation
 sound_device::sound_device(QString w, bool p, int g) : device(QString("16"), w, p, g)
 {
-	interpreter = new frame_interpreter_sound_device(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_amplifier());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_amplifier());
+	setup_frame_interpreter(new frame_interpreter_sound_device(w, p, g));
 }
 
 // Radio device implementation
 radio_device::radio_device(QString w, bool p, int g) : device(QString("16"), w, p, g)
 {
-	interpreter = new frame_interpreter_radio_device(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_radio());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_radio());
+	setup_frame_interpreter(new frame_interpreter_radio_device(w, p, g));
 }
 
 // Sound matrix device implementation
 sound_matr::sound_matr(QString w, bool p, int g) : device(QString("16"), QString("1000"), p, g)
 {
-	interpreter = new frame_interpreter_sound_matr_device(QString("1000"), p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_sound_matr());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_sound_matr());
+	setup_frame_interpreter(new frame_interpreter_sound_matr_device(QString("1000"), p, g));
 }
 
 // Doorphone device implementation
 doorphone_device::doorphone_device(QString w, bool p, int g) : device(QString("6"), w, p, g)
 {
 	qDebug("doorphone_device::doorphone_device()");
-	interpreter = new frame_interpreter_doorphone_device(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_doorphone());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_doorphone());
+	setup_frame_interpreter(new frame_interpreter_doorphone_device(w, p, g));
 }
 
 // Imp.anti device
 impanti_device::impanti_device(QString w, bool p, int g) : device(QString("16"), w, p, g)
 {
 	qDebug("impanti_device::impanti_device()");
-	interpreter = new frame_interpreter_impanti_device(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_impanti());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_impanti());
+	setup_frame_interpreter(new frame_interpreter_impanti_device(w, p, g));
 }
 
 // Zon.anti device
 zonanti_device::zonanti_device(QString w, bool p, int g) : device(QString("5"), w, p, g)
 {
 	qDebug("zonanti_device::impanti_device()");
-	interpreter = new frame_interpreter_zonanti_device(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_zonanti());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_zonanti());
+	setup_frame_interpreter(new frame_interpreter_zonanti_device(w, p, g));
 }
 
 thermal_regulator::thermal_regulator(QString where, bool p, int g) : device(QString("4"), where, p, g)
@@ -336,33 +274,29 @@ thermal_regulator::thermal_regulator(QString where, bool p, int g) : device(QStr
 
 void thermal_regulator::setOff()
 {
-	openwebnet msg_open;
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_OFF)).arg(QString("#") + where);
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
 void thermal_regulator::setProtection()
 {
-	openwebnet msg_open;
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_PROTECTION)).arg(QString("#") + where);
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
 void thermal_regulator::setSummer()
 {
-	openwebnet msg_open;
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(SUMMER)).arg(QString("#") + where);
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
 void thermal_regulator::setWinter()
 {
-	openwebnet msg_open;
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(WINTER)).arg(QString("#") + where);
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -383,8 +317,7 @@ void thermal_regulator::setManualTemp(unsigned temperature)
 	what.sprintf("#%d*%04d*%d", TEMPERATURE_SET, temperature, GENERIC_MODE);
 
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -393,8 +326,7 @@ void thermal_regulator::setWeekProgram(int program)
 	const QString what = QString::number(WEEK_PROGRAM + program);
 	const QString sharp_where = QString("#") + where;
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -411,9 +343,8 @@ void thermal_regulator::setWeekendDateTime(QDate date, BtTime time, int program)
 	const int what_program = WEEK_PROGRAM + program;
 	QString what = QString::number(GENERIC_WEEKEND) + "#" + QString::number(what_program);
 
-	openwebnet msg_open;
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 
 	// Second frame: set date
@@ -438,9 +369,8 @@ void thermal_regulator::setHolidayDateTime(QDate date, BtTime time, int program)
 	QString what;
 	what.sprintf("%d#%d", HOLIDAY_NUM_DAYS + number_of_days, WEEK_PROGRAM + program);
 
-	openwebnet msg_open;
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 
 	// Second frame: set date
@@ -458,9 +388,8 @@ void thermal_regulator::setHolidayEndDate(QDate date)
 	// day and month must be padded with 0 if they have only one digit
 	what.sprintf("#%d*%02d*%02d*%d", HOLIDAY_DATE_END, date.day(), date.month(), date.year());
 
-	openwebnet msg_open;
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -472,9 +401,8 @@ void thermal_regulator::setHolidayEndTime(BtTime time)
 	// hours and minutes must be padded with 0 if they have only one digit
 	what.sprintf("#%d*%02d*%02d", HOLIDAY_TIME_END, time.hour(), time.minute());
 
-	openwebnet msg_open;
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -483,17 +411,10 @@ unsigned thermal_regulator::minimumTemp() const
 	return 30;
 }
 
-thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g)
-	: thermal_regulator(where, p, g)
+thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g) : thermal_regulator(where, p, g)
 {
-	interpreter = new frame_interpreter_thermal_regulator(who, where, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_thermal_regulator_4z());
-
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-			this, SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_thermal_regulator_4z());
+	setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
 }
 
 void thermal_regulator_4z::setManualTempTimed(int temperature, BtTime time)
@@ -507,22 +428,20 @@ void thermal_regulator_4z::setManualTempTimed(int temperature, BtTime time)
 	// than 24 hours.
 	//
 	// First frame: set temperature
-	const QString number_of_hours = "2";
+	const char* number_of_hours = "2";
 	QString what;
-	what.sprintf("%d#%04d#%s", GENERIC_MANUAL_TIMED, temperature, number_of_hours.ascii());
+	what.sprintf("%d#%04d#%s", GENERIC_MANUAL_TIMED, temperature, number_of_hours);
 
-	openwebnet msg_open;
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 
 	// Second frame: set end time
 	QString what2;
 	what2.sprintf("#%d*%02d*%02d", MANUAL_TIMED_END, time.hour(), time.minute());
 
-	openwebnet msg_open_2;
 	msg = QString("*#") + who + "*" + sharp_where + "*" + what2 + "##";
-	msg_open_2.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open_2 = createMsgOpen(msg);
 	sendFrame(msg_open_2.frame_open);
 }
 
@@ -538,14 +457,8 @@ thermo_type_t thermal_regulator_4z::type() const
 
 thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g) : thermal_regulator(where, p, g)
 {
-	interpreter = new frame_interpreter_thermal_regulator(who, where, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_thermal_regulator_99z());
-
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-			this, SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_thermal_regulator_99z());
+	setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
 }
 
 void thermal_regulator_99z::setScenario(int scenario)
@@ -553,8 +466,7 @@ void thermal_regulator_99z::setScenario(int scenario)
 	const QString what = QString::number(SCENARIO_PROGRAM + scenario);
 	const QString sharp_where = QString("#") + where;
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -574,19 +486,14 @@ temperature_probe_controlled::temperature_probe_controlled(QString w, thermo_typ
 	device(QString("4"), w, p, g)
 {
 	qDebug("temperature_probe_controlled::temperature_probe_controlled(), type=%d, fancoil=%s", type, _fancoil ? "true" : "false");
-	interpreter = new frame_interpreter_temperature_probe_controlled(w, type, ind_centrale, indirizzo, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_temperature_probe_extra(type));
-	stat->append(new device_status_temperature_probe());
+	stat.append(new device_status_temperature_probe_extra(type));
+	stat.append(new device_status_temperature_probe());
 	fancoil = _fancoil;
 	simple_where = indirizzo;
 	if (fancoil)
-		stat->append(new device_status_fancoil());
+		stat.append(new device_status_fancoil());
 
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-			interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-			this, SIGNAL(status_changed(QPtrList<device_status>)));
+	setup_frame_interpreter(new frame_interpreter_temperature_probe_controlled(w, type, ind_centrale, indirizzo, p, g));
 }
 
 void temperature_probe_controlled::setManual(unsigned setpoint)
@@ -600,8 +507,7 @@ void temperature_probe_controlled::setManual(unsigned setpoint)
 	QString sharp_where = QString("#") + where;
 
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -611,8 +517,7 @@ void temperature_probe_controlled::setAutomatic()
 	QString sharp_where = QString("#") + where;
 
 	QString msg = QString("*") + who + "*" + QString::number(mode) + QString("*") + sharp_where + QString("##");
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(const_cast<char *> (msg.ascii()), msg.length());
+	openwebnet msg_open = createMsgOpen(msg);
 	sendFrame(msg_open.frame_open);
 }
 
@@ -623,8 +528,7 @@ void temperature_probe_controlled::setFancoilSpeed(int speed)
 	{
 		QString msg = QString("*#") + who + "*" + simple_where + "*#" + QString::number(dimension) + "*" +
 			QString::number(speed) + "##";
-		openwebnet msg_open;
-		msg_open.CreateMsgOpen(const_cast<char *>(msg.ascii()), msg.length());
+		openwebnet msg_open = createMsgOpen(msg);
 		sendFrame(msg_open.frame_open);
 	}
 }
@@ -635,8 +539,7 @@ void temperature_probe_controlled::requestFancoilStatus()
 	if (fancoil)
 	{
 		QString msg = QString("*#") + who + "*" + simple_where + "*" + QString::number(dimension) + "##";
-		openwebnet msg_open;
-		msg_open.CreateMsgOpen(const_cast<char *>(msg.ascii()), msg.length());
+		openwebnet msg_open = createMsgOpen(msg);
 		sendFrame(msg_open.frame_open);
 	}
 }
@@ -645,28 +548,16 @@ void temperature_probe_controlled::requestFancoilStatus()
 temperature_probe_notcontrolled::temperature_probe_notcontrolled(QString w, bool external, bool p, int g) :
 	device(QString("4"), w, p, g)
 {
-	interpreter = new frame_interpreter_temperature_probe(w, external, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_temperature_probe());
-
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)),
-	        interpreter, SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)),
-	        this, SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_temperature_probe());
+	setup_frame_interpreter(new frame_interpreter_temperature_probe(w, external, p, g));
 }
 
 // modscen device
 modscen_device::modscen_device(QString w, bool p, int g) : device(QString("0"), w, p, g)
 {
 	qDebug("modscen_device::modscen_device()");
-	interpreter = new frame_interpreter_modscen_device(w, p, g);
-	set_frame_interpreter(interpreter);
-	stat->append(new device_status_modscen());
-	connect(this, SIGNAL(handle_frame(char *, QPtrList<device_status> *)), 
-			interpreter, 
-			SLOT(handle_frame_handler(char *, QPtrList<device_status> *)));
-	connect(interpreter, SIGNAL(frame_event(QPtrList<device_status>)), this, 
-			SIGNAL(status_changed(QPtrList<device_status>)));
+	stat.append(new device_status_modscen());
+	setup_frame_interpreter(new frame_interpreter_modscen_device(w, p, g));
 }
 
 
@@ -677,7 +568,7 @@ aux_device::aux_device(QString w, bool p, int g) : device(QString("9"), w, p, g)
 
 void aux_device::init(bool force)
 {
-	OpenMsg msg = OpenMsg::createReadDim(who.ascii(), where.ascii());
+	OpenMsg msg = OpenMsg::createReadDim(who.toStdString(), where.toStdString());
 	qDebug("aux_device::init message: %s", msg.frame_open);
 	sendInit(msg.frame_open);
 }
@@ -687,7 +578,7 @@ void aux_device::frame_rx_handler(char *frame)
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
 
-	if (who != msg.who() || where != msg.where())
+	if (who.toInt() != msg.who() || where.toInt() != msg.where())
 		return;
 
 	qDebug("aux_device::frame_rx_handler");

@@ -6,10 +6,10 @@
 #include "device_status.h"
 #include "bttime.h"
 
-#include <qstring.h>
-#include <qptrlist.h>
-#include <qobject.h>
-#include <qdatetime.h>
+#include <QDateTime>
+#include <QString>
+#include <QObject>
+#include <QList>
 
 class frame_interpreter;
 class Client;
@@ -23,8 +23,6 @@ public:
 	device(QString who, QString where, bool p=false, int g=-1);
 	//! Init device: send messages initializing data
 	virtual void init(bool force = false);
-	//! Set frame interpreter
-	void set_frame_interpreter(frame_interpreter *fi);
 	//! Set where
 	void set_where(QString);
 	//! Set pul status
@@ -46,17 +44,18 @@ public:
 	virtual ~device();
 
 	void sendFrame(const char *frame);
+	void sendFrame(QString frame);
 	void sendInit(const char *frame);
 
 signals:
 	//! Status changed
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 	//! Invoked after successful initialization
 	void initialized(device_status *);
 	//! We want to send a frame
 	void send_frame(char *);
 	//! We want a frame to be handled
-	void handle_frame(char *, QPtrList<device_status> *);
+	void handle_frame(char *, QList<device_status*>);
 public slots:
 	//! receive a frame
 	virtual void frame_rx_handler(char *);
@@ -67,11 +66,14 @@ protected:
 	//! Interpreter
 	frame_interpreter *interpreter;
 	//! List of device stats
-	QPtrList<device_status> *stat;
+	QList<device_status*> stat;
 	//! Node's who
 	QString who;
 	//! Node's where
 	QString where;
+
+	/// connect the frame interpreter with the device
+	void setup_frame_interpreter(frame_interpreter* i);
 
 private:
 	//! Pul status
