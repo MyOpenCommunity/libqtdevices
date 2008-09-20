@@ -69,7 +69,8 @@ void automCancAttuatIll::Attiva()
 	char val[100];
 	char *v[] = { val , };
 
-	strncpy(val, time.ascii(), sizeof(val));
+	QByteArray buf = time.toAscii();
+	strncpy(val, buf.constData(), sizeof(val));
 
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateWrDimensionMsgOpen("1", getAddress(), "2", v, 1);

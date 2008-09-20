@@ -102,6 +102,11 @@ private:
 	char amb[80];
 	char nome[15];
 	bannFrecce * bannNavigazione;
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 

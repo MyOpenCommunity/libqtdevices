@@ -21,10 +21,10 @@
 #include "fontmanager.h"
 
 
-aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(parent, name.ascii())
+aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -34,13 +34,13 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 
 	auxName = new BtLabel(this,"Nome della sorgente");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
-	ambDescr->setAlignment(AlignHCenter|AlignTop);
+	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	QFont aFont;
 	FontManager::instance()->getFont(font_aux_descr_ambiente, aFont);
 	ambDescr->setFont(aFont);
 	ambDescr->setText(amb);
 	auxName->setGeometry(0,30,240,40);
-	auxName->setAlignment(AlignHCenter|AlignTop);
+	auxName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 
 	FontManager::instance()->getFont(font_aux_nome_sorgente, aFont);
 	auxName->setFont(aFont);
@@ -123,3 +123,25 @@ void aux::freezed(bool f)
 	// Disable aux and all of its children
 	setDisabled(f);
 }
+
+void aux::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void aux::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void aux::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
