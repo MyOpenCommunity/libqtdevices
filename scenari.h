@@ -162,13 +162,13 @@ public slots:
 	/*!
 	 * \brief Enable scheduled scenario
 	 */
-	void enable(void);
+	void enable();
 	/*! Disable scheduled scenario */
-	void disable(void); 
+	void disable();
 	/*! Start scheduled scenario */
-	void start(void);
+	void start();
 	/*! Stop scheduled scenario */
-	void stop(void);
+	void stop();
 };
 
 #endif

@@ -150,6 +150,29 @@ bool Calibrate::sanityCheck()
 		return FALSE;
 	}
 
+	if(tl.x() < tr.x())
+	{
+		qWarning("err tl.x > tr.x\n");
+		return FALSE;
+	}
+
+	if(bl.x() < br.x())
+	{
+		qWarning("err bl.x > br.x\n");
+		return FALSE;
+	}
+
+	if(tl.y() > bl.y())
+	{
+		qWarning("err tl.y < bl.y\n");
+		return FALSE;
+	}
+
+	if(tr.y() > br.y())
+	{
+		qWarning("err tr.y > br.y\n");
+		return FALSE;
+	}
 #endif
 	qWarning("return TRUE Calibrate::sanityCheck");
 	return TRUE;
