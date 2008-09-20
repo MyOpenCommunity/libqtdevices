@@ -1,8 +1,8 @@
 #ifndef _ALLARME_H_
 #define _ALLARME_H_
 
-#include <qframe.h>
-#include <qcolor.h>
+#include <QFrame>
+#include <QColor>
 
 class banner;
 class BtLabel;
@@ -32,6 +32,11 @@ private:
 	BtLabel *descr;
 	void SetIcons(char*);
 	altype type;
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+
 public:
 	allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, altype t);
 

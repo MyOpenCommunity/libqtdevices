@@ -5,9 +5,9 @@
 #include "main.h"
 #include "fontmanager.h"
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
+#include <QPixmap>
+#include <QWidget>
+#include <QCursor>
 
 
 /*****************************************************************
@@ -21,7 +21,7 @@ allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *I
     type = t;
     SetIcons(IconaDx);
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor(QCursor(blankCursor));
+    setCursor(QCursor(Qt::BlankCursor));
 #endif
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
     setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -58,7 +58,7 @@ void allarme::SetIcons(char *icon)
     QFont aFont;
     FontManager::instance()->getFont(font_allarme_descr, aFont);
     descr->setFont(aFont);
-    descr->setAlignment(AlignHCenter|AlignVCenter);
+    descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,
 		       MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
@@ -66,7 +66,6 @@ void allarme::SetIcons(char *icon)
     bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE,
 		      MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 }
-
 
 void allarme::setBGColor(QColor c)
 {
@@ -115,4 +114,18 @@ void allarme::freezed(bool f)
     qDebug("allarme::freezed(%d)", f);
     bool enabled = !f;
     bnav->setEnabled(enabled);
+}
+
+void allarme::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void allarme::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
 }
