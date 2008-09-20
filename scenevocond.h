@@ -1,9 +1,10 @@
 #ifndef _SCENEVOCOND_H_
 #define _SCENEVOCOND_H_
 
-#include <qframe.h>
-
 #include "device_status.h"
+
+#include <QFrame>
+#include <QList>
 
 class QDateTime;
 class BtButton;
@@ -26,21 +27,23 @@ private:
 	QString *img[MAX_EVO_COND_IMG];
 	int val;
 	int serial_number;
+protected:
+	/*!
+	\brief: Returns image path for a certain index
+	\arg: index of image whose path shall be returned
+	*/
+	QString getImg(int index);
+	/*!
+	\brief sets image path for a certain index
+	\param index index of image whose path shall be set
+	*/
+	void setImg(int index, QString s);
+
 public:
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
 
 	scenEvo_cond(QWidget *parent, char *name);
-	/*!
-	\brief: Returns image path for a certain index
-	\arg: index of image whose path shall be returned
-	*/
-	const char *getImg(int index);
-	/*!
-	\brief sets image path for a certain index
-	\param index index of image whose path shall be set
-	*/
-	void setImg(int index, const char *);
 	/*!
 	\brief returns value related to condition
 	*/
@@ -94,6 +97,11 @@ public:
 	virtual void inizializza(void);
 	//! Returns true when condition is satisfied
 	virtual bool isTrue(void);
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+
 public slots:
 	//! Next button pressed
 	virtual void Next();
@@ -251,10 +259,6 @@ public:
 	virtual int get_divisor();
 	//! Returns true if OFF must be shown instead of 0
 	virtual bool show_OFF_on_zero();
-	//! Returns condition's serial number
-	//int get_serial_number();
-	//! Sets condition's serial number
-	//void set_serial_number(int);
 	//! Returns pointer to parent scenEvo_cond_d
 	scenEvo_cond_d *get_parent(void);
 	//! Sets condition value
@@ -303,7 +307,7 @@ public slots:
 	//! Invoked when OK button is pressed
 	virtual void OK();
 	//! Invoked by device when status changes
-	virtual void status_changed(QPtrList<device_status>) = 0;
+	virtual void status_changed(QList<device_status*>) = 0;
 signals:
 	//! No more emitted when condition is true
 	// void verificata();
@@ -336,7 +340,7 @@ public:
 	virtual void get_condition_value(QString&);
 public slots:
 	//! Invoked when status changes
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 };
 
 /*!
@@ -393,7 +397,7 @@ public slots:
 	//! Invoked when DOWN button is pressed
 	void Down();
 	//! Invoked when status changes
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 };
 
 
@@ -449,7 +453,7 @@ public slots:
 	//! Invoked when DOWN button is pressed
 	void Down();
 	//! Invoked when status changes
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 };
 
 /*!
@@ -495,7 +499,7 @@ public:
 public slots:
 	void OK();
 	//! Invoked when status changes
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 	//! Invoked when UP button is pressed
 	void Up();
 	//! Invoked when DOWN button is pressed
@@ -539,7 +543,7 @@ public:
 	void gestFrame(char*);
 public slots:
 	//! Invoked when status changes
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 };
 
 
@@ -684,7 +688,7 @@ public:
 	virtual void set_condition_value(QString);
 
 protected slots:
-	virtual void status_changed(QPtrList<device_status> sl);
+	virtual void status_changed(QList<device_status*> sl);
 
 private slots:
 	// TODO: use a more generic approach!

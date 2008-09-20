@@ -8,6 +8,7 @@
 **
 ****************************************************************/
 
+#include <QString>
 
  /*!
   \brief Transform a image file name into a pressed one.
@@ -90,7 +91,7 @@ void rearmWDT();
  /*!
   \brief  Changes configuration file giving: fileName, id, fieldName, value, serial number of id recursion to change
 */
-bool setCfgValue(char*, int , const char*, const char* ,int);
+bool setCfgValue(QString file, int id, QString campo, QString valore, int serNumId);
 
  /*!
   \brief  Same as above. file name is the default one and \a serial \a number \a of \a id \a recursion \a to \a change is 1.

@@ -9,13 +9,14 @@
 #include "timescript.h"
 #include "fontmanager.h"
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
-#include <qdatetime.h>
-#include <qlabel.h>
-#include <qdir.h>
-#include <qfile.h>
+#include <QDateTime>
+#include <QPixmap>
+#include <QWidget>
+#include <QCursor>
+#include <QDebug>
+#include <QLabel>
+#include <QDir>
+#include <QFile>
 
 #include <assert.h>
 
@@ -23,7 +24,7 @@
 ** Advanced scenario management generic condition
 ****************************************************************/
 
-scenEvo_cond::scenEvo_cond(QWidget *parent, char *name) : QFrame(parent, name)
+scenEvo_cond::scenEvo_cond(QWidget *parent, char *name) : QFrame(parent)
 {
 	val = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
@@ -31,19 +32,19 @@ scenEvo_cond::scenEvo_cond(QWidget *parent, char *name) : QFrame(parent, name)
 	hasTimeCondition = false;
 }
 
-const char *scenEvo_cond::getImg(int index)
+QString scenEvo_cond::getImg(int index)
 {
 	if (index >= MAX_EVO_COND_IMG)
 		return "";
-	return img[index]->ascii();
+	return *img[index];
 }
 
-void scenEvo_cond::setImg(int index, const char *s)
+void scenEvo_cond::setImg(int index, QString s)
 {
-	qDebug("scenEvo_cond: setting image %d to %s", index, s);
+	qDebug() << "scenEvo_cond: setting image " << index << " to " << s;
 	if (index >= MAX_EVO_COND_IMG)
 		return;
-	*img[index]  = s;
+	*img[index] = s;
 }
 
 int scenEvo_cond::getVal(void)
@@ -58,7 +59,7 @@ void scenEvo_cond::setVal(int v)
 
 const char *scenEvo_cond::getDescription(void)
 {
-return "Generic scenEvo condition";
+	return "Generic scenEvo condition";
 }
 
 void scenEvo_cond::mostra()
@@ -78,7 +79,7 @@ void scenEvo_cond::setFGColor(int r, int g, int b)
 }
 
 void scenEvo_cond::setBGColor(QColor c)
-{	
+{
 	qDebug("scenEvo_cond::setBGColor(QColor c)");
 }
 
@@ -153,6 +154,19 @@ bool scenEvo_cond::isTrue(void)
 	return false;
 }
 
+void scenEvo_cond::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void scenEvo_cond::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
 
 /*****************************************************************
  ** Advanced scenario management, time condition
@@ -165,7 +179,7 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(paren
 	m = new QString("");
 	s = new QString("");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	ora = NULL;
 	timer = new QTimer(this);
@@ -178,13 +192,13 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(paren
 void scenEvo_cond_h::set_h(const char *_h)
 {
 	*h = _h;
-	qDebug("scenEvo_cond_h::set_h : %s", h->ascii());
+	qDebug() << "scenEvo_cond_h::set_h : " << h;
 }
 
 void scenEvo_cond_h::set_m(const char *_m)
 {
 	*m = _m;
-	qDebug("scenEvo_cond_h::set_m : %s", m->ascii());
+	qDebug() << "scenEvo_cond_h::set_m : " << m;
 	QTime t(h->toInt(), m->toInt(), 0);
 	cond_time->setTime(t);
 	ora->setDataOra(QDateTime(QDate::currentDate(), t));
@@ -195,7 +209,7 @@ void scenEvo_cond_h::set_m(const char *_m)
 void scenEvo_cond_h::set_s(const char *_s)
 {
 	*s = _s;
-	qDebug("scenEvo_cond_h::set_s : %s", s->ascii());
+	qDebug() << "scenEvo_cond_h::set_s : " << s;
 }
 
 const char *scenEvo_cond_h::getDescription(void)
@@ -203,14 +217,14 @@ const char *scenEvo_cond_h::getDescription(void)
 	return "scenEvo hour condition";
 }
 
-void scenEvo_cond_h::SetIcons() 
+void scenEvo_cond_h::SetIcons()
 {
 	QPixmap* Icon1 = new QPixmap();
 	QPixmap* Icon2 = NULL;
 	char iconName[MAX_PATH];
 	qDebug("scenEvo_cond_h::SetIcons()");
 	for (int i = 0; i < 6; i++)
-		qDebug("icon[%d] = %s", i, getImg(i));
+		qDebug() << "icon[" << i << "] = " << getImg(i);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 	memset(iconName, '\000', sizeof(iconName));
@@ -247,7 +261,7 @@ void scenEvo_cond_h::SetIcons()
 	}
 	for (uchar idx = 2; idx < 4; idx++)
 	{
-		but[idx] = new BtButton(this,"freccia"+QString::number(idx));
+		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-2)*80+50,190,60,60);
 		but[idx]->setAutoRepeat(true);
 		but[idx]->setPixmap(*Icon1);
@@ -267,12 +281,13 @@ void scenEvo_cond_h::SetIcons()
 	Immagine->setGeometry(90,0,60,60);
 	delete(Icon1);
 	// Pulsante in basso a sinistra, area 6 (SE C'E` L'ICONA)
-	if (getImg(A6_ICON_INDEX)[0])
+	if (!getImg(A6_ICON_INDEX).isEmpty())
 	{
 		Icon1 = new QPixmap();
 		Icon1->load(getImg(A6_ICON_INDEX));
-		qDebug("Area 6: loaded icon %s", getImg(A6_ICON_INDEX));
-		getPressName((char *)getImg(A6_ICON_INDEX), iconName,sizeof(iconName));
+		qDebug() << "Area 6: loaded icon " << getImg(A6_ICON_INDEX);
+		QByteArray buf = getImg(A6_ICON_INDEX).toAscii();
+		getPressName(buf.data(), iconName, sizeof(iconName));
 		if (QFile::exists(iconName))
 		{
 			Icon2 = new QPixmap();
@@ -290,13 +305,14 @@ void scenEvo_cond_h::SetIcons()
 	else
 		but[A6_BUTTON_INDEX] = NULL;
 	// Pulsante in basso al centro, area 7
-	if (getImg(A7_ICON_INDEX)[0])
+	if (!getImg(A7_ICON_INDEX).isEmpty())
 	{
 		Icon1 = new QPixmap();
 		Icon2 = NULL;
 		Icon1->load(getImg(A7_ICON_INDEX));
-		qDebug("Area 7: loaded icon %s", getImg(A7_ICON_INDEX));
-		getPressName((char *)getImg(A7_ICON_INDEX),iconName, sizeof(iconName));
+		qDebug() << "Area 7: loaded icon " << getImg(A7_ICON_INDEX);
+		QByteArray buf = getImg(A7_ICON_INDEX).toAscii();
+		getPressName(buf.data(), iconName, sizeof(iconName));
 		if (QFile::exists(iconName))
 		{
 			Icon2 = new QPixmap();
@@ -314,13 +330,14 @@ void scenEvo_cond_h::SetIcons()
 	else
 		but[A7_BUTTON_INDEX] = NULL;
 	// Pulsante in basso a destra, area 8
-	if (getImg(A8_ICON_INDEX)[0])
+	if (!getImg(A8_ICON_INDEX).isEmpty())
 	{
 		Icon1 = new QPixmap();
 		Icon2 = NULL;
 		Icon1->load(getImg(A8_ICON_INDEX));
-		qDebug("Area 8: loaded icon %s", getImg(A8_ICON_INDEX));
-		getPressName((char *)getImg(A8_ICON_INDEX),iconName, sizeof(iconName));
+		qDebug() << "Area 8: loaded icon " << getImg(A8_ICON_INDEX);
+		QByteArray buf = getImg(A8_ICON_INDEX).toAscii();
+		getPressName(buf.data(),iconName, sizeof(iconName));
 		if (QFile::exists(iconName))
 		{
 			Icon2 = new QPixmap();
@@ -367,7 +384,7 @@ void scenEvo_cond_h::mostra()
 		disconnect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
 		connect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
 	}
-	if (getImg(3)[0] == 0)
+	if (getImg(3).isEmpty())
 	{
 	// cimg4 is empty
 		if (but[A8_BUTTON_INDEX])
@@ -395,7 +412,7 @@ void scenEvo_cond_h::mostra()
 }
 
 void scenEvo_cond_h::setBGColor(QColor c)
-{	
+{
 	setPaletteBackgroundColor(c);
 	if (ora)
 		ora->setPaletteBackgroundColor(c);
@@ -430,7 +447,8 @@ void scenEvo_cond_h::setupTimer()
 	// with new interval. Otherwise it is just started.
 	qDebug("(re)starting timer with interval = %d", secsto * 1000);
 	timer->stop();
-	timer->start(secsto * 1000, true);
+	timer->setSingleShot(true);
+	timer->start(secsto * 1000);
 }
 
 void scenEvo_cond_h::Apply()
@@ -465,11 +483,9 @@ void scenEvo_cond_h::save()
 {
 	qDebug("scenEvo_cond_h::save()");
 	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "hour",
-		cond_time->time().toString("hh").ascii(), get_serial_number());
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "minute",
-		cond_time->time().toString("mm").ascii(), get_serial_number());
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "hour", cond_time->time().toString("hh"), get_serial_number());
+	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "minute",cond_time->time().toString("mm"), get_serial_number());
+	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
 }
 
 void scenEvo_cond_h::reset()
@@ -482,7 +498,7 @@ void scenEvo_cond_h::reset()
 bool scenEvo_cond_h::isTrue(void)
 {
 	return
-	((cond_time->time().hour() == 
+	((cond_time->time().hour() ==
 	QDateTime::currentDateTime().time().hour()) &&
 	(cond_time->time().minute() ==
 	QDateTime::currentDateTime().time().minute()));
@@ -496,7 +512,7 @@ scenEvo_cond_d::scenEvo_cond_d(QWidget *parent, char *name) : scenEvo_cond(paren
 {
 	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	descr = new QString("");
 	where = new QString("");
@@ -507,7 +523,7 @@ scenEvo_cond_d::scenEvo_cond_d(QWidget *parent, char *name) : scenEvo_cond(paren
 
 void scenEvo_cond_d::set_descr(QString d)
 {
-	qDebug("scenEvo_cond_d::set_descr(%s)", d.ascii());
+	qDebug() << "scenEvo_cond_d::set_descr("<< d << ")";
 	*descr = d;
 }
 
@@ -549,13 +565,13 @@ void scenEvo_cond_d::mostra()
 }
 
 void scenEvo_cond_d::setBGColor(QColor c)
-{	
+{
 	qDebug("scenEvo_cond_d::setBGColor()");
 	setPaletteBackgroundColor(c);
 	for (uchar idx = 0; idx < 7; idx++)
 		if (but[idx])
 			but[idx]->setPaletteBackgroundColor(c);
-	
+
 	area1_ptr->setPaletteBackgroundColor(c);
 	area2_ptr->setPaletteBackgroundColor(c);
 	if (actual_condition)
@@ -589,13 +605,15 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 	QPixmap* Icon1;
 	QPixmap* Icon2;
 	char iconName[MAX_PATH];
-	if (!getImg(icon_index)[0])
+	if (getImg(icon_index).isEmpty())
 	{
 		but[button_index] = NULL;
 		return;
 	}
 	Icon1 = new QPixmap();
-	getPressName((char *)getImg(icon_index), iconName, sizeof(iconName));
+
+	QByteArray buf = getImg(icon_index).toAscii();
+	getPressName(buf.data(), iconName, sizeof(iconName));
 	if (QFile::exists(getImg(icon_index)))
 	{
 		Icon1->load(getImg(icon_index));
@@ -614,13 +632,13 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 		delete Icon2;
 }
 
-void scenEvo_cond_d::SetIcons() 
+void scenEvo_cond_d::SetIcons()
 {
 	QFont aFont;
 	qDebug("scenEvo_cond_d::SetIcons()");
 	QPixmap* Icon1 = new QPixmap();
 	for (int i=0; i<6; i++)
-		qDebug("icon[%d] = %s", i, getImg(i));
+		qDebug() << "icon[" << i << "] = " << getImg(i);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 	area1_ptr = new BtLabel(this, "Area1");
@@ -629,7 +647,7 @@ void scenEvo_cond_d::SetIcons()
 	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2,	TEXT_X_DIM, TEXT_Y_DIM);
 	FontManager::instance()->getFont(font_scenEvoCond_Area2, aFont);
 	area2_ptr->setFont(aFont);
-	area2_ptr->setAlignment(AlignHCenter|AlignVCenter);
+	area2_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	BtButton *b = new BtButton(this, "Up button");
 	but[A3_BUTTON_INDEX] = b;
 	b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
@@ -732,8 +750,8 @@ void scenEvo_cond_d::save()
 	qDebug("scenEvo_cond_d::save()");
 	QString s; actual_condition->get_condition_value(s);
 	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "trigger", s.ascii(), get_serial_number());
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "trigger", s, get_serial_number());
+	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
 	reset();
 	inizializza();
 }
@@ -760,7 +778,7 @@ bool scenEvo_cond_d::isTrue(void)
 ****************************************************************/
 device_condition::device_condition(QWidget *p, QString *s)
 {
-	qDebug("device_condtion::device_condition(%s)", s->ascii());
+	qDebug() << "device_condition::device_condition(" << s << ")";
 	parent = p;
 	satisfied = false;
 }
@@ -806,7 +824,7 @@ void device_condition::set_condition_value(int v)
 
 void device_condition::set_condition_value(QString s)
 {
-	qDebug("device_condition::set_condition_value (%s)", s.ascii());
+	qDebug() << "device_condition::set_condition_value (" << s << ")";
 	set_condition_value(s.toInt());
 }
 
@@ -896,14 +914,16 @@ void device_condition::setFGColor(QColor c)
 {
 	qDebug("device_condition::setFGColor (%d, %d, %d)", c.red(), c.green(),
 	c.blue());
-	frame->setPaletteForegroundColor(c);
+	// TODO: sistemare con il nuovo metodo qt4!
+	//frame->setPaletteForegroundColor(c);
 }
 
 void device_condition::setBGColor(QColor c)
 {
 	qDebug("device_condition::setBGColor (%d, %d, %d)", c.red(), c.green(),
 	c.blue());
-	frame->setPaletteBackgroundColor(c);
+	// TODO: sistemare con il nuovo metodo qt4!
+	//frame->setPaletteBackgroundColor(c);
 }
 
 void device_condition::inizializza()
@@ -926,13 +946,13 @@ bool device_condition::isTrue()
 
 void device_condition::set_where(QString s)
 {
-	qDebug("device_condition::set_where(%s)\n", s.ascii());
+	qDebug() << "device_condition::set_where(" << s << ")";
 	dev->set_where(s);
 	// Aggiunge il nodo alla cache
 	dev = btouch_device_cache.add_device(dev);
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-		this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
 }
 
 void device_condition::set_pul(bool p)
@@ -952,12 +972,12 @@ void device_condition::set_group(int g)
 device_condition_light_status::device_condition_light_status(QWidget *parent, char *name, QString *c) :
 	device_condition(parent, c)
 {
-	QLabel *l = new QLabel(parent, name);
-	l->setAlignment(AlignHCenter|AlignVCenter);
+	QLabel *l = new QLabel(parent);
+	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
 	l->setFont(aFont);
-	
+
 	frame = l;
 	set_condition_value(*c);
 	set_current_value(device_condition::get_condition_value());
@@ -975,16 +995,15 @@ void device_condition_light_status::Draw()
 	((QLabel *)frame)->setText(get_string());
 }
 
-void device_condition_light_status::status_changed(QPtrList<device_status> sl)
+void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
 	int trig_v = device_condition::get_condition_value();
 	stat_var curr_status(stat_var::ON_OFF);
 	qDebug("device_condition_light_status::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::LIGHTS:
@@ -1020,9 +1039,7 @@ void device_condition_light_status::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
-	delete dsi;
 }
 
 int device_condition_light_status::get_max()
@@ -1039,7 +1056,7 @@ void device_condition_light_status::set_condition_value(QString s)
 	else if (s == "0")
 		v = 0;
 	else
-		qDebug("Unknown condition value %s for device_condition_light_status", s.ascii());
+		qDebug() << "Unknown condition value " << s << " for device_condition_light_status";
 	device_condition::set_condition_value(v);
 }
 
@@ -1055,16 +1072,15 @@ void device_condition_light_status::get_condition_value(QString& out)
 device_condition_dimming::device_condition_dimming(QWidget *parent, char *name, QString *c) :
 	device_condition(parent, c)
 {
-	qDebug("device_condition_dimming::device_condition_dimming(%s)",
-	c->ascii());
-	QLabel *l = new QLabel(parent, name);
-	l->setAlignment(AlignHCenter|AlignVCenter);
+	qDebug() << "device_condition_dimming::device_condition_dimming(" << c << ")";
+	QLabel *l = new QLabel(parent);
+	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_scenEvoCond_device_condition_dimming, aFont);
 	l->setFont(aFont);
 
 	frame = l;
-	if (strcmp(c->ascii(), "0") == 0)
+	if (*c == "0")
 	{
 		set_condition_value_min(0);
 		set_condition_value_max(0);
@@ -1072,9 +1088,9 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, char *name, 
 	else
 	{
 		set_condition_value_min((QString) c->at(0));
-		set_condition_value_max(c->ascii()+2);
+		QByteArray buf = c->toAscii();
+		set_condition_value_max(buf.constData()+2);
 	}
-	//set_condition_value(*c);
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	// A dimmer is actually a light
@@ -1090,10 +1106,10 @@ QString device_condition_dimming::get_current_value()
 	return val;
 }
 
-int device_condition_dimming::get_min() 
-{ 
+int device_condition_dimming::get_min()
+{
 	return 0;
-} 
+}
 
 int device_condition_dimming::get_max()
 {
@@ -1109,7 +1125,7 @@ int device_condition_dimming::get_step()
 void device_condition_dimming::Up()
 {
 	qDebug("device_condition_dimming::Up()");
-	
+
 	int val = get_current_value_min();
 	switch (val)
 	{
@@ -1206,7 +1222,7 @@ void device_condition_dimming::set_condition_value_min(int s)
 
 void device_condition_dimming::set_condition_value_min(QString s)
 {
-	qDebug("device_condition_dimming::set_condition_value_min(%s)", s.ascii());
+	qDebug() << "device_condition_dimming::set_condition_value_min(" << s << ")";
 	min_val = s.toInt();
 }
 
@@ -1223,7 +1239,7 @@ void device_condition_dimming::set_condition_value_max(int s)
 
 void device_condition_dimming::set_condition_value_max(QString s)
 {
-	qDebug("device_condition_dimming::set_condition_value_max(%s)", s.ascii());
+	qDebug() << "device_condition_dimming::set_condition_value_max(" << s << ")";
 	max_val = s.toInt();
 }
 
@@ -1268,7 +1284,7 @@ void device_condition_dimming::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void device_condition_dimming::status_changed(QPtrList<device_status> sl)
+void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
@@ -1276,12 +1292,10 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
 	stat_var curr_speed(stat_var::SPEED);
 	stat_var curr_status(stat_var::ON_OFF);
 
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
 	qDebug("device_condition_dimming::status_changed()");
-	while ((ds = dsi->current()) != 0)
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::LIGHTS:
@@ -1317,9 +1331,7 @@ void device_condition_dimming::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
-	delete dsi;
 }
 
 /*****************************************************************
@@ -1329,27 +1341,27 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, char
 device_condition(parent, c)
 {
 	char sup[10];
-	qDebug("device_condition_dimming_100::device_condition_dimming_100(%s)", c->ascii());
-	QLabel *l = new QLabel(parent, name);
-	l->setAlignment(AlignHCenter|AlignVCenter);
+	qDebug() << "device_condition_dimming_100::device_condition_dimming_100(" << c << ")";
+	QLabel *l = new QLabel(parent);
+	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
 	l->setFont(aFont);
 	frame = l;
-	if (strcmp(c->ascii(), "0") == 0)
+	if (*c == "0")
 	{
 		set_condition_value_min(0);
 		set_condition_value_max(0);
 	}
 	else
 	{
-		sprintf(sup, "%s", c->ascii());
+		QByteArray buf = c->toAscii();
+		sprintf(sup, "%s", buf.constData());
 		strtok(sup, "-");
 		set_condition_value_min(sup);
-		sprintf(sup, "%s", strchr(c->ascii(), '-')+1);
+		sprintf(sup, "%s", strchr(buf.constData(), '-')+1);
 		set_condition_value_max(sup);
 	}
-	//set_condition_value(*c);
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	// A dimmer is actually a light
@@ -1365,10 +1377,10 @@ QString device_condition_dimming_100::get_current_value()
 	return val;
 }
 
-int device_condition_dimming_100::get_min() 
-{ 
+int device_condition_dimming_100::get_min()
+{
 	return 0;
-} 
+}
 
 int device_condition_dimming_100::get_max()
 {
@@ -1383,7 +1395,7 @@ int device_condition_dimming_100::get_step()
 void device_condition_dimming_100::Up()
 {
 	qDebug("device_condition_dimming_100::Up()");
-	
+
 	int val = get_current_value_min();
 	switch (val)
 	{
@@ -1488,7 +1500,7 @@ void device_condition_dimming_100::set_condition_value_min(int s)
 
 void device_condition_dimming_100::set_condition_value_min(QString s)
 {
-	qDebug("device_condition_dimming_100::set_condition_value_min(%s)", s.ascii());
+	qDebug() << "device_condition_dimming_100::set_condition_value_min(" << s << ")";
 	min_val = s.toInt();
 }
 
@@ -1505,7 +1517,7 @@ void device_condition_dimming_100::set_condition_value_max(int s)
 
 void device_condition_dimming_100::set_condition_value_max(QString s)
 {
-	qDebug("device_condition_dimming_100::set_condition_value_max(%s)", s.ascii());
+	qDebug() << "device_condition_dimming_100::set_condition_value_max(" << s << ")";
 	max_val = s.toInt();
 }
 
@@ -1550,21 +1562,18 @@ void device_condition_dimming_100::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void device_condition_dimming_100::status_changed(QPtrList<device_status> sl)
+void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
-
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_lev(stat_var::LEV);
 	stat_var curr_speed(stat_var::SPEED);
 	stat_var curr_status(stat_var::ON_OFF);
 	int val10;
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
 	qDebug("device_condition_dimming_100::status_changed()");
-	while ((ds = dsi->current()) != 0)
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::LIGHTS:
@@ -1603,36 +1612,34 @@ void device_condition_dimming_100::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
-	delete dsi;
 }
 
 /*****************************************************************
 ** Actual volume device condition
 ****************************************************************/
-device_condition_volume::device_condition_volume(QWidget *parent, 
-						char *name, QString *c) :
+device_condition_volume::device_condition_volume(QWidget *parent, char *name, QString *c) :
 	device_condition(parent, c)
 {
 	char sup[10];
-	QLabel *l = new QLabel(parent, name);
-	l->setAlignment(AlignHCenter|AlignVCenter);
+	QLabel *l = new QLabel(parent);
+	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
 	l->setFont(aFont);
 	frame = l;
-	if (strcmp(c->ascii(), "-1") == 0)
+	if (*c == "-1")
 	{
 		set_condition_value_min(-1);
 		set_condition_value_max(-1);
 	}
 	else
 	{
-		sprintf(sup, "%s", c->ascii());
+		QByteArray buf = c->toAscii();
+		sprintf(sup, "%s", buf.constData());
 		strtok(sup, "-");
 		set_condition_value_min(sup);
-		sprintf(sup, "%s", strchr(c->ascii(), '-')+1);
+		sprintf(sup, "%s", strchr(buf.constData(), '-')+1);
 		set_condition_value_max(sup);
 	}
 	set_current_value_min(get_condition_value_min());
@@ -1649,7 +1656,7 @@ void device_condition_volume::set_condition_value_min(int s)
 
 void device_condition_volume::set_condition_value_min(QString s)
 {
-	qDebug("device_condition_volume::set_condition_value_min(%s)", s.ascii());
+	qDebug() << "device_condition_volume::set_condition_value_min(" << s << ")";
 	min_val = s.toInt();
 }
 
@@ -1666,7 +1673,7 @@ void device_condition_volume::set_condition_value_max(int s)
 
 void device_condition_volume::set_condition_value_max(QString s)
 {
-	qDebug("device_condition_volume::set_condition_value_max(%s)", s.ascii());
+	qDebug() << "device_condition_volume::set_condition_value_max(" << s << ")";
 	max_val = s.toInt();
 }
 
@@ -1695,16 +1702,15 @@ void device_condition_volume::set_current_value_max(int max)
 	current_value_max = max;
 }
 
-int device_condition_volume::get_min() 
-{ 
+int device_condition_volume::get_min()
+{
 	return 0;
-} 
+}
 
 int device_condition_volume::get_max()
 {
 	return 31;
 }
-
 
 void device_condition_volume::set_condition_value(QString s)
 {
@@ -1816,7 +1822,7 @@ void device_condition_volume::Draw()
 	qDebug("device_condition_volume::Draw(), val_min = %d - val_max = %d", val_min, val_max);
 	if (val_min == -1)
 		tmp = tr("OFF");
-	else if ((val_min == 0) && (val_max == 31))
+	else if (val_min == 0 && val_max == 31)
 		tmp = tr("ON");
 	else
 	{
@@ -1828,18 +1834,17 @@ void device_condition_volume::Draw()
 	((QLabel *)frame)->setText(tmp);
 }
 
-void device_condition_volume::status_changed(QPtrList<device_status> sl)
+void device_condition_volume::status_changed(QList<device_status*> sl)
 {
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_volume(stat_var::AUDIO_LEVEL);
 	stat_var curr_stato(stat_var::ON_OFF);
 	qDebug("device_condition_volume::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::AMPLIFIER:
@@ -1876,9 +1881,7 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
-	delete dsi;
 }
 
 QString device_condition_volume::get_unit()
@@ -1897,12 +1900,11 @@ void device_condition_volume::reset()
 /*****************************************************************
 ** Actual temperature device condition
 ****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, 
-						char *name, QString *c) :
+device_condition_temp::device_condition_temp(QWidget *parent, char *name, QString *c) :
 	device_condition(parent, c)
 {
-	QLabel *l = new QLabel(parent, name);
-	l->setAlignment(AlignHCenter|AlignVCenter);
+	QLabel *l = new QLabel(parent);
+	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
 	l->setFont(aFont);
@@ -1966,17 +1968,16 @@ void device_condition_temp::get_condition_value(QString& out)
 	out = tmp;
 }
 
-void device_condition_temp::status_changed(QPtrList<device_status> sl)
+void device_condition_temp::status_changed(QList<device_status*> sl)
 {
 	int trig_v = device_condition::get_condition_value();
 	stat_var curr_temp(stat_var::TEMPERATURE);
 	qDebug("device_condition_temp::status_changed()");
 	qDebug("trig_v = %d", trig_v);
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::TEMPERATURE_PROBE:
@@ -2002,9 +2003,7 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
-	delete dsi;
 }
 
 
@@ -2015,8 +2014,8 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 device_condition_aux::device_condition_aux(QWidget *parent, char *name, QString *c) :
 	device_condition(parent, c)
 {
-	QLabel *l = new QLabel(parent, name);
-	l->setAlignment(AlignHCenter|AlignVCenter);
+	QLabel *l = new QLabel(parent);
+	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
 	l->setFont(aFont);
@@ -2068,11 +2067,11 @@ void device_condition_aux::set_condition_value(QString s)
 	else if (s == "0")
 		v = 0;
 	else
-		qDebug("Unknown condition value %s for device_condition_aux", s.ascii());
+		qDebug() << "Unknown condition value " << s << " for device_condition_aux";
 	device_condition::set_condition_value(v);
 }
 
-void device_condition_aux::status_changed(QPtrList<device_status> sl)
+void device_condition_aux::status_changed(QList<device_status*> sl)
 {
 	assert(!"Old status changed on device_condition_aux not implemented!");
 }

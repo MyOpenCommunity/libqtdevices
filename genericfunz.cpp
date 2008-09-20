@@ -16,7 +16,6 @@
 #include <QDir>
 #include <QWidget>
 #include <QPixmap>
-#include <QString>
 #include <QTextStream>
 
 #include <fcntl.h>
@@ -24,6 +23,7 @@
 
 #define CONFILENAME	"cfg/conf.xml"
 
+// TODO: cambiare in modo che queste funzioni accettino qstring come argomento!
 void getPressName(char* name, char* pressName,char len)
 {
 	memset(pressName,'\000',len);
@@ -57,7 +57,7 @@ void getAmbName(char *name, char *out, char *amb, char len)
 	}
 }
 
-bool setCfgValue(char* file, int id, const char* campo, const char* valore,int serNumId)
+bool setCfgValue(QString file, int id, QString campo, QString valore, int serNumId)
 {
 	char app1[100];
 	char app2[100];
@@ -95,7 +95,8 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 		{
 			if  (count == serNumId)
 			{
-				sprintf(&app2[0], "<%s>",campo);
+				QByteArray buf = campo.toAscii();
+				sprintf(&app2[0], "<%s>", buf.constData());
 				while (true)
 				{
 					Line = t1.readLine().append('\n');
@@ -108,7 +109,7 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 						break;
 				}
 
-				Line.sprintf("<%s>%s</%s>\n",campo,valore,campo);
+				Line = QString("<%1>%2</%3>\n").arg(campo).arg(valore).arg(campo);
 				t2 << Line;
 				while (true)
 				{
@@ -121,7 +122,7 @@ bool setCfgValue(char* file, int id, const char* campo, const char* valore,int s
 				fil2->flush();
 				fil1->close();
 				fil2->close();
-				QDir::current().rename("cfg/appoggio.xml",file);
+				QDir::current().rename("cfg/appoggio.xml", file);
 				return (TRUE);
 			}
 			else

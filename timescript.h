@@ -32,6 +32,10 @@ public:
 	QDateTime getDataOra();
 	void setDataOra(QDateTime);
 
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+
 protected:
 	void timerEvent(QTimerEvent *);
 	void mousePressEvent(QMouseEvent *);
