@@ -41,7 +41,7 @@ private:
 public:
 	attuatAutom(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 private slots:
 	void Attiva();
 	void Disattiva();
@@ -65,9 +65,10 @@ class grAttuatAutom : public bannOnOff
 {
 Q_OBJECT
 private:
-	QPtrList<QString> elencoDisp;
+	// TODO: probabilmente sarebbe meglio che diventasse QList<QString> ma viene creata
+	// nell'xmlconfhandler, e passata come void*.
+	QList<QString*> elencoDisp;
 	device *dev;
-	void setAddress(void*);
 public:
 	grAttuatAutom(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
@@ -104,7 +105,7 @@ private slots:
 	void analizzaUp();
 	void analizzaDown();
 public slots:
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 };
 
 
@@ -138,7 +139,7 @@ private slots:
 	void upRil();
 	void sendStop();
 public slots:
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 };
 
 
@@ -160,22 +161,24 @@ class attuatAutomTemp : public bannOnOff2scr
 Q_OBJECT
 protected:
 	uchar cntTempi;
-	char tempo_display[100];
-	QPtrList<QString> *tempi;
+	QString tempo_display;
+	QList<QString*> tempi;
 	device *dev;
 	uchar ntempi();
-	void leggi_tempo(char *&);
+	QString leggi_tempo();
 	virtual void assegna_tempo_display();
 	virtual void inizializza(bool forza=false);
 public:
-	attuatAutomTemp(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
+	// TODO: la lista QList<QString*> *lt contiene stringhe che vengono create esternamente (dall'xmlconfhandler?) e distrutte
+	// dal distruttore della classe.. decidere di chi deve essere l'ownership di questi oggetti!!
+	attuatAutomTemp(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QList<QString*> *lt = NULL);
 	~attuatAutomTemp();
 private slots:
 	void CiclaTempo();
 protected slots:
 	virtual void Attiva();
 public slots:
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 };
 
 
@@ -199,14 +202,14 @@ Q_OBJECT
 
 protected:
 	bool stato_noto;
-	void assegna_tempo_display();
+	virtual void assegna_tempo_display();
 	virtual void inizializza(bool forza=false);
 public:
-	attuatAutomTempNuovoN(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
+	attuatAutomTempNuovoN(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QList<QString*> *lt = NULL);
 protected slots:
 	void Attiva();
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 };
 
 
@@ -214,7 +217,7 @@ public slots:
  **attuatore automazione temporizzato nuovo a tempo fisso
  ****************************************************************/
 /*!
- * \class attuatAutomTempN
+ * \class attuatAutomTempF
  * \brief This class is made to manage a timed control.
  *
  * This object implements the new timed actuator with fixed time setting
@@ -230,8 +233,8 @@ private:
 	void SetIcons(char *, char *, char *);
 	void Draw();
 protected:
+	// TODO: rendere tempo una qstring!
 	char tempo[20];
-	void leggi_tempo(char *&out);
 	void chiedi_stato();
 	int h, m, s, val;
 	QTimer *myTimer;
@@ -245,7 +248,7 @@ protected slots:
 	void Attiva();
 	void update();
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 };
 
 
@@ -265,10 +268,10 @@ class grAttuatInt : public bann3But
 {
 Q_OBJECT
 private:
-	QPtrList<QString> elencoDisp;
+	QList<QString*> elencoDisp;
 	device *dev;
 	void inizializza(bool forza = false);
-	void setAddress(void*);
+	void sendFrame(char *msg);
 public:
 	grAttuatInt(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */

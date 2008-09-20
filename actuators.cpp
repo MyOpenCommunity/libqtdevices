@@ -36,22 +36,21 @@ attuatAutom::attuatAutom(QWidget *parent,const char *name,char* indirizzo,char* 
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_light(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 
 	setChi("1");
 }
 
-void attuatAutom::status_changed(QPtrList<device_status> sl)
+void attuatAutom::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("attuatAutom::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 			case device_status::LIGHTS:
@@ -74,11 +73,10 @@ void attuatAutom::status_changed(QPtrList<device_status> sl)
 				qDebug("attuatAutom variation, ignored");
 				break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 
@@ -131,25 +129,22 @@ grAttuatAutom::grAttuatAutom(QWidget *parent,const char *name,void *indirizzi, c
 	: bannOnOff(parent, name)
 {
 	SetIcons(IconaDx, IconaSx,NULL,icon,period ,number);
-	setAddress(indirizzi);
+	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
+	elencoDisp = *((QList<QString*>*)indirizzi);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
-}
-
-void grAttuatAutom::setAddress(void*indirizzi)
-{
-	elencoDisp=*((QPtrList<QString>*)indirizzi);
 }
 
 void grAttuatAutom::Attiva()
 {
 	openwebnet msg_open;
 
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
+	for (int i = 0; i < elencoDisp.size();++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "1",(char*)elencoDisp.at(idx)->ascii(),"");
+		QByteArray buf = elencoDisp.at(i)->toAscii();
+		msg_open.CreateMsgOpen("1", "1", buf.data(), "");
 		dev->sendFrame(msg_open.frame_open);
 	}
 }
@@ -158,13 +153,15 @@ void grAttuatAutom::Disattiva()
 {
 	openwebnet msg_open;
 
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
+	for (int i = 0; i < elencoDisp.size();++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "0",(char*)elencoDisp.at(idx)->ascii(),"");
+		QByteArray buf = elencoDisp.at(i)->toAscii();
+		msg_open.CreateMsgOpen("1", "0", buf.data(), "");
 		dev->sendFrame(msg_open.frame_open);
 	}
 }
+
 
 /*****************************************************************
  **attuatAutomInt
@@ -193,27 +190,25 @@ attuatAutomInt::attuatAutomInt(QWidget *parent,const char *name,char* indirizzo,
 	uprunning = dorunning = 0;
 	dev = btouch_device_cache.get_autom_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
-void attuatAutomInt::status_changed(QPtrList<device_status> sl)
+void attuatAutomInt::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_status(stat_var::STAT);
 	bool aggiorna = false;
 	qDebug("attuatAutomInt::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	int v;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::AUTOM:
 			qDebug("Autom status variation");
 			ds->read(device_status_autom::STAT_INDEX, curr_status);
-			v = curr_status.get_val();
+			int v = curr_status.get_val();
 			qDebug("status = %d", v);
 			qDebug("isActive = %d", isActive());
 			switch (v)
@@ -222,8 +217,8 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
 				if (isActive())
 				{
 					impostaAttivo(0);
-					uprunning=dorunning=0;
-					aggiorna=1;
+					uprunning = dorunning = 0;
+					aggiorna = 1;
 					SetIcons((uchar)0,nomeFile1);
 					SetIcons((uchar)1,nomeFile2);
 					sxButton->setEnabled(1);
@@ -234,9 +229,9 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
 				if (!isActive() || (isActive() == 2))
 				{
 					impostaAttivo(1);
-					dorunning=0;
-					uprunning=1;
-					aggiorna=1;
+					dorunning = 0;
+					uprunning = 1;
+					aggiorna = 1;
 					SetIcons((uchar)0,nomeFile3);
 					SetIcons((uchar)1,nomeFile2);
 					dxButton->setDisabled(1);
@@ -247,9 +242,9 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
 				if (!isActive() || (isActive() == 1))
 				{
 					impostaAttivo(2);
-					dorunning=1;
-					uprunning=0;
-					aggiorna=1;
+					dorunning = 1;
+					uprunning = 0;
+					aggiorna = 1;
 					SetIcons((uchar)0,nomeFile1);
 					SetIcons((uchar)1,nomeFile3);
 					sxButton->setDisabled(1);
@@ -265,33 +260,23 @@ void attuatAutomInt::status_changed(QPtrList<device_status> sl)
 			qDebug("Unknown device status type");
 			break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void attuatAutomInt::analizzaUp()
 {
 	if (!dorunning)
 	{
+		openwebnet msg_open;
+		msg_open.CreateNullMsgOpen();
 		if (uprunning)
-		{
-			openwebnet msg_open;
-
-			msg_open.CreateNullMsgOpen();
-			msg_open.CreateMsgOpen("2", "0",getAddress(),"");
-			dev->sendFrame(msg_open.frame_open);
-		}
+			msg_open.CreateMsgOpen("2", "0", getAddress(),"");
 		else
-		{
-			openwebnet msg_open;
-
-			msg_open.CreateNullMsgOpen();
-			msg_open.CreateMsgOpen("2", "1",getAddress(),"");
-			dev->sendFrame(msg_open.frame_open);
-		}
+			msg_open.CreateMsgOpen("2", "1", getAddress(),"");
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -299,22 +284,13 @@ void attuatAutomInt::analizzaDown()
 {
 	if (!uprunning)
 	{
-		if (dorunning)
-		{
-			openwebnet msg_open;
-
-			msg_open.CreateNullMsgOpen();
+		openwebnet msg_open;
+		msg_open.CreateNullMsgOpen();
+		if (uprunning)
 			msg_open.CreateMsgOpen("2", "0",getAddress(),"");
-			dev->sendFrame(msg_open.frame_open);
-		}
 		else
-		{
-			openwebnet msg_open;
-
-			msg_open.CreateNullMsgOpen();
 			msg_open.CreateMsgOpen("2", "2",getAddress(),"");
-			dev->sendFrame(msg_open.frame_open);
-		}
+		dev->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -360,27 +336,25 @@ attuatAutomIntSic::attuatAutomIntSic(QWidget *parent,const char *name,char* indi
 	uprunning = dorunning = 0;
 	dev = btouch_device_cache.get_autom_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
-void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
+void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_status(stat_var::STAT);
 	bool aggiorna = false;
 	qDebug("attuatAutomInt::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	int v;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::AUTOM:
 			qDebug("Autom status variation");
 			ds->read(device_status_autom::STAT_INDEX, curr_status);
-			v = curr_status.get_val();
+			int v = curr_status.get_val();
 			qDebug("status = %d", v);
 			switch(v)
 			{
@@ -400,9 +374,9 @@ void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
 				if (!isActive() || (isActive() == 2))
 				{
 					impostaAttivo(1);
-					dorunning=0;
-					uprunning=1;
-					aggiorna=1;
+					dorunning = 0;
+					uprunning = 1;
+					aggiorna = 1;
 					SetIcons((uchar)0,nomeFile3);
 					SetIcons((uchar)1,nomeFile2);
 					dxButton->setDisabled(1);
@@ -413,9 +387,9 @@ void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
 				if (!isActive() || (isActive() == 1))
 				{
 					impostaAttivo(2);
-					dorunning=1;
-					uprunning=0;
-					aggiorna=1;
+					dorunning = 1;
+					uprunning = 0;
+					aggiorna = 1;
 					SetIcons((uchar)0,nomeFile1);
 					SetIcons((uchar)1,nomeFile3);
 					sxButton->setDisabled(1);
@@ -430,11 +404,10 @@ void attuatAutomIntSic::status_changed(QPtrList<device_status> sl)
 			qDebug("Unknown device status type");
 			break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void attuatAutomIntSic::upPres()
@@ -442,7 +415,6 @@ void attuatAutomIntSic::upPres()
 	if (!dorunning && !isActive())
 	{
 		openwebnet msg_open;
-
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("2", "1",getAddress(),"");
 		dev->sendFrame(msg_open.frame_open);
@@ -464,17 +436,13 @@ void attuatAutomIntSic::doPres()
 void attuatAutomIntSic::upRil()
 {
 	if (!dorunning)
-	{
 		QTimer::singleShot(500, this, SLOT(sendStop()));
-	}
 }
 
 void attuatAutomIntSic::doRil()
 {
 	if (!uprunning)
-	{
 		QTimer::singleShot(500, this, SLOT(sendStop()));
-	}
 }
 
 void attuatAutomIntSic::sendStop()
@@ -499,28 +467,27 @@ void attuatAutomIntSic::inizializza(bool forza)
 	dev->sendInit(msg_open.frame_open);
 }
 
+
 /*****************************************************************
  **attuatAutomTemp
  ****************************************************************/
 
-attuatAutomTemp::attuatAutomTemp(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number, QPtrList<QString> *lt)
+attuatAutomTemp::attuatAutomTemp(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number, QList<QString*> *lt)
 : bannOnOff2scr(parent, name)
 {
 	SetIcons(IconaDx, IconaSx ,icon, pressedIcon,period ,number);
 	setAddress(indirizzo);
-	cntTempi=0;
+	cntTempi = 0;
 	static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "15'", "30''" };
-	tempi = new QPtrList<QString>;
-	tempi->clear();
-	unsigned int nt = lt->count() ? lt->count() : sizeof(t) / sizeof(char *);
-	for (unsigned int i = 0; i < nt; i++)
+	int nt = lt->size() ? lt->size() : sizeof(t) / sizeof(char *);
+	for (int i = 0; i < nt; i++)
 	{
 		QString *s;
-		if (lt->count() && i < lt->count())
+		if (i < lt->size())
 			s = lt->at(i);
 		else
 			s = new QString(t[i]);
-		tempi->append(s);
+		tempi.append(s);
 	}
 
 	assegna_tempo_display();
@@ -533,34 +500,31 @@ attuatAutomTemp::attuatAutomTemp(QWidget *parent,const char *name,char* indirizz
 	connect(this, SIGNAL(sxClick()), this, SLOT(CiclaTempo()));
 }
 
-void attuatAutomTemp::leggi_tempo(char *&out)
+QString attuatAutomTemp::leggi_tempo()
 {
 	if (cntTempi >= ntempi())
-		out = (char *)"";
-	else
-		out = (char *)(tempi->at(cntTempi))->ascii();
+		return "";
+
+	return *tempi.at(cntTempi);
 }
 
 uchar attuatAutomTemp::ntempi()
 {
-	return tempi->count();
+	return tempi.size();
 }
 
-void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
+void attuatAutomTemp::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_hh(stat_var::HH);
 	stat_var curr_mm(stat_var::MM);
 	stat_var curr_ss(stat_var::SS);
-	int tmpval;
 	bool aggiorna = false;
 	qDebug("attuatAutomTemp::status_changed()");
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
 	stat_var curr_status(stat_var::ON_OFF);
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::LIGHTS:
@@ -568,11 +532,8 @@ void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
 			ds->read(device_status_light::ON_OFF_INDEX, curr_status);
 			qDebug("status = %d", curr_status.get_val());
 			aggiorna = true;
-			if ((isActive() && !curr_status.get_val()) || (!isActive() && curr_status.get_val()))
-			{
-				// Update
+			if ((isActive() && !curr_status.get_val()) || (!isActive() && curr_status.get_val())) // Update
 				impostaAttivo(curr_status.get_val() != 0);
-			}
 			break;
 		case device_status::DIMMER:
 			qDebug("dimmer status variation, ignored");
@@ -605,7 +566,7 @@ void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
 			hnow = curr_hh.get_val();
 			mnow = curr_mm.get_val();
 			snow = curr_ss.get_val();
-			tmpval = (hnow * 3600) + (mnow * 60) + snow;
+			int tmpval = (hnow * 3600) + (mnow * 60) + snow;
 			if ((isActive() && tmpval) || (!isActive() && !tmpval))
 			{
 				qDebug("already active, ignoring");
@@ -619,12 +580,10 @@ void attuatAutomTemp::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
 
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void attuatAutomTemp::Attiva()
@@ -642,7 +601,7 @@ void attuatAutomTemp::Attiva()
 
 void attuatAutomTemp::CiclaTempo()
 {
-	cntTempi= (cntTempi+1) % ntempi();
+	cntTempi = (cntTempi+1) % ntempi();
 	qDebug("ntempi = %d", ntempi());
 	qDebug("cntTempi = %d", cntTempi);
 	assegna_tempo_display();
@@ -659,55 +618,50 @@ void attuatAutomTemp::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	//  qDebug("mando frame attuat autom Temp %s",pippo);
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	dev->sendInit(msg_open.frame_open);
 }
 
 void attuatAutomTemp::assegna_tempo_display()
 {
-	char *s; leggi_tempo(s);
-	strcpy(tempo_display, s);
+	tempo_display = leggi_tempo();
 }
 
 attuatAutomTemp::~attuatAutomTemp()
 {
-	for (unsigned int i=0; i<tempi->count(); i++)
-		delete tempi->at(i);
-	delete tempi;
+	while (!tempi.isEmpty())
+		delete tempi.takeFirst();
 }
 
 /*****************************************************************
  **attuatAutomTempNuovoN
  ****************************************************************/
 
-attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number , QPtrList<QString> *lt)
+attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number , QList<QString*> *lt)
 	: attuatAutomTemp(parent, name, indirizzo, IconaSx, IconaDx, icon, pressedIcon, period, number, lt)
 {
 	assegna_tempo_display();
 	stato_noto = false;
 	SetSecondaryTextU(tempo_display);
-	disconnect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(attuatAutomTemp::status_changed(QPtrList<device_status>)));
+	disconnect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(attuatAutomTemp::status_changed(QList<device_status*>)));
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
-void attuatAutomTempNuovoN::status_changed(QPtrList<device_status> sl)
+void attuatAutomTempNuovoN::status_changed(QList<device_status*> sl)
 {
 	bool aggiorna = false;
 	stat_var curr_hh(stat_var::HH);
 	stat_var curr_mm(stat_var::MM);
 	stat_var curr_ss(stat_var::SS);
-	int tmpval;
 	qDebug("attuatAutomTempNuovoN::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
 	stat_var curr_status(stat_var::ON_OFF);
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::LIGHTS:
@@ -751,7 +705,7 @@ void attuatAutomTempNuovoN::status_changed(QPtrList<device_status> sl)
 			hnow = curr_hh.get_val();
 			mnow = curr_mm.get_val();
 			snow = curr_ss.get_val();
-			tmpval = (hnow * 3600) + (mnow * 60) + snow;
+			int tmpval = (hnow * 3600) + (mnow * 60) + snow;
 			if ((isActive() && tmpval) || (!isActive() && !tmpval))
 			{
 				qDebug("already active, ignoring");
@@ -765,22 +719,20 @@ void attuatAutomTempNuovoN::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
 
 	qDebug("aggiorna = %d", aggiorna);
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void attuatAutomTempNuovoN::Attiva()
 {
 	openwebnet msg_open;
 	char frame[100];
-	char *t; leggi_tempo(t);
-	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), t);
-	msg_open.CreateNullMsgOpen();     
+	QByteArray buf = leggi_tempo().toAscii();
+	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), buf.constData());
+	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen(frame, strlen(frame));
 	dev->sendFrame(msg_open.frame_open);
 }
@@ -801,11 +753,13 @@ void attuatAutomTempNuovoN::inizializza(bool forza)
 
 void attuatAutomTempNuovoN::assegna_tempo_display()
 {
+	char *ptr;
 	char tmp[50];
 	int hh , mm, ss;
-	char *ptr;
-	leggi_tempo(ptr);
-	strcpy(tmp, ptr);
+	// TODO: riscrivere utilizzando c++ e qt!!
+	QByteArray buf = leggi_tempo().toAscii();
+	strcpy(tmp, buf.constData());
+
 	// Prende solo hh e min
 	ptr = strtok(tmp, "*");
 	hh = strtol(ptr, NULL, 10);
@@ -814,26 +768,15 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 	ptr = strtok(NULL, "*");
 	ss = strtol(ptr, NULL, 10);
 	qDebug("tempo = %d %d %d", hh, mm, ss);
-	if (!hh && !mm)
-	{
-		// Time in secs
-		sprintf(tempo_display, "%d\"", ss);
-	}
-	else if (!hh)
-	{
-		// Time in mins'
-		sprintf(tempo_display, "%d'", mm);
-	}
-	else if (hh < 10)
-	{
-		// Time in hh:mm
-		sprintf(tempo_display, "%d:%02d", hh, mm);
-	}
-	else
-	{
-		// Time in hh h
-		sprintf(tempo_display, "%dh", hh);
-	}
+
+	if (!hh && !mm) // Time in secs
+		tempo_display.sprintf("%d\"", ss);
+	else if (!hh) // Time in mins'
+		tempo_display.sprintf("%d'", mm);
+	else if (hh < 10) // Time in hh:mm
+		tempo_display.sprintf("%d:%02d", hh, mm);
+	else// Time in hh h
+		tempo_display.sprintf("%dh", hh);
 }
 
 
@@ -849,6 +792,8 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent,const char *name,ch
 	attuatAutomTempNuovoF::SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
 	setAddress(indirizzo);
 	SetSecondaryTextU("????");
+
+	// TODO: riscrivere utilizzando qt e c++!!
 	strncpy(tempo, t ? t : "0*0*0", sizeof(tempo));
 	char *ptr;
 	char tmp1[50];
@@ -882,7 +827,8 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent,const char *name,ch
 		// Time in hh h
 		sprintf(tmp, "%dh", h);
 	}
-	myTimer = new QTimer(this,"periodic_refresh");
+
+	myTimer = new QTimer(this);
 	stato_noto = false;
 	temp_nota = false;
 	connect(myTimer,SIGNAL(timeout()),this,SLOT(update()));
@@ -893,15 +839,15 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent,const char *name,ch
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_newtimed(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 	dev = btouch_device_cache.get_dimmer(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
-void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
+void attuatAutomTempNuovoF::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_hh(stat_var::HH);
 	stat_var curr_mm(stat_var::MM);
@@ -909,12 +855,10 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("attuatAutomTempNuovoF::status_changed()");
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::LIGHTS:
@@ -973,7 +917,6 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 		default:
 			qDebug("WARNING: tipo non previsto");
 		}
-		++(*dsi);
 	}
 
 	if (aggiorna)
@@ -981,7 +924,6 @@ void attuatAutomTempNuovoF::status_changed(QPtrList<device_status> sl)
 		qDebug("invoco Draw con value = %d", value);
 		Draw();
 	}
-	delete dsi;
 }
 
 void attuatAutomTempNuovoF::update()
@@ -1008,8 +950,7 @@ void attuatAutomTempNuovoF::Attiva()
 {
 	openwebnet msg_open;
 	char frame[100];
-	char *t; leggi_tempo(t);
-	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), t);
+	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), tempo);
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen(frame, strlen(frame));
 	dev->sendFrame(msg_open.frame_open);
@@ -1049,11 +990,6 @@ void attuatAutomTempNuovoF::chiedi_stato()
 	strcat(pippo,"##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	emit richStato(msg_open.frame_open);
-}
-
-void attuatAutomTempNuovoF::leggi_tempo(char *&out)
-{
-	out = tempo;
 }
 
 void attuatAutomTempNuovoF::SetIcons(char *i1, char *i2, char *i3)
@@ -1146,7 +1082,7 @@ void attuatAutomTempNuovoF::Draw()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_bannertext, aFont);
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		BannerText->setFont(aFont);
 		BannerText->setText(qtesto);
 	}
@@ -1154,7 +1090,7 @@ void attuatAutomTempNuovoF::Draw()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_secondarytext, aFont);
-		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		SecondaryText->setFont(aFont);
 		SecondaryText->setText(qtestoSecondario);
 	}
@@ -1169,52 +1105,40 @@ grAttuatInt::grAttuatInt(QWidget *parent,const char *name,void *indirizzi,char* 
 	: bann3But(parent, name)
 {
 	SetIcons(IconaDx,IconaSx ,NULL,icon,period ,number);
-	setAddress(indirizzi);
+	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
+	elencoDisp = *((QList<QString*>*)indirizzi);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(dxClick()),this,SLOT(Alza()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(Abbassa()));
 	connect(this,SIGNAL(centerClick()),this,SLOT(Ferma()));
 }
 
-void grAttuatInt::setAddress(void*indirizzi)
+void grAttuatInt::sendFrame(char *msg)
 {
-	elencoDisp=*((QPtrList<QString>*)indirizzi);
+	openwebnet msg_open;
+
+	for (int i = 0; i < elencoDisp.size();++i)
+	{
+		msg_open.CreateNullMsgOpen();
+		QByteArray buf = elencoDisp.at(i)->toAscii();
+		msg_open.CreateMsgOpen("2", msg, buf.data(), "");
+		dev->sendFrame(msg_open.frame_open);
+	}
 }
 
 void grAttuatInt::Alza()
 {
-	openwebnet msg_open;
-
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("2", "1",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	sendFrame("1");
 }
 
 void grAttuatInt::Abbassa()
 {
-	openwebnet msg_open;
-
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
-	{
-		msg_open.CreateNullMsgOpen();     
-		msg_open.CreateMsgOpen("2", "2",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	sendFrame("2");
 }
 
 void grAttuatInt::Ferma()
 {
-	openwebnet msg_open;
-
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("2", "0",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	sendFrame("0");
 }
 
 void grAttuatInt::inizializza(bool forza)
