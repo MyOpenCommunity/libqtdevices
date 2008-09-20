@@ -1,3 +1,14 @@
+#include "scenevocond.h"
+#include "main.h"
+#include "device.h"
+#include "frame_interpreter.h"
+#include "device_cache.h"
+#include "genericfunz.h"
+#include "btbutton.h"
+#include "btlabel.h"
+#include "timescript.h"
+#include "fontmanager.h"
+
 #include <qpixmap.h>
 #include <qwidget.h>
 #include <qcursor.h>
@@ -8,24 +19,11 @@
 
 #include <assert.h>
 
-#include "openclient.h"
-#include "sottomenu.h"
-#include "scenevocond.h"
-#include "device.h"
-#include "frame_interpreter.h"
-#include "device_cache.h"
-#include "genericfunz.h"
-#include "btbutton.h"
-#include "btlabel.h"
-#include "timescript.h"
-#include "fontmanager.h"
-
 /*****************************************************************
 ** Advanced scenario management generic condition
-****************************************************************/	
+****************************************************************/
 
-scenEvo_cond::scenEvo_cond(QWidget *parent, char *name) :
-QFrame(parent, name)
+scenEvo_cond::scenEvo_cond(QWidget *parent, char *name) : QFrame(parent, name)
 {
 	val = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
@@ -155,21 +153,21 @@ bool scenEvo_cond::isTrue(void)
 	return false;
 }
 
+
 /*****************************************************************
  ** Advanced scenario management, time condition
-****************************************************************/	
+****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) :
-scenEvo_cond(parent, name)
+scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(parent, name)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
 	h = new QString("");
 	m = new QString("");
 	s = new QString("");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor (QCursor (blankCursor));
+	setCursor(QCursor(blankCursor));
 #endif
-	ora=NULL;
+	ora = NULL;
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
 	cond_time = new QDateTime(QDateTime::currentDateTime());
@@ -211,7 +209,7 @@ void scenEvo_cond_h::SetIcons()
 	QPixmap* Icon2 = NULL;
 	char iconName[MAX_PATH];
 	qDebug("scenEvo_cond_h::SetIcons()");
-	for (int i=0; i<6; i++)
+	for (int i = 0; i < 6; i++)
 		qDebug("icon[%d] = %s", i, getImg(i));
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -220,11 +218,13 @@ void scenEvo_cond_h::SetIcons()
 	// Pulsanti su
 	Icon1->load(iconName);
 	getPressName((char*)ICON_FRECCIA_SU, iconName,sizeof(iconName));
-	if (QFile::exists(iconName)) {
+	if (QFile::exists(iconName))
+	{
 		Icon2 = new QPixmap();
 		Icon2->load(iconName);
 	}
-	for (uchar idx=0;idx<2;idx++) {
+	for (uchar idx = 0; idx < 2; idx++)
+	{
 		but[idx] = new BtButton(this, "freccia");
 		but[idx]->setGeometry(idx*80+50, 80, 60, 60);
 		but[idx]->setAutoRepeat(true);
@@ -240,11 +240,13 @@ void scenEvo_cond_h::SetIcons()
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_FRECCIA_GIU);
 	getPressName((char*)ICON_FRECCIA_GIU, &iconName[0],sizeof(iconName));
-	if (QFile::exists(iconName)) {
+	if (QFile::exists(iconName))
+	{
 		Icon2 = new QPixmap();
 		Icon2->load(iconName);
 	}
-	for (uchar idx=2;idx<4;idx++) {
+	for (uchar idx = 2; idx < 4; idx++)
+	{
 		but[idx] = new BtButton(this,"freccia"+QString::number(idx));
 		but[idx]->setGeometry((idx-2)*80+50,190,60,60);
 		but[idx]->setAutoRepeat(true);
@@ -265,12 +267,14 @@ void scenEvo_cond_h::SetIcons()
 	Immagine->setGeometry(90,0,60,60);
 	delete(Icon1);
 	// Pulsante in basso a sinistra, area 6 (SE C'E` L'ICONA)
-	if (getImg(A6_ICON_INDEX)[0]) {
+	if (getImg(A6_ICON_INDEX)[0])
+	{
 		Icon1 = new QPixmap();
 		Icon1->load(getImg(A6_ICON_INDEX));
 		qDebug("Area 6: loaded icon %s", getImg(A6_ICON_INDEX));
 		getPressName((char *)getImg(A6_ICON_INDEX), iconName,sizeof(iconName));
-		if (QFile::exists(iconName)) {  
+		if (QFile::exists(iconName))
+		{
 			Icon2 = new QPixmap();
 			Icon2->load(iconName);
 		}
@@ -286,19 +290,20 @@ void scenEvo_cond_h::SetIcons()
 	else
 		but[A6_BUTTON_INDEX] = NULL;
 	// Pulsante in basso al centro, area 7
-	if (getImg(A7_ICON_INDEX)[0]) {
+	if (getImg(A7_ICON_INDEX)[0])
+	{
 		Icon1 = new QPixmap();
 		Icon2 = NULL;
 		Icon1->load(getImg(A7_ICON_INDEX));
 		qDebug("Area 7: loaded icon %s", getImg(A7_ICON_INDEX));
 		getPressName((char *)getImg(A7_ICON_INDEX),iconName, sizeof(iconName));
-		if (QFile::exists(iconName)) {
+		if (QFile::exists(iconName))
+		{
 			Icon2 = new QPixmap();
 			Icon2->load(iconName);
-		} 
+		}
 		but[A7_BUTTON_INDEX] = new BtButton(this, "np1");
-		but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 
-						60, 60);
+		but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 60, 60);
 		but[A7_BUTTON_INDEX]->setPixmap(*Icon1);
 		if (Icon2)
 			but[A7_BUTTON_INDEX]->setPressedPixmap(*Icon2);
@@ -309,13 +314,15 @@ void scenEvo_cond_h::SetIcons()
 	else
 		but[A7_BUTTON_INDEX] = NULL;
 	// Pulsante in basso a destra, area 8
-	if (getImg(A8_ICON_INDEX)[0]) {
+	if (getImg(A8_ICON_INDEX)[0])
+	{
 		Icon1 = new QPixmap();
 		Icon2 = NULL;
 		Icon1->load(getImg(A8_ICON_INDEX));
 		qDebug("Area 8: loaded icon %s", getImg(A8_ICON_INDEX));
 		getPressName((char *)getImg(A8_ICON_INDEX),iconName, sizeof(iconName));
-		if (QFile::exists(iconName)) {  
+		if (QFile::exists(iconName))
+		{
 			Icon2 = new QPixmap();
 			Icon2->load(iconName);
 		}
@@ -339,7 +346,7 @@ void scenEvo_cond_h::SetIcons()
 void scenEvo_cond_h::mostra()
 {
 	qDebug("scenEvo_cond_h::mostra()");
-	for (uchar idx=0; idx < 8; idx++)
+	for (uchar idx = 0; idx < 8; idx++)
 		if (but[idx])
 			but[idx]->show();
 	ora->show();
@@ -355,25 +362,31 @@ void scenEvo_cond_h::mostra()
 	connect(but[2] ,SIGNAL(clicked()), ora, SLOT(diminOra()));
 	connect(but[3] ,SIGNAL(clicked()), ora, SLOT(diminMin()));
 
-	if (but[A6_BUTTON_INDEX]) {
+	if (but[A6_BUTTON_INDEX])
+	{
 		disconnect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
 		connect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
 	}
-	if (getImg(3)[0] == 0) {
+	if (getImg(3)[0] == 0)
+	{
 	// cimg4 is empty
-		if (but[A8_BUTTON_INDEX]) {
+		if (but[A8_BUTTON_INDEX])
+		{
 			qDebug("connecting A8 to Prev");
 			disconnect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
 			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
 		}
 	}
-	else {
-		if (but[A7_BUTTON_INDEX]) {
+	else
+	{
+		if (but[A7_BUTTON_INDEX])
+		{
 			qDebug("connecting A7 to Prev");
 			disconnect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
 			connect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
 		}
-		if (but[A8_BUTTON_INDEX]) {
+		if (but[A8_BUTTON_INDEX])
+		{
 			qDebug("connecting A8 to Next");
 			disconnect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
 			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
@@ -386,7 +399,8 @@ void scenEvo_cond_h::setBGColor(QColor c)
 	setPaletteBackgroundColor(c);
 	if (ora)
 		ora->setPaletteBackgroundColor(c);
-	for (uchar idx=0;idx<7;idx++) {
+	for (uchar idx = 0; idx < 7; idx++)
+	{
 		if (but[idx])
 			but[idx]->setPaletteBackgroundColor(c);
 	}
@@ -397,8 +411,9 @@ void scenEvo_cond_h::setFGColor(QColor c)
 	setPaletteForegroundColor(c);
 	if (ora)
 		ora->setPaletteForegroundColor(c);
-	for (uchar idx=0;idx<7;idx++) {
-		if (but[idx])   
+	for (uchar idx = 0; idx < 7; idx++)
+	{
+		if (but[idx])
 			but[idx]->setPaletteForegroundColor(c);
 	}
 }
@@ -441,7 +456,7 @@ void scenEvo_cond_h::scaduta()
 void scenEvo_cond_h::setEnabled(bool e)
 {
 	qDebug("scenEvo_cond_h::setEnabled(%d)", e);
-	for (int i=0; i<8; i++)
+	for (int i = 0; i < 8; i++)
 		if (but[i])
 			but[i]->setEnabled(e);
 }
@@ -477,13 +492,12 @@ bool scenEvo_cond_h::isTrue(void)
 ** Advanced scenario management, device condition
 ****************************************************************/
 
-scenEvo_cond_d::scenEvo_cond_d(QWidget *parent, char *name) :
-scenEvo_cond(parent, name)
+scenEvo_cond_d::scenEvo_cond_d(QWidget *parent, char *name) : scenEvo_cond(parent, name)
 {
 	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor (QCursor (blankCursor));
-#endif  
+	setCursor(QCursor(blankCursor));
+#endif
 	descr = new QString("");
 	where = new QString("");
 	trigger = new QString("");
@@ -522,7 +536,7 @@ const char *scenEvo_cond_d::getDescription(void)
 void scenEvo_cond_d::mostra()
 {
 	qDebug("scenEvo_cond_d::mostra()");
-	for (uchar idx=0; idx < 8; idx++)
+	for (uchar idx = 0; idx < 8; idx++)
 		if (but[idx])
 			but[idx]->show();
 
@@ -538,7 +552,7 @@ void scenEvo_cond_d::setBGColor(QColor c)
 {	
 	qDebug("scenEvo_cond_d::setBGColor()");
 	setPaletteBackgroundColor(c);
-	for (uchar idx=0;idx<7;idx++) 
+	for (uchar idx = 0; idx < 7; idx++)
 		if (but[idx])
 			but[idx]->setPaletteBackgroundColor(c);
 	
@@ -552,7 +566,7 @@ void scenEvo_cond_d::setFGColor(QColor c)
 {
 	qDebug("scenEvo_cond_d::setFGColor()");
 	setPaletteForegroundColor(c);
-	for (uchar idx=0;idx<7;idx++)
+	for (uchar idx = 0; idx < 7; idx++)
 		if (but[idx])
 			but[idx]->setPaletteForegroundColor(c);
 
@@ -565,29 +579,31 @@ void scenEvo_cond_d::setFGColor(QColor c)
 void scenEvo_cond_d::setEnabled(bool e)
 {
 	qDebug("scenEvo_cond_d::setEnabled(%d)", e);
-	for (int i=0; i<7; i++)
+	for (int i = 0; i < 7; i++)
 		if (but[i])
 			but[i]->setEnabled(e);
 }
-
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 {
 	QPixmap* Icon1;
 	QPixmap* Icon2;
 	char iconName[MAX_PATH];
-	if (!getImg(icon_index)[0]) {
+	if (!getImg(icon_index)[0])
+	{
 		but[button_index] = NULL;
 		return;
 	}
 	Icon1 = new QPixmap();
 	getPressName((char *)getImg(icon_index), iconName, sizeof(iconName));
-	if (QFile::exists(getImg(icon_index))) {
+	if (QFile::exists(getImg(icon_index)))
+	{
 		Icon1->load(getImg(icon_index));
 		if (but[button_index])
 			but[button_index]->setPixmap(*Icon1);
 	}
-	if (QFile::exists(iconName)) {
+	if (QFile::exists(iconName))
+	{
 		Icon2 = new QPixmap();
 		Icon2->load(iconName);
 		if (but[button_index])
@@ -647,7 +663,8 @@ void scenEvo_cond_d::SetIcons()
 	// Create actual device condition
 	device_condition *dc;
 	qDebug("#### Condition type = %d", getVal());
-	switch(getVal()) {
+	switch (getVal())
+	{
 	case 1:
 		dc = new device_condition_light_status(this, "light_status", trigger);
 		break;
@@ -675,7 +692,8 @@ void scenEvo_cond_d::SetIcons()
 		dc = NULL;
 	}
 
-	if (dc) {
+	if (dc)
+	{
 		dc->setGeometry(40,140,160,50);
 		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
 		dc->set_where(*where);
@@ -931,8 +949,7 @@ void device_condition::set_group(int g)
 /*****************************************************************
 ** Actual light status device condition
 ****************************************************************/
-device_condition_light_status::
-device_condition_light_status(QWidget *parent, char *name, QString *c) : 
+device_condition_light_status::device_condition_light_status(QWidget *parent, char *name, QString *c) :
 	device_condition(parent, c)
 {
 	QLabel *l = new QLabel(parent, name);
@@ -966,8 +983,10 @@ void device_condition_light_status::status_changed(QPtrList<device_status> sl)
 	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
-	while ((ds = dsi->current()) != 0) {
-		switch (ds->get_type()) {
+	while ((ds = dsi->current()) != 0)
+	{
+		switch (ds->get_type())
+		{
 		case device_status::LIGHTS:
 			ds->read(device_status_light::ON_OFF_INDEX, curr_status);
 			qDebug("Light status variation");
@@ -1033,8 +1052,7 @@ void device_condition_light_status::get_condition_value(QString& out)
 /*****************************************************************
 ** Actual dimming value device condition
 ****************************************************************/
-device_condition_dimming::device_condition_dimming(QWidget *parent, 
-						char *name, QString *c) :
+device_condition_dimming::device_condition_dimming(QWidget *parent, char *name, QString *c) :
 	device_condition(parent, c)
 {
 	qDebug("device_condition_dimming::device_condition_dimming(%s)",
@@ -1093,7 +1111,7 @@ void device_condition_dimming::Up()
 	qDebug("device_condition_dimming::Up()");
 	
 	int val = get_current_value_min();
-	switch(val)
+	switch (val)
 	{
 	case 0:
 		set_current_value_min(2);
@@ -1118,7 +1136,7 @@ void device_condition_dimming::Down()
 {
 	qDebug("device_condition_dimming::Down()");
 	int val = get_current_value_min();
-	switch(val)
+	switch (val)
 	{
 	case 2:
 		set_current_value_min(0);
@@ -1367,7 +1385,7 @@ void device_condition_dimming_100::Up()
 	qDebug("device_condition_dimming_100::Up()");
 	
 	int val = get_current_value_min();
-	switch(val)
+	switch (val)
 	{
 	case 0:
 		set_current_value_min(1);
@@ -1396,7 +1414,7 @@ void device_condition_dimming_100::Down()
 {
 	qDebug("device_condition_dimming_100::Down()");
 	int val = get_current_value_min();
-	switch(val)
+	switch (val)
 	{
 	case 1:
 		set_current_value_min(0);
@@ -1817,8 +1835,7 @@ void device_condition_volume::status_changed(QPtrList<device_status> sl)
 	stat_var curr_volume(stat_var::AUDIO_LEVEL);
 	stat_var curr_stato(stat_var::ON_OFF);
 	qDebug("device_condition_volume::status_changed()");
-	QPtrListIterator<device_status> *dsi =
-	new QPtrListIterator<device_status>(sl);
+	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
 	while ((ds = dsi->current()) != 0)
@@ -1955,8 +1972,7 @@ void device_condition_temp::status_changed(QPtrList<device_status> sl)
 	stat_var curr_temp(stat_var::TEMPERATURE);
 	qDebug("device_condition_temp::status_changed()");
 	qDebug("trig_v = %d", trig_v);
-	QPtrListIterator<device_status> *dsi =
-	new QPtrListIterator<device_status>(sl);
+	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
 	while ((ds = dsi->current()) != 0)
