@@ -8,51 +8,42 @@
  **
  ****************************************************************/
 
-#include <qlabel.h>
+
 #include <qpixmap.h>
-#include <qwidget.h>
-#include <qdatetime.h>
-#include <qstring.h>
 #include <qcursor.h>
 #include <qfile.h>
 
 #include "aux.h"
-#include "banner.h"
-#include "bannondx.h"
 #include "bannfrecce.h"
-#include "main.h"
 #include "btbutton.h"
 #include "btlabel.h"
 #include "genericfunz.h"
-
-#include "openclient.h"
 #include "fontmanager.h"
 
-aux::aux( QWidget *parent, const QString & name, const QString & amb )
-: QWidget( parent, name.ascii() )
+
+aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(parent, name.ascii())
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor (QCursor (blankCursor));
-	//   showFullScreen();
+	setCursor(QCursor(blankCursor));
 #endif
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
-	bannNavigazione->setGeometry( 0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE );
+	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
 	auxName = new BtLabel(this,"Nome della sorgente");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
 	QFont aFont;
-	FontManager::instance()->getFont( font_aux_descr_ambiente, aFont );
-	ambDescr->setFont( aFont );
+	FontManager::instance()->getFont(font_aux_descr_ambiente, aFont);
+	ambDescr->setFont(aFont);
 	ambDescr->setText(amb);
 	auxName->setGeometry(0,30,240,40);
 	auxName->setAlignment(AlignHCenter|AlignTop);
 
-	FontManager::instance()->getFont( font_aux_nome_sorgente, aFont );
-	auxName->setFont( aFont );
+	FontManager::instance()->getFont(font_aux_nome_sorgente, aFont);
+	auxName->setFont(aFont);
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
 	fwdBut = new BtButton(this, "bottone fwd");
@@ -69,9 +60,8 @@ aux::aux( QWidget *parent, const QString & name, const QString & amb )
 		fwdBut->setPressedPixmap(*pressIcon);
 	}
 	connect(fwdBut, SIGNAL(clicked()), this, SIGNAL(Btnfwd()));
-	connect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
+	connect(bannNavigazione, SIGNAL(backClick()),this,SIGNAL(Closed()));
 }
-
 
 void aux::showAux()
 {
@@ -79,42 +69,37 @@ void aux::showAux()
 	showFullScreen();
 }
 
-
 void aux::setBGColor(int r, int g, int b)
-{	
-	setBGColor( QColor :: QColor(r,g,b));
+{
+	setBGColor(QColor::QColor(r,g,b));
 }
-
 
 void aux::setFGColor(int r, int g, int b)
 {
-	setFGColor( QColor :: QColor(r,g,b));
+	setFGColor(QColor::QColor(r,g,b));
 }
 
-
 void aux::setBGColor(QColor c)
-{	
-	setPaletteBackgroundColor( c );
+{
+	setPaletteBackgroundColor(c);
 	auxName->setPaletteBackgroundColor(c);
 	ambDescr->setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
 	fwdBut->setPaletteBackgroundColor(c);
 }
 
-
 void aux::setFGColor(QColor c)
 {
-	setPaletteForegroundColor( c );
+	setPaletteForegroundColor(c);
 	auxName->setPaletteForegroundColor(c);
 	ambDescr->setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
 	fwdBut->setPaletteForegroundColor(c);
 }
 
-
 int aux::setBGPixmap(char* backImage)
 {
-	QPixmap Back; 
+	QPixmap Back;
 	if(Back.load(backImage))
 	{
 		setPaletteBackgroundPixmap(Back);
@@ -123,17 +108,14 @@ int aux::setBGPixmap(char* backImage)
 	return (1);
 }
 
-
-void aux::setAmbDescr( const QString & d)
+void aux::setAmbDescr(const QString & d)
 {
 	ambDescr->setText(d);
 }
 
-
 void aux::draw()
 {
 }
-
 
 void aux::freezed(bool f)
 {

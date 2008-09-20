@@ -13,6 +13,9 @@
 
 #include "bannbuticon.h"
 
+#include <qwidget.h>
+#include <qstring.h>
+
 /// Forward Declarations
 class device;
 
@@ -31,7 +34,7 @@ Q_OBJECT
 private:
 	device *dev;
 public:
-	automCancAttuatVC ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL);
+	automCancAttuatVC (QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL);
 private slots:
 	void Attiva(void);
 };
@@ -53,7 +56,7 @@ private:
 	device *dev;
 	QString time;
 public:
-	automCancAttuatIll ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL, QString *t = NULL);
+	automCancAttuatIll (QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL, QString *t = NULL);
 private slots:
 	void Attiva(void);
 };
