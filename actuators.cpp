@@ -18,8 +18,9 @@
 
 #include <openwebnet.h> // class openwebnet
 
-#include <qfile.h>
-#include <qtimer.h>
+#include <QFile>
+#include <QTimer>
+
 #include <stdlib.h>
 
 /*****************************************************************
