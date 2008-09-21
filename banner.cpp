@@ -695,6 +695,7 @@ void banner::setBGColor(QColor c)
 	if (cdxButton)
 		cdxButton->setPaletteBackgroundColor(c);
 }
+
 void banner::setFGColor(QColor c)	
 {
 	setPaletteForegroundColor(c);
