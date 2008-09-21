@@ -1,3 +1,4 @@
+
 /****************************************************************
 **
 ** BTicino Touch scren Colori art. H4686
@@ -7,16 +8,12 @@
 **definizioni dei vari items implementati per impostazioni
 **
 ****************************************************************/
-#include <qwidget.h>
 
 #include "banner.h"
 #include "bannondx.h"
-#include "genericfunz.h"
 
+#include <qwidget.h>
 
-/*****************************************************************
-**setDataOra
-****************************************************************/
 
 #ifndef SETDATAORA
 #define SETDATAORA
@@ -29,82 +26,72 @@
 
   \author Davide
   \date lug 2005
-*/  
+*/
 class setDataOra : public bannOnDx 
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-     setDataOra( sottoMenu  *, const char * );     
-signals:
-  //    void sendFrame(char *); 
+	setDataOra(sottoMenu  *, const char *);
 public slots:
-//     void Attiva();
 	void hide();
 private:
-       impostaTime settalora;
-
+	impostaTime settalora;
 };
 #endif //SETDATAORA
 
-/*****************************************************************
-**impostaSveglia
-****************************************************************/
 
 #ifndef IMPSVEGLIA
 #define IMPSVEGLIA
 
 #include "sveglia.h"
-#include	"diffsonora.h"
+#include "diffsonora.h"
 #include "bann2but.h"
+
 /*!
   \class impostaSveglia
   \brief This class is made to make alarm clock settings.
 
   \author Davide
   \date lug 2005
-*/              
-class impostaSveglia : public bann2But 
+*/
+class impostaSveglia : public bann2But
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-     impostaSveglia( QWidget *, const char * , contdiff*, char* , char* , char*, char*, int, int, char*,int);
-/*!
-  \brief changes the abilitation af the alarm set
-*/      
-     void 	setAbil(bool);
-/*!
-  \brief forces a eeprom read to initialyze alarm set settings
-*/       
-     void inizializza();
+	impostaSveglia(QWidget *, const char * , contdiff*, char* , char* , char*, char*, int, int, char*,int);
+	/*!
+	\brief changes the abilitation af the alarm set
+	*/
+	void setAbil(bool);
+	/*!
+	\brief forces a eeprom read to initialyze alarm set settings
+	*/
+	void inizializza();
+
 signals:
 /*!
-  \brief Emitted to turn alarm clock off
-*/        
-     void spegniSveglia();
-public slots:	
+\brief Emitted to turn alarm clock off
+*/
+	void spegniSveglia();
+public slots:
 /*!
-  \brief Analizes \a Open \a frames coming form the system 
-*/   
-      void gestFrame(char*);
+\brief Analizes \a Open \a frames coming form the system
+*/
+	void gestFrame(char*);
 /*!
-  \brief changes the alarm set abilitation
-*/   
-      void 	toggleAbil();
+\brief changes the alarm set abilitation
+*/
+	void toggleAbil();
 /*!
-  \brief Shows the object
-*/       
-      void	show();
+\brief Shows the object
+*/
+	void show();
 private:
-      sveglia* svegliolina;
-      char iconOn[50];
-      char iconOff[50]; 
+	sveglia* svegliolina;
+	char iconOn[50];
+	char iconOff[50];
 };
 #endif //IMPSVEGLIA
-
-
-/*****************************************************************
-**calibration
-****************************************************************/
 
 #ifndef CALIBRATION
 #define CALIBRATION
@@ -116,121 +103,88 @@ private:
 
   \author Davide
   \date lug 2005
-*/  
+*/
 class calibration : public bannOnDx
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-     calibration( sottoMenu  *, const char *,const char *);     
-signals:
+	calibration(sottoMenu  *, const char *,const char *);
 
-private slots:	
-     void 	doCalib();
-     void	fineCalib();
- signals:
-     void       startCalib();
-     void       endCalib();
+private slots:
+	void doCalib();
+	void fineCalib();
+signals:
+	void startCalib();
+	void endCalib();
 private:
-      Calibrate* calib;
+	Calibrate* calib;
 };
 #endif //CALIBRATION
 
-
-/*****************************************************************
-**beep
-****************************************************************/
 
 #ifndef BEEP_H
 #define BEEP_H
 /*!
   \class setDataOra
-  \brief Beep (dis)abilitation 
+  \brief Beep (dis)abilitation
 
   \author Davide
   \date lug 2005
-*/  
+*/
 class impBeep : public bannOnSx
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-     impBeep( sottoMenu  *, const char *,char *,const char *,const char *);     
-signals:
-
-public slots:	
-     void 	toggleBeep();
+	impBeep(sottoMenu  *, const char *,char *,const char *,const char *);
+public slots:
+	void toggleBeep();
 private:
-      char iconOn[50];
-      char iconOff[50]; 
+	char iconOn[50];
+	char iconOff[50];
 };
 #endif //BEEP_H
-
-/*****************************************************************
-**contrasto
-****************************************************************/
 
 #ifndef IMP_CONTR_H
 #define IMP_CONTR_H
 
 #include "contrpage.h"
-/*!
-  \class setDataOra
-  \brief Contast regulation 
-  
-  \author Davide
-  \date lug 2005
-*/  
+
 class impContr : public bannOnDx
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-     impContr( sottoMenu  *, const char *,char *,const char *);     
-signals:
-
+	impContr(sottoMenu  *, const char *,char *,const char *);
 public slots:
 	void hide();
 
-private slots:	
-     void 	showContr();
-     void 	contrMade();
+private slots:
+	void showContr();
+	void contrMade();
 private:
-     contrPage* contrasto; 
+	contrPage* contrasto;
 };
 #endif //IMP_CONTR_H
 
-/*****************************************************************
-**versione 
-****************************************************************/
 
 #ifndef VERSIONE_H
 #define VERSIONE_H
 
 #include "versio.h"
-/*!
-  \class machVers
-  \brief Displaies the machine versions (Fw / pic / Hw)
 
-  \author Davide
-  \date lug 2005
-*/  
 class machVers : public bannOnDx
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-     machVers( sottoMenu  *, const char *,  versio*, const char*);     
-signals:
+	machVers(sottoMenu  *, const char *,  versio*, const char*);
 private slots:
-     void tiempout();
-     void showVers();
+	void tiempout();
+	void showVers();
 private:
-  versio * v;
-  QTimer *tiempo;
+	versio * v;
+	QTimer *tiempo;
 };
 #endif //VERSIONE_H
 
-
-/*****************************************************************
-**passWord
-****************************************************************/
 
 #ifndef PASSWORD_H
 #define PASSWORD_H
@@ -245,60 +199,59 @@ private:
   It's possible (dis)abilitate the password and to change the actual password.
   \author Davide
   \date lug 2005
-*/  
+*/
 class impPassword : public bann2But 
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-     impPassword (QWidget *,const char *, char* , char*, char*,char*,int );     
-//     void 	setActivation(bool);
+	impPassword (QWidget *,const char *, char* , char*, char*,char*,int);
 signals:
 /*!
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
-*/           
-     void activatePaswd(bool);
+*/
+	void activatePaswd(bool);
 /*!
   \brief  Emitted when the password is changed so BtMain knows which password has to wait
-*/           
-     void 	setPwd(bool,char*);
-public slots:	
+*/
+	void setPwd(bool,char*);
+public slots:
 /*!
   \brief  Changes the activation state
 */ 
-      void 	toggleActivation();
+	void toggleActivation();
 /*!
   \brief  Shows the banner
 */ 
-      void	show();
+	void show();
 /*!
   \brief Hides what has to be hidden
 */
-      void      hide();
+	void hide();
 /*!
   \brief  Shows the keypad to compose the password key
-*/      
-      void  reShow1(char*);
+*/
+	void reShow1(char*);
 /*!
   \brief  Shows the keypad to compose the confirmation of the password key
-*/      
-      void  reShow2(char*);      
+*/
+	void reShow2(char*);
 /*!
   \brief  Stops the error beep made when the password insertion is wrong
-*/          
-      void  tiempout();
+*/
+	void tiempout();
 /*!
   \brief  Reimplements QWidget::setEnabled(bool)
-*/           
-      void setEnabled ( bool );
+*/
+	void setEnabled (bool);
 private:
-      char paswd[10];
-      bool active;
-      char iconOn[50];
-      char iconOff[50];       
-      tastiera *tasti;
-      bool sb;
-      QTimer * tiempo;
-      unsigned char starting;
+	char paswd[10];
+	bool active;
+	char iconOn[50];
+	char iconOff[50];
+	tastiera *tasti;
+	bool sb;
+	QTimer * tiempo;
+	unsigned char starting;
 };
 #endif //PASSWORD_H
 
