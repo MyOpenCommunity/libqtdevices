@@ -1,9 +1,3 @@
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
-#include <qfile.h>
-#include <qtimer.h>
-
 #include "videocitof.h"
 #include "device.h"
 #include "frame_interpreter.h"
@@ -14,13 +8,19 @@
 #include "btbutton.h"
 #include "fontmanager.h"
 
+#include <QPixmap>
+#include <QWidget>
+#include <QCursor>
+#include <QFile>
+#include <QTimer>
+
 // Call notifier implementation
 
-call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) : QFrame(parent, name)
+call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) : QFrame(parent)
 {
 	qDebug("call_notifier::call_notifier()");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	QString where;
 	my_station = ms;
@@ -36,14 +36,15 @@ call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) : QFrame
 		qDebug("Bad thing, cannot create device");
 		return;
     }
-	myTimer = new QTimer(this, "idle timer");
+	myTimer = new QTimer(this);
+	myTimer->setSingleShot(true);
 	connect(myTimer, SIGNAL(timeout()), this, SLOT(close()));
 	// Pass incoming frames on to device
 	connect(this, SIGNAL(frame_available(char *)),
 		station_dev, SLOT(frame_rx_handler(char *)));
 	// Get status changed events
-	connect(station_dev, SIGNAL(status_changed(QPtrList<device_status>)),
-		this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(station_dev, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
 	station_dev->init();
 
 	QString _txt1(tr("Unknown"));
@@ -58,26 +59,26 @@ void call_notifier::get_where(QString& out)
 	my_station->get_where(out);
 }
 
-void call_notifier::status_changed(QPtrList<device_status> dsl)
+void call_notifier::status_changed(QList<device_status*> dsl)
 {
 	// When we get here, we captured a call frame for sure, no need to
 	// read status
 	qDebug("call_notifier::status_changed()");
-	emit(frame_captured(this));
+	emit frame_captured(this);
 }
 
 void call_notifier::showFullScreen()
 {
 	qDebug("call_notifier::showFullScreen()");
 	QFrame::showFullScreen();
-	myTimer->start(30000, true);
+	myTimer->start(30000);
 }
 
 // FIXME: direct connection ?
 void call_notifier::frame_available_handler(char *f)
 {
 	qDebug("call_notifier::frame_available_handler()");
-	emit(frame_available(f));
+	emit frame_available(f);
 }
 
 void call_notifier::stairlight_pressed()
@@ -85,7 +86,7 @@ void call_notifier::stairlight_pressed()
 	qDebug("call_notifier::stairlight_pressed()");
 	if (my_station)
 	my_station->stairlight_pressed();
-	myTimer->start(30000, true);
+	myTimer->start(30000);
 }
 
 void call_notifier::stairlight_released()
@@ -109,7 +110,7 @@ void call_notifier::close()
 	qDebug("call_notifier::close()");
 	myTimer->stop();
 	hide();
-	emit(closed(this));
+	emit closed(this);
 }
 
 // Private methods
@@ -123,7 +124,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 	QFont aFont;
 	FontManager::instance()->getFont(font_videocitof_area1, aFont);
 	area1_ptr->setFont(aFont);
-	area1_ptr->setAlignment(AlignHCenter|AlignVCenter);
+	area1_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QString s;
 	if (my_station)
 		my_station->get_descr(s);
@@ -144,7 +145,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 				LABEL_WIDTH, LABEL_HEIGHT);
 		FontManager::instance()->getFont(font_videocitof_area3, aFont);
 		area3_ptr->setFont(aFont);
-		area3_ptr->setAlignment(AlignHCenter|AlignVCenter);
+		area3_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		s = _txt2;
 		area3_ptr->setText(s);
 	}
@@ -166,7 +167,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 				LABEL_WIDTH, LABEL_HEIGHT);
 		FontManager::instance()->getFont(font_videocitof_area5, aFont);
 		area5_ptr->setFont(aFont);
-		area5_ptr->setAlignment(AlignHCenter|AlignVCenter);
+		area5_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		s = _txt3;
 		area5_ptr->setText(s);
 	} 
@@ -181,34 +182,32 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 	SetButtonsIcons();
 }
 
-void call_notifier::SetButtonIcon(const char *ic, BtButton *b)
+void call_notifier::SetButtonIcon(QString icon_name, BtButton *b)
 {
 	if (!b)
 		return;
-	QPixmap* Icon1;
-	QPixmap* Icon2;
-	Icon1 = new QPixmap();
-	char iconName[40];
-	getPressName((char *)ic, iconName, sizeof(iconName));
-	if (QFile::exists(ic))
+
+	QPixmap* Icon1 = new QPixmap();
+	if (QFile::exists(icon_name))
 	{
-		Icon1->load(ic);
+		Icon1->load(icon_name);
 		if (b)
 			b->setPixmap(*Icon1);
 	}
 
+	char iconName[40];
+	QByteArray buf = icon_name.toAscii();
+	getPressName(buf.data(), iconName, sizeof(iconName));
 	if (QFile::exists(iconName))
 	{
-		Icon2 = new QPixmap();
+		QPixmap* Icon2 = new QPixmap();
 		Icon2->load(iconName);
 		if (b)
 			b->setPressedPixmap(*Icon2);
+		delete Icon2;
 	}
 
 	delete Icon1;
-
-	if (Icon2)
-		delete Icon2;
 }
 
 void call_notifier::SetButtonsIcons()
@@ -227,9 +226,9 @@ void call_notifier::SetButtonsIcons()
 		my_station->get_key_icon(a4_icon);
 		my_station->get_close_icon(a6_icon);
 	}
-	SetButtonIcon(a2_icon.ascii(), area2_but);
-	SetButtonIcon(a4_icon.ascii(), area4_but);
-	SetButtonIcon(a6_icon.ascii(), area6_but);
+	SetButtonIcon(a2_icon, area2_but);
+	SetButtonIcon(a4_icon, area4_but);
+	SetButtonIcon(a6_icon, area6_but);
 }
 
 void call_notifier::setBGColor(int r, int g, int b)
@@ -247,40 +246,55 @@ void call_notifier::setBGColor(QColor c)
 	qDebug("call_notifier::setBGColor()");
 	setPaletteBackgroundColor(c);
 	if (area1_ptr)
-	area1_ptr->setPaletteBackgroundColor(c);
+		area1_ptr->setPaletteBackgroundColor(c);
 	if (area3_ptr)
-	area3_ptr->setPaletteBackgroundColor(c);
+		area3_ptr->setPaletteBackgroundColor(c);
 	if (area5_ptr)
-	area5_ptr->setPaletteBackgroundColor(c);
+		area5_ptr->setPaletteBackgroundColor(c);
 	if (area2_but)
-	area2_but->setPaletteBackgroundColor(c);
+		area2_but->setPaletteBackgroundColor(c);
 	if (area4_but)
-	area4_but->setPaletteBackgroundColor(c);
+		area4_but->setPaletteBackgroundColor(c);
 	if (area6_but)
-	area6_but->setPaletteBackgroundColor(c);
+		area6_but->setPaletteBackgroundColor(c);
 }
 
 void call_notifier::setFGColor(QColor c)
 {	
 	setPaletteForegroundColor(c);
 	if (area1_ptr)
-	area1_ptr->setPaletteForegroundColor(c);
+		area1_ptr->setPaletteForegroundColor(c);
 	if (area3_ptr)
-	area3_ptr->setPaletteForegroundColor(c);
+		area3_ptr->setPaletteForegroundColor(c);
 	if (area5_ptr)
-	area5_ptr->setPaletteForegroundColor(c);
+		area5_ptr->setPaletteForegroundColor(c);
 	if (area2_but)
-	area2_but->setPaletteForegroundColor(c);
+		area2_but->setPaletteForegroundColor(c);
 	if (area4_but)
-	area4_but->setPaletteForegroundColor(c);
+		area4_but->setPaletteForegroundColor(c);
 	if (area6_but)
-	area6_but->setPaletteForegroundColor(c);
+		area6_but->setPaletteForegroundColor(c);
 }
 
 void call_notifier::freezed(bool f)
 {
 	qDebug("call_notifier::freezed(%d)", f);
 }
+
+void call_notifier::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void call_notifier::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
 
 // Call notifier manager implementation
 call_notifier_manager::call_notifier_manager()
@@ -316,7 +330,7 @@ void call_notifier_manager::gestFrame(char *f)
 {
 	qDebug("call_notifier_manager::gestFrame()");
 	known_station = false;
-	emit(frame_available(f));
+	emit frame_available(f);
 	// Has one of the known stations' call_notifier objects captured
 	// this frame ?
 	if ((!known_station) && unknown_station_notifier)
@@ -332,5 +346,5 @@ void call_notifier_manager::frame_captured_handler(call_notifier *cn)
 	known_station = true;
 	// A frame has been captured by a call notifier (cn)
 	cn->showFullScreen();
-	emit(frame_captured(cn));
+	emit frame_captured(cn);
 }

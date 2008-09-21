@@ -3,10 +3,10 @@
 
 #include "device_status.h"
 
-#include <qframe.h>
-#include <qcolor.h>
-#include <qstring.h>
-#include <qptrlist.h>
+#include <QFrame>
+#include <QColor>
+#include <QString>
+#include <QList>
 
 class postoExt;
 class BtLabel;
@@ -36,13 +36,17 @@ private:
 	//! Set buttons' icons
 	void SetButtonsIcons();
 	//! Set single button icon
-	void SetButtonIcon(const char *icon_name, BtButton *but);
+	void SetButtonIcon(QString icon_name, BtButton *but);
 	//! Some consts
 	static const int LABEL_HEIGHT = 20;
 	static const int BUTTON_DIM = 60;
 	static const int LABEL_WIDTH = 180;
 	//! 30secs idle timer
 	QTimer *myTimer;
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
 public:
 	//! Constructor
 	call_notifier(QWidget *parent, char *name, postoExt *ms);
@@ -75,7 +79,7 @@ public:
 
 public slots:
 	//! Invoked by device when status changes
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 	//! A frame is available, pass it on to the device
 	void frame_available_handler(char *);
 	//! Area 2 button pressed
