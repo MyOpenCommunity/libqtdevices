@@ -8,24 +8,19 @@
 **definizione dei vari items
 ****************************************************************/
 #include "setitems.h"
-#include "main.h"
-#include "openclient.h"
 #include "genericfunz.h"
-#include "sottomenu.h"
+
+#include <qtimer.h>
 
 #include <stdlib.h>
 
 extern unsigned char tipoData;
-/*****************************************************************
-**setdataOra
-****************************************************************/
 
-setDataOra::setDataOra( sottoMenu *parent,const char *name )
-		: bannOnDx( parent, name )
+setDataOra::setDataOra(sottoMenu *parent,const char *name) : bannOnDx(parent, name)
 {
-	SetIcons( ICON_INFO,1);
-	settalora.setBGColor(backgroundColor()/*BG_R, BG_G, BG_B*/);
-	settalora.setFGColor(foregroundColor()/*255-BG_R, 255-BG_G, 255-BG_B*/);
+	SetIcons(ICON_INFO,1);
+	settalora.setBGColor(backgroundColor());
+	settalora.setFGColor(foregroundColor());
 	connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));
 	connect(&settalora,SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	connect(&settalora, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
@@ -37,17 +32,14 @@ void setDataOra::hide()
 	settalora.hide();
 }
 
-/*****************************************************************
-**impostaSveglia
-****************************************************************/
 
-impostaSveglia::impostaSveglia( QWidget *parent,const char *name, contdiff* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* frame, int tipo)
-        : bann2But( parent, name )
+impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* frame, int tipo)
+	: bann2But(parent, name)
 {
 
 	strcpy(&iconOn[0], icon1);
 	strcpy(&iconOff[0], icon2);
-	SetIcons( &iconOff[0] ,ICON_INFO);
+	SetIcons(&iconOff[0] ,ICON_INFO);
 	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, h, m);
 	svegliolina->setBGColor(backgroundColor());
 	svegliolina->setFGColor(foregroundColor());
@@ -82,7 +74,7 @@ void impostaSveglia::setAbil(bool b)
 void impostaSveglia::toggleAbil()
 {
 	bool b;
-	b=svegliolina->getActivation()^1;
+	b = svegliolina->getActivation()^1;
 
 	svegliolina-> activateSveglia(b);
 	show();
@@ -111,14 +103,10 @@ void impostaSveglia::inizializza()
 }
 
 
-/*****************************************************************
-**calibration
-****************************************************************/
-
-calibration::calibration( sottoMenu  *parent,const char *name, const char* icon )
-		: bannOnDx( parent, name )
+calibration::calibration(sottoMenu  *parent,const char *name, const char* icon)
+	: bannOnDx(parent, name)
 {
-	SetIcons( ICON_INFO,1);
+	SetIcons(ICON_INFO,1);
 	connect(this,SIGNAL(click()),this,SLOT(doCalib()));
 }
 
@@ -130,6 +118,7 @@ void calibration::doCalib()
 	connect(calib,SIGNAL(fineCalib()), this, SLOT(fineCalib()));
 	emit(startCalib());
 }
+
 void calibration::fineCalib()
 {
 	show();
@@ -137,18 +126,15 @@ void calibration::fineCalib()
 	emit(endCalib());
 }
 
-/*****************************************************************
-**beep
-****************************************************************/
 
-impBeep::impBeep( sottoMenu  *parent,const char *name ,char* val, const char * icon1, const char *icon2)
-        : bannOnSx( parent, name )
+impBeep::impBeep(sottoMenu  *parent,const char *name ,char* val, const char * icon1, const char *icon2)
+        : bannOnSx(parent, name)
 {
 	strncpy(&iconOn[0], icon1, sizeof(iconOn));
 	strncpy(&iconOff[0], icon2, sizeof(iconOff));
 	connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));
-	SetIcons( &iconOff[0],1);
-	SetIcons( &iconOn[0],1);
+	SetIcons(&iconOff[0],1);
+	SetIcons(&iconOn[0],1);
 	bool on = !strcmp(val, "1");
 	if (!on)
 	{
@@ -165,7 +151,7 @@ impBeep::impBeep( sottoMenu  *parent,const char *name ,char* val, const char * i
 
 void impBeep::toggleBeep()
 {
-	if(getBeep())
+	if (getBeep())
 	{
 		setBeep(FALSE,TRUE);
 		SetIcons(uchar(0), &iconOff[0]);
@@ -179,15 +165,12 @@ void impBeep::toggleBeep()
 	Draw();
 }
 
-/*****************************************************************
-**contrasto
-****************************************************************/
 
-impContr::impContr( sottoMenu  *parent,const char *name ,char* val, const char * icon1)
-        : bannOnDx( parent, name )
+impContr::impContr(sottoMenu  *parent,const char *name ,char* val, const char * icon1)
+	: bannOnDx(parent, name)
 {
 	contrasto = NULL;
-	SetIcons( icon1,1);
+	SetIcons(icon1,1);
 	connect(this,SIGNAL(click()),this,SLOT(showContr()));
 	setContrast(atoi(val),FALSE);
 }
@@ -215,19 +198,15 @@ void impContr::contrMade()
 void impContr::hide()
 {
 	banner::hide();
-	if(contrasto)
-	contrasto->hide();
+	if (contrasto)
+		contrasto->hide();
 }
 
 
-/*****************************************************************
-**machVers
-****************************************************************/
-
-machVers::machVers( sottoMenu  *parent,const char *name, versio * ver, const char* icon1)
-		: bannOnDx( parent, name )
+machVers::machVers(sottoMenu  *parent,const char *name, versio * ver, const char* icon1)
+	: bannOnDx(parent, name)
 {
-	SetIcons( icon1,1);
+	SetIcons(icon1,1);
 	connect(this,SIGNAL(click()),this,SLOT(showVers()));
 	v=ver;
 }
@@ -254,19 +233,15 @@ void machVers::tiempout()
 }
 
 
-/*****************************************************************
-**impPassword 
-****************************************************************/
-
-impPassword ::impPassword ( QWidget *parent,const char *name, char* icon1, char*icon2,char* icon3, char* password,int attiva)
-		: bann2But( parent, name )
+impPassword ::impPassword (QWidget *parent,const char *name, char* icon1, char*icon2,char* icon3, char* password,int attiva)
+	: bann2But(parent, name)
 {
 
 	strncpy(&iconOn[0], icon1, sizeof(iconOn));
 	strncpy(&iconOff[0], icon2, sizeof(iconOff));
 	strncpy(&paswd[0], password, sizeof(paswd));
 
-	SetIcons( &iconOff[0] ,icon3);
+	SetIcons(&iconOff[0] ,icon3);
 
 	tasti = new tastiera(NULL,"tast");
 
@@ -280,12 +255,12 @@ impPassword ::impPassword ( QWidget *parent,const char *name, char* icon1, char*
 	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 	connect(this, SIGNAL(setPwd(bool,char*)), parentWidget(), SIGNAL(setPwd(bool,char*)));
 	if (attiva==1)
-		active=TRUE;
+		active = TRUE;
 	else
-		active=FALSE;
+		active = FALSE;
 
 	emit(setPwd(active,&paswd[0]));
-	starting=1;
+	starting = 1;
 }
 
 
@@ -293,19 +268,19 @@ void impPassword::toggleActivation()
 {
 	if (active)
 	{
-		active=FALSE;
+		active = FALSE;
 		setCfgValue(PROTEZIONE, "enabled","0",getSerNum());
 	}
 	else
 	{
-		active=TRUE;
+		active = TRUE;
 		setCfgValue(PROTEZIONE, "enabled","1",getSerNum());
 	}
 	emit(setPwd(active,&paswd[0]));
 	show();
 }
 
-void  impPassword::show()
+void impPassword::show()
 {
 	if (active)
 		SetIcons(uchar(0),&iconOn[0]);
@@ -314,7 +289,7 @@ void  impPassword::show()
 	qDebug("impPassword::show()");
 	Draw();
 	qDebug("passwd = %s %d", &paswd[0], paswd[0]);
-	if ( (paswd[0]=='\000') || (starting) )
+	if ((paswd[0]=='\000') || (starting))
 	{
 		qDebug("passwd = ZERO");
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -332,7 +307,7 @@ void  impPassword::show()
 	QWidget::show();
 }
 
-void  impPassword::reShow1(char* c)
+void impPassword::reShow1(char* c)
 {
 	if (c==NULL)
 	{
@@ -343,7 +318,7 @@ void  impPassword::reShow1(char* c)
 	{
 		show();
 		qDebug("password errata doveva essere %s",&paswd[0]);
-		sb=getBeep();
+		sb = getBeep();
 		setBeep(TRUE,FALSE);
 		beep(1000);
 		tiempo = new QTimer(this,"clock");
@@ -360,7 +335,7 @@ void  impPassword::reShow1(char* c)
 	}
 }
 
-void  impPassword::reShow2(char* c)
+void impPassword::reShow2(char* c)
 {
 	if (c)
 	{
@@ -380,16 +355,16 @@ void impPassword::tiempout()
 	setBeep(sb,FALSE);
 }
 
-void impPassword::setEnabled ( bool  b)
+void impPassword::setEnabled(bool  b)
 {
 	if (!b)
-	starting=0;
+		starting = 0;
 	QWidget::setEnabled(b);
 }
 
 void impPassword::hide()
 {
 	banner::hide();
-	if(tasti)
-	tasti->hide();
+	if (tasti)
+		tasti->hide();
 }
