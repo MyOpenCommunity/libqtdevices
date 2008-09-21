@@ -16,6 +16,10 @@
 
 #include <openwebnet.h> // class openwebnet
 
+#include <QByteArray>
+#include <QWidget>
+#include <QDebug>
+
 /*****************************************************************
  **sorgente_aux
  ****************************************************************/
@@ -38,8 +42,9 @@ sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, boo
 	else
 	{
 		myAux = new aux(NULL, name, ambdescr);
-		myAux->setBGColor(parentWidget(TRUE)->backgroundColor());
-		myAux->setFGColor(parentWidget(TRUE)->foregroundColor());
+		// TODO: sistemare per usare il modo qt4 per i colori!
+		//myAux->setBGColor(parentWidget()->backgroundColor());
+		//myAux->setFGColor(parentWidget()->foregroundColor());
 		// Get freezed events
 		connect(parent, SIGNAL(frez(bool)), myAux, SLOT(freezed(bool)));
 	}
@@ -133,9 +138,10 @@ void sorgenteMultiAux::attiva()
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
 		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
+			QByteArray buf = (*it).toAscii();
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*22*0#4#");
-			strcat(pippo,(*it));
+			strcat(pippo,buf.constData());
 			strcat(pippo,"*6");
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
@@ -146,9 +152,10 @@ void sorgenteMultiAux::attiva()
 			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*22*1#4#");
-			strcat(pippo,(*it));
+			strcat(pippo,buf.constData());
 			strcat(pippo,"*2#");
-			strcat(pippo, indirizzo_semplice);
+			QByteArray buf_ind = indirizzo_semplice.toAscii();
+			strcat(pippo, buf_ind.constData());
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 			dev->sendFrame(msg_open.frame_open);
@@ -162,23 +169,21 @@ void sorgenteMultiAux::attiva()
 
 void sorgenteMultiAux::ambChanged(const QString & ad, bool multi, char *indamb)
 {
-	qDebug("sorgenteMultiAux::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
+	qDebug() << "sorgenteMultiRadio::ambChanged(" << ad << ", " << multi << ", " << indamb << ")";
 	if (!multi)
 	{
 		multiamb = false;
 		indirizzo_ambiente = QString((const char *)indamb).toInt();
-		QString *dove = new QString(QString::number(100 + QString((const char *)indamb).toInt() * 10 +
+		QString dove(QString::number(100 + QString((const char *)indamb).toInt() * 10 +
 			indirizzo_semplice.toInt(), 10));
-		qDebug("Source where now = %s", dove->ascii());
-		setAddress((char *)dove->ascii());
-		delete dove;
+		qDebug() << "Source where is now " << dove;
+		setAddress(dove);
 	}
 	else
 	{
-		QString *dove = new QString(QString::number(100 + indirizzo_semplice.toInt(), 10));
-		qDebug("Source where is now %s", dove->ascii());
-		setAddress((char *)dove->ascii());
-		delete dove;
+		QString dove(QString::number(100 + indirizzo_semplice.toInt(), 10));
+		qDebug() << "Source where is now " << dove;
+		setAddress(dove);
 		multiamb = true;
 	}
 	myAux->setAmbDescr(ad);

@@ -13,6 +13,9 @@
 
 #include "bannciclaz.h"
 
+#include <QString>
+#include <QStringList>
+
 /// Forward Declarations
 class aux;
 class device;
@@ -35,7 +38,7 @@ protected:
 	aux *myAux;
 	bool vecchia;
 public:
-	sorgente_aux( QWidget *parent,const char *name,char* indirizzo, bool vecchio=true, char *ambdescr="");
+	sorgente_aux(QWidget *parent,const char *name,char* indirizzo, bool vecchio=true, char *ambdescr="");
 	void inizializza(bool forza = false);
 private slots:
 	void ciclaSorg();
