@@ -489,16 +489,6 @@ void scenEvo::Draw()
 	}
 }
 
-const char *scenEvo::getAction() 
-{
-	return action.ascii();
-}
-
-void scenEvo::setAction(const char *a)
-{
-	action = a;
-}
-
 void scenEvo::trigOnStatusChanged()
 {
 	qDebug("scenEvo::trigOnStatusChanged()");
@@ -690,7 +680,6 @@ void scenSched::disable()
 	emit sendFrame(msg_open.frame_open);
 	Draw();
 }
-
 
 void scenSched::Draw()
 {
