@@ -18,7 +18,7 @@
 #include <qcursor.h>
 #include <stdlib.h>
 
-versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(parent, name,  f)
+versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(parent, name,  (Qt::WindowFlags)f)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -30,23 +30,25 @@ versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(pare
 	BtLabel* myHome = new BtLabel(this, "MH");
 	myHome->setGeometry(30, 12, 181, 128);
 	myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	myHome->setAutoResize(TRUE);
+	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!
+	//myHome->setAutoResize(TRUE);
 	myHome->setPixmap(QPixmap(IMG_PATH "my_home.png"));
 
 	bticino = new BtLabel(this, "BT");
 	bticino->setGeometry(129, 258, 92, 42);
 	bticino->setFrameStyle(QFrame::Plain);
-	bticino->setAutoResize(TRUE);
+	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!
+	//bticino->setAutoResize(TRUE);
 	bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
 
 	datiGen->setLineWidth(3);
 	datiGen->setText(model);
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	datiGen->setAlignment(AlignHCenter|AlignVCenter);
+	datiGen->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_versio_datiGen, aFont);
 	datiGen->setFont(aFont);
@@ -113,9 +115,10 @@ void versio::gestFrame(char* frame)
 
 		datiGen->setFont(aFont);
 		datiGen->setIndent(15);
-		datiGen->setAlignment(AlignLeft|AlignTop);
+		datiGen->setAlignment(Qt::AlignLeft|Qt::AlignTop);
+		QByteArray buf = model.toAscii();
 		sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d",
-			model.ascii(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);
+			buf.constData(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);
 		
 		datiGen->setText(&scritta[100]); // FIXME da tradurre??
 		qDebug("setta scritte versio");
