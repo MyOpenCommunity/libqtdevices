@@ -36,7 +36,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 
 	qDebug("light = %d, key = %d, unknown = %d", light, key, unknown);
 	qDebug("descr = %s, where = %s", name, _where);
-	//SetIcons(Icona1, Icona3, Icona4, Icona2);
 	SetIcons (Icona2, Icona3, "", "", Icona1);
 	if (key)
 	{
@@ -71,9 +70,8 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 				this, SLOT(frame_captured_handler(call_notifier *)));
 		connect(cnm, SIGNAL(call_notifier_closed(call_notifier *)),
 				this, SLOT(call_notifier_closed(call_notifier *)));
-		connect(btouch_device_cache.get_client_monitor(), 
-				SIGNAL(frameIn(char *)),
-				cnm, SLOT(gestFrame(char *)));
+		connect(btouch_device_cache.get_client_monitor(),
+				SIGNAL(frameIn(char *)), cnm, SLOT(gestFrame(char *)));
 		connect(this, SIGNAL(freezed(bool)), cnm, SIGNAL(freezed(bool)));
 	}
 	cnm->add_call_notifier(cn);
@@ -104,35 +102,38 @@ void postoExt::call_notifier_closed(call_notifier *cn)
 	qDebug("postoExt::call_notifier_closed()");
 }
 
-void postoExt::open_door_clicked(void)
+void postoExt::open_door_clicked()
 {
 	qDebug("postoExt::open_door_clicked()");
 	openwebnet msg_open;
 	msg_open.CreateNullMsgOpen();
 	char tmp[100];
-	sprintf(tmp, "*6*10*%s##", where.ascii());
+	QByteArray buf = where.toAscii();
+	sprintf(tmp, "*6*10*%s##", buf.constData());
 	msg_open.CreateMsgOpen(tmp, strlen(tmp));
 	emit sendFrame(msg_open.frame_open);
 }
 
-void postoExt::stairlight_pressed(void)
+void postoExt::stairlight_pressed()
 {
 	qDebug("postoExt::stairlight_pressed()");
 	openwebnet msg_open;
 	msg_open.CreateNullMsgOpen();
 	char tmp[100];
-	sprintf(tmp, "*6*12*%s##", where.ascii());
+	QByteArray buf = where.toAscii();
+	sprintf(tmp, "*6*12*%s##", buf.constData());
 	msg_open.CreateMsgOpen(tmp, strlen(tmp));
 	emit sendFrame(msg_open.frame_open);
 }
 
-void postoExt::stairlight_released(void)
+void postoExt::stairlight_released()
 {
 	qDebug("postoExt::stairlight_released()");
 	openwebnet msg_open;
 	msg_open.CreateNullMsgOpen();
 	char tmp[100];
-	sprintf(tmp, "*6*11*%s##", where.ascii());
+	QByteArray buf = where.toAscii();
+	sprintf(tmp, "*6*11*%s##", buf.constData());
 	msg_open.CreateMsgOpen(tmp, strlen(tmp));
 	emit sendFrame(msg_open.frame_open);
 }
@@ -147,12 +148,12 @@ void postoExt::get_descr(QString& out)
 	out = descr;
 }
 
-bool postoExt::get_light(void)
+bool postoExt::get_light()
 {
 	return light;
 }
 
-bool postoExt::get_key(void)
+bool postoExt::get_key()
 {
 	return key;
 }
@@ -170,4 +171,14 @@ void postoExt::get_key_icon(QString& out)
 void postoExt::get_close_icon(QString& out)
 {
 	out = close_icon;
+}
+
+const QColor& postoExt::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& postoExt::foregroundColor()
+{
+	return palette().color(foregroundRole());
 }

@@ -13,8 +13,8 @@
 
 #include "bann4taslab.h"
 
-#include <qwidget.h>
-#include <qstring.h>
+#include <QWidget>
+#include <QString>
 
 /// Forward Declarations
 class dati_sorgente_multi;
@@ -45,6 +45,10 @@ private:
 	QString close_icon;
 	static call_notifier_manager *cnm;
 	static call_notifier *unknown_notifier;
+	// TODO: rimuovere questi metodi qt3!
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
+
 public:
 	postoExt(QWidget *parent=0, const char *name=NULL, char* Icona1="",char *Icona2="", char *Icona3="", char* Icona4="", char *where="", char *light="", char *key="", char *unknown = "0");
 	//! Read where
@@ -52,9 +56,9 @@ public:
 	//! Read description
 	void get_descr(QString&);
 	//! Get key mode
-	bool get_key(void);
+	bool get_key();
 	//! Get light mode
-	bool get_light(void);
+	bool get_light();
 	//! Get light icon name
 	void get_light_icon(QString&);
 	//! Get key icon name
@@ -63,11 +67,11 @@ public:
 	void get_close_icon(QString&);
 public  slots:
 	//! Invoked when right button is pressed
-	void stairlight_pressed(void);
+	void stairlight_pressed();
 	//! Invoked when right button is released 
-	void stairlight_released(void); 
+	void stairlight_released();
 	//! Invoked when left button is clicked
-	void open_door_clicked(void);
+	void open_door_clicked();
 	//! Usual gestFrame
 	void gestFrame(char *);
 	//! Invoked when a frame has been captured by a call_notifier
