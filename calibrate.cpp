@@ -3,25 +3,29 @@
 #include "fontmanager.h"
 #include "btbutton.h"
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-#include <qwindowsystem_qws.h>
-#include <qgfx_qws.h>
-#endif
 
-#include <qfile.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qlabel.h>
-#include <qtimer.h>
-#include <qpainter.h>
+#include <QDesktopWidget>
+#include <QGlobalStatic> // qAbs
+#include <QApplication>
+#include <QMouseEvent>
+#include <QWSServer>
+#include <QPainter>
+#include <QScreen>
+#include <QCursor>
+#include <QLabel>
+#include <QTimer>
+#include <QFile>
+
 
 #define BUTTON_SEC_TIMEOUT 10
 
 #define IMG_OK IMG_PATH "btnok.png"
 
-Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned char m) :
-	QWidget(parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose), button_test(false)
+
+Calibrate::Calibrate(QWidget* parent, unsigned char m) :
+	QWidget(parent, Qt::Tool | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint), button_test(false)
 {
+	setAttribute(Qt::WA_DeleteOnClose);
 	const int offset = 30;
 	QRect desk = qApp->desktop()->geometry();
 	setGeometry(0, 0, desk.width(), desk.height());
@@ -45,7 +49,7 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
 		cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint(qt_screen->deviceWidth()/2, qt_screen->deviceHeight()/2);
 	}
 	crossPos = fromDevice(cd.screenPoints[QWSPointerCalibrationData::TopLeft]);
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 
 	timer = new QTimer(this);
@@ -122,10 +126,10 @@ bool Calibrate::sanityCheck()
 	QPoint bl = cd.devPoints[QWSPointerCalibrationData::BottomLeft];
 	QPoint br = cd.devPoints[QWSPointerCalibrationData::BottomRight];
 
-	int vl = QABS(tl.x() - bl.x());
-	int vr = QABS(tr.x() - br.x());
+	int vl = qAbs(tl.x() - bl.x());
+	int vr = qAbs(tr.x() - br.x());
 
-	int diff = QABS(vl - vr);
+	int diff = qAbs(vl - vr);
 
 	int avg1 = (tl.x() + bl.x()) / 2;
 	int avg2 = (tr.x() + br.x()) / 2;
@@ -137,9 +141,9 @@ bool Calibrate::sanityCheck()
 		qWarning("err>10 per cento     ->  left: %d right: %d\n",vl/avg2*100 ,vr/avg2*100);
 		return FALSE;
 	}
-	int ht = QABS(tl.y() - tr.y());
-	int hb = QABS(br.y() - bl.y());
-	diff = QABS(ht - hb);
+	int ht = qAbs(tl.y() - tr.y());
+	int hb = qAbs(br.y() - bl.y());
+	diff = qAbs(ht - hb);
 	avg1 = (tl.y() + tr.y()) / 2;
 	avg2 = (br.y() + bl.y()) / 2;
 	if (avg1 > avg2)
@@ -216,7 +220,8 @@ void Calibrate::paintEvent(QPaintEvent *)
 void Calibrate::buttonsTest()
 {
 	qWarning("Calibrate::buttonsTest");
-	button_timer->start(BUTTON_SEC_TIMEOUT * 1000, true);
+	button_timer->setSingleShot(true);
+	button_timer->start(BUTTON_SEC_TIMEOUT * 1000);
 	box_text->setText(tr("Click the OK button"));
 	button_test = true;
 	b1->show();
@@ -330,13 +335,13 @@ void Calibrate::timeout()
 	bool doneY = FALSE;
 	QPoint newPos(crossPos.x() + dx, crossPos.y() + dy);
 
-	if (QABS(crossPos.x() - target.x()) <= QABS(dx))
+	if (qAbs(crossPos.x() - target.x()) <= qAbs(dx))
 	{
 		newPos.setX(target.x());
 		doneX = TRUE;
 	}
 
-	if (QABS(crossPos.y() - target.y()) <= QABS(dy))
+	if (qAbs(crossPos.y() - target.y()) <= qAbs(dy))
 	{
 		newPos.setY(target.y());
 		doneY = TRUE;
