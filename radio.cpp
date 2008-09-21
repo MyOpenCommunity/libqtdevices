@@ -8,15 +8,6 @@
  **
  ****************************************************************/
 
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qframe.h>
-#include <qdatetime.h>
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qfile.h>
-
 #include "radio.h"
 #include "banner.h"
 #include "bannondx.h"
@@ -27,18 +18,27 @@
 #include "btbutton.h"
 #include "fontmanager.h"
 
-radio::radio( QWidget *parent, const char *name, const QString & amb )
-: QWidget( parent, name )
+#include <qlabel.h>
+#include <qpixmap.h>
+#include <qframe.h>
+#include <qdatetime.h>
+#include <qlcdnumber.h>
+#include <qcursor.h>
+#include <qfile.h>
+
+
+radio::radio(QWidget *parent, const char *name, const QString & amb)
+	: QWidget(parent, name)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor (QCursor (blankCursor));
-	//   showFullScreen();
+	setCursor(QCursor(blankCursor));
 #endif
+
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
-	bannNavigazione  = new bannFrecce(this,"bannerfrecce",1);
-	bannNavigazione  ->setGeometry( 0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE );
+	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
+	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
 	memoBut = new BtButton(this,"Bottone di memorizzazione");
 	decBut = new BtButton(this,"Bottone di decFreq");
@@ -58,15 +58,15 @@ radio::radio( QWidget *parent, const char *name, const QString & amb )
 	ambDescr = new BtLabel(this, "descrizione ambiente");
 	ambDescr->setAlignment(AlignHCenter|AlignTop);
  	QFont aFont;
-	FontManager::instance()->getFont( font_radio_descrizione_ambiente, aFont );
-	ambDescr->setFont( aFont );
-	ambDescr->setText( amb );
+	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
+	ambDescr->setFont(aFont);
+	ambDescr->setText(amb);
 	freq = new QLCDNumber(this,"pippo");
 	progrText = new BtLabel(this,"progressivo stazione");
-	freq->setSegmentStyle(QLCDNumber::Flat); 
+	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(TRUE);
 	freq->setNumDigits(6);
-	freq->setGeometry(60,40,180,60);    
+	freq->setGeometry(60,40,180,60);
 	freq->setLineWidth(0);
 	memoBut->setGeometry(60,190,120,60);
 	decBut->setGeometry(0,130,60,60);
@@ -202,20 +202,17 @@ radio::radio( QWidget *parent, const char *name, const QString & amb )
 	}
 
 	Icon->load(ICON_CANC);
-	getPressName((char*)ICON_CANC, &pressIconName[0],sizeof(pressIconName));    
+	getPressName((char*)ICON_CANC, &pressIconName[0],sizeof(pressIconName));
 	cancBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
 	{
 		pressIcon->load(pressIconName);
-		cancBut->setPressedPixmap(*pressIcon); 
+		cancBut->setPressedPixmap(*pressIcon);
 	}
-
 
 	manual=FALSE;
 	wasManual=TRUE;
-
-
 
 	connect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
 	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
@@ -232,24 +229,26 @@ radio::radio( QWidget *parent, const char *name, const QString & amb )
 	connect(quatBut,SIGNAL(clicked()),this,SLOT(memo4()));
 	connect(cinBut,SIGNAL(clicked()),this,SLOT(memo5()));
 }
+
 void radio::showRadio()
-{    
+{
 	draw();
 	showFullScreen();
 }
 
 void radio::setBGColor(int r, int g, int b)
-{	
-	setBGColor( QColor :: QColor(r,g,b));    
+{
+	setBGColor(QColor::QColor(r,g,b));
 }
+
 void radio::setFGColor(int r, int g, int b)
 {
-	setFGColor( QColor :: QColor(r,g,b));
+	setFGColor(QColor::QColor(r,g,b));
 }
 
 void radio::setBGColor(QColor c)
-{	
-	setPaletteBackgroundColor( c );    
+{
+	setPaletteBackgroundColor(c);
 	memoBut->setPaletteBackgroundColor(c);
 	decBut->setPaletteBackgroundColor(c);
 	aumBut->setPaletteBackgroundColor(c);
@@ -263,13 +262,14 @@ void radio::setBGColor(QColor c)
 	dueBut->setPaletteBackgroundColor(c);
 	treBut->setPaletteBackgroundColor(c);
 	quatBut->setPaletteBackgroundColor(c);
-	cinBut->setPaletteBackgroundColor(c);    
-	cancBut->setPaletteBackgroundColor(c);    
-	bannNavigazione->setBGColor(c);    
+	cinBut->setPaletteBackgroundColor(c);
+	cancBut->setPaletteBackgroundColor(c);
+	bannNavigazione->setBGColor(c);
 }
+
 void radio::setFGColor(QColor c)
 {
-	setPaletteForegroundColor( c );
+	setPaletteForegroundColor(c);
 	memoBut->setPaletteForegroundColor(c);
 	decBut->setPaletteForegroundColor(c);
 	aumBut->setPaletteForegroundColor(c);
@@ -283,22 +283,21 @@ void radio::setFGColor(QColor c)
 	dueBut->setPaletteForegroundColor(c);
 	treBut->setPaletteForegroundColor(c);
 	quatBut->setPaletteForegroundColor(c);
-	cinBut->setPaletteForegroundColor(c);    
-	cancBut->setPaletteForegroundColor(c);    
-	bannNavigazione->setFGColor(c);  
+	cinBut->setPaletteForegroundColor(c);
+	cancBut->setPaletteForegroundColor(c);
+	bannNavigazione->setFGColor(c);
 }
 
 int radio::setBGPixmap(char* backImage)
 {
-	QPixmap Back; 
-	if(Back.load(backImage))
+	QPixmap Back;
+	if (Back.load(backImage))
 	{
-		setPaletteBackgroundPixmap(Back);      
+		setPaletteBackgroundPixmap(Back);
 		return (0);
-	}    
+	}
 	return (1);
 }
-
 
 void radio::setFreq(float f)
 {
@@ -309,19 +308,23 @@ float radio::getFreq()
 {
 	return(frequenza);
 }
-void radio::setRDS( const QString & s)
+
+void radio::setRDS(const QString & s)
 {
 	qrds = s;
-	qrds.truncate( 8 );
+	qrds.truncate(8);
 }
+
 QString * radio::getRDS()
 {
 	return & qrds;
 }
+
 void radio::setStaz(uchar st)
 {
 	stazione=st;
 }
+
 uchar radio::getStaz()
 {
 	return	(stazione);
@@ -334,20 +337,20 @@ bool radio::isManual()
 
 void radio::setAmbDescr(const QString & d)
 {
-	ambDescr->setText( d );
+	ambDescr->setText(d);
 }
 
 void radio::draw()
 {
 	QFont aFont;
 	rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
-	FontManager::instance()->getFont( font_radio_rdsLabel, aFont );
-	rdsLabel->setFont( aFont );
+	FontManager::instance()->getFont(font_radio_rdsLabel, aFont);
+	rdsLabel->setFont(aFont);
 	radioName->setAlignment(AlignHCenter|AlignTop);
-	FontManager::instance()->getFont( font_radio_radioName, aFont );
-	radioName->setFont( aFont );
-	radioName->setText( qnome );
-	rdsLabel->setText( qrds );
+	FontManager::instance()->getFont(font_radio_radioName, aFont);
+	radioName->setFont(aFont);
+	radioName->setText(qnome);
+	rdsLabel->setText(qrds);
 	char fr[10];
 	sprintf(fr,"%.2f",frequenza);
 	freq->display(&fr[0]);
@@ -369,12 +372,12 @@ void radio::draw()
 	wasManual=manual;
 
 	progrText ->setAlignment(AlignHCenter|AlignVCenter);
-	FontManager::instance()->getFont( font_radio_progrText, aFont );
-	progrText ->setFont( aFont );
+	FontManager::instance()->getFont(font_radio_progrText, aFont);
+	progrText ->setFont(aFont);
 	progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");
 }
 
-void radio::setNameU( const QString & s)
+void radio::setNameU(const QString & s)
 {
 	qnome = s;
 }
@@ -397,6 +400,7 @@ void radio::setAuto()
 	manual=FALSE;
 	draw();
 }
+
 void radio::setMan()
 {
 	disconnect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
@@ -411,31 +415,34 @@ void radio::setMan()
 	draw();
 }
 
-
 void radio::memo1()
 {
 	emit(memoFreq(uchar(1)));
 	ripristinaContesto();
 }
+
 void radio::memo2()
 {
-	emit(memoFreq(uchar(2)));    
+	emit(memoFreq(uchar(2)));
 	ripristinaContesto();
 }
+
 void radio::memo3()
 {
-	emit(memoFreq(uchar(3)));   
+	emit(memoFreq(uchar(3)));
 	ripristinaContesto();
 }
+
 void radio::memo4()
 {
-	emit(memoFreq(uchar(4)));   
+	emit(memoFreq(uchar(4)));
 	ripristinaContesto();
 }
+
 void radio::memo5()
 {
-	emit(memoFreq(uchar(5)));   
-	ripristinaContesto(); 
+	emit(memoFreq(uchar(5)));
+	ripristinaContesto();
 }
 
 void radio::cambiaContesto()
@@ -445,7 +452,7 @@ void radio::cambiaContesto()
 	treBut->show();
 	quatBut->show();
 	cinBut->show();
-	cancBut->show();   
+	cancBut->show();
 	memoBut->hide();
 	decBut->hide();
 	aumBut->hide();
@@ -455,6 +462,7 @@ void radio::cambiaContesto()
 	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
 	connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(ripristinaContesto()));
 }
+
 void radio::ripristinaContesto()
 {
 	unoBut->hide();
@@ -462,7 +470,7 @@ void radio::ripristinaContesto()
 	treBut->hide();
 	quatBut->hide();
 	cinBut->hide();
-	cancBut->hide();   
+	cancBut->hide();
 	memoBut->show();
 	decBut->show();
 	aumBut->show();
@@ -470,11 +478,12 @@ void radio::ripristinaContesto()
 	manBut->show();
 	cicBut->show();
 	connect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
-	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(ripristinaContesto()));    
+	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(ripristinaContesto()));
 }
+
 void radio::verTas()
 {
-	if ( (!aumBut->isDown()) && (!decBut->isDown()) )
+	if ((!aumBut->isDown()) && (!decBut->isDown()))
 		emit (richFreq());
 }
 

@@ -40,32 +40,32 @@ protected:
 	bool old_diffson;
 	device *dev;
 public:
-	banradio( QWidget *parent,const char *name,char* indirizzo, int nbut=4, const QString & ambdescr="");
+	banradio(QWidget *parent,const char *name,char* indirizzo, int nbut=4, const QString & ambdescr="");
 	void inizializza(bool forza = false);
 	/*!
 	  \brief Sets the background color for the banner.
 
 	  The arguments are RGB components for the color.
 	*/
-	void setBGColor(int, int , int );
+	void setBGColor(int, int , int);
 	/*!
 	  \brief Sets the foreground color for the banner.
 
 	  The arguments are RGB components for the color.
 	*/
-	void setFGColor(int , int , int );
+	void setFGColor(int , int , int);
 	/*!
 	  \brief Sets the background color for the banner.
 
 	  The argument is the QColor description of the color.
 	*/
-	void setBGColor(QColor );
+	void setBGColor(QColor);
 	/*!
 	  \brief Sets the foreground color for the banner.
 
 	  The argument is the QColor description of the color.
 	*/
-	void setFGColor(QColor );
+	void setFGColor(QColor);
 protected slots:
 	void ciclaSorg();
 	void decBrano();
@@ -84,7 +84,7 @@ public slots:
 	void status_changed(QPtrList<device_status>);
 	virtual void	show();
 	void hide();
-	void SetTextU( const QString & );
+	void SetTextU(const QString &);
 };
 
 
@@ -110,7 +110,7 @@ public:
 public slots:
 	void attiva();
 	void addAmb(char *);
-	void ambChanged( const QString &, bool, char *);
+	void ambChanged(const QString &, bool, char *);
 	void show();
 signals:
 	void active(int, int);

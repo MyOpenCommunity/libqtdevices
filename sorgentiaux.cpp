@@ -1,5 +1,3 @@
-
-
 /****************************************************************
  **
  ** BTicino Touch scren Colori art. H4686
@@ -13,31 +11,35 @@
 #include "sorgentiaux.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
 #include "aux.h" // class myAux
-#include <openwebnet.h> // class openwebnet
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
+
+#include <openwebnet.h> // class openwebnet
 
 /*****************************************************************
  **sorgente_aux
  ****************************************************************/
-sorgente_aux::sorgente_aux( QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
-: bannCiclaz( parent, name, vecchio ? 4 : 3)
+sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
+	: bannCiclaz(parent, name, vecchio ? 4 : 3)
 {
-	SetIcons( ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
+	SetIcons(ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
 
 	vecchia = vecchio;
 	setAddress(indirizzo);
 	dev = btouch_device_cache.get_device(getAddress());
 
-	if(vecchio) {
+	if (vecchio)
+	{
 		connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
 		connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
 		connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
 		nascondi(BUT2);
-	} else {
+	}
+	else
+	{
 		myAux = new aux(NULL, name, ambdescr);
-		myAux->setBGColor(parentWidget(TRUE)->backgroundColor() );
-		myAux->setFGColor(parentWidget(TRUE)->foregroundColor() );
+		myAux->setBGColor(parentWidget(TRUE)->backgroundColor());
+		myAux->setFGColor(parentWidget(TRUE)->foregroundColor());
 		// Get freezed events
 		connect(parent, SIGNAL(frez(bool)), myAux, SLOT(freezed(bool)));
 	}
@@ -72,8 +74,8 @@ void sorgente_aux::aumBrano()
 	openwebnet msg_open;
 	char amb[2];
 	sprintf(amb, getAddress());
-	if(!vecchia)
-		if(amb[1] == '0')
+	if (!vecchia)
+		if (amb[1] == '0')
 			amb[1] = '1';
 
 	msg_open.CreateMsgOpen("16","6001",amb,"");
@@ -88,7 +90,7 @@ void sorgente_aux::hide()
 {
 	qDebug("sorgente::hide()");
 	banner::hide();
-	if(vecchia)
+	if (vecchia)
 		return;
 	myAux->hide();
 }
@@ -96,11 +98,11 @@ void sorgente_aux::hide()
 /*****************************************************************
  ** Sorgente aux diffusione sonora multicanale
  ****************************************************************/
-	sorgenteMultiAux::sorgenteMultiAux( QWidget *parent,const char *name,char* indirizzo,char* Icona1,char* Icona2, char *Icona3, char *ambdescr)
-: sorgente_aux( parent, name, indirizzo, false, ambdescr)
-{       
-	qDebug("sorgenteMultiAux::sorgenteMultiAux() : "
-			"%s %s %s", Icona1, Icona2, Icona3);
+
+sorgenteMultiAux::sorgenteMultiAux(QWidget *parent,const char *name,char* indirizzo,char* Icona1,char* Icona2, char *Icona3, char *ambdescr)
+	: sorgente_aux(parent, name, indirizzo, false, ambdescr)
+{
+	qDebug("sorgenteMultiAux::sorgenteMultiAux() : %s %s %s", Icona1, Icona2, Icona3);
 	SetIcons(Icona1, Icona2, NULL, Icona3);
 	indirizzo_semplice = QString(indirizzo);
 	indirizzi_ambienti.clear();
@@ -118,16 +120,19 @@ void sorgenteMultiAux::attiva()
 	char pippo[50];
 	openwebnet msg_open;
   
-	if(!multiamb) {
+	if (!multiamb)
+	{
 		memset(pippo,'\000',sizeof(pippo));
 		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		dev->sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
-	} else {
-		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI",
-				indirizzi_ambienti.count());
-		for ( QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it ) {
+	}
+	else
+	{
+		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
+		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		{
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*22*0#4#");
 			strcat(pippo,(*it));
@@ -158,28 +163,25 @@ void sorgenteMultiAux::attiva()
 void sorgenteMultiAux::ambChanged(const QString & ad, bool multi, char *indamb)
 {
 	qDebug("sorgenteMultiAux::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
-	if(!multi) {
+	if (!multi)
+	{
 		multiamb = false;
 		indirizzo_ambiente = QString((const char *)indamb).toInt();
-		QString *dove = new QString(
-				QString::number(100 + 
-					QString((const char *)indamb).toInt() * 10 +
-					indirizzo_semplice.toInt(),
-					10));
+		QString *dove = new QString(QString::number(100 + QString((const char *)indamb).toInt() * 10 +
+			indirizzo_semplice.toInt(), 10));
 		qDebug("Source where now = %s", dove->ascii());
 		setAddress((char *)dove->ascii());
 		delete dove;
-	} else {
-		QString *dove = new QString(
-				QString::number(100 + 
-					indirizzo_semplice.toInt(),
-					10));
+	}
+	else
+	{
+		QString *dove = new QString(QString::number(100 + indirizzo_semplice.toInt(), 10));
 		qDebug("Source where is now %s", dove->ascii());
 		setAddress((char *)dove->ascii());
 		delete dove;
 		multiamb = true;
 	}
-	myAux->setAmbDescr( ad );
+	myAux->setAmbDescr(ad);
 }
 
 void sorgenteMultiAux::addAmb(char *a)
