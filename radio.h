@@ -12,7 +12,7 @@
 #ifndef RADIO_H
 #define RADIO_H
 
-#include <qwidget.h>
+#include <QWidget>
 
 class BtLabel;
 class BtButton;
@@ -202,6 +202,11 @@ private:
 	QString qnome;
 	bool manual, wasManual;
 	bannFrecce *bannNavigazione;
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 

@@ -14,6 +14,10 @@
 #include "bannciclaz.h"
 #include "device_status.h"
 
+#include <QList>
+#include <QString>
+#include <QStringList>
+
 /// Forward Declarations
 class radio;
 class device;
@@ -81,7 +85,7 @@ protected slots:
 	void startRDS();
 	void grandadChanged(QWidget *);
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 	virtual void	show();
 	void hide();
 	void SetTextU(const QString &);

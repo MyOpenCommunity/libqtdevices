@@ -660,9 +660,11 @@ void banner::impostaAttivo(char Attivo)
 	}
 }
 
-void banner::setAddress(const char *indirizzo)
+void banner::setAddress(QString addr)
 {
-	strncpy(address,indirizzo,sizeof(address));
+	QByteArray buf = addr.toAscii();
+	// TODO: rendere address una qstring!
+	strncpy(address,buf.constData(),sizeof(address));
 }
 
 void banner::gestFrame(char*){}

@@ -1,3 +1,4 @@
+
 /****************************************************************
  **
  ** BTicino Touch scren Colori art. H4686
@@ -18,20 +19,20 @@
 #include "btbutton.h"
 #include "fontmanager.h"
 
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qframe.h>
-#include <qdatetime.h>
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qfile.h>
+#include <QLabel>
+#include <QPixmap>
+#include <QFrame>
+#include <QDateTime>
+#include <QLCDNumber>
+#include <QCursor>
+#include <QFile>
 
 
 radio::radio(QWidget *parent, const char *name, const QString & amb)
-	: QWidget(parent, name)
+	: QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
@@ -56,12 +57,12 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	rdsLabel = new BtLabel(this,"Bottone di sinistra");
 	radioName = new BtLabel(this,"Bottone di sinistra");
 	ambDescr = new BtLabel(this, "descrizione ambiente");
-	ambDescr->setAlignment(AlignHCenter|AlignTop);
+	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
  	QFont aFont;
 	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
 	ambDescr->setFont(aFont);
 	ambDescr->setText(amb);
-	freq = new QLCDNumber(this,"pippo");
+	freq = new QLCDNumber(this);
 	progrText = new BtLabel(this,"progressivo stazione");
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(TRUE);
@@ -343,10 +344,10 @@ void radio::setAmbDescr(const QString & d)
 void radio::draw()
 {
 	QFont aFont;
-	rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
+	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	FontManager::instance()->getFont(font_radio_rdsLabel, aFont);
 	rdsLabel->setFont(aFont);
-	radioName->setAlignment(AlignHCenter|AlignTop);
+	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	FontManager::instance()->getFont(font_radio_radioName, aFont);
 	radioName->setFont(aFont);
 	radioName->setText(qnome);
@@ -371,10 +372,10 @@ void radio::draw()
 	}
 	wasManual=manual;
 
-	progrText ->setAlignment(AlignHCenter|AlignVCenter);
+	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	FontManager::instance()->getFont(font_radio_progrText, aFont);
-	progrText ->setFont(aFont);
-	progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");
+	progrText->setFont(aFont);
+	progrText->setText(QString::number((int)stazione)+":");
 }
 
 void radio::setNameU(const QString & s)
@@ -492,4 +493,25 @@ void radio::freezed(bool f)
 	qDebug("radio::freezed()");
 	// Disable radio and all of its children
 	setDisabled(f);
+}
+
+void radio::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void radio::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void radio::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
 }

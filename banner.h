@@ -143,7 +143,7 @@ public:
 	 *
 	 *  The argument  describe the Open What of the object controlled by the banner.
 	 */
-	void setAddress(const char *);
+	void setAddress(QString addr);
 	/*!
 	 *  \brief Retrieves the address of what is controlled by the banner.
 	 *
