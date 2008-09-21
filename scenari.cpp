@@ -19,7 +19,8 @@
 
 #include <openwebnet.h> // class openwebnet
 
-#include <qdir.h>
+#include <QDir>
+#include <QDebug>
 
 /*****************************************************************
  **scenario
@@ -86,8 +87,8 @@ void scenario::inizializza(bool forza){}
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_modscen_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
 void gesModScen::attivaScenario()
@@ -176,16 +177,15 @@ void gesModScen::cancScen()
 	dev->sendFrame(msg_open.frame_open);
 }
 
-void gesModScen::status_changed(QPtrList<device_status> sl)
+void gesModScen::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_status(stat_var::STAT);
 	qDebug("gesModScen::status_changed");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	bool aggiorna = false;
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::MODSCEN:
@@ -202,26 +202,26 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 							SLOT(attivaScenario()));
 					connect(this,SIGNAL(sxClick()), this,
 							SLOT(stopProgScen()));
-					in_progr=0;
+					in_progr = 0;
 				}
 				else
 				{
-					in_progr=1;
+					in_progr = 1;
 					exitInfo();
 				}
-				aggiorna=1;
+				aggiorna = 1;
 				break;
 			case device_status_modscen::LOCKED:
 				qDebug("Locked");
-				bloccato=1;
+				bloccato = 1;
 				exitInfo();
-				aggiorna=1;
+				aggiorna = 1;
 				break;
 			case device_status_modscen::BUSY:
 				qDebug("Busy");
-				in_progr=1;
+				in_progr = 1;
 				exitInfo();
-				aggiorna=1;
+				aggiorna = 1;
 				break;
 			case device_status_modscen::PROGRAMMING_STOP:
 				qDebug("Programming stop");
@@ -229,8 +229,8 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
-				aggiorna=1;
-				in_progr=0;
+				aggiorna = 1;
+				in_progr = 0;
 				break;
 			case device_status_modscen::UNLOCKED:
 				qDebug("Unlocked");
@@ -238,8 +238,8 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
-				aggiorna=1;
-				bloccato=0;
+				aggiorna = 1;
+				bloccato = 0;
 				break;
 			default:
 				qDebug("Unknown status %d", curr_status.get_val());
@@ -249,7 +249,6 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
 
 	if (aggiorna)
@@ -260,7 +259,6 @@ void gesModScen::status_changed(QPtrList<device_status> sl)
 			mostra(BUT2);
 		Draw();
 	}
-	delete dsi;
 }
 
 void gesModScen::inizializza(bool forza)
@@ -275,34 +273,33 @@ void gesModScen::inizializza(bool forza)
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, const char *name, QPtrList<scenEvo_cond> *c, char *i1, char *i2,
+scenEvo::scenEvo(QWidget *parent, const char *name, QList<scenEvo_cond*> *c, char *i1, char *i2,
 	char *i3, char *i4, char *i5, char *i6, char *i7, QString act, int enable) : bann3But(parent, name)
 {
 	if (c)
-		condList = new QPtrList<scenEvo_cond>(*c);
-	cond_iterator = new QPtrListIterator<scenEvo_cond>(*condList);
-	cond_iterator->toFirst();
-	scenEvo_cond *co;
-	QPtrListIterator<scenEvo_cond> *ci = new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	serial_number = next_serial_number++;
-	while ((co = ci->current()) != 0)
 	{
-		qDebug(co->getDescription());
+		condList = *c;
+		current_condition = 0;
+	}
+
+	serial_number = next_serial_number++;
+	for (int i = 0; i < condList.size(); ++i)
+	{
+		scenEvo_cond *co = condList.at(i);
+		qDebug() << "connecting condition: " << co->getDescription();
 		co->set_serial_number(serial_number);
 		connect(co, SIGNAL(verificata()), this, SLOT(trig()));
 		connect(co, SIGNAL(condSatisfied()), this, SLOT(trigOnStatusChanged()));
 		connect(co, SIGNAL(okAll()), this, SLOT(saveAndApplyAll()));
 		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
-		++(*ci);
 	}
-	delete ci;
+
 	action = act;
 	SetIcons(i1, i2 , i3, i4);
 	impostaAttivo(enable);
-	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAttivaScev()));
-	connect(this,SIGNAL(dxClick()),this,SLOT(configScev()));
-	connect(this,SIGNAL(centerClick()),this,SLOT(forzaScev()));
+	connect(this,SIGNAL(sxClick()), this, SLOT(toggleAttivaScev()));
+	connect(this,SIGNAL(dxClick()), this, SLOT(configScev()));
+	connect(this,SIGNAL(centerClick()), this, SLOT(forzaScev()));
 	connect(parent, SIGNAL(frez(bool)), this, SLOT(freezed(bool)));
 }
 
@@ -314,14 +311,14 @@ void scenEvo::toggleAttivaScev()
 	const char *s = isActive() ? "1" : "0";
 	copyFile("cfg/conf.xml","cfg/conf1.lmx");
 	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "enable", s, serial_number);
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
 }
 
 void scenEvo::configScev()
 {
 	qDebug("scenEvo::configScev");
 	hide();
-	scenEvo_cond *co = cond_iterator->current();
+	scenEvo_cond *co = condList.at(current_condition);
 	qDebug("Invoco %p->mostra()", co);
 	co->setBGColor(backgroundColor());
 	co->setFGColor(foregroundColor());
@@ -342,15 +339,16 @@ void scenEvo::forzaScev()
 void scenEvo::nextCond()
 {
 	qDebug("scenEvo::nextCond()");
-	scenEvo_cond *co = cond_iterator->current();
+	scenEvo_cond *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	co->hide();
-	if (!cond_iterator->atLast())
+
+	if (current_condition + 1 < static_cast<unsigned>(condList.size()))
 	{
-		++(*cond_iterator);
-		co = cond_iterator->current();
+		++current_condition;
+		co = condList.at(current_condition);
 		qDebug("co = %p", co);
 		if (co)
 		{
@@ -365,7 +363,7 @@ void scenEvo::nextCond()
 	}
 	else
 	{
-		cond_iterator->toFirst();
+		current_condition = 0;
 		Draw();
 		show();
 	}
@@ -374,15 +372,16 @@ void scenEvo::nextCond()
 void scenEvo::prevCond()
 {
 	qDebug("scenEvo::prevCond()");
-	scenEvo_cond *co = cond_iterator->current();
+	scenEvo_cond *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	co->hide();
-	if (!cond_iterator->atFirst())
+
+	if (current_condition > 0)
 	{
-		--(*cond_iterator);
-		co = cond_iterator->current();
+		--current_condition;
+		co = condList.at(current_condition);
 		qDebug("co = %p", co);
 		if (co)
 		{
@@ -404,10 +403,10 @@ void scenEvo::prevCond()
 void scenEvo::firstCond()
 {
 	qDebug("scenEvo::firstCond()");
-	scenEvo_cond *co = cond_iterator->current();
+	scenEvo_cond *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	co->hide();
-	cond_iterator->toFirst();
+	current_condition = 0;
 	Draw();
 	show();
 }
@@ -415,29 +414,22 @@ void scenEvo::firstCond()
 void scenEvo::saveAndApplyAll()
 {
 	qDebug("scenEvo::saveAndApplyAll()");
-	QPtrListIterator<scenEvo_cond> *ci = new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	scenEvo_cond *co;
-	while ((co = ci->current()) != 0)
+	for (int i = 0; i < condList.size(); ++i)
 	{
+		scenEvo_cond *co = condList.at(i);
 		co->Apply();
 		co->save();
-		++(*ci);
 	}
-	delete ci;
 }
 
 void scenEvo::resetAll()
 {
 	qDebug("scenEvo::resetAll()");
-	QPtrListIterator<scenEvo_cond> *ci = new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	scenEvo_cond *co;
-	while ((co = ci->current()) != 0) {
+	for (int i = 0; i < condList.size(); ++i)
+	{
+		scenEvo_cond *co = condList.at(i);
 		co->reset();
-		++(*ci);
 	}
-	delete ci;
 }
 
 void scenEvo::Draw()
@@ -451,21 +443,21 @@ void scenEvo::Draw()
 	// Icon[2] => right button
 	// pressIcon[2] => pressed right button
 	qDebug("scenEvo::Draw(%p)", this);
-	cond_iterator->toFirst();
-	if ((sxButton) && (Icon[0]) && (Icon[1]))
+	current_condition = 0;
+	if (sxButton && Icon[0] && Icon[1])
 	{
 		int sxb_index = isActive() ? 0 : 1;
 		sxButton->setPixmap(*Icon[sxb_index]);
 		if (pressIcon[sxb_index])
 			sxButton->setPressedPixmap(*pressIcon[sxb_index]);
 	}
-	if ((dxButton) && (Icon[2]))
+	if (dxButton && Icon[2])
 	{
 		dxButton->setPixmap(*Icon[2]);
 		if (pressIcon[2])
 			dxButton->setPressedPixmap(*pressIcon[2]);
 	}
-	if ((csxButton) && (Icon[3]))
+	if (csxButton && Icon[3])
 	{
 		csxButton->setPixmap(*Icon[3]);
 		if (pressIcon[3])
@@ -475,7 +467,7 @@ void scenEvo::Draw()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_bannertext, aFont);
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		BannerText->setFont(aFont);
 		BannerText->setText(qtesto);
 	}
@@ -483,7 +475,7 @@ void scenEvo::Draw()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_secondarytext, aFont);
-		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		SecondaryText->setFont(aFont);
 		SecondaryText->setText(qtestoSecondario);
 	}
@@ -492,11 +484,9 @@ void scenEvo::Draw()
 void scenEvo::trigOnStatusChanged()
 {
 	qDebug("scenEvo::trigOnStatusChanged()");
-	QPtrListIterator<scenEvo_cond> ci(*condList);
-	scenEvo_cond *co;
-	while ((co = ci.current()) != 0)
+	for (int i = 0; i < condList.size(); ++i)
 	{
-		++ci;
+		scenEvo_cond *co = condList.at(i);
 		if (co->hasTimeCondition)
 			return;
 	}
@@ -505,53 +495,45 @@ void scenEvo::trigOnStatusChanged()
 
 void scenEvo::trig(bool forced)
 {
-	if (!action)
+	if (action.isEmpty())
 	{
 		qDebug("scenEvo::trig(), act = NULL, non faccio niente");
 		return;
 	}
-	QPtrListIterator<scenEvo_cond> *ci;
-	if (forced)
-		goto do_send;
-	if (!isActive())
+
+	if (!forced)
 	{
-		qDebug("scenEvo::trig(), non abilitato, non faccio niente");
-		return;
-	}
-	// Verifica tutte le condizioni
-	ci = new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	scenEvo_cond *co;
-	while ((co = ci->current()) != 0)
-	{
-		if (!co->isTrue())
+		if (!isActive())
 		{
-			qDebug("Condizione %p (%s), non verificata, non faccio niente",
-					co, co->getDescription());
+			qDebug("scenEvo::trig(), non abilitato, non faccio niente");
 			return;
 		}
-		++(*ci);
+		for (int i = 0; i < condList.size(); ++i)
+		{
+			scenEvo_cond *co = condList.at(i);
+			if (!co->isTrue())
+			{
+				qDebug("Condizione %p (%s), non verificata, non faccio niente",
+						co, co->getDescription());
+				return;
+			}
+		}
 	}
-	delete ci;
-do_send:
-	qDebug("scenEvo::trig(), act = %s", action.ascii());
+	QByteArray buf = action.toAscii();
+	qDebug("scenEvo::trig(), act = %s", buf.constData());
 	openwebnet msg_open;
-	msg_open.CreateMsgOpen((char *)action.ascii(), action.length());
+	msg_open.CreateMsgOpen(buf.data(), buf.length());
 	emit sendFrame(msg_open.frame_open);
 }
 
 void scenEvo::freezed(bool f)
 {
 	qDebug("scenEvo::freezed(bool f)");
-	QPtrListIterator<scenEvo_cond> *ci = new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	scenEvo_cond *co;
-	while ((co = ci->current()) != 0)
+	for (int i = 0; i < condList.size(); ++i)
 	{
+		scenEvo_cond *co = condList.at(i);
 		co->setEnabled(!f);
-		++(*ci);
 	}
-	delete ci;
 }
 
 void scenEvo::gestFrame(char* frame)
@@ -562,34 +544,39 @@ void scenEvo::gestFrame(char* frame)
 void scenEvo::inizializza(bool forza)
 {
 	qDebug("scenEvo::inizializza()");
-	scenEvo_cond *co;
-	QPtrListIterator<scenEvo_cond> *ci = new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	while ((co = ci->current()) != 0)
+	for (int i = 0; i < condList.size(); ++i)
 	{
+		scenEvo_cond *co = condList.at(i);
 		co->inizializza();
-		++(*ci);
 	}
-	delete ci;
 }
 
 void scenEvo::hide()
 {
 	qDebug("scenEvo::hide()");
-	scenEvo_cond *co;
-	QPtrListIterator<scenEvo_cond> *ci = new QPtrListIterator<scenEvo_cond>(*condList);
-	ci->toFirst();
-	while ((co = ci->current()) != 0)
+	for (int i = 0; i < condList.size(); ++i)
 	{
+		scenEvo_cond *co = condList.at(i);
 		co->hide();
-		++(*ci);
 	}
-	delete ci;
 	banner::hide();
 }
 
-// FIXME: FAI IL DISTRUTTORE !!!!!
+scenEvo::~scenEvo()
+{
+	while (!condList.isEmpty())
+		delete condList.takeFirst();
+}
 
+const QColor& scenEvo::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& scenEvo::foregroundColor()
+{
+	return palette().color(foregroundRole());
+}
 
 /*****************************************************************
  ** Scenario schedulato
@@ -645,8 +632,8 @@ void scenSched::enable()
 {
 	qDebug("scenSched::enable()");
 	openwebnet msg_open;
-	msg_open.CreateMsgOpen((char *)action_enable.ascii(), 
-			action_enable.length());
+	QByteArray buf = action_enable.toAscii();
+	msg_open.CreateMsgOpen(buf.data(),buf.length());
 	emit sendFrame(msg_open.frame_open);
 	Draw();
 }
@@ -655,8 +642,8 @@ void scenSched::start()
 {
 	qDebug("scenSched::start()");
 	openwebnet msg_open;
-	msg_open.CreateMsgOpen((char *)action_start.ascii(), 
-			action_start.length());
+	QByteArray buf = action_start.toAscii();
+	msg_open.CreateMsgOpen(buf.data(),buf.length());
 	emit sendFrame(msg_open.frame_open);
 	Draw();
 }
@@ -665,8 +652,8 @@ void scenSched::stop()
 {
 	qDebug("scenSched::stop()");
 	openwebnet msg_open;
-	msg_open.CreateMsgOpen((char *)action_stop.ascii(), 
-			action_stop.length());
+	QByteArray buf = action_stop.toAscii();
+	msg_open.CreateMsgOpen(buf.data(),buf.length());
 	emit sendFrame(msg_open.frame_open);
 	Draw();
 }
@@ -675,8 +662,8 @@ void scenSched::disable()
 {
 	qDebug("scenSched::disable()");
 	openwebnet msg_open;
-	msg_open.CreateMsgOpen((char *)action_disable.ascii(), 
-			action_disable.length());
+	QByteArray buf = action_disable.toAscii();
+	msg_open.CreateMsgOpen(buf.data(),buf.length());
 	emit sendFrame(msg_open.frame_open);
 	Draw();
 }
@@ -720,7 +707,7 @@ void scenSched::Draw()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_bannertext, aFont);
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		BannerText->setFont(aFont);
 		BannerText->setText(qtesto);
 	}

@@ -17,8 +17,13 @@
 #include "bann4but.h"
 #include "device_status.h"
 
+#include <QObject>
+#include <QString>
+#include <QList>
+
 class scenEvo_cond;
 class device;
+class QWidget;
 
 /*****************************************************************
  **scenario
@@ -75,7 +80,7 @@ private slots:
 	void stopProgScen();
 	void cancScen();
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 	void inizializza(bool forza = false);
 };
 
@@ -93,13 +98,19 @@ class scenEvo : public  bann3But
 {
 Q_OBJECT
 private:
-	QPtrList<scenEvo_cond> *condList;
-	QPtrListIterator<scenEvo_cond> *cond_iterator;
+	QList<scenEvo_cond*> condList;
+	unsigned current_condition;
 	QString action;
 	int serial_number;
 	static int next_serial_number;
+
+	// TODO: rimuovere questi metodi qt3!
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
+
 public:
-	scenEvo(QWidget *parent=0, const char *name=NULL, QPtrList<scenEvo_cond> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3 = NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, QString act="", int enabled = 0);
+	scenEvo(QWidget *parent=0, const char *name=NULL, QList<scenEvo_cond*> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3 = NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, QString act="", int enabled = 0);
+	~scenEvo();
 	void Draw();
 private slots:
 	void toggleAttivaScev();
