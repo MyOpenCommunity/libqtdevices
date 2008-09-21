@@ -10,16 +10,16 @@
 
 #include "sorgentimedia.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
-#include <openwebnet.h> // class openwebnet
 #include "device_cache.h"
 #include "device.h"
+
+#include <openwebnet.h> // class openwebnet
 
 /*****************************************************************
  **SorgenteMultimedia
  ****************************************************************/
 BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbut) :
-	bannCiclaz(parent, name, nbut),
-	source_menu(NULL, name, indirizzo, where)
+	bannCiclaz(parent, name, nbut), source_menu(NULL, name, indirizzo, where)
 {
 	SetIcons(ICON_CICLA, ICON_IMPOSTA, ICON_FFWD, ICON_REW);
 
@@ -30,7 +30,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	connect(parentWidget(TRUE), SIGNAL(frez(bool)), &source_menu, SLOT(freezed(bool)));
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showPage()));
-	if(nbut == 4)
+	if (nbut == 4)
 	{
 		connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));
 		connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
@@ -111,11 +111,12 @@ void BannerSorgenteMultimedia::inizializza(bool forza)
 	sprintf(amb, getAddress());
 	dev->sendInit((char *)(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(amb[2]).ascii()));
 }
+
 /*
  * Banner Sorgente Multimediale Multicanale
  */
 BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
-		const char *icon_onoff, const char *icon_cycle, const char *icon_settings) :
+	const char *icon_onoff, const char *icon_cycle, const char *icon_settings) :
 	BannerSorgenteMultimedia(parent, name, indirizzo, where, 3)
 {
 	SetIcons(icon_onoff, NULL, icon_cycle, icon_settings);
@@ -138,7 +139,6 @@ void BannerSorgenteMultimediaMC::attiva()
 		memset(pippo,'\000',sizeof(pippo));
 		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-		//msg_open.CreateMsgOpen("16", "3", getAddress(), "");
 		dev->sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 		source_menu.enableSource(false);
