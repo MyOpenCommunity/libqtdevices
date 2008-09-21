@@ -13,6 +13,7 @@
 
 #include "bann4taslab.h"
 
+#include <qwidget.h>
 #include <qstring.h>
 
 /// Forward Declarations

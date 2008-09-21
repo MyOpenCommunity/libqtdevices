@@ -23,7 +23,7 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
-postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown) : bann4tasLab( parent, name )
+postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown) : bann4tasLab(parent, name)
 {
 	where = _where;
 	descr = name;
@@ -38,16 +38,20 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	qDebug("descr = %s, where = %s", name, _where);
 	//SetIcons(Icona1, Icona3, Icona4, Icona2);
 	SetIcons (Icona2, Icona3, "", "", Icona1);
-	if(key) {
+	if (key)
+	{
 		key_icon = Icona2;
 		connect(this, SIGNAL(sxPressed()), this, SLOT(open_door_clicked()));
-	} else
+	}
+	else
 		nascondi(BUT1);
-	if(light) {
+	if (light)
+	{
 		connect(this, SIGNAL(dxPressed()), this, SLOT(stairlight_pressed()));
 		connect(this, SIGNAL(dxReleased()), this, SLOT(stairlight_released()));
 		light_icon = Icona3;
-	} else
+	}
+	else
 		nascondi(BUT2);
 	connect(parent, SIGNAL(frez(bool)), this, SIGNAL(freezed(bool)));
 	close_icon = Icona4;
@@ -59,7 +63,8 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	cn->setBGColor(backgroundColor());
 	cn->setFGColor(foregroundColor());
 	qDebug("cnm = %p", cnm);
-	if(!cnm) {
+	if (!cnm)
+	{
 		qDebug("Creating call notifier manager");
 		cnm = new call_notifier_manager();
 		connect(cnm, SIGNAL(frame_captured(call_notifier *)),
@@ -72,7 +77,8 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 		connect(this, SIGNAL(freezed(bool)), cnm, SIGNAL(freezed(bool)));
 	}
 	cnm->add_call_notifier(cn);
-	if(unknown && !unknown_notifier) {
+	if (unknown && !unknown_notifier)
+	{
 		qDebug("Creating unknown station notifier");
 		unknown_notifier = new call_notifier(NULL, "unk call notif", NULL);
 		cnm->set_unknown_call_notifier(unknown_notifier);
@@ -90,14 +96,12 @@ void postoExt::frame_captured_handler(call_notifier *cn)
 {
 	qDebug("postoExt::frame_captured_handler()");
 	// Just unfreeze
-	//emit(svegl(1));
 	emit(freeze(0));
 }
 
 void postoExt::call_notifier_closed(call_notifier *cn)
 {
 	qDebug("postoExt::call_notifier_closed()");
-	//emit(svegl(0));
 }
 
 void postoExt::open_door_clicked(void)
