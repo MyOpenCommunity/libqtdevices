@@ -17,8 +17,8 @@
 
 #include "btlabelevo.h"
 
-#include <qstring.h>
-#include <qtimer.h>
+#include <QString>
+#include <QTimer>
 
 /**
  * \class TitleLabel
@@ -30,13 +30,14 @@ class TitleLabel : public BtLabelEvo
 {
 Q_OBJECT
 public:
-	TitleLabel(QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE, WFlags f = 0);
+	TitleLabel(QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = FALSE, Qt::WindowFlags f = 0);
 
 	void setText(const QString & text_to_set);
-	void drawContents(QPainter *p);
 	void resetTextPosition();
-
 	void setMaxVisibleChars(int n);
+
+protected:
+	virtual void paintEvent(QPaintEvent *event);
 
 private:
 	// internal data

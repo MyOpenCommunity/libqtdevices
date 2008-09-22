@@ -10,12 +10,12 @@
 
 #include "titlelabel.h"
 
-#include <qpainter.h>
+#include <QPainter>
 
 /// ***********************************************************************************************************************
 /// Methods for TitleLabel
 /// ***********************************************************************************************************************
-TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, WFlags f) :
+TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, Qt::WindowFlags f) :
 	BtLabelEvo(parent, 0, f)
 {
 	// Style
@@ -42,10 +42,11 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offs
 	connect(&scrolling_timer, SIGNAL(timeout()), this, SLOT(handleScrollingTimer()));
 }
 
-void TitleLabel::drawContents(QPainter *p)
+void TitleLabel::paintEvent(QPaintEvent *event)
 {
-	p->translate(w_offset, h_offset);
-	QLabel::drawContents(p);
+	QPainter p(this);
+	p.translate(w_offset, h_offset);
+	BtLabelEvo::paintEvent(event);
 }
 
 void TitleLabel::resetTextPosition()

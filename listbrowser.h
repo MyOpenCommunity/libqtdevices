@@ -14,12 +14,12 @@
 #ifndef LIST_BROWSER_H
 #define LIST_BROWSER_H
 
+
 #include "titlelabel.h"
 
-#include <qvaluevector.h>
-#include <qstring.h>
-#include <qwidget.h>
-#include <qptrvector.h>
+#include <QVector>
+#include <QString>
+#include <QWidget>
 
 
 class ButtonsBar;
@@ -34,13 +34,13 @@ class ListBrowser : public QWidget
 {
 Q_OBJECT
 public:
-	ListBrowser(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
-
+	ListBrowser(QWidget *parent, unsigned rows_per_page, const char *name=0, Qt::WindowFlags f=0);
+	~ListBrowser();
 	/// Apply Style
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 
-	void setList(QValueVector<QString> _item_list, unsigned _current_page = 0);
+	void setList(QVector<QString> _item_list, unsigned _current_page = 0);
 	void showList();
 
 	unsigned getCurrentPage();
@@ -57,14 +57,18 @@ private:
 	unsigned rows_per_page;
 	unsigned current_page;
 
-	QPtrVector<TitleLabel> labels_list;
+	QVector<TitleLabel*> labels_list;
 	ButtonsBar             *buttons_bar;
 
 	/// The list of items displayed
-	QValueVector<QString> item_list;
+	QVector<QString> item_list;
 
 	/// before to show itself some init is done
 	void showEvent(QShowEvent *event);
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
 
 private slots:
 	void clicked(int item);

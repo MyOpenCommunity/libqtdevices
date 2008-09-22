@@ -13,7 +13,9 @@
 #include "fontmanager.h"
 #include "main.h"
 
-#include <qlayout.h>
+#include <QLayout>
+#include <QFont>
+
 #include <algorithm>
 
 // Interface icon paths.
@@ -21,13 +23,15 @@ static const char *IMG_SELECT = IMG_PATH "arrrg.png";
 static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 
 
-ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *name, WFlags f) :
-	QWidget(parent, name, f)
+ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *name, Qt::WindowFlags f) :
+	QWidget(parent, f)
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_listbrowser, aFont);
 	setFont(aFont);
 
+	// TODO: sistemare lo stile!!
+	/*
 	// Set Style
 	// Look QColorGroup Class Reference
 	QPalette current_color_palette = palette();
@@ -40,6 +44,7 @@ ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *n
 	current_color_palette.setColor(QColorGroup::Midlight, Qt::black);
 	current_color_palette.setColor(QColorGroup::Dark, Qt::black);
 	setPalette(current_color_palette);
+	*/
 
 	// Create main Layout
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
@@ -51,25 +56,25 @@ ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *n
 	current_page = 0;
 
 	// Create labels_layout
-	QVBoxLayout *labels_layout = new QVBoxLayout(main_layout);
+	QVBoxLayout *labels_layout = new QVBoxLayout();
 	labels_layout->setMargin(0);
 	labels_layout->setSpacing(0);
 
 	// Create labels and add them to label_layout
 	// WARNING Quick and Dirty alignment using offsets of TitleLabel
-	QValueVector<int> h_offsets;
+	QVector<int> h_offsets;
 	h_offsets.append(-4);
 	h_offsets.append(-2);
 	h_offsets.append(-1);
 	h_offsets.append(0);
-	labels_list.resize(rows_per_page);
-	labels_list.setAutoDelete(true);
+	labels_list.reserve(rows_per_page);
 	for (unsigned i = 0; i < rows_per_page; ++i)
 	{
 		// Create label and add it to labels_layout
-		labels_list.insert(i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], true));
+		labels_list.append(new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], true));
 		labels_layout->addWidget(labels_list[i]);
 	}
+	main_layout->addLayout(labels_layout);
 
 	// Create buttons_bar
 	buttons_bar = new ButtonsBar(this, rows_per_page, Qt::Vertical);
@@ -85,6 +90,12 @@ ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *n
 	connect(buttons_bar, SIGNAL(clicked(int)), SLOT(clicked(int)));
 }
 
+ListBrowser::~ListBrowser()
+{
+	for (int i = 0; i < labels_list.size(); ++i)
+		delete labels_list[i];
+}
+
 void ListBrowser::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
@@ -97,7 +108,7 @@ void ListBrowser::setFGColor(QColor c)
 	buttons_bar->setFGColor(c);
 }
 
-void ListBrowser::setList(QValueVector<QString> _item_list, unsigned _current_page)
+void ListBrowser::setList(QVector<QString> _item_list, unsigned _current_page)
 {
 	item_list = _item_list;
 	current_page = _current_page;
@@ -116,10 +127,10 @@ unsigned ListBrowser::getCurrentPage()
 
 void ListBrowser::showList()
 {
-	unsigned start = current_page * rows_per_page;
-	unsigned end   = std::min(start + rows_per_page, item_list.count());
+	int start = current_page * rows_per_page;
+	int end   = std::min(static_cast<int>(start + rows_per_page), item_list.count());
 
-	for (unsigned i = 0; i < labels_list.size(); ++i)
+	for (int i = 0; i < labels_list.size(); ++i)
 	{
 		if (i < end-start)
 		{
@@ -154,4 +165,18 @@ void ListBrowser::prevItem()
 void ListBrowser::clicked(int item)
 {
 	emit itemIsClicked(current_page * rows_per_page + item);
+}
+
+void ListBrowser::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void ListBrowser::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
 }
