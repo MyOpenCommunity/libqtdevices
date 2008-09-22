@@ -43,9 +43,8 @@ public:
 	//! Destructor
 	virtual ~device();
 
-	void sendFrame(const char *frame);
 	void sendFrame(QString frame);
-	void sendInit(const char *frame);
+	void sendInit(QString frame);
 
 signals:
 	//! Status changed

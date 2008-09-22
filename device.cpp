@@ -42,14 +42,10 @@ void device::sendFrame(QString frame)
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
-void device::sendFrame(const char *frame)
+void device::sendInit(QString frame)
 {
-	client_comandi->ApriInviaFrameChiudi(frame);
-}
-
-void device::sendInit(const char *frame)
-{
-	client_richieste->ApriInviaFrameChiudi(frame);
+	QByteArray buf = frame.toAscii();
+	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::init(bool force)
