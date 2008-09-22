@@ -11,6 +11,7 @@
 #include "listbrowser.h"
 #include "buttons_bar.h"
 #include "fontmanager.h"
+#include "main.h"
 
 #include <qlayout.h>
 #include <algorithm>

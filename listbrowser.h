@@ -14,12 +14,13 @@
 #ifndef LIST_BROWSER_H
 #define LIST_BROWSER_H
 
+#include "titlelabel.h"
+
 #include <qvaluevector.h>
 #include <qstring.h>
 #include <qwidget.h>
 #include <qptrvector.h>
 
-#include "titlelabel.h"
 
 class ButtonsBar;
 
