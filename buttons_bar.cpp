@@ -10,26 +10,8 @@
 
 #include "buttons_bar.h"
 
-#include <algorithm>
-#include <string>
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <qwidget.h>
-#include <qframe.h>
-#include <qdatetime.h>
-#include <qfile.h>
-#include <qpushbutton.h>
-#include <qevent.h>
-#include <qvaluevector.h>
 #include <qlayout.h>
-
-#include "banner.h"
-#include "bannondx.h"
-#include "bannfrecce.h"
-#include "main.h"
-
+#include <qstring.h>
 
 
 /// ***********************************************************************************************************************
@@ -57,7 +39,7 @@ ButtonsBar::ButtonsBar(QWidget *parent, unsigned int number_of_buttons, Orientat
 		// its parent. We also need to store the pointer in the button_list vector because
 		// when we call find method of buttons group we obtain a QButton pointer and no a
 		// BtButton pointer!
-		buttons_list.insert( i, new BtButton(buttons_group, QString("Button%1").arg(i)) );
+		buttons_list.insert(i, new BtButton(buttons_group, QString("Button%1").arg(i)));
 	}
 
 	// Senza il seguente Layout la barra non viene visualizzata in modo corretto
@@ -76,7 +58,7 @@ ButtonsBar::ButtonsBar(QWidget *parent, unsigned int number_of_buttons, Orientat
 	isToggleBar = false;
 
 	/// Connect Signal
-	connect( buttons_group, SIGNAL(clicked(int)), this, SIGNAL(clicked(int)) );
+	connect(buttons_group, SIGNAL(clicked(int)), this, SIGNAL(clicked(int)));
 }
 
 bool ButtonsBar::setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon)

@@ -15,6 +15,7 @@
 #include "bannondx.h"
 #include "fontmanager.h"
 #include "buttons_bar.h"
+#include "main.h"
 
 #include <qlayout.h>
 #include <unistd.h>
