@@ -14,6 +14,8 @@
 #include "bannregolaz.h"
 #include "device_status.h"
 
+#include <qwidget.h>
+
 class device;
 
 /*****************************************************************
@@ -34,7 +36,7 @@ private:
 	char value;
 	device *dev;
 public:
-	amplificatore( QWidget *, const char *,char*,char*,char*,char*,char*);
+	amplificatore(QWidget *, const char *,char*,char*,char*,char*,char*);
 	void inizializza(bool forza = false);
 private slots:
 	void Accendi();
@@ -65,7 +67,7 @@ private:
 	QPtrList<QString> elencoDisp;
 	device *dev;
 public:
-	grAmplificatori  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
+	grAmplificatori(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
 	void inizializza(bool forza = false);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 	void setAddress(void*);

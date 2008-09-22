@@ -19,7 +19,7 @@
  ****************************************************************/
 
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx)
-: bannButIcon(parent, name)
+	: bannButIcon(parent, name)
 {
 	qDebug("automCancAttuatVC::automCancAttuatVC() : %s %s", IconaSx, IconaDx);
 	SetIcons(IconaSx, NULL, IconaDx);
@@ -48,7 +48,7 @@ void automCancAttuatVC::Attiva()
  ****************************************************************/
 
 automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, QString *t)
-: bannButIcon(parent, name)
+	: bannButIcon(parent, name)
 {
 	qDebug("automCancAttuatIll::automCancAttuatIll() :%s %s", IconaSx, IconaDx);
 	SetIcons(IconaSx, NULL, IconaDx);
