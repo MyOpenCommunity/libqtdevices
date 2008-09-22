@@ -12,11 +12,12 @@
 #define AMPLIFICATORI_H
 
 #include "bannregolaz.h"
-#include "device_status.h"
 
 #include <qwidget.h>
 
+class device_status;
 class device;
+class QString;
 
 /*****************************************************************
  **Amplificatore
@@ -44,7 +45,7 @@ private slots:
 	void Aumenta();
 	void Diminuisci();
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 };
 
 
@@ -64,7 +65,9 @@ class grAmplificatori : public bannRegolaz
 {
 Q_OBJECT
 private:
-	QPtrList<QString> elencoDisp;
+	// TODO: probabilmente sarebbe meglio che diventasse QList<QString> ma viene creata
+	// nell'xmlconfhandler, e passata come void*.
+	QList<QString*> elencoDisp;
 	device *dev;
 public:
 	grAmplificatori(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);

@@ -10,9 +10,12 @@
 
 #include "amplificatori.h"
 #include "device_cache.h" // btouch_device_cache
+#include "device_status.h"
 #include "device.h"
 
 #include <openwebnet.h> // class openwebnet
+
+#include <QString>
 
 /*****************************************************************
  **amplificatore
@@ -35,8 +38,8 @@ amplificatore::amplificatore(QWidget *parent,const char *name,char* indirizzo,ch
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_sound_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
 int trasformaVol(int vol)
@@ -65,18 +68,16 @@ int trasformaVol(int vol)
 	return(-1);
 }
 
-void amplificatore::status_changed(QPtrList<device_status>sl)
+void amplificatore::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_lev(stat_var::LEV);
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("amplificatore::status_changed");
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::AMPLIFIER :
@@ -100,11 +101,10 @@ void amplificatore::status_changed(QPtrList<device_status>sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void amplificatore::Accendi()
@@ -187,9 +187,9 @@ grAmplificatori::grAmplificatori(QWidget *parent,const char *name,void *indirizz
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
-void grAmplificatori::setAddress(void*indirizzi)
+void grAmplificatori::setAddress(void *indirizzi)
 {
-	elencoDisp=*((QPtrList<QString>*)indirizzi);
+	elencoDisp=*((QList<QString*>*)indirizzi);
 }
 
 void grAmplificatori::Attiva()
@@ -200,7 +200,8 @@ void grAmplificatori::Attiva()
 	for (uchar idx=0; idx<elencoDisp.count();idx++)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
 		else if (ind[0] == '#')
@@ -219,7 +220,8 @@ void grAmplificatori::Disattiva()
 	for (uchar idx=0; idx<elencoDisp.count();idx++)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
 		else if (ind[0] == '#')
@@ -237,7 +239,8 @@ void grAmplificatori::Aumenta()
 	for (uchar idx=0; idx<elencoDisp.count();idx++)
 	{
 		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("16", "1001",(char*)elencoDisp.at(idx)->ascii(),"");
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		msg_open.CreateMsgOpen("16", "1001",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
 }
@@ -249,7 +252,8 @@ void grAmplificatori::Diminuisci()
 	for (uchar idx=0; idx<elencoDisp.count();idx++)
 	{
 		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("16", "1101",(char*)elencoDisp.at(idx)->ascii(),"");
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		msg_open.CreateMsgOpen("16", "1101",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
 }
