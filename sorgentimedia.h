@@ -14,6 +14,10 @@
 #include "bannciclaz.h"
 #include "multimedia_source.h"
 
+#include <QStringList>
+#include <QString>
+#include <QWidget>
+
 class device;
 
 /**
