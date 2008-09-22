@@ -18,11 +18,14 @@
 #include "btbutton.h"
 #include "main.h"
 
-#include <qlayout.h>
-#include <qregexp.h>
-#include <stdlib.h>
-#include <qapplication.h> //qapp
+#include <QApplication>
+#include <QStringList>
+#include <QLayout>
+#include <QRegExp>
+#include <QDebug>
+#include <QTime>
 
+#include <stdlib.h>
 #include <unistd.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
@@ -52,7 +55,7 @@ enum ChoiceButtons
 };
 
 
-SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent, name)
+SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent)
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_listbrowser, aFont);
@@ -90,12 +93,12 @@ SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent, 
 	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
 	main_controls->addWidget(back_btn);
 
-	QGridLayout *main_layout = new QGridLayout(this, 4, 2, 1);
-	main_layout->addMultiCell(new QSpacerItem(MAX_WIDTH, 20), 0, 0, 0, 1);
+	QGridLayout *main_layout = new QGridLayout(this);
+	main_layout->addItem(new QSpacerItem(MAX_WIDTH, 20), 0, 0, 1, 2);
 	main_layout->addLayout(labels_layout, 1, 0);
 	main_layout->addWidget(buttons_bar, 1, 1);
-	main_layout->addMultiCellLayout(main_controls, 2, 2, 0, 1, Qt::AlignLeft);
-	main_layout->addMultiCell(new QSpacerItem(MAX_WIDTH, 10), 3, 3, 0, 1);
+	main_layout->addLayout(main_controls, 2, 0, 1, 2, Qt::AlignLeft);
+	main_layout->addItem(new QSpacerItem(MAX_WIDTH, 10), 3, 0, 1, 2);
 
 	connect(back_btn, SIGNAL(released()), SIGNAL(Closed()));
 	connect(buttons_bar, SIGNAL(clicked(int)), SIGNAL(clicked(int)));
@@ -115,10 +118,23 @@ void SourceChoice::setFGColor(QColor c)
 	back_btn->setPaletteForegroundColor(c);
 }
 
+void SourceChoice::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void SourceChoice::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
 
 MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
-	QWidget(parent, name),
-	audio_initialized(true)
+	QWidget(parent), audio_initialized(true)
 {
 	// Set main geometry
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
@@ -235,8 +251,8 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 
 	connect(selector, SIGNAL(notifyExit()), SLOT(handleSelectorExit()));
 
-	connect(selector, SIGNAL(startPlayer(QValueVector<AudioData>, unsigned)),
-			SLOT(startPlayer(QValueVector<AudioData>, unsigned)));
+	connect(selector, SIGNAL(startPlayer(QVector<AudioData>, unsigned)),
+			SLOT(startPlayer(QVector<AudioData>, unsigned)));
 }
 
 void MultimediaSource::handleClose()
@@ -268,7 +284,8 @@ void MultimediaSource::initAudio()
 	// perform Audio Init
 	if (!audio_initialized)
 	{
-		emit sendFrame((char *)(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address).ascii()));
+		QByteArray buf = QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address).toAscii();
+		emit sendFrame(buf.data());
 		audio_initialized = true;
 	}
 }
@@ -372,12 +389,14 @@ void MultimediaSource::handleChoiceSource(int button_id)
 
 void MultimediaSource::handleStartPlay()
 {
-	emit sendFrame((char *)(QString("*22*1#4#1*2#%1##").arg(where_address).ascii()));
+	QByteArray buf = QString("*22*1#4#1*2#%1##").arg(where_address).toAscii();
+	emit sendFrame(buf.data());
 }
 
 void MultimediaSource::handleStopPlay()
 {
-	emit sendFrame((char *)(QString("*22*0#4#1*2#%1##").arg(where_address).ascii()));
+	QByteArray buf = QString("*22*0#4#1*2#%1##").arg(where_address).toAscii();
+	emit sendFrame(buf.data());
 }
 
 void MultimediaSource::setBGColor(int r, int g, int b)
@@ -438,18 +457,49 @@ void MultimediaSource::disableSource(bool send_frame)
 		emit notifyStopPlay();
 }
 
-void MultimediaSource::startPlayer(QValueVector<AudioData> list, unsigned element)
+void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 {
 	selector->hide();
 	play_window->startPlayer(list, element);
 	play_window->show();
 }
 
+void MultimediaSource::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void MultimediaSource::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+const QColor& MultimediaSource::paletteBackgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& MultimediaSource::paletteForegroundColor()
+{
+	return palette().color(foregroundRole());
+}
+
+void MultimediaSource::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
 /// ***********************************************************************************************************************
 /// Methods for FileSelector
 /// ***********************************************************************************************************************
 
-FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name, WFlags f) :
+FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name, Qt::WindowFlags f) :
 	Selector(parent, name, f)
 {
 	level = 0;
@@ -459,8 +509,11 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 	main_layout->addWidget(list_browser);
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
-	current_dir.setMatchAllDirs(true);
-	current_dir.setNameFilter("*.[mM]3[uU];*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
+	current_dir.setFilter(QDir::AllDirs);
+
+	QStringList filters;
+	filters << "*.[mM]3[uU]" << "*.[mM][pP]3" << "*.[wW][[aA][vV]" << "*.[oO][gG][gG]" << "*.[wW][mM][aA]";
+	current_dir.setNameFilters(filters);
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
@@ -479,15 +532,15 @@ void FileSelector::showEvent(QShowEvent *event)
 void FileSelector::itemIsClicked(int item)
 {
 	QString filename = files_list[item];
-	qDebug("[AUDIO] FileSelector::itemIsClicked %d -> %s", item, filename.ascii());
+	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << " -> " << filename;
 	QFileInfo clicked_element(current_dir, filename);
 	if (!clicked_element.exists())
-		qDebug("[AUDIO] Error retrieving file by name: %s", filename.ascii());
+		qDebug() << "[AUDIO] Error retrieving file by name: " << filename;
 
 	if (clicked_element.isDir())
 	{
 		++level;
-		if (!browseFiles(clicked_element.absFilePath()))
+		if (!browseFiles(clicked_element.absoluteFilePath()))
 		{
 			// FIXME display error?
 			emit notifyExit();
@@ -495,18 +548,18 @@ void FileSelector::itemIsClicked(int item)
 	}
 	else
 	{
-		QValueVector<AudioData> play_list;
+		QVector<AudioData> play_list;
 		unsigned element = 0;
 		unsigned track_number = 0;
 
-		for (unsigned i = 0; i < files_list.count(); ++i)
+		for (int i = 0; i < files_list.size(); ++i)
 		{
 			QFileInfo fn(current_dir, files_list[i]);
 			if (fn.isDir())
 				continue;
 
-			play_list.append(AudioData(fn.absFilePath(), fn.baseName(true)));
-			if (clicked_element.absFilePath() == fn.absFilePath())
+			play_list.append(AudioData(fn.absoluteFilePath(), fn.completeBaseName()));
+			if (clicked_element.absoluteFilePath() == fn.absoluteFilePath())
 				element = track_number;
 
 			++track_number;
@@ -520,7 +573,7 @@ void FileSelector::browseUp()
 	if (level)
 	{
 		--level;
-		if (!browseFiles(QFileInfo(current_dir, "..").absFilePath()))
+		if (!browseFiles(QFileInfo(current_dir, "..").absoluteFilePath()))
 		{
 			// FIXME display error?
 			emit notifyExit();
@@ -532,7 +585,7 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
-	QString old_path = current_dir.absPath();
+	QString old_path = current_dir.absolutePath();
 	if (changePath(new_path))
 	{
 		if (current_dir.count() <= 2) // empty directory
@@ -541,7 +594,7 @@ bool FileSelector::browseFiles(QString new_path)
 	}
 	else
 	{
-		qDebug("[AUDIO] browseFiles(): path '%s' doesn't exist", new_path.ascii());
+		qDebug() << "[AUDIO] browseFiles(): path '" << new_path << "%s' doesn't exist";
 		return false;
 	}
 }
@@ -552,9 +605,9 @@ bool FileSelector::changePath(QString new_path)
 	if (QFileInfo(new_path).exists())
 	{
 		// save the info of old directory
-		pages_indexes[current_dir.absPath()] = list_browser->getCurrentPage();
+		pages_indexes[current_dir.absolutePath()] = list_browser->getCurrentPage();
 
-		QString new_path_string = QFileInfo(new_path).absFilePath();
+		QString new_path_string = QFileInfo(new_path).absoluteFilePath();
 		// change path
 		current_dir.setPath(new_path_string);
 		return true;
@@ -584,8 +637,8 @@ bool FileSelector::browseFiles()
 	current_dir.refresh();
 
 	// Create fileslist from files
-	const QFileInfoList *temp_files_list = current_dir.entryInfoList();
-	if (!temp_files_list)
+	QList<QFileInfo> temp_files_list = current_dir.entryInfoList();
+	if (temp_files_list.empty())
 	{
 		qDebug("[AUDIO] Error retrieving file list!");
 		return false;
@@ -593,19 +646,16 @@ bool FileSelector::browseFiles()
 
 	files_list.clear();
 
-	QFileInfoListIterator it(*temp_files_list);
-	QFileInfo *file;
-
-	while ((file = it.current()) != 0)
+	for (int i = 0; i < temp_files_list.size(); ++i)
 	{
-		if (file->fileName() != "." && file->fileName() != "..")
-			files_list.append(file->fileName().latin1());
-		++it;
+		const QFileInfo& f = temp_files_list.at(i);
+		if (f.fileName() != "." && f.fileName() != "..")
+			files_list.append(f.fileName());
 	}
 
 	unsigned page = 0;
-	if (pages_indexes.contains(current_dir.absPath()))
-		page = pages_indexes[current_dir.absPath()];
+	if (pages_indexes.contains(current_dir.absolutePath()))
+		page = pages_indexes[current_dir.absolutePath()];
 
 	int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
 	if (wait_time > 0)
@@ -645,7 +695,7 @@ void FileSelector::setFGColor(QColor c)
 /// Methods for RadioSelector
 /// ***********************************************************************************************************************
 
-RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name, WFlags f) :
+RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name, Qt::WindowFlags f) :
 	Selector(parent, name, f)
 {
 	list_browser = new ListBrowser(this, rows_per_page, name, f);
@@ -676,13 +726,13 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode c
 			if (descr.length() > 0 && url.length() > 0)
 				radio_list.append(AudioData(url, descr));
 			else
-				qDebug("[AUDIO] Error loading radio item %s", n.nodeName().ascii());
+				qDebug() << "[AUDIO] Error loading radio item " << n.nodeName();
 		}
 		n = n.nextSibling();
 	}
 
-	QValueVector<QString> list;
-	for (unsigned i = 0; i < radio_list.count(); ++i)
+	QVector<QString> list;
+	for (int i = 0; i < radio_list.size(); ++i)
 		list.append(radio_list[i].desc);
 
 	list_browser->setList(list);
@@ -691,7 +741,7 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode c
 
 void RadioSelector::itemIsClicked(int item)
 {
-	qDebug("[AUDIO] RadioSelector::itemIsClicked %d -> %s", item, radio_list[item].path.ascii());
+	qDebug() << "[AUDIO] RadioSelector::itemIsClicked " << item << " -> " << radio_list[item].path;
 	emit startPlayer(radio_list, item);
 }
 

@@ -17,7 +17,8 @@
 #include "buttons_bar.h"
 #include "main.h"
 
-#include <qlayout.h>
+#include <QLayout>
+
 #include <unistd.h>
 
 /*
@@ -50,7 +51,7 @@ static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
 /// ***********************************************************************************************************************
 
 PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
-	QWidget(parent, name, WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
+	QWidget(parent, Qt::FramelessWindowHint | Qt::Window)
 {
 	current_track = CURRENT_TRACK_NONE;
 	read_player_output = true;
@@ -68,8 +69,9 @@ PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent, const char * name) 
 	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
 	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
-	QHBoxLayout *main_controls_layout = new QHBoxLayout(main_layout);
+	QHBoxLayout *main_controls_layout = new QHBoxLayout();
 	addMainControls(main_controls_layout);
+	main_layout->addLayout(main_controls_layout);
 }
 
 void PlayWindow::addMainControls(QBoxLayout* layout)
@@ -117,7 +119,7 @@ void PlayWindow::prevTrack()
 
 void PlayWindow::nextTrack()
 {
-	if (media_player->isInstanceRunning() && current_track < (play_list.count() - 1))
+	if (media_player->isInstanceRunning() && static_cast<int>(current_track) < (play_list.size() - 1))
 	{
 		playNextTrack();
 		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
@@ -162,7 +164,7 @@ void PlayWindow::handlePlayingDone()
 	 * mplayer has terminated because the track is finished
 	 * so we go to the next track if exists.
 	 */
-	if (current_track < (play_list.count() - 1))
+	if (static_cast<int>(current_track) < (play_list.size() - 1))
 	{
 		playNextTrack();
 	}
@@ -176,7 +178,7 @@ void PlayWindow::handlePlayingAborted()
 	qDebug("[AUDIO] Error in mplayer, stopping playlist");
 }
 
-void PlayWindow::startPlayer(QValueVector<AudioData> _play_list, unsigned element)
+void PlayWindow::startPlayer(QVector<AudioData> _play_list, unsigned element)
 {
 	qDebug("[AUDIO] startPlayer()");
 	stop();
@@ -215,6 +217,20 @@ QString PlayWindow::getCurrentDescription()
 	return play_list[current_track].desc;
 }
 
+void PlayWindow::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void PlayWindow::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
 /// ***********************************************************************************************************************
 /// Methods for MediaPlayWindow
 /// ***********************************************************************************************************************
@@ -233,11 +249,14 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 	QHBoxLayout *tags_layout = new QHBoxLayout();
 	main_layout->insertLayout(1, tags_layout);
 
-	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
-	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
+	QVBoxLayout *tags_name_layout = new QVBoxLayout();
+	QVBoxLayout *tags_text_layout = new QVBoxLayout();
 
 	addNameLabels(tags_name_layout, aFont);
 	addTextLabels(tags_text_layout, aFont);
+
+	tags_layout->addLayout(tags_name_layout);
+	tags_layout->addLayout(tags_layout);
 
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
@@ -376,11 +395,11 @@ void MediaPlayWindow::refreshPlayInfo()
 	// Now we iterate on updated_playing_info and import new entries in playing_info
 	QMap<QString, QString>::Iterator it;
 	for (it = updated_playing_info.begin(); it != updated_playing_info.end(); ++it)
-		playing_info[it.key()] = it.data();
+		playing_info[it.key()] = it.value();
 
 	// Extract Time Data
-	QStringList total   = QStringList::split(".", playing_info["total_time"]);
-	QStringList current = QStringList::split(".", playing_info["current_time"]);
+	QStringList total   = playing_info["total_time"].split(".");
+	QStringList current = playing_info["current_time"].split(".");
 
 	// Set INFO in Labels
 	if (playing_info["meta_title"].isNull())

@@ -28,10 +28,11 @@
 #ifndef MULTIMEDIA_SOURCE_H
 #define MULTIMEDIA_SOURCE_H
 
-#include <qdir.h>
-#include <qvaluevector.h>
-#include <qwidget.h>
-#include <qdom.h>
+#include <QDir>
+#include <QMap>
+#include <QVector>
+#include <QWidget>
+#include <QDomNode>
 
 class ListBrowser;
 class Selector;
@@ -77,6 +78,10 @@ signals:
 private:
 	ButtonsBar *buttons_bar;
 	BtButton   *back_btn;
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
 };
 
 
@@ -184,11 +189,19 @@ private:
 	QDomNode radio_node;
 	bool radio_enabled, mediaserver_enabled;
 
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
+
+	const QColor& paletteBackgroundColor();
+	const QColor& paletteForegroundColor();
+
 private slots:
 	/// handles to receive play and stop notifications
 	void handleStartPlay();
 	void handleStopPlay();
-	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
+	void startPlayer(QVector<AudioData> play_list, unsigned element);
 
 	void handleChoiceSource(int button_id);
 	void handleSelectorExit();
@@ -206,7 +219,7 @@ class Selector : public QWidget
 {
 Q_OBJECT
 public:
-	Selector(QWidget *parent, const char *name=0, WFlags f=0) : QWidget(parent, name, f) {}
+	Selector(QWidget *parent, const char *name=0, Qt::WindowFlags f=0) : QWidget(parent, f) {}
 	virtual void setBGColor(QColor c) = 0;
 	virtual void setFGColor(QColor c) = 0;
 
@@ -219,7 +232,7 @@ public slots:
 
 signals:
 	virtual void notifyExit();
-	virtual void startPlayer(QValueVector<AudioData> play_list, unsigned element);
+	virtual void startPlayer(QVector<AudioData> play_list, unsigned element);
 };
 
 
@@ -232,7 +245,7 @@ class  FileSelector : public Selector
 {
 Q_OBJECT
 public:
-	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name=0, WFlags f=0);
+	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name=0, Qt::WindowFlags f=0);
 
 	/// Apply Style
 	void setBGColor(QColor c);
@@ -257,7 +270,7 @@ private:
 	// How many subdirs we are descending from root.
 	unsigned level;
 
-	QValueVector<QString>    files_list;
+	QVector<QString>    files_list;
 
 	QMap<QString, unsigned>  pages_indexes;
 
@@ -284,7 +297,7 @@ class RadioSelector : public Selector
 {
 Q_OBJECT
 public:
-	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name=0, WFlags f=0);
+	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name=0, Qt::WindowFlags f=0);
 
 	/// Apply Style
 	void setBGColor(QColor c);
@@ -298,7 +311,7 @@ public slots:
 	void browseUp();
 
 private:
-	QValueVector<AudioData> radio_list;
+	QVector<AudioData> radio_list;
 
 	/// The listBrowser instance, used to display files.
 	ListBrowser *list_browser;

@@ -17,8 +17,10 @@
 
 #include "multimedia_source.h"
 
-#include <qwidget.h>
-#include <qvaluevector.h>
+#include <QWidget>
+#include <QVector>
+#include <QString>
+
 
 class MediaPlayer;
 class ButtonsBar;
@@ -50,7 +52,7 @@ public:
 	/// Return true if a song is currently active, even if in pause.
 	bool isPlaying();
 
-	void startPlayer(QValueVector<AudioData> _play_list, unsigned element);
+	void startPlayer(QVector<AudioData> _play_list, unsigned element);
 
 protected:
 	// To make PlayWindow an abstract class.
@@ -88,7 +90,7 @@ signals:
 	void notifyStopPlay();
 
 private:
-	QValueVector<AudioData> play_list;
+	QVector<AudioData> play_list;
 
 	/*
 	 * current_track is the track played by mplayer.
@@ -96,6 +98,10 @@ private:
 	 */
 	unsigned int current_track;
 	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
 };
 
 
