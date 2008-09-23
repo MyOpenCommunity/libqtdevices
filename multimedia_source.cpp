@@ -22,7 +22,6 @@
 #include <qregexp.h>
 #include <stdlib.h>
 #include <qapplication.h> //qapp
-
 #include <unistd.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
@@ -43,6 +42,19 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 
 static const char *IMG_WAIT = IMG_PATH "loading.png";
+
+
+//#define DEBUG_MEDIA_NAVIGATION
+
+#if defined(DEBUG_MEDIA_NAVIGATION)
+#define DEBUG_MEDIA(msg) \
+do \
+{ \
+	qDebug(QString("Riga ") + QString::number(__LINE__) + QTime::currentTime().toString(" hh:mm:ss.zzz -> ") + (msg)); \
+} while(0)
+#else
+#define DEBUG_MEDIA(msg) {}
+#endif
 
 
 enum ChoiceButtons
@@ -564,6 +576,7 @@ bool FileSelector::changePath(QString new_path)
 
 bool FileSelector::browseFiles()
 {
+	DEBUG_MEDIA("start browse files");
 	QLabel* l = new QLabel((QWidget*)parent());
 	QPixmap *icon = icons_library.getIcon(IMG_WAIT);
 	l->setPixmap(*icon);
@@ -572,8 +585,10 @@ bool FileSelector::browseFiles()
 	r.moveCenter(QPoint(MAX_WIDTH / 2, MAX_HEIGHT / 2));
 	l->setGeometry(r);
 
+	DEBUG_MEDIA("before show");
 	l->show();
 	qApp->processEvents();
+	DEBUG_MEDIA("after show");
 
 	//list_browser->setEnabled(false);
 
@@ -618,6 +633,8 @@ bool FileSelector::browseFiles()
 
 	l->hide();
 	l->deleteLater();
+
+	DEBUG_MEDIA("end browse files");
 	return true;
 }
 
