@@ -11,11 +11,12 @@
 #ifndef IMPOSTA_TIME_H
 #define IMPOSTA_TIME_H
 
-#include <qframe.h>
 #include "btbutton.h"
 #include "main.h"
 #include "timescript.h"
 #include "btlabel.h"
+
+#include <QFrame>
 
 /*!
   \class impostaTime
@@ -90,6 +91,13 @@ private slots:
 private:
 	timeScript *dataOra;
 	BtLabel *Immagine;
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
 };
 
 

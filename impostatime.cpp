@@ -12,18 +12,18 @@
 #include "genericfunz.h"
 #include "openclient.h"
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
-#include <qdatetime.h>
-#include <qfile.h>
+#include <QPixmap>
+#include <QWidget>
+#include <QCursor>
+#include <QDateTime>
+#include <QFile>
 
 extern unsigned char tipoData;
 
-impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent, name)
+impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor(QCursor(blankCursor));
+    setCursor(QCursor(Qt::BlankCursor));
 #endif
 	char iconName[MAX_PATH];
 	QPixmap* Icon1 = new QPixmap();
@@ -32,7 +32,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent, nam
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
-	QDateTime OroTemp = QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
+	QDateTime OroTemp = QDateTime::currentDateTime();
 	dataOra = new timeScript(this,"impostazioni",1,&OroTemp);
 	dataOra->setGeometry(10,120,220,80);
 	dataOra->setFrameStyle(QFrame::Plain);
@@ -77,7 +77,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent, nam
 
 	for (uchar idx=3;idx<6;idx++)
 	{
-		but[idx] = new BtButton(this,"freccia"+QString::number(idx));
+		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-3)*80+10,200,60,60);
 		but[idx]->setAutoRepeat(true);
 		but[idx]->setPixmap(*Icon1);
@@ -194,18 +194,12 @@ void impostaTime::OKTime()
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	openwebnet msg_open;
 	char pippo[50];
-	QString s;
 
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*#13**#0*");
-	s = dataOra->getDataOra().toString("hh");
-	strcat(pippo,s.ascii());
-	strcat(pippo,"*");
-	s = dataOra->getDataOra().toString("mm");
-	strcat(pippo,s.ascii());
-	strcat(pippo,"*");
-	s = dataOra->getDataOra().toString("ss");
-	strcat(pippo,s.ascii());
+
+	QByteArray buf = dataOra->getDataOra().toString("hh*mm*ss").toAscii();
+	strcat(pippo, buf.constData());
 	strcat(pippo,"**##");
 
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
@@ -243,14 +237,9 @@ void impostaTime::OKDate()
 
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*#13**#1*00*");
-	s = dataOra->getDataOra().toString("dd");
-	strcat(pippo,s.ascii());
-	strcat(pippo,"*");
-	s = dataOra->getDataOra().toString("MM");
-	strcat(pippo,s.ascii());
-	strcat(pippo,"*");
-	s = dataOra->getDataOra().toString("yyyy");
-	strcat(pippo,s.ascii());
+
+	QByteArray buf = dataOra->getDataOra().toString("dd*MM*yyyy").toAscii();
+	strcat(pippo, buf.constData());
 	strcat(pippo,"##");
 
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
@@ -301,4 +290,35 @@ void impostaTime::hide()
 	QFrame::hide();
 	if (dataOra)
 		dataOra->hide();
+}
+
+void impostaTime::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void impostaTime::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void impostaTime::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
+const QColor& impostaTime::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& impostaTime::foregroundColor()
+{
+	return palette().color(foregroundRole());
 }
