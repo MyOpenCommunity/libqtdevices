@@ -30,10 +30,10 @@
 #define BUT_SMALL_DIM (MAX_WIDTH-POSX1*2)/8
 #define POSX1_SMALL POSX1
 
-tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent, name)
+tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor(QCursor(blankCursor));
+    setCursor(QCursor(Qt::BlankCursor));
 #endif
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -51,8 +51,8 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	okBut = new BtButton(this,"Bottone di canc");
 	cancBut = new BtButton(this,"Bottone di canc");
 
-	digitLabel = new BtLabel(this,"");
-	scrittaLabel = new BtLabel(this, tr("PASSWORD:"));
+	digitLabel = new BtLabel(this);
+	scrittaLabel = new BtLabel(this);
 
 	unoBut->setGeometry(POSX1,line*0,BUT_DIM,BUT_DIM);
 	dueBut->setGeometry(POSX2,line*0,BUT_DIM,BUT_DIM);
@@ -75,6 +75,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	Icon = new QPixmap();
 	pressIcon = new QPixmap();
 
+	//TODO: rimuovere tutto questo codice duplicato!!
 	Icon->load(ICON_UNO);
 	getPressName((char*)ICON_UNO, &pressIconName[0],sizeof(pressIconName));
 	unoBut->setPixmap(*Icon);
@@ -294,12 +295,12 @@ int tastiera::setBGPixmap(char* backImage)
 
 void tastiera::draw()
 {
-	scrittaLabel->setAlignment(AlignHCenter|AlignVCenter);
+	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_tastiera_scritta_label, aFont);
 	scrittaLabel->setFont(aFont);
 	scrittaLabel->setText(tr("PASSWORD:"));
-	digitLabel->setAlignment(AlignLeft|AlignVCenter);
+	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
 	FontManager::instance()->getFont(font_tastiera_digit_label, aFont);
 	digitLabel->setFont(aFont);
@@ -475,4 +476,25 @@ void tastiera_con_stati::show()
 		}
 	}
 	QWidget::show();
+}
+
+void tastiera::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void tastiera::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void tastiera::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
 }

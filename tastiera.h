@@ -159,6 +159,9 @@ public slots:
 private:
 	char pwd[6];
 	char mode;
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 
