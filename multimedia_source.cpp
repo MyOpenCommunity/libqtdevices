@@ -498,7 +498,6 @@ void FileSelector::itemIsClicked(int item)
 
 	if (clicked_element.isDir())
 	{
-		++level;
 		if (!browseFiles(clicked_element.absFilePath()))
 		{
 			// FIXME display error?
@@ -544,18 +543,24 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
+	++level;
 	QString old_path = current_dir.absPath();
 	if (changePath(new_path))
 	{
-		if (current_dir.count() <= 2) // empty directory
+		if (current_dir.count() <= 2)
+		{
+			qDebug("[AUDIO] empty directory: %s", new_path.ascii());
 			changePath(old_path);
-		return browseFiles();
+			--level;
+		}
 	}
 	else
 	{
 		qDebug("[AUDIO] browseFiles(): path '%s' doesn't exist", new_path.ascii());
-		return false;
+		changePath(old_path);
+		--level;
 	}
+	return browseFiles();
 }
 
 bool FileSelector::changePath(QString new_path)
