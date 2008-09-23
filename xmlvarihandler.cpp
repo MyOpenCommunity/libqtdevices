@@ -39,6 +39,7 @@ bool xmlskinhandler::startDocument()
     CurTagL7 = "";
     return TRUE;
 }
+
 bool xmlskinhandler::startElement(const QString&, const QString&, const QString& qName, const QXmlAttributes&)
 {
 	if (CurTagL1.isEmpty())
@@ -181,7 +182,8 @@ bool xmlcfghandler::characters(const QString & qValue)
 			}
 			if (!CurTagL3.compare("logfile"))
 			{
-				strncpy(*logFile,qValue.ascii(),MAX_PATH);
+				QByteArray buf = qValue.toAscii();
+				strncpy(*logFile,buf.constData(),MAX_PATH);
 			}
 		}
 	}
