@@ -11,6 +11,8 @@
 #include "main.h"
 #include "btmain.h"
 #include "xmlvarihandler.h"
+#include "genericfunz.h"
+
 #include <openwebnet.h>
 #include <common_functions.h>
 
