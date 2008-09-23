@@ -34,7 +34,7 @@ protected:
 	char gruppi[4];
 	device *dev;
 public:
-	dimmer( QWidget *, const char *, char *, char *, char *, char *, char *, char *, bool to_be_connect = true );
+	dimmer(QWidget *, const char *, char *, char *, char *, char *, char *, char *, bool to_be_connect = true);
 	virtual void inizializza(bool forza = false);
 	void Draw();
 private slots:
@@ -46,7 +46,6 @@ public slots:
 	virtual void status_changed(QPtrList<device_status>);
 signals:
 	void frame_available(char *);
-
 };
 
 
@@ -61,7 +60,7 @@ signals:
  */
 class dimmer100 : public dimmer
 {
-Q_OBJECT ;
+Q_OBJECT;
 private:
 	/*!
 	 * \brief decode msg code, lev and speed from open message
@@ -74,7 +73,7 @@ private:
 	int last_on_lev;
 	int speed;
 public:
-	dimmer100( QWidget *, const char *, char *, char *, char *, char *, char *, char *, int, int );
+	dimmer100(QWidget *, const char *, char *, char *, char *, char *, char *, char *, int, int);
 	void inizializza(bool forza=false);
 	void status_changed(QPtrList<device_status>);
 private slots:
@@ -103,7 +102,7 @@ Q_OBJECT
 protected:
 	QPtrList<QString> elencoDisp;
 public:
-	grDimmer  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
+	grDimmer  (QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 	void setAddress(void*);
 	void inizializza(bool forza = false);
@@ -135,7 +134,7 @@ private:
 	QValueList<int> soft_start;
 	QValueList<int> soft_stop;
 public:
-	grDimmer100  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0, QValueList<int> sstart = QValueList<int>(), QValueList<int> sstop = QValueList<int>());
+	grDimmer100  (QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0, QValueList<int> sstart = QValueList<int>(), QValueList<int> sstop = QValueList<int>());
 private slots:
 	void Attiva();
 	void Disattiva();
