@@ -10,7 +10,6 @@
 
 // Device implementation
 
-
 openwebnet createMsgOpen(QString msg)
 {
 	QByteArray buf = msg.toAscii();
@@ -20,7 +19,7 @@ openwebnet createMsgOpen(QString msg)
 }
 
 
-device::device(QString _who, QString _where, bool p, int g)
+device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 {
 	who = _who;
 	where = _where;
@@ -50,6 +49,7 @@ void device::sendInit(QString frame)
 
 void device::init(bool force)
 {
+	assert(interpreter && "interpreter not set!");
 	qDebug("device::init()");
 	// True if all device has already been initialized
 

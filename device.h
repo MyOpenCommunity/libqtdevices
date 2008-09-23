@@ -15,7 +15,8 @@ class frame_interpreter;
 class Client;
 
 //! Generic device
-class device : public QObject {
+class device : public QObject
+{
 Q_OBJECT
 
 public:
