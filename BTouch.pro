@@ -146,7 +146,7 @@ SOURCES += actuators.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            genericfunz.cpp \
-           genPage.cpp \
+           genpage.cpp \
            homePage.cpp \
            icondispatcher.cpp \
            impostatime.cpp \

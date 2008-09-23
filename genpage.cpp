@@ -17,11 +17,11 @@
 #include <qfile.h>
 
 genPage::genPage(QWidget *parent,const char *name , unsigned char tipo,const char *img, unsigned int f)
-	: BtLabel(parent, name, f)
+	: BtLabel(parent, name, (Qt::WindowFlags)f)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 	switch (tipo)
