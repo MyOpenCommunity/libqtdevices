@@ -20,69 +20,76 @@
 /*!
   \class impostaTime
   \brief This is the class used to set time and date.
-  
+
   \author Davide
   \date lug 2005
-*/  
+*/
+
 class  impostaTime : public QFrame
 {
-   Q_OBJECT
+Q_OBJECT
 public:
-    impostaTime( QWidget *parent=0, const char *name=0 );
+	impostaTime(QWidget *parent=0, const char *name=0);
 /*!
   \brief Sets the background color for the banner.
-  
+
   The argument is the QColor description of the color.
-*/           
-   void 	setBGColor(QColor);
+*/
+	void setBGColor(QColor);
+
 /*!
   \brief Sets the foreground color for the banner.
-  
+
   The argument is the QColor description of the color.
-*/            
-   void 	setFGColor(QColor);
- /*!
+*/
+	void setFGColor(QColor);
+
+/*!
   \brief Sets the background color for the banner.
-  
+
   The arguments are RGB components for the color.
-*/         
-   void 	setBGColor(int, int , int );
- /*!
+*/
+	void setBGColor(int, int , int);
+
+/*!
   \brief Sets the foreground color for the banner.
-  
+
   The arguments are RGB components for the color.
-*/      
-   void 	setFGColor(int , int , int );
- /*!
+*/
+	void setFGColor(int , int , int);
+
+/*!
   \brief Sets the background pixmap for the banner.
-*/         
-   int 	setBGPixmap(char* );
-   BtButton*  but[7];
-    
+*/
+	int setBGPixmap(char*);
+	BtButton *but[7];
+
 signals:
- /*!
+/*!
   \brief Emitted when the object is closed.
-*/         
-    void 	Closed();
-//  void 	gestFrame(char*);
- /*!
+*/
+	void Closed();
+
+/*!
   \brief Emitted to send \a Open \a frame on the system.
-*/             
-    void 	sendFrame(char*);
-	 void	sendInit(char*);
+*/
+	void sendFrame(char*);
+	void sendInit(char*);
 
 public slots:
 /*!
   \brief Draws the object.
-*/    
-    void 	mostra();
- void        hide(); 
+*/
+	void mostra();
+	void hide();
+
 private slots:
-    void	OKTime();
-    void    OKDate();    
+	void OKTime();
+	void OKDate();
+
 private:
-   timeScript* dataOra;
-   BtLabel* Immagine;
+	timeScript *dataOra;
+	BtLabel *Immagine;
 };
 
 
