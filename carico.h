@@ -25,18 +25,18 @@ class device;
  * \author Davide
  * \date lug 2005
  */
-class carico : public bannOnSx 
+class carico : public bannOnSx
 {
 Q_OBJECT
 public:
-	carico(sottoMenu  *, const char * ,char*,char*);
+	carico(sottoMenu *, const char * ,char*, char*);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
 public slots:
 	void gestFrame(char*);
 private:
-	device *dev;	
+	device *dev;
 };
 
 #endif
