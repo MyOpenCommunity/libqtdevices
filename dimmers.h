@@ -14,6 +14,9 @@
 #include "device_status.h"
 #include "bannregolaz.h"
 
+#include <QWidget>
+#include <QString>
+#include <QList>
 
 class device;
 
@@ -43,7 +46,7 @@ private slots:
 	virtual void Aumenta();
 	virtual void Diminuisci();
 public slots:
-	virtual void status_changed(QPtrList<device_status>);
+	virtual void status_changed(QList<device_status*>);
 signals:
 	void frame_available(char *);
 };
@@ -75,7 +78,7 @@ private:
 public:
 	dimmer100(QWidget *, const char *, char *, char *, char *, char *, char *, char *, int, int);
 	void inizializza(bool forza=false);
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 private slots:
 	void Accendi();
 	void Spegni();
@@ -100,9 +103,9 @@ class grDimmer : public bannRegolaz
 {
 Q_OBJECT
 protected:
-	QPtrList<QString> elencoDisp;
+	QList<QString*> elencoDisp;
 public:
-	grDimmer  (QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
+	grDimmer(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 	void setAddress(void*);
 	void inizializza(bool forza = false);
@@ -113,6 +116,7 @@ private slots:
 	virtual void Diminuisci();
 private:
 	device *dev;
+	void sendFrame(char *msg);
 };
 
 
@@ -131,10 +135,11 @@ class grDimmer100 : public grDimmer
 {
 Q_OBJECT
 private:
-	QValueList<int> soft_start;
-	QValueList<int> soft_stop;
+	QList<int> soft_start;
+	QList<int> soft_stop;
 public:
-	grDimmer100  (QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0, QValueList<int> sstart = QValueList<int>(), QValueList<int> sstop = QValueList<int>());
+	grDimmer100(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0,
+		QList<int> sstart = QList<int>(), QList<int> sstop = QList<int>());
 private slots:
 	void Attiva();
 	void Disattiva();

@@ -40,8 +40,8 @@ dimmer::dimmer(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,ch
 		// Crea o preleva il dispositivo dalla cache
 		dev = btouch_device_cache.get_dimmer(getAddress());
 		// Get status changed events back
-		connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-				this, SLOT(status_changed(QPtrList<device_status>)));
+		connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+				this, SLOT(status_changed(QList<device_status*>)));
 	}
 }
 
@@ -107,7 +107,7 @@ void dimmer::Draw()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_bannertext, aFont);
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		BannerText->setFont(aFont);
 		BannerText->setText(qtesto);
 	}
@@ -115,13 +115,13 @@ void dimmer::Draw()
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_secondarytext, aFont);
-		SecondaryText->setAlignment(AlignHCenter|AlignVCenter);
+		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		SecondaryText->setFont(aFont);
 		SecondaryText->setText(qtestoSecondario);
 	}
 }
 
-void dimmer::status_changed(QPtrList<device_status> sl)
+void dimmer::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_lev(stat_var::LEV);
 	stat_var curr_speed(stat_var::SPEED);
@@ -129,63 +129,61 @@ void dimmer::status_changed(QPtrList<device_status> sl)
 	stat_var curr_fault(stat_var::FAULT);
 	bool aggiorna = false;
 	qDebug("dimmer10::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
-			case device_status::LIGHTS:
-				qDebug("Light status variation");
-				ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-				qDebug("status = %d", curr_status.get_val());
-				impostaAttivo(curr_status.get_val() != 0);
-				if (!curr_status.get_val())
-				{
-					// Update 
-					aggiorna = true;
-					impostaAttivo(0);
-				}
-				else
-					impostaAttivo(1);
-				break;
-			case device_status::DIMMER:
-				ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-				ds->read(device_status_dimmer::FAULT_INDEX, curr_fault);
-				if (curr_fault.get_val())
-				{
-					qDebug("DIMMER FAULT !!");
-					impostaAttivo(2);
-				}
-				else
-				{
-					qDebug("dimmer status variation");
-					qDebug("level = %d", curr_lev.get_val());
-					setValue(curr_lev.get_val());
-					if ((curr_lev.get_val() == 0))
-						impostaAttivo(0);
-				}
+		case device_status::LIGHTS:
+			qDebug("Light status variation");
+			ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+			qDebug("status = %d", curr_status.get_val());
+			impostaAttivo(curr_status.get_val() != 0);
+			if (!curr_status.get_val())
+			{
+				// Update
 				aggiorna = true;
-				break;
-			case device_status::DIMMER100:
-				ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-				ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-				ds->read(device_status_dimmer::FAULT_INDEX, curr_fault);
-				qDebug("dimmer 100 status variation, ignored");
-				break;
-			case device_status::NEWTIMED:
-				qDebug("new timed device status variation, ignored");
-				break;
-			default:
-				qDebug("device status of unknown type (%d)", ds->get_type());
-				break;
+				impostaAttivo(0);
+			}
+			else
+				impostaAttivo(1);
+			break;
+		case device_status::DIMMER:
+			ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
+			ds->read(device_status_dimmer::FAULT_INDEX, curr_fault);
+			if (curr_fault.get_val())
+			{
+				qDebug("DIMMER FAULT !!");
+				impostaAttivo(2);
+			}
+			else
+			{
+				qDebug("dimmer status variation");
+				qDebug("level = %d", curr_lev.get_val());
+				setValue(curr_lev.get_val());
+				if ((curr_lev.get_val() == 0))
+					impostaAttivo(0);
+			}
+			aggiorna = true;
+			break;
+		case device_status::DIMMER100:
+			ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+			ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+			ds->read(device_status_dimmer::FAULT_INDEX, curr_fault);
+			qDebug("dimmer 100 status variation, ignored");
+			break;
+		case device_status::NEWTIMED:
+			qDebug("new timed device status variation, ignored");
+			break;
+		default:
+			qDebug("device status of unknown type (%d)", ds->get_type());
+			break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void dimmer::Accendi()
@@ -264,8 +262,8 @@ dimmer100::dimmer100(QWidget *parent,const char *name,char* indirizzo,char* Icon
 	qDebug("breakIcon = %s", breakIcon);
 	SetIcons(IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0);
 	dev = btouch_device_cache.get_dimmer100(getAddress());
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-		this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
 }
 
 
@@ -349,7 +347,7 @@ void dimmer100::Diminuisci()
 	dev->sendFrame(msg_open.frame_open);
 }
 
-void dimmer100::status_changed(QPtrList<device_status> sl)
+void dimmer100::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_lev(stat_var::LEV);
 	stat_var curr_speed(stat_var::SPEED);
@@ -357,64 +355,62 @@ void dimmer100::status_changed(QPtrList<device_status> sl)
 	stat_var curr_fault(stat_var::FAULT);
 	bool aggiorna = false;
 	qDebug("dimmer100::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
-			case device_status::LIGHTS:
-				qDebug("Light status variation");
-				ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-				qDebug("status = %d", curr_status.get_val());
-				if (!curr_status.get_val())
-				{
-					// Only update on OFF
-					aggiorna = true;
-					impostaAttivo(0);
-				}
-				else
-					impostaAttivo(1);
-				break;
-			case device_status::DIMMER:
-				ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-				qDebug("dimmer status variation, ignored");
-			case device_status::DIMMER100:
-				ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-				ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-				ds->read(device_status_dimmer100::FAULT_INDEX, curr_fault);
-				if (curr_fault.get_val())
-				{
-					qDebug("DIMMER 100 FAULT !!");
-					impostaAttivo(2);
-				}
-				else
-				{
-					qDebug("dimmer 100 status variation");
-					qDebug("level = %d, speed = %d", curr_lev.get_val(), curr_speed.get_val());
-					if ((curr_lev.get_val() == 0))
-						impostaAttivo(0);
-					if ((curr_lev.get_val() <= 5))
-						setValue(5);
-					else
-						setValue(curr_lev.get_val());
-					qDebug("value = %d", getValue());
-				}
+		case device_status::LIGHTS:
+			qDebug("Light status variation");
+			ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+			qDebug("status = %d", curr_status.get_val());
+			if (!curr_status.get_val())
+			{
+				// Only update on OFF
 				aggiorna = true;
-				break;
-			case device_status::NEWTIMED:
-				qDebug("new timed device status variation, ignored");
-				break;
-			default:
-				qDebug("device status of unknown type (%d)", ds->get_type());
-				break;
+				impostaAttivo(0);
+			}
+			else
+				impostaAttivo(1);
+			break;
+		case device_status::DIMMER:
+			ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
+			qDebug("dimmer status variation, ignored");
+		case device_status::DIMMER100:
+			ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
+			ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
+			ds->read(device_status_dimmer100::FAULT_INDEX, curr_fault);
+			if (curr_fault.get_val())
+			{
+				qDebug("DIMMER 100 FAULT !!");
+				impostaAttivo(2);
+			}
+			else
+			{
+				qDebug("dimmer 100 status variation");
+				qDebug("level = %d, speed = %d", curr_lev.get_val(), curr_speed.get_val());
+				if ((curr_lev.get_val() == 0))
+					impostaAttivo(0);
+				if ((curr_lev.get_val() <= 5))
+					setValue(5);
+				else
+					setValue(curr_lev.get_val());
+				qDebug("value = %d", getValue());
+			}
+			aggiorna = true;
+			break;
+		case device_status::NEWTIMED:
+			qDebug("new timed device status variation, ignored");
+			break;
+		default:
+			qDebug("device status of unknown type (%d)", ds->get_type());
+			break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void dimmer100::inizializza(bool forza)
@@ -439,10 +435,9 @@ void dimmer100::inizializza(bool forza)
  ****************************************************************/
 
 grDimmer::grDimmer(QWidget *parent,const char *name,void *indirizzi, char* IconaSx,char* IconaDx,char *iconsx ,char* icondx,
-	int period,int number)
-	: bannRegolaz(parent, name)
+	int period,int number) : bannRegolaz(parent, name)
 {
-	SetIcons( IconaSx, IconaDx ,icondx,iconsx);
+	SetIcons(IconaSx, IconaDx ,icondx,iconsx);
 	setAddress(indirizzi);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
@@ -453,55 +448,39 @@ grDimmer::grDimmer(QWidget *parent,const char *name,void *indirizzi, char* Icona
 
 void grDimmer::setAddress(void*indirizzi)
 {
-	elencoDisp = *((QPtrList<QString>*)indirizzi);
+	elencoDisp = *((QList<QString*>*)indirizzi);
+}
+
+void grDimmer::sendFrame(char *msg)
+{
+	openwebnet msg_open;
+	for (int i = 0; i < elencoDisp.size(); ++i)
+	{
+		msg_open.CreateNullMsgOpen();
+		QByteArray buf = elencoDisp.at(i)->toAscii();
+		msg_open.CreateMsgOpen("1", msg, buf.data(), "");
+		dev->sendFrame(msg_open.frame_open);
+	}
 }
 
 void grDimmer::Attiva()
 {
-	openwebnet msg_open;
-
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "1",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	sendFrame("1");
 }
 
 void grDimmer::Disattiva()
 {
-	openwebnet msg_open;
-
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "0",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	sendFrame("0");
 }
 
 void grDimmer::Aumenta()
 {
-	openwebnet msg_open;
-
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "30",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	sendFrame("30");
 }
 
 void grDimmer::Diminuisci()
 {
-	openwebnet msg_open;
-
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "31",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	sendFrame("31");
 }
 
 void grDimmer::inizializza(bool forza){}
@@ -511,8 +490,7 @@ void grDimmer::inizializza(bool forza){}
  ****************************************************************/
 
 grDimmer100::grDimmer100(QWidget *parent,const char *name,void *indirizzi, char* IconaSx,char* IconaDx,char *iconsx ,char* icondx,int period,
-	int number, QValueList<int>sstart, QValueList<int>sstop)
-	: grDimmer(parent, name, indirizzi, IconaSx, IconaDx, iconsx,icondx, period, number)
+	int number, QList<int>sstart, QList<int>sstop) : grDimmer(parent, name, indirizzi, IconaSx, IconaDx, iconsx,icondx, period, number)
 {
 	qDebug("grDimmer100::grDimmer100()");
 	qDebug("sstart[0] = %d", sstart[0]);
@@ -530,7 +508,8 @@ void grDimmer100::Attiva()
 	{
 		msg_open.CreateNullMsgOpen();
 		char s[100];
-		sprintf(s, "*1*1#%d*%s##", soft_start[idx], (elencoDisp.at(idx))->ascii());
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		sprintf(s, "*1*1#%d*%s##", soft_start[idx], buf.constData());
 		msg_open.CreateMsgOpen(s, strlen(s));
 		dev->sendFrame(msg_open.frame_open);
 	}
@@ -544,7 +523,8 @@ void grDimmer100::Disattiva()
 	{
 		msg_open.CreateNullMsgOpen();
 		char s[100];
-		sprintf(s, "*1*0#%d*%s##", soft_stop[idx], (elencoDisp.at(idx))->ascii());
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		sprintf(s, "*1*0#%d*%s##", soft_stop[idx], buf.constData());
 		msg_open.CreateMsgOpen(s, strlen(s));
 		dev->sendFrame(msg_open.frame_open);
 	}
@@ -556,7 +536,8 @@ void grDimmer100::Aumenta()
 	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
 	{
 		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "30#5#255",(char*)elencoDisp.at(idx)->ascii(),"");
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		msg_open.CreateMsgOpen("1", "30#5#255",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
 }
@@ -567,7 +548,8 @@ void grDimmer100::Diminuisci()
 	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
 	{
 		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "31#5#255",(char*)elencoDisp.at(idx)->ascii(),"");
+		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		msg_open.CreateMsgOpen("1", "31#5#255",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
 }
