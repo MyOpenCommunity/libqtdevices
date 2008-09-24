@@ -11,15 +11,17 @@
 #ifndef DIFFMULTI_H
 #define DIFFMULTI_H
 
+#include "device_status.h"
+#include "sottomenu.h"
+
+#include <qvaluelist.h>
 #include <qwidget.h>
 #include <qptrlist.h>
-
-#include "device_status.h"
-#include "scenevocond.h" // per la connect
-#include "sottomenu.h" // per la connect
+#include <qstring.h>
 
 class diffSonora;
 class device;
+class scenEvo_cond;
 
 class dati_sorgente_multi
 {

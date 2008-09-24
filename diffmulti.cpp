@@ -15,9 +15,11 @@
 #include "genericfunz.h"
 #include "sveglia.h"
 #include "diffsonora.h"
+#include "scenevocond.h"
 
 #include <qwidget.h>
 #include <qtimer.h>
+#include <qpoint.h>
 
 dati_sorgente_multi::dati_sorgente_multi(char t, QPtrList<QString> *d, void *ind,
 	char *_I1, char *_I2, char *_I3, int p1, char *ad)
@@ -59,9 +61,7 @@ dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
 		qDebug("gruppo AMPLIFICATORI !!");
 		indirizzo = new QPtrList<QString>(*((QPtrList<QString> *)ind));
 		qDebug("indirizzo = %p", indirizzo);	
-		QPtrListIterator<QString> *lii =
-			new QPtrListIterator<QString>(*(QPtrList<QString> *)
-					(indirizzo));
+		QPtrListIterator<QString> *lii = new QPtrListIterator<QString>(*(QPtrList<QString> *)(indirizzo));
 		QString *bah;
 		lii->toFirst();
 		while ((bah = lii->current()))
@@ -378,8 +378,7 @@ void diffmulti::status_changed(QPtrList<device_status> sl)
 					i<=device_status_sound_matr::AMB8_INDEX; i++)
 			{
 				ds->read(i, curr_act);
-				qDebug("Curr active source for amb %d is now %d", i+1,
-						curr_act.get_val());
+				qDebug("Curr active source for amb %d is now %d", i+1, curr_act.get_val());
 				emit actSrcChanged(i+1, curr_act.get_val());
 			}
 			break;
