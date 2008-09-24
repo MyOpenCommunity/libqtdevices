@@ -410,7 +410,7 @@ signals:
 	/*!
 	 *  \brief Emitted when the right button is clicked.
 	 */
-	void dxClick(); 
+	void dxClick();
 	/*!
 	 *  \brief Emitted when the left button is clicked.
 	 */
@@ -458,29 +458,29 @@ signals:
 	/*!
 	 *  \brief Emitted to (de)freeze the objects of the banner
 	 */
-	virtual void freezed(bool);
+	void freezed(bool);
 	/*!
 	 *  \brief Emitted when the banner decide to freeze the device (i.e. when the \a alarm \a clock turns on).
 	 */
-	virtual void freeze(bool);
+	void freeze(bool);
 	/*!
 	 *  \brief Emitted to communicate when the \a alarm \a clock begins and ends.
 	 */
-	virtual void svegl(bool);
-	virtual void richStato(char*);
+	void svegl(bool);
+	void richStato(char*);
 	/*!
 	 *  \brief Emitted when the banner decide send an \a Open \a frame to the system.
 	 */
-	virtual void sendFrame(char*);
+	void sendFrame(char*);
 	/*!
 	 *  \brief As above, but we want to wait for the relevant open ack message
 	 */
-	virtual void sendFramew(char*);
-	virtual void sendInit(char*);
+	void sendFramew(char*);
+	void sendInit(char*);
 	/*!
 	 *  \brief Emitted when the banner decide to die and to be removed from the list containig it.
 	 */
-	virtual void killMe(banner*);
+	void killMe(banner*);
 
 protected:
 

@@ -544,6 +544,10 @@ void FileSelector::showEvent(QShowEvent *event)
 
 void FileSelector::itemIsClicked(int item)
 {
+	QLabel *l = createWaitDialog();
+	QTime time_counter;
+	time_counter.start();
+
 	QString filename = files_list[item];
 	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << " -> " << filename;
 	QFileInfo clicked_element(current_dir, filename);
@@ -552,11 +556,17 @@ void FileSelector::itemIsClicked(int item)
 
 	if (clicked_element.isDir())
 	{
+		++level;
 		if (!browseFiles(clicked_element.absoluteFilePath()))
 		{
-			// FIXME display error?
+			destroyWaitDialog(l);
 			emit notifyExit();
+			return;
 		}
+		int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
+		if (wait_time > 0)
+			usleep(wait_time * 1000);
+		destroyWaitDialog(l);
 	}
 	else
 	{
@@ -576,20 +586,32 @@ void FileSelector::itemIsClicked(int item)
 
 			++track_number;
 		}
+		int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
+		if (wait_time > 0)
+			usleep(wait_time * 1000);
+		destroyWaitDialog(l);
 		emit startPlayer(play_list, element);
 	}
 }
 
 void FileSelector::browseUp()
 {
+
 	if (level)
 	{
 		--level;
-		if (!browseFiles(QFileInfo(current_dir, "..").absoluteFilePath()))
+		QLabel *l = createWaitDialog();
+		QTime time_counter;
+		time_counter.start();
 		{
-			// FIXME display error?
+			destroyWaitDialog(l);
 			emit notifyExit();
+			return;
 		}
+		int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
+		if (wait_time > 0)
+			usleep(wait_time * 1000);
+		destroyWaitDialog(l);
 	}
 	else
 		emit notifyExit();
@@ -597,7 +619,6 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
-	++level;
 	QString old_path = current_dir.absolutePath();
 	if (changePath(new_path))
 	{
@@ -633,9 +654,14 @@ bool FileSelector::changePath(QString new_path)
 	return false;
 }
 
-bool FileSelector::browseFiles()
+void FileSelector::destroyWaitDialog(QLabel *l)
 {
-	DEBUG_MEDIA("start browse files");
+	l->hide();
+	l->deleteLater();
+}
+
+QLabel *FileSelector::createWaitDialog()
+{
 	QLabel* l = new QLabel((QWidget*)parent());
 	QPixmap *icon = icons_library.getIcon(IMG_WAIT);
 	l->setPixmap(*icon);
@@ -644,16 +670,13 @@ bool FileSelector::browseFiles()
 	r.moveCenter(QPoint(MAX_WIDTH / 2, MAX_HEIGHT / 2));
 	l->setGeometry(r);
 
-	DEBUG_MEDIA("before show");
 	l->show();
 	qApp->processEvents();
-	DEBUG_MEDIA("after show");
+	return l;
+}
 
-	//list_browser->setEnabled(false);
-
-	QTime time_counter;
-	time_counter.start();
-
+bool FileSelector::browseFiles()
+{
 	// refresh QDir information
 	current_dir.refresh();
 
@@ -678,19 +701,8 @@ bool FileSelector::browseFiles()
 	if (pages_indexes.contains(current_dir.absolutePath()))
 		page = pages_indexes[current_dir.absolutePath()];
 
-	int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
-	if (wait_time > 0)
-		usleep(wait_time * 1000);
-
 	list_browser->setList(files_list, page);
 	list_browser->showList();
-
-	//list_browser->setEnabled(true);
-
-	l->hide();
-	l->deleteLater();
-
-	DEBUG_MEDIA("end browse files");
 	return true;
 }
 

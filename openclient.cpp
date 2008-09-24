@@ -162,7 +162,11 @@ void Client::manageFrame(QByteArray frame)
 	if (ismonitor)
 	{
 		qDebug() << "frame read: " << frame;
-		if (frame != last_msg_open_read.frame_open)
+		if (frame == "*#*1##")
+			qWarning("ERROR - ack received");
+		else if (frame == "*#*0##")
+			qWarning("ERROR - nak received");
+		else if (frame != last_msg_open_read.frame_open)
 		{
 			Open_read.stop();
 			last_msg_open_read.CreateMsgOpen(frame.data(),frame.size());

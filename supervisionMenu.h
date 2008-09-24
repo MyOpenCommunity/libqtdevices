@@ -16,14 +16,14 @@
 #define BTOUCH_SUPERVISION_MENU_H
 
 
-#include "device.h"
 #include "sottomenu.h"
 #include "bannpuls.h"
 #include "main.h"
 #include "stopngo.h"
 
+#include <qwidget.h>
+#include <qcolor.h>
 #include <qdom.h>
-
 
 
 /*!
@@ -32,39 +32,34 @@
 
   \author Lucio Macellari
   \date May 2008
-  */  
+*/
 class SupervisionMenu : public sottoMenu
 {
-	Q_OBJECT
-	public:
-		SupervisionMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg);
-		~SupervisionMenu();
+Q_OBJECT
+public:
+	SupervisionMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg);
+	~SupervisionMenu();
 
-	private:
-		QDomNode subtreeRoot;
-		sottoMenu* stopngoSubmenu;
-		QPtrList<StopngoItem> stopngoList;
-		QPtrList<StopngoPage> stopngoPages;
-		int classesCount;
+private:
+	QDomNode subtreeRoot;
+	sottoMenu* stopngoSubmenu;
+	QPtrList<StopngoItem> stopngoList;
+	QPtrList<StopngoPage> stopngoPages;
+	int classesCount;
 
-		void Create2ButBanner(QDomElement, QString, QString);
-  	QString GetDeviceAddress(QDomNode);
-		QDomNode FindNamedNode(QDomNode, QString);
-		void CreateStopnGoMenu(QDomNode, bannPuls*);
-		void AddItems();
-		void AddBanners();
-		void LinkBanner2Page(bannPuls*, StopngoItem*);
+	void Create2ButBanner(QDomElement, QString, QString);
+	QString GetDeviceAddress(QDomNode);
+	QDomNode FindNamedNode(QDomNode, QString);
+	void CreateStopnGoMenu(QDomNode, bannPuls*);
+	void AddItems();
+	void AddBanners();
+	void LinkBanner2Page(bannPuls*, StopngoItem*);
 
-  public slots:
-	  void showPg();
-	  
-	signals:
-		void quickOpen();
+public slots:
+	void showPg();
+
+signals:
+	void quickOpen();
 };
 
-
-
-
 #endif
-
-

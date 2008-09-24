@@ -265,12 +265,14 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 
 void *xmlconfhandler::getAddr()
 {
-	char pip[50];
+	// TODO: remove this obscene fix! Use a QVariant!
+	static char pip[50];
+
 	pip[0] = 0;
 	void *pnt = 0;
 
-	if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
-	{			       
+	if ((!page_item_what.isNull()) && (!page_item_what.isEmpty()))
+	{
 		strcpy(pip, page_item_what.ascii());
 		strcat(pip,"*");
 		strcat(pip,page_item_where.ascii());
@@ -279,13 +281,9 @@ void *xmlconfhandler::getAddr()
 		strcpy(pip, page_item_where.ascii());
 
 	if (page_item_list_group->isEmpty())
-	{
-		pnt=pip;
-	}
+		pnt = pip;
 	else
-	{
-		pnt=page_item_list_group;
-	}
+		pnt = page_item_list_group;
 
 	return pnt;
 }

@@ -16,8 +16,9 @@
 #include "btlabel.h"
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
-#include <openwebnet.h> // class openwebnet
 #include "tastiera.h"
+
+#include <openwebnet.h> // class openwebnet
 
 #include <stdlib.h>
 
@@ -25,30 +26,10 @@
  **zonaAnti
  ****************************************************************/
 
-void zonaAnti::setIcons()
+zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char *iconzona, char *IconDisactive,
+	char *IconActive, char *iconSparz, int period, int number) : bannOnIcons (parent, name.ascii())
 {
-	if(isActive()) {
-		banner::SetIcons((unsigned char)1, sparzIName);
-		banner::SetIcons((unsigned char)3, zonaAttiva);
-	} else {
-		banner::SetIcons((unsigned char)1, parzIName);
-		banner::SetIcons((unsigned char)3, zonaNonAttiva);
-	}
-}
-
-
-	zonaAnti::zonaAnti( QWidget *parent, 
-			 	const QString & name,
-				char* indirizzo,
-				char* iconzona, 
-				char* IconDisactive, 
-				char *IconActive, 
-				char *iconSparz, /*char *icon ,char *pressedIcon ,*/
-				int period,
-				int number )
-		: bannOnIcons ( parent, name.ascii() )
-{
-	char    pippo[MAX_PATH];
+	char pippo[MAX_PATH];
 
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");
@@ -56,16 +37,18 @@ void zonaAnti::setIcons()
 	parzIName = IMG_PATH "btnparzializza.png";
 	sparzIName = IMG_PATH "btnsparzializza.png";
 	getZoneName(iconzona, &pippo[0], indirizzo, sizeof(pippo));
-	//getZoneName(IconDisactive, &pluto[0], indirizzo, sizeof(pluto));
 	qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
 	zonaAnti::SetIcons(sparzIName, &pippo[0], IconDisactive);
-	if (BannerText) {
+
+	if (BannerText)
+	{
 		QFont aFont;
-		FontManager::instance()->getFont( font_items_bannertext, aFont );
+		FontManager::instance()->getFont(font_items_bannertext, aFont);
 		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-		BannerText->setFont( aFont );
-		BannerText->setText( name );
+		BannerText->setFont(aFont);
+		BannerText->setText(name);
 	}
+
 	zonaAttiva = IconActive;
 	zonaNonAttiva = IconDisactive;
 	setChi("5");
@@ -75,12 +58,24 @@ void zonaAnti::setIcons()
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			this, SLOT(status_changed(QPtrList<device_status>)));
-	// Button will be disabled later
-	//nascondi(BUT2);
-	//nascondi(BUT1);
+
 	abilitaParz(true);
 	setIcons();
 	zonaAnti::Draw();
+}
+
+void zonaAnti::setIcons()
+{
+	if (isActive())
+	{
+		banner::SetIcons((unsigned char)1, sparzIName);
+		banner::SetIcons((unsigned char)3, zonaAttiva);
+	}
+	else
+	{
+		banner::SetIcons((unsigned char)1, parzIName);
+		banner::SetIcons((unsigned char)3, zonaNonAttiva);
+	}
 }
 
 void zonaAnti::SetIcons(char *i1, char *i2, char *i3)
@@ -110,36 +105,43 @@ void zonaAnti::status_changed(QPtrList<device_status> sl)
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("zonAnti::status_changed()");
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(sl);
+	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
-	while( ( ds = dsi->current() ) != 0) {
+	while ((ds = dsi->current()) != 0)
+	{
 		int s;
-		switch (ds->get_type()) {
-			case device_status::ZONANTI:
-				qDebug("Zon.anti status variation");
-				ds->read(device_status_zonanti::ON_OFF_INDEX, curr_status);
-				s = curr_status.get_val();
-				qDebug("stat is %d", s);
-				if(!isActive() && s) {
-					impostaAttivo(1);
-					qDebug("new status = %d", s);
-					aggiorna = true;
-				} else if(isActive() && !s) {
-					impostaAttivo(0);
-					qDebug("new status = %d", s);
-					aggiorna = true;
-				}
-				break;
-			default:
-				qDebug("device status of unknown type (%d)", ds->get_type());
-				break;
+		switch (ds->get_type())
+		{
+		case device_status::ZONANTI:
+			qDebug("Zon.anti status variation");
+			ds->read(device_status_zonanti::ON_OFF_INDEX, curr_status);
+			s = curr_status.get_val();
+			qDebug("stat is %d", s);
+			if (!isActive() && s)
+			{
+				impostaAttivo(1);
+				qDebug("new status = %d", s);
+				aggiorna = true;
+			}
+			else if (isActive() && !s)
+			{
+				impostaAttivo(0);
+				qDebug("new status = %d", s);
+				aggiorna = true;
+			}
+			break;
+		default:
+			qDebug("device status of unknown type (%d)", ds->get_type());
+			break;
 		}
 		++(*dsi);
 	}
-	if(aggiorna) {
-		if(!already_changed) {
+
+	if (aggiorna)
+	{
+		if (!already_changed)
+		{
 			already_changed = true;
 			emit(partChanged(this));
 		}
@@ -149,7 +151,7 @@ void zonaAnti::status_changed(QPtrList<device_status> sl)
 	delete dsi;
 }
 
-char* zonaAnti::getChi()
+char *zonaAnti::getChi()
 {
 	return("5");
 }
@@ -158,7 +160,8 @@ void zonaAnti::ToggleParzializza()
 {
 	qDebug("zonaAnti::ToggleParzializza()");
 	impostaAttivo(!isActive());
-	if(!already_changed) {
+	if (!already_changed)
+	{
 		already_changed = true;
 		emit(partChanged(this));
 	}
@@ -169,10 +172,13 @@ void zonaAnti::ToggleParzializza()
 void zonaAnti::abilitaParz(bool ab)
 {
 	qDebug("zonaAnti::abilitaParz(%d)", ab);
-	if(ab) {
+	if (ab)
+	{
 		connect(this, SIGNAL(sxClick()), this, SLOT(ToggleParzializza()));
 		mostra(BUT1);
-	} else {
+	}
+	else
+	{
 		disconnect(this, SIGNAL(sxClick()), this, SLOT(ToggleParzializza()));
 		nascondi(BUT1);
 	}
@@ -184,11 +190,10 @@ void zonaAnti::clearChanged()
 	already_changed = false;
 }
 
-
 void zonaAnti::inizializza(bool forza)
-{ 
+{
 	openwebnet msg_open;
-	char    pippo[50];
+	char pippo[50];
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*#5*");
 	strcat(pippo,getAddress());
@@ -203,11 +208,10 @@ void zonaAnti::inizializza(bool forza)
  ****************************************************************/
 
 
-	impAnti::impAnti( QWidget *parent,const char *name,char* indirizzo,char* IconOn, char* IconOff, char* IconInfo, char* IconActive, int ,int  )
-:  bann2butLab( parent, name )
-{      
+impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo,char* IconOn, char* IconOff, char* IconInfo, char* IconActive, int,int )
+	: bann2butLab(parent, name)
+{
 	char pippo[MAX_PATH];
-
 	memset(pippo,'\000',sizeof(pippo));
 	tasti = NULL;
 	if (IconActive)
@@ -215,7 +219,7 @@ void zonaAnti::inizializza(bool forza)
 
 	strcat(pippo,"dis");
 	strcat(pippo,strstr(IconActive,"."));
-	SetIcons(  IconInfo,IconOff,&pippo[0],IconOn,IconActive);
+	SetIcons( IconInfo,IconOff,&pippo[0],IconOn,IconActive);
 	setChi("5");
 	send_part_msg = false;
 	inserting = false;
@@ -233,7 +237,6 @@ void zonaAnti::inizializza(bool forza)
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			this, SLOT(status_changed(QPtrList<device_status>)));
-
 }
 
 void impAnti::status_changed(QPtrList<device_status> sl)
@@ -241,55 +244,60 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("impAnti::status_changed()");
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(sl);
+	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
 	dsi->toFirst();
 	device_status *ds;
-	while( ( ds = dsi->current() ) != 0) {
+	while ((ds = dsi->current()) != 0)
+	{
 		int s;
-		switch (ds->get_type()) {
-			case device_status::IMPANTI:
-				qDebug("Imp.anti status variation");
-				ds->read(device_status_impanti::ON_OFF_INDEX, curr_status);
-				s = curr_status.get_val();
-				qDebug("status = %d", s);
-				if(!isActive() && s) {
-					impostaAttivo(2);
-					nascondi(BUT4);
-					nascondi(BUT1);
-					mostra(BUT2);
-					aggiorna=1;
-					qDebug("IMPIANTO INSERITO !!");
-					emit(impiantoInserito());
-					emit(abilitaParz(false));
-					connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
-					insert_timer.start(5000);
-					send_part_msg = false;
-				} else if(isActive() && !s) {
-					impostaAttivo(0);
-					nascondi(BUT2);
-					mostra(BUT4);
-					aggiorna=1;
-					qDebug("IMPIANTO DISINSERITO !!");
-					emit(abilitaParz(true));
-					emit(clearChanged());
-					send_part_msg = false;
-				}
-				break;
-			default:
-				qDebug("device status of unknown type (%d)", ds->get_type());
-				break;
+		switch (ds->get_type())
+		{
+		case device_status::IMPANTI:
+			qDebug("Imp.anti status variation");
+			ds->read(device_status_impanti::ON_OFF_INDEX, curr_status);
+			s = curr_status.get_val();
+			qDebug("status = %d", s);
+			if (!isActive() && s)
+			{
+				impostaAttivo(2);
+				nascondi(BUT4);
+				nascondi(BUT1);
+				mostra(BUT2);
+				aggiorna=1;
+				qDebug("IMPIANTO INSERITO !!");
+				emit(impiantoInserito());
+				emit(abilitaParz(false));
+				connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
+				insert_timer.start(5000);
+				send_part_msg = false;
+			}
+			else if (isActive() && !s)
+			{
+				impostaAttivo(0);
+				nascondi(BUT2);
+				mostra(BUT4);
+				aggiorna=1;
+				qDebug("IMPIANTO DISINSERITO !!");
+				emit(abilitaParz(true));
+				emit(clearChanged());
+				send_part_msg = false;
+			}
+			break;
+		default:
+			qDebug("device status of unknown type (%d)", ds->get_type());
+			break;
 		}
 		++(*dsi);
 	}
-	if(aggiorna)
+
+	if (aggiorna)
 		Draw();
 	delete dsi;
 }
 
 int impAnti::getIsActive(int zona)
 {
-	if(le_zone[zona] !=  NULL)
+	if (le_zone[zona] != NULL)
 		return le_zone[zona]->isActive();
 	else
 		return -1;
@@ -304,14 +312,15 @@ void impAnti::Inserisci()
 {
 	qDebug("impAnti::Inserisci()");
 	int s[MAX_ZONE];
-	for(int i=0; i<MAX_ZONE; i++) 
+	for (int i=0; i<MAX_ZONE; i++)
 	{
-		if(le_zone[i] !=  NULL)
+		if (le_zone[i] !=  NULL)
 			s[i] = le_zone[i]->isActive();
 		else
 			s[i] = -1;
 	}
-	if(tasti)
+
+	if (tasti)
 		delete tasti;
 	inserting = true;
 	tasti = new tastiera_con_stati(s, NULL, "");
@@ -320,12 +329,11 @@ void impAnti::Inserisci()
 	tasti->setFGColor(foregroundColor());
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showTastiera();
-	//parentWidget()->hide();
-	//    this->hide();
 }
+
 void impAnti::Disinserisci()
 {
-	if(tasti)
+	if (tasti)
 		delete tasti;
 	tasti = new tastiera(NULL, "");
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
@@ -333,23 +341,20 @@ void impAnti::Disinserisci()
 	tasti->setFGColor(foregroundColor());
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showTastiera();
-	//parentWidget()->hide();
-
-	//    this->hide();
 }
 
-
-void impAnti::Insert1(char* pwd)
-{  
+void impAnti::Insert1(char *pwd)
+{
 	openwebnet msg_open;
-	char    pippo[50];
+	char pippo[50];
 
-	if (!pwd) 
+	if (!pwd)
 		goto end;
 	passwd = pwd;
 
 	qDebug("impAnti::Insert()");
-	if(!send_part_msg) {
+	if (!send_part_msg)
+	{
 		Insert3();
 		goto end;
 	}
@@ -357,9 +362,8 @@ void impAnti::Insert1(char* pwd)
 	strcat(pippo,"*5*50#");
 	strcat(pippo,pwd);
 	strcat(pippo,"#");
-	for(int i=0; i<MAX_ZONE; i++)
-		strcat(pippo, le_zone[i] && le_zone[i]->isActive() ? 
-				"0" : "1");
+	for (int i = 0; i < MAX_ZONE; i++)
+		strcat(pippo, le_zone[i] && le_zone[i]->isActive() ? "0" : "1");
 	strcat(pippo,"*0##");
 	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 	qDebug("sending part frame %s", pippo);
@@ -373,7 +377,7 @@ end:
 void impAnti::Insert2()
 {
 	qDebug("impAnti::Insert2()");
-	if(!inserting)
+	if (!inserting)
 		return;
 	// 5 seconds between first open ack and open insert messages
 	connect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
@@ -401,33 +405,32 @@ void impAnti::Insert3()
 	insert_timer.start(5000);
 }
 
-void impAnti::DeInsert(char* pwd)
+void impAnti::DeInsert(char *pwd)
 {
 	qDebug("impAnti::DeInsert()");
 	if (pwd)
 	{
 		openwebnet msg_open;
-		char    pippo[50];
-
+		char pippo[50];
 		memset(pippo,'\000',sizeof(pippo));
 		strcat(pippo,"*5*36#");
 		strcat(pippo,pwd);
 		strcat(pippo,"*0##");
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		dev->sendFrame(msg_open.frame_open);
-	}    
+	}
 	parentWidget()->show();
-	//    qDebug("disinserisco con %s", pwd);
 }
 
 void impAnti::openAckRx()
 {
 	qDebug("impAnti::openAckRx()");
-	if(!inserting) {
+	if (!inserting)
+	{
 		qDebug("Not inserting");
 		return;
 	}
-	if(!part_msg_sent) return;
+	if (!part_msg_sent) return;
 	part_msg_sent = false;
 	qDebug("waiting 5 seconds before sending insert message");
 	// Do second step of insert
@@ -437,13 +440,14 @@ void impAnti::openAckRx()
 void impAnti::openNakRx()
 {
 	qDebug("impAnti::openNakRx()");
-	if(!part_msg_sent) return;
+	if (!part_msg_sent)
+		return;
 	//Agre - per sicurezza provo a continuare per evitare di non inserire l'impianto
 	openAckRx();
 	part_msg_sent = false;
 }
 
-char* impAnti::getChi()
+char *impAnti::getChi()
 {
 	return("5");
 }
@@ -451,7 +455,7 @@ char* impAnti::getChi()
 void impAnti::setZona(zonaAnti *za)
 {
 	int index = za->getIndex() - 1;
-	if((index >= 0) && (index < MAX_ZONE))
+	if ((index >= 0) && (index < MAX_ZONE))
 		le_zone[index] = za;
 }
 
@@ -473,7 +477,8 @@ void impAnti::hide()
 {
 	qDebug("impAnti::hide()");
 	banner::hide();
-	if(tasti && tasti->isShown()) {
+	if (tasti && tasti->isShown())
+	{
 		qDebug("HIDING KEYBOARD");
 		tasti->hide();
 	}

@@ -81,8 +81,6 @@ public  slots:
 signals:
 	//! Emitted when a frame is available
 	void frame_available(char *);
-	//! Emitted on freezed
-	void freezed(bool);
 };
 
 #endif

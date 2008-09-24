@@ -285,6 +285,9 @@ private:
 
 	/// Change the current dir, return false in case of error.
 	bool changePath(QString new_path);
+
+	QLabel *createWaitDialog();
+	void destroyWaitDialog(QLabel *l);
 };
 
 
