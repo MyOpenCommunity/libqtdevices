@@ -12,7 +12,7 @@
 #define DIFFMULTI_H
 
 #include <qwidget.h>
-#include <qptrlist.h> 
+#include <qptrlist.h>
 
 #include "device_status.h"
 #include "scenevocond.h" // per la connect
@@ -21,7 +21,7 @@
 class diffSonora;
 class device;
 
-class dati_sorgente_multi 
+class dati_sorgente_multi
 {
 public:
 	char tipo;
@@ -30,10 +30,10 @@ public:
 	void *indirizzo;
 	char I1[50], I2[50], I3[50];
 	int modo;
-	dati_sorgente_multi(char t, QPtrList<QString> *d, void *ind,
-			char *I1, char *I2, char *I3, int p1, char *ad);
+	dati_sorgente_multi(char t, QPtrList<QString> *d, void *ind, char *I1, char *I2, char *I3, int p1, char *ad);
 	~dati_sorgente_multi();
 };
+
 
 class dati_ampli_multi
 {
@@ -48,23 +48,16 @@ public:
 	~dati_ampli_multi();
 };
 
+
 class diffmulti : public sottoMenu
 {
 Q_OBJECT
 public:
-	diffmulti( QWidget *parent=0, const char *name=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1 );
-	int addItem(char tipo, QPtrList<QString> *nomi, void* indirizzo,
-			QPtrList<QString> &icon_names,
-			int periodo=0,
-			int numFrame=0, QColor  secondFroreground=QColor(0,0,0),
-			char* descr1=NULL, char* descr2=NULL, char* descr3=NULL,
-			char* descr4=NULL, int par3=0, int par4=0,
-			QPtrList<QString> *lt = NULL,
-			QPtrList<scenEvo_cond> *lc = NULL,
-			QString action="", QString light="", QString key="",
-			QString unk="",
-			QValueList<int> sstart = QValueList<int>(),
-			QValueList<int> sttop = QValueList<int>());
+	diffmulti(QWidget *parent=0, const char *name=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1);
+	int addItem(char tipo, QPtrList<QString> *nomi, void* indirizzo, QPtrList<QString> &icon_names, int periodo=0, int numFrame=0,
+			QColor secondFroreground=QColor(0,0,0), char* descr1=NULL, char* descr2=NULL, char* descr3=NULL, char* descr4=NULL,
+			int par3=0, int par4=0,	QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, QString action="", QString light="",
+			QString key="", QString unk="", QValueList<int> sstart = QValueList<int>(),QValueList<int> sttop = QValueList<int>());
 	/*!
 	 *  \brief Changes the type of navigation bar present at the
 	 *  bsubtree (see bannFrecce). Also calls downstream diffSonora setNavBarMode
@@ -81,8 +74,8 @@ public:
 	 */
 	void setGeom(int,int,int,int);
 	void inizializza();
+
 public slots:
-	//void freezed();
 	void ds_closed(diffSonora *);
 	void hide();
 	void show();
@@ -92,11 +85,13 @@ public slots:
 	 */
 	void freezed_handler(bool);
 	void gestFrame(char*);
+
 signals:
 	void actSrcChanged(int, int);
 	void dsClosed();
 	void freezed(bool);
 	void gesFrame(char *);
+
 private:
 	QPtrList<diffSonora> *dslist;
 	QPtrList<dati_ampli_multi> *datimmulti;
@@ -106,10 +101,12 @@ private:
 	int _where_address;
 };
 
-class sveglia ;
+
+class sveglia;
+
 
 //! Contenitore diffusione sonora/diffusione sonora multicanale per sveglia
-class contdiff : public QObject 
+class contdiff : public QObject
 {
 Q_OBJECT
 private:
@@ -127,16 +124,17 @@ public:
 	void restorewindows();
 	void connectClosed(sveglia *);
 	void disconnectClosed(sveglia *);
+
 public slots:
 	//! Invoke proper hide method
 	void hide();
 	void show();
+
 signals:
 	/*!
 	 *  \brief Emitted when the object is closed.
 	 */
 	void Closed();
-
 };
 
 

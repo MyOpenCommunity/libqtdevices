@@ -12,12 +12,10 @@
 #define DIFFSONORA_H
 
 #include <qwidget.h>
-#include <qptrlist.h> 
+#include <qptrlist.h>
+#include <qstring.h>
 
 class banner;
-
-// #include "items.h"
-// #include "openclient.h"
 
 class sottoMenu;
 
@@ -34,23 +32,23 @@ class diffSonora : public QWidget
 {
 Q_OBJECT
 public:
-	diffSonora( QWidget *parent=0, const char *name=0, bool creasorgenti=true);
+	diffSonora(QWidget *parent=0, const char *name=0, bool creasorgenti=true);
 	/*!
 	 * \brief Sets the background color for the banner.
 	 *
 	 * The arguments are RGB components for the color.
 	 */
-	void setBGColor(int, int , int );
+	void setBGColor(int, int , int);
 	/*!
 	 * \brief Sets the foreground color for the banner.
 	 *
 	 * The arguments are RGB components for the color.
 	 */
-	void setFGColor(int , int , int );
+	void setFGColor(int , int , int);
 	/*!
 	 * \brief Sets the background pixmap for the banner.
 	 */
-	int setBGPixmap(char* );
+	int setBGPixmap(char*);
 	/*!
 	 * \brief Set the "sorgenti" submenu"
 	 */
@@ -61,14 +59,8 @@ public:
 	 * If it is a source it is added to the sources subtree otherwise it's added to the amplifiers one.
 	 * This method reproduce the one implemented in sottoMenù in similar manner.
 	 */
-	virtual int addItemU(
-			char tipo, 
-			const QString & nome, 
-			void* indirizzo, 
-			QPtrList<QString> &icon_names, 
-			int periodo=0 , 
-			int where=0, 
-			char *ambdescr="");
+	virtual int addItemU(char tipo, const QString & nome, void* indirizzo,QPtrList<QString> &icon_names,
+		int periodo=0 , int where=0, char *ambdescr="");
 	/*!
 	 * \brief Sets the row's number.
 	 */
@@ -98,6 +90,7 @@ public:
 	 * A forced draw force a draw of the subtree(sottoMenu) also if its internal index remain unchanged.
 	 */
 	void forceDraw();
+
 signals:
 	/*!
 	 * \brief Emitted when the object is closed.
@@ -121,6 +114,7 @@ signals:
 	 * \brief Emitted thought sources and amplifiers when the device is going into (de)freezing state.
 	 */
 	void freezed(bool);
+
 public slots:
 	/*!
 	 * \brief Analyze \a Open \a frame to detect which source is active at a certain time.
@@ -155,8 +149,9 @@ public slots:
 	 * \brief sets isVisual to false and emits freezed signal
 	 */
 	void freezed_handler(bool);
+
 protected:
-	uchar numRighe,isVisual;	
+	uchar numRighe,isVisual;
 	sottoMenu* sorgenti;
 };
 
