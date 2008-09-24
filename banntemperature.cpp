@@ -66,12 +66,12 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 void BannTemperature::Draw()
 {
 	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
+	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	descr_label->setFont(aFont);
 	descr_label->setAlignment(AlignAuto | AlignVCenter);
 	descr_label->setText(probe_descr);
 
-	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
+	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	temp_label->setFont(aFont);
 	temp_label->setAlignment(AlignCenter);
 	switch (temp_scale)
