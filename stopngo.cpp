@@ -18,9 +18,9 @@
 #include "fontmanager.h"
 #include "main.h"
 
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qtimer.h>
+#include <QLCDNumber>
+#include <QCursor>
+#include <QTimer>
 
 
 #define TITLE_BAR_HEIGHT 30
@@ -121,44 +121,45 @@ BannPulsDynIcon::~BannPulsDynIcon()
 }
 
 
-void BannPulsDynIcon::status_changed(QPtrList<device_status> sl)
+void BannPulsDynIcon::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_stat(stat_var::INFO_MCI);
 
 	bool aggiorna = false;
 	qDebug("supervisionMenu::status_changed()");
-	device_status_mci *ds;                                                       //Scan the list
-  	for (ds = (device_status_mci*)sl.first(); ds; ds = (device_status_mci*)sl.next())
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status_mci *ds = static_cast<device_status_mci*>(sl.at(i));
 		if (ds->get_type() == device_status::SUPERVISION_MCI)
 		{
 			qDebug("Supervision status variation");
 			ds->read(device_status_mci::MCI_STATUS_INDEX, curr_stat);
 			int statusBmp = curr_stat.get_val();
 			qDebug("status = %d", statusBmp);
-			if (!(statusBmp & STATUS_BIT_OPEN_CLOSE))      //Closed
+			if (!(statusBmp & STATUS_BIT_OPEN_CLOSE))  // Closed
 			{
 				qDebug("Supervision: Change banner icon to CLOSED");
 				SetIcons(ICON, ICON_STOPNGO_CHIUSO);
 			}
-			else                                           //Opened
+			else  // Opened
 			{
-				if (statusBmp & STATUS_BIT_LOCKED)           //Open because of lock
+				if (statusBmp & STATUS_BIT_LOCKED) // Open because of lock
 				{
 					qDebug("Supervision: Change banner icon to LOCKED");
 					SetIcons(ICON, ICON_STOPNGO_BLOCCO);
 				}
-				else if (statusBmp & STATUS_BIT_CC)          //Open because of short circuit between L and N
+				else if (statusBmp & STATUS_BIT_CC)  // Open because of short circuit between L and N
 				{
 					qDebug("Supervision: Change banner icon to short circuit");
 					SetIcons(ICON, ICON_STOPNGO_CORTOCIRCUITO);
 				}
-				else if (statusBmp & STATUS_BIT_EARTH_FAIL)  //Open because of earth failure
+				else if (statusBmp & STATUS_BIT_EARTH_FAIL)  // Open because of earth failure
 				{
 					qDebug("Supervision: Change banner icon to EARTH FAILURE");
 					SetIcons(ICON, ICON_STOPNGO_GUASTO_TERRA);
 				}
-				else if (statusBmp & STATUS_BIT_VMAX)        //Open because of out of Vmax
+				else if (statusBmp & STATUS_BIT_VMAX)  // Open because of out of Vmax
 				{
 					qDebug("Supervision: Change banner icon to VMAX");
 					SetIcons(ICON, ICON_STOPNGO_SOVRATENSIONE);
@@ -183,10 +184,10 @@ void BannPulsDynIcon::status_changed(QPtrList<device_status> sl)
 	StopngoPage class definition
 ==================================================================================================*/
 
-StopngoPage::StopngoPage(QWidget *parent, const char *name, QString where, int id, QString pageTitle) : QWidget(parent, name)
+StopngoPage::StopngoPage(QWidget *parent, const char *name, QString where, int id, QString pageTitle) : QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 	showFullScreen();
 #endif
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
@@ -202,12 +203,12 @@ StopngoPage::StopngoPage(QWidget *parent, const char *name, QString where, int i
 	freqSendTimer = NULL;
 	labelAutoArm = labelVerify = NULL;
 
-	onBut       	= NULL;
-	offBut      	= NULL;
-	verifyBut   	= NULL;
-	autotestBut 	= NULL;
-	minusBut    	= NULL;
-	plusBut     	= NULL;
+	onBut = NULL;
+	offBut = NULL;
+	verifyBut = NULL;
+	autotestBut = NULL;
+	minusBut = NULL;
+	plusBut = NULL;
 	freqLcdNumber = NULL;
 
 	AddItems();
@@ -253,8 +254,8 @@ void StopngoPage::AddItems()
 	titleBar->setFrameStyle(QFrame::NoFrame);
 	titleBar->setIndent(TITLE_BAR_INDENT);
 	titleBar->setFont(tFont);
-	titleBar->setAlignment(AlignCenter|AlignTop);
-	titleBar->setText(pageTitle.ascii());
+	titleBar->setAlignment(Qt::AlignCenter|Qt::AlignTop);
+	titleBar->setText(pageTitle);
 	titleBar->show();
 
 	//Draw the exit button
@@ -301,7 +302,7 @@ void StopngoPage::AddItems()
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
 		labelVerify->setFont(aFont);
-		labelVerify->setAlignment(AlignCenter|AlignTop);
+		labelVerify->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 		labelVerify->setText(tr("Test"));
 		labelVerify->show();
 		//Draw the VERIFY button
@@ -318,7 +319,7 @@ void StopngoPage::AddItems()
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
 		labelVerify->setFont(aFont);
-		labelVerify->setAlignment(AlignCenter|AlignTop);
+		labelVerify->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 		labelVerify->setText(tr("Self-test"));
 		labelVerify->show();
 		//Draw the AUTOTEST button
@@ -344,7 +345,7 @@ void StopngoPage::AddItems()
 		connect(plusBut, SIGNAL(released()), this, SLOT(LoadTimer()));
 		plusBut->show();
 		  //Draw LCD number
-		freqLcdNumber = new QLCDNumber(3, this, "autotest freq");
+		freqLcdNumber = new QLCDNumber(3, this);
 		freqLcdNumber->setGeometry(BUT_DIM, THIRD_ROW_Y, MAX_WIDTH-(BUT_DIM*2), BUT_DIM);
 		freqLcdNumber->setFrameStyle(QFrame::Plain);
 		freqLcdNumber->setLineWidth(0);
@@ -359,7 +360,7 @@ void StopngoPage::AddItems()
 	labelAutoArm->setGeometry(0, secondRowY+BUT_DIM, armLabelW, LABELS_HEIGHT);
 	labelAutoArm->setFrameStyle(QFrame::NoFrame);
 	labelAutoArm->setFont(aFont);
-	labelAutoArm->setAlignment(AlignCenter|AlignTop);
+	labelAutoArm->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 	labelAutoArm->setText(tr("Self-recluser"));
 	labelAutoArm->show();
 	//Draw the auto arm button
@@ -382,6 +383,8 @@ void StopngoPage::setFGColor(int r, int g, int b)
 
 void StopngoPage::setBGColor(QColor c)
 {
+	// TODO: sistemare con i metodi qt4 per impostare i colori!!
+/*
 	setPaletteBackgroundColor(c);
 
 	titleBar->setPaletteBackgroundColor(c);
@@ -407,10 +410,13 @@ void StopngoPage::setBGColor(QColor c)
 		labelAutoArm->setPaletteBackgroundColor(c);
 	if (labelVerify)
 		labelVerify->setPaletteBackgroundColor(c);
+*/
 }
 
 void StopngoPage::setFGColor(QColor c)
 {
+	// TODO: sistemare con i metodi qt4 per impostare i colori!!
+/*
 	setPaletteForegroundColor(c);
 
 	titleBar->setPaletteForegroundColor(c);
@@ -435,10 +441,13 @@ void StopngoPage::setFGColor(QColor c)
 		labelAutoArm->setPaletteForegroundColor(c);
 	if (labelVerify)
 		labelVerify->setPaletteForegroundColor(c);
+*/
 }
 
 int StopngoPage::setBGPixmap(char* backImage)
 {
+	// TODO: sistemare con i metodi qt4 per impostare i colori!!
+/*
 	QPixmap Back;
 	if (Back.load(backImage))
 	{
@@ -451,6 +460,7 @@ int StopngoPage::setBGPixmap(char* backImage)
 		
 		return 0;
 	}
+	*/
 	return 1;
 }
 
@@ -465,15 +475,15 @@ void StopngoPage::freezed(bool f)
 	setDisabled(f);
 }
 
-void StopngoPage::status_changed(QPtrList<device_status> sl)
+void StopngoPage::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_stat(stat_var::INFO_MCI);
 	stat_var curr_freq(stat_var::WORD);
 
 	qDebug("StopngoPage::status_changed()");
-	device_status_mci *ds;                                                       //Scan the list
-	for (ds = (device_status_mci*)sl.first(); ds; ds = (device_status_mci*)sl.next())
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status_mci *ds = static_cast<device_status_mci*>(sl.at(i));
 		if (ds->get_type() == device_status::SUPERVISION_MCI)
 		{
 			qDebug("StopngoPage status variation");
@@ -672,7 +682,8 @@ void StopngoPage::LoadTimer()
 	}
 	
 	qDebug("StopngoPage::LoadTimer() start timer.");
-	freqSendTimer->start(AUTOTEST_SEND_TIMEOUT, true);
+	freqSendTimer->setSingleShot(true);
+	freqSendTimer->start(AUTOTEST_SEND_TIMEOUT);
 }
 
 QString StopngoPage::getPressedIconName(const char *iconname)
@@ -704,21 +715,23 @@ QString StopngoPage::getPressedIconName(const char *iconname)
 void StopngoPage::FireFreqFrame()
 {
 	qDebug("StopngoPage::FireFreqFrame() Enter");
+	QByteArray buf = where.toAscii();
 	char frameOpen[30];
-	sprintf(frameOpen, "*#%s*%s*#%s*%d##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_FREQ_AUTOTEST, autotestFreq);
+	sprintf(frameOpen, "*#%s*%s*#%s*%d##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_FREQ_AUTOTEST, autotestFreq);
 	qDebug("StopngoPage::FireFreqFrame() fire frame: %s", frameOpen);
 	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_FREQ_AUTOTEST);
+	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_FREQ_AUTOTEST);
 	emit(sendFrame(frameOpen));
 }
 
 void StopngoPage::AutoArmClick()
 {
+	QByteArray buf = where.toAscii();
 	char frameOpen[30];
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_AUTOREARM_DISABLED) ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF, where.ascii());
+		(statusBmp & STATUS_BIT_AUTOREARM_DISABLED) ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF, buf.constData());
 	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
+	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
 	emit(sendFrame(frameOpen));
 }
 
@@ -726,9 +739,10 @@ void StopngoPage::OnClick()
 {
 	if ((statusBmp&STOPNGO_WARNING_MASK) || !(statusBmp&STATUS_BIT_OPEN_CLOSE))
 		return;
-	
+
+	QByteArray buf = where.toAscii();
 	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_CLOSE, where.ascii());
+	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_CLOSE, buf.constData());
 	emit(sendFrame(frameOpen));
 }
 
@@ -736,29 +750,32 @@ void StopngoPage::OffClick()
 {
 	if (statusBmp&STATUS_BIT_OPEN_CLOSE)
 		return;
-	
+
+	QByteArray buf = where.toAscii();
 	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_OPEN, where.ascii());
+	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_OPEN, buf.constData());
 	emit(sendFrame(frameOpen));
 }
 
 void StopngoPage::VerifyClick()
 {
 	char frameOpen[30];
+	QByteArray buf = where.toAscii();
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_VERIFY_DISABLED)?OPEN_WHAT_VERIFY_ON:OPEN_WHAT_VERIFY_OFF, where.ascii());
+		(statusBmp & STATUS_BIT_VERIFY_DISABLED)?OPEN_WHAT_VERIFY_ON:OPEN_WHAT_VERIFY_OFF, buf.constData());
 	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
+	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
 	emit(sendFrame(frameOpen));
 }
 
 void StopngoPage::AutotestClick()
 {
 	char frameOpen[30];
+	QByteArray buf = where.toAscii();
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_AUTOTEST_DISABLED)?OPEN_WHAT_AUTOTEST_ON:OPEN_WHAT_AUTOTEST_OFF, where.ascii());
+		(statusBmp & STATUS_BIT_AUTOTEST_DISABLED)?OPEN_WHAT_AUTOTEST_ON:OPEN_WHAT_AUTOTEST_OFF, buf.constData());
 	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
+	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
 	emit(sendFrame(frameOpen));
 }
 

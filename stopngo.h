@@ -21,9 +21,9 @@
 #include "btlabel.h"
 #include "btbutton.h"
 
-#include <qwidget.h>
-#include <qptrlist.h>
-#include <qfile.h>
+#include <QWidget>
+#include <QList>
+#include <QFile>
 
 class QLCDNumber;
 class QTimer;
@@ -74,7 +74,7 @@ public:
 	~BannPulsDynIcon();
 
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 };
 
 
@@ -114,7 +114,7 @@ protected:
 	void SetFreqValue(int);
 
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 	void showPage();
 	void freezed(bool);
 
