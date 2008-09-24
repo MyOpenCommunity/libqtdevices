@@ -21,10 +21,6 @@ bannOnIcons::bannOnIcons(QWidget *parent,const char *name) : banner(parent, name
 	addItem(TEXT , 0 , BANNONICONS_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE-BANNONICONS_BUT_DIM);
 	addItem(ICON , BANNONICONS_BUT_DIM , 0 , BANNONICONS_BUT_DIM , BANNONICONS_BUT_DIM);
 	addItem(ICON2 , 2*BANNONICONS_BUT_DIM , 0 , BANNONICONS_BUT_DIM , BANNONICONS_BUT_DIM);
-
-	connect(this,SIGNAL(sxClick()),this,SIGNAL(click()));
-	connect(this,SIGNAL(sxPressed()),this,SIGNAL(pressed()));
-	connect(this,SIGNAL(sxReleased()),this,SIGNAL(released()));
 }
 
 
