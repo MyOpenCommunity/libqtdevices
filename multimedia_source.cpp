@@ -498,6 +498,7 @@ void FileSelector::itemIsClicked(int item)
 
 	if (clicked_element.isDir())
 	{
+		++level;
 		if (!browseFiles(clicked_element.absFilePath()))
 		{
 			// FIXME display error?
@@ -543,7 +544,6 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
-	++level;
 	QString old_path = current_dir.absPath();
 	if (changePath(new_path))
 	{
