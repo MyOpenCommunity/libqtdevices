@@ -14,6 +14,10 @@
 #include "bannbuticon.h"
 #include "bannbut2icon.h"
 
+#include <qptrlist.h>
+#include <qwidget.h>
+#include <qstring.h>
+
 /// Forward Declarations
 class diffSonora;
 class diffmulti;
