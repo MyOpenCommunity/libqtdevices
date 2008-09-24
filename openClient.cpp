@@ -221,7 +221,11 @@ int Client::socketFrameRead()
 		if (ismonitor)
 		{
 			qDebug("letto: %s", buf);
-			if (strcmp(buf, last_msg_open_read.frame_open) !=0)
+			if (!strcmp(buf, "*#*1##"))
+				qWarning("ERROR - ack received");
+			else if (!strcmp(buf, "*#*0##"))
+				qWarning("ERROR - nak received");
+			else if (strcmp(buf, last_msg_open_read.frame_open) != 0)
 			{
 				Open_read.stop();
 				last_msg_open_read.CreateMsgOpen(buf,strlen(buf));
