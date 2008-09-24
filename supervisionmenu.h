@@ -21,10 +21,10 @@
 #include "main.h"
 #include "stopngo.h"
 
-#include <qwidget.h>
-#include <qcolor.h>
-#include <qdom.h>
-
+#include <QWidget>
+#include <QColor>
+#include <QDomNode>
+#include <QList>
 
 /*!
   \class SupervisionMenu
@@ -43,8 +43,8 @@ public:
 private:
 	QDomNode subtreeRoot;
 	sottoMenu* stopngoSubmenu;
-	QPtrList<StopngoItem> stopngoList;
-	QPtrList<StopngoPage> stopngoPages;
+	QList<StopngoItem*> stopngoList;
+	QList<StopngoPage*> stopngoPages;
 	int classesCount;
 
 	void Create2ButBanner(QDomElement, QString, QString);
@@ -54,6 +54,10 @@ private:
 	void AddItems();
 	void AddBanners();
 	void LinkBanner2Page(bannPuls*, StopngoItem*);
+
+	// TODO: rimuovere questi metodi qt3!
+	const QColor& paletteBackgroundColor();
+	const QColor& paletteForegroundColor();
 
 public slots:
 	void showPg();

@@ -12,9 +12,11 @@
  * \author Lucio Macellari
  */
 
-#include "supervisionMenu.h"
+#include "supervisionmenu.h"
 #include "device_cache.h"
 #include "device.h"
+
+#include <QDebug>
 
 #define STOPNGO_BANN_IMAGE ICON_STOPNGO_CHIUSO
 
@@ -26,8 +28,6 @@ SupervisionMenu::SupervisionMenu(QWidget *parent, const char *name, QDomNode n, 
 	sottoMenu(parent, name)
 {
 	qDebug("[SUPERVISION] SupervisionMenu()");
-	stopngoList.setAutoDelete(TRUE);
-	stopngoPages.setAutoDelete(TRUE);
 
 	subtreeRoot = n;
 	stopngoSubmenu = NULL;
@@ -38,8 +38,12 @@ SupervisionMenu::SupervisionMenu(QWidget *parent, const char *name, QDomNode n, 
 
 SupervisionMenu::~SupervisionMenu()
 {
-	stopngoList.clear();
-	stopngoPages.clear();
+	while (!stopngoList.isEmpty())
+		delete stopngoList.takeFirst();
+
+	while (!stopngoPages.isEmpty())
+		delete stopngoPages.takeFirst();
+
 	if (this != stopngoSubmenu)
 		delete stopngoSubmenu;
 }
@@ -84,7 +88,7 @@ void SupervisionMenu::AddBanners()
 		{
 			if (this == stopngoSubmenu)  // Only one Stop&Go device is mapped
 			{
-				StopngoPage* pg = stopngoPages.getFirst();
+				StopngoPage* pg = stopngoPages.first();
 				if (pg)
 				{
 					disconnect(pg, SIGNAL(Closed()), this, SLOT(showFullScreen()));
@@ -102,11 +106,12 @@ void SupervisionMenu::AddBanners()
 
 void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
 {
-	bannPuls *bp = new bannPuls(this, descr.ascii());
+	bannPuls *bp = new bannPuls(this, 0);
 
-	bp->SetIcons(ICON_FRECCIA_DX, 0, ci.ascii());
+	QByteArray buf = ci.toAscii();
+	bp->SetIcons(ICON_FRECCIA_DX, 0, buf.constData());
 	QString addr = GetDeviceAddress(e);
-	bp->setAddress(addr.ascii());
+	bp->setAddress(addr);
 	elencoBanner.append(bp);
 	connectLastBanner();
 
@@ -122,13 +127,13 @@ void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
 
 QDomNode SupervisionMenu::FindNamedNode(QDomNode root, QString name)
 {
-	QValueList<QDomNode> nodes;
+	QList<QDomNode> nodes;
 	nodes.append(root);
 	while (!nodes.isEmpty())
 	{
 		QDomNode n = nodes.first();
 		QDomNode item = n.namedItem(name);
-		qDebug("[SUPERVISOR] FindNamedNode: item = %s", item.nodeName().ascii());
+		qDebug() << "[SUPERVISOR] FindNamedNode: item = " << item.nodeName();
 		if (item.isNull())
 		{
 			QDomNodeList list = n.childNodes();
@@ -167,13 +172,13 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 			stopngoList.append(new StopngoItem(id.toElement().text().toInt(), cid.toElement().text().toInt(),
 				des.toElement().text(), where.toElement().text()));
 
-			qDebug("[SUPERVISOR] CreateStopnGoMenu() found: %s desc=%s id=%s", n.nodeName().ascii(),
-					des.toElement().text().ascii(), id.toElement().text().ascii());
+			qDebug() << "[SUPERVISOR] CreateStopnGoMenu() found: " << n.nodeName() << " desc="
+				<< des.toElement().text() << " id=" << id.toElement().text();
 		}
 		n = n.nextSibling();
 	}
 
-	if (stopngoList.count() > 1)  // more than one device
+	if (stopngoList.size() > 1)  // more than one device
 	{
 		// Show a submenu listing the devices to control
 		sottoMenu *sm = new sottoMenu(NULL, "StopnGo Group");  // Create submenu
@@ -187,26 +192,26 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 		QObject::connect(this, SIGNAL(frez(bool)), sm, SLOT(freezed(bool)));
 		stopngoSubmenu = sm;
 
-		StopngoItem *itm;  // Scan found devices
-		for (itm = stopngoList.first(); itm; itm = stopngoList.next())
+		for (int i = 0; i < stopngoList.size(); ++i)
 		{
+			StopngoItem *itm = stopngoList.at(i);
 			BannPulsDynIcon *bp = new BannPulsDynIcon(sm, "banner");  // Create a new banner
 			bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
-			bp->SetTextU(itm->GetDescr().ascii());
+			bp->SetTextU(itm->GetDescr());
 			bp->setAnimationParams(0, 0);
 			bp->setBGColor(paletteBackgroundColor());
 			bp->setFGColor(paletteForegroundColor());
 			bp->setId(itm->GetId());
 
 			// Get status changed events back
-			mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere().ascii());
-			connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), bp, SLOT(status_changed(QPtrList<device_status>)));
+			mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere());
+			connect(dev, SIGNAL(status_changed(QList<device_status*>)), bp, SLOT(status_changed(QList<device_status*>)));
 			sm->appendBanner(bp);  // Add the new banner to the submenu
 			LinkBanner2Page(bp, itm);  // Connect the new banner to the page
 		}
 		sm->forceDraw();
 	}
-	else if (stopngoList.count() == 1)  // one device
+	else if (stopngoList.size() == 1)  // one device
 	{
 		// directly open the only available device page
 		stopngoSubmenu = this;
@@ -229,9 +234,9 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 	connect(pg, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	
 	// Get status changed events back
-	mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere().ascii());
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-			pg, SLOT(status_changed(QPtrList<device_status>)));
+	mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere());
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			pg, SLOT(status_changed(QList<device_status*>)));
 
 	stopngoPages.append(pg);
 }
@@ -243,5 +248,15 @@ void SupervisionMenu::showPg()
 		emit(quickOpen());
 	else
 		showFullScreen();
+}
+
+const QColor& SupervisionMenu::paletteBackgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& SupervisionMenu::paletteForegroundColor()
+{
+	return palette().color(foregroundRole());
 }
 

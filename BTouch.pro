@@ -88,7 +88,7 @@ HEADERS += actuators.h \
            sorgentiradio.h \
            sottomenu.h \
            stopngo.h \
-           supervisionMenu.h \
+           supervisionmenu.h \
            sveglia.h \
            tastiera.h \
            thermalmenu.h \
@@ -170,7 +170,7 @@ SOURCES += actuators.cpp \
            sorgentiradio.cpp \
            sottoMenu.cpp \
            stopngo.cpp \
-           supervisionMenu.cpp \
+           supervisionmenu.cpp \
            sveglia.cpp \
            tastiera.cpp \
            thermalmenu.cpp \
