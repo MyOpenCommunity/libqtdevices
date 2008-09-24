@@ -43,7 +43,6 @@ void device::sendInit(const char *frame)
 
 void device::init(bool force)
 {
-	assert(interpreter && "interpreter not set!");
 	qDebug("device::init()");
 	// True if all device has already been initialized
 	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(*stat);
@@ -59,6 +58,7 @@ void device::init(bool force)
 		if (force)
 		{
 			qDebug("device status force initialize");
+			assert(interpreter && "interpreter not set!");
 			interpreter->get_init_messages(ds, msgl);
 			for (QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it)
 			{
@@ -81,6 +81,7 @@ void device::init(bool force)
 			else
 			{
 				qDebug("getting init message");
+				assert(interpreter && "interpreter not set!");
 				interpreter->get_init_messages(ds, msgl);
 				for (QStringList::Iterator it = msgl.begin();it != msgl.end(); ++it)
 				{
