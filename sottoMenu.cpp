@@ -23,6 +23,7 @@
 #include "btbutton.h"
 #include "diffsonora.h"
 #include "versio.h"
+#include "genericfunz.h"
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
 #include "dimmers.h"
