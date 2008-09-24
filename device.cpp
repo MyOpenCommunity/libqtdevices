@@ -689,7 +689,7 @@ void aux_device::frame_rx_handler(char *frame)
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
 
-	if (who != msg.who() || where != msg.where())
+	if (who != QString::number(msg.who()) || where != QString::number(msg.where()))
 		return;
 
 	qDebug("aux_device::frame_rx_handler");
