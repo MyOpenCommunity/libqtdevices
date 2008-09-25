@@ -65,7 +65,7 @@ public:
 
 	//! Get a controlled temperature probe
 	device *get_temperature_probe_controlled(QString where, thermo_type_t type,
-		bool fancoil, const char *ind_centrale, const char *indirizzo);
+		bool fancoil, QString ind_centrale, QString indirizzo);
 	//! Get stand-alone or external temperature probe
 	device *get_temperature_probe(QString w, bool external);
 	//! Get modscen

@@ -18,11 +18,12 @@
 #include "bttime.h"
 #include "main.h"
 
-#include <qlayout.h>
-#include <qbuttongroup.h>
-#include <qdom.h>
-#include <qlcdnumber.h>
-#include <qtimer.h>
+#include <QLayout>
+#include <QButtonGroup>
+#include <QDomNode>
+#include <QLCDNumber>
+#include <QTimer>
+#include <QMap>
 
 class device;
 class thermal_regulator;
@@ -55,7 +56,7 @@ public:
 protected:
 	BannFullScreen(QWidget *parent, const char *name);
 	QColor second_fg;
-	BtButton *getButton(const char *img);
+	BtButton *getButton(QString img);
 };
 
 enum BannID
@@ -86,7 +87,7 @@ public:
 	virtual void Draw();
 	void setSecondForeground(QColor fg2);
 public slots:
-	virtual void status_changed(QPtrList<device_status> list);
+	virtual void status_changed(QList<device_status*> sl);
 
 protected:
 	/// Global layout for the banner
@@ -115,7 +116,7 @@ public:
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
-	virtual void status_changed(QPtrList<device_status> list);
+	virtual void status_changed(QList<device_status*> sl);
 protected:
 	/// Setpoint temperature. The scale of the temperature may be Celsius or Fahrenheit, depending on the value
 	/// of FSBannSimpleProbe::temp_scale. Units represent 1/10 of degree, for example -23.5 Celsius degrees
@@ -192,7 +193,7 @@ public:
 	BtButton *customButton();
 	virtual thermal_regulator *dev() = 0;
 public slots:
-	virtual void status_changed(QPtrList<device_status> list);
+	virtual void status_changed(QList<device_status*> sl);
 protected:
 	/**
 	 * Utility function to create settings menu for the thermal regulator device.
@@ -403,7 +404,7 @@ public:
 	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
 			TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
-	virtual void status_changed(QPtrList<device_status> list);
+	virtual void status_changed(QList<device_status*> sl);
 private:
 	/**
 	 * Creates fancoil buttons and loads icons
@@ -426,7 +427,7 @@ public:
 	virtual void Draw();
 	virtual BtButton *customButton();
 public slots:
-	void status_changed(QPtrList<device_status> list);
+	void status_changed(QList<device_status*> sl);
 protected:
 	QVBoxLayout main_layout;
 	/// The button to be set on the navbar

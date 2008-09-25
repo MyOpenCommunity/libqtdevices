@@ -322,15 +322,18 @@ device *device_cache::get_poweramplifier_device(QString w)
 }
 
 device *device_cache::get_temperature_probe_controlled(QString w, thermo_type_t type,
-		bool fancoil, const char *ind_centrale, const char *indirizzo)
+		bool fancoil, QString ind_centrale, QString indirizzo)
 {
+	QByteArray buf_centrale = ind_centrale.toAscii();
+	QByteArray buf_indirizzo = indirizzo.toAscii();
+
 	QString k = get_device_key(QString("4"), w);
 	qDebug() << "device_cache::get_temperature_probe_controlled(), key=" << k
 		<< " type=" << type << " fancoil=" << (fancoil ? "yes" : "no");
 	device *out = (*this)[k];
 	if (!out)
 	{
-		out = new temperature_probe_controlled(w, type, fancoil, ind_centrale, indirizzo);
+		out = new temperature_probe_controlled(w, type, fancoil, buf_centrale.constData(), buf_indirizzo.constData());
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
 		connect_comm(out);
