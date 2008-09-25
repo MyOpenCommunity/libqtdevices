@@ -61,6 +61,21 @@ do \
 #endif
 
 
+inline QTime startTimeCounter()
+{
+	QTime timer;
+	timer.start();
+	return timer;
+}
+
+inline void waitTimeCounter(const QTime& timer, int msec)
+{
+	int wait_time = msec - timer.elapsed();
+	if (wait_time > 0)
+		usleep(wait_time * 1000);
+}
+
+
 enum ChoiceButtons
 {
 	BUTTON_RADIO = 0,
@@ -535,18 +550,23 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 
 void FileSelector::showEvent(QShowEvent *event)
 {
+	QLabel *l = createWaitDialog();
+	QTime time_counter = startTimeCounter();
+
 	if (!browseFiles())
 	{
 		// FIXME display error?
 		emit notifyExit();
 	}
+
+	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
+	destroyWaitDialog(l);
 }
 
 void FileSelector::itemIsClicked(int item)
 {
 	QLabel *l = createWaitDialog();
-	QTime time_counter;
-	time_counter.start();
+	QTime time_counter = startTimeCounter();
 
 	QString filename = files_list[item];
 	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << " -> " << filename;
@@ -563,9 +583,7 @@ void FileSelector::itemIsClicked(int item)
 			emit notifyExit();
 			return;
 		}
-		int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
-		if (wait_time > 0)
-			usleep(wait_time * 1000);
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 		destroyWaitDialog(l);
 	}
 	else
@@ -586,9 +604,7 @@ void FileSelector::itemIsClicked(int item)
 
 			++track_number;
 		}
-		int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
-		if (wait_time > 0)
-			usleep(wait_time * 1000);
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 		destroyWaitDialog(l);
 		emit startPlayer(play_list, element);
 	}
@@ -601,16 +617,15 @@ void FileSelector::browseUp()
 	{
 		--level;
 		QLabel *l = createWaitDialog();
-		QTime time_counter;
-		time_counter.start();
+		QTime time_counter = startTimeCounter();
+
+		if (!browseFiles(QFileInfo(current_dir, "..").absoluteFilePath()))
 		{
 			destroyWaitDialog(l);
 			emit notifyExit();
 			return;
 		}
-		int wait_time = MEDIASERVER_MSEC_WAIT_TIME - time_counter.elapsed();
-		if (wait_time > 0)
-			usleep(wait_time * 1000);
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 		destroyWaitDialog(l);
 	}
 	else
