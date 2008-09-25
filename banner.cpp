@@ -102,24 +102,25 @@ BtButton *banner::customButton()
 	return 0;
 }
 
-QString banner::getPressedIconName(const char *iconname)
+QString banner::getPressedIconName(QString iconname)
 {
 	/** This method wraps the previous pressIconName function.
 	 *  The main fix introduced is to return the NOT-Pressed Icon Name if
 	 *  does not exist pressed icon.
 	 */
-	if (!iconname)
-		return NULL;
+	if (iconname.isEmpty())
+		return QString();
 
 	char pressIconName[MAX_PATH];
-	getPressName((char*)iconname, &pressIconName[0], sizeof(pressIconName));
+	QByteArray buf = iconname.toAscii();
+	getPressName(buf.data(), &pressIconName[0], sizeof(pressIconName));
 	
 	/// If pressIconName file exists, return the press icon name
 	/// otherwise the the same name of the NOT PRESSED icon is returned
 	if (pressIconName == NULL || !QFile::exists(pressIconName))
 	{	
-		qDebug("could not get pressed icon %s, using: %s", pressIconName, iconname);
-		return QString(iconname);
+		qDebug("could not get pressed icon %s, using: %s", pressIconName, buf.constData());
+		return iconname;
 	}
 	else
 	{

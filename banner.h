@@ -56,7 +56,7 @@ public:
 	 *  for a given IconName return the pressed status IconName
 	 *  we added this to wrap GetPressName of genericFunz.cpp
 	 */
-	QString getPressedIconName(const char *);
+	QString getPressedIconName(QString);
 	/*!
 	 * \brief sets the Icon of a item in the banner
 	 *
