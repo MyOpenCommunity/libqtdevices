@@ -23,19 +23,6 @@ class diffSonora;
 class device;
 class scenEvo_cond;
 
-class dati_sorgente_multi
-{
-public:
-	char tipo;
-	QPtrList<QString> *descr;
-	char ambdescr[50];
-	void *indirizzo;
-	char I1[50], I2[50], I3[50];
-	int modo;
-	dati_sorgente_multi(char t, QPtrList<QString> *d, void *ind, char *I1, char *I2, char *I3, int p1, char *ad);
-	~dati_sorgente_multi();
-};
-
 
 class dati_ampli_multi
 {
