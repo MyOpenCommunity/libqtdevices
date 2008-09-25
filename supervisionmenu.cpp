@@ -28,7 +28,6 @@ SupervisionMenu::SupervisionMenu(QWidget *parent, const char *name, QDomNode n, 
 	sottoMenu(parent, name)
 {
 	qDebug("[SUPERVISION] SupervisionMenu()");
-
 	subtreeRoot = n;
 	stopngoSubmenu = NULL;
 	setBGColor(bg);
@@ -73,10 +72,10 @@ void SupervisionMenu::AddBanners()
 				bannPuls* b = static_cast<bannPuls*>(elencoBanner.getLast());
 				CreateStopnGoMenu(l1Element, b);
 				break;
-			classesCount++;
 			}
-			level1Node = level1Node.nextSibling();
+			classesCount++;
 		}
+		level1Node = level1Node.nextSibling();
 	}
 
 	if (classesCount == 1)  // Only one class has been defined in the supervision section of conf.xml
@@ -86,7 +85,7 @@ void SupervisionMenu::AddBanners()
 
 		if (stopngoSubmenu)  // Check is the only submenu is a stopngo menu
 		{
-			if (this == stopngoSubmenu)  // Only one Stop&Go device is mapped
+			if (this == stopngoSubmenu)  // Only one Stop&Go devise is mapped
 			{
 				StopngoPage* pg = stopngoPages.first();
 				if (pg)
