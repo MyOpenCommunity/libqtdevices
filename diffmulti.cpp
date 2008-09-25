@@ -21,25 +21,6 @@
 #include <qtimer.h>
 #include <qpoint.h>
 
-dati_sorgente_multi::dati_sorgente_multi(char t, QPtrList<QString> *d, void *ind,
-	char *_I1, char *_I2, char *_I3, int p1, char *ad)
-{
-	tipo = t;
-	descr = new QPtrList<QString>(*((QPtrList<QString> *)d));
-	indirizzo = new(char[20]);
-	memcpy(indirizzo, ind, 20);
-	strncpy(ambdescr, ad, sizeof(ambdescr));
-	strncpy(I1, _I1, sizeof(I1));
-	strncpy(I2, _I2, sizeof(I2));
-	strncpy(I3, _I3, sizeof(I3));
-	modo = p1;
-}
-
-dati_sorgente_multi::~dati_sorgente_multi()
-{
-	delete descr;
-	// We should delete indirizzo but is problematic because it is a void*
-}
 
 dati_ampli_multi::dati_ampli_multi(char t, QPtrList<QString> *d, void *ind,
 		int p1, char *_I1, char *_I2, char *_I3, char *_I4, char *_I5)

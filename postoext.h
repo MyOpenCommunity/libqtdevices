@@ -17,7 +17,6 @@
 #include <qstring.h>
 
 /// Forward Declarations
-class dati_sorgente_multi;
 class call_notifier_manager;
 class call_notifier;
 
