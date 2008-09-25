@@ -18,18 +18,21 @@
 #define BANNTEMPERATURE_H
 
 #include "banner.h"
-#include "device_status.h"
 #include "main.h"
 
-#include <qdom.h>
+#include <QDomNode>
+#include <QString>
+#include <QList>
 
 #define DESCR_LABEL_WIDTH 180
 #define BORDER_WIDTH        5
 #define DESCRIPTION_WIDTH 120
 #define TEMPERATURE_WIDTH 120
-	
+
 class BtLabelEvo;
+class device_status;
 class device;
+
 
 class BannTemperature : public banner
 {
@@ -52,7 +55,7 @@ public slots:
 	 *
 	 * \param list A list of device_status objects
 	 */
-	void status_changed(QPtrList<device_status> list);
+	void status_changed(QList<device_status*> sl);
 private:
 	QDomNode conf_root;
 	/// Name of the zone where the probe is installed (read from config)
