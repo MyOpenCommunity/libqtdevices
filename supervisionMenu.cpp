@@ -191,7 +191,7 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 		{
 			BannPulsDynIcon *bp = new BannPulsDynIcon(sm, "banner");  // Create a new banner
 			bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
-			bp->SetTextU(itm->GetDescr().ascii());
+			bp->SetTextU(itm->GetDescr());
 			bp->setAnimationParams(0, 0);
 			bp->setBGColor(paletteBackgroundColor());
 			bp->setFGColor(paletteForegroundColor());

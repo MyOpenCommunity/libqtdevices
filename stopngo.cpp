@@ -254,7 +254,7 @@ void StopngoPage::AddItems()
 	titleBar->setIndent(TITLE_BAR_INDENT);
 	titleBar->setFont(tFont);
 	titleBar->setAlignment(AlignCenter|AlignTop);
-	titleBar->setText(pageTitle.ascii());
+	titleBar->setText(pageTitle);
 	titleBar->show();
 
 	//Draw the exit button
