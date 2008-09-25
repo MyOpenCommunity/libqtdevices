@@ -14,15 +14,16 @@
 
 #include <openwebnet.h> // class openwebnet
 
-#include <qcursor.h>
+#include <QCursor>
 
 #include <stdlib.h>
 
+
 diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
-	: QWidget(parent, name)
+	: QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	numRighe = NUM_RIGHE;
 
@@ -31,7 +32,7 @@ diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 	else
 		sorgenti = NULL;
 	
-	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2); 
+	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
 
 	if (creasorgenti)
 		setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
@@ -97,8 +98,14 @@ int diffSonora::setBGPixmap(char *backImage)
 	return 1;
 }
 
+// TODO: sarebbe meglio che icon_names diventasse una QList<QString>.. al momento
+// e' l'xmlconfhandler che "detiene" l'ownership delle stringhe contenute nella
+// lista.. anche se poi a tutti gli effetti non le cancella.
+// In ogni caso sarebbe da allocare staticamente le stringhe che fanno parte di
+// icon_names.
+
 int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
-	QPtrList<QString> &icon_names, int modo, int where, char *ambdescr)
+	QList<QString*> &icon_names, int modo, int where, char *ambdescr)
 {
 	if  ((tipo==SORGENTE_AUX) || (tipo==SORGENTE_RADIO) || (tipo==SORGENTE_MULTIM))
 	{
@@ -164,7 +171,8 @@ void diffSonora::gestFrame(char*frame)
 		{
 			if ((!strcmp(msg_open.Extract_cosa(),"0")) || (!strcmp(msg_open.Extract_cosa(),"3")))
 			{
-				sorgenti->setIndex((char *)QString::number(w+100, 10).ascii());
+				QByteArray buf = QString::number(w+100, 10).toAscii();
+				sorgenti->setIndex(buf.data());
 				aggiorna = 1;
 				qDebug("accesa sorg: %d", w);
 			}
@@ -176,7 +184,8 @@ void diffSonora::gestFrame(char*frame)
 			(!strcmp(msg_open.Extract_livello(),"2"))))
 		{
 			w = strtoul(msg_open.Extract_interfaccia(), NULL, 10);
-			sorgenti->setIndex((char *)QString::number(w+100, 10).ascii());
+			QByteArray buf = QString::number(w+100, 10).toAscii();
+			sorgenti->setIndex(buf.data());
 			aggiorna = 1;
 			qDebug("accesa sorg(WHO=22): %d", w);
 		}
@@ -284,5 +293,38 @@ void diffSonora::addSource(banner *b)
 void diffSonora::setFirstSource(int addr)
 {
 	qDebug("diffSonora::setFirstSource(%d)", addr);
-	sorgenti->setIndex((char *)QString::number(addr, 10).ascii());
+	QByteArray buf = QString::number(addr, 10).toAscii();
+	sorgenti->setIndex(buf.data());
+}
+
+// TODO: funzioni di compatibilita' qt3.. da rimuovere!!
+void diffSonora::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void diffSonora::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void diffSonora::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
+const QColor& diffSonora::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& diffSonora::foregroundColor()
+{
+	return palette().color(foregroundRole());
 }

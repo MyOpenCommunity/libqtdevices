@@ -11,9 +11,9 @@
 #ifndef DIFFSONORA_H
 #define DIFFSONORA_H
 
-#include <qwidget.h>
-#include <qptrlist.h>
-#include <qstring.h>
+#include <QWidget>
+#include <QList>
+#include <QString>
 
 class banner;
 
@@ -59,7 +59,7 @@ public:
 	 * If it is a source it is added to the sources subtree otherwise it's added to the amplifiers one.
 	 * This method reproduce the one implemented in sottoMenù in similar manner.
 	 */
-	virtual int addItemU(char tipo, const QString & nome, void* indirizzo,QPtrList<QString> &icon_names,
+	virtual int addItemU(char tipo, const QString & nome, void* indirizzo,QList<QString*> &icon_names,
 		int periodo=0 , int where=0, char *ambdescr="");
 	/*!
 	 * \brief Sets the row's number.
@@ -153,6 +153,15 @@ public slots:
 protected:
 	uchar numRighe,isVisual;
 	sottoMenu* sorgenti;
+
+private:
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
+
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
 };
 
 #endif // DIFFSONORA_H

@@ -141,7 +141,7 @@ SOURCES += actuators.cpp \
            device_cache.cpp \
            device_status.cpp \
            diffmulti.cpp \
-           diffSonora.cpp \
+           diffsonora.cpp \
            dimmers.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
