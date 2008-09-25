@@ -91,10 +91,8 @@ extern device_cache btouch_device_cache;
 
 // Extern functions
 
-extern QString get_device_key(QString who, QString where);
-extern QString get_device_key(char *who, char *where);
-extern QString key_to_where(QString where);
-extern QString key_to_who(QString who);
+QString get_device_key(QString who, QString where);
+QString get_device_key(char *who, char *where);
 
 
 #endif // __DEVICE_CACHE_H__

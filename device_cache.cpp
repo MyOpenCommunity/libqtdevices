@@ -5,6 +5,18 @@
 
 #include <qwidget.h>
 
+
+static inline QString key_to_where(QString k)
+{
+	return k.left(k.indexOf('*'));
+}
+
+static inline QString key_to_who(QString k)
+{
+	return k.right(k.length() - k.indexOf('*'));
+}
+
+
 // Constructor
 device_cache::device_cache() : QMap<QString, device*>()
 {
@@ -15,9 +27,8 @@ void device_cache::init_devices(void)
 {
 	qDebug("initializing devices");
 	device_cache::Iterator it;
-	for (it = begin(); it != end(); ++it) {
-		it.data()->init();
-	}
+	for (it = begin(); it != end(); ++it)
+		it.value()->init();
 }
 
 void device_cache::connect_comm(device *dev)
@@ -43,9 +54,10 @@ void device_cache::disconnect_comm(device *dev)
 // Get device given key , create it if it doesn't exist
 device *device_cache::get_device(QString k)
 {
-	qDebug("device_cache::get_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new device(key_to_who(k), key_to_where(k));
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -62,9 +74,10 @@ device *device_cache::get_device(QString k)
 device *device_cache::get_light(QString w)
 {
 	QString k = get_device_key(QString("1"), w);
-	qDebug("device_cache::get_light(%s)", k.ascii());
+	qDebug() << "device_cache::get_light(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new light(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -79,9 +92,10 @@ device *device_cache::get_light(QString w)
 device *device_cache::get_dimmer(QString w)
 {
 	QString k = get_device_key(QString("1"), w);
-	qDebug("device_cache::get_light(%s)", k.ascii());
+	qDebug() << "device_cache::get_dimmer(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new light(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -97,9 +111,10 @@ device *device_cache::get_dimmer(QString w)
 device *device_cache::get_dimmer100(QString w)
 {
 	QString k = get_device_key(QString("1"), w);
-	qDebug("device_cache::get_light(%s)", k.ascii());
+	qDebug() << "device_cache::get_dimmer100(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new light(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -115,9 +130,10 @@ device *device_cache::get_dimmer100(QString w)
 device *device_cache::get_newtimed(QString w)
 {
 	QString k = get_device_key(QString("1"), w);
-	qDebug("device_cache::get_light(%s)", k.ascii());
+	qDebug() << "device_cache::get_newtimed(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new light(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -133,9 +149,10 @@ device *device_cache::get_newtimed(QString w)
 device *device_cache::get_doorphone_device(QString w)
 {
 	QString k = get_device_key(QString("6"), w);
-	qDebug("device_cache::get_doorphone_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_doorphone_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new doorphone_device(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -150,9 +167,10 @@ device *device_cache::get_doorphone_device(QString w)
 device *device_cache::get_autom_device(QString w)
 {
 	QString k = get_device_key(QString("2"), w);
-	qDebug("device_cache::get_autom_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_autom_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new autom(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -167,9 +185,10 @@ device *device_cache::get_autom_device(QString w)
 device *device_cache::get_sound_device(QString w)
 {
 	QString k = get_device_key(QString("16"), w);
-	qDebug("device_cache::get_sound_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_sound_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new sound_device(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -184,9 +203,10 @@ device *device_cache::get_sound_device(QString w)
 device *device_cache::get_sound_matr_device()
 {
 	QString k = get_device_key(QString("16"), QString("1000"));
-	qDebug("device_cache::get_sound_matr_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_sound_matr_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new sound_matr(QString("1000"));
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -208,11 +228,12 @@ device *device_cache::get_radio_device(QString w)
 	while(wh >= 10)
 		wh -= 10;
 	w = QString::number(wh);
-	qDebug("Modified w to %s", w.ascii());
+	qDebug() << "Modified w to " << w;
 	QString k = get_device_key(QString("16"), w);
-	qDebug("device_cache::get_radio_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_radio_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new radio_device(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -227,9 +248,10 @@ device *device_cache::get_radio_device(QString w)
 device *device_cache::get_impanti_device()
 {
 	QString k = get_device_key(QString("16"), QString("0"));
-	qDebug("device_cache::get_impanti_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_impanti_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new impanti_device(QString("0"));
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -244,9 +266,10 @@ device *device_cache::get_impanti_device()
 device *device_cache::get_zonanti_device(QString w)
 {
 	QString k = get_device_key(QString("16"), w);
-	qDebug("device_cache::get_impanti_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_zonanti_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new zonanti_device(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -261,7 +284,7 @@ device *device_cache::get_thermal_regulator(QString where, thermo_type_t type)
 {
 	QString k = get_device_key(QString("4"), where);
 	device *out = (*this)[k];
-	if(!out)
+	if (!out)
 	{
 		switch(type)
 		{
@@ -284,9 +307,10 @@ device *device_cache::get_thermal_regulator(QString where, thermo_type_t type)
 device *device_cache::get_poweramplifier_device(QString w)
 {
 	QString k = get_device_key(QString("22"), w);
-	qDebug("device_cache::get_poweramplifier_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_poweramplifier_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out) {
+	if (!out)
+	{
 		out = new poweramplifier_device(w);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
@@ -301,10 +325,10 @@ device *device_cache::get_temperature_probe_controlled(QString w, thermo_type_t 
 		bool fancoil, const char *ind_centrale, const char *indirizzo)
 {
 	QString k = get_device_key(QString("4"), w);
-	qDebug("device_cache::get_temperature_probe_controlled(), key=%s type=%d fancoil=%s",
-		k.ascii(), type, fancoil ? "yes" : "no");
+	qDebug() << "device_cache::get_temperature_probe_controlled(), key=" << k
+		<< " type=" << type << " fancoil=" << (fancoil ? "yes" : "no");
 	device *out = (*this)[k];
-	if(!out)
+	if (!out)
 	{
 		out = new temperature_probe_controlled(w, type, fancoil, ind_centrale, indirizzo);
 		qDebug("device is not there, creating device %p", out);
@@ -320,10 +344,10 @@ device *device_cache::get_temperature_probe_controlled(QString w, thermo_type_t 
 device *device_cache::get_temperature_probe(QString w, bool external)
 {
 	QString k = get_device_key(QString("4"), w);
-	qDebug("device_cache::get_temperature_probe(), key=%s external=%s",
-		k.ascii(), external ? "true" : "false");
+	qDebug() << "device_cache::get_temperature_probe(), key=" << k
+		<< " external=" << (external ? "true" : "false");
 	device *out = (*this)[k];
-	if(!out)
+	if (!out)
 	{
 		out = new temperature_probe_notcontrolled(w, external);
 		qDebug("device is not there, creating device %p", out);
@@ -340,9 +364,9 @@ device *device_cache::get_temperature_probe(QString w, bool external)
 device *device_cache::get_modscen_device(QString w)
 {
 	QString k = get_device_key(QString("0"), w);
-	qDebug("device_cache::get_modscen_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_modscen_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out)
+	if (!out)
 	{
 		out = new modscen_device(w);
 		qDebug("device is not there, creating device %p", out);
@@ -358,9 +382,9 @@ device *device_cache::get_modscen_device(QString w)
 device *device_cache::get_mci_device(QString w)
 {
 	QString k = get_device_key(QString("18"), w);
-	qDebug("device_cache::get_mci_device(%s)", k.ascii());
+	qDebug() << "device_cache::get_mci_device(" << k << ")";
 	device *out = (*this)[k];
-	if(!out)
+	if (!out)
 	{
 		out = new mci_device(w);
 		qDebug("device is not there, creating device %p", out);
@@ -375,17 +399,18 @@ device *device_cache::get_mci_device(QString w)
 // Destroy device given key
 void device_cache::put_device(QString k)
 {
-	qDebug("device_cache::put_device(%s)", k.ascii());
+	qDebug() << "device_cache::put_device(" << k << ")";
 	device *d = (*this)[k];
-	if(!d)
-		goto end;
+	if (!d)
+	{
+		qDebug("device_cache::put_device(), end");
+		return;
+	}
 	qDebug("device reference count is 0, deleting device");
 	disconnect_comm(d);
-	erase(k);
-	if(!d->put())
-		// Reference count is zero, delete object
+	remove(k);
+	if (!d->put()) // Reference count is zero, delete object
 		delete d;
-end:
 	qDebug("device_cache::put_device(), end");
 }
 
@@ -394,17 +419,20 @@ device *device_cache::add_device(device *p)
 {
 	qDebug("device_cache::add_device(%p)", p);
 	QString k = p->get_key();
-	qDebug("key is %s", k.ascii());
-	if((*this)[k]) { 
+	qDebug() << "key is " << k;
+	if ((*this)[k])
+	{
 		qDebug("device is already there (%p), deleting %p", (*this)[k], p);
 		disconnect_comm(p);
 		delete p;
 		p = (*this)[k];
-		goto end;
 	}
-	qDebug("device %p inserted", p);
-	(*this)[k] = p;
-end:
+	else
+	{
+		qDebug("device %p inserted", p);
+		(*this)[k] = p;
+	}
+
 	qDebug("device_cache::add_device() returning");
 	connect_comm(p);
 	return p;
@@ -442,22 +470,12 @@ device_cache::~device_cache()
 // Extern functions
 QString get_device_key(QString who, QString where)
 {
-	return who + "*" + where ;
+	return who + "*" + where;
 }
 
 QString get_device_key(char *who, char *where)
 {
 	return get_device_key(QString(who), QString(where));
-}
-
-QString key_to_where(QString k)
-{
-	return k.left(k.find('*'));
-}
-
-QString key_to_who(QString k)
-{
-	return k.right(k.length() - k.find('*'));
 }
 
 // Global device cache: FIXME, MOVE THIS SOMEWHERE ELSE
