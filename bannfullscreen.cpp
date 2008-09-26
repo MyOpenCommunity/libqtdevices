@@ -303,6 +303,10 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
+	local_temp_placeholder = new BtLabelEvo(this);
+	main_layout.addWidget(local_temp_placeholder);
+	main_layout.setStretchFactor(local_temp_placeholder, 1);
+
 	switch (temp_scale)
 	{
 	case CELSIUS:
@@ -398,6 +402,7 @@ void FSBannProbe::Draw()
 	setVisible(btn_plus, status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
 	setVisible(local_temp_label, !isOff && !isAntigelo && local_temp != "0");
+	setVisible(local_temp_placeholder, isOff || isAntigelo || local_temp == "0");
 	setVisible(icon_off, isOff);
 	setVisible(icon_antifreeze, isAntigelo);
 	setVisible(navbar_button, probe_type == THERMO_Z99 && !isOff && !isAntigelo);
