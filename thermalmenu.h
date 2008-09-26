@@ -23,10 +23,10 @@
 #include "bannpuls.h"
 #include "main.h"
 
-#include <qwidget.h>
-#include <qstring.h>
-#include <qcolor.h>
-#include <qdom.h>
+#include <QDomNode>
+#include <QWidget>
+#include <QString>
+#include <QColor>
 
 
 class ThermalMenu : public sottoMenu
@@ -68,6 +68,11 @@ private:
 	unsigned bann_number;
 	/// A reference to the only submenu below us
 	sottoMenu *single_submenu;
+
+	// TODO: rimuovere questi metodi qt3!
+	const QColor& paletteBackgroundColor();
+	const QColor& paletteForegroundColor();
+
 };
 
 #endif

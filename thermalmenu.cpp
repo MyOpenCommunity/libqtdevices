@@ -15,7 +15,8 @@
 #include "device_cache.h"
 #include "plantmenu.h"
 
-#include <qregexp.h>
+#include <QRegExp>
+#include <QDebug>
 
 static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
 static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png");
@@ -92,10 +93,12 @@ void ThermalMenu::addBanners()
 
 bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString descr)
 {
-	bannPuls *bp = new bannPuls(this, descr.ascii());
-	qDebug("[TERMO] addBanners1: %s", descr.ascii());
+	bannPuls *bp = new bannPuls(this, 0);
+	qDebug() << "[TERMO] addBanners1: " << descr;
 
-	bp->SetIcons(i_right_arrow.ascii(), 0, central_icon.ascii());
+	QByteArray buf_right = i_right_arrow.toAscii();
+	QByteArray buf_central = central_icon.toAscii();
+	bp->SetIcons(buf_right.constData(), 0, buf_central.constData());
 
 	initBanner(bp, e);
 
@@ -139,7 +142,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 			QString addr = n.namedItem("where").toElement().text();
 			if (external)
 				addr += "00";
-			device *dev = btouch_device_cache.get_temperature_probe(addr.ascii(), external);
+			device *dev = btouch_device_cache.get_temperature_probe(addr, external);
 
 			banner *b = new BannTemperature(sm, "banner", n, dev);
 			initBanner(b, n);
@@ -156,4 +159,14 @@ void ThermalMenu::showPage()
 		single_submenu->show();
 	else
 		show();
+}
+
+const QColor& ThermalMenu::paletteBackgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& ThermalMenu::paletteForegroundColor()
+{
+	return palette().color(foregroundRole());
 }
