@@ -696,7 +696,7 @@ void scenEvo_cond_d::SetIcons()
 	{
 		dc->setGeometry(40,140,160,50);
 		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
-		dc->set_where(*where);
+		dc->setup_device(*where);
 	}
 	actual_condition = dc;
 	qDebug("scenEvo_cond_d::SetIcons(), end");
@@ -925,11 +925,11 @@ bool device_condition::isTrue()
 	return satisfied;
 }
 
-void device_condition::set_where(QString s)
+void device_condition::setup_device(QString s)
 {
-	qDebug("device_condition::set_where(%s)\n", s.ascii());
+	qDebug("device_condition::setup_device(where: %s)\n", s.ascii());
 	dev->set_where(s);
-	// Aggiunge il nodo alla cache
+	// Add the device to cache, or replace it with the instance found in cache
 	dev = btouch_device_cache.add_device(dev);
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
@@ -2100,8 +2100,15 @@ device_condition_aux::device_condition_aux(QWidget *parent, char *name, QString 
 	set_current_value(device_condition::get_condition_value());
 	dev = new aux_device(QString(""));
 
-	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
 	Draw();
+}
+
+void device_condition_aux::setup_device(QString s)
+{
+	device_condition::setup_device(s);
+	// The device can be replaced by "add_device" method of device_cache, thus
+	// the connection must be after that.
+	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
 }
 
 void device_condition_aux::Draw()

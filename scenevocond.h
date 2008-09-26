@@ -239,6 +239,7 @@ protected:
 	device *dev;
 	//! True when condition is satisfied
 	bool satisfied;
+
 public:
 	//! Constructor
 	device_condition(QWidget *parent, QString *trigger);
@@ -286,8 +287,8 @@ public:
 	virtual void inizializza(void);
 	//! Resets condition
 	virtual void reset(void);
-	//! Set device where
-	void set_where(QString);
+	//! Setup the device
+	virtual void setup_device(QString);
 	//! Set device pul
 	void set_pul(bool);
 	//! Set device group
@@ -691,6 +692,9 @@ public:
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);
+
+	//! Setup the device
+	virtual void setup_device(QString);
 
 protected slots:
 	virtual void status_changed(QPtrList<device_status> sl);
