@@ -44,9 +44,7 @@ Q_OBJECT
 public:
 	diffmulti(QWidget *parent=0, const char *name=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1);
 	int addItem(char tipo, QPtrList<QString> *nomi, void* indirizzo, QPtrList<QString> &icon_names, int periodo=0, int numFrame=0,
-			QColor secondFroreground=QColor(0,0,0), char* descr1=NULL, char* descr2=NULL, char* descr3=NULL, char* descr4=NULL,
-			int par3=0, int par4=0,	QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL, QString action="", QString light="",
-			QString key="", QString unk="", QValueList<int> sstart = QValueList<int>(),QValueList<int> sttop = QValueList<int>());
+			QColor secondFroreground=QColor(0,0,0));
 	/*!
 	 *  \brief Changes the type of navigation bar present at the
 	 *  bsubtree (see bannFrecce). Also calls downstream diffSonora setNavBarMode
