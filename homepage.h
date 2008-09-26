@@ -155,7 +155,7 @@ private:
    * \param new_bt_temperature The new temperature in BTicino 4-digit format.
    * \param which_display The index of the display to update.
    */
-  void updateTemperatureDisplay(float new_bt_temperature, unsigned which_display);
+  void updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display);
 
 // QTimer 	 *orologio;
   timeScript* dataOra;
@@ -167,6 +167,8 @@ int xClock,yClock,xTemp,yTemp;
   char  ext1[2],ext2[2],ext3[2];
   char * ext[3];
   QLCDNumber 	*temperatura[3];
+  /// The temperature scale set in config file (either Celsius or Fahrenheit)
+  TemperatureScale temp_scale;
   char specialFrame[50];
   char chi[10];
   char cosa[10];
