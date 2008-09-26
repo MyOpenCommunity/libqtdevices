@@ -14,10 +14,10 @@
 #include "device_status.h"
 #include "sottomenu.h"
 
-#include <qvaluelist.h>
-#include <qwidget.h>
-#include <qptrlist.h>
-#include <qstring.h>
+#include <QWidget>
+#include <QString>
+#include <QList>
+
 
 class diffSonora;
 class device;
@@ -28,12 +28,13 @@ class dati_ampli_multi
 {
 public:
 	char tipo;
-	QPtrList<QString> *descr;
+	// NOTE: the ownership of descr strings is mantained by xmlconfhandler.
+	QList<QString*> *descr;
 	void *indirizzo;
 	QString I1, I2, I3, I4, I5;
 	int modo;
-	dati_ampli_multi(char t, QPtrList<QString> *d, void *ind, int p1,
-			char *I1, char *I2, char *I3, char *I4, char *I5 = NULL);
+	dati_ampli_multi(char t, QList<QString*> *d, void *ind, int p1,
+			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
 	~dati_ampli_multi();
 };
 
@@ -43,8 +44,11 @@ class diffmulti : public sottoMenu
 Q_OBJECT
 public:
 	diffmulti(QWidget *parent=0, const char *name=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1);
-	int addItem(char tipo, QPtrList<QString> *nomi, void* indirizzo, QPtrList<QString> &icon_names, int periodo=0, int numFrame=0,
+	~diffmulti();
+
+	int addItem(char tipo, QList<QString*> *descrizioni, void* indirizzo, QList<QString*> &icon_names, int periodo=0, int numFrame=0,
 			QColor secondFroreground=QColor(0,0,0));
+
 	/*!
 	 *  \brief Changes the type of navigation bar present at the
 	 *  bsubtree (see bannFrecce). Also calls downstream diffSonora setNavBarMode
@@ -66,7 +70,7 @@ public slots:
 	void ds_closed(diffSonora *);
 	void hide();
 	void show();
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*> sl);
 	/*!
 	 *  \brief sets isVisual to false and emits freezed signal
 	 */
@@ -80,8 +84,8 @@ signals:
 	void gesFrame(char *);
 
 private:
-	QPtrList<diffSonora> *dslist;
-	QPtrList<dati_ampli_multi> *datimmulti;
+	QList<diffSonora*> dslist;
+	QList<dati_ampli_multi*> datimmulti;
 	sottoMenu *sorgenti;
 	device *matr;
 	/// kemosh FIX
