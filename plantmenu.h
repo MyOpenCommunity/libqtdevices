@@ -14,10 +14,10 @@
 #include "bannpuls.h"
 #include "bannfullscreen.h"
 
-#include <qsignalmapper.h>
-#include <qstring.h>
-#include <qcolor.h>
-#include <qdom.h>
+#include <QSignalMapper>
+#include <QString>
+#include <QColor>
+#include <QDomNode>
 
 class device;
 class thermal_regulator_99z;
@@ -66,5 +66,9 @@ private:
 	 * Used to call show(int) on SottoMenu based on which banner is clicked.
 	 */
 	QSignalMapper signal_mapper;
+
+	// TODO: rimuovere questi metodi qt3!
+	const QColor& paletteBackgroundColor();
+	const QColor& paletteForegroundColor();
 };
 #endif // PLANTMENU_H

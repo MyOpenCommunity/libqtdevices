@@ -12,7 +12,7 @@
 #include "device.h"
 #include "device_cache.h"
 
-#include <qregexp.h>
+#include <QRegExp>
 
 static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
 static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
@@ -21,7 +21,7 @@ static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png"
 PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2) :
 	sottoMenu(parent, name),
 	items_submenu(this, "items submenu", 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
-	signal_mapper(0, "")
+	signal_mapper(0)
 {
 	conf_root = conf;
 	setBGColor(bg);
@@ -94,8 +94,10 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	/*
 	 * Create little banner in selection menu.
 	 */
-	bannPuls *bp = new bannPuls(this, descr.ascii());
-	bp->SetIcons(i_right_arrow.ascii(), 0, central_icon.ascii());
+	bannPuls *bp = new bannPuls(this, 0);
+	QByteArray buf_right = i_right_arrow.toAscii();
+	QByteArray buf_central = central_icon.toAscii();
+	bp->SetIcons(buf_right.constData(), 0, buf_central.constData());
 	initBanner(bp, n);
 	elencoBanner.append(bp);
 	connectLastBanner();
@@ -110,4 +112,14 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	items_submenu.appendBanner(fsb);
 
 	return bp;
+}
+
+const QColor& PlantMenu::paletteBackgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& PlantMenu::paletteForegroundColor()
+{
+	return palette().color(foregroundRole());
 }
