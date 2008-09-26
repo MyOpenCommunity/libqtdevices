@@ -49,6 +49,7 @@ public:
 	void sendFrame(const char *frame);
 	void sendInit(const char *frame);
 
+	virtual void reset() {}
 signals:
 	//! Status changed
 	void status_changed(QPtrList<device_status>);
@@ -376,7 +377,7 @@ Q_OBJECT
 public:
 	aux_device(QString w, bool p=false, int g=-1);
 	virtual void init(bool force = false);
-
+	virtual void reset();
 public slots:
 	virtual void frame_rx_handler(char *);
 
