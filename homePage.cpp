@@ -9,7 +9,6 @@
 ****************************************************************/
 
 #include "homepage.h"
-#include "main.h"
 #include "timescript.h"
 #include "genericfunz.h"
 #include "openclient.h"
@@ -296,6 +295,23 @@ void homePage::freezed(bool f)
  
 }
 
+void homePage::updateTemperatureDisplay(float new_bt_temperature, unsigned which_display)
+{
+	char tmp[10], temp[10];
+	qDebug("vedo temperatura per Temp in Homepage: %d", (int)new_bt_temperature);
+	memset(temp,'\000',sizeof(temp));
+	if (new_bt_temperature>=1000)
+	{
+		strcat(temp,"-");
+		new_bt_temperature=new_bt_temperature-1000;
+	}
+	new_bt_temperature/=10;
+	sprintf(tmp,"%.1f",new_bt_temperature);
+	strcat(temp,tmp);
+	strcat(temp,TEMP_DEGREES"C");
+	temperatura[which_display]->display(&temp[0]);
+}
+
 void homePage::gestFrame(char* frame)
  {    
     openwebnet msg_open;
@@ -333,19 +349,7 @@ void homePage::gestFrame(char* frame)
          }
          if(my_frame)
          {
-           char     tmp[10], temp[10];
-           qDebug("vedo temperatura per Temp in Homepage: %d",(int)icx);
-           memset(temp,'\000',sizeof(temp));
-           if (icx>=1000)
-           {
-             strcat(temp,"-");
-             icx=icx-1000;
-           }
-           icx/=10;
-           sprintf(tmp,"%.1f",icx);
-           strcat(temp,tmp);
-           strcat(temp,TEMP_DEGREES"C");
-           temperatura[idx]->display(&temp[0]);
+	   updateTemperatureDisplay(icx, idx);
          }
     }
     }
