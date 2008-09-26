@@ -14,14 +14,16 @@
 #include "bannpuls.h"
 #include "bannfullscreen.h"
 
-#include <qdom.h>
-#include <qptrvector.h>
 #include <qsignalmapper.h>
+#include <qstring.h>
+#include <qcolor.h>
+#include <qdom.h>
 
 class device;
 class thermal_regulator_99z;
 class thermal_regulator_4z;
 class thermal_regulator;
+
 
 class PlantMenu : public sottoMenu
 {
@@ -53,7 +55,6 @@ private:
 
 	/// The second foreground color
 	QColor second_fg;
-
 
 	/*
 	 * Sub-sub menu used to show the full screen banners corresponding to the
