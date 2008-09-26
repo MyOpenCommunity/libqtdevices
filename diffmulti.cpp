@@ -82,9 +82,24 @@ diffmulti::diffmulti(QWidget *parent, const char *name, uchar navBarMode,int wi,
 }
 
 int diffmulti::addItem(char tipo, QPtrList<QString> *descrizioni, void* indirizzo, QPtrList<QString> &icon_names,int modo, int numFrame,
-		QColor SecondForeground, char* descr1, char* descr2,char* descr3, char* descr4, int par3,int par4, QPtrList<QString> *lt,
-		QPtrList<scenEvo_cond> *lc, QString action, QString light, QString key, QString unknown,QValueList<int>sstart, QValueList<int>sstop)
+		QColor SecondForeground)
 {
+
+	char* descr1 = NULL;
+	char* descr2 = NULL;
+	char* descr3 = NULL;
+	char* descr4 = NULL;
+	int par3 = 0;
+	int par4 = 0;
+	QPtrList<QString> *lt = NULL;
+	QPtrList<scenEvo_cond> *lc = NULL;
+	QString action = "";
+	QString light = "";
+	QString key = "";
+	QString unknown = "";
+	QValueList<int>sstart = QValueList<int>();
+	QValueList<int>sstop = QValueList<int>();
+
 	qDebug("diffmulti::addItem (%d)", tipo);
 	qDebug("Amplificatore (%s)", (char *)indirizzo);
 	qDebug("%d elementi in descrizioni", descrizioni->count());
