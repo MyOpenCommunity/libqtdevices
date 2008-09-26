@@ -11,6 +11,7 @@
 #include <qcolor.h>
 #include <qptrlist.h>
 
+#include "main.h"
 #include "btbutton.h"
 
 class QLCDNumber;
@@ -148,6 +149,14 @@ private slots:
 /*! \brief Emitted when the \a supervision management is required */
   void Supervisione();
 private:
+
+  /**
+   * Updates the display when the temperature changes.
+   * \param new_bt_temperature The new temperature in BTicino 4-digit format.
+   * \param which_display The index of the display to update.
+   */
+  void updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display);
+
 // QTimer 	 *orologio;
   timeScript* dataOra;
 int xClock,yClock,xTemp,yTemp;
@@ -158,6 +167,8 @@ int xClock,yClock,xTemp,yTemp;
   char  ext1[2],ext2[2],ext3[2];
   char * ext[3];
   QLCDNumber 	*temperatura[3];
+  /// The temperature scale set in config file (either Celsius or Fahrenheit)
+  TemperatureScale temp_scale;
   char specialFrame[50];
   char chi[10];
   char cosa[10];
