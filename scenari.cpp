@@ -554,11 +554,6 @@ void scenEvo::freezed(bool f)
 	delete ci;
 }
 
-void scenEvo::gestFrame(char* frame)
-{
-	qDebug("scenEvo::gestFrame()");
-}
-
 void scenEvo::inizializza(bool forza)
 {
 	qDebug("scenEvo::inizializza()");
