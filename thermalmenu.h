@@ -23,6 +23,12 @@
 #include "bannpuls.h"
 #include "main.h"
 
+#include <qwidget.h>
+#include <qstring.h>
+#include <qcolor.h>
+#include <qdom.h>
+
+
 class ThermalMenu : public sottoMenu
 {
 Q_OBJECT
