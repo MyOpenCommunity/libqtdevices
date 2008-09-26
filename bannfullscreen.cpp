@@ -116,77 +116,77 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 
 	switch (id)
 	{
-		case fs_nc_probe:
-			bfs = new FSBannSimpleProbe(parent, n, scale);
-			break;
-		case fs_4z_probe:
-			{
-				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-						btouch_device_cache.get_temperature_probe_controlled(
-							where_composed.ascii(), THERMO_Z4, false, ind_centrale.ascii(), simple_address.ascii()));
-				QString thermr_where = QString("0#") + ind_centrale;
-				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-				bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
-			}
-			break;
-		case fs_99z_probe:
-			{
-				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-						btouch_device_cache.get_temperature_probe_controlled(
-							simple_address.ascii(), THERMO_Z99, false, ind_centrale.ascii(), simple_address.ascii()));
-				QString thermr_where = ind_centrale;
-				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-				bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
-			}
-			break;
-		case fs_4z_fancoil:
-			{
-				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-						btouch_device_cache.get_temperature_probe_controlled(
-							where_composed.ascii(), THERMO_Z4, true, ind_centrale.ascii(), simple_address.ascii()));
-				QString thermr_where = QString("0#") + ind_centrale;
-				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-				bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
-			}
-			break;
-		case fs_99z_fancoil:
-			{
-				temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-						btouch_device_cache.get_temperature_probe_controlled(
-							simple_address.ascii(), THERMO_Z99, true, ind_centrale.ascii(), simple_address.ascii()));
-				QString thermr_where = ind_centrale;
-				thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-						btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-				bfs = new FSBannFancoil(n, dev, thermo_reg, parent);
-			}
-			break;
-		case fs_4z_thermal_regulator:
-			{
-				where_composed = QString("0#") + ind_centrale;
-				thermal_regulator_4z *dev = static_cast<thermal_regulator_4z *>(
-						btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4));
-				bfs = new FSBannTermoReg4z(n, dev, parent);
-			}
-			break;
-		case fs_99z_thermal_regulator:
-			{
-				where_composed = ind_centrale;
-				thermal_regulator_99z *dev = static_cast<thermal_regulator_99z *>(
-						btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z99));
-				bfs = new FSBannTermoReg99z(n, dev, parent);
-			}
-			break;
-		case fs_date_edit:
-			bfs = new FSBannDate(parent, 0);
-			break;
-		case fs_time_edit:
-			bfs = new FSBannTime(parent, 0);
-			break;
-		default:
-			qFatal("Unknown banner type %d on bannfullscreen", id);
+	case fs_nc_probe:
+		bfs = new FSBannSimpleProbe(parent, n, scale);
+		break;
+	case fs_4z_probe:
+		{
+			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+					btouch_device_cache.get_temperature_probe_controlled(
+						where_composed.ascii(), THERMO_Z4, false, ind_centrale.ascii(), simple_address.ascii()));
+			QString thermr_where = QString("0#") + ind_centrale;
+			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
+			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
+		}
+		break;
+	case fs_99z_probe:
+		{
+			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+					btouch_device_cache.get_temperature_probe_controlled(
+						simple_address.ascii(), THERMO_Z99, false, ind_centrale.ascii(), simple_address.ascii()));
+			QString thermr_where = ind_centrale;
+			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
+			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
+		}
+		break;
+	case fs_4z_fancoil:
+		{
+			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+					btouch_device_cache.get_temperature_probe_controlled(
+						where_composed.ascii(), THERMO_Z4, true, ind_centrale.ascii(), simple_address.ascii()));
+			QString thermr_where = QString("0#") + ind_centrale;
+			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
+			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
+		}
+		break;
+	case fs_99z_fancoil:
+		{
+			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+					btouch_device_cache.get_temperature_probe_controlled(
+						simple_address.ascii(), THERMO_Z99, true, ind_centrale.ascii(), simple_address.ascii()));
+			QString thermr_where = ind_centrale;
+			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
+			bfs = new FSBannFancoil(n, dev, thermo_reg, parent);
+		}
+		break;
+	case fs_4z_thermal_regulator:
+		{
+			where_composed = QString("0#") + ind_centrale;
+			thermal_regulator_4z *dev = static_cast<thermal_regulator_4z *>(
+					btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z4));
+			bfs = new FSBannTermoReg4z(n, dev, parent);
+		}
+		break;
+	case fs_99z_thermal_regulator:
+		{
+			where_composed = ind_centrale;
+			thermal_regulator_99z *dev = static_cast<thermal_regulator_99z *>(
+					btouch_device_cache.get_thermal_regulator(where_composed.ascii(), THERMO_Z99));
+			bfs = new FSBannTermoReg99z(n, dev, parent);
+		}
+		break;
+	case fs_date_edit:
+		bfs = new FSBannDate(parent, 0);
+		break;
+	case fs_time_edit:
+		bfs = new FSBannTime(parent, 0);
+		break;
+	default:
+		qFatal("Unknown banner type %d on bannfullscreen", id);
 	}
 	return bfs;
 }
@@ -216,15 +216,15 @@ void FSBannSimpleProbe::Draw()
 	temp_label->setAlignment(AlignHCenter);
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			temp_label->setText(celsiusString(bt2Celsius(temp)));
-			break;
-		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
-			break;
-		default:
-			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-			temp_label->setText(celsiusString(temp));
+	case CELSIUS:
+		temp_label->setText(celsiusString(bt2Celsius(temp)));
+		break;
+	case FAHRENHEIT:
+		temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
+		break;
+	default:
+		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
+		temp_label->setText(celsiusString(temp));
 	}
 
 
@@ -305,23 +305,23 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
-			minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
-			// bticino absolute minimum temperature is -23.5 Celsius
-			setpoint = -235;
-			break;
-		case FAHRENHEIT:
-			maximum_manual_temp = bt2Fahrenheit(thermo_reg->maximumTemp());
-			minimum_manual_temp = bt2Fahrenheit(thermo_reg->minimumTemp());
-			setpoint = -103;
-			break;
-		default:
-			qWarning("BannProbe ctor: wrong scale, defaulting to celsius");
-			maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
-			minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
-			setpoint = -235;
-			temp_scale = CELSIUS;
+	case CELSIUS:
+		maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
+		minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
+		// bticino absolute minimum temperature is -23.5 Celsius
+		setpoint = -235;
+		break;
+	case FAHRENHEIT:
+		maximum_manual_temp = bt2Fahrenheit(thermo_reg->maximumTemp());
+		minimum_manual_temp = bt2Fahrenheit(thermo_reg->minimumTemp());
+		setpoint = -103;
+		break;
+	default:
+		qWarning("BannProbe ctor: wrong scale, defaulting to celsius");
+		maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
+		minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
+		setpoint = -235;
+		temp_scale = CELSIUS;
 	}
 
 	local_temp = "0";
@@ -336,15 +336,15 @@ void FSBannProbe::setDeviceToManual()
 	unsigned bt_temp;
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			bt_temp = celsius2Bt(setpoint);
-			break;
-		case FAHRENHEIT:
-			bt_temp = fahrenheit2Bt(setpoint);
-			break;
-		default:
-			qWarning("BannProbe::setDeviceToManual: unknown scale, defaulting to celsius");
-			bt_temp = celsius2Bt(setpoint);
+	case CELSIUS:
+		bt_temp = celsius2Bt(setpoint);
+		break;
+	case FAHRENHEIT:
+		bt_temp = fahrenheit2Bt(setpoint);
+		break;
+	default:
+		qWarning("BannProbe::setDeviceToManual: unknown scale, defaulting to celsius");
+		bt_temp = celsius2Bt(setpoint);
 	}
 	dev->setManual(bt_temp);
 }
@@ -407,15 +407,15 @@ void FSBannProbe::Draw()
 
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			setpoint_label->setText(celsiusString(setpoint));
-			break;
-		case FAHRENHEIT:
-			setpoint_label->setText(fahrenheitString(setpoint));
-			break;
-		default:
-			qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
-			setpoint_label->setText(celsiusString(setpoint));
+	case CELSIUS:
+		setpoint_label->setText(celsiusString(setpoint));
+		break;
+	case FAHRENHEIT:
+		setpoint_label->setText(fahrenheitString(setpoint));
+		break;
+	default:
+		qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+		setpoint_label->setText(celsiusString(setpoint));
 	}
 
 	setpoint_label->setFont(aFont);
@@ -492,15 +492,15 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			{
 				switch (temp_scale)
 				{
-					case CELSIUS:
-						setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
-						break;
-					case FAHRENHEIT:
-						setpoint = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
-						break;
-					default:
-						qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
-						setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+				case CELSIUS:
+					setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+					break;
+				case FAHRENHEIT:
+					setpoint = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
+					break;
+				default:
+					qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+					setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
 				}
 				update = true;
 			}
@@ -511,37 +511,37 @@ void FSBannProbe::status_changed(QPtrList<device_status> list)
 			{
 				switch (curr_stat.get_val())
 				{
-					case device_status_temperature_probe_extra::S_MAN:
-						status = MANUAL;
-						navbar_button->setPixmap(*icons_library.getIcon(IMG_AUTO));
-						navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_AUTO)));
-						update = true;
-						break;
-					case device_status_temperature_probe_extra::S_AUTO:
-						status = AUTOMATIC;
-						navbar_button->setPixmap(*icons_library.getIcon(IMG_MAN));
-						navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_MAN)));
-						update = true;
-						break;
-					case device_status_temperature_probe_extra::S_ANTIGELO:
-					case device_status_temperature_probe_extra::S_TERM:
-					case device_status_temperature_probe_extra::S_GEN:
-						isOff = false;
-						isAntigelo = true;
-						update = true;
-						break;
-					case device_status_temperature_probe_extra::S_OFF:
-						isOff = true;
-						isAntigelo = false;
-						update = true;
-						break;
-					case device_status_temperature_probe_extra::S_NONE:
-						status = AUTOMATIC;
-						update = true;
-						break;
-					default:
-						update = false;
-						break;
+				case device_status_temperature_probe_extra::S_MAN:
+					status = MANUAL;
+					navbar_button->setPixmap(*icons_library.getIcon(IMG_AUTO));
+					navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_AUTO)));
+					update = true;
+					break;
+				case device_status_temperature_probe_extra::S_AUTO:
+					status = AUTOMATIC;
+					navbar_button->setPixmap(*icons_library.getIcon(IMG_MAN));
+					navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_MAN)));
+					update = true;
+					break;
+				case device_status_temperature_probe_extra::S_ANTIGELO:
+				case device_status_temperature_probe_extra::S_TERM:
+				case device_status_temperature_probe_extra::S_GEN:
+					isOff = false;
+					isAntigelo = true;
+					update = true;
+					break;
+				case device_status_temperature_probe_extra::S_OFF:
+					isOff = true;
+					isAntigelo = false;
+					update = true;
+					break;
+				case device_status_temperature_probe_extra::S_NONE:
+					status = AUTOMATIC;
+					update = true;
+					break;
+				default:
+					update = false;
+					break;
 				}
 			}
 		}
@@ -653,22 +653,22 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			maximum_manual_temp = bt2Celsius(dev->maximumTemp());
-			minimum_manual_temp = bt2Celsius(dev->minimumTemp());
-			temp = 200;
-			break;
-		case FAHRENHEIT:
-			maximum_manual_temp = bt2Fahrenheit(dev->maximumTemp());
-			minimum_manual_temp = bt2Fahrenheit(dev->minimumTemp());
-			temp = 680;
-			break;
-		default:
-			qWarning("BannManual ctor: wrong scale, defaulting to celsius");
-			maximum_manual_temp = bt2Celsius(dev->maximumTemp());
-			minimum_manual_temp = bt2Celsius(dev->minimumTemp());
-			temp = 200;
-			temp_scale = CELSIUS;
+	case CELSIUS:
+		maximum_manual_temp = bt2Celsius(dev->maximumTemp());
+		minimum_manual_temp = bt2Celsius(dev->minimumTemp());
+		temp = 200;
+		break;
+	case FAHRENHEIT:
+		maximum_manual_temp = bt2Fahrenheit(dev->maximumTemp());
+		minimum_manual_temp = bt2Fahrenheit(dev->minimumTemp());
+		temp = 680;
+		break;
+	default:
+		qWarning("BannManual ctor: wrong scale, defaulting to celsius");
+		maximum_manual_temp = bt2Celsius(dev->maximumTemp());
+		minimum_manual_temp = bt2Celsius(dev->minimumTemp());
+		temp = 200;
+		temp_scale = CELSIUS;
 	}
 
 
@@ -702,15 +702,15 @@ void FSBannManual::performAction()
 	unsigned bt_temp;
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			bt_temp = celsius2Bt(temp);
-			break;
-		case FAHRENHEIT:
-			bt_temp = fahrenheit2Bt(temp);
-			break;
-		default:
-			qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
-			bt_temp = celsius2Bt(temp);
+	case CELSIUS:
+		bt_temp = celsius2Bt(temp);
+		break;
+	case FAHRENHEIT:
+		bt_temp = fahrenheit2Bt(temp);
+		break;
+	default:
+		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
+		bt_temp = celsius2Bt(temp);
 	}
 	emit(temperatureSelected(bt_temp));
 }
@@ -748,15 +748,15 @@ void FSBannManual::Draw()
 
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			temp_label->setText(celsiusString(temp));
-			break;
-		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(temp));
-			break;
-		default:
-			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to Celsius");
-			temp_label->setText(celsiusString(temp));
+	case CELSIUS:
+		temp_label->setText(celsiusString(temp));
+		break;
+	case FAHRENHEIT:
+		temp_label->setText(fahrenheitString(temp));
+		break;
+	default:
+		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to Celsius");
+		temp_label->setText(celsiusString(temp));
 	}
 
 	temp_label->setPaletteForegroundColor(second_fg);
@@ -780,15 +780,15 @@ void FSBannManual::status_changed(QPtrList<device_status> list)
 			{
 				switch (temp_scale)
 				{
-					case CELSIUS:
-						temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
-						break;
-					case FAHRENHEIT:
-						temp = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
-						break;
-					default:
-						qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-						temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+				case CELSIUS:
+					temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+					break;
+				case FAHRENHEIT:
+					temp = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
+					break;
+				default:
+					qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
+					temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
 				}
 				update = true;
 			}
@@ -932,136 +932,136 @@ void FSBannTermoReg::status_changed(QPtrList<device_status> list)
 			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
 			switch (curr_season.get_val())
 			{
-				case thermal_regulator::SUMMER:
-					{
-						const QString img = QString(IMG_PATH) + "estate_s.png";
-						QPixmap *icon = icons_library.getIcon(img.ascii());
-						season_icon->setPixmap(*icon);
-						season = thermal_regulator::SUMMER;
-					}
-					break;
-				case thermal_regulator::WINTER:
-					{
-						const QString img = QString(IMG_PATH) + "inverno_s.png";
-						QPixmap *icon = icons_library.getIcon(img.ascii());
-						season_icon->setPixmap(*icon);
-						season = thermal_regulator::WINTER;
-					}
-					break;
+			case thermal_regulator::SUMMER:
+				{
+					const QString img = QString(IMG_PATH) + "estate_s.png";
+					QPixmap *icon = icons_library.getIcon(img.ascii());
+					season_icon->setPixmap(*icon);
+					season = thermal_regulator::SUMMER;
+				}
+				break;
+			case thermal_regulator::WINTER:
+				{
+					const QString img = QString(IMG_PATH) + "inverno_s.png";
+					QPixmap *icon = icons_library.getIcon(img.ascii());
+					season_icon->setPixmap(*icon);
+					season = thermal_regulator::WINTER;
+				}
+				break;
 			}
 
 			stat_var curr_status(stat_var::THERMR);
 			ds->read(device_status_thermal_regulator::STATUS_INDEX, curr_status);
 			switch (curr_status.get_val())
 			{
-				case device_status_thermal_regulator::OFF:
+			case device_status_thermal_regulator::OFF:
+				{
+					QPixmap *icon = icons_library.getIcon(IMG_OFF_S);
+					mode_icon->setPixmap(*icon);
+					description_visible = false;
+				}
+				break;
+			case device_status_thermal_regulator::PROTECTION:
+				{
+					QPixmap *icon = icons_library.getIcon(IMG_ANTIFREEZE_S);
+					mode_icon->setPixmap(*icon);
+					description_visible = false;
+				}
+				break;
+			case device_status_thermal_regulator::MANUAL:
+			case device_status_thermal_regulator::MANUAL_TIMED:
+				{
+					QString i_img = QString(IMG_PATH);
+					if (curr_status.get_val() == device_status_thermal_regulator::MANUAL)
+						i_img += "manuale.png";
+					else
+						i_img += "manuale_temporizzato.png";
+					QPixmap *icon = icons_library.getIcon(i_img.ascii());
+					mode_icon->setPixmap(*icon);
+					stat_var curr_sp(stat_var::SP);
+					ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
+					// remember: stat_var::get_val() returns an int
+					switch (temp_scale)
 					{
-						QPixmap *icon = icons_library.getIcon(IMG_OFF_S);
-						mode_icon->setPixmap(*icon);
-						description_visible = false;
+					case CELSIUS:
+						description = celsiusString(bt2Celsius(
+									static_cast<unsigned>(curr_sp.get_val())));
+						break;
+					case FAHRENHEIT:
+						description = fahrenheitString(bt2Fahrenheit(
+									static_cast<unsigned>(curr_sp.get_val())));
+						break;
+					default:
+						qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
+						description = celsiusString(curr_sp.get_val());
 					}
-					break;
-				case device_status_thermal_regulator::PROTECTION:
-					{
-						QPixmap *icon = icons_library.getIcon(IMG_ANTIFREEZE_S);
-						mode_icon->setPixmap(*icon);
-						description_visible = false;
-					}
-					break;
-				case device_status_thermal_regulator::MANUAL:
-				case device_status_thermal_regulator::MANUAL_TIMED:
-					{
-						QString i_img = QString(IMG_PATH);
-						if (curr_status.get_val() == device_status_thermal_regulator::MANUAL)
-							i_img += "manuale.png";
-						else
-							i_img += "manuale_temporizzato.png";
-						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_icon->setPixmap(*icon);
-						stat_var curr_sp(stat_var::SP);
-						ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
-						// remember: stat_var::get_val() returns an int
-						switch (temp_scale)
-						{
-							case CELSIUS:
-								description = celsiusString(bt2Celsius(
-											static_cast<unsigned>(curr_sp.get_val())));
-								break;
-							case FAHRENHEIT:
-								description = fahrenheitString(bt2Fahrenheit(
-											static_cast<unsigned>(curr_sp.get_val())));
-								break;
-							default:
-								qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
-								description = celsiusString(curr_sp.get_val());
-						}
-						description_visible = true;
-					}
-					break;
-				case device_status_thermal_regulator::WEEK_PROGRAM:
-					{
-						const QString i_img = QString(IMG_PATH) + "settimanale.png";
-						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_icon->setPixmap(*icon);
+					description_visible = true;
+				}
+				break;
+			case device_status_thermal_regulator::WEEK_PROGRAM:
+				{
+					const QString i_img = QString(IMG_PATH) + "settimanale.png";
+					QPixmap *icon = icons_library.getIcon(i_img.ascii());
+					mode_icon->setPixmap(*icon);
 
-						stat_var curr_program(stat_var::PROGRAM);
-						ds->read(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
+					stat_var curr_program(stat_var::PROGRAM);
+					ds->read(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
 
-						// now search the description in the DOM
-						int program = curr_program.get_val();
+					// now search the description in the DOM
+					int program = curr_program.get_val();
 
-						switch (season)
-						{
-							case thermal_regulator::SUMMER:
-								description = lookupProgramDescription("summer", program);
-								break;
-							case thermal_regulator::WINTER:
-								description = lookupProgramDescription("winter", program);
-								break;
-						}
-						description_visible = true;
-					}
-					break;
-				case device_status_thermal_regulator::SCENARIO:
+					switch (season)
 					{
-						const QString i_img = QString(IMG_PATH) + "scenari.png";
-						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_icon->setPixmap(*icon);
+					case thermal_regulator::SUMMER:
+						description = lookupProgramDescription("summer", program);
+						break;
+					case thermal_regulator::WINTER:
+						description = lookupProgramDescription("winter", program);
+						break;
+					}
+					description_visible = true;
+				}
+				break;
+			case device_status_thermal_regulator::SCENARIO:
+				{
+					const QString i_img = QString(IMG_PATH) + "scenari.png";
+					QPixmap *icon = icons_library.getIcon(i_img.ascii());
+					mode_icon->setPixmap(*icon);
 
-						stat_var curr_scenario(stat_var::SCENARIO);
-						ds->read(device_status_thermal_regulator::SCENARIO_INDEX, curr_scenario);
+					stat_var curr_scenario(stat_var::SCENARIO);
+					ds->read(device_status_thermal_regulator::SCENARIO_INDEX, curr_scenario);
 
-						int scenario = curr_scenario.get_val();
-						switch (season)
-						{
-							case thermal_regulator::SUMMER:
-								description = lookupScenarioDescription("summer", scenario);
-								break;
-							case thermal_regulator::WINTER:
-								description = lookupScenarioDescription("winter", scenario);
-								break;
-						}
-						description_visible = true;
-					}
-					break;
-				case device_status_thermal_regulator::HOLIDAY:
+					int scenario = curr_scenario.get_val();
+					switch (season)
 					{
-						const QString i_img = QString(IMG_PATH) + "feriale.png";
-						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_icon->setPixmap(*icon);
-						description_visible = false;
+					case thermal_regulator::SUMMER:
+						description = lookupScenarioDescription("summer", scenario);
+						break;
+					case thermal_regulator::WINTER:
+						description = lookupScenarioDescription("winter", scenario);
+						break;
 					}
-					break;
-				case device_status_thermal_regulator::WEEKEND:
-					{
-						const QString i_img = QString(IMG_PATH) + "festivo.png";
-						QPixmap *icon = icons_library.getIcon(i_img.ascii());
-						mode_icon->setPixmap(*icon);
-						description_visible = false;
-					}
-					break;
-				default:
-					break;
+					description_visible = true;
+				}
+				break;
+			case device_status_thermal_regulator::HOLIDAY:
+				{
+					const QString i_img = QString(IMG_PATH) + "feriale.png";
+					QPixmap *icon = icons_library.getIcon(i_img.ascii());
+					mode_icon->setPixmap(*icon);
+					description_visible = false;
+				}
+				break;
+			case device_status_thermal_regulator::WEEKEND:
+				{
+					const QString i_img = QString(IMG_PATH) + "festivo.png";
+					QPixmap *icon = icons_library.getIcon(i_img.ascii());
+					mode_icon->setPixmap(*icon);
+					description_visible = false;
+				}
+				break;
+			default:
+				break;
 			}
 		}
 	}
