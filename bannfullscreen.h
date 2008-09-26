@@ -133,6 +133,8 @@ protected:
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	BtLabelEvo *local_temp_label;
+	/// This label is used as a placeholder when local_temp_label is hidden to avoid nasty graphics effects
+	BtLabelEvo *local_temp_placeholder;
 
 	QDomNode conf_root;
 	temperature_probe_controlled *dev;
