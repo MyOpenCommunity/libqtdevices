@@ -2,6 +2,7 @@
 #define _SCENEVOCOND_H_
 
 #include "device_status.h"
+#include "main.h"
 
 #include <QFrame>
 #include <QList>
@@ -246,6 +247,7 @@ protected:
 	device *dev;
 	//! True when condition is satisfied
 	bool satisfied;
+
 public:
 	//! Constructor
 	device_condition(QWidget *parent, QString *trigger);
@@ -289,8 +291,8 @@ public:
 	virtual void inizializza(void);
 	//! Resets condition
 	virtual void reset(void);
-	//! Set device where
-	void set_where(QString);
+	//! Setup the device
+	virtual void setup_device(QString);
 	//! Set device pul
 	void set_pul(bool);
 	//! Set device group
@@ -513,6 +515,8 @@ public slots:
 \author Ciminaghi
 \date May 2006
 */
+#define CONDITION_MIX_TEMP 1050
+#define CONDITION_MAX_TEMP  500
 class device_condition_temp : public device_condition
 {
 Q_OBJECT
@@ -544,6 +548,12 @@ public:
 public slots:
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
+private:
+	/// Maximum and minimum values for temperature conditions
+	int max_temp, min_temp;
+	/// Step value for temperature conditions
+	int step;
+	TemperatureScale temp_scale;
 };
 
 
@@ -686,6 +696,9 @@ public:
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);
+
+	//! Setup the device
+	virtual void setup_device(QString);
 
 protected slots:
 	virtual void status_changed(QList<device_status*> sl);

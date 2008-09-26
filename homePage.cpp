@@ -9,12 +9,12 @@
 ****************************************************************/
 
 #include "homepage.h"
-#include "main.h"
 #include "timescript.h"
 #include "genericfunz.h"
 #include "openclient.h"
 #include "btlabel.h"
 #include "fontmanager.h"
+#include "scaleconversion.h"
 
 #include <qpixmap.h>
 #include <qdatetime.h>
@@ -36,6 +36,8 @@ homePage::homePage( QWidget *parent, const char *name, WFlags f )
     freez=FALSE;
     descrizione=NULL;
     tempCont=0;
+
+    temp_scale = readTemperatureScale();
  }
 
 
@@ -178,17 +180,18 @@ void homePage::addTemp(
 		case 2: strcpy(zonaTermo3,z);zt[2]=&zonaTermo3[0];strcpy(ext3,Ext);ext[2]=ext3;break;
 	}
 
-     temperatura[tempCont] = new QLCDNumber(this,"0.00"TEMP_DEGREES"C");
-     temperatura[tempCont] ->setGeometry(x,y,width,height-H_SCR_TEMP);
-     temperatura[tempCont] ->setPaletteForegroundColor(fg);
-     temperatura[tempCont] ->setPaletteBackgroundColor(bg);
+     temperatura[tempCont] = new QLCDNumber(this);
+     temperatura[tempCont]->setGeometry(x, y, width, height - H_SCR_TEMP);
+     temperatura[tempCont]->setPaletteForegroundColor(fg);
+     temperatura[tempCont]->setPaletteBackgroundColor(bg);
+     temperatura[tempCont]->setFrameStyle(style);
+     temperatura[tempCont]->setLineWidth(line);
+     temperatura[tempCont]->setNumDigits(6);
+     temperatura[tempCont]->setSegmentStyle(QLCDNumber::Flat);
 
-     temperatura[tempCont] ->setFrameStyle( style );
-     temperatura[tempCont] ->setLineWidth(line);    
-     temperatura[tempCont] ->setNumDigits(6);
-     temperatura[tempCont] -> display("0.00"TEMP_DEGREES"C");
-     temperatura[tempCont] -> setSegmentStyle(QLCDNumber::Flat);    
-     
+     unsigned default_bt_temp = 1235;
+     updateTemperatureDisplay(default_bt_temp, tempCont);
+
      if ( ! qtext.isEmpty() )
      {
 	QFont aFont;
@@ -296,12 +299,37 @@ void homePage::freezed(bool f)
  
 }
 
+void homePage::updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display)
+{
+	qDebug("vedo temperatura per Temp in Homepage: %u", new_bt_temperature);
+	QString displayed_temp;
+
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		displayed_temp = celsiusString(bt2Celsius(new_bt_temperature));
+		break;
+	case FAHRENHEIT:
+		displayed_temp = fahrenheitString(bt2Fahrenheit(new_bt_temperature));
+		break;
+	default:
+		qWarning("Wrong temperature scale, defaulting to celsius");
+		temp_scale = CELSIUS;
+		displayed_temp = celsiusString(bt2Celsius(new_bt_temperature));
+	}
+	// qlcdnumber can display the degree sign, but not as utf-8 text.
+	// We have to change the char TEMP_DEGREES with the single quote char (')
+	displayed_temp = displayed_temp.replace(TEMP_DEGREES, "'");
+
+	temperatura[which_display]->display(displayed_temp);
+}
+
 void homePage::gestFrame(char* frame)
  {    
     openwebnet msg_open;
 //    char aggiorna;
     char dovex[30];
-    float icx;
+    unsigned icx;
     bool my_frame;
 
 
@@ -323,29 +351,17 @@ void homePage::gestFrame(char* frame)
 	if(!strcmp(ext[idx], "0") && !strcmp(dovex,zt[idx]) && !strcmp(msg_open.Extract_grandezza(),"0")) 
 	{
           //Temperatura misurata
-	  icx=atoi(msg_open.Extract_valori(0));
+	  icx = static_cast<unsigned>(atoi(msg_open.Extract_valori(0)));
           my_frame = true;
 	 }
          else if(!strcmp(ext[idx], "1") && !strcmp(msg_open.Extract_grandezza(),"15") && !strncmp(dovex,zt[idx], 1))
          {
-           icx=atoi(msg_open.Extract_valori(1));
+           icx = static_cast<unsigned>(atoi(msg_open.Extract_valori(1)));
            my_frame = true;
          }
          if(my_frame)
          {
-           char     tmp[10], temp[10];
-           qDebug("vedo temperatura per Temp in Homepage: %d",(int)icx);
-           memset(temp,'\000',sizeof(temp));
-           if (icx>=1000)
-           {
-             strcat(temp,"-");
-             icx=icx-1000;
-           }
-           icx/=10;
-           sprintf(tmp,"%.1f",icx);
-           strcat(temp,tmp);
-           strcat(temp,TEMP_DEGREES"C");
-           temperatura[idx]->display(&temp[0]);
+	   updateTemperatureDisplay(icx, idx);
          }
     }
     }

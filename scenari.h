@@ -126,7 +126,6 @@ private slots:
 	void hide();
 	void trigOnStatusChanged();
 public slots:
-	void gestFrame(char*);
 	void inizializza(bool forza = false);
 };
 

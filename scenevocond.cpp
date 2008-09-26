@@ -1,13 +1,12 @@
 #include "scenevocond.h"
-#include "main.h"
 #include "device.h"
-#include "frame_interpreter.h"
 #include "device_cache.h"
 #include "genericfunz.h"
 #include "btbutton.h"
 #include "btlabel.h"
 #include "timescript.h"
 #include "fontmanager.h"
+#include "scaleconversion.h"
 
 #include <QDateTime>
 #include <QPixmap>
@@ -15,6 +14,7 @@
 #include <QCursor>
 #include <QDebug>
 #include <QLabel>
+#include <QTimer>
 #include <QDir>
 #include <QFile>
 
@@ -714,7 +714,7 @@ void scenEvo_cond_d::SetIcons()
 	{
 		dc->setGeometry(40,140,160,50);
 		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
-		dc->set_where(*where);
+		dc->setup_device(*where);
 	}
 	actual_condition = dc;
 	qDebug("scenEvo_cond_d::SetIcons(), end");
@@ -935,6 +935,7 @@ void device_condition::inizializza()
 void device_condition::reset()
 {
 	qDebug("device_condition::reset()");
+	dev->reset();
 	set_current_value(get_condition_value());
 	Draw();
 }
@@ -944,11 +945,11 @@ bool device_condition::isTrue()
 	return satisfied;
 }
 
-void device_condition::set_where(QString s)
+void device_condition::setup_device(QString s)
 {
-	qDebug() << "device_condition::set_where(" << s << ")";
+	qDebug() << "device_condition::setup_device(" << s << ")";
 	dev->set_where(s);
-	// Aggiunge il nodo alla cache
+	// Add the device to cache, or replace it with the instance found in cache
 	dev = btouch_device_cache.add_device(dev);
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
@@ -1909,25 +1910,46 @@ device_condition_temp::device_condition_temp(QWidget *parent, char *name, QStrin
 	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
 	l->setFont(aFont);
 	frame = l;
+
+	temp_scale = readTemperatureScale();
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
+		min_temp = bt2Celsius(CONDITION_MIX_TEMP);
+		break;
+	case FAHRENHEIT:
+		max_temp = bt2Fahrenheit(CONDITION_MAX_TEMP);
+		min_temp = bt2Fahrenheit(CONDITION_MIX_TEMP);
+		break;
+	default:
+		qWarning("Wrong temperature scale, defaulting to celsius");
+		temp_scale = CELSIUS;
+		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
+		min_temp = bt2Celsius(CONDITION_MIX_TEMP);
+	}
+	step = 5;
+
 	set_condition_value(*c);
 	set_current_value(device_condition::get_condition_value());
+
 	Draw();
 	dev = new temperature_probe_notcontrolled(QString(""), false);
 }
 
 int device_condition_temp::get_min()
 {
-	return -50;
+	return min_temp;
 }
 
 int device_condition_temp::get_max()
 {
-	return 500;
+	return max_temp;
 }
 
 int device_condition_temp::get_step()
 {
-	return 5;
+	return step;
 }
 
 int device_condition_temp::get_divisor()
@@ -1937,39 +1959,77 @@ int device_condition_temp::get_divisor()
 
 QString device_condition_temp::get_unit()
 {
-	return TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		return TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
+	case FAHRENHEIT:
+		return TEMP_DEGREES"F \2611"TEMP_DEGREES"F";
+	default:
+		qWarning("Wrong temperature scale, defaulting to celsius");
+		return TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
+	}
 }
 
 void device_condition_temp::Draw()
 {
-	QString tmp;
 	QString u = get_unit();
+	// val is an integer either in Celsius or in Fahrenheit degrees
 	int val = get_current_value();
 	qDebug("device_condition_temp::Draw(), val = %d", val);
-	if (val == -5)
-		 tmp = QString("-0.5%1 ").arg(u);
-	else
-		tmp = QString("%1.%2%3").arg(val/10).arg(val >= 0 ? val%10 : -val%10).arg(u);
+
+	QString tmp = QString::number(val);
+	tmp.insert(tmp.length() - 1, ".");
+	tmp += u;
+
 	((QLabel *)frame)->setText(tmp);
 }
 
 void device_condition_temp::set_condition_value(QString s)
 {
-	bool neg = s[0] == '1';
-	int val = (s.right(3)).toInt();
-	device_condition::set_condition_value(neg ? -val : val);
+	// s is in bticino 4-digit form, we should translate to an int
+	int val = s.toInt();
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		val = bt2Celsius(val);
+		break;
+	case FAHRENHEIT:
+		val = bt2Celsius(val);
+		break;
+	default:
+		qWarning("Wrong temperature scale, defaulting to celsius");
+		val = bt2Celsius(val);
+	}
+	device_condition::set_condition_value(val);
 }
 
 void device_condition_temp::get_condition_value(QString& out)
 {
-	char tmp[100];
+	// transform an int value to a string in bticino 4-digit form
 	int val = device_condition::get_condition_value();
-	sprintf(tmp, "%c%3d", (val < 0 ? '1' : '0') , abs(val));
-	out = tmp;
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		out = QString::number(celsius2Bt(val));
+		break;
+	case FAHRENHEIT:
+		out = QString::number(fahrenheit2Bt(val));
+		break;
+	default:
+		qWarning("Wrong temperature scale, defaulting to celsius");
+		out = QString::number(celsius2Bt(val));
+	}
+
+	// if the val is positive, QString::number strips the leading zeros
+	// we need to put them back to be in 4-digit format
+	if (val > 0)
+		out.prepend("0");
 }
 
 void device_condition_temp::status_changed(QList<device_status*> sl)
 {
+	// get_condition_value() returns an int, which is Celsius or Fahrenheit
 	int trig_v = device_condition::get_condition_value();
 	stat_var curr_temp(stat_var::TEMPERATURE);
 	qDebug("device_condition_temp::status_changed()");
@@ -1984,7 +2044,21 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 			qDebug("Temperature changed");
 			ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
 			qDebug("Current temperature %d", curr_temp.get_val());
-			if ((curr_temp.get_val() >= (trig_v-10)) &&  (curr_temp.get_val() <= (trig_v+10)))
+			int measured_temp;
+			switch (temp_scale)
+			{
+			case CELSIUS:
+				measured_temp = bt2Celsius(curr_temp.get_val());
+				break;
+			case FAHRENHEIT:
+				measured_temp = bt2Fahrenheit(curr_temp.get_val());
+				break;
+			default:
+				qWarning("Wrong temperature scale, defaulting to celsius");
+				measured_temp = bt2Celsius(curr_temp.get_val());
+			}
+
+			if ((measured_temp >= (trig_v - 10)) &&  (measured_temp <= (trig_v + 10)))
 			{
 				qDebug("Condition triggered");
 				if (!satisfied)
@@ -2025,8 +2099,15 @@ device_condition_aux::device_condition_aux(QWidget *parent, char *name, QString 
 	set_current_value(device_condition::get_condition_value());
 	dev = new aux_device(QString(""));
 
-	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
 	Draw();
+}
+
+void device_condition_aux::setup_device(QString s)
+{
+	device_condition::setup_device(s);
+	// The device can be replaced by "add_device" method of device_cache, thus
+	// the connection must be after that.
+	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
 }
 
 void device_condition_aux::Draw()

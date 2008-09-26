@@ -219,15 +219,15 @@ void FSBannSimpleProbe::Draw()
 	temp_label->setAlignment(Qt::AlignHCenter);
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			temp_label->setText(celsiusString(bt2Celsius(temp)));
-			break;
-		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
-			break;
-		default:
-			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-			temp_label->setText(celsiusString(temp));
+	case CELSIUS:
+		temp_label->setText(celsiusString(bt2Celsius(temp)));
+		break;
+	case FAHRENHEIT:
+		temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
+		break;
+	default:
+		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
+		temp_label->setText(celsiusString(temp));
 	}
 
 
@@ -304,25 +304,29 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	main_layout.addWidget(local_temp_label);
 	main_layout.setStretchFactor(local_temp_label, 1);
 
+	local_temp_placeholder = new BtLabelEvo(this);
+	main_layout.addWidget(local_temp_placeholder);
+	main_layout.setStretchFactor(local_temp_placeholder, 1);
+
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
-			minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
-			// bticino absolute minimum temperature is -23.5 Celsius
-			setpoint = -235;
-			break;
-		case FAHRENHEIT:
-			maximum_manual_temp = bt2Fahrenheit(thermo_reg->maximumTemp());
-			minimum_manual_temp = bt2Fahrenheit(thermo_reg->minimumTemp());
-			setpoint = -103;
-			break;
-		default:
-			qWarning("BannProbe ctor: wrong scale, defaulting to celsius");
-			maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
-			minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
-			setpoint = -235;
-			temp_scale = CELSIUS;
+	case CELSIUS:
+		maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
+		minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
+		// bticino absolute minimum temperature is -23.5 Celsius
+		setpoint = -235;
+		break;
+	case FAHRENHEIT:
+		maximum_manual_temp = bt2Fahrenheit(thermo_reg->maximumTemp());
+		minimum_manual_temp = bt2Fahrenheit(thermo_reg->minimumTemp());
+		setpoint = -103;
+		break;
+	default:
+		qWarning("BannProbe ctor: wrong scale, defaulting to celsius");
+		maximum_manual_temp = bt2Celsius(thermo_reg->maximumTemp());
+		minimum_manual_temp = bt2Celsius(thermo_reg->minimumTemp());
+		setpoint = -235;
+		temp_scale = CELSIUS;
 	}
 
 	local_temp = "0";
@@ -337,15 +341,15 @@ void FSBannProbe::setDeviceToManual()
 	unsigned bt_temp;
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			bt_temp = celsius2Bt(setpoint);
-			break;
-		case FAHRENHEIT:
-			bt_temp = fahrenheit2Bt(setpoint);
-			break;
-		default:
-			qWarning("BannProbe::setDeviceToManual: unknown scale, defaulting to celsius");
-			bt_temp = celsius2Bt(setpoint);
+	case CELSIUS:
+		bt_temp = celsius2Bt(setpoint);
+		break;
+	case FAHRENHEIT:
+		bt_temp = fahrenheit2Bt(setpoint);
+		break;
+	default:
+		qWarning("BannProbe::setDeviceToManual: unknown scale, defaulting to celsius");
+		bt_temp = celsius2Bt(setpoint);
 	}
 	dev->setManual(bt_temp);
 }
@@ -399,6 +403,7 @@ void FSBannProbe::Draw()
 	setWidgetVisible(btn_plus, status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 	setWidgetVisible(setpoint_label, !isOff && !isAntigelo);
 	setWidgetVisible(local_temp_label, !isOff && !isAntigelo && local_temp != "0");
+	setWidgetVisible(local_temp_placeholder, isOff || isAntigelo || local_temp == "0");
 	setWidgetVisible(icon_off, isOff);
 	setWidgetVisible(icon_antifreeze, isAntigelo);
 	setWidgetVisible(navbar_button, probe_type == THERMO_Z99 && !isOff && !isAntigelo);
@@ -408,15 +413,15 @@ void FSBannProbe::Draw()
 
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			setpoint_label->setText(celsiusString(setpoint));
-			break;
-		case FAHRENHEIT:
-			setpoint_label->setText(fahrenheitString(setpoint));
-			break;
-		default:
-			qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
-			setpoint_label->setText(celsiusString(setpoint));
+	case CELSIUS:
+		setpoint_label->setText(celsiusString(setpoint));
+		break;
+	case FAHRENHEIT:
+		setpoint_label->setText(fahrenheitString(setpoint));
+		break;
+	default:
+		qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+		setpoint_label->setText(celsiusString(setpoint));
 	}
 
 	setpoint_label->setFont(aFont);
@@ -650,22 +655,22 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			maximum_manual_temp = bt2Celsius(dev->maximumTemp());
-			minimum_manual_temp = bt2Celsius(dev->minimumTemp());
-			temp = 200;
-			break;
-		case FAHRENHEIT:
-			maximum_manual_temp = bt2Fahrenheit(dev->maximumTemp());
-			minimum_manual_temp = bt2Fahrenheit(dev->minimumTemp());
-			temp = 680;
-			break;
-		default:
-			qWarning("BannManual ctor: wrong scale, defaulting to celsius");
-			maximum_manual_temp = bt2Celsius(dev->maximumTemp());
-			minimum_manual_temp = bt2Celsius(dev->minimumTemp());
-			temp = 200;
-			temp_scale = CELSIUS;
+	case CELSIUS:
+		maximum_manual_temp = bt2Celsius(dev->maximumTemp());
+		minimum_manual_temp = bt2Celsius(dev->minimumTemp());
+		temp = 200;
+		break;
+	case FAHRENHEIT:
+		maximum_manual_temp = bt2Fahrenheit(dev->maximumTemp());
+		minimum_manual_temp = bt2Fahrenheit(dev->minimumTemp());
+		temp = 680;
+		break;
+	default:
+		qWarning("BannManual ctor: wrong scale, defaulting to celsius");
+		maximum_manual_temp = bt2Celsius(dev->maximumTemp());
+		minimum_manual_temp = bt2Celsius(dev->minimumTemp());
+		temp = 200;
+		temp_scale = CELSIUS;
 	}
 
 
@@ -699,15 +704,15 @@ void FSBannManual::performAction()
 	unsigned bt_temp;
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			bt_temp = celsius2Bt(temp);
-			break;
-		case FAHRENHEIT:
-			bt_temp = fahrenheit2Bt(temp);
-			break;
-		default:
-			qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
-			bt_temp = celsius2Bt(temp);
+	case CELSIUS:
+		bt_temp = celsius2Bt(temp);
+		break;
+	case FAHRENHEIT:
+		bt_temp = fahrenheit2Bt(temp);
+		break;
+	default:
+		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
+		bt_temp = celsius2Bt(temp);
 	}
 	emit(temperatureSelected(bt_temp));
 }
@@ -745,15 +750,15 @@ void FSBannManual::Draw()
 
 	switch (temp_scale)
 	{
-		case CELSIUS:
-			temp_label->setText(celsiusString(temp));
-			break;
-		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(temp));
-			break;
-		default:
-			qWarning("BannSimpleProbe: unknown temperature scale, defaulting to Celsius");
-			temp_label->setText(celsiusString(temp));
+	case CELSIUS:
+		temp_label->setText(celsiusString(temp));
+		break;
+	case FAHRENHEIT:
+		temp_label->setText(fahrenheitString(temp));
+		break;
+	default:
+		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to Celsius");
+		temp_label->setText(celsiusString(temp));
 	}
 
 	temp_label->setPaletteForegroundColor(second_fg);
@@ -779,15 +784,15 @@ void FSBannManual::status_changed(QList<device_status*> sl)
 			{
 				switch (temp_scale)
 				{
-					case CELSIUS:
-						temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
-						break;
-					case FAHRENHEIT:
-						temp = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
-						break;
-					default:
-						qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-						temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+				case CELSIUS:
+					temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
+					break;
+				case FAHRENHEIT:
+					temp = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
+					break;
+				default:
+					qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
+					temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
 				}
 				update = true;
 			}
@@ -984,17 +989,17 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 					// remember: stat_var::get_val() returns an int
 					switch (temp_scale)
 					{
-						case CELSIUS:
-							description = celsiusString(bt2Celsius(
-										static_cast<unsigned>(curr_sp.get_val())));
-							break;
-						case FAHRENHEIT:
-							description = fahrenheitString(bt2Fahrenheit(
-										static_cast<unsigned>(curr_sp.get_val())));
-							break;
-						default:
-							qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
-							description = celsiusString(curr_sp.get_val());
+					case CELSIUS:
+						description = celsiusString(bt2Celsius(
+									static_cast<unsigned>(curr_sp.get_val())));
+						break;
+					case FAHRENHEIT:
+						description = fahrenheitString(bt2Fahrenheit(
+									static_cast<unsigned>(curr_sp.get_val())));
+						break;
+					default:
+						qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
+						description = celsiusString(curr_sp.get_val());
 					}
 					description_visible = true;
 				}
@@ -1013,12 +1018,12 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 
 					switch (season)
 					{
-						case thermal_regulator::SUMMER:
-							description = lookupProgramDescription("summer", program);
-							break;
-						case thermal_regulator::WINTER:
-							description = lookupProgramDescription("winter", program);
-							break;
+					case thermal_regulator::SUMMER:
+						description = lookupProgramDescription("summer", program);
+						break;
+					case thermal_regulator::WINTER:
+						description = lookupProgramDescription("winter", program);
+						break;
 					}
 					description_visible = true;
 				}
@@ -1035,12 +1040,12 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 					int scenario = curr_scenario.get_val();
 					switch (season)
 					{
-						case thermal_regulator::SUMMER:
-							description = lookupScenarioDescription("summer", scenario);
-							break;
-						case thermal_regulator::WINTER:
-							description = lookupScenarioDescription("winter", scenario);
-							break;
+					case thermal_regulator::SUMMER:
+						description = lookupScenarioDescription("summer", scenario);
+						break;
+					case thermal_regulator::WINTER:
+						description = lookupScenarioDescription("winter", scenario);
+						break;
 					}
 					description_visible = true;
 				}

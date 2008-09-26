@@ -785,7 +785,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*scenari,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
 							QObject::connect(*scenari,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari,SLOT(freezed(bool)));
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari,SIGNAL(gestFrame(char *)));
 							break;
 						case IMPOSTAZIONI:    
 							(*imposta)->forceDraw();
@@ -818,8 +817,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 									*imposta);
 							(*scenari_evoluti)->forceDraw();
 							QObject::connect(*scenari_evoluti,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari_evoluti,SIGNAL(gestFrame(char *)));
+							QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
 							QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
 							QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
