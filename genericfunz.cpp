@@ -46,6 +46,16 @@ void getZoneName(char* name, char* pressName,char*zona, char len)
 	}
 }
 
+QString getAmbName(QString name, QString amb)
+{
+	// TODO:  verificare che faccia la stessa cosa della versione c!
+	int pos = name.indexOf(".");
+	if (pos != -1)
+		return name.left(pos) + amb.at(0) + name.mid(pos);
+
+	return QString();
+}
+
 void getAmbName(char *name, char *out, char *amb, char len)
 {
 	memset(out,'\000',len);

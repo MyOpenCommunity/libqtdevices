@@ -140,16 +140,14 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			banner *b;
 			if (tipo == AMBIENTE)
 			{
-				b = new ambDiffSon(this, descrizioni->at(0)->ascii(), (char *)indirizzo,
-					(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
-					(char *)safeAt(icon_names, 2)->ascii(),
-					&datimmulti, ds, sorgenti, this);
+				b = new ambDiffSon(this, *descrizioni->at(0), (char *)indirizzo,
+						*safeAt(icon_names, 0), *safeAt(icon_names, 1), *safeAt(icon_names, 2),
+						&datimmulti, ds, sorgenti, this);
 			}
 			else
 			{
-				b = new insAmbDiffSon(this, descrizioni, indirizzo,
-					(char *)safeAt(icon_names, 0)->ascii(), (char *)safeAt(icon_names, 1)->ascii(),
-					&datimmulti, ds,  sorgenti, this);
+				b = new insAmbDiffSon(this, descrizioni, indirizzo, *safeAt(icon_names, 0),
+						*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
 			}
 			elencoBanner.append(b);
 			dslist.append(ds);
@@ -183,7 +181,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			datimmulti.append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
 					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
 					*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
-			delete lsi;
 			break;
 		}
 

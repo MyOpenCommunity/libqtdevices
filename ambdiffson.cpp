@@ -27,14 +27,16 @@
  ****************************************************************/
 
 
-ambDiffSon::ambDiffSon(QWidget *parent, const char *_name, void *indirizzo, char* IconaSx, char* IconaDx, char *icon,
+ambDiffSon::ambDiffSon(QWidget *parent, QString _name, void *indirizzo, QString IconaSx, QString IconaDx, QString icon,
 	QList<dati_ampli_multi*> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent), name(_name)
 {
-	qDebug("ambDiffSon::ambDiffSon() : %s %s %s %s", (char *)indirizzo, IconaSx, IconaDx, icon);
-	char zoneIcon[50];
-	getAmbName(IconaSx, zoneIcon, (char *)indirizzo, sizeof(zoneIcon));
-	qDebug("zoneIcon = %s", zoneIcon);
-	SetIcons(icon, zoneIcon, IconaDx);
+	qDebug() << "ambDiffSon::ambDiffSon() : " << (char *)indirizzo << " " << IconaSx << " " << IconaDx << " " << icon;
+	QString zoneIcon = getAmbName(IconaSx, (char *)indirizzo);
+	qDebug() << "zoneIcon = " << zoneIcon;
+	QByteArray buf_zone = zoneIcon.toAscii();
+	QByteArray buf_icon_dx = IconaDx.toAscii();
+	QByteArray buf_icon = icon.toAscii();
+	SetIcons(buf_icon.constData(), buf_zone.constData(), buf_icon_dx.constData());
 	Draw();
 	setAddress((char *)indirizzo);
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
@@ -171,12 +173,14 @@ bool ambDiffSon::isDraw()
  ** Insieme ambienti diffusione sonora multicanale
  ****************************************************************/
 
-insAmbDiffSon::insAmbDiffSon(QWidget *parent, QList<QString*> *names, void *indirizzo,char* Icona1,char* Icona2, QList<dati_ampli_multi*> *la,
+insAmbDiffSon::insAmbDiffSon(QWidget *parent, QList<QString*> *names, void *indirizzo,QString Icona1, QString Icona2, QList<dati_ampli_multi*> *la,
 	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent), name(*names->at(0))
 {
-	qDebug("insAmbDiffSon::insAmbDiffSon() : %s %s %s", (char *)indirizzo, Icona1, Icona2);
+	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << (char *)indirizzo << " " << Icona1 << " " << Icona2;
 	// TODO: c'e' un sacco codice duplicato con ambdiffson!!!
-	SetIcons(Icona1, Icona2);
+	QByteArray buf_icon1 = Icona1.toAscii();
+	QByteArray buf_icon2 = Icona2.toAscii();
+	SetIcons(buf_icon1.constData(), buf_icon2.constData());
 	Draw();
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 	diffson = ds;

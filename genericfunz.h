@@ -30,6 +30,8 @@ void getZoneName(char* , char* ,char*, char );
 */
 void getAmbName(char *, char *, char *, char);
 
+QString getAmbName(QString name, QString amb);
+
  /*!
   \brief Sets the contrast of the device.
 

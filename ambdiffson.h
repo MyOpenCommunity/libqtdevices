@@ -44,7 +44,7 @@ private:
 	bool is_draw;
 	QString name;
 public:
-	ambDiffSon(QWidget *parent=0, const char *_name=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", char *Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	ambDiffSon(QWidget *parent=0, QString _name=NULL, void *indirizzo=NULL, QString Icona1="", QString Icona2="", QString Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
 	void hide();
 	void setDraw(bool d);
@@ -76,7 +76,7 @@ private:
 	sottoMenu *sorgenti;
 	QString name;
 public:
-	insAmbDiffSon(QWidget *parent=0, QList<QString*> *descrizioni=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	insAmbDiffSon(QWidget *parent=0, QList<QString*> *descrizioni=NULL, void *indirizzo=NULL, QString Icona1="", QString Icona2="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
 public slots:
 	void configura();
