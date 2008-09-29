@@ -674,7 +674,9 @@ modscen_device::modscen_device(QString w, bool p, int g) : device(QString("0"), 
 
 aux_device::aux_device(QString w, bool p, int g) : device(QString("9"), w, p, g)
 {
-	status = stat_var(stat_var::NONE, 0, 0, 1, 1);
+	// We set an initial value out of admitted range to force the emission of
+	// status_changed signal.
+	status = stat_var(stat_var::NONE, -1, 0, 1, 1);
 }
 
 void aux_device::init(bool force)
