@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #ifndef XMLCONFHANDLER_H
-#define XMLCONFHANDLER_H   
+#define XMLCONFHANDLER_H
 
 #include <qxml.h>
 #include <qcolor.h>
@@ -30,6 +30,11 @@ class scenEvo_cond;
 class Client;
 class SupervisionMenu;
 
+#include <qvaluelist.h>
+#include <qptrlist.h>
+#include <qstring.h>
+#include <qcolor.h>
+#include <qdatetime.h>
 
 /*!
   \class xmlconfhandler
@@ -62,113 +67,112 @@ class SupervisionMenu;
 
   \author Davide
   \date lug 2005
-  */  
+  */
 class xmlconfhandler : public QXmlDefaultHandler
 {
-	public:
-		xmlconfhandler(BtMain *BtM=NULL, homePage **home=NULL,  homePage **specPage=NULL,  sottoMenu **scenari_evoluti=NULL,
-				sottoMenu **videocitofonia=NULL, sottoMenu **illumino=NULL, sottoMenu **scenari=NULL, sottoMenu **carichi=NULL,
-				sottoMenu **imposta=NULL, sottoMenu **automazioni=NULL, ThermalMenu **termo=NULL, diffSonora **difSon=NULL,
-				diffmulti **dm=NULL, antintrusione **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
-				Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL, QColor *bg=NULL,
-				QColor *fg1=NULL, QColor *fg2=NULL);
+public:
+	xmlconfhandler(BtMain *BtM=NULL, homePage **home=NULL,  homePage **specPage=NULL,  sottoMenu **scenari_evoluti=NULL,
+			sottoMenu **videocitofonia=NULL, sottoMenu **illumino=NULL, sottoMenu **scenari=NULL, sottoMenu **carichi=NULL,
+			sottoMenu **imposta=NULL, sottoMenu **automazioni=NULL, ThermalMenu **termo=NULL, diffSonora **difSon=NULL,
+			diffmulti **dm=NULL, antintrusione **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
+			Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL, QColor *bg=NULL,
+			QColor *fg1=NULL, QColor *fg2=NULL);
 
-		~xmlconfhandler();
-		/*!
-		  \brief Reset and initialize values
-		  */  
-		bool startDocument();
-		/*!
-		  \brief take memory of the name of the tag which is actually parsed. It is also possible understand which is the level actually parsed (seek the firs empty tag!)
-		  */    
-		bool startElement( const QString&, const QString&, const QString& , 
-				const QXmlAttributes& );
-		/*!
-		  \brief Saves the values read during the parsing in variables
-		  */      
-		bool characters( const QString & ch );
-		/*!
-		  \brief Makes the "sottoMenu", populate them and make connections and makes a certain number of initalization
-		  */      
-		bool endElement( const QString&, const QString&, const QString& );
+	~xmlconfhandler();
+	/*!
+		\brief Reset and initialize values
+		*/
+	bool startDocument();
+	/*!
+		\brief take memory of the name of the tag which is actually parsed. It is also possible understand which is the level actually parsed (seek the firs empty tag!)
+		*/
+	bool startElement(const QString&, const QString&, const QString& , const QXmlAttributes&);
+	/*!
+		\brief Saves the values read during the parsing in variables
+		*/
+	bool characters(const QString & ch);
+	/*!
+		\brief Makes the "sottoMenu", populate them and make connections and makes a certain number of initalization
+		*/
+	bool endElement(const QString&, const QString&, const QString&);
 
-	private:
-		void *computeAddress();
-		void *getAddr();
-		void addItemU(sottoMenu *pageAct, void *address);
+private:
+	void *computeAddress();
+	void *getAddr();
+	void addItemU(sottoMenu *pageAct, void *address);
 
-		QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6;
-		QString CurTagL7,CurTagL8; // Only to avoid abnormal behaviour
-		bool ok;
+	QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6;
+	QString CurTagL7,CurTagL8; // Only to avoid abnormal behaviour
+	bool ok;
 
-		int hompage_isdefined;
-		int hompage_type;
-		int hompage_id;
+	int hompage_isdefined;
+	int hompage_type;
+	int hompage_id;
 
-		int sottomenu_id;
-		QString sottomenu_descr;
-		int sottomenu_left;
-		int sottomenu_top;
-		QString sottomenu_icon_name;
-		QString sottomenu_where;
+	int sottomenu_id;
+	QString sottomenu_descr;
+	int sottomenu_left;
+	int sottomenu_top;
+	QString sottomenu_icon_name;
+	QString sottomenu_where;
 
-		int page_id;
-		QString page_descr;
+	int page_id;
+	QString page_descr;
 
-		int page_item_id, page_item_id_m;
-		QString page_item_descr;
-		QPtrList<QString> *page_item_descr_m;
-		QString page_item_what;
-		QString page_item_where, page_item_where_m;
-		QString page_item_mode;
-		QString page_item_key;
-		QString page_item_light;
-		QString page_item_unknown;
-		QString page_item_txt1;
-		QString page_item_txt2;
-		QString page_item_txt3;
-		QString page_icon, page_item_who, page_item_type, page_item_action;
-		int page_item_softstart, page_item_softstop;
+	int page_item_id, page_item_id_m;
+	QString page_item_descr;
+	QPtrList<QString> *page_item_descr_m;
+	QString page_item_what;
+	QString page_item_where, page_item_where_m;
+	QString page_item_mode;
+	QString page_item_key;
+	QString page_item_light;
+	QString page_item_unknown;
+	QString page_item_txt1;
+	QString page_item_txt2;
+	QString page_item_txt3;
+	QString page_icon, page_item_who, page_item_type, page_item_action;
+	int page_item_softstart, page_item_softstop;
 
-		void * page_item_indirizzo;
+	void * page_item_indirizzo;
 
-		QPtrList<QString> * page_item_list_img, *page_item_list_img_m;
-		QPtrList<QString> * page_item_list_group, *page_item_list_group_m;
-		QPtrList<QString> * page_item_list_txt;
-		QPtrList<QString> * page_item_list_txt_times;
-		QValueList<int>sstart;
-		QValueList<int>sstop;
-		ambDiffSon *curr_amb;
+	QPtrList<QString> * page_item_list_img, *page_item_list_img_m;
+	QPtrList<QString> * page_item_list_group, *page_item_list_group_m;
+	QPtrList<QString> * page_item_list_txt;
+	QPtrList<QString> * page_item_list_txt_times;
+	QValueList<int>sstart;
+	QValueList<int>sstop;
+	ambDiffSon *curr_amb;
 
-		scenEvo_cond *page_item_cond;
-		QPtrList<scenEvo_cond> *page_item_cond_list;
-		int	par1, par2,par3, par4;
-		unsigned int itemNum;
-		QString CurTagL4_copy, CurTagL5_copy;
-		QColor Background, Foreground,SecondForeground;    
-		unsigned char idPageDefault,car;
+	scenEvo_cond *page_item_cond;
+	QPtrList<scenEvo_cond> *page_item_cond_list;
+	int	par1, par2,par3, par4;
+	unsigned int itemNum;
+	QString CurTagL4_copy, CurTagL5_copy;
+	QColor Background, Foreground,SecondForeground;
+	unsigned char idPageDefault,car;
 
-		void set_page_item_defaults();
+	void set_page_item_defaults();
 
-		homePage **home;
-		homePage **specPage;
-		sottoMenu **illumino, **scenari, **carichi, **imposta, **automazioni, **sched,
-			  **scenari_evoluti, **videocitofonia;
-		diffmulti **dm;
-		ThermalMenu **termo;
-		diffSonora **difSon;
-		antintrusione** antintr;
-		SupervisionMenu** supervisione;
-		QWidget ** pagDefault;
-		versio *datiGen ;
+	homePage **home;
+	homePage **specPage;
+	sottoMenu **illumino, **scenari, **carichi, **imposta, **automazioni, **sched,
+		**scenari_evoluti, **videocitofonia;
+	diffmulti **dm;
+	ThermalMenu **termo;
+	diffSonora **difSon;
+	antintrusione** antintr;
+	SupervisionMenu** supervisione;
+	QWidget ** pagDefault;
+	versio *datiGen ;
 
-		BtMain * BtM;
-		Client * client_comandi;
-		Client *  client_monitor;
-		Client * client_richieste;
-		// For watchdog refresh
-		QTime wdtime;
-};                   
+	BtMain * BtM;
+	Client * client_comandi;
+	Client *  client_monitor;
+	Client * client_richieste;
+	// For watchdog refresh
+	QTime wdtime;
+};
 
 
 #endif
