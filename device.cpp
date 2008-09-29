@@ -674,13 +674,7 @@ modscen_device::modscen_device(QString w, bool p, int g) : device(QString("0"), 
 
 aux_device::aux_device(QString w, bool p, int g) : device(QString("9"), w, p, g)
 {
-	status = stat_var(stat_var::NONE, -1, -1, 1, 1);
-}
-
-void aux_device::reset()
-{
-	int init_value = -1;
-	status.set_val(init_value);
+	status = stat_var(stat_var::NONE, 0, 0, 1, 1);
 }
 
 void aux_device::init(bool force)

@@ -915,7 +915,6 @@ void device_condition::inizializza()
 void device_condition::reset()
 {
 	qDebug("device_condition::reset()");
-	dev->reset();
 	set_current_value(get_condition_value());
 	Draw();
 }
