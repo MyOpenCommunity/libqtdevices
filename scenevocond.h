@@ -700,12 +700,20 @@ public:
 	//! Setup the device
 	virtual void setup_device(QString);
 
+public slots:
+	void OK();
+
 protected slots:
 	virtual void status_changed(QList<device_status*> sl);
 
 private slots:
 	// TODO: use a more generic approach!
 	void status_changed(stat_var status);
+private:
+	/// check if the condition is satisfied
+	void check_condition(bool emit_signal);
+	bool device_initialized;
+	int device_value;
 };
 
 #endif // _SCENEVOCOND_H_

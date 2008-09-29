@@ -935,7 +935,6 @@ void device_condition::inizializza()
 void device_condition::reset()
 {
 	qDebug("device_condition::reset()");
-	dev->reset();
 	set_current_value(get_condition_value());
 	Draw();
 }
@@ -2086,7 +2085,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 ****************************************************************/
 
 device_condition_aux::device_condition_aux(QWidget *parent, char *name, QString *c) :
-	device_condition(parent, c)
+	device_condition(parent, c), device_initialized(false), device_value(-1)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -2115,16 +2114,17 @@ void device_condition_aux::Draw()
 	((QLabel *)frame)->setText(get_current_value() ? tr("ON") : tr("OFF"));
 }
 
-void device_condition_aux::status_changed(stat_var status)
+void device_condition_aux::check_condition(bool emit_signal)
 {
 	int trig_v = device_condition::get_condition_value();
-	if (trig_v == status.get_val())
+	if (trig_v == device_value)
 	{
 		qDebug("aux condition (%d) satisfied", trig_v);
 		if (!satisfied)
 		{
 			satisfied = true;
-			emit(condSatisfied());
+			if (emit_signal)
+				emit condSatisfied();
 		}
 	}
 	else
@@ -2132,6 +2132,15 @@ void device_condition_aux::status_changed(stat_var status)
 		qDebug("aux condition (%d) NOT satisfied", trig_v);
 		satisfied = false;
 	}
+}
+
+void device_condition_aux::status_changed(stat_var status)
+{
+	qDebug("device_condition_aux::status_changed");
+	device_value = status.get_val();
+	// We emit signal condSatisfied only if the device is initialized.
+	check_condition(device_initialized);
+	device_initialized = true;
 }
 
 int device_condition_aux::get_max()
@@ -2150,9 +2159,17 @@ void device_condition_aux::set_condition_value(QString s)
 	else
 		qDebug() << "Unknown condition value " << s << " for device_condition_aux";
 	device_condition::set_condition_value(v);
+	check_condition(false);
 }
 
 void device_condition_aux::status_changed(QList<device_status*> sl)
 {
 	assert(!"Old status changed on device_condition_aux not implemented!");
+}
+
+void device_condition_aux::OK()
+{
+	qDebug("device_condition_aux::OK()");
+	device_condition::OK();
+	check_condition(false);
 }
