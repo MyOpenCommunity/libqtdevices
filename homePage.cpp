@@ -319,7 +319,7 @@ void homePage::updateTemperatureDisplay(unsigned new_bt_temperature, unsigned wh
 	}
 	// qlcdnumber can display the degree sign, but not as utf-8 text.
 	// We have to change the char TEMP_DEGREES with the single quote char (')
-	displayed_temp = displayed_temp.replace(TEMP_DEGREES, "'");
+	displayed_temp = displayed_temp.replace(TEMP_DEGREES, " '");
 
 	temperatura[which_display]->display(displayed_temp);
 }
