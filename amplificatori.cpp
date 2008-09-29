@@ -187,9 +187,14 @@ grAmplificatori::grAmplificatori(QWidget *parent,const char *name,void *indirizz
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
+grAmplificatori::~grAmplificatori()
+{
+	delete elencoDisp;
+}
+
 void grAmplificatori::setAddress(void *indirizzi)
 {
-	elencoDisp=*((QList<QString*>*)indirizzi);
+	elencoDisp = (QList<QString>*)indirizzi;
 }
 
 void grAmplificatori::Attiva()
@@ -197,10 +202,10 @@ void grAmplificatori::Attiva()
 	char pippo[50];
 	char ind[3];
 
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
+	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		QByteArray buf = elencoDisp->at(i).toAscii();
 		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
@@ -217,10 +222,10 @@ void grAmplificatori::Disattiva()
 	char pippo[50];
 	char ind[3];
 
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
+	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		QByteArray buf = elencoDisp->at(i).toAscii();
 		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
@@ -236,10 +241,10 @@ void grAmplificatori::Aumenta()
 {
 	openwebnet msg_open;
 
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
+	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		QByteArray buf = elencoDisp->at(i).toAscii();
 		msg_open.CreateMsgOpen("16", "1001",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
@@ -249,10 +254,10 @@ void grAmplificatori::Diminuisci()
 {
 	openwebnet msg_open;
 
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
+	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
+		QByteArray buf = elencoDisp->at(i).toAscii();
 		msg_open.CreateMsgOpen("16", "1101",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}

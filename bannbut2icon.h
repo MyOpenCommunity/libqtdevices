@@ -35,7 +35,7 @@ class bannBut2Icon : public banner
 {
 Q_OBJECT
 public:
-	bannBut2Icon(QWidget *, const char *);
+	bannBut2Icon(QWidget *, const char * = 0);
 };
 
 #endif //BANNBUT2ICON_H

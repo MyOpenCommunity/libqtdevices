@@ -14,9 +14,9 @@
 #include "bannbuticon.h"
 #include "bannbut2icon.h"
 
-#include <qptrlist.h>
-#include <qwidget.h>
-#include <qstring.h>
+#include <QWidget>
+#include <QString>
+#include <QList>
 
 /// Forward Declarations
 class diffSonora;
@@ -42,14 +42,15 @@ private:
 	sottoMenu *sorgenti;
 	int actSrc;
 	bool is_draw;
+	QString name;
 public:
-	ambDiffSon(QWidget *parent=0, const char *name=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", char *Icona3="", QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	ambDiffSon(QWidget *parent=0, const char *_name=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", char *Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
 	void hide();
 	void setDraw(bool d);
 	bool isDraw();
 public slots:
-	void configura(); 
+	void configura();
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
 signals:
@@ -73,8 +74,9 @@ private:
 	diffSonora *diffson;
 	diffmulti *diffmul;
 	sottoMenu *sorgenti;
+	QString name;
 public:
-	insAmbDiffSon(QWidget *parent=0, QPtrList<QString> *descrizioni=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	insAmbDiffSon(QWidget *parent=0, QList<QString*> *descrizioni=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
 public slots:
 	void configura();

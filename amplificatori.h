@@ -64,13 +64,9 @@ public slots:
 class grAmplificatori : public bannRegolaz
 {
 Q_OBJECT
-private:
-	// TODO: probabilmente sarebbe meglio che diventasse QList<QString> ma viene creata
-	// nell'xmlconfhandler, e passata come void*.
-	QList<QString*> elencoDisp;
-	device *dev;
 public:
 	grAmplificatori(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
+	~grAmplificatori();
 	void inizializza(bool forza = false);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 	void setAddress(void*);
@@ -79,6 +75,10 @@ private slots:
 	void Disattiva();
 	void Aumenta();
 	void Diminuisci();
+private:
+	// TODO: rendere elencoDisp un QList<QString>!! Adesso viene costruito in ambdiffson e distrutto qui!
+	QList<QString> *elencoDisp;
+	device *dev;
 };
 
 #endif

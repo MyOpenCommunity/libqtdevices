@@ -38,7 +38,7 @@ dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, void *ind,
 		indirizzo = new(char[20]);
 		memcpy(indirizzo, ind, 20);
 	}
-	else
+	else if (t == GR_AMPLIFICATORI)
 	{
 		qDebug("gruppo AMPLIFICATORI !!");
 		QList<QString*>* tmp_indirizzo = new QList<QString*>(*((QList<QString*> *)ind));
@@ -47,6 +47,9 @@ dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, void *ind,
 		for (int i = 0; i < tmp_indirizzo->size(); ++i)
 			qDebug() << "INDIRIZZO = " << *tmp_indirizzo->at(i);
 	}
+	else
+		assert(!"Unknown amplifier type!!");
+
 	I1 = _I1;
 	I2 = _I2;
 	I3 = _I3;
@@ -172,10 +175,10 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 	case GR_AMPLIFICATORI:
 		{
 			qDebug("Gruppo amplificatori");
-			QList<QString*> *tmp_indirizzo = (QList<QString*> *)indirizzo;
-			for (int i = 0; i < tmp_indirizzo->size(); ++i)
+			QList<QString*> *indirizzi = (QList<QString*> *)indirizzo;
+			for (int i = 0; i < indirizzi->size(); ++i)
 			{
-				qDebug() << "ADDRESS =" << *tmp_indirizzo->at(i);
+				qDebug() << "ADDRESS =" << *indirizzi->at(i);
 			}
 			datimmulti.append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
 					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
