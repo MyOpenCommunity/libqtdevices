@@ -22,8 +22,11 @@
 #include <qregexp.h>
 #include <stdlib.h>
 #include <qapplication.h> //qapp
+#include <unistd.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
+
+#define MEDIASERVER_MSEC_WAIT_TIME 2000
 
 /*
  * Scripts launched before and after a track is played.
@@ -38,7 +41,35 @@ static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 
-static const char *IMG_WAIT = IMG_PATH "dwnpage.png";
+static const char *IMG_WAIT = IMG_PATH "loading.png";
+
+
+//#define DEBUG_MEDIA_NAVIGATION
+
+#if defined(DEBUG_MEDIA_NAVIGATION)
+#define DEBUG_MEDIA(msg) \
+do \
+{ \
+	qDebug(QString("Riga ") + QString::number(__LINE__) + QTime::currentTime().toString(" hh:mm:ss.zzz -> ") + (msg)); \
+} while(0)
+#else
+#define DEBUG_MEDIA(msg) {}
+#endif
+
+
+inline QTime startTimeCounter()
+{
+	QTime timer;
+	timer.start();
+	return timer;
+}
+
+inline void waitTimeCounter(const QTime& timer, int msec)
+{
+	int wait_time = msec - timer.elapsed();
+	if (wait_time > 0)
+		usleep(wait_time * 1000);
+}
 
 
 enum ChoiceButtons
@@ -465,15 +496,24 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 
 void FileSelector::showEvent(QShowEvent *event)
 {
+	QLabel *l = createWaitDialog();
+	QTime time_counter = startTimeCounter();
+
 	if (!browseFiles())
 	{
 		// FIXME display error?
 		emit notifyExit();
 	}
+
+	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
+	destroyWaitDialog(l);
 }
 
 void FileSelector::itemIsClicked(int item)
 {
+	QLabel *l = createWaitDialog();
+	QTime time_counter = startTimeCounter();
+
 	QString filename = files_list[item];
 	qDebug("[AUDIO] FileSelector::itemIsClicked %d -> %s", item, filename.ascii());
 	QFileInfo clicked_element(current_dir, filename);
@@ -485,9 +525,12 @@ void FileSelector::itemIsClicked(int item)
 		++level;
 		if (!browseFiles(clicked_element.absFilePath()))
 		{
-			// FIXME display error?
+			destroyWaitDialog(l);
 			emit notifyExit();
+			return;
 		}
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
+		destroyWaitDialog(l);
 	}
 	else
 	{
@@ -507,20 +550,29 @@ void FileSelector::itemIsClicked(int item)
 
 			++track_number;
 		}
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
+		destroyWaitDialog(l);
 		emit startPlayer(play_list, element);
 	}
 }
 
 void FileSelector::browseUp()
 {
+
 	if (level)
 	{
 		--level;
+		QLabel *l = createWaitDialog();
+		QTime time_counter = startTimeCounter();
+
 		if (!browseFiles(QFileInfo(current_dir, "..").absFilePath()))
 		{
-			// FIXME display error?
+			destroyWaitDialog(l);
 			emit notifyExit();
+			return;
 		}
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
+		destroyWaitDialog(l);
 	}
 	else
 		emit notifyExit();
@@ -531,15 +583,20 @@ bool FileSelector::browseFiles(QString new_path)
 	QString old_path = current_dir.absPath();
 	if (changePath(new_path))
 	{
-		if (current_dir.count() <= 2) // empty directory
+		if (current_dir.count() <= 2)
+		{
+			qDebug("[AUDIO] empty directory: %s", new_path.ascii());
 			changePath(old_path);
-		return browseFiles();
+			--level;
+		}
 	}
 	else
 	{
 		qDebug("[AUDIO] browseFiles(): path '%s' doesn't exist", new_path.ascii());
-		return false;
+		changePath(old_path);
+		--level;
 	}
+	return browseFiles();
 }
 
 bool FileSelector::changePath(QString new_path)
@@ -558,15 +615,29 @@ bool FileSelector::changePath(QString new_path)
 	return false;
 }
 
-bool FileSelector::browseFiles()
+void FileSelector::destroyWaitDialog(QLabel *l)
+{
+	l->hide();
+	l->deleteLater();
+}
+
+QLabel *FileSelector::createWaitDialog()
 {
 	QLabel* l = new QLabel((QWidget*)parent());
-	l->setPixmap(QPixmap(IMG_WAIT));
-	l->setGeometry(0,0, MAX_WIDTH, MAX_HEIGHT);
-	l->setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
+	QPixmap *icon = icons_library.getIcon(IMG_WAIT);
+	l->setPixmap(*icon);
+
+	QRect r = icon->rect();
+	r.moveCenter(QPoint(MAX_WIDTH / 2, MAX_HEIGHT / 2));
+	l->setGeometry(r);
+
 	l->show();
 	qApp->processEvents();
+	return l;
+}
 
+bool FileSelector::browseFiles()
+{
 	// refresh QDir information
 	current_dir.refresh();
 
@@ -596,9 +667,6 @@ bool FileSelector::browseFiles()
 
 	list_browser->setList(files_list, page);
 	list_browser->showList();
-
-	l->hide();
-	l->deleteLater();
 	return true;
 }
 

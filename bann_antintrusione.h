@@ -21,6 +21,7 @@
 class tastiera;
 class device;
 
+
 /*****************************************************************
  **Zona Antiintrusione
  ****************************************************************/
@@ -44,7 +45,7 @@ private:
 	bool already_changed;
 	device *dev;
 public:
-	zonaAnti( QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
+	zonaAnti(QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
 	void inizializza(bool forza = false);
 	void SetIcons(char *, char *, char *);
 	void Draw();
@@ -86,7 +87,7 @@ private:
 	char *passwd;
 	device *dev;
 public:
-	impAnti( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
+	impAnti(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 private slots:
 	void inizializza(bool forza = false);
 	void Inserisci();

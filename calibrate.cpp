@@ -1,20 +1,26 @@
-
 #include "calibrate.h"
 #include "main.h"
+#include "fontmanager.h"
+#include "btbutton.h"
 
-#include <qpainter.h>
-#include <qtimer.h>
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 #include <qwindowsystem_qws.h>
 #include <qgfx_qws.h>
 #endif
+
 #include <qfile.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qlabel.h>
+#include <qtimer.h>
+#include <qpainter.h>
 
+#define BUTTON_SEC_TIMEOUT 10
+
+#define IMG_OK IMG_PATH "btnok.png"
 
 Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned char m) :
-	QWidget(parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose)
+	QWidget(parent, name, wf | WStyle_Tool | WStyle_Customize | WStyle_StaysOnTop | WDestructiveClose), button_test(false)
 {
 	const int offset = 30;
 	QRect desk = qApp->desktop()->geometry();
@@ -39,21 +45,64 @@ Calibrate::Calibrate(QWidget* parent, const char * name, WFlags wf, unsigned cha
 		cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint(qt_screen->deviceWidth()/2, qt_screen->deviceHeight()/2);
 	}
 	crossPos = fromDevice(cd.screenPoints[QWSPointerCalibrationData::TopLeft]);
-	location = QWSPointerCalibrationData::TopLeft;
 	setCursor(QCursor(blankCursor));
 #endif
+
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
+
+	button_timer = new QTimer(this);
+	b1 = createButton(IMG_OK, 10, 10);
+	b2 = createButton(IMG_OK, 170, 250);
+
+	QFont aFont;
+	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
+
+	box_text = new QLabel(this);
+	box_text->setFont(aFont);
+	box_text->setAlignment(Qt::AlignHCenter);
+	box_text->setGeometry(0, 205, desk.width(), 45);
+
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	QWSServer::mouseHandler()->clearCalibration();
+	if (QFile::exists("/etc/pointercal"))
+		system("cp /etc/pointercal /etc/pointercal.calibrated");
+
 #endif
-	grabMouse();
 	manut = m;
+	startCalibration();
+
+	connect(button_timer, SIGNAL(timeout()), SLOT(rollbackCalibration()));
+	connect(b1, SIGNAL(clicked()), b2, SLOT(show()));
+	connect(b1, SIGNAL(clicked()), b1, SLOT(hide()));
+	connect(b2, SIGNAL(clicked()), SLOT(endCalibration()));
+	connect(b2, SIGNAL(clicked()), b2, SLOT(hide()));
 }
 
 Calibrate::~Calibrate()
 {
 	releaseMouse();
+}
+
+BtButton *Calibrate::createButton(const char* icon_name, int x, int y)
+{
+	BtButton *b = new BtButton(this);
+	QPixmap *icon = icons_library.getIcon(icon_name);
+	b->setPixmap(*icon);
+	b->setGeometry(x, y, icon->width(), icon->height());
+	return b;
+}
+
+void Calibrate::startCalibration()
+{
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	QWSServer::mouseHandler()->clearCalibration();
+	location = QWSPointerCalibrationData::TopLeft;
+#endif
+	button_test = false;
+	grabMouse();
+	b1->hide();
+	b2->hide();
+	box_text->setText(tr("Click the crosshair"));
 }
 
 QPoint Calibrate::fromDevice(const QPoint &p)
@@ -91,8 +140,8 @@ bool Calibrate::sanityCheck()
 	int ht = QABS(tl.y() - tr.y());
 	int hb = QABS(br.y() - bl.y());
 	diff = QABS(ht - hb);
-	avg1 = (tl.y()+ tr.y()) / 2;
-	avg2 = (br.y()+ bl.y()) / 2;
+	avg1 = (tl.y() + tr.y()) / 2;
+	avg2 = (br.y() + bl.y()) / 2;
 	if (avg1 > avg2)
 		avg2=avg1;
 	if ((ht > avg2/10)||(hb > avg2/10))
@@ -101,7 +150,30 @@ bool Calibrate::sanityCheck()
 		return FALSE;
 	}
 
-#endif	
+	if(tl.x() < tr.x())
+	{
+		qWarning("err tl.x > tr.x\n");
+		return FALSE;
+	}
+
+	if(bl.x() < br.x())
+	{
+		qWarning("err bl.x > br.x\n");
+		return FALSE;
+	}
+
+	if(tl.y() > bl.y())
+	{
+		qWarning("err tl.y < bl.y\n");
+		return FALSE;
+	}
+
+	if(tr.y() > br.y())
+	{
+		qWarning("err tr.y > br.y\n");
+		return FALSE;
+	}
+#endif
 	qWarning("return TRUE Calibrate::sanityCheck");
 	return TRUE;
 }
@@ -111,10 +183,13 @@ void Calibrate::moveCrosshair(QPoint pt)
 	QPainter p(this);
 	p.drawPixmap(crossPos.x()-8, crossPos.y()-8, saveUnder);
 	saveUnder = QPixmap::grabWindow(winId(), pt.x()-8, pt.y()-8, 16, 16);
-	p.drawRect(pt.x()-1, pt.y()-8, 2, 7);
-	p.drawRect(pt.x()-1, pt.y()+1, 2, 7);
-	p.drawRect(pt.x()-8, pt.y()-1, 7, 2);
-	p.drawRect(pt.x()+1, pt.y()-1, 7, 2);
+	if (!button_test)
+	{
+		p.drawRect(pt.x()-1, pt.y()-8, 2, 7);
+		p.drawRect(pt.x()-1, pt.y()+1, 2, 7);
+		p.drawRect(pt.x()-8, pt.y()-1, 7, 2);
+		p.drawRect(pt.x()+1, pt.y()-1, 7, 2);
+	}
 	crossPos = pt;
 }
 
@@ -126,7 +201,7 @@ void Calibrate::paintEvent(QPaintEvent *)
 
 	if (!logo.isNull())
 	{
-		y = height() / 2 - logo.height() - 15;
+		y = height() / 2 - logo.height() + 55;
 		p.drawPixmap((width() - logo.width())/2, y, logo);
 	}
 	else
@@ -138,8 +213,55 @@ void Calibrate::paintEvent(QPaintEvent *)
 	moveCrosshair(crossPos);
 }
 
+void Calibrate::buttonsTest()
+{
+	qWarning("Calibrate::buttonsTest");
+	button_timer->start(BUTTON_SEC_TIMEOUT * 1000, true);
+	box_text->setText(tr("Click the OK button"));
+	button_test = true;
+	b1->show();
+	update();
+}
+
+void Calibrate::rollbackCalibration()
+{
+	qWarning("Calibrate::rollbackCalibration");
+	if (QFile::exists("/etc/pointercal.calibrated"))
+		system("cp /etc/pointercal.calibrated /etc/pointercal");
+	else
+		qWarning("Cannot found backup calibration!");
+
+	startCalibration();
+	trackCrosshair();
+	update();
+}
+
+void Calibrate::endCalibration()
+{
+	qWarning("Calibrate::endCalibration");
+	if (QFile::exists("/etc/pointercal.calibrated"))
+		system("rm /etc/pointercal.calibrated");
+
+	hide();
+	close();
+
+	emit (fineCalib());
+	if (manut==1)
+		delete(this);
+}
+
+void Calibrate::trackCrosshair()
+{
+	QPoint target = fromDevice(cd.screenPoints[location]);
+	dx = (target.x() - crossPos.x())/10;
+	dy = (target.y() - crossPos.y())/10;
+	timer->start(30);
+}
+
 void Calibrate::mousePressEvent(QMouseEvent *e)
 {
+	if (button_test)
+		return;
 	// map to device coordinates
 	qWarning("Calibrate::mousePressEvent");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -155,7 +277,8 @@ void Calibrate::mousePressEvent(QMouseEvent *e)
 
 void Calibrate::mouseReleaseEvent(QMouseEvent *)
 {
-	if (timer->isActive())
+	qWarning("Calibrate::mouseReleaseEvent");
+	if (timer->isActive() || button_test)
 		return;
 
 	bool doMove = TRUE;
@@ -170,7 +293,6 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 	else
 		lastLoc=QWSPointerCalibrationData::LastLocation-1;
 	qWarning("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
-	//if (location < QWSPointerCalibrationData::LastLocation) {
 	if (location < lastLoc)
 	{
 		qWarning("location < lastLoc    ovvero %d<%d",location,lastLoc);
@@ -182,27 +304,21 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 		qWarning("sto per fare Sanity Chack");
 		if (sanityCheck())
 		{
-			QWSServer::mouseHandler()->calibrate(&cd);
 			releaseMouse();
-			hide();
-			close();
+			QWSServer::mouseHandler()->calibrate(&cd);
 			doMove = FALSE;
-			emit (fineCalib());
-			if (manut==1)
-				delete(this);
+			if (!manut)
+				buttonsTest();
+			else
+				endCalibration();
 		}
 		else
 			location = QWSPointerCalibrationData::TopLeft;
     }
 
 	if (doMove)
-	{
-		QPoint target = fromDevice(cd.screenPoints[location]);
-		dx = (target.x() - crossPos.x())/10;
-		dy = (target.y() - crossPos.y())/10;
-		timer->start(30);
-	}
-#endif	
+		trackCrosshair();
+#endif
 }
 
 void Calibrate::timeout()
@@ -232,6 +348,6 @@ void Calibrate::timeout()
 		timer->stop();
 	}
 	moveCrosshair(newPos);
-	#endif
+#endif
 }
 

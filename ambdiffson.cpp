@@ -17,6 +17,8 @@
 #include "sottomenu.h"
 #include "fontmanager.h"
 
+#include <qfont.h>
+
 #include <stdlib.h>
 
 /*****************************************************************
@@ -24,8 +26,8 @@
  ****************************************************************/
 
 
-ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char* IconaSx, char* IconaDx, char *icon, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
-: bannBut2Icon( parent, name )
+ambDiffSon::ambDiffSon(QWidget *parent, const char *name, void *indirizzo, char* IconaSx, char* IconaDx, char *icon,
+	QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent, name)
 {
 	qDebug("ambDiffSon::ambDiffSon() : %s %s %s %s", (char *)indirizzo, IconaSx, IconaDx, icon);
 	char zoneIcon[50];
@@ -36,14 +38,13 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 	setAddress((char *)indirizzo);
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 
-	//diffson = new diffSonora(NULL, "Diff sonora ambiente");
 	diffson = ds;
 	sorgenti = sorg;
 	diffmul = dm;
 	QPtrListIterator<dati_ampli_multi> *lai = new QPtrListIterator<dati_ampli_multi>(*la);
 	lai->toFirst();
 	dati_ampli_multi *am;
-	while( ( am = lai->current() ) != 0) 
+	while ((am = lai->current()) != 0)
 	{
 		QPtrList<QString> icons;
 		QString qI1(am->I1);
@@ -57,7 +58,7 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 		icons.append(&qI4);
 		icons.append(&qI5);
 
-		if(am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
+		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
 		{
 			qDebug("Adding amplifier (%d, %s %s)", am->tipo, (char *)am->indirizzo, am->descr->at(0)->ascii());
 			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);
@@ -69,12 +70,12 @@ ambDiffSon::ambDiffSon( QWidget *parent, const char *name, void *indirizzo, char
 			QPtrListIterator<QString> *lii = new QPtrListIterator<QString>(*(QPtrList<QString> *)(am->indirizzo));
 			QString *i;
 			lii->toFirst();
-			while ( ( i = lii->current()) )
+			while ((i = lii->current()))
 			{
 				QStringList qsl = QStringList::split(QChar(','), *i);
 				QPtrList<QString> *indirizzi = new QPtrList<QString>();
 				indirizzi->setAutoDelete(true);
-				for(unsigned int j=0; j<qsl.count(); j++)
+				for (unsigned int j = 0; j < qsl.count(); j++)
 					indirizzi->append(new QString(qsl[j]));
 				diffson->addItemU(am->tipo, *am->descr->at(0), indirizzi, icons, am->modo);
 				++(*lii);
@@ -100,10 +101,10 @@ void ambDiffSon::Draw()
 	BannerIcon2->setPixmap(*(Icon[3]));
 	BannerIcon2->repaint();
 	QFont aFont;
-	FontManager::instance()->getFont( font_items_bannertext, aFont );
+	FontManager::instance()->getFont(font_items_bannertext, aFont);
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( aFont );
-	BannerText->setText( qtesto );
+	BannerText->setFont(aFont);
+	BannerText->setText(qtesto);
 }
 
 void ambDiffSon::hide()
@@ -125,9 +126,6 @@ void ambDiffSon::configura()
 	connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
 	connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
 	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
-	//connect(diffmul, SIGNAL(gestFrame(char *)), 
-	//diffson, SIGNAL(gestFrame(char *)));
-	//diffson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
 	diffson->setFirstSource(actSrc);
 	diffson->forceDraw();
 	diffson->showFullScreen();
@@ -137,19 +135,19 @@ void ambDiffSon::configura()
 void ambDiffSon::actSrcChanged(int a, int s)
 {
 	qDebug("ambDiffSon::actSrcChanged(%d, %d)", a, s);
-	if(a != atoi(getAddress())) {
+	if (a != atoi(getAddress()))
+	{
 		qDebug("not my address, discarding event");
 		return;
 	}
 	qDebug("First source's where is %d", actSrc);
-	if(actSrc != (100 + a*10 + s))
+	if (actSrc != (100 + a*10 + s))
 	{
 		actSrc = 100 + a*10 + s;
-		if(isDraw())
+		if (isDraw())
 		{
 			diffson->setFirstSource(actSrc);
 			sorgenti->draw();
-			//diffson->forceDraw();
 		}
 	}
 }
@@ -163,17 +161,17 @@ bool ambDiffSon::isDraw()
 {
 	return is_draw;
 }
+
 /*****************************************************************
  ** Insieme ambienti diffusione sonora multicanale
  ****************************************************************/
 
-insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *indirizzo,char* Icona1,char* Icona2, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
-: bannButIcon( parent, (char *)names->at(0)->ascii() )
+insAmbDiffSon::insAmbDiffSon(QWidget *parent, QPtrList<QString> *names, void *indirizzo,char* Icona1,char* Icona2, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
+	: bannButIcon(parent, (char *)names->at(0)->ascii())
 {
 	qDebug("insAmbDiffSon::insAmbDiffSon() : %s %s %s", (char *)indirizzo, Icona1, Icona2);
 	SetIcons(Icona1, Icona2);
 	Draw();
-	//setAddress(indirizzo);
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 	diffson = ds;
 	sorgenti = sorg;
@@ -182,7 +180,7 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 	QPtrListIterator<dati_ampli_multi> *lai = new QPtrListIterator<dati_ampli_multi>(*la);
 	lai->toFirst();
 	dati_ampli_multi *am;
-	while( ( am = lai->current() ) != 0)
+	while ((am = lai->current()) != 0)
 	{
 		QPtrList<QString> icons;
 		QString qI1(am->I1);
@@ -194,29 +192,29 @@ insAmbDiffSon::insAmbDiffSon( QWidget *parent, QPtrList<QString> *names, void *i
 		icons.append(&qI3);
 		icons.append(&qI4);
 
-		if(am->tipo == AMPLIFICATORE) {
+		if (am->tipo == AMPLIFICATORE)
+		{
 			qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
 					(char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
 			diffson->addItemU(am->tipo, *am->descr->at(0), 
 					(char *)am->indirizzo,
 					icons, am->modo);
-		} else {
+		}
+		else
+		{
 			qDebug("Adding amplifier group(%d)", am->tipo);
 			qDebug("indirizzo = %p", am->indirizzo);
-			QPtrListIterator<QString> *lii =
-				new QPtrListIterator<QString>(*(QPtrList<QString> *)
-						(am->indirizzo));
+			QPtrListIterator<QString> *lii = new QPtrListIterator<QString>(*(QPtrList<QString> *)(am->indirizzo));
 			QString *i;
 			lii->toFirst();
-			while( ( i = lii->current()) ) {
+			while ((i = lii->current()))
+			{
 				QStringList qsl = QStringList::split(QChar(','), *i);
 				QPtrList<QString> *indirizzi = new QPtrList<QString>();
 				indirizzi->setAutoDelete(true);
-				for(unsigned int j=0; j<qsl.count(); j++)
+				for (unsigned int j = 0; j < qsl.count(); j++)
 					indirizzi->append(new QString(qsl[j]));
-				diffson->addItemU(am->tipo, *am->descr->at(0), 
-						indirizzi,
-						icons, am->modo);
+				diffson->addItemU(am->tipo, *am->descr->at(0), indirizzi, icons, am->modo);
 				++(*lii);
 			}
 			delete lii;
@@ -236,10 +234,10 @@ void insAmbDiffSon::Draw()
 	BannerIcon->setPixmap(*(Icon[0]));
 	BannerIcon->repaint();
 	QFont aFont;
-	FontManager::instance()->getFont( font_items_bannertext, aFont );
+	FontManager::instance()->getFont(font_items_bannertext, aFont);
 	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont( aFont );
-	BannerText->setText( qtesto );
+	BannerText->setFont(aFont);
+	BannerText->setText(qtesto);
 }
 
 void insAmbDiffSon::configura()

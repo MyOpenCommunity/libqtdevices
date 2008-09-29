@@ -15,7 +15,7 @@
 #include <qcolor.h>
 #include <qdatetime.h>
 #include <qstring.h>
-#include "supervisionMenu.h"
+
 
 class homePage;
 class sottoMenu;
@@ -28,21 +28,8 @@ class BtMain;
 class ambDiffSon;
 class scenEvo_cond;
 class Client;
+class SupervisionMenu;
 
-// Obscene hack, see function below...
-static QString empty_string("");
-
-/**
- * Utility function to access a list of string: if no element is present
- * at position \a idx, return empty string.
- */
-extern inline QString *safeAt(QPtrList<QString> &list, unsigned int idx)
-{
-	if (idx < list.count())
-		return list.at(idx);
-	else
-		return &empty_string;
-}
 
 /*!
   \class xmlconfhandler

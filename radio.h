@@ -1,3 +1,4 @@
+
 /****************************************************************
  **
  ** BTicino Touch scren Colori art. H4686
@@ -30,17 +31,17 @@ class  radio : public QWidget
 {
 Q_OBJECT
 public:
-	radio( QWidget *parent=0, const char *name=0, const QString & amb="" );
+	radio(QWidget *parent=0, const char *name=0, const QString & amb="");
 	/*!
 	 * \brief Sets the background color for the banner.
 	 * The arguments are RGB components for the color.
 	 */
-	void setBGColor(int, int , int );
+	void setBGColor(int, int , int);
 	/*!
 	 * \brief Sets the foreground color for the banner.
 	 * The arguments are RGB components for the color.
 	 */
-	void setFGColor(int , int , int );
+	void setFGColor(int , int , int);
 	/*!
 	 * \brief Sets the background color for the banner.
 	 * The argument is the QColor description of the color.
@@ -54,7 +55,7 @@ public:
 	/*!
 	 * \brief Sets the background pixmap for the banner.
 	 */
-	int setBGPixmap(char* );
+	int setBGPixmap(char*);
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	BtLabel* rdsLabel,* radioName,*progrText, *ambDescr;
@@ -62,7 +63,7 @@ public:
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file
 	 */
-	void setNameU( const QString & );
+	void setNameU(const QString &);
 	/*!
 	 * \brief Gets the name of the tuner found in user configuration file
 	 */
@@ -78,11 +79,11 @@ public:
 	/*!
 	 * \brief Sets the RDS message of the syntonized station
 	 */
-	void setRDS( const QString & );
+	void setRDS(const QString &);
 	/*!
 	 * \brief Sets amb. description
 	 */
-	void setAmbDescr( const QString & );
+	void setAmbDescr(const QString &);
 	/*!
 	 * \brief Gets the RDS message of the syntonized station
 	 */

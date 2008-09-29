@@ -17,6 +17,7 @@
 #include "bann4but.h"
 #include "device_status.h"
 
+class scenEvo_cond;
 class device;
 
 /*****************************************************************
@@ -29,11 +30,11 @@ class device;
  * \author Davide
  * \date lug 2005
  */
-class scenario : public bannOnSx 
+class scenario : public bannOnSx
 {
 Q_OBJECT
 public:
-	scenario( sottoMenu  *, const char *, char *, char *);
+	scenario(sottoMenu  *, const char *, char *, char *);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
@@ -65,7 +66,7 @@ private:
 	unsigned char sendInProgr, bloccato, in_progr;
 	device *dev;
 public:
-	gesModScen( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* Ico1=NULL,char* Ico2=NULL,char* Ico3=NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL);
+	gesModScen(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* Ico1=NULL,char* Ico2=NULL,char* Ico3=NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL);
 private slots:
 	void attivaScenario();
 	void enterInfo();
@@ -98,15 +99,8 @@ private:
 	int serial_number;
 	static int next_serial_number;
 public:
-	scenEvo( QWidget *parent=0, const char *name=NULL, QPtrList<scenEvo_cond> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3 = NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, QString act="", int enabled = 0);
+	scenEvo(QWidget *parent=0, const char *name=NULL, QPtrList<scenEvo_cond> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3 = NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, QString act="", int enabled = 0);
 	void Draw();
-	/*! \brief Returns action as an open message */
-	const char *getAction();
-	/*!
-	 * \brief Sets action as an open message
-	 * \param a pointer to open frame
-	 */
-	void setAction(const char *a);
 private slots:
 	void toggleAttivaScev();
 	void configScev();
@@ -121,10 +115,7 @@ private slots:
 	void hide();
 	void trigOnStatusChanged();
 public slots:
-	void gestFrame(char*);
 	void inizializza(bool forza = false);
-signals:
-	void frame_available(char *);
 };
 
 
@@ -146,16 +137,7 @@ private:
 	QString action_start;
 	QString action_stop;
 public:
-	scenSched( QWidget *parent=0, const char *name=NULL, char* IconaSx="",char *IconaCSx="", char *IconaCDx="", char* IconaDx="", char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
-	/*!
-	 * \brief Returns action as an open message
-	 */
-	const char *getAction() ;
-	/*!
-	 * \brief Sets action as an open message
-	 * \param a pointer to open frame
-	 */
-	void setAction(const char *a);
+	scenSched(QWidget *parent=0, const char *name=NULL, char* IconaSx="",char *IconaCSx="", char *IconaCDx="", char* IconaDx="", char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
 	/*!
 	 * Reimplemented draw
 	 */
@@ -164,13 +146,13 @@ public slots:
 	/*!
 	 * \brief Enable scheduled scenario
 	 */
-	void enable(void);
+	void enable();
 	/*! Disable scheduled scenario */
-	void disable(void); 
+	void disable();
 	/*! Start scheduled scenario */
-	void start(void);
+	void start();
 	/*! Stop scheduled scenario */
-	void stop(void);
+	void stop();
 };
 
 #endif

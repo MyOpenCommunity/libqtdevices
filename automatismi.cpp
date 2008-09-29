@@ -9,19 +9,19 @@
  ****************************************************************/
 
 #include "automatismi.h"
-#include <openwebnet.h> // class openwebnet
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
+
+#include <openwebnet.h> // class openwebnet
 
 /*****************************************************************
  ** automCancAttuatVC
  ****************************************************************/
 
-automCancAttuatVC::automCancAttuatVC( QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx )
-: bannButIcon( parent, name )
-{       
-	qDebug("automCancAttuatVC::automCancAttuatVC() : "
-			"%s %s", IconaSx, IconaDx);
+automCancAttuatVC::automCancAttuatVC(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx)
+	: bannButIcon(parent, name)
+{
+	qDebug("automCancAttuatVC::automCancAttuatVC() : %s %s", IconaSx, IconaDx);
 	SetIcons(IconaSx, NULL, IconaDx);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
@@ -30,8 +30,6 @@ automCancAttuatVC::automCancAttuatVC( QWidget *parent, const char *name, char* i
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			this, SLOT(status_changed(QPtrList<device_status>)));
-
-	//setChi("1");
 }
 
 void automCancAttuatVC::Attiva()
@@ -49,11 +47,10 @@ void automCancAttuatVC::Attiva()
  ** automCancAttuatIll
  ****************************************************************/
 
-automCancAttuatIll::automCancAttuatIll( QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, QString *t )
-: bannButIcon( parent, name )
-{       	  
-	qDebug("automCancAttuatIll::automCancAttuatIll() : "
-			"%s %s", IconaSx, IconaDx);
+automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, QString *t)
+	: bannButIcon(parent, name)
+{
+	qDebug("automCancAttuatIll::automCancAttuatIll() :%s %s", IconaSx, IconaDx);
 	SetIcons(IconaSx, NULL, IconaDx);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
@@ -64,7 +61,6 @@ automCancAttuatIll::automCancAttuatIll( QWidget *parent, const char *name, char*
 			this, SLOT(status_changed(QPtrList<device_status>)));
 	time = t ? *t : QString("*0*0*18");
 	Draw();
-	//setChi("1");
 }
 
 void automCancAttuatIll::Attiva()
@@ -76,11 +72,6 @@ void automCancAttuatIll::Attiva()
 	strncpy(val, time.ascii(), sizeof(val));
 
 	msg_open.CreateNullMsgOpen();
-	//crea il messaggio open *#chi*dove*#grandezza*val_1*val_2*...val_n##
-	//void openwebnet::CreateWrDimensionMsgOpen(char who[MAX_LENGTH], char where[MAX_LENGTH],
-	//                                    char dimension[MAX_LENGTH],
-	//                                    char** value,
-	//                                    int numValue)
 	msg_open.CreateWrDimensionMsgOpen("1", getAddress(), "2", v, 1);
 	dev->sendFrame(msg_open.frame_open);
 }

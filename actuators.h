@@ -37,12 +37,12 @@ Q_OBJECT
 private:
 	char gruppi[4];
 	device *dev;
-public:
-	attuatAutom( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 	void inizializza(bool forza=false);
+public:
+	attuatAutom(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 public slots:
 	void status_changed(QPtrList<device_status>);
-	private slots:
+private slots:
 	void Attiva();
 	void Disattiva();
 	char* getChi();
@@ -67,10 +67,10 @@ Q_OBJECT
 private:
 	QPtrList<QString> elencoDisp;
 	device *dev;
-public:
-	grAttuatAutom  ( QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
-	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 	void setAddress(void*);
+public:
+	grAttuatAutom(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
+	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
 	void Attiva();
 	void Disattiva();
@@ -94,12 +94,12 @@ class attuatAutomInt : public bannOnOff
 {
 Q_OBJECT
 private:
-	char uprunning,dorunning;  
+	char uprunning,dorunning;
 	char nomeFile1[MAX_PATH],nomeFile2[MAX_PATH],nomeFile3[MAX_PATH];
 	device *dev;
-public:
-	attuatAutomInt ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 	void inizializza(bool forza = false);
+public:
+	attuatAutomInt(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 private slots:
 	void analizzaUp();
 	void analizzaDown();
@@ -127,10 +127,10 @@ Q_OBJECT
 private:
 	char uprunning,dorunning;
 	char nomeFile1[MAX_PATH],nomeFile2[MAX_PATH],nomeFile3[MAX_PATH];
+	void inizializza(bool forza = false);
 	device *dev;
 public:
-	attuatAutomIntSic ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
-	void inizializza(bool forza = false);
+	attuatAutomIntSic(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 private slots:
 	void doPres();
 	void upPres();
@@ -159,21 +159,16 @@ class attuatAutomTemp : public bannOnOff2scr
 {
 Q_OBJECT
 protected:
-	uchar cntTempi;   
+	uchar cntTempi;
 	char tempo_display[100];
-	uchar ntempi() ;
-	void leggi_tempo(char *&);
-	virtual void assegna_tempo_display();
-	/*!
-	 *  \brief Returns true if the object is a target for message
-	 *	TODO: MAKE THIS A METHOD OF class banner ?
-	 */
-	//bool isForMe(openwebnet& message);
 	QPtrList<QString> *tempi;
 	device *dev;
-public:
-	attuatAutomTemp ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
+	uchar ntempi();
+	void leggi_tempo(char *&);
+	virtual void assegna_tempo_display();
 	virtual void inizializza(bool forza=false);
+public:
+	attuatAutomTemp(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
 	~attuatAutomTemp();
 private slots:
 	void CiclaTempo();
@@ -200,13 +195,14 @@ public slots:
  */
 class attuatAutomTempNuovoN : public attuatAutomTemp
 {
-Q_OBJECT ;
+Q_OBJECT
+
 protected:
-	void assegna_tempo_display();
 	bool stato_noto;
+	void assegna_tempo_display();
+	virtual void inizializza(bool forza=false);
 public:
-	attuatAutomTempNuovoN ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
-	void inizializza(bool forza=false);
+	attuatAutomTempNuovoN(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QPtrList<QString> *lt = NULL);
 protected slots:
 	void Attiva();
 public slots:
@@ -227,10 +223,15 @@ public slots:
  */
 class attuatAutomTempNuovoF : public bannOn2scr
 {
-Q_OBJECT ;
+Q_OBJECT
+private:
+	device *dev;
+	void inizializza(bool forza=false);
+	void SetIcons(char *, char *, char *);
+	void Draw();
 protected:
 	char tempo[20];
-	void leggi_tempo(char *&out); 
+	void leggi_tempo(char *&out);
 	void chiedi_stato();
 	int h, m, s, val;
 	QTimer *myTimer;
@@ -239,18 +240,12 @@ protected:
 	bool update_ok;
 	int  tentativi_update;
 public:
-	attuatAutomTempNuovoF ( QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, const char *tempo=NULL);
-	void inizializza(bool forza=false);
-	void SetIcons(char *, char *, char *);
-	void Draw();
+	attuatAutomTempNuovoF(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, const char *tempo=NULL);
 protected slots:
 	void Attiva();
 	void update();
 public slots:
-
 	void status_changed(QPtrList<device_status>);
-private:
-	device *dev;
 };
 
 
@@ -272,11 +267,11 @@ Q_OBJECT
 private:
 	QPtrList<QString> elencoDisp;
 	device *dev;
+	void inizializza(bool forza = false);
+	void setAddress(void*);
 public:
 	grAttuatInt(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
-	void setAddress(void*);
-	void inizializza(bool forza = false);
 public slots:
 	void Alza();
 	void Abbassa();
@@ -302,9 +297,9 @@ Q_OBJECT
 private:
 	char type;
 	device *dev;
-public:
-	attuatPuls( QWidget *parent=0, const char *name=NULL ,char*indirizzi=NULL,char* IconaSx=NULL,/*char* IconaDx=NULL,*/char*IconActive=NULL,char tipo=0,int periodo=0,int numFrame=0); 
 	void inizializza(bool forza = false);
+public:
+	attuatPuls(QWidget *parent=0, const char *name=NULL ,char*indirizzi=NULL,char* IconaSx=NULL,char*IconActive=NULL,char tipo=0,int periodo=0,int numFrame=0);
 private slots:
 	void Attiva();
 	void Disattiva();

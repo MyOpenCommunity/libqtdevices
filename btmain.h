@@ -12,14 +12,11 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
-#include <qwidget.h>
 #include "btlabel.h"
-#include "supervisionMenu.h"
 
-// #include "../bt_stackopen/common_files/openwebnet.h"
-#include "../bt_stackopen/common_files/common_functions.h"
-// #include <qmainwindow.h> 
+#include <common_functions.h>
 
+#include <qwidget.h>
 
 #define BALL_NUM	5
 
@@ -34,6 +31,7 @@ class Calibrate;
 class genPage;
 class Client;
 class tastiera;
+class SupervisionMenu;
 
 /*!
   \class palla

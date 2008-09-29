@@ -18,7 +18,7 @@ then
   export QMAKESPEC=$QMAKESPEC
   if [ $COMPILING_NOT_CLEAN != "yes" ]
   then
-    $QTDIR/qmake/qmake -project
+    # $QTDIR/qmake/qmake -project
     $QTDIR/qmake/qmake
     make clean
   else

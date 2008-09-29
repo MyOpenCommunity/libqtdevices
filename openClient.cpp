@@ -8,38 +8,37 @@
 **
 ****************************************************************/
 
-#include <qsocket.h>
-#include <qtextstream.h>
 #include "openclient.h"
 #include "genericfunz.h"
+
+#include <qsocket.h>
+#include <qtextstream.h>
 #include <unistd.h>
 
-
-
-Client::Client( const QString &host, Q_UINT16 port, int ismon, bool isri)
+Client::Client(const QString &host, Q_UINT16 port, int ismon, bool isri)
 {
-  qDebug("Client::Client()");
+	qDebug("Client::Client()");
 
-  ismonitor=ismon;
-    isrichiesta=isri;
+	ismonitor=ismon;
+	isrichiesta=isri;
 
-  socket = new QSocket( this );
+	socket = new QSocket(this);
 
-  connect( socket, SIGNAL(connected()),this, SLOT(socketConnected()) );
-  connect( socket, SIGNAL(connectionClosed()),this, SLOT(socketConnectionClosed()) );
-  connect( socket, SIGNAL(readyRead()),this, SLOT(socketFrameRead()) );
-  connect( socket, SIGNAL(error(int)),this, SLOT(socketError(int)) );
+	connect(socket, SIGNAL(connected()),this, SLOT(socketConnected()));
+	connect(socket, SIGNAL(connectionClosed()),this, SLOT(socketConnectionClosed()));
+	connect(socket, SIGNAL(readyRead()),this, SLOT(socketFrameRead()));
+	connect(socket, SIGNAL(error(int)),this, SLOT(socketError(int)));
 
-  tick = NULL;
+	tick = NULL;
 
-  // connect to the server
-  connetti();
+	// connect to the server
+	connetti();
 
-  // azzero la variabile last_msg_open_read e last_msg_open_write
-  last_msg_open_read.CreateNullMsgOpen();
-  last_msg_open_write.CreateNullMsgOpen();
+	// azzero la variabile last_msg_open_read e last_msg_open_write
+	last_msg_open_read.CreateNullMsgOpen();
+	last_msg_open_write.CreateNullMsgOpen();
 
-  connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
+	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
 /****************************************************************************
@@ -49,20 +48,23 @@ Client::Client( const QString &host, Q_UINT16 port, int ismon, bool isri)
 *****************************************************************************/
 void Client::socketConnected()
 {
-  qDebug("Client::socketConnected()");
-  qDebug( "Connected to server");
-  if (ismonitor)  {
-    qDebug( "TRY TO START monitor session");
-    socket->clearPendingData ();
-    sendToServer(SOCKET_MONITOR);
-    emit(monitorSu());
-  }
-  else if(isrichiesta){
-    qDebug( "TRY TO START request");
-  }
-  else {
-    qDebug( "TRY TO START command");
-  }
+	qDebug("Client::socketConnected()");
+	qDebug("Connected to server");
+	if (ismonitor)
+	{
+		qDebug("TRY TO START monitor session");
+		socket->clearPendingData ();
+		sendToServer(SOCKET_MONITOR);
+		emit(monitorSu());
+	}
+	else if (isrichiesta)
+	{
+		qDebug("TRY TO START request");
+	}
+	else
+	{
+		qDebug("TRY TO START command");
+	}
 }
 
 // FIX: remove this slot!
@@ -78,34 +80,33 @@ void Client::ApriInviaFrameChiudi(char* frame)
 *****************************************************************************/
 void Client::ApriInviaFrameChiudi(const char* frame)
 {
-  qDebug("Client::ApriInviaFrameChiudi()");
+	qDebug("Client::ApriInviaFrameChiudi()");
 
-    if(strcmp(frame, last_msg_open_write.frame_open) != 0)
-    {
-        last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
-        if( ( socket->state() == QSocket::Idle )|| ( socket->state() == QSocket::Closing ))
-        {
-	    //strcpy(&fr[0],frame);
-	    connetti();
-			  if(isrichiesta)
-				  sendToServer(SOCKET_RICHIESTE);
-			  else
-	    			sendToServer(SOCKET_COMANDI ); //lo metto qui else mando prima frame di questo!
-        }
-        sendToServer(frame);
-        qDebug("invio: %s",frame);
-    }
-    else
-       qDebug("Frame Open <%s> already send", frame);
+	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
+	{
+		last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
+		if ((socket->state() == QSocket::Idle)|| (socket->state() == QSocket::Closing))
+		{
+			connetti();
+			if (isrichiesta)
+				sendToServer(SOCKET_RICHIESTE);
+			else
+				sendToServer(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
+		}
+		sendToServer(frame);
+		qDebug("invio: %s",frame);
+	}
+	else
+		qDebug("Frame Open <%s> already send", frame);
 }
 
 void Client::ApriInviaFrameChiudiw(char *frame)
 {
-    qDebug("Client::ApriInviaFrameChiudiw()");
-    ApriInviaFrameChiudi(frame);
-    qDebug("Frame sent waiting for ack");
-    while(socketWaitForAck() < 0);
-    qDebug("Ack received");
+	qDebug("Client::ApriInviaFrameChiudiw()");
+	ApriInviaFrameChiudi(frame);
+	qDebug("Frame sent waiting for ack");
+	while(socketWaitForAck() < 0);
+	qDebug("Ack received");
 }
 
 /****************************************************************************
@@ -114,13 +115,13 @@ void Client::ApriInviaFrameChiudiw(char *frame)
 **
 *****************************************************************************/
 void Client::richStato(char* richiesta)
-{   
-    qDebug("Client::richStato()");
-    if ( socket->state() == QSocket::Idle )
-    {
-	connetti();
-    }
-    sendToServer(richiesta);
+{
+	qDebug("Client::richStato()");
+	if (socket->state() == QSocket::Idle)
+	{
+		connetti();
+	}
+	sendToServer(richiesta);
 }
 
 /****************************************************************************
@@ -129,9 +130,9 @@ void Client::richStato(char* richiesta)
 **
 *****************************************************************************/
 void Client::connetti()
-{    
-      qDebug("Client::connetti()");
-   socket->connectToHost( "127.0.0.1", 20000 );
+{
+	qDebug("Client::connetti()");
+	socket->connectToHost("127.0.0.1", 20000);
 }
 
 /****************************************************************************
@@ -141,12 +142,13 @@ void Client::connetti()
 *****************************************************************************/
 void Client::closeConnection()
 {
-  qDebug("Client::closeConnection()");
-  socket->close();
-  if ( socket->state() == QSocket::Closing ) {
-    // We have a delayed close.
-    connect( socket, SIGNAL(delayedCloseFinished()),SLOT(socketClosed()) );
-  }
+	qDebug("Client::closeConnection()");
+	socket->close();
+	if (socket->state() == QSocket::Closing)
+	{
+		// We have a delayed close.
+		connect(socket, SIGNAL(delayedCloseFinished()),SLOT(socketClosed()));
+	}
 }
 	
 /****************************************************************************
@@ -156,8 +158,8 @@ void Client::closeConnection()
 *****************************************************************************/
 void Client::sendToServer(const char * frame)
 {
-  qDebug("Client::sendToServer()");
-  socket->writeBlock( frame, strlen(frame));
+	qDebug("Client::sendToServer()");
+	socket->writeBlock(frame, strlen(frame));
 }
 
 /****************************************************************************
@@ -167,105 +169,116 @@ void Client::sendToServer(const char * frame)
 *****************************************************************************/
 int Client::socketFrameRead()
 {
-  char buf[2048];
-  char * pnt;
-  int num=0,n_read=0;
-  
-    qDebug("Client::socketFrameRead()");
-  //riarmo il WD
-  rearmWDT();
-  // read from the server 
-  for(;;)
-  {
-      memset(buf,'\0',sizeof(buf));
-      pnt=buf;
-      n_read=0;
-      while(true){
-	  if (pnt<(buf+sizeof(buf)-1)) {	 
-	      num=socket->getch();
-	       if  ( (num==-1) && (pnt==buf) )
-		  break;
-	       else if (num!=-1)
-	       {
-	            *pnt=(char)num;
-	            pnt++;
-	            n_read++;
-	      }
-	  }
-	  else return -1;
-	  if (n_read>=2)
-	      if ( (buf[n_read-1] == '#') && (buf[n_read-2] == '#') )
-		  break;      
-      }
-      if (num==-1)
-	  break;
-      
-      // inizializzo il buffer
-      buf[n_read]='\0';
-      n_read--;
-      
-      //elimino gli eventuali caratteri '\n' e '\r'
-      while((buf[n_read]=='\n') || (buf[n_read]=='\r'))
-      {
-	  // inizializzo il buffer
-	  buf[n_read]='\0';
-	  n_read--;
-      }  
-      
-         if  (ismonitor)
-      {
-	  //qDebug( "letta monitor");
-	  qDebug("letto: %s", buf);
-          if(strcmp(buf, last_msg_open_read.frame_open) !=0 )
-          {
-            Open_read.stop();
-            last_msg_open_read.CreateMsgOpen(buf,strlen(buf));
-            Open_read.start(1000, TRUE);
-            emit frameIn(buf);
-          }
-          else
-            qDebug("Frame Open duplicated");
-      } else {
-	  if(!strcmp(buf, "*#*1##")) {
-	      qDebug("ack received");
-              last_msg_open_write.CreateNullMsgOpen();
-	      emit openAckRx();
-	  }
-	  else if(!strcmp(buf, "*#*0##")) {
-	      qDebug("nak received");
-              last_msg_open_write.CreateNullMsgOpen();
-	      emit openNakRx();
-	  }
-      }
-}
-return 0;  
+	char buf[2048];
+	char *pnt;
+	int num=0, n_read=0;
+
+	qDebug("Client::socketFrameRead()");
+	//riarmo il WD
+	rearmWDT();
+	// read from the server
+	for (;;)
+	{
+		memset(buf,'\0',sizeof(buf));
+		pnt=buf;
+		n_read=0;
+		while(true)
+		{
+			if (pnt<(buf+sizeof(buf)-1))
+			{
+				num=socket->getch();
+				if  ((num==-1) && (pnt==buf))
+					break;
+				else if (num!=-1)
+				{
+					*pnt=(char)num;
+					pnt++;
+					n_read++;
+				}
+			}
+			else
+				return -1;
+
+			if (n_read>=2)
+				if ((buf[n_read-1] == '#') && (buf[n_read-2] == '#'))
+					break;
+		}
+		if (num==-1)
+			break;
+
+		// inizializzo il buffer
+		buf[n_read]='\0';
+		n_read--;
+
+		//elimino gli eventuali caratteri '\n' e '\r'
+		while((buf[n_read]=='\n') || (buf[n_read]=='\r'))
+		{
+			// inizializzo il buffer
+			buf[n_read]='\0';
+			n_read--;
+		}
+
+		if (ismonitor)
+		{
+			qDebug("letto: %s", buf);
+			if (!strcmp(buf, "*#*1##"))
+				qWarning("ERROR - ack received");
+			else if (!strcmp(buf, "*#*0##"))
+				qWarning("ERROR - nak received");
+			else if (strcmp(buf, last_msg_open_read.frame_open) != 0)
+			{
+				Open_read.stop();
+				last_msg_open_read.CreateMsgOpen(buf,strlen(buf));
+				Open_read.start(1000, TRUE);
+				emit frameIn(buf);
+			}
+			else
+				qDebug("Frame Open duplicated");
+		}
+		else
+		{
+			if (!strcmp(buf, "*#*1##"))
+			{
+				qDebug("ack received");
+				last_msg_open_write.CreateNullMsgOpen();
+				emit openAckRx();
+			}
+			else if (!strcmp(buf, "*#*0##"))
+			{
+				qDebug("nak received");
+				last_msg_open_write.CreateNullMsgOpen();
+				emit openNakRx();
+			}
+		}
+	}
+	return 0;
 }
 
 void Client::clear_last_msg_open_read()
 {
-  qDebug("Delete last Frame Open read");
-  last_msg_open_read.CreateNullMsgOpen();
+	qDebug("Delete last Frame Open read");
+	last_msg_open_read.CreateNullMsgOpen();
 }
-
 
 // Aspetta ack
 int Client::socketWaitForAck()
 {
-      qDebug("Client::socketWaitForAck()");
+	qDebug("Client::socketWaitForAck()");
 
-    if(ismonitor) return -1;
-    ackRx = false;
-    connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
-    int stat;
-    if((stat = socketFrameRead()) < 0)
-	return stat;
-    disconnect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
-    return ackRx ? 0 : -1 ;
+	if (ismonitor)
+		return -1;
+	ackRx = false;
+	connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
+	int stat;
+	if ((stat = socketFrameRead()) < 0)
+		return stat;
+	disconnect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
+	return ackRx ? 0 : -1;
 }
 
 void Client::ackReceived()
 {
-    ackRx = true ;
+	ackRx = true;
 }
 
 /****************************************************************************
@@ -275,10 +288,10 @@ void Client::ackReceived()
 *****************************************************************************/
 void Client::socketConnectionClosed()
 {
-        qDebug("Client::socketConnectionClosed()");
-  qDebug( "Connection closed by the server");    
-  if (ismonitor)
-    connetti();
+	qDebug("Client::socketConnectionClosed()");
+	qDebug("Connection closed by the server");
+	if (ismonitor)
+		connetti();
 }
 
 /****************************************************************************
@@ -296,16 +309,17 @@ void Client::socketClosed()
 ** errore
 **
 *****************************************************************************/
-void Client::socketError( int e )
+void Client::socketError(int e)
 {
 	qDebug("Client::socketError()");
 
-	qDebug( "Error number %d occurred",e);
-	if (ismonitor) {
-		if(tick)
+	qDebug("Error number %d occurred",e);
+	if (ismonitor)
+	{
+		if (tick)
 			delete tick;
 		tick = new QTimer(this,"tick");
 		tick->start(500,TRUE);
 		connect(tick,SIGNAL(timeout()), this,SLOT(connetti()));
-  }
+	}
 }

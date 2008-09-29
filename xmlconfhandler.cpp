@@ -27,6 +27,7 @@
 #include "btmain.h"
 #include "scenevocond.h"
 #include "openclient.h"
+#include "supervisionMenu.h"
 
 unsigned char tipoData=0;
 
@@ -264,12 +265,14 @@ bool xmlconfhandler::startElement( const QString&, const QString&,
 
 void *xmlconfhandler::getAddr()
 {
-	char pip[50];
+	// TODO: remove this obscene fix! Use a QVariant!
+	static char pip[50];
+
 	pip[0] = 0;
 	void *pnt = 0;
 
-	if ( (!page_item_what.isNull()) && (!page_item_what.isEmpty())  )
-	{			       
+	if ((!page_item_what.isNull()) && (!page_item_what.isEmpty()))
+	{
 		strcpy(pip, page_item_what.ascii());
 		strcat(pip,"*");
 		strcat(pip,page_item_where.ascii());
@@ -278,13 +281,9 @@ void *xmlconfhandler::getAddr()
 		strcpy(pip, page_item_where.ascii());
 
 	if (page_item_list_group->isEmpty())
-	{
-		pnt=pip;
-	}
+		pnt = pip;
 	else
-	{
-		pnt=page_item_list_group;
-	}
+		pnt = page_item_list_group;
 
 	return pnt;
 }
@@ -786,7 +785,6 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 							QObject::connect(*scenari,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
 							QObject::connect(*scenari,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 							QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari,SLOT(freezed(bool)));
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari,SIGNAL(gestFrame(char *)));
 							break;
 						case IMPOSTAZIONI:    
 							(*imposta)->forceDraw();
@@ -819,8 +817,7 @@ bool xmlconfhandler::endElement( const QString&, const QString&, const QString& 
 									*imposta);
 							(*scenari_evoluti)->forceDraw();
 							QObject::connect(*scenari_evoluti,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-							QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));  
-							QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*scenari_evoluti,SIGNAL(gestFrame(char *)));
+							QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)                            
 							QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
 							QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
@@ -1290,7 +1287,7 @@ bool xmlconfhandler::characters( const QString & qValue)
 							int v = qValue.toInt();
 							cd->setVal(v);
 						} else if(!CurTagL6.compare("descr")) {
-							cd->set_descr(qValue.ascii());
+							cd->set_descr(qValue);
 						} else if(!CurTagL6.compare("where")) {
 							cd->set_where(qValue.ascii());
 						} else if(!CurTagL6.compare("trigger")){

@@ -14,13 +14,15 @@
 #include "device.h"
 #include "main.h"
 #include "btlabelevo.h"
+#include "scaleconversion.h"
 
 BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev)
 	: banner(parent, name)
 {
 	conf_root = config;
 	probe_descr = conf_root.namedItem("descr").toElement().text();
-	temperature = "-23.5"TEMP_DEGREES"C";
+	temperature = 1235;
+	temp_scale = readTemperatureScale();
 
 	setChi("4");
 
@@ -52,19 +54,7 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 		{
 			stat_var curr_temp(stat_var::TEMPERATURE);
 			dev->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			float icx = curr_temp.get_val();
-			QString qtemp = "";
-			char tmp[10];
-			if (icx >= 1000)
-			{
-				icx = icx - 1000;
-				qtemp = "-";
-			}
-			icx /= 10;
-			sprintf(tmp, "%.1f", icx);
-			qtemp += tmp;
-			qtemp += TEMP_DEGREES"C";
-			temperature = qtemp;
+			temperature = curr_temp.get_val();
 			update = true;
 		}
 	}
@@ -76,14 +66,24 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 void BannTemperature::Draw()
 {
 	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
+	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	descr_label->setFont(aFont);
 	descr_label->setAlignment(AlignAuto | AlignVCenter);
 	descr_label->setText(probe_descr);
 
-	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
+	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	temp_label->setFont(aFont);
 	temp_label->setAlignment(AlignCenter);
-	temp_label->setText(temperature);
+	switch (temp_scale)
+	{
+		case CELSIUS:
+			temp_label->setText(celsiusString(bt2Celsius(temperature)));
+			break;
+		case FAHRENHEIT:
+			temp_label->setText(fahrenheitString(bt2Fahrenheit(temperature)));
+			break;
+		default:
+			qWarning("BannTemperature: unknown scale");
+	}
 	banner::Draw();
 }

@@ -1,17 +1,16 @@
 #ifndef	CALIBRATE_H
 #define	CALIBRATE_H
 
-//#include <qwsmouse_qws.h>
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-//#include "QWSMOUSE/qmouselinuxtp_qws.h"
 #include "QWSMOUSE/qmouse_qws.h"
 #endif
 #include <qwidget.h>
 #include <qpixmap.h>
 
-//class QTimer;
-#include <qtimer.h>
 
+class BtButton;
+class QLabel;
+class QTimer;
 
 /*!
   \class calibrate
@@ -31,14 +30,23 @@ public:
 
 private:
 	QPoint fromDevice(const QPoint &p);
+	/// Check if the calibration is ok
 	bool sanityCheck();
 	void moveCrosshair(QPoint pt);
 	void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
 	void mouseReleaseEvent(QMouseEvent *);
+	/// Start the buttons test
+	void buttonsTest();
+	void trackCrosshair();
+	void startCalibration();
+	BtButton *createButton(const char* icon_name, int x, int y);
 
 private slots:
 	void timeout();
+	void endCalibration();
+	void rollbackCalibration();
+
 signals:
 	void inizioCalib();
 	void fineCalib();
@@ -52,10 +60,13 @@ private:
 	QPoint crossPos;
 	QPoint penPos;
 	QPixmap saveUnder;
-	QTimer *timer;
+	QTimer *timer, *button_timer;
+	QLabel *box_text;
+	BtButton *b1, *b2;
 	unsigned char manut;
 	int dx;
 	int dy;
+	bool button_test;
 };
 
 

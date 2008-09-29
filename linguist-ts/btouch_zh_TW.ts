@@ -1,5 +1,16 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>Calibrate</name>
+    <message>
+        <source>Click the crosshair</source>
+        <translation type="unfinished">按一下十字</translation>
+    </message>
+    <message>
+        <source>Click the OK button</source>
+        <translation type="unfinished">點擊OK按鈕</translation>
+    </message>
+</context>
+<context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
@@ -160,6 +171,60 @@
     </message>
 </context>
 <context>
+    <name>device_condition</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">關</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_aux</name>
+    <message>
+        <source>ON</source>
+        <translation type="unfinished">對</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">關</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_dimming</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">關</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_dimming_100</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">關</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_light_status</name>
+    <message>
+        <source>ON</source>
+        <translation type="unfinished">對</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">關</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_volume</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">關</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation type="unfinished">對</translation>
+    </message>
+</context>
+<context>
     <name>sveglia</name>
     <message>
         <source>once</source>
@@ -176,6 +241,13 @@
     <message>
         <source>sat-sun</source>
         <translation>週六至週日</translation>
+    </message>
+</context>
+<context>
+    <name>tastiera</name>
+    <message>
+        <source>PASSWORD:</source>
+        <translation>密碼:</translation>
     </message>
 </context>
 </TS>

@@ -23,6 +23,7 @@
 #include "btbutton.h"
 #include "diffsonora.h"
 #include "versio.h"
+#include "genericfunz.h"
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
 #include "dimmers.h"
@@ -671,7 +672,7 @@ void  sottoMenu::killBanner(banner* b)
 
 void sottoMenu::hide(bool index)
 {
-	qDebug("[TERMO] sottoMenu::hide() (%s)", name());
+	qDebug("sottoMenu::hide() (%s)", name());
 	QWidget::hide();
 	emit(hideChildren());
 	if(index)

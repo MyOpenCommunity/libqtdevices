@@ -17,18 +17,11 @@
 #ifndef BUTTONS_BAR_H
 #define BUTTONS_BAR_H
 
-#include <qframe.h>
-#include <qlcdnumber.h>
-#include <qmap.h>
-#include <qptrvector.h>
-#include <qbuttongroup.h>
-#include <qpainter.h>
-
 #include "btbutton.h"
-#include "main.h"
-#include "btlabel.h"
-#include "bannfrecce.h"
-#include "bann3but.h"
+
+#include <qbuttongroup.h>
+#include <qptrvector.h>
+#include <qwidget.h>
 
 
 /** \class ButtonsBar
@@ -50,9 +43,9 @@ public:
 	void setBGColor(QColor c);
 	void setFGColor(QColor c);
 private:
-	bool                  isToggleBar;
+	bool isToggleBar;
 	QPtrVector<BtButton>  buttons_list;
-	QButtonGroup          *buttons_group;
+	QButtonGroup *buttons_group;
 signals:
 	/// The signal pressed(int ) of QButton group is connected to the following by the constructor
 	void clicked(int button_number);

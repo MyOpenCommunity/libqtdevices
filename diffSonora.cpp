@@ -8,50 +8,49 @@
  **
  ****************************************************************/
 
-#include <qcursor.h>
-
 #include "diffsonora.h"
 #include "sottomenu.h"
 #include "btlabel.h"
+
 #include <openwebnet.h> // class openwebnet
 
 #include <qcursor.h>
+
 #include <stdlib.h>
 
-diffSonora::diffSonora( QWidget *parent, const char *name, bool creasorgenti )
-: QWidget( parent, name )
+diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
+	: QWidget(parent, name)
 {
-	#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor (QCursor (blankCursor));
-	//    showFullScreen();
-	#endif  
-	numRighe=NUM_RIGHE;  
-	if(creasorgenti)
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	setCursor(QCursor(blankCursor));
+#endif
+	numRighe = NUM_RIGHE;
+
+	if (creasorgenti)
 		sorgenti = new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
 	else
 		sorgenti = NULL;
 	
 	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2); 
 
-	if(creasorgenti)
-		setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-	//sorgenti -> setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT/numRighe);
-	//   amplificatori -> setGeometry (0, MAX_HEIGHT/numRighe, MAX_WIDTH, MAX_HEIGHT- MAX_HEIGHT/numRighe );
+	if (creasorgenti)
+		setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
-	if(sorgenti)
+	if (sorgenti)
 		connect(sorgenti, SIGNAL(Closed()), this, SLOT(fineVis()));
 	connect(amplificatori  ,SIGNAL(Closed()),this,SLOT(fineVis()));
 	BtLabel* linea = new BtLabel(this,NULL,0);
 	linea->setGeometry(0,77,240,3);
 	linea->setPaletteForegroundColor(QColor::QColor(0,0,0));
 
-	if(creasorgenti) 
+	if (creasorgenti)
 	{
 		connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
 		connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 		connect(sorgenti,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
 		connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));
 	}
+
 	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *))); 
 	connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 	connect(amplificatori,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
@@ -69,49 +68,49 @@ void diffSonora::setSorgenti(sottoMenu *s)
 	connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));
 }
 
-
 void diffSonora::setBGColor(int r, int g, int b)
-{	
-	setPaletteBackgroundColor( QColor :: QColor(r,g,b));    
+{
+	setPaletteBackgroundColor(QColor::QColor(r,g,b));
 	if (sorgenti)
-		sorgenti-> setBGColor(backgroundColor() );
+		sorgenti->setBGColor(backgroundColor());
 	if (amplificatori)
-		amplificatori-> setBGColor(backgroundColor() );
+		amplificatori->setBGColor(backgroundColor());
 }
+
 void diffSonora::setFGColor(int r, int g, int b)
 {
-	setPaletteForegroundColor( QColor :: QColor(r,g,b));
-	if (sorgenti) sorgenti-> setFGColor( foregroundColor() );
-	if (amplificatori) amplificatori-> setFGColor( foregroundColor() );
+	setPaletteForegroundColor(QColor::QColor(r,g,b));
+	if (sorgenti)
+		sorgenti->setFGColor(foregroundColor());
+	if (amplificatori)
+		amplificatori->setFGColor(foregroundColor());
 }
 
-int diffSonora::setBGPixmap(char* backImage)
+int diffSonora::setBGPixmap(char *backImage)
 {
 	QPixmap Back;
-	if(Back.load(backImage))
+	if (Back.load(backImage))
 	{
-		setPaletteBackgroundPixmap(Back);      
-		return (0);
+		setPaletteBackgroundPixmap(Back);
+		return 0;
 	}
-	return (1);
+	return 1;
 }
 
-
 int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
-		QPtrList<QString> &icon_names,
-		int modo, int where, char *ambdescr)
+	QPtrList<QString> &icon_names, int modo, int where, char *ambdescr)
 {
-	if  ( (tipo==SORGENTE_AUX) || (tipo==SORGENTE_RADIO) || (tipo==SORGENTE_MULTIM) )
+	if  ((tipo==SORGENTE_AUX) || (tipo==SORGENTE_RADIO) || (tipo==SORGENTE_MULTIM))
 	{
-		sorgenti-> setBGColor( backgroundColor() );
-		sorgenti-> setFGColor( foregroundColor() );
-		sorgenti-> addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, where);
+		sorgenti->setBGColor(backgroundColor());
+		sorgenti->setFGColor(foregroundColor());
+		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, where);
 	}
-	else if ( (tipo == SORG_RADIO) || (tipo == SORG_AUX) || (tipo == SORGENTE_MULTIM_MC) )
+	else if ((tipo == SORG_RADIO) || (tipo == SORG_AUX) || (tipo == SORGENTE_MULTIM_MC))
 	{
-		sorgenti-> setBGColor(backgroundColor() );
-		sorgenti-> setFGColor(foregroundColor() );
-		sorgenti-> addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
+		sorgenti->setBGColor(backgroundColor());
+		sorgenti->setFGColor(foregroundColor());
+		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 	}
@@ -119,7 +118,7 @@ int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizz
 	{
 		amplificatori->addItemU(tipo, qdescrizione, indirizzo, icon_names);
 	}
-	return(1);
+	return 1;
 }
 
 void diffSonora::setNumRighe(uchar n)
@@ -128,21 +127,19 @@ void diffSonora::setNumRighe(uchar n)
 	qDebug("Invoking amplificatori->setNumRighe(%d)", n-2);
 	amplificatori->setNumRighe(n-2);
 	qDebug("sorgenti = %p", sorgenti);
-	if(sorgenti)
+	if (sorgenti)
 		sorgenti->setNumRighe(1);
-	if(sorgenti)
+	if (sorgenti)
 		sorgenti->draw();
 	amplificatori->draw();
 }
 
-
 void diffSonora::inizializza()
 {
-	amplificatori-> inizializza();
+	amplificatori->inizializza();
 	sorgenti->inizializza();
 	emit sendInit("*16*53*100##");
 }
-
 
 void diffSonora::gestFrame(char*frame)
 {
@@ -151,45 +148,47 @@ void diffSonora::gestFrame(char*frame)
 	char aggiorna;
 	int w;
 
-	aggiorna=0;
+	aggiorna = 0;
 
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 
 	if (!strcmp(msg_open.Extract_chi(),"16"))
 	{
-			w = strtoul(msg_open.Extract_dove(), NULL, 10);
-		if(w < 100)
+		w = strtoul(msg_open.Extract_dove(), NULL, 10);
+		if (w < 100)
 			goto not_ours;
-		while(w >= 100)
-			w-=100;
-		while(w >= 10)
-			w-=10;
+		while (w >= 100)
+			w -= 100;
+		while (w >= 10)
+			w -= 10;
 		{
 			if ((!strcmp(msg_open.Extract_cosa(),"0")) || (!strcmp(msg_open.Extract_cosa(),"3")))
 			{
 				sorgenti->setIndex((char *)QString::number(w+100, 10).ascii());
-				aggiorna=1;
+				aggiorna = 1;
 				qDebug("accesa sorg: %d", w);
-			}	  
+			}
 		}
 	}
-        else if (!strcmp(msg_open.Extract_chi(),"22")) 
+	else if (!strcmp(msg_open.Extract_chi(),"22"))
 	{
-		if (!strncmp(msg_open.Extract_cosa(),"2", 1) && (!strcmp(msg_open.Extract_dove(),"5") && (!strcmp(msg_open.Extract_livello(),"2"))))
+		if (!strncmp(msg_open.Extract_cosa(),"2", 1) && (!strcmp(msg_open.Extract_dove(),"5") &&
+			(!strcmp(msg_open.Extract_livello(),"2"))))
 		{
-			w=strtoul(msg_open.Extract_interfaccia(), NULL, 10);
+			w = strtoul(msg_open.Extract_interfaccia(), NULL, 10);
 			sorgenti->setIndex((char *)QString::number(w+100, 10).ascii());
-			aggiorna=1;
+			aggiorna = 1;
 			qDebug("accesa sorg(WHO=22): %d", w);
 		}
 	}
+
 not_ours:
 	if (aggiorna)
 	{
 		sorgenti->draw();
-		if(isVisual)
+		if (isVisual)
 		{
-			QWidget::show();	    
+			QWidget::show();
 		}
 	}
 }
@@ -198,53 +197,50 @@ void diffSonora::freezed_handler(bool f)
 {
 	qDebug("diffSonora::freezed(%d)", f);
 	isVisual = f ? 0 : 1;
-	if(isHidden())
+	if (isHidden())
 		isVisual = false;
 }
 
 void diffSonora::show()
 {
 	openwebnet msg_open;
-	//emit sendInit("*16*53*100##"); 
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
-	isVisual=1;
+	isVisual = 1;
 
-#if 1
 	if (sorgenti)
-		sorgenti-> show();
+		sorgenti->show();
 	if (amplificatori)
-		amplificatori-> show();
-#endif
+		amplificatori->show();
+
 	QWidget::show();
-}   
+}
 
 void diffSonora::draw()
-{	
+{
 	if (sorgenti)
-		sorgenti-> draw();
+		sorgenti->draw();
 	if (amplificatori)
-		amplificatori-> draw();
+		amplificatori->draw();
 }
 
 void diffSonora::forceDraw()
-{	
+{
 	qDebug("diffSonora::forceDraw()");
 	if (sorgenti)
-		sorgenti-> forceDraw();
+		sorgenti->forceDraw();
 	if (amplificatori)
-		amplificatori-> forceDraw();
+		amplificatori->forceDraw();
 }
 
 void diffSonora::hide()
 {
 	qDebug("diffSonora::hide()");
-#if 1
+
 	if (sorgenti)
-		sorgenti-> hide(false);
+		sorgenti->hide(false);
 	if (amplificatori)
-		amplificatori-> hide();
-#endif
+		amplificatori->hide();
 	if (amplificatori)
 		amplificatori->setIndice(0);
 	isVisual = false;
@@ -253,17 +249,16 @@ void diffSonora::hide()
 
 void diffSonora::setGeom(int x,int y,int w,int h)
 {
-	qDebug("diffSonora::setGeom(%d, %d, %d, %d, numRighe = %d)",
-			x, y, w, h, numRighe);
-	QWidget::setGeometry(x,y,w,h);
-	if (sorgenti) {
-		qDebug("sorgenti->setGeometry(%d, %d, %d, %d)",
-				x, 0, w, h/numRighe);
-		sorgenti->setGeometry(x,0,w,h/numRighe) ; // - 40);
+	qDebug("diffSonora::setGeom(%d, %d, %d, %d, numRighe = %d)",x, y, w, h, numRighe);
+	QWidget::setGeometry(x, y, w, h);
+	if (sorgenti)
+	{
+		qDebug("sorgenti->setGeometry(%d, %d, %d, %d)", x, 0, w, h/numRighe);
+		sorgenti->setGeometry(x,0,w,h/numRighe);
 	}
-	if(amplificatori) {
-		qDebug("amplificatori->setGeometry(%d, %d, %d, %d)",
-				x, h/numRighe,w,h/numRighe*(numRighe-1));
+	if (amplificatori)
+	{
+		qDebug("amplificatori->setGeometry(%d, %d, %d, %d)", x, h/numRighe,w,h/numRighe*(numRighe-1));
 		amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
 	}
 }

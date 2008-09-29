@@ -13,10 +13,10 @@
 
 #include "bann4taslab.h"
 
+#include <qwidget.h>
 #include <qstring.h>
 
 /// Forward Declarations
-class dati_sorgente_multi;
 class call_notifier_manager;
 class call_notifier;
 
@@ -76,8 +76,6 @@ public  slots:
 signals:
 	//! Emitted when a frame is available
 	void frame_available(char *);
-	//! Emitted on freezed
-	void freezed(bool);
 };
 
 #endif

@@ -15,7 +15,8 @@ class frame_interpreter;
 class Client;
 
 //! Generic device
-class device : public QObject {
+class device : public QObject
+{
 Q_OBJECT
 
 public:
@@ -60,8 +61,6 @@ signals:
 public slots:
 	//! receive a frame
 	virtual void frame_rx_handler(char *);
-	//! Deal with frame event
-	void frame_event_handler(QPtrList<device_status>);
 	//! Initialization requested by frame interpreter
 	void init_requested_handler(QString msg);
 
@@ -368,6 +367,24 @@ Q_OBJECT
 public:
 	//! Constructor
 	modscen_device(QString, bool p=false, int g=-1);
+};
+
+//! Aux device
+class aux_device : public device
+{
+Q_OBJECT
+public:
+	aux_device(QString w, bool p=false, int g=-1);
+	virtual void init(bool force = false);
+
+public slots:
+	virtual void frame_rx_handler(char *);
+
+private:
+	stat_var status;
+
+signals:
+	void status_changed(stat_var);
 };
 
 

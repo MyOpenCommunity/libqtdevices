@@ -16,6 +16,7 @@
 #include "device_status.h"
 #include "btwidgets.h"
 #include "bttime.h"
+#include "main.h"
 
 #include <qlayout.h>
 #include <qbuttongroup.h>
@@ -71,7 +72,7 @@ enum BannID
 };
 
 /// Factory function to get banners
-BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale);
+BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale = CELSIUS);
 
 /**
  * A base class for banners that represent a probe. It displays a label with zone name on top
@@ -81,7 +82,7 @@ class FSBannSimpleProbe : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannSimpleProbe(QWidget *parent, QDomNode n, const char *name = 0);
+	FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	void setSecondForeground(QColor fg2);
 public slots:
@@ -92,10 +93,12 @@ protected:
 	QVBoxLayout main_layout;
 	/// Measured temperature label and string
 	BtLabelEvo *temp_label;
-	QString temp;
+	unsigned temp;
 	/// Zone description label and string
 	BtLabelEvo *descr_label;
 	QString descr;
+	/// Temperature scale
+	TemperatureScale temp_scale;
 };
 
 /**
@@ -107,15 +110,17 @@ class FSBannProbe : public FSBannSimpleProbe
 {
 Q_OBJECT
 public:
-	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,const char *name = 0);
+	FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+			TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	BtButton *customButton();
 public slots:
 	virtual void status_changed(QPtrList<device_status> list);
 protected:
-	/// Setpoint temperature. All temperatures are expressed in 1/10 of degrees, temperatures > 1000 are negative.
-	/// Example: 1235 is -23.5 (Celsius degrees), 395 is 39.5. Precision is generally 5.
-	unsigned setpoint;
+	/// Setpoint temperature. The scale of the temperature may be Celsius or Fahrenheit, depending on the value
+	/// of FSBannSimpleProbe::temp_scale. Units represent 1/10 of degree, for example -23.5 Celsius degrees
+	/// are represented as -235 if temp_scale == CELSIUS, or -103 if temp_scale == FAHRENHEIT
+	int setpoint;
 	BtLabelEvo  *setpoint_label;
 	/// This flag is used to syncrhonize with other devices in the home. True when setpoint temperature is modified
 	/// by this BTouch, false otherwise
@@ -128,10 +133,17 @@ protected:
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	BtLabelEvo *local_temp_label;
+	/// This label is used as a placeholder when local_temp_label is hidden to avoid nasty graphics effects
+	BtLabelEvo *local_temp_placeholder;
 
 	QDomNode conf_root;
 	temperature_probe_controlled *dev;
 private:
+	/**
+	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
+	 */
+	void setDeviceToManual();
+
 	enum probe_status
 	{
 		AUTOMATIC,
@@ -150,9 +162,9 @@ private:
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
 	/// The minimum temperature that can be set with manual operation
-	unsigned minimum_manual_temp;
+	int minimum_manual_temp;
 	/// The maximum temperature that can be set with manual operation
-	unsigned maximum_manual_temp;
+	int maximum_manual_temp;
 	BtButton *navbar_button;
 
 private slots:
@@ -239,6 +251,7 @@ protected:
 	QDomNode conf_root;
 
 	BtButton *navbar_button;
+	TemperatureScale temp_scale;
 private slots:
 	/**
 	 * The following slots are used to control the status of input for holiday/weekend mode.
@@ -389,7 +402,8 @@ class FSBannFancoil : public FSBannProbe
 {
 Q_OBJECT
 public:
-	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent, const char *name = 0);
+	FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+			TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
 	virtual void status_changed(QPtrList<device_status> list);
 private:
@@ -410,7 +424,7 @@ class FSBannManual : public BannFullScreen
 {
 Q_OBJECT
 public:
-	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev);
+	FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev, TemperatureScale scale = CELSIUS);
 	virtual void Draw();
 	virtual BtButton *customButton();
 public slots:
@@ -419,15 +433,16 @@ protected:
 	QVBoxLayout main_layout;
 	/// The button to be set on the navbar
 	BtButton *navbar_button;
-	/// The setpoint temperature set on the interface
-	unsigned temp;
+	/// The setpoint temperature set on the interface. The scale is given by temp_scale
+	int temp;
+	TemperatureScale temp_scale;
 private:
 	QString descr;
 	BtLabelEvo *descr_label;
 	BtLabelEvo *temp_label;
 	thermal_regulator *dev;
-	unsigned maximum_manual_temp;
-	unsigned minimum_manual_temp;
+	int maximum_manual_temp;
+	int minimum_manual_temp;
 	unsigned setpoint_delta;
 private slots:
 	void incSetpoint();
@@ -444,7 +459,7 @@ class FSBannManualTimed : public FSBannManual
 {
 Q_OBJECT
 public:
-	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev);
+	FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 private:
