@@ -7,6 +7,7 @@
 #include "btlabel.h"
 #include "btbutton.h"
 #include "fontmanager.h"
+#include "main.h"
 
 #include <QPixmap>
 #include <QWidget>
