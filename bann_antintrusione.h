@@ -15,7 +15,10 @@
 #include "bann2butlab.h"
 #include "device_status.h"
 
-#include <qtimer.h>
+#include <QString>
+#include <QColor>
+#include <QList>
+
 
 /// Forward Declarations
 class tastiera;
@@ -45,12 +48,12 @@ private:
 	bool already_changed;
 	device *dev;
 public:
-	zonaAnti(QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL/*,char* IconaSx=NULL,char* IconaDx=NULL*/,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
+	zonaAnti(QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
 	void inizializza(bool forza = false);
 	void SetIcons(char *, char *, char *);
 	void Draw();
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 	char* getChi();
 	void ToggleParzializza();
 	void abilitaParz(bool);
@@ -83,9 +86,13 @@ private:
 	bool send_part_msg;
 	bool part_msg_sent;
 	bool inserting;
-	QTimer insert_timer;
 	char *passwd;
 	device *dev;
+
+	// TODO: rimuovere questi metodi qt3!
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
+
 public:
 	impAnti(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 private slots:
@@ -97,7 +104,7 @@ private slots:
 	void Insert3();
 	void DeInsert(char*);
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 	char* getChi();
 	void partChanged(zonaAnti*);
 	void setZona(zonaAnti*);

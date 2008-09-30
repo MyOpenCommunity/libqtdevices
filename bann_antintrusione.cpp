@@ -20,14 +20,17 @@
 
 #include <openwebnet.h> // class openwebnet
 
+#include <QTimer>
+
 #include <stdlib.h>
+
 
 /*****************************************************************
  **zonaAnti
  ****************************************************************/
 
 zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char *iconzona, char *IconDisactive,
-	char *IconActive, char *iconSparz, int period, int number) : bannOnIcons (parent, name.ascii())
+	char *IconActive, char *iconSparz, int period, int number) : bannOnIcons(parent, 0)
 {
 	char pippo[MAX_PATH];
 
@@ -44,7 +47,7 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_items_bannertext, aFont);
-		BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		BannerText->setFont(aFont);
 		BannerText->setText(name);
 	}
@@ -56,8 +59,8 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_zonanti_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 
 	abilitaParz(true);
 	setIcons();
@@ -100,16 +103,15 @@ int zonaAnti::getIndex(void)
 	return atoi(&(getAddress()[1]));
 }
 
-void zonaAnti::status_changed(QPtrList<device_status> sl)
+void zonaAnti::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("zonAnti::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		int s;
 		switch (ds->get_type())
 		{
@@ -135,7 +137,6 @@ void zonaAnti::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
 
 	if (aggiorna)
@@ -143,12 +144,11 @@ void zonaAnti::status_changed(QPtrList<device_status> sl)
 		if (!already_changed)
 		{
 			already_changed = true;
-			emit(partChanged(this));
+			emit partChanged(this);
 		}
 		setIcons();
 		Draw();
 	}
-	delete dsi;
 }
 
 char *zonaAnti::getChi()
@@ -235,20 +235,19 @@ impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo,char* IconOn, 
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_impanti_device();
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
-void impAnti::status_changed(QPtrList<device_status> sl)
+void impAnti::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("impAnti::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		int s;
 		switch (ds->get_type())
 		{
@@ -265,10 +264,9 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 				mostra(BUT2);
 				aggiorna=1;
 				qDebug("IMPIANTO INSERITO !!");
-				emit(impiantoInserito());
-				emit(abilitaParz(false));
-				connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
-				insert_timer.start(5000);
+				emit impiantoInserito();
+				emit abilitaParz(false);
+				QTimer::singleShot(5000, this, SLOT(inizializza()));
 				send_part_msg = false;
 			}
 			else if (isActive() && !s)
@@ -278,8 +276,8 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 				mostra(BUT4);
 				aggiorna=1;
 				qDebug("IMPIANTO DISINSERITO !!");
-				emit(abilitaParz(true));
-				emit(clearChanged());
+				emit abilitaParz(true);
+				emit clearChanged();
 				send_part_msg = false;
 			}
 			break;
@@ -287,12 +285,10 @@ void impAnti::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
 
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 int impAnti::getIsActive(int zona)
@@ -379,10 +375,8 @@ void impAnti::Insert2()
 	qDebug("impAnti::Insert2()");
 	if (!inserting)
 		return;
-	// 5 seconds between first open ack and open insert messages
-	connect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
-	// single shot timer
-	insert_timer.start(6000, TRUE);
+	// 6 seconds between first open ack and open insert messages
+	QTimer::singleShot(6000, this, SLOT(Insert3()));
 }
 
 void impAnti::Insert3()
@@ -391,7 +385,7 @@ void impAnti::Insert3()
 	char *pwd = passwd;
 	openwebnet msg_open;
 	char    pippo[50];
-	emit(clearAlarms());
+	emit clearAlarms();
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*5*36#");
 	strcat(pippo,pwd);
@@ -400,9 +394,7 @@ void impAnti::Insert3()
 	dev->sendFrame(msg_open.frame_open);
 	parentWidget()->show();
 	inserting = false;
-	disconnect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
-	connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
-	insert_timer.start(5000);
+	QTimer::singleShot(5000, this, SLOT(inizializza()));
 }
 
 void impAnti::DeInsert(char *pwd)
@@ -468,8 +460,6 @@ void impAnti::partChanged(zonaAnti *za)
 void impAnti::inizializza(bool forza)
 {
 	qDebug("impAnti::inizializza()");
-	insert_timer.stop();
-	disconnect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
 	dev->sendInit("*#5*0##");
 }
 
@@ -477,9 +467,19 @@ void impAnti::hide()
 {
 	qDebug("impAnti::hide()");
 	banner::hide();
-	if (tasti && tasti->isShown())
+	if (tasti && !tasti->isHidden())
 	{
 		qDebug("HIDING KEYBOARD");
 		tasti->hide();
 	}
+}
+
+const QColor& impAnti::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& impAnti::foregroundColor()
+{
+	return palette().color(foregroundRole());
 }
