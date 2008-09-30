@@ -14,7 +14,7 @@
 
 #include <qlayout.h>
 
-BtButton *getButton(const char *img, const char *imgp, QWidget *parent, bool autorepeat)
+BtButton *getButton(QString img, QString imgp, QWidget *parent, bool autorepeat)
 {
 	QPixmap *icon         = icons_library.getIcon(img);
 	QPixmap *pressed_icon = icons_library.getIcon(imgp);
@@ -31,9 +31,7 @@ BtButton *getButton(const char *img, const char *imgp, QWidget *parent, bool aut
 	return btn;
 }
 
-BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
-	: QWidget(parent, name),
-	_time(0, 0)
+BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name) : QWidget(parent), _time(0, 0)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
@@ -45,9 +43,10 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 
 	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
-	QHBoxLayout *hbox = new QHBoxLayout(main_layout);
+	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addWidget(btn1);
 	hbox->addWidget(btn2);
+	main_layout->addLayout(hbox);
 
 	num = new QLCDNumber(this);
 	num->setSegmentStyle(QLCDNumber::Flat);
@@ -63,9 +62,10 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name)
 
 	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
-	hbox = new QHBoxLayout(main_layout);
+	hbox = new QHBoxLayout();
 	hbox->addWidget(btn1);
 	hbox->addWidget(btn2);
+	main_layout->addLayout(hbox);
 }
 
 void BtTimeEdit::setMaxHours(int hours)
@@ -107,8 +107,7 @@ void BtTimeEdit::decMin()
 	num->display(_time.toString());
 }
 
-BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
-	: QWidget(parent, name)
+BtDateEdit::BtDateEdit(QWidget *parent, const char *name) : QWidget(parent)
 {
 	_date = QDate::currentDate();
 	_date = _date.addDays(1);
@@ -128,10 +127,11 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 	connect(btn_up_month, SIGNAL(clicked()), this, SLOT(incMonth()));
 	connect(btn_up_year, SIGNAL(clicked()), this, SLOT(incYear()));
 
-	QHBoxLayout *h_up_box = new QHBoxLayout(main_layout);
+	QHBoxLayout *h_up_box = new QHBoxLayout();
 	h_up_box->addWidget(btn_up_day);
 	h_up_box->addWidget(btn_up_month);
 	h_up_box->addWidget(btn_up_year);
+	main_layout->addLayout(h_up_box);
 
 	date_display = new QLCDNumber(this);
 	date_display->setSegmentStyle(QLCDNumber::Flat);
@@ -151,10 +151,11 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 	connect(btn_down_month, SIGNAL(clicked()), this, SLOT(decMonth()));
 	connect(btn_down_year, SIGNAL(clicked()), this, SLOT(decYear()));
 
-	QHBoxLayout *h_down_box = new QHBoxLayout(main_layout);
+	QHBoxLayout *h_down_box = new QHBoxLayout();
 	h_down_box->addWidget(btn_down_day);
 	h_down_box->addWidget(btn_down_month);
 	h_down_box->addWidget(btn_down_year);
+	main_layout->addLayout(h_down_box);
 }
 
 QDate BtDateEdit::date()
