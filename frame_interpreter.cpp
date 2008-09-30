@@ -2512,7 +2512,6 @@ bool frame_interpreter_temperature_probe_controlled::is_frame_ours(openwebnet_ex
 		}
 	}
 
-	qDebug("[INTRP TERMO] is_our: %s", is_our ? "YES" : "NO");
 	return is_our;
 }
 
