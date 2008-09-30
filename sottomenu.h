@@ -18,11 +18,9 @@
 #include "device_status.h"
 #include "bttime.h"
 
-#include <qwidget.h>
-#include <qptrlist.h>
-#include <qdom.h>
-#include <qvaluelist.h>
-#include <qdatetime.h>
+#include <QWidget>
+#include <QDomNode>
+#include <QDateTime>
 
 
 class bannFrecce;
@@ -42,7 +40,8 @@ class sottoMenu : public QWidget
 {
 Q_OBJECT
 public:
-	sottoMenu(QWidget *parent=0, const char *name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
+	sottoMenu(QWidget *parent=0, const char *_name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
+	~sottoMenu();
 	/*!
 		\brief Sets the background color for the banner.
 
@@ -108,15 +107,15 @@ unknown : unknown field (for video door phone items
 sstart : soft start values list for dimmer 100 group
 sstop : soft stop values list vor dimmer 100 group
 */
-	virtual int addItemU(char tipo, const QString & nome, void *indirizzo,
-			QPtrList<QString> &icon_names,
-			int periodo = 0, int numFrame = 0, QColor secondFroreground = QColor(0,0,0),
-			char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
-			int par3=0, int par4=0,
-			QPtrList<QString> *lt = NULL, QPtrList<scenEvo_cond> *lc = NULL,
-			QString action="", QString light="", QString key="", QString unk="",
-			QValueList<int> sstart = QValueList<int>(),
-			QValueList<int> sttop = QValueList<int>(), QString txt1="", QString txt2="", QString txt3="");
+	int addItemU(char tipo, const QString & nome, void *indirizzo,
+		QList<QString*> &icon_names,
+		int periodo = 0, int numFrame = 0, QColor secondFroreground = QColor(0,0,0),
+		char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
+		int par3=0, int par4=0,
+		QList<QString*> *lt = NULL, QList<scenEvo_cond*> *lc = NULL,
+		QString action="", QString light="", QString key="", QString unk="",
+		QList<int> sstart = QList<int>(),
+		QList<int> sttop = QList<int>(), QString txt1="", QString txt2="", QString txt3="");
 
 	/**
 		* Add a new banner.
@@ -213,7 +212,7 @@ sstop : soft stop values list vor dimmer 100 group
 	/*!
 		\brief reparent implementation
 		*/
-	virtual void reparent (QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE);
+	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 	/*!
 		\brief add amb to all banners
 		*/
@@ -366,19 +365,31 @@ protected:
 		* \return        A null node if no tag was found, the node otherwise
 		*/
 	QDomNode findNamedNode(QDomNode root, QString name);
-	QPtrList<banner> elencoBanner;
-	QTimer* iniTim;
-	int	indice, indicold;
+	QList<banner*> elencoBanner;
+	int indice, indicold;
 	unsigned int height,width;
 	uchar numRighe, hasNavBar;
 	bannFrecce * bannNavigazione;
 	bool freez;
 	char iconName[MAX_PATH];
-	private:
+private:
 	/// Number of banners to scroll at each goUp() or goDown() call. Default value is 1, to avoid
 	/// breaking existing code.
 	unsigned scroll_step;
 	void setModeIcon(char*);
+	QString name; // To simulate old qt3 behavior for name of widgets.
+
+protected:
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
+
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
+	const QColor& paletteBackgroundColor();
+	const QColor& paletteForegroundColor();
+
 };
 
 
@@ -396,7 +407,7 @@ public:
 	virtual void createSummerBanners() = 0;
 	virtual void createWinterBanners() = 0;
 public slots:
-	void status_changed(QPtrList<device_status> list);
+	void status_changed(QList<device_status*> sl);
 protected:
 	int season;
 	QDomNode conf_root;

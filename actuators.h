@@ -243,7 +243,7 @@ protected:
 	bool update_ok;
 	int  tentativi_update;
 public:
-	attuatAutomTempNuovoF(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, const char *tempo=NULL);
+	attuatAutomTempNuovoF(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, QString tempo=NULL);
 protected slots:
 	void Attiva();
 	void update();

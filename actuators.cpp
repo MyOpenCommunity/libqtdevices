@@ -787,7 +787,7 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 
 #define NTIMEICONS 9
 
-attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent,const char *name,char* indirizzo,char* IconaCentroSx,char* IconaCentroDx,char *IconaDx, const char *t)
+attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent,const char *name,char* indirizzo,char* IconaCentroSx,char* IconaCentroDx,char *IconaDx, QString t)
 	: bannOn2scr(parent, name)
 {
 	attuatAutomTempNuovoF::SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
@@ -795,7 +795,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent,const char *name,ch
 	SetSecondaryTextU("????");
 
 	// TODO: riscrivere utilizzando qt e c++!!
-	strncpy(tempo, t ? t : "0*0*0", sizeof(tempo));
+	strncpy(tempo, t.isEmpty() ? t.toAscii().constData() : "0*0*0", sizeof(tempo));
 	char *ptr;
 	char tmp1[50];
 	strcpy(tmp1, tempo);

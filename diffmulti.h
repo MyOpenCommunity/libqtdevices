@@ -57,7 +57,7 @@ public:
 	void setNumRighe(uchar);
 	void ripristinaRighe(void);
 	void forceDraw();
-	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
+	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 	void resizewindows(int x, int y, int w, int h);
 
 	/*!

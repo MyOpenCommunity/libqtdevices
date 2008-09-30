@@ -32,18 +32,20 @@
 #include "bann_antintrusione.h"
 #include "bannfullscreen.h"
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
-#include <qtimer.h>
-#include <qregexp.h>
+#include <QByteArray>
+#include <QPixmap>
+#include <QCursor>
+#include <QTimer>
+#include <QRegExp>
+#include <QDebug>
+
 #include <algorithm>
 
 
 #define IMG_OK IMG_PATH "btnok.png"
 
-sottoMenu::sottoMenu(QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
-	:QWidget(parent, name)
+sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi,int hei, uchar n)
+	:QWidget(parent), name(_name)
 {
 	numRighe = n;
 	scroll_step = 1;
@@ -72,19 +74,24 @@ sottoMenu::sottoMenu(QWidget *parent, const char *name, uchar navBarMode,int wi,
 		connect(bannNavigazione,SIGNAL(forwardClick()),this,SIGNAL(goDx()));
 
 #ifdef IPHONE_MODE
-		connect(this, SIGNAL(goUP()), bannNavigazione  ,SIGNAL(upClick()));
-		connect(this, SIGNAL(goDO()), bannNavigazione  ,SIGNAL(downClick()));
+		connect(this, SIGNAL(goUP()), bannNavigazione,SIGNAL(upClick()));
+		connect(this, SIGNAL(goDO()), bannNavigazione,SIGNAL(downClick()));
 #endif
 	}
 
-	elencoBanner.setAutoDelete(TRUE);
 	indice = 0;
 	indicold = 100;
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 	if (!parentWidget())
 		showFullScreen();
 #endif
+}
+
+sottoMenu::~sottoMenu()
+{
+	while (!elencoBanner.isEmpty())
+		delete elencoBanner.takeFirst();
 }
 
 void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
@@ -155,8 +162,8 @@ void sottoMenu::setAllBGColor(QColor c)
 	if (bannNavigazione)
 		bannNavigazione->setBGColor(c);
 
-    for (banner *b = elencoBanner.first(); b; b = elencoBanner.next())
-		b->setBGColor(c);
+	for (int i = 0; i < elencoBanner.size(); ++i)
+		elencoBanner.at(i)->setBGColor(c);
 }
 
 void sottoMenu::setAllFGColor(QColor c)
@@ -165,8 +172,9 @@ void sottoMenu::setAllFGColor(QColor c)
 	if (bannNavigazione)
 		bannNavigazione->setFGColor(c);
 
-    for (banner *b = elencoBanner.first(); b; b = elencoBanner.next())
-		b->setFGColor(c);
+	for (int i = 0; i < elencoBanner.size(); ++i)
+		elencoBanner.at(i)->setFGColor(c);
+
 }
 
 int sottoMenu::setBGPixmap(char* backImage)
@@ -182,25 +190,41 @@ int sottoMenu::setBGPixmap(char* backImage)
 
 
 int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo,
-		QPtrList<QString> &icon_names,
+		QList<QString*> &icon_names,
 		int periodo, int numFrame,
 		QColor SecondForeground,
 		char *descr1, char *descr2, char *descr3, char *descr4,
 		int par3, int par4,
-		QPtrList<QString> *lt, QPtrList<scenEvo_cond> *lc,
+		QList<QString*> *lt, QList<scenEvo_cond*> *lc,
 		QString action, QString light, QString key, QString unknown,
-		QValueList<int> sstart, QValueList<int> sstop,
+		QList<int> sstart, QList<int> sstop,
 		QString txt1, QString txt2, QString txt3)
 {
-	const char * descrizione = qdescrizione.ascii();
+	// TODO: cambiare i costruttori delle classi in modo che prendano come
+	// argomento delle QString!
+	QByteArray buf_descr = qdescrizione.toAscii();
+	const char * descrizione = buf_descr.constData();
 
-	char *IconaSx = (char *)safeAt(icon_names, 0)->ascii();
-	char *IconaDx = (char *)safeAt(icon_names, 1)->ascii();
-	char *icon = (char *)safeAt(icon_names, 2)->ascii();
-	char *pressedIcon = (char *)safeAt(icon_names, 3)->ascii();
-	char *icoEx1 = (char *)safeAt(icon_names, 4)->ascii();
-	char *icoEx2 = (char *)safeAt(icon_names, 5)->ascii();
-	char *icoEx3 = (char *)safeAt(icon_names, 6)->ascii();
+	QByteArray buf_icona_sx = safeAt(icon_names, 0)->toAscii();
+	char *IconaSx = buf_icona_sx.data();
+
+	QByteArray buf_icona_dx = safeAt(icon_names, 1)->toAscii();
+	char *IconaDx = buf_icona_dx.data();
+
+	QByteArray buf_icon = safeAt(icon_names, 2)->toAscii();
+	char *icon = buf_icon.data();
+
+	QByteArray buf_pressed_icon = safeAt(icon_names, 3)->toAscii();
+	char *pressedIcon = buf_pressed_icon.data();
+
+	QByteArray buf_ico_ex1 = safeAt(icon_names, 4)->toAscii();
+	char *icoEx1 = buf_ico_ex1.data();
+
+	QByteArray buf_ico_ex2 = safeAt(icon_names, 5)->toAscii();
+	char *icoEx2 = buf_ico_ex2.data();
+	
+	QByteArray buf_ico_ex3 = safeAt(icon_names, 6)->toAscii();
+	char *icoEx3 = buf_ico_ex3.data();
 
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo)
@@ -244,7 +268,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	case ATTUAT_AUTOM_TEMP_NUOVO_F:
 		if (!lt->count())
 			lt->append(new QString(""));
-		elencoBanner.append(new attuatAutomTempNuovoF(this,descrizione, (char*)indirizzo,IconaSx, IconaDx, icon, lt->at(0)->ascii()));
+		elencoBanner.append(new attuatAutomTempNuovoF(this,descrizione, (char*)indirizzo,IconaSx, IconaDx, icon, *lt->at(0)));
 		break;
 	case GR_ATTUAT_INT:
 		elencoBanner.append(new grAttuatInt(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,periodo,numFrame));
@@ -262,7 +286,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new automCancAttuatVC(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx));
 		break;
 	case AUTOM_CANC_ATTUAT_ILL:
-		elencoBanner.append(new automCancAttuatIll(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx, (lt->at(0))));
+		elencoBanner.append(new automCancAttuatIll(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx, *lt->at(0)));
 		break;
 	case SET_DATA_ORA:
 		elencoBanner.append(new setDataOra(this,descrizione));
@@ -351,7 +375,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new scenSched(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4));
 		break;
 	case POSTO_ESTERNO:
-		elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, (char *)light.ascii(), (char *)key.ascii(), (char *)unknown.ascii()));
+		elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
 		break;
 	case SORG_RADIO:
 		elencoBanner.append(new sorgenteMultiRadio(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
@@ -365,16 +389,18 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	}
 	connectLastBanner();
 
-	elencoBanner.getLast()->SetTextU(qdescrizione);
-	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
-	elencoBanner.getLast()->setBGColor(backgroundColor());
-	elencoBanner.getLast()->setFGColor(foregroundColor());
-	elencoBanner.getLast()->setId(tipo);
-	for (int idx = elencoBanner.count() - 2; idx >= 0; idx--)
+	banner *last = elencoBanner.last();
+	last->SetTextU(qdescrizione);
+	last->setAnimationParams(periodo,numFrame);
+	last->setBGColor(backgroundColor());
+	last->setFGColor(foregroundColor());
+	last->setId(tipo);
+	
+	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
 	{
 		if (elencoBanner.at(idx)->getId() == tipo)
 		{
-			elencoBanner.getLast()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
+			elencoBanner.last()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
 			idx = -1;
 		}
 	}
@@ -390,16 +416,17 @@ void sottoMenu::appendBanner(banner *b)
 
 void sottoMenu::connectLastBanner()
 {
-	connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));
-	connect(this, SIGNAL(parentChanged(QWidget *)), elencoBanner.getLast(), SLOT(grandadChanged(QWidget *)));
-	connect(elencoBanner.getLast(), SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
-	connect(elencoBanner.getLast(), SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
-	connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this, SIGNAL(svegl(bool)));
-	connect(this, SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
-	connect(elencoBanner.getLast(), SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
-	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
+	banner *last = elencoBanner.last();
+	connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
+	connect(this, SIGNAL(parentChanged(QWidget *)), last, SLOT(grandadChanged(QWidget *)));
+	connect(last, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
+	connect(last, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
+	connect(last, SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
+	connect(last, SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
+	connect(last, SIGNAL(svegl(bool)), this, SIGNAL(svegl(bool)));
+	connect(this, SIGNAL(frez(bool)), last, SIGNAL(freezed(bool)));
+	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
+	connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 }
 
 void sottoMenu::addItem(banner *b)
@@ -407,13 +434,15 @@ void sottoMenu::addItem(banner *b)
 	elencoBanner.append(b);
 	connectLastBanner();
 
-	connect(this, SIGNAL(hideChildren()), elencoBanner.getLast(), SLOT(hide()));
-	elencoBanner.getLast()->SetTextU(elencoBanner.getLast()->name()); // name() torna il nome passato alla classe QWidget. non verra' tradotto...
+	banner *last = elencoBanner.last();
+	connect(this, SIGNAL(hideChildren()), last, SLOT(hide()));
+	// TODO: sistemare! la name nelle qt4 non esiste piu'!!
+	//elencoBanner.getLast()->SetTextU(last->name()); // name() torna il nome passato alla classe QWidget. non verra' tradotto...
 	int periodo, numFrame;
-	elencoBanner.getLast()->getAnimationParams(periodo, numFrame);
-	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
-	elencoBanner.getLast()->setBGColor(backgroundColor());
-	elencoBanner.getLast()->setFGColor(foregroundColor());
+	last->getAnimationParams(periodo, numFrame);
+	last->setAnimationParams(periodo,numFrame);
+	last->setBGColor(backgroundColor());
+	last->setFGColor(foregroundColor());
 }
 
 void sottoMenu::showItem(int id)
@@ -424,32 +453,32 @@ void sottoMenu::showItem(int id)
 
 void sottoMenu::draw()
 {
-	uint idx,idy;
-	qDebug("sottoMenu::draw() (%s)", name());
-	if (!(indicold==indice))
+	qDebug() << "sottoMenu::draw() (" << name << ")";
+	if (indicold != indice)
 	{
-		for (idy = 0; idy < elencoBanner.count(); ++idy)
-			elencoBanner.at(idy)->hide();
+		for (int i = 0; i < elencoBanner.size(); ++i)
+			elencoBanner.at(i)->hide();
+
 		if (hasNavBar)
 		{
 			if (banner *bann = elencoBanner.at(indice))
 				bannNavigazione->setCustomButton(bann->customButton());
 
-			unsigned end = numRighe;
+			int end = numRighe;
 			if (scroll_step != 1)
 			{
 				// next line takes care of the case when we have to draw 1 or 2 banners only
 				// see also ListBrowser::showList()
-				unsigned tmp = std::min((unsigned) indice + numRighe, elencoBanner.count());
+				unsigned tmp = std::min(indice + numRighe, elencoBanner.size());
 				end = tmp - indice;
 			}
 
-			for (idx = 0; idx < end; ++idx)
+			for (int i = 0; i < end; ++i)
 			{
-				if  ((elencoBanner.at(indice + idx)) || (elencoBanner.count() > numRighe))
+				if  ((elencoBanner.at(indice + i)) || (elencoBanner.size() > numRighe))
 				{
-					int tmp = (indice + idx) % elencoBanner.count();
-					int y = idx * (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
+					int tmp = (indice + i) % elencoBanner.size();
+					int y = i * (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
 					int h = (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
 					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d", tmp, 0, y, width, h);
 					elencoBanner.at(tmp)->setGeometry(0, y, width, h);
@@ -465,13 +494,14 @@ void sottoMenu::draw()
 		}
 		else
 		{
-			for (idx = 0; idx < numRighe; ++idx)
+			for (int i = 0; i < numRighe; ++i)
 			{
-				if  ((elencoBanner.at(indice + idx)) || (elencoBanner.count() >= numRighe))
+				if  ((elencoBanner.at(indice + i)) || (elencoBanner.size() >= numRighe))
 				{
-					elencoBanner.at((indice+idx) % elencoBanner.count())->setGeometry(0,idx*QWidget::height()/numRighe,QWidget::width(),QWidget::height()/numRighe);
-					elencoBanner.at((indice+idx) % elencoBanner.count())->Draw();
-					elencoBanner.at((indice+idx) % elencoBanner.count())->show();
+					banner *b = elencoBanner.at((indice + i) % elencoBanner.size());
+					b->setGeometry(0, i*  QWidget::height() /numRighe, QWidget::width(),QWidget::height()/numRighe);
+					b->Draw();
+					b->show();
 				}
 			}
 		}
@@ -487,9 +517,9 @@ void sottoMenu::forceDraw()
 
 void sottoMenu::goUp()
 {
-	if (elencoBanner.count() > numRighe)
+	if (elencoBanner.size() > numRighe)
 	{
-		indicold=indice;
+		indicold = indice;
 		// This should work with both scroll_step = 1 (default) and scroll_step = 3
 		// Suppose we have 5 banners, 3 banners per page, scroll_step = 3
 		//  . first page, indice == 0, banners shown:0,1,2
@@ -498,7 +528,7 @@ void sottoMenu::goUp()
 		// Suppose we have scroll_step = 1
 		//  . when indice == 4, user presses arrow down:indice == 5 >= 5 banners => indice = 0 (same as previous code)
 		indice = indice + scroll_step;
-		if ((unsigned) indice >= elencoBanner.count())
+		if (indice >= elencoBanner.size())
 			indice = 0;
 		draw();
 	}
@@ -564,25 +594,22 @@ banner* sottoMenu::getPrevious()
 void sottoMenu::inizializza()
 {
 	qDebug("sottoMenu::inizializza()");
-	iniTim = new QTimer(this,"iniTimer");
-	iniTim->start(300,TRUE);
-	QObject::connect(iniTim,SIGNAL(timeout()), this,SLOT(init()));
-
+	QTimer::singleShot(300, this, SLOT(init()));
 }
 
 void sottoMenu::init()
 {
 	qDebug("sottoMenu::init()");
-	for (char idx=0;idx<elencoBanner.count();idx++)
-		elencoBanner.at (idx)->inizializza();
+	for (int i = 0; i < elencoBanner.size(); ++i)
+		elencoBanner.at(i)->inizializza();
 }
 
 void sottoMenu::init_dimmer()
 {
 	qDebug("sottoMenu::init_dimmer()");
-	for (char idx=0;idx<elencoBanner.count();idx++)
+	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		switch(elencoBanner.at(idx)->getId())
+		switch(elencoBanner.at(i)->getId())
 		{
 		case DIMMER:
 		case DIMMER_100:
@@ -590,7 +617,7 @@ void sottoMenu::init_dimmer()
 		case ATTUAT_AUTOM_TEMP:
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
 		case ATTUAT_AUTOM_TEMP_NUOVO_F:
-			elencoBanner.at (idx)->inizializza(true);
+			elencoBanner.at(i)->inizializza(true);
 			break;
 		default:
 			break;
@@ -600,13 +627,13 @@ void sottoMenu::init_dimmer()
 
 bool sottoMenu::setPul(char* chi, char* where)
 {
-	unsigned char p=0;
+	unsigned char p = 0;
 
-	for (char idx = 0;idx < elencoBanner.count(); idx++)
+	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		if ((!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)))
+		if ((!strcmp(elencoBanner.at(i)->getChi(),chi)) && (!strcmp(elencoBanner.at(i)->getAddress(),where)))
 		{
-			elencoBanner.at(idx)->setPul();
+			elencoBanner.at(i)->setPul();
 			p = 1;
 		}
 	}
@@ -619,11 +646,11 @@ bool sottoMenu::setGroup(char* chi, char* where, bool* group)
 {
 	unsigned char p = 0;
 
-	for (char idx = 0;idx < elencoBanner.count(); idx++)
+	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		if ((!strcmp(elencoBanner.at(idx)->getChi(),chi)) && (!strcmp(elencoBanner.at(idx)->getAddress(),where)))
+		if ((!strcmp(elencoBanner.at(i)->getChi(),chi)) && (!strcmp(elencoBanner.at(i)->getAddress(),where)))
 		{
-			elencoBanner.at(idx)->setGroup(group);
+			elencoBanner.at(i)->setGroup(group);
 			p = 1;
 		}
 	}
@@ -634,25 +661,23 @@ bool sottoMenu::setGroup(char* chi, char* where, bool* group)
 
 void sottoMenu::setIndex(char* indiriz)
 {
-	for (unsigned int idx = 0; idx < elencoBanner.count(); idx++)
+	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		if (!strcmp(elencoBanner.at(idx)->getAddress(),indiriz))
+		if (!strcmp(elencoBanner.at(i)->getAddress(),indiriz))
 		{
 			qDebug("setindex trovato %s",indiriz);
-			elencoBanner.at(idx)->mostra(banner::BUT2);
-			indice=idx;
+			elencoBanner.at(i)->mostra(banner::BUT2);
+			indice = i;
 		}
 		else
-			elencoBanner.at(idx)->nascondi(banner::BUT2);
+			elencoBanner.at(i)->nascondi(banner::BUT2);
 	}
 }
 
 void sottoMenu::mostra_all(char but)
 {
-	for (unsigned int idx = 0; idx < elencoBanner.count(); idx++)
-	{
-		elencoBanner.at(idx)->mostra(but);
-	}
+	for (int i = 0; i < elencoBanner.size(); ++i)
+		elencoBanner.at(i)->mostra(but);
 }
 
 void sottoMenu::setNumRig(uchar n)
@@ -690,7 +715,7 @@ void sottoMenu::freezed(bool f)
 {
 	freez = f;
 
-	qDebug("%s freezed %d",name(),freez);
+	qDebug() << name << " freezed " << freez;
 
 	if (freez)
 	{
@@ -720,16 +745,16 @@ void sottoMenu::setGeometry(int x, int y, int w, int h)
 
 void  sottoMenu::killBanner(banner* b)
 {
-	int icx=elencoBanner.findRef(b);
+	int icx = elencoBanner.indexOf(b);
 
-	if (icx  != -1)
+	if (icx != -1)
 	{
 		elencoBanner.at(icx)->hide();
-		elencoBanner.remove(icx);
+		elencoBanner.takeAt(icx)->deleteLater();
 		indice = 0;
 		indicold = 100;
 		draw();
-		if ((elencoBanner.count() == 0) && (parentWidget()))
+		if (elencoBanner.count() == 0 && parentWidget())
 		{
 			emit Closed();
 			parentWidget()->showFullScreen();
@@ -739,7 +764,7 @@ void  sottoMenu::killBanner(banner* b)
 
 void sottoMenu::hide(bool index)
 {
-	qDebug("sottoMenu::hide() (%s)", name());
+	qDebug() << "sottoMenu::hide() (" << name << ")";
 	QWidget::hide();
 	emit hideChildren();
 	if (index)
@@ -768,21 +793,22 @@ void  sottoMenu::setIndice(char c)
 
 void sottoMenu::show()
 {
-	qDebug("sottoMenu::show() (%s)", name());
+	qDebug() << "sottoMenu::show() (" << name << ")";
 
-	if (strcmp(name(), "ILLUMINO") == 0)
+	if (name == "ILLUMINO")
 		init_dimmer();
 	forceDraw();
 	QWidget::show();
 }
 
-void sottoMenu::reparent (QWidget * parent, WFlags f, const QPoint & p, bool showIt)
+void sottoMenu::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint &p, bool showIt)
 {
 	qDebug("sottoMenu::reparent()");
 	emit parentChanged(parent);
-	QWidget::reparent(parent, f, p, showIt);
+	setParent(parent);
+	setWindowFlags(f);
+	move(p);
 }
-
 
 void sottoMenu::addAmb(char *a)
 {
@@ -808,7 +834,7 @@ void sottoMenu::initBanner(banner *bann, QDomNode conf)
 
 QDomNode sottoMenu::findNamedNode(QDomNode root, QString name)
 {
-	QValueList<QDomNode> nodes;
+	QList<QDomNode> nodes;
 	nodes.append(root);
 	while (!nodes.isEmpty())
 	{
@@ -831,76 +857,118 @@ QDomNode sottoMenu::findNamedNode(QDomNode root, QString name)
 }
 
 #ifdef IPHONE_MODE
-	void sottoMenu::mouseMoveEvent(QMouseEvent *e)
+void sottoMenu::mouseMoveEvent(QMouseEvent *e)
+{
+	static int x = 0,y = 0,Xpos = 0,Ypos = 0;
+	static QTime lastEvent = QTime::currentTime(Qt::LocalTime);
+	static QTime lastManEvent = QTime::currentTime(Qt::LocalTime);
+	static int down = 0, gapT = 100, gapY = 10;
+
+	QTime s = QTime::currentTime(Qt::LocalTime);
+
+	printf("sottoMenu::mouseMoveEvent %d - %d\n",y,s.msec());
+	if (s>lastEvent.addMSecs(200))
 	{
-		static int x = 0,y = 0,Xpos = 0,Ypos = 0;
-		static QTime lastEvent = QTime::currentTime(Qt::LocalTime);
-		static QTime lastManEvent = QTime::currentTime(Qt::LocalTime);
-		static int down = 0, gapT = 100, gapY = 10;
-
-		QTime s = QTime::currentTime(Qt::LocalTime);
-
-		printf("sottoMenu::mouseMoveEvent %d - %d\n",y,s.msec());
-		if (s>lastEvent.addMSecs(200))
-		{
-			gapY = 10;
-			gapT = 50;
-			y = e->y();
-		} 
-
-		if ((abs(y-e->y())>gapY))
-		{
-			QTime s1 = lastManEvent.addMSecs(gapT);
-			if (e->y() > y)
-			{
-				if (((s > s1) && (!down)) || (e->y() - y > 20))
-				{
-					if (bannNavigazione)
-						emit goUP();
-					lastManEvent = QTime::currentTime(Qt::LocalTime);
-					printf("up %d\n",y);
-					if (e->y() - y > 35)
-						emit goUP();
-					if (gapT >30)
-						gapT = 30;
-					if (gapY > 5)
-						gapY = 5;
-				}
-				else if (down)
-				{
-					down = 0;
-					gapT = 50;
-					gapY = 10;
-				}
-			}
-			else
-			{
-				if (((s > s1) && (down)) || (y - e->y() > 20))
-				{
-					if (bannNavigazione)
-						emit goDO();
-					lastManEvent = QTime::currentTime(Qt::LocalTime); 
-					printf("down %d\n",y);
-					if (y - e->y() > 35)
-						emit goUP();
-					if (gapT > 30)
-						gapT = 30;
-					if (gapY > 5)
-						gapY = 5;
-				}
-				else if (!down)
-				{
-					down = 1;
-					gapT = 50;
-					gapY = 10;
-				}
-			}
-			x = e->x();
-			y = e->y();
-		}
-		lastEvent = QTime::currentTime(Qt::LocalTime);
+		gapY = 10;
+		gapT = 50;
+		y = e->y();
 	}
+
+	if ((abs(y-e->y())>gapY))
+	{
+		QTime s1 = lastManEvent.addMSecs(gapT);
+		if (e->y() > y)
+		{
+			if (((s > s1) && (!down)) || (e->y() - y > 20))
+			{
+				if (bannNavigazione)
+					emit goUP();
+				lastManEvent = QTime::currentTime(Qt::LocalTime);
+				printf("up %d\n",y);
+				if (e->y() - y > 35)
+					emit goUP();
+				if (gapT >30)
+					gapT = 30;
+				if (gapY > 5)
+					gapY = 5;
+			}
+			else if (down)
+			{
+				down = 0;
+				gapT = 50;
+				gapY = 10;
+			}
+		}
+		else
+		{
+			if (((s > s1) && (down)) || (y - e->y() > 20))
+			{
+				if (bannNavigazione)
+					emit goDO();
+				lastManEvent = QTime::currentTime(Qt::LocalTime);
+				printf("down %d\n",y);
+				if (y - e->y() > 35)
+					emit goUP();
+				if (gapT > 30)
+					gapT = 30;
+				if (gapY > 5)
+					gapY = 5;
+			}
+			else if (!down)
+			{
+				down = 1;
+				gapT = 50;
+				gapY = 10;
+			}
+		}
+		x = e->x();
+		y = e->y();
+	}
+	lastEvent = QTime::currentTime(Qt::LocalTime);
+}
 #endif
+
+void sottoMenu::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void sottoMenu::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void sottoMenu::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
+const QColor& sottoMenu::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& sottoMenu::foregroundColor()
+{
+	return palette().color(foregroundRole());
+}
+
+const QColor& sottoMenu::paletteBackgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& sottoMenu::paletteForegroundColor()
+{
+	return palette().color(foregroundRole());
+}
+
 
 // Specialized submenus function definition
 //
@@ -909,11 +977,13 @@ ProgramMenu::ProgramMenu(QWidget *parent, const char *name, QDomNode conf) : sot
 	conf_root = conf;
 }
 
-void ProgramMenu::status_changed(QPtrList<device_status> list)
+void ProgramMenu::status_changed(QList<device_status*> sl)
 {
 	bool update = false;
-	for (QPtrListIterator<device_status> it(list); device_status *ds = it.current(); ++it)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z || ds->get_type() == device_status::THERMAL_REGULATOR_99Z)
 		{
 			stat_var curr_season(stat_var::SEASON);
@@ -939,6 +1009,7 @@ void ProgramMenu::status_changed(QPtrList<device_status> list)
 			}
 		}
 	}
+
 	if (update)
 	{
 		setAllBGColor(paletteBackgroundColor());
@@ -975,14 +1046,16 @@ void WeeklyMenu::createSummerBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			QByteArray buf_i_ok = i_ok.toAscii();
+			QByteArray buf_i_central = i_central.toAscii();
+			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
 				bp->SetTextU(p.toElement().text());
 				QRegExp re("(\\d)");
-				int index = re.search(p.nodeName());
+				int index = re.indexIn(p.nodeName());
 				if (index != -1)
 					bp->setProgram(re.cap(1).toInt());
 			}
@@ -1013,14 +1086,16 @@ void WeeklyMenu::createWinterBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			QByteArray buf_i_ok = i_ok.toAscii();
+			QByteArray buf_i_central = i_central.toAscii();
+			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
 				bp->SetTextU(p.toElement().text());
 				QRegExp re("(\\d)");
-				int index = re.search(p.nodeName());
+				int index = re.indexIn(p.nodeName());
 				if (index != -1)
 					bp->setProgram(re.cap(1).toInt());
 			}
@@ -1057,14 +1132,16 @@ void ScenarioMenu::createSummerBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			QByteArray buf_i_ok = i_ok.toAscii();
+			QByteArray buf_i_central = i_central.toAscii();
+			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
 				bp->SetTextU(p.toElement().text());
 				QRegExp re("(\\d+)");
-				int index = re.search(p.nodeName());
+				int index = re.indexIn(p.nodeName());
 				if (index != -1)
 					bp->setProgram(re.cap(1).toInt());
 			}
@@ -1095,14 +1172,16 @@ void ScenarioMenu::createWinterBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			bp->SetIcons(i_ok.ascii(), 0, i_central.ascii());
+			QByteArray buf_i_ok = i_ok.toAscii();
+			QByteArray buf_i_central = i_central.toAscii();
+			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
 				bp->SetTextU(p.toElement().text());
 				QRegExp re("(\\d+)");
-				int index = re.search(p.nodeName());
+				int index = re.indexIn(p.nodeName());
 				if (index != -1)
 					bp->setProgram(re.cap(1).toInt());
 			}

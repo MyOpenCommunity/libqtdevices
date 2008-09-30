@@ -56,7 +56,7 @@ private:
 	device *dev;
 	QString time;
 public:
-	automCancAttuatIll (QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL, QString *t = NULL);
+	automCancAttuatIll(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL, QString t = QString());
 private slots:
 	void Attiva();
 };

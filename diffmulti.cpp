@@ -151,17 +151,18 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			}
 			elencoBanner.append(b);
 			dslist.append(ds);
-			elencoBanner.getLast()->SetTextU(*(descrizioni->at(0)));
-			elencoBanner.getLast()->setBGColor(backgroundColor());
-			elencoBanner.getLast()->setFGColor(foregroundColor());
-			elencoBanner.getLast()->setId(tipo);
-			connect(this, SIGNAL(gestFrame(char*)), elencoBanner.getLast(), SLOT(gestFrame(char*)));
-			connect(this, SIGNAL(actSrcChanged(int, int)), elencoBanner.getLast(), SLOT(actSrcChanged(int, int)));
-			connect(elencoBanner.getLast(), SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
-			connect(elencoBanner.getLast(), SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
-			connect(this , SIGNAL(frez(bool)), elencoBanner.getLast(), SIGNAL(freezed(bool)));
-			connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
-			connect(elencoBanner.getLast(), SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
+			banner *last = elencoBanner.last();
+			last->SetTextU(*(descrizioni->at(0)));
+			last->setBGColor(backgroundColor());
+			last->setFGColor(foregroundColor());
+			last->setId(tipo);
+			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
+			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
+			connect(last, SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
+			connect(last, SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
+			connect(this , SIGNAL(frez(bool)), last, SIGNAL(freezed(bool)));
+			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
+			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 			if (tipo == AMBIENTE)
 				sorgenti->addAmb((char *)indirizzo);
 
@@ -224,15 +225,15 @@ void diffmulti::setNumRighe(uchar n)
 		dslist.at(i)->setNumRighe(n);
 }
 
-void diffmulti::reparent(QWidget *par, unsigned int f, QPoint p, bool showIt)
+void diffmulti::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint & p, bool showIt)
 {
-	sottoMenu::reparent(par, f, p, showIt);
+	sottoMenu::reparent(parent, f, p, showIt);
 	for (int i = 0; i < dslist.size(); ++i)
 	{
 		diffSonora *ds = dslist.at(i);
-		ds->setParent(!par ? par : this);
-		ds->setWindowFlags((Qt::WindowFlags)f);
-		ds->move(QPoint(0, 0);
+		ds->setParent(!parent ? parent : this);
+		ds->setWindowFlags(f);
+		ds->move(p);
 	}
 }
 
@@ -247,18 +248,14 @@ void diffmulti::ds_closed(diffSonora *ds)
 {
 	qDebug("diffmulti::ds_closed()");
 	ds->hide();
-	QPtrListIterator<banner> *lbi = new QPtrListIterator<banner>(elencoBanner);
-	lbi->toFirst();
-	banner *b;
-	while ((b = lbi->current()) != 0)
+
+	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		b->Draw();
-		b->show();
-		++(*lbi);
+		elencoBanner.at(i)->Draw();
+		elencoBanner.at(i)->show();
 	}
 	forceDraw();
 	showFullScreen();
-	delete lbi;
 }
 
 void diffmulti::hide()

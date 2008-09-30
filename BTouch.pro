@@ -168,7 +168,7 @@ SOURCES += actuators.cpp \
            sorgentiaux.cpp \
            sorgentimedia.cpp \
            sorgentiradio.cpp \
-           sottoMenu.cpp \
+           sottomenu.cpp \
            stopngo.cpp \
            supervisionmenu.cpp \
            sveglia.cpp \

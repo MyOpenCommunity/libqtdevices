@@ -13,6 +13,9 @@
 #include "device_cache.h" // btouch_device_cache
 #include "videocitof.h" // class call_notifier
 
+#include <QDebug>
+
+
 /*****************************************************************
  ** Posto Esterno
  ****************************************************************/	
@@ -23,16 +26,15 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
-postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown) : bann4tasLab(parent, name)
+postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, QString _light, QString _key, QString _unknown) : bann4tasLab(parent, name)
 {
 	where = _where;
 	descr = name;
-	light = !strcmp(_light, "1");
-	key = !strcmp(_key, "1");
-	unknown = !strcmp(_unknown, "1");
-	qDebug("postoExt::postoExt(), unknown = %s", _unknown);
-	qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", 
-			Icona1, Icona2, Icona3, Icona4);
+	light = (_light == "1");
+	key = (_key == "1");
+	unknown = (_unknown == "1");
+	qDebug() << "postoExt::postoExt(), unknown = "  << _unknown;
+	qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", Icona1, Icona2, Icona3, Icona4);
 
 	qDebug("light = %d, key = %d, unknown = %d", light, key, unknown);
 	qDebug("descr = %s, where = %s", name, _where);

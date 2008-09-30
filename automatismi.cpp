@@ -47,7 +47,7 @@ void automCancAttuatVC::Attiva()
  ** automCancAttuatIll
  ****************************************************************/
 
-automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, QString *t)
+automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, QString t)
 	: bannButIcon(parent, name)
 {
 	qDebug("automCancAttuatIll::automCancAttuatIll() :%s %s", IconaSx, IconaDx);
@@ -59,7 +59,7 @@ automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char* 
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
 			this, SLOT(status_changed(QPtrList<device_status>)));
-	time = t ? *t : QString("*0*0*18");
+	time = t.isEmpty() ? t : QString("*0*0*18");
 	Draw();
 }
 
