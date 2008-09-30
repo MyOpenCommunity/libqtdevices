@@ -19,9 +19,9 @@
 BannOff::BannOff(QWidget *parent, const char *name, thermal_regulator *_dev)
 	: bann3But(parent, name)
 {
-	const QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
+	QByteArray i_off = QString("%1%2").arg(IMG_PATH).arg("off.png").toAscii();
 
-	SetIcons(0, 0, 0, i_off.ascii());
+	SetIcons(0, 0, 0, i_off.constData());
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
 	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
@@ -36,9 +36,9 @@ void BannOff::performAction()
 BannAntifreeze::BannAntifreeze(QWidget *parent, const char *name, thermal_regulator *_dev)
 	: bann3But(parent, name)
 {
-	const QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
+	QByteArray i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png").toAscii();
 
-	SetIcons(0, 0, 0, i_antifreeze.ascii());
+	SetIcons(0, 0, 0, i_antifreeze.constData());
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
 	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
@@ -53,11 +53,11 @@ void BannAntifreeze::performAction()
 BannSummerWinter::BannSummerWinter(QWidget *parent, const char *name, thermal_regulator *_dev)
 	: bann4But(parent, name)
 {
-	const QString i_summer = QString("%1%2").arg(IMG_PATH).arg("estate.png");
-	const QString i_winter = QString("%1%2").arg(IMG_PATH).arg("inverno.png");
+	QByteArray i_summer = QString("%1%2").arg(IMG_PATH).arg("estate.png").toAscii();
+	QByteArray i_winter = QString("%1%2").arg(IMG_PATH).arg("inverno.png").toAscii();
 
 	// see banner:195 (don't know why it works, really)
-	SetIcons(0, 0, i_summer.ascii(), i_winter.ascii());
+	SetIcons(0, 0, i_summer.constData(), i_winter.constData());
 	dev = _dev;
 
 	connect(this, SIGNAL(csxClick()), this, SLOT(setWinter()));

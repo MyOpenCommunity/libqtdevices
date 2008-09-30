@@ -125,7 +125,7 @@ SOURCES += actuators.cpp \
            bannonoff2scr.cpp \
            bannonoffcombo.cpp \
            bannpuls.cpp \
-           bannRegolaz.cpp \
+           bannregolaz.cpp \
            bannsettings.cpp \
            banntemperature.cpp \
            btbutton.cpp \

@@ -32,7 +32,7 @@ bannRegolaz::bannRegolaz(QWidget *parent,const char *name) : banner(parent, name
 void bannRegolaz::armTimRipdx()
 {
 	if  (!timRip)
-		timRip = new QTimer(this,"clock");
+		timRip = new QTimer(this);
 	if (!(timRip->isActive()))
 	{
 		timRip->start(TIME_RIP_REGOLAZ);
@@ -44,7 +44,7 @@ void bannRegolaz::armTimRipdx()
 void bannRegolaz::armTimRipsx()
 {
 	if (!timRip)
-		timRip = new QTimer(this,"clock");
+		timRip = new QTimer(this);
 
 	if (!(timRip->isActive()))
 	{
