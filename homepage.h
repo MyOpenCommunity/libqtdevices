@@ -10,9 +10,9 @@
 #include "main.h"
 #include "btbutton.h"
 
-#include <qwidget.h>
-#include <qcolor.h>
-#include <qptrlist.h>
+#include <QWidget>
+#include <QColor>
+#include <QList>
 
 class QLCDNumber;
 class BtLabel;
@@ -38,7 +38,7 @@ class homePage : public QWidget
 {
 Q_OBJECT
 public:
-	homePage(QWidget *parent=0, const char *name=0, WFlags f =Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
+	homePage(QWidget *parent, const char *name, Qt::WindowFlags f);
 
 /*!
   \brief Sets the background color for the banner.
@@ -165,12 +165,11 @@ private:
    * \param new_bt_temperature The new temperature in BTicino 4-digit format.
    * \param which_display The index of the display to update.
    */
-void updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display);
-
+	void updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display);
 
 	timeScript* dataOra;
 	int xClock, yClock, xTemp, yTemp;
-	QPtrList<BtButton> elencoButtons;
+	QList<BtButton*> elencoButtons;
 	bool freez;
 	char zonaTermo1[50], zonaTermo2[50], zonaTermo3[50];
 	char *zt[3];
@@ -186,6 +185,15 @@ void updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_displa
 	char tipoSpecial;
 	unsigned int tempCont;
 	BtLabel *descrizione, *descrTemp[3];
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
+
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
+
 };
 
 

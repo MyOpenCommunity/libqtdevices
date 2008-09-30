@@ -23,11 +23,11 @@
 
 #include <stdlib.h>
 
-
-homePage::homePage(QWidget *parent, const char *name, WFlags f) : QWidget(parent, name)
+// TODO: rimuovere le windows flag, non utilizzate!
+homePage::homePage(QWidget *parent, const char *name, Qt::WindowFlags f) : QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -41,25 +41,22 @@ homePage::homePage(QWidget *parent, const char *name, WFlags f) : QWidget(parent
 
 void homePage::addButton(int x, int y, char* iconName, char function, char* chix, char* cosax, char* dovex, char tipo)
 {
-	BtButton *b1;
-	QPixmap Icon;
-
 	char nomeFile[MAX_PATH];
-	elencoButtons.append(new BtButton (this,"BelBottone"));
-	b1 = elencoButtons.getLast();
+	BtButton *b1 = new BtButton(this,"BelBottone");
+	elencoButtons.append(b1);
 
-	if (function==SPECIAL)
+	if (function == SPECIAL)
 		b1->setGeometry(x, y, DIM_SPECBUT_HOME, DIM_BUT_HOME_SMALL);
-	else if (function==BACK)
+	else if (function == BACK)
 		b1->setGeometry(x, y, DIM_BUT_HOME_SMALL, DIM_BUT_HOME_SMALL);
 	else
 		b1->setGeometry(x, y, DIM_BUT_HOME, DIM_BUT_HOME);
 
+	QPixmap Icon;
 	if (Icon.load(iconName))
 		b1->setPixmap(Icon);
 	b1->setPaletteBackgroundColor(backgroundColor());
 
-	
 	getPressName((char*)iconName, &nomeFile[0],sizeof(nomeFile));
 
 	if (Icon.load(nomeFile))
@@ -201,8 +198,9 @@ void homePage::addTemp(char *z, int x, int y, int width, int height, QColor bg, 
 
 	temperatura[tempCont] = new QLCDNumber(this);
 	temperatura[tempCont]->setGeometry(x, y, width, height - H_SCR_TEMP);
-	temperatura[tempCont]->setPaletteForegroundColor(fg);
-	temperatura[tempCont]->setPaletteBackgroundColor(bg);
+	// TODO: sistemare con i metodi qt4!
+	//temperatura[tempCont]->setPaletteForegroundColor(fg);
+	//temperatura[tempCont]->setPaletteBackgroundColor(bg);
 	temperatura[tempCont]->setFrameStyle(style);
 	temperatura[tempCont]->setLineWidth(line);
 	temperatura[tempCont]->setNumDigits(6);
@@ -215,9 +213,9 @@ void homePage::addTemp(char *z, int x, int y, int width, int height, QColor bg, 
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
-		descrTemp[tempCont] = new BtLabel(this, qtext.ascii());
+		descrTemp[tempCont] = new BtLabel(this);
 		descrTemp[tempCont]->setFont(aFont);
-		descrTemp[tempCont]->setAlignment(AlignHCenter|AlignVCenter);
+		descrTemp[tempCont]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		descrTemp[tempCont]->setText(qtext);
 		descrTemp[tempCont]->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
 		descrTemp[tempCont]->setPaletteForegroundColor(fg);
@@ -259,9 +257,9 @@ void homePage::addDescrU(const QString & qz, int x, int y, int width, int height
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_descrizione, aFont);
-	descrizione = new BtLabel(this, qz.ascii());
+	descrizione = new BtLabel(this);
 	descrizione->setFont(aFont);
-	descrizione->setAlignment(AlignHCenter|AlignVCenter);
+	descrizione->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	descrizione->setText(qz);
 	descrizione->setGeometry(x,y,width,height);
 	descrizione->setPaletteForegroundColor(fg);
@@ -291,15 +289,15 @@ void homePage::freezed(bool f)
 	freez = f;
 	if (freez)
 	{
-		for (uchar idx = 0; idx < elencoButtons.count(); idx++)
-			elencoButtons.at(idx)->setEnabled(FALSE);
+		for (int i = 0; i < elencoButtons.size(); ++i)
+			elencoButtons.at(i)->setEnabled(FALSE);
 		if (descrizione)
 			descrizione->setEnabled(FALSE);
 	}
 	else
 	{
-		for (uchar idx = 0; idx < elencoButtons.count(); idx++)
-			elencoButtons.at(idx)->setEnabled(TRUE);
+		for (int i = 0; i < elencoButtons.size(); ++i)
+			elencoButtons.at(i)->setEnabled(TRUE);
 		if (descrizione)
 			descrizione->setEnabled(TRUE);
 	}
@@ -423,4 +421,35 @@ void homePage::specFunzRelease()
 	strcat(&specialFrame[0],&dove[0]);
 	strcat(&specialFrame[0],"##");
 	emit sendFrame(&specialFrame[0]);
+}
+
+void homePage::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void homePage::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void homePage::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
+const QColor& homePage::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& homePage::foregroundColor()
+{
+	return palette().color(foregroundRole());
 }

@@ -147,7 +147,7 @@ SOURCES += actuators.cpp \
            frame_interpreter.cpp \
            genericfunz.cpp \
            genpage.cpp \
-           homePage.cpp \
+           homepage.cpp \
            icondispatcher.cpp \
            impostatime.cpp \
            listbrowser.cpp \
