@@ -11,16 +11,14 @@
 #include "bannpuls.h"
 #include "main.h"
 
-bannPuls::bannPuls( QWidget *parent,const char *name )
-        : banner( parent, name )
+bannPuls::bannPuls(QWidget *parent,const char *name) : banner(parent, name)
 {
-    addItem( BUT1 , MAX_WIDTH-BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM );
-    addItem( ICON ,BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y );
-
-    addItem( TEXT , 0 , BANPULS_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE-BANPULS_BUT_DIM );
-       
-    connect(this,SIGNAL(sxClick()),this,SIGNAL(click()));
-    connect(this,SIGNAL(sxPressed()),this,SIGNAL(pressed()));
-    connect(this,SIGNAL(sxReleased()),this,SIGNAL(released()));
+	addItem(BUT1, MAX_WIDTH-BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
+	addItem(ICON,BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y);
+	addItem(TEXT, 0 , BANPULS_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE-BANPULS_BUT_DIM);
+	
+	connect(this,SIGNAL(sxClick()),this,SIGNAL(click()));
+	connect(this,SIGNAL(sxPressed()),this,SIGNAL(pressed()));
+	connect(this,SIGNAL(sxReleased()),this,SIGNAL(released()));
 }
 
