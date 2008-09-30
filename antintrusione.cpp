@@ -13,27 +13,27 @@
 #include "bann_antintrusione.h"
 #include "sottomenu.h"
 
-#include <qdatetime.h>
-#include <qcursor.h>
+#include <QDateTime>
+#include <QCursor>
+#include <QTimer>
+
 
 extern unsigned char tipoData;
 
-antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent, name)
+antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent)
 {
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
-	zone = new sottoMenu(this,"Zone",4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2);
+	zone = new sottoMenu(this,"Zone",4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
 	zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
 	impianto = new sottoMenu(this,"impianto",0,MAX_WIDTH, MAX_HEIGHT/numRighe,1);
 	connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
 	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
-	allarmi.clear();
-	allarmi.setAutoDelete(true);
-	curr_alarm = NULL;
+	curr_alarm = -1;
 	setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
 	connect(zone  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
 	connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
@@ -48,6 +48,11 @@ antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent
 
 	connect(this,SIGNAL(freezed(bool)),zone,SLOT(freezed(bool)));
 	connect(this,SIGNAL(freezed(bool)),impianto,SLOT(freezed(bool)));
+}
+
+antintrusione::~antintrusione()
+{
+	doClearAlarms();
 }
 
 void antintrusione::IsParz(bool ab)
@@ -111,14 +116,12 @@ end:
 
 void antintrusione::testranpo()
 {
-	QTimer *t = new  QTimer(this,"T");
-	connect(t, SIGNAL(timeout()),this,SLOT(ctrlAllarm()));
-	t->start(150, TRUE);
+	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
 }
 
 void antintrusione:: ctrlAllarm()
 {
-	qDebug("ctrlAllarm %d", allarmi.count());
+	qDebug("ctrlAllarm %d", allarmi.size());
 	if (!allarmi.isEmpty())
 		impianto->getLast()->mostra(banner::BUT1);
 	else
@@ -154,15 +157,9 @@ void antintrusione::draw()
 		zone->draw();
 	if (allarmi.isEmpty())
 		return;
-	QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
-	ai->toFirst();
-	allarme *a;
-	while ((a = ai->current()))
-	{
-		a->draw();
-		++(*ai);
-	}
-	delete ai;
+
+	for (int i = 0; i < allarmi.size(); ++i)
+		allarmi.at(i)->draw();
 }
 
 int antintrusione::setBGPixmap(char* backImage)
@@ -177,7 +174,7 @@ int antintrusione::setBGPixmap(char* backImage)
 }
 
 int antintrusione::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
-	QPtrList<QString> &icon_names, int periodo, int numFrame)
+	QList<QString*> &icon_names, int periodo, int numFrame)
 {
 	if (tipo == IMPIANTINTRUS)
 	{
@@ -244,8 +241,8 @@ void antintrusione::gesFrame(char*frame)
 
 	if (!strcmp(msg_open.Extract_chi(),"5"))
 	{
-		if ((! strncmp(msg_open.Extract_cosa(),"12",2)) || (! strncmp(msg_open.Extract_cosa(),"15",2)) || \
-			(! strncmp(msg_open.Extract_cosa(),"16",2)) || (! strncmp(msg_open.Extract_cosa(),"17",2)))
+		if ((!strncmp(msg_open.Extract_cosa(),"12",2)) || (! strncmp(msg_open.Extract_cosa(),"15",2)) || \
+			(!strncmp(msg_open.Extract_cosa(),"16",2)) || (! strncmp(msg_open.Extract_cosa(),"17",2)))
 		{
 			QString descr;
 			char zona[3];
@@ -282,31 +279,33 @@ void antintrusione::gesFrame(char*frame)
 
 			strcpy(&zona[0],msg_open.Extract_dove());
 
-			QString time;
-			time.sprintf("\n%s   %s    %s %s",
-				QDateTime::currentDateTime().toString("hh:mm").ascii(),
-				QDateTime::currentDateTime().toString("dd.MM").ascii(),
-				tipo, &zona[1]);
+			QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
+			QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
+			QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(&zona[1]);
 
 			descr += time;
 			descr.truncate(2 * MAX_PATH);
 
 			allarmi.append(new allarme(NULL, descr, NULL, ICON_DEL, t));
-			curr_alarm = allarmi.current();
-			curr_alarm->setFGColor(foregroundColor());
-			curr_alarm->setBGColor(backgroundColor());
-			connect(curr_alarm, SIGNAL(Back()), this, SLOT(closeAlarms()));
-			connect(curr_alarm, SIGNAL(Next()), this, SLOT(nextAlarm()));
-			connect(curr_alarm, SIGNAL(Prev()), this, SLOT(prevAlarm()));
-			connect(curr_alarm, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
-			connect(this, SIGNAL(freezed(bool)), curr_alarm, SLOT(freezed(bool)));
-			aggiorna=1;
+			// The current alarm is the last alarm inserted
+			curr_alarm = allarmi.size() - 1;
+			allarme *curr = allarmi.at(curr_alarm);
+			curr->setFGColor(foregroundColor());
+			curr->setBGColor(backgroundColor());
+			connect(curr, SIGNAL(Back()), this, SLOT(closeAlarms()));
+			connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
+			connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
+			connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
+			connect(this, SIGNAL(freezed(bool)), curr, SLOT(freezed(bool)));
+			aggiorna = 1;
 		}
 	}
 	if (aggiorna)
 	{
 		qDebug("ARRIVATO ALLARME!!!!");
-		curr_alarm->show();
+		assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+		allarme *curr = allarmi.at(curr_alarm);
+		curr->show();
 		ctrlAllarm();
 	}
 }
@@ -329,57 +328,52 @@ void antintrusione::setNavBarMode(uchar c)
 void antintrusione::nextAlarm()
 {
 	qDebug("antiintrusione::nextAlarm()");
-	curr_alarm->hide();
-	curr_alarm = allarmi.next();
-	if (!curr_alarm)
-	{
-		qDebug("fine");
-		curr_alarm = allarmi.first();
-	}
-	curr_alarm->show();
+	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	allarmi.at(curr_alarm)->hide();
+
+	if (++curr_alarm >= allarmi.size())
+		curr_alarm = 0;
+
+	allarmi.at(curr_alarm)->show();
 }
 
 void antintrusione::prevAlarm()
 {
 	qDebug("antiintrusione::prevAlarm()");
-	curr_alarm->hide();
-	curr_alarm = allarmi.prev();
-	if (!curr_alarm)
-	{
-		qDebug("inizio");
-		curr_alarm = allarmi.last();
-	}
-	curr_alarm->show();
+	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	allarmi.at(curr_alarm)->hide();
+
+	if (--curr_alarm < 0)
+		curr_alarm = allarmi.size() - 1;
+
+	allarmi.at(curr_alarm)->show();
 }
 
 void antintrusione::deleteAlarm()
 {
 	qDebug("antiintrusione::deleteAlarm()");
-	// Enough, autodelete is set
-	curr_alarm->hide();
-	allarmi.remove(curr_alarm);
+	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	allarmi.at(curr_alarm)->hide();
+	allarmi.takeAt(curr_alarm)->deleteLater();
+
 	if (allarmi.isEmpty())
 	{
-		curr_alarm = NULL;
+		curr_alarm = -1;
 		testranpo();
 		return;
 	}
-	curr_alarm = allarmi.current();
-	curr_alarm->show();
+	else if (curr_alarm >= allarmi.size())
+		curr_alarm = allarmi.size() - 1;
+
+	allarmi.at(curr_alarm)->show();
 }
 
 void antintrusione::closeAlarms()
 {
 	qDebug("antiintrusione::closeAlarms()");
-	QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
-	ai->toFirst();
-	allarme *a;
-	while ((a = ai->current()))
-	{
-		a->hide();
-		++(*ai);
-	}
-	delete ai;
+	for (int i = 0; i < allarmi.size(); ++i)
+		allarmi.at(i)->hide();
+
 	impianto->show();
 	zone->show();
 }
@@ -387,20 +381,21 @@ void antintrusione::closeAlarms()
 void antintrusione::showAlarms()
 {
 	qDebug("antiintrusione::showAlarms()");
-	curr_alarm = allarmi.last();
-	if (!curr_alarm)
+	if (allarmi.isEmpty())
 		return;
+
+	curr_alarm = allarmi.size() - 1;
 	impianto->hide();
 	zone->hide();
-	curr_alarm->show();
+	allarmi.at(curr_alarm)->show();
 }
 
 void antintrusione::doClearAlarms()
 {
 	qDebug("antiintrusione::doClearAlarms()");
-	allarmi.clear();
+	while (!allarmi.isEmpty())
+		delete allarmi.takeFirst();
 }
-
 
 void antintrusione::show()
 {
@@ -416,16 +411,11 @@ void antintrusione::hide()
 	QWidget::hide();
 	impianto->hide();
 	zone->hide();
-	QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
-	ai->toFirst();
-	allarme *a;
-	while ((a = ai->current()))
-	{
-		a->hide();
-		++(*ai);
-	}
-	delete ai;
+	for (int i = 0; i < allarmi.size(); ++i)
+		allarmi.at(i)->hide();
+
 	qDebug("Richiesta stato zone");
+	// TODO: fare un ciclo!!
 	emit sendFrame("*#5*#1##");
 	emit sendFrame("*#5*#2##");
 	emit sendFrame("*#5*#3##");
@@ -434,4 +424,35 @@ void antintrusione::hide()
 	emit sendFrame("*#5*#6##");
 	emit sendFrame("*#5*#7##");
 	emit sendFrame("*#5*#8##");
+}
+
+void antintrusione::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void antintrusione::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void antintrusione::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
+const QColor& antintrusione::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& antintrusione::foregroundColor()
+{
+	return palette().color(foregroundRole());
 }
