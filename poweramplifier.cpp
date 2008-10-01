@@ -4,7 +4,9 @@
 #include "btlabel.h"
 #include "main.h"
 
-#include <qregexp.h>
+#include <QRegExp>
+#include <QList>
+
 #include <stdlib.h>
 
 static const char *IMG_PLUS = IMG_PATH "btnplus.png";
@@ -25,7 +27,7 @@ static const char *IMG_LESS = IMG_PATH "less.png";
  ****************************************************************/
 
 PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* onIcon, char* offIcon, char *onAmpl, char *offAmpl, char* settingIcon)
-: bannRegolaz(parent, name)
+	: bannRegolaz(parent, name)
 {
 	qDebug("PowerAmplifier::PowerAmplifier()");
 	setRange(1,9);
@@ -49,7 +51,7 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	QColor *bg, *fg1, *fg2;
 	readExtraConf(&bg, &fg1, &fg2);
 
-	QPtrList<QString> icons;
+	QList<QString*> icons;
 	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), NULL, icons);
 	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons, 0, 0, *fg2);
 	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons, 0, 0, *fg2);
@@ -82,7 +84,8 @@ void PowerAmplifier::showSettings()
 
 void PowerAmplifier::toggleStatus()
 {
-	SetIcons(1, status ? off_icon.ascii() : on_icon.ascii());
+	QByteArray buf_icon = status ? off_icon.toAscii() : on_icon.toAscii();
+	SetIcons(1, buf_icon.constData());
 	status = !status;
 	Draw();
 }
@@ -134,8 +137,7 @@ void PowerAmplifierPreset::fillPresetDesc()
 
 	for (unsigned i=10; i < num_preset; ++i)
 	{
-		QString desc;
-		desc.sprintf("%s %d", tr("Preset").ascii(), i + 1);
+		QString desc = QString("%1 %2").arg( tr("Preset")).arg(i + 1);
 		preset_desc.append(desc);
 	}
 
@@ -144,7 +146,7 @@ void PowerAmplifierPreset::fillPresetDesc()
 	while (!node.isNull())
 	{
 		QRegExp reg("pre\\d{1,2}");
-		int pos = reg.search(node.nodeName());
+		int pos = reg.indexIn(node.nodeName());
 		if (pos != -1)
 		{
 			int preset_id = node.nodeName().mid(pos + 3, reg.matchedLength()).toInt();
@@ -175,7 +177,7 @@ QDomNode PowerAmplifierPreset::getPowerAmplifierNode()
 
 void PowerAmplifierPreset::showEvent(QShowEvent *event)
 {
-	SetTextU(preset_desc[preset].ascii());
+	SetTextU(preset_desc[preset]);
 	Draw();
 }
 
@@ -186,7 +188,7 @@ void PowerAmplifierPreset::prevPreset()
 		preset = num_preset - 1;
 	else
 		--preset;
-	SetTextU(preset_desc[preset].ascii());
+	SetTextU(preset_desc[preset]);
 	Draw();
 }
 
@@ -197,7 +199,7 @@ void PowerAmplifierPreset::nextPreset()
 		preset = 0;
 	else
 		++preset;
-	SetTextU(preset_desc[preset].ascii());
+	SetTextU(preset_desc[preset]);
 	Draw();
 }
 
@@ -237,7 +239,7 @@ void PowerAmplifierTreble::showLevel()
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	SetSecondaryTextU(desc.ascii());
+	SetSecondaryTextU(desc);
 }
 
 void PowerAmplifierTreble::setFGColor(QColor c)
@@ -282,7 +284,7 @@ void PowerAmplifierBass::showLevel()
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	SetSecondaryTextU(desc.ascii());
+	SetSecondaryTextU(desc);
 }
 
 void PowerAmplifierBass::setFGColor(QColor c)
@@ -332,7 +334,7 @@ void PowerAmplifierBalance::showBalance()
 {
 	QString desc;
 	desc.sprintf("%d", abs(balance));
-	SetSecondaryTextU(desc.ascii());
+	SetSecondaryTextU(desc);
 }
 
 void PowerAmplifierBalance::setFGColor(QColor c)

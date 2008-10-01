@@ -7,10 +7,12 @@
 #include "bannonoffcombo.h"
 #include "poweramplifier_device.h"
 
-#include <qvaluevector.h>
-#include <qdom.h>
+#include <QDomNode>
+#include <QWidget>
+#include <QVector>
 
 class sottoMenu;
+
 
 /*****************************************************************
  **Power amplifier
@@ -58,7 +60,7 @@ private slots:
 
 private:
 	unsigned preset, num_preset;
-	QValueVector <QString> preset_desc;
+	QVector<QString> preset_desc;
 	void fillPresetDesc();
 	QDomNode getPowerAmplifierNode();
 };
