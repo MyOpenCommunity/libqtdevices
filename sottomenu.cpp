@@ -15,6 +15,7 @@
 #include "setitems.h"
 #include "btbutton.h"
 #include "diffsonora.h"
+#include "diffmulti.h"
 #include "versio.h"
 #include "genericfunz.h"
 #include "xmlconfhandler.h"

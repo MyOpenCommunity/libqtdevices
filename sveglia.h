@@ -221,6 +221,11 @@ private:
 	bool gesFrameAbil,svegliaAbil,onceToGest;
 	QTimer *minuTimer,*aumVolTimer;
 	char *frame;
+
+	// TODO: rimuovere queste funzioni qt3!!
+	void setPaletteBackgroundColor(const QColor &c);
+	void setPaletteForegroundColor(const QColor &c);
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 #endif // SVEGLIA_H
