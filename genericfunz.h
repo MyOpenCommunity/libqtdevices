@@ -18,6 +18,7 @@
 */
 void getPressName(char*, char*,char);
 
+QString getPressName(QString name);
  /*!
   \brief Transform a image file name into a pressed one with a index taken from a \a antiintrusion \a zone name.
 

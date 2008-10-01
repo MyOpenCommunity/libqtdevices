@@ -189,13 +189,13 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(paren
 	hasTimeCondition = true;
 }
 
-void scenEvo_cond_h::set_h(const char *_h)
+void scenEvo_cond_h::set_h(QString _h)
 {
 	*h = _h;
 	qDebug() << "scenEvo_cond_h::set_h : " << h;
 }
 
-void scenEvo_cond_h::set_m(const char *_m)
+void scenEvo_cond_h::set_m(QString _m)
 {
 	*m = _m;
 	qDebug() << "scenEvo_cond_h::set_m : " << m;
@@ -206,7 +206,7 @@ void scenEvo_cond_h::set_m(const char *_m)
 	setupTimer();
 }
 
-void scenEvo_cond_h::set_s(const char *_s)
+void scenEvo_cond_h::set_s(QString _s)
 {
 	*s = _s;
 	qDebug() << "scenEvo_cond_h::set_s : " << s;
@@ -527,9 +527,9 @@ void scenEvo_cond_d::set_descr(QString d)
 	*descr = d;
 }
 
-void scenEvo_cond_d::set_where(const char *w)
+void scenEvo_cond_d::set_where(QString w)
 {
-	qDebug("scenEvo_cond_d::set_where(%s)", w);
+	qDebug() << "scenEvo_cond_d::set_where(" << w << ")";
 	*where = w;
 }
 
@@ -538,9 +538,9 @@ void scenEvo_cond_d::get_where(QString& out)
 	out = *where;
 }
 
-void scenEvo_cond_d::set_trigger(const char *t)
+void scenEvo_cond_d::set_trigger(QString t)
 {
-	qDebug("scenEvo_cond_d::set_trigger(%s)", t);
+	qDebug() << "scenEvo_cond_d::set_trigger(" << t << ")";
 	*trigger = t;
 }
 

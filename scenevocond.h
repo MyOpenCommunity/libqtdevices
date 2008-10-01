@@ -34,13 +34,15 @@ protected:
 	\arg: index of image whose path shall be returned
 	*/
 	QString getImg(int index);
+
+
+public:
 	/*!
 	\brief sets image path for a certain index
 	\param index index of image whose path shall be set
 	*/
 	void setImg(int index, QString s);
 
-public:
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
 
@@ -173,17 +175,17 @@ public:
 	\brief Sets hours
 	\param pointer to hours string
 	*/
-	void set_h(const char *h);
+	void set_h(QString h);
 	/*!
 	\brief Sets minutes
 	\param pointer to minutes string
 	*/
-	void set_m(const char *m);
+	void set_m(QString m);
 	/*!
 	\brief Sets seconds
 	\param pointer to seconds string
 	*/
-	void set_s(const char *s);
+	void set_s(QString s);
 	/*!
 	\brief Returns condition description
 	*/
@@ -626,7 +628,7 @@ public:
 		\brief Set device address
 		\param w new device address
 	*/
-	void set_where(const char *w);
+	void set_where(QString w);
 	/*!
 		\brief Read device address
 	*/
@@ -640,7 +642,7 @@ public:
 	\brief Set trigger condition
 	\param t new trigger condition
 	*/
-	void set_trigger(const char *t);
+	void set_trigger(QString t);
 	/*!
 	\brief Returns condition description in human language
 	*/

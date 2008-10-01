@@ -77,7 +77,7 @@ private slots:
 	void Diminuisci();
 private:
 	// TODO: rendere elencoDisp un QList<QString>!! Adesso viene costruito in ambdiffson e distrutto qui!
-	QList<QString> *elencoDisp;
+	QList<QString*> *elencoDisp;
 	device *dev;
 };
 

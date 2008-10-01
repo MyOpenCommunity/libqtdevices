@@ -30,11 +30,11 @@ class scenEvo_cond;
 class Client;
 class SupervisionMenu;
 
-#include <qvaluelist.h>
-#include <qptrlist.h>
-#include <qstring.h>
-#include <qcolor.h>
-#include <qdatetime.h>
+#include <QDateTime>
+#include <QString>
+#include <QColor>
+#include <QList>
+
 
 /*!
   \class xmlconfhandler
@@ -121,7 +121,7 @@ private:
 
 	int page_item_id, page_item_id_m;
 	QString page_item_descr;
-	QPtrList<QString> *page_item_descr_m;
+	QList<QString*> *page_item_descr_m;
 	QString page_item_what;
 	QString page_item_where, page_item_where_m;
 	QString page_item_mode;
@@ -136,16 +136,18 @@ private:
 
 	void * page_item_indirizzo;
 
-	QPtrList<QString> * page_item_list_img, *page_item_list_img_m;
-	QPtrList<QString> * page_item_list_group, *page_item_list_group_m;
-	QPtrList<QString> * page_item_list_txt;
-	QPtrList<QString> * page_item_list_txt_times;
-	QValueList<int>sstart;
-	QValueList<int>sstop;
+	QList<QString*> page_item_list_img;
+	QList<QString*> page_item_list_img_m;
+	QList<QString*> *page_item_list_group;
+	QList<QString*> *page_item_list_group_m;
+	QList<QString> page_item_list_txt;
+	QList<QString*> *page_item_list_txt_times;
+	QList<int>sstart;
+	QList<int>sstop;
 	ambDiffSon *curr_amb;
 
 	scenEvo_cond *page_item_cond;
-	QPtrList<scenEvo_cond> *page_item_cond_list;
+	QList<scenEvo_cond*> *page_item_cond_list;
 	int	par1, par2,par3, par4;
 	unsigned int itemNum;
 	QString CurTagL4_copy, CurTagL5_copy;

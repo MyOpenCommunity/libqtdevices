@@ -16,15 +16,16 @@
 #include "fontmanager.h"
 #include "scaleconversion.h"
 
-#include <qpixmap.h>
-#include <qdatetime.h>
-#include <qcursor.h>
-#include <qlcdnumber.h>
+#include <QPixmap>
+#include <QDateTime>
+#include <QCursor>
+#include <QLCDNumber>
+#include <QByteArray>
 
 #include <stdlib.h>
 
-// TODO: rimuovere le windows flag, non utilizzate!
-homePage::homePage(QWidget *parent, const char *name, Qt::WindowFlags f) : QWidget(parent)
+
+homePage::homePage(QWidget *parent, const char *name) : QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	setCursor(QCursor(Qt::BlankCursor));
@@ -39,9 +40,8 @@ homePage::homePage(QWidget *parent, const char *name, Qt::WindowFlags f) : QWidg
 	temp_scale = readTemperatureScale();
 }
 
-void homePage::addButton(int x, int y, char* iconName, char function, char* chix, char* cosax, char* dovex, char tipo)
+void homePage::addButton(int x, int y, QString iconName, char function, QString chix, QString cosax,QString dovex, char tipo)
 {
-	char nomeFile[MAX_PATH];
 	BtButton *b1 = new BtButton(this,"BelBottone");
 	elencoButtons.append(b1);
 
@@ -57,9 +57,7 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 		b1->setPixmap(Icon);
 	b1->setPaletteBackgroundColor(backgroundColor());
 
-	getPressName((char*)iconName, &nomeFile[0],sizeof(nomeFile));
-
-	if (Icon.load(nomeFile))
+	if (Icon.load(getPressName(iconName)))
 		b1->setPressedPixmap(Icon);
 
 	switch (function)
@@ -94,9 +92,9 @@ void homePage::addButton(int x, int y, char* iconName, char function, char* chix
 	case SPECIAL:
 		tipoSpecial = tipo;
 		qDebug("tipoSpecial= %d",tipoSpecial);
-		strcpy(&chi[0],chix);
-		strcpy(&cosa[0],cosax);
-		strcpy(&dove[0],dovex);
+		strcpy(chi, chix.toAscii().constData());
+		strcpy(cosa, cosax.toAscii().constData());
+		strcpy(dove, dovex.toAscii().constData());
 		if (tipoSpecial == PULSANTE)
 		{
 			qDebug("tipoSpecial = PULSANTE");
@@ -171,25 +169,25 @@ void homePage::addDate(int x, int y)
 	addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
 }	
 
-void homePage::addTemp(char *z, int x, int y, int width, int height, QColor bg, QColor fg,
+void homePage::addTemp(QString z, int x, int y, int width, int height, QColor bg, QColor fg,
 	int style, int line, const QString & qtext, char *Ext)
 {
 	switch(tempCont)
 	{
 	case 0:
-	 	strcpy(zonaTermo1,z);
+	 	strcpy(zonaTermo1, z.toAscii().constData());
 		zt[0] = &zonaTermo1[0];
 		strcpy(ext1,Ext);
 		ext[0] = ext1;
 		break;
 	case 1:
-		strcpy(zonaTermo2,z);
+		strcpy(zonaTermo2, z.toAscii().constData());
 		zt[1] = &zonaTermo2[0];
 		strcpy(ext2,Ext);
 		ext[1] = ext2;
 		break;
 	case 2:
-		strcpy(zonaTermo3,z);
+		strcpy(zonaTermo3, z.toAscii().constData());
 		zt[2] = &zonaTermo3[0];
 		strcpy(ext3,Ext);
 		ext[2] = ext3;
@@ -209,7 +207,7 @@ void homePage::addTemp(char *z, int x, int y, int width, int height, QColor bg, 
 	unsigned default_bt_temp = 1235;
 	updateTemperatureDisplay(default_bt_temp, tempCont);
 
-	if (! qtext.isEmpty())
+	if (!qtext.isEmpty())
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
@@ -222,6 +220,11 @@ void homePage::addTemp(char *z, int x, int y, int width, int height, QColor bg, 
 		descrTemp[tempCont]->setPaletteBackgroundColor(bg);
 	}
 	tempCont++;
+}
+
+void homePage::addTemp(QString z, int x, int y)
+{
+	addTemp(z,x,y,180, 35, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0,NULL);
 }
 
 void homePage::inizializza()
@@ -245,11 +248,6 @@ void homePage::inizializza()
 		}
 		emit sendInit(&Frame[0]);
 	}
-}
-
-void homePage::addTemp(char *z, int x, int y)
-{
-	addTemp(z,x,y,180, 35, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0,NULL);
 }
 
 void homePage::addDescrU(const QString & qz, int x, int y, int width, int height, QColor bg,
@@ -340,7 +338,7 @@ void homePage::gestFrame(char* frame)
 	if (!strcmp(msg_open.Extract_chi(),"4"))
 	{
 		qDebug("vedo temperatura per Temp: %s",msg_open.frame_open);
-		strcpy(&dovex[0], msg_open.Extract_dove());
+		strcpy(dovex, msg_open.Extract_dove());
 		if (dovex[0] == '#')
 			strcpy(&dovex[0], &dovex[1]);
 	
@@ -365,11 +363,11 @@ void homePage::gestFrame(char* frame)
 			}
 		}
 	}
-	if ((!strcmp(msg_open.Extract_chi(),&chi[0])) && (tipoSpecial==CICLICO))
+	if (!strcmp(msg_open.Extract_chi(),chi) && tipoSpecial == CICLICO)
 	{
-		if ((! strcmp(&dove[0],msg_open.Extract_dove())))
+		if (!strcmp(dove,msg_open.Extract_dove()))
 		{
-			strcpy(&cosa[0], msg_open.Extract_cosa());
+			strcpy(cosa, msg_open.Extract_cosa());
 		}
 	}
 }
@@ -378,23 +376,23 @@ void homePage::specFunz()
 {
 	char specialFrame[50];
 
-	if (tipoSpecial==CICLICO)
+	if (tipoSpecial == CICLICO)
 	{
-		if (strcmp(&cosa[0], "0"))
-			strcpy(&cosa[0],"0");
+		if (strcmp(cosa, "0"))
+			strcpy(cosa, "0");
 		else
-			strcpy(&cosa[0],"1");
+			strcpy(cosa, "1");
 	}
 
-	strcpy(&specialFrame[0],"*");
-	strcat(&specialFrame[0],&chi[0]);
-	strcat(&specialFrame[0],"*");
-	strcat(&specialFrame[0],&cosa[0]);
-	strcat(&specialFrame[0],"*");
-	strcat(&specialFrame[0],&dove[0]);
-	strcat(&specialFrame[0],"##");
+	strcpy(specialFrame, "*");
+	strcat(specialFrame, chi);
+	strcat(specialFrame, "*");
+	strcat(specialFrame, cosa);
+	strcat(specialFrame, "*");
+	strcat(specialFrame, dove);
+	strcat(specialFrame, "##");
 
-	emit sendFrame(&specialFrame[0]);
+	emit sendFrame(specialFrame);
 }
 
 void homePage::specFunzPress()
@@ -402,12 +400,12 @@ void homePage::specFunzPress()
 	qDebug("tipoSpecial= PRESSED");
 	char specialFrame[50];
 
-	strcpy(&specialFrame[0],"*");
-	strcat(&specialFrame[0],&chi[0]);
-	strcat(&specialFrame[0],"*1*");
-	strcat(&specialFrame[0],&dove[0]);
-	strcat(&specialFrame[0],"##");
-	emit sendFrame(&specialFrame[0]);
+	strcpy(specialFrame, "*");
+	strcat(specialFrame, chi);
+	strcat(specialFrame, "*1*");
+	strcat(specialFrame, dove);
+	strcat(specialFrame, "##");
+	emit sendFrame(specialFrame);
 }
 
 void homePage::specFunzRelease()
@@ -415,12 +413,12 @@ void homePage::specFunzRelease()
 	qDebug("tipoSpecial= RELEASED");
 	char specialFrame[50];
 
-	strcpy(&specialFrame[0],"*");
-	strcat(&specialFrame[0],&chi[0]);
-	strcat(&specialFrame[0],"*0*");
-	strcat(&specialFrame[0],&dove[0]);
-	strcat(&specialFrame[0],"##");
-	emit sendFrame(&specialFrame[0]);
+	strcpy(specialFrame, "*");
+	strcat(specialFrame, chi);
+	strcat(specialFrame, "*0*");
+	strcat(specialFrame, dove);
+	strcat(specialFrame, "##");
+	emit sendFrame(specialFrame);
 }
 
 void homePage::setPaletteBackgroundColor(const QColor &c)

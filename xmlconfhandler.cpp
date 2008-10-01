@@ -23,12 +23,13 @@
 #include "btmain.h"
 #include "scenevocond.h"
 #include "openclient.h"
-#include "supervisionMenu.h"
+#include "supervisionmenu.h"
 
-#include <qobject.h>
-#include <qtimer.h>
-#include <qregexp.h>
-#include <qwidget.h>
+#include <QObject>
+#include <QRegExp>
+#include <QWidget>
+#include <QDebug>
+#include <QTimer>
 
 #include <stdlib.h>
 
@@ -111,15 +112,12 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	Background = *bg;
 	Foreground = *fg1;
 	SecondForeground = *fg2;
-	page_item_list_img = new QPtrList<QString>;
-	page_item_list_img_m = new QPtrList<QString>;
-	page_item_list_group = new QPtrList<QString>;
-	page_item_list_group_m = new QPtrList<QString>;
-	page_item_list_txt = new QPtrList<QString>;
-	page_item_list_txt_times = new QPtrList<QString>;
+	page_item_list_group = new QList<QString*>;
+	page_item_list_group_m = new QList<QString*>;
+	page_item_list_txt_times = new QList<QString*>;
 	page_item_cond = NULL;
-	page_item_cond_list = new QPtrList<scenEvo_cond>;
-	page_item_descr_m = new QPtrList<QString>;
+	page_item_cond_list = new QList<scenEvo_cond*>;
+	page_item_descr_m = new QList<QString*>;
 	page_item_unknown = "";
 	page_item_txt1 = "";
 	page_item_txt2 = "";
@@ -133,14 +131,36 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
  *******************************************/
 xmlconfhandler::~xmlconfhandler()
 {
-	delete page_item_list_img;
-	delete page_item_list_img_m;
-	delete page_item_list_group;
-	delete page_item_list_group_m;
-	delete page_item_list_txt;
-	delete page_item_list_txt_times;
-	delete page_item_cond_list;
+	// TODO: page_item_descr_m e' usato solo da diffmulti, rendere un QList<QString*> !!
+	while (!page_item_descr_m->isEmpty())
+		delete page_item_descr_m->takeFirst();
 	delete page_item_descr_m;
+
+	while (!page_item_list_img.isEmpty())
+		delete page_item_list_img.takeFirst();
+
+	// NOTE: utilizzato solo dalla diffmulti!
+	while (!page_item_list_img_m.isEmpty())
+		delete page_item_list_img_m.takeFirst();
+
+	while (!page_item_list_group->isEmpty())
+		delete page_item_list_group->takeFirst();
+	delete page_item_list_group;
+
+	// NOTE: usato solo dalla diffmulti ma poi passato in giro..
+	while (!page_item_list_group_m->isEmpty())
+		delete page_item_list_group_m->takeFirst();
+	delete page_item_list_group_m;
+
+	// NOTE: usato solo da sottomenu (parametro lt)
+	while (!page_item_list_txt_times->isEmpty())
+		delete page_item_list_txt_times->takeFirst();
+	delete page_item_list_txt_times;
+
+	// NOTE: usato dal sottomenu che lo usa per gli scenari evoluti
+	while (!page_item_cond_list->isEmpty())
+		delete page_item_cond_list->takeFirst();
+	delete page_item_cond_list;
 }
 
 
@@ -155,16 +175,16 @@ void xmlconfhandler::set_page_item_defaults()
 	page_item_id = 0;
 	page_item_indirizzo = NULL;
 
-	page_item_list_img->clear();
-	page_item_list_img_m->clear();
+	// TODO: questi sono tutti memory leak!
+	page_item_list_img.clear();
+	page_item_list_img_m.clear();
 	page_item_list_group->clear();
 	page_item_list_group_m->clear();
-	par1 = par2 = 0;
-	page_item_list_img->clear();
-	page_item_list_txt->clear();
 	page_item_list_txt_times->clear();
-	page_item_list_group->clear();
 	page_item_cond_list->clear();
+	
+	par1 = par2 = 0;
+	page_item_list_txt.clear();
 	page_item_what = "";
 	page_item_descr = "";
 	page_item_where = "";
@@ -266,14 +286,13 @@ void *xmlconfhandler::getAddr()
 	pip[0] = 0;
 	void *pnt = 0;
 
-	if ((!page_item_what.isNull()) && (!page_item_what.isEmpty()))
+	if (!page_item_what.isNull() && !page_item_what.isEmpty())
 	{
-		strcpy(pip, page_item_what.ascii());
-		strcat(pip,"*");
-		strcat(pip,page_item_where.ascii());
+		QString buf = page_item_what + "*" + page_item_where;
+		strcpy(pip, buf.toAscii().constData());
 	}
 	else
-		strcpy(pip, page_item_where.ascii());
+		strcpy(pip, page_item_where.toAscii().constData());
 
 	if (page_item_list_group->isEmpty())
 		pnt = pip;
@@ -287,7 +306,7 @@ void *xmlconfhandler::computeAddress()
 {
 	void *pnt = getAddr();
 
-	if ((char)page_item_id == SET_SVEGLIA) 
+	if ((char)page_item_id == SET_SVEGLIA)
 	{
 		if  (par2 == sveglia::DI_SON) 
 		{
@@ -299,12 +318,12 @@ void *xmlconfhandler::computeAddress()
 		}
 		else
 		{
-			pnt=NULL;
+			pnt = NULL;
 		}
 	} 
-	else if ((char)page_item_id==VERSIONE) 
+	else if ((char)page_item_id == VERSIONE)
 	{
-		pnt=datiGen;
+		pnt = datiGen;
 	}
 
 	return pnt;
@@ -312,14 +331,14 @@ void *xmlconfhandler::computeAddress()
 
 void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 {
-	sm->addItemU ((char)page_item_id, page_item_descr,
-			address,*page_item_list_img,
-			par1,  par2, SecondForeground,
-			(char*)page_item_list_txt->at(0)->ascii(),
-			(char*)page_item_list_txt->at(1)->ascii(),
-			(char*)page_item_list_txt->at(2)->ascii(),
-			(char*)page_item_list_txt->at(3)->ascii(),
-			par3, par4,
+	QByteArray buf_img1 = page_item_list_txt.at(0).toAscii();
+	QByteArray buf_img2 = page_item_list_txt.at(1).toAscii();
+	QByteArray buf_img3 = page_item_list_txt.at(2).toAscii();
+	QByteArray buf_img4 = page_item_list_txt.at(3).toAscii();
+	
+	sm->addItemU((char)page_item_id, page_item_descr, address, page_item_list_img,
+			par1, par2, SecondForeground, buf_img1.data(), buf_img2.data(),
+			buf_img3.data(), buf_img4.data(), par3, par4,
 			page_item_list_txt_times, page_item_cond_list, page_item_action,
 			page_item_light, page_item_key, page_item_unknown, sstart, sstop,
 			page_item_txt1, page_item_txt2, page_item_txt3);
@@ -334,13 +353,11 @@ void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
  *******************************************/
 bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 {
+	if (wdtime.elapsed() > 1000)
 	{
-		if (wdtime.elapsed() > 1000)
-		{
-			wdtime.restart();
-			qDebug("Invoking rearmWDT()");
-			rearmWDT();
-		}
+		wdtime.restart();
+		qDebug("Invoking rearmWDT()");
+		rearmWDT();
 	}
 
 	if (!car)
@@ -386,7 +403,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case SCENARI_EVOLUTI:
 					case VIDEOCITOFONIA:
 					case SUPERVISIONE:
-						(*home)->addButton(sottomenu_left,sottomenu_top,(char *)sottomenu_icon_name.ascii(), (char)sottomenu_id);
+						(*home)->addButton(sottomenu_left,sottomenu_top,sottomenu_icon_name, (char)sottomenu_id);
 						break;
 					case DATA:
 						(*home)->addDate(sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3);
@@ -396,10 +413,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 					case TEMPERATURA:
 					case TERMO_HOME_NC_PROBE:
-						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
+						(*home)->addTemp(sottomenu_where,sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
 						break;
 					case TERMO_HOME_NC_EXTPROBE:
-						(*home)->addTemp((char *)sottomenu_where.ascii(),sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"", "1");
+						(*home)->addTemp(sottomenu_where,sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"", "1");
 						break;
 					}
 
@@ -419,15 +436,12 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 				{
 					qDebug("INSERTED ITEM:ID %d",page_item_id);
 					qDebug("INS ITEM: %s",banTesti[page_item_id]);
-					qDebug("DESCR: %s", page_item_descr.ascii());
-					for (int idx = page_item_list_img->count(); idx < 11; idx++)
-					{
-						page_item_list_img->append(new QString(""));
-					}
-					for (int idx = page_item_list_txt->count(); idx < 4; idx++)
-					{
-						page_item_list_txt->append(new QString(""));
-					}
+					qDebug() << "DESCR: " << page_item_descr;
+					for (int i = page_item_list_img.size(); i < 11; ++i)
+						page_item_list_img.append(new QString(""));
+
+					for (int i = page_item_list_txt.size(); i < 4; ++i)
+						page_item_list_txt.append("");
 
 					sottoMenu *pageAct = NULL;
 					void *addr = 0;
@@ -487,17 +501,16 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					case ANTIINTRUSIONE:
 						(*antintr)->addItemU((char)page_item_id, page_item_descr,
-							(char*)page_item_where.ascii(), *page_item_list_img, par1,  par2);
+							page_item_where.toAscii().data(), page_item_list_img, par1,  par2);
 						break;
 					case DIFSON:
 						if ((!page_item_what.isNull()) && (!page_item_what.isEmpty()))
 						{
-							strcpy(pip, page_item_what.ascii());
-							strcat(pip,"*");
-							strcat(pip,page_item_where.ascii());
+							QString buf = page_item_what + "*" + page_item_where;
+							strcpy(pip, buf.toAscii().constData());
 						}
 						else
-							strcpy(pip, page_item_where.ascii());
+							strcpy(pip, page_item_where.toAscii().constData());
 
 						if (page_item_list_group->isEmpty())
 						{
@@ -514,7 +527,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 						par1 = page_item_mode.toInt();
 						(*difSon)->addItemU((char)page_item_id, page_item_descr, pnt,
-							*page_item_list_img, par1,  par2);
+							page_item_list_img, par1,  par2);
 						break;
 
 					case DIFSON_MULTI:
@@ -524,15 +537,16 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						{
 							qDebug("clearing descr list");
 							page_item_descr_m->clear();
-							qDebug("appending %s to descr list", page_item_descr.ascii());
+
+							qDebug() << "appending %s to descr list" << page_item_descr;
 							page_item_descr_m->append(new QString(page_item_descr));
 						}
 
-						strcpy(&pip[0], page_item_where.ascii());
-						par2 = atoi(page_item_where.ascii());
+						strcpy(pip, page_item_where.toAscii().constData());
+						par2 = page_item_where.toInt();
 
-						(*dm)->addItem ((char)page_item_id, page_item_descr_m, pip,
-							*page_item_list_img, par1, par2, QColor(0,0,0));
+						(*dm)->addItem((char)page_item_id, page_item_descr_m, pip,
+							page_item_list_img, par1, par2, QColor(0,0,0));
 						qDebug("clearing descr list");
 						page_item_descr_m->clear();
 						break;
@@ -543,10 +557,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						{
 						case TEMPERATURA:
 						case TERMO_HOME_NC_PROBE:
-							(*specPage)->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii());
+							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,page_item_descr);
 							break;
 						case TERMO_HOME_NC_EXTPROBE:
-							(*specPage)->addTemp((char*)page_item_where.ascii(),10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,(char*)page_item_descr.ascii(), "1");
+							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,page_item_descr, "1");
 							break;
 						case DATA:
 							//sottomenu_left,sottomenu_top,
@@ -557,7 +571,8 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 							(*specPage)->addClock(10,(itemNum-1)*80+10,220,60,Background,Foreground,QFrame::Plain,3);
 							break;
 						case CMDSPECIAL:
-							(*specPage)->addButton(60,260,(char*)page_item_list_img->at(0)->ascii(),SPECIAL,(char*)page_item_who.ascii(),(char*)page_item_what.ascii(),(char*)page_item_where.ascii(),(char)page_item_type.toInt(&ok, 10));
+							QByteArray buf_img = page_item_list_img.at(0)->toAscii();
+							(*specPage)->addButton(60,260, buf_img.data(),SPECIAL, page_item_who,page_item_what,page_item_where,(char)page_item_type.toInt(&ok, 10));
 							(*specPage)->addDescrU(page_item_descr, 60,240,180,20,Background,Foreground,QFrame::Plain,3);
 							pageAct = NULL;
 							break;
@@ -571,13 +586,13 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 				else if (CurTagL4.startsWith("item") && CurTagL5.startsWith("device") && CurTagL6.isEmpty())
 				{
 					char pip[50];
-					memset(&pip[0],'\000',sizeof(pip));
+					memset(pip,'\000',sizeof(pip));
 					void* pnt;
 					qDebug("DIFF SON MULTI END ELEMENT !!!!");
 					qDebug("INSERTED ITEM:ID %d",page_item_id_m);
 					qDebug("INS ITEM: %s",banTesti[page_item_id_m]);
-					qDebug("DESCR = %s", (page_item_descr_m->at(0))->ascii());
-					strcpy(&pip[0], page_item_where_m.ascii());
+					qDebug() << "DESCR = " << *page_item_descr_m->at(0);
+					strcpy(pip, page_item_where_m.toAscii().constData());
 
 					if (page_item_list_group_m->isEmpty())
 					{
@@ -588,11 +603,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						qDebug("**** DIFSON_MULTI: multi address");
 						pnt = page_item_list_group_m;
 					}
-					(*dm)->addItem((char)page_item_id_m, page_item_descr_m, pnt,
-						*page_item_list_img_m);
+					(*dm)->addItem((char)page_item_id_m, page_item_descr_m, pnt,page_item_list_img_m);
 					qDebug("clearing descr list !!!\n");
 					page_item_descr_m->clear();
-					page_item_list_img_m->clear();
+					page_item_list_img_m.clear();
 				}
 				else if (CurTagL3.startsWith("page") && CurTagL4.isEmpty())
 				{
@@ -931,7 +945,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 		{
 			if (!CurTagL3.compare("orientation"))
 			{
-				setOrientation((char*)qValue.ascii());
+				setOrientation(qValue.toAscii().data());
 			}
 
 			// Leggo info homepage
@@ -952,7 +966,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 				// Leggo tutti i tag che iniziano per item
 				if (CurTagL4.startsWith("id"))
 				{
-					*home = new homePage(NULL,"homepage",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);    
+					*home = new homePage(NULL,"homepage");
 					(*home)->setBGColor(Background.red(),Background.green(),Background.blue());
 					(*home)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
 					QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*home,SLOT(gestFrame(char *)));
@@ -974,9 +988,10 @@ bool xmlconfhandler::characters(const QString & qValue)
 					else if (!CurTagL5.compare("cimg1"))
 					{
 						sottomenu_icon_name = QString(IMG_PATH);
-						sottomenu_icon_name.append(qValue.ascii());
-						qDebug ("PAGEMENU:icon_name %s",sottomenu_icon_name.ascii());
-					} else if (!CurTagL5.compare("where"))
+						sottomenu_icon_name.append(qValue);
+						qDebug() << "PAGEMENU:icon_name " << sottomenu_icon_name;
+					}
+					else if (!CurTagL5.compare("where"))
 						sottomenu_where = qValue;
 				} // if (!CurTagL4.startsWith("item"))
 			} // if (!CurTagL3.startsWith("pagemenu"))
@@ -1027,7 +1042,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						page_item_id_m = 0;
 						page_item_descr_m->clear();
 						page_item_where_m = "";
-						page_item_list_img_m->clear();
+						page_item_list_img_m.clear();
 						break;
 
 					case SCENARI:
@@ -1106,7 +1121,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 
 					case SPECIAL:
 						qDebug("!");
-						(*specPage) = new homePage(NULL,"SPECIAL",Qt::WType_TopLevel | Qt::WStyle_Maximize | Qt::WRepaintNoErase);
+						(*specPage) = new homePage(NULL,"SPECIAL");
 						pageAct = *specPage;
 						(*specPage)->setBGColor(Background.red(),Background.green(),Background.blue());
 						(*specPage)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
@@ -1173,16 +1188,16 @@ bool xmlconfhandler::characters(const QString & qValue)
 					else if ((CurTagL5.startsWith("cimg")) || (!CurTagL5.compare("value")) ||
 						(!CurTagL5.compare("hour")) || (!CurTagL5.compare("minute")))
 					{
-						qDebug("FOR PAGEITEM:IMG=%s",qValue.ascii());
+						qDebug() << "FOR PAGEITEM:IMG=" << qValue;
 						QString sValue = qValue;
 						if  (CurTagL5.startsWith("cimg"))
 							sValue.prepend(IMG_PATH);
-						qDebug("cimg %s", sValue.ascii());
-						page_item_list_img->append(new QString(sValue));
+						qDebug() << "cimg " << sValue;
+						page_item_list_img.append(new QString(sValue));
 					}
 					else if (CurTagL5.startsWith("txt"))
 					{
-						page_item_list_txt->append(new QString(qValue));
+						page_item_list_txt.append(qValue);
 					}
 					else if (!CurTagL5.compare("type"))
 					{
@@ -1211,55 +1226,39 @@ bool xmlconfhandler::characters(const QString & qValue)
 						// Hour condition
 						if (!CurTagL6.compare("value"))
 						{
-							qDebug("condH, value = %s",qValue.ascii());
-							ch->setVal(atoi(qValue.ascii()));
+							qDebug() << "condH, value = " << qValue;
+							ch->setVal(qValue.toInt());
 
 						}
 						else if (!CurTagL6.compare("hour"))
 						{
-							qDebug("condH, hour = %s", qValue.ascii());
-							ch->set_h(qValue.ascii());
+							qDebug() << "condH, hour = " << qValue;
+							ch->set_h(qValue);
 						}
 						else if (!CurTagL6.compare("minute"))
 						{
-							qDebug("condH, minute = %s",qValue.ascii());
-							ch->set_m(qValue.ascii());
+							qDebug() << "condH, minute = " << qValue;
+							ch->set_m(qValue);
 						}
 						else if (!CurTagL6.compare("cimg1"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								ch->setImg(0, tmp);
-							}
+								ch->setImg(0, QString(IMG_PATH) + qValue);
 						}
 						else if (!CurTagL6.compare("cimg2"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								ch->setImg(1, tmp.ascii());
-							}
+								ch->setImg(1, QString(IMG_PATH) + qValue);
 						}
 						else if (!CurTagL6.compare("cimg3"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								ch->setImg(2, tmp.ascii());
-							}
+								ch->setImg(2, QString(IMG_PATH) + qValue);
 						}
 						else if (!CurTagL6.compare("cimg4"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								ch->setImg(3, tmp.ascii());
-							}
+								ch->setImg(3, QString(IMG_PATH) + qValue);
 						}
 					}
 					else if (!CurTagL5.compare("condDevice"))
@@ -1279,56 +1278,36 @@ bool xmlconfhandler::characters(const QString & qValue)
 						}
 						else if (!CurTagL6.compare("where"))
 						{
-							cd->set_where(qValue.ascii());
+							cd->set_where(qValue);
 						}
 						else if (!CurTagL6.compare("trigger"))
 						{
-							cd->set_trigger(qValue.ascii());
+							cd->set_trigger(qValue);
 						}
 						else if (!CurTagL6.compare("cimg1"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								cd->setImg(0, tmp.ascii());
-							}
+								cd->setImg(0, QString(IMG_PATH) + qValue);
 						}
 						else if (!CurTagL6.compare("cimg2"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								cd->setImg(1, tmp.ascii());
-							}
+								cd->setImg(1, QString(IMG_PATH) + qValue);
 						}
 						else if (!CurTagL6.compare("cimg3"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								cd->setImg(2, tmp.ascii());
-							}
+								cd->setImg(2, QString(IMG_PATH) + qValue);
 						}
 						else if (!CurTagL6.compare("cimg4"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								cd->setImg(3, tmp.ascii());
-							}
+								cd->setImg(3, QString(IMG_PATH) + qValue);
 						}
 						else if (!CurTagL6.compare("cimg5"))
 						{
 							if (qValue != "")
-							{
-								QString tmp(IMG_PATH);
-								tmp.append(qValue.ascii());
-								cd->setImg(4, tmp.ascii());
-							}
+								cd->setImg(4, QString(IMG_PATH) + qValue);
 						}
 					}
 					else if (!CurTagL5.compare("action"))
@@ -1336,7 +1315,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						if (!CurTagL6.compare("open"))
 						{
 							page_item_action = qValue;
-							qDebug("action = %s", qValue.ascii());
+							qDebug() << "action = " << qValue;
 						}
 					}
 					else if (!CurTagL5.compare("unable"))
@@ -1346,23 +1325,21 @@ bool xmlconfhandler::characters(const QString & qValue)
 							if (!qValue.compare("0"))
 							{
 								par1 = 0;
-								QString *s = new QString("");
-								page_item_list_txt->insert(0, s);
-								s = new QString("");
-								page_item_list_img->insert(0, s);
-							} else
+								page_item_list_txt.insert(0, "");
+								page_item_list_img.insert(0, new QString(""));
+							}
+							else
 								par1 = 1;
 						}
 						else if (!CurTagL6.compare("open") && par1)
 						{
-							QString *s = new QString(qValue.ascii());
-							page_item_list_txt->insert(0, s);
+							page_item_list_txt.insert(0, qValue);
 						}
 						else if (CurTagL6.startsWith("cimg") && par1)
 						{
 							QString *s = new QString(IMG_PATH);
 							s->append(qValue);
-							page_item_list_img->insert(0, s);
+							page_item_list_img.insert(0, s);
 						}
 					}
 					else if (!CurTagL5.compare("disable"))
@@ -1371,10 +1348,8 @@ bool xmlconfhandler::characters(const QString & qValue)
 						{
 							if (!qValue.compare("0"))
 							{
-								QString *s = new QString("");
-								page_item_list_txt->insert(1, s);
-								s = new QString("");
-								page_item_list_img->insert(1, s);
+								page_item_list_txt.insert(1, "");
+								page_item_list_img.insert(1, new QString(""));
 								par1 = 0;
 							}
 							else
@@ -1382,14 +1357,13 @@ bool xmlconfhandler::characters(const QString & qValue)
 						}
 						else if (!CurTagL6.compare("open") && par1)
 						{
-							QString *s = new QString(qValue.ascii());
-							page_item_list_txt->insert(1, s);
+							page_item_list_txt.insert(1, qValue);
 						}
 						else if (CurTagL6.startsWith("cimg") && par1)
 						{
 							QString *s = new QString(IMG_PATH);
 							s->append(qValue);
-							page_item_list_img->insert(1, s);
+							page_item_list_img.insert(1, s);
 						}
 					}
 					else if (!CurTagL5.compare("start"))
@@ -1398,10 +1372,8 @@ bool xmlconfhandler::characters(const QString & qValue)
 						{
 							if (!qValue.compare("0"))
 							{
-								QString *s = new QString("");
-								page_item_list_txt->insert(2, s);
-								s = new QString("");
-								page_item_list_img->insert(2, s);
+								page_item_list_txt.insert(2, "");
+								page_item_list_img.insert(2, new QString(""));
 								par1 = 0;
 							}
 							else
@@ -1409,14 +1381,13 @@ bool xmlconfhandler::characters(const QString & qValue)
 						}
 						else if (!CurTagL6.compare("open") && par1)
 						{
-							QString *s = new QString(qValue.ascii());
-							page_item_list_txt->insert(2, s);
+							page_item_list_txt.insert(2, qValue);
 						}
 						else if (CurTagL6.startsWith("cimg") && par1)
 						{
 							QString *s = new QString(IMG_PATH);
 							s->append(qValue);
-							page_item_list_img->insert(2, s);
+							page_item_list_img.insert(2, s);
 						}
 					}
 					else if (!CurTagL5.compare("stop"))
@@ -1425,10 +1396,8 @@ bool xmlconfhandler::characters(const QString & qValue)
 						{
 							if (!qValue.compare("0"))
 							{
-								QString *s = new QString("");
-								page_item_list_txt->insert(3, s);
-								s = new QString("");
-								page_item_list_img->insert(3, s);
+								page_item_list_txt.insert(3, "");
+								page_item_list_img.insert(3, new QString(""));
 								par1 = 0;
 							}
 							else
@@ -1436,14 +1405,13 @@ bool xmlconfhandler::characters(const QString & qValue)
 						}
 						else if (!CurTagL6.compare("open") && par1)
 						{
-							QString *s = new QString(qValue.ascii());
-							page_item_list_txt->insert(3, s);
+							page_item_list_txt.insert(3, qValue);
 						}
 						else if (CurTagL6.startsWith("cimg") && par1)
 						{
 							QString *s = new QString(IMG_PATH);
 							s->append(qValue);
-							page_item_list_img->insert(3, s);
+							page_item_list_img.insert(3, s);
 						}
 					}
 				} // if (CurTagL4.startsWith("item"))
@@ -1462,7 +1430,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					{
 						page_item_descr_m->append(new QString(qValue));
 						qDebug("appending to descr list: ");
-						qDebug("DESCR = %s", qValue.ascii());
+						qDebug() << "DESCR = " << qValue;
 					}
 					else if (CurTagL6.startsWith("where"))
 					{
@@ -1470,20 +1438,20 @@ bool xmlconfhandler::characters(const QString & qValue)
 						{
 							page_item_list_group_m->clear();
 							page_item_where_m = qValue;
-							qDebug("WHERE = %s", qValue.ascii());
+							qDebug() << "WHERE = " << qValue;
 						}
 						else
 						{
 							page_item_list_group_m->append(new QString(qValue));
-							qDebug("WHERE_MULTI %s", qValue.ascii());
+							qDebug() << "WHERE_MULTI " << qValue;
 						}
 					}
 					else if (CurTagL6.startsWith("cimg"))
 					{
 						QString sValue = qValue;
 						sValue.prepend(IMG_PATH);
-						qDebug("cimg %s", sValue.ascii());
-						page_item_list_img_m->append(new QString(sValue));
+						qDebug() << "cimg " << sValue;
+						page_item_list_img_m.append(new QString(sValue));
 					}
 				} // CurTagL4.startsWith("item") && CurTagL5.startsWith("device")
 				else if (!CurTagL4.compare("command"))
@@ -1506,7 +1474,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					{
 						QString sValue = qValue;
 						sValue.prepend(IMG_PATH);
-						page_item_list_img->append(new QString(sValue));
+						page_item_list_img.append(new QString(sValue));
 					}
 				}  //else if (!CurTagL4.compare("command"))
 				else if (!CurTagL4.compare("type"))

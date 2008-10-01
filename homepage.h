@@ -11,6 +11,7 @@
 #include "btbutton.h"
 
 #include <QWidget>
+#include <QString>
 #include <QColor>
 #include <QList>
 
@@ -38,7 +39,7 @@ class homePage : public QWidget
 {
 Q_OBJECT
 public:
-	homePage(QWidget *parent, const char *name, Qt::WindowFlags f);
+	homePage(QWidget *parent, const char *name);
 
 /*!
   \brief Sets the background color for the banner.
@@ -57,7 +58,7 @@ public:
 
   The arguments are the position of the button (x,y),  the fileName of the image to put on the button, the function associated to the button as described in pagSecLiv (main.h), the \a Open parameters of the commands of the special command (who, what, where), and the type of the special command as descibed in tipoFunzSpe.
 */
-	void addButton(int x=0 , int y=0 , char* iconName=NULL, char function = 0,char* chi=NULL, char* cosa=NULL, char* dove=NULL, char tipo=0);
+	void addButton(int x=0 , int y=0 , QString iconName=QString(), char function = 0,QString chi=QString(), QString cosa=QString(), QString dove=QString(), char tipo=0);
 /*!
   \brief Adds a Clock.
 
@@ -83,11 +84,12 @@ public:
 
   The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel and the text describing the zone.
 */
-	void addTemp(char*, int, int, int, int, QColor, QColor, int, int, const QString &, char * Ext="0");
+	void addTemp(QString, int, int, int, int, QColor, QColor, int, int, const QString &, char * Ext="0");
+
   /*!
   \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame, line and text.
 */
-	void addTemp(char*, int , int);
+	void addTemp(QString, int , int);
 /*!
   \brief Adds a Description usually used for special page.
 
@@ -101,7 +103,7 @@ public:
 /*!
   \brief Sets the background pixmap for the banner.
 */
-   int setBGPixmap(char*);
+	int setBGPixmap(char*);
 
 /*! \enum tipoFunzSpe
    This enum let decide the behavior of the special button*/

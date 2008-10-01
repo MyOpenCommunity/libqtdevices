@@ -35,6 +35,16 @@ void getPressName(char* name, char* pressName,char len)
 	}
 }
 
+QString getPressName(QString name)
+{
+	// TODO:  verificare che faccia la stessa cosa della versione c!
+	int pos = name.indexOf(".");
+	if (pos != -1)
+		return name.left(pos) + "p" + name.mid(pos);
+
+	return QString();
+}
+
 void getZoneName(char* name, char* pressName,char*zona, char len)
 {
 	memset(pressName,'\000',len);

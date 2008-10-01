@@ -189,12 +189,14 @@ grAmplificatori::grAmplificatori(QWidget *parent,const char *name,void *indirizz
 
 grAmplificatori::~grAmplificatori()
 {
-	delete elencoDisp;
+	// TODO: Viene distrutto da xmlconfhandler.. se creato da lui!! Altrimenti
+	// c'e' un memory leak! Sistemare cambiando la gestione dell'indirizzo!
+	//delete elencoDisp;
 }
 
 void grAmplificatori::setAddress(void *indirizzi)
 {
-	elencoDisp = (QList<QString>*)indirizzi;
+	elencoDisp = (QList<QString*>*)indirizzi;
 }
 
 void grAmplificatori::Attiva()
@@ -205,7 +207,7 @@ void grAmplificatori::Attiva()
 	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp->at(i).toAscii();
+		QByteArray buf = elencoDisp->at(i)->toAscii();
 		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
@@ -225,7 +227,7 @@ void grAmplificatori::Disattiva()
 	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp->at(i).toAscii();
+		QByteArray buf = elencoDisp->at(i)->toAscii();
 		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
@@ -244,7 +246,7 @@ void grAmplificatori::Aumenta()
 	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp->at(i).toAscii();
+		QByteArray buf = elencoDisp->at(i)->toAscii();
 		msg_open.CreateMsgOpen("16", "1001",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
@@ -257,7 +259,7 @@ void grAmplificatori::Diminuisci()
 	for (int i = 0; i < elencoDisp->size(); ++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp->at(i).toAscii();
+		QByteArray buf = elencoDisp->at(i)->toAscii();
 		msg_open.CreateMsgOpen("16", "1101",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
