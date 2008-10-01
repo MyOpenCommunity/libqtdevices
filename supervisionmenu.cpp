@@ -69,7 +69,7 @@ void SupervisionMenu::AddBanners()
 				// Create a banner for the class
 				Create2ButBanner(l1Element, STOPNGO_BANN_IMAGE, "StopnGo banner");
 				// Create the submenu/page related to this banner
-				bannPuls* b = static_cast<bannPuls*>(elencoBanner.getLast());
+				bannPuls* b = static_cast<bannPuls*>(elencoBanner.last());
 				CreateStopnGoMenu(l1Element, b);
 				break;
 			}
@@ -80,7 +80,7 @@ void SupervisionMenu::AddBanners()
 
 	if (classesCount == 1)  // Only one class has been defined in the supervision section of conf.xml
 	{
-		bannPuls* bann = static_cast<bannPuls*>(elencoBanner.getLast());
+		bannPuls* bann = static_cast<bannPuls*>(elencoBanner.last());
 		connect(this, SIGNAL(quickOpen()), bann, SIGNAL(sxClick()));
 
 		if (stopngoSubmenu)  // Check is the only submenu is a stopngo menu
@@ -115,13 +115,14 @@ void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
 	connectLastBanner();
 
 	QDomNode n = FindNamedNode(e, "descr");
-	elencoBanner.getLast()->SetTextU(n.toElement().text());
-	elencoBanner.getLast()->setAnimationParams(0, 0);
+	banner *last = elencoBanner.last();
+	last->SetTextU(n.toElement().text());
+	last->setAnimationParams(0, 0);
 
-	elencoBanner.getLast()->setBGColor(paletteBackgroundColor());
-	elencoBanner.getLast()->setFGColor(paletteForegroundColor());
+	last->setBGColor(paletteBackgroundColor());
+	last->setFGColor(paletteForegroundColor());
 	n = FindNamedNode(e, "id");
-	elencoBanner.getLast()->setId(n.toElement().text().toInt());
+	last->setId(n.toElement().text().toInt());
 }
 
 QDomNode SupervisionMenu::FindNamedNode(QDomNode root, QString name)
