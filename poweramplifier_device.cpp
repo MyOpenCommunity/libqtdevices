@@ -36,7 +36,7 @@ void poweramplifier_device::frame_rx_handler(char *frame)
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
 
-	if (who != msg.who() || where != msg.where())
+	if (who.toInt() != msg.who() || where.toInt() != msg.where())
 		return;
 
 	qDebug("poweramplifier_device::frame_rx_handler");
