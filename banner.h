@@ -359,6 +359,8 @@ public:
 
 	const QColor& paletteBackgroundColor();
 	const QColor& paletteForegroundColor();
+	const QColor& backgroundColor() { return paletteBackgroundColor(); }
+	const QColor& foregroundColor() { return paletteForegroundColor(); }
 
 private:
 	

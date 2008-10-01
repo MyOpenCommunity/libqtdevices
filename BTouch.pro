@@ -164,7 +164,7 @@ SOURCES += actuators.cpp \
            scaleconversion.cpp \
            scenari.cpp \
            scenevocond.cpp \
-           setItems.cpp \
+           setitems.cpp \
            sorgentiaux.cpp \
            sorgentimedia.cpp \
            sorgentiradio.cpp \

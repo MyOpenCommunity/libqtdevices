@@ -7,12 +7,20 @@
 **
 **definizione dei vari items
 ****************************************************************/
+
+#include "versio.h"
+#include "sveglia.h"
 #include "setitems.h"
+#include "tastiera.h"
+#include "diffmulti.h"
+#include "calibrate.h"
+#include "contrpage.h"
 #include "genericfunz.h"
 
-#include <qtimer.h>
+#include <QTimer>
 
 #include <stdlib.h>
+
 
 extern unsigned char tipoData;
 
@@ -37,14 +45,14 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff* diso,
 	: bann2But(parent, name)
 {
 
-	strcpy(&iconOn[0], icon1);
-	strcpy(&iconOff[0], icon2);
-	SetIcons(&iconOff[0] ,ICON_INFO);
+	strcpy(iconOn, icon1);
+	strcpy(iconOff, icon2);
+	SetIcons(iconOff ,ICON_INFO);
 	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, h, m);
 	svegliolina->setBGColor(backgroundColor());
 	svegliolina->setFGColor(foregroundColor());
 	svegliolina->hide();
-	if (enabled==1)
+	if (enabled == 1)
 		setAbil(TRUE);
 	else
 		setAbil(FALSE);
@@ -80,17 +88,17 @@ void impostaSveglia::toggleAbil()
 	show();
 }
 
-void  impostaSveglia::show()
+void impostaSveglia::show()
 {
 	if (svegliolina->getActivation())
 	{
 		qDebug("impostaSveglia mette icona ON (%p)", iconOn);
-		SetIcons(uchar(0),&iconOn[0]);
+		SetIcons(uchar(0),iconOn);
 	}
 	else
 	{
 		qDebug("impostaSveglia mette icona OFF");
-		SetIcons(uchar(0),&iconOff[0]);
+		SetIcons(uchar(0),iconOff);
 	}
 	Draw();
 	QWidget::show();
@@ -116,25 +124,25 @@ void calibration::doCalib()
 	calib->show();
 	hide();
 	connect(calib,SIGNAL(fineCalib()), this, SLOT(fineCalib()));
-	emit(startCalib());
+	emit startCalib();
 }
 
 void calibration::fineCalib()
 {
 	show();
-	delete(calib);
-	emit(endCalib());
+	delete calib;
+	emit endCalib();
 }
 
 
 impBeep::impBeep(sottoMenu  *parent,const char *name ,char* val, const char * icon1, const char *icon2)
         : bannOnSx(parent, name)
 {
-	strncpy(&iconOn[0], icon1, sizeof(iconOn));
-	strncpy(&iconOff[0], icon2, sizeof(iconOff));
+	strncpy(iconOn, icon1, sizeof(iconOn));
+	strncpy(iconOff, icon2, sizeof(iconOff));
 	connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));
-	SetIcons(&iconOff[0],1);
-	SetIcons(&iconOn[0],1);
+	SetIcons(iconOff,1);
+	SetIcons(iconOn,1);
 	bool on = !strcmp(val, "1");
 	if (!on)
 	{
@@ -191,7 +199,7 @@ void impContr::contrMade()
 	show();
 	contrasto->hide();
 	setContrast(getContrast(),TRUE);
-	delete(contrasto);
+	delete contrasto;
 	contrasto = NULL;
 }
 
@@ -203,7 +211,7 @@ void impContr::hide()
 }
 
 
-machVers::machVers(sottoMenu  *parent,const char *name, versio * ver, const char* icon1)
+machVers::machVers(sottoMenu  *parent,const char *name, versio *ver, const char* icon1)
 	: bannOnDx(parent, name)
 {
 	SetIcons(icon1,1);
@@ -220,28 +228,24 @@ void machVers::showVers()
 #else
 	v->show();
 #endif
-
-	tiempo = new QTimer(this,"clock");
-	tiempo->start(10000,TRUE);
-	connect(tiempo,SIGNAL(timeout()),this,SLOT(tiempout()));
+	QTimer::singleShot(10000, this, SLOT(tiempout()));
 }
 
 void machVers::tiempout()
 {
 	v->hide();
-	delete(tiempo);
 }
 
 
-impPassword ::impPassword (QWidget *parent,const char *name, char* icon1, char*icon2,char* icon3, char* password,int attiva)
+impPassword::impPassword(QWidget *parent,const char *name, char* icon1, char*icon2,char* icon3, char* password,int attiva)
 	: bann2But(parent, name)
 {
 
-	strncpy(&iconOn[0], icon1, sizeof(iconOn));
-	strncpy(&iconOff[0], icon2, sizeof(iconOff));
-	strncpy(&paswd[0], password, sizeof(paswd));
+	strncpy(iconOn, icon1, sizeof(iconOn));
+	strncpy(iconOff, icon2, sizeof(iconOff));
+	strncpy(paswd, password, sizeof(paswd));
 
-	SetIcons(&iconOff[0] ,icon3);
+	SetIcons(iconOff ,icon3);
 
 	tasti = new tastiera(NULL,"tast");
 
@@ -254,12 +258,12 @@ impPassword ::impPassword (QWidget *parent,const char *name, char* icon1, char*i
 
 	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 	connect(this, SIGNAL(setPwd(bool,char*)), parentWidget(), SIGNAL(setPwd(bool,char*)));
-	if (attiva==1)
+	if (attiva == 1)
 		active = TRUE;
 	else
 		active = FALSE;
 
-	emit(setPwd(active,&paswd[0]));
+	emit setPwd(active,paswd);
 	starting = 1;
 }
 
@@ -276,16 +280,16 @@ void impPassword::toggleActivation()
 		active = TRUE;
 		setCfgValue(PROTEZIONE, "enabled","1",getSerNum());
 	}
-	emit(setPwd(active,&paswd[0]));
+	emit setPwd(active,paswd);
 	show();
 }
 
 void impPassword::show()
 {
 	if (active)
-		SetIcons(uchar(0),&iconOn[0]);
+		SetIcons(uchar(0),iconOn);
 	else
-		SetIcons(uchar(0),&iconOff[0]);
+		SetIcons(uchar(0),iconOff);
 	qDebug("impPassword::show()");
 	Draw();
 	qDebug("passwd = %s %d", &paswd[0], paswd[0]);
@@ -309,7 +313,7 @@ void impPassword::show()
 
 void impPassword::reShow1(char* c)
 {
-	if (c==NULL)
+	if (c == NULL)
 	{
 		show();
 		return;
@@ -319,11 +323,9 @@ void impPassword::reShow1(char* c)
 		show();
 		qDebug("password errata doveva essere %s",&paswd[0]);
 		sb = getBeep();
-		setBeep(TRUE,FALSE);
+		setBeep(TRUE,FALSE); 
 		beep(1000);
-		tiempo = new QTimer(this,"clock");
-		tiempo->start(1100,TRUE);
-		connect(tiempo,SIGNAL(timeout()),this,SLOT(tiempout()));
+		QTimer::singleShot(1100, this, SLOT(tiempout()));
 	}
 	else
 	{
@@ -351,7 +353,6 @@ void impPassword::reShow2(char* c)
 
 void impPassword::tiempout()
 {
-	delete(tiempo);
 	setBeep(sb,FALSE);
 }
 
