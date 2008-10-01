@@ -186,6 +186,7 @@ private:
 	unsigned int tempCont;
 	BtLabel *descrizione, *descrTemp[3];
 
+public:
 	// TODO: rimuovere questi metodi qt3!
 	void setPaletteForegroundColor(const QColor &c);
 	void setPaletteBackgroundColor(const QColor &c);

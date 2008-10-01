@@ -25,7 +25,7 @@
 #include "versio.h"
 #include "tastiera.h"
 #include "thermalmenu.h"
-#include "supervisionMenu.h"
+#include "supervisionmenu.h"
 
 #include <qwindowsystem_qws.h>
 #include <qapplication.h>
@@ -44,7 +44,7 @@
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
 
-BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(parent, name)
+BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(parent)
 {
 
 	/*******************************************
@@ -94,14 +94,15 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	linea = NULL;
 	for (int idx = 0; idx < 12; idx++)
 	{
-		screensav[idx] = new BtLabel("",this,"g");
+		screensav[idx] = new BtLabel(this);
 		screensav[idx]->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		screensav[idx]->hide();
+		screensav[idx]->setText("");
 		Sfondo[idx] = NULL;
 	}
 	for (int idx = 0; idx < 12; idx++)
 	{
-		ball[idx] = new BtLabel(this,"",0);
+		ball[idx] = new BtLabel(this);
 		ball[idx]->hide();
 	}
 
@@ -116,7 +117,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 
 	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
-		tempo1 = new QTimer(this,"clock");
+		tempo1 = new QTimer(this);
 		tempo1->start(200);
 		connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
 		datiGen->show();
@@ -124,7 +125,7 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	else
 	{
 		tempo1 = NULL;
-		calib = new Calibrate(NULL,"calibrazione",(unsigned char)0,(unsigned char)1);
+		calib = new Calibrate(NULL, (unsigned char)1);
 		calib->show();
 		connect(calib, SIGNAL(fineCalib()), this,SLOT(hom()));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
@@ -133,17 +134,17 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
 #endif
-		alreadyCalibrated=TRUE;
+		alreadyCalibrated = TRUE;
 	}
 }
 
 void BtMain::hom()
 {
 	if (tempo1)
-		delete(tempo1);
+		delete tempo1;
 	else
 	{
-		tempo1 = new QTimer(this,"clock");
+		tempo1 = new QTimer(this);
 		tempo1->start(200);
 		connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
 		return;
@@ -156,16 +157,18 @@ void BtMain::hom()
 	//-----------------------------------------------
 	if (QFile::exists("cfg/conf.xml"))
 	{ 
-		xmlconfhandler  *handler2 = new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
+		xmlconfhandler *handler2 = new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
 				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
 				client_comandi, client_monitor, client_richieste, datiGen, bg, fg1, fg2);
+		// TODO: sistemare con i metodi qt4!
+		/*
 		setBackgroundColor(*bg);
 		for (int idx = 0; idx < 12; idx++)
 		{
 			ball[idx]->setBackgroundColor(*bg);
 			ball[idx]->setBackgroundMode(Qt::NoBackground);
 		}
-
+		*/
 		QFile *xmlFile = new QFile("cfg/conf.xml");
 		QXmlInputSource source2(xmlFile);
 		QXmlSimpleReader reader2;
@@ -175,18 +178,19 @@ void BtMain::hom()
 		qDebug("finito parsing");
 		delete handler2;
 		delete xmlFile;
-		qApp->setMainWidget(Home);
+		// TODO: verificare! Sembra che non sia piu' necessario e che l'applicazione venga
+		// automaticamente chiusa quando tutte le finestre sono chiuse!
+		//qApp->setMainWidget(Home);
 		hide();
 	}
 	setGeometry(0,0,240,320);
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 	setBackgroundColor(QColor(255,255,255));
 
 	connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(myMain()));
 	client_monitor->connetti();
 	qDebug("OPPI");
 }
-
 
 void BtMain::init()
 {
@@ -226,9 +230,9 @@ void BtMain::init()
 
 	struct sysinfo info;
 	sysinfo(&info);
-	if ((info.uptime<200) && ((unsigned long)(info.uptime-1)>(unsigned long)getTimePress())  && (!alreadyCalibrated))
+	if (info.uptime < 200 && ((unsigned long)(info.uptime - 1) > (unsigned long)getTimePress()) && !alreadyCalibrated)
 	{
-		calib = new Calibrate(NULL,"calibrazione",0,1);
+		calib = new Calibrate(NULL, 1);
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 		Home->hide();
@@ -250,12 +254,12 @@ void BtMain::myMain()
 	datiGen->hide();
 	btouch_device_cache.init_devices();
 
-	tempo1 = new QTimer(this,"clock");
+	tempo1 = new QTimer(this);
 	tempo1->start(2000);
 	disconnect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
 	connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
 
-	tempo2 = new QTimer(this,"clock");
+	tempo2 = new QTimer(this);
 	tempo2->start(3000);
 	connect(tempo2,SIGNAL(timeout()),this,SLOT(testFiles()));
 }
@@ -375,7 +379,7 @@ void BtMain::gesScrSav()
 				qDebug("***** freeze(TRUE) ***** ");
 				emit freeze(TRUE);
 				bloccato = 01;
-				tempo1->changeInterval(500);
+				tempo1->start(500);
 #endif
 			}
 		}
@@ -384,7 +388,7 @@ void BtMain::gesScrSav()
 			qDebug("***** freeze(FALSE) ***** ");
 			emit freeze(FALSE);
 			bloccato = 0;
-			tempo1->changeInterval(2000);
+			tempo1->start(2000);
 			pd_shown = false;
 			freezed(FALSE);
 		}
@@ -463,7 +467,7 @@ void BtMain::gesScrSav()
 				countScrSav = 0;
 			}
 
-			if (isShown())
+			if (!isHidden())
 			{
 #ifdef SCREENSAVER_BALLS
 				if (backcol < 3)
@@ -493,7 +497,7 @@ void BtMain::gesScrSav()
 							p.drawEllipse((dim[idx]-idy)/2,(dim[idx]-idy)/2,idy,idy);
 						ball[idx]->setMask(Maschera);
 					}
-					tempo1->changeInterval(100);
+					tempo1->start(100);
 				}
 				else
 				{
@@ -549,7 +553,7 @@ void BtMain::gesScrSav()
 				}
 #endif
 #ifdef SCREENSAVER_LINE
-				tempo1->changeInterval(100);
+				tempo1->start(100);
 				if (backcol >= 5)
 				{
 					if (grab)
@@ -597,7 +601,7 @@ void BtMain::gesScrSav()
 		setBacklight(FALSE);
 		qDebug("***** freeze(TRUE) ***** ");
 		emit freeze(TRUE);
-		tempo1->changeInterval(500);
+		tempo1->start(500);
 #endif
 		firstTime = 0;
 		bloccato = 1;
@@ -606,7 +610,7 @@ void BtMain::gesScrSav()
 	{
 		firstTime = 0;
 		setBacklight(TRUE);
-		tempo1->changeInterval(2000);
+		tempo1->start(2000);
 		bloccato = 0;
 	}
 }
@@ -671,22 +675,6 @@ void BtMain::svegl(bool b)
 }
 
 
-palla::palla(QWidget*parent, const char* name,unsigned int f) : BtLabel(parent, name, f) { }
-
-void palla::paintEvent(QPaintEvent *)
-{
-	QPainter paint(this);
-	paint.setBrush(QBrush(foregroundColor(), Qt::SolidPattern));
-	paint.drawEllipse(0,0,width(),height());
-};
-
-void palla ::clear()
-{
-	QPainter paint(this);
-	paint.fillRect(0,0,width(),height(),QBrush (backgroundColor(), Qt::SolidPattern));
-}
-
-
 void BtMain::startCalib()
 {
 	qDebug("BtMain::startCalib()");
@@ -703,4 +691,45 @@ void BtMain::ResetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
 	emit resettimer();
+}
+
+void BtMain::setBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void BtMain::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
+}
+
+
+palla::palla(QWidget*parent, const char* name,unsigned int f) : BtLabel(parent, name, (Qt::WindowFlags)f) { }
+
+void palla::paintEvent(QPaintEvent *)
+{
+	QPainter paint(this);
+	paint.setBrush(QBrush(foregroundColor(), Qt::SolidPattern));
+	paint.drawEllipse(0,0,width(),height());
+};
+
+void palla ::clear()
+{
+	QPainter paint(this);
+	paint.fillRect(0,0,width(),height(),QBrush (backgroundColor(), Qt::SolidPattern));
+}
+
+
+const QColor& palla::backgroundColor()
+{
+	return palette().color(backgroundRole());
+}
+
+const QColor& palla::foregroundColor()
+{
+	return palette().color(foregroundRole());
 }

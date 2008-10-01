@@ -52,6 +52,11 @@ public slots:
 	void paintEvent(QPaintEvent *);
 private:
 	int rx, ry;
+
+	// TODO: rimuovere questi metodi qt3!
+	const QColor& backgroundColor();
+	const QColor& foregroundColor();
+	
 };
 
 
@@ -124,6 +129,11 @@ private:
 	BtLabel *ball[BALL_NUM];
 	BtLabel *linea;
 	int countScrSav,icx,icy,x[BALL_NUM],y[BALL_NUM],vx[BALL_NUM],vy[BALL_NUM],dim[BALL_NUM];
+
+	// TODO: rimuovere questi metodi qt3!
+	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
+	void setBackgroundColor(const QColor &c);
+	
 };
 
 #endif// BTMAIN_H

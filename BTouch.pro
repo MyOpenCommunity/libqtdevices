@@ -130,7 +130,7 @@ SOURCES += actuators.cpp \
            banntemperature.cpp \
            btbutton.cpp \
            btlabel.cpp \
-           BtMain.cpp \
+           btmain.cpp \
            bttime.cpp \
            btwidgets.cpp \
            buttons_bar.cpp \
