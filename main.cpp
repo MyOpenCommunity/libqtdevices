@@ -62,8 +62,25 @@ int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
 
+
+QDomNode getChildWithName(QDomNode parent, QString name)
+{
+	QDomNode n = parent.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName() == name)
+			return n;
+
+		n = n.nextSibling();
+	}
+	return QDomNode();
+}
+
+
 TemperatureScale readTemperatureScale()
 {
+	TemperatureScale default_scale = CELSIUS;
+
 	static TemperatureScale scale = NONE;
 	// cache the value
 	if (scale != NONE)
@@ -71,41 +88,29 @@ TemperatureScale readTemperatureScale()
 
 	QDomElement root = qdom_appconfig.documentElement();
 
-	QDomNode n = root.firstChild();
-	while (!n.isNull())
+	QDomNode setup_node = getChildWithName(root, "setup");
+	if (!setup_node.isNull())
 	{
-		if (n.isElement() && n.nodeName() == "setup")
+		QDomNode gen_node = getChildWithName(setup_node, "generale");
+		if (!gen_node.isNull())
 		{
-			QDomNode setup_child = n.firstChild();
-			while (!setup_child.isNull())
+			QDomNode temp_node = getChildWithName(gen_node, "temperature");
+			if (!temp_node.isNull())
 			{
-				if (setup_child.isElement() && setup_child.nodeName() == "generale")
+				QDomNode format_node = getChildWithName(temp_node, "format");
+				if (!format_node.isNull())
 				{
-					QDomNode gen_child = setup_child.firstChild();
-					while (!gen_child.isNull())
-					{
-						if (gen_child.isElement() && gen_child.nodeName() == "temperature")
-						{
-							QDomNode temp_child = gen_child.firstChild();
-							while (!temp_child.isNull())
-							{
-								if (temp_child.isElement() && temp_child.nodeName() == "format")
-								{
-									QDomElement e = temp_child.toElement();
-									scale = static_cast<TemperatureScale>(e.text().toInt());
-									return scale;
-								}
-								temp_child = temp_child.nextSibling();
-							}
-						}
-						gen_child = gen_child.nextSibling();
-					}
+					QDomElement e = format_node.toElement();
+					scale = static_cast<TemperatureScale>(e.text().toInt());
+					return scale;
 				}
-				setup_child = setup_child.nextSibling();
 			}
 		}
-		n = n.nextSibling();
 	}
+
+	qWarning("Temperature scale not found on conf.xml!");
+	scale = default_scale;
+	return default_scale;
 }
 
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2)

@@ -16,6 +16,7 @@
 
 QDomNode getPageNode(int id);
 QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
+QDomNode getChildWithName(QDomNode parent, QString name);
 QString getLanguage();
 
 // FIXME: next time a global function is needed, create an object that stores global configuration
