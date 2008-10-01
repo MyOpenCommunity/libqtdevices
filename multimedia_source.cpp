@@ -496,6 +496,9 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 
 void FileSelector::showEvent(QShowEvent *event)
 {
+	// refresh QDir information
+	current_dir.refresh();
+
 	QLabel *l = createWaitDialog();
 	QTime time_counter = startTimeCounter();
 
@@ -558,7 +561,6 @@ void FileSelector::itemIsClicked(int item)
 
 void FileSelector::browseUp()
 {
-
 	if (level)
 	{
 		--level;
@@ -638,8 +640,6 @@ QLabel *FileSelector::createWaitDialog()
 
 bool FileSelector::browseFiles()
 {
-	// refresh QDir information
-	current_dir.refresh();
 
 	// Create fileslist from files
 	const QFileInfoList *temp_files_list = current_dir.entryInfoList();
