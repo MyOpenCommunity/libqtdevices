@@ -19,49 +19,47 @@
 #include <qapplication.h>
 #include <signal.h>
 #include <qregexp.h>
-#define	TIMESTAMP
+
+#define TIMESTAMP
 #ifdef TIMESTAMP
 #include <qdatetime.h>
 #endif
 
 
-/*******************************************
- ** Instance global object to handle icons
- *******************************************/
+
+// Instance global object to handle icons
 IconDispatcher icons_library;
 
 
-/*******************************************
- * Instance DOM global object to handle
- * configuration.
- * ****************************************/
+// Instance DOM global object to handle configuration.
 QDomDocument qdom_appconfig;
 
+// Configurazione applicativo - path - verbosity - ecc
 
-/*******************************************
- ** Configurazione applicativo - path - verbosity - ecc
- *******************************************/
 // Variabili di inizializzazione
-char * My_File_Cfg=MY_FILE_CFG_DEFAULT;
-char * My_File_User_Cfg=MY_FILE_USER_CFG_DEFAULT;
-char * My_File_Log=MY_FILE_LOG_DEFAULT;
-char * My_Parser=MY_PARSER_DEFAULT;
-char * Xml_File_In=XML_FILE_IN_DEFAULT;
-char * Xml_File_Out=XML_FILE_OUT_DEFAULT;
-FILE * StdLog = stdout;
+char *My_File_Cfg = MY_FILE_CFG_DEFAULT;
+char *My_File_User_Cfg = MY_FILE_USER_CFG_DEFAULT;
+char *My_File_Log = MY_FILE_LOG_DEFAULT;
+char *My_Parser = MY_PARSER_DEFAULT;
+char *Xml_File_In = XML_FILE_IN_DEFAULT;
+char *Xml_File_Out = XML_FILE_OUT_DEFAULT;
+FILE *StdLog = stdout;
+
 // il VERBOSITY_LEVEL condiziona tutte le printf
-int  VERBOSITY_LEVEL=VERBOSITY_LEVEL_DEFAULT;
-char * Path_Var=NULL;
-char * bt_wd=NULL;
-char * My_Path=NULL;
+int  VERBOSITY_LEVEL = VERBOSITY_LEVEL_DEFAULT;
+char *Path_Var = NULL;
+char *bt_wd = NULL;
+char *My_Path = NULL;
+
 // il Suffisso serve per distinguere le stampe
-char * Suffisso = "<BTo>";
+char *Suffisso = "<BTo>";
 
 // Variabili SSL 
 int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
 
+BtMain *BTouch;
 
 QDomNode getChildWithName(QDomNode parent, QString name)
 {
@@ -140,25 +138,26 @@ void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2)
 		*fg2 = new QColor(7,151,254);
 }
 
-void myMessageOutput( QtMsgType type, const char *msg )
+void myMessageOutput(QtMsgType type, const char *msg)
 {
-	switch ( type ) 
+	switch (type)
 	{
 	case QtDebugMsg:
 		if (VERBOSITY_LEVEL>1)
-		#ifndef TIMESTAMP
-		fprintf( StdLog, "<BTo> %s\n", msg );
-		#endif
-		#ifdef TIMESTAMP
-		fprintf( StdLog, "<BTo>%.2d:%.2d:%.2d,%.1d  %s\n",QTime::currentTime().hour() ,QTime::currentTime().minute() ,QTime::currentTime().second(),QTime::currentTime().msec()/100,msg );
-		#endif
+#ifndef TIMESTAMP
+		fprintf(StdLog, "<BTo> %s\n", msg);
+#endif
+#ifdef TIMESTAMP
+		fprintf(StdLog, "<BTo>%.2d:%.2d:%.2d,%.1d  %s\n",QTime::currentTime().hour() ,QTime::currentTime().minute(),
+			QTime::currentTime().second(),QTime::currentTime().msec()/100,msg);
+#endif
 		break;
 	case QtWarningMsg:
 		if (VERBOSITY_LEVEL>0)
-		fprintf( StdLog, "<BTo> %s\n", msg );
+		fprintf(StdLog, "<BTo> %s\n", msg);
 		break;
 	case QtFatalMsg:
-		fprintf( stderr, "<BTo> FATAL %s\n", msg );
+		fprintf(stderr, "<BTo> FATAL %s\n", msg);
 		// deliberately core dump
 		abort();
 	}
@@ -217,18 +216,14 @@ QString getLanguage()
 	return node.toElement().text();
 }
 
-BtMain *BTouch;
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
-	/*******************************************
-	 ** Inizio Lettura configurazione applicativo
-	 *******************************************/
-
-	QFile * xmlFile;
+	 // Inizio Lettura configurazione applicativo
+	QFile *xmlFile;
 	char *logFile;
 
-	logFile=new(char[MAX_PATH]);
+	logFile = new(char[MAX_PATH]);
 	strncpy(logFile, My_File_Log, MAX_PATH);
 
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
@@ -244,17 +239,16 @@ int main( int argc, char **argv )
 
 	xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
 	xmlFile = new QFile(My_File_Cfg);
-	QXmlInputSource source( xmlFile );
+	QXmlInputSource source(xmlFile);
 	QXmlSimpleReader reader;
-	reader.setContentHandler( handler );
-	reader.parse( source );
+	reader.setContentHandler(handler);
+	reader.parse(source);
 	delete handler;
 	delete xmlFile;
 
-	if (strcmp(logFile,"")&&strcmp(logFile,"-"))
-		// Settato il file di log
+	if (strcmp(logFile,"") && strcmp(logFile,"-"))  // Settato il file di log
 		StdLog = fopen(logFile,"a+");
-	if (NULL==StdLog)
+	if (NULL == StdLog)
 	{
 		StdLog = stdout;
 		qDebug("StdLog==NULL");
@@ -264,7 +258,7 @@ int main( int argc, char **argv )
 	setvbuf(stdout, (char *)NULL, _IONBF, 0);
 	setvbuf(stderr, (char *)NULL, _IONBF, 0);
 	// D'ora in avanti qDebug, ... scrivono dove gli ho detto io
-	qInstallMsgHandler( myMessageOutput );
+	qInstallMsgHandler(myMessageOutput);
 
 	QString language_suffix = getLanguage();
 	if (language_suffix != QString(DEFAULT_LANGUAGE))
@@ -278,16 +272,11 @@ int main( int argc, char **argv )
 			qWarning("File %s not found for language %s", language_file.ascii(), language_suffix.ascii());
 	}
 
-	/*******************************************
-	 ** Fine Lettura configurazione applicativo
-	 *******************************************/
-
+	// Fine Lettura configurazione applicativo
 	signal(SIGUSR1, MySignal);
 	signal(SIGUSR2, ResetTimer);
 
 	qDebug("Start BtMain");
-
 	BTouch = new BtMain(NULL,"MAIN PROGRAM",&a);
-
 	return a.exec();
 }
