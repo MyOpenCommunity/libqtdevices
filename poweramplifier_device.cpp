@@ -25,8 +25,8 @@ poweramplifier_device::poweramplifier_device(QString w, bool p, int g) :
 }
 
 void poweramplifier_device::init(bool force)
-{
-	OpenMsg msg = OpenMsg::createReadDim(who.ascii(), where.ascii());
+{	
+	OpenMsg msg = OpenMsg::createReadDim(who.toAscii().constData(), where.toAscii().constData());
 	qDebug("poweramplifier_device::init message: %s", msg.frame_open);
 	sendInit(msg.frame_open);
 }
@@ -52,16 +52,23 @@ void poweramplifier_device::frame_rx_handler(char *frame)
 
 void poweramplifier_device::turn_on()
 {
+	// TODO: non faccio il porting di questi due metodi perche' il codice non e'
+	// stato ancora sviluppato completamente (e quindi non e' usato ma fortemente
+	// soggetto a modifiche)
+/*
 	QString what;
 	what.sprintf("%d#%d#%s", ON_FOLLOW_ME, MM_TYPE, QString(where[3]).ascii());
 	OpenMsg msg = OpenMsg::createCmd(who.ascii(), where.ascii(), what.ascii());
 	sendFrame(msg.frame_open);
+*/
 }
 
 void poweramplifier_device::turn_off()
 {
+/*
 	QString what;
 	what.sprintf("%d#%d#%s", OFF, MM_TYPE, QString(where[3]).ascii());
 	OpenMsg msg = OpenMsg::createCmd(who.ascii(), where.ascii(), what.ascii());
 	sendFrame(msg.frame_open);
+*/
 }
