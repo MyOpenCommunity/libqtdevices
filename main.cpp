@@ -16,15 +16,18 @@
 #include <openwebnet.h>
 #include <common_functions.h>
 
-#include <qapplication.h>
-#include <signal.h>
-#include <qregexp.h>
+#include <QApplication>
+#include <QTranslator>
+#include <QVector>
+#include <QRegExp>
+#include <QtDebug>
 
 #define TIMESTAMP
 #ifdef TIMESTAMP
-#include <qdatetime.h>
+#include <QDateTime>
 #endif
 
+#include <signal.h>
 
 
 // Instance global object to handle icons
@@ -143,20 +146,20 @@ void myMessageOutput(QtMsgType type, const char *msg)
 	switch (type)
 	{
 	case QtDebugMsg:
-		if (VERBOSITY_LEVEL>1)
+		if (VERBOSITY_LEVEL > 1)
 #ifndef TIMESTAMP
 		fprintf(StdLog, "<BTo> %s\n", msg);
-#endif
-#ifdef TIMESTAMP
+#else
 		fprintf(StdLog, "<BTo>%.2d:%.2d:%.2d,%.1d  %s\n",QTime::currentTime().hour() ,QTime::currentTime().minute(),
 			QTime::currentTime().second(),QTime::currentTime().msec()/100,msg);
 #endif
 		break;
 	case QtWarningMsg:
-		if (VERBOSITY_LEVEL>0)
-		fprintf(StdLog, "<BTo> %s\n", msg);
+		if (VERBOSITY_LEVEL > 0)
+			fprintf(StdLog, "<BTo> %s\n", msg);
 		break;
 	case QtFatalMsg:
+	default:
 		fprintf(stderr, "<BTo> FATAL %s\n", msg);
 		// deliberately core dump
 		abort();
@@ -201,12 +204,12 @@ QString getLanguage()
 	QString default_language(DEFAULT_LANGUAGE);
 	QDomNode node = qdom_appconfig.documentElement();
 
-	QValueVector<QString> node_names(3);
+	QVector<QString> node_names(3);
 	node_names[0] = "setup";
 	node_names[1] = "generale";
 	node_names[2] = "language";
 
-	for (QValueVector<QString>::iterator It = node_names.begin(); It != node_names.end(); ++It)
+	for (QVector<QString>::iterator It = node_names.begin(); It != node_names.end(); ++It)
 	{
 		node = node.namedItem(*It);
 		if (node.isNull())
@@ -264,12 +267,12 @@ int main(int argc, char **argv)
 	if (language_suffix != QString(DEFAULT_LANGUAGE))
 	{
 		QString language_file;
-		language_file.sprintf(LANGUAGE_FILE_TMPL, language_suffix.ascii());
+		language_file.sprintf(LANGUAGE_FILE_TMPL, language_suffix.toAscii().constData());
 		QTranslator *translator = new QTranslator(0);
 		if (translator->load(language_file))
 			a.installTranslator(translator);
 		else
-			qWarning("File %s not found for language %s", language_file.ascii(), language_suffix.ascii());
+			qWarning() << "File " << language_file << " not found for language " << language_suffix;
 	}
 
 	// Fine Lettura configurazione applicativo
