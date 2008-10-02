@@ -26,7 +26,7 @@ poweramplifier_device::poweramplifier_device(QString w, bool p, int g) :
 
 void poweramplifier_device::init(bool force)
 {	
-	OpenMsg msg = OpenMsg::createReadDim(who.toAscii().constData(), where.toAscii().constData());
+	OpenMsg msg = OpenMsg::createReadDim(who.toStdString(), where.toStdString());
 	qDebug("poweramplifier_device::init message: %s", msg.frame_open);
 	sendInit(msg.frame_open);
 }
