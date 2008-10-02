@@ -55,8 +55,7 @@ BtLabelEvo *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
 	"fancoil3off.png", "fancoil3on.png", "fancoilAoff.png", "fancoilAon.png"};
 
-BannFullScreen::BannFullScreen(QWidget *parent, const char *name)
-	: banner(parent, name)
+BannFullScreen::BannFullScreen(QWidget *parent, const char *name) : banner(parent, name)
 {
 }
 
@@ -258,8 +257,7 @@ void FSBannSimpleProbe::status_changed(QList<device_status*> sl)
 }
 
 FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
-		TemperatureScale scale, const char *name)
-	: FSBannSimpleProbe(parent, n, scale),
+	TemperatureScale scale, const char *name) : FSBannSimpleProbe(parent, n, scale),
 	delta_setpoint(false),
 	setpoint_delay(2000),
 	setpoint_delta(5)
@@ -559,18 +557,15 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 }
 
 FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
-		TemperatureScale scale, const char *name)
-	: FSBannProbe(n, _dev, thermo_reg, parent, scale),
-	fancoil_buttons(4, Qt::Horizontal, this)
+	TemperatureScale scale, const char *name) : FSBannProbe(n, _dev, thermo_reg, parent, scale), fancoil_buttons(this)
 {
 	dev = _dev;
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
 
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
-	fancoil_buttons.hide(); // do not show QButtonGroup frame
 	fancoil_status = 0;
-	connect(&fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
+	connect(&fancoil_buttons, SIGNAL(buttonClicked(int)), SLOT(handleFancoilButtons(int)));
 }
 
 void FSBannFancoil::createFancoilButtons()
@@ -586,18 +581,17 @@ void FSBannFancoil::createFancoilButtons()
 		btn->setToggleButton(true);
 
 		hbox->addWidget(btn);
-		fancoil_buttons.insert(btn, id);
+		fancoil_buttons.addButton(btn, id);
 
 		speed_to_btn_tbl[(id + 1) % 4] = id;
 		btn_to_speed_tbl[id] = (id + 1) % 4;
 	}
 	main_layout.insertLayout(-1, hbox);
-	main_layout.setStretchFactor(&fancoil_buttons, 2);
 }
 
 void FSBannFancoil::Draw()
 {
-	fancoil_buttons.setButton(fancoil_status);
+	fancoil_buttons.button(fancoil_status)->setChecked(true);
 	FSBannProbe::Draw();
 }
 
