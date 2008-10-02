@@ -23,7 +23,7 @@
 #include <QPixmap>
 #include <QVector>
 #include <QWidget>
-#include <QVector>
+
 
 
 /** \class ButtonsBar
