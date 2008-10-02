@@ -9,17 +9,23 @@
 **
 ****************************************************************/
 
+#ifndef SET_ITEMS_H
+#define SET_ITEMS_H
+
 #include "banner.h"
 #include "bannondx.h"
-
-#include <qwidget.h>
-
-
-#ifndef SETDATAORA
-#define SETDATAORA
-
-
+#include "bann2but.h"
 #include "impostatime.h"
+
+#include <QWidget>
+
+class versio;
+class sveglia;
+class tastiera;
+class Calibrate;
+class contrPage;
+class contdiff;
+
 /*!
   \class setDataOra
   \brief This class is made to set time and date.
@@ -31,21 +37,13 @@ class setDataOra : public bannOnDx
 {
 Q_OBJECT
 public:
-	setDataOra(sottoMenu  *, const char *);
+	setDataOra(sottoMenu *, const char *);
 public slots:
 	void hide();
 private:
 	impostaTime settalora;
 };
-#endif //SETDATAORA
 
-
-#ifndef IMPSVEGLIA
-#define IMPSVEGLIA
-
-#include "sveglia.h"
-#include "diffsonora.h"
-#include "bann2but.h"
 
 /*!
   \class impostaSveglia
@@ -91,12 +89,8 @@ private:
 	char iconOn[50];
 	char iconOff[50];
 };
-#endif //IMPSVEGLIA
 
-#ifndef CALIBRATION
-#define CALIBRATION
 
-#include "calibrate.h"
 /*!
   \class calibration
   \brief Calibrate the device
@@ -119,11 +113,8 @@ signals:
 private:
 	Calibrate* calib;
 };
-#endif //CALIBRATION
 
 
-#ifndef BEEP_H
-#define BEEP_H
 /*!
   \class setDataOra
   \brief Beep (dis)abilitation
@@ -142,12 +133,7 @@ private:
 	char iconOn[50];
 	char iconOff[50];
 };
-#endif //BEEP_H
 
-#ifndef IMP_CONTR_H
-#define IMP_CONTR_H
-
-#include "contrpage.h"
 
 class impContr : public bannOnDx
 {
@@ -163,13 +149,7 @@ private slots:
 private:
 	contrPage* contrasto;
 };
-#endif //IMP_CONTR_H
 
-
-#ifndef VERSIONE_H
-#define VERSIONE_H
-
-#include "versio.h"
 
 class machVers : public bannOnDx
 {
@@ -180,18 +160,10 @@ private slots:
 	void tiempout();
 	void showVers();
 private:
-	versio * v;
-	QTimer *tiempo;
+	versio *v;
 };
-#endif //VERSIONE_H
 
 
-#ifndef PASSWORD_H
-#define PASSWORD_H
-
-
-#include "bann2but.h"
-#include "tastiera.h"
 /*!
   \class impPassword
   \brief Manages the password.
@@ -250,10 +222,9 @@ private:
 	char iconOff[50];
 	tastiera *tasti;
 	bool sb;
-	QTimer * tiempo;
 	unsigned char starting;
 };
-#endif //PASSWORD_H
+#endif //SET_ITEMS_H
 
 
 

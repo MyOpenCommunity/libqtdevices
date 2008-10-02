@@ -254,7 +254,7 @@ void StopngoPage::AddItems()
 	titleBar->setFrameStyle(QFrame::NoFrame);
 	titleBar->setIndent(TITLE_BAR_INDENT);
 	titleBar->setFont(tFont);
-	titleBar->setAlignment(AlignCenter|AlignTop);
+	titleBar->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 	titleBar->setText(pageTitle);
 	titleBar->show();
 

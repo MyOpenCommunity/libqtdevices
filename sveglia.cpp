@@ -32,10 +32,10 @@
 #include <unistd.h>
 
 sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff* diso, char* f, char*h, char*m)
-	: QFrame(parent, name)
+	: QFrame(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
+	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
@@ -123,9 +123,9 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 		if (Icon2)
 			choice[idx]->setPressedPixmap(*Icon2);
 		choice[idx]->hide();
-		testiChoice[idx] = new BtLabel(this,"choiceLabel" + QString::number(idx));
+		testiChoice[idx] = new BtLabel(this);
 		testiChoice[idx]->setGeometry(80,idx*60,120,60);
-		testiChoice[idx]->setAlignment(AlignHCenter|AlignVCenter);
+		testiChoice[idx]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		testiChoice[idx]->setFont(aFont);
 		testiChoice[idx]->hide();
     }
@@ -138,7 +138,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 
 	oraSveglia =  new QDateTime();
 	oraSveglia->setTime(QTime(atoi(h),atoi(m)));
-	oraSveglia->setDate(QDate::currentDate(Qt::LocalTime));
+	oraSveglia->setDate(QDate::currentDate());
 	dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
 	dataOra->setGeometry(40,140,160,50);
 	dataOra->setFrameStyle(QFrame::Plain);
@@ -377,7 +377,7 @@ void sveglia::Closed()
 
 	gesFrameAbil = FALSE;
 	activateSveglia(TRUE);
-	emit(ImClosed());
+	emit ImClosed();
 	delete oraSveglia;
 	oraSveglia = new QDateTime(dataOra->getDataOra());
 	copyFile("cfg/conf.xml","cfg/conf1.lmx");
@@ -386,7 +386,7 @@ void sveglia::Closed()
 	char t[2];
 	sprintf(&t[0],"%d",tipoSveglia);
 	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",&t[0],serNum);
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
+	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
 }
 
 void sveglia::okTipo()
@@ -432,7 +432,7 @@ void sveglia::activateSveglia(bool a)
 	{
 		if (!minuTimer)
 		{
-			minuTimer = new QTimer(this,"tick");
+			minuTimer = new QTimer(this);
 			minuTimer->start(200);
 			connect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
 			setCfgValue(SET_SVEGLIA, "enabled","1",serNum);
@@ -534,7 +534,7 @@ void sveglia::verificaSveglia()
 	if (!svegliaAbil)
 		return;
 
-	QDateTime actualDateTime = QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
+	QDateTime actualDateTime = QDateTime::currentDateTime();
 
 	if ((tipoSveglia==SEMPRE) || ((tipoSveglia==ONCE)) ||\
 		((tipoSveglia==FERIALI) && (actualDateTime.date().dayOfWeek()<6)) ||\
@@ -545,28 +545,28 @@ void sveglia::verificaSveglia()
 		{
 			if (tipo == BUZZER)
 			{
-				aumVolTimer = new QTimer(this,"timer sveglia Buzzer");
-				aumVolTimer->start(100,FALSE);
+				aumVolTimer = new QTimer(this);
+				aumVolTimer->start(100);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(buzzerAlarm()));
 				contaBuzzer = 0;
 				conta2min = 0;
-				emit(freeze(TRUE));
-				emit(svegl(TRUE));
+				emit freeze(TRUE);
+				emit svegl(TRUE);
 			}
 			else if (tipo == DI_SON)
 			{
-				aumVolTimer = new QTimer(this,"timer aumenta volume sveglia");
-				aumVolTimer->start(3000,FALSE);
+				aumVolTimer = new QTimer(this);
+				aumVolTimer->start(3000);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
-				conta2min=0;
+				conta2min = 0;
 				setBacklight(TRUE);
-				emit(freeze(TRUE));
-				emit(svegl(TRUE));
+				emit freeze(TRUE);
+				emit svegl(TRUE);
 			}
 			else if (tipo == FRAME)
 			{
 				qDebug("mando la frame: %s", frame);
-				emit(sendFrame(frame));
+				emit sendFrame(frame);
 			}
 
 			qDebug("PARTE LA SVEGLIA");
@@ -796,8 +796,8 @@ void sveglia::aumVol()
 				emit sendFrame(msg_open.frame_open);
 			}
 		}
-		emit(freeze(FALSE));
-		emit (svegl(FALSE));
+		emit freeze(FALSE);
+		emit svegl(FALSE);
 	}
 }
 
@@ -828,15 +828,15 @@ void sveglia::buzzerAlarm()
 		aumVolTimer->stop();
 		setBeep(buzAbilOld,FALSE);
 		delete aumVolTimer;
-		aumVolTimer=NULL;
-		emit(freeze(FALSE));
-		emit(svegl(FALSE));
+		aumVolTimer = NULL;
+		emit freeze(FALSE);
+		emit svegl(FALSE);
 	}
 }
 
 void sveglia::spegniSveglia(bool b)
 {
-	if ((!b) && (aumVolTimer))
+	if (!b && aumVolTimer)
 	{
 		if (aumVolTimer->isActive())
 		{
@@ -900,4 +900,26 @@ void sveglia::inizializza()
 	::close(eeprom);    // servono i:: se no fa la close() di QWidget
 	}
 #endif
+}
+
+// TODO: funzioni di compatibilita' qt3.. da rimuovere!!
+void sveglia::setPaletteBackgroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(backgroundRole(), c);
+	setPalette(palette);
+}
+
+void sveglia::setPaletteForegroundColor(const QColor &c)
+{
+	QPalette palette;
+	palette.setColor(foregroundRole(), c);
+	setPalette(palette);
+}
+
+void sveglia::setPaletteBackgroundPixmap(const QPixmap &pixmap)
+{
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pixmap));
+	setPalette(palette);
 }

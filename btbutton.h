@@ -17,7 +17,7 @@ class BtButton : public QPushButton
 {
 Q_OBJECT
 public:
-	BtButton( QWidget *parent, const char* name=0 ) {}
+	BtButton( QWidget *parent, QString s=QString() ) {}
 	BtButton( const QString &text, QWidget *parent, const char* name=0 ) {}
 
 	virtual void setPressedPixmap( const QPixmap & ) {}
@@ -28,6 +28,8 @@ public:
 	void setPaletteBackgroundColor(const QColor &c) {}
 	const QColor& paletteBackgroundColor() { return palette().color(backgroundRole()); }
 	const QColor& paletteForegroundColor() { return palette().color(foregroundRole()); }
+	void setOn(bool) {}
+	void setToggleButton(bool) {}
 };
 
 
