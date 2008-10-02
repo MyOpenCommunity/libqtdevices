@@ -289,17 +289,6 @@ void radio::setFGColor(QColor c)
 	bannNavigazione->setFGColor(c);
 }
 
-int radio::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return (0);
-	}
-	return (1);
-}
-
 void radio::setFreq(float f)
 {
 	frequenza=f;

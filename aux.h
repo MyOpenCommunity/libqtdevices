@@ -59,10 +59,6 @@ public:
 	*/
 	void setFGColor(QColor);
 
-	/*!
-	\brief Sets the background pixmap for the banner.
-	*/
-	int setBGPixmap(char*);
 	BtLabel* auxName, *ambDescr;
 	BtButton *fwdBut;
 

@@ -100,10 +100,6 @@ public:
   \brief Same as above. Dimension is assumed 160x20, the colors used are the same of the entire page, with no frame, line and text.
 */
 	void addDescrU(const QString &, int , int);
-/*!
-  \brief Sets the background pixmap for the banner.
-*/
-	int setBGPixmap(char*);
 
 /*! \enum tipoFunzSpe
    This enum let decide the behavior of the special button*/

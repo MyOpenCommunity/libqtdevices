@@ -141,17 +141,6 @@ void impostaTime::setFGColor(QColor c)
 	}
 }
 
-int impostaTime::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return 0;
-	}
-	return 1;
-}
-
 void impostaTime::OKTime()
 {
 	disconnect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));

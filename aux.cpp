@@ -97,17 +97,6 @@ void aux::setFGColor(QColor c)
 	fwdBut->setPaletteForegroundColor(c);
 }
 
-int aux::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if(Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return (0);
-	}
-	return (1);
-}
-
 void aux::setAmbDescr(const QString & d)
 {
 	ambDescr->setText(d);

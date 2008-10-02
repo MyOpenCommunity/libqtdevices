@@ -49,10 +49,6 @@ public:
 */
 	void setFGColor(int , int , int);
 /*!
-  \brief sets the background pixmap starting from the name of a png file
-*/
-	int setBGPixmap(char*);
-/*!
   \brief inserts a new item in the antintrusione class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
 */
 	int addItemU(char tipo, const QString & nome , void* indirizzo, QList<QString*> &icon_names,

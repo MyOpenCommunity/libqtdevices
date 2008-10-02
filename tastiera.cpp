@@ -282,17 +282,6 @@ void tastiera::setFGColor(QColor c)
 	scrittaLabel->setPaletteForegroundColor(c);
 }
 
-int tastiera::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return (0);
-	}
-	return (1);
-}
-
 void tastiera::draw()
 {
 	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);

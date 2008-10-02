@@ -87,17 +87,6 @@ void diffSonora::setFGColor(int r, int g, int b)
 		amplificatori->setFGColor(foregroundColor());
 }
 
-int diffSonora::setBGPixmap(char *backImage)
-{
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return 0;
-	}
-	return 1;
-}
-
 // TODO: sarebbe meglio che icon_names diventasse una QList<QString>.. al momento
 // e' l'xmlconfhandler che "detiene" l'ownership delle stringhe contenute nella
 // lista.. anche se poi a tutti gli effetti non le cancella.

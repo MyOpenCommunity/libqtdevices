@@ -163,10 +163,6 @@ private:
 	 */
 	void setFGColor(int, int, int);
 	/*!
-	 * \brief Sets the background pixmap for the banner.
-	 */
-	int setBGPixmap(char*);
-	/*!
 	 * \brief Draws the page
 	 */
 	void draw() {};

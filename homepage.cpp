@@ -123,20 +123,10 @@ void homePage::setBGColor(int r, int g, int b)
 {	
 	setPaletteBackgroundColor(QColor::QColor(r,g,b));
 }
+
 void homePage::setFGColor(int r, int g, int b)
 {
 	setPaletteForegroundColor(QColor::QColor(r,g,b));
-}
-
-int homePage::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return 0;
-	}
-	return 1;
 }
 
 void homePage::addClock(int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)

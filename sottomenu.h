@@ -79,10 +79,6 @@ public:
 		*/
 	void setAllFGColor(QColor);
 	/*!
-		\brief Sets the background pixmap for the banner.
-		*/
-	int setBGPixmap(char*);
-	/*!
 		\brief Retrieves the number of objects in the list
 		*/
 	uint getCount();

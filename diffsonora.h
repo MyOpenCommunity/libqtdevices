@@ -46,10 +46,6 @@ public:
 	 */
 	void setFGColor(int , int , int);
 	/*!
-	 * \brief Sets the background pixmap for the banner.
-	 */
-	int setBGPixmap(char*);
-	/*!
 	 * \brief Set the "sorgenti" submenu"
 	 */
 	void setSorgenti(sottoMenu *);

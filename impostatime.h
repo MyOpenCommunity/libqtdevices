@@ -59,10 +59,6 @@ public:
 */
 	void setFGColor(int , int , int);
 
-/*!
-  \brief Sets the background pixmap for the banner.
-*/
-	int setBGPixmap(char*);
 	BtButton *but[7];
 
 signals:

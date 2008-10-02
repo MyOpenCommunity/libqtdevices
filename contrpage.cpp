@@ -128,17 +128,6 @@ void contrPage::setFGColor(QColor c)
 	paintLabel->setPaletteForegroundColor(c);
 }
 
-int contrPage::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if(Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return 0;
-	}
-	return 1;
-}
-
 void contrPage::aumContr()
 {
 	uchar c;

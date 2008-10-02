@@ -68,11 +68,6 @@ public:
 	void setFGColor(int , int , int);
 
 /*!
-  \brief Sets the background pixmap for the banner.
-*/
-	int setBGPixmap(char*);
-
-/*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
 */
 	void setSerNum(int);

@@ -60,11 +60,6 @@ public:
 */
 	virtual void setFGColor(QColor);
 
-/*!
-  \brief Sets the background pixmap for the banner.
-*/
-	int setBGPixmap(char*);
-
 	BtButton *aumBut, *decBut,*okBut;
 	BtLabel* paintLabel,*colorBar;
 	void draw();

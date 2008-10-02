@@ -444,26 +444,6 @@ void StopngoPage::setFGColor(QColor c)
 */
 }
 
-int StopngoPage::setBGPixmap(char* backImage)
-{
-	// TODO: sistemare con i metodi qt4 per impostare i colori!!
-/*
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		QPixmap temp;
-		temp.resize(BUT_DIM, BUT_DIM);
-
-		bitBlt(&temp, 0, 0, &Back, BUT_POS_X, BUT_POS_Y, BUT_DIM, BUT_DIM);
-		okBut->setPaletteBackgroundPixmap(temp);
-		
-		return 0;
-	}
-	*/
-	return 1;
-}
-
 void StopngoPage::showPage()
 {
 	showFullScreen();

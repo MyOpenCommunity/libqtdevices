@@ -96,7 +96,6 @@ public:
 	virtual void setFGColor(int , int , int);
 	virtual void setBGColor(QColor);
 	virtual void setFGColor(QColor);
-	int setBGPixmap(char*);
 
 protected:
 	QString pageTitle, where;

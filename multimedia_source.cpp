@@ -450,17 +450,6 @@ void MultimediaSource::setFGColor(QColor c)
 	source_choice->setFGColor(c);
 }
 
-int MultimediaSource::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if(Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return 0;
-	}
-	return 1;
-}
-
 void MultimediaSource::enableSource(bool send_frame)
 {
 	qDebug("[AUDIO] Running start play script: %s", start_play_script);

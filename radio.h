@@ -52,10 +52,6 @@ public:
 	 * The argument is the QColor description of the color.
 	 */
 	void setFGColor(QColor);
-	/*!
-	 * \brief Sets the background pixmap for the banner.
-	 */
-	int setBGPixmap(char*);
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	BtLabel* rdsLabel,* radioName,*progrText, *ambDescr;
