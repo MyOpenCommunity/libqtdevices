@@ -110,7 +110,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 		qDebug("diffmulti::additem -> Entering SORG_RADIO case...");
 	case SORG_AUX:
 		qDebug("diffmulti::additem -> Entering SORG_AUX case...");
-		qDebug() << "Source (" << tipo << ", " << descrizioni->at(0) << "): appending to source list";
+		qDebug() << "Source (" << (int)tipo << ", " << *descrizioni->at(0) << "): appending to source list";
 		qDebug("sorgenti->addItem (%p)", sorgenti);
 		/*
 			* NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
@@ -365,13 +365,7 @@ void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool show
 			ds->show();
 	}
 	if (dm)
-	{
-		dm->setParent(parent);
-		dm->setWindowFlags((Qt::WindowFlags)f);
-		dm->move(point);
-		if (showIt)
-			dm->show();
-	}
+		dm->reparent(parent, (Qt::WindowFlags)f, point, showIt);
 }
 
 void contdiff::setNavBarMode(uchar m)
