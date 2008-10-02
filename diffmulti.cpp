@@ -74,7 +74,8 @@ diffmulti::diffmulti(QWidget *parent, const char *name, uchar navBarMode,int wi,
 	connect(this, SIGNAL(frez(bool)), sorgenti, SLOT(freezed(bool)));
 
 	// Get status changed events back
-	connect(matr, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
 }
 
 diffmulti::~diffmulti()

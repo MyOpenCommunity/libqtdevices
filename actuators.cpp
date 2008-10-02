@@ -495,8 +495,8 @@ attuatAutomTemp::attuatAutomTemp(QWidget *parent,const char *name,char* indirizz
 	SetSecondaryTextU(tempo_display);
 	dev = btouch_device_cache.get_light(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 	connect(this, SIGNAL(dxClick()), this, SLOT(Attiva()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(CiclaTempo()));
 }

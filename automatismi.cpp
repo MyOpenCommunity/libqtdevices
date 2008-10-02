@@ -28,8 +28,8 @@ automCancAttuatVC::automCancAttuatVC(QWidget *parent, const char *name, char* in
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_autom_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
 void automCancAttuatVC::Attiva()
@@ -57,8 +57,8 @@ automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char* 
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_autom_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), 
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 	time = t.isEmpty() ? t : QString("*0*0*18");
 	Draw();
 }
