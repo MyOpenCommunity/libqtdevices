@@ -455,6 +455,7 @@ void sottoMenu::showItem(int id)
 void sottoMenu::draw()
 {
 	qDebug() << "sottoMenu::draw() (" << name << ")";
+	assert(indice >= 0 && "index of elencoBanner (sottoMenu) less than 0!!");
 	if (indicold != indice)
 	{
 		for (int i = 0; i < elencoBanner.size(); ++i)
@@ -462,8 +463,9 @@ void sottoMenu::draw()
 
 		if (hasNavBar)
 		{
-			if (banner *bann = elencoBanner.at(indice))
-				bannNavigazione->setCustomButton(bann->customButton());
+			if (!elencoBanner.isEmpty())
+				if (banner *bann = elencoBanner.at(indice))
+					bannNavigazione->setCustomButton(bann->customButton());
 
 			int end = numRighe;
 			if (scroll_step != 1)
@@ -476,7 +478,7 @@ void sottoMenu::draw()
 
 			for (int i = 0; i < end; ++i)
 			{
-				if  ((elencoBanner.at(indice + i)) || (elencoBanner.size() > numRighe))
+				if (indice + i < elencoBanner.size() || elencoBanner.size() > numRighe)
 				{
 					int tmp = (indice + i) % elencoBanner.size();
 					int y = i * (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
@@ -506,13 +508,13 @@ void sottoMenu::draw()
 				}
 			}
 		}
-		indicold=indice;
+		indicold = indice;
 	}
 }
 
 void sottoMenu::forceDraw()
 {
-	indicold=indice+1;
+	indicold = indice + 1;
 	draw();
 }
 

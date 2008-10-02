@@ -538,7 +538,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 							qDebug("clearing descr list");
 							page_item_descr_m->clear();
 
-							qDebug() << "appending %s to descr list" << page_item_descr;
+							qDebug() << "appending " << page_item_descr << " to descr list";
 							page_item_descr_m->append(new QString(page_item_descr));
 						}
 
