@@ -36,7 +36,7 @@ homePage::homePage(QWidget *parent, const char *name, WFlags f) : QWidget(parent
 	freez = FALSE;
 	descrizione = NULL;
 	tempCont = 0;
-	temp_scale = readTemperatureScale();
+	temp_scale = NONE;
 }
 
 void homePage::addButton(int x, int y, char* iconName, char function, char* chix, char* cosax, char* dovex, char tipo)
@@ -177,6 +177,7 @@ void homePage::addDate(int x, int y)
 void homePage::addTemp(char *z, int x, int y, int width, int height, QColor bg, QColor fg,
 	int style, int line, const QString & qtext, char *Ext)
 {
+	temp_scale = readTemperatureScale();
 	switch(tempCont)
 	{
 	case 0:
