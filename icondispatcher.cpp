@@ -47,9 +47,7 @@ QPixmap* IconDispatcher::getIconPointer(QString name)
 	else
 	{
 		// QPixmap object is created, (name, pointer) is stored in cache
-		QPixmap* image_pointer;
-		image_pointer = new QPixmap();
-
+		QPixmap* image_pointer = new QPixmap();
 		cache.insert(name, image_pointer);
 		return image_pointer;
 	}
@@ -61,14 +59,13 @@ QPixmap* IconDispatcher::getIcon(QString name, const char * format, Qt::ImageCon
 		return 0;
 
 	QPixmap* image_pointer = getIconPointer(name);
-	// a QPixmap is null when has zero width, zero height and no contents.
+
 	if (image_pointer->isNull())
-		image_pointer->load(name, format, flags);
-	else
-	{
-		qDebug() << "Error loading icon '" << name << "', using empty icon";
-		if (!image_pointer->load(ICON_VUOTO))
-			qDebug("*** FATAL ***: empty icon not found!");
-	}
+		if (!image_pointer->load(name, format, flags))
+		{
+			qDebug() << "Error loading icon" << name << ", using empty icon";
+			if (!image_pointer->load(ICON_VUOTO))
+				qWarning("*** FATAL ***: empty icon not found!");
+		}
 	return image_pointer;
 }

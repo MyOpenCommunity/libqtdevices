@@ -68,7 +68,8 @@ ambDiffSon::ambDiffSon(QWidget *parent, QString _name, void *indirizzo, QString 
 
 		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
 		{
-			qDebug() << "Adding amplifier (" << am->tipo << ", " << (char *)am->indirizzo << " " << *am->descr->at(0) << ")";
+			qDebug() << "Adding amplifier (" << static_cast<int>(am->tipo) << ", "
+				<< (char *)am->indirizzo << " " << *am->descr->at(0) << ")";
 			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);
 		}
 		else if (am->tipo == GR_AMPLIFICATORI)
@@ -206,7 +207,8 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QList<QString*> *names, void *indi
 
 		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
 		{
-			qDebug() << "Adding amplifier (" << am->tipo << ", " << (char *)am->indirizzo << " " << *am->descr->at(0) << ")";
+			qDebug() << "Adding amplifier (" << static_cast<int>(am->tipo) << ", "
+				<< (char *)am->indirizzo << " " << *am->descr->at(0) << ")";
 			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);
 		}
 		else if (am->tipo == GR_AMPLIFICATORI)
