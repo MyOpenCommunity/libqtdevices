@@ -103,6 +103,7 @@ private slots:
 	void testPwd(char*);
 	void testFiles();
 	void svegl(bool);
+	void waitBeforeInit();
 
 public slots:
 	void startCalib();

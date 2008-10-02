@@ -58,8 +58,8 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	QWSServer::setCursorVisible(FALSE);
 #endif
 
-	client_monitor = new  Client("127.0.0.1",20000,1);
-	client_comandi = new  Client("127.0.0.1",20000,0);
+	client_monitor = new Client("127.0.0.1",20000,1);
+	client_comandi = new Client("127.0.0.1",20000,0);
 	client_richieste = new Client("127.0.0.1",20000,0, true);
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
@@ -117,17 +117,15 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 
 	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
-		tempo1 = new QTimer(this);
-		tempo1->start(200);
-		connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
+		waitBeforeInit();
 		datiGen->show();
 	}
 	else
 	{
-		tempo1 = NULL;
 		calib = new Calibrate(NULL, (unsigned char)1);
 		calib->show();
-		connect(calib, SIGNAL(fineCalib()), this,SLOT(hom()));
+		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
+
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(showFullScreen()));
 #endif
@@ -138,18 +136,13 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	}
 }
 
+void BtMain::waitBeforeInit()
+{
+	QTimer::singleShot(200, this, SLOT(hom()));
+}
+
 void BtMain::hom()
 {
-	if (tempo1)
-		delete tempo1;
-	else
-	{
-		tempo1 = new QTimer(this);
-		tempo1->start(200);
-		connect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
-		return;
-	}
-
 	datiGen->inizializza();
 	QColor *bg, *fg1, *fg2;
 	readExtraConf(&bg, &fg1, &fg2);
@@ -256,7 +249,6 @@ void BtMain::myMain()
 
 	tempo1 = new QTimer(this);
 	tempo1->start(2000);
-	disconnect(tempo1,SIGNAL(timeout()),this,SLOT(hom()));
 	connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
 
 	tempo2 = new QTimer(this);
