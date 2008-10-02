@@ -30,6 +30,32 @@ BtButton::BtButton(const QString &text, QWidget *parent) : QPushButton(text, par
 {
 }
 
+void BtButton::setPressedPixmap(const QPixmap &p)
+{
+	pressed_pixmap = &p;
+}
+
+void BtButton::setPixmap(const QPixmap &p)
+{
+	pixmap = &p;
+}
+
+void BtButton::paintEvent(QPaintEvent *event)
+{
+	// TODO: cambiare la pixmap solo se cambia stato!
+	if (isDown())
+		setIcon(*pressed_pixmap);
+	else
+		setIcon(*pixmap);
+
+#ifdef  BEEP
+	if (isDown())
+		beep();
+#endif
+
+	QPushButton::paintEvent(event);
+}
+
 
 
 

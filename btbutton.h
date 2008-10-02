@@ -20,8 +20,8 @@ public:
 	BtButton(QWidget *parent=0);
 	BtButton(const QString &text, QWidget *parent=0);
 
-	virtual void setPressedPixmap( const QPixmap & ) {}
-	void setPixmap( const QPixmap & ) {}
+	void setPressedPixmap(const QPixmap &p);
+	void setPixmap(const QPixmap &p);
 
 	// TODO: rimuovere questi metodi qt3!
 	void setPaletteForegroundColor(const QColor &c) {}
@@ -30,6 +30,13 @@ public:
 	const QColor& paletteForegroundColor() { return palette().color(foregroundRole()); }
 	void setOn(bool) {}
 	void setToggleButton(bool) {}
+
+protected:
+	virtual void paintEvent(QPaintEvent *event);
+
+private:
+	const QPixmap* pressed_pixmap;
+	const QPixmap* pixmap;
 };
 
 
