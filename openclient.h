@@ -17,9 +17,9 @@
 #include <QTcpSocket>
 #include <QByteArray>
 
-#define SOCKET_MONITOR "*99*1##"
-#define SOCKET_COMANDI "*99*9##"
-#define SOCKET_RICHIESTE "*99*0##"
+
+#define OPENSERVER_ADDR "127.0.0.1"
+#define OPENSERVER_PORT 20000
 
 
 /*!
@@ -34,16 +34,22 @@ class Client : public QObject
 {
 Q_OBJECT
 public:
-	Client(const QString &host, unsigned _port, int mon, bool richieste=false);
-	~Client() {};
+
+	enum Type
+	{
+		MONITOR = 0,
+		RICHIESTE,
+		COMANDI
+	};
+
+	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 
 public slots:
-	/// Connects to the socket
-	void connetti();
 	void ApriInviaFrameChiudi(const char *);
 	void ApriInviaFrameChiudi(char *);
 
 private slots:
+	void connetti();
 	/// Reads messages from the socket
 	int socketFrameRead(void);
 
@@ -60,8 +66,8 @@ private slots:
 
 private:
 	QTcpSocket *socket;
-	int ismonitor;
-	bool isrichiesta;
+	Type type;
+	QString host;
 	unsigned port;
 	QByteArray data_read;
 	QTimer Open_read;
@@ -69,8 +75,6 @@ private:
 	openwebnet last_msg_open_write;
 	bool ackRx;
 
-	/// Sends messages throught the socket
-	void sendToServer(const char *);
 	void socketStateRead(char*);
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();

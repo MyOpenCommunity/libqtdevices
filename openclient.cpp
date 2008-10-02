@@ -11,17 +11,21 @@
 #include "openclient.h"
 #include "genericfunz.h"
 
+#define SOCKET_MONITOR "*99*1##"
+#define SOCKET_COMANDI "*99*9##"
+#define SOCKET_RICHIESTE "*99*0##"
 
-Client::Client(const QString &host, unsigned _port, int ismon, bool isri) : ismonitor(ismon), isrichiesta(isri), port(_port)
+
+Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
 	qDebug("Client::Client()");
 
 	socket = new QTcpSocket(this);
 
-	connect(socket, SIGNAL(connected()),this, SLOT(socketConnected()));
-	connect(socket, SIGNAL(disconnected()),this, SLOT(socketConnectionClosed()));
-	connect(socket, SIGNAL(readyRead()),this, SLOT(socketFrameRead()));
-	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(socketError(QAbstractSocket::SocketError)));
+	connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
+	connect(socket, SIGNAL(disconnected()), SLOT(socketConnectionClosed()));
+	connect(socket, SIGNAL(readyRead()), SLOT(socketFrameRead()));
+	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
 
 	// connect to the server
 	connetti();
@@ -33,29 +37,20 @@ Client::Client(const QString &host, unsigned _port, int ismon, bool isri) : ismo
 	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
-/****************************************************************************
-**
-** socket connessa
-**
-*****************************************************************************/
 void Client::socketConnected()
 {
 	qDebug("Client::socketConnected()");
 	qDebug("Connected to server");
-	if (ismonitor)
+	if (type == MONITOR)
 	{
 		qDebug("TRY TO START monitor session");
-		sendToServer(SOCKET_MONITOR);
-		emit(monitorSu());
+		socket->write(SOCKET_MONITOR);
+		emit monitorSu();
 	}
-	else if (isrichiesta)
-	{
+	else if (type == RICHIESTE)
 		qDebug("TRY TO START request");
-	}
 	else
-	{
 		qDebug("TRY TO START command");
-	}
 }
 
 // FIX: remove this slot!
@@ -64,11 +59,6 @@ void Client::ApriInviaFrameChiudi(char* frame)
 	ApriInviaFrameChiudi(const_cast<const char*>(frame));
 }
 
-/****************************************************************************
-**
-** connetto all'openserver
-**
-*****************************************************************************/
 void Client::ApriInviaFrameChiudi(const char* frame)
 {
 	qDebug("Client::ApriInviaFrameChiudi()");
@@ -79,12 +69,12 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 		if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
 		{
 			connetti();
-			if (isrichiesta)
-				sendToServer(SOCKET_RICHIESTE);
+			if (type == RICHIESTE)
+				socket->write(SOCKET_RICHIESTE);
 			else
-				sendToServer(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
+				socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
 		}
-		sendToServer(frame);
+		socket->write(frame);
 		qDebug("invio: %s",frame);
 	}
 	else
@@ -105,42 +95,19 @@ void Client::ApriInviaFrameChiudiw(char *frame)
 	qDebug("Ack received");
 }
 
-/****************************************************************************
-**
-** richiesta stato all'openserver
-**
-*****************************************************************************/
+// richiesta stato all'openserver
 void Client::richStato(char* richiesta)
 {
 	qDebug("Client::richStato()");
 	if (socket->state() == QAbstractSocket::UnconnectedState)
-	{
 		connetti();
-	}
-	sendToServer(richiesta);
+	socket->write(richiesta);
 }
 
-/****************************************************************************
-**
-** connetto all'openserver
-**
-*****************************************************************************/
 void Client::connetti()
 {
 	qDebug("Client::connetti()");
-	socket->connectToHost("127.0.0.1", port);
-}
-
-
-/****************************************************************************
-**
-** invio all'openserver
-**
-*****************************************************************************/
-void Client::sendToServer(const char * frame)
-{
-	qDebug("Client::sendToServer()");
-	socket->write(frame);
+	socket->connectToHost(host, port);
 }
 
 QByteArray Client::readFromServer()
@@ -159,7 +126,7 @@ QByteArray Client::readFromServer()
 
 void Client::manageFrame(QByteArray frame)
 {
-	if (ismonitor)
+	if (type == MONITOR)
 	{
 		qDebug() << "frame read: " << frame;
 		if (frame == "*#*1##")
@@ -226,7 +193,7 @@ int Client::socketWaitForAck()
 {
 	qDebug("Client::socketWaitForAck()");
 
-	if (ismonitor)
+	if (type == MONITOR)
 		return -1;
 	ackRx = false;
 	connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
@@ -242,29 +209,19 @@ void Client::ackReceived()
 	ackRx = true;
 }
 
-/****************************************************************************
-**
-** chiusa dal server
-**
-*****************************************************************************/
 void Client::socketConnectionClosed()
 {
 	qDebug("Client::socketConnectionClosed()");
-	qDebug("Connection closed by the server");
-	if (ismonitor)
+	if (type == MONITOR)
 		connetti();
 }
 
-/****************************************************************************
-**
-** errore
-**
-*****************************************************************************/
 void Client::socketError(QAbstractSocket::SocketError e)
 {
-	qDebug("Client::socketError()");
+	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR)
+		qWarning() << "OpenClient: error " << e << "occurred " << socket->errorString()
+			<< "on client" << type;
 
-	qWarning() << "OpenClient: error " << e << "occurred (" << socket->errorString() << ")";
-	if (ismonitor)
+	if (type == MONITOR)
 		QTimer::singleShot(500, this, SLOT(connetti()));
 }

@@ -44,6 +44,8 @@
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
 
+
+
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(parent)
 {
 
@@ -58,9 +60,9 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	QWSServer::setCursorVisible(FALSE);
 #endif
 
-	client_monitor = new Client("127.0.0.1",20000,1);
-	client_comandi = new Client("127.0.0.1",20000,0);
-	client_richieste = new Client("127.0.0.1",20000,0, true);
+	client_monitor = new Client(Client::MONITOR);
+	client_comandi = new Client(Client::COMANDI);
+	client_richieste = new Client(Client::RICHIESTE);
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 
@@ -181,8 +183,6 @@ void BtMain::hom()
 	setBackgroundColor(QColor(255,255,255));
 
 	connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(myMain()));
-	client_monitor->connetti();
-	qDebug("OPPI");
 }
 
 void BtMain::init()
