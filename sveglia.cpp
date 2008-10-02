@@ -57,7 +57,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 
 	for (uchar idx = 0; idx < 2; idx++)
 	{
-		but[idx] = new BtButton(this,"freccia");
+		but[idx] = new BtButton(this);
 
 		but[idx]->setGeometry(idx*80 + 50,80,60,60);
 		but[idx]->setAutoRepeat(true);
@@ -81,7 +81,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	}
 	for (uchar idx = 2; idx < 4; idx++)
 	{
-		but[idx] = new BtButton(this,"freccia" + QString::number(idx));
+		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-2)*80 + 50,190,60,60);
 		but[idx]->setAutoRepeat(true);
 		but[idx]->setPixmap(*Icon1);
@@ -113,7 +113,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	FontManager::instance()->getFont(font_sveglia_scelta, aFont);
 	for (uchar idx = 0; idx < 4; idx++)
 	{
-		choice[idx] = new BtButton(this,"choice" + QString::number(idx));
+		choice[idx] = new BtButton(this);
 		choice[idx]->setGeometry(10,idx*60,60,60);
 		choice[idx]->setToggleButton(TRUE);
 		if (!(Icon1->isNull()))

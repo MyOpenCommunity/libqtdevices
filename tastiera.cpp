@@ -38,18 +38,18 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
-	unoBut = new BtButton(this,"Bottone uno");
-	dueBut = new BtButton(this,"Bottone due");
-	treBut = new BtButton(this,"Bottone tre");
-	quatBut = new BtButton(this,"Bottone quattro");
-	cinBut = new BtButton(this,"Bottone cinque");
-	seiBut = new BtButton(this,"Bottone uno");
-	setBut = new BtButton(this,"Bottone due");
-	ottBut = new BtButton(this,"Bottone tre");
-	novBut = new BtButton(this,"Bottone quattro");
-	zeroBut = new BtButton(this,"Bottone cinque");
-	okBut = new BtButton(this,"Bottone di canc");
-	cancBut = new BtButton(this,"Bottone di canc");
+	unoBut = new BtButton(this);
+	dueBut = new BtButton(this);
+	treBut = new BtButton(this);
+	quatBut = new BtButton(this);
+	cinBut = new BtButton(this);
+	seiBut = new BtButton(this);
+	setBut = new BtButton(this);
+	ottBut = new BtButton(this);
+	novBut = new BtButton(this);
+	zeroBut = new BtButton(this);
+	okBut = new BtButton(this);
+	cancBut = new BtButton(this);
 
 	digitLabel = new BtLabel(this);
 	scrittaLabel = new BtLabel(this);
@@ -421,7 +421,7 @@ tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent, const char *na
 	for (i = 0, x = POSX1_SMALL; i < 8; i++, x += BUT_SMALL_DIM)
 	{
 		// Create button
-		stati[i] = new BtButton(this, "bottone stato");
+		stati[i] = new BtButton(this);
 		stati[i]->setEnabled(0);
 
 		stati[i]->setFont(aFont);

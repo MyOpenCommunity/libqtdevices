@@ -30,9 +30,9 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH,MAX_HEIGHT));
 
-	aumBut = new BtButton(this,"Bottone uno");
-	decBut = new BtButton(this,"Bottone due");
-	okBut = new BtButton(this,"Bottone di canc");
+	aumBut = new BtButton(this);
+	decBut = new BtButton(this);
+	okBut = new BtButton(this);
 
 	paintLabel = new BtLabel(this,"PL");
 	colorBar = new BtLabel(this,"CB");

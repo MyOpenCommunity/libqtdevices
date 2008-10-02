@@ -392,14 +392,14 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 	switch(item)
 	{
 	case BUT1: 
-		sxButton = new BtButton(this,"Bottone di sinistra"); 
+		sxButton = new BtButton(this);
 		connect(sxButton,SIGNAL(clicked()),this,SIGNAL(sxClick()));
 		connect(sxButton,SIGNAL(pressed()),this,SIGNAL(sxPressed()));
 		connect(sxButton,SIGNAL(released()),this,SIGNAL(sxReleased()));
 		Item = sxButton;
 		break;
 	case BUT2: 
-		dxButton = new BtButton(this,"Bottone di destra");
+		dxButton = new BtButton(this);
 		connect(dxButton,SIGNAL(clicked()),this,SIGNAL(dxClick()));
 		connect(dxButton,SIGNAL(pressed()),this,SIGNAL(dxPressed()));
 		connect(dxButton,SIGNAL(released()),this,SIGNAL(dxReleased()));
@@ -416,14 +416,14 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 		Item = BannerIcon2; 
 		break;
 	case BUT3:
-		csxButton = new BtButton(this,"Bottone di centrosinistra");
+		csxButton = new BtButton(this);
 		connect(csxButton,SIGNAL(clicked()),this,SIGNAL(csxClick()));
 		connect(csxButton,SIGNAL(pressed()),this,SIGNAL(csxPressed()));
 		connect(csxButton,SIGNAL(released()),this,SIGNAL(csxReleased()));
 		Item = csxButton;
 		break;
 	case BUT4: 
-		cdxButton = new BtButton(this,"Bottone di centrodestra");
+		cdxButton = new BtButton(this);
 		connect(cdxButton,SIGNAL(clicked()),this,SIGNAL(cdxClick()));
 		connect(cdxButton,SIGNAL(pressed()),this,SIGNAL(cdxPressed()));
 		connect(cdxButton,SIGNAL(released()),this,SIGNAL(cdxReleased()));

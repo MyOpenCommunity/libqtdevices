@@ -52,7 +52,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 
 	for (uchar idx = 0; idx < 3; idx++)
 	{
-		but[idx] = new BtButton(this,"freccia");
+		but[idx] = new BtButton(this);
 		but[idx]->setGeometry(idx*80+10,60,60,60);
 		but[idx]->setAutoRepeat(true);
 		but[idx]->setPixmap(*Icon1);
@@ -91,7 +91,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	Icon2 = NULL;
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_OK);
-	but[6] = new BtButton(this,"OK");
+	but[6] = new BtButton(this);
 	but[6]->setGeometry(90,260,60,60);
 	but[6]->setPixmap(*Icon1);
 	getPressName((char*)ICON_OK, &iconName[0],sizeof(iconName));

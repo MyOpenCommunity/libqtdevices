@@ -41,18 +41,18 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
 	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
-	memoBut = new BtButton(this,"Bottone di memorizzazione");
-	decBut = new BtButton(this,"Bottone di decFreq");
-	aumBut = new BtButton(this,"Bottone di aumFreq");
-	autoBut = new BtButton(this,"Bottone di atoSearch");
-	manBut = new BtButton(this,"Bottone di manSearch");
-	cicBut = new BtButton(this,"Bottone di cicStaz");
-	unoBut = new BtButton(this,"Bottone uno");
-	dueBut = new BtButton(this,"Bottone due");
-	treBut = new BtButton(this,"Bottone tre");
-	quatBut = new BtButton(this,"Bottone quattro");
-	cinBut = new BtButton(this,"Bottone cinque");
-	cancBut = new BtButton(this,"Bottone di canc");
+	memoBut = new BtButton(this);
+	decBut = new BtButton(this);
+	aumBut = new BtButton(this);
+	autoBut = new BtButton(this);
+	manBut = new BtButton(this);
+	cicBut = new BtButton(this);
+	unoBut = new BtButton(this);
+	dueBut = new BtButton(this);
+	treBut = new BtButton(this);
+	quatBut = new BtButton(this);
+	cinBut = new BtButton(this);
+	cancBut = new BtButton(this);
 
 	rdsLabel = new BtLabel(this,"Bottone di sinistra");
 	radioName = new BtLabel(this,"Bottone di sinistra");

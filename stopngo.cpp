@@ -259,14 +259,14 @@ void StopngoPage::AddItems()
 	titleBar->show();
 
 	//Draw the exit button
-	okBut = new BtButton(this, "Exit button");
+	okBut = new BtButton(this);
 	okBut->setGeometry(BUT_POS_X, BUT_POS_Y, BUT_DIM, BUT_DIM);
 	SetButtonIcon(okBut, ICON_FRECCIA_SX);
 	connect(okBut, SIGNAL(clicked()), this, SIGNAL(Closed()));
 	okBut->show();
 	
 	//Draw the status icon
-	statusIcon = new BtLabel(this, "Status icon");
+	statusIcon = new BtLabel(this);
 	statusIcon->setGeometry((MAX_WIDTH-STATUS_ICON_WIDTH)/2, FIRST_ROW_Y, STATUS_ICON_WIDTH, STATUS_ICON_HEIGHT);
 	statusIcon->setFrameStyle(QFrame::NoFrame);
 	SetStatusIcon(ICON_STOPNGO_CHIUSO);
@@ -286,13 +286,13 @@ void StopngoPage::AddItems()
 	case STOPNGO_PLUS:
 		secondRowY += 10;
 		//Draw the ON button
-		onBut = new BtButton(this, "On button");
+		onBut = new BtButton(this);
 		onBut->setGeometry(MAX_WIDTH-BUT_DIM, FIRST_ROW_Y, BUT_DIM, BUT_DIM);
 		SetButtonIcon(onBut, ICON_ON);
 		connect(onBut, SIGNAL(clicked()), this, SLOT(OnClick()));
 		onBut->show();
 		//Draw the OFF button
-		offBut = new BtButton(this, "Off button");
+		offBut = new BtButton(this);
 		offBut->setGeometry(0, FIRST_ROW_Y, BUT_DIM, BUT_DIM);
 		SetButtonIcon(offBut, ICON_OFF);
 		connect(offBut, SIGNAL(clicked()), this, SLOT(OffClick()));
@@ -306,7 +306,7 @@ void StopngoPage::AddItems()
 		labelVerify->setText(tr("Test"));
 		labelVerify->show();
 		//Draw the VERIFY button
-		verifyBut = new BtButton(this, "Verify button");
+		verifyBut = new BtButton(this);
 		verifyBut->setGeometry(MAX_WIDTH-BUT_DIM-(BUT_DIM/2), secondRowY, BUT_DIM, BUT_DIM);
 		SetButtonIcon(verifyBut, ICON_STOPNGO_A_VERIFICA_IMPIANTO);
 		connect(verifyBut, SIGNAL(clicked()), this, SLOT(VerifyClick()));
@@ -323,13 +323,13 @@ void StopngoPage::AddItems()
 		labelVerify->setText(tr("Self-test"));
 		labelVerify->show();
 		//Draw the AUTOTEST button
-		autotestBut = new BtButton(this, "Autotest button");
+		autotestBut = new BtButton(this);
 		autotestBut->setGeometry(MAX_WIDTH-BUT_DIM-(BUT_DIM/2), secondRowY, BUT_DIM, BUT_DIM);
 		SetButtonIcon(autotestBut, ICON_STOPNGO_A_AUTOTEST);
 		connect(autotestBut, SIGNAL(clicked()), this, SLOT(AutotestClick()));
 		autotestBut->show();
 		//Draw the MINUS button
-		minusBut = new BtButton(this, "Minus button");
+		minusBut = new BtButton(this);
 		minusBut->setGeometry(0, THIRD_ROW_Y, BUT_DIM, BUT_DIM);
 		minusBut->setAutoRepeat(true);
 		SetButtonIcon(minusBut, ICON_MENO);
@@ -337,7 +337,7 @@ void StopngoPage::AddItems()
 			connect(minusBut, SIGNAL(released()), this, SLOT(LoadTimer()));
 		minusBut->show();
 		//Draw the PLUS button
-		plusBut = new BtButton(this, "Plus button");
+		plusBut = new BtButton(this);
 		plusBut->setGeometry(MAX_WIDTH-BUT_DIM, THIRD_ROW_Y, BUT_DIM, BUT_DIM);
 		plusBut->setAutoRepeat(true);
 		SetButtonIcon(plusBut, ICON_PIU);
@@ -364,7 +364,7 @@ void StopngoPage::AddItems()
 	labelAutoArm->setText(tr("Self-recluser"));
 	labelAutoArm->show();
 	//Draw the auto arm button
-	autoArmBut = new BtButton(this, "Arm button");
+	autoArmBut = new BtButton(this);
 	autoArmBut->setGeometry(armButX, secondRowY, BUT_DIM, BUT_DIM);
 	SetButtonIcon(autoArmBut, ICON_STOPNGO_A_RIARMO);
 	connect(autoArmBut, SIGNAL(clicked()), this, SLOT(AutoArmClick()));

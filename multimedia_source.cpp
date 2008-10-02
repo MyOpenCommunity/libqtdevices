@@ -116,7 +116,7 @@ SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent)
 		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
 
 	QHBoxLayout *main_controls = new QHBoxLayout();
-	back_btn = new BtButton(this, "back_btn");
+	back_btn = new BtButton(this);
 	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
 	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
 	main_controls->addWidget(back_btn);

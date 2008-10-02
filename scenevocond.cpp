@@ -239,7 +239,7 @@ void scenEvo_cond_h::SetIcons()
 	}
 	for (uchar idx = 0; idx < 2; idx++)
 	{
-		but[idx] = new BtButton(this, "freccia");
+		but[idx] = new BtButton(this);
 		but[idx]->setGeometry(idx*80+50, 80, 60, 60);
 		but[idx]->setAutoRepeat(true);
 		but[idx]->setPixmap(*Icon1);
@@ -293,7 +293,7 @@ void scenEvo_cond_h::SetIcons()
 			Icon2 = new QPixmap();
 			Icon2->load(iconName);
 		}
-		but[A6_BUTTON_INDEX] = new BtButton(this, "ok");
+		but[A6_BUTTON_INDEX] = new BtButton(this);
 		but[A6_BUTTON_INDEX]->setGeometry(0, MAX_HEIGHT - 60, 60, 60);
 		but[A6_BUTTON_INDEX]->setPixmap(*Icon1);
 		if (Icon2)
@@ -318,7 +318,7 @@ void scenEvo_cond_h::SetIcons()
 			Icon2 = new QPixmap();
 			Icon2->load(iconName);
 		}
-		but[A7_BUTTON_INDEX] = new BtButton(this, "np1");
+		but[A7_BUTTON_INDEX] = new BtButton(this);
 		but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 60, 60);
 		but[A7_BUTTON_INDEX]->setPixmap(*Icon1);
 		if (Icon2)
@@ -343,7 +343,7 @@ void scenEvo_cond_h::SetIcons()
 			Icon2 = new QPixmap();
 			Icon2->load(iconName);
 		}
-		but[A8_BUTTON_INDEX] = new BtButton(this, "np2");
+		but[A8_BUTTON_INDEX] = new BtButton(this);
 		but[A8_BUTTON_INDEX]->setGeometry(MAX_WIDTH - 60, MAX_HEIGHT - 60, 60, 60);
 		but[A8_BUTTON_INDEX]->setPixmap(*Icon1);
 		if (Icon2)
@@ -648,19 +648,19 @@ void scenEvo_cond_d::SetIcons()
 	FontManager::instance()->getFont(font_scenEvoCond_Area2, aFont);
 	area2_ptr->setFont(aFont);
 	area2_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	BtButton *b = new BtButton(this, "Up button");
+	BtButton *b = new BtButton(this);
 	but[A3_BUTTON_INDEX] = b;
 	b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(Up()));
-	b = new BtButton(this, "Down button");
+	b = new BtButton(this);
 	but[A4_BUTTON_INDEX] = b;
 	b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(Down()));
-	b = new BtButton(this, "OK button");
+	b = new BtButton(this);
 	but[A5_BUTTON_INDEX] = b;
 	b->setGeometry(0, MAX_HEIGHT - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(OK()));
-	b = new BtButton(this, "Prev button");
+	b = new BtButton(this);
 	but[A6_BUTTON_INDEX] = b;
 	b->setGeometry(MAX_WIDTH - BUTTON_DIM, MAX_HEIGHT - BUTTON_DIM,
 		BUTTON_DIM, BUTTON_DIM);

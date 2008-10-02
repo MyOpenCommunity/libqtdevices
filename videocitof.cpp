@@ -134,7 +134,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 	area1_ptr->setText(s);
 	if (my_station && my_station->get_light())
 	{
-		area2_but = new BtButton(this, "Area2");
+		area2_but = new BtButton(this);
 		area2_but->setGeometry(0, (MAX_HEIGHT/2)-BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
 		connect(area2_but, SIGNAL(pressed()), this, 
 			SLOT(stairlight_pressed()));
@@ -158,7 +158,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 
 	if (my_station && my_station->get_key())
 	{
-		area4_but = new BtButton(this, "Area4");
+		area4_but = new BtButton(this);
 		area4_but->setGeometry(0, ((3*MAX_HEIGHT)/4)-BUTTON_DIM, 
 				BUTTON_DIM, BUTTON_DIM);
 		connect(area4_but, SIGNAL(clicked()), this, SLOT(open_door_clicked()));
@@ -177,7 +177,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 		area4_but = NULL;
 		area5_ptr = NULL;
 	}
-	area6_but = new BtButton(this, "Area6");
+	area6_but = new BtButton(this);
 	area6_but->setGeometry(0, MAX_HEIGHT-BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
 	connect(area6_but, SIGNAL(clicked()), this, SLOT(close()));
 	SetButtonsIcons();

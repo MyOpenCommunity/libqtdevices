@@ -46,7 +46,7 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 	auxName->setFont(aFont);
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
-	fwdBut = new BtButton(this, "bottone fwd");
+	fwdBut = new BtButton(this);
 	fwdBut->setGeometry(MAX_WIDTH/2-30, 160, 60, 60);
 	QPixmap* Icon = new QPixmap();
 	QPixmap* pressIcon = new QPixmap();

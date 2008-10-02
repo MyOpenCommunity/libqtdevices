@@ -11,14 +11,14 @@
 class BtButtonPrivate;
 class QPopupMenu;*/
 
-#include <qpushbutton.h>
+#include <QPushButton>
 
 class BtButton : public QPushButton
 {
 Q_OBJECT
 public:
-	BtButton( QWidget *parent, QString s=QString() ) {}
-	BtButton( const QString &text, QWidget *parent, const char* name=0 ) {}
+	BtButton(QWidget *parent=0);
+	BtButton(const QString &text, QWidget *parent=0);
 
 	virtual void setPressedPixmap( const QPixmap & ) {}
 	void setPixmap( const QPixmap & ) {}

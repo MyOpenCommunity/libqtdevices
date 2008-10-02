@@ -42,7 +42,7 @@ homePage::homePage(QWidget *parent, const char *name) : QWidget(parent)
 
 void homePage::addButton(int x, int y, QString iconName, char function, QString chix, QString cosax,QString dovex, char tipo)
 {
-	BtButton *b1 = new BtButton(this,"BelBottone");
+	BtButton *b1 = new BtButton(this);
 	elencoButtons.append(b1);
 
 	if (function == SPECIAL)

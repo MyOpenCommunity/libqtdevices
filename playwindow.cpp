@@ -76,8 +76,8 @@ PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent, const char * name) 
 
 void PlayWindow::addMainControls(QBoxLayout* layout)
 {
-	back_btn = new BtButton(this, "back_btn");
-	settings_btn = new BtButton(this, "settings_btn");
+	back_btn = new BtButton(this);
+	settings_btn = new BtButton(this);
 	layout->addWidget(back_btn);
 	layout->addStretch();
 	layout->addWidget(settings_btn);

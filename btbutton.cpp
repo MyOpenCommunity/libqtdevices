@@ -21,6 +21,18 @@
 #include <unistd.h>
 */
 
+
+BtButton::BtButton(QWidget *parent) : QPushButton(parent)
+{
+}
+
+BtButton::BtButton(const QString &text, QWidget *parent) : QPushButton(text, parent)
+{
+}
+
+
+
+
 #if 0
 static const int autoRepeatDelay  = 2300;
 static const int autoRepeatPeriod = 100;
