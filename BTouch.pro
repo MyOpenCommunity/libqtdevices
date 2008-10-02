@@ -105,22 +105,22 @@ SOURCES += actuators.cpp \
            antintrusione.cpp \
            automatismi.cpp \
            aux.cpp \
-           ban4tasLab.cpp \
-           bann2But.cpp \
-           bann2butLab.cpp \
+           bann4taslab.cpp \
+           bann2but.cpp \
+           bann2butlab.cpp \
            bann3but.cpp \
-           bann4But.cpp \
+           bann4but.cpp \
            bann_antintrusione.cpp \
-           bannBut2Icon.cpp \
-           bannButIcon.cpp \
+           bannbut2icon.cpp \
+           bannbuticon.cpp \
            bannciclaz.cpp \
            bannciclaz3but.cpp \
            banner.cpp \
            bannfrecce.cpp \
            bannfullscreen.cpp \
            bannon2scr.cpp \
-           bannOnDx.cpp \
-           bannOnIcons.cpp \
+           bannondx.cpp \
+           bannonicons.cpp \
            bannonoff.cpp \
            bannonoff2scr.cpp \
            bannonoffcombo.cpp \
@@ -174,7 +174,7 @@ SOURCES += actuators.cpp \
            sveglia.cpp \
            tastiera.cpp \
            thermalmenu.cpp \
-           timeScript.cpp \
+           timescript.cpp \
            titlelabel.cpp \
            versio.cpp \
            videocitof.cpp \
