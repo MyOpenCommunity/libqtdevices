@@ -309,19 +309,19 @@ public slots:
 	virtual void goDown();
 	/*!
 		\brief  See inizializza().
-		*/
+	*/
 	void init();
 	/*!
 		\brief  See inizializza().
-		*/
+	*/
 	void init_dimmer();
 	/*!
 		\brief  Sets all the banners disabled.
-		*/
+	*/
 	void freezed(bool);
 	/*!
-		\brief  Reimplements QWidget::Hide() and hides the page.
-		*/
+		\brief  Hide the page.
+	*/
 	virtual void hide(bool index = true);
 	/*!
 		\brief  Reimplements QWidget::mouseReleaseEvent(QMouseEvent *), used to wake up from frozen state.

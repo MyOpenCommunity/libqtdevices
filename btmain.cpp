@@ -45,7 +45,6 @@
 #define SCREENSAVER_LINE
 
 
-
 BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(parent)
 {
 

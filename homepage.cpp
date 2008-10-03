@@ -167,19 +167,19 @@ void homePage::addTemp(QString z, int x, int y, int width, int height, QColor bg
 	{
 	case 0:
 	 	strcpy(zonaTermo1, z.toAscii().constData());
-		zt[0] = &zonaTermo1[0];
+		zt[0] = zonaTermo1;
 		strcpy(ext1,Ext);
 		ext[0] = ext1;
 		break;
 	case 1:
 		strcpy(zonaTermo2, z.toAscii().constData());
-		zt[1] = &zonaTermo2[0];
+		zt[1] = zonaTermo2;
 		strcpy(ext2,Ext);
 		ext[1] = ext2;
 		break;
 	case 2:
 		strcpy(zonaTermo3, z.toAscii().constData());
-		zt[2] = &zonaTermo3[0];
+		zt[2] = zonaTermo3;
 		strcpy(ext3,Ext);
 		ext[2] = ext3;
 		break;
@@ -224,20 +224,20 @@ void homePage::inizializza()
 
 	for (unsigned idx = 0; idx < tempCont; idx++)
 	{
-		strcpy(&Frame[0],"*#4*");
+		strcpy(Frame,"*#4*");
 		if (!strcmp(ext[idx], "0"))
 		{
-			strcat(&Frame[0],zt[idx]);
-			strcat(&Frame[0],"*0##");
+			strcat(Frame,zt[idx]);
+			strcat(Frame,"*0##");
 		}
 		else
 		{
-			strcat(&Frame[0],zt[idx]);
-			strcat(&Frame[0],"00*15#");
-			strcat(&Frame[0],zt[idx]);
-			strcat(&Frame[0],"##");
+			strcat(Frame,zt[idx]);
+			strcat(Frame,"00*15#");
+			strcat(Frame,zt[idx]);
+			strcat(Frame,"##");
 		}
-		emit sendInit(&Frame[0]);
+		emit sendInit(Frame);
 	}
 }
 

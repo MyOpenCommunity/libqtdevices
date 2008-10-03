@@ -465,7 +465,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case CARICHI:
-						pageAct = (*carichi);
+						pageAct = *carichi;
 						addr = computeAddress();
 						addItemU(pageAct, addr);
 						break;
@@ -476,25 +476,25 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case  SCENARI:
-						pageAct = (*scenari);
+						pageAct = *scenari;
 						addr = computeAddress();
 						addItemU(pageAct, addr);
 						break;
 
 					case SCENARI_EVOLUTI:
-						pageAct = (*scenari_evoluti);
+						pageAct = *scenari_evoluti;
 						addr = computeAddress();
 						addItemU(pageAct, addr);
 						break;
 
 					case VIDEOCITOFONIA:
-						pageAct = (*videocitofonia);
+						pageAct = *videocitofonia;
 						addr = computeAddress();
 						addItemU(pageAct, addr);
 						break;
 
 					case IMPOSTAZIONI:
-						pageAct = (*imposta);
+						pageAct = *imposta;
 						addr = computeAddress();
 						addItemU(pageAct, addr);
 						break;
@@ -1018,26 +1018,27 @@ bool xmlconfhandler::characters(const QString & qValue)
 					qDebug("INSERTING PAGE: %s",pagTesti[page_id-1]);
 					QDomNode n;
 
-				switch (page_id)
-				{
+					// TODO: questo codice e' pieno di hide, che pero' non e' la stessa
+					// hide della qwidget (perche' non e' virtuale) e quindi va chiamata
+					// separatamente prima di fare l'upcast. Trovare un modo di evitare
+					// queste ripetizioni.
+					switch (page_id)
+					{
 					case AUTOMAZIONE:
 						*automazioni = new sottoMenu(NULL,"AUTOM");
-						(*automazioni)->setBGColor(Background);
-						(*automazioni)->setFGColor(Foreground);
+						(*automazioni)->hide();
 						pageAct = *automazioni;
 						break;
 
 					case ILLUMINAZIONE:
 						*illumino = new sottoMenu(NULL,"ILLUMINO");
-						(*illumino)->setBGColor(Background);
-						(*illumino)->setFGColor(Foreground);
+						(*illumino)->hide();
 						pageAct = *illumino;
 						break;
 
 					case DIFSON_MULTI:
 						*dm = new diffmulti(NULL, "DIFSON_MULTI");
-						(*dm)->setBGColor(Background);
-						(*dm)->setFGColor(Foreground);
+						(*dm)->hide();
 						pageAct = *dm;
 						page_item_id_m = 0;
 						page_item_descr_m->clear();
@@ -1047,29 +1048,25 @@ bool xmlconfhandler::characters(const QString & qValue)
 
 					case SCENARI:
 						*scenari = new sottoMenu(NULL,"SCENARI");
-						(*scenari)->setBGColor(Background);
-						(*scenari)->setFGColor(Foreground);
+						(*scenari)->hide();
 						pageAct = *scenari;
 						break;
 
 					case CARICHI:
 						*carichi = new sottoMenu(NULL,"CARICHI");
-						(*carichi)->setBGColor(Background);
-						(*carichi)->setFGColor(Foreground);
+						(*carichi)->hide();
 						pageAct = *carichi;
 						break;
 
 					case DIFSON:
 						*difSon = new diffSonora(NULL,"DIFSON");
-						(*difSon)->setBGColor(Background.red(),Background.green(),Background.blue());
-						(*difSon)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
+						(*difSon)->hide();
 						pageAct = *difSon;
 						break;
 
 					case ANTIINTRUSIONE:
 						*antintr = new antintrusione(NULL,"ANTI");
-						(*antintr)->setBGColor(Background.red(),Background.green(),Background.blue());
-						(*antintr)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
+						(*antintr)->hide();
 						pageAct = *antintr;
 						break;
 
@@ -1079,6 +1076,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground, SecondForeground);
 						else
 							qWarning("TERMOREGOLAZIONE configuration not found!");
+						(*termo)->hide();
 						pageAct = *termo;
 						break;
 
@@ -1088,48 +1086,45 @@ bool xmlconfhandler::characters(const QString & qValue)
 							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground, SecondForeground);
 						else
 							qWarning("TERMOREG_MULTI_PLANT configuration not found!");
+						(*termo)->hide();
 						pageAct = *termo;
 						break;
 
 					case IMPOSTAZIONI:
-						*imposta = new sottoMenu (NULL,"IMPOSTA");
-						(*imposta)->setBGColor(Background);
-						(*imposta)->setFGColor(Foreground);
+						*imposta = new sottoMenu(NULL,"IMPOSTA");
 						QObject::connect(*imposta,SIGNAL(setPwd(bool,char*)), BtM, SLOT (setPwd(bool,char*)));
+						(*imposta)->hide();
 						pageAct = *imposta;
 						break;
 
 					case SCENARI_EVOLUTI:
-						*scenari_evoluti = new sottoMenu (NULL,"SCENARI_EVOLUTI");
-						(*scenari_evoluti)->setBGColor(Background);
-						(*scenari_evoluti)->setFGColor(Foreground);
+						*scenari_evoluti = new sottoMenu(NULL,"SCENARI_EVOLUTI");
+						(*scenari_evoluti)->hide();
 						pageAct = *scenari_evoluti;
 						break;
 
 					case VIDEOCITOFONIA:
-						*videocitofonia = new sottoMenu (NULL, "VIDEOCITOFONIA");
-						(*videocitofonia)->setBGColor(Background);
-						(*videocitofonia)->setFGColor(Foreground);
+						*videocitofonia = new sottoMenu(NULL, "VIDEOCITOFONIA");
+						(*videocitofonia)->hide();
 						pageAct = *videocitofonia;
 						break;
 
 					case SUPERVISIONE:
 						n = getPageNode(page_id);
 						*supervisione = new SupervisionMenu(NULL, "SUPERVISIONE", n, Background, Foreground);
+						(*supervisione)->hide();
 						pageAct = *supervisione;
 						break;
 
 					case SPECIAL:
-						qDebug("!");
 						(*specPage) = new homePage(NULL,"SPECIAL");
-						pageAct = *specPage;
-						(*specPage)->setBGColor(Background.red(),Background.green(),Background.blue());
-						(*specPage)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
 						(*specPage)->addButton(0,260,ICON_FRECCIA_SX ,BACK);
+						(*specPage)->hide();
+						pageAct = *specPage;
 						break;
 					} // switch (page_id)
-					pageAct->hide();
-					if ((idPageDefault == page_id) && (hompage_isdefined))
+
+					if (idPageDefault == page_id && hompage_isdefined)
 						*pagDefault = pageAct;
 
 				} // if (!CurTagL4.compare("id"))
