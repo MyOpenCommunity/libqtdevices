@@ -18,6 +18,7 @@
 #include <openwebnet.h> // class openwebnet
 
 #include <stdlib.h> // atoi
+#include <stdio.h> //sprintf
 
 /*****************************************************************
  **dimmer

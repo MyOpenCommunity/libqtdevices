@@ -21,6 +21,7 @@
 #include <QVector>
 #include <QString>
 
+#include <limits.h> // UINT_MAX
 
 class MediaPlayer;
 class ButtonsBar;

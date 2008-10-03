@@ -8,15 +8,17 @@
 **
 ****************************************************************/
 #include "antintrusione.h"
-#include <openwebnet.h> // class openwebnet
 #include "tastiera.h"
 #include "bann_antintrusione.h"
 #include "sottomenu.h"
+
+#include <openwebnet.h> // class openwebnet
 
 #include <QDateTime>
 #include <QCursor>
 #include <QTimer>
 
+#include <assert.h>
 
 extern unsigned char tipoData;
 

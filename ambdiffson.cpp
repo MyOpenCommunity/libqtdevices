@@ -21,6 +21,7 @@
 #include <QFont>
 
 #include <stdlib.h>
+#include <assert.h>
 
 /*****************************************************************
  ** Ambiente diffusione sonora multicanale

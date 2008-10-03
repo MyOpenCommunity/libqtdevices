@@ -177,7 +177,7 @@ void BtMain::hom()
 		//qApp->setMainWidget(Home);
 		hide();
 	}
-	setGeometry(0,0,240,320);
+	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setCursor(QCursor(Qt::BlankCursor));
 	setBackgroundColor(QColor(255,255,255));
 

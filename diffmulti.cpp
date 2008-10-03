@@ -21,6 +21,8 @@
 #include <QPoint>
 #include <QDebug>
 
+#include <assert.h>
+
 
 dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, void *ind,
 		int p1, QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
