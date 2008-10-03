@@ -28,7 +28,7 @@ dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, void *ind,
 	tipo = t;
 	// TODO: allocare nello stack!
 	descr = new QList<QString*>(*d);
-	qDebug() << "dati_ampli_multi: descr = " << descr->at(0);
+	qDebug() << "dati_ampli_multi: descr = " << *descr->at(0);
 	if (t == AMPLIFICATORE || t == POWER_AMPLIFIER)
 	{
 		if (t == AMPLIFICATORE)
