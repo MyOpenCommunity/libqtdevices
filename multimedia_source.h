@@ -257,7 +257,7 @@ private:
 	// How many subdirs we are descending from root.
 	unsigned level;
 
-	QValueVector<QString>    files_list;
+	QValueVector<QFileInfo> files_list;
 
 	QMap<QString, unsigned>  pages_indexes;
 
