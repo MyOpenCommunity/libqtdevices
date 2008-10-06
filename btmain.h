@@ -101,7 +101,7 @@ private:
 	BtLabel * screensav[12];
 	BtLabel *ball[BALL_NUM];
 	BtLabel *linea;
-	int countScrSav,icx,icy,x[BALL_NUM],y[BALL_NUM],vx[BALL_NUM],vy[BALL_NUM],dim[BALL_NUM];
+	int icx,icy,x[BALL_NUM],y[BALL_NUM],vx[BALL_NUM],vy[BALL_NUM],dim[BALL_NUM];
 };
 
 #endif// BTMAIN_H

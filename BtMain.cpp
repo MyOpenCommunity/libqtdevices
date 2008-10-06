@@ -366,7 +366,7 @@ void BtMain::gesScrSav()
 
 	if (!firstTime)
 	{
-		if  ((tiempo >= 30) && (getBacklight()))
+		if  (tiempo >= 30 && getBacklight())
 		{
 			if (!svegliaIsOn)
 			{
@@ -379,7 +379,7 @@ void BtMain::gesScrSav()
 #endif
 			}
 		}
-		else if ((tiempo <= 5) && (bloccato))
+		else if (tiempo <= 5 && bloccato)
 		{
 			qDebug("***** freeze(FALSE) ***** ");
 			emit freeze(FALSE);
@@ -388,7 +388,7 @@ void BtMain::gesScrSav()
 			pd_shown = false;
 			freezed(FALSE);
 		}
-		if  ((tiempo >= 60) && (!svegliaIsOn) && (!calibrating))
+		if  (tiempo >= 60 && !svegliaIsOn && !calibrating)
 		{
 			if (pagDefault)
 			{
@@ -426,7 +426,7 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  ((tiempo >= 65) && isHidden())
+			if  (tiempo >= 65 && isHidden())
 			{
 				for (int idx = 0; idx < 12; idx++)
 				{
@@ -443,24 +443,20 @@ void BtMain::gesScrSav()
 					screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
 					screensav[idx]->setPixmap(*Sfondo[idx]);
 					screensav[idx]->hide();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-					showFullScreen();
-#else
-					show();
-#endif
 				}
+
 				if (grab)
 					delete(grab);
 				if (pagDefault)
 					grab = new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
 				else
 					grab = new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
+
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 				showFullScreen();
 #else
 				show();
 #endif
-				countScrSav = 0;
 			}
 
 			if (isShown())
