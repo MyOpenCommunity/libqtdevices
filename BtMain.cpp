@@ -670,23 +670,6 @@ void BtMain::svegl(bool b)
 	svegliaIsOn = b;
 }
 
-
-palla::palla(QWidget*parent, const char* name,unsigned int f) : BtLabel(parent, name, f) { }
-
-void palla::paintEvent(QPaintEvent *)
-{
-	QPainter paint(this);
-	paint.setBrush(QBrush(foregroundColor(), Qt::SolidPattern));
-	paint.drawEllipse(0,0,width(),height());
-};
-
-void palla ::clear()
-{
-	QPainter paint(this);
-	paint.fillRect(0,0,width(),height(),QBrush (backgroundColor(), Qt::SolidPattern));
-}
-
-
 void BtMain::startCalib()
 {
 	qDebug("BtMain::startCalib()");

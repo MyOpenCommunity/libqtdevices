@@ -34,28 +34,6 @@ class tastiera;
 class SupervisionMenu;
 
 /*!
-  \class palla
-  \brief This is a specific BtLabel used to draw balls on the screen-saver
-  \author Davide
-  \date lug 2005
-*/
-
-
-
-class palla : public BtLabel
-{
-Q_OBJECT
-public:
-	palla(QWidget*parent=0, const char* name=0,unsigned int f=0);
-	void clear();
-public slots:
-	void paintEvent(QPaintEvent *);
-private:
-	int rx, ry;
-};
-
-
-/*!
   \class BtMain
   \brief This is a class used to manage the starting sequence, call the xml handler that builds the objects configured, shunt signals and controlling screen-saver and special page displaying (such as configuration page, colored pages and so on).
 
