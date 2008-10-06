@@ -24,6 +24,7 @@
 #include "openclient.h"
 #include "versio.h"
 #include "tastiera.h"
+#include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionMenu.h"
 
@@ -84,28 +85,12 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	svegliaIsOn = FALSE;
 	tiempo_last_ev = 0;
 	pd_shown = false;
-#ifndef SCREENSAVER_LINE
-	backcol = 0;
-	y[0] = 0;
+#ifdef SCREENSAVER_LINE
+	screensaver = getScreenSaver(ScreenSaver::LINES);
 #else
-	backcol = 10;
+	screensaver = getScreenSaver(ScreenSaver::BALLS);
 #endif
 	tasti = NULL;
-	linea = NULL;
-	for (int idx = 0; idx < 12; idx++)
-	{
-		screensav[idx] = new BtLabel("",this,"g");
-		screensav[idx]->setFrameStyle(QFrame::Panel | QFrame::Raised);
-		screensav[idx]->hide();
-		Sfondo[idx] = NULL;
-	}
-	for (int idx = 0; idx < 12; idx++)
-	{
-		ball[idx] = new BtLabel(this,"",0);
-		ball[idx]->hide();
-	}
-
-	grab = NULL;
 	pwdOn = 0;
 
 	datiGen = new versio(NULL, "DG");
@@ -133,8 +118,13 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
 #endif
-		alreadyCalibrated=TRUE;
+		alreadyCalibrated = TRUE;
 	}
+}
+
+BtMain::~BtMain()
+{
+	delete screensaver;
 }
 
 void BtMain::hom()
@@ -160,11 +150,6 @@ void BtMain::hom()
 				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
 				client_comandi, client_monitor, client_richieste, datiGen, bg, fg1, fg2);
 		setBackgroundColor(*bg);
-		for (int idx = 0; idx < 12; idx++)
-		{
-			ball[idx]->setBackgroundColor(*bg);
-			ball[idx]->setBackgroundMode(Qt::NoBackground);
-		}
 
 		QFile *xmlFile = new QFile("cfg/conf.xml");
 		QXmlInputSource source2(xmlFile);
@@ -176,6 +161,7 @@ void BtMain::hom()
 		delete handler2;
 		delete xmlFile;
 		qApp->setMainWidget(Home);
+		screensaver->hide();
 		hide();
 	}
 	setGeometry(0,0,240,320);
@@ -426,166 +412,24 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && isHidden())
+			if  (tiempo >= 65 && screensaver->isHidden())
 			{
-				for (int idx = 0; idx < 12; idx++)
-				{
-					if (Sfondo[idx])
-						delete(Sfondo[idx]);
-					if (pagDefault)
-					{
-						Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(pagDefault,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4));
-					}
-					else
-					{
-						Sfondo[idx] =  new QPixmap(QPixmap::grabWidget(Home,(idx%3)*MAX_WIDTH/3,(int)(idx/3)*MAX_HEIGHT/4,MAX_WIDTH,MAX_HEIGHT/4));
-					}
-					screensav[idx]->setGeometry((idx%3)*80,(int)(idx/3)*80,80,80);
-					screensav[idx]->setPixmap(*Sfondo[idx]);
-					screensav[idx]->hide();
-				}
-
-				if (grab)
-					delete(grab);
-				if (pagDefault)
-					grab = new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
-				else
-					grab = new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
-
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-				showFullScreen();
+				screensaver->showFullScreen();
 #else
-				show();
+				screensaver->show();
 #endif
 			}
 
-			if (isShown())
+			if (screensaver->isShown())
 			{
-#ifdef SCREENSAVER_BALLS
-				if (backcol < 3)
-				{
-					backcol = 4;
-					for (int idx = 0; idx < 12; idx++)
-					{
-						screensav[idx]->hide();
-					}
-					setPaletteBackgroundPixmap(*grab);
-					for (int idx = 0; idx < BALL_NUM; idx++)
-					{
-						x[idx] = (int)(200.0*rand() / (RAND_MAX+1.0));
-						y[idx] = (int)(200.0*rand() / (RAND_MAX+1.0));
-						vx[idx] = (int)(30.0*rand() / (RAND_MAX+1.0)) -15;
-						vy[idx] = (int)(30.0*rand() / (RAND_MAX+1.0)) -15;
-						if (!vy[idx])
-							vy[idx] = 1;
-						if (!vx[idx])
-							vx[idx] = 1;
-						dim[idx] = (int)(10.0*rand() / (RAND_MAX+1.0))+15;
-
-						QBitmap Maschera = QBitmap(dim[idx],dim[idx],TRUE);
-						QPainter p(&Maschera);
-						p.setBrush(QBrush (Qt::color1, Qt::SolidPattern));
-						for (int idy = 2; idy <= dim[idx]; idy++)
-							p.drawEllipse((dim[idx]-idy)/2,(dim[idx]-idy)/2,idy,idy);
-						ball[idx]->setMask(Maschera);
-					}
-					tempo1->changeInterval(100);
-				}
-				else
-				{
-					backcol++;
-					if (backcol == 9)
-					{
-						backcol = 4;
-						if (grab)
-							delete grab;
-						if (pagDefault)
-							grab = new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
-						else
-							grab = new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
-						setPaletteBackgroundPixmap(*grab);
-					}
-
-					for (int idx = 0;idx < BALL_NUM; idx++)
-					{
-						x[idx] += vx[idx];
-						y[idx] += vy[idx];
-
-						if  (x[idx] <= 0)
-						{
-							vx[idx] = (int)(10.0*rand() / (RAND_MAX+1.0)) + 5;
-							x[idx] = 0;
-							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-						}
-						if  (y[idx] > (MAX_HEIGHT-dim[idx]))
-						{
-							vy[idx] = (int)(10.0*rand() / (RAND_MAX+1.0)) - 15;
-							y[idx] = MAX_HEIGHT-dim[idx];
-							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-						}
-						if   (y[idx] <= 0)
-						{
-							vy[idx] = (int)(10.0*rand() / (RAND_MAX+1.0)) + 5;
-							if (!vy[idx])
-								vy[idx] = 1;
-							y[idx] = 0;
-							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-						}
-						if  (x[idx] > (MAX_WIDTH-dim[idx]))
-						{
-							vx[idx] = (int) (10.0*rand() / (RAND_MAX+1.0)) - 15;
-							if (!vx[idx])
-								vx[idx] = 1;
-							x[idx] = MAX_WIDTH-dim[idx];
-							ball[idx]->setPaletteBackgroundColor(QColor((int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150,(int) (100.0*rand() / (RAND_MAX+1.0))+150));
-						}
-						ball[idx]->setGeometry(x[idx],y[idx],dim[idx],dim[idx]);
-						ball[idx]->show();
-					}
-				}
-#endif
-#ifdef SCREENSAVER_LINE
+				QWidget *target = pagDefault ? pagDefault : Home;
+				screensaver->refresh(QPixmap::grabWidget(target,0,0,MAX_WIDTH,MAX_HEIGHT));
 				tempo1->changeInterval(100);
-				if (backcol >= 5)
-				{
-					if (grab)
-						delete grab;
-					if (pagDefault)
-						grab = new QPixmap(QPixmap::grabWidget(pagDefault,0,0,MAX_WIDTH,MAX_HEIGHT));
-					else
-						grab = new QPixmap(QPixmap::grabWidget(Home,0,0,MAX_WIDTH,MAX_HEIGHT));
-					setPaletteBackgroundPixmap(*grab);
-					backcol = 0;
-				}
-				backcol++;
-				if (y[0] > MAX_HEIGHT)
-				{
-					y[0] = MAX_HEIGHT;
-					y[1] = 1;
-				}
-				if (y[0] < 0)
-				{
-					y[0] = 0;
-					y[1] = 0;
-				}
-				if (y[1] == 0)
-					y[0] += 3;
-				else
-					y[0] -= 3;
-
-				if (!linea)
-					linea = new BtLabel(this,NULL,0);
-				linea->setGeometry(0,y[0],MAX_WIDTH,6);
-				if (y[1])
-					linea->setPaletteBackgroundColor(QColor::QColor(Qt::black));
-				else
-					linea->setPaletteBackgroundColor(QColor::QColor(Qt::white));
-				linea->show();
-#endif
 			}
 		}
 		else
-			hide();
+			screensaver->hide();
 	}
 	else if (tiempo >= 120)
 	{
@@ -618,7 +462,7 @@ void BtMain::freezed(bool b)
 	{
 		event_unfreeze = 1;
 		setBacklight(TRUE);
-		hide();
+		screensaver->hide();
 		if (pwdOn)
 		{
 			if (!tasti)
