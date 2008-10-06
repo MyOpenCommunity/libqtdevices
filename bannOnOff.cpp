@@ -11,21 +11,16 @@
 #include "bannonoff.h"
 #include "main.h"
 
-bannOnOff::bannOnOff( QWidget *parent,const char *name )
-        : banner( parent, name )
+bannOnOff::bannOnOff(QWidget *parent,const char *name) : banner(parent, name)
 {
-    addItem( BUT1 , MAX_WIDTH-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM );
-    addItem( BUT2 , 0 , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM );
-    addItem( TEXT , 0 , BANONOFF_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE-BANONOFF_BUT_DIM );
-    addItem( ICON , BANONOFF_BUT_DIM , 0 , BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y );
-    
-   /*connect(this,SIGNAL(sxClick()),this,SIGNAL(sxClick()));
-    connect(this,SIGNAL(dxClick()),this,SIGNAL(dxClick()));*/
+	addItem(BUT1, MAX_WIDTH-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	addItem(BUT2, 0 , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	addItem(TEXT, 0 , BANONOFF_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE-BANONOFF_BUT_DIM);
+	addItem(ICON, BANONOFF_BUT_DIM , 0 , BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
 }
 
-
-void bannOnOff::setIcons( const char *onIcon , const char *offIcon)
+void bannOnOff::setIcons(const char *onIcon , const char *offIcon)
 {
-    SetIcons(ICON_ON,ICON_OFF,onIcon,offIcon);
+	SetIcons(ICON_ON,ICON_OFF,onIcon,offIcon);
 }
 

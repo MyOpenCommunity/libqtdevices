@@ -280,21 +280,23 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
 	hbox->addWidget(btn_minus);
+	hbox->addStretch();
 
 	setpoint_label = new BtLabelEvo(this);
 	hbox->addWidget(setpoint_label);
-
-	btn_plus = getButton(IMG_PLUS);
-	btn_plus->hide();
-	btn_plus->setAutoRepeat(true);
-	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
-	hbox->addWidget(btn_plus);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, AlignHCenter);
 	hbox->addWidget(icon_antifreeze);
 
 	icon_off = getLabelWithPixmap(IMG_OFF_S, this, AlignHCenter);
 	hbox->addWidget(icon_off);
+
+	hbox->addStretch();
+	btn_plus = getButton(IMG_PLUS);
+	btn_plus->hide();
+	btn_plus->setAutoRepeat(true);
+	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
+	hbox->addWidget(btn_plus);
 
 	main_layout.addLayout(hbox);
 	main_layout.setStretchFactor(hbox, 1);
@@ -306,6 +308,10 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	local_temp_placeholder = new BtLabelEvo(this);
 	main_layout.addWidget(local_temp_placeholder);
 	main_layout.setStretchFactor(local_temp_placeholder, 1);
+
+	fancoil_buttons_placeholder = new BtLabelEvo(this);
+	main_layout.addWidget(fancoil_buttons_placeholder);
+	main_layout.setStretchFactor(fancoil_buttons_placeholder, 1);
 
 	switch (temp_scale)
 	{
@@ -570,6 +576,7 @@ FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, the
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
 	fancoil_buttons.hide(); // do not show QButtonGroup frame
+	fancoil_buttons_placeholder->hide();
 	fancoil_status = 0;
 	connect(&fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 }

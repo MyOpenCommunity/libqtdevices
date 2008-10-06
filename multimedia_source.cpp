@@ -496,6 +496,9 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 
 void FileSelector::showEvent(QShowEvent *event)
 {
+	// refresh QDir information
+	current_dir.refresh();
+
 	QLabel *l = createWaitDialog();
 	QTime time_counter = startTimeCounter();
 
@@ -514,11 +517,11 @@ void FileSelector::itemIsClicked(int item)
 	QLabel *l = createWaitDialog();
 	QTime time_counter = startTimeCounter();
 
-	QString filename = files_list[item];
-	qDebug("[AUDIO] FileSelector::itemIsClicked %d -> %s", item, filename.ascii());
-	QFileInfo clicked_element(current_dir, filename);
+	const QFileInfo& clicked_element = files_list[item];
+	qDebug("[AUDIO] FileSelector::itemIsClicked %d -> %s", item, clicked_element.fileName().ascii());
+
 	if (!clicked_element.exists())
-		qDebug("[AUDIO] Error retrieving file by name: %s", filename.ascii());
+		qDebug("[AUDIO] Error retrieving file");
 
 	if (clicked_element.isDir())
 	{
@@ -540,7 +543,7 @@ void FileSelector::itemIsClicked(int item)
 
 		for (unsigned i = 0; i < files_list.count(); ++i)
 		{
-			QFileInfo fn(current_dir, files_list[i]);
+			const QFileInfo& fn = files_list[i];
 			if (fn.isDir())
 				continue;
 
@@ -558,7 +561,6 @@ void FileSelector::itemIsClicked(int item)
 
 void FileSelector::browseUp()
 {
-
 	if (level)
 	{
 		--level;
@@ -638,9 +640,6 @@ QLabel *FileSelector::createWaitDialog()
 
 bool FileSelector::browseFiles()
 {
-	// refresh QDir information
-	current_dir.refresh();
-
 	// Create fileslist from files
 	const QFileInfoList *temp_files_list = current_dir.entryInfoList();
 	if (!temp_files_list)
@@ -653,11 +652,15 @@ bool FileSelector::browseFiles()
 
 	QFileInfoListIterator it(*temp_files_list);
 	QFileInfo *file;
+	QValueVector<QString> names_list;
 
 	while ((file = it.current()) != 0)
 	{
 		if (file->fileName() != "." && file->fileName() != "..")
-			files_list.append(file->fileName().latin1());
+		{
+			names_list.append(file->fileName().latin1());
+			files_list.append(*file);
+		}
 		++it;
 	}
 
@@ -665,7 +668,7 @@ bool FileSelector::browseFiles()
 	if (pages_indexes.contains(current_dir.absPath()))
 		page = pages_indexes[current_dir.absPath()];
 
-	list_browser->setList(files_list, page);
+	list_browser->setList(names_list, page);
 	list_browser->showList();
 	return true;
 }

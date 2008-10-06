@@ -18,250 +18,234 @@
 
 extern unsigned char tipoData;
 
-antintrusione::antintrusione( QWidget *parent, const char *name )
-        : QWidget( parent, name )
+antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent, name)
 {
-    
+
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor (QCursor (blankCursor));
+	setCursor(QCursor(blankCursor));
 #endif
-   tasti = NULL;
-   numRighe=NUM_RIGHE;  
-   zone = new sottoMenu(this,"Zone",4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2); 
-   zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
-   impianto = new sottoMenu(this,"impianto",0,MAX_WIDTH, MAX_HEIGHT/numRighe,1); 
-   connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-   connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
-   //connect(zone, SIGNAL(goDx()), impianto->getLast(), SLOT(Inserisci()));
-   allarmi.clear();
-   allarmi.setAutoDelete(true);
-   curr_alarm = NULL;
-    setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-    connect(zone  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
-    
-    connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
-    connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
-    connect(zone,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*))); 
-    connect(zone,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*))); 
-    connect(impianto,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
-    connect(impianto,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
-    connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
-    connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
-    connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
-    
-    connect(this,SIGNAL(freezed(bool)),zone,SLOT(freezed(bool)));
-    connect(this,SIGNAL(freezed(bool)),impianto,SLOT(freezed(bool)));        
+	tasti = NULL;
+	numRighe = NUM_RIGHE;
+	zone = new sottoMenu(this,"Zone",4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,/*numRighe-*/2);
+	zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
+	impianto = new sottoMenu(this,"impianto",0,MAX_WIDTH, MAX_HEIGHT/numRighe,1);
+	connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
+	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
+	allarmi.clear();
+	allarmi.setAutoDelete(true);
+	curr_alarm = NULL;
+	setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
+	connect(zone  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
+	connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
+	connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
+	connect(zone,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+	connect(zone,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
+	connect(impianto,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
+	connect(impianto,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
+	connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
+	connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
+	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
+
+	connect(this,SIGNAL(freezed(bool)),zone,SLOT(freezed(bool)));
+	connect(this,SIGNAL(freezed(bool)),impianto,SLOT(freezed(bool)));
 }
 
 void antintrusione::IsParz(bool ab)
 {
-  qDebug("antintrusione::IsParz(%d)", ab);
-  if(ab) {
-    connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-    zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
-  } else {
-    disconnect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-    zone->setNavBarMode(3,"");
-  }
-  zone->forceDraw();
-  //zone->show();
-  //zone->getLast()->Draw();
+	qDebug("antintrusione::IsParz(%d)", ab);
+	if (ab)
+	{
+		connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
+		zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
+	}
+	else
+	{
+		disconnect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
+		zone->setNavBarMode(3,"");
+	}
+	zone->forceDraw();
 }
 
 void antintrusione::Parzializza()
 {
-   qDebug("antintrusione::Parzializza()");
-    int s[MAX_ZONE];
-    for(int i=0; i<MAX_ZONE; i++) 
-    {
-      s[i] = ((impAnti *)impianto->getLast())->getIsActive(i);
-    }
-    if(tasti)
-      delete tasti;
-    tasti = new tastiera_con_stati(s, NULL, "");
-    connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Parz(char*)));
-    tasti->setBGColor(backgroundColor());
-    tasti->setFGColor(foregroundColor());
-    tasti->setMode(tastiera::HIDDEN);
-    tasti->showTastiera();
+	qDebug("antintrusione::Parzializza()");
+	int s[MAX_ZONE];
+	for (int i = 0; i < MAX_ZONE; i++)
+	{
+		s[i] = ((impAnti *)impianto->getLast())->getIsActive(i);
+	}
+	if (tasti)
+		delete tasti;
+	tasti = new tastiera_con_stati(s, NULL, "");
+	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Parz(char*)));
+	tasti->setBGColor(backgroundColor());
+	tasti->setFGColor(foregroundColor());
+	tasti->setMode(tastiera::HIDDEN);
+	tasti->showTastiera();
 }
 
 void antintrusione::Parz(char* pwd)
 {
-  openwebnet msg_open;
-  char pippo[50];
-  
-  qDebug("antintrusione::Parz()");
-  if (!pwd) 
-    goto end;
-  
-  memset(pippo,'\000',sizeof(pippo));
-  strcat(pippo,"*5*50#");
-  strcat(pippo,pwd);
-  strcat(pippo,"#");
-  for(int i=0; i<MAX_ZONE; i++)
-    strcat(pippo, ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1");
-  strcat(pippo,"*0##");
-  msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-  qDebug("sending part frame %s", pippo);
-  emit sendFrame(msg_open.frame_open);
-  ((impAnti *)impianto->getLast())->ToSendParz(false);
+	openwebnet msg_open;
+	char pippo[50];
+
+	qDebug("antintrusione::Parz()");
+	if (!pwd)
+		goto end;
+
+	memset(pippo,'\000',sizeof(pippo));
+	strcat(pippo,"*5*50#");
+	strcat(pippo,pwd);
+	strcat(pippo,"#");
+	for (int i = 0; i < MAX_ZONE; i++)
+		strcat(pippo, ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1");
+	strcat(pippo,"*0##");
+	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	qDebug("sending part frame %s", pippo);
+	emit sendFrame(msg_open.frame_open);
+	((impAnti *)impianto->getLast())->ToSendParz(false);
 end:
-  impianto->show();
-  zone->show();
+	impianto->show();
+	zone->show();
 }
 
 void antintrusione::testranpo()
 {
-    QTimer *t=new  QTimer(this,"T");
-    connect(t,SIGNAL(timeout()),this,SLOT( ctrlAllarm()));
-    t->start(150,TRUE);
+	QTimer *t = new  QTimer(this,"T");
+	connect(t, SIGNAL(timeout()),this,SLOT(ctrlAllarm()));
+	t->start(150, TRUE);
 }
 
 void antintrusione:: ctrlAllarm()
 {
-    qDebug("ctrlAllarm %d", allarmi.count());
-    if (!allarmi.isEmpty())
-	impianto->getLast()->mostra(banner::BUT1);
-    else
-        impianto->getLast()->nascondi(banner::BUT1);
-    impianto->show();
-    zone->show();
+	qDebug("ctrlAllarm %d", allarmi.count());
+	if (!allarmi.isEmpty())
+		impianto->getLast()->mostra(banner::BUT1);
+	else
+		impianto->getLast()->nascondi(banner::BUT1);
+	impianto->show();
+	zone->show();
 }
 
 void antintrusione::setBGColor(int r, int g, int b)
 {	
-    setPaletteBackgroundColor( QColor :: QColor(r,g,b));    
-    if (impianto)
-	impianto-> setBGColor(backgroundColor() );
-    if (zone)
-	zone-> setBGColor(backgroundColor() );
+	setPaletteBackgroundColor(QColor::QColor(r,g,b));
+	if (impianto)
+		impianto->setBGColor(backgroundColor());
+	if (zone)
+		zone->setBGColor(backgroundColor());
 }
 
 void antintrusione::setFGColor(int r, int g, int b)
 {
-    setPaletteForegroundColor( QColor :: QColor(r,g,b));
-    if (impianto)
-	impianto-> setFGColor(foregroundColor() );
-    if (zone)    
-	zone-> setFGColor(foregroundColor() );
+	setPaletteForegroundColor(QColor::QColor(r,g,b));
+	if (impianto)
+		impianto->setFGColor(foregroundColor());
+	if (zone)
+		zone->setFGColor(foregroundColor());
 }
-
 
 void antintrusione::draw()
 {	
-    ctrlAllarm();
-    if (impianto)
-	impianto-> draw();
-    if (zone)
-	zone-> draw();
-    if(allarmi.isEmpty()) return;
-    QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
-    ai->toFirst();
-    allarme *a;
-    while((a = ai->current())) {
-	a->draw();
-	++(*ai);
-    }
-    delete ai;
+	ctrlAllarm();
+	if (impianto)
+		impianto->draw();
+	if (zone)
+		zone->draw();
+	if (allarmi.isEmpty())
+		return;
+	QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
+	ai->toFirst();
+	allarme *a;
+	while ((a = ai->current()))
+	{
+		a->draw();
+		++(*ai);
+	}
+	delete ai;
 }
-
 
 int antintrusione::setBGPixmap(char* backImage)
 {
-    QPixmap Back; 
-     if(Back.load(backImage))
-    {
-	 setPaletteBackgroundPixmap(Back);      
-	 return (0);
-    }    
-     return (1);
+	QPixmap Back;
+	if (Back.load(backImage))
+	{
+		setPaletteBackgroundPixmap(Back);
+		return 0;
+	}
+	return 1;
 }
 
-
 int antintrusione::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
-	QPtrList<QString> &icon_names,
-	int periodo, int numFrame)
- {        
-    if (tipo== IMPIANTINTRUS)
-    {
-	impianto->addItemU(tipo, qdescrizione, indirizzo, icon_names);
-	connect(impianto->getLast(), SIGNAL(impiantoInserito()), this
-		,SLOT(doClearAlarms()));
-	connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),
-		this, SIGNAL(abilitaParz(bool)));
-	connect(impianto->getLast(), SIGNAL(clearChanged()),
-		this, SIGNAL(clearChanged()));
-	connect(this, SIGNAL(partChanged(zonaAnti*)), impianto->getLast(),
-		SLOT(partChanged(zonaAnti*)));
-	connect(impianto, SIGNAL(openAckRx()), impianto->getLast(),
-		SLOT(openAckRx()));
-	connect(impianto, SIGNAL(openNakRx()), impianto->getLast(),
-		SLOT(openNakRx()));
+	QPtrList<QString> &icon_names, int periodo, int numFrame)
+{
+	if (tipo == IMPIANTINTRUS)
+	{
+		impianto->addItemU(tipo, qdescrizione, indirizzo, icon_names);
+		connect(impianto->getLast(), SIGNAL(impiantoInserito()), this,SLOT(doClearAlarms()));
+		connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),this, SIGNAL(abilitaParz(bool)));
+		connect(impianto->getLast(), SIGNAL(clearChanged()),this, SIGNAL(clearChanged()));
+		connect(this, SIGNAL(partChanged(zonaAnti*)), impianto->getLast(),SLOT(partChanged(zonaAnti*)));
+		connect(impianto, SIGNAL(openAckRx()), impianto->getLast(),SLOT(openAckRx()));
+		connect(impianto, SIGNAL(openNakRx()), impianto->getLast(),SLOT(openNakRx()));
 
-	testoTecnico = tr("technical");
-	testoIntrusione = tr("intrusion");
-	testoManom = tr("tamper");
-	testoPanic = tr("anti-panic");
+		testoTecnico = tr("technical");
+		testoIntrusione = tr("intrusion");
+		testoManom = tr("tamper");
+		testoPanic = tr("anti-panic");
 
-	// To simulate old behaviour
-	testoTecnico.truncate(MAX_PATH);
-	testoIntrusione.truncate(MAX_PATH);
-	testoManom.truncate(MAX_PATH);
-	testoPanic.truncate(MAX_PATH);
-	impianto->forceDraw();
-    }
-    else if (tipo== ZONANTINTRUS) {
-	zone->addItemU(tipo, qdescrizione, indirizzo, icon_names);
-	connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), 
-		SLOT(abilitaParz(bool)));
-	connect(this, SIGNAL(clearChanged()), zone->getLast(),
-		SLOT(clearChanged()));
-	connect(zone->getLast(), SIGNAL(partChanged(zonaAnti*)),
-		this, SIGNAL(partChanged(zonaAnti*)));
-	// Alhtough looking at the source one would say that more than 
-	// one "impianto" could be configured, in real life only one 
-	// impianto can exist
-	((impAnti *)impianto->getLast())->setZona((zonaAnti *)zone->getLast());
-	zone->forceDraw();
-    }
-    return(1);    
- }
+		// To simulate old behaviour
+		testoTecnico.truncate(MAX_PATH);
+		testoIntrusione.truncate(MAX_PATH);
+		testoManom.truncate(MAX_PATH);
+		testoPanic.truncate(MAX_PATH);
+		impianto->forceDraw();
+	}
+	else if (tipo == ZONANTINTRUS)
+	{
+		zone->addItemU(tipo, qdescrizione, indirizzo, icon_names);
+		connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), SLOT(abilitaParz(bool)));
+		connect(this, SIGNAL(clearChanged()), zone->getLast(),SLOT(clearChanged()));
+		connect(zone->getLast(), SIGNAL(partChanged(zonaAnti*)),this, SIGNAL(partChanged(zonaAnti*)));
+		// Alhtough looking at the source one would say that more than
+		// one "impianto" could be configured, in real life only one
+		// impianto can exist
+		((impAnti *)impianto->getLast())->setZona((zonaAnti *)zone->getLast());
+		zone->forceDraw();
+	}
+	return 1;
+}
 
 void antintrusione::setNumRighe(uchar n)
 {
-    numRighe=n;
-    zone->setNumRighe(n-1);
-    impianto->setNumRighe(1);
-    zone->draw();
-    impianto->draw();
+	numRighe = n;
+	zone->setNumRighe(n - 1);
+	impianto->setNumRighe(1);
+	zone->draw();
+	impianto->draw();
 }
-
 
 void antintrusione::inizializza()
-{     
-    zone-> inizializza();
-    impianto->inizializza();
-    connect(((impAnti *)impianto->getLast()), SIGNAL(clearAlarms()),
-	    this, SLOT(doClearAlarms()));
-//     emit sendFrame("*16*53*100##");      frame per richiesta stato impianto
+{
+	zone->inizializza();
+	impianto->inizializza();
+	connect(((impAnti *)impianto->getLast()), SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
 }
-
 
 void antintrusione::gesFrame(char*frame)
 {	
-    emit gestFrame(frame);
-    openwebnet msg_open;
-    char aggiorna;
-    
-    aggiorna=0;
-      
-    msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-   
-    if (!strcmp(msg_open.Extract_chi(),"5"))
-    {
-		if ( (! strncmp(msg_open.Extract_cosa(),"12",2) ) || (! strncmp(msg_open.Extract_cosa(),"15",2) ) || \
-	     	(! strncmp(msg_open.Extract_cosa(),"16",2) ) || (! strncmp(msg_open.Extract_cosa(),"17",2) ) )
+	emit gestFrame(frame);
+	openwebnet msg_open;
+	char aggiorna;
+
+	aggiorna = 0;
+
+	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
+
+	if (!strcmp(msg_open.Extract_chi(),"5"))
+	{
+		if ((! strncmp(msg_open.Extract_cosa(),"12",2)) || (! strncmp(msg_open.Extract_cosa(),"15",2)) || \
+			(! strncmp(msg_open.Extract_cosa(),"16",2)) || (! strncmp(msg_open.Extract_cosa(),"17",2)))
 		{
 			QString descr;
 			char zona[3];
@@ -319,134 +303,135 @@ void antintrusione::gesFrame(char*frame)
 			aggiorna=1;
 		}
 	}
-    if (aggiorna)
-    {
-	    qDebug("ARRIVATO ALLARME!!!!");
+	if (aggiorna)
+	{
+		qDebug("ARRIVATO ALLARME!!!!");
 		curr_alarm->show();
-        ctrlAllarm();
-    }
+		ctrlAllarm();
+	}
 }
-
-
-
 
 void antintrusione::setGeom(int x,int y,int w,int h)
 {
-    qDebug("antiintrusione::setGeom(%d, %d, %d, %d)",
-	   x, y, w, h);
-      QWidget::setGeometry(x,y,w,h);
-      if (impianto)
-	impianto->setGeometry(x,y,w,h/numRighe);
-    if(zone)
-	zone->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
+	qDebug("antiintrusione::setGeom(%d, %d, %d, %d)", x, y, w, h);
+	QWidget::setGeometry(x,y,w,h);
+	if (impianto)
+		impianto->setGeometry(x,y,w,h/numRighe);
+	if (zone)
+		zone->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
 }
 
 void antintrusione::setNavBarMode(uchar c)
 {
-    zone->setNavBarMode(c);
+	zone->setNavBarMode(c);
 }
 
 void antintrusione::nextAlarm()
 {
-    qDebug("antiintrusione::nextAlarm()");
-    curr_alarm->hide();
-    curr_alarm = allarmi.next();
-    if(!curr_alarm) {
-	qDebug("fine");
-	curr_alarm = allarmi.first();
-    }
-    curr_alarm->show();
+	qDebug("antiintrusione::nextAlarm()");
+	curr_alarm->hide();
+	curr_alarm = allarmi.next();
+	if (!curr_alarm)
+	{
+		qDebug("fine");
+		curr_alarm = allarmi.first();
+	}
+	curr_alarm->show();
 }
 
 void antintrusione::prevAlarm()
 {
-    qDebug("antiintrusione::prevAlarm()");
-    curr_alarm->hide();
-    curr_alarm = allarmi.prev();
-    if(!curr_alarm) {
-        qDebug("inizio");
-	curr_alarm = allarmi.last();
-    }
-    curr_alarm->show();
+	qDebug("antiintrusione::prevAlarm()");
+	curr_alarm->hide();
+	curr_alarm = allarmi.prev();
+	if (!curr_alarm)
+	{
+		qDebug("inizio");
+		curr_alarm = allarmi.last();
+	}
+	curr_alarm->show();
 }
 
 void antintrusione::deleteAlarm()
 {
-    qDebug("antiintrusione::deleteAlarm()");
-    // Enough, autodelete is set
-    curr_alarm->hide();
-    allarmi.remove(curr_alarm);
-    if(allarmi.isEmpty()) {
-	curr_alarm = NULL;
-	//closeAlarms();
-	testranpo();
-	return;
-    }
-    curr_alarm = allarmi.current();
-    curr_alarm->show();
+	qDebug("antiintrusione::deleteAlarm()");
+	// Enough, autodelete is set
+	curr_alarm->hide();
+	allarmi.remove(curr_alarm);
+	if (allarmi.isEmpty())
+	{
+		curr_alarm = NULL;
+		testranpo();
+		return;
+	}
+	curr_alarm = allarmi.current();
+	curr_alarm->show();
 }
 
 void antintrusione::closeAlarms()
 {
-    qDebug("antiintrusione::closeAlarms()");
-    QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
-    ai->toFirst();
-    allarme *a;
-    while((a = ai->current())) {
-	a->hide();
-	++(*ai);
-    }
-    delete ai;
-    impianto->show();
-    zone->show();
+	qDebug("antiintrusione::closeAlarms()");
+	QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
+	ai->toFirst();
+	allarme *a;
+	while ((a = ai->current()))
+	{
+		a->hide();
+		++(*ai);
+	}
+	delete ai;
+	impianto->show();
+	zone->show();
 }
 
 void antintrusione::showAlarms()
 {
-    qDebug("antiintrusione::showAlarms()");
-    curr_alarm = allarmi.last();
-    if(!curr_alarm) return;
-    impianto->hide();
-    zone->hide();
-    curr_alarm->show();
+	qDebug("antiintrusione::showAlarms()");
+	curr_alarm = allarmi.last();
+	if (!curr_alarm)
+		return;
+	impianto->hide();
+	zone->hide();
+	curr_alarm->show();
 }
 
 void antintrusione::doClearAlarms()
 {
-  qDebug("antiintrusione::doClearAlarms()");
-  allarmi.clear();
+	qDebug("antiintrusione::doClearAlarms()");
+	allarmi.clear();
 }
 
 
 void antintrusione::show()
 {
-    qDebug("antintrusione::show()");
-    impianto->show();
-    zone->show();
-    QWidget::show();
+	qDebug("antintrusione::show()");
+	impianto->show();
+	zone->show();
+	QWidget::show();
 }
 
 void antintrusione::hide()
 {
-    qDebug("antiintrusione::hide()");
-    QWidget::hide();
-    impianto->hide();
-    zone->hide();
-    QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
-    ai->toFirst();
-    allarme *a;
-    while((a = ai->current())) {
-        a->hide();
-        ++(*ai);
-    }
-    delete ai;
-    qDebug("Richiesta stato zone");    
-    emit(sendFrame("*#5*#1##"));
-    emit(sendFrame("*#5*#2##"));
-    emit(sendFrame("*#5*#3##"));
-    emit(sendFrame("*#5*#4##"));
-    emit(sendFrame("*#5*#5##"));
-    emit(sendFrame("*#5*#6##"));
-    emit(sendFrame("*#5*#7##"));
-    emit(sendFrame("*#5*#8##"));
+	qDebug("antiintrusione::hide()");
+	QWidget::hide();
+	impianto->hide();
+	zone->hide();
+	QPtrListIterator<allarme> *ai = new QPtrListIterator<allarme>(allarmi);
+	ai->toFirst();
+	allarme *a;
+	while ((a = ai->current()))
+	{
+		a->hide();
+		++(*ai);
+	}
+	delete ai;
+	qDebug("Richiesta stato zone");
+	emit sendFrame("*#5*#1##");
+	emit sendFrame("*#5*#2##");
+	emit sendFrame("*#5*#3##");
+	emit sendFrame("*#5*#4##");
+	emit sendFrame("*#5*#5##");
+	emit sendFrame("*#5*#6##");
+	emit sendFrame("*#5*#7##");
+	emit sendFrame("*#5*#8##");
 }

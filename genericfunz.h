@@ -118,7 +118,7 @@ void getName(char *name);
 
 void ResetTimer(int signo);
 
-void grabScreen(void* pWidget, char* filename);
+void grabScreen(void* pWidget);
 
 // Obscene hack, see function below...
 static QString empty_string("");

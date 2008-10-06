@@ -16,6 +16,7 @@
 
 QDomNode getPageNode(int id);
 QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
+QDomNode getChildWithName(QDomNode parent, QString name);
 QString getLanguage();
 
 // FIXME: next time a global function is needed, create an object that stores global configuration
@@ -165,7 +166,8 @@ extern QDomDocument qdom_appconfig;
  ****************************************************************/
 /*! \enum pagSecLiv
   This enum describes the various kind of pages*/
-enum pagSecLiv{
+enum pagSecLiv
+{
 	AUTOMAZIONE=1,                                /*!< Automation system */
 	ILLUMINAZIONE=2,                              /*!< Lighting system */
 	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
@@ -176,7 +178,6 @@ enum pagSecLiv{
 	IMPOSTAZIONI=8,                               /*!< Settings */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	//SCHEDULAZIONI=11,                           /*!< Schedulations page*/
 	VIDEOCITOFONIA=11,
 	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
@@ -190,112 +191,112 @@ enum pagSecLiv{
  ****************************************************************/
 /*!  \def ICON_CICLA
   The file name for \a changing icon*/
-#define ICON_CICLA			(IMG_PATH "btncycle.png")
+#define ICON_CICLA  (IMG_PATH "btncycle.png")
 /*!  \def ICON_OK
   The file name for \a ok icon*/
-#define ICON_OK				(IMG_PATH "btnok.png")
+#define ICON_OK  (IMG_PATH "btnok.png")
 /*!  \def ICON_ON
   The file name for \a on icon*/
-#define ICON_ON				(IMG_PATH "btnon.png")
+#define ICON_ON  (IMG_PATH "btnon.png")
 /*!  \def ICON_OFF
   The file name for \a off icon*/
-#define ICON_OFF			(IMG_PATH "btnoff.png")
+#define ICON_OFF  (IMG_PATH "btnoff.png")
 /*!  \def ICON_IMPOSTA
   The file name for \a setting icon*/
-#define ICON_IMPOSTA		(IMG_PATH "audiosetting.png")
+#define ICON_IMPOSTA  (IMG_PATH "audiosetting.png")
 /*!  \def ICON_INFO
   The file name for \a information icon*/
-#define ICON_INFO			(IMG_PATH "btninfo.png")
+#define ICON_INFO  (IMG_PATH "btninfo.png")
 /*!  \def ICON_FRECCIA_SU
   The file name for \a up-arrow icon*/
-#define ICON_FRECCIA_SU		(IMG_PATH "arrup.png")
+#define ICON_FRECCIA_SU  (IMG_PATH "arrup.png")
 /*!  \def ICON_FRECCIA_GIU
   The file name for \a down-arrow icon*/
-#define ICON_FRECCIA_GIU	(IMG_PATH "arrdw.png")
+#define ICON_FRECCIA_GIU  (IMG_PATH "arrdw.png")
 /*!  \def ICON_FRECCIA_SX
   The file name for \a left-arrow icon*/
-#define ICON_FRECCIA_SX		(IMG_PATH "arrlf.png")
+#define ICON_FRECCIA_SX  (IMG_PATH "arrlf.png")
 /*!  \def ICON_FRECCIA_DX
   The file name for \a right-arrow icon*/
-#define ICON_FRECCIA_DX		(IMG_PATH "arrrg.png")
+#define ICON_FRECCIA_DX  (IMG_PATH "arrrg.png")
 /*!  \def ICON_FFWD
   The file name for \a feed \a forward icon*/
-#define ICON_FFWD			(IMG_PATH "btnforward.png")
+#define ICON_FFWD  (IMG_PATH "btnforward.png")
 /*!  \def ICON_REW
   The file name for \a rewind icon*/
-#define ICON_REW			(IMG_PATH "btnbackward.png")
+#define ICON_REW  (IMG_PATH "btnbackward.png")
 /*!  \def ICON_DIFFSON
   The file name for \a diffson icon*/
-#define ICON_DIFFSON			(IMG_PATH "appdiffsmall.png")
+#define ICON_DIFFSON  (IMG_PATH "appdiffsmall.png")
 /*!  \def ICON_OROLOGIO
   The file name for \a clock icon*/
-#define ICON_OROLOGIO		(IMG_PATH "orologio.png")
+#define ICON_OROLOGIO  (IMG_PATH "orologio.png")
 /*!  \def ICON_CALENDARIO
   The file name for \a calendar icon*/
-#define ICON_CALENDARIO		(IMG_PATH "calendario.png")
+#define ICON_CALENDARIO  (IMG_PATH "calendario.png")
 /*!  \def ICON_SVEGLIA_ON
   The file name for \a alarm \a clock icon*/
-#define ICON_SVEGLIA_ON 	(IMG_PATH "svegliaon.png")
+#define ICON_SVEGLIA_ON  (IMG_PATH "svegliaon.png")
 /*!  \def ICON_PIU
   The file name for \a plus icon*/
-#define ICON_PIU			(IMG_PATH "btnplus.png")
+#define ICON_PIU  (IMG_PATH "btnplus.png")
 /*!  \def ICON_MENO
   The file name for \a minus icon*/
-#define ICON_MENO			(IMG_PATH "btnmin.png")
+#define ICON_MENO  (IMG_PATH "btnmin.png")
 /*!  \def ICON_MANUAL_ON
   The file name for \a manual \a selected icon*/
-#define ICON_MANUAL_ON		(IMG_PATH "btnman.png")
+#define ICON_MANUAL_ON  (IMG_PATH "btnman.png")
 /*!  \def ICON_MANUAL_OFF
   The file name for \a manual \a unselected icon*/
-#define ICON_MANUAL_OFF		(IMG_PATH "btnmanoff.png")
+#define ICON_MANUAL_OFF  (IMG_PATH "btnmanoff.png")
 /*!  \def ICON_AUTO
   The file name for \a automatic \a selected icon*/
-#define ICON_AUTO_ON		(IMG_PATH "btnauto.png")
+#define ICON_AUTO_ON  (IMG_PATH "btnauto.png")
 /*!  \def ICON_AUTO_OFF
   The file name for \a automatic \a unselected icon*/
-#define ICON_AUTO_OFF		(IMG_PATH "btnautooff.png")
+#define ICON_AUTO_OFF  (IMG_PATH "btnautooff.png")
 /*!  \def ICON_MEM
   The file name for \a memorization icon*/
-#define ICON_MEM			(IMG_PATH "btnmem.png")
+#define ICON_MEM  (IMG_PATH "btnmem.png")
 /*!  \def ICON_ZERO
   The file name for \a zero icon*/
-#define ICON_ZERO			(IMG_PATH "num0.png")
+#define ICON_ZERO  (IMG_PATH "num0.png")
 /*!  \def ICON_UNO
   The file name for \a one icon*/
-#define ICON_UNO			(IMG_PATH "num1.png")
+#define ICON_UNO  (IMG_PATH "num1.png")
 /*!  \def ICON_DUE
   The file name for \a two icon*/
-#define ICON_DUE			(IMG_PATH "num2.png")
+#define ICON_DUE  (IMG_PATH "num2.png")
 /*!  \def ICON_TRE
   The file name for \a three icon*/
-#define ICON_TRE			(IMG_PATH "num3.png")
+#define ICON_TRE  (IMG_PATH "num3.png")
 /*!  \def ICON_QUATTRO
   The file name for \a for icon*/
-#define ICON_QUATTRO		(IMG_PATH "num4.png")
+#define ICON_QUATTRO  (IMG_PATH "num4.png")
 /*!  \def ICON_CINQUE
   The file name for \a five icon*/
-#define ICON_CINQUE			(IMG_PATH "num5.png")
+#define ICON_CINQUE  (IMG_PATH "num5.png")
 /*!  \def ICON_SEI
   The file name for \a six icon*/
-#define ICON_SEI			(IMG_PATH "num6.png")
+#define ICON_SEI  (IMG_PATH "num6.png")
 /*!  \def ICON_SETTE
   The file name for \a seven icon*/
-#define ICON_SETTE			(IMG_PATH "num7.png")
+#define ICON_SETTE  (IMG_PATH "num7.png")
 /*!  \def ICON_OTTO
   The file name for \a eight icon*/
-#define ICON_OTTO			(IMG_PATH "num8.png")
+#define ICON_OTTO  (IMG_PATH "num8.png")
 /*!  \def ICON_NOVE
   The file name for \a nine icon*/
-#define ICON_NOVE			(IMG_PATH "num9.png")
+#define ICON_NOVE  (IMG_PATH "num9.png")
 /*!  \def ICON_CANC
   The file name for \a cancellation icon*/
-#define ICON_CANC			(IMG_PATH "btncanc.png")
+#define ICON_CANC  (IMG_PATH "btncanc.png")
 /*!  \def ICON_VUOTO
   The file name for \a empty icon*/
-#define ICON_VUOTO			(IMG_PATH "btnempty.png")
+#define ICON_VUOTO  (IMG_PATH "btnempty.png")
 /*!  \def ICON_DEL
   The file name for \a delete icon*/
-#define ICON_DEL			(IMG_PATH "btndel.png")
+#define ICON_DEL  (IMG_PATH "btndel.png")
 /*!  \def ICON_SUPERVISIONE
   The file name for \a plant supervision icon*/
 #define ICON_SUPERVISIONE (IMG_PATH "supervisione_impianto.png")
@@ -344,7 +345,8 @@ enum pagSecLiv{
 /*! \enum bannerType
  *  This enum describes the various banner type implemented
  */
-enum  bannerType {
+enum  bannerType
+{
 	ATTUAT_AUTOM=0,                               /*!<  Automation actuator */
 	DIMMER=1,                                     /*!<  Dimmer */
 	ATTUAT_AUTOM_INT=2,                           /*!<  Interblocked automation actuator */
@@ -400,8 +402,8 @@ enum  bannerType {
 	TERMO_4Z_PROBE_FANCOIL=54,                    /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
 	TERMO_NC_EXTPROBE=55,                         /*!< External not-controlled probe */
 	TERMO_NC_PROBE=56,                            /*!< Not-controlled probe */
-        TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
-        TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
+	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
+	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
 	CLASS_STOPNGO=59,                             /*!< StopnGo devices class */
 	STOPNGO=60,                                   /*!< StopnGo device */
 	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */

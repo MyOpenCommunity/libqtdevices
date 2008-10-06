@@ -128,13 +128,16 @@ protected:
 
 	BtButton *btn_minus, *btn_plus;
 	BtLabelEvo *icon_off, *icon_antifreeze;
-	// FIXME: setpoint e' la temperatura impostata mentre la rotellina e' `locale'
+	// setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	BtLabelEvo *local_temp_label;
 	/// This label is used as a placeholder when local_temp_label is hidden to avoid nasty graphics effects
 	BtLabelEvo *local_temp_placeholder;
+
+	/// Used as a placeholder for fancoil buttons bar to avoid graphics glitches.
+	BtLabelEvo *fancoil_buttons_placeholder;
 
 	QDomNode conf_root;
 	temperature_probe_controlled *dev;
