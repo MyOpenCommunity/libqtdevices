@@ -1727,13 +1727,13 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
 			qDebug("frame_sound_matr_device::handle_frame, normal frame");
 			stat_var curr_act(stat_var::ACTIVE_SOURCE);
 			char ambiente[2];
-			sprintf(ambiente,"%d", ((atoi(m.Extract_dove())-100)/10)-1);
-			ds->read(atoi(ambiente), curr_act);
-			qDebug("Curr active source for amb %s = %d", ambiente+1, curr_act.get_val());
-			act = atoi(m.Extract_dove())-110-(10*atoi(ambiente));
+			sprintf(ambiente,"%d", ((atoi(m.Extract_dove())-100)/10));
+			ds->read(atoi(ambiente)-1, curr_act);
+			qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
+			act = atoi(m.Extract_dove())-100-(10*(atoi(ambiente)));
 			qDebug("New active source = %d", act);
 			curr_act.set_val(act);
-			ds->write_val(atoi(ambiente), curr_act);
+			ds->write_val(atoi(ambiente)-1, curr_act);
 			do_event = true;
 		}
 	}
