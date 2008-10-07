@@ -299,7 +299,6 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	hbox->addWidget(btn_plus);
 
 	main_layout.addLayout(hbox);
-	main_layout.setStretchFactor(hbox, 1);
 
 	// avoid moving of fancoil buttons bar
 	main_layout.addStretch();
@@ -594,7 +593,6 @@ void FSBannFancoil::createFancoilButtons()
 		btn_to_speed_tbl[id] = (id + 1) % 4;
 	}
 	main_layout.insertLayout(-1, hbox);
-	main_layout.setStretchFactor(&fancoil_buttons, 2);
 }
 
 void FSBannFancoil::Draw()
