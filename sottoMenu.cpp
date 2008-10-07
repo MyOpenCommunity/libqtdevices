@@ -402,20 +402,6 @@ void sottoMenu::connectLastBanner()
 	connect(elencoBanner.getLast(), SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 }
 
-void sottoMenu::addItem(banner *b)
-{
-	elencoBanner.append(b);
-	connectLastBanner();
-
-	connect(this, SIGNAL(hideChildren()), elencoBanner.getLast(), SLOT(hide()));
-	elencoBanner.getLast()->SetTextU(elencoBanner.getLast()->name()); // name() torna il nome passato alla classe QWidget. non verra' tradotto...
-	int periodo, numFrame;
-	elencoBanner.getLast()->getAnimationParams(periodo, numFrame);
-	elencoBanner.getLast()->setAnimationParams(periodo,numFrame);
-	elencoBanner.getLast()->setBGColor(backgroundColor());
-	elencoBanner.getLast()->setFGColor(foregroundColor());
-}
-
 void sottoMenu::showItem(int id)
 {
 	indice = id;

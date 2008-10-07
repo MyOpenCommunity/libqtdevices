@@ -138,10 +138,6 @@ public slots:
 	 */
 	void fineVis();
 	/*!
-	 * \brief adds a source
-	 */
-	void addSource(banner *b);
-	/*!
 	 * \brief sets first source given address 
 	 */
 	void setFirstSource(int addr);
