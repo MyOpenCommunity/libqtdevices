@@ -301,17 +301,13 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	main_layout.addLayout(hbox);
 	main_layout.setStretchFactor(hbox, 1);
 
+	// avoid moving of fancoil buttons bar
+	main_layout.addStretch();
+
 	local_temp_label = new BtLabelEvo(this);
-	main_layout.addWidget(local_temp_label);
-	main_layout.setStretchFactor(local_temp_label, 1);
+	local_temp_label->setGeometry(LOCAL_TEMP_X, LOCAL_TEMP_Y,
+			LOCAL_TEMP_WIDTH, LOCAL_TEMP_HEIGHT);
 
-	local_temp_placeholder = new BtLabelEvo(this);
-	main_layout.addWidget(local_temp_placeholder);
-	main_layout.setStretchFactor(local_temp_placeholder, 1);
-
-	fancoil_buttons_placeholder = new BtLabelEvo(this);
-	main_layout.addWidget(fancoil_buttons_placeholder);
-	main_layout.setStretchFactor(fancoil_buttons_placeholder, 1);
 
 	switch (temp_scale)
 	{
@@ -408,7 +404,6 @@ void FSBannProbe::Draw()
 	setVisible(btn_plus, status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 	setVisible(setpoint_label, !isOff && !isAntigelo);
 	setVisible(local_temp_label, !isOff && !isAntigelo && local_temp != "0");
-	setVisible(local_temp_placeholder, isOff || isAntigelo || local_temp == "0");
 	setVisible(icon_off, isOff);
 	setVisible(icon_antifreeze, isAntigelo);
 	setVisible(navbar_button, probe_type == THERMO_Z99 && !isOff && !isAntigelo);
@@ -576,7 +571,6 @@ FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, the
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
 	fancoil_buttons.hide(); // do not show QButtonGroup frame
-	fancoil_buttons_placeholder->hide();
 	fancoil_status = 0;
 	connect(&fancoil_buttons, SIGNAL(clicked(int)), SLOT(handleFancoilButtons(int)));
 }
