@@ -560,11 +560,11 @@ void FileSelector::itemIsClicked(int item)
 	QLabel *l = createWaitDialog();
 	QTime time_counter = startTimeCounter();
 
-	QString filename = files_list[item];
-	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << " -> " << filename;
-	QFileInfo clicked_element(current_dir, filename);
+	const QFileInfo& clicked_element = files_list[item];
+	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.fileName();
+
 	if (!clicked_element.exists())
-		qDebug() << "[AUDIO] Error retrieving file by name: " << filename;
+		qDebug("[AUDIO] Error retrieving file");
 
 	if (clicked_element.isDir())
 	{
@@ -586,7 +586,7 @@ void FileSelector::itemIsClicked(int item)
 
 		for (int i = 0; i < files_list.size(); ++i)
 		{
-			QFileInfo fn(current_dir, files_list[i]);
+			const QFileInfo& fn = files_list[i];
 			if (fn.isDir())
 				continue;
 
@@ -683,7 +683,6 @@ QLabel *FileSelector::createWaitDialog()
 
 bool FileSelector::browseFiles()
 {
-
 	// Create fileslist from files
 	QList<QFileInfo> temp_files_list = current_dir.entryInfoList();
 	if (temp_files_list.empty())
@@ -694,18 +693,23 @@ bool FileSelector::browseFiles()
 
 	files_list.clear();
 
+	QVector<QString> names_list;
+
 	for (int i = 0; i < temp_files_list.size(); ++i)
 	{
 		const QFileInfo& f = temp_files_list.at(i);
 		if (f.fileName() != "." && f.fileName() != "..")
-			files_list.append(f.fileName());
+		{
+			names_list.append(f.fileName());
+			files_list.append(f);
+		}
 	}
 
 	unsigned page = 0;
 	if (pages_indexes.contains(current_dir.absolutePath()))
 		page = pages_indexes[current_dir.absolutePath()];
 
-	list_browser->setList(files_list, page);
+	list_browser->setList(names_list, page);
 	list_browser->showList();
 	return true;
 }

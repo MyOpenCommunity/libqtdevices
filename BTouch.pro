@@ -82,6 +82,7 @@ HEADERS += actuators.h \
            scaleconversion.h \
            scenari.h \
            scenevocond.h \
+           screensaver.h \
            setitems.h \
            sorgentiaux.h \
            sorgentimedia.h \
@@ -164,6 +165,7 @@ SOURCES += actuators.cpp \
            scaleconversion.cpp \
            scenari.cpp \
            scenevocond.cpp \
+           screensaver.cpp \
            setitems.cpp \
            sorgentiaux.cpp \
            sorgentimedia.cpp \

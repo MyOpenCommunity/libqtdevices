@@ -192,7 +192,7 @@ void homePage::addTemp(QString z, int x, int y, int width, int height, QColor bg
 	//temperatura[tempCont]->setPaletteBackgroundColor(bg);
 	temperatura[tempCont]->setFrameStyle(style);
 	temperatura[tempCont]->setLineWidth(line);
-	temperatura[tempCont]->setNumDigits(6);
+	temperatura[tempCont]->setNumDigits(9);
 	temperatura[tempCont]->setSegmentStyle(QLCDNumber::Flat);
 
 	unsigned default_bt_temp = 1235;
