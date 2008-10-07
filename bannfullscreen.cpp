@@ -1508,6 +1508,7 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 
 	connect(scenario_menu, SIGNAL(Closed()), this, SLOT(scenarioCancelled()));
 	connect(scenario_menu, SIGNAL(programClicked(int)), this, SLOT(scenarioSelected(int)));
+	scenario_menu->hide();
 }
 
 void FSBannTermoReg99z::scenarioCancelled()
