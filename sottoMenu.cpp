@@ -359,9 +359,11 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	case SORG_AUX:
 		elencoBanner.append(new sorgenteMultiAux(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
+	case CLEANSCREEN:
+		elencoBanner.append(new BannCleanScreen(this, descrizione));
+		break;
 	default:
-		qDebug("********** sottoMenu::addItem():unknown item type!!! ************\n");
-		return 0;
+		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}
 	connectLastBanner();
 

@@ -73,6 +73,10 @@ static const char *banTesti[] =
 	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
 	//    68-71
 	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    72-75
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    76-79
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
 };
 
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up */

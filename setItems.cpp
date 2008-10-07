@@ -9,6 +9,7 @@
 ****************************************************************/
 #include "setitems.h"
 #include "genericfunz.h"
+#include "cleanscreen.h"
 
 #include <qtimer.h>
 
@@ -367,4 +368,32 @@ void impPassword::hide()
 	banner::hide();
 	if (tasti)
 		tasti->hide();
+}
+
+
+BannCleanScreen::BannCleanScreen(sottoMenu *parent, const char *name) : bannOnDx(parent, name)
+{
+	qDebug("GIANNI costruttore di BannCleanScreen");
+	SetIcons(ICON_INFO,1);
+	page = new CleanScreen();
+	page->hide();
+
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	connect(this, SIGNAL(click()), page, SLOT(showFullScreen()));
+#else
+	connect(this, SIGNAL(click()), page, SLOT(show()));
+#endif
+
+	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+}
+
+BannCleanScreen::~BannCleanScreen()
+{
+	delete page;
+}
+
+void BannCleanScreen::hide()
+{
+	bannOnDx::hide();
+	page->hide();
 }
