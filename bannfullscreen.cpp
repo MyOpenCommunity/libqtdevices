@@ -283,7 +283,7 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	hbox->addStretch();
 
 	setpoint_label = new BtLabelEvo(this);
-	hbox->addWidget(setpoint_label);
+	setpoint_label->setGeometry(SETPOINT_X, SETPOINT_Y, SETPOINT_WIDTH, SETPOINT_HEIGHT);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, AlignHCenter);
 	hbox->addWidget(icon_antifreeze);
