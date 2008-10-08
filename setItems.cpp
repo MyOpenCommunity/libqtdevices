@@ -373,7 +373,6 @@ void impPassword::hide()
 
 BannCleanScreen::BannCleanScreen(sottoMenu *parent, const char *name) : bannOnDx(parent, name)
 {
-	qDebug("GIANNI costruttore di BannCleanScreen");
 	SetIcons(ICON_INFO,1);
 	page = new CleanScreen();
 	page->hide();
