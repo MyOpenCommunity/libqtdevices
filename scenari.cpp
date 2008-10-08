@@ -75,6 +75,7 @@ void scenario::inizializza(bool forza){}
 		strcpy(&dove[0], strstr(indirizzo,"*")+1);
 	}
 	sendInProgr=0;
+	in_progr=0;
 
 	setAddress(dove);
 	impostaAttivo(2);

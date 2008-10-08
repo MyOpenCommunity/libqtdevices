@@ -22,7 +22,7 @@
 #include <qobjectlist.h>
 
 #define I_OK  IMG_PATH"btnok.png"
-#define IMG_SETTINGS IMG_PATH"setscen.png"
+#define IMG_SETTINGS IMG_PATH"set.png"
 #define IMG_PLUS IMG_PATH "btnplus.png"
 #define IMG_MINUS IMG_PATH "btnmin.png"
 #define IMG_AUTO IMG_PATH "btnauto.png"
