@@ -107,10 +107,11 @@ void BtTimeEdit::decMin()
 	num->display(_time.toString());
 }
 
+QString BtDateEdit::DATE_FORMAT;
+
 BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
-	: QWidget(parent, name)
+	: QWidget(parent, name), _date(QDate::currentDate())
 {
-	_date = QDate::currentDate();
 	_date = _date.addDays(1);
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	// Buttons to increase day, month, year
@@ -124,10 +125,6 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 	btn_top_center = getButton(btn_up_img, btn_up_img_press, this, true);
 	btn_top_right = getButton(btn_up_img, btn_up_img_press, this, true);
 
-	connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incDay()));
-	connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incMonth()));
-	connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incYear()));
-
 	QHBoxLayout *h_up_box = new QHBoxLayout(main_layout);
 	h_up_box->addWidget(btn_top_left);
 	h_up_box->addWidget(btn_top_center);
@@ -136,7 +133,6 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 	date_display = new QLCDNumber(this);
 	date_display->setSegmentStyle(QLCDNumber::Flat);
 	date_display->setNumDigits(8);
-	date_display->display(_date.toString("dd.MM.yy"));
 	date_display->setFrameStyle(QFrame::NoFrame);
 	main_layout->addWidget(date_display);
 
@@ -147,14 +143,46 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name)
 	btn_bottom_center = getButton(btn_down_img, btn_down_img_press, this, true);
 	btn_bottom_right = getButton(btn_down_img, btn_down_img_press, this, true);
 
-	connect(btn_bottom_left, SIGNAL(clicked()), this, SLOT(decDay()));
-	connect(btn_bottom_center, SIGNAL(clicked()), this, SLOT(decMonth()));
-	connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decYear()));
-
 	QHBoxLayout *h_down_box = new QHBoxLayout(main_layout);
 	h_down_box->addWidget(btn_bottom_left);
 	h_down_box->addWidget(btn_bottom_center);
 	h_down_box->addWidget(btn_bottom_right);
+
+	// read date format and set connection accordingly
+	QString conf_path("setup/generale/clock/dateformat");
+	QDomElement e = getConfElement(conf_path);
+	DateFormat fmt;
+	if (!e.isNull())
+		fmt = static_cast<DateFormat>(e.text().toInt());
+	else
+		fmt = NONE;
+
+	switch (fmt)
+	{
+	case USA_DATE:
+		DATE_FORMAT = "MM.dd.yy";
+		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incDay()));
+		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incMonth()));
+		connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incYear()));
+		connect(btn_bottom_center, SIGNAL(clicked()), this, SLOT(decDay()));
+		connect(btn_bottom_left, SIGNAL(clicked()), this, SLOT(decMonth()));
+		connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decYear()));
+		break;
+	default:
+		qWarning("No date format found, defaulting to European format");
+		// fall below
+	case EUROPEAN_DATE:
+		DATE_FORMAT = "dd.MM.yy";
+		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incDay()));
+		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incMonth()));
+		connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incYear()));
+		connect(btn_bottom_left, SIGNAL(clicked()), this, SLOT(decDay()));
+		connect(btn_bottom_center, SIGNAL(clicked()), this, SLOT(decMonth()));
+		connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decYear()));
+		break;
+	}
+
+	date_display->display(_date.toString(DATE_FORMAT));
 }
 
 QDate BtDateEdit::date()
@@ -165,19 +193,19 @@ QDate BtDateEdit::date()
 void BtDateEdit::incDay()
 {
 	_date = _date.addDays(1);
-	date_display->display(_date.toString("dd.MM.yy"));
+	date_display->display(_date.toString(DATE_FORMAT));
 }
 
 void BtDateEdit::incMonth()
 {
 	_date = _date.addMonths(1);
-	date_display->display(_date.toString("dd.MM.yy"));
+	date_display->display(_date.toString(DATE_FORMAT));
 }
 
 void BtDateEdit::incYear()
 {
 	_date = _date.addYears(1);
-	date_display->display(_date.toString("dd.MM.yy"));
+	date_display->display(_date.toString(DATE_FORMAT));
 }
 
 void BtDateEdit::decDay()
@@ -185,7 +213,7 @@ void BtDateEdit::decDay()
 	if (_date.addDays(-1) >= QDate::currentDate())
 	{
 		_date = _date.addDays(-1);
-		date_display->display(_date.toString("dd.MM.yy"));
+		date_display->display(_date.toString(DATE_FORMAT));
 	}
 }
 
@@ -194,7 +222,7 @@ void BtDateEdit::decMonth()
 	if (_date.addMonths(-1) >= QDate::currentDate())
 	{
 		_date = _date.addMonths(-1);
-		date_display->display(_date.toString("dd.MM.yy"));
+		date_display->display(_date.toString(DATE_FORMAT));
 	}
 }
 
@@ -203,6 +231,6 @@ void BtDateEdit::decYear()
 	if (_date.addYears(-1) >= QDate::currentDate())
 	{
 		_date = _date.addYears(-1);
-		date_display->display(_date.toString("dd.MM.yy"));
+		date_display->display(_date.toString(DATE_FORMAT));
 	}
 }

@@ -28,6 +28,7 @@ enum TemperatureScale
 };
 TemperatureScale readTemperatureScale();
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
+QDomElement getConfElement(QString path);
 
 /****************************************************************
  ** ICONS LIBRARY
