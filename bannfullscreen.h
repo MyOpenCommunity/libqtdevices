@@ -155,7 +155,7 @@ private:
 	static const unsigned LOCAL_TEMP_HEIGHT = 50;
 	// absolute position of setpoint temperature
 	static const unsigned SETPOINT_X = 70;
-	static const unsigned SETPOINT_Y = 75;
+	static const unsigned SETPOINT_Y = 90;
 	static const unsigned SETPOINT_WIDTH = 100;
 	static const unsigned SETPOINT_HEIGHT = 50;
 
