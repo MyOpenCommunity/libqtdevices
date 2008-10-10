@@ -17,6 +17,7 @@
 #include <QWidget>
 #include <QPixmap>
 #include <QTextStream>
+#include <QDateTime>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -474,8 +475,9 @@ void ResetTimer(int signo)
 	BTouch->ResetTimer();
 }
 
-void grabScreen(void* pWidget, char* filename)
+void grabScreen(void* pWidget)
 {
+	char filename[1024];
 	qDebug("=============== I'm going to grab the screen ===============");
 
 	if (!QDir::current().exists(QString("grabs")))
@@ -485,6 +487,7 @@ void grabScreen(void* pWidget, char* filename)
 	}
 
 	QPixmap grabbedScreen = QPixmap::grabWidget((QWidget*)pWidget, 0, 0, -1, -1);
+	sprintf(filename, "%.2d:%.2d:%.2d,%.1d",QTime::currentTime().hour() ,QTime::currentTime().minute(), QTime::currentTime().second(),QTime::currentTime().msec()/100);
 	QString fn(filename);
 	if (grabbedScreen.save(fn.prepend("grabs/"), "PNG"))
 		qDebug("=============== Screen grabbed ===============");

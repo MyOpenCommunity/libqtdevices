@@ -372,9 +372,11 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	case SORG_AUX:
 		elencoBanner.append(new sorgenteMultiAux(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
+	case CLEANSCREEN:
+		elencoBanner.append(new BannCleanScreen(this, descrizione));
+		break;
 	default:
-		qDebug("********** sottoMenu::addItem():unknown item type!!! ************\n");
-		return 0;
+		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}
 	connectLastBanner();
 
@@ -416,22 +418,6 @@ void sottoMenu::connectLastBanner()
 	connect(this, SIGNAL(frez(bool)), last, SIGNAL(freezed(bool)));
 	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
 	connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
-}
-
-void sottoMenu::addItem(banner *b)
-{
-	elencoBanner.append(b);
-	connectLastBanner();
-
-	banner *last = elencoBanner.last();
-	connect(this, SIGNAL(hideChildren()), last, SLOT(hide()));
-	// TODO: sistemare! la name nelle qt4 non esiste piu'!!
-	//elencoBanner.getLast()->SetTextU(last->name()); // name() torna il nome passato alla classe QWidget. non verra' tradotto...
-	int periodo, numFrame;
-	last->getAnimationParams(periodo, numFrame);
-	last->setAnimationParams(periodo,numFrame);
-	last->setBGColor(backgroundColor());
-	last->setFGColor(foregroundColor());
 }
 
 void sottoMenu::showItem(int id)

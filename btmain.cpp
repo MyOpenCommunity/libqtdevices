@@ -219,6 +219,7 @@ void BtMain::init()
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 		calib->show();
 #endif
+		alreadyCalibrated = TRUE;
 	}
 }
 

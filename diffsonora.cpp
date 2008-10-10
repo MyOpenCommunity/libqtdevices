@@ -273,12 +273,6 @@ void diffSonora::fineVis()
 	emit(closed(this));
 }
 
-void diffSonora::addSource(banner *b)
-{
-	sorgenti->addItem(b);
-	connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
-}
-
 void diffSonora::setFirstSource(int addr)
 {
 	qDebug("diffSonora::setFirstSource(%d)", addr);

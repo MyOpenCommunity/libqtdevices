@@ -74,6 +74,10 @@ static const char *banTesti[] =
 	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
 	//    68-71
 	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    72-75
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
+	//    76-79
+	"ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!", "ARGH, empty!!!",
 };
 
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up */
@@ -1490,9 +1494,9 @@ bool xmlconfhandler::characters(const QString & qValue)
 			{
 				if (!CurTagL4.compare("coordinate_scs"))
 				{
-					if (!CurTagL5.compare("scs_addr"))
+					if (!CurTagL5.compare("diag_addr"))
 					{
-						datiGen->setAddr(qValue.toInt(&ok, 16));
+						datiGen->setAddr(qValue.toInt(&ok, 16)-768);
 					}
 				}
 			}

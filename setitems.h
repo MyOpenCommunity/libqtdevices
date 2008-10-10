@@ -226,5 +226,24 @@ private:
 };
 #endif //SET_ITEMS_H
 
+#ifndef BANN_CLEANSCREEN
+#define BANN_CLEANSCREEN
+
+class CleanScreen;
 
 
+class BannCleanScreen : public bannOnDx
+{
+Q_OBJECT
+public:
+	BannCleanScreen(sottoMenu *parent, const char *name);
+	~BannCleanScreen();
+
+public slots:
+	void hide();
+
+private:
+	CleanScreen *page;
+};
+
+#endif

@@ -23,7 +23,7 @@
 #include <QDebug>
 
 #define I_OK  IMG_PATH"btnok.png"
-#define IMG_SETTINGS IMG_PATH"setscen.png"
+#define IMG_SETTINGS IMG_PATH"set.png"
 #define IMG_PLUS IMG_PATH "btnplus.png"
 #define IMG_MINUS IMG_PATH "btnmin.png"
 #define IMG_AUTO IMG_PATH "btnauto.png"
@@ -282,7 +282,7 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	hbox->addStretch();
 
 	setpoint_label = new BtLabelEvo(this);
-	hbox->addWidget(setpoint_label);
+	setpoint_label->setGeometry(SETPOINT_X, SETPOINT_Y, SETPOINT_WIDTH, SETPOINT_HEIGHT);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, Qt::AlignHCenter);
 	hbox->addWidget(icon_antifreeze);
@@ -298,19 +298,14 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	hbox->addWidget(btn_plus);
 
 	main_layout.addLayout(hbox);
-	main_layout.setStretchFactor(hbox, 1);
+
+	// avoid moving of fancoil buttons bar
+	main_layout.addStretch();
 
 	local_temp_label = new BtLabelEvo(this);
-	main_layout.addWidget(local_temp_label);
-	main_layout.setStretchFactor(local_temp_label, 1);
+	local_temp_label->setGeometry(LOCAL_TEMP_X, LOCAL_TEMP_Y,
+			LOCAL_TEMP_WIDTH, LOCAL_TEMP_HEIGHT);
 
-	local_temp_placeholder = new BtLabelEvo(this);
-	main_layout.addWidget(local_temp_placeholder);
-	main_layout.setStretchFactor(local_temp_placeholder, 1);
-
-	fancoil_buttons_placeholder = new BtLabelEvo(this);
-	main_layout.addWidget(fancoil_buttons_placeholder);
-	main_layout.setStretchFactor(fancoil_buttons_placeholder, 1);
 
 	switch (temp_scale)
 	{
@@ -407,7 +402,6 @@ void FSBannProbe::Draw()
 	setWidgetVisible(btn_plus, status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 	setWidgetVisible(setpoint_label, !isOff && !isAntigelo);
 	setWidgetVisible(local_temp_label, !isOff && !isAntigelo && local_temp != "0");
-	setWidgetVisible(local_temp_placeholder, isOff || isAntigelo || local_temp == "0");
 	setWidgetVisible(icon_off, isOff);
 	setWidgetVisible(icon_antifreeze, isAntigelo);
 	setWidgetVisible(navbar_button, probe_type == THERMO_Z99 && !isOff && !isAntigelo);
@@ -570,7 +564,6 @@ FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, the
 
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
-	fancoil_buttons_placeholder->hide();
 	fancoil_status = 0;
 	connect(&fancoil_buttons, SIGNAL(buttonClicked(int)), SLOT(handleFancoilButtons(int)));
 }
@@ -1146,6 +1139,8 @@ void FSBannTermoReg4z::createSettingsMenu()
 		// propagate freeze signal to settings submenu
 		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SLOT(freezed(bool)));
 		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SIGNAL(freezePropagate(bool)));
+		// hide children
+		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");
@@ -1204,6 +1199,8 @@ void FSBannTermoReg99z::createSettingsMenu()
 		// propagate freeze signal to settings submenu
 		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SLOT(freezed(bool)));
 		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SIGNAL(freezePropagate(bool)));
+		// hide children
+		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");
@@ -1256,6 +1253,8 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SIGNAL(freezePropagate(bool)));
+	// hide children
+	connect(settings, SIGNAL(hideChildren()), manual_menu, SLOT(hide()));
 
 	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev, temp_scale);
 	bann->setSecondForeground(second_fg);
@@ -1300,6 +1299,8 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), program_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), program_menu, SIGNAL(freezePropagate(bool)));
+	// hide children
+	connect(settings, SIGNAL(hideChildren()), program_menu, SLOT(hide()));
 
 	connect(program_menu, SIGNAL(Closed()), this, SLOT(weekProgramCancelled()));
 	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(weekProgramSelected(int)));
@@ -1360,6 +1361,8 @@ DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SIGNAL(freezePropagate(bool)));
+	// hide children
+	connect(settings, SIGNAL(hideChildren()), date_edit, SLOT(hide()));
 	date_edit->hide();
 	connect(date_edit, SIGNAL(Closed()), this, SLOT(dateCancelled()));
 	connect(date_edit, SIGNAL(dateSelected(QDate)), this, SLOT(dateSelected(QDate)));
@@ -1374,6 +1377,8 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SIGNAL(freezePropagate(bool)));
+	// hide children
+	connect(settings, SIGNAL(hideChildren()), time_edit, SLOT(hide()));
 	time_edit->hide();
 	connect(time_edit, SIGNAL(timeSelected(BtTime)), this, SLOT(timeSelected(BtTime)));
 	connect(time_edit, SIGNAL(Closed()), this, SLOT(timeCancelled()));
@@ -1389,6 +1394,8 @@ WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode co
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), program_choice, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), program_choice, SIGNAL(freezePropagate(bool)));
+	// hide children
+	connect(settings, SIGNAL(hideChildren()), program_choice, SLOT(hide()));
 	program_choice->hide();
 	connect(program_choice, SIGNAL(programClicked(int)), this, SLOT(weekendHolidaySettingsEnd(int)));
 	connect(program_choice, SIGNAL(Closed()), this, SLOT(programCancelled()));
@@ -1476,6 +1483,8 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SIGNAL(freezePropagate(bool)));
+	// hide children
+	connect(settings, SIGNAL(hideChildren()), timed_manual_menu, SLOT(hide()));
 
 	connect(timed_manual_menu, SIGNAL(Closed()), this, SLOT(manualTimedCancelled()));
 	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), this, SLOT(manualTimedSelected(BtTime, int)));
@@ -1513,9 +1522,12 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), scenario_menu, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), scenario_menu, SIGNAL(freezePropagate(bool)));
+	// hide children
+	connect(settings, SIGNAL(hideChildren()), scenario_menu, SLOT(hide()));
 
 	connect(scenario_menu, SIGNAL(Closed()), this, SLOT(scenarioCancelled()));
 	connect(scenario_menu, SIGNAL(programClicked(int)), this, SLOT(scenarioSelected(int)));
+	scenario_menu->hide();
 }
 
 void FSBannTermoReg99z::scenarioCancelled()

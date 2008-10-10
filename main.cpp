@@ -77,6 +77,20 @@ QDomNode getChildWithName(QDomNode parent, QString name)
 	return QDomNode();
 }
 
+QDomElement getConfElement(QString path)
+{
+	QStringList sl = path.split('/');
+	QDomElement root = qdom_appconfig.documentElement();
+	QDomNode node = root;
+	while (!sl.isEmpty())
+	{
+		QString str = sl.first();
+		if (!node.isNull())
+			node = getChildWithName(node, str);
+		sl.pop_front();
+	}
+	return node.toElement();
+}
 
 TemperatureScale readTemperatureScale()
 {

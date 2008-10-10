@@ -332,10 +332,6 @@ public slots:
 		*/
 	void killBanner(banner*);
 	/*!
-		\brief Adds a banner
-		*/
-	void addItem(banner *);
-	/*!
 		\brief  Empties the banner list.
 		*/
 	void svuota();

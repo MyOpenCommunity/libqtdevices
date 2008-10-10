@@ -54,6 +54,7 @@ HEADERS += actuators.h \
            buttons_bar.h \
            calibrate.h \
            carico.h \
+           cleanscreen.h \
            contrpage.h \
            device.h \
            device_cache.h \
@@ -137,6 +138,7 @@ SOURCES += actuators.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
            carico.cpp \
+           cleanscreen.cpp \
            contrpage.cpp \
            device.cpp \
            device_cache.cpp \

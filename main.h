@@ -28,6 +28,7 @@ enum TemperatureScale
 };
 TemperatureScale readTemperatureScale();
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
+QDomElement getConfElement(QString path);
 
 /****************************************************************
  ** ICONS LIBRARY
@@ -415,7 +416,8 @@ enum  bannerType
 	POWER_AMPLIFIER_TREBLE=71,
 	POWER_AMPLIFIER_BASS=72,
 	POWER_AMPLIFIER_BALANCE=73,
-	POWER_AMPLIFIER_LOUD=74
+	POWER_AMPLIFIER_LOUD=74,
+	CLEANSCREEN=75
 };
 
 /*! \enum pulsType
