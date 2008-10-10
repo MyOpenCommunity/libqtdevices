@@ -1531,9 +1531,9 @@ bool xmlconfhandler::characters(const QString & qValue)
 			{
 				if (!CurTagL4.compare("coordinate_scs"))
 				{
-					if (!CurTagL5.compare("scs_addr"))
+					if (!CurTagL5.compare("diag_addr"))
 					{
-						datiGen->setAddr(qValue.toInt(&ok, 16));
+						datiGen->setAddr(qValue.toInt(&ok, 16)-768);
 					}
 				}
 			}
