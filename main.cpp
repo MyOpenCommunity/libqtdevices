@@ -98,31 +98,18 @@ TemperatureScale readTemperatureScale()
 	if (scale != NONE)
 		return scale;
 
-	QDomElement root = qdom_appconfig.documentElement();
-
-	QDomNode setup_node = getChildWithName(root, "setup");
-	if (!setup_node.isNull())
+	QDomElement temperature_format = getConfElement("setup/generale/temperature/format");
+	if (temperature_format.isNull())
 	{
-		QDomNode gen_node = getChildWithName(setup_node, "generale");
-		if (!gen_node.isNull())
-		{
-			QDomNode temp_node = getChildWithName(gen_node, "temperature");
-			if (!temp_node.isNull())
-			{
-				QDomNode format_node = getChildWithName(temp_node, "format");
-				if (!format_node.isNull())
-				{
-					QDomElement e = format_node.toElement();
-					scale = static_cast<TemperatureScale>(e.text().toInt());
-					return scale;
-				}
-			}
-		}
+		qWarning("Temperature scale not found on conf.xml!");
+		scale = default_scale;
+	}
+	else
+	{
+		scale = static_cast<TemperatureScale>(temperature_format.text().toInt());
 	}
 
-	qWarning("Temperature scale not found on conf.xml!");
-	scale = default_scale;
-	return default_scale;
+	return scale;
 }
 
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2)

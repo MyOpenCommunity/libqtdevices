@@ -28,6 +28,15 @@ enum TemperatureScale
 };
 TemperatureScale readTemperatureScale();
 void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
+
+/**
+ * Finds a node in DOM tree with the path given as a parameter.
+ * \param path The path in the xml tree that leads to the node. The path must omit the root node
+ * (example: node "configuratore" in conf.xml) and must separate the nodes with a '/'. The last node
+ * must not be followed by a '/'.
+ * Example: "setup/generale/clock/dateformat"
+ * \return A Null node if the path is not found, a valid node otherwise.
+ */
 QDomElement getConfElement(QString path);
 
 /****************************************************************
