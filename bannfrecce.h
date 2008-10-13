@@ -99,6 +99,9 @@ private:
 
 	/// The parent of custom button set with setCustomButton method
 	QWidget *dx_button_parent;
+
+public slots:
+	virtual void setEnabled(bool v);
 };
 
 

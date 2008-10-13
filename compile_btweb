@@ -16,14 +16,14 @@ if [ "$MACHINE" = "H4684" ] || [ "$MACHINE" = "LGRH4684" ] || [ "$MACHINE" = "H4
 then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
-  if [ $COMPILING_NOT_CLEAN != "yes" ]
-  then
+#  if [ $COMPILING_NOT_CLEAN != "yes" ]
+#  then
     # $QTDIR/qmake/qmake -project
     $QTDIR/qmake/qmake
     make clean
-  else
-    echo "Compiling COMPILING_NOT_CLEAN activated"
-  fi
+#  else
+#    echo "Compiling COMPILING_NOT_CLEAN activated"
+#  fi
 
   make || exit 1
 

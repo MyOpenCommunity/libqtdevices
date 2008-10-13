@@ -64,10 +64,16 @@ public:
 	 * Returns the date set on the widget.
 	 */
 	QDate date();
+	enum DateFormat {
+		EUROPEAN_DATE = 0,
+		USA_DATE = 1,
+		NONE,
+	};
 private:
 	/// display date set
 	QLCDNumber *date_display;
 	QDate _date;
+	static QString DATE_FORMAT;
 private slots:
 	void incDay();
 	void incMonth();
