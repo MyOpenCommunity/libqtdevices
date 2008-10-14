@@ -160,7 +160,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			QString thermr_where = ind_centrale;
 			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
 					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-			bfs = new FSBannFancoil(n, dev, thermo_reg, parent);
+			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
 		}
 		break;
 	case fs_4z_thermal_regulator:
