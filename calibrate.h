@@ -31,7 +31,6 @@ private:
 	QPoint fromDevice(const QPoint &p);
 	/// Check if the calibration is ok
 	bool sanityCheck();
-	void moveCrosshair(QPoint pt);
 	void paintEvent(QPaintEvent *);
 	void mousePressEvent(QMouseEvent *);
 	void mouseReleaseEvent(QMouseEvent *);
@@ -57,8 +56,9 @@ private:
 	QWSPointerCalibrationData::Location location;
 #endif
 	QPoint crossPos;
+	// the new position of the crosshair
+	QPoint newPos;
 	QPoint penPos;
-	QPixmap saveUnder;
 	QTimer *timer, *button_timer;
 	QLabel *box_text;
 	BtButton *b1, *b2;

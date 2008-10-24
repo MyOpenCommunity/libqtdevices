@@ -106,7 +106,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	}
 	else
 	{
-		calib = new Calibrate(NULL, (unsigned char)1);
+		calib = new Calibrate(NULL, 1);
 		calib->show();
 		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
 

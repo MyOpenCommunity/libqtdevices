@@ -15,7 +15,7 @@
 #include <QLabel>
 #include <QTimer>
 #include <QFile>
-
+#include <QDebug>
 
 #define BUTTON_SEC_TIMEOUT 10
 
@@ -23,7 +23,7 @@
 
 
 Calibrate::Calibrate(QWidget* parent, unsigned char m) :
-	QWidget(parent, Qt::Tool | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint), button_test(false)
+	QWidget(parent, Qt::Tool | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint), button_test(false)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
 	const int offset = 30;
@@ -49,32 +49,26 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 		cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint(qt_screen->deviceWidth()/2, qt_screen->deviceHeight()/2);
 	}
 	crossPos = fromDevice(cd.screenPoints[QWSPointerCalibrationData::TopLeft]);
+	newPos = crossPos;
 	setCursor(QCursor(Qt::BlankCursor));
 #endif
-
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
-
 	button_timer = new QTimer(this);
 	b1 = createButton(IMG_OK, 5, 5);
 	b2 = createButton(IMG_OK, 175, 255);
-
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
-
 	box_text = new QLabel(this);
 	box_text->setFont(aFont);
 	box_text->setAlignment(Qt::AlignHCenter);
 	box_text->setGeometry(0, 205, desk.width(), 50);
-
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	if (QFile::exists("/etc/pointercal"))
 		system("cp /etc/pointercal /etc/pointercal.calibrated");
-
 #endif
 	manut = m;
 	startCalibration();
-
 	connect(button_timer, SIGNAL(timeout()), SLOT(rollbackCalibration()));
 	connect(b1, SIGNAL(clicked()), b2, SLOT(show()));
 	connect(b1, SIGNAL(clicked()), b1, SLOT(hide()));
@@ -138,7 +132,7 @@ bool Calibrate::sanityCheck()
 
     if ((vl > avg2/10)||(vr > avg2/10))
 	{
-		qWarning("err>10 per cento     ->  left: %d right: %d\n",vl/avg2*100 ,vr/avg2*100);
+		qWarning("err>10 per cento ->  left: %d right: %d\n",vl/avg2*100 ,vr/avg2*100);
 		return FALSE;
 	}
 	int ht = qAbs(tl.y() - tr.y());
@@ -182,25 +176,9 @@ bool Calibrate::sanityCheck()
 	return TRUE;
 }
 
-void Calibrate::moveCrosshair(QPoint pt)
-{
-	QPainter p(this);
-	p.drawPixmap(crossPos.x()-8, crossPos.y()-8, saveUnder);
-	saveUnder = QPixmap::grabWindow(winId(), pt.x()-8, pt.y()-8, 16, 16);
-	if (!button_test)
-	{
-		p.drawRect(pt.x()-1, pt.y()-8, 2, 7);
-		p.drawRect(pt.x()-1, pt.y()+1, 2, 7);
-		p.drawRect(pt.x()-8, pt.y()-1, 7, 2);
-		p.drawRect(pt.x()+1, pt.y()-1, 7, 2);
-	}
-	crossPos = pt;
-}
-
 void Calibrate::paintEvent(QPaintEvent *)
 {
 	QPainter p(this);
-
 	int y;
 
 	if (!logo.isNull())
@@ -213,8 +191,14 @@ void Calibrate::paintEvent(QPaintEvent *)
 
 	y = height() / 2 + 15;
 
-	saveUnder = QPixmap::grabWindow(winId(), crossPos.x()-8, crossPos.y()-8, 16, 16);
-	moveCrosshair(crossPos);
+	if (!button_test)
+	{
+		p.drawRect(newPos.x()-1, newPos.y()-8, 2, 7);
+		p.drawRect(newPos.x()-1, newPos.y()+1, 2, 7);
+		p.drawRect(newPos.x()-8, newPos.y()-1, 7, 2);
+		p.drawRect(newPos.x()+1, newPos.y()-1, 7, 2);
+	}
+	crossPos = newPos;
 }
 
 void Calibrate::buttonsTest()
@@ -250,8 +234,8 @@ void Calibrate::endCalibration()
 	hide();
 	close();
 
-	emit (fineCalib());
-	if (manut==1)
+	emit fineCalib();
+	if (manut == 1)
 		delete(this);
 }
 
@@ -293,20 +277,19 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 	cd.devPoints[location] = penPos;
 
 	unsigned char lastLoc;
-	if (manut==0)
-		lastLoc=QWSPointerCalibrationData::LastLocation;
+	if (manut == 0)
+		lastLoc = QWSPointerCalibrationData::LastLocation;
 	else
-		lastLoc=QWSPointerCalibrationData::LastLocation-1;
+		lastLoc = QWSPointerCalibrationData::LastLocation - 1;
 	qWarning("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
 	if (location < lastLoc)
 	{
-		qWarning("location < lastLoc    ovvero %d<%d",location,lastLoc);
+		qWarning("location < lastLoc ovvero %d<%d",location,lastLoc);
 		location = (QWSPointerCalibrationData::Location)((int)location + 1);
 		qWarning("new location: %d", location);
 	}
 	else
 	{
-		qWarning("sto per fare Sanity Chack");
 		if (sanityCheck())
 		{
 			releaseMouse();
@@ -333,7 +316,7 @@ void Calibrate::timeout()
 
 	bool doneX = FALSE;
 	bool doneY = FALSE;
-	QPoint newPos(crossPos.x() + dx, crossPos.y() + dy);
+	newPos = QPoint(crossPos.x() + dx, crossPos.y() + dy);
 
 	if (qAbs(crossPos.x() - target.x()) <= qAbs(dx))
 	{
@@ -352,7 +335,7 @@ void Calibrate::timeout()
 		penPos = QPoint();
 		timer->stop();
 	}
-	moveCrosshair(newPos);
+	update();
 #endif
 }
 
