@@ -281,6 +281,6 @@ int main(int argc, char **argv)
 	signal(SIGUSR2, ResetTimer);
 
 	qDebug("Start BtMain");
-	BTouch = new BtMain(NULL,"MAIN PROGRAM",&a);
+	BTouch = new BtMain(NULL);
 	return a.exec();
 }

@@ -44,7 +44,7 @@ class  BtMain : public QWidget
 {
 Q_OBJECT
 public:
-	BtMain(QWidget *parent=0, const char *name=0,QApplication*a=NULL);
+	BtMain(QWidget *parent=0);
 	~BtMain();
 	homePage * Home, *specPage;
 	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;

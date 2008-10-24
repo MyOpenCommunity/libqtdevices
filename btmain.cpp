@@ -28,17 +28,16 @@
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
 
-#include <qwindowsystem_qws.h>
-#include <qapplication.h>
-#include <qobject.h>
-#include <qcursor.h>
-#include <qwindowdefs.h>
-#include <qbitmap.h>
-#include <qpixmap.h>
-#include <qpainter.h>
-#include <qtimer.h>
-#include <qfile.h>
-#include <qxml.h>
+#include <QXmlSimpleReader>
+#include <QXmlInputSource>
+#include <QWSServer>
+#include <QPainter>
+#include <QObject>
+#include <QCursor>
+#include <QBitmap>
+#include <QPixmap>
+#include <QTimer>
+#include <QFile>
 
 #include <sys/sysinfo.h>
 
@@ -46,7 +45,7 @@
 #define SCREENSAVER_LINE
 
 
-BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(parent)
+BtMain::BtMain(QWidget *parent) : QWidget(parent)
 {
 
 	/*******************************************
