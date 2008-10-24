@@ -56,8 +56,8 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
 
 	button_timer = new QTimer(this);
-	b1 = createButton(IMG_OK, 10, 10);
-	b2 = createButton(IMG_OK, 170, 250);
+	b1 = createButton(IMG_OK, 5, 5);
+	b2 = createButton(IMG_OK, 175, 255);
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
@@ -65,7 +65,7 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	box_text = new QLabel(this);
 	box_text->setFont(aFont);
 	box_text->setAlignment(Qt::AlignHCenter);
-	box_text->setGeometry(0, 205, desk.width(), 45);
+	box_text->setGeometry(0, 205, desk.width(), 50);
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	if (QFile::exists("/etc/pointercal"))

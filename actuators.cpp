@@ -945,6 +945,13 @@ void attuatAutomTempNuovoF::update()
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen(frame, strlen(frame));
 	dev->sendInit(msg_open.frame_open);
+	// imposto il timer corretto
+	if (!temp_nota)
+	{
+		int v = h * 3600 + m * 60 + s;
+		myTimer->start((1000 * v) / NTIMEICONS);
+		temp_nota = true;
+	}
 }
 
 void attuatAutomTempNuovoF::Attiva()
@@ -955,13 +962,11 @@ void attuatAutomTempNuovoF::Attiva()
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen(frame, strlen(frame));
 	dev->sendFrame(msg_open.frame_open);
-	// Chiede subito la temporizzazione
-	update();
-	// Valore iniziale = il valore impostato
-	int v = h * 3600 + m * 60 + s;
-	// e programma un aggiornamento
-	tentativi_update = 1;
-	myTimer->start((1000 * v) / NTIMEICONS);
+	tentativi_update = 0;
+	update_ok = false;
+	//programma un aggiornamento immediato
+	temp_nota = false;
+	myTimer->start(100);
 	Draw();
 }
 
