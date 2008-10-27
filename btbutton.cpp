@@ -1,4 +1,5 @@
 #include "btbutton.h"
+#include "genericfunz.h"
 
 /*
 #include "main.h"
@@ -22,33 +23,55 @@
 */
 
 
-BtButton::BtButton(QWidget *parent) : QPushButton(parent)
+BtButton::BtButton(QWidget *parent) : QPushButton(parent), icon_set(false)
 {
+	setStyleSheet(QString("border:0px;"));
 }
 
-BtButton::BtButton(const QString &text, QWidget *parent) : QPushButton(text, parent)
+BtButton::BtButton(const QString &text, QWidget *parent) : QPushButton(text, parent), icon_set(false)
 {
+	setStyleSheet(QString("border:0px;"));
 }
 
 void BtButton::setPressedPixmap(const QPixmap &p)
 {
-	pressed_pixmap = &p;
+	pressed_pixmap = p;
 }
 
 void BtButton::setPixmap(const QPixmap &p)
 {
-	pixmap = &p;
+	pixmap = p;
+}
+
+void BtButton::mousePressEvent(QMouseEvent *event)
+{
+	if (!pressed_pixmap.isNull())
+	{
+		setIcon(pressed_pixmap);
+		setIconSize(pressed_pixmap.size());
+		icon_set = true;
+	}
+	QPushButton::mousePressEvent(event);
+}
+
+void BtButton::mouseReleaseEvent(QMouseEvent *event)
+{
+	setIcon(pixmap);
+	setIconSize(pixmap.size());
+	icon_set = true;
+	QPushButton::mouseReleaseEvent(event);
 }
 
 void BtButton::paintEvent(QPaintEvent *event)
 {
-	// TODO: cambiare la pixmap solo se cambia stato!
-	if (isDown())
-		setIcon(*pressed_pixmap);
-	else
-		setIcon(*pixmap);
+	if (!icon_set)
+	{
+		setIcon(pixmap);
+		setIconSize(pixmap.size());
+		icon_set = true;
+	}
 
-#ifdef  BEEP
+#ifdef BEEP
 	if (isDown())
 		beep();
 #endif

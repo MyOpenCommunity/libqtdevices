@@ -33,10 +33,17 @@ public:
 
 protected:
 	virtual void paintEvent(QPaintEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent *event);
+	virtual void mousePressEvent(QMouseEvent *event);
 
 private:
-	const QPixmap* pressed_pixmap;
-	const QPixmap* pixmap;
+	/// The pixmap to show when the button is down
+	QPixmap pressed_pixmap;
+	/// The pixmap to show when the button is in normal state
+	QPixmap pixmap;
+
+	// A flag used internally to means if the icon is setted or not.
+	bool icon_set;
 };
 
 
