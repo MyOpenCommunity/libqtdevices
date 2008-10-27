@@ -140,14 +140,11 @@ bool BtMain::loadConfiguration(QString cfg_file)
 {
 	QColor *bg, *fg1, *fg2;
 	readExtraConf(&bg, &fg1, &fg2);
-
 	if (QFile::exists(cfg_file))
 	{
 		xmlconfhandler *handler2 = new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
 				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
 				client_comandi, client_monitor, client_richieste, datiGen, bg, fg1, fg2);
-		// TODO: sistemare con i metodi qt4!
-		// setBackgroundColor(*bg);
 		QFile xmlFile(cfg_file);
 		QXmlInputSource source2(&xmlFile);
 		QXmlSimpleReader reader2;
@@ -155,6 +152,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		reader2.setContentHandler(handler2);
 		reader2.parse(source2);
 		qDebug("finito parsing");
+		qApp->setStyleSheet(QString("QWidget {background-color:%1;color:%2;}").arg(bg->name()).arg(fg1->name()));
 		delete handler2;
 		return true;
 	}
@@ -173,11 +171,15 @@ void BtMain::hom()
 		screensaver->hide();
 		hide();
 	}
+	else
+	{
+		qApp->setStyleSheet(QString("QWidget {background-color:#000000;color:#FFFFFF;}"));
+	}
+
 	config_loaded = true;
 
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setCursor(QCursor(Qt::BlankCursor));
-	setBackgroundColor(QColor(255,255,255));
 
 	if (monitor_ready)
 		myMain();
@@ -542,18 +544,4 @@ void BtMain::ResetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
 	emit resettimer();
-}
-
-void BtMain::setBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void BtMain::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
 }

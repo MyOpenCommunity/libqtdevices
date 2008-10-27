@@ -971,8 +971,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 				if (CurTagL4.startsWith("id"))
 				{
 					*home = new homePage(NULL,"homepage");
-					(*home)->setBGColor(Background.red(),Background.green(),Background.blue());
-					(*home)->setFGColor(Foreground.red(),Foreground.green(),Foreground.blue());
 					QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*home,SLOT(gestFrame(char *)));
 					if ((!hompage_id) && (hompage_isdefined))
 						*pagDefault=*home;

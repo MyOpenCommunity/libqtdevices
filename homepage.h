@@ -42,18 +42,6 @@ public:
 	homePage(QWidget *parent, const char *name);
 
 /*!
-  \brief Sets the background color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setBGColor(int , int , int);
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setFGColor(int , int , int);
-/*!
   \brief Adds a button to the page.
 
   The arguments are the position of the button (x,y),  the fileName of the image to put on the button, the function associated to the button as described in pagSecLiv (main.h), the \a Open parameters of the commands of the special command (who, what, where), and the type of the special command as descibed in tipoFunzSpe.

@@ -99,10 +99,6 @@ private:
 	Calibrate* calib;
 	ScreenSaver *screensaver;
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-	void setBackgroundColor(const QColor &c);
-
 	// A flag that is set when the client monitor socket is ready
 	bool monitor_ready;
 	// A flag that is set when the configuration has loaded

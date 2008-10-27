@@ -119,16 +119,6 @@ void homePage::addButton(int x, int y, QString iconName, char function, QString 
 	}
 }
 
-void homePage::setBGColor(int r, int g, int b)
-{	
-	setPaletteBackgroundColor(QColor::QColor(r,g,b));
-}
-
-void homePage::setFGColor(int r, int g, int b)
-{
-	setPaletteForegroundColor(QColor::QColor(r,g,b));
-}
-
 void homePage::addClock(int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
 {
 	dataOra = new timeScript(this,"scrittaHomePage",1);
