@@ -109,6 +109,7 @@ private:
 	bool config_loaded;
 
 	void myMain();
+	bool loadConfiguration(QString cfg_file);
 };
 
 #endif// BTMAIN_H

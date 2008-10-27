@@ -44,6 +44,8 @@
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
 
+#define CFG_FILE "cfg/conf.xml"
+
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent)
 {
@@ -105,8 +107,8 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 
 	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
-		waitBeforeInit();
 		datiGen->show();
+		waitBeforeInit();
 	}
 	else
 	{
@@ -134,38 +136,45 @@ void BtMain::waitBeforeInit()
 	QTimer::singleShot(200, this, SLOT(hom()));
 }
 
-void BtMain::hom()
+bool BtMain::loadConfiguration(QString cfg_file)
 {
-	config_loaded = true;
-	datiGen->inizializza();
 	QColor *bg, *fg1, *fg2;
 	readExtraConf(&bg, &fg1, &fg2);
 
-	//-----------------------------------------------
-	if (QFile::exists("cfg/conf.xml"))
-	{ 
+	if (QFile::exists(cfg_file))
+	{
 		xmlconfhandler *handler2 = new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
 				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
 				client_comandi, client_monitor, client_richieste, datiGen, bg, fg1, fg2);
 		// TODO: sistemare con i metodi qt4!
-
 		// setBackgroundColor(*bg);
-		
-		QFile *xmlFile = new QFile("cfg/conf.xml");
-		QXmlInputSource source2(xmlFile);
+		QFile xmlFile(cfg_file);
+		QXmlInputSource source2(&xmlFile);
 		QXmlSimpleReader reader2;
 		qDebug("parte parsing");
 		reader2.setContentHandler(handler2);
 		reader2.parse(source2);
 		qDebug("finito parsing");
 		delete handler2;
-		delete xmlFile;
+		return true;
+	}
+	return false;
+}
+
+void BtMain::hom()
+{
+	datiGen->inizializza();
+
+	if (loadConfiguration(CFG_FILE))
+	{
 		// TODO: verificare! Sembra che non sia piu' necessario e che l'applicazione venga
 		// automaticamente chiusa quando tutte le finestre sono chiuse!
 		//qApp->setMainWidget(Home);
 		screensaver->hide();
 		hide();
 	}
+	config_loaded = true;
+
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setCursor(QCursor(Qt::BlankCursor));
 	setBackgroundColor(QColor(255,255,255));
