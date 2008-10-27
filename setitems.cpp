@@ -137,7 +137,7 @@ void calibration::fineCalib()
 
 
 impBeep::impBeep(sottoMenu  *parent,const char *name ,char* val, const char * icon1, const char *icon2)
-        : bannOnSx(parent, name)
+	: bannOnSx(parent, name)
 {
 	strncpy(iconOn, icon1, sizeof(iconOn));
 	strncpy(iconOff, icon2, sizeof(iconOff));
@@ -148,12 +148,12 @@ impBeep::impBeep(sottoMenu  *parent,const char *name ,char* val, const char * ic
 	if (!on)
 	{
 		setBeep(FALSE,FALSE);
-		SetIcons(uchar(0), &iconOff[0]);
+		SetIcons(uchar(0), iconOff);
 	}
 	else
 	{
-	setBeep(TRUE,FALSE);
-	SetIcons(uchar(1), &iconOn[0]);
+		setBeep(TRUE,FALSE);
+		SetIcons(uchar(1), iconOn);
 	}
 	Draw();
 }
@@ -163,12 +163,12 @@ void impBeep::toggleBeep()
 	if (getBeep())
 	{
 		setBeep(FALSE,TRUE);
-		SetIcons(uchar(0), &iconOff[0]);
+		SetIcons(uchar(0), iconOff);
 	}
 	else
 	{
 		setBeep(TRUE,TRUE);
-		SetIcons(uchar(0), &iconOn[0]);
+		SetIcons(uchar(0), iconOn);
 		beep();
 	}
 	Draw();
@@ -222,8 +222,6 @@ machVers::machVers(sottoMenu  *parent,const char *name, versio *ver, const char*
 
 void machVers::showVers()
 {
-	v->setPaletteBackgroundColor(backgroundColor());
-	v->setPaletteForegroundColor(foregroundColor());
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	v->showFullScreen();
 #else

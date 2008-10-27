@@ -572,8 +572,6 @@ void scenEvo_cond_d::setBGColor(QColor c)
 		if (but[idx])
 			but[idx]->setPaletteBackgroundColor(c);
 
-	area1_ptr->setPaletteBackgroundColor(c);
-	area2_ptr->setPaletteBackgroundColor(c);
 	if (actual_condition)
 		actual_condition->setBGColor(c);
 }
@@ -586,8 +584,6 @@ void scenEvo_cond_d::setFGColor(QColor c)
 		if (but[idx])
 			but[idx]->setPaletteForegroundColor(c);
 
-	area1_ptr->setPaletteForegroundColor(c);
-	area2_ptr->setPaletteForegroundColor(c);
 	if (actual_condition)
 		actual_condition->setFGColor(c);
 }

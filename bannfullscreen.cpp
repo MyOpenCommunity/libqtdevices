@@ -424,7 +424,7 @@ void FSBannProbe::Draw()
 
 	setpoint_label->setFont(aFont);
 	setpoint_label->setAlignment(Qt::AlignHCenter);
-	setpoint_label->setPaletteForegroundColor(second_fg);
+	setpoint_label->setStyleSheet(QString("QLabel {color:%1;}").arg(second_fg.name()));
 
 	FontManager::instance()->getFont(font_banTermo_testo, aFont);
 	local_temp_label->setFont(aFont);
@@ -755,7 +755,7 @@ void FSBannManual::Draw()
 		temp_label->setText(celsiusString(temp));
 	}
 
-	temp_label->setPaletteForegroundColor(second_fg);
+	temp_label->setStyleSheet(QString("QLabel {color:%1;}").arg(second_fg.name()));
 }
 
 BtButton *FSBannManual::customButton()
@@ -916,7 +916,8 @@ void FSBannTermoReg::Draw()
 	description_label->setFont(aFont);
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
-	description_label->setPaletteForegroundColor(second_fg);
+	// TODO: verificare che venga impostato correttamente!!
+	description_label->setStyleSheet(QString("QLabel {color:%1;}").arg(second_fg.name()));
 }
 
 void FSBannTermoReg::status_changed(QList<device_status*> sl)

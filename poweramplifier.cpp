@@ -245,7 +245,8 @@ void PowerAmplifierTreble::showLevel()
 void PowerAmplifierTreble::setFGColor(QColor c)
 {
 	banner::setFGColor(c);
-	SecondaryText->setPaletteForegroundColor(secondary_fg);
+	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
+	//SecondaryText->setPaletteForegroundColor(secondary_fg);
 }
 
 /*****************************************************************
@@ -290,7 +291,8 @@ void PowerAmplifierBass::showLevel()
 void PowerAmplifierBass::setFGColor(QColor c)
 {
 	banner::setFGColor(c);
-	SecondaryText->setPaletteForegroundColor(secondary_fg);
+	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
+	// SecondaryText->setPaletteForegroundColor(secondary_fg);
 }
 
 /*****************************************************************
@@ -340,7 +342,8 @@ void PowerAmplifierBalance::showBalance()
 void PowerAmplifierBalance::setFGColor(QColor c)
 {
 	banner::setFGColor(c);
-	SecondaryText->setPaletteForegroundColor(secondary_fg);
+	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
+	//SecondaryText->setPaletteForegroundColor(secondary_fg);
 }
 
 /*****************************************************************

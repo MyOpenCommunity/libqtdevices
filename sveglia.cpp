@@ -186,7 +186,6 @@ void sveglia::setBGColor(QColor c)
 	{
 		if (choice[idx])
 			choice[idx]->setPaletteBackgroundColor(c);
-		testiChoice[idx]->setPaletteBackgroundColor(c);
 	}
 	if (bannNavigazione)
 		bannNavigazione->setBGColor(c);
@@ -206,7 +205,6 @@ void sveglia::setFGColor(QColor c)
 	{
 		if (choice[idx])
 			choice[idx]->setPaletteForegroundColor(c);
-		testiChoice[idx]->setPaletteForegroundColor(c);
 	}
 	if (bannNavigazione)
 		bannNavigazione->setFGColor(c);

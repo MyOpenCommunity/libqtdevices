@@ -257,8 +257,6 @@ void tastiera::setBGColor(QColor c)
 	zeroBut->setPaletteBackgroundColor(c);
 	okBut->setPaletteBackgroundColor(c);
 	cancBut->setPaletteBackgroundColor(c);
-	digitLabel->setPaletteBackgroundColor(c);
-	scrittaLabel->setPaletteBackgroundColor(c);
 }
 
 void tastiera::setFGColor(QColor c)
@@ -278,8 +276,6 @@ void tastiera::setFGColor(QColor c)
 	zeroBut->setPaletteForegroundColor(c);
 	okBut->setPaletteForegroundColor(c);
 	cancBut->setPaletteForegroundColor(c);
-	digitLabel->setPaletteForegroundColor(c);
-	scrittaLabel->setPaletteForegroundColor(c);
 }
 
 void tastiera::draw()

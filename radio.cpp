@@ -256,9 +256,6 @@ void radio::setBGColor(QColor c)
 	autoBut->setPaletteBackgroundColor(c);
 	manBut->setPaletteBackgroundColor(c);
 	cicBut->setPaletteBackgroundColor(c);
-	rdsLabel->setPaletteBackgroundColor(c);
-	radioName->setPaletteBackgroundColor(c);
-	ambDescr->setPaletteBackgroundColor(c);
 	unoBut->setPaletteBackgroundColor(c);
 	dueBut->setPaletteBackgroundColor(c);
 	treBut->setPaletteBackgroundColor(c);
@@ -277,9 +274,6 @@ void radio::setFGColor(QColor c)
 	autoBut->setPaletteForegroundColor(c);
 	manBut->setPaletteForegroundColor(c);
 	cicBut->setPaletteForegroundColor(c);
-	rdsLabel->setPaletteForegroundColor(c);
-	radioName->setPaletteForegroundColor(c);
-	ambDescr->setPaletteForegroundColor(c);
 	unoBut->setPaletteForegroundColor(c);
 	dueBut->setPaletteForegroundColor(c);
 	treBut->setPaletteForegroundColor(c);

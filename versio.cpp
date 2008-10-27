@@ -55,20 +55,6 @@ versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(pare
 	indDisp = 0;
 }
 
-void versio::setPaletteForegroundColor(const QColor & c)
-{
-	datiGen->setPaletteBackgroundColor(c);
-	bticino->setPaletteBackgroundColor(c);
-	BtLabel::setPaletteForegroundColor(c);
-}
-
-void versio::setPaletteBackgroundColor(const QColor &  c)
-{
-	datiGen->setPaletteForegroundColor(c);
-	bticino->setPaletteForegroundColor(c);
-	BtLabel::setPaletteBackgroundColor(c);
-}
-
 void versio::gestFrame(char* frame)
 {
 	openwebnet msg_open;

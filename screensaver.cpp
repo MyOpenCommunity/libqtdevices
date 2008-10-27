@@ -80,18 +80,19 @@ void ScreenSaverBalls::refresh(const QPixmap &bg_image)
 									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
 									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150);
 			int rand_number = (int)(10.0 * rand() / (RAND_MAX + 1.0));
-			
+
+			QString ball_style = QString("QLabel {background-color:%1;}").arg(ball_bg.name());
 			if  (x[idx] <= 0)
 			{
 				vx[idx] = rand_number + 5;
 				x[idx] = 0;
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
+				ball[idx]->setStyleSheet(ball_style);
 			}
 			if  (y[idx] > (MAX_HEIGHT-dim[idx]))
 			{
 				vy[idx] = rand_number - 15;
 				y[idx] = MAX_HEIGHT-dim[idx];
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
+				ball[idx]->setStyleSheet(ball_style);
 			}
 			if   (y[idx] <= 0)
 			{
@@ -99,7 +100,7 @@ void ScreenSaverBalls::refresh(const QPixmap &bg_image)
 				if (!vy[idx])
 					vy[idx] = 1;
 				y[idx] = 0;
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
+				ball[idx]->setStyleSheet(ball_style);
 			}
 			if  (x[idx] > (MAX_WIDTH-dim[idx]))
 			{
@@ -107,7 +108,7 @@ void ScreenSaverBalls::refresh(const QPixmap &bg_image)
 				if (!vx[idx])
 					vx[idx] = 1;
 				x[idx] = MAX_WIDTH - dim[idx];
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
+				ball[idx]->setStyleSheet(ball_style);
 			}
 			ball[idx]->setGeometry(x[idx], y[idx], dim[idx], dim[idx]);
 			ball[idx]->show();
@@ -152,6 +153,6 @@ void ScreenSaverLine::refresh(const QPixmap &bg_image)
 		y -= 3;
 
 	line->setGeometry(0, y, MAX_WIDTH, 6);
-	line->setPaletteBackgroundColor(QColor::QColor(black_line ? Qt::black : Qt::white));
+	line->setStyleSheet(QString("QLabel {background-color:%1;}").arg(black_line ? "#000000" : "#FFFFFF"));
 	line->show();
 }

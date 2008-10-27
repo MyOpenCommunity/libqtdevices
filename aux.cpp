@@ -82,8 +82,6 @@ void aux::setFGColor(int r, int g, int b)
 void aux::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	auxName->setPaletteBackgroundColor(c);
-	ambDescr->setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
 	fwdBut->setPaletteBackgroundColor(c);
 }
@@ -91,8 +89,6 @@ void aux::setBGColor(QColor c)
 void aux::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
-	auxName->setPaletteForegroundColor(c);
-	ambDescr->setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
 	fwdBut->setPaletteForegroundColor(c);
 }

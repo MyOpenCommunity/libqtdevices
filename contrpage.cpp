@@ -116,7 +116,6 @@ void contrPage::setBGColor(QColor c)
 	decBut->setPaletteBackgroundColor(c);
 	aumBut->setPaletteBackgroundColor(c);
 	okBut->setPaletteBackgroundColor(c);
-	paintLabel->setPaletteBackgroundColor(c);
 }
 
 void contrPage::setFGColor(QColor c)
@@ -125,7 +124,6 @@ void contrPage::setFGColor(QColor c)
 	decBut->setPaletteForegroundColor(c);
 	aumBut->setPaletteForegroundColor(c);
 	okBut->setPaletteForegroundColor(c);
-	paintLabel->setPaletteForegroundColor(c);
 }
 
 void contrPage::aumContr()

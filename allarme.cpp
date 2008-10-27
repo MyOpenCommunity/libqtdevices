@@ -72,8 +72,6 @@ void allarme::setBGColor(QColor c)
     qDebug("allarme::setBGColor()");
     bnav->setBGColor(c);
     setPaletteBackgroundColor(c);
-    Immagine->setPaletteBackgroundColor(c);
-    descr->setPaletteBackgroundColor(c);
 }
 
 void allarme::setFGColor(QColor c)
@@ -81,8 +79,6 @@ void allarme::setFGColor(QColor c)
     qDebug("allarme::setFGColor()");
     bnav->setFGColor(c);
     setPaletteForegroundColor(c);
-    Immagine->setPaletteForegroundColor(c);
-    descr->setPaletteForegroundColor(c);
 }
 
 void allarme::setBGColor(int r, int g, int b)

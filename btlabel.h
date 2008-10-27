@@ -18,10 +18,6 @@ Q_OBJECT
 public:
 	BtLabel(QWidget *parent, const char *name = 0, Qt::WindowFlags f = 0);
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
-
 public slots:
 	virtual void setEnabled(bool);
 };

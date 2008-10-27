@@ -229,7 +229,6 @@ bool xmlconfhandler::startDocument()
 	hompage_id = 0xff;
 
 	set_page_item_defaults();
-	datiGen->setPaletteBackgroundColor(Background);
 	return TRUE;
 }
 

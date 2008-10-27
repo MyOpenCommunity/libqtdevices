@@ -683,12 +683,6 @@ void banner::setFGColor(int r, int g, int b)
 void banner::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	if (BannerIcon)
-		BannerIcon ->setPaletteBackgroundColor(c);
-	if (BannerText)
-		BannerText->setPaletteBackgroundColor(c);
-	if (SecondaryText)
-		SecondaryText->setPaletteBackgroundColor(c);
 	if (sxButton)
 		sxButton->setPaletteBackgroundColor(c);
 	if (dxButton)
@@ -702,12 +696,6 @@ void banner::setBGColor(QColor c)
 void banner::setFGColor(QColor c)	
 {
 	setPaletteForegroundColor(c);
-	if (BannerIcon)
-		BannerIcon ->setPaletteForegroundColor(c);
-	if (BannerText)
-		BannerText->setPaletteForegroundColor(c);
-	if (SecondaryText)
-		SecondaryText->setPaletteForegroundColor(c);
 	if (sxButton)
 		sxButton->setPaletteForegroundColor(c);
 	if (dxButton)

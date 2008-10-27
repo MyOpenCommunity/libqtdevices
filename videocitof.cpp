@@ -246,12 +246,6 @@ void call_notifier::setBGColor(QColor c)
 {
 	qDebug("call_notifier::setBGColor()");
 	setPaletteBackgroundColor(c);
-	if (area1_ptr)
-		area1_ptr->setPaletteBackgroundColor(c);
-	if (area3_ptr)
-		area3_ptr->setPaletteBackgroundColor(c);
-	if (area5_ptr)
-		area5_ptr->setPaletteBackgroundColor(c);
 	if (area2_but)
 		area2_but->setPaletteBackgroundColor(c);
 	if (area4_but)
@@ -263,12 +257,6 @@ void call_notifier::setBGColor(QColor c)
 void call_notifier::setFGColor(QColor c)
 {	
 	setPaletteForegroundColor(c);
-	if (area1_ptr)
-		area1_ptr->setPaletteForegroundColor(c);
-	if (area3_ptr)
-		area3_ptr->setPaletteForegroundColor(c);
-	if (area5_ptr)
-		area5_ptr->setPaletteForegroundColor(c);
 	if (area2_but)
 		area2_but->setPaletteForegroundColor(c);
 	if (area4_but)

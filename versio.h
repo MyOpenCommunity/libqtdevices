@@ -33,14 +33,6 @@ public:
 	*/
 	void inizializza();
 	/*!
-	\brief Sets the foreground color reimplementing QWidget::setPaletteForegroundColor(const QColor &)
-	*/
-	void setPaletteForegroundColor(const QColor &);
-	/*!
-	\brief Sets the foreground color reimplementing QWidget::setPaletteBackgroundColor(const QColor &)
-	*/
-	void setPaletteBackgroundColor(const QColor &);
-	/*!
 	\brief Sets the serial number of the device among all the TouchScreens installed in the system
 	*/
      void setAddr(int);

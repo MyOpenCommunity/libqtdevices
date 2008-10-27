@@ -177,9 +177,6 @@ void homePage::addTemp(QString z, int x, int y, int width, int height, QColor bg
 
 	temperatura[tempCont] = new QLCDNumber(this);
 	temperatura[tempCont]->setGeometry(x, y, width, height - H_SCR_TEMP);
-	// TODO: sistemare con i metodi qt4!
-	//temperatura[tempCont]->setPaletteForegroundColor(fg);
-	//temperatura[tempCont]->setPaletteBackgroundColor(bg);
 	temperatura[tempCont]->setFrameStyle(style);
 	temperatura[tempCont]->setLineWidth(line);
 	temperatura[tempCont]->setNumDigits(9);
@@ -197,8 +194,6 @@ void homePage::addTemp(QString z, int x, int y, int width, int height, QColor bg
 		descrTemp[tempCont]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		descrTemp[tempCont]->setText(qtext);
 		descrTemp[tempCont]->setGeometry(x,y+height-H_SCR_TEMP,width,H_SCR_TEMP);
-		descrTemp[tempCont]->setPaletteForegroundColor(fg);
-		descrTemp[tempCont]->setPaletteBackgroundColor(bg);
 	}
 	tempCont++;
 }
@@ -241,8 +236,6 @@ void homePage::addDescrU(const QString & qz, int x, int y, int width, int height
 	descrizione->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	descrizione->setText(qz);
 	descrizione->setGeometry(x,y,width,height);
-	descrizione->setPaletteForegroundColor(fg);
-	descrizione->setPaletteBackgroundColor(bg);
 	descrizione->setFrameStyle(style);
 	descrizione->setLineWidth(line);
 }

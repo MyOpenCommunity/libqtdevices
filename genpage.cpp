@@ -27,16 +27,17 @@ genPage::genPage(QWidget *parent,const char *name , unsigned char tipo,const cha
 	switch (tipo)
 	{
 	case RED:
-		setPaletteBackgroundColor(QColor(255,0,0));
+		setStyleSheet("QLabel {color:#FF0000;}");
 		break;
 	case BLUE:
-		setPaletteBackgroundColor(QColor(0,0,255));
+		setStyleSheet("QLabel {color:#0000FF;}");
 		break;
 	case GREEN:
-		setPaletteBackgroundColor(QColor(0,255,0));
+		setStyleSheet("QLabel {color:#00FF00;}");
 		break;
 	case IMAGE:
-		if (QFile::exists(img)) setPixmap(QPixmap(img));
+		if (QFile::exists(img))
+			setPixmap(QPixmap(img));
 		break;
 	}
 }
