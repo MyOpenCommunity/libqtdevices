@@ -67,7 +67,6 @@ signals:
 
 private slots:
 	void hom();
-	void myMain();
 	void init();
 	void gesScrSav();
 	void freezed(bool);
@@ -76,6 +75,7 @@ private slots:
 	void testFiles();
 	void svegl(bool);
 	void waitBeforeInit();
+	void monitorReady();
 
 public slots:
 	void startCalib();
@@ -102,6 +102,13 @@ private:
 	// TODO: rimuovere questi metodi qt3!
 	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 	void setBackgroundColor(const QColor &c);
+
+	// A flag that is set when the client monitor socket is ready
+	bool monitor_ready;
+	// A flag that is set when the configuration has loaded
+	bool config_loaded;
+
+	void myMain();
 };
 
 #endif// BTMAIN_H

@@ -64,6 +64,10 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	client_richieste = new Client(Client::RICHIESTE);
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
+	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
+
+	monitor_ready = false;
+	config_loaded = false;
 
 	setBacklight(true);
 
@@ -132,6 +136,7 @@ void BtMain::waitBeforeInit()
 
 void BtMain::hom()
 {
+	config_loaded = true;
 	datiGen->inizializza();
 	QColor *bg, *fg1, *fg2;
 	readExtraConf(&bg, &fg1, &fg2);
@@ -165,7 +170,15 @@ void BtMain::hom()
 	setCursor(QCursor(Qt::BlankCursor));
 	setBackgroundColor(QColor(255,255,255));
 
-	connect(client_monitor,SIGNAL(monitorSu()),this,SLOT(myMain()));
+	if (monitor_ready)
+		myMain();
+}
+
+void BtMain::monitorReady()
+{
+	monitor_ready = true;
+	if (config_loaded)
+		myMain();
 }
 
 void BtMain::init()
