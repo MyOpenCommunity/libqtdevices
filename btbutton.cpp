@@ -26,11 +26,13 @@
 BtButton::BtButton(QWidget *parent) : QPushButton(parent), icon_set(false)
 {
 	setStyleSheet(QString("border:0px;"));
+	setFocusPolicy(Qt::NoFocus);
 }
 
 BtButton::BtButton(const QString &text, QWidget *parent) : QPushButton(text, parent), icon_set(false)
 {
 	setStyleSheet(QString("border:0px;"));
+	setFocusPolicy(Qt::NoFocus);
 }
 
 void BtButton::setPressedPixmap(const QPixmap &p)
