@@ -38,8 +38,9 @@ void ScreenSaverBalls::refresh(const QPixmap &bg_image)
 	if (backcol < 3)
 	{
 		backcol = 4;
-		// TODO: sistemare con i metodi qt4!
-		// setPaletteBackgroundPixmap(bg_image);
+		QPalette palette;
+		palette.setBrush(backgroundRole(), QBrush(bg_image));
+		setPalette(palette);
 		for (int idx = 0; idx < BALL_NUM; idx++)
 		{
 			x[idx] = (int)(200.0 * rand() / (RAND_MAX + 1.0));
@@ -67,8 +68,9 @@ void ScreenSaverBalls::refresh(const QPixmap &bg_image)
 		if (backcol == 9)
 		{
 			backcol = 4;
-			// TODO: sistemare con i metodi qt4!
-			// setPaletteBackgroundPixmap(bg_image);
+			QPalette palette;
+			palette.setBrush(backgroundRole(), QBrush(bg_image));
+			setPalette(palette);
 		}
 
 		for (int idx = 0; idx < BALL_NUM; idx++)
@@ -128,8 +130,9 @@ void ScreenSaverLine::refresh(const QPixmap &bg_image)
 {
 	if (backcol >= 5)
 	{
-		// TODO: sistemare con i metodi qt4!
-		// setPaletteBackgroundPixmap(bg_image);
+		QPalette palette;
+		palette.setBrush(backgroundRole(), QBrush(bg_image));
+		setPalette(palette);
 		backcol = 0;
 	}
 
