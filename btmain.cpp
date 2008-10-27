@@ -56,7 +56,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	// If not compiled for Desktop, turns OFF mouse pointer
 	// QWSServer is in <qwindowsystem_qws.h>
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	QWSServer::setCursorVisible(FALSE);
+	QWSServer::setCursorVisible(false);
 #endif
 
 	client_monitor = new Client(Client::MONITOR);
@@ -65,7 +65,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 
-	setBacklight(TRUE);
+	setBacklight(true);
 
 	rearmWDT();
 
@@ -81,8 +81,8 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	dm = NULL;
 	antintr = NULL;
 	screen = NULL;
-	alreadyCalibrated = FALSE;
-	svegliaIsOn = FALSE;
+	alreadyCalibrated = false;
+	svegliaIsOn = false;
 	tiempo_last_ev = 0;
 	pd_shown = false;
 #ifdef SCREENSAVER_LINE
@@ -93,7 +93,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	tasti = NULL;
 	pwdOn = 0;
 
-	datiGen = new versio(NULL, "DG");
+	datiGen = new versio();
 	struct sysinfo info;
 	sysinfo(&info);
 	qDebug("uptime: %d",(int)info.uptime);
@@ -116,7 +116,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
 #endif
-		alreadyCalibrated = TRUE;
+		alreadyCalibrated = true;
 	}
 }
 
@@ -218,7 +218,7 @@ void BtMain::init()
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 		calib->show();
 #endif
-		alreadyCalibrated = TRUE;
+		alreadyCalibrated = true;
 	}
 }
 
@@ -255,7 +255,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"red",genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			setBacklight(TRUE);
+			setBacklight(true);
 			tempo1->stop();
 		}
 	}
@@ -272,7 +272,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"green",genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			setBacklight(TRUE);
+			setBacklight(true);
 			tempo1->stop();
 		}
 	}
@@ -289,7 +289,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"blu",genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			setBacklight(TRUE);
+			setBacklight(true);
 			tempo1->stop();
 		}
 	}
@@ -306,7 +306,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			setBacklight(TRUE);
+			setBacklight(true);
 			tempo1->stop();
 		}
 	}
@@ -351,9 +351,9 @@ void BtMain::gesScrSav()
 			if (!svegliaIsOn)
 			{
 #ifndef BACKLIGHT_SEMPRE_ON
-				setBacklight(FALSE);
+				setBacklight(false);
 				qDebug("***** freeze(TRUE) ***** ");
-				emit freeze(TRUE);
+				emit freeze(true);
 				bloccato = 01;
 				tempo1->start(500);
 #endif
@@ -362,11 +362,11 @@ void BtMain::gesScrSav()
 		else if (tiempo <= 5 && bloccato)
 		{
 			qDebug("***** freeze(FALSE) ***** ");
-			emit freeze(FALSE);
+			emit freeze(false);
 			bloccato = 0;
 			tempo1->start(2000);
 			pd_shown = false;
-			freezed(FALSE);
+			freezed(false);
 		}
 		if  (tiempo >= 60 && !svegliaIsOn && !calibrating)
 		{
@@ -428,9 +428,9 @@ void BtMain::gesScrSav()
 	else if (tiempo >= 120)
 	{
 #ifndef BACKLIGHT_SEMPRE_ON
-		setBacklight(FALSE);
+		setBacklight(false);
 		qDebug("***** freeze(TRUE) ***** ");
-		emit freeze(TRUE);
+		emit freeze(true);
 		tempo1->start(500);
 #endif
 		firstTime = 0;
@@ -439,7 +439,7 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = 0;
-		setBacklight(TRUE);
+		setBacklight(true);
 		tempo1->start(2000);
 		bloccato = 0;
 	}
@@ -455,7 +455,7 @@ void BtMain::freezed(bool b)
 	if  (!b)
 	{
 		event_unfreeze = 1;
-		setBacklight(TRUE);
+		setBacklight(true);
 		screensaver->hide();
 		if (pwdOn)
 		{
