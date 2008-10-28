@@ -41,9 +41,6 @@ signals:
 private slots:
 	void aumContr();
 	void decContr();
-
-private:
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 #define BUT_DIM 60

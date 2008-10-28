@@ -394,34 +394,3 @@ void antintrusione::hide()
 	emit sendFrame("*#5*#7##");
 	emit sendFrame("*#5*#8##");
 }
-
-void antintrusione::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void antintrusione::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
-void antintrusione::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}
-
-const QColor& antintrusione::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& antintrusione::foregroundColor()
-{
-	return palette().color(foregroundRole());
-}

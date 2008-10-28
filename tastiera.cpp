@@ -398,10 +398,3 @@ void tastiera_con_stati::show()
 	}
 	QWidget::show();
 }
-
-void tastiera::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}

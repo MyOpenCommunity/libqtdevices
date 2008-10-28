@@ -424,12 +424,6 @@ void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 	play_window->show();
 }
 
-void MultimediaSource::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}
 
 /// ***********************************************************************************************************************
 /// Methods for FileSelector

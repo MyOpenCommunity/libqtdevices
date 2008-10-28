@@ -334,10 +334,6 @@ private:
 	unsigned scroll_step;
 	void setModeIcon(char*);
 	QString name; // To simulate old qt3 behavior for name of widgets.
-
-protected:
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 

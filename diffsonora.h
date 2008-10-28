@@ -133,15 +133,6 @@ public slots:
 protected:
 	uchar numRighe,isVisual;
 	sottoMenu* sorgenti;
-
-private:
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-
-	const QColor& backgroundColor();
-	const QColor& foregroundColor();
 };
 
 #endif // DIFFSONORA_H

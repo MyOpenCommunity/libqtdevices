@@ -52,7 +52,7 @@ public:
 
   The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel.
 */
-	void addClock(int, int, int, int, QColor, QColor, int, int);
+	void addClock(int, int, int, int, int, int);
 /*!
   \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame and line.
 */
@@ -62,7 +62,7 @@ public:
 
   The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel.
 */
-	void addDate(int, int, int, int, QColor, QColor, int, int);
+	void addDate(int, int, int, int, int, int);
 /*!
   \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame and line.
 */
@@ -72,7 +72,7 @@ public:
 
   The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel and the text describing the zone.
 */
-	void addTemp(QString, int, int, int, int, QColor, QColor, int, int, const QString &, char * Ext="0");
+	void addTemp(QString, int, int, int, int, int, int, const QString &, char * Ext="0");
 
   /*!
   \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame, line and text.
@@ -83,7 +83,7 @@ public:
 
   The arguments are the text, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel.
 */
-	void addDescrU(const QString &, int, int, int, int, QColor, QColor, int, int);
+	void addDescrU(const QString &, int, int, int, int, int, int);
  /*!
   \brief Same as above. Dimension is assumed 160x20, the colors used are the same of the entire page, with no frame, line and text.
 */
@@ -171,16 +171,6 @@ private:
 	char tipoSpecial;
 	unsigned int tempCont;
 	BtLabel *descrizione, *descrTemp[3];
-
-public:
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-
-	const QColor& backgroundColor();
-	const QColor& foregroundColor();
-
 };
 
 

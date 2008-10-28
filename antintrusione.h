@@ -194,14 +194,6 @@ private:
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
 	tastiera *tasti;
 	static const int MAX_ZONE = 8;
-
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-
-	const QColor& backgroundColor();
-	const QColor& foregroundColor();
 };
 
 

@@ -258,35 +258,3 @@ void diffSonora::setFirstSource(int addr)
 	QByteArray buf = QString::number(addr, 10).toAscii();
 	sorgenti->setIndex(buf.data());
 }
-
-// TODO: funzioni di compatibilita' qt3.. da rimuovere!!
-void diffSonora::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void diffSonora::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
-void diffSonora::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}
-
-const QColor& diffSonora::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& diffSonora::foregroundColor()
-{
-	return palette().color(foregroundRole());
-}

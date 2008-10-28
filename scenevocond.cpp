@@ -134,19 +134,6 @@ bool scenEvo_cond::isTrue(void)
 	return false;
 }
 
-void scenEvo_cond::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void scenEvo_cond::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
 
 /*****************************************************************
  ** Advanced scenario management, time condition

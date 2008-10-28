@@ -71,7 +71,6 @@ private:
 	char nome[15];
 	bannFrecce * bannNavigazione;
 
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 

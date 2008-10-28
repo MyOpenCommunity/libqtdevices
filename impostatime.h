@@ -59,9 +59,6 @@ private slots:
 private:
 	timeScript *dataOra;
 	BtLabel *Immagine;
-
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 

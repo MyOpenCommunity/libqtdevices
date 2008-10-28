@@ -117,10 +117,3 @@ void contrPage::decContr()
 	if (c >= 10)
 		setContrast(c-10,FALSE);
 }
-
-void contrPage::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}

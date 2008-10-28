@@ -236,17 +236,3 @@ timeScript::~timeScript()
 	if (mioClock)
 		delete mioClock;
 }
-
-void timeScript::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void timeScript::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}

@@ -77,10 +77,6 @@ public:
 	//! Returns true when condition is satisfied
 	virtual bool isTrue(void);
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
-
 public slots:
 	//! Next button pressed
 	virtual void Next();

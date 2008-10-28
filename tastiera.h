@@ -125,8 +125,6 @@ public slots:
 private:
 	char pwd[6];
 	char mode;
-	// TODO: rimuovere!
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
 

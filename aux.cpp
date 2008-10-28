@@ -83,11 +83,3 @@ void aux::freezed(bool f)
 	// Disable aux and all of its children
 	setDisabled(f);
 }
-
-void aux::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}
-

@@ -246,10 +246,3 @@ void impostaTime::hide()
 	if (dataOra)
 		dataOra->hide();
 }
-
-void impostaTime::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}

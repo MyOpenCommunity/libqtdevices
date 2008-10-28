@@ -409,17 +409,17 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*home)->addButton(sottomenu_left,sottomenu_top,sottomenu_icon_name, (char)sottomenu_id);
 						break;
 					case DATA:
-						(*home)->addDate(sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3);
+						(*home)->addDate(sottomenu_left+10,sottomenu_top+10,220,60,QFrame::Plain,3);
 						break;
 					case OROLOGIO:
-						(*home)->addClock(sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3);
+						(*home)->addClock(sottomenu_left+10,sottomenu_top+10,220,60,QFrame::Plain,3);
 						break;
 					case TEMPERATURA:
 					case TERMO_HOME_NC_PROBE:
-						(*home)->addTemp(sottomenu_where,sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"");
+						(*home)->addTemp(sottomenu_where,sottomenu_left+10,sottomenu_top+10,220,60,QFrame::Plain,3,"");
 						break;
 					case TERMO_HOME_NC_EXTPROBE:
-						(*home)->addTemp(sottomenu_where,sottomenu_left+10,sottomenu_top+10,220,60,Background,Foreground,QFrame::Plain,3,"", "1");
+						(*home)->addTemp(sottomenu_where,sottomenu_left+10,sottomenu_top+10,220,60,QFrame::Plain,3,"", "1");
 						break;
 					}
 
@@ -560,23 +560,23 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						{
 						case TEMPERATURA:
 						case TERMO_HOME_NC_PROBE:
-							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,page_item_descr);
+							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,(int)QFrame::Plain,3,page_item_descr);
 							break;
 						case TERMO_HOME_NC_EXTPROBE:
-							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,Background,Foreground,(int)QFrame::Plain,3,page_item_descr, "1");
+							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,(int)QFrame::Plain,3,page_item_descr, "1");
 							break;
 						case DATA:
 							//sottomenu_left,sottomenu_top,
-							(*specPage)->addDate(10,(itemNum-1)*80+10,220,60,Background,Foreground,QFrame::Plain,3);
+							(*specPage)->addDate(10,(itemNum-1)*80+10,220,60,QFrame::Plain,3);
 							break;
 						case OROLOGIO:
 							//sottomenu_left,sottomenu_top,
-							(*specPage)->addClock(10,(itemNum-1)*80+10,220,60,Background,Foreground,QFrame::Plain,3);
+							(*specPage)->addClock(10,(itemNum-1)*80+10,220,60,QFrame::Plain,3);
 							break;
 						case CMDSPECIAL:
 							QByteArray buf_img = page_item_list_img.at(0)->toAscii();
 							(*specPage)->addButton(60,260, buf_img.data(),SPECIAL, page_item_who,page_item_what,page_item_where,(char)page_item_type.toInt(&ok, 10));
-							(*specPage)->addDescrU(page_item_descr, 60,240,180,20,Background,Foreground,QFrame::Plain,3);
+							(*specPage)->addDescrU(page_item_descr, 60,240,180,20,QFrame::Plain,3);
 							pageAct = NULL;
 							break;
 						}

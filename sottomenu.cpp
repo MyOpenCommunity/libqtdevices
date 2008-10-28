@@ -855,13 +855,6 @@ void sottoMenu::mouseMoveEvent(QMouseEvent *e)
 }
 #endif
 
-void sottoMenu::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}
-
 
 // Specialized submenus function definition
 //

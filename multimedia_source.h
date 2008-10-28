@@ -158,9 +158,6 @@ private:
 	QDomNode radio_node;
 	bool radio_enabled, mediaserver_enabled;
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-
 private slots:
 	/// handles to receive play and stop notifications
 	void handleStartPlay();

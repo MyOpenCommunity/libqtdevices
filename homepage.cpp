@@ -118,38 +118,33 @@ void homePage::addButton(int x, int y, QString iconName, char function, QString 
 	}
 }
 
-void homePage::addClock(int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
+void homePage::addClock(int x, int y,int width,int height,int style, int line)
 {
 	dataOra = new timeScript(this,"scrittaHomePage",1);
 	dataOra->setGeometry(x,y,width,height);
-	dataOra->setPaletteForegroundColor(fg);
-	dataOra->setPaletteBackgroundColor(bg);
 	dataOra->setFrameStyle(style);
 	dataOra->setLineWidth(line);
 }
 
 void homePage::addClock(int x, int y)
 {
-	addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
+	addClock(x, y, 180, 35, QFrame::NoFrame, 0);
 }
 
-void homePage::addDate(int x, int y,int width,int height,QColor bg, QColor fg, int style, int line)
+void homePage::addDate(int x, int y,int width,int height, int style, int line)
 {
 	dataOra = new timeScript(this,"scrittaHomePage",uchar (25));
 	dataOra->setGeometry(x,y,width,height);
-	dataOra->setPaletteForegroundColor(fg);
-	dataOra->setPaletteBackgroundColor(bg);
 	dataOra->setFrameStyle(style);
 	dataOra->setLineWidth(line);
 }
 
 void homePage::addDate(int x, int y)
 {
-	addClock(x, y, 180, 35, foregroundColor(), backgroundColor(),QFrame::NoFrame, 0);
+	addClock(x, y, 180, 35,QFrame::NoFrame, 0);
 }	
 
-void homePage::addTemp(QString z, int x, int y, int width, int height, QColor bg, QColor fg,
-	int style, int line, const QString & qtext, char *Ext)
+void homePage::addTemp(QString z, int x, int y, int width, int height, int style, int line, const QString & qtext, char *Ext)
 {
 	temp_scale = readTemperatureScale();
 	switch(tempCont)
@@ -199,7 +194,7 @@ void homePage::addTemp(QString z, int x, int y, int width, int height, QColor bg
 
 void homePage::addTemp(QString z, int x, int y)
 {
-	addTemp(z,x,y,180, 35, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0,NULL);
+	addTemp(z,x,y,180, 35, QFrame::NoFrame, 0,NULL);
 }
 
 void homePage::inizializza()
@@ -225,8 +220,7 @@ void homePage::inizializza()
 	}
 }
 
-void homePage::addDescrU(const QString & qz, int x, int y, int width, int height, QColor bg,
-	QColor fg, int style,int line)
+void homePage::addDescrU(const QString & qz, int x, int y, int width, int height, int style,int line)
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_descrizione, aFont);
@@ -241,7 +235,7 @@ void homePage::addDescrU(const QString & qz, int x, int y, int width, int height
 
 void homePage::addDescrU(const QString & qz, int x, int y)
 {
-	addDescrU(qz,x,y,160, 20, backgroundColor(), foregroundColor(), QFrame::NoFrame, 0);
+	addDescrU(qz,x,y,160, 20, QFrame::NoFrame, 0);
 }
 
 void homePage::mouseReleaseEvent(QMouseEvent * e)
@@ -392,35 +386,4 @@ void homePage::specFunzRelease()
 	strcat(specialFrame, dove);
 	strcat(specialFrame, "##");
 	emit sendFrame(specialFrame);
-}
-
-void homePage::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void homePage::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
-void homePage::setPaletteBackgroundPixmap(const QPixmap &pixmap)
-{
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pixmap));
-	setPalette(palette);
-}
-
-const QColor& homePage::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& homePage::foregroundColor()
-{
-	return palette().color(foregroundRole());
 }
