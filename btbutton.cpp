@@ -22,6 +22,9 @@
 #include <unistd.h>
 */
 
+#include <QStyleOption>
+#include <QStylePainter>
+
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent), icon_set(false)
 {
@@ -78,10 +81,15 @@ void BtButton::paintEvent(QPaintEvent *event)
 		beep();
 #endif
 
-	QPushButton::paintEvent(event);
+	// The drawing of BtButton is reimplemented here to prevent the "graying"
+	// of the image when the button is in the disabled state.
+	QStylePainter p(this);
+	QStyleOptionButton option;
+	initStyleOption(&option);
+
+	option.state |= QStyle::State_Enabled; // Prevent the "graying"
+	p.drawControl(QStyle::CE_PushButton, option);
 }
-
-
 
 
 #if 0
