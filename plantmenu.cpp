@@ -24,8 +24,6 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	signal_mapper(0)
 {
 	conf_root = conf;
-	setBGColor(bg);
-	setFGColor(fg);
 	second_fg = fg2;
 
 	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
@@ -39,9 +37,6 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(this, SIGNAL(hideChildren()), &items_submenu, SLOT(hide()));
-
-	items_submenu.setBGColor(paletteBackgroundColor());
-	items_submenu.setFGColor(paletteForegroundColor());
 
 	QDomNode n = conf_root.firstChild();
 	int banner_id = 0;

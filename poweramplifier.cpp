@@ -65,16 +65,6 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	delete fg2;
 }
 
-void PowerAmplifier::setBGColor(QColor c)
-{
-	settings_page->setAllBGColor(c);
-}
-
-void PowerAmplifier::setFGColor(QColor c)
-{
-	settings_page->setAllFGColor(c);
-}
-
 void PowerAmplifier::showSettings()
 {
 	settings_page->show();

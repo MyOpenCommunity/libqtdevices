@@ -28,8 +28,6 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor b
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");
 	conf_root = n;
-	setBGColor(bg);
-	setFGColor(fg);
 	second_fg = fg2;
 	bann_number = 0;
 	addBanners();
@@ -114,8 +112,6 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
 {
 	sottoMenu *sm = new sottoMenu(NULL, "sottomenu extprobe");
-	sm->setBGColor(paletteBackgroundColor());
-	sm->setFGColor(paletteForegroundColor());
 	single_submenu = sm;
 	// we want to scroll external probes per pages and not per probes
 	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)

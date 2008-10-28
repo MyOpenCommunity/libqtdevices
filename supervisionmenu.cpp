@@ -30,8 +30,6 @@ SupervisionMenu::SupervisionMenu(QWidget *parent, const char *name, QDomNode n, 
 	qDebug("[SUPERVISION] SupervisionMenu()");
 	subtreeRoot = n;
 	stopngoSubmenu = NULL;
-	setBGColor(bg);
-	setFGColor(fg);
 	AddItems();
 }
 
@@ -180,8 +178,6 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 		// Show a submenu listing the devices to control
 		sottoMenu *sm = new sottoMenu(NULL, "StopnGo Group");  // Create submenu
 		sm->hide();
-		sm->setBGColor(paletteBackgroundColor());
-		sm->setFGColor(paletteForegroundColor());
 		QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));  // Connect submenu
 		QObject::connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
 		QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));

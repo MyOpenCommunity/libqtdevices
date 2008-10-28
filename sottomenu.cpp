@@ -133,34 +133,6 @@ void sottoMenu::setModeIcon(char* iconBut4)
 	bannNavigazione->Draw();
 }
 
-void sottoMenu::setBGColor(int r, int g, int b)
-{	
-	setBGColor(QColor::QColor(r,g,b));
-}
-void sottoMenu::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void sottoMenu::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-}
-void sottoMenu::setFGColor(QColor c)	
-{
-	setPaletteForegroundColor(c);
-}
-
-void sottoMenu::setAllBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-}
-
-void sottoMenu::setAllFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-}
-
 int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo,
 		QList<QString*> &icon_names,
 		int periodo, int numFrame,
@@ -883,45 +855,11 @@ void sottoMenu::mouseMoveEvent(QMouseEvent *e)
 }
 #endif
 
-void sottoMenu::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void sottoMenu::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
 void sottoMenu::setPaletteBackgroundPixmap(const QPixmap &pixmap)
 {
 	QPalette palette;
 	palette.setBrush(backgroundRole(), QBrush(pixmap));
 	setPalette(palette);
-}
-
-const QColor& sottoMenu::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& sottoMenu::foregroundColor()
-{
-	return palette().color(foregroundRole());
-}
-
-const QColor& sottoMenu::paletteBackgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& sottoMenu::paletteForegroundColor()
-{
-	return palette().color(foregroundRole());
 }
 
 
@@ -966,11 +904,7 @@ void ProgramMenu::status_changed(QList<device_status*> sl)
 	}
 
 	if (update)
-	{
-		setAllBGColor(paletteBackgroundColor());
-		setAllFGColor(paletteForegroundColor());
 		forceDraw();
-	}
 }
 
 

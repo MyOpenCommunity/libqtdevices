@@ -41,14 +41,6 @@ public:
 	antintrusione(QWidget *parent=0, const char *name=0);
 	~antintrusione();
 /*!
-  \brief sets the background color giving RGB values
-*/
-   void setBGColor(int, int , int);
-/*!
-  \brief sets the foreground color giving RGB values
-*/
-	void setFGColor(int , int , int);
-/*!
   \brief inserts a new item in the antintrusione class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
 */
 	int addItemU(char tipo, const QString & nome , void* indirizzo, QList<QString*> &icon_names,

@@ -70,24 +70,6 @@ void diffSonora::setSorgenti(sottoMenu *s)
 	connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));
 }
 
-void diffSonora::setBGColor(int r, int g, int b)
-{
-	setPaletteBackgroundColor(QColor::QColor(r,g,b));
-	if (sorgenti)
-		sorgenti->setBGColor(backgroundColor());
-	if (amplificatori)
-		amplificatori->setBGColor(backgroundColor());
-}
-
-void diffSonora::setFGColor(int r, int g, int b)
-{
-	setPaletteForegroundColor(QColor::QColor(r,g,b));
-	if (sorgenti)
-		sorgenti->setFGColor(foregroundColor());
-	if (amplificatori)
-		amplificatori->setFGColor(foregroundColor());
-}
-
 // TODO: sarebbe meglio che icon_names diventasse una QList<QString>.. al momento
 // e' l'xmlconfhandler che "detiene" l'ownership delle stringhe contenute nella
 // lista.. anche se poi a tutti gli effetti non le cancella.
@@ -99,14 +81,10 @@ int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizz
 {
 	if  ((tipo==SORGENTE_AUX) || (tipo==SORGENTE_RADIO) || (tipo==SORGENTE_MULTIM))
 	{
-		sorgenti->setBGColor(backgroundColor());
-		sorgenti->setFGColor(foregroundColor());
 		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, where);
 	}
 	else if ((tipo == SORG_RADIO) || (tipo == SORG_AUX) || (tipo == SORGENTE_MULTIM_MC))
 	{
-		sorgenti->setBGColor(backgroundColor());
-		sorgenti->setFGColor(foregroundColor());
 		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));

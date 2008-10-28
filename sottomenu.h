@@ -43,42 +43,6 @@ public:
 	sottoMenu(QWidget *parent=0, const char *_name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
 	~sottoMenu();
 	/*!
-		\brief Sets the background color for the banner.
-
-		The arguments are RGB components for the color.
-		*/
-	void setBGColor(int, int , int);
-	/*!
-		\brief Sets the foreground color for the banner.
-
-		The arguments are RGB components for the color.
-		*/
-	void setFGColor(int , int , int);
-	/*!
-		\brief Sets the background color for the banner.
-
-		The argument is the QColor description of the color.
-		*/
-	void setBGColor(QColor);
-	/*!
-		\brief Sets the foreground color for the banner.
-
-		The argument is the QColor description of the color.
-		*/
-	void setFGColor(QColor);
-	/*!
-		\brief Sets the background color for the banner and all its child.
-
-		The argument is the QColor description of the color.
-		*/
-	void setAllBGColor(QColor);
-	/*!
-		\brief Sets the foreground color for the banner and all its child.
-
-		The argument is the QColor description of the color.
-		*/
-	void setAllFGColor(QColor);
-	/*!
 		\brief Retrieves the number of objects in the list
 		*/
 	uint getCount();
@@ -373,15 +337,7 @@ private:
 
 protected:
 	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
 	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-
-	const QColor& backgroundColor();
-	const QColor& foregroundColor();
-	const QColor& paletteBackgroundColor();
-	const QColor& paletteForegroundColor();
-
 };
 
 

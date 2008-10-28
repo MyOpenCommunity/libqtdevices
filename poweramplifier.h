@@ -27,8 +27,6 @@ class PowerAmplifier : public bannRegolaz
 Q_OBJECT
 public:
 	PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* onIcon, char* offIcon, char *onAmpl, char *offAmpl, char* settingIcon);
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 
 private slots:
 	void showSettings();

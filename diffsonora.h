@@ -34,18 +34,6 @@ Q_OBJECT
 public:
 	diffSonora(QWidget *parent=0, const char *name=0, bool creasorgenti=true);
 	/*!
-	 * \brief Sets the background color for the banner.
-	 *
-	 * The arguments are RGB components for the color.
-	 */
-	void setBGColor(int, int , int);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 *
-	 * The arguments are RGB components for the color.
-	 */
-	void setFGColor(int , int , int);
-	/*!
 	 * \brief Set the "sorgenti" submenu"
 	 */
 	void setSorgenti(sottoMenu *);

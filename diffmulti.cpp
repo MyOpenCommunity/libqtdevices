@@ -132,8 +132,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			// Do not create "sorgenti" submenu
 			diffSonora *ds = new diffSonora(NULL, "Diff sonora ambiente", false);
 			ds->setSorgenti(sorgenti);
-			ds->setBGColor(backgroundColor().red(), backgroundColor().green(), backgroundColor().blue());
-			ds->setFGColor(foregroundColor().red(), foregroundColor().green(), foregroundColor().blue());
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
 			connect(ds,SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));

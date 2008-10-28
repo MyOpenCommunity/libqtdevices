@@ -130,24 +130,6 @@ void antintrusione:: ctrlAllarm()
 	zone->show();
 }
 
-void antintrusione::setBGColor(int r, int g, int b)
-{	
-	setPaletteBackgroundColor(QColor::QColor(r,g,b));
-	if (impianto)
-		impianto->setBGColor(backgroundColor());
-	if (zone)
-		zone->setBGColor(backgroundColor());
-}
-
-void antintrusione::setFGColor(int r, int g, int b)
-{
-	setPaletteForegroundColor(QColor::QColor(r,g,b));
-	if (impianto)
-		impianto->setFGColor(foregroundColor());
-	if (zone)
-		zone->setFGColor(foregroundColor());
-}
-
 void antintrusione::draw()
 {	
 	ctrlAllarm();
