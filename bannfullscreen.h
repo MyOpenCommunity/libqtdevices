@@ -46,13 +46,6 @@ class BannFullScreen : public banner
 Q_OBJECT
 public:
 	void setSecondForeground(QColor fg2);
-
-	/**
-	 * This function is reimplemented from banner because fullscreen banners don't use
-	 * the same items as banners (BUT1, BUT2, TEXT and so on).
-	 */
-	virtual void setBGColor(QColor bg);
-	virtual void setFGColor(QColor bg);
 protected:
 	BannFullScreen(QWidget *parent, const char *name);
 	QColor second_fg;

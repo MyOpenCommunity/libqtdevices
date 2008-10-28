@@ -356,34 +356,6 @@ void banradio::richFreq()
 	dev->sendFrame(msg_open.frame_open);
 }
 
-void banradio::setBGColor(int r, int g , int b)
-{
-	setBGColor(QColor(r,g,b));
-}
-
-void banradio::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor(r,g,b));
-}
-
-void banradio::setBGColor(QColor c)
-{
-	if (c.isValid())
-	{
-		myRadio->setBGColor(c);
-		banner::setBGColor(c);
-	}
-}
-
-void banradio::setFGColor(QColor c)
-{
-	if (c.isValid())
-	{
-		myRadio->setFGColor(c);
-		banner::setFGColor(c);
-	}
-}
-
 void banradio::inizializza(bool forza)
 {
 }

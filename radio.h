@@ -32,26 +32,6 @@ class  radio : public QWidget
 Q_OBJECT
 public:
 	radio(QWidget *parent=0, const char *name=0, const QString & amb="");
-	/*!
-	 * \brief Sets the background color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setBGColor(int, int , int);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setFGColor(int , int , int);
-	/*!
-	 * \brief Sets the background color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setBGColor(QColor);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setFGColor(QColor);
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	BtLabel* rdsLabel,* radioName,*progrText, *ambDescr;

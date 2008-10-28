@@ -156,8 +156,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			dslist.append(ds);
 			banner *last = elencoBanner.last();
 			last->SetTextU(*(descrizioni->at(0)));
-			last->setBGColor(backgroundColor());
-			last->setFGColor(foregroundColor());
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));

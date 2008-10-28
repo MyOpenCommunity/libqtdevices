@@ -177,8 +177,6 @@ void sveglia::setBGColor(QColor c)
 	setPaletteBackgroundColor(c);
 	if (dataOra)
 		dataOra->setPaletteBackgroundColor(c);
-	if (bannNavigazione)
-		bannNavigazione->setBGColor(c);
 }
 
 void sveglia::setFGColor(QColor c)
@@ -186,8 +184,6 @@ void sveglia::setFGColor(QColor c)
 	setPaletteForegroundColor(c);
 	if (dataOra)
 		dataOra->setPaletteForegroundColor(c);
-	if (bannNavigazione)
-		bannNavigazione->setFGColor(c);
 }
 
 void sveglia::okTime()

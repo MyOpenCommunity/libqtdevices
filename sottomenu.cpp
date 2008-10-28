@@ -111,8 +111,6 @@ void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
 			bannNavigazione = new bannFrecce(this,"bannerfrecce",navBarMode, IconBut4);
 
 			bannNavigazione->setGeometry(0, height-height/NUM_RIGHE, width, height/NUM_RIGHE/*numRighe */);
-			bannNavigazione->setBGColor(backgroundColor());
-			bannNavigazione->setFGColor(foregroundColor());
 			connect(bannNavigazione, SIGNAL(backClick()), this, SIGNAL(Closed()));
 			connect(bannNavigazione, SIGNAL(upClick()), this, SLOT(goUp()));
 			connect(bannNavigazione, SIGNAL(downClick()), this, SLOT(goDown()));
@@ -147,35 +145,20 @@ void sottoMenu::setFGColor(int r, int g, int b)
 void sottoMenu::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	if (bannNavigazione)
-		bannNavigazione->setBGColor(c);
 }
 void sottoMenu::setFGColor(QColor c)	
 {
 	setPaletteForegroundColor(c);
-	if (bannNavigazione)
-		bannNavigazione->setFGColor(c);
 }
 
 void sottoMenu::setAllBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	if (bannNavigazione)
-		bannNavigazione->setBGColor(c);
-
-	for (int i = 0; i < elencoBanner.size(); ++i)
-		elencoBanner.at(i)->setBGColor(c);
 }
 
 void sottoMenu::setAllFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
-	if (bannNavigazione)
-		bannNavigazione->setFGColor(c);
-
-	for (int i = 0; i < elencoBanner.size(); ++i)
-		elencoBanner.at(i)->setFGColor(c);
-
 }
 
 int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo,
@@ -383,8 +366,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	banner *last = elencoBanner.last();
 	last->SetTextU(qdescrizione);
 	last->setAnimationParams(periodo,numFrame);
-	last->setBGColor(backgroundColor());
-	last->setFGColor(foregroundColor());
 	last->setId(tipo);
 	
 	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
@@ -796,9 +777,6 @@ void sottoMenu::addAmb(char *a)
 
 void sottoMenu::initBanner(banner *bann, QDomNode conf)
 {
-	bann->setBGColor(paletteBackgroundColor());
-	bann->setFGColor(paletteForegroundColor());
-
 	QDomNode n = findNamedNode(conf, "descr");
 	bann->SetTextU(n.toElement().text());
 

@@ -31,34 +31,6 @@ Q_OBJECT
 public:
 	aux(QWidget *parent=0, const QString & name="", const QString & amb="");
 
-	/*!
-	\brief Sets the background color for the banner.
-
-	The arguments are RGB components for the color.
-	*/
-	void setBGColor(int, int , int);
-
-	/*!
-	\brief Sets the foreground color for the banner.
-
-	The arguments are RGB components for the color.
-	*/
-	void setFGColor(int , int , int);
-
-	/*!
-	\brief Sets the background color for the banner.
-
-	The argument is the QColor description of the color.
-	*/
-	void setBGColor(QColor);
-
-	/*!
-	\brief Sets the foreground color for the banner.
-
-	The argument is the QColor description of the color.
-	*/
-	void setFGColor(QColor);
-
 	BtLabel* auxName, *ambDescr;
 	BtButton *fwdBut;
 
@@ -99,9 +71,6 @@ private:
 	char nome[15];
 	bannFrecce * bannNavigazione;
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
 	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 

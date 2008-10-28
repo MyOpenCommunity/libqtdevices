@@ -27,8 +27,7 @@
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;
 
-banner::banner(QWidget *parent,const char *name)
-: QWidget(parent)
+banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 {
 	BannerIcon = NULL;
 	BannerText = NULL;
@@ -668,28 +667,8 @@ void banner::setAddress(QString addr)
 	strncpy(address,buf.constData(),sizeof(address));
 }
 
-void banner::gestFrame(char*){}
-
-
-void banner::setBGColor(int r, int g, int b)
-{	
-	setBGColor(QColor :: QColor(r,g,b));
-}
-void banner::setFGColor(int r, int g, int b)
+void banner::gestFrame(char*)
 {
-	setFGColor(QColor :: QColor(r,g,b));
-}
-
-void banner::setBGColor(QColor c)
-{
-	// TODO: rimuovere!!
-	setPaletteBackgroundColor(c);
-}
-
-void banner::setFGColor(QColor c)	
-{
-	// TODO: rimuovere!!
-	setPaletteForegroundColor(c);
 }
 
 void banner::setValue(char val)
@@ -872,28 +851,4 @@ QString banner::getNameRoot(QString full_string, QString text_to_strip)
 QString banner::getNameRoot(char *full_string, QString text_to_strip)
 {
 	return getNameRoot(QString(full_string), text_to_strip);
-}
-
-void banner::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void banner::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
-const QColor& banner::paletteBackgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& banner::paletteForegroundColor()
-{
-	return palette().color(foregroundRole());
 }

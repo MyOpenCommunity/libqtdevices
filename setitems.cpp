@@ -28,8 +28,6 @@ extern unsigned char tipoData;
 setDataOra::setDataOra(sottoMenu *parent,const char *name) : bannOnDx(parent, name)
 {
 	SetIcons(ICON_INFO,1);
-	settalora.setBGColor(backgroundColor());
-	settalora.setFGColor(foregroundColor());
 	connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));
 	connect(&settalora,SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	connect(&settalora, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
@@ -50,8 +48,6 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff* diso,
 	strcpy(iconOff, icon2);
 	SetIcons(iconOff ,ICON_INFO);
 	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, h, m);
-	svegliolina->setBGColor(backgroundColor());
-	svegliolina->setFGColor(foregroundColor());
 	svegliolina->hide();
 	if (enabled == 1)
 		setAbil(TRUE);

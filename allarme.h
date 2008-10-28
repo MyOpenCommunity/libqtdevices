@@ -33,40 +33,9 @@ private:
 	void SetIcons(char*);
 	altype type;
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
-
 public:
 	allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, altype t);
 
-	/*!
-		\brief Sets the background color for the banner.
-		\param c QColor description of the color.
-	*/
-	virtual void setBGColor(QColor c);
-
-	/*!
-		\brief Sets the foreground color for the banner.
-		\param c QColor description of the color.
-	*/
-	virtual void setFGColor(QColor c);
-
-	/*!
-		\brief Sets the background color for the banner.
-		\param r red component for the color.
-		\param g green component for the color.
-		\param b blue component for the color.
-	*/
-	void setBGColor(int r, int g, int b);
-
-	/*!
-		\brief Sets the background color for the banner.
-		\param r red component for the color.
-		\param g green component for the color.
-		\param b blue component for the color.
-	*/
-	void setFGColor(int r, int g, int b);
 	void show();
 public slots:
 	/*! Draw widget */

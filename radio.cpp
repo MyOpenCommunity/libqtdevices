@@ -237,28 +237,6 @@ void radio::showRadio()
 	showFullScreen();
 }
 
-void radio::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void radio::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void radio::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	bannNavigazione->setBGColor(c);
-}
-
-void radio::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	bannNavigazione->setFGColor(c);
-}
-
 void radio::setFreq(float f)
 {
 	frequenza=f;

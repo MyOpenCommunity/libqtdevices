@@ -46,30 +46,6 @@ protected:
 public:
 	banradio(QWidget *parent,const char *name,char* indirizzo, int nbut=4, const QString & ambdescr="");
 	void inizializza(bool forza = false);
-	/*!
-	  \brief Sets the background color for the banner.
-
-	  The arguments are RGB components for the color.
-	*/
-	void setBGColor(int, int , int);
-	/*!
-	  \brief Sets the foreground color for the banner.
-
-	  The arguments are RGB components for the color.
-	*/
-	void setFGColor(int , int , int);
-	/*!
-	  \brief Sets the background color for the banner.
-
-	  The argument is the QColor description of the color.
-	*/
-	void setBGColor(QColor);
-	/*!
-	  \brief Sets the foreground color for the banner.
-
-	  The argument is the QColor description of the color.
-	*/
-	void setFGColor(QColor);
 protected slots:
 	void ciclaSorg();
 	void decBrano();

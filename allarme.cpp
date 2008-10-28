@@ -67,30 +67,6 @@ void allarme::SetIcons(char *icon)
 		      MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 }
 
-void allarme::setBGColor(QColor c)
-{
-    qDebug("allarme::setBGColor()");
-    bnav->setBGColor(c);
-    setPaletteBackgroundColor(c);
-}
-
-void allarme::setFGColor(QColor c)
-{
-    qDebug("allarme::setFGColor()");
-    bnav->setFGColor(c);
-    setPaletteForegroundColor(c);
-}
-
-void allarme::setBGColor(int r, int g, int b)
-{
-    return allarme::setBGColor(QColor(r, g, b));
-}
-
-void allarme::setFGColor(int r, int g, int b)
-{
-    return allarme::setFGColor(QColor(r, g, b));
-}
-
 void allarme::draw()
 {
     qDebug("allarme::draw()");
@@ -110,18 +86,4 @@ void allarme::freezed(bool f)
     qDebug("allarme::freezed(%d)", f);
     bool enabled = !f;
     bnav->setEnabled(enabled);
-}
-
-void allarme::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void allarme::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
 }

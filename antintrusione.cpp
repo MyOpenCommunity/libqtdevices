@@ -279,8 +279,6 @@ void antintrusione::gesFrame(char*frame)
 			// The current alarm is the last alarm inserted
 			curr_alarm = allarmi.size() - 1;
 			allarme *curr = allarmi.at(curr_alarm);
-			curr->setFGColor(foregroundColor());
-			curr->setBGColor(backgroundColor());
 			connect(curr, SIGNAL(Back()), this, SLOT(closeAlarms()));
 			connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
 			connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));

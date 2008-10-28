@@ -118,9 +118,6 @@ void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
 	banner *last = elencoBanner.last();
 	last->SetTextU(n.toElement().text());
 	last->setAnimationParams(0, 0);
-
-	last->setBGColor(paletteBackgroundColor());
-	last->setFGColor(paletteForegroundColor());
 	n = FindNamedNode(e, "id");
 	last->setId(n.toElement().text().toInt());
 }
@@ -199,8 +196,6 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 			bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
 			bp->SetTextU(itm->GetDescr());
 			bp->setAnimationParams(0, 0);
-			bp->setBGColor(paletteBackgroundColor());
-			bp->setFGColor(paletteForegroundColor());
 			bp->setId(itm->GetId());
 
 			// Get status changed events back

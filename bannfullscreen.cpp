@@ -72,25 +72,6 @@ BtButton *BannFullScreen::getButton(QString img)
 	return btn;
 }
 
-void BannFullScreen::setBGColor(QColor bg)
-{
-	QList<QWidget*> l = findChildren<QWidget*>("QWidget");
-
-	// TODO: sistemare con i metodi qt4 per i colori!!
-	//for (int i = 0; i < l.size(); ++i)
-	//	l.at(i)->setPaletteBackgroundColor(bg);
-	banner::setBGColor(bg);
-}
-
-void BannFullScreen::setFGColor(QColor fg)
-{
-	QList<QWidget*> l = findChildren<QWidget*>("QWidget");
-
-	// TODO: sistemare con i metodi qt4 per i colori!!
-	//for (int i = 0; i < l.size(); ++i)
-	//	l.at(i)->setPaletteForegroundColor(fg);
-	banner::setFGColor(fg);
-}
 
 /**
  * Extract the address from the DOM node passed as parameter.
@@ -1170,9 +1151,6 @@ void FSBannTermoReg4z::createSettingsMenu()
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
 	settings->appendBanner(summer_winter);
 	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
-
-	settings->setAllFGColor(paletteForegroundColor());
-	settings->setAllBGColor(paletteBackgroundColor());
 	settings->hide();
 }
 
@@ -1229,9 +1207,6 @@ void FSBannTermoReg99z::createSettingsMenu()
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
 	settings->appendBanner(summer_winter);
 	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
-
-	settings->setAllFGColor(paletteForegroundColor());
-	settings->setAllBGColor(paletteBackgroundColor());
 	settings->hide();
 }
 
@@ -1261,9 +1236,6 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	bann->setSecondForeground(second_fg);
 
 	manual_menu->appendBanner(bann);
-	manual_menu->setAllFGColor(paletteForegroundColor());
-	manual_menu->setAllBGColor(paletteBackgroundColor());
-
 	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
 	connect(manual_menu, SIGNAL(Closed()), this, SLOT(manualCancelled()));
 	manual_menu->hide();
@@ -1291,8 +1263,6 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 	settings->appendBanner(weekly);
 
 	program_menu = new WeeklyMenu(0, "weekly", conf);
-	program_menu->setAllBGColor(paletteBackgroundColor());
-	program_menu->setAllFGColor(paletteForegroundColor());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
@@ -1357,8 +1327,6 @@ banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString 
 DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 {
 	DateEditMenu *date_edit = new DateEditMenu(0, "date edit");
-	date_edit->setAllBGColor(paletteBackgroundColor());
-	date_edit->setAllFGColor(paletteForegroundColor());
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SIGNAL(freezePropagate(bool)));
@@ -1373,8 +1341,6 @@ DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 {
 	TimeEditMenu *time_edit = new TimeEditMenu(0, "time edit");
-	time_edit->setAllBGColor(paletteBackgroundColor());
-	time_edit->setAllFGColor(paletteForegroundColor());
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SLOT(freezed(bool)));
 	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SIGNAL(freezePropagate(bool)));
@@ -1389,8 +1355,6 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, "weekly program edit", conf);
-	program_choice->setAllBGColor(paletteBackgroundColor());
-	program_choice->setAllFGColor(paletteForegroundColor());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_choice, SLOT(status_changed(QList<device_status*>)));
 	// propagate freeze signal
 	connect(settings, SIGNAL(freezePropagate(bool)), program_choice, SLOT(freezed(bool)));
@@ -1476,9 +1440,6 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	bann->setMaxHours(25);
 
 	timed_manual_menu->appendBanner(bann);
-	timed_manual_menu->setAllFGColor(paletteForegroundColor());
-	timed_manual_menu->setAllBGColor(paletteBackgroundColor());
-
 	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(show()));
 	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(raise()));
 	// propagate freeze signal
@@ -1514,8 +1475,6 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	settings->appendBanner(scenario);
 
 	scenario_menu = new ScenarioMenu(0, "weekly", conf);
-	scenario_menu->setAllBGColor(paletteBackgroundColor());
-	scenario_menu->setAllFGColor(paletteForegroundColor());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), scenario_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));

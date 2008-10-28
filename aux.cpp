@@ -8,17 +8,16 @@
  **
  ****************************************************************/
 
-
-#include <qpixmap.h>
-#include <qcursor.h>
-#include <qfile.h>
-
 #include "aux.h"
 #include "bannfrecce.h"
 #include "btbutton.h"
 #include "btlabel.h"
 #include "genericfunz.h"
 #include "fontmanager.h"
+
+#include <QPixmap>
+#include <QCursor>
+#include <QFile>
 
 
 aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(parent)
@@ -69,28 +68,6 @@ void aux::showAux()
 	showFullScreen();
 }
 
-void aux::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void aux::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void aux::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	bannNavigazione->setBGColor(c);
-}
-
-void aux::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	bannNavigazione->setFGColor(c);
-}
-
 void aux::setAmbDescr(const QString & d)
 {
 	ambDescr->setText(d);
@@ -105,20 +82,6 @@ void aux::freezed(bool f)
 	qDebug("aux::freezed()");
 	// Disable aux and all of its children
 	setDisabled(f);
-}
-
-void aux::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void aux::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
 }
 
 void aux::setPaletteBackgroundPixmap(const QPixmap &pixmap)

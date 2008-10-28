@@ -212,30 +212,6 @@ public:
 	 */
 	void setId(char);
 	/*!
-	 *  \brief Sets the background color for the banner.
-	 *
-	 *  The arguments are RGB components for the color.
-	 */
-	virtual void setBGColor(int, int, int);
-	/*!
-	 *  \brief Sets the foreground color for the banner.
-	 *
-	 *  The arguments are RGB components for the color.
-	 */
-	virtual void setFGColor(int , int , int);
-	/*!
-	 *  \brief Sets the background color for the banner.
-	 *
-	 *  The argument is the QColor description of the color.
-	 */
-	virtual void setBGColor(QColor);
-	/*!
-	 *  \brief Sets the foreground color for the banner.
-	 *
-	 *  The argument is the QColor description of the color.
-	 */
-	virtual void setFGColor(QColor);
-	/*!
 	 *  \brief Sets the Value for the object controlled by the banner.
 	 *
 	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
@@ -352,15 +328,6 @@ public:
 		TEXT2,
 	};
 	virtual void addAmb(char *);
-
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
-
-	const QColor& paletteBackgroundColor();
-	const QColor& paletteForegroundColor();
-	const QColor& backgroundColor() { return paletteBackgroundColor(); }
-	const QColor& foregroundColor() { return paletteForegroundColor(); }
 
 private:
 	

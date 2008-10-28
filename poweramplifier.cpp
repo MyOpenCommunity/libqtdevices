@@ -67,13 +67,11 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 
 void PowerAmplifier::setBGColor(QColor c)
 {
-	banner::setBGColor(c);
 	settings_page->setAllBGColor(c);
 }
 
 void PowerAmplifier::setFGColor(QColor c)
 {
-	banner::setFGColor(c);
 	settings_page->setAllFGColor(c);
 }
 
@@ -244,7 +242,6 @@ void PowerAmplifierTreble::showLevel()
 
 void PowerAmplifierTreble::setFGColor(QColor c)
 {
-	banner::setFGColor(c);
 	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
 	//SecondaryText->setPaletteForegroundColor(secondary_fg);
 }
@@ -290,7 +287,6 @@ void PowerAmplifierBass::showLevel()
 
 void PowerAmplifierBass::setFGColor(QColor c)
 {
-	banner::setFGColor(c);
 	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
 	// SecondaryText->setPaletteForegroundColor(secondary_fg);
 }
@@ -341,7 +337,6 @@ void PowerAmplifierBalance::showBalance()
 
 void PowerAmplifierBalance::setFGColor(QColor c)
 {
-	banner::setFGColor(c);
 	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
 	//SecondaryText->setPaletteForegroundColor(secondary_fg);
 }

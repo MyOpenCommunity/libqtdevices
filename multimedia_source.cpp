@@ -435,13 +435,11 @@ void MultimediaSource::setFGColor(int r, int g, int b)
 void MultimediaSource::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	bannNavigazione->setBGColor(c);
 	source_choice->setBGColor(c);
 }
 void MultimediaSource::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
-	bannNavigazione->setFGColor(c);
 	source_choice->setFGColor(c);
 }
 
