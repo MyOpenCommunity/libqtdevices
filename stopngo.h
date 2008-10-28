@@ -92,10 +92,6 @@ Q_OBJECT
 public:
 	StopngoPage(QWidget *parent, const char *name, QString where, int id = 0, QString pageTitle = "");
 	~StopngoPage();
-	virtual void setBGColor(int, int , int);
-	virtual void setFGColor(int , int , int);
-	virtual void setBGColor(QColor);
-	virtual void setFGColor(QColor);
 
 protected:
 	QString pageTitle, where;

@@ -214,9 +214,7 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 {
 	StopngoPage* pg = new StopngoPage(NULL, "stopngo", itm->GetWhere(), itm->GetId(), itm->GetDescr());
 	pg->hide();
-	pg->setBGColor(paletteBackgroundColor());
-	pg->setFGColor(paletteForegroundColor());
-	
+
 	connect(bnr, SIGNAL(sxClick()), pg, SLOT(showPage()));
 	connect(stopngoSubmenu, SIGNAL(hideChildren()), pg, SLOT(hide()));
 	connect(pg, SIGNAL(Closed()), stopngoSubmenu, SLOT(showFullScreen()));

@@ -31,34 +31,6 @@ class  impostaTime : public QFrame
 Q_OBJECT
 public:
 	impostaTime(QWidget *parent=0, const char *name=0);
-/*!
-  \brief Sets the background color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	void setBGColor(QColor);
-
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	void setFGColor(QColor);
-
-/*!
-  \brief Sets the background color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setBGColor(int, int , int);
-
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setFGColor(int , int , int);
-
 	BtButton *but[7];
 
 signals:
@@ -89,11 +61,7 @@ private:
 	BtLabel *Immagine;
 
 	// TODO: rimuovere questi metodi qt3!
-	void setPaletteBackgroundColor(const QColor &c);
-	void setPaletteForegroundColor(const QColor &c);
 	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-	const QColor& backgroundColor();
-	const QColor& foregroundColor();
 };
 
 

@@ -42,9 +42,6 @@ sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, boo
 	else
 	{
 		myAux = new aux(NULL, name, ambdescr);
-		// TODO: sistemare per usare il modo qt4 per i colori!
-		//myAux->setBGColor(parentWidget()->backgroundColor());
-		//myAux->setFGColor(parentWidget()->foregroundColor());
 		// Get freezed events
 		connect(parent, SIGNAL(frez(bool)), myAux, SLOT(freezed(bool)));
 	}

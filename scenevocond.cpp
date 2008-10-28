@@ -68,26 +68,6 @@ void scenEvo_cond::mostra()
 	qDebug("scenEvo_cond::mostra()");
 }
 
-void scenEvo_cond::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void scenEvo_cond::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void scenEvo_cond::setBGColor(QColor c)
-{
-	qDebug("scenEvo_cond::setBGColor(QColor c)");
-}
-
-void scenEvo_cond::setFGColor(QColor c)
-{
-	qDebug("scenEvo_cond::setFGColor(QColor c)");
-}
-
 void scenEvo_cond::SetIcons()
 {
 	// Does nothing by default
@@ -411,20 +391,6 @@ void scenEvo_cond_h::mostra()
 	}
 }
 
-void scenEvo_cond_h::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	if (ora)
-		ora->setPaletteBackgroundColor(c);
-}
-
-void scenEvo_cond_h::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	if (ora)
-		ora->setPaletteForegroundColor(c);
-}
-
 void scenEvo_cond_h::setupTimer()
 {
 	QDateTime now = QDateTime::currentDateTime();
@@ -552,24 +518,6 @@ void scenEvo_cond_d::mostra()
 	if (actual_condition)
 		actual_condition->show();
 	show();
-}
-
-void scenEvo_cond_d::setBGColor(QColor c)
-{
-	qDebug("scenEvo_cond_d::setBGColor()");
-	setPaletteBackgroundColor(c);
-
-	if (actual_condition)
-		actual_condition->setBGColor(c);
-}
-
-void scenEvo_cond_d::setFGColor(QColor c)
-{
-	qDebug("scenEvo_cond_d::setFGColor()");
-	setPaletteForegroundColor(c);
-
-	if (actual_condition)
-		actual_condition->setFGColor(c);
 }
 
 void scenEvo_cond_d::setEnabled(bool e)
@@ -888,22 +836,6 @@ scenEvo_cond_d *device_condition::get_parent()
 QString device_condition::get_unit()
 {
 	return "";
-}
-
-void device_condition::setFGColor(QColor c)
-{
-	qDebug("device_condition::setFGColor (%d, %d, %d)", c.red(), c.green(),
-	c.blue());
-	// TODO: sistemare con il nuovo metodo qt4!
-	//frame->setPaletteForegroundColor(c);
-}
-
-void device_condition::setBGColor(QColor c)
-{
-	qDebug("device_condition::setBGColor (%d, %d, %d)", c.red(), c.green(),
-	c.blue());
-	// TODO: sistemare con il nuovo metodo qt4!
-	//frame->setPaletteBackgroundColor(c);
 }
 
 void device_condition::inizializza()

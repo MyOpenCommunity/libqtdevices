@@ -39,43 +39,16 @@ class  sveglia : public QFrame
 Q_OBJECT
 public:
     sveglia(QWidget *parent=0, const char *name=0,uchar freq=1, uchar t=0,contdiff* diso=NULL, char* frame=NULL, char*h="12", char* m="0");
-/*!
-  \brief Sets the background color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	void setBGColor(QColor);
-
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	void setFGColor(QColor);
-
- /*!
-  \brief Sets the background color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setBGColor(int, int , int);
-
-/*!
-  \brief Sets the background color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setFGColor(int , int , int);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
 */
 	void setSerNum(int);
 
-	BtButton*  but[4];
-	BtLabel* Immagine;
-	BtButton* choice[4];
-	BtLabel* testiChoice[4];
+	BtButton *but[4];
+	BtLabel *Immagine;
+	BtButton *choice[4];
+	BtLabel *testiChoice[4];
 
 /*!
   \brief Sets the alarm set (dis)active.

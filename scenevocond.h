@@ -61,30 +61,6 @@ public:
 	*/
 	virtual const char *getDescription();
 	/*!
-	\brief Sets the background color for the banner.
-	\param c QColor description of the color.
-	*/
-	virtual void setBGColor(QColor c);
-	/*!
-	\brief Sets the foreground color for the banner.
-	\param c QColor description of the color.
-	*/
-	virtual void setFGColor(QColor c);
-	/*!
-	\brief Sets the background color for the banner.
-	\param r red component for the color.
-	\param g green component for the color.
-	\param b blue component for the color.
-	*/
-	void setBGColor(int r, int g, int b);
-	/*!
-	\brief Sets the background color for the banner.
-	\param r red component for the color.
-	\param g green component for the color.
-	\param b blue component for the color.
-	*/
-	void setFGColor(int r, int g, int b);
-	/*!
 	\brief Draws and initializes some connections.
 	*/
 	virtual void  mostra();
@@ -194,16 +170,6 @@ public:
 	\brief Draws page and initializes some connections
 	*/
 	void mostra();
-	/*!
-	\brief Sets the background color for the banner.
-	\param c QColor description of the color.
-	*/
-	void setBGColor(QColor c);
-	/*!
-	\brief Sets the foreground color for the banner.
-	\param c QColor description of the color.
-	*/
-	void setFGColor(QColor c);
 	//! Sets icons
 	void SetIcons();
 	//! Set enabled/disabled
@@ -285,10 +251,6 @@ public:
 	int get_current_value();
 	//! Sets current value for condition
 	int set_current_value(int);
-	//! Sets foreground color
-	void setFGColor(QColor c);
-	//! Sets background color
-	void setBGColor(QColor c);
 	//! Inits condition
 	virtual void inizializza(void);
 	//! Resets condition
@@ -651,16 +613,6 @@ public:
 	\brief Draws and initializes some connections.
 	*/
 	void  mostra();
-	/*!
-	\brief Sets the background color for the banner.
-	\param c QColor description of the color.
-	*/
-	void setBGColor(QColor c);
-	/*!
-	\brief Sets the foreground color for the banner.
-	\param c QColor description of the color.
-	*/
-	void setFGColor(QColor c);
 	//! Set enabled/disabled
 	void setEnabled(bool);
 	//! Sets icons

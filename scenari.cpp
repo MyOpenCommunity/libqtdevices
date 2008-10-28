@@ -321,8 +321,6 @@ void scenEvo::configScev()
 	hide();
 	scenEvo_cond *co = condList.at(current_condition);
 	qDebug("Invoco %p->mostra()", co);
-	co->setBGColor(backgroundColor());
-	co->setFGColor(foregroundColor());
 	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
@@ -353,8 +351,6 @@ void scenEvo::nextCond()
 		qDebug("co = %p", co);
 		if (co)
 		{
-			co->setBGColor(backgroundColor());
-			co->setFGColor(foregroundColor());
 			connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 			connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 			connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
@@ -386,8 +382,6 @@ void scenEvo::prevCond()
 		qDebug("co = %p", co);
 		if (co)
 		{
-			co->setBGColor(backgroundColor());
-			co->setFGColor(foregroundColor());
 			connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 			connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 			connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));

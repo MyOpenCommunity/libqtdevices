@@ -28,9 +28,6 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 
 	setAddress(indirizzo);
 	dev = btouch_device_cache.get_device(getAddress());
-	// TODO: sistemare con il modo qt4 di impostare i colori!
-	//source_menu.setBGColor(parentWidget()->backgroundColor());
-	//source_menu.setFGColor(parentWidget()->foregroundColor());
 	connect(parentWidget(), SIGNAL(frez(bool)), &source_menu, SLOT(freezed(bool)));
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showPage()));

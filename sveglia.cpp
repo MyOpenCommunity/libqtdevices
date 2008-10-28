@@ -162,30 +162,6 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	}
 }
 
-void sveglia::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void sveglia::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void sveglia::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	if (dataOra)
-		dataOra->setPaletteBackgroundColor(c);
-}
-
-void sveglia::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	if (dataOra)
-		dataOra->setPaletteForegroundColor(c);
-}
-
 void sveglia::okTime()
 {
 	disconnect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));

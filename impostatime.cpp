@@ -107,30 +107,6 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	Immagine->setGeometry(90,0,120,60);
 }
 
-void impostaTime::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void impostaTime::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void impostaTime::setBGColor(QColor c)
-{	
-	setPaletteBackgroundColor(c);
-	if (dataOra)
-		dataOra->setPaletteBackgroundColor(backgroundColor());
-}
-
-void impostaTime::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	if (dataOra)
-		dataOra->setPaletteForegroundColor(foregroundColor());
-}
-
 void impostaTime::OKTime()
 {
 	disconnect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
@@ -271,33 +247,9 @@ void impostaTime::hide()
 		dataOra->hide();
 }
 
-void impostaTime::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void impostaTime::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
 void impostaTime::setPaletteBackgroundPixmap(const QPixmap &pixmap)
 {
 	QPalette palette;
 	palette.setBrush(backgroundRole(), QBrush(pixmap));
 	setPalette(palette);
-}
-
-const QColor& impostaTime::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& impostaTime::foregroundColor()
-{
-	return palette().color(foregroundRole());
 }
