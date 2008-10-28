@@ -13,7 +13,7 @@
 
 #include "main.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 class BtLabel;
 class BtButton;

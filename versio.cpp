@@ -13,10 +13,12 @@
 #include "openclient.h"
 #include "fontmanager.h"
 
-#include <qwidget.h>
-#include <qpixmap.h>
-#include <qcursor.h>
+#include <QWidget>
+#include <QPixmap>
+#include <QCursor>
+
 #include <stdlib.h>
+
 
 versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(parent, name,  (Qt::WindowFlags)f)
 {

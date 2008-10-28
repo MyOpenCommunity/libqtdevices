@@ -20,16 +20,17 @@
 #include "bannfrecce.h"
 #include "fontmanager.h"
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
-#include <qdatetime.h>
-#include <qdir.h>
-#include <qfile.h>
+#include <QDateTime>
+#include <QPixmap>
+#include <QWidget>
+#include <QCursor>
+#include <QDir>
+#include <QFile>
 
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 
 sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff* diso, char* f, char*h, char*m)
 	: QFrame(parent)

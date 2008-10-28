@@ -1,8 +1,8 @@
 #include "screensaver.h"
 #include "main.h"
 
-#include <qpainter.h>
-#include <qbitmap.h>
+#include <QPainter>
+#include <QBitmap>
 
 #include <stdlib.h> // RAND_MAX
 #include <assert.h>

@@ -1,11 +1,10 @@
 #include "cleanscreen.h"
 #include "main.h"
 
-#include <qlabel.h>
 
 #define WAIT_TIME 10
 
-static const char *BG_CLEANSCREEN = IMG_PATH "dwnpage.png";
+//static const char *BG_CLEANSCREEN = IMG_PATH "dwnpage.png";
 
 
 CleanScreen::CleanScreen(QWidget *parent) : QWidget(parent)

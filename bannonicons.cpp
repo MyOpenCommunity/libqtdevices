@@ -11,9 +11,6 @@
 #include "bannonicons.h"
 #include "main.h"
 
-#include <qlabel.h>
-#include <qpixmap.h>
-
 
 bannOnIcons::bannOnIcons(QWidget *parent,const char *name) : banner(parent, name)
 {

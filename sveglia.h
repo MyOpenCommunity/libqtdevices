@@ -11,7 +11,7 @@
 #ifndef SVEGLIA_H
 #define SVEGLIA_H
 
-#include <qframe.h>
+#include <QFrame>
 
 #define AMPLI_NUM 100
 #define BASE_EEPROM 11360

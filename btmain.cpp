@@ -56,7 +56,6 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	qDebug("parte BtMain");
 
 	// If not compiled for Desktop, turns OFF mouse pointer
-	// QWSServer is in <qwindowsystem_qws.h>
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	QWSServer::setCursorVisible(false);
 #endif

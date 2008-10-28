@@ -11,7 +11,8 @@
 #include "bannregolaz.h"
 #include "main.h"
 
-#include <qtimer.h>
+#include <QTimer>
+
 
 bannRegolaz::bannRegolaz(QWidget *parent,const char *name) : banner(parent, name)
 {

@@ -11,10 +11,11 @@
 #include "genpage.h"
 #include "main.h"
 
-#include <qwidget.h>
-#include <qpixmap.h>
-#include <qcursor.h>
-#include <qfile.h>
+#include <QWidget>
+#include <QPixmap>
+#include <QCursor>
+#include <QFile>
+
 
 genPage::genPage(QWidget *parent,const char *name , unsigned char tipo,const char *img, unsigned int f)
 	: BtLabel(parent, name, (Qt::WindowFlags)f)
