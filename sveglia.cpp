@@ -178,10 +178,7 @@ void sveglia::okTime()
 	{
 		choice[idx]->show();
 		testiChoice[idx]->show();
-		if (tipoSveglia == idx)
-			choice[idx]->setOn(TRUE);
-		else
-			choice[idx]->setOn(FALSE);
+		choice[idx]->setChecked(tipoSveglia == idx);
 	}
 
 	dataOra->hide();
@@ -243,12 +240,7 @@ void sveglia::mostra()
 void sveglia::drawSelectPage()
 {
 	for (uchar idx = 0; idx < 4; idx++)
-	{
-		if (idx!=tipoSveglia)
-			choice[idx]->setOn(FALSE);
-		else
-			choice[idx]->setOn(TRUE);
-	}
+		choice[idx]->setChecked(idx == tipoSveglia);
 }
 
 void sveglia::sel1(bool isOn)

@@ -86,7 +86,7 @@ void ButtonsBar::setToggleStatus(unsigned int button_up_index)
 	if (isToggleBar && button_up_index < buttons_list.size())
 	{
 		for (int i = 0; i < buttons_list.size(); i++)
-			buttons_list.at(i)->setOn(false);
+			buttons_list.at(i)->setChecked(false);
 		buttons_list.at(button_up_index)->setChecked(true);
 	}
 }

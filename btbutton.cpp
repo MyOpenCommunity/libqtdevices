@@ -1,20 +1,17 @@
 #include "btbutton.h"
 #include "genericfunz.h"
 
+#include <QDebug>
 #include <QStyleOption>
 #include <QStylePainter>
 
 
-BtButton::BtButton(QWidget *parent) : QPushButton(parent), icon_set(false)
+BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
 	setStyleSheet(QString("border:0px;"));
 	setFocusPolicy(Qt::NoFocus);
-}
-
-BtButton::BtButton(const QString &text, QWidget *parent) : QPushButton(text, parent), icon_set(false)
-{
-	setStyleSheet(QString("border:0px;"));
-	setFocusPolicy(Qt::NoFocus);
+	// ?? TODO: sistemare, ci sono problemi.. verificare a cosa serviva in buttons_bar e sveglia..
+	// setCheckable(true);
 }
 
 void BtButton::setPressedPixmap(const QPixmap &p)
@@ -27,33 +24,18 @@ void BtButton::setPixmap(const QPixmap &p)
 	pixmap = p;
 }
 
-void BtButton::mousePressEvent(QMouseEvent *event)
-{
-	if (!pressed_pixmap.isNull())
-	{
-		setIcon(pressed_pixmap);
-		setIconSize(pressed_pixmap.size());
-		icon_set = true;
-	}
-	QPushButton::mousePressEvent(event);
-}
-
-void BtButton::mouseReleaseEvent(QMouseEvent *event)
-{
-	setIcon(pixmap);
-	setIconSize(pixmap.size());
-	icon_set = true;
-	QPushButton::mouseReleaseEvent(event);
-}
-
 void BtButton::paintEvent(QPaintEvent *event)
 {
-	if (!icon_set)
+	QPixmap *p = &pixmap;
+
+	if (!pressed_pixmap.isNull() && (isDown() || isChecked()))
 	{
-		setIcon(pixmap);
-		setIconSize(pixmap.size());
-		icon_set = true;
+		//qDebug() << "Is down:" << isDown() << " Is checked:" << isChecked();
+		p = &pressed_pixmap;
 	}
+
+	setIcon(*p);
+	setIconSize(p->size());
 
 #ifdef BEEP
 	if (isDown())
@@ -62,10 +44,10 @@ void BtButton::paintEvent(QPaintEvent *event)
 
 	// The drawing of BtButton is reimplemented here to prevent the "graying"
 	// of the image when the button is in the disabled state.
-	QStylePainter p(this);
+	QStylePainter painter(this);
 	QStyleOptionButton option;
 	initStyleOption(&option);
 
 	option.state |= QStyle::State_Enabled; // Prevent the "graying"
-	p.drawControl(QStyle::CE_PushButton, option);
+	painter.drawControl(QStyle::CE_PushButton, option);
 }
