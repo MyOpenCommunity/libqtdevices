@@ -69,6 +69,7 @@ HEADERS += actuators.h \
            homepage.h \
            icondispatcher.h \
            impostatime.h \
+           lansettings.h \
            listbrowser.h \
            main.h \
            mediaplayer.h \
@@ -153,6 +154,7 @@ SOURCES += actuators.cpp \
            homePage.cpp \
            icondispatcher.cpp \
            impostatime.cpp \
+           lansettings.cpp \
            listbrowser.cpp \
            main.cpp \
            mediaplayer.cpp \

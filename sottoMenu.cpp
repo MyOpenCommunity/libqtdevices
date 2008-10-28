@@ -31,6 +31,7 @@
 #include "carico.h"
 #include "bann_antintrusione.h"
 #include "bannfullscreen.h"
+#include "lansettings.h"
 
 #include <qpixmap.h>
 #include <qwidget.h>
@@ -361,6 +362,20 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		break;
 	case CLEANSCREEN:
 		elencoBanner.append(new BannCleanScreen(this, descrizione));
+		break;
+	case LANSETTINGS:
+		bannOnDx *b = new bannOnDx(this, descrizione);
+		b->SetIcons(ICON_INFO, 1);
+		elencoBanner.append(b);
+		// create lansettings menu
+		LanSettings *ls = new LanSettings(this);
+		ls->setBGColor(paletteBackgroundColor());
+		ls->setFGColor(paletteForegroundColor());
+		ls->hide();
+
+		connect(this, SIGNAL(freezePropagate(bool)), ls, SLOT(freeze(bool)));
+		connect(this, SIGNAL(hideChildren()), ls, SLOT(hide()));
+		connect(b, SIGNAL(click()), ls, SLOT(showFullScreen()));
 		break;
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");

@@ -792,6 +792,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 						QObject::connect(*imposta,SIGNAL(startCalib()), BtM, SLOT(startCalib()));
 						QObject::connect(*imposta,SIGNAL(endCalib()),BtM, SLOT(endCalib()));
+						QObject::connect(BtM, SIGNAL(freeze(bool)), *imposta, SIGNAL(freezePropagate(bool)));
 						break;
 
 					case SCENARI_EVOLUTI:
