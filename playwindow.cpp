@@ -280,16 +280,6 @@ void MediaPlayWindow::showPauseBtn()
 	play_controls->setButtonIcons(0, *icon, *pressed_icon);
 }
 
-void MediaPlayWindow::setBGColor(QColor c)
-{
-	play_controls->setBGColor(c);
-}
-
-void MediaPlayWindow::setFGColor(QColor c)
-{
-	play_controls->setFGColor(c);
-}
-
 void MediaPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
 {
 	/// Create Labels (that contain tag names)
@@ -505,16 +495,6 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 	// Add space to the end of layout to align buttons with previus page
 	main_layout->addSpacing(10);
 	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
-}
-
-void RadioPlayWindow::setBGColor(QColor c)
-{
-	play_controls->setBGColor(c);
-}
-
-void RadioPlayWindow::setFGColor(QColor c)
-{
-	play_controls->setFGColor(c);
 }
 
 void RadioPlayWindow::startPlayer(unsigned int track)

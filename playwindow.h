@@ -109,10 +109,6 @@ Q_OBJECT
 public:
 	MediaPlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
 
-	// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
-
 	// Play control
 	void pause();
 	void resume();
@@ -168,10 +164,6 @@ class RadioPlayWindow : public PlayWindow
 Q_OBJECT
 public:
 	RadioPlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
-
-	// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 
 protected:
 	void startPlayer(unsigned int);

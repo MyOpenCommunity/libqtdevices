@@ -132,32 +132,6 @@ SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent)
 	connect(buttons_bar, SIGNAL(clicked(int)), SIGNAL(clicked(int)));
 }
 
-void SourceChoice::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	buttons_bar->setBGColor(c);
-}
-
-void SourceChoice::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	buttons_bar->setFGColor(c);
-}
-
-void SourceChoice::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void SourceChoice::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
 
 MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
 	QWidget(parent), audio_initialized(true)
@@ -255,9 +229,6 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 		selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE, radio_node);
 	else
 		selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
-
-	selector->setBGColor(paletteBackgroundColor());
-	selector->setFGColor(paletteForegroundColor());
 
 	// Pulsanti up, down e back
 	connect(bannNavigazione, SIGNAL(downClick()), selector, SLOT(prevItem()));
@@ -422,27 +393,6 @@ void MultimediaSource::handleStopPlay()
 	emit sendFrame(buf.data());
 }
 
-void MultimediaSource::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void MultimediaSource::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void MultimediaSource::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	source_choice->setBGColor(c);
-}
-void MultimediaSource::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	source_choice->setFGColor(c);
-}
-
 void MultimediaSource::enableSource(bool send_frame)
 {
 	qDebug("[AUDIO] Running start play script: %s", start_play_script);
@@ -472,30 +422,6 @@ void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 	selector->hide();
 	play_window->startPlayer(list, element);
 	play_window->show();
-}
-
-void MultimediaSource::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void MultimediaSource::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
-const QColor& MultimediaSource::paletteBackgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& MultimediaSource::paletteForegroundColor()
-{
-	return palette().color(foregroundRole());
 }
 
 void MultimediaSource::setPaletteBackgroundPixmap(const QPixmap &pixmap)
@@ -717,15 +643,6 @@ void FileSelector::prevItem()
 	list_browser->prevItem();
 }
 
-void FileSelector::setBGColor(QColor c)
-{
-	list_browser->setBGColor(c);
-}
-
-void FileSelector::setFGColor(QColor c)
-{
-	list_browser->setFGColor(c);
-}
 
 /// ***********************************************************************************************************************
 /// Methods for RadioSelector
@@ -794,14 +711,4 @@ void RadioSelector::nextItem()
 void RadioSelector::prevItem()
 {
 	list_browser->prevItem();
-}
-
-void RadioSelector::setBGColor(QColor c)
-{
-	list_browser->setBGColor(c);
-}
-
-void RadioSelector::setFGColor(QColor c)
-{
-	list_browser->setFGColor(c);
 }

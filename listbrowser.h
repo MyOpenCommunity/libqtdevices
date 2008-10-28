@@ -36,9 +36,6 @@ Q_OBJECT
 public:
 	ListBrowser(QWidget *parent, unsigned rows_per_page, const char *name=0, Qt::WindowFlags f=0);
 	~ListBrowser();
-	/// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 
 	void setList(QVector<QString> _item_list, unsigned _current_page = 0);
 	void showList();
@@ -65,10 +62,6 @@ private:
 
 	/// before to show itself some init is done
 	void showEvent(QShowEvent *event);
-
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
 
 private slots:
 	void clicked(int item);

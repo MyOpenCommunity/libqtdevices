@@ -100,27 +100,3 @@ void ButtonsBar::hideButton(int idx)
 {
 	buttons_list[idx]->hide();
 }
-
-void ButtonsBar::setBGColor(QColor c)
-{
-/*
-	setPaletteBackgroundColor(c);
-	setBackgroundColor(c);
-	buttons_group->setPaletteBackgroundColor(c);
-
-	for (int i = 0; i < buttons_list.size(); i++)
-		buttons_list[i]->setPaletteBackgroundColor(c);
-*/
-}
-void ButtonsBar::setFGColor(QColor c)
-{
-/*
-	setPaletteForegroundColor(c);
-	buttons_group->setPaletteForegroundColor(c);
-
-	for (int i = 0; i < buttons_list.size(); i++)
-		buttons_list[i]->setPaletteForegroundColor(c);
-*/
-}
-
-

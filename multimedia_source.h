@@ -68,8 +68,6 @@ class SourceChoice : public QWidget
 Q_OBJECT
 public:
 	SourceChoice(QWidget *parent, const char *name);
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 
 signals:
 	void clicked(int);
@@ -78,10 +76,6 @@ signals:
 private:
 	ButtonsBar *buttons_bar;
 	BtButton   *back_btn;
-
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
 };
 
 
@@ -95,17 +89,6 @@ class MultimediaSource : public QWidget
 Q_OBJECT
 public:
 	MultimediaSource(QWidget *parent=0, const char *name=0, const char *amb="", int where_address=0);
-
-	/*!
-	 * \brief Sets the background color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setBGColor(QColor);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setFGColor(QColor);
 	/*!
 	 * \brief Sets amb. description
 	 */
@@ -153,16 +136,6 @@ public slots:
 private:
 	void sourceMenu(AudioSourceType t);
 	/*!
-	 * \brief Sets the background color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setBGColor(int, int, int);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setFGColor(int, int, int);
-	/*!
 	 * \brief Draws the page
 	 */
 	void draw() {};
@@ -186,12 +159,7 @@ private:
 	bool radio_enabled, mediaserver_enabled;
 
 	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
 	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
-
-	const QColor& paletteBackgroundColor();
-	const QColor& paletteForegroundColor();
 
 private slots:
 	/// handles to receive play and stop notifications
@@ -216,8 +184,6 @@ class Selector : public QWidget
 Q_OBJECT
 public:
 	Selector(QWidget *parent, const char *name=0, Qt::WindowFlags f=0) : QWidget(parent, f) {}
-	virtual void setBGColor(QColor c) = 0;
-	virtual void setFGColor(QColor c) = 0;
 
 public slots:
 	virtual void nextItem() = 0;
@@ -242,10 +208,6 @@ class  FileSelector : public Selector
 Q_OBJECT
 public:
 	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name=0, Qt::WindowFlags f=0);
-
-	/// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 
 public slots:
 	void nextItem();
@@ -297,10 +259,6 @@ class RadioSelector : public Selector
 Q_OBJECT
 public:
 	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name=0, Qt::WindowFlags f=0);
-
-	/// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 
 public slots:
 	void nextItem();

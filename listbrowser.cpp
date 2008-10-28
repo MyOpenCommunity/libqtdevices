@@ -96,18 +96,6 @@ ListBrowser::~ListBrowser()
 		delete labels_list[i];
 }
 
-void ListBrowser::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	buttons_bar->setBGColor(c);
-}
-
-void ListBrowser::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	buttons_bar->setFGColor(c);
-}
-
 void ListBrowser::setList(QVector<QString> _item_list, unsigned _current_page)
 {
 	item_list = _item_list;
@@ -165,18 +153,4 @@ void ListBrowser::prevItem()
 void ListBrowser::clicked(int item)
 {
 	emit itemIsClicked(current_page * rows_per_page + item);
-}
-
-void ListBrowser::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void ListBrowser::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
 }

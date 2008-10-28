@@ -43,8 +43,6 @@ public:
 	void setToggleStatus(unsigned int button_up_index);
 	void showButton(int idx);
 	void hideButton(int idx);
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 private:
 	bool isToggleBar;
 	QVector<BtButton*>  buttons_list;
