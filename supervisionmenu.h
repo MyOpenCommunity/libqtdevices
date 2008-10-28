@@ -55,10 +55,6 @@ private:
 	void AddBanners();
 	void LinkBanner2Page(bannPuls*, StopngoItem*);
 
-	// TODO: rimuovere questi metodi qt3!
-	const QColor& paletteBackgroundColor();
-	const QColor& paletteForegroundColor();
-
 public slots:
 	void showPg();
 

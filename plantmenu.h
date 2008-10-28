@@ -29,7 +29,7 @@ class PlantMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2);
+	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor fg2);
 private:
 
 	/**
@@ -66,9 +66,5 @@ private:
 	 * Used to call show(int) on SottoMenu based on which banner is clicked.
 	 */
 	QSignalMapper signal_mapper;
-
-	// TODO: rimuovere questi metodi qt3!
-	const QColor& paletteBackgroundColor();
-	const QColor& paletteForegroundColor();
 };
 #endif // PLANTMENU_H

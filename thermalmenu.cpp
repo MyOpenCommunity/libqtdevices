@@ -42,8 +42,7 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor b
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config,
-			paletteBackgroundColor(), paletteForegroundColor(), second_fg);
+	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config, second_fg);
 
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
@@ -159,14 +158,4 @@ void ThermalMenu::showPage()
 		single_submenu->show();
 	else
 		show();
-}
-
-const QColor& ThermalMenu::paletteBackgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& ThermalMenu::paletteForegroundColor()
-{
-	return palette().color(foregroundRole());
 }

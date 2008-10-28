@@ -18,7 +18,7 @@ static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.pn
 static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
 static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png");
 
-PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2) :
+PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor fg2) :
 	sottoMenu(parent, name),
 	items_submenu(this, "items submenu", 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
 	signal_mapper(0)
@@ -109,14 +109,4 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	items_submenu.appendBanner(fsb);
 
 	return bp;
-}
-
-const QColor& PlantMenu::paletteBackgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& PlantMenu::paletteForegroundColor()
-{
-	return palette().color(foregroundRole());
 }

@@ -68,11 +68,6 @@ private:
 	unsigned bann_number;
 	/// A reference to the only submenu below us
 	sottoMenu *single_submenu;
-
-	// TODO: rimuovere questi metodi qt3!
-	const QColor& paletteBackgroundColor();
-	const QColor& paletteForegroundColor();
-
 };
 
 #endif

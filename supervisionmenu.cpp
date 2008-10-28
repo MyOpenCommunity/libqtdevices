@@ -238,14 +238,3 @@ void SupervisionMenu::showPg()
 	else
 		showFullScreen();
 }
-
-const QColor& SupervisionMenu::paletteBackgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& SupervisionMenu::paletteForegroundColor()
-{
-	return palette().color(foregroundRole());
-}
-
