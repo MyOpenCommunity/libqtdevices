@@ -189,9 +189,6 @@ void impContr::showContr()
 	hide();
 	contrasto = new contrPage(NULL,"contr");
 	connect(contrasto, SIGNAL(Close()), this, SLOT(contrMade()));
-
-	contrasto->setBGColor(backgroundColor());
-	contrasto->setFGColor(foregroundColor());
 	contrasto->show();
 }
 
@@ -247,9 +244,6 @@ impPassword::impPassword(QWidget *parent,const char *name, char* icon1, char*ico
 	SetIcons(iconOff ,icon3);
 
 	tasti = new tastiera(NULL,"tast");
-
-	tasti->setBGColor(backgroundColor());
-	tasti->setFGColor(foregroundColor());
 	tasti->hide();
 	tasti->setMode(tastiera::HIDDEN);
 	connect(this,SIGNAL(dxClick()),tasti,SLOT(showTastiera()));

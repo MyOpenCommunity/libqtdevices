@@ -44,39 +44,10 @@ private:
 	//! 30secs idle timer
 	QTimer *myTimer;
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
 public:
-	//! Constructor
 	call_notifier(QWidget *parent, char *name, postoExt *ms);
 	//! Get station's where
 	void get_where(QString&);
-	/*!
-	\brief Sets the background color for the banner.
-	\param c QColor description of the color.
-	*/
-	virtual void setBGColor(QColor c);
-	/*!
-	\brief Sets the foreground color for the banner.
-	\param c QColor description of the color.
-	*/
-	virtual void setFGColor(QColor c);
-	/*!
-	\brief Sets the background color for the banner.
-	\param r red component for the color.
-	\param g green component for the color.
-	\param b blue component for the color.
-	*/
-	void setBGColor(int r, int g, int b);
-	/*!
-	\brief Sets the background color for the banner.
-	\param r red component for the color.
-	\param g green component for the color.
-	\param b blue component for the color.
-	*/
-	void setFGColor(int r, int g, int b);
-
 public slots:
 	//! Invoked by device when status changes
 	void status_changed(QList<device_status*>);

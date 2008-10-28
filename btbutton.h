@@ -14,11 +14,6 @@ public:
 	void setPressedPixmap(const QPixmap &p);
 	void setPixmap(const QPixmap &p);
 
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c) {}
-	void setPaletteBackgroundColor(const QColor &c) {}
-	const QColor& paletteBackgroundColor() { return palette().color(backgroundRole()); }
-	const QColor& paletteForegroundColor() { return palette().color(foregroundRole()); }
 	void setOn(bool) {}
 	void setToggleButton(bool) {}
 

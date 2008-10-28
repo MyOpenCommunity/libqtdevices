@@ -55,7 +55,6 @@ void homePage::addButton(int x, int y, QString iconName, char function, QString 
 	QPixmap Icon;
 	if (Icon.load(iconName))
 		b1->setPixmap(Icon);
-	b1->setPaletteBackgroundColor(backgroundColor());
 
 	if (Icon.load(getPressName(iconName)))
 		b1->setPressedPixmap(Icon);

@@ -321,8 +321,6 @@ void impAnti::Inserisci()
 	inserting = true;
 	tasti = new tastiera_con_stati(s, NULL, "");
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
-	tasti->setBGColor(backgroundColor());
-	tasti->setFGColor(foregroundColor());
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showTastiera();
 }
@@ -333,8 +331,6 @@ void impAnti::Disinserisci()
 		delete tasti;
 	tasti = new tastiera(NULL, "");
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
-	tasti->setBGColor(backgroundColor());
-	tasti->setFGColor(foregroundColor());
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showTastiera();
 }
@@ -345,14 +341,18 @@ void impAnti::Insert1(char *pwd)
 	char pippo[50];
 
 	if (!pwd)
-		goto end;
+	{
+		parentWidget()->show();
+		return;
+	}
 	passwd = pwd;
 
 	qDebug("impAnti::Insert()");
 	if (!send_part_msg)
 	{
 		Insert3();
-		goto end;
+		parentWidget()->show();
+		return;
 	}
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*5*50#");
@@ -366,7 +366,6 @@ void impAnti::Insert1(char *pwd)
 	dev->sendFrame(msg_open.frame_open);
 	send_part_msg = false;
 	part_msg_sent = true;
-end:
 	parentWidget()->show();
 }
 

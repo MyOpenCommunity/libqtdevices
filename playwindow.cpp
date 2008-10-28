@@ -92,20 +92,6 @@ void PlayWindow::addMainControls(QBoxLayout* layout)
 	connect(settings_btn, SIGNAL(released()), SIGNAL(settingsBtn()));
 }
 
-void PlayWindow::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	back_btn->setPaletteBackgroundColor(c);
-	settings_btn->setPaletteBackgroundColor(c);
-}
-
-void PlayWindow::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	back_btn->setPaletteForegroundColor(c);
-	settings_btn->setPaletteForegroundColor(c);
-}
-
 void PlayWindow::prevTrack()
 {
 	if (media_player->isInstanceRunning() && current_track != 0)
@@ -217,19 +203,6 @@ QString PlayWindow::getCurrentDescription()
 	return play_list[current_track].desc;
 }
 
-void PlayWindow::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void PlayWindow::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
 
 /// ***********************************************************************************************************************
 /// Methods for MediaPlayWindow
@@ -309,13 +282,11 @@ void MediaPlayWindow::showPauseBtn()
 
 void MediaPlayWindow::setBGColor(QColor c)
 {
-	PlayWindow::setBGColor(c);
 	play_controls->setBGColor(c);
 }
 
 void MediaPlayWindow::setFGColor(QColor c)
 {
-	PlayWindow::setFGColor(c);
 	play_controls->setFGColor(c);
 }
 
@@ -538,13 +509,11 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 
 void RadioPlayWindow::setBGColor(QColor c)
 {
-	PlayWindow::setBGColor(c);
 	play_controls->setBGColor(c);
 }
 
 void RadioPlayWindow::setFGColor(QColor c)
 {
-	PlayWindow::setFGColor(c);
 	play_controls->setFGColor(c);
 }
 

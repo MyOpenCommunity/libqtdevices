@@ -416,11 +416,6 @@ void scenEvo_cond_h::setBGColor(QColor c)
 	setPaletteBackgroundColor(c);
 	if (ora)
 		ora->setPaletteBackgroundColor(c);
-	for (uchar idx = 0; idx < 7; idx++)
-	{
-		if (but[idx])
-			but[idx]->setPaletteBackgroundColor(c);
-	}
 }
 
 void scenEvo_cond_h::setFGColor(QColor c)
@@ -428,11 +423,6 @@ void scenEvo_cond_h::setFGColor(QColor c)
 	setPaletteForegroundColor(c);
 	if (ora)
 		ora->setPaletteForegroundColor(c);
-	for (uchar idx = 0; idx < 7; idx++)
-	{
-		if (but[idx])
-			but[idx]->setPaletteForegroundColor(c);
-	}
 }
 
 void scenEvo_cond_h::setupTimer()
@@ -568,9 +558,6 @@ void scenEvo_cond_d::setBGColor(QColor c)
 {
 	qDebug("scenEvo_cond_d::setBGColor()");
 	setPaletteBackgroundColor(c);
-	for (uchar idx = 0; idx < 7; idx++)
-		if (but[idx])
-			but[idx]->setPaletteBackgroundColor(c);
 
 	if (actual_condition)
 		actual_condition->setBGColor(c);
@@ -580,9 +567,6 @@ void scenEvo_cond_d::setFGColor(QColor c)
 {
 	qDebug("scenEvo_cond_d::setFGColor()");
 	setPaletteForegroundColor(c);
-	for (uchar idx = 0; idx < 7; idx++)
-		if (but[idx])
-			but[idx]->setPaletteForegroundColor(c);
 
 	if (actual_condition)
 		actual_condition->setFGColor(c);

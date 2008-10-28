@@ -101,8 +101,6 @@ void bannFrecce::setCustomButton(BtButton *btn)
 		btn->setParent(this);
 		btn->move(dx_button_coord.topLeft());
 		btn->show();
-		btn->setPaletteBackgroundColor(paletteBackgroundColor());
-		btn->setPaletteForegroundColor(paletteForegroundColor());
 		dxButton = btn;
 	}
 	else

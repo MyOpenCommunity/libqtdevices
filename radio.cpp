@@ -250,36 +250,12 @@ void radio::setFGColor(int r, int g, int b)
 void radio::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
-	memoBut->setPaletteBackgroundColor(c);
-	decBut->setPaletteBackgroundColor(c);
-	aumBut->setPaletteBackgroundColor(c);
-	autoBut->setPaletteBackgroundColor(c);
-	manBut->setPaletteBackgroundColor(c);
-	cicBut->setPaletteBackgroundColor(c);
-	unoBut->setPaletteBackgroundColor(c);
-	dueBut->setPaletteBackgroundColor(c);
-	treBut->setPaletteBackgroundColor(c);
-	quatBut->setPaletteBackgroundColor(c);
-	cinBut->setPaletteBackgroundColor(c);
-	cancBut->setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
 }
 
 void radio::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
-	memoBut->setPaletteForegroundColor(c);
-	decBut->setPaletteForegroundColor(c);
-	aumBut->setPaletteForegroundColor(c);
-	autoBut->setPaletteForegroundColor(c);
-	manBut->setPaletteForegroundColor(c);
-	cicBut->setPaletteForegroundColor(c);
-	unoBut->setPaletteForegroundColor(c);
-	dueBut->setPaletteForegroundColor(c);
-	treBut->setPaletteForegroundColor(c);
-	quatBut->setPaletteForegroundColor(c);
-	cinBut->setPaletteForegroundColor(c);
-	cancBut->setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
 }
 

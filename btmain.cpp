@@ -486,8 +486,6 @@ void BtMain::freezed(bool b)
 			if (!tasti)
 			{
 				tasti = new tastiera(NULL,"tast");
-				tasti->setBGColor(Home->backgroundColor());
-				tasti->setFGColor(Home->foregroundColor());
 				tasti->setMode(tastiera::HIDDEN);
 				tasti->showTastiera();
 				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));

@@ -122,11 +122,6 @@ void impostaTime::setBGColor(QColor c)
 	setPaletteBackgroundColor(c);
 	if (dataOra)
 		dataOra->setPaletteBackgroundColor(backgroundColor());
-	for (int idx = 0;idx < 7; idx++)
-	{
-		if (but[idx])
-			but[idx]->setPaletteBackgroundColor(backgroundColor());
-	}
 }
 
 void impostaTime::setFGColor(QColor c)
@@ -134,11 +129,6 @@ void impostaTime::setFGColor(QColor c)
 	setPaletteForegroundColor(c);
 	if (dataOra)
 		dataOra->setPaletteForegroundColor(foregroundColor());
-	for (int idx = 0; idx < 7; idx++)
-	{
-		if (but[idx])
-			but[idx]->setPaletteForegroundColor(foregroundColor());
-	}
 }
 
 void impostaTime::OKTime()

@@ -60,9 +60,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	Draw();
 	qDebug("creating call_notifier");
 	call_notifier *cn = new call_notifier((QWidget *)NULL, (char *)"call notifier", this);
-	qDebug("setting BG and FG colors");
-	cn->setBGColor(backgroundColor());
-	cn->setFGColor(foregroundColor());
 	qDebug("cnm = %p", cnm);
 	if (!cnm)
 	{
@@ -82,8 +79,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 		qDebug("Creating unknown station notifier");
 		unknown_notifier = new call_notifier(NULL, "unk call notif", NULL);
 		cnm->set_unknown_call_notifier(unknown_notifier);
-		unknown_notifier->setBGColor(backgroundColor());
-		unknown_notifier->setFGColor(foregroundColor());
 	}
 }
 

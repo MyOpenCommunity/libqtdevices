@@ -85,8 +85,6 @@ void antintrusione::Parzializza()
 		delete tasti;
 	tasti = new tastiera_con_stati(s, NULL, "");
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Parz(char*)));
-	tasti->setBGColor(backgroundColor());
-	tasti->setFGColor(foregroundColor());
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showTastiera();
 }

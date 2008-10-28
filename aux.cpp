@@ -83,14 +83,12 @@ void aux::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
 	bannNavigazione->setBGColor(c);
-	fwdBut->setPaletteBackgroundColor(c);
 }
 
 void aux::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	bannNavigazione->setFGColor(c);
-	fwdBut->setPaletteForegroundColor(c);
 }
 
 void aux::setAmbDescr(const QString & d)

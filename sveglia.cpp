@@ -177,16 +177,6 @@ void sveglia::setBGColor(QColor c)
 	setPaletteBackgroundColor(c);
 	if (dataOra)
 		dataOra->setPaletteBackgroundColor(c);
-	for (uchar idx = 0; idx < 6; idx++)
-	{
-		if (but[idx])
-			but[idx]->setPaletteBackgroundColor(c);
-	}
-	for (uchar idx = 0; idx < 4; idx++)
-	{
-		if (choice[idx])
-			choice[idx]->setPaletteBackgroundColor(c);
-	}
 	if (bannNavigazione)
 		bannNavigazione->setBGColor(c);
 }
@@ -196,16 +186,6 @@ void sveglia::setFGColor(QColor c)
 	setPaletteForegroundColor(c);
 	if (dataOra)
 		dataOra->setPaletteForegroundColor(c);
-	for (uchar idx = 0; idx < 6; idx++)
-	{
-		if (but[idx])
-			but[idx]->setPaletteForegroundColor(c);
-	}
-	for (uchar idx = 0; idx < 4; idx++)
-	{
-		if (choice[idx])
-			choice[idx]->setPaletteForegroundColor(c);
-	}
 	if (bannNavigazione)
 		bannNavigazione->setFGColor(c);
 }

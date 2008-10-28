@@ -30,38 +30,9 @@ class BtButton;
 
 class  tastiera : public QWidget
 {
-   Q_OBJECT
+Q_OBJECT
 public:
     tastiera(QWidget *parent=0, const char *name=0, int line=LINE);
-
-/*!
-  \brief Sets the background color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setBGColor(int, int , int);
-
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setFGColor(int , int , int);
-
-/*!
-  \brief Sets the background color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	virtual void setBGColor(QColor);
-
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	virtual void setFGColor(QColor);
-
 	BtButton *zeroBut, *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
 	BtLabel* digitLabel, *scrittaLabel;
 /*!
@@ -154,8 +125,7 @@ public slots:
 private:
 	char pwd[6];
 	char mode;
-	void setPaletteBackgroundColor(const QColor &c);
-	void setPaletteForegroundColor(const QColor &c);
+	// TODO: rimuovere!
 	void setPaletteBackgroundPixmap(const QPixmap &pixmap);
 };
 
@@ -167,8 +137,6 @@ Q_OBJECT
 public:
 	//! Constructor
 	tastiera_con_stati(int s[8], QWidget *parent=0, const char *name=0);
-	void setBGColor(QColor);
-	void setFGColor(QColor);
 public slots:
 	//! Invert fg/bg colors for active "stati"
 	void show();

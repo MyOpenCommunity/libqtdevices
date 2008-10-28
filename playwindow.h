@@ -39,10 +39,6 @@ class  PlayWindow : public QWidget
 {
 Q_OBJECT
 public:
-	// Apply Style
-	virtual void setBGColor(QColor c);
-	virtual void setFGColor(QColor c);
-	
 	// Play control
 	void nextTrack();
 	void prevTrack();
@@ -99,10 +95,6 @@ private:
 	 */
 	unsigned int current_track;
 	static const unsigned CURRENT_TRACK_NONE = UINT_MAX;
-
-	// TODO: rimuovere questi metodi qt3!
-	void setPaletteForegroundColor(const QColor &c);
-	void setPaletteBackgroundColor(const QColor &c);
 };
 
 

@@ -136,14 +136,12 @@ void SourceChoice::setBGColor(QColor c)
 {
 	setPaletteBackgroundColor(c);
 	buttons_bar->setBGColor(c);
-	back_btn->setPaletteBackgroundColor(c);
 }
 
 void SourceChoice::setFGColor(QColor c)
 {
 	setPaletteForegroundColor(c);
 	buttons_bar->setFGColor(c);
-	back_btn->setPaletteForegroundColor(c);
 }
 
 void SourceChoice::setPaletteBackgroundColor(const QColor &c)
@@ -248,9 +246,6 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 	else
 		play_window = new MediaPlayWindow(media_player, this);
 
-	play_window->setBGColor(paletteBackgroundColor());
-	play_window->setFGColor(paletteForegroundColor());
-	play_window->setPalette(palette());
 	play_window->setFont(font());
 
 	if (selector)

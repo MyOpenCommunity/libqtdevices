@@ -100,32 +100,6 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	connect(okBut,SIGNAL(clicked()),this,SIGNAL(Close()));
 }
 
-void contrPage::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void contrPage::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void contrPage::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	decBut->setPaletteBackgroundColor(c);
-	aumBut->setPaletteBackgroundColor(c);
-	okBut->setPaletteBackgroundColor(c);
-}
-
-void contrPage::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	decBut->setPaletteForegroundColor(c);
-	aumBut->setPaletteForegroundColor(c);
-	okBut->setPaletteForegroundColor(c);
-}
-
 void contrPage::aumContr()
 {
 	uchar c;
@@ -142,21 +116,6 @@ void contrPage::decContr()
 	c = getContrast();
 	if (c >= 10)
 		setContrast(c-10,FALSE);
-}
-
-// TODO: funzioni di compatibilita' qt3.. da rimuovere!!
-void contrPage::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void contrPage::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
 }
 
 void contrPage::setPaletteBackgroundPixmap(const QPixmap &pixmap)

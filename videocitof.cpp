@@ -232,58 +232,10 @@ void call_notifier::SetButtonsIcons()
 	SetButtonIcon(a6_icon, area6_but);
 }
 
-void call_notifier::setBGColor(int r, int g, int b)
-{
-    setBGColor(QColor :: QColor(r,g,b));
-}
-
-void call_notifier::setFGColor(int r, int g, int b)
-{
-    setFGColor(QColor :: QColor(r,g,b));
-}
-
-void call_notifier::setBGColor(QColor c)
-{
-	qDebug("call_notifier::setBGColor()");
-	setPaletteBackgroundColor(c);
-	if (area2_but)
-		area2_but->setPaletteBackgroundColor(c);
-	if (area4_but)
-		area4_but->setPaletteBackgroundColor(c);
-	if (area6_but)
-		area6_but->setPaletteBackgroundColor(c);
-}
-
-void call_notifier::setFGColor(QColor c)
-{	
-	setPaletteForegroundColor(c);
-	if (area2_but)
-		area2_but->setPaletteForegroundColor(c);
-	if (area4_but)
-		area4_but->setPaletteForegroundColor(c);
-	if (area6_but)
-		area6_but->setPaletteForegroundColor(c);
-}
-
 void call_notifier::freezed(bool f)
 {
 	qDebug("call_notifier::freezed(%d)", f);
 }
-
-void call_notifier::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void call_notifier::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
-}
-
 
 // Call notifier manager implementation
 call_notifier_manager::call_notifier_manager()

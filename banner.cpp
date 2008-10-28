@@ -682,28 +682,14 @@ void banner::setFGColor(int r, int g, int b)
 
 void banner::setBGColor(QColor c)
 {
+	// TODO: rimuovere!!
 	setPaletteBackgroundColor(c);
-	if (sxButton)
-		sxButton->setPaletteBackgroundColor(c);
-	if (dxButton)
-		dxButton->setPaletteBackgroundColor(c);
-	if (csxButton)
-		csxButton->setPaletteBackgroundColor(c);
-	if (cdxButton)
-		cdxButton->setPaletteBackgroundColor(c);
 }
 
 void banner::setFGColor(QColor c)	
 {
+	// TODO: rimuovere!!
 	setPaletteForegroundColor(c);
-	if (sxButton)
-		sxButton->setPaletteForegroundColor(c);
-	if (dxButton)
-		dxButton->setPaletteForegroundColor(c);
-	if (csxButton)
-		csxButton->setPaletteForegroundColor(c);
-	if (cdxButton)
-		cdxButton->setPaletteForegroundColor(c);
 }
 
 void banner::setValue(char val)

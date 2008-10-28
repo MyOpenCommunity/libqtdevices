@@ -230,54 +230,6 @@ void tastiera::showTastiera()
 	show();
 }
 
-void tastiera::setBGColor(int r, int g, int b)
-{	
-	setBGColor(QColor :: QColor(r,g,b));
-}
-
-void tastiera::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor :: QColor(r,g,b));
-}
-
-void tastiera::setBGColor(QColor c)
-{	
-	qDebug("tastiera::setBGColor");
-	setPaletteBackgroundColor(c);
-
-	unoBut->setPaletteBackgroundColor(c);
-	dueBut->setPaletteBackgroundColor(c);
-	treBut->setPaletteBackgroundColor(c);
-	quatBut->setPaletteBackgroundColor(c);
-	cinBut->setPaletteBackgroundColor(c);
-	seiBut->setPaletteBackgroundColor(c);
-	setBut->setPaletteBackgroundColor(c);
-	ottBut->setPaletteBackgroundColor(c);
-	novBut->setPaletteBackgroundColor(c);
-	zeroBut->setPaletteBackgroundColor(c);
-	okBut->setPaletteBackgroundColor(c);
-	cancBut->setPaletteBackgroundColor(c);
-}
-
-void tastiera::setFGColor(QColor c)
-{
-	qDebug("tastiera::setFGColor");
-	setPaletteForegroundColor(c);
-
-	unoBut->setPaletteForegroundColor(c);
-	dueBut->setPaletteForegroundColor(c);
-	treBut->setPaletteForegroundColor(c);
-	quatBut->setPaletteForegroundColor(c);
-	cinBut->setPaletteForegroundColor(c);
-	seiBut->setPaletteForegroundColor(c);
-	setBut->setPaletteForegroundColor(c);
-	ottBut->setPaletteForegroundColor(c);
-	novBut->setPaletteForegroundColor(c);
-	zeroBut->setPaletteForegroundColor(c);
-	okBut->setPaletteForegroundColor(c);
-	cancBut->setPaletteForegroundColor(c);
-}
-
 void tastiera::draw()
 {
 	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -431,50 +383,20 @@ tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent, const char *na
 	digitLabel->show();
 }
 
-void tastiera_con_stati::setBGColor(QColor c)
-{
-	int i;
-	qDebug("tastiera_con_stati::setBGColor");
-	for (i = 0; i < 8; i++)
-		stati[i]->setPaletteBackgroundColor(c);
-	tastiera::setBGColor(c);
-}
-
-void tastiera_con_stati::setFGColor(QColor c)
-{
-	int i;
-	qDebug("tastiera_con_stati::setFGColor");
-	for (i = 0; i < 8; i++)
-		stati[i]->setPaletteForegroundColor(c);
-	tastiera::setFGColor(c);
-}
-
 void tastiera_con_stati::show()
 {
 	for (int i = 0; i < 8; i++)
 	{
 		if (st[i])
 		{
-			QColor fc = stati[i]->paletteForegroundColor();
-			stati[i]->setPaletteForegroundColor(stati[i]->paletteBackgroundColor());
-			stati[i]->setPaletteBackgroundColor(fc);
+			// TODO: e' necessario trovare un modo per invertire colore di testo e sfondo
+			// con gli stylesheet, che forse e' parsare la stringa ottenuta con stylesheet()!!
+			//QColor fc = stati[i]->paletteForegroundColor();
+			//stati[i]->setPaletteForegroundColor(stati[i]->paletteBackgroundColor());
+			//stati[i]->setPaletteBackgroundColor(fc);
 		}
 	}
 	QWidget::show();
-}
-
-void tastiera::setPaletteBackgroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(backgroundRole(), c);
-	setPalette(palette);
-}
-
-void tastiera::setPaletteForegroundColor(const QColor &c)
-{
-	QPalette palette;
-	palette.setColor(foregroundRole(), c);
-	setPalette(palette);
 }
 
 void tastiera::setPaletteBackgroundPixmap(const QPixmap &pixmap)
