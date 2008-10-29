@@ -11,12 +11,6 @@
 #ifndef XMLCONFHANDLER_H
 #define XMLCONFHANDLER_H
 
-#include <qxml.h>
-#include <qcolor.h>
-#include <qdatetime.h>
-#include <qstring.h>
-
-
 class homePage;
 class sottoMenu;
 class diffSonora;
@@ -34,6 +28,7 @@ class SupervisionMenu;
 #include <QString>
 #include <QColor>
 #include <QList>
+#include <qxml.h>
 
 
 /*!
@@ -130,7 +125,7 @@ private:
 	QString page_icon, page_item_who, page_item_type, page_item_action;
 	int page_item_softstart, page_item_softstop;
 
-	void * page_item_indirizzo;
+	void *page_item_indirizzo;
 
 	QList<QString*> page_item_list_img;
 	QList<QString*> page_item_list_img_m;
@@ -159,15 +154,15 @@ private:
 	diffmulti **dm;
 	ThermalMenu **termo;
 	diffSonora **difSon;
-	antintrusione** antintr;
-	SupervisionMenu** supervisione;
-	QWidget ** pagDefault;
+	antintrusione **antintr;
+	SupervisionMenu **supervisione;
+	QWidget **pagDefault;
 	versio *datiGen ;
 
-	BtMain * BtM;
-	Client * client_comandi;
-	Client *  client_monitor;
-	Client * client_richieste;
+	BtMain *BtM;
+	Client *client_comandi;
+	Client *client_monitor;
+	Client *client_richieste;
 	// For watchdog refresh
 	QTime wdtime;
 };
