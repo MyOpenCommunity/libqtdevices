@@ -12,7 +12,6 @@
 #include "fontmanager.h"
 #include "main.h" // MY_FILE_CFG_FONT
 
-
 #include <QFile>
 
 #include <stdlib.h>
@@ -21,12 +20,12 @@
 /**
  * \brief inizializzazione del membro statico
  */
-FontManager* FontManager::m_pinstance = 0;
+FontManager *FontManager::m_pinstance = 0;
 
 /**
  * \brief implementazione del singleton
  */
-FontManager* FontManager::instance ()
+FontManager *FontManager::instance()
 {
 	if (m_pinstance == 0)
 	{
@@ -35,15 +34,11 @@ FontManager* FontManager::instance ()
     return m_pinstance;
 }
 
-/**
- * \brief costruttore di default
-*/
 FontManager::FontManager()
 {
 	loadFonts();
 }
 
-//#define PRINT_ON_CONSOLE
 /**
  * \brief colleziona gli elementi di un font (id, family, size...) 
  *          e quando la descrizione e' completa salva il font nella mappa
@@ -89,9 +84,6 @@ int FontManager::addElement(int nElement, FontInfo & fi, QString tagName, QStrin
 
 	if (testCounter == nFontInfoFields)
 	{
-#ifdef PRINT_ON_CONSOLE 
-		printf("added %d %s %d %d\n", fi.id, fi._family, fi.size, fi.weight);
-#endif
 		m_map.insert((eFontID) fi.id, fi);
 		testCounter = 0;
 	}
@@ -139,10 +131,10 @@ int FontManager::loadFonts()
 					nElement++;
 					QDomElement e = n.toElement();
 					int err = addElement(nElement, fi, e.tagName(), e.text());
-					if (err  != 0)
+					if (err != 0)
 					{
 						printf("%d %s %d",  err, __FILE__, __LINE__);
-						// todo log errore
+						// TODO: log errore
 						return -3;
 					}
 				}
@@ -162,9 +154,9 @@ int FontManager::loadFonts()
 int FontManager::getFont(eFontID fontID, QFont & font)
 {
 	FontInfo fi;
-	int ret = getFontInfo (fontID, fi);
+	int ret = getFontInfo(fontID, fi);
 	font.setFamily(fi.family());
-	font.setPointSize (fi.size);
+	font.setPointSize(fi.size);
 	font.setWeight (fi.weight);
 	return ret;
 }
@@ -177,14 +169,14 @@ int FontManager::getFont(eFontID fontID, QFont & font)
  */
 int FontManager::getFontInfo(eFontID fontID, FontInfo & fi)
 {
-	QMap <eFontID, FontInfo>::iterator it = m_map.find(fontID);
+	QMap<eFontID, FontInfo>::iterator it = m_map.find(fontID);
 	if (it != m_map.end())
 	{
 		fi = *it;
 		return 0;
 	}
-	strcpy (fi._family, "arial"); // default font
-	fi.size= 24;
+	strcpy(fi._family, "arial"); // default font
+	fi.size = 24;
 	fi.weight = QFont::Normal ;
 	return -1;
 }
