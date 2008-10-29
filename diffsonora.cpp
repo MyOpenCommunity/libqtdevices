@@ -42,8 +42,7 @@ diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 	connect(amplificatori  ,SIGNAL(Closed()),this,SLOT(fineVis()));
 	BtLabel* linea = new BtLabel(this,NULL,0);
 	linea->setGeometry(0,77,240,3);
-	// TODO: verificare!!
-	linea->setStyleSheet("QLabel {color:#000000;}");
+	linea->setStyleSheet("QLabel {background-color:#FFFFFF;}");
 
 	if (creasorgenti)
 	{
