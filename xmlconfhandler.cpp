@@ -89,7 +89,7 @@ static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIO
  *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
 		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, diffSonora **dS, diffmulti **_dm, antintrusione **ant,
-		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG, QColor *bg, QColor *fg1, QColor *fg2)
+		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG, QColor *fg2)
 {
 	home = h;
 	specPage = sP;
@@ -112,9 +112,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	client_richieste = c_r;
 	datiGen = dG;
 
-	//   bg_r, bg_g, bg_b,fg_r,fg_g, fg_b,fg_r1, fg_g1, fg_b1;
-	Background = *bg;
-	Foreground = *fg1;
 	SecondForeground = *fg2;
 	page_item_list_group = new QList<QString*>;
 	page_item_list_group_m = new QList<QString*>;
@@ -1074,7 +1071,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					case TERMOREGOLAZIONE:
 						n = getPageNode(TERMOREGOLAZIONE);
 						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground, SecondForeground);
+							*termo = new ThermalMenu(NULL, "TERMO", n, SecondForeground);
 						else
 							qWarning("TERMOREGOLAZIONE configuration not found!");
 						(*termo)->hide();
@@ -1084,7 +1081,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					case TERMOREG_MULTI_PLANT:
 						n = getPageNode(TERMOREG_MULTI_PLANT);
 						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, "TERMO", n, Background, Foreground, SecondForeground);
+							*termo = new ThermalMenu(NULL, "TERMO", n, SecondForeground);
 						else
 							qWarning("TERMOREG_MULTI_PLANT configuration not found!");
 						(*termo)->hide();
@@ -1112,7 +1109,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 
 					case SUPERVISIONE:
 						n = getPageNode(page_id);
-						*supervisione = new SupervisionMenu(NULL, "SUPERVISIONE", n, Background, Foreground);
+						*supervisione = new SupervisionMenu(NULL, "SUPERVISIONE", n);
 						(*supervisione)->hide();
 						pageAct = *supervisione;
 						break;

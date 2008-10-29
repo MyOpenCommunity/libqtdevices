@@ -60,10 +60,7 @@ class SupervisionMenu;
   16. pointer to monitor socket device;  
   17. pointer to the page with versions;  
   18. pointer to \a schedulations subtree (sottoMenu) pointer;  
-  19. pointer to \a background color;    
-  20. pointer to \a foreground color;    
-  21. pointer to \a second \a foreground color;    
-  22. pointer to a multichannel sound \a diffusion subtree (sottoMenu) pointer;
+  19. pointer to \a second \a foreground color;
 
   \author Davide
   \date lug 2005
@@ -75,8 +72,7 @@ public:
 			sottoMenu **videocitofonia=NULL, sottoMenu **illumino=NULL, sottoMenu **scenari=NULL, sottoMenu **carichi=NULL,
 			sottoMenu **imposta=NULL, sottoMenu **automazioni=NULL, ThermalMenu **termo=NULL, diffSonora **difSon=NULL,
 			diffmulti **dm=NULL, antintrusione **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
-			Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL, QColor *bg=NULL,
-			QColor *fg1=NULL, QColor *fg2=NULL);
+			Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL, QColor *fg2=NULL);
 
 	~xmlconfhandler();
 	/*!
@@ -151,7 +147,7 @@ private:
 	int	par1, par2,par3, par4;
 	unsigned int itemNum;
 	QString CurTagL4_copy, CurTagL5_copy;
-	QColor Background, Foreground,SecondForeground;
+	QColor SecondForeground;
 	unsigned char idPageDefault,car;
 
 	void set_page_item_defaults();

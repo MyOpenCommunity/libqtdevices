@@ -23,7 +23,7 @@ static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png"
 static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
 static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
-ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2) :
+ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor fg2) :
 	sottoMenu(parent, name)
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");

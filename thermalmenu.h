@@ -36,7 +36,7 @@ public:
 	/**
 	 * 
 	 */
-	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2);
+	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor fg2);
 
 public slots:
 	/**

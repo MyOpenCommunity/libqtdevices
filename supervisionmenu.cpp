@@ -24,8 +24,7 @@
 	SupervisionMenu class definition
 ==================================================================================================*/
 
-SupervisionMenu::SupervisionMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg) :
-	sottoMenu(parent, name)
+SupervisionMenu::SupervisionMenu(QWidget *parent, const char *name, QDomNode n) : sottoMenu(parent, name)
 {
 	qDebug("[SUPERVISION] SupervisionMenu()");
 	subtreeRoot = n;

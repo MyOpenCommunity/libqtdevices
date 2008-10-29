@@ -141,18 +141,17 @@ bool BtMain::loadConfiguration(QString cfg_file)
 	readExtraConf(&bg, &fg1, &fg2);
 	if (QFile::exists(cfg_file))
 	{
-		xmlconfhandler *handler2 = new xmlconfhandler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
+		xmlconfhandler handler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
 				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
-				client_comandi, client_monitor, client_richieste, datiGen, bg, fg1, fg2);
+				client_comandi, client_monitor, client_richieste, datiGen, fg2);
+
 		QFile xmlFile(cfg_file);
-		QXmlInputSource source2(&xmlFile);
-		QXmlSimpleReader reader2;
+		QXmlSimpleReader reader;
 		qDebug("parte parsing");
-		reader2.setContentHandler(handler2);
-		reader2.parse(source2);
+		reader.setContentHandler(&handler);
+		reader.parse(QXmlInputSource(&xmlFile));
 		qDebug("finito parsing");
 		qApp->setStyleSheet(QString("QWidget {background-color:%1;color:%2;}").arg(bg->name()).arg(fg1->name()));
-		delete handler2;
 		return true;
 	}
 	return false;

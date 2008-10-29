@@ -44,8 +44,8 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offs
 
 void TitleLabel::paintEvent(QPaintEvent *event)
 {
-	QPainter p(this);
-	p.translate(w_offset, h_offset);
+/*	QPainter p(this);
+	p.translate(w_offset, h_offset);*/
 	BtLabelEvo::paintEvent(event);
 }
 
