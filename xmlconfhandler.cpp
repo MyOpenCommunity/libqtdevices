@@ -1172,12 +1172,12 @@ bool xmlconfhandler::characters(const QString & qValue)
 						}
 						if (!CurTagL6.compare("softstart"))
 						{
-							qDebug("**** QUA %d", qValue.toInt());
+							qDebug("**** SOFTSTART %d", qValue.toInt());
 							sstart.append(qValue.toInt());
 						}
 						if (!CurTagL6.compare("softstop"))
 						{
-							qDebug("**** QUA %d", qValue.toInt());
+							qDebug("**** SOFTSTOP %d", qValue.toInt());
 							sstop.append(qValue.toInt());
 						}
 					}
