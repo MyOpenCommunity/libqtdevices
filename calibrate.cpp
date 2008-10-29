@@ -25,6 +25,7 @@
 Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	QWidget(parent, Qt::Tool | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint), button_test(false)
 {
+	setStyleSheet("QWidget {background-color:#FFFFFF;color:#000000;}");
 	setAttribute(Qt::WA_DeleteOnClose);
 	const int offset = 30;
 	QRect desk = qApp->desktop()->geometry();
