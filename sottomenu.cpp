@@ -83,7 +83,6 @@ sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi
 	indice = 0;
 	indicold = 100;
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
 	if (!parentWidget())
 		showFullScreen();
 #endif

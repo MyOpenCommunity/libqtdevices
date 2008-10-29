@@ -46,9 +46,6 @@ versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(pare
 	datiGen->setLineWidth(3);
 	datiGen->setText(model);
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	datiGen->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;

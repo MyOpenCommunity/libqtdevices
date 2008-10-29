@@ -22,9 +22,6 @@
 
 aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(parent)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 

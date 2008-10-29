@@ -20,9 +20,6 @@
 call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) : QFrame(parent)
 {
 	qDebug("call_notifier::call_notifier()");
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	QString where;
 	my_station = ms;
 	if (ms)

@@ -22,9 +22,6 @@ extern unsigned char tipoData;
 
 impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor(QCursor(Qt::BlankCursor));
-#endif
 	char iconName[MAX_PATH];
 	QPixmap* Icon1 = new QPixmap();
 	QPixmap* Icon2 = NULL;

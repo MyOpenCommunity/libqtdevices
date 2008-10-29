@@ -35,9 +35,6 @@
 sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff* diso, char* f, char*h, char*m)
 	: QFrame(parent)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;

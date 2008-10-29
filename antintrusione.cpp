@@ -24,10 +24,6 @@ extern unsigned char tipoData;
 
 antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent)
 {
-
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
 	zone = new sottoMenu(this,"Zone",4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);

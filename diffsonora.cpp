@@ -22,9 +22,6 @@
 diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 	: QWidget(parent)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	numRighe = NUM_RIGHE;
 
 	if (creasorgenti)

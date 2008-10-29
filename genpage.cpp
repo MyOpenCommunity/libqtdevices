@@ -21,9 +21,6 @@ genPage::genPage(QWidget *parent,const char *name , unsigned char tipo,const cha
 	: BtLabel(parent, name, (Qt::WindowFlags)f)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 	switch (tipo)
 	{

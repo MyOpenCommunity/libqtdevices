@@ -51,7 +51,6 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	}
 	crossPos = fromDevice(cd.screenPoints[QWSPointerCalibrationData::TopLeft]);
 	newPos = crossPos;
-	setCursor(QCursor(Qt::BlankCursor));
 #endif
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));

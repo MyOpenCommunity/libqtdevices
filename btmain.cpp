@@ -177,7 +177,6 @@ void BtMain::hom()
 	config_loaded = true;
 
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setCursor(QCursor(Qt::BlankCursor));
 
 	if (monitor_ready)
 		myMain();

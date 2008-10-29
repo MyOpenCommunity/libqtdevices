@@ -20,9 +20,6 @@ allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *I
     qDebug("indirizzo = %s, IconaDx = %s, tipo = %d", indirizzo, IconaDx, t);
     type = t;
     SetIcons(IconaDx);
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor(QCursor(Qt::BlankCursor));
-#endif
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
     setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
     descr->setText(name);

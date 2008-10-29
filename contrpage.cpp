@@ -24,7 +24,6 @@
 contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
 	showFullScreen();
 #endif
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);

@@ -145,9 +145,6 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(paren
 	h = new QString("");
 	m = new QString("");
 	s = new QString("");
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	ora = NULL;
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
@@ -454,9 +451,6 @@ bool scenEvo_cond_h::isTrue(void)
 scenEvo_cond_d::scenEvo_cond_d(QWidget *parent, char *name) : scenEvo_cond(parent, name)
 {
 	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(Qt::BlankCursor));
-#endif
 	descr = new QString("");
 	where = new QString("");
 	trigger = new QString("");
