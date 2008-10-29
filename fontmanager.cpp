@@ -12,6 +12,7 @@
 #include "fontmanager.h"
 #include "main.h" // MY_FILE_CFG_FONT
 
+
 #include <QFile>
 
 #include <stdlib.h>
@@ -107,7 +108,7 @@ int FontManager::loadFonts()
 	QDomDocument doc("mydocument");
 	QString language_suffix = getLanguage();
 
-	QString font_file = QString("%1%2").arg(MY_FILE_CFG_FONT).arg(language_suffix);
+	QString font_file = QString(MY_FILE_CFG_FONT).arg(language_suffix);
 
 	QFile file(font_file);
 	if (!file.open(QIODevice::ReadOnly))
@@ -129,7 +130,6 @@ int FontManager::loadFonts()
 		QDomElement e = n.toElement(); // try to convert the node to an element.
 		if (!e.isNull())
 		{
-			// printf("%s",  e.tagName().ascii());
 			int nElement = 0;
 			FontInfo fi;
 			for (QDomNode n = e.firstChild(); !n.isNull(); n = n.nextSibling())

@@ -103,7 +103,7 @@ extern QDomDocument qdom_appconfig;
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
-#define MY_FILE_CFG_FONT        "cfg/extra/3/font_%s.xml"
+#define MY_FILE_CFG_FONT        "cfg/extra/3/font_%1.xml"
 /*! \def MY_FILE_CFG_FONT
  *  The font configuration file
  */
