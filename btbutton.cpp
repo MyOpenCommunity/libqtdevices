@@ -36,6 +36,7 @@ void BtButton::paintEvent(QPaintEvent *event)
 
 	setIcon(*p);
 	setIconSize(p->size());
+	resize(p->size());
 
 #ifdef BEEP
 	if (isDown())
