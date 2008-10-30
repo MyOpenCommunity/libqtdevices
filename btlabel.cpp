@@ -41,6 +41,7 @@ void BtLabel::paintEvent(QPaintEvent *e)
 		QStyleOption opt;
 		opt.initFrom(this);
 		style->drawItemPixmap(&painter, cr, align, pix);
+		// NOTE: In this case, painter.end() is called by QPainter destructor
 	}
 	else
 	{
