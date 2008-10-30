@@ -80,51 +80,50 @@ void getAmbName(char *name, char *out, char *amb, char len)
 
 bool setCfgValue(QString file, int id, QString campo, QString valore, int serNumId)
 {
-	char app1[100];
-	char app2[100];
 	int count;
+	QString tmp_file = "cfg/appoggio.xml";
 
 	comChConf();
 	count = 1;
-	if (QFile::exists("cfg/appoggio.xml"))
-	QFile::remove("cfg/appoggio.xml");
+	if (QFile::exists(tmp_file))
+		QFile::remove(tmp_file);
 
 	QFile *fil1 = new QFile(file);
-	QFile *fil2 = new QFile("cfg/appoggio.xml");
+	QFile *fil2 = new QFile(tmp_file);
 	if (!fil1->open(QIODevice::WriteOnly | QIODevice::ReadOnly))
-		return (FALSE);
+		return false;
 
 	if (!fil2->open(QIODevice::WriteOnly))
 	{
 		fil1->close();
-		return (FALSE);
+		return false;
 	}
 
 	QTextStream t1(fil1);
 	QTextStream t2(fil2);
-	sprintf(&app1[0], "<id>%d</id>",id);
 
-    while (true)
+	QString app1 = QString("<id>%1</id>").arg(id);
+
+	while (true)
 	{
 		QString Line = t1.readLine().append('\n');
-		if (Line.compare("\n"))
+		if (Line == "\n")
 			break;
 
 		t2 << Line;
 
-		if (Line.contains(&app1[0]))
+		if (Line.contains(app1))
 		{
 			if  (count == serNumId)
 			{
-				QByteArray buf = campo.toAscii();
-				sprintf(&app2[0], "<%s>", buf.constData());
+				QString app2 = QString("<%1>").arg(campo);
 				while (true)
 				{
 					Line = t1.readLine().append('\n');
-					if (Line.compare("\n"))
+					if (Line == "\n")
 						break;
 
-					if (!Line.contains(&app2[0]))
+					if (!Line.contains(app2))
 						t2 << Line;
 					else
 						break;
@@ -135,7 +134,7 @@ bool setCfgValue(QString file, int id, QString campo, QString valore, int serNum
 				while (true)
 				{
 					Line = t1.readLine().append('\n');
-					if (Line.compare("\n"))
+					if (Line == "\n")
 						break;
 					t2 << Line;
 				}
@@ -143,17 +142,18 @@ bool setCfgValue(QString file, int id, QString campo, QString valore, int serNum
 				fil2->flush();
 				fil1->close();
 				fil2->close();
-				QDir::current().rename("cfg/appoggio.xml", file);
-				return (TRUE);
+				QDir::current().remove(file);
+				QDir::current().rename(tmp_file, file);
+				return true;
 			}
 			else
 				count++;
 		}
-    }
+	}
 
 	fil1->close();
 	fil2->close();
-	return (FALSE);
+	return false;
 }
 
 bool setCfgValue(int id, const char* campo, const char* valore)
