@@ -130,8 +130,10 @@ public slots:
 	 */
 	void freezed_handler(bool);
 
-protected:
-	uchar numRighe,isVisual;
+
+private:
+	bool isVisual;
+	uchar numRighe;
 	sottoMenu* sorgenti;
 };
 

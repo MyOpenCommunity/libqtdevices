@@ -23,7 +23,9 @@ diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 	: QWidget(parent)
 {
 	numRighe = NUM_RIGHE;
-
+	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore
+	// deve essere inizializzato
+	isVisual = false;
 	if (creasorgenti)
 		sorgenti = new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
 	else
@@ -35,8 +37,8 @@ diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 		setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
 	if (sorgenti)
-		connect(sorgenti, SIGNAL(Closed()), this, SLOT(fineVis()));
-	connect(amplificatori  ,SIGNAL(Closed()),this,SLOT(fineVis()));
+		connect(sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
+	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	BtLabel* linea = new BtLabel(this,NULL,0);
 	linea->setGeometry(0,77,240,3);
 	linea->setStyleSheet("QLabel {background-color:#FFFFFF;}");
@@ -94,7 +96,7 @@ int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizz
 
 void diffSonora::setNumRighe(uchar n)
 {
-	numRighe=n;
+	numRighe = n;
 	qDebug("Invoking amplificatori->setNumRighe(%d)", n-2);
 	amplificatori->setNumRighe(n-2);
 	qDebug("sorgenti = %p", sorgenti);
@@ -169,7 +171,7 @@ not_ours:
 void diffSonora::freezed_handler(bool f)
 {
 	qDebug("diffSonora::freezed(%d)", f);
-	isVisual = f ? 0 : 1;
+	isVisual = f ? false : true;
 	if (isHidden())
 		isVisual = false;
 }
@@ -179,7 +181,7 @@ void diffSonora::show()
 	openwebnet msg_open;
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
-	isVisual = 1;
+	isVisual = true;
 
 	if (sorgenti)
 		sorgenti->show();
@@ -243,9 +245,9 @@ void diffSonora::setNavBarMode(uchar c)
 
 void diffSonora::fineVis()
 {
-	isVisual=0;
-	emit(Closed());
-	emit(closed(this));
+	isVisual = false;
+	emit Closed();
+	emit closed(this);
 }
 
 void diffSonora::setFirstSource(int addr)
