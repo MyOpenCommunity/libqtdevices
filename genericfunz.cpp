@@ -18,6 +18,7 @@
 #include <QPixmap>
 #include <QTextStream>
 #include <QDateTime>
+#include <QDebug>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -170,7 +171,7 @@ bool copyFile(char* orig, char* dest)
 {
 	QFile *filIN = new QFile(orig);
 	if (!filIN->open(QIODevice::ReadOnly))
-		return (FALSE);
+		return false;
 
 	if (QFile::exists(dest))
 		QFile::remove(dest);
@@ -178,7 +179,7 @@ bool copyFile(char* orig, char* dest)
 	QFile *filOUT = new QFile(dest);
 
 	if (!filOUT->open(QIODevice::WriteOnly))
-		return (FALSE);
+		return false;
 
 	QDataStream tIN(filIN);
 	QDataStream tOUT(filOUT);
@@ -192,7 +193,7 @@ bool copyFile(char* orig, char* dest)
 
 	filIN->close();
 	filOUT->close();
-	return (TRUE);
+	return true;
 }
 
 void setContrast(unsigned char c,bool b)
@@ -280,28 +281,22 @@ void setBacklight(bool b)
 	}
 }
 
-void setBeep(bool b,bool ab)
+void setBeep(bool buzzer_enable, bool write_to_conf)
 {
+	const char *p = buzzer_enable ? "1" : "0";
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
 	{
 		FILE* fd = fopen("/proc/sys/dev/btweb/buzzer_enable", "w");
 		if (fd >= 0)
 		{
-			if (b)
-				fwrite("1", 1, 1, fd);
-			else
-				fwrite("0", 1, 1, fd);
+			fwrite(p, 1, 1, fd);
 			fclose(fd);
 		}
 	}
 
-	if (ab)
+	if (write_to_conf)
 	{
-		qDebug("LUCA setBeep, write to file, beep value = %d", b);
-		if (b)
-			setCfgValue(SUONO, "value","1");
-		else
-			setCfgValue(SUONO, "value","0");
+		setCfgValue(SUONO, "value", p);
 	}
 }
 
@@ -313,13 +308,9 @@ bool getBeep()
 		FILE *fd = fopen("/proc/sys/dev/btweb/buzzer_enable",  "r");
 		if (fd >= 0)
 		{
-			fread (&c ,1, 1,fd);
+			fread (&c, 1, 1, fd);
 			fclose(fd);
-
-			if (c!='0')
-				return true;
-			else
-				return false;
+			return c != '0';
 		}
     }
     return false;
@@ -342,7 +333,7 @@ bool getBacklight()
 				read(fd, &c[0], 4);
 				close(fd);
 				if (atoi(&c[0]) < 100)
-					return (TRUE);
+					return true;
 			}
 		}
 	}
@@ -356,11 +347,11 @@ bool getBacklight()
 				read (fd, &c[0], 1);
 				close(fd);
 				if (c[0]!='0')
-					return (TRUE);
+					return true;
 			}
 		}
 	}
-	return (FALSE);
+	return false;
 }
 
 
