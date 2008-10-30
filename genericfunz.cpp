@@ -18,6 +18,7 @@
 #include <QPixmap>
 #include <QTextStream>
 #include <QDateTime>
+#include <QDebug>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -80,51 +81,50 @@ void getAmbName(char *name, char *out, char *amb, char len)
 
 bool setCfgValue(QString file, int id, QString campo, QString valore, int serNumId)
 {
-	char app1[100];
-	char app2[100];
 	int count;
+	QString tmp_file = "cfg/appoggio.xml";
 
 	comChConf();
 	count = 1;
-	if (QFile::exists("cfg/appoggio.xml"))
-	QFile::remove("cfg/appoggio.xml");
+	if (QFile::exists(tmp_file))
+		QFile::remove(tmp_file);
 
 	QFile *fil1 = new QFile(file);
-	QFile *fil2 = new QFile("cfg/appoggio.xml");
+	QFile *fil2 = new QFile(tmp_file);
 	if (!fil1->open(QIODevice::WriteOnly | QIODevice::ReadOnly))
-		return (FALSE);
+		return false;
 
 	if (!fil2->open(QIODevice::WriteOnly))
 	{
 		fil1->close();
-		return (FALSE);
+		return false;
 	}
 
 	QTextStream t1(fil1);
 	QTextStream t2(fil2);
-	sprintf(&app1[0], "<id>%d</id>",id);
 
-    while (true)
+	QString app1 = QString("<id>%1</id>").arg(id);
+
+	while (true)
 	{
 		QString Line = t1.readLine().append('\n');
-		if (Line.compare("\n"))
+		if (Line == "\n")
 			break;
 
 		t2 << Line;
 
-		if (Line.contains(&app1[0]))
+		if (Line.contains(app1))
 		{
 			if  (count == serNumId)
 			{
-				QByteArray buf = campo.toAscii();
-				sprintf(&app2[0], "<%s>", buf.constData());
+				QString app2 = QString("<%1>").arg(campo);
 				while (true)
 				{
 					Line = t1.readLine().append('\n');
-					if (Line.compare("\n"))
+					if (Line == "\n")
 						break;
 
-					if (!Line.contains(&app2[0]))
+					if (!Line.contains(app2))
 						t2 << Line;
 					else
 						break;
@@ -135,7 +135,7 @@ bool setCfgValue(QString file, int id, QString campo, QString valore, int serNum
 				while (true)
 				{
 					Line = t1.readLine().append('\n');
-					if (Line.compare("\n"))
+					if (Line == "\n")
 						break;
 					t2 << Line;
 				}
@@ -143,17 +143,18 @@ bool setCfgValue(QString file, int id, QString campo, QString valore, int serNum
 				fil2->flush();
 				fil1->close();
 				fil2->close();
-				QDir::current().rename("cfg/appoggio.xml", file);
-				return (TRUE);
+				QDir::current().remove(file);
+				QDir::current().rename(tmp_file, file);
+				return true;
 			}
 			else
 				count++;
 		}
-    }
+	}
 
 	fil1->close();
 	fil2->close();
-	return (FALSE);
+	return false;
 }
 
 bool setCfgValue(int id, const char* campo, const char* valore)
@@ -170,7 +171,7 @@ bool copyFile(char* orig, char* dest)
 {
 	QFile *filIN = new QFile(orig);
 	if (!filIN->open(QIODevice::ReadOnly))
-		return (FALSE);
+		return false;
 
 	if (QFile::exists(dest))
 		QFile::remove(dest);
@@ -178,7 +179,7 @@ bool copyFile(char* orig, char* dest)
 	QFile *filOUT = new QFile(dest);
 
 	if (!filOUT->open(QIODevice::WriteOnly))
-		return (FALSE);
+		return false;
 
 	QDataStream tIN(filIN);
 	QDataStream tOUT(filOUT);
@@ -192,7 +193,7 @@ bool copyFile(char* orig, char* dest)
 
 	filIN->close();
 	filOUT->close();
-	return (TRUE);
+	return true;
 }
 
 void setContrast(unsigned char c,bool b)
@@ -280,27 +281,22 @@ void setBacklight(bool b)
 	}
 }
 
-void setBeep(bool b,bool ab)
+void setBeep(bool buzzer_enable, bool write_to_conf)
 {
+	const char *p = buzzer_enable ? "1" : "0";
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
 	{
 		FILE* fd = fopen("/proc/sys/dev/btweb/buzzer_enable", "w");
 		if (fd >= 0)
 		{
-			if (b)
-				fwrite("1", 1, 1, fd);
-			else
-				fwrite("0", 1, 1, fd);
+			fwrite(p, 1, 1, fd);
 			fclose(fd);
 		}
 	}
 
-	if (ab)
+	if (write_to_conf)
 	{
-		if (b)
-			setCfgValue(SUONO, "value","1");
-		else
-			setCfgValue(SUONO, "value","0");
+		setCfgValue(SUONO, "value", p);
 	}
 }
 
@@ -312,20 +308,12 @@ bool getBeep()
 		FILE *fd = fopen("/proc/sys/dev/btweb/buzzer_enable",  "r");
 		if (fd >= 0)
 		{
-			fread (&c ,1, 1,fd);
+			fread (&c, 1, 1, fd);
 			fclose(fd);
-
-			if (c!='0')
-			{
-				return (TRUE);
-			}
-			else
-			{
-				return (FALSE);
-			}
+			return c != '0';
 		}
     }
-    return (FALSE);
+    return false;
 }
 
 bool getBacklight()
@@ -345,7 +333,7 @@ bool getBacklight()
 				read(fd, &c[0], 4);
 				close(fd);
 				if (atoi(&c[0]) < 100)
-					return (TRUE);
+					return true;
 			}
 		}
 	}
@@ -359,11 +347,11 @@ bool getBacklight()
 				read (fd, &c[0], 1);
 				close(fd);
 				if (c[0]!='0')
-					return (TRUE);
+					return true;
 			}
 		}
 	}
-	return (FALSE);
+	return false;
 }
 
 
@@ -388,21 +376,9 @@ void beep(int t)
 		if (fd >= 0)
 		{
 			char te[10];
-#ifndef HAS_HP
-			sprintf(&te[0],"4000 %d",t);
-			write(fd, &te[0],strlen(&te[0]));
-#endif
-#ifdef HAS_HP
-			sprintf(&te[0],"%d %d",2400,t/3);
-			write(fd, &te[0],strlen(&te[0]));
-			sleep(t/3000);
-			sprintf(&te[0],"%d %d",1600,t/3);
-			write(fd, &te[0],strlen(&te[0]));
-			sleep(t/3000);
-			sprintf(&te[0],"%d %d",800,t/3);
-			write(fd, &te[0],strlen(&te[0]));
-#endif
-		close(fd);
+			sprintf(te, "4000 %d", t);
+			write(fd, te, strlen(te));
+			close(fd);
 		}
     }
 }

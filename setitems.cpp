@@ -138,19 +138,15 @@ impBeep::impBeep(sottoMenu  *parent,const char *name ,char* val, const char * ic
 	strncpy(iconOn, icon1, sizeof(iconOn));
 	strncpy(iconOff, icon2, sizeof(iconOff));
 	connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));
+	//TODO: che ci fanno tutte queste chiamate alla seticons??
 	SetIcons(iconOff,1);
 	SetIcons(iconOn,1);
 	bool on = !strcmp(val, "1");
-	if (!on)
-	{
-		setBeep(FALSE,FALSE);
-		SetIcons(uchar(0), iconOff);
-	}
-	else
-	{
-		setBeep(TRUE,FALSE);
+	setBeep(on, false);
+	if (on)
 		SetIcons(uchar(1), iconOn);
-	}
+	else
+		SetIcons(uchar(0), iconOff);
 	Draw();
 }
 
@@ -158,12 +154,12 @@ void impBeep::toggleBeep()
 {
 	if (getBeep())
 	{
-		setBeep(FALSE,TRUE);
+		setBeep(false, true);
 		SetIcons(uchar(0), iconOff);
 	}
 	else
 	{
-		setBeep(TRUE,TRUE);
+		setBeep(true, true);
 		SetIcons(uchar(0), iconOn);
 		beep();
 	}

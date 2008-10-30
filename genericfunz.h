@@ -55,12 +55,12 @@ void setBacklight(bool);
 */
 bool getBacklight();
 
- /*!
-  \brief Sets the abilitation of the beep.
-
-  The beep abilitation is set to the value of the first argument. If the second argument is TRUE also the configuration file is updated otherwise it isn't.
-*/
-void setBeep(bool,bool);
+/**
+ * Enables the beep.
+ * \param buzzer_enable Enables the beep for this execution of BTouch, without changing conf.xml.
+ * \param write_to_conf Writes to config file the value passed in buzzer_enable.
+ */
+void setBeep(bool buzzer_enable, bool write_to_conf);
 
  /*!
   \brief Sets the orientation of the device.
