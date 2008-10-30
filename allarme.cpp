@@ -49,12 +49,12 @@ void allarme::SetIcons(char *icon)
 		break;
     }
     Icon1->load(icon1);
-    Immagine = new BtLabel(this, "icona_alarm");
+    Immagine = new BtLabel(this);
     Immagine->setPixmap(*Icon1);
     Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
 			  ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
     delete(Icon1);
-    descr = new BtLabel(this, "descr_alarm"); 
+    descr = new BtLabel(this);
     QFont aFont;
     FontManager::instance()->getFont(font_allarme_descr, aFont);
     descr->setFont(aFont);

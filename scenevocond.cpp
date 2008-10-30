@@ -242,7 +242,7 @@ void scenEvo_cond_h::SetIcons()
 	Icon1 = new QPixmap();
 	Icon2 = NULL;
 	Icon1->load(getImg(0));
-	Immagine = new BtLabel(this, "orologio");
+	Immagine = new BtLabel(this);
 	if (Icon1)
 		Immagine->setPixmap(*Icon1);
 	Immagine->setGeometry(90,0,60,60);
@@ -556,9 +556,9 @@ void scenEvo_cond_d::SetIcons()
 		qDebug() << "icon[" << i << "] = " << getImg(i);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-	area1_ptr = new BtLabel(this, "Area1");
+	area1_ptr = new BtLabel(this);
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
-	area2_ptr = new BtLabel(this, "Area2");
+	area2_ptr = new BtLabel(this);
 	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2,	TEXT_X_DIM, TEXT_Y_DIM);
 	FontManager::instance()->getFont(font_scenEvoCond_Area2, aFont);
 	area2_ptr->setFont(aFont);

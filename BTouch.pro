@@ -47,7 +47,6 @@ HEADERS += actuators.h \
            banntemperature.h \
            btbutton.h \
            btlabel.h \
-           btlabelevo.h \
            btmain.h \
            bttime.h \
            btwidgets.h \

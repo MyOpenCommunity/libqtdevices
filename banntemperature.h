@@ -29,9 +29,9 @@
 #define DESCRIPTION_WIDTH 120
 #define TEMPERATURE_WIDTH 120
 
-class BtLabelEvo;
 class device_status;
 class device;
+class BtLabel;
 
 
 class BannTemperature : public banner
@@ -63,9 +63,9 @@ private:
 	/// Probed temperature
 	unsigned  temperature;
 	/// Temperature label
-	BtLabelEvo  *temp_label;
+	BtLabel  *temp_label;
 	/// Zone name label
-	BtLabelEvo  *descr_label;
+	BtLabel  *descr_label;
 	TemperatureScale temp_scale;
 };
 

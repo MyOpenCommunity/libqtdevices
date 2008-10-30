@@ -14,7 +14,7 @@
 #include "device.h"
 #include "device_status.h"
 #include "main.h"
-#include "btlabelevo.h"
+#include "btlabel.h"
 #include "scaleconversion.h"
 
 #include <QFont>
@@ -36,9 +36,9 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 	else
 		qFatal("[TERMO] no where in configuration");
 
-	descr_label = new BtLabelEvo(this);
+	descr_label = new BtLabel(this);
 	descr_label->setGeometry(BORDER_WIDTH, 0, DESCRIPTION_WIDTH, BANPULS_ICON_DIM_Y);
-	temp_label = new BtLabelEvo(this);
+	temp_label = new BtLabel(this);
 	temp_label->setGeometry(DESCRIPTION_WIDTH, 0, TEMPERATURE_WIDTH, BANPULS_ICON_DIM_Y);
 
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),

@@ -54,16 +54,16 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	cinBut = new BtButton(this);
 	cancBut = new BtButton(this);
 
-	rdsLabel = new BtLabel(this,"Bottone di sinistra");
-	radioName = new BtLabel(this,"Bottone di sinistra");
-	ambDescr = new BtLabel(this, "descrizione ambiente");
+	rdsLabel = new BtLabel(this);
+	radioName = new BtLabel(this);
+	ambDescr = new BtLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
  	QFont aFont;
 	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
 	ambDescr->setFont(aFont);
 	ambDescr->setText(amb);
 	freq = new QLCDNumber(this);
-	progrText = new BtLabel(this,"progressivo stazione");
+	progrText = new BtLabel(this);
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(TRUE);
 	freq->setNumDigits(6);
