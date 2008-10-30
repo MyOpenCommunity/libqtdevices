@@ -100,7 +100,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	if (Icon2)
 		but[6]->setPressedPixmap(*Icon2);
 
-	Immagine = new BtLabel(this, "immaginetta superiore");
+	Immagine = new BtLabel(this);
 	Immagine->setGeometry(90,0,120,60);
 }
 

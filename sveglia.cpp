@@ -91,7 +91,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_SVEGLIA_ON);
 
-	Immagine = new BtLabel(this, "immaginetta superiore");
+	Immagine = new BtLabel(this);
 	if (Icon1)
 		Immagine->setPixmap(*Icon1);
 

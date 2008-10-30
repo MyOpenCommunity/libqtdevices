@@ -15,7 +15,7 @@
 #ifndef TITLE_LABEL_H
 #define TITLE_LABEL_H
 
-#include "btlabelevo.h"
+#include "btlabel.h"
 
 #include <QString>
 #include <QTimer>
@@ -23,10 +23,10 @@
 /**
  * \class TitleLabel
  *
- * this class is derived from BtLabelEvo
+ * this class is derived from BtLabel
  * and reimplements drawContent to have scrolling text
  */
-class TitleLabel : public BtLabelEvo
+class TitleLabel : public BtLabel
 {
 Q_OBJECT
 public:

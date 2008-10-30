@@ -20,23 +20,23 @@
 #include <stdlib.h>
 
 
-versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(parent, name,  (Qt::WindowFlags)f)
+versio::versio(QWidget *parent,const char *name , unsigned int f) : BtLabel(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
-	datiGen = new BtLabel(this, "DG");
+	datiGen = new BtLabel(this);
 	datiGen->setGeometry(15, 150, 210, 160);
 	datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
 
-	BtLabel* myHome = new BtLabel(this, "MH");
+	BtLabel* myHome = new BtLabel(this);
 	myHome->setGeometry(30, 12, 181, 128);
 	myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!
 	//myHome->setAutoResize(TRUE);
 	myHome->setPixmap(QPixmap(IMG_PATH "my_home.png"));
 
-	bticino = new BtLabel(this, "BT");
+	bticino = new BtLabel(this);
 	bticino->setGeometry(129, 258, 92, 42);
 	bticino->setFrameStyle(QFrame::Plain);
 	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!

@@ -28,8 +28,8 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
 	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
-	auxName = new BtLabel(this,"Nome della sorgente");
-	ambDescr = new BtLabel(this, "descrizione ambiente");
+	auxName = new BtLabel(this);
+	ambDescr = new BtLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	QFont aFont;
 	FontManager::instance()->getFont(font_aux_descr_ambiente, aFont);

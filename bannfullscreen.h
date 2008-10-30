@@ -35,7 +35,7 @@ class DateEditMenu;
 class ProgramMenu;
 class WeeklyMenu;
 class ScenarioMenu;
-class BtLabelEvo;
+class BtLabel;
 
 
 /**
@@ -86,10 +86,10 @@ protected:
 	/// Global layout for the banner
 	QVBoxLayout main_layout;
 	/// Measured temperature label and string
-	BtLabelEvo *temp_label;
+	BtLabel *temp_label;
 	unsigned temp;
 	/// Zone description label and string
-	BtLabelEvo *descr_label;
+	BtLabel *descr_label;
 	QString descr;
 	/// Temperature scale
 	TemperatureScale temp_scale;
@@ -115,18 +115,18 @@ protected:
 	/// of FSBannSimpleProbe::temp_scale. Units represent 1/10 of degree, for example -23.5 Celsius degrees
 	/// are represented as -235 if temp_scale == CELSIUS, or -103 if temp_scale == FAHRENHEIT
 	int setpoint;
-	BtLabelEvo  *setpoint_label;
+	BtLabel  *setpoint_label;
 	/// This flag is used to syncrhonize with other devices in the home. True when setpoint temperature is modified
 	/// by this BTouch, false otherwise
 	bool delta_setpoint;
 
 	BtButton *btn_minus, *btn_plus;
-	BtLabelEvo *icon_off, *icon_antifreeze;
+	BtLabel *icon_off, *icon_antifreeze;
 	// setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
-	BtLabelEvo *local_temp_label;
+	BtLabel *local_temp_label;
 
 	QDomNode conf_root;
 	temperature_probe_controlled *dev;
@@ -328,14 +328,14 @@ private:
 
 	QVBoxLayout main_layout;
 	/// Label and string that may be visualized
-	BtLabelEvo *description_label;
+	BtLabel *description_label;
 	QString description;
 	/// Set visibility status for description (in off, antifreeze, holiday and weekend description should not be visible)
 	bool description_visible;
 	/// Status icon (summer/winter)
-	BtLabelEvo *season_icon;
+	BtLabel *season_icon;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
-	BtLabelEvo *mode_icon;
+	BtLabel *mode_icon;
 
 
 	QDate date_end;
@@ -441,8 +441,8 @@ protected:
 	TemperatureScale temp_scale;
 private:
 	QString descr;
-	BtLabelEvo *descr_label;
-	BtLabelEvo *temp_label;
+	BtLabel *descr_label;
+	BtLabel *temp_label;
 	thermal_regulator *dev;
 	int maximum_manual_temp;
 	int minimum_manual_temp;

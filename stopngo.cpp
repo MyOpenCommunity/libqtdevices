@@ -248,7 +248,7 @@ void StopngoPage::AddItems()
 	FontManager::instance()->getFont(font_stopngo_page_title, tFont);
 
 	//Draw the title bar
-	titleBar = new BtLabel(this, "Title Bar");
+	titleBar = new BtLabel(this);
 	titleBar->setGeometry(0, 0, MAX_WIDTH, TITLE_BAR_HEIGHT);
 	titleBar->setFrameStyle(QFrame::NoFrame);
 	titleBar->setIndent(TITLE_BAR_INDENT);
@@ -297,7 +297,7 @@ void StopngoPage::AddItems()
 		connect(offBut, SIGNAL(clicked()), this, SLOT(OffClick()));
 		offBut->show();
 		//Draw the verify button label
-		labelVerify = new BtLabel(this, "Verify");
+		labelVerify = new BtLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
 		labelVerify->setFont(aFont);
@@ -314,7 +314,7 @@ void StopngoPage::AddItems()
 
 	case STOPNGO_BTEST:
 		//Draw the Autotest button label
-		labelVerify = new BtLabel(this, "Autotest");
+		labelVerify = new BtLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
 		labelVerify->setFont(aFont);
@@ -355,7 +355,7 @@ void StopngoPage::AddItems()
 	}
 
 	//Draw the auto arm button label
-	labelAutoArm = new BtLabel(this, "Rearm");
+	labelAutoArm = new BtLabel(this);
 	labelAutoArm->setGeometry(0, secondRowY+BUT_DIM, armLabelW, LABELS_HEIGHT);
 	labelAutoArm->setFrameStyle(QFrame::NoFrame);
 	labelAutoArm->setFont(aFont);

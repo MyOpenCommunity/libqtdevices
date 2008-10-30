@@ -16,7 +16,7 @@
 /// Methods for TitleLabel
 /// ***********************************************************************************************************************
 TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, Qt::WindowFlags f) :
-	BtLabelEvo(parent, 0, f)
+	BtLabel(parent)
 {
 	// Style
 	setFixedWidth(w);
@@ -46,7 +46,7 @@ void TitleLabel::paintEvent(QPaintEvent *event)
 {
 	QPainter p(this);
 	p.translate(w_offset, h_offset);
-	BtLabelEvo::paintEvent(event);
+	BtLabel::paintEvent(event);
 }
 
 void TitleLabel::resetTextPosition()

@@ -405,13 +405,13 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 		Item = dxButton;
 		break;
 	case TEXT: 
-		BannerText = new BtLabel(this,"Testo"); Item = BannerText;
+		BannerText = new BtLabel(this); Item = BannerText;
 		break;
 	case ICON:
-		BannerIcon = new BtLabel(this,"Icona"); Item = BannerIcon;
+		BannerIcon = new BtLabel(this); Item = BannerIcon;
 		break;
 	case ICON2: 
-		BannerIcon2 = new BtLabel(this, "Icona2"); 
+		BannerIcon2 = new BtLabel(this);
 		Item = BannerIcon2; 
 		break;
 	case BUT3:
@@ -429,7 +429,7 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 		Item = cdxButton;
 		break;
 	case TEXT2: 
-		SecondaryText = new BtLabel(this,"Testo secondario"); Item = SecondaryText;
+		SecondaryText = new BtLabel(this); Item = SecondaryText;
 		break;
 	}
 	Item->setGeometry(x,y,dimX,dimY);

@@ -33,8 +33,8 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	decBut = new BtButton(this);
 	okBut = new BtButton(this);
 
-	paintLabel = new BtLabel(this,"PL");
-	colorBar = new BtLabel(this,"CB");
+	paintLabel = new BtLabel(this);
+	colorBar = new BtLabel(this);
 
 	decBut->setGeometry(0,MAX_HEIGHT-BUT_DIM, BUT_DIM, BUT_DIM);
 	aumBut->setGeometry(MAX_WIDTH-BUT_DIM, MAX_HEIGHT-BUT_DIM, BUT_DIM, BUT_DIM);

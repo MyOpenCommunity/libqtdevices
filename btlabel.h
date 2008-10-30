@@ -16,10 +16,9 @@ class BtLabel : public QLabel
 {
 Q_OBJECT
 public:
-	BtLabel(QWidget *parent, const char *name = 0, Qt::WindowFlags f = 0);
-
-public slots:
-	virtual void setEnabled(bool);
+	BtLabel(QWidget *parent);
+protected:
+	virtual void paintEvent(QPaintEvent *e);
 };
 
 #endif
