@@ -31,7 +31,6 @@
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
 #include <QWSServer>
-#include <QPainter>
 #include <QObject>
 #include <QCursor>
 #include <QBitmap>
@@ -49,10 +48,6 @@
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent)
 {
-
-	/*******************************************
-	v** Socket
-	*******************************************/
 	qDebug("parte BtMain");
 
 	// If not compiled for Desktop, turns OFF mouse pointer
@@ -493,19 +488,22 @@ void BtMain::freezed(bool b)
 
 void BtMain::setPwd(bool b, char* p)
 {
+	// TODO: cambiare la password in un QString! E' necessario cambiare il segnale
+	// proveniente dalla classe impPassword (setitems) e che passa da sottomenu e
+	// xmlconfhandler (sarebbe anche il caso di semplificare se possibile questo giro)
 	pwdOn = b;
-	strcpy(&pwd[0], p);
-	qDebug("BtMain nuova pwd = %s - %d",&pwd[0],pwdOn);
+	strcpy(pwd, p);
+	qDebug("BtMain nuova pwd = %s - %d", pwd, pwdOn);
 }
 
 void BtMain::testPwd(char* p)
 {
 	if (p)
 	{
-		if (strcmp(p,&pwd[0]))
+		if (strcmp(p, pwd))
 		{
 			tasti->showTastiera();
-			qDebug("pwd ko %s  doveva essere %s",p,&pwd[0]);
+			qDebug("pwd ko %s doveva essere %s",p, pwd);
 		}
 		else
 		{
