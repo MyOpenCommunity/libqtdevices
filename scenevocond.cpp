@@ -77,22 +77,22 @@ void scenEvo_cond::SetIcons()
 void scenEvo_cond::Next()
 {
 	qDebug("scenEvo_cond::Next()");
-	emit(SwitchToNext());
+	emit SwitchToNext();
 }
 
 void scenEvo_cond::Prev()
 {
 	qDebug("scenEvo_cond::Prev()");
 	reset();
-	emit(resetAll());
-	emit(SwitchToFirst());
+	emit resetAll();
+	emit SwitchToFirst();
 }
 
 void scenEvo_cond::OK()
 {
 	qDebug("scenEvo_cond::OK()");
 	save();
-	emit(SwitchToFirst());
+	emit SwitchToFirst();
 }
 
 void scenEvo_cond::Apply()
@@ -183,8 +183,8 @@ const char *scenEvo_cond_h::getDescription(void)
 
 void scenEvo_cond_h::SetIcons()
 {
-	QPixmap* Icon1 = new QPixmap();
-	QPixmap* Icon2 = NULL;
+	QPixmap *Icon1 = new QPixmap();
+	QPixmap *Icon2 = NULL;
 	char iconName[MAX_PATH];
 	qDebug("scenEvo_cond_h::SetIcons()");
 	for (int i = 0; i < 6; i++)
@@ -407,7 +407,7 @@ void scenEvo_cond_h::OK()
 void scenEvo_cond_h::scaduta()
 {
 	qDebug("scenEvo_cond_h::scaduta()");
-	emit(verificata());
+	emit verificata();
 	setupTimer();
 }
 
@@ -511,8 +511,8 @@ void scenEvo_cond_d::setEnabled(bool e)
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 {
-	QPixmap* Icon1;
-	QPixmap* Icon2;
+	QPixmap *Icon1;
+	QPixmap *Icon2;
 	char iconName[MAX_PATH];
 	if (getImg(icon_index).isEmpty())
 	{
@@ -545,7 +545,7 @@ void scenEvo_cond_d::SetIcons()
 {
 	QFont aFont;
 	qDebug("scenEvo_cond_d::SetIcons()");
-	QPixmap* Icon1 = new QPixmap();
+	QPixmap *Icon1 = new QPixmap();
 	for (int i=0; i<6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
@@ -650,8 +650,8 @@ void scenEvo_cond_d::OK(void)
 {
 	qDebug("scenEvo_cond_d::OK()");
 	// Save ALL conditions here (not just this one)
-	emit(okAll());
-	emit(SwitchToFirst());
+	emit okAll();
+	emit SwitchToFirst();
 }
 
 void scenEvo_cond_d::save()
@@ -910,7 +910,7 @@ void device_condition_light_status::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit(condSatisfied());
+					emit condSatisfied();
 				}
 			}
 			else
@@ -1205,7 +1205,7 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit(condSatisfied());
+					emit condSatisfied();
 				}
 			}
 			else
@@ -1489,7 +1489,7 @@ void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit(condSatisfied());
+					emit condSatisfied();
 				}
 			}
 			else
@@ -1752,7 +1752,7 @@ void device_condition_volume::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit(condSatisfied());
+					emit condSatisfied();
 				}
 			}
 			else if ((curr_stato.get_val() == 1) && (curr_volume.get_val() >= trig_v_min) && (curr_volume.get_val() <= trig_v_max))
@@ -1761,7 +1761,7 @@ void device_condition_volume::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit(condSatisfied());
+					emit condSatisfied();
 				}
 			}
 			else
@@ -1956,7 +1956,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit(condSatisfied());
+					emit condSatisfied();
 				}
 			}
 			else
