@@ -472,13 +472,3 @@ void impAnti::hide()
 		tasti->hide();
 	}
 }
-
-const QColor& impAnti::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& impAnti::foregroundColor()
-{
-	return palette().color(foregroundRole());
-}

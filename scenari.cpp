@@ -558,16 +558,6 @@ scenEvo::~scenEvo()
 		delete condList.takeFirst();
 }
 
-const QColor& scenEvo::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& scenEvo::foregroundColor()
-{
-	return palette().color(foregroundRole());
-}
-
 /*****************************************************************
  ** Scenario schedulato
  ****************************************************************/	

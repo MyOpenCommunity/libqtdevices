@@ -89,10 +89,6 @@ private:
 	char *passwd;
 	device *dev;
 
-	// TODO: rimuovere questi metodi qt3!
-	const QColor& backgroundColor();
-	const QColor& foregroundColor();
-
 public:
 	impAnti(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 private slots:
@@ -105,7 +101,7 @@ private slots:
 	void DeInsert(char*);
 public slots:
 	void status_changed(QList<device_status*>);
-	char* getChi();
+	char *getChi();
 	void partChanged(zonaAnti*);
 	void setZona(zonaAnti*);
 	int getIsActive(int zona);

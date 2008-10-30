@@ -44,9 +44,6 @@ private:
 	QString close_icon;
 	static call_notifier_manager *cnm;
 	static call_notifier *unknown_notifier;
-	// TODO: rimuovere questi metodi qt3!
-	const QColor& backgroundColor();
-	const QColor& foregroundColor();
 
 public:
 	postoExt(QWidget *parent=0, const char *name=NULL, char* Icona1="",char *Icona2="", char *Icona3="", char* Icona4="", char *where="", QString light="", QString key="", QString unknown = "0");

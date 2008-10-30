@@ -169,13 +169,3 @@ void postoExt::get_close_icon(QString& out)
 {
 	out = close_icon;
 }
-
-const QColor& postoExt::backgroundColor()
-{
-	return palette().color(backgroundRole());
-}
-
-const QColor& postoExt::foregroundColor()
-{
-	return palette().color(foregroundRole());
-}
