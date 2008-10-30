@@ -297,6 +297,7 @@ void setBeep(bool b,bool ab)
 
 	if (ab)
 	{
+		qDebug("LUCA setBeep, write to file, beep value = %d", b);
 		if (b)
 			setCfgValue(SUONO, "value","1");
 		else
@@ -316,16 +317,12 @@ bool getBeep()
 			fclose(fd);
 
 			if (c!='0')
-			{
-				return (TRUE);
-			}
+				return true;
 			else
-			{
-				return (FALSE);
-			}
+				return false;
 		}
     }
-    return (FALSE);
+    return false;
 }
 
 bool getBacklight()
@@ -388,21 +385,9 @@ void beep(int t)
 		if (fd >= 0)
 		{
 			char te[10];
-#ifndef HAS_HP
-			sprintf(&te[0],"4000 %d",t);
-			write(fd, &te[0],strlen(&te[0]));
-#endif
-#ifdef HAS_HP
-			sprintf(&te[0],"%d %d",2400,t/3);
-			write(fd, &te[0],strlen(&te[0]));
-			sleep(t/3000);
-			sprintf(&te[0],"%d %d",1600,t/3);
-			write(fd, &te[0],strlen(&te[0]));
-			sleep(t/3000);
-			sprintf(&te[0],"%d %d",800,t/3);
-			write(fd, &te[0],strlen(&te[0]));
-#endif
-		close(fd);
+			sprintf(te, "4000 %d", t);
+			write(fd, te, strlen(te));
+			close(fd);
 		}
     }
 }
