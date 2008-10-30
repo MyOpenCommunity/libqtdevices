@@ -13,11 +13,40 @@ BtLabel::BtLabel(QWidget *parent) : QLabel(parent)
 void BtLabel::paintEvent(QPaintEvent *e)
 {
 	QStyle *style = QWidget::style();
-	QPainter painter(this);
+	QPainter painter;
+	painter.begin(this);
 	drawFrame(&painter);
 	QRect cr = contentsRect();
 	cr.adjust(margin(), margin(), -margin(), -margin());
 	int align = QStyle::visualAlignment(layoutDirection(), QFlag(alignment()));
+
+	if (pixmap() && !pixmap()->isNull())
+	{
+		QPixmap pix;
+		if (hasScaledContents())
+		{
+			/* Removed Qt code below
+			if (!d->scaledpixmap || d->scaledpixmap->size() != cr.size()) {
+				if (!d->cachedimage)
+				d->cachedimage = new QImage(d->pixmap->toImage());
+				delete d->scaledpixmap;
+				d->scaledpixmap = new QPixmap(QPixmap::fromImage(d->cachedimage->scaled(cr.size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
+			}
+			*/
+			// we may have performance problems here...fortunately, this is not the default path for qlabel
+			pix = pixmap()->scaled(cr.size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+		}
+		else
+			pix = *pixmap();
+		QStyleOption opt;
+		opt.initFrom(this);
+		style->drawItemPixmap(&painter, cr, align, pix);
+	}
+	else
+	{
+		painter.end();
+		QLabel::paintEvent(e);
+	}
 
 	/*
 #ifndef QT_NO_MOVIE
@@ -108,28 +137,4 @@ void BtLabel::paintEvent(QPaintEvent *e)
     } else
 #endif
 	   */
-	if (pixmap() && !pixmap()->isNull())
-	{
-		QPixmap pix;
-		if (hasScaledContents())
-		{
-			/* Removed Qt code below
-			if (!d->scaledpixmap || d->scaledpixmap->size() != cr.size()) {
-				if (!d->cachedimage)
-				d->cachedimage = new QImage(d->pixmap->toImage());
-				delete d->scaledpixmap;
-				d->scaledpixmap = new QPixmap(QPixmap::fromImage(d->cachedimage->scaled(cr.size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)));
-			}
-			*/
-			// we may have performance problems here...fortunately, this is not the default path for qlabel
-			pix = pixmap()->scaled(cr.size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
-		}
-		else
-			pix = *pixmap();
-		QStyleOption opt;
-		opt.initFrom(this);
-		style->drawItemPixmap(&painter, cr, align, pix);
-	}
-	else
-		QLabel::paintEvent(e);
 }
