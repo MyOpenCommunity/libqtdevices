@@ -40,11 +40,11 @@ void scenario::Attiva()
 	char cosa[15];
 
 	strncpy(cosa,getAddress(),sizeof(cosa));
-	if (strstr(&cosa[0],"*"))
+	if (strstr(cosa,"*"))
 	{
-		memset(index(&cosa[0],'*'),'\000',sizeof(cosa)-(index(&cosa[0],'*')-&cosa[0]));
+		memset(index(cosa,'*'),'\000',sizeof(cosa)-(index(cosa,'*')-cosa));
 		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("0",&cosa[0],strstr(getAddress(),"*")+1,"");
+		msg_open.CreateMsgOpen("0", cosa,strstr(getAddress(),"*")+1,"");
 		dev->sendFrame(msg_open.frame_open);
 	}
 }
@@ -55,28 +55,28 @@ void scenario::inizializza(bool forza){}
  **gesModScen
  ****************************************************************/
 
-	gesModScen::gesModScen(QWidget *parent, const char *name ,char*indirizzo,char* IcoSx,char* IcoDx,char* IcoCsx,char* IcoCdx,char* IcoDes, char* IcoSx2, char* IcoDx2)
-:  bann4tasLab(parent, name)
+gesModScen::gesModScen(QWidget *parent, const char *name ,char*indirizzo,char* IcoSx,char* IcoDx,char* IcoCsx,char* IcoCdx,char* IcoDes, char* IcoSx2, char* IcoDx2)
+	:  bann4tasLab(parent, name)
 {
-	strcpy(&iconOn[0],IcoSx);
-	strcpy(&iconStop[0],IcoSx2);
-	strcpy(&iconInfo[0],IcoDx);
-	strcpy(&iconNoInfo[0],IcoDx2);
+	strcpy(iconOn,IcoSx);
+	strcpy(iconStop,IcoSx2);
+	strcpy(iconInfo,IcoDx);
+	strcpy(iconNoInfo,IcoDx2);
 
-	SetIcons (IcoSx, IcoDx, IcoCsx, IcoCdx, IcoDes);
+	SetIcons(IcoSx, IcoDx, IcoCsx, IcoCdx, IcoDes);
 	nascondi(BUT3);
 	nascondi(BUT4);
 
-	memset(&cosa[0],'\000',sizeof(&cosa[0]));
-	memset(&dove[0],'\000',sizeof(&dove[0]));
+	memset(cosa,'\000',sizeof(cosa));
+	memset(dove,'\000',sizeof(dove));
 	qDebug("gesModScen::gesModScen(): indirizzo = %s", indirizzo);
 	if (strstr(indirizzo,"*"))
 	{
-		strncpy(&cosa[0], indirizzo, strstr(indirizzo,"*")-indirizzo);
-		strcpy(&dove[0], strstr(indirizzo,"*")+1);
+		strncpy(cosa, indirizzo, strstr(indirizzo,"*")-indirizzo);
+		strcpy(dove, strstr(indirizzo,"*")+1);
 	}
-	sendInProgr=0;
-	in_progr=0;
+	sendInProgr = 0;
+	in_progr = 0;
 
 	setAddress(dove);
 	impostaAttivo(2);
@@ -97,13 +97,13 @@ void gesModScen::attivaScenario()
 	openwebnet msg_open;
 	char    pippo[50];
 
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*0*");
-	strcat(pippo,&cosa[0]);
-	strcat(pippo,"*");
-	strcat(pippo,&dove[0]);
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	memset(pippo, '\000',sizeof(pippo));
+	strcat(pippo, "*0*");
+	strcat(pippo, cosa);
+	strcat(pippo, "*");
+	strcat(pippo, dove);
+	strcat(pippo, "##");
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendFrame(msg_open.frame_open);
 }
 
@@ -112,8 +112,8 @@ void gesModScen::enterInfo()
 	nascondi(ICON);
 	mostra(BUT4);
 	mostra(BUT3);
-	SetIcons(uchar(1),&iconNoInfo[0]);
-	qDebug(&iconNoInfo[0]);
+	SetIcons(uchar(1),iconNoInfo);
+	qDebug(iconNoInfo);
 	disconnect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
 	Draw();
@@ -124,8 +124,7 @@ void gesModScen::exitInfo()
 	mostra(ICON);
 	nascondi(BUT4);
 	nascondi(BUT3);
-	SetIcons(uchar(1),&iconInfo[0]);
-	qDebug(&iconInfo[0]);
+	SetIcons(uchar(1),iconInfo);
 	connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
 	disconnect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
 	Draw();
@@ -138,13 +137,13 @@ void gesModScen::startProgScen()
 
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*0*40#");
-	strcat(pippo,&cosa[0]);
+	strcat(pippo,cosa);
 	strcat(pippo,"*");
-	strcat(pippo,&dove[0]);
+	strcat(pippo,dove);
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendFrame(msg_open.frame_open);
-	sendInProgr=1;
+	sendInProgr = 1;
 }
 
 void gesModScen::stopProgScen()
@@ -152,15 +151,15 @@ void gesModScen::stopProgScen()
 	openwebnet msg_open;
 	char    pippo[50];
 
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*0*41#");
-	strcat(pippo,&cosa[0]);
-	strcat(pippo,"*");
-	strcat(pippo,&dove[0]);
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	memset(pippo, '\000',sizeof(pippo));
+	strcat(pippo, "*0*41#");
+	strcat(pippo, cosa);
+	strcat(pippo, "*");
+	strcat(pippo, dove);
+	strcat(pippo, "##");
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendFrame(msg_open.frame_open);
-	sendInProgr=0;
+	sendInProgr = 0;
 }
 
 void gesModScen::cancScen()
@@ -168,13 +167,13 @@ void gesModScen::cancScen()
 	openwebnet msg_open;
 	char    pippo[50];
 
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*0*42#");
-	strcat(pippo,&cosa[0]);
-	strcat(pippo,"*");
-	strcat(pippo,&dove[0]);
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	memset(pippo, '\000',sizeof(pippo));
+	strcat(pippo, "*0*42#");
+	strcat(pippo, cosa);
+	strcat(pippo, "*");
+	strcat(pippo, dove);
+	strcat(pippo, "##");
+	msg_open.CreateMsgOpen((char*)pippo, strlen((char*)pippo));
 	dev->sendFrame(msg_open.frame_open);
 }
 
@@ -198,11 +197,9 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				qDebug("Programming start");
 				if (sendInProgr)
 				{
-					SetIcons(uchar(0),&iconStop[0]);
-					disconnect(this,SIGNAL(sxClick()), this,
-							SLOT(attivaScenario()));
-					connect(this,SIGNAL(sxClick()), this,
-							SLOT(stopProgScen()));
+					SetIcons(uchar(0), iconStop);
+					disconnect(this,SIGNAL(sxClick()), this,SLOT(attivaScenario()));
+					connect(this,SIGNAL(sxClick()), this,SLOT(stopProgScen()));
 					in_progr = 0;
 				}
 				else
@@ -226,7 +223,7 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				break;
 			case device_status_modscen::PROGRAMMING_STOP:
 				qDebug("Programming stop");
-				SetIcons(uchar(0),&iconOn[0]);
+				SetIcons(uchar(0),iconOn);
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
@@ -235,7 +232,7 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				break;
 			case device_status_modscen::UNLOCKED:
 				qDebug("Unlocked");
-				SetIcons(uchar(0),&iconOn[0]);
+				SetIcons(uchar(0),iconOn);
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
@@ -570,8 +567,7 @@ scenSched::scenSched(QWidget *parent, const char *name, char* Icona1,char *Icona
 	action_stop = astop;
 	qDebug("scenSched::scenSched(), enable = %s, start = %s, stop = %s, "
 			"disable = %s", aen, adis, astart, astop);
-	qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", 
-			Icona1, Icona2, Icona3, Icona4);
+	qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", Icona1, Icona2, Icona3, Icona4);
 	SetIcons(Icona1, Icona3, Icona4, Icona2);
 	if (aen[0])
 	{
@@ -659,25 +655,25 @@ void scenSched::Draw()
 	// Icon[2] => right button
 	// pressIcon[2] => pressed right button
 	qDebug("scenSched::Draw()");
-	if ((sxButton) && (Icon[0]))
+	if (sxButton && Icon[0])
 	{
 		sxButton->setPixmap(*Icon[0]);
 		if (pressIcon[0])
 			sxButton->setPressedPixmap(*pressIcon[0]);
 	}
-	if ((csxButton) && (Icon[1]))
+	if (csxButton && Icon[1])
 	{
 		csxButton->setPixmap(*Icon[1]);
 		if (pressIcon[1])
 			csxButton->setPressedPixmap(*pressIcon[1]);
 	}
-	if ((cdxButton) && (Icon[3]))
+	if (cdxButton && Icon[3])
 	{
 		cdxButton->setPixmap(*Icon[3]);
 		if (pressIcon[3])
 			cdxButton->setPressedPixmap(*pressIcon[3]);
 	}
-	if ((dxButton) && (Icon[2]))
+	if (dxButton && Icon[2])
 	{
 		dxButton->setPixmap(*Icon[2]);
 		if (pressIcon[2])
