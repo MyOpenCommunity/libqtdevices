@@ -19,8 +19,7 @@
 #include <stdlib.h>
 
 
-diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
-	: QWidget(parent), sorgenti(NULL)
+diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent), sorgenti(NULL)
 {
 	numRighe = NUM_RIGHE;
 	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore
@@ -29,14 +28,13 @@ diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 
 	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe, 2);
 
-	// TODO: piuttosto che un booleano quando le sorgenti vengono create esternamente
-	// sarebbe meglio che venisse passato il sottoMenu* in modo che i metodi fuori
-	// dal costruttore possano aver la certezza che sorgenti e' impostato correttamente.
-	if (creasorgenti)
-		setSorgenti(new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1));
+	if (!_sorgenti)
+	{
+		_sorgenti = new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
+		connect(_sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
+	}
 
-	if (sorgenti)
-		connect(sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
+	setSorgenti(_sorgenti);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	BtLabel *linea = new BtLabel(this);
 
@@ -69,20 +67,18 @@ void diffSonora::setSorgenti(sottoMenu *s)
 int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
 	QList<QString*> &icon_names, int modo, int where, char *ambdescr)
 {
-	if  ((tipo==SORGENTE_AUX) || (tipo==SORGENTE_RADIO) || (tipo==SORGENTE_MULTIM))
+	if  (tipo == SORGENTE_AUX || tipo == SORGENTE_RADIO || tipo == SORGENTE_MULTIM)
 	{
 		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, where);
 	}
-	else if ((tipo == SORG_RADIO) || (tipo == SORG_AUX) || (tipo == SORGENTE_MULTIM_MC))
+	else if (tipo == SORG_RADIO || tipo == SORG_AUX || tipo == SORGENTE_MULTIM_MC)
 	{
 		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 	}
 	else
-	{
 		amplificatori->addItemU(tipo, qdescrizione, indirizzo, icon_names);
-	}
 	return 1;
 }
 
@@ -92,10 +88,8 @@ void diffSonora::setNumRighe(uchar n)
 	qDebug("Invoking amplificatori->setNumRighe(%d)", n-2);
 	amplificatori->setNumRighe(n-2);
 	qDebug("sorgenti = %p", sorgenti);
-	if (sorgenti)
-		sorgenti->setNumRighe(1);
-	if (sorgenti)
-		sorgenti->draw();
+	sorgenti->setNumRighe(1);
+	sorgenti->draw();
 	amplificatori->draw();
 }
 
@@ -170,13 +164,13 @@ void diffSonora::freezed_handler(bool f)
 
 void diffSonora::show()
 {
+	qDebug("diffSonora::show()");
 	openwebnet msg_open;
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
 	isVisual = true;
 
-	if (sorgenti)
-		sorgenti->show();
+	sorgenti->show();
 	if (amplificatori)
 		amplificatori->show();
 
@@ -185,8 +179,7 @@ void diffSonora::show()
 
 void diffSonora::draw()
 {
-	if (sorgenti)
-		sorgenti->draw();
+	sorgenti->draw();
 	if (amplificatori)
 		amplificatori->draw();
 }
@@ -194,8 +187,7 @@ void diffSonora::draw()
 void diffSonora::forceDraw()
 {
 	qDebug("diffSonora::forceDraw()");
-	if (sorgenti)
-		sorgenti->forceDraw();
+	sorgenti->forceDraw();
 	if (amplificatori)
 		amplificatori->forceDraw();
 }
@@ -204,8 +196,7 @@ void diffSonora::hide()
 {
 	qDebug("diffSonora::hide()");
 
-	if (sorgenti)
-		sorgenti->hide(false);
+	sorgenti->hide(false);
 	if (amplificatori)
 		amplificatori->hide();
 	if (amplificatori)
@@ -218,11 +209,8 @@ void diffSonora::setGeom(int x,int y,int w,int h)
 {
 	qDebug("diffSonora::setGeom(%d, %d, %d, %d, numRighe = %d)",x, y, w, h, numRighe);
 	QWidget::setGeometry(x, y, w, h);
-	if (sorgenti)
-	{
-		qDebug("sorgenti->setGeometry(%d, %d, %d, %d)", x, 0, w, h/numRighe);
-		sorgenti->setGeometry(x,0,w,h/numRighe);
-	}
+	qDebug("sorgenti->setGeometry(%d, %d, %d, %d)", x, 0, w, h/numRighe);
+	sorgenti->setGeometry(x,0,w,h/numRighe);
 	if (amplificatori)
 	{
 		qDebug("amplificatori->setGeometry(%d, %d, %d, %d)", x, h/numRighe,w,h/numRighe*(numRighe-1));

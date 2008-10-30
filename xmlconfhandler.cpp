@@ -1057,7 +1057,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case DIFSON:
-						*difSon = new diffSonora(NULL,"DIFSON");
+						*difSon = new diffSonora(NULL);
 						(*difSon)->hide();
 						pageAct = *difSon;
 						break;

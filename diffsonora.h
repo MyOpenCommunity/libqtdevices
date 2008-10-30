@@ -32,11 +32,7 @@ class diffSonora : public QWidget
 {
 Q_OBJECT
 public:
-	diffSonora(QWidget *parent=0, const char *name=0, bool creasorgenti=true);
-	/*!
-	 * \brief Set the "sorgenti" submenu"
-	 */
-	void setSorgenti(sottoMenu *);
+	diffSonora(QWidget *parent=0, sottoMenu *_sorgenti=0);
 	/*!
 	 * \brief Adds an object in the class.
 	 *
@@ -118,10 +114,6 @@ public slots:
 	 */
 	void hide();
 	/*!
-	 * \brief Emittes the closed signal when amplifiers subtree(sottoMenu) is closed.
-	 */
-	void fineVis();
-	/*!
 	 * \brief sets first source given address 
 	 */
 	void setFirstSource(int addr);
@@ -130,8 +122,17 @@ public slots:
 	 */
 	void freezed_handler(bool);
 
+private slots:
+	/*!
+	 * \brief Emittes the closed signal when amplifiers subtree(sottoMenu) is closed.
+	 */
+	void fineVis();
 
 private:
+	/*!
+	 * \brief Set the "sorgenti" submenu"
+	 */
+	void setSorgenti(sottoMenu *);
 	bool isVisual;
 	uchar numRighe;
 	sottoMenu* sorgenti;

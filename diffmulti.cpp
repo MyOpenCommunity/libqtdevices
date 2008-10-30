@@ -130,8 +130,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 	case AMBIENTE:
 		{
 			// Do not create "sorgenti" submenu
-			diffSonora *ds = new diffSonora(NULL, "Diff sonora ambiente", false);
-			ds->setSorgenti(sorgenti);
+			diffSonora *ds = new diffSonora(NULL, sorgenti);
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
 			connect(ds,SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
