@@ -29,6 +29,9 @@ diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 
 	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe, 2);
 
+	// TODO: piuttosto che un booleano quando le sorgenti vengono create esternamente
+	// sarebbe meglio che venisse passato il sottoMenu* in modo che i metodi fuori
+	// dal costruttore possano aver la certezza che sorgenti e' impostato correttamente.
 	if (creasorgenti)
 		setSorgenti(new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1));
 
