@@ -1,4 +1,5 @@
 #include "btbutton.h"
+#include "main.h"
 #include "genericfunz.h"
 
 #include <QDebug>
