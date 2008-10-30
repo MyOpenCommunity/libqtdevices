@@ -377,18 +377,16 @@ void scenEvo_cond_h::mostra()
 
 void scenEvo_cond_h::setupTimer()
 {
-	QDateTime now = QDateTime::currentDateTime();
-	int secsto = now.secsTo(*cond_time);
-	while (secsto <= 0)
-		// Do it tomorrow
-		secsto += 24 * 60 * 60;
+	QTime now = QTime::currentTime();
+	int msecsto = now.msecsTo(cond_time->time());
 
-	// According to QT doc, if timer is running, it is stopped and restarted
-	// with new interval. Otherwise it is just started.
-	qDebug("(re)starting timer with interval = %d", secsto * 1000);
+	while (msecsto <= 0) // Do it tomorrow
+		msecsto += 24 * 60 * 60 * 1000;
+
+	qDebug("(re)starting timer with interval = %d", msecsto);
 	timer->stop();
 	timer->setSingleShot(true);
-	timer->start(secsto * 1000);
+	timer->start(msecsto);
 }
 
 void scenEvo_cond_h::Apply()
@@ -437,11 +435,9 @@ void scenEvo_cond_h::reset()
 
 bool scenEvo_cond_h::isTrue(void)
 {
-	return
-	((cond_time->time().hour() ==
-	QDateTime::currentDateTime().time().hour()) &&
-	(cond_time->time().minute() ==
-	QDateTime::currentDateTime().time().minute()));
+	QTime cur = QDateTime::currentDateTime().time();
+	return ((cond_time->time().hour() == cur.hour()) &&
+			(cond_time->time().minute() == cur.minute()));
 }
 
 /*****************************************************************
