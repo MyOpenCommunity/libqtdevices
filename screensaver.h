@@ -13,8 +13,8 @@
 
 #include "btlabel.h"
 
-#include <qwidget.h>
-#include <qpixmap.h>
+#include <QWidget>
+#include <QPixmap>
 
 #define BALL_NUM 5
 
