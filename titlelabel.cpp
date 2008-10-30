@@ -12,9 +12,7 @@
 
 #include <QPainter>
 
-/// ***********************************************************************************************************************
-/// Methods for TitleLabel
-/// ***********************************************************************************************************************
+
 TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, Qt::WindowFlags f) :
 	BtLabel(parent)
 {
@@ -39,13 +37,15 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offs
 	scrolling = _scrolling;
 
 	// connect timer to scroll text
-	connect(&scrolling_timer, SIGNAL(timeout()), this, SLOT(handleScrollingTimer()));
+	connect(&scrolling_timer, SIGNAL(timeout()), SLOT(handleScrollingTimer()));
 }
 
 void TitleLabel::paintEvent(QPaintEvent *event)
 {
-	QPainter p(this);
-	p.translate(w_offset, h_offset);
+	QPainter painter;
+	painter.begin(this);
+	painter.translate(w_offset, h_offset);
+	painter.end();
 	BtLabel::paintEvent(event);
 }
 
@@ -65,7 +65,7 @@ void TitleLabel::setText(const QString & text_to_set)
 	QLabel::setText(text_to_set);
 
 	// start the timer if scroll is needed
-	if (scrolling == TRUE && text_length > visible_chars)
+	if (scrolling && text_length > visible_chars)
 		scrolling_timer.start(time_per_step);
 	else
 		scrolling_timer.stop();
