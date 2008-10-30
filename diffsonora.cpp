@@ -20,39 +20,27 @@
 
 
 diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
-	: QWidget(parent)
+	: QWidget(parent), sorgenti(NULL)
 {
 	numRighe = NUM_RIGHE;
 	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore
 	// deve essere inizializzato
 	isVisual = false;
-	if (creasorgenti)
-		sorgenti = new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
-	else
-		sorgenti = NULL;
-	
-	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
+
+	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe, 2);
 
 	if (creasorgenti)
-		setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
+		setSorgenti(new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1));
 
 	if (sorgenti)
 		connect(sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
-	BtLabel* linea = new BtLabel(this);
+	BtLabel *linea = new BtLabel(this);
 
 	linea->setGeometry(0,77,240,3);
 	linea->setStyleSheet("QLabel {background-color:#FFFFFF;}");
 
-	if (creasorgenti)
-	{
-		connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
-		connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
-		connect(sorgenti,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
-		connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));
-	}
-
-	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *))); 
+	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));
 	connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 	connect(amplificatori,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
 	connect(this,SIGNAL(freezed(bool)),amplificatori,SLOT(freezed(bool)));
@@ -62,11 +50,11 @@ diffSonora::diffSonora(QWidget *parent, const char *name, bool creasorgenti)
 void diffSonora::setSorgenti(sottoMenu *s)
 {
 	sorgenti = s;
-	setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-	connect(this,SIGNAL(gesFrame(char *)),sorgenti,SIGNAL(gestFrame(char *)));
-	connect(sorgenti,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
-	connect(sorgenti,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
-	connect(this,SIGNAL(freezed(bool)),sorgenti,SLOT(freezed(bool)));
+	setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
+	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
+	connect(sorgenti, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
+	connect(sorgenti, SIGNAL(sendInit(char*)), this, SIGNAL(sendInit(char*)));
+	connect(this, SIGNAL(freezed(bool)), sorgenti, SLOT(freezed(bool)));
 }
 
 // TODO: sarebbe meglio che icon_names diventasse una QList<QString>.. al momento
