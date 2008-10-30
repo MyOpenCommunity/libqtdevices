@@ -103,24 +103,27 @@ public slots:
 	 */
 	void gestFrame(char*);
 	/*!
-	 * \brief Make sure a source being active before showing the page.
-	 */
-	void show();
-	/*!
-	 * \brief Make sure that amplifier index is resetted before hiding.
-	 *
-	 * Resetting amplifier index guarantees that nex time amplifiers will be shown the first 
-	 * banners will be drawn.
-	 */
-	void hide();
-	/*!
-	 * \brief sets first source given address 
+	 * \brief sets first source given address
 	 */
 	void setFirstSource(int addr);
 	/*!
 	 * \brief sets isVisual to false and emits freezed signal
 	 */
 	void freezed_handler(bool);
+
+protected:
+	/*!
+	 * \brief Make sure a source being active before showing the page.
+	 */
+	virtual void showEvent(QShowEvent *event);
+
+	/*!
+	 * \brief Make sure that amplifier index is resetted before hiding.
+	 *
+	 * Resetting amplifier index guarantees that nex time amplifiers will be shown the first 
+	 * banners will be drawn.
+	 */
+	virtual void hideEvent(QHideEvent *event);
 
 private slots:
 	/*!

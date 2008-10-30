@@ -45,7 +45,6 @@ diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent),
 	connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 	connect(amplificatori,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
 	connect(this,SIGNAL(freezed(bool)),amplificatori,SLOT(freezed(bool)));
-	qDebug("diffSonora::diffSonora() END");
 }
 
 void diffSonora::setSorgenti(sottoMenu *s)
@@ -162,47 +161,37 @@ void diffSonora::freezed_handler(bool f)
 		isVisual = false;
 }
 
-void diffSonora::show()
+void diffSonora::showEvent(QShowEvent *event)
 {
-	qDebug("diffSonora::show()");
+	qDebug("diffSonora::showEvent()");
 	openwebnet msg_open;
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
 	isVisual = true;
 
 	sorgenti->show();
-	if (amplificatori)
-		amplificatori->show();
-
-	QWidget::show();
 }
 
 void diffSonora::draw()
 {
 	sorgenti->draw();
-	if (amplificatori)
-		amplificatori->draw();
+	amplificatori->draw();
 }
 
 void diffSonora::forceDraw()
 {
 	qDebug("diffSonora::forceDraw()");
 	sorgenti->forceDraw();
-	if (amplificatori)
-		amplificatori->forceDraw();
+	amplificatori->forceDraw();
 }
 
-void diffSonora::hide()
+void diffSonora::hideEvent(QHideEvent *event)
 {
-	qDebug("diffSonora::hide()");
+	qDebug("diffSonora::hideEvent()");
 
 	sorgenti->hide(false);
-	if (amplificatori)
-		amplificatori->hide();
-	if (amplificatori)
-		amplificatori->setIndice(0);
+	amplificatori->setIndice(0);
 	isVisual = false;
-	QWidget::hide();
 }
 
 void diffSonora::setGeom(int x,int y,int w,int h)
@@ -211,11 +200,8 @@ void diffSonora::setGeom(int x,int y,int w,int h)
 	QWidget::setGeometry(x, y, w, h);
 	qDebug("sorgenti->setGeometry(%d, %d, %d, %d)", x, 0, w, h/numRighe);
 	sorgenti->setGeometry(x,0,w,h/numRighe);
-	if (amplificatori)
-	{
-		qDebug("amplificatori->setGeometry(%d, %d, %d, %d)", x, h/numRighe,w,h/numRighe*(numRighe-1));
-		amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
-	}
+	qDebug("amplificatori->setGeometry(%d, %d, %d, %d)", x, h/numRighe,w,h/numRighe*(numRighe-1));
+	amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
 }
 
 void diffSonora::setNavBarMode(uchar c)
