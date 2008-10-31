@@ -803,10 +803,6 @@ void banner:: inizializza(bool forza){}
 
 void  banner::rispStato(char*){}
 
-void banner::hide(){QWidget::hide(); }
-
-void banner::show(){QWidget::show();}
-
 void banner::openAckRx(void)
 {
 	qDebug("openAckRx()");

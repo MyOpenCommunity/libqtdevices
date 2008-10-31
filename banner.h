@@ -347,14 +347,6 @@ public slots:
 	 */
 	virtual void  rispStato(char*);
 	/*!
-	 *  \brief Must be reimplemented to do something when hiding the banner.
-	 */
-	virtual void hide();
-	/*!
-	 *  \brief Must be reimplemented to do something when showing the banner.
-	 */
-	virtual void show();
-	/*!
 	 *  \brief Invoked on open ack reception
 	 */
 	virtual void openAckRx();
