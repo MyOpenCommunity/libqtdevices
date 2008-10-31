@@ -133,7 +133,7 @@ bool Calibrate::sanityCheck()
     if ((vl > avg2/10)||(vr > avg2/10))
 	{
 		qWarning("err>10 per cento ->  left: %d right: %d\n",vl/avg2*100 ,vr/avg2*100);
-		return FALSE;
+		return false;
 	}
 	int ht = qAbs(tl.y() - tr.y());
 	int hb = qAbs(br.y() - bl.y());
@@ -145,35 +145,35 @@ bool Calibrate::sanityCheck()
 	if ((ht > avg2/10)||(hb > avg2/10))
 	{
 		qWarning("err>10 per cento top: %d bottom: %d\n",ht/avg2*100 ,hb/avg2*100);
-		return FALSE;
+		return false;
 	}
 
 	if(tl.x() < tr.x())
 	{
 		qWarning("err tl.x > tr.x\n");
-		return FALSE;
+		return false;
 	}
 
 	if(bl.x() < br.x())
 	{
 		qWarning("err bl.x > br.x\n");
-		return FALSE;
+		return false;
 	}
 
 	if(tl.y() > bl.y())
 	{
 		qWarning("err tl.y < bl.y\n");
-		return FALSE;
+		return false;
 	}
 
 	if(tr.y() > br.y())
 	{
 		qWarning("err tr.y > br.y\n");
-		return FALSE;
+		return false;
 	}
 #endif
 	qWarning("return TRUE Calibrate::sanityCheck");
-	return TRUE;
+	return true;
 }
 
 void Calibrate::paintEvent(QPaintEvent *)
@@ -270,7 +270,7 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 	if (timer->isActive() || button_test)
 		return;
 
-	bool doMove = TRUE;
+	bool doMove = true;
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 
@@ -294,7 +294,7 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 		{
 			releaseMouse();
 			QWSServer::mouseHandler()->calibrate(&cd);
-			doMove = FALSE;
+			doMove = false;
 			if (!manut)
 				buttonsTest();
 			else
@@ -314,20 +314,20 @@ void Calibrate::timeout()
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	QPoint target = fromDevice(cd.screenPoints[location]);
 
-	bool doneX = FALSE;
-	bool doneY = FALSE;
+	bool doneX = false;
+	bool doneY = false;
 	newPos = QPoint(crossPos.x() + dx, crossPos.y() + dy);
 
 	if (qAbs(crossPos.x() - target.x()) <= qAbs(dx))
 	{
 		newPos.setX(target.x());
-		doneX = TRUE;
+		doneX = true;
 	}
 
 	if (qAbs(crossPos.y() - target.y()) <= qAbs(dy))
 	{
 		newPos.setY(target.y());
-		doneY = TRUE;
+		doneY = true;
 	}
 
 	if (doneX && doneY)

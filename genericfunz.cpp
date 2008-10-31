@@ -159,12 +159,12 @@ bool setCfgValue(QString file, int id, QString campo, QString valore, int serNum
 
 bool setCfgValue(int id, const char* campo, const char* valore)
 {
-	return  setCfgValue(id, campo, valore,1);
+	return setCfgValue(id, campo, valore,1);
 }
 
 bool setCfgValue(int id, const char* campo, const char* valore,int serNumId)
 {
-	return  setCfgValue(CONFILENAME, id, campo, valore, serNumId);
+	return setCfgValue(CONFILENAME, id, campo, valore, serNumId);
 }
 
 bool copyFile(char* orig, char* dest)
@@ -205,16 +205,16 @@ void setContrast(unsigned char c,bool b)
 		int fd = open("/proc/sys/dev/btweb/contrast", O_WRONLY);
 		if (fd >= 0)
 		{
-			sprintf(&contr[0],"%d",c);
+			sprintf(contr,"%d",c);
 			qDebug("setto il contrasto a : %d", c);
-			write(fd, &contr[0], 4);
+			write(fd, contr, 4);
 			close(fd);
 		}
 	}
 	if (b)
 	{
-		sprintf(&contr[0],"%03d",c);
-		setCfgValue(CONTRASTO, "value",&contr[0]);
+		sprintf(contr,"%03d",c);
+		setCfgValue(CONTRASTO, "value",contr);
 	}
 }
 
@@ -226,12 +226,12 @@ unsigned char getContrast()
 		int fd = open("/proc/sys/dev/btweb/contrast",O_RDONLY);
 		if (fd >= 0)
 		{
-			read(fd, &contr[0], 4);
+			read(fd, contr, 4);
 			close(fd);
-			return (atoi(&contr[0]));
+			return atoi(contr);
 		}
 	}
-	return (0x00);
+	return 0x00;
 }
 
 void setBacklight(bool b)
@@ -330,9 +330,9 @@ bool getBacklight()
 			fd = open("/proc/sys/dev/btweb/brightness", O_RDONLY);
 			if (fd >= 0)
 			{
-				read(fd, &c[0], 4);
+				read(fd, c, 4);
 				close(fd);
-				if (atoi(&c[0]) < 100)
+				if (atoi(c) < 100)
 					return true;
 			}
 		}
@@ -344,9 +344,9 @@ bool getBacklight()
 			fd = open("/proc/sys/dev/btweb/backlight", O_RDONLY);
 			if (fd >= 0)
 			{
-				read (fd, &c[0], 1);
+				read (fd, c, 1);
 				close(fd);
-				if (c[0]!='0')
+				if (c[0] != '0')
 					return true;
 			}
 		}
@@ -362,7 +362,7 @@ void setOrientation(char* o)
 		int fd = open("/proc/sys/dev/btweb/upsidedown", O_WRONLY);
 		if (fd >= 0)
 		{
-			write(fd, &o[0], 1);
+			write(fd, o, 1);
 			close(fd);
 		}
 	}
@@ -398,11 +398,11 @@ unsigned long getTimePress()
 	{
 		int fd = open("/proc/sys/dev/btweb/touch_ago", O_RDONLY);
 
-		read(fd, &time[0], 6);
+		read(fd, time, 6);
 		close(fd);
 		t = atol(time);
 	}
-	return (t);
+	return t;
 }
 
 void rearmWDT()
@@ -435,12 +435,10 @@ void getName(char *name)
 		int fd = open("/proc/sys/dev/btweb/name", O_RDONLY);
 		if (fd >= 0)
 		{
-			read(fd, &name[0], 50);
+			read(fd, name, 50);
 			close(fd);
-			return;
 		}
 	}
-	return;
 }
 
 extern BtMain *BTouch;
