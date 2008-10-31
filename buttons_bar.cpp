@@ -47,7 +47,7 @@ ButtonsBar::ButtonsBar(QWidget *parent, unsigned int number_of_buttons, Qt::Orie
 	for (uint i = 0; i < number_of_buttons; i++)
 	{
 		BtButton* btn = new BtButton(this);
-		buttons_group->addButton(btn);
+		buttons_group->addButton(btn, i);
 		box->addWidget(btn);
 		buttons_list.append(btn);
 	}
