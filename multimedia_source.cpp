@@ -359,7 +359,6 @@ void MultimediaSource::handleSelectorExit()
 
 void MultimediaSource::handleChoiceSource(int button_id)
 {
-
 	// Create the instances only if change the source type
 	if (button_id == BUTTON_RADIO && source_type != RADIO_SOURCE)
 	{
@@ -371,7 +370,7 @@ void MultimediaSource::handleChoiceSource(int button_id)
 		sourceMenu(FILE_SOURCE);
 		play_window->stop();
 	}
-
+	assert(play_window && "PlayWindow not set!");
 	bannNavigazione->setHidden(false);
 	source_choice->hide();
 
