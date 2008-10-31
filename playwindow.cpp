@@ -229,7 +229,7 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 	addTextLabels(tags_text_layout, aFont);
 
 	tags_layout->addLayout(tags_name_layout);
-	tags_layout->addLayout(tags_layout);
+	tags_layout->addLayout(tags_text_layout);
 
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
