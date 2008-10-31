@@ -2,17 +2,17 @@
 #include "main.h"
 #include "fontmanager.h"
 #include "btbutton.h"
-
+#include "btlabel.h"
 
 #include <QDesktopWidget>
 #include <QGlobalStatic> // qAbs
 #include <QApplication>
 #include <QMouseEvent>
 #include <QWSServer>
+#include <QVariant> // setProperty
 #include <QPainter>
 #include <QScreen>
 #include <QCursor>
-#include <QLabel>
 #include <QTimer>
 #include <QFile>
 #include <QDebug>
@@ -25,7 +25,7 @@
 Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	QWidget(parent, Qt::Tool | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint), button_test(false)
 {
-	setStyleSheet("QWidget {background-color:#FFFFFF;color:#000000;}");
+	setProperty("noStyle", true);
 	setAttribute(Qt::WA_DeleteOnClose);
 	const int offset = 30;
 	QRect desk = qApp->desktop()->geometry();
@@ -59,7 +59,7 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	b2 = createButton(IMG_OK, 175, 255);
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
-	box_text = new QLabel(this);
+	box_text = new BtLabel(this);
 	box_text->setFont(aFont);
 	box_text->setAlignment(Qt::AlignHCenter);
 	box_text->setGeometry(0, 205, desk.width(), 50);

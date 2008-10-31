@@ -7,7 +7,7 @@
 
 
 class BtButton;
-class QLabel;
+class BtLabel;
 class QTimer;
 
 
@@ -60,7 +60,7 @@ private:
 	QPoint newPos;
 	QPoint penPos;
 	QTimer *timer, *button_timer;
-	QLabel *box_text;
+	BtLabel *box_text;
 	BtButton *b1, *b2;
 	unsigned char manut;
 	int dx;

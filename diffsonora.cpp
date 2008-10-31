@@ -15,6 +15,7 @@
 #include <openwebnet.h> // class openwebnet
 
 #include <QCursor>
+#include <QVariant> // setProperty
 
 #include <stdlib.h>
 
@@ -39,7 +40,7 @@ diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent),
 	BtLabel *linea = new BtLabel(this);
 
 	linea->setGeometry(0,77,240,3);
-	linea->setStyleSheet("QLabel {background-color:#FFFFFF;}");
+	linea->setProperty("noStyle", true);
 
 	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));
 	connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));

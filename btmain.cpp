@@ -146,7 +146,9 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		reader.setContentHandler(&handler);
 		reader.parse(QXmlInputSource(&xmlFile));
 		qDebug("finito parsing");
-		qApp->setStyleSheet(QString("QWidget {background-color:%1;color:%2;}").arg(bg->name()).arg(fg1->name()));
+		QString widget_style = QString(" QWidget {background-color:%1;color:%2;} ").arg(bg->name()).arg(fg1->name());
+		QString no_style(" QWidget[noStyle=\"true\"] {background-color:#FFFFFF;color:#000000;} QWidget[noStyle=\"true\"] QWidget {background-color:#FFFFFF;color:#000000;} ");
+		qApp->setStyleSheet(widget_style + no_style);
 		return true;
 	}
 	return false;
