@@ -172,7 +172,7 @@ void MultimediaSource::loadSources()
 
 	if (node_page.isNull())
 	{
-		qDebug("[AUDIO] ERROR loading configuration");
+		qWarning("[AUDIO] ERROR loading configuration");
 		return;
 	}
 
@@ -398,7 +398,7 @@ void MultimediaSource::enableSource(bool send_frame)
 
 	int rc;
 	if ((rc = system(start_play_script)) != 0)
-		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
+		qWarning("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
 
 	if(send_frame)
 		emit notifyStartPlay();
@@ -410,7 +410,7 @@ void MultimediaSource::disableSource(bool send_frame)
 
 	int rc;
 	if ((rc = system(stop_play_script)) != 0)
-		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
+		qWarning("[AUDIO] Error on stop play script, exit code %d", rc);
 
 	if(send_frame)
 		emit notifyStopPlay();
@@ -476,7 +476,7 @@ void FileSelector::itemIsClicked(int item)
 	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.fileName();
 
 	if (!clicked_element.exists())
-		qDebug("[AUDIO] Error retrieving file");
+		qWarning() << "[AUDIO] Error retrieving file: " << clicked_element.absoluteFilePath();
 
 	if (clicked_element.isDir())
 	{
@@ -599,7 +599,7 @@ bool FileSelector::browseFiles()
 	QList<QFileInfo> temp_files_list = current_dir.entryInfoList();
 	if (temp_files_list.empty())
 	{
-		qDebug("[AUDIO] Error retrieving file list!");
+		qWarning("[AUDIO] Error retrieving file list!");
 		return false;
 	}
 
@@ -672,7 +672,7 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode c
 			if (descr.length() > 0 && url.length() > 0)
 				radio_list.append(AudioData(url, descr));
 			else
-				qDebug() << "[AUDIO] Error loading radio item " << n.nodeName();
+				qWarning() << "[AUDIO] Error loading radio item " << n.nodeName();
 		}
 		n = n.nextSibling();
 	}
