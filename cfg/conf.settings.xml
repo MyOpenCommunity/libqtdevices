@@ -328,6 +328,16 @@
         <!-- lista immagini -->
         <cimg1>btninfo.png</cimg1>
       </item7>
+      <item8>
+        <!-- identifica la tipologia di item, vedi tab. skinObj -->
+        <id>75</id>
+        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
+        <cid>807</cid>
+        <!-- descr: contiene il testo da mostrare nell'item -->
+        <descr>Pulizia schermo</descr>
+        <!-- value: valore del contrasto 0-255 -->
+        <time>10</time>
+      </item8>
       </page0>
    </displaypages>
    <impianto/>
