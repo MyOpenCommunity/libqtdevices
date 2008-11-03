@@ -63,7 +63,7 @@ ButtonsBar::~ButtonsBar()
 
 bool ButtonsBar::setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon)
 {
-	if (!buttons_list.at(button_number))
+	if ((int)button_number >= buttons_list.size())
 		return false;
 
 	buttons_list.at(button_number)->setPixmap(icon);
@@ -83,7 +83,7 @@ void ButtonsBar::setToggleButtons(bool enable)
 
 void ButtonsBar::setToggleStatus(unsigned int button_up_index)
 {
-	if (isToggleBar && button_up_index < buttons_list.size())
+	if (isToggleBar && (int)button_up_index < buttons_list.size())
 	{
 		for (int i = 0; i < buttons_list.size(); i++)
 			buttons_list.at(i)->setChecked(false);

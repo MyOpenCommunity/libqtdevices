@@ -389,9 +389,8 @@ void sottoMenu::draw()
 
 		if (hasNavBar)
 		{
-			if (!elencoBanner.isEmpty())
-				if (banner *bann = elencoBanner.at(indice))
-					bannNavigazione->setCustomButton(bann->customButton());
+			if (!elencoBanner.isEmpty() && indice < elencoBanner.size())
+				bannNavigazione->setCustomButton(elencoBanner.at(indice)->customButton());
 
 			int end = numRighe;
 			if (scroll_step != 1)
