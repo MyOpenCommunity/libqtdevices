@@ -161,11 +161,9 @@ must be displayed.
   \brief clear alarm list
 */
 	void doClearAlarms();
-/*!
-  \brief Hides what has to be hidden
-*/
-	void hide();
-	void show();
+
+protected:
+	virtual void hideEvent(QHideEvent *event);
 
 private:
 /*!

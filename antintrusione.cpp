@@ -362,20 +362,9 @@ void antintrusione::doClearAlarms()
 		delete allarmi.takeFirst();
 }
 
-void antintrusione::show()
+void antintrusione::hideEvent(QHideEvent *event)
 {
-	qDebug("antintrusione::show()");
-	impianto->show();
-	zone->show();
-	QWidget::show();
-}
-
-void antintrusione::hide()
-{
-	qDebug("antiintrusione::hide()");
-	QWidget::hide();
-	impianto->hide();
-	zone->hide();
+	qDebug("antiintrusione::hideEvent()");
 	for (int i = 0; i < allarmi.size(); ++i)
 		allarmi.at(i)->hide();
 
