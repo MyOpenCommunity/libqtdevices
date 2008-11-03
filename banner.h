@@ -50,7 +50,7 @@ public:
 	/*!
 	 * \brief sets a possible additional text one can see on the banner
 	 */
-	void SetSecondaryTextU(const QString & );
+	void SetSecondaryTextU(const QString &);
 	/*!
 	 *  \brief return the Pressed Icon Name
 	 *  for a given IconName return the pressed status IconName
@@ -445,17 +445,16 @@ signals:
 
 protected:
 
-	BtLabel * BannerIcon;
-	BtLabel * BannerIcon2;
-	BtLabel * BannerText;
-	BtLabel * SecondaryText;
-	BtButton * sxButton;
-	BtButton * dxButton;
-	BtButton * csxButton;
-	BtButton * cdxButton;
-	QPixmap *  Icon[MAX_NUM_ICON];
-	QPixmap * pressIcon[5];
-	// Dichiarazione icons_library - Vecchio modo con la cache che è un membro statico di banner
+	BtLabel *BannerIcon;
+	BtLabel *BannerIcon2;
+	BtLabel *BannerText;
+	BtLabel *SecondaryText;
+	BtButton *sxButton;
+	BtButton *dxButton;
+	BtButton *csxButton;
+	BtButton *cdxButton;
+	QPixmap *Icon[MAX_NUM_ICON];
+	QPixmap *pressIcon[5];
 	/**
 	 * Icons is a vector with pointers to QPixmap.
 	 * When an icon is needed, iconsLibrary is asked to create
@@ -476,8 +475,6 @@ protected:
 	 * NOW iconsLibrary has its own destructor for icons
 	 * no need to destroy them in banner
 	 */
-	//static IconDispatcher icons_library;
-
 	QString qtesto, qtestoSecondario;
 
 	char attivo,value,maxValue,minValue,id,step;
@@ -489,7 +486,7 @@ protected:
 	/**
 	 *  \brief Returns true if the object is a target for message
 	 */
-	bool isForMe(openwebnet * message);
+	bool isForMe(openwebnet *message);
 
 	/**
 	 * Utility function to draw all buttons except the rightmost one
