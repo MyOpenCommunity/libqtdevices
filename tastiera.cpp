@@ -73,7 +73,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 
 	//TODO: rimuovere tutto questo codice duplicato!!
 	Icon->load(ICON_UNO);
-	getPressName((char*)ICON_UNO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_UNO, pressIconName,sizeof(pressIconName));
 	unoBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -83,7 +83,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_DUE);
-	getPressName((char*)ICON_DUE, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_DUE, pressIconName,sizeof(pressIconName));
 	dueBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -93,7 +93,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_TRE);
-	getPressName((char*)ICON_TRE, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_TRE, pressIconName,sizeof(pressIconName));
 	treBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -103,7 +103,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_QUATTRO);
-	getPressName((char*)ICON_QUATTRO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_QUATTRO, pressIconName,sizeof(pressIconName));
 	quatBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -113,7 +113,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_CINQUE);
-	getPressName((char*)ICON_CINQUE, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_CINQUE, pressIconName,sizeof(pressIconName));
 	cinBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -123,7 +123,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_SEI);
-	getPressName((char*)ICON_SEI, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_SEI, pressIconName,sizeof(pressIconName));
 	seiBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -133,7 +133,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_SETTE);
-	getPressName((char*)ICON_SETTE, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_SETTE, pressIconName,sizeof(pressIconName));
 	setBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -143,7 +143,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_OTTO);
-	getPressName((char*)ICON_OTTO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_OTTO, pressIconName,sizeof(pressIconName));
 	ottBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -153,7 +153,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_NOVE);
-	getPressName((char*)ICON_NOVE, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_NOVE, pressIconName,sizeof(pressIconName));
 	novBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -162,7 +162,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_ZERO);
-	getPressName((char*)ICON_ZERO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_ZERO, pressIconName,sizeof(pressIconName));
 	zeroBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -171,7 +171,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 	Icon->load(ICON_OK);
-	getPressName((char*)ICON_OK, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_OK, pressIconName,sizeof(pressIconName));
 	okBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -180,7 +180,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	}
 
 		Icon->load(ICON_CANC);
-	getPressName((char*)ICON_CANC, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_CANC, pressIconName,sizeof(pressIconName));
 	cancBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -221,7 +221,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 
 void tastiera::showTastiera()
 {
-	memset(&pwd[0],'\000',sizeof(&pwd[0]));
+	memset(pwd,'\000',sizeof(pwd));
 	draw();
 	show();
 }
@@ -239,90 +239,90 @@ void tastiera::draw()
 	digitLabel->setFont(aFont);
 	qDebug("tastiera::draw(), mode = %d", mode);
 	if (mode == CLEAN)
-		digitLabel->setText(&pwd[0]);
+		digitLabel->setText(pwd);
 	else
 	{
 		char pw[10];
 		memset(pw,'\000',sizeof(pw));
-		memset(pw,'*',strlen(&pwd[0]));
-		digitLabel->setText(&pw[0]);
+		memset(pw,'*',strlen(pwd));
+		digitLabel->setText(pw);
 	}
 }
 
 void tastiera::press1()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"1");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"1");
 	draw();
 }
 
 void tastiera::press2()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"2");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"2");
 	draw();
 }
 
 void tastiera::press3()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"3");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"3");
 	draw();
 }
 
 void tastiera::press4()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"4");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"4");
 	draw();
 }
 
 void tastiera::press5()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"5");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"5");
 	draw();
 }
 
 void tastiera::press6()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"6");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"6");
 	draw();
 }
 
 void tastiera::press7()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"7");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"7");
 	draw();
 }
 
 void tastiera::press8()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"8");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"8");
 	draw();
 }
 
 void tastiera::press9()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"9");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"9");
 	draw();
 }
 
 void tastiera::press0()
 {
-	if (strlen(&pwd[0]) < 5)
-		strcat(&pwd[0],"0");
+	if (strlen(pwd) < 5)
+		strcat(pwd,"0");
 	draw();
 }
 
 void tastiera::canc()
 {
-	if (strlen(&pwd[0]) > 0)
-		pwd[strlen(&pwd[0]) - 1] = '\000';
+	if (strlen(pwd) > 0)
+		pwd[strlen(pwd) - 1] = '\000';
 	else
 	{
 		hide();
@@ -334,7 +334,7 @@ void tastiera::canc()
 void tastiera::ok()
 {
 	hide();
-	emit(Closed(&pwd[0]));
+	emit(Closed(pwd));
 }
 
 void tastiera::setMode(char m)	

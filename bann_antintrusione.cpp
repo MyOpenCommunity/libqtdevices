@@ -39,9 +39,9 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 	// Mail agresta 22/06
 	parzIName = IMG_PATH "btnparzializza.png";
 	sparzIName = IMG_PATH "btnsparzializza.png";
-	getZoneName(iconzona, &pippo[0], indirizzo, sizeof(pippo));
+	getZoneName(iconzona, pippo, indirizzo, sizeof(pippo));
 	qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
-	zonaAnti::SetIcons(sparzIName, &pippo[0], IconDisactive);
+	zonaAnti::SetIcons(sparzIName, pippo, IconDisactive);
 
 	if (BannerText)
 	{
@@ -198,7 +198,7 @@ void zonaAnti::inizializza(bool forza)
 	strcat(pippo,"*#5*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 }
 
@@ -215,11 +215,11 @@ impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo,char* IconOn, 
 	memset(pippo,'\000',sizeof(pippo));
 	tasti = NULL;
 	if (IconActive)
-		strncpy(&pippo[0],IconActive,strstr(IconActive,".")-IconActive-3);
+		strncpy(pippo,IconActive,strstr(IconActive,".")-IconActive-3);
 
 	strcat(pippo,"dis");
 	strcat(pippo,strstr(IconActive,"."));
-	SetIcons( IconInfo,IconOff,&pippo[0],IconOn,IconActive);
+	SetIcons( IconInfo,IconOff,pippo,IconOn,IconActive);
 	setChi("5");
 	send_part_msg = false;
 	inserting = false;
@@ -361,7 +361,7 @@ void impAnti::Insert1(char *pwd)
 	for (int i = 0; i < MAX_ZONE; i++)
 		strcat(pippo, le_zone[i] && le_zone[i]->isActive() ? "0" : "1");
 	strcat(pippo,"*0##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	qDebug("sending part frame %s", pippo);
 	dev->sendFrame(msg_open.frame_open);
 	send_part_msg = false;
@@ -389,7 +389,7 @@ void impAnti::Insert3()
 	strcat(pippo,"*5*36#");
 	strcat(pippo,pwd);
 	strcat(pippo,"*0##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendFrame(msg_open.frame_open);
 	parentWidget()->show();
 	inserting = false;
@@ -407,7 +407,7 @@ void impAnti::DeInsert(char *pwd)
 		strcat(pippo,"*5*36#");
 		strcat(pippo,pwd);
 		strcat(pippo,"*0##");
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 		dev->sendFrame(msg_open.frame_open);
 	}
 	parentWidget()->show();

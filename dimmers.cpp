@@ -232,7 +232,7 @@ void dimmer::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	if (!forza)
 		emit richStato(msg_open.frame_open);
 	else
@@ -424,7 +424,7 @@ void dimmer100::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"*1##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	if (!forza)
 		emit richStato(msg_open.frame_open);
 	else

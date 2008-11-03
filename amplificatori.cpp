@@ -163,14 +163,14 @@ void amplificatore::inizializza(bool forza)
 	strcat(pippo,"*#16*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"*1##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*#16*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"*5##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 }
 

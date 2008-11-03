@@ -277,7 +277,7 @@ void impPassword::show()
 		SetIcons(uchar(0),iconOff);
 	qDebug("impPassword::show()");
 	Draw();
-	qDebug("passwd = %s %d", &paswd[0], paswd[0]);
+	qDebug("passwd = %s %d", paswd, paswd[0]);
 	if ((paswd[0]=='\000') || (starting))
 	{
 		qDebug("passwd = ZERO");
@@ -303,10 +303,10 @@ void impPassword::reShow1(char* c)
 		show();
 		return;
 	}
-	if (strcmp(&paswd[0],c))
+	if (strcmp(paswd,c))
 	{
 		show();
-		qDebug("password errata doveva essere %s",&paswd[0]);
+		qDebug("password errata doveva essere %s",paswd);
 		sb = getBeep();
 		setBeep(TRUE,FALSE); 
 		beep(1000);
@@ -328,9 +328,9 @@ void impPassword::reShow2(char* c)
 	{
 		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
-		strcpy(&paswd[0],c);
-		setCfgValue(PROTEZIONE, "value",&paswd[0],getSerNum());
-		emit(setPwd(active,&paswd[0]));
+		strcpy(paswd,c);
+		setCfgValue(PROTEZIONE, "value",paswd,getSerNum());
+		emit(setPwd(active,paswd));
 	}
 	show();
 	tasti->setMode(tastiera::HIDDEN);

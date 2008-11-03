@@ -112,7 +112,7 @@ QString banner::getPressedIconName(QString iconname)
 
 	char pressIconName[MAX_PATH];
 	QByteArray buf = iconname.toAscii();
-	getPressName(buf.data(), &pressIconName[0], sizeof(pressIconName));
+	getPressName(buf.data(), pressIconName, sizeof(pressIconName));
 	
 	/// If pressIconName file exists, return the press icon name
 	/// otherwise the the same name of the NOT PRESSED icon is returned
@@ -647,7 +647,7 @@ void banner::Draw()
 void banner::impostaAttivo(char Attivo)
 {
 	attivo = Attivo;
-	if ((animationTimer) &&(!Attivo))
+	if (animationTimer && !Attivo)
 	{
 		animationTimer->stop();
 		qDebug("KILLanimationTimer");
@@ -783,7 +783,7 @@ bool banner::isForMe(openwebnet * m)
 {
 	if (strcmp(m->Extract_chi(), "1"))
 		 return false;
-	if (! strcmp(m->Extract_dove(), getAddress()))
+	if (!strcmp(m->Extract_dove(), getAddress()))
 		 return true;
 	// BAH
 	return (!getPul() && ((!strcmp(m->Extract_dove(),"0")) ||

@@ -115,7 +115,7 @@ void attuatAutom::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	if (!forza)
 		emit richStato(msg_open.frame_open);
 	else
@@ -304,7 +304,7 @@ void attuatAutomInt::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 }
 
@@ -464,7 +464,7 @@ void attuatAutomIntSic::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 }
 
@@ -592,11 +592,11 @@ void attuatAutomTemp::Attiva()
 	openwebnet msg_open;
 	char cosa[15];
 
-	memset(&cosa[0],'\000',sizeof(cosa));
-	sprintf(&cosa[0],"%d",(11+cntTempi));
+	memset(cosa,'\000',sizeof(cosa));
+	sprintf(cosa,"%d",(11+cntTempi));
 
 	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1",&cosa[0],getAddress(),"");
+	msg_open.CreateMsgOpen("1",cosa,getAddress(),"");
 	dev->sendFrame(msg_open.frame_open);
 }
 
@@ -619,7 +619,7 @@ void attuatAutomTemp::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 }
 
@@ -748,7 +748,7 @@ void attuatAutomTempNuovoN::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"*2##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 }
 
@@ -980,7 +980,7 @@ void attuatAutomTempNuovoF::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"*2##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendInit(msg_open.frame_open);
 }
 
@@ -994,7 +994,7 @@ void attuatAutomTempNuovoF::chiedi_stato()
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	emit richStato(msg_open.frame_open);
 }
 

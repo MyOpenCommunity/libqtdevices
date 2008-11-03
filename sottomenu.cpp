@@ -96,7 +96,7 @@ sottoMenu::~sottoMenu()
 
 void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
 {
-	qDebug("strcmp(IconBut4,&iconName[0]):%s - %s", IconBut4, iconName);
+	qDebug("strcmp(IconBut4,iconName):%s - %s", IconBut4, iconName);
 	if (navBarMode != hasNavBar)
 	{
 		if (bannNavigazione)
@@ -120,7 +120,7 @@ void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
 	}
 	else if (strcmp(IconBut4,iconName))
 	{
-		qDebug("strcmp(IconBut4,&iconName[0]):%s - %s", iconName, IconBut4);
+		qDebug("strcmp(IconBut4,iconName):%s - %s", iconName, IconBut4);
 		setModeIcon(IconBut4);
 	}
 }

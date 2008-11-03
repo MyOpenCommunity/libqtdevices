@@ -101,7 +101,7 @@ void antintrusione::Parz(char* pwd)
 	for (int i = 0; i < MAX_ZONE; i++)
 		strcat(pippo, ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1");
 	strcat(pippo,"*0##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	qDebug("sending part frame %s", pippo);
 	emit sendFrame(msg_open.frame_open);
 	((impAnti *)impianto->getLast())->ToSendParz(false);
@@ -244,7 +244,7 @@ void antintrusione::gesFrame(char*frame)
 			// To simulate old behaviour
 			descr.truncate(MAX_PATH);
 
-			strcpy(&zona[0],msg_open.Extract_dove());
+			strcpy(zona,msg_open.Extract_dove());
 
 			QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
 			QString ddMM = QDateTime::currentDateTime().toString("dd.MM");

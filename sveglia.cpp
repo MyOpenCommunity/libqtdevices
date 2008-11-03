@@ -46,7 +46,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	memset(iconName,'\000',sizeof(iconName));
 	strcpy(iconName,ICON_FRECCIA_SU);
 	Icon1->load(iconName);
-	getPressName((char*)ICON_FRECCIA_SU, &iconName[0],sizeof(iconName));
+	getPressName((char*)ICON_FRECCIA_SU, iconName,sizeof(iconName));
 	if (QFile::exists(iconName))
 	{
 		Icon2 = new QPixmap();
@@ -71,7 +71,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	Icon2 = NULL;
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_FRECCIA_GIU);
-	getPressName((char*)ICON_FRECCIA_GIU, &iconName[0],sizeof(iconName));
+	getPressName((char*)ICON_FRECCIA_GIU, iconName,sizeof(iconName));
 	if (QFile::exists(iconName))
 	{
 		Icon2 = new QPixmap();
@@ -100,7 +100,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	delete Icon2;
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_VUOTO);
-	getPressName((char*)ICON_VUOTO, &iconName[0],sizeof(iconName));
+	getPressName((char*)ICON_VUOTO, iconName,sizeof(iconName));
 	if (QFile::exists(iconName))
 	{
 		Icon2 = new QPixmap();
@@ -313,8 +313,8 @@ void sveglia::Closed()
 	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "hour",oraSveglia->time().toString("hh"),serNum);
 	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "minute",oraSveglia->time().toString("mm"),serNum);
 	char t[2];
-	sprintf(&t[0],"%d",tipoSveglia);
-	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",&t[0],serNum);
+	sprintf(t,"%d",tipoSveglia);
+	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",t,serNum);
 	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
 }
 
@@ -417,7 +417,7 @@ void sveglia::gestFrame(char* frame)
 					strcat(pippo,"*#16*");
 					sprintf(&pippo[5],"%d",deviceAddr);
 					strcat(pippo,"*1##");
-					msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 					emit sendFrame(msg_open.frame_open);
 				}
 			}
@@ -533,7 +533,7 @@ void sveglia::aumVol()
 		strcat(pippo,"*16*3*");
 		sprintf(&pippo[6],"%d",sorgente);
 		strcat(pippo,"##");
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 		emit sendFrame(msg_open.frame_open);
 
 		memset(pippo,'\000',sizeof(pippo));
@@ -542,7 +542,7 @@ void sveglia::aumVol()
 		strcat(pippo,"*#7*");
 		sprintf(&pippo[strlen(pippo)],"%d",stazione);
 		strcat(pippo,"##");
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 		emit sendFrame(msg_open.frame_open);
 
 		for (uchar idx = 0; idx < AMPLI_NUM; idx++)
@@ -558,7 +558,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+10);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -571,7 +571,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+20);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -584,7 +584,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+30);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -597,7 +597,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+40);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -610,7 +610,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+50);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -623,7 +623,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+60);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -636,7 +636,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+70);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -649,7 +649,7 @@ void sveglia::aumVol()
 						strcat(pippo,"*16*3*");
 						sprintf(&pippo[6],"%d",sorgente+80);
 						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
@@ -661,7 +661,7 @@ void sveglia::aumVol()
 					strcat(pippo,"*#1*");
 					sprintf(&pippo[11],"%d",volSveglia[idx]);
 					strcat(pippo,"##");
-					msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 					emit sendFrame(msg_open.frame_open);
 				}
 				else
@@ -670,14 +670,14 @@ void sveglia::aumVol()
 					strcat(pippo,"*#16*");
 					sprintf(&pippo[5],"%02d",idx);
 					strcat(pippo,"*#1*8##");
-					msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 					emit sendFrame(msg_open.frame_open);
 				}
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*16*3*");
 				sprintf(&pippo[6],"%02d",idx);
 				strcat(pippo,"##");
-				msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+				msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 				emit sendFrame(msg_open.frame_open);
 			}
 		}
@@ -699,7 +699,7 @@ void sveglia::aumVol()
 				strcat(pippo,"*#1*");
 				sprintf(&pippo[11],"%d",conta2min);
 				strcat(pippo,"##");
-				msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+				msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 				emit sendFrame(msg_open.frame_open);
 			}
 		}
@@ -721,7 +721,7 @@ void sveglia::aumVol()
 				strcat(pippo,"*16*13*");
 				sprintf(&pippo[strlen(pippo)],"%02d",idx);
 				strcat(pippo,"##");
-				msg_open.CreateMsgOpen((char*)&pippo[0], strlen((char*)&pippo[0]));
+				msg_open.CreateMsgOpen((char*)pippo, strlen((char*)pippo));
 				emit sendFrame(msg_open.frame_open);
 			}
 		}
@@ -799,12 +799,12 @@ void sveglia::inizializza()
 		int eeprom;
 		char chiave[6];
 
-		memset(&chiave[0],'\000',sizeof(chiave));
+		memset(chiave,'\000',sizeof(chiave));
 		eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
 		lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
-		read(eeprom, &chiave[0], 5);
+		read(eeprom, chiave, 5);
 
-		if (strcmp(&chiave[0],AL_KEY))
+		if (strcmp(chiave,AL_KEY))
 		{
 			lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
 			write(eeprom,AL_KEY,5);

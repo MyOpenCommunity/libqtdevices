@@ -602,7 +602,7 @@ QString StopngoPage::getPressedIconName(const char *iconname)
 		return NULL;
 
 	char pressIconName[MAX_PATH];
-	getPressName((char*)iconname, &pressIconName[0], sizeof(pressIconName));
+	getPressName((char*)iconname, pressIconName, sizeof(pressIconName));
 	
 	/// If pressIconName file exists, return the press icon name
 	/// otherwise the the same name of the NOT PRESSED icon is returned

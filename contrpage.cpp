@@ -59,7 +59,7 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	pressIcon = new QPixmap();
 
 	Icon->load(ICON_MENO);
-	getPressName((char*)ICON_MENO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_MENO, pressIconName,sizeof(pressIconName));
 	decBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -69,7 +69,7 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	}
 
 	Icon->load(ICON_PIU);
-	getPressName((char*)ICON_PIU, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_PIU, pressIconName,sizeof(pressIconName));
 	aumBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -79,7 +79,7 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	}
 
 	Icon->load(ICON_OK);
-	getPressName((char*)ICON_OK, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_OK, pressIconName,sizeof(pressIconName));
 	okBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))

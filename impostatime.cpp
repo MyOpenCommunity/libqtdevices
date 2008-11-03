@@ -39,7 +39,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	memset(iconName,'\000',sizeof(iconName));
 	strcpy(iconName,ICON_FRECCIA_SU);
 	Icon1->load(iconName);
-	getPressName((char*)ICON_FRECCIA_SU, &iconName[0],sizeof(iconName));
+	getPressName((char*)ICON_FRECCIA_SU, iconName,sizeof(iconName));
 
 	if (QFile::exists(iconName))
 	{
@@ -65,7 +65,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_FRECCIA_GIU);
 
-	getPressName((char*)ICON_FRECCIA_GIU, &iconName[0],sizeof(iconName));
+	getPressName((char*)ICON_FRECCIA_GIU, iconName,sizeof(iconName));
 	if (QFile::exists(iconName))
 	{
 		Icon2 = new QPixmap();
@@ -91,7 +91,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	but[6] = new BtButton(this);
 	but[6]->setGeometry(90,260,60,60);
 	but[6]->setPixmap(*Icon1);
-	getPressName((char*)ICON_OK, &iconName[0],sizeof(iconName));
+	getPressName((char*)ICON_OK, iconName,sizeof(iconName));
 	if (QFile::exists(iconName))
 	{
 		Icon2 = new QPixmap();
@@ -154,7 +154,7 @@ void impostaTime::OKTime()
 	strcat(pippo, buf.constData());
 	strcat(pippo,"**##");
 
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	emit sendFrame(msg_open.frame_open);
 #endif
 }
@@ -194,7 +194,7 @@ void impostaTime::OKDate()
 	strcat(pippo, buf.constData());
 	strcat(pippo,"##");
 
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	emit sendFrame(msg_open.frame_open);
 #endif
 	hide();

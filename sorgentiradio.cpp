@@ -155,7 +155,7 @@ void banradio::pre_show()
 		strcat(pippo,"*#16*");
 		strcat(pippo,getAddress());
 		strcat(pippo,"*6##");
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 
 		dev->sendInit(msg_open.frame_open);
 	}
@@ -202,7 +202,7 @@ void banradio::ciclaSorg()
 	sprintf(amb, getAddress());
 	memset(pippo,'\000',sizeof(pippo));
 	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	dev->sendFrame(msg_open.frame_open);
 }
 
@@ -305,7 +305,7 @@ void banradio::memoStaz(uchar st)
 	strcat(pippo,pippa);
 	strcat(pippo,"##");
 	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 
 	dev->sendFrame(msg_open.frame_open);
 }
@@ -320,7 +320,7 @@ void banradio::startRDS()
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
 	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 
 	dev->sendFrame(msg_open.frame_open);
 }
@@ -336,7 +336,7 @@ void banradio::stopRDS()
 	strcat(pippo,"##");
 
 	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 
 	dev->sendFrame(msg_open.frame_open);
 }
@@ -351,7 +351,7 @@ void banradio::richFreq()
 	strcat(pippo,getAddress());
 	strcat(pippo,"*6##");
 
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 
 	dev->sendFrame(msg_open.frame_open);
 }
@@ -387,7 +387,7 @@ void sorgenteMultiRadio::attiva()
 	{
 		memset(pippo,'\000',sizeof(pippo));
 		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 		dev->sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
@@ -402,11 +402,11 @@ void sorgenteMultiRadio::attiva()
 			strcat(pippo,buf.constData());
 			strcat(pippo,"*6");
 			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*22*1#4#");
@@ -415,11 +415,11 @@ void sorgenteMultiRadio::attiva()
 			QByteArray buf_ind = indirizzo_semplice.toAscii();
 			strcat(pippo, buf_ind.constData());
 			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 			dev->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
+			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 			dev->sendFrame(msg_open.frame_open);
 		}
 	}

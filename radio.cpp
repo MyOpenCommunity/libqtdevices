@@ -94,7 +94,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	char pressIconName[MAX_PATH];
 
 	Icon->load(ICON_CICLA);
-	getPressName((char*)ICON_CICLA, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_CICLA, pressIconName,sizeof(pressIconName));
 	cicBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -104,7 +104,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_PIU);
-	getPressName((char*)ICON_PIU, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_PIU, pressIconName,sizeof(pressIconName));
 	aumBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -113,7 +113,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_MENO);
-	getPressName((char*)ICON_MENO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_MENO, pressIconName,sizeof(pressIconName));
 	decBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -122,7 +122,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_MEM);
-	getPressName((char*)ICON_MEM, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_MEM, pressIconName,sizeof(pressIconName));
 	memoBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -131,7 +131,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_MANUAL_ON);
-	getPressName((char*)ICON_MANUAL_ON, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_MANUAL_ON, pressIconName,sizeof(pressIconName));
 	manBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -140,7 +140,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_AUTO_ON);
-	getPressName((char*)ICON_AUTO_ON, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_AUTO_ON, pressIconName,sizeof(pressIconName));
 	autoBut->setPixmap(*Icon);
 	if (QFile::exists(pressIconName))
 	{
@@ -149,7 +149,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_UNO);
-	getPressName((char*)ICON_UNO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_UNO, pressIconName,sizeof(pressIconName));
 	unoBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -159,7 +159,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_DUE);
-	getPressName((char*)ICON_DUE, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_DUE, pressIconName,sizeof(pressIconName));
 	dueBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -169,7 +169,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_TRE);
-	getPressName((char*)ICON_TRE, &pressIconName[0],sizeof(pressIconName));    
+	getPressName((char*)ICON_TRE, pressIconName,sizeof(pressIconName));
 	treBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -179,7 +179,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_QUATTRO);
-	getPressName((char*)ICON_QUATTRO, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_QUATTRO, pressIconName,sizeof(pressIconName));
 	quatBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -189,7 +189,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_CINQUE);
-	getPressName((char*)ICON_CINQUE, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_CINQUE, pressIconName,sizeof(pressIconName));
 	cinBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -199,7 +199,7 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	}
 
 	Icon->load(ICON_CANC);
-	getPressName((char*)ICON_CANC, &pressIconName[0],sizeof(pressIconName));
+	getPressName((char*)ICON_CANC, pressIconName,sizeof(pressIconName));
 	cancBut->setPixmap(*Icon);
 
 	if (QFile::exists(pressIconName))
@@ -287,7 +287,7 @@ void radio::draw()
 	rdsLabel->setText(qrds);
 	char fr[10];
 	sprintf(fr,"%.2f",frequenza);
-	freq->display(&fr[0]);
+	freq->display(fr);
 
 	QPixmap* Icon = new QPixmap();
 	if (manual!=wasManual)
