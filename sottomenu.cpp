@@ -53,7 +53,7 @@ sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi
 	hasNavBar = navBarMode;
 	width = wi;
 	height = hei;
-	freez = FALSE;
+	freez = false;
 
 	setGeometry(0,0,width,height);
 	setFixedSize(QSize(width, height));
@@ -483,9 +483,10 @@ void sottoMenu::goDown()
 		draw();
 	}
 }
+
 void sottoMenu::setNumRighe(uchar n)
 {
-	numRighe=n;
+	numRighe = n;
 }
 
 void sottoMenu::setScrollStep(unsigned step)
@@ -505,7 +506,7 @@ banner* sottoMenu::getCurrent()
 
 banner* sottoMenu::getNext()
 {
-	if (indice==((int)elencoBanner.count()-1))
+	if (indice == ((int)elencoBanner.count()-1))
 		return elencoBanner.at(0);
 	return elencoBanner.at(indice + 1);
 }
@@ -564,8 +565,8 @@ bool sottoMenu::setPul(char* chi, char* where)
 		}
 	}
 	if (p)
-		return TRUE;
-	return FALSE;
+		return true;
+	return false;
 }
 
 bool sottoMenu::setGroup(char* chi, char* where, bool* group)
@@ -581,8 +582,8 @@ bool sottoMenu::setGroup(char* chi, char* where, bool* group)
 		}
 	}
 	if (p)
-		return TRUE;
-	return FALSE;
+		return true;
+	return false;
 }
 
 void sottoMenu::setIndex(char* indiriz)
@@ -631,7 +632,7 @@ void sottoMenu::mouseReleaseEvent(QMouseEvent *  e)
 	qDebug("Released");
 	if (freez)
 	{
-		freez = FALSE;
+		freez = false;
 		emit freeze(freez);
 	}
 	QWidget::mouseReleaseEvent(e);
@@ -646,18 +647,18 @@ void sottoMenu::freezed(bool f)
 	if (freez)
 	{
 		for (uchar idx = 0; idx < elencoBanner.count(); idx++)
-			elencoBanner.at(idx)->setEnabled(FALSE);
+			elencoBanner.at(idx)->setEnabled(false);
 		if (hasNavBar)
-			bannNavigazione->setEnabled(FALSE);
+			bannNavigazione->setEnabled(false);
 	}
 	else
 	{
 		for (uchar idx = 0; idx < elencoBanner.count(); idx++)
-			elencoBanner.at(idx)->setEnabled(TRUE);
+			elencoBanner.at(idx)->setEnabled(true);
 		if (hasNavBar)
-			bannNavigazione->setEnabled(TRUE);
+			bannNavigazione->setEnabled(true);
 	}
-	emit (frez(f));
+	emit frez(f);
 }
 
 void sottoMenu::setGeometry(int x, int y, int w, int h)
@@ -708,7 +709,7 @@ void sottoMenu::svuota()
 
 uint sottoMenu::getCount()
 {
-	return(elencoBanner.count());
+	return elencoBanner.count();
 }
 
 void  sottoMenu::setIndice(char c)
@@ -1080,7 +1081,7 @@ TimeEditMenu::TimeEditMenu(QWidget *parent, const char *name) : sottoMenu(parent
 
 void TimeEditMenu::performAction()
 {
-	emit(timeSelected(time()));
+	emit timeSelected(time());
 }
 
 BtTime TimeEditMenu::time()
@@ -1100,6 +1101,7 @@ void DateEditMenu::performAction()
 {
 	emit dateSelected(date());
 }
+
 QDate DateEditMenu::date()
 {
 	return date_edit->date();
