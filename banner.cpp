@@ -36,9 +36,9 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	dxButton = NULL;
 	csxButton = NULL;
 	cdxButton = NULL;
-	for (int idx=0;idx<MAX_NUM_ICON;idx++)
+	for (int idx = 0; idx < MAX_NUM_ICON; idx++)
 		Icon[idx] = NULL;
-	for (int idx=0;idx<4;idx++)
+	for (int idx = 0; idx < MAX_PRESS_ICON; idx++)
 		pressIcon[idx] = NULL;
 	periodo = 0;
 	numFrame = contFrame = 0;
@@ -80,7 +80,7 @@ banner::~banner()
 	cdxButton = NULL;
 	for (int idx = 0; idx < MAX_NUM_ICON; idx++)
 		Icon[idx] = NULL;
-	for (int idx = 0; idx < 4; idx++)
+	for (int idx = 0; idx < MAX_PRESS_ICON; idx++)
 		pressIcon[idx] = NULL;
 }
 
@@ -130,6 +130,7 @@ QString banner::getPressedIconName(QString iconname)
 
 void banner::SetIcons(uchar idIcon, const char *actuallcon)
 {
+	assert(idIcon < MAX_PRESS_ICON && "Index of icon out of range!");
 	Icon[idIcon]      = icons_library.getIcon(actuallcon);
 	pressIcon[idIcon] = icons_library.getIcon(getPressedIconName(actuallcon));
 }
@@ -283,7 +284,7 @@ void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerA
 		qDebug("Icon[2] <- %s", centerInactiveIcon);
 	}
 
-	if ((centerActiveIcon) &&(number))
+	if (centerActiveIcon && number)
 	{
 		for (int i = 1; i <= number; i++)
 		{

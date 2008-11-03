@@ -13,6 +13,7 @@
 
 
 #define MAX_NUM_ICON    46
+#define MAX_PRESS_ICON  5
 #define MAX_TEXT        21
 #define MAX_TEXT_2      11
 
@@ -454,7 +455,7 @@ protected:
 	BtButton *csxButton;
 	BtButton *cdxButton;
 	QPixmap *Icon[MAX_NUM_ICON];
-	QPixmap *pressIcon[5];
+	QPixmap *pressIcon[MAX_PRESS_ICON];
 	/**
 	 * Icons is a vector with pointers to QPixmap.
 	 * When an icon is needed, iconsLibrary is asked to create
