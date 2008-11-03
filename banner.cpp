@@ -46,13 +46,13 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	attivo = 0;
 	minValue = maxValue = 0;
 	step = 1;
-	animationTimer=NULL;
-	numRighe=NUM_RIGHE;
+	animationTimer = NULL;
+	numRighe = NUM_RIGHE;
 	memset(chi,'\000',sizeof(chi));
-	memset(group,FALSE,sizeof(group));
-	pul=FALSE;
-	serNum=1;
-	stato=0;
+	memset(group,false,sizeof(group));
+	pul = false;
+	serNum = 1;
+	stato = 0;
 }
 
 banner::~banner()
@@ -78,9 +78,9 @@ banner::~banner()
 	dxButton = NULL;
 	csxButton = NULL;
 	cdxButton = NULL;
-	for (int idx=0;idx<MAX_NUM_ICON;idx++)
+	for (int idx = 0; idx < MAX_NUM_ICON; idx++)
 		Icon[idx] = NULL;
-	for (int idx=0;idx<4;idx++)
+	for (int idx = 0; idx < 4; idx++)
 		pressIcon[idx] = NULL;
 }
 
@@ -117,7 +117,7 @@ QString banner::getPressedIconName(QString iconname)
 	/// If pressIconName file exists, return the press icon name
 	/// otherwise the the same name of the NOT PRESSED icon is returned
 	if (pressIconName == NULL || !QFile::exists(pressIconName))
-	{	
+	{
 		qDebug("could not get pressed icon %s, using: %s", pressIconName, buf.constData());
 		return iconname;
 	}
@@ -136,12 +136,12 @@ void banner::SetIcons(uchar idIcon, const char *actuallcon)
 
 void banner::SetIcons(const char *actuallcon ,char tipo)
 {
-	if (tipo==1)
-	{	
+	if (tipo == 1)
+	{
 		Icon[0]      = icons_library.getIcon(actuallcon);
 		pressIcon[0] = icons_library.getIcon(getPressedIconName(actuallcon));
 	}
-	if (tipo==3)
+	if (tipo == 3)
 	{
 		Icon[3]      = icons_library.getIcon(actuallcon);
 		pressIcon[3] = icons_library.getIcon(getPressedIconName(actuallcon));
@@ -299,18 +299,17 @@ void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerA
 		qDebug("Icon[3] <- %s", centerActiveIcon);
 	}
 
-	periodo=period;
-	numFrame=number;
+	periodo = period;
+	numFrame = number;
 }
 
 void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,char inactiveLevel)
 {
-	SetIcons(sxIcon , dxIcon, centerActiveIcon, centerInactiveIcon,(const char*)NULL, inactiveLevel);
+	SetIcons(sxIcon, dxIcon, centerActiveIcon, centerInactiveIcon,(const char*)NULL, inactiveLevel);
 }
 
 void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon, const char*breakIcon, char inactiveLevel)
 {
-
 	if (sxIcon)
 	{
 		Icon[0]      = icons_library.getIcon(sxIcon);
@@ -386,18 +385,18 @@ void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerA
 
 void banner::addItem(char item,int x,int y,int dimX, int dimY)
 {
-	QWidget * Item=NULL;
+	QWidget *Item = NULL;
 
 	switch(item)
 	{
-	case BUT1: 
+	case BUT1:
 		sxButton = new BtButton(this);
 		connect(sxButton,SIGNAL(clicked()),this,SIGNAL(sxClick()));
 		connect(sxButton,SIGNAL(pressed()),this,SIGNAL(sxPressed()));
 		connect(sxButton,SIGNAL(released()),this,SIGNAL(sxReleased()));
 		Item = sxButton;
 		break;
-	case BUT2: 
+	case BUT2:
 		dxButton = new BtButton(this);
 		connect(dxButton,SIGNAL(clicked()),this,SIGNAL(dxClick()));
 		connect(dxButton,SIGNAL(pressed()),this,SIGNAL(dxPressed()));
@@ -410,7 +409,7 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 	case ICON:
 		BannerIcon = new BtLabel(this); Item = BannerIcon;
 		break;
-	case ICON2: 
+	case ICON2:
 		BannerIcon2 = new BtLabel(this);
 		Item = BannerIcon2; 
 		break;
@@ -421,14 +420,14 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 		connect(csxButton,SIGNAL(released()),this,SIGNAL(csxReleased()));
 		Item = csxButton;
 		break;
-	case BUT4: 
+	case BUT4:
 		cdxButton = new BtButton(this);
 		connect(cdxButton,SIGNAL(clicked()),this,SIGNAL(cdxClick()));
 		connect(cdxButton,SIGNAL(pressed()),this,SIGNAL(cdxPressed()));
 		connect(cdxButton,SIGNAL(released()),this,SIGNAL(cdxReleased()));
 		Item = cdxButton;
 		break;
-	case TEXT2: 
+	case TEXT2:
 		SecondaryText = new BtLabel(this); Item = SecondaryText;
 		break;
 	}
@@ -501,121 +500,117 @@ void banner::mostra(char item)
 
 void banner::drawAllButRightButton()
 {
-	if ((sxButton) &&(Icon[0]))
+	if (sxButton && Icon[0])
 	{
 		sxButton->setPixmap(*Icon[0]);
 		if (pressIcon[0])
 			sxButton->setPressedPixmap(*pressIcon[0]);
 	}
-
-	if (minValue==maxValue)
+	if (minValue == maxValue)
 	{
-		QPixmap *pntIcon=NULL;
+		QPixmap *pntIcon = NULL;
 
-		if (attivo==1)
-			pntIcon=Icon[3+contFrame];
-		if (attivo==2)
-		{
-			pntIcon=Icon[4+contFrame];
-		}
+		if (attivo == 1)
+			pntIcon = Icon[3+contFrame];
+		if (attivo == 2)
+			pntIcon = Icon[4+contFrame];
 		else if (!attivo)
-			pntIcon=Icon[2];
-		if ((pntIcon) &&(BannerIcon))
+			pntIcon = Icon[2];
+		if (pntIcon && BannerIcon)
 		{
 			BannerIcon->repaint();
 			BannerIcon->setPixmap(*pntIcon);
 			BannerIcon->repaint();
 		}
 
-		if ((Icon[2]) &&(csxButton))
+		if (Icon[2] && csxButton)
 		{
 			csxButton->setPixmap(*Icon[2]);
 			if (pressIcon[2])
 				csxButton->setPressedPixmap(*pressIcon[2]);
 		}
 
-		if ((cdxButton) &&(Icon[3]))
+		if (cdxButton && Icon[3])
 		{
 			cdxButton->setPixmap(*Icon[3]);
 			if (pressIcon[3])
 				cdxButton->setPressedPixmap(*pressIcon[3]);
 		}
-		qApp-> flush();
+		qApp->flush();
 	}
 	else
 	{
-		if (attivo==1)
+		if (attivo == 1)
 		{
-			if ((Icon[4+((value-step)/step)*2]) &&(csxButton))
+			if (Icon[4+((value-step)/step)*2] && csxButton)
 			{
 				csxButton->setPixmap(*Icon[4+((value-step)/step)*2]);
 				qDebug("* Icon[%d]", 4+((value-step)/step)*2);
 			}
-			if ((cdxButton) &&(Icon[5+((value-step)/step)*2]))
+			if (cdxButton && Icon[5+((value-step)/step)*2])
 			{
 				cdxButton->setPixmap(*Icon[5+((value-step)/step)*2]);
 				qDebug("** Icon[%d]", 5+((value-step)/step)*2);
 			}
 		}
-		else if (attivo==0)
+		else if (attivo == 0)
 		{
 			if (Icon[22])
 			{
-				if ((Icon[22+(value-step)/step*2]) &&(csxButton))
+				if (Icon[22+(value-step)/step*2] && csxButton)
 				{
 					csxButton->setPixmap(*Icon[22+((value-step)/step)*2]);
 					qDebug("*** Icon[%d]", 22+((value-step)/step)*2);
 				}
 
-				if ((cdxButton) &&(Icon[23+((value-step)/step)*2]))
+				if (cdxButton && Icon[23+((value-step)/step)*2])
 				{
 					cdxButton->setPixmap(*Icon[23+((value-step)/step)*2]);
 					qDebug("**** Icon[%d]", 23+((value-step)/step)*2);
 				}
-			}	  	
+			}
 			else
 			{
-				if ((Icon[2]) &&(csxButton))
+				if (Icon[2] && csxButton)
 				{
 					csxButton->setPixmap(*Icon[2]);	
 					qDebug("***** Icon[%d]", 2);
 				}
 
-				if ((cdxButton) &&(Icon[3]))
+				if (cdxButton && Icon[3])
 				{
 					cdxButton->setPixmap(*Icon[3]); 
 					qDebug("****** Icon[%d]", 3);
 				}
 			}
 		}
-		else if (attivo==2)
+		else if (attivo == 2)
 		{
-			if ((Icon[44]) &&(csxButton))
+			if (Icon[44] && csxButton)
 			{
 				csxButton->setPixmap(*Icon[44]);
 				qDebug("******* Icon[%d]", 44);
 			}
 
-			if ((cdxButton) &&(Icon[45]))
+			if (cdxButton && Icon[45])
 			{
 				cdxButton->setPixmap(*Icon[45]);
 				qDebug("******* Icon[%d]", 45);
 			}
 		}
-
 	}
 
 	/*TODO
 	  icona animata -> armare timer per cambiare centerActiveIcon
 	  qui devo copiare period e number e in draw attivare il timer*/
-	if ((periodo) &&(numFrame))
-	{	   
+	if (periodo && numFrame)
+	{
 		if (!animationTimer)
 		{
 			animationTimer = new QTimer(this);
 			connect(animationTimer,SIGNAL(timeout()),this,SLOT(animate()));
 		}
-		if (!(animationTimer->isActive()) &&(attivo))
+		if (!animationTimer->isActive() && attivo)
 			animationTimer->start(periodo);
 	}
 
@@ -641,8 +636,7 @@ void banner::Draw()
 {
 	qDebug("banner::Draw(), attivo = %d, value = %d", attivo, value);
 	drawAllButRightButton();
-
-	if ((dxButton) &&(Icon[1]))
+	if (dxButton && Icon[1])
 	{
 		dxButton->setPixmap(*Icon[1]);
 		if (pressIcon[1])
@@ -652,7 +646,7 @@ void banner::Draw()
 
 void banner::impostaAttivo(char Attivo)
 {
-	attivo=Attivo;
+	attivo = Attivo;
 	if ((animationTimer) &&(!Attivo))
 	{
 		animationTimer->stop();
@@ -673,36 +667,36 @@ void banner::gestFrame(char*)
 
 void banner::setValue(char val)
 {
-	if ((val>=minValue) &&(val<=maxValue))
-		value=val;
+	if (val >= minValue && val <= maxValue)
+		value = val;
 }
 
 void banner::aumValue()
 {
-	if (value<maxValue)
-		value+=step;
+	if (value < maxValue)
+		value += step;
 }
 
 void banner::decValue()
 {
-	if (value>minValue)
-		value-=step;
+	if (value > minValue)
+		value -= step;
 }
 
 void banner::setMaxValue(char val)
 {
-	maxValue=val;
+	maxValue = val;
 }
 
 void banner::setMinValue(char val)
 {
-	minValue=val;
+	minValue = val;
 }
 
 void banner::setRange(char minval,char maxval)
 {
-	maxValue=maxval;
-	minValue=minval;
+	maxValue = maxval;
+	minValue = minval;
 }
 
 void banner::setStep(char s)
@@ -717,21 +711,21 @@ unsigned char banner::isActive()
 
 char banner::getValue()
 {
-	return(value);
+	return value;
 }
 
 void banner::animate()
 {
 	contFrame++;
-	if (contFrame>=numFrame)
-		contFrame=0;
+	if (contFrame >= numFrame)
+		contFrame = 0;
 	Draw();
 }
 
-void banner::setAnimationParams(int per ,int num)
+void banner::setAnimationParams(int per, int num)
 {
-	periodo=per;
-	numFrame=num;
+	periodo = per;
+	numFrame = num;
 }
 
 void banner::getAnimationParams(int& per, int& num)
@@ -742,47 +736,47 @@ void banner::getAnimationParams(int& per, int& num)
 
 void banner::setNumRighe(uchar n)
 {
-	numRighe=n;
+	numRighe = n;
 }
 
 char* banner::getAddress()
 {
-	return(&address[0]);
+	return address;
 }
 
 void banner::setChi(char* indirizzo)
 {
-	strncpy(&chi[0],indirizzo,sizeof(chi));
+	strncpy(chi, indirizzo, sizeof(chi));
 }
 
 char* banner::getChi()
 {
-	return(&chi[0]);
+	return chi;
 }
 
 void banner::setGroup(bool* gr)
 {
 	qDebug("%s setted GROUP",getAddress());
-	for (unsigned int idx=0;idx<9;idx++)
+	for (unsigned int idx = 0; idx < 9; idx++)
 	{
-		group[idx]=gr[idx];
+		group[idx] = gr[idx];
 	}
 }
 
 bool* banner::getGroup()
 {
-	return(&group[0]);
+	return group;
 }
 
 void banner::setPul()
 {
-	pul=TRUE;
+	pul = true;
 	qDebug("%s setted PUL",getAddress());
 }
 
 bool banner::getPul()
 {
-	return(pul);
+	return pul;
 }
 
 bool banner::isForMe(openwebnet * m)
@@ -792,16 +786,20 @@ bool banner::isForMe(openwebnet * m)
 	if (! strcmp(m->Extract_dove(), getAddress()))
 		 return true;
 	// BAH
-	return(! getPul() &&((!strcmp(m->Extract_dove(),"0")) ||
+	return (!getPul() && ((!strcmp(m->Extract_dove(),"0")) ||
 			((strlen(m->Extract_dove())==1) && 
 			(!strncmp(m->Extract_dove(), getAddress(), 1))) ||
 			((!strncmp(m->Extract_dove(),"#",1)) && 
 			*(getGroup()+(atoi(m->Extract_dove()+1))-1))));
 }
 
-void banner:: inizializza(bool forza){}
+void banner::inizializza(bool forza)
+{
+}
 
-void  banner::rispStato(char*){}
+void  banner::rispStato(char*)
+{
+}
 
 void banner::openAckRx(void)
 {
@@ -813,30 +811,57 @@ void banner::openNakRx(void)
 	qDebug("openNakRx()");
 }
 
-void banner::setSerNum(int s){serNum=s;}
+void banner::setSerNum(int s)
+{
+	serNum = s;
+}
 
-int banner::getSerNum(){return(serNum);}
+int banner::getSerNum()
+{
+	return serNum;
+}
 
-char banner::getId(){return(id);}
+char banner::getId()
+{
+	return id;
+}
 
-void banner::setId(char i){id=i;}
+void banner::setId(char i)
+{
+	id = i;
+}
 
-unsigned char banner::getState(){return(stato); }
+unsigned char banner::getState()
+{
+	return stato;
+}
 
-char* banner::getManIcon(){return NULL;}
+char* banner::getManIcon()
+{
+	return NULL;
+}
 
-char* banner::getAutoIcon(){return NULL;}
+char* banner::getAutoIcon()
+{
+	return NULL;
+}
 
 void banner::ambChanged(const QString &, bool, char *)
 {
 	qDebug("[WARNING] empty slot ambChanged called!");
 };
 
-void banner::parentChanged(QWidget *newParent) { }
+void banner::parentChanged(QWidget *newParent)
+{
+}
 
-void banner::grandadChanged(QWidget *newGrandad) { }
+void banner::grandadChanged(QWidget *newGrandad)
+{
+}
 
-void banner::addAmb(char *) {}
+void banner::addAmb(char *)
+{
+}
 
 QString banner::getNameRoot(QString full_string, QString text_to_strip)
 {
