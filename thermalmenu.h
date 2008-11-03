@@ -26,7 +26,6 @@
 #include <QDomNode>
 #include <QWidget>
 #include <QString>
-#include <QColor>
 
 
 class ThermalMenu : public sottoMenu

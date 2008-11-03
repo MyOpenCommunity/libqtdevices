@@ -2,10 +2,10 @@
 #define _ALLARME_H_
 
 #include <QFrame>
-#include <QColor>
 
 class banner;
 class BtLabel;
+
 
 /*!
   \class allarme

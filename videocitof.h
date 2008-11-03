@@ -4,7 +4,6 @@
 #include "device_status.h"
 
 #include <QFrame>
-#include <QColor>
 #include <QString>
 #include <QList>
 
@@ -12,6 +11,7 @@ class postoExt;
 class BtLabel;
 class BtButton;
 class device;
+
 
 class call_notifier : public QFrame
 {

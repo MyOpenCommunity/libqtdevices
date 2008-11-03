@@ -16,7 +16,6 @@
 
 #include <QSignalMapper>
 #include <QString>
-#include <QColor>
 #include <QDomNode>
 
 class device;

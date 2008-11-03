@@ -17,9 +17,9 @@
 
 #include <QByteArray>
 #include <QWidget>
-#include <QColor>
 #include <QDebug>
 #include <QChar>
+
 
 /*****************************************************************
  **sorgente_Radio

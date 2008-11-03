@@ -26,7 +26,6 @@ class SupervisionMenu;
 
 #include <QDateTime>
 #include <QString>
-#include <QColor>
 #include <QList>
 #include <qxml.h>
 
@@ -142,7 +141,6 @@ private:
 	int	par1, par2,par3, par4;
 	unsigned int itemNum;
 	QString CurTagL4_copy, CurTagL5_copy;
-	QColor SecondForeground;
 	unsigned char idPageDefault,car;
 
 	void set_page_item_defaults();

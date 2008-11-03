@@ -22,7 +22,6 @@
 #include "stopngo.h"
 
 #include <QWidget>
-#include <QColor>
 #include <QDomNode>
 #include <QList>
 

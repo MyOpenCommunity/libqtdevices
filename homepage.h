@@ -12,7 +12,6 @@
 
 #include <QWidget>
 #include <QString>
-#include <QColor>
 #include <QList>
 
 class QLCDNumber;

@@ -46,7 +46,6 @@ class BannFullScreen : public banner
 Q_OBJECT
 protected:
 	BannFullScreen(QWidget *parent, const char *name);
-	QColor second_fg;
 	BtButton *getButton(QString img);
 };
 

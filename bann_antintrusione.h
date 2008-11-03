@@ -16,9 +16,7 @@
 #include "device_status.h"
 
 #include <QString>
-#include <QColor>
 #include <QList>
-
 
 /// Forward Declarations
 class tastiera;
