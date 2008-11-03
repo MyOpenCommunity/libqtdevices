@@ -426,7 +426,8 @@ enum  bannerType
 	POWER_AMPLIFIER_BASS=72,
 	POWER_AMPLIFIER_BALANCE=73,
 	POWER_AMPLIFIER_LOUD=74,
-	CLEANSCREEN=75
+	CLEANSCREEN=75,
+	LANSETTINGS=76,                               /*!< LAN settings and information */
 };
 
 /*! \enum pulsType
