@@ -56,8 +56,10 @@ bool openwebnet_where::pp(int& addr)
 bool openwebnet_where::gen(int& l, int& i)
 {
 	l = -1;
-	if ((at(0)=='0' && length() == 1) ||
-			(at(0)=='0' && length() >= 3 && length() <= 6)) {
+	if (!length())
+		return false;
+	if ((at(0) == '0' && length() == 1) || (at(0) == '0' && length() >= 3 && length() <= 6))
+	{
 		lev(l);
 		interf(i);
 		return true;
