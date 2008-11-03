@@ -73,7 +73,7 @@ int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizz
 	}
 	else if (tipo == SORG_RADIO || tipo == SORG_AUX || tipo == SORGENTE_MULTIM_MC)
 	{
-		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, QColor(0,0,0), ambdescr);
+		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, ambdescr);
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 	}

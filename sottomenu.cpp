@@ -133,9 +133,7 @@ void sottoMenu::setModeIcon(char* iconBut4)
 }
 
 int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo,
-		QList<QString*> &icon_names,
-		int periodo, int numFrame,
-		QColor SecondForeground,
+		QList<QString*> &icon_names, int periodo, int numFrame,
 		char *descr1, char *descr2, char *descr3, char *descr4,
 		int par3, int par4,
 		QList<QString*> *lt, QList<scenEvo_cond*> *lc,

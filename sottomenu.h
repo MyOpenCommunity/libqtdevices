@@ -68,8 +68,7 @@ sstart : soft start values list for dimmer 100 group
 sstop : soft stop values list vor dimmer 100 group
 */
 	int addItemU(char tipo, const QString & nome, void *indirizzo,
-		QList<QString*> &icon_names,
-		int periodo = 0, int numFrame = 0, QColor secondFroreground = QColor(0,0,0),
+		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0,
 		char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
 		int par3=0, int par4=0,
 		QList<QString*> *lt = NULL, QList<scenEvo_cond*> *lc = NULL,

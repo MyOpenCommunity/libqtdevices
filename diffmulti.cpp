@@ -89,8 +89,7 @@ diffmulti::~diffmulti()
 		delete dslist.takeFirst();
 }
 
-int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo, QList<QString*> &icon_names,int modo, int numFrame,
-		QColor SecondForeground)
+int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
 {
 	qDebug("diffmulti::addItem (%d)", tipo);
 	qDebug("Amplificatore (%s)", (char *)indirizzo);
@@ -203,7 +202,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 		break;
 
 	default:
-		sottoMenu::addItemU(tipo, *descrizioni->at(0),indirizzo, icon_names, modo, numFrame, SecondForeground);
+		addItemU(tipo, *descrizioni->at(0),indirizzo, icon_names, modo, numFrame);
 		break;
 	}
 	return 1;

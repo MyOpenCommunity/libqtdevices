@@ -138,7 +138,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 	{
 		xmlconfhandler handler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
 				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
-				client_comandi, client_monitor, client_richieste, datiGen, fg2);
+				client_comandi, client_monitor, client_richieste, datiGen);
 
 		QFile xmlFile(cfg_file);
 		QXmlSimpleReader reader;

@@ -89,7 +89,7 @@ static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIO
  *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
 		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, diffSonora **dS, diffmulti **_dm, antintrusione **ant,
-		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG, QColor *fg2)
+		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG)
 {
 	home = h;
 	specPage = sP;
@@ -112,7 +112,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	client_richieste = c_r;
 	datiGen = dG;
 
-	SecondForeground = *fg2;
 	page_item_list_group = new QList<QString*>;
 	page_item_list_group_m = new QList<QString*>;
 	page_item_list_txt_times = new QList<QString*>;
@@ -337,7 +336,7 @@ void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 	QByteArray buf_img4 = page_item_list_txt.at(3).toAscii();
 	
 	sm->addItemU((char)page_item_id, page_item_descr, address, page_item_list_img,
-			par1, par2, SecondForeground, buf_img1.data(), buf_img2.data(),
+			par1, par2, buf_img1.data(), buf_img2.data(),
 			buf_img3.data(), buf_img4.data(), par3, par4,
 			page_item_list_txt_times, page_item_cond_list, page_item_action,
 			page_item_light, page_item_key, page_item_unknown, sstart, sstop,
@@ -545,8 +544,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						strcpy(pip, page_item_where.toAscii().constData());
 						par2 = page_item_where.toInt();
 
-						(*dm)->addItem((char)page_item_id, page_item_descr_m, pip,
-							page_item_list_img, par1, par2, QColor(0,0,0));
+						(*dm)->addItem((char)page_item_id, page_item_descr_m, pip,page_item_list_img, par1, par2);
 						qDebug("clearing descr list");
 						page_item_descr_m->clear();
 						break;
