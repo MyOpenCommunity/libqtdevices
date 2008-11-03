@@ -23,12 +23,10 @@ static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png"
 static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
 static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
-ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor fg2) :
-	sottoMenu(parent, name)
+ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n) : sottoMenu(parent, name)
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");
 	conf_root = n;
-	second_fg = fg2;
 	bann_number = 0;
 	addBanners();
 
@@ -42,7 +40,7 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor f
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config, second_fg);
+	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config);
 
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));

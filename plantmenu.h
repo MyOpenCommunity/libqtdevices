@@ -29,9 +29,9 @@ class PlantMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor fg2);
-private:
+	PlantMenu(QWidget *parent, char *name, QDomNode conf);
 
+private:
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
 	 * screen banner.
@@ -52,9 +52,6 @@ private:
 	/// Address of the thermal regulation device
 	/// empty in case of 99z device
 	QString ind_centrale;
-
-	/// The second foreground color
-	QColor second_fg;
 
 	/*
 	 * Sub-sub menu used to show the full screen banners corresponding to the

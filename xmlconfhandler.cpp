@@ -1071,7 +1071,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					case TERMOREGOLAZIONE:
 						n = getPageNode(TERMOREGOLAZIONE);
 						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, "TERMO", n, SecondForeground);
+							*termo = new ThermalMenu(NULL, "TERMO", n);
 						else
 							qWarning("TERMOREGOLAZIONE configuration not found!");
 						(*termo)->hide();
@@ -1081,7 +1081,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					case TERMOREG_MULTI_PLANT:
 						n = getPageNode(TERMOREG_MULTI_PLANT);
 						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, "TERMO", n, SecondForeground);
+							*termo = new ThermalMenu(NULL, "TERMO", n);
 						else
 							qWarning("TERMOREG_MULTI_PLANT configuration not found!");
 						(*termo)->hide();

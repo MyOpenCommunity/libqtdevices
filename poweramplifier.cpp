@@ -2,8 +2,8 @@
 #include "device_cache.h" // btouch_device_cache
 #include "sottomenu.h"
 #include "btlabel.h"
-#include "main.h"
 
+#include <QVariant> // setProperty
 #include <QRegExp>
 #include <QList>
 
@@ -21,6 +21,7 @@ static const char *IMG_LOUD_ON = IMG_PATH "loud.png";
 static const char *IMG_LOUD_OFF = IMG_PATH "loud_off.png";
 static const char *IMG_MORE = IMG_PATH "more.png";
 static const char *IMG_LESS = IMG_PATH "less.png";
+
 
 /*****************************************************************
  ** PowerAmplifier
@@ -48,21 +49,14 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	status = false;
 	settings_page = new sottoMenu(NULL, "PowerAmplifierSettings");
 
-	QColor *bg, *fg1, *fg2;
-	readExtraConf(&bg, &fg1, &fg2);
-
 	QList<QString*> icons;
 	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons, 0, 0, *fg2);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons, 0, 0, *fg2);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), NULL, icons, 0, 0, *fg2);
-	settings_page->addItemU((char)POWER_AMPLIFIER_LOUD, tr("Loud"), NULL, icons, 0, 0, *fg2);
+	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_LOUD, tr("Loud"), NULL, icons);
 	settings_page->hide();
 	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
-
-	delete bg;
-	delete fg1;
-	delete fg2;
 }
 
 void PowerAmplifier::showSettings()
@@ -97,8 +91,7 @@ void PowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t, st
  ** PowerAmplifierPreset
  ****************************************************************/
 
-PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent, const char *name)
- : bannOnOff(parent, name)
+PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent) : bannOnOff(parent)
 {
 	qDebug("PowerAmplifierPreset::PowerAmplifierPreset()");
 	SetIcons(IMG_PLUS, IMG_MINUS, NULL, IMG_PRESET);
@@ -195,15 +188,14 @@ void PowerAmplifierPreset::nextPreset()
  ** PowerAmplifierTreble
  ****************************************************************/
 
-PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent, const char *name, QColor SecondForeground)
- : bannOnOff2scr(parent, name)
+PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent) : bannOnOff2scr(parent)
 {
+	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_TREBLE);
 	level = 0;
 	qDebug("PowerAmplifierTreble::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
-	secondary_fg = SecondForeground;
 	showLevel();
 }
 
@@ -230,25 +222,19 @@ void PowerAmplifierTreble::showLevel()
 	SetSecondaryTextU(desc);
 }
 
-void PowerAmplifierTreble::setFGColor(QColor c)
-{
-	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
-	//SecondaryText->setPaletteForegroundColor(secondary_fg);
-}
 
 /*****************************************************************
  ** PowerAmplifierBass
  ****************************************************************/
 
-PowerAmplifierBass::PowerAmplifierBass(QWidget *parent, const char *name, QColor SecondForeground)
- : bannOnOff2scr(parent, name)
+PowerAmplifierBass::PowerAmplifierBass(QWidget *parent) : bannOnOff2scr(parent)
 {
+	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_BASS);
 	level = 0;
 	qDebug("PowerAmplifierBass::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
-	secondary_fg = SecondForeground;
 	showLevel();
 }
 
@@ -275,22 +261,16 @@ void PowerAmplifierBass::showLevel()
 	SetSecondaryTextU(desc);
 }
 
-void PowerAmplifierBass::setFGColor(QColor c)
-{
-	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
-	// SecondaryText->setPaletteForegroundColor(secondary_fg);
-}
 
 /*****************************************************************
  ** PowerAmplifierBalance
  ****************************************************************/
 
-PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent, const char *name, QColor SecondForeground)
- : BannOnOffCombo(parent, name)
+PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent) : BannOnOffCombo(parent)
 {
 	qDebug("PowerAmplifierBalance::PowerAmplifierBalance()");
+	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MORE, IMG_LESS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
-	secondary_fg = SecondForeground;
 	balance = 0;
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
 	connect(this, SIGNAL(dxClick()), SLOT(sx()));
@@ -325,18 +305,12 @@ void PowerAmplifierBalance::showBalance()
 	SetSecondaryTextU(desc);
 }
 
-void PowerAmplifierBalance::setFGColor(QColor c)
-{
-	// TODO: sistemare quando ce ne sara' bisogno con i metodi qt4!
-	//SecondaryText->setPaletteForegroundColor(secondary_fg);
-}
 
 /*****************************************************************
  ** PowerAmplifierLoud
  ****************************************************************/
 
-PowerAmplifierLoud::PowerAmplifierLoud(QWidget *parent, const char *name)
- : bannOnOff(parent, name)
+PowerAmplifierLoud::PowerAmplifierLoud(QWidget *parent) : bannOnOff(parent)
 {
 	qDebug("PowerAmplifierLoud::PowerAmplifierLoud()");
 	SetIcons(ICON_ON, ICON_OFF, IMG_LOUD_ON, IMG_LOUD_OFF);

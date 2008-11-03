@@ -44,8 +44,6 @@ class BtLabel;
 class BannFullScreen : public banner
 {
 Q_OBJECT
-public:
-	void setSecondForeground(QColor fg2);
 protected:
 	BannFullScreen(QWidget *parent, const char *name);
 	QColor second_fg;
@@ -78,7 +76,6 @@ Q_OBJECT
 public:
 	FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale = CELSIUS, const char *name = 0);
 	virtual void Draw();
-	void setSecondForeground(QColor fg2);
 public slots:
 	virtual void status_changed(QList<device_status*> sl);
 

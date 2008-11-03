@@ -12,19 +12,19 @@
 #include "device.h"
 #include "device_cache.h"
 
+#include <QVariant>
 #include <QRegExp>
 
 static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
 static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
 static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png");
 
-PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor fg2) :
-	sottoMenu(parent, name),
+
+PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf) : sottoMenu(parent, name),
 	items_submenu(0, "items submenu", 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
 	signal_mapper(0)
 {
 	conf_root = conf;
-	second_fg = fg2;
 
 	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
 	if (thermr_address.isNull())
@@ -105,7 +105,7 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	TemperatureScale scale = readTemperatureScale();
 	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale, scale);
 	initBanner(fsb, n);
-	fsb->setSecondForeground(second_fg);
+	fsb->setProperty("SecondFgColor", true);
 	items_submenu.appendBanner(fsb);
 
 	return bp;

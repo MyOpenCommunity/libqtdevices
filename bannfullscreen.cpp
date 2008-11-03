@@ -20,6 +20,7 @@
 #include "scaleconversion.h"
 
 #include <QByteArray>
+#include <QVariant>
 #include <QDebug>
 
 #define I_OK  IMG_PATH"btnok.png"
@@ -57,11 +58,6 @@ static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fanc
 
 BannFullScreen::BannFullScreen(QWidget *parent, const char *name) : banner(parent, name)
 {
-}
-
-void BannFullScreen::setSecondForeground(QColor fg2)
-{
-	second_fg = fg2;
 }
 
 BtButton *BannFullScreen::getButton(QString img)
@@ -405,7 +401,7 @@ void FSBannProbe::Draw()
 
 	setpoint_label->setFont(aFont);
 	setpoint_label->setAlignment(Qt::AlignHCenter);
-	setpoint_label->setStyleSheet(QString("QLabel {color:%1;}").arg(second_fg.name()));
+	setpoint_label->setProperty("SecondFgColor", true);
 
 	FontManager::instance()->getFont(font_banTermo_testo, aFont);
 	local_temp_label->setFont(aFont);
@@ -736,7 +732,7 @@ void FSBannManual::Draw()
 		temp_label->setText(celsiusString(temp));
 	}
 
-	temp_label->setStyleSheet(QString("QLabel {color:%1;}").arg(second_fg.name()));
+	temp_label->setProperty("SecondFgColor", true);
 }
 
 BtButton *FSBannManual::customButton()
@@ -845,15 +841,12 @@ BtTime FSBannTime::time()
 }
 
 FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
-	: BannFullScreen(parent, name),
-	main_layout(this)
+	: BannFullScreen(parent, name), main_layout(this)
 {
 	conf_root = n;
 	navbar_button = getButton(IMG_SETTINGS);
 
-	QColor *bg, *fg1, *fg2;
-	readExtraConf(&bg, &fg1, &fg2);
-	setSecondForeground(*fg2);
+	setProperty("SecondFgColor", true);
 
 	// Put a sensible default for the description
 	QDomNode descr = conf_root.namedItem("descr");
@@ -898,7 +891,7 @@ void FSBannTermoReg::Draw()
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
 	// TODO: verificare che venga impostato correttamente!!
-	description_label->setStyleSheet(QString("QLabel {color:%1;}").arg(second_fg.name()));
+	description_label->setProperty("SecondFgColor", true);
 }
 
 void FSBannTermoReg::status_changed(QList<device_status*> sl)
@@ -1233,7 +1226,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	connect(settings, SIGNAL(hideChildren()), manual_menu, SLOT(hide()));
 
 	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev, temp_scale);
-	bann->setSecondForeground(second_fg);
+	bann->setProperty("SecondFgColor", true);
 
 	manual_menu->appendBanner(bann);
 	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
@@ -1436,7 +1429,8 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	timed_manual_menu = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
 	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
-	bann->setSecondForeground(second_fg);
+
+	bann->setProperty("SecondFgColor", true);
 	bann->setMaxHours(25);
 
 	timed_manual_menu->appendBanner(bann);

@@ -36,7 +36,7 @@ public:
 	/**
 	 * 
 	 */
-	ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor fg2);
+	ThermalMenu(QWidget *parent, const char *name, QDomNode n);
 
 public slots:
 	/**
@@ -63,7 +63,6 @@ private:
 	QDomNode conf_root;
 	/// do NOT setAutoDelete(true), since banners are children of
 	/// ThermalMenu and will be deleted by Qt
-	QColor second_fg;
 
 	unsigned bann_number;
 	/// A reference to the only submenu below us

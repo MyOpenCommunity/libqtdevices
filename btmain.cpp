@@ -148,7 +148,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		qDebug("finito parsing");
 		QString widget_style = QString(" QWidget {background-color:%1;color:%2;} ").arg(bg->name()).arg(fg1->name());
 		QString no_style(" QWidget[noStyle=\"true\"] {background-color:#FFFFFF;color:#000000;} QWidget[noStyle=\"true\"] QWidget {background-color:#FFFFFF;color:#000000;} ");
-		qApp->setStyleSheet(widget_style + no_style);
+		QString second_text_color = QString(" QWidget[SecondFgColor=\"true\"] {color:%1;} QWidget[SecondFgColor=\"true\"] QWidget {color:%1;}  ").arg(fg2->name());
+		qApp->setStyleSheet(widget_style + no_style + second_text_color);
 		return true;
 	}
 	return false;
