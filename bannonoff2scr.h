@@ -30,7 +30,7 @@ class bannOnOff2scr : public banner
 {
 Q_OBJECT
 public:
-	bannOnOff2scr(QWidget *, const char *);
+	bannOnOff2scr(QWidget *w=0, const char *n=0);
 
 	void setIcons(const char *onIcon=0, const char *offIcon=0);
 };
