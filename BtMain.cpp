@@ -28,7 +28,6 @@
 #include "thermalmenu.h"
 #include "supervisionMenu.h"
 
-#include <assert.h>
 #include <qwindowsystem_qws.h>
 #include <qapplication.h>
 #include <qobject.h>
@@ -90,8 +89,11 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 
 	// read screensaver type from config file
 	QDomElement screensaver_type = getConfElement("displaypages/screensaver/type");
-	assert(!screensaver_type.isNull());
-	int type = screensaver_type.text().toInt();
+	int type = ScreenSaver::LINES;
+	if (screensaver_type.isNull())
+		qWarning("Type of screeensaver not found!");
+	else
+		type = screensaver_type.text().toInt();
 	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(type));
 
 	tasti = NULL;
