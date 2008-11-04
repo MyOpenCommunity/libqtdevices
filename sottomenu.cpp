@@ -59,10 +59,6 @@ sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi
 	setGeometry(0,0,width,height);
 	setFixedSize(QSize(width, height));
 
-#ifdef IPHONE_MODE
-	setMouseTracking(true);
-#endif
-
 	bannNavigazione = NULL;
 
 	if (navBarMode)
@@ -75,10 +71,6 @@ sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi
 		connect(bannNavigazione,SIGNAL(downClick()),this,SLOT(goDown()));
 		connect(bannNavigazione,SIGNAL(forwardClick()),this,SIGNAL(goDx()));
 
-#ifdef IPHONE_MODE
-		connect(this, SIGNAL(goUP()), bannNavigazione,SIGNAL(upClick()));
-		connect(this, SIGNAL(goDO()), bannNavigazione,SIGNAL(downClick()));
-#endif
 	}
 
 	indice = 0;
@@ -792,78 +784,6 @@ QDomNode sottoMenu::findNamedNode(QDomNode root, QString name)
 	QDomNode null;
 	return null;
 }
-
-#ifdef IPHONE_MODE
-void sottoMenu::mouseMoveEvent(QMouseEvent *e)
-{
-	static int x = 0,y = 0,Xpos = 0,Ypos = 0;
-	static QTime lastEvent = QTime::currentTime(Qt::LocalTime);
-	static QTime lastManEvent = QTime::currentTime(Qt::LocalTime);
-	static int down = 0, gapT = 100, gapY = 10;
-
-	QTime s = QTime::currentTime(Qt::LocalTime);
-
-	printf("sottoMenu::mouseMoveEvent %d - %d\n",y,s.msec());
-	if (s>lastEvent.addMSecs(200))
-	{
-		gapY = 10;
-		gapT = 50;
-		y = e->y();
-	}
-
-	if ((abs(y-e->y())>gapY))
-	{
-		QTime s1 = lastManEvent.addMSecs(gapT);
-		if (e->y() > y)
-		{
-			if (((s > s1) && (!down)) || (e->y() - y > 20))
-			{
-				if (bannNavigazione)
-					emit goUP();
-				lastManEvent = QTime::currentTime(Qt::LocalTime);
-				printf("up %d\n",y);
-				if (e->y() - y > 35)
-					emit goUP();
-				if (gapT >30)
-					gapT = 30;
-				if (gapY > 5)
-					gapY = 5;
-			}
-			else if (down)
-			{
-				down = 0;
-				gapT = 50;
-				gapY = 10;
-			}
-		}
-		else
-		{
-			if (((s > s1) && (down)) || (y - e->y() > 20))
-			{
-				if (bannNavigazione)
-					emit goDO();
-				lastManEvent = QTime::currentTime(Qt::LocalTime);
-				printf("down %d\n",y);
-				if (y - e->y() > 35)
-					emit goUP();
-				if (gapT > 30)
-					gapT = 30;
-				if (gapY > 5)
-					gapY = 5;
-			}
-			else if (!down)
-			{
-				down = 1;
-				gapT = 50;
-				gapY = 10;
-			}
-		}
-		x = e->x();
-		y = e->y();
-	}
-	lastEvent = QTime::currentTime(Qt::LocalTime);
-}
-#endif
 
 
 // Specialized submenus function definition

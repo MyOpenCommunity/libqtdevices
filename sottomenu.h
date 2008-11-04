@@ -11,8 +11,6 @@
 #ifndef SOTTOMENU_H
 #define SOTTOMENU_H
 
-#undef IPHONE_MODE
-
 #include "main.h"
 #include "banner.h"
 #include "device_status.h"
@@ -176,9 +174,6 @@ sstop : soft stop values list vor dimmer 100 group
 		\brief add amb to all banners
 		*/
 	void addAmb(char *);
-#ifdef IPHONE_MODE
-		void mouseMoveEvent(QMouseEvent *e);
-#endif
 signals:
 	void goUP();
 	void goDO();
