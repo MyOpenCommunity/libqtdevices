@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 extern unsigned char tipoData;
+static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 setDataOra::setDataOra(sottoMenu *parent,const char *name) : bannOnDx(parent, name)
 {
@@ -400,8 +401,7 @@ void BannCleanScreen::hide()
 
 BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(parent, name)
 {
-	// TODO: set the correct icon
-	SetIcons(ICON_INFO, 1);
+	SetIcons(ICON_BRIGHTNESS, 1);
 	page = new BrightnessPage();
 	page->hide();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
