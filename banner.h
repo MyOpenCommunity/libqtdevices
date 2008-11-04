@@ -485,7 +485,7 @@ protected:
 	BtButton * csxButton;
 	BtButton * cdxButton;
 	QPixmap *  Icon[MAX_NUM_ICON];
-	QPixmap * pressIcon[4];
+	QPixmap * pressIcon[5];
 	// Dichiarazione icons_library - Vecchio modo con la cache che è un membro statico di banner
 	/**
 	 * Icons is a vector with pointers to QPixmap.
