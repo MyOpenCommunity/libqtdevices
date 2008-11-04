@@ -1742,7 +1742,7 @@ void frame_interpreter_sound_matr_device::handle_frame_handler(char *frame, QLis
 	qDebug("frame_interpreter_sound_matr_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-	if (atoi(msg_open.Extract_chi()) != 16)
+	if ((atoi(msg_open.Extract_chi()) != 16) && (atoi(msg_open.Extract_chi()) != 22))
 		return;
 
 	evt_list.clear();
@@ -1789,8 +1789,7 @@ void frame_interpreter_sound_matr_device::handle_frame(openwebnet_ext m, device_
 			{
 				stat_var curr_act(stat_var::ACTIVE_SOURCE);
 				ds->read(i, curr_act);
-				qDebug("Curr active source for amb %d = %d", i,
-						curr_act.get_val());
+				qDebug("Curr active source for amb %d = %d", i+1, curr_act.get_val());
 				act = atoi(m.Extract_valori(i));
 				qDebug("New active source = %d", act);
 				if (act != curr_act.get_val())
@@ -1818,6 +1817,22 @@ void frame_interpreter_sound_matr_device::handle_frame(openwebnet_ext m, device_
 			ds->read(atoi(ambiente)-1, curr_act);
 			qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
 			act = atoi(m.Extract_dove())-100-(10*(atoi(ambiente)));
+			qDebug("New active source = %d", act);
+			curr_act.set_val(act);
+			ds->write_val(atoi(ambiente)-1, curr_act);
+			do_event = true;
+		}
+		//*22*2#4#1*5#2#3##i
+		if ((strcmp(m.Extract_chi(), "22") == 0) && (strncmp(m.Extract_cosa(), "2#4#", 4) == 0) &&
+			(strcmp(m.Extract_dove(), "5") == 0) && (strcmp(m.Extract_livello(), "2") == 0))
+		{
+			qDebug("frame_sound_matr_device::handle_frame, normal frame WHO = 22");
+			stat_var curr_act(stat_var::ACTIVE_SOURCE);
+			char ambiente[2];
+			sprintf(ambiente,"%d", atoi(m.Extract_cosa()+4));
+			ds->read(atoi(ambiente)-1, curr_act);
+			qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
+			act = atoi(m.Extract_interfaccia());
 			qDebug("New active source = %d", act);
 			curr_act.set_val(act);
 			ds->write_val(atoi(ambiente)-1, curr_act);
@@ -2648,6 +2663,9 @@ void frame_interpreter_temperature_probe_controlled::get_init_message(device_sta
 			head = "*#4*#";
 			end  = "##";
 			out  = head + where + end;
+			stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
+			int delta = 1;
+			curr_info_centrale.set_val(delta);
 		}
 		else
 			out = "";
@@ -2941,6 +2959,20 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 			emit init_requested(QString(pippo));
 			new_request_timer.start(TIMEOUT_TIME);
 			new_request_allowed = false;
+		}
+		else
+		{
+			sp = atoi(m.Extract_valori(0));
+			if (curr_local.get_val() <= 3)
+				sp -= curr_local.get_val()*10;
+			else if (curr_local.get_val() >= 11)
+				sp += (curr_local.get_val()-10)*10;
+			else
+				break;
+			qDebug("setting new sp");
+			curr_sp.set_val(sp);
+			ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
+			evt_list.append(ds);
 		}
 		break;
 	case 14:

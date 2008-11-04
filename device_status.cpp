@@ -374,8 +374,8 @@ device_status_zonanti::device_status_zonanti() :
 device_status_thermal_regulator::device_status_thermal_regulator(device_status::type _type)
 	: device_status(_type)
 {
-	add_var(SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
-	add_var(SEASON_INDEX, new stat_var(stat_var::SEASON, 0, 0, 1, 1));
+	add_var(SP_INDEX, new stat_var(stat_var::SP, -1, 0, INT_MAX, 1));
+	add_var(SEASON_INDEX, new stat_var(stat_var::SEASON, -1, 0, 1, 1));
 	// programs start at 1 and end at 3
 	add_var(PROGRAM_INDEX, new stat_var(stat_var::PROGRAM, 0, 1, 3, 1));
 	// scenarios start at 1 and end at 16
@@ -408,9 +408,9 @@ device_status_temperature_probe_extra::device_status_temperature_probe_extra(the
 	 */
 	add_var((int)STAT_INDEX, new stat_var(stat_var::STAT, -1, 0, 5, 1));
 	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, -1, 0, 13, 1));
-	add_var((int)SP_INDEX, new stat_var(stat_var::SP, 0, 0, INT_MAX, 1));
-	add_var((int)CRONO, new stat_var(stat_var::CRONO, 0, 0, 1, 1));
-	add_var((int)INFO_CENTRALE, new stat_var(stat_var::INFO_CENTRALE, 1, 0, 1, 1));
+	add_var((int)SP_INDEX, new stat_var(stat_var::SP, -1, 0, INT_MAX, 1));
+	add_var((int)CRONO, new stat_var(stat_var::CRONO, -1, 0, 1, 1));
+	add_var((int)INFO_CENTRALE, new stat_var(stat_var::INFO_CENTRALE, -1, 0, 1, 1));
 }
 
 // Device status for fancoil

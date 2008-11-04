@@ -451,7 +451,7 @@ private:
 	QString indirizzo;
 
 	/// Time to wait (in msec) before allowing another status request on the bus
-	static const int TIMEOUT_TIME = 1000;
+	static const int TIMEOUT_TIME = 10000;
 	/// This timer is used to compact all status requests done in TIMEOUT_TIME milliseconds in one frame only
 	QTimer new_request_timer;
 	/// If true, a new request frame can be sent
