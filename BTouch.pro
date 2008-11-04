@@ -48,6 +48,7 @@ HEADERS += actuators.h \
            btbutton.h \
            btlabel.h \
            btmain.h \
+           btstyle.h \
            bttime.h \
            btwidgets.h \
            buttons_bar.h \
@@ -133,6 +134,7 @@ SOURCES += actuators.cpp \
            btbutton.cpp \
            btlabel.cpp \
            btmain.cpp \
+           btstyle.cpp \
            bttime.cpp \
            btwidgets.cpp \
            buttons_bar.cpp \

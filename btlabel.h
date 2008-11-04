@@ -1,24 +1,27 @@
 #ifndef BTLABEL_H
 #define BTLABEL_H
 
+/**
+ * \file
+ * <!--
+ * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
+ * All rights reserved.
+ * -->
+ *
+ * \brief This class implements a label with the "btstyle"
+ *
+ * \author Gianni Valdambrini <aleister@develer.com>
+ * \date November 2008
+ */
 
 #include <QLabel>
 
-
-// TODO: è necessario avere una label che si comporta come quella delle qt, ma
-// che quando viene disabilitata non si ingrigisce. Questa soluzione non va bene
-// perche' vengono comunque dispatchati gli eventi alla label e ai suoi figli
-// (essendo a tutti gli effetti abilitata)
-// La soluzione sara' quella di utilizzare una qlabel standard disabilitando
-// l'effetto di "ingrigimento" attraverso gli stylesheet.
 
 class BtLabel : public QLabel
 {
 Q_OBJECT
 public:
 	BtLabel(QWidget *parent);
-protected:
-	virtual void paintEvent(QPaintEvent *e);
 };
 
 #endif
