@@ -42,11 +42,10 @@
 
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
-
 #define CFG_FILE "cfg/conf.xml"
 
 
-BtMain::BtMain(QWidget *parent) : QWidget(parent)
+BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
 	qDebug("parte BtMain");
 
@@ -85,11 +84,16 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 	svegliaIsOn = false;
 	tiempo_last_ev = 0;
 	pd_shown = false;
-#ifdef SCREENSAVER_LINE
-	screensaver = getScreenSaver(ScreenSaver::LINES);
-#else
-	screensaver = getScreenSaver(ScreenSaver::BALLS);
-#endif
+
+	// read screensaver type from config file
+	QDomElement screensaver_type = getConfElement("displaypages/screensaver/type");
+	int type = ScreenSaver::LINES;
+	if (screensaver_type.isNull())
+		qWarning("Type of screeensaver not found!");
+	else
+		type = screensaver_type.text().toInt();
+	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(type));
+
 	tasti = NULL;
 	pwdOn = 0;
 
@@ -122,7 +126,8 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent)
 
 BtMain::~BtMain()
 {
-	delete screensaver;
+	if (screensaver)
+		delete screensaver;
 }
 
 void BtMain::waitBeforeInit()
@@ -164,7 +169,8 @@ void BtMain::hom()
 		// TODO: verificare! Sembra che non sia piu' necessario e che l'applicazione venga
 		// automaticamente chiusa quando tutte le finestre sono chiuse!
 		//qApp->setMainWidget(Home);
-		screensaver->hide();
+		if (screensaver)
+			screensaver->hide();
 		hide();
 	}
 	else
@@ -423,7 +429,7 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && screensaver->isHidden())
+			if  (tiempo >= 65 && screensaver && screensaver->isHidden())
 			{
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 				screensaver->showFullScreen();
@@ -432,7 +438,8 @@ void BtMain::gesScrSav()
 #endif
 			}
 
-			if (!screensaver->isHidden())
+			// FIXME: do we need to change tempo1 if there's no screensaver?
+			if (screensaver && !screensaver->isHidden())
 			{
 				QWidget *target = pagDefault ? pagDefault : Home;
 				screensaver->refresh(QPixmap::grabWidget(target,0,0,MAX_WIDTH,MAX_HEIGHT));
@@ -440,7 +447,8 @@ void BtMain::gesScrSav()
 			}
 		}
 		else
-			screensaver->hide();
+			if (screensaver)
+				screensaver->hide();
 	}
 	else if (tiempo >= 120)
 	{
@@ -471,7 +479,8 @@ void BtMain::freezed(bool b)
 	{
 		event_unfreeze = 1;
 		setBacklight(true);
-		screensaver->hide();
+		if (screensaver)
+			screensaver->hide();
 		if (pwdOn)
 		{
 			if (!tasti)

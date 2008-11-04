@@ -15,6 +15,8 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 		return new ScreenSaverBalls();
 	case ScreenSaver::LINES:
 		return new ScreenSaverLine();
+	case ScreenSaver::NONE:
+		return 0;
 	default:
 		assert(!"Type of screensaver not handled!");
 	}

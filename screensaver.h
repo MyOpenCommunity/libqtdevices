@@ -35,8 +35,9 @@ public:
 
 	enum Type
 	{
-		BALLS,
-		LINES
+		NONE = 0,       // no screensaver
+		LINES = 1,      // single line that goes up and down
+		BALLS = 2,      // many balls on screen
 	};
 };
 

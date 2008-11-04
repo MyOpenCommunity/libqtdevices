@@ -53,6 +53,10 @@
    </setup>
    <displaypages>
       <orientation>0</orientation>
+      <screensaver>
+	      <!-- 0: no screensaver, 1: lines, 2: balls, 3: line+hour, 4: line+text -->
+	      <type>1</type>
+      </screensaver>
       <homepage>
          <isdefined>0</isdefined>
          <id>0</id>
