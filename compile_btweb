@@ -34,6 +34,7 @@ then
   touch BTouch_qws
   chmod +x BTouch_qws
   echo "#!/bin/ettclsh" >> BTouch_qws
+  echo "sleep 15" >> BTouch_qws
   echo "set env(QWS_MOUSE_PROTO) linuxtp" >>  BTouch_qws
   if [ "$MACHINE" = "H4684_IP" ] || [ "$MACHINE" = "L4684SDK" ]
   then

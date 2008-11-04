@@ -1914,20 +1914,24 @@ device_condition_temp::device_condition_temp(QWidget *parent,
 	case CELSIUS:
 		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
 		min_temp = bt2Celsius(CONDITION_MIX_TEMP);
+		set_condition_value(*c);
 		break;
 	case FAHRENHEIT:
 		max_temp = bt2Fahrenheit(CONDITION_MAX_TEMP);
 		min_temp = bt2Fahrenheit(CONDITION_MIX_TEMP);
+		char t[10];
+		sprintf(t, "%d",  bt2Fahrenheit((*c).toInt()));
+		set_condition_value(t);
 		break;
 	default:
 		qWarning("Wrong temperature scale, defaulting to celsius");
 		temp_scale = CELSIUS;
 		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
 		min_temp = bt2Celsius(CONDITION_MIX_TEMP);
+		set_condition_value(*c);
 	}
 	step = 5;
 
-	set_condition_value(*c);
 	set_current_value(device_condition::get_condition_value());
 
 	Draw();

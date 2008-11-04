@@ -98,7 +98,10 @@ HEADERS += actuators.h \
            versio.h \
            videocitof.h \
            xmlconfhandler.h \
-           xmlvarihandler.h
+           xmlvarihandler.h \
+           QWSMOUSE/qmouse_qws.h \
+           QWSMOUSE/qmouselinuxtp_qws.h
+
 SOURCES += actuators.cpp \
            allarme.cpp \
            ambdiffson.cpp \
@@ -181,16 +184,19 @@ SOURCES += actuators.cpp \
            versio.cpp \
            videocitof.cpp \
            xmlconfhandler.cpp \
-           xmlvarihandler.cpp
+           xmlvarihandler.cpp \
+           QWSMOUSE/qmouse_qws.cpp \
+           QWSMOUSE/qmouselinuxtp_qws.cpp
 
-TRANSLATIONS += cfg/extra/2/btouch_it.ts \
-                cfg/extra/2/btouch_de.ts \
-                cfg/extra/2/btouch_es.ts \
-                cfg/extra/2/btouch_fr.ts \
-                cfg/extra/2/btouch_nl.ts \
-                cfg/extra/2/btouch_pt.ts \
-                cfg/extra/2/btouch_ru.ts \
-                cfg/extra/2/btouch_ar.ts \
-                cfg/extra/2/btouch_zh_CN.ts \
-                cfg/extra/2/btouch_zh_TW.ts
-
+TRANSLATIONS += linguist-ts/btouch_ar.ts \
+                linguist-ts/btouch_de.ts \
+                linguist-ts/btouch_def.ts \
+                linguist-ts/btouch_en.ts \
+                linguist-ts/btouch_es.ts \
+                linguist-ts/btouch_fr.ts \
+                linguist-ts/btouch_it.ts \
+                linguist-ts/btouch_nl.ts \
+                linguist-ts/btouch_pt.ts \
+                linguist-ts/btouch_ru.ts \
+                linguist-ts/btouch_zh_CN.ts \
+                linguist-ts/btouch_zh_TW.ts
