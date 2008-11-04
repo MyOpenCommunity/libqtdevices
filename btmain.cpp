@@ -369,13 +369,11 @@ void BtMain::gesScrSav()
 		{
 			if (!svegliaIsOn)
 			{
-#ifndef BACKLIGHT_SEMPRE_ON
 				setBacklight(false);
 				qDebug("***** freeze(TRUE) ***** ");
 				emit freeze(true);
 				bloccato = 01;
 				tempo1->start(500);
-#endif
 			}
 		}
 		else if (tiempo <= 5 && bloccato)
@@ -446,12 +444,10 @@ void BtMain::gesScrSav()
 	}
 	else if (tiempo >= 120)
 	{
-#ifndef BACKLIGHT_SEMPRE_ON
 		setBacklight(false);
 		qDebug("***** freeze(TRUE) ***** ");
 		emit freeze(true);
 		tempo1->start(500);
-#endif
 		firstTime = 0;
 		bloccato = 1;
 	}
