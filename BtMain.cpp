@@ -28,6 +28,7 @@
 #include "thermalmenu.h"
 #include "supervisionMenu.h"
 
+#include <assert.h>
 #include <qwindowsystem_qws.h>
 #include <qapplication.h>
 #include <qobject.h>
@@ -45,7 +46,8 @@
 //#define SCREENSAVER_BALLS
 #define SCREENSAVER_LINE
 
-BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(parent, name)
+BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(parent, name),
+	screensaver(0)
 {
 
 	/*******************************************
@@ -85,11 +87,13 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	svegliaIsOn = FALSE;
 	tiempo_last_ev = 0;
 	pd_shown = false;
-#ifdef SCREENSAVER_LINE
-	screensaver = getScreenSaver(ScreenSaver::LINES);
-#else
-	screensaver = getScreenSaver(ScreenSaver::BALLS);
-#endif
+
+	// read screensaver type from config file
+	QDomElement screensaver_type = getConfElement("displaypages/screensaver/type");
+	assert(!screensaver_type.isNull());
+	int type = screensaver_type.text().toInt();
+	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(type));
+
 	tasti = NULL;
 	pwdOn = 0;
 
@@ -124,7 +128,8 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 
 BtMain::~BtMain()
 {
-	delete screensaver;
+	if (screensaver)
+		delete screensaver;
 }
 
 void BtMain::hom()
@@ -161,7 +166,8 @@ void BtMain::hom()
 		delete handler2;
 		delete xmlFile;
 		qApp->setMainWidget(Home);
-		screensaver->hide();
+		if (screensaver)
+			screensaver->hide();
 		hide();
 	}
 	setGeometry(0,0,240,320);
@@ -413,7 +419,7 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && screensaver->isHidden())
+			if  (tiempo >= 65 && screensaver && screensaver->isHidden())
 			{
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 				screensaver->showFullScreen();
@@ -422,7 +428,8 @@ void BtMain::gesScrSav()
 #endif
 			}
 
-			if (screensaver->isShown())
+			// FIXME: do we need to change tempo1 if there's no screensaver?
+			if (screensaver && screensaver->isShown())
 			{
 				QWidget *target = pagDefault ? pagDefault : Home;
 				screensaver->refresh(QPixmap::grabWidget(target,0,0,MAX_WIDTH,MAX_HEIGHT));
@@ -430,7 +437,8 @@ void BtMain::gesScrSav()
 			}
 		}
 		else
-			screensaver->hide();
+			if (screensaver)
+				screensaver->hide();
 	}
 	else if (tiempo >= 120)
 	{
@@ -463,7 +471,8 @@ void BtMain::freezed(bool b)
 	{
 		event_unfreeze = 1;
 		setBacklight(TRUE);
-		screensaver->hide();
+		if (screensaver)
+			screensaver->hide();
 		if (pwdOn)
 		{
 			if (!tasti)
