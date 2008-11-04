@@ -393,8 +393,9 @@ BannCleanScreen::~BannCleanScreen()
 	delete page;
 }
 
-void BannCleanScreen::hide()
+void BannCleanScreen::hideEvent(QHideEvent *e)
 {
+	Q_UNUSED(e);
 	bannOnDx::hide();
 	page->hide();
 }
@@ -413,8 +414,9 @@ BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(p
 	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 }
 
-void BannBrightness::hide()
+void BannBrightness::hideEvent(QHideEvent *e)
 {
+	Q_UNUSED(e);
 	bannOnDx::hide();
 	page->hide();
 }

@@ -267,10 +267,8 @@ Q_OBJECT
 public:
 	BannCleanScreen(sottoMenu *parent, const char *name);
 	~BannCleanScreen();
-
-public slots:
-	void hide();
-
+protected:
+	void hideEvent(QHideEvent *e);
 private:
 	CleanScreen *page;
 };
@@ -288,8 +286,8 @@ Q_OBJECT
 public:
 	BannBrightness(sottoMenu *parent, const char *name);
 	~BannBrightness();
-public slots:
-	void hide();
+protected:
+	void hideEvent(QHideEvent *e);
 private:
 	BrightnessPage *page;
 };
