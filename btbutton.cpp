@@ -39,10 +39,8 @@ void BtButton::paintEvent(QPaintEvent *event)
 	setIconSize(p->size());
 	resize(p->size());
 
-#ifdef BEEP
 	if (isDown())
 		beep();
-#endif
 
 	// The drawing of BtButton is reimplemented here to prevent the "graying"
 	// of the image when the button is in the disabled state.

@@ -451,10 +451,6 @@ enum pulsType
 /*! \def TIME_RIP_REGOLAZ  time [ms] between two repetitionof a regulation command during the same pressure
  */
 #define TIME_RIP_REGOLAZ 500
-/*! \def BEEP
- * if not defined it's impossible to have a beep when pressing a button
- */
-#define BEEP
 
 /// The simbol of temperature degrees
 #define TEMP_DEGREES "\272"
