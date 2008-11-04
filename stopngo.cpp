@@ -516,6 +516,11 @@ void StopngoPage::status_changed(QPtrList<device_status> sl)
 							onBut->hide();
 						if (offBut)
 							offBut->hide();
+						if (verifyBut)
+						{
+							verifyBut->hide();
+							labelVerify->hide();
+						}
 					}
 					else if (statusBmp & STATUS_BIT_CC) // Open because of short circuit between L and N
 					{
@@ -525,6 +530,11 @@ void StopngoPage::status_changed(QPtrList<device_status> sl)
 							onBut->hide();
 						if (offBut)
 							offBut->hide();
+						if (verifyBut)
+						{
+							verifyBut->show();
+							labelVerify->show();
+						}
 					}
 					else if (statusBmp & STATUS_BIT_EARTH_FAIL)  //Open because of earth failure
 					{
@@ -534,15 +544,25 @@ void StopngoPage::status_changed(QPtrList<device_status> sl)
 							onBut->hide();
 						if (offBut)
 							offBut->hide();
+						if (verifyBut)
+						{
+							verifyBut->show();
+							labelVerify->show();
+						}
 					}
 					else if (statusBmp & STATUS_BIT_VMAX) // Open because of out of Vmax
 					{
 						qDebug("StopngoPage: Change banner icon to VMAX");
 						SetStatusIcon(ICON_STOPNGO_SOVRATENSIONE);
 						if (onBut)
-							onBut->hide();
+							onBut->show();
 						if (offBut)
-							offBut->hide();
+							offBut->show();
+						if (verifyBut)
+						{
+							verifyBut->hide();
+							labelVerify->hide();
+						}
 					}
 					else
 					{
@@ -552,11 +572,11 @@ void StopngoPage::status_changed(QPtrList<device_status> sl)
 							onBut->show();
 						if (offBut)
 							offBut->show();
-					}
-					if (verifyBut)
-					{
-						verifyBut->show();
-						labelVerify->show();
+						if (verifyBut)
+						{
+							verifyBut->hide();
+							labelVerify->hide();
+						}
 					}
 					if (autotestBut)
 					{

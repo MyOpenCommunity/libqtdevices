@@ -16,14 +16,14 @@ if [ "$MACHINE" = "H4684" ] || [ "$MACHINE" = "LGRH4684" ] || [ "$MACHINE" = "H4
 then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
-  if [ $COMPILING_NOT_CLEAN != "yes" ]
-  then
-    $QTDIR/qmake/qmake -project
+#  if [ $COMPILING_NOT_CLEAN != "yes" ]
+#  then
+    # $QTDIR/qmake/qmake -project
     $QTDIR/qmake/qmake
     make clean
-  else
-    echo "Compiling COMPILING_NOT_CLEAN activated"
-  fi
+#  else
+#    echo "Compiling COMPILING_NOT_CLEAN activated"
+#  fi
 
   make || exit 1
 
@@ -34,6 +34,7 @@ then
   touch BTouch_qws
   chmod +x BTouch_qws
   echo "#!/bin/ettclsh" >> BTouch_qws
+  echo "sleep 15" >> BTouch_qws
   echo "set env(QWS_MOUSE_PROTO) linuxtp" >>  BTouch_qws
   if [ "$MACHINE" = "H4684_IP" ] || [ "$MACHINE" = "L4684SDK" ]
   then
