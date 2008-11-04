@@ -10,6 +10,7 @@
 #include "setitems.h"
 #include "genericfunz.h"
 #include "cleanscreen.h"
+#include "brightnesspage.h"
 
 #include <qtimer.h>
 
@@ -395,4 +396,30 @@ void BannCleanScreen::hide()
 {
 	bannOnDx::hide();
 	page->hide();
+}
+
+BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(parent, name)
+{
+	// TODO: set the correct icon
+	SetIcons(ICON_INFO, 1);
+	page = new BrightnessPage();
+	page->hide();
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	connect(this, SIGNAL(click()), page, SLOT(showFullScreen()));
+#else
+	connect(this, SIGNAL(click()), page, SLOT(show()));
+#endif
+	connect(parentWidget(), SIGNAL(freeze(bool)), page, SLOT(freezed(bool)));
+	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+}
+
+void BannBrightness::hide()
+{
+	bannOnDx::hide();
+	page->hide();
+}
+
+BannBrightness::~BannBrightness()
+{
+	delete page;
 }

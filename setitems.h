@@ -276,3 +276,21 @@ private:
 };
 
 #endif
+
+#ifndef BANN_BRIGHTNESS
+#define BANN_BRIGHTNESS
+
+class BrightnessPage;
+
+class BannBrightness : public bannOnDx
+{
+Q_OBJECT
+public:
+	BannBrightness(sottoMenu *parent, const char *name);
+	~BannBrightness();
+public slots:
+	void hide();
+private:
+	BrightnessPage *page;
+};
+#endif //BANN_BRIGHTNESS

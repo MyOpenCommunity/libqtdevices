@@ -45,6 +45,7 @@ HEADERS += actuators.h \
            bannregolaz.h \
            bannsettings.h \
            banntemperature.h \
+           brightnesspage.h \
            btbutton.h \
            btlabel.h \
            btlabelevo.h \
@@ -134,6 +135,7 @@ SOURCES += actuators.cpp \
            bannRegolaz.cpp \
            bannsettings.cpp \
            banntemperature.cpp \
+           brightnesspage.cpp \
            BTButton.cpp \
            BtLabel.cpp \
            BtMain.cpp \
