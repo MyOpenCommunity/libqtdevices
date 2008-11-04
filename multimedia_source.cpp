@@ -585,12 +585,12 @@ bool FileSelector::browseFiles(QString new_path)
 	QString old_path = current_dir.absPath();
 	if (changePath(new_path))
 	{
-		if (current_dir.count() <= 2)
+		if (!browseFiles())
 		{
-			qDebug("[AUDIO] empty directory: %s", new_path.ascii());
 			changePath(old_path);
 			--level;
 		}
+		return true;
 	}
 	else
 	{
@@ -645,6 +645,12 @@ bool FileSelector::browseFiles()
 	if (!temp_files_list)
 	{
 		qDebug("[AUDIO] Error retrieving file list!");
+		return false;
+	}
+
+	if (temp_files_list->count() <= 2)
+	{
+		qDebug("[AUDIO] empty directory: %s", current_dir.absPath().ascii());
 		return false;
 	}
 
