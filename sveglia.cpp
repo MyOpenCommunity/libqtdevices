@@ -19,7 +19,7 @@
 #include "timescript.h"
 #include "bannfrecce.h"
 #include "fontmanager.h"
-#include "backlight.h"
+#include "brightnesscontrol.h"
 
 #include <qpixmap.h>
 #include <qwidget.h>

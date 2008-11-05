@@ -27,7 +27,7 @@
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionMenu.h"
-#include "backlight.h"
+#include "brightnesscontrol.h"
 
 #include <qwindowsystem_qws.h>
 #include <qapplication.h>

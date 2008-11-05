@@ -14,7 +14,7 @@
 
 #include "sottomenu.h"
 #include "bannondx.h"
-#include "backlight.h"
+#include "brightnesscontrol.h"
 
 #include <qbuttongroup.h>
 

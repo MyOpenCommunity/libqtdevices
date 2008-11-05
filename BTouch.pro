@@ -46,7 +46,7 @@ HEADERS += actuators.h \
            bannsettings.h \
            banntemperature.h \
            brightnesspage.h \
-           backlight.h \
+           brightnesscontrol.h \
            btbutton.h \
            btlabel.h \
            btlabelevo.h \
@@ -137,7 +137,7 @@ SOURCES += actuators.cpp \
            bannsettings.cpp \
            banntemperature.cpp \
            brightnesspage.cpp \
-           backlight.cpp \
+           brightnesscontrol.cpp \
            BTButton.cpp \
            BtLabel.cpp \
            BtMain.cpp \

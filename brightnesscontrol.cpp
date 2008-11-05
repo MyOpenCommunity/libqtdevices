@@ -1,4 +1,4 @@
-#include "backlight.h"
+#include "brightnesscontrol.h"
 #include "genericfunz.h"
 
 BrightnessControl *BrightnessControl::_instance = 0;
