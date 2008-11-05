@@ -31,6 +31,8 @@ BrightnessPage::BrightnessPage(QWidget *parent) : sottoMenu(parent)
 
 	buttons.setExclusive(true);
 	connect (this, SIGNAL(goDx()), SLOT(brightnessSelected()));
+
+	// TODO: fill in button_to_state
 }
 
 BannToggle *BrightnessPage::getBanner(const QString &banner_text)

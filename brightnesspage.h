@@ -14,6 +14,7 @@
 
 #include "sottomenu.h"
 #include "bannondx.h"
+#include "backlight.h"
 
 #include <qbuttongroup.h>
 
@@ -36,6 +37,7 @@ public slots:
 private:
 	BannToggle *getBanner(const QString &banner_text);
 	QButtonGroup buttons;
+	QMap <int, BrightnessControl::brightness_policy_t> button_to_state;
 };
 
 #endif // BRIGHTNESSPAGE_H
