@@ -4,6 +4,22 @@
 #include <qvaluevector.h>
 #include <qpair.h>
 
+enum BacklightStatus
+{
+	BACKLIGHT_OFF = 0,
+	BACKLIGHT_ON = 1
+};
+
+enum BrightnessState
+{
+	ON = 0,
+	OFF = 1,
+	SCREENSAVER = 2
+};
+
+typedef QPair<BacklightStatus, unsigned> brightness_state_t;
+typedef QValueVector< brightness_state_t > brightness_policy_t;
+
 
 /**
  * This is a helper class to set the brightness of the display.
@@ -17,25 +33,23 @@
 class BrightnessControl
 {
 public:
-	enum BacklightStatus
-	{
-		BACKLIGHT_OFF = 0,
-		BACKLIGHT_ON = 1
-	};
-
-	enum State
-	{
-		ON = 0,
-		OFF = 1,
-		SCREENSAVER = 2
-	};
-
-	typedef QValueVector< QPair< BacklightStatus, unsigned> > brightness_policy_t;
 
 	/// Number of possible states (On, Off, Screensaver)
 	static const unsigned NUMBER_OF_STATES = static_cast<unsigned>(SCREENSAVER) + 1;
+
+	/**
+	 * Sets the brightness policy. The brightness policy must be of this form:
+	 * index 0 (== ON): state for on
+	 * index 1 (== OFF): state for off
+	 * index 2 (== SCREENSAVER): state for screensaver
+	 */
+
 	static bool setBrightnessPolicy(const brightness_policy_t &bp);
-	static void setState(State state);
+	/**
+	 * Regulates brightness and backlight as stored in the policy.
+	 * \param state The state to be set.
+	 */
+	static void setState(BrightnessState state);
 private:
 	static brightness_policy_t policy;
 };

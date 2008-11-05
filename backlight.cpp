@@ -1,9 +1,9 @@
 #include "backlight.h"
 #include "genericfunz.h"
 
-QValueVector< QPair< BrightnessControl::BacklightStatus, unsigned > > BrightnessControl::policy;
+brightness_policy_t BrightnessControl::policy;
 
-bool BrightnessControl::setBrightnessPolicy(const QValueVector< QPair< BacklightStatus, unsigned > > &bp)
+bool BrightnessControl::setBrightnessPolicy(const brightness_policy_t &bp)
 {
 	if (bp.size() != NUMBER_OF_STATES)
 	{
@@ -14,7 +14,7 @@ bool BrightnessControl::setBrightnessPolicy(const QValueVector< QPair< Backlight
 	return true;
 }
 
-void BrightnessControl::setState(BrightnessControl::State state)
+void BrightnessControl::setState(BrightnessState state)
 {
 	// FIXME: cosi' funziona ma forse e' meglio fare un cast a bool
 	setBacklightOn(policy[state].first);

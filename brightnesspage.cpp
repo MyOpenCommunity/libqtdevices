@@ -12,6 +12,17 @@
 #include "main.h" // for ICON_{OK,VUOTO}
 #include "btbutton.h"
 
+static brightness_policy_t getBrightnessPolicy(brightness_state_t on_state,
+		brightness_state_t off_state, brightness_state_t screensaver_state)
+{
+	// set the size, we don't need more states
+	brightness_policy_t policy(BrightnessControl::NUMBER_OF_STATES);
+	policy.push_back(on_state);
+	policy.push_back(off_state);
+	policy.push_back(screensaver_state);
+	return policy;
+}
+
 BrightnessPage::BrightnessPage(QWidget *parent) : sottoMenu(parent)
 {
 	setNavBarMode(10, ICON_OK);
@@ -21,18 +32,34 @@ BrightnessPage::BrightnessPage(QWidget *parent) : sottoMenu(parent)
 	setFGColor(*fg);
 
 	BannToggle *off = getBanner(tr("Off"));
-	buttons.insert(off->getButton(), 0);
+	const int off_id = 0;
+	buttons.insert(off->getButton(), off_id);
+	button_to_policy.insert(off_id, getBrightnessPolicy(
+			brightness_state_t(BACKLIGHT_ON, 10),
+			brightness_state_t(BACKLIGHT_OFF, 10),
+			brightness_state_t(BACKLIGHT_OFF, 10)
+			));
 
 	BannToggle *low = getBanner(tr("Low brightness"));
-	buttons.insert(low->getButton(), 1);
+	const int low_id = 1;
+	buttons.insert(low->getButton(), low_id);
+	button_to_policy.insert(low_id, getBrightnessPolicy(
+			brightness_state_t(BACKLIGHT_ON, 10),
+			brightness_state_t(BACKLIGHT_ON, 255),
+			brightness_state_t(BACKLIGHT_ON, 255)
+			));
 
 	BannToggle *high = getBanner(tr("High brightness"));
-	buttons.insert(high->getButton(), 2);
+	const int high_id = 2;
+	buttons.insert(high->getButton(), high_id);
+	button_to_policy.insert(high_id, getBrightnessPolicy(
+			brightness_state_t(BACKLIGHT_ON, 10),
+			brightness_state_t(BACKLIGHT_ON, 210),
+			brightness_state_t(BACKLIGHT_ON, 210)
+			));
 
 	buttons.setExclusive(true);
 	connect (this, SIGNAL(goDx()), SLOT(brightnessSelected()));
-
-	// TODO: fill in button_to_state
 }
 
 BannToggle *BrightnessPage::getBanner(const QString &banner_text)
@@ -47,7 +74,7 @@ BannToggle *BrightnessPage::getBanner(const QString &banner_text)
 
 void BrightnessPage::brightnessSelected()
 {
-	// TODO: set the new brightness policy
+	BrightnessControl::setBrightnessPolicy(button_to_policy[buttons.selectedId()]);
 	// this will close the window
 	emit Closed();
 }
