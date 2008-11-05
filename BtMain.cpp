@@ -68,17 +68,31 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 
+	// read screensaver type from config file
+	QDomElement screensaver_type_node = getConfElement("displaypages/screensaver/type");
+	int screensaver_type = ScreenSaver::LINES;
+	if (screensaver_type_node.isNull())
+		qWarning("Type of screeensaver not found!");
+	else
+		screensaver_type = screensaver_type_node.text().toInt();
+	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
+
 	// read configuration for brightness
-	// brightness conf is in IMPOSTAZIONI page
-	QDomNode conf_page_root = getPageNode(IMPOSTAZIONI);
-	QDomNode bright_item_node = getChildWithId(conf_page_root, QRegExp("item\\d{1,2}"), BRIGHTNESS);
-	BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_OFF;
-	if (!bright_item_node.isNull())
+	BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
+	if (screensaver_type == ScreenSaver::NONE)
+		conf_brightness_policy = BrightnessControl::POLICY_OFF;
+	else
 	{
-		QDomNode policy = bright_item_node.namedItem("liv").toElement();
-		if (!policy.isNull())
-			conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(
-					policy.toElement().text().toInt());
+		// brightness conf is in IMPOSTAZIONI page
+		QDomNode conf_page_root = getPageNode(IMPOSTAZIONI);
+		QDomNode bright_item_node = getChildWithId(conf_page_root, QRegExp("item\\d{1,2}"), BRIGHTNESS);
+		if (!bright_item_node.isNull())
+		{
+			QDomNode policy = bright_item_node.namedItem("liv").toElement();
+			if (!policy.isNull())
+				conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(
+						policy.toElement().text().toInt());
+		}
 	}
 	BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
 
@@ -102,15 +116,6 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	svegliaIsOn = FALSE;
 	tiempo_last_ev = 0;
 	pd_shown = false;
-
-	// read screensaver type from config file
-	QDomElement screensaver_type = getConfElement("displaypages/screensaver/type");
-	int type = ScreenSaver::LINES;
-	if (screensaver_type.isNull())
-		qWarning("Type of screeensaver not found!");
-	else
-		type = screensaver_type.text().toInt();
-	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(type));
 
 	tasti = NULL;
 	pwdOn = 0;

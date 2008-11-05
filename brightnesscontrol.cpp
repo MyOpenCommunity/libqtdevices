@@ -1,5 +1,6 @@
 #include "brightnesscontrol.h"
 #include "genericfunz.h"
+#include "main.h"
 
 BrightnessControl *BrightnessControl::_instance = 0;
 
@@ -48,6 +49,7 @@ bool BrightnessControl::setBrightnessPolicy(DefautPolicy policy)
 			));
 		break;
 	}
+	setCfgValue(BRIGHTNESS, "liv", QString::number(policy).ascii());
 	return true;
 }
 
