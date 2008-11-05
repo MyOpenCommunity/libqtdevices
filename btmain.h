@@ -46,17 +46,17 @@ Q_OBJECT
 public:
 	BtMain(QWidget *parent=0);
 	~BtMain();
-	homePage * Home, *specPage;
+	homePage *Home, *specPage;
 	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
 	diffmulti *dm;
 	ThermalMenu *termo;
 	diffSonora *difSon;
-	antintrusione* antintr;
+	antintrusione *antintr;
 	SupervisionMenu *supervisione;
-	Client * client_richieste;
-	Client * client_comandi;
-	Client *  client_monitor;
-	versio* datiGen;
+	Client *client_richieste;
+	Client *client_comandi;
+	Client *client_monitor;
+	versio *datiGen;
 	void ResetTimer();
 signals:
 /*!
@@ -89,14 +89,14 @@ private:
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
 	tastiera *tasti;
 	bool event_unfreeze;
-	unsigned char firstTime,bloccato;
+	bool firstTime, bloccato;
 	bool pd_shown;
 	genPage *screen;
 	unsigned char tiposcreen;
 	unsigned long tiempo_ev;
 	unsigned long tiempo_last_ev;
 	bool calibrating;
-	Calibrate* calib;
+	Calibrate *calib;
 	ScreenSaver *screensaver;
 
 	// A flag that is set when the client monitor socket is ready

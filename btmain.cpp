@@ -44,6 +44,10 @@
 #define SCREENSAVER_LINE
 #define CFG_FILE "cfg/conf.xml"
 
+#ifndef min
+# define min(a, b) ((a) < (b)) ? (a) : (b)
+#endif
+
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
@@ -70,7 +74,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 
 	calibrating = false;
 	event_unfreeze = false;
-	firstTime = 1;
+	firstTime = true;
 	pagDefault = NULL;
 	Home = specPage = NULL;
 	illumino = scenari = carichi = imposta = automazioni = scenari_evoluti = videocitofonia = NULL;
@@ -352,10 +356,6 @@ static unsigned long now()
 	return time(NULL);
 }
 
-#ifndef min
-# define min(a, b) ((a) < (b)) ? (a) : (b)
-#endif
-
 void BtMain::gesScrSav()
 {
 	unsigned long tiempo, tiempo_press;
@@ -376,17 +376,12 @@ void BtMain::gesScrSav()
 			if (!svegliaIsOn)
 			{
 				setBacklight(false);
-				qDebug("***** freeze(TRUE) ***** ");
-				emit freeze(true);
-				bloccato = 01;
+				freezed(true);
 				tempo1->start(500);
 			}
 		}
 		else if (tiempo <= 5 && bloccato)
 		{
-			qDebug("***** freeze(FALSE) ***** ");
-			emit freeze(false);
-			bloccato = 0;
 			tempo1->start(2000);
 			pd_shown = false;
 			freezed(false);
@@ -453,31 +448,28 @@ void BtMain::gesScrSav()
 	else if (tiempo >= 120)
 	{
 		setBacklight(false);
-		qDebug("***** freeze(TRUE) ***** ");
-		emit freeze(true);
+		freezed(true);
 		tempo1->start(500);
-		firstTime = 0;
-		bloccato = 1;
+		firstTime = false;
 	}
 	else if (tiempo <= 5)
 	{
-		firstTime = 0;
+		firstTime = false;
 		setBacklight(true);
 		tempo1->start(2000);
-		bloccato = 0;
+		bloccato = false;
 	}
 }
 
 void BtMain::freezed(bool b)
 {
-	bloccato = 0;
-	if (b)
-		bloccato = 1;
+	emit freeze(b);
+	bloccato = b;
 
 	qDebug("BtMain::freezed(%d)", b);
 	if  (!b)
 	{
-		event_unfreeze = 1;
+		event_unfreeze = true;
 		setBacklight(true);
 		if (screensaver)
 			screensaver->hide();
