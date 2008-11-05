@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extra>
+   <id>4</id>
+   <dir>1</dir>
+   <name>axolute dark</name>
+   <type>skin</type>
+   <ver>4.1.1</ver>
+   <sw>
+      <name>TiDisplayColorIP</name>
+      <ver>4.1</ver>
+   </sw>
+   <stylesheet>QWidget {background-color:#1E1E1E;color:#D8D8D8;}
+	   QWidget[noStyle=\"true\"] {background-color:#FFFFFF;color:#000000;} QWidget[noStyle=\"true\"] QWidget {background-color:#FFFFFF;color:#000000;}
+	   QWidget[SecondFgColor=\"true\"] {color:#6FB2FF;} QWidget[SecondFgColor=\"true\"] QWidget {color:#6FB2FF;}
+   </stylesheet>
+   <dimsum>1561271</dimsum>
+</extra>

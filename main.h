@@ -25,7 +25,6 @@ enum TemperatureScale
 	NONE,
 };
 TemperatureScale readTemperatureScale();
-void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
 
 /// Seee getElement
 QDomElement getConfElement(QString path);

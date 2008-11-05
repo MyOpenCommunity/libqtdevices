@@ -14,37 +14,6 @@
 #include <qxml.h>
 #include <qstring.h>
 
-class QColor;
-
-/*!
-  \class xmlskinhandler
-  \brief This class parses the skin configuration file and returns the colors to be used in the application.
-
-  Using QT SAX handler for xml parsing, this class reads the colors to be used.
-  The arguments of the constructor are the pointer to a QColor pointer returning respectively backgroundColor, foregroundColor and secondForegroundColor
-
-  \author Davide
-  \date lug 2005
-*/
-
-class xmlskinhandler : public QXmlDefaultHandler
-{
-public:
-	xmlskinhandler(QColor**, QColor**, QColor**);
-	~xmlskinhandler();
-
-	bool startDocument();
-	bool startElement(const QString&, const QString&, const QString& ,const QXmlAttributes&);
-	bool characters(const QString & ch);
-	bool endElement(const QString&, const QString&, const QString&);
-
-private:
-	QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6,CurTagL7;
-	bool ok;
-	int r,g,b;
-	QColor** bg,** fg1, **fg2;
-};
-
 
 /*!
   \class xmlcfghandler 

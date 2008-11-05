@@ -105,7 +105,10 @@ private:
 	bool config_loaded;
 
 	void myMain();
+	/// Load the main configuration
 	bool loadConfiguration(QString cfg_file);
+	/// Load the skin configuration
+	bool loadSkin(QString xml_file);
 };
 
 #endif// BTMAIN_H

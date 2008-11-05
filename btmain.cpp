@@ -16,6 +16,7 @@
 #include "diffmulti.h"
 #include "antintrusione.h"
 #include "generic_functions.h"
+#include "xml_functions.h"
 #include "xmlconfhandler.h"
 #include "calibrate.h"
 #include "btlabel.h"
@@ -139,10 +140,27 @@ void BtMain::waitBeforeInit()
 	QTimer::singleShot(200, this, SLOT(hom()));
 }
 
+bool BtMain::loadSkin(QString xml_file)
+{
+	if (QFile::exists(xml_file))
+	{
+		QFile extra(EXTRA_FILE);
+		QDomDocument qdom_extra;
+		if (qdom_extra.setContent(&extra))
+		{
+			QDomElement style = getElement(qdom_extra, "extra/stylesheet");
+			if (!style.isNull())
+			{
+				qApp->setStyleSheet(style.text());
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 bool BtMain::loadConfiguration(QString cfg_file)
 {
-	QColor *bg, *fg1, *fg2;
-	readExtraConf(&bg, &fg1, &fg2);
 	if (QFile::exists(cfg_file))
 	{
 		xmlconfhandler handler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
@@ -155,10 +173,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		reader.setContentHandler(&handler);
 		reader.parse(QXmlInputSource(&xmlFile));
 		qDebug("finito parsing");
-		QString widget_style = QString(" QWidget {background-color:%1;color:%2;} ").arg(bg->name()).arg(fg1->name());
-		QString no_style(" QWidget[noStyle=\"true\"] {background-color:#FFFFFF;color:#000000;} QWidget[noStyle=\"true\"] QWidget {background-color:#FFFFFF;color:#000000;} ");
-		QString second_text_color = QString(" QWidget[SecondFgColor=\"true\"] {color:%1;} QWidget[SecondFgColor=\"true\"] QWidget {color:%1;}  ").arg(fg2->name());
-		qApp->setStyleSheet(widget_style + no_style + second_text_color);
 		return true;
 	}
 	return false;
@@ -167,6 +181,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 void BtMain::hom()
 {
 	datiGen->inizializza();
+	if (!loadSkin(EXTRA_FILE))
+		qWarning("Unable to load skin file!");
 
 	if (loadConfiguration(CFG_FILE))
 	{
@@ -177,13 +193,8 @@ void BtMain::hom()
 			screensaver->hide();
 		hide();
 	}
-	else
-	{
-		qApp->setStyleSheet(QString("QWidget {background-color:#000000;color:#FFFFFF;}"));
-	}
 
 	config_loaded = true;
-
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 
 	if (monitor_ready)
