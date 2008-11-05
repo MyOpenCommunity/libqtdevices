@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "ambdiffson.h"
-#include "genericfunz.h" // void getAmbName(...)
+#include "generic_functions.h" // void getAmbName(...)
 #include "btlabel.h"
 #include "btbutton.h"
 #include "diffsonora.h"

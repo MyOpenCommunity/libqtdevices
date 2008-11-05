@@ -1,6 +1,6 @@
 #include "btbutton.h"
 #include "main.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // beep
 
 #include <QDebug>
 #include <QStyleOption>

@@ -10,7 +10,7 @@
 
 #include "homepage.h"
 #include "timescript.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // getPressName
 #include "openclient.h"
 #include "btlabel.h"
 #include "fontmanager.h"

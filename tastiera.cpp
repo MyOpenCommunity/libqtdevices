@@ -9,8 +9,8 @@
 ****************************************************************/
 
 
-#include "genericfunz.h"
 #include "tastiera.h"
+#include "generic_functions.h" // getPressName
 #include "banner.h"
 #include "fontmanager.h"
 #include "btlabel.h"

@@ -9,7 +9,7 @@
 ****************************************************************/
 
 #include "openclient.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // rearmWDT
 
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_COMANDI "*99*9##"

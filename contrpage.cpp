@@ -11,7 +11,7 @@
 #include "contrpage.h"
 #include "banner.h"
 #include "main.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // getPressName, getContrast, setContrast
 #include "btlabel.h"
 #include "btbutton.h"
 

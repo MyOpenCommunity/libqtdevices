@@ -14,7 +14,7 @@
 #include "scenevocond.h"
 #include "btbutton.h"
 #include "btlabel.h"
-#include "genericfunz.h" // bool copyFile(...)
+#include "generic_functions.h" // bool copyFile(...)
 #include "fontmanager.h"
 
 #include <openwebnet.h> // class openwebnet

@@ -12,7 +12,7 @@
 #include "btbutton.h"
 #include "main.h"
 #include "btlabel.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // getPressName
 #include "openclient.h"
 #include "fontmanager.h"
 

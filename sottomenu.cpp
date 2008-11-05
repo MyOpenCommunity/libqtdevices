@@ -17,7 +17,7 @@
 #include "diffsonora.h"
 #include "diffmulti.h"
 #include "versio.h"
-#include "genericfunz.h"
+#include "generic_functions.h"
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
 #include "dimmers.h"

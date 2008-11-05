@@ -12,7 +12,7 @@
 #include "bannfrecce.h"
 #include "btbutton.h"
 #include "btlabel.h"
-#include "genericfunz.h"
+#include "generic_functions.h"
 #include "fontmanager.h"
 
 #include <QPixmap>

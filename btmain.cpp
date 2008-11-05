@@ -15,7 +15,7 @@
 #include "diffsonora.h"
 #include "diffmulti.h"
 #include "antintrusione.h"
-#include "genericfunz.h"
+#include "generic_functions.h"
 #include "xmlconfhandler.h"
 #include "calibrate.h"
 #include "btlabel.h"

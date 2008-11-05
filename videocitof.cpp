@@ -3,7 +3,7 @@
 #include "frame_interpreter.h"
 #include "device_cache.h"
 #include "postoext.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // getPressName
 #include "btlabel.h"
 #include "btbutton.h"
 #include "fontmanager.h"

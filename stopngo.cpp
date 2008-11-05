@@ -14,7 +14,7 @@
 
 
 #include "stopngo.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // getPressName
 #include "fontmanager.h"
 #include "main.h"
 

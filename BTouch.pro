@@ -64,7 +64,7 @@ HEADERS += actuators.h \
            dimmers.h \
            fontmanager.h \
            frame_interpreter.h \
-           genericfunz.h \
+           generic_functions.h \
            genpage.h \
            homepage.h \
            icondispatcher.h \
@@ -151,7 +151,7 @@ SOURCES += actuators.cpp \
            dimmers.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
-           genericfunz.cpp \
+           generic_functions.cpp \
            genpage.cpp \
            homepage.cpp \
            icondispatcher.cpp \

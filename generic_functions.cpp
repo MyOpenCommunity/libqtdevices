@@ -8,7 +8,7 @@
 **
 ****************************************************************/
 
-#include "genericfunz.h"
+#include "generic_functions.h"
 #include "openclient.h"
 #include "main.h"
 #include "btmain.h"

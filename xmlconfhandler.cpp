@@ -16,7 +16,7 @@
 #include "diffsonora.h"
 #include "diffmulti.h"
 #include "sveglia.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // rearmWDT, setOrientation
 #include "versio.h"
 #include "antintrusione.h"
 #include "thermalmenu.h"

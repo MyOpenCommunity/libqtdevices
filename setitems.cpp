@@ -15,7 +15,7 @@
 #include "diffmulti.h"
 #include "calibrate.h"
 #include "contrpage.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
 #include "cleanscreen.h"
 
 #include <QTimer>

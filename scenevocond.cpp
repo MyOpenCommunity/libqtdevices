@@ -1,7 +1,7 @@
 #include "scenevocond.h"
 #include "device.h"
 #include "device_cache.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // getPressName, copyFile, setCfgValue
 #include "btbutton.h"
 #include "btlabel.h"
 #include "timescript.h"

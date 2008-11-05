@@ -12,7 +12,7 @@
 #include "ambdiffson.h"
 #include "device_cache.h"
 #include "device.h"
-#include "genericfunz.h"
+#include "generic_functions.h" // safeAt
 #include "sveglia.h"
 #include "diffsonora.h"
 #include "scenevocond.h"

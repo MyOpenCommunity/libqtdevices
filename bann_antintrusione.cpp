@@ -10,7 +10,7 @@
 
 #include "bann_antintrusione.h"
 #include "main.h" // MAX_PATH, IMG_PATH
-#include "genericfunz.h" // void getZoneName(...)
+#include "generic_functions.h" // void getZoneName(...)
 #include "fontmanager.h"
 #include "btbutton.h"
 #include "btlabel.h"
