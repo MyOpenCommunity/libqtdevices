@@ -11,6 +11,7 @@
 #include "main.h"
 #include "btmain.h"
 #include "xmlvarihandler.h"
+#include "xml_functions.h"
 #include "generic_functions.h"
 
 #include <openwebnet.h>
@@ -19,7 +20,6 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QVector>
-#include <QRegExp>
 #include <QtDebug>
 
 #define TIMESTAMP
@@ -64,32 +64,9 @@ char *ssl_certificate_path = NULL;
 
 BtMain *BTouch;
 
-QDomNode getChildWithName(QDomNode parent, QString name)
-{
-	QDomNode n = parent.firstChild();
-	while (!n.isNull())
-	{
-		if (n.isElement() && n.nodeName() == name)
-			return n;
-
-		n = n.nextSibling();
-	}
-	return QDomNode();
-}
-
 QDomElement getConfElement(QString path)
 {
-	QStringList sl = path.split('/');
-	QDomElement root = qdom_appconfig.documentElement();
-	QDomNode node = root;
-	while (!sl.isEmpty())
-	{
-		QString str = sl.first();
-		if (!node.isNull())
-			node = getChildWithName(node, str);
-		sl.pop_front();
-	}
-	return node.toElement();
+	return getElement(qdom_appconfig.documentElement(), path);
 }
 
 TemperatureScale readTemperatureScale()
@@ -165,25 +142,6 @@ void myMessageOutput(QtMsgType type, const char *msg)
 		// deliberately core dump
 		abort();
 	}
-}
-
-QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id)
-{
-	QDomNode n = parent.firstChild();
-	while (!n.isNull())
-	{
-		if (n.isElement() && n.nodeName().contains(node_regexp))
-		{
-			QDomNode child = n.firstChild();
-			while (!child.isNull() && child.nodeName() != "id")
-				child = child.nextSibling();
-
-			if (!child.isNull() && child.toElement().text().toInt() == id)
-				return n;
-		}
-		n = n.nextSibling();
-	}
-	return QDomNode();
 }
 
 QDomNode getPageNode(int id)

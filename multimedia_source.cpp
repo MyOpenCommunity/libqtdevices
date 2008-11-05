@@ -9,6 +9,7 @@
  ****************************************************************/
 
 #include "multimedia_source.h"
+#include "xml_functions.h" // getChildWithId
 #include "playwindow.h"
 #include "bannfrecce.h"
 #include "listbrowser.h"

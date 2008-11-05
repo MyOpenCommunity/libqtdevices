@@ -1,7 +1,8 @@
 #include "cleanscreen.h"
-#include "main.h"
+#include "xml_functions.h" // getChildWithId
 #include "fontmanager.h"
 #include "btlabel.h"
+#include "main.h"
 
 #include <assert.h>
 #include <qregexp.h>
