@@ -386,6 +386,10 @@ void sveglia::Closed()
 	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "minute",oraSveglia->time().toString("mm"),serNum);
 	char t[2];
 	sprintf(&t[0],"%d",tipoSveglia);
+	// FIXME: questa istruzione crea una foglia alarmset in fondo al file di conf
+	// che viene rimossa quando la sveglia suona.
+	// Se per qualche motivo il BTouch muore prima che la sveglia sia suonata
+	// il file di configurazione e' corrotto
 	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",&t[0],serNum);
 	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml",FALSE);
 }
