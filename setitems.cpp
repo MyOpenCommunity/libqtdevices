@@ -17,6 +17,7 @@
 #include "contrpage.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
 #include "cleanscreen.h"
+#include "brightnesspage.h"
 
 #include <QTimer>
 
@@ -24,6 +25,7 @@
 
 
 extern unsigned char tipoData;
+static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 setDataOra::setDataOra(sottoMenu *parent,const char *name) : bannOnDx(parent, name)
 {
@@ -376,8 +378,35 @@ BannCleanScreen::~BannCleanScreen()
 	delete page;
 }
 
-void BannCleanScreen::hide()
+void BannCleanScreen::hideEvent(QHideEvent *e)
 {
+	Q_UNUSED(e);
 	bannOnDx::hide();
 	page->hide();
+}
+
+BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(parent, name)
+{
+	SetIcons(ICON_BRIGHTNESS, 1);
+	page = new BrightnessPage();
+	page->hide();
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	connect(this, SIGNAL(click()), page, SLOT(showFullScreen()));
+#else
+	connect(this, SIGNAL(click()), page, SLOT(show()));
+#endif
+	connect(parentWidget(), SIGNAL(freeze(bool)), page, SLOT(freezed(bool)));
+	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+}
+
+void BannBrightness::hideEvent(QHideEvent *e)
+{
+	Q_UNUSED(e);
+	bannOnDx::hide();
+	page->hide();
+}
+
+BannBrightness::~BannBrightness()
+{
+	delete page;
 }

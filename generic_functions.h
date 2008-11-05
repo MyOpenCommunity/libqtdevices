@@ -50,6 +50,21 @@ unsigned char getContrast();
 */
 void setBacklight(bool);
 
+/**
+ * Sets the backlight of the device on or off according to the value of the argument.
+ * This differs from setBacklight in that it only sets the backlight (ie. writes only to
+ * device /proc/sys/dev/btweb/brightness).
+ * \param value If true, sets on the backlight.
+ */
+void setBacklightOn(bool value);
+
+/**
+ * Sets the brightness level of the display.
+ * \param level The new brightness level. Allowed values are 0 <= level <= 255
+ * Using values outside this range yields no results.
+ */
+void setBrightnessLevel(int level);
+
  /*!
   \brief Gets the backlight state.
 */

@@ -28,6 +28,7 @@
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
+#include "brightnesscontrol.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -41,8 +42,6 @@
 
 #include <sys/sysinfo.h>
 
-//#define SCREENSAVER_BALLS
-#define SCREENSAVER_LINE
 #define CFG_FILE "cfg/conf.xml"
 
 #ifndef min
@@ -69,7 +68,35 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	monitor_ready = false;
 	config_loaded = false;
 
-	setBacklight(true);
+	// read screensaver type from config file
+	QDomElement screensaver_type_node = getConfElement("displaypages/screensaver/type");
+	int screensaver_type = ScreenSaver::LINES;
+	if (screensaver_type_node.isNull())
+		qWarning("Type of screeensaver not found!");
+	else
+		screensaver_type = screensaver_type_node.text().toInt();
+	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
+
+	// read configuration for brightness
+	BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
+	if (screensaver_type == ScreenSaver::NONE)
+		conf_brightness_policy = BrightnessControl::POLICY_OFF;
+	else
+	{
+		// brightness conf is in IMPOSTAZIONI page
+		QDomNode conf_page_root = getPageNode(IMPOSTAZIONI);
+		QDomNode bright_item_node = getChildWithId(conf_page_root, QRegExp("item\\d{1,2}"), BRIGHTNESS);
+		if (!bright_item_node.isNull())
+		{
+			QDomNode policy = bright_item_node.namedItem("liv").toElement();
+			if (!policy.isNull())
+				conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(
+						policy.toElement().text().toInt());
+		}
+	}
+	BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
+
+	BrightnessControl::instance()->setState(ON);
 
 	rearmWDT();
 
@@ -89,15 +116,6 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	svegliaIsOn = false;
 	tiempo_last_ev = 0;
 	pd_shown = false;
-
-	// read screensaver type from config file
-	QDomElement screensaver_type = getConfElement("displaypages/screensaver/type");
-	int type = ScreenSaver::LINES;
-	if (screensaver_type.isNull())
-		qWarning("Type of screeensaver not found!");
-	else
-		type = screensaver_type.text().toInt();
-	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(type));
 
 	tasti = NULL;
 	pwdOn = 0;
@@ -295,7 +313,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"red",genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			setBacklight(true);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -312,7 +330,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"green",genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			setBacklight(true);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -329,7 +347,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"blu",genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			setBacklight(true);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -346,7 +364,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			setBacklight(true);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -386,7 +404,7 @@ void BtMain::gesScrSav()
 		{
 			if (!svegliaIsOn)
 			{
-				setBacklight(false);
+				BrightnessControl::instance()->setState(OFF);
 				freezed(true);
 				tempo1->start(500);
 			}
@@ -442,6 +460,7 @@ void BtMain::gesScrSav()
 #else
 				screensaver->show();
 #endif
+				BrightnessControl::instance()->setState(SCREENSAVER);
 			}
 
 			// FIXME: do we need to change tempo1 if there's no screensaver?
@@ -458,7 +477,7 @@ void BtMain::gesScrSav()
 	}
 	else if (tiempo >= 120)
 	{
-		setBacklight(false);
+		BrightnessControl::instance()->setState(OFF);
 		freezed(true);
 		tempo1->start(500);
 		firstTime = false;
@@ -466,7 +485,7 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = false;
-		setBacklight(true);
+		BrightnessControl::instance()->setState(ON);
 		tempo1->start(2000);
 		bloccato = false;
 	}
@@ -481,7 +500,7 @@ void BtMain::freezed(bool b)
 	if  (!b)
 	{
 		event_unfreeze = true;
-		setBacklight(true);
+		BrightnessControl::instance()->setState(ON);
 		if (screensaver)
 			screensaver->hide();
 		if (pwdOn)

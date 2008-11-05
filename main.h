@@ -410,14 +410,17 @@ enum  bannerType
 	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
 	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
-	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
-	POWER_AMPLIFIER_PRESET=70,
-	POWER_AMPLIFIER_TREBLE=71,
-	POWER_AMPLIFIER_BASS=72,
-	POWER_AMPLIFIER_BALANCE=73,
-	POWER_AMPLIFIER_LOUD=74,
-	CLEANSCREEN=75,
-	LANSETTINGS=76,                               /*!< LAN settings and information */
+	// keep 68-71 free for energy management devices
+	CLEANSCREEN=72,                               /*!< clean screen widget */
+	BRIGHTNESS=73,                                /*!< brightness selection widget */
+
+	LANSETTINGS=79,                               /*!< LAN settings and information [DUMMY id] */
+	POWER_AMPLIFIER=80,                           /*!< Power amplifier [DUMMY id] */
+	POWER_AMPLIFIER_PRESET=81,
+	POWER_AMPLIFIER_TREBLE=82,
+	POWER_AMPLIFIER_BASS=83,
+	POWER_AMPLIFIER_BALANCE=84,
+	POWER_AMPLIFIER_LOUD=85,
 };
 
 /*! \enum pulsType

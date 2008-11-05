@@ -238,12 +238,28 @@ Q_OBJECT
 public:
 	BannCleanScreen(sottoMenu *parent, const char *name);
 	~BannCleanScreen();
-
-public slots:
-	void hide();
-
+protected:
+	void hideEvent(QHideEvent *e);
 private:
 	CleanScreen *page;
 };
 
 #endif
+
+#ifndef BANN_BRIGHTNESS
+#define BANN_BRIGHTNESS
+
+class BrightnessPage;
+
+class BannBrightness : public bannOnDx
+{
+Q_OBJECT
+public:
+	BannBrightness(sottoMenu *parent, const char *name);
+	~BannBrightness();
+protected:
+	void hideEvent(QHideEvent *e);
+private:
+	BrightnessPage *page;
+};
+#endif //BANN_BRIGHTNESS
