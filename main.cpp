@@ -209,7 +209,7 @@ int main(int argc, char **argv)
 
 	// Fine Lettura configurazione applicativo
 	signal(SIGUSR1, MySignal);
-	signal(SIGUSR2, ResetTimer);
+	signal(SIGUSR2, resetTimer);
 
 	qDebug("Start BtMain");
 	BTouch = new BtMain(NULL);

@@ -57,7 +57,7 @@ public:
 	Client *client_comandi;
 	Client *client_monitor;
 	versio *datiGen;
-	void ResetTimer();
+	void resetTimer();
 signals:
 /*!
   \brief Emitted to (de)freeze the console

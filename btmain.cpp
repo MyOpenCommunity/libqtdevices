@@ -544,7 +544,7 @@ void BtMain::endCalib()
 	calibrating = false;
 }
 
-void BtMain::ResetTimer()
+void BtMain::resetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
 	emit resettimer();

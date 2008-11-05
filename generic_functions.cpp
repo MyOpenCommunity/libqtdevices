@@ -443,10 +443,10 @@ void getName(char *name)
 
 extern BtMain *BTouch;
 
-void ResetTimer(int signo)
+void resetTimer(int signo)
 {
-	qDebug("ResetTimer()");
-	BTouch->ResetTimer();
+	qDebug("resetTimer()");
+	BTouch->resetTimer();
 }
 
 void grabScreen(void* pWidget)

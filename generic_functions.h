@@ -119,7 +119,7 @@ void  comChConf();
 
 void getName(char *name);
 
-void ResetTimer(int signo);
+void resetTimer(int signo);
 
 void grabScreen(void* pWidget);
 
