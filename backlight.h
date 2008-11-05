@@ -33,6 +33,15 @@ typedef QValueVector< brightness_state_t > brightness_policy_t;
 class BrightnessControl
 {
 public:
+	/// The default policies as defined on conf file
+	enum DefautPolicy
+	{
+		POLICY_OFF = 0,
+		POLICY_LOW = 1,
+		POLICY_HIGH = 2
+	};
+
+	static BrightnessControl *instance();
 
 	/// Number of possible states (On, Off, Screensaver)
 	static const unsigned NUMBER_OF_STATES = static_cast<unsigned>(SCREENSAVER) + 1;
@@ -43,15 +52,24 @@ public:
 	 * index 1 (== OFF): state for off
 	 * index 2 (== SCREENSAVER): state for screensaver
 	 */
+	bool setBrightnessPolicy(const brightness_policy_t &bp);
 
-	static bool setBrightnessPolicy(const brightness_policy_t &bp);
+	/**
+	 * Sets one of the default policies
+	 */
+	bool setBrightnessPolicy(DefautPolicy policy);
+
 	/**
 	 * Regulates brightness and backlight as stored in the policy.
 	 * \param state The state to be set.
 	 */
-	static void setState(BrightnessState state);
+	void setState(BrightnessState state);
 private:
-	static brightness_policy_t policy;
+	BrightnessControl();
+	BrightnessControl(BrightnessControl &);
+
+	static BrightnessControl *_instance;
+	brightness_policy_t policy;
 };
 
 

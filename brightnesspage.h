@@ -37,7 +37,6 @@ public slots:
 private:
 	BannToggle *getBanner(const QString &banner_text);
 	QButtonGroup buttons;
-	QMap <int, brightness_policy_t> button_to_policy;
 };
 
 #endif // BRIGHTNESSPAGE_H
