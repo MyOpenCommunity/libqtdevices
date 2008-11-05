@@ -204,6 +204,40 @@ unsigned char getContrast()
 	return (0x00);
 }
 
+static void writeValueToFd(int fd, int value)
+{
+	// this has to be changed in qt4
+	QString str = QString::number(value);
+	write(fd, str.ascii(), str.length());
+}
+
+void setBrightnessLevel(int level)
+{
+	if (QFile::exists("/proc/sys/dev/btweb/brightness"))
+	{
+		int fd = open("/proc/sys/dev/btweb/brightness", O_WRONLY);
+		if (fd >= 0)
+		{
+			writeValueToFd(fd, level);
+			close(fd);
+		}
+	}
+}
+
+void setBacklightOn(bool b)
+{
+	if (QFile::exists("/proc/sys/dev/btweb/backlight"))
+	{
+		int fd = open("/proc/sys/dev/btweb/backlight", O_WRONLY);
+		if (fd >= 0)
+		{
+			writeValueToFd(fd, b);
+			close(fd);
+		}
+	}
+}
+
+
 void setBacklight(bool b)
 {
 	char name[50];
@@ -211,44 +245,16 @@ void setBacklight(bool b)
 	getName(name);
 	if (!strncmp(name, "H4684_IP", strlen("H4684_IP")))
 	{
-		if (QFile::exists("/proc/sys/dev/btweb/brightness"))
-		{
-			int fd = open("/proc/sys/dev/btweb/brightness", O_WRONLY);
-			if (fd >= 0)
-			{
-				if (b)
-					write(fd, "10", 2);
-				else
-					write(fd, "210", 3);
-				close(fd);
-			}
-		}
-		if (QFile::exists("/proc/sys/dev/btweb/backlight"))
-		{
-			int fd = open("/proc/sys/dev/btweb/backlight", O_WRONLY);
-			if (fd >= 0)
-			{
-				if (b)
-					write(fd, "1", 1);
-				close(fd);
-			}
-		}
+		if (b)
+			setBrightnessLevel(10);
+		else
+			setBrightnessLevel(210);
+
+		if (b)
+			setBacklightOn(true);
 	}
 	else
-	{
-		if (QFile::exists("/proc/sys/dev/btweb/backlight"))
-		{
-			int fd = open("/proc/sys/dev/btweb/backlight", O_WRONLY);
-			if (fd >= 0)
-			{
-				if (b)
-					write(fd, "1", 1);
-				else
-					write(fd, "0", 1);
-				close(fd);
-			}
-		}
-	}
+		setBacklightOn(b);
 }
 
 void setBeep(bool b,bool ab)
