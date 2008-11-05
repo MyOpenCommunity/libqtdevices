@@ -27,6 +27,7 @@
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionMenu.h"
+#include "backlight.h"
 
 #include <qwindowsystem_qws.h>
 #include <qapplication.h>
@@ -39,6 +40,7 @@
 #include <qtimer.h>
 #include <qfile.h>
 #include <qxml.h>
+#include <qregexp.h>
 
 #include <sys/sysinfo.h>
 
@@ -66,7 +68,21 @@ BtMain::BtMain(QWidget *parent, const char *name,QApplication* a) : QWidget(pare
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 
-	setBacklight(TRUE);
+	// read configuration for brightness
+	// brightness conf is in IMPOSTAZIONI page
+	QDomNode conf_page_root = getPageNode(IMPOSTAZIONI);
+	QDomNode bright_item_node = getChildWithId(conf_page_root, QRegExp("item\\d{1,2}"), BRIGHTNESS);
+	BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_OFF;
+	if (!bright_item_node.isNull())
+	{
+		QDomNode policy = bright_item_node.namedItem("liv").toElement();
+		if (!policy.isNull())
+			conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(
+					policy.toElement().text().toInt());
+	}
+	BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
+
+	BrightnessControl::instance()->setState(ON);
 
 	rearmWDT();
 
@@ -270,7 +286,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"red",genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			setBacklight(TRUE);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -287,7 +303,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"green",genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			setBacklight(TRUE);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -304,7 +320,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,"blu",genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			setBacklight(TRUE);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -321,7 +337,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			setBacklight(TRUE);
+			BrightnessControl::instance()->setState(ON);
 			tempo1->stop();
 		}
 	}
@@ -366,7 +382,7 @@ void BtMain::gesScrSav()
 			if (!svegliaIsOn)
 			{
 #ifndef BACKLIGHT_SEMPRE_ON
-				setBacklight(FALSE);
+				BrightnessControl::instance()->setState(OFF);
 				qDebug("***** freeze(TRUE) ***** ");
 				emit freeze(TRUE);
 				bloccato = 01;
@@ -428,6 +444,7 @@ void BtMain::gesScrSav()
 #else
 				screensaver->show();
 #endif
+				BrightnessControl::instance()->setState(SCREENSAVER);
 			}
 
 			// FIXME: do we need to change tempo1 if there's no screensaver?
@@ -445,7 +462,7 @@ void BtMain::gesScrSav()
 	else if (tiempo >= 120)
 	{
 #ifndef BACKLIGHT_SEMPRE_ON
-		setBacklight(FALSE);
+		BrightnessControl::instance()->setState(OFF);
 		qDebug("***** freeze(TRUE) ***** ");
 		emit freeze(TRUE);
 		tempo1->changeInterval(500);
@@ -456,7 +473,7 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = 0;
-		setBacklight(TRUE);
+		BrightnessControl::instance()->setState(ON);
 		tempo1->changeInterval(2000);
 		bloccato = 0;
 	}
@@ -472,7 +489,7 @@ void BtMain::freezed(bool b)
 	if  (!b)
 	{
 		event_unfreeze = 1;
-		setBacklight(TRUE);
+		BrightnessControl::instance()->setState(ON);
 		if (screensaver)
 			screensaver->hide();
 		if (pwdOn)

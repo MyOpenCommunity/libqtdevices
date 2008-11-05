@@ -19,6 +19,7 @@
 #include "timescript.h"
 #include "bannfrecce.h"
 #include "fontmanager.h"
+#include "backlight.h"
 
 #include <qpixmap.h>
 #include <qwidget.h>
@@ -559,7 +560,7 @@ void sveglia::verificaSveglia()
 				aumVolTimer->start(3000,FALSE);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min=0;
-				setBacklight(TRUE);
+				BrightnessControl::instance()->setState(ON);
 				emit(freeze(TRUE));
 				emit(svegl(TRUE));
 			}
@@ -817,9 +818,9 @@ void sveglia::buzzerAlarm()
 	}
 
 	if (contaBuzzer%8==0)
-		setBacklight(TRUE);
+		BrightnessControl::instance()->setState(ON);
 	else
-		setBacklight(FALSE);
+		BrightnessControl::instance()->setState(OFF);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
