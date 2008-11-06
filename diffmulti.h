@@ -70,16 +70,11 @@ public slots:
 	void hide();
 	void show();
 	void status_changed(QList<device_status*> sl);
-	/*!
-	 *  \brief sets isVisual to false and emits freezed signal
-	 */
-	void freezed_handler(bool);
 	void gestFrame(char*);
 
 signals:
 	void actSrcChanged(int, int);
 	void dsClosed();
-	void freezed(bool);
 	void gesFrame(char *);
 
 private:

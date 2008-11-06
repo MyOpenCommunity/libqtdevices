@@ -131,7 +131,6 @@ signals:
 
 public slots:
 	void showPage();
-	void freezed(bool f);
 
 private:
 	void sourceMenu(AudioSourceType t);

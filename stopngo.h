@@ -111,7 +111,6 @@ protected:
 public slots:
 	void status_changed(QList<device_status*>);
 	void showPage();
-	void freezed(bool);
 
 protected slots:
 		void AutoArmClick();

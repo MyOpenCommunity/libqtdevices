@@ -375,12 +375,6 @@ void StopngoPage::showPage()
 	showFullScreen();
 }
 
-void StopngoPage::freezed(bool f)
-{
-	qDebug("StopngoPage::freezed()");
-	setDisabled(f);
-}
-
 void StopngoPage::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_stat(stat_var::INFO_MCI);

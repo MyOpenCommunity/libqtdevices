@@ -206,21 +206,6 @@ signals:
 	void richStato(char*);
 	void rispStato(char*);
 	/*!
-		\brief Emitted to signal to BtMain that a banner requires to freeze the device.
-		*/
-	void freeze(bool);
-
-	/**
-		* This signal can be used to propagate the freeze signal to other submenus. It should be connected with
-		* freeze() slot and freezePropagate() signal of the following submenus.
-		*/
-	void freezePropagate(bool);
-
-	/*!
-		\brief Emitted to tell to banners in the list that the device was frozen.
-		*/
-	void frez(bool);
-	/*!
 		\brief Emitted to tell BtMain the state af the alarmset.
 		*/
 	virtual void svegl(bool);
@@ -274,10 +259,6 @@ public slots:
 	*/
 	void init_dimmer();
 	/*!
-		\brief  Sets all the banners disabled.
-	*/
-	void freezed(bool);
-	/*!
 		\brief  Hide the page.
 	*/
 	virtual void hide(bool index = true);
@@ -316,7 +297,6 @@ protected:
 	unsigned int height,width;
 	uchar numRighe, hasNavBar;
 	bannFrecce * bannNavigazione;
-	bool freez;
 	char iconName[MAX_PATH];
 private:
 	/// Number of banners to scroll at each goUp() or goDown() call. Default value is 1, to avoid

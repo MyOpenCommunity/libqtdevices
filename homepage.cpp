@@ -31,7 +31,6 @@ homePage::homePage(QWidget *parent, const char *name) : QWidget(parent)
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 	xClock = xTemp = MAX_WIDTH + 2;
 	yClock = yTemp = MAX_HEIGHT + 2;
-	freez = FALSE;
 	descrizione = NULL;
 	tempCont = 0;
 	temp_scale = NONE;

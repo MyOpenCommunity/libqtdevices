@@ -116,7 +116,6 @@ private slots:
 	void prevCond();
 	void firstCond();
 	void trig(bool forced = false);
-	void freezed(bool);
 	void saveAndApplyAll();
 	void resetAll();
 	void hide();

@@ -298,7 +298,6 @@ scenEvo::scenEvo(QWidget *parent, const char *name, QList<scenEvo_cond*> *c, cha
 	connect(this,SIGNAL(sxClick()), this, SLOT(toggleAttivaScev()));
 	connect(this,SIGNAL(dxClick()), this, SLOT(configScev()));
 	connect(this,SIGNAL(centerClick()), this, SLOT(forzaScev()));
-	connect(parent, SIGNAL(frez(bool)), this, SLOT(freezed(bool)));
 }
 
 void scenEvo::toggleAttivaScev()
@@ -516,16 +515,6 @@ void scenEvo::trig(bool forced)
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(buf.data(), buf.length());
 	emit sendFrame(msg_open.frame_open);
-}
-
-void scenEvo::freezed(bool f)
-{
-	qDebug("scenEvo::freezed(bool f)");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		scenEvo_cond *co = condList.at(i);
-		co->setEnabled(!f);
-	}
 }
 
 void scenEvo::inizializza(bool forza)

@@ -32,9 +32,6 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf) : sottoMenu(par
 	else
 		ind_centrale = thermr_address.toElement().text();
 
-	// propagate freeze
-	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SLOT(freezed(bool)));
-	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(this, SIGNAL(hideChildren()), &items_submenu, SLOT(hide()));
 

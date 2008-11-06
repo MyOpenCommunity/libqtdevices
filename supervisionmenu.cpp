@@ -181,7 +181,6 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 		QObject::connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
 		QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
 		QObject::connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-		QObject::connect(this, SIGNAL(frez(bool)), sm, SLOT(freezed(bool)));
 		stopngoSubmenu = sm;
 
 		for (int i = 0; i < stopngoList.size(); ++i)
@@ -218,7 +217,6 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 	connect(stopngoSubmenu, SIGNAL(hideChildren()), pg, SLOT(hide()));
 	connect(pg, SIGNAL(Closed()), stopngoSubmenu, SLOT(showFullScreen()));
 	connect(pg, SIGNAL(Closed()), pg, SLOT(hide()));
-	connect(stopngoSubmenu, SIGNAL(frez(bool)), pg, SLOT(freezed(bool)));
 	connect(pg, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	
 	// Get status changed events back

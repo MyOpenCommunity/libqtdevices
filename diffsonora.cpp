@@ -45,7 +45,6 @@ diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent),
 	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));
 	connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 	connect(amplificatori,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
-	connect(this,SIGNAL(freezed(bool)),amplificatori,SLOT(freezed(bool)));
 }
 
 void diffSonora::setSorgenti(sottoMenu *s)
@@ -55,7 +54,6 @@ void diffSonora::setSorgenti(sottoMenu *s)
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
 	connect(sorgenti, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	connect(sorgenti, SIGNAL(sendInit(char*)), this, SIGNAL(sendInit(char*)));
-	connect(this, SIGNAL(freezed(bool)), sorgenti, SLOT(freezed(bool)));
 }
 
 // TODO: sarebbe meglio che icon_names diventasse una QList<QString>.. al momento
@@ -154,6 +152,8 @@ not_ours:
 	}
 }
 
+// TODO: capire il significato di questa gestione particolare del 'isVisual'!!
+/*
 void diffSonora::freezed_handler(bool f)
 {
 	qDebug("diffSonora::freezed(%d)", f);
@@ -161,6 +161,7 @@ void diffSonora::freezed_handler(bool f)
 	if (isHidden())
 		isVisual = false;
 }
+*/
 
 void diffSonora::showEvent(QShowEvent *event)
 {

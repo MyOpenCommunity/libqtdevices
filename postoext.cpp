@@ -58,7 +58,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	}
 	else
 		nascondi(BUT2);
-	connect(parent, SIGNAL(frez(bool)), this, SIGNAL(freezed(bool)));
 	close_icon = Icona4;
 	impostaAttivo(2);
 	Draw();
@@ -75,7 +74,6 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 				this, SLOT(call_notifier_closed(call_notifier *)));
 		connect(btouch_device_cache.get_client_monitor(),
 				SIGNAL(frameIn(char *)), cnm, SLOT(gestFrame(char *)));
-		connect(this, SIGNAL(freezed(bool)), cnm, SIGNAL(freezed(bool)));
 	}
 	cnm->add_call_notifier(cn);
 	if (unknown && !unknown_notifier)

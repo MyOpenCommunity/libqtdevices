@@ -100,14 +100,6 @@ signals:
 	void openNakRx();
 
 /*!
-  \brief emitted to take the device out from or into a freezed state
-*/
-	void freeze(bool);
-/*!
-  \brief emitted when the device goes out from or into a freezed state to allineate the impianto-zone-allarmi behavior
-*/
-	void freezed(bool);
-/*!
   \brief enable/disable area partialization enable events
 */
 	void abilitaParz(bool ab);

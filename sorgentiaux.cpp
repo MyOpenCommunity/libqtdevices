@@ -40,11 +40,7 @@ sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, boo
 		nascondi(BUT2);
 	}
 	else
-	{
 		myAux = new aux(NULL, name, ambdescr);
-		// Get freezed events
-		connect(parent, SIGNAL(frez(bool)), myAux, SLOT(freezed(bool)));
-	}
 }
 
 void sorgente_aux::gestFrame(char*)

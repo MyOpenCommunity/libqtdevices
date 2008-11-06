@@ -72,8 +72,6 @@ diffmulti::diffmulti(QWidget *parent, const char *name, uchar navBarMode,int wi,
 {
 	sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, MAX_HEIGHT/4 - 3,1);
 	matr = btouch_device_cache.get_sound_matr_device();
-	connect(sorgenti, SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
-	connect(this, SIGNAL(frez(bool)), sorgenti, SLOT(freezed(bool)));
 
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
@@ -132,9 +130,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			diffSonora *ds = new diffSonora(NULL, sorgenti);
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
-			connect(ds,SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
-			connect(this,SIGNAL(frez(bool)), ds, SLOT(freezed_handler(bool)));
-			connect(this,SIGNAL(frez(bool)), ds, SIGNAL(freezed(bool)));
 			ds->draw();
 			banner *b;
 			if (tipo == AMBIENTE)
@@ -155,9 +150,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
 			connect(last, SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
-			connect(this , SIGNAL(frez(bool)), last, SIGNAL(freezed(bool)));
 			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 			if (tipo == AMBIENTE)
@@ -323,12 +316,6 @@ void diffmulti::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
-}
-
-void diffmulti::freezed_handler(bool f)
-{
-	qDebug("diffmulti::freezed(%d)", f);
-	sottoMenu::freezed(f);
 }
 
 void diffmulti::gestFrame(char*frame)

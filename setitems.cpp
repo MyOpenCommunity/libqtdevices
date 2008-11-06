@@ -63,9 +63,7 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff* diso,
 	connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 	connect(svegliolina, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(svegliolina,SIGNAL(ImClosed()),parentWidget() , SLOT(showFullScreen()));
-	connect(svegliolina, SIGNAL(freeze(bool)),this , SIGNAL(freeze(bool)));
 	connect(svegliolina, SIGNAL(svegl(bool)),this , SIGNAL(svegl(bool)));
-	connect(this, SIGNAL(freezed(bool)), svegliolina,SLOT(spegniSveglia(bool)));
 }
 
 void impostaSveglia::gestFrame(char* frame)
@@ -395,7 +393,6 @@ BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(p
 #else
 	connect(this, SIGNAL(click()), page, SLOT(show()));
 #endif
-	connect(parentWidget(), SIGNAL(freeze(bool)), page, SLOT(freezed(bool)));
 	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 }
 

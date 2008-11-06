@@ -47,13 +47,8 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 	single_submenu = sm;
 
 	sm->hide();
-	// propagate freeze signal
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SLOT(freezed(bool)));
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
-	// do we need this?
-	//connect(sm, SIGNAL(freeze(bool)), BtM, SIGNAL(freeze(bool)));
 }
 
 void ThermalMenu::addBanners()
@@ -125,9 +120,6 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
 	sm->hide();
-	// propagate freeze signal
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SLOT(freezed(bool)));
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
 

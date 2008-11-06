@@ -28,7 +28,6 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 
 	setAddress(indirizzo);
 	dev = btouch_device_cache.get_device(getAddress());
-	connect(parentWidget(), SIGNAL(frez(bool)), &source_menu, SLOT(freezed(bool)));
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showPage()));
 	if (nbut == 4)

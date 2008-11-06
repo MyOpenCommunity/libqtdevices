@@ -61,8 +61,6 @@ public slots:
 	void open_door_clicked();
 	//! Close window
 	void close();
-	//! Received on freeze
-	void freezed(bool);
 	//! Show full screen, reimplemented to restart 30secs timer
 	void showFullScreen();
 signals:
@@ -104,8 +102,6 @@ signals:
 	void frame_captured(call_notifier *);
 	//! Emitted when a call notifier window is closed
 	void call_notifier_closed(call_notifier *);
-	//! Emitted on freeze
-	void freezed(bool);
 };
 
 

@@ -474,7 +474,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						addr = computeAddress();
 						break;
 
-					case  SCENARI:
+					case SCENARI:
 						pageAct = *scenari;
 						addr = computeAddress();
 						addItemU(pageAct, addr);
@@ -625,11 +625,8 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*supervisione,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(*supervisione,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
 						QObject::connect(*supervisione,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
 						QObject::connect(*supervisione,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*supervisione,SLOT(freezed(bool)));
 						break;
 
 					case AUTOMAZIONE:
@@ -646,8 +643,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*automazioni,SIGNAL(gestFrame(char *)));
 						QObject::connect(*automazioni,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*automazioni,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*automazioni,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*automazioni,SLOT(freezed(bool)));
 						break;
 
 					case ILLUMINAZIONE:
@@ -664,9 +659,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
 						QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*illumino,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 						QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*illumino,SLOT(freezed(bool)));
 						break;
 					case ANTIINTRUSIONE:
 						(*antintr)->draw();
@@ -685,9 +678,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_comandi,SIGNAL(openNakRx()),*antintr,SIGNAL(openNakRx()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*antintr,SLOT(gesFrame(char *)));
 						QObject::connect(*antintr,SIGNAL(Closed()),*antintr,SLOT(hide()));
-
-						QObject::connect(*antintr,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*antintr,SIGNAL(freezed(bool)));
 						break;
 					case CARICHI:
 						(*carichi)->forceDraw();
@@ -702,8 +692,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(*carichi,SIGNAL(Closed()),*carichi,SLOT(hide()));
 						QObject::connect(*carichi,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*carichi,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*carichi,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*carichi,SLOT(freezed(bool)));
 						break;
 					case TERMOREGOLAZIONE:
 					case TERMOREG_MULTI_PLANT:
@@ -720,9 +708,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
 						QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*termo,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*termo,SLOT(freezed(bool)));
-						QObject::connect(BtM, SIGNAL(freeze(bool)), *termo, SIGNAL(freezePropagate(bool)));
 						break;
 					case DIFSON:
 						(*difSon)->draw();
@@ -738,9 +723,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
 						QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*difSon,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*difSon,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SLOT(freezed_handler(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*difSon,SIGNAL(freezed(bool)));
 						break;
 
 					case DIFSON_MULTI:
@@ -757,9 +739,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*dm,SLOT(gestFrame(char *)));
 						QObject::connect(*dm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*dm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*dm,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SIGNAL(freezed(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*dm,SLOT(freezed_handler(bool)));
 						break;
 
 					case SCENARI:
@@ -775,8 +754,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(*scenari,SIGNAL(Closed()),*scenari,SLOT(hide()));
 						QObject::connect(*scenari,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*scenari,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*scenari,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari,SLOT(freezed(bool)));
 						break;
 
 					case IMPOSTAZIONI:
@@ -793,14 +770,9 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
 						QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*imposta,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(*imposta,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
 						QObject::connect(*imposta,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*imposta,SLOT(freezed(bool)));
-
 						QObject::connect(*imposta,SIGNAL(startCalib()), BtM, SLOT(startCalib()));
 						QObject::connect(*imposta,SIGNAL(endCalib()),BtM, SLOT(endCalib()));
-						QObject::connect(BtM, SIGNAL(freeze(bool)), *imposta, SIGNAL(freezePropagate(bool)));
 						break;
 
 					case SCENARI_EVOLUTI:
@@ -817,9 +789,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
 						QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*scenari_evoluti,SLOT(hide()));
-						QObject::connect(*scenari_evoluti,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(*scenari_evoluti,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*scenari_evoluti,SLOT(freezed(bool)));
 						break;
 
 					case VIDEOCITOFONIA:
@@ -837,15 +806,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(*videocitofonia,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
 						QObject::connect(*videocitofonia,SIGNAL(Closed()),*videocitofonia,SLOT(hide()));
-						QObject::connect(*videocitofonia,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-						QObject::connect(*videocitofonia,SIGNAL(freeze(bool)),BtM,SLOT(freezed(bool)));
 						QObject::connect(*videocitofonia,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*videocitofonia,SLOT(freezed(bool)));
 						break;
 
 					case SPECIAL:
-						QObject::connect(BtM,SIGNAL(freeze(bool)),*specPage,SLOT(freezed(bool)));
-						QObject::connect(*specPage,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
 						QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*specPage,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*specPage,SIGNAL(Close()),*specPage,SLOT(hide()));
@@ -883,12 +847,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					}
 				}
 			} //  if (CurTagL3.startsWith("page"))
-
-			if (!CurTagL2.compare("displaypages") && CurTagL3.isEmpty())
-			{
-				QObject::connect(BtM,SIGNAL(freeze(bool)),*home,SLOT(freezed(bool)));
-				QObject::connect(*home,SIGNAL(freeze(bool)),BtM,SIGNAL(freeze(bool)));
-			}
 		} //  if (!CurTagL2.compare("displaypages"))
 	} // if (!CurTagL1.compare("configuratore"))
 

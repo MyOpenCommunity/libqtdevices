@@ -86,14 +86,6 @@ signals:
 	 */
 	void sendFrame(char*);
 	void sendInit(char*);
-	/*!
-	 * \brief Emitted when there is a banner forcing (de)freezing state.
-	 */
-	void freeze(bool);
-	/*!
-	 * \brief Emitted thought sources and amplifiers when the device is going into (de)freezing state.
-	 */
-	void freezed(bool);
 
 public slots:
 	/*!
@@ -106,10 +98,6 @@ public slots:
 	 * \brief sets first source given address
 	 */
 	void setFirstSource(int addr);
-	/*!
-	 * \brief sets isVisual to false and emits freezed signal
-	 */
-	void freezed_handler(bool);
 
 protected:
 	/*!

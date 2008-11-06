@@ -128,8 +128,6 @@ signals:
 	void Special();
 /*! \brief Emitted when the the object is closed.*/
 	void Close();
-/*! \brief Emitted when the objects composing the page has to be frozen.*/
-	void freeze(bool);
 /*! \brief Emitted to send \a Open \a frame on the system.*/
 	void sendFrame(char*);
 	void sendInit(char*);
@@ -153,7 +151,6 @@ private:
 	timeScript* dataOra;
 	int xClock, yClock, xTemp, yTemp;
 	QList<BtButton*> elencoButtons;
-	bool freez;
 	char zonaTermo1[50], zonaTermo2[50], zonaTermo3[50];
 	char *zt[3];
 	char ext1[2], ext2[2], ext3[2];

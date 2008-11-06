@@ -77,10 +77,3 @@ void allarme::show()
     Immagine->show();
     descr->show();
 }
-
-void allarme::freezed(bool f)
-{
-    qDebug("allarme::freezed(%d)", f);
-    bool enabled = !f;
-    bnav->setEnabled(enabled);
-}

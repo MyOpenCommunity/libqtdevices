@@ -68,8 +68,6 @@ banradio::banradio(QWidget *parent,const char *name,char* indirizzo, int nbut, c
 	dev = btouch_device_cache.get_radio_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
-	// Get freezed events
-	connect(parent, SIGNAL(frez(bool)), myRadio, SLOT(freezed(bool)));
 }
 
 void banradio::grandadChanged(QWidget *newGrandad)

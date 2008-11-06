@@ -209,11 +209,6 @@ void call_notifier::SetButtonsIcons()
 	SetButtonIcon(a6_icon, area6_but);
 }
 
-void call_notifier::freezed(bool f)
-{
-	qDebug("call_notifier::freezed(%d)", f);
-}
-
 // Call notifier manager implementation
 call_notifier_manager::call_notifier_manager()
 {
@@ -231,7 +226,6 @@ void call_notifier_manager::add_call_notifier(call_notifier *cn)
 		this, SLOT(frame_captured_handler(call_notifier *)));
 	connect(cn, SIGNAL(closed(call_notifier *)),
 		this, SIGNAL(call_notifier_closed(call_notifier *)));
-	connect(this, SIGNAL(freezed(bool)), cn, SLOT(freezed(bool)));
 }
 
 void call_notifier_manager::set_unknown_call_notifier(call_notifier *cn)

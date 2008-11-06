@@ -418,14 +418,6 @@ signals:
 	 */
 	void cdxPressed();
 	/*!
-	 *  \brief Emitted to (de)freeze the objects of the banner
-	 */
-	void freezed(bool);
-	/*!
-	 *  \brief Emitted when the banner decide to freeze the device (i.e. when the \a alarm \a clock turns on).
-	 */
-	void freeze(bool);
-	/*!
 	 *  \brief Emitted to communicate when the \a alarm \a clock begins and ends.
 	 */
 	void svegl(bool);

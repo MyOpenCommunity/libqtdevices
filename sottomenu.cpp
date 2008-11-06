@@ -54,7 +54,6 @@ sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi
 	hasNavBar = navBarMode;
 	width = wi;
 	height = hei;
-	freez = false;
 
 	setGeometry(0,0,width,height);
 	setFixedSize(QSize(width, height));
@@ -331,7 +330,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		LanSettings *ls = new LanSettings(this);
 		ls->hide();
 
-		connect(this, SIGNAL(freezePropagate(bool)), ls, SLOT(freeze(bool)));
 		connect(this, SIGNAL(hideChildren()), ls, SLOT(hide()));
 		connect(b, SIGNAL(click()), ls, SLOT(showFullScreen()));
 		break;
@@ -371,9 +369,7 @@ void sottoMenu::connectLastBanner()
 	connect(last, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	connect(last, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(last, SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-	connect(last, SIGNAL(freeze(bool)), this, SIGNAL(freeze(bool)));
 	connect(last, SIGNAL(svegl(bool)), this, SIGNAL(svegl(bool)));
-	connect(this, SIGNAL(frez(bool)), last, SIGNAL(freezed(bool)));
 	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
 	connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 }
@@ -633,31 +629,6 @@ uchar sottoMenu::getNumRig()
 int sottoMenu::getHeight()
 {
 	return height;
-}
-
-void sottoMenu::freezed(bool f)
-{
-	/*
-	freez = f;
-
-	qDebug() << name << " freezed " << freez;
-
-	if (freez)
-	{
-		for (uchar idx = 0; idx < elencoBanner.count(); idx++)
-			elencoBanner.at(idx)->setEnabled(false);
-		if (hasNavBar)
-			bannNavigazione->setEnabled(false);
-	}
-	else
-	{
-		for (uchar idx = 0; idx < elencoBanner.count(); idx++)
-			elencoBanner.at(idx)->setEnabled(true);
-		if (hasNavBar)
-			bannNavigazione->setEnabled(true);
-	}
-	emit frez(f);
-	*/
 }
 
 void sottoMenu::setGeometry(int x, int y, int w, int h)

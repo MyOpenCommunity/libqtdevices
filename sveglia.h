@@ -102,6 +102,7 @@ void sendInit(char*);
 /*!
   \brief Emitted to freeze the device.
 */
+// TODO: rimuovere appena possibile!
 	void freeze(bool);
 
 /*!

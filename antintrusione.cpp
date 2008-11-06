@@ -43,9 +43,6 @@ antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent
 	connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
 	connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
 	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
-
-	connect(this,SIGNAL(freezed(bool)),zone,SLOT(freezed(bool)));
-	connect(this,SIGNAL(freezed(bool)),impianto,SLOT(freezed(bool)));
 }
 
 antintrusione::~antintrusione()
@@ -261,7 +258,6 @@ void antintrusione::gesFrame(char*frame)
 			connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
 			connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
 			connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
-			connect(this, SIGNAL(freezed(bool)), curr, SLOT(freezed(bool)));
 			aggiorna = 1;
 		}
 	}

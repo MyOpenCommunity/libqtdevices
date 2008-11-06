@@ -61,10 +61,6 @@ public:
 	/// Freeze or unfreeze the application
 	void freezed(bool);
 signals:
-/*!
-  \brief Emitted to (de)freeze the console
-*/
-	void freeze(bool);
 	void resettimer();
 
 private slots:

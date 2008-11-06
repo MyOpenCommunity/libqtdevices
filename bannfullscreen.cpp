@@ -1109,9 +1109,6 @@ void FSBannTermoReg4z::createSettingsMenu()
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(raise()));
 		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
-		// propagate freeze signal to settings submenu
-		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SLOT(freezed(bool)));
-		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SIGNAL(freezePropagate(bool)));
 		// hide children
 		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
@@ -1166,9 +1163,6 @@ void FSBannTermoReg99z::createSettingsMenu()
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(raise()));
 		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
-		// propagate freeze signal to settings submenu
-		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SLOT(freezed(bool)));
-		connect(parentWidget(), SIGNAL(freezePropagate(bool)), settings, SIGNAL(freezePropagate(bool)));
 		// hide children
 		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
@@ -1217,9 +1211,6 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	manual_menu = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(show()));
 	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(raise()));
-	// propagate freeze signal
-	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SLOT(freezed(bool)));
-	connect(settings, SIGNAL(freezePropagate(bool)), manual_menu, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), manual_menu, SLOT(hide()));
 
@@ -1258,9 +1249,6 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(raise()));
-	// propagate freeze signal
-	connect(settings, SIGNAL(freezePropagate(bool)), program_menu, SLOT(freezed(bool)));
-	connect(settings, SIGNAL(freezePropagate(bool)), program_menu, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), program_menu, SLOT(hide()));
 
@@ -1318,9 +1306,6 @@ banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString 
 DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 {
 	DateEditMenu *date_edit = new DateEditMenu(0, "date edit");
-	// propagate freeze signal
-	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SLOT(freezed(bool)));
-	connect(settings, SIGNAL(freezePropagate(bool)), date_edit, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), date_edit, SLOT(hide()));
 	date_edit->hide();
@@ -1332,9 +1317,6 @@ DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 {
 	TimeEditMenu *time_edit = new TimeEditMenu(0, "time edit");
-	// propagate freeze signal
-	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SLOT(freezed(bool)));
-	connect(settings, SIGNAL(freezePropagate(bool)), time_edit, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), time_edit, SLOT(hide()));
 	time_edit->hide();
@@ -1347,9 +1329,6 @@ WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode co
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, "weekly program edit", conf);
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_choice, SLOT(status_changed(QList<device_status*>)));
-	// propagate freeze signal
-	connect(settings, SIGNAL(freezePropagate(bool)), program_choice, SLOT(freezed(bool)));
-	connect(settings, SIGNAL(freezePropagate(bool)), program_choice, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), program_choice, SLOT(hide()));
 	program_choice->hide();
@@ -1434,9 +1413,6 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	timed_manual_menu->appendBanner(bann);
 	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(show()));
 	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(raise()));
-	// propagate freeze signal
-	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SLOT(freezed(bool)));
-	connect(settings, SIGNAL(freezePropagate(bool)), timed_manual_menu, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), timed_manual_menu, SLOT(hide()));
 
@@ -1471,9 +1447,6 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));
-	// propagate freeze signal
-	connect(settings, SIGNAL(freezePropagate(bool)), scenario_menu, SLOT(freezed(bool)));
-	connect(settings, SIGNAL(freezePropagate(bool)), scenario_menu, SIGNAL(freezePropagate(bool)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), scenario_menu, SLOT(hide()));
 

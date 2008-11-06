@@ -40,8 +40,6 @@ public:
 public slots:
 	/*! Draw widget */
 	void draw();
-	/*! window freezed, disable everything */
-	void freezed(bool);
  signals:
 	void Next();
 	void Prev();
