@@ -15,18 +15,17 @@
 #ifndef TITLE_LABEL_H
 #define TITLE_LABEL_H
 
-#include "btlabel.h"
-
 #include <QString>
+#include <QLabel>
 #include <QTimer>
 
 /**
  * \class TitleLabel
  *
- * this class is derived from BtLabel
+ * this class is derived from QLabel
  * and reimplements drawContent to have scrolling text
  */
-class TitleLabel : public BtLabel
+class TitleLabel : public QLabel
 {
 Q_OBJECT
 public:

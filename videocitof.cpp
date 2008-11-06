@@ -4,7 +4,6 @@
 #include "device_cache.h"
 #include "postoext.h"
 #include "generic_functions.h" // getPressName
-#include "btlabel.h"
 #include "btbutton.h"
 #include "fontmanager.h"
 #include "main.h"
@@ -12,6 +11,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include <QCursor>
+#include <QLabel>
 #include <QFile>
 #include <QTimer>
 
@@ -116,7 +116,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 {
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-	area1_ptr = new BtLabel(this);
+	area1_ptr = new QLabel(this);
 	area1_ptr->setGeometry(0, (MAX_HEIGHT/4)-2*LABEL_HEIGHT,
 				MAX_WIDTH, LABEL_HEIGHT);
 	QFont aFont;
@@ -137,7 +137,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 			SLOT(stairlight_pressed()));
 		connect(area2_but, SIGNAL(released()), this, 
 			SLOT(stairlight_released()));
-		area3_ptr = new BtLabel(this);
+		area3_ptr = new QLabel(this);
 		area3_ptr->setGeometry(BUTTON_DIM,
 				(MAX_HEIGHT/2)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
 				LABEL_WIDTH, LABEL_HEIGHT);
@@ -159,7 +159,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 		area4_but->setGeometry(0, ((3*MAX_HEIGHT)/4)-BUTTON_DIM, 
 				BUTTON_DIM, BUTTON_DIM);
 		connect(area4_but, SIGNAL(clicked()), this, SLOT(open_door_clicked()));
-		area5_ptr = new BtLabel(this);
+		area5_ptr = new QLabel(this);
 		area5_ptr->setGeometry(BUTTON_DIM,
 				((3*MAX_HEIGHT)/4)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
 				LABEL_WIDTH, LABEL_HEIGHT);

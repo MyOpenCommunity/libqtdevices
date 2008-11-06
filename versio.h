@@ -10,7 +10,7 @@
 #ifndef  GENERIC_CLASSES_H
 #define GENERIC_CLASSES_H
 
-#include "btlabel.h"
+#include <QLabel>
 
 class QWidget;
 
@@ -23,7 +23,7 @@ class QWidget;
   \author Davide
   \date lug 2005
 */  
-class versio : public BtLabel
+class versio : public QLabel
 {
 Q_OBJECT
 public:
@@ -63,7 +63,7 @@ private:
 	unsigned char hw_release;
 	unsigned char hw_build;
 	QString model;
-	BtLabel*datiGen, *bticino;
+	QLabel *datiGen, *bticino;
 	int indDisp;
 };
 

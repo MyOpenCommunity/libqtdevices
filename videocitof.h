@@ -8,9 +8,9 @@
 #include <QList>
 
 class postoExt;
-class BtLabel;
 class BtButton;
 class device;
+class QLabel;
 
 
 class call_notifier : public QFrame
@@ -20,11 +20,11 @@ private:
 	postoExt *my_station;
 	device *station_dev;
 	//! Pointer to area1 label
-	BtLabel *area1_ptr;
+	QLabel *area1_ptr;
 	//! Pointer to area3 label
-	BtLabel *area3_ptr;
+	QLabel *area3_ptr;
 	//! Pointer to area5 label
-	BtLabel *area5_ptr;
+	QLabel *area5_ptr;
 	//! Pointer to area 2 button
 	BtButton *area2_but;
 	//! Pointer to area 4 button

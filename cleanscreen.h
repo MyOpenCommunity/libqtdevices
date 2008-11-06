@@ -12,10 +12,11 @@
 #define CLEANSCREEN_H
 
 #include <time.h> //time_t and time()
-#include <qwidget.h>
-#include <qtimer.h>
 
-class BtLabel;
+#include <QWidget>
+#include <QTimer>
+
+class QLabel;
 
 class CleanScreen : public QWidget
 {
@@ -38,7 +39,7 @@ private:
 	/// Used to compute the remaining time of cleanscreen
 	time_t end_time;
 	/// labels to show remaining time and cleanscreen icon
-	BtLabel *time_label, *icon_label;
+	QLabel *time_label, *icon_label;
 
 	static const unsigned TIME_LABEL_X = 80;
 	static const unsigned TIME_LABEL_Y = 160;

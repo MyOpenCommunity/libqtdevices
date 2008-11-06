@@ -16,9 +16,11 @@
 #include <QWidget>
 #include <QCursor>
 #include <QDateTime>
+#include <QLabel>
 #include <QFile>
 
 extern unsigned char tipoData;
+
 
 impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 {
@@ -52,7 +54,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	but[6]->setGeometry(90,260,60,60);
 	but[6]->setImage(ICON_OK);
 
-	Immagine = new BtLabel(this);
+	Immagine = new QLabel(this);
 	Immagine->setGeometry(90,0,120,60);
 }
 

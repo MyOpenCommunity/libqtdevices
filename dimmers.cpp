@@ -12,10 +12,11 @@
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
 #include "btbutton.h"
-#include "btlabel.h"
 #include "fontmanager.h"
 
 #include <openwebnet.h> // class openwebnet
+
+#include <QLabel>
 
 #include <stdlib.h> // atoi
 #include <stdio.h> //sprintf

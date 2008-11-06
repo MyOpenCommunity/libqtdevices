@@ -15,8 +15,8 @@
 
 #include <QWidget>
 
-class BtLabel;
 class BtButton;
+class QLabel;
 
 #define LINE MAX_HEIGHT/5
 
@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     tastiera(QWidget *parent=0, const char *name=0, int line=LINE);
 	BtButton *zeroBut, *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
-	BtLabel* digitLabel, *scrittaLabel;
+	QLabel* digitLabel, *scrittaLabel;
 /*!
   \brief Draws the page
 */

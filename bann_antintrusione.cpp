@@ -13,7 +13,6 @@
 #include "generic_functions.h" // void getZoneName(...)
 #include "fontmanager.h"
 #include "btbutton.h"
-#include "btlabel.h"
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
 #include "tastiera.h"
@@ -21,6 +20,7 @@
 #include <openwebnet.h> // class openwebnet
 
 #include <QTimer>
+#include <QLabel>
 
 #include <stdlib.h>
 

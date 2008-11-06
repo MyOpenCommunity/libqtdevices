@@ -12,12 +12,12 @@
 #include "banner.h"
 #include "main.h"
 #include "generic_functions.h" // getPressName, getContrast, setContrast
-#include "btlabel.h"
 #include "btbutton.h"
 
 #include <QWidget>
 #include <QFrame>
 #include <QString>
+#include <QLabel>
 #include <QFile>
 
 
@@ -33,8 +33,8 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	decBut = new BtButton(this);
 	okBut = new BtButton(this);
 
-	paintLabel = new BtLabel(this);
-	colorBar = new BtLabel(this);
+	paintLabel = new QLabel(this);
+	colorBar = new QLabel(this);
 
 	decBut->setGeometry(0,MAX_HEIGHT-BUT_DIM, BUT_DIM, BUT_DIM);
 	aumBut->setGeometry(MAX_WIDTH-BUT_DIM, MAX_HEIGHT-BUT_DIM, BUT_DIM, BUT_DIM);

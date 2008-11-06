@@ -19,7 +19,6 @@
 #include "xml_functions.h"
 #include "xmlconfhandler.h"
 #include "calibrate.h"
-#include "btlabel.h"
 #include "genpage.h"
 #include "device_cache.h"
 #include "openclient.h"

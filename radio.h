@@ -14,10 +14,10 @@
 
 #include <QWidget>
 
-class BtLabel;
 class BtButton;
 class bannFrecce;
 class QLCDNumber;
+class QLabel;
 
 
 /*!
@@ -34,7 +34,7 @@ public:
 	radio(QWidget *parent=0, const char *name=0, const QString & amb="");
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
-	BtLabel* rdsLabel,* radioName,*progrText, *ambDescr;
+	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLCDNumber *freq;
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file

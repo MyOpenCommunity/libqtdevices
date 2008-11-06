@@ -14,7 +14,6 @@
 #include "generic_functions.h" // getPressName, copyFile, setCfgValue, setBacklight, getBeep, setBeep, beep, setBacklight
 #include "diffmulti.h"
 #include "btbutton.h"
-#include "btlabel.h"
 #include "openclient.h"
 #include "timescript.h"
 #include "bannfrecce.h"
@@ -25,6 +24,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include <QCursor>
+#include <QLabel>
 #include <QDir>
 #include <QFile>
 
@@ -64,7 +64,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_SVEGLIA_ON);
 
-	Immagine = new BtLabel(this);
+	Immagine = new QLabel(this);
 	if (Icon1)
 		Immagine->setPixmap(*Icon1);
 
@@ -82,7 +82,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 		choice[idx]->setImage(ICON_VUOTO);
 		choice[idx]->hide();
 
-		testiChoice[idx] = new BtLabel(this);
+		testiChoice[idx] = new QLabel(this);
 		testiChoice[idx]->setGeometry(80,idx*60,120,60);
 		testiChoice[idx]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		testiChoice[idx]->setFont(aFont);

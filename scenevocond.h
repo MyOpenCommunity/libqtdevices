@@ -7,12 +7,11 @@
 #include <QFrame>
 #include <QList>
 
-class QDateTime;
 class BtButton;
-class BtLabel;
 class timeScript;
 class device;
-
+class QDateTime;
+class QLabel;
 
 /*!
   \class scenEvo_cond
@@ -136,7 +135,7 @@ private:
 	//! Pointers to buttons
 	BtButton*  but[7];
 	//! Pointer to label
-	BtLabel* Immagine;
+	QLabel *Immagine;
 	//! Time modification object
 	timeScript *ora;
 	//! Timer for triggering condition
@@ -557,11 +556,11 @@ private:
 	//! Area #7 (prev) icon index
 	static const int A6_ICON_INDEX = 4;
 	//! Pointers to buttons
-	BtButton*  but[7];
+	BtButton *but[7];
 	//! Pointer to area1 label
-	BtLabel *area1_ptr;
+	QLabel *area1_ptr;
 	//! Pointer to area2 label
-	BtLabel *area2_ptr;
+	QLabel *area2_ptr;
 	//! Specific device condition
 	device_condition *actual_condition;
 	//! Set button icons

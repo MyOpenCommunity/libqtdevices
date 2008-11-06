@@ -15,13 +15,12 @@
 #ifndef STOPNGO_H
 #define STOPNGO_H
 
-
 #include "device.h"
 #include "bannpuls.h"
-#include "btlabel.h"
 #include "btbutton.h"
 
 #include <QWidget>
+#include <QLabel>
 #include <QList>
 #include <QFile>
 
@@ -96,9 +95,9 @@ public:
 protected:
 	QString pageTitle, where;
 	int id, statusBmp, autotestFreq;
-	BtLabel *titleBar, *labelAutoArm, *labelVerify;
+	QLabel *titleBar, *labelAutoArm, *labelVerify;
 	BtButton *okBut, *autoArmBut, *onBut, *offBut, *verifyBut, *autotestBut, *minusBut, *plusBut;
-	BtLabel *statusIcon;
+	QLabel *statusIcon;
 	QLCDNumber *freqLcdNumber;
 	QTimer *freqSendTimer;
 	

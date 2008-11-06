@@ -31,7 +31,7 @@
 
 class device_status;
 class device;
-class BtLabel;
+class QLabel;
 
 
 class BannTemperature : public banner
@@ -63,9 +63,9 @@ private:
 	/// Probed temperature
 	unsigned  temperature;
 	/// Temperature label
-	BtLabel  *temp_label;
+	QLabel  *temp_label;
 	/// Zone name label
-	BtLabel  *descr_label;
+	QLabel  *descr_label;
 	TemperatureScale temp_scale;
 };
 

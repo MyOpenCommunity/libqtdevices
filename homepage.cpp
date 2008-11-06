@@ -12,7 +12,6 @@
 #include "timescript.h"
 #include "generic_functions.h" // getPressName
 #include "openclient.h"
-#include "btlabel.h"
 #include "fontmanager.h"
 #include "scaleconversion.h"
 
@@ -21,6 +20,7 @@
 #include <QCursor>
 #include <QLCDNumber>
 #include <QByteArray>
+#include <QLabel>
 
 #include <stdlib.h>
 
@@ -174,7 +174,7 @@ void homePage::addTemp(QString z, int x, int y, int width, int height, int style
 	{
 		QFont aFont;
 		FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
-		descrTemp[tempCont] = new BtLabel(this);
+		descrTemp[tempCont] = new QLabel(this);
 		descrTemp[tempCont]->setFont(aFont);
 		descrTemp[tempCont]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		descrTemp[tempCont]->setText(qtext);
@@ -215,7 +215,7 @@ void homePage::addDescrU(const QString & qz, int x, int y, int width, int height
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_descrizione, aFont);
-	descrizione = new BtLabel(this);
+	descrizione = new QLabel(this);
 	descrizione->setFont(aFont);
 	descrizione->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	descrizione->setText(qz);

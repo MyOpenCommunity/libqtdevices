@@ -4,8 +4,7 @@
 #include <QFrame>
 
 class banner;
-class BtLabel;
-
+class QLabel;
 
 /*!
   \class allarme
@@ -28,8 +27,8 @@ private:
 	static const int ICON_DIM = 80;
 	static const int NAV_DIM = 60;
 	banner *bnav;
-	BtLabel *Immagine;
-	BtLabel *descr;
+	QLabel *Immagine;
+	QLabel *descr;
 	void SetIcons(char*);
 	altype type;
 

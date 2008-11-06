@@ -14,9 +14,11 @@
 #include "btbutton.h"
 #include "main.h"
 #include "timescript.h"
-#include "btlabel.h"
 
 #include <QFrame>
+
+class QLabel;
+
 
 /*!
   \class impostaTime
@@ -58,7 +60,7 @@ private slots:
 
 private:
 	timeScript *dataOra;
-	BtLabel *Immagine;
+	QLabel *Immagine;
 };
 
 

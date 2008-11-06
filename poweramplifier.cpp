@@ -2,10 +2,10 @@
 #include "xml_functions.h" // getChildWithId
 #include "device_cache.h" // btouch_device_cache
 #include "sottomenu.h"
-#include "btlabel.h"
 
 #include <QVariant> // setProperty
 #include <QRegExp>
+#include <QLabel>
 #include <QList>
 
 #include <stdlib.h>

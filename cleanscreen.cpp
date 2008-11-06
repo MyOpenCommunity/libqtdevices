@@ -1,13 +1,14 @@
 #include "cleanscreen.h"
 #include "xml_functions.h" // getChildWithId
 #include "fontmanager.h"
-#include "btlabel.h"
 #include "main.h"
 
+#include <QRegExp>
+#include <QLabel>
+#include <QDateTime>
+
 #include <assert.h>
-#include <qregexp.h>
-#include <qlabel.h>
-#include <qdatetime.h>
+
 
 static const char *CLEANSCREEN_ICON = IMG_PATH "btnplusp.png";
 
@@ -24,12 +25,12 @@ CleanScreen::CleanScreen(QWidget *parent) : QWidget(parent)
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
 
-	time_label = new BtLabel(this);
+	time_label = new QLabel(this);
 	time_label->setFont(aFont);
 	time_label->setAlignment(Qt::AlignHCenter);
 	time_label->setGeometry(TIME_LABEL_X, TIME_LABEL_Y, TIME_LABEL_WIDTH, TIME_LABEL_HEIGHT);
 
-	icon_label = new BtLabel(this);
+	icon_label = new QLabel(this);
 	QPixmap *icon = icons_library.getIcon(CLEANSCREEN_ICON);
 	icon_label->setPixmap(*icon);
 	icon_label->setAlignment(Qt::AlignHCenter);

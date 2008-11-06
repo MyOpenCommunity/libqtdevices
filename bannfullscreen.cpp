@@ -13,7 +13,6 @@
 #include "fontmanager.h"
 #include "sottomenu.h"
 #include "btbutton.h"
-#include "btlabel.h"
 #include "device.h"
 #include "bannsettings.h"
 #include "device_cache.h"
@@ -21,6 +20,7 @@
 
 #include <QByteArray>
 #include <QVariant>
+#include <QLabel>
 #include <QDebug>
 
 #define I_OK  IMG_PATH"btnok.png"
@@ -45,9 +45,9 @@ void setWidgetVisible(QWidget *w, bool visible)
 }
 
 
-BtLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
+QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 {
-	BtLabel *tmp = new BtLabel(parent);
+	QLabel *tmp = new QLabel(parent);
 	tmp->setPixmap(*icons_library.getIcon(img));
 	tmp->setAlignment((Qt::Alignment)alignment);
 	return tmp;
@@ -174,10 +174,10 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureSca
 	main_layout(this),
 	temp_scale(scale)
 {
-	descr_label = new BtLabel(this);
+	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
 
-	temp_label = new BtLabel(this);
+	temp_label = new QLabel(this);
 	main_layout.addWidget(temp_label);
 	main_layout.setAlignment(Qt::AlignHCenter);
 
@@ -257,7 +257,7 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	hbox->addWidget(btn_minus);
 	hbox->addStretch();
 
-	setpoint_label = new BtLabel(this);
+	setpoint_label = new QLabel(this);
 	setpoint_label->setGeometry(SETPOINT_X, SETPOINT_Y, SETPOINT_WIDTH, SETPOINT_HEIGHT);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, Qt::AlignHCenter);
@@ -278,7 +278,7 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	// avoid moving of fancoil buttons bar
 	main_layout.addStretch();
 
-	local_temp_label = new BtLabel(this);
+	local_temp_label = new QLabel(this);
 	local_temp_label->setGeometry(LOCAL_TEMP_X, LOCAL_TEMP_Y,
 			LOCAL_TEMP_WIDTH, LOCAL_TEMP_HEIGHT);
 
@@ -617,7 +617,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	setpoint_delta(5)
 {
 	descr = tr("Manual");
-	descr_label = new BtLabel(this);
+	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
 
 	switch (temp_scale)
@@ -644,7 +644,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	navbar_button = getButton(I_OK);
 	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 
-	temp_label = new BtLabel(this);
+	temp_label = new QLabel(this);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
@@ -855,7 +855,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 		qDebug("[TERMO] FSBannTermoReg ctor: no description found, maybe wrong node conf?");
 		description = "Wrong node";
 	}
-	description_label = new BtLabel(this);
+	description_label = new QLabel(this);
 	description_label->setAlignment(Qt::AlignHCenter);
 
 	description_visible = true;

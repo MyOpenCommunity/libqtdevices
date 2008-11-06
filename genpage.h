@@ -10,7 +10,7 @@
 #ifndef  GENERIC_PAGES_H
 #define GENERIC_PAGES_H
 
-#include "btlabel.h"
+#include <QLabel>
 
 /*!
   \class genPage
@@ -20,11 +20,11 @@
   \date lug 2005
 */
 
-class genPage : public BtLabel
+class genPage : public QLabel
 {
 Q_OBJECT
 public:
-	genPage( QWidget *parent= NULL, const char *name = NULL, unsigned char tipo=0, const char *img = NULL,unsigned int f =  0);
+	genPage(QWidget *parent= NULL, const char *name = NULL, unsigned char tipo=0, const char *img = NULL,unsigned int f =  0);
 	enum pageType
 	{
 		RED = 0,  /*! \enum generates a \a red page */

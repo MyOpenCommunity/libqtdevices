@@ -11,10 +11,10 @@
 #ifndef SCREENSAVER_H
 #define SCREENSAVER_H
 
-#include "btlabel.h"
-
 #include <QWidget>
 #include <QPixmap>
+
+class QLabel;
 
 #define BALL_NUM 5
 
@@ -58,7 +58,7 @@ private:
 	friend ScreenSaver *getScreenSaver(ScreenSaver::Type type);
 	ScreenSaverBalls();
 
-	BtLabel *ball[BALL_NUM];
+	QLabel *ball[BALL_NUM];
 	int x[BALL_NUM], y[BALL_NUM], vx[BALL_NUM], vy[BALL_NUM], dim[BALL_NUM];
 	int backcol;
 };
@@ -78,7 +78,7 @@ private:
 	ScreenSaverLine();
 
 	int backcol;
-	BtLabel *line;
+	QLabel *line;
 	bool black_line;
 	int y;
 };

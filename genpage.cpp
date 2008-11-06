@@ -18,7 +18,7 @@
 
 
 genPage::genPage(QWidget *parent,const char *name , unsigned char tipo,const char *img, unsigned int f)
-	: BtLabel(parent)
+	: QLabel(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));

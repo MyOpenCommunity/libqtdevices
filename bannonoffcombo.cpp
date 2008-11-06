@@ -1,7 +1,7 @@
 #include "bannonoffcombo.h"
-#include "btlabel.h"
 #include "main.h"
 
+#include <QLabel>
 
 #define BUTONOFFCOMBO_ICON_DIM_Y 60
 #define BANONOFFCOMBO_BUT_DIM 60

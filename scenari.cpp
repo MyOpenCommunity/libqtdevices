@@ -13,7 +13,6 @@
 #include "device.h"
 #include "scenevocond.h"
 #include "btbutton.h"
-#include "btlabel.h"
 #include "generic_functions.h" // bool copyFile(...)
 #include "fontmanager.h"
 
@@ -21,6 +20,8 @@
 
 #include <QDir>
 #include <QDebug>
+#include <QLabel>
+
 
 /*****************************************************************
  **scenario

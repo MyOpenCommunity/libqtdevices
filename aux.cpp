@@ -11,12 +11,12 @@
 #include "aux.h"
 #include "bannfrecce.h"
 #include "btbutton.h"
-#include "btlabel.h"
 #include "generic_functions.h"
 #include "fontmanager.h"
 
 #include <QPixmap>
 #include <QCursor>
+#include <QLabel>
 #include <QFile>
 
 
@@ -28,8 +28,8 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
 	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
-	auxName = new BtLabel(this);
-	ambDescr = new BtLabel(this);
+	auxName = new QLabel(this);
+	ambDescr = new QLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	QFont aFont;
 	FontManager::instance()->getFont(font_aux_descr_ambiente, aFont);

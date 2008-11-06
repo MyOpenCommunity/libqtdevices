@@ -20,11 +20,11 @@
 #define SORG_PAR 2
 
 class contdiff;
-class BtLabel;
 class BtButton;
 class bannFrecce;
 class timeScript;
 class QDateTime;
+class QLabel;
 
 
 /*!
@@ -46,9 +46,9 @@ public:
 	void setSerNum(int);
 
 	BtButton *but[4];
-	BtLabel *Immagine;
+	QLabel *Immagine;
 	BtButton *choice[4];
-	BtLabel *testiChoice[4];
+	QLabel *testiChoice[4];
 
 /*!
   \brief Sets the alarm set (dis)active.

@@ -20,6 +20,7 @@
 
 #include <QLCDNumber>
 #include <QCursor>
+#include <QLabel>
 #include <QTimer>
 
 
@@ -248,7 +249,7 @@ void StopngoPage::AddItems()
 	FontManager::instance()->getFont(font_stopngo_page_title, tFont);
 
 	//Draw the title bar
-	titleBar = new BtLabel(this);
+	titleBar = new QLabel(this);
 	titleBar->setGeometry(0, 0, MAX_WIDTH, TITLE_BAR_HEIGHT);
 	titleBar->setFrameStyle(QFrame::NoFrame);
 	titleBar->setIndent(TITLE_BAR_INDENT);
@@ -265,7 +266,7 @@ void StopngoPage::AddItems()
 	okBut->show();
 	
 	//Draw the status icon
-	statusIcon = new BtLabel(this);
+	statusIcon = new QLabel(this);
 	statusIcon->setGeometry((MAX_WIDTH-STATUS_ICON_WIDTH)/2, FIRST_ROW_Y, STATUS_ICON_WIDTH, STATUS_ICON_HEIGHT);
 	statusIcon->setFrameStyle(QFrame::NoFrame);
 	SetStatusIcon(ICON_STOPNGO_CHIUSO);
@@ -297,7 +298,7 @@ void StopngoPage::AddItems()
 		connect(offBut, SIGNAL(clicked()), this, SLOT(OffClick()));
 		offBut->show();
 		//Draw the verify button label
-		labelVerify = new BtLabel(this);
+		labelVerify = new QLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
 		labelVerify->setFont(aFont);
@@ -314,7 +315,7 @@ void StopngoPage::AddItems()
 
 	case STOPNGO_BTEST:
 		//Draw the Autotest button label
-		labelVerify = new BtLabel(this);
+		labelVerify = new QLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
 		labelVerify->setFont(aFont);
@@ -355,7 +356,7 @@ void StopngoPage::AddItems()
 	}
 
 	//Draw the auto arm button label
-	labelAutoArm = new BtLabel(this);
+	labelAutoArm = new QLabel(this);
 	labelAutoArm->setGeometry(0, secondRowY+BUT_DIM, armLabelW, LABELS_HEIGHT);
 	labelAutoArm->setFrameStyle(QFrame::NoFrame);
 	labelAutoArm->setFont(aFont);

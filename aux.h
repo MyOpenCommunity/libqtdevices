@@ -11,10 +11,10 @@
 #ifndef AUX_H
 #define AUX_H
 
-#include <qwidget.h>
-#include <qstring.h>
+#include <QWidget>
+#include <QString>
 
-class BtLabel;
+class QLabel;
 class BtButton;
 class bannFrecce;
 
@@ -31,7 +31,7 @@ Q_OBJECT
 public:
 	aux(QWidget *parent=0, const QString & name="", const QString & amb="");
 
-	BtLabel* auxName, *ambDescr;
+	QLabel *auxName, *ambDescr;
 	BtButton *fwdBut;
 
 	/*!

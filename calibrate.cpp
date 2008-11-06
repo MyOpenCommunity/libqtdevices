@@ -2,7 +2,6 @@
 #include "main.h"
 #include "fontmanager.h"
 #include "btbutton.h"
-#include "btlabel.h"
 
 #include <QDesktopWidget>
 #include <QGlobalStatic> // qAbs
@@ -14,6 +13,7 @@
 #include <QScreen>
 #include <QCursor>
 #include <QTimer>
+#include <QLabel>
 #include <QFile>
 #include <QDebug>
 
@@ -59,7 +59,7 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	b2 = createButton(IMG_OK, 175, 255);
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
-	box_text = new BtLabel(this);
+	box_text = new QLabel(this);
 	box_text->setFont(aFont);
 	box_text->setAlignment(Qt::AlignHCenter);
 	box_text->setGeometry(0, 205, desk.width(), 50);

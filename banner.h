@@ -19,12 +19,15 @@
 
 #include <QWidget>
 
-class BtLabel;
+
 class BtButton;
-class QPixmap;
-class QTimer;
 class openwebnet;
 class sottoMenu;
+
+class QPixmap;
+class QTimer;
+class QLabel;
+
 
 /*!
  * \class banner
@@ -438,10 +441,10 @@ signals:
 
 protected:
 
-	BtLabel *BannerIcon;
-	BtLabel *BannerIcon2;
-	BtLabel *BannerText;
-	BtLabel *SecondaryText;
+	QLabel *BannerIcon;
+	QLabel *BannerIcon2;
+	QLabel *BannerText;
+	QLabel *SecondaryText;
 	BtButton *sxButton;
 	BtButton *dxButton;
 	BtButton *csxButton;

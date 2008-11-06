@@ -11,12 +11,12 @@
 #include "banner.h"
 #include "btbutton.h"
 #include "main.h"
-#include "btlabel.h"
 #include "generic_functions.h" // getPressName
 #include "openclient.h"
 #include "fontmanager.h"
 
 #include <QPixmap>
+#include <QLabel>
 #include <QFile>
 #include <QTimer>
 #include <QDebug>
@@ -405,14 +405,16 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 		Item = dxButton;
 		break;
 	case TEXT: 
-		BannerText = new BtLabel(this); Item = BannerText;
+		BannerText = new QLabel(this);
+		Item = BannerText;
 		break;
 	case ICON:
-		BannerIcon = new BtLabel(this); Item = BannerIcon;
+		BannerIcon = new QLabel(this);
+		Item = BannerIcon;
 		break;
 	case ICON2:
-		BannerIcon2 = new BtLabel(this);
-		Item = BannerIcon2; 
+		BannerIcon2 = new QLabel(this);
+		Item = BannerIcon2;
 		break;
 	case BUT3:
 		csxButton = new BtButton(this);
@@ -429,7 +431,8 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 		Item = cdxButton;
 		break;
 	case TEXT2:
-		SecondaryText = new BtLabel(this); Item = SecondaryText;
+		SecondaryText = new QLabel(this);
+		Item = SecondaryText;
 		break;
 	}
 	Item->setGeometry(x,y,dimX,dimY);

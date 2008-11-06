@@ -14,7 +14,6 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
-#include "btlabel.h"
 #include "generic_functions.h" // getPressName
 #include "btbutton.h"
 #include "fontmanager.h"
@@ -50,16 +49,16 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	cinBut = new BtButton(this);
 	cancBut = new BtButton(this);
 
-	rdsLabel = new BtLabel(this);
-	radioName = new BtLabel(this);
-	ambDescr = new BtLabel(this);
+	rdsLabel = new QLabel(this);
+	radioName = new QLabel(this);
+	ambDescr = new QLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
  	QFont aFont;
 	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
 	ambDescr->setFont(aFont);
 	ambDescr->setText(amb);
 	freq = new QLCDNumber(this);
-	progrText = new BtLabel(this);
+	progrText = new QLabel(this);
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(TRUE);
 	freq->setNumDigits(6);

@@ -14,9 +14,10 @@
 #include <QString>
 #include <QList>
 
-class QLCDNumber;
-class BtLabel;
 class timeScript;
+class QLCDNumber;
+class QLabel;
+
 
 #define MAX_BUT_SOTMEN 9
 #define DIM_BUT_HOME 80
@@ -49,7 +50,7 @@ public:
 /*!
   \brief Adds a Clock.
 
-  The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel.
+  The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
 */
 	void addClock(int, int, int, int, int, int);
 /*!
@@ -59,7 +60,7 @@ public:
 /*!
   \brief Adds a Date.
 
-  The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel.
+  The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
 */
 	void addDate(int, int, int, int, int, int);
 /*!
@@ -69,7 +70,7 @@ public:
 /*!
   \brief Adds a Temperature.
 
-  The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel and the text describing the zone.
+  The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel and the text describing the zone.
 */
 	void addTemp(QString, int, int, int, int, int, int, const QString &, char * Ext="0");
 
@@ -80,7 +81,7 @@ public:
 /*!
   \brief Adds a Description usually used for special page.
 
-  The arguments are the text, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for BtLabel.
+  The arguments are the text, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
 */
 	void addDescrU(const QString &, int, int, int, int, int, int);
  /*!
@@ -164,7 +165,7 @@ private:
 	char dove[10];
 	char tipoSpecial;
 	unsigned int tempCont;
-	BtLabel *descrizione, *descrTemp[3];
+	QLabel *descrizione, *descrTemp[3];
 };
 
 

@@ -11,8 +11,6 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
-#include "btlabel.h"
-
 #include <common_functions.h>
 
 #include <qwidget.h>

@@ -10,12 +10,12 @@
 
 #include "diffsonora.h"
 #include "sottomenu.h"
-#include "btlabel.h"
 
 #include <openwebnet.h> // class openwebnet
 
 #include <QCursor>
 #include <QVariant> // setProperty
+#include <QLabel>
 
 #include <stdlib.h>
 
@@ -37,7 +37,7 @@ diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent),
 
 	setSorgenti(_sorgenti);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
-	BtLabel *linea = new BtLabel(this);
+	QLabel *linea = new QLabel(this);
 
 	linea->setGeometry(0,77,240,3);
 	linea->setProperty("noStyle", true);

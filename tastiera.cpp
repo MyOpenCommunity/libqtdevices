@@ -13,10 +13,10 @@
 #include "generic_functions.h" // getPressName
 #include "banner.h"
 #include "fontmanager.h"
-#include "btlabel.h"
 #include "btbutton.h"
 
 #include <QFrame>
+#include <QLabel>
 #include <QString>
 #include <QCursor>
 #include <QFile>
@@ -47,8 +47,8 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	okBut = new BtButton(this);
 	cancBut = new BtButton(this);
 
-	digitLabel = new BtLabel(this);
-	scrittaLabel = new BtLabel(this);
+	digitLabel = new QLabel(this);
+	scrittaLabel = new QLabel(this);
 
 	unoBut->setGeometry(POSX1,line*0,BUT_DIM,BUT_DIM);
 	dueBut->setGeometry(POSX2,line*0,BUT_DIM,BUT_DIM);

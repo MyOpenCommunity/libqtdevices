@@ -3,7 +3,6 @@
 #include "device_cache.h"
 #include "generic_functions.h" // getPressName, copyFile, setCfgValue
 #include "btbutton.h"
-#include "btlabel.h"
 #include "timescript.h"
 #include "fontmanager.h"
 #include "scaleconversion.h"
@@ -207,7 +206,7 @@ void scenEvo_cond_h::SetIcons()
 	}
 
 	// Orologio
-	Immagine = new BtLabel(this);
+	Immagine = new QLabel(this);
 	QPixmap Icon1;
 	if (Icon1.load(getImg(0)))
 		Immagine->setPixmap(Icon1);
@@ -456,9 +455,9 @@ void scenEvo_cond_d::SetIcons()
 		qDebug() << "icon[" << i << "] = " << getImg(i);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-	area1_ptr = new BtLabel(this);
+	area1_ptr = new QLabel(this);
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
-	area2_ptr = new BtLabel(this);
+	area2_ptr = new QLabel(this);
 	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2,	TEXT_X_DIM, TEXT_Y_DIM);
 	FontManager::instance()->getFont(font_scenEvoCond_Area2, aFont);
 	area2_ptr->setFont(aFont);

@@ -13,12 +13,12 @@
 #include "device.h"
 #include "btbutton.h"
 #include "generic_functions.h" // void getPressName(...)
-#include "btlabel.h"
 #include "fontmanager.h"
 
 #include <openwebnet.h> // class openwebnet
 
 #include <QFile>
+#include <QLabel>
 #include <QTimer>
 
 #include <stdlib.h>

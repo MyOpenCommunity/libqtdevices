@@ -10,7 +10,6 @@
 
 #include "ambdiffson.h"
 #include "generic_functions.h" // void getAmbName(...)
-#include "btlabel.h"
 #include "btbutton.h"
 #include "diffsonora.h"
 #include "diffmulti.h" // struct data_ampli_multi

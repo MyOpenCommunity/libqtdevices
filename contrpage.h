@@ -13,8 +13,8 @@
 
 #include <QWidget>
 
-class BtLabel;
 class BtButton;
+class QLabel;
 
 /*!
   \class contrPage
@@ -33,7 +33,7 @@ public:
 	void draw();
 
 	BtButton *aumBut, *decBut, *okBut;
-	BtLabel *paintLabel, *colorBar;
+	QLabel *paintLabel, *colorBar;
 
 signals:
 	void Close();

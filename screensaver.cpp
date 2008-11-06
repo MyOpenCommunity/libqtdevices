@@ -3,6 +3,7 @@
 
 #include <QPainter>
 #include <QBitmap>
+#include <QLabel>
 
 #include <stdlib.h> // RAND_MAX
 #include <assert.h>
@@ -29,7 +30,7 @@ ScreenSaverBalls::ScreenSaverBalls()
 	y[0] = 0;
 	for (int idx = 0; idx < BALL_NUM; idx++)
 	{
-		ball[idx] = new BtLabel(this);
+		ball[idx] = new QLabel(this);
 		// TODO: sistemare con i metodi qt4!
 		//ball[idx]->setBackgroundMode(Qt::NoBackground);
 	}
@@ -124,7 +125,7 @@ void ScreenSaverBalls::refresh(const QPixmap &bg_image)
 ScreenSaverLine::ScreenSaverLine()
 {
 	backcol = 10;
-	line = new BtLabel(this);
+	line = new QLabel(this);
 	black_line = false;
 }
 
