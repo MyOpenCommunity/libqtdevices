@@ -12,6 +12,7 @@
 #include "openclient.h" // class openwebnet, Client
 #include "device_cache.h" // btouch_device_cache
 #include "videocitof.h" // class call_notifier
+#include "btmain.h"
 
 #include <QDebug>
 
@@ -25,6 +26,9 @@ call_notifier_manager *postoExt::cnm = NULL;
 
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
+
+extern BtMain *BTouch;
+
 
 postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, QString _light, QString _key, QString _unknown) : bann4tasLab(parent, name)
 {
@@ -91,7 +95,7 @@ void postoExt::frame_captured_handler(call_notifier *cn)
 {
 	qDebug("postoExt::frame_captured_handler()");
 	// Just unfreeze
-	emit(freeze(0));
+	BTouch->freezed(false);
 }
 
 void postoExt::call_notifier_closed(call_notifier *cn)

@@ -58,6 +58,8 @@ public:
 	Client *client_monitor;
 	versio *datiGen;
 	void resetTimer();
+	/// Freeze or unfreeze the application
+	void freezed(bool);
 signals:
 /*!
   \brief Emitted to (de)freeze the console
@@ -69,7 +71,6 @@ private slots:
 	void hom();
 	void init();
 	void gesScrSav();
-	void freezed(bool);
 	void setPwd(bool,char*);
 	void testPwd(char*);
 	void testFiles();
