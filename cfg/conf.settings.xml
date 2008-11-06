@@ -334,7 +334,7 @@
       </item7>
       <item8>
         <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>75</id>
+        <id>72</id>
         <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
         <cid>807</cid>
         <!-- descr: contiene il testo da mostrare nell'item -->
