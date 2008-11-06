@@ -84,8 +84,7 @@ Calibrate::~Calibrate()
 BtButton *Calibrate::createButton(const char* icon_name, int x, int y)
 {
 	BtButton *b = new BtButton(this);
-	QPixmap *icon = icons_library.getIcon(icon_name);
-	b->setPixmap(*icon);
+	b->setIcon(icon_name);
 	b->move(x, y);
 	return b;
 }

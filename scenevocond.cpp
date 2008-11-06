@@ -183,138 +183,66 @@ const char *scenEvo_cond_h::getDescription(void)
 
 void scenEvo_cond_h::SetIcons()
 {
-	QPixmap *Icon1 = new QPixmap();
-	QPixmap *Icon2 = NULL;
 	char iconName[MAX_PATH];
 	qDebug("scenEvo_cond_h::SetIcons()");
 	for (int i = 0; i < 6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-	memset(iconName, '\000', sizeof(iconName));
-	strcpy(iconName, ICON_FRECCIA_SU);
-	// Pulsanti su
-	Icon1->load(iconName);
-	getPressName((char*)ICON_FRECCIA_SU, iconName,sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-	}
+
 	for (uchar idx = 0; idx < 2; idx++)
 	{
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry(idx*80+50, 80, 60, 60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setPixmap(*Icon1);
-		if (Icon2)
-			but[idx]->setPressedPixmap(*Icon2);
+		but[idx]->setImage(ICON_FRECCIA_SU);
 	}
-	delete (Icon1);
-	if (Icon2)
-		delete (Icon2);
+
 	// Pulsanti giu`
-	Icon2=NULL;
-	Icon1 = new QPixmap();
-	Icon1->load(ICON_FRECCIA_GIU);
-	getPressName((char*)ICON_FRECCIA_GIU, &iconName[0],sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-	}
 	for (uchar idx = 2; idx < 4; idx++)
 	{
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-2)*80+50,190,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setPixmap(*Icon1);
-		if (Icon2)
-			but[idx]->setPressedPixmap(*Icon2);
+		but[idx]->setImage(ICON_FRECCIA_GIU);
 	}
-	delete(Icon1);
-	if (Icon2)
-		delete Icon2;
+
 	// Orologio
-	Icon1 = new QPixmap();
-	Icon2 = NULL;
-	Icon1->load(getImg(0));
 	Immagine = new BtLabel(this);
-	if (Icon1)
-		Immagine->setPixmap(*Icon1);
+	QPixmap Icon1;
+	if (Icon1.load(getImg(0)))
+		Immagine->setPixmap(Icon1);
 	Immagine->setGeometry(90,0,60,60);
-	delete(Icon1);
+
 	// Pulsante in basso a sinistra, area 6 (SE C'E` L'ICONA)
 	if (!getImg(A6_ICON_INDEX).isEmpty())
 	{
-		Icon1 = new QPixmap();
-		Icon1->load(getImg(A6_ICON_INDEX));
 		qDebug() << "Area 6: loaded icon " << getImg(A6_ICON_INDEX);
-		QByteArray buf = getImg(A6_ICON_INDEX).toAscii();
-		getPressName(buf.data(), iconName, sizeof(iconName));
-		if (QFile::exists(iconName))
-		{
-			Icon2 = new QPixmap();
-			Icon2->load(iconName);
-		}
 		but[A6_BUTTON_INDEX] = new BtButton(this);
 		but[A6_BUTTON_INDEX]->setGeometry(0, MAX_HEIGHT - 60, 60, 60);
-		but[A6_BUTTON_INDEX]->setPixmap(*Icon1);
-		if (Icon2)
-			but[A6_BUTTON_INDEX]->setPressedPixmap(*Icon2);
-		delete Icon1;
-		if (Icon2)
-			delete Icon2;
+		but[A6_BUTTON_INDEX]->setImage(A6_ICON_INDEX);
 	}
 	else
 		but[A6_BUTTON_INDEX] = NULL;
+
 	// Pulsante in basso al centro, area 7
 	if (!getImg(A7_ICON_INDEX).isEmpty())
 	{
-		Icon1 = new QPixmap();
-		Icon2 = NULL;
-		Icon1->load(getImg(A7_ICON_INDEX));
 		qDebug() << "Area 7: loaded icon " << getImg(A7_ICON_INDEX);
-		QByteArray buf = getImg(A7_ICON_INDEX).toAscii();
-		getPressName(buf.data(), iconName, sizeof(iconName));
-		if (QFile::exists(iconName))
-		{
-			Icon2 = new QPixmap();
-			Icon2->load(iconName);
-		}
 		but[A7_BUTTON_INDEX] = new BtButton(this);
 		but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 60, 60);
-		but[A7_BUTTON_INDEX]->setPixmap(*Icon1);
-		if (Icon2)
-			but[A7_BUTTON_INDEX]->setPressedPixmap(*Icon2);
-		delete Icon1;
-		if (Icon2)
-			delete Icon2;
+		but[A7_BUTTON_INDEX]->setImage(A7_ICON_INDEX);
 	}
 	else
 		but[A7_BUTTON_INDEX] = NULL;
+
 	// Pulsante in basso a destra, area 8
 	if (!getImg(A8_ICON_INDEX).isEmpty())
 	{
-		Icon1 = new QPixmap();
-		Icon2 = NULL;
-		Icon1->load(getImg(A8_ICON_INDEX));
 		qDebug() << "Area 8: loaded icon " << getImg(A8_ICON_INDEX);
-		QByteArray buf = getImg(A8_ICON_INDEX).toAscii();
-		getPressName(buf.data(),iconName, sizeof(iconName));
-		if (QFile::exists(iconName))
-		{
-			Icon2 = new QPixmap();
-			Icon2->load(iconName);
-		}
 		but[A8_BUTTON_INDEX] = new BtButton(this);
 		but[A8_BUTTON_INDEX]->setGeometry(MAX_WIDTH - 60, MAX_HEIGHT - 60, 60, 60);
-		but[A8_BUTTON_INDEX]->setPixmap(*Icon1);
-		if (Icon2)
-			but[A8_BUTTON_INDEX]->setPressedPixmap(*Icon2);
-		delete Icon1;
-		if (Icon2)
-			delete Icon2;
+		but[A8_BUTTON_INDEX]->setImage(A8_ICON_INDEX);
 	}
 	else
 		but[A8_BUTTON_INDEX] = NULL;
@@ -507,34 +435,17 @@ void scenEvo_cond_d::setEnabled(bool e)
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 {
-	QPixmap *Icon1;
-	QPixmap *Icon2;
-	char iconName[MAX_PATH];
 	if (getImg(icon_index).isEmpty())
 	{
 		but[button_index] = NULL;
 		return;
 	}
-	Icon1 = new QPixmap();
 
-	QByteArray buf = getImg(icon_index).toAscii();
-	getPressName(buf.data(), iconName, sizeof(iconName));
 	if (QFile::exists(getImg(icon_index)))
 	{
-		Icon1->load(getImg(icon_index));
 		if (but[button_index])
-			but[button_index]->setPixmap(*Icon1);
+			but[button_index]->setImage(getImg(icon_index));
 	}
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-		if (but[button_index])
-			but[button_index]->setPressedPixmap(*Icon2);
-	}
-	delete Icon1;
-	if (Icon2)
-		delete Icon2;
 }
 
 void scenEvo_cond_d::SetIcons()

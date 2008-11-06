@@ -185,27 +185,7 @@ void call_notifier::SetButtonIcon(QString icon_name, BtButton *b)
 	if (!b)
 		return;
 
-	QPixmap* Icon1 = new QPixmap();
-	if (QFile::exists(icon_name))
-	{
-		Icon1->load(icon_name);
-		if (b)
-			b->setPixmap(*Icon1);
-	}
-
-	char iconName[40];
-	QByteArray buf = icon_name.toAscii();
-	getPressName(buf.data(), iconName, sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		QPixmap* Icon2 = new QPixmap();
-		Icon2->load(iconName);
-		if (b)
-			b->setPressedPixmap(*Icon2);
-		delete Icon2;
-	}
-
-	delete Icon1;
+	b->setImage(icon_name);
 }
 
 void call_notifier::SetButtonsIcons()

@@ -44,15 +44,6 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	QPixmap* Icon2 = NULL;
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-	memset(iconName,'\000',sizeof(iconName));
-	strcpy(iconName,ICON_FRECCIA_SU);
-	Icon1->load(iconName);
-	getPressName((char*)ICON_FRECCIA_SU, iconName,sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-	}
 
 	for (uchar idx = 0; idx < 2; idx++)
 	{
@@ -60,35 +51,17 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 
 		but[idx]->setGeometry(idx*80 + 50,80,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setPixmap(*Icon1);
-		if (Icon2)
-		{
-			but[idx]->setPressedPixmap(*Icon2);
-		}
+		but[idx]->setImage(ICON_FRECCIA_SU);
 	}
 
-	delete Icon1;
-	delete Icon2;
-	Icon2 = NULL;
-	Icon1 = new QPixmap();
-	Icon1->load(ICON_FRECCIA_GIU);
-	getPressName((char*)ICON_FRECCIA_GIU, iconName,sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-	}
 	for (uchar idx = 2; idx < 4; idx++)
 	{
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-2)*80 + 50,190,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setPixmap(*Icon1);
-		if (Icon2)
-			but[idx]->setPressedPixmap(*Icon2);
+		but[idx]->setImage(ICON_FRECCIA_GIU);
 	}
 
-	delete Icon1;
 	Icon1 = new QPixmap();
 	Icon1->load(ICON_SVEGLIA_ON);
 
@@ -99,14 +72,6 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	Immagine->setGeometry(90,0,80,80);
 	delete Icon1;
 	delete Icon2;
-	Icon1 = new QPixmap();
-	Icon1->load(ICON_VUOTO);
-	getPressName((char*)ICON_VUOTO, iconName,sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-	}
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_sveglia_scelta, aFont);
@@ -114,14 +79,11 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	{
 		choice[idx] = new BtButton(this);
 		choice[idx]->setGeometry(10,idx*60,60,60);
+		// FIXME: cambiare con setCheckable(true)
 		choice[idx]->setToggleButton(TRUE);
-		if (!(Icon1->isNull()))
-		{
-			choice[idx]->setPixmap(*Icon1);
-		}
-		if (Icon2)
-			choice[idx]->setPressedPixmap(*Icon2);
+		choice[idx]->setImage(ICON_VUOTO);
 		choice[idx]->hide();
+
 		testiChoice[idx] = new BtLabel(this);
 		testiChoice[idx]->setGeometry(80,idx*60,120,60);
 		testiChoice[idx]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);

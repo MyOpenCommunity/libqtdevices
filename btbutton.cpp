@@ -15,6 +15,19 @@ BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 	// setCheckable(true);
 }
 
+void BtButton::setImage(const QString &icon_path, IconFlag f)
+{
+	pixmap = *icons_library.getIcon(icon_path);
+
+	if (f == LOAD_PRESSED_ICON)
+		setPressedImage(getPressName(icon_path));
+}
+
+void BtButton::setPressedImage(const QString &pressed_icon)
+{
+	pressed_pixmap = *icons_library.getIcon(pressed_icon);
+}
+
 void BtButton::setPressedPixmap(const QPixmap &p)
 {
 	pressed_pixmap = p;

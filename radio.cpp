@@ -93,120 +93,29 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	QPixmap* pressIcon = new QPixmap();
 	char pressIconName[MAX_PATH];
 
-	Icon->load(ICON_CICLA);
-	getPressName((char*)ICON_CICLA, pressIconName,sizeof(pressIconName));
-	cicBut->setPixmap(*Icon);
+	cicBut->setIcon(ICON_CICLA);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cicBut->setPressedPixmap(*pressIcon);
-	}
+	aumBut->setIcon(ICON_PIU);
 
-	Icon->load(ICON_PIU);
-	getPressName((char*)ICON_PIU, pressIconName,sizeof(pressIconName));
-	aumBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		aumBut->setPressedPixmap(*pressIcon);
-	}
+	decBut->setIcon(ICON_MENO)
 
-	Icon->load(ICON_MENO);
-	getPressName((char*)ICON_MENO, pressIconName,sizeof(pressIconName));
-	decBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		decBut->setPressedPixmap(*pressIcon);
-	}
+	memoBut->setIcon(ICON_MEM);
 
-	Icon->load(ICON_MEM);
-	getPressName((char*)ICON_MEM, pressIconName,sizeof(pressIconName));
-	memoBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		memoBut->setPressedPixmap(*pressIcon);
-	}
+	manBut->setIcon(ICON_MANUAL_ON);
 
-	Icon->load(ICON_MANUAL_ON);
-	getPressName((char*)ICON_MANUAL_ON, pressIconName,sizeof(pressIconName));
-	manBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		manBut->setPressedPixmap(*pressIcon);
-	}
+	autoBut->setIcon(ICON_AUTO_ON);
 
-	Icon->load(ICON_AUTO_ON);
-	getPressName((char*)ICON_AUTO_ON, pressIconName,sizeof(pressIconName));
-	autoBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		autoBut->setPressedPixmap(*pressIcon);
-	}
+	unoBut->setIcon(ICON_UNO);
 
-	Icon->load(ICON_UNO);
-	getPressName((char*)ICON_UNO, pressIconName,sizeof(pressIconName));
-	unoBut->setPixmap(*Icon);
+	dueBut->setIcon(ICON_DUE);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		unoBut->setPressedPixmap(*pressIcon);
-	}
+	treBut->setIcon(ICON_TRE);
 
-	Icon->load(ICON_DUE);
-	getPressName((char*)ICON_DUE, pressIconName,sizeof(pressIconName));
-	dueBut->setPixmap(*Icon);
+	quatBut->setIcon(ICON_QUATTRO);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		dueBut->setPressedPixmap(*pressIcon);
-	}
+	cinBut->setIcon(ICON_CINQUE);
 
-	Icon->load(ICON_TRE);
-	getPressName((char*)ICON_TRE, pressIconName,sizeof(pressIconName));
-	treBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		treBut->setPressedPixmap(*pressIcon); 
-	}
-
-	Icon->load(ICON_QUATTRO);
-	getPressName((char*)ICON_QUATTRO, pressIconName,sizeof(pressIconName));
-	quatBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		quatBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_CINQUE);
-	getPressName((char*)ICON_CINQUE, pressIconName,sizeof(pressIconName));
-	cinBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cinBut->setPressedPixmap(*pressIcon); 
-	}
-
-	Icon->load(ICON_CANC);
-	getPressName((char*)ICON_CANC, pressIconName,sizeof(pressIconName));
-	cancBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cancBut->setPressedPixmap(*pressIcon);
-	}
+	cancBut->setIcon(ICON_CANC);
 
 	manual=FALSE;
 	wasManual=TRUE;
@@ -289,19 +198,18 @@ void radio::draw()
 	sprintf(fr,"%.2f",frequenza);
 	freq->display(fr);
 
-	QPixmap* Icon = new QPixmap();
 	if (manual!=wasManual)
 	{
 		if (manual)
-			Icon->load(ICON_MANUAL_ON);
+		{
+			manBut->setIcon(ICON_MANUAL_ON);
+			autoBut->setIcon(ICON_AUTO_OFF);
+		}
 		else
-			Icon->load(ICON_MANUAL_OFF);
-		manBut->setPixmap(*Icon);
-		if (manual)
-			Icon->load(ICON_AUTO_OFF);
-		else
-			Icon->load(ICON_AUTO_ON);
-		autoBut->setPixmap(*Icon);
+		{
+			manBut->setIcon(ICON_MANUAL_OFF);
+			autoBut->setIcon(ICON_AUTO_ON);
+		}
 	}
 	wasManual=manual;
 

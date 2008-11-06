@@ -22,10 +22,6 @@ extern unsigned char tipoData;
 
 impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 {
-	char iconName[MAX_PATH];
-	QPixmap* Icon1 = new QPixmap();
-	QPixmap* Icon2 = NULL;
-
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
@@ -36,40 +32,12 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 	dataOra->setLineWidth(0);
 	dataOra->hide();
 
-	memset(iconName,'\000',sizeof(iconName));
-	strcpy(iconName,ICON_FRECCIA_SU);
-	Icon1->load(iconName);
-	getPressName((char*)ICON_FRECCIA_SU, iconName,sizeof(iconName));
-
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-	}
-
 	for (uchar idx = 0; idx < 3; idx++)
 	{
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry(idx*80+10,60,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setPixmap(*Icon1);
-		if (Icon2)
-		{
-			but[idx]->setPressedPixmap(*Icon2);
-		}
-	}
-	delete Icon1;
-	delete Icon2;
-
-	Icon2 = NULL;
-	Icon1 = new QPixmap();
-	Icon1->load(ICON_FRECCIA_GIU);
-
-	getPressName((char*)ICON_FRECCIA_GIU, iconName,sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
+		but[idx]->setIcon(ICON_FRECCIA_SU);
 	}
 
 	for (uchar idx=3;idx<6;idx++)
@@ -77,28 +45,12 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-3)*80+10,200,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setPixmap(*Icon1);
-		if (Icon2)
-			but[idx]->setPressedPixmap(*Icon2);
+		but[idx]->setIcon(ICON_FRECCIA_GIU);
 	}
 
-	delete Icon1;
-	delete Icon2;
-
-	Icon2 = NULL;
-	Icon1 = new QPixmap();
-	Icon1->load(ICON_OK);
 	but[6] = new BtButton(this);
 	but[6]->setGeometry(90,260,60,60);
-	but[6]->setPixmap(*Icon1);
-	getPressName((char*)ICON_OK, iconName,sizeof(iconName));
-	if (QFile::exists(iconName))
-	{
-		Icon2 = new QPixmap();
-		Icon2->load(iconName);
-	}
-	if (Icon2)
-		but[6]->setPressedPixmap(*Icon2);
+	but[6]->setIcon(ICON_OK);
 
 	Immagine = new BtLabel(this);
 	Immagine->setGeometry(90,0,120,60);

@@ -25,7 +25,7 @@
 
 #define CONFILENAME	"cfg/conf.xml"
 
-// TODO: cambiare in modo che queste funzioni accettino qstring come argomento!
+// TODO: cambiare tutte le chiamate a questa funzione in quella che prende una qstring
 void getPressName(char* name, char* pressName,char len)
 {
 	memset(pressName,'\000',len);
@@ -39,7 +39,6 @@ void getPressName(char* name, char* pressName,char len)
 
 QString getPressName(QString name)
 {
-	// TODO:  verificare che faccia la stessa cosa della versione c!
 	int pos = name.indexOf(".");
 	if (pos != -1)
 		return name.left(pos) + "p" + name.mid(pos);

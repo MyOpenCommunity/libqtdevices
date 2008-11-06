@@ -118,8 +118,7 @@ SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent)
 
 	QHBoxLayout *main_controls = new QHBoxLayout();
 	back_btn = new BtButton(this);
-	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
-	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
+	back_btn->setIcon(IMG_BACK);
 	main_controls->addWidget(back_btn);
 
 	QGridLayout *main_layout = new QGridLayout(this);

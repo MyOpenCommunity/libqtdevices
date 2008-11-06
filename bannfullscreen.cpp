@@ -63,8 +63,7 @@ BannFullScreen::BannFullScreen(QWidget *parent, const char *name) : banner(paren
 BtButton *BannFullScreen::getButton(QString img)
 {
 	BtButton *btn = new BtButton(this);
-	btn->setPixmap(*icons_library.getIcon(img));
-	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(img)));
+	btn->setIcon(img);
 	return btn;
 }
 
@@ -492,14 +491,12 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 				{
 				case device_status_temperature_probe_extra::S_MAN:
 					status = MANUAL;
-					navbar_button->setPixmap(*icons_library.getIcon(IMG_AUTO));
-					navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_AUTO)));
+					navbar_button->setIcon(IMG_AUTO);
 					update = true;
 					break;
 				case device_status_temperature_probe_extra::S_AUTO:
 					status = AUTOMATIC;
-					navbar_button->setPixmap(*icons_library.getIcon(IMG_MAN));
-					navbar_button->setPressedPixmap(*icons_library.getIcon(getPressedIconName(IMG_MAN)));
+					navbar_button->setIcon(IMG_MAN);
 					update = true;
 					break;
 				case device_status_temperature_probe_extra::S_ANTIGELO:
@@ -553,8 +550,7 @@ void FSBannFancoil::createFancoilButtons()
 		QString path = QString(IMG_PATH) + FANCOIL_ICONS[i];
 		QString path_pressed = QString(IMG_PATH) + FANCOIL_ICONS[i+1];
 		BtButton *btn = new BtButton(this);
-		btn->setPixmap(*icons_library.getIcon(path));
-		btn->setPressedPixmap(*icons_library.getIcon(path_pressed));
+		btn->setIcon(path);
 		btn->setToggleButton(true);
 
 		hbox->addWidget(btn);
@@ -805,8 +801,9 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	main_layout(this)
 {
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
+	// TODO: cambiare con qlabel
 	BtButton *top = new BtButton(this);
-	top->setPixmap(top_img);
+	top->setIcon(top_img);
 	top->setDown(true);
 	top->setEnabled(false);
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
@@ -825,8 +822,9 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout(this)
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
+	// TODO: cambiare con qlabel
 	BtButton *top = new BtButton(this);
-	top->setPixmap(i_top_img);
+	top->setIcon(i_top_img);
 	top->setDown(true);
 	top->setEnabled(false);
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);

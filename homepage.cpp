@@ -49,12 +49,7 @@ void homePage::addButton(int x, int y, QString iconName, char function, QString 
 	else
 		b1->setGeometry(x, y, DIM_BUT_HOME, DIM_BUT_HOME);
 
-	QPixmap Icon;
-	if (Icon.load(iconName))
-		b1->setPixmap(Icon);
-
-	if (Icon.load(getPressName(iconName)))
-		b1->setPressedPixmap(Icon);
+	b1->setIcon(iconName);
 
 	switch (function)
 	{
