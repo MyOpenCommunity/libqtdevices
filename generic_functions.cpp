@@ -131,9 +131,10 @@ bool setCfgValue(QString file, int id, QString campo, QString valore, int serNum
 				fil2->flush();
 				fil1->close();
 				fil2->close();
-				QDir::current().remove(file);
-				QDir::current().rename(tmp_file, file);
-				return true;
+				// QDir::rename fails if destination file exists
+				// so we use rename system call
+				if (!::rename(tmp_file.toLatin1().constData(), file.toLatin1().constData()))
+					return true;
 			}
 			else
 				count++;
