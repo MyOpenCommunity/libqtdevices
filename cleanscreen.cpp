@@ -17,9 +17,8 @@ CleanScreen::CleanScreen(QWidget *parent) : QWidget(parent)
 
 	connect(&secs_timer, SIGNAL(timeout()), SLOT(update()));
 
-	connect(&timer, SIGNAL(timeout()), SLOT(timerElapsed()));
 	connect(&timer, SIGNAL(timeout()), &secs_timer, SLOT(stop()));
-	connect(&timer, SIGNAL(timeout()), SIGNAL((Closed())));
+	connect(&timer, SIGNAL(timeout()), SIGNAL(Closed()));
 	timer.setSingleShot(true);
 
 	QFont aFont;
