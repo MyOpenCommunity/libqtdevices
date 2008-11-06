@@ -133,22 +133,11 @@ QDomNode getPageNode(int id)
 
 QString getLanguage()
 {
-	QString default_language(DEFAULT_LANGUAGE);
-	QDomNode node = qdom_appconfig.documentElement();
+	QDomElement l = getConfElement("setup/generale/language");
+	if (!l.isNull())
+		return l.text();
 
-	QVector<QString> node_names(3);
-	node_names[0] = "setup";
-	node_names[1] = "generale";
-	node_names[2] = "language";
-
-	for (QVector<QString>::iterator It = node_names.begin(); It != node_names.end(); ++It)
-	{
-		node = node.namedItem(*It);
-		if (node.isNull())
-			return default_language;
-	}
-
-	return node.toElement().text();
+	return QString(DEFAULT_LANGUAGE);
 }
 
 
