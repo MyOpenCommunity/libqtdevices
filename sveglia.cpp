@@ -19,6 +19,7 @@
 #include "timescript.h"
 #include "bannfrecce.h"
 #include "fontmanager.h"
+#include "brightnesscontrol.h"
 
 #include <QDateTime>
 #include <QPixmap>
@@ -314,6 +315,10 @@ void sveglia::Closed()
 	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "minute",oraSveglia->time().toString("mm"),serNum);
 	char t[2];
 	sprintf(t,"%d",tipoSveglia);
+	// FIXME: questa istruzione crea una foglia alarmset in fondo al file di conf
+	// che viene rimossa quando la sveglia suona.
+	// Se per qualche motivo il BTouch muore prima che la sveglia sia suonata
+	// il file di configurazione e' corrotto
 	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",t,serNum);
 	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
 }
@@ -488,7 +493,7 @@ void sveglia::verificaSveglia()
 				aumVolTimer->start(3000);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
-				setBacklight(TRUE);
+				BrightnessControl::instance()->setState(ON);
 				emit freeze(TRUE);
 				emit svegl(TRUE);
 			}
@@ -746,9 +751,9 @@ void sveglia::buzzerAlarm()
 	}
 
 	if (contaBuzzer%8==0)
-		setBacklight(TRUE);
+		BrightnessControl::instance()->setState(ON);
 	else
-		setBacklight(FALSE);
+		BrightnessControl::instance()->setState(OFF);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
