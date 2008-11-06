@@ -42,19 +42,11 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 	auxName->setFont(aFont);
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
+
 	fwdBut = new BtButton(this);
 	fwdBut->setGeometry(MAX_WIDTH/2-30, 160, 60, 60);
-	QPixmap* Icon = new QPixmap();
-	QPixmap* pressIcon = new QPixmap();
-	char pressIconName[MAX_PATH];
-	Icon->load(ICON_FFWD);
-	getPressName((char*)ICON_FFWD, &pressIconName[0],sizeof(pressIconName));
-	fwdBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		fwdBut->setPressedPixmap(*pressIcon);
-	}
+	fwdBut->setIcon(ICON_FFWD);
+
 	connect(fwdBut, SIGNAL(clicked()), this, SIGNAL(Btnfwd()));
 	connect(bannNavigazione, SIGNAL(backClick()),this,SIGNAL(Closed()));
 }

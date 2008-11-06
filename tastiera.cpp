@@ -65,128 +65,30 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	scrittaLabel->setGeometry(0,line*4,MAX_WIDTH/2,line);
 	digitLabel->setGeometry(MAX_WIDTH/2,line*4,MAX_WIDTH/2,line);
 
-	QPixmap *Icon, *pressIcon;
-	char   pressIconName[MAX_PATH];
+	unoBut->setImage(ICON_UNO);
 
-	Icon = new QPixmap();
-	pressIcon = new QPixmap();
+	dueBut->setImage(ICON_DUE);
 
-	//TODO: rimuovere tutto questo codice duplicato!!
-	Icon->load(ICON_UNO);
-	getPressName((char*)ICON_UNO, pressIconName,sizeof(pressIconName));
-	unoBut->setPixmap(*Icon);
+	treBut->setImage(ICON_TRE);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		unoBut->setPressedPixmap(*pressIcon);
-	}
+	quatBut->setImage(ICON_QUATTRO);
 
-	Icon->load(ICON_DUE);
-	getPressName((char*)ICON_DUE, pressIconName,sizeof(pressIconName));
-	dueBut->setPixmap(*Icon);
+	cinBut->setImage(ICON_CINQUE);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		dueBut->setPressedPixmap(*pressIcon);
-	}
+	seiBut->setImage(ICON_SEI);
 
-	Icon->load(ICON_TRE);
-	getPressName((char*)ICON_TRE, pressIconName,sizeof(pressIconName));
-	treBut->setPixmap(*Icon);
+	setBut->setImage(ICON_SETTE);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		treBut->setPressedPixmap(*pressIcon);
-	}
+	ottBut->setImage(ICON_OTTO);
 
-	Icon->load(ICON_QUATTRO);
-	getPressName((char*)ICON_QUATTRO, pressIconName,sizeof(pressIconName));
-	quatBut->setPixmap(*Icon);
+	novBut->setImage(ICON_NOVE);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		quatBut->setPressedPixmap(*pressIcon);
-	}
+	zeroBut->setImage(ICON_ZERO);
 
-	Icon->load(ICON_CINQUE);
-	getPressName((char*)ICON_CINQUE, pressIconName,sizeof(pressIconName));
-	cinBut->setPixmap(*Icon);
+	okBut->setImage(ICON_OK);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cinBut->setPressedPixmap(*pressIcon);
-	}
+	cancBut->setImage(ICON_CANC);
 
-	Icon->load(ICON_SEI);
-	getPressName((char*)ICON_SEI, pressIconName,sizeof(pressIconName));
-	seiBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		seiBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_SETTE);
-	getPressName((char*)ICON_SETTE, pressIconName,sizeof(pressIconName));
-	setBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		setBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_OTTO);
-	getPressName((char*)ICON_OTTO, pressIconName,sizeof(pressIconName));
-	ottBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		ottBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_NOVE);
-	getPressName((char*)ICON_NOVE, pressIconName,sizeof(pressIconName));
-	novBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		novBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_ZERO);
-	getPressName((char*)ICON_ZERO, pressIconName,sizeof(pressIconName));
-	zeroBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		zeroBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_OK);
-	getPressName((char*)ICON_OK, pressIconName,sizeof(pressIconName));
-	okBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		okBut->setPressedPixmap(*pressIcon);
-	}
-
-		Icon->load(ICON_CANC);
-	getPressName((char*)ICON_CANC, pressIconName,sizeof(pressIconName));
-	cancBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cancBut->setPressedPixmap(*pressIcon);
-	}
 	memset(pwd,'\000', sizeof(pwd));
 	mode=CLEAN;
 

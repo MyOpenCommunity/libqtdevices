@@ -17,16 +17,8 @@
 
 BtButton *getButton(QString img, QString imgp, QWidget *parent, bool autorepeat)
 {
-	QPixmap *icon         = icons_library.getIcon(img);
-	QPixmap *pressed_icon = icons_library.getIcon(imgp);
-	if (!icon)
-		qDebug("[TERMO] BtDateEdit: could not get icon, prepare for strangeness");
-	if (!pressed_icon)
-		qDebug("[TERMO] BtDateEdit: could not get pressed icon, prepare for strangeness");
-
 	BtButton *btn = new BtButton(parent);
-	btn->setPixmap(*icon);
-	btn->setPressedPixmap(*pressed_icon);
+	btn->setIcon(img);
 	if (autorepeat)
 		btn->setAutoRepeat(true);
 	return btn;

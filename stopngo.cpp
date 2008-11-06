@@ -578,8 +578,7 @@ void StopngoPage::SetButtonIcon(BtButton *btn, const char *icnPath)
 	if (!btn || !icnPath)
 		return;
 	
-	btn->setPixmap(*icons_library.getIcon(icnPath));
-	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(icnPath)));
+	btn->setImage(icnPath);
 }
 
 void StopngoPage::SetFreqValue(int val)

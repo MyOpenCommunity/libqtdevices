@@ -52,41 +52,10 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	//colorBar ->setAutoResize(TRUE);
 	colorBar ->setPixmap(QPixmap(IMG_PATH "colorbar.png"));
 
-	QPixmap *Icon, *pressIcon;
-	char   pressIconName[MAX_PATH];
+	decBut->setIcon(ICON_MENO);
+	aumBut->setIcon(ICON_PIU);
+	okBut->setIcon(ICON_OK);
 
-	Icon = new QPixmap();
-	pressIcon = new QPixmap();
-
-	Icon->load(ICON_MENO);
-	getPressName((char*)ICON_MENO, pressIconName,sizeof(pressIconName));
-	decBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		decBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_PIU);
-	getPressName((char*)ICON_PIU, pressIconName,sizeof(pressIconName));
-	aumBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		aumBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_OK);
-	getPressName((char*)ICON_OK, pressIconName,sizeof(pressIconName));
-	okBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		okBut->setPressedPixmap(*pressIcon);
-	}
 	aumBut->show();
 	decBut->show();
 	okBut->show();

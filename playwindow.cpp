@@ -82,11 +82,8 @@ void PlayWindow::addMainControls(QBoxLayout* layout)
 	layout->addStretch();
 	layout->addWidget(settings_btn);
 
-	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
-	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
-
-	settings_btn->setPixmap(*icons_library.getIcon(IMG_SETTINGS));
-	settings_btn->setPressedPixmap(*icons_library.getIcon(IMG_SETTINGS_P));
+	back_btn->setIcon(IMG_BACK);
+	settings_btn->setIcon(IMG_SETTINGS);
 
 	connect(back_btn, SIGNAL(released()), SIGNAL(backBtn()));
 	connect(settings_btn, SIGNAL(released()), SIGNAL(settingsBtn()));
