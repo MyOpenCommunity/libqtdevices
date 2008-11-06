@@ -404,7 +404,6 @@ void BtMain::gesScrSav()
 		{
 			if (!svegliaIsOn)
 			{
-				BrightnessControl::instance()->setState(OFF);
 				freezed(true);
 				tempo1->start(500);
 			}
@@ -477,7 +476,6 @@ void BtMain::gesScrSav()
 	}
 	else if (tiempo >= 120)
 	{
-		BrightnessControl::instance()->setState(OFF);
 		freezed(true);
 		tempo1->start(500);
 		firstTime = false;
@@ -497,7 +495,7 @@ void BtMain::freezed(bool b)
 	bloccato = b;
 
 	qDebug("BtMain::freezed(%d)", b);
-	if  (!b)
+	if (!bloccato)
 	{
 		event_unfreeze = true;
 		BrightnessControl::instance()->setState(ON);
@@ -513,6 +511,10 @@ void BtMain::freezed(bool b)
 				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
 			}
 		}
+	}
+	else
+	{
+		BrightnessControl::instance()->setState(OFF);
 	}
 }
 
