@@ -282,10 +282,6 @@ public slots:
 	*/
 	virtual void hide(bool index = true);
 	/*!
-		\brief  Reimplements QWidget::mouseReleaseEvent(QMouseEvent *), used to wake up from frozen state.
-		*/
-	void mouseReleaseEvent(QMouseEvent *);
-	/*!
 		\brief  Removes a banner from the list.
 		*/
 	void killBanner(banner*);

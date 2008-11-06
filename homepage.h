@@ -100,8 +100,6 @@ public:
 	void inizializza();
 
 private slots:
-	void mouseReleaseEvent (QMouseEvent *);
-	void freezed(bool);
 	void gestFrame(char*);
 	void specFunz();
 	void specFunzPress();

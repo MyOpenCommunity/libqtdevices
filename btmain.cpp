@@ -489,12 +489,20 @@ void BtMain::gesScrSav()
 	}
 }
 
+bool BtMain::eventFilter(QObject *obj, QEvent *ev)
+{
+	if (ev->type() != QEvent::MouseButtonRelease)
+		return false;
+
+	freezed(false);
+	return true;
+}
+
 void BtMain::freezed(bool b)
 {
-	emit freeze(b);
+	qDebug("BtMain::freezed(%d)", b);
 	bloccato = b;
 
-	qDebug("BtMain::freezed(%d)", b);
 	if (!bloccato)
 	{
 		event_unfreeze = true;
@@ -511,10 +519,12 @@ void BtMain::freezed(bool b)
 				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
 			}
 		}
+		qApp->removeEventFilter(this);
 	}
 	else
 	{
 		BrightnessControl::instance()->setState(OFF);
+		qApp->installEventFilter(this);
 	}
 }
 

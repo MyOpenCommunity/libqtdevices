@@ -635,19 +635,9 @@ int sottoMenu::getHeight()
 	return height;
 }
 
-void sottoMenu::mouseReleaseEvent(QMouseEvent *  e)
-{
-	qDebug("Released");
-	if (freez)
-	{
-		freez = false;
-		emit freeze(freez);
-	}
-	QWidget::mouseReleaseEvent(e);
-}
-
 void sottoMenu::freezed(bool f)
 {
+	/*
 	freez = f;
 
 	qDebug() << name << " freezed " << freez;
@@ -667,6 +657,7 @@ void sottoMenu::freezed(bool f)
 			bannNavigazione->setEnabled(true);
 	}
 	emit frez(f);
+	*/
 }
 
 void sottoMenu::setGeometry(int x, int y, int w, int h)

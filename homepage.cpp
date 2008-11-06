@@ -235,36 +235,6 @@ void homePage::addDescrU(const QString & qz, int x, int y)
 	addDescrU(qz,x,y,160, 20, QFrame::NoFrame, 0);
 }
 
-void homePage::mouseReleaseEvent(QMouseEvent * e)
-{
-	qDebug("Released");
-	if (freez)
-	{
-		freez = FALSE;
-		emit freeze(freez);
-	}
-	QWidget::mouseReleaseEvent(e);
-}
-
-void homePage::freezed(bool f)
-{
-	freez = f;
-	if (freez)
-	{
-		for (int i = 0; i < elencoButtons.size(); ++i)
-			elencoButtons.at(i)->setEnabled(FALSE);
-		if (descrizione)
-			descrizione->setEnabled(FALSE);
-	}
-	else
-	{
-		for (int i = 0; i < elencoButtons.size(); ++i)
-			elencoButtons.at(i)->setEnabled(TRUE);
-		if (descrizione)
-			descrizione->setEnabled(TRUE);
-	}
-}
-
 void homePage::updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display)
 {
 	qDebug("vedo temperatura per Temp in Homepage: %u", new_bt_temperature);

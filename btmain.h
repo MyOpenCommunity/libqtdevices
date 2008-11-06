@@ -81,6 +81,9 @@ public slots:
 	void startCalib();
 	void endCalib();
 
+protected:
+	virtual bool eventFilter(QObject *obj, QEvent *ev);
+
 private:
 	QTimer *tempo1;
 	QTimer *tempo2;
