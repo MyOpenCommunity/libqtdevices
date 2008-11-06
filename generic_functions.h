@@ -122,12 +122,6 @@ bool setCfgValue(int , const char* , const char* );
 bool setCfgValue(int , const char*, const char* ,int);
 
  /*!
-  \brief  Copies the file whose fileName is the first argument in an other with the fileName as in the second argument..
-*/
-bool copyFile(char*, char*);
-
-void  comChConf();
- /*!
   \brief Retrieves the name of the device.
 */
 

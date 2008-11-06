@@ -346,10 +346,8 @@ void scenEvo_cond_h::setEnabled(bool e)
 void scenEvo_cond_h::save()
 {
 	qDebug("scenEvo_cond_h::save()");
-	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "hour", cond_time->time().toString("hh"), get_serial_number());
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "minute",cond_time->time().toString("mm"), get_serial_number());
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
+	setCfgValue("cfg/conf.xml", SCENARIO_EVOLUTO, "hour", cond_time->time().toString("hh"), get_serial_number());
+	setCfgValue("cfg/conf.xml", SCENARIO_EVOLUTO, "minute",cond_time->time().toString("mm"), get_serial_number());
 }
 
 void scenEvo_cond_h::reset()
@@ -563,9 +561,7 @@ void scenEvo_cond_d::save()
 {
 	qDebug("scenEvo_cond_d::save()");
 	QString s; actual_condition->get_condition_value(s);
-	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "trigger", s, get_serial_number());
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
+	setCfgValue("cfg/conf.xml", SCENARIO_EVOLUTO, "trigger", s, get_serial_number());
 	reset();
 	inizializza();
 }
