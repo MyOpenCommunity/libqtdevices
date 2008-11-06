@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QLabel>
 #include <QTimer>
+#include <QDebug>
 
 #include <stdlib.h>
 
@@ -1003,7 +1004,6 @@ void attuatAutomTempNuovoF::SetIcons(char *i1, char *i2, char *i3)
 	qDebug("attuatAutomTempNuovoF::SetIcons");
 	char tmp[MAX_PATH], tmp1[MAX_PATH];
 	char *ptr;
-	char pressIconName[MAX_PATH];
 	if (!Icon[0])
 		Icon[0] = new QPixmap();
 	strcpy(tmp1, i2);
@@ -1024,13 +1024,13 @@ void attuatAutomTempNuovoF::SetIcons(char *i1, char *i2, char *i3)
 		Icon[2] = new QPixmap();
 	Icon[2]->load(i3);
 	qDebug("Icon[2] <- %s", i3);
-	getPressName(i3, pressIconName, sizeof(pressIconName));
+	QString pressIconName = getPressName(i3);
 	if (QFile::exists(pressIconName))
 	{
 		if (!pressIcon[2])
 			pressIcon[2] = new QPixmap();
 		pressIcon[2]->load(pressIconName);
-		qDebug("pressIcon[2] <- %s", pressIconName);
+		qDebug() << "pressIcon[2] <- " << pressIconName;
 	}
 	for (int i = 0; i < NTIMEICONS; i++)
 	{

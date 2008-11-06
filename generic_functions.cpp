@@ -25,17 +25,6 @@
 
 #define CONFILENAME	"cfg/conf.xml"
 
-// TODO: cambiare tutte le chiamate a questa funzione in quella che prende una qstring
-void getPressName(char* name, char* pressName,char len)
-{
-	memset(pressName,'\000',len);
-	if (strstr(name,"."))
-	{
-		strncpy(pressName,name,strstr(name,".")-name);
-		strcat(pressName,"p");
-		strcat(pressName,strstr(name,"."));
-	}
-}
 
 QString getPressName(QString name)
 {

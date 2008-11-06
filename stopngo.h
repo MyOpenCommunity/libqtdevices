@@ -1,3 +1,4 @@
+
 /*!
  * \file
  * <!--
@@ -80,7 +81,7 @@ public slots:
 
 /*!
   \class StopngoPage
-  \brief Stop & go devices GUI page. 
+  \brief Stop & go devices GUI page.
   
   \author Lucio Macellari - Mac S.r.l.
   \date jul 2008
@@ -92,7 +93,7 @@ public:
 	StopngoPage(QWidget *parent, const char *name, QString where, int id = 0, QString pageTitle = "");
 	~StopngoPage();
 
-protected:
+private:
 	QString pageTitle, where;
 	int id, statusBmp, autotestFreq;
 	QLabel *titleBar, *labelAutoArm, *labelVerify;
@@ -101,7 +102,6 @@ protected:
 	QLCDNumber *freqLcdNumber;
 	QTimer *freqSendTimer;
 	
-	QString getPressedIconName(const char *);
 	void AddItems();
 	void SetStatusIcon(const char *);
 	void SetButtonIcon(BtButton *, const char *);
@@ -111,7 +111,7 @@ public slots:
 	void status_changed(QList<device_status*>);
 	void showPage();
 
-protected slots:
+private slots:
 		void AutoArmClick();
 		void OnClick();
 		void OffClick();

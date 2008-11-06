@@ -110,22 +110,9 @@ QString banner::getPressedIconName(QString iconname)
 	if (iconname.isEmpty())
 		return QString();
 
-	char pressIconName[MAX_PATH];
-	QByteArray buf = iconname.toAscii();
-	getPressName(buf.data(), pressIconName, sizeof(pressIconName));
-	
-	/// If pressIconName file exists, return the press icon name
-	/// otherwise the the same name of the NOT PRESSED icon is returned
-	if (pressIconName == NULL || !QFile::exists(pressIconName))
-	{
-		qDebug("could not get pressed icon %s, using: %s", pressIconName, buf.constData());
-		return iconname;
-	}
-	else
-	{
-		qDebug("got pressed icon: %s", pressIconName);
-		return QString(pressIconName);
-	}
+	QString pressIconName = getPressName(iconname);
+
+	return QFile::exists(pressIconName) ? pressIconName : iconname;
 }
 
 void banner::SetIcons(uchar idIcon, const char *actuallcon)

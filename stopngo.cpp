@@ -606,32 +606,6 @@ void StopngoPage::LoadTimer()
 	freqSendTimer->start(AUTOTEST_SEND_TIMEOUT);
 }
 
-QString StopngoPage::getPressedIconName(const char *iconname)
-{
-	/** This method wraps the previous pressIconName function.
-	*  The main fix introduced is to return the NOT-Pressed Icon Name if
-	*  does not exist pressed icon.
-	*/
-	if (!iconname)
-		return NULL;
-
-	char pressIconName[MAX_PATH];
-	getPressName((char*)iconname, pressIconName, sizeof(pressIconName));
-	
-	/// If pressIconName file exists, return the press icon name
-	/// otherwise the the same name of the NOT PRESSED icon is returned
-	if (pressIconName == NULL || !QFile::exists(pressIconName))
-	{
-		qDebug("could not get pressed icon %s, using: %s", pressIconName, iconname);
-		return QString(iconname);
-	}
-	else
-	{
-		qDebug("got pressed icon: %s", pressIconName);
-		return QString(pressIconName);
-	}
-}
-
 void StopngoPage::FireFreqFrame()
 {
 	qDebug("StopngoPage::FireFreqFrame() Enter");

@@ -14,11 +14,10 @@
  /*!
   \brief Transform a image file name into a pressed one.
 
-  The ".png" file name is converted into a "p.png" file name. The first argument is the name to convert, the second is the converted name gave back from the procedure and the third is the length of the file name.
+  Return the filename of a image '.png' converted into a "p.png" file name.
 */
-void getPressName(char*, char*,char);
-
 QString getPressName(QString name);
+
  /*!
   \brief Transform a image file name into a pressed one with a index taken from a \a antiintrusion \a zone name.
 
