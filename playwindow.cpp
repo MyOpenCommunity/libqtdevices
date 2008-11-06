@@ -82,8 +82,8 @@ void PlayWindow::addMainControls(QBoxLayout* layout)
 	layout->addStretch();
 	layout->addWidget(settings_btn);
 
-	back_btn->setIcon(IMG_BACK);
-	settings_btn->setIcon(IMG_SETTINGS);
+	back_btn->setImage(IMG_BACK);
+	settings_btn->setImage(IMG_SETTINGS);
 
 	connect(back_btn, SIGNAL(released()), SIGNAL(backBtn()));
 	connect(settings_btn, SIGNAL(released()), SIGNAL(settingsBtn()));

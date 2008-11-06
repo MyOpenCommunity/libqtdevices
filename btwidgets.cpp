@@ -18,7 +18,7 @@
 BtButton *getButton(QString img, QString imgp, QWidget *parent, bool autorepeat)
 {
 	BtButton *btn = new BtButton(parent);
-	btn->setIcon(img);
+	btn->setImage(img);
 	if (autorepeat)
 		btn->setAutoRepeat(true);
 	return btn;

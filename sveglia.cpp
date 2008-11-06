@@ -39,7 +39,6 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;
-	char iconName[MAX_PATH];
 	QPixmap* Icon1 = new QPixmap();
 	QPixmap* Icon2 = NULL;
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
@@ -79,8 +78,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	{
 		choice[idx] = new BtButton(this);
 		choice[idx]->setGeometry(10,idx*60,60,60);
-		// FIXME: cambiare con setCheckable(true)
-		choice[idx]->setToggleButton(TRUE);
+		choice[idx]->setCheckable(true);
 		choice[idx]->setImage(ICON_VUOTO);
 		choice[idx]->hide();
 

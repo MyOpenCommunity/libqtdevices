@@ -45,7 +45,7 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 
 	fwdBut = new BtButton(this);
 	fwdBut->setGeometry(MAX_WIDTH/2-30, 160, 60, 60);
-	fwdBut->setIcon(ICON_FFWD);
+	fwdBut->setImage(ICON_FFWD);
 
 	connect(fwdBut, SIGNAL(clicked()), this, SIGNAL(Btnfwd()));
 	connect(bannNavigazione, SIGNAL(backClick()),this,SIGNAL(Closed()));

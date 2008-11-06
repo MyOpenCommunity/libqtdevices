@@ -37,7 +37,7 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry(idx*80+10,60,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setIcon(ICON_FRECCIA_SU);
+		but[idx]->setImage(ICON_FRECCIA_SU);
 	}
 
 	for (uchar idx=3;idx<6;idx++)
@@ -45,12 +45,12 @@ impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-3)*80+10,200,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setIcon(ICON_FRECCIA_GIU);
+		but[idx]->setImage(ICON_FRECCIA_GIU);
 	}
 
 	but[6] = new BtButton(this);
 	but[6]->setGeometry(90,260,60,60);
-	but[6]->setIcon(ICON_OK);
+	but[6]->setImage(ICON_OK);
 
 	Immagine = new BtLabel(this);
 	Immagine->setGeometry(90,0,120,60);

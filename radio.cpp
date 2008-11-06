@@ -93,29 +93,29 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	QPixmap* pressIcon = new QPixmap();
 	char pressIconName[MAX_PATH];
 
-	cicBut->setIcon(ICON_CICLA);
+	cicBut->setImage(ICON_CICLA);
 
-	aumBut->setIcon(ICON_PIU);
+	aumBut->setImage(ICON_PIU);
 
-	decBut->setIcon(ICON_MENO)
+	decBut->setImage(ICON_MENO);
 
-	memoBut->setIcon(ICON_MEM);
+	memoBut->setImage(ICON_MEM);
 
-	manBut->setIcon(ICON_MANUAL_ON);
+	manBut->setImage(ICON_MANUAL_ON);
 
-	autoBut->setIcon(ICON_AUTO_ON);
+	autoBut->setImage(ICON_AUTO_ON);
 
-	unoBut->setIcon(ICON_UNO);
+	unoBut->setImage(ICON_UNO);
 
-	dueBut->setIcon(ICON_DUE);
+	dueBut->setImage(ICON_DUE);
 
-	treBut->setIcon(ICON_TRE);
+	treBut->setImage(ICON_TRE);
 
-	quatBut->setIcon(ICON_QUATTRO);
+	quatBut->setImage(ICON_QUATTRO);
 
-	cinBut->setIcon(ICON_CINQUE);
+	cinBut->setImage(ICON_CINQUE);
 
-	cancBut->setIcon(ICON_CANC);
+	cancBut->setImage(ICON_CANC);
 
 	manual=FALSE;
 	wasManual=TRUE;
@@ -202,13 +202,13 @@ void radio::draw()
 	{
 		if (manual)
 		{
-			manBut->setIcon(ICON_MANUAL_ON);
-			autoBut->setIcon(ICON_AUTO_OFF);
+			manBut->setImage(ICON_MANUAL_ON);
+			autoBut->setImage(ICON_AUTO_OFF);
 		}
 		else
 		{
-			manBut->setIcon(ICON_MANUAL_OFF);
-			autoBut->setIcon(ICON_AUTO_ON);
+			manBut->setImage(ICON_MANUAL_OFF);
+			autoBut->setImage(ICON_AUTO_ON);
 		}
 	}
 	wasManual=manual;

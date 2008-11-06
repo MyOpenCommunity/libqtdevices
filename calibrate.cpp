@@ -84,7 +84,7 @@ Calibrate::~Calibrate()
 BtButton *Calibrate::createButton(const char* icon_name, int x, int y)
 {
 	BtButton *b = new BtButton(this);
-	b->setIcon(icon_name);
+	b->setImage(icon_name);
 	b->move(x, y);
 	return b;
 }

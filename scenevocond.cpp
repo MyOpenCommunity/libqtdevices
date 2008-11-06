@@ -183,7 +183,6 @@ const char *scenEvo_cond_h::getDescription(void)
 
 void scenEvo_cond_h::SetIcons()
 {
-	char iconName[MAX_PATH];
 	qDebug("scenEvo_cond_h::SetIcons()");
 	for (int i = 0; i < 6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
@@ -220,7 +219,7 @@ void scenEvo_cond_h::SetIcons()
 		qDebug() << "Area 6: loaded icon " << getImg(A6_ICON_INDEX);
 		but[A6_BUTTON_INDEX] = new BtButton(this);
 		but[A6_BUTTON_INDEX]->setGeometry(0, MAX_HEIGHT - 60, 60, 60);
-		but[A6_BUTTON_INDEX]->setImage(A6_ICON_INDEX);
+		but[A6_BUTTON_INDEX]->setImage(getImg(A6_ICON_INDEX));
 	}
 	else
 		but[A6_BUTTON_INDEX] = NULL;
@@ -231,7 +230,7 @@ void scenEvo_cond_h::SetIcons()
 		qDebug() << "Area 7: loaded icon " << getImg(A7_ICON_INDEX);
 		but[A7_BUTTON_INDEX] = new BtButton(this);
 		but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 60, 60);
-		but[A7_BUTTON_INDEX]->setImage(A7_ICON_INDEX);
+		but[A7_BUTTON_INDEX]->setImage(getImg(A7_ICON_INDEX));
 	}
 	else
 		but[A7_BUTTON_INDEX] = NULL;
@@ -242,7 +241,7 @@ void scenEvo_cond_h::SetIcons()
 		qDebug() << "Area 8: loaded icon " << getImg(A8_ICON_INDEX);
 		but[A8_BUTTON_INDEX] = new BtButton(this);
 		but[A8_BUTTON_INDEX]->setGeometry(MAX_WIDTH - 60, MAX_HEIGHT - 60, 60, 60);
-		but[A8_BUTTON_INDEX]->setImage(A8_ICON_INDEX);
+		but[A8_BUTTON_INDEX]->setImage(getImg(A8_ICON_INDEX));
 	}
 	else
 		but[A8_BUTTON_INDEX] = NULL;

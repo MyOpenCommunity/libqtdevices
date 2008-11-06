@@ -52,9 +52,9 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	//colorBar ->setAutoResize(TRUE);
 	colorBar ->setPixmap(QPixmap(IMG_PATH "colorbar.png"));
 
-	decBut->setIcon(ICON_MENO);
-	aumBut->setIcon(ICON_PIU);
-	okBut->setIcon(ICON_OK);
+	decBut->setImage(ICON_MENO);
+	aumBut->setImage(ICON_PIU);
+	okBut->setImage(ICON_OK);
 
 	aumBut->show();
 	decBut->show();

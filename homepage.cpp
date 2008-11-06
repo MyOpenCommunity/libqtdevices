@@ -49,7 +49,7 @@ void homePage::addButton(int x, int y, QString iconName, char function, QString 
 	else
 		b1->setGeometry(x, y, DIM_BUT_HOME, DIM_BUT_HOME);
 
-	b1->setIcon(iconName);
+	b1->setImage(iconName);
 
 	switch (function)
 	{
