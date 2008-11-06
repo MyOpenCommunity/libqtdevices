@@ -801,11 +801,8 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 	main_layout(this)
 {
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
-	// TODO: cambiare con qlabel
-	BtButton *top = new BtButton(this);
-	top->setImage(top_img);
-	top->setDown(true);
-	top->setEnabled(false);
+	QLabel *top = new QLabel(this);
+	top->setPixmap(*icons_library.getIcon(top_img));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	date_edit = new BtDateEdit(this);
@@ -822,11 +819,8 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 	main_layout(this)
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
-	// TODO: cambiare con qlabel
-	BtButton *top = new BtButton(this);
-	top->setImage(i_top_img);
-	top->setDown(true);
-	top->setEnabled(false);
+	QLabel *top = new QLabel(this);
+	top->setPixmap(*icons_library.getIcon(i_top_img));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	time_edit = new BtTimeEdit(this);

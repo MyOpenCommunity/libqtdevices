@@ -15,7 +15,7 @@
 #include <qlayout.h>
 
 
-BtButton *getButton(QString img, QString imgp, QWidget *parent, bool autorepeat)
+BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
 {
 	BtButton *btn = new BtButton(parent);
 	btn->setImage(img);
@@ -30,9 +30,8 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name) : QWidget(parent), _ti
 
 	BtButton *btn1, *btn2;
 	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
-	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
-	btn1 = getButton(btn_up_img, btn_up_img_press, this, true);
-	btn2 = getButton(btn_up_img, btn_up_img_press, this, true);
+	btn1 = getButton(btn_up_img, this, true);
+	btn2 = getButton(btn_up_img, this, true);
 
 	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
@@ -49,9 +48,8 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name) : QWidget(parent), _ti
 	main_layout->addWidget(num);
 
 	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
-	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
-	btn1 = getButton(btn_down_img, btn_down_img_press, this, true);
-	btn2 = getButton(btn_down_img, btn_down_img_press, this, true);
+	btn1 = getButton(btn_down_img, this, true);
+	btn2 = getButton(btn_down_img, this, true);
 
 	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
@@ -114,10 +112,9 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name) : QWidget(parent),
 	BtButton *btn_bottom_left, *btn_bottom_center, *btn_bottom_right;
 
 	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
-	const QString btn_up_img_press = QString("%1%2").arg(IMG_PATH).arg("arrupp.png");
-	btn_top_left = getButton(btn_up_img, btn_up_img_press, this, true);
-	btn_top_center = getButton(btn_up_img, btn_up_img_press, this, true);
-	btn_top_right = getButton(btn_up_img, btn_up_img_press, this, true);
+	btn_top_left = getButton(btn_up_img, this, true);
+	btn_top_center = getButton(btn_up_img, this, true);
+	btn_top_right = getButton(btn_up_img, this, true);
 
 	QHBoxLayout *h_up_box = new QHBoxLayout();
 	h_up_box->addWidget(btn_top_left);
@@ -132,11 +129,10 @@ BtDateEdit::BtDateEdit(QWidget *parent, const char *name) : QWidget(parent),
 	main_layout->addWidget(date_display);
 
 	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
-	const QString btn_down_img_press = QString("%1%2").arg(IMG_PATH).arg("arrdwp.png");
 
-	btn_bottom_left = getButton(btn_down_img, btn_down_img_press, this, true);
-	btn_bottom_center = getButton(btn_down_img, btn_down_img_press, this, true);
-	btn_bottom_right = getButton(btn_down_img, btn_down_img_press, this, true);
+	btn_bottom_left = getButton(btn_down_img, this, true);
+	btn_bottom_center = getButton(btn_down_img, this, true);
+	btn_bottom_right = getButton(btn_down_img, this, true);
 
 	QHBoxLayout *h_down_box = new QHBoxLayout();
 	h_down_box->addWidget(btn_bottom_left);
