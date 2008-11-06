@@ -3,8 +3,6 @@
 #include "generic_functions.h" // beep
 
 #include <QDebug>
-#include <QStyleOption>
-#include <QStylePainter>
 
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
@@ -55,12 +53,5 @@ void BtButton::paintEvent(QPaintEvent *event)
 	if (isDown())
 		beep();
 
-	// The drawing of BtButton is reimplemented here to prevent the "graying"
-	// of the image when the button is in the disabled state.
-	QStylePainter painter(this);
-	QStyleOptionButton option;
-	initStyleOption(&option);
-
-	option.state |= QStyle::State_Enabled; // Prevent the "graying"
-	painter.drawControl(QStyle::CE_PushButton, option);
+	QPushButton::paintEvent(event);
 }
