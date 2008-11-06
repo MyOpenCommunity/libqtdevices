@@ -8,7 +8,21 @@ class BtButton : public QPushButton
 {
 Q_OBJECT
 public:
+	enum IconFlag
+	{
+		NO_FLAG,                    // empty flag
+		LOAD_PRESSED_ICON,          // load pressed icon in setIcon
+	};
 	BtButton(QWidget *parent=0);
+
+	/**
+	 * Loads an icon into the button.
+	 * \param icon_path The full path of the icon to be loaded
+	 * \param f Flags defined in IconFlag. If LOAD_PRESSED_ICON, call setPressedIcon
+	 * with parameter icon_path + "p".
+	 */
+	void setImage(const QString &icon_path, IconFlag f = LOAD_PRESSED_ICON);
+	void setPressedImage(const QString &pressed_icon);
 
 	void setPressedPixmap(const QPixmap &p);
 	void setPixmap(const QPixmap &p);
