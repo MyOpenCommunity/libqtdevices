@@ -307,9 +307,7 @@ void scenEvo::toggleAttivaScev()
 	impostaAttivo(!isActive());
 	Draw();
 	const char *s = isActive() ? "1" : "0";
-	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "enable", s, serial_number);
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
+	setCfgValue(SCENARIO_EVOLUTO, "enable", s, serial_number);
 }
 
 void scenEvo::configScev()

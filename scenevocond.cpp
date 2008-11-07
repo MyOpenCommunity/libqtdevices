@@ -349,7 +349,8 @@ void scenEvo_cond_h::save()
 	copyFile("cfg/conf.xml","cfg/conf1.lmx");
 	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "hour", cond_time->time().toString("hh"), get_serial_number());
 	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "minute",cond_time->time().toString("mm"), get_serial_number());
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
+	if (!::rename("cfg/conf1.lmx","cfg/conf.xml"))
+		qWarning("%s: Could not move temporary config on conf.xml", __FILE__);
 }
 
 void scenEvo_cond_h::reset()

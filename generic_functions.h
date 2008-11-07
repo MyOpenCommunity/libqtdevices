@@ -109,17 +109,17 @@ void rearmWDT();
  /*!
   \brief  Changes configuration file giving: fileName, id, fieldName, value, serial number of id recursion to change
 */
-bool setCfgValue(QString file, int id, QString campo, QString valore, int serNumId);
+bool setCfgValue(const QString &file, int id, const QString &campo, const QString &valore, int serNumId);
 
  /*!
   \brief  Same as above. file name is the default one and \a serial \a number \a of \a id \a recursion \a to \a change is 1.
 */
-bool setCfgValue(int , const char* , const char* );
+bool setCfgValue(int id, const QString &campo, const QString &valore);
 
  /*!
   \brief  Same as above. file name is the default one.
 */
-bool setCfgValue(int , const char*, const char* ,int);
+bool setCfgValue(int id, const QString &campo, const QString &valore, int serNumId);
 
  /*!
   \brief  Copies the file whose fileName is the first argument in an other with the fileName as in the second argument..

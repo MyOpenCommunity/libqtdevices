@@ -44,7 +44,6 @@ static const char *stop_play_script = "/bin/audio_off.tcl";
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
 static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
-static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
 
 static const char *IMG_WAIT = IMG_PATH "loading.png";
 

@@ -37,8 +37,6 @@ static const char *IMG_STOP_P = IMG_PATH "btnsdstopp.png";
 static const char *IMG_PAUSE_P = IMG_PATH "btnpausep.png";
 static const char *IMG_NEXT_P = IMG_PATH "btnforwardp.png";
 static const char *IMG_PREV_P = IMG_PATH "btnbackwardp.png";
-static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
-static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
 
 /*
  * Path in conf.xml where the configurable label texts are found.

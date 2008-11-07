@@ -88,10 +88,6 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	cinBut->hide();
 	cancBut->hide();
 
-	QPixmap* Icon = new QPixmap();
-	QPixmap* pressIcon = new QPixmap();
-	char pressIconName[MAX_PATH];
-
 	cicBut->setImage(ICON_CICLA);
 
 	aumBut->setImage(ICON_PIU);
@@ -201,13 +197,13 @@ void radio::draw()
 	{
 		if (manual)
 		{
-			manBut->setImage(ICON_MANUAL_ON);
-			autoBut->setImage(ICON_AUTO_OFF);
+			manBut->setImage(ICON_MANUAL_ON, BtButton::NO_FLAG);
+			autoBut->setImage(ICON_AUTO_OFF, BtButton::NO_FLAG);
 		}
 		else
 		{
-			manBut->setImage(ICON_MANUAL_OFF);
-			autoBut->setImage(ICON_AUTO_ON);
+			manBut->setImage(ICON_MANUAL_OFF, BtButton::NO_FLAG);
+			autoBut->setImage(ICON_AUTO_ON, BtButton::NO_FLAG);
 		}
 	}
 	wasManual=manual;
