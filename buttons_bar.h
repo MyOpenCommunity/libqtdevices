@@ -35,7 +35,7 @@ Q_OBJECT
 public:
 	ButtonsBar(QWidget *parent = 0, unsigned int number_of_buttons = 1, Qt::Orientation orientation = Qt::Horizontal);
 	~ButtonsBar();
-	bool setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon);
+	bool setButtonIcon(unsigned int button_number, const QString &icon_path);
 	
 	void showButton(int idx);
 	void hideButton(int idx);

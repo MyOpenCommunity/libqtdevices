@@ -32,12 +32,6 @@ static const char *IMG_PREV = IMG_PATH "btnbackward.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
 
-static const char *IMG_PLAY_P = IMG_PATH "btnplayp.png"; 
-static const char *IMG_STOP_P = IMG_PATH "btnsdstopp.png";
-static const char *IMG_PAUSE_P = IMG_PATH "btnpausep.png";
-static const char *IMG_NEXT_P = IMG_PATH "btnforwardp.png";
-static const char *IMG_PREV_P = IMG_PATH "btnbackwardp.png";
-
 /*
  * Path in conf.xml where the configurable label texts are found.
  */
@@ -229,23 +223,9 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	/*
-	 * Create Buttons and set their geometry
-	 */
-	QPixmap *icon;
-	QPixmap *pressed_icon;
-
-	icon         = icons_library.getIcon(IMG_STOP);
-	pressed_icon = icons_library.getIcon(IMG_STOP_P);
-	play_controls->setButtonIcons(1, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_PREV);
-	pressed_icon = icons_library.getIcon(IMG_PREV_P);
-	play_controls->setButtonIcons(2, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_NEXT);
-	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
-	play_controls->setButtonIcons(3, *icon, *pressed_icon);
+	play_controls->setButtonIcon(1, IMG_STOP);
+	play_controls->setButtonIcon(2, IMG_PREV);
+	play_controls->setButtonIcon(3, IMG_NEXT);
 
 	main_layout->insertWidget(2, play_controls);
 	// Add space to the end of layout to align buttons with previus page
@@ -263,16 +243,12 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 
 void MediaPlayWindow::showPlayBtn()
 {
-	QPixmap *icon         = icons_library.getIcon(IMG_PLAY);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PLAY_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+	play_controls->setButtonIcon(0, IMG_PLAY);
 }
 
 void MediaPlayWindow::showPauseBtn()
 {
-	QPixmap *icon         = icons_library.getIcon(IMG_PAUSE);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PAUSE_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+	play_controls->setButtonIcon(0, IMG_PAUSE);
 }
 
 void MediaPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
@@ -466,25 +442,10 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	 // Create Buttons and set their geometry
-	QPixmap *icon;
-	QPixmap *pressed_icon;
-
-	icon         = icons_library.getIcon(IMG_PLAY);
-	pressed_icon = icons_library.getIcon(IMG_PLAY_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_STOP);
-	pressed_icon = icons_library.getIcon(IMG_STOP_P);
-	play_controls->setButtonIcons(1, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_PREV);
-	pressed_icon = icons_library.getIcon(IMG_PREV_P);
-	play_controls->setButtonIcons(2, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_NEXT);
-	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
-	play_controls->setButtonIcons(3, *icon, *pressed_icon);
+	play_controls->setButtonIcon(0, IMG_PLAY);
+	play_controls->setButtonIcon(1, IMG_STOP);
+	play_controls->setButtonIcon(2, IMG_PREV);
+	play_controls->setButtonIcon(3, IMG_NEXT);
 
 	main_layout->insertWidget(2, play_controls);
 	// Add space to the end of layout to align buttons with previus page

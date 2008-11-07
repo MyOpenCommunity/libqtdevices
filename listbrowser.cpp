@@ -20,8 +20,6 @@
 
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
-
 
 ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *name, Qt::WindowFlags f) :
 	QWidget(parent, f)
@@ -80,10 +78,8 @@ ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *n
 	buttons_bar = new ButtonsBar(this, rows_per_page, Qt::Vertical);
 
 	// Set Icons for buttons_bar (using icons_library cache)
-	QPixmap *icon         = icons_library.getIcon(IMG_SELECT);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_SELECT_P);
 	for (unsigned i = 0; i < rows_per_page; ++i)
-		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
+		buttons_bar->setButtonIcon(i, IMG_SELECT);
 
 	// Add buttons_bar to main_layout
 	main_layout->addWidget(buttons_bar);
