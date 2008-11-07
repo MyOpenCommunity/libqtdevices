@@ -336,6 +336,7 @@ void impPassword::tiempout()
 	setBeep(sb,FALSE);
 }
 
+// TODO: capire l'esatto funzionamento di "starting" ed eliminare la setEnabled!
 void impPassword::setEnabled(bool  b)
 {
 	if (!b)

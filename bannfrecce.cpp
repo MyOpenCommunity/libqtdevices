@@ -107,13 +107,6 @@ void bannFrecce::setCustomButton(BtButton *btn)
 		dxButton = original_dx_button;
 }
 
-void bannFrecce::setEnabled(bool v)
-{
-	QWidget::setEnabled(v);
-	if (dxButton)
-		dxButton->setEnabled(v);
-}
-
 bannFrecce::~bannFrecce()
 {
 	// This istruction is required to avoid destroying of dxButton when the

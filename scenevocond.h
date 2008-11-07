@@ -65,8 +65,6 @@ public:
 	virtual void  mostra();
 	//! Sets icons
 	virtual void SetIcons();
-	//! Enable/disable
-	virtual void setEnabled(bool);
 	//! Set serial number
 	void set_serial_number(int);
 	//! Get serial number
@@ -167,8 +165,6 @@ public:
 	void mostra();
 	//! Sets icons
 	void SetIcons();
-	//! Set enabled/disabled
-	void setEnabled(bool);
 	//! Save condition
 	void save();
 	//! Return true when condition is satisfied
@@ -256,8 +252,6 @@ public:
 	void set_pul(bool);
 	//! Set device group
 	void set_group(int);
-	//! Set enabled/disabled
-	void setEnabled(bool);
 	//! Returns true when actual condition is satisfied
 	bool isTrue(void);
 public slots:
@@ -608,8 +602,6 @@ public:
 	\brief Draws and initializes some connections.
 	*/
 	void  mostra();
-	//! Set enabled/disabled
-	void setEnabled(bool);
 	//! Sets icons
 	void SetIcons();
 	//! Save condition

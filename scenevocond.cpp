@@ -99,11 +99,6 @@ void scenEvo_cond::Apply()
 	qDebug("scenEvo_cond::Apply()");
 }
 
-void scenEvo_cond::setEnabled(bool e)
-{
-	qDebug("scenEvo_cond::setEnabled(%d)", e);
-}
-
 void scenEvo_cond::save()
 {
 	qDebug("scenEvo_cond::save()");
@@ -335,14 +330,6 @@ void scenEvo_cond_h::scaduta()
 	setupTimer();
 }
 
-void scenEvo_cond_h::setEnabled(bool e)
-{
-	qDebug("scenEvo_cond_h::setEnabled(%d)", e);
-	for (int i = 0; i < 8; i++)
-		if (but[i])
-			but[i]->setEnabled(e);
-}
-
 void scenEvo_cond_h::save()
 {
 	qDebug("scenEvo_cond_h::save()");
@@ -422,14 +409,6 @@ void scenEvo_cond_d::mostra()
 	if (actual_condition)
 		actual_condition->show();
 	show();
-}
-
-void scenEvo_cond_d::setEnabled(bool e)
-{
-	qDebug("scenEvo_cond_d::setEnabled(%d)", e);
-	for (int i = 0; i < 7; i++)
-		if (but[i])
-			but[i]->setEnabled(e);
 }
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
