@@ -659,16 +659,21 @@ void  sottoMenu::killBanner(banner* b)
 	}
 }
 
-void sottoMenu::hide(bool index)
+void sottoMenu::hideEvent(QHideEvent *event)
 {
-	qDebug() << "sottoMenu::hide() (" << name << ")";
-	QWidget::hide();
+	qDebug() << "sottoMenu::hideEvent()" << name;
 	emit hideChildren();
+
+	// TODO: diffsonora era l'unica a chiamare hide(false), evitando quindi che
+	// fosse resettato l'indice.. capire come mai!
+	indice = 0;
+	/*
 	if (index)
 	{
 		indice = 0;
 		forceDraw();
 	}
+	*/
 }
 
 void sottoMenu::svuota()
@@ -688,14 +693,13 @@ void  sottoMenu::setIndice(char c)
 		indice = c;
 }
 
-void sottoMenu::show()
+void sottoMenu::showEvent(QShowEvent *event)
 {
-	qDebug() << "sottoMenu::show() (" << name << ")";
+	qDebug() << "sottoMenu::showEvent()" << name;
 
 	if (name == "ILLUMINO")
 		init_dimmer();
 	forceDraw();
-	QWidget::show();
 }
 
 void sottoMenu::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint &p, bool showIt)

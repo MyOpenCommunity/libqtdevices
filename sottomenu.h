@@ -259,10 +259,6 @@ public slots:
 	*/
 	void init_dimmer();
 	/*!
-		\brief  Hide the page.
-	*/
-	virtual void hide(bool index = true);
-	/*!
 		\brief  Removes a banner from the list.
 		*/
 	void killBanner(banner*);
@@ -270,7 +266,6 @@ public slots:
 		\brief  Empties the banner list.
 		*/
 	void svuota();
-	void show();
 	void showItem(int id);
 protected:
 	void connectLastBanner();
@@ -292,12 +287,15 @@ protected:
 		* \return        A null node if no tag was found, the node otherwise
 		*/
 	QDomNode findNamedNode(QDomNode root, QString name);
+	virtual void hideEvent(QHideEvent *event);
+	virtual void showEvent(QShowEvent *event);
 	QList<banner*> elencoBanner;
 	int indice, indicold;
 	unsigned int height,width;
 	uchar numRighe, hasNavBar;
 	bannFrecce * bannNavigazione;
 	char iconName[MAX_PATH];
+
 private:
 	/// Number of banners to scroll at each goUp() or goDown() call. Default value is 1, to avoid
 	/// breaking existing code.

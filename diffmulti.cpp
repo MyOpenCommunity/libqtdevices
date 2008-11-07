@@ -248,18 +248,10 @@ void diffmulti::ds_closed(diffSonora *ds)
 	showFullScreen();
 }
 
-void diffmulti::hide()
+void diffmulti::hideEvent(QHideEvent *event)
 {
-	qDebug("diffmulti::hide()");
-	sottoMenu::hide();
-	
 	for (int i = 0; i < dslist.size(); ++i)
 		dslist.at(i)->hide();
-}
-
-void diffmulti::show()
-{
-	QWidget::show();
 }
 
 void diffmulti::setGeom(int x, int y, int w,int h)

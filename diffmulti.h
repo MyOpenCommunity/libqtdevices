@@ -67,10 +67,11 @@ public:
 
 public slots:
 	void ds_closed(diffSonora *);
-	void hide();
-	void show();
 	void status_changed(QList<device_status*> sl);
 	void gestFrame(char*);
+
+protected:
+	virtual void hideEvent(QHideEvent *event);
 
 signals:
 	void actSrcChanged(int, int);

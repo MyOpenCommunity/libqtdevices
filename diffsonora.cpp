@@ -191,7 +191,7 @@ void diffSonora::hideEvent(QHideEvent *event)
 {
 	qDebug("diffSonora::hideEvent()");
 
-	sorgenti->hide(false);
+	sorgenti->hide();
 	amplificatori->setIndice(0);
 	isVisual = false;
 }
