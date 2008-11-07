@@ -13,7 +13,7 @@
 #include "device.h"
 #include "scenevocond.h"
 #include "btbutton.h"
-#include "generic_functions.h" // setCfgValue()
+#include "generic_functions.h" // bool copyFile(...)
 #include "fontmanager.h"
 
 #include <openwebnet.h> // class openwebnet
@@ -307,7 +307,9 @@ void scenEvo::toggleAttivaScev()
 	impostaAttivo(!isActive());
 	Draw();
 	const char *s = isActive() ? "1" : "0";
-	setCfgValue("cfg/conf.xml", SCENARIO_EVOLUTO, "enable", s, serial_number);
+	copyFile("cfg/conf.xml","cfg/conf1.lmx");
+	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "enable", s, serial_number);
+	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
 }
 
 void scenEvo::configScev()

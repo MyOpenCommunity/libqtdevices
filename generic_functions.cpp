@@ -157,6 +157,35 @@ bool setCfgValue(int id, const char* campo, const char* valore,int serNumId)
 	return setCfgValue(CONFILENAME, id, campo, valore, serNumId);
 }
 
+bool copyFile(char* orig, char* dest)
+{
+	QFile *filIN = new QFile(orig);
+	if (!filIN->open(QIODevice::ReadOnly))
+		return false;
+
+	if (QFile::exists(dest))
+		QFile::remove(dest);
+
+	QFile *filOUT = new QFile(dest);
+
+	if (!filOUT->open(QIODevice::WriteOnly))
+		return false;
+
+	QDataStream tIN(filIN);
+	QDataStream tOUT(filOUT);
+	unsigned char i;
+	do
+	{
+		tIN >> i;
+		tOUT << i;
+	}
+	while(!tIN.atEnd());
+
+	filIN->close();
+	filOUT->close();
+	return true;
+}
+
 void setContrast(unsigned char c,bool b)
 {
 	char contr[4];
@@ -384,7 +413,7 @@ void rearmWDT()
 	}
 }
 
-static void  comChConf()
+void  comChConf()
 {
 	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
 	if (fd >= 0)
