@@ -198,8 +198,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 void BtMain::hom()
 {
 	datiGen->inizializza();
-	if (!loadSkin(EXTRA_FILE))
-		qWarning("Unable to load skin file!");
 
 	if (loadConfiguration(CFG_FILE))
 	{
@@ -210,6 +208,9 @@ void BtMain::hom()
 			screensaver->hide();
 		hide();
 	}
+
+	if (!loadSkin(EXTRA_FILE))
+		qWarning("Unable to load skin file!");
 
 	config_loaded = true;
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
