@@ -108,6 +108,10 @@ public:
 	scenEvo(QWidget *parent=0, const char *name=NULL, QList<scenEvo_cond*> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3 = NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, QString act="", int enabled = 0);
 	~scenEvo();
 	void Draw();
+
+protected:
+	virtual void hideEvent(QHideEvent *event);
+
 private slots:
 	void toggleAttivaScev();
 	void configScev();
@@ -118,8 +122,8 @@ private slots:
 	void trig(bool forced = false);
 	void saveAndApplyAll();
 	void resetAll();
-	void hide();
 	void trigOnStatusChanged();
+
 public slots:
 	void inizializza(bool forza = false);
 };

@@ -38,8 +38,8 @@ class setDataOra : public bannOnDx
 Q_OBJECT
 public:
 	setDataOra(sottoMenu *, const char *);
-public slots:
-	void hide();
+protected:
+	virtual void hideEvent(QHideEvent *event);
 private:
 	impostaTime settalora;
 };
@@ -80,10 +80,8 @@ public slots:
 \brief changes the alarm set abilitation
 */
 	void toggleAbil();
-/*!
-\brief Shows the object
-*/
-	void show();
+protected:
+	virtual void showEvent(QShowEvent *event);
 private:
 	sveglia* svegliolina;
 	char iconOn[50];
@@ -140,8 +138,8 @@ class impContr : public bannOnDx
 Q_OBJECT
 public:
 	impContr(sottoMenu  *, const char *,char *,const char *);
-public slots:
-	void hide();
+protected:
+	virtual void hideEvent(QHideEvent *event);
 
 private slots:
 	void showContr();
@@ -192,14 +190,6 @@ public slots:
 */ 
 	void toggleActivation();
 /*!
-  \brief  Shows the banner
-*/ 
-	void show();
-/*!
-  \brief Hides what has to be hidden
-*/
-	void hide();
-/*!
   \brief  Shows the keypad to compose the password key
 */
 	void reShow1(char*);
@@ -214,7 +204,12 @@ public slots:
 /*!
   \brief  Reimplements QWidget::setEnabled(bool)
 */
-	void setEnabled (bool);
+	void setEnabled(bool);
+
+protected:
+	virtual void hideEvent(QHideEvent *event);
+	virtual void showEvent(QShowEvent *event);
+
 private:
 	char paswd[10];
 	bool active;
@@ -239,7 +234,7 @@ public:
 	BannCleanScreen(sottoMenu *parent, const char *name);
 	~BannCleanScreen();
 protected:
-	void hideEvent(QHideEvent *e);
+	virtual void hideEvent(QHideEvent *event);
 private:
 	CleanScreen *page;
 };
@@ -258,7 +253,7 @@ public:
 	BannBrightness(sottoMenu *parent, const char *name);
 	~BannBrightness();
 protected:
-	void hideEvent(QHideEvent *e);
+	virtual void hideEvent(QHideEvent *event);
 private:
 	BrightnessPage *page;
 };

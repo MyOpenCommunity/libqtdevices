@@ -23,6 +23,15 @@ public:
 		MANOMISSIONE,
 		PANIC,
 	} altype;
+
+	allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, altype t);
+
+public slots:
+	/*! Draw widget */
+	void draw();
+
+protected:
+	virtual void showEvent(QShowEvent *event);
 private:
 	static const int ICON_DIM = 80;
 	static const int NAV_DIM = 60;
@@ -32,14 +41,7 @@ private:
 	void SetIcons(char*);
 	altype type;
 
-public:
-	allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, altype t);
-
-	void show();
-public slots:
-	/*! Draw widget */
-	void draw();
- signals:
+signals:
 	void Next();
 	void Prev();
 	void Delete();

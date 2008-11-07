@@ -157,11 +157,9 @@ void banradio::pre_show()
 
 		dev->sendInit(msg_open.frame_open);
 	}
-
-	QWidget::show();
 }
 
-void banradio::show()
+void banradio::showEvent(QShowEvent *event)
 {
 	pre_show();
 
@@ -175,13 +173,12 @@ void banradio::show()
 	mostra(BUT2);
 }
 
-void banradio::hide()
+void banradio::hideEvent(QHideEvent *event)
 {
-	qDebug("banradio::hide()");
+	qDebug("banradio::hideEvent()");
 	if (!myRadio->isHidden())
 		stopRDS();
 	myRadio->hide();
-	QWidget::hide();
 }
 
 void banradio::SetTextU(const QString & qtext)
@@ -445,7 +442,7 @@ void sorgenteMultiRadio::ambChanged(const QString & ad, bool multi, char *indamb
 	myRadio->setAmbDescr(ad);
 }
 
-void sorgenteMultiRadio::show()
+void sorgenteMultiRadio::showEvent(QShowEvent *event)
 {
 	banradio::pre_show();
 }

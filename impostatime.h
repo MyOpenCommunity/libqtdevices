@@ -52,7 +52,9 @@ public slots:
   \brief Draws the object.
 */
 	void mostra();
-	void hide();
+
+protected:
+	void impostaTime::hideEvent(QHideEvent *event);
 
 private slots:
 	void OKTime();

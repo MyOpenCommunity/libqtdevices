@@ -190,10 +190,9 @@ void impostaTime::mostra()
 	dataOra->show();
 }
 
-void impostaTime::hide()
+void impostaTime::hideEvent(QHideEvent *event)
 {
-	qDebug("impostaTime::hide()");
-	QFrame::hide();
+	qDebug("impostaTime::hideEvent()");
 	if (dataOra)
 		dataOra->hide();
 }

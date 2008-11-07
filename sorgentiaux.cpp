@@ -84,10 +84,9 @@ void sorgente_aux::inizializza(bool forza)
 {
 }
 
-void sorgente_aux::hide()
+void sorgente_aux::hideEvent(QHideEvent *event)
 {
-	qDebug("sorgente::hide()");
-	banner::hide();
+	qDebug("sorgente::hideEvent()");
 	if (vecchia)
 		return;
 	myAux->hide();

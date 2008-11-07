@@ -35,9 +35,8 @@ setDataOra::setDataOra(sottoMenu *parent,const char *name) : bannOnDx(parent, na
 	connect(&settalora, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 }
 
-void setDataOra::hide()
+void setDataOra::hideEvent(QHideEvent *event)
 {
-	banner::hide();
 	settalora.hide();
 }
 
@@ -85,7 +84,7 @@ void impostaSveglia::toggleAbil()
 	show();
 }
 
-void impostaSveglia::show()
+void impostaSveglia::showEvent(QShowEvent *event)
 {
 	if (svegliolina->getActivation())
 	{
@@ -98,7 +97,6 @@ void impostaSveglia::show()
 		SetIcons(uchar(0),iconOff);
 	}
 	Draw();
-	QWidget::show();
 	svegliolina->setSerNum(getSerNum());
 }
 
@@ -193,9 +191,8 @@ void impContr::contrMade()
 	contrasto = NULL;
 }
 
-void impContr::hide()
+void impContr::hideEvent(QHideEvent *event)
 {
-	banner::hide();
 	if (contrasto)
 		contrasto->hide();
 }
@@ -269,16 +266,15 @@ void impPassword::toggleActivation()
 	show();
 }
 
-void impPassword::show()
+void impPassword::showEvent(QShowEvent *event)
 {
 	if (active)
 		SetIcons(uchar(0),iconOn);
 	else
 		SetIcons(uchar(0),iconOff);
-	qDebug("impPassword::show()");
 	Draw();
 	qDebug("passwd = %s %d", paswd, paswd[0]);
-	if ((paswd[0]=='\000') || (starting))
+	if ((paswd[0]=='\000') || starting)
 	{
 		qDebug("passwd = ZERO");
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -293,7 +289,6 @@ void impPassword::show()
 		tasti->setMode(tastiera::HIDDEN);
 		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 	}
-	QWidget::show();
 }
 
 void impPassword::reShow1(char* c)
@@ -348,9 +343,8 @@ void impPassword::setEnabled(bool  b)
 	QWidget::setEnabled(b);
 }
 
-void impPassword::hide()
+void impPassword::hideEvent(QHideEvent *event)
 {
-	banner::hide();
 	if (tasti)
 		tasti->hide();
 }
@@ -376,10 +370,8 @@ BannCleanScreen::~BannCleanScreen()
 	delete page;
 }
 
-void BannCleanScreen::hideEvent(QHideEvent *e)
+void BannCleanScreen::hideEvent(QHideEvent *event)
 {
-	Q_UNUSED(e);
-	bannOnDx::hide();
 	page->hide();
 }
 
@@ -396,10 +388,8 @@ BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(p
 	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 }
 
-void BannBrightness::hideEvent(QHideEvent *e)
+void BannBrightness::hideEvent(QHideEvent *event)
 {
-	Q_UNUSED(e);
-	bannOnDx::hide();
 	page->hide();
 }
 

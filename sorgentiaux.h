@@ -46,9 +46,9 @@ private slots:
 	void aumBrano();
 public slots:
 	void gestFrame(char*);
-	void hide();
 protected:
 	device *dev;
+	virtual void hideEvent(QHideEvent *event);
 };
 
 

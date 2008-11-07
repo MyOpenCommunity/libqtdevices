@@ -462,10 +462,9 @@ void impAnti::inizializza(bool forza)
 	dev->sendInit("*#5*0##");
 }
 
-void impAnti::hide()
+void impAnti::hideEvent(QHideEvent *event)
 {
-	qDebug("impAnti::hide()");
-	banner::hide();
+	qDebug("impAnti::hideEvent()");
 	if (tasti && !tasti->isHidden())
 	{
 		qDebug("HIDING KEYBOARD");

@@ -106,7 +106,8 @@ public slots:
 	void ToSendParz(bool s);
 	void openAckRx();
 	void openNakRx();
-	void hide();
+protected:
+	virtual void hideEvent(QHideEvent *event);
 signals:
 	void impiantoInserito();
 	void abilitaParz(bool);

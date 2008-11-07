@@ -69,10 +69,9 @@ void allarme::draw()
     qDebug("allarme::draw()");
 }
 
-void allarme::show()
+void allarme::showEvent(QShowEvent *event)
 {
-    qDebug("allarme::show()");
-    QFrame::show();
+    qDebug("allarme::showEvent()");
     bnav->show();
     Immagine->show();
     descr->show();

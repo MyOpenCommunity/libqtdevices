@@ -115,11 +115,10 @@ void ambDiffSon::Draw()
 	BannerText->setText(qtesto);
 }
 
-void ambDiffSon::hide()
+void ambDiffSon::hideEvent(QHideEvent *event)
 {
-	qDebug("ambDiffSon::hide()");
+	qDebug("ambDiffSon::hideEvent()");
 	setDraw(false);
-	banner::hide();
 }
 
 void ambDiffSon::configura()

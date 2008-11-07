@@ -31,13 +31,13 @@ public:
 	virtual void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
-	void hide();
 private slots:
 	void ciclaSorg();
 	void decBrano();
 	void aumBrano();
 	void menu();
 protected:
+	virtual void hideEvent(QHideEvent *event);
 	MultimediaSource source_menu;
 	device *dev;
 };

@@ -528,15 +528,14 @@ void scenEvo::inizializza(bool forza)
 	}
 }
 
-void scenEvo::hide()
+void scenEvo::hideEvent(QHideEvent *event)
 {
-	qDebug("scenEvo::hide()");
+	qDebug("scenEvo::hideEvent()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
 		scenEvo_cond *co = condList.at(i);
 		co->hide();
 	}
-	banner::hide();
 }
 
 scenEvo::~scenEvo()

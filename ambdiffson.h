@@ -46,13 +46,14 @@ private:
 public:
 	ambDiffSon(QWidget *parent=0, QString _name=NULL, void *indirizzo=NULL, QString Icona1="", QString Icona2="", QString Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
-	void hide();
 	void setDraw(bool d);
 	bool isDraw();
 public slots:
 	void configura();
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
+protected:
+	virtual void hideEvent(QHideEvent *event);
 signals:
 	void ambChanged(const QString &, bool, char *);
 };

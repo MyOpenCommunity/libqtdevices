@@ -38,14 +38,18 @@ class device;
 class banradio : public bannCiclaz
 {
 Q_OBJECT
-protected:
-	void pre_show();
-	radio* myRadio;
-	bool old_diffson;
-	device *dev;
 public:
 	banradio(QWidget *parent,const char *name,char* indirizzo, int nbut=4, const QString & ambdescr="");
 	void inizializza(bool forza = false);
+
+protected:
+	radio* myRadio;
+	bool old_diffson;
+	device *dev;
+	void pre_show();
+	virtual void hideEvent(QHideEvent *event);
+	virtual void showEvent(QShowEvent *event);
+
 protected slots:
 	void ciclaSorg();
 	void decBrano();
@@ -62,8 +66,6 @@ protected slots:
 	void grandadChanged(QWidget *);
 public slots:
 	void status_changed(QList<device_status*>);
-	virtual void	show();
-	void hide();
 	void SetTextU(const QString &);
 };
 
@@ -80,20 +82,26 @@ public slots:
 class sorgenteMultiRadio : public banradio
 {
 Q_OBJECT
+public:
+	sorgenteMultiRadio(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambDescr="");
+
+public slots:
+	void attiva();
+	void addAmb(char *);
+	void ambChanged(const QString &, bool, char *);
+
+protected:
+	virtual void showEvent(QShowEvent *event);
+
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
-public:
-	sorgenteMultiRadio(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambDescr="");
-public slots:
-	void attiva();
-	void addAmb(char *);
-	void ambChanged(const QString &, bool, char *);
-	void show();
+
 signals:
 	void active(int, int);
+
 };
 
 #endif
