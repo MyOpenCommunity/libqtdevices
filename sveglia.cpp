@@ -271,16 +271,18 @@ void sveglia::Closed()
 	delete oraSveglia;
 	oraSveglia = new QDateTime(dataOra->getDataOra());
 	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "hour",oraSveglia->time().toString("hh"),serNum);
-	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "minute",oraSveglia->time().toString("mm"),serNum);
-	char t[2];
-	sprintf(t,"%d",tipoSveglia);
+	// These calls to setCfgValue must be done atomically on conf.xml (remember, there are
+	// many processes that may write in conf.xml), so they are first done
+	// on a temporary file which is moved to conf.xml at the end
+	setCfgValue("cfg/conf1.lmx", SET_SVEGLIA, "hour", oraSveglia->time().toString("hh"), serNum);
+	setCfgValue("cfg/conf1.lmx", SET_SVEGLIA, "minute", oraSveglia->time().toString("mm"), serNum);
 	// FIXME: questa istruzione crea una foglia alarmset in fondo al file di conf
 	// che viene rimossa quando la sveglia suona.
 	// Se per qualche motivo il BTouch muore prima che la sveglia sia suonata
 	// il file di configurazione e' corrotto
-	setCfgValue("cfg/conf1.lmx",SET_SVEGLIA, "alarmset",t,serNum);
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
+	setCfgValue("cfg/conf1.lmx", SET_SVEGLIA, "alarmset", QString::number(tipoSveglia), serNum);
+	if (!::rename("cfg/conf1.lmx", "cfg/conf.xml"))
+		qWarning("%s: Could not move temporary config on conf.xml", __FILE__);
 }
 
 void sveglia::okTipo()

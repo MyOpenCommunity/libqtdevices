@@ -68,10 +68,14 @@ void getAmbName(char *name, char *out, char *amb, char len)
 	}
 }
 
-bool setCfgValue(QString file, int id, QString campo, QString valore, int serNumId)
+/**
+ * Changes a value in conf.xml file atomically.
+ * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
+ */
+bool setCfgValue(const QString &file, int id, const QString &campo, const QString &valore, int serNumId)
 {
 	int count;
-	QString tmp_file = "cfg/appoggio.xml";
+	const QString tmp_file = "cfg/appoggio.xml";
 
 	comChConf();
 	count = 1;
@@ -147,12 +151,12 @@ bool setCfgValue(QString file, int id, QString campo, QString valore, int serNum
 	return false;
 }
 
-bool setCfgValue(int id, const char* campo, const char* valore)
+bool setCfgValue(int id, const QString &campo, const QString &valore)
 {
-	return setCfgValue(id, campo, valore,1);
+	return setCfgValue(id, campo, valore, 1);
 }
 
-bool setCfgValue(int id, const char* campo, const char* valore,int serNumId)
+bool setCfgValue(int id, const QString &campo, const QString &valore, int serNumId)
 {
 	return setCfgValue(CONFILENAME, id, campo, valore, serNumId);
 }
