@@ -26,7 +26,7 @@ enum TemperatureScale
 };
 TemperatureScale readTemperatureScale();
 
-/// Seee getElement
+// See getElement
 QDomElement getConfElement(QString path);
 
 /****************************************************************
@@ -54,10 +54,6 @@ QDomElement getConfElement(QString path);
  */
 /// We use a global object to handle icons_library because different classes need icons.
 extern IconDispatcher icons_library;
-
-/// Global application config built using QDom
-extern QDomDocument qdom_appconfig;
-
 
 /****************************************************************
  ** Default configurazione applicativo

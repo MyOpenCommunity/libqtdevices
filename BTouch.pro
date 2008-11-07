@@ -101,7 +101,6 @@ HEADERS += actuators.h \
            videocitof.h \
            xmlconfhandler.h \
            xml_functions.h \
-           xmlvarihandler.h \
 
 SOURCES += actuators.cpp \
            allarme.cpp \
@@ -189,7 +188,6 @@ SOURCES += actuators.cpp \
            videocitof.cpp \
            xmlconfhandler.cpp \
            xml_functions.cpp \
-           xmlvarihandler.cpp \
 
 TRANSLATIONS += linguist-ts/btouch_ar.ts \
                 linguist-ts/btouch_de.ts \

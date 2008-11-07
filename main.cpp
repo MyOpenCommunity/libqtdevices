@@ -10,7 +10,6 @@
 
 #include "main.h"
 #include "btmain.h"
-#include "xmlvarihandler.h"
 #include "xml_functions.h"
 #include "generic_functions.h"
 
@@ -21,6 +20,7 @@
 #include <QTranslator>
 #include <QVector>
 #include <QtDebug>
+#include <QFile>
 
 #define TIMESTAMP
 #ifdef TIMESTAMP
@@ -30,39 +30,38 @@
 #include <signal.h>
 
 
+/// The struct that contain the global configuration values
+struct GlobalConfig
+{
+	int verbosity_level;
+	QString log_file;
+};
+
 // Instance global object to handle icons
 IconDispatcher icons_library;
-
 
 // Instance DOM global object to handle configuration.
 QDomDocument qdom_appconfig;
 
-// Configurazione applicativo - path - verbosity - ecc
+// Instance of a global config
+GlobalConfig global_config;
 
-// Variabili di inizializzazione
-char *My_File_Cfg = MY_FILE_CFG_DEFAULT;
-char *My_File_User_Cfg = MY_FILE_USER_CFG_DEFAULT;
-char *My_File_Log = MY_FILE_LOG_DEFAULT;
-char *My_Parser = MY_PARSER_DEFAULT;
-char *Xml_File_In = XML_FILE_IN_DEFAULT;
-char *Xml_File_Out = XML_FILE_OUT_DEFAULT;
+// A global pointer to the log file
 FILE *StdLog = stdout;
 
-// il VERBOSITY_LEVEL condiziona tutte le printf
-int  VERBOSITY_LEVEL = VERBOSITY_LEVEL_DEFAULT;
-char *Path_Var = NULL;
-char *bt_wd = NULL;
-char *My_Path = NULL;
+// The global verbosity_level, used by BTouch and libcommon (MySignal)
+int VERBOSITY_LEVEL;
 
-// il Suffisso serve per distinguere le stampe
+// Only for the linking with libcommon
+char *My_Parser = MY_PARSER_DEFAULT;
 char *Suffisso = "<BTo>";
-
-// Variabili SSL 
 int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
 
+/// A global pointer to BtMain
 BtMain *BTouch;
+
 
 QDomElement getConfElement(QString path)
 {
@@ -99,10 +98,13 @@ void myMessageOutput(QtMsgType type, const char *msg)
 	case QtDebugMsg:
 		if (VERBOSITY_LEVEL > 1)
 #ifndef TIMESTAMP
-		fprintf(StdLog, "<BTo> %s\n", msg);
+			fprintf(StdLog, "<BTo> %s\n", msg);
 #else
-		fprintf(StdLog, "<BTo>%.2d:%.2d:%.2d,%.1d  %s\n",QTime::currentTime().hour() ,QTime::currentTime().minute(),
-			QTime::currentTime().second(),QTime::currentTime().msec()/100,msg);
+		{
+			QTime now = QTime::currentTime();
+			fprintf(StdLog, "<BTo>%.2d:%.2d:%.2d,%.1d  %s\n",now.hour(), now.minute(),
+				now.second(), now.msec()/100, msg);
+		}
 #endif
 		break;
 	case QtWarningMsg:
@@ -140,18 +142,54 @@ QString getLanguage()
 	return QString(DEFAULT_LANGUAGE);
 }
 
+static void loadGlobalConfig(QString xml_file)
+{
+	global_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
+	global_config.log_file = MY_FILE_LOG_DEFAULT;
+
+	if (QFile::exists(xml_file))
+	{
+		QFile fh(xml_file);
+		QDomDocument qdom_config;
+		if (qdom_config.setContent(&fh))
+		{
+			QDomNode el = getElement(qdom_config, "root/sw");
+			if (!el.isNull())
+			{
+				QDomElement v = getElement(el, "BTouch/logverbosity");
+				if (!v.isNull())
+					global_config.verbosity_level = v.text().toInt();
+
+				QDomNode l = getChildWithName(el, "logfile");
+				if (!l.isNull())
+					global_config.log_file = l.toElement().text();
+			}
+		}
+	}
+}
+
+static void setupLogger(QString log_file)
+{
+	if (!log_file.isEmpty())
+		StdLog = fopen(log_file.toAscii().constData(), "a+");
+
+	if (NULL == StdLog)
+		StdLog = stdout;
+
+	// Prevent buffering
+	setvbuf(StdLog, (char *)NULL, _IONBF, 0);
+	setvbuf(stdout, (char *)NULL, _IONBF, 0);
+	setvbuf(stderr, (char *)NULL, _IONBF, 0);
+
+	qInstallMsgHandler(myMessageOutput);
+}
+
 
 int main(int argc, char **argv)
 {
-	 // Inizio Lettura configurazione applicativo
-	QFile *xmlFile;
-	char *logFile;
-
-	logFile = new(char[MAX_PATH]);
-	strncpy(logFile, My_File_Log, MAX_PATH);
+	QApplication a(argc, argv);
 
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
-
 	if (!qdom_appconfig.setContent(&file))
 	{
 		file.close();
@@ -159,30 +197,9 @@ int main(int argc, char **argv)
 	}
 	file.close();
 
-	QApplication a(argc, argv);
-
-	xmlcfghandler *handler = new xmlcfghandler(&VERBOSITY_LEVEL, &logFile);
-	xmlFile = new QFile(My_File_Cfg);
-	QXmlInputSource source(xmlFile);
-	QXmlSimpleReader reader;
-	reader.setContentHandler(handler);
-	reader.parse(source);
-	delete handler;
-	delete xmlFile;
-
-	if (strcmp(logFile,"") && strcmp(logFile,"-"))  // Settato il file di log
-		StdLog = fopen(logFile,"a+");
-	if (NULL == StdLog)
-	{
-		StdLog = stdout;
-		qDebug("StdLog==NULL");
-	}
-	// No bufferizzazione
-	setvbuf(StdLog, (char *)NULL, _IONBF, 0);
-	setvbuf(stdout, (char *)NULL, _IONBF, 0);
-	setvbuf(stderr, (char *)NULL, _IONBF, 0);
-	// D'ora in avanti qDebug, ... scrivono dove gli ho detto io
-	qInstallMsgHandler(myMessageOutput);
+	loadGlobalConfig(MY_FILE_CFG_DEFAULT);
+	setupLogger(global_config.log_file);
+	VERBOSITY_LEVEL = global_config.verbosity_level;
 
 	QString language_suffix = getLanguage();
 	if (language_suffix != QString(DEFAULT_LANGUAGE))
