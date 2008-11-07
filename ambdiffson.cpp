@@ -221,9 +221,9 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QList<QString*> *names, void *indi
 			{
 				QString s = *indirizzi->at(i);
 				QStringList qsl = s.split(',');
-				QList<QString> *li = new QList<QString>();
+				QList<QString*> *li = new QList<QString*>();
 				for (int j = 0; j < qsl.size(); ++j)
-					li->append(qsl[j]);
+					li->append(new QString(qsl[j]));
 				diffson->addItemU(am->tipo, *am->descr->at(0), li, icons, am->modo);
 			}
 		}
