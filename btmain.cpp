@@ -162,10 +162,10 @@ bool BtMain::loadSkin(QString xml_file)
 	if (QFile::exists(xml_file))
 	{
 		QFile extra(xml_file);
-		QDomDocument qdom_extra;
-		if (qdom_extra.setContent(&extra))
+		QDomDocument dom;
+		if (dom.setContent(&extra))
 		{
-			QDomElement style = getElement(qdom_extra, "extra/stylesheet");
+			QDomElement style = getElement(dom, "extra/stylesheet");
 			if (!style.isNull())
 			{
 				qApp->setStyleSheet(style.text());
