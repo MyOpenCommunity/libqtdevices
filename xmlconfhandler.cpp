@@ -368,9 +368,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 		{
 			if (!CurTagL3.compare("homepage") && (CurTagL4.isEmpty()))
 			{
-				qWarning("HOMEPAGE");
-				qWarning("hompage_isdefined=%d",hompage_isdefined);
-				qWarning("hompage_id=%d",hompage_id);	
+				qDebug() << "HOMEPAGE isdefined:" << hompage_isdefined << "id:" << hompage_id;
 				if (hompage_isdefined)
 				{
 					if (hompage_isdefined)
