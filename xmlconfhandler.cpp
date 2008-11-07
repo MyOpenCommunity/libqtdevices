@@ -973,27 +973,20 @@ bool xmlconfhandler::characters(const QString & qValue)
 					qDebug("INSERTING PAGE: %s",pagTesti[page_id-1]);
 					QDomNode n;
 
-					// TODO: questo codice e' pieno di hide, che pero' non e' la stessa
-					// hide della qwidget (perche' non e' virtuale) e quindi va chiamata
-					// separatamente prima di fare l'upcast. Trovare un modo di evitare
-					// queste ripetizioni.
 					switch (page_id)
 					{
 					case AUTOMAZIONE:
 						*automazioni = new sottoMenu(NULL,"AUTOM");
-						(*automazioni)->hide();
 						pageAct = *automazioni;
 						break;
 
 					case ILLUMINAZIONE:
 						*illumino = new sottoMenu(NULL,"ILLUMINO");
-						(*illumino)->hide();
 						pageAct = *illumino;
 						break;
 
 					case DIFSON_MULTI:
 						*dm = new diffmulti(NULL, "DIFSON_MULTI");
-						(*dm)->hide();
 						pageAct = *dm;
 						page_item_id_m = 0;
 						page_item_descr_m->clear();
@@ -1003,25 +996,21 @@ bool xmlconfhandler::characters(const QString & qValue)
 
 					case SCENARI:
 						*scenari = new sottoMenu(NULL,"SCENARI");
-						(*scenari)->hide();
 						pageAct = *scenari;
 						break;
 
 					case CARICHI:
 						*carichi = new sottoMenu(NULL,"CARICHI");
-						(*carichi)->hide();
 						pageAct = *carichi;
 						break;
 
 					case DIFSON:
 						*difSon = new diffSonora(NULL);
-						(*difSon)->hide();
 						pageAct = *difSon;
 						break;
 
 					case ANTIINTRUSIONE:
 						*antintr = new antintrusione(NULL,"ANTI");
-						(*antintr)->hide();
 						pageAct = *antintr;
 						break;
 
@@ -1031,7 +1020,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 							*termo = new ThermalMenu(NULL, "TERMO", n);
 						else
 							qWarning("TERMOREGOLAZIONE configuration not found!");
-						(*termo)->hide();
 						pageAct = *termo;
 						break;
 
@@ -1041,44 +1029,39 @@ bool xmlconfhandler::characters(const QString & qValue)
 							*termo = new ThermalMenu(NULL, "TERMO", n);
 						else
 							qWarning("TERMOREG_MULTI_PLANT configuration not found!");
-						(*termo)->hide();
 						pageAct = *termo;
 						break;
 
 					case IMPOSTAZIONI:
 						*imposta = new sottoMenu(NULL,"IMPOSTA");
 						QObject::connect(*imposta,SIGNAL(setPwd(bool,char*)), BtM, SLOT (setPwd(bool,char*)));
-						(*imposta)->hide();
 						pageAct = *imposta;
 						break;
 
 					case SCENARI_EVOLUTI:
 						*scenari_evoluti = new sottoMenu(NULL,"SCENARI_EVOLUTI");
-						(*scenari_evoluti)->hide();
 						pageAct = *scenari_evoluti;
 						break;
 
 					case VIDEOCITOFONIA:
 						*videocitofonia = new sottoMenu(NULL, "VIDEOCITOFONIA");
-						(*videocitofonia)->hide();
 						pageAct = *videocitofonia;
 						break;
 
 					case SUPERVISIONE:
 						n = getPageNode(page_id);
 						*supervisione = new SupervisionMenu(NULL, "SUPERVISIONE", n);
-						(*supervisione)->hide();
 						pageAct = *supervisione;
 						break;
 
 					case SPECIAL:
 						(*specPage) = new homePage(NULL,"SPECIAL");
 						(*specPage)->addButton(0,260,ICON_FRECCIA_SX ,BACK);
-						(*specPage)->hide();
 						pageAct = *specPage;
 						break;
 					} // switch (page_id)
 
+					pageAct->hide();
 					if (idPageDefault == page_id && hompage_isdefined)
 						*pagDefault = pageAct;
 
