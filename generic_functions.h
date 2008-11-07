@@ -126,11 +126,6 @@ bool setCfgValue(int id, const QString &campo, const QString &valore, int serNum
 */
 bool copyFile(char*, char*);
 
-void  comChConf();
- /*!
-  \brief Retrieves the name of the device.
-*/
-
 void getName(char *name);
 
 void resetTimer(int signo);
