@@ -551,7 +551,7 @@ void FSBannFancoil::createFancoilButtons()
 		QString path_pressed = QString(IMG_PATH) + FANCOIL_ICONS[i+1];
 		BtButton *btn = new BtButton(this);
 		btn->setImage(path);
-		btn->setToggleButton(true);
+		btn->setCheckable(true);
 
 		hbox->addWidget(btn);
 		fancoil_buttons.addButton(btn, id);

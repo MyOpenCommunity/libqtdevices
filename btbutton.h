@@ -27,8 +27,6 @@ public:
 	void setPressedPixmap(const QPixmap &p);
 	void setPixmap(const QPixmap &p);
 
-	void setToggleButton(bool) {}
-
 protected:
 	virtual void paintEvent(QPaintEvent *event);
 
