@@ -9,8 +9,6 @@ BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
 	setStyleSheet(QString("border:0px;"));
 	setFocusPolicy(Qt::NoFocus);
-	// ?? TODO: sistemare, ci sono problemi.. verificare a cosa serviva in buttons_bar e sveglia..
-	// setCheckable(true);
 }
 
 void BtButton::setImage(const QString &icon_path, IconFlag f)
@@ -42,7 +40,6 @@ void BtButton::paintEvent(QPaintEvent *event)
 
 	if (!pressed_pixmap.isNull() && (isDown() || isChecked()))
 	{
-		//qDebug() << "Is down:" << isDown() << " Is checked:" << isChecked();
 		p = &pressed_pixmap;
 	}
 
