@@ -13,7 +13,7 @@
 
 #include "bannregolaz.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 class device_status;
 class device;

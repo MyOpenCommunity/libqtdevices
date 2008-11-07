@@ -12,7 +12,8 @@
 #define BANN4BUT_H
 
 #include "banner.h"
-#include <qwidget.h>
+
+#include <QWidget>
 
 
 #define BAN4BUT_DIM 60

@@ -3,10 +3,10 @@
 #ifndef __DEVICE_CACHE_H__
 #define __DEVICE_CACHE_H__
 
-#include <qmap.h>
-#include <qstring.h>
-
 #include "device_status.h"
+
+#include <QMap>
+#include <QString>
 
 class Client;
 class device;
@@ -20,9 +20,9 @@ private:
 	//! Disconnect comm signals
 	void disconnect_comm(device *);
 
-	Client * client_comandi;
-	Client * client_monitor;
-	Client * client_richieste;
+	Client *client_comandi;
+	Client *client_monitor;
+	Client *client_richieste;
 public:
 	//! Constructor
 	device_cache();

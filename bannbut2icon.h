@@ -12,8 +12,8 @@
 #define BANNBUT2ICON_H
 
 #include "banner.h"
-#include <qwidget.h>
 
+#include <QWidget>
 
 
 #define BANNBUT2ICON_TEXT_DIM_X          240

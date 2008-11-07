@@ -16,7 +16,7 @@
 #include "bannondx.h"
 #include "brightnesscontrol.h"
 
-#include <qbuttongroup.h>
+#include <QButtonGroup>
 
 class BannToggle : public bannOnSx
 {

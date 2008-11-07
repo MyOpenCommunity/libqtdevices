@@ -12,7 +12,7 @@
 #define XMLVARIHANDLER_H
 
 #include <qxml.h>
-#include <qstring.h>
+#include <QString>
 
 
 /*!

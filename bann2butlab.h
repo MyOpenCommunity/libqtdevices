@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 
 #define BUT2BL_ICON_DIM_X 120

@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 class QTimer;
 

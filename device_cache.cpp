@@ -3,7 +3,7 @@
 #include "device.h"
 #include "poweramplifier_device.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 
 static inline QString key_to_where(QString k)

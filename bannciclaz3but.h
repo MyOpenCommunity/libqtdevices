@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 
 #define BANCICL3BUT_SMALL_BUT_DIM_X 60

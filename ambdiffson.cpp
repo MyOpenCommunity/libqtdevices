@@ -17,6 +17,7 @@
 #include "fontmanager.h"
 
 #include <QDebug>
+#include <QLabel>
 #include <QFont>
 
 #include <stdlib.h>

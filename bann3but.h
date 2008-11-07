@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 #define BAN3BUT_BUT_DIM 60
 #define BAN3BUT_BUTCEN_DIM 120

@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 #define BANON2SCR_TEXT1_DIM_X 100
 #define BANON2SCR_TEXT1_DIM_Y 60

@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 #define BUTONOFF2SCR_ICON_DIM_X 80
 #define BUTONOFF2SCR_ICON_DIM_Y 60

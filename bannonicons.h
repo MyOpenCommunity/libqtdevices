@@ -12,7 +12,8 @@
 #define BANNONICONS
 
 #include "banner.h"
-#include <qwidget.h>
+
+#include <QWidget>
 
 /*!
   \class bannOnIcons

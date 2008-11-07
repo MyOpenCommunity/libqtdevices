@@ -13,8 +13,8 @@
 
 #include "bannbuticon.h"
 
-#include <qwidget.h>
-#include <qstring.h>
+#include <QWidget>
+#include <QString>
 
 /// Forward Declarations
 class device;

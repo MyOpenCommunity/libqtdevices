@@ -16,7 +16,7 @@
 #define BANNONOFF_COMBO
 
 #include "banner.h"
-#include <qwidget.h>
+#include <QWidget>
 
 enum ComboStatus
 {

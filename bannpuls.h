@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 #define BANPULS_BUT_DIM  60
 #define BANPULS_ICON_DIM_X 120

@@ -12,7 +12,7 @@
 #ifndef SCALECONVERSION_H
 #define SCALECONVERSION_H
 
-#include <qstring.h>
+#include <QString>
 
 /**
  * Creates a string from an integer that represents Celsius degrees.

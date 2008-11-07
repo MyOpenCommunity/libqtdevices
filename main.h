@@ -12,7 +12,7 @@
 
 #include "icondispatcher.h"
 
-#include <qdom.h>
+#include <QDomNode>
 
 QDomNode getPageNode(int id);
 QString getLanguage();

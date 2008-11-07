@@ -12,7 +12,7 @@
 #include "btbutton.h"
 #include "main.h"
 
-#include <qlayout.h>
+#include <QLayout>
 
 
 BtButton *getButton(QString img, QWidget *parent, bool autorepeat)

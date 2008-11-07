@@ -13,8 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
-#include <qlabel.h>
+#include <QWidget>
 
 
 #define BANNBUTICON_TEXT_DIM_X          240

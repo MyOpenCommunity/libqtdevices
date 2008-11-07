@@ -3,7 +3,7 @@
 
 #include "device.h"
 
-#include <qmap.h>
+#include <QMap>
 
 
 class poweramplifier_device : public device

@@ -15,9 +15,9 @@
 
 #include "bttime.h"
 
-#include <qwidget.h>
-#include <qlcdnumber.h>
-#include <qdatetime.h>
+#include <QWidget>
+#include <QLCDNumber>
+#include <QDateTime>
 
 /**
  * A widget that emulates QTimeEdit

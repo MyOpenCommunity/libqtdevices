@@ -13,7 +13,7 @@
 
 #include <common_functions.h>
 
-#include <qwidget.h>
+#include <QWidget>
 
 class sottoMenu;
 class diffSonora;
