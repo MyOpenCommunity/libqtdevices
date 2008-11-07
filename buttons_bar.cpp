@@ -51,7 +51,6 @@ ButtonsBar::ButtonsBar(QWidget *parent, unsigned int number_of_buttons, Qt::Orie
 		box->addWidget(btn);
 		buttons_list.append(btn);
 	}
-	isToggleBar = false;
 
 	/// Connect Signal
 	connect(buttons_group, SIGNAL(buttonClicked(int)), this, SIGNAL(clicked(int)));
@@ -71,24 +70,6 @@ bool ButtonsBar::setButtonIcons(unsigned int button_number, const QPixmap &icon,
 	// Non è necessario il setGeometry o il resize dei pulsanti,
 	// ma è molto importante nel costruttore del ButtonGroup indicare il numero di pulsanti
 	return true;
-}
-
-void ButtonsBar::setToggleButtons(bool enable)
-{
-	for (int i = 0; i < buttons_list.size(); i++)
-		buttons_list.at(i)->setToggleButton(enable);
-	
-	isToggleBar = enable;
-}
-
-void ButtonsBar::setToggleStatus(unsigned int button_up_index)
-{
-	if (isToggleBar && (int)button_up_index < buttons_list.size())
-	{
-		for (int i = 0; i < buttons_list.size(); i++)
-			buttons_list.at(i)->setChecked(false);
-		buttons_list.at(button_up_index)->setChecked(true);
-	}
 }
 
 void ButtonsBar::showButton(int idx)

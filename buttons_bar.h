@@ -37,14 +37,9 @@ public:
 	~ButtonsBar();
 	bool setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon);
 	
-	/// Set toggle state on all buttons
-	void setToggleButtons(bool enable);
-	/// If Toggle Status has been enabled, set the given button on;
-	void setToggleStatus(unsigned int button_up_index);
 	void showButton(int idx);
 	void hideButton(int idx);
 private:
-	bool isToggleBar;
 	QVector<BtButton*>  buttons_list;
 	QButtonGroup *buttons_group;
 signals:
