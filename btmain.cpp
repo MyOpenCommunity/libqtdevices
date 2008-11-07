@@ -161,7 +161,7 @@ bool BtMain::loadSkin(QString xml_file)
 {
 	if (QFile::exists(xml_file))
 	{
-		QFile extra(EXTRA_FILE);
+		QFile extra(xml_file);
 		QDomDocument qdom_extra;
 		if (qdom_extra.setContent(&extra))
 		{
