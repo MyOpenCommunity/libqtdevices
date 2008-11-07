@@ -25,7 +25,6 @@
 
 #define CONFILENAME	"cfg/conf.xml"
 
-static void comChConf();
 
 QString getPressName(QString name)
 {
@@ -77,7 +76,11 @@ bool setCfgValue(const QString &file, int id, const QString &campo, const QStrin
 	int count;
 	const QString tmp_file = "cfg/appoggio.xml";
 
-	comChConf();
+	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
+	if (fd >= 0)
+	{
+		close(fd);
+	}
 	count = 1;
 	if (QFile::exists(tmp_file))
 		QFile::remove(tmp_file);
@@ -414,15 +417,6 @@ void rearmWDT()
 		{
 			close(fd);
 		}
-	}
-}
-
-void  comChConf()
-{
-	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
-	if (fd >= 0)
-	{
-		close(fd);
 	}
 }
 
