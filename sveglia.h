@@ -169,7 +169,7 @@ public slots:
 /*!
   \brief Analyzes the \a Open \a Frame incoming to understand how the end-user want his a sound \a diffusion \a alarm \a set to work.
 */
-	void gestFrame(char*);
+	void gestFrame(char *f);
 
 /*!
   \brief Stops the alarm set.
@@ -189,7 +189,7 @@ private:
 	int volSveglia[AMPLI_NUM];
 	bool gesFrameAbil,svegliaAbil,onceToGest;
 	QTimer *minuTimer,*aumVolTimer;
-	char *frame;
+	QString frame;
 };
 
 #endif // SVEGLIA_H

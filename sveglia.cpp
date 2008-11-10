@@ -108,11 +108,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	tipo = t;
 	qDebug("tipoSveglia= %d - tipo= %d",tipoSveglia, tipo);
 	if (tipo == FRAME)
-	{
-		frame = new char[50];
-		memset(frame,'\000',sizeof(frame));
-		sprintf(frame,"%s",f);
-	}
+		frame = f;
 }
 
 void sveglia::okTime()
@@ -332,7 +328,7 @@ void sveglia::activateSveglia(bool a)
 	}
 }
 
-void sveglia::gestFrame(char* frame)
+void sveglia::gestFrame(char* f)
 {
 	if (gesFrameAbil == false)
 		return;
@@ -340,12 +336,12 @@ void sveglia::gestFrame(char* frame)
 	openwebnet msg_open;
 	int deviceAddr;
 
-	msg_open.CreateMsgOpen(frame,strstr(frame,"##") - frame + 2);
+	msg_open.CreateMsgOpen(f, strstr(f, "##") - f + 2);
 
 	if (!strcmp(msg_open.Extract_chi(),"16"))
 	{
 		deviceAddr = atoi(msg_open.Extract_dove());
-		if ((deviceAddr >= 0) && (deviceAddr <= AMPLI_NUM))
+		if (deviceAddr >= 0 && deviceAddr <= AMPLI_NUM)
 		{
 			if (!msg_open.IsMeasureFrame())
 			{
@@ -442,8 +438,8 @@ void sveglia::verificaSveglia()
 			}
 			else if (tipo == FRAME)
 			{
-				qDebug("mando la frame: %s", frame);
-				emit sendFrame(frame);
+				qDebug() << "mando la frame:" << frame;
+				emit sendFrame(frame.toAscii().data());
 			}
 
 			qDebug("PARTE LA SVEGLIA");
