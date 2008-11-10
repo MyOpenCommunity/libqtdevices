@@ -96,11 +96,11 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 	banner *b;
 	switch (tipo)
 	{
-	/** WARNING SORG_RADIO and SORG_AUX are multichannel sources.
-		*  the not-multichannel are called SORGENTE_RADIO and SORGENTE_AUX (!)
-		*
-		*  So we added here the case for our new source that is SORGENTE_MULTIM_MC
-		*/
+		/** WARNING SORG_RADIO and SORG_AUX are multichannel sources.
+		 *  the not-multichannel are called SORGENTE_RADIO and SORGENTE_AUX (!)
+		 *
+		 *  So we added here the case for our new source that is SORGENTE_MULTIM_MC
+		 */
 	case SORGENTE_MULTIM_MC:
 		qDebug("diffmulti::additem -> Entering SORGENTE_MULTIM_MC case...");
 		// Kemosh FIX: store indirizzo to emit the proper init frame
@@ -112,8 +112,8 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 		qDebug() << "Source (" << (int)tipo << ", " << *descrizioni->at(0) << "): appending to source list";
 		qDebug("sorgenti->addItem (%p)", sorgenti);
 		/*
-			* NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
-			*/
+		 * NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
+		 */
 		sorgenti->addItemU(tipo, *descrizioni->at(0), (char *)indirizzo, icon_names, 0, numFrame);
 		b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));

@@ -73,11 +73,6 @@ public slots:
 protected:
 	virtual void hideEvent(QHideEvent *event);
 
-signals:
-	void actSrcChanged(int, int);
-	void dsClosed();
-	void gesFrame(char *);
-
 private:
 	QList<diffSonora*> dslist;
 	QList<dati_ampli_multi*> datimmulti;
@@ -85,6 +80,11 @@ private:
 	device *matr;
 	/// kemosh FIX
 	int _where_address;
+
+signals:
+	void actSrcChanged(int, int);
+	void dsClosed();
+	void gesFrame(char *);
 };
 
 
@@ -95,9 +95,6 @@ class sveglia;
 class contdiff : public QObject
 {
 Q_OBJECT
-private:
-	diffSonora *ds;
-	diffmulti *dm;
 public:
 	contdiff(diffSonora *, diffmulti *);
 	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
@@ -115,6 +112,10 @@ public slots:
 	//! Invoke proper hide method
 	void hide();
 	void show();
+
+private:
+	diffSonora *ds;
+	diffmulti *dm;
 
 signals:
 	/*!
