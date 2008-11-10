@@ -128,7 +128,7 @@ signals:
 /*! \brief Emitted when the \a special \a function is required.*/
 	void Special();
 /*! \brief Emitted when the the object is closed.*/
-	void Close();
+	void Closed();
 /*! \brief Emitted to send \a Open \a frame on the system.*/
 	void sendFrame(char*);
 	void sendInit(char*);

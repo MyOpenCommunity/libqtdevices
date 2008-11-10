@@ -810,12 +810,12 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case SPECIAL:
 						QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*specPage,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*specPage,SIGNAL(Close()),*specPage,SLOT(hide()));
+						QObject::connect(*specPage,SIGNAL(Closed()),*specPage,SLOT(hide()));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-						QObject::connect(*specPage,SIGNAL(Close()),*home,SLOT(showFullScreen()));
+						QObject::connect(*specPage,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*specPage,SIGNAL(Close()),*home,SLOT(show()));
+						QObject::connect(*specPage,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*specPage,SLOT(gestFrame(char *)));
 						break;

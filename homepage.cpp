@@ -104,7 +104,7 @@ void homePage::addButton(int x, int y, QString iconName, char function, QString 
 		connect(b1, SIGNAL(clicked()), this, SIGNAL(Supervisione()));
 		break;
 	case BACK:
-	 	connect(b1, SIGNAL(clicked()), this, SIGNAL(Close()));
+		connect(b1, SIGNAL(clicked()), this, SIGNAL(Closed()));
 		break;
 	}
 }
