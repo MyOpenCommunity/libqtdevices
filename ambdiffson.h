@@ -77,7 +77,7 @@ private:
 	sottoMenu *sorgenti;
 	QString name;
 public:
-	insAmbDiffSon(QWidget *parent=0, QList<QString*> *descrizioni=NULL, void *indirizzo=NULL, QString Icona1="", QString Icona2="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	insAmbDiffSon(QWidget *parent=0, QList<QString*> *descrizioni=NULL, QString Icona1="", QString Icona2="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
 public slots:
 	void configura();
