@@ -201,14 +201,14 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo
 
 int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *> *indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
 {
+	assert(tipo != AMBIENTE);
 	qDebug("diffmulti::addItem (%d)", tipo);
-	qDebug("Amplificatore (%s)", (char *)indirizzo);
+	qDebug("Amplificatore (%p)", indirizzo);
 	qDebug("%d elementi in descrizioni", descrizioni->count());
 
 	switch (tipo)
 	{
 	case INSIEME_AMBIENTI:
-	case AMBIENTE:
 		{
 			// Do not create "sorgenti" submenu
 			diffSonora *ds = new diffSonora(NULL, sorgenti);
@@ -216,17 +216,8 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
 			ds->draw();
 			banner *b;
-			if (tipo == AMBIENTE)
-			{
-				b = new ambDiffSon(this, *descrizioni->at(0), (char *)indirizzo,
-						*safeAt(icon_names, 0), *safeAt(icon_names, 1), *safeAt(icon_names, 2),
-						&datimmulti, ds, sorgenti, this);
-			}
-			else
-			{
-				b = new insAmbDiffSon(this, descrizioni, indirizzo, *safeAt(icon_names, 0),
-						*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
-			}
+			b = new insAmbDiffSon(this, descrizioni, indirizzo, *safeAt(icon_names, 0),
+					*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
 			elencoBanner.append(b);
 			dslist.append(ds);
 			banner *last = elencoBanner.last();
@@ -237,8 +228,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *
 			connect(last, SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
 			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
-			if (tipo == AMBIENTE)
-				sorgenti->addAmb((char *)indirizzo);
 
 			while (!datimmulti.isEmpty())
 				delete datimmulti.takeFirst();
