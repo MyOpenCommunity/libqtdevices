@@ -104,9 +104,8 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	dataOra->setLineWidth(0);
 	difson = diso;
 	if (difson)
-	{
 		difson->hide();
-	}
+
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;
 	minuTimer = NULL;
@@ -184,15 +183,14 @@ void sveglia::mostra()
 	connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
 
 	if (difson)
-	{
 		difson->connectClosed(this);
-	}
+
 	connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
 	connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
 	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
 	connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));
 	aggiornaDatiEEprom = 0;
-	if (tipo!=DI_SON)
+	if (tipo != DI_SON)
 		bannNavigazione->mostra(banner::BUT2);
 }
 
@@ -205,9 +203,7 @@ void sveglia::drawSelectPage()
 void sveglia::sel1(bool isOn)
 {
 	if (isOn)
-	{
 		tipoSveglia = ONCE;
-	}
 	drawSelectPage();
 }
 
@@ -243,7 +239,7 @@ void sveglia::Closed()
 		difson->disconnectClosed(this);
 		if (aggiornaDatiEEprom)
 		{
-			difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)FALSE);
+			difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)false);
 			difson->setNavBarMode(3);
 			difson->ripristinaRighe();
 			difson->restorewindows();
@@ -255,9 +251,7 @@ void sveglia::Closed()
 			eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
 			lseek(eeprom,BASE_EEPROM + (serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
 			for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
-			{
 				write(eeprom,&volSveglia[idx],1);
-			}
 			write(eeprom,&sorgente,1);
 			write(eeprom,&stazione,1);
 			::close(eeprom);
@@ -265,8 +259,8 @@ void sveglia::Closed()
 		}
 	}
 
-	gesFrameAbil = FALSE;
-	activateSveglia(TRUE);
+	gesFrameAbil = false;
+	activateSveglia(true);
 	emit ImClosed();
 	delete oraSveglia;
 	oraSveglia = new QDateTime(dataOra->getDataOra());
@@ -296,27 +290,23 @@ void sveglia::okTipo()
 	}
 	Immagine->show();
 	if (tipo != DI_SON)
-	{
 		Closed();
-	}
 	else if (difson)
 	{
 		this->bannNavigazione->hide();
 		difson->setNumRighe((uchar)3);
 		difson->setGeom(0,80,240,240);
 		difson->setNavBarMode(6);
-		difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)TRUE);
+		difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)true);
 		difson->resizewindows();
 		difson->forceDraw();
 
 		aggiornaDatiEEprom = 1;
-		gesFrameAbil = TRUE;
+		gesFrameAbil = true;
 		sorgente = 101;
 		stazione = 0;
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
-		{
 			volSveglia[idx] = -1;
-		}
 		difson->show();
 	}
 }
@@ -349,7 +339,7 @@ void sveglia::activateSveglia(bool a)
 
 void sveglia::gestFrame(char* frame)
 {
-	if (gesFrameAbil == FALSE)
+	if (gesFrameAbil == false)
 		return;
 
 	openwebnet msg_open;
@@ -405,9 +395,7 @@ void sveglia::gestFrame(char* frame)
 			{
 				sorgente = deviceAddr;
 				if (sorgente > 109)
-				{
-					sorgente=sorgente - ((sorgente-100)/10)*10;
-				}
+					sorgente = sorgente - ((sorgente-100)/10)*10;
 				qDebug("Sorgente %d", sorgente);
 			}
 			if (msg_open.IsMeasureFrame() && (!strcmp(msg_open.Extract_grandezza(),"7")))
@@ -416,9 +404,7 @@ void sveglia::gestFrame(char* frame)
 				qDebug("Stazione %d",stazione);
 				sorgente = deviceAddr;
 				if (sorgente > 109)
-				{
 					sorgente = sorgente-((sorgente-100)/10)*10;
-				}
 				qDebug("Sorgente %d", sorgente);
 			}
 		}
@@ -432,9 +418,9 @@ void sveglia::verificaSveglia()
 
 	QDateTime actualDateTime = QDateTime::currentDateTime();
 
-	if ((tipoSveglia==SEMPRE) || ((tipoSveglia==ONCE)) ||\
-		((tipoSveglia==FERIALI) && (actualDateTime.date().dayOfWeek()<6)) ||\
-		((tipoSveglia==FESTIVI) && (actualDateTime.date().dayOfWeek()>5)))
+	if (tipoSveglia == SEMPRE || tipoSveglia == ONCE ||
+		(tipoSveglia == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
+		(tipoSveglia == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
 	{
 		qDebug("secsTo: %d",oraSveglia->time().secsTo(actualDateTime.time()));
 		if ((actualDateTime.time() >= (oraSveglia->time())) && ((oraSveglia->time().secsTo(actualDateTime.time())<60)))
@@ -446,8 +432,8 @@ void sveglia::verificaSveglia()
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(buzzerAlarm()));
 				contaBuzzer = 0;
 				conta2min = 0;
-				emit freeze(TRUE);
-				emit svegl(TRUE);
+				emit freeze(true);
+				emit svegl(true);
 			}
 			else if (tipo == DI_SON)
 			{
@@ -456,8 +442,8 @@ void sveglia::verificaSveglia()
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
 				BrightnessControl::instance()->setState(ON);
-				emit freeze(TRUE);
-				emit svegl(TRUE);
+				emit freeze(true);
+				emit svegl(true);
 			}
 			else if (tipo == FRAME)
 			{
@@ -468,7 +454,7 @@ void sveglia::verificaSveglia()
 			qDebug("PARTE LA SVEGLIA");
 
 		if (tipoSveglia == ONCE)
-			activateSveglia(FALSE);
+			activateSveglia(false);
 		}
 	}
 	if (svegliaAbil)
@@ -516,7 +502,7 @@ void sveglia::aumVol()
 		{
 			if (volSveglia[idx] > -1)
 			{
-				if ((idx >= 10) && (idx <= 19))
+				if (idx >= 10 && idx <= 19)
 				{
 					if (!amb1)
 					{
@@ -529,7 +515,7 @@ void sveglia::aumVol()
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
-				if ((idx >= 20) && (idx <= 29))
+				if (idx >= 20 && idx <= 29)
 				{
 					if (!amb2)
 					{
@@ -542,7 +528,7 @@ void sveglia::aumVol()
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
-				if ((idx >= 30) && (idx <= 39))
+				if (idx >= 30 && idx <= 39)
 				{
 					if (!amb3)
 					{
@@ -555,7 +541,7 @@ void sveglia::aumVol()
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
-				if ((idx >= 40) && (idx <= 49))
+				if (idx >= 40 && idx <= 49)
 				{
 					if (!amb4)
 					{
@@ -568,7 +554,7 @@ void sveglia::aumVol()
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
-				if ((idx >= 50) && (idx <= 59))
+				if (idx >= 50 && idx <= 59)
 				{
 					if (!amb5)
 					{
@@ -581,7 +567,7 @@ void sveglia::aumVol()
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
-				if ((idx >= 60) && (idx <= 69))
+				if (idx >= 60 && idx <= 69)
 				{
 					if (!amb6)
 					{
@@ -594,7 +580,7 @@ void sveglia::aumVol()
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
-				if ((idx >= 70) && (idx <= 79))
+				if (idx >= 70 && idx <= 79)
 				{
 					if (!amb7)
 					{
@@ -607,7 +593,7 @@ void sveglia::aumVol()
 						emit sendFrame(msg_open.frame_open);
 					}
 				}
-				if ((idx >= 80) && (idx <= 89))
+				if (idx >= 80 && idx <= 89)
 				{
 					if (!amb8)
 					{
@@ -692,8 +678,8 @@ void sveglia::aumVol()
 				emit sendFrame(msg_open.frame_open);
 			}
 		}
-		emit freeze(FALSE);
-		emit svegl(FALSE);
+		emit freeze(false);
+		emit svegl(false);
 	}
 }
 
@@ -702,14 +688,12 @@ void sveglia::buzzerAlarm()
 	if (contaBuzzer == 0)
 	{
 		buzAbilOld=getBeep();
-		setBeep(TRUE,FALSE);
+		setBeep(true,false);
 	}
 	if  (contaBuzzer%2==0)
 	{
 		if (((contaBuzzer+2)%12) && (contaBuzzer%12))
-		{
 			beep(10);
-		}
 	}
 
 	if (contaBuzzer%8==0)
@@ -722,11 +706,11 @@ void sveglia::buzzerAlarm()
 	{
 		qDebug("SPENGO LA SVEGLIA");
 		aumVolTimer->stop();
-		setBeep(buzAbilOld,FALSE);
+		setBeep(buzAbilOld,false);
 		delete aumVolTimer;
 		aumVolTimer = NULL;
-		emit freeze(FALSE);
-		emit svegl(FALSE);
+		emit freeze(false);
+		emit svegl(false);
 	}
 }
 
@@ -739,11 +723,11 @@ void sveglia::spegniSveglia(bool b)
 			qDebug("SPENGO LA SVEGLIA");
 			aumVolTimer->stop();
 			if (tipo==BUZZER)
-				setBeep(buzAbilOld,FALSE);
+				setBeep(buzAbilOld,false);
 
 			delete aumVolTimer;
 			aumVolTimer = NULL;
-			emit (svegl(FALSE));
+			emit (svegl(false));
 		}
 	}
 	else if (b)
