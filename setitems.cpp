@@ -41,7 +41,8 @@ void setDataOra::hideEvent(QHideEvent *event)
 }
 
 
-impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff* diso, char*h, char*m, char* icon1, char*icon2, int enabled , int freq , char* frame, int tipo)
+impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff *diso, char *h, char *m, char *icon1,
+	char *icon2, int enabled, int freq, char *frame, int tipo)
 	: bann2But(parent, name)
 {
 
@@ -51,9 +52,9 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff* diso,
 	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, h, m);
 	svegliolina->hide();
 	if (enabled == 1)
-		setAbil(TRUE);
+		setAbil(true);
 	else
-		setAbil(FALSE);
+		setAbil(false);
 	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
 	connect(this,SIGNAL(dxClick()),parentWidget(),SLOT(hide()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));
@@ -69,7 +70,7 @@ void impostaSveglia::gestFrame(char* frame)
 {
 }
 
-void impostaSveglia::setAbil(bool b) 
+void impostaSveglia::setAbil(bool b)
 {
 	svegliolina->activateSveglia(b);
 	show();
@@ -80,7 +81,7 @@ void impostaSveglia::toggleAbil()
 	bool b;
 	b = svegliolina->getActivation()^1;
 
-	svegliolina-> activateSveglia(b);
+	svegliolina->activateSveglia(b);
 	show();
 }
 
@@ -106,7 +107,7 @@ void impostaSveglia::inizializza()
 }
 
 
-calibration::calibration(sottoMenu  *parent,const char *name, const char* icon)
+calibration::calibration(sottoMenu *parent,const char *name, const char *icon)
 	: bannOnDx(parent, name)
 {
 	SetIcons(ICON_INFO,1);
@@ -130,7 +131,7 @@ void calibration::fineCalib()
 }
 
 
-impBeep::impBeep(sottoMenu  *parent,const char *name ,char* val, const char * icon1, const char *icon2)
+impBeep::impBeep(sottoMenu *parent, const char *name, char *val, const char *icon1, const char *icon2)
 	: bannOnSx(parent, name)
 {
 	strncpy(iconOn, icon1, sizeof(iconOn));
@@ -165,13 +166,13 @@ void impBeep::toggleBeep()
 }
 
 
-impContr::impContr(sottoMenu  *parent,const char *name ,char* val, const char * icon1)
+impContr::impContr(sottoMenu *parent, const char *name, char *val, const char *icon1)
 	: bannOnDx(parent, name)
 {
 	contrasto = NULL;
 	SetIcons(icon1,1);
 	connect(this,SIGNAL(click()),this,SLOT(showContr()));
-	setContrast(atoi(val),FALSE);
+	setContrast(atoi(val),false);
 }
 
 void impContr::showContr()
@@ -186,7 +187,7 @@ void impContr::contrMade()
 {
 	show();
 	contrasto->hide();
-	setContrast(getContrast(),TRUE);
+	setContrast(getContrast(),true);
 	delete contrasto;
 	contrasto = NULL;
 }
@@ -198,12 +199,12 @@ void impContr::hideEvent(QHideEvent *event)
 }
 
 
-machVers::machVers(sottoMenu  *parent,const char *name, versio *ver, const char* icon1)
+machVers::machVers(sottoMenu *parent, const char *name, versio *ver, const char *icon1)
 	: bannOnDx(parent, name)
 {
 	SetIcons(icon1,1);
 	connect(this,SIGNAL(click()),this,SLOT(showVers()));
-	v=ver;
+	v = ver;
 }
 
 void machVers::showVers()
@@ -222,7 +223,7 @@ void machVers::tiempout()
 }
 
 
-impPassword::impPassword(QWidget *parent,const char *name, char* icon1, char*icon2,char* icon3, char* password,int attiva)
+impPassword::impPassword(QWidget *parent, const char *name, char *icon1, char *icon2,char *icon3, char *password, int attiva)
 	: bann2But(parent, name)
 {
 
@@ -241,9 +242,9 @@ impPassword::impPassword(QWidget *parent,const char *name, char* icon1, char*ico
 	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 	connect(this, SIGNAL(setPwd(bool,char*)), parentWidget(), SIGNAL(setPwd(bool,char*)));
 	if (attiva == 1)
-		active = TRUE;
+		active = true;
 	else
-		active = FALSE;
+		active = false;
 
 	emit setPwd(active,paswd);
 	starting = 1;
@@ -254,12 +255,12 @@ void impPassword::toggleActivation()
 {
 	if (active)
 	{
-		active = FALSE;
+		active = false;
 		setCfgValue(PROTEZIONE, "enabled","0",getSerNum());
 	}
 	else
 	{
-		active = TRUE;
+		active = true;
 		setCfgValue(PROTEZIONE, "enabled","1",getSerNum());
 	}
 	emit setPwd(active,paswd);
@@ -274,7 +275,7 @@ void impPassword::showEvent(QShowEvent *event)
 		SetIcons(uchar(0),iconOff);
 	Draw();
 	qDebug("passwd = %s %d", paswd, paswd[0]);
-	if ((paswd[0]=='\000') || starting)
+	if ((paswd[0] == '\000') || starting)
 	{
 		qDebug("passwd = ZERO");
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -291,7 +292,7 @@ void impPassword::showEvent(QShowEvent *event)
 	}
 }
 
-void impPassword::reShow1(char* c)
+void impPassword::reShow1(char *c)
 {
 	if (c == NULL)
 	{
@@ -303,7 +304,7 @@ void impPassword::reShow1(char* c)
 		show();
 		qDebug("password errata doveva essere %s",paswd);
 		sb = getBeep();
-		setBeep(TRUE,FALSE); 
+		setBeep(true,false);
 		beep(1000);
 		QTimer::singleShot(1100, this, SLOT(tiempout()));
 	}
@@ -317,7 +318,7 @@ void impPassword::reShow1(char* c)
 	}
 }
 
-void impPassword::reShow2(char* c)
+void impPassword::reShow2(char *c)
 {
 	if (c)
 	{
@@ -333,7 +334,7 @@ void impPassword::reShow2(char* c)
 
 void impPassword::tiempout()
 {
-	setBeep(sb,FALSE);
+	setBeep(sb,false);
 }
 
 // TODO: capire l'esatto funzionamento di "starting" ed eliminare la setEnabled!
