@@ -16,17 +16,17 @@
 #ifndef STOPNGO_H
 #define STOPNGO_H
 
-#include "device.h"
 #include "bannpuls.h"
 #include "btbutton.h"
 
 #include <QWidget>
-#include <QLabel>
 #include <QList>
-#include <QFile>
 
+class device_status;
 class QLCDNumber;
 class QTimer;
+class QLabel;
+
 
 /*!
   \class StopngoItem
@@ -42,15 +42,15 @@ public:
 	StopngoItem();
 	~StopngoItem();
 
-	inline void SetId(int id){ this->id = id; };
-	inline void SetCid(int cid){ this->cid = cid; };
-	inline void SetDescr(QString descr){ this->descr = descr; };
-	inline void SetWhere(QString where){ this->where = where; };
+	inline void SetId(int id) { this->id = id; }
+	inline void SetCid(int cid) { this->cid = cid; }
+	inline void SetDescr(QString descr) { this->descr = descr; }
+	inline void SetWhere(QString where) { this->where = where; }
 
-	inline int GetId(){ return this->id; };
-	inline int GetCid(){ return this->cid; };
-	inline QString GetDescr(){ return this->descr; };
-	inline QString GetWhere(){ return this->where; };
+	inline int GetId() { return this->id; }
+	inline int GetCid() { return this->cid; }
+	inline QString GetDescr() { return this->descr; }
+	inline QString GetWhere() { return this->where; }
 private:
 	int id;
 	int cid;
@@ -112,15 +112,15 @@ public slots:
 	void showPage();
 
 private slots:
-		void AutoArmClick();
-		void OnClick();
-		void OffClick();
-		void VerifyClick();
-		void AutotestClick();
-		void MinusClick();
-		void PlusClick();
-		void LoadTimer();
-		void FireFreqFrame();
+	void AutoArmClick();
+	void OnClick();
+	void OffClick();
+	void VerifyClick();
+	void AutotestClick();
+	void MinusClick();
+	void PlusClick();
+	void LoadTimer();
+	void FireFreqFrame();
 
 signals:
 	void Closed();

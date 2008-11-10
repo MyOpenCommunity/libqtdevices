@@ -16,6 +16,7 @@
 #include "stopngo.h"
 #include "generic_functions.h" // getPressName
 #include "fontmanager.h"
+#include "device.h"
 #include "main.h"
 
 #include <QLCDNumber>
@@ -120,7 +121,6 @@ BannPulsDynIcon::BannPulsDynIcon(QWidget *parent, const char *name) : bannPuls(p
 BannPulsDynIcon::~BannPulsDynIcon()
 {
 }
-
 
 void BannPulsDynIcon::status_changed(QList<device_status*> sl)
 {
@@ -613,9 +613,9 @@ void StopngoPage::FireFreqFrame()
 	char frameOpen[30];
 	sprintf(frameOpen, "*#%s*%s*#%s*%d##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_FREQ_AUTOTEST, autotestFreq);
 	qDebug("StopngoPage::FireFreqFrame() fire frame: %s", frameOpen);
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_FREQ_AUTOTEST);
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 }
 
 void StopngoPage::AutoArmClick()
@@ -624,9 +624,9 @@ void StopngoPage::AutoArmClick()
 	char frameOpen[30];
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
 		(statusBmp & STATUS_BIT_AUTOREARM_DISABLED) ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF, buf.constData());
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 }
 
 void StopngoPage::OnClick()
@@ -637,7 +637,7 @@ void StopngoPage::OnClick()
 	QByteArray buf = where.toAscii();
 	char frameOpen[30];
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_CLOSE, buf.constData());
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 }
 
 void StopngoPage::OffClick()
@@ -648,7 +648,7 @@ void StopngoPage::OffClick()
 	QByteArray buf = where.toAscii();
 	char frameOpen[30];
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_OPEN, buf.constData());
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 }
 
 void StopngoPage::VerifyClick()
@@ -657,9 +657,9 @@ void StopngoPage::VerifyClick()
 	QByteArray buf = where.toAscii();
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
 		(statusBmp & STATUS_BIT_VERIFY_DISABLED)?OPEN_WHAT_VERIFY_ON:OPEN_WHAT_VERIFY_OFF, buf.constData());
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 }
 
 void StopngoPage::AutotestClick()
@@ -668,9 +668,9 @@ void StopngoPage::AutotestClick()
 	QByteArray buf = where.toAscii();
 	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
 		(statusBmp & STATUS_BIT_AUTOTEST_DISABLED)?OPEN_WHAT_AUTOTEST_ON:OPEN_WHAT_AUTOTEST_OFF, buf.constData());
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
-	emit(sendFrame(frameOpen));
+	emit sendFrame(frameOpen);
 }
 
 void StopngoPage::MinusClick()
