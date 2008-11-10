@@ -145,7 +145,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo
 			banner *b;
 			if (tipo == AMBIENTE)
 			{
-				b = new ambDiffSon(this, *descrizioni->at(0), (char *)indirizzo,
+				b = new ambDiffSon(this, *descrizioni->at(0), indirizzo,
 						*safeAt(icon_names, 0), *safeAt(icon_names, 1), *safeAt(icon_names, 2),
 						&datimmulti, ds, sorgenti, this);
 			}

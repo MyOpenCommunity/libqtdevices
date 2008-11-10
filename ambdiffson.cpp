@@ -28,18 +28,18 @@
  ****************************************************************/
 
 
-ambDiffSon::ambDiffSon(QWidget *parent, QString _name, void *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+ambDiffSon::ambDiffSon(QWidget *parent, QString _name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
 	QList<dati_ampli_multi*> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent), name(_name)
 {
-	qDebug() << "ambDiffSon::ambDiffSon() : " << (char *)indirizzo << " " << IconaSx << " " << IconaDx << " " << icon;
-	QString zoneIcon = getAmbName(IconaSx, (char *)indirizzo);
+	qDebug() << "ambDiffSon::ambDiffSon() : " << indirizzo << " " << IconaSx << " " << IconaDx << " " << icon;
+	QString zoneIcon = getAmbName(IconaSx, indirizzo);
 	qDebug() << "zoneIcon = " << zoneIcon;
 	QByteArray buf_zone = zoneIcon.toAscii();
 	QByteArray buf_icon_dx = IconaDx.toAscii();
 	QByteArray buf_icon = icon.toAscii();
 	SetIcons(buf_icon.constData(), buf_zone.constData(), buf_icon_dx.constData());
 	Draw();
-	setAddress((char *)indirizzo);
+	setAddress(indirizzo);
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 
 	diffson = ds;
