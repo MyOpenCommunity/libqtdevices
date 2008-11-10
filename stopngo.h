@@ -38,19 +38,18 @@ class QLabel;
 class StopngoItem
 {
 public:
-	StopngoItem(int id, int cid, QString descr, QString where);
-	StopngoItem();
-	~StopngoItem();
+	StopngoItem(int _id=0, int _cid=0, QString _descr="", QString _where="0");
 
-	inline void SetId(int id) { this->id = id; }
-	inline void SetCid(int cid) { this->cid = cid; }
-	inline void SetDescr(QString descr) { this->descr = descr; }
-	inline void SetWhere(QString where) { this->where = where; }
+	void SetId(int id);
+	void SetCid(int cid);
+	void SetDescr(QString descr);
+	void SetWhere(QString where);
 
-	inline int GetId() { return this->id; }
-	inline int GetCid() { return this->cid; }
-	inline QString GetDescr() { return this->descr; }
-	inline QString GetWhere() { return this->where; }
+	int GetId();
+	int GetCid();
+	QString GetDescr();
+	QString GetWhere();
+
 private:
 	int id;
 	int cid;
