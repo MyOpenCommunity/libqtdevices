@@ -33,14 +33,12 @@
 #include <unistd.h>
 
 
-sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff* diso, char* f, char*h, char*m)
+sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff *diso, char *f, char *h, char *m)
 	: QFrame(parent)
 {
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;
-	QPixmap* Icon1 = new QPixmap();
-	QPixmap* Icon2 = NULL;
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
@@ -61,16 +59,13 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 		but[idx]->setImage(ICON_FRECCIA_GIU);
 	}
 
-	Icon1 = new QPixmap();
-	Icon1->load(ICON_SVEGLIA_ON);
+	QPixmap Icon(ICON_SVEGLIA_ON);
 
 	Immagine = new QLabel(this);
-	if (Icon1)
-		Immagine->setPixmap(*Icon1);
+	if (!Icon.isNull())
+		Immagine->setPixmap(Icon);
 
 	Immagine->setGeometry(90,0,80,80);
-	delete Icon1;
-	delete Icon2;
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_sveglia_scelta, aFont);
@@ -95,7 +90,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	testiChoice[2]->setText(tr("mon-fri"));
 	testiChoice[3]->setText(tr("sat-sun"));
 
-	oraSveglia =  new QDateTime();
+	oraSveglia = new QDateTime();
 	oraSveglia->setTime(QTime(atoi(h),atoi(m)));
 	oraSveglia->setDate(QDate::currentDate());
 	dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
@@ -122,10 +117,10 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 
 void sveglia::okTime()
 {
-	disconnect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-	disconnect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
-	disconnect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-	disconnect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
+	disconnect(but[0], SIGNAL(clicked()), dataOra, SLOT(aumOra()));
+	disconnect(but[1], SIGNAL(clicked()), dataOra, SLOT(aumMin()));
+	disconnect(but[2], SIGNAL(clicked()), dataOra, SLOT(diminOra()));
+	disconnect(but[3], SIGNAL(clicked()), dataOra, SLOT(diminMin()));
 	disconnect(bannNavigazione,SIGNAL(forwardClick()),this,SLOT(okTime()));
 	connect(bannNavigazione,SIGNAL(forwardClick()),this,SLOT(okTipo()));
 
@@ -143,7 +138,7 @@ void sveglia::okTime()
 	Immagine->hide();
 	
 	if (tipo!=DI_SON)
-		bannNavigazione ->nascondi(banner::BUT2);
+		bannNavigazione->nascondi(banner::BUT2);
 }
 
 void sveglia::mostra()
@@ -166,10 +161,10 @@ void sveglia::mostra()
 	show();
 #endif
 
-	disconnect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-	disconnect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
-	disconnect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-	disconnect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
+	disconnect(but[0],SIGNAL(clicked()),dataOra,SLOT(aumOra()));
+	disconnect(but[1],SIGNAL(clicked()),dataOra,SLOT(aumMin()));
+	disconnect(but[2],SIGNAL(clicked()),dataOra,SLOT(diminOra()));
+	disconnect(but[3],SIGNAL(clicked()),dataOra,SLOT(diminMin()));
 
 	connect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
 	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
@@ -314,7 +309,7 @@ void sveglia::okTipo()
 void sveglia::activateSveglia(bool a)
 {
 	svegliaAbil = a;
-	if (a)
+	if (svegliaAbil)
 	{
 		if (!minuTimer)
 		{
@@ -687,16 +682,16 @@ void sveglia::buzzerAlarm()
 {
 	if (contaBuzzer == 0)
 	{
-		buzAbilOld=getBeep();
+		buzAbilOld = getBeep();
 		setBeep(true,false);
 	}
-	if  (contaBuzzer%2==0)
+	if  (contaBuzzer % 2 == 0)
 	{
-		if (((contaBuzzer+2)%12) && (contaBuzzer%12))
+		if (((contaBuzzer + 2) % 12) && (contaBuzzer % 12))
 			beep(10);
 	}
 
-	if (contaBuzzer%8==0)
+	if (contaBuzzer % 8 == 0)
 		BrightnessControl::instance()->setState(ON);
 	else
 		BrightnessControl::instance()->setState(OFF);
@@ -722,7 +717,7 @@ void sveglia::spegniSveglia(bool b)
 		{
 			qDebug("SPENGO LA SVEGLIA");
 			aumVolTimer->stop();
-			if (tipo==BUZZER)
+			if (tipo == BUZZER)
 				setBeep(buzAbilOld,false);
 
 			delete aumVolTimer;
