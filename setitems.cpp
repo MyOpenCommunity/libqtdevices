@@ -56,7 +56,6 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff *diso,
 	else
 		setAbil(false);
 	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
-	connect(this,SIGNAL(dxClick()),parentWidget(),SLOT(hide()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));
 
 	connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*)));
