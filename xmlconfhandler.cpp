@@ -446,7 +446,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					void *addr = 0;
 					char pip[50];
 					pip[0] = 0;
-					void *pnt = 0;
 					switch (page_id)
 					{
 					case AUTOMAZIONE:
@@ -511,22 +510,18 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						else
 							strcpy(pip, page_item_where.toAscii().constData());
 
-						if (page_item_list_group->isEmpty())
-						{
-							pnt = pip;
-						}
-						else
-						{
-							pnt = page_item_list_group;
-						}
-
 						// Use third digit of where for audio player frames
 						// FIXME aleph: better place for this
 						par2 = pip[2] - '0';
 
 						par1 = page_item_mode.toInt();
-						(*difSon)->addItemU((char)page_item_id, page_item_descr, pnt,
-							page_item_list_img, par1,  par2);
+
+						if (page_item_list_group->isEmpty())
+							(*difSon)->addItemU((char)page_item_id, page_item_descr, pip,
+								page_item_list_img, par1,  par2);
+						else
+							(*difSon)->addItemU((char)page_item_id, page_item_descr, page_item_list_group,
+								page_item_list_img, par1,  par2);
 						break;
 
 					case DIFSON_MULTI:
