@@ -11,8 +11,6 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
-#include <common_functions.h>
-
 #include <QWidget>
 
 class sottoMenu;
@@ -44,22 +42,13 @@ Q_OBJECT
 public:
 	BtMain(QWidget *parent=0);
 	~BtMain();
-	homePage *Home, *specPage;
-	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
-	diffmulti *dm;
-	ThermalMenu *termo;
-	diffSonora *difSon;
-	antintrusione *antintr;
-	SupervisionMenu *supervisione;
 	Client *client_richieste;
 	Client *client_comandi;
 	Client *client_monitor;
-	versio *datiGen;
+
 	void resetTimer();
 	/// Freeze or unfreeze the application
 	void freezed(bool);
-signals:
-	void resettimer();
 
 private slots:
 	void hom();
@@ -80,6 +69,14 @@ protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private:
+	homePage *Home, *specPage;
+	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
+	diffmulti *dm;
+	ThermalMenu *termo;
+	diffSonora *difSon;
+	antintrusione *antintr;
+	SupervisionMenu *supervisione;
+	versio *datiGen;
 	QTimer *tempo1;
 	QTimer *tempo2;
 	QWidget *pagDefault;
@@ -107,6 +104,9 @@ private:
 	bool loadConfiguration(QString cfg_file);
 	/// Load the skin configuration
 	bool loadSkin(QString xml_file);
+
+signals:
+	void resettimer();
 };
 
 #endif// BTMAIN_H
