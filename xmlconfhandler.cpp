@@ -606,20 +606,19 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 				}
 				else if (CurTagL3.startsWith("page") && CurTagL4.isEmpty())
 				{
+					QWidget *pageAct = NULL;
 					// Esco dalla pagina
 					switch (page_id)
 					{
 					case SUPERVISIONE:
+						pageAct = *supervisione;
 						(*supervisione)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showPg()));
-						QObject::connect(*supervisione,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(show()));
-						QObject::connect(*supervisione,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*supervisione,SIGNAL(Closed()),*supervisione,SLOT(hide()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -628,46 +627,42 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case AUTOMAZIONE:
+						pageAct = *automazioni;
 						(*automazioni)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
-						QObject::connect(*automazioni,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)                    
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(show()));
-						QObject::connect(*automazioni,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*automazioni,SIGNAL(Closed()),*automazioni,SLOT(hide()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*automazioni,SIGNAL(gestFrame(char *)));
 						QObject::connect(*automazioni,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*automazioni,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case ILLUMINAZIONE:
+						pageAct = *illumino;
 						(*illumino)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
-						QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
-						QObject::connect(*illumino,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*illumino,SIGNAL(Closed()),*illumino,SLOT(hide()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
 						QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
 						break;
+
 					case ANTIINTRUSIONE:
+						pageAct = *antintr;
 						(*antintr)->draw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(showFullScreen()));
-						QObject::connect(*antintr,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(show()));
-						QObject::connect(*antintr,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
 						QObject::connect(*antintr,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*antintr,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -675,96 +670,86 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_comandi,SIGNAL(openAckRx()),*antintr,SIGNAL(openAckRx()));
 						QObject::connect(client_comandi,SIGNAL(openNakRx()),*antintr,SIGNAL(openNakRx()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*antintr,SLOT(gesFrame(char *)));
-						QObject::connect(*antintr,SIGNAL(Closed()),*antintr,SLOT(hide()));
 						break;
+
 					case CARICHI:
+						pageAct = *carichi;
 						(*carichi)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(showFullScreen()));
-						QObject::connect(*carichi,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(show()));
-						QObject::connect(*carichi,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*carichi,SIGNAL(Closed()),*carichi,SLOT(hide()));
 						QObject::connect(*carichi,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*carichi,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
+
 					case TERMOREGOLAZIONE:
 					case TERMOREG_MULTI_PLANT:
+						pageAct = *termo;
 						(*termo)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showPage()));
-						QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showPage()));
-						QObject::connect(*termo,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*termo,SIGNAL(Closed()),*termo,SLOT(hide()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
 						QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
+
 					case DIFSON:
+						pageAct = *difSon;
 						(*difSon)->draw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showFullScreen()));
-						QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(show()));
-						QObject::connect(*difSon,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*difSon,SIGNAL(Closed()),*difSon,SLOT(hide()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
 						QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*difSon,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case DIFSON_MULTI:
+						pageAct = *dm;
 						(*dm)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(showFullScreen()));
-						QObject::connect(*dm,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(show()));
-						QObject::connect(*dm,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*dm,SIGNAL(Closed()),*dm,SLOT(hide()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*dm,SLOT(gestFrame(char *)));
 						QObject::connect(*dm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*dm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case SCENARI:
+						pageAct = *scenari;
 						(*scenari)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showFullScreen()));
-						QObject::connect(*scenari,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(show()));
-						QObject::connect(*scenari,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*scenari,SIGNAL(Closed()),*scenari,SLOT(hide()));
 						QObject::connect(*scenari,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*scenari,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case IMPOSTAZIONI:
+						pageAct = *imposta;
 						(*imposta)->forceDraw();
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
-						QObject::connect(*imposta,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(show()));
-						QObject::connect(*imposta,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*imposta,SIGNAL(Closed()),*imposta,SLOT(hide()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
 						QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*imposta,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -774,22 +759,21 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case SCENARI_EVOLUTI:
+						pageAct = *scenari_evoluti;
 						qDebug("******* scenari_evoluti = %p, impostazioni = %p ******", *scenari_evoluti,*imposta);
 						(*scenari_evoluti)->forceDraw();
 						QObject::connect(*scenari_evoluti,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
-						QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(show()));
-						QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*scenari_evoluti,SIGNAL(Closed()),*scenari_evoluti,SLOT(hide()));
 						break;
 
 					case VIDEOCITOFONIA:
+						pageAct = *videocitofonia;
 						qDebug("******* videocitofonia = %p ", *videocitofonia);
 						(*videocitofonia)->forceDraw();
 						QObject::connect(*videocitofonia,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
@@ -797,29 +781,28 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*videocitofonia,SIGNAL(gestFrame(char *)));
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showFullScreen()));
-						QObject::connect(*videocitofonia,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
 #endif
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(show()));
-						QObject::connect(*videocitofonia,SIGNAL(Closed()),*home,SLOT(show()));
 #endif
-						QObject::connect(*videocitofonia,SIGNAL(Closed()),*videocitofonia,SLOT(hide()));
 						QObject::connect(*videocitofonia,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
 						break;
 
 					case SPECIAL:
+						pageAct = *specPage;
 						QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*specPage,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*specPage,SIGNAL(Closed()),*specPage,SLOT(hide()));
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-						QObject::connect(*specPage,SIGNAL(Closed()),*home,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*specPage,SIGNAL(Closed()),*home,SLOT(show()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*specPage,SLOT(gestFrame(char *)));
 						break;
 					} // switch page_id
+
+					QObject::connect(pageAct, SIGNAL(Closed()), pageAct, SLOT(hide()));
+#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+					QObject::connect(pageAct, SIGNAL(Closed()), *home, SLOT(showFullScreen()));
+#endif
+#if !defined (BTWEB) && !defined (BT_EMBEDDED)
+					QObject::connect(pageAct, SIGNAL(Closed()), *home, SLOT(show()));
+#endif
 
 					// Pulisco per il prox
 					set_page_item_defaults();
