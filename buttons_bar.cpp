@@ -60,13 +60,12 @@ ButtonsBar::~ButtonsBar()
 {
 }
 
-bool ButtonsBar::setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon)
+bool ButtonsBar::setButtonIcon(unsigned int button_number, const QString &icon_path)
 {
 	if ((int)button_number >= buttons_list.size())
 		return false;
 
-	buttons_list.at(button_number)->setPixmap(icon);
-	buttons_list.at(button_number)->setPressedPixmap(pressed_icon);
+	buttons_list.at(button_number)->setImage(icon_path);
 	// Non è necessario il setGeometry o il resize dei pulsanti,
 	// ma è molto importante nel costruttore del ButtonGroup indicare il numero di pulsanti
 	return true;

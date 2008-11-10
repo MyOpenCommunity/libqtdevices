@@ -42,7 +42,6 @@ static const char *stop_play_script = "/bin/audio_off.tcl";
 
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 
 static const char *IMG_WAIT = IMG_PATH "loading.png";
@@ -109,11 +108,8 @@ SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent)
 	// Create buttons_bar
 	buttons_bar = new ButtonsBar(this, num_choices, Qt::Vertical);
 
-	// Set Icons for buttons_bar (using icons_library cache)
-	QPixmap *icon         = icons_library.getIcon(IMG_SELECT);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_SELECT_P);
 	for (unsigned i = 0; i < num_choices; ++i)
-		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
+		buttons_bar->setButtonIcon(i, IMG_SELECT);
 
 	QHBoxLayout *main_controls = new QHBoxLayout();
 	back_btn = new BtButton(this);

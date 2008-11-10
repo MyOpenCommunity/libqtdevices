@@ -56,7 +56,7 @@ QPixmap* IconDispatcher::getIconPointer(QString name)
 QPixmap* IconDispatcher::getIcon(QString name, const char * format, Qt::ImageConversionFlags flags)
 {
 	if (name.isNull())
-		qFatal("Requested an icon with empty string.");
+		qWarning("Requested an icon with null string.");
 
 	QPixmap* image_pointer = getIconPointer(name);
 
