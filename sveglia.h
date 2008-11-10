@@ -11,7 +11,7 @@
 #ifndef SVEGLIA_H
 #define SVEGLIA_H
 
-#include <QFrame>
+#include <QWidget>
 
 #define AMPLI_NUM 100
 #define BASE_EEPROM 11360
@@ -34,7 +34,7 @@ class QLabel;
   \author Davide
   \date lug 2005
 */
-class  sveglia : public QFrame
+class  sveglia : public QWidget
 {
 Q_OBJECT
 public:
