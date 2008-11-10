@@ -87,12 +87,8 @@ diffmulti::~diffmulti()
 		delete dslist.takeFirst();
 }
 
-int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
+int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
 {
-	qDebug("diffmulti::addItem (%d)", tipo);
-	qDebug("Amplificatore (%s)", (char *)indirizzo);
-	qDebug("%d elementi in descrizioni", descrizioni->count());
-
 	banner *b;
 	switch (tipo)
 	{
@@ -114,7 +110,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 		/*
 		 * NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
 		 */
-		sorgenti->addItemU(tipo, *descrizioni->at(0), (char *)indirizzo, icon_names, 0, numFrame);
+		sorgenti->addItemU(tipo, *descrizioni->at(0), (void *)indirizzo, icon_names, 0, numFrame);
 		b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
 		connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)),b, SLOT(ambChanged(const QString &, bool, char *)));
@@ -122,7 +118,21 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 		connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
 		connect(b,SIGNAL(sendInit(char*)),this, SIGNAL(sendInit(char*)));
 		break;
+	default:
+		addItemU(tipo, *descrizioni->at(0),indirizzo, icon_names, modo, numFrame);
+		break;
+	}
+	return 1;
+}
 
+int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *> *indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
+{
+	qDebug("diffmulti::addItem (%d)", tipo);
+	qDebug("Amplificatore (%s)", (char *)indirizzo);
+	qDebug("%d elementi in descrizioni", descrizioni->count());
+
+	switch (tipo)
+	{
 	case INSIEME_AMBIENTI:
 	case AMBIENTE:
 		{

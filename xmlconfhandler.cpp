@@ -580,7 +580,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 				{
 					char pip[50];
 					memset(pip,'\000',sizeof(pip));
-					void* pnt;
 					qDebug("DIFF SON MULTI END ELEMENT !!!!");
 					qDebug("INSERTED ITEM:ID %d",page_item_id_m);
 					qDebug("INS ITEM: %s",banTesti[page_item_id_m]);
@@ -589,14 +588,14 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					if (page_item_list_group_m->isEmpty())
 					{
-						pnt = pip;
+						(*dm)->addItem((char)page_item_id_m, page_item_descr_m, pip,page_item_list_img_m);
 					}
 					else
 					{
 						qDebug("**** DIFSON_MULTI: multi address");
-						pnt = page_item_list_group_m;
+						(*dm)->addItem((char)page_item_id_m, page_item_descr_m, page_item_list_group_m,
+								page_item_list_img_m);
 					}
-					(*dm)->addItem((char)page_item_id_m, page_item_descr_m, pnt,page_item_list_img_m);
 					qDebug("clearing descr list !!!\n");
 					page_item_descr_m->clear();
 					page_item_list_img_m.clear();
