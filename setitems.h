@@ -66,12 +66,6 @@ public:
 	*/
 	void inizializza();
 
-	virtual void Draw();
-signals:
-/*!
-\brief Emitted to turn alarm clock off
-*/
-	void spegniSveglia();
 public slots:
 /*!
 \brief Analizes \a Open \a frames coming form the system
@@ -81,12 +75,20 @@ public slots:
 \brief changes the alarm set abilitation
 */
 	void toggleAbil();
-protected:
-	virtual void showEvent(QShowEvent *event);
+
 private:
 	sveglia* svegliolina;
 	char iconOn[50];
 	char iconOff[50];
+
+private slots:
+	void forceDraw();
+
+signals:
+/*!
+\brief Emitted to turn alarm clock off
+*/
+	void spegniSveglia();
 };
 
 

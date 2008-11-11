@@ -59,6 +59,7 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff *diso,
 	connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 	connect(svegliolina, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(svegliolina,SIGNAL(ImClosed()), svegliolina, SLOT(hide()));
+	connect(svegliolina,SIGNAL(ImClosed()), this, SLOT(forceDraw()));
 	connect(svegliolina, SIGNAL(svegl(bool)),this , SIGNAL(svegl(bool)));
 }
 
@@ -69,34 +70,20 @@ void impostaSveglia::gestFrame(char* frame)
 void impostaSveglia::setAbil(bool b)
 {
 	svegliolina->setActive(b);
-	Draw();
+	forceDraw();
 }
 
 void impostaSveglia::toggleAbil()
 {
 	svegliolina->setActive(!svegliolina->isActive());
-	Draw();
+	forceDraw();
 }
 
-void impostaSveglia::Draw()
+void impostaSveglia::forceDraw()
 {
-	if (svegliolina->isActive())
-	{
-		qDebug("impostaSveglia mette icona ON (%p)", iconOn);
-		SetIcons(uchar(0),iconOn);
-	}
-	else
-	{
-		qDebug("impostaSveglia mette icona OFF");
-		SetIcons(uchar(0),iconOff);
-	}
-	banner::Draw();
+	SetIcons(uchar(0), svegliolina->isActive() ? iconOn : iconOff);
+	Draw();
 	svegliolina->setSerNum(getSerNum());
-}
-
-void impostaSveglia::showEvent(QShowEvent *event)
-{
-	Draw();
 }
 
 void impostaSveglia::inizializza()
