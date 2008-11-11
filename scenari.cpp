@@ -13,7 +13,7 @@
 #include "device.h"
 #include "scenevocond.h"
 #include "btbutton.h"
-#include "generic_functions.h" // bool copyFile(...)
+#include "generic_functions.h" // setCfgValue
 #include "fontmanager.h"
 
 #include <openwebnet.h> // class openwebnet

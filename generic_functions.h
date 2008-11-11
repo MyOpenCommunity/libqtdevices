@@ -113,11 +113,6 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const
 
 bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
- /*!
-  \brief  Copies the file whose fileName is the first argument in an other with the fileName as in the second argument..
-*/
-bool copyFile(char*, char*);
-
 void getName(char *name);
 
 void resetTimer(int signo);

@@ -150,35 +150,6 @@ bool setCfgValue(QString field, QString value, int item_id, int num_item, const 
 	return setCfgValue(m, item_id, num_item, filename);
 }
 
-bool copyFile(char* orig, char* dest)
-{
-	QFile *filIN = new QFile(orig);
-	if (!filIN->open(QIODevice::ReadOnly))
-		return false;
-
-	if (QFile::exists(dest))
-		QFile::remove(dest);
-
-	QFile *filOUT = new QFile(dest);
-
-	if (!filOUT->open(QIODevice::WriteOnly))
-		return false;
-
-	QDataStream tIN(filIN);
-	QDataStream tOUT(filOUT);
-	unsigned char i;
-	do
-	{
-		tIN >> i;
-		tOUT << i;
-	}
-	while(!tIN.atEnd());
-
-	filIN->close();
-	filOUT->close();
-	return true;
-}
-
 void setContrast(unsigned char c,bool b)
 {
 	char contr[4];

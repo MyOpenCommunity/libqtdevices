@@ -11,7 +11,7 @@
 
 
 #include "sveglia.h"
-#include "generic_functions.h" // getPressName, copyFile, setCfgValue, setBacklight, getBeep, setBeep, beep, setBacklight
+#include "generic_functions.h" // getPressName, setCfgValue, setBacklight, getBeep, setBeep, beep, setBacklight
 #include "diffmulti.h"
 #include "btbutton.h"
 #include "openclient.h"
