@@ -264,7 +264,7 @@ void sveglia::Closed()
 	QMap<QString, QString> data;
 	data["hour"] = oraSveglia->time().toString("hh");
 	data["minute"] = oraSveglia->time().toString("mm");
-	data["alarmSet"] = QString::number(tipoSveglia);
+	data["alarmset"] = QString::number(tipoSveglia);
 
 	setCfgValue(data, SET_SVEGLIA, serNum);
 }
