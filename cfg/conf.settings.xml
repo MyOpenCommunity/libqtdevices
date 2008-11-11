@@ -257,9 +257,9 @@
         <type>0</type>
         <!-- enabled: la sveglia è attiva 1,  disattivata 0-->
         <enabled>0</enabled>
-        <!-- alarmSet: codice per il giorno in cui la sveglia deve suonare -->
+        <!-- alarmset: codice per il giorno in cui la sveglia deve suonare -->
         <!-- 0 una volta, 1 sempre, 2 lun-ven, 3 sab-dom -->
-        <alarmSet>1</alarmSet>
+        <alarmset>1</alarmset>
         <!-- testi da mostrare per alarmSet -->
         <txt1>una volta</txt1>
         <txt2>sempre</txt2>
