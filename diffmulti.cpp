@@ -23,14 +23,12 @@
 
 #include <assert.h>
 
-
-dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, void *ind,
+dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, char *ind,
 		int p1, QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
 {
-	tipo = t;
-	// TODO: allocare nello stack!
-	descr = new QList<QString*>(*d);
+	init(t, d, p1, _I1, _I2, _I3, _I4, _I5);
 	qDebug() << "dati_ampli_multi: descr = " << *descr->at(0);
+
 	if (t == AMPLIFICATORE || t == POWER_AMPLIFIER)
 	{
 		if (t == AMPLIFICATORE)
@@ -40,10 +38,19 @@ dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, void *ind,
 		indirizzo = new(char[20]);
 		memcpy(indirizzo, ind, 20);
 	}
-	else if (t == GR_AMPLIFICATORI)
+	else
+		assert(!"Unknown amplifier type!!");
+}
+
+dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, QList<QString *> *ind,
+		int p1, QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
+{
+	init(t, d, p1, _I1, _I2, _I3, _I4, _I5);
+	qDebug() << "dati_ampli_multi: descr = " << *descr->at(0);
+	if (t == GR_AMPLIFICATORI)
 	{
 		qDebug("gruppo AMPLIFICATORI !!");
-		QList<QString*>* tmp_indirizzo = new QList<QString*>(*((QList<QString*> *)ind));
+		QList<QString*>* tmp_indirizzo = new QList<QString*>(*ind);
 		indirizzo = tmp_indirizzo;
 		qDebug("indirizzo = %p", indirizzo);
 		for (int i = 0; i < tmp_indirizzo->size(); ++i)
@@ -51,7 +58,14 @@ dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, void *ind,
 	}
 	else
 		assert(!"Unknown amplifier type!!");
+}
 
+void dati_ampli_multi::init(char t, QList<QString *> *d, int p1,
+		QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
+{
+	tipo = t;
+	// TODO: allocare nello stack!
+	descr = new QList<QString*>(*d);
 	I1 = _I1;
 	I2 = _I2;
 	I3 = _I3;
@@ -87,20 +101,16 @@ diffmulti::~diffmulti()
 		delete dslist.takeFirst();
 }
 
-int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
+int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
 {
-	qDebug("diffmulti::addItem (%d)", tipo);
-	qDebug("Amplificatore (%s)", (char *)indirizzo);
-	qDebug("%d elementi in descrizioni", descrizioni->count());
-
 	banner *b;
 	switch (tipo)
 	{
-	/** WARNING SORG_RADIO and SORG_AUX are multichannel sources.
-		*  the not-multichannel are called SORGENTE_RADIO and SORGENTE_AUX (!)
-		*
-		*  So we added here the case for our new source that is SORGENTE_MULTIM_MC
-		*/
+		/** WARNING SORG_RADIO and SORG_AUX are multichannel sources.
+		 *  the not-multichannel are called SORGENTE_RADIO and SORGENTE_AUX (!)
+		 *
+		 *  So we added here the case for our new source that is SORGENTE_MULTIM_MC
+		 */
 	case SORGENTE_MULTIM_MC:
 		qDebug("diffmulti::additem -> Entering SORGENTE_MULTIM_MC case...");
 		// Kemosh FIX: store indirizzo to emit the proper init frame
@@ -112,9 +122,9 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 		qDebug() << "Source (" << (int)tipo << ", " << *descrizioni->at(0) << "): appending to source list";
 		qDebug("sorgenti->addItem (%p)", sorgenti);
 		/*
-			* NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
-			*/
-		sorgenti->addItemU(tipo, *descrizioni->at(0), (char *)indirizzo, icon_names, 0, numFrame);
+		 * NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
+		 */
+		sorgenti->addItemU(tipo, *descrizioni->at(0), (void *)indirizzo, icon_names, 0, numFrame);
 		b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
 		connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)),b, SLOT(ambChanged(const QString &, bool, char *)));
@@ -123,6 +133,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 		connect(b,SIGNAL(sendInit(char*)),this, SIGNAL(sendInit(char*)));
 		break;
 
+	// TODO: codice duplicato da sotto, da eliminare quanto prima
 	case INSIEME_AMBIENTI:
 	case AMBIENTE:
 		{
@@ -134,13 +145,13 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			banner *b;
 			if (tipo == AMBIENTE)
 			{
-				b = new ambDiffSon(this, *descrizioni->at(0), (char *)indirizzo,
+				b = new ambDiffSon(this, *descrizioni->at(0), indirizzo,
 						*safeAt(icon_names, 0), *safeAt(icon_names, 1), *safeAt(icon_names, 2),
 						&datimmulti, ds, sorgenti, this);
 			}
 			else
 			{
-				b = new insAmbDiffSon(this, descrizioni, indirizzo, *safeAt(icon_names, 0),
+				b = new insAmbDiffSon(this, descrizioni, *safeAt(icon_names, 0),
 						*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
 			}
 			elencoBanner.append(b);
@@ -159,19 +170,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 			while (!datimmulti.isEmpty())
 				delete datimmulti.takeFirst();
 			draw();
-			break;
-		}
-	case GR_AMPLIFICATORI:
-		{
-			qDebug("Gruppo amplificatori");
-			QList<QString*> *indirizzi = (QList<QString*> *)indirizzo;
-			for (int i = 0; i < indirizzi->size(); ++i)
-			{
-				qDebug() << "ADDRESS =" << *indirizzi->at(i);
-			}
-			datimmulti.append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
-					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
-					*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
 			break;
 		}
 
@@ -193,6 +191,62 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, void* indirizzo
 					*safeAt(icon_names, 2), *safeAt(icon_names, 3),
 					*safeAt(icon_names, 4)));
 		break;
+
+	default:
+		addItemU(tipo, *descrizioni->at(0),indirizzo, icon_names, modo, numFrame);
+		break;
+	}
+	return 1;
+}
+
+int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *> *indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
+{
+	assert(tipo != AMBIENTE);
+	qDebug("diffmulti::addItem (%d)", tipo);
+	qDebug("Amplificatore (%p)", indirizzo);
+	qDebug("%d elementi in descrizioni", descrizioni->count());
+
+	switch (tipo)
+	{
+	case INSIEME_AMBIENTI:
+		{
+			// Do not create "sorgenti" submenu
+			diffSonora *ds = new diffSonora(NULL, sorgenti);
+			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
+			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
+			ds->draw();
+			banner *b;
+			b = new insAmbDiffSon(this, descrizioni, *safeAt(icon_names, 0),
+					*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
+			elencoBanner.append(b);
+			dslist.append(ds);
+			banner *last = elencoBanner.last();
+			last->SetTextU(*(descrizioni->at(0)));
+			last->setId(tipo);
+			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
+			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
+			connect(last, SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
+			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
+			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
+
+			while (!datimmulti.isEmpty())
+				delete datimmulti.takeFirst();
+			draw();
+			break;
+		}
+	case GR_AMPLIFICATORI:
+		{
+			qDebug("Gruppo amplificatori");
+			QList<QString*> *indirizzi = (QList<QString*> *)indirizzo;
+			for (int i = 0; i < indirizzi->size(); ++i)
+			{
+				qDebug() << "ADDRESS =" << *indirizzi->at(i);
+			}
+			datimmulti.append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
+					*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
+			break;
+		}
 
 	default:
 		addItemU(tipo, *descrizioni->at(0),indirizzo, icon_names, modo, numFrame);

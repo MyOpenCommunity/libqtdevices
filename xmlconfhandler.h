@@ -134,7 +134,6 @@ private:
 	QList<QString*> *page_item_list_txt_times;
 	QList<int>sstart;
 	QList<int>sstop;
-	ambDiffSon *curr_amb;
 
 	scenEvo_cond *page_item_cond;
 	QList<scenEvo_cond*> *page_item_cond_list;

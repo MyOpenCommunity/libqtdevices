@@ -33,7 +33,11 @@ public:
 	void *indirizzo;
 	QString I1, I2, I3, I4, I5;
 	int modo;
-	dati_ampli_multi(char t, QList<QString*> *d, void *ind, int p1,
+	dati_ampli_multi(char t, QList<QString*> *d, char *ind, int p1,
+			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
+	dati_ampli_multi(char t, QList<QString*> *d, QList<QString *> *ind, int p1,
+			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
+	void init(char t, QList<QString *> *d, int p1,
 			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
 	~dati_ampli_multi();
 };
@@ -46,7 +50,8 @@ public:
 	diffmulti(QWidget *parent=0, const char *name=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1);
 	~diffmulti();
 
-	int addItem(char tipo, QList<QString*> *descrizioni, void* indirizzo, QList<QString*> &icon_names, int periodo=0, int numFrame=0);
+	int addItem(char tipo, QList<QString*> *descrizioni, QList<QString *> *indirizzo, QList<QString*> &icon_names, int periodo=0, int numFrame=0);
+	int addItem(char tipo, QList<QString*> *descrizioni, char* indirizzo, QList<QString*> &icon_names, int periodo=0, int numFrame=0);
 
 	/*!
 	 *  \brief Changes the type of navigation bar present at the
@@ -73,11 +78,6 @@ public slots:
 protected:
 	virtual void hideEvent(QHideEvent *event);
 
-signals:
-	void actSrcChanged(int, int);
-	void dsClosed();
-	void gesFrame(char *);
-
 private:
 	QList<diffSonora*> dslist;
 	QList<dati_ampli_multi*> datimmulti;
@@ -85,6 +85,11 @@ private:
 	device *matr;
 	/// kemosh FIX
 	int _where_address;
+
+signals:
+	void actSrcChanged(int, int);
+	void dsClosed();
+	void gesFrame(char *);
 };
 
 
@@ -95,9 +100,6 @@ class sveglia;
 class contdiff : public QObject
 {
 Q_OBJECT
-private:
-	diffSonora *ds;
-	diffmulti *dm;
 public:
 	contdiff(diffSonora *, diffmulti *);
 	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
@@ -115,6 +117,10 @@ public slots:
 	//! Invoke proper hide method
 	void hide();
 	void show();
+
+private:
+	diffSonora *ds;
+	diffmulti *dm;
 
 signals:
 	/*!

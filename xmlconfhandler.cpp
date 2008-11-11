@@ -442,9 +442,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					sottoMenu *pageAct = NULL;
 					void *addr = 0;
-					char pip[50];
-					pip[0] = 0;
-					void *pnt = 0;
 					switch (page_id)
 					{
 					case AUTOMAZIONE:
@@ -501,6 +498,9 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 							page_item_where.toAscii().data(), page_item_list_img, par1,  par2);
 						break;
 					case DIFSON:
+					{
+						char pip[50];
+						pip[0] = 0;
 						if ((!page_item_what.isNull()) && (!page_item_what.isEmpty()))
 						{
 							QString buf = page_item_what + "*" + page_item_where;
@@ -509,25 +509,25 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						else
 							strcpy(pip, page_item_where.toAscii().constData());
 
-						if (page_item_list_group->isEmpty())
-						{
-							pnt = pip;
-						}
-						else
-						{
-							pnt = page_item_list_group;
-						}
-
 						// Use third digit of where for audio player frames
 						// FIXME aleph: better place for this
 						par2 = pip[2] - '0';
 
 						par1 = page_item_mode.toInt();
-						(*difSon)->addItemU((char)page_item_id, page_item_descr, pnt,
-							page_item_list_img, par1,  par2);
+
+						if (page_item_list_group->isEmpty())
+							(*difSon)->addItemU((char)page_item_id, page_item_descr, pip,
+								page_item_list_img, par1,  par2);
+						else
+							(*difSon)->addItemU((char)page_item_id, page_item_descr, page_item_list_group,
+								page_item_list_img, par1,  par2);
+					}
 						break;
 
 					case DIFSON_MULTI:
+					{
+						char pip[50];
+						pip[0] = 0;
 						if ((page_item_id == SORG_RADIO) || (page_item_id==SORG_AUX) ||
 							(page_item_id==AMBIENTE) || (page_item_id==INSIEME_AMBIENTI) ||
 							(page_item_id==SORGENTE_MULTIM) || (page_item_id==SORGENTE_MULTIM_MC))
@@ -545,6 +545,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*dm)->addItem((char)page_item_id, page_item_descr_m, pip,page_item_list_img, par1, par2);
 						qDebug("clearing descr list");
 						page_item_descr_m->clear();
+					}
 						break;
 
 					case SPECIAL:
@@ -583,7 +584,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 				{
 					char pip[50];
 					memset(pip,'\000',sizeof(pip));
-					void* pnt;
 					qDebug("DIFF SON MULTI END ELEMENT !!!!");
 					qDebug("INSERTED ITEM:ID %d",page_item_id_m);
 					qDebug("INS ITEM: %s",banTesti[page_item_id_m]);
@@ -592,14 +592,14 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					if (page_item_list_group_m->isEmpty())
 					{
-						pnt = pip;
+						(*dm)->addItem((char)page_item_id_m, page_item_descr_m, pip,page_item_list_img_m);
 					}
 					else
 					{
 						qDebug("**** DIFSON_MULTI: multi address");
-						pnt = page_item_list_group_m;
+						(*dm)->addItem((char)page_item_id_m, page_item_descr_m, page_item_list_group_m,
+								page_item_list_img_m);
 					}
-					(*dm)->addItem((char)page_item_id_m, page_item_descr_m, pnt,page_item_list_img_m);
 					qDebug("clearing descr list !!!\n");
 					page_item_descr_m->clear();
 					page_item_list_img_m.clear();

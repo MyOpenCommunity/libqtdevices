@@ -61,23 +61,46 @@ void diffSonora::setSorgenti(sottoMenu *s)
 // lista.. anche se poi a tutti gli effetti non le cancella.
 // In ogni caso sarebbe da allocare staticamente le stringhe che fanno parte di
 // icon_names.
-
-int diffSonora::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
+int diffSonora::addItemU(char tipo, const QString &description, QList<QString *> *indirizzo,
 	QList<QString*> &icon_names, int modo, int where, char *ambdescr)
 {
-	if  (tipo == SORGENTE_AUX || tipo == SORGENTE_RADIO || tipo == SORGENTE_MULTIM)
+	if (tipo == GR_AMPLIFICATORI)
 	{
-		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, where);
-	}
-	else if (tipo == SORG_RADIO || tipo == SORG_AUX || tipo == SORGENTE_MULTIM_MC)
-	{
-		sorgenti->addItemU(tipo, qdescrizione, indirizzo, icon_names, modo, 0, ambdescr);
-		banner *b = sorgenti->getLast();
-		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
+		amplificatori->addItemU(tipo, description, (void *)indirizzo, icon_names);
+		return 1;
 	}
 	else
-		amplificatori->addItemU(tipo, qdescrizione, indirizzo, icon_names);
+		assert(!"difSonora::addItemU() called with type != GR_AMPLIFICATORI");
+}
+
+int diffSonora::addItemU(char tipo, const QString &description, char* indirizzo,
+	QList<QString*> &icon_names, int modo, int where, char *ambdescr)
+{
+	switch (tipo)
+	{
+	case SORGENTE_AUX:
+	case SORGENTE_RADIO:
+	case SORGENTE_MULTIM:
+		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, where, ambdescr);
+		break;
+	case SORG_RADIO:
+	case SORG_AUX:
+	case SORGENTE_MULTIM_MC:
+	{
+		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, 0, ambdescr);
+		banner *b = sorgenti->getLast();
+		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
+		break;
+	}
+	case AMPLIFICATORE:
+		amplificatori->addItemU(tipo, description, (void *)indirizzo, icon_names);
+		break;
+	default:
+		qWarning("%s: Adding an unknown type to sottoMenu amplificatori", __FILE__);
+		amplificatori->addItemU(tipo, description, (void *)indirizzo, icon_names);
+	}
 	return 1;
+
 }
 
 void diffSonora::setNumRighe(uchar n)
