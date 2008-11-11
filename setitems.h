@@ -66,6 +66,7 @@ public:
 	*/
 	void inizializza();
 
+	virtual void Draw();
 signals:
 /*!
 \brief Emitted to turn alarm clock off
