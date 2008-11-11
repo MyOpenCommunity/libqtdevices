@@ -329,7 +329,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		// create lansettings menu
 		LanSettings *ls = new LanSettings(this);
 		ls->hide();
-
+		// TODO: rimuovere la hideChildren! Rimplementare la hideEvent al suo posto!
 		connect(this, SIGNAL(hideChildren()), ls, SLOT(hide()));
 		connect(b, SIGNAL(click()), ls, SLOT(showFullScreen()));
 		break;
