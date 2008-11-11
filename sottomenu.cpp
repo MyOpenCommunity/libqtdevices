@@ -124,6 +124,59 @@ void sottoMenu::setModeIcon(char* iconBut4)
 	bannNavigazione->Draw();
 }
 
+int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString *> *indirizzo,
+		QList<QString*> &icon_names, int periodo, int numFrame,
+		char *descr1, char *descr2, char *descr3, char *descr4,
+		int par3, int par4,
+		QList<QString*> *lt, QList<scenEvo_cond*> *lc,
+		QString action, QString light, QString key, QString unknown,
+		QList<int> sstart, QList<int> sstop,
+		QString txt1, QString txt2, QString txt3)
+{
+	// TODO: codice duplicato da sotto, da cambiare
+	QByteArray buf_descr = qdescrizione.toAscii();
+	const char * descrizione = buf_descr.constData();
+
+	QByteArray buf_icona_sx = safeAt(icon_names, 0)->toAscii();
+	char *IconaSx = buf_icona_sx.data();
+
+	QByteArray buf_icona_dx = safeAt(icon_names, 1)->toAscii();
+	char *IconaDx = buf_icona_dx.data();
+
+	QByteArray buf_icon = safeAt(icon_names, 2)->toAscii();
+	char *icon = buf_icon.data();
+
+	QByteArray buf_pressed_icon = safeAt(icon_names, 3)->toAscii();
+	char *pressedIcon = buf_pressed_icon.data();
+
+	qDebug("sottoMenu::addItem(lista), lt = (%p)", lt);
+	switch (tipo)
+	{
+	case GR_AMPLIFICATORI:
+		elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon));
+		break;
+	default:
+		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
+	}
+	connectLastBanner();
+
+	banner *last = elencoBanner.last();
+	last->SetTextU(qdescrizione);
+	last->setAnimationParams(periodo,numFrame);
+	last->setId(tipo);
+
+	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
+	{
+		if (elencoBanner.at(idx)->getId() == tipo)
+		{
+			elencoBanner.last()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
+			idx = -1;
+		}
+	}
+
+	return 1;
+}
+
 int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo,
 		QList<QString*> &icon_names, int periodo, int numFrame,
 		char *descr1, char *descr2, char *descr3, char *descr4,
@@ -256,9 +309,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		break;
 	case SORGENTE_RADIO:
 		elencoBanner.append(new banradio(this,descrizione ,(char*)indirizzo));
-		break;
-	case GR_AMPLIFICATORI:
-		elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon));
 		break;
 	case SET_SVEGLIA:
 		elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,icoEx1,par3));
