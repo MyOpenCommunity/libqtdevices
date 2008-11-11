@@ -93,7 +93,7 @@ void postoExt::frame_captured_handler(call_notifier *cn)
 {
 	qDebug("postoExt::frame_captured_handler()");
 	// Just unfreeze
-	BTouch->freezed(false);
+	BTouch->freeze(false);
 }
 
 void postoExt::call_notifier_closed(call_notifier *cn)

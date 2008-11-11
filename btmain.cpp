@@ -404,7 +404,7 @@ void BtMain::gesScrSav()
 		{
 			if (!svegliaIsOn)
 			{
-				freezed(true);
+				freeze(true);
 				tempo1->start(500);
 			}
 		}
@@ -412,7 +412,7 @@ void BtMain::gesScrSav()
 		{
 			tempo1->start(2000);
 			pd_shown = false;
-			freezed(false);
+			freeze(false);
 		}
 		if  (tiempo >= 60 && !svegliaIsOn && !calibrating)
 		{
@@ -476,7 +476,7 @@ void BtMain::gesScrSav()
 	}
 	else if (tiempo >= 120)
 	{
-		freezed(true);
+		freeze(true);
 		tempo1->start(500);
 		firstTime = false;
 	}
@@ -494,13 +494,13 @@ bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 	if (ev->type() != QEvent::MouseButtonRelease)
 		return false;
 
-	freezed(false);
+	freeze(false);
 	return true;
 }
 
-void BtMain::freezed(bool b)
+void BtMain::freeze(bool b)
 {
-	qDebug("BtMain::freezed(%d)", b);
+	qDebug("BtMain::freeze(%d)", b);
 	bloccato = b;
 
 	if (!bloccato)

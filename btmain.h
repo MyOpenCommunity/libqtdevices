@@ -36,7 +36,7 @@ class SupervisionMenu;
   \date lug 2005
 */
 
-class  BtMain : public QWidget
+class BtMain : public QWidget
 {
 Q_OBJECT
 public:
@@ -48,7 +48,7 @@ public:
 
 	void resetTimer();
 	/// Freeze or unfreeze the application
-	void freezed(bool);
+	void freeze(bool);
 
 private slots:
 	void hom();
