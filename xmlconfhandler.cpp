@@ -622,7 +622,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*supervisione,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
 						QObject::connect(*supervisione,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
 						break;
 
@@ -785,7 +784,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 #if !defined (BTWEB) && !defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(show()));
 #endif
-						QObject::connect(*videocitofonia,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
 						break;
 
 					case SPECIAL:
