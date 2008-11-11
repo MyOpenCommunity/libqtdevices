@@ -27,6 +27,7 @@
 #include <QLabel>
 #include <QDir>
 #include <QFile>
+#include <QMap>
 
 #include <fcntl.h>
 #include <stdlib.h>
@@ -255,19 +256,13 @@ void sveglia::Closed()
 	emit ImClosed();
 	delete oraSveglia;
 	oraSveglia = new QDateTime(dataOra->getDataOra());
-	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	// These calls to setCfgValue must be done atomically on conf.xml (remember, there are
-	// many processes that may write in conf.xml), so they are first done
-	// on a temporary file which is moved to conf.xml at the end
-	setCfgValue("cfg/conf1.lmx", SET_SVEGLIA, "hour", oraSveglia->time().toString("hh"), serNum);
-	setCfgValue("cfg/conf1.lmx", SET_SVEGLIA, "minute", oraSveglia->time().toString("mm"), serNum);
-	// FIXME: questa istruzione crea una foglia alarmset in fondo al file di conf
-	// che viene rimossa quando la sveglia suona.
-	// Se per qualche motivo il BTouch muore prima che la sveglia sia suonata
-	// il file di configurazione e' corrotto
-	setCfgValue("cfg/conf1.lmx", SET_SVEGLIA, "alarmset", QString::number(tipoSveglia), serNum);
-	if (!::rename("cfg/conf1.lmx", "cfg/conf.xml"))
-		qWarning("%s: Could not move temporary config on conf.xml", __FILE__);
+
+	QMap<QString, QString> data;
+	data["hour"] = oraSveglia->time().toString("hh");
+	data["minute"] = oraSveglia->time().toString("mm");
+	data["alarmSet"] = QString::number(tipoSveglia);
+
+	setCfgValue(data, SET_SVEGLIA, serNum);
 }
 
 void sveglia::okTipo()
@@ -312,7 +307,7 @@ void sveglia::activateSveglia(bool a)
 			minuTimer = new QTimer(this);
 			minuTimer->start(200);
 			connect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
-			setCfgValue(SET_SVEGLIA, "enabled","1",serNum);
+			setCfgValue("enabled","1", SET_SVEGLIA, serNum);
 		}
 	}
 	else
@@ -323,7 +318,7 @@ void sveglia::activateSveglia(bool a)
 			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
 			delete minuTimer;
 			minuTimer = NULL;
-			setCfgValue(SET_SVEGLIA, "enabled","0",serNum);
+			setCfgValue("enabled", "0", SET_SVEGLIA, serNum);
 		}
 	}
 }

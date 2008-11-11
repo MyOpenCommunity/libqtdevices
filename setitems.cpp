@@ -255,12 +255,12 @@ void impPassword::toggleActivation()
 	if (active)
 	{
 		active = false;
-		setCfgValue(PROTEZIONE, "enabled","0",getSerNum());
+		setCfgValue("enabled", "0", PROTEZIONE, getSerNum());
 	}
 	else
 	{
 		active = true;
-		setCfgValue(PROTEZIONE, "enabled","1",getSerNum());
+		setCfgValue("enabled", "1", PROTEZIONE, getSerNum());
 	}
 	emit setPwd(active,paswd);
 	show();
@@ -324,7 +324,7 @@ void impPassword::reShow2(char *c)
 		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
 		strcpy(paswd,c);
-		setCfgValue(PROTEZIONE, "value",paswd,getSerNum());
+		setCfgValue("value", paswd, PROTEZIONE, getSerNum());
 		emit(setPwd(active,paswd));
 	}
 	show();

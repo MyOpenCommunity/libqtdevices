@@ -307,7 +307,7 @@ void scenEvo::toggleAttivaScev()
 	impostaAttivo(!isActive());
 	Draw();
 	const char *s = isActive() ? "1" : "0";
-	setCfgValue(SCENARIO_EVOLUTO, "enable", s, serial_number);
+	setCfgValue("enable", s, SCENARIO_EVOLUTO, serial_number);
 }
 
 void scenEvo::configScev()

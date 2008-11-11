@@ -13,17 +13,16 @@
 #include "main.h"
 #include "btmain.h"
 
-#include <QDir>
-#include <QWidget>
-#include <QPixmap>
+#include <QMutableMapIterator>
 #include <QTextStream>
 #include <QDateTime>
+#include <QWidget>
+#include <QPixmap>
 #include <QDebug>
+#include <QDir>
 
 #include <fcntl.h>
 #include <unistd.h>
-
-#define CONFILENAME	"cfg/conf.xml"
 
 
 QString getPressName(QString name)
@@ -71,97 +70,84 @@ void getAmbName(char *name, char *out, char *amb, char len)
  * Changes a value in conf.xml file atomically.
  * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
  */
-bool setCfgValue(const QString &file, int id, const QString &campo, const QString &valore, int serNumId)
+bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item, const QString &filename)
 {
-	int count;
-	const QString tmp_file = "cfg/appoggio.xml";
-
 	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
 	if (fd >= 0)
-	{
 		close(fd);
-	}
-	count = 1;
-	if (QFile::exists(tmp_file))
-		QFile::remove(tmp_file);
 
-	QFile *fil1 = new QFile(file);
-	QFile *fil2 = new QFile(tmp_file);
-	if (!fil1->open(QIODevice::WriteOnly | QIODevice::ReadOnly))
+	const QString tmp_filename = "cfg/appoggio.xml";
+	if (QFile::exists(tmp_filename))
+		QFile::remove(tmp_filename);
+
+	QFile tmp_file(tmp_filename);
+
+	if (!tmp_file.open(QIODevice::WriteOnly))
 		return false;
 
-	if (!fil2->open(QIODevice::WriteOnly))
-	{
-		fil1->close();
+	QFile out_file(filename);
+	if (!out_file.open(QIODevice::WriteOnly | QIODevice::ReadOnly))
 		return false;
-	}
 
-	QTextStream t1(fil1);
-	QTextStream t2(fil2);
+	QTextStream out_stream(&out_file);
+	QTextStream tmp_stream(&tmp_file);
 
-	QString app1 = QString("<id>%1</id>").arg(id);
+	QString item_tag = QString("<id>%1</id>").arg(item_id);
 
 	while (true)
 	{
-		QString Line = t1.readLine().append('\n');
-		if (Line == "\n")
+		QString line = out_stream.readLine();
+		if (line.isNull())
 			break;
+		tmp_stream << line.append('\n');
 
-		t2 << Line;
-
-		if (Line.contains(app1))
+		if (line.contains(item_tag))
 		{
-			if  (count == serNumId)
+			int count = 1;
+			if (count == num_item)
 			{
-				QString app2 = QString("<%1>").arg(campo);
 				while (true)
 				{
-					Line = t1.readLine().append('\n');
-					if (Line == "\n")
+					QString line = out_stream.readLine();
+					if (line.isNull())
 						break;
 
-					if (!Line.contains(app2))
-						t2 << Line;
-					else
-						break;
+					QMutableMapIterator<QString, QString> it(data);
+					while (it.hasNext())
+					{
+						it.next();
+						if (line.contains(QString("<%1>").arg(it.key())))
+						{
+							line = QString("<%1>%2</%1>").arg(it.key()).arg(it.value());
+							it.remove();
+							break;
+						}
+					}
+					tmp_stream << line.append("\n");
 				}
+				assert(!data.size() && "Some fields not found on configuration file!");
 
-				Line = QString("<%1>%2</%3>\n").arg(campo).arg(valore).arg(campo);
-				t2 << Line;
-				while (true)
-				{
-					Line = t1.readLine().append('\n');
-					if (Line == "\n")
-						break;
-					t2 << Line;
-				}
-				t2.flush();
-				fil2->flush();
-				fil1->close();
-				fil2->close();
-				// QDir::rename fails if destination file exists
-				// so we use rename system call
-				if (!::rename(tmp_file.toLatin1().constData(), file.toLatin1().constData()))
+				tmp_stream.flush();
+				tmp_file.close();
+				out_file.flush();
+				out_file.close();
+
+				// QDir::rename fails if destination file exists so we use rename system call
+				if (!::rename(tmp_filename.toLatin1().constData(), filename.toLatin1().constData()))
 					return true;
 			}
 			else
-				count++;
+				++count;
 		}
 	}
-
-	fil1->close();
-	fil2->close();
 	return false;
 }
 
-bool setCfgValue(int id, const QString &campo, const QString &valore)
+bool setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
 {
-	return setCfgValue(id, campo, valore, 1);
-}
-
-bool setCfgValue(int id, const QString &campo, const QString &valore, int serNumId)
-{
-	return setCfgValue(CONFILENAME, id, campo, valore, serNumId);
+	QMap<QString, QString> m;
+	m[field] = value;
+	return setCfgValue(m, item_id, num_item, filename);
 }
 
 bool copyFile(char* orig, char* dest)
@@ -211,7 +197,7 @@ void setContrast(unsigned char c,bool b)
 	if (b)
 	{
 		sprintf(contr,"%03d",c);
-		setCfgValue(CONTRASTO, "value",contr);
+		setCfgValue("value", contr, CONTRASTO);
 	}
 }
 
@@ -298,7 +284,7 @@ void setBeep(bool buzzer_enable, bool write_to_conf)
 
 	if (write_to_conf)
 	{
-		setCfgValue(SUONO, "value", p);
+		setCfgValue("value", p, SUONO);
 	}
 }
 

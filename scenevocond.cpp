@@ -333,11 +333,11 @@ void scenEvo_cond_h::scaduta()
 void scenEvo_cond_h::save()
 {
 	qDebug("scenEvo_cond_h::save()");
-	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "hour", cond_time->time().toString("hh"), get_serial_number());
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "minute",cond_time->time().toString("mm"), get_serial_number());
-	if (!::rename("cfg/conf1.lmx","cfg/conf.xml"))
-		qWarning("%s: Could not move temporary config on conf.xml", __FILE__);
+
+	QMap<QString, QString> data;
+	data["hour"] = cond_time->time().toString("hh");
+	data["minute"] = cond_time->time().toString("mm");
+	setCfgValue(data, SCENARIO_EVOLUTO, get_serial_number());
 }
 
 void scenEvo_cond_h::reset()
@@ -542,10 +542,9 @@ void scenEvo_cond_d::OK(void)
 void scenEvo_cond_d::save()
 {
 	qDebug("scenEvo_cond_d::save()");
-	QString s; actual_condition->get_condition_value(s);
-	copyFile("cfg/conf.xml","cfg/conf1.lmx");
-	setCfgValue("cfg/conf1.lmx", SCENARIO_EVOLUTO, "trigger", s, get_serial_number());
-	QDir::current().rename("cfg/conf1.lmx","cfg/conf.xml");
+	QString s;
+	actual_condition->get_condition_value(s);
+	setCfgValue("trigger", s, SCENARIO_EVOLUTO, get_serial_number());
 	reset();
 	inizializza();
 }

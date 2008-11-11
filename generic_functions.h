@@ -10,6 +10,9 @@
 
 #include <QString>
 #include <QList>
+#include <QMap>
+
+#include "main.h" // MY_FILE_USER_CFG_DEFAULT
 
  /*!
   \brief Transform a image file name into a pressed one.
@@ -106,20 +109,9 @@ unsigned long getTimePress();
 */
 void rearmWDT();
 
- /*!
-  \brief  Changes configuration file giving: fileName, id, fieldName, value, serial number of id recursion to change
-*/
-bool setCfgValue(const QString &file, int id, const QString &campo, const QString &valore, int serNumId);
+bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
- /*!
-  \brief  Same as above. file name is the default one and \a serial \a number \a of \a id \a recursion \a to \a change is 1.
-*/
-bool setCfgValue(int id, const QString &campo, const QString &valore);
-
- /*!
-  \brief  Same as above. file name is the default one.
-*/
-bool setCfgValue(int id, const QString &campo, const QString &valore, int serNumId);
+bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
  /*!
   \brief  Copies the file whose fileName is the first argument in an other with the fileName as in the second argument..
