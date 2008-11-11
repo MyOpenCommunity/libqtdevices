@@ -100,12 +100,6 @@ void sendInit(char*);
 	void ImClosed();
 
 /*!
-  \brief Emitted to freeze the device.
-*/
-// TODO: rimuovere appena possibile!
-	void freeze(bool);
-
-/*!
   \brief Emitted to comunicate weather the alarm set is running or not.
 */
 	void svegl(bool);

@@ -19,6 +19,7 @@
 #include "bannfrecce.h"
 #include "fontmanager.h"
 #include "brightnesscontrol.h"
+#include "btmain.h"
 
 #include <QDateTime>
 #include <QPixmap>
@@ -32,6 +33,8 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+extern BtMain *BTouch;
 
 
 sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff *diso, char *f, char *h, char *m)
@@ -110,6 +113,8 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	qDebug("tipoSveglia= %d - tipo= %d",tipoSveglia, tipo);
 	if (tipo == FRAME)
 		frame = f;
+
+	connect(BTouch, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
 
 void sveglia::okTime()
@@ -417,7 +422,7 @@ void sveglia::verificaSveglia()
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(buzzerAlarm()));
 				contaBuzzer = 0;
 				conta2min = 0;
-				emit freeze(true);
+				BTouch->freeze(true);
 				emit svegl(true);
 			}
 			else if (tipo == DI_SON)
@@ -427,7 +432,7 @@ void sveglia::verificaSveglia()
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
 				BrightnessControl::instance()->setState(ON);
-				emit freeze(true);
+				BTouch->freeze(true);
 				emit svegl(true);
 			}
 			else if (tipo == FRAME)
@@ -663,7 +668,7 @@ void sveglia::aumVol()
 				emit sendFrame(msg_open.frame_open);
 			}
 		}
-		emit freeze(false);
+		BTouch->freeze(false);
 		emit svegl(false);
 	}
 }
@@ -694,7 +699,7 @@ void sveglia::buzzerAlarm()
 		setBeep(buzAbilOld,false);
 		delete aumVolTimer;
 		aumVolTimer = NULL;
-		emit freeze(false);
+		BTouch->freeze(false);
 		emit svegl(false);
 	}
 }
@@ -712,7 +717,7 @@ void sveglia::spegniSveglia(bool b)
 
 			delete aumVolTimer;
 			aumVolTimer = NULL;
-			emit (svegl(false));
+			emit svegl(false);
 		}
 	}
 	else if (b)
