@@ -502,6 +502,7 @@ void BtMain::freeze(bool b)
 {
 	qDebug("BtMain::freeze(%d)", b);
 	bloccato = b;
+	emit freezed(bloccato);
 
 	if (!bloccato)
 	{

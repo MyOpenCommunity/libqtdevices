@@ -107,6 +107,7 @@ private:
 
 signals:
 	void resettimer();
+	void freezed(bool);
 };
 
 #endif// BTMAIN_H
