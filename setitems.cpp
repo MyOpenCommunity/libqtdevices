@@ -51,17 +51,14 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff *diso,
 	SetIcons(iconOff ,ICON_INFO);
 	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, h, m);
 	svegliolina->hide();
-	if (enabled == 1)
-		setAbil(true);
-	else
-		setAbil(false);
+	setAbil(enabled == 1);
 	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));
 
 	connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*)));
 	connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
 	connect(svegliolina, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
-	connect(svegliolina,SIGNAL(ImClosed()),parentWidget() , SLOT(showFullScreen()));
+	connect(svegliolina,SIGNAL(ImClosed()), svegliolina, SLOT(hide()));
 	connect(svegliolina, SIGNAL(svegl(bool)),this , SIGNAL(svegl(bool)));
 }
 
@@ -71,19 +68,19 @@ void impostaSveglia::gestFrame(char* frame)
 
 void impostaSveglia::setAbil(bool b)
 {
-	svegliolina->activateSveglia(b);
+	svegliolina->setActive(b);
 	Draw();
 }
 
 void impostaSveglia::toggleAbil()
 {
-	svegliolina->activateSveglia(!svegliolina->getActivation());
+	svegliolina->setActive(!svegliolina->isActive());
 	Draw();
 }
 
 void impostaSveglia::Draw()
 {
-	if (svegliolina->getActivation())
+	if (svegliolina->isActive())
 	{
 		qDebug("impostaSveglia mette icona ON (%p)", iconOn);
 		SetIcons(uchar(0),iconOn);

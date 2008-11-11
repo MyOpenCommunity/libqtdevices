@@ -53,12 +53,12 @@ public:
 /*!
   \brief Sets the alarm set (dis)active.
 */
-	void activateSveglia(bool);
+	void setActive(bool);
 
 /*!
-  \brief Retrieves the activation state of the alarm set.
+  \brief Retrieves the state of the alarm set.
 */
-	bool getActivation();
+	bool isActive();
 
 /*!
   \brief Reads from the eeprom the alarm set state.
@@ -187,7 +187,7 @@ private:
 	QDateTime *oraSveglia;
 	contdiff *difson;
 	int volSveglia[AMPLI_NUM];
-	bool gesFrameAbil,svegliaAbil,onceToGest;
+	bool gesFrameAbil, active, onceToGest;
 	QTimer *minuTimer,*aumVolTimer;
 	QString frame;
 };

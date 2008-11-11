@@ -134,7 +134,7 @@ void sveglia::okTime()
 	dataOra->hide();
 	Immagine->hide();
 	
-	if (tipo!=DI_SON)
+	if (tipo != DI_SON)
 		bannNavigazione->nascondi(banner::BUT2);
 }
 
@@ -223,7 +223,6 @@ void sveglia::sel4(bool isOn)
 void sveglia::Closed()
 {
 	qDebug("Sveglia Closed");
-	hide();
 	//imposta la sveglia in
 	if (difson)
 	{
@@ -231,7 +230,7 @@ void sveglia::Closed()
 		difson->disconnectClosed(this);
 		if (aggiornaDatiEEprom)
 		{
-			difson->reparent((QWidget*)NULL,0,QPoint(0,0),(bool)false);
+			difson->reparent(NULL,0,QPoint(0,0),false);
 			difson->setNavBarMode(3);
 			difson->ripristinaRighe();
 			difson->restorewindows();
@@ -252,7 +251,7 @@ void sveglia::Closed()
 	}
 
 	gesFrameAbil = false;
-	activateSveglia(true);
+	setActive(true);
 	emit ImClosed();
 	delete oraSveglia;
 	oraSveglia = new QDateTime(dataOra->getDataOra());
@@ -297,10 +296,10 @@ void sveglia::okTipo()
 	}
 }
 
-void sveglia::activateSveglia(bool a)
+void sveglia::setActive(bool a)
 {
-	svegliaAbil = a;
-	if (svegliaAbil)
+	active = a;
+	if (active)
 	{
 		if (!minuTimer)
 		{
@@ -399,7 +398,7 @@ void sveglia::gestFrame(char* f)
 
 void sveglia::verificaSveglia()
 {
-	if (!svegliaAbil)
+	if (!active)
 		return;
 
 	QDateTime actualDateTime = QDateTime::currentDateTime();
@@ -440,16 +439,16 @@ void sveglia::verificaSveglia()
 			qDebug("PARTE LA SVEGLIA");
 
 		if (tipoSveglia == ONCE)
-			activateSveglia(false);
+			setActive(false);
 		}
 	}
-	if (svegliaAbil)
+	if (active)
 		minuTimer->start((60-actualDateTime.time().second())*1000);
 }
 
-bool sveglia::getActivation()
+bool sveglia::isActive()
 {
-	return svegliaAbil;
+	return active;
 }
 
 void sveglia::aumVol()
