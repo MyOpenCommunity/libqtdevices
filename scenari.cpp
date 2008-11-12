@@ -113,7 +113,7 @@ void gesModScen::enterInfo()
 	nascondi(ICON);
 	mostra(BUT4);
 	mostra(BUT3);
-	SetIcons(uchar(1),iconNoInfo);
+	SetIcons(1, iconNoInfo);
 	qDebug(iconNoInfo);
 	disconnect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
@@ -125,7 +125,7 @@ void gesModScen::exitInfo()
 	mostra(ICON);
 	nascondi(BUT4);
 	nascondi(BUT3);
-	SetIcons(uchar(1),iconInfo);
+	SetIcons(1, iconInfo);
 	connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
 	disconnect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
 	Draw();

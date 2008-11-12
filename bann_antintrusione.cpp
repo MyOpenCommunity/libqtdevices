@@ -70,21 +70,21 @@ void zonaAnti::setIcons()
 {
 	if (isActive())
 	{
-		banner::SetIcons((unsigned char)1, sparzIName);
-		banner::SetIcons((unsigned char)3, zonaAttiva);
+		banner::SetIcons(1, sparzIName);
+		banner::SetIcons(3, zonaAttiva);
 	}
 	else
 	{
-		banner::SetIcons((unsigned char)1, parzIName);
-		banner::SetIcons((unsigned char)3, zonaNonAttiva);
+		banner::SetIcons(1, parzIName);
+		banner::SetIcons(3, zonaNonAttiva);
 	}
 }
 
 void zonaAnti::SetIcons(char *i1, char *i2, char *i3)
 {
-	banner::SetIcons((unsigned char)1, i1);
-	banner::SetIcons((unsigned char)2, i2);
-	banner::SetIcons((unsigned char)3, i3);
+	banner::SetIcons(1, i1);
+	banner::SetIcons(2, i2);
+	banner::SetIcons(3, i3);
 }
 
 void zonaAnti::Draw()
