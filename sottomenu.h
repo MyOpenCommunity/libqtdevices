@@ -40,10 +40,12 @@ Q_OBJECT
 public:
 	sottoMenu(QWidget *parent=0, const char *_name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
 	~sottoMenu();
+
 	/*!
-		\brief Retrieves the number of objects in the list
-		*/
+	\brief Retrieves the number of objects in the list
+	*/
 	uint getCount();
+
 	/*!
 		\brief Adds an item to the list. the arguments are:
 tipo: banner type as described in the bannerType (main.h)
@@ -73,6 +75,7 @@ sstop : soft stop values list vor dimmer 100 group
 		QString action="", QString light="", QString key="", QString unk="",
 		QList<int> sstart = QList<int>(),
 		QList<int> sttop = QList<int>(), QString txt1="", QString txt2="", QString txt3="");
+
 	/**
 	 * Overloaded member function that takes a QList<QString *> *indirizzo parameter
 	 */
@@ -86,203 +89,164 @@ sstop : soft stop values list vor dimmer 100 group
 		QList<int> sttop = QList<int>(), QString txt1="", QString txt2="", QString txt3="");
 
 	/**
-		* Add a new banner.
-		*/
+	* Add a new banner.
+	*/
 	void appendBanner(banner *b);
+
 	/*!
-		\brief Initializes all the objects in the list calling init() after a certain time
-		*/
+	\brief Initializes all the objects in the list calling init() after a certain time
+	*/
 	virtual void inizializza();
-	/*!
-		\brief Draws the subtree starting from the right item.
 
-		The drawn isn't made if the first item to draw doesn't change
-		*/
+	/*!
+	\brief Draws the subtree starting from the right item.
+
+	The drawn isn't made if the first item to draw doesn't change
+	*/
 	void draw();
-	/*!
-		\brief Draws the subtree starting from the right item.
 
-		The drawn is always made
-		*/
-	virtual void forceDraw();
 	/*!
-		\brief Set the row's number to be drawn in the screen
-		*/
+	\brief Draws the subtree starting from the right item.
+
+	The drawn is always made
+	*/
+	virtual void forceDraw();
+
+	/*!
+	\brief Set the row's number to be drawn in the screen
+	*/
 	virtual void setNumRighe(uchar);
 
 	/**
-		* Set the number of rows to scroll up or down at each goUp() or goDown() call
-		* \param step The number of rows to scroll up or down
-		*/
+	* Set the number of rows to scroll up or down at each goUp() or goDown() call
+	* \param step The number of rows to scroll up or down
+	*/
 	void setScrollStep(unsigned step);
 
 	/*!
-		\brief Retrieves the last banner of the list
-		*/
+	\brief Retrieves the last banner of the list
+	*/
 	banner* getLast();
+
 	/*!
-		\brief Retrieves the current banner in the list
-		*/
+	\brief Retrieves the current banner in the list
+	*/
 	banner* getCurrent();
+
 	/*!
-		\brief Retrieves the next banner in the list
-		*/
+	\brief Retrieves the next banner in the list
+	*/
 	banner* getNext();
+
 	/*!
-		\brief Retrieves the previous banner in the list
-		*/
+	\brief Retrieves the previous banner in the list
+	*/
 	banner* getPrevious();
 
 	/*!
-		\brief Sets the index of the list forcing it to the object having the address passed by argument.
-		*/
+	\brief Sets the index of the list forcing it to the object having the address passed by argument.
+	*/
 	void setIndex(char*);
 	void mostra_all(char);
-	/*!
-		\brief Sets the index of the list forcing which is the first item to draw.
-		*/
-	void setIndice(char);
-	/*!
-		\brief Such as setNumRighe(uchar).
-		*/
-	void setNumRig(uchar);
-	/*!
-		\brief Set the height of the area occupied by the subtree.
-		*/
-	void setHeight(int);
-	/*!
-		\brief Retrieves the number of rows used by the subtree.
-		*/
-	uchar getNumRig();
-	/*!
-		\brief Retrieves the height of th area occupied by the subtree.
-		*/
-	int getHeight();
-	/*!
-		\brief Changes the type of navigation bar present at the bsubtree (see bannFrecce)
-		*/
-	virtual void setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
-	/*!
-		\brief Set the Geometry for the object.
-		*/
-	void setGeometry(int, int, int, int);
-	/*!
-		\brief reparent implementation
-		*/
-	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
-	/*!
-		\brief add amb to all banners
-		*/
-	void addAmb(char *);
-signals:
-	void goUP();
-	void goDO();
-	/*!
-		\brief Emitted when the object is closed.
-		*/
-	void Closed();
-	/*!
-		\brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
-		*/
-	void gestFrame(char*);
-	/*!
-		\brief Emitted to connect the \a Open \a Frame coming from to the banners in the list to the openClient.
-		*/
-	void sendFrame(char*);
-	void sendInit(char*);
-	/*!
-		\brief Like sendFrame, but also ack is requested before proceeding
-		*/
-	void sendFramew(char*);
-	/*!
-		\brief Open ack received
-		*/
-	void openAckRx(void);
-	/*!
-		\brief Open nak received
-		*/
-	void openNakRx(void);
 
-	void richStato(char*);
-	void rispStato(char*);
 	/*!
-		\brief Emitted to go to a further page.
-		*/
-	void goDx();
+	\brief Sets the index of the list forcing which is the first item to draw.
+	*/
+	void setIndice(char);
+
 	/*!
-		\brief Emitted to tell that an item in the list was removed.
-		*/
-	void itemKilled();
+	\brief Such as setNumRighe(uchar).
+	*/
+	void setNumRig(uchar);
+
 	/*!
-		\brief Emitted to tell to BtMain tha state of the password (value and abilitation).
-		*/
-	void setPwd(bool,char*);
+	\brief Set the height of the area occupied by the subtree.
+	*/
+	void setHeight(int);
+
 	/*!
-		\brief Parent changed
-		*/
-	void parentChanged(QWidget *newParent);
+	\brief Retrieves the number of rows used by the subtree.
+	*/
+	uchar getNumRig();
+
 	/*!
-		\brief amb description changed (for diffmulti)
-		*/
-	void ambChanged(const QString & newdescr, bool multiwhere, char *where);
+	\brief Retrieves the height of th area occupied by the subtree.
+	*/
+	int getHeight();
+
 	/*!
-		\brief hide all children
-		*/
-	void hideChildren();
+	\brief Changes the type of navigation bar present at the bsubtree (see bannFrecce)
+	*/
+	virtual void setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
+
 	/*!
-		\brief emitted on calibration start
-		*/
-	void startCalib();
+	\brief Set the Geometry for the object.
+	*/
+	void setGeometry(int, int, int, int);
+
 	/*!
-		\brief emitted on calibration end
-		*/
-	void endCalib();
+	\brief reparent implementation
+	*/
+	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
+
+	/*!
+	\brief add amb to all banners
+	*/
+	void addAmb(char *);
+
 public slots:
 	/*!
-		\brief Slides the list upward.
-		*/
+	\brief Slides the list upward.
+	*/
 	virtual void goUp();
+
 	/*!
-		\brief Slides the list downward.
-		*/
+	\brief Slides the list downward.
+	*/
 	virtual void goDown();
+
 	/*!
-		\brief  See inizializza().
+	\brief  See inizializza().
 	*/
 	void init();
+
 	/*!
-		\brief  See inizializza().
+	\brief  See inizializza().
 	*/
 	void init_dimmer();
+
 	/*!
-		\brief  Removes a banner from the list.
-		*/
+	\brief  Removes a banner from the list.
+	*/
 	void killBanner(banner*);
+
 	/*!
-		\brief  Empties the banner list.
-		*/
+	\brief  Empties the banner list.
+	*/
 	void svuota();
 	void showItem(int id);
 protected:
 	void connectLastBanner();
 	/**
-		* Set BG and FG color, address, id, text, animation params
-		* in a banner.
-		*
-		* \param bann The banner being set
-		* \param conf The node in the Dom tree that holds a reference
-		* to an `item' tag (that is the root node of an item configuration)
-		*/
+	* Set BG and FG color, address, id, text, animation params
+	* in a banner.
+	*
+	* \param bann The banner being set
+	* \param conf The node in the Dom tree that holds a reference
+	* to an `item' tag (that is the root node of an item configuration)
+	*/
 	void initBanner(banner *bann, QDomNode conf);
+
 	/**
-		* Finds a node with tag name equal to the parameter
-		* using a breadth-first search.
-		*
-		* \param root    The node where the search starts
-		* \param name    The tag name to find
-		* \return        A null node if no tag was found, the node otherwise
-		*/
+	* Finds a node with tag name equal to the parameter
+	* using a breadth-first search.
+	*
+	* \param root    The node where the search starts
+	* \param name    The tag name to find
+	* \return        A null node if no tag was found, the node otherwise
+	*/
 	QDomNode findNamedNode(QDomNode root, QString name);
+
 	virtual void hideEvent(QHideEvent *event);
 	virtual void showEvent(QShowEvent *event);
 	QList<banner*> elencoBanner;
@@ -298,6 +262,84 @@ private:
 	unsigned scroll_step;
 	void setModeIcon(char*);
 	QString name; // To simulate old qt3 behavior for name of widgets.
+
+signals:
+	void goUP();
+	void goDO();
+
+	/*!
+	\brief Emitted when the object is closed.
+	*/
+	void Closed();
+
+	/*!
+	\brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
+	*/
+	void gestFrame(char*);
+
+	/*!
+	\brief Emitted to connect the \a Open \a Frame coming from to the banners in the list to the openClient.
+	*/
+	void sendFrame(char*);
+	void sendInit(char*);
+
+	/*!
+	\brief Like sendFrame, but also ack is requested before proceeding
+	*/
+	void sendFramew(char*);
+
+	/*!
+	\brief Open ack received
+	*/
+	void openAckRx(void);
+
+	/*!
+	\brief Open nak received
+	*/
+	void openNakRx(void);
+
+	void richStato(char*);
+	void rispStato(char*);
+
+	/*!
+	\brief Emitted to go to a further page.
+	*/
+	void goDx();
+
+	/*!
+	\brief Emitted to tell that an item in the list was removed.
+	*/
+	void itemKilled();
+
+	/*!
+	\brief Emitted to tell to BtMain tha state of the password (value and abilitation).
+	*/
+	void setPwd(bool,char*);
+
+	/*!
+	\brief Parent changed
+	*/
+	void parentChanged(QWidget *newParent);
+
+	/*!
+	\brief amb description changed (for diffmulti)
+	*/
+	void ambChanged(const QString & newdescr, bool multiwhere, char *where);
+
+	/*!
+	\brief hide all children
+	*/
+	void hideChildren();
+
+	/*!
+	\brief emitted on calibration start
+	*/
+	void startCalib();
+
+	/*!
+	\brief emitted on calibration end
+	*/
+	void endCalib();
 };
 
 
