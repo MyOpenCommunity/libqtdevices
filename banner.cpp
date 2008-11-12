@@ -145,29 +145,19 @@ void banner::SetIcons(QString sxIcon, QString dxIcon)
 		SetIcons(1, dxIcon);
 }
 
-void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char *centerIcon)
+void banner::SetIcons(QString sxIcon , QString dxIcon, QString centerIcon)
 {
-	if (sxIcon)
-	{
-		Icon[0]      = icons_library.getIcon(sxIcon);
-		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
-		qDebug("Icon[0] <- %s", sxIcon);
-	}
+	if (!sxIcon.isNull())
+		SetIcons(0, sxIcon);
 
-	if (dxIcon)
-	{
-		Icon[1]      = icons_library.getIcon(dxIcon);
-		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
-		qDebug("Icon[1] <- %s", dxIcon);
-	}
+	if (!dxIcon.isNull())
+		SetIcons(1, dxIcon);
 
-	if (centerIcon)
-	{
-		Icon[3]      = icons_library.getIcon(centerIcon);
-		pressIcon[3] = icons_library.getIcon(getPressedIconName(centerIcon));
-		qDebug("Icon[3] <- %s", centerIcon);
-	}
+	if (!centerIcon.isNull())
+		SetIcons(3, dxIcon);
 
+	// TODO: che cos'e' questo impostaAttivo? Senza di quello potrebbe essere usata
+	// questa funzione con argomento di default anche per la variante sopra!
 	impostaAttivo(1);
 }
 

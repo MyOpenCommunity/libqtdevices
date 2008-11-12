@@ -89,7 +89,7 @@ public:
 	 *
 	 * the arguments describe the images to put on the buttons and into the describing label passing the file names
 	 */
-	void SetIcons(const char *, const char *,const char *);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerIcon);
 
 	/*!
 	 * \brief sets the Icon of left and right button and the central label when the banner is active or not
