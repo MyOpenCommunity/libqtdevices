@@ -75,14 +75,14 @@ public:
 	/*!
 	 * \brief sets the Icon of a item in the banner
 	 */
-	void SetIcons(const char *name, int type);
+	void SetIcons(QString name, int type);
 
 	/*!
 	 * \brief sets the Icon of left and right button
 	 *
 	 * the arguments describe the images to put on the buttons passing the file names
 	 */
-	void SetIcons(const char *, const char *);
+	void SetIcons(QString sxIcon, QString dxIcon);
 
 	/*!
 	 * \brief sets the Icon of left and right button and the central label

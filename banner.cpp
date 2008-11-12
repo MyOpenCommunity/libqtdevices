@@ -118,35 +118,31 @@ void banner::SetIcons(int id, QString name)
 	pressIcon[id] = icons_library.getIcon(getPressedIconName(name));
 }
 
-void banner::SetIcons(const char *name, int type)
+void banner::SetIcons(QString name, int type)
 {
-	if (type == 1)
+	int id;
+	switch (type)
 	{
-		Icon[0]      = icons_library.getIcon(name);
-		pressIcon[0] = icons_library.getIcon(getPressedIconName(name));
+		case 1:
+			id = 0;
+			break;
+		case 3:
+			id = 3;
+			break;
+		default:
+			qWarning("Type %d not handled on banner::setIcons!", type);
+			return;
 	}
-	if (type == 3)
-	{
-		Icon[3]      = icons_library.getIcon(name);
-		pressIcon[3] = icons_library.getIcon(getPressedIconName(name));
-	}
+	SetIcons(id, name);
 }
 
-void banner::SetIcons(const char *sxIcon , const char *dxIcon)
+void banner::SetIcons(QString sxIcon, QString dxIcon)
 {
-	if (sxIcon)
-	{
-		Icon[0]      = icons_library.getIcon(sxIcon);
-		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
-		qDebug("Icon[0] <- %s", sxIcon);
-	}
+	if (!sxIcon.isNull())
+		SetIcons(0, sxIcon);
 
-	if (dxIcon)
-	{
-		Icon[1]      = icons_library.getIcon(dxIcon);
-		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
-		qDebug("Icon[1] <- %s", dxIcon);
-	}
+	if (!dxIcon.isNull())
+		SetIcons(1, dxIcon);
 }
 
 void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char *centerIcon)
