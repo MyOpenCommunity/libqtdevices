@@ -166,20 +166,6 @@ public:
 	 *  The returned value is the Open Who of the object controlled by the banner.
 	 */
 	char *getChi();
-	/*!
-	 *  \brief Changes the group list of the object controlled by the banner.
-	 *
-	 *  The group list is an array of 9 bool varibles.
-	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
-	 */
-	void setGroup(bool*);
-	/*!
-	 *  \brief Retrieves the group list of the object controlled by the banner.
-	 *
-	 *  The group list is an array of 9 bool varibles. 
-	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
-	 */
-	bool *getGroup();
 
 	/*!
 	 *  \brief Sets the serial number of the banner.
@@ -461,7 +447,6 @@ protected:
 	int periodo, numFrame,contFrame,serNum;
 	char address[20];
 	char chi[5];
-	bool group[9];
 	/**
 	 *  \brief Returns true if the object is a target for message
 	 */
@@ -471,6 +456,16 @@ protected:
 	 * Utility function to draw all buttons except the rightmost one
 	 */
 	void drawAllButRightButton();
+private:
+	/*!
+	 *  \brief Retrieves the group list of the object controlled by the banner.
+	 *
+	 *  The group list is an array of 9 bool varibles. 
+	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
+	 */
+	bool *getGroup();
+
+	bool group[9];
 };
 
 

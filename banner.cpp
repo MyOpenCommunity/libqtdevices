@@ -744,15 +744,6 @@ char* banner::getChi()
 	return chi;
 }
 
-void banner::setGroup(bool* gr)
-{
-	qDebug("%s setted GROUP",getAddress());
-	for (unsigned int idx = 0; idx < 9; idx++)
-	{
-		group[idx] = gr[idx];
-	}
-}
-
 bool* banner::getGroup()
 {
 	return group;
@@ -769,6 +760,9 @@ bool banner::isForMe(openwebnet * m)
 			((strlen(m->Extract_dove())==1) && 
 			(!strncmp(m->Extract_dove(), getAddress(), 1))) ||
 			((!strncmp(m->Extract_dove(),"#",1)) && 
+			 // assuming that the following code stays inside group array,
+			 // the result is always false, since nobody ever sets anything
+			 // different in group
 			*(getGroup()+(atoi(m->Extract_dove()+1))-1))));
 }
 
