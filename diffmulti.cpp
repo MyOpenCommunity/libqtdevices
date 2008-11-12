@@ -313,12 +313,6 @@ void diffmulti::setGeom(int x, int y, int w,int h)
 	setGeometry(x, y, w, h);
 }
 
-void diffmulti::forceDraw()
-{
-	qDebug("diffmulti::forceDraw()");
-	sottoMenu::forceDraw();
-}
-
 void diffmulti::resizewindows(int x, int y, int w, int h)
 {
 	for (int i = 0; i < dslist.size(); ++i)

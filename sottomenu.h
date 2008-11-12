@@ -110,7 +110,7 @@ sstop : soft stop values list vor dimmer 100 group
 
 	The drawn is always made
 	*/
-	virtual void forceDraw();
+	void forceDraw();
 
 	/*!
 	\brief Set the row's number to be drawn in the screen
@@ -200,10 +200,6 @@ public slots:
 	*/
 	void killBanner(banner*);
 
-	/*!
-	\brief  Empties the banner list.
-	*/
-	void svuota();
 	void showItem(int id);
 protected:
 	void connectLastBanner();

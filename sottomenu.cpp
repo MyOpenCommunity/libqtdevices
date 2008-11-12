@@ -490,6 +490,7 @@ void sottoMenu::draw()
 
 void sottoMenu::forceDraw()
 {
+	qDebug() << name << "::forceDraw()";
 	indicold = indice + 1;
 	draw();
 }
@@ -665,12 +666,6 @@ void sottoMenu::hideEvent(QHideEvent *event)
 		forceDraw();
 	}
 	*/
-}
-
-void sottoMenu::svuota()
-{
-	elencoBanner.clear();
-	draw();
 }
 
 uint sottoMenu::getCount()
