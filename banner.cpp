@@ -182,43 +182,24 @@ void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon
 		SetIcons(4, centerDownIcon);
 }
 
-void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,int period, int number)
+void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, int period, int number)
 {
-	if (sxIcon)
-	{
-		Icon[0]      = icons_library.getIcon(sxIcon);
-		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
-		qDebug("Icon[0] <- %s", sxIcon);
-	}
+	SetIcons(sxIcon, dxIcon);
 
-	if (dxIcon)
-	{
-		Icon[1]      = icons_library.getIcon(dxIcon);
-		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
-		qDebug("Icon[1] <- %s", dxIcon);
-	}
+	if (!centerInactiveIcon.isNull())
+		SetIcons(2, centerInactiveIcon);
 
-	if (centerInactiveIcon)
+	if (!centerActiveIcon.isNull())
 	{
-		Icon[2]      = icons_library.getIcon(centerInactiveIcon);
-		pressIcon[2] = icons_library.getIcon(getPressedIconName(centerInactiveIcon));
-		qDebug("Icon[2] <- %s", centerInactiveIcon);
-	}
-
-	if (centerActiveIcon && number)
-	{
-		for (int i = 1; i <= number; i++)
-		{
-			QString root_of_name = getNameRoot(centerActiveIcon, ".png");
-			QString name = QString("%1%2.png").arg(root_of_name).arg(i);
-			Icon[2+i] = icons_library.getIcon(name, "PNG", Qt::ThresholdDither | Qt::DitherMode_Mask | Qt::AvoidDither);
-		}
-	}
-	else if (centerActiveIcon)
-	{
-		Icon[3]      = icons_library.getIcon(centerActiveIcon);
-		pressIcon[3] = icons_library.getIcon(getPressedIconName(centerActiveIcon));
-		qDebug("Icon[3] <- %s", centerActiveIcon);
+		if (number)
+			for (int i = 1; i <= number; i++)
+			{
+				QString root_of_name = getNameRoot(centerActiveIcon, ".png");
+				QString name = QString("%1%2.png").arg(root_of_name).arg(i);
+				Icon[2 + i] = icons_library.getIcon(name, "PNG", Qt::ThresholdDither | Qt::DitherMode_Mask | Qt::AvoidDither);
+			}
+		else
+			SetIcons(3, centerActiveIcon);
 	}
 
 	periodo = period;
