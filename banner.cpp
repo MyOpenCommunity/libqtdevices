@@ -50,7 +50,6 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	numRighe = NUM_RIGHE;
 	memset(group,false,sizeof(group));
 	serNum = 1;
-	stato = 0;
 }
 
 banner::~banner()
@@ -660,28 +659,6 @@ void banner::setValue(char val)
 		value = val;
 }
 
-void banner::aumValue()
-{
-	if (value < maxValue)
-		value += step;
-}
-
-void banner::decValue()
-{
-	if (value > minValue)
-		value -= step;
-}
-
-void banner::setMaxValue(char val)
-{
-	maxValue = val;
-}
-
-void banner::setMinValue(char val)
-{
-	minValue = val;
-}
-
 void banner::setRange(char minval,char maxval)
 {
 	maxValue = maxval;
@@ -721,11 +698,6 @@ void banner::getAnimationParams(int& per, int& num)
 {
 	per = periodo;
 	num = numFrame;
-}
-
-void banner::setNumRighe(uchar n)
-{
-	numRighe = n;
 }
 
 char* banner::getAddress()
@@ -791,21 +763,6 @@ char banner::getId()
 void banner::setId(char i)
 {
 	id = i;
-}
-
-unsigned char banner::getState()
-{
-	return stato;
-}
-
-char* banner::getManIcon()
-{
-	return NULL;
-}
-
-char* banner::getAutoIcon()
-{
-	return NULL;
 }
 
 void banner::ambChanged(const QString &, bool, char *)

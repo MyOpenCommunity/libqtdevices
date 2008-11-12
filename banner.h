@@ -184,40 +184,12 @@ public:
 	 */
 	void setValue(char);
 	/*!
-	 *  \brief Increments the Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to increment the value of such an object.
-	 */
-	void aumValue();
-	/*!
-	 *  \brief Derements the Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to decrement the value of such an object.
-	 */
-	void decValue();
-	/*!
 	 *  \brief Retrieves the Value for the object controlled by the banner.
 	 *
 	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
 	 *  The function in used to retrieve the value of such an object.
 	 */
 	char getValue();
-	/*!
-	 *  \brief Sets the maximum Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to determine the maximum value for such an object.
-	 */
-	void setMaxValue(char);
-	/*!
-	 *  \brief Sets the minimum Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to determine the minimum value for such an object.
-	 */
-	void setMinValue(char);
 	/*!
 	 *  \brief Sets the value range for the object controlled by the banner.
 	 *
@@ -242,10 +214,8 @@ public:
 	 */
 	void setAnimationParams(int,int);
 	void getAnimationParams(int&, int&);
-	void setNumRighe(uchar);
 	QTimer *animationTimer;
 	uchar numRighe;
-	unsigned char stato;
 	virtual void inizializza(bool forza=false);
 	/*!
 	 *  \brief Force an object of the banner to be hided.
@@ -259,18 +229,6 @@ public:
 	 *  The object to be shown is described by the \a oggettinoDelBanner description.
 	 */
 	void mostra(char);
-	/*!
-	 *  \brief Retrieves the state of the object controlled by the banner.
-	 */
-	unsigned char getState();
-	/*!
-	 *  \brief Must be reimplemented to retrieve the filereference of the manual icon for the object controlled by the banner.
-	 */
-	virtual char *getManIcon();
-	/*!
-	 *  \brief Must be reimplemented to retrieve the filereference of the automatic icon for the object controlled by the banner.
-	 */
-	virtual char *getAutoIcon();
 
 	/*!
 	 *  \enum oggettinoDelBanner
