@@ -102,7 +102,6 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	TemperatureScale scale = readTemperatureScale();
 	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale, scale);
 	initBanner(fsb, n);
-	fsb->setProperty("SecondFgColor", true);
 	items_submenu.appendBanner(fsb);
 
 	return bp;

@@ -45,7 +45,6 @@ public slots:
 private slots:
 	void Attiva();
 	void Disattiva();
-	char* getChi();
 };
 
 

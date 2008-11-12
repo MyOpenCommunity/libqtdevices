@@ -605,40 +605,6 @@ void sottoMenu::init_dimmer()
 	}
 }
 
-bool sottoMenu::setPul(char* chi, char* where)
-{
-	unsigned char p = 0;
-
-	for (int i = 0; i < elencoBanner.size(); ++i)
-	{
-		if ((!strcmp(elencoBanner.at(i)->getChi(),chi)) && (!strcmp(elencoBanner.at(i)->getAddress(),where)))
-		{
-			elencoBanner.at(i)->setPul();
-			p = 1;
-		}
-	}
-	if (p)
-		return true;
-	return false;
-}
-
-bool sottoMenu::setGroup(char* chi, char* where, bool* group)
-{
-	unsigned char p = 0;
-
-	for (int i = 0; i < elencoBanner.size(); ++i)
-	{
-		if ((!strcmp(elencoBanner.at(i)->getChi(),chi)) && (!strcmp(elencoBanner.at(i)->getAddress(),where)))
-		{
-			elencoBanner.at(i)->setGroup(group);
-			p = 1;
-		}
-	}
-	if (p)
-		return true;
-	return false;
-}
-
 void sottoMenu::setIndex(char* indiriz)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)

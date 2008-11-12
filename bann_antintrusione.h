@@ -52,7 +52,6 @@ public:
 	void Draw();
 public slots:
 	void status_changed(QList<device_status*>);
-	char* getChi();
 	void ToggleParzializza();
 	void abilitaParz(bool);
 	void clearChanged(void);
@@ -99,7 +98,6 @@ private slots:
 	void DeInsert(char*);
 public slots:
 	void status_changed(QList<device_status*>);
-	char *getChi();
 	void partChanged(zonaAnti*);
 	void setZona(zonaAnti*);
 	int getIsActive(int zona);

@@ -132,18 +132,7 @@ sstop : soft stop values list vor dimmer 100 group
 		\brief Retrieves the previous banner in the list
 		*/
 	banner* getPrevious();
-	/*!
-		\brief Set an item in the list to be PUL that means that the device works only with addresse \a Open \a frame.
 
-		The arguments passed are \a Open \a who and \a Open \a where.
-		*/
-	bool setPul(char* chi="", char* where="");
-	/*!
-		\brief Set an item in the list to be part of some groups.
-
-		The arguments passed are \a Open \a who and \a Open \a where and a list af bool each of them telling if the object belongs to a certain group or not.
-		*/
-	bool setGroup(char* chi="", char* where="", bool group[9]=NULL);
 	/*!
 		\brief Sets the index of the list forcing it to the object having the address passed by argument.
 		*/

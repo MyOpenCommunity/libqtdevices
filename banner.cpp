@@ -47,12 +47,8 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	minValue = maxValue = 0;
 	step = 1;
 	animationTimer = NULL;
-	numRighe = NUM_RIGHE;
-	memset(chi,'\000',sizeof(chi));
 	memset(group,false,sizeof(group));
-	pul = false;
 	serNum = 1;
-	stato = 0;
 }
 
 banner::~banner()
@@ -662,28 +658,6 @@ void banner::setValue(char val)
 		value = val;
 }
 
-void banner::aumValue()
-{
-	if (value < maxValue)
-		value += step;
-}
-
-void banner::decValue()
-{
-	if (value > minValue)
-		value -= step;
-}
-
-void banner::setMaxValue(char val)
-{
-	maxValue = val;
-}
-
-void banner::setMinValue(char val)
-{
-	minValue = val;
-}
-
 void banner::setRange(char minval,char maxval)
 {
 	maxValue = maxval;
@@ -725,49 +699,14 @@ void banner::getAnimationParams(int& per, int& num)
 	num = numFrame;
 }
 
-void banner::setNumRighe(uchar n)
-{
-	numRighe = n;
-}
-
 char* banner::getAddress()
 {
 	return address;
 }
 
-void banner::setChi(char* indirizzo)
-{
-	strncpy(chi, indirizzo, sizeof(chi));
-}
-
-char* banner::getChi()
-{
-	return chi;
-}
-
-void banner::setGroup(bool* gr)
-{
-	qDebug("%s setted GROUP",getAddress());
-	for (unsigned int idx = 0; idx < 9; idx++)
-	{
-		group[idx] = gr[idx];
-	}
-}
-
 bool* banner::getGroup()
 {
 	return group;
-}
-
-void banner::setPul()
-{
-	pul = true;
-	qDebug("%s setted PUL",getAddress());
-}
-
-bool banner::getPul()
-{
-	return pul;
 }
 
 bool banner::isForMe(openwebnet * m)
@@ -777,10 +716,13 @@ bool banner::isForMe(openwebnet * m)
 	if (!strcmp(m->Extract_dove(), getAddress()))
 		 return true;
 	// BAH
-	return (!getPul() && ((!strcmp(m->Extract_dove(),"0")) ||
+	return (((!strcmp(m->Extract_dove(),"0")) ||
 			((strlen(m->Extract_dove())==1) && 
 			(!strncmp(m->Extract_dove(), getAddress(), 1))) ||
 			((!strncmp(m->Extract_dove(),"#",1)) && 
+			 // assuming that the following code stays inside group array,
+			 // the result is always false, since nobody ever sets anything
+			 // different in group
 			*(getGroup()+(atoi(m->Extract_dove()+1))-1))));
 }
 
@@ -820,21 +762,6 @@ char banner::getId()
 void banner::setId(char i)
 {
 	id = i;
-}
-
-unsigned char banner::getState()
-{
-	return stato;
-}
-
-char* banner::getManIcon()
-{
-	return NULL;
-}
-
-char* banner::getAutoIcon()
-{
-	return NULL;
 }
 
 void banner::ambChanged(const QString &, bool, char *)
