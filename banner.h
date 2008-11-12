@@ -346,15 +346,6 @@ protected:
 	 */
 	void drawAllButRightButton();
 private:
-	/*!
-	 *  \brief Retrieves the group list of the object controlled by the banner.
-	 *
-	 *  The group list is an array of 9 bool varibles. 
-	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
-	 */
-	bool *getGroup();
-	bool group[9];
-
 	QTimer *animationTimer;
 	/**
 	 *   Utility functions to get icon name root. For istance

@@ -47,7 +47,6 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	minValue = maxValue = 0;
 	step = 1;
 	animationTimer = NULL;
-	memset(group,false,sizeof(group));
 	serNum = 1;
 }
 
@@ -702,11 +701,6 @@ void banner::getAnimationParams(int& per, int& num)
 char* banner::getAddress()
 {
 	return address;
-}
-
-bool* banner::getGroup()
-{
-	return group;
 }
 
 void banner::inizializza(bool forza)
