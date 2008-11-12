@@ -29,15 +29,15 @@ class dati_ampli_multi
 public:
 	char tipo;
 	// NOTE: the ownership of descr strings is mantained by xmlconfhandler.
-	QList<QString*> *descr;
+	QString descr;
 	void *indirizzo;
 	QString I1, I2, I3, I4, I5;
 	int modo;
-	dati_ampli_multi(char t, QList<QString*> *d, char *ind, int p1,
+	dati_ampli_multi(char t, QString d, char *ind, int p1,
 			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
-	dati_ampli_multi(char t, QList<QString*> *d, QList<QString *> *ind, int p1,
+	dati_ampli_multi(char t, QString d, QList<QString *> *ind, int p1,
 			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
-	void init(char t, QList<QString *> *d, int p1,
+	void init(char t, QString d, int p1,
 			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
 	~dati_ampli_multi();
 };

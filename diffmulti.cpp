@@ -23,11 +23,10 @@
 
 #include <assert.h>
 
-dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, char *ind,
+dati_ampli_multi::dati_ampli_multi(char t, QString d, char *ind,
 		int p1, QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
 {
 	init(t, d, p1, _I1, _I2, _I3, _I4, _I5);
-	qDebug() << "dati_ampli_multi: descr = " << *descr->at(0);
 
 	if (t == AMPLIFICATORE || t == POWER_AMPLIFIER)
 	{
@@ -42,11 +41,10 @@ dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, char *ind,
 		assert(!"Unknown amplifier type!!");
 }
 
-dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, QList<QString *> *ind,
+dati_ampli_multi::dati_ampli_multi(char t, QString d, QList<QString *> *ind,
 		int p1, QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
 {
 	init(t, d, p1, _I1, _I2, _I3, _I4, _I5);
-	qDebug() << "dati_ampli_multi: descr = " << *descr->at(0);
 	if (t == GR_AMPLIFICATORI)
 	{
 		qDebug("gruppo AMPLIFICATORI !!");
@@ -60,23 +58,22 @@ dati_ampli_multi::dati_ampli_multi(char t, QList<QString*> *d, QList<QString *> 
 		assert(!"Unknown amplifier type!!");
 }
 
-void dati_ampli_multi::init(char t, QList<QString *> *d, int p1,
+void dati_ampli_multi::init(char t, QString d, int p1,
 		QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
 {
 	tipo = t;
-	// TODO: allocare nello stack!
-	descr = new QList<QString*>(*d);
+	descr = d;
 	I1 = _I1;
 	I2 = _I2;
 	I3 = _I3;
 	I4 = _I4;
 	I5 = _I5;
 	modo = p1;
+	qDebug() << "dati_ampli_multi: descr = " << descr;
 }
 
 dati_ampli_multi::~dati_ampli_multi()
 {
-	delete descr;
 	// We should delete indirizzo but is problematic because it is a void*
 }
 
@@ -175,7 +172,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo
 	case AMPLIFICATORE:
 		qDebug() << "Icone = " << *safeAt(icon_names, 0) << " - " << *safeAt(icon_names, 1)
 			<< " - "<< *safeAt(icon_names, 2) << " - " << *safeAt(icon_names, 3);
-		datimmulti.append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+		datimmulti.append(new dati_ampli_multi(tipo, *descrizioni->at(0), indirizzo, modo,
 					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
 					*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
 		break;
@@ -185,7 +182,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo
 			<< " - "<< *safeAt(icon_names, 2) << " - " << *safeAt(icon_names, 3) << " - "
 			<< *safeAt(icon_names, 4);
 
-		datimmulti.append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+		datimmulti.append(new dati_ampli_multi(tipo, *descrizioni->at(0), indirizzo, modo,
 					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
 					*safeAt(icon_names, 2), *safeAt(icon_names, 3),
 					*safeAt(icon_names, 4)));
@@ -241,7 +238,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *
 			{
 				qDebug() << "ADDRESS =" << *indirizzi->at(i);
 			}
-			datimmulti.append(new dati_ampli_multi(tipo, descrizioni, indirizzo, modo,
+			datimmulti.append(new dati_ampli_multi(tipo, *descrizioni->at(0), indirizzo, modo,
 					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
 					*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
 			break;

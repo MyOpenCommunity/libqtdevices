@@ -70,8 +70,8 @@ ambDiffSon::ambDiffSon(QWidget *parent, QString _name, char *indirizzo, QString 
 		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
 		{
 			qDebug() << "Adding amplifier (" << static_cast<int>(am->tipo) << ", "
-				<< (char *)am->indirizzo << " " << *am->descr->at(0) << ")";
-			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);
+				<< (char *)am->indirizzo << " " << am->descr << ")";
+			diffson->addItemU(am->tipo, am->descr, (char *)am->indirizzo, icons, am->modo);
 		}
 		else if (am->tipo == GR_AMPLIFICATORI)
 		{
@@ -88,7 +88,7 @@ ambDiffSon::ambDiffSon(QWidget *parent, QString _name, char *indirizzo, QString 
 				QList<QString*> *li = new QList<QString*>();
 				for (int j = 0; j < qsl.size(); ++j)
 					li->append(new QString(qsl[j]));
-				diffson->addItemU(am->tipo, *am->descr->at(0), li, icons, am->modo);
+				diffson->addItemU(am->tipo, am->descr, li, icons, am->modo);
 			}
 		}
 		else
@@ -208,8 +208,8 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QSt
 		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
 		{
 			qDebug() << "Adding amplifier (" << static_cast<int>(am->tipo) << ", "
-				<< (char *)am->indirizzo << " " << *am->descr->at(0) << ")";
-			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);
+				<< (char *)am->indirizzo << " " << am->descr << ")";
+			diffson->addItemU(am->tipo, am->descr, (char *)am->indirizzo, icons, am->modo);
 		}
 		else if (am->tipo == GR_AMPLIFICATORI)
 		{
@@ -224,7 +224,7 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QSt
 				QList<QString*> *li = new QList<QString*>();
 				for (int j = 0; j < qsl.size(); ++j)
 					li->append(new QString(qsl[j]));
-				diffson->addItemU(am->tipo, *am->descr->at(0), li, icons, am->modo);
+				diffson->addItemU(am->tipo, am->descr, li, icons, am->modo);
 			}
 		}
 		else
