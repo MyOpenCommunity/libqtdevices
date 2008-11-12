@@ -62,11 +62,11 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 			this, SLOT(status_changed(QList<device_status*>)));
 
 	abilitaParz(true);
-	setIcons();
+	SetIcons();
 	zonaAnti::Draw();
 }
 
-void zonaAnti::setIcons()
+void zonaAnti::SetIcons()
 {
 	if (isActive())
 	{
@@ -80,7 +80,7 @@ void zonaAnti::setIcons()
 	}
 }
 
-void zonaAnti::SetIcons(char *i1, char *i2, char *i3)
+void zonaAnti::SetIcons(QString i1, QString i2, QString i3)
 {
 	banner::SetIcons(1, i1);
 	banner::SetIcons(2, i2);
@@ -145,7 +145,7 @@ void zonaAnti::status_changed(QList<device_status*> sl)
 			already_changed = true;
 			emit partChanged(this);
 		}
-		setIcons();
+		SetIcons();
 		Draw();
 	}
 }
@@ -159,7 +159,7 @@ void zonaAnti::ToggleParzializza()
 		already_changed = true;
 		emit(partChanged(this));
 	}
-	setIcons();
+	SetIcons();
 	Draw();
 }
 
@@ -213,7 +213,7 @@ impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo,char* IconOn, 
 
 	strcat(pippo,"dis");
 	strcat(pippo,strstr(IconActive,"."));
-	SetIcons( IconInfo,IconOff,pippo,IconOn,IconActive);
+	SetIcons(IconInfo, IconOff, pippo, IconOn, IconActive);
 	send_part_msg = false;
 	inserting = false;
 	memset(le_zone, 0, sizeof(le_zone));
