@@ -631,25 +631,6 @@ void sottoMenu::setGeometry(int x, int y, int w, int h)
 	QWidget::setGeometry(x, y, w, h);
 }
 
-void  sottoMenu::killBanner(banner* b)
-{
-	int icx = elencoBanner.indexOf(b);
-
-	if (icx != -1)
-	{
-		elencoBanner.at(icx)->hide();
-		elencoBanner.takeAt(icx)->deleteLater();
-		indice = 0;
-		indicold = 100;
-		draw();
-		if (elencoBanner.count() == 0 && parentWidget())
-		{
-			emit Closed();
-			parentWidget()->showFullScreen();
-		}
-	}
-}
-
 void sottoMenu::hideEvent(QHideEvent *event)
 {
 	qDebug() << "sottoMenu::hideEvent()" << name;

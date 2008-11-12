@@ -195,11 +195,6 @@ public slots:
 	*/
 	void init_dimmer();
 
-	/*!
-	\brief  Removes a banner from the list.
-	*/
-	void killBanner(banner*);
-
 	void showItem(int id);
 protected:
 	void connectLastBanner();
