@@ -50,7 +50,6 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	numRighe = NUM_RIGHE;
 	memset(chi,'\000',sizeof(chi));
 	memset(group,false,sizeof(group));
-	pul = false;
 	serNum = 1;
 	stato = 0;
 }
@@ -759,17 +758,6 @@ bool* banner::getGroup()
 	return group;
 }
 
-void banner::setPul()
-{
-	pul = true;
-	qDebug("%s setted PUL",getAddress());
-}
-
-bool banner::getPul()
-{
-	return pul;
-}
-
 bool banner::isForMe(openwebnet * m)
 {
 	if (strcmp(m->Extract_chi(), "1"))
@@ -777,7 +765,7 @@ bool banner::isForMe(openwebnet * m)
 	if (!strcmp(m->Extract_dove(), getAddress()))
 		 return true;
 	// BAH
-	return (!getPul() && ((!strcmp(m->Extract_dove(),"0")) ||
+	return (((!strcmp(m->Extract_dove(),"0")) ||
 			((strlen(m->Extract_dove())==1) && 
 			(!strncmp(m->Extract_dove(), getAddress(), 1))) ||
 			((!strncmp(m->Extract_dove(),"#",1)) && 

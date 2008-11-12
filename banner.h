@@ -180,18 +180,6 @@ public:
 	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
 	 */
 	bool *getGroup();
-	/*!
-	 *  \brief Force the object controlled being PUL.
-	 *
-	 *  When a ligthing/automation object is considered PUL it changes its state only with \a point \a to \a point commands.
-	 */
-	void setPul();
-	/*!
-	 *  \brief Retrieves if the object controlled is PUL or not.
-	 *
-	 *  When a ligthing/automation object is considered PUL it changes its state only with \a point \a to \a point commands.
-	 */
-	bool getPul();
 
 	/*!
 	 *  \brief Sets the serial number of the banner.
@@ -474,7 +462,6 @@ protected:
 	char address[20];
 	char chi[5];
 	bool group[9];
-	bool pul;
 	/**
 	 *  \brief Returns true if the object is a target for message
 	 */
