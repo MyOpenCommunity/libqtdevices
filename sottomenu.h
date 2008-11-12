@@ -129,21 +129,6 @@ sstop : soft stop values list vor dimmer 100 group
 	banner* getLast();
 
 	/*!
-	\brief Retrieves the current banner in the list
-	*/
-	banner* getCurrent();
-
-	/*!
-	\brief Retrieves the next banner in the list
-	*/
-	banner* getNext();
-
-	/*!
-	\brief Retrieves the previous banner in the list
-	*/
-	banner* getPrevious();
-
-	/*!
 	\brief Sets the index of the list forcing it to the object having the address passed by argument.
 	*/
 	void setIndex(char*);
@@ -153,11 +138,6 @@ sstop : soft stop values list vor dimmer 100 group
 	\brief Sets the index of the list forcing which is the first item to draw.
 	*/
 	void setIndice(char);
-
-	/*!
-	\brief Such as setNumRighe(uchar).
-	*/
-	void setNumRig(uchar);
 
 	/*!
 	\brief Set the height of the area occupied by the subtree.

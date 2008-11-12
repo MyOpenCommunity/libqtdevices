@@ -552,25 +552,6 @@ banner* sottoMenu::getLast()
 	return elencoBanner.last();
 }
 
-banner* sottoMenu::getCurrent()
-{
-	return elencoBanner.at(indice);
-}
-
-banner* sottoMenu::getNext()
-{
-	if (indice == ((int)elencoBanner.count()-1))
-		return elencoBanner.at(0);
-	return elencoBanner.at(indice + 1);
-}
-
-banner* sottoMenu::getPrevious()
-{
-	if (indice == 0)
-		return elencoBanner.at(elencoBanner.count()-1);
-	return elencoBanner.at(indice-1);
-}
-
 void sottoMenu::inizializza()
 {
 	qDebug("sottoMenu::inizializza()");
@@ -624,11 +605,6 @@ void sottoMenu::mostra_all(char but)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
 		elencoBanner.at(i)->mostra(but);
-}
-
-void sottoMenu::setNumRig(uchar n)
-{
-	numRighe = n;
 }
 
 void sottoMenu::setHeight(int h)
