@@ -752,7 +752,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
 						QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*imposta,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*imposta,SIGNAL(svegl(bool)),BtM,SLOT(svegl(bool)));
 						QObject::connect(*imposta,SIGNAL(startCalib()), BtM, SLOT(startCalib()));
 						QObject::connect(*imposta,SIGNAL(endCalib()),BtM, SLOT(endCalib()));
 						break;

@@ -420,10 +420,6 @@ signals:
 	 *  \brief Emitted when the center-right button is pressed.
 	 */
 	void cdxPressed();
-	/*!
-	 *  \brief Emitted to communicate when the \a alarm \a clock begins and ends.
-	 */
-	void svegl(bool);
 	void richStato(char*);
 	/*!
 	 *  \brief Emitted when the banner decide send an \a Open \a frame to the system.

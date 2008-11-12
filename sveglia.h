@@ -87,23 +87,6 @@ public:
 		FRAME = 2   /*!< An \a Open \a frame is emitted (used in schedulations)*/
 	};
 
-signals:
-/*!
-  \brief Emitted to send \a Open \a Frame to the system.
-*/
-void sendFrame(char*);
-void sendInit(char*);
-
-/*!
-  \brief Emitted when the object is closed.
-*/
-	void ImClosed();
-
-/*!
-  \brief Emitted to comunicate weather the alarm set is running or not.
-*/
-	void svegl(bool);
-
 public slots:
 /*!
   \brief Execute when the time for the alarm set is chosen to show the frequency (once-always-mon/fri-sat-sun).
@@ -184,6 +167,18 @@ private:
 	bool gesFrameAbil, active, onceToGest;
 	QTimer *minuTimer,*aumVolTimer;
 	QString frame;
+
+signals:
+/*!
+  \brief Emitted to send \a Open \a Frame to the system.
+*/
+void sendFrame(char*);
+void sendInit(char*);
+
+/*!
+  \brief Emitted when the object is closed.
+*/
+	void ImClosed();
 };
 
 #endif // SVEGLIA_H

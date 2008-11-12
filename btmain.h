@@ -49,6 +49,8 @@ public:
 	void resetTimer();
 	/// Freeze or unfreeze the application
 	void freeze(bool);
+	/// Set on/off the sveglia status
+	void svegl(bool);
 
 private slots:
 	void hom();
@@ -57,7 +59,6 @@ private slots:
 	void setPwd(bool,char*);
 	void testPwd(char*);
 	void testFiles();
-	void svegl(bool);
 	void waitBeforeInit();
 	void monitorReady();
 

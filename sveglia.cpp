@@ -423,7 +423,7 @@ void sveglia::verificaSveglia()
 				contaBuzzer = 0;
 				conta2min = 0;
 				BTouch->freeze(true);
-				emit svegl(true);
+				BTouch->svegl(true);
 			}
 			else if (tipo == DI_SON)
 			{
@@ -433,7 +433,7 @@ void sveglia::verificaSveglia()
 				conta2min = 0;
 				BrightnessControl::instance()->setState(ON);
 				BTouch->freeze(true);
-				emit svegl(true);
+				BTouch->svegl(true);
 			}
 			else if (tipo == FRAME)
 			{
@@ -669,7 +669,7 @@ void sveglia::aumVol()
 			}
 		}
 		BTouch->freeze(false);
-		emit svegl(false);
+		BTouch->svegl(false);
 	}
 }
 
@@ -700,7 +700,7 @@ void sveglia::buzzerAlarm()
 		delete aumVolTimer;
 		aumVolTimer = NULL;
 		BTouch->freeze(false);
-		emit svegl(false);
+		BTouch->svegl(false);
 	}
 }
 
@@ -717,7 +717,7 @@ void sveglia::spegniSveglia(bool b)
 
 			delete aumVolTimer;
 			aumVolTimer = NULL;
-			emit svegl(false);
+			BTouch->svegl(false);
 		}
 	}
 	else if (b)

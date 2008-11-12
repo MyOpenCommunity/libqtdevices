@@ -206,10 +206,6 @@ signals:
 	void richStato(char*);
 	void rispStato(char*);
 	/*!
-		\brief Emitted to tell BtMain the state af the alarmset.
-		*/
-	virtual void svegl(bool);
-	/*!
 		\brief Emitted to go to a further page.
 		*/
 	void goDx();

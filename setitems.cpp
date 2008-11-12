@@ -60,7 +60,6 @@ impostaSveglia::impostaSveglia(QWidget *parent,const char *name, contdiff *diso,
 	connect(svegliolina, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(svegliolina,SIGNAL(ImClosed()), svegliolina, SLOT(hide()));
 	connect(svegliolina,SIGNAL(ImClosed()), this, SLOT(forceDraw()));
-	connect(svegliolina, SIGNAL(svegl(bool)),this , SIGNAL(svegl(bool)));
 }
 
 void impostaSveglia::gestFrame(char* frame)

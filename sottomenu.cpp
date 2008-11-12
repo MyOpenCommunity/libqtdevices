@@ -369,7 +369,6 @@ void sottoMenu::connectLastBanner()
 	connect(last, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	connect(last, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(last, SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-	connect(last, SIGNAL(svegl(bool)), this, SIGNAL(svegl(bool)));
 	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
 	connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 }

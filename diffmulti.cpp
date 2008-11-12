@@ -161,7 +161,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
 			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 			if (tipo == AMBIENTE)
@@ -225,7 +224,6 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(svegl(bool)), this , SIGNAL(svegl(bool)));
 			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 
