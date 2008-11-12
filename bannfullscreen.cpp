@@ -259,6 +259,7 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 
 	setpoint_label = new QLabel(this);
 	setpoint_label->setGeometry(SETPOINT_X, SETPOINT_Y, SETPOINT_WIDTH, SETPOINT_HEIGHT);
+	setpoint_label->setProperty("SecondFgColor", true);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, Qt::AlignHCenter);
 	hbox->addWidget(icon_antifreeze);
@@ -400,7 +401,6 @@ void FSBannProbe::Draw()
 
 	setpoint_label->setFont(aFont);
 	setpoint_label->setAlignment(Qt::AlignHCenter);
-	setpoint_label->setProperty("SecondFgColor", true);
 
 	FontManager::instance()->getFont(font_banTermo_testo, aFont);
 	local_temp_label->setFont(aFont);
@@ -551,6 +551,7 @@ void FSBannFancoil::createFancoilButtons()
 		QString path_pressed = QString(IMG_PATH) + FANCOIL_ICONS[i+1];
 		BtButton *btn = new BtButton(this);
 		btn->setImage(path);
+		btn->setPressedImage(path_pressed);
 		btn->setCheckable(true);
 
 		hbox->addWidget(btn);
@@ -645,6 +646,7 @@ FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator 
 	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 
 	temp_label = new QLabel(this);
+	temp_label->setProperty("SecondFgColor", true);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
@@ -727,8 +729,6 @@ void FSBannManual::Draw()
 		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to Celsius");
 		temp_label->setText(celsiusString(temp));
 	}
-
-	temp_label->setProperty("SecondFgColor", true);
 }
 
 BtButton *FSBannManual::customButton()
@@ -838,8 +838,6 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	conf_root = n;
 	navbar_button = getButton(IMG_SETTINGS);
 
-	setProperty("SecondFgColor", true);
-
 	// Put a sensible default for the description
 	QDomNode descr = conf_root.namedItem("descr");
 	if (!descr.isNull())
@@ -851,6 +849,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
 	}
 	description_label = new QLabel(this);
 	description_label->setAlignment(Qt::AlignHCenter);
+	description_label->setProperty("SecondFgColor", true);
 
 	description_visible = true;
 
@@ -883,7 +882,6 @@ void FSBannTermoReg::Draw()
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
 	// TODO: verificare che venga impostato correttamente!!
-	description_label->setProperty("SecondFgColor", true);
 }
 
 void FSBannTermoReg::status_changed(QList<device_status*> sl)
@@ -1209,7 +1207,6 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	connect(settings, SIGNAL(hideChildren()), manual_menu, SLOT(hide()));
 
 	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev, temp_scale);
-	bann->setProperty("SecondFgColor", true);
 
 	manual_menu->appendBanner(bann);
 	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
@@ -1401,7 +1398,6 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 
 	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
 
-	bann->setProperty("SecondFgColor", true);
 	bann->setMaxHours(25);
 
 	timed_manual_menu->appendBanner(bann);
