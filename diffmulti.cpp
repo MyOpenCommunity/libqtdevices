@@ -305,12 +305,6 @@ void diffmulti::hideEvent(QHideEvent *event)
 		dslist.at(i)->hide();
 }
 
-void diffmulti::setGeom(int x, int y, int w,int h)
-{
-	qDebug("diffmulti::setGeom(%d, %d, %d, %d)", x, y, w, h);
-	setGeometry(x, y, w, h);
-}
-
 void diffmulti::resizewindows(int x, int y, int w, int h)
 {
 	for (int i = 0; i < dslist.size(); ++i)
@@ -410,7 +404,7 @@ void contdiff::setGeom(int x, int y, int w, int h)
 	if (ds)
 		ds->setGeom(x, y, w, h);
 	if (dm)
-		dm->setGeom(x, y, w, h);
+		dm->setGeometry(x, y, w, h);
 }
 
 void contdiff::forceDraw()
@@ -451,7 +445,7 @@ void contdiff::resizewindows()
 		ds->setGeom(0, 80, 240, 240);
 	if (dm)
 	{
-		dm->setGeom(0, 80, 240, 240);
+		dm->setGeometry(0, 80, 240, 240);
 		dm->resizewindows(0, 0, 240, 240);
 	}
 }
