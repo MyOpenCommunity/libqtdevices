@@ -47,7 +47,6 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	minValue = maxValue = 0;
 	step = 1;
 	animationTimer = NULL;
-	numRighe = NUM_RIGHE;
 	memset(group,false,sizeof(group));
 	serNum = 1;
 }

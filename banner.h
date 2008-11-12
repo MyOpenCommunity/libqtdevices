@@ -214,8 +214,6 @@ public:
 	 */
 	void setAnimationParams(int,int);
 	void getAnimationParams(int&, int&);
-	QTimer *animationTimer;
-	uchar numRighe;
 	virtual void inizializza(bool forza=false);
 	/*!
 	 *  \brief Force an object of the banner to be hided.
@@ -410,6 +408,7 @@ private:
 	bool *getGroup();
 
 	bool group[9];
+	QTimer *animationTimer;
 };
 
 
