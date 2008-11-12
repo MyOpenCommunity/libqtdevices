@@ -116,7 +116,7 @@ public:
 	 */
 	void SetIcons(const char *, const char *, const char *, const char *, char);
 
-	void SetIcons(const char *, const char *, const char *, const char *, const char *);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon, QString centerUpIcon, QString centerDownIcon);
 	/*!
 	 *  \brief sets the Icon of left and right button and the central variable in different levels label when the banner is active or not. Also an image representing broken state is passed.
 	 *

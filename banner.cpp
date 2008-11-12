@@ -147,11 +147,7 @@ void banner::SetIcons(QString sxIcon, QString dxIcon)
 
 void banner::SetIcons(QString sxIcon , QString dxIcon, QString centerIcon)
 {
-	if (!sxIcon.isNull())
-		SetIcons(0, sxIcon);
-
-	if (!dxIcon.isNull())
-		SetIcons(1, dxIcon);
+	SetIcons(sxIcon, dxIcon);
 
 	if (!centerIcon.isNull())
 		SetIcons(3, dxIcon);
@@ -163,55 +159,27 @@ void banner::SetIcons(QString sxIcon , QString dxIcon, QString centerIcon)
 
 void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon)
 {
-	if (!sxIcon.isNull())
-		SetIcons(0, sxIcon);
-
-	if (!dxIcon.isNull())
-		SetIcons(1, dxIcon);
+	SetIcons(sxIcon, dxIcon);
 
 	if (!centerActiveIcon.isNull())
-		SetIcons(3, dxIcon);
+		SetIcons(3, centerActiveIcon);
 
 	if (!centerInactiveIcon.isNull())
 		SetIcons(2, centerInactiveIcon);
 }
 
-void banner::SetIcons(const char *sxIcon , const char *dxIcon, const char*centerInactiveIcon, const char*centerUpIcon, const char*centerDownIcon)
+void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon, QString centerUpIcon, QString centerDownIcon)
 {
-	if (sxIcon)
-	{
-		Icon[0]      = icons_library.getIcon(sxIcon);
-		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
-		qDebug("Icon[0] <- %s", sxIcon);
-	}
+	SetIcons(sxIcon, dxIcon);
 
-	if (dxIcon)
-	{
-		Icon[1]      = icons_library.getIcon(dxIcon);
-		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
-		qDebug("Icon[1] <- %s", dxIcon);
-	}
+	if (!centerInactiveIcon.isNull())
+		SetIcons(2, centerInactiveIcon);
 
-	if (centerInactiveIcon)
-	{
-		Icon[2]      = icons_library.getIcon(centerInactiveIcon);
-		pressIcon[2] = icons_library.getIcon(getPressedIconName(centerInactiveIcon));
-		qDebug("Icon[2] <- %s", centerInactiveIcon);
-	}
+	if (!centerUpIcon.isNull())
+		SetIcons(3, centerUpIcon);
 
-	if (centerUpIcon)
-	{
-		Icon[3]      = icons_library.getIcon(centerUpIcon);
-		pressIcon[3] = icons_library.getIcon(getPressedIconName(centerUpIcon));
-		qDebug("Icon[3] <- %s", centerUpIcon);
-	}
-
-	if (centerDownIcon)
-	{
-		Icon[4]      = icons_library.getIcon(centerDownIcon);
-		pressIcon[4] = icons_library.getIcon(getPressedIconName(centerDownIcon));
-		qDebug("Icon[4] <- %s", centerDownIcon);
-	}
+	if (!centerDownIcon.isNull())
+		SetIcons(4, centerDownIcon);
 }
 
 void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,int period, int number)
