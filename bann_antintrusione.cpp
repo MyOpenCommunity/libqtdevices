@@ -54,7 +54,6 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 
 	zonaAttiva = IconActive;
 	zonaNonAttiva = IconDisactive;
-	setChi("5");
 	already_changed = false;
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_zonanti_device(getAddress());
@@ -151,11 +150,6 @@ void zonaAnti::status_changed(QList<device_status*> sl)
 	}
 }
 
-char *zonaAnti::getChi()
-{
-	return("5");
-}
-
 void zonaAnti::ToggleParzializza()
 {
 	qDebug("zonaAnti::ToggleParzializza()");
@@ -220,7 +214,6 @@ impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo,char* IconOn, 
 	strcat(pippo,"dis");
 	strcat(pippo,strstr(IconActive,"."));
 	SetIcons( IconInfo,IconOff,pippo,IconOn,IconActive);
-	setChi("5");
 	send_part_msg = false;
 	inserting = false;
 	memset(le_zone, 0, sizeof(le_zone));
@@ -436,11 +429,6 @@ void impAnti::openNakRx()
 	//Agre - per sicurezza provo a continuare per evitare di non inserire l'impianto
 	openAckRx();
 	part_msg_sent = false;
-}
-
-char *impAnti::getChi()
-{
-	return("5");
 }
 
 void impAnti::setZona(zonaAnti *za)

@@ -155,19 +155,6 @@ public:
 	 */
 	char *getAddress();
 	/*!
-	 *  \brief Changes the function of what is controlled by the banner.
-	 *
-	 *  he argument  describe the Open Who of the object controlled by the banner.
-	 */
-	void setChi(char*);
-	/*!
-	 *  \brief Retrieves the function of what is controlled by the banner.
-	 *
-	 *  The returned value is the Open Who of the object controlled by the banner.
-	 */
-	char *getChi();
-
-	/*!
 	 *  \brief Sets the serial number of the banner.
 	 *
 	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
@@ -446,7 +433,6 @@ protected:
 	char attivo,value,maxValue,minValue,id,step;
 	int periodo, numFrame,contFrame,serNum;
 	char address[20];
-	char chi[5];
 	/**
 	 *  \brief Returns true if the object is a target for message
 	 */

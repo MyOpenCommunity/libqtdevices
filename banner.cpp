@@ -48,7 +48,6 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	step = 1;
 	animationTimer = NULL;
 	numRighe = NUM_RIGHE;
-	memset(chi,'\000',sizeof(chi));
 	memset(group,false,sizeof(group));
 	serNum = 1;
 	stato = 0;
@@ -732,16 +731,6 @@ void banner::setNumRighe(uchar n)
 char* banner::getAddress()
 {
 	return address;
-}
-
-void banner::setChi(char* indirizzo)
-{
-	strncpy(chi, indirizzo, sizeof(chi));
-}
-
-char* banner::getChi()
-{
-	return chi;
 }
 
 bool* banner::getGroup()

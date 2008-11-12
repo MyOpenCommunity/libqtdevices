@@ -40,8 +40,6 @@ attuatAutom::attuatAutom(QWidget *parent,const char *name,char* indirizzo,char* 
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
-
-	setChi("1");
 }
 
 void attuatAutom::status_changed(QList<device_status*> sl)
@@ -98,13 +96,6 @@ void attuatAutom::Disattiva()
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("1", "0",getAddress(),"");
 	dev->sendFrame(msg_open.frame_open);
-}
-
-
-
-char* attuatAutom::getChi()
-{
-	return("1");
 }
 
 void attuatAutom::inizializza(bool forza)

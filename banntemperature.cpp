@@ -28,8 +28,6 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 	temperature = 1235;
 	temp_scale = readTemperatureScale();
 
-	setChi("4");
-
 	QDomNode addr = conf_root.namedItem("where");
 	if (!addr.isNull())
 		setAddress(addr.toElement().text());
