@@ -117,7 +117,7 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	page_item_list_txt_times = new QList<QString*>;
 	page_item_cond = NULL;
 	page_item_cond_list = new QList<scenEvo_cond*>;
-	page_item_descr_m = new QList<QString*>;
+	device_descr = "";
 	page_item_unknown = "";
 	page_item_txt1 = "";
 	page_item_txt2 = "";
@@ -131,11 +131,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
  *******************************************/
 xmlconfhandler::~xmlconfhandler()
 {
-	// TODO: page_item_descr_m e' usato solo da diffmulti, rendere un QList<QString*> !!
-	while (!page_item_descr_m->isEmpty())
-		delete page_item_descr_m->takeFirst();
-	delete page_item_descr_m;
-
 	while (!page_item_list_img.isEmpty())
 		delete page_item_list_img.takeFirst();
 
@@ -527,24 +522,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case DIFSON_MULTI:
 					{
 						char pip[50];
-						pip[0] = 0;
-						if ((page_item_id == SORG_RADIO) || (page_item_id==SORG_AUX) ||
-							(page_item_id==AMBIENTE) || (page_item_id==INSIEME_AMBIENTI) ||
-							(page_item_id==SORGENTE_MULTIM) || (page_item_id==SORGENTE_MULTIM_MC))
-						{
-							qDebug("clearing descr list");
-							page_item_descr_m->clear();
-
-							qDebug() << "appending " << page_item_descr << " to descr list";
-							page_item_descr_m->append(new QString(page_item_descr));
-						}
-
 						strcpy(pip, page_item_where.toAscii().constData());
 						par2 = page_item_where.toInt();
 
-						(*dm)->addItem((char)page_item_id, page_item_descr_m, pip,page_item_list_img, par1, par2);
-						qDebug("clearing descr list");
-						page_item_descr_m->clear();
+						(*dm)->addItem((char)page_item_id, page_item_descr, pip,page_item_list_img, par1, par2);
 					}
 						break;
 
@@ -587,23 +568,19 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					qDebug("DIFF SON MULTI END ELEMENT !!!!");
 					qDebug("INSERTED ITEM:ID %d",page_item_id_m);
 					qDebug("INS ITEM: %s",banTesti[page_item_id_m]);
-					qDebug() << "DESCR = " << *page_item_descr_m->at(0);
+
 					strcpy(pip, page_item_where_m.toAscii().constData());
 
 					if (page_item_list_group_m->isEmpty())
-					{
-						(*dm)->addItem((char)page_item_id_m, page_item_descr_m, pip,page_item_list_img_m);
-					}
+						(*dm)->addItem((char)page_item_id_m, device_descr, pip,page_item_list_img_m);
 					else
 					{
 						// it's not possible to arrive here if item id == 47 (AMBIENTE)
 						// because it has only one tag <where> and no tags <where[number]>
 						qDebug("**** DIFSON_MULTI: multi address");
-						(*dm)->addItem((char)page_item_id_m, page_item_descr_m, page_item_list_group_m,
+						(*dm)->addItem((char)page_item_id_m, device_descr, page_item_list_group_m,
 								page_item_list_img_m);
 					}
-					qDebug("clearing descr list !!!\n");
-					page_item_descr_m->clear();
 					page_item_list_img_m.clear();
 				}
 				else if (CurTagL3.startsWith("page") && CurTagL4.isEmpty())
@@ -969,7 +946,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 						*dm = new diffmulti(NULL, "DIFSON_MULTI");
 						pageAct = *dm;
 						page_item_id_m = 0;
-						page_item_descr_m->clear();
 						page_item_where_m = "";
 						page_item_list_img_m.clear();
 						break;
@@ -1341,9 +1317,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					}
 					else if (CurTagL6.startsWith("descr"))
 					{
-						page_item_descr_m->append(new QString(qValue));
-						qDebug("appending to descr list: ");
-						qDebug() << "DESCR = " << qValue;
+						device_descr = qValue;
 					}
 					else if (CurTagL6.startsWith("where"))
 					{

@@ -111,7 +111,7 @@ private:
 
 	int page_item_id, page_item_id_m;
 	QString page_item_descr;
-	QList<QString*> *page_item_descr_m;
+	QString device_descr;
 	QString page_item_what;
 	QString page_item_where, page_item_where_m;
 	QString page_item_mode;
