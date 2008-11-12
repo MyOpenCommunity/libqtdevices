@@ -198,7 +198,8 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				qDebug("Programming start");
 				if (sendInProgr)
 				{
-					SetIcons(uchar(0), iconStop);
+					// TODO: trasformare iconStop in QString!
+					SetIcons(0, QString(iconStop));
 					disconnect(this,SIGNAL(sxClick()), this,SLOT(attivaScenario()));
 					connect(this,SIGNAL(sxClick()), this,SLOT(stopProgScen()));
 					in_progr = 0;
@@ -224,7 +225,7 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				break;
 			case device_status_modscen::PROGRAMMING_STOP:
 				qDebug("Programming stop");
-				SetIcons(uchar(0),iconOn);
+				SetIcons(0, QString(iconOn));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
@@ -233,7 +234,7 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				break;
 			case device_status_modscen::UNLOCKED:
 				qDebug("Unlocked");
-				SetIcons(uchar(0),iconOn);
+				SetIcons(0, QString(iconOn));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));

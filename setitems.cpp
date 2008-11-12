@@ -80,7 +80,8 @@ void impostaSveglia::toggleAbil()
 
 void impostaSveglia::forceDraw()
 {
-	SetIcons(uchar(0), svegliolina->isActive() ? iconOn : iconOff);
+	// TODO: trasformare iconOn && iconOff in QString!
+	SetIcons(0, QString(svegliolina->isActive() ? iconOn : iconOff));
 	Draw();
 	svegliolina->setSerNum(getSerNum());
 }
@@ -126,24 +127,26 @@ impBeep::impBeep(sottoMenu *parent, const char *name, char *val, const char *ico
 	SetIcons(iconOn,1);
 	bool on = !strcmp(val, "1");
 	setBeep(on, false);
+	// TODO: trasformare iconOn && iconOff in QString!
 	if (on)
-		SetIcons(uchar(1), iconOn);
+		SetIcons(1, QString(iconOn));
 	else
-		SetIcons(uchar(0), iconOff);
+		SetIcons(0, QString(iconOff));
 	Draw();
 }
 
 void impBeep::toggleBeep()
 {
+	// TODO: trasformare iconOn && iconOff in QString!
 	if (getBeep())
 	{
 		setBeep(false, true);
-		SetIcons(uchar(0), iconOff);
+		SetIcons(0, QString(iconOff));
 	}
 	else
 	{
 		setBeep(true, true);
-		SetIcons(uchar(0), iconOn);
+		SetIcons(0, QString(iconOn));
 		beep();
 	}
 	Draw();
@@ -253,10 +256,8 @@ void impPassword::toggleActivation()
 
 void impPassword::showEvent(QShowEvent *event)
 {
-	if (active)
-		SetIcons(uchar(0),iconOn);
-	else
-		SetIcons(uchar(0),iconOff);
+	// TODO: trasformare iconOn && iconOff in QString!
+	SetIcons(0, QString(active ? iconOn : iconOff));
 	Draw();
 	qDebug("passwd = %s %d", paswd, paswd[0]);
 	if ((paswd[0] == '\000') || starting)

@@ -111,9 +111,9 @@ QString banner::getPressedIconName(QString iconname)
 	return QFile::exists(pressIconName) ? pressIconName : iconname;
 }
 
-void banner::SetIcons(int id, const char *name)
+void banner::SetIcons(int id, QString name)
 {
-	assert(id < MAX_PRESS_ICON && "Index of icon out of range!");
+	assert(id < MAX_PRESS_ICON && id >= 0 && "Index of icon out of range!");
 	Icon[id]      = icons_library.getIcon(name);
 	pressIcon[id] = icons_library.getIcon(getPressedIconName(name));
 }

@@ -70,7 +70,7 @@ public:
 	 *
 	 * the arguments describe the item as defined in the oggettinoDelBanner, the image is passed thought the file name
 	 */
-	void SetIcons(int id, const char *);
+	void SetIcons(int id, QString name);
 
 	/*!
 	 * \brief sets the Icon of a item in the banner

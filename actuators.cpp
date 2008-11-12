@@ -212,8 +212,9 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					impostaAttivo(0);
 					uprunning = dorunning = 0;
 					aggiorna = 1;
-					SetIcons((uchar)0,nomeFile1);
-					SetIcons((uchar)1,nomeFile2);
+					// TODO: trasformare nomeFile* in QString!
+					SetIcons(0, QString(nomeFile1));
+					SetIcons(1, QString(nomeFile2));
 					sxButton->setEnabled(1);
 					dxButton->setEnabled(1);
 				}
@@ -225,8 +226,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					dorunning = 0;
 					uprunning = 1;
 					aggiorna = 1;
-					SetIcons((uchar)0,nomeFile3);
-					SetIcons((uchar)1,nomeFile2);
+					SetIcons(0, QString(nomeFile3));
+					SetIcons(1, QString(nomeFile2));
 					dxButton->setDisabled(1);
 					sxButton->setEnabled(1);
 				}
@@ -238,8 +239,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					dorunning = 1;
 					uprunning = 0;
 					aggiorna = 1;
-					SetIcons((uchar)0,nomeFile1);
-					SetIcons((uchar)1,nomeFile3);
+					SetIcons(0, QString(nomeFile1));
+					SetIcons(1, QString(nomeFile3));
 					sxButton->setDisabled(1);
 					dxButton->setEnabled(1);
 				}
@@ -357,8 +358,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					impostaAttivo(0);
 					uprunning=dorunning=0;
 					aggiorna=1;
-					SetIcons((uchar)0,nomeFile1);
-					SetIcons((uchar)1,nomeFile2);
+					SetIcons(0, QString(nomeFile1));
+					SetIcons(1, QString(nomeFile2));
 					sxButton->setEnabled(1);
 					dxButton->setEnabled(1);
 				}
@@ -370,8 +371,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					dorunning = 0;
 					uprunning = 1;
 					aggiorna = 1;
-					SetIcons((uchar)0,nomeFile3);
-					SetIcons((uchar)1,nomeFile2);
+					SetIcons(0, QString(nomeFile3));
+					SetIcons(1, QString(nomeFile2));
 					dxButton->setDisabled(1);
 					sxButton->setEnabled(1);
 				}
@@ -383,8 +384,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					dorunning = 1;
 					uprunning = 0;
 					aggiorna = 1;
-					SetIcons((uchar)0,nomeFile1);
-					SetIcons((uchar)1,nomeFile3);
+					SetIcons(0, QString(nomeFile1));
+					SetIcons(1, QString(nomeFile3));
 					sxButton->setDisabled(1);
 					dxButton->setEnabled(1);
 				}
