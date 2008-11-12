@@ -66,7 +66,7 @@ int diffSonora::addItemU(char tipo, const QString &description, QList<QString *>
 {
 	if (tipo == GR_AMPLIFICATORI)
 	{
-		amplificatori->addItemU(tipo, description, (void *)indirizzo, icon_names);
+		amplificatori->addItemU(tipo, description, indirizzo, icon_names);
 		return 1;
 	}
 	else

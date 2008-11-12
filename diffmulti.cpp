@@ -200,6 +200,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo
 
 int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *> *indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
 {
+	// we can never be here with tipo == AMBIENTE (see also xmlconfhandler.cpp and conf.xml spec)
 	assert(tipo != AMBIENTE);
 	qDebug("diffmulti::addItem (%d)", tipo);
 	qDebug("Amplificatore (%p)", indirizzo);

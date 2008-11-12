@@ -51,11 +51,11 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizz
 	settings_page = new sottoMenu(NULL, "PowerAmplifierSettings");
 
 	QList<QString*> icons;
-	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_LOUD, tr("Loud"), NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), (char *)NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), (char *)NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), (char *)NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), (char *)NULL, icons);
+	settings_page->addItemU((char)POWER_AMPLIFIER_LOUD, tr("Loud"), (char *)NULL, icons);
 	settings_page->hide();
 	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
 }

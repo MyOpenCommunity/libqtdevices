@@ -178,11 +178,12 @@ void amplificatore::inizializza(bool forza)
  **gruppo di amplificatori
  ****************************************************************/
 
-grAmplificatori::grAmplificatori(QWidget *parent,const char *name,void *indirizzi,char* IconaSx,char* IconaDx, char *iconsx ,char* icondx,int period,int number)
-	: bannRegolaz(parent, name)
+grAmplificatori::grAmplificatori(QWidget *parent,const char *name,QList<QString *> *indirizzi,char* IconaSx,
+		char* IconaDx, char *iconsx ,char* icondx,int period,int number)
+	: bannRegolaz(parent, name),
+	elencoDisp(indirizzi)
 {
 	SetIcons(IconaSx,IconaDx ,icondx,iconsx);
-	setAddress(indirizzi);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
@@ -195,11 +196,6 @@ grAmplificatori::~grAmplificatori()
 	// TODO: Viene distrutto da xmlconfhandler.. se creato da lui!! Altrimenti
 	// c'e' un memory leak! Sistemare cambiando la gestione dell'indirizzo!
 	//delete elencoDisp;
-}
-
-void grAmplificatori::setAddress(void *indirizzi)
-{
-	elencoDisp = (QList<QString*>*)indirizzi;
 }
 
 void grAmplificatori::Attiva()

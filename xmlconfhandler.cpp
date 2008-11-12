@@ -596,6 +596,8 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					}
 					else
 					{
+						// it's not possible to arrive here if item id == 47 (AMBIENTE)
+						// because it has only one tag <where> and no tags <where[number]>
 						qDebug("**** DIFSON_MULTI: multi address");
 						(*dm)->addItem((char)page_item_id_m, page_item_descr_m, page_item_list_group_m,
 								page_item_list_img_m);
