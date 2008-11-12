@@ -150,7 +150,7 @@ void banner::SetIcons(QString sxIcon , QString dxIcon, QString centerIcon)
 	SetIcons(sxIcon, dxIcon);
 
 	if (!centerIcon.isNull())
-		SetIcons(3, dxIcon);
+		SetIcons(3, centerIcon);
 
 	// TODO: che cos'e' questo impostaAttivo? Senza di quello potrebbe essere usata
 	// questa funzione con argomento di default anche per la variante sopra!
