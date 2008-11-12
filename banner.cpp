@@ -111,24 +111,24 @@ QString banner::getPressedIconName(QString iconname)
 	return QFile::exists(pressIconName) ? pressIconName : iconname;
 }
 
-void banner::SetIcons(uchar idIcon, const char *actuallcon)
+void banner::SetIcons(int id, const char *name)
 {
-	assert(idIcon < MAX_PRESS_ICON && "Index of icon out of range!");
-	Icon[idIcon]      = icons_library.getIcon(actuallcon);
-	pressIcon[idIcon] = icons_library.getIcon(getPressedIconName(actuallcon));
+	assert(id < MAX_PRESS_ICON && "Index of icon out of range!");
+	Icon[id]      = icons_library.getIcon(name);
+	pressIcon[id] = icons_library.getIcon(getPressedIconName(name));
 }
 
-void banner::SetIcons(const char *actuallcon ,char tipo)
+void banner::SetIcons(const char *name, int type)
 {
-	if (tipo == 1)
+	if (type == 1)
 	{
-		Icon[0]      = icons_library.getIcon(actuallcon);
-		pressIcon[0] = icons_library.getIcon(getPressedIconName(actuallcon));
+		Icon[0]      = icons_library.getIcon(name);
+		pressIcon[0] = icons_library.getIcon(getPressedIconName(name));
 	}
-	if (tipo == 3)
+	if (type == 3)
 	{
-		Icon[3]      = icons_library.getIcon(actuallcon);
-		pressIcon[3] = icons_library.getIcon(getPressedIconName(actuallcon));
+		Icon[3]      = icons_library.getIcon(name);
+		pressIcon[3] = icons_library.getIcon(getPressedIconName(name));
 	}
 }
 

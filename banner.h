@@ -70,12 +70,12 @@ public:
 	 *
 	 * the arguments describe the item as defined in the oggettinoDelBanner, the image is passed thought the file name
 	 */
-	void SetIcons(uchar , const char *);
+	void SetIcons(int id, const char *);
 
 	/*!
 	 * \brief sets the Icon of a item in the banner
 	 */
-	void SetIcons(const char *,char);
+	void SetIcons(const char *name, int type);
 
 	/*!
 	 * \brief sets the Icon of left and right button
