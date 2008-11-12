@@ -114,7 +114,7 @@ public:
 	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has
 	 * to visualize when the banner is in active state
 	 */
-	void SetIcons(const char *, const char *, const char *, const char *, char);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, bool inactiveLevel);
 
 	void SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon, QString centerUpIcon, QString centerDownIcon);
 	/*!
@@ -124,7 +124,7 @@ public:
 	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has 
 	 * to visualize when the banner is in active state. The 5° argument represent the broken state image path.
 	 */
-	void SetIcons(const char *, const char *, const char *, const char *, const char *, char);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, QString breakIcon, bool inactiveLevel);
 
 	/*!
 	 * \brief Inserts an object in the banner.
@@ -365,7 +365,7 @@ private:
 	 *   from "ondimmer.png" we can get "ondimmer" in a generic way
 	 */
 	QString getNameRoot(QString full_string, QString text_to_strip);
-	QString getNameRoot(char *full_string, QString text_to_strip);
+
 
 private slots:
 	void animate();

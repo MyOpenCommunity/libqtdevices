@@ -29,7 +29,7 @@ amplificatore::amplificatore(QWidget *parent,const char *name,char* indirizzo,ch
 {
 	qDebug("amplificatore::amplificatore()");
 	setRange(1,9);
-	SetIcons(IconaSx, IconaDx ,icon, inactiveIcon,(char)1);
+	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, true);
 	qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));

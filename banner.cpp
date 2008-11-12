@@ -206,26 +206,14 @@ void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, 
 	numFrame = number;
 }
 
-void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon,char inactiveLevel)
+void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, bool inactiveLevel)
 {
-	SetIcons(sxIcon, dxIcon, centerActiveIcon, centerInactiveIcon,(const char*)NULL, inactiveLevel);
+	SetIcons(sxIcon, dxIcon, centerActiveIcon, centerInactiveIcon, QString(), inactiveLevel);
 }
 
-void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerActiveIcon,const char*centerInactiveIcon, const char*breakIcon, char inactiveLevel)
+void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, QString centerInactiveIcon, QString breakIcon, bool inactiveLevel)
 {
-	if (sxIcon)
-	{
-		Icon[0]      = icons_library.getIcon(sxIcon);
-		pressIcon[0] = icons_library.getIcon(getPressedIconName(sxIcon));
-		qDebug("Icon[0] <- %s", sxIcon);
-	}
-
-	if (dxIcon)
-	{
-		Icon[1]      = icons_library.getIcon(dxIcon);
-		pressIcon[1] = icons_library.getIcon(getPressedIconName(dxIcon));
-		qDebug("Icon[1] <- %s", dxIcon);
-	}
+	SetIcons(sxIcon, dxIcon);
 	
 	// Load base Icon that can be *sxl0 or *dxl0
 	//FIXME FIXME FIXME(anche sopra)
@@ -270,7 +258,7 @@ void banner::SetIcons(const char *sxIcon , const char *dxIcon,const char*centerA
 		}
 	}
 	
-	if (breakIcon)
+	if (!breakIcon.isNull())
 	{
 		QString break_root_of_name = getNameRoot(breakIcon, ".png");
 	
@@ -703,10 +691,4 @@ void banner::addAmb(char *)
 QString banner::getNameRoot(QString full_string, QString text_to_strip)
 {
 	return full_string.mid(0, full_string.lastIndexOf('.'));
-
-}
-
-QString banner::getNameRoot(char *full_string, QString text_to_strip)
-{
-	return getNameRoot(QString(full_string), text_to_strip);
 }
