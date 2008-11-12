@@ -340,10 +340,6 @@ protected:
 	char attivo,value,maxValue,minValue,id,step;
 	int periodo, numFrame,contFrame,serNum;
 	char address[20];
-	/**
-	 *  \brief Returns true if the object is a target for message
-	 */
-	bool isForMe(openwebnet *message);
 
 	/**
 	 * Utility function to draw all buttons except the rightmost one
