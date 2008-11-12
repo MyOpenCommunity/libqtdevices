@@ -19,8 +19,3 @@ bannOnOff2scr::bannOnOff2scr(QWidget *parent,const char *name) : banner(parent, 
 	addItem(ICON, MAX_WIDTH-BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X , 0 , BUTONOFF2SCR_ICON_DIM_X , BUTONOFF2SCR_ICON_DIM_Y);
 	addItem(TEXT2, BANONOFF2SCR_BUT_DIM ,0 ,MAX_WIDTH-2*BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, /*MAX_HEIGHT/NUM_RIGHE-BANONOFF2SCR_BUT_DIM */BUTONOFF2SCR_ICON_DIM_Y);
 }
-
-void bannOnOff2scr::setIcons(const char *onIcon , const char *offIcon)
-{
-	SetIcons(ICON_ON,ICON_OFF,onIcon,offIcon);
-}

@@ -32,7 +32,6 @@ class bannOnOff : public banner
 Q_OBJECT
 public:
 	bannOnOff(QWidget *w=0, const char *n=0);
-	void setIcons(const char *onIcon=0, const char *offIcon=0);
 };
 
 

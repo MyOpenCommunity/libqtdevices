@@ -34,8 +34,6 @@ class bannOn2scr : public banner
 Q_OBJECT
 public:
 	bannOn2scr(QWidget *w=0, const char *n=0);
-
-	void setIcons(const char *sxIcon=0, const char *dxIcon=0,const char *onIcon=0);
 };
 
 

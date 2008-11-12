@@ -25,8 +25,3 @@ bannOn2scr::bannOn2scr(QWidget *parent,const char *name) : banner(parent, name)
 	x = 0;
 	addItem(TEXT, x, y, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE - BANON2SCR_BUT_DIM);
 }
-
-void bannOn2scr::setIcons(const char *sxIcon, const char *dxIcon, const char *onIcon)
-{
-	banner::SetIcons(sxIcon, dxIcon, onIcon);
-}
