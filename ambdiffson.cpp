@@ -174,8 +174,8 @@ bool ambDiffSon::isDraw()
  ** Insieme ambienti diffusione sonora multicanale
  ****************************************************************/
 
-insAmbDiffSon::insAmbDiffSon(QWidget *parent, QList<QString*> *names, QString Icona1, QString Icona2, QList<dati_ampli_multi*> *la,
-	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent), name(*names->at(0))
+insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QString Icona2, QList<dati_ampli_multi*> *la,
+	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent), name(_name)
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
 	// TODO: c'e' un sacco codice duplicato con ambdiffson!!!

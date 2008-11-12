@@ -151,7 +151,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, char* indirizzo
 			}
 			else
 			{
-				b = new insAmbDiffSon(this, descrizioni, *safeAt(icon_names, 0),
+				b = new insAmbDiffSon(this, *descrizioni->at(0), *safeAt(icon_names, 0),
 						*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
 			}
 			elencoBanner.append(b);
@@ -216,7 +216,7 @@ int diffmulti::addItem(char tipo,  QList<QString*> *descrizioni, QList<QString *
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
 			ds->draw();
 			banner *b;
-			b = new insAmbDiffSon(this, descrizioni, *safeAt(icon_names, 0),
+			b = new insAmbDiffSon(this, *descrizioni->at(0), *safeAt(icon_names, 0),
 					*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
 			elencoBanner.append(b);
 			dslist.append(ds);
