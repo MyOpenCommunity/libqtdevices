@@ -105,7 +105,7 @@ void Calibrate::startCalibration()
 QPoint Calibrate::fromDevice(const QPoint &p)
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	qWarning("inside Calibrate::fromDevice");
+	qDebug("inside Calibrate::fromDevice");
 	return qt_screen->mapFromDevice(p,QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()));
 #endif
 }
@@ -171,7 +171,7 @@ bool Calibrate::sanityCheck()
 		return false;
 	}
 #endif
-	qWarning("return TRUE Calibrate::sanityCheck");
+	qDebug("return TRUE Calibrate::sanityCheck");
 	return true;
 }
 
@@ -202,7 +202,7 @@ void Calibrate::paintEvent(QPaintEvent *)
 
 void Calibrate::buttonsTest()
 {
-	qWarning("Calibrate::buttonsTest");
+	qDebug("Calibrate::buttonsTest");
 	button_timer->setSingleShot(true);
 	button_timer->start(BUTTON_SEC_TIMEOUT * 1000);
 	box_text->setText(tr("Click the OK button"));
@@ -213,7 +213,7 @@ void Calibrate::buttonsTest()
 
 void Calibrate::rollbackCalibration()
 {
-	qWarning("Calibrate::rollbackCalibration");
+	qDebug("Calibrate::rollbackCalibration");
 	if (QFile::exists("/etc/pointercal.calibrated"))
 		system("cp /etc/pointercal.calibrated /etc/pointercal");
 	else
@@ -226,7 +226,7 @@ void Calibrate::rollbackCalibration()
 
 void Calibrate::endCalibration()
 {
-	qWarning("Calibrate::endCalibration");
+	qDebug("Calibrate::endCalibration");
 	if (QFile::exists("/etc/pointercal.calibrated"))
 		system("rm /etc/pointercal.calibrated");
 
@@ -251,7 +251,7 @@ void Calibrate::mousePressEvent(QMouseEvent *e)
 	if (button_test)
 		return;
 	// map to device coordinates
-	qWarning("Calibrate::mousePressEvent");
+	qDebug("Calibrate::mousePressEvent");
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	QPoint devPos = qt_screen->mapToDevice(e->pos(),
 	QSize(qt_screen->width(), qt_screen->height()));
@@ -265,7 +265,7 @@ void Calibrate::mousePressEvent(QMouseEvent *e)
 
 void Calibrate::mouseReleaseEvent(QMouseEvent *)
 {
-	qWarning("Calibrate::mouseReleaseEvent");
+	qDebug("Calibrate::mouseReleaseEvent");
 	if (timer->isActive() || button_test)
 		return;
 
@@ -280,12 +280,12 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 		lastLoc = QWSPointerCalibrationData::LastLocation;
 	else
 		lastLoc = QWSPointerCalibrationData::LastLocation - 1;
-	qWarning("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
+	qDebug("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
 	if (location < lastLoc)
 	{
-		qWarning("location < lastLoc ovvero %d<%d",location,lastLoc);
+		qDebug("location < lastLoc ovvero %d<%d",location,lastLoc);
 		location = (QWSPointerCalibrationData::Location)((int)location + 1);
-		qWarning("new location: %d", location);
+		qDebug("new location: %d", location);
 	}
 	else
 	{
