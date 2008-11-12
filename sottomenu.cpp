@@ -420,7 +420,6 @@ void sottoMenu::connectLastBanner()
 	connect(last, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(last, SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
 	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
-	connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 }
 
 void sottoMenu::showItem(int id)

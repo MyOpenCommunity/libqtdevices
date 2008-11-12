@@ -416,10 +416,6 @@ signals:
 	 */
 	void sendFramew(char*);
 	void sendInit(char*);
-	/*!
-	 *  \brief Emitted when the banner decide to die and to be removed from the list containig it.
-	 */
-	void killMe(banner*);
 };
 
 
