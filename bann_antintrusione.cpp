@@ -41,7 +41,10 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 	sparzIName = IMG_PATH "btnsparzializza.png";
 	getZoneName(iconzona, pippo, indirizzo, sizeof(pippo));
 	qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
-	zonaAnti::SetIcons(sparzIName, pippo, IconDisactive);
+
+	banner::SetIcons(1, sparzIName);
+	banner::SetIcons(2, pippo);
+	banner::SetIcons(3, IconDisactive);
 
 	if (BannerText)
 	{
@@ -78,13 +81,6 @@ void zonaAnti::SetIcons()
 		banner::SetIcons(1, parzIName);
 		banner::SetIcons(3, zonaNonAttiva);
 	}
-}
-
-void zonaAnti::SetIcons(QString i1, QString i2, QString i3)
-{
-	banner::SetIcons(1, i1);
-	banner::SetIcons(2, i2);
-	banner::SetIcons(3, i3);
 }
 
 void zonaAnti::Draw()

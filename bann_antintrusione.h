@@ -48,7 +48,6 @@ private:
 public:
 	zonaAnti(QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
 	void inizializza(bool forza = false);
-	void SetIcons(QString i1, QString i2, QString i3);
 	void Draw();
 public slots:
 	void status_changed(QList<device_status*>);
