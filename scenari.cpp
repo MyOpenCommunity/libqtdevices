@@ -56,13 +56,13 @@ void scenario::inizializza(bool forza){}
  **gesModScen
  ****************************************************************/
 
-gesModScen::gesModScen(QWidget *parent, const char *name ,char*indirizzo,char* IcoSx,char* IcoDx,char* IcoCsx,char* IcoCdx,char* IcoDes, char* IcoSx2, char* IcoDx2)
-	:  bann4tasLab(parent, name)
+gesModScen::gesModScen(QWidget *parent, const char *name , char *indirizzo, QString IcoSx, QString IcoDx, QString IcoCsx,
+	QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2) :  bann4tasLab(parent, name)
 {
-	strcpy(iconOn,IcoSx);
-	strcpy(iconStop,IcoSx2);
-	strcpy(iconInfo,IcoDx);
-	strcpy(iconNoInfo,IcoDx2);
+	icon_on = IcoSx;
+	icon_stop = IcoSx2;
+	icon_info = IcoDx;
+	icon_no_info = IcoDx2;
 
 	SetIcons(IcoSx, IcoDx, IcoCsx, IcoCdx, IcoDes);
 	nascondi(BUT3);
@@ -113,8 +113,7 @@ void gesModScen::enterInfo()
 	nascondi(ICON);
 	mostra(BUT4);
 	mostra(BUT3);
-	SetIcons(1, iconNoInfo);
-	qDebug(iconNoInfo);
+	SetIcons(1, icon_no_info);
 	disconnect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
 	Draw();
@@ -125,7 +124,7 @@ void gesModScen::exitInfo()
 	mostra(ICON);
 	nascondi(BUT4);
 	nascondi(BUT3);
-	SetIcons(1, iconInfo);
+	SetIcons(1, icon_info);
 	connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
 	disconnect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
 	Draw();
@@ -198,8 +197,7 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				qDebug("Programming start");
 				if (sendInProgr)
 				{
-					// TODO: trasformare iconStop in QString!
-					SetIcons(0, QString(iconStop));
+					SetIcons(0, icon_stop);
 					disconnect(this,SIGNAL(sxClick()), this,SLOT(attivaScenario()));
 					connect(this,SIGNAL(sxClick()), this,SLOT(stopProgScen()));
 					in_progr = 0;
@@ -225,7 +223,7 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				break;
 			case device_status_modscen::PROGRAMMING_STOP:
 				qDebug("Programming stop");
-				SetIcons(0, QString(iconOn));
+				SetIcons(0, icon_on);
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
@@ -234,7 +232,7 @@ void gesModScen::status_changed(QList<device_status*> sl)
 				break;
 			case device_status_modscen::UNLOCKED:
 				qDebug("Unlocked");
-				SetIcons(0, QString(iconOn));
+				SetIcons(0, icon_on);
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
 				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
@@ -273,8 +271,8 @@ void gesModScen::inizializza(bool forza)
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, const char *name, QList<scenEvo_cond*> *c, char *i1, char *i2,
-	char *i3, char *i4, char *i5, char *i6, char *i7, QString act, int enable) : bann3But(parent, name)
+scenEvo::scenEvo(QWidget *parent, const char *name, QList<scenEvo_cond*> *c, QString i1, QString i2,
+	QString i3, QString i4, QString act, int enable) : bann3But(parent, name)
 {
 	if (c)
 	{
@@ -295,7 +293,7 @@ scenEvo::scenEvo(QWidget *parent, const char *name, QList<scenEvo_cond*> *c, cha
 	}
 
 	action = act;
-	SetIcons(i1, i2 , i3, i4);
+	SetIcons(i1, i2, i3, i4);
 	impostaAttivo(enable);
 	connect(this,SIGNAL(sxClick()), this, SLOT(toggleAttivaScev()));
 	connect(this,SIGNAL(dxClick()), this, SLOT(configScev()));
@@ -546,7 +544,7 @@ scenEvo::~scenEvo()
 /*****************************************************************
  ** Scenario schedulato
  ****************************************************************/	
-scenSched::scenSched(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4,
+scenSched::scenSched(QWidget *parent, const char *name, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
 	char *aen, char *adis, char *astart, char *astop) : bann4But(parent, name)
 {
 	action_enable = aen;
@@ -555,7 +553,6 @@ scenSched::scenSched(QWidget *parent, const char *name, char* Icona1,char *Icona
 	action_stop = astop;
 	qDebug("scenSched::scenSched(), enable = %s, start = %s, stop = %s, "
 			"disable = %s", aen, adis, astart, astop);
-	qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", Icona1, Icona2, Icona3, Icona4);
 	SetIcons(Icona1, Icona3, Icona4, Icona2);
 	if (aen[0])
 	{

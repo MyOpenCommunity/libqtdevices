@@ -61,17 +61,18 @@ private:
 class gesModScen : public  bann4tasLab
 {
 Q_OBJECT
+public:
+	gesModScen(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IcoSx=QString(), QString IcoDx=QString(), QString IcoCsx=QString(),
+		QString IcoCdx=QString(), QString IcoDes=QString(), QString IcoSx2=QString(), QString IcoDx2=QString());
+public slots:
+	void status_changed(QList<device_status*>);
+	void inizializza(bool forza = false);
 private:
-	char iconOn[50];
-	char iconStop[50];
-	char iconInfo[50];
-	char iconNoInfo[50];
+	QString icon_on, icon_stop, icon_info, icon_no_info;
 	char cosa[10];
 	char dove[10];
 	unsigned char sendInProgr, bloccato, in_progr;
 	device *dev;
-public:
-	gesModScen(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* Ico1=NULL,char* Ico2=NULL,char* Ico3=NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL);
 private slots:
 	void attivaScenario();
 	void enterInfo();
@@ -79,9 +80,6 @@ private slots:
 	void startProgScen();
 	void stopProgScen();
 	void cancScen();
-public slots:
-	void status_changed(QList<device_status*>);
-	void inizializza(bool forza = false);
 };
 
 
@@ -97,21 +95,22 @@ public slots:
 class scenEvo : public  bann3But
 {
 Q_OBJECT
+public:
+	scenEvo(QWidget *parent=0, const char *name=NULL, QList<scenEvo_cond*> *c=NULL, QString i1=QString(), QString i2=QString(), QString i3=QString(), QString i4=QString(), QString act="", int enabled = 0);
+	~scenEvo();
+	void Draw();
+public slots:
+	void inizializza(bool forza = false);
+
+protected:
+	virtual void hideEvent(QHideEvent *event);
+
 private:
 	QList<scenEvo_cond*> condList;
 	unsigned current_condition;
 	QString action;
 	int serial_number;
 	static int next_serial_number;
-
-public:
-	scenEvo(QWidget *parent=0, const char *name=NULL, QList<scenEvo_cond*> *c=NULL, char* Ico1=NULL,char* Ico2=NULL,char* Ico3 = NULL,char* Ico4=NULL, char* Ico5=NULL, char* Ico6=NULL, char* Ico7=NULL, QString act="", int enabled = 0);
-	~scenEvo();
-	void Draw();
-
-protected:
-	virtual void hideEvent(QHideEvent *event);
-
 private slots:
 	void toggleAttivaScev();
 	void configScev();
@@ -123,9 +122,6 @@ private slots:
 	void saveAndApplyAll();
 	void resetAll();
 	void trigOnStatusChanged();
-
-public slots:
-	void inizializza(bool forza = false);
 };
 
 
@@ -147,7 +143,7 @@ private:
 	QString action_start;
 	QString action_stop;
 public:
-	scenSched(QWidget *parent=0, const char *name=NULL, char* IconaSx="",char *IconaCSx="", char *IconaCDx="", char* IconaDx="", char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
+	scenSched(QWidget *parent=0, const char *name=NULL, QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), QString Icona4=QString(), char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
 	/*!
 	 * Reimplemented draw
 	 */

@@ -338,10 +338,10 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new impPassword(this, descrizione, IconaDx, icon, pressedIcon, IconaSx, periodo));
 		break;
 	case MOD_SCENARI:
-		elencoBanner.append(new gesModScen(this, descrizione ,(char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon, icoEx1, icoEx2, icoEx3));
+		elencoBanner.append(new gesModScen(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1, icoEx2, icoEx3));
 		break;
 	case SCENARIO_EVOLUTO:
-		elencoBanner.append(new scenEvo(this, descrizione, lc, IconaSx, IconaDx, icon, pressedIcon, NULL, NULL, NULL, action, par3));
+		elencoBanner.append(new scenEvo(this, descrizione, lc, IconaSx, IconaDx, icon, pressedIcon, action, par3));
 		break;
 	case SCENARIO_SCHEDULATO:
 		elencoBanner.append(new scenSched(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4));
