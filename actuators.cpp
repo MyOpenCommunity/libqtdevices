@@ -468,10 +468,10 @@ void attuatAutomIntSic::inizializza(bool forza)
  **attuatAutomTemp
  ****************************************************************/
 
-attuatAutomTemp::attuatAutomTemp(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number, QList<QString*> *lt)
-: bannOnOff2scr(parent, name)
+attuatAutomTemp::attuatAutomTemp(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number, QList<QString*> *lt)
+	: bannOnOff2scr(parent, name)
 {
-	SetIcons(IconaDx, IconaSx ,icon, pressedIcon,period ,number);
+	SetIcons(IconaDx, IconaSx, icon, pressedIcon, period, number);
 	setAddress(indirizzo);
 	cntTempi = 0;
 	static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "15'", "30''" };
@@ -482,7 +482,7 @@ attuatAutomTemp::attuatAutomTemp(QWidget *parent,const char *name,char* indirizz
 		if (i < lt->size())
 			s = lt->at(i);
 		else
-			s = new QString(t[i]);
+			s = new QString(t[i]); // TODO: verificare a cosa serve e se potrebbe essere un memory leak!
 		tempi.append(s);
 	}
 
@@ -633,7 +633,8 @@ attuatAutomTemp::~attuatAutomTemp()
  **attuatAutomTempNuovoN
  ****************************************************************/
 
-attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number , QList<QString*> *lt)
+attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+	QString pressedIcon, int period, int number, QList<QString*> *lt)
 	: attuatAutomTemp(parent, name, indirizzo, IconaSx, IconaDx, icon, pressedIcon, period, number, lt)
 {
 	assegna_tempo_display();

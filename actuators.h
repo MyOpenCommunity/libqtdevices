@@ -160,6 +160,14 @@ private slots:
 class attuatAutomTemp : public bannOnOff2scr
 {
 Q_OBJECT
+public:
+	// TODO: la lista QList<QString*> *lt contiene stringhe che vengono create esternamente (dall'xmlconfhandler?) e distrutte
+	// dal distruttore della classe.. decidere di chi deve essere l'ownership di questi oggetti!!
+	attuatAutomTemp(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString*> *lt = NULL);
+	~attuatAutomTemp();
+public slots:
+	virtual void status_changed(QList<device_status*>);
 protected:
 	uchar cntTempi;
 	QString tempo_display;
@@ -169,17 +177,10 @@ protected:
 	QString leggi_tempo();
 	virtual void assegna_tempo_display();
 	virtual void inizializza(bool forza=false);
-public:
-	// TODO: la lista QList<QString*> *lt contiene stringhe che vengono create esternamente (dall'xmlconfhandler?) e distrutte
-	// dal distruttore della classe.. decidere di chi deve essere l'ownership di questi oggetti!!
-	attuatAutomTemp(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QList<QString*> *lt = NULL);
-	~attuatAutomTemp();
-private slots:
-	void CiclaTempo();
 protected slots:
 	virtual void Attiva();
-public slots:
-	virtual void status_changed(QList<device_status*>);
+private slots:
+	void CiclaTempo();
 };
 
 
@@ -200,17 +201,17 @@ public slots:
 class attuatAutomTempNuovoN : public attuatAutomTemp
 {
 Q_OBJECT
-
+public:
+	attuatAutomTempNuovoN(QWidget *parent=0, const char *name=NULL,char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString*> *lt = NULL);
+public slots:
+	void status_changed(QList<device_status*>);
 protected:
 	bool stato_noto;
 	virtual void assegna_tempo_display();
 	virtual void inizializza(bool forza=false);
-public:
-	attuatAutomTempNuovoN(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0, QList<QString*> *lt = NULL);
 protected slots:
 	void Attiva();
-public slots:
-	void status_changed(QList<device_status*>);
 };
 
 
