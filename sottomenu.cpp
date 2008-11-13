@@ -409,7 +409,6 @@ void sottoMenu::connectLastBanner()
 	connect(last, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(last, SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
 	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
-	connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 }
 
 void sottoMenu::showItem(int id)
@@ -479,6 +478,7 @@ void sottoMenu::draw()
 
 void sottoMenu::forceDraw()
 {
+	qDebug() << name << "::forceDraw()";
 	indicold = indice + 1;
 	draw();
 }
@@ -541,25 +541,6 @@ banner* sottoMenu::getLast()
 	return elencoBanner.last();
 }
 
-banner* sottoMenu::getCurrent()
-{
-	return elencoBanner.at(indice);
-}
-
-banner* sottoMenu::getNext()
-{
-	if (indice == ((int)elencoBanner.count()-1))
-		return elencoBanner.at(0);
-	return elencoBanner.at(indice + 1);
-}
-
-banner* sottoMenu::getPrevious()
-{
-	if (indice == 0)
-		return elencoBanner.at(elencoBanner.count()-1);
-	return elencoBanner.at(indice-1);
-}
-
 void sottoMenu::inizializza()
 {
 	qDebug("sottoMenu::inizializza()");
@@ -615,11 +596,6 @@ void sottoMenu::mostra_all(char but)
 		elencoBanner.at(i)->mostra(but);
 }
 
-void sottoMenu::setNumRig(uchar n)
-{
-	numRighe = n;
-}
-
 void sottoMenu::setHeight(int h)
 {
 	height = h;
@@ -644,25 +620,6 @@ void sottoMenu::setGeometry(int x, int y, int w, int h)
 	QWidget::setGeometry(x, y, w, h);
 }
 
-void  sottoMenu::killBanner(banner* b)
-{
-	int icx = elencoBanner.indexOf(b);
-
-	if (icx != -1)
-	{
-		elencoBanner.at(icx)->hide();
-		elencoBanner.takeAt(icx)->deleteLater();
-		indice = 0;
-		indicold = 100;
-		draw();
-		if (elencoBanner.count() == 0 && parentWidget())
-		{
-			emit Closed();
-			parentWidget()->showFullScreen();
-		}
-	}
-}
-
 void sottoMenu::hideEvent(QHideEvent *event)
 {
 	qDebug() << "sottoMenu::hideEvent()" << name;
@@ -678,12 +635,6 @@ void sottoMenu::hideEvent(QHideEvent *event)
 		forceDraw();
 	}
 	*/
-}
-
-void sottoMenu::svuota()
-{
-	elencoBanner.clear();
-	draw();
 }
 
 uint sottoMenu::getCount()

@@ -340,25 +340,12 @@ protected:
 	char attivo,value,maxValue,minValue,id,step;
 	int periodo, numFrame,contFrame,serNum;
 	char address[20];
-	/**
-	 *  \brief Returns true if the object is a target for message
-	 */
-	bool isForMe(openwebnet *message);
 
 	/**
 	 * Utility function to draw all buttons except the rightmost one
 	 */
 	void drawAllButRightButton();
 private:
-	/*!
-	 *  \brief Retrieves the group list of the object controlled by the banner.
-	 *
-	 *  The group list is an array of 9 bool varibles. 
-	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
-	 */
-	bool *getGroup();
-	bool group[9];
-
 	QTimer *animationTimer;
 	/**
 	 *   Utility functions to get icon name root. For istance
@@ -429,10 +416,6 @@ signals:
 	 */
 	void sendFramew(char*);
 	void sendInit(char*);
-	/*!
-	 *  \brief Emitted when the banner decide to die and to be removed from the list containig it.
-	 */
-	void killMe(banner*);
 };
 
 

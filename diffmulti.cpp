@@ -158,7 +158,6 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 			if (tipo == AMBIENTE)
 				sorgenti->addAmb((char *)indirizzo);
@@ -221,7 +220,6 @@ int diffmulti::addItem(char tipo,  QString descrizione, QList<QString *> *indiri
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(killMe(banner*)), this, SLOT(killBanner(banner*)));
 			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
 
 			while (!datimmulti.isEmpty())
@@ -301,18 +299,6 @@ void diffmulti::hideEvent(QHideEvent *event)
 {
 	for (int i = 0; i < dslist.size(); ++i)
 		dslist.at(i)->hide();
-}
-
-void diffmulti::setGeom(int x, int y, int w,int h)
-{
-	qDebug("diffmulti::setGeom(%d, %d, %d, %d)", x, y, w, h);
-	setGeometry(x, y, w, h);
-}
-
-void diffmulti::forceDraw()
-{
-	qDebug("diffmulti::forceDraw()");
-	sottoMenu::forceDraw();
 }
 
 void diffmulti::resizewindows(int x, int y, int w, int h)
@@ -414,7 +400,7 @@ void contdiff::setGeom(int x, int y, int w, int h)
 	if (ds)
 		ds->setGeom(x, y, w, h);
 	if (dm)
-		dm->setGeom(x, y, w, h);
+		dm->setGeometry(x, y, w, h);
 }
 
 void contdiff::forceDraw()
@@ -455,7 +441,7 @@ void contdiff::resizewindows()
 		ds->setGeom(0, 80, 240, 240);
 	if (dm)
 	{
-		dm->setGeom(0, 80, 240, 240);
+		dm->setGeometry(0, 80, 240, 240);
 		dm->resizewindows(0, 0, 240, 240);
 	}
 }

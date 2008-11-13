@@ -47,7 +47,6 @@ banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 	minValue = maxValue = 0;
 	step = 1;
 	animationTimer = NULL;
-	memset(group,false,sizeof(group));
 	serNum = 1;
 }
 
@@ -606,28 +605,6 @@ void banner::getAnimationParams(int& per, int& num)
 char* banner::getAddress()
 {
 	return address;
-}
-
-bool* banner::getGroup()
-{
-	return group;
-}
-
-bool banner::isForMe(openwebnet * m)
-{
-	if (strcmp(m->Extract_chi(), "1"))
-		 return false;
-	if (!strcmp(m->Extract_dove(), getAddress()))
-		 return true;
-	// BAH
-	return (((!strcmp(m->Extract_dove(),"0")) ||
-			((strlen(m->Extract_dove())==1) && 
-			(!strncmp(m->Extract_dove(), getAddress(), 1))) ||
-			((!strncmp(m->Extract_dove(),"#",1)) && 
-			 // assuming that the following code stays inside group array,
-			 // the result is always false, since nobody ever sets anything
-			 // different in group
-			*(getGroup()+(atoi(m->Extract_dove()+1))-1))));
 }
 
 void banner::inizializza(bool forza)

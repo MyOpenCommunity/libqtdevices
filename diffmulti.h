@@ -60,14 +60,9 @@ public:
 	void setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
 	void setNumRighe(uchar);
 	void ripristinaRighe(void);
-	void forceDraw();
 	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 	void resizewindows(int x, int y, int w, int h);
 
-	/*!
-	 *  \brief Sets the geometry passing x,y,w,h.
-	 */
-	void setGeom(int,int,int,int);
 	void inizializza();
 
 public slots:
