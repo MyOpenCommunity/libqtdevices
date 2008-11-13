@@ -9,7 +9,6 @@
 ****************************************************************/
 
 #include "impostatime.h"
-#include "generic_functions.h" // getPressName
 #include "openclient.h"
 
 #include <QPixmap>

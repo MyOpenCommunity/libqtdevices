@@ -1,7 +1,7 @@
 #include "scenevocond.h"
 #include "device.h"
 #include "device_cache.h"
-#include "generic_functions.h" // getPressName, setCfgValue
+#include "generic_functions.h" // setCfgValue
 #include "btbutton.h"
 #include "timescript.h"
 #include "fontmanager.h"

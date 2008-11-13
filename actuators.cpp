@@ -12,7 +12,7 @@
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
 #include "btbutton.h"
-#include "generic_functions.h" // void getPressName(...)
+#include "generic_functions.h" // getPressName
 #include "fontmanager.h"
 
 #include <openwebnet.h> // class openwebnet

@@ -11,7 +11,7 @@
 #include "contrpage.h"
 #include "banner.h"
 #include "main.h"
-#include "generic_functions.h" // getPressName, getContrast, setContrast
+#include "generic_functions.h" // getContrast, setContrast
 #include "btbutton.h"
 
 #include <QWidget>

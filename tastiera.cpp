@@ -10,7 +10,6 @@
 
 
 #include "tastiera.h"
-#include "generic_functions.h" // getPressName
 #include "banner.h"
 #include "fontmanager.h"
 #include "btbutton.h"

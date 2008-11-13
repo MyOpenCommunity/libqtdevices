@@ -14,7 +14,6 @@
 #include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
-#include "generic_functions.h" // getPressName
 #include "btbutton.h"
 #include "fontmanager.h"
 

@@ -14,7 +14,6 @@
 
 
 #include "stopngo.h"
-#include "generic_functions.h" // getPressName
 #include "fontmanager.h"
 #include "device.h"
 #include "main.h"
