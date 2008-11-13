@@ -93,18 +93,19 @@ private slots:
 class attuatAutomInt : public bannOnOff
 {
 Q_OBJECT
-private:
-	char uprunning,dorunning;
-	char nomeFile1[MAX_PATH],nomeFile2[MAX_PATH],nomeFile3[MAX_PATH];
-	device *dev;
-	void inizializza(bool forza = false);
 public:
-	attuatAutomInt(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
+	attuatAutomInt(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(),
+		QString IconDisactive=QString());
+public slots:
+	virtual void status_changed(QList<device_status*>);
 private slots:
 	void analizzaUp();
 	void analizzaDown();
-public slots:
-	virtual void status_changed(QList<device_status*>);
+private:
+	char uprunning,dorunning;
+	QString icon_sx, icon_dx, icon_stop;
+	device *dev;
+	void inizializza(bool forza = false);
 };
 
 
@@ -124,21 +125,22 @@ public slots:
 class attuatAutomIntSic : public bannOnOff
 {
 Q_OBJECT
+public:
+	attuatAutomIntSic(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+		QString IconActive=QString(), QString IconDisactive=QString());
+public slots:
+	virtual void status_changed(QList<device_status*>);
 private:
-	char uprunning,dorunning;
-	char nomeFile1[MAX_PATH],nomeFile2[MAX_PATH],nomeFile3[MAX_PATH];
+	char uprunning ,dorunning;
+	QString icon_sx, icon_dx, icon_stop;
 	void inizializza(bool forza = false);
 	device *dev;
-public:
-	attuatAutomIntSic(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
 private slots:
 	void doPres();
 	void upPres();
 	void doRil();
 	void upRil();
 	void sendStop();
-public slots:
-	virtual void status_changed(QList<device_status*>);
 };
 
 

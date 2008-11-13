@@ -160,21 +160,23 @@ void grAttuatAutom::Disattiva()
  **attuatAutomInt
  ****************************************************************/
 
-attuatAutomInt::attuatAutomInt(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *StopIcon ,int period,int number)
+attuatAutomInt::attuatAutomInt(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
 	: bannOnOff(parent, name)
 {
-	memset(nomeFile1,'\000',sizeof(nomeFile1));
-	memset(nomeFile2,'\000',sizeof(nomeFile2));
-	strncpy(nomeFile1,icon,strstr(icon,".")-icon);
-	strncpy(nomeFile2,icon,strstr(icon,".")-icon);
-	strcat(nomeFile1,"o");
-	strcat(nomeFile2,"c");
-	strcat(nomeFile1,strstr(icon,"."));
-	strcat(nomeFile2,strstr(icon,"."));
-	SetIcons(IconaSx, IconaDx , icon,nomeFile1,nomeFile2);
-	strncpy(nomeFile3,StopIcon,sizeof(nomeFile3));
-	strncpy(nomeFile1,IconaSx,sizeof(nomeFile3));
-	strncpy(nomeFile2,IconaDx,sizeof(nomeFile3));
+
+	int pos = icon.indexOf(".");
+	if (pos != -1)
+	{
+		QString img1 = icon.left(pos) + "o" + icon.mid(pos);
+		QString img2 = icon.left(pos) + "c" + icon.mid(pos);
+		SetIcons(IconaSx, IconaDx, icon, img1, img2);
+	}
+	else
+		qWarning() << "Cannot find dot on image " << icon;
+
+	icon_sx = IconaSx;
+	icon_dx = IconaDx;
+	icon_stop = StopIcon;
 
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(analizzaUp()));
@@ -212,9 +214,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					impostaAttivo(0);
 					uprunning = dorunning = 0;
 					aggiorna = 1;
-					// TODO: trasformare nomeFile* in QString!
-					SetIcons(0, QString(nomeFile1));
-					SetIcons(1, QString(nomeFile2));
+					SetIcons(0, icon_sx);
+					SetIcons(1, icon_dx);
 					sxButton->setEnabled(1);
 					dxButton->setEnabled(1);
 				}
@@ -226,8 +227,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					dorunning = 0;
 					uprunning = 1;
 					aggiorna = 1;
-					SetIcons(0, QString(nomeFile3));
-					SetIcons(1, QString(nomeFile2));
+					SetIcons(0, icon_stop);
+					SetIcons(1, icon_dx);
 					dxButton->setDisabled(1);
 					sxButton->setEnabled(1);
 				}
@@ -239,8 +240,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					dorunning = 1;
 					uprunning = 0;
 					aggiorna = 1;
-					SetIcons(0, QString(nomeFile1));
-					SetIcons(1, QString(nomeFile3));
+					SetIcons(0, icon_sx);
+					SetIcons(1, icon_stop);
 					sxButton->setDisabled(1);
 					dxButton->setEnabled(1);
 				}
@@ -305,21 +306,22 @@ void attuatAutomInt::inizializza(bool forza)
  **attuatAutomIntSic
  ****************************************************************/
 
-attuatAutomIntSic::attuatAutomIntSic(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *StopIcon ,int period,int number)
-: bannOnOff(parent, name)
+attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
+	: bannOnOff(parent, name)
 {
-	memset(nomeFile1,'\000',sizeof(nomeFile1));
-	memset(nomeFile2,'\000',sizeof(nomeFile2));
-	strncpy(nomeFile1,icon,strstr(icon,".")-icon);
-	strncpy(nomeFile2,icon,strstr(icon,".")-icon);
-	strcat(nomeFile1,"o");
-	strcat(nomeFile2,"c");
-	strcat(nomeFile1,strstr(icon,"."));
-	strcat(nomeFile2,strstr(icon,"."));
-	SetIcons(IconaSx, IconaDx , icon,nomeFile1,nomeFile2);
-	strncpy(nomeFile3,StopIcon,sizeof(nomeFile3));
-	strncpy(nomeFile1,IconaSx,sizeof(nomeFile3));
-	strncpy(nomeFile2,IconaDx,sizeof(nomeFile3));
+	int pos = icon.indexOf(".");
+	if (pos != -1)
+	{
+		QString img1 = icon.left(pos) + "o" + icon.mid(pos);
+		QString img2 = icon.left(pos) + "c" + icon.mid(pos);
+		SetIcons(IconaSx, IconaDx, icon, img1, img2);
+	}
+	else
+		qWarning() << "Cannot find dot on image " << icon;
+
+	icon_sx = IconaSx;
+	icon_dx = IconaDx;
+	icon_stop = StopIcon;
 
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(upPres()));
@@ -358,8 +360,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					impostaAttivo(0);
 					uprunning=dorunning=0;
 					aggiorna=1;
-					SetIcons(0, QString(nomeFile1));
-					SetIcons(1, QString(nomeFile2));
+					SetIcons(0, icon_sx);
+					SetIcons(1, icon_dx);
 					sxButton->setEnabled(1);
 					dxButton->setEnabled(1);
 				}
@@ -371,8 +373,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					dorunning = 0;
 					uprunning = 1;
 					aggiorna = 1;
-					SetIcons(0, QString(nomeFile3));
-					SetIcons(1, QString(nomeFile2));
+					SetIcons(0, icon_stop);
+					SetIcons(1, icon_dx);
 					dxButton->setDisabled(1);
 					sxButton->setEnabled(1);
 				}
@@ -384,8 +386,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					dorunning = 1;
 					uprunning = 0;
 					aggiorna = 1;
-					SetIcons(0, QString(nomeFile1));
-					SetIcons(1, QString(nomeFile3));
+					SetIcons(0, icon_sx);
+					SetIcons(1, icon_stop);
 					sxButton->setDisabled(1);
 					dxButton->setEnabled(1);
 				}

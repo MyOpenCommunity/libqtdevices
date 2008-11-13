@@ -229,10 +229,10 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new carico(this, descrizione, (char*)indirizzo, IconaSx));
 		break;
 	case ATTUAT_AUTOM_INT:
-		elencoBanner.append(new attuatAutomInt(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame));
+		elencoBanner.append(new attuatAutomInt(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case ATTUAT_AUTOM_INT_SIC:
-		elencoBanner.append(new attuatAutomIntSic(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame));
+		elencoBanner.append(new attuatAutomIntSic(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case ATTUAT_AUTOM_TEMP:
 		elencoBanner.append(new attuatAutomTemp(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt));
