@@ -529,24 +529,21 @@ void BtMain::freeze(bool b)
 	}
 }
 
-void BtMain::setPwd(bool b, char* p)
+void BtMain::setPwd(bool b, QString p)
 {
-	// TODO: cambiare la password in un QString! E' necessario cambiare il segnale
-	// proveniente dalla classe impPassword (setitems) e che passa da sottomenu e
-	// xmlconfhandler (sarebbe anche il caso di semplificare se possibile questo giro)
 	pwdOn = b;
-	strcpy(pwd, p);
-	qDebug("BtMain nuova pwd = %s - %d", pwd, pwdOn);
+	pwd = p;
+	qDebug() << "BtMain nuova pwd = " << pwd << "-" << pwdOn;
 }
 
 void BtMain::testPwd(char* p)
 {
 	if (p)
 	{
-		if (strcmp(p, pwd))
+		if (p != pwd)
 		{
 			tasti->showTastiera();
-			qDebug("pwd ko %s doveva essere %s",p, pwd);
+			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
 		}
 		else
 		{

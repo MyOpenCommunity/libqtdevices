@@ -325,17 +325,17 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	case IMPIANTINTRUS:
 		elencoBanner.append(new impAnti(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
-	case SUONO:// iconaSx e' in realta' "value"
+	case SUONO: // iconaSx e' in realta' "value"
 		elencoBanner.append(new impBeep(this, descrizione, IconaSx, IconaDx, icon));
 		break;
-	case CONTRASTO:
-		elencoBanner.append(new impContr(this,descrizione , IconaSx,IconaDx));
+	case CONTRASTO: // iconaSx e' in realta' "value"
+		elencoBanner.append(new impContr(this, descrizione, IconaSx, IconaDx));
 		break;
 	case VERSIONE:
-		elencoBanner.append(new machVers(this,descrizione , (versio*)indirizzo, IconaSx));
+		elencoBanner.append(new machVers(this, descrizione, (versio*)indirizzo, IconaSx));
 		break;
 	case PROTEZIONE:
-		elencoBanner.append(new impPassword(this,descrizione ,IconaDx,icon,pressedIcon, IconaSx, periodo));
+		elencoBanner.append(new impPassword(this, descrizione, IconaDx, icon, pressedIcon, IconaSx, periodo));
 		break;
 	case MOD_SCENARI:
 		elencoBanner.append(new gesModScen(this, descrizione ,(char*)indirizzo, IconaSx,IconaDx,icon,pressedIcon, icoEx1, icoEx2, icoEx3));

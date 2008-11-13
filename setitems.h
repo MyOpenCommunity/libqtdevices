@@ -139,7 +139,7 @@ class impContr : public bannOnDx
 {
 Q_OBJECT
 public:
-	impContr(sottoMenu  *, const char *,char *,const char *);
+	impContr(sottoMenu *parent, const char *name, QString val, QString icon1);
 protected:
 	virtual void hideEvent(QHideEvent *event);
 
@@ -147,7 +147,7 @@ private slots:
 	void showContr();
 	void contrMade();
 private:
-	contrPage* contrasto;
+	contrPage *contrasto;
 };
 
 
@@ -155,7 +155,7 @@ class machVers : public bannOnDx
 {
 Q_OBJECT
 public:
-	machVers(sottoMenu  *, const char *,  versio*, const char*);
+	machVers(sottoMenu *parent, const char *name, versio *ver, QString icon1);
 private slots:
 	void tiempout();
 	void showVers();
@@ -172,20 +172,11 @@ private:
   \author Davide
   \date lug 2005
 */
-class impPassword : public bann2But 
+class impPassword : public bann2But
 {
 Q_OBJECT
 public:
-	impPassword (QWidget *,const char *, char* , char*, char*,char*,int);
-signals:
-/*!
-  \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
-*/
-	void activatePaswd(bool);
-/*!
-  \brief  Emitted when the password is changed so BtMain knows which password has to wait
-*/
-	void setPwd(bool,char*);
+	impPassword(QWidget *parent, const char *name, QString icon1, QString icon2, QString icon3, QString pwd, int attiva);
 public slots:
 /*!
   \brief  Changes the activation state
@@ -213,13 +204,21 @@ protected:
 	virtual void showEvent(QShowEvent *event);
 
 private:
-	char paswd[10];
 	bool active;
-	char iconOn[50];
-	char iconOff[50];
+	QString icon_on, icon_off;
+	QString password;
 	tastiera *tasti;
 	bool sb;
 	unsigned char starting;
+signals:
+/*!
+  \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
+*/
+	void activatePaswd(bool);
+/*!
+  \brief  Emitted when the password is changed so BtMain knows which password has to wait
+*/
+	void setPwd(bool, QString);
 };
 #endif //SET_ITEMS_H
 

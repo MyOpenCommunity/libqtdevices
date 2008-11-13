@@ -20,6 +20,7 @@
 #include "brightnesspage.h"
 
 #include <QTimer>
+#include <QDebug>
 
 #include <stdlib.h>
 
@@ -148,13 +149,13 @@ void impBeep::toggleBeep()
 }
 
 
-impContr::impContr(sottoMenu *parent, const char *name, char *val, const char *icon1)
+impContr::impContr(sottoMenu *parent, const char *name, QString val, QString icon1)
 	: bannOnDx(parent, name)
 {
 	contrasto = NULL;
-	SetIcons(icon1,1);
+	SetIcons(icon1, 1);
 	connect(this,SIGNAL(click()),this,SLOT(showContr()));
-	setContrast(atoi(val),false);
+	setContrast(val.toInt(), false);
 }
 
 void impContr::showContr()
@@ -181,10 +182,10 @@ void impContr::hideEvent(QHideEvent *event)
 }
 
 
-machVers::machVers(sottoMenu *parent, const char *name, versio *ver, const char *icon1)
+machVers::machVers(sottoMenu *parent, const char *name, versio *ver, QString icon1)
 	: bannOnDx(parent, name)
 {
-	SetIcons(icon1,1);
+	SetIcons(icon1, 1);
 	connect(this,SIGNAL(click()),this,SLOT(showVers()));
 	v = ver;
 }
@@ -205,15 +206,14 @@ void machVers::tiempout()
 }
 
 
-impPassword::impPassword(QWidget *parent, const char *name, char *icon1, char *icon2,char *icon3, char *password, int attiva)
+impPassword::impPassword(QWidget *parent, const char *name, QString icon1, QString icon2, QString icon3, QString pwd, int attiva)
 	: bann2But(parent, name)
 {
+	icon_on = icon1;
+	icon_off = icon2;
+	password = pwd;
 
-	strncpy(iconOn, icon1, sizeof(iconOn));
-	strncpy(iconOff, icon2, sizeof(iconOff));
-	strncpy(paswd, password, sizeof(paswd));
-
-	SetIcons(iconOff ,icon3);
+	SetIcons(icon_off, icon3);
 
 	tasti = new tastiera(NULL,"tast");
 	tasti->hide();
@@ -222,13 +222,15 @@ impPassword::impPassword(QWidget *parent, const char *name, char *icon1, char *i
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
 
 	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-	connect(this, SIGNAL(setPwd(bool,char*)), parentWidget(), SIGNAL(setPwd(bool,char*)));
+	// TODO: e' brutto fare una connessione con il parent.. se il banner viene messo in un'altra gerarchia non funziona
+	// piu' niente!
+	connect(this, SIGNAL(setPwd(bool, QString)), parentWidget(), SIGNAL(setPwd(bool, QString)));
 	if (attiva == 1)
 		active = true;
 	else
 		active = false;
 
-	emit setPwd(active,paswd);
+	emit setPwd(active, password);
 	starting = 1;
 }
 
@@ -245,19 +247,18 @@ void impPassword::toggleActivation()
 		active = true;
 		setCfgValue("enabled", "1", PROTEZIONE, getSerNum());
 	}
-	emit setPwd(active,paswd);
+	emit setPwd(active, password);
 	show();
 }
 
 void impPassword::showEvent(QShowEvent *event)
 {
-	// TODO: trasformare iconOn && iconOff in QString!
-	SetIcons(0, QString(active ? iconOn : iconOff));
+	SetIcons(0, active ? icon_on : icon_off);
 	Draw();
-	qDebug("passwd = %s %d", paswd, paswd[0]);
-	if ((paswd[0] == '\000') || starting)
+	qDebug() << "password = " << password;
+	if (password.isEmpty() || starting)
 	{
-		qDebug("passwd = ZERO");
+		qDebug("password = ZERO");
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
 		tasti->setMode(tastiera::CLEAN);
@@ -279,10 +280,10 @@ void impPassword::reShow1(char *c)
 		show();
 		return;
 	}
-	if (strcmp(paswd,c))
+	if (password != c)
 	{
 		show();
-		qDebug("password errata doveva essere %s",paswd);
+		qDebug() << "password errata doveva essere " << password;
 		sb = getBeep();
 		setBeep(true,false);
 		beep(1000);
@@ -304,9 +305,9 @@ void impPassword::reShow2(char *c)
 	{
 		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
-		strcpy(paswd,c);
-		setCfgValue("value", paswd, PROTEZIONE, getSerNum());
-		emit(setPwd(active,paswd));
+		password = c;
+		setCfgValue("value", password, PROTEZIONE, getSerNum());
+		emit setPwd(active, password);
 	}
 	show();
 	tasti->setMode(tastiera::HIDDEN);

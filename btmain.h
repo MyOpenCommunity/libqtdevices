@@ -56,7 +56,7 @@ private slots:
 	void hom();
 	void init();
 	void gesScrSav();
-	void setPwd(bool,char*);
+	void setPwd(bool, QString);
 	void testPwd(char*);
 	void testFiles();
 	void waitBeforeInit();
@@ -81,7 +81,7 @@ private:
 	QTimer *tempo1;
 	QTimer *tempo2;
 	QWidget *pagDefault;
-	char pwd[10];
+	QString pwd;
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
 	tastiera *tasti;
 	bool event_unfreeze;

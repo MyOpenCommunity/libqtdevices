@@ -990,7 +990,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 
 					case IMPOSTAZIONI:
 						*imposta = new sottoMenu(NULL,"IMPOSTA");
-						QObject::connect(*imposta,SIGNAL(setPwd(bool,char*)), BtM, SLOT (setPwd(bool,char*)));
+						QObject::connect(*imposta,SIGNAL(setPwd(bool, QString)), BtM, SLOT(setPwd(bool, QString)));
 						pageAct = *imposta;
 						break;
 
