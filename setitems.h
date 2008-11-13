@@ -56,8 +56,8 @@ class impostaSveglia : public bann2But
 {
 Q_OBJECT
 public:
-	impostaSveglia(QWidget *parent, const char *name, contdiff *diso, char *hour, char *minute, char *icon1,
-		char *icon2, int enabled, int freq, char *frame, int tipo);
+	impostaSveglia(QWidget *parent, const char *name, contdiff *diso, QString hour, QString minute, QString icon1,
+		QString icon2, int enabled, int freq, char *frame, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
 	*/
@@ -79,8 +79,7 @@ public slots:
 
 private:
 	sveglia* svegliolina;
-	char iconOn[50];
-	char iconOff[50];
+	QString icon_on, icon_off;
 
 private slots:
 	void forceDraw();
@@ -104,16 +103,16 @@ class calibration : public bannOnDx
 {
 Q_OBJECT
 public:
-	calibration(sottoMenu  *, const char *,const char *);
+	calibration(sottoMenu *parent, const char *name, QString icon);
 
 private slots:
 	void doCalib();
 	void fineCalib();
+private:
+	Calibrate* calib;
 signals:
 	void startCalib();
 	void endCalib();
-private:
-	Calibrate* calib;
 };
 
 

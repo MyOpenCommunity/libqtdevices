@@ -41,15 +41,14 @@ void setDataOra::hideEvent(QHideEvent *event)
 }
 
 
-impostaSveglia::impostaSveglia(QWidget *parent, const char *name, contdiff *diso, char *hour, char *minute, char *icon1,
-	char *icon2, int enabled, int freq, char *frame, int tipo)
+impostaSveglia::impostaSveglia(QWidget *parent, const char *name, contdiff *diso, QString hour, QString minute, QString icon1,
+	QString icon2, int enabled, int freq, char *frame, int tipo)
 	: bann2But(parent, name)
 {
-
-	strcpy(iconOn, icon1);
-	strcpy(iconOff, icon2);
-	SetIcons(iconOff ,ICON_INFO);
-	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, hour, minute);
+	icon_on = icon1;
+	icon_off = icon2;
+	SetIcons(icon_off, ICON_INFO);
+	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, frame, hour.toInt(), minute.toInt());
 	svegliolina->hide();
 	setAbil(enabled == 1);
 	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
@@ -80,8 +79,7 @@ void impostaSveglia::toggleAbil()
 
 void impostaSveglia::forceDraw()
 {
-	// TODO: trasformare iconOn && iconOff in QString!
-	SetIcons(0, QString(svegliolina->isActive() ? iconOn : iconOff));
+	SetIcons(0, svegliolina->isActive() ? icon_on : icon_off);
 	Draw();
 	svegliolina->setSerNum(getSerNum());
 }
@@ -92,7 +90,7 @@ void impostaSveglia::inizializza()
 }
 
 
-calibration::calibration(sottoMenu *parent,const char *name, const char *icon)
+calibration::calibration(sottoMenu *parent, const char *name, QString icon)
 	: bannOnDx(parent, name)
 {
 	SetIcons(ICON_INFO,1);

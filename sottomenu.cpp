@@ -304,7 +304,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		break;
 	case CALIBRAZIONE:
 		{
-			calibration *c = new calibration(this,descrizione ,IconaSx);
+			calibration *c = new calibration(this,descrizione, IconaSx);
 			elencoBanner.append(c);
 			connect(c, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
 			connect(c, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
@@ -323,7 +323,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new zonaAnti(this, qdescrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case IMPIANTINTRUS:
-		elencoBanner.append(new impAnti(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+		elencoBanner.append(new impAnti(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case SUONO:
 		elencoBanner.append(new impBeep(this,descrizione , IconaSx,IconaDx, icon));

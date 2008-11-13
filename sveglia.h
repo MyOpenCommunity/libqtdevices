@@ -38,7 +38,7 @@ class  sveglia : public QWidget
 {
 Q_OBJECT
 public:
-    sveglia(QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, contdiff *diso=NULL, char *frame=NULL, char *hour="12", char *minute="0");
+    sveglia(QWidget *parent=0, const char *name=0, uchar freq=1, uchar t=0, contdiff *diso=NULL, char *frame=NULL, int hour=12, int minute=0);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.

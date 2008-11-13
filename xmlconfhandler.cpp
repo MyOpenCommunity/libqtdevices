@@ -1077,6 +1077,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					else if ((CurTagL5.startsWith("cimg")) || (!CurTagL5.compare("value")) ||
 						(!CurTagL5.compare("hour")) || (!CurTagL5.compare("minute")))
 					{
+						// TODO: ore e minuti che ci fanno nella lista delle immagini???? TOGLIERE!!!
 						qDebug() << "FOR PAGEITEM:IMG=" << qValue;
 						QString sValue = qValue;
 						if  (CurTagL5.startsWith("cimg"))
