@@ -178,12 +178,11 @@ void amplificatore::inizializza(bool forza)
  **gruppo di amplificatori
  ****************************************************************/
 
-grAmplificatori::grAmplificatori(QWidget *parent,const char *name,QList<QString *> *indirizzi,char* IconaSx,
-		char* IconaDx, char *iconsx ,char* icondx,int period,int number)
-	: bannRegolaz(parent, name),
-	elencoDisp(indirizzi)
+grAmplificatori::grAmplificatori(QWidget *parent,const char *name,QList<QString *> *indirizzi,QString IconaSx,
+	QString IconaDx, QString iconsx, QString icondx)
+	: bannRegolaz(parent, name), elencoDisp(indirizzi)
 {
-	SetIcons(IconaSx,IconaDx ,icondx,iconsx);
+	SetIcons(IconaSx, IconaDx, icondx, iconsx);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));

@@ -65,7 +65,7 @@ class grAmplificatori : public bannRegolaz
 {
 Q_OBJECT
 public:
-	grAmplificatori(QWidget *parent=0, const char *name=NULL ,QList<QString *> *indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
+	grAmplificatori(QWidget *parent=0, const char *name=NULL ,QList<QString *> *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
 	~grAmplificatori();
 	void inizializza(bool forza = false);
 private slots:

@@ -137,23 +137,12 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString *
 	QByteArray buf_descr = qdescrizione.toAscii();
 	const char * descrizione = buf_descr.constData();
 
-	QByteArray buf_icona_sx = safeAt(icon_names, 0)->toAscii();
-	char *IconaSx = buf_icona_sx.data();
-
-	QByteArray buf_icona_dx = safeAt(icon_names, 1)->toAscii();
-	char *IconaDx = buf_icona_dx.data();
-
-	QByteArray buf_icon = safeAt(icon_names, 2)->toAscii();
-	char *icon = buf_icon.data();
-
-	QByteArray buf_pressed_icon = safeAt(icon_names, 3)->toAscii();
-	char *pressedIcon = buf_pressed_icon.data();
-
 	qDebug("sottoMenu::addItem(lista), lt = (%p)", lt);
 	switch (tipo)
 	{
 	case GR_AMPLIFICATORI:
-		elencoBanner.append(new grAmplificatori(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon));
+		elencoBanner.append(new grAmplificatori(this,descrizione, indirizzo, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
+			*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
 		break;
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
