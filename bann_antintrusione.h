@@ -36,6 +36,7 @@ class device;
  */
 class zonaAnti : public bannOnIcons
 {
+using banner::SetIcons; // import the set of overload of SetIcons from banner
 Q_OBJECT
 private:
 	void SetIcons();

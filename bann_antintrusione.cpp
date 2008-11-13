@@ -42,9 +42,9 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 	getZoneName(iconzona, pippo, indirizzo, sizeof(pippo));
 	qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
 
-	banner::SetIcons(1, sparzIName);
-	banner::SetIcons(2, pippo);
-	banner::SetIcons(3, IconDisactive);
+	SetIcons(1, sparzIName);
+	SetIcons(2, pippo);
+	SetIcons(3, IconDisactive);
 
 	if (BannerText)
 	{
@@ -73,13 +73,13 @@ void zonaAnti::SetIcons()
 {
 	if (isActive())
 	{
-		banner::SetIcons(1, sparzIName);
-		banner::SetIcons(3, zonaAttiva);
+		SetIcons(1, sparzIName);
+		SetIcons(3, zonaAttiva);
 	}
 	else
 	{
-		banner::SetIcons(1, parzIName);
-		banner::SetIcons(3, zonaNonAttiva);
+		SetIcons(1, parzIName);
+		SetIcons(3, zonaNonAttiva);
 	}
 }
 
