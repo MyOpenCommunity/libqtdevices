@@ -261,15 +261,12 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	if (!breakIcon.isNull())
 	{
 		QString break_root_of_name = getNameRoot(breakIcon, ".png");
-	
 		nomeFile = QString("%1sx.png").arg(break_root_of_name);
 		Icon[44] = icons_library.getIcon(nomeFile);
 		qDebug() << "New Icon[" << 44 << "] <- " << nomeFile;
-
 		nomeFile = QString("%1dx.png").arg(break_root_of_name);
 		Icon[45] = icons_library.getIcon(nomeFile);
 		qDebug() << "New Icon[" << 45 << "] <- " << nomeFile;
-		
 	}
 }
 
