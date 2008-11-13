@@ -205,28 +205,28 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	switch (tipo)
 	{
 	case ATTUAT_AUTOM:
-		elencoBanner.append(new attuatAutom(this,descrizione ,(char*)indirizzo, IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame));
+		elencoBanner.append(new attuatAutom(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame));
 		break;
 	case DIMMER:
-		elencoBanner.append(new dimmer(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon, icoEx1));
+		elencoBanner.append(new dimmer(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;
 	case DIMMER_100:
-		elencoBanner.append(new dimmer100(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon, icoEx1, par3, par4));
+		elencoBanner.append(new dimmer100(this, descrizione, (char*)indirizzo, IconaSx, IconaDx ,icon, pressedIcon, icoEx1, par3, par4));
 		break;
 	case SCENARIO:
-		elencoBanner.append(new scenario(this,descrizione ,(char*)indirizzo,IconaSx));
+		elencoBanner.append(new scenario(this, descrizione, (char*)indirizzo, IconaSx));
 		break;
 	case GR_ATTUAT_AUTOM:
-		elencoBanner.append(new grAttuatAutom(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,periodo,numFrame));
+		elencoBanner.append(new grAttuatAutom(this, descrizione, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
 		break;
 	case GR_DIMMER:
-		elencoBanner.append(new grDimmer(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon));
+		elencoBanner.append(new grDimmer(this, descrizione, indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case GR_DIMMER100:
-		elencoBanner.append(new grDimmer100(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,pressedIcon, periodo, numFrame, sstart, sstop));
+		elencoBanner.append(new grDimmer100(this, descrizione, indirizzo, IconaSx, IconaDx, icon, pressedIcon, sstart, sstop));
 		break;
 	case CARICO:
-		elencoBanner.append(new carico(this,descrizione ,(char*)indirizzo,IconaSx));
+		elencoBanner.append(new carico(this, descrizione, (char*)indirizzo, IconaSx));
 		break;
 	case ATTUAT_AUTOM_INT:
 		elencoBanner.append(new attuatAutomInt(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame));

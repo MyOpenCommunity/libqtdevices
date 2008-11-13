@@ -39,7 +39,7 @@ class scenario : public bannOnSx
 {
 Q_OBJECT
 public:
-	scenario(sottoMenu  *, const char *, char *, char *);
+	scenario(sottoMenu *parent, const char *name, char *indirizzo, QString IconaSx);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();

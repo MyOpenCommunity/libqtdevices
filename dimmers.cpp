@@ -25,13 +25,13 @@
  **dimmer
  ****************************************************************/
 
-dimmer::dimmer(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon,char* breakIcon, bool to_be_connect)
+dimmer::dimmer(QWidget *parent,const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect)
 	: bannRegolaz(parent, name)
 {
 
 	setRange(20, 100);
 	setStep(10);
-	SetIcons(IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0);
+	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, breakIcon, false);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
@@ -245,8 +245,8 @@ void dimmer::inizializza(bool forza)
  **dimmer 100 livelli
  ****************************************************************/
 
-dimmer100::dimmer100(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,
-	char *inactiveIcon,char* breakIcon,int sstart, int sstop)
+dimmer100::dimmer100(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+	QString inactiveIcon, QString breakIcon, int sstart, int sstop)
 	: dimmer(parent, name, indirizzo, IconaSx, IconaDx, icon,inactiveIcon, breakIcon, false)
 {
 	qDebug("costruttore dimmer100, name = %s", name);
@@ -257,12 +257,8 @@ dimmer100::dimmer100(QWidget *parent,const char *name,char* indirizzo,char* Icon
 	setRange(5,100);
 	setStep(5);
 	setValue(0);
-	qDebug("IconaSx = %s", IconaSx);
-	qDebug("IconaDx = %s", IconaDx);
-	qDebug("icon = %s", icon);
-	qDebug("inactiveIcon = %s", inactiveIcon);
-	qDebug("breakIcon = %s", breakIcon);
-	SetIcons(IconaSx,IconaDx,icon, inactiveIcon,breakIcon,(char)0);
+	// TODO: non lo fa gia' dimmer? Perche' c'e' questa duplicazione??
+	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, breakIcon, false);
 	dev = btouch_device_cache.get_dimmer100(getAddress());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
@@ -436,10 +432,10 @@ void dimmer100::inizializza(bool forza)
  **gruppo di dimmer
  ****************************************************************/
 
-grDimmer::grDimmer(QWidget *parent,const char *name,void *indirizzi, char* IconaSx,char* IconaDx,char *iconsx ,char* icondx,
-	int period,int number) : bannRegolaz(parent, name)
+grDimmer::grDimmer(QWidget *parent, const char *name, void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx) :
+	bannRegolaz(parent, name)
 {
-	SetIcons(IconaSx, IconaDx ,icondx,iconsx);
+	SetIcons(IconaSx, IconaDx, icondx, iconsx);
 	setAddress(indirizzi);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
@@ -491,8 +487,8 @@ void grDimmer::inizializza(bool forza){}
  **gruppo di dimmer100
  ****************************************************************/
 
-grDimmer100::grDimmer100(QWidget *parent,const char *name,void *indirizzi, char* IconaSx,char* IconaDx,char *iconsx ,char* icondx,int period,
-	int number, QList<int>sstart, QList<int>sstop) : grDimmer(parent, name, indirizzi, IconaSx, IconaDx, iconsx,icondx, period, number)
+grDimmer100::grDimmer100(QWidget *parent, const char *name,void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx,
+	QList<int>sstart, QList<int>sstop) : grDimmer(parent, name, indirizzi, IconaSx, IconaDx, iconsx, icondx)
 {
 	qDebug("grDimmer100::grDimmer100()");
 	qDebug("sstart[0] = %d", sstart[0]);

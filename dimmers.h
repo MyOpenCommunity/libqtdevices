@@ -37,7 +37,7 @@ protected:
 	char gruppi[4];
 	device *dev;
 public:
-	dimmer(QWidget *, const char *, char *, char *, char *, char *, char *, char *, bool to_be_connect = true);
+	dimmer(QWidget *parent,const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect=true);
 	virtual void inizializza(bool forza = false);
 	void Draw();
 private slots:
@@ -76,7 +76,9 @@ private:
 	int last_on_lev;
 	int speed;
 public:
-	dimmer100(QWidget *, const char *, char *, char *, char *, char *, char *, char *, int, int);
+
+	dimmer100(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+		QString inactiveIcon, QString breakIcon, int sstart, int sstop);
 	void inizializza(bool forza=false);
 	void status_changed(QList<device_status*>);
 private slots:
@@ -102,13 +104,13 @@ private slots:
 class grDimmer : public bannRegolaz
 {
 Q_OBJECT
-protected:
-	QList<QString*> elencoDisp;
 public:
-	grDimmer(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
+	grDimmer(QWidget *parent=0, const char *name=NULL, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 	void setAddress(void*);
 	void inizializza(bool forza = false);
+protected:
+	QList<QString*> elencoDisp;
 private slots:
 	virtual void Attiva();
 	virtual void Disattiva();
@@ -138,8 +140,8 @@ private:
 	QList<int> soft_start;
 	QList<int> soft_stop;
 public:
-	grDimmer100(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0,
-		QList<int> sstart = QList<int>(), QList<int> sstop = QList<int>());
+	grDimmer100(QWidget *parent=0, const char *name=NULL ,void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(),QString Iconsx=QString(),
+		QString Icondx=QString(), QList<int> sstart = QList<int>(), QList<int> sstop = QList<int>());
 private slots:
 	void Attiva();
 	void Disattiva();

@@ -39,7 +39,7 @@ private:
 	device *dev;
 	void inizializza(bool forza=false);
 public:
-	attuatAutom(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
+	attuatAutom(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(), QString IconDisactive=QString(),int periodo=0,int numFrame=0);
 public slots:
 	void status_changed(QList<device_status*>);
 private slots:
@@ -69,7 +69,7 @@ private:
 	QList<QString*> elencoDisp;
 	device *dev;
 public:
-	grAttuatAutom(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
+	grAttuatAutom(QWidget *parent=0, const char *name=NULL ,void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Icon=QString(), int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
 	void Attiva();

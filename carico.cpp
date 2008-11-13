@@ -18,11 +18,11 @@
  **carico
  ****************************************************************/
 
-carico::carico(sottoMenu *parent,const char *name,char* indirizzo ,char* IconaSx)
-: bannOnSx(parent, name)
+carico::carico(sottoMenu *parent, const char *name, char *indirizzo, QString IconaSx)
+	: bannOnSx(parent, name)
 {
 
-	SetIcons(IconaSx,1);
+	SetIcons(IconaSx, 1);
 	setAddress(indirizzo);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));

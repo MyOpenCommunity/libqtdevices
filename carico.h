@@ -29,7 +29,7 @@ class carico : public bannOnSx
 {
 Q_OBJECT
 public:
-	carico(sottoMenu *, const char * ,char*, char*);
+	carico(sottoMenu *parent, const char *name, char *indirizzo, QString IconaSx);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();

@@ -28,10 +28,10 @@
  **attuatAutom
  ****************************************************************/
 
-attuatAutom::attuatAutom(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *pressedIcon ,int period,int number)
+attuatAutom::attuatAutom(QWidget *parent,const char *name,char* indirizzo,QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number)
 	: bannOnOff(parent, name)
 {
-	SetIcons(IconaSx,IconaDx ,icon, pressedIcon,period ,number);
+	SetIcons(IconaSx, IconaDx, icon, pressedIcon, period, number);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
@@ -118,10 +118,10 @@ void attuatAutom::inizializza(bool forza)
  **gruppo di attuatAutom
  ****************************************************************/
 
-grAttuatAutom::grAttuatAutom(QWidget *parent,const char *name,void *indirizzi, char* IconaDx,char* IconaSx,char *icon ,int period,int number)
+grAttuatAutom::grAttuatAutom(QWidget *parent, const char *name, void *indirizzi, QString IconaDx, QString IconaSx, QString icon, int period, int number)
 	: bannOnOff(parent, name)
 {
-	SetIcons(IconaDx, IconaSx,NULL,icon,period ,number);
+	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
 	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
 	elencoDisp = *((QList<QString*>*)indirizzi);
 	dev = btouch_device_cache.get_device(getAddress());
