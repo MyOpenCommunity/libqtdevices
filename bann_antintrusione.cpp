@@ -29,8 +29,8 @@
  **zonaAnti
  ****************************************************************/
 
-zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char *iconzona, char *IconDisactive,
-	char *IconActive, char *iconSparz, int period, int number) : bannOnIcons(parent, 0)
+zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, QString iconzona, QString IconDisactive,
+	QString IconActive) : bannOnIcons(parent, 0)
 {
 	char pippo[MAX_PATH];
 
@@ -39,8 +39,9 @@ zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, char 
 	// Mail agresta 22/06
 	parzIName = IMG_PATH "btnparzializza.png";
 	sparzIName = IMG_PATH "btnsparzializza.png";
-	getZoneName(iconzona, pippo, indirizzo, sizeof(pippo));
-	qDebug("icons %s %s %s", pippo, parzIName, sparzIName);
+	//mah...
+	QByteArray buffer = iconzona.toAscii();
+	getZoneName(buffer.data(), pippo, indirizzo, sizeof(pippo));
 
 	SetIcons(1, sparzIName);
 	SetIcons(2, pippo);
@@ -198,18 +199,17 @@ void zonaAnti::inizializza(bool forza)
  ****************************************************************/
 
 
-impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo,char* IconOn, char* IconOff, char* IconInfo, char* IconActive, int,int )
+impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
 	: bann2butLab(parent, name)
 {
-	char pippo[MAX_PATH];
-	memset(pippo,'\000',sizeof(pippo));
 	tasti = NULL;
-	if (IconActive)
-		strncpy(pippo,IconActive,strstr(IconActive,".")-IconActive-3);
+	QString disactive_icon_path;
+	if (!IconActive.isNull())
+		disactive_icon_path = IconActive.left(IconActive.indexOf('.') - 3);
 
-	strcat(pippo,"dis");
-	strcat(pippo,strstr(IconActive,"."));
-	SetIcons(IconInfo, IconOff, pippo, IconOn, IconActive);
+	disactive_icon_path += "dis" + IconActive.mid(IconActive.indexOf('.'));
+
+	SetIcons(IconInfo, IconOff, disactive_icon_path, IconOn, IconActive);
 	send_part_msg = false;
 	inserting = false;
 	memset(le_zone, 0, sizeof(le_zone));
