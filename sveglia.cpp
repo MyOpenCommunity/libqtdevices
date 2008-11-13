@@ -37,7 +37,7 @@
 extern BtMain *BTouch;
 
 
-sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff *diso, char *f, char *h, char *m)
+sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff *diso, char *f, char *hour, char *minute)
 	: QWidget(parent)
 {
 	bannNavigazione = new bannFrecce(this,"bannerfrecce",9);
@@ -95,7 +95,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	testiChoice[3]->setText(tr("sat-sun"));
 
 	oraSveglia = new QDateTime();
-	oraSveglia->setTime(QTime(atoi(h),atoi(m)));
+	oraSveglia->setTime(QTime(atoi(hour),atoi(minute)));
 	oraSveglia->setDate(QDate::currentDate());
 	dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
 	dataOra->setGeometry(40,140,160,50);
