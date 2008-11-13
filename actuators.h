@@ -229,11 +229,11 @@ protected slots:
 class attuatAutomTempNuovoF : public bannOn2scr
 {
 Q_OBJECT
-private:
-	device *dev;
-	void inizializza(bool forza=false);
-	void SetIcons(char *, char *, char *);
-	void Draw();
+public:
+	attuatAutomTempNuovoF(QWidget *parent=0, const char *name=NULL ,char *indirizzo=NULL, QString IconaCentroSx=QString(),
+		QString IconaCentroDx=QString(), QString IconDx=QString(), QString t=QString());
+public slots:
+	void status_changed(QList<device_status*>);
 protected:
 	// TODO: rendere tempo una qstring!
 	char tempo[20];
@@ -244,13 +244,15 @@ protected:
 	bool temp_nota;
 	bool update_ok;
 	int  tentativi_update;
-public:
-	attuatAutomTempNuovoF(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaCentroSx=NULL,char* IconaCentroDx=NULL,char*IconDx=NULL, QString tempo=NULL);
 protected slots:
 	void Attiva();
 	void update();
-public slots:
-	void status_changed(QList<device_status*>);
+private:
+	device *dev;
+	void inizializza(bool forza=false);
+	 // This function mask the other overload of banner::SetIcons. I don't care about it.
+	void SetIcons(QString i1, QString i2, QString i3);
+	void Draw();
 };
 
 

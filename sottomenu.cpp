@@ -235,15 +235,15 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new attuatAutomIntSic(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case ATTUAT_AUTOM_TEMP:
-		elencoBanner.append(new attuatAutomTemp(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt));
+		elencoBanner.append(new attuatAutomTemp(this, descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt));
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		elencoBanner.append(new attuatAutomTempNuovoN(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame, lt));
+		elencoBanner.append(new attuatAutomTempNuovoN(this, descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, lt));
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_F:
 		if (!lt->count())
 			lt->append(new QString(""));
-		elencoBanner.append(new attuatAutomTempNuovoF(this,descrizione, (char*)indirizzo,IconaSx, IconaDx, icon, *lt->at(0)));
+		elencoBanner.append(new attuatAutomTempNuovoF(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, *lt->at(0)));
 		break;
 	case GR_ATTUAT_INT:
 		elencoBanner.append(new grAttuatInt(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,periodo,numFrame));

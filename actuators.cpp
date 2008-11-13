@@ -783,10 +783,10 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 
 #define NTIMEICONS 9
 
-attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent,const char *name,char* indirizzo,char* IconaCentroSx,char* IconaCentroDx,char *IconaDx, QString t)
+attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, const char *name, char *indirizzo, QString IconaCentroSx, QString IconaCentroDx, QString IconaDx, QString t)
 	: bannOn2scr(parent, name)
 {
-	attuatAutomTempNuovoF::SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
+	SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
 	setAddress(indirizzo);
 	SetSecondaryTextU("????");
 
@@ -994,48 +994,50 @@ void attuatAutomTempNuovoF::chiedi_stato()
 	emit richStato(msg_open.frame_open);
 }
 
-void attuatAutomTempNuovoF::SetIcons(char *i1, char *i2, char *i3)
+void attuatAutomTempNuovoF::SetIcons(QString i1, QString i2, QString i3)
 {
 	qDebug("attuatAutomTempNuovoF::SetIcons");
-	char tmp[MAX_PATH], tmp1[MAX_PATH];
-	char *ptr;
+
+	// TODO: verificare se e' possibile utilizzare qualcuna delle SetIcons o
+	// perlomeno la icon_dispatcher!
 	if (!Icon[0])
 		Icon[0] = new QPixmap();
-	strcpy(tmp1, i2);
-	ptr = strtok(tmp1, ".");
-	sprintf(tmp, "%soff.png", ptr);
-	Icon[0]->load(tmp);
-	qDebug("Icon[0] <- %s", tmp);
+
+	int pos = i2.indexOf(".");
+	if (pos != -1)
+		Icon[0]->load(i2.left(pos) + "off.png");
+	else
+		qWarning() << "Cannot find dot on image " << i2;
 
 	if (!Icon[1])
 		Icon[1] = new QPixmap();
-	strcpy(tmp1, i2);
-	ptr = strtok(tmp1, ".");
-	sprintf(tmp, "%son.png", ptr);
-	Icon[1]->load(tmp);
-	qDebug("Icon[1] <- %s", tmp);
+
+	if (pos != -1)
+		Icon[1]->load(i2.left(pos) + "on.png");
+	else
+		qWarning() << "Cannot find dot on image " << i2;
 
 	if (!Icon[2])
 		Icon[2] = new QPixmap();
 	Icon[2]->load(i3);
-	qDebug("Icon[2] <- %s", i3);
 	QString pressIconName = getPressName(i3);
 	if (QFile::exists(pressIconName))
 	{
 		if (!pressIcon[2])
 			pressIcon[2] = new QPixmap();
 		pressIcon[2]->load(pressIconName);
-		qDebug() << "pressIcon[2] <- " << pressIconName;
 	}
+
 	for (int i = 0; i < NTIMEICONS; i++)
 	{
 		if (!Icon[3 + i])
 			Icon[3 + i] = new QPixmap();
-		strcpy(tmp1, i1);
-		ptr = strtok(tmp1, ".");
-		sprintf(tmp, "%s%d.png", ptr, i);
-		Icon[3 + i]->load(tmp);	
-		qDebug("Icon[%d] <- %s", 3+i, tmp);
+
+		pos = i1.indexOf(".");
+		if (pos != -1)
+			Icon[0]->load(i1.left(pos) + QString::number(i) + ".png");
+		else
+			qWarning() << "Cannot find dot on image " << i2;
 	}
 }
 
