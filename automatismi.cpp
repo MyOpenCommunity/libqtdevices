@@ -18,11 +18,11 @@
  ** automCancAttuatVC
  ****************************************************************/
 
-automCancAttuatVC::automCancAttuatVC(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx)
+automCancAttuatVC::automCancAttuatVC(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx)
 	: bannButIcon(parent, name)
 {
-	qDebug("automCancAttuatVC::automCancAttuatVC() : %s %s", IconaSx, IconaDx);
-	SetIcons(IconaSx, NULL, IconaDx);
+	qDebug("automCancAttuatVC::automCancAttuatVC()");
+	SetIcons(IconaSx, QString(), IconaDx);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache
@@ -47,11 +47,11 @@ void automCancAttuatVC::Attiva()
  ** automCancAttuatIll
  ****************************************************************/
 
-automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char* indirizzo, char* IconaSx, char* IconaDx, QString t)
+automCancAttuatIll::automCancAttuatIll(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString t)
 	: bannButIcon(parent, name)
 {
-	qDebug("automCancAttuatIll::automCancAttuatIll() :%s %s", IconaSx, IconaDx);
-	SetIcons(IconaSx, NULL, IconaDx);
+	qDebug("automCancAttuatIll::automCancAttuatIll()");
+	SetIcons(IconaSx, QString(), IconaDx);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache

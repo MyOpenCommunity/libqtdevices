@@ -271,18 +271,19 @@ private:
 class grAttuatInt : public bann3But
 {
 Q_OBJECT
-private:
-	QList<QString*> elencoDisp;
-	device *dev;
-	void inizializza(bool forza = false);
-	void sendFrame(char *msg);
 public:
-	grAttuatInt(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Icon=NULL,int periodo=0,int numFrame=0);
+	grAttuatInt(QWidget *parent=0, const char *name=NULL, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+		QString Icon=QString(), int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 public slots:
 	void Alza();
 	void Abbassa();
 	void Ferma();
+private:
+	QList<QString*> elencoDisp;
+	device *dev;
+	void inizializza(bool forza = false);
+	void sendFrame(char *msg);
 };
 
 
@@ -301,15 +302,16 @@ public slots:
 class attuatPuls : public bannPuls
 {
 Q_OBJECT
+public:
+	attuatPuls(QWidget *parent=0, const char *name=NULL, char *indirizzi=NULL, QString IconaSx=QString(), QString IconActive=QString(),
+		char tipo=0, int periodo=0, int numFrame=0);
+private slots:
+	void Attiva();
+	void Disattiva();
 private:
 	char type;
 	device *dev;
 	void inizializza(bool forza = false);
-public:
-	attuatPuls(QWidget *parent=0, const char *name=NULL ,char*indirizzi=NULL,char* IconaSx=NULL,char*IconActive=NULL,char tipo=0,int periodo=0,int numFrame=0);
-private slots:
-	void Attiva();
-	void Disattiva();
 };
 
 #endif

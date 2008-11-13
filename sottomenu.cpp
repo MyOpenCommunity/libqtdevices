@@ -246,22 +246,22 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new attuatAutomTempNuovoF(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, *lt->at(0)));
 		break;
 	case GR_ATTUAT_INT:
-		elencoBanner.append(new grAttuatInt(this,descrizione ,indirizzo,IconaSx, IconaDx,icon,periodo,numFrame));
+		elencoBanner.append(new grAttuatInt(this, descrizione, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
 		break;
 	case ATTUAT_AUTOM_PULS:
-		elencoBanner.append(new attuatPuls(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,AUTOMAZ,periodo,numFrame));
+		elencoBanner.append(new attuatPuls(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, AUTOMAZ, periodo, numFrame));
 		break;
 	case ATTUAT_VCT_LS:
-		elencoBanner.append(new attuatPuls(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,VCT_LS,periodo,numFrame));
+		elencoBanner.append(new attuatPuls(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, VCT_LS, periodo, numFrame));
 		break;
 	case ATTUAT_VCT_SERR:
-		elencoBanner.append(new attuatPuls(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,VCT_SERR,periodo,numFrame));
+		elencoBanner.append(new attuatPuls(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, VCT_SERR, periodo, numFrame));
 		break;
 	case AUTOM_CANC_ATTUAT_VC:
-		elencoBanner.append(new automCancAttuatVC(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx));
+		elencoBanner.append(new automCancAttuatVC(this, descrizione, (char*)indirizzo, IconaSx, IconaDx));
 		break;
 	case AUTOM_CANC_ATTUAT_ILL:
-		elencoBanner.append(new automCancAttuatIll(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx, *lt->at(0)));
+		elencoBanner.append(new automCancAttuatIll(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, *lt->at(0)));
 		break;
 	case SET_DATA_ORA:
 		elencoBanner.append(new setDataOra(this,descrizione));

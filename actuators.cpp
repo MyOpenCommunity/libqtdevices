@@ -1104,10 +1104,10 @@ void attuatAutomTempNuovoF::Draw()
  **gruppo di attuatInt
  ****************************************************************/
 
-grAttuatInt::grAttuatInt(QWidget *parent,const char *name,void *indirizzi,char* IconaSx,char* IconaDx, char *icon ,int period,int number)
+grAttuatInt::grAttuatInt(QWidget *parent, const char *name, void *indirizzi, QString IconaSx, QString IconaDx, QString icon, int period, int number)
 	: bann3But(parent, name)
 {
-	SetIcons(IconaDx,IconaSx ,NULL,icon,period ,number);
+	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
 	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
 	elencoDisp = *((QList<QString*>*)indirizzi);
 	dev = btouch_device_cache.get_device(getAddress());
@@ -1152,10 +1152,10 @@ void grAttuatInt::inizializza(bool forza)
  **attuatPuls
  ****************************************************************/
 
-attuatPuls::attuatPuls(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,/*char* IconaDx,*/char *icon ,char tipo ,int period,int number)
+attuatPuls::attuatPuls(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString icon, char tipo, int period, int number)
 : bannPuls(parent, name)
 {
-	SetIcons(IconaSx,NULL,icon,NULL,period ,number);
+	SetIcons(IconaSx, QString(), icon, QString(), period,number);
 	setAddress(indirizzo);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
