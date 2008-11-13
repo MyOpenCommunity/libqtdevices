@@ -115,10 +115,9 @@ void BannerSorgenteMultimedia::inizializza(bool forza)
  * Banner Sorgente Multimediale Multicanale
  */
 BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
-	const char *icon_onoff, const char *icon_cycle, const char *icon_settings) :
-	BannerSorgenteMultimedia(parent, name, indirizzo, where, 3)
+	QString icon_onoff, QString icon_cycle, QString icon_settings) : BannerSorgenteMultimedia(parent, name, indirizzo, where, 3)
 {
-	SetIcons(icon_onoff, NULL, icon_cycle, icon_settings);
+	SetIcons(icon_onoff, QString(), icon_cycle, icon_settings);
 
 	indirizzo_semplice = QString(indirizzo);
 	indirizzi_ambienti.clear();

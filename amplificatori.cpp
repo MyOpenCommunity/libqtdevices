@@ -24,13 +24,12 @@
  **amplificatore
  ****************************************************************/
 
-amplificatore::amplificatore(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon)
+amplificatore::amplificatore(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
 	: bannRegolaz(parent, name)
 {
 	qDebug("amplificatore::amplificatore()");
 	setRange(1,9);
 	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, true);
-	qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));

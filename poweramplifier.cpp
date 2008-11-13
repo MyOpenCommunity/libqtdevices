@@ -28,13 +28,13 @@ static const char *IMG_LESS = IMG_PATH "less.png";
  ** PowerAmplifier
  ****************************************************************/
 
-PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* onIcon, char* offIcon, char *onAmpl, char *offAmpl, char* settingIcon)
+PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char *indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon)
 	: bannRegolaz(parent, name)
 {
 	qDebug("PowerAmplifier::PowerAmplifier()");
 	setRange(1,9);
 	setValue(1);
-	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl,(char)1);
+	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl, true);
 	setAddress(indirizzo);
 	dev = static_cast<poweramplifier_device*>(btouch_device_cache.get_poweramplifier_device(getAddress()));
 	connect(dev, SIGNAL(status_changed(QMap<status_key_t, stat_var>)),
@@ -67,8 +67,7 @@ void PowerAmplifier::showSettings()
 
 void PowerAmplifier::toggleStatus()
 {
-	QByteArray buf_icon = status ? off_icon.toAscii() : on_icon.toAscii();
-	SetIcons(1, buf_icon.constData());
+	SetIcons(1, status ? off_icon : on_icon);
 	status = !status;
 	Draw();
 }

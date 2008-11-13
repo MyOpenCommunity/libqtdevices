@@ -264,10 +264,10 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new automCancAttuatIll(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, *lt->at(0)));
 		break;
 	case SET_DATA_ORA:
-		elencoBanner.append(new setDataOra(this,descrizione));
+		elencoBanner.append(new setDataOra(this, descrizione));
 		break;
 	case POWER_AMPLIFIER:
-		elencoBanner.append(new PowerAmplifier(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,icoEx1));
+		elencoBanner.append(new PowerAmplifier(this, descrizione,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;
 	case POWER_AMPLIFIER_PRESET:
 		elencoBanner.append(new PowerAmplifierPreset(this));
@@ -285,10 +285,10 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new PowerAmplifierLoud(this));
 		break;
 	case AMPLIFICATORE:
-		elencoBanner.append(new amplificatore(this,descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon));
+		elencoBanner.append(new amplificatore(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case SORGENTE_AUX:
-		elencoBanner.append(new sorgente_aux(this,descrizione ,(char*)indirizzo));
+		elencoBanner.append(new sorgente_aux(this, descrizione, (char*)indirizzo));
 		break;
 	case SORGENTE_MULTIM:/// New Multimedia Audio Source.  NOTE:numFrame parametere name is not significative:it's the (cut down) where address
 		elencoBanner.append(new BannerSorgenteMultimedia(this, descrizione, (char *)indirizzo, numFrame, 4));
@@ -297,10 +297,10 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new BannerSorgenteMultimediaMC(this, descrizione, (char *)indirizzo, numFrame, IconaSx, IconaDx, icon));
 		break;
 	case SORGENTE_RADIO:
-		elencoBanner.append(new banradio(this,descrizione ,(char*)indirizzo));
+		elencoBanner.append(new banradio(this, descrizione, (char*)indirizzo));
 		break;
 	case SET_SVEGLIA:
-		elencoBanner.append(new impostaSveglia(this,descrizione ,(contdiff*)indirizzo, IconaSx,IconaDx, icon, pressedIcon, periodo, numFrame,icoEx1,par3));
+		elencoBanner.append(new impostaSveglia(this, descrizione, (contdiff*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, icoEx1, par3));
 		break;
 	case CALIBRAZIONE:
 		{

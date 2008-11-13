@@ -37,7 +37,7 @@ private:
 	char value;
 	device *dev;
 public:
-	amplificatore(QWidget *, const char *,char*,char*,char*,char*,char*);
+	amplificatore(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon);
 	void inizializza(bool forza = false);
 private slots:
 	void Accendi();

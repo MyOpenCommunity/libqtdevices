@@ -50,21 +50,21 @@ class BannerSorgenteMultimediaMC : public BannerSorgenteMultimedia
 Q_OBJECT
 public:
 	BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
-		const char *icon_onoff, const char *icon_cycle, const char *icon_settings);
+		QString icon_onoff, QString icon_cycle, QString icon_settings);
 	void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
 	void attiva();
 	void addAmb(char *);
 	void ambChanged(const QString &, bool, char *);
-signals:
-	void active(int, int);
 
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
+signals:
+	void active(int, int);
 };
 
 #endif
