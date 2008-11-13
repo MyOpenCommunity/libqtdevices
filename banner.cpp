@@ -27,6 +27,7 @@
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;
 
+// TODO: rimuovere il name dai parametri!!
 banner::banner(QWidget *parent,const char *name) : QWidget(parent)
 {
 	BannerIcon = NULL;
