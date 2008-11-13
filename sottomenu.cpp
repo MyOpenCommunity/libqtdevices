@@ -175,31 +175,16 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		QList<int> sstart, QList<int> sstop,
 		QString txt1, QString txt2, QString txt3)
 {
-	// TODO: cambiare i costruttori delle classi in modo che prendano come
-	// argomento delle QString!
 	QByteArray buf_descr = qdescrizione.toAscii();
 	const char * descrizione = buf_descr.constData();
 
-	QByteArray buf_icona_sx = safeAt(icon_names, 0)->toAscii();
-	char *IconaSx = buf_icona_sx.data();
-
-	QByteArray buf_icona_dx = safeAt(icon_names, 1)->toAscii();
-	char *IconaDx = buf_icona_dx.data();
-
-	QByteArray buf_icon = safeAt(icon_names, 2)->toAscii();
-	char *icon = buf_icon.data();
-
-	QByteArray buf_pressed_icon = safeAt(icon_names, 3)->toAscii();
-	char *pressedIcon = buf_pressed_icon.data();
-
-	QByteArray buf_ico_ex1 = safeAt(icon_names, 4)->toAscii();
-	char *icoEx1 = buf_ico_ex1.data();
-
-	QByteArray buf_ico_ex2 = safeAt(icon_names, 5)->toAscii();
-	char *icoEx2 = buf_ico_ex2.data();
-	
-	QByteArray buf_ico_ex3 = safeAt(icon_names, 6)->toAscii();
-	char *icoEx3 = buf_ico_ex3.data();
+	QString IconaSx = *safeAt(icon_names, 0);
+	QString IconaDx = *safeAt(icon_names, 1);
+	QString icon = *safeAt(icon_names, 2);
+	QString pressedIcon = *safeAt(icon_names, 3);
+	QString icoEx1 = *safeAt(icon_names, 4);
+	QString icoEx2 = *safeAt(icon_names, 5);
+	QString icoEx3 = *safeAt(icon_names, 6);
 
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo)
