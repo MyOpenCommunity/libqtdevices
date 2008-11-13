@@ -127,12 +127,11 @@ class impBeep : public bannOnSx
 {
 Q_OBJECT
 public:
-	impBeep(sottoMenu  *, const char *,char *,const char *,const char *);
+	impBeep(sottoMenu *parent, const char *name, QString val, QString icon1, QString icon2);
 public slots:
 	void toggleBeep();
 private:
-	char iconOn[50];
-	char iconOff[50];
+	QString icon_on, icon_off;
 };
 
 

@@ -325,8 +325,8 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	case IMPIANTINTRUS:
 		elencoBanner.append(new impAnti(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
-	case SUONO:
-		elencoBanner.append(new impBeep(this,descrizione , IconaSx,IconaDx, icon));
+	case SUONO:// iconaSx e' in realta' "value"
+		elencoBanner.append(new impBeep(this, descrizione, IconaSx, IconaDx, icon));
 		break;
 	case CONTRASTO:
 		elencoBanner.append(new impContr(this,descrizione , IconaSx,IconaDx));

@@ -114,37 +114,34 @@ void calibration::fineCalib()
 }
 
 
-impBeep::impBeep(sottoMenu *parent, const char *name, char *val, const char *icon1, const char *icon2)
+impBeep::impBeep(sottoMenu *parent, const char *name, QString val, QString icon1, QString icon2)
 	: bannOnSx(parent, name)
 {
-	strncpy(iconOn, icon1, sizeof(iconOn));
-	strncpy(iconOff, icon2, sizeof(iconOff));
+	icon_on = icon1;
+	icon_off = icon2;
 	connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));
-	//TODO: che ci fanno tutte queste chiamate alla seticons??
-	SetIcons(iconOff,1);
-	SetIcons(iconOn,1);
-	bool on = !strcmp(val, "1");
+	SetIcons(0, icon_on);
+
+	bool on = (val.toInt() == 1);
 	setBeep(on, false);
-	// TODO: trasformare iconOn && iconOff in QString!
 	if (on)
-		SetIcons(1, QString(iconOn));
+		SetIcons(1, icon_on);
 	else
-		SetIcons(0, QString(iconOff));
+		SetIcons(0, icon_off);
 	Draw();
 }
 
 void impBeep::toggleBeep()
 {
-	// TODO: trasformare iconOn && iconOff in QString!
 	if (getBeep())
 	{
 		setBeep(false, true);
-		SetIcons(0, QString(iconOff));
+		SetIcons(0, icon_off);
 	}
 	else
 	{
 		setBeep(true, true);
-		SetIcons(0, QString(iconOn));
+		SetIcons(0, icon_on);
 		beep();
 	}
 	Draw();

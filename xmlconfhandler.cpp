@@ -1078,6 +1078,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						(!CurTagL5.compare("hour")) || (!CurTagL5.compare("minute")))
 					{
 						// TODO: ore e minuti che ci fanno nella lista delle immagini???? TOGLIERE!!!
+						// TODO: anche il value e' nella lista delle immagini!
 						qDebug() << "FOR PAGEITEM:IMG=" << qValue;
 						QString sValue = qValue;
 						if  (CurTagL5.startsWith("cimg"))
