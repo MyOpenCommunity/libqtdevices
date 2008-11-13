@@ -42,12 +42,12 @@ private:
 	void SetIcons();
 	char *parzIName;
 	char *sparzIName;
-	char *zonaAttiva;
-	char *zonaNonAttiva;
+	QString zonaAttiva;
+	QString zonaNonAttiva;
 	bool already_changed;
 	device *dev;
 public:
-	zonaAnti(QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL,char*IconActive=NULL,char*IconDisactive=NULL,char* iconParz=NULL, char *iconSparz=NULL, int periodo=0,int numFrame=0);
+	zonaAnti(QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL, QString iconzona = QString(), QString IconDisactive = QString(), QString IconActive = QString());
 	void inizializza(bool forza = false);
 	void Draw();
 public slots:
@@ -87,7 +87,7 @@ private:
 	device *dev;
 
 public:
-	impAnti(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*IconActive=NULL,char*IconDisactive=NULL,int periodo=0,int numFrame=0);
+	impAnti(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL, QString IconOn = QString(), QString IconOff = QString(), QString IconInfo = QString(), QString IconActive = QString());
 private slots:
 	void inizializza(bool forza = false);
 	void Inserisci();

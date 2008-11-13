@@ -320,7 +320,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	TERMO_PROBE=56,             Not-controlled probe
 	*/
 	case ZONANTINTRUS:
-		elencoBanner.append(new zonaAnti(this, qdescrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+		elencoBanner.append(new zonaAnti(this, qdescrizione, (char*)indirizzo, IconaSx, IconaDx, icon));
 		break;
 	case IMPIANTINTRUS:
 		elencoBanner.append(new impAnti(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
