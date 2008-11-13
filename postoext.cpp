@@ -30,7 +30,8 @@ call_notifier *postoExt::unknown_notifier = NULL;
 extern BtMain *BTouch;
 
 
-postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, QString _light, QString _key, QString _unknown) : bann4tasLab(parent, name)
+postoExt::postoExt(QWidget *parent, const char *name, QString Icona1, QString Icona2, QString Icona3, QString Icona4, char *_where,
+	QString _light, QString _key, QString _unknown) : bann4tasLab(parent, name)
 {
 	where = _where;
 	descr = name;
@@ -38,11 +39,10 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 	key = (_key == "1");
 	unknown = (_unknown == "1");
 	qDebug() << "postoExt::postoExt(), unknown = "  << _unknown;
-	qDebug("I1 = %s, I2 = %s, I3 = %s, I4 = %s", Icona1, Icona2, Icona3, Icona4);
 
 	qDebug("light = %d, key = %d, unknown = %d", light, key, unknown);
 	qDebug("descr = %s, where = %s", name, _where);
-	SetIcons (Icona2, Icona3, "", "", Icona1);
+	SetIcons(Icona2, Icona3, "", "", Icona1);
 	if (key)
 	{
 		key_icon = Icona2;

@@ -64,17 +64,17 @@ protected:
 class sorgenteMultiAux : public sorgente_aux
 {
 Q_OBJECT
+public:
+	sorgenteMultiAux(QWidget *parent=0, const char *name=NULL, char *indirizzo="", QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), char *ambdescr="");
+	void addAmb(char *);
+public slots:
+	void attiva();
+	void ambChanged(const QString &, bool, char *);
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
-public:
-	sorgenteMultiAux(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambdescr="");
-	void addAmb(char *);
-public slots:
-	void attiva();
-	void ambChanged(const QString &, bool, char *);
 signals:
 	void active(int, int);
 };

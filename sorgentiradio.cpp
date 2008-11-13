@@ -359,12 +359,12 @@ void banradio::inizializza(bool forza)
 /*****************************************************************
  ** Sorgente radio diffusione sonora multicanale
  ****************************************************************/
-sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, const char *name, char* indirizzo, char* Icona1, char* Icona2, char *Icona3, char *ambDescr)
+sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, const char *name, char* indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr)
 	: banradio(parent, name, indirizzo, 3, ambDescr)
 {
-	qDebug("sorgenteMultiRadio::sorgenteMultiRadio() : %s %s %s", Icona1, Icona2, Icona3);
+	qDebug("sorgenteMultiRadio::sorgenteMultiRadio()");
 	
-	SetIcons(Icona1, Icona2, NULL, Icona3);
+	SetIcons(Icona1, Icona2, QString(), Icona3);
 	
 	connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
 	indirizzo_semplice = QString(indirizzo);

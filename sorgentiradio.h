@@ -83,7 +83,7 @@ class sorgenteMultiRadio : public banradio
 {
 Q_OBJECT
 public:
-	sorgenteMultiRadio(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambDescr="");
+	sorgenteMultiRadio(QWidget *parent=0, const char *name=NULL, char *indirizzo="", QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), char *ambDescr="");
 
 public slots:
 	void attiva();
@@ -101,7 +101,6 @@ private:
 
 signals:
 	void active(int, int);
-
 };
 
 #endif

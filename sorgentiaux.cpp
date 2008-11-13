@@ -96,11 +96,11 @@ void sorgente_aux::hideEvent(QHideEvent *event)
  ** Sorgente aux diffusione sonora multicanale
  ****************************************************************/
 
-sorgenteMultiAux::sorgenteMultiAux(QWidget *parent,const char *name,char* indirizzo,char* Icona1,char* Icona2, char *Icona3, char *ambdescr)
+sorgenteMultiAux::sorgenteMultiAux(QWidget *parent, const char *name, char *indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambdescr)
 	: sorgente_aux(parent, name, indirizzo, false, ambdescr)
 {
-	qDebug("sorgenteMultiAux::sorgenteMultiAux() : %s %s %s", Icona1, Icona2, Icona3);
-	SetIcons(Icona1, Icona2, NULL, Icona3);
+	qDebug("sorgenteMultiAux::sorgenteMultiAux()");
+	SetIcons(Icona1, Icona2, QString(), Icona3);
 	indirizzo_semplice = QString(indirizzo);
 	indirizzi_ambienti.clear();
 	connect(this, SIGNAL(dxClick()), myAux, SLOT(showAux()));
