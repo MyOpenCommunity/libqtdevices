@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!--ATTENZIONE: il file xml NON deve essere indentato, NON ha più di sei livelli (radice compresa) -->
+<!--ATTENZIONE: il file xml NON deve essere indentato, NON ha piï¿½ di sei livelli (radice compresa) -->
 <!--e non deve avere carattere a capo a fine file-->
-<!--In tutti i campi where che seguono nella versione attuale il livello L4 è gestito -->
+<!--In tutti i campi where che seguono nella versione attuale il livello L4 ï¿½ gestito -->
 <configuratore>
   <!-- ver_xml: versione del file di configurazione -->
   <ver_xml>4.0.4</ver_xml>
@@ -41,7 +41,7 @@
     </generale>
     <ethernet>
       <lan>
-        <!--Modalità di indirizzamento IP: 0=non definito, 1=DHCP, 2=Ipfisso-->
+        <!--Modalitï¿½ di indirizzamento IP: 0=non definito, 1=DHCP, 2=Ipfisso-->
         <mode>2</mode>
         <!--URL numerica:192.168.1.xx dove xx=50 + numero progressivo del touch sull'impianto -->
         <addressip>192.168.1.50</addressip>
@@ -76,6 +76,10 @@
     <sicurezza>
       <!--min length:5; max length: 9; solo digit-->
       <pwd_open>12345</pwd_open>
+	  <abilita_ip>
+		  <range_1>192.168.1-10.1-254</range_1>
+		  <range_2>10.3.3.1-254</range_2>
+	  </abilita_ip>
     </sicurezza>
     <servizi>
       <!--valori ammessi 0-1-->
@@ -91,7 +95,7 @@
   <displaypages>
     <!-- orientamento del display 0/1 -->
     <orientation>0</orientation>
-    <!-- pagina di default che viene caricata dopo un periodo di inattività -->
+    <!-- pagina di default che viene caricata dopo un periodo di inattivitï¿½ -->
     <homepage>
       <!-- isdefined: 0 pagina di default disabilitata, 1 pagina di default abilitata -->
       <isdefined>1</isdefined>
@@ -100,7 +104,7 @@
       <!-- cid: id della pagina da caricare come default per il configuratore -->
       <cid>2</cid>
     </homepage>
-    <!-- pagemenu: pagina col menù; delle applicazioni presenti, composta da N item: item1..itemN -->
+    <!-- pagemenu: pagina col menï¿½; delle applicazioni presenti, composta da N item: item1..itemN -->
     <pagemenu>
       <!-- identificativo della pagina, vedi tab. skinObj -->
       <id>0</id>
@@ -338,7 +342,7 @@
         <what>2</what>
         <!-- indirizzo della centralina (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>11</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -355,7 +359,7 @@
         <what>14</what>
         <!-- indirizzo del modulo scenari (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>12</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -383,7 +387,7 @@
         <descr>DIMMER 10</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>21</where>
         <!-- lista immagini. N.B. le immagini cimg1 e cimg2 presentano solo la 'base' del nome (escludendo -->
         <!-- il valore del livello di accensione) -->
@@ -402,7 +406,7 @@
         <descr>ATTUATORE</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>22</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -423,7 +427,7 @@
         <!--		  		 generale 0(#4#01..99) -->
         <!--				 ambienti 1..9(#4#01..99) -->
         <!-- 				 gruppo #1..#9(#4#01..99) -->
-        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
         <element1>
           <where>#1</where>
         </element1>
@@ -446,7 +450,7 @@
         <!-- 				 generale 0(#4#01..99) -->
         <!--				 ambienti 1..9(#4#01..99) -->
         <!--				 gruppo #1..#9(#4#01..99) -->
-        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
         <element1>
           <where>1</where>
         </element1>
@@ -464,7 +468,7 @@
         <descr>LUCE TEMPORIZZATA A 6 TEMPI</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>37</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -479,7 +483,7 @@
         <cid>207</cid>
         <!-- descr: contiene il testo da mostrare nell'item -->
         <descr>LUCE SCALE</descr>
-        <!--Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 2 (montante pubblico) -->
+        <!--Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 2 (montante pubblico) -->
         <where>4038</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -494,7 +498,7 @@
         <descr>DIMMER 100</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 1..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>38</where>
         <!--Tempo di softstart:valori ammessi: 1-254-->
         <softstart>25</softstart>
@@ -516,7 +520,7 @@
         <descr>LUCE TEMPORIZZATA A N TEMPI</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 1..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>38</where>
         <!--Tempo prefissato 1 (hh*mm*ss): ce ne possono essere fino n-->
         <time1>5*25*7</time1>
@@ -537,7 +541,7 @@
         <descr>LUCE TEMPORIZZATA A T FISSO</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 1..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>38</where>
         <!--Tempo fisso (hh*mm*ss) -->
         <time>5*25*7</time>
@@ -559,7 +563,7 @@
         <!--		  		 generale 0(#4#01..99) -->
         <!--				 ambienti 1..9(#4#01..99) -->
         <!-- 				 gruppo #1..#9(#4#01..99) -->
-        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
         <element1>
           <where>#1</where>
           <softstart>25</softstart>
@@ -589,9 +593,9 @@
         <descr>SERRANDA</descr>
         <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>42</where>
-        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <!-- mode: modalitï¿½ pressione, 0 normale, 1 sicura -->
         <mode>1</mode>
         <!-- lista immagini -->
         <cimg1>arrup.png</cimg1>
@@ -609,9 +613,9 @@
         <descr>TENDA</descr>
         <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>43</where>
-        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <!-- mode: modalitï¿½ pressione, 0 normale, 1 sicura -->
         <mode>1</mode>
         <!-- lista immagini -->
         <cimg1>btnopen.png</cimg1>
@@ -629,9 +633,9 @@
         <descr>BASCULANTE</descr>
         <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>44</where>
-        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <!-- mode: modalitï¿½ pressione, 0 normale, 1 sicura -->
         <mode>0</mode>
         <!-- lista immagini -->
         <cimg1>arrup.png</cimg1>
@@ -649,9 +653,9 @@
         <descr>CANCELLO</descr>
         <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>45</where>
-        <!-- mode: modalità pressione, 0 normale, 1 sicura -->
+        <!-- mode: modalitï¿½ pressione, 0 normale, 1 sicura -->
         <mode>1</mode>
         <!-- lista immagini -->
         <cimg1>btnopen.png</cimg1>
@@ -668,7 +672,7 @@
         <descr>VENTILATORE</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>23</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -685,7 +689,7 @@
         <descr>IRRIGAZIONE</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>24</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -702,7 +706,7 @@
         <descr>PRESA COMANDATA</descr>
         <!-- indirizzo dell'attuatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>25</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -719,7 +723,7 @@
         <!-- descr: contiene il testo da mostrare nell'item -->
         <descr>SERRATURA</descr>
         <!-- indirizzo della funzione automazione-->
-        <!--mode = 0 ->  where rappresenta a e pl, (where # level # interface - where+lev+interface open).  Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <!--mode = 0 ->  where rappresenta a e pl, (where # level # interface - where+lev+interface open).  Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
         <!--mode = 1 -> where rappresenta p1 e p2. Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo-->
         <where>4046</where>
         <!-- mode: sistema dell'attuatore, 0 automazione, 1 videocitofonico -->
@@ -740,7 +744,7 @@
         <!-- Valori ammessi: generale 0(#4#01..99) -->
         <!--				 ambienti 1..9(#4#01..99) -->
         <!--				 gruppo #1..#9(#4#01..99) -->
-        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <!-- ho indicato tra parentesi valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
         <element1>
           <where>2</where>
         </element1>
@@ -759,7 +763,7 @@
         <descr>CANCELLO </descr>
         <!-- indirizzo del movimentatore (a e pl # level # interface - where+lev+interface open). -->
         <!-- Valori ammessi: 11..99(#4#01..09), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 4 -->
+        <!-- se l'oggetto ï¿½ su livello SCS 4 -->
         <where>45</where>
         <!--time: valore di temporizzazione: 0*0*1 oppure 0*0*2-->
         <time>0*0*2</time>
@@ -777,7 +781,7 @@
         <descr>CANCELLO </descr>
         <!-- indirizzo del movimentatore (P e N # level  - where+lev). -->
         <!-- Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo -->
-        <!-- se l'oggetto è su livello SCS 2 (montante pubblico) -->
+        <!-- se l'oggetto ï¿½ su livello SCS 2 (montante pubblico) -->
         <where>4045#2</where>
         <!-- lista immagini -->
         <cimg1>btnon.png</cimg1>
@@ -797,7 +801,7 @@
         <cid>400</cid>
         <!-- descr: contiene il testo da mostrare nell'item -->
         <descr>CARICO</descr>
-        <!-- priorità carico (where OPEN). Valori ammessi: #1...#8 -->
+        <!-- prioritï¿½ carico (where OPEN). Valori ammessi: #1...#8 -->
         <where>#1</where>
         <!-- lista immagini -->
         <cimg1>btnbigon.png</cimg1>
@@ -953,7 +957,7 @@
           <cid>506</cid>
           <!-- descr: contiene il testo da mostrare nell'item -->
           <descr>ZONA NON CONTROLLATA (Slave)</descr>
-          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where è formattato nel seguente modo: [SLAVE][ZaZb])-->
+          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where ï¿½ formattato nel seguente modo: [SLAVE][ZaZb])-->
           <where>1</where>
           <!-- lista immagini -->
           <cimg1>btnmin.png</cimg1>
@@ -971,7 +975,7 @@
       <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
       <cid>3</cid>
       <descr>antifurto</descr>
-      <!-- Questo item (id 301) sarà, quanto meno nella versione 1.0 sempre presente poiché identifica -->
+      <!-- Questo item (id 301) sarï¿½, quanto meno nella versione 1.0 sempre presente poichï¿½ identifica -->
       <!-- l'inserimento/disinserimento del sistema antifurto -->
       <item1>
         <!-- identifica la tipologia di item, vedi tab. skinObj -->
@@ -1089,9 +1093,9 @@
           <minute>30</minute>
           <cimg1>orologio.png</cimg1>
           <cimg2>btnok.png</cimg2>
-          <!--cimg3: arrlf.png se non c'è condizione device, arrrg.png se c'è condizione device-->
+          <!--cimg3: arrlf.png se non c'ï¿½ condizione device, arrrg.png se c'ï¿½ condizione device-->
           <cimg3>arrrg.png</cimg3>
-          <!--cimg4: vuota se non c'è condizione device, arrlf.png se c'è condizione device-->
+          <!--cimg4: vuota se non c'ï¿½ condizione device, arrlf.png se c'ï¿½ condizione device-->
           <cimg4>arrlf.png</cimg4>
         </condH>
         <!--condDevice: condizione legata allo stato di un dispositivo SCS-->
@@ -1101,18 +1105,18 @@
           <!--descrizione del parametro rilevato dal dispositivo-->
           <descr>Luce salotto</descr>
           <!--where: posizione del dispositivo-->
-          <!-- Se value=1 o 2: where è l'indirizzo dell'attuatore Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
-          <!--Se value=3: where è l'indirizzo della zona controllata. Valori ammessi: 01..99-->
-          <!--Se value=4: where è l'indirizzo dell'amplificatore. Valori ammessi: 01..99 (a pf)  -->
-          <!-- Se value=6: where è l'indirizzo dell'attuatore Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
-          <!--Se value=7: where è l'indirizzo della sonda esterna. Valori ammessi: 1..9-->
-          <!--Se value=8: where è l'indirizzo della zona non controllata. Valori ammessi: 01..99 se Master, [Slave][ZaZb] se slave.-->
-          <!--Se value=9: where è l'indirizzo dell'ausiliario. Valori ammessi: 1..9.-->
+          <!-- Se value=1 o 2: where ï¿½ l'indirizzo dell'attuatore Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
+          <!--Se value=3: where ï¿½ l'indirizzo della zona controllata. Valori ammessi: 01..99-->
+          <!--Se value=4: where ï¿½ l'indirizzo dell'amplificatore. Valori ammessi: 01..99 (a pf)  -->
+          <!-- Se value=6: where ï¿½ l'indirizzo dell'attuatore Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
+          <!--Se value=7: where ï¿½ l'indirizzo della sonda esterna. Valori ammessi: 1..9-->
+          <!--Se value=8: where ï¿½ l'indirizzo della zona non controllata. Valori ammessi: 01..99 se Master, [Slave][ZaZb] se slave.-->
+          <!--Se value=9: where ï¿½ l'indirizzo dell'ausiliario. Valori ammessi: 1..9.-->
           <where>30</where>
           <!--trigger: valore del parametro espresso in termini OPEN, dipende da value-->
           <!--Se value=1: valori ammessi: 0 (OFF), 1 (ON)-->
           <!--Se value=2: valori ammessi: 2(20%),3,4,5,6,7,8,9,10, 0(OFF), 2-4(ON dal 20% al 40%), 5-7(ON dal 50% al 70%), 8-10(ON dal 70% al 100%)-->
-          <!--Se value=3, 7 o 8: valore in OPEN che esprime una temperatura in °C. es: 0215=+21,5°C, 1030=-3°C (discrezione di mezzo grado)-->
+          <!--Se value=3, 7 o 8: valore in OPEN che esprime una temperatura in ï¿½C. es: 0215=+21,5ï¿½C, 1030=-3ï¿½C (discrezione di mezzo grado)-->
           <!--Se value=4:valori ammessi: 1..31, 0-31(ON), -1(OFF), 0-6(ON dal 0% al 20%), 7-12(ON dal 21% al 40%), 13-22(ON dal 41% al 70%), 23-31(ON dal 41% al 100%)-->
           <!--Se value=6: valori ammessi: 2(20%),3,4,5,6,7,8,9,10, 0(OFF), 1-20(ON dal 1% al 20%), 21-40(ON dal 21% al 40%), 41-70(ON dal 41% al 70%), 71-100(ON dal 71% al 100%)-->
           <!--Se value=9: valori ammessi: 1 (ON), 0 (OFF)-->
@@ -1156,7 +1160,7 @@
           <!--Presenza trigger-value: 1=presente, 0=non presente-->
           <value>1</value>
           <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
-          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4-->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4-->
           <open>*15*02*56##</open>
           <cimg1>btnscevab.png</cimg1>
         </unable>
@@ -1164,7 +1168,7 @@
           <!--Presenza trigger-value: 1=presente, 0=non presente (legato al value di unable)-->
           <value>1</value>
           <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
-          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4-->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4-->
           <open>*15*02*56##</open>
           <cimg1>btnscevdis.png</cimg1>
         </disable>
@@ -1172,7 +1176,7 @@
           <!--Presenza trigger-value: 1=presente, 0=non presente-->
           <value>1</value>
           <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
-          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4-->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4-->
           <open>*15*02*56##</open>
           <cimg1>btnstart.png</cimg1>
         </start>
@@ -1180,7 +1184,7 @@
           <!--Presenza trigger-value: 1=presente, 0=non presente-->
           <value>1</value>
           <!--open: trigger in forma comando open *15*pulsante*indirizzo comando##-->
-          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+          <!--Valori ammessi per l'indirizzo coamndo: 01..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
           <open>*15*02*56##</open>
           <cimg1>btnstopred.png</cimg1>
         </stop>
@@ -1242,7 +1246,7 @@
           <cid>602</cid>
           <!-- descr: contiene il testo da mostrare nell'item -->
           <descr>AMBIENTE</descr>
-          <!--where: #n, dove n è l'indirizzo di ambiente-->
+          <!--where: #n, dove n ï¿½ l'indirizzo di ambiente-->
           <where1>#1</where1>
           <!--lista immagini che compongono l'item insieme amplificatori-->
           <cimg1>btnon.png</cimg1>
@@ -1466,7 +1470,7 @@
           <cid>506</cid>
           <!-- descr: contiene il testo da mostrare nell'item -->
           <descr>ZONA NON CONTROLLATA (Slave)</descr>
-          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where è formattato nel seguente modo: [SLAVE][ZaZb])-->
+          <!-- indirizzo della sonda. Valori possibili: 101-999 (dove il where ï¿½ formattato nel seguente modo: [SLAVE][ZaZb])-->
           <where>1</where>
           <!-- lista immagini -->
           <cimg1>btnmin.png</cimg1>
@@ -1499,7 +1503,7 @@
         <who>1</who>
         <!-- what: contiene il what OPEN -->
         <what>0</what>
-        <!-- where: contiene il where OPEN, Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto è su livello SCS 4 -->
+        <!-- where: contiene il where OPEN, Valori ammessi: 11..99(#4#01..99), tra parentesi ho valori opzionali presenti solo se l'oggetto ï¿½ su livello SCS 4 -->
         <where>33</where>
         <!-- lista immagini -->
         <cimg1>btnspecial.png</cimg1>
@@ -1546,7 +1550,7 @@
         <!-- descr: contiene il nome descrittivo del posto esterno-->
         <descr>PORTONE</descr>
         <!--Valori ammessi: 4000..4095(#2), tra parentesi ho valori opzionali presenti solo-->
-        <!--se l'oggetto è su livello SCS 2 (montante pubblico) -->
+        <!--se l'oggetto ï¿½ su livello SCS 2 (montante pubblico) -->
         <where>4033</where>
         <!--light: 0= luce scale non presente, 1=luce scale presente-->
         <light>1</light>
@@ -1561,7 +1565,7 @@
     </pagevct>
     <page0>
       <!-- identificativo della pagina, vedi tab. skinObj -->
-      <!-- nella seguente pagina sarà possibile avere un solo item per gli -->
+      <!-- nella seguente pagina sarï¿½ possibile avere un solo item per gli -->
       <!-- id 25, 14, 28, 21, 26 e 27 mentre tre al massimo per gli id 20 -->
       <id>8</id>
       <!-- identificativo della pagina per il configuratore, vedi tab. skinObj -->
@@ -1589,7 +1593,7 @@
         <descr>SVEGLIA</descr>
         <!-- type: contiene il tipo di sveglia: 0 buzzer, 1 diffusione sonora, 2 schedulazione -->
         <type>0</type>
-        <!-- enabled: la sveglia è attiva 1,  disattivata 0-->
+        <!-- enabled: la sveglia ï¿½ attiva 1,  disattivata 0-->
         <enabled>0</enabled>
         <!-- alarmSet: codice per il giorno in cui la sveglia deve suonare -->
         <!-- 0 una volta, 1 sempre, 2 lun-ven, 3 sab-dom -->
@@ -1668,19 +1672,19 @@
       </item7>
     </page0>
   </displaypages>
-  <!-- Nota: Attualmente la foglia impianto rimarrà in realtà sempre vuota poiché il dispositivo -->
-  <!-- richiederà ogni volta lo stato, si è solo su livello 3 e non ci si appoggerà al sinottico -->
+  <!-- Nota: Attualmente la foglia impianto rimarrï¿½ in realtï¿½ sempre vuota poichï¿½ il dispositivo -->
+  <!-- richiederï¿½ ogni volta lo stato, si ï¿½ solo su livello 3 e non ci si appoggerï¿½ al sinottico -->
   <impianto>
     <!-- max length 40; digit,* -->
     <!-- In questo campo vanno inseriti separati da un asterisco gli indirizzi (I3 e I4) delle -->
     <!-- interfacce di livello tra Lev 3 e Lev 4 delle interfacce di livello tra Lev 3 e Lev 4 -->
     <livello4>27*14</livello4>
     <!-- max length 30; digit,#,* -->
-    <!-- in questi campi vanno elencati gli attuatori che sono in modalità PUL e/o che hanno configurato un Gruppo (max 3) e/o che sono dimmer -->
+    <!-- in questi campi vanno elencati gli attuatori che sono in modalitï¿½ PUL e/o che hanno configurato un Gruppo (max 3) e/o che sono dimmer -->
     <!-- alcuni esempi (attenzioni i codici inseriti non sono protocollo open) -->
-    <!-- attuatore posto su livello 3, di indirizzo 11 (A=1, PL=1), in modalità PUL (15), con gruppo 2 configurato, non dimmer -->
+    <!-- attuatore posto su livello 3, di indirizzo 11 (A=1, PL=1), in modalitï¿½ PUL (15), con gruppo 2 configurato, non dimmer -->
     <disp1>11#3*15*2,0</disp1>
-    <!-- attuatore di indirizzo 23 su livello 3 in modalità PUL appartenente a gruppo 1, dimmer -->
+    <!-- attuatore di indirizzo 23 su livello 3 in modalitï¿½ PUL appartenente a gruppo 1, dimmer -->
     <disp2>23#3*15*2,1</disp2>
     <!-- attuatore di indirizzo 11 su livello 4 via interfaccia di ind 27, PUL, gruppi 1 e 3 configurati, dimmer -->
     <disp3>11#4#27*15*1*3,1</disp3>

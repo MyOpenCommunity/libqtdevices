@@ -39,6 +39,10 @@
 </coordinate_scs>
 </scs>
 <sicurezza>
+<abilita_ip>
+<range_1>192.168.1-10.1-254</range_1>
+<range_2>10.3.3.1-254</range_2>
+</abilita_ip>
 <pwd_open>12345</pwd_open>
 </sicurezza>
 <servizi>
