@@ -43,6 +43,7 @@
 
 #include <algorithm>
 
+#include <assert.h>
 
 #define IMG_OK IMG_PATH "btnok.png"
 
@@ -347,6 +348,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new BannCleanScreen(this, descrizione));
 		break;
 	case LANSETTINGS:
+	{
 		bannOnDx *b = new bannOnDx(this, descrizione);
 		b->SetIcons(ICON_INFO, 1);
 		elencoBanner.append(b);
@@ -357,6 +359,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		connect(this, SIGNAL(hideChildren()), ls, SLOT(hide()));
 		connect(b, SIGNAL(click()), ls, SLOT(showFullScreen()));
 		break;
+	}
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}

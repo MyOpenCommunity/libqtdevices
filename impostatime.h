@@ -54,7 +54,7 @@ public slots:
 	void mostra();
 
 protected:
-	void impostaTime::hideEvent(QHideEvent *event);
+	void hideEvent(QHideEvent *event);
 
 private slots:
 	void OKTime();

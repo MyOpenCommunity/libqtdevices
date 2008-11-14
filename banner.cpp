@@ -22,7 +22,7 @@
 #include <QDebug>
 #include <QApplication> //qapp
 
-#include <stdlib.h>
+#include <assert.h> // assert
 
 // Init icons_library - Vecchio modo con la cache che è un membro statico di banner
 // IconDispatcher  banner::icons_library;

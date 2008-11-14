@@ -8,6 +8,8 @@
 
 #include <QStringList>
 
+#include <assert.h>
+
 // Device implementation
 
 openwebnet createMsgOpen(QString msg)
