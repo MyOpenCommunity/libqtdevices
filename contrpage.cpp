@@ -23,9 +23,7 @@
 
 contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	showFullScreen();
-#endif
+	showFullScreen(); // TODO: verificare se e' necessario!!
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH,MAX_HEIGHT));
 

@@ -212,9 +212,7 @@ void BannPulsDynIcon::status_changed(QList<device_status*> sl)
 
 StopngoPage::StopngoPage(QWidget *parent, const char *name, QString where, int id, QString pageTitle) : QWidget(parent)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	showFullScreen();
-#endif
+	showFullScreen(); // TODO: verificare se e' necessario!
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 

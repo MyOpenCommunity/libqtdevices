@@ -51,11 +51,7 @@
 BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
 	qDebug("parte BtMain");
-
-	// If not compiled for Desktop, turns OFF mouse pointer
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	QWSServer::setCursorVisible(false);
-#endif
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
@@ -133,15 +129,9 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	else
 	{
 		calib = new Calibrate(NULL, 1);
-		calib->show();
+		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
-
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(show()));
-#endif
 		alreadyCalibrated = true;
 	}
 }
@@ -266,16 +256,10 @@ void BtMain::init()
 	sysinfo(&info);
 	if (info.uptime < 200 && ((unsigned long)(info.uptime - 1) > (unsigned long)getTimePress()) && !alreadyCalibrated)
 	{
-		calib = new Calibrate(NULL, 1);
-
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 		Home->hide();
-		calib->show();
+		calib = new Calibrate(NULL, 1);
+		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-		calib->show();
-#endif
 		alreadyCalibrated = true;
 	}
 }
@@ -454,11 +438,7 @@ void BtMain::gesScrSav()
 
 			if  (tiempo >= 65 && screensaver && screensaver->isHidden())
 			{
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 				screensaver->showFullScreen();
-#else
-				screensaver->show();
-#endif
 				BrightnessControl::instance()->setState(SCREENSAVER);
 			}
 

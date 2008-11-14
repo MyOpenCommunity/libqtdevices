@@ -592,12 +592,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case SUPERVISIONE:
 						pageAct = *supervisione;
 						(*supervisione)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showPg()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(show()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*supervisione,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -607,12 +602,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case AUTOMAZIONE:
 						pageAct = *automazioni;
 						(*automazioni)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(show()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*automazioni,SIGNAL(gestFrame(char *)));
 						QObject::connect(*automazioni,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*automazioni,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -621,12 +611,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case ILLUMINAZIONE:
 						pageAct = *illumino;
 						(*illumino)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(show()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
 						QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -636,12 +621,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case ANTIINTRUSIONE:
 						pageAct = *antintr;
 						(*antintr)->draw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(show()));
-#endif
 						QObject::connect(*antintr,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*antintr,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*antintr,SIGNAL(sendFramew(char*)),client_comandi,SLOT(ApriInviaFrameChiudiw(char*)));
@@ -653,12 +633,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case CARICHI:
 						pageAct = *carichi;
 						(*carichi)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(show()));
-#endif
 						QObject::connect(*carichi,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*carichi,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
@@ -667,12 +642,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case TERMOREG_MULTI_PLANT:
 						pageAct = *termo;
 						(*termo)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showPage()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showPage()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
 						QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -681,12 +651,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case DIFSON:
 						pageAct = *difSon;
 						(*difSon)->draw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(show()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
 						QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*difSon,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -695,12 +660,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case DIFSON_MULTI:
 						pageAct = *dm;
 						(*dm)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(show()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*dm,SLOT(gestFrame(char *)));
 						QObject::connect(*dm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*dm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -709,12 +669,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case SCENARI:
 						pageAct = *scenari;
 						(*scenari)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(show()));
-#endif
 						QObject::connect(*scenari,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*scenari,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
@@ -722,12 +677,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case IMPOSTAZIONI:
 						pageAct = *imposta;
 						(*imposta)->forceDraw();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(show()));
-#endif
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
 						QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*imposta,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
@@ -741,12 +691,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*scenari_evoluti)->forceDraw();
 						QObject::connect(*scenari_evoluti,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(show()));
-#endif
 						break;
 
 					case VIDEOCITOFONIA:
@@ -756,12 +701,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						QObject::connect(*videocitofonia,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*videocitofonia,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*videocitofonia,SIGNAL(gestFrame(char *)));
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(show()));
-#endif
 						break;
 
 					case SPECIAL:
@@ -773,12 +713,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					} // switch page_id
 
 					QObject::connect(pageAct, SIGNAL(Closed()), pageAct, SLOT(hide()));
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 					QObject::connect(pageAct, SIGNAL(Closed()), *home, SLOT(showFullScreen()));
-#endif
-#if !defined (BTWEB) && !defined (BT_EMBEDDED)
-					QObject::connect(pageAct, SIGNAL(Closed()), *home, SLOT(show()));
-#endif
 
 					// Pulisco per il prox
 					set_page_item_defaults();

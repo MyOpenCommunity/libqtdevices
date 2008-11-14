@@ -180,12 +180,7 @@ void impostaTime::mostra()
 	connect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminSec()));
 	connect(but[6] ,SIGNAL(clicked()),this,SLOT(OKTime()));
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	showFullScreen();
-#else
-	show();
-#endif
-
 	dataOra->show();
 }
 

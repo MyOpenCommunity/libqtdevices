@@ -193,11 +193,7 @@ machVers::machVers(sottoMenu *parent, const char *name, versio *ver, QString ico
 
 void machVers::showVers()
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	v->showFullScreen();
-#else
-	v->show();
-#endif
 	QTimer::singleShot(10000, this, SLOT(tiempout()));
 }
 
@@ -330,12 +326,7 @@ BannCleanScreen::BannCleanScreen(sottoMenu *parent, const char *name) : bannOnDx
 	page = new CleanScreen();
 	page->hide();
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	connect(this, SIGNAL(click()), page, SLOT(showFullScreen()));
-#else
-	connect(this, SIGNAL(click()), page, SLOT(show()));
-#endif
-
 	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 }
 
@@ -354,11 +345,7 @@ BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(p
 	SetIcons(ICON_BRIGHTNESS, 1);
 	page = new BrightnessPage();
 	page->hide();
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	connect(this, SIGNAL(click()), page, SLOT(showFullScreen()));
-#else
-	connect(this, SIGNAL(click()), page, SLOT(show()));
-#endif
 	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 }
 

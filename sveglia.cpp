@@ -157,11 +157,7 @@ void sveglia::mostra()
 		testiChoice[idx]->hide();
 	}
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	showFullScreen();
-#else
-	show();
-#endif
 
 	disconnect(but[0],SIGNAL(clicked()),dataOra,SLOT(aumOra()));
 	disconnect(but[1],SIGNAL(clicked()),dataOra,SLOT(aumMin()));

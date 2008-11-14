@@ -75,10 +75,9 @@ sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi
 
 	indice = 0;
 	indicold = 100;
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	// TODO: verificare se e' necessario!!
 	if (!parentWidget())
 		showFullScreen();
-#endif
 }
 
 sottoMenu::~sottoMenu()
