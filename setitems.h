@@ -209,7 +209,7 @@ private:
 	QString password;
 	tastiera *tasti;
 	bool sb;
-	unsigned char starting;
+	bool starting;
 signals:
 /*!
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not

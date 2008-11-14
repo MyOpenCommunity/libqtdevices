@@ -93,6 +93,16 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 
 	mode = CLEAN;
 
+	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	QFont aFont;
+	FontManager::instance()->getFont(font_tastiera_scritta_label, aFont);
+	scrittaLabel->setFont(aFont);
+	scrittaLabel->setText(tr("PASSWORD:"));
+	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+
+	FontManager::instance()->getFont(font_tastiera_digit_label, aFont);
+	digitLabel->setFont(aFont);
+
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(canc()));
 	connect(okBut,SIGNAL(clicked()),this,SLOT(ok()));
@@ -107,16 +117,6 @@ void tastiera::showTastiera()
 void tastiera::draw()
 {
 	qDebug("tastiera::draw(), mode = %d", mode);
-	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_tastiera_scritta_label, aFont);
-	scrittaLabel->setFont(aFont);
-	scrittaLabel->setText(tr("PASSWORD:"));
-	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-
-	FontManager::instance()->getFont(font_tastiera_digit_label, aFont);
-	digitLabel->setFont(aFont);
-
 	if (mode == CLEAN)
 		digitLabel->setText(text);
 	else

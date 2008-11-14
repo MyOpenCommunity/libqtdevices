@@ -44,7 +44,7 @@ public:
 */
 	enum tastiType
 	{
-		HIDDEN,  /*!< When the code is composed the only a \a * is shown for each digit on the display */
+		HIDDEN = 0,  /*!< When the code is composed the only a \a * is shown for each digit on the display */
 		CLEAN  /*!< When the code is composed the digits are shown on the display*/
 	};
 

@@ -216,7 +216,7 @@ impPassword::impPassword(QWidget *parent, const char *name, QString icon1, QStri
 
 	SetIcons(icon_off, icon3);
 
-	tasti = new tastiera(NULL,"tast");
+	tasti = new tastiera();
 	tasti->hide();
 	tasti->setMode(tastiera::HIDDEN);
 	connect(this,SIGNAL(dxClick()),tasti,SLOT(showTastiera()));
@@ -226,35 +226,23 @@ impPassword::impPassword(QWidget *parent, const char *name, QString icon1, QStri
 	// TODO: e' brutto fare una connessione con il parent.. se il banner viene messo in un'altra gerarchia non funziona
 	// piu' niente!
 	connect(this, SIGNAL(setPwd(bool, QString)), parentWidget(), SIGNAL(setPwd(bool, QString)));
-	if (attiva == 1)
-		active = true;
-	else
-		active = false;
+	active = (attiva == 1);
 
 	emit setPwd(active, password);
-	starting = 1;
+	starting = true;
 }
-
 
 void impPassword::toggleActivation()
 {
-	if (active)
-	{
-		active = false;
-		setCfgValue("enabled", "0", PROTEZIONE, getSerNum());
-	}
-	else
-	{
-		active = true;
-		setCfgValue("enabled", "1", PROTEZIONE, getSerNum());
-	}
+	active = !active;
+	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
 	emit setPwd(active, password);
-	show();
+	SetIcons(0, active ? icon_on : icon_off);
+	Draw();
 }
 
 void impPassword::showEvent(QShowEvent *event)
 {
-	SetIcons(0, active ? icon_on : icon_off);
 	Draw();
 	qDebug() << "password = " << password;
 	if (password.isEmpty() || starting)
@@ -276,6 +264,7 @@ void impPassword::showEvent(QShowEvent *event)
 
 void impPassword::reShow1(char *c)
 {
+	qDebug("impPassword::reShow1");
 	if (c == NULL)
 	{
 		show();
@@ -302,6 +291,7 @@ void impPassword::reShow1(char *c)
 
 void impPassword::reShow2(char *c)
 {
+	qDebug("impPassword::reShow2");
 	if (c)
 	{
 		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -323,7 +313,7 @@ void impPassword::tiempout()
 void impPassword::setEnabled(bool  b)
 {
 	if (!b)
-		starting = 0;
+		starting = false;
 	QWidget::setEnabled(b);
 }
 
