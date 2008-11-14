@@ -102,10 +102,10 @@ void versio::gestFrame(char* frame)
 		datiGen->setIndent(15);
 		datiGen->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 		QByteArray buf = model.toAscii();
-		sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d",
+		sprintf(scritta, "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d",
 			buf.constData(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);
-		
-		datiGen->setText(&scritta[100]); // FIXME da tradurre??
+
+		datiGen->setText(scritta); // FIXME da tradurre??
 		qDebug("setta scritte versio");
 	}
 }
