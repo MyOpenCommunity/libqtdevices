@@ -9,7 +9,7 @@ LIBS+= -L../common_files -lcommon -lssl
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
 QT += network xml
 
-QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
+QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter -Wno-write-strings
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
 QMAKE_CXXFLAGS_RELEASE += -O2
 QMAKE_CXXFLAGS += -fexceptions

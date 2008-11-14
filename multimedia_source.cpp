@@ -28,6 +28,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <assert.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
 

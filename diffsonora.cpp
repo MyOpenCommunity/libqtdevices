@@ -17,8 +17,7 @@
 #include <QVariant> // setProperty
 #include <QLabel>
 
-#include <stdlib.h>
-
+#include <assert.h>
 
 diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent), sorgenti(NULL)
 {

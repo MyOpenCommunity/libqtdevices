@@ -23,6 +23,7 @@
 
 #include <fcntl.h>
 #include <unistd.h>
+#include <assert.h>
 
 
 QString getPressName(QString name)

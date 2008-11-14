@@ -201,6 +201,7 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 		switch (ds->get_type())
 		{
 		case device_status::AUTOM:
+		{
 			qDebug("Autom status variation");
 			ds->read(device_status_autom::STAT_INDEX, curr_status);
 			int v = curr_status.get_val();
@@ -251,6 +252,7 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 				break;
 			}
 			break;
+		}
 		default:
 			qDebug("Unknown device status type");
 			break;
@@ -348,6 +350,7 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 		switch (ds->get_type())
 		{
 		case device_status::AUTOM:
+		{
 			qDebug("Autom status variation");
 			ds->read(device_status_autom::STAT_INDEX, curr_status);
 			int v = curr_status.get_val();
@@ -396,6 +399,7 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 				qDebug("Unknown status in autom. message");
 				break;
 			}
+		}
 		default:
 			qDebug("Unknown device status type");
 			break;
@@ -538,6 +542,7 @@ void attuatAutomTemp::status_changed(QList<device_status*> sl)
 			qDebug("dimmer 100 status variation, ignored");
 			break;
 		case device_status::NEWTIMED:
+		{
 			qDebug("new timed device status variation, ignored");
 			ds->read(device_status_new_timed::HH_INDEX, curr_hh);
 			ds->read(device_status_new_timed::MM_INDEX, curr_mm);
@@ -572,6 +577,7 @@ void attuatAutomTemp::status_changed(QList<device_status*> sl)
 			qDebug("tempo = %d %d %d", hnow, mnow, snow);
 			aggiorna = true;
 			break;
+		}
 		default:
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
@@ -679,6 +685,7 @@ void attuatAutomTempNuovoN::status_changed(QList<device_status*> sl)
 			qDebug("dimmer 100 status variation, ignored");
 			break;
 		case device_status::NEWTIMED:
+		{
 			qDebug("new timed device status variation");
 			ds->read(device_status_new_timed::HH_INDEX, curr_hh);
 			ds->read(device_status_new_timed::MM_INDEX, curr_mm);
@@ -712,6 +719,7 @@ void attuatAutomTempNuovoN::status_changed(QList<device_status*> sl)
 			qDebug("tempo = %d %d %d", hnow, mnow, snow);
 			aggiorna = true;
 			break;
+		}
 		default:
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
@@ -878,6 +886,7 @@ void attuatAutomTempNuovoF::status_changed(QList<device_status*> sl)
 			qDebug("dimmer 100 status variation, ignored");
 			break;
 		case device_status::NEWTIMED:
+		{
 			qDebug("new timed device status variation");
 			ds->read(device_status_new_timed::HH_INDEX, curr_hh);
 			ds->read(device_status_new_timed::MM_INDEX, curr_mm);
@@ -911,6 +920,7 @@ void attuatAutomTempNuovoF::status_changed(QList<device_status*> sl)
 			qDebug("tempo = %d %d %d", hnow, mnow, snow);
 			aggiorna = true;
 			break;
+		}
 		default:
 			qDebug("WARNING: tipo non previsto");
 		}
