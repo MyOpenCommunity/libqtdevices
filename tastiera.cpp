@@ -108,10 +108,9 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	connect(okBut,SIGNAL(clicked()),this,SLOT(ok()));
 }
 
-void tastiera::showTastiera()
+void tastiera::showEvent(QShowEvent *event)
 {
 	draw();
-	show();
 }
 
 void tastiera::draw()
@@ -195,7 +194,7 @@ tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent, const char *na
 	digitLabel->show();
 }
 
-void tastiera_con_stati::show()
+void tastiera_con_stati::paintEvent(QPaintEvent *event)
 {
 	for (int i = 0; i < 8; i++)
 	{
@@ -208,5 +207,4 @@ void tastiera_con_stati::show()
 			//stati[i]->setPaletteBackgroundColor(fc);
 		}
 	}
-	QWidget::show();
 }

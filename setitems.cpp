@@ -219,7 +219,7 @@ impPassword::impPassword(QWidget *parent, const char *name, QString icon1, QStri
 	tasti = new tastiera();
 	tasti->hide();
 	tasti->setMode(tastiera::HIDDEN);
-	connect(this,SIGNAL(dxClick()),tasti,SLOT(showTastiera()));
+	connect(this,SIGNAL(dxClick()),tasti,SLOT(showFullScreen()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
 
 	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -284,7 +284,7 @@ void impPassword::reShow1(char *c)
 		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
 		tasti->setMode(tastiera::CLEAN);
-		tasti->showTastiera();
+		tasti->showFullScreen();
 		qDebug("password giusta");
 	}
 }

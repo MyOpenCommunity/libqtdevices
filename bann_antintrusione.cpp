@@ -311,7 +311,7 @@ void impAnti::Inserisci()
 	tasti = new tastiera_con_stati(s, NULL, "");
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
 	tasti->setMode(tastiera::HIDDEN);
-	tasti->showTastiera();
+	tasti->showFullScreen();
 }
 
 void impAnti::Disinserisci()
@@ -321,7 +321,7 @@ void impAnti::Disinserisci()
 	tasti = new tastiera(NULL, "");
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
 	tasti->setMode(tastiera::HIDDEN);
-	tasti->showTastiera();
+	tasti->showFullScreen();
 }
 
 void impAnti::Insert1(char *pwd)

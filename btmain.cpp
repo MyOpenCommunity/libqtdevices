@@ -516,7 +516,7 @@ void BtMain::freeze(bool b)
 			{
 				tasti = new tastiera(NULL,"tast");
 				tasti->setMode(tastiera::HIDDEN);
-				tasti->showTastiera();
+				tasti->showFullScreen();
 				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
 			}
 		}
@@ -542,7 +542,7 @@ void BtMain::testPwd(char* p)
 	{
 		if (p != pwd)
 		{
-			tasti->showTastiera();
+			tasti->showFullScreen();
 			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
 		}
 		else
@@ -552,7 +552,7 @@ void BtMain::testPwd(char* p)
 		}
 	}
 	else
-		tasti->showTastiera();
+		tasti->showFullScreen();
 }
 
 void BtMain::svegl(bool b)

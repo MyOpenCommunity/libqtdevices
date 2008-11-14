@@ -79,7 +79,7 @@ void antintrusione::Parzializza()
 	tasti = new tastiera_con_stati(s, NULL, "");
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Parz(char*)));
 	tasti->setMode(tastiera::HIDDEN);
-	tasti->showTastiera();
+	tasti->showFullScreen();
 }
 
 void antintrusione::Parz(char* pwd)

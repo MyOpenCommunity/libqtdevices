@@ -63,10 +63,9 @@ public slots:
 */
 	void canc();
 
-	void showTastiera();
-
 protected:
 	QLabel *digitLabel, *scrittaLabel;
+	virtual void showEvent(QShowEvent *event);
 
 private:
 	BtButton *zeroBut, *unoBut, *dueBut, *treBut, *quatBut, *cinBut, *seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
@@ -92,9 +91,8 @@ Q_OBJECT
 public:
 	//! Constructor
 	tastiera_con_stati(int s[8], QWidget *parent=0, const char *name=0);
-public slots:
-	//! Invert fg/bg colors for active "stati"
-	void show();
+protected:
+	virtual void paintEvent(QPaintEvent *event);  //! Invert fg/bg colors for active "stati"
 private:
 	BtButton *stati[8];
 	bool st[8];
