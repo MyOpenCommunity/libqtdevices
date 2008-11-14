@@ -17,6 +17,7 @@
 
 class BtButton;
 class QLabel;
+class QButtonGroup;
 
 #define LINE MAX_HEIGHT/5
 
@@ -28,24 +29,17 @@ class QLabel;
   \date lug 2005
 */
 
-class  tastiera : public QWidget
+class tastiera : public QWidget
 {
 Q_OBJECT
 public:
     tastiera(QWidget *parent=0, const char *name=0, int line=LINE);
-	BtButton *zeroBut, *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
-	QLabel* digitLabel, *scrittaLabel;
 /*!
   \brief Draws the page
 */
 	void draw();
 
-/*!
-  \brief Selects the mode of operation (encripted or not).
-*/
-	void setMode(char);
-
-/*! \enum    tastiType
+/*! \enum tastiType
   differentiate between encripted and clean mode
 */
 	enum tastiType
@@ -54,12 +48,10 @@ public:
 		CLEAN  /*!< When the code is composed the digits are shown on the display*/
 	};
 
-signals:
 /*!
-  \brief Emitted when the object is closed. The argument represent the code composed by the user.
+  \brief Selects the mode of operation (encripted or not).
 */
-	void Closed(char*);
-
+	void setMode(tastiType t);
 public slots:
 /*!
   \brief Executed when the \a ok \a button is clicked. Hides the object and closes.
@@ -72,59 +64,24 @@ public slots:
 	void canc();
 
 	void showTastiera();
-/*!
-  \brief Executed when the \a zero \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press0();
 
-/*!
-  \brief Executed when the \a one \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press1();
-
-/*!
-  \brief Executed when the \a two \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press2();
-
-/*!
-  \brief Executed when the \a three \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press3();
-
-/*!
-  \brief Executed when the \a four \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press4();
-
-/*!
-  \brief Executed when the \a five \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press5();
-
-/*!
-  \brief Executed when the \a six \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press6();
-
-/*!
-  \brief Executed when the \a seven \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press7();
-
-/*!
-  \brief Executed when the \a eight \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press8();
-
-/*!
-  \brief Executed when the \a nine \a button is clicked. Composes the code and give a visual feed-back of the new digit.
-*/
-	void press9();
+protected:
+	QLabel *digitLabel, *scrittaLabel;
 
 private:
-	char pwd[6];
-	char mode;
+	BtButton *zeroBut, *unoBut, *dueBut, *treBut, *quatBut, *cinBut, *seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
+	QString text;
+	tastiType mode;
+	QButtonGroup *buttons_group;
+
+private slots:
+	void buttonClicked(int number);
+
+signals:
+/*!
+  \brief Emitted when the object is closed. The argument represent the code composed by the user.
+*/
+	void Closed(char*);
 };
 
 

@@ -19,6 +19,8 @@
 #include <QString>
 #include <QCursor>
 #include <QFile>
+#include <QDebug>
+#include <QButtonGroup>
 
 #define BUT_DIM 60
 #define POSX1 (MAX_WIDTH-BUT_DIM*3)/6
@@ -33,6 +35,7 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
+	buttons_group = new QButtonGroup(this);
 	unoBut = new BtButton(this);
 	dueBut = new BtButton(this);
 	treBut = new BtButton(this);
@@ -65,70 +68,45 @@ tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent
 	digitLabel->setGeometry(MAX_WIDTH/2,line*4,MAX_WIDTH/2,line);
 
 	unoBut->setImage(ICON_UNO);
-
+	buttons_group->addButton(unoBut, 1);
 	dueBut->setImage(ICON_DUE);
-
+	buttons_group->addButton(dueBut, 2);
 	treBut->setImage(ICON_TRE);
-
+	buttons_group->addButton(treBut, 3);
 	quatBut->setImage(ICON_QUATTRO);
-
+	buttons_group->addButton(quatBut, 4);
 	cinBut->setImage(ICON_CINQUE);
-
+	buttons_group->addButton(cinBut, 5);
 	seiBut->setImage(ICON_SEI);
-
+	buttons_group->addButton(seiBut, 6);
 	setBut->setImage(ICON_SETTE);
-
+	buttons_group->addButton(setBut, 7);
 	ottBut->setImage(ICON_OTTO);
-
+	buttons_group->addButton(ottBut, 8);
 	novBut->setImage(ICON_NOVE);
-
+	buttons_group->addButton(novBut, 9);
 	zeroBut->setImage(ICON_ZERO);
+	buttons_group->addButton(zeroBut, 0);
 
 	okBut->setImage(ICON_OK);
-
 	cancBut->setImage(ICON_CANC);
 
-	memset(pwd,'\000', sizeof(pwd));
-	mode=CLEAN;
+	mode = CLEAN;
 
-	connect(unoBut,SIGNAL(clicked()),this,SLOT(press1()));
-	connect(dueBut,SIGNAL(clicked()),this,SLOT(press2()));
-	connect(treBut,SIGNAL(clicked()),this,SLOT(press3()));
-	connect(quatBut,SIGNAL(clicked()),this,SLOT(press4()));
-	connect(cinBut,SIGNAL(clicked()),this,SLOT(press5()));
-	connect(seiBut,SIGNAL(clicked()),this,SLOT(press6()));
-	connect(setBut,SIGNAL(clicked()),this,SLOT(press7()));
-	connect(ottBut,SIGNAL(clicked()),this,SLOT(press8()));
-	connect(novBut,SIGNAL(clicked()),this,SLOT(press9()));
-	connect(zeroBut,SIGNAL(clicked()),this,SLOT(press0()));
+	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(canc()));
 	connect(okBut,SIGNAL(clicked()),this,SLOT(ok()));
-
-	unoBut->show();
-	dueBut->show();
-	treBut->show();
-	quatBut->show();
-	cinBut->show();
-	seiBut->show();
-	setBut->show();
-	ottBut->show();
-	novBut->show();
-	zeroBut->show();
-	okBut->show();
-	cancBut->show();
-	scrittaLabel->show();
-	digitLabel->show();
 }
 
 void tastiera::showTastiera()
 {
-	memset(pwd,'\000',sizeof(pwd));
 	draw();
 	show();
 }
 
 void tastiera::draw()
 {
+	qDebug("tastiera::draw(), mode = %d", mode);
 	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_tastiera_scritta_label, aFont);
@@ -138,110 +116,47 @@ void tastiera::draw()
 
 	FontManager::instance()->getFont(font_tastiera_digit_label, aFont);
 	digitLabel->setFont(aFont);
-	qDebug("tastiera::draw(), mode = %d", mode);
+
 	if (mode == CLEAN)
-		digitLabel->setText(pwd);
+		digitLabel->setText(text);
 	else
-	{
-		char pw[10];
-		memset(pw,'\000',sizeof(pw));
-		memset(pw,'*',strlen(pwd));
-		digitLabel->setText(pw);
-	}
+		digitLabel->setText(QString(text.length(),'*'));
 }
 
-void tastiera::press1()
+void tastiera::buttonClicked(int number)
 {
-	if (strlen(pwd) < 5)
-		strcat(pwd,"1");
-	draw();
-}
-
-void tastiera::press2()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"2");
-	draw();
-}
-
-void tastiera::press3()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"3");
-	draw();
-}
-
-void tastiera::press4()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"4");
-	draw();
-}
-
-void tastiera::press5()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"5");
-	draw();
-}
-
-void tastiera::press6()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"6");
-	draw();
-}
-
-void tastiera::press7()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"7");
-	draw();
-}
-
-void tastiera::press8()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"8");
-	draw();
-}
-
-void tastiera::press9()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"9");
-	draw();
-}
-
-void tastiera::press0()
-{
-	if (strlen(pwd) < 5)
-		strcat(pwd,"0");
+	qDebug() << "button clicked " << number;
+	if (text.length() < 5)
+		text += QString::number(number);
 	draw();
 }
 
 void tastiera::canc()
 {
-	if (strlen(pwd) > 0)
-		pwd[strlen(pwd) - 1] = '\000';
+	if (text.length() > 0)
+		text.chop(1);
 	else
 	{
 		hide();
-		emit (Closed(NULL));
+		emit Closed(NULL);
 	}
 	draw();
 }
 
 void tastiera::ok()
 {
+	// TODO: l'hide deve essere la classe "esterna" a gestirlo sul segnale Closed()
+	// che NON deve avere parametri. Il testo/password devono essere specificati
+	// attraverso un'altro segnale (o estratti attraverso un getter)
 	hide();
-	emit(Closed(pwd));
+	emit Closed(text.toAscii().data());
 }
 
-void tastiera::setMode(char m)	
+void tastiera::setMode(tastiType t)
 {
-	mode = m;
+	mode = t;
 }
+
 
 // tastiera_con_stati implementation
 tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent, const char *name)
