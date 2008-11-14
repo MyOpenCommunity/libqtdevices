@@ -18,6 +18,7 @@
 #include <QDateTime>
 #include <QWidget>
 #include <QPixmap>
+#include <QRegExp>
 #include <QDebug>
 #include <QDir>
 
@@ -93,7 +94,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item, const Q
 	QTextStream out_stream(&out_file);
 	QTextStream tmp_stream(&tmp_file);
 
-	QString item_tag = QString("<id>%1</id>").arg(item_id);
+	QRegExp item_tag = QRegExp(QString("<\\s*id\\s*>\\s*%1\\s*<\\s*/\\s*id\\s*>").arg(item_id));
 
 	while (true)
 	{
@@ -117,7 +118,8 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item, const Q
 					while (it.hasNext())
 					{
 						it.next();
-						if (line.contains(QString("<%1>").arg(it.key())))
+						QRegExp field = QRegExp(QString("<\\s*%1\\s*/?\\s*>").arg(it.key()));
+						if (line.contains(field))
 						{
 							line = QString("<%1>%2</%1>").arg(it.key()).arg(it.value());
 							it.remove();
