@@ -38,7 +38,8 @@ private:
 	banner *bnav;
 	QLabel *Immagine;
 	QLabel *descr;
-	void SetIcons(char*);
+	// This function mask the other overload of banner::SetIcons. I don't care about it.
+	void SetIcons(QString icon);
 	altype type;
 
 signals:

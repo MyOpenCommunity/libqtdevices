@@ -31,7 +31,7 @@ allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *I
     show();
 }
 
-void allarme::SetIcons(char *icon)
+void allarme::SetIcons(QString icon)
 {
     qDebug("allarme::SetIcons()");
 	QPixmap p;
