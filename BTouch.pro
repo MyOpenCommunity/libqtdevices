@@ -6,14 +6,15 @@ TEMPLATE = app
 # determine the target platform on the basis of environment variable TARGET
 PLATFORM = $$(TARGET)
 
-contains(TARGET, arm) {
-	LIBS+= -L../common_files -lcommon -lssl
+contains(PLATFORM, arm) {
+	LIBS+= -L../common_files -lcommon
 	OBJECTS_DIR = obj/arm
 	MOC_DIR = moc/arm
 }
 
-contains(TARGET, x86) {
-	LIBS+= -L../common_files/lib/x86 -lcommon -lssl
+contains(PLATFORM, x86) {
+	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
+	LIBS+= -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
 
@@ -21,13 +22,13 @@ contains(TARGET, x86) {
 	QMAKE_CXXFLAGS_WARN_ON += -Wno-write-strings
 }
 
-
+LIBS+= -lssl
 CONFIG+= qt debug warn_on
 DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
 QT += network xml
 
-QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter -Wno-write-strings
+QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
 QMAKE_CXXFLAGS_RELEASE += -O2
 QMAKE_CXXFLAGS += -fexceptions

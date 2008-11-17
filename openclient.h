@@ -17,8 +17,10 @@
 #include <QTcpSocket>
 #include <QByteArray>
 
-
+#ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
+#endif
+
 #define OPENSERVER_PORT 20000
 
 
