@@ -34,10 +34,7 @@ ambDiffSon::ambDiffSon(QWidget *parent, QString _name, char *indirizzo, QString 
 	qDebug() << "ambDiffSon::ambDiffSon() : " << indirizzo << " " << IconaSx << " " << IconaDx << " " << icon;
 	QString zoneIcon = getAmbName(IconaSx, indirizzo);
 	qDebug() << "zoneIcon = " << zoneIcon;
-	QByteArray buf_zone = zoneIcon.toAscii();
-	QByteArray buf_icon_dx = IconaDx.toAscii();
-	QByteArray buf_icon = icon.toAscii();
-	SetIcons(buf_icon.constData(), buf_zone.constData(), buf_icon_dx.constData());
+	SetIcons(icon, zoneIcon, IconaDx);
 	Draw();
 	setAddress(indirizzo);
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
@@ -179,9 +176,7 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QSt
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
 	// TODO: c'e' un sacco codice duplicato con ambdiffson!!!
-	QByteArray buf_icon1 = Icona1.toAscii();
-	QByteArray buf_icon2 = Icona2.toAscii();
-	SetIcons(buf_icon1.constData(), buf_icon2.constData());
+	SetIcons(Icona1, Icona2);
 	Draw();
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 	diffson = ds;

@@ -104,8 +104,7 @@ void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
 {
 	bannPuls *bp = new bannPuls(this, 0);
 
-	QByteArray buf = ci.toAscii();
-	bp->SetIcons(ICON_FRECCIA_DX, 0, buf.constData());
+	bp->SetIcons(ICON_FRECCIA_DX, QString(), ci);
 	QString addr = GetDeviceAddress(e);
 	bp->setAddress(addr);
 	elencoBanner.append(bp);

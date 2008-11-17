@@ -89,9 +89,7 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	 * Create little banner in selection menu.
 	 */
 	bannPuls *bp = new bannPuls(this, 0);
-	QByteArray buf_right = i_right_arrow.toAscii();
-	QByteArray buf_central = central_icon.toAscii();
-	bp->SetIcons(buf_right.constData(), 0, buf_central.constData());
+	bp->SetIcons(i_right_arrow, QString(), central_icon);
 	initBanner(bp, n);
 	elencoBanner.append(bp);
 	connectLastBanner();

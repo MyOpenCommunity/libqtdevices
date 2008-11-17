@@ -88,10 +88,7 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 	bannPuls *bp = new bannPuls(this, 0);
 	qDebug() << "[TERMO] addBanners1: " << descr;
 
-	QByteArray buf_right = i_right_arrow.toAscii();
-	QByteArray buf_central = central_icon.toAscii();
-	bp->SetIcons(buf_right.constData(), 0, buf_central.constData());
-
+	bp->SetIcons(i_right_arrow, QString(), central_icon);
 	initBanner(bp, e);
 
 	elencoBanner.append(bp);

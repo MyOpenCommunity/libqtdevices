@@ -22,8 +22,7 @@ BannOnOffCombo::BannOnOffCombo(QWidget *parent, const char *name) : banner(paren
 
 void BannOnOffCombo::changeStatus(ComboStatus st)
 {
-	QByteArray buf = status_icon[st].toAscii();
-	banner::SetIcons(2, buf.constData());
+	banner::SetIcons(2, status_icon[st]);
 
 	switch (st)
 	{
@@ -46,10 +45,10 @@ void BannOnOffCombo::changeStatus(ComboStatus st)
 	}
 }
 
-void BannOnOffCombo::SetIcons(const char *sxIcon , const char *dxIcon, const char *centerIcon, const char *centerSxIcon, const char *centerDxIcon)
+void BannOnOffCombo::SetIcons(QString sxIcon, QString dxIcon, QString centerIcon, QString centerSxIcon, QString centerDxIcon)
 {
 	status_icon[CENTER] = centerIcon;
 	status_icon[SX] = centerSxIcon;
 	status_icon[DX] = centerDxIcon;
-	banner::SetIcons(sxIcon, dxIcon, NULL, centerIcon);
+	banner::SetIcons(sxIcon, dxIcon, QString(), centerIcon);
 }

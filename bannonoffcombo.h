@@ -35,7 +35,7 @@ public:
 
 protected:
 	void changeStatus(ComboStatus st);
-	void SetIcons(const char *sxIcon , const char *dxIcon, const char *centerIcon, const char *centerSxIcon, const char *centerDxIcon);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerIcon, QString centerSxIcon, QString centerDxIcon);
 
 private:
 	QString status_icon[NUM_STATUS];

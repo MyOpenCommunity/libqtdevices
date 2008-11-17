@@ -765,9 +765,7 @@ void WeeklyMenu::createSummerBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			QByteArray buf_i_ok = i_ok.toAscii();
-			QByteArray buf_i_central = i_central.toAscii();
-			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
+			bp->SetIcons(i_ok, QString(), i_central);
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
@@ -805,9 +803,7 @@ void WeeklyMenu::createWinterBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			QByteArray buf_i_ok = i_ok.toAscii();
-			QByteArray buf_i_central = i_central.toAscii();
-			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
+			bp->SetIcons(i_ok, QString(), i_central);
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
@@ -851,9 +847,7 @@ void ScenarioMenu::createSummerBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			QByteArray buf_i_ok = i_ok.toAscii();
-			QByteArray buf_i_central = i_central.toAscii();
-			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
+			bp->SetIcons(i_ok, QString(), i_central);
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())
@@ -891,9 +885,7 @@ void ScenarioMenu::createWinterBanners()
 		while (!p.isNull())
 		{
 			BannWeekly *bp = new BannWeekly(this);
-			QByteArray buf_i_ok = i_ok.toAscii();
-			QByteArray buf_i_central = i_central.toAscii();
-			bp->SetIcons(buf_i_ok.constData(), 0, buf_i_central.constData());
+			bp->SetIcons(i_ok, QString(), i_central);
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 			// set Text taken from conf.xml
 			if (p.isElement())

@@ -18,7 +18,6 @@
 #include <QDateTime>
 #include <QCursor>
 #include <QLCDNumber>
-#include <QByteArray>
 #include <QLabel>
 
 #include <stdlib.h>

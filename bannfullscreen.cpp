@@ -18,7 +18,6 @@
 #include "device_cache.h"
 #include "scaleconversion.h"
 
-#include <QByteArray>
 #include <QVariant>
 #include <QLabel>
 #include <QDebug>
@@ -1286,10 +1285,8 @@ void FSBannTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, thermal
 
 banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString icon)
 {
-	QByteArray bann_img = QString(QString(IMG_PATH) + icon).toAscii();
-
 	bannPuls *bann = new bannPuls(settings, 0);
-	bann->SetIcons(IMG_RIGHT_ARROW, 0, bann_img);
+	bann->SetIcons(IMG_RIGHT_ARROW, 0, IMG_PATH + icon);
 	settings->appendBanner(bann);
 	return bann;
 }
