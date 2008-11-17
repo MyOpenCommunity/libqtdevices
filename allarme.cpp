@@ -34,34 +34,32 @@ allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *I
 void allarme::SetIcons(char *icon)
 {
     qDebug("allarme::SetIcons()");
-    QPixmap *Icon1 = new QPixmap();
-    char *icon1;
-    switch(type)
+	QPixmap p;
+	QString icon_name;
+    switch (type)
 	{
     case allarme::TECNICO:
-		icon1 = IMG_PATH "imgalltec.png";
+		icon_name = IMG_PATH "imgalltec.png";
 		break;
     default:
-		icon1 = IMG_PATH "imgallintr.png";
+		icon_name = IMG_PATH "imgallintr.png";
 		break;
     }
-    Icon1->load(icon1);
+	p.load(icon_name);
     Immagine = new QLabel(this);
-    Immagine->setPixmap(*Icon1);
+    Immagine->setPixmap(p);
     Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
-			  ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
-    delete(Icon1);
+		ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
+
     descr = new QLabel(this);
     QFont aFont;
     FontManager::instance()->getFont(font_allarme_descr, aFont);
     descr->setFont(aFont);
     descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-    descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,
-		       MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+    descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
     bnav = new bannFrecce(this, "banner_nav", 4, icon);
-    bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE,
-		      MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+    bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 }
 
 void allarme::draw()
