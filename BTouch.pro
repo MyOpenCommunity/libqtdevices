@@ -3,9 +3,27 @@
 
 TEMPLATE = app
 
+# determine the target platform on the basis of environment variable TARGET
+PLATFORM = $$(TARGET)
+
+contains(TARGET, arm) {
+	LIBS+= -L../common_files -lcommon -lssl
+	OBJECTS_DIR = obj/arm
+	MOC_DIR = moc/arm
+}
+
+contains(TARGET, x86) {
+	LIBS+= -L../common_files/lib/x86 -lcommon -lssl
+	OBJECTS_DIR = obj/x86
+	MOC_DIR = moc/x86
+
+	# extra flag to shut down gcc 4 noisy warning messages
+	QMAKE_CXXFLAGS_WARN_ON += -Wno-write-strings
+}
+
+
 CONFIG+= qt debug warn_on
 DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB
-LIBS+= -L../common_files -lcommon -lssl
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
 QT += network xml
 
