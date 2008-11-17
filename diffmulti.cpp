@@ -248,7 +248,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, QList<QString *> *indiri
 	return 1;
 }
 
-void diffmulti::setNavBarMode(uchar a, char* i)
+void diffmulti::setNavBarMode(uchar a, QString i)
 {
 	sottoMenu::setNavBarMode(a, i);
 	for (int i = 0; i < dslist.size(); ++i)

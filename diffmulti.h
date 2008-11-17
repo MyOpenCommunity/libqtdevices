@@ -57,7 +57,7 @@ public:
 	 *  \brief Changes the type of navigation bar present at the
 	 *  bsubtree (see bannFrecce). Also calls downstream diffSonora setNavBarMode
 	 */
-	void setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
+	virtual void setNavBarMode(uchar=0, QString IconBut4=ICON_FRECCIA_DX);
 	void setNumRighe(uchar);
 	void ripristinaRighe(void);
 	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);

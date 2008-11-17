@@ -44,7 +44,7 @@ public:
 
   if IconBut4 isn't specified the right arrow is shown by default
 */
-	bannFrecce(QWidget *parent=NULL, const char *name=NULL ,uchar num=3,char* IconBut4=ICON_FRECCIA_DX);
+	bannFrecce(QWidget *parent=NULL, const char *name=NULL ,uchar num=3, QString IconBut4=ICON_FRECCIA_DX);
 
 	~bannFrecce();
 	/**

@@ -157,7 +157,7 @@ sstop : soft stop values list vor dimmer 100 group
 	/*!
 	\brief Changes the type of navigation bar present at the bsubtree (see bannFrecce)
 	*/
-	virtual void setNavBarMode(uchar=0, char* IconBut4=ICON_FRECCIA_DX);
+	virtual void setNavBarMode(uchar=0, QString IconBut4=ICON_FRECCIA_DX);
 
 	/*!
 	\brief Set the Geometry for the object.
@@ -225,13 +225,13 @@ protected:
 	unsigned int height,width;
 	uchar numRighe, hasNavBar;
 	bannFrecce * bannNavigazione;
-	char iconName[MAX_PATH];
+	QString iconName;
 
 private:
 	/// Number of banners to scroll at each goUp() or goDown() call. Default value is 1, to avoid
 	/// breaking existing code.
 	unsigned scroll_step;
-	void setModeIcon(char*);
+	void setModeIcon(QString iconBut4);
 	QString name; // To simulate old qt3 behavior for name of widgets.
 
 signals:

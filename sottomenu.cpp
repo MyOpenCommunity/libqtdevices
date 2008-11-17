@@ -86,9 +86,8 @@ sottoMenu::~sottoMenu()
 		delete elencoBanner.takeFirst();
 }
 
-void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
+void sottoMenu::setNavBarMode(uchar navBarMode, QString IconBut4)
 {
-	qDebug("strcmp(IconBut4,iconName):%s - %s", IconBut4, iconName);
 	if (navBarMode != hasNavBar)
 	{
 		if (bannNavigazione)
@@ -110,16 +109,13 @@ void sottoMenu::setNavBarMode(uchar navBarMode, char* IconBut4)
 		hasNavBar = navBarMode;
 		setModeIcon(IconBut4);
 	}
-	else if (strcmp(IconBut4,iconName))
-	{
-		qDebug("strcmp(IconBut4,iconName):%s - %s", iconName, IconBut4);
+	else if (IconBut4 != iconName)
 		setModeIcon(IconBut4);
-	}
 }
 
-void sottoMenu::setModeIcon(char* iconBut4)
+void sottoMenu::setModeIcon(QString iconBut4)
 {
-	strncpy(iconName, iconBut4, MAX_PATH);
+	iconName = iconBut4;
 	bannNavigazione->SetIcons(1, iconName);
 	bannNavigazione->Draw();
 }
