@@ -9,7 +9,8 @@
 ****************************************************************/
 
 #include "versio.h"
-#include "main.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 #include "openclient.h"
 #include "fontmanager.h"
 
@@ -113,9 +114,9 @@ void versio::gestFrame(char* frame)
 void versio::inizializza()
 {
 	qDebug("*************** versio::inizializza() ***************");
-	emit sendFrame("*#1013**6##");
-	emit sendFrame("*#1013**3##");
-	emit sendFrame("*#13**16##");
+	BTouch->sendFrame("*#1013**6##");
+	BTouch->sendFrame("*#1013**3##");
+	BTouch->sendFrame("*#13**16##");
 }
 
 void versio::setAddr(int a)

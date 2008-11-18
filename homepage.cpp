@@ -13,6 +13,8 @@
 #include "openclient.h"
 #include "fontmanager.h"
 #include "scaleconversion.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QPixmap>
 #include <QDateTime>
@@ -205,7 +207,7 @@ void homePage::inizializza()
 			strcat(Frame,zt[idx]);
 			strcat(Frame,"##");
 		}
-		emit sendInit(Frame);
+		BTouch->sendInit(Frame);
 	}
 }
 
@@ -318,7 +320,7 @@ void homePage::specFunz()
 	strcat(specialFrame, dove);
 	strcat(specialFrame, "##");
 
-	emit sendFrame(specialFrame);
+	BTouch->sendFrame(specialFrame);
 }
 
 void homePage::specFunzPress()
@@ -331,7 +333,7 @@ void homePage::specFunzPress()
 	strcat(specialFrame, "*1*");
 	strcat(specialFrame, dove);
 	strcat(specialFrame, "##");
-	emit sendFrame(specialFrame);
+	BTouch->sendFrame(specialFrame);
 }
 
 void homePage::specFunzRelease()
@@ -344,5 +346,5 @@ void homePage::specFunzRelease()
 	strcat(specialFrame, "*0*");
 	strcat(specialFrame, dove);
 	strcat(specialFrame, "##");
-	emit sendFrame(specialFrame);
+	BTouch->sendFrame(specialFrame);
 }

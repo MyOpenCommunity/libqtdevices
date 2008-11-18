@@ -46,12 +46,6 @@ public slots:
 	\brief Analyze the \a Open \a frame incoming to verify the versions to be shown
 	*/
 	void gestFrame(char*);
-signals:
-	/*!
-	\brief Emitted to send \a Open \a frame to ask which are the versions mounted on the device
-	*/
-     void sendFrame(char*);	
-     void sendInit(char*);
 private:
 	unsigned char vers;
 	unsigned char release;

@@ -123,7 +123,6 @@ private slots:
 
 signals:
 	void Closed();
-	void sendFrame(char*);
 };
 
 #endif

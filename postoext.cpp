@@ -109,7 +109,7 @@ void postoExt::open_door_clicked()
 	QByteArray buf = where.toAscii();
 	sprintf(tmp, "*6*10*%s##", buf.constData());
 	msg_open.CreateMsgOpen(tmp, strlen(tmp));
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void postoExt::stairlight_pressed()
@@ -121,7 +121,7 @@ void postoExt::stairlight_pressed()
 	QByteArray buf = where.toAscii();
 	sprintf(tmp, "*6*12*%s##", buf.constData());
 	msg_open.CreateMsgOpen(tmp, strlen(tmp));
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void postoExt::stairlight_released()
@@ -133,7 +133,7 @@ void postoExt::stairlight_released()
 	QByteArray buf = where.toAscii();
 	sprintf(tmp, "*6*11*%s##", buf.constData());
 	msg_open.CreateMsgOpen(tmp, strlen(tmp));
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void postoExt::get_where(QString& out)

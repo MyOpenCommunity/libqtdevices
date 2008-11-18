@@ -10,6 +10,8 @@
 
 #include "impostatime.h"
 #include "openclient.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QPixmap>
 #include <QWidget>
@@ -108,7 +110,7 @@ void impostaTime::OKTime()
 	strcat(pippo,"**##");
 
 	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 #endif
 }
 
@@ -148,7 +150,7 @@ void impostaTime::OKDate()
 	strcat(pippo,"##");
 
 	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 #endif
 	hide();
 }

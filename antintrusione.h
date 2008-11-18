@@ -87,15 +87,6 @@ signals:
   \brief emitted when a open frame comes from the plant so impianto-zone-allarmi can analyze it
 */
 	void gestFrame(char*);
-/*!
-  \brief emitted when there's the necessity to send an open frame
-*/
-	void sendFrame(char*);
-	void sendInit(char*);
-/*!
-  \brief as above, but wait for ack
-*/
-	void sendFramew(char*);
 	void openAckRx();
 	void openNakRx();
 

@@ -41,12 +41,6 @@ signals:
 */
 	void Closed();
 
-/*!
-  \brief Emitted to send \a Open \a frame on the system.
-*/
-	void sendFrame(char*);
-	void sendInit(char*);
-
 public slots:
 /*!
   \brief Draws the object.

@@ -11,6 +11,8 @@
 #include "tastiera.h"
 #include "bann_antintrusione.h"
 #include "sottomenu.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <openwebnet.h> // class openwebnet
 
@@ -36,10 +38,6 @@ antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent
 	connect(zone  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
 	connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
 	connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
-	connect(zone,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
-	connect(zone,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
-	connect(impianto,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
-	connect(impianto,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
 	connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
 	connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
 	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
@@ -100,7 +98,7 @@ void antintrusione::Parz(char* pwd)
 	strcat(pippo,"*0##");
 	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	qDebug("sending part frame %s", pippo);
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 	((impAnti *)impianto->getLast())->ToSendParz(false);
 end:
 	impianto->show();
@@ -366,12 +364,12 @@ void antintrusione::hideEvent(QHideEvent *event)
 
 	qDebug("Richiesta stato zone");
 	// TODO: fare un ciclo!!
-	emit sendFrame("*#5*#1##");
-	emit sendFrame("*#5*#2##");
-	emit sendFrame("*#5*#3##");
-	emit sendFrame("*#5*#4##");
-	emit sendFrame("*#5*#5##");
-	emit sendFrame("*#5*#6##");
-	emit sendFrame("*#5*#7##");
-	emit sendFrame("*#5*#8##");
+	BTouch->sendFrame("*#5*#1##");
+	BTouch->sendFrame("*#5*#2##");
+	BTouch->sendFrame("*#5*#3##");
+	BTouch->sendFrame("*#5*#4##");
+	BTouch->sendFrame("*#5*#5##");
+	BTouch->sendFrame("*#5*#6##");
+	BTouch->sendFrame("*#5*#7##");
+	BTouch->sendFrame("*#5*#8##");
 }

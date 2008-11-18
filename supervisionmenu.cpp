@@ -15,6 +15,8 @@
 #include "supervisionmenu.h"
 #include "device_cache.h"
 #include "device.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QDebug>
 
@@ -216,7 +218,6 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 	connect(stopngoSubmenu, SIGNAL(hideChildren()), pg, SLOT(hide()));
 	connect(pg, SIGNAL(Closed()), stopngoSubmenu, SLOT(showFullScreen()));
 	connect(pg, SIGNAL(Closed()), pg, SLOT(hide()));
-	connect(pg, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
 	
 	// Get status changed events back
 	mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere());

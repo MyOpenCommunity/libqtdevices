@@ -129,9 +129,6 @@ signals:
 	void Special();
 /*! \brief Emitted when the the object is closed.*/
 	void Closed();
-/*! \brief Emitted to send \a Open \a frame on the system.*/
-	void sendFrame(char*);
-	void sendInit(char*);
 /*! \brief Emitted when the \a schedulation subtree(sottoMenu) is required.*/
 	void Schedulazioni();
 /*! \brief Emitted when the \a advanced scenarios management(sottoMenu) is required */

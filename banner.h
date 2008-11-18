@@ -407,15 +407,6 @@ signals:
 	 */
 	void cdxPressed();
 	void richStato(char*);
-	/*!
-	 *  \brief Emitted when the banner decide send an \a Open \a frame to the system.
-	 */
-	void sendFrame(char*);
-	/*!
-	 *  \brief As above, but we want to wait for the relevant open ack message
-	 */
-	void sendFramew(char*);
-	void sendInit(char*);
 };
 
 

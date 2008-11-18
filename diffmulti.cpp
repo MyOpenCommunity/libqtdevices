@@ -16,6 +16,8 @@
 #include "sveglia.h"
 #include "diffsonora.h"
 #include "scenevocond.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QTimer>
 #include <QPoint>
@@ -127,7 +129,6 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 		connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)),b, SLOT(ambChanged(const QString &, bool, char *)));
 		connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 		connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
-		connect(b,SIGNAL(sendInit(char*)),this, SIGNAL(sendInit(char*)));
 		break;
 
 	// TODO: codice duplicato da sotto, da eliminare quanto prima

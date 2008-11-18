@@ -9,7 +9,8 @@
  ****************************************************************/
 
 #include "sorgentimedia.h"
-#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
+#include "btmain.h"
+#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA, BTouch
 #include "device_cache.h"
 #include "device.h"
 
@@ -40,7 +41,6 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *
 	QWidget *sotto_menu = this->parentWidget()->parentWidget();
 	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
 	connect(&source_menu, SIGNAL(Closed()), &source_menu, SLOT(hide()));
-	connect(&source_menu, SIGNAL(sendFrame(char *)), this, SIGNAL(sendFrame(char *)));
 }
 
 void BannerSorgenteMultimedia::ciclaSorg()

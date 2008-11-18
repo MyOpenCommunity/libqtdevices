@@ -594,8 +594,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*supervisione)->forceDraw();
 						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showPg()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
-						QObject::connect(*supervisione,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*supervisione,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*supervisione,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
 						break;
 
@@ -604,8 +602,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*automazioni)->forceDraw();
 						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*automazioni,SIGNAL(gestFrame(char *)));
-						QObject::connect(*automazioni,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*automazioni,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case ILLUMINAZIONE:
@@ -613,8 +609,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*illumino)->forceDraw();
 						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
-						QObject::connect(*illumino,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*illumino,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
 						break;
 
@@ -622,9 +616,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						pageAct = *antintr;
 						(*antintr)->draw();
 						QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(showFullScreen()));
-						QObject::connect(*antintr,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*antintr,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*antintr,SIGNAL(sendFramew(char*)),client_comandi,SLOT(ApriInviaFrameChiudiw(char*)));
 						QObject::connect(client_comandi,SIGNAL(openAckRx()),*antintr,SIGNAL(openAckRx()));
 						QObject::connect(client_comandi,SIGNAL(openNakRx()),*antintr,SIGNAL(openNakRx()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*antintr,SLOT(gesFrame(char *)));
@@ -634,8 +625,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						pageAct = *carichi;
 						(*carichi)->forceDraw();
 						QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(showFullScreen()));
-						QObject::connect(*carichi,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*carichi,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case TERMOREGOLAZIONE:
@@ -644,8 +633,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*termo)->forceDraw();
 						QObject::connect(*home,SIGNAL(Termoregolazione()),*termo,SLOT(showPage()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*termo,SIGNAL(gestFrame(char *)));
-						QObject::connect(*termo,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*termo,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case DIFSON:
@@ -653,8 +640,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*difSon)->draw();
 						QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showFullScreen()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
-						QObject::connect(*difSon,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*difSon,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case DIFSON_MULTI:
@@ -662,16 +647,12 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*dm)->forceDraw();
 						QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(showFullScreen()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*dm,SLOT(gestFrame(char *)));
-						QObject::connect(*dm,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*dm,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case SCENARI:
 						pageAct = *scenari;
 						(*scenari)->forceDraw();
 						QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showFullScreen()));
-						QObject::connect(*scenari,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*scenari,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						break;
 
 					case IMPOSTAZIONI:
@@ -679,8 +660,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*imposta)->forceDraw();
 						QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
-						QObject::connect(*imposta,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*imposta,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*imposta,SIGNAL(startCalib()), BtM, SLOT(startCalib()));
 						QObject::connect(*imposta,SIGNAL(endCalib()),BtM, SLOT(endCalib()));
 						break;
@@ -689,8 +668,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						pageAct = *scenari_evoluti;
 						qDebug("******* scenari_evoluti = %p, impostazioni = %p ******", *scenari_evoluti,*imposta);
 						(*scenari_evoluti)->forceDraw();
-						QObject::connect(*scenari_evoluti,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*scenari_evoluti,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
 						break;
 
@@ -698,16 +675,12 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						pageAct = *videocitofonia;
 						qDebug("******* videocitofonia = %p ", *videocitofonia);
 						(*videocitofonia)->forceDraw();
-						QObject::connect(*videocitofonia,SIGNAL(sendFrame(char *)), client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*videocitofonia,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*videocitofonia,SIGNAL(gestFrame(char *)));
 						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showFullScreen()));
 						break;
 
 					case SPECIAL:
 						pageAct = *specPage;
-						QObject::connect(*specPage,SIGNAL(sendFrame(char *)),client_comandi,SLOT(ApriInviaFrameChiudi(char *)));
-						QObject::connect(*specPage,SIGNAL(sendInit(char *)),client_richieste,SLOT(ApriInviaFrameChiudi(char *)));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*specPage,SLOT(gestFrame(char *)));
 						break;
 					} // switch page_id

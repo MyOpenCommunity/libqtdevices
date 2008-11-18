@@ -121,10 +121,6 @@ signals:
 	 * \brief Emitted when fwd button is pressed
 	 */
 	void Btnfwd();
-	/*!
-	 * \brief Send open frame.
-	 */
-	void sendFrame(char *);
 
 	void notifyStartPlay();
 	void notifyStopPlay();

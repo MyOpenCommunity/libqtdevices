@@ -15,6 +15,8 @@
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <openwebnet.h> // class openwebnet
 
@@ -512,7 +514,7 @@ void scenEvo::trig(bool forced)
 	qDebug("scenEvo::trig(), act = %s", buf.constData());
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen(buf.data(), buf.length());
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void scenEvo::inizializza(bool forza)
@@ -595,7 +597,7 @@ void scenSched::enable()
 	openwebnet msg_open;
 	QByteArray buf = action_enable.toAscii();
 	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 	Draw();
 }
 
@@ -605,7 +607,7 @@ void scenSched::start()
 	openwebnet msg_open;
 	QByteArray buf = action_start.toAscii();
 	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 	Draw();
 }
 
@@ -615,7 +617,7 @@ void scenSched::stop()
 	openwebnet msg_open;
 	QByteArray buf = action_stop.toAscii();
 	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 	Draw();
 }
 
@@ -625,7 +627,7 @@ void scenSched::disable()
 	openwebnet msg_open;
 	QByteArray buf = action_disable.toAscii();
 	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	emit sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 	Draw();
 }
 

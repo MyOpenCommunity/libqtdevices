@@ -249,17 +249,6 @@ signals:
 	void gestFrame(char*);
 
 	/*!
-	\brief Emitted to connect the \a Open \a Frame coming from to the banners in the list to the openClient.
-	*/
-	void sendFrame(char*);
-	void sendInit(char*);
-
-	/*!
-	\brief Like sendFrame, but also ack is requested before proceeding
-	*/
-	void sendFramew(char*);
-
-	/*!
 	\brief Open ack received
 	*/
 	void openAckRx(void);

@@ -131,12 +131,6 @@ signals:
 	 * \brief Emitted when there are \a Open \a frame incoming to make them arrive to amplifiers and sources.
 	 */
 	void gesFrame(char*);
-
-	/*!
-	 * \brief Emitted when there are \a Open \a frame outcoming from amplifiers or sources to make them arrive to openClient.
-	 */
-	void sendFrame(char*);
-	void sendInit(char*);
 };
 
 #endif // DIFFSONORA_H

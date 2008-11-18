@@ -18,6 +18,8 @@
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
 #include "cleanscreen.h"
 #include "brightnesspage.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QTimer>
 #include <QDebug>
@@ -32,8 +34,6 @@ setDataOra::setDataOra(sottoMenu *parent,const char *name) : bannOnDx(parent, na
 {
 	SetIcons(ICON_INFO,1);
 	connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));
-	connect(&settalora,SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
-	connect(&settalora, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 }
 
 void setDataOra::hideEvent(QHideEvent *event)
@@ -57,8 +57,6 @@ impostaSveglia::impostaSveglia(QWidget *parent, const char *name, contdiff *diso
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));
 
 	connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*)));
-	connect(svegliolina,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
-	connect(svegliolina, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
 	connect(svegliolina,SIGNAL(ImClosed()), svegliolina, SLOT(hide()));
 	connect(svegliolina,SIGNAL(ImClosed()), this, SLOT(forceDraw()));
 }

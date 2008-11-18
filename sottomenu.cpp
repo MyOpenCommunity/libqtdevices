@@ -9,7 +9,8 @@
  ****************************************************************/
 
 #include "sottomenu.h"
-#include "main.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 #include "bannsettings.h"
 #include "postoext.h"
 #include "setitems.h"
@@ -388,10 +389,7 @@ void sottoMenu::connectLastBanner()
 	banner *last = elencoBanner.last();
 	connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 	connect(this, SIGNAL(parentChanged(QWidget *)), last, SLOT(grandadChanged(QWidget *)));
-	connect(last, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
-	connect(last, SIGNAL(sendInit(char *)), this, SIGNAL(sendInit(char *)));
-	connect(last, SIGNAL(sendFramew(char*)), this, SIGNAL(sendFramew(char*)));
-	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
+connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
 }
 
 void sottoMenu::showItem(int id)

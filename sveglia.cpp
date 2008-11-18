@@ -20,6 +20,7 @@
 #include "fontmanager.h"
 #include "brightnesscontrol.h"
 #include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QDateTime>
 #include <QPixmap>
@@ -359,7 +360,7 @@ void sveglia::gestFrame(char* f)
 					sprintf(&pippo[5],"%d",deviceAddr);
 					strcat(pippo,"*1##");
 					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-					emit sendFrame(msg_open.frame_open);
+					BTouch->sendFrame(msg_open.frame_open);
 				}
 			}
 			else
@@ -432,7 +433,7 @@ void sveglia::verificaSveglia()
 			else if (tipo == FRAME)
 			{
 				qDebug() << "mando la frame:" << frame;
-				emit sendFrame(frame.toAscii().data());
+				BTouch->sendFrame(frame.toAscii().data());
 			}
 
 			qDebug("PARTE LA SVEGLIA");
@@ -471,7 +472,7 @@ void sveglia::aumVol()
 		sprintf(&pippo[6],"%d",sorgente);
 		strcat(pippo,"##");
 		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		emit sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 
 		memset(pippo,'\000',sizeof(pippo));
 		strcat(pippo,"*#16*");
@@ -480,7 +481,7 @@ void sveglia::aumVol()
 		sprintf(&pippo[strlen(pippo)],"%d",stazione);
 		strcat(pippo,"##");
 		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		emit sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 
 		for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		{
@@ -496,7 +497,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+10);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (idx >= 20 && idx <= 29)
@@ -509,7 +510,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+20);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (idx >= 30 && idx <= 39)
@@ -522,7 +523,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+30);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (idx >= 40 && idx <= 49)
@@ -535,7 +536,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+40);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (idx >= 50 && idx <= 59)
@@ -548,7 +549,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+50);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (idx >= 60 && idx <= 69)
@@ -561,7 +562,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+60);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (idx >= 70 && idx <= 79)
@@ -574,7 +575,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+70);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (idx >= 80 && idx <= 89)
@@ -587,7 +588,7 @@ void sveglia::aumVol()
 						sprintf(&pippo[6],"%d",sorgente+80);
 						strcat(pippo,"##");
 						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						emit sendFrame(msg_open.frame_open);
+						BTouch->sendFrame(msg_open.frame_open);
 					}
 				}
 				if (volSveglia[idx] < 10)
@@ -599,7 +600,7 @@ void sveglia::aumVol()
 					sprintf(&pippo[11],"%d",volSveglia[idx]);
 					strcat(pippo,"##");
 					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-					emit sendFrame(msg_open.frame_open);
+					BTouch->sendFrame(msg_open.frame_open);
 				}
 				else
 				{
@@ -608,14 +609,14 @@ void sveglia::aumVol()
 					sprintf(&pippo[5],"%02d",idx);
 					strcat(pippo,"*#1*8##");
 					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-					emit sendFrame(msg_open.frame_open);
+					BTouch->sendFrame(msg_open.frame_open);
 				}
 				memset(pippo,'\000',sizeof(pippo));
 				strcat(pippo,"*16*3*");
 				sprintf(&pippo[6],"%02d",idx);
 				strcat(pippo,"##");
 				msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-				emit sendFrame(msg_open.frame_open);
+				BTouch->sendFrame(msg_open.frame_open);
 			}
 		}
 		conta2min = 9;
@@ -637,7 +638,7 @@ void sveglia::aumVol()
 				sprintf(&pippo[11],"%d",conta2min);
 				strcat(pippo,"##");
 				msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-				emit sendFrame(msg_open.frame_open);
+				BTouch->sendFrame(msg_open.frame_open);
 			}
 		}
 	}
@@ -659,7 +660,7 @@ void sveglia::aumVol()
 				sprintf(&pippo[strlen(pippo)],"%02d",idx);
 				strcat(pippo,"##");
 				msg_open.CreateMsgOpen((char*)pippo, strlen((char*)pippo));
-				emit sendFrame(msg_open.frame_open);
+				BTouch->sendFrame(msg_open.frame_open);
 			}
 		}
 		BTouch->freeze(false);

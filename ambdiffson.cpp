@@ -15,6 +15,8 @@
 #include "diffmulti.h" // struct data_ampli_multi
 #include "sottomenu.h"
 #include "fontmanager.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QDebug>
 #include <QLabel>
@@ -123,13 +125,7 @@ void ambDiffSon::configura()
 {
 	qDebug("ambDiffSon::configura()");
 	emit(ambChanged(name, false, getAddress()));
-	qDebug("sorgenti->parent() = %p", sorgenti->parent());
-	qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
-	disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	disconnect(sorgenti->parent(), SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-	connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
 	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	diffson->setFirstSource(actSrc);
 	diffson->forceDraw();
@@ -248,12 +244,7 @@ void insAmbDiffSon::configura()
 	qDebug("insAmbDiffSon::configura()");
 	emit(ambChanged(name, true, (char *)NULL));
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
-	qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
-	disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	disconnect(sorgenti->parent(), SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-	connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
 	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	sorgenti->mostra_all(banner::BUT2);
 	diffson->forceDraw();

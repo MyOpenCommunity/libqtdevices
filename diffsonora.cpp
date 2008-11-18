@@ -10,6 +10,8 @@
 
 #include "diffsonora.h"
 #include "sottomenu.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <openwebnet.h> // class openwebnet
 
@@ -42,8 +44,6 @@ diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent),
 	linea->setProperty("noStyle", true);
 
 	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));
-	connect(amplificatori,SIGNAL(sendFrame(char*)),this , SIGNAL(sendFrame(char*)));
-	connect(amplificatori,SIGNAL(sendInit(char*)),this , SIGNAL(sendInit(char*)));
 }
 
 void diffSonora::setSorgenti(sottoMenu *s)
@@ -51,8 +51,6 @@ void diffSonora::setSorgenti(sottoMenu *s)
 	sorgenti = s;
 	setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
-	connect(sorgenti, SIGNAL(sendFrame(char*)), this, SIGNAL(sendFrame(char*)));
-	connect(sorgenti, SIGNAL(sendInit(char*)), this, SIGNAL(sendInit(char*)));
 }
 
 // TODO: sarebbe meglio che icon_names diventasse una QList<QString>.. al momento
@@ -117,7 +115,7 @@ void diffSonora::inizializza()
 {
 	amplificatori->inizializza();
 	sorgenti->inizializza();
-	emit sendInit("*16*53*100##");
+	BTouch->sendInit("*16*53*100##");
 }
 
 void diffSonora::gestFrame(char*frame)
