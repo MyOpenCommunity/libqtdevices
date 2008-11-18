@@ -633,24 +633,20 @@ void StopngoPage::LoadTimer()
 void StopngoPage::FireFreqFrame()
 {
 	qDebug("StopngoPage::FireFreqFrame() Enter");
-	QByteArray buf = where.toAscii();
-	char frameOpen[30];
-	sprintf(frameOpen, "*#%s*%s*#%s*%d##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_FREQ_AUTOTEST, autotestFreq);
-	qDebug("StopngoPage::FireFreqFrame() fire frame: %s", frameOpen);
-	BTouch->sendFrame(frameOpen);
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_FREQ_AUTOTEST);
-	BTouch->sendFrame(frameOpen);
+	QString f = QString("*#%1*%2*#%3*%4##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_FREQ_AUTOTEST).arg(autotestFreq);
+	qDebug() << "StopngoPage::FireFreqFrame() fire frame: " << f;
+	BTouch->sendFrame(f);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_FREQ_AUTOTEST);
+	BTouch->sendFrame(f);
 }
 
 void StopngoPage::AutoArmClick()
 {
-	QByteArray buf = where.toAscii();
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_AUTOREARM_DISABLED) ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF, buf.constData());
-	BTouch->sendFrame(frameOpen);
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
-	BTouch->sendFrame(frameOpen);
+	QString what = statusBmp & STATUS_BIT_AUTOREARM_DISABLED ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF;
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
+	BTouch->sendFrame(f);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
+	BTouch->sendFrame(f);
 }
 
 void StopngoPage::OnClick()
@@ -658,43 +654,35 @@ void StopngoPage::OnClick()
 	if ((statusBmp&STOPNGO_WARNING_MASK) || !(statusBmp&STATUS_BIT_OPEN_CLOSE))
 		return;
 
-	QByteArray buf = where.toAscii();
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_CLOSE, buf.constData());
-	BTouch->sendFrame(frameOpen);
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(OPEN_WHAT_CLOSE).arg(where);
+	BTouch->sendFrame(f);
 }
 
 void StopngoPage::OffClick()
 {
-	if (statusBmp&STATUS_BIT_OPEN_CLOSE)
+	if (statusBmp & STATUS_BIT_OPEN_CLOSE)
 		return;
 
-	QByteArray buf = where.toAscii();
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_OPEN, buf.constData());
-	BTouch->sendFrame(frameOpen);
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(OPEN_WHAT_OPEN).arg(where);
+	BTouch->sendFrame(f);
 }
 
 void StopngoPage::VerifyClick()
 {
-	char frameOpen[30];
-	QByteArray buf = where.toAscii();
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_VERIFY_DISABLED)?OPEN_WHAT_VERIFY_ON:OPEN_WHAT_VERIFY_OFF, buf.constData());
-	BTouch->sendFrame(frameOpen);
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
-	BTouch->sendFrame(frameOpen);
+	QString what = statusBmp & STATUS_BIT_VERIFY_DISABLED ? OPEN_WHAT_VERIFY_ON : OPEN_WHAT_VERIFY_OFF;
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
+	BTouch->sendFrame(f);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
+	BTouch->sendFrame(f);
 }
 
 void StopngoPage::AutotestClick()
 {
-	char frameOpen[30];
-	QByteArray buf = where.toAscii();
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_AUTOTEST_DISABLED)?OPEN_WHAT_AUTOTEST_ON:OPEN_WHAT_AUTOTEST_OFF, buf.constData());
-	BTouch->sendFrame(frameOpen);
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, buf.constData(), OPEN_GRANDEZZA_STATO);
-	BTouch->sendFrame(frameOpen);
+	QString what = statusBmp & STATUS_BIT_AUTOTEST_DISABLED ? OPEN_WHAT_AUTOTEST_ON : OPEN_WHAT_AUTOTEST_OFF;
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
+	BTouch->sendFrame(f);
+	QString f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
+	BTouch->sendFrame(f);
 }
 
 void StopngoPage::MinusClick()
