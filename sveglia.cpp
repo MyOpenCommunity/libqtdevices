@@ -34,8 +34,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-extern BtMain *BTouch;
-
 
 sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff *diso, char *f, int hour, int minute)
 	: QWidget(parent)

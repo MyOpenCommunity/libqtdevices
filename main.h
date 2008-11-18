@@ -29,6 +29,12 @@ TemperatureScale readTemperatureScale();
 // See getElement
 QDomElement getConfElement(QString path);
 
+// Forward declaration
+class BtMain;
+
+/// A global pointer to the main class of BTouch.
+extern BtMain *BTouch;
+
 /****************************************************************
  ** ICONS LIBRARY
  ****************************************************************/
@@ -54,6 +60,7 @@ QDomElement getConfElement(QString path);
  */
 /// We use a global object to handle icons_library because different classes need icons.
 extern IconDispatcher icons_library;
+
 
 /****************************************************************
  ** Default configurazione applicativo

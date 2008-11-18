@@ -394,8 +394,6 @@ void getName(char *name)
 	}
 }
 
-extern BtMain *BTouch;
-
 void resetTimer(int signo)
 {
 	qDebug("resetTimer()");

@@ -13,6 +13,7 @@
 #include "device_cache.h" // btouch_device_cache
 #include "videocitof.h" // class call_notifier
 #include "btmain.h"
+#include "main.h" // BTouch
 
 #include <QDebug>
 
@@ -26,8 +27,6 @@ call_notifier_manager *postoExt::cnm = NULL;
 
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
-
-extern BtMain *BTouch;
 
 
 postoExt::postoExt(QWidget *parent, const char *name, QString Icona1, QString Icona2, QString Icona3, QString Icona4, char *_where,
