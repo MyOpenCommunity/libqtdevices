@@ -387,7 +387,7 @@ void MultimediaSource::enableSource(bool send_frame)
 	if ((rc = system(start_play_script)) != 0)
 		qWarning("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
 
-	if(send_frame)
+	if (send_frame)
 		emit notifyStartPlay();
 }
 
@@ -399,7 +399,7 @@ void MultimediaSource::disableSource(bool send_frame)
 	if ((rc = system(stop_play_script)) != 0)
 		qWarning("[AUDIO] Error on stop play script, exit code %d", rc);
 
-	if(send_frame)
+	if (send_frame)
 		emit notifyStopPlay();
 }
 
