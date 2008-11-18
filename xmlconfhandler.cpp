@@ -846,7 +846,8 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case ILLUMINAZIONE:
-						*illumino = new sottoMenu(NULL,"ILLUMINO");
+						*illumino = new sottoMenu(NULL);
+						(*illumino)->setObjectName("ILLUMINO");
 						pageAct = *illumino;
 						break;
 

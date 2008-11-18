@@ -49,7 +49,7 @@
 #define IMG_OK IMG_PATH "btnok.png"
 
 sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi,int hei, uchar n)
-	:QWidget(parent), name(_name)
+	:QWidget(parent)
 {
 	numRighe = n;
 	scroll_step = 1;
@@ -393,7 +393,7 @@ void sottoMenu::showItem(int id)
 
 void sottoMenu::draw()
 {
-	qDebug() << "sottoMenu::draw() (" << name << ")";
+	qDebug() << "sottoMenu::draw()";
 	assert(indice >= 0 && "index of elencoBanner (sottoMenu) less than 0!!");
 	if (indicold != indice)
 	{
@@ -452,7 +452,7 @@ void sottoMenu::draw()
 
 void sottoMenu::forceDraw()
 {
-	qDebug() << name << "::forceDraw()";
+	qDebug() << "sottoMenu::forceDraw()";
 	indicold = indice + 1;
 	draw();
 }
@@ -596,7 +596,7 @@ void sottoMenu::setGeometry(int x, int y, int w, int h)
 
 void sottoMenu::hideEvent(QHideEvent *event)
 {
-	qDebug() << "sottoMenu::hideEvent()" << name;
+	qDebug() << "sottoMenu::hideEvent()";
 	emit hideChildren();
 
 	// TODO: diffsonora era l'unica a chiamare hide(false), evitando quindi che
@@ -624,9 +624,10 @@ void  sottoMenu::setIndice(char c)
 
 void sottoMenu::showEvent(QShowEvent *event)
 {
-	qDebug() << "sottoMenu::showEvent()" << name;
+	qDebug() << "sottoMenu::showEvent()";
 
-	if (name == "ILLUMINO")
+	// TODO: sottoMenu deve gestire troppi casi particolari, spezzare!
+	if (objectName() == "ILLUMINO")
 		init_dimmer();
 	forceDraw();
 }

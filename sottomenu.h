@@ -226,7 +226,6 @@ private:
 	/// breaking existing code.
 	unsigned scroll_step;
 	void setModeIcon(QString iconBut4);
-	QString name; // To simulate old qt3 behavior for name of widgets.
 
 signals:
 	void goUP();
