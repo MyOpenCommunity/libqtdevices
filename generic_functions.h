@@ -24,9 +24,9 @@ QString getPressName(QString name);
  /*!
   \brief Transform a image file name into a pressed one with a index taken from a \a antiintrusion \a zone name.
 
-  The ".png" file name is converted into a "[number]p.png" file name. The first argument is the name to convert, the second is the converted name gave back from the procedure,  the third is a string like "zn" where n is the number of the \a antiintrusion \a zone and the fourth is the length of the file name.
+  Return the ".png" file name converted into a "[number]p.png" file name. The first argument is the name to convert, the second is a string like "zn" where n is the number of the \a antiintrusion \a zone.
 */
-void getZoneName(char* , char* ,char*, char );
+QString getZoneName(QString name, QString zone);
 
 /*!
   Like getZoneName, but receives an "ambiente" number

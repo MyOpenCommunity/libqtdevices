@@ -19,6 +19,7 @@
 
 #include <openwebnet.h> // class openwebnet
 
+#include <QDebug>
 #include <QTimer>
 #include <QLabel>
 
@@ -32,19 +33,14 @@
 zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, QString iconzona, QString IconDisactive,
 	QString IconActive) : bannOnIcons(parent, 0)
 {
-	char pippo[MAX_PATH];
-
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");
 	// Mail agresta 22/06
 	parzIName = IMG_PATH "btnparzializza.png";
 	sparzIName = IMG_PATH "btnsparzializza.png";
-	//mah...
-	QByteArray buffer = iconzona.toAscii();
-	getZoneName(buffer.data(), pippo, indirizzo, sizeof(pippo));
 
 	SetIcons(1, sparzIName);
-	SetIcons(2, pippo);
+	SetIcons(2, getZoneName(iconzona, indirizzo));
 	SetIcons(3, IconDisactive);
 
 	if (BannerText)

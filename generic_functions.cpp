@@ -36,15 +36,13 @@ QString getPressName(QString name)
 	return QString();
 }
 
-void getZoneName(char* name, char* pressName,char*zona, char len)
+QString getZoneName(QString name, QString zone)
 {
-	memset(pressName,'\000',len);
-	if (strstr(name,"."))
-	{
-		strncpy(pressName,name,strstr(name,".")-name);
-		strncat(pressName,&zona[1],1);
-		strcat(pressName,strstr(name,"."));
-	}
+	int pos = name.indexOf(".");
+	if (pos != -1)
+		return name.left(pos) + zone.at(1) + name.mid(pos);
+
+	return QString();
 }
 
 QString getAmbName(QString name, QString amb)
