@@ -38,7 +38,7 @@ class sottoMenu : public QWidget
 {
 Q_OBJECT
 public:
-	sottoMenu(QWidget *parent=0, const char *_name=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
+	sottoMenu(QWidget *parent=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
 	~sottoMenu();
 
 	/*!
@@ -306,7 +306,7 @@ class ProgramMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	ProgramMenu(QWidget *parent, const char *name, QDomNode conf);
+	ProgramMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners() = 0;
 	virtual void createWinterBanners() = 0;
 public slots:
@@ -326,7 +326,7 @@ class WeeklyMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	WeeklyMenu(QWidget *parent, const char *name, QDomNode conf);
+	WeeklyMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };
@@ -339,7 +339,7 @@ class ScenarioMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	ScenarioMenu(QWidget *parent, const char *name, QDomNode conf);
+	ScenarioMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };
@@ -351,7 +351,7 @@ class TimeEditMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	TimeEditMenu(QWidget *parent, const char *name);
+	TimeEditMenu(QWidget *parent=0);
 	BtTime time();
 private:
 	FSBannTime *time_edit;
@@ -369,7 +369,7 @@ class DateEditMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	DateEditMenu(QWidget *parent, const char *name);
+	DateEditMenu(QWidget *parent=0);
 	QDate date();
 private:
 	FSBannDate *date_edit;

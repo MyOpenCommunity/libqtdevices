@@ -35,7 +35,7 @@ public:
 	/**
 	 * 
 	 */
-	ThermalMenu(QWidget *parent, const char *name, QDomNode n);
+	ThermalMenu(QWidget *parent, QDomNode n);
 
 public slots:
 	/**

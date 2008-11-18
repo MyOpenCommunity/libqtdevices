@@ -24,13 +24,13 @@
 
 extern unsigned char tipoData;
 
-antintrusione::antintrusione(QWidget *parent, const char *name) : QWidget(parent)
+antintrusione::antintrusione(QWidget *parent) : QWidget(parent)
 {
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
-	zone = new sottoMenu(this,"Zone",4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
+	zone = new sottoMenu(this,4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
 	zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
-	impianto = new sottoMenu(this,"impianto",0,MAX_WIDTH, MAX_HEIGHT/numRighe,1);
+	impianto = new sottoMenu(this,0,MAX_WIDTH, MAX_HEIGHT/numRighe,1);
 	connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
 	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
 	curr_alarm = -1;

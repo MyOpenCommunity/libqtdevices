@@ -28,7 +28,7 @@ class PlantMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	PlantMenu(QWidget *parent, char *name, QDomNode conf);
+	PlantMenu(QWidget *parent, QDomNode conf);
 
 private:
 	/**

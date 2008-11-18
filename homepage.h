@@ -39,7 +39,7 @@ class homePage : public QWidget
 {
 Q_OBJECT
 public:
-	homePage(QWidget *parent, const char *name);
+	homePage(QWidget *parent=0);
 
 /*!
   \brief Adds a button to the page.

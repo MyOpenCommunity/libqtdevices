@@ -26,7 +26,7 @@
 	SupervisionMenu class definition
 ==================================================================================================*/
 
-SupervisionMenu::SupervisionMenu(QWidget *parent, const char *name, QDomNode n) : sottoMenu(parent, name)
+SupervisionMenu::SupervisionMenu(QWidget *parent, QDomNode n) : sottoMenu(parent)
 {
 	qDebug("[SUPERVISION] SupervisionMenu()");
 	subtreeRoot = n;
@@ -176,7 +176,7 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 	if (stopngoList.size() > 1)  // more than one device
 	{
 		// Show a submenu listing the devices to control
-		sottoMenu *sm = new sottoMenu(NULL, "StopnGo Group");  // Create submenu
+		sottoMenu *sm = new sottoMenu;
 		sm->hide();
 		QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));  // Connect submenu
 		QObject::connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));

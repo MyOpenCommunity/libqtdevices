@@ -20,8 +20,8 @@ static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
 static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png");
 
 
-PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf) : sottoMenu(parent, name),
-	items_submenu(0, "items submenu", 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
+PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent),
+	items_submenu(0, 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
 	signal_mapper(0)
 {
 	conf_root = conf;

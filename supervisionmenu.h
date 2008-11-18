@@ -36,7 +36,7 @@ class SupervisionMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	SupervisionMenu(QWidget *parent, const char *name, QDomNode n);
+	SupervisionMenu(QWidget *parent, QDomNode n);
 	~SupervisionMenu();
 
 private:

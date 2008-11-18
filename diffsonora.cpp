@@ -28,11 +28,11 @@ diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent),
 	// deve essere inizializzato
 	isVisual = false;
 
-	amplificatori = new sottoMenu(this, "Amplificatori", 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe, 2);
+	amplificatori = new sottoMenu(this, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe, 2);
 
 	if (!_sorgenti)
 	{
-		_sorgenti = new sottoMenu(this, "Sorgenti", 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
+		_sorgenti = new sottoMenu(this, 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
 		connect(_sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
 	}
 

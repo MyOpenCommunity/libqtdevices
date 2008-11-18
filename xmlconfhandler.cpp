@@ -788,7 +788,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 				// Leggo tutti i tag che iniziano per item
 				if (CurTagL4.startsWith("id"))
 				{
-					*home = new homePage(NULL,"homepage");
+					*home = new homePage;
 					QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*home,SLOT(gestFrame(char *)));
 					if ((!hompage_id) && (hompage_isdefined))
 						*pagDefault=*home;
@@ -841,18 +841,18 @@ bool xmlconfhandler::characters(const QString & qValue)
 					switch (page_id)
 					{
 					case AUTOMAZIONE:
-						*automazioni = new sottoMenu(NULL,"AUTOM");
+						*automazioni = new sottoMenu;
 						pageAct = *automazioni;
 						break;
 
 					case ILLUMINAZIONE:
-						*illumino = new sottoMenu(NULL);
+						*illumino = new sottoMenu;
 						(*illumino)->setObjectName("ILLUMINO");
 						pageAct = *illumino;
 						break;
 
 					case DIFSON_MULTI:
-						*dm = new diffmulti(NULL, "DIFSON_MULTI");
+						*dm = new diffmulti;
 						pageAct = *dm;
 						page_item_id_m = 0;
 						page_item_where_m = "";
@@ -860,29 +860,29 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case SCENARI:
-						*scenari = new sottoMenu(NULL,"SCENARI");
+						*scenari = new sottoMenu;
 						pageAct = *scenari;
 						break;
 
 					case CARICHI:
-						*carichi = new sottoMenu(NULL,"CARICHI");
+						*carichi = new sottoMenu;
 						pageAct = *carichi;
 						break;
 
 					case DIFSON:
-						*difSon = new diffSonora(NULL);
+						*difSon = new diffSonora;
 						pageAct = *difSon;
 						break;
 
 					case ANTIINTRUSIONE:
-						*antintr = new antintrusione(NULL,"ANTI");
+						*antintr = new antintrusione;
 						pageAct = *antintr;
 						break;
 
 					case TERMOREGOLAZIONE:
 						n = getPageNode(TERMOREGOLAZIONE);
 						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, "TERMO", n);
+							*termo = new ThermalMenu(NULL, n);
 						else
 							qWarning("TERMOREGOLAZIONE configuration not found!");
 						pageAct = *termo;
@@ -891,36 +891,36 @@ bool xmlconfhandler::characters(const QString & qValue)
 					case TERMOREG_MULTI_PLANT:
 						n = getPageNode(TERMOREG_MULTI_PLANT);
 						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, "TERMO", n);
+							*termo = new ThermalMenu(NULL, n);
 						else
 							qWarning("TERMOREG_MULTI_PLANT configuration not found!");
 						pageAct = *termo;
 						break;
 
 					case IMPOSTAZIONI:
-						*imposta = new sottoMenu(NULL,"IMPOSTA");
+						*imposta = new sottoMenu;
 						QObject::connect(*imposta,SIGNAL(setPwd(bool, QString)), BtM, SLOT(setPwd(bool, QString)));
 						pageAct = *imposta;
 						break;
 
 					case SCENARI_EVOLUTI:
-						*scenari_evoluti = new sottoMenu(NULL,"SCENARI_EVOLUTI");
+						*scenari_evoluti = new sottoMenu;
 						pageAct = *scenari_evoluti;
 						break;
 
 					case VIDEOCITOFONIA:
-						*videocitofonia = new sottoMenu(NULL, "VIDEOCITOFONIA");
+						*videocitofonia = new sottoMenu;
 						pageAct = *videocitofonia;
 						break;
 
 					case SUPERVISIONE:
 						n = getPageNode(page_id);
-						*supervisione = new SupervisionMenu(NULL, "SUPERVISIONE", n);
+						*supervisione = new SupervisionMenu(NULL, n);
 						pageAct = *supervisione;
 						break;
 
 					case SPECIAL:
-						(*specPage) = new homePage(NULL,"SPECIAL");
+						(*specPage) = new homePage;
 						(*specPage)->addButton(0,260,ICON_FRECCIA_SX ,BACK);
 						pageAct = *specPage;
 						break;

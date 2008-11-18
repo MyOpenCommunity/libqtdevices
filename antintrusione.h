@@ -38,7 +38,7 @@ class antintrusione : public QWidget
 {
 Q_OBJECT
 public:
-	antintrusione(QWidget *parent=0, const char *name=0);
+	antintrusione(QWidget *parent=0);
 	~antintrusione();
 /*!
   \brief inserts a new item in the antintrusione class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi

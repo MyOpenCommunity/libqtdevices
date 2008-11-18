@@ -1096,7 +1096,7 @@ thermal_regulator *FSBannTermoReg4z::dev()
 
 void FSBannTermoReg4z::createSettingsMenu()
 {
-	settings = new sottoMenu(0, "settings");
+	settings = new sottoMenu;
 	if (settings)
 	{
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
@@ -1150,7 +1150,7 @@ thermal_regulator *FSBannTermoReg99z::dev()
 
 void FSBannTermoReg99z::createSettingsMenu()
 {
-	settings = new sottoMenu(0, "settings");
+	settings = new sottoMenu;
 	if (settings)
 	{
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
@@ -1201,7 +1201,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	manual->SetIcons(IMG_RIGHT_ARROW, 0, i_manual);
 
 	settings->appendBanner(manual);
-	manual_menu = new sottoMenu(0, "manual", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+	manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
 	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(show()));
 	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(raise()));
 	// hide children
@@ -1236,7 +1236,7 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 	weekly->SetIcons(IMG_RIGHT_ARROW, 0, i_weekly);
 	settings->appendBanner(weekly);
 
-	program_menu = new WeeklyMenu(0, "weekly", conf);
+	program_menu = new WeeklyMenu(0, conf);
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
@@ -1295,7 +1295,7 @@ banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString 
 
 DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 {
-	DateEditMenu *date_edit = new DateEditMenu(0, "date edit");
+	DateEditMenu *date_edit = new DateEditMenu;
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), date_edit, SLOT(hide()));
 	date_edit->hide();
@@ -1306,7 +1306,7 @@ DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 
 TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 {
-	TimeEditMenu *time_edit = new TimeEditMenu(0, "time edit");
+	TimeEditMenu *time_edit = new TimeEditMenu;
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), time_edit, SLOT(hide()));
 	time_edit->hide();
@@ -1317,7 +1317,7 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 
 WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
 {
-	WeeklyMenu *program_choice = new WeeklyMenu(0, "weekly program edit", conf);
+	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_choice, SLOT(status_changed(QList<device_status*>)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), program_choice, SLOT(hide()));
@@ -1393,7 +1393,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	manual_timed->SetIcons(IMG_RIGHT_ARROW, 0, i_manual);
 
 	settings->appendBanner(manual_timed);
-	timed_manual_menu = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
+	timed_manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
 	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
 
@@ -1431,7 +1431,7 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	scenario->SetIcons(IMG_RIGHT_ARROW, 0, i_scenario);
 	settings->appendBanner(scenario);
 
-	scenario_menu = new ScenarioMenu(0, "weekly", conf);
+	scenario_menu = new ScenarioMenu(0, conf);
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), scenario_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));

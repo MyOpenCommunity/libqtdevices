@@ -23,7 +23,7 @@ static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png"
 static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
 static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
-ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n) : sottoMenu(parent, name)
+ThermalMenu::ThermalMenu(QWidget *parent, QDomNode n) : sottoMenu(parent)
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");
 	conf_root = n;
@@ -40,7 +40,7 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n) : sottoM
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config);
+	sottoMenu *sm = new PlantMenu(NULL, config);
 
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
 	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
@@ -100,7 +100,7 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 
 void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
 {
-	sottoMenu *sm = new sottoMenu(NULL, "sottomenu extprobe");
+	sottoMenu *sm = new sottoMenu;
 	single_submenu = sm;
 	// we want to scroll external probes per pages and not per probes
 	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)

@@ -80,10 +80,10 @@ dati_ampli_multi::~dati_ampli_multi()
 }
 
 
-diffmulti::diffmulti(QWidget *parent, const char *name, uchar navBarMode,int wi,int hei, uchar n)
-	: sottoMenu(parent, name, navBarMode, wi, hei, n)
+diffmulti::diffmulti(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n)
+	: sottoMenu(parent, navBarMode, wi, hei, n)
 {
-	sorgenti = new sottoMenu(this,"Sorgenti",0,MAX_WIDTH, MAX_HEIGHT/4 - 3,1);
+	sorgenti = new sottoMenu(this,0,MAX_WIDTH, MAX_HEIGHT/4 - 3,1);
 	matr = btouch_device_cache.get_sound_matr_device();
 
 	// Get status changed events back

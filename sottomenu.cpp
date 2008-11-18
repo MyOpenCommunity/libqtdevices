@@ -48,7 +48,7 @@
 
 #define IMG_OK IMG_PATH "btnok.png"
 
-sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi,int hei, uchar n)
+sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n)
 	:QWidget(parent)
 {
 	numRighe = n;
@@ -687,7 +687,7 @@ QDomNode sottoMenu::findNamedNode(QDomNode root, QString name)
 
 // Specialized submenus function definition
 //
-ProgramMenu::ProgramMenu(QWidget *parent, const char *name, QDomNode conf) : sottoMenu(parent, name)
+ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
 {
 	conf_root = conf;
 }
@@ -730,7 +730,7 @@ void ProgramMenu::status_changed(QList<device_status*> sl)
 }
 
 
-WeeklyMenu::WeeklyMenu(QWidget *parent, const char *name, QDomNode conf) : ProgramMenu(parent, name, conf)
+WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
 {
 	season = thermal_regulator::SUMMER;
 	createSummerBanners();
@@ -812,7 +812,7 @@ void WeeklyMenu::createWinterBanners()
 	}
 }
 
-ScenarioMenu::ScenarioMenu(QWidget *parent, const char *name, QDomNode conf) : ProgramMenu(parent, name, conf)
+ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
 {
 	season = thermal_regulator::SUMMER;
 	createSummerBanners();
@@ -895,7 +895,7 @@ void ScenarioMenu::createWinterBanners()
 }
 
 
-TimeEditMenu::TimeEditMenu(QWidget *parent, const char *name) : sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
+TimeEditMenu::TimeEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
 	setNavBarMode(10, IMG_OK);
 	time_edit = new FSBannTime(this);
@@ -913,7 +913,7 @@ BtTime TimeEditMenu::time()
 	return time_edit->time();
 }
 
-DateEditMenu::DateEditMenu(QWidget *parent, const char *name) : sottoMenu(parent, name, 10, MAX_WIDTH, MAX_HEIGHT, 1)
+DateEditMenu::DateEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
 	setNavBarMode(10, IMG_OK);
 	date_edit = new FSBannDate(this);

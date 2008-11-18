@@ -48,7 +48,7 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char *indirizz
 	off_icon = offIcon;
 	on_icon = onIcon;
 	status = false;
-	settings_page = new sottoMenu(NULL, "PowerAmplifierSettings");
+	settings_page = new sottoMenu(NULL);
 
 	QList<QString*> icons;
 	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), (char *)NULL, icons);

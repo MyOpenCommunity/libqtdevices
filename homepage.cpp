@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 
-homePage::homePage(QWidget *parent, const char *name) : QWidget(parent)
+homePage::homePage(QWidget *parent) : QWidget(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
