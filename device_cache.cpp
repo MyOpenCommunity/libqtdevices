@@ -35,17 +35,12 @@ void device_cache::connect_comm(device *dev)
 {
 	client_monitor->connect(client_monitor, SIGNAL(frameIn(char *)),
 			dev, SLOT(frame_rx_handler(char *)));
-	client_comandi->connect(dev, SIGNAL(send_frame(char *)),
-			client_comandi, SLOT(ApriInviaFrameChiudi(char *)));
 }
 
 void device_cache::disconnect_comm(device *dev)
 {
 	client_monitor->disconnect(client_monitor, SIGNAL(frameIn(char *)),
 			dev, SLOT(frame_rx_handler(char *)));
-	client_comandi->disconnect(dev, SIGNAL(send_frame(char *)),
-			client_comandi, 
-			SLOT(ApriInviaFrameChiudi(char *)));
 }
 
 // Get device given key , create it if it doesn't exist

@@ -48,8 +48,6 @@ signals:
 	void status_changed(QList<device_status*>);
 	//! Invoked after successful initialization
 	void initialized(device_status *);
-	//! We want to send a frame
-	void send_frame(char *);
 	//! We want a frame to be handled
 	void handle_frame(char *, QList<device_status*>);
 public slots:
