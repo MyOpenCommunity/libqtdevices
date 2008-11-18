@@ -44,10 +44,6 @@
 
 #define CFG_FILE MY_FILE_USER_CFG_DEFAULT
 
-#ifndef min
-# define min(a, b) ((a) < (b)) ? (a) : (b)
-#endif
-
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
@@ -381,7 +377,7 @@ void BtMain::gesScrSav()
 		tiempo_last_ev = now();
 		event_unfreeze = false;
 	}
-	tiempo = min(tiempo_press, (now() - tiempo_last_ev));
+	tiempo = qMin(tiempo_press, (now() - tiempo_last_ev));
 
 	if (!firstTime)
 	{
