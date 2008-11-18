@@ -193,41 +193,35 @@ grAmplificatori::grAmplificatori(QWidget *parent,const char *name,QList<QString 
 
 void grAmplificatori::Attiva()
 {
-	char pippo[50];
-	char ind[3];
-
 	for (int i = 0; i < elencoDisp.size(); ++i)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp.at(i).toAscii();
-		sprintf(ind, "%s", buf.constData());
-		if (strcmp(ind, "0") == 0)
-			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
-		else if (ind[0] == '#')
-			sprintf(pippo,"*22*34#4#%c*4#%c##",ind[1], ind[1]);
+		QString ind = elencoDisp.at(i);
+		QString f;
+		if (ind == "0")
+			f = QString("*22*34#4#%1*5#3#%1##").arg(ind.at(0));
+		else if (ind.at(0) == '#')
+			f = QString("*22*34#4#%1*4#%1##").arg(ind.at(1));
 		else
-			sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-		dev->sendFrame(pippo);
+			f = QString("*22*34#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1));
+
+		dev->sendFrame(f);
 	}
 }
 
 void grAmplificatori::Disattiva()
 {
-	char pippo[50];
-	char ind[3];
-
 	for (int i = 0; i < elencoDisp.size(); ++i)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp.at(i).toAscii();
-		sprintf(ind, "%s", buf.constData());
-		if (strcmp(ind, "0") == 0)
-			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
-		else if (ind[0] == '#')
-			sprintf(pippo,"*22*0#4#%c*4#%c##",ind[1], ind[1]);
+		QString ind = elencoDisp.at(i);
+		QString f;
+		if (ind == "0")
+			f = QString("*22*0#4#%1*5#3#%1##").arg(ind.at(0));
+		else if (ind.at(0) == '#')
+			f = QString("*22*0#4#%1*4#%1##").arg(ind.at(1));
 		else
-			sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-		dev->sendFrame(pippo);
+			f = QString("*22*0#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1));
+
+		dev->sendFrame(f);
 	}
 }
 
