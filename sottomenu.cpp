@@ -71,7 +71,6 @@ sottoMenu::sottoMenu(QWidget *parent, const char *_name, uchar navBarMode,int wi
 		connect(bannNavigazione,SIGNAL(upClick()),this,SLOT(goUp()));
 		connect(bannNavigazione,SIGNAL(downClick()),this,SLOT(goDown()));
 		connect(bannNavigazione,SIGNAL(forwardClick()),this,SIGNAL(goDx()));
-
 	}
 
 	indice = 0;
@@ -383,7 +382,7 @@ void sottoMenu::connectLastBanner()
 	banner *last = elencoBanner.last();
 	connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 	connect(this, SIGNAL(parentChanged(QWidget *)), last, SLOT(grandadChanged(QWidget *)));
-connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
+	connect(last, SIGNAL(richStato(char*)), this, SIGNAL(richStato(char*)));
 }
 
 void sottoMenu::showItem(int id)
