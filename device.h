@@ -20,7 +20,6 @@ class device : public QObject
 Q_OBJECT
 
 public:
-	//! Constructor
 	device(QString who, QString where, bool p=false, int g=-1);
 	//! Init device: send messages initializing data
 	virtual void init(bool force = false);
@@ -38,12 +37,9 @@ public:
 	int put();
 	//! Returns cache key
 	QString get_key(void);
-
-	void setClients(Client *comandi, Client *monitor, Client *richieste);
-
-	//! Destructor
 	virtual ~device();
 
+	// TODO: rendere protected!
 	void sendFrame(QString frame);
 	void sendInit(QString frame);
 

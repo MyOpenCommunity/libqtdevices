@@ -36,10 +36,7 @@ void device_cache::connect_comm(device *dev)
 	client_monitor->connect(client_monitor, SIGNAL(frameIn(char *)),
 			dev, SLOT(frame_rx_handler(char *)));
 	client_comandi->connect(dev, SIGNAL(send_frame(char *)),
-			client_comandi, 
-			SLOT(ApriInviaFrameChiudi(char *)));
-
-	dev->setClients(client_comandi, client_monitor, client_richieste);
+			client_comandi, SLOT(ApriInviaFrameChiudi(char *)));
 }
 
 void device_cache::disconnect_comm(device *dev)

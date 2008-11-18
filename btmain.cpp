@@ -560,3 +560,15 @@ QPixmap* BtMain::getIcon(QString name, const char *format, Qt::ImageConversionFl
 {
 	return icons_library.getIcon(name, format, flags);
 }
+
+void BtMain::sendFrame(QString frame)
+{
+	QByteArray buf = frame.toAscii();
+	client_comandi->ApriInviaFrameChiudi(buf.constData());
+}
+
+void BtMain::sendInit(QString frame)
+{
+	QByteArray buf = frame.toAscii();
+	client_richieste->ApriInviaFrameChiudi(buf.constData());
+}

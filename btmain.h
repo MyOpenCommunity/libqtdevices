@@ -56,7 +56,13 @@ public:
 	/// Set on/off the sveglia status
 	void svegl(bool);
 
+	// Return a pixmap* to the icon with 'name', using the cache of icons.
 	QPixmap* getIcon(QString name, const char *format=0, Qt::ImageConversionFlags flags=Qt::AutoColor);
+
+	// A global way to send frames/init requests. Do not use these directly, prefer using
+	// devices specific methods.
+	void sendFrame(QString frame);
+	void sendInit(QString frame);
 
 private slots:
 	void hom();

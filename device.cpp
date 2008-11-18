@@ -1,8 +1,10 @@
 
-#include "openclient.h"
 #include "device.h"
+#include "openclient.h"
 #include "frame_interpreter.h"
 #include "device_cache.h"
+#include "btmain.h"
+#include "main.h"
 
 #include <openmsg.h>
 
@@ -30,23 +32,14 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 	refcount = 0;
 }
 
-void device::setClients(Client *comandi, Client *monitor, Client *richieste)
-{
-	client_comandi = comandi;
-	client_monitor = monitor;
-	client_richieste = richieste;
-}
-
 void device::sendFrame(QString frame)
 {
-	QByteArray buf = frame.toAscii();
-	client_comandi->ApriInviaFrameChiudi(buf.constData());
+	BTouch->sendFrame(frame);
 }
 
 void device::sendInit(QString frame)
 {
-	QByteArray buf = frame.toAscii();
-	client_richieste->ApriInviaFrameChiudi(buf.constData());
+	BTouch->sendInit(frame);
 }
 
 void device::init(bool force)
