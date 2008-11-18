@@ -21,6 +21,7 @@
 
 #include <QLCDNumber>
 #include <QCursor>
+#include <QDebug>
 #include <QLabel>
 #include <QTimer>
 
@@ -681,7 +682,7 @@ void StopngoPage::AutotestClick()
 	QString what = statusBmp & STATUS_BIT_AUTOTEST_DISABLED ? OPEN_WHAT_AUTOTEST_ON : OPEN_WHAT_AUTOTEST_OFF;
 	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
 	BTouch->sendFrame(f);
-	QString f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
 	BTouch->sendFrame(f);
 }
 
