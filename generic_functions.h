@@ -31,8 +31,6 @@ QString getZoneName(QString name, QString zone);
 /*!
   Like getZoneName, but receives an "ambiente" number
 */
-void getAmbName(char *, char *, char *, char);
-
 QString getAmbName(QString name, QString amb);
 
  /*!

@@ -33,10 +33,8 @@
 ambDiffSon::ambDiffSon(QWidget *parent, QString _name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
 	QList<dati_ampli_multi*> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent), name(_name)
 {
-	qDebug() << "ambDiffSon::ambDiffSon() : " << indirizzo << " " << IconaSx << " " << IconaDx << " " << icon;
-	QString zoneIcon = getAmbName(IconaSx, indirizzo);
-	qDebug() << "zoneIcon = " << zoneIcon;
-	SetIcons(icon, zoneIcon, IconaDx);
+	qDebug() << "ambDiffSon::ambDiffSon()";
+	SetIcons(icon, getAmbName(IconaSx, indirizzo), IconaDx);
 	Draw();
 	setAddress(indirizzo);
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
