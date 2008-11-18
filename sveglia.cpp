@@ -433,7 +433,7 @@ void sveglia::verificaSveglia()
 			else if (tipo == FRAME)
 			{
 				qDebug() << "mando la frame:" << frame;
-				BTouch->sendFrame(frame.toAscii().data());
+				BTouch->sendFrame(frame);
 			}
 
 			qDebug("PARTE LA SVEGLIA");
