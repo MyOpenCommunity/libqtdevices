@@ -16,6 +16,7 @@
 #include "stopngo.h"
 #include "fontmanager.h"
 #include "device.h"
+#include "btmain.h"
 #include "main.h"
 
 #include <QLCDNumber>
@@ -588,7 +589,7 @@ void StopngoPage::SetStatusIcon(const char* iconPath)
 	if (!iconPath)
 		return;
 	
-	statusIcon->setPixmap(*icons_library.getIcon(iconPath));
+	statusIcon->setPixmap(*BTouch->getIcon(iconPath));
 }
 
 void StopngoPage::SetButtonIcon(BtButton *btn, const char *icnPath)

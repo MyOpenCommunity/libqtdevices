@@ -37,8 +37,6 @@ struct GlobalConfig
 	QString log_file;
 };
 
-// Instance global object to handle icons
-IconDispatcher icons_library;
 
 // Instance DOM global object to handle configuration.
 QDomDocument qdom_appconfig;

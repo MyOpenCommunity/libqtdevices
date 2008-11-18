@@ -17,6 +17,7 @@
 #include "fontmanager.h"
 #include "mediaplayer.h"
 #include "btbutton.h"
+#include "btmain.h"
 #include "main.h"
 
 #include <QApplication>
@@ -568,7 +569,7 @@ void FileSelector::destroyWaitDialog(QLabel *l)
 QLabel *FileSelector::createWaitDialog()
 {
 	QLabel* l = new QLabel((QWidget*)parent());
-	QPixmap *icon = icons_library.getIcon(IMG_WAIT);
+	QPixmap *icon = BTouch->getIcon(IMG_WAIT);
 	l->setPixmap(*icon);
 
 	QRect r = icon->rect();

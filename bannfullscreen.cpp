@@ -17,6 +17,8 @@
 #include "bannsettings.h"
 #include "device_cache.h"
 #include "scaleconversion.h"
+#include "btmain.h"
+#include "main.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -47,7 +49,7 @@ void setWidgetVisible(QWidget *w, bool visible)
 QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 {
 	QLabel *tmp = new QLabel(parent);
-	tmp->setPixmap(*icons_library.getIcon(img));
+	tmp->setPixmap(*BTouch->getIcon(img));
 	tmp->setAlignment((Qt::Alignment)alignment);
 	return tmp;
 }
@@ -801,7 +803,7 @@ FSBannDate::FSBannDate(QWidget *parent, const char *name)
 {
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	QLabel *top = new QLabel(this);
-	top->setPixmap(*icons_library.getIcon(top_img));
+	top->setPixmap(*BTouch->getIcon(top_img));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	date_edit = new BtDateEdit(this);
@@ -819,7 +821,7 @@ FSBannTime::FSBannTime(QWidget *parent, const char *name)
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	QLabel *top = new QLabel(this);
-	top->setPixmap(*icons_library.getIcon(i_top_img));
+	top->setPixmap(*BTouch->getIcon(i_top_img));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	time_edit = new BtTimeEdit(this);
@@ -899,7 +901,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case thermal_regulator::SUMMER:
 				{
 					const QString img = QString(IMG_PATH) + "estate_s.png";
-					QPixmap *icon = icons_library.getIcon(img);
+					QPixmap *icon = BTouch->getIcon(img);
 					season_icon->setPixmap(*icon);
 					season = thermal_regulator::SUMMER;
 				}
@@ -907,7 +909,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case thermal_regulator::WINTER:
 				{
 					const QString img = QString(IMG_PATH) + "inverno_s.png";
-					QPixmap *icon = icons_library.getIcon(img);
+					QPixmap *icon = BTouch->getIcon(img);
 					season_icon->setPixmap(*icon);
 					season = thermal_regulator::WINTER;
 				}
@@ -920,14 +922,14 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			{
 			case device_status_thermal_regulator::OFF:
 				{
-					QPixmap *icon = icons_library.getIcon(IMG_OFF_S);
+					QPixmap *icon = BTouch->getIcon(IMG_OFF_S);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}
 				break;
 			case device_status_thermal_regulator::PROTECTION:
 				{
-					QPixmap *icon = icons_library.getIcon(IMG_ANTIFREEZE_S);
+					QPixmap *icon = BTouch->getIcon(IMG_ANTIFREEZE_S);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}
@@ -940,7 +942,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 						i_img += "manuale.png";
 					else
 						i_img += "manuale_temporizzato.png";
-					QPixmap *icon = icons_library.getIcon(i_img);
+					QPixmap *icon = BTouch->getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 					stat_var curr_sp(stat_var::SP);
 					ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
@@ -965,7 +967,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::WEEK_PROGRAM:
 				{
 					const QString i_img = QString(IMG_PATH) + "settimanale.png";
-					QPixmap *icon = icons_library.getIcon(i_img);
+					QPixmap *icon = BTouch->getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 
 					stat_var curr_program(stat_var::PROGRAM);
@@ -989,7 +991,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::SCENARIO:
 				{
 					const QString i_img = QString(IMG_PATH) + "scenari.png";
-					QPixmap *icon = icons_library.getIcon(i_img);
+					QPixmap *icon = BTouch->getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 
 					stat_var curr_scenario(stat_var::SCENARIO);
@@ -1011,7 +1013,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::HOLIDAY:
 				{
 					const QString i_img = QString(IMG_PATH) + "feriale.png";
-					QPixmap *icon = icons_library.getIcon(i_img);
+					QPixmap *icon = BTouch->getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}
@@ -1019,7 +1021,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::WEEKEND:
 				{
 					const QString i_img = QString(IMG_PATH) + "festivo.png";
-					QPixmap *icon = icons_library.getIcon(i_img);
+					QPixmap *icon = BTouch->getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}

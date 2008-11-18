@@ -36,6 +36,7 @@
 #include <QCursor>
 #include <QBitmap>
 #include <QPixmap>
+#include <QString>
 #include <QTimer>
 #include <QFile>
 
@@ -557,4 +558,9 @@ void BtMain::resetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
 	emit resettimer();
+}
+
+QPixmap* BtMain::getIcon(QString name, const char *format, Qt::ImageConversionFlags flags)
+{
+	return icons_library.getIcon(name, format, flags);
 }

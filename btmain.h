@@ -11,6 +11,8 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
+#include "icondispatcher.h"
+
 #include <QWidget>
 
 class sottoMenu;
@@ -26,6 +28,8 @@ class Client;
 class tastiera;
 class ScreenSaver;
 class SupervisionMenu;
+class QPixmap;
+class QString;
 
 /*!
   \class BtMain
@@ -51,6 +55,8 @@ public:
 	void freeze(bool);
 	/// Set on/off the sveglia status
 	void svegl(bool);
+
+	QPixmap* getIcon(QString name, const char *format=0, Qt::ImageConversionFlags flags=Qt::AutoColor);
 
 private slots:
 	void hom();
@@ -99,6 +105,8 @@ private:
 	bool monitor_ready;
 	// A flag that is set when the configuration has loaded
 	bool config_loaded;
+	// The manager of icons
+	IconDispatcher icons_library;
 
 	void myMain();
 	/// Load the main configuration

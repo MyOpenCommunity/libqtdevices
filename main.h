@@ -36,33 +36,6 @@ class BtMain;
 extern BtMain *BTouch;
 
 /****************************************************************
- ** ICONS LIBRARY
- ****************************************************************/
-/**
- * Icons is a vector with pointers to QPixmap.
- * When an icon is needed, iconsLibrary is asked to create
- * a QPixmap and return the pointer. This pointer is stored
- * in Icons, instead to manually create a QPixmap and store the
- * pointer. In this way iconsLibrary do not waste memory.
- *
- * For instance if we have
- *
- * if(!Icon[0])
- * Icon[0] = new QPixmap();
- * Icon[0]->load(actuallcon);
- *
- * we instead write
- *
- * if(!Icon[0]) Icon[0] = iconsLibrary.getIcon(actuallcon)
- *
- * NOW iconsLibrary has its own destructor for icons
- * no need to destroy them in banner
- */
-/// We use a global object to handle icons_library because different classes need icons.
-extern IconDispatcher icons_library;
-
-
-/****************************************************************
  ** Default configurazione applicativo
  ****************************************************************/
 /*! \def MYPROCESSNAME

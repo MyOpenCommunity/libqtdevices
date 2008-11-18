@@ -1,6 +1,7 @@
 #include "cleanscreen.h"
 #include "xml_functions.h" // getChildWithId
 #include "fontmanager.h"
+#include "btmain.h"
 #include "main.h"
 
 #include <QRegExp>
@@ -30,7 +31,7 @@ CleanScreen::CleanScreen(QWidget *parent) : QWidget(parent)
 	time_label->setGeometry(TIME_LABEL_X, TIME_LABEL_Y, TIME_LABEL_WIDTH, TIME_LABEL_HEIGHT);
 
 	icon_label = new QLabel(this);
-	QPixmap *icon = icons_library.getIcon(CLEANSCREEN_ICON);
+	QPixmap *icon = BTouch->getIcon(CLEANSCREEN_ICON);
 	icon_label->setPixmap(*icon);
 	icon_label->setAlignment(Qt::AlignHCenter);
 	icon_label->setGeometry(ICON_LABEL_X, ICON_LABEL_Y, ICON_LABEL_WIDTH, ICON_LABEL_HEIGHT);

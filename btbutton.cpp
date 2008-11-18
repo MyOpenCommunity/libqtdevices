@@ -1,4 +1,5 @@
 #include "btbutton.h"
+#include "btmain.h"
 #include "main.h"
 #include "generic_functions.h" // beep
 
@@ -14,7 +15,7 @@ BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 
 void BtButton::setImage(const QString &icon_path, IconFlag f)
 {
-	pixmap = *icons_library.getIcon(icon_path);
+	pixmap = *BTouch->getIcon(icon_path);
 
 	if (f == LOAD_PRESSED_ICON)
 	{
@@ -26,7 +27,7 @@ void BtButton::setImage(const QString &icon_path, IconFlag f)
 
 void BtButton::setPressedImage(const QString &pressed_icon)
 {
-	pressed_pixmap = *icons_library.getIcon(pressed_icon);
+	pressed_pixmap = *BTouch->getIcon(pressed_icon);
 }
 
 void BtButton::setPressedPixmap(const QPixmap &p)
