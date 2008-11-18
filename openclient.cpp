@@ -53,12 +53,7 @@ void Client::socketConnected()
 		qDebug("TRY TO START command");
 }
 
-// FIX: remove this slot!
-void Client::ApriInviaFrameChiudi(char* frame)
-{
-	ApriInviaFrameChiudi(const_cast<const char*>(frame));
-}
-
+// TODO: rendere frame una QString!
 void Client::ApriInviaFrameChiudi(const char* frame)
 {
 	qDebug("Client::ApriInviaFrameChiudi()");

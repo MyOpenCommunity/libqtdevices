@@ -48,7 +48,6 @@ public:
 
 public slots:
 	void ApriInviaFrameChiudi(const char *);
-	void ApriInviaFrameChiudi(char *);
 
 private slots:
 	void connetti();
