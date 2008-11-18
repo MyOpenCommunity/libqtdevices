@@ -77,16 +77,10 @@ sstop : soft stop values list vor dimmer 100 group
 		QList<int> sttop = QList<int>(), QString txt1="", QString txt2="", QString txt3="");
 
 	/**
-	 * Overloaded member function that takes a QList<QString *> *indirizzo parameter
+	 * Overloaded member function that takes a QList<QString> indirizzo parameter
 	 */
-	int addItemU(char tipo, const QString & nome, QList<QString *> *indirizzo,
-		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0,
-		char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
-		int par3=0, int par4=0,
-		QList<QString*> *lt = NULL, QList<scenEvo_cond*> *lc = NULL,
-		QString action="", QString light="", QString key="", QString unk="",
-		QList<int> sstart = QList<int>(),
-		QList<int> sttop = QList<int>(), QString txt1="", QString txt2="", QString txt3="");
+	int addItemU(char tipo, const QString & nome, QList<QString> indirizzo,
+		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0);
 
 	/**
 	* Add a new banner.

@@ -63,7 +63,12 @@ int diffSonora::addItemU(char tipo, const QString &description, QList<QString *>
 {
 	if (tipo == GR_AMPLIFICATORI)
 	{
-		amplificatori->addItemU(tipo, description, indirizzo, icon_names);
+		// TODO: rimuovere questa conversione, modificando l'xmlconfhandler!
+		QList <QString> ind;
+		for (int i = 0; i < indirizzo->size(); ++i)
+			ind.append(*indirizzo->at(i));
+
+		amplificatori->addItemU(tipo, description, ind, icon_names);
 		return 1;
 	}
 	else

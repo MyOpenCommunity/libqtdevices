@@ -121,32 +121,20 @@ void sottoMenu::setModeIcon(QString iconBut4)
 	bannNavigazione->Draw();
 }
 
-int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString *> *indirizzo,
-		QList<QString*> &icon_names, int periodo, int numFrame,
-		char *descr1, char *descr2, char *descr3, char *descr4,
-		int par3, int par4,
-		QList<QString*> *lt, QList<scenEvo_cond*> *lc,
-		QString action, QString light, QString key, QString unknown,
-		QList<int> sstart, QList<int> sstop,
-		QString txt1, QString txt2, QString txt3)
+int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString> indirizzo,
+	QList<QString*> &icon_names, int periodo, int numFrame)
 {
 	// TODO: codice duplicato da sotto, da cambiare
 	QByteArray buf_descr = qdescrizione.toAscii();
 	const char * descrizione = buf_descr.constData();
 
-	qDebug("sottoMenu::addItem(lista), lt = (%p)", lt);
+	qDebug("sottoMenu::addItem(lista)");
 	switch (tipo)
 	{
 	case GR_AMPLIFICATORI:
-		{
-		QList <QString> ind;
-		for (int i = 0; i < indirizzo->size(); ++i)
-			ind.append(*indirizzo->at(i));
-
-		elencoBanner.append(new grAmplificatori(this,descrizione, ind, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
+		elencoBanner.append(new grAmplificatori(this,descrizione, indirizzo, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
 			*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
 		break;
-		}
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}
