@@ -66,7 +66,6 @@ class grAmplificatori : public bannRegolaz
 Q_OBJECT
 public:
 	grAmplificatori(QWidget *parent=0, const char *name=NULL ,QList<QString *> *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
-	~grAmplificatori();
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
@@ -74,8 +73,7 @@ private slots:
 	void Aumenta();
 	void Diminuisci();
 private:
-	// TODO: rendere elencoDisp un QList<QString>!! Adesso viene costruito in ambdiffson e distrutto qui!
-	QList<QString*> *elencoDisp;
+	QList<QString> elencoDisp;
 	device *dev;
 };
 

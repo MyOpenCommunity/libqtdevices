@@ -178,9 +178,11 @@ void amplificatore::inizializza(bool forza)
  ****************************************************************/
 
 grAmplificatori::grAmplificatori(QWidget *parent,const char *name,QList<QString *> *indirizzi,QString IconaSx,
-	QString IconaDx, QString iconsx, QString icondx)
-	: bannRegolaz(parent, name), elencoDisp(indirizzi)
+	QString IconaDx, QString iconsx, QString icondx) : bannRegolaz(parent, name)
 {
+	for (int i = 0; i < indirizzi->size(); ++i)
+		elencoDisp.append(*indirizzi->at(i));
+
 	SetIcons(IconaSx, IconaDx, icondx, iconsx);
 	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
@@ -189,22 +191,15 @@ grAmplificatori::grAmplificatori(QWidget *parent,const char *name,QList<QString 
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
-grAmplificatori::~grAmplificatori()
-{
-	// TODO: Viene distrutto da xmlconfhandler.. se creato da lui!! Altrimenti
-	// c'e' un memory leak! Sistemare cambiando la gestione dell'indirizzo!
-	//delete elencoDisp;
-}
-
 void grAmplificatori::Attiva()
 {
 	char pippo[50];
 	char ind[3];
 
-	for (int i = 0; i < elencoDisp->size(); ++i)
+	for (int i = 0; i < elencoDisp.size(); ++i)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp->at(i)->toAscii();
+		QByteArray buf = elencoDisp.at(i).toAscii();
 		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
@@ -221,10 +216,10 @@ void grAmplificatori::Disattiva()
 	char pippo[50];
 	char ind[3];
 
-	for (int i = 0; i < elencoDisp->size(); ++i)
+	for (int i = 0; i < elencoDisp.size(); ++i)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		QByteArray buf = elencoDisp->at(i)->toAscii();
+		QByteArray buf = elencoDisp.at(i).toAscii();
 		sprintf(ind, "%s", buf.constData());
 		if (strcmp(ind, "0") == 0)
 			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
@@ -240,10 +235,10 @@ void grAmplificatori::Aumenta()
 {
 	openwebnet msg_open;
 
-	for (int i = 0; i < elencoDisp->size(); ++i)
+	for (int i = 0; i < elencoDisp.size(); ++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp->at(i)->toAscii();
+		QByteArray buf = elencoDisp.at(i).toAscii();
 		msg_open.CreateMsgOpen("16", "1001",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
@@ -253,10 +248,10 @@ void grAmplificatori::Diminuisci()
 {
 	openwebnet msg_open;
 
-	for (int i = 0; i < elencoDisp->size(); ++i)
+	for (int i = 0; i < elencoDisp.size(); ++i)
 	{
 		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp->at(i)->toAscii();
+		QByteArray buf = elencoDisp.at(i).toAscii();
 		msg_open.CreateMsgOpen("16", "1101",buf.data(),"");
 		dev->sendFrame(msg_open.frame_open);
 	}
