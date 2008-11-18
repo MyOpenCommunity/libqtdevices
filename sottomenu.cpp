@@ -138,9 +138,15 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString *
 	switch (tipo)
 	{
 	case GR_AMPLIFICATORI:
-		elencoBanner.append(new grAmplificatori(this,descrizione, indirizzo, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
+		{
+		QList <QString> ind;
+		for (int i = 0; i < indirizzo->size(); ++i)
+			ind.append(*indirizzo->at(i));
+
+		elencoBanner.append(new grAmplificatori(this,descrizione, ind, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
 			*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
 		break;
+		}
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}
