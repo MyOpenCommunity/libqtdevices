@@ -19,7 +19,7 @@
 #include <qwidget.h>
 #include <qptrlist.h>
 #include <qstring.h>
-
+#include <qtimer.h>
 
 class sottoMenu;
 class zonaAnti;
@@ -38,6 +38,7 @@ class antintrusione : public QWidget
 {
 Q_OBJECT
 public:
+        QTimer request_timer;
 	antintrusione(QWidget *parent=0, const char *name=0);
 /*!
   \brief sets the background color giving RGB values
@@ -177,7 +178,7 @@ must be displayed.
 */
 	void hide();
 	void show();
-
+	void request();
 private:
 /*!
   \param <numRighe> row number of the object

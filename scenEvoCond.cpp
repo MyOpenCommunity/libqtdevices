@@ -170,7 +170,7 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(paren
 	ora = NULL;
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
-	cond_time = new QDateTime(QDateTime::currentDateTime());
+	cond_time = new QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
 	ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
 	hasTimeCondition = true;
 }
@@ -420,8 +420,12 @@ void scenEvo_cond_h::setFGColor(QColor c)
 
 void scenEvo_cond_h::setupTimer()
 {
-	QDateTime now = QDateTime::currentDateTime();
+	QDateTime now = QDateTime::currentDateTime(Qt::LocalTime);
 	int secsto = now.secsTo(*cond_time);
+	
+	while(secsto >=  24 * 60 * 60)
+		secsto -= 24 * 60 * 60;
+
 	while (secsto <= 0)
 		// Do it tomorrow
 		secsto += 24 * 60 * 60;

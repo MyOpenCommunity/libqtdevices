@@ -107,6 +107,8 @@ void antintrusione::Parz(char* pwd)
 end:
 	impianto->show();
 	zone->show();
+	connect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
+        request_timer.start(5000);
 }
 
 void antintrusione::testranpo()
@@ -434,4 +436,11 @@ void antintrusione::hide()
 	emit sendFrame("*#5*#6##");
 	emit sendFrame("*#5*#7##");
 	emit sendFrame("*#5*#8##");
+}
+
+void antintrusione::request()
+{
+	request_timer.stop();
+	disconnect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
+	sendInit("*#5*0##");
 }
