@@ -42,7 +42,7 @@
 
 #include <sys/sysinfo.h>
 
-#define CFG_FILE "cfg/conf.xml"
+#define CFG_FILE MY_FILE_USER_CFG_DEFAULT
 
 #ifndef min
 # define min(a, b) ((a) < (b)) ? (a) : (b)
