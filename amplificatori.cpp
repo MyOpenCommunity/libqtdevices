@@ -191,38 +191,31 @@ grAmplificatori::grAmplificatori(QWidget *parent,const char *name,QList<QString 
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
-void grAmplificatori::Attiva()
+void grAmplificatori::sendActivationFrame(QString argm)
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
 	{
 		QString ind = elencoDisp.at(i);
 		QString f;
 		if (ind == "0")
-			f = QString("*22*34#4#%1*5#3#%1##").arg(ind.at(0));
+			f = QString("*22*%2#4#%1*5#3#%1##").arg(ind.at(0)).arg(argm);
 		else if (ind.at(0) == '#')
-			f = QString("*22*34#4#%1*4#%1##").arg(ind.at(1));
+			f = QString("*22*%2#4#%1*4#%1##").arg(ind.at(1)).arg(argm);
 		else
-			f = QString("*22*34#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1));
+			f = QString("*22*%3#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1)).arg(argm);
 
 		dev->sendFrame(f);
 	}
 }
 
+void grAmplificatori::Attiva()
+{
+	sendActivationFrame("34");
+}
+
 void grAmplificatori::Disattiva()
 {
-	for (int i = 0; i < elencoDisp.size(); ++i)
-	{
-		QString ind = elencoDisp.at(i);
-		QString f;
-		if (ind == "0")
-			f = QString("*22*0#4#%1*5#3#%1##").arg(ind.at(0));
-		else if (ind.at(0) == '#')
-			f = QString("*22*0#4#%1*4#%1##").arg(ind.at(1));
-		else
-			f = QString("*22*0#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1));
-
-		dev->sendFrame(f);
-	}
+	sendActivationFrame("0");
 }
 
 void grAmplificatori::Aumenta()

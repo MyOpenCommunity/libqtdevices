@@ -75,6 +75,7 @@ private slots:
 private:
 	QList<QString> elencoDisp;
 	device *dev;
+	void sendActivationFrame(QString argm);
 };
 
 #endif
