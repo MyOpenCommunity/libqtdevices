@@ -28,7 +28,7 @@ class bann4tasLab : public banner
 {
 Q_OBJECT
 public:
-	bann4tasLab(QWidget * parent=NULL, const char *name=NULL);
+	bann4tasLab(QWidget * parent=NULL);
 };
 
 

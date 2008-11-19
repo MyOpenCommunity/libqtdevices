@@ -1019,7 +1019,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					{
 						if (!page_item_cond)
 						{
-							page_item_cond = new scenEvo_cond_h(NULL, "cond h s.evo.");
+							page_item_cond = new scenEvo_cond_h(NULL);
 							QObject::connect(BtM, SIGNAL(resettimer()), page_item_cond, SLOT(setupTimer()));
 						}
 						scenEvo_cond_h *ch = (scenEvo_cond_h *)page_item_cond;
@@ -1065,7 +1065,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					{
 						// Device condition
 						if (!page_item_cond)
-							page_item_cond = new scenEvo_cond_d(NULL,"scen. evo. c.disp.");
+							page_item_cond = new scenEvo_cond_d(NULL);
 						scenEvo_cond_d *cd = (scenEvo_cond_d *)page_item_cond;
 						if (!CurTagL6.compare("value"))
 						{

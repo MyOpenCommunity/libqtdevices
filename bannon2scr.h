@@ -33,7 +33,7 @@ class bannOn2scr : public banner
 {
 Q_OBJECT
 public:
-	bannOn2scr(QWidget *w=0, const char *n=0);
+	bannOn2scr(QWidget *w=0);
 };
 
 

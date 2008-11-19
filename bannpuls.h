@@ -30,7 +30,7 @@ class bannPuls : public banner
 {
 Q_OBJECT
 public:
-	bannPuls(QWidget *, const char *);
+	bannPuls(QWidget *parent);
 
 signals:
 	void click();

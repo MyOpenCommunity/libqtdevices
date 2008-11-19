@@ -12,7 +12,7 @@
 #include "bann4taslab.h"
 #include "main.h"
 
-bann4tasLab::bann4tasLab(QWidget *parent,const char *name) : banner(parent, name)
+bann4tasLab::bann4tasLab(QWidget *parent) : banner(parent)
 {
 	// sx
 	addItem(BUT1,(MAX_WIDTH/4-BUT4TL_DIM)/2,0,BUT4TL_DIM , BUT4TL_DIM );

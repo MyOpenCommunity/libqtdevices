@@ -14,7 +14,7 @@
 
 extern unsigned char tipoData;
 
-timeScript::timeScript(QWidget *parent, const char *name, uchar tipo, QDateTime* mioOrol)
+timeScript::timeScript(QWidget *parent, uchar tipo, QDateTime* mioOrol)
     : QLCDNumber(parent)
 {
 	type = tipo;

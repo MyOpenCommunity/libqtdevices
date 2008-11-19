@@ -28,9 +28,9 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
-
+// TODO: capire a che serve name!
 postoExt::postoExt(QWidget *parent, const char *name, QString Icona1, QString Icona2, QString Icona3, QString Icona4, char *_where,
-	QString _light, QString _key, QString _unknown) : bann4tasLab(parent, name)
+	QString _light, QString _key, QString _unknown) : bann4tasLab(parent)
 {
 	where = _where;
 	descr = name;
@@ -61,7 +61,7 @@ postoExt::postoExt(QWidget *parent, const char *name, QString Icona1, QString Ic
 	impostaAttivo(2);
 	Draw();
 	qDebug("creating call_notifier");
-	call_notifier *cn = new call_notifier((QWidget *)NULL, (char *)"call notifier", this);
+	call_notifier *cn = new call_notifier(NULL, this);
 	qDebug("cnm = %p", cnm);
 	if (!cnm)
 	{
@@ -78,7 +78,7 @@ postoExt::postoExt(QWidget *parent, const char *name, QString Icona1, QString Ic
 	if (unknown && !unknown_notifier)
 	{
 		qDebug("Creating unknown station notifier");
-		unknown_notifier = new call_notifier(NULL, "unk call notif", NULL);
+		unknown_notifier = new call_notifier(NULL, NULL);
 		cnm->set_unknown_call_notifier(unknown_notifier);
 	}
 }

@@ -12,7 +12,7 @@
 #include "sottomenu.h"
 #include "main.h"
 
-bannOnDx::bannOnDx(sottoMenu *parent,const char *name) : banner(parent, name)
+bannOnDx::bannOnDx(sottoMenu *parent) : banner(parent)
 {
 	unsigned char nr = parent->getNumRig();
 
@@ -23,7 +23,7 @@ bannOnDx::bannOnDx(sottoMenu *parent,const char *name) : banner(parent, name)
 	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
 }
 
-bannOnSx::bannOnSx(sottoMenu *parent,const char *name) : banner(parent, name)
+bannOnSx::bannOnSx(sottoMenu *parent) : banner(parent)
 {
 	unsigned char nr=parent->getNumRig();
 	addItem(BUT1, 0,  (((MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE)/nr)-BUTONSX_BUT_DIM_Y)/2 ,  BUTONSX_BUT_DIM_X ,

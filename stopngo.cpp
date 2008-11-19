@@ -140,7 +140,7 @@ QString StopngoItem::GetWhere()
 	BannPulsDynIcon class definition
 ==================================================================================================*/
 
-BannPulsDynIcon::BannPulsDynIcon(QWidget *parent, const char *name) : bannPuls(parent, name)
+BannPulsDynIcon::BannPulsDynIcon(QWidget *parent) : bannPuls(parent)
 {
 }
 
@@ -212,7 +212,7 @@ void BannPulsDynIcon::status_changed(QList<device_status*> sl)
 	StopngoPage class definition
 ==================================================================================================*/
 
-StopngoPage::StopngoPage(QWidget *parent, const char *name, QString where, int id, QString pageTitle) : QWidget(parent)
+StopngoPage::StopngoPage(QWidget *parent, QString where, int id, QString pageTitle) : QWidget(parent)
 {
 	showFullScreen(); // TODO: verificare se e' necessario!
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);

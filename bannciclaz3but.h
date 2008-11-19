@@ -32,7 +32,7 @@ class bannCiclaz3but : public banner
 {
 Q_OBJECT
 public:
-	bannCiclaz3but(QWidget *, const char *);
+	bannCiclaz3but(QWidget *parent);
 };
 
 

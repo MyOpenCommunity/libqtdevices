@@ -33,7 +33,7 @@ class tastiera : public QWidget
 {
 Q_OBJECT
 public:
-    tastiera(QWidget *parent=0, const char *name=0, int line=LINE);
+    tastiera(QWidget *parent=0, int line=LINE);
 /*!
   \brief Draws the page
 */
@@ -90,7 +90,7 @@ class tastiera_con_stati : public tastiera
 Q_OBJECT
 public:
 	//! Constructor
-	tastiera_con_stati(int s[8], QWidget *parent=0, const char *name=0);
+	tastiera_con_stati(int s[8], QWidget *parent=0);
 protected:
 	virtual void paintEvent(QPaintEvent *event);  //! Invert fg/bg colors for active "stati"
 private:

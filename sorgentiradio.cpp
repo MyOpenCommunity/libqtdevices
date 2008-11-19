@@ -24,12 +24,12 @@
 /*****************************************************************
  **sorgente_Radio
  ****************************************************************/
-banradio::banradio(QWidget *parent,const char *name,char* indirizzo, int nbut, const QString & ambdescr)
-	: bannCiclaz(parent, name, nbut)
+banradio::banradio(QWidget *parent,char* indirizzo, int nbut, const QString & ambdescr)
+	: bannCiclaz(parent, nbut)
 {
 	SetIcons(ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
 	setAddress(indirizzo);
-	myRadio = new radio(NULL,"radio", ambdescr);
+	myRadio = new radio(NULL, ambdescr);
 	myRadio->setRDS("");
 	myRadio->setFreq(0.00);
 	QWidget *grandad = this->parentWidget()->parentWidget();
@@ -359,8 +359,8 @@ void banradio::inizializza(bool forza)
 /*****************************************************************
  ** Sorgente radio diffusione sonora multicanale
  ****************************************************************/
-sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, const char *name, char* indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr)
-	: banradio(parent, name, indirizzo, 3, ambDescr)
+sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, char* indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr)
+	: banradio(parent, indirizzo, 3, ambDescr)
 {
 	qDebug("sorgenteMultiRadio::sorgenteMultiRadio()");
 	

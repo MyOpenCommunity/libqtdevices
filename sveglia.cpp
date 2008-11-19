@@ -36,10 +36,10 @@
 #include <unistd.h>
 
 
-sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdiff *diso, char *f, int hour, int minute)
+sveglia::sveglia(QWidget *parent, uchar t, uchar freq, contdiff *diso, char *f, int hour, int minute)
 	: QWidget(parent)
 {
-	bannNavigazione = new bannFrecce(this,"bannerfrecce",9);
+	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
@@ -96,7 +96,7 @@ sveglia::sveglia(QWidget *parent, const char *name, uchar t, uchar freq, contdif
 	oraSveglia = new QDateTime();
 	oraSveglia->setTime(QTime(hour, minute));
 	oraSveglia->setDate(QDate::currentDate());
-	dataOra = new timeScript(this,"scrittaHomePage",2,oraSveglia);
+	dataOra = new timeScript(this,2,oraSveglia);
 	dataOra->setGeometry(40,140,160,50);
 	dataOra->setFrameStyle(QFrame::Plain);
 	dataOra->setLineWidth(0);

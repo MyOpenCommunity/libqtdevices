@@ -87,7 +87,7 @@ private:
 	device *dev;
 
 public:
-	impAnti(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL, QString IconOn = QString(), QString IconOff = QString(), QString IconInfo = QString(), QString IconActive = QString());
+	impAnti(QWidget *parent=0, char *indirizzo=NULL, QString IconOn = QString(), QString IconOff = QString(), QString IconInfo = QString(), QString IconActive = QString());
 private slots:
 	void inizializza(bool forza = false);
 	void Inserisci();

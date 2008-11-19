@@ -25,7 +25,7 @@ class timeScript : public QLCDNumber
 {
     Q_OBJECT
 public:
-	timeScript(QWidget *parent=0, const char *name=0, uchar type=0, QDateTime* mioOrol=NULL);
+	timeScript(QWidget *parent=0, uchar type=0, QDateTime* mioOrol=NULL);
 	~timeScript();
 
 	void showDate();

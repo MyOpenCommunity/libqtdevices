@@ -47,7 +47,7 @@ public:
 	 * \param config The node in the Dom tree that acts as root of this device
 	 * \param dev    The probe (device) connected with this banner
 	 */
-	BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev);
+	BannTemperature(QWidget *parent, QDomNode config, device *dev);
 	virtual void Draw();
 public slots:
 	/**

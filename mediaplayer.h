@@ -10,7 +10,7 @@ class MediaPlayer : public QObject
 {
 Q_OBJECT
 public:
-	MediaPlayer(QObject *parent = 0, const char *name = 0);
+	MediaPlayer(QObject *parent = 0);
 	~MediaPlayer();
 
 	/// Starts MPlayer playing a single track

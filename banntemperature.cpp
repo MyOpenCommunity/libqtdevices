@@ -20,8 +20,7 @@
 #include <QFont>
 
 
-BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev)
-	: banner(parent, name)
+BannTemperature::BannTemperature(QWidget *parent, QDomNode config, device *dev) : banner(parent)
 {
 	conf_root = config;
 	probe_descr = conf_root.namedItem("descr").toElement().text();

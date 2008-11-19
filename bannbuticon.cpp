@@ -12,7 +12,7 @@
 #include "main.h"
 
 
-bannButIcon::bannButIcon(QWidget *parent,const char *name) : banner(parent, name)
+bannButIcon::bannButIcon(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1 , MAX_WIDTH - BANNBUTICON_BUT_DIM, 0, BANNBUTICON_BUT_DIM, BANNBUTICON_BUT_DIM);
 	addItem(ICON, BANNBUTICON_BUT_DIM, 0, BANNBUTICON_ICON_DIM_X, BANNBUTICON_ICON_DIM_Y);

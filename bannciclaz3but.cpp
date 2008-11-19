@@ -11,7 +11,7 @@
 #include "bannciclaz3but.h"
 #include "main.h"
 
-bannCiclaz3but:: bannCiclaz3but(QWidget *parent,const char *name) : banner(parent, name)
+bannCiclaz3but:: bannCiclaz3but(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, 0 ,(MAX_HEIGHT/NUM_RIGHE-BANCICL3BUT_BUT_DIM_Y)/2 , BANCICL3BUT_SMALL_BUT_DIM_X , BANCICL3BUT_BUT_DIM_Y);
 	addItem(BUT2, MAX_WIDTH-BANCICL3BUT_SMALL_BUT_DIM_X , (MAX_HEIGHT/NUM_RIGHE-BANCICL3BUT_BUT_DIM_Y)/2 , BANCICL3BUT_SMALL_BUT_DIM_X , BANCICL3BUT_BUT_DIM_Y);

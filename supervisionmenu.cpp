@@ -104,7 +104,7 @@ void SupervisionMenu::AddBanners()
 
 void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
 {
-	bannPuls *bp = new bannPuls(this, 0);
+	bannPuls *bp = new bannPuls(this);
 
 	bp->SetIcons(ICON_FRECCIA_DX, QString(), ci);
 	QString addr = GetDeviceAddress(e);
@@ -187,7 +187,7 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 		for (int i = 0; i < stopngoList.size(); ++i)
 		{
 			StopngoItem *itm = stopngoList.at(i);
-			BannPulsDynIcon *bp = new BannPulsDynIcon(sm, "banner");  // Create a new banner
+			BannPulsDynIcon *bp = new BannPulsDynIcon(sm);  // Create a new banner
 			bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
 			bp->SetTextU(itm->GetDescr());
 			bp->setAnimationParams(0, 0);
@@ -211,7 +211,7 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 
 void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 {
-	StopngoPage* pg = new StopngoPage(NULL, "stopngo", itm->GetWhere(), itm->GetId(), itm->GetDescr());
+	StopngoPage* pg = new StopngoPage(NULL, itm->GetWhere(), itm->GetId(), itm->GetDescr());
 	pg->hide();
 
 	connect(bnr, SIGNAL(sxClick()), pg, SLOT(showPage()));

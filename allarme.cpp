@@ -58,7 +58,7 @@ void allarme::SetIcons(QString icon)
     descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-    bnav = new bannFrecce(this, "banner_nav", 4, icon);
+    bnav = new bannFrecce(this, 4, icon);
     bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 }
 

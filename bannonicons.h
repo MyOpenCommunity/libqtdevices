@@ -26,7 +26,7 @@ class bannOnIcons : public banner
 {
 Q_OBJECT
 public:
-	bannOnIcons(QWidget *, const char *);
+	bannOnIcons(QWidget *parent);
 };
 
 

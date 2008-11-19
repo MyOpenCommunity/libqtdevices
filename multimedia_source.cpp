@@ -84,7 +84,7 @@ enum ChoiceButtons
 };
 
 
-SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent)
+SourceChoice::SourceChoice(QWidget *parent) : QWidget(parent)
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_listbrowser, aFont);
@@ -130,7 +130,7 @@ SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent)
 }
 
 
-MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
+MultimediaSource::MultimediaSource(QWidget *parent, const char *amb, int _where_address) :
 	QWidget(parent), audio_initialized(true)
 {
 	// Set main geometry
@@ -141,10 +141,10 @@ MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
 	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
-	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
+	bannNavigazione = new bannFrecce(this, 4, ICON_DIFFSON);
 	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	source_choice = new SourceChoice(this, name);
+	source_choice = new SourceChoice(this);
 	source_choice->hide();
 	source_type = NONE_SOURCE;
 	media_player = new MediaPlayer(this);
@@ -412,11 +412,11 @@ void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 /// Methods for FileSelector
 /// ***********************************************************************************************************************
 
-FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name, Qt::WindowFlags f) :
-	Selector(parent, name, f)
+FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, Qt::WindowFlags f) :
+	Selector(parent, f)
 {
 	level = 0;
-	list_browser = new ListBrowser(this, rows_per_page, name, f);
+	list_browser = new ListBrowser(this, rows_per_page, f);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->addWidget(list_browser);
@@ -632,10 +632,10 @@ void FileSelector::prevItem()
 /// Methods for RadioSelector
 /// ***********************************************************************************************************************
 
-RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name, Qt::WindowFlags f) :
-	Selector(parent, name, f)
+RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, Qt::WindowFlags f) :
+	Selector(parent, f)
 {
-	list_browser = new ListBrowser(this, rows_per_page, name, f);
+	list_browser = new ListBrowser(this, rows_per_page, f);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->addWidget(list_browser);

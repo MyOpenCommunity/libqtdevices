@@ -31,7 +31,7 @@ class bannCiclaz : public banner
 {
 Q_OBJECT
 public:
-     bannCiclaz(QWidget *, const char *, int nbuts=4);
+     bannCiclaz(QWidget *parent, int nbuts=4);
 };
 
 #endif //BANNCICLAZ_H

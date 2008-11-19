@@ -31,7 +31,7 @@ class  radio : public QWidget
 {
 Q_OBJECT
 public:
-	radio(QWidget *parent=0, const char *name=0, const QString & amb="");
+	radio(QWidget *parent=0, const QString & amb="");
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;

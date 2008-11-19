@@ -17,7 +17,7 @@
 #include <QFile>
 
 
-genPage::genPage(QWidget *parent,const char *name , unsigned char tipo,const char *img, unsigned int f)
+genPage::genPage(QWidget *parent, unsigned char tipo,const char *img, unsigned int f)
 	: QLabel(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);

@@ -16,8 +16,7 @@
 
 #include <openwebnet.h>
 
-BannOff::BannOff(QWidget *parent, const char *name, thermal_regulator *_dev)
-	: bann3But(parent, name)
+BannOff::BannOff(QWidget *parent, thermal_regulator *_dev) : bann3But(parent)
 {
 	QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
 
@@ -33,8 +32,7 @@ void BannOff::performAction()
 	dev->setOff();
 }
 
-BannAntifreeze::BannAntifreeze(QWidget *parent, const char *name, thermal_regulator *_dev)
-	: bann3But(parent, name)
+BannAntifreeze::BannAntifreeze(QWidget *parent, thermal_regulator *_dev) : bann3But(parent)
 {
 	QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
 
@@ -50,8 +48,7 @@ void BannAntifreeze::performAction()
 	dev->setProtection();
 }
 
-BannSummerWinter::BannSummerWinter(QWidget *parent, const char *name, thermal_regulator *_dev)
-	: bann4But(parent, name)
+BannSummerWinter::BannSummerWinter(QWidget *parent, thermal_regulator *_dev) : bann4But(parent)
 {
 	QString i_summer = QString("%1%2").arg(IMG_PATH).arg("estate.png");
 	QString i_winter = QString("%1%2").arg(IMG_PATH).arg("inverno.png");
@@ -78,8 +75,7 @@ void BannSummerWinter::setWinter()
 	dev->setWinter();
 }
 
-BannWeekly::BannWeekly(QWidget *parent, const char *name)
-	: bannPuls(parent, name)
+BannWeekly::BannWeekly(QWidget *parent) : bannPuls(parent)
 {
 	program = 1;
 	connect(this, SIGNAL(click()), this, SLOT(performAction()));

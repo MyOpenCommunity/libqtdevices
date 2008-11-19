@@ -32,7 +32,7 @@ class bann2butLab : public banner
 {
 Q_OBJECT
 public:
-	bann2butLab(QWidget *, const char *);
+	bann2butLab(QWidget *parent);
 };
 
 

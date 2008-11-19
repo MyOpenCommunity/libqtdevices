@@ -33,7 +33,7 @@ class bannRegolaz : public banner
 {
 	Q_OBJECT
 public:
-	bannRegolaz(QWidget *, const char *);
+	bannRegolaz(QWidget *parent);
 
 private slots:
 	void armTimRipdx();

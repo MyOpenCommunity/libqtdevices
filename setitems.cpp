@@ -30,7 +30,7 @@
 extern unsigned char tipoData;
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
-setDataOra::setDataOra(sottoMenu *parent,const char *name) : bannOnDx(parent, name)
+setDataOra::setDataOra(sottoMenu *parent) : bannOnDx(parent)
 {
 	SetIcons(ICON_INFO,1);
 	connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));
@@ -42,15 +42,15 @@ void setDataOra::hideEvent(QHideEvent *event)
 }
 
 
-impostaSveglia::impostaSveglia(QWidget *parent, const char *name, contdiff *diso, QString hour, QString minute, QString icon1,
+impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, QString hour, QString minute, QString icon1,
 	QString icon2, int enabled, int freq, QString frame, int tipo)
-	: bann2But(parent, name)
+	: bann2But(parent)
 {
 	icon_on = icon1;
 	icon_off = icon2;
 	SetIcons(icon_off, ICON_INFO);
 	QByteArray buf_frame = frame.toAscii();
-	svegliolina = new sveglia(NULL,"svegliolina",(uchar) freq, (uchar) tipo,diso, buf_frame.data(), hour.toInt(), minute.toInt());
+	svegliolina = new sveglia(NULL,(uchar) freq, (uchar) tipo,diso, buf_frame.data(), hour.toInt(), minute.toInt());
 	svegliolina->hide();
 	setAbil(enabled == 1);
 	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
@@ -90,8 +90,7 @@ void impostaSveglia::inizializza()
 }
 
 
-calibration::calibration(sottoMenu *parent, const char *name, QString icon)
-	: bannOnDx(parent, name)
+calibration::calibration(sottoMenu *parent, QString icon) : bannOnDx(parent)
 {
 	SetIcons(ICON_INFO,1);
 	connect(this,SIGNAL(click()),this,SLOT(doCalib()));
@@ -114,8 +113,8 @@ void calibration::fineCalib()
 }
 
 
-impBeep::impBeep(sottoMenu *parent, const char *name, QString val, QString icon1, QString icon2)
-	: bannOnSx(parent, name)
+impBeep::impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2)
+	: bannOnSx(parent)
 {
 	icon_on = icon1;
 	icon_off = icon2;
@@ -148,8 +147,7 @@ void impBeep::toggleBeep()
 }
 
 
-impContr::impContr(sottoMenu *parent, const char *name, QString val, QString icon1)
-	: bannOnDx(parent, name)
+impContr::impContr(sottoMenu *parent, QString val, QString icon1) : bannOnDx(parent)
 {
 	contrasto = NULL;
 	SetIcons(icon1, 1);
@@ -181,8 +179,8 @@ void impContr::hideEvent(QHideEvent *event)
 }
 
 
-machVers::machVers(sottoMenu *parent, const char *name, versio *ver, QString icon1)
-	: bannOnDx(parent, name)
+machVers::machVers(sottoMenu *parent, versio *ver, QString icon1)
+	: bannOnDx(parent)
 {
 	SetIcons(icon1, 1);
 	connect(this,SIGNAL(click()),this,SLOT(showVers()));
@@ -201,8 +199,8 @@ void machVers::tiempout()
 }
 
 
-impPassword::impPassword(QWidget *parent, const char *name, QString icon1, QString icon2, QString icon3, QString pwd, int attiva)
-	: bann2But(parent, name)
+impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString icon3, QString pwd, int attiva)
+	: bann2But(parent)
 {
 	icon_on = icon1;
 	icon_off = icon2;
@@ -318,7 +316,7 @@ void impPassword::hideEvent(QHideEvent *event)
 }
 
 
-BannCleanScreen::BannCleanScreen(sottoMenu *parent, const char *name) : bannOnDx(parent, name)
+BannCleanScreen::BannCleanScreen(sottoMenu *parent) : bannOnDx(parent)
 {
 	SetIcons(ICON_INFO,1);
 	page = new CleanScreen();
@@ -338,7 +336,7 @@ void BannCleanScreen::hideEvent(QHideEvent *event)
 	page->hide();
 }
 
-BannBrightness::BannBrightness(sottoMenu *parent, const char *name) : bannOnDx(parent, name)
+BannBrightness::BannBrightness(sottoMenu *parent) : bannOnDx(parent)
 {
 	SetIcons(ICON_BRIGHTNESS, 1);
 	page = new BrightnessPage();

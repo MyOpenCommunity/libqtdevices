@@ -29,7 +29,7 @@ class bann3But : public banner
 {
 Q_OBJECT
 public:
-	bann3But(QWidget *, const char *);
+	bann3But(QWidget *parent);
 
 signals:
 	void centerClick();

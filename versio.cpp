@@ -21,7 +21,7 @@
 #include <stdlib.h>
 
 
-versio::versio(QWidget *parent,const char *name , unsigned int f) : QLabel(parent)
+versio::versio(QWidget *parent,unsigned int f) : QLabel(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));

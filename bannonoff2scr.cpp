@@ -11,7 +11,7 @@
 #include "bannonoff2scr.h"
 #include "main.h"
 
-bannOnOff2scr::bannOnOff2scr(QWidget *parent,const char *name) : banner(parent, name)
+bannOnOff2scr::bannOnOff2scr(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, 0 , 0 , BANONOFF2SCR_BUT_DIM , BANONOFF2SCR_BUT_DIM);
 	addItem(BUT2, MAX_WIDTH-BANONOFF2SCR_BUT_DIM , 0 , BANONOFF2SCR_BUT_DIM , BANONOFF2SCR_BUT_DIM);

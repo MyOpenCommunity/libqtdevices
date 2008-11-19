@@ -37,7 +37,7 @@ class setDataOra : public bannOnDx
 {
 Q_OBJECT
 public:
-	setDataOra(sottoMenu *, const char *);
+	setDataOra(sottoMenu *parent);
 protected:
 	virtual void hideEvent(QHideEvent *event);
 private:
@@ -56,7 +56,7 @@ class impostaSveglia : public bann2But
 {
 Q_OBJECT
 public:
-	impostaSveglia(QWidget *parent, const char *name, contdiff *diso, QString hour, QString minute, QString icon1,
+	impostaSveglia(QWidget *parent, contdiff *diso, QString hour, QString minute, QString icon1,
 		QString icon2, int enabled, int freq, QString frame, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
@@ -103,7 +103,7 @@ class calibration : public bannOnDx
 {
 Q_OBJECT
 public:
-	calibration(sottoMenu *parent, const char *name, QString icon);
+	calibration(sottoMenu *parent, QString icon);
 
 private slots:
 	void doCalib();
@@ -127,7 +127,7 @@ class impBeep : public bannOnSx
 {
 Q_OBJECT
 public:
-	impBeep(sottoMenu *parent, const char *name, QString val, QString icon1, QString icon2);
+	impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2);
 public slots:
 	void toggleBeep();
 private:
@@ -139,7 +139,7 @@ class impContr : public bannOnDx
 {
 Q_OBJECT
 public:
-	impContr(sottoMenu *parent, const char *name, QString val, QString icon1);
+	impContr(sottoMenu *parent, QString val, QString icon1);
 protected:
 	virtual void hideEvent(QHideEvent *event);
 
@@ -155,7 +155,7 @@ class machVers : public bannOnDx
 {
 Q_OBJECT
 public:
-	machVers(sottoMenu *parent, const char *name, versio *ver, QString icon1);
+	machVers(sottoMenu *parent, versio *ver, QString icon1);
 private slots:
 	void tiempout();
 	void showVers();
@@ -176,7 +176,7 @@ class impPassword : public bann2But
 {
 Q_OBJECT
 public:
-	impPassword(QWidget *parent, const char *name, QString icon1, QString icon2, QString icon3, QString pwd, int attiva);
+	impPassword(QWidget *parent, QString icon1, QString icon2, QString icon3, QString pwd, int attiva);
 public slots:
 /*!
   \brief  Changes the activation state
@@ -232,7 +232,7 @@ class BannCleanScreen : public bannOnDx
 {
 Q_OBJECT
 public:
-	BannCleanScreen(sottoMenu *parent, const char *name);
+	BannCleanScreen(sottoMenu *parent);
 	~BannCleanScreen();
 protected:
 	virtual void hideEvent(QHideEvent *event);
@@ -251,7 +251,7 @@ class BannBrightness : public bannOnDx
 {
 Q_OBJECT
 public:
-	BannBrightness(sottoMenu *parent, const char *name);
+	BannBrightness(sottoMenu *parent);
 	~BannBrightness();
 protected:
 	virtual void hideEvent(QHideEvent *event);

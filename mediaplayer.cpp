@@ -26,7 +26,7 @@ static void mplayerExited(int signo, siginfo_t *info, void *)
 		_globalMediaPlayer->sigChildReceived(info->si_pid, status);
 }
 
-MediaPlayer::MediaPlayer(QObject *parent, const char *name) : QObject(parent)
+MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
 	struct sigaction sa;
 

@@ -29,7 +29,7 @@ class BannOff : public bann3But
 {
 Q_OBJECT
 public:
-	BannOff(QWidget *parent, const char *name, thermal_regulator *_dev);
+	BannOff(QWidget *parent, thermal_regulator *_dev);
 public slots:
 	/**
 	 * Shut down the thermal regulator
@@ -51,7 +51,7 @@ class BannAntifreeze : public bann3But
 {
 Q_OBJECT
 public:
-	BannAntifreeze(QWidget *parent, const char *name, thermal_regulator *_dev);
+	BannAntifreeze(QWidget *parent, thermal_regulator *_dev);
 public slots:
 	/**
 	 * Set thermal regulator in antifreeze protection
@@ -73,7 +73,7 @@ class BannSummerWinter : public bann4But
 {
 Q_OBJECT
 public:
-	BannSummerWinter(QWidget *parent, const char *name, thermal_regulator *_dev);
+	BannSummerWinter(QWidget *parent, thermal_regulator *_dev);
 	enum seasons {WINTER, SUMMER};
 public slots:
 	void setSummer();
@@ -96,7 +96,7 @@ class BannWeekly : public bannPuls
 {
 Q_OBJECT
 public:
-	BannWeekly(QWidget *parent, const char *name = 0);
+	BannWeekly(QWidget *parent);
 	void setProgram(int prog);
 public slots:
 	void performAction();

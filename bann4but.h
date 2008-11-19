@@ -28,7 +28,7 @@ class bann4But : public banner
 {
 Q_OBJECT
 public:
-	bann4But(QWidget *, const char *);
+	bann4But(QWidget *);
 };
 
 #endif //BANN3BUT_H

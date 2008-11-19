@@ -45,7 +45,7 @@ class banner : public QWidget
 {
 Q_OBJECT
 public:
-	banner(QWidget *, const char *);
+	banner(QWidget *parent);
 	virtual ~banner();
 
 	/*!

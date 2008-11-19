@@ -24,7 +24,7 @@ class genPage : public QLabel
 {
 Q_OBJECT
 public:
-	genPage(QWidget *parent= NULL, const char *name = NULL, unsigned char tipo=0, const char *img = NULL,unsigned int f =  0);
+	genPage(QWidget *parent= NULL, unsigned char tipo=0, const char *img = NULL,unsigned int f =  0);
 	enum pageType
 	{
 		RED = 0,  /*! \enum generates a \a red page */

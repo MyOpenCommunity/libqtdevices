@@ -288,7 +288,7 @@ void BtMain::testFiles()
 		else if (!screen)
 		{
 			tiposcreen = genPage::RED;
-			screen = new genPage(NULL,"red",genPage::RED);
+			screen = new genPage(NULL,genPage::RED);
 			screen->show();
 			qDebug("TEST1");
 			BrightnessControl::instance()->setState(ON);
@@ -305,7 +305,7 @@ void BtMain::testFiles()
 		else if (!screen)
 		{
 			tiposcreen=genPage::GREEN;
-			screen = new genPage(NULL,"green",genPage::GREEN);
+			screen = new genPage(NULL,genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
 			BrightnessControl::instance()->setState(ON);
@@ -322,7 +322,7 @@ void BtMain::testFiles()
 		else if (!screen)
 		{
 			tiposcreen = genPage::BLUE;
-			screen = new genPage(NULL,"blu",genPage::BLUE);
+			screen = new genPage(NULL,genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
 			BrightnessControl::instance()->setState(ON);
@@ -338,7 +338,7 @@ void BtMain::testFiles()
 		}
 		else if (!screen)
 		{
-			screen = new genPage(NULL,"blu",genPage::IMAGE, IMG_PATH "dwnpage.png");
+			screen = new genPage(NULL,genPage::IMAGE, IMG_PATH "dwnpage.png");
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
@@ -488,7 +488,7 @@ void BtMain::freeze(bool b)
 		{
 			if (!tasti)
 			{
-				tasti = new tastiera(NULL,"tast");
+				tasti = new tastiera(NULL);
 				tasti->setMode(tastiera::HIDDEN);
 				tasti->showFullScreen();
 				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));

@@ -27,7 +27,7 @@ class versio : public QLabel
 {
 Q_OBJECT
 public:
-	versio(QWidget *parent= NULL, const char *name = NULL, unsigned int f =  0);
+	versio(QWidget *parent= NULL, unsigned int f =  0);
 	/*!
 	\brief Initialize the page asking the versions to the open stack.
 	*/

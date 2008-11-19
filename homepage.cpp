@@ -111,7 +111,7 @@ void homePage::addButton(int x, int y, QString iconName, char function, QString 
 
 void homePage::addClock(int x, int y,int width,int height,int style, int line)
 {
-	dataOra = new timeScript(this,"scrittaHomePage",1);
+	dataOra = new timeScript(this,1);
 	dataOra->setGeometry(x,y,width,height);
 	dataOra->setFrameStyle(style);
 	dataOra->setLineWidth(line);
@@ -124,7 +124,7 @@ void homePage::addClock(int x, int y)
 
 void homePage::addDate(int x, int y,int width,int height, int style, int line)
 {
-	dataOra = new timeScript(this,"scrittaHomePage",uchar (25));
+	dataOra = new timeScript(this,uchar(25));
 	dataOra->setGeometry(x,y,width,height);
 	dataOra->setFrameStyle(style);
 	dataOra->setLineWidth(line);

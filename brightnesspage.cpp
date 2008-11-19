@@ -48,7 +48,7 @@ void BrightnessPage::brightnessSelected()
 	emit Closed();
 }
 
-BannToggle::BannToggle(sottoMenu *parent, const char *name) : bannOnSx(parent, name)
+BannToggle::BannToggle(sottoMenu *parent) : bannOnSx(parent)
 {
 	SetIcons(ICON_VUOTO, 1);
 	sxButton->setCheckable(true);

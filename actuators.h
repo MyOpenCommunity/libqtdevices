@@ -39,7 +39,7 @@ private:
 	device *dev;
 	void inizializza(bool forza=false);
 public:
-	attuatAutom(QWidget *parent=0, const char *name=NULL ,char*indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(), QString IconDisactive=QString(),int periodo=0,int numFrame=0);
+	attuatAutom(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(), QString IconDisactive=QString(),int periodo=0,int numFrame=0);
 public slots:
 	void status_changed(QList<device_status*>);
 private slots:
@@ -68,7 +68,7 @@ private:
 	// nell'xmlconfhandler, e passata come void*.
 	QList<QString*> elencoDisp;
 public:
-	grAttuatAutom(QWidget *parent=0, const char *name=NULL ,void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Icon=QString(), int periodo=0, int numFrame=0);
+	grAttuatAutom(QWidget *parent=0, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Icon=QString(), int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
 	void Attiva();
@@ -93,7 +93,7 @@ class attuatAutomInt : public bannOnOff
 {
 Q_OBJECT
 public:
-	attuatAutomInt(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(),
+	attuatAutomInt(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(),
 		QString IconDisactive=QString());
 public slots:
 	virtual void status_changed(QList<device_status*>);
@@ -125,7 +125,7 @@ class attuatAutomIntSic : public bannOnOff
 {
 Q_OBJECT
 public:
-	attuatAutomIntSic(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+	attuatAutomIntSic(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
 		QString IconActive=QString(), QString IconDisactive=QString());
 public slots:
 	virtual void status_changed(QList<device_status*>);
@@ -162,7 +162,7 @@ Q_OBJECT
 public:
 	// TODO: la lista QList<QString*> *lt contiene stringhe che vengono create esternamente (dall'xmlconfhandler?) e distrutte
 	// dal distruttore della classe.. decidere di chi deve essere l'ownership di questi oggetti!!
-	attuatAutomTemp(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+	attuatAutomTemp(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
 		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString*> *lt = NULL);
 	~attuatAutomTemp();
 public slots:
@@ -201,7 +201,7 @@ class attuatAutomTempNuovoN : public attuatAutomTemp
 {
 Q_OBJECT
 public:
-	attuatAutomTempNuovoN(QWidget *parent=0, const char *name=NULL,char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+	attuatAutomTempNuovoN(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
 		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString*> *lt = NULL);
 public slots:
 	void status_changed(QList<device_status*>);
@@ -229,7 +229,7 @@ class attuatAutomTempNuovoF : public bannOn2scr
 {
 Q_OBJECT
 public:
-	attuatAutomTempNuovoF(QWidget *parent=0, const char *name=NULL ,char *indirizzo=NULL, QString IconaCentroSx=QString(),
+	attuatAutomTempNuovoF(QWidget *parent=0, char *indirizzo=NULL, QString IconaCentroSx=QString(),
 		QString IconaCentroDx=QString(), QString IconDx=QString(), QString t=QString());
 public slots:
 	void status_changed(QList<device_status*>);
@@ -271,7 +271,7 @@ class grAttuatInt : public bann3But
 {
 Q_OBJECT
 public:
-	grAttuatInt(QWidget *parent=0, const char *name=NULL, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+	grAttuatInt(QWidget *parent=0, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
 		QString Icon=QString(), int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 public slots:
@@ -301,7 +301,7 @@ class attuatPuls : public bannPuls
 {
 Q_OBJECT
 public:
-	attuatPuls(QWidget *parent=0, const char *name=NULL, char *indirizzi=NULL, QString IconaSx=QString(), QString IconActive=QString(),
+	attuatPuls(QWidget *parent=0, char *indirizzi=NULL, QString IconaSx=QString(), QString IconActive=QString(),
 		char tipo=0, int periodo=0, int numFrame=0);
 private slots:
 	void Attiva();

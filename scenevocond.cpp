@@ -23,7 +23,8 @@
 ** Advanced scenario management generic condition
 ****************************************************************/
 
-scenEvo_cond::scenEvo_cond(QWidget *parent, char *name) : QFrame(parent)
+// TODO: vedere se puo' essere trasformato in un QWidget!
+scenEvo_cond::scenEvo_cond(QWidget *parent) : QFrame(parent)
 {
 	val = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
@@ -133,7 +134,7 @@ bool scenEvo_cond::isTrue(void)
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(parent, name)
+scenEvo_cond_h::scenEvo_cond_h(QWidget *parent) : scenEvo_cond(parent)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
 	h = new QString("");
@@ -143,7 +144,7 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(paren
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
 	cond_time = new QDateTime(QDateTime::currentDateTime());
-	ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
+	ora = new timeScript(this, 2 , cond_time);
 	hasTimeCondition = true;
 }
 
@@ -358,7 +359,7 @@ bool scenEvo_cond_h::isTrue(void)
 ** Advanced scenario management, device condition
 ****************************************************************/
 
-scenEvo_cond_d::scenEvo_cond_d(QWidget *parent, char *name) : scenEvo_cond(parent, name)
+scenEvo_cond_d::scenEvo_cond_d(QWidget *parent) : scenEvo_cond(parent)
 {
 	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
 	descr = new QString("");
@@ -478,26 +479,26 @@ void scenEvo_cond_d::SetIcons()
 	switch (getVal())
 	{
 	case 1:
-		dc = new device_condition_light_status(this, "light_status", trigger);
+		dc = new device_condition_light_status(this, trigger);
 		break;
 	case 2:
-		dc = new device_condition_dimming(this, "dimming_val", trigger);
+		dc = new device_condition_dimming(this, trigger);
 		break;
 	case 3:
 	case 7:
 	case 8:
-		dc = new device_condition_temp(this, "temp_val", trigger);
+		dc = new device_condition_temp(this, trigger);
 		but[A3_BUTTON_INDEX]->setAutoRepeat(true);
 		but[A4_BUTTON_INDEX]->setAutoRepeat(true);
 		break;
 	case 9:
-		dc = new device_condition_aux(this, "aux_val", trigger);
+		dc = new device_condition_aux(this, trigger);
 		break;
 	case 4:
-		dc = new device_condition_volume(this, "audio_val", trigger);
+		dc = new device_condition_volume(this, trigger);
 		break;
 	case 6:
-		dc = new device_condition_dimming_100(this, "dimming_100_val", trigger);
+		dc = new device_condition_dimming_100(this, trigger);
 		break;
 	default:
 		qDebug("Unknown device condition");
@@ -746,7 +747,7 @@ void device_condition::set_group(int g)
 /*****************************************************************
 ** Actual light status device condition
 ****************************************************************/
-device_condition_light_status::device_condition_light_status(QWidget *parent, char *name, QString *c) :
+device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c) :
 	device_condition(parent, c)
 {
 	QLabel *l = new QLabel(parent);
@@ -846,7 +847,7 @@ void device_condition_light_status::get_condition_value(QString& out)
 /*****************************************************************
 ** Actual dimming value device condition
 ****************************************************************/
-device_condition_dimming::device_condition_dimming(QWidget *parent, char *name, QString *c) :
+device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c) :
 	device_condition(parent, c)
 {
 	qDebug() << "device_condition_dimming::device_condition_dimming(" << c << ")";
@@ -1114,7 +1115,7 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 /*****************************************************************
  ** Actual dimming 100 value device condition
 ****************************************************************/
-device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, char *name, QString *c) :
+device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c) :
 device_condition(parent, c)
 {
 	char sup[10];
@@ -1395,7 +1396,7 @@ void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 /*****************************************************************
 ** Actual volume device condition
 ****************************************************************/
-device_condition_volume::device_condition_volume(QWidget *parent, char *name, QString *c) :
+device_condition_volume::device_condition_volume(QWidget *parent, QString *c) :
 	device_condition(parent, c)
 {
 	char sup[10];
@@ -1677,7 +1678,7 @@ void device_condition_volume::reset()
 /*****************************************************************
 ** Actual temperature device condition
 ****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, char *name, QString *c) :
+device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 	device_condition(parent, c)
 {
 	QLabel *l = new QLabel(parent);
@@ -1863,7 +1864,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 ** Aux device condition
 ****************************************************************/
 
-device_condition_aux::device_condition_aux(QWidget *parent, char *name, QString *c) :
+device_condition_aux::device_condition_aux(QWidget *parent, QString *c) :
 	device_condition(parent, c), device_initialized(false), device_value(-1)
 {
 	QLabel *l = new QLabel(parent);

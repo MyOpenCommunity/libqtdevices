@@ -29,7 +29,7 @@
  **scenario
  ****************************************************************/
 
-scenario::scenario(sottoMenu *parent, const char *name, char *indirizzo, QString IconaSx) : bannOnSx(parent, name)
+scenario::scenario(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
 	setAddress(indirizzo);
@@ -57,8 +57,8 @@ void scenario::inizializza(bool forza){}
  **gesModScen
  ****************************************************************/
 
-gesModScen::gesModScen(QWidget *parent, const char *name , char *indirizzo, QString IcoSx, QString IcoDx, QString IcoCsx,
-	QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2) :  bann4tasLab(parent, name)
+gesModScen::gesModScen(QWidget *parent, char *indirizzo, QString IcoSx, QString IcoDx, QString IcoCsx,
+	QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2) :  bann4tasLab(parent)
 {
 	icon_on = IcoSx;
 	icon_stop = IcoSx2;
@@ -272,8 +272,8 @@ void gesModScen::inizializza(bool forza)
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, const char *name, QList<scenEvo_cond*> *c, QString i1, QString i2,
-	QString i3, QString i4, QString act, int enable) : bann3But(parent, name)
+scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> *c, QString i1, QString i2,
+	QString i3, QString i4, QString act, int enable) : bann3But(parent)
 {
 	if (c)
 	{
@@ -545,8 +545,8 @@ scenEvo::~scenEvo()
 /*****************************************************************
  ** Scenario schedulato
  ****************************************************************/	
-scenSched::scenSched(QWidget *parent, const char *name, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
-	char *aen, char *adis, char *astart, char *astop) : bann4But(parent, name)
+scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
+	char *aen, char *adis, char *astart, char *astop) : bann4But(parent)
 {
 	action_enable = aen;
 	action_disable = adis;

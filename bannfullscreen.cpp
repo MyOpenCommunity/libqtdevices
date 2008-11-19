@@ -57,7 +57,7 @@ QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
 	"fancoil3off.png", "fancoil3on.png", "fancoilAoff.png", "fancoilAon.png"};
 
-BannFullScreen::BannFullScreen(QWidget *parent, const char *name) : banner(parent, name)
+BannFullScreen::BannFullScreen(QWidget *parent) : banner(parent)
 {
 }
 
@@ -159,10 +159,10 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 		}
 		break;
 	case fs_date_edit:
-		bfs = new FSBannDate(parent, 0);
+		bfs = new FSBannDate(parent);
 		break;
 	case fs_time_edit:
-		bfs = new FSBannTime(parent, 0);
+		bfs = new FSBannTime(parent);
 		break;
 	default:
 		qFatal("Unknown banner type %d on bannfullscreen", id);
@@ -170,10 +170,8 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 	return bfs;
 }
 
-FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale, const char *name)
-	: BannFullScreen(parent, name),
-	main_layout(this),
-	temp_scale(scale)
+FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale)
+	: BannFullScreen(parent), main_layout(this), temp_scale(scale)
 {
 	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
@@ -234,7 +232,7 @@ void FSBannSimpleProbe::status_changed(QList<device_status*> sl)
 }
 
 FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
-	TemperatureScale scale, const char *name) : FSBannSimpleProbe(parent, n, scale),
+	TemperatureScale scale) : FSBannSimpleProbe(parent, n, scale),
 	delta_setpoint(false),
 	setpoint_delay(2000),
 	setpoint_delta(5)
@@ -532,7 +530,7 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 }
 
 FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
-	TemperatureScale scale, const char *name) : FSBannProbe(n, _dev, thermo_reg, parent, scale), fancoil_buttons(this)
+	TemperatureScale scale) : FSBannProbe(n, _dev, thermo_reg, parent, scale), fancoil_buttons(this)
 {
 	dev = _dev;
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
@@ -611,12 +609,8 @@ void FSBannFancoil::status_changed(QList<device_status*> sl)
 	FSBannProbe::status_changed(sl);
 }
 
-FSBannManual::FSBannManual(QWidget *parent, const char *name, thermal_regulator *_dev, TemperatureScale scale)
-	: BannFullScreen(parent, "manual"),
-	main_layout(this),
-	temp_scale(scale),
-	dev(_dev),
-	setpoint_delta(5)
+FSBannManual::FSBannManual(QWidget *parent, thermal_regulator *_dev, TemperatureScale scale)
+	: BannFullScreen(parent), main_layout(this), temp_scale(scale), dev(_dev), setpoint_delta(5)
 {
 	descr = tr("Manual");
 	descr_label = new QLabel(this);
@@ -771,8 +765,8 @@ void FSBannManual::status_changed(QList<device_status*> sl)
 		Draw();
 }
 
-FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_regulator_4z *_dev, TemperatureScale scale)
-	: FSBannManual(parent, name, _dev, scale),
+FSBannManualTimed::FSBannManualTimed(QWidget *parent, thermal_regulator_4z *_dev, TemperatureScale scale)
+	: FSBannManual(parent, _dev, scale),
 	dev(_dev)
 {
 	time_edit = new BtTimeEdit(this);
@@ -797,9 +791,7 @@ void FSBannManualTimed::setMaxMinutes(int max)
 	time_edit->setMaxMinutes(max);
 }
 
-FSBannDate::FSBannDate(QWidget *parent, const char *name)
-	: BannFullScreen(parent, name),
-	main_layout(this)
+FSBannDate::FSBannDate(QWidget *parent) : BannFullScreen(parent), main_layout(this)
 {
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	QLabel *top = new QLabel(this);
@@ -815,9 +807,7 @@ QDate FSBannDate::date()
 	return date_edit->date();
 }
 
-FSBannTime::FSBannTime(QWidget *parent, const char *name)
-	: BannFullScreen(parent, name),
-	main_layout(this)
+FSBannTime::FSBannTime(QWidget *parent) : BannFullScreen(parent), main_layout(this)
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	QLabel *top = new QLabel(this);
@@ -833,8 +823,7 @@ BtTime FSBannTime::time()
 	return time_edit->time();
 }
 
-FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent, const char *name)
-	: BannFullScreen(parent, name), main_layout(this)
+FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent) : BannFullScreen(parent), main_layout(this)
 {
 	conf_root = n;
 	navbar_button = getButton(IMG_SETTINGS);
@@ -1081,8 +1070,8 @@ QString FSBannTermoReg::lookupScenarioDescription(QString season, int scenario_n
 	return "";
 }
 
-FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent, const char *name)
-	: FSBannTermoReg(n, parent, name)
+FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent)
+	: FSBannTermoReg(n, parent)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
@@ -1119,24 +1108,24 @@ void FSBannTermoReg4z::createSettingsMenu()
 	weekendSettings(settings, conf_root, _dev);
 
 	// off banner
-	BannOff *off = new BannOff(settings, "OFF", _dev);
+	BannOff *off = new BannOff(settings, _dev);
 	settings->appendBanner(off);
 	connect(off, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", _dev);
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, _dev);
 	settings->appendBanner(antifreeze);
 	connect(antifreeze, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, _dev);
 	settings->appendBanner(summer_winter);
 	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
 	settings->hide();
 }
 
-FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent, const char *name)
-	: FSBannTermoReg(n, parent, name)
+FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent)
+	: FSBannTermoReg(n, parent)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
@@ -1172,17 +1161,17 @@ void FSBannTermoReg99z::createSettingsMenu()
 	weekendSettings(settings, conf_root, _dev);
 
 	// off banner
-	BannOff *off = new BannOff(settings, "OFF", _dev);
+	BannOff *off = new BannOff(settings, _dev);
 	settings->appendBanner(off);
 	connect(off, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, "antifreeze", _dev);
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, _dev);
 	settings->appendBanner(antifreeze);
 	connect(antifreeze, SIGNAL(clicked()), settings, SLOT(hide()));
 
 	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, "Summer/Winter", _dev);
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, _dev);
 	settings->appendBanner(summer_winter);
 	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
 	settings->hide();
@@ -1197,7 +1186,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	sprintf(i_manual, "%s%s", IMG_PATH, "manuale.png");
 
 	// manual banner
-	bannPuls *manual = new bannPuls(settings, "Manual");
+	bannPuls *manual = new bannPuls(settings);
 	manual->SetIcons(IMG_RIGHT_ARROW, 0, i_manual);
 
 	settings->appendBanner(manual);
@@ -1207,7 +1196,7 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), manual_menu, SLOT(hide()));
 
-	FSBannManual *bann = new FSBannManual(manual_menu, 0, dev, temp_scale);
+	FSBannManual *bann = new FSBannManual(manual_menu, dev, temp_scale);
 
 	manual_menu->appendBanner(bann);
 	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
@@ -1232,7 +1221,7 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 	char i_weekly[100];
 	sprintf(i_weekly, "%s%s", IMG_PATH, "settimanale.png");
 
-	bannPuls *weekly = new bannPuls(settings, "weekly");
+	bannPuls *weekly = new bannPuls(settings);
 	weekly->SetIcons(IMG_RIGHT_ARROW, 0, i_weekly);
 	settings->appendBanner(weekly);
 
@@ -1287,7 +1276,7 @@ void FSBannTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, thermal
 
 banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString icon)
 {
-	bannPuls *bann = new bannPuls(settings, 0);
+	bannPuls *bann = new bannPuls(settings);
 	bann->SetIcons(IMG_RIGHT_ARROW, 0, IMG_PATH + icon);
 	settings->appendBanner(bann);
 	return bann;
@@ -1389,13 +1378,13 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	char i_manual[100];
 	sprintf(i_manual, "%s%s", IMG_PATH, "manuale_temporizzato.png");
 	// timed manual banner
-	bannPuls *manual_timed = new bannPuls(settings, "manual_timed");
+	bannPuls *manual_timed = new bannPuls(settings);
 	manual_timed->SetIcons(IMG_RIGHT_ARROW, 0, i_manual);
 
 	settings->appendBanner(manual_timed);
 	timed_manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
-	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
+	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, dev);
 
 	bann->setMaxHours(25);
 
@@ -1427,7 +1416,7 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	char i_scenario[100];
 	sprintf(i_scenario, "%s%s", IMG_PATH, "scenari.png");
 
-	bannPuls *scenario = new bannPuls(settings, "scenario");
+	bannPuls *scenario = new bannPuls(settings);
 	scenario->SetIcons(IMG_RIGHT_ARROW, 0, i_scenario);
 	settings->appendBanner(scenario);
 

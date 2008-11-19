@@ -16,7 +16,7 @@
 
 // Call notifier implementation
 
-call_notifier::call_notifier(QWidget *parent, char *name, postoExt *ms) : QFrame(parent)
+call_notifier::call_notifier(QWidget *parent, postoExt *ms) : QFrame(parent)
 {
 	qDebug("call_notifier::call_notifier()");
 	QString where;

@@ -37,7 +37,7 @@ private:
 	char value;
 	device *dev;
 public:
-	amplificatore(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon);
+	amplificatore(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon);
 	void inizializza(bool forza = false);
 private slots:
 	void Accendi();
@@ -65,7 +65,7 @@ class grAmplificatori : public bannRegolaz
 {
 Q_OBJECT
 public:
-	grAmplificatori(QWidget *parent=0, const char *name=NULL ,QList<QString> indirizzi=QList<QString>(), QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
+	grAmplificatori(QWidget *parent=0, QList<QString> indirizzi=QList<QString>(), QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();

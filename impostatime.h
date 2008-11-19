@@ -32,7 +32,7 @@ class  impostaTime : public QFrame
 {
 Q_OBJECT
 public:
-	impostaTime(QWidget *parent=0, const char *name=0);
+	impostaTime(QWidget *parent=0);
 	BtButton *but[7];
 
 signals:

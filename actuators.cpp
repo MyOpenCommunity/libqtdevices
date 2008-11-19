@@ -30,8 +30,8 @@
  **attuatAutom
  ****************************************************************/
 
-attuatAutom::attuatAutom(QWidget *parent,const char *name,char* indirizzo,QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number)
-	: bannOnOff(parent, name)
+attuatAutom::attuatAutom(QWidget *parent,char* indirizzo,QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number)
+	: bannOnOff(parent)
 {
 	SetIcons(IconaSx, IconaDx, icon, pressedIcon, period, number);
 	setAddress(indirizzo);
@@ -120,8 +120,8 @@ void attuatAutom::inizializza(bool forza)
  **gruppo di attuatAutom
  ****************************************************************/
 
-grAttuatAutom::grAttuatAutom(QWidget *parent, const char *name, void *indirizzi, QString IconaDx, QString IconaSx, QString icon, int period, int number)
-	: bannOnOff(parent, name)
+grAttuatAutom::grAttuatAutom(QWidget *parent, void *indirizzi, QString IconaDx, QString IconaSx, QString icon, int period, int number)
+	: bannOnOff(parent)
 {
 	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
 	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
@@ -161,8 +161,8 @@ void grAttuatAutom::Disattiva()
  **attuatAutomInt
  ****************************************************************/
 
-attuatAutomInt::attuatAutomInt(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
-	: bannOnOff(parent, name)
+attuatAutomInt::attuatAutomInt(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
+	: bannOnOff(parent)
 {
 
 	int pos = icon.indexOf(".");
@@ -309,8 +309,8 @@ void attuatAutomInt::inizializza(bool forza)
  **attuatAutomIntSic
  ****************************************************************/
 
-attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
-	: bannOnOff(parent, name)
+attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
+	: bannOnOff(parent)
 {
 	int pos = icon.indexOf(".");
 	if (pos != -1)
@@ -473,8 +473,8 @@ void attuatAutomIntSic::inizializza(bool forza)
  **attuatAutomTemp
  ****************************************************************/
 
-attuatAutomTemp::attuatAutomTemp(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number, QList<QString*> *lt)
-	: bannOnOff2scr(parent, name)
+attuatAutomTemp::attuatAutomTemp(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number, QList<QString*> *lt)
+	: bannOnOff2scr(parent)
 {
 	SetIcons(IconaDx, IconaSx, icon, pressedIcon, period, number);
 	setAddress(indirizzo);
@@ -640,9 +640,9 @@ attuatAutomTemp::~attuatAutomTemp()
  **attuatAutomTempNuovoN
  ****************************************************************/
 
-attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
 	QString pressedIcon, int period, int number, QList<QString*> *lt)
-	: attuatAutomTemp(parent, name, indirizzo, IconaSx, IconaDx, icon, pressedIcon, period, number, lt)
+	: attuatAutomTemp(parent, indirizzo, IconaSx, IconaDx, icon, pressedIcon, period, number, lt)
 {
 	assegna_tempo_display();
 	stato_noto = false;
@@ -792,8 +792,8 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 
 #define NTIMEICONS 9
 
-attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, const char *name, char *indirizzo, QString IconaCentroSx, QString IconaCentroDx, QString IconaDx, QString t)
-	: bannOn2scr(parent, name)
+attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, char *indirizzo, QString IconaCentroSx, QString IconaCentroDx, QString IconaDx, QString t)
+	: bannOn2scr(parent)
 {
 	SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
 	setAddress(indirizzo);
@@ -1115,8 +1115,8 @@ void attuatAutomTempNuovoF::Draw()
  **gruppo di attuatInt
  ****************************************************************/
 
-grAttuatInt::grAttuatInt(QWidget *parent, const char *name, void *indirizzi, QString IconaSx, QString IconaDx, QString icon, int period, int number)
-	: bann3But(parent, name)
+grAttuatInt::grAttuatInt(QWidget *parent, void *indirizzi, QString IconaSx, QString IconaDx, QString icon, int period, int number)
+	: bann3But(parent)
 {
 	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
 	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
@@ -1162,8 +1162,8 @@ void grAttuatInt::inizializza(bool forza)
  **attuatPuls
  ****************************************************************/
 
-attuatPuls::attuatPuls(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString icon, char tipo, int period, int number)
-: bannPuls(parent, name)
+attuatPuls::attuatPuls(QWidget *parent, char *indirizzo, QString IconaSx, QString icon, char tipo, int period, int number)
+: bannPuls(parent)
 {
 	SetIcons(IconaSx, QString(), icon, QString(), period,number);
 	setAddress(indirizzo);

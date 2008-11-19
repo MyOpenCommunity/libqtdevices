@@ -28,7 +28,7 @@ class bann2But : public banner
 {
 Q_OBJECT
 public:
-	bann2But(QWidget *, const char *);
+	bann2But(QWidget *parent);
 };
 
 

@@ -53,7 +53,7 @@ public:
 
 protected:
 	// To make PlayWindow an abstract class.
-	PlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
+	PlayWindow(MediaPlayer *player, QWidget *parent = 0);
 	virtual void startPlayer(unsigned int);
 	virtual void stopPlayer();
 	void playNextTrack();
@@ -107,7 +107,7 @@ class MediaPlayWindow : public PlayWindow
 {
 Q_OBJECT
 public:
-	MediaPlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
+	MediaPlayWindow(MediaPlayer *player, QWidget *parent = 0);
 
 	// Play control
 	void pause();
@@ -163,7 +163,7 @@ class RadioPlayWindow : public PlayWindow
 {
 Q_OBJECT
 public:
-	RadioPlayWindow(MediaPlayer *player, QWidget *parent = 0, const char * name = 0);
+	RadioPlayWindow(MediaPlayer *player, QWidget *parent = 0);
 
 protected:
 	void startPlayer(unsigned int);

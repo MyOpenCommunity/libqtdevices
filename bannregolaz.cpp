@@ -14,7 +14,7 @@
 #include <QTimer>
 
 
-bannRegolaz::bannRegolaz(QWidget *parent,const char *name) : banner(parent, name)
+bannRegolaz::bannRegolaz(QWidget *parent) : banner(parent)
 {
 	addItem(BUT2, 0 , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);
 	addItem(BUT1, MAX_WIDTH - BANREGOL_BUT_DIM , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);

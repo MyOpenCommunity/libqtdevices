@@ -25,7 +25,7 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
-	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
+	bannNavigazione = new bannFrecce(this, 1);
 	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
 	auxName = new QLabel(this);

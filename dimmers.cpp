@@ -27,8 +27,8 @@
  **dimmer
  ****************************************************************/
 
-dimmer::dimmer(QWidget *parent,const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect)
-	: bannRegolaz(parent, name)
+dimmer::dimmer(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect)
+	: bannRegolaz(parent)
 {
 
 	setRange(20, 100);
@@ -247,11 +247,11 @@ void dimmer::inizializza(bool forza)
  **dimmer 100 livelli
  ****************************************************************/
 
-dimmer100::dimmer100(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+dimmer100::dimmer100(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
 	QString inactiveIcon, QString breakIcon, int sstart, int sstop)
-	: dimmer(parent, name, indirizzo, IconaSx, IconaDx, icon,inactiveIcon, breakIcon, false)
+	: dimmer(parent, indirizzo, IconaSx, IconaDx, icon,inactiveIcon, breakIcon, false)
 {
-	qDebug("costruttore dimmer100, name = %s", name);
+	qDebug("costruttore dimmer100");
 	softstart = sstart;
 	qDebug("softstart = %d", softstart);
 	softstop = sstop;
@@ -434,8 +434,8 @@ void dimmer100::inizializza(bool forza)
  **gruppo di dimmer
  ****************************************************************/
 
-grDimmer::grDimmer(QWidget *parent, const char *name, void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx) :
-	bannRegolaz(parent, name)
+grDimmer::grDimmer(QWidget *parent, void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx) :
+	bannRegolaz(parent)
 {
 	SetIcons(IconaSx, IconaDx, icondx, iconsx);
 	setAddress(indirizzi); // TODO: indirizzi non serve piu' a niente?
@@ -488,8 +488,8 @@ void grDimmer::inizializza(bool forza){}
  **gruppo di dimmer100
  ****************************************************************/
 
-grDimmer100::grDimmer100(QWidget *parent, const char *name,void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx,
-	QList<int>sstart, QList<int>sstop) : grDimmer(parent, name, indirizzi, IconaSx, IconaDx, iconsx, icondx)
+grDimmer100::grDimmer100(QWidget *parent, void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx,
+	QList<int>sstart, QList<int>sstop) : grDimmer(parent, indirizzi, IconaSx, IconaDx, iconsx, icondx)
 {
 	qDebug("grDimmer100::grDimmer100()");
 	qDebug("sstart[0] = %d", sstart[0]);

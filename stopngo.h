@@ -69,7 +69,7 @@ class BannPulsDynIcon : public bannPuls
 {
 Q_OBJECT
 public:
-	BannPulsDynIcon(QWidget *, const char *);
+	BannPulsDynIcon(QWidget *parent);
 	~BannPulsDynIcon();
 
 public slots:
@@ -89,7 +89,7 @@ class StopngoPage : public QWidget
 {
 Q_OBJECT
 public:
-	StopngoPage(QWidget *parent, const char *name, QString where, int id = 0, QString pageTitle = "");
+	StopngoPage(QWidget *parent, QString where, int id = 0, QString pageTitle = "");
 	~StopngoPage();
 
 private:

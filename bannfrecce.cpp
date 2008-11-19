@@ -7,8 +7,7 @@
 #include "bannfrecce.h"
 #include "btbutton.h"
 
-bannFrecce::bannFrecce(QWidget *parent, const char *name, uchar num, QString IconBut4)
-	: banner(parent, name)
+bannFrecce::bannFrecce(QWidget *parent, uchar num, QString IconBut4) : banner(parent)
 {
     qDebug("bannFrecce::bannFrecce(%d)", num);
     addItem(BUT1,(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,

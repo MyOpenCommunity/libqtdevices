@@ -30,7 +30,7 @@ class BtTimeEdit : public QWidget
 {
 Q_OBJECT
 public:
-	BtTimeEdit(QWidget *parent, const char *name = 0);
+	BtTimeEdit(QWidget *parent);
 
 	/**
 	 * Returns the time set on the widget.
@@ -59,7 +59,7 @@ class BtDateEdit : public QWidget
 {
 Q_OBJECT
 public:
-	BtDateEdit(QWidget *parent, const char *name = 0);
+	BtDateEdit(QWidget *parent);
 	/**
 	 * Returns the date set on the widget.
 	 */

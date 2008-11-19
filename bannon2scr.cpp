@@ -11,7 +11,7 @@
 #include "bannon2scr.h"
 #include "main.h"
 
-bannOn2scr::bannOn2scr(QWidget *parent,const char *name) : banner(parent, name)
+bannOn2scr::bannOn2scr(QWidget *parent) : banner(parent)
 {
 	int x = 0, y = 0;
 	addItem(TEXT2, x, y, BANON2SCR_TEXT1_DIM_X, BANON2SCR_TEXT1_DIM_Y);

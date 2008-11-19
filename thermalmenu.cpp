@@ -85,7 +85,7 @@ void ThermalMenu::addBanners()
 
 bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString descr)
 {
-	bannPuls *bp = new bannPuls(this, 0);
+	bannPuls *bp = new bannPuls(this);
 	qDebug() << "[TERMO] addBanners1: " << descr;
 
 	bp->SetIcons(i_right_arrow, QString(), central_icon);
@@ -130,7 +130,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 				addr += "00";
 			device *dev = btouch_device_cache.get_temperature_probe(addr, external);
 
-			banner *b = new BannTemperature(sm, "banner", n, dev);
+			banner *b = new BannTemperature(sm, n, dev);
 			initBanner(b, n);
 
 			sm->appendBanner(b);

@@ -26,13 +26,13 @@
 #include <QFile>
 
 
-radio::radio(QWidget *parent, const char *name, const QString & amb)
+radio::radio(QWidget *parent, const QString & amb)
 	: QWidget(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
-	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
+	bannNavigazione = new bannFrecce(this,1);
 	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
 	memoBut = new BtButton(this);

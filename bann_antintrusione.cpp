@@ -31,7 +31,7 @@
  ****************************************************************/
 
 zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, QString iconzona, QString IconDisactive,
-	QString IconActive) : bannOnIcons(parent, 0)
+	QString IconActive) : bannOnIcons(parent)
 {
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");
@@ -195,8 +195,8 @@ void zonaAnti::inizializza(bool forza)
  ****************************************************************/
 
 
-impAnti::impAnti(QWidget *parent,const char *name,char* indirizzo, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
-	: bann2butLab(parent, name)
+impAnti::impAnti(QWidget *parent,char* indirizzo, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
+	: bann2butLab(parent)
 {
 	tasti = NULL;
 	QString disactive_icon_path;
@@ -304,7 +304,7 @@ void impAnti::Inserisci()
 	if (tasti)
 		delete tasti;
 	inserting = true;
-	tasti = new tastiera_con_stati(s, NULL, "");
+	tasti = new tastiera_con_stati(s, NULL);
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showFullScreen();
@@ -314,7 +314,7 @@ void impAnti::Disinserisci()
 {
 	if (tasti)
 		delete tasti;
-	tasti = new tastiera(NULL, "");
+	tasti = new tastiera(NULL);
 	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showFullScreen();

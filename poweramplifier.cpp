@@ -28,8 +28,8 @@ static const char *IMG_LESS = IMG_PATH "less.png";
  ** PowerAmplifier
  ****************************************************************/
 
-PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char *indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon)
-	: bannRegolaz(parent, name)
+PowerAmplifier::PowerAmplifier(QWidget *parent, char *indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon)
+	: bannRegolaz(parent)
 {
 	qDebug("PowerAmplifier::PowerAmplifier()");
 	setRange(1,9);

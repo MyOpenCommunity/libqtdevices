@@ -39,7 +39,7 @@ class scenario : public bannOnSx
 {
 Q_OBJECT
 public:
-	scenario(sottoMenu *parent, const char *name, char *indirizzo, QString IconaSx);
+	scenario(sottoMenu *parent, char *indirizzo, QString IconaSx);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
@@ -60,7 +60,7 @@ class gesModScen : public  bann4tasLab
 {
 Q_OBJECT
 public:
-	gesModScen(QWidget *parent=0, const char *name=NULL, char *indirizzo=NULL, QString IcoSx=QString(), QString IcoDx=QString(), QString IcoCsx=QString(),
+	gesModScen(QWidget *parent=0, char *indirizzo=NULL, QString IcoSx=QString(), QString IcoDx=QString(), QString IcoCsx=QString(),
 		QString IcoCdx=QString(), QString IcoDes=QString(), QString IcoSx2=QString(), QString IcoDx2=QString());
 public slots:
 	void status_changed(QList<device_status*>);
@@ -94,7 +94,7 @@ class scenEvo : public  bann3But
 {
 Q_OBJECT
 public:
-	scenEvo(QWidget *parent=0, const char *name=NULL, QList<scenEvo_cond*> *c=NULL, QString i1=QString(), QString i2=QString(), QString i3=QString(), QString i4=QString(), QString act="", int enabled = 0);
+	scenEvo(QWidget *parent=0, QList<scenEvo_cond*> *c=NULL, QString i1=QString(), QString i2=QString(), QString i3=QString(), QString i4=QString(), QString act="", int enabled = 0);
 	~scenEvo();
 	void Draw();
 public slots:
@@ -141,7 +141,7 @@ private:
 	QString action_start;
 	QString action_stop;
 public:
-	scenSched(QWidget *parent=0, const char *name=NULL, QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), QString Icona4=QString(), char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
+	scenSched(QWidget *parent=0, QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), QString Icona4=QString(), char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
 	/*!
 	 * Reimplemented draw
 	 */

@@ -24,7 +24,7 @@ BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
 	return btn;
 }
 
-BtTimeEdit::BtTimeEdit(QWidget *parent, const char *name) : QWidget(parent), _time(0, 0)
+BtTimeEdit::BtTimeEdit(QWidget *parent) : QWidget(parent), _time(0, 0)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 
@@ -101,8 +101,7 @@ void BtTimeEdit::decMin()
 QString BtDateEdit::DATE_FORMAT;
 
 
-BtDateEdit::BtDateEdit(QWidget *parent, const char *name) : QWidget(parent),
-	_date(QDate::currentDate())
+BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentDate())
 {
 	_date = _date.addDays(1);
 	QVBoxLayout *main_layout = new QVBoxLayout(this);

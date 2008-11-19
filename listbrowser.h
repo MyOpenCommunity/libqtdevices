@@ -34,7 +34,7 @@ class ListBrowser : public QWidget
 {
 Q_OBJECT
 public:
-	ListBrowser(QWidget *parent, unsigned rows_per_page, const char *name=0, Qt::WindowFlags f=0);
+	ListBrowser(QWidget *parent, unsigned rows_per_page, Qt::WindowFlags f=0);
 	~ListBrowser();
 
 	void setList(QVector<QString> _item_list, unsigned _current_page = 0);

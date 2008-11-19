@@ -22,14 +22,14 @@
 
 extern unsigned char tipoData;
 
-
-impostaTime::impostaTime(QWidget *parent, const char *name) : QFrame(parent)
+// TODO: vedere se si puo' rendere impostaTime un QWidget!
+impostaTime::impostaTime(QWidget *parent) : QFrame(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	QDateTime OroTemp = QDateTime::currentDateTime();
-	dataOra = new timeScript(this,"impostazioni",1,&OroTemp);
+	dataOra = new timeScript(this,1,&OroTemp);
 	dataOra->setGeometry(10,120,220,80);
 	dataOra->setFrameStyle(QFrame::Plain);
 	dataOra->setLineWidth(0);

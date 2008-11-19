@@ -28,7 +28,7 @@ class bannOnDx : public banner
 {
 Q_OBJECT
 public:
-	bannOnDx(sottoMenu *, const char *);
+	bannOnDx(sottoMenu *parent);
 signals:
 	void click();
 };
@@ -55,7 +55,7 @@ class bannOnSx : public banner
 {
 Q_OBJECT
 public:
-	bannOnSx(sottoMenu *, const char *);
+	bannOnSx(sottoMenu *parent);
 signals:
 	void click();
 };

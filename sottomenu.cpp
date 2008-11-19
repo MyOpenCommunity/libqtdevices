@@ -64,7 +64,7 @@ sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n)
 
 	if (navBarMode)
 	{
-		bannNavigazione = new bannFrecce(this,"bannerfrecce",navBarMode);
+		bannNavigazione = new bannFrecce(this, navBarMode);
 
 		bannNavigazione->setGeometry(0 , height-height/numRighe ,width , height/numRighe);
 		connect(bannNavigazione,SIGNAL(backClick()),this,SIGNAL(Closed()));
@@ -98,7 +98,7 @@ void sottoMenu::setNavBarMode(uchar navBarMode, QString IconBut4)
 		}
 		if (navBarMode)
 		{
-			bannNavigazione = new bannFrecce(this,"bannerfrecce",navBarMode, IconBut4);
+			bannNavigazione = new bannFrecce(this, navBarMode, IconBut4);
 
 			bannNavigazione->setGeometry(0, height-height/NUM_RIGHE, width, height/NUM_RIGHE/*numRighe */);
 			connect(bannNavigazione, SIGNAL(backClick()), this, SIGNAL(Closed()));
@@ -123,15 +123,11 @@ void sottoMenu::setModeIcon(QString iconBut4)
 int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString> indirizzo,
 	QList<QString*> &icon_names, int periodo, int numFrame)
 {
-	// TODO: codice duplicato da sotto, da cambiare
-	QByteArray buf_descr = qdescrizione.toAscii();
-	const char * descrizione = buf_descr.constData();
-
 	qDebug("sottoMenu::addItem(lista)");
 	switch (tipo)
 	{
 	case GR_AMPLIFICATORI:
-		elencoBanner.append(new grAmplificatori(this,descrizione, indirizzo, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
+		elencoBanner.append(new grAmplificatori(this, indirizzo, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
 			*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
 		break;
 	default:
@@ -180,69 +176,69 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	switch (tipo)
 	{
 	case ATTUAT_AUTOM:
-		elencoBanner.append(new attuatAutom(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame));
+		elencoBanner.append(new attuatAutom(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame));
 		break;
 	case DIMMER:
-		elencoBanner.append(new dimmer(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
+		elencoBanner.append(new dimmer(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;
 	case DIMMER_100:
-		elencoBanner.append(new dimmer100(this, descrizione, (char*)indirizzo, IconaSx, IconaDx ,icon, pressedIcon, icoEx1, par3, par4));
+		elencoBanner.append(new dimmer100(this, (char*)indirizzo, IconaSx, IconaDx ,icon, pressedIcon, icoEx1, par3, par4));
 		break;
 	case SCENARIO:
-		elencoBanner.append(new scenario(this, descrizione, (char*)indirizzo, IconaSx));
+		elencoBanner.append(new scenario(this, (char*)indirizzo, IconaSx));
 		break;
 	case GR_ATTUAT_AUTOM:
-		elencoBanner.append(new grAttuatAutom(this, descrizione, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
+		elencoBanner.append(new grAttuatAutom(this, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
 		break;
 	case GR_DIMMER:
-		elencoBanner.append(new grDimmer(this, descrizione, indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+		elencoBanner.append(new grDimmer(this, indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case GR_DIMMER100:
-		elencoBanner.append(new grDimmer100(this, descrizione, indirizzo, IconaSx, IconaDx, icon, pressedIcon, sstart, sstop));
+		elencoBanner.append(new grDimmer100(this, indirizzo, IconaSx, IconaDx, icon, pressedIcon, sstart, sstop));
 		break;
 	case CARICO:
-		elencoBanner.append(new carico(this, descrizione, (char*)indirizzo, IconaSx));
+		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));
 		break;
 	case ATTUAT_AUTOM_INT:
-		elencoBanner.append(new attuatAutomInt(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+		elencoBanner.append(new attuatAutomInt(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case ATTUAT_AUTOM_INT_SIC:
-		elencoBanner.append(new attuatAutomIntSic(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+		elencoBanner.append(new attuatAutomIntSic(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case ATTUAT_AUTOM_TEMP:
-		elencoBanner.append(new attuatAutomTemp(this, descrizione ,(char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt));
+		elencoBanner.append(new attuatAutomTemp(this, (char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt));
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		elencoBanner.append(new attuatAutomTempNuovoN(this, descrizione ,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, lt));
+		elencoBanner.append(new attuatAutomTempNuovoN(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, lt));
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_F:
 		if (!lt->count())
 			lt->append(new QString(""));
-		elencoBanner.append(new attuatAutomTempNuovoF(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, *lt->at(0)));
+		elencoBanner.append(new attuatAutomTempNuovoF(this, (char*)indirizzo, IconaSx, IconaDx, icon, *lt->at(0)));
 		break;
 	case GR_ATTUAT_INT:
-		elencoBanner.append(new grAttuatInt(this, descrizione, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
+		elencoBanner.append(new grAttuatInt(this, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
 		break;
 	case ATTUAT_AUTOM_PULS:
-		elencoBanner.append(new attuatPuls(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, AUTOMAZ, periodo, numFrame));
+		elencoBanner.append(new attuatPuls(this, (char*)indirizzo, IconaSx, IconaDx, AUTOMAZ, periodo, numFrame));
 		break;
 	case ATTUAT_VCT_LS:
-		elencoBanner.append(new attuatPuls(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, VCT_LS, periodo, numFrame));
+		elencoBanner.append(new attuatPuls(this, (char*)indirizzo, IconaSx, IconaDx, VCT_LS, periodo, numFrame));
 		break;
 	case ATTUAT_VCT_SERR:
-		elencoBanner.append(new attuatPuls(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, VCT_SERR, periodo, numFrame));
+		elencoBanner.append(new attuatPuls(this, (char*)indirizzo, IconaSx, IconaDx, VCT_SERR, periodo, numFrame));
 		break;
 	case AUTOM_CANC_ATTUAT_VC:
-		elencoBanner.append(new automCancAttuatVC(this, descrizione, (char*)indirizzo, IconaSx, IconaDx));
+		elencoBanner.append(new automCancAttuatVC(this, (char*)indirizzo, IconaSx, IconaDx));
 		break;
 	case AUTOM_CANC_ATTUAT_ILL:
-		elencoBanner.append(new automCancAttuatIll(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, *lt->at(0)));
+		elencoBanner.append(new automCancAttuatIll(this, (char*)indirizzo, IconaSx, IconaDx, *lt->at(0)));
 		break;
 	case SET_DATA_ORA:
-		elencoBanner.append(new setDataOra(this, descrizione));
+		elencoBanner.append(new setDataOra(this));
 		break;
 	case POWER_AMPLIFIER:
-		elencoBanner.append(new PowerAmplifier(this, descrizione,(char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
+		elencoBanner.append(new PowerAmplifier(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;
 	case POWER_AMPLIFIER_PRESET:
 		elencoBanner.append(new PowerAmplifierPreset(this));
@@ -260,26 +256,26 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new PowerAmplifierLoud(this));
 		break;
 	case AMPLIFICATORE:
-		elencoBanner.append(new amplificatore(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+		elencoBanner.append(new amplificatore(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case SORGENTE_AUX:
 		elencoBanner.append(new sorgente_aux(this, descrizione, (char*)indirizzo));
 		break;
 	case SORGENTE_MULTIM:/// New Multimedia Audio Source.  NOTE:numFrame parametere name is not significative:it's the (cut down) where address
-		elencoBanner.append(new BannerSorgenteMultimedia(this, descrizione, (char *)indirizzo, numFrame, 4));
+		elencoBanner.append(new BannerSorgenteMultimedia(this, (char *)indirizzo, numFrame, 4));
 		break;
 	case SORGENTE_MULTIM_MC:
-		elencoBanner.append(new BannerSorgenteMultimediaMC(this, descrizione, (char *)indirizzo, numFrame, IconaSx, IconaDx, icon));
+		elencoBanner.append(new BannerSorgenteMultimediaMC(this, (char *)indirizzo, numFrame, IconaSx, IconaDx, icon));
 		break;
 	case SORGENTE_RADIO:
-		elencoBanner.append(new banradio(this, descrizione, (char*)indirizzo));
+		elencoBanner.append(new banradio(this, (char*)indirizzo));
 		break;
 	case SET_SVEGLIA:
-		elencoBanner.append(new impostaSveglia(this, descrizione, (contdiff*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, icoEx1, par3));
+		elencoBanner.append(new impostaSveglia(this, (contdiff*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, icoEx1, par3));
 		break;
 	case CALIBRAZIONE:
 		{
-			calibration *c = new calibration(this,descrizione, IconaSx);
+			calibration *c = new calibration(this, IconaSx);
 			elencoBanner.append(c);
 			connect(c, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
 			connect(c, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
@@ -298,47 +294,47 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new zonaAnti(this, qdescrizione, (char*)indirizzo, IconaSx, IconaDx, icon));
 		break;
 	case IMPIANTINTRUS:
-		elencoBanner.append(new impAnti(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
+		elencoBanner.append(new impAnti(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case SUONO: // iconaSx e' in realta' "value"
-		elencoBanner.append(new impBeep(this, descrizione, IconaSx, IconaDx, icon));
+		elencoBanner.append(new impBeep(this, IconaSx, IconaDx, icon));
 		break;
 	case CONTRASTO: // iconaSx e' in realta' "value"
-		elencoBanner.append(new impContr(this, descrizione, IconaSx, IconaDx));
+		elencoBanner.append(new impContr(this, IconaSx, IconaDx));
 		break;
 	case VERSIONE:
-		elencoBanner.append(new machVers(this, descrizione, (versio*)indirizzo, IconaSx));
+		elencoBanner.append(new machVers(this, (versio*)indirizzo, IconaSx));
 		break;
 	case PROTEZIONE:
-		elencoBanner.append(new impPassword(this, descrizione, IconaDx, icon, pressedIcon, IconaSx, periodo));
+		elencoBanner.append(new impPassword(this, IconaDx, icon, pressedIcon, IconaSx, periodo));
 		break;
 	case MOD_SCENARI:
-		elencoBanner.append(new gesModScen(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1, icoEx2, icoEx3));
+		elencoBanner.append(new gesModScen(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1, icoEx2, icoEx3));
 		break;
 	case SCENARIO_EVOLUTO:
-		elencoBanner.append(new scenEvo(this, descrizione, lc, IconaSx, IconaDx, icon, pressedIcon, action, par3));
+		elencoBanner.append(new scenEvo(this, lc, IconaSx, IconaDx, icon, pressedIcon, action, par3));
 		break;
 	case SCENARIO_SCHEDULATO:
-		elencoBanner.append(new scenSched(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4));
+		elencoBanner.append(new scenSched(this, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4));
 		break;
 	case POSTO_ESTERNO:
 		elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
 		break;
 	case SORG_RADIO:
-		elencoBanner.append(new sorgenteMultiRadio(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
+		elencoBanner.append(new sorgenteMultiRadio(this, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
 	case SORG_AUX:
 		elencoBanner.append(new sorgenteMultiAux(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
 	case BRIGHTNESS:
-		elencoBanner.append(new BannBrightness(this, descrizione));
+		elencoBanner.append(new BannBrightness(this));
 		break;
 	case CLEANSCREEN:
-		elencoBanner.append(new BannCleanScreen(this, descrizione));
+		elencoBanner.append(new BannCleanScreen(this));
 		break;
 	case LANSETTINGS:
 	{
-		bannOnDx *b = new bannOnDx(this, descrizione);
+		bannOnDx *b = new bannOnDx(this);
 		b->SetIcons(ICON_INFO, 1);
 		elencoBanner.append(b);
 		// create lansettings menu

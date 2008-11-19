@@ -31,7 +31,7 @@ class bannOnOff : public banner
 {
 Q_OBJECT
 public:
-	bannOnOff(QWidget *w=0, const char *n=0);
+	bannOnOff(QWidget *w=0);
 };
 
 

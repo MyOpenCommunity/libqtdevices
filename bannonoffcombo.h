@@ -31,7 +31,7 @@ class BannOnOffCombo : public banner
 {
 	Q_OBJECT
 public:
-	BannOnOffCombo(QWidget *w=0, const char *n=0);
+	BannOnOffCombo(QWidget *w=0);
 
 protected:
 	void changeStatus(ComboStatus st);

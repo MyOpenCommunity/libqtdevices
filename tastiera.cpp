@@ -30,7 +30,7 @@
 #define BUT_SMALL_DIM (MAX_WIDTH-POSX1*2)/8
 #define POSX1_SMALL POSX1
 
-tastiera::tastiera(QWidget *parent, const char *name, int line) : QWidget(parent)
+tastiera::tastiera(QWidget *parent, int line) : QWidget(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -158,8 +158,8 @@ void tastiera::setMode(tastiType t)
 
 
 // tastiera_con_stati implementation
-tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent, const char *name)
-	: tastiera(parent, name, MAX_HEIGHT/6)
+tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent)
+	: tastiera(parent, MAX_HEIGHT/6)
 {
 	int i, x;
 	char tmp[2] = "1";

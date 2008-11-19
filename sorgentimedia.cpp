@@ -21,8 +21,8 @@
 /*****************************************************************
  **SorgenteMultimedia
  ****************************************************************/
-BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbut) :
-	bannCiclaz(parent, name, nbut), source_menu(NULL, name, indirizzo, where)
+BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, char *indirizzo, int where, int nbut) :
+	bannCiclaz(parent, nbut), source_menu(NULL, indirizzo, where)
 {
 	SetIcons(ICON_CICLA, ICON_IMPOSTA, ICON_FFWD, ICON_REW);
 
@@ -112,8 +112,8 @@ void BannerSorgenteMultimedia::inizializza(bool forza)
 /*
  * Banner Sorgente Multimediale Multicanale
  */
-BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
-	QString icon_onoff, QString icon_cycle, QString icon_settings) : BannerSorgenteMultimedia(parent, name, indirizzo, where, 3)
+BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, char *indirizzo, int where,
+	QString icon_onoff, QString icon_cycle, QString icon_settings) : BannerSorgenteMultimedia(parent, indirizzo, where, 3)
 {
 	SetIcons(icon_onoff, QString(), icon_cycle, icon_settings);
 

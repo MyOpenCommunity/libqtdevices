@@ -67,7 +67,7 @@ class SourceChoice : public QWidget
 {
 Q_OBJECT
 public:
-	SourceChoice(QWidget *parent, const char *name);
+	SourceChoice(QWidget *parent);
 
 signals:
 	void clicked(int);
@@ -88,7 +88,7 @@ class MultimediaSource : public QWidget
 {
 Q_OBJECT
 public:
-	MultimediaSource(QWidget *parent=0, const char *name=0, const char *amb="", int where_address=0);
+	MultimediaSource(QWidget *parent=0, const char *amb="", int where_address=0);
 	/*!
 	 * \brief Sets amb. description
 	 */
@@ -175,7 +175,7 @@ class Selector : public QWidget
 {
 Q_OBJECT
 public:
-	Selector(QWidget *parent, const char *name=0, Qt::WindowFlags f=0) : QWidget(parent, f) {}
+	Selector(QWidget *parent, Qt::WindowFlags f=0) : QWidget(parent, f) {}
 
 public slots:
 	virtual void nextItem() = 0;
@@ -199,7 +199,7 @@ class  FileSelector : public Selector
 {
 Q_OBJECT
 public:
-	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name=0, Qt::WindowFlags f=0);
+	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, Qt::WindowFlags f=0);
 
 public slots:
 	void nextItem();
@@ -250,7 +250,7 @@ class RadioSelector : public Selector
 {
 Q_OBJECT
 public:
-	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name=0, Qt::WindowFlags f=0);
+	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, Qt::WindowFlags f=0);
 
 public slots:
 	void nextItem();

@@ -11,7 +11,7 @@
 #include "bann2butlab.h"
 #include "main.h"
 
-bann2butLab::bann2butLab(QWidget *parent,const char *name) : banner(parent, name)
+bann2butLab::bann2butLab(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, MAX_WIDTH - BAN2BL_BUT_DIM , 0 , BAN2BL_BUT_DIM , BAN2BL_BUT_DIM);
 	addItem(BUT2, 0 , 0 , BAN2BL_BUT_DIM , BAN2BL_BUT_DIM);

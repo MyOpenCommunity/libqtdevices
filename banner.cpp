@@ -27,7 +27,7 @@
 
 
 // TODO: rimuovere il name dai parametri!!
-banner::banner(QWidget *parent,const char *name) : QWidget(parent)
+banner::banner(QWidget *parent) : QWidget(parent)
 {
 	BannerIcon = NULL;
 	BannerText = NULL;

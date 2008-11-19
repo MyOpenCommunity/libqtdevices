@@ -42,8 +42,7 @@ static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
 /// Methods for PlayWindow
 /// ***********************************************************************************************************************
 
-PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
-	QWidget(parent, Qt::FramelessWindowHint | Qt::Window)
+PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::Window)
 {
 	current_track = CURRENT_TRACK_NONE;
 	read_player_output = true;
@@ -197,8 +196,7 @@ QString PlayWindow::getCurrentDescription()
 /// Methods for MediaPlayWindow
 /// ***********************************************************************************************************************
 
-MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
-	PlayWindow(player, parent, name)
+MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWindow(player, parent)
 {
 	qDebug("[AUDIO] MediaPlayWindow costructor");
 	main_layout->insertSpacing(0, 20);
@@ -420,8 +418,7 @@ void MediaPlayWindow::handleButtons(int button_number)
 /// Methods for RadioPlayWindow
 /// ***********************************************************************************************************************
 
-RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
-	PlayWindow(player, parent, name)
+RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWindow(player, parent)
 {
 	qDebug("[AUDIO] RadioPlayWindow costructor");
 	read_player_output = false;

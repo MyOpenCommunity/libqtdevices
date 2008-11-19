@@ -26,8 +26,8 @@
  **amplificatore
  ****************************************************************/
 
-amplificatore::amplificatore(QWidget *parent, const char *name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
-	: bannRegolaz(parent, name)
+amplificatore::amplificatore(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
+	: bannRegolaz(parent)
 {
 	qDebug("amplificatore::amplificatore()");
 	setRange(1,9);
@@ -179,8 +179,8 @@ void amplificatore::inizializza(bool forza)
  **gruppo di amplificatori
  ****************************************************************/
 
-grAmplificatori::grAmplificatori(QWidget *parent, const char *name, QList<QString> indirizzi, QString IconaSx,
-	QString IconaDx, QString iconsx, QString icondx) : bannRegolaz(parent, name), elencoDisp(indirizzi)
+grAmplificatori::grAmplificatori(QWidget *parent, QList<QString> indirizzi, QString IconaSx,
+	QString IconaDx, QString iconsx, QString icondx) : bannRegolaz(parent), elencoDisp(indirizzi)
 {
 	SetIcons(IconaSx, IconaDx, icondx, iconsx);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));

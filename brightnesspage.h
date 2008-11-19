@@ -22,7 +22,7 @@ class BannToggle : public bannOnSx
 {
 Q_OBJECT
 public:
-	BannToggle(sottoMenu *parent=0, const char *name=0);
+	BannToggle(sottoMenu *parent=0);
 	BtButton *getButton();
 	~BannToggle() { };
 };

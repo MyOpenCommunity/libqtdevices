@@ -21,7 +21,7 @@
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
 
-ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *name, Qt::WindowFlags f) :
+ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, Qt::WindowFlags f) :
 	QWidget(parent, f)
 {
 	QFont aFont;

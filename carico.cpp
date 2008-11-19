@@ -18,8 +18,7 @@
  **carico
  ****************************************************************/
 
-carico::carico(sottoMenu *parent, const char *name, char *indirizzo, QString IconaSx)
-	: bannOnSx(parent, name)
+carico::carico(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
 	setAddress(indirizzo);

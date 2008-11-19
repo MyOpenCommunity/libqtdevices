@@ -45,7 +45,7 @@ public:
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
 
-	scenEvo_cond(QWidget *parent, char *name);
+	scenEvo_cond(QWidget *parent);
 	/*!
 	\brief returns value related to condition
 	*/
@@ -139,7 +139,7 @@ private:
 	//! Timer for triggering condition
 	QTimer *timer;
 public:
-	scenEvo_cond_h(QWidget *parent, char *name);
+	scenEvo_cond_h(QWidget *parent);
 	/*!
 	\brief Sets hours
 	\param pointer to hours string
@@ -284,7 +284,7 @@ private:
 	QString get_string();
 public:
 	//! Constructor
-	device_condition_light_status(QWidget *parent, char *name, QString *trigger);
+	device_condition_light_status(QWidget *parent, QString *trigger);
 	//! Draws frame
 	virtual void Draw();
 	//! Returns max value
@@ -314,7 +314,7 @@ private:
 	int current_value_max;
 public:
 	//! Constructor
-	device_condition_dimming(QWidget *parent, char *name, QString *trigger);
+	device_condition_dimming(QWidget *parent, QString *trigger);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -372,7 +372,7 @@ private:
 	int current_value_max;
 public:
 	//! Constructor
-	device_condition_dimming_100(QWidget *parent, char *name, QString *trigger);
+	device_condition_dimming_100(QWidget *parent, QString *trigger);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -427,7 +427,7 @@ private:
 	int current_value_max;
 public:
 	//! Constructor
-	device_condition_volume(QWidget *parent, char *name, QString *trigger);
+	device_condition_volume(QWidget *parent, QString *trigger);
 
 	//! Returns min value
 	int get_min();
@@ -475,7 +475,7 @@ class device_condition_temp : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_temp(QWidget *parent, char *name, QString *trigger);
+	device_condition_temp(QWidget *parent, QString *trigger);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -564,7 +564,7 @@ private:
 	//! Inits condition
 	void inizializza(void);
 public:
-	scenEvo_cond_d(QWidget *parent, char *name);
+	scenEvo_cond_d(QWidget *parent);
 	/*!
 		\brief Set description
 		\param d new description
@@ -633,7 +633,7 @@ class device_condition_aux : public device_condition
 {
 Q_OBJECT
 public:
-	device_condition_aux(QWidget *parent, char *name, QString *trigger);
+	device_condition_aux(QWidget *parent, QString *trigger);
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);

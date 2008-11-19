@@ -23,7 +23,7 @@
  **sorgente_aux
  ****************************************************************/
 sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
-	: bannCiclaz(parent, name, vecchio ? 4 : 3)
+	: bannCiclaz(parent, vecchio ? 4 : 3)
 {
 	SetIcons(ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
 

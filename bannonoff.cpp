@@ -11,7 +11,7 @@
 #include "bannonoff.h"
 #include "main.h"
 
-bannOnOff::bannOnOff(QWidget *parent,const char *name) : banner(parent, name)
+bannOnOff::bannOnOff(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, MAX_WIDTH-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
 	addItem(BUT2, 0 , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);

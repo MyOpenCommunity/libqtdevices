@@ -12,7 +12,7 @@ class BtButton;
 class device;
 class QLabel;
 
-
+// TOdO: rendere un QWidget!
 class call_notifier : public QFrame
 {
 Q_OBJECT
@@ -45,7 +45,7 @@ private:
 	QTimer *myTimer;
 
 public:
-	call_notifier(QWidget *parent, char *name, postoExt *ms);
+	call_notifier(QWidget *parent, postoExt *ms);
 	//! Get station's where
 	void get_where(QString&);
 public slots:

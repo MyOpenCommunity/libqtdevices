@@ -12,7 +12,7 @@
 #include "main.h"
 
 
-bann4But::bann4But(QWidget *parent,const char *name) : banner(parent, name)
+bann4But::bann4But(QWidget *parent) : banner(parent)
 {
 	// sx
 	addItem(BUT1,(MAX_WIDTH/4-BAN4BUT_DIM)/2,0,BAN4BUT_DIM , BAN4BUT_DIM);
