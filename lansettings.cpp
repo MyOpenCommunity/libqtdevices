@@ -6,7 +6,7 @@ LanSettings::LanSettings(QWidget *parent) :
 {
 	// create banners
 	bannOnDx *b = new bannOnDx(this);
-	b->SetTextU("Prova");
+	b->setText("Prova");
 	b->SetIcons(ICON_INFO, 1);
 	appendBanner(b);
 

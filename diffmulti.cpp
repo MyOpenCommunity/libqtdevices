@@ -155,7 +155,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 			elencoBanner.append(b);
 			dslist.append(ds);
 			banner *last = elencoBanner.last();
-			last->SetTextU(descrizione);
+			last->setText(descrizione);
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
@@ -217,7 +217,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, QList<QString *> *indiri
 			elencoBanner.append(b);
 			dslist.append(ds);
 			banner *last = elencoBanner.last();
-			last->SetTextU(descrizione);
+			last->setText(descrizione);
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));

@@ -51,12 +51,12 @@ public:
 	/*!
 	 * \brief sets the foundamental text one can see on the banner
 	 */
-	virtual void SetTextU(const QString &);
+	virtual void setText(const QString &);
 
 	/*!
 	 * \brief sets a possible additional text one can see on the banner
 	 */
-	void SetSecondaryTextU(const QString &);
+	void setSecondaryText(const QString &);
 
 	/*!
 	 *  \brief return the Pressed Icon Name

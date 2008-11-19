@@ -35,7 +35,7 @@ BrightnessPage::BrightnessPage(QWidget *parent) : sottoMenu(parent)
 BannToggle *BrightnessPage::getBanner(const QString &banner_text)
 {
 	BannToggle *bann = new BannToggle(this);
-	bann->SetTextU(banner_text);
+	bann->setText(banner_text);
 	elencoBanner.append(bann);
 	return bann;
 }

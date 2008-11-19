@@ -114,7 +114,7 @@ void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
 
 	QDomNode n = FindNamedNode(e, "descr");
 	banner *last = elencoBanner.last();
-	last->SetTextU(n.toElement().text());
+	last->setText(n.toElement().text());
 	last->setAnimationParams(0, 0);
 	n = FindNamedNode(e, "id");
 	last->setId(n.toElement().text().toInt());
@@ -189,7 +189,7 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 			StopngoItem *itm = stopngoList.at(i);
 			BannPulsDynIcon *bp = new BannPulsDynIcon(sm);  // Create a new banner
 			bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
-			bp->SetTextU(itm->GetDescr());
+			bp->setText(itm->GetDescr());
 			bp->setAnimationParams(0, 0);
 			bp->setId(itm->GetId());
 

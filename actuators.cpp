@@ -492,7 +492,7 @@ attuatAutomTemp::attuatAutomTemp(QWidget *parent, char *indirizzo, QString Icona
 	}
 
 	assegna_tempo_display();
-	SetSecondaryTextU(tempo_display);
+	setSecondaryText(tempo_display);
 	dev = btouch_device_cache.get_light(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
@@ -608,7 +608,7 @@ void attuatAutomTemp::CiclaTempo()
 	qDebug("ntempi = %d", ntempi());
 	qDebug("cntTempi = %d", cntTempi);
 	assegna_tempo_display();
-	SetSecondaryTextU(tempo_display);
+	setSecondaryText(tempo_display);
 	Draw();
 }
 
@@ -646,7 +646,7 @@ attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent, char *indirizzo, Q
 {
 	assegna_tempo_display();
 	stato_noto = false;
-	SetSecondaryTextU(tempo_display);
+	setSecondaryText(tempo_display);
 	disconnect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(attuatAutomTemp::status_changed(QList<device_status*>)));
 	// Get status changed events back
@@ -797,7 +797,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, char *indirizzo, Q
 {
 	SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
 	setAddress(indirizzo);
-	SetSecondaryTextU("????");
+	setSecondaryText("????");
 
 	// TODO: riscrivere utilizzando qt e c++!!
 	strncpy(tempo, t.isEmpty() ? t.toAscii().constData() : "0*0*0", sizeof(tempo));
@@ -840,7 +840,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, char *indirizzo, Q
 	connect(myTimer,SIGNAL(timeout()),this,SLOT(update()));
 	update_ok = false;
 	tentativi_update = 0;
-	SetSecondaryTextU(tmp);
+	setSecondaryText(tmp);
 	connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_newtimed(getAddress());

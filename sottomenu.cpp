@@ -136,7 +136,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString> 
 	connectLastBanner();
 
 	banner *last = elencoBanner.last();
-	last->SetTextU(qdescrizione);
+	last->setText(qdescrizione);
 	last->setAnimationParams(periodo,numFrame);
 	last->setId(tipo);
 
@@ -351,7 +351,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	connectLastBanner();
 
 	banner *last = elencoBanner.last();
-	last->SetTextU(qdescrizione);
+	last->setText(qdescrizione);
 	last->setAnimationParams(periodo,numFrame);
 	last->setId(tipo);
 	
@@ -647,7 +647,7 @@ void sottoMenu::addAmb(char *a)
 void sottoMenu::initBanner(banner *bann, QDomNode conf)
 {
 	QDomNode n = findNamedNode(conf, "descr");
-	bann->SetTextU(n.toElement().text());
+	bann->setText(n.toElement().text());
 
 	n = findNamedNode(conf, "id");
 	bann->setId(n.toElement().text().toInt());
@@ -758,7 +758,7 @@ void WeeklyMenu::createSummerBanners()
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
-				bp->SetTextU(p.toElement().text());
+				bp->setText(p.toElement().text());
 				QRegExp re("(\\d)");
 				int index = re.indexIn(p.nodeName());
 				if (index != -1)
@@ -796,7 +796,7 @@ void WeeklyMenu::createWinterBanners()
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
-				bp->SetTextU(p.toElement().text());
+				bp->setText(p.toElement().text());
 				QRegExp re("(\\d)");
 				int index = re.indexIn(p.nodeName());
 				if (index != -1)
@@ -840,7 +840,7 @@ void ScenarioMenu::createSummerBanners()
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
-				bp->SetTextU(p.toElement().text());
+				bp->setText(p.toElement().text());
 				QRegExp re("(\\d+)");
 				int index = re.indexIn(p.nodeName());
 				if (index != -1)
@@ -878,7 +878,7 @@ void ScenarioMenu::createWinterBanners()
 			// set Text taken from conf.xml
 			if (p.isElement())
 			{
-				bp->SetTextU(p.toElement().text());
+				bp->setText(p.toElement().text());
 				QRegExp re("(\\d+)");
 				int index = re.indexIn(p.nodeName());
 				if (index != -1)

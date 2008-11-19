@@ -158,7 +158,7 @@ QDomNode PowerAmplifierPreset::getPowerAmplifierNode()
 
 void PowerAmplifierPreset::showEvent(QShowEvent *event)
 {
-	SetTextU(preset_desc[preset]);
+	setText(preset_desc[preset]);
 	Draw();
 }
 
@@ -169,7 +169,7 @@ void PowerAmplifierPreset::prevPreset()
 		preset = num_preset - 1;
 	else
 		--preset;
-	SetTextU(preset_desc[preset]);
+	setText(preset_desc[preset]);
 	Draw();
 }
 
@@ -180,7 +180,7 @@ void PowerAmplifierPreset::nextPreset()
 		preset = 0;
 	else
 		++preset;
-	SetTextU(preset_desc[preset]);
+	setText(preset_desc[preset]);
 	Draw();
 }
 
@@ -219,7 +219,7 @@ void PowerAmplifierTreble::showLevel()
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	SetSecondaryTextU(desc);
+	setSecondaryText(desc);
 }
 
 
@@ -258,7 +258,7 @@ void PowerAmplifierBass::showLevel()
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	SetSecondaryTextU(desc);
+	setSecondaryText(desc);
 }
 
 
@@ -302,7 +302,7 @@ void PowerAmplifierBalance::showBalance()
 {
 	QString desc;
 	desc.sprintf("%d", abs(balance));
-	SetSecondaryTextU(desc);
+	setSecondaryText(desc);
 }
 
 

@@ -181,9 +181,9 @@ void banradio::hideEvent(QHideEvent *event)
 	myRadio->hide();
 }
 
-void banradio::SetTextU(const QString & qtext)
+void banradio::setText(const QString & qtext)
 {
-	banner::SetTextU(qtext);
+	banner::setText(qtext);
 	myRadio->setNameU(qtext);
 }
 

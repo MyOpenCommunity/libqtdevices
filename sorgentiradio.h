@@ -66,7 +66,7 @@ protected slots:
 	void grandadChanged(QWidget *);
 public slots:
 	void status_changed(QList<device_status*>);
-	void SetTextU(const QString &);
+	virtual void setText(const QString &);
 };
 
 
