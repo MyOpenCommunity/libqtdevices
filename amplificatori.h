@@ -74,7 +74,6 @@ private slots:
 	void Diminuisci();
 private:
 	QList<QString> elencoDisp;
-	device *dev;
 	void sendActivationFrame(QString argm);
 };
 

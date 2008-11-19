@@ -32,8 +32,6 @@ public:
 	Client *get_client_comandi();
 	//! Returns pointer to client_monitor
 	Client *get_client_monitor();
-	//! Get device given key , create it if it doesn't exist
-	device *get_device(QString k = "");
 	//! Get simple light device
 	device *get_light(QString where);
 	//! Get old dimmer device

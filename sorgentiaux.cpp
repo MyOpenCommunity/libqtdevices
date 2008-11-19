@@ -9,10 +9,9 @@
  ****************************************************************/
 
 #include "sorgentiaux.h"
-#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
+#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, BTouch
 #include "aux.h" // class myAux
-#include "device_cache.h" // btouch_device_cache
-#include "device.h"
+#include "btmain.h"
 
 #include <openwebnet.h> // class openwebnet
 
@@ -30,7 +29,6 @@ sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, boo
 
 	vecchia = vecchio;
 	setAddress(indirizzo);
-	dev = btouch_device_cache.get_device(getAddress());
 
 	if (vecchio)
 	{
@@ -57,14 +55,14 @@ void sorgente_aux::ciclaSorg()
 	memset(pippo,'\000',sizeof(pippo));
 	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
 	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void sorgente_aux::decBrano()
 {
 	openwebnet msg_open;
 	msg_open.CreateMsgOpen("16","6101",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void sorgente_aux::aumBrano()
@@ -77,7 +75,7 @@ void sorgente_aux::aumBrano()
 			amb[1] = '1';
 
 	msg_open.CreateMsgOpen("16","6001",amb,"");
-	dev->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void sorgente_aux::inizializza(bool forza)
@@ -122,7 +120,7 @@ void sorgenteMultiAux::attiva()
 		memset(pippo,'\000',sizeof(pippo));
 		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
 		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
 	else
@@ -137,11 +135,11 @@ void sorgenteMultiAux::attiva()
 			strcat(pippo,"*6");
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
+			BTouch->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
 			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
+			BTouch->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*22*1#4#");
 			strcat(pippo,buf.constData());
@@ -150,11 +148,11 @@ void sorgenteMultiAux::attiva()
 			strcat(pippo, buf_ind.constData());
 			strcat(pippo,"##");
 			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
+			BTouch->sendFrame(msg_open.frame_open);
 			memset(pippo,'\000',sizeof(pippo));
 			strcat(pippo,"*#16*1000*11##");
 			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
+			BTouch->sendFrame(msg_open.frame_open);
 		}
 	}
 }

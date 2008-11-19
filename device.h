@@ -20,7 +20,6 @@ class device : public QObject
 Q_OBJECT
 
 public:
-	device(QString who, QString where, bool p=false, int g=-1);
 	//! Init device: send messages initializing data
 	virtual void init(bool force = false);
 	//! Set where
@@ -57,6 +56,8 @@ public slots:
 	void init_requested_handler(QString msg);
 
 protected:
+	// The costructor is protected only to make device abstract.
+	device(QString who, QString where, bool p=false, int g=-1);
 	//! Interpreter
 	frame_interpreter *interpreter;
 	//! List of device stats

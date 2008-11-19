@@ -43,25 +43,6 @@ void device_cache::disconnect_comm(device *dev)
 			dev, SLOT(frame_rx_handler(char *)));
 }
 
-// Get device given key , create it if it doesn't exist
-device *device_cache::get_device(QString k)
-{
-	qDebug() << "device_cache::get_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new device(key_to_who(k), key_to_where(k));
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-		// Connect to comm clients
-		connect_comm(out);
-	}
-	// Increment device reference count
-	out->get();
-	qDebug("device_cache::get_device() returning %p", out);
-	return out;
-}
-
 // Get light device given address
 device *device_cache::get_light(QString w)
 {

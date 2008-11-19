@@ -13,6 +13,8 @@
 #include "device.h"
 #include "btbutton.h"
 #include "fontmanager.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <openwebnet.h> // class openwebnet
 
@@ -436,15 +438,14 @@ grDimmer::grDimmer(QWidget *parent, const char *name, void *indirizzi, QString I
 	bannRegolaz(parent, name)
 {
 	SetIcons(IconaSx, IconaDx, icondx, iconsx);
-	setAddress(indirizzi);
-	dev = btouch_device_cache.get_device(getAddress());
+	setAddress(indirizzi); // TODO: indirizzi non serve piu' a niente?
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
-void grDimmer::setAddress(void*indirizzi)
+void grDimmer::setAddress(void *indirizzi)
 {
 	elencoDisp = *((QList<QString*>*)indirizzi);
 }
@@ -457,7 +458,7 @@ void grDimmer::sendFrame(char *msg)
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(i)->toAscii();
 		msg_open.CreateMsgOpen("1", msg, buf.data(), "");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -492,8 +493,7 @@ grDimmer100::grDimmer100(QWidget *parent, const char *name,void *indirizzi, QStr
 {
 	qDebug("grDimmer100::grDimmer100()");
 	qDebug("sstart[0] = %d", sstart[0]);
-	setAddress(indirizzi);
-	dev = btouch_device_cache.get_device(getAddress());
+	setAddress(indirizzi); // TODO: indirizzi non serve piu' a niente?
 	soft_start = sstart;
 	soft_stop = sstop;
 }
@@ -509,7 +509,7 @@ void grDimmer100::Attiva()
 		QByteArray buf = elencoDisp.at(idx)->toAscii();
 		sprintf(s, "*1*1#%d*%s##", soft_start[idx], buf.constData());
 		msg_open.CreateMsgOpen(s, strlen(s));
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -524,7 +524,7 @@ void grDimmer100::Disattiva()
 		QByteArray buf = elencoDisp.at(idx)->toAscii();
 		sprintf(s, "*1*0#%d*%s##", soft_stop[idx], buf.constData());
 		msg_open.CreateMsgOpen(s, strlen(s));
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -536,7 +536,7 @@ void grDimmer100::Aumenta()
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(idx)->toAscii();
 		msg_open.CreateMsgOpen("1", "30#5#255",buf.data(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -548,6 +548,6 @@ void grDimmer100::Diminuisci()
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(idx)->toAscii();
 		msg_open.CreateMsgOpen("1", "31#5#255",buf.data(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }

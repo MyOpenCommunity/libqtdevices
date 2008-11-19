@@ -18,7 +18,6 @@
 #include <QString>
 #include <QWidget>
 
-class device;
 
 /**
  * \brief This class is made to manage a multimedia source.
@@ -39,7 +38,6 @@ private slots:
 protected:
 	virtual void hideEvent(QHideEvent *event);
 	MultimediaSource source_menu;
-	device *dev;
 };
 
 /**

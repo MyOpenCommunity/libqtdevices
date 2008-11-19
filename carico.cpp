@@ -9,8 +9,8 @@
  ****************************************************************/
 
 #include "carico.h"
-#include "device_cache.h"
-#include "device.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <openwebnet.h> // class openwebnet
 
@@ -23,8 +23,7 @@ carico::carico(sottoMenu *parent, const char *name, char *indirizzo, QString Ico
 {
 
 	SetIcons(IconaSx, 1);
-	setAddress(indirizzo);
-	dev = btouch_device_cache.get_device(getAddress());
+	setAddress(indirizzo); // TODO: indirizzo non sembra servire piu'.. verificare!
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
@@ -38,7 +37,7 @@ void carico::Attiva()
 
 	msg_open.CreateNullMsgOpen();
 	msg_open.CreateMsgOpen("3", "2",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(msg_open.frame_open);
 }
 
 void carico::inizializza(bool forza){}

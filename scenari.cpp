@@ -33,7 +33,6 @@ scenario::scenario(sottoMenu *parent, const char *name, char *indirizzo, QString
 {
 	SetIcons(IconaSx, 1);
 	setAddress(indirizzo);
-	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
@@ -48,7 +47,7 @@ void scenario::Attiva()
 		memset(index(cosa,'*'),'\000',sizeof(cosa)-(index(cosa,'*')-cosa));
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("0", cosa,strstr(getAddress(),"*")+1,"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 void scenario::inizializza(bool forza){}

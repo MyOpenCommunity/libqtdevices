@@ -117,7 +117,6 @@ private slots:
 	virtual void Aumenta();
 	virtual void Diminuisci();
 private:
-	device *dev;
 	void sendFrame(char *msg);
 };
 
@@ -147,8 +146,6 @@ private slots:
 	void Disattiva();
 	void Aumenta();
 	void Diminuisci();
-private:
-	device *dev;
 };
 
 #endif

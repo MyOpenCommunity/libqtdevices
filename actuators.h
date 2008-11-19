@@ -67,7 +67,6 @@ private:
 	// TODO: probabilmente sarebbe meglio che diventasse QList<QString> ma viene creata
 	// nell'xmlconfhandler, e passata come void*.
 	QList<QString*> elencoDisp;
-	device *dev;
 public:
 	grAttuatAutom(QWidget *parent=0, const char *name=NULL ,void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Icon=QString(), int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
@@ -281,7 +280,6 @@ public slots:
 	void Ferma();
 private:
 	QList<QString*> elencoDisp;
-	device *dev;
 	void inizializza(bool forza = false);
 	void sendFrame(char *msg);
 };
@@ -310,7 +308,6 @@ private slots:
 	void Disattiva();
 private:
 	char type;
-	device *dev;
 	void inizializza(bool forza = false);
 };
 

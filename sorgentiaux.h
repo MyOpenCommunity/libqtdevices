@@ -18,7 +18,6 @@
 
 /// Forward Declarations
 class aux;
-class device;
 
 /*****************************************************************
  **Sorgente_AUX
@@ -47,7 +46,6 @@ private slots:
 public slots:
 	void gestFrame(char*);
 protected:
-	device *dev;
 	virtual void hideEvent(QHideEvent *event);
 };
 

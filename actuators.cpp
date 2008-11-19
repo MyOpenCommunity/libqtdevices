@@ -14,6 +14,8 @@
 #include "btbutton.h"
 #include "generic_functions.h" // getPressName
 #include "fontmanager.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <openwebnet.h> // class openwebnet
 
@@ -124,7 +126,6 @@ grAttuatAutom::grAttuatAutom(QWidget *parent, const char *name, void *indirizzi,
 	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
 	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
 	elencoDisp = *((QList<QString*>*)indirizzi);
-	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 }
@@ -138,7 +139,7 @@ void grAttuatAutom::Attiva()
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(i)->toAscii();
 		msg_open.CreateMsgOpen("1", "1", buf.data(), "");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -151,7 +152,7 @@ void grAttuatAutom::Disattiva()
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(i)->toAscii();
 		msg_open.CreateMsgOpen("1", "0", buf.data(), "");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -1120,7 +1121,6 @@ grAttuatInt::grAttuatInt(QWidget *parent, const char *name, void *indirizzi, QSt
 	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
 	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
 	elencoDisp = *((QList<QString*>*)indirizzi);
-	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(dxClick()),this,SLOT(Alza()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(Abbassa()));
 	connect(this,SIGNAL(centerClick()),this,SLOT(Ferma()));
@@ -1135,7 +1135,7 @@ void grAttuatInt::sendFrame(char *msg)
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(i)->toAscii();
 		msg_open.CreateMsgOpen("2", msg, buf.data(), "");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -1167,10 +1167,9 @@ attuatPuls::attuatPuls(QWidget *parent, const char *name, char *indirizzo, QStri
 {
 	SetIcons(IconaSx, QString(), icon, QString(), period,number);
 	setAddress(indirizzo);
-	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(sxReleased()),this,SLOT(Disattiva()));
-	type=tipo;
+	type = tipo;
 	impostaAttivo(1);
 }
 
@@ -1182,17 +1181,17 @@ void attuatPuls::Attiva()
 	case  AUTOMAZ:
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("1", "1",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 		break;
 	case  VCT_SERR:
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("6", "10",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 		break;
 	case  VCT_LS:
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("6", "12",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 		break;
 	}
 }
@@ -1205,14 +1204,14 @@ void attuatPuls::Disattiva()
 	case  AUTOMAZ:
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("1", "0",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 		break;
 	case  VCT_SERR:
 		break;
 	case  VCT_LS:
 		msg_open.CreateNullMsgOpen();
 		msg_open.CreateMsgOpen("6", "11",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 		break;
 	}
 }

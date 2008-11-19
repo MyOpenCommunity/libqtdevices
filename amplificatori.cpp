@@ -12,6 +12,8 @@
 #include "device_cache.h" // btouch_device_cache
 #include "device_status.h"
 #include "device.h"
+#include "btmain.h"
+#include "main.h" // BTouch
 
 #include <openwebnet.h> // class openwebnet
 
@@ -181,7 +183,6 @@ grAmplificatori::grAmplificatori(QWidget *parent, const char *name, QList<QStrin
 	QString IconaDx, QString iconsx, QString icondx) : bannRegolaz(parent, name), elencoDisp(indirizzi)
 {
 	SetIcons(IconaSx, IconaDx, icondx, iconsx);
-	dev = btouch_device_cache.get_device(getAddress());
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
@@ -201,7 +202,7 @@ void grAmplificatori::sendActivationFrame(QString argm)
 		else
 			f = QString("*22*%3#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1)).arg(argm);
 
-		dev->sendFrame(f);
+		BTouch->sendFrame(f);
 	}
 }
 
@@ -224,7 +225,7 @@ void grAmplificatori::Aumenta()
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(i).toAscii();
 		msg_open.CreateMsgOpen("16", "1001",buf.data(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
@@ -237,7 +238,7 @@ void grAmplificatori::Diminuisci()
 		msg_open.CreateNullMsgOpen();
 		QByteArray buf = elencoDisp.at(i).toAscii();
 		msg_open.CreateMsgOpen("16", "1101",buf.data(),"");
-		dev->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(msg_open.frame_open);
 	}
 }
 
