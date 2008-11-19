@@ -124,7 +124,7 @@ void versio::setAddr(int a)
 	indDisp = a;
 }
 
-void versio::setModelU(const QString & m)
+void versio::setModel(const QString & m)
 {
 	model = m;
 	datiGen->setText(model);

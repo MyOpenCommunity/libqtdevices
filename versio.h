@@ -39,7 +39,7 @@ public:
 	/*!
 	\brief Sets model string
 	*/
-	void setModelU(const QString &);
+	void setModel(const QString &);
 
 public slots:
 	/*!

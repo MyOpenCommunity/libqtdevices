@@ -1309,7 +1309,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 					}
 				}
 				if (!CurTagL4.compare("modello"))
-					datiGen->setModelU(qValue);
+					datiGen->setModel(qValue);
 			}
 		}
 	} // if (!CurTagL1.startsWith("configuratore"))
