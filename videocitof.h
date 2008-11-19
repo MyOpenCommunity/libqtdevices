@@ -16,6 +16,25 @@ class QLabel;
 class call_notifier : public QFrame
 {
 Q_OBJECT
+public:
+	call_notifier(QWidget *parent, postoExt *ms);
+	//! Get station's where
+	void get_where(QString&);
+public slots:
+	//! Invoked by device when status changes
+	void status_changed(QList<device_status*>);
+	//! A frame is available, pass it on to the device
+	void frame_available_handler(char *);
+	//! Area 2 button pressed
+	void stairlight_pressed();
+	//! Area 4 button released
+	void stairlight_released();
+	//! Area 6 button clicked
+	void open_door_clicked();
+	//! Close window
+	void close();
+	//! Show full screen, reimplemented to restart 30secs timer
+	void showFullScreen();
 private:
 	postoExt *my_station;
 	device *station_dev;
@@ -43,26 +62,6 @@ private:
 	static const int LABEL_WIDTH = 180;
 	//! 30secs idle timer
 	QTimer *myTimer;
-
-public:
-	call_notifier(QWidget *parent, postoExt *ms);
-	//! Get station's where
-	void get_where(QString&);
-public slots:
-	//! Invoked by device when status changes
-	void status_changed(QList<device_status*>);
-	//! A frame is available, pass it on to the device
-	void frame_available_handler(char *);
-	//! Area 2 button pressed
-	void stairlight_pressed();
-	//! Area 4 button released
-	void stairlight_released();
-	//! Area 6 button clicked
-	void open_door_clicked();
-	//! Close window
-	void close();
-	//! Show full screen, reimplemented to restart 30secs timer
-	void showFullScreen();
 signals:
 	//! A frame is available
 	void frame_available(char *);

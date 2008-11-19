@@ -22,19 +22,6 @@ class QLabel;
 class scenEvo_cond : public QFrame
 {
 Q_OBJECT
-private:
-	static const int MAX_EVO_COND_IMG =5;
-	QString *img[MAX_EVO_COND_IMG];
-	int val;
-	int serial_number;
-protected:
-	/*!
-	\brief: Returns image path for a certain index
-	\arg: index of image whose path shall be returned
-	*/
-	QString getImg(int index);
-
-
 public:
 	/*!
 	\brief sets image path for a certain index
@@ -87,6 +74,20 @@ public slots:
 	virtual void save();
 	//! Reset condition (on cancel)
 	virtual void reset();
+
+protected:
+	/*!
+	\brief: Returns image path for a certain index
+	\arg: index of image whose path shall be returned
+	*/
+	QString getImg(int index);
+
+private:
+	static const int MAX_EVO_COND_IMG =5;
+	QString *img[MAX_EVO_COND_IMG];
+	int val;
+	int serial_number;
+
 signals:
 	//! Emitted when user clicks Next icon
 	void SwitchToNext();
