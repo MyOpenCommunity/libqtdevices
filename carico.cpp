@@ -21,9 +21,8 @@
 carico::carico(sottoMenu *parent, const char *name, char *indirizzo, QString IconaSx)
 	: bannOnSx(parent, name)
 {
-
 	SetIcons(IconaSx, 1);
-	setAddress(indirizzo); // TODO: indirizzo non sembra servire piu'.. verificare!
+	setAddress(indirizzo);
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
@@ -31,6 +30,7 @@ void carico::gestFrame(char*)
 {
 
 }
+
 void carico::Attiva()
 {
 	openwebnet msg_open;
@@ -40,4 +40,6 @@ void carico::Attiva()
 	BTouch->sendFrame(msg_open.frame_open);
 }
 
-void carico::inizializza(bool forza){}
+void carico::inizializza(bool forza)
+{
+}
