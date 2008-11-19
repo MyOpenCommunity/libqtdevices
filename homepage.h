@@ -83,11 +83,11 @@ public:
 
   The arguments are the text, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
 */
-	void addDescrU(const QString &, int, int, int, int, int, int);
+	void addDescr(const QString &, int, int, int, int, int, int);
  /*!
   \brief Same as above. Dimension is assumed 160x20, the colors used are the same of the entire page, with no frame, line and text.
 */
-	void addDescrU(const QString &, int , int);
+	void addDescr(const QString &, int , int);
 
 /*! \enum tipoFunzSpe
    This enum let decide the behavior of the special button*/

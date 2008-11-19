@@ -551,7 +551,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						case CMDSPECIAL:
 							QByteArray buf_img = page_item_list_img.at(0)->toAscii();
 							(*specPage)->addButton(60,260, buf_img.data(),SPECIAL, page_item_who,page_item_what,page_item_where,(char)page_item_type.toInt(&ok, 10));
-							(*specPage)->addDescrU(page_item_descr, 60,240,180,20,QFrame::Plain,3);
+							(*specPage)->addDescr(page_item_descr, 60,240,180,20,QFrame::Plain,3);
 							pageAct = NULL;
 							break;
 						}

@@ -211,7 +211,7 @@ void homePage::inizializza()
 	}
 }
 
-void homePage::addDescrU(const QString & qz, int x, int y, int width, int height, int style,int line)
+void homePage::addDescr(const QString & qz, int x, int y, int width, int height, int style,int line)
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_homepage_bottoni_descrizione, aFont);
@@ -224,9 +224,9 @@ void homePage::addDescrU(const QString & qz, int x, int y, int width, int height
 	descrizione->setLineWidth(line);
 }
 
-void homePage::addDescrU(const QString & qz, int x, int y)
+void homePage::addDescr(const QString & qz, int x, int y)
 {
-	addDescrU(qz,x,y,160, 20, QFrame::NoFrame, 0);
+	addDescr(qz,x,y,160, 20, QFrame::NoFrame, 0);
 }
 
 void homePage::updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display)
