@@ -218,11 +218,6 @@ void radio::setNameU(const QString & s)
 	qnome = s;
 }
 
-QString * radio::getNameU()
-{
-	return &qnome;
-}
-
 void radio::setAuto()
 {
 	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));

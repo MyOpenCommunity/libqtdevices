@@ -41,10 +41,6 @@ public:
 	 */
 	void setNameU(const QString &);
 	/*!
-	 * \brief Gets the name of the tuner found in user configuration file
-	 */
-	QString * getNameU();
-	/*!
 	 * \brief Sets the frequency of the syntonized station
 	 */
 	void setFreq(float);
