@@ -213,7 +213,7 @@ void radio::draw()
 	progrText->setText(QString::number((int)stazione)+":");
 }
 
-void radio::setNameU(const QString & s)
+void radio::setName(const QString & s)
 {
 	qnome = s;
 }

@@ -184,7 +184,7 @@ void banradio::hideEvent(QHideEvent *event)
 void banradio::setText(const QString & qtext)
 {
 	banner::setText(qtext);
-	myRadio->setNameU(qtext);
+	myRadio->setName(qtext);
 }
 
 void banradio::ciclaSorg()

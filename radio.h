@@ -39,7 +39,7 @@ public:
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file
 	 */
-	void setNameU(const QString &);
+	void setName(const QString &);
 	/*!
 	 * \brief Sets the frequency of the syntonized station
 	 */
