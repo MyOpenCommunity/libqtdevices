@@ -213,17 +213,12 @@ void dimmer::Diminuisci()
 
 void dimmer::inizializza(bool forza)
 {
-	char    pippo[50];
 	qDebug("dimmer::inizializza");
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
+	QString f = QString("*#1*") + getAddress() + "##";
 	if (!forza)
-		emit richStato(pippo);
+		emit richStato(f);
 	else
-		dev->sendInit(pippo);
+		dev->sendInit(f);
 }
 
 
@@ -379,17 +374,13 @@ void dimmer100::status_changed(QList<device_status*> sl)
 
 void dimmer100::inizializza(bool forza)
 {
-	char    pippo[50];
 	qDebug("dimmer100::inizializza");
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*1##");
+	QString f = QString("*#1*") + getAddress() + "*1##";
+	
 	if (!forza)
-		emit richStato(pippo);
+		emit richStato(f);
 	else
-		dev->sendInit(pippo);
+		dev->sendInit(f);
 }
 
 /*****************************************************************

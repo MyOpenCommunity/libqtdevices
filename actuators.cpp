@@ -91,16 +91,11 @@ void attuatAutom::Disattiva()
 
 void attuatAutom::inizializza(bool forza)
 {
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
+	QString f = QString("*#1*") + getAddress() + "##";
 	if (!forza)
-		emit richStato(pippo);
+		emit richStato(f);
 	else
-		dev->sendInit(pippo);
+		dev->sendInit(f);
 }
 
 /*****************************************************************
@@ -873,13 +868,7 @@ void attuatAutomTempNuovoF::inizializza(bool forza)
 // Chiede lo stato dell'attuatore con una frame vecchia
 void attuatAutomTempNuovoF::chiedi_stato()
 {
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-	emit richStato(pippo);
+	emit richStato(QString("*#1*") + getAddress() + "##");
 }
 
 void attuatAutomTempNuovoF::SetIcons(QString i1, QString i2, QString i3)
