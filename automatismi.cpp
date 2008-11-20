@@ -9,6 +9,7 @@
  ****************************************************************/
 
 #include "automatismi.h"
+#include "generic_functions.h" // createMsgOpen
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
 
@@ -34,12 +35,7 @@ automCancAttuatVC::automCancAttuatVC(QWidget *parent, char *indirizzo, QString I
 
 void automCancAttuatVC::Attiva()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	// FIXME: CHECK FRAME !!
-	msg_open.CreateMsgOpen("6", "10",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("6", "10",getAddress()));
 }
 
 

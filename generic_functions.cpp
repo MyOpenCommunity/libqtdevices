@@ -13,6 +13,8 @@
 #include "main.h"
 #include "btmain.h"
 
+#include <openwebnet.h> // class openwebnet
+
 #include <QMutableMapIterator>
 #include <QTextStream>
 #include <QDateTime>
@@ -25,6 +27,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <assert.h>
+
+
+QString createMsgOpen(QString who, QString what, QString where, QString when)
+{
+	openwebnet msg_open;
+	msg_open.CreateMsgOpen(who.toAscii().data(), what.toAscii().data(),
+	 	where.toAscii().data(), when.toAscii().data());
+	return msg_open.frame_open;
+}
 
 // TODO: unificare queste tre funzioni praticamente identiche!
 QString getPressName(QString name)

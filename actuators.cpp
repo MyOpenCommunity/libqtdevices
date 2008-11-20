@@ -12,7 +12,7 @@
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
 #include "btbutton.h"
-#include "generic_functions.h" // getPressName
+#include "generic_functions.h" // getPressName, createMsgOpen
 #include "fontmanager.h"
 #include "btmain.h"
 #include "main.h" // BTouch
@@ -81,23 +81,14 @@ void attuatAutom::status_changed(QList<device_status*> sl)
 		Draw();
 }
 
-
 void attuatAutom::Attiva()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1", "1",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "1", getAddress()));
 }
 
 void attuatAutom::Disattiva()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1", "0",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "0", getAddress()));
 }
 
 void attuatAutom::inizializza(bool forza)
@@ -132,28 +123,14 @@ grAttuatAutom::grAttuatAutom(QWidget *parent, void *indirizzi, QString IconaDx, 
 
 void grAttuatAutom::Attiva()
 {
-	openwebnet msg_open;
-
 	for (int i = 0; i < elencoDisp.size();++i)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(i)->toAscii();
-		msg_open.CreateMsgOpen("1", "1", buf.data(), "");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(createMsgOpen("1", "1", *elencoDisp.at(i)));
 }
 
 void grAttuatAutom::Disattiva()
 {
-	openwebnet msg_open;
-
 	for (int i = 0; i < elencoDisp.size();++i)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(i)->toAscii();
-		msg_open.CreateMsgOpen("1", "0", buf.data(), "");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(createMsgOpen("1", "0", *elencoDisp.at(i)));
 }
 
 
@@ -267,29 +244,14 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 void attuatAutomInt::analizzaUp()
 {
 	if (!dorunning)
-	{
-		openwebnet msg_open;
-		msg_open.CreateNullMsgOpen();
-		if (uprunning)
-			msg_open.CreateMsgOpen("2", "0", getAddress(),"");
-		else
-			msg_open.CreateMsgOpen("2", "1", getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+		dev->sendFrame(createMsgOpen("2", uprunning ? "0" : "1", getAddress()));
 }
 
 void attuatAutomInt::analizzaDown()
 {
+	// TODO: verificare... che senso ha quel doppio controllo su uprunning??
 	if (!uprunning)
-	{
-		openwebnet msg_open;
-		msg_open.CreateNullMsgOpen();
-		if (uprunning)
-			msg_open.CreateMsgOpen("2", "0",getAddress(),"");
-		else
-			msg_open.CreateMsgOpen("2", "2",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+		dev->sendFrame(createMsgOpen("2", uprunning ? "0" : "2", getAddress()));
 }
 
 void attuatAutomInt::inizializza(bool forza)
@@ -414,24 +376,13 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 void attuatAutomIntSic::upPres()
 {
 	if (!dorunning && !isActive())
-	{
-		openwebnet msg_open;
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("2", "1",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
-	} 
+		dev->sendFrame(createMsgOpen("2", "1", getAddress()));
 }
 
 void attuatAutomIntSic::doPres()
 {
 	if (!uprunning && !isActive())
-	{
-		openwebnet msg_open;
-
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("2", "2",getAddress(),"");
-		dev->sendFrame(msg_open.frame_open);
-	} 
+		dev->sendFrame(createMsgOpen("2", "2", getAddress()));
 }
 
 void attuatAutomIntSic::upRil()
@@ -448,11 +399,7 @@ void attuatAutomIntSic::doRil()
 
 void attuatAutomIntSic::sendStop()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("2", "0",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("2", "0", getAddress()));
 }
 
 void attuatAutomIntSic::inizializza(bool forza)
@@ -591,15 +538,7 @@ void attuatAutomTemp::status_changed(QList<device_status*> sl)
 
 void attuatAutomTemp::Attiva()
 {
-	openwebnet msg_open;
-	char cosa[15];
-
-	memset(cosa,'\000',sizeof(cosa));
-	sprintf(cosa,"%d",(11+cntTempi));
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1",cosa,getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", QString::number(11+cntTempi), getAddress()));
 }
 
 void attuatAutomTemp::CiclaTempo()
@@ -1128,15 +1067,8 @@ grAttuatInt::grAttuatInt(QWidget *parent, void *indirizzi, QString IconaSx, QStr
 
 void grAttuatInt::sendFrame(char *msg)
 {
-	openwebnet msg_open;
-
 	for (int i = 0; i < elencoDisp.size();++i)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(i)->toAscii();
-		msg_open.CreateMsgOpen("2", msg, buf.data(), "");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(createMsgOpen("2", msg, *elencoDisp.at(i)));
 }
 
 void grAttuatInt::Alza()
@@ -1175,43 +1107,31 @@ attuatPuls::attuatPuls(QWidget *parent, char *indirizzo, QString IconaSx, QStrin
 
 void attuatPuls::Attiva()
 {
-	openwebnet msg_open;
 	switch (type)
 	{
 	case  AUTOMAZ:
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "1",getAddress(),"");
-		BTouch->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(createMsgOpen("1", "1", getAddress()));
 		break;
 	case  VCT_SERR:
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("6", "10",getAddress(),"");
-		BTouch->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(createMsgOpen("6", "10", getAddress()));
 		break;
 	case  VCT_LS:
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("6", "12",getAddress(),"");
-		BTouch->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(createMsgOpen("6", "12", getAddress()));
 		break;
 	}
 }
 
 void attuatPuls::Disattiva()
 {
-	openwebnet msg_open;
 	switch (type)
 	{
 	case  AUTOMAZ:
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("1", "0",getAddress(),"");
-		BTouch->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(createMsgOpen("1", "0", getAddress()));
 		break;
 	case  VCT_SERR:
 		break;
 	case  VCT_LS:
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("6", "11",getAddress(),"");
-		BTouch->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(createMsgOpen("6", "11", getAddress()));
 		break;
 	}
 }

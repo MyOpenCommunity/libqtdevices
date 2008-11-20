@@ -10,6 +10,7 @@
 
 #include "amplificatori.h"
 #include "device_cache.h" // btouch_device_cache
+#include "generic_functions.h" // createMsgOpen
 #include "device_status.h"
 #include "device.h"
 #include "btmain.h"
@@ -137,22 +138,14 @@ void amplificatore::Spegni()
 
 void amplificatore::Aumenta()
 {
-	openwebnet msg_open;
-
 	qDebug("amplificatore::Aumenta()");
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("16", "1001",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "1001", getAddress()));
 }
 
 void amplificatore::Diminuisci()
 {
-	openwebnet msg_open;
-
 	qDebug("amplificatore::Diminuisci()");
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("16", "1101",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "1101",getAddress()));
 }
 
 void amplificatore::inizializza(bool forza)
@@ -218,28 +211,14 @@ void grAmplificatori::Disattiva()
 
 void grAmplificatori::Aumenta()
 {
-	openwebnet msg_open;
-
 	for (int i = 0; i < elencoDisp.size(); ++i)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(i).toAscii();
-		msg_open.CreateMsgOpen("16", "1001",buf.data(),"");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(createMsgOpen("16", "1001", elencoDisp.at(i)));
 }
 
 void grAmplificatori::Diminuisci()
 {
-	openwebnet msg_open;
-
 	for (int i = 0; i < elencoDisp.size(); ++i)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(i).toAscii();
-		msg_open.CreateMsgOpen("16", "1101",buf.data(),"");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(createMsgOpen("16", "1101", elencoDisp.at(i)));
 }
 
 void grAmplificatori::inizializza(bool forza)

@@ -12,6 +12,7 @@
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, BTouch
 #include "aux.h" // class myAux
 #include "btmain.h"
+#include "generic_functions.h" // createMsgOpen
 
 #include <openwebnet.h> // class openwebnet
 
@@ -60,9 +61,7 @@ void sorgente_aux::ciclaSorg()
 
 void sorgente_aux::decBrano()
 {
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen("16","6101",getAddress(),"");
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(createMsgOpen("16","6101", getAddress()));
 }
 
 void sorgente_aux::aumBrano()
@@ -73,9 +72,7 @@ void sorgente_aux::aumBrano()
 	if (!vecchia)
 		if (amb[1] == '0')
 			amb[1] = '1';
-
-	msg_open.CreateMsgOpen("16","6001",amb,"");
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(createMsgOpen("16","6001", amb));
 }
 
 void sorgente_aux::inizializza(bool forza)

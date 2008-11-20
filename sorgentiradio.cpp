@@ -11,9 +11,11 @@
 #include "sorgentiradio.h"
 #include "main.h" // ICON_CICLA
 #include "radio.h"
-#include <openwebnet.h> // class openwebnet
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
+#include "generic_functions.h" // createMsgOpen
+
+#include <openwebnet.h> // class openwebnet
 
 #include <QByteArray>
 #include <QWidget>
@@ -203,43 +205,32 @@ void banradio::ciclaSorg()
 
 void banradio::decBrano()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateMsgOpen("16","6101",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "6101", getAddress()));
 }
 
 void banradio::aumBrano()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateMsgOpen("16","6001",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "6001", getAddress()));
 }
+
 void banradio::aumFreqAuto()
 {
-	openwebnet msg_open;
-
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5000",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5000", getAddress()));
 }
+
 void banradio::decFreqAuto()
 {
-	openwebnet msg_open;
-
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5100",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5100", getAddress()));
 }
 
 void banradio::aumFreqMan()
 {
-	openwebnet msg_open;
 	float f;
 
 	f = myRadio->getFreq();
@@ -249,13 +240,11 @@ void banradio::aumFreqMan()
 		f = 87.50;
 	myRadio->setFreq(f);
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5001",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5001", getAddress()));
 }
 
 void banradio::decFreqMan()
 {
-	openwebnet msg_open;
 	float f;
 
 	f = myRadio->getFreq();
@@ -265,13 +254,11 @@ void banradio::decFreqMan()
 		f = 108.00;
 	myRadio->setFreq(f);
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5101",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5101", getAddress()));
 }
 
 void banradio::changeStaz()
 {
-	openwebnet msg_open;
 	char amb[2];
 
 	sprintf(amb, getAddress());
@@ -279,8 +266,7 @@ void banradio::changeStaz()
 		if (amb[1] == '0')
 			amb[1] = '1';
 
-	msg_open.CreateMsgOpen("16","6001",amb,"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "6001", amb));
 }
 
 void banradio::memoStaz(uchar st)

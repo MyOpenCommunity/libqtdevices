@@ -11,8 +11,7 @@
 #include "carico.h"
 #include "btmain.h"
 #include "main.h" // BTouch
-
-#include <openwebnet.h> // class openwebnet
+#include "generic_functions.h" // createMsgOpen
 
 /*****************************************************************
  **carico
@@ -32,11 +31,7 @@ void carico::gestFrame(char*)
 
 void carico::Attiva()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("3", "2",getAddress(),"");
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(createMsgOpen("3", "2", getAddress()));
 }
 
 void carico::inizializza(bool forza)

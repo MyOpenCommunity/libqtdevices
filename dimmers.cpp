@@ -15,6 +15,7 @@
 #include "fontmanager.h"
 #include "btmain.h"
 #include "main.h" // BTouch
+#include "generic_functions.h" // createMsgOpen
 
 #include <openwebnet.h> // class openwebnet
 
@@ -192,37 +193,22 @@ void dimmer::status_changed(QList<device_status*> sl)
 
 void dimmer::Accendi()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1", "1",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "1", getAddress()));
 }
 
 void dimmer::Spegni()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1", "0",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "0", getAddress()));
 }
 
 void dimmer::Aumenta()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1", "30",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "30", getAddress()));
 }
 
 void dimmer::Diminuisci()
 {
-	openwebnet msg_open;
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1", "31",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "31", getAddress()));
 }
 
 void dimmer::inizializza(bool forza)
@@ -325,26 +311,17 @@ void dimmer100::Spegni()
 void dimmer100::Aumenta()
 {
 	qDebug("dimmer100::Aumenta()");
-	openwebnet msg_open;
-	msg_open.CreateNullMsgOpen();
-	char cosa[100];
+
 	// Simone agresta il 4/4/2006
 	// per l'incremento e il decremento prova ad usare il valore di velocit? di
 	// default 255.
-	sprintf(cosa, "30#5#255");
-	msg_open.CreateMsgOpen("1", cosa, getAddress(), "");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "30#5#255", getAddress()));
 }
 
 void dimmer100::Diminuisci()
 {
 	qDebug("dimmer100::Diminuisci()");
-	openwebnet msg_open;
-	char cosa[100];
-	sprintf(cosa, "31#5#255");
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("1", cosa ,getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("1", "31#5#255", getAddress()));
 }
 
 void dimmer100::status_changed(QList<device_status*> sl)
@@ -452,14 +429,8 @@ void grDimmer::setAddress(void *indirizzi)
 
 void grDimmer::sendFrame(char *msg)
 {
-	openwebnet msg_open;
 	for (int i = 0; i < elencoDisp.size(); ++i)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(i)->toAscii();
-		msg_open.CreateMsgOpen("1", msg, buf.data(), "");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(createMsgOpen("1", msg, *elencoDisp.at(i)));
 }
 
 void grDimmer::Attiva()
@@ -502,7 +473,7 @@ void grDimmer100::Attiva()
 {
 	openwebnet msg_open;
 
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
+	for (int idx = 0; idx < elencoDisp.size(); idx++)
 	{
 		msg_open.CreateNullMsgOpen();
 		char s[100];
@@ -517,7 +488,7 @@ void grDimmer100::Disattiva()
 {
 	openwebnet msg_open;
 
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
+	for (int idx = 0; idx < elencoDisp.size(); idx++)
 	{
 		msg_open.CreateNullMsgOpen();
 		char s[100];
@@ -530,24 +501,12 @@ void grDimmer100::Disattiva()
 
 void grDimmer100::Aumenta()
 {
-	openwebnet msg_open;
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
-		msg_open.CreateMsgOpen("1", "30#5#255",buf.data(),"");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+	for (int idx = 0; idx < elencoDisp.size(); idx++)
+		BTouch->sendFrame(createMsgOpen("1", "30#5#255", *elencoDisp.at(idx)));
 }
 
 void grDimmer100::Diminuisci()
 {
-	openwebnet msg_open;
-	for (uchar idx = 0; idx < elencoDisp.count(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
-		msg_open.CreateMsgOpen("1", "31#5#255",buf.data(),"");
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+	for (int idx = 0; idx < elencoDisp.size(); idx++)
+		BTouch->sendFrame(createMsgOpen("1", "31#5#255", *elencoDisp.at(idx)));
 }
