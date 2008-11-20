@@ -55,7 +55,7 @@ public slots:
 protected:
 	virtual void hideEvent(QHideEvent *event);
 signals:
-	void ambChanged(const QString &, bool, char *);
+	void ambChanged(const QString &, bool, QString);
 };
 
 
@@ -84,7 +84,7 @@ public slots:
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
 signals:
-	void ambChanged(const QString &, bool, char *);
+	void ambChanged(const QString &, bool, QString);
 };
 
 #endif

@@ -120,15 +120,14 @@ void sorgenteMultiAux::attiva()
 	}
 }
 
-void sorgenteMultiAux::ambChanged(const QString & ad, bool multi, char *indamb)
+void sorgenteMultiAux::ambChanged(const QString & ad, bool multi, QString indamb)
 {
 	qDebug() << "sorgenteMultiRadio::ambChanged(" << ad << ", " << multi << ", " << indamb << ")";
 	if (!multi)
 	{
 		multiamb = false;
-		indirizzo_ambiente = QString((const char *)indamb).toInt();
-		QString dove(QString::number(100 + QString((const char *)indamb).toInt() * 10 +
-			indirizzo_semplice.toInt(), 10));
+		indirizzo_ambiente = indamb.toInt();
+		QString dove(QString::number(100 + indamb.toInt() * 10 + indirizzo_semplice.toInt(), 10));
 		qDebug() << "Source where is now " << dove;
 		setAddress(dove);
 	}

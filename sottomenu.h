@@ -277,7 +277,7 @@ signals:
 	/*!
 	\brief amb description changed (for diffmulti)
 	*/
-	void ambChanged(const QString & newdescr, bool multiwhere, char *where);
+	void ambChanged(const QString & newdescr, bool multiwhere, QString where);
 
 	/*!
 	\brief hide all children

@@ -645,7 +645,7 @@ void banner::setId(char i)
 	id = i;
 }
 
-void banner::ambChanged(const QString &, bool, char *)
+void banner::ambChanged(const QString &, bool, QString)
 {
 	qDebug("[WARNING] empty slot ambChanged called!");
 };

@@ -88,7 +88,7 @@ public:
 public slots:
 	void attiva();
 	void addAmb(char *);
-	void ambChanged(const QString &, bool, char *);
+	void ambChanged(const QString &, bool, QString);
 
 protected:
 	virtual void showEvent(QShowEvent *event);

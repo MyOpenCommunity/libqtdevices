@@ -67,7 +67,7 @@ public:
 	void addAmb(char *);
 public slots:
 	void attiva();
-	void ambChanged(const QString &, bool, char *);
+	void ambChanged(const QString &, bool, QString);
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;

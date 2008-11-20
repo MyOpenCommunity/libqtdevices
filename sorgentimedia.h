@@ -54,7 +54,7 @@ public slots:
 	void gestFrame(char *);
 	void attiva();
 	void addAmb(char *);
-	void ambChanged(const QString &, bool, char *);
+	void ambChanged(const QString &, bool, QString);
 
 private:
 	QString indirizzo_semplice;

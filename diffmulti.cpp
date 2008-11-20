@@ -126,7 +126,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 		sorgenti->addItemU(tipo, descrizione, (void *)indirizzo, icon_names, 0, numFrame);
 		b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
-		connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)),b, SLOT(ambChanged(const QString &, bool, char *)));
+		connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)),b, SLOT(ambChanged(const QString &, bool, QString)));
 		connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 		connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
 		break;
@@ -159,7 +159,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
+			connect(last, SIGNAL(ambChanged(const QString &, bool, QString)), sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)));
 			if (tipo == AMBIENTE)
 				sorgenti->addAmb((char *)indirizzo);
 
@@ -221,7 +221,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, QList<QString *> *indiri
 			last->setId(tipo);
 			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(ambChanged(const QString &, bool, char *)), sorgenti, SIGNAL(ambChanged(const QString &, bool, char *)));
+			connect(last, SIGNAL(ambChanged(const QString &, bool, QString)), sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)));
 
 			while (!datimmulti.isEmpty())
 				delete datimmulti.takeFirst();
