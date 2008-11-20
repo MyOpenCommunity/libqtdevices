@@ -14,8 +14,9 @@
 
 #include "main.h" // MY_FILE_USER_CFG_DEFAULT
 
-/// A wrapper function around openwebnet::CreateMsgOpen
-QString createMsgOpen(QString who, QString what, QString where, QString when="");
+/// This function is similar to openwebnet::CreateMsgOpen but unlike that the result
+/// frame is not tested for correcteness.
+QString createMsgOpen(QString who, QString what, QString where);
 
  /*!
   \brief Transform a image file name into a pressed one.
