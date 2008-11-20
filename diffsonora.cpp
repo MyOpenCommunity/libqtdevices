@@ -146,8 +146,7 @@ void diffSonora::gestFrame(char*frame)
 		{
 			if ((!strcmp(msg_open.Extract_cosa(),"0")) || (!strcmp(msg_open.Extract_cosa(),"3")))
 			{
-				QByteArray buf = QString::number(w+100, 10).toAscii();
-				sorgenti->setIndex(buf.data());
+				sorgenti->setIndex(QString::number(w+100));
 				aggiorna = 1;
 				qDebug("accesa sorg: %d", w);
 			}
@@ -159,8 +158,7 @@ void diffSonora::gestFrame(char*frame)
 			(!strcmp(msg_open.Extract_livello(),"2"))))
 		{
 			w = strtoul(msg_open.Extract_interfaccia(), NULL, 10);
-			QByteArray buf = QString::number(w+100, 10).toAscii();
-			sorgenti->setIndex(buf.data());
+			sorgenti->setIndex(QString::number(w+100));
 			aggiorna = 1;
 			qDebug("accesa sorg(WHO=22): %d", w);
 		}
@@ -246,6 +244,5 @@ void diffSonora::fineVis()
 void diffSonora::setFirstSource(int addr)
 {
 	qDebug("diffSonora::setFirstSource(%d)", addr);
-	QByteArray buf = QString::number(addr, 10).toAscii();
-	sorgenti->setIndex(buf.data());
+	sorgenti->setIndex(QString::number(addr));
 }

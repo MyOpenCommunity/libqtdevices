@@ -125,7 +125,7 @@ sstop : soft stop values list vor dimmer 100 group
 	/*!
 	\brief Sets the index of the list forcing it to the object having the address passed by argument.
 	*/
-	void setIndex(char*);
+	void setIndex(QString addr);
 	void mostra_all(char);
 
 	/*!

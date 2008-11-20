@@ -545,13 +545,13 @@ void sottoMenu::init_dimmer()
 	}
 }
 
-void sottoMenu::setIndex(char* indiriz)
+void sottoMenu::setIndex(QString addr)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		if (!strcmp(elencoBanner.at(i)->getAddress(),indiriz))
+		if (QString(elencoBanner.at(i)->getAddress()) == addr)
 		{
-			qDebug("setindex trovato %s",indiriz);
+			qDebug() << "setindex trovato" << addr;
 			elencoBanner.at(i)->mostra(banner::BUT2);
 			indice = i;
 		}
