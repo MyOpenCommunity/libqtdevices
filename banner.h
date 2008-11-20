@@ -406,7 +406,10 @@ signals:
 	 *  \brief Emitted when the center-right button is pressed.
 	 */
 	void cdxPressed();
-	void richStato(char*);
+	// TODO: forse sarebbe meglio evitare il rimpallo di segnali per fare una richiesta
+	// di stato e usare direttamente BTouch.. ma poi c'e' anche il rischio di abusare
+	// troppo di quella variabile globale!
+	void richStato(QString);
 };
 
 

@@ -251,7 +251,7 @@ signals:
 	*/
 	void openNakRx(void);
 
-	void richStato(char*);
+	void richStato(QString);
 	void rispStato(char*);
 
 	/*!

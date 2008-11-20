@@ -91,12 +91,12 @@ void Client::ApriInviaFrameChiudiw(char *frame)
 }
 
 // richiesta stato all'openserver
-void Client::richStato(char* richiesta)
+void Client::richStato(QString richiesta)
 {
 	qDebug("Client::richStato()");
 	if (socket->state() == QAbstractSocket::UnconnectedState)
 		connetti();
-	socket->write(richiesta);
+	socket->write(richiesta.toAscii());
 }
 
 void Client::connetti()

@@ -594,7 +594,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*supervisione)->forceDraw();
 						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showPg()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
-						QObject::connect(*supervisione,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
+						QObject::connect(*supervisione,SIGNAL(richStato(QString)),client_richieste,SLOT(richStato(QString)));
 						break;
 
 					case AUTOMAZIONE:
@@ -609,7 +609,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						(*illumino)->forceDraw();
 						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
-						QObject::connect(*illumino,SIGNAL(richStato(char *)),client_richieste,SLOT(richStato(char *)));
+						QObject::connect(*illumino,SIGNAL(richStato(QString)),client_richieste,SLOT(richStato(QString)));
 						break;
 
 					case ANTIINTRUSIONE:

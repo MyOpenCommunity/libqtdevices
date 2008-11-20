@@ -60,7 +60,7 @@ private slots:
 
 	/// Send an \a Open \aFrame through the socket and wait for ack
 	void ApriInviaFrameChiudiw(char*);
-	void richStato(char*);
+	void richStato(QString richiesta);
 	void ackReceived();
 
 	void clear_last_msg_open_read();
