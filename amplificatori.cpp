@@ -112,26 +112,20 @@ void amplificatore::status_changed(QList<device_status*> sl)
 
 void amplificatore::Accendi()
 {
-	char pippo[50];
 	char ind[3];
 
 	qDebug("amplificatore::Accendi()");
-	memset(pippo,'\000',sizeof(pippo));
 	sprintf(ind, "%s", getAddress());
-	sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-	dev->sendFrame(pippo);
+	dev->sendFrame(QString("*22*34#4#%1*3#%1#%2##").arg(ind[0]).arg(ind[1]));
 }
 
 void amplificatore::Spegni()
 {
-	char pippo[50];
 	char ind[3];
 
 	qDebug("amplificatore::Spegni()");
-	memset(pippo,'\000',sizeof(pippo));
 	sprintf(ind, "%s", getAddress());
-	sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-	dev->sendFrame(pippo);
+	dev->sendFrame(QString("*22*0#4#%1*3#%1#%2##").arg(ind[0]).arg(ind[1]));
 }
 
 void amplificatore::Aumenta()
