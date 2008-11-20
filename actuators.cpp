@@ -17,8 +17,6 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 
-#include <openwebnet.h> // class openwebnet
-
 #include <QFile>
 #include <QLabel>
 #include <QTimer>
@@ -92,19 +90,17 @@ void attuatAutom::Disattiva()
 }
 
 void attuatAutom::inizializza(bool forza)
-{ 
-	openwebnet msg_open;
+{
 	char    pippo[50];
 
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	if (!forza)
-		emit richStato(msg_open.frame_open);
+		emit richStato(pippo);
 	else
-		dev->sendInit(msg_open.frame_open);
+		dev->sendInit(pippo);
 }
 
 /*****************************************************************
@@ -256,15 +252,7 @@ void attuatAutomInt::analizzaDown()
 
 void attuatAutomInt::inizializza(bool forza)
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
+	dev->sendInit(QString("*#1*") + getAddress() + "##");
 }
 
 /*****************************************************************
@@ -403,16 +391,8 @@ void attuatAutomIntSic::sendStop()
 }
 
 void attuatAutomIntSic::inizializza(bool forza)
-{ 
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
+{
+	dev->sendInit(QString("*#1*") + getAddress() + "##");
 }
 
 
@@ -553,15 +533,7 @@ void attuatAutomTemp::CiclaTempo()
 
 void attuatAutomTemp::inizializza(bool forza)
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
+	dev->sendInit(QString("*#1*") + getAddress() + "##");
 }
 
 void attuatAutomTemp::assegna_tempo_display()
@@ -673,27 +645,13 @@ void attuatAutomTempNuovoN::status_changed(QList<device_status*> sl)
 
 void attuatAutomTempNuovoN::Attiva()
 {
-	openwebnet msg_open;
-	char frame[100];
-	QByteArray buf = leggi_tempo().toAscii();
-	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), buf.constData());
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen(frame, strlen(frame));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*#1*%1*#2*%2##").arg(getAddress()).arg(leggi_tempo()));
 }
 
 // *#1*dove*2## 
 void attuatAutomTempNuovoN::inizializza(bool forza)
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*2##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
+	dev->sendInit(QString("*#1*") + getAddress() + "*2##");
 }
 
 void attuatAutomTempNuovoN::assegna_tempo_display()
@@ -885,12 +843,7 @@ void attuatAutomTempNuovoF::update()
 		}
 		update_ok = false;
 	}
-	openwebnet msg_open;
-	char frame[100];
-	sprintf(frame, "*#1*%s*2##", getAddress());
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen(frame, strlen(frame));
-	dev->sendInit(msg_open.frame_open);
+	dev->sendInit(QString("*#1*%1*2##").arg(getAddress()));
 	// imposto il timer corretto
 	if (!temp_nota)
 	{
@@ -902,12 +855,7 @@ void attuatAutomTempNuovoF::update()
 
 void attuatAutomTempNuovoF::Attiva()
 {
-	openwebnet msg_open;
-	char frame[100];
-	sprintf(frame, "*#1*%s*#2*%s##", getAddress(), tempo);
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen(frame, strlen(frame));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*#1*%1*#2*%2##").arg(getAddress()).arg(tempo));
 	tentativi_update = 0;
 	update_ok = false;
 	//programma un aggiornamento immediato
@@ -918,30 +866,20 @@ void attuatAutomTempNuovoF::Attiva()
 
 // *#1*dove*2## 
 void attuatAutomTempNuovoF::inizializza(bool forza)
-{ 
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#1*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*2##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
+{
+	dev->sendInit(QString("*#1*") + getAddress() + "*2##");
 }
 
 // Chiede lo stato dell'attuatore con una frame vecchia
 void attuatAutomTempNuovoF::chiedi_stato()
 {
-	openwebnet msg_open;
 	char    pippo[50];
 
 	memset(pippo,'\000',sizeof(pippo));
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	emit richStato(msg_open.frame_open);
+	emit richStato(pippo);
 }
 
 void attuatAutomTempNuovoF::SetIcons(QString i1, QString i2, QString i3)

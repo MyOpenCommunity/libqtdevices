@@ -99,18 +99,8 @@ void impostaTime::OKTime()
 	}
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	openwebnet msg_open;
-	char pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#13**#0*");
-
-	QByteArray buf = dataOra->getDataOra().toString("hh*mm*ss").toAscii();
-	strcat(pippo, buf.constData());
-	strcat(pippo,"**##");
-
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	BTouch->sendFrame(msg_open.frame_open);
+	QString f = "*#13**#0*" + dataOra->getDataOra().toString("hh*mm*ss") + "**##";
+	BTouch->sendFrame(f);
 #endif
 }
 
@@ -138,19 +128,8 @@ void impostaTime::OKDate()
 	}
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	openwebnet msg_open;
-	char    pippo[50];
-	QString s;
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#13**#1*00*");
-
-	QByteArray buf = dataOra->getDataOra().toString("dd*MM*yyyy").toAscii();
-	strcat(pippo, buf.constData());
-	strcat(pippo,"##");
-
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	BTouch->sendFrame(msg_open.frame_open);
+	QString f = "*#13**#1*00*" + dataOra->getDataOra().toString("dd*MM*yyyy") + "##";
+	BTouch->sendFrame(f);
 #endif
 	hide();
 }

@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "postoext.h"
-#include "openclient.h" // class openwebnet, Client
+#include "openclient.h" // Client
 #include "device_cache.h" // btouch_device_cache
 #include "videocitof.h" // class call_notifier
 #include "btmain.h"
@@ -103,37 +103,19 @@ void postoExt::call_notifier_closed(call_notifier *cn)
 void postoExt::open_door_clicked()
 {
 	qDebug("postoExt::open_door_clicked()");
-	openwebnet msg_open;
-	msg_open.CreateNullMsgOpen();
-	char tmp[100];
-	QByteArray buf = where.toAscii();
-	sprintf(tmp, "*6*10*%s##", buf.constData());
-	msg_open.CreateMsgOpen(tmp, strlen(tmp));
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(QString("*6*10*%1##").arg(where));
 }
 
 void postoExt::stairlight_pressed()
 {
 	qDebug("postoExt::stairlight_pressed()");
-	openwebnet msg_open;
-	msg_open.CreateNullMsgOpen();
-	char tmp[100];
-	QByteArray buf = where.toAscii();
-	sprintf(tmp, "*6*12*%s##", buf.constData());
-	msg_open.CreateMsgOpen(tmp, strlen(tmp));
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(QString("*6*12*%1##").arg(where));
 }
 
 void postoExt::stairlight_released()
 {
 	qDebug("postoExt::stairlight_released()");
-	openwebnet msg_open;
-	msg_open.CreateNullMsgOpen();
-	char tmp[100];
-	QByteArray buf = where.toAscii();
-	sprintf(tmp, "*6*11*%s##", buf.constData());
-	msg_open.CreateMsgOpen(tmp, strlen(tmp));
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(QString("*6*11*%1##").arg(where));
 }
 
 void postoExt::get_where(QString& out)

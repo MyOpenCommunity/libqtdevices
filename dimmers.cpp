@@ -213,7 +213,6 @@ void dimmer::Diminuisci()
 
 void dimmer::inizializza(bool forza)
 {
-	openwebnet msg_open;
 	char    pippo[50];
 	qDebug("dimmer::inizializza");
 
@@ -221,11 +220,10 @@ void dimmer::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	if (!forza)
-		emit richStato(msg_open.frame_open);
+		emit richStato(pippo);
 	else
-		dev->sendInit(msg_open.frame_open);
+		dev->sendInit(pippo);
 }
 
 
@@ -283,14 +281,8 @@ void dimmer100::Accendi()
 	qDebug("dimmer100::Accendi()");
 	if (isActive())
 		return;
-	//*#1*where*#1*lev*speed
-	openwebnet msg_open;
-	msg_open.CreateNullMsgOpen();
-	char s[100];
-	//*1*0#velocita*dove## 
-	sprintf(s, "*1*1#%d*%s##", softstart, getAddress());
-	msg_open.CreateMsgOpen(s, strlen(s));
-	dev->sendFrame(msg_open.frame_open);
+	//*1*0#velocita*dove##
+	dev->sendFrame(QString("*1*1#%1*%2##").arg(softstart).arg(getAddress()));
 }
 
 void dimmer100::Spegni()
@@ -298,14 +290,9 @@ void dimmer100::Spegni()
 	qDebug("dimmer100::Spegni()");
 	if (!isActive())
 		return;
-	openwebnet msg_open;
-	msg_open.CreateNullMsgOpen();
-	char s[100];
 	last_on_lev = getValue();
-	//*1*0#velocita*dove## 
-	sprintf(s, "*1*0#%d*%s##", softstop, getAddress());
-	msg_open.CreateMsgOpen(s, strlen(s));
-	dev->sendFrame(msg_open.frame_open);
+	//*1*0#velocita*dove##
+	dev->sendFrame(QString("*1*0#%1*%2##").arg(softstop).arg(getAddress()));
 }
 
 void dimmer100::Aumenta()
@@ -392,7 +379,6 @@ void dimmer100::status_changed(QList<device_status*> sl)
 
 void dimmer100::inizializza(bool forza)
 {
-	openwebnet msg_open;
 	char    pippo[50];
 	qDebug("dimmer100::inizializza");
 
@@ -400,11 +386,10 @@ void dimmer100::inizializza(bool forza)
 	strcat(pippo,"*#1*");
 	strcat(pippo,getAddress());
 	strcat(pippo,"*1##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
 	if (!forza)
-		emit richStato(msg_open.frame_open);
+		emit richStato(pippo);
 	else
-		dev->sendInit(msg_open.frame_open);
+		dev->sendInit(pippo);
 }
 
 /*****************************************************************
@@ -471,32 +456,14 @@ grDimmer100::grDimmer100(QWidget *parent, void *indirizzi, QString IconaSx, QStr
 
 void grDimmer100::Attiva()
 {
-	openwebnet msg_open;
-
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		char s[100];
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
-		sprintf(s, "*1*1#%d*%s##", soft_start[idx], buf.constData());
-		msg_open.CreateMsgOpen(s, strlen(s));
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(QString("*1*1#%1*%2##").arg(soft_start[idx]).arg(*elencoDisp.at(idx)));
 }
 
 void grDimmer100::Disattiva()
 {
-	openwebnet msg_open;
-
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		char s[100];
-		QByteArray buf = elencoDisp.at(idx)->toAscii();
-		sprintf(s, "*1*0#%d*%s##", soft_stop[idx], buf.constData());
-		msg_open.CreateMsgOpen(s, strlen(s));
-		BTouch->sendFrame(msg_open.frame_open);
-	}
+		BTouch->sendFrame(QString("*1*0#%1*%2##").arg(soft_stop[idx]).arg(*elencoDisp.at(idx)));
 }
 
 void grDimmer100::Aumenta()

@@ -43,16 +43,10 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, char *indiri
 
 void BannerSorgenteMultimedia::ciclaSorg()
 {
-	openwebnet msg_open;
 	qDebug("BannerSorgenteMultimedia::ciclaSorg()");
-	char pippo[50];
 	char amb[3];
-
 	sprintf(amb, getAddress());
-	memset(pippo,'\000',sizeof(pippo));
-	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(amb[2]));
 }
 
 void BannerSorgenteMultimedia::decBrano()
@@ -126,16 +120,12 @@ BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, char *in
 
 void BannerSorgenteMultimediaMC::attiva()
 {
-	char    pippo[50];
-	openwebnet msg_open;
-
 	qDebug("BannerSorgenteMultimediaMC::attiva()");
+
 	if (!multiamb)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		BTouch->sendFrame(msg_open.frame_open);
+		QString f = QString("*22*35#4#%1#%2*4#%1##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		BTouch->sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 		source_menu.enableSource(false);
 		source_menu.resume();
@@ -145,31 +135,10 @@ void BannerSorgenteMultimediaMC::attiva()
 		QStringList::Iterator it;
 		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			QByteArray buf = (*it).toAscii();
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*0#4#");
-			strcat(pippo,buf.constData());
-			strcat(pippo,"*6");
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*1#4#");
-			strcat(pippo,buf.constData());
-			strcat(pippo,"*2#");
-			QByteArray buf_ind = indirizzo_semplice.toAscii();
-			strcat(pippo, buf_ind.constData());
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
+			BTouch->sendFrame("*22*0#4#" + *it + "*6##");
+			BTouch->sendFrame("*#16*1000*11##");
+			BTouch->sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
+			BTouch->sendFrame("*#16*1000*11##");
 		}
 		source_menu.enableSource(false);
 		source_menu.resume();

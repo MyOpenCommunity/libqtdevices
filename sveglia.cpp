@@ -353,14 +353,7 @@ void sveglia::gestFrame(char* f)
 				if (!strcmp(msg_open.Extract_cosa(),"3"))
 				{
 					qDebug("ho visto un ampli acceso!");
-					openwebnet msg_open;
-					char pippo[50];
-					memset(pippo,'\000',sizeof(pippo));
-					strcat(pippo,"*#16*");
-					sprintf(&pippo[5],"%d",deviceAddr);
-					strcat(pippo,"*1##");
-					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-					BTouch->sendFrame(msg_open.frame_open);
+					BTouch->sendFrame("*#16*" + QString::number(deviceAddr) + "*1##");
 				}
 			}
 			else
@@ -464,26 +457,10 @@ void sveglia::aumVol()
 
 	if (conta2min == 0)
 	{
-		openwebnet msg_open;
-		char pippo[50];
+		BTouch->sendFrame("*16*3*" + QString::number(sorgente) + "##");
+		BTouch->sendFrame("*#16*" + QString::number(sorgente) + "*#7*" + QString::number(stazione) + "##");
 
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*16*3*");
-		sprintf(&pippo[6],"%d",sorgente);
-		strcat(pippo,"##");
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		BTouch->sendFrame(msg_open.frame_open);
-
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*#16*");
-		sprintf(&pippo[strlen(pippo)],"%d",sorgente);
-		strcat(pippo,"*#7*");
-		sprintf(&pippo[strlen(pippo)],"%d",stazione);
-		strcat(pippo,"##");
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		BTouch->sendFrame(msg_open.frame_open);
-
-		for (uchar idx = 0; idx < AMPLI_NUM; idx++)
+		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			if (volSveglia[idx] > -1)
 			{
@@ -492,12 +469,7 @@ void sveglia::aumVol()
 					if (!amb1)
 					{
 						amb1 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+10);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 10) + "##");
 					}
 				}
 				if (idx >= 20 && idx <= 29)
@@ -505,12 +477,7 @@ void sveglia::aumVol()
 					if (!amb2)
 					{
 						amb2 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+20);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 20) + "##");
 					}
 				}
 				if (idx >= 30 && idx <= 39)
@@ -518,12 +485,7 @@ void sveglia::aumVol()
 					if (!amb3)
 					{
 						amb3 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+30);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 30) + "##");
 					}
 				}
 				if (idx >= 40 && idx <= 49)
@@ -531,12 +493,7 @@ void sveglia::aumVol()
 					if (!amb4)
 					{
 						amb4 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+40);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 40) + "##");
 					}
 				}
 				if (idx >= 50 && idx <= 59)
@@ -544,12 +501,7 @@ void sveglia::aumVol()
 					if (!amb5)
 					{
 						amb5 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+50);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 50) + "##");
 					}
 				}
 				if (idx >= 60 && idx <= 69)
@@ -557,12 +509,7 @@ void sveglia::aumVol()
 					if (!amb6)
 					{
 						amb6 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+60);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 60) + "##");
 					}
 				}
 				if (idx >= 70 && idx <= 79)
@@ -570,12 +517,7 @@ void sveglia::aumVol()
 					if (!amb7)
 					{
 						amb7 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+70);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 70) + "##");
 					}
 				}
 				if (idx >= 80 && idx <= 89)
@@ -583,40 +525,22 @@ void sveglia::aumVol()
 					if (!amb8)
 					{
 						amb8 = true;
-						memset(pippo,'\000',sizeof(pippo));
-						strcat(pippo,"*16*3*");
-						sprintf(&pippo[6],"%d",sorgente+80);
-						strcat(pippo,"##");
-						msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-						BTouch->sendFrame(msg_open.frame_open);
+						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 80) + "##");
 					}
 				}
 				if (volSveglia[idx] < 10)
 				{
-					memset(pippo,'\000',sizeof(pippo));
-					strcat(pippo,"*#16*");
-					sprintf(&pippo[5],"%02d",idx);
-					strcat(pippo,"*#1*");
-					sprintf(&pippo[11],"%d",volSveglia[idx]);
-					strcat(pippo,"##");
-					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-					BTouch->sendFrame(msg_open.frame_open);
+					QString f;
+					BTouch->sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, volSveglia[idx]));
 				}
 				else
 				{
-					memset(pippo,'\000',sizeof(pippo));
-					strcat(pippo,"*#16*");
-					sprintf(&pippo[5],"%02d",idx);
-					strcat(pippo,"*#1*8##");
-					msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-					BTouch->sendFrame(msg_open.frame_open);
+					QString f;
+					BTouch->sendFrame(f.sprintf("*#16*%02d*#1*8##", idx));
 				}
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*16*3*");
-				sprintf(&pippo[6],"%02d",idx);
-				strcat(pippo,"##");
-				msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-				BTouch->sendFrame(msg_open.frame_open);
+
+				QString f;
+				BTouch->sendFrame(f.sprintf("*16*3*%02d##", idx));
 			}
 		}
 		conta2min = 9;
@@ -625,20 +549,12 @@ void sveglia::aumVol()
 	conta2min++;
 	if (conta2min < 32)
 	{
-		for (uchar idx = 0; idx < AMPLI_NUM; idx++)
+		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			if (volSveglia[idx] >= conta2min)
 			{
-				openwebnet msg_open;
-				char pippo[50];
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*#16*");
-				sprintf(&pippo[5],"%02d",idx);
-				strcat(pippo,"*#1*");
-				sprintf(&pippo[11],"%d",conta2min);
-				strcat(pippo,"##");
-				msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-				BTouch->sendFrame(msg_open.frame_open);
+				QString f;
+				BTouch->sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, conta2min));
 			}
 		}
 	}
@@ -650,17 +566,12 @@ void sveglia::aumVol()
 		aumVolTimer = NULL;
 
 		openwebnet msg_open;
-		char pippo[50];
-		for (uchar idx = 0; idx < AMPLI_NUM; idx++)
+		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			if (volSveglia[idx]>-1)
 			{
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*16*13*");
-				sprintf(&pippo[strlen(pippo)],"%02d",idx);
-				strcat(pippo,"##");
-				msg_open.CreateMsgOpen((char*)pippo, strlen((char*)pippo));
-				BTouch->sendFrame(msg_open.frame_open);
+				QString f;
+				BTouch->sendFrame(f.sprintf("*16*13*%02d##", idx));
 			}
 		}
 		BTouch->freeze(false);

@@ -14,8 +14,6 @@
 #include "btmain.h"
 #include "generic_functions.h" // createMsgOpen
 
-#include <openwebnet.h> // class openwebnet
-
 #include <QByteArray>
 #include <QWidget>
 #include <QDebug>
@@ -48,15 +46,9 @@ void sorgente_aux::gestFrame(char*)
 
 void sorgente_aux::ciclaSorg()
 {
-	openwebnet msg_open;
-	char pippo[50];
 	char amb[3];
-
 	sprintf(amb, getAddress());
-	memset(pippo,'\000',sizeof(pippo));
-	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(amb[2]));
 }
 
 void sorgente_aux::decBrano()
@@ -66,7 +58,6 @@ void sorgente_aux::decBrano()
 
 void sorgente_aux::aumBrano()
 {
-	openwebnet msg_open;
 	char amb[2];
 	sprintf(amb, getAddress());
 	if (!vecchia)
@@ -109,15 +100,11 @@ sorgenteMultiAux::sorgenteMultiAux(QWidget *parent, const char *name, char *indi
 void sorgenteMultiAux::attiva()
 {
 	qDebug("sorgenteMultiAux::attiva()");
-	char pippo[50];
-	openwebnet msg_open;
-  
+
 	if (!multiamb)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		BTouch->sendFrame(msg_open.frame_open);
+		QString f = QString("*22*35#4#%1#%2*4#%1##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		BTouch->sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
 	else
@@ -125,31 +112,10 @@ void sorgenteMultiAux::attiva()
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
 		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			QByteArray buf = (*it).toAscii();
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*0#4#");
-			strcat(pippo,buf.constData());
-			strcat(pippo,"*6");
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*1#4#");
-			strcat(pippo,buf.constData());
-			strcat(pippo,"*2#");
-			QByteArray buf_ind = indirizzo_semplice.toAscii();
-			strcat(pippo, buf_ind.constData());
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			BTouch->sendFrame(msg_open.frame_open);
+			BTouch->sendFrame("*22*0#4#" + *it + "*6##");
+			BTouch->sendFrame("*#16*1000*11##");
+			BTouch->sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
+			BTouch->sendFrame("*#16*1000*11##");
 		}
 	}
 }

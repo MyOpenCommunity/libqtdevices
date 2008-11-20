@@ -15,8 +15,6 @@
 #include "device.h"
 #include "generic_functions.h" // createMsgOpen
 
-#include <openwebnet.h> // class openwebnet
-
 #include <QByteArray>
 #include <QWidget>
 #include <QDebug>
@@ -147,19 +145,8 @@ void banradio::status_changed(QList<device_status*> sl)
 
 void banradio::pre_show()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
 	if (old_diffson)
-	{
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*#16*");
-		strcat(pippo,getAddress());
-		strcat(pippo,"*6##");
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-
-		dev->sendInit(msg_open.frame_open);
-	}
+		dev->sendInit(QString("*#16*") + getAddress() + "*6##");
 }
 
 void banradio::showEvent(QShowEvent *event)
@@ -192,16 +179,11 @@ void banradio::setText(const QString & qtext)
 
 void banradio::ciclaSorg()
 {
-	openwebnet msg_open;
 	qDebug("banradio::ciclaSorg()");
-	char pippo[50];
 	char amb[3];
 
 	sprintf(amb, getAddress());
-	memset(pippo,'\000',sizeof(pippo));
-	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(amb[2]));
 }
 
 void banradio::decBrano()
@@ -272,7 +254,6 @@ void banradio::changeStaz()
 
 void banradio::memoStaz(uchar st)
 {
-	openwebnet msg_open;
 	char    pippo[50],pippa[10];
 	unsigned int ic;
 
@@ -286,56 +267,22 @@ void banradio::memoStaz(uchar st)
 	sprintf(pippa,"%01hu",st);
 	strcat(pippo,pippa);
 	strcat(pippo,"##");
-	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(pippo);
 }
 
 void banradio::startRDS()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*16*101*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*16*101*") + getAddress() + "##");
 }
 
 void banradio::stopRDS()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*16*102*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-
-	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*16*102*") + getAddress() + "##");
 }
 
 void banradio::richFreq()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*6##");
-
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*#16*") + getAddress() + "*6##");
 }
 
 void banradio::inizializza(bool forza)
@@ -362,15 +309,11 @@ sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, char* indirizzo, QString
 void sorgenteMultiRadio::attiva()
 {
 	qDebug("sorgenteMultiRadio::attiva()");
-	char pippo[50];
-	openwebnet msg_open;
-  
+
 	if (!multiamb)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		dev->sendFrame(msg_open.frame_open);
+		QString f = QString("*22*35#4#%1#%2*4#%1##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		dev->sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
 	else
@@ -378,31 +321,10 @@ void sorgenteMultiRadio::attiva()
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
 		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			QByteArray buf = (*it).toAscii();
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*0#4#");
-			strcat(pippo,buf.constData());
-			strcat(pippo,"*6");
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*1#4#");
-			strcat(pippo,buf.constData());
-			strcat(pippo,"*2#");
-			QByteArray buf_ind = indirizzo_semplice.toAscii();
-			strcat(pippo, buf_ind.constData());
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-			dev->sendFrame(msg_open.frame_open);
+			dev->sendFrame("*22*0#4#" + *it + "*6##");
+			dev->sendFrame("*#16*1000*11##");
+			dev->sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
+			dev->sendFrame("*#16*1000*11##");
 		}
 	}
 }

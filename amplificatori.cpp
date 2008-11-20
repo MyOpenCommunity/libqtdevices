@@ -16,8 +16,6 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 
-#include <openwebnet.h> // class openwebnet
-
 #include <QString>
 
 #include <stdio.h> //sprintf
@@ -150,22 +148,8 @@ void amplificatore::Diminuisci()
 
 void amplificatore::inizializza(bool forza)
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*1##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*5##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
+	dev->sendInit(QString("*#16*") + getAddress() + "*1##");
+	dev->sendInit(QString("*#16*") + getAddress() + "*5##");
 }
 
 /*****************************************************************

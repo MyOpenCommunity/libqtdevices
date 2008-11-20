@@ -18,8 +18,6 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 
-#include <openwebnet.h> // class openwebnet
-
 #include <QDir>
 #include <QDebug>
 #include <QLabel>
@@ -38,20 +36,19 @@ scenario::scenario(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOn
 
 void scenario::Attiva()
 {
-	openwebnet msg_open;
 	char cosa[15];
 
 	strncpy(cosa,getAddress(),sizeof(cosa));
 	if (strstr(cosa,"*"))
 	{
 		memset(index(cosa,'*'),'\000',sizeof(cosa)-(index(cosa,'*')-cosa));
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("0", cosa,strstr(getAddress(),"*")+1,"");
-		BTouch->sendFrame(msg_open.frame_open);
+		BTouch->sendFrame(createMsgOpen("0", cosa, strstr(getAddress(),"*")+1));
 	}
 }
-void scenario::inizializza(bool forza){}
 
+void scenario::inizializza(bool forza)
+{
+}
 
 /*****************************************************************
  **gesModScen
@@ -96,17 +93,7 @@ gesModScen::gesModScen(QWidget *parent, char *indirizzo, QString IcoSx, QString 
 
 void gesModScen::attivaScenario()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo, '\000',sizeof(pippo));
-	strcat(pippo, "*0*");
-	strcat(pippo, cosa);
-	strcat(pippo, "*");
-	strcat(pippo, dove);
-	strcat(pippo, "##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*0*") + cosa + "*" + dove + "##");
 }
 
 void gesModScen::enterInfo()
@@ -133,49 +120,19 @@ void gesModScen::exitInfo()
 
 void gesModScen::startProgScen()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*0*40#");
-	strcat(pippo,cosa);
-	strcat(pippo,"*");
-	strcat(pippo,dove);
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*0*40#") + cosa + "*" + dove + "##");
 	sendInProgr = 1;
 }
 
 void gesModScen::stopProgScen()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo, '\000',sizeof(pippo));
-	strcat(pippo, "*0*41#");
-	strcat(pippo, cosa);
-	strcat(pippo, "*");
-	strcat(pippo, dove);
-	strcat(pippo, "##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*0*41#") + cosa + "*" + dove + "##");
 	sendInProgr = 0;
 }
 
 void gesModScen::cancScen()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo, '\000',sizeof(pippo));
-	strcat(pippo, "*0*42#");
-	strcat(pippo, cosa);
-	strcat(pippo, "*");
-	strcat(pippo, dove);
-	strcat(pippo, "##");
-	msg_open.CreateMsgOpen((char*)pippo, strlen((char*)pippo));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*0*42#") + cosa + "*" + dove + "##");
 }
 
 void gesModScen::status_changed(QList<device_status*> sl)
@@ -509,11 +466,9 @@ void scenEvo::trig(bool forced)
 			}
 		}
 	}
-	QByteArray buf = action.toAscii();
-	qDebug("scenEvo::trig(), act = %s", buf.constData());
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(buf.data(), buf.length());
-	BTouch->sendFrame(msg_open.frame_open);
+
+	qDebug() << "scenEvo::trig(), act = " << action;
+	BTouch->sendFrame(action);
 }
 
 void scenEvo::inizializza(bool forza)
@@ -593,40 +548,28 @@ scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Ic
 void scenSched::enable()
 {
 	qDebug("scenSched::enable()");
-	openwebnet msg_open;
-	QByteArray buf = action_enable.toAscii();
-	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(action_enable);
 	Draw();
 }
 
 void scenSched::start()
 {
 	qDebug("scenSched::start()");
-	openwebnet msg_open;
-	QByteArray buf = action_start.toAscii();
-	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(action_start);
 	Draw();
 }
 
 void scenSched::stop()
 {
 	qDebug("scenSched::stop()");
-	openwebnet msg_open;
-	QByteArray buf = action_stop.toAscii();
-	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(action_stop);
 	Draw();
 }
 
 void scenSched::disable()
 {
 	qDebug("scenSched::disable()");
-	openwebnet msg_open;
-	QByteArray buf = action_disable.toAscii();
-	msg_open.CreateMsgOpen(buf.data(),buf.length());
-	BTouch->sendFrame(msg_open.frame_open);
+	BTouch->sendFrame(action_disable);
 	Draw();
 }
 

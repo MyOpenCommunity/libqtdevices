@@ -17,8 +17,6 @@
 #include "device.h"
 #include "tastiera.h"
 
-#include <openwebnet.h> // class openwebnet
-
 #include <QDebug>
 #include <QTimer>
 #include <QLabel>
@@ -179,14 +177,7 @@ void zonaAnti::clearChanged()
 
 void zonaAnti::inizializza(bool forza)
 {
-	openwebnet msg_open;
-	char pippo[50];
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#5*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendInit(msg_open.frame_open);
+	dev->sendInit(QString("*#5*") + getAddress() + "##");
 }
 
 
@@ -322,9 +313,6 @@ void impAnti::Disinserisci()
 
 void impAnti::Insert1(char *pwd)
 {
-	openwebnet msg_open;
-	char pippo[50];
-
 	if (!pwd)
 	{
 		parentWidget()->show();
@@ -339,16 +327,13 @@ void impAnti::Insert1(char *pwd)
 		parentWidget()->show();
 		return;
 	}
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*5*50#");
-	strcat(pippo,pwd);
-	strcat(pippo,"#");
+	QString f = QString("*5*50#") + pwd + "#";
 	for (int i = 0; i < MAX_ZONE; i++)
-		strcat(pippo, le_zone[i] && le_zone[i]->isActive() ? "0" : "1");
-	strcat(pippo,"*0##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	qDebug("sending part frame %s", pippo);
-	dev->sendFrame(msg_open.frame_open);
+		f += le_zone[i] && le_zone[i]->isActive() ? "0" : "1";
+	f += "*0##";
+	qDebug() << "sending part frame" << f;
+	dev->sendFrame(f);
+
 	send_part_msg = false;
 	part_msg_sent = true;
 	parentWidget()->show();
@@ -366,16 +351,8 @@ void impAnti::Insert2()
 void impAnti::Insert3()
 {
 	qDebug("impAnti::Insert3()");
-	char *pwd = passwd;
-	openwebnet msg_open;
-	char    pippo[50];
 	emit clearAlarms();
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*5*36#");
-	strcat(pippo,pwd);
-	strcat(pippo,"*0##");
-	msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*5*36#") + passwd + "*0##");
 	parentWidget()->show();
 	inserting = false;
 	QTimer::singleShot(5000, this, SLOT(inizializza()));
@@ -385,16 +362,7 @@ void impAnti::DeInsert(char *pwd)
 {
 	qDebug("impAnti::DeInsert()");
 	if (pwd)
-	{
-		openwebnet msg_open;
-		char pippo[50];
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*5*36#");
-		strcat(pippo,pwd);
-		strcat(pippo,"*0##");
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		dev->sendFrame(msg_open.frame_open);
-	}
+		dev->sendFrame(QString("*5*36#") + pwd + "*0##");
 	parentWidget()->show();
 }
 

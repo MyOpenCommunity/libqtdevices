@@ -18,6 +18,7 @@
 
 #include <QDateTime>
 #include <QCursor>
+#include <QDebug>
 #include <QTimer>
 
 #include <assert.h>
@@ -82,22 +83,15 @@ void antintrusione::Parzializza()
 
 void antintrusione::Parz(char* pwd)
 {
-	openwebnet msg_open;
-	char pippo[50];
-
 	qDebug("antintrusione::Parz()");
 	if (pwd)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*5*50#");
-		strcat(pippo,pwd);
-		strcat(pippo,"#");
+		QString f = QString("*5*50#") + pwd + "#";
 		for (int i = 0; i < MAX_ZONE; i++)
-			strcat(pippo, ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1");
-		strcat(pippo,"*0##");
-		msg_open.CreateMsgOpen((char*)pippo,strlen((char*)pippo));
-		qDebug("sending part frame %s", pippo);
-		BTouch->sendFrame(msg_open.frame_open);
+			f += ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1";
+		f += "*0##";
+		qDebug() << "sending part frame" << f;
+		BTouch->sendFrame(f);
 		((impAnti *)impianto->getLast())->ToSendParz(false);
 	}
 	impianto->show();
