@@ -34,6 +34,7 @@ banradio::banradio(QWidget *parent,char* indirizzo, int nbut, const QString & am
 	myRadio = new radio(NULL, ambdescr);
 	myRadio->setRDS("");
 	myRadio->setFreq(0.00);
+	// TODO: non e' bello fare affidamento su chi e' il grandad!
 	QWidget *grandad = this->parentWidget()->parentWidget();
 
 	myRadio->setStaz((uchar)1);
