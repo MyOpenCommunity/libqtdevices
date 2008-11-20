@@ -14,15 +14,6 @@
 
 // Device implementation
 
-openwebnet createMsgOpen(QString msg)
-{
-	QByteArray buf = msg.toAscii();
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(const_cast<char*> (buf.constData()), buf.size());
-	return msg_open;
-}
-
-
 device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 {
 	who = _who;
@@ -267,29 +258,25 @@ thermal_regulator::thermal_regulator(QString where, bool p, int g) : device(QStr
 void thermal_regulator::setOff()
 {
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_OFF)).arg(QString("#") + where);
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void thermal_regulator::setProtection()
 {
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_PROTECTION)).arg(QString("#") + where);
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void thermal_regulator::setSummer()
 {
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(SUMMER)).arg(QString("#") + where);
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void thermal_regulator::setWinter()
 {
 	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(WINTER)).arg(QString("#") + where);
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void thermal_regulator::setManualTemp(unsigned temperature)
@@ -309,8 +296,7 @@ void thermal_regulator::setManualTemp(unsigned temperature)
 	what.sprintf("#%d*%04d*%d", TEMPERATURE_SET, temperature, GENERIC_MODE);
 
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void thermal_regulator::setWeekProgram(int program)
@@ -318,8 +304,7 @@ void thermal_regulator::setWeekProgram(int program)
 	const QString what = QString::number(WEEK_PROGRAM + program);
 	const QString sharp_where = QString("#") + where;
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void thermal_regulator::setWeekendDateTime(QDate date, BtTime time, int program)
@@ -336,8 +321,7 @@ void thermal_regulator::setWeekendDateTime(QDate date, BtTime time, int program)
 	QString what = QString::number(GENERIC_WEEKEND) + "#" + QString::number(what_program);
 
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 
 	// Second frame: set date
 	setHolidayEndDate(date);
@@ -362,8 +346,7 @@ void thermal_regulator::setHolidayDateTime(QDate date, BtTime time, int program)
 	what.sprintf("%d#%d", HOLIDAY_NUM_DAYS + number_of_days, WEEK_PROGRAM + program);
 
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 
 	// Second frame: set date
 	setHolidayEndDate(date);
@@ -381,8 +364,7 @@ void thermal_regulator::setHolidayEndDate(QDate date)
 	what.sprintf("#%d*%02d*%02d*%d", HOLIDAY_DATE_END, date.day(), date.month(), date.year());
 
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void thermal_regulator::setHolidayEndTime(BtTime time)
@@ -394,8 +376,7 @@ void thermal_regulator::setHolidayEndTime(BtTime time)
 	what.sprintf("#%d*%02d*%02d", HOLIDAY_TIME_END, time.hour(), time.minute());
 
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 unsigned thermal_regulator::minimumTemp() const
@@ -425,16 +406,14 @@ void thermal_regulator_4z::setManualTempTimed(int temperature, BtTime time)
 	what.sprintf("%d#%04d#%s", GENERIC_MANUAL_TIMED, temperature, number_of_hours);
 
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 
 	// Second frame: set end time
 	QString what2;
 	what2.sprintf("#%d*%02d*%02d", MANUAL_TIMED_END, time.hour(), time.minute());
 
 	msg = QString("*#") + who + "*" + sharp_where + "*" + what2 + "##";
-	openwebnet msg_open_2 = createMsgOpen(msg);
-	sendFrame(msg_open_2.frame_open);
+	sendFrame(msg);
 }
 
 unsigned thermal_regulator_4z::maximumTemp() const
@@ -458,8 +437,7 @@ void thermal_regulator_99z::setScenario(int scenario)
 	const QString what = QString::number(SCENARIO_PROGRAM + scenario);
 	const QString sharp_where = QString("#") + where;
 	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 unsigned thermal_regulator_99z::maximumTemp() const
@@ -499,8 +477,7 @@ void temperature_probe_controlled::setManual(unsigned setpoint)
 	QString sharp_where = QString("#") + where;
 
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void temperature_probe_controlled::setAutomatic()
@@ -509,8 +486,7 @@ void temperature_probe_controlled::setAutomatic()
 	QString sharp_where = QString("#") + where;
 
 	QString msg = QString("*") + who + "*" + QString::number(mode) + QString("*") + sharp_where + QString("##");
-	openwebnet msg_open = createMsgOpen(msg);
-	sendFrame(msg_open.frame_open);
+	sendFrame(msg);
 }
 
 void temperature_probe_controlled::setFancoilSpeed(int speed)
@@ -520,8 +496,7 @@ void temperature_probe_controlled::setFancoilSpeed(int speed)
 	{
 		QString msg = QString("*#") + who + "*" + simple_where + "*#" + QString::number(dimension) + "*" +
 			QString::number(speed) + "##";
-		openwebnet msg_open = createMsgOpen(msg);
-		sendFrame(msg_open.frame_open);
+		sendFrame(msg);
 	}
 }
 
@@ -531,8 +506,7 @@ void temperature_probe_controlled::requestFancoilStatus()
 	if (fancoil)
 	{
 		QString msg = QString("*#") + who + "*" + simple_where + "*" + QString::number(dimension) + "##";
-		openwebnet msg_open = createMsgOpen(msg);
-		sendFrame(msg_open.frame_open);
+		sendFrame(msg);
 	}
 }
 
