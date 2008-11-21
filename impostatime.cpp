@@ -10,11 +10,12 @@
 
 #include "impostatime.h"
 #include "openclient.h"
+#include "timescript.h"
+#include "btbutton.h"
 #include "btmain.h"
 #include "main.h" // BTouch
 
 #include <QPixmap>
-#include <QWidget>
 #include <QCursor>
 #include <QDateTime>
 #include <QLabel>
@@ -35,7 +36,7 @@ impostaTime::impostaTime(QWidget *parent) : QWidget(parent)
 	dataOra->setLineWidth(0);
 	dataOra->hide();
 
-	for (uchar idx = 0; idx < 3; idx++)
+	for (int idx = 0; idx < 3; idx++)
 	{
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry(idx*80+10,60,60,60);
@@ -43,7 +44,7 @@ impostaTime::impostaTime(QWidget *parent) : QWidget(parent)
 		but[idx]->setImage(ICON_FRECCIA_SU);
 	}
 
-	for (uchar idx=3;idx<6;idx++)
+	for (int idx = 3; idx < 6; idx++)
 	{
 		but[idx] = new BtButton(this);
 		but[idx]->setGeometry((idx-3)*80+10,200,60,60);
@@ -67,7 +68,7 @@ void impostaTime::OKTime()
 	disconnect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
 	disconnect(but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
 	disconnect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminSec()));
-	disconnect(but[6] ,SIGNAL(clicked()),this,SLOT(OKTime()));
+	disconnect(but[6] ,SIGNAL(clicked()),this, SLOT(OKTime()));
 
 	dataOra->showDate();
 
@@ -83,7 +84,6 @@ void impostaTime::OKTime()
 		connect(but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
 		connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
 		connect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
-		connect(but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
 	}
 	else
 	{
@@ -93,8 +93,9 @@ void impostaTime::OKTime()
 		connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
 		connect(but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
 		connect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
-		connect(but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
 	}
+
+	connect(but[6] ,SIGNAL(clicked()), SLOT(OKDate()));
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	QString f = "*#13**#0*" + dataOra->getDataOra().toString("hh*mm*ss") + "**##";
@@ -112,7 +113,6 @@ void impostaTime::OKDate()
 		disconnect(but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
 		disconnect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
 		disconnect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
-		disconnect(but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
 	}
 	else
 	{
@@ -122,14 +122,16 @@ void impostaTime::OKDate()
 		disconnect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
 		disconnect(but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
 		disconnect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
-		disconnect(but[6] ,SIGNAL(clicked()),this,SLOT(OKDate()));
+		
 	}
+
+	disconnect(but[6] ,SIGNAL(clicked()),this, SLOT(OKDate()));
 
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	QString f = "*#13**#1*00*" + dataOra->getDataOra().toString("dd*MM*yyyy") + "##";
 	BTouch->sendFrame(f);
 #endif
-	hide();
+	emit Closed();
 }
 
 void impostaTime::mostra()
@@ -159,11 +161,4 @@ void impostaTime::mostra()
 
 	showFullScreen();
 	dataOra->show();
-}
-
-void impostaTime::hideEvent(QHideEvent *event)
-{
-	qDebug("impostaTime::hideEvent()");
-	if (dataOra)
-		dataOra->hide();
 }

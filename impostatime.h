@@ -11,12 +11,10 @@
 #ifndef IMPOSTA_TIME_H
 #define IMPOSTA_TIME_H
 
-#include "btbutton.h"
-#include "main.h"
-#include "timescript.h"
+#include <QWidget>
 
-#include <QFrame>
-
+class timeScript;
+class BtButton;
 class QLabel;
 
 
@@ -46,9 +44,6 @@ public slots:
   \brief Draws the object.
 */
 	void mostra();
-
-protected:
-	void hideEvent(QHideEvent *event);
 
 private slots:
 	void OKTime();

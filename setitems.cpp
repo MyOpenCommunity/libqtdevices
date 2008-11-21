@@ -33,7 +33,8 @@ static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 setDataOra::setDataOra(sottoMenu *parent) : bannOnDx(parent)
 {
 	SetIcons(ICON_INFO,1);
-	connect(this,SIGNAL(click()),&settalora,SLOT(mostra()));
+	connect(this, SIGNAL(click()), &settalora, SLOT(mostra()));
+	connect(&settalora, SIGNAL(Closed()), &settalora, SLOT(hide()));
 }
 
 void setDataOra::hideEvent(QHideEvent *event)
