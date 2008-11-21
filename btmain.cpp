@@ -188,9 +188,6 @@ void BtMain::hom()
 
 	if (loadConfiguration(CFG_FILE))
 	{
-		// TODO: verificare! Sembra che non sia piu' necessario e che l'applicazione venga
-		// automaticamente chiusa quando tutte le finestre sono chiuse!
-		//qApp->setMainWidget(Home);
 		if (screensaver)
 			screensaver->hide();
 		hide();

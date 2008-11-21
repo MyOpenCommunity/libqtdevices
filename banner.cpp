@@ -26,7 +26,6 @@
 #include <assert.h> // assert
 
 
-// TODO: rimuovere il name dai parametri!!
 banner::banner(QWidget *parent) : QWidget(parent)
 {
 	BannerIcon = NULL;
