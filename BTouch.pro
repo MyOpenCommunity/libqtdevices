@@ -17,9 +17,6 @@ contains(PLATFORM, x86) {
 	LIBS+= -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
-
-	# extra flag to shut down gcc 4 noisy warning messages
-	QMAKE_CXXFLAGS_WARN_ON += -Wno-write-strings
 }
 
 LIBS+= -lssl
