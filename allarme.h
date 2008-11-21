@@ -24,7 +24,7 @@ public:
 		PANIC,
 	} altype;
 
-	allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, altype t);
+	allarme(QWidget *parent, const QString & name, char *indirizzo, QString IconaDx, altype t);
 
 public slots:
 	/*! Draw widget */

@@ -992,7 +992,7 @@ grAttuatInt::grAttuatInt(QWidget *parent, void *indirizzi, QString IconaSx, QStr
 	connect(this,SIGNAL(centerClick()),this,SLOT(Ferma()));
 }
 
-void grAttuatInt::sendFrame(char *msg)
+void grAttuatInt::sendFrame(QString msg)
 {
 	for (int i = 0; i < elencoDisp.size();++i)
 		BTouch->sendFrame(createMsgOpen("2", msg, *elencoDisp.at(i)));

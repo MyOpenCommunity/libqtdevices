@@ -117,7 +117,7 @@ private slots:
 	virtual void Aumenta();
 	virtual void Diminuisci();
 private:
-	void sendFrame(char *msg);
+	void sendFrame(QString msg);
 };
 
 

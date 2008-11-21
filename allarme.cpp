@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include <QCursor>
+#include <QDebug>
 #include <QLabel>
 
 
@@ -14,10 +15,10 @@
 ** Generic alarm
 ****************************************************************/	
 
-allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, altype t): QFrame(parent)
+allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, QString IconaDx, altype t): QFrame(parent)
 {
     qDebug("allarme::allarme()");
-    qDebug("indirizzo = %s, IconaDx = %s, tipo = %d", indirizzo, IconaDx, t);
+    qDebug() << "indirizzo =" << indirizzo << ", IconaDx =" << IconaDx << ", tipo = " << t;
     type = t;
     SetIcons(IconaDx);
     setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);

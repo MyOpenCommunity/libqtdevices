@@ -403,7 +403,7 @@ void grDimmer::setAddress(void *indirizzi)
 	elencoDisp = *((QList<QString*>*)indirizzi);
 }
 
-void grDimmer::sendFrame(char *msg)
+void grDimmer::sendFrame(QString msg)
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
 		BTouch->sendFrame(createMsgOpen("1", msg, *elencoDisp.at(i)));

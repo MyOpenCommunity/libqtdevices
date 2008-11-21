@@ -135,10 +135,10 @@ void homePage::addDate(int x, int y)
 	addClock(x, y, 180, 35,QFrame::NoFrame, 0);
 }	
 
-void homePage::addTemp(QString z, int x, int y, int width, int height, int style, int line, const QString & qtext, char *Ext)
+void homePage::addTemp(QString z, int x, int y, int width, int height, int style, int line, const QString & qtext, const char *Ext)
 {
 	temp_scale = readTemperatureScale();
-	switch(tempCont)
+	switch (tempCont)
 	{
 	case 0:
 	 	strcpy(zonaTermo1, z.toAscii().constData());

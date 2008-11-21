@@ -203,7 +203,7 @@ void antintrusione::gesFrame(char*frame)
 		{
 			QString descr;
 			char zona[3];
-			char *tipo = "Z";
+			QString tipo = "Z";
 			allarme::altype t;
 
 			if  (!strncmp(msg_open.Extract_cosa(),"12",2) && !testoTecnico.isNull())

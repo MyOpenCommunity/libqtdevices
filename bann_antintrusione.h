@@ -40,8 +40,7 @@ using banner::SetIcons; // import the set of overload of SetIcons from banner
 Q_OBJECT
 private:
 	void SetIcons();
-	char *parzIName;
-	char *sparzIName;
+	QString parzIName, sparzIName;
 	QString zonaAttiva;
 	QString zonaNonAttiva;
 	bool already_changed;

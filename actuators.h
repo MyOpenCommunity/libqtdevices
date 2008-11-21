@@ -281,7 +281,7 @@ public slots:
 private:
 	QList<QString*> elencoDisp;
 	void inizializza(bool forza = false);
-	void sendFrame(char *msg);
+	void sendFrame(QString msg);
 };
 
 
