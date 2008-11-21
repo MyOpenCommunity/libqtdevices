@@ -37,15 +37,6 @@
 #define IMG_ANTIFREEZE_S IMG_PATH "sondaantigelo.png"
 
 
-void setWidgetVisible(QWidget *w, bool visible)
-{
-	if (visible)
-		w->show();
-	else
-		w->hide();
-}
-
-
 QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 {
 	QLabel *tmp = new QLabel(parent);
@@ -374,13 +365,13 @@ void FSBannProbe::setSetpoint()
 
 void FSBannProbe::Draw()
 {
-	setWidgetVisible(btn_minus, status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	setWidgetVisible(btn_plus, status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	setWidgetVisible(setpoint_label, !isOff && !isAntigelo);
-	setWidgetVisible(local_temp_label, !isOff && !isAntigelo && local_temp != "0");
-	setWidgetVisible(icon_off, isOff);
-	setWidgetVisible(icon_antifreeze, isAntigelo);
-	setWidgetVisible(navbar_button, probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	setpoint_label->setVisible(!isOff && !isAntigelo);
+	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
+	icon_off->setVisible(isOff);
+	icon_antifreeze->setVisible(isAntigelo);
+	navbar_button->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
@@ -867,7 +858,7 @@ void FSBannTermoReg::Draw()
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	setWidgetVisible(description_label, description_visible);
+	description_label->setVisible(description_visible);
 	description_label->setFont(aFont);
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
