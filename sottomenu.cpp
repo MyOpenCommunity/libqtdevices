@@ -161,9 +161,6 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		QList<int> sstart, QList<int> sstop,
 		QString txt1, QString txt2, QString txt3)
 {
-	QByteArray buf_descr = qdescrizione.toAscii();
-	const char * descrizione = buf_descr.constData();
-
 	QString IconaSx = *safeAt(icon_names, 0);
 	QString IconaDx = *safeAt(icon_names, 1);
 	QString icon = *safeAt(icon_names, 2);
@@ -259,7 +256,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new amplificatore(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case SORGENTE_AUX:
-		elencoBanner.append(new sorgente_aux(this, descrizione, (char*)indirizzo));
+		elencoBanner.append(new sorgente_aux(this, qdescrizione, (char*)indirizzo));
 		break;
 	case SORGENTE_MULTIM:/// New Multimedia Audio Source.  NOTE:numFrame parametere name is not significative:it's the (cut down) where address
 		elencoBanner.append(new BannerSorgenteMultimedia(this, (char *)indirizzo, numFrame, 4));
@@ -324,7 +321,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new sorgenteMultiRadio(this, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
 	case SORG_AUX:
-		elencoBanner.append(new sorgenteMultiAux(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
+		elencoBanner.append(new sorgenteMultiAux(this, qdescrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
 	case BRIGHTNESS:
 		elencoBanner.append(new BannBrightness(this));

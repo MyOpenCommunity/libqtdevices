@@ -21,7 +21,7 @@
 /*****************************************************************
  **sorgente_aux
  ****************************************************************/
-sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, bool vecchio, char *ambdescr)
+sorgente_aux::sorgente_aux(QWidget *parent, QString aux_name, char* indirizzo, bool vecchio, char *ambdescr)
 	: bannCiclaz(parent, vecchio ? 4 : 3)
 {
 	SetIcons(ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
@@ -37,7 +37,7 @@ sorgente_aux::sorgente_aux(QWidget *parent,const char *name,char* indirizzo, boo
 		nascondi(BUT2);
 	}
 	else
-		myAux = new aux(NULL, name, ambdescr);
+		myAux = new aux(NULL, aux_name, ambdescr);
 }
 
 void sorgente_aux::gestFrame(char*)
@@ -79,8 +79,8 @@ void sorgente_aux::hideEvent(QHideEvent *event)
  ** Sorgente aux diffusione sonora multicanale
  ****************************************************************/
 
-sorgenteMultiAux::sorgenteMultiAux(QWidget *parent, const char *name, char *indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambdescr)
-	: sorgente_aux(parent, name, indirizzo, false, ambdescr)
+sorgenteMultiAux::sorgenteMultiAux(QWidget *parent, QString aux_name, char *indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambdescr)
+	: sorgente_aux(parent, aux_name, indirizzo, false, ambdescr)
 {
 	qDebug("sorgenteMultiAux::sorgenteMultiAux()");
 	SetIcons(Icona1, Icona2, QString(), Icona3);
