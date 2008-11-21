@@ -358,15 +358,8 @@ void antintrusione::hideEvent(QHideEvent *event)
 		allarmi.at(i)->hide();
 
 	qDebug("Richiesta stato zone");
-	// TODO: fare un ciclo!!
-	BTouch->sendFrame("*#5*#1##");
-	BTouch->sendFrame("*#5*#2##");
-	BTouch->sendFrame("*#5*#3##");
-	BTouch->sendFrame("*#5*#4##");
-	BTouch->sendFrame("*#5*#5##");
-	BTouch->sendFrame("*#5*#6##");
-	BTouch->sendFrame("*#5*#7##");
-	BTouch->sendFrame("*#5*#8##");
+	for (int i = 1; i <= 8; ++i)
+		BTouch->sendFrame(QString("*#5*#%1##").arg(i));
 }
 
 void antintrusione::request()
