@@ -59,7 +59,7 @@ void diffSonora::setSorgenti(sottoMenu *s)
 // In ogni caso sarebbe da allocare staticamente le stringhe che fanno parte di
 // icon_names.
 int diffSonora::addItemU(char tipo, const QString &description, QList<QString *> *indirizzo,
-	QList<QString*> &icon_names, int modo, int where, char *ambdescr)
+	QList<QString*> &icon_names, int modo, int where)
 {
 	if (tipo == GR_AMPLIFICATORI)
 	{
@@ -76,20 +76,21 @@ int diffSonora::addItemU(char tipo, const QString &description, QList<QString *>
 }
 
 int diffSonora::addItemU(char tipo, const QString &description, char* indirizzo,
-	QList<QString*> &icon_names, int modo, int where, char *ambdescr)
+	QList<QString*> &icon_names, int modo, int where, const char *ambdescr)
 {
+	// TODO: trasformare ambdescr in qstring o almeno in un const char*!
 	switch (tipo)
 	{
 	case SORGENTE_AUX:
 	case SORGENTE_RADIO:
 	case SORGENTE_MULTIM:
-		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, where, ambdescr);
+		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, where, const_cast<char*>(ambdescr));
 		break;
 	case SORG_RADIO:
 	case SORG_AUX:
 	case SORGENTE_MULTIM_MC:
 	{
-		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, 0, ambdescr);
+		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, 0, const_cast<char*>(ambdescr));
 		banner *b = sorgenti->getLast();
 		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
 		break;
