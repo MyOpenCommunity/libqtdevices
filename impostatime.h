@@ -49,6 +49,7 @@ private slots:
 private:
 	timeScript *dataOra;
 	QLabel *Immagine;
+	void disconnectAllButton();
 };
 
 
