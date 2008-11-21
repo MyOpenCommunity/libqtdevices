@@ -39,11 +39,8 @@ signals:
 */
 	void Closed();
 
-public slots:
-/*!
-  \brief Draws the object.
-*/
-	void mostra();
+protected:
+	virtual void showEvent(QShowEvent *event);
 
 private slots:
 	void OKTime();

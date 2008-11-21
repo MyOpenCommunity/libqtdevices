@@ -9,14 +9,12 @@
 ****************************************************************/
 
 #include "impostatime.h"
-#include "openclient.h"
 #include "timescript.h"
 #include "btbutton.h"
 #include "btmain.h"
 #include "main.h" // BTouch
 
 #include <QPixmap>
-#include <QCursor>
 #include <QDateTime>
 #include <QLabel>
 #include <QFile>
@@ -34,7 +32,6 @@ impostaTime::impostaTime(QWidget *parent) : QWidget(parent)
 	dataOra->setGeometry(10,120,220,80);
 	dataOra->setFrameStyle(QFrame::Plain);
 	dataOra->setLineWidth(0);
-	dataOra->hide();
 
 	for (int idx = 0; idx < 3; idx++)
 	{
@@ -122,7 +119,6 @@ void impostaTime::OKDate()
 		disconnect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminDay()));
 		disconnect(but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
 		disconnect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminYear()));
-		
 	}
 
 	disconnect(but[6] ,SIGNAL(clicked()),this, SLOT(OKDate()));
@@ -134,9 +130,9 @@ void impostaTime::OKDate()
 	emit Closed();
 }
 
-void impostaTime::mostra()
+void impostaTime::showEvent(QShowEvent *event)
 {
-	qDebug("impostaTime::mostra()");
+	qDebug("impostaTime::showEvent()");
 	dataOra->reset();
 	dataOra->showTime();
 	disconnect(but[0], 0, dataOra, 0);
@@ -158,7 +154,4 @@ void impostaTime::mostra()
 	connect(but[4] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
 	connect(but[5] ,SIGNAL(clicked()),dataOra,SLOT(diminSec()));
 	connect(but[6] ,SIGNAL(clicked()),this,SLOT(OKTime()));
-
-	showFullScreen();
-	dataOra->show();
 }
