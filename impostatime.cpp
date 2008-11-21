@@ -71,11 +71,9 @@ void impostaTime::OKTime()
 
 	dataOra->showDate();
 
-	QPixmap* Icon1 = new QPixmap();
-	Icon1->load(ICON_CALENDARIO);
-
-	if (Icon1)
-		Immagine->setPixmap(*Icon1);
+	QPixmap *icon = BTouch->getIcon(ICON_CALENDARIO);
+	if (icon)
+		Immagine->setPixmap(*icon);
 
 	if (tipoData == 1)
 	{
@@ -147,11 +145,9 @@ void impostaTime::mostra()
 	disconnect(but[5], 0, dataOra, 0);
 	disconnect(but[6], 0, dataOra, 0);
 
-	QPixmap *Icon1 = new QPixmap();
-	Icon1->load(ICON_OROLOGIO);
-
-	if (Icon1)
-		Immagine->setPixmap(*Icon1);
+	QPixmap *icon = BTouch->getIcon(ICON_OROLOGIO);
+	if (icon)
+		Immagine->setPixmap(*icon);
 
 	connect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
 	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
