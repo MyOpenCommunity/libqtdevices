@@ -22,8 +22,8 @@
 
 extern unsigned char tipoData;
 
-// TODO: vedere se si puo' rendere impostaTime un QWidget!
-impostaTime::impostaTime(QWidget *parent) : QFrame(parent)
+
+impostaTime::impostaTime(QWidget *parent) : QWidget(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));

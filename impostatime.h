@@ -28,7 +28,7 @@ class QLabel;
   \date lug 2005
 */
 
-class  impostaTime : public QFrame
+class  impostaTime : public QWidget
 {
 Q_OBJECT
 public:
