@@ -37,7 +37,7 @@ protected:
 	aux *myAux;
 	bool vecchia;
 public:
-	sorgente_aux(QWidget *parent, QString aux_name, char* indirizzo, bool vecchio=true, char *ambdescr="");
+	sorgente_aux(QWidget *parent, QString aux_name, char* indirizzo, bool vecchio=true, QString ambdescr=QString());
 	void inizializza(bool forza = false);
 private slots:
 	void ciclaSorg();
@@ -63,7 +63,8 @@ class sorgenteMultiAux : public sorgente_aux
 {
 Q_OBJECT
 public:
-	sorgenteMultiAux(QWidget *parent=0, QString aux_name=QString(), char *indirizzo="", QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), char *ambdescr="");
+	sorgenteMultiAux(QWidget *parent=0, QString aux_name=QString(), char *indirizzo="", QString Icona1=QString(),
+		QString Icona2=QString(), QString Icona3=QString(), QString ambdescr=QString());
 	void addAmb(char *);
 public slots:
 	void attiva();
