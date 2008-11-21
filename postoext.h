@@ -34,12 +34,12 @@ class postoExt : public bann4tasLab
 {
 Q_OBJECT
 public:
-	postoExt(QWidget *parent=0, const char *name=NULL, QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), QString Icona4=QString(),
+	postoExt(QWidget *parent=0, QString d=QString(), QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), QString Icona4=QString(),
 		char *where="", QString light="", QString key="", QString unknown = "0");
 	//! Read where
 	void get_where(QString&);
 	//! Read description
-	void get_descr(QString&);
+	QString get_descr();
 	//! Get key mode
 	bool get_key();
 	//! Get light mode

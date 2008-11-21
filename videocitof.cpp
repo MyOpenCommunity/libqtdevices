@@ -124,7 +124,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 	area1_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QString s;
 	if (my_station)
-		my_station->get_descr(s);
+		s = my_station->get_descr();
 	else
 		s = _txt1;
 	area1_ptr->setText(s);

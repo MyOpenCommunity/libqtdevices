@@ -318,7 +318,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new scenSched(this, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4));
 		break;
 	case POSTO_ESTERNO:
-		elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
+		elencoBanner.append(new postoExt(this, qdescrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
 		break;
 	case SORG_RADIO:
 		elencoBanner.append(new sorgenteMultiRadio(this, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));

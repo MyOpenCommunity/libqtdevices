@@ -28,19 +28,19 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
-// TODO: capire a che serve name!
-postoExt::postoExt(QWidget *parent, const char *name, QString Icona1, QString Icona2, QString Icona3, QString Icona4, char *_where,
+
+postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, QString Icona3, QString Icona4, char *_where,
 	QString _light, QString _key, QString _unknown) : bann4tasLab(parent)
 {
 	where = _where;
-	descr = name;
+	descr = d;
 	light = (_light == "1");
 	key = (_key == "1");
 	unknown = (_unknown == "1");
 	qDebug() << "postoExt::postoExt(), unknown = "  << _unknown;
 
 	qDebug("light = %d, key = %d, unknown = %d", light, key, unknown);
-	qDebug("descr = %s, where = %s", name, _where);
+	qDebug() << "descr =" << descr << ", where =" << _where;
 	SetIcons(Icona2, Icona3, "", "", Icona1);
 	if (key)
 	{
@@ -123,9 +123,9 @@ void postoExt::get_where(QString& out)
 	out = where;
 }
 
-void postoExt::get_descr(QString& out)
+QString postoExt::get_descr()
 {
-	out = descr;
+	return descr;
 }
 
 bool postoExt::get_light()
