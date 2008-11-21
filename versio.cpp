@@ -14,6 +14,8 @@
 #include "openclient.h"
 #include "fontmanager.h"
 
+#include <openwebnet.h>
+
 #include <QWidget>
 #include <QPixmap>
 #include <QCursor>

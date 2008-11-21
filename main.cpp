@@ -13,7 +13,6 @@
 #include "xml_functions.h"
 #include "generic_functions.h"
 
-#include <openwebnet.h>
 #include <common_functions.h>
 
 #include <QApplication>

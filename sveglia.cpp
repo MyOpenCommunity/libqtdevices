@@ -22,6 +22,8 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 
+#include <openwebnet.h>
+
 #include <QDateTime>
 #include <QPixmap>
 #include <QWidget>

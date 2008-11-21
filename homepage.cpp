@@ -16,6 +16,8 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 
+#include <openwebnet.h>
+
 #include <QPixmap>
 #include <QDateTime>
 #include <QCursor>

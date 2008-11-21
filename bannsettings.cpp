@@ -14,7 +14,6 @@
 #include "main.h"
 #include "device.h"
 
-#include <openwebnet.h>
 
 BannOff::BannOff(QWidget *parent, thermal_regulator *_dev) : bann3But(parent)
 {

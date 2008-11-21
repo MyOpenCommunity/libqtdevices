@@ -21,7 +21,6 @@
 
 
 class BtButton;
-class openwebnet;
 class sottoMenu;
 
 class QPixmap;

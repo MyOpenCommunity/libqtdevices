@@ -19,6 +19,7 @@
 #include <QList>
 
 class device;
+class openwebnet;
 
 /*****************************************************************
  **Dimmer
