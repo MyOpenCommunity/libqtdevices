@@ -2699,15 +2699,14 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 	int cr;
 	int delta;
 	bool do_event = false;
-	char pippo[50];
+
 	// Read current status
 	ds->read((int)device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
 	ds->read((int)device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
 	ds->read((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 	ds->read((int)device_status_temperature_probe_extra::CRONO, curr_crono);
 	ds->read((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
-	
-	
+
 	qDebug("curr status is %d", curr_stat.get_val());
 	qDebug("curr local is %d", curr_local.get_val());
 	qDebug("curr sp is %d", curr_sp.get_val());
@@ -2717,11 +2716,7 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 	if ((!strcmp(m.Extract_dove(), "#0")) && (type == THERMO_Z99) && (!curr_info_centrale.get_val()))
 	{
 		/// FRAME VERSO LA CENTRALE
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*#4*#");
-		strcat(pippo,get_where().toAscii().constData());
-		strcat(pippo,"##");
-		emit init_requested(QString(pippo));
+		emit init_requested("*#4*#" + get_where() + "##");
 		delta = 1;
 		curr_info_centrale.set_val(delta);
 		ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
@@ -2756,11 +2751,7 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 		//Richiesta set-point
 		if ((ds->initialized()) && (new_request_allowed))
 		{
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#4*");
-			strcat(pippo,m.Extract_dove()+1);
-			strcat(pippo,"##");
-			emit init_requested(QString(pippo));
+			emit init_requested("*#4*" + QString(m.Extract_dove() + 1) + "##");
 			new_request_timer.start(TIMEOUT_TIME);
 			new_request_allowed = false;
 		}
@@ -2786,11 +2777,7 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 		}
 		if ((ds->initialized()) && new_request_allowed)
 		{
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#4*");
-			strcat(pippo,m.Extract_dove()+1);
-			strcat(pippo,"##");
-			emit init_requested(QString(pippo));
+			emit init_requested("*#4*" + QString(m.Extract_dove() + 1) + "##");
 			new_request_timer.start(TIMEOUT_TIME);
 			new_request_allowed = false;
 		}
@@ -2860,11 +2847,7 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 			if ((curr_crono.get_val()) && (ds->initialized()) && (!curr_info_centrale.get_val()))
 			{
 				/// FRAME VERSO LA CENTRALE
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*#4*#");
-				strcat(pippo,m.Extract_dove());
-				strcat(pippo,"##");
-				emit init_requested(QString(pippo));
+				emit init_requested("*#4*#" + QString(m.Extract_dove()) + "##");
 				delta = 1;
 				curr_info_centrale.set_val(delta);
 				ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
@@ -2896,11 +2879,7 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 	case 0:
 		if (new_request_allowed)
 		{
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#4*");
-			strcat(pippo,m.Extract_dove());
-			strcat(pippo,"*14##");
-			emit init_requested(QString(pippo));
+			emit init_requested("*#4*" + QString(m.Extract_dove()) + "*14##");
 			new_request_timer.start(TIMEOUT_TIME);
 			new_request_allowed = false;
 		}
@@ -2913,11 +2892,7 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 			if ((curr_crono.get_val()) && (loc ==  13) && (curr_local.get_val() == 5) && (!curr_info_centrale.get_val()))
 			{
 				/// FRAME VERSO LA CENTRALE
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*#4*#");
-				strcat(pippo,m.Extract_dove());
-				strcat(pippo,"##");
-				emit init_requested(QString(pippo));
+				emit init_requested("*#4*#" + QString(m.Extract_dove()) + "##");
 				delta = 1;
 				curr_info_centrale.set_val(delta);
 				ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
@@ -2928,22 +2903,14 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 			evt_list.append(ds);
 			if ((ds->initialized()) && new_request_allowed)
 			{
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*#4*");
-				strcat(pippo,m.Extract_dove());
-				strcat(pippo,"##");
-				emit init_requested(QString(pippo));
+				emit init_requested("*#4*" + QString(m.Extract_dove()) + "##");
 				new_request_timer.start(TIMEOUT_TIME);
 				new_request_allowed = false;
 			}
 			if (curr_crono.get_val() && (!curr_info_centrale.get_val()))
 			{
 				/// FRAME VERSO LA CENTRALE
-				memset(pippo,'\000',sizeof(pippo));
-				strcat(pippo,"*#4*#");
-				strcat(pippo,m.Extract_dove());
-				strcat(pippo,"##");
-				emit init_requested(QString(pippo));
+				emit init_requested("*#4*#" + QString(m.Extract_dove()) + "##");
 				delta = 1;
 				curr_info_centrale.set_val(delta);
 				ds->write_val((int)device_status_temperature_probe_extra::INFO_CENTRALE, curr_info_centrale);
@@ -2955,11 +2922,7 @@ void frame_interpreter_temperature_probe_controlled::handle_frame(openwebnet_ext
 	case 12:
 		if ((ds->initialized()) && new_request_allowed)
 		{
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#4*");
-			strcat(pippo,m.Extract_dove());
-			strcat(pippo,"*14##");
-			emit init_requested(QString(pippo));
+			emit init_requested("*#4*" + QString(m.Extract_dove()) + "*14##");
 			new_request_timer.start(TIMEOUT_TIME);
 			new_request_allowed = false;
 		}
