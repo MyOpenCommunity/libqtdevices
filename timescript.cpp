@@ -9,10 +9,10 @@
 ****************************************************************/
 
 #include "timescript.h"
+#include "main.h" // getConfElement
 
 #include <QTimerEvent>
 
-extern unsigned char tipoData;
 
 timeScript::timeScript(QWidget *parent, uchar tipo, QDateTime* mioOrol)
     : QLCDNumber(parent)
@@ -80,12 +80,14 @@ void timeScript::showDate()
 		date = QDate::currentDate();
 
 	QString s;
-	if (tipoData == 1)
+
+	QDomElement el = getConfElement("setup/generale/clock/dateformat");
+	if (!el.isNull() && el.text().toInt() == 1)
 		s = date.toString("MM.dd.yy");
 	else
 		s = date.toString("dd.MM.yy");
 
-	setNumDigits(((QString)s).length());
+	setNumDigits(s.length());
 	display(s);
 
 	if (showDateTimer == -1)

@@ -27,8 +27,8 @@
 #include <stdlib.h>
 
 
-extern unsigned char tipoData;
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
+
 
 setDataOra::setDataOra(sottoMenu *parent) : bannOnDx(parent)
 {

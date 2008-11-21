@@ -140,8 +140,7 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 	main_layout->addLayout(h_down_box);
 
 	// read date format and set connection accordingly
-	QString conf_path("setup/generale/clock/dateformat");
-	QDomElement e = getConfElement(conf_path);
+	QDomElement e = getConfElement("setup/generale/clock/dateformat");
 	DateFormat fmt;
 	if (!e.isNull())
 		fmt = static_cast<DateFormat>(e.text().toInt());

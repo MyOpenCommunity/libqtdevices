@@ -12,14 +12,13 @@
 #include "timescript.h"
 #include "btbutton.h"
 #include "btmain.h"
-#include "main.h" // BTouch
+#include "main.h" // BTouch, getConfElement
 
 #include <QPixmap>
 #include <QDateTime>
 #include <QLabel>
 #include <QFile>
 
-extern unsigned char tipoData;
 
 
 impostaTime::impostaTime(QWidget *parent) : QWidget(parent)
@@ -66,7 +65,8 @@ void impostaTime::OKTime()
 	if (icon)
 		Immagine->setPixmap(*icon);
 
-	if (tipoData == 1)
+	QDomElement el = getConfElement("setup/generale/clock/dateformat");
+	if (!el.isNull() && el.text().toInt() == 1)
 	{
 		connect(but[1], SIGNAL(clicked()),dataOra,SLOT(aumDay()));
 		connect(but[0], SIGNAL(clicked()),dataOra,SLOT(aumMonth()));

@@ -23,7 +23,6 @@
 
 #include <assert.h>
 
-extern unsigned char tipoData;
 
 antintrusione::antintrusione(QWidget *parent) : QWidget(parent)
 {

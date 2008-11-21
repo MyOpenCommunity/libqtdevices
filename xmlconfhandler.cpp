@@ -33,7 +33,6 @@
 
 #include <stdlib.h>
 
-unsigned char tipoData = 0;
 
 /// banTesti: text utilized during the initialization sequence when the menu is built up
 static const char *banTesti[] =
@@ -1301,13 +1300,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 			}
 			else if (!CurTagL3.compare("generale"))
 			{
-				if (!CurTagL4.compare("clock"))
-				{
-					if (!CurTagL5.compare("dateformat"))
-					{
-						tipoData = qValue.toInt(&ok, 10);//FORMATO DATA
-					}
-				}
 				if (!CurTagL4.compare("modello"))
 					datiGen->setModel(qValue);
 			}
