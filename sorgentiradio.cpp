@@ -146,7 +146,7 @@ void banradio::status_changed(QList<device_status*> sl)
 void banradio::pre_show()
 {
 	if (old_diffson)
-		dev->sendInit(QString("*#16*") + getAddress() + "*6##");
+		dev->sendInit("*#16*" + getAddress() + "*6##");
 }
 
 void banradio::showEvent(QShowEvent *event)
@@ -180,10 +180,7 @@ void banradio::setText(const QString & qtext)
 void banradio::ciclaSorg()
 {
 	qDebug("banradio::ciclaSorg()");
-	char amb[3];
-
-	sprintf(amb, getAddress());
-	dev->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(amb[2]));
+	dev->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::decBrano()
@@ -242,25 +239,23 @@ void banradio::decFreqMan()
 
 void banradio::changeStaz()
 {
-	char amb[2];
-
-	sprintf(amb, getAddress());
+	QString addr = getAddress();
 	if (!old_diffson)
-		if (amb[1] == '0')
-			amb[1] = '1';
-
-	dev->sendFrame(createMsgOpen("16", "6001", amb));
+		if (addr.at(1) == '0')
+			addr[1] = '1';
+	dev->sendFrame(createMsgOpen("16", "6001", addr));
 }
 
 void banradio::memoStaz(uchar st)
 {
+	// TODO: sistemare questo metodo quando sara' possibile provarlo!
 	char    pippo[50],pippa[10];
 	unsigned int ic;
 
 	memset(pippo,'\000',sizeof(pippo));
 	memset(pippa,'\000',sizeof(pippa));
 	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
+	strcat(pippo,getAddress().toAscii().constData());
 	strcat(pippo,"*#10*");
 	memset(pippa,'\000',sizeof(pippa));
 	ic = (unsigned int)st;
@@ -272,17 +267,17 @@ void banradio::memoStaz(uchar st)
 
 void banradio::startRDS()
 {
-	dev->sendFrame(QString("*16*101*") + getAddress() + "##");
+	dev->sendFrame("*16*101*" + getAddress() + "##");
 }
 
 void banradio::stopRDS()
 {
-	dev->sendFrame(QString("*16*102*") + getAddress() + "##");
+	dev->sendFrame("*16*102*" + getAddress() + "##");
 }
 
 void banradio::richFreq()
 {
-	dev->sendFrame(QString("*#16*") + getAddress() + "*6##");
+	dev->sendFrame("*#16*" + getAddress() + "*6##");
 }
 
 void banradio::inizializza(bool forza)

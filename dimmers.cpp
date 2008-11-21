@@ -214,7 +214,7 @@ void dimmer::Diminuisci()
 void dimmer::inizializza(bool forza)
 {
 	qDebug("dimmer::inizializza");
-	QString f = QString("*#1*") + getAddress() + "##";
+	QString f = "*#1*" + getAddress() + "##";
 	if (!forza)
 		emit richStato(f);
 	else
@@ -375,7 +375,7 @@ void dimmer100::status_changed(QList<device_status*> sl)
 void dimmer100::inizializza(bool forza)
 {
 	qDebug("dimmer100::inizializza");
-	QString f = QString("*#1*") + getAddress() + "*1##";
+	QString f = "*#1*" + getAddress() + "*1##";
 	
 	if (!forza)
 		emit richStato(f);

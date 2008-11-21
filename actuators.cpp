@@ -91,7 +91,7 @@ void attuatAutom::Disattiva()
 
 void attuatAutom::inizializza(bool forza)
 {
-	QString f = QString("*#1*") + getAddress() + "##";
+	QString f = "*#1*" + getAddress() + "##";
 	if (!forza)
 		emit richStato(f);
 	else
@@ -247,7 +247,7 @@ void attuatAutomInt::analizzaDown()
 
 void attuatAutomInt::inizializza(bool forza)
 {
-	dev->sendInit(QString("*#1*") + getAddress() + "##");
+	dev->sendInit("*#1*" + getAddress() + "##");
 }
 
 /*****************************************************************
@@ -387,7 +387,7 @@ void attuatAutomIntSic::sendStop()
 
 void attuatAutomIntSic::inizializza(bool forza)
 {
-	dev->sendInit(QString("*#1*") + getAddress() + "##");
+	dev->sendInit("*#1*" + getAddress() + "##");
 }
 
 
@@ -528,7 +528,7 @@ void attuatAutomTemp::CiclaTempo()
 
 void attuatAutomTemp::inizializza(bool forza)
 {
-	dev->sendInit(QString("*#1*") + getAddress() + "##");
+	dev->sendInit("*#1*" + getAddress() + "##");
 }
 
 void attuatAutomTemp::assegna_tempo_display()
@@ -646,7 +646,7 @@ void attuatAutomTempNuovoN::Attiva()
 // *#1*dove*2## 
 void attuatAutomTempNuovoN::inizializza(bool forza)
 {
-	dev->sendInit(QString("*#1*") + getAddress() + "*2##");
+	dev->sendInit("*#1*" + getAddress() + "*2##");
 }
 
 void attuatAutomTempNuovoN::assegna_tempo_display()
@@ -862,13 +862,13 @@ void attuatAutomTempNuovoF::Attiva()
 // *#1*dove*2## 
 void attuatAutomTempNuovoF::inizializza(bool forza)
 {
-	dev->sendInit(QString("*#1*") + getAddress() + "*2##");
+	dev->sendInit("*#1*" + getAddress() + "*2##");
 }
 
 // Chiede lo stato dell'attuatore con una frame vecchia
 void attuatAutomTempNuovoF::chiedi_stato()
 {
-	emit richStato(QString("*#1*") + getAddress() + "##");
+	emit richStato("*#1*" + getAddress() + "##");
 }
 
 void attuatAutomTempNuovoF::SetIcons(QString i1, QString i2, QString i3)

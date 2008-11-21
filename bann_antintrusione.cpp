@@ -90,7 +90,9 @@ void zonaAnti::Draw()
 
 int zonaAnti::getIndex(void)
 {
-	return atoi(&(getAddress()[1]));
+	QString addr = getAddress();
+	addr.remove(0, 1);
+	return addr.toInt();
 }
 
 void zonaAnti::status_changed(QList<device_status*> sl)
@@ -177,7 +179,7 @@ void zonaAnti::clearChanged()
 
 void zonaAnti::inizializza(bool forza)
 {
-	dev->sendInit(QString("*#5*") + getAddress() + "##");
+	dev->sendInit("*#5*" + getAddress() + "##");
 }
 
 

@@ -44,9 +44,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, char *indiri
 void BannerSorgenteMultimedia::ciclaSorg()
 {
 	qDebug("BannerSorgenteMultimedia::ciclaSorg()");
-	char amb[3];
-	sprintf(amb, getAddress());
-	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(amb[2]));
+	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
 }
 
 void BannerSorgenteMultimedia::decBrano()
@@ -68,7 +66,7 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 	qDebug("BannerSorgenteMultimedia::gestFrame()");
 
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-	sprintf(amb, getAddress());
+	sprintf(amb, getAddress().toAscii().constData());
 	if ((!strcmp(msg_open.Extract_chi(),"22")) &&
 	    (!strncmp(msg_open.Extract_cosa(),"2", 1)) &&
 	    (!strcmp(msg_open.Extract_dove(),"5")) && 
@@ -96,11 +94,7 @@ void BannerSorgenteMultimedia::hideEvent(QHideEvent *event)
 void BannerSorgenteMultimedia::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimedia::inizializza()");
-	openwebnet msg_open;
-	char amb[3];
-
-	sprintf(amb, getAddress());
-	BTouch->sendInit(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(amb[2]));
+	BTouch->sendInit(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(getAddress().at(2)));
 }
 
 /*

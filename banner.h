@@ -167,7 +167,7 @@ public:
 	 *
 	 *  The returned value is the Open What of the object controlled by the banner.
 	 */
-	char *getAddress();
+	QString getAddress();
 
 	/*!
 	 *  \brief Sets the serial number of the banner.
@@ -339,7 +339,7 @@ protected:
 
 	char attivo,value,maxValue,minValue,id,step;
 	int periodo, numFrame,contFrame,serNum;
-	char address[20];
+	QString address;
 
 	/**
 	 * Utility function to draw all buttons except the rightmost one

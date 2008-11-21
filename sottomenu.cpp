@@ -549,7 +549,7 @@ void sottoMenu::setIndex(QString addr)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		if (QString(elencoBanner.at(i)->getAddress()) == addr)
+		if (elencoBanner.at(i)->getAddress() == addr)
 		{
 			qDebug() << "setindex trovato" << addr;
 			elencoBanner.at(i)->mostra(banner::BUT2);

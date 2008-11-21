@@ -112,20 +112,16 @@ void amplificatore::status_changed(QList<device_status*> sl)
 
 void amplificatore::Accendi()
 {
-	char ind[3];
-
+	QString addr = getAddress();
 	qDebug("amplificatore::Accendi()");
-	sprintf(ind, "%s", getAddress());
-	dev->sendFrame(QString("*22*34#4#%1*3#%1#%2##").arg(ind[0]).arg(ind[1]));
+	dev->sendFrame(QString("*22*34#4#%1*3#%1#%2##").arg(addr.at(0)).arg(addr.at(1)));
 }
 
 void amplificatore::Spegni()
 {
-	char ind[3];
-
+	QString addr = getAddress();
 	qDebug("amplificatore::Spegni()");
-	sprintf(ind, "%s", getAddress());
-	dev->sendFrame(QString("*22*0#4#%1*3#%1#%2##").arg(ind[0]).arg(ind[1]));
+	dev->sendFrame(QString("*22*0#4#%1*3#%1#%2##").arg(addr.at(0)).arg(addr.at(1)));
 }
 
 void amplificatore::Aumenta()
@@ -142,8 +138,8 @@ void amplificatore::Diminuisci()
 
 void amplificatore::inizializza(bool forza)
 {
-	dev->sendInit(QString("*#16*") + getAddress() + "*1##");
-	dev->sendInit(QString("*#16*") + getAddress() + "*5##");
+	dev->sendInit("*#16*" + getAddress() + "*1##");
+	dev->sendInit("*#16*" + getAddress() + "*5##");
 }
 
 /*****************************************************************

@@ -46,9 +46,7 @@ void sorgente_aux::gestFrame(char*)
 
 void sorgente_aux::ciclaSorg()
 {
-	char amb[3];
-	sprintf(amb, getAddress());
-	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(amb[2]));
+	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
 }
 
 void sorgente_aux::decBrano()
@@ -58,12 +56,11 @@ void sorgente_aux::decBrano()
 
 void sorgente_aux::aumBrano()
 {
-	char amb[2];
-	sprintf(amb, getAddress());
+	QString addr = getAddress();
 	if (!vecchia)
-		if (amb[1] == '0')
-			amb[1] = '1';
-	BTouch->sendFrame(createMsgOpen("16","6001", amb));
+		if (addr.at(1) == '0')
+			addr[1] = '1';
+	BTouch->sendFrame(createMsgOpen("16", "6001", addr));
 }
 
 void sorgente_aux::inizializza(bool forza)

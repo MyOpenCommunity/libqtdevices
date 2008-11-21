@@ -35,7 +35,7 @@ automCancAttuatVC::automCancAttuatVC(QWidget *parent, char *indirizzo, QString I
 
 void automCancAttuatVC::Attiva()
 {
-	dev->sendFrame(createMsgOpen("6", "10",getAddress()));
+	dev->sendFrame(createMsgOpen("6", "10", getAddress()));
 }
 
 
@@ -69,6 +69,6 @@ void automCancAttuatIll::Attiva()
 	strncpy(val, buf.constData(), sizeof(val));
 
 	msg_open.CreateNullMsgOpen();
-	msg_open.CreateWrDimensionMsgOpen("1", getAddress(), "2", v, 1);
+	msg_open.CreateWrDimensionMsgOpen("1", getAddress().toAscii().data(), "2", v, 1);
 	dev->sendFrame(msg_open.frame_open);
 }

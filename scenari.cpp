@@ -37,12 +37,12 @@ scenario::scenario(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOn
 void scenario::Attiva()
 {
 	char cosa[15];
-
-	strncpy(cosa,getAddress(),sizeof(cosa));
+	QByteArray buf_addr = getAddress().toAscii();
+	strncpy(cosa, buf_addr.constData(),sizeof(cosa));
 	if (strstr(cosa,"*"))
 	{
 		memset(index(cosa,'*'),'\000',sizeof(cosa)-(index(cosa,'*')-cosa));
-		BTouch->sendFrame(createMsgOpen("0", cosa, strstr(getAddress(),"*")+1));
+		BTouch->sendFrame(createMsgOpen("0", cosa, strstr(buf_addr.constData(),"*")+1));
 	}
 }
 

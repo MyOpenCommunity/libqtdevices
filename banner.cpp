@@ -546,9 +546,7 @@ void banner::impostaAttivo(char Attivo)
 
 void banner::setAddress(QString addr)
 {
-	QByteArray buf = addr.toAscii();
-	// TODO: rendere address una qstring!
-	strncpy(address,buf.constData(),sizeof(address));
+	address = addr;
 }
 
 void banner::gestFrame(char*)
@@ -602,7 +600,7 @@ void banner::getAnimationParams(int& per, int& num)
 	num = numFrame;
 }
 
-char* banner::getAddress()
+QString banner::getAddress()
 {
 	return address;
 }
