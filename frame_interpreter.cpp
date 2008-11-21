@@ -1778,37 +1778,40 @@ void frame_interpreter_sound_matr_device::handle_frame(openwebnet_ext m, device_
 	qDebug("frame_interpreter_sound_matr_device::handle_frame");
 	if (m.IsMeasureFrame())
 	{
-		// *#1*where*1*lev*speed##
-		int code = atoi(m.Extract_grandezza());
-		qDebug("frame_sound_matr_device::handle_frame, meas frame");
-		switch (code)
+		if (strcmp(m.Extract_chi(), "16") == 0)
 		{
-		case 11:
-			for (int i=device_status_sound_matr::AMB1_INDEX;
-					i<=device_status_sound_matr::AMB8_INDEX; i++)
+			// *#1*where*1*lev*speed##
+			int code = atoi(m.Extract_grandezza());
+			qDebug("frame_sound_matr_device::handle_frame, meas frame");
+			switch (code)
 			{
-				stat_var curr_act(stat_var::ACTIVE_SOURCE);
-				ds->read(i, curr_act);
-				qDebug("Curr active source for amb %d = %d", i+1, curr_act.get_val());
-				act = atoi(m.Extract_valori(i));
-				qDebug("New active source = %d", act);
-				if (act != curr_act.get_val())
+			case 11:
+				for (int i=device_status_sound_matr::AMB1_INDEX;
+						i<=device_status_sound_matr::AMB8_INDEX; i++)
 				{
-					curr_act.set_val(act);
-					ds->write_val(i, curr_act);
-					do_event = true;
+					stat_var curr_act(stat_var::ACTIVE_SOURCE);
+					ds->read(i, curr_act);
+					qDebug("Curr active source for amb %d = %d", i+1, curr_act.get_val());
+					act = atoi(m.Extract_valori(i));
+					qDebug("New active source = %d", act);
+					if (act != curr_act.get_val())
+					{
+						curr_act.set_val(act);
+						ds->write_val(i, curr_act);
+						do_event = true;
+					}
 				}
+			break;
+			default:
+				qDebug("frame_sound_matr_device::handle_frame"
+						", meas frame, code = %d", code);
+				break;
 			}
-			break;
-		default:
-			qDebug("frame_sound_matr_device::handle_frame"
-					", meas frame, code = %d", code);
-			break;
 		}
 	}
 	else
 	{
-		if ((atoi(m.Extract_cosa()) == 3) && ((atoi(m.Extract_dove()) >= 111)))
+		if ((strcmp(m.Extract_chi(), "16") == 0) &&  (atoi(m.Extract_cosa()) == 3) && ((atoi(m.Extract_dove()) >= 111)))
 		{
 			qDebug("frame_sound_matr_device::handle_frame, normal frame");
 			stat_var curr_act(stat_var::ACTIVE_SOURCE);

@@ -3,11 +3,11 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нажмите crosshair</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нажмите кнопку ОК</translation>
     </message>
 </context>
 <context>
@@ -171,6 +171,60 @@
     </message>
 </context>
 <context>
+    <name>device_condition</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_aux</name>
+    <message>
+        <source>ON</source>
+        <translation type="unfinished">ON</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_dimming</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_dimming_100</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_light_status</name>
+    <message>
+        <source>ON</source>
+        <translation type="unfinished">ON</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+</context>
+<context>
+    <name>device_condition_volume</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation type="unfinished">ON</translation>
+    </message>
+</context>
+<context>
     <name>sveglia</name>
     <message>
         <source>once</source>
@@ -193,7 +247,7 @@
     <name>tastiera</name>
     <message>
         <source>PASSWORD:</source>
-        <translation type="unfinished"></translation>
+        <translation>ПАРОЛЬ:</translation>
     </message>
 </context>
 </TS>

@@ -18,8 +18,8 @@
 
 #include <QWidget>
 #include <QString>
+#include <QTimer>
 #include <QList>
-
 
 class sottoMenu;
 class zonaAnti;
@@ -144,6 +144,7 @@ must be displayed.
   \brief clear alarm list
 */
 	void doClearAlarms();
+	void request();
 
 protected:
 	virtual void hideEvent(QHideEvent *event);
@@ -175,6 +176,7 @@ private:
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
 	tastiera *tasti;
 	static const int MAX_ZONE = 8;
+	QTimer request_timer;
 };
 
 

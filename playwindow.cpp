@@ -142,6 +142,8 @@ void PlayWindow::handlePlayingDone()
 	{
 		playNextTrack();
 	}
+	else
+		startPlayer(0);
 }
 
 void PlayWindow::handlePlayingAborted()

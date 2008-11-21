@@ -305,6 +305,9 @@ void scenEvo_cond_h::setupTimer()
 	while (msecsto <= 0) // Do it tomorrow
 		msecsto += 24 * 60 * 60 * 1000;
 
+	while (msecsto >=  24 * 60 * 60 * 1000)
+		msecsto -= 24 * 60 * 60 * 1000;
+
 	qDebug("(re)starting timer with interval = %d", msecsto);
 	timer->stop();
 	timer->setSingleShot(true);

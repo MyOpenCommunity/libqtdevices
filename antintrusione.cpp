@@ -96,6 +96,8 @@ void antintrusione::Parz(char* pwd)
 	}
 	impianto->show();
 	zone->show();
+	connect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
+	request_timer.start(5000);
 }
 
 void antintrusione::testranpo()
@@ -365,4 +367,11 @@ void antintrusione::hideEvent(QHideEvent *event)
 	BTouch->sendFrame("*#5*#6##");
 	BTouch->sendFrame("*#5*#7##");
 	BTouch->sendFrame("*#5*#8##");
+}
+
+void antintrusione::request()
+{
+	request_timer.stop();
+	disconnect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
+	BTouch->sendInit("*#5*0##");
 }
