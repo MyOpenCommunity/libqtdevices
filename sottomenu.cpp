@@ -120,7 +120,7 @@ void sottoMenu::setModeIcon(QString iconBut4)
 	bannNavigazione->Draw();
 }
 
-int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString> indirizzo,
+int sottoMenu::addItemU(char tipo, const QString &descrizione, QList<QString> indirizzo,
 	QList<QString*> &icon_names, int periodo, int numFrame)
 {
 	qDebug("sottoMenu::addItem(lista)");
@@ -136,7 +136,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString> 
 	connectLastBanner();
 
 	banner *last = elencoBanner.last();
-	last->setText(qdescrizione);
+	last->setText(descrizione);
 	last->setAnimationParams(periodo,numFrame);
 	last->setId(tipo);
 
@@ -152,7 +152,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, QList<QString> 
 	return 1;
 }
 
-int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo,
+int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		QList<QString*> &icon_names, int periodo, int numFrame,
 		char *descr1, char *descr2, char *descr3, char *descr4,
 		int par3, int par4,
@@ -256,7 +256,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new amplificatore(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
 	case SORGENTE_AUX:
-		elencoBanner.append(new sorgente_aux(this, qdescrizione, (char*)indirizzo));
+		elencoBanner.append(new sorgente_aux(this, descrizione, (char*)indirizzo));
 		break;
 	case SORGENTE_MULTIM:/// New Multimedia Audio Source.  NOTE:numFrame parametere name is not significative:it's the (cut down) where address
 		elencoBanner.append(new BannerSorgenteMultimedia(this, (char *)indirizzo, numFrame, 4));
@@ -288,7 +288,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	TERMO_PROBE=56,             Not-controlled probe
 	*/
 	case ZONANTINTRUS:
-		elencoBanner.append(new zonaAnti(this, qdescrizione, (char*)indirizzo, IconaSx, IconaDx, icon));
+		elencoBanner.append(new zonaAnti(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon));
 		break;
 	case IMPIANTINTRUS:
 		elencoBanner.append(new impAnti(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
@@ -315,13 +315,13 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 		elencoBanner.append(new scenSched(this, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4));
 		break;
 	case POSTO_ESTERNO:
-		elencoBanner.append(new postoExt(this, qdescrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
+		elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
 		break;
 	case SORG_RADIO:
 		elencoBanner.append(new sorgenteMultiRadio(this, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
 	case SORG_AUX:
-		elencoBanner.append(new sorgenteMultiAux(this, qdescrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
+		elencoBanner.append(new sorgenteMultiAux(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
 	case BRIGHTNESS:
 		elencoBanner.append(new BannBrightness(this));
@@ -348,7 +348,7 @@ int sottoMenu::addItemU(char tipo, const QString & qdescrizione, void *indirizzo
 	connectLastBanner();
 
 	banner *last = elencoBanner.last();
-	last->setText(qdescrizione);
+	last->setText(descrizione);
 	last->setAnimationParams(periodo,numFrame);
 	last->setId(tipo);
 	
