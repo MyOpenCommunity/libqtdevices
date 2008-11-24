@@ -835,12 +835,14 @@ bool xmlconfhandler::characters(const QString & qValue)
 					QWidget* pageAct = NULL;
 					page_id = qValue.toInt(&ok, 10);
 					qDebug("INSERTING PAGE: %s",pagTesti[page_id-1]);
-					QDomNode n;
+
+					QDomNode page_node = getPageNode(page_id);
+					assert(!page_node.isNull() && "Page node on xml configuration file not found!");
 
 					switch (page_id)
 					{
 					case AUTOMAZIONE:
-						*automazioni = new sottoMenu;
+						*automazioni = new Automation(0, page_node);
 						pageAct = *automazioni;
 						break;
 
@@ -879,20 +881,12 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case TERMOREGOLAZIONE:
-						n = getPageNode(TERMOREGOLAZIONE);
-						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, n);
-						else
-							qWarning("TERMOREGOLAZIONE configuration not found!");
+						*termo = new ThermalMenu(0, page_node);
 						pageAct = *termo;
 						break;
 
 					case TERMOREG_MULTI_PLANT:
-						n = getPageNode(TERMOREG_MULTI_PLANT);
-						if (!n.isNull())
-							*termo = new ThermalMenu(NULL, n);
-						else
-							qWarning("TERMOREG_MULTI_PLANT configuration not found!");
+						*termo = new ThermalMenu(0, page_node);
 						pageAct = *termo;
 						break;
 
@@ -913,8 +907,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case SUPERVISIONE:
-						n = getPageNode(page_id);
-						*supervisione = new SupervisionMenu(NULL, n);
+						*supervisione = new SupervisionMenu(0, page_node);
 						pageAct = *supervisione;
 						break;
 

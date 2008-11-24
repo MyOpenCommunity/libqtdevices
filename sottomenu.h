@@ -378,4 +378,18 @@ private slots:
 signals:
 	void dateSelected(QDate);
 };
+
+
+
+class Automation : public sottoMenu
+{
+Q_OBJECT
+public:
+	Automation(QWidget *parent=0, QDomNode config_node) : sottoMenu(parent) {}
+};
+
+
+
+
+
 #endif // SOTTOMENU_H
