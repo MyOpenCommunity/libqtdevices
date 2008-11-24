@@ -690,7 +690,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					// Pulisco per il prox
 					set_page_item_defaults();
 					page_id = 0;
-					page_descr = "";
 				}
 				else if (CurTagL3.startsWith("page") && CurTagL4.startsWith("item") &&
 						CurTagL5.startsWith("cond") && CurTagL6.isEmpty())
@@ -923,10 +922,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 						*pagDefault = pageAct;
 
 				} // if (!CurTagL4.compare("id"))
-				else if (!CurTagL4.compare("descr"))
-				{
-					page_descr = qValue;
-				}
 				else if ((CurTagL4.startsWith("item") || CurTagL4.startsWith("device")) && (!CurTagL5.startsWith("device")))
 				{
 					CurTagL4_copy=CurTagL4;

@@ -107,7 +107,6 @@ private:
 	QString sottomenu_where;
 
 	int page_id;
-	QString page_descr;
 
 	int page_item_id, page_item_id_m;
 	QString page_item_descr;
