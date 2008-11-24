@@ -687,6 +687,9 @@ ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
 
 void ProgramMenu::status_changed(QList<device_status*> sl)
 {
+	// TODO: vedere se da bannfullscreen puo' arrivare un segnale season_changed
+	// con il quale il programMenu possa aggiornarsi graficamente. In questo modo
+	// si evitano dipendenze del sottomenu con i device_status.
 	bool update = false;
 
 	for (int i = 0; i < sl.size(); ++i)
