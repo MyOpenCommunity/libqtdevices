@@ -22,14 +22,10 @@
 #include <QLabel>
 
 #include <stdlib.h> // atoi
-#include <stdio.h> //sprintf
 
-/*****************************************************************
- **dimmer
- ****************************************************************/
 
-dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect)
-	: bannRegolaz(parent)
+dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
+	bool to_be_connect) : bannRegolaz(parent)
 {
 
 	setRange(20, 100);
@@ -222,10 +218,6 @@ void dimmer::inizializza(bool forza)
 }
 
 
-/*****************************************************************
- **dimmer 100 livelli
- ****************************************************************/
-
 dimmer100::dimmer100(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
 	QString inactiveIcon, QString breakIcon, int sstart, int sstop)
 	: dimmer(parent, where, IconaSx, IconaDx, icon,inactiveIcon, breakIcon, false)
@@ -383,12 +375,9 @@ void dimmer100::inizializza(bool forza)
 		dev->sendInit(f);
 }
 
-/*****************************************************************
- **gruppo di dimmer
- ****************************************************************/
 
-grDimmer::grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString iconsx, QString icondx) :
-	bannRegolaz(parent)
+grDimmer::grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString iconsx,
+	QString icondx) : bannRegolaz(parent)
 {
 	SetIcons(IconaSx, IconaDx, icondx, iconsx);
 	elencoDisp = addresses;
@@ -428,12 +417,9 @@ void grDimmer::inizializza(bool forza)
 {
 }
 
-/*****************************************************************
- **gruppo di dimmer100
- ****************************************************************/
 
-grDimmer100::grDimmer100(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString iconsx, QString icondx,
-	QList<int>sstart, QList<int>sstop) : grDimmer(parent, addresses, IconaSx, IconaDx, iconsx, icondx)
+grDimmer100::grDimmer100(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString iconsx,
+	QString icondx, QList<int>sstart, QList<int>sstop) : grDimmer(parent, addresses, IconaSx, IconaDx, iconsx, icondx)
 {
 	qDebug("grDimmer100::grDimmer100()");
 	qDebug("sstart[0] = %d", sstart[0]);
@@ -444,13 +430,13 @@ grDimmer100::grDimmer100(QWidget *parent, QList<QString> addresses, QString Icon
 void grDimmer100::Attiva()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(QString("*1*1#%1*%2##").arg(soft_start[idx]).arg(elencoDisp.at(idx)));
+		BTouch->sendFrame(QString("*1*1#%1*%2##").arg(soft_start.at(idx)).arg(elencoDisp.at(idx)));
 }
 
 void grDimmer100::Disattiva()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(QString("*1*0#%1*%2##").arg(soft_stop[idx]).arg(elencoDisp.at(idx)));
+		BTouch->sendFrame(QString("*1*0#%1*%2##").arg(soft_stop.at(idx)).arg(elencoDisp.at(idx)));
 }
 
 void grDimmer100::Aumenta()
