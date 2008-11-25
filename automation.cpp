@@ -11,17 +11,16 @@
 
 Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 {
-	QList<QDomNode> items = getChildren(config_node, "item");
-
-	for (int i = 0; i < items.size(); ++i)
+	QDomNode item;
+	foreach (item, getChildren(config_node, "item"))
 	{
-		int id = getTextChild(items[i], "id").toInt();
-		QString where = getTextChild(items[i], "where");
-		QString img1 = IMG_PATH + getTextChild(items[i], "cimg1");
-		QString img2 = IMG_PATH + getTextChild(items[i], "cimg2");
-		QString img3 = IMG_PATH + getTextChild(items[i], "cimg3");
-		QString img4 = IMG_PATH + getTextChild(items[i], "cimg4");
-		QString time = getTextChild(items[i], "time");
+		int id = getTextChild(item, "id").toInt();
+		QString where = getTextChild(item, "where");
+		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
+		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
+		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
+		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
+		QString time = getTextChild(item, "time");
 
 		banner *b;
 		switch (id)
@@ -41,9 +40,9 @@ Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent
 		case GR_ATTUAT_INT:
 			{
 			QList<QString> addresses;
-			QList<QDomNode> elements = getChildren(items[i], "element");
-			for (int j = 0; j < elements.size(); ++j)
-				addresses.append(getTextChild(elements[j], "where"));
+			QDomNode el;
+			foreach (el, getChildren(item, "element"))
+				addresses.append(getTextChild(el, "where"));
 
 			b = new grAttuatInt(this, addresses, img1, img2, img3);
 			break;
@@ -61,7 +60,7 @@ Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent
 			assert(!"Type of item not handled on automation page!");
 		}
 
-		b->setText(getTextChild(items[i], "descr"));
+		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		// TODO: gestire il serNum come fa sottoMenu::addItemU!!
 		appendBanner(b); // TODO: deve gestire tutte le connect??
