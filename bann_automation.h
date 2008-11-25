@@ -22,10 +22,10 @@ class device_status;
 class automCancAttuatVC : public bannButIcon
 {
 Q_OBJECT
+public:
+	automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx);
 private:
 	device *dev;
-public:
-	automCancAttuatVC(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(),QString IconaDx=QString());
 private slots:
 	void Attiva();
 };
@@ -40,12 +40,11 @@ private slots:
 class automCancAttuatIll : public bannButIcon
 {
 Q_OBJECT
+public:
+	automCancAttuatIll(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString t);
 private:
 	device *dev;
 	QString time;
-public:
-	automCancAttuatIll(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(),
-		QString IconaDx=QString(), QString t = QString());
 private slots:
 	void Attiva();
 };
@@ -61,14 +60,15 @@ private slots:
 class attuatAutom : public bannOnOff
 {
 Q_OBJECT
+
+public:
+	attuatAutom(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive, QString IconDisactive, int periodo=0, int numFrame=0);
+public slots:
+	void status_changed(QList<device_status*>);
 private:
 	char gruppi[4];
 	device *dev;
 	void inizializza(bool forza=false);
-public:
-	attuatAutom(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(), QString IconDisactive=QString(),int periodo=0,int numFrame=0);
-public slots:
-	void status_changed(QList<device_status*>);
 private slots:
 	void Attiva();
 	void Disattiva();
@@ -89,8 +89,7 @@ class attuatAutomIntSic : public bannOnOff
 {
 Q_OBJECT
 public:
-	attuatAutomIntSic(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(),
-		QString IconActive=QString(), QString IconDisactive=QString());
+	attuatAutomIntSic(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive, QString IconDisactive);
 public slots:
 	virtual void status_changed(QList<device_status*>);
 private:
@@ -121,8 +120,7 @@ class attuatAutomInt : public bannOnOff
 {
 Q_OBJECT
 public:
-	attuatAutomInt(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(),
-		QString IconDisactive=QString());
+	attuatAutomInt(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive, QString IconDisactive);
 public slots:
 	virtual void status_changed(QList<device_status*>);
 private slots:
@@ -151,8 +149,8 @@ class grAttuatInt : public bann3But
 {
 Q_OBJECT
 public:
-	grAttuatInt(QWidget *parent=0, QList<QString> addresses=QList<QString>(), QString IconaSx=QString(), QString IconaDx=QString(),
-		QString Icon=QString(), int periodo=0, int numFrame=0);
+	grAttuatInt(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx,
+		QString Icon, int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 public slots:
 	void Alza();
