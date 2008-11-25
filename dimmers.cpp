@@ -28,14 +28,14 @@
  **dimmer
  ****************************************************************/
 
-dimmer::dimmer(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect)
+dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect)
 	: bannRegolaz(parent)
 {
 
 	setRange(20, 100);
 	setStep(10);
 	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, breakIcon, false);
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
@@ -226,9 +226,9 @@ void dimmer::inizializza(bool forza)
  **dimmer 100 livelli
  ****************************************************************/
 
-dimmer100::dimmer100(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+dimmer100::dimmer100(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
 	QString inactiveIcon, QString breakIcon, int sstart, int sstop)
-	: dimmer(parent, indirizzo, IconaSx, IconaDx, icon,inactiveIcon, breakIcon, false)
+	: dimmer(parent, where, IconaSx, IconaDx, icon,inactiveIcon, breakIcon, false)
 {
 	qDebug("costruttore dimmer100");
 	softstart = sstart;
@@ -387,26 +387,21 @@ void dimmer100::inizializza(bool forza)
  **gruppo di dimmer
  ****************************************************************/
 
-grDimmer::grDimmer(QWidget *parent, void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx) :
+grDimmer::grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString iconsx, QString icondx) :
 	bannRegolaz(parent)
 {
 	SetIcons(IconaSx, IconaDx, icondx, iconsx);
-	setAddress(indirizzi); // TODO: indirizzi non serve piu' a niente?
+	elencoDisp = addresses;
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
-void grDimmer::setAddress(void *indirizzi)
-{
-	elencoDisp = *((QList<QString*>*)indirizzi);
-}
-
 void grDimmer::sendFrame(QString msg)
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
-		BTouch->sendFrame(createMsgOpen("1", msg, *elencoDisp.at(i)));
+		BTouch->sendFrame(createMsgOpen("1", msg, elencoDisp.at(i)));
 }
 
 void grDimmer::Attiva()
@@ -429,18 +424,19 @@ void grDimmer::Diminuisci()
 	sendFrame("31");
 }
 
-void grDimmer::inizializza(bool forza){}
+void grDimmer::inizializza(bool forza)
+{
+}
 
 /*****************************************************************
  **gruppo di dimmer100
  ****************************************************************/
 
-grDimmer100::grDimmer100(QWidget *parent, void *indirizzi, QString IconaSx, QString IconaDx, QString iconsx, QString icondx,
-	QList<int>sstart, QList<int>sstop) : grDimmer(parent, indirizzi, IconaSx, IconaDx, iconsx, icondx)
+grDimmer100::grDimmer100(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString iconsx, QString icondx,
+	QList<int>sstart, QList<int>sstop) : grDimmer(parent, addresses, IconaSx, IconaDx, iconsx, icondx)
 {
 	qDebug("grDimmer100::grDimmer100()");
 	qDebug("sstart[0] = %d", sstart[0]);
-	setAddress(indirizzi); // TODO: indirizzi non serve piu' a niente?
 	soft_start = sstart;
 	soft_stop = sstop;
 }
@@ -448,23 +444,23 @@ grDimmer100::grDimmer100(QWidget *parent, void *indirizzi, QString IconaSx, QStr
 void grDimmer100::Attiva()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(QString("*1*1#%1*%2##").arg(soft_start[idx]).arg(*elencoDisp.at(idx)));
+		BTouch->sendFrame(QString("*1*1#%1*%2##").arg(soft_start[idx]).arg(elencoDisp.at(idx)));
 }
 
 void grDimmer100::Disattiva()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(QString("*1*0#%1*%2##").arg(soft_stop[idx]).arg(*elencoDisp.at(idx)));
+		BTouch->sendFrame(QString("*1*0#%1*%2##").arg(soft_stop[idx]).arg(elencoDisp.at(idx)));
 }
 
 void grDimmer100::Aumenta()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(createMsgOpen("1", "30#5#255", *elencoDisp.at(idx)));
+		BTouch->sendFrame(createMsgOpen("1", "30#5#255", elencoDisp.at(idx)));
 }
 
 void grDimmer100::Diminuisci()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(createMsgOpen("1", "31#5#255", *elencoDisp.at(idx)));
+		BTouch->sendFrame(createMsgOpen("1", "31#5#255", elencoDisp.at(idx)));
 }

@@ -184,11 +184,6 @@ public slots:
 	*/
 	void init();
 
-	/*!
-	\brief  See inizializza().
-	*/
-	void init_dimmer();
-
 	void showItem(int id);
 protected:
 	void connectLastBanner();

@@ -96,12 +96,11 @@ void attuatAutom::inizializza(bool forza)
 }
 
 
-grAttuatAutom::grAttuatAutom(QWidget *parent, void *indirizzi, QString IconaDx, QString IconaSx, QString icon, int period, int number)
+grAttuatAutom::grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaDx, QString IconaSx, QString icon, int period, int number)
 	: bannOnOff(parent)
 {
 	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
-	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
-	elencoDisp = *((QList<QString*>*)indirizzi);
+	elencoDisp = addresses;
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 }
@@ -109,31 +108,32 @@ grAttuatAutom::grAttuatAutom(QWidget *parent, void *indirizzi, QString IconaDx, 
 void grAttuatAutom::Attiva()
 {
 	for (int i = 0; i < elencoDisp.size();++i)
-		BTouch->sendFrame(createMsgOpen("1", "1", *elencoDisp.at(i)));
+		BTouch->sendFrame(createMsgOpen("1", "1", elencoDisp.at(i)));
 }
 
 void grAttuatAutom::Disattiva()
 {
 	for (int i = 0; i < elencoDisp.size();++i)
-		BTouch->sendFrame(createMsgOpen("1", "0", *elencoDisp.at(i)));
+		BTouch->sendFrame(createMsgOpen("1", "0", elencoDisp.at(i)));
 }
 
 
-attuatAutomTemp::attuatAutomTemp(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number, QList<QString*> *lt)
-	: bannOnOff2scr(parent)
+attuatAutomTemp::attuatAutomTemp(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString pressedIcon,
+	int period, int number, QList<QString> lt) : bannOnOff2scr(parent)
 {
 	SetIcons(IconaDx, IconaSx, icon, pressedIcon, period, number);
-	setAddress(indirizzo);
+	setAddress(where);
 	cntTempi = 0;
+	// TODO: riscrivere con un QVector<QString>!!
 	static const char *t[] =  { "1'", "2'", "3'", "4'", "5'", "15'", "30''" };
-	int nt = lt->size() ? lt->size() : sizeof(t) / sizeof(char *);
+	int nt = lt.size() ? lt.size() : sizeof(t) / sizeof(char *);
 	for (int i = 0; i < nt; i++)
 	{
-		QString *s;
-		if (i < lt->size())
-			s = lt->at(i);
+		QString s;
+		if (i < lt.size())
+			s = lt.at(i);
 		else
-			s = new QString(t[i]); // TODO: verificare a cosa serve e se potrebbe essere un memory leak!
+			s = t[i];
 		tempi.append(s);
 	}
 
@@ -152,7 +152,7 @@ QString attuatAutomTemp::leggi_tempo()
 	if (cntTempi >= ntempi())
 		return "";
 
-	return *tempi.at(cntTempi);
+	return tempi.at(cntTempi);
 }
 
 uchar attuatAutomTemp::ntempi()
@@ -260,16 +260,10 @@ void attuatAutomTemp::assegna_tempo_display()
 	tempo_display = leggi_tempo();
 }
 
-attuatAutomTemp::~attuatAutomTemp()
-{
-	while (!tempi.isEmpty())
-		delete tempi.takeFirst();
-}
 
-
-attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
-	QString pressedIcon, int period, int number, QList<QString*> *lt)
-	: attuatAutomTemp(parent, indirizzo, IconaSx, IconaDx, icon, pressedIcon, period, number, lt)
+attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
+	QString pressedIcon, int period, int number, QList<QString> lt)
+	: attuatAutomTemp(parent, where, IconaSx, IconaDx, icon, pressedIcon, period, number, lt)
 {
 	assegna_tempo_display();
 	stato_noto = false;
@@ -401,11 +395,11 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 
 #define NTIMEICONS 9
 
-attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, char *indirizzo, QString IconaCentroSx, QString IconaCentroDx, QString IconaDx, QString t)
+attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, QString where, QString IconaCentroSx, QString IconaCentroDx, QString IconaDx, QString t)
 	: bannOn2scr(parent)
 {
 	SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
-	setAddress(indirizzo);
+	setAddress(where);
 	setSecondaryText("????");
 
 	// TODO: riscrivere utilizzando qt e c++!!

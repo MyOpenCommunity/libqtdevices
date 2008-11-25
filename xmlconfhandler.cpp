@@ -25,6 +25,7 @@
 #include "openclient.h"
 #include "supervisionmenu.h"
 #include "automation.h"
+#include "lighting.h"
 
 #include <QObject>
 #include <QRegExp>
@@ -847,8 +848,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case ILLUMINAZIONE:
-						*illumino = new sottoMenu;
-						(*illumino)->setObjectName("ILLUMINO");
+						*illumino = new Lighting(0, page_node);
 						pageAct = *illumino;
 						break;
 

@@ -38,7 +38,7 @@ protected:
 	char gruppi[4];
 	device *dev;
 public:
-	dimmer(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect=true);
+	dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect=true);
 	virtual void inizializza(bool forza = false);
 	void Draw();
 private slots:
@@ -78,7 +78,7 @@ private:
 	int speed;
 public:
 
-	dimmer100(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+	dimmer100(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
 		QString inactiveIcon, QString breakIcon, int sstart, int sstop);
 	void inizializza(bool forza=false);
 	void status_changed(QList<device_status*>);
@@ -106,12 +106,10 @@ class grDimmer : public bannRegolaz
 {
 Q_OBJECT
 public:
-	grDimmer(QWidget *parent=0, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
-	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
-	void setAddress(void*);
+	grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
 	void inizializza(bool forza = false);
 protected:
-	QList<QString*> elencoDisp;
+	QList<QString> elencoDisp;
 private slots:
 	virtual void Attiva();
 	virtual void Disattiva();
@@ -140,7 +138,7 @@ private:
 	QList<int> soft_start;
 	QList<int> soft_stop;
 public:
-	grDimmer100(QWidget *parent=0, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(),QString Iconsx=QString(),
+	grDimmer100(QWidget *parent, QList<QString> addresses, QString IconaSx=QString(), QString IconaDx=QString(),QString Iconsx=QString(),
 		QString Icondx=QString(), QList<int> sstart = QList<int>(), QList<int> sstop = QList<int>());
 private slots:
 	void Attiva();

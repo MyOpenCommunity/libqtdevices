@@ -171,43 +171,11 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo)
 	{
-	case ATTUAT_AUTOM:
-		elencoBanner.append(new attuatAutom(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame));
-		break;
-	case DIMMER:
-		elencoBanner.append(new dimmer(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
-		break;
-	case DIMMER_100:
-		elencoBanner.append(new dimmer100(this, (char*)indirizzo, IconaSx, IconaDx ,icon, pressedIcon, icoEx1, par3, par4));
-		break;
 	case SCENARIO:
 		elencoBanner.append(new scenario(this, (char*)indirizzo, IconaSx));
 		break;
-	case GR_ATTUAT_AUTOM:
-		elencoBanner.append(new grAttuatAutom(this, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
-		break;
-	case GR_DIMMER:
-		elencoBanner.append(new grDimmer(this, indirizzo, IconaSx, IconaDx, icon, pressedIcon));
-		break;
-	case GR_DIMMER100:
-		elencoBanner.append(new grDimmer100(this, indirizzo, IconaSx, IconaDx, icon, pressedIcon, sstart, sstop));
-		break;
 	case CARICO:
 		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));
-		break;
-	case ATTUAT_AUTOM_TEMP:
-		elencoBanner.append(new attuatAutomTemp(this, (char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt));
-		break;
-	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		elencoBanner.append(new attuatAutomTempNuovoN(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, lt));
-		break;
-	case ATTUAT_AUTOM_TEMP_NUOVO_F:
-		if (!lt->count())
-			lt->append(new QString(""));
-		elencoBanner.append(new attuatAutomTempNuovoF(this, (char*)indirizzo, IconaSx, IconaDx, icon, *lt->at(0)));
-		break;
-	case ATTUAT_VCT_LS:
-		elencoBanner.append(new attuatPuls(this, (char*)indirizzo, IconaSx, IconaDx, VCT_LS, periodo, numFrame));
 		break;
 	case SET_DATA_ORA:
 		elencoBanner.append(new setDataOra(this));
@@ -499,27 +467,6 @@ void sottoMenu::init()
 		elencoBanner.at(i)->inizializza();
 }
 
-void sottoMenu::init_dimmer()
-{
-	qDebug("sottoMenu::init_dimmer()");
-	for (int i = 0; i < elencoBanner.size(); ++i)
-	{
-		switch(elencoBanner.at(i)->getId())
-		{
-		case DIMMER:
-		case DIMMER_100:
-		case ATTUAT_AUTOM:
-		case ATTUAT_AUTOM_TEMP:
-		case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		case ATTUAT_AUTOM_TEMP_NUOVO_F:
-			elencoBanner.at(i)->inizializza(true);
-			break;
-		default:
-			break;
-		}
-	}
-}
-
 void sottoMenu::setIndex(QString addr)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
@@ -596,10 +543,6 @@ void  sottoMenu::setIndice(char c)
 void sottoMenu::showEvent(QShowEvent *event)
 {
 	qDebug() << "sottoMenu::showEvent()";
-
-	// TODO: sottoMenu deve gestire troppi casi particolari, spezzare!
-	if (objectName() == "ILLUMINO")
-		init_dimmer();
 	forceDraw();
 }
 

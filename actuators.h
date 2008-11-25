@@ -60,11 +60,9 @@ class grAttuatAutom : public bannOnOff
 {
 Q_OBJECT
 private:
-	// TODO: probabilmente sarebbe meglio che diventasse QList<QString> ma viene creata
-	// nell'xmlconfhandler, e passata come void*.
-	QList<QString*> elencoDisp;
+	QList<QString> elencoDisp;
 public:
-	grAttuatAutom(QWidget *parent=0, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString Icon=QString(), int periodo=0, int numFrame=0);
+	grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaSx=QString(), QString IconaDx=QString(), QString Icon=QString(), int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
 	void Attiva();
@@ -86,17 +84,14 @@ class attuatAutomTemp : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-	// TODO: la lista QList<QString*> *lt contiene stringhe che vengono create esternamente (dall'xmlconfhandler?) e distrutte
-	// dal distruttore della classe.. decidere di chi deve essere l'ownership di questi oggetti!!
-	attuatAutomTemp(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
-		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString*> *lt = NULL);
-	~attuatAutomTemp();
+attuatAutomTemp(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(),
+		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString> lt = QList<QString>());
 public slots:
 	virtual void status_changed(QList<device_status*>);
 protected:
 	uchar cntTempi;
 	QString tempo_display;
-	QList<QString*> tempi;
+	QList<QString> tempi;
 	device *dev;
 	uchar ntempi();
 	QString leggi_tempo();
@@ -124,8 +119,8 @@ class attuatAutomTempNuovoN : public attuatAutomTemp
 {
 Q_OBJECT
 public:
-	attuatAutomTempNuovoN(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
-		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString*> *lt = NULL);
+	attuatAutomTempNuovoN(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(),
+		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString> lt = QList<QString>());
 public slots:
 	void status_changed(QList<device_status*>);
 protected:
@@ -152,7 +147,7 @@ class attuatAutomTempNuovoF : public bannOn2scr
 {
 Q_OBJECT
 public:
-	attuatAutomTempNuovoF(QWidget *parent=0, char *indirizzo=NULL, QString IconaCentroSx=QString(),
+	attuatAutomTempNuovoF(QWidget *parent=0, QString where=QString(), QString IconaCentroSx=QString(),
 		QString IconaCentroDx=QString(), QString IconDx=QString(), QString t=QString());
 public slots:
 	void status_changed(QList<device_status*>);
