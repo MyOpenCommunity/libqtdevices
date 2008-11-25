@@ -442,16 +442,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					{
 					case AUTOMAZIONE:
 						pageAct = *automazioni;
-						addr = computeAddress();
-						addItemU(pageAct, addr);
 						break;
 
 					case  ILLUMINAZIONE:
 						pageAct = *illumino;
-						par3 = page_item_softstart;
-						par4 = page_item_softstop;
-						addr = computeAddress();
-						addItemU(pageAct, addr);
 						break;
 
 					case CARICHI:
