@@ -21,9 +21,6 @@
 class device;
 class openwebnet;
 
-/*****************************************************************
- **Dimmer
- ****************************************************************/
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.
@@ -33,14 +30,14 @@ class openwebnet;
 class dimmer : public bannRegolaz
 {
 Q_OBJECT
-protected:
-	char pul;
-	char gruppi[4];
-	device *dev;
 public:
 	dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon, bool to_be_connect=true);
 	virtual void inizializza(bool forza = false);
 	void Draw();
+protected:
+	char pul;
+	char gruppi[4];
+	device *dev;
 private slots:
 	virtual void Accendi();
 	virtual void Spegni();
@@ -53,9 +50,6 @@ signals:
 };
 
 
-/*****************************************************************
- **Dimmer 100 Livelli
- ****************************************************************/
 /*!
  * \class dimmer 100 livelli
  * \brief This is the 100 lev dimmer-banner class.
@@ -65,23 +59,21 @@ signals:
 class dimmer100 : public dimmer
 {
 Q_OBJECT;
-private:
-	/*!
-	 * \brief decode msg code, lev and speed from open message
-	 * returns true if msg_open is a message for a new dimmer, 
-	 * false otherwise
-	 */
-	bool decCLV(openwebnet&, char& code, char& lev, char& speed,
-	char& h, char& m, char& s); 
-	int softstart, softstop;
-	int last_on_lev;
-	int speed;
 public:
-
 	dimmer100(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
 		QString inactiveIcon, QString breakIcon, int sstart, int sstop);
 	void inizializza(bool forza=false);
 	void status_changed(QList<device_status*>);
+private:
+	/*!
+	 * \brief decode msg code, lev and speed from open message
+	 * returns true if msg_open is a message for a new dimmer,
+	 * false otherwise
+	 */
+	bool decCLV(openwebnet&, char& code, char& lev, char& speed, char& h, char& m, char& s);
+	int softstart, softstop;
+	int last_on_lev;
+	int speed;
 private slots:
 	void Accendi();
 	void Spegni();
@@ -90,9 +82,6 @@ private slots:
 };
 
 
-/*****************************************************************
- **gruppo dimmer
- ****************************************************************/
 /*!
  * \class grDimmer
  * \brief This class is made to control a number of dimmers.
@@ -106,7 +95,7 @@ class grDimmer : public bannRegolaz
 {
 Q_OBJECT
 public:
-	grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
+	grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString Iconsx, QString Icondx);
 	void inizializza(bool forza = false);
 protected:
 	QList<QString> elencoDisp;
@@ -120,9 +109,6 @@ private:
 };
 
 
-/*****************************************************************
- **gruppo dimmer 100 livelli
- ****************************************************************/
 /*!
  * \class grDimmer100
  * \brief This class is made to control a number of 100 levels dimmers
@@ -134,12 +120,12 @@ private:
 class grDimmer100 : public grDimmer
 {
 Q_OBJECT
+public:
+	grDimmer100(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx,QString Iconsx,
+		QString Icondx, QList<int> sstart, QList<int> sstop);
 private:
 	QList<int> soft_start;
 	QList<int> soft_stop;
-public:
-	grDimmer100(QWidget *parent, QList<QString> addresses, QString IconaSx=QString(), QString IconaDx=QString(),QString Iconsx=QString(),
-		QString Icondx=QString(), QList<int> sstart = QList<int>(), QList<int> sstop = QList<int>());
 private slots:
 	void Attiva();
 	void Disattiva();
