@@ -53,6 +53,7 @@ QPixmap* IconDispatcher::getIconPointer(QString name)
 	}
 }
 
+// TODO: centralizzare qua la gestione dell'IMG_PATH! In questo modo si riducono le dipendenze!
 QPixmap* IconDispatcher::getIcon(QString name, const char * format, Qt::ImageConversionFlags flags)
 {
 	if (name.isNull())
