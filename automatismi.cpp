@@ -19,12 +19,12 @@
  ** automCancAttuatVC
  ****************************************************************/
 
-automCancAttuatVC::automCancAttuatVC(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx)
+automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
 	: bannButIcon(parent)
 {
 	qDebug("automCancAttuatVC::automCancAttuatVC()");
 	SetIcons(IconaSx, QString(), IconaDx);
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_autom_device(getAddress());
@@ -43,12 +43,12 @@ void automCancAttuatVC::Attiva()
  ** automCancAttuatIll
  ****************************************************************/
 
-automCancAttuatIll::automCancAttuatIll(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString t)
+automCancAttuatIll::automCancAttuatIll(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString t)
 	: bannButIcon(parent)
 {
 	qDebug("automCancAttuatIll::automCancAttuatIll()");
 	SetIcons(IconaSx, QString(), IconaDx);
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache
 	dev = btouch_device_cache.get_autom_device(getAddress());

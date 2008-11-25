@@ -36,6 +36,7 @@ HEADERS += actuators.h \
            ambdiffson.h \
            amplificatori.h \
            antintrusione.h \
+           automation.h \
            automatismi.h \
            aux.h \
            bann2but.h \
@@ -123,6 +124,7 @@ SOURCES += actuators.cpp \
            ambdiffson.cpp \
            amplificatori.cpp \
            antintrusione.cpp \
+           automation.cpp \
            automatismi.cpp \
            aux.cpp \
            bann4taslab.cpp \

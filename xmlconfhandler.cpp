@@ -24,6 +24,7 @@
 #include "scenevocond.h"
 #include "openclient.h"
 #include "supervisionmenu.h"
+#include "automation.h"
 
 #include <QObject>
 #include <QRegExp>

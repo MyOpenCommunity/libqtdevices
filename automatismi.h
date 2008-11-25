@@ -34,7 +34,7 @@ Q_OBJECT
 private:
 	device *dev;
 public:
-	automCancAttuatVC(QWidget *parent=0, char *indirizzo=NULL,QString IconaSx=QString(),QString IconaDx=QString());
+	automCancAttuatVC(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(),QString IconaDx=QString());
 private slots:
 	void Attiva();
 };
@@ -56,7 +56,7 @@ private:
 	device *dev;
 	QString time;
 public:
-	automCancAttuatIll(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(),
+	automCancAttuatIll(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(),
 		QString IconaDx=QString(), QString t = QString());
 private slots:
 	void Attiva();

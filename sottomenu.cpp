@@ -172,9 +172,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo)
 	{
-	case ATTUAT_AUTOM:
-		elencoBanner.append(new attuatAutom(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame));
-		break;
 	case DIMMER:
 		elencoBanner.append(new dimmer(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;
@@ -196,12 +193,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	case CARICO:
 		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));
 		break;
-	case ATTUAT_AUTOM_INT:
-		elencoBanner.append(new attuatAutomInt(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
-		break;
-	case ATTUAT_AUTOM_INT_SIC:
-		elencoBanner.append(new attuatAutomIntSic(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
-		break;
 	case ATTUAT_AUTOM_TEMP:
 		elencoBanner.append(new attuatAutomTemp(this, (char*)indirizzo,IconaSx, IconaDx,icon, pressedIcon,periodo,numFrame,lt));
 		break;
@@ -213,23 +204,8 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 			lt->append(new QString(""));
 		elencoBanner.append(new attuatAutomTempNuovoF(this, (char*)indirizzo, IconaSx, IconaDx, icon, *lt->at(0)));
 		break;
-	case GR_ATTUAT_INT:
-		elencoBanner.append(new grAttuatInt(this, indirizzo, IconaSx, IconaDx, icon, periodo, numFrame));
-		break;
-	case ATTUAT_AUTOM_PULS:
-		elencoBanner.append(new attuatPuls(this, (char*)indirizzo, IconaSx, IconaDx, AUTOMAZ, periodo, numFrame));
-		break;
 	case ATTUAT_VCT_LS:
 		elencoBanner.append(new attuatPuls(this, (char*)indirizzo, IconaSx, IconaDx, VCT_LS, periodo, numFrame));
-		break;
-	case ATTUAT_VCT_SERR:
-		elencoBanner.append(new attuatPuls(this, (char*)indirizzo, IconaSx, IconaDx, VCT_SERR, periodo, numFrame));
-		break;
-	case AUTOM_CANC_ATTUAT_VC:
-		elencoBanner.append(new automCancAttuatVC(this, (char*)indirizzo, IconaSx, IconaDx));
-		break;
-	case AUTOM_CANC_ATTUAT_ILL:
-		elencoBanner.append(new automCancAttuatIll(this, (char*)indirizzo, IconaSx, IconaDx, *lt->at(0)));
 		break;
 	case SET_DATA_ORA:
 		elencoBanner.append(new setDataOra(this));

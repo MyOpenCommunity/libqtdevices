@@ -39,7 +39,7 @@ private:
 	device *dev;
 	void inizializza(bool forza=false);
 public:
-	attuatAutom(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(), QString IconDisactive=QString(),int periodo=0,int numFrame=0);
+	attuatAutom(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(), QString IconDisactive=QString(),int periodo=0,int numFrame=0);
 public slots:
 	void status_changed(QList<device_status*>);
 private slots:
@@ -93,7 +93,7 @@ class attuatAutomInt : public bannOnOff
 {
 Q_OBJECT
 public:
-	attuatAutomInt(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(),
+	attuatAutomInt(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(), QString IconActive=QString(),
 		QString IconDisactive=QString());
 public slots:
 	virtual void status_changed(QList<device_status*>);
@@ -125,7 +125,7 @@ class attuatAutomIntSic : public bannOnOff
 {
 Q_OBJECT
 public:
-	attuatAutomIntSic(QWidget *parent=0, char *indirizzo=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+	attuatAutomIntSic(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(),
 		QString IconActive=QString(), QString IconDisactive=QString());
 public slots:
 	virtual void status_changed(QList<device_status*>);
@@ -271,7 +271,7 @@ class grAttuatInt : public bann3But
 {
 Q_OBJECT
 public:
-	grAttuatInt(QWidget *parent=0, void *indirizzi=NULL, QString IconaSx=QString(), QString IconaDx=QString(),
+	grAttuatInt(QWidget *parent=0, QList<QString> addresses=QList<QString>(), QString IconaSx=QString(), QString IconaDx=QString(),
 		QString Icon=QString(), int periodo=0, int numFrame=0);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 public slots:
@@ -279,7 +279,7 @@ public slots:
 	void Abbassa();
 	void Ferma();
 private:
-	QList<QString*> elencoDisp;
+	QList<QString> elencoDisp;
 	void inizializza(bool forza = false);
 	void sendFrame(QString msg);
 };
@@ -301,7 +301,7 @@ class attuatPuls : public bannPuls
 {
 Q_OBJECT
 public:
-	attuatPuls(QWidget *parent=0, char *indirizzi=NULL, QString IconaSx=QString(), QString IconActive=QString(),
+	attuatPuls(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconActive=QString(),
 		char tipo=0, int periodo=0, int numFrame=0);
 private slots:
 	void Attiva();

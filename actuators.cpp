@@ -28,11 +28,11 @@
  **attuatAutom
  ****************************************************************/
 
-attuatAutom::attuatAutom(QWidget *parent,char* indirizzo,QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number)
+attuatAutom::attuatAutom(QWidget *parent,QString where,QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number)
 	: bannOnOff(parent)
 {
 	SetIcons(IconaSx, IconaDx, icon, pressedIcon, period, number);
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	// Crea o preleva il dispositivo dalla cache
@@ -129,7 +129,7 @@ void grAttuatAutom::Disattiva()
  **attuatAutomInt
  ****************************************************************/
 
-attuatAutomInt::attuatAutomInt(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
+attuatAutomInt::attuatAutomInt(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
 	: bannOnOff(parent)
 {
 
@@ -147,7 +147,7 @@ attuatAutomInt::attuatAutomInt(QWidget *parent, char *indirizzo, QString IconaSx
 	icon_dx = IconaDx;
 	icon_stop = StopIcon;
 
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(sxClick()),this,SLOT(analizzaUp()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(analizzaDown()));
 
@@ -254,7 +254,7 @@ void attuatAutomInt::inizializza(bool forza)
  **attuatAutomIntSic
  ****************************************************************/
 
-attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
+attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
 	: bannOnOff(parent)
 {
 	int pos = icon.indexOf(".");
@@ -271,7 +271,7 @@ attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, char *indirizzo, QString I
 	icon_dx = IconaDx;
 	icon_stop = StopIcon;
 
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(upPres()));
 	connect(this,SIGNAL(dxPressed()),this,SLOT(doPres()));
 	connect(this,SIGNAL(sxReleased()),this,SLOT(upRil()));
@@ -981,12 +981,11 @@ void attuatAutomTempNuovoF::Draw()
  **gruppo di attuatInt
  ****************************************************************/
 
-grAttuatInt::grAttuatInt(QWidget *parent, void *indirizzi, QString IconaSx, QString IconaDx, QString icon, int period, int number)
+grAttuatInt::grAttuatInt(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString icon, int period, int number)
 	: bann3But(parent)
 {
 	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
-	// TODO: togliere questo cast da void*!!!! (bisogna intervenire su xmlconfhandler)
-	elencoDisp = *((QList<QString*>*)indirizzi);
+	elencoDisp = addresses;
 	connect(this,SIGNAL(dxClick()),this,SLOT(Alza()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(Abbassa()));
 	connect(this,SIGNAL(centerClick()),this,SLOT(Ferma()));
@@ -995,7 +994,7 @@ grAttuatInt::grAttuatInt(QWidget *parent, void *indirizzi, QString IconaSx, QStr
 void grAttuatInt::sendFrame(QString msg)
 {
 	for (int i = 0; i < elencoDisp.size();++i)
-		BTouch->sendFrame(createMsgOpen("2", msg, *elencoDisp.at(i)));
+		BTouch->sendFrame(createMsgOpen("2", msg, elencoDisp.at(i)));
 }
 
 void grAttuatInt::Alza()
@@ -1021,11 +1020,11 @@ void grAttuatInt::inizializza(bool forza)
  **attuatPuls
  ****************************************************************/
 
-attuatPuls::attuatPuls(QWidget *parent, char *indirizzo, QString IconaSx, QString icon, char tipo, int period, int number)
+attuatPuls::attuatPuls(QWidget *parent, QString where, QString IconaSx, QString icon, char tipo, int period, int number)
 : bannPuls(parent)
 {
 	SetIcons(IconaSx, QString(), icon, QString(), period,number);
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(sxReleased()),this,SLOT(Disattiva()));
 	type = tipo;

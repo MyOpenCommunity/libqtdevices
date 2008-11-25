@@ -67,7 +67,7 @@ unknown : unknown field (for video door phone items
 sstart : soft start values list for dimmer 100 group
 sstop : soft stop values list vor dimmer 100 group
 */
-	int addItemU(char tipo, const QString &descrizione, void *indirizzo,
+	virtual int addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0,
 		char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
 		int par3=0, int par4=0,
@@ -79,7 +79,7 @@ sstop : soft stop values list vor dimmer 100 group
 	/**
 	 * Overloaded member function that takes a QList<QString> indirizzo parameter
 	 */
-	int addItemU(char tipo, const QString &descrizione, QList<QString> indirizzo,
+	virtual int addItemU(char tipo, const QString &descrizione, QList<QString> indirizzo,
 		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0);
 
 	/**
@@ -378,18 +378,5 @@ private slots:
 signals:
 	void dateSelected(QDate);
 };
-
-
-
-class Automation : public sottoMenu
-{
-Q_OBJECT
-public:
-	Automation(QWidget *parent=0, QDomNode config_node) : sottoMenu(parent) {}
-};
-
-
-
-
 
 #endif // SOTTOMENU_H
