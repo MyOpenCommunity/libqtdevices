@@ -1,9 +1,12 @@
 #include "automation.h"
 #include "bann_automation.h"
 #include "actuators.h"
-#include "xml_functions.h"
+#include "xml_functions.h" // getChildren, getTextChild
 
+#include <QDomNode>
+#include <QString>
 #include <QDebug>
+#include <QList>
 
 
 Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent)

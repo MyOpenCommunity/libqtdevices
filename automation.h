@@ -16,6 +16,10 @@
 
 #include "sottomenu.h"
 
+#include <QWidget>
+
+class QDomNode;
+
 
 class Automation : public sottoMenu
 {
