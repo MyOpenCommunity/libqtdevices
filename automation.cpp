@@ -61,6 +61,6 @@ Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent
 		b->setText(getTextChild(items[i], "descr"));
 		b->setId(id);
 		// TODO: gestire il serNum come fa sottoMenu::addItemU!!
-		elencoBanner.append(b);
+		appendBanner(b); // TODO: deve gestire tutte le connect??
 	}
 }
