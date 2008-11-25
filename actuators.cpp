@@ -25,6 +25,77 @@
 #include <stdlib.h>
 
 
+attuatAutom::attuatAutom(QWidget *parent,QString where,QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number)
+	: bannOnOff(parent)
+{
+	SetIcons(IconaSx, IconaDx, icon, pressedIcon, period, number);
+	setAddress(where);
+	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
+	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
+	// Crea o preleva il dispositivo dalla cache
+	dev = btouch_device_cache.get_light(getAddress());
+	// Get status changed events back
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
+}
+
+void attuatAutom::status_changed(QList<device_status*> sl)
+{
+	stat_var curr_status(stat_var::ON_OFF);
+	bool aggiorna = false;
+	qDebug("attuatAutom::status_changed()");
+
+	for (int i = 0; i < sl.size(); ++i)
+	{
+		device_status *ds = sl.at(i);
+		switch (ds->get_type())
+		{
+			case device_status::LIGHTS:
+				qDebug("attuatAutom status variation");
+				ds->read(device_status_light::ON_OFF_INDEX, curr_status);
+				qDebug("status = %d", curr_status.get_val());
+				qDebug("status = %d", curr_status.get_val());
+				if (!curr_status.get_val() && isActive())
+				{
+					aggiorna = true;
+					impostaAttivo(0);
+				}
+				else if (curr_status.get_val() && !isActive())
+				{
+					aggiorna = true;
+					impostaAttivo(1);
+				}
+				break;
+			default:
+				qDebug("attuatAutom variation, ignored");
+				break;
+		}
+	}
+
+	if (aggiorna)
+		Draw();
+}
+
+void attuatAutom::Attiva()
+{
+	dev->sendFrame(createMsgOpen("1", "1", getAddress()));
+}
+
+void attuatAutom::Disattiva()
+{
+	dev->sendFrame(createMsgOpen("1", "0", getAddress()));
+}
+
+void attuatAutom::inizializza(bool forza)
+{
+	QString f = "*#1*" + getAddress() + "##";
+	if (!forza)
+		emit richStato(f);
+	else
+		dev->sendInit(f);
+}
+
+
 grAttuatAutom::grAttuatAutom(QWidget *parent, void *indirizzi, QString IconaDx, QString IconaSx, QString icon, int period, int number)
 	: bannOnOff(parent)
 {

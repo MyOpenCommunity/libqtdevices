@@ -23,6 +23,31 @@ class device;
 
 
 /*!
+ * \class attuatAutom
+ * \brief This is the \a automation \a actuator-banner class.
+ * This class is used to represent both lightings and various kind of automation such as fan and irrigation.
+ * \author Davide
+ * \date lug 2005
+ */
+class attuatAutom : public bannOnOff
+{
+Q_OBJECT
+
+public:
+	attuatAutom(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive, QString IconDisactive, int periodo=0, int numFrame=0);
+public slots:
+	void status_changed(QList<device_status*>);
+private:
+	char gruppi[4];
+	device *dev;
+	void inizializza(bool forza=false);
+private slots:
+	void Attiva();
+	void Disattiva();
+};
+
+
+/*!
  * \class grAttuatAutom
  * \brief This class is made to control a number of automation actuators.
  *

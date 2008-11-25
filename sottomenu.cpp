@@ -171,6 +171,9 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo)
 	{
+	case ATTUAT_AUTOM:
+		elencoBanner.append(new attuatAutom(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame));
+		break;
 	case DIMMER:
 		elencoBanner.append(new dimmer(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;

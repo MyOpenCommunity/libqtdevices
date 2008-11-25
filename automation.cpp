@@ -39,12 +39,12 @@ Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent
 			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
 			break;
 		case GR_ATTUAT_INT:
-	  		{
+			{
 			QList<QString> addresses;
 			QList<QDomNode> elements = getChildren(items[i], "element");
 			for (int j = 0; j < elements.size(); ++j)
 				addresses.append(getTextChild(elements[j], "where"));
-				
+
 			b = new grAttuatInt(this, addresses, img1, img2, img3);
 			break;
 			}
