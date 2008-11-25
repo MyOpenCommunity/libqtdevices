@@ -2,6 +2,7 @@
 
 #include <QStringList>
 
+
 QDomNode getChildWithName(QDomNode parent, QString name)
 {
 	QDomNode n = parent.firstChild();
@@ -48,3 +49,24 @@ QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id)
 	return QDomNode();
 }
 
+QList<QDomNode> getChildren(QDomNode parent, QString name)
+{
+	QList<QDomNode> l;
+	QDomNode n = parent.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().startsWith(name))
+			l.append(n);
+
+		n = n.nextSibling();
+	}
+	return l;
+}
+
+QString getTextChild(QDomNode parent, QString name)
+{
+	QDomNode n = getChildWithName(parent, name);
+	if (n.isNull())
+		return QString();
+	return n.toElement().text();
+}
