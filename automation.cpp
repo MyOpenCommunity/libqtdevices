@@ -57,6 +57,10 @@ Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent
 		default:
 			assert(!"Type of item not handled on automation page!");
 		}
+
+		b->setText(getTextChild(items[i], "descr"));
+		b->setId(id);
+		// TODO: gestire il serNum come fa sottoMenu::addItemU!!
 		elencoBanner.append(b);
 	}
 }
