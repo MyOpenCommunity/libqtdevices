@@ -37,7 +37,6 @@ HEADERS += actuators.h \
            amplificatori.h \
            antintrusione.h \
            automation.h \
-           automatismi.h \
            aux.h \
            bann2but.h \
            bann2butlab.h \
@@ -45,6 +44,7 @@ HEADERS += actuators.h \
            bann4but.h \
            bann4taslab.h \
            bann_antintrusione.h \
+           bann_automation.h \
            bannbut2icon.h \
            bannbuticon.h \
            bannciclaz.h \
@@ -125,7 +125,6 @@ SOURCES += actuators.cpp \
            amplificatori.cpp \
            antintrusione.cpp \
            automation.cpp \
-           automatismi.cpp \
            aux.cpp \
            bann4taslab.cpp \
            bann2but.cpp \
@@ -133,6 +132,7 @@ SOURCES += actuators.cpp \
            bann3but.cpp \
            bann4but.cpp \
            bann_antintrusione.cpp \
+           bann_automation.cpp \
            bannbut2icon.cpp \
            bannbuticon.cpp \
            bannciclaz.cpp \

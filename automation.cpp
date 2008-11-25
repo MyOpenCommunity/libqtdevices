@@ -1,7 +1,7 @@
 #include "automation.h"
-#include "xml_functions.h"
+#include "bann_automation.h"
 #include "actuators.h"
-#include "automatismi.h"
+#include "xml_functions.h"
 
 #include <QDebug>
 
