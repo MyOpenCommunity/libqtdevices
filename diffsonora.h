@@ -40,8 +40,7 @@ public:
 	 */
 	int addItemU(char tipo, const QString & nome, char *indirizzo,QList<QString*> &icon_names,
 		int periodo=0 , int where=0, const char *ambdescr="");
-	int addItemU(char tipo, const QString & nome, QList<QString *> *indirizzo,QList<QString*> &icon_names,
-		int periodo=0 , int where=0);
+	int addItemU(char tipo, const QString & nome, QList<QString *> *indirizzo,QList<QString*> &icon_names);
 
 	/*!
 	 * \brief Sets the row's number.

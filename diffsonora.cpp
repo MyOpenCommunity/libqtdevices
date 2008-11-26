@@ -59,7 +59,7 @@ void diffSonora::setSorgenti(sottoMenu *s)
 // In ogni caso sarebbe da allocare staticamente le stringhe che fanno parte di
 // icon_names.
 int diffSonora::addItemU(char tipo, const QString &description, QList<QString *> *indirizzo,
-	QList<QString*> &icon_names, int modo, int where)
+	QList<QString*> &icon_names)
 {
 	if (tipo == GR_AMPLIFICATORI)
 	{

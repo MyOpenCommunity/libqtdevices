@@ -510,7 +510,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 								page_item_list_img, par1,  par2);
 						else
 							(*difSon)->addItemU((char)page_item_id, page_item_descr, page_item_list_group,
-								page_item_list_img, par1);
+								page_item_list_img);
 					}
 						break;
 

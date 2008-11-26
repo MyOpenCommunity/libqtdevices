@@ -85,7 +85,7 @@ ambDiffSon::ambDiffSon(QWidget *parent, QString _name, char *indirizzo, QString 
 				QList<QString*> *li = new QList<QString*>();
 				for (int j = 0; j < qsl.size(); ++j)
 					li->append(new QString(qsl[j]));
-				diffson->addItemU(am->tipo, am->descr, li, icons, am->modo);
+				diffson->addItemU(am->tipo, am->descr, li, icons);
 			}
 		}
 		else
@@ -213,7 +213,7 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QSt
 				QList<QString*> *li = new QList<QString*>();
 				for (int j = 0; j < qsl.size(); ++j)
 					li->append(new QString(qsl[j]));
-				diffson->addItemU(am->tipo, am->descr, li, icons, am->modo);
+				diffson->addItemU(am->tipo, am->descr, li, icons);
 			}
 		}
 		else
