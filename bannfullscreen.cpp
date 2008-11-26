@@ -1173,12 +1173,9 @@ void FSBannTermoReg99z::createSettingsMenu()
 //
 void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 {
-	char i_manual[100];
-	sprintf(i_manual, "%s%s", IMG_PATH, "manuale.png");
-
 	// manual banner
 	bannPuls *manual = new bannPuls(settings);
-	manual->SetIcons(IMG_RIGHT_ARROW, 0, i_manual);
+	manual->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("manuale.png"));
 
 	settings->appendBanner(manual);
 	manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
@@ -1209,11 +1206,8 @@ void FSBannTermoReg::manualSelected(unsigned temp)
 
 void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
 {
-	char i_weekly[100];
-	sprintf(i_weekly, "%s%s", IMG_PATH, "settimanale.png");
-
 	bannPuls *weekly = new bannPuls(settings);
-	weekly->SetIcons(IMG_RIGHT_ARROW, 0, i_weekly);
+	weekly->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("settimanale.png"));
 	settings->appendBanner(weekly);
 
 	program_menu = new WeeklyMenu(0, conf);
@@ -1366,11 +1360,9 @@ void FSBannTermoReg::weekendHolidaySettingsEnd(int program)
 
 void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
 {
-	char i_manual[100];
-	sprintf(i_manual, "%s%s", IMG_PATH, "manuale_temporizzato.png");
 	// timed manual banner
 	bannPuls *manual_timed = new bannPuls(settings);
-	manual_timed->SetIcons(IMG_RIGHT_ARROW, 0, i_manual);
+	manual_timed->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("manuale_temporizzato.png"));
 
 	settings->appendBanner(manual_timed);
 	timed_manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
@@ -1404,11 +1396,8 @@ void FSBannTermoReg4z::manualTimedSelected(BtTime time, int temp)
 
 void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
 {
-	char i_scenario[100];
-	sprintf(i_scenario, "%s%s", IMG_PATH, "scenari.png");
-
 	bannPuls *scenario = new bannPuls(settings);
-	scenario->SetIcons(IMG_RIGHT_ARROW, 0, i_scenario);
+	scenario->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("scenari.png"));
 	settings->appendBanner(scenario);
 
 	scenario_menu = new ScenarioMenu(0, conf);
