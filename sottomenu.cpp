@@ -21,7 +21,6 @@
 #include "generic_functions.h"
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
-#include "dimmers.h"
 #include "actuators.h"
 #include "scenari.h"
 #include "amplificatori.h"
