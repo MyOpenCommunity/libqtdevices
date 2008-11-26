@@ -313,6 +313,15 @@ void sottoMenu::appendBanner(banner *b)
 {
 	elencoBanner.append(b);
 	connectLastBanner();
+
+	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
+	{
+		if (elencoBanner.at(idx)->getId() == b->getId())
+		{
+			elencoBanner.last()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
+			idx = -1;
+		}
+	}
 }
 
 void sottoMenu::connectLastBanner()
