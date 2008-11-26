@@ -1,6 +1,6 @@
 #include "lighting.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "dimmers.h"
+#include "bann_lighting.h"
 #include "actuators.h"
 
 #include <QDomNode>

@@ -45,6 +45,7 @@ HEADERS += actuators.h \
            bann4taslab.h \
            bann_antintrusione.h \
            bann_automation.h \
+           bann_lighting.h \
            bannbut2icon.h \
            bannbuticon.h \
            bannciclaz.h \
@@ -78,7 +79,6 @@ HEADERS += actuators.h \
            device_status.h \
            diffmulti.h \
            diffsonora.h \
-           dimmers.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -134,6 +134,7 @@ SOURCES += actuators.cpp \
            bann4but.cpp \
            bann_antintrusione.cpp \
            bann_automation.cpp \
+           bann_lighting.cpp \
            bannbut2icon.cpp \
            bannbuticon.cpp \
            bannciclaz.cpp \
@@ -167,7 +168,6 @@ SOURCES += actuators.cpp \
            device_status.cpp \
            diffmulti.cpp \
            diffsonora.cpp \
-           dimmers.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \
