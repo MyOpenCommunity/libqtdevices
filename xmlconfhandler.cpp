@@ -515,13 +515,8 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case DIFSON_MULTI:
-					{
-						char pip[50];
-						strcpy(pip, page_item_where.toAscii().constData());
 						par2 = page_item_where.toInt();
-
-						(*dm)->addItem((char)page_item_id, page_item_descr, pip,page_item_list_img, par1, par2);
-					}
+						(*dm)->addItem((char)page_item_id, page_item_descr, page_item_where.toAscii().data(),page_item_list_img, par1, par2);
 						break;
 
 					case SPECIAL:
