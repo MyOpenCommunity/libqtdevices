@@ -118,38 +118,6 @@ void sottoMenu::setModeIcon(QString iconBut4)
 	bannNavigazione->Draw();
 }
 
-int sottoMenu::addItemU(char tipo, const QString &descrizione, QList<QString> indirizzo,
-	QList<QString*> &icon_names, int periodo, int numFrame)
-{
-	qDebug("sottoMenu::addItem(lista)");
-	switch (tipo)
-	{
-	case GR_AMPLIFICATORI:
-		elencoBanner.append(new grAmplificatori(this, indirizzo, *safeAt(icon_names, 0), *safeAt(icon_names, 1),
-			*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
-		break;
-	default:
-		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
-	}
-	connectLastBanner();
-
-	banner *last = elencoBanner.last();
-	last->setText(descrizione);
-	last->setAnimationParams(periodo,numFrame);
-	last->setId(tipo);
-
-	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
-	{
-		if (elencoBanner.at(idx)->getId() == tipo)
-		{
-			elencoBanner.last()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
-			idx = -1;
-		}
-	}
-
-	return 1;
-}
-
 int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		QList<QString*> &icon_names, int periodo, int numFrame,
 		char *descr1, char *descr2, char *descr3, char *descr4,

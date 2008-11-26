@@ -243,14 +243,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, QList<QString *> *indiri
 		}
 
 	default:
-		{
-		// TODO: evitare questa conversione modificando l'xmlconfhandler!
-		QList<QString> ind;
-		for (int i = 0; i < indirizzo->size(); ++i)
-			ind.append(*indirizzo->at(i));
-		addItemU(tipo, descrizione, ind, icon_names, modo, numFrame);
-		break;
-		}
+		assert(!"Unknown item type on diffmulti::addItem");
 	}
 	return 1;
 }

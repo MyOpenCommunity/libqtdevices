@@ -12,7 +12,8 @@
 #include "sottomenu.h"
 #include "btmain.h"
 #include "main.h" // BTouch
-
+#include "amplificatori.h" // grAmplificatori
+#include "generic_functions.h" // safeAt
 #include <openwebnet.h> // class openwebnet
 
 #include <QCursor>
@@ -68,7 +69,12 @@ int diffSonora::addItemU(char tipo, const QString &description, QList<QString *>
 		for (int i = 0; i < indirizzo->size(); ++i)
 			ind.append(*indirizzo->at(i));
 
-		amplificatori->addItemU(tipo, description, ind, icon_names);
+		banner *b = new grAmplificatori(amplificatori, ind, *safeAt(icon_names, 0),
+			*safeAt(icon_names, 1), *safeAt(icon_names, 2), *safeAt(icon_names, 3));
+
+		b->setText(description);
+		b->setId(tipo);
+		amplificatori->appendBanner(b);
 		return 1;
 	}
 	else

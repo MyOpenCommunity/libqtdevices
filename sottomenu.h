@@ -77,12 +77,6 @@ sstop : soft stop values list vor dimmer 100 group
 		QList<int> sttop = QList<int>(), QString txt1="", QString txt2="", QString txt3="");
 
 	/**
-	 * Overloaded member function that takes a QList<QString> indirizzo parameter
-	 */
-	virtual int addItemU(char tipo, const QString &descrizione, QList<QString> indirizzo,
-		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0);
-
-	/**
 	* Add a new banner.
 	*/
 	void appendBanner(banner *b);
