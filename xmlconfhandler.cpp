@@ -506,10 +506,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						par1 = page_item_mode.toInt();
 
 						if (page_item_list_group->isEmpty())
-							(*difSon)->addItemU((char)page_item_id, page_item_descr, pip,
+							(*difSon)->addItem((char)page_item_id, page_item_descr, pip,
 								page_item_list_img, par1,  par2);
 						else
-							(*difSon)->addItemU((char)page_item_id, page_item_descr, page_item_list_group,
+							(*difSon)->addItem((char)page_item_id, page_item_descr, page_item_list_group,
 								page_item_list_img);
 					}
 						break;

@@ -59,7 +59,7 @@ void diffSonora::setSorgenti(sottoMenu *s)
 // lista.. anche se poi a tutti gli effetti non le cancella.
 // In ogni caso sarebbe da allocare staticamente le stringhe che fanno parte di
 // icon_names.
-int diffSonora::addItemU(char tipo, const QString &description, QList<QString *> *indirizzo,
+int diffSonora::addItem(char tipo, const QString &description, QList<QString *> *indirizzo,
 	QList<QString*> &icon_names)
 {
 	if (tipo == GR_AMPLIFICATORI)
@@ -81,7 +81,7 @@ int diffSonora::addItemU(char tipo, const QString &description, QList<QString *>
 		assert(!"difSonora::addItemU() called with type != GR_AMPLIFICATORI");
 }
 
-int diffSonora::addItemU(char tipo, const QString &description, char* indirizzo,
+int diffSonora::addItem(char tipo, const QString &description, char* indirizzo,
 	QList<QString*> &icon_names, int modo, int where, const char *ambdescr)
 {
 	// TODO: trasformare ambdescr in qstring o almeno in un const char*!
