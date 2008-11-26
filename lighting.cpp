@@ -63,7 +63,7 @@ Lighting::Lighting(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 			break;
 		case DIMMER_100:
 			b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
-				getTextChild(item,"softstop").toInt());
+					getTextChild(item,"softstop").toInt());
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
 			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, periodo, numFrame, times);

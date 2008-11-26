@@ -1,5 +1,6 @@
 #include "bann_lighting.h"
 #include "device_cache.h" // btouch_device_cache
+#include "device_status.h"
 #include "device.h"
 #include "btbutton.h"
 #include "fontmanager.h"

@@ -1,7 +1,6 @@
 #ifndef BANN_LIGHTING_H
 #define BANN_LIGHTING_H
 
-#include "device_status.h"
 #include "bannregolaz.h"
 #include "bannonoff.h"
 #include "bannonoff2scr.h"
@@ -12,6 +11,7 @@
 #include <QList>
 
 class device;
+class device_status;
 class openwebnet;
 
 /*!
@@ -92,13 +92,13 @@ public:
 	void inizializza(bool forza = false);
 protected:
 	QList<QString> elencoDisp;
+private:
+	void sendFrame(QString msg);
 private slots:
 	virtual void Attiva();
 	virtual void Disattiva();
 	virtual void Aumenta();
 	virtual void Diminuisci();
-private:
-	void sendFrame(QString msg);
 };
 
 
@@ -139,14 +139,14 @@ private slots:
 class grAttuatAutom : public bannOnOff
 {
 Q_OBJECT
-private:
-	QList<QString> elencoDisp;
 public:
-	grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaSx=QString(), QString IconaDx=QString(), QString Icon=QString(), int periodo=0, int numFrame=0);
+	grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString Icon, int periodo, int numFrame);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
 	void Attiva();
 	void Disattiva();
+private:
+	QList<QString> elencoDisp;
 };
 
 
@@ -164,8 +164,8 @@ class attuatAutomTemp : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-attuatAutomTemp(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(),
-		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString> lt = QList<QString>());
+attuatAutomTemp(QWidget *parent, QString where, QString IconaSx, QString IconaDx,
+		QString IconActive, QString IconDisactive, int periodo, int numFrame, QList<QString> lt);
 public slots:
 	virtual void status_changed(QList<device_status*>);
 protected:
