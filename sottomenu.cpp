@@ -139,7 +139,7 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	switch (tipo)
 	{
 	case SCENARIO:
-		elencoBanner.append(new scenario(this, (char*)indirizzo, IconaSx));
+		elencoBanner.append(new bannScenario(this, (char*)indirizzo, IconaSx));
 		break;
 	case CARICO:
 		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));

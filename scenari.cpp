@@ -27,14 +27,14 @@
  **scenario
  ****************************************************************/
 
-scenario::scenario(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOnSx(parent)
+bannScenario::bannScenario(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
-void scenario::Attiva()
+void bannScenario::Attiva()
 {
 	char cosa[15];
 	QByteArray buf_addr = getAddress().toAscii();
@@ -46,7 +46,7 @@ void scenario::Attiva()
 	}
 }
 
-void scenario::inizializza(bool forza)
+void bannScenario::inizializza(bool forza)
 {
 }
 

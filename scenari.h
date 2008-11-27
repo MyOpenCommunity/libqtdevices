@@ -29,17 +29,17 @@ class QWidget;
  **scenario
  ****************************************************************/
 /*!
- * \class scenario
+ * \class bannScenario
  * \brief This class is made to control a scenario of a \a scenario \a unit.
  *
  * \author Davide
  * \date lug 2005
  */
-class scenario : public bannOnSx
+class bannScenario : public bannOnSx
 {
 Q_OBJECT
 public:
-	scenario(sottoMenu *parent, char *indirizzo, QString IconaSx);
+	bannScenario(sottoMenu *parent, char *indirizzo, QString IconaSx);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
