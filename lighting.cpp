@@ -89,6 +89,8 @@ Lighting::Lighting(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 			b = new grDimmer100(this, addresses, img1, img2, img3, img4, sstart, sstop);
 			break;
 			}
+		default:
+			assert(!"Type of item not handled on lighting page!");
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
