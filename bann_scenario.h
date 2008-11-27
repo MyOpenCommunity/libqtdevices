@@ -41,7 +41,7 @@ private slots:
  * \author Davide
  * \date lug 2005
  */
-class gesModScen : public  bann4tasLab
+class gesModScen : public bann4tasLab
 {
 Q_OBJECT
 public:
@@ -72,7 +72,7 @@ private slots:
  * \author Ciminaghi
  * \date apr 2006
  */
-class scenEvo : public  bann3But
+class scenEvo : public bann3But
 {
 Q_OBJECT
 public:
@@ -111,14 +111,9 @@ private slots:
  * \author Ciminaghi
  * \date apr 2006
  */
-class scenSched : public  bann4But
+class scenSched : public bann4But
 {
 Q_OBJECT
-private:
-	QString action_enable;
-	QString action_disable;
-	QString action_start;
-	QString action_stop;
 public:
 	scenSched(QWidget *parent=0, QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), QString Icona4=QString(), char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
 	/*!
@@ -136,6 +131,8 @@ public slots:
 	void start();
 	/*! Stop scheduled scenario */
 	void stop();
+private:
+	QString action_enable, action_disable, action_start, action_stop;
 };
 
 #endif
