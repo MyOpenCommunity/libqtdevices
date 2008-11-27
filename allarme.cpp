@@ -6,7 +6,6 @@
 
 #include <QPixmap>
 #include <QWidget>
-#include <QCursor>
 #include <QDebug>
 #include <QLabel>
 

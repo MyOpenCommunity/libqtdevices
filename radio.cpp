@@ -22,7 +22,6 @@
 #include <QFrame>
 #include <QDateTime>
 #include <QLCDNumber>
-#include <QCursor>
 #include <QFile>
 
 

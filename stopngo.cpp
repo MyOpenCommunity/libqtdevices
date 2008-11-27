@@ -20,7 +20,6 @@
 #include "main.h" // BTouch
 
 #include <QLCDNumber>
-#include <QCursor>
 #include <QDebug>
 #include <QLabel>
 #include <QTimer>

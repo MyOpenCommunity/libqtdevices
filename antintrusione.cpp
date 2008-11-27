@@ -17,7 +17,6 @@
 #include <openwebnet.h> // class openwebnet
 
 #include <QDateTime>
-#include <QCursor>
 #include <QDebug>
 #include <QTimer>
 

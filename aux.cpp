@@ -15,7 +15,6 @@
 #include "fontmanager.h"
 
 #include <QPixmap>
-#include <QCursor>
 #include <QLabel>
 #include <QFile>
 

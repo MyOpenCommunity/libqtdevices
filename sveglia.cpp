@@ -27,7 +27,6 @@
 #include <QDateTime>
 #include <QPixmap>
 #include <QWidget>
-#include <QCursor>
 #include <QLabel>
 #include <QDir>
 #include <QFile>

@@ -16,7 +16,6 @@
 #include "generic_functions.h" // safeAt
 #include <openwebnet.h> // class openwebnet
 
-#include <QCursor>
 #include <QVariant> // setProperty
 #include <QLabel>
 

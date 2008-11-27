@@ -35,7 +35,6 @@
 
 #include <QByteArray>
 #include <QPixmap>
-#include <QCursor>
 #include <QTimer>
 #include <QRegExp>
 #include <QDebug>

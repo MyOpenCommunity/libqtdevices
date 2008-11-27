@@ -13,7 +13,6 @@
 
 #include <QWidget>
 #include <QPixmap>
-#include <QCursor>
 #include <QFile>
 
 

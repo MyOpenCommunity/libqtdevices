@@ -33,7 +33,6 @@
 #include <QXmlInputSource>
 #include <QWSServer>
 #include <QObject>
-#include <QCursor>
 #include <QBitmap>
 #include <QPixmap>
 #include <QString>

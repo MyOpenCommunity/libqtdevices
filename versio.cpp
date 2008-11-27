@@ -18,7 +18,6 @@
 
 #include <QWidget>
 #include <QPixmap>
-#include <QCursor>
 
 #include <stdlib.h>
 

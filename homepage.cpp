@@ -20,7 +20,6 @@
 
 #include <QPixmap>
 #include <QDateTime>
-#include <QCursor>
 #include <QLCDNumber>
 #include <QLabel>
 

@@ -11,7 +11,6 @@
 #include <QVariant> // setProperty
 #include <QPainter>
 #include <QScreen>
-#include <QCursor>
 #include <QTimer>
 #include <QLabel>
 #include <QFile>

@@ -9,7 +9,6 @@
 
 #include <QPixmap>
 #include <QWidget>
-#include <QCursor>
 #include <QLabel>
 #include <QFile>
 #include <QTimer>

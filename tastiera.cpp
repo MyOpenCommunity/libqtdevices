@@ -17,7 +17,6 @@
 #include <QFrame>
 #include <QLabel>
 #include <QString>
-#include <QCursor>
 #include <QFile>
 #include <QDebug>
 #include <QButtonGroup>
