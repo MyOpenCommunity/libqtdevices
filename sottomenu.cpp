@@ -22,7 +22,7 @@
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
 #include "actuators.h"
-#include "scenari.h"
+#include "bann_scenario.h"
 #include "amplificatori.h"
 #include "poweramplifier.h"
 #include "sorgentiradio.h"
