@@ -46,6 +46,7 @@ HEADERS += actuators.h \
            bann_antintrusione.h \
            bann_automation.h \
            bann_lighting.h \
+           bann_scenario.h \
            bannbut2icon.h \
            bannbuticon.h \
            bannciclaz.h \
@@ -100,7 +101,7 @@ HEADERS += actuators.h \
            poweramplifier_device.h \
            radio.h \
            scaleconversion.h \
-           scenari.h \
+           scenario.h \
            scenevocond.h \
            screensaver.h \
            setitems.h \
@@ -135,6 +136,7 @@ SOURCES += actuators.cpp \
            bann_antintrusione.cpp \
            bann_automation.cpp \
            bann_lighting.cpp \
+           bann_scenario.cpp \
            bannbut2icon.cpp \
            bannbuticon.cpp \
            bannciclaz.cpp \
@@ -189,7 +191,7 @@ SOURCES += actuators.cpp \
            poweramplifier_device.cpp \
            radio.cpp \
            scaleconversion.cpp \
-           scenari.cpp \
+           scenario.cpp \
            scenevocond.cpp \
            screensaver.cpp \
            setitems.cpp \

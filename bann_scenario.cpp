@@ -1,14 +1,4 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** scenari.cpp
- **
- **
- **definizioni dei vari scenari implementati
- ****************************************************************/
-
-#include "scenari.h"
+#include "bann_scenario.h"
 #include "device_cache.h" // btouch_device_cache
 #include "device.h"
 #include "scenevocond.h"
@@ -22,10 +12,6 @@
 #include <QDebug>
 #include <QLabel>
 
-
-/*****************************************************************
- **scenario
- ****************************************************************/
 
 bannScenario::bannScenario(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOnSx(parent)
 {
@@ -50,9 +36,6 @@ void bannScenario::inizializza(bool forza)
 {
 }
 
-/*****************************************************************
- **gesModScen
- ****************************************************************/
 
 gesModScen::gesModScen(QWidget *parent, char *indirizzo, QString IcoSx, QString IcoDx, QString IcoCsx,
 	QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2) :  bann4tasLab(parent)
@@ -222,10 +205,6 @@ void gesModScen::inizializza(bool forza)
 	nascondi(BUT2);
 }
 
-
-/*****************************************************************
- ** Scenario evoluto
- ****************************************************************/	
 
 int scenEvo::next_serial_number = 1;
 
@@ -497,9 +476,7 @@ scenEvo::~scenEvo()
 		delete condList.takeFirst();
 }
 
-/*****************************************************************
- ** Scenario schedulato
- ****************************************************************/	
+
 scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
 	char *aen, char *adis, char *astart, char *astop) : bann4But(parent)
 {

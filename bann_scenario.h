@@ -1,15 +1,6 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** scenari.h
- **
- **definizioni dei vari scenari implementati
- **
- ****************************************************************/
 
-#ifndef SCENARI_H
-#define SCENARI_H
+#ifndef BANN_SCENARIO_H
+#define BANN_SCENARIO_H
 
 #include "bannondx.h" // class bannOnSx
 #include "bann4taslab.h"
@@ -25,9 +16,6 @@ class scenEvo_cond;
 class device;
 class QWidget;
 
-/*****************************************************************
- **scenario
- ****************************************************************/
 /*!
  * \class bannScenario
  * \brief This class is made to control a scenario of a \a scenario \a unit.
@@ -45,9 +33,6 @@ private slots:
 	void Attiva();
 };
 
-/*****************************************************************
- **Gestione Modulo scenari
- ****************************************************************/
 /*!
  * \class gesModScen
  * \brief This class is made to control a scenario of a \a din \a scenario \a module.
@@ -81,9 +66,6 @@ private slots:
 };
 
 
-/*****************************************************************
- ** Scenario evoluto
- ****************************************************************/
 /*!
  * \class scenEvo
  * \brief This class represents an advanced scenario management object
@@ -123,9 +105,6 @@ private slots:
 };
 
 
-/*****************************************************************
- ** Scenario schedulato
- ****************************************************************/
 /*!
  * \class scenSched
  * \brief This class represents a scheduled scenario management object
