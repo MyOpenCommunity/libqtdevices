@@ -61,7 +61,7 @@ void Lighting::loadItems(QDomNode config_node)
 			b = new grAttuatAutom(this, getAddresses(item), img1, img2, img3);
 			break;
 		case ATTUAT_AUTOM_TEMP:
-			b = new attuatAutomTemp(this, where, img1, img2, img3, img4, periodo, numFrame, times);
+			b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
 			break;
 		case ATTUAT_VCT_LS:
 			b = new attuatPuls(this, where, img1, img2, VCT_LS, periodo, numFrame);
@@ -71,7 +71,7 @@ void Lighting::loadItems(QDomNode config_node)
 					getTextChild(item,"softstop").toInt());
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
-			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, periodo, numFrame, times);
+			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_F:
 			if (!times.count())

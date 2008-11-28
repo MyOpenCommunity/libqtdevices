@@ -165,7 +165,7 @@ class attuatAutomTemp : public bannOnOff2scr
 Q_OBJECT
 public:
 attuatAutomTemp(QWidget *parent, QString where, QString IconaSx, QString IconaDx,
-		QString IconActive, QString IconDisactive, int periodo, int numFrame, QList<QString> lt);
+		QString IconActive, QString IconDisactive, QList<QString> lt);
 public slots:
 	virtual void status_changed(QList<device_status*>);
 protected:
@@ -199,8 +199,8 @@ class attuatAutomTempNuovoN : public attuatAutomTemp
 {
 Q_OBJECT
 public:
-	attuatAutomTempNuovoN(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconaDx=QString(),
-		QString IconActive=QString(), QString IconDisactive=QString(), int periodo=0, int numFrame=0, QList<QString> lt = QList<QString>());
+	attuatAutomTempNuovoN(QWidget *parent, QString where, QString IconaSx, QString IconaDx,
+		QString IconActive, QString IconDisactive, QList<QString> lt);
 public slots:
 	void status_changed(QList<device_status*>);
 protected:
@@ -224,8 +224,8 @@ class attuatAutomTempNuovoF : public bannOn2scr
 {
 Q_OBJECT
 public:
-	attuatAutomTempNuovoF(QWidget *parent=0, QString where=QString(), QString IconaCentroSx=QString(),
-		QString IconaCentroDx=QString(), QString IconDx=QString(), QString t=QString());
+	attuatAutomTempNuovoF(QWidget *parent, QString where, QString IconaCentroSx,
+		QString IconaCentroDx, QString IconDx, QString t);
 public slots:
 	void status_changed(QList<device_status*>);
 protected:

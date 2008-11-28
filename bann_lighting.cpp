@@ -468,10 +468,10 @@ void grAttuatAutom::Disattiva()
 }
 
 
-attuatAutomTemp::attuatAutomTemp(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString pressedIcon,
-	int period, int number, QList<QString> lt) : bannOnOff2scr(parent)
+attuatAutomTemp::attuatAutomTemp(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
+	QString pressedIcon, QList<QString> lt) : bannOnOff2scr(parent)
 {
-	SetIcons(IconaDx, IconaSx, icon, pressedIcon, period, number);
+	SetIcons(IconaDx, IconaSx, icon, pressedIcon);
 	setAddress(where);
 	cntTempi = 0;
 	// TODO: riscrivere con un QVector<QString>!!
@@ -612,8 +612,8 @@ void attuatAutomTemp::assegna_tempo_display()
 
 
 attuatAutomTempNuovoN::attuatAutomTempNuovoN(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
-	QString pressedIcon, int period, int number, QList<QString> lt)
-	: attuatAutomTemp(parent, where, IconaSx, IconaDx, icon, pressedIcon, period, number, lt)
+	QString pressedIcon, QList<QString> lt)
+	: attuatAutomTemp(parent, where, IconaSx, IconaDx, icon, pressedIcon, lt)
 {
 	assegna_tempo_display();
 	stato_noto = false;
@@ -745,8 +745,8 @@ void attuatAutomTempNuovoN::assegna_tempo_display()
 
 #define NTIMEICONS 9
 
-attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, QString where, QString IconaCentroSx, QString IconaCentroDx, QString IconaDx, QString t)
-	: bannOn2scr(parent)
+attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, QString where, QString IconaCentroSx, QString IconaCentroDx,
+	QString IconaDx, QString t) : bannOn2scr(parent)
 {
 	SetIcons(IconaCentroSx, IconaCentroDx, IconaDx);
 	setAddress(where);
