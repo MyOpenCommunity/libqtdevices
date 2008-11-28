@@ -7,7 +7,7 @@
 **Sottomenù antiintrusione
 **
 ****************************************************************/
-#include "antintrusione.h"
+#include "antintrusion.h"
 #include "tastiera.h"
 #include "bann_antintrusione.h"
 #include "sottomenu.h"
@@ -23,7 +23,7 @@
 #include <assert.h>
 
 
-antintrusione::antintrusione(QWidget *parent) : QWidget(parent)
+Antintrusion::Antintrusion(QWidget *parent) : QWidget(parent)
 {
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
@@ -42,12 +42,12 @@ antintrusione::antintrusione(QWidget *parent) : QWidget(parent)
 	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
 }
 
-antintrusione::~antintrusione()
+Antintrusion::~Antintrusion()
 {
 	doClearAlarms();
 }
 
-void antintrusione::IsParz(bool ab)
+void Antintrusion::IsParz(bool ab)
 {
 	qDebug("antintrusione::IsParz(%d)", ab);
 	if (ab)
@@ -63,7 +63,7 @@ void antintrusione::IsParz(bool ab)
 	zone->forceDraw();
 }
 
-void antintrusione::Parzializza()
+void Antintrusion::Parzializza()
 {
 	qDebug("antintrusione::Parzializza()");
 	int s[MAX_ZONE];
@@ -79,7 +79,7 @@ void antintrusione::Parzializza()
 	tasti->showFullScreen();
 }
 
-void antintrusione::Parz(char* pwd)
+void Antintrusion::Parz(char* pwd)
 {
 	qDebug("antintrusione::Parz()");
 	if (pwd)
@@ -98,12 +98,12 @@ void antintrusione::Parz(char* pwd)
 	request_timer.start(5000);
 }
 
-void antintrusione::testranpo()
+void Antintrusion::testranpo()
 {
 	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
 }
 
-void antintrusione:: ctrlAllarm()
+void Antintrusion:: ctrlAllarm()
 {
 	qDebug("ctrlAllarm %d", allarmi.size());
 	if (!allarmi.isEmpty())
@@ -114,8 +114,8 @@ void antintrusione:: ctrlAllarm()
 	zone->show();
 }
 
-void antintrusione::draw()
-{	
+void Antintrusion::draw()
+{
 	ctrlAllarm();
 	if (impianto)
 		impianto->draw();
@@ -128,7 +128,7 @@ void antintrusione::draw()
 		allarmi.at(i)->draw();
 }
 
-int antintrusione::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
+int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
 	QList<QString*> &icon_names, int periodo, int numFrame)
 {
 	if (tipo == IMPIANTINTRUS)
@@ -168,7 +168,7 @@ int antintrusione::addItemU(char tipo, const QString & qdescrizione, void* indir
 	return 1;
 }
 
-void antintrusione::setNumRighe(uchar n)
+void Antintrusion::setNumRighe(uchar n)
 {
 	numRighe = n;
 	zone->setNumRighe(n - 1);
@@ -177,14 +177,14 @@ void antintrusione::setNumRighe(uchar n)
 	impianto->draw();
 }
 
-void antintrusione::inizializza()
+void Antintrusion::inizializza()
 {
 	zone->inizializza();
 	impianto->inizializza();
 	connect(((impAnti *)impianto->getLast()), SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
 }
 
-void antintrusione::gesFrame(char*frame)
+void Antintrusion::gesFrame(char*frame)
 {	
 	emit gestFrame(frame);
 	openwebnet msg_open;
@@ -262,7 +262,7 @@ void antintrusione::gesFrame(char*frame)
 	}
 }
 
-void antintrusione::setGeom(int x,int y,int w,int h)
+void Antintrusion::setGeom(int x,int y,int w,int h)
 {
 	qDebug("antiintrusione::setGeom(%d, %d, %d, %d)", x, y, w, h);
 	QWidget::setGeometry(x,y,w,h);
@@ -272,12 +272,12 @@ void antintrusione::setGeom(int x,int y,int w,int h)
 		zone->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
 }
 
-void antintrusione::setNavBarMode(uchar c)
+void Antintrusion::setNavBarMode(uchar c)
 {
 	zone->setNavBarMode(c);
 }
 
-void antintrusione::nextAlarm()
+void Antintrusion::nextAlarm()
 {
 	qDebug("antiintrusione::nextAlarm()");
 	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
@@ -289,7 +289,7 @@ void antintrusione::nextAlarm()
 	allarmi.at(curr_alarm)->show();
 }
 
-void antintrusione::prevAlarm()
+void Antintrusion::prevAlarm()
 {
 	qDebug("antiintrusione::prevAlarm()");
 	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
@@ -301,7 +301,7 @@ void antintrusione::prevAlarm()
 	allarmi.at(curr_alarm)->show();
 }
 
-void antintrusione::deleteAlarm()
+void Antintrusion::deleteAlarm()
 {
 	qDebug("antiintrusione::deleteAlarm()");
 	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
@@ -320,7 +320,7 @@ void antintrusione::deleteAlarm()
 	allarmi.at(curr_alarm)->show();
 }
 
-void antintrusione::closeAlarms()
+void Antintrusion::closeAlarms()
 {
 	qDebug("antiintrusione::closeAlarms()");
 	for (int i = 0; i < allarmi.size(); ++i)
@@ -330,7 +330,7 @@ void antintrusione::closeAlarms()
 	zone->show();
 }
 
-void antintrusione::showAlarms()
+void Antintrusion::showAlarms()
 {
 	qDebug("antiintrusione::showAlarms()");
 	if (allarmi.isEmpty())
@@ -342,14 +342,14 @@ void antintrusione::showAlarms()
 	allarmi.at(curr_alarm)->show();
 }
 
-void antintrusione::doClearAlarms()
+void Antintrusion::doClearAlarms()
 {
 	qDebug("antiintrusione::doClearAlarms()");
 	while (!allarmi.isEmpty())
 		delete allarmi.takeFirst();
 }
 
-void antintrusione::hideEvent(QHideEvent *event)
+void Antintrusion::hideEvent(QHideEvent *event)
 {
 	qDebug("antiintrusione::hideEvent()");
 	for (int i = 0; i < allarmi.size(); ++i)
@@ -360,7 +360,7 @@ void antintrusione::hideEvent(QHideEvent *event)
 		BTouch->sendFrame(QString("*#5*#%1##").arg(i));
 }
 
-void antintrusione::request()
+void Antintrusion::request()
 {
 	request_timer.stop();
 	disconnect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));

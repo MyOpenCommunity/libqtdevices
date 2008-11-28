@@ -18,7 +18,7 @@
 class sottoMenu;
 class diffSonora;
 class diffmulti;
-class antintrusione;
+class Antintrusion;
 class ThermalMenu;
 class versio;
 class homePage;
@@ -87,7 +87,7 @@ private:
 	diffmulti *dm;
 	ThermalMenu *termo;
 	diffSonora *difSon;
-	antintrusione *antintr;
+	Antintrusion *antintr;
 	SupervisionMenu *supervisione;
 	versio *datiGen;
 	QTimer *tempo1;

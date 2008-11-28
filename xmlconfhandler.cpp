@@ -18,7 +18,7 @@
 #include "sveglia.h"
 #include "generic_functions.h" // rearmWDT, setOrientation
 #include "versio.h"
-#include "antintrusione.h"
+#include "antintrusion.h"
 #include "thermalmenu.h"
 #include "scenevocond.h" // TODO: rimuovere appena possibile!
 #include "btmain.h"
@@ -90,7 +90,7 @@ static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIO
  *
  *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
-		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, diffSonora **dS, diffmulti **_dm, antintrusione **ant,
+		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, diffSonora **dS, diffmulti **_dm, Antintrusion **ant,
 		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG)
 {
 	home = h;
@@ -843,7 +843,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case ANTIINTRUSIONE:
-						*antintr = new antintrusione;
+						*antintr = new Antintrusion;
 						pageAct = *antintr;
 						break;
 

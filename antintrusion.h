@@ -9,8 +9,8 @@
 **
 ****************************************************************/
 
-#ifndef ANTINTRUS_H
-#define ANTINTRUS_H
+#ifndef ANTINTRUSION_H
+#define ANTINTRUSION_H
 
 
 #include "main.h" // MAX_PATH
@@ -27,21 +27,21 @@ class tastiera;
 
 
 /*!
-  \class antintrusione
+  \class Antintrusion
   \brief This is a class that contains the alarm-plant, the zone's list and the alarm queue  
 
   each of that are \a sottomenu type. The plant is always kept on the top, the zones in the remaining lines. Alarm queue is active only when there's some alarm pending (and it's possible from \a antintrusione object to access to \a alarm \a queue one though a button). When there's an alarm the alarm queue becomes automatically visible 
   \author Davide
   \date lug 2005
 */
-class antintrusione : public QWidget
+class Antintrusion : public QWidget
 {
 Q_OBJECT
 public:
-	antintrusione(QWidget *parent=0);
-	~antintrusione();
+	Antintrusion(QWidget *parent=0);
+	~Antintrusion();
 /*!
-  \brief inserts a new item in the antintrusione class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
+  \brief inserts a new item in the Antintrusion class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
 */
 	int addItemU(char tipo, const QString & nome , void* indirizzo, QList<QString*> &icon_names,
 		int periodo=0 , int numFrame=0);
