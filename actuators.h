@@ -56,8 +56,7 @@ class attuatPuls : public bannPuls
 {
 Q_OBJECT
 public:
-	attuatPuls(QWidget *parent=0, QString where=QString(), QString IconaSx=QString(), QString IconActive=QString(),
-		char tipo=0, int periodo=0, int numFrame=0);
+	attuatPuls(QWidget *parent, QString where, QString IconaSx, QString IconActive, char tipo);
 private slots:
 	void Attiva();
 	void Disattiva();

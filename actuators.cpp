@@ -92,10 +92,10 @@ void attuatAutom::inizializza(bool forza)
 }
 
 
-attuatPuls::attuatPuls(QWidget *parent, QString where, QString IconaSx, QString icon, char tipo, int period, int number)
+attuatPuls::attuatPuls(QWidget *parent, QString where, QString IconaSx, QString icon, char tipo)
 : bannPuls(parent)
 {
-	SetIcons(IconaSx, QString(), icon, QString(), period,number);
+	SetIcons(IconaSx, QString(), icon, QString());
 	setAddress(where);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(sxReleased()),this,SLOT(Disattiva()));

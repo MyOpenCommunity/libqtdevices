@@ -37,9 +37,6 @@ void Lighting::loadItems(QDomNode config_node)
 		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
 		QString img5 = IMG_PATH + getTextChild(item, "cimg5");
 
-		// TODO: gestire periodo && numFrame!
-		int periodo = 0;
-		int numFrame = 0;
 		QList<QString> times;
 		QDomNode el;
 		foreach (el, getChildren(item, "time"))
@@ -64,7 +61,7 @@ void Lighting::loadItems(QDomNode config_node)
 			b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
 			break;
 		case ATTUAT_VCT_LS:
-			b = new attuatPuls(this, where, img1, img2, VCT_LS, periodo, numFrame);
+			b = new attuatPuls(this, where, img1, img2, VCT_LS);
 			break;
 		case DIMMER_100:
 			b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
