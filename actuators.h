@@ -30,7 +30,8 @@ class attuatAutom : public bannOnOff
 Q_OBJECT
 
 public:
-	attuatAutom(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive, QString IconDisactive, int periodo=0, int numFrame=0);
+	attuatAutom(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive,
+		QString IconDisactive);
 public slots:
 	void status_changed(QList<device_status*>);
 private:

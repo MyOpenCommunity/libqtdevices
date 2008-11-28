@@ -21,10 +21,10 @@
 #include <QDebug>
 
 
-attuatAutom::attuatAutom(QWidget *parent,QString where,QString IconaSx, QString IconaDx, QString icon, QString pressedIcon, int period, int number)
-	: bannOnOff(parent)
+attuatAutom::attuatAutom(QWidget *parent,QString where,QString IconaSx, QString IconaDx, QString icon,
+	QString pressedIcon) : bannOnOff(parent)
 {
-	SetIcons(IconaSx, IconaDx, icon, pressedIcon, period, number);
+	SetIcons(IconaSx, IconaDx, icon, pressedIcon);
 	setAddress(where);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
