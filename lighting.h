@@ -31,7 +31,7 @@ protected:
 	virtual void showEvent(QShowEvent *event);
 
 private:
-	void init_dimmer();
+	void initDimmer();
 	void loadItems(QDomNode config_node);
 };
 

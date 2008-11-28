@@ -103,9 +103,9 @@ void Lighting::loadItems(QDomNode config_node)
 	}
 }
 
-void Lighting::init_dimmer()
+void Lighting::initDimmer()
 {
-	qDebug("Lighting::init_dimmer()");
+	qDebug("Lighting::initDimmer()");
 	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
 		switch(elencoBanner.at(i)->getId())
@@ -127,7 +127,7 @@ void Lighting::init_dimmer()
 void Lighting::showEvent(QShowEvent *event)
 {
 	qDebug() << "Lighting::showEvent()";
-	init_dimmer();
+	initDimmer();
 
 	sottoMenu::showEvent(event);
 }
