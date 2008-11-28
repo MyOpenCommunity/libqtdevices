@@ -20,12 +20,13 @@
 #include "versio.h"
 #include "antintrusione.h"
 #include "thermalmenu.h"
+#include "scenevocond.h" // TODO: rimuovere appena possibile!
 #include "btmain.h"
-#include "scenevocond.h"
 #include "openclient.h"
 #include "supervisionmenu.h"
 #include "automation.h"
 #include "lighting.h"
+#include "scenario.h"
 
 #include <QObject>
 #include <QRegExp>
@@ -116,8 +117,7 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	page_item_list_group = new QList<QString*>;
 	page_item_list_group_m = new QList<QString*>;
 	page_item_list_txt_times = new QList<QString*>;
-	page_item_cond = NULL;
-	page_item_cond_list = new QList<scenEvo_cond*>;
+	page_item_cond_list = new QList<scenEvo_cond*>; // TODO: rimuovere appena possibile!
 	device_descr = "";
 	page_item_unknown = "";
 	page_item_txt1 = "";
@@ -461,14 +461,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					case SCENARI:
 						pageAct = *scenari;
-						addr = computeAddress();
-						addItemU(pageAct, addr);
 						break;
 
 					case SCENARI_EVOLUTI:
 						pageAct = *scenari_evoluti;
-						addr = computeAddress();
-						addItemU(pageAct, addr);
 						break;
 
 					case VIDEOCITOFONIA:
@@ -682,24 +678,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					set_page_item_defaults();
 					page_id = 0;
 				}
-				else if (CurTagL3.startsWith("page") && CurTagL4.startsWith("item") &&
-						CurTagL5.startsWith("cond") && CurTagL6.isEmpty())
-				{
-					if (page_item_cond)
-					{
-						if (!(page_item_cond->getVal()))
-						{
-							// Value is 0, condition has to be deleted
-							delete page_item_cond;
-						}
-						else
-						{
-							page_item_cond->SetIcons();
-							page_item_cond_list->append(page_item_cond);
-						}
-						page_item_cond = NULL;
-					}
-				}
 			} //  if (CurTagL3.startsWith("page"))
 		} //  if (!CurTagL2.compare("displaypages"))
 	} // if (!CurTagL1.compare("configuratore"))
@@ -850,7 +828,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case SCENARI:
-						*scenari = new sottoMenu;
+						*scenari = new Scenario(0, page_node);
 						pageAct = *scenari;
 						break;
 
@@ -886,7 +864,8 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case SCENARI_EVOLUTI:
-						*scenari_evoluti = new sottoMenu;
+						*scenari_evoluti = new Scenario(0, page_node);
+						QObject::connect(BtM, SIGNAL(resettimer()), *scenari_evoluti, SIGNAL(resettimer()));
 						pageAct = *scenari_evoluti;
 						break;
 
@@ -991,205 +970,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 					else if (!CurTagL5.compare("enable"))
 					{
 						par3 = qValue.toInt(&ok, 10);
-					}
-					else if (!CurTagL5.compare("condH"))
-					{
-						if (!page_item_cond)
-						{
-							page_item_cond = new scenEvo_cond_h(NULL);
-							QObject::connect(BtM, SIGNAL(resettimer()), page_item_cond, SLOT(setupTimer()));
-						}
-						scenEvo_cond_h *ch = (scenEvo_cond_h *)page_item_cond;
-						// Hour condition
-						if (!CurTagL6.compare("value"))
-						{
-							qDebug() << "condH, value = " << qValue;
-							ch->setVal(qValue.toInt());
-
-						}
-						else if (!CurTagL6.compare("hour"))
-						{
-							qDebug() << "condH, hour = " << qValue;
-							ch->set_h(qValue);
-						}
-						else if (!CurTagL6.compare("minute"))
-						{
-							qDebug() << "condH, minute = " << qValue;
-							ch->set_m(qValue);
-						}
-						else if (!CurTagL6.compare("cimg1"))
-						{
-							if (qValue != "")
-								ch->setImg(0, QString(IMG_PATH) + qValue);
-						}
-						else if (!CurTagL6.compare("cimg2"))
-						{
-							if (qValue != "")
-								ch->setImg(1, QString(IMG_PATH) + qValue);
-						}
-						else if (!CurTagL6.compare("cimg3"))
-						{
-							if (qValue != "")
-								ch->setImg(2, QString(IMG_PATH) + qValue);
-						}
-						else if (!CurTagL6.compare("cimg4"))
-						{
-							if (qValue != "")
-								ch->setImg(3, QString(IMG_PATH) + qValue);
-						}
-					}
-					else if (!CurTagL5.compare("condDevice"))
-					{
-						// Device condition
-						if (!page_item_cond)
-							page_item_cond = new scenEvo_cond_d(NULL);
-						scenEvo_cond_d *cd = (scenEvo_cond_d *)page_item_cond;
-						if (!CurTagL6.compare("value"))
-						{
-							int v = qValue.toInt();
-							cd->setVal(v);
-						}
-						else if (!CurTagL6.compare("descr"))
-						{
-							cd->set_descr(qValue);
-						}
-						else if (!CurTagL6.compare("where"))
-						{
-							cd->set_where(qValue);
-						}
-						else if (!CurTagL6.compare("trigger"))
-						{
-							cd->set_trigger(qValue);
-						}
-						else if (!CurTagL6.compare("cimg1"))
-						{
-							if (qValue != "")
-								cd->setImg(0, QString(IMG_PATH) + qValue);
-						}
-						else if (!CurTagL6.compare("cimg2"))
-						{
-							if (qValue != "")
-								cd->setImg(1, QString(IMG_PATH) + qValue);
-						}
-						else if (!CurTagL6.compare("cimg3"))
-						{
-							if (qValue != "")
-								cd->setImg(2, QString(IMG_PATH) + qValue);
-						}
-						else if (!CurTagL6.compare("cimg4"))
-						{
-							if (qValue != "")
-								cd->setImg(3, QString(IMG_PATH) + qValue);
-						}
-						else if (!CurTagL6.compare("cimg5"))
-						{
-							if (qValue != "")
-								cd->setImg(4, QString(IMG_PATH) + qValue);
-						}
-					}
-					else if (!CurTagL5.compare("action"))
-					{
-						if (!CurTagL6.compare("open"))
-						{
-							page_item_action = qValue;
-							qDebug() << "action = " << qValue;
-						}
-					}
-					else if (!CurTagL5.compare("unable"))
-					{
-						if (!CurTagL6.compare("value"))
-						{
-							if (!qValue.compare("0"))
-							{
-								par1 = 0;
-								page_item_list_txt.insert(0, "");
-								page_item_list_img.insert(0, new QString(""));
-							}
-							else
-								par1 = 1;
-						}
-						else if (!CurTagL6.compare("open") && par1)
-						{
-							page_item_list_txt.insert(0, qValue);
-						}
-						else if (CurTagL6.startsWith("cimg") && par1)
-						{
-							QString *s = new QString(IMG_PATH);
-							s->append(qValue);
-							page_item_list_img.insert(0, s);
-						}
-					}
-					else if (!CurTagL5.compare("disable"))
-					{
-						if (!CurTagL6.compare("value"))
-						{
-							if (!qValue.compare("0"))
-							{
-								page_item_list_txt.insert(1, "");
-								page_item_list_img.insert(1, new QString(""));
-								par1 = 0;
-							}
-							else
-								par1 = 1;
-						}
-						else if (!CurTagL6.compare("open") && par1)
-						{
-							page_item_list_txt.insert(1, qValue);
-						}
-						else if (CurTagL6.startsWith("cimg") && par1)
-						{
-							QString *s = new QString(IMG_PATH);
-							s->append(qValue);
-							page_item_list_img.insert(1, s);
-						}
-					}
-					else if (!CurTagL5.compare("start"))
-					{
-						if (!CurTagL6.compare("value"))
-						{
-							if (!qValue.compare("0"))
-							{
-								page_item_list_txt.insert(2, "");
-								page_item_list_img.insert(2, new QString(""));
-								par1 = 0;
-							}
-							else
-								par1 = 1;
-						}
-						else if (!CurTagL6.compare("open") && par1)
-						{
-							page_item_list_txt.insert(2, qValue);
-						}
-						else if (CurTagL6.startsWith("cimg") && par1)
-						{
-							QString *s = new QString(IMG_PATH);
-							s->append(qValue);
-							page_item_list_img.insert(2, s);
-						}
-					}
-					else if (!CurTagL5.compare("stop"))
-					{
-						if (!CurTagL6.compare("value"))
-						{
-							if (!qValue.compare("0"))
-							{
-								page_item_list_txt.insert(3, "");
-								page_item_list_img.insert(3, new QString(""));
-								par1 = 0;
-							}
-							else
-								par1 = 1;
-						}
-						else if (!CurTagL6.compare("open") && par1)
-						{
-							page_item_list_txt.insert(3, qValue);
-						}
-						else if (CurTagL6.startsWith("cimg") && par1)
-						{
-							QString *s = new QString(IMG_PATH);
-							s->append(qValue);
-							page_item_list_img.insert(3, s);
-						}
 					}
 				} // if (CurTagL4.startsWith("item"))
 				else if (CurTagL4.startsWith("item") && CurTagL5.startsWith("device"))

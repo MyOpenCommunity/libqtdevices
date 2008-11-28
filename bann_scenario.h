@@ -27,7 +27,7 @@ class bannScenario : public bannOnSx
 {
 Q_OBJECT
 public:
-	bannScenario(sottoMenu *parent, char *indirizzo, QString IconaSx);
+	bannScenario(sottoMenu *parent, QString where, QString IconaSx);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
@@ -45,15 +45,14 @@ class gesModScen : public bann4tasLab
 {
 Q_OBJECT
 public:
-	gesModScen(QWidget *parent=0, char *indirizzo=NULL, QString IcoSx=QString(), QString IcoDx=QString(), QString IcoCsx=QString(),
-		QString IcoCdx=QString(), QString IcoDes=QString(), QString IcoSx2=QString(), QString IcoDx2=QString());
+	gesModScen(QWidget *parent, QString where, QString IcoSx, QString IcoDx, QString IcoCsx,
+		QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2);
 public slots:
 	void status_changed(QList<device_status*>);
 	void inizializza(bool forza = false);
 private:
 	QString icon_on, icon_stop, icon_info, icon_no_info;
-	char cosa[10];
-	char dove[10];
+	QString cosa, dove;
 	unsigned char sendInProgr, bloccato, in_progr;
 	device *dev;
 private slots:
@@ -76,7 +75,7 @@ class scenEvo : public bann3But
 {
 Q_OBJECT
 public:
-	scenEvo(QWidget *parent=0, QList<scenEvo_cond*> *c=NULL, QString i1=QString(), QString i2=QString(), QString i3=QString(), QString i4=QString(), QString act="", int enabled = 0);
+	scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1=QString(), QString i2=QString(), QString i3=QString(), QString i4=QString(), QString act="", int enabled = 0);
 	~scenEvo();
 	void Draw();
 public slots:
@@ -115,7 +114,8 @@ class scenSched : public bann4But
 {
 Q_OBJECT
 public:
-	scenSched(QWidget *parent=0, QString Icona1=QString(), QString Icona2=QString(), QString Icona3=QString(), QString Icona4=QString(), char *action_enable="", char *action_disable="", char *action_start="", char *action_stop="");
+	scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4, QString act_enable,
+		QString act_disable, QString act_start, QString act_stop);
 	/*!
 	 * Reimplemented draw
 	 */

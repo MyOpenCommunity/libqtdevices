@@ -13,10 +13,10 @@
 #include <QLabel>
 
 
-bannScenario::bannScenario(sottoMenu *parent, char *indirizzo, QString IconaSx) : bannOnSx(parent)
+bannScenario::bannScenario(sottoMenu *parent, QString where, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
-	setAddress(indirizzo);
+	setAddress(where);
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
@@ -37,7 +37,7 @@ void bannScenario::inizializza(bool forza)
 }
 
 
-gesModScen::gesModScen(QWidget *parent, char *indirizzo, QString IcoSx, QString IcoDx, QString IcoCsx,
+gesModScen::gesModScen(QWidget *parent, QString where, QString IcoSx, QString IcoDx, QString IcoCsx,
 	QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2) :  bann4tasLab(parent)
 {
 	icon_on = IcoSx;
@@ -49,13 +49,13 @@ gesModScen::gesModScen(QWidget *parent, char *indirizzo, QString IcoSx, QString 
 	nascondi(BUT3);
 	nascondi(BUT4);
 
-	memset(cosa,'\000',sizeof(cosa));
-	memset(dove,'\000',sizeof(dove));
-	qDebug("gesModScen::gesModScen(): indirizzo = %s", indirizzo);
-	if (strstr(indirizzo,"*"))
+	qDebug() << "gesModScen::gesModScen(): indirizzo =" << where;
+
+	int pos = where.indexOf('*');
+	if (pos != -1)
 	{
-		strncpy(cosa, indirizzo, strstr(indirizzo,"*")-indirizzo);
-		strcpy(dove, strstr(indirizzo,"*")+1);
+		cosa = where.left(pos);
+		dove = where.mid(pos + 1);
 	}
 	sendInProgr = 0;
 	in_progr = 0;
@@ -76,7 +76,7 @@ gesModScen::gesModScen(QWidget *parent, char *indirizzo, QString IcoSx, QString 
 
 void gesModScen::attivaScenario()
 {
-	dev->sendFrame(QString("*0*") + cosa + "*" + dove + "##");
+	dev->sendFrame("*0*" + cosa + "*" + dove + "##");
 }
 
 void gesModScen::enterInfo()
@@ -103,19 +103,19 @@ void gesModScen::exitInfo()
 
 void gesModScen::startProgScen()
 {
-	dev->sendFrame(QString("*0*40#") + cosa + "*" + dove + "##");
+	dev->sendFrame("*0*40#" + cosa + "*" + dove + "##");
 	sendInProgr = 1;
 }
 
 void gesModScen::stopProgScen()
 {
-	dev->sendFrame(QString("*0*41#") + cosa + "*" + dove + "##");
+	dev->sendFrame("*0*41#" + cosa + "*" + dove + "##");
 	sendInProgr = 0;
 }
 
 void gesModScen::cancScen()
 {
-	dev->sendFrame(QString("*0*42#") + cosa + "*" + dove + "##");
+	dev->sendFrame("*0*42#" + cosa + "*" + dove + "##");
 }
 
 void gesModScen::status_changed(QList<device_status*> sl)
@@ -208,14 +208,10 @@ void gesModScen::inizializza(bool forza)
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> *c, QString i1, QString i2,
-	QString i3, QString i4, QString act, int enable) : bann3But(parent)
+scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1, QString i2,
+	QString i3, QString i4, QString act, int enable) : bann3But(parent), condList(c)
 {
-	if (c)
-	{
-		condList = *c;
-		current_condition = 0;
-	}
+	current_condition = 0;
 
 	serial_number = next_serial_number++;
 	for (int i = 0; i < condList.size(); ++i)
@@ -456,6 +452,7 @@ void scenEvo::inizializza(bool forza)
 	for (int i = 0; i < condList.size(); ++i)
 	{
 		scenEvo_cond *co = condList.at(i);
+		qDebug() << "Ciclo n. " << i << co->getDescription();
 		co->inizializza();
 	}
 }
@@ -478,16 +475,16 @@ scenEvo::~scenEvo()
 
 
 scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
-	char *aen, char *adis, char *astart, char *astop) : bann4But(parent)
+	QString act_enable, QString act_disable, QString act_start, QString act_stop) : bann4But(parent)
 {
-	action_enable = aen;
-	action_disable = adis;
-	action_start = astart;
-	action_stop = astop;
-	qDebug("scenSched::scenSched(), enable = %s, start = %s, stop = %s, "
-			"disable = %s", aen, adis, astart, astop);
+	qDebug("scenSched::scenSched()");
+	action_enable = act_enable;
+	action_disable = act_disable;
+	action_start = act_start;
+	action_stop = act_stop;
+
 	SetIcons(Icona1, Icona3, Icona4, Icona2);
-	if (aen[0])
+	if (!act_enable.isNull())
 	{
 		// sx
 		qDebug("BUT1 attivo");
@@ -495,7 +492,7 @@ scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Ic
 	}
 	else
 		nascondi(BUT1);
-	if (astart[0])
+	if (!act_start.isNull())
 	{
 		// csx
 		qDebug("BUT3 attivo");
@@ -503,7 +500,7 @@ scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Ic
 	}
 	else
 		nascondi(BUT3);
-	if (astop[0])
+	if (!act_stop.isNull())
 	{
 		// cdx
 		qDebug("BUT4 attivo");
@@ -511,7 +508,7 @@ scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Ic
 	}
 	else
 		nascondi(BUT4);
-	if (adis[0])
+	if (!act_disable.isNull())
 	{
 		// dx
 		qDebug("BUT2 attivo");

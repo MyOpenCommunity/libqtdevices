@@ -22,7 +22,6 @@
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
 #include "actuators.h"
-#include "bann_scenario.h"
 #include "amplificatori.h"
 #include "poweramplifier.h"
 #include "sorgentiradio.h"
@@ -137,9 +136,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	qDebug("sottoMenu::addItem (%p)", lt);
 	switch (tipo)
 	{
-	case SCENARIO:
-		elencoBanner.append(new bannScenario(this, (char*)indirizzo, IconaSx));
-		break;
 	case CARICO:
 		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));
 		break;
@@ -216,15 +212,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		break;
 	case PROTEZIONE:
 		elencoBanner.append(new impPassword(this, IconaDx, icon, pressedIcon, IconaSx, periodo));
-		break;
-	case MOD_SCENARI:
-		elencoBanner.append(new gesModScen(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1, icoEx2, icoEx3));
-		break;
-	case SCENARIO_EVOLUTO:
-		elencoBanner.append(new scenEvo(this, lc, IconaSx, IconaDx, icon, pressedIcon, action, par3));
-		break;
-	case SCENARIO_SCHEDULATO:
-		elencoBanner.append(new scenSched(this, IconaSx, IconaDx, icon, pressedIcon, descr1, descr2, descr3, descr4));
 		break;
 	case POSTO_ESTERNO:
 		elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
