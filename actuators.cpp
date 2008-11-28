@@ -14,7 +14,6 @@
 #include "device.h"
 #include "btbutton.h"
 #include "generic_functions.h" // getPressName, createMsgOpen
-#include "fontmanager.h"
 #include "btmain.h"
 #include "main.h" // BTouch
 
@@ -47,19 +46,12 @@ void attuatAutom::status_changed(QList<device_status*> sl)
 		switch (ds->get_type())
 		{
 			case device_status::LIGHTS:
-				qDebug("attuatAutom status variation");
 				ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-				qDebug("status = %d", curr_status.get_val());
 				qDebug("status = %d", curr_status.get_val());
 				if (!curr_status.get_val() && isActive())
 				{
 					aggiorna = true;
-					impostaAttivo(0);
-				}
-				else if (curr_status.get_val() && !isActive())
-				{
-					aggiorna = true;
-					impostaAttivo(1);
+					impostaAttivo(isActive() ? 0 : 1);
 				}
 				break;
 			default:
@@ -93,7 +85,7 @@ void attuatAutom::inizializza(bool forza)
 
 
 attuatPuls::attuatPuls(QWidget *parent, QString where, QString IconaSx, QString icon, char tipo)
-: bannPuls(parent)
+	: bannPuls(parent)
 {
 	SetIcons(IconaSx, QString(), icon, QString());
 	setAddress(where);
