@@ -26,6 +26,8 @@ class Automation : public sottoMenu
 Q_OBJECT
 public:
 	Automation(QWidget *parent, QDomNode config_node);
+private:
+	void loadItems(QDomNode config_node);
 };
 
 #endif

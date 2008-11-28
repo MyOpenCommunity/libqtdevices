@@ -28,6 +28,7 @@ public:
 	Scenario(QWidget *parent, QDomNode config_node);
 private:
 	QList<scenEvo_cond*> loadConditions(QDomNode config_node);
+	void loadItems(QDomNode config_node);
 signals:
 	void resettimer();
 };

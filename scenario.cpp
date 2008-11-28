@@ -11,6 +11,11 @@
 
 Scenario::Scenario(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 {
+	loadItems(config_node);
+}
+
+void Scenario::loadItems(QDomNode config_node)
+{
 	QDomNode item;
 	foreach (item, getChildren(config_node, "item"))
 	{
@@ -42,7 +47,8 @@ Scenario::Scenario(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 			break;
 			}
 		case SCENARIO_EVOLUTO:
-			b = new scenEvo(this, loadConditions(item), img1, img2, img3, img4, getElement(item, "action/open").text(), getTextChild(item, "enable").toInt());
+			b = new scenEvo(this, loadConditions(item), img1, img2, img3, img4,
+				getElement(item, "action/open").text(), getTextChild(item, "enable").toInt());
 			break;
 
 		case SCENARIO_SCHEDULATO:

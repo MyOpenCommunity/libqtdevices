@@ -32,6 +32,7 @@ protected:
 
 private:
 	void init_dimmer();
+	void loadItems(QDomNode config_node);
 };
 
 #endif

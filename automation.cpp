@@ -11,6 +11,11 @@
 
 Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 {
+	loadItems(config_node);
+}
+
+void Automation::loadItems(QDomNode config_node)
+{
 	QDomNode item;
 	foreach (item, getChildren(config_node, "item"))
 	{
