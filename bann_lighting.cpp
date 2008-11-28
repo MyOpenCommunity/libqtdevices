@@ -446,10 +446,10 @@ void grDimmer100::Diminuisci()
 }
 
 
-grAttuatAutom::grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaDx, QString IconaSx, QString icon, int period, int number)
+grAttuatAutom::grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaDx, QString IconaSx, QString icon)
 	: bannOnOff(parent)
 {
-	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
+	SetIcons(IconaDx, IconaSx, QString(), icon);
 	elencoDisp = addresses;
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));

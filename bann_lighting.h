@@ -140,7 +140,7 @@ class grAttuatAutom : public bannOnOff
 {
 Q_OBJECT
 public:
-	grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString Icon, int periodo, int numFrame);
+	grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString Icon);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
 	void Attiva();
