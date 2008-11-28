@@ -625,7 +625,7 @@ void WeeklyMenu::createSummerBanners()
 	{
 		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
 	}
-
+	// TODO: riscrivere con le nuove funzioni di xml_functions!!
 	QDomNode summer = conf_root.namedItem("summer");
 	if (!summer.isNull())
 	{
