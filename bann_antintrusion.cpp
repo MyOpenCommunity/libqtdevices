@@ -1,13 +1,3 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** bann_antintrusion.cpp
- **
- **
- **definizioni dei vari banner antintrusione implementati
- ****************************************************************/
-
 #include "bann_antintrusion.h"
 #include "main.h" // MAX_PATH, IMG_PATH
 #include "generic_functions.h" // void getZoneName(...)
@@ -21,12 +11,6 @@
 #include <QTimer>
 #include <QLabel>
 
-#include <stdlib.h>
-
-
-/*****************************************************************
- **zonaAnti
- ****************************************************************/
 
 zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive,
 	QString IconActive) : bannOnIcons(parent)
@@ -150,7 +134,7 @@ void zonaAnti::ToggleParzializza()
 	if (!already_changed)
 	{
 		already_changed = true;
-		emit(partChanged(this));
+		emit partChanged(this);
 	}
 	SetIcons();
 	Draw();
@@ -181,11 +165,6 @@ void zonaAnti::inizializza(bool forza)
 {
 	dev->sendInit("*#5*" + getAddress() + "##");
 }
-
-
-/*****************************************************************
- **impAnti
- ****************************************************************/
 
 
 impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)

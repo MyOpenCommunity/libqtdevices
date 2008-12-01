@@ -1,13 +1,3 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** bann_antintrusione.cpp
- **
- **
- **definizioni dei vari banner antintrusione implementati
- ****************************************************************/
-
 #ifndef BANN_ANTINTRUSION_H
 #define BANN_ANTINTRUSION_H
 
@@ -23,9 +13,6 @@ class tastiera;
 class device;
 
 
-/*****************************************************************
- **Zona Antiintrusione
- ****************************************************************/
 /*!
  *  \class zonaAnti
  * \brief This class is made to manage an anti-intrusion zone.
@@ -38,13 +25,6 @@ class zonaAnti : public bannOnIcons
 {
 using banner::SetIcons; // import the set of overload of SetIcons from banner
 Q_OBJECT
-private:
-	void SetIcons();
-	QString parzIName, sparzIName;
-	QString zonaAttiva;
-	QString zonaNonAttiva;
-	bool already_changed;
-	device *dev;
 public:
 	zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive, QString IconActive);
 	void inizializza(bool forza = false);
@@ -55,14 +35,18 @@ public slots:
 	void abilitaParz(bool);
 	void clearChanged(void);
 	int getIndex();
+private:
+	void SetIcons();
+	QString parzIName, sparzIName;
+	QString zonaAttiva;
+	QString zonaNonAttiva;
+	bool already_changed;
+	device *dev;
 signals:
 	void partChanged(zonaAnti *);
 };
 
 
-/*****************************************************************
- **Impianto Antiintrusione
- ****************************************************************/
 /*!
  * \class impAnti
  * \brief This class is made to manage the anti-intrusion system.
@@ -75,26 +59,8 @@ signals:
 class impAnti : public  bann2butLab
 {
 Q_OBJECT
-private:
-	static const int MAX_ZONE = 8;
-	tastiera* tasti;
-	zonaAnti *le_zone[MAX_ZONE];
-	bool send_part_msg;
-	bool part_msg_sent;
-	bool inserting;
-	char *passwd;
-	device *dev;
-
 public:
 	impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive);
-private slots:
-	void inizializza(bool forza = false);
-	void Inserisci();
-	void Disinserisci();
-	void Insert1(char*);
-	void Insert2();
-	void Insert3();
-	void DeInsert(char*);
 public slots:
 	void status_changed(QList<device_status*>);
 	void partChanged(zonaAnti*);
@@ -105,6 +71,23 @@ public slots:
 	void openNakRx();
 protected:
 	virtual void hideEvent(QHideEvent *event);
+private:
+	static const int MAX_ZONE = 8;
+	tastiera *tasti;
+	zonaAnti *le_zone[MAX_ZONE];
+	bool send_part_msg;
+	bool part_msg_sent;
+	bool inserting;
+	char *passwd;
+	device *dev;
+private slots:
+	void inizializza(bool forza = false);
+	void Inserisci();
+	void Disinserisci();
+	void Insert1(char*);
+	void Insert2();
+	void Insert3();
+	void DeInsert(char*);
 signals:
 	void impiantoInserito();
 	void abilitaParz(bool);
