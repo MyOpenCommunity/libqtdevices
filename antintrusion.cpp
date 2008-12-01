@@ -62,13 +62,15 @@ void Antintrusion::loadItems(QDomNode config_node)
 		if (id == IMPIANTINTRUS)
 		{
 			b = new impAnti(this, img1, img2, img3, img4);
+			b->setText(descr);
+			b->setId(id);
 			impianto->appendBanner(b);
-			connect(impianto->getLast(), SIGNAL(impiantoInserito()), this,SLOT(doClearAlarms()));
-			connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),this, SIGNAL(abilitaParz(bool)));
-			connect(impianto->getLast(), SIGNAL(clearChanged()),this, SIGNAL(clearChanged()));
-			connect(this, SIGNAL(partChanged(zonaAnti*)), impianto->getLast(),SLOT(partChanged(zonaAnti*)));
-			connect(impianto, SIGNAL(openAckRx()), impianto->getLast(),SLOT(openAckRx()));
-			connect(impianto, SIGNAL(openNakRx()), impianto->getLast(),SLOT(openNakRx()));
+			connect(b, SIGNAL(impiantoInserito()), this, SLOT(doClearAlarms()));
+			connect(b, SIGNAL(abilitaParz(bool)), this, SIGNAL(abilitaParz(bool)));
+			connect(b, SIGNAL(clearChanged()), this, SIGNAL(clearChanged()));
+			connect(this, SIGNAL(partChanged(zonaAnti*)), b, SLOT(partChanged(zonaAnti*)));
+			connect(impianto, SIGNAL(openAckRx()), b, SLOT(openAckRx()));
+			connect(impianto, SIGNAL(openNakRx()), b, SLOT(openNakRx()));
 
 			testoTecnico = tr("technical");
 			testoIntrusione = tr("intrusion");
@@ -79,21 +81,20 @@ void Antintrusion::loadItems(QDomNode config_node)
 		else if (id == ZONANTINTRUS)
 		{
 			b = new zonaAnti(this, descr, getTextChild(item, "where"), img1, img2, img3);
+			b->setText(descr);
+			b->setId(id);
 			zone->appendBanner(b);
-			connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), SLOT(abilitaParz(bool)));
-			connect(this, SIGNAL(clearChanged()), zone->getLast(),SLOT(clearChanged()));
-			connect(zone->getLast(), SIGNAL(partChanged(zonaAnti*)),this, SIGNAL(partChanged(zonaAnti*)));
+			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
+			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
+			connect(b, SIGNAL(partChanged(zonaAnti*)), this, SIGNAL(partChanged(zonaAnti*)));
 			// Alhtough looking at the source one would say that more than
 			// one "impianto" could be configured, in real life only one
 			// impianto can exist
-			((impAnti *)impianto->getLast())->setZona((zonaAnti *)zone->getLast());
+			((impAnti *)impianto->getLast())->setZona((zonaAnti *)b);
 			zone->forceDraw();
 		}
 		else
 			assert(!"Type of item not handled on antintrusion page!");
-
-		b->setText(descr);
-		b->setId(id);
 	}
 }
 
