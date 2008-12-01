@@ -1,12 +1,3 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**antintrusione.cpp
-**
-**Sottomenù antiintrusione
-**
-****************************************************************/
 #include "antintrusion.h"
 #include "tastiera.h"
 #include "bann_antintrusion.h"
@@ -15,12 +6,13 @@
 #include "main.h" // BTouch
 #include "generic_functions.h" // safeAt
 #include "xml_functions.h" // getChildren, getTextChild
+#include "allarme.h"
 
 #include <openwebnet.h> // class openwebnet
 
 #include <QDateTime>
 #include <QDebug>
-#include <QTimer>
+#include <QDomNode>
 
 #include <assert.h>
 

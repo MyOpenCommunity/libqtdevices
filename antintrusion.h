@@ -3,18 +3,15 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** antintrusione.h
+** antintrusion.h
 **
-**definizioni della pagina di sottoMenu antiintrusione
+**definizioni della pagina di antiintrusione
 **
 ****************************************************************/
 
 #ifndef ANTINTRUSION_H
 #define ANTINTRUSION_H
 
-
-#include "main.h" // MAX_PATH
-#include "allarme.h"
 
 #include <QWidget>
 #include <QString>
@@ -24,6 +21,8 @@
 class sottoMenu;
 class zonaAnti;
 class tastiera;
+class allarme;
+class QDomNode;
 
 
 /*!
@@ -174,4 +173,4 @@ signals:
 };
 
 
-#endif // ANTINTRUS_H
+#endif // ANTINTRUSION_H
