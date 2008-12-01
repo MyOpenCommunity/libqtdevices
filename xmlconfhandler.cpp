@@ -481,7 +481,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					case ANTIINTRUSIONE:
 						(*antintr)->addItemU((char)page_item_id, page_item_descr,
-							page_item_where.toAscii().data(), page_item_list_img, par1,  par2);
+							page_item_where.toAscii().data(), page_item_list_img);
 						break;
 					case DIFSON:
 					{

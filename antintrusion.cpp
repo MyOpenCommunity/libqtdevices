@@ -128,8 +128,7 @@ void Antintrusion::draw()
 		allarmi.at(i)->draw();
 }
 
-int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indirizzo,
-	QList<QString*> &icon_names, int periodo, int numFrame)
+int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indirizzo, QList<QString*> &icon_names)
 {
 	if (tipo == IMPIANTINTRUS)
 	{
