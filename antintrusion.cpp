@@ -61,7 +61,7 @@ void Antintrusion::loadItems(QDomNode config_node)
 
 		if (id == IMPIANTINTRUS)
 		{
-			b = new impAnti(this, img1, img2, img3, img4);
+			b = new impAnti(impianto, img1, img2, img3, img4);
 			b->setText(descr);
 			b->setId(id);
 			impianto->appendBanner(b);
@@ -80,7 +80,7 @@ void Antintrusion::loadItems(QDomNode config_node)
 		}
 		else if (id == ZONANTINTRUS)
 		{
-			b = new zonaAnti(this, descr, getTextChild(item, "where"), img1, img2, img3);
+			b = new zonaAnti(zone, descr, getTextChild(item, "where"), img1, img2, img3);
 			b->setText(descr);
 			b->setId(id);
 			zone->appendBanner(b);
