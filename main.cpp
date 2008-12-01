@@ -127,7 +127,7 @@ QDomNode getPageNode(int id)
 	if (n.isNull())
 		return QDomNode();
 
-	return getChildWithId(n, QRegExp("page\\d{1,2}"), id);
+	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special)"), id);
 }
 
 QString getLanguage()
