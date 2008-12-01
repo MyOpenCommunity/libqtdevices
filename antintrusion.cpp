@@ -129,7 +129,7 @@ void Antintrusion::draw()
 		allarmi.at(i)->draw();
 }
 
-int Antintrusion::addItemU(char tipo, const QString & qdescrizione, QString indirizzo, QList<QString*> &icon_names)
+void Antintrusion::addItem(int id, const QString &descrizione, QString indirizzo, QList<QString*> &icon_names)
 {
 	QString IconaSx = *safeAt(icon_names, 0);
 	QString IconaDx = *safeAt(icon_names, 1);
@@ -137,7 +137,7 @@ int Antintrusion::addItemU(char tipo, const QString & qdescrizione, QString indi
 	QString pressedIcon = *safeAt(icon_names, 3);
 
 	banner *b;
-	if (tipo == IMPIANTINTRUS)
+	if (id == IMPIANTINTRUS)
 	{
 		b = new impAnti(this, IconaSx, IconaDx, icon, pressedIcon);
 		impianto->appendBanner(b);
@@ -152,17 +152,11 @@ int Antintrusion::addItemU(char tipo, const QString & qdescrizione, QString indi
 		testoIntrusione = tr("intrusion");
 		testoManom = tr("tamper");
 		testoPanic = tr("anti-panic");
-
-		// To simulate old behaviour
-		testoTecnico.truncate(MAX_PATH);
-		testoIntrusione.truncate(MAX_PATH);
-		testoManom.truncate(MAX_PATH);
-		testoPanic.truncate(MAX_PATH);
 		impianto->forceDraw();
 	}
-	else if (tipo == ZONANTINTRUS)
+	else if (id == ZONANTINTRUS)
 	{
-		b = new zonaAnti(this, qdescrizione, indirizzo, IconaSx, IconaDx, icon);
+		b = new zonaAnti(this, descrizione, indirizzo, IconaSx, IconaDx, icon);
 		zone->appendBanner(b);
 		connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), SLOT(abilitaParz(bool)));
 		connect(this, SIGNAL(clearChanged()), zone->getLast(),SLOT(clearChanged()));
@@ -176,9 +170,8 @@ int Antintrusion::addItemU(char tipo, const QString & qdescrizione, QString indi
 	else
 		assert(!"Type of item not handled on antintrusion page!");
 
-	b->setText(qdescrizione);
-	b->setId(tipo);
-	return 1;
+	b->setText(descrizione);
+	b->setId(id);
 }
 
 void Antintrusion::setNumRighe(uchar n)
