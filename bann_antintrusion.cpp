@@ -2,13 +2,13 @@
  **
  ** BTicino Touch scren Colori art. H4686
  **
- ** bann_antintrusione.cpp
+ ** bann_antintrusion.cpp
  **
  **
  **definizioni dei vari banner antintrusione implementati
  ****************************************************************/
 
-#include "bann_antintrusione.h"
+#include "bann_antintrusion.h"
 #include "main.h" // MAX_PATH, IMG_PATH
 #include "generic_functions.h" // void getZoneName(...)
 #include "fontmanager.h"

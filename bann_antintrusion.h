@@ -8,8 +8,8 @@
  **definizioni dei vari banner antintrusione implementati
  ****************************************************************/
 
-#ifndef BANN_ANTINTRUSIONE_H
-#define BANN_ANTINTRUSIONE_H
+#ifndef BANN_ANTINTRUSION_H
+#define BANN_ANTINTRUSION_H
 
 #include "bannonicons.h"
 #include "bann2butlab.h"

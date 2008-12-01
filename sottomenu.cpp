@@ -28,7 +28,6 @@
 #include "sorgentiaux.h"
 #include "sorgentimedia.h"
 #include "carico.h"
-#include "bann_antintrusione.h"
 #include "bannfullscreen.h"
 #include "lansettings.h"
 
