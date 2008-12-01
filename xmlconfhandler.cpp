@@ -480,7 +480,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case ANTIINTRUSIONE:
-						(*antintr)->addItem(page_item_id, page_item_descr, page_item_where, page_item_list_img);
+						// Nothing to do..
 						break;
 					case DIFSON:
 					{
@@ -842,7 +842,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case ANTIINTRUSIONE:
-						*antintr = new Antintrusion;
+						*antintr = new Antintrusion(0, page_node);
 						pageAct = *antintr;
 						break;
 

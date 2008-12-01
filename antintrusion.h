@@ -38,12 +38,8 @@ class Antintrusion : public QWidget
 {
 Q_OBJECT
 public:
-	Antintrusion(QWidget *parent=0);
+	Antintrusion(QWidget *parent, QDomNode config_node);
 	~Antintrusion();
-/*!
-  \brief inserts a new item in the Antintrusion class. If the new element is a plant it is added to \a impianto; if it is a zone it is added to \a zone; if it is an alarm it is added to \a allarmi
-*/
-	void addItem(int id, const QString &descrizione, QString indirizzo, QList<QString*> &icon_names);
 /*!
   \brief sets the rows number fot the object. This method automatically give the exact row number to the \a sottomenu: impianto-zone-allarmi
   arguments:
@@ -76,31 +72,6 @@ public:
   \brief force the object to draw all its components (impianto-zone-allarmi)
 */
 	void draw();
-
-signals:
-/*!
-  \brief it's emitted when the object is closed
-*/
-	void Closed();
-/*!
-  \brief emitted when a open frame comes from the plant so impianto-zone-allarmi can analyze it
-*/
-	void gestFrame(char*);
-	void openAckRx();
-	void openNakRx();
-
-/*!
-  \brief enable/disable area partialization enable events
-*/
-	void abilitaParz(bool ab);
-/*!
-  \brief part. changed events
-*/
-	void partChanged(zonaAnti*);
-/*!
-  \brief clear changed flags
-*/
-	void clearChanged();
 
 public slots:
 	void Parzializza();
@@ -176,6 +147,30 @@ private:
 	tastiera *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
+
+	void loadItems(QDomNode config_node);
+
+signals:
+	void Closed();
+/*!
+  \brief emitted when a open frame comes from the plant so impianto-zone-allarmi can analyze it
+*/
+	void gestFrame(char*);
+	void openAckRx();
+	void openNakRx();
+
+/*!
+  \brief enable/disable area partialization enable events
+*/
+	void abilitaParz(bool ab);
+/*!
+  \brief part. changed events
+*/
+	void partChanged(zonaAnti*);
+/*!
+  \brief clear changed flags
+*/
+	void clearChanged();
 };
 
 

@@ -14,6 +14,7 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 #include "generic_functions.h" // safeAt
+#include "xml_functions.h" // getChildren, getTextChild
 
 #include <openwebnet.h> // class openwebnet
 
@@ -24,7 +25,7 @@
 #include <assert.h>
 
 
-Antintrusion::Antintrusion(QWidget *parent) : QWidget(parent)
+Antintrusion::Antintrusion(QWidget *parent, QDomNode config_node) : QWidget(parent)
 {
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
@@ -41,6 +42,59 @@ Antintrusion::Antintrusion(QWidget *parent) : QWidget(parent)
 	connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
 	connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
 	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
+	loadItems(config_node);
+}
+
+void Antintrusion::loadItems(QDomNode config_node)
+{
+	QDomNode item;
+	foreach (item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
+		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
+		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
+		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
+		QString descr = getTextChild(item, "descr");
+
+		banner *b;
+
+		if (id == IMPIANTINTRUS)
+		{
+			b = new impAnti(this, img1, img2, img3, img4);
+			impianto->appendBanner(b);
+			connect(impianto->getLast(), SIGNAL(impiantoInserito()), this,SLOT(doClearAlarms()));
+			connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),this, SIGNAL(abilitaParz(bool)));
+			connect(impianto->getLast(), SIGNAL(clearChanged()),this, SIGNAL(clearChanged()));
+			connect(this, SIGNAL(partChanged(zonaAnti*)), impianto->getLast(),SLOT(partChanged(zonaAnti*)));
+			connect(impianto, SIGNAL(openAckRx()), impianto->getLast(),SLOT(openAckRx()));
+			connect(impianto, SIGNAL(openNakRx()), impianto->getLast(),SLOT(openNakRx()));
+
+			testoTecnico = tr("technical");
+			testoIntrusione = tr("intrusion");
+			testoManom = tr("tamper");
+			testoPanic = tr("anti-panic");
+			impianto->forceDraw();
+		}
+		else if (id == ZONANTINTRUS)
+		{
+			b = new zonaAnti(this, descr, getTextChild(item, "where"), img1, img2, img3);
+			zone->appendBanner(b);
+			connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), SLOT(abilitaParz(bool)));
+			connect(this, SIGNAL(clearChanged()), zone->getLast(),SLOT(clearChanged()));
+			connect(zone->getLast(), SIGNAL(partChanged(zonaAnti*)),this, SIGNAL(partChanged(zonaAnti*)));
+			// Alhtough looking at the source one would say that more than
+			// one "impianto" could be configured, in real life only one
+			// impianto can exist
+			((impAnti *)impianto->getLast())->setZona((zonaAnti *)zone->getLast());
+			zone->forceDraw();
+		}
+		else
+			assert(!"Type of item not handled on antintrusion page!");
+
+		b->setText(descr);
+		b->setId(id);
+	}
 }
 
 Antintrusion::~Antintrusion()
@@ -127,51 +181,6 @@ void Antintrusion::draw()
 
 	for (int i = 0; i < allarmi.size(); ++i)
 		allarmi.at(i)->draw();
-}
-
-void Antintrusion::addItem(int id, const QString &descrizione, QString indirizzo, QList<QString*> &icon_names)
-{
-	QString IconaSx = *safeAt(icon_names, 0);
-	QString IconaDx = *safeAt(icon_names, 1);
-	QString icon = *safeAt(icon_names, 2);
-	QString pressedIcon = *safeAt(icon_names, 3);
-
-	banner *b;
-	if (id == IMPIANTINTRUS)
-	{
-		b = new impAnti(this, IconaSx, IconaDx, icon, pressedIcon);
-		impianto->appendBanner(b);
-		connect(impianto->getLast(), SIGNAL(impiantoInserito()), this,SLOT(doClearAlarms()));
-		connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),this, SIGNAL(abilitaParz(bool)));
-		connect(impianto->getLast(), SIGNAL(clearChanged()),this, SIGNAL(clearChanged()));
-		connect(this, SIGNAL(partChanged(zonaAnti*)), impianto->getLast(),SLOT(partChanged(zonaAnti*)));
-		connect(impianto, SIGNAL(openAckRx()), impianto->getLast(),SLOT(openAckRx()));
-		connect(impianto, SIGNAL(openNakRx()), impianto->getLast(),SLOT(openNakRx()));
-
-		testoTecnico = tr("technical");
-		testoIntrusione = tr("intrusion");
-		testoManom = tr("tamper");
-		testoPanic = tr("anti-panic");
-		impianto->forceDraw();
-	}
-	else if (id == ZONANTINTRUS)
-	{
-		b = new zonaAnti(this, descrizione, indirizzo, IconaSx, IconaDx, icon);
-		zone->appendBanner(b);
-		connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), SLOT(abilitaParz(bool)));
-		connect(this, SIGNAL(clearChanged()), zone->getLast(),SLOT(clearChanged()));
-		connect(zone->getLast(), SIGNAL(partChanged(zonaAnti*)),this, SIGNAL(partChanged(zonaAnti*)));
-		// Alhtough looking at the source one would say that more than
-		// one "impianto" could be configured, in real life only one
-		// impianto can exist
-		((impAnti *)impianto->getLast())->setZona((zonaAnti *)zone->getLast());
-		zone->forceDraw();
-	}
-	else
-		assert(!"Type of item not handled on antintrusion page!");
-
-	b->setText(descrizione);
-	b->setId(id);
 }
 
 void Antintrusion::setNumRighe(uchar n)
