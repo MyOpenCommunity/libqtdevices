@@ -28,7 +28,7 @@
  **zonaAnti
  ****************************************************************/
 
-zonaAnti::zonaAnti(QWidget *parent, const QString & name, char *indirizzo, QString iconzona, QString IconDisactive,
+zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive,
 	QString IconActive) : bannOnIcons(parent)
 {
 	setAddress(indirizzo);
@@ -188,7 +188,7 @@ void zonaAnti::inizializza(bool forza)
  ****************************************************************/
 
 
-impAnti::impAnti(QWidget *parent,char* indirizzo, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
+impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
 	: bann2butLab(parent)
 {
 	tasti = NULL;

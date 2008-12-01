@@ -129,7 +129,7 @@ void Antintrusion::draw()
 		allarmi.at(i)->draw();
 }
 
-int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indirizzo, QList<QString*> &icon_names)
+int Antintrusion::addItemU(char tipo, const QString & qdescrizione, QString indirizzo, QList<QString*> &icon_names)
 {
 	QString IconaSx = *safeAt(icon_names, 0);
 	QString IconaDx = *safeAt(icon_names, 1);
@@ -139,7 +139,7 @@ int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indiri
 	banner *b;
 	if (tipo == IMPIANTINTRUS)
 	{
-		b = new impAnti(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon);
+		b = new impAnti(this, IconaSx, IconaDx, icon, pressedIcon);
 		impianto->appendBanner(b);
 		connect(impianto->getLast(), SIGNAL(impiantoInserito()), this,SLOT(doClearAlarms()));
 		connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),this, SIGNAL(abilitaParz(bool)));
@@ -162,7 +162,7 @@ int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indiri
 	}
 	else if (tipo == ZONANTINTRUS)
 	{
-		b = new zonaAnti(this, qdescrizione, (char*)indirizzo, IconaSx, IconaDx, icon);
+		b = new zonaAnti(this, qdescrizione, indirizzo, IconaSx, IconaDx, icon);
 		zone->appendBanner(b);
 		connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), SLOT(abilitaParz(bool)));
 		connect(this, SIGNAL(clearChanged()), zone->getLast(),SLOT(clearChanged()));

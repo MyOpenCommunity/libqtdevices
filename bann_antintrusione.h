@@ -46,7 +46,7 @@ private:
 	bool already_changed;
 	device *dev;
 public:
-	zonaAnti(QWidget *parent=0, const QString & name=NULL ,char*indirizzo=NULL, QString iconzona = QString(), QString IconDisactive = QString(), QString IconActive = QString());
+	zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive, QString IconActive);
 	void inizializza(bool forza = false);
 	void Draw();
 public slots:
@@ -86,7 +86,7 @@ private:
 	device *dev;
 
 public:
-	impAnti(QWidget *parent=0, char *indirizzo=NULL, QString IconOn = QString(), QString IconOff = QString(), QString IconInfo = QString(), QString IconActive = QString());
+	impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive);
 private slots:
 	void inizializza(bool forza = false);
 	void Inserisci();
