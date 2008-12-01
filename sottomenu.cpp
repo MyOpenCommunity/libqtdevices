@@ -195,12 +195,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	TERMO_EXTPROBE=55,          External not-controlled probe
 	TERMO_PROBE=56,             Not-controlled probe
 	*/
-	case ZONANTINTRUS:
-		elencoBanner.append(new zonaAnti(this, descrizione, (char*)indirizzo, IconaSx, IconaDx, icon));
-		break;
-	case IMPIANTINTRUS:
-		elencoBanner.append(new impAnti(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
-		break;
 	case SUONO: // iconaSx e' in realta' "value"
 		elencoBanner.append(new impBeep(this, IconaSx, IconaDx, icon));
 		break;

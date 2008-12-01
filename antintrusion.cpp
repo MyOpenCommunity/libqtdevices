@@ -13,6 +13,7 @@
 #include "sottomenu.h"
 #include "btmain.h"
 #include "main.h" // BTouch
+#include "generic_functions.h" // safeAt
 
 #include <openwebnet.h> // class openwebnet
 
@@ -130,9 +131,16 @@ void Antintrusion::draw()
 
 int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indirizzo, QList<QString*> &icon_names)
 {
+	QString IconaSx = *safeAt(icon_names, 0);
+	QString IconaDx = *safeAt(icon_names, 1);
+	QString icon = *safeAt(icon_names, 2);
+	QString pressedIcon = *safeAt(icon_names, 3);
+
+	banner *b;
 	if (tipo == IMPIANTINTRUS)
 	{
-		impianto->addItemU(tipo, qdescrizione, indirizzo, icon_names);
+		b = new impAnti(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon);
+		impianto->appendBanner(b);
 		connect(impianto->getLast(), SIGNAL(impiantoInserito()), this,SLOT(doClearAlarms()));
 		connect(impianto->getLast(), SIGNAL(abilitaParz(bool)),this, SIGNAL(abilitaParz(bool)));
 		connect(impianto->getLast(), SIGNAL(clearChanged()),this, SIGNAL(clearChanged()));
@@ -154,7 +162,8 @@ int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indiri
 	}
 	else if (tipo == ZONANTINTRUS)
 	{
-		zone->addItemU(tipo, qdescrizione, indirizzo, icon_names);
+		b = new zonaAnti(this, qdescrizione, (char*)indirizzo, IconaSx, IconaDx, icon);
+		zone->appendBanner(b);
 		connect(this, SIGNAL(abilitaParz(bool)), zone->getLast(), SLOT(abilitaParz(bool)));
 		connect(this, SIGNAL(clearChanged()), zone->getLast(),SLOT(clearChanged()));
 		connect(zone->getLast(), SIGNAL(partChanged(zonaAnti*)),this, SIGNAL(partChanged(zonaAnti*)));
@@ -164,6 +173,11 @@ int Antintrusion::addItemU(char tipo, const QString & qdescrizione, void* indiri
 		((impAnti *)impianto->getLast())->setZona((zonaAnti *)zone->getLast());
 		zone->forceDraw();
 	}
+	else
+		assert(!"Type of item not handled on antintrusion page!");
+
+	b->setText(qdescrizione);
+	b->setId(tipo);
 	return 1;
 }
 
