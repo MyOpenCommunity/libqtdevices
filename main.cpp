@@ -118,11 +118,7 @@ void myMessageOutput(QtMsgType type, const char *msg)
 
 QDomNode getPageNode(int id)
 {
-	QDomElement root = qdom_appconfig.documentElement();
-
-	QDomNode n = root.firstChild();
-	while (!n.isNull() && n.nodeName() != "displaypages")
-		n = n.nextSibling();
+	QDomElement n = getConfElement("displaypages");
 
 	if (n.isNull())
 		return QDomNode();
