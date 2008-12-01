@@ -248,7 +248,7 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	{
 		if (elencoBanner.at(idx)->getId() == tipo)
 		{
-			elencoBanner.last()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
+			last->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
 			idx = -1;
 		}
 	}
@@ -265,7 +265,7 @@ void sottoMenu::appendBanner(banner *b)
 	{
 		if (elencoBanner.at(idx)->getId() == b->getId())
 		{
-			elencoBanner.last()->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
+			b->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
 			idx = -1;
 		}
 	}
