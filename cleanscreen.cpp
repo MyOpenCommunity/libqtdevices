@@ -13,7 +13,7 @@
 
 static const char *CLEANSCREEN_ICON = IMG_PATH "btnplusp.png";
 
-CleanScreen::CleanScreen(QWidget *parent) : QWidget(parent)
+CleanScreen::CleanScreen(QWidget *parent) : BTWidget(parent)
 {
 
 	connect(&secs_timer, SIGNAL(timeout()), SLOT(update()));
@@ -36,6 +36,7 @@ CleanScreen::CleanScreen(QWidget *parent) : QWidget(parent)
 	icon_label->setAlignment(Qt::AlignHCenter);
 	icon_label->setGeometry(ICON_LABEL_X, ICON_LABEL_Y, ICON_LABEL_WIDTH, ICON_LABEL_HEIGHT);
 
+	// TODO: rimuovere! Nei banner non va letta la configurazione, ma solo nella pagine principali!
 	QDomNode page_root = getPageNode(IMPOSTAZIONI);
 	assert(!page_root.isNull());
 	QDomNode cleanscreen_root = getChildWithId(page_root, QRegExp("item\\d{1,2}"), CLEANSCREEN);
@@ -49,6 +50,7 @@ void CleanScreen::resetTime()
 	// update the widget every second
 	secs_timer.start(1 * 1000);
 	timer.start(wait_time_sec * 1000);
+	// TODO: serve davvero time() ?? Non si puo' usare qualcosa QT, magari QTime.elapsed?
 	end_time = time(0) + wait_time_sec;
 }
 

@@ -6,6 +6,7 @@
 #include "lansettings.h"
 #include "diffmulti.h" // contdiff
 #include "xml_functions.h" // getChildren, getTextChild
+#include "cleanscreen.h"
 
 #include <QDebug>
 
@@ -73,7 +74,7 @@ void Settings::loadItems(QDomNode config_node)
 			b = new BannBrightness(this);
 			break;
 		case CLEANSCREEN:
-			b = new BannCleanScreen(this);
+			b = new bannOnDx(this, ICON_INFO, new CleanScreen());
 			break;
 		case LANSETTINGS:
 			{

@@ -11,14 +11,17 @@
 #ifndef CLEANSCREEN_H
 #define CLEANSCREEN_H
 
+#include "btwidget.h"
+
+#include <QTimer>
+
 #include <time.h> //time_t and time()
 
-#include <QWidget>
-#include <QTimer>
 
 class QLabel;
 
-class CleanScreen : public QWidget
+
+class CleanScreen : public BTWidget
 {
 Q_OBJECT
 public:

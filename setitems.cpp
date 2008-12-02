@@ -16,7 +16,6 @@
 #include "calibrate.h"
 #include "contrpage.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
-#include "cleanscreen.h"
 #include "brightnesspage.h"
 #include "btmain.h"
 #include "main.h" // BTouch
@@ -315,26 +314,6 @@ void impPassword::hideEvent(QHideEvent *event)
 		tasti->hide();
 }
 
-
-BannCleanScreen::BannCleanScreen(sottoMenu *parent) : bannOnDx(parent)
-{
-	SetIcons(ICON_INFO,1);
-	page = new CleanScreen();
-	page->hide();
-
-	connect(this, SIGNAL(click()), page, SLOT(showFullScreen()));
-	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
-}
-
-BannCleanScreen::~BannCleanScreen()
-{
-	delete page;
-}
-
-void BannCleanScreen::hideEvent(QHideEvent *event)
-{
-	page->hide();
-}
 
 BannBrightness::BannBrightness(sottoMenu *parent) : bannOnDx(parent)
 {

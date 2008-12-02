@@ -14,7 +14,7 @@
 #include "banner.h"
 
 class sottoMenu;
-
+class BTWidget;
 
 /*!
   \class bannOnDx
@@ -28,7 +28,12 @@ class bannOnDx : public banner
 {
 Q_OBJECT
 public:
-	bannOnDx(sottoMenu *parent);
+	bannOnDx(sottoMenu *parent, QString icon=QString(), BTWidget *page=0);
+	virtual ~bannOnDx();
+protected:
+	virtual void hideEvent(QHideEvent *event);
+private:
+	QWidget *linked_page;
 signals:
 	void click();
 };

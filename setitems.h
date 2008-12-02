@@ -220,30 +220,6 @@ signals:
 */
 	void setPwd(bool, QString);
 };
-#endif //SET_ITEMS_H
-
-#ifndef BANN_CLEANSCREEN
-#define BANN_CLEANSCREEN
-
-class CleanScreen;
-
-
-class BannCleanScreen : public bannOnDx
-{
-Q_OBJECT
-public:
-	BannCleanScreen(sottoMenu *parent);
-	~BannCleanScreen();
-protected:
-	virtual void hideEvent(QHideEvent *event);
-private:
-	CleanScreen *page;
-};
-
-#endif
-
-#ifndef BANN_BRIGHTNESS
-#define BANN_BRIGHTNESS
 
 class BrightnessPage;
 
@@ -258,4 +234,5 @@ protected:
 private:
 	BrightnessPage *page;
 };
-#endif //BANN_BRIGHTNESS
+
+#endif

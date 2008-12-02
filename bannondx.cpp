@@ -10,9 +10,11 @@
 
 #include "bannondx.h"
 #include "sottomenu.h"
+#include "btwidget.h"
 #include "main.h"
 
-bannOnDx::bannOnDx(sottoMenu *parent) : banner(parent)
+
+bannOnDx::bannOnDx(sottoMenu *parent, QString icon, BTWidget *page) : banner(parent)
 {
 	unsigned char nr = parent->getNumRig();
 
@@ -21,7 +23,30 @@ bannOnDx::bannOnDx(sottoMenu *parent) : banner(parent)
 	addItem(TEXT , 0, 0 , MAX_WIDTH-BUTONDX_BUT_DIM_X,
 		((MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE)/nr));
 	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
+
+	if (!icon.isEmpty())
+		SetIcons(icon, 1);
+
+	linked_page = page;
+	if (linked_page)
+	{
+		linked_page->hide();
+		connect(this, SIGNAL(sxClick()), linked_page, SLOT(showFullScreen()));
+		connect(linked_page, SIGNAL(Closed()), linked_page, SLOT(hide()));
+	}
 }
+
+void bannOnDx::hideEvent(QHideEvent *event)
+{
+	if (linked_page)
+		linked_page->hide();
+}
+
+bannOnDx::~bannOnDx()
+{
+	delete linked_page;
+}
+
 
 bannOnSx::bannOnSx(sottoMenu *parent) : banner(parent)
 {
