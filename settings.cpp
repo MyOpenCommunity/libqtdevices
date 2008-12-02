@@ -78,18 +78,8 @@ void Settings::loadItems(QDomNode config_node)
 			b = new bannOnDx(this, ICON_INFO, new CleanScreen());
 			break;
 		case LANSETTINGS:
-			{
-			b = new bannOnDx(this);
-			b->SetIcons(ICON_INFO, 1);
-			// create lansettings menu
-			LanSettings *ls = new LanSettings(this);
-			ls->hide();
-			// TODO: rimuovere la hideChildren! Rimplementare la hideEvent al suo posto!
-			connect(this, SIGNAL(hideChildren()), ls, SLOT(hide()));
-			connect(b, SIGNAL(click()), ls, SLOT(showFullScreen()));
+			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));
 			break;
-			}
-
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);

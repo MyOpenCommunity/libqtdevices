@@ -10,7 +10,6 @@ LanSettings::LanSettings(QWidget *parent) :
 	b->SetIcons(ICON_INFO, 1);
 	appendBanner(b);
 
-	connect(this, SIGNAL(Closed()), SLOT(hide()));
 
 	// create children
 	// . riassunto
