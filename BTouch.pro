@@ -69,12 +69,12 @@ HEADERS += actuators.h \
            btbutton.h \
            btmain.h \
            bttime.h \
-           btwidgets.h \
            buttons_bar.h \
            calibrate.h \
            carico.h \
            cleanscreen.h \
            contrpage.h \
+           datetime.h \
            device.h \
            device_cache.h \
            device_status.h \
@@ -159,12 +159,12 @@ SOURCES += actuators.cpp \
            brightnesspage.cpp \
            brightnesscontrol.cpp \
            bttime.cpp \
-           btwidgets.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
            carico.cpp \
            cleanscreen.cpp \
            contrpage.cpp \
+           datetime.cpp \
            device.cpp \
            device_cache.cpp \
            device_status.cpp \

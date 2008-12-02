@@ -18,6 +18,7 @@
 #include "scaleconversion.h"
 #include "btmain.h"
 #include "main.h"
+#include "datetime.h"
 
 #include <QVariant>
 #include <QLabel>

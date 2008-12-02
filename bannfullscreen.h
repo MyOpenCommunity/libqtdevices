@@ -17,7 +17,6 @@
 #include "bann4but.h"
 #include "bannpuls.h"
 #include "device_status.h"
-#include "btwidgets.h"
 #include "bttime.h"
 #include "main.h"
 
@@ -38,6 +37,8 @@ class DateEditMenu;
 class ProgramMenu;
 class WeeklyMenu;
 class ScenarioMenu;
+class BtTimeEdit;
+class BtDateEdit;
 
 class QLabel;
 

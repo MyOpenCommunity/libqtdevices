@@ -1,17 +1,17 @@
 /*!
- * \btwidgets.h
+ * \datetime.h
  * <!--
  * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
  * -->
  *
- * \brief Implementation of useful widgets for BTouch
+ * \brief Implementation of date / time widgets for BTouch
  *
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
-#ifndef BTWIDGETS_H
-#define BTWIDGETS_H
+#ifndef DATETIME_H
+#define DATETIME_H
 
 #include "bttime.h"
 
@@ -82,5 +82,5 @@ private slots:
 	void decMonth();
 	void decYear();
 };
-#endif // BTWIDGETS_H
+#endif // DATETIME_H
 

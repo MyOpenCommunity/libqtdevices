@@ -1,5 +1,5 @@
 /*!
- * \btwidgets.h
+ * \datetime.cpp
  * <!--
  * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
@@ -8,7 +8,7 @@
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
-#include "btwidgets.h"
+#include "datetime.h"
 #include "btbutton.h"
 #include "main.h"
 
