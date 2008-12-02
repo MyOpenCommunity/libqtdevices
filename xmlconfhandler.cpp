@@ -272,33 +272,6 @@ void *xmlconfhandler::getAddr()
 	return pnt;
 }
 
-void *xmlconfhandler::computeAddress()
-{
-	void *pnt = getAddr();
-
-	if ((char)page_item_id == SET_SVEGLIA)
-	{
-		if  (par2 == sveglia::DI_SON) 
-		{
-			// Use old or multichannel sd
-			if (*difSon)
-				pnt = new contdiff(*difSon, NULL);
-			else if (*dm)
-				pnt = new contdiff(NULL, *dm);
-		}
-		else
-		{
-			pnt = NULL;
-		}
-	} 
-	else if ((char)page_item_id == VERSIONE)
-	{
-		pnt = datiGen;
-	}
-
-	return pnt;
-}
-
 void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 {
 	QByteArray buf_img1 = page_item_list_txt.at(0).toAscii();
@@ -421,13 +394,12 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					case CARICHI:
 						pageAct = *carichi;
-						addr = computeAddress();
+						addr = getAddr();
 						addItemU(pageAct, addr);
 						break;
 
 					case TERMOREGOLAZIONE:
 						pageAct = *termo;
-						addr = computeAddress();
 						break;
 
 					case SCENARI:

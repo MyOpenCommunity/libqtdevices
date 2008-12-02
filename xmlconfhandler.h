@@ -86,7 +86,6 @@ public:
 	bool endElement(const QString&, const QString&, const QString&);
 
 private:
-	void *computeAddress();
 	void *getAddr();
 	void addItemU(sottoMenu *pageAct, void *address);
 
