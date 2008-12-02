@@ -39,7 +39,7 @@
 #define IMG_OK IMG_PATH "btnok.png"
 
 sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n)
-	:QWidget(parent)
+	: BTWidget(parent)
 {
 	numRighe = n;
 	scroll_step = 1;
@@ -268,7 +268,7 @@ void sottoMenu::draw()
 				if  (indice + i < elencoBanner.size() || elencoBanner.size() >= numRighe)
 				{
 					banner *b = elencoBanner.at((indice + i) % elencoBanner.size());
-					b->setGeometry(0, i*  QWidget::height() /numRighe, QWidget::width(),QWidget::height()/numRighe);
+					b->setGeometry(0, i*  BTWidget::height() /numRighe, BTWidget::width(), BTWidget::height()/numRighe);
 					b->Draw();
 					b->show();
 				}
@@ -398,7 +398,7 @@ void sottoMenu::setGeometry(int x, int y, int w, int h)
 	qDebug("sottoMenu::setGeometry(%d, %d, %d, %d)", x, y, w, h);
 	height = h;
 	width = w;
-	QWidget::setGeometry(x, y, w, h);
+	BTWidget::setGeometry(x, y, w, h);
 }
 
 void sottoMenu::hideEvent(QHideEvent *event)

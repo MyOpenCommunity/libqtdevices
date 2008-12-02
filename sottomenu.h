@@ -15,8 +15,8 @@
 #include "banner.h"
 #include "device_status.h"
 #include "bttime.h"
+#include "btwidget.h"
 
-#include <QWidget>
 #include <QDomNode>
 #include <QDateTime>
 
@@ -34,7 +34,7 @@ class FSBannDate;
   \author Davide
   \date lug 2005
   */
-class sottoMenu : public QWidget
+class sottoMenu : public BTWidget
 {
 Q_OBJECT
 public:
@@ -215,11 +215,6 @@ private:
 signals:
 	void goUP();
 	void goDO();
-
-	/*!
-	\brief Emitted when the object is closed.
-	*/
-	void Closed();
 
 	/*!
 	\brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
