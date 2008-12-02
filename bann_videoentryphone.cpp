@@ -205,7 +205,7 @@ void call_notifier::stairlight_pressed()
 {
 	qDebug("call_notifier::stairlight_pressed()");
 	if (my_station)
-	my_station->stairlight_pressed();
+		my_station->stairlight_pressed();
 	myTimer->start(30000);
 }
 
@@ -213,7 +213,7 @@ void call_notifier::stairlight_released()
 {
 	qDebug("call_notifier::stairlight_released()");
 	if (my_station)
-	my_station->stairlight_released();
+		my_station->stairlight_released();
 	myTimer->start(30000);
 }
 
@@ -221,7 +221,7 @@ void call_notifier::open_door_clicked()
 {
 	qDebug("call_notifier::open_door_clicked()");
 	if (my_station)
-	my_station->open_door_clicked();
+		my_station->open_door_clicked();
 	myTimer->start(30000);
 }
 
