@@ -27,6 +27,7 @@
 #include "lighting.h"
 #include "scenario.h"
 #include "videoentryphone.h"
+#include "settings.h"
 
 #include <QObject>
 #include <QRegExp>
@@ -814,7 +815,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case IMPOSTAZIONI:
-						*imposta = new sottoMenu;
+						*imposta = new Settings(0, page_node);
 						QObject::connect(*imposta,SIGNAL(setPwd(bool, QString)), BtM, SLOT(setPwd(bool, QString)));
 						pageAct = *imposta;
 						break;
