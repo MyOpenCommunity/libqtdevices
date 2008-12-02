@@ -29,14 +29,14 @@
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 
-impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, QString hour, QString minute, QString icon1,
-	QString icon2, QString icon3, int enabled, int freq, int tipo)
+impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
+	QString icon2, QString icon3, int enabled, int tipo, int freq)
 	: bann2But(parent)
 {
 	icon_on = icon1;
 	icon_off = icon2;
 	SetIcons(icon_off, icon3);
-	svegliolina = new sveglia(NULL,(uchar) freq, (uchar) tipo,diso, 0, hour.toInt(), minute.toInt());
+	svegliolina = new sveglia(0, static_cast<sveglia::sveType>(tipo), static_cast<sveglia::sveFreq>(freq), diso, hour, minute);
 	svegliolina->hide();
 	setAbil(enabled == 1);
 	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));

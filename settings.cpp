@@ -26,7 +26,6 @@ void Settings::loadItems(QDomNode config_node)
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
-		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
 		banner *b;
 		switch (id)
 		{
@@ -38,8 +37,8 @@ void Settings::loadItems(QDomNode config_node)
 			int type = getTextChild(item, "type").toInt();
 			int enabled = getTextChild(item, "enabled").toInt();
 			int alarmset = getTextChild(item, "alarmset").toInt();
-			QString hour = getTextChild(item, "hour");
-			QString minute = getTextChild(item, "minute");
+			int hour = getTextChild(item, "hour").toInt();
+			int minute = getTextChild(item, "minute").toInt();
 
 			contdiff *cont = 0;
 			if (type == sveglia::DI_SON)

@@ -34,11 +34,32 @@ class QLabel;
   \author Davide
   \date lug 2005
 */
-class  sveglia : public QWidget
+class sveglia : public QWidget
 {
 Q_OBJECT
 public:
-    sveglia(QWidget *parent=0, uchar freq=1, uchar t=0, contdiff *diso=NULL, char *frame=NULL, int hour=12, int minute=0);
+/*! \enum  sveFreq
+  Differentiate the alarm set frequencies of operation
+*/
+	enum sveFreq
+	{
+		SEMPRE = 1,  /*!< Always -> every day*/
+		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
+		FERIALI = 2,  /*!< Week days -> only from monday to friday*/
+		FESTIVI = 3,  /*!< Festive days -> only on Sunday and Saturday*/
+		NESSUNO = 50  /*!< Never*/
+	};
+
+/*! \enum sveType
+  Differentiate the alarm set type
+*/
+	enum sveType
+	{
+		BUZZER = 0,  /*!< The buzzer sounds and backlight flashes*/
+		DI_SON = 1  /*!< The sound diffusion system is used*/
+	};
+
+    sveglia(QWidget *parent, sveType t, sveFreq f, contdiff *diso, int hour, int minute);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
@@ -65,27 +86,7 @@ public:
 */
 	void inizializza();
 
-/*! \enum  sveFreq
-  Differentiate the alarm set frequencies of operation
-*/
-	enum sveFreq
-	{
-		SEMPRE = 1,  /*!< Always -> every day*/
-		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
-		FERIALI = 2,  /*!< Week days -> only from monday to friday*/
-		FESTIVI = 3,  /*!< Festive days -> only on Sunday and Saturday*/
-		NESSUNO = 50  /*!< Never*/
-	};
 
-/*! \enum sveType
-  Differentiate the alarm set type
-*/
-	enum sveType
-	{
-		BUZZER = 0,  /*!< The buzzer sounds and backlight flashes*/
-		DI_SON = 1,  /*!< The sound diffusion system is used*/
-		FRAME = 2   /*!< An \a Open \a frame is emitted (used in schedulations)*/
-	};
 
 public slots:
 /*!
@@ -154,10 +155,12 @@ public slots:
 	void spegniSveglia(bool);
 
 private:
+	sveType tipo;
+	sveFreq tipoSveglia;
 	void drawSelectPage();
 	timeScript *dataOra;
 	bannFrecce *bannNavigazione;
-	uchar tipoSveglia,conta2min,sorgente,stazione,tipo,aggiornaDatiEEprom;
+	uchar conta2min,sorgente,stazione, aggiornaDatiEEprom;
 	int serNum;
 	bool buzAbilOld;
 	unsigned int contaBuzzer;

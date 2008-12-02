@@ -37,7 +37,7 @@
 #include <unistd.h>
 
 
-sveglia::sveglia(QWidget *parent, uchar t, uchar freq, contdiff *diso, char *f, int hour, int minute)
+sveglia::sveglia(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int hour, int minute)
 	: QWidget(parent)
 {
 	// TODO: rimuovere gestione frame!
@@ -111,9 +111,7 @@ sveglia::sveglia(QWidget *parent, uchar t, uchar freq, contdiff *diso, char *f, 
 	minuTimer = NULL;
 	tipoSveglia = freq;
 	tipo = t;
-	qDebug("tipoSveglia= %d - tipo= %d",tipoSveglia, tipo);
-	if (tipo == FRAME)
-		frame = f;
+	qDebug("tipoSveglia = %d - tipo= %d ",tipoSveglia, tipo);
 
 	connect(BTouch, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
@@ -425,11 +423,8 @@ void sveglia::verificaSveglia()
 				BTouch->freeze(true);
 				BTouch->svegl(true);
 			}
-			else if (tipo == FRAME)
-			{
-				qDebug() << "mando la frame:" << frame;
-				BTouch->sendFrame(frame);
-			}
+			else
+				assert(!"Unknown sveglia type!");
 
 			qDebug("PARTE LA SVEGLIA");
 
