@@ -20,7 +20,6 @@ class ThermalMenu;
 class versio;
 class BtMain;
 class ambDiffSon;
-class scenEvo_cond;
 class Client;
 class SupervisionMenu;
 
@@ -114,8 +113,7 @@ private:
 	QString page_item_what;
 	QString page_item_where, page_item_where_m;
 	QString page_item_mode;
-	QString page_icon, page_item_who, page_item_type, page_item_action;
-	int page_item_softstart, page_item_softstop;
+	QString page_icon, page_item_who, page_item_type;
 
 	void *page_item_indirizzo;
 
@@ -124,10 +122,7 @@ private:
 	QList<QString*> *page_item_list_group;
 	QList<QString*> *page_item_list_group_m;
 	QList<QString> page_item_list_txt;
-	QList<QString*> *page_item_list_txt_times;
 
-	scenEvo_cond *page_item_cond;
-	QList<scenEvo_cond*> *page_item_cond_list;
 	int	par1, par2,par3, par4;
 	unsigned int itemNum;
 	QString CurTagL4_copy, CurTagL5_copy;

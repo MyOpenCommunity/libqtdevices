@@ -118,9 +118,7 @@ void sottoMenu::setModeIcon(QString iconBut4)
 int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		QList<QString*> &icon_names, int periodo, int numFrame,
 		char *descr1, char *descr2, char *descr3, char *descr4,
-		int par3, int par4,
-		QList<QString*> *lt, QList<scenEvo_cond*> *lc,
-		QString action)
+		int par3, int par4)
 {
 	QString IconaSx = *safeAt(icon_names, 0);
 	QString IconaDx = *safeAt(icon_names, 1);
@@ -130,7 +128,7 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	QString icoEx2 = *safeAt(icon_names, 5);
 	QString icoEx3 = *safeAt(icon_names, 6);
 
-	qDebug("sottoMenu::addItem (%p)", lt);
+	qDebug("sottoMenu::addItemU");
 	switch (tipo)
 	{
 	case CARICO:

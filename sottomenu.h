@@ -70,9 +70,7 @@ sstop : soft stop values list vor dimmer 100 group
 	virtual int addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0,
 		char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
-		int par3=0, int par4=0,
-		QList<QString*> *lt = NULL, QList<scenEvo_cond*> *lc = NULL,
-		QString action="");
+		int par3=0, int par4=0);
 
 	/**
 	* Add a new banner.

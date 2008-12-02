@@ -20,7 +20,6 @@
 #include "versio.h"
 #include "antintrusion.h"
 #include "thermalmenu.h"
-#include "scenevocond.h" // TODO: rimuovere appena possibile!
 #include "btmain.h"
 #include "openclient.h"
 #include "supervisionmenu.h"
@@ -117,8 +116,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 
 	page_item_list_group = new QList<QString*>;
 	page_item_list_group_m = new QList<QString*>;
-	page_item_list_txt_times = new QList<QString*>;
-	page_item_cond_list = new QList<scenEvo_cond*>; // TODO: rimuovere appena possibile!
 	device_descr = "";
 	// Start counting for wd refresh
 	wdtime.start();
@@ -144,16 +141,6 @@ xmlconfhandler::~xmlconfhandler()
 	while (!page_item_list_group_m->isEmpty())
 		delete page_item_list_group_m->takeFirst();
 	delete page_item_list_group_m;
-
-	// NOTE: usato solo da sottomenu (parametro lt)
-	while (!page_item_list_txt_times->isEmpty())
-		delete page_item_list_txt_times->takeFirst();
-	delete page_item_list_txt_times;
-
-	// NOTE: usato dal sottomenu che lo usa per gli scenari evoluti
-	while (!page_item_cond_list->isEmpty())
-		delete page_item_cond_list->takeFirst();
-	delete page_item_cond_list;
 }
 
 
@@ -173,8 +160,6 @@ void xmlconfhandler::set_page_item_defaults()
 	page_item_list_img_m.clear();
 	page_item_list_group->clear();
 	page_item_list_group_m->clear();
-	page_item_list_txt_times->clear();
-	page_item_cond_list->clear();
 	
 	par1 = par2 = 0;
 	page_item_list_txt.clear();
@@ -185,8 +170,6 @@ void xmlconfhandler::set_page_item_defaults()
 	page_item_who = "";
 	page_item_type = "0";
 	page_item_mode = "0";
-	page_item_softstart = 25;
-	page_item_softstop = 25;
 	itemNum=0;
 }
 
@@ -326,9 +309,7 @@ void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 	
 	sm->addItemU((char)page_item_id, page_item_descr, address, page_item_list_img,
 			par1, par2, buf_img1.data(), buf_img2.data(),
-			buf_img3.data(), buf_img4.data(), par3, par4,
-			page_item_list_txt_times, page_item_cond_list, page_item_action);
-	page_item_cond_list->clear();
+			buf_img3.data(), buf_img4.data(), par3, par4);
 }
 
 /*******************************************
@@ -886,12 +867,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 						page_item_descr = qValue;
 					else if (!CurTagL5.compare("mode"))
 						page_item_mode = qValue;
-					else if (!CurTagL5.compare("softstart"))
-						page_item_softstart = qValue.toInt(&ok, 10);
-					else if (!CurTagL5.compare("softstop"))
-						page_item_softstop = qValue.toInt(&ok, 10);
-					else if (CurTagL5.startsWith("time"))
-						page_item_list_txt_times->append(new QString(qValue));
 					else if (!CurTagL5.compare("where"))
 						page_item_where = qValue;
 					else if (!CurTagL5.compare("what"))
