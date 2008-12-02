@@ -27,6 +27,7 @@
 #include "automation.h"
 #include "lighting.h"
 #include "scenario.h"
+#include "videoentryphone.h"
 
 #include <QObject>
 #include <QRegExp>
@@ -119,10 +120,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	page_item_list_txt_times = new QList<QString*>;
 	page_item_cond_list = new QList<scenEvo_cond*>; // TODO: rimuovere appena possibile!
 	device_descr = "";
-	page_item_unknown = "";
-	page_item_txt1 = "";
-	page_item_txt2 = "";
-	page_item_txt3 = "";
 	// Start counting for wd refresh
 	wdtime.start();
 }
@@ -184,16 +181,12 @@ void xmlconfhandler::set_page_item_defaults()
 	page_item_what = "";
 	page_item_descr = "";
 	page_item_where = "";
-	page_item_key = "";
-	page_item_light = "";
 	page_icon = "";
 	page_item_who = "";
 	page_item_type = "0";
 	page_item_mode = "0";
 	page_item_softstart = 25;
 	page_item_softstop = 25;
-	sstart.clear();
-	sstop.clear();
 	itemNum=0;
 }
 
@@ -334,9 +327,7 @@ void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
 	sm->addItemU((char)page_item_id, page_item_descr, address, page_item_list_img,
 			par1, par2, buf_img1.data(), buf_img2.data(),
 			buf_img3.data(), buf_img4.data(), par3, par4,
-			page_item_list_txt_times, page_item_cond_list, page_item_action,
-			page_item_light, page_item_key, page_item_unknown, sstart, sstop,
-			page_item_txt1, page_item_txt2, page_item_txt3);
+			page_item_list_txt_times, page_item_cond_list, page_item_action);
 	page_item_cond_list->clear();
 }
 
@@ -469,8 +460,8 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					case VIDEOCITOFONIA:
 						pageAct = *videocitofonia;
-						addr = computeAddress();
-						addItemU(pageAct, addr);
+						//addr = computeAddress();
+						//addItemU(pageAct, addr);
 						break;
 
 					case IMPOSTAZIONI:
@@ -785,18 +776,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 			// Legge le varie pagine: page1, page2,..., pagen
 			else if (CurTagL3.startsWith("page"))
 			{
-				if ((CurTagL3 == "pagevct") && (CurTagL4 == "unknown"))
-					page_item_unknown = qValue;
-
-				if ((CurTagL3 == "pagevct") && (CurTagL4.startsWith("txt")))
-				{
-					if (page_item_txt1 == "")
-						page_item_txt1 = qValue;
-					else if (page_item_txt2 == "")
-						page_item_txt2 = qValue;
-					else
-						page_item_txt3 = qValue;
-				}
 				if (CurTagL4 == "id")
 				{
 					QWidget* pageAct = NULL;
@@ -869,7 +848,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case VIDEOCITOFONIA:
-						*videocitofonia = new sottoMenu;
+						*videocitofonia = new VideoEntryPhone(0, page_node);
 						pageAct = *videocitofonia;
 						break;
 
@@ -917,25 +896,11 @@ bool xmlconfhandler::characters(const QString & qValue)
 						page_item_where = qValue;
 					else if (!CurTagL5.compare("what"))
 						page_item_what = qValue;
-					else if (!CurTagL5.compare("light"))
-						page_item_light = qValue;
-					else if (!CurTagL5.compare("key"))
-						page_item_key = qValue;
 					else if (CurTagL5.startsWith("element"))
 					{
 						if (!CurTagL6.compare("where"))
 						{
 							page_item_list_group->append(new QString(qValue));
-						}
-						if (!CurTagL6.compare("softstart"))
-						{
-							qDebug("**** SOFTSTART %d", qValue.toInt());
-							sstart.append(qValue.toInt());
-						}
-						if (!CurTagL6.compare("softstop"))
-						{
-							qDebug("**** SOFTSTOP %d", qValue.toInt());
-							sstop.append(qValue.toInt());
 						}
 					}
 					else if ((CurTagL5.startsWith("cimg")) || (!CurTagL5.compare("value")) ||
@@ -1034,12 +999,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 				else if (!CurTagL4.compare("type"))
 				{
 					par3 = qValue.toInt(&ok, 10);
-				}
-				else if (!CurTagL4.compare("ind_centrale"))
-				{
-					// Name doesn't matter, the variable is used as a trick to pass value to termo
-					// constructor.
-					page_item_txt1 = qValue;
 				}
 			} // else if (CurTagL4.startsWith("page"))
 		} // if (!CurTagL2.startsWith("displaypages"))

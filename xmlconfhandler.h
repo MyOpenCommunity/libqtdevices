@@ -114,12 +114,6 @@ private:
 	QString page_item_what;
 	QString page_item_where, page_item_where_m;
 	QString page_item_mode;
-	QString page_item_key;
-	QString page_item_light;
-	QString page_item_unknown;
-	QString page_item_txt1;
-	QString page_item_txt2;
-	QString page_item_txt3;
 	QString page_icon, page_item_who, page_item_type, page_item_action;
 	int page_item_softstart, page_item_softstop;
 
@@ -131,8 +125,6 @@ private:
 	QList<QString*> *page_item_list_group_m;
 	QList<QString> page_item_list_txt;
 	QList<QString*> *page_item_list_txt_times;
-	QList<int>sstart;
-	QList<int>sstop;
 
 	scenEvo_cond *page_item_cond;
 	QList<scenEvo_cond*> *page_item_cond_list;

@@ -118,6 +118,7 @@ HEADERS += actuators.h \
            titlelabel.h \
            versio.h \
            videocitof.h \
+           videoentryphone.h \
            xmlconfhandler.h \
            xml_functions.h \
 
@@ -208,6 +209,7 @@ SOURCES += actuators.cpp \
            titlelabel.cpp \
            versio.cpp \
            videocitof.cpp \
+           videoentryphone.cpp \
            xmlconfhandler.cpp \
            xml_functions.cpp \
 

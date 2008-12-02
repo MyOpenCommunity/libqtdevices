@@ -120,9 +120,7 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		char *descr1, char *descr2, char *descr3, char *descr4,
 		int par3, int par4,
 		QList<QString*> *lt, QList<scenEvo_cond*> *lc,
-		QString action, QString light, QString key, QString unknown,
-		QList<int> sstart, QList<int> sstop,
-		QString txt1, QString txt2, QString txt3)
+		QString action)
 {
 	QString IconaSx = *safeAt(icon_names, 0);
 	QString IconaDx = *safeAt(icon_names, 1);
@@ -205,9 +203,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 		break;
 	case PROTEZIONE:
 		elencoBanner.append(new impPassword(this, IconaDx, icon, pressedIcon, IconaSx, periodo));
-		break;
-	case POSTO_ESTERNO:
-		elencoBanner.append(new postoExt(this, descrizione, IconaSx, IconaDx, icon, pressedIcon, (char *)indirizzo, light, key, unknown));
 		break;
 	case SORG_RADIO:
 		elencoBanner.append(new sorgenteMultiRadio(this, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));

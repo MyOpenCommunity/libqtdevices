@@ -29,7 +29,7 @@ call_notifier_manager *postoExt::cnm = NULL;
 call_notifier *postoExt::unknown_notifier = NULL;
 
 
-postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, QString Icona3, QString Icona4, char *_where,
+postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, QString Icona3, QString Icona4, QString _where,
 	QString _light, QString _key, QString _unknown) : bann4tasLab(parent)
 {
 	where = _where;
