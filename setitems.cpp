@@ -29,19 +29,6 @@
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 
-setDataOra::setDataOra(sottoMenu *parent) : bannOnDx(parent)
-{
-	SetIcons(ICON_INFO,1);
-	connect(this, SIGNAL(click()), &settalora, SLOT(showFullScreen()));
-	connect(&settalora, SIGNAL(Closed()), &settalora, SLOT(hide()));
-}
-
-void setDataOra::hideEvent(QHideEvent *event)
-{
-	settalora.hide();
-}
-
-
 impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, QString hour, QString minute, QString icon1,
 	QString icon2, QString icon3, int enabled, int freq, int tipo)
 	: bann2But(parent)

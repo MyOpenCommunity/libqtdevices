@@ -21,7 +21,7 @@
 
 
 
-impostaTime::impostaTime(QWidget *parent) : QWidget(parent)
+impostaTime::impostaTime(QWidget *parent) : BTWidget(parent)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));

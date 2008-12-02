@@ -15,7 +15,6 @@
 #include "banner.h"
 #include "bannondx.h"
 #include "bann2but.h"
-#include "impostatime.h"
 
 #include <QWidget>
 
@@ -25,24 +24,6 @@ class tastiera;
 class Calibrate;
 class contrPage;
 class contdiff;
-
-/*!
-  \class setDataOra
-  \brief This class is made to set time and date.
-
-  \author Davide
-  \date lug 2005
-*/
-class setDataOra : public bannOnDx 
-{
-Q_OBJECT
-public:
-	setDataOra(sottoMenu *parent);
-protected:
-	virtual void hideEvent(QHideEvent *event);
-private:
-	impostaTime settalora;
-};
 
 
 /*!

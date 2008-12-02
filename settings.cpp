@@ -7,6 +7,7 @@
 #include "diffmulti.h" // contdiff
 #include "xml_functions.h" // getChildren, getTextChild
 #include "cleanscreen.h"
+#include "impostatime.h"
 
 #include <QDebug>
 
@@ -52,7 +53,7 @@ void Settings::loadItems(QDomNode config_node)
 			break;
 			}
 		case SET_DATA_ORA:
-			b = new setDataOra(this);
+			b = new bannOnDx(this, ICON_INFO, new impostaTime());
 			break;
 		case CONTRASTO:
 			b = new impContr(this, getTextChild(item, "value"), img1);

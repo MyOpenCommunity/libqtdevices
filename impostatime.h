@@ -11,7 +11,7 @@
 #ifndef IMPOSTA_TIME_H
 #define IMPOSTA_TIME_H
 
-#include <QWidget>
+#include "btwidget.h"
 
 class timeScript;
 class BtButton;
@@ -26,18 +26,12 @@ class QLabel;
   \date lug 2005
 */
 
-class  impostaTime : public QWidget
+class  impostaTime : public BTWidget
 {
 Q_OBJECT
 public:
 	impostaTime(QWidget *parent=0);
 	BtButton *but[7];
-
-signals:
-/*!
-  \brief Emitted when the object is closed.
-*/
-	void Closed();
 
 protected:
 	virtual void showEvent(QShowEvent *event);
