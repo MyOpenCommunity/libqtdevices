@@ -12,7 +12,6 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 #include "bannsettings.h"
-#include "postoext.h"
 #include "setitems.h"
 #include "btbutton.h"
 #include "diffsonora.h"

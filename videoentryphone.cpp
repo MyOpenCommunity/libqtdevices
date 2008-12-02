@@ -1,6 +1,6 @@
 #include "videoentryphone.h"
-#include "postoext.h"
-#include "xml_functions.h"
+#include "bann_videoentryphone.h"
+#include "xml_functions.h" // getTextChild, getChildren
 
 #include <QDebug>
 

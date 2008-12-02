@@ -1,14 +1,4 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** postoext.cpp
- **
- **
- **
- ****************************************************************/
-
-#include "postoext.h"
+#include "bann_videoentryphone.h"
 #include "openclient.h" // Client
 #include "device_cache.h" // btouch_device_cache
 #include "videocitof.h" // class call_notifier
@@ -18,9 +8,6 @@
 #include <QDebug>
 
 
-/*****************************************************************
- ** Posto Esterno
- ****************************************************************/	
 
 // Static pointer to call notifier manager
 call_notifier_manager *postoExt::cnm = NULL;

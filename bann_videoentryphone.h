@@ -1,15 +1,5 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** postoext.h
- **
- **
- **
- ****************************************************************/
-
-#ifndef POSTOEXT_H
-#define POSTOEXT_H
+#ifndef BANN_VIDEOENTRYPHONE_H
+#define BANN_VIDEOENTRYPHONE_H
 
 #include "bann4taslab.h"
 
@@ -21,9 +11,6 @@ class call_notifier_manager;
 class call_notifier;
 
 
-/*****************************************************************
- ** Posto esterno
- ****************************************************************/
 /*!
  * \class postoExt
  * \brief This class represents an outdoor station

@@ -2,7 +2,7 @@
 #include "device.h"
 #include "frame_interpreter.h"
 #include "device_cache.h"
-#include "postoext.h"
+#include "bann_videoentryphone.h"
 #include "btbutton.h"
 #include "fontmanager.h"
 #include "main.h"

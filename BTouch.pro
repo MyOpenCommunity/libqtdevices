@@ -47,6 +47,7 @@ HEADERS += actuators.h \
            bann_automation.h \
            bann_lighting.h \
            bann_scenario.h \
+           bann_videoentryphone.h \
            bannbut2icon.h \
            bannbuticon.h \
            bannciclaz.h \
@@ -96,7 +97,6 @@ HEADERS += actuators.h \
            openclient.h \
            plantmenu.h \
            playwindow.h \
-           postoext.h \
            poweramplifier.h \
            poweramplifier_device.h \
            radio.h \
@@ -138,6 +138,7 @@ SOURCES += actuators.cpp \
            bann_automation.cpp \
            bann_lighting.cpp \
            bann_scenario.cpp \
+           bann_videoentryphone.cpp \
            bannbut2icon.cpp \
            bannbuticon.cpp \
            bannciclaz.cpp \
@@ -187,7 +188,6 @@ SOURCES += actuators.cpp \
            openclient.cpp \
            plantmenu.cpp \
            playwindow.cpp \
-           postoext.cpp \
            poweramplifier.cpp \
            poweramplifier_device.cpp \
            radio.cpp \
