@@ -61,8 +61,8 @@ postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, Q
 				this, SLOT(frame_captured_handler(call_notifier *)));
 		connect(cnm, SIGNAL(call_notifier_closed(call_notifier *)),
 				this, SLOT(call_notifier_closed(call_notifier *)));
-		connect(btouch_device_cache.get_client_monitor(),
-				SIGNAL(frameIn(char *)), cnm, SLOT(gestFrame(char *)));
+		connect(BTouch->client_monitor, SIGNAL(frameIn(char *)),
+				cnm, SLOT(gestFrame(char *)));
 	}
 	cnm->add_call_notifier(cn);
 	if (unknown && !unknown_notifier)

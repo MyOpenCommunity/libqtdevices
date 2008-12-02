@@ -421,16 +421,6 @@ void device_cache::set_clients(Client* com, Client* mon, Client* ri)
 	client_richieste = ri;
 }
 
-Client *device_cache::get_client_comandi()
-{
-	return client_comandi;
-}
-
-Client *device_cache::get_client_monitor()
-{
-	return client_monitor;
-}
-
 // Destructor
 device_cache::~device_cache()
 {

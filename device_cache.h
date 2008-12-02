@@ -28,10 +28,6 @@ public:
 	device_cache();
 	//! Inits all devices
 	void init_devices();
-	//! Returns pointer to client_comandi
-	Client *get_client_comandi();
-	//! Returns pointer to client_monitor
-	Client *get_client_monitor();
 	//! Get simple light device
 	device *get_light(QString where);
 	//! Get old dimmer device
