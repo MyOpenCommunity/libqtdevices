@@ -11,11 +11,9 @@
 #include "sottomenu.h"
 #include "btmain.h"
 #include "main.h" // BTouch
-#include "setitems.h"
 #include "btbutton.h"
 #include "diffsonora.h"
 #include "diffmulti.h"
-#include "versio.h"
 #include "generic_functions.h"
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"
@@ -27,7 +25,6 @@
 #include "sorgentimedia.h"
 #include "carico.h"
 #include "bannfullscreen.h"
-#include "lansettings.h"
 
 #include <QByteArray>
 #include <QPixmap>
@@ -132,9 +129,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	case CARICO:
 		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));
 		break;
-	case SET_DATA_ORA:
-		elencoBanner.append(new setDataOra(this));
-		break;
 	case POWER_AMPLIFIER:
 		elencoBanner.append(new PowerAmplifier(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;
@@ -168,63 +162,12 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	case SORGENTE_RADIO:
 		elencoBanner.append(new banradio(this, (char*)indirizzo));
 		break;
-	case SET_SVEGLIA:
-		elencoBanner.append(new impostaSveglia(this, (contdiff*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, periodo, numFrame, icoEx1, par3));
-		break;
-	case CALIBRAZIONE:
-		{
-			calibration *c = new calibration(this, IconaSx);
-			elencoBanner.append(c);
-			connect(c, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
-			connect(c, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
-			break;
-		}
-	/// New parameters for termoPage (that is in items.cpp)
-	// WARNING! par3 is <type> tag of TERMO page, par4 is <ind_centrale>
-	/* Ecco i nuovi Componenti
-	TERMO_FANCOIL=52,           Thermoregulation zone with fan-coil control
-	TERMO_4Z=53,                4 Zones Thermoregulation
-	TERMO_4Z_FANCOIL=54,        4 Zones Thermoregulation with fan-coil control
-	TERMO_EXTPROBE=55,          External not-controlled probe
-	TERMO_PROBE=56,             Not-controlled probe
-	*/
-	case SUONO: // iconaSx e' in realta' "value"
-		elencoBanner.append(new impBeep(this, IconaSx, IconaDx, icon));
-		break;
-	case CONTRASTO: // iconaSx e' in realta' "value"
-		elencoBanner.append(new impContr(this, IconaSx, IconaDx));
-		break;
-	case VERSIONE:
-		elencoBanner.append(new machVers(this, (versio*)indirizzo, IconaSx));
-		break;
-	case PROTEZIONE:
-		elencoBanner.append(new impPassword(this, IconaDx, icon, pressedIcon, IconaSx, periodo));
-		break;
 	case SORG_RADIO:
 		elencoBanner.append(new sorgenteMultiRadio(this, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
 	case SORG_AUX:
 		elencoBanner.append(new sorgenteMultiAux(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
 		break;
-	case BRIGHTNESS:
-		elencoBanner.append(new BannBrightness(this));
-		break;
-	case CLEANSCREEN:
-		elencoBanner.append(new BannCleanScreen(this));
-		break;
-	case LANSETTINGS:
-	{
-		bannOnDx *b = new bannOnDx(this);
-		b->SetIcons(ICON_INFO, 1);
-		elencoBanner.append(b);
-		// create lansettings menu
-		LanSettings *ls = new LanSettings(this);
-		ls->hide();
-		// TODO: rimuovere la hideChildren! Rimplementare la hideEvent al suo posto!
-		connect(this, SIGNAL(hideChildren()), ls, SLOT(hide()));
-		connect(b, SIGNAL(click()), ls, SLOT(showFullScreen()));
-		break;
-	}
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}

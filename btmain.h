@@ -81,15 +81,18 @@ public slots:
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
+public:
+	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
+	diffSonora *difSon;
+	diffmulti *dm;
+	versio *datiGen;
+
 private:
 	homePage *Home, *specPage;
 	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
-	diffmulti *dm;
 	ThermalMenu *termo;
-	diffSonora *difSon;
 	Antintrusion *antintr;
 	SupervisionMenu *supervisione;
-	versio *datiGen;
 	QTimer *tempo1;
 	QTimer *tempo2;
 	QWidget *pagDefault;

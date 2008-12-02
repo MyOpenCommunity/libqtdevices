@@ -40,6 +40,7 @@
 sveglia::sveglia(QWidget *parent, uchar t, uchar freq, contdiff *diso, char *f, int hour, int minute)
 	: QWidget(parent)
 {
+	// TODO: rimuovere gestione frame!
 	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;

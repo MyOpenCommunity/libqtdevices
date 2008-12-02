@@ -440,14 +440,10 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					case VIDEOCITOFONIA:
 						pageAct = *videocitofonia;
-						//addr = computeAddress();
-						//addItemU(pageAct, addr);
 						break;
 
 					case IMPOSTAZIONI:
 						pageAct = *imposta;
-						addr = computeAddress();
-						addItemU(pageAct, addr);
 						break;
 
 					case ANTIINTRUSIONE:
