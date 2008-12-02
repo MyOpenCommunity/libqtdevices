@@ -13,6 +13,9 @@
 #define BANNFULLSCREEN_H
 
 #include "banner.h"
+#include "bann3but.h"
+#include "bann4but.h"
+#include "bannpuls.h"
 #include "device_status.h"
 #include "btwidgets.h"
 #include "bttime.h"
@@ -66,6 +69,7 @@ enum BannID
 /// Factory function to get banners
 BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale = CELSIUS);
 
+
 /**
  * A base class for banners that represent a probe. It displays a label with zone name on top
  * and the measured temperature.
@@ -91,6 +95,7 @@ protected:
 	/// Temperature scale
 	TemperatureScale temp_scale;
 };
+
 
 /**
  * Displays information about a probe controlled by a thermal regulator.
@@ -181,6 +186,7 @@ private slots:
 	 */
 	void decSetpoint();
 };
+
 
 /**
  *
@@ -344,6 +350,7 @@ private:
 	WeeklyMenu *program_menu;
 };
 
+
 /**
  * Displays information about the thermal regulator device. Information may be: operation mode, label
  * describing more information about mode (for example, the program name), current season.
@@ -372,6 +379,7 @@ private slots:
 	void manualTimedCancelled();
 };
 
+
 /**
  * The difference with FSBannTermoReg4z is in settings menu. 99 zones thermal regulators allow the user
  * to set the scenario and do not have a manual timed mode
@@ -393,6 +401,7 @@ private slots:
 	void scenarioCancelled();
 	void scenarioSelected(int scenario);
 };
+
 
 /**
  * Displays information about a controlled probe with fancoil. In addition to FSBannProbe, it displays
@@ -419,6 +428,7 @@ private:
 private slots:
 	void handleFancoilButtons(int pressedButton);
 };
+
 
 class FSBannManual : public BannFullScreen
 {
@@ -452,6 +462,7 @@ signals:
 	void temperatureSelected(unsigned);
 };
 
+
 /**
  * A fullscreen banner to edit setpoint temperature and the duration of manual settings
  */
@@ -472,6 +483,7 @@ signals:
 	void timeAndTempSelected(BtTime, int);
 };
 
+
 class FSBannDate : public BannFullScreen
 {
 Q_OBJECT
@@ -483,6 +495,7 @@ private:
 	BtDateEdit *date_edit;
 };
 
+
 class FSBannTime : public BannFullScreen
 {
 Q_OBJECT
@@ -493,6 +506,96 @@ private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;
 	int hours, minutes;
+};
+
+
+/**
+ * This banner shuts the thermal regulator off when clicked. Before using it, be sure to
+ * set the address of the thermal regulator.
+ * It displays a button in the center with icon "OFF".
+ */
+class BannOff : public bann3But
+{
+Q_OBJECT
+public:
+	BannOff(QWidget *parent, thermal_regulator *_dev);
+public slots:
+	/**
+	 * Shut down the thermal regulator
+	 */
+	void performAction();
+private:
+	/// The device that this banner sends commands to
+	thermal_regulator *dev;
+signals:
+	void clicked();
+};
+
+
+/**
+ * This banner sets the thermal regulator in antifreeze protection. Be sure to set the
+ * address of the device.
+ * It displays one button at the center with icon antifreeze on it.
+ */
+class BannAntifreeze : public bann3But
+{
+Q_OBJECT
+public:
+	BannAntifreeze(QWidget *parent, thermal_regulator *_dev);
+public slots:
+	/**
+	 * Set thermal regulator in antifreeze protection
+	 */
+	void performAction();
+private:
+	/// The device that this banner sends commands to
+	thermal_regulator *dev;
+signals:
+	void clicked();
+};
+
+
+/**
+ * This banner sets the thermal regulator in summer or winter status, depending on the
+ * button pressed.
+ * It displays two buttons at the center, one with the summer icon and one with the winter icon.
+ */
+class BannSummerWinter : public bann4But
+{
+Q_OBJECT
+public:
+	BannSummerWinter(QWidget *parent, thermal_regulator *_dev);
+	enum seasons {WINTER, SUMMER};
+public slots:
+	void setSummer();
+	void setWinter();
+private:
+	seasons status;
+	/// The device that this banner sends commands to
+	thermal_regulator *dev;
+signals:
+	void clicked();
+};
+
+
+/**
+ * This banner emits a signal with an int, corresponding to the program set with setProgram(). Default
+ * program is 1, so be sure to set the program you want to be set before using it.
+ * It displays a not clickable image on the center, an ok button on the right and program description
+ * below.
+ */
+class BannWeekly : public bannPuls
+{
+Q_OBJECT
+public:
+	BannWeekly(QWidget *parent);
+	void setProgram(int prog);
+public slots:
+	void performAction();
+private:
+	int program;
+signals:
+	void programNumber(int);
 };
 
 #endif // BANNFULLSCREEN_H

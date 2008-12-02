@@ -11,7 +11,6 @@
 #include "sottomenu.h"
 #include "btmain.h"
 #include "main.h" // BTouch
-#include "bannsettings.h"
 #include "setitems.h"
 #include "btbutton.h"
 #include "diffsonora.h"

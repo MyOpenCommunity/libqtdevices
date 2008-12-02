@@ -63,7 +63,6 @@ HEADERS += actuators.h \
            bannonoffcombo.h \
            bannpuls.h \
            bannregolaz.h \
-           bannsettings.h \
            banntemperature.h \
            brightnesspage.h \
            brightnesscontrol.h \
@@ -153,7 +152,6 @@ SOURCES += actuators.cpp \
            bannonoffcombo.cpp \
            bannpuls.cpp \
            bannregolaz.cpp \
-           bannsettings.cpp \
            banntemperature.cpp \
            btbutton.cpp \
            btmain.cpp \
