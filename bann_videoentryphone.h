@@ -48,8 +48,6 @@ public  slots:
 	void stairlight_released();
 	//! Invoked when left button is clicked
 	void open_door_clicked();
-	//! Usual gestFrame
-	void gestFrame(char *);
 	//! Invoked when a frame has been captured by a call_notifier
 	void frame_captured_handler(call_notifier *);
 	//! Invoked when a call_notifier window is closed

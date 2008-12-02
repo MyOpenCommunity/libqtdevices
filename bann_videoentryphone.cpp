@@ -73,11 +73,6 @@ postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, Q
 	}
 }
 
-void postoExt::gestFrame(char *s)
-{
-	qDebug("postoExt::gestFrame()");
-}
-
 void postoExt::frame_captured_handler(call_notifier *cn)
 {
 	qDebug("postoExt::frame_captured_handler()");

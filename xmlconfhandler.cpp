@@ -558,14 +558,12 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						pageAct = *automazioni;
 						(*automazioni)->forceDraw();
 						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
-						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*automazioni,SIGNAL(gestFrame(char *)));
 						break;
 
 					case ILLUMINAZIONE:
 						pageAct = *illumino;
 						(*illumino)->forceDraw();
 						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
-						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*illumino,SIGNAL(gestFrame(char *)));
 						QObject::connect(*illumino,SIGNAL(richStato(QString)),client_richieste,SLOT(richStato(QString)));
 						break;
 
@@ -632,7 +630,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						pageAct = *videocitofonia;
 						qDebug("******* videocitofonia = %p ", *videocitofonia);
 						(*videocitofonia)->forceDraw();
-						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*videocitofonia,SIGNAL(gestFrame(char *)));
 						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showFullScreen()));
 						break;
 
