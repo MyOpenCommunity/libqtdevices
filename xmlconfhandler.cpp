@@ -35,8 +35,6 @@
 #include <QDebug>
 #include <QTimer>
 
-#include <stdlib.h>
-
 
 /// banTesti: text utilized during the initialization sequence when the menu is built up
 static const char *banTesti[] =
