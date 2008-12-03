@@ -80,6 +80,8 @@ signals:
   \author Davide
   \date lug 2005
 */
+// TODO: rimuovere questa classe, e usare direttamente bannOnDx! E' necessario intervenire su Calibrate
+// per modificare la gestione del grabMouse e del backup della vecchia calibrazione.
 class calibration : public bannOnDx
 {
 Q_OBJECT
