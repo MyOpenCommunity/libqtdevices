@@ -21,6 +21,19 @@
 
 #include <assert.h>
 
+
+AudioSources::AudioSources(QWidget *parent) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE - 3, 1)
+{
+}
+
+void AudioSources::addAmb(char *a)
+{
+	qDebug("sottoMenu::addAmb(%s)", a);
+	for (int idx = elencoBanner.count() - 1; idx >= 0; idx--)
+		elencoBanner.at(idx)->addAmb(a);
+}
+
+
 diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent), sorgenti(NULL)
 {
 	numRighe = NUM_RIGHE;
@@ -32,7 +45,7 @@ diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent),
 
 	if (!_sorgenti)
 	{
-		_sorgenti = new sottoMenu(this, 0, MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
+		_sorgenti = new AudioSources(this);
 		connect(_sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
 	}
 

@@ -444,13 +444,6 @@ void sottoMenu::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint &p, bo
 	move(p);
 }
 
-void sottoMenu::addAmb(char *a)
-{
-	qDebug("sottoMenu::addAmb(%s)", a);
-	for (int idx = elencoBanner.count() - 1; idx >= 0; idx--)
-		elencoBanner.at(idx)->addAmb(a);
-}
-
 void sottoMenu::initBanner(banner *bann, QDomNode conf)
 {
 	QDomNode n = findNamedNode(conf, "descr");

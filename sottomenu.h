@@ -153,11 +153,6 @@ sstop : soft stop values list vor dimmer 100 group
 	*/
 	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 
-	/*!
-	\brief add amb to all banners
-	*/
-	void addAmb(char *);
-
 public slots:
 	/*!
 	\brief Slides the list upward.

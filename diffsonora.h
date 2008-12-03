@@ -11,12 +11,25 @@
 #ifndef DIFFSONORA_H
 #define DIFFSONORA_H
 
+#include "sottomenu.h"
+
 #include <QWidget>
 #include <QList>
 #include <QString>
 
 class banner;
-class sottoMenu;
+
+
+/// A container for sources (aux, touchscreen, radio..)
+class AudioSources : public sottoMenu
+{
+Q_OBJECT
+public:
+	AudioSources(QWidget *parent);
+	/// add amb to all banners (source)
+	void addAmb(char *);
+};
+
 
 /*!
  * \class diffSonora

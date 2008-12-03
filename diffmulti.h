@@ -20,6 +20,7 @@
 
 
 class diffSonora;
+class AudioSources;
 class device;
 class scenEvo_cond;
 
@@ -76,7 +77,7 @@ protected:
 private:
 	QList<diffSonora*> dslist;
 	QList<dati_ampli_multi*> datimmulti;
-	sottoMenu *sorgenti;
+	AudioSources *sorgenti;
 	device *matr;
 	/// kemosh FIX
 	int _where_address;
