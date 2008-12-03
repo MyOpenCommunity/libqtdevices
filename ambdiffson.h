@@ -36,13 +36,6 @@ class sottoMenu;
 class ambDiffSon : public bannBut2Icon
 {
 Q_OBJECT
-private:
-	diffSonora *diffson;
-	diffmulti *diffmul;
-	sottoMenu *sorgenti;
-	int actSrc;
-	bool is_draw;
-	QString name;
 public:
 	ambDiffSon(QWidget *parent=0, QString _name=NULL, char *indirizzo=NULL, QString Icona1="", QString Icona2="", QString Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
@@ -54,6 +47,13 @@ public slots:
 	void actSrcChanged(int, int);
 protected:
 	virtual void hideEvent(QHideEvent *event);
+private:
+	diffSonora *diffson;
+	diffmulti *diffmul;
+	sottoMenu *sorgenti;
+	int actSrc;
+	bool is_draw;
+	QString name;
 signals:
 	void ambChanged(const QString &, bool, QString);
 };
@@ -71,11 +71,6 @@ signals:
 class insAmbDiffSon : public bannButIcon
 {
 Q_OBJECT
-private:
-	diffSonora *diffson;
-	diffmulti *diffmul;
-	sottoMenu *sorgenti;
-	QString name;
 public:
 	insAmbDiffSon(QWidget *parent=0, QString _name="", QString Icona1="", QString Icona2="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
@@ -83,6 +78,11 @@ public slots:
 	void configura();
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
+private:
+	diffSonora *diffson;
+	diffmulti *diffmul;
+	sottoMenu *sorgenti;
+	QString name;
 signals:
 	void ambChanged(const QString &, bool, QString);
 };
