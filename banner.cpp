@@ -180,30 +180,6 @@ void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon
 		SetIcons(4, centerDownIcon);
 }
 
-void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, int period, int number)
-{
-	SetIcons(sxIcon, dxIcon);
-
-	if (!centerInactiveIcon.isNull())
-		SetIcons(2, centerInactiveIcon);
-
-	if (!centerActiveIcon.isNull())
-	{
-		if (number)
-			for (int i = 1; i <= number; i++)
-			{
-				QString root_of_name = getNameRoot(centerActiveIcon, ".png");
-				QString name = QString("%1%2.png").arg(root_of_name).arg(i);
-				Icon[2 + i] = BTouch->getIcon(name, "PNG", Qt::ThresholdDither | Qt::DitherMode_Mask | Qt::AvoidDither);
-			}
-		else
-			SetIcons(3, centerActiveIcon);
-	}
-
-	periodo = period;
-	numFrame = number;
-}
-
 void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, bool inactiveLevel)
 {
 	SetIcons(sxIcon, dxIcon, centerActiveIcon, centerInactiveIcon, QString(), inactiveLevel);

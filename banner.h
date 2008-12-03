@@ -98,15 +98,6 @@ public:
 	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon);
 
 	/*!
-	 * \brief sets the Icon of left and right button and the central label when the banner is active or not
-	 *
-	 * the arguments describe the images to put on the buttons and into the describing label passing the file names. 
-	 * The 5° and 6° argument descrive respectively the period and the number of frame considering that the label 
-	 * is rapresented by a animated image when the banner is in active state
-	 */
-	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, int period, int number);
-
-	/*!
 	 *  \brief sets the Icon of left and right button and the central variable in different levels label when the banner is active or not
 	 *
 	 * the arguments describe the images to put on the buttons and into the describing label passing the file names.

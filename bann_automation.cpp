@@ -323,10 +323,10 @@ void attuatAutomInt::inizializza(bool forza)
 }
 
 
-grAttuatInt::grAttuatInt(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString icon, int period, int number)
+grAttuatInt::grAttuatInt(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString icon)
 	: bann3But(parent)
 {
-	SetIcons(IconaDx, IconaSx, QString(), icon, period, number);
+	SetIcons(IconaDx, IconaSx, QString(), icon);
 	elencoDisp = addresses;
 	connect(this,SIGNAL(dxClick()),this,SLOT(Alza()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(Abbassa()));

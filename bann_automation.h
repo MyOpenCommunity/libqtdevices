@@ -124,8 +124,7 @@ class grAttuatInt : public bann3But
 {
 Q_OBJECT
 public:
-	grAttuatInt(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx,
-		QString Icon, int periodo=0, int numFrame=0);
+	grAttuatInt(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString Icon);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
 public slots:
 	void Alza();
