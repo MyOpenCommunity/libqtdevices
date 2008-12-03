@@ -194,13 +194,7 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QSt
 		icons.append(&qI4);
 		icons.append(&qI5);
 
-		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
-		{
-			qDebug() << "Adding amplifier (" << static_cast<int>(am->tipo) << ", "
-				<< (char *)am->indirizzo << " " << am->descr << ")";
-			diffson->addItem(am->tipo, am->descr, (char *)am->indirizzo, icons, am->modo);
-		}
-		else if (am->tipo == GR_AMPLIFICATORI)
+		if (am->tipo == GR_AMPLIFICATORI)
 		{
 			qDebug("Adding amplifier group");
 			qDebug("indirizzo = %p", am->indirizzo);
