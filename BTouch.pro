@@ -47,6 +47,7 @@ HEADERS += actuators.h \
            bann_automation.h \
            bann_lighting.h \
            bann_scenario.h \
+           bann_settings.h \
            bann_videoentryphone.h \
            bannbut2icon.h \
            bannbuticon.h \
@@ -104,7 +105,6 @@ HEADERS += actuators.h \
            scenario.h \
            scenevocond.h \
            screensaver.h \
-           setitems.h \
            settings.h \
            sorgentiaux.h \
            sorgentimedia.h \
@@ -138,6 +138,7 @@ SOURCES += actuators.cpp \
            bann_automation.cpp \
            bann_lighting.cpp \
            bann_scenario.cpp \
+           bann_settings.cpp \
            bann_videoentryphone.cpp \
            bannbut2icon.cpp \
            bannbuticon.cpp \
@@ -195,7 +196,6 @@ SOURCES += actuators.cpp \
            scenario.cpp \
            scenevocond.cpp \
            screensaver.cpp \
-           setitems.cpp \
            settings.cpp \
            sorgentiaux.cpp \
            sorgentimedia.cpp \

@@ -1,16 +1,6 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** setItems.cpp
-**
-**
-**definizione dei vari items
-****************************************************************/
-
+#include "bann_settings.h"
 #include "versio.h"
 #include "sveglia.h"
-#include "setitems.h"
 #include "tastiera.h"
 #include "diffmulti.h"
 #include "calibrate.h"

@@ -3,14 +3,14 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** setitems.h
+** bann_settings.h
 **
-**definizioni dei vari items implementati per impostazioni
+** definizioni dei vari items implementati per impostazioni
 **
 ****************************************************************/
 
-#ifndef SET_ITEMS_H
-#define SET_ITEMS_H
+#ifndef BANN_SETTINGS_H
+#define BANN_SETTINGS_H
 
 #include "banner.h"
 #include "bannondx.h"

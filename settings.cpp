@@ -1,5 +1,5 @@
 #include "settings.h"
-#include "setitems.h"
+#include "bann_settings.h"
 #include "sveglia.h"
 #include "main.h"
 #include "btmain.h" // BTouch
