@@ -22,7 +22,7 @@
 #include <assert.h>
 
 
-AudioSources::AudioSources(QWidget *parent) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE - 3, 1)
+AudioSources::AudioSources(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE, 1)
 {
 }
 
@@ -34,26 +34,33 @@ void AudioSources::addAmb(char *a)
 }
 
 
-diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent), sorgenti(NULL)
+diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent)
+{
+	init();
+	setSorgenti(_sorgenti);
+}
+
+diffSonora::diffSonora(QWidget *parent, QDomNode config_node) : QWidget(parent)
+{
+	init();
+	AudioSources *_sorgenti = new AudioSources(this, config_node);
+	connect(_sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
+	setSorgenti(_sorgenti);
+}
+
+void diffSonora::init()
 {
 	numRighe = NUM_RIGHE;
 	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore
 	// deve essere inizializzato
 	isVisual = false;
 
-	amplificatori = new sottoMenu(this, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe, 2);
+	amplificatori = new sottoMenu(this, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe + 3, 2);
 
-	if (!_sorgenti)
-	{
-		_sorgenti = new AudioSources(this);
-		connect(_sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
-	}
-
-	setSorgenti(_sorgenti);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	QLabel *linea = new QLabel(this);
 
-	linea->setGeometry(0,77,240,3);
+	linea->setGeometry(0, MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, 3);
 	linea->setProperty("noStyle", true);
 
 	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));

@@ -48,7 +48,7 @@ class diffmulti : public sottoMenu
 {
 Q_OBJECT
 public:
-	diffmulti(QWidget *parent=0, uchar withNavBar=3, int width=MAX_WIDTH, int height=MAX_HEIGHT, uchar n=NUM_RIGHE-1);
+	diffmulti(QWidget *parent, QDomNode config_node);
 	~diffmulti();
 
 	int addItem(char tipo, QString descrizione, QList<QString *> *indirizzo, QList<QString*> &icon_names, int periodo=0, int numFrame=0);

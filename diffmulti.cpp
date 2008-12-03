@@ -80,10 +80,9 @@ dati_ampli_multi::~dati_ampli_multi()
 }
 
 
-diffmulti::diffmulti(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n)
-	: sottoMenu(parent, navBarMode, wi, hei, n)
+diffmulti::diffmulti(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
 {
-	sorgenti = new AudioSources(this);
+	sorgenti = new AudioSources(this, config_node);
 	matr = btouch_device_cache.get_sound_matr_device();
 
 	// Get status changed events back
@@ -136,7 +135,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 	case AMBIENTE:
 		{
 			// Do not create "sorgenti" submenu
-			diffSonora *ds = new diffSonora(NULL, sorgenti);
+			diffSonora *ds = new diffSonora(0, sorgenti);
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
 			ds->draw();
@@ -207,7 +206,7 @@ int diffmulti::addItem(char tipo,  QString descrizione, QList<QString *> *indiri
 	case INSIEME_AMBIENTI:
 		{
 			// Do not create "sorgenti" submenu
-			diffSonora *ds = new diffSonora(NULL, sorgenti);
+			diffSonora *ds = new diffSonora(0, sorgenti);
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
 			ds->draw();

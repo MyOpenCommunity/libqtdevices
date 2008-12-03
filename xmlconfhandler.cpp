@@ -743,7 +743,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case DIFSON_MULTI:
-						*dm = new diffmulti;
+						*dm = new diffmulti(0, page_node);
 						pageAct = *dm;
 						page_item_id_m = 0;
 						page_item_where_m = "";
@@ -761,7 +761,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case DIFSON:
-						*difSon = new diffSonora;
+						*difSon = new diffSonora(0, page_node);
 						pageAct = *difSon;
 						break;
 

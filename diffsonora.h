@@ -25,7 +25,7 @@ class AudioSources : public sottoMenu
 {
 Q_OBJECT
 public:
-	AudioSources(QWidget *parent);
+	AudioSources(QWidget *parent, QDomNode config_node);
 	/// add amb to all banners (source)
 	void addAmb(char *);
 };
@@ -44,7 +44,8 @@ class diffSonora : public QWidget
 {
 Q_OBJECT
 public:
-	diffSonora(QWidget *parent=0, sottoMenu *_sorgenti=0);
+	diffSonora(QWidget *parent, QDomNode config_node);
+	diffSonora(QWidget *parent, sottoMenu *_sorgenti);
 	/*!
 	 * \brief Adds an object in the class.
 	 *
@@ -121,6 +122,7 @@ private:
 	 * \brief Set the "sorgenti" submenu"
 	 */
 	void setSorgenti(sottoMenu *);
+	void init();
 	bool isVisual;
 	uchar numRighe;
 	sottoMenu* sorgenti;
