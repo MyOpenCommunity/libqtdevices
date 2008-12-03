@@ -16,17 +16,9 @@
 #include "calibrate.h"
 #include "contrpage.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
-#include "brightnesspage.h"
-#include "btmain.h"
-#include "main.h" // BTouch
 
 #include <QTimer>
 #include <QDebug>
-
-#include <stdlib.h>
-
-
-static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 
 impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
@@ -301,22 +293,3 @@ void impPassword::hideEvent(QHideEvent *event)
 		tasti->hide();
 }
 
-
-BannBrightness::BannBrightness(sottoMenu *parent) : bannOnDx(parent)
-{
-	SetIcons(ICON_BRIGHTNESS, 1);
-	page = new BrightnessPage();
-	page->hide();
-	connect(this, SIGNAL(click()), page, SLOT(showFullScreen()));
-	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
-}
-
-void BannBrightness::hideEvent(QHideEvent *event)
-{
-	page->hide();
-}
-
-BannBrightness::~BannBrightness()
-{
-	delete page;
-}

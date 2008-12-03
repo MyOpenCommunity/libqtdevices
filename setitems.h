@@ -202,18 +202,4 @@ signals:
 	void setPwd(bool, QString);
 };
 
-class BrightnessPage;
-
-class BannBrightness : public bannOnDx
-{
-Q_OBJECT
-public:
-	BannBrightness(sottoMenu *parent);
-	~BannBrightness();
-protected:
-	virtual void hideEvent(QHideEvent *event);
-private:
-	BrightnessPage *page;
-};
-
 #endif

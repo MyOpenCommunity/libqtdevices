@@ -8,8 +8,12 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "cleanscreen.h"
 #include "impostatime.h"
+#include "brightnesspage.h"
 
 #include <QDebug>
+
+
+static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 
 Settings::Settings(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
@@ -71,7 +75,7 @@ void Settings::loadItems(QDomNode config_node)
 			b = new machVers(this, BTouch->datiGen, img1);
 			break;
 		case BRIGHTNESS:
-			b = new BannBrightness(this);
+			b = new bannOnDx(this, ICON_BRIGHTNESS, new BrightnessPage());
 			break;
 		case CLEANSCREEN:
 			b = new bannOnDx(this, ICON_INFO, new CleanScreen());
