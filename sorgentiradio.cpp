@@ -24,7 +24,7 @@
 /*****************************************************************
  **sorgente_Radio
  ****************************************************************/
-banradio::banradio(QWidget *parent,char* indirizzo, int nbut, const QString & ambdescr)
+banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString & ambdescr)
 	: bannCiclaz(parent, nbut)
 {
 	SetIcons(ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
@@ -288,7 +288,7 @@ void banradio::inizializza(bool forza)
 /*****************************************************************
  ** Sorgente radio diffusione sonora multicanale
  ****************************************************************/
-sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, char* indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr)
+sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, QString indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr)
 	: banradio(parent, indirizzo, 3, ambDescr)
 {
 	qDebug("sorgenteMultiRadio::sorgenteMultiRadio()");
@@ -296,7 +296,7 @@ sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, char* indirizzo, QString
 	SetIcons(Icona1, Icona2, QString(), Icona3);
 	
 	connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
-	indirizzo_semplice = QString(indirizzo);
+	indirizzo_semplice = indirizzo;
 	indirizzi_ambienti.clear();
 	multiamb = false;
 }
