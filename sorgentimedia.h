@@ -26,7 +26,7 @@ class BannerSorgenteMultimedia : public bannCiclaz
 {
 Q_OBJECT
 public:
-	BannerSorgenteMultimedia(QWidget *parent, char *indirizzo, int where, int nbutt);
+BannerSorgenteMultimedia(QWidget *parent, QString indirizzo, int where, int nbutt);
 	virtual void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
@@ -47,7 +47,7 @@ class BannerSorgenteMultimediaMC : public BannerSorgenteMultimedia
 {
 Q_OBJECT
 public:
-	BannerSorgenteMultimediaMC(QWidget *parent, char *indirizzo, int where,
+	BannerSorgenteMultimediaMC(QWidget *parent, QString indirizzo, int where,
 		QString icon_onoff, QString icon_cycle, QString icon_settings);
 	void inizializza(bool forza = false);
 public slots:

@@ -88,7 +88,7 @@ class MultimediaSource : public QWidget
 {
 Q_OBJECT
 public:
-	MultimediaSource(QWidget *parent=0, const char *amb="", int where_address=0);
+	MultimediaSource(QWidget *parent, int where_address);
 	/*!
 	 * \brief Sets amb. description
 	 */

@@ -130,7 +130,7 @@ SourceChoice::SourceChoice(QWidget *parent) : QWidget(parent)
 }
 
 
-MultimediaSource::MultimediaSource(QWidget *parent, const char *amb, int _where_address) :
+MultimediaSource::MultimediaSource(QWidget *parent, int _where_address) :
 	QWidget(parent), audio_initialized(true)
 {
 	// Set main geometry
