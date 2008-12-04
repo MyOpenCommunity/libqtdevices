@@ -272,18 +272,6 @@ void *xmlconfhandler::getAddr()
 	return pnt;
 }
 
-void xmlconfhandler::addItemU(sottoMenu *sm, void *address)
-{
-	QByteArray buf_img1 = page_item_list_txt.at(0).toAscii();
-	QByteArray buf_img2 = page_item_list_txt.at(1).toAscii();
-	QByteArray buf_img3 = page_item_list_txt.at(2).toAscii();
-	QByteArray buf_img4 = page_item_list_txt.at(3).toAscii();
-	
-	sm->addItemU((char)page_item_id, page_item_descr, address, page_item_list_img,
-			par1, par2, buf_img1.data(), buf_img2.data(),
-			buf_img3.data(), buf_img4.data(), par3, par4);
-}
-
 /*******************************************
  *
  * Esco da un livello
@@ -393,9 +381,19 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case CARICHI:
+						{
 						pageAct = *carichi;
 						addr = getAddr();
-						addItemU(pageAct, addr);
+
+						QByteArray buf_img1 = page_item_list_txt.at(0).toAscii();
+						QByteArray buf_img2 = page_item_list_txt.at(1).toAscii();
+						QByteArray buf_img3 = page_item_list_txt.at(2).toAscii();
+						QByteArray buf_img4 = page_item_list_txt.at(3).toAscii();
+
+						pageAct->addItemU((char)page_item_id, page_item_descr, addr, page_item_list_img,
+							par1, par2, buf_img1.data(), buf_img2.data(),
+							buf_img3.data(), buf_img4.data(), par3, par4);
+						}
 						break;
 
 					case TERMOREGOLAZIONE:
@@ -424,14 +422,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case DIFSON:
 					{
 						char pip[50];
-						pip[0] = 0;
-						if ((!page_item_what.isNull()) && (!page_item_what.isEmpty()))
-						{
-							QString buf = page_item_what + "*" + page_item_where;
-							strcpy(pip, buf.toAscii().constData());
-						}
-						else
-							strcpy(pip, page_item_where.toAscii().constData());
+						strcpy(pip, page_item_where.toAscii().constData());
 
 						// Use third digit of where for audio player frames
 						// FIXME aleph: better place for this
