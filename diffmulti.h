@@ -79,8 +79,6 @@ private:
 	QList<dati_ampli_multi*> datimmulti;
 	AudioSources *sorgenti;
 	device *matr;
-	/// kemosh FIX
-	int _where_address;
 
 signals:
 	void actSrcChanged(int, int);

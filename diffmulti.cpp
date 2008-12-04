@@ -111,8 +111,6 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 		 */
 	case SORGENTE_MULTIM_MC:
 		qDebug("diffmulti::additem -> Entering SORGENTE_MULTIM_MC case...");
-		// Kemosh FIX: store indirizzo to emit the proper init frame
-		_where_address = numFrame;
 	case SORG_RADIO:
 		qDebug("diffmulti::additem -> Entering SORG_RADIO case...");
 	case SORG_AUX:
