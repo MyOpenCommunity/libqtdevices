@@ -39,20 +39,20 @@ void Scenario::loadItems(QDomNode config_node)
 			break;
 
 		case MOD_SCENARI:
-			{
+		{
 			QString img5 = IMG_PATH + getTextChild(item, "cimg5");
 			QString img6 = IMG_PATH + getTextChild(item, "cimg6");
 			QString img7 = IMG_PATH + getTextChild(item, "cimg7");
 			b = new gesModScen(this, where, img1, img2, img3, img4, img5, img6, img7);
 			break;
-			}
+		}
 		case SCENARIO_EVOLUTO:
 			b = new scenEvo(this, loadConditions(item), img1, img2, img3, img4,
 				getElement(item, "action/open").text(), getTextChild(item, "enable").toInt());
 			break;
 
 		case SCENARIO_SCHEDULATO:
-			{
+		{
 			QList<QString> names, img, descr;
 			names << "unable" << "disable" << "start" << "stop";
 
@@ -74,7 +74,7 @@ void Scenario::loadItems(QDomNode config_node)
 			}
 			b = new scenSched(this, img[0], img[1], img[2], img[3], descr[0], descr[1], descr[2], descr[3]);
 			break;
-			}
+		}
 		default:
 			assert(!"Type of item not handled on scenario page!");
 		}

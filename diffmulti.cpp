@@ -103,7 +103,6 @@ diffmulti::~diffmulti()
 
 int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
 {
-	banner *b;
 	switch (tipo)
 	{
 	case SORGENTE_MULTIM_MC:

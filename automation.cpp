@@ -43,7 +43,7 @@ void Automation::loadItems(QDomNode config_node)
 			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
 			break;
 		case GR_ATTUAT_INT:
-			{
+		{
 			QList<QString> addresses;
 			QDomNode el;
 			foreach (el, getChildren(item, "element"))
@@ -51,7 +51,7 @@ void Automation::loadItems(QDomNode config_node)
 
 			b = new grAttuatInt(this, addresses, img1, img2, img3);
 			break;
-			}
+		}
 		case AUTOM_CANC_ATTUAT_ILL:
 			b = new automCancAttuatIll(this, where, img1, img2, time);
 			break;

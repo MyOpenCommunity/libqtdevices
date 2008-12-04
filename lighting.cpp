@@ -76,7 +76,7 @@ void Lighting::loadItems(QDomNode config_node)
 			b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
 			break;
 		case GR_DIMMER100:
-			{
+		{
 			QList<int> sstart, sstop;
 			QList<QString> addresses;
 
@@ -90,7 +90,7 @@ void Lighting::loadItems(QDomNode config_node)
 
 			b = new grDimmer100(this, addresses, img1, img2, img3, img4, sstart, sstop);
 			break;
-			}
+		}
 		default:
 			assert(!"Type of item not handled on lighting page!");
 		}

@@ -37,7 +37,7 @@ void Settings::loadItems(QDomNode config_node)
 			b = new impBeep(this, getTextChild(item, "value"), img1, img2);
 			break;
 		case SET_SVEGLIA:
-			{
+		{
 			int type = getTextChild(item, "type").toInt();
 			int enabled = getTextChild(item, "enabled").toInt();
 			int alarmset = getTextChild(item, "alarmset").toInt();
@@ -54,7 +54,7 @@ void Settings::loadItems(QDomNode config_node)
 
 			b = new impostaSveglia(this, cont, hour, minute, img1, img2, img3, enabled, type, alarmset);
 			break;
-			}
+		}
 		case SET_DATA_ORA:
 			b = new bannOnDx(this, ICON_INFO, new impostaTime());
 			break;
@@ -62,12 +62,12 @@ void Settings::loadItems(QDomNode config_node)
 			b = new impContr(this, getTextChild(item, "value"), img1);
 			break;
 		case CALIBRAZIONE:
-			{
+		{
 			b = new calibration(this, img1);
 			connect(b, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
 			connect(b, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
 			break;
-			}
+		}
 		case PROTEZIONE:
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			break;
