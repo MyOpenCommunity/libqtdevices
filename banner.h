@@ -265,7 +265,7 @@ public:
 		TEXT2,
 	};
 
-	virtual void addAmb(char *);
+	virtual void addAmb(QString);
 public slots:
 	/*!
 	 *  \brief Must be reimplemented to analyze the \a Open \a Frame incoming.

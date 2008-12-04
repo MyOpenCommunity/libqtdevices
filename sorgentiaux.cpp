@@ -136,8 +136,8 @@ void sorgenteMultiAux::ambChanged(const QString & ad, bool multi, QString indamb
 	myAux->setAmbDescr(ad);
 }
 
-void sorgenteMultiAux::addAmb(char *a)
+void sorgenteMultiAux::addAmb(QString a)
 {
-	qDebug("sorgenteMultiAux::addAmb(%s)", a);
-	indirizzi_ambienti += QString(a);
+	qDebug() << "sorgenteMultiAux::addAmb" << a;
+	indirizzi_ambienti += a;
 }

@@ -351,8 +351,8 @@ void sorgenteMultiRadio::showEvent(QShowEvent *event)
 	banradio::pre_show();
 }
 
-void sorgenteMultiRadio::addAmb(char *a)
+void sorgenteMultiRadio::addAmb(QString a)
 {
-	qDebug("sorgenteMultiRadio::addAmb(%s)", a);
-	indirizzi_ambienti += QString(a);
+	qDebug() << "sorgenteMultiRadio::addAmb" << a;
+	indirizzi_ambienti += a;
 }

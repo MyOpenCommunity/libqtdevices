@@ -161,9 +161,9 @@ void BannerSorgenteMultimediaMC::ambChanged(const QString & ad, bool multi, QStr
 	qDebug() << "Source where is now %s" << dove;
 }
 
-void BannerSorgenteMultimediaMC::addAmb(char *a)
+void BannerSorgenteMultimediaMC::addAmb(QString a)
 {
-	indirizzi_ambienti += QString(a);
+	indirizzi_ambienti += a;
 }
 
 void BannerSorgenteMultimediaMC::inizializza(bool forza)

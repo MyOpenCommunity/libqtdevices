@@ -33,9 +33,8 @@ AudioSources::AudioSources(QWidget *parent, QDomNode config_node) : sottoMenu(pa
 	loadItems(config_node);
 }
 
-void AudioSources::addAmb(char *a)
+void AudioSources::addAmb(QString a)
 {
-	qDebug("sottoMenu::addAmb(%s)", a);
 	for (int idx = elencoBanner.count() - 1; idx >= 0; idx--)
 		elencoBanner.at(idx)->addAmb(a);
 }

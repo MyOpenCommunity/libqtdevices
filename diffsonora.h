@@ -27,7 +27,7 @@ Q_OBJECT
 public:
 	AudioSources(QWidget *parent, QDomNode config_node);
 	/// add amb to all banners (source)
-	void addAmb(char *);
+	void addAmb(QString a);
 
 private:
 	void loadItems(QDomNode config_node);

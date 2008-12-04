@@ -62,7 +62,7 @@ Q_OBJECT
 public:
 	sorgenteMultiAux(QWidget *parent, QString aux_name, QString indirizzo, QString Icona1,
 		QString Icona2, QString Icona3, QString ambdescr=QString());
-	void addAmb(char *);
+	void addAmb(QString a);
 public slots:
 	void attiva();
 	void ambChanged(const QString &, bool, QString);

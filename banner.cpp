@@ -631,7 +631,7 @@ void banner::grandadChanged(QWidget *newGrandad)
 {
 }
 
-void banner::addAmb(char *)
+void banner::addAmb(QString)
 {
 }
 
