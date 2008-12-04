@@ -44,10 +44,6 @@ sorgente_aux::~sorgente_aux()
 	delete myAux;
 }
 
-void sorgente_aux::gestFrame(char*)
-{
-}
-
 void sorgente_aux::ciclaSorg()
 {
 	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));

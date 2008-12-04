@@ -40,8 +40,6 @@ public:
 protected:
 	virtual void hideEvent(QHideEvent *event);
 	aux *myAux;
-public slots:
-	void gestFrame(char*);
 private slots:
 	void ciclaSorg();
 	void decBrano();
