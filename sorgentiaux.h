@@ -33,20 +33,19 @@ class aux;
 class sorgente_aux : public bannCiclaz
 {
 Q_OBJECT
-protected:
-	aux *myAux;
-	bool vecchia;
 public:
 	sorgente_aux(QWidget *parent, QString aux_name, QString indirizzo, bool vecchio=true, QString ambdescr=QString());
+	virtual ~sorgente_aux();
 	void inizializza(bool forza = false);
+protected:
+	virtual void hideEvent(QHideEvent *event);
+	aux *myAux;
+public slots:
+	void gestFrame(char*);
 private slots:
 	void ciclaSorg();
 	void decBrano();
 	void aumBrano();
-public slots:
-	void gestFrame(char*);
-protected:
-	virtual void hideEvent(QHideEvent *event);
 };
 
 

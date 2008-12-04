@@ -24,20 +24,24 @@
 sorgente_aux::sorgente_aux(QWidget *parent, QString aux_name, QString indirizzo, bool vecchio, QString ambdescr)
 	: bannCiclaz(parent, vecchio ? 4 : 3)
 {
-	SetIcons(ICON_CICLA,NULL,ICON_FFWD,ICON_REW);
-
-	vecchia = vecchio;
+	SetIcons(ICON_CICLA, QString(), ICON_FFWD, ICON_REW);
 	setAddress(indirizzo);
 
 	if (vecchio)
 	{
-		connect(this  ,SIGNAL(sxClick()),this,SLOT(ciclaSorg()));
-		connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
-		connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+		connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));
+		connect(this, SIGNAL(csxClick()), this, SLOT(decBrano()));
+		connect(this, SIGNAL(cdxClick()), this, SLOT(aumBrano()));
 		nascondi(BUT2);
+		myAux = 0;
 	}
 	else
 		myAux = new aux(NULL, aux_name, ambdescr);
+}
+
+sorgente_aux::~sorgente_aux()
+{
+	delete myAux;
 }
 
 void sorgente_aux::gestFrame(char*)
@@ -57,7 +61,7 @@ void sorgente_aux::decBrano()
 void sorgente_aux::aumBrano()
 {
 	QString addr = getAddress();
-	if (!vecchia)
+	if (myAux)
 		if (addr.at(1) == '0')
 			addr[1] = '1';
 	BTouch->sendFrame(createMsgOpen("16", "6001", addr));
@@ -69,10 +73,8 @@ void sorgente_aux::inizializza(bool forza)
 
 void sorgente_aux::hideEvent(QHideEvent *event)
 {
-	qDebug("sorgente::hideEvent()");
-	if (vecchia)
-		return;
-	myAux->hide();
+	if (myAux)
+		myAux->hide();
 }
 
 /*****************************************************************
