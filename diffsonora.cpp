@@ -98,6 +98,11 @@ void AudioSources::loadItems(QDomNode config_node)
 }
 
 
+AmpliContainer::AmpliContainer(QWidget *parent) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe + 3, 2)
+{
+}
+
+
 diffSonora::diffSonora(QWidget *parent, AudioSources *s) : QWidget(parent)
 {
 	init();
@@ -119,7 +124,7 @@ void diffSonora::init()
 	// deve essere inizializzato
 	isVisual = false;
 
-	amplificatori = new sottoMenu(this, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe + 3, 2);
+	amplificatori = new AmpliContainer(this);
 
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	QLabel *linea = new QLabel(this);

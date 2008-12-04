@@ -36,6 +36,15 @@ signals:
 };
 
 
+/// A container for various type of amplifier..
+class AmpliContainer : public sottoMenu
+{
+Q_OBJECT
+public:
+	AmpliContainer(QWidget *parent);
+};
+
+
 /*!
  * \class diffSonora
  * \brief This is a class that manage sound diffusion function of the system. 
@@ -131,7 +140,7 @@ private:
 	bool isVisual;
 	uchar numRighe;
 	AudioSources* sorgenti;
-	sottoMenu* amplificatori;
+	AmpliContainer* amplificatori;
 
 private slots:
 	/*!
