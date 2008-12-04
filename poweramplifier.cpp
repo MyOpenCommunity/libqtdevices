@@ -50,12 +50,26 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, char *indirizzo, QString onIcon,
 	status = false;
 	settings_page = new sottoMenu(NULL);
 
-	QList<QString*> icons;
-	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), (char *)NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), (char *)NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), (char *)NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), (char *)NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_LOUD, tr("Loud"), (char *)NULL, icons);
+	banner *b = new PowerAmplifierPreset(settings_page);
+	b->setText(tr("Preset"));
+	settings_page->appendBanner(b);
+
+	b = new PowerAmplifierTreble(settings_page);
+	b->setText(tr("Treble"));
+	settings_page->appendBanner(b);
+
+	b = new PowerAmplifierBass(settings_page);
+	b->setText(tr("Bass"));
+	settings_page->appendBanner(b);
+
+	b = new PowerAmplifierBalance(settings_page);
+	b->setText(tr("Balance"));
+	settings_page->appendBanner(b);
+
+	b = new PowerAmplifierLoud(settings_page);
+	b->setText(tr("Loud"));
+	settings_page->appendBanner(b);
+
 	settings_page->hide();
 	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
 }
@@ -122,6 +136,7 @@ void PowerAmplifierPreset::fillPresetDesc()
 		preset_desc.append(desc);
 	}
 
+	// TODO: rimuovere lettura xml da qua! Deve essere letto solo da pagine principali!
 	QDomNode n = getPowerAmplifierNode();
 	QDomNode node = n.firstChild();
 	while (!node.isNull())

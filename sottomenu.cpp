@@ -132,21 +132,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	case POWER_AMPLIFIER:
 		elencoBanner.append(new PowerAmplifier(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
 		break;
-	case POWER_AMPLIFIER_PRESET:
-		elencoBanner.append(new PowerAmplifierPreset(this));
-		break;
-	case POWER_AMPLIFIER_TREBLE:
-		elencoBanner.append(new PowerAmplifierTreble(this));
-		break;
-	case POWER_AMPLIFIER_BASS:
-		elencoBanner.append(new PowerAmplifierBass(this));
-		break;
-	case POWER_AMPLIFIER_BALANCE:
-		elencoBanner.append(new PowerAmplifierBalance(this));
-		break;
-	case POWER_AMPLIFIER_LOUD:
-		elencoBanner.append(new PowerAmplifierLoud(this));
-		break;
 	case AMPLIFICATORE:
 		elencoBanner.append(new amplificatore(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
