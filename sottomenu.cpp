@@ -150,24 +150,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	case AMPLIFICATORE:
 		elencoBanner.append(new amplificatore(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
 		break;
-	case SORGENTE_AUX:
-		elencoBanner.append(new sorgente_aux(this, descrizione, (char*)indirizzo));
-		break;
-	case SORGENTE_MULTIM:/// New Multimedia Audio Source.  NOTE:numFrame parametere name is not significative:it's the (cut down) where address
-		elencoBanner.append(new BannerSorgenteMultimedia(this, (char *)indirizzo, numFrame, 4));
-		break;
-	case SORGENTE_MULTIM_MC:
-		elencoBanner.append(new BannerSorgenteMultimediaMC(this, (char *)indirizzo, numFrame, IconaSx, IconaDx, icon));
-		break;
-	case SORGENTE_RADIO:
-		elencoBanner.append(new banradio(this, (char*)indirizzo));
-		break;
-	case SORG_RADIO:
-		elencoBanner.append(new sorgenteMultiRadio(this, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
-		break;
-	case SORG_AUX:
-		elencoBanner.append(new sorgenteMultiAux(this, descrizione, (char *)indirizzo, IconaSx, IconaDx, icon, descr1));
-		break;
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}

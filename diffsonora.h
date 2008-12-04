@@ -28,6 +28,11 @@ public:
 	AudioSources(QWidget *parent, QDomNode config_node);
 	/// add amb to all banners (source)
 	void addAmb(char *);
+
+private:
+	void loadItems(QDomNode config_node);
+signals:
+	void actSrcChanged(int, int);
 };
 
 

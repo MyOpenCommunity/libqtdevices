@@ -83,8 +83,10 @@ dati_ampli_multi::~dati_ampli_multi()
 diffmulti::diffmulti(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
 {
 	sorgenti = new AudioSources(this, config_node);
-	matr = btouch_device_cache.get_sound_matr_device();
+	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
+	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
+	matr = btouch_device_cache.get_sound_matr_device();
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
@@ -104,28 +106,9 @@ int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<Q
 	banner *b;
 	switch (tipo)
 	{
-		/** WARNING SORG_RADIO and SORG_AUX are multichannel sources.
-		 *  the not-multichannel are called SORGENTE_RADIO and SORGENTE_AUX (!)
-		 *
-		 *  So we added here the case for our new source that is SORGENTE_MULTIM_MC
-		 */
 	case SORGENTE_MULTIM_MC:
-		qDebug("diffmulti::additem -> Entering SORGENTE_MULTIM_MC case...");
 	case SORG_RADIO:
-		qDebug("diffmulti::additem -> Entering SORG_RADIO case...");
 	case SORG_AUX:
-		qDebug("diffmulti::additem -> Entering SORG_AUX case...");
-		qDebug() << "Source (" << (int)tipo << ", " << descrizione << "): appending to source list";
-		qDebug("sorgenti->addItem (%p)", sorgenti);
-		/*
-		 * NOTE: numFrame parametere name is not significative: it's the (cut down) where address.
-		 */
-		sorgenti->addItemU(tipo, descrizione, (void *)indirizzo, icon_names, 0, numFrame);
-		b = sorgenti->getLast();
-		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goUp()));
-		connect(sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)),b, SLOT(ambChanged(const QString &, bool, QString)));
-		connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
-		connect(this,SIGNAL(gesFrame(char *)),b,SLOT(gestFrame(char *)));
 		break;
 
 	// TODO: codice duplicato da sotto, da eliminare quanto prima

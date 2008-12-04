@@ -14,9 +14,15 @@
 #include "main.h" // BTouch
 #include "amplificatori.h" // grAmplificatori
 #include "generic_functions.h" // safeAt
+#include "xml_functions.h" // getChildren, getTextChild
+#include "sorgentiaux.h"
+#include "sorgentimedia.h"
+#include "sorgentiradio.h"
+
 #include <openwebnet.h> // class openwebnet
 
 #include <QVariant> // setProperty
+#include <QDebug>
 #include <QLabel>
 
 #include <assert.h>
@@ -24,6 +30,7 @@
 
 AudioSources::AudioSources(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE, 1)
 {
+	loadItems(config_node);
 }
 
 void AudioSources::addAmb(char *a)
@@ -31,6 +38,63 @@ void AudioSources::addAmb(char *a)
 	qDebug("sottoMenu::addAmb(%s)", a);
 	for (int idx = elencoBanner.count() - 1; idx >= 0; idx--)
 		elencoBanner.at(idx)->addAmb(a);
+}
+
+void AudioSources::loadItems(QDomNode config_node)
+{
+	QDomNode item;
+	foreach (item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+		QString descr = getTextChild(item, "descr");
+		QString where = getTextChild(item, "where");
+		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
+		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
+		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
+		banner *b = 0;
+		bool multi_channel = false;
+
+		switch (id)
+		{
+		case SORGENTE_AUX:
+			b = new sorgente_aux(this, descr, where);
+			break;
+		case SORGENTE_RADIO:
+			b = new banradio(this, where);
+			break;
+		case SORGENTE_MULTIM:
+			b = new BannerSorgenteMultimedia(this, where, QString(where.at(2)).toInt(), 4);
+			break;
+		case SORG_RADIO:
+			b = new sorgenteMultiRadio(this, where, img1, img2, img3);
+			multi_channel = true;
+			break;
+		case SORG_AUX:
+			b = new sorgenteMultiAux(this, descr, where, img1, img2, img3);
+			multi_channel = true;
+			break;
+		case SORGENTE_MULTIM_MC:
+			b = new BannerSorgenteMultimediaMC(this, where, where.toInt(), img1, img2, img3);
+			multi_channel = true;
+			break;
+		default:
+			// Nothing to do, the other items is not managed by AudioSources.
+			break;
+		}
+		if (b)
+		{
+			if (multi_channel)
+			{
+				connect(b, SIGNAL(csxClick()), this, SLOT(goDown()));
+				connect(this, SIGNAL(ambChanged(const QString &, bool, QString)),
+					b, SLOT(ambChanged(const QString &, bool, QString)));
+				connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));
+			}
+			b->setText(descr);
+			b->setId(id);
+			appendBanner(b);
+		}
+	}
 }
 
 
@@ -109,17 +173,7 @@ int diffSonora::addItem(char tipo, const QString &description, char* indirizzo,
 	case SORGENTE_AUX:
 	case SORGENTE_RADIO:
 	case SORGENTE_MULTIM:
-		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, where, const_cast<char*>(ambdescr));
 		break;
-	case SORG_RADIO:
-	case SORG_AUX:
-	case SORGENTE_MULTIM_MC:
-	{
-		sorgenti->addItemU(tipo, description, (void *)indirizzo, icon_names, modo, 0, const_cast<char*>(ambdescr));
-		banner *b = sorgenti->getLast();
-		connect(b, SIGNAL(csxClick()), sorgenti, SLOT(goDown()));
-		break;
-	}
 	case AMPLIFICATORE:
 		amplificatori->addItemU(tipo, description, (void *)indirizzo, icon_names);
 		break;
