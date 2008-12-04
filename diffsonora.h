@@ -50,7 +50,7 @@ class diffSonora : public QWidget
 Q_OBJECT
 public:
 	diffSonora(QWidget *parent, QDomNode config_node);
-	diffSonora(QWidget *parent, sottoMenu *_sorgenti);
+	diffSonora(QWidget *parent, AudioSources *s);
 	/*!
 	 * \brief Adds an object in the class.
 	 *
@@ -126,11 +126,11 @@ private:
 	/*!
 	 * \brief Set the "sorgenti" submenu"
 	 */
-	void setSorgenti(sottoMenu *);
+	void setSorgenti(AudioSources *s);
 	void init();
 	bool isVisual;
 	uchar numRighe;
-	sottoMenu* sorgenti;
+	AudioSources* sorgenti;
 	sottoMenu* amplificatori;
 
 private slots:

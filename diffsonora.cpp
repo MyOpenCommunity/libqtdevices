@@ -98,18 +98,18 @@ void AudioSources::loadItems(QDomNode config_node)
 }
 
 
-diffSonora::diffSonora(QWidget *parent, sottoMenu *_sorgenti) : QWidget(parent)
+diffSonora::diffSonora(QWidget *parent, AudioSources *s) : QWidget(parent)
 {
 	init();
-	setSorgenti(_sorgenti);
+	setSorgenti(s);
 }
 
 diffSonora::diffSonora(QWidget *parent, QDomNode config_node) : QWidget(parent)
 {
 	init();
-	AudioSources *_sorgenti = new AudioSources(this, config_node);
-	connect(_sorgenti, SIGNAL(Closed()), SLOT(fineVis()));
-	setSorgenti(_sorgenti);
+	AudioSources *s = new AudioSources(this, config_node);
+	connect(s, SIGNAL(Closed()), SLOT(fineVis()));
+	setSorgenti(s);
 }
 
 void diffSonora::init()
@@ -130,7 +130,7 @@ void diffSonora::init()
 	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));
 }
 
-void diffSonora::setSorgenti(sottoMenu *s)
+void diffSonora::setSorgenti(AudioSources *s)
 {
 	sorgenti = s;
 	setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
