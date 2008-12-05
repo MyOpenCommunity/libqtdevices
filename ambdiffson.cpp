@@ -12,7 +12,7 @@
 #include "generic_functions.h" // void getAmbName(...)
 #include "btbutton.h"
 #include "diffsonora.h"
-#include "diffmulti.h" // struct data_ampli_multi
+#include "diffmulti.h"
 #include "sottomenu.h"
 #include "fontmanager.h"
 #include "btmain.h"
@@ -31,7 +31,7 @@
 
 
 ambDiffSon::ambDiffSon(QWidget *parent, QString _name, QString indirizzo, QString IconaSx, QString IconaDx, QString icon,
-	QList<dati_ampli_multi*> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent), name(_name)
+	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent), name(_name)
 {
 	qDebug() << "ambDiffSon::ambDiffSon()";
 	SetIcons(icon, getAmbName(IconaSx, indirizzo), IconaDx);
@@ -42,55 +42,6 @@ ambDiffSon::ambDiffSon(QWidget *parent, QString _name, QString indirizzo, QStrin
 	diffson = ds;
 	sorgenti = sorg;
 	diffmul = dm;
-
-	for (int i = 0; i < la->size(); ++i)
-	{
-		dati_ampli_multi *am = la->at(i);
-
-		// TODO: far diventare icons un QList<QString>!! Al momento l'unico
-		// motivo per cui vengono evitati crash e' perche' i nomi delle icone
-		// non vengono memorizzati ma utilizzati esclusivamente per ottenere
-		// le corrispondenti pixmap (vedi banner::setIcons)
-		QList<QString*> icons;
-		QString qI1(am->I1);
-		QString qI2(am->I2);
-		QString qI3(am->I3);
-		QString qI4(am->I4);
-		QString qI5(am->I5);
-		icons.append(&qI1);
-		icons.append(&qI2);
-		icons.append(&qI3);
-		icons.append(&qI4);
-		icons.append(&qI5);
-
-
-		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
-		{
-			qDebug() << "Adding amplifier (" << static_cast<int>(am->tipo) << ", "
-				<< (char *)am->indirizzo << " " << am->descr << ")";
-			diffson->addItem(am->tipo, am->descr, (char *)am->indirizzo, icons, am->modo);
-		}
-		else if (am->tipo == GR_AMPLIFICATORI)
-		{
-			qDebug("Adding amplifier group");
-			qDebug("indirizzo = %p", am->indirizzo);
-
-			QList<QString*> *indirizzi = (QList<QString*> *)(am->indirizzo);
-			for (int i = 0; i < indirizzi->size(); ++i)
-			{
-				QString s = *indirizzi->at(i);
-				QStringList qsl = s.split(',');
-				// TODO: passo un * a QList<QString*> che non verra' mai distrutto!
-				// sistemare passando un QList<QString>!!
-				QList<QString*> *li = new QList<QString*>();
-				for (int j = 0; j < qsl.size(); ++j)
-					li->append(new QString(qsl[j]));
-				diffson->addItem(am->tipo, am->descr, li, icons);
-			}
-		}
-		else
-			assert(!"Unknown amplifier type!!");
-	}
 	setDraw(false);
 }
 
@@ -165,7 +116,7 @@ bool ambDiffSon::isDraw()
  ** Insieme ambienti diffusione sonora multicanale
  ****************************************************************/
 
-insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QString Icona2, QList<dati_ampli_multi*> *la,
+insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QString Icona2,
 	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent), name(_name)
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
@@ -176,43 +127,6 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QSt
 	diffson = ds;
 	sorgenti = sorg;
 	diffmul = dm;
-
-	// TODO: vedi ambdiffson!!! questo pezzo di codice qua sotto e' duplicato!
-	for (int i = 0; i < la->size(); ++i)
-	{
-		dati_ampli_multi *am = la->at(i);
-
-		QList<QString*> icons;
-		QString qI1(am->I1);
-		QString qI2(am->I2);
-		QString qI3(am->I3);
-		QString qI4(am->I4);
-		QString qI5(am->I5);
-		icons.append(&qI1);
-		icons.append(&qI2);
-		icons.append(&qI3);
-		icons.append(&qI4);
-		icons.append(&qI5);
-
-		if (am->tipo == GR_AMPLIFICATORI)
-		{
-			qDebug("Adding amplifier group");
-			qDebug("indirizzo = %p", am->indirizzo);
-
-			QList<QString*> *indirizzi = (QList<QString*> *)(am->indirizzo);
-			for (int i = 0; i < indirizzi->size(); ++i)
-			{
-				QString s = *indirizzi->at(i);
-				QStringList qsl = s.split(',');
-				QList<QString*> *li = new QList<QString*>();
-				for (int j = 0; j < qsl.size(); ++j)
-					li->append(new QString(qsl[j]));
-				diffson->addItem(am->tipo, am->descr, li, icons);
-			}
-		}
-		else
-			assert(!"Unknown amplifier type!!");
-	}
 }
 
 void insAmbDiffSon::Draw()

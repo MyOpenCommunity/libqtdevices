@@ -41,7 +41,9 @@ class AmpliContainer : public sottoMenu
 {
 Q_OBJECT
 public:
-	AmpliContainer(QWidget *parent);
+	AmpliContainer(QWidget *parent, QDomNode config_node);
+private:
+	void loadAmplifiers(QDomNode config_node);
 };
 
 
@@ -59,16 +61,7 @@ class diffSonora : public QWidget
 Q_OBJECT
 public:
 	diffSonora(QWidget *parent, QDomNode config_node);
-	diffSonora(QWidget *parent, AudioSources *s);
-	/*!
-	 * \brief Adds an object in the class.
-	 *
-	 * If it is a source it is added to the sources subtree otherwise it's added to the amplifiers one.
-	 * This method reproduce the one implemented in sottoMenù in similar manner.
-	 */
-	int addItem(char tipo, const QString & nome, char *indirizzo,QList<QString*> &icon_names,
-		int periodo=0 , int where=0, const char *ambdescr="");
-	int addItem(char tipo, const QString & nome, QList<QString *> *indirizzo,QList<QString*> &icon_names);
+	diffSonora(QWidget *parent, AudioSources *s, QDomNode config_node);
 
 	/*!
 	 * \brief Sets the row's number.
@@ -136,11 +129,11 @@ private:
 	 * \brief Set the "sorgenti" submenu"
 	 */
 	void setSorgenti(AudioSources *s);
-	void init();
+	void init(QDomNode config_node);
 	bool isVisual;
 	uchar numRighe;
-	AudioSources* sorgenti;
-	AmpliContainer* amplificatori;
+	AudioSources *sorgenti;
+	AmpliContainer *amplificatori;
 
 private slots:
 	/*!

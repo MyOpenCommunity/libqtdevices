@@ -422,28 +422,9 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						// Nothing to do..
 						break;
 					case DIFSON:
-					{
-						char pip[50];
-						strcpy(pip, page_item_where.toAscii().constData());
-
-						// Use third digit of where for audio player frames
-						// FIXME aleph: better place for this
-						par2 = pip[2] - '0';
-
-						par1 = page_item_mode.toInt();
-
-						if (page_item_list_group->isEmpty())
-							(*difSon)->addItem((char)page_item_id, page_item_descr, pip,
-								page_item_list_img, par1,  par2);
-						else
-							(*difSon)->addItem((char)page_item_id, page_item_descr, page_item_list_group,
-								page_item_list_img);
-					}
 						break;
 
 					case DIFSON_MULTI:
-						par2 = page_item_where.toInt();
-						(*dm)->addItem((char)page_item_id, page_item_descr, page_item_where.toAscii().data(),page_item_list_img, par1, par2);
 						break;
 
 					case SPECIAL:
@@ -478,28 +459,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 
 					set_page_item_defaults();
 				} // if (CurTagL4.startsWith("item") && CurTagL5.isEmpty())
-				else if (CurTagL4.startsWith("item") && CurTagL5.startsWith("device") && CurTagL6.isEmpty())
-				{
-					char pip[50];
-					memset(pip,'\000',sizeof(pip));
-					qDebug("DIFF SON MULTI END ELEMENT !!!!");
-					qDebug("INSERTED ITEM:ID %d",page_item_id_m);
-					qDebug("INS ITEM: %s",banTesti[page_item_id_m]);
-
-					strcpy(pip, page_item_where_m.toAscii().constData());
-
-					if (page_item_list_group_m->isEmpty())
-						(*dm)->addItem((char)page_item_id_m, device_descr, pip,page_item_list_img_m);
-					else
-					{
-						// it's not possible to arrive here if item id == 47 (AMBIENTE)
-						// because it has only one tag <where> and no tags <where[number]>
-						qDebug("**** DIFSON_MULTI: multi address");
-						(*dm)->addItem((char)page_item_id_m, device_descr, page_item_list_group_m,
-								page_item_list_img_m);
-					}
-					page_item_list_img_m.clear();
-				}
 				else if (CurTagL3.startsWith("page") && CurTagL4.isEmpty())
 				{
 					QWidget *pageAct = NULL;

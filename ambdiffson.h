@@ -37,7 +37,8 @@ class ambDiffSon : public bannBut2Icon
 {
 Q_OBJECT
 public:
-	ambDiffSon(QWidget *parent=0, QString _name=NULL, QString indirizzo="", QString Icona1="", QString Icona2="", QString Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	ambDiffSon(QWidget *parent, QString _name, QString indirizzo, QString Icona1, QString Icona2,
+		QString Icona3, diffSonora *ds, sottoMenu *sorg, diffmulti *dm);
 	void Draw();
 	void setDraw(bool d);
 	bool isDraw();
@@ -72,7 +73,8 @@ class insAmbDiffSon : public bannButIcon
 {
 Q_OBJECT
 public:
-	insAmbDiffSon(QWidget *parent=0, QString _name="", QString Icona1="", QString Icona2="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QString Icona2, diffSonora *ds,
+		sottoMenu *sorg, diffmulti *dm);
 	void Draw();
 public slots:
 	void configura();

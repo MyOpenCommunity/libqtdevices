@@ -129,12 +129,6 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	case CARICO:
 		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));
 		break;
-	case POWER_AMPLIFIER:
-		elencoBanner.append(new PowerAmplifier(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon, icoEx1));
-		break;
-	case AMPLIFICATORE:
-		elencoBanner.append(new amplificatore(this, (char*)indirizzo, IconaSx, IconaDx, icon, pressedIcon));
-		break;
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
 	}

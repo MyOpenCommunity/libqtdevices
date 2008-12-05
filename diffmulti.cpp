@@ -12,72 +12,19 @@
 #include "ambdiffson.h"
 #include "device_cache.h"
 #include "device.h"
-#include "generic_functions.h" // safeAt
+#include "device_status.h"
 #include "sveglia.h"
 #include "diffsonora.h"
 #include "scenevocond.h"
 #include "btmain.h"
 #include "main.h" // BTouch
+#include "xml_functions.h" // getChildren, getTextChild
 
 #include <QTimer>
 #include <QPoint>
 #include <QDebug>
 
 #include <assert.h>
-
-dati_ampli_multi::dati_ampli_multi(char t, QString d, char *ind,
-		int p1, QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
-{
-	init(t, d, p1, _I1, _I2, _I3, _I4, _I5);
-
-	if (t == AMPLIFICATORE || t == POWER_AMPLIFIER)
-	{
-		if (t == AMPLIFICATORE)
-			qDebug("Amplificatore (%s)", (char *)ind);
-		else
-			qDebug("Power amplifier (%s)", (char *)ind);
-		indirizzo = new(char[20]);
-		memcpy(indirizzo, ind, 20);
-	}
-	else
-		assert(!"Unknown amplifier type!!");
-}
-
-dati_ampli_multi::dati_ampli_multi(char t, QString d, QList<QString *> *ind,
-		int p1, QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
-{
-	init(t, d, p1, _I1, _I2, _I3, _I4, _I5);
-	if (t == GR_AMPLIFICATORI)
-	{
-		qDebug("gruppo AMPLIFICATORI !!");
-		QList<QString*>* tmp_indirizzo = new QList<QString*>(*ind);
-		indirizzo = tmp_indirizzo;
-		qDebug("indirizzo = %p", indirizzo);
-		for (int i = 0; i < tmp_indirizzo->size(); ++i)
-			qDebug() << "INDIRIZZO = " << *tmp_indirizzo->at(i);
-	}
-	else
-		assert(!"Unknown amplifier type!!");
-}
-
-void dati_ampli_multi::init(char t, QString d, int p1,
-		QString _I1, QString _I2, QString _I3, QString _I4, QString _I5)
-{
-	tipo = t;
-	descr = d;
-	I1 = _I1;
-	I2 = _I2;
-	I3 = _I3;
-	I4 = _I4;
-	I5 = _I5;
-	modo = p1;
-	qDebug() << "dati_ampli_multi: descr = " << descr;
-}
-
-dati_ampli_multi::~dati_ampli_multi()
-{
-	// We should delete indirizzo but is problematic because it is a void*
-}
 
 
 diffmulti::diffmulti(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
@@ -90,141 +37,65 @@ diffmulti::diffmulti(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
+
+	loadAmbienti(config_node);
 }
 
 diffmulti::~diffmulti()
 {
-	while (!datimmulti.isEmpty())
-		delete datimmulti.takeFirst();
-
 	while (!dslist.isEmpty())
 		delete dslist.takeFirst();
 }
 
-int diffmulti::addItem(char tipo,  QString descrizione, char* indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
+void diffmulti::loadAmbienti(QDomNode config_node)
 {
-	switch (tipo)
+	QDomNode item;
+	foreach (item, getChildren(config_node, "item"))
 	{
-	case SORGENTE_MULTIM_MC:
-	case SORG_RADIO:
-	case SORG_AUX:
-		break;
+		int id = getTextChild(item, "id").toInt();
+		QString descr = getTextChild(item, "descr");
+		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
+		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
+		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
 
-	// TODO: codice duplicato da sotto, da eliminare quanto prima
-	case INSIEME_AMBIENTI:
-	case AMBIENTE:
+		diffSonora *ds;
+		if (id == INSIEME_AMBIENTI || id == AMBIENTE)
 		{
 			// Do not create "sorgenti" submenu
-			diffSonora *ds = new diffSonora(0, sorgenti);
+			ds = new diffSonora(0, sorgenti, item);
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
 			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
 			ds->draw();
-			banner *b;
-			if (tipo == AMBIENTE)
-			{
-				b = new ambDiffSon(this, descrizione, indirizzo,
-						*safeAt(icon_names, 0), *safeAt(icon_names, 1), *safeAt(icon_names, 2),
-						&datimmulti, ds, sorgenti, this);
-			}
-			else
-			{
-				b = new insAmbDiffSon(this, descrizione, *safeAt(icon_names, 0),
-						*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
-			}
-			elencoBanner.append(b);
 			dslist.append(ds);
-			banner *last = elencoBanner.last();
-			last->setText(descrizione);
-			last->setId(tipo);
-			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
-			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(ambChanged(const QString &, bool, QString)), sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)));
-			if (tipo == AMBIENTE)
-				sorgenti->addAmb((char *)indirizzo);
-
-			while (!datimmulti.isEmpty())
-				delete datimmulti.takeFirst();
-			draw();
-			break;
 		}
 
-	case AMPLIFICATORE:
-		qDebug() << "Icone = " << *safeAt(icon_names, 0) << " - " << *safeAt(icon_names, 1)
-			<< " - "<< *safeAt(icon_names, 2) << " - " << *safeAt(icon_names, 3);
-		datimmulti.append(new dati_ampli_multi(tipo, descrizione, indirizzo, modo,
-					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
-					*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
-		break;
-
-	case POWER_AMPLIFIER:
-		qDebug() << "Icone Power Multi = " << *safeAt(icon_names, 0) << " - " << *safeAt(icon_names, 1)
-			<< " - "<< *safeAt(icon_names, 2) << " - " << *safeAt(icon_names, 3) << " - "
-			<< *safeAt(icon_names, 4);
-
-		datimmulti.append(new dati_ampli_multi(tipo, descrizione, indirizzo, modo,
-					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
-					*safeAt(icon_names, 2), *safeAt(icon_names, 3),
-					*safeAt(icon_names, 4)));
-		break;
-
-	default:
-		addItemU(tipo, descrizione,indirizzo, icon_names, modo, numFrame);
-		break;
-	}
-	return 1;
-}
-
-int diffmulti::addItem(char tipo,  QString descrizione, QList<QString *> *indirizzo, QList<QString*> &icon_names,int modo, int numFrame)
-{
-	// we can never be here with tipo == AMBIENTE (see also xmlconfhandler.cpp and conf.xml spec)
-	assert(tipo != AMBIENTE);
-	qDebug("diffmulti::addItem (%d)", tipo);
-	qDebug("Amplificatore (%p)", indirizzo);
-
-	switch (tipo)
-	{
-	case INSIEME_AMBIENTI:
+		banner *b = 0;
+		switch (id)
 		{
-			// Do not create "sorgenti" submenu
-			diffSonora *ds = new diffSonora(0, sorgenti);
-			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
-			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
-			ds->draw();
-			banner *b;
-			b = new insAmbDiffSon(this, descrizione, *safeAt(icon_names, 0),
-					*safeAt(icon_names, 1), &datimmulti, ds,  sorgenti, this);
+		case INSIEME_AMBIENTI:
+			b = new insAmbDiffSon(this, descr, img1, img2, ds, sorgenti, this);
+			break;
+		case AMBIENTE:
+		{
+			QString where = getTextChild(item, "where");
+			b = new ambDiffSon(this, descr, where, img1, img2, img3, ds, sorgenti, this);
+			sorgenti->addAmb(where);
+			break;
+		}
+		default: // Nothing to do, the other items (source audio) is managed by AudioSources class
+			break;
+		}
+		if (b)
+		{
+			connect(this, SIGNAL(gestFrame(char*)), b, SLOT(gestFrame(char*)));
+			connect(this, SIGNAL(actSrcChanged(int, int)), b, SLOT(actSrcChanged(int, int)));
+			connect(b, SIGNAL(ambChanged(const QString &, bool, QString)), sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)));
+			b->setText(descr);
+			b->setId(id);
 			elencoBanner.append(b);
-			dslist.append(ds);
-			banner *last = elencoBanner.last();
-			last->setText(descrizione);
-			last->setId(tipo);
-			connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
-			connect(this, SIGNAL(actSrcChanged(int, int)), last, SLOT(actSrcChanged(int, int)));
-			connect(last, SIGNAL(ambChanged(const QString &, bool, QString)), sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)));
-
-			while (!datimmulti.isEmpty())
-				delete datimmulti.takeFirst();
-			draw();
-			break;
 		}
-	case GR_AMPLIFICATORI:
-		{
-			qDebug("Gruppo amplificatori");
-			QList<QString*> *indirizzi = (QList<QString*> *)indirizzo;
-			for (int i = 0; i < indirizzi->size(); ++i)
-			{
-				qDebug() << "ADDRESS =" << *indirizzi->at(i);
-			}
-			datimmulti.append(new dati_ampli_multi(tipo, descrizione, indirizzo, modo,
-					*safeAt(icon_names, 0), *safeAt(icon_names, 1),
-					*safeAt(icon_names, 2), *safeAt(icon_names, 3)));
-			break;
-		}
-
-	default:
-		assert(!"Unknown item type on diffmulti::addItem");
 	}
-	return 1;
+	draw();
 }
 
 void diffmulti::setNavBarMode(uchar a, QString i)

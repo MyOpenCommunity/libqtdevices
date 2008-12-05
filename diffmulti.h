@@ -11,7 +11,6 @@
 #ifndef DIFFMULTI_H
 #define DIFFMULTI_H
 
-#include "device_status.h"
 #include "sottomenu.h"
 
 #include <QWidget>
@@ -22,26 +21,7 @@
 class diffSonora;
 class AudioSources;
 class device;
-class scenEvo_cond;
-
-
-class dati_ampli_multi
-{
-public:
-	char tipo;
-	// NOTE: the ownership of descr strings is mantained by xmlconfhandler.
-	QString descr;
-	void *indirizzo;
-	QString I1, I2, I3, I4, I5;
-	int modo;
-	dati_ampli_multi(char t, QString d, char *ind, int p1,
-			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
-	dati_ampli_multi(char t, QString d, QList<QString *> *ind, int p1,
-			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
-	void init(char t, QString d, int p1,
-			QString _I1, QString _I2, QString _I3, QString _I4, QString _I5 = QString());
-	~dati_ampli_multi();
-};
+class device_status;
 
 
 class diffmulti : public sottoMenu
@@ -50,9 +30,6 @@ Q_OBJECT
 public:
 	diffmulti(QWidget *parent, QDomNode config_node);
 	~diffmulti();
-
-	int addItem(char tipo, QString descrizione, QList<QString *> *indirizzo, QList<QString*> &icon_names, int periodo=0, int numFrame=0);
-	int addItem(char tipo, QString descrizione, char* indirizzo, QList<QString*> &icon_names, int periodo=0, int numFrame=0);
 
 	/*!
 	 *  \brief Changes the type of navigation bar present at the
@@ -75,8 +52,9 @@ protected:
 	virtual void hideEvent(QHideEvent *event);
 
 private:
+	void loadAmbienti(QDomNode config_node);
+
 	QList<diffSonora*> dslist;
-	QList<dati_ampli_multi*> datimmulti;
 	AudioSources *sorgenti;
 	device *matr;
 

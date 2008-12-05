@@ -13,11 +13,11 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 #include "amplificatori.h" // grAmplificatori
-#include "generic_functions.h" // safeAt
 #include "xml_functions.h" // getChildren, getTextChild
 #include "sorgentiaux.h"
 #include "sorgentimedia.h"
 #include "sorgentiradio.h"
+#include "poweramplifier.h"
 
 #include <openwebnet.h> // class openwebnet
 
@@ -97,41 +97,105 @@ void AudioSources::loadItems(QDomNode config_node)
 }
 
 
-AmpliContainer::AmpliContainer(QWidget *parent) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe + 3, 2)
+AmpliContainer::AmpliContainer(QWidget *parent, QDomNode config_node) :
+	sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE + 3, 2)
 {
+	loadAmplifiers(config_node);
+}
+
+void AmpliContainer::loadAmplifiers(QDomNode config_node)
+{
+	// Amplifiers are items in diffSonora and devices in diffmulti
+	QDomNode node;
+	foreach (node, getChildren(config_node, "item") + getChildren(config_node, "device"))
+	{
+		int id = getTextChild(node, "id").toInt();
+		QString descr = getTextChild(node, "descr");
+		QString where = getTextChild(node, "where");
+		QString img1 = IMG_PATH + getTextChild(node, "cimg1");
+		QString img2 = IMG_PATH + getTextChild(node, "cimg2");
+		QString img3 = IMG_PATH + getTextChild(node, "cimg3");
+		QString img4 = IMG_PATH + getTextChild(node, "cimg4");
+		QString img5 = IMG_PATH + getTextChild(node, "cimg5");
+		banner *b = 0;
+
+		switch (id)
+		{
+		case AMPLIFICATORE:
+			b = new amplificatore(this, where, img1, img2, img3, img4);
+			break;
+		case POWER_AMPLIFIER:
+			b = new PowerAmplifier(this, where, img1, img2, img3, img4, img5);
+			break;
+		case GR_AMPLIFICATORI:
+		{
+			// TODO: In diffmulti ci sono piu' descr.. prendo la prima.. verificare che vada bene!
+			QList<QDomNode> l = getChildren(node, "descr");
+			if (!l.isEmpty())
+				descr = l.at(0).toElement().text();
+
+			// in diffmulti the list of where is in the form:
+			// <element1><where>..</where></element1><element2>..</element2>..
+			// in diffsonora in the form:
+			// <where1>..</where1><where2>..</where2>..
+			QList<QString> addresses;
+			QDomNode a;
+			foreach (a, getChildren(node, "element"))
+				addresses.append(getTextChild(a, "where"));
+
+			if (addresses.isEmpty())
+				foreach (a, getChildren(node, "where"))
+				{
+					QStringList l = a.toElement().text().split(',');
+					for (int i = 0; i < l.size(); ++i)
+						addresses.append(l.at(i));
+				}
+
+			b = new grAmplificatori(this, addresses, img1, img2, img3, img4);
+			break;
+		}
+		default: // Nothing to do, in diffSonora there are other items managed by AudioSources class.
+			break;
+		}
+
+		if (b)
+		{
+			b->setText(descr);
+			b->setId(id);
+			appendBanner(b);
+		}
+	}
 }
 
 
-diffSonora::diffSonora(QWidget *parent, AudioSources *s) : QWidget(parent)
+diffSonora::diffSonora(QWidget *parent, AudioSources *s, QDomNode config_node) : QWidget(parent)
 {
-	init();
+	init(config_node);
 	setSorgenti(s);
 }
 
 diffSonora::diffSonora(QWidget *parent, QDomNode config_node) : QWidget(parent)
 {
-	init();
+	init(config_node);
 	AudioSources *s = new AudioSources(this, config_node);
 	connect(s, SIGNAL(Closed()), SLOT(fineVis()));
 	setSorgenti(s);
 }
 
-void diffSonora::init()
+void diffSonora::init(QDomNode config_node)
 {
 	numRighe = NUM_RIGHE;
 	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore
 	// deve essere inizializzato
 	isVisual = false;
 
-	amplificatori = new AmpliContainer(this);
-
+	amplificatori = new AmpliContainer(this, config_node);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
-	QLabel *linea = new QLabel(this);
+	connect(this, SIGNAL(gesFrame(char *)), amplificatori, SIGNAL(gestFrame(char *)));
 
+	QLabel *linea = new QLabel(this);
 	linea->setGeometry(0, MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, 3);
 	linea->setProperty("noStyle", true);
-
-	connect(this,SIGNAL(gesFrame(char *)),amplificatori,SIGNAL(gestFrame(char *)));
 }
 
 void diffSonora::setSorgenti(AudioSources *s)
@@ -139,54 +203,6 @@ void diffSonora::setSorgenti(AudioSources *s)
 	sorgenti = s;
 	setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
-}
-
-// TODO: sarebbe meglio che icon_names diventasse una QList<QString>.. al momento
-// e' l'xmlconfhandler che "detiene" l'ownership delle stringhe contenute nella
-// lista.. anche se poi a tutti gli effetti non le cancella.
-// In ogni caso sarebbe da allocare staticamente le stringhe che fanno parte di
-// icon_names.
-int diffSonora::addItem(char tipo, const QString &description, QList<QString *> *indirizzo,
-	QList<QString*> &icon_names)
-{
-	if (tipo == GR_AMPLIFICATORI)
-	{
-		// TODO: rimuovere questa conversione, modificando l'xmlconfhandler!
-		QList <QString> ind;
-		for (int i = 0; i < indirizzo->size(); ++i)
-			ind.append(*indirizzo->at(i));
-
-		banner *b = new grAmplificatori(amplificatori, ind, *safeAt(icon_names, 0),
-			*safeAt(icon_names, 1), *safeAt(icon_names, 2), *safeAt(icon_names, 3));
-
-		b->setText(description);
-		b->setId(tipo);
-		amplificatori->appendBanner(b);
-		return 1;
-	}
-	else
-		assert(!"difSonora::addItemU() called with type != GR_AMPLIFICATORI");
-}
-
-int diffSonora::addItem(char tipo, const QString &description, char* indirizzo,
-	QList<QString*> &icon_names, int modo, int where, const char *ambdescr)
-{
-	// TODO: trasformare ambdescr in qstring o almeno in un const char*!
-	switch (tipo)
-	{
-	case SORGENTE_AUX:
-	case SORGENTE_RADIO:
-	case SORGENTE_MULTIM:
-		break;
-	case AMPLIFICATORE:
-		amplificatori->addItemU(tipo, description, (void *)indirizzo, icon_names);
-		break;
-	default:
-		qWarning("%s: Adding an unknown type to sottoMenu amplificatori", __FILE__);
-		amplificatori->addItemU(tipo, description, (void *)indirizzo, icon_names);
-	}
-	return 1;
-
 }
 
 void diffSonora::setNumRighe(uchar n)
