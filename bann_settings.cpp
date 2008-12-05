@@ -2,7 +2,7 @@
 #include "versio.h"
 #include "sveglia.h"
 #include "tastiera.h"
-#include "diffmulti.h"
+#include "multisounddiff.h" // contdiff
 #include "calibrate.h"
 #include "contrpage.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue

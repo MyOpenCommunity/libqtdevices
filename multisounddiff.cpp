@@ -2,13 +2,13 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** diffmulti.cpp
+** multisounddiff.cpp
 **
 ** Pagina sottomenu diffusione multicanale
 **
 ****************************************************************/
 
-#include "diffmulti.h"
+#include "multisounddiff.h"
 #include "ambdiffson.h"
 #include "device_cache.h"
 #include "device.h"
@@ -27,7 +27,7 @@
 #include <assert.h>
 
 
-diffmulti::diffmulti(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
+MultiSoundDiff::MultiSoundDiff(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
 {
 	sorgenti = new AudioSources(this, config_node);
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
@@ -41,13 +41,13 @@ diffmulti::diffmulti(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 
 	loadAmbienti(config_node);
 }
 
-diffmulti::~diffmulti()
+MultiSoundDiff::~MultiSoundDiff()
 {
 	while (!dslist.isEmpty())
 		delete dslist.takeFirst();
 }
 
-void diffmulti::loadAmbienti(QDomNode config_node)
+void MultiSoundDiff::loadAmbienti(QDomNode config_node)
 {
 	QDomNode item;
 	foreach (item, getChildren(config_node, "item"))
@@ -98,21 +98,21 @@ void diffmulti::loadAmbienti(QDomNode config_node)
 	draw();
 }
 
-void diffmulti::setNavBarMode(uchar a, QString i)
+void MultiSoundDiff::setNavBarMode(uchar a, QString i)
 {
 	sottoMenu::setNavBarMode(a, i);
 	for (int i = 0; i < dslist.size(); ++i)
 		dslist.at(i)->setNavBarMode(a);
 }
 
-void diffmulti::setNumRighe(uchar n)
+void MultiSoundDiff::setNumRighe(uchar n)
 {
 	sottoMenu::setNumRighe(n);
 	for (int i = 0; i < dslist.size(); ++i)
 		dslist.at(i)->setNumRighe(n);
 }
 
-void diffmulti::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint & p, bool showIt)
+void MultiSoundDiff::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint & p, bool showIt)
 {
 	sottoMenu::reparent(parent, f, p, showIt);
 	for (int i = 0; i < dslist.size(); ++i)
@@ -124,16 +124,16 @@ void diffmulti::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint & p, b
 	}
 }
 
-void diffmulti::inizializza()
+void MultiSoundDiff::inizializza()
 {
-	qDebug("diffmulti::inizializza()");
+	qDebug("MultiSoundDiff::inizializza()");
 	sorgenti->inizializza();
 	matr->init();
 }
 
-void diffmulti::ds_closed(SoundDiffusion *ds)
+void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
 {
-	qDebug("diffmulti::ds_closed()");
+	qDebug("MultiSoundDiff::ds_closed()");
 	ds->hide();
 
 	for (int i = 0; i < elencoBanner.size(); ++i)
@@ -145,13 +145,13 @@ void diffmulti::ds_closed(SoundDiffusion *ds)
 	showFullScreen();
 }
 
-void diffmulti::hideEvent(QHideEvent *event)
+void MultiSoundDiff::hideEvent(QHideEvent *event)
 {
 	for (int i = 0; i < dslist.size(); ++i)
 		dslist.at(i)->hide();
 }
 
-void diffmulti::resizewindows(int x, int y, int w, int h)
+void MultiSoundDiff::resizewindows(int x, int y, int w, int h)
 {
 	for (int i = 0; i < dslist.size(); ++i)
 	{
@@ -161,7 +161,7 @@ void diffmulti::resizewindows(int x, int y, int w, int h)
 	}
 }
 
-void diffmulti::ripristinaRighe(void)
+void MultiSoundDiff::ripristinaRighe(void)
 {
 	sottoMenu::setNumRighe(3);
 
@@ -169,10 +169,10 @@ void diffmulti::ripristinaRighe(void)
 		dslist.at(i)->setNumRighe(4);
 }
 
-void diffmulti::status_changed(QList<device_status*> sl)
+void MultiSoundDiff::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_act(stat_var::ACTIVE_SOURCE);
-	qDebug("diffmulti::status_changed()");
+	qDebug("MultiSoundDiff::status_changed()");
 
 	for (int i = 0; i < sl.size(); ++i)
 	{
@@ -195,13 +195,13 @@ void diffmulti::status_changed(QList<device_status*> sl)
 	}
 }
 
-void diffmulti::gestFrame(char*frame)
+void MultiSoundDiff::gestFrame(char*frame)
 {
 	emit gesFrame(frame);
 }
 
 // contdiff implementation
-contdiff::contdiff(SoundDiffusion *_ds, diffmulti *_dm) : QObject()
+contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiff *_dm) : QObject()
 {
 	qDebug("contdiff::contdiff(ds = %p, dm = %p)", _ds, _dm);
 	ds = _ds;
@@ -215,7 +215,7 @@ contdiff::contdiff(SoundDiffusion *_ds, diffmulti *_dm) : QObject()
 void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool showIt)
 {
 	qDebug("contdiff::reparent()");
-	
+
 	if (ds)
 	{
 		ds->setParent(parent);

@@ -12,7 +12,7 @@
 
 #include "sveglia.h"
 #include "generic_functions.h" // setCfgValue, setBacklight, getBeep, setBeep, beep, setBacklight
-#include "diffmulti.h"
+#include "multisounddiff.h" // contdiff
 #include "btbutton.h"
 #include "openclient.h"
 #include "timescript.h"

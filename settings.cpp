@@ -4,7 +4,7 @@
 #include "main.h"
 #include "btmain.h" // BTouch
 #include "lansettings.h"
-#include "diffmulti.h" // contdiff
+#include "multisounddiff.h" // contdiff
 #include "xml_functions.h" // getChildren, getTextChild
 #include "cleanscreen.h"
 #include "impostatime.h"

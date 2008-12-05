@@ -14,7 +14,7 @@
 class homePage;
 class sottoMenu;
 class SoundDiffusion;
-class diffmulti;
+class MultiSoundDiff;
 class Antintrusion;
 class ThermalMenu;
 class versio;
@@ -64,7 +64,7 @@ public:
 	xmlconfhandler(BtMain *BtM=NULL, homePage **home=NULL,  homePage **specPage=NULL,  sottoMenu **scenari_evoluti=NULL,
 			sottoMenu **videocitofonia=NULL, sottoMenu **illumino=NULL, sottoMenu **scenari=NULL, sottoMenu **carichi=NULL,
 			sottoMenu **imposta=NULL, sottoMenu **automazioni=NULL, ThermalMenu **termo=NULL, SoundDiffusion **difSon=NULL,
-			diffmulti **dm=NULL, Antintrusion **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
+			MultiSoundDiff **dm=NULL, Antintrusion **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
 			Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL);
 
 	~xmlconfhandler();
@@ -132,7 +132,7 @@ private:
 	homePage **specPage;
 	sottoMenu **illumino, **scenari, **carichi, **imposta, **automazioni, **sched,
 		**scenari_evoluti, **videocitofonia;
-	diffmulti **dm;
+	MultiSoundDiff **dm;
 	ThermalMenu **termo;
 	SoundDiffusion **difSon;
 	Antintrusion **antintr;

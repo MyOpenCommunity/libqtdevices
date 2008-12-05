@@ -17,7 +17,7 @@
 
 class sottoMenu;
 class SoundDiffusion;
-class diffmulti;
+class MultiSoundDiff;
 class Antintrusion;
 class ThermalMenu;
 class versio;
@@ -84,7 +84,7 @@ protected:
 public:
 	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
 	SoundDiffusion *difSon;
-	diffmulti *dm;
+	MultiSoundDiff *dm;
 	versio *datiGen;
 
 private:

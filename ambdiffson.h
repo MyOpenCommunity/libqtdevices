@@ -20,7 +20,7 @@
 
 /// Forward Declarations
 class SoundDiffusion;
-class diffmulti;
+class MultiSoundDiff;
 class dati_ampli_multi;
 class sottoMenu;
 
@@ -38,7 +38,7 @@ class ambDiffSon : public bannBut2Icon
 Q_OBJECT
 public:
 	ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString Icona1, QString Icona2,
-		QString Icona3, SoundDiffusion *ds, sottoMenu *sorg, diffmulti *dm);
+		QString Icona3, SoundDiffusion *ds, sottoMenu *sorg, MultiSoundDiff *dm);
 	void Draw();
 	void setDraw(bool d);
 	bool isDraw();
@@ -50,7 +50,7 @@ protected:
 	virtual void hideEvent(QHideEvent *event);
 private:
 	SoundDiffusion *diffson;
-	diffmulti *diffmul;
+	MultiSoundDiff *diffmul;
 	sottoMenu *sorgenti;
 	int actSrc;
 	bool is_draw;
@@ -74,7 +74,7 @@ class insAmbDiffSon : public bannButIcon
 Q_OBJECT
 public:
 	insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2, SoundDiffusion *ds,
-		sottoMenu *sorg, diffmulti *dm);
+		sottoMenu *sorg, MultiSoundDiff *dm);
 	void Draw();
 public slots:
 	void configura();
@@ -82,7 +82,7 @@ public slots:
 	void actSrcChanged(int, int);
 private:
 	SoundDiffusion *diffson;
-	diffmulti *diffmul;
+	MultiSoundDiff *diffmul;
 	sottoMenu *sorgenti;
 	QString descr;
 signals:

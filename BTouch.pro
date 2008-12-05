@@ -80,7 +80,6 @@ HEADERS += actuators.h \
            device.h \
            device_cache.h \
            device_status.h \
-           diffmulti.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -94,6 +93,7 @@ HEADERS += actuators.h \
            main.h \
            mediaplayer.h \
            multimedia_source.h \
+           multisounddiff.h \
            openclient.h \
            plantmenu.h \
            playwindow.h \
@@ -171,7 +171,6 @@ SOURCES += actuators.cpp \
            device.cpp \
            device_cache.cpp \
            device_status.cpp \
-           diffmulti.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \
@@ -185,6 +184,7 @@ SOURCES += actuators.cpp \
            main.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
+           multisounddiff.cpp \
            openclient.cpp \
            plantmenu.cpp \
            playwindow.cpp \

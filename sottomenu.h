@@ -250,7 +250,7 @@ signals:
 	void parentChanged(QWidget *newParent);
 
 	/*!
-	\brief amb description changed (for diffmulti)
+	\brief amb description changed (for MultiSoundDiff)
 	*/
 	void ambChanged(const QString & newdescr, bool multiwhere, QString where);
 

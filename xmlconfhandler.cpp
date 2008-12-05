@@ -14,7 +14,7 @@
 #include "sottomenu.h"
 #include "impostatime.h"
 #include "sounddiffusion.h"
-#include "diffmulti.h"
+#include "multisounddiff.h"
 #include "sveglia.h"
 #include "generic_functions.h" // rearmWDT, setOrientation
 #include "versio.h"
@@ -91,7 +91,7 @@ static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIO
  *
  *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
-		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, SoundDiffusion **dS, diffmulti **_dm, Antintrusion **ant,
+		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, SoundDiffusion **dS, MultiSoundDiff **_dm, Antintrusion **ant,
 		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG)
 {
 	home = h;
@@ -695,7 +695,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case DIFSON_MULTI:
-						*dm = new diffmulti(0, page_node);
+						*dm = new MultiSoundDiff(0, page_node);
 						pageAct = *dm;
 						page_item_id_m = 0;
 						page_item_where_m = "";

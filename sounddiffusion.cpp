@@ -105,7 +105,7 @@ AmpliContainer::AmpliContainer(QWidget *parent, QDomNode config_node) :
 
 void AmpliContainer::loadAmplifiers(QDomNode config_node)
 {
-	// Amplifiers are items in SoundDiffusion and devices in diffmulti
+	// Amplifiers are items in SoundDiffusion and devices in MultiSoundDiff
 	QDomNode node;
 	foreach (node, getChildren(config_node, "item") + getChildren(config_node, "device"))
 	{
@@ -129,12 +129,12 @@ void AmpliContainer::loadAmplifiers(QDomNode config_node)
 			break;
 		case GR_AMPLIFICATORI:
 		{
-			// TODO: In diffmulti ci sono piu' descr.. prendo la prima.. verificare che vada bene!
+			// TODO: In MultiSoundDiff ci sono piu' descr.. prendo la prima.. verificare che vada bene!
 			QList<QDomNode> l = getChildren(node, "descr");
 			if (!l.isEmpty())
 				descr = l.at(0).toElement().text();
 
-			// in diffmulti the list of where is in the form:
+			// in MultiSoundDiff the list of where is in the form:
 			// <element1><where>..</where></element1><element2>..</element2>..
 			// in SoundDiffusion in the form:
 			// <where1>..</where1><where2>..</where2>..
