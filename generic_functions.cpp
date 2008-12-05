@@ -309,14 +309,14 @@ bool getBacklight()
 }
 
 
-void setOrientation(char* o)
+void setOrientation(QString orientation)
 {
 	if (QFile::exists("/proc/sys/dev/btweb/upsidedown"))
 	{
 		int fd = open("/proc/sys/dev/btweb/upsidedown", O_WRONLY);
 		if (fd >= 0)
 		{
-			write(fd, o, 1);
+			write(fd, orientation.toAscii().constData(), 1);
 			close(fd);
 		}
 	}

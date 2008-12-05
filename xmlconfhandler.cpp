@@ -583,13 +583,8 @@ bool xmlconfhandler::characters(const QString & qValue)
 	{
 		if (!CurTagL2.compare("displaypages"))
 		{
-			if (!CurTagL3.compare("orientation"))
-			{
-				setOrientation(qValue.toAscii().data());
-			}
-
 			// Leggo info homepage
-			else if (!CurTagL3.compare("homepage"))
+			if (!CurTagL3.compare("homepage"))
 			{
 				if (!CurTagL4.compare("isdefined"))
 					hompage_isdefined = qValue.toInt(&ok, 10);

@@ -84,7 +84,7 @@ void setBeep(bool buzzer_enable, bool write_to_conf);
  /*!
   \brief Sets the orientation of the device.
 */
-void setOrientation( char*);
+void setOrientation(QString orientation);
 
  /*!
   \brief Makes a system beep.

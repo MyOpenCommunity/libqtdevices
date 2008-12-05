@@ -179,6 +179,10 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		if (!model.isNull())
 			datiGen->setModel(model.text());
 
+		QDomElement orientation = getConfElement("displaypages/orientation");
+		if (!orientation.isNull())
+			setOrientation(orientation.text());
+
 		QFile xmlFile(cfg_file);
 		QXmlSimpleReader reader;
 		qDebug("parte parsing");
