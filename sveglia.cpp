@@ -35,6 +35,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <assert.h>
 
 
 sveglia::sveglia(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int hour, int minute)

@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QList>
 
+#include <assert.h>
+
 
 static QList<QString> getAddresses(QDomNode item)
 {

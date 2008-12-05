@@ -4,6 +4,8 @@
 
 #include <QDebug>
 
+#include <assert.h>
+
 
 VideoEntryPhone::VideoEntryPhone(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 {

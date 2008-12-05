@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QList>
 
+#include <assert.h>
+
 
 Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
 {
