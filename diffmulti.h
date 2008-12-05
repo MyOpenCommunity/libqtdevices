@@ -18,7 +18,7 @@
 #include <QList>
 
 
-class diffSonora;
+class SoundDiffusion;
 class AudioSources;
 class device;
 class device_status;
@@ -33,7 +33,7 @@ public:
 
 	/*!
 	 *  \brief Changes the type of navigation bar present at the
-	 *  bsubtree (see bannFrecce). Also calls downstream diffSonora setNavBarMode
+	 *  bsubtree (see bannFrecce). Also calls downstream SoundDiffusion setNavBarMode
 	 */
 	virtual void setNavBarMode(uchar=0, QString IconBut4=ICON_FRECCIA_DX);
 	void setNumRighe(uchar);
@@ -44,7 +44,7 @@ public:
 	void inizializza();
 
 public slots:
-	void ds_closed(diffSonora *);
+	void ds_closed(SoundDiffusion *);
 	void status_changed(QList<device_status*> sl);
 	void gestFrame(char*);
 
@@ -54,7 +54,7 @@ protected:
 private:
 	void loadAmbienti(QDomNode config_node);
 
-	QList<diffSonora*> dslist;
+	QList<SoundDiffusion*> dslist;
 	AudioSources *sorgenti;
 	device *matr;
 
@@ -73,7 +73,7 @@ class contdiff : public QObject
 {
 Q_OBJECT
 public:
-	contdiff(diffSonora *, diffmulti *);
+	contdiff(SoundDiffusion *, diffmulti *);
 	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
 	void setNavBarMode(uchar);
 	void setNumRighe(uchar);
@@ -91,7 +91,7 @@ public slots:
 	void show();
 
 private:
-	diffSonora *ds;
+	SoundDiffusion *ds;
 	diffmulti *dm;
 
 signals:

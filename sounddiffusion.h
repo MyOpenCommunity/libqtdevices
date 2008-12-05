@@ -2,14 +2,14 @@
  **
  ** BTicino Touch scren Colori art. H4686
  **
- ** diffsonora.h
+ ** sounddiffusion.h
  **
  **definizioni della pagina di sottoMenu diffusione Sonora
  **
  ****************************************************************/
 
-#ifndef DIFFSONORA_H
-#define DIFFSONORA_H
+#ifndef SOUND_DIFFUSION_H
+#define SOUND_DIFFUSION_H
 
 #include "sottomenu.h"
 
@@ -48,7 +48,7 @@ private:
 
 
 /*!
- * \class diffSonora
+ * \class SoundDiffusion
  * \brief This is a class that manage sound diffusion function of the system. 
  * It is composed of two subtree (sottoMenu): amplifiers and sources. 
  * In the first row of the page is shown the source active at a certain 
@@ -56,12 +56,12 @@ private:
  * \author Davide
  * \date lug 2005
  */
-class diffSonora : public QWidget
+class SoundDiffusion : public QWidget
 {
 Q_OBJECT
 public:
-	diffSonora(QWidget *parent, QDomNode config_node);
-	diffSonora(QWidget *parent, AudioSources *s, QDomNode config_node);
+	SoundDiffusion(QWidget *parent, QDomNode config_node);
+	SoundDiffusion(QWidget *parent, AudioSources *s, QDomNode config_node);
 
 	/*!
 	 * \brief Sets the row's number.
@@ -146,7 +146,7 @@ signals:
 	 * \brief Emitted when the object is closed.
 	 */
 	void Closed();
-	void closed(diffSonora*);
+	void closed(SoundDiffusion*);
 
 	/*!
 	 * \brief Emitted when there are \a Open \a frame incoming to make them arrive to amplifiers and sources.
@@ -154,4 +154,4 @@ signals:
 	void gesFrame(char*);
 };
 
-#endif // DIFFSONORA_H
+#endif // SOUND_DIFFUSION

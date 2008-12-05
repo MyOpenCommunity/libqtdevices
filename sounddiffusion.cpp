@@ -2,13 +2,13 @@
  **
  ** BTicino Touch scren Colori art. H4686
  **
- **diffSonora.cpp
+ ** sounddiffusion.cpp
  **
  **Sottomenù diffusione sonora
  **
  ****************************************************************/
 
-#include "diffsonora.h"
+#include "sounddiffusion.h"
 #include "sottomenu.h"
 #include "btmain.h"
 #include "main.h" // BTouch
@@ -105,7 +105,7 @@ AmpliContainer::AmpliContainer(QWidget *parent, QDomNode config_node) :
 
 void AmpliContainer::loadAmplifiers(QDomNode config_node)
 {
-	// Amplifiers are items in diffSonora and devices in diffmulti
+	// Amplifiers are items in SoundDiffusion and devices in diffmulti
 	QDomNode node;
 	foreach (node, getChildren(config_node, "item") + getChildren(config_node, "device"))
 	{
@@ -136,7 +136,7 @@ void AmpliContainer::loadAmplifiers(QDomNode config_node)
 
 			// in diffmulti the list of where is in the form:
 			// <element1><where>..</where></element1><element2>..</element2>..
-			// in diffsonora in the form:
+			// in SoundDiffusion in the form:
 			// <where1>..</where1><where2>..</where2>..
 			QList<QString> addresses;
 			QDomNode a;
@@ -154,7 +154,7 @@ void AmpliContainer::loadAmplifiers(QDomNode config_node)
 			b = new grAmplificatori(this, addresses, img1, img2, img3, img4);
 			break;
 		}
-		default: // Nothing to do, in diffSonora there are other items managed by AudioSources class.
+		default: // Nothing to do, in SoundDiffusion there are other items managed by AudioSources class.
 			break;
 		}
 
@@ -168,13 +168,13 @@ void AmpliContainer::loadAmplifiers(QDomNode config_node)
 }
 
 
-diffSonora::diffSonora(QWidget *parent, AudioSources *s, QDomNode config_node) : QWidget(parent)
+SoundDiffusion::SoundDiffusion(QWidget *parent, AudioSources *s, QDomNode config_node) : QWidget(parent)
 {
 	init(config_node);
 	setSorgenti(s);
 }
 
-diffSonora::diffSonora(QWidget *parent, QDomNode config_node) : QWidget(parent)
+SoundDiffusion::SoundDiffusion(QWidget *parent, QDomNode config_node) : QWidget(parent)
 {
 	init(config_node);
 	AudioSources *s = new AudioSources(this, config_node);
@@ -182,7 +182,7 @@ diffSonora::diffSonora(QWidget *parent, QDomNode config_node) : QWidget(parent)
 	setSorgenti(s);
 }
 
-void diffSonora::init(QDomNode config_node)
+void SoundDiffusion::init(QDomNode config_node)
 {
 	numRighe = NUM_RIGHE;
 	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore
@@ -198,14 +198,14 @@ void diffSonora::init(QDomNode config_node)
 	linea->setProperty("noStyle", true);
 }
 
-void diffSonora::setSorgenti(AudioSources *s)
+void SoundDiffusion::setSorgenti(AudioSources *s)
 {
 	sorgenti = s;
 	setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
 }
 
-void diffSonora::setNumRighe(uchar n)
+void SoundDiffusion::setNumRighe(uchar n)
 {
 	numRighe = n;
 	qDebug("Invoking amplificatori->setNumRighe(%d)", n-2);
@@ -216,14 +216,14 @@ void diffSonora::setNumRighe(uchar n)
 	amplificatori->draw();
 }
 
-void diffSonora::inizializza()
+void SoundDiffusion::inizializza()
 {
 	amplificatori->inizializza();
 	sorgenti->inizializza();
 	BTouch->sendInit("*16*53*100##");
 }
 
-void diffSonora::gestFrame(char*frame)
+void SoundDiffusion::gestFrame(char*frame)
 {
 	emit gesFrame(frame);
 	openwebnet msg_open;
@@ -277,18 +277,18 @@ not_ours:
 
 // TODO: capire il significato di questa gestione particolare del 'isVisual'!!
 /*
-void diffSonora::freezed_handler(bool f)
+void SoundDiffusion::freezed_handler(bool f)
 {
-	qDebug("diffSonora::freezed(%d)", f);
+	qDebug("SoundDiffusion::freezed(%d)", f);
 	isVisual = f ? false : true;
 	if (isHidden())
 		isVisual = false;
 }
 */
 
-void diffSonora::showEvent(QShowEvent *event)
+void SoundDiffusion::showEvent(QShowEvent *event)
 {
-	qDebug("diffSonora::showEvent()");
+	qDebug("SoundDiffusion::showEvent()");
 	openwebnet msg_open;
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
@@ -297,31 +297,31 @@ void diffSonora::showEvent(QShowEvent *event)
 	sorgenti->show();
 }
 
-void diffSonora::draw()
+void SoundDiffusion::draw()
 {
 	sorgenti->draw();
 	amplificatori->draw();
 }
 
-void diffSonora::forceDraw()
+void SoundDiffusion::forceDraw()
 {
-	qDebug("diffSonora::forceDraw()");
+	qDebug("SoundDiffusion::forceDraw()");
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
 }
 
-void diffSonora::hideEvent(QHideEvent *event)
+void SoundDiffusion::hideEvent(QHideEvent *event)
 {
-	qDebug("diffSonora::hideEvent()");
+	qDebug("SoundDiffusion::hideEvent()");
 
 	sorgenti->hide();
 	amplificatori->setIndice(0);
 	isVisual = false;
 }
 
-void diffSonora::setGeom(int x,int y,int w,int h)
+void SoundDiffusion::setGeom(int x,int y,int w,int h)
 {
-	qDebug("diffSonora::setGeom(%d, %d, %d, %d, numRighe = %d)",x, y, w, h, numRighe);
+	qDebug("SoundDiffusion::setGeom(%d, %d, %d, %d, numRighe = %d)",x, y, w, h, numRighe);
 	QWidget::setGeometry(x, y, w, h);
 	qDebug("sorgenti->setGeometry(%d, %d, %d, %d)", x, 0, w, h/numRighe);
 	sorgenti->setGeometry(x,0,w,h/numRighe);
@@ -329,20 +329,20 @@ void diffSonora::setGeom(int x,int y,int w,int h)
 	amplificatori->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
 }
 
-void diffSonora::setNavBarMode(uchar c)
+void SoundDiffusion::setNavBarMode(uchar c)
 {
 	amplificatori->setNavBarMode(c);
 }
 
-void diffSonora::fineVis()
+void SoundDiffusion::fineVis()
 {
 	isVisual = false;
 	emit Closed();
 	emit closed(this);
 }
 
-void diffSonora::setFirstSource(int addr)
+void SoundDiffusion::setFirstSource(int addr)
 {
-	qDebug("diffSonora::setFirstSource(%d)", addr);
+	qDebug("SoundDiffusion::setFirstSource(%d)", addr);
 	sorgenti->setIndex(QString::number(addr));
 }

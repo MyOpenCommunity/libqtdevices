@@ -14,7 +14,7 @@
 #include "device.h"
 #include "device_status.h"
 #include "sveglia.h"
-#include "diffsonora.h"
+#include "sounddiffusion.h"
 #include "scenevocond.h"
 #include "btmain.h"
 #include "main.h" // BTouch
@@ -58,13 +58,13 @@ void diffmulti::loadAmbienti(QDomNode config_node)
 		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
 
-		diffSonora *ds;
+		SoundDiffusion *ds;
 		if (id == INSIEME_AMBIENTI || id == AMBIENTE)
 		{
 			// Do not create "sorgenti" submenu
-			ds = new diffSonora(0, sorgenti, item);
-			connect(ds, SIGNAL(closed(diffSonora*)), this, SLOT(ds_closed(diffSonora*)));
-			connect(ds, SIGNAL(closed(diffSonora*)), this, SIGNAL(dsClosed()));
+			ds = new SoundDiffusion(0, sorgenti, item);
+			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SLOT(ds_closed(SoundDiffusion*)));
+			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SIGNAL(dsClosed()));
 			ds->draw();
 			dslist.append(ds);
 		}
@@ -117,7 +117,7 @@ void diffmulti::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint & p, b
 	sottoMenu::reparent(parent, f, p, showIt);
 	for (int i = 0; i < dslist.size(); ++i)
 	{
-		diffSonora *ds = dslist.at(i);
+		SoundDiffusion *ds = dslist.at(i);
 		ds->setParent(!parent ? parent : this);
 		ds->setWindowFlags(f);
 		ds->move(p);
@@ -131,7 +131,7 @@ void diffmulti::inizializza()
 	matr->init();
 }
 
-void diffmulti::ds_closed(diffSonora *ds)
+void diffmulti::ds_closed(SoundDiffusion *ds)
 {
 	qDebug("diffmulti::ds_closed()");
 	ds->hide();
@@ -155,7 +155,7 @@ void diffmulti::resizewindows(int x, int y, int w, int h)
 {
 	for (int i = 0; i < dslist.size(); ++i)
 	{
-		diffSonora *ds = dslist.at(i);
+		SoundDiffusion *ds = dslist.at(i);
 		ds->setGeom(x, y, w, h);
 		ds->forceDraw();
 	}
@@ -201,7 +201,7 @@ void diffmulti::gestFrame(char*frame)
 }
 
 // contdiff implementation
-contdiff::contdiff(diffSonora *_ds, diffmulti *_dm) : QObject()
+contdiff::contdiff(SoundDiffusion *_ds, diffmulti *_dm) : QObject()
 {
 	qDebug("contdiff::contdiff(ds = %p, dm = %p)", _ds, _dm);
 	ds = _ds;

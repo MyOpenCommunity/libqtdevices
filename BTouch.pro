@@ -81,7 +81,6 @@ HEADERS += actuators.h \
            device_cache.h \
            device_status.h \
            diffmulti.h \
-           diffsonora.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -110,6 +109,7 @@ HEADERS += actuators.h \
            sorgentimedia.h \
            sorgentiradio.h \
            sottomenu.h \
+           sounddiffusion.h \
            stopngo.h \
            supervisionmenu.h \
            sveglia.h \
@@ -172,7 +172,6 @@ SOURCES += actuators.cpp \
            device_cache.cpp \
            device_status.cpp \
            diffmulti.cpp \
-           diffsonora.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \
@@ -201,6 +200,7 @@ SOURCES += actuators.cpp \
            sorgentimedia.cpp \
            sorgentiradio.cpp \
            sottomenu.cpp \
+           sounddiffusion.cpp \
            stopngo.cpp \
            supervisionmenu.cpp \
            sveglia.cpp \

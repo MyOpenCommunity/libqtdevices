@@ -12,8 +12,6 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 #include "btbutton.h"
-#include "diffsonora.h"
-#include "diffmulti.h"
 #include "generic_functions.h"
 #include "xmlconfhandler.h"
 #include "bannfrecce.h"

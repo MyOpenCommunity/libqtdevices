@@ -16,7 +16,7 @@
 #include <QWidget>
 
 class sottoMenu;
-class diffSonora;
+class SoundDiffusion;
 class diffmulti;
 class Antintrusion;
 class ThermalMenu;
@@ -83,7 +83,7 @@ protected:
 
 public:
 	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
-	diffSonora *difSon;
+	SoundDiffusion *difSon;
 	diffmulti *dm;
 	versio *datiGen;
 

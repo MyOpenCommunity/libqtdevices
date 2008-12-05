@@ -11,7 +11,7 @@
 #include "ambdiffson.h"
 #include "generic_functions.h" // void getAmbName(...)
 #include "btbutton.h"
-#include "diffsonora.h"
+#include "sounddiffusion.h"
 #include "diffmulti.h"
 #include "fontmanager.h"
 #include "btmain.h"
@@ -29,7 +29,7 @@
 
 
 ambDiffSon::ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString IconaSx, QString IconaDx, QString icon,
-	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent)
+	SoundDiffusion *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent)
 {
 	qDebug() << "ambDiffSon::ambDiffSon()";
 	descr = d;
@@ -116,7 +116,7 @@ bool ambDiffSon::isDraw()
  ****************************************************************/
 
 insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2,
-	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent)
+	SoundDiffusion *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent)
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
 	descr = d;
