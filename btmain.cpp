@@ -168,7 +168,16 @@ bool BtMain::loadConfiguration(QString cfg_file)
 	{
 		xmlconfhandler handler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
 				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
-				client_comandi, client_monitor, client_richieste, datiGen);
+				client_comandi, client_monitor, client_richieste);
+
+		QDomElement addr = getConfElement("setup/scs/coordinate_scs/diag_addr");
+		bool ok;
+		if (!addr.isNull())
+			datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
+
+		QDomElement model = getConfElement("setup/generale/modello");
+		if (!model.isNull())
+			datiGen->setModel(model.text());
 
 		QFile xmlFile(cfg_file);
 		QXmlSimpleReader reader;

@@ -65,7 +65,7 @@ public:
 			sottoMenu **videocitofonia=NULL, sottoMenu **illumino=NULL, sottoMenu **scenari=NULL, sottoMenu **carichi=NULL,
 			sottoMenu **imposta=NULL, sottoMenu **automazioni=NULL, ThermalMenu **termo=NULL, SoundDiffusion **difSon=NULL,
 			MultiSoundDiff **dm=NULL, Antintrusion **antintr=NULL, SupervisionMenu **sup=NULL, QWidget **pagDefault=NULL, Client *client_comandi=NULL,
-			Client *client_monitor=NULL, Client *client_richieste=NULL, versio *datiGen=NULL);
+			Client *client_monitor=NULL, Client *client_richieste=NULL);
 
 	~xmlconfhandler();
 	/*!

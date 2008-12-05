@@ -17,7 +17,6 @@
 #include "multisounddiff.h"
 #include "sveglia.h"
 #include "generic_functions.h" // rearmWDT, setOrientation
-#include "versio.h"
 #include "antintrusion.h"
 #include "thermalmenu.h"
 #include "btmain.h"
@@ -35,6 +34,7 @@
 #include <QWidget>
 #include <QDebug>
 #include <QTimer>
+#include <QFrame>
 
 #include <assert.h>
 
@@ -93,7 +93,7 @@ static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIO
  *******************************************/
 xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
 		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, SoundDiffusion **dS, MultiSoundDiff **_dm, Antintrusion **ant,
-		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r, versio *dG)
+		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r)
 {
 	home = h;
 	specPage = sP;
@@ -114,7 +114,6 @@ xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMen
 	client_comandi = c_c;
 	client_monitor = c_m;
 	client_richieste = c_r;
-	datiGen = dG;
 
 	page_item_list_group = new QList<QString*>;
 	page_item_list_group_m = new QList<QString*>;
@@ -881,24 +880,6 @@ bool xmlconfhandler::characters(const QString & qValue)
 				}
 			} // else if (CurTagL4.startsWith("page"))
 		} // if (!CurTagL2.startsWith("displaypages"))
-		else if (!CurTagL2.compare("setup"))
-		{
-			if (!CurTagL3.compare("scs"))
-			{
-				if (!CurTagL4.compare("coordinate_scs"))
-				{
-					if (!CurTagL5.compare("diag_addr"))
-					{
-						datiGen->setAddr(qValue.toInt(&ok, 16)-768);
-					}
-				}
-			}
-			else if (!CurTagL3.compare("generale"))
-			{
-				if (!CurTagL4.compare("modello"))
-					datiGen->setModel(qValue);
-			}
-		}
 	} // if (!CurTagL1.startsWith("configuratore"))
 
 	return TRUE;
