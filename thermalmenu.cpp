@@ -63,18 +63,17 @@ void ThermalMenu::addBanners()
 		{
 			if (e.tagName().contains(QRegExp("plant(\\d*)")))
 			{
-				QString descr = findNamedNode(e, "descr").toElement().text();
-				b = addMenuItem(e, i_plant, descr);
+				b = addMenuItem(e, i_plant);
 				createPlantMenu(e, b);
 			}
 			else if (e.tagName() == "extprobe")
 			{
-				b = addMenuItem(e, i_ext_probe, "extprobe");
+				b = addMenuItem(e, i_ext_probe);
 				createProbeMenu(e, b, true);
 			}
 			else if (e.tagName() == "tempprobe")
 			{
-				b = addMenuItem(e, i_temp_probe, "tempprobe");
+				b = addMenuItem(e, i_temp_probe);
 				createProbeMenu(e, b, false);
 			}
 		}
@@ -83,10 +82,9 @@ void ThermalMenu::addBanners()
 	}
 }
 
-bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString descr)
+bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 {
 	bannPuls *bp = new bannPuls(this);
-	qDebug() << "[TERMO] addBanners1: " << descr;
 
 	bp->SetIcons(i_right_arrow, QString(), central_icon);
 	initBanner(bp, e);

@@ -45,7 +45,7 @@ public slots:
 	void showPage();
 
 private:
-	bannPuls *addMenuItem(QDomElement, QString, QString);
+	bannPuls *addMenuItem(QDomElement, QString);
 	/**
 	 * Create a sottoMenu to show external and not controlled probes
 	 *

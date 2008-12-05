@@ -116,16 +116,6 @@ protected:
 	*/
 	void initBanner(banner *bann, QDomNode conf);
 
-	/**
-	* Finds a node with tag name equal to the parameter
-	* using a breadth-first search.
-	*
-	* \param root    The node where the search starts
-	* \param name    The tag name to find
-	* \return        A null node if no tag was found, the node otherwise
-	*/
-	QDomNode findNamedNode(QDomNode root, QString name);
-
 	virtual void hideEvent(QHideEvent *event);
 	virtual void showEvent(QShowEvent *event);
 	QList<banner*> elencoBanner;

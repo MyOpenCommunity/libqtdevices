@@ -11,6 +11,7 @@
 #include "plantmenu.h"
 #include "device.h"
 #include "device_cache.h"
+#include "xml_functions.h"
 
 #include <QVariant>
 #include <QRegExp>
@@ -42,7 +43,7 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent),
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
 			bannPuls *bp = 0;
-			QString descr = findNamedNode(n, "descr").toElement().text();
+			QString descr = getTextChild(n, "descr");
 			if (descr.isNull())
 				qDebug("[TERMO] PlantMenu::PlantMenu, ``descr'' is null, prepare for strangeness...");
 
