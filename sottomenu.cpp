@@ -23,7 +23,6 @@
 #include "sorgentimedia.h"
 #include "carico.h"
 #include "bannfullscreen.h"
-#include "xml_functions.h"
 
 #include <QByteArray>
 #include <QPixmap>
@@ -319,14 +318,6 @@ void sottoMenu::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint &p, bo
 	setParent(parent);
 	setWindowFlags(f);
 	move(p);
-}
-
-void sottoMenu::initBanner(banner *bann, QDomNode conf)
-{
-	bann->setText(getTextChild(conf, "descr"));
-	bann->setId(getTextChild(conf, "id").toInt());
-	bann->setAnimationParams(0, 0);
-	// note:we are ignoring the serial number...
 }
 
 // Specialized submenus function definition

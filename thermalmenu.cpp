@@ -14,6 +14,7 @@
 #include "banntemperature.h"
 #include "device_cache.h"
 #include "plantmenu.h"
+#include "xml_functions.h"
 
 #include <QRegExp>
 #include <QDebug>
@@ -87,7 +88,7 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 	bannPuls *bp = new bannPuls(this);
 
 	bp->SetIcons(i_right_arrow, QString(), central_icon);
-	initBanner(bp, e);
+	bp->setText(getTextChild(e, "descr"));
 
 	elencoBanner.append(bp);
 	connectLastBanner();
@@ -129,7 +130,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 			device *dev = btouch_device_cache.get_temperature_probe(addr, external);
 
 			banner *b = new BannTemperature(sm, n, dev);
-			initBanner(b, n);
+			b->setText(getTextChild(n, "descr"));
 
 			sm->appendBanner(b);
 		}

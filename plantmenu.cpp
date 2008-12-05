@@ -91,7 +91,7 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	 */
 	bannPuls *bp = new bannPuls(this);
 	bp->SetIcons(i_right_arrow, QString(), central_icon);
-	initBanner(bp, n);
+	bp->setText(getTextChild(n, "descr"));
 	elencoBanner.append(bp);
 	connectLastBanner();
 
@@ -100,7 +100,7 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	 */
 	TemperatureScale scale = readTemperatureScale();
 	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale, scale);
-	initBanner(fsb, n);
+	fsb->setText(getTextChild(n, "descr"));
 	items_submenu.appendBanner(fsb);
 
 	return bp;

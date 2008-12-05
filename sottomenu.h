@@ -106,15 +106,6 @@ public slots:
 
 protected:
 	void connectLastBanner();
-	/**
-	* Set BG and FG color, address, id, text, animation params
-	* in a banner.
-	*
-	* \param bann The banner being set
-	* \param conf The node in the Dom tree that holds a reference
-	* to an `item' tag (that is the root node of an item configuration)
-	*/
-	void initBanner(banner *bann, QDomNode conf);
 
 	virtual void hideEvent(QHideEvent *event);
 	virtual void showEvent(QShowEvent *event);
