@@ -14,14 +14,13 @@
 #include "bannregolaz.h"
 
 #include <QWidget>
+#include <QString>
+#include <QList>
 
 class device_status;
 class device;
-class QString;
 
-/*****************************************************************
- **Amplificatore
- ****************************************************************/
+
 /*!
  * \class amplificatore
  * \brief This class is made to manage an audio amplifier.
@@ -33,25 +32,22 @@ class QString;
 class amplificatore : public bannRegolaz
 {
 Q_OBJECT
-private:
-	char value;
-	device *dev;
 public:
 	amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon);
 	void inizializza(bool forza = false);
+public slots:
+	void status_changed(QList<device_status*>);
 private slots:
 	void Accendi();
 	void Spegni();
 	void Aumenta();
 	void Diminuisci();
-public slots:
-	void status_changed(QList<device_status*>);
+private:
+	char value;
+	device *dev;
 };
 
 
-/*****************************************************************
- **gruppo amplificatori
- ****************************************************************/
 /*!
  * \class grAmplificatori
  * \brief This class is made to manage a number of audio amplifier.

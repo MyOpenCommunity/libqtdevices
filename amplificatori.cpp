@@ -16,14 +16,6 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 
-#include <QString>
-
-#include <stdio.h> //sprintf
-
-
-/*****************************************************************
- **amplificatore
- ****************************************************************/
 
 amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
 	: bannRegolaz(parent)
@@ -47,28 +39,27 @@ amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx
 
 int trasformaVol(int vol)
 {
-	if (vol<0)
-		return(-1);
-
-	if (vol<=3) 
-		return(1);
-	if (vol<=7) 
-		return(2);
-	if (vol<=11) 
-		return(3);
-	if (vol<=14) 
-		return(4);
-	if (vol<=17) 
-		return(5);
-	if (vol<=20) 
-		return(6);
-	if (vol<=23) 
-		return(7);
-	if (vol<=27) 
-		return(8);
-	if (vol<=31) 
-		return(9);
-	return(-1);
+	if (vol < 0)
+		return -1;
+	if (vol <= 3)
+		return 1;
+	if (vol <= 7)
+		return 2;
+	if (vol <= 11)
+		return 3;
+	if (vol <= 14)
+		return 4;
+	if (vol <= 17)
+		return 5;
+	if (vol <= 20)
+		return 6;
+	if (vol <= 23)
+		return 7;
+	if (vol <= 27)
+		return 8;
+	if (vol <= 31)
+		return 9;
+	return -1;
 }
 
 void amplificatore::status_changed(QList<device_status*> sl)
@@ -142,9 +133,6 @@ void amplificatore::inizializza(bool forza)
 	dev->sendInit("*#16*" + getAddress() + "*5##");
 }
 
-/*****************************************************************
- **gruppo di amplificatori
- ****************************************************************/
 
 grAmplificatori::grAmplificatori(QWidget *parent, QList<QString> indirizzi, QString IconaSx,
 	QString IconaDx, QString iconsx, QString icondx) : bannRegolaz(parent), elencoDisp(indirizzi)
