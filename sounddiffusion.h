@@ -33,6 +33,10 @@ private:
 	void loadItems(QDomNode config_node);
 signals:
 	void actSrcChanged(int, int);
+	/*!
+	\brief amb description changed (for MultiSoundDiff)
+	*/
+	void ambChanged(const QString & newdescr, bool multiwhere, QString where);
 };
 
 
