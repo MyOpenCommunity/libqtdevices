@@ -25,7 +25,7 @@
  **amplificatore
  ****************************************************************/
 
-amplificatore::amplificatore(QWidget *parent, char *indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
+amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
 	: bannRegolaz(parent)
 {
 	qDebug("amplificatore::amplificatore()");

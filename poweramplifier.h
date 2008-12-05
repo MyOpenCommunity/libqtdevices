@@ -26,7 +26,7 @@ class PowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
 public:
-	PowerAmplifier(QWidget *parent, char *indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
+	PowerAmplifier(QWidget *parent, QString indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
 
 private slots:
 	void showSettings();
