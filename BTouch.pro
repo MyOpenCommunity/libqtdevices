@@ -4,7 +4,7 @@
 TEMPLATE = app
 
 # determine the target platform on the basis of environment variable TARGET
-PLATFORM = $$(TARGET)
+PLATFORM = $$(ARCH)
 
 contains(PLATFORM, arm) {
 	LIBS+= -L../common_files -lcommon
