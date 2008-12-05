@@ -28,6 +28,7 @@
 #include "scenario.h"
 #include "videoentryphone.h"
 #include "settings.h"
+#include "carico.h"
 
 #include <QObject>
 #include <QRegExp>
@@ -371,7 +372,6 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						page_item_list_txt.append("");
 
 					sottoMenu *pageAct = NULL;
-					void *addr = 0;
 					switch (page_id)
 					{
 					case AUTOMAZIONE:
@@ -383,19 +383,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case CARICHI:
-						{
 						pageAct = *carichi;
-						addr = getAddr();
-
-						QByteArray buf_img1 = page_item_list_txt.at(0).toAscii();
-						QByteArray buf_img2 = page_item_list_txt.at(1).toAscii();
-						QByteArray buf_img3 = page_item_list_txt.at(2).toAscii();
-						QByteArray buf_img4 = page_item_list_txt.at(3).toAscii();
-
-						pageAct->addItemU((char)page_item_id, page_item_descr, addr, page_item_list_img,
-							par1, par2, buf_img1.data(), buf_img2.data(),
-							buf_img3.data(), buf_img4.data(), par3, par4);
-						}
 						break;
 
 					case TERMOREGOLAZIONE:
@@ -708,7 +696,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case CARICHI:
-						*carichi = new sottoMenu;
+						*carichi = new Carico(0, page_node);
 						pageAct = *carichi;
 						break;
 

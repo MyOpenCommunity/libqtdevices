@@ -108,47 +108,6 @@ void sottoMenu::setModeIcon(QString iconBut4)
 	bannNavigazione->Draw();
 }
 
-int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
-		QList<QString*> &icon_names, int periodo, int numFrame,
-		char *descr1, char *descr2, char *descr3, char *descr4,
-		int par3, int par4)
-{
-	QString IconaSx = *safeAt(icon_names, 0);
-	QString IconaDx = *safeAt(icon_names, 1);
-	QString icon = *safeAt(icon_names, 2);
-	QString pressedIcon = *safeAt(icon_names, 3);
-	QString icoEx1 = *safeAt(icon_names, 4);
-	QString icoEx2 = *safeAt(icon_names, 5);
-	QString icoEx3 = *safeAt(icon_names, 6);
-
-	qDebug("sottoMenu::addItemU");
-	switch (tipo)
-	{
-	case CARICO:
-		elencoBanner.append(new bannCarico(this, (char*)indirizzo, IconaSx));
-		break;
-	default:
-		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");
-	}
-	connectLastBanner();
-
-	banner *last = elencoBanner.last();
-	last->setText(descrizione);
-	last->setAnimationParams(periodo,numFrame);
-	last->setId(tipo);
-	
-	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
-	{
-		if (elencoBanner.at(idx)->getId() == tipo)
-		{
-			last->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
-			idx = -1;
-		}
-	}
-
-	return 1;
-}
-
 void sottoMenu::appendBanner(banner *b)
 {
 	elencoBanner.append(b);

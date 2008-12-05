@@ -46,32 +46,6 @@ public:
 	*/
 	uint getCount();
 
-	/*!
-		\brief Adds an item to the list. the arguments are:
-tipo: banner type as described in the bannerType (main.h)
-nome: banner name which is the description showed on the banner
-indirizzo: address pointer which is a char* if the banner controls only a device; QptrList char* if the banner control a device group
-IconaSx, IconaDx, IconaAttiva, IconaDisattiv, IcoEx1, IcoEx2, IcoEx3:	Images' name to use in different positions in the banner
-periodo: repetition time of the animated descriptive image on the banner if there's one
-numFrame:  number of images composing the animated descriptive image on the banner if there's one
-secondFroreground: color for a particoular text in the banner
-descr1, descr2, descr3, descr4:	additional texts describng the banner
-par3: an other possible parameter
-par4:     one more possible parameter
-lt : a pointer to a list of QStrings describing the list of times for new timed actuators
-lc : a pointer to a list of pointers to scenEvo_cond (advanced scenarios management conditions
-action : action string
-light : light field (for video door phone items)
-key : key field (for video door phone items)
-unknown : unknown field (for video door phone items
-sstart : soft start values list for dimmer 100 group
-sstop : soft stop values list vor dimmer 100 group
-*/
-	virtual int addItemU(char tipo, const QString &descrizione, void *indirizzo,
-		QList<QString*> &icon_names,int periodo = 0, int numFrame = 0,
-		char *descr1 = NULL, char *descr2 = NULL, char *descr3 = NULL, char *descr4 = NULL,
-		int par3=0, int par4=0);
-
 	/**
 	* Add a new banner.
 	*/

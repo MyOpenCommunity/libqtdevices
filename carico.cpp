@@ -12,6 +12,9 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 #include "generic_functions.h" // createMsgOpen
+#include "xml_functions.h" // getChildren, getTextChild
+
+#include <assert.h>
 
 
 bannCarico::bannCarico(sottoMenu *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)
@@ -33,4 +36,27 @@ void bannCarico::Attiva()
 
 void bannCarico::inizializza(bool forza)
 {
+}
+
+
+Carico::Carico(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
+{
+	loadItems(config_node);
+}
+
+void Carico::loadItems(QDomNode config_node)
+{
+	QDomNode item;
+	foreach (item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+		assert(id == CARICO && "Type of item not handled on carico page!");
+		QString where = getTextChild(item, "where");
+		QString img = IMG_PATH + getTextChild(item, "cimg1");
+
+		banner *b = new bannCarico(this, where, img);
+		b->setText(getTextChild(item, "descr"));
+		b->setId(id);
+		appendBanner(b);
+	}
 }

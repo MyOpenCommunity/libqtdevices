@@ -12,6 +12,8 @@
 #define CARICO_H
 
 #include "bannondx.h" // class bannOnSx
+#include "sottomenu.h"
+
 
 /*!
  * \class bannCarico
@@ -33,5 +35,13 @@ public slots:
 };
 
 
+class Carico : public sottoMenu
+{
+Q_OBJECT
+public:
+	Carico(QWidget *parent, QDomNode config_node);
+private:
+	void loadItems(QDomNode config_node);
+};
 
 #endif
