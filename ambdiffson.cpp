@@ -30,7 +30,7 @@
  ****************************************************************/
 
 
-ambDiffSon::ambDiffSon(QWidget *parent, QString _name, char *indirizzo, QString IconaSx, QString IconaDx, QString icon,
+ambDiffSon::ambDiffSon(QWidget *parent, QString _name, QString indirizzo, QString IconaSx, QString IconaDx, QString icon,
 	QList<dati_ampli_multi*> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent), name(_name)
 {
 	qDebug() << "ambDiffSon::ambDiffSon()";

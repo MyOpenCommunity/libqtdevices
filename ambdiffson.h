@@ -37,7 +37,7 @@ class ambDiffSon : public bannBut2Icon
 {
 Q_OBJECT
 public:
-	ambDiffSon(QWidget *parent=0, QString _name=NULL, char *indirizzo=NULL, QString Icona1="", QString Icona2="", QString Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	ambDiffSon(QWidget *parent=0, QString _name=NULL, QString indirizzo="", QString Icona1="", QString Icona2="", QString Icona3="", QList<dati_ampli_multi*> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
 	void Draw();
 	void setDraw(bool d);
 	bool isDraw();
