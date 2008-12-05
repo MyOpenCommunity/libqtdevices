@@ -13,7 +13,6 @@
 #include "btbutton.h"
 #include "diffsonora.h"
 #include "diffmulti.h"
-#include "sottomenu.h"
 #include "fontmanager.h"
 #include "btmain.h"
 #include "main.h" // BTouch
@@ -22,7 +21,6 @@
 #include <QLabel>
 #include <QFont>
 
-#include <stdlib.h>
 #include <assert.h>
 
 /*****************************************************************
@@ -30,10 +28,11 @@
  ****************************************************************/
 
 
-ambDiffSon::ambDiffSon(QWidget *parent, QString _name, QString indirizzo, QString IconaSx, QString IconaDx, QString icon,
-	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent), name(_name)
+ambDiffSon::ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString IconaSx, QString IconaDx, QString icon,
+	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent)
 {
 	qDebug() << "ambDiffSon::ambDiffSon()";
+	descr = d;
 	SetIcons(icon, getAmbName(IconaSx, indirizzo), IconaDx);
 	Draw();
 	setAddress(indirizzo);
@@ -73,7 +72,7 @@ void ambDiffSon::hideEvent(QHideEvent *event)
 void ambDiffSon::configura()
 {
 	qDebug("ambDiffSon::configura()");
-	emit ambChanged(name, false, getAddress());
+	emit ambChanged(descr, false, getAddress());
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
 	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	diffson->setFirstSource(actSrc);
@@ -116,11 +115,11 @@ bool ambDiffSon::isDraw()
  ** Insieme ambienti diffusione sonora multicanale
  ****************************************************************/
 
-insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString _name, QString Icona1, QString Icona2,
-	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent), name(_name)
+insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2,
+	diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannButIcon(parent)
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
-	// TODO: c'e' un sacco codice duplicato con ambdiffson!!!
+	descr = d;
 	SetIcons(Icona1, Icona2);
 	Draw();
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
@@ -148,7 +147,7 @@ void insAmbDiffSon::Draw()
 void insAmbDiffSon::configura()
 {
 	qDebug("insAmbDiffSon::configura()");
-	emit ambChanged(name, true, QString());
+	emit ambChanged(descr, true, QString());
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
 	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
