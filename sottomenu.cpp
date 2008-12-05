@@ -125,7 +125,7 @@ int sottoMenu::addItemU(char tipo, const QString &descrizione, void *indirizzo,
 	switch (tipo)
 	{
 	case CARICO:
-		elencoBanner.append(new carico(this, (char*)indirizzo, IconaSx));
+		elencoBanner.append(new bannCarico(this, (char*)indirizzo, IconaSx));
 		break;
 	default:
 		assert(!"********** sottoMenu::addItem():unknown item type!!! ************");

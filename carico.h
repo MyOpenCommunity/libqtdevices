@@ -13,27 +13,25 @@
 
 #include "bannondx.h" // class bannOnSx
 
-
-/*****************************************************************
- **carico
- ****************************************************************/
 /*!
- * \class carico
+ * \class bannCarico
  * \brief This class is made to force an appliance.
  *
  * \author Davide
  * \date lug 2005
  */
-class carico : public bannOnSx
+class bannCarico : public bannOnSx
 {
 Q_OBJECT
 public:
-	carico(sottoMenu *parent, char *indirizzo, QString IconaSx);
+	bannCarico(sottoMenu *parent, QString indirizzo, QString IconaSx);
 	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
 public slots:
 	void gestFrame(char*);
 };
+
+
 
 #endif
