@@ -86,8 +86,6 @@ public:
 	bool endElement(const QString&, const QString&, const QString&);
 
 private:
-	void *getAddr();
-
 	QString CurTagL1,CurTagL2,CurTagL3,CurTagL4,CurTagL5,CurTagL6;
 	QString CurTagL7,CurTagL8; // Only to avoid abnormal behaviour
 	bool ok;

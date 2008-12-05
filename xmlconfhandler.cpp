@@ -250,29 +250,6 @@ bool xmlconfhandler::startElement(const QString&, const QString&, const QString&
 	return TRUE;
 }
 
-void *xmlconfhandler::getAddr()
-{
-	// TODO: remove this obscene fix! Use a QVariant!
-	static char pip[50];
-
-	pip[0] = 0;
-	void *pnt = 0;
-
-	if (!page_item_what.isNull() && !page_item_what.isEmpty())
-	{
-		QString buf = page_item_what + "*" + page_item_where;
-		strcpy(pip, buf.toAscii().constData());
-	}
-	else
-		strcpy(pip, page_item_where.toAscii().constData());
-
-	if (page_item_list_group->isEmpty())
-		pnt = pip;
-	else
-		pnt = page_item_list_group;
-
-	return pnt;
-}
 
 /*******************************************
  *
