@@ -274,40 +274,9 @@ void sottoMenu::init()
 		elencoBanner.at(i)->inizializza();
 }
 
-void sottoMenu::setIndex(QString addr)
-{
-	for (int i = 0; i < elencoBanner.size(); ++i)
-	{
-		if (elencoBanner.at(i)->getAddress() == addr)
-		{
-			qDebug() << "setindex trovato" << addr;
-			elencoBanner.at(i)->mostra(banner::BUT2);
-			indice = i;
-		}
-		else
-			elencoBanner.at(i)->nascondi(banner::BUT2);
-	}
-}
-
-void sottoMenu::mostra_all(char but)
-{
-	for (int i = 0; i < elencoBanner.size(); ++i)
-		elencoBanner.at(i)->mostra(but);
-}
-
-void sottoMenu::setHeight(int h)
-{
-	height = h;
-}
-
 uchar sottoMenu::getNumRig()
 {
 	return numRighe;
-}
-
-int sottoMenu::getHeight()
-{
-	return height;
 }
 
 void sottoMenu::setGeometry(int x, int y, int w, int h)
@@ -334,17 +303,6 @@ void sottoMenu::hideEvent(QHideEvent *event)
 		forceDraw();
 	}
 	*/
-}
-
-uint sottoMenu::getCount()
-{
-	return elencoBanner.count();
-}
-
-void  sottoMenu::setIndice(char c)
-{
-	if (c <= elencoBanner.count())
-		indice = c;
 }
 
 void sottoMenu::showEvent(QShowEvent *event)

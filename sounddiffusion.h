@@ -29,13 +29,17 @@ public:
 	/// add amb to all banners (source)
 	void addAmb(QString a);
 
+	/// Sets the index of the list forcing it to the object having the address passed by argument.
+	void setIndex(QString addr);
+
+	void mostra_all(char);
+
 private:
 	void loadItems(QDomNode config_node);
 signals:
 	void actSrcChanged(int, int);
-	/*!
-	\brief amb description changed (for MultiSoundDiff)
-	*/
+
+	/// amb description changed (for MultiSoundDiff)
 	void ambChanged(const QString & newdescr, bool multiwhere, QString where);
 };
 
@@ -46,6 +50,10 @@ class AmpliContainer : public sottoMenu
 Q_OBJECT
 public:
 	AmpliContainer(QWidget *parent, QDomNode config_node);
+
+	/// Sets the index of the list forcing which is the first item to draw.
+	void setIndice(char);
+
 private:
 	void loadAmplifiers(QDomNode config_node);
 };

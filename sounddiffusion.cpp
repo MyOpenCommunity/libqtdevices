@@ -96,6 +96,26 @@ void AudioSources::loadItems(QDomNode config_node)
 	}
 }
 
+void AudioSources::setIndex(QString addr)
+{
+	for (int i = 0; i < elencoBanner.size(); ++i)
+	{
+		if (elencoBanner.at(i)->getAddress() == addr)
+		{
+			elencoBanner.at(i)->mostra(banner::BUT2);
+			indice = i;
+		}
+		else
+			elencoBanner.at(i)->nascondi(banner::BUT2);
+	}
+}
+
+void AudioSources::mostra_all(char but)
+{
+	for (int i = 0; i < elencoBanner.size(); ++i)
+		elencoBanner.at(i)->mostra(but);
+}
+
 
 AmpliContainer::AmpliContainer(QWidget *parent, QDomNode config_node) :
 	sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE + 3, 2)
@@ -165,6 +185,12 @@ void AmpliContainer::loadAmplifiers(QDomNode config_node)
 			appendBanner(b);
 		}
 	}
+}
+
+void AmpliContainer::setIndice(char c)
+{
+	if (c <= elencoBanner.count())
+		indice = c;
 }
 
 

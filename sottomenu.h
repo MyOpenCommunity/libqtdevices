@@ -41,11 +41,6 @@ public:
 	sottoMenu(QWidget *parent=0, uchar withNavBar=3 ,int width=MAX_WIDTH,int  height=MAX_HEIGHT,uchar n=NUM_RIGHE-1);
 	~sottoMenu();
 
-	/*!
-	\brief Retrieves the number of objects in the list
-	*/
-	uint getCount();
-
 	/**
 	* Add a new banner.
 	*/
@@ -87,30 +82,9 @@ public:
 	banner* getLast();
 
 	/*!
-	\brief Sets the index of the list forcing it to the object having the address passed by argument.
-	*/
-	void setIndex(QString addr);
-	void mostra_all(char);
-
-	/*!
-	\brief Sets the index of the list forcing which is the first item to draw.
-	*/
-	void setIndice(char);
-
-	/*!
-	\brief Set the height of the area occupied by the subtree.
-	*/
-	void setHeight(int);
-
-	/*!
 	\brief Retrieves the number of rows used by the subtree.
 	*/
 	uchar getNumRig();
-
-	/*!
-	\brief Retrieves the height of th area occupied by the subtree.
-	*/
-	int getHeight();
 
 	/*!
 	\brief Changes the type of navigation bar present at the bsubtree (see bannFrecce)
@@ -128,22 +102,8 @@ public:
 	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 
 public slots:
-	/*!
-	\brief Slides the list upward.
-	*/
-	virtual void goUp();
-
-	/*!
-	\brief Slides the list downward.
-	*/
-	virtual void goDown();
-
-	/*!
-	\brief  See inizializza().
-	*/
-	void init();
-
 	void showItem(int id);
+
 protected:
 	void connectLastBanner();
 	/**
@@ -175,11 +135,28 @@ protected:
 	bannFrecce * bannNavigazione;
 	QString iconName;
 
+protected slots:
+	/*!
+	\brief Slides the list downward.
+	*/
+	virtual void goDown();
+
 private:
 	/// Number of banners to scroll at each goUp() or goDown() call. Default value is 1, to avoid
 	/// breaking existing code.
 	unsigned scroll_step;
 	void setModeIcon(QString iconBut4);
+
+private slots:
+	/*!
+	\brief Slides the list upward.
+	*/
+	virtual void goUp();
+
+	/*!
+	\brief  See inizializza().
+	*/
+	void init();
 
 signals:
 	void goUP();

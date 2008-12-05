@@ -21,8 +21,8 @@
 /// Forward Declarations
 class SoundDiffusion;
 class MultiSoundDiff;
-class dati_ampli_multi;
-class sottoMenu;
+class AudioSources;
+
 
 /*****************************************************************
  ** Ambiente diffusione sonora multicanale
@@ -38,7 +38,7 @@ class ambDiffSon : public bannBut2Icon
 Q_OBJECT
 public:
 	ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString Icona1, QString Icona2,
-		QString Icona3, SoundDiffusion *ds, sottoMenu *sorg, MultiSoundDiff *dm);
+		QString Icona3, SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm);
 	void Draw();
 	void setDraw(bool d);
 	bool isDraw();
@@ -51,7 +51,7 @@ protected:
 private:
 	SoundDiffusion *diffson;
 	MultiSoundDiff *diffmul;
-	sottoMenu *sorgenti;
+	AudioSources *sorgenti;
 	int actSrc;
 	bool is_draw;
 	QString descr;
@@ -74,7 +74,7 @@ class insAmbDiffSon : public bannButIcon
 Q_OBJECT
 public:
 	insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2, SoundDiffusion *ds,
-		sottoMenu *sorg, MultiSoundDiff *dm);
+		AudioSources *sorg, MultiSoundDiff *dm);
 	void Draw();
 public slots:
 	void configura();
@@ -83,7 +83,7 @@ public slots:
 private:
 	SoundDiffusion *diffson;
 	MultiSoundDiff *diffmul;
-	sottoMenu *sorgenti;
+	AudioSources *sorgenti;
 	QString descr;
 signals:
 	void ambChanged(const QString &, bool, QString);
