@@ -11,7 +11,7 @@
 #ifndef CLEANSCREEN_H
 #define CLEANSCREEN_H
 
-#include "btwidget.h"
+#include "page.h"
 
 #include <QTimer>
 
@@ -21,11 +21,11 @@
 class QLabel;
 
 
-class CleanScreen : public BTWidget
+class CleanScreen : public Page
 {
 Q_OBJECT
 public:
-	CleanScreen(QWidget *parent=0);
+	CleanScreen();
 private:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);

@@ -10,11 +10,11 @@
 
 #include "bannondx.h"
 #include "sottomenu.h"
-#include "btwidget.h"
+#include "page.h"
 #include "main.h"
 
 
-bannOnDx::bannOnDx(sottoMenu *parent, QString icon, BTWidget *page) : banner(parent)
+bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
 {
 	unsigned char nr = parent->getNumRig();
 

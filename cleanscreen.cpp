@@ -13,9 +13,8 @@
 
 static const char *CLEANSCREEN_ICON = IMG_PATH "btnplusp.png";
 
-CleanScreen::CleanScreen(QWidget *parent) : BTWidget(parent)
+CleanScreen::CleanScreen()
 {
-
 	connect(&secs_timer, SIGNAL(timeout()), SLOT(update()));
 
 	connect(&timer, SIGNAL(timeout()), &secs_timer, SLOT(stop()));

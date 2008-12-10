@@ -11,7 +11,7 @@
 #ifndef IMPOSTA_TIME_H
 #define IMPOSTA_TIME_H
 
-#include "btwidget.h"
+#include "page.h"
 
 class timeScript;
 class BtButton;
@@ -26,11 +26,11 @@ class QLabel;
   \date lug 2005
 */
 
-class  impostaTime : public BTWidget
+class  impostaTime : public Page
 {
 Q_OBJECT
 public:
-	impostaTime(QWidget *parent=0);
+	impostaTime();
 	BtButton *but[7];
 
 protected:

@@ -5,24 +5,26 @@
  * All rights reserved.
  * -->
  *
- * \brief This is the main class of all widget used in BTouch app.
+ * \brief This class represent a Page.
  *
  * \author Gianni Valdambrini <aleister@develer.com>
  * \date December 2008
  */
 
-#ifndef BTWIDGET_H
-#define BTWIDGET_H
+#ifndef PAGE_H
+#define PAGE_H
 
 #include <QWidget>
 
-class BTWidget : public QWidget
+
+class Page : public QWidget
 {
 Q_OBJECT
-public:
-	BTWidget(QWidget *parent=0);
+public slots:
+	virtual void showPage() { showFullScreen(); }
+
 signals:
-	/// Emitted when the widget is closed.
+	/// Emitted when the page is closed.
 	void Closed();
 };
 

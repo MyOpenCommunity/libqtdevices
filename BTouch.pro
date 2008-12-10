@@ -70,7 +70,6 @@ HEADERS += actuators.h \
            btbutton.h \
            btmain.h \
            bttime.h \
-           btwidget.h \
            buttons_bar.h \
            calibrate.h \
            carico.h \
@@ -95,6 +94,7 @@ HEADERS += actuators.h \
            multimedia_source.h \
            multisounddiff.h \
            openclient.h \
+           page.h \
            plantmenu.h \
            playwindow.h \
            poweramplifier.h \
@@ -161,7 +161,6 @@ SOURCES += actuators.cpp \
            brightnesspage.cpp \
            brightnesscontrol.cpp \
            bttime.cpp \
-           btwidget.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
            carico.cpp \

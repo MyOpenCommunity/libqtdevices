@@ -15,7 +15,7 @@
 #include "banner.h"
 #include "device_status.h"
 #include "bttime.h"
-#include "btwidget.h"
+#include "page.h"
 
 #include <QDomNode>
 #include <QDateTime>
@@ -34,7 +34,7 @@ class FSBannDate;
   \author Davide
   \date lug 2005
   */
-class sottoMenu : public BTWidget
+class sottoMenu : public Page
 {
 Q_OBJECT
 public:
