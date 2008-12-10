@@ -95,6 +95,7 @@ HEADERS += actuators.h \
            multisounddiff.h \
            openclient.h \
            page.h \
+           pagecontainer.h \
            plantmenu.h \
            playwindow.h \
            poweramplifier.h \
@@ -185,6 +186,7 @@ SOURCES += actuators.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \
            openclient.cpp \
+           pagecontainer.cpp \
            plantmenu.cpp \
            playwindow.cpp \
            poweramplifier.cpp \
