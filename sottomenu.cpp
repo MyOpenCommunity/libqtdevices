@@ -36,9 +36,8 @@
 
 #define IMG_OK IMG_PATH "btnok.png"
 
-sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n)
+sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n) : Page(parent)
 {
-	Q_UNUSED(parent); // TODO: rimuovere il parent!
 	numRighe = n;
 	scroll_step = 1;
 	hasNavBar = navBarMode;
