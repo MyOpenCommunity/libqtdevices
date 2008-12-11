@@ -682,12 +682,12 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case TERMOREGOLAZIONE:
-						*termo = new ThermalMenu(0, page_node);
+						*termo = new ThermalMenu(page_node);
 						pageAct = *termo;
 						break;
 
 					case TERMOREG_MULTI_PLANT:
-						*termo = new ThermalMenu(0, page_node);
+						*termo = new ThermalMenu(page_node);
 						pageAct = *termo;
 						break;
 

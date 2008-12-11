@@ -35,14 +35,14 @@ public:
 	/**
 	 * 
 	 */
-	ThermalMenu(QWidget *parent, QDomNode n);
+	ThermalMenu(QDomNode config_node);
 
 public slots:
 	/**
 	 * Show ThermalMenu if there are two or more banners, show the only submenu below us
 	 * otherwise.
 	 */
-	void showPage();
+	virtual void showPage();
 
 private:
 	bannPuls *addMenuItem(QDomElement, QString);
@@ -57,9 +57,8 @@ private:
 	void createProbeMenu(QDomNode config, bannPuls *bann, bool external);
 
 	void createPlantMenu(QDomNode config, bannPuls *bann);
-	void addBanners();
+	void loadBanners(QDomNode config_node);
 
-	QDomNode conf_root;
 	/// do NOT setAutoDelete(true), since banners are children of
 	/// ThermalMenu and will be deleted by Qt
 

@@ -14,7 +14,7 @@
 #include "banntemperature.h"
 #include "device_cache.h"
 #include "plantmenu.h"
-#include "xml_functions.h"
+#include "xml_functions.h" // getChildren, getTextChild
 
 #include <QRegExp>
 #include <QDebug>
@@ -24,12 +24,11 @@ static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png"
 static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
 static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
-ThermalMenu::ThermalMenu(QWidget *parent, QDomNode n) : sottoMenu(parent)
+ThermalMenu::ThermalMenu(QDomNode config_node)
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");
-	conf_root = n;
 	bann_number = 0;
-	addBanners();
+	loadBanners(config_node);
 
 	qDebug("[TERMO] thermalmenu: end adding items.");
 	// check if plant menus are created?
@@ -52,34 +51,24 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
 }
 
-void ThermalMenu::addBanners()
+void ThermalMenu::loadBanners(QDomNode config_node)
 {
 	bannPuls *b = NULL;
-
-	QDomNode node = conf_root.firstChild();
-	while (!node.isNull())
+	QDomNode node;
+	foreach (node, getChildren(config_node, "plant"))
 	{
-		QDomElement e = node.toElement();
-		if (!e.isNull())
-		{
-			if (e.tagName().contains(QRegExp("plant(\\d*)")))
-			{
-				b = addMenuItem(e, i_plant);
-				createPlantMenu(e, b);
-			}
-			else if (e.tagName() == "extprobe")
-			{
-				b = addMenuItem(e, i_ext_probe);
-				createProbeMenu(e, b, true);
-			}
-			else if (e.tagName() == "tempprobe")
-			{
-				b = addMenuItem(e, i_temp_probe);
-				createProbeMenu(e, b, false);
-			}
-		}
-
-		node = node.nextSibling();
+		b = addMenuItem(node.toElement(), i_plant);
+		createPlantMenu(node.toElement(), b);
+	}
+	foreach (node, getChildren(config_node, "extprobe"))
+	{
+		b = addMenuItem(node.toElement(), i_ext_probe);
+		createProbeMenu(node.toElement(), b, true);
+	}
+	foreach (node, getChildren(config_node, "tempprobe"))
+	{
+		b = addMenuItem(node.toElement(), i_temp_probe);
+		createProbeMenu(node.toElement(), b, false);
 	}
 }
 
@@ -141,7 +130,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 void ThermalMenu::showPage()
 {
 	if (bann_number == 1)
-		single_submenu->show();
+		single_submenu->showPage();
 	else
-		show();
+		sottoMenu::showPage();
 }
