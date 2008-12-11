@@ -36,12 +36,11 @@ class SupervisionMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	SupervisionMenu(QDomNode n);
+	SupervisionMenu(QDomNode config_node);
 	~SupervisionMenu();
 
 private:
-	QDomNode subtreeRoot;
-	sottoMenu* stopngoSubmenu;
+	sottoMenu *stopngoSubmenu;
 	QList<StopngoItem*> stopngoList;
 	QList<StopngoPage*> stopngoPages;
 	int classesCount;
@@ -50,8 +49,7 @@ private:
 	QString GetDeviceAddress(QDomNode);
 	QDomNode FindNamedNode(QDomNode, QString);
 	void CreateStopnGoMenu(QDomNode, bannPuls*);
-	void AddItems();
-	void AddBanners();
+	void loadItems(QDomNode config_node);
 	void LinkBanner2Page(bannPuls*, StopngoItem*);
 
 public slots:

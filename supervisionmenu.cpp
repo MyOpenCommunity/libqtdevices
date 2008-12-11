@@ -26,12 +26,10 @@
 	SupervisionMenu class definition
 ==================================================================================================*/
 
-SupervisionMenu::SupervisionMenu(QDomNode n)
+SupervisionMenu::SupervisionMenu(QDomNode config_node)
 {
-	qDebug("[SUPERVISION] SupervisionMenu()");
-	subtreeRoot = n;
 	stopngoSubmenu = NULL;
-	AddItems();
+	loadItems(config_node);
 }
 
 SupervisionMenu::~SupervisionMenu()
@@ -46,15 +44,12 @@ SupervisionMenu::~SupervisionMenu()
 		delete stopngoSubmenu;
 }
 
-void SupervisionMenu::AddItems()
-{
-	AddBanners();
-}
 
-void SupervisionMenu::AddBanners()
+void SupervisionMenu::loadItems(QDomNode config_node)
 {
+	// TODO: gestire come nelle altre classi con le funzioni di xml_functions!
 	classesCount = 0;
-	QDomNode level1Node = subtreeRoot.firstChild();
+	QDomNode level1Node = config_node.firstChild();
 	while (!level1Node.isNull())
 	{
 		QDomElement l1Element = level1Node.toElement();
@@ -218,7 +213,7 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 	connect(stopngoSubmenu, SIGNAL(hideChildren()), pg, SLOT(hide()));
 	connect(pg, SIGNAL(Closed()), stopngoSubmenu, SLOT(showFullScreen()));
 	connect(pg, SIGNAL(Closed()), pg, SLOT(hide()));
-	
+
 	// Get status changed events back
 	mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
