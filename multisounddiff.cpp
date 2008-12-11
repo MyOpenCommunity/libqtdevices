@@ -62,7 +62,7 @@ void MultiSoundDiff::loadAmbienti(QDomNode config_node)
 		if (id == INSIEME_AMBIENTI || id == AMBIENTE)
 		{
 			// Do not create "sorgenti" submenu
-			ds = new SoundDiffusion(0, sorgenti, item);
+			ds = new SoundDiffusion(sorgenti, item);
 			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SLOT(ds_closed(SoundDiffusion*)));
 			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SIGNAL(dsClosed()));
 			ds->draw();

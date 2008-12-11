@@ -68,12 +68,12 @@ private:
  * \author Davide
  * \date lug 2005
  */
-class SoundDiffusion : public QWidget
+class SoundDiffusion : public Page
 {
 Q_OBJECT
 public:
-	SoundDiffusion(QWidget *parent, QDomNode config_node);
-	SoundDiffusion(QWidget *parent, AudioSources *s, QDomNode config_node);
+	SoundDiffusion(QDomNode config_node);
+	SoundDiffusion(AudioSources *s, QDomNode config_node);
 
 	/*!
 	 * \brief Sets the row's number.
@@ -154,10 +154,6 @@ private slots:
 	void fineVis();
 
 signals:
-	/*!
-	 * \brief Emitted when the object is closed.
-	 */
-	void Closed();
 	void closed(SoundDiffusion*);
 
 	/*!

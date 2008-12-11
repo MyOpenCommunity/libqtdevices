@@ -194,13 +194,13 @@ void AmpliContainer::setIndice(char c)
 }
 
 
-SoundDiffusion::SoundDiffusion(QWidget *parent, AudioSources *s, QDomNode config_node) : QWidget(parent)
+SoundDiffusion::SoundDiffusion(AudioSources *s, QDomNode config_node)
 {
 	init(config_node);
 	setSorgenti(s);
 }
 
-SoundDiffusion::SoundDiffusion(QWidget *parent, QDomNode config_node) : QWidget(parent)
+SoundDiffusion::SoundDiffusion(QDomNode config_node)
 {
 	init(config_node);
 	AudioSources *s = new AudioSources(this, config_node);

@@ -476,7 +476,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case DIFSON:
 						pageAct = *difSon;
 						(*difSon)->draw();
-						QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Difson()),*difSon,SLOT(showPage()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*difSon,SLOT(gestFrame(char *)));
 						break;
 
@@ -672,7 +672,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case DIFSON:
-						*difSon = new SoundDiffusion(0, page_node);
+						*difSon = new SoundDiffusion(page_node);
 						pageAct = *difSon;
 						break;
 
