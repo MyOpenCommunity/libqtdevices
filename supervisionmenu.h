@@ -46,8 +46,6 @@ private:
 	int classesCount;
 
 	void Create2ButBanner(QDomElement, QString, QString);
-	QString GetDeviceAddress(QDomNode);
-	QDomNode FindNamedNode(QDomNode, QString);
 	void CreateStopnGoMenu(QDomNode, bannPuls*);
 	void loadItems(QDomNode config_node);
 	void LinkBanner2Page(bannPuls*, StopngoItem*);

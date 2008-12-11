@@ -17,14 +17,14 @@
 #include "device.h"
 #include "btmain.h"
 #include "main.h" // BTouch
+#include "xml_functions.h" // getChildren, getTextChild
 
 #include <QDebug>
 
+#include <assert.h>
+
 #define STOPNGO_BANN_IMAGE ICON_STOPNGO_CHIUSO
 
-/*==================================================================================================
-	SupervisionMenu class definition
-==================================================================================================*/
 
 SupervisionMenu::SupervisionMenu(QDomNode config_node)
 {
@@ -44,32 +44,31 @@ SupervisionMenu::~SupervisionMenu()
 		delete stopngoSubmenu;
 }
 
-
 void SupervisionMenu::loadItems(QDomNode config_node)
 {
-	// TODO: gestire come nelle altre classi con le funzioni di xml_functions!
 	classesCount = 0;
-	QDomNode level1Node = config_node.firstChild();
-	while (!level1Node.isNull())
+
+	QDomNode node;
+	foreach (node, getChildren(config_node, "class"))
 	{
-		QDomElement l1Element = level1Node.toElement();
-		if (!l1Element.isNull() && l1Element.tagName().startsWith("class"))
+		int id = getTextChild(node, "id").toInt();
+		switch (id)
 		{
-			// Now look for the ID subnode
-			QDomNode n = FindNamedNode(l1Element, "id");
-			switch (n.toElement().text().toInt())
-			{
-			case CLASS_STOPNGO:
-				// Create a banner for the class
-				Create2ButBanner(l1Element, STOPNGO_BANN_IMAGE, "StopnGo banner");
-				// Create the submenu/page related to this banner
-				bannPuls* b = static_cast<bannPuls*>(elencoBanner.last());
-				CreateStopnGoMenu(l1Element, b);
-				break;
-			}
-			classesCount++;
+		case CLASS_STOPNGO:
+		{
+			bannPuls *b = new bannPuls(this);
+			b->SetIcons(ICON_FRECCIA_DX, QString(), STOPNGO_BANN_IMAGE);
+			b->setAddress(getTextChild(node, "where"));
+			b->setText(getTextChild(node, "descr"));
+			b->setId(id);
+			appendBanner(b);
+			CreateStopnGoMenu(node, static_cast<bannPuls*>(b));
+			++classesCount;
+			break;
 		}
-		level1Node = level1Node.nextSibling();
+		default:
+			assert(!"Type of class not handled on supervision page!");
+		}
 	}
 
 	if (classesCount == 1)  // Only one class has been defined in the supervision section of conf.xml
@@ -79,7 +78,7 @@ void SupervisionMenu::loadItems(QDomNode config_node)
 
 		if (stopngoSubmenu)  // Check is the only submenu is a stopngo menu
 		{
-			if (this == stopngoSubmenu)  // Only one Stop&Go devise is mapped
+			if (this == stopngoSubmenu)  // Only one Stop&Go device is mapped
 			{
 				StopngoPage* pg = stopngoPages.first();
 				if (pg)
@@ -90,99 +89,39 @@ void SupervisionMenu::loadItems(QDomNode config_node)
 			}
 			else  // A Stop&Go submenu instance has been created
 			{
-				disconnect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showFullScreen()));
+				disconnect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showPage()));
 				connect(stopngoSubmenu, SIGNAL(Closed()), this, SIGNAL(Closed()));
 			}
 		}
 	}
 }
 
-void SupervisionMenu::Create2ButBanner(QDomElement e, QString ci, QString descr)
-{
-	bannPuls *bp = new bannPuls(this);
-
-	bp->SetIcons(ICON_FRECCIA_DX, QString(), ci);
-	QString addr = GetDeviceAddress(e);
-	bp->setAddress(addr);
-	elencoBanner.append(bp);
-	connectLastBanner();
-
-	QDomNode n = FindNamedNode(e, "descr");
-	banner *last = elencoBanner.last();
-	last->setText(n.toElement().text());
-	last->setAnimationParams(0, 0);
-	n = FindNamedNode(e, "id");
-	last->setId(n.toElement().text().toInt());
-}
-
-QDomNode SupervisionMenu::FindNamedNode(QDomNode root, QString name)
-{
-	QList<QDomNode> nodes;
-	nodes.append(root);
-	while (!nodes.isEmpty())
-	{
-		QDomNode n = nodes.first();
-		QDomNode item = n.namedItem(name);
-		qDebug() << "[SUPERVISOR] FindNamedNode: item = " << item.nodeName();
-		if (item.isNull())
-		{
-			QDomNodeList list = n.childNodes();
-			for (unsigned i = 0; i < list.length(); ++i)
-				nodes.append(list.item(i));
-			nodes.pop_front();
-		}
-		else
-		{
-			return item;
-		}
-	}
-	throw;
-}
-
-QString SupervisionMenu::GetDeviceAddress(QDomNode root)
-{
-	QDomNode n = FindNamedNode(root, "where");
-	QDomElement where = n.toElement();
-	return where.text();
-}
-
 void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 {
-	qDebug("[SUPERVISOR] CreateStopnGoMenu()");
-	
-	QDomNode n = node.firstChild();
-	while (!n.isNull())  // Scan XML subtree to build a list of device items
+	QDomNode item;
+	foreach (item, getChildren(node, "item"))
 	{
-		if (n.nodeName().startsWith("item"))
-		{
-			QDomNode id = FindNamedNode(n, "id");
-			QDomNode cid = FindNamedNode(n, "cid");
-			QDomNode des   = FindNamedNode(n, "descr");
-			QDomNode where = FindNamedNode(n, "where");
-			stopngoList.append(new StopngoItem(id.toElement().text().toInt(), cid.toElement().text().toInt(),
-				des.toElement().text(), where.toElement().text()));
-
-			qDebug() << "[SUPERVISOR] CreateStopnGoMenu() found: " << n.nodeName() << " desc="
-				<< des.toElement().text() << " id=" << id.toElement().text();
-		}
-		n = n.nextSibling();
+		int id = getTextChild(item, "id").toInt();
+		int cid = getTextChild(item, "cid").toInt();
+		QString descr = getTextChild(item, "descr");
+		QString where = getTextChild(item, "where");
+		stopngoList.append(new StopngoItem(id, cid, descr, where));
 	}
 
 	if (stopngoList.size() > 1)  // more than one device
 	{
 		// Show a submenu listing the devices to control
-		sottoMenu *sm = new sottoMenu;
-		sm->hide();
-		QObject::connect(bann, SIGNAL(sxClick()), sm, SLOT(showFullScreen()));  // Connect submenu
-		QObject::connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
-		QObject::connect(sm, SIGNAL(Closed()), this, SLOT(showFullScreen()));
-		QObject::connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-		stopngoSubmenu = sm;
+		stopngoSubmenu = new sottoMenu;
+		stopngoSubmenu->hide();
+		connect(bann, SIGNAL(sxClick()), stopngoSubmenu, SLOT(showPage()));  // Connect submenu
+		connect(this, SIGNAL(hideChildren()), stopngoSubmenu, SLOT(hide()));
+		connect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showPage()));
+		connect(stopngoSubmenu, SIGNAL(Closed()), stopngoSubmenu, SLOT(hide()));
 
 		for (int i = 0; i < stopngoList.size(); ++i)
 		{
 			StopngoItem *itm = stopngoList.at(i);
-			BannPulsDynIcon *bp = new BannPulsDynIcon(sm);  // Create a new banner
+			BannPulsDynIcon *bp = new BannPulsDynIcon(stopngoSubmenu);  // Create a new banner
 			bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
 			bp->setText(itm->GetDescr());
 			bp->setAnimationParams(0, 0);
@@ -191,10 +130,10 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 			// Get status changed events back
 			mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere());
 			connect(dev, SIGNAL(status_changed(QList<device_status*>)), bp, SLOT(status_changed(QList<device_status*>)));
-			sm->appendBanner(bp);  // Add the new banner to the submenu
+			stopngoSubmenu->appendBanner(bp);  // Add the new banner to the submenu
 			LinkBanner2Page(bp, itm);  // Connect the new banner to the page
 		}
-		sm->forceDraw();
+		stopngoSubmenu->forceDraw();
 	}
 	else if (stopngoList.size() == 1)  // one device
 	{
@@ -211,7 +150,7 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 
 	connect(bnr, SIGNAL(sxClick()), pg, SLOT(showPage()));
 	connect(stopngoSubmenu, SIGNAL(hideChildren()), pg, SLOT(hide()));
-	connect(pg, SIGNAL(Closed()), stopngoSubmenu, SLOT(showFullScreen()));
+	connect(pg, SIGNAL(Closed()), stopngoSubmenu, SLOT(showPage()));
 	connect(pg, SIGNAL(Closed()), pg, SLOT(hide()));
 
 	// Get status changed events back
