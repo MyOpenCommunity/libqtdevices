@@ -453,7 +453,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case ANTIINTRUSIONE:
 						pageAct = *antintr;
 						(*antintr)->draw();
-						QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Antiintrusione()),*antintr,SLOT(showPage()));
 						QObject::connect(client_comandi,SIGNAL(openAckRx()),*antintr,SIGNAL(openAckRx()));
 						QObject::connect(client_comandi,SIGNAL(openNakRx()),*antintr,SIGNAL(openNakRx()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*antintr,SLOT(gesFrame(char *)));
@@ -677,7 +677,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case ANTIINTRUSIONE:
-						*antintr = new Antintrusion(0, page_node);
+						*antintr = new Antintrusion(page_node);
 						pageAct = *antintr;
 						break;
 

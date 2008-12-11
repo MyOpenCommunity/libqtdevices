@@ -13,11 +13,12 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QDomNode>
+#include <QWidget>
 
 #include <assert.h>
 
 
-Antintrusion::Antintrusion(QWidget *parent, QDomNode config_node) : QWidget(parent)
+Antintrusion::Antintrusion(QDomNode config_node)
 {
 	tasti = NULL;
 	numRighe = NUM_RIGHE;

@@ -13,7 +13,8 @@
 #define ANTINTRUSION_H
 
 
-#include <QWidget>
+#include "page.h"
+
 #include <QString>
 #include <QTimer>
 #include <QList>
@@ -23,6 +24,7 @@ class zonaAnti;
 class tastiera;
 class allarme;
 class QDomNode;
+class QWidget;
 
 
 /*!
@@ -33,11 +35,11 @@ class QDomNode;
   \author Davide
   \date lug 2005
 */
-class Antintrusion : public QWidget
+class Antintrusion : public Page
 {
 Q_OBJECT
 public:
-	Antintrusion(QWidget *parent, QDomNode config_node);
+	Antintrusion(QDomNode config_node);
 	~Antintrusion();
 /*!
   \brief sets the rows number fot the object. This method automatically give the exact row number to the \a sottomenu: impianto-zone-allarmi
@@ -150,7 +152,6 @@ private:
 	void loadItems(QDomNode config_node);
 
 signals:
-	void Closed();
 /*!
   \brief emitted when a open frame comes from the plant so impianto-zone-allarmi can analyze it
 */
