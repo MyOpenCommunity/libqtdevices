@@ -25,7 +25,7 @@ class Lighting : public sottoMenu
 {
 Q_OBJECT
 public:
-	Lighting(QWidget *parent, QDomNode config_node);
+	Lighting(QDomNode config_node);
 
 protected:
 	virtual void showEvent(QShowEvent *event);

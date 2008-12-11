@@ -11,7 +11,7 @@
 #include <assert.h>
 
 
-Automation::Automation(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
+Automation::Automation(QDomNode config_node)
 {
 	loadItems(config_node);
 }

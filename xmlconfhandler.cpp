@@ -644,12 +644,12 @@ bool xmlconfhandler::characters(const QString & qValue)
 					switch (page_id)
 					{
 					case AUTOMAZIONE:
-						*automazioni = new Automation(0, page_node);
+						*automazioni = new Automation(page_node);
 						pageAct = *automazioni;
 						break;
 
 					case ILLUMINAZIONE:
-						*illumino = new Lighting(0, page_node);
+						*illumino = new Lighting(page_node);
 						pageAct = *illumino;
 						break;
 

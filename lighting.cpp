@@ -21,7 +21,7 @@ static QList<QString> getAddresses(QDomNode item)
 }
 
 
-Lighting::Lighting(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
+Lighting::Lighting(QDomNode config_node)
 {
 	loadItems(config_node);
 }
