@@ -432,7 +432,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case SUPERVISIONE:
 						pageAct = *supervisione;
 						(*supervisione)->forceDraw();
-						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showPg()));
+						QObject::connect(*home,SIGNAL(Supervisione()),*supervisione,SLOT(showPage()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*supervisione,SIGNAL(gestFrame(char *)));
 						QObject::connect(*supervisione,SIGNAL(richStato(QString)),client_richieste,SLOT(richStato(QString)));
 						break;
@@ -709,7 +709,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case SUPERVISIONE:
-						*supervisione = new SupervisionMenu(0, page_node);
+						*supervisione = new SupervisionMenu(page_node);
 						pageAct = *supervisione;
 						break;
 

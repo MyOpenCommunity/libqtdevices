@@ -36,7 +36,7 @@ class SupervisionMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	SupervisionMenu(QWidget *parent, QDomNode n);
+	SupervisionMenu(QDomNode n);
 	~SupervisionMenu();
 
 private:
@@ -55,7 +55,7 @@ private:
 	void LinkBanner2Page(bannPuls*, StopngoItem*);
 
 public slots:
-	void showPg();
+	virtual void showPage();
 
 signals:
 	void quickOpen();

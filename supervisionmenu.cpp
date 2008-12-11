@@ -26,7 +26,7 @@
 	SupervisionMenu class definition
 ==================================================================================================*/
 
-SupervisionMenu::SupervisionMenu(QWidget *parent, QDomNode n) : sottoMenu(parent)
+SupervisionMenu::SupervisionMenu(QDomNode n)
 {
 	qDebug("[SUPERVISION] SupervisionMenu()");
 	subtreeRoot = n;
@@ -227,11 +227,11 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 	stopngoPages.append(pg);
 }
 
-void SupervisionMenu::showPg()
+void SupervisionMenu::showPage()
 {
-	qDebug("SupervisionMenu::showPg()");
+	qDebug("SupervisionMenu::showPage()");
 	if (classesCount == 1)
-		emit(quickOpen());
+		emit quickOpen();
 	else
-		showFullScreen();
+		sottoMenu::showPage();
 }
