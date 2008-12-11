@@ -31,7 +31,7 @@ bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
 	if (linked_page)
 	{
 		linked_page->hide();
-		connect(this, SIGNAL(sxClick()), linked_page, SLOT(showFullScreen()));
+		connect(this, SIGNAL(sxClick()), linked_page, SLOT(showPage()));
 		connect(linked_page, SIGNAL(Closed()), linked_page, SLOT(hide()));
 	}
 }

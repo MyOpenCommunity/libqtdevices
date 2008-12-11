@@ -440,13 +440,13 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case AUTOMAZIONE:
 						pageAct = *automazioni;
 						(*automazioni)->forceDraw();
-						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Automazione()),*automazioni,SLOT(showPage()));
 						break;
 
 					case ILLUMINAZIONE:
 						pageAct = *illumino;
 						(*illumino)->forceDraw();
-						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Illuminazione()),*illumino,SLOT(showPage()));
 						QObject::connect(*illumino,SIGNAL(richStato(QString)),client_richieste,SLOT(richStato(QString)));
 						break;
 
