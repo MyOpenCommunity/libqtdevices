@@ -405,6 +405,7 @@ void impAnti::Insert3()
 	disconnect(&insert_timer, SIGNAL(timeout()), this, SLOT(Insert3()));
 	connect(&insert_timer, SIGNAL(timeout()), this, SLOT(inizializza()));
 	insert_timer.start(5000);
+	ToSendParz(false);
 }
 
 void impAnti::DeInsert(char *pwd)

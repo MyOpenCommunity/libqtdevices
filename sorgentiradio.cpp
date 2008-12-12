@@ -410,7 +410,7 @@ void sorgenteMultiRadio::attiva()
 	if (!multiamb)
 	{
 		memset(pippo,'\000',sizeof(pippo));
-		sprintf(pippo,"*22*35#4#%d#%d*4#%d##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
+		sprintf(pippo,"*22*35#4#%d#%d*3#%d#0##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
 		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
 		dev->sendFrame(msg_open.frame_open);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());

@@ -260,7 +260,6 @@ impPassword ::impPassword (QWidget *parent,const char *name, char* icon1, char*i
 		active = FALSE;
 
 	emit(setPwd(active,&paswd[0]));
-	starting = 1;
 }
 
 
@@ -289,7 +288,7 @@ void impPassword::show()
 	qDebug("impPassword::show()");
 	Draw();
 	qDebug("passwd = %s %d", &paswd[0], paswd[0]);
-	if ((paswd[0]=='\000') || (starting))
+	if (paswd[0]=='\000') 
 	{
 		qDebug("passwd = ZERO");
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -346,7 +345,6 @@ void impPassword::reShow2(char* c)
 		emit(setPwd(active,&paswd[0]));
 	}
 	show();
-	tasti->setMode(tastiera::HIDDEN);
 }
 
 void impPassword::tiempout()
@@ -357,8 +355,6 @@ void impPassword::tiempout()
 
 void impPassword::setEnabled(bool  b)
 {
-	if (!b)
-		starting = 0;
 	QWidget::setEnabled(b);
 }
 

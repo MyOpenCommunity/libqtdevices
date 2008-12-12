@@ -1753,7 +1753,6 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
                         ds->write_val(atoi(ambiente)-1, curr_act);
                         do_event = true;
 		}
-
 	}
 	if (do_event)
 		evt_list.append(ds);
@@ -2600,9 +2599,9 @@ get_init_message(device_status *s, QString& out)
 				head = "*#4*#";
 				end  = "##";
 				out  = head + where + end;
-			        stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
+				stat_var curr_info_centrale(stat_var::INFO_CENTRALE);
 				int delta = 1;
-		                curr_info_centrale.set_val(delta);
+				curr_info_centrale.set_val(delta);
 			}
 			else
 				out = "";
@@ -2748,9 +2747,8 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 			break;
 		case 202:
 			// PROT TERMICA
-			if (/*!ds->initialized() || */
-					((curr_stat.get_val() != device_status_temperature_probe_extra::S_TERM) &&
-					((curr_local.get_val() != 4) || (curr_local.get_val() != 5)))) {
+			if (/*!ds->initialized() || */(curr_stat.get_val() !=
+						device_status_temperature_probe_extra::S_TERM)) {
 				do_event = true;
 				stat = device_status_temperature_probe_extra::S_TERM;
 			}
@@ -2892,16 +2890,16 @@ handle_frame(openwebnet_ext m, device_status_temperature_probe_extra *ds)
 			else
 			{
 				sp = atoi(m.Extract_valori(0));
-                                if(curr_local.get_val() <= 3)
+				if (curr_local.get_val() <= 3)
 					sp -= curr_local.get_val()*10;
-				else if(curr_local.get_val() >= 11)
-                                        sp += (curr_local.get_val()-10)*10;
+				else if (curr_local.get_val() >= 11)
+					sp += (curr_local.get_val()-10)*10;
 				else
 					break;
 				qDebug("setting new sp");
-                                curr_sp.set_val(sp);
-                                ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
-                                evt_list.append(ds);
+				curr_sp.set_val(sp);
+				ds->write_val((int)device_status_temperature_probe_extra::SP_INDEX, curr_sp);
+				evt_list.append(ds);
 			}
 			break;
 		case 14:

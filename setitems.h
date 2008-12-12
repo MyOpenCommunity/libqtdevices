@@ -251,7 +251,6 @@ private:
 	tastiera *tasti;
 	bool sb;
 	QTimer * tiempo;
-	unsigned char starting;
 };
 #endif //PASSWORD_H
 

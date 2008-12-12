@@ -827,7 +827,20 @@ FSBannManualTimed::FSBannManualTimed(QWidget *parent, const char *name, thermal_
 
 void FSBannManualTimed::performAction()
 {
-	emit(timeAndTempSelected(time_edit->time(), temp));
+	unsigned bt_temp;
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		bt_temp = celsius2Bt(temp);
+		break;
+	case FAHRENHEIT:
+		bt_temp = fahrenheit2Bt(temp);
+		break;
+	default:
+		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
+		bt_temp = celsius2Bt(temp);
+	}
+	emit(timeAndTempSelected(time_edit->time(), bt_temp));
 }
 
 void FSBannManualTimed::setMaxHours(int max)
@@ -1482,7 +1495,7 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	settings->appendBanner(manual_timed);
 	timed_manual_menu = new sottoMenu(0, "manual_timed", 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
-	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev);
+	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, 0, dev, temp_scale);
 	bann->setSecondForeground(second_fg);
 	bann->setMaxHours(25);
 
