@@ -27,7 +27,7 @@
 #include <assert.h>
 
 
-MultiSoundDiff::MultiSoundDiff(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
+MultiSoundDiff::MultiSoundDiff(QDomNode config_node) : sottoMenu((QWidget*)0, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
 {
 	sorgenti = new AudioSources(this, config_node);
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));

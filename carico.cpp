@@ -39,7 +39,7 @@ void bannCarico::inizializza(bool forza)
 }
 
 
-Carico::Carico(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
+Carico::Carico(QDomNode config_node)
 {
 	loadItems(config_node);
 }

@@ -28,7 +28,7 @@ class MultiSoundDiff : public sottoMenu
 {
 Q_OBJECT
 public:
-	MultiSoundDiff(QWidget *parent, QDomNode config_node);
+	MultiSoundDiff(QDomNode config_node);
 	~MultiSoundDiff();
 
 	/*!

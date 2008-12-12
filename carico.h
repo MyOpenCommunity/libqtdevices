@@ -39,7 +39,7 @@ class Carico : public sottoMenu
 {
 Q_OBJECT
 public:
-	Carico(QWidget *parent, QDomNode config_node);
+	Carico(QDomNode config_node);
 private:
 	void loadItems(QDomNode config_node);
 };

@@ -7,7 +7,7 @@
 #include <assert.h>
 
 
-VideoEntryPhone::VideoEntryPhone(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
+VideoEntryPhone::VideoEntryPhone(QDomNode config_node)
 {
 	loadDevices(config_node);
 }

@@ -11,7 +11,7 @@
 #include <assert.h>
 
 
-Scenario::Scenario(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
+Scenario::Scenario(QDomNode config_node)
 {
 	loadItems(config_node);
 }

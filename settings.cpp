@@ -16,7 +16,7 @@
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 
-Settings::Settings(QWidget *parent, QDomNode config_node) : sottoMenu(parent)
+Settings::Settings(QDomNode config_node)
 {
 	loadItems(config_node);
 }

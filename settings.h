@@ -25,7 +25,7 @@ class Settings : public sottoMenu
 {
 Q_OBJECT
 public:
-	Settings(QWidget *parent, QDomNode config_node);
+	Settings(QDomNode config_node);
 
 private:
 	void loadItems(QDomNode config_node);

@@ -462,7 +462,7 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case CARICHI:
 						pageAct = *carichi;
 						(*carichi)->forceDraw();
-						QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Carichi()),*carichi,SLOT(showPage()));
 						break;
 
 					case TERMOREGOLAZIONE:
@@ -483,20 +483,20 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 					case DIFSON_MULTI:
 						pageAct = *dm;
 						(*dm)->forceDraw();
-						QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Difmulti()),*dm,SLOT(showPage()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*dm,SLOT(gestFrame(char *)));
 						break;
 
 					case SCENARI:
 						pageAct = *scenari;
 						(*scenari)->forceDraw();
-						QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Scenari()),*scenari,SLOT(showPage()));
 						break;
 
 					case IMPOSTAZIONI:
 						pageAct = *imposta;
 						(*imposta)->forceDraw();
-						QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Settings()),*imposta,SLOT(showPage()));
 						QObject::connect(client_monitor,SIGNAL(frameIn(char *)),*imposta,SIGNAL(gestFrame(char *)));
 						QObject::connect(*imposta,SIGNAL(startCalib()), BtM, SLOT(startCalib()));
 						QObject::connect(*imposta,SIGNAL(endCalib()),BtM, SLOT(endCalib()));
@@ -506,14 +506,14 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						pageAct = *scenari_evoluti;
 						qDebug("******* scenari_evoluti = %p, impostazioni = %p ******", *scenari_evoluti,*imposta);
 						(*scenari_evoluti)->forceDraw();
-						QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(ScenariEvoluti()),*scenari_evoluti,SLOT(showPage()));
 						break;
 
 					case VIDEOCITOFONIA:
 						pageAct = *videocitofonia;
 						qDebug("******* videocitofonia = %p ", *videocitofonia);
 						(*videocitofonia)->forceDraw();
-						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showFullScreen()));
+						QObject::connect(*home,SIGNAL(Videocitofonia()),*videocitofonia,SLOT(showPage()));
 						break;
 
 					case SPECIAL:
@@ -654,7 +654,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case DIFSON_MULTI:
-						*dm = new MultiSoundDiff(0, page_node);
+						*dm = new MultiSoundDiff(page_node);
 						pageAct = *dm;
 						page_item_id_m = 0;
 						page_item_where_m = "";
@@ -662,12 +662,12 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case SCENARI:
-						*scenari = new Scenario(0, page_node);
+						*scenari = new Scenario(page_node);
 						pageAct = *scenari;
 						break;
 
 					case CARICHI:
-						*carichi = new Carico(0, page_node);
+						*carichi = new Carico(page_node);
 						pageAct = *carichi;
 						break;
 
@@ -692,19 +692,19 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case IMPOSTAZIONI:
-						*imposta = new Settings(0, page_node);
+						*imposta = new Settings(page_node);
 						QObject::connect(*imposta,SIGNAL(setPwd(bool, QString)), BtM, SLOT(setPwd(bool, QString)));
 						pageAct = *imposta;
 						break;
 
 					case SCENARI_EVOLUTI:
-						*scenari_evoluti = new Scenario(0, page_node);
+						*scenari_evoluti = new Scenario(page_node);
 						QObject::connect(BtM, SIGNAL(resettimer()), *scenari_evoluti, SIGNAL(resettimer()));
 						pageAct = *scenari_evoluti;
 						break;
 
 					case VIDEOCITOFONIA:
-						*videocitofonia = new VideoEntryPhone(0, page_node);
+						*videocitofonia = new VideoEntryPhone(page_node);
 						pageAct = *videocitofonia;
 						break;
 

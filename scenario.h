@@ -25,7 +25,7 @@ class Scenario : public sottoMenu
 {
 Q_OBJECT
 public:
-	Scenario(QWidget *parent, QDomNode config_node);
+	Scenario(QDomNode config_node);
 private:
 	QList<scenEvo_cond*> loadConditions(QDomNode config_node);
 	void loadItems(QDomNode config_node);
