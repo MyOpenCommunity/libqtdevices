@@ -23,7 +23,7 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
-postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown) : bann4tasLab(parent, name)
+postoExt::postoExt(QWidget *parent, QString name, char* Icona1,char *Icona2, char *Icona3, char* Icona4, char *_where, char *_light, char *_key, char *_unknown) : bann4tasLab(parent, name.ascii())
 {
 	where = _where;
 	descr = name;
@@ -35,7 +35,7 @@ postoExt::postoExt(QWidget *parent, const char *name, char* Icona1,char *Icona2,
 			Icona1, Icona2, Icona3, Icona4);
 
 	qDebug("light = %d, key = %d, unknown = %d", light, key, unknown);
-	qDebug("descr = %s, where = %s", name, _where);
+	qDebug("descr = %s, where = %s", name.ascii(), _where);
 	//SetIcons(Icona1, Icona3, Icona4, Icona2);
 	SetIcons (Icona2, Icona3, "", "", Icona1);
 	if (key)

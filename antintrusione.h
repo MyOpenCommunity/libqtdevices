@@ -38,7 +38,7 @@ class antintrusione : public QWidget
 {
 Q_OBJECT
 public:
-        QTimer request_timer;
+
 	antintrusione(QWidget *parent=0, const char *name=0);
 /*!
   \brief sets the background color giving RGB values
@@ -206,6 +206,7 @@ private:
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
 	tastiera *tasti;
 	static const int MAX_ZONE = 8;
+	QTimer request_timer;
 };
 
 

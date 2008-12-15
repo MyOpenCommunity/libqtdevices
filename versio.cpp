@@ -114,10 +114,10 @@ void versio::gestFrame(char* frame)
 		datiGen->setFont(aFont);
 		datiGen->setIndent(15);
 		datiGen->setAlignment(AlignLeft|AlignTop);
-		sprintf(&scritta[100], "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d",
+		sprintf(scritta, "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d",
 			model.ascii(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);
 		
-		datiGen->setText(&scritta[100]); // FIXME da tradurre??
+		datiGen->setText(scritta); // FIXME da tradurre??
 		qDebug("setta scritte versio");
 	}
 }

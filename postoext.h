@@ -45,7 +45,7 @@ private:
 	static call_notifier_manager *cnm;
 	static call_notifier *unknown_notifier;
 public:
-	postoExt(QWidget *parent=0, const char *name=NULL, char* Icona1="",char *Icona2="", char *Icona3="", char* Icona4="", char *where="", char *light="", char *key="", char *unknown = "0");
+	postoExt(QWidget *parent=0, QString name=QString(), char* Icona1="",char *Icona2="", char *Icona3="", char* Icona4="", char *where="", char *light="", char *key="", char *unknown = "0");
 	//! Read where
 	void get_where(QString&);
 	//! Read description

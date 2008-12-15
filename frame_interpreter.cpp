@@ -1694,7 +1694,7 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
 	bool do_event = false;
 	qDebug("frame_interpreter_sound_matr_device::handle_frame");
 	if (m.IsMeasureFrame()) {
-		if(strcmp(m.Extract_chi(), "16") == 0) {
+		if (strcmp(m.Extract_chi(), "16") == 0) {
 			// *#1*where*1*lev*speed##
 			int code = atoi(m.Extract_grandezza());
 			qDebug("frame_sound_matr_device::handle_frame, meas frame");
@@ -1704,8 +1704,7 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
 							i<=device_status_sound_matr::AMB8_INDEX; i++) {
 						stat_var curr_act(stat_var::ACTIVE_SOURCE);
 						ds->read(i, curr_act);
-						qDebug("Curr active source for amb %d = %d", i+1, 
-								curr_act.get_val());
+						qDebug("Curr active source for amb %d = %d", i+1, curr_act.get_val());
 						act = atoi(m.Extract_valori(i));
 						qDebug("New active source = %d", act);
 						if (act != curr_act.get_val()) {
@@ -1739,19 +1738,20 @@ handle_frame(openwebnet_ext m, device_status_sound_matr *ds)
 			do_event = true;
 		}
 		//*22*2#4#1*5#2#3##i
-		if ((strcmp(m.Extract_chi(), "22") == 0) && (strncmp(m.Extract_cosa(), "2#4#", 4) == 0) && (strcmp(m.Extract_dove(), "5") == 0) && (strcmp(m.Extract_livello(), "2") == 0))
-                {
+		if ((strcmp(m.Extract_chi(), "22") == 0) && (strncmp(m.Extract_cosa(), "2#4#", 4) == 0) &&
+			(strcmp(m.Extract_dove(), "5") == 0) && (strcmp(m.Extract_livello(), "2") == 0))
+		{
 			qDebug("frame_sound_matr_device::handle_frame, normal frame WHO = 22");
 			stat_var curr_act(stat_var::ACTIVE_SOURCE);
-                        char ambiente[2];
-                        sprintf(ambiente,"%d", atoi(m.Extract_cosa()+4));
-                        ds->read(atoi(ambiente)-1, curr_act);
-                        qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
-                        act = atoi(m.Extract_interfaccia());
-                        qDebug("New active source = %d", act);
-                        curr_act.set_val(act);
-                        ds->write_val(atoi(ambiente)-1, curr_act);
-                        do_event = true;
+			char ambiente[2];
+			sprintf(ambiente,"%d", atoi(m.Extract_cosa()+4));
+			ds->read(atoi(ambiente)-1, curr_act);
+			qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
+			act = atoi(m.Extract_interfaccia());
+			qDebug("New active source = %d", act);
+			curr_act.set_val(act);
+			ds->write_val(atoi(ambiente)-1, curr_act);
+			do_event = true;
 		}
 	}
 	if (do_event)

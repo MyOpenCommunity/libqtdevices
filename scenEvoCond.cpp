@@ -170,7 +170,7 @@ scenEvo_cond_h::scenEvo_cond_h(QWidget *parent, char *name) : scenEvo_cond(paren
 	ora = NULL;
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
-	cond_time = new QDateTime(QDateTime::currentDateTime(Qt::LocalTime));
+	cond_time = new QDateTime(QDateTime::currentDateTime());
 	ora = new timeScript(this, "condizione scen evo h", 2 , cond_time);
 	hasTimeCondition = true;
 }
@@ -420,10 +420,10 @@ void scenEvo_cond_h::setFGColor(QColor c)
 
 void scenEvo_cond_h::setupTimer()
 {
-	QDateTime now = QDateTime::currentDateTime(Qt::LocalTime);
+	QDateTime now = QDateTime::currentDateTime();
 	int secsto = now.secsTo(*cond_time);
-	
-	while(secsto >=  24 * 60 * 60)
+
+	while (secsto >=  24 * 60 * 60)
 		secsto -= 24 * 60 * 60;
 
 	while (secsto <= 0)
@@ -1923,9 +1923,7 @@ device_condition_temp::device_condition_temp(QWidget *parent,
 	case FAHRENHEIT:
 		max_temp = bt2Fahrenheit(CONDITION_MAX_TEMP);
 		min_temp = bt2Fahrenheit(CONDITION_MIX_TEMP);
-		char t[10];
-		sprintf(t, "%d",  bt2Fahrenheit((*c).toInt()));
-		set_condition_value(t);
+		set_condition_value(QString::number(bt2Fahrenheit((*c).toInt())));
 		break;
 	default:
 		qWarning("Wrong temperature scale, defaulting to celsius");

@@ -183,7 +183,7 @@ enum pagSecLiv
 	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
 	SUPERVISIONE=14,                              /*!< Supervision system */
-	TERMOREG_MULTI_PLANT=15                       /*!< Thermoregulation system with one or more 4-zones plants */
+	TERMOREG_MULTI_PLANT=15                       /*!< Thermoregulation system with one or more plants */
 };
 
 

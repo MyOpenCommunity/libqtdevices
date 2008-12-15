@@ -108,7 +108,7 @@ end:
 	impianto->show();
 	zone->show();
 	connect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
-        request_timer.start(5000);
+	request_timer.start(5000);
 }
 
 void antintrusione::testranpo()
@@ -442,5 +442,5 @@ void antintrusione::request()
 {
 	request_timer.stop();
 	disconnect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
-	sendInit("*#5*0##");
+	emit sendInit("*#5*0##");
 }

@@ -306,8 +306,8 @@ int impAnti::getIsActive(int zona)
 void impAnti::ToSendParz(bool s)
 {
 	send_part_msg = s;
-	if(!send_part_msg)
-		emit(clearChanged());
+	if (!send_part_msg)
+		emit clearChanged();
 }
 
 void impAnti::Inserisci()
