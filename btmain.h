@@ -28,6 +28,8 @@ class Client;
 class tastiera;
 class ScreenSaver;
 class SupervisionMenu;
+class SpecialPage;
+
 class QPixmap;
 class QString;
 
@@ -88,7 +90,8 @@ public:
 	versio *datiGen;
 
 private:
-	homePage *Home, *specPage;
+	homePage *Home;
+	SpecialPage *specPage;
 	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
 	ThermalMenu *termo;
 	Antintrusion *antintr;

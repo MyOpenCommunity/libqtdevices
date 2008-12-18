@@ -111,10 +111,12 @@ HEADERS += actuators.h \
            sorgentiradio.h \
            sottomenu.h \
            sounddiffusion.h \
+           specialpage.h \
            stopngo.h \
            supervisionmenu.h \
            sveglia.h \
            tastiera.h \
+           temperatureviewer.h \
            thermalmenu.h \
            timescript.h \
            titlelabel.h \
@@ -202,10 +204,12 @@ SOURCES += actuators.cpp \
            sorgentiradio.cpp \
            sottomenu.cpp \
            sounddiffusion.cpp \
+           specialpage.cpp \
            stopngo.cpp \
            supervisionmenu.cpp \
            sveglia.cpp \
            tastiera.cpp \
+           temperatureviewer.cpp \
            thermalmenu.cpp \
            timescript.cpp \
            titlelabel.cpp \

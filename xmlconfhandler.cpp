@@ -28,6 +28,7 @@
 #include "videoentryphone.h"
 #include "settings.h"
 #include "carico.h"
+#include "specialpage.h"
 
 #include <QObject>
 #include <QRegExp>
@@ -91,7 +92,7 @@ static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIO
 /*******************************************
  *
  *******************************************/
-xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, homePage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
+xmlconfhandler::xmlconfhandler(BtMain *BM, homePage **h, SpecialPage **sP, sottoMenu **se, sottoMenu **vc, sottoMenu **i, sottoMenu **s,
 		sottoMenu **c, sottoMenu **im,  sottoMenu **a, ThermalMenu **t, SoundDiffusion **dS, MultiSoundDiff **_dm, Antintrusion **ant,
 		SupervisionMenu **sup, QWidget **pD, Client *c_c, Client *c_m , Client *c_r)
 {
@@ -392,31 +393,8 @@ bool xmlconfhandler::endElement(const QString&, const QString&, const QString&)
 						break;
 
 					case SPECIAL:
-						qDebug("special");
-						switch(page_item_id)
-						{
-						case TEMPERATURA:
-						case TERMO_HOME_NC_PROBE:
-							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,(int)QFrame::Plain,3,page_item_descr);
-							break;
-						case TERMO_HOME_NC_EXTPROBE:
-							(*specPage)->addTemp(page_item_where,10,(itemNum-1)*80+10,220,60,(int)QFrame::Plain,3,page_item_descr, "1");
-							break;
-						case DATA:
-							//sottomenu_left,sottomenu_top,
-							(*specPage)->addDate(10,(itemNum-1)*80+10,220,60,QFrame::Plain,3);
-							break;
-						case OROLOGIO:
-							//sottomenu_left,sottomenu_top,
-							(*specPage)->addClock(10,(itemNum-1)*80+10,220,60,QFrame::Plain,3);
-							break;
-						case CMDSPECIAL:
-							QByteArray buf_img = page_item_list_img.at(0)->toAscii();
-							(*specPage)->addButton(60,260, buf_img.data(),SPECIAL, page_item_who,page_item_what,page_item_where,(char)page_item_type.toInt(&ok, 10));
-							(*specPage)->addDescr(page_item_descr, 60,240,180,20,QFrame::Plain,3);
-							pageAct = NULL;
-							break;
-						}
+						break;
+
 					default:
 						qDebug("xmlconfhandler: sottoMenu type unknown!!");
 					}
@@ -714,8 +692,7 @@ bool xmlconfhandler::characters(const QString & qValue)
 						break;
 
 					case SPECIAL:
-						(*specPage) = new homePage;
-						(*specPage)->addButton(0,260,ICON_FRECCIA_SX ,BACK);
+						(*specPage) = new SpecialPage(page_node);
 						pageAct = *specPage;
 						break;
 					} // switch (page_id)

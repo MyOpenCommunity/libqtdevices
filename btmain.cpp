@@ -28,6 +28,7 @@
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
 #include "brightnesscontrol.h"
+#include "specialpage.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -95,7 +96,8 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	event_unfreeze = false;
 	firstTime = true;
 	pagDefault = NULL;
-	Home = specPage = NULL;
+	Home = NULL;
+	specPage = NULL;
 	illumino = scenari = carichi = imposta = automazioni = scenari_evoluti = videocitofonia = NULL;
 	supervisione = NULL;
 	termo = NULL;
