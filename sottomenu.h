@@ -247,6 +247,11 @@ public:
 	ScenarioMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
+private:
+	/**
+	 * \param season The season (either "summer" or "winter")
+	 */
+	void createSeasonBanner(QString season, QString icon);
 };
 
 /**

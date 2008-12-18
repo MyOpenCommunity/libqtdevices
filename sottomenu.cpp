@@ -402,82 +402,48 @@ ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent,
 	createSummerBanners();
 }
 
-void ScenarioMenu::createSummerBanners()
+void ScenarioMenu::createSeasonBanner(QString season, QString icon)
 {
 	elencoBanner.clear();
 	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
-	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_estivo.png");
 
 	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
 	{
 		qFatal("[TERMO] ScenarioMenu:wrong node in config file");
 	}
 
-	QDomNode summer = conf_root.namedItem("summer");
-	if (!summer.isNull())
+	QDomElement program = getElement(conf_root, season + "/scen");
+	QDomNode node;
+	foreach(node, getChildren(program, "s"))
 	{
-		QDomNode programs = summer.namedItem("scen");
-		QDomNode p;
-		if (!programs.isNull())
-			p = programs.firstChild();
-		while (!p.isNull())
+		BannWeekly *bp = new BannWeekly(this);
+		bp->SetIcons(i_ok, QString(), icon);
+		connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
+		// set Text taken from conf.xml
+		if (node.isElement())
 		{
-			BannWeekly *bp = new BannWeekly(this);
-			bp->SetIcons(i_ok, QString(), i_central);
-			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
-			// set Text taken from conf.xml
-			if (p.isElement())
-			{
-				bp->setText(p.toElement().text());
-				QRegExp re("(\\d+)");
-				int index = re.indexIn(p.nodeName());
-				if (index != -1)
-					bp->setProgram(re.cap(1).toInt());
-			}
-			elencoBanner.append(bp);
-			p = p.nextSibling();
+			bp->setText(node.toElement().text());
+			QRegExp re("(\\d+)");
+			int index = re.indexIn(node.nodeName());
+			if (index != -1)
+				bp->setProgram(re.cap(1).toInt());
 		}
+		elencoBanner.append(bp);
 	}
+}
+
+void ScenarioMenu::createSummerBanners()
+{
+	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_estivo.png");
+	createSeasonBanner("summer", i_central);
+
 }
 
 void ScenarioMenu::createWinterBanners()
 {
-	elencoBanner.clear();
-	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
 	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_invernale.png");
-
-	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
-	{
-		qFatal("[TERMO] ScenarioMenu:wrong node in config file");
-	}
-
-	QDomNode winter = conf_root.namedItem("winter");
-	if (!winter.isNull())
-	{
-		QDomNode programs = winter.namedItem("scen");
-		QDomNode p;
-		if (!programs.isNull())
-			p = programs.firstChild();
-		while (!p.isNull())
-		{
-			BannWeekly *bp = new BannWeekly(this);
-			bp->SetIcons(i_ok, QString(), i_central);
-			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
-			// set Text taken from conf.xml
-			if (p.isElement())
-			{
-				bp->setText(p.toElement().text());
-				QRegExp re("(\\d+)");
-				int index = re.indexIn(p.nodeName());
-				if (index != -1)
-					bp->setProgram(re.cap(1).toInt());
-			}
-			elencoBanner.append(bp);
-			p = p.nextSibling();
-		}
-	}
+	createSeasonBanner("winter", i_central);
 }
-
 
 TimeEditMenu::TimeEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
 {
