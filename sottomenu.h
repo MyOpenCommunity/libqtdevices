@@ -214,6 +214,11 @@ public:
 protected:
 	int season;
 	QDomNode conf_root;
+	/**
+	 * \param season Either "summer" or "winter"
+	 * \param what Either "prog" or "scen"
+	 */
+	void createSeasonBanner(QString season, QString what, QString icon);
 signals:
 	void programClicked(int);
 };
@@ -229,11 +234,6 @@ public:
 	WeeklyMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
-private:
-	/**
-	 * \param season The season (either "summer" or "winter")
-	 */
-	void createSeasonBanner(QString season, QString icon);
 };
 
 /**
@@ -247,11 +247,6 @@ public:
 	ScenarioMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
-private:
-	/**
-	 * \param season The season (either "summer" or "winter")
-	 */
-	void createSeasonBanner(QString season, QString icon);
 };
 
 /**

@@ -349,14 +349,9 @@ void ProgramMenu::setSeason(Season new_season)
 		forceDraw();
 }
 
-WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
+void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
 {
-	season = thermal_regulator::SUMMER;
-	createSummerBanners();
-}
-
-void WeeklyMenu::createSeasonBanner(const QString season, const QString icon)
-{
+	assert(what == "scen" || what == "prog");
 	elencoBanner.clear();
 	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
 
@@ -364,57 +359,12 @@ void WeeklyMenu::createSeasonBanner(const QString season, const QString icon)
 	{
 		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
 	}
-	QDomElement program = getElement(conf_root, season + "/prog");
+	QDomElement program = getElement(conf_root, season + "/" + what);
+	// The leaves we are looking for start with either "p" or "s"
+	QString name = what.left(1);
+
 	QDomNode node;
-	foreach(node, getChildren(program, "p"))
-	{
-		BannWeekly *bp = new BannWeekly(this);
-		bp->SetIcons(i_ok, QString(), icon);
-		connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
-		// set Text taken from conf.xml
-		if (node.isElement())
-		{
-			bp->setText(node.toElement().text());
-			QRegExp re("(\\d)");
-			int index = re.indexIn(node.nodeName());
-			if (index != -1)
-				bp->setProgram(re.cap(1).toInt());
-		}
-		elencoBanner.append(bp);
-	}
-}
-
-void WeeklyMenu::createSummerBanners()
-{
-	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_estivo.png");
-	createSeasonBanner("summer", i_central);
-}
-
-void WeeklyMenu::createWinterBanners()
-{
-	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_invernale.png");
-	createSeasonBanner("winter", i_central);
-}
-
-ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
-{
-	season = thermal_regulator::SUMMER;
-	createSummerBanners();
-}
-
-void ScenarioMenu::createSeasonBanner(QString season, QString icon)
-{
-	elencoBanner.clear();
-	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
-
-	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
-	{
-		qFatal("[TERMO] ScenarioMenu:wrong node in config file");
-	}
-
-	QDomElement program = getElement(conf_root, season + "/scen");
-	QDomNode node;
-	foreach(node, getChildren(program, "s"))
+	foreach(node, getChildren(program, name))
 	{
 		BannWeekly *bp = new BannWeekly(this);
 		bp->SetIcons(i_ok, QString(), icon);
@@ -432,17 +382,41 @@ void ScenarioMenu::createSeasonBanner(QString season, QString icon)
 	}
 }
 
+WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
+{
+	season = thermal_regulator::SUMMER;
+	createSummerBanners();
+}
+
+void WeeklyMenu::createSummerBanners()
+{
+	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_estivo.png");
+	createSeasonBanner("summer", "prog", i_central);
+}
+
+void WeeklyMenu::createWinterBanners()
+{
+	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_invernale.png");
+	createSeasonBanner("winter", "prog", i_central);
+}
+
+ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
+{
+	season = thermal_regulator::SUMMER;
+	createSummerBanners();
+}
+
 void ScenarioMenu::createSummerBanners()
 {
 	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_estivo.png");
-	createSeasonBanner("summer", i_central);
+	createSeasonBanner("summer", "scen", i_central);
 
 }
 
 void ScenarioMenu::createWinterBanners()
 {
 	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_invernale.png");
-	createSeasonBanner("winter", i_central);
+	createSeasonBanner("winter", "scen", i_central);
 }
 
 TimeEditMenu::TimeEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
