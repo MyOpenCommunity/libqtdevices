@@ -14,6 +14,9 @@
 #include <QDebug>
 #include <QLabel>
 
+#include <assert.h>
+
+
 #define DIM_BUT_BACK 60
 
 
