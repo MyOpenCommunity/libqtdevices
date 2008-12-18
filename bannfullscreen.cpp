@@ -19,6 +19,7 @@
 #include "btmain.h"
 #include "main.h"
 #include "datetime.h"
+#include "xml_functions.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -59,27 +60,10 @@ BtButton *BannFullScreen::getButton(QString img)
 	return btn;
 }
 
-
-/**
- * Extract the address from the DOM node passed as parameter.
- * \param n The node where the configuration of this item starts.
- * \return The simple address if this item
- */
-QString extractAddress(QDomNode n)
-{
-	if (!n.isNull())
-	{
-		QDomNode where = n.namedItem("where");
-		if (!where.isNull() && where.isElement())
-			return where.toElement().text();
-	}
-	return QString();
-}
-
 BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale)
 {
 	BannFullScreen *bfs = 0;
-	QString simple_address = extractAddress(n);
+	QString simple_address = getTextChild(n, "where");
 	QString where_composed;
 	if (!simple_address.isNull())
 		where_composed = simple_address + "#" + ind_centrale;
