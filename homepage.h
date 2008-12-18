@@ -7,23 +7,12 @@
 #ifndef BT_HOMEPAGE
 #define BT_HOMEPAGE
 
-#include "main.h"
-#include "btbutton.h"
+#include "page.h"
 
-#include <QWidget>
 #include <QString>
-#include <QList>
 
 class timeScript;
-class QLCDNumber;
-class QLabel;
-
-
-#define MAX_BUT_SOTMEN 9
-#define DIM_BUT_HOME 80
-#define DIM_BUT_HOME_SMALL 60
-#define DIM_SPECBUT_HOME 180
-#define H_SCR_TEMP 20
+class TemperatureViewer;
 
 
 /*!
@@ -35,11 +24,11 @@ class QLabel;
   \date lug 2005
 */
 
-class homePage : public QWidget
+class homePage : public Page
 {
 Q_OBJECT
 public:
-	homePage(QWidget *parent=0);
+	homePage();
 
 /*!
   \brief Adds a button to the page.
@@ -54,57 +43,29 @@ public:
 */
 	void addClock(int, int, int, int, int, int);
 /*!
-  \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame and line.
-*/
-	void addClock(int , int);
-/*!
   \brief Adds a Date.
 
   The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
 */
 	void addDate(int, int, int, int, int, int);
 /*!
-  \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame and line.
-*/
-	void addDate(int , int);
-/*!
   \brief Adds a Temperature.
 
   The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel and the text describing the zone.
 */
 	void addTemp(QString, int, int, int, int, int, int, const QString &, const char * Ext="0");
-
-  /*!
-  \brief Same as above. Dimension is assumed 185x35, the colors used are the same of the entire page, with no frame, line and text.
-*/
-	void addTemp(QString, int , int);
 /*!
   \brief Adds a Description usually used for special page.
 
   The arguments are the text, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
 */
 	void addDescr(const QString &, int, int, int, int, int, int);
- /*!
-  \brief Same as above. Dimension is assumed 160x20, the colors used are the same of the entire page, with no frame, line and text.
-*/
-	void addDescr(const QString &, int , int);
 
-/*! \enum tipoFunzSpe
-   This enum let decide the behavior of the special button*/
-	enum tipoFunzSpe
-	{
-		NORMALE = 0,  /*!<  Clicking the \a special \a button the device always make the same function.*/
-		CICLICO = 1,  /*!< Clicking the \a special \a button the device one time make a \a ON command and then an \a OFF command an so on.*/
-		PULSANTE = 2   /*!<  Pushing the \a special \a button the device make a \a ON command while Releasing the button a \a OFF command is made.*/
-	};
 
 	void inizializza();
 
 private slots:
 	void gestFrame(char*);
-	void specFunz();
-	void specFunzPress();
-	void specFunzRelease();
 
 signals:
 /*! \brief Emitted when the \a automation subtree(sottoMenu) is required.*/  
@@ -139,30 +100,7 @@ signals:
 	void Supervisione();
 
 private:
-  /**
-   * Updates the display when the temperature changes.
-   * \param new_bt_temperature The new temperature in BTicino 4-digit format.
-   * \param which_display The index of the display to update.
-   */
-	void updateTemperatureDisplay(unsigned new_bt_temperature, unsigned which_display);
-
-	timeScript* dataOra;
-	int xClock, yClock, xTemp, yTemp;
-	QList<BtButton*> elencoButtons;
-	char zonaTermo1[50], zonaTermo2[50], zonaTermo3[50];
-	char *zt[3];
-	char ext1[2], ext2[2], ext3[2];
-	char *ext[3];
-	QLCDNumber *temperatura[3];
-	/// The temperature scale set in config file (either Celsius or Fahrenheit)
-	TemperatureScale temp_scale;
-	char specialFrame[50];
-	char chi[10];
-	char cosa[10];
-	char dove[10];
-	char tipoSpecial;
-	unsigned int tempCont;
-	QLabel *descrizione, *descrTemp[3];
+	TemperatureViewer *temp_viewer;
 };
 
 
