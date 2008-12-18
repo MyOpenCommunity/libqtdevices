@@ -10,7 +10,7 @@
 
 #include "sottomenu.h"
 #include "btmain.h"
-#include "main.h" // BTouch
+#include "main.h" // BTouch, Season
 #include "btbutton.h"
 #include "generic_functions.h"
 #include "xmlconfhandler.h"
@@ -326,46 +326,27 @@ ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
 	conf_root = conf;
 }
 
-void ProgramMenu::status_changed(QList<device_status*> sl)
+void ProgramMenu::setSeason(Season new_season)
 {
-	// TODO: vedere se da bannfullscreen puo' arrivare un segnale season_changed
-	// con il quale il programMenu possa aggiornarsi graficamente. In questo modo
-	// si evitano dipendenze del sottomenu con i device_status.
 	bool update = false;
-
-	for (int i = 0; i < sl.size(); ++i)
+	if (new_season != season)
 	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z || ds->get_type() == device_status::THERMAL_REGULATOR_99Z)
+		season = new_season;
+		update = true;
+		switch (season)
 		{
-			stat_var curr_season(stat_var::SEASON);
-			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
-			switch (curr_season.get_val())
-			{
-			case thermal_regulator::SUMMER:
-				if (season == thermal_regulator::WINTER)
-				{
-					season = thermal_regulator::SUMMER;
-					createSummerBanners();
-					update = true;
-				}
-				break;
-			case thermal_regulator::WINTER:
-				if (season == thermal_regulator::SUMMER)
-				{
-					season = thermal_regulator::WINTER;
-					createWinterBanners();
-					update = true;
-				}
-				break;
-			}
+		case SUMMER:
+			createSummerBanners();
+			break;
+		case WINTER:
+			createWinterBanners();
+			break;
 		}
 	}
 
 	if (update)
 		forceDraw();
 }
-
 
 WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
 {

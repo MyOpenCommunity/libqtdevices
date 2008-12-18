@@ -26,6 +26,12 @@ enum TemperatureScale
 };
 TemperatureScale readTemperatureScale();
 
+enum Season
+{
+	SUMMER = 0,
+	WINTER = 1,
+};
+
 // See getElement
 QDomElement getConfElement(QString path);
 

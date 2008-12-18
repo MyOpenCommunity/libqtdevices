@@ -860,25 +860,8 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 		{
 			stat_var curr_season(stat_var::SEASON);
 			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
-			switch (curr_season.get_val())
-			{
-			case thermal_regulator::SUMMER:
-				{
-					const QString img = QString(IMG_PATH) + "estate_s.png";
-					QPixmap *icon = BTouch->getIcon(img);
-					season_icon->setPixmap(*icon);
-					season = thermal_regulator::SUMMER;
-				}
-				break;
-			case thermal_regulator::WINTER:
-				{
-					const QString img = QString(IMG_PATH) + "inverno_s.png";
-					QPixmap *icon = BTouch->getIcon(img);
-					season_icon->setPixmap(*icon);
-					season = thermal_regulator::WINTER;
-				}
-				break;
-			}
+			season = curr_season.get_val();
+			setSeason(static_cast<Season>(season));
 
 			stat_var curr_status(stat_var::THERMR);
 			ds->read(device_status_thermal_regulator::STATUS_INDEX, curr_status);
@@ -999,6 +982,32 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 	Draw();
 }
 
+void FSBannTermoReg::setSeason(Season new_season)
+{
+	switch (new_season)
+	{
+	case SUMMER:
+		{
+			const QString img = QString(IMG_PATH) + "estate_s.png";
+			QPixmap *icon = BTouch->getIcon(img);
+			season_icon->setPixmap(*icon);
+			program_choice->setSeason(SUMMER);
+			program_menu->setSeason(SUMMER);
+
+		}
+		break;
+	case WINTER:
+		{
+			const QString img = QString(IMG_PATH) + "inverno_s.png";
+			QPixmap *icon = BTouch->getIcon(img);
+			season_icon->setPixmap(*icon);
+			program_choice->setSeason(WINTER);
+			program_menu->setSeason(WINTER);
+		}
+		break;
+	}
+}
+
 QString FSBannTermoReg::lookupProgramDescription(QString season, int program_number)
 {
 	QDomNode prog = conf_root.namedItem(season);
@@ -1112,6 +1121,20 @@ thermal_regulator *FSBannTermoReg99z::dev()
 	return _dev;
 }
 
+void FSBannTermoReg99z::setSeason(Season new_season)
+{
+	switch (new_season)
+	{
+	case SUMMER:
+		scenario_menu->setSeason(SUMMER);
+		break;
+	case WINTER:
+		scenario_menu->setSeason(WINTER);
+		break;
+	}
+	FSBannTermoReg::setSeason(new_season);
+}
+
 void FSBannTermoReg99z::createSettingsMenu()
 {
 	settings = new sottoMenu;
@@ -1195,7 +1218,6 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 	settings->appendBanner(weekly);
 
 	program_menu = new WeeklyMenu(0, conf);
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(raise()));
@@ -1276,7 +1298,6 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_choice, SLOT(status_changed(QList<device_status*>)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), program_choice, SLOT(hide()));
 	program_choice->hide();
@@ -1385,7 +1406,6 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	settings->appendBanner(scenario);
 
 	scenario_menu = new ScenarioMenu(0, conf);
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), scenario_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));

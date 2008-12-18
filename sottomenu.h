@@ -13,7 +13,6 @@
 
 #include "main.h"
 #include "banner.h"
-#include "device_status.h"
 #include "bttime.h"
 #include "page.h"
 
@@ -211,8 +210,7 @@ public:
 	ProgramMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners() = 0;
 	virtual void createWinterBanners() = 0;
-public slots:
-	void status_changed(QList<device_status*> sl);
+	void setSeason(Season new_season);
 protected:
 	int season;
 	QDomNode conf_root;
