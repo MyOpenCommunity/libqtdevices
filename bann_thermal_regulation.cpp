@@ -927,10 +927,10 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 					switch (season)
 					{
 					case thermal_regulator::SUMMER:
-						description = lookupProgramDescription("summer", program);
+						description = lookupProgramDescription("summer", "prog", program);
 						break;
 					case thermal_regulator::WINTER:
-						description = lookupProgramDescription("winter", program);
+						description = lookupProgramDescription("winter", "prog", program);
 						break;
 					}
 					description_visible = true;
@@ -949,10 +949,10 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 					switch (season)
 					{
 					case thermal_regulator::SUMMER:
-						description = lookupScenarioDescription("summer", scenario);
+						description = lookupProgramDescription("summer", "scen", scenario);
 						break;
 					case thermal_regulator::WINTER:
-						description = lookupScenarioDescription("winter", scenario);
+						description = lookupProgramDescription("winter", "scen", scenario);
 						break;
 					}
 					description_visible = true;
@@ -1001,50 +1001,17 @@ void FSBannTermoReg::setSeason(Season new_season)
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
 }
 
-QString FSBannTermoReg::lookupProgramDescription(QString season, int program_number)
+QString FSBannTermoReg::lookupProgramDescription(QString season, QString what, int program_number)
 {
-	QDomNode prog = conf_root.namedItem(season);
-	if (!prog.isNull())
-	{
-		prog = prog.namedItem("prog");
-		if (!prog.isNull())
-		{
-			QDomNode iter = prog.firstChild();
-			for (int i = 1; i != program_number && !(iter.isNull()); iter = iter.nextSibling(), ++i)
-				;
-			if (!iter.isNull())
-				return iter.toElement().text();
-			else
-				qWarning("[TERMO] FSBannTermoReg::lookupProgramDescription WEEK PROGRAM: wrong node");
-		}
-		else
-			qWarning("[TERMO] FSBannTermoReg::lookupProgramDescription WEEK PROGRAM: wrong node");
-	}
-	qDebug("FSBannTermoReg::lookupProgramDescription: You did not supply the correct season.");
-	return "";
-}
-
-QString FSBannTermoReg::lookupScenarioDescription(QString season, int scenario_number)
-{
-	QDomNode scen = conf_root.namedItem(season);
-	if (!scen.isNull())
-	{
-		scen = scen.namedItem("scen");
-		if (!scen.isNull())
-		{
-			QDomNode iter = scen.firstChild();
-			for (int i = 1; i != scenario_number && !(iter.isNull()); iter = iter.nextSibling(), ++i)
-				;
-			if (!iter.isNull())
-				return iter.toElement().text();
-			else
-				qWarning("[TERMO] FSBannTermoReg::lookupScenarioDescription SCENARIO PROGRAM: wrong node");
-		}
-		else
-			qWarning("[TERMO] FSBannTermoReg::lookupScenarioDescription SCENARIO PROGRAM: wrong node");
-	}
-	qDebug("FSBannTermoReg::lookupScenarioDescription: You did not supply the correct season.");
-	return "";
+	// summer/prog/p[program_number]
+	assert((what == "prog" || what == "scen") && "'what' must be either 'prog' or 'scen'");
+	QString name = what.left(1);
+	QString path = season + "/" + what + "/" + name + QString::number(program_number);
+	QDomElement node = getElement(conf_root, path);
+	if (node.isNull())
+		return "";
+	else
+		return node.text();
 }
 
 FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent)
