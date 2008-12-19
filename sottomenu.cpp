@@ -23,7 +23,7 @@
 #include "sorgentimedia.h"
 #include "carico.h"
 #include "bannfullscreen.h"
-#include "xml_functions.h"
+#include "xml_functions.h" // getChildren, getElement
 
 #include <QByteArray>
 #include <QPixmap>
@@ -351,9 +351,9 @@ void ProgramMenu::setSeason(Season new_season)
 
 void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
 {
-	assert(what == "scen" || what == "prog");
+	assert((what == "scen" || what == "prog") && "'what' must be either 'prog' or 'scen'");
 	elencoBanner.clear();
-	const QString i_ok = QString("%1%2").arg(IMG_PATH).arg("btnok.png");
+	const QString i_ok = QString(IMG_PATH) + "btnok.png";
 
 	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
 	{
@@ -373,10 +373,9 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 		if (node.isElement())
 		{
 			bp->setText(node.toElement().text());
-			QRegExp re("(\\d+)");
-			int index = re.indexIn(node.nodeName());
-			if (index != -1)
-				bp->setProgram(re.cap(1).toInt());
+			// here node name is of the form "s12" or "p3"
+			int program_number = node.nodeName().mid(1).toInt();
+			bp->setProgram(program_number);
 		}
 		elencoBanner.append(bp);
 	}
@@ -390,13 +389,13 @@ WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, con
 
 void WeeklyMenu::createSummerBanners()
 {
-	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_estivo.png");
+	const QString i_central = QString(IMG_PATH) + "programma_estivo.png";
 	createSeasonBanner("summer", "prog", i_central);
 }
 
 void WeeklyMenu::createWinterBanners()
 {
-	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("programma_invernale.png");
+	const QString i_central = QString(IMG_PATH) + "programma_invernale.png";
 	createSeasonBanner("winter", "prog", i_central);
 }
 
@@ -408,14 +407,14 @@ ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent,
 
 void ScenarioMenu::createSummerBanners()
 {
-	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_estivo.png");
+	const QString i_central = QString(IMG_PATH) + "scenario_estivo.png";
 	createSeasonBanner("summer", "scen", i_central);
 
 }
 
 void ScenarioMenu::createWinterBanners()
 {
-	const QString i_central = QString("%1%2").arg(IMG_PATH).arg("scenario_invernale.png");
+	const QString i_central = QString(IMG_PATH) + "scenario_invernale.png";
 	createSeasonBanner("winter", "scen", i_central);
 }
 

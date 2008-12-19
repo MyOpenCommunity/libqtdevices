@@ -984,28 +984,20 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 
 void FSBannTermoReg::setSeason(Season new_season)
 {
-	switch (new_season)
+	if (new_season == SUMMER || new_season == WINTER)
 	{
-	case SUMMER:
-		{
-			const QString img = QString(IMG_PATH) + "estate_s.png";
-			QPixmap *icon = BTouch->getIcon(img);
-			season_icon->setPixmap(*icon);
-			program_choice->setSeason(SUMMER);
-			program_menu->setSeason(SUMMER);
-
-		}
-		break;
-	case WINTER:
-		{
-			const QString img = QString(IMG_PATH) + "inverno_s.png";
-			QPixmap *icon = BTouch->getIcon(img);
-			season_icon->setPixmap(*icon);
-			program_choice->setSeason(WINTER);
-			program_menu->setSeason(WINTER);
-		}
-		break;
+		QString img = IMG_PATH;
+		if (new_season == SUMMER)
+			img += "estate_s.png";
+		else
+			img += "inverno_s.png";
+		QPixmap *icon = BTouch->getIcon(img);
+		season_icon->setPixmap(*icon);
+		program_choice->setSeason(new_season);
+		program_menu->setSeason(new_season);
 	}
+	else
+		qWarning("Received season is not SUMMER or WINTER, ignoring");
 }
 
 QString FSBannTermoReg::lookupProgramDescription(QString season, int program_number)
@@ -1123,15 +1115,10 @@ thermal_regulator *FSBannTermoReg99z::dev()
 
 void FSBannTermoReg99z::setSeason(Season new_season)
 {
-	switch (new_season)
-	{
-	case SUMMER:
-		scenario_menu->setSeason(SUMMER);
-		break;
-	case WINTER:
-		scenario_menu->setSeason(WINTER);
-		break;
-	}
+	if (new_season == SUMMER || new_season == WINTER)
+		scenario_menu->setSeason(new_season);
+	else
+		qWarning("Received season is not SUMMER or WINTER, ignoring");
 	FSBannTermoReg::setSeason(new_season);
 }
 
