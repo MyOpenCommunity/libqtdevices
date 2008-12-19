@@ -22,6 +22,7 @@
 #include "sottomenu.h"
 #include "bannpuls.h"
 #include "bttime.h"
+#include "bannfullscreen.h"
 
 #include <QDomNode>
 #include <QWidget>

@@ -42,6 +42,12 @@ class BtDateEdit;
 
 class QLabel;
 
+enum Season
+{
+	SUMMER = 0,
+	WINTER = 1,
+};
+
 
 /**
  * An interface class for all full screen banners.

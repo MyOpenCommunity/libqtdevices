@@ -12,7 +12,6 @@
 
 #include "thermalmenu.h"
 #include "banntemperature.h"
-#include "bannfullscreen.h"
 #include "device_cache.h"
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
