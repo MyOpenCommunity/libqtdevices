@@ -22,8 +22,6 @@
 #include "sorgentiaux.h"
 #include "sorgentimedia.h"
 #include "carico.h"
-#include "bannfullscreen.h"
-#include "xml_functions.h" // getChildren, getElement
 
 #include <QByteArray>
 #include <QPixmap>
@@ -34,8 +32,6 @@
 #include <algorithm>
 
 #include <assert.h>
-
-#define IMG_OK IMG_PATH "btnok.png"
 
 sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n) : Page(parent)
 {
@@ -318,138 +314,4 @@ void sottoMenu::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint &p, bo
 	setParent(parent);
 	setWindowFlags(f);
 	move(p);
-}
-
-// Specialized submenus function definition
-//
-ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
-{
-	conf_root = conf;
-}
-
-void ProgramMenu::setSeason(Season new_season)
-{
-	bool update = false;
-	if (new_season != season)
-	{
-		season = new_season;
-		update = true;
-		switch (season)
-		{
-		case SUMMER:
-			createSummerBanners();
-			break;
-		case WINTER:
-			createWinterBanners();
-			break;
-		}
-	}
-
-	if (update)
-		forceDraw();
-}
-
-void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
-{
-	assert((what == "scen" || what == "prog") && "'what' must be either 'prog' or 'scen'");
-	elencoBanner.clear();
-	const QString i_ok = QString(IMG_PATH) + "btnok.png";
-
-	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
-	{
-		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
-	}
-	QDomElement program = getElement(conf_root, season + "/" + what);
-	// The leaves we are looking for start with either "p" or "s"
-	QString name = what.left(1);
-
-	QDomNode node;
-	foreach(node, getChildren(program, name))
-	{
-		BannWeekly *bp = new BannWeekly(this);
-		bp->SetIcons(i_ok, QString(), icon);
-		connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
-		// set Text taken from conf.xml
-		if (node.isElement())
-		{
-			bp->setText(node.toElement().text());
-			// here node name is of the form "s12" or "p3"
-			int program_number = node.nodeName().mid(1).toInt();
-			bp->setProgram(program_number);
-		}
-		elencoBanner.append(bp);
-	}
-}
-
-WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
-{
-	season = thermal_regulator::SUMMER;
-	createSummerBanners();
-}
-
-void WeeklyMenu::createSummerBanners()
-{
-	const QString i_central = QString(IMG_PATH) + "programma_estivo.png";
-	createSeasonBanner("summer", "prog", i_central);
-}
-
-void WeeklyMenu::createWinterBanners()
-{
-	const QString i_central = QString(IMG_PATH) + "programma_invernale.png";
-	createSeasonBanner("winter", "prog", i_central);
-}
-
-ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
-{
-	season = thermal_regulator::SUMMER;
-	createSummerBanners();
-}
-
-void ScenarioMenu::createSummerBanners()
-{
-	const QString i_central = QString(IMG_PATH) + "scenario_estivo.png";
-	createSeasonBanner("summer", "scen", i_central);
-
-}
-
-void ScenarioMenu::createWinterBanners()
-{
-	const QString i_central = QString(IMG_PATH) + "scenario_invernale.png";
-	createSeasonBanner("winter", "scen", i_central);
-}
-
-TimeEditMenu::TimeEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
-{
-	setNavBarMode(10, IMG_OK);
-	time_edit = new FSBannTime(this);
-	elencoBanner.append(time_edit);
-	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
-}
-
-void TimeEditMenu::performAction()
-{
-	emit timeSelected(time());
-}
-
-BtTime TimeEditMenu::time()
-{
-	return time_edit->time();
-}
-
-DateEditMenu::DateEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
-{
-	setNavBarMode(10, IMG_OK);
-	date_edit = new FSBannDate(this);
-	elencoBanner.append(date_edit);
-	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
-}
-
-void DateEditMenu::performAction()
-{
-	emit dateSelected(date());
-}
-
-QDate DateEditMenu::date()
-{
-	return date_edit->date();
 }

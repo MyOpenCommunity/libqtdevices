@@ -20,6 +20,7 @@
 #include "main.h"
 #include "datetime.h"
 #include "xml_functions.h"
+#include "thermalmenu.h"
 
 #include <QVariant>
 #include <QLabel>
