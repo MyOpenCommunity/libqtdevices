@@ -496,7 +496,6 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 				}
 			}
 		}
-		
 	}
 
 	if (update)
@@ -1397,7 +1396,6 @@ BannOff::BannOff(QWidget *parent, thermal_regulator *_dev) : bann3But(parent)
 
 void BannOff::performAction()
 {
-	qDebug("[TERMO] BannOff::performAction: action performed");
 	dev->setOff();
 }
 
@@ -1414,10 +1412,8 @@ BannAntifreeze::BannAntifreeze(QWidget *parent, thermal_regulator *_dev) : bann3
 
 void BannAntifreeze::performAction()
 {
-	qDebug("[TERMO] BannAntifreeze::performAction: action performed");
 	dev->setProtection();
 }
-
 
 BannSummerWinter::BannSummerWinter(QWidget *parent, thermal_regulator *_dev) : bann4But(parent)
 {
@@ -1436,13 +1432,11 @@ BannSummerWinter::BannSummerWinter(QWidget *parent, thermal_regulator *_dev) : b
 
 void BannSummerWinter::setSummer()
 {
-	qDebug("[TERMO] BannSummerWinter::setSummer(): summer is very hot indeed!");
 	dev->setSummer();
 }
 
 void BannSummerWinter::setWinter()
 {
-	qDebug("[TERMO]BannSummerWinter::setWinter(): winter is cold...");
 	dev->setWinter();
 }
 
