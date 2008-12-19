@@ -38,11 +38,13 @@ void homePage::loadItems(QDomNode config_node)
 		{
 		case DATA:
 		case OROLOGIO:
+		{
 			timeScript *d = new timeScript(this, id == DATA ? 25 : 1);
 			d->setGeometry(x + 10, y + 10, 220, 60);
 			d->setFrameStyle(QFrame::Plain);
 			d->setLineWidth(3);
 			break;
+		}
 		case TEMPERATURA:
 		case TERMO_HOME_NC_PROBE:
 			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, QFrame::Plain, 3, "", "0");

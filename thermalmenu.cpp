@@ -20,6 +20,8 @@
 #include <QRegExp>
 #include <QDebug>
 
+#include <assert.h>
+
 #define IMG_OK IMG_PATH "btnok.png"
 
 static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");

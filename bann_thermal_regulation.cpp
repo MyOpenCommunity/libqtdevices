@@ -26,6 +26,8 @@
 #include <QLabel>
 #include <QDebug>
 
+#include <assert.h>
+
 #define I_OK  IMG_PATH"btnok.png"
 #define IMG_SETTINGS IMG_PATH"set.png"
 #define IMG_PLUS IMG_PATH "btnplus.png"

@@ -13,7 +13,6 @@
 #include "main.h" // BTouch, Season
 #include "btbutton.h"
 #include "generic_functions.h"
-#include "xmlconfhandler.h"
 #include "bannfrecce.h"
 #include "actuators.h"
 #include "amplificatori.h"
