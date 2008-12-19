@@ -55,7 +55,7 @@ HEADERS += actuators.h \
            bannciclaz3but.h \
            banner.h \
            bannfrecce.h \
-           bannfullscreen.h \
+           bann_thermal_regulation.h \
            bannon2scr.h \
            bannondx.h \
            bannonicons.h \
@@ -148,7 +148,7 @@ SOURCES += actuators.cpp \
            bannciclaz3but.cpp \
            banner.cpp \
            bannfrecce.cpp \
-           bannfullscreen.cpp \
+           bann_thermal_regulation.cpp \
            bannon2scr.cpp \
            bannondx.cpp \
            bannonicons.cpp \

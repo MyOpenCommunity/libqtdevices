@@ -42,6 +42,12 @@ class BtDateEdit;
 
 class QLabel;
 
+enum Season
+{
+	SUMMER = 0,
+	WINTER = 1,
+};
+
 
 /**
  * An interface class for all full screen banners.
@@ -209,20 +215,19 @@ protected:
 	virtual void createSettingsMenu() = 0;
 
 	/**
-	 * Utility function to find in the DOM the program description to be displayed on screen.
-	 * \param season The season we are interested into. It must be either "summer" or "winter".
-	 * \param program_number The number of the program we are looking the description of.
-	 * \return The description of the program as written in DOM.
+	 * Set the icon on the main page of thermal regulator and calls setSeason() on
+	 * his own ProgramMenu's.
 	 */
-	QString lookupProgramDescription(QString season, int program_number);
+	virtual void setSeason(Season new_season);
 
 	/**
 	 * Utility function to find in the DOM the program description to be displayed on screen.
 	 * \param season The season we are interested into. It must be either "summer" or "winter".
-	 * \param scenario_number The number of the scenario we are looking the description of.
+	 * \param what Either "prog" or "scen"
+	 * \param program_number The number of the program we are looking the description of.
 	 * \return The description of the program as written in DOM.
 	 */
-	QString lookupScenarioDescription(QString season, int scenario_number);
+	QString lookupProgramDescription(QString season, QString what, int program_number);
 
 	/**
 	 * Utility function to create the submenu to set the weekly program in thermal
@@ -393,6 +398,7 @@ public:
 	virtual thermal_regulator *dev();
 protected:
 	virtual void createSettingsMenu();
+	virtual void setSeason(Season new_season);
 private:
 	void scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev);
 

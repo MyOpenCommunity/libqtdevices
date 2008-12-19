@@ -9,7 +9,7 @@
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
 
-#include "bannfullscreen.h"
+#include "bann_thermal_regulation.h"
 #include "fontmanager.h"
 #include "sottomenu.h"
 #include "btbutton.h"
@@ -19,6 +19,8 @@
 #include "btmain.h"
 #include "main.h"
 #include "datetime.h"
+#include "xml_functions.h"
+#include "thermalmenu.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -59,27 +61,10 @@ BtButton *BannFullScreen::getButton(QString img)
 	return btn;
 }
 
-
-/**
- * Extract the address from the DOM node passed as parameter.
- * \param n The node where the configuration of this item starts.
- * \return The simple address if this item
- */
-QString extractAddress(QDomNode n)
-{
-	if (!n.isNull())
-	{
-		QDomNode where = n.namedItem("where");
-		if (!where.isNull() && where.isElement())
-			return where.toElement().text();
-	}
-	return QString();
-}
-
 BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale)
 {
 	BannFullScreen *bfs = 0;
-	QString simple_address = extractAddress(n);
+	QString simple_address = getTextChild(n, "where");
 	QString where_composed;
 	if (!simple_address.isNull())
 		where_composed = simple_address + "#" + ind_centrale;
@@ -511,7 +496,6 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 				}
 			}
 		}
-		
 	}
 
 	if (update)
@@ -876,25 +860,8 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 		{
 			stat_var curr_season(stat_var::SEASON);
 			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
-			switch (curr_season.get_val())
-			{
-			case thermal_regulator::SUMMER:
-				{
-					const QString img = QString(IMG_PATH) + "estate_s.png";
-					QPixmap *icon = BTouch->getIcon(img);
-					season_icon->setPixmap(*icon);
-					season = thermal_regulator::SUMMER;
-				}
-				break;
-			case thermal_regulator::WINTER:
-				{
-					const QString img = QString(IMG_PATH) + "inverno_s.png";
-					QPixmap *icon = BTouch->getIcon(img);
-					season_icon->setPixmap(*icon);
-					season = thermal_regulator::WINTER;
-				}
-				break;
-			}
+			season = curr_season.get_val();
+			setSeason(static_cast<Season>(season));
 
 			stat_var curr_status(stat_var::THERMR);
 			ds->read(device_status_thermal_regulator::STATUS_INDEX, curr_status);
@@ -959,10 +926,10 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 					switch (season)
 					{
 					case thermal_regulator::SUMMER:
-						description = lookupProgramDescription("summer", program);
+						description = lookupProgramDescription("summer", "prog", program);
 						break;
 					case thermal_regulator::WINTER:
-						description = lookupProgramDescription("winter", program);
+						description = lookupProgramDescription("winter", "prog", program);
 						break;
 					}
 					description_visible = true;
@@ -981,10 +948,10 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 					switch (season)
 					{
 					case thermal_regulator::SUMMER:
-						description = lookupScenarioDescription("summer", scenario);
+						description = lookupProgramDescription("summer", "scen", scenario);
 						break;
 					case thermal_regulator::WINTER:
-						description = lookupScenarioDescription("winter", scenario);
+						description = lookupProgramDescription("winter", "scen", scenario);
 						break;
 					}
 					description_visible = true;
@@ -1015,50 +982,35 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 	Draw();
 }
 
-QString FSBannTermoReg::lookupProgramDescription(QString season, int program_number)
+void FSBannTermoReg::setSeason(Season new_season)
 {
-	QDomNode prog = conf_root.namedItem(season);
-	if (!prog.isNull())
+	if (new_season == SUMMER || new_season == WINTER)
 	{
-		prog = prog.namedItem("prog");
-		if (!prog.isNull())
-		{
-			QDomNode iter = prog.firstChild();
-			for (int i = 1; i != program_number && !(iter.isNull()); iter = iter.nextSibling(), ++i)
-				;
-			if (!iter.isNull())
-				return iter.toElement().text();
-			else
-				qWarning("[TERMO] FSBannTermoReg::lookupProgramDescription WEEK PROGRAM: wrong node");
-		}
+		QString img = IMG_PATH;
+		if (new_season == SUMMER)
+			img += "estate_s.png";
 		else
-			qWarning("[TERMO] FSBannTermoReg::lookupProgramDescription WEEK PROGRAM: wrong node");
+			img += "inverno_s.png";
+		QPixmap *icon = BTouch->getIcon(img);
+		season_icon->setPixmap(*icon);
+		program_choice->setSeason(new_season);
+		program_menu->setSeason(new_season);
 	}
-	qDebug("FSBannTermoReg::lookupProgramDescription: You did not supply the correct season.");
-	return "";
+	else
+		qWarning("Received season is not SUMMER or WINTER, ignoring");
 }
 
-QString FSBannTermoReg::lookupScenarioDescription(QString season, int scenario_number)
+QString FSBannTermoReg::lookupProgramDescription(QString season, QString what, int program_number)
 {
-	QDomNode scen = conf_root.namedItem(season);
-	if (!scen.isNull())
-	{
-		scen = scen.namedItem("scen");
-		if (!scen.isNull())
-		{
-			QDomNode iter = scen.firstChild();
-			for (int i = 1; i != scenario_number && !(iter.isNull()); iter = iter.nextSibling(), ++i)
-				;
-			if (!iter.isNull())
-				return iter.toElement().text();
-			else
-				qWarning("[TERMO] FSBannTermoReg::lookupScenarioDescription SCENARIO PROGRAM: wrong node");
-		}
-		else
-			qWarning("[TERMO] FSBannTermoReg::lookupScenarioDescription SCENARIO PROGRAM: wrong node");
-	}
-	qDebug("FSBannTermoReg::lookupScenarioDescription: You did not supply the correct season.");
-	return "";
+	// summer/prog/p[program_number]
+	assert((what == "prog" || what == "scen") && "'what' must be either 'prog' or 'scen'");
+	QString name = what.left(1);
+	QString path = season + "/" + what + "/" + name + QString::number(program_number);
+	QDomElement node = getElement(conf_root, path);
+	if (node.isNull())
+		return "";
+	else
+		return node.text();
 }
 
 FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent)
@@ -1126,6 +1078,15 @@ FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, 
 thermal_regulator *FSBannTermoReg99z::dev()
 {
 	return _dev;
+}
+
+void FSBannTermoReg99z::setSeason(Season new_season)
+{
+	if (new_season == SUMMER || new_season == WINTER)
+		scenario_menu->setSeason(new_season);
+	else
+		qWarning("Received season is not SUMMER or WINTER, ignoring");
+	FSBannTermoReg::setSeason(new_season);
 }
 
 void FSBannTermoReg99z::createSettingsMenu()
@@ -1211,7 +1172,6 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 	settings->appendBanner(weekly);
 
 	program_menu = new WeeklyMenu(0, conf);
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
 	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(raise()));
@@ -1292,7 +1252,6 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), program_choice, SLOT(status_changed(QList<device_status*>)));
 	// hide children
 	connect(settings, SIGNAL(hideChildren()), program_choice, SLOT(hide()));
 	program_choice->hide();
@@ -1401,7 +1360,6 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 	settings->appendBanner(scenario);
 
 	scenario_menu = new ScenarioMenu(0, conf);
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), scenario_menu, SLOT(status_changed(QList<device_status*>)));
 
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
 	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));
@@ -1438,7 +1396,6 @@ BannOff::BannOff(QWidget *parent, thermal_regulator *_dev) : bann3But(parent)
 
 void BannOff::performAction()
 {
-	qDebug("[TERMO] BannOff::performAction: action performed");
 	dev->setOff();
 }
 
@@ -1455,10 +1412,8 @@ BannAntifreeze::BannAntifreeze(QWidget *parent, thermal_regulator *_dev) : bann3
 
 void BannAntifreeze::performAction()
 {
-	qDebug("[TERMO] BannAntifreeze::performAction: action performed");
 	dev->setProtection();
 }
-
 
 BannSummerWinter::BannSummerWinter(QWidget *parent, thermal_regulator *_dev) : bann4But(parent)
 {
@@ -1477,13 +1432,11 @@ BannSummerWinter::BannSummerWinter(QWidget *parent, thermal_regulator *_dev) : b
 
 void BannSummerWinter::setSummer()
 {
-	qDebug("[TERMO] BannSummerWinter::setSummer(): summer is very hot indeed!");
 	dev->setSummer();
 }
 
 void BannSummerWinter::setWinter()
 {
-	qDebug("[TERMO]BannSummerWinter::setWinter(): winter is cold...");
 	dev->setWinter();
 }
 

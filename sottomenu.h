@@ -13,8 +13,6 @@
 
 #include "main.h"
 #include "banner.h"
-#include "device_status.h"
-#include "bttime.h"
 #include "page.h"
 
 #include <QDomNode>
@@ -23,8 +21,6 @@
 
 class bannFrecce;
 class scenEvo_cond;
-class FSBannTime;
-class FSBannDate;
 
 /*!
   \class sottoMenu
@@ -195,90 +191,6 @@ signals:
 	\brief emitted on calibration end
 	*/
 	void endCalib();
-};
-
-
-/**
- * A base class for submenus that allow to choose one program in a list. The list changes
- * when season changes (summer/winter).
- * This class emits a signal when a program is clicked. This signal should be used to close
- * the submenu and to take further action, for example sending a frame to the thermal regulator.
- */
-class ProgramMenu : public sottoMenu
-{
-Q_OBJECT
-public:
-	ProgramMenu(QWidget *parent, QDomNode conf);
-	virtual void createSummerBanners() = 0;
-	virtual void createWinterBanners() = 0;
-public slots:
-	void status_changed(QList<device_status*> sl);
-protected:
-	int season;
-	QDomNode conf_root;
-signals:
-	void programClicked(int);
-};
-
-/**
- * This is a specialized version of ProgramMenu to select week programs. The list
- * of programs is read from DOM.
- */
-class WeeklyMenu : public ProgramMenu
-{
-Q_OBJECT
-public:
-	WeeklyMenu(QWidget *parent, QDomNode conf);
-	virtual void createSummerBanners();
-	virtual void createWinterBanners();
-};
-
-/**
- * This is a specialized version of ProgramMenu to select scenarios. The list
- * of scenarios is read from DOM and updated when season changes
- */
-class ScenarioMenu : public ProgramMenu
-{
-Q_OBJECT
-public:
-	ScenarioMenu(QWidget *parent, QDomNode conf);
-	virtual void createSummerBanners();
-	virtual void createWinterBanners();
-};
-
-/**
- * A submenu that let the user choose the time.
- */
-class TimeEditMenu : public sottoMenu
-{
-Q_OBJECT
-public:
-	TimeEditMenu(QWidget *parent=0);
-	BtTime time();
-private:
-	FSBannTime *time_edit;
-private slots:
-	void performAction();
-signals:
-	void timeSelected(BtTime);
-};
-
-/**
- * A submenu that let the users choose a date and emits a signal with the selected date when the user
- * confirms the choice.
- */
-class DateEditMenu : public sottoMenu
-{
-Q_OBJECT
-public:
-	DateEditMenu(QWidget *parent=0);
-	QDate date();
-private:
-	FSBannDate *date_edit;
-private slots:
-	void performAction();
-signals:
-	void dateSelected(QDate);
 };
 
 #endif // SOTTOMENU_H
