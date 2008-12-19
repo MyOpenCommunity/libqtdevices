@@ -122,7 +122,6 @@ HEADERS += actuators.h \
            titlelabel.h \
            versio.h \
            videoentryphone.h \
-           xmlconfhandler.h \
            xml_functions.h \
 
 SOURCES += actuators.cpp \
@@ -215,7 +214,6 @@ SOURCES += actuators.cpp \
            titlelabel.cpp \
            versio.cpp \
            videoentryphone.cpp \
-           xmlconfhandler.cpp \
            xml_functions.cpp \
 
 TRANSLATIONS += linguist-ts/btouch_ar.ts \

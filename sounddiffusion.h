@@ -85,7 +85,7 @@ public:
 	 *
 	 * It recall the sources' and amplifiers' inizialization procedure.
 	 */
-	void inizializza();
+	virtual void inizializza();
 
 	/*!
 	 * \brief Sets the geometry passing x,y,w,h.

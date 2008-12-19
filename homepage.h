@@ -7,12 +7,14 @@
 #ifndef BT_HOMEPAGE
 #define BT_HOMEPAGE
 
-#include "page.h"
+#include "pagecontainer.h"
 
 #include <QString>
 
 class timeScript;
 class TemperatureViewer;
+
+class QDomNode;
 
 
 /*!
@@ -24,83 +26,19 @@ class TemperatureViewer;
   \date lug 2005
 */
 
-class homePage : public Page
+class homePage : public PageContainer
 {
 Q_OBJECT
 public:
-	homePage();
-
-/*!
-  \brief Adds a button to the page.
-
-  The arguments are the position of the button (x,y),  the fileName of the image to put on the button, the function associated to the button as described in pagSecLiv (main.h), the \a Open parameters of the commands of the special command (who, what, where), and the type of the special command as descibed in tipoFunzSpe.
-*/
-	void addButton(int x=0 , int y=0 , QString iconName=QString(), char function = 0,QString chi=QString(), QString cosa=QString(), QString dove=QString(), char tipo=0);
-/*!
-  \brief Adds a Clock.
-
-  The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
-*/
-	void addClock(int, int, int, int, int, int);
-/*!
-  \brief Adds a Date.
-
-  The arguments are the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
-*/
-	void addDate(int, int, int, int, int, int);
-/*!
-  \brief Adds a Temperature.
-
-  The arguments are the zone associated to the temperature measurement, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel and the text describing the zone.
-*/
-	void addTemp(QString, int, int, int, int, int, int, const QString &, const char * Ext="0");
-/*!
-  \brief Adds a Description usually used for special page.
-
-  The arguments are the text, the position of the field (x,y),  the dimensions (w,h), background and foreground color, style and line as for QLabel.
-*/
-	void addDescr(const QString &, int, int, int, int, int, int);
-
-
+	homePage(QDomNode config_node);
 	void inizializza();
 
 private slots:
 	void gestFrame(char*);
 
-signals:
-/*! \brief Emitted when the \a automation subtree(sottoMenu) is required.*/  
-	void Automazione();
-/*! \brief Emitted when the \a lighting subtree(sottoMenu) is required.*/  
-	void Illuminazione();
-/*! \brief Emitted when the \a anti-intrusion subtree(sottoMenu) is required.*/  
-	void Antiintrusione();
-/*! \brief Emitted when the \a electrict control subtree(sottoMenu) is required.*/  
-	void Carichi();
-/*! \brief Emitted when the \a thermoregulation subtree(sottoMenu) is required.*/  
-	void Termoregolazione();
-/*! \brief Emitted when the \a sound \a diffusion subtree(sottoMenu) is required.*/  
-	void Difson();
-/*! \brief Emitted when the \a multichannel \a diffusione subtree is required. */
-	void Difmulti();
-/*! \brief Emitted when the \a scenarios subtree(sottoMenu) is required.*/  
-	void Scenari();
-/*! \brief Emitted when the \a settings subtree(sottoMenu) is required.*/  
-	void Settings();
-/*! \brief Emitted when the \a special \a function is required.*/
-	void Special();
-/*! \brief Emitted when the the object is closed.*/
-	void Closed();
-/*! \brief Emitted when the \a schedulation subtree(sottoMenu) is required.*/
-	void Schedulazioni();
-/*! \brief Emitted when the \a advanced scenarios management(sottoMenu) is required */
-	void ScenariEvoluti();
-/*! \brief Emitted when the \a video door phone management(sottoMenu) is required */
-	void Videocitofonia();
-/*! \brief Emitted when the \a supervision management is required */
-	void Supervisione();
-
 private:
 	TemperatureViewer *temp_viewer;
+	void loadItems(QDomNode config_node);
 };
 
 

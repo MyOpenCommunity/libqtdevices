@@ -27,7 +27,7 @@ class SpecialPage : public Page
 Q_OBJECT
 public:
 	SpecialPage(QDomNode config_node);
-	void inizializza();
+	virtual void inizializza();
 
 private:
 	void loadItems(QDomNode config_node);

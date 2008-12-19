@@ -13,101 +13,50 @@
 #include "fontmanager.h"
 #include "temperatureviewer.h"
 #include "btbutton.h"
+#include "xml_functions.h" // getChildren, getTextChild
 
-#include <QLabel>
-
-#define DIM_BUT 80
+#include <QDomNode>
 
 
-homePage::homePage()
+homePage::homePage(QDomNode config_node) : PageContainer(config_node)
 {
 	temp_viewer = new TemperatureViewer(this);
+	loadItems(config_node);
 }
 
-void homePage::addButton(int x, int y, QString iconName, char function, QString chix, QString cosax,QString dovex, char tipo)
+// Load only the item that is not a section page (which is loaded by PageContainer)
+void homePage::loadItems(QDomNode config_node)
 {
-	BtButton *b = new BtButton(this);
-	b->setGeometry(x, y, DIM_BUT, DIM_BUT);
-	b->setImage(iconName);
-
-	switch (function)
+	QDomNode item;
+	foreach (item, getChildren(config_node, "item"))
 	{
-	case AUTOMAZIONE:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Automazione()));
-		break;
-	case ILLUMINAZIONE:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Illuminazione()));
-		break;
-	case ANTIINTRUSIONE:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Antiintrusione()));
-		break;
-	case CARICHI:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Carichi()));
-		break;
-	case TERMOREGOLAZIONE:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Termoregolazione()));
-		break;
-	case DIFSON:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Difson()));
-		break;
-	case DIFSON_MULTI:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Difmulti()));
-		break;
-	case SCENARI:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Scenari()));
-		break;
-	case IMPOSTAZIONI:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Settings()));
-		break;
-	case SCENARI_EVOLUTI:
-		connect(b, SIGNAL(clicked()), this, SIGNAL(ScenariEvoluti()));
-		break;
-	case VIDEOCITOFONIA:
-		connect(b,SIGNAL(clicked()),this, SIGNAL(Videocitofonia()));
-		break;
-	case SUPERVISIONE:
-		connect(b, SIGNAL(clicked()), this, SIGNAL(Supervisione()));
-		break;
+		int id = getTextChild(item, "id").toInt();
+		int x = getTextChild(item, "left").toInt();
+		int y = getTextChild(item, "top").toInt();
+
+		switch (id)
+		{
+		case DATA:
+		case OROLOGIO:
+			timeScript *d = new timeScript(this, id == DATA ? 25 : 1);
+			d->setGeometry(x + 10, y + 10, 220, 60);
+			d->setFrameStyle(QFrame::Plain);
+			d->setLineWidth(3);
+			break;
+		case TEMPERATURA:
+		case TERMO_HOME_NC_PROBE:
+			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, QFrame::Plain, 3, "", "0");
+			break;
+		case TERMO_HOME_NC_EXTPROBE:
+			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, QFrame::Plain, 3, "", "1");
+			break;
+		}
 	}
-}
-
-void homePage::addClock(int x, int y,int width,int height,int style, int line)
-{
-	timeScript *d = new timeScript(this, 1);
-	d->setGeometry(x,y,width,height);
-	d->setFrameStyle(style);
-	d->setLineWidth(line);
-}
-
-void homePage::addDate(int x, int y,int width,int height, int style, int line)
-{
-	timeScript *d = new timeScript(this, 25);
-	d->setGeometry(x,y,width,height);
-	d->setFrameStyle(style);
-	d->setLineWidth(line);
-}
-
-void homePage::addTemp(QString z, int x, int y, int width, int height, int style, int line, const QString & qtext, const char *Ext)
-{
-	temp_viewer->add(z, x, y, width, height, style, line, qtext, QString(Ext));
 }
 
 void homePage::inizializza()
 {
 	temp_viewer->inizializza();
-}
-
-void homePage::addDescr(const QString & qz, int x, int y, int width, int height, int style,int line)
-{
-	QFont aFont;
-	FontManager::instance()->getFont(font_homepage_bottoni_descrizione, aFont);
-	QLabel *descr = new QLabel(this);
-	descr->setFont(aFont);
-	descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	descr->setText(qz);
-	descr->setGeometry(x,y,width,height);
-	descr->setFrameStyle(style);
-	descr->setLineWidth(line);
 }
 
 void homePage::gestFrame(char* frame)

@@ -1,15 +1,46 @@
 #include "pagecontainer.h"
 #include "main.h"
 #include "btbutton.h"
+#include "btmain.h" // BTouch
+#include "xml_functions.h" // getTextChild, getChildren
+#include "generic_functions.h" // rearmWDT
+
+#include <QDomNode>
+#include <QDebug>
+#include <QTime>
 
 #define DIM_BUT 80
 
 
-PageContainer::PageContainer() : buttons_group(this)
+PageContainer::PageContainer(QDomNode config_node) : buttons_group(this)
 {
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	setFixedSize(MAX_WIDTH, MAX_HEIGHT);
 	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
+	loadItems(config_node);
+}
+
+void PageContainer::loadItems(QDomNode config_node)
+{
+	QTime wdtime;
+	wdtime.start(); // Start counting for wd refresh
+
+	QDomNode item;
+	foreach (item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
+		int x = getTextChild(item, "left").toInt();
+		int y = getTextChild(item, "top").toInt();
+
+		// Within the pagemenu element, it can exists items that are not a page.
+		if (Page *p = BTouch->getPage(id))
+			addPage(p, id, img1, x, y);
+
+		if (wdtime.elapsed() > 1000)
+		{
+			wdtime.restart();
+			rearmWDT();
+		}
+	}
 }
 
 void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
@@ -20,13 +51,16 @@ void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;
-	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
+	// TODO: attualmente chiudere la pagina contenitore e riaprirla sul Closed
+	// crea un aggiornamento grafico piuttosto brutto.. capire quale e' il mdo
+	// giusto di risolverlo!
+	//connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
+	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 }
 
 void PageContainer::clicked(int id)
 {
 	page_list[id]->showPage();
-	hide();
+	//hide();
 }
-
 

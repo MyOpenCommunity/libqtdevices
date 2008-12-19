@@ -17,18 +17,21 @@
 #include "page.h"
 
 #include <QButtonGroup>
-#include <QMap>
+#include <QHash>
+
+class QDomNode;
 
 
 class PageContainer : public Page
 {
 Q_OBJECT
 public:
-	PageContainer();
+	PageContainer(QDomNode config_node);
 	void addPage(Page *page, int id, QString iconName, int x, int y);
 private:
 	QButtonGroup buttons_group;
-	QMap<int, Page*> page_list;
+	QHash<int, Page*> page_list;
+	void loadItems(QDomNode config_node);
 private slots:
 	void clicked(int id);
 };

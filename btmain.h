@@ -14,6 +14,7 @@
 #include "icondispatcher.h"
 
 #include <QWidget>
+#include <QHash>
 
 class sottoMenu;
 class SoundDiffusion;
@@ -29,6 +30,7 @@ class tastiera;
 class ScreenSaver;
 class SupervisionMenu;
 class SpecialPage;
+class Page;
 
 class QPixmap;
 class QString;
@@ -45,6 +47,7 @@ class QString;
 class BtMain : public QWidget
 {
 Q_OBJECT
+friend class PageContainer;
 public:
 	BtMain(QWidget *parent=0);
 	~BtMain();
@@ -90,15 +93,16 @@ public:
 	versio *datiGen;
 
 private:
+	QHash<int, Page*> page_list;
+
+	/// build the page related to id if exists and return it, otherwise return 0
+	Page *getPage(int id);
+
 	homePage *Home;
-	SpecialPage *specPage;
-	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
-	ThermalMenu *termo;
-	Antintrusion *antintr;
-	SupervisionMenu *supervisione;
+	Page *pagDefault;
+
 	QTimer *tempo1;
 	QTimer *tempo2;
-	QWidget *pagDefault;
 	QString pwd;
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
 	tastiera *tasti;

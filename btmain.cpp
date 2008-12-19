@@ -14,10 +14,15 @@
 #include "sottomenu.h"
 #include "sounddiffusion.h"
 #include "multisounddiff.h"
+#include "videoentryphone.h"
 #include "antintrusion.h"
+#include "automation.h"
+#include "lighting.h"
+#include "scenario.h"
+#include "settings.h"
+#include "carico.h"
 #include "generic_functions.h"
 #include "xml_functions.h"
-#include "xmlconfhandler.h"
 #include "calibrate.h"
 #include "genpage.h"
 #include "device_cache.h"
@@ -29,6 +34,7 @@
 #include "supervisionmenu.h"
 #include "brightnesscontrol.h"
 #include "specialpage.h"
+#include "page.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -97,13 +103,6 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	firstTime = true;
 	pagDefault = NULL;
 	Home = NULL;
-	specPage = NULL;
-	illumino = scenari = carichi = imposta = automazioni = scenari_evoluti = videocitofonia = NULL;
-	supervisione = NULL;
-	termo = NULL;
-	difSon = NULL;
-	dm = NULL;
-	antintr = NULL;
 	screen = NULL;
 	alreadyCalibrated = false;
 	svegliaIsOn = false;
@@ -164,13 +163,140 @@ bool BtMain::loadSkin(QString xml_file)
 	return false;
 }
 
+Page *BtMain::getPage(int id)
+{
+	QDomNode page_node = getPageNode(id);
+	if (page_node.isNull())
+		return 0;
+
+	// A section page can be built only once.
+	if (page_list.contains(id))
+		return page_list[id];
+
+	Page *page = 0;
+	switch (id)
+	{
+	case AUTOMAZIONE:
+	{
+		Automation *p = new Automation(page_node);
+		p->forceDraw();
+		page = p;
+		break;
+	}
+	case ILLUMINAZIONE:
+	{
+		Lighting *p = new Lighting(page_node);
+		p->forceDraw();
+		connect(p, SIGNAL(richStato(QString)), client_richieste, SLOT(richStato(QString)));
+		page = p;
+		break;
+	}
+	case ANTIINTRUSIONE:
+	{
+		Antintrusion *p = new Antintrusion(page_node);
+		p->draw();
+		connect(client_comandi, SIGNAL(openAckRx()), p, SIGNAL(openAckRx()));
+		connect(client_comandi, SIGNAL(openNakRx()), p, SIGNAL(openNakRx()));
+		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gesFrame(char *)));
+		page = p;
+		break;
+	}
+	case CARICHI:
+	{
+		Carico *p = new Carico(page_node);
+		p->forceDraw();
+		page = p;
+		break;
+	}
+	case TERMOREGOLAZIONE:
+	case TERMOREG_MULTI_PLANT:
+	{
+		ThermalMenu *p = new ThermalMenu(page_node);
+		p->forceDraw();
+		connect(client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
+		page = p;
+		break;
+	}
+	case DIFSON:
+	{
+		SoundDiffusion *p = new SoundDiffusion(page_node);
+		p->draw();
+		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
+		page = p;
+		break;
+	}
+	case DIFSON_MULTI:
+	{
+		MultiSoundDiff *p = new MultiSoundDiff(page_node);
+		p->forceDraw();
+		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
+		page = p;
+		break;
+	}
+	case SCENARI:
+	case SCENARI_EVOLUTI:
+	{
+		Scenario *p = new Scenario(page_node);
+		p->forceDraw();
+		page = p;
+		break;
+	}
+	case IMPOSTAZIONI:
+	{
+		Settings *p = new Settings(page_node);
+		p->forceDraw();
+		connect(client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
+		connect(p, SIGNAL(startCalib()), this, SLOT(startCalib()));
+		connect(p, SIGNAL(endCalib()), this, SLOT(endCalib()));
+		page = p;
+		break;
+	}
+	case VIDEOCITOFONIA:
+	{
+		VideoEntryPhone *p = new VideoEntryPhone(page_node);
+		p->forceDraw();
+		page = p;
+		break;
+	}
+	case SUPERVISIONE:
+	{
+		SupervisionMenu *p = new SupervisionMenu(page_node);
+		p->forceDraw();
+		connect(client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
+		connect(p, SIGNAL(richStato(QString)), client_richieste, SLOT(richStato(QString)));
+		page = p;
+		break;
+	}
+	case SPECIAL:
+	{
+		SpecialPage *p = new SpecialPage(page_node);
+		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
+		connect(p, SIGNAL(Closed()), p, SLOT(hide()));
+		page = p;
+		break;
+	}
+	default:
+		qFatal("Page %d not found on xml config file!", id);
+	}
+
+	page->hide();
+	return page;
+}
+
 bool BtMain::loadConfiguration(QString cfg_file)
 {
 	if (QFile::exists(cfg_file))
 	{
-		xmlconfhandler handler(this, &Home, &specPage, &scenari_evoluti, &videocitofonia, &illumino,
-				&scenari, &carichi, &imposta, &automazioni, &termo, &difSon, &dm, &antintr, &supervisione, &pagDefault,
-				client_comandi, client_monitor, client_richieste);
+		QDomNode pagemenu_home = getChildWithId(getConfElement("displaypages"),
+			QRegExp("pagemenu(\\d{1,2}|)"), 0);
+		Home = new homePage(pagemenu_home);
+
+		QDomNode home_node = getConfElement("displaypages/homepage");
+		if (getTextChild(home_node, "isdefined").toInt())
+		{
+			int id_default = getTextChild(home_node, "id").toInt();
+			pagDefault = !id_default ? Home : getPage(id_default);
+		}
 
 		QDomElement addr = getConfElement("setup/scs/coordinate_scs/diag_addr");
 		bool ok;
@@ -184,13 +310,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		QDomElement orientation = getConfElement("displaypages/orientation");
 		if (!orientation.isNull())
 			setOrientation(orientation.text());
-
-		QFile xmlFile(cfg_file);
-		QXmlSimpleReader reader;
-		qDebug("parte parsing");
-		reader.setContentHandler(&handler);
-		reader.parse(QXmlInputSource(&xmlFile));
-		qDebug("finito parsing");
 		return true;
 	}
 	return false;
@@ -232,30 +351,10 @@ void BtMain::init()
 	Home->inizializza();
 	if (datiGen)
 		datiGen->inizializza();
-	if (illumino)
-		illumino->inizializza();
-	if (automazioni)
-		automazioni->inizializza();
-	if (antintr)
-		antintr->inizializza();
-	if (difSon)
-		difSon->inizializza();
-	if (dm)
-		dm->inizializza();
-	if (scenari)
-		scenari->inizializza();
-	if (imposta)
-		imposta->inizializza();
-	if (termo)
-		termo->inizializza();
-	if (scenari_evoluti)
-		scenari_evoluti->inizializza();
-	if (videocitofonia)
-		videocitofonia->inizializza();
-	if (imposta)
-		imposta->inizializza();
-	if (supervisione)
-		supervisione->inizializza();
+
+	Page *p;
+	foreach (p, page_list)
+		p->inizializza();
 
 	struct sysinfo info;
 	sysinfo(&info);
@@ -410,34 +509,8 @@ void BtMain::gesScrSav()
 				if (!pd_shown)
 				{
 					pd_shown = true;
-					if (illumino)
-						illumino->hide();
-					if (scenari)
-						scenari->hide();
-					if (carichi)
-						carichi->hide();
-					if (imposta)
-						imposta->hide();
-					if (automazioni)
-						automazioni->hide();
-					if (termo)
-						termo->hide();
-					if (difSon)
-						difSon->hide();
-					if (dm)
-						dm->hide();
-					if (antintr)
-						antintr->hide();
-					if (specPage)
-						specPage->hide();
-					if (scenari_evoluti)
-						scenari_evoluti->hide();
-					if (videocitofonia)
-						videocitofonia->hide();
-					if (supervisione)
-						supervisione->hide();
 					if (pagDefault)
-						pagDefault->showFullScreen();
+						pagDefault->showPage();
 				}
 			}
 

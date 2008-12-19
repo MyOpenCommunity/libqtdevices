@@ -24,6 +24,7 @@ public:
 	// Normally, the page is a fullscreen page, but sometimes is a part of
 	// another page (see Antintrusion or SoundDiffusion)
 	Page(QWidget *parent=0) : QWidget(parent) {}
+	virtual void inizializza() {}
 
 public slots:
 	virtual void showPage() { showFullScreen(); }

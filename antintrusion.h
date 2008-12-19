@@ -60,7 +60,7 @@ public:
   \brief asks the starting point for the plant 
   \bug the plant doesn't answer to this question at his time \date lug 2005
 */
-	void inizializza();
+	virtual void inizializza();
 /*!
   \brief sets the geometry of the object
 */
