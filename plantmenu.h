@@ -12,7 +12,7 @@
 
 #include "sottomenu.h"
 #include "bannpuls.h"
-#include "bannfullscreen.h"
+#include "bann_thermal_regulation.h"
 
 #include <QSignalMapper>
 #include <QString>

@@ -9,7 +9,7 @@
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
 
-#include "bannfullscreen.h"
+#include "bann_thermal_regulation.h"
 #include "fontmanager.h"
 #include "sottomenu.h"
 #include "btbutton.h"
