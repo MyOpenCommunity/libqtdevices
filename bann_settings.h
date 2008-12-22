@@ -177,10 +177,6 @@ public slots:
   \brief  Stops the error beep made when the password insertion is wrong
 */
 	void tiempout();
-/*!
-  \brief  Reimplements QWidget::setEnabled(bool)
-*/
-	void setEnabled(bool);
 
 protected:
 	virtual void hideEvent(QHideEvent *event);
@@ -192,7 +188,6 @@ private:
 	QString password;
 	tastiera *tasti;
 	bool sb;
-	bool starting;
 signals:
 /*!
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not

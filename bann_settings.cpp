@@ -189,7 +189,6 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	active = (attiva == 1);
 
 	emit setPwd(active, password);
-	starting = true;
 }
 
 void impPassword::toggleActivation()
@@ -205,7 +204,7 @@ void impPassword::showEvent(QShowEvent *event)
 {
 	Draw();
 	qDebug() << "password = " << password;
-	if (password.isEmpty() || starting)
+	if (password.isEmpty())
 	{
 		qDebug("password = ZERO");
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
@@ -261,20 +260,11 @@ void impPassword::reShow2(char *c)
 		emit setPwd(active, password);
 	}
 	show();
-	tasti->setMode(tastiera::HIDDEN);
 }
 
 void impPassword::tiempout()
 {
 	setBeep(sb,false);
-}
-
-// TODO: capire l'esatto funzionamento di "starting" ed eliminare la setEnabled!
-void impPassword::setEnabled(bool  b)
-{
-	if (!b)
-		starting = false;
-	QWidget::setEnabled(b);
 }
 
 void impPassword::hideEvent(QHideEvent *event)

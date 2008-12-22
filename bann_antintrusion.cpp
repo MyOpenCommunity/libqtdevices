@@ -339,6 +339,7 @@ void impAnti::Insert3()
 	parentWidget()->show();
 	inserting = false;
 	QTimer::singleShot(5000, this, SLOT(inizializza()));
+	ToSendParz(false);
 }
 
 void impAnti::DeInsert(char *pwd)

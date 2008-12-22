@@ -307,7 +307,7 @@ void sorgenteMultiRadio::attiva()
 
 	if (!multiamb)
 	{
-		QString f = QString("*22*35#4#%1#%2*4#%1##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
 		dev->sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
