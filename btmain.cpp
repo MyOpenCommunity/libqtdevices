@@ -66,36 +66,6 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	monitor_ready = false;
 	config_loaded = false;
 
-	// read screensaver type from config file
-	QDomElement screensaver_type_node = getConfElement("displaypages/screensaver/type");
-	int screensaver_type = ScreenSaver::LINES;
-	if (screensaver_type_node.isNull())
-		qWarning("Type of screeensaver not found!");
-	else
-		screensaver_type = screensaver_type_node.text().toInt();
-	screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
-
-	// read configuration for brightness
-	BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
-	if (screensaver_type == ScreenSaver::NONE)
-		conf_brightness_policy = BrightnessControl::POLICY_OFF;
-	else
-	{
-		// brightness conf is in IMPOSTAZIONI page
-		QDomNode conf_page_root = getPageNode(IMPOSTAZIONI);
-		QDomNode bright_item_node = getChildWithId(conf_page_root, QRegExp("item\\d{1,2}"), BRIGHTNESS);
-		if (!bright_item_node.isNull())
-		{
-			QDomNode policy = bright_item_node.namedItem("liv").toElement();
-			if (!policy.isNull())
-				conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(
-						policy.toElement().text().toInt());
-		}
-	}
-	BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
-
-	BrightnessControl::instance()->setState(ON);
-
 	rearmWDT();
 
 	calibrating = false;
@@ -310,6 +280,36 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		QDomElement orientation = getConfElement("displaypages/orientation");
 		if (!orientation.isNull())
 			setOrientation(orientation.text());
+
+		// read screensaver type from config file
+		QDomElement screensaver_type_node = getConfElement("displaypages/screensaver/type");
+		int screensaver_type = ScreenSaver::LINES;
+		if (screensaver_type_node.isNull())
+			qWarning("Type of screeensaver not found!");
+		else
+			screensaver_type = screensaver_type_node.text().toInt();
+		screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
+
+		// read configuration for brightness
+		BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
+		if (screensaver_type == ScreenSaver::NONE)
+			conf_brightness_policy = BrightnessControl::POLICY_OFF;
+		else
+		{
+			// brightness conf is in IMPOSTAZIONI page
+			QDomNode conf_page_root = getPageNode(IMPOSTAZIONI);
+			QDomNode bright_item_node = getChildWithId(conf_page_root, QRegExp("item\\d{1,2}"), BRIGHTNESS);
+			if (!bright_item_node.isNull())
+			{
+				QDomNode policy = bright_item_node.namedItem("liv").toElement();
+				if (!policy.isNull())
+					conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(
+							policy.toElement().text().toInt());
+			}
+		}
+		BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
+		BrightnessControl::instance()->setState(ON);
+
 		return true;
 	}
 	return false;
