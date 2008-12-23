@@ -38,7 +38,6 @@ public:
 	QString get_key(void);
 	virtual ~device();
 
-	// TODO: rendere protected!
 	void sendFrame(QString frame);
 	void sendInit(QString frame);
 
