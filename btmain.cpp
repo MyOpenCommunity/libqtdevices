@@ -114,20 +114,16 @@ void BtMain::waitBeforeInit()
 	QTimer::singleShot(200, this, SLOT(hom()));
 }
 
-bool BtMain::loadSkin(QString xml_file)
+bool BtMain::loadStyleSheet(QString filename)
 {
-	if (QFile::exists(xml_file))
+	if (QFile::exists(filename))
 	{
-		QFile extra(xml_file);
-		QDomDocument dom;
-		if (dom.setContent(&extra))
+		QFile file(filename);
+		if (file.open(QFile::ReadOnly))
 		{
-			QDomElement style = getElement(dom, "extra/stylesheet");
-			if (!style.isNull())
-			{
-				qApp->setStyleSheet(style.text());
-				return true;
-			}
+			qApp->setStyleSheet(file.readAll());
+			file.close();
+			return true;
 		}
 	}
 	return false;
@@ -326,7 +322,7 @@ void BtMain::hom()
 		hide();
 	}
 
-	if (!loadSkin(EXTRA_FILE))
+	if (!loadStyleSheet(CSS_FILE))
 		qWarning("Unable to load skin file!");
 
 	config_loaded = true;

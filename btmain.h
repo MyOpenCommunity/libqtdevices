@@ -128,7 +128,7 @@ private:
 	/// Load the main configuration
 	bool loadConfiguration(QString cfg_file);
 	/// Load the skin configuration
-	bool loadSkin(QString xml_file);
+	bool loadStyleSheet(QString filename);
 
 signals:
 	void resettimer();

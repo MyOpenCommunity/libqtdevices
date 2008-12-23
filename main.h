@@ -66,6 +66,10 @@ extern BtMain *BTouch;
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
 #define EXTRA_FILE                  "cfg/extra/1/extra.xml"
+/*! \def CSS_FILE
+ *  Define the css file that contains the stylesheets for the application
+ */
+#define CSS_FILE                  "cfg/extra/1/stylesheet.css"
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
