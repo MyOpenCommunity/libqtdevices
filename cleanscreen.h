@@ -13,6 +13,7 @@
 
 #include "page.h"
 
+#include <QDateTime>
 #include <QTimer>
 
 #include <time.h> //time_t and time()
@@ -40,7 +41,7 @@ private:
 	/// Wait time in seconds read from conf file
 	int wait_time_sec;
 	/// Used to compute the remaining time of cleanscreen
-	time_t end_time;
+	QTime end_time;
 	/// labels to show remaining time and cleanscreen icon
 	QLabel *time_label, *icon_label;
 

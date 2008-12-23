@@ -5,7 +5,6 @@
 
 #include <QRegExp>
 #include <QLabel>
-#include <QDateTime>
 
 #include <assert.h>
 
@@ -43,8 +42,7 @@ void CleanScreen::resetTime()
 	// update the widget every second
 	secs_timer.start(1 * 1000);
 	timer.start(wait_time_sec * 1000);
-	// TODO: serve davvero time() ?? Non si puo' usare qualcosa QT, magari QTime.elapsed?
-	end_time = time(0) + wait_time_sec;
+	end_time.restart();
 }
 
 void CleanScreen::showEvent(QShowEvent *e)
@@ -66,10 +64,13 @@ void CleanScreen::mouseMoveEvent(QMouseEvent *e)
 void CleanScreen::paintEvent(QPaintEvent *e)
 {
 	// we use QTime only to format the output
-	QTime diff;
-	diff = diff.addSecs(end_time - time(0));
-	if (diff.minute())
-		time_label->setText(diff.toString("mm:ss"));
+	QTime remaining_time;
+	// The following setText() 'floors' the number of seconds remaining, so
+	// add 900 to display correctly the number of remaining seconds without
+	// using ceil (which is for floating point numbers)
+	remaining_time = remaining_time.addMSecs(wait_time_sec * 1000 - end_time.elapsed() + 900);
+	if (remaining_time.minute())
+		time_label->setText(remaining_time.toString("mm:ss"));
 	else
-		time_label->setText(diff.toString("ss"));
+		time_label->setText(remaining_time.toString("ss"));
 }
