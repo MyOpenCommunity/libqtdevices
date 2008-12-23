@@ -147,11 +147,9 @@ ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
 
 void ProgramMenu::setSeason(Season new_season)
 {
-	bool update = false;
 	if (new_season != season)
 	{
 		season = new_season;
-		update = true;
 		switch (season)
 		{
 		case SUMMER:
@@ -161,10 +159,9 @@ void ProgramMenu::setSeason(Season new_season)
 			createWinterBanners();
 			break;
 		}
-	}
 
-	if (update)
 		forceDraw();
+	}
 }
 
 void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
