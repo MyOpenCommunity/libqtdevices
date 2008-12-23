@@ -25,7 +25,7 @@ class CleanScreen : public Page
 {
 Q_OBJECT
 public:
-	CleanScreen();
+	CleanScreen(int clean_time);
 private:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
@@ -38,7 +38,7 @@ private:
 	//(see analog clock example)
 	QTimer secs_timer;
 	/// Wait time in seconds read from conf file
-	unsigned wait_time_sec;
+	int wait_time_sec;
 	/// Used to compute the remaining time of cleanscreen
 	time_t end_time;
 	/// labels to show remaining time and cleanscreen icon

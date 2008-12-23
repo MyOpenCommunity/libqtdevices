@@ -78,8 +78,11 @@ void Settings::loadItems(QDomNode config_node)
 			b = new bannOnDx(this, ICON_BRIGHTNESS, new BrightnessPage());
 			break;
 		case CLEANSCREEN:
-			b = new bannOnDx(this, ICON_INFO, new CleanScreen());
+		{
+			int clean_time = getTextChild(item, "time").toInt();
+			b = new bannOnDx(this, ICON_INFO, new CleanScreen(clean_time));
 			break;
+		}
 		case LANSETTINGS:
 			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));
 			break;
