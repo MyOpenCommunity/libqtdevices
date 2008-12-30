@@ -24,6 +24,12 @@
 
 class ButtonsBar;
 
+class QButtonGroup;
+class QVBoxLayout;
+class QBoxLayout;
+class QLabel;
+
+
 /**
  * \class ListBrowser
  *
@@ -34,8 +40,7 @@ class ListBrowser : public QWidget
 {
 Q_OBJECT
 public:
-	ListBrowser(QWidget *parent, unsigned rows_per_page, Qt::WindowFlags f=0);
-	~ListBrowser();
+	ListBrowser(QWidget *parent, unsigned rows_per_page);
 
 	void setList(QVector<QString> _item_list, unsigned _current_page = 0);
 	void showList();
@@ -54,14 +59,13 @@ private:
 	unsigned rows_per_page;
 	unsigned current_page;
 
-	QVector<TitleLabel*> labels_list;
-	ButtonsBar             *buttons_bar;
+	QButtonGroup *buttons_group;
+	QVBoxLayout *main_layout;
 
 	/// The list of items displayed
 	QVector<QString> item_list;
 
-	/// before to show itself some init is done
-	void showEvent(QShowEvent *event);
+	void addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_btn);
 
 private slots:
 	void clicked(int item);

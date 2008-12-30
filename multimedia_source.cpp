@@ -13,7 +13,6 @@
 #include "playwindow.h"
 #include "bannfrecce.h"
 #include "listbrowser.h"
-#include "buttons_bar.h"
 #include "fontmanager.h"
 #include "mediaplayer.h"
 #include "btbutton.h"
@@ -21,6 +20,7 @@
 #include "main.h" // BTouch
 
 #include <QApplication>
+#include <QButtonGroup>
 #include <QStringList>
 #include <QLayout>
 #include <QRegExp>
@@ -411,7 +411,7 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 	Selector(parent, f)
 {
 	level = 0;
-	list_browser = new ListBrowser(this, rows_per_page, f);
+	list_browser = new ListBrowser(this, rows_per_page);
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->addWidget(list_browser);
@@ -630,10 +630,8 @@ void FileSelector::prevItem()
 RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, Qt::WindowFlags f) :
 	Selector(parent, f)
 {
-	list_browser = new ListBrowser(this, rows_per_page, f);
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
-	main_layout->addWidget(list_browser);
+	list_browser = new ListBrowser(this, rows_per_page);
+	list_browser->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
