@@ -19,17 +19,17 @@
 #include "btmain.h"
 #include "main.h" // BTouch
 #include "titlelabel.h"
+#include "xml_functions.h" // getChildren, getTextChild
 
 #include <QApplication>
 #include <QButtonGroup>
 #include <QStringList>
+#include <QDomNode>
 #include <QLayout>
 #include <QRegExp>
 #include <QDebug>
 #include <QTime>
 
-#include <stdlib.h>
-#include <unistd.h>
 #include <assert.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
@@ -46,7 +46,6 @@ static const char *stop_play_script = "/bin/audio_off.tcl";
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
-
 static const char *IMG_WAIT = IMG_PATH "loading.png";
 
 
@@ -165,20 +164,11 @@ void MultimediaSource::loadSources()
 
 	if (!n.isNull())
 	{
-		QDomNode node = n.firstChild();
-		while (!node.isNull())
-		{
-			if (node.nodeName() == "web_radio")
-				radio_node = node;
-
-			if (node.nodeName() == "radiooip")
-				radio_enabled = node.toElement().text().toInt() == 1;
-
-			if (node.nodeName() == "mediaserver")
-				mediaserver_enabled = node.toElement().text().toInt() == 1;
-
-			node = node.nextSibling();
-		}
+		radio_node = getChildWithName(n, "web_radio");
+		QString radio = getTextChild(n, "radiooip");
+		radio_enabled = radio.isNull() ? 0 : (radio.toInt() == 1);
+		QString media = getTextChild(n, "mediaserver");
+		mediaserver_enabled = media.isNull() ? 0 : (media.toInt() == 1);
 	}
 
 	// Check for correctness
@@ -396,8 +386,8 @@ void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 /// Methods for FileSelector
 /// ***********************************************************************************************************************
 
-FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, Qt::WindowFlags f) :
-	Selector(parent, f)
+FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path) :
+	Selector(parent)
 {
 	level = 0;
 	list_browser = new ListBrowser(this, rows_per_page);
@@ -608,38 +598,20 @@ void FileSelector::prevItem()
 /// Methods for RadioSelector
 /// ***********************************************************************************************************************
 
-RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, Qt::WindowFlags f) :
-	Selector(parent, f)
+RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config) :
+	Selector(parent)
 {
 	list_browser = new ListBrowser(this, rows_per_page);
 	list_browser->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
-	QDomNode n = config.firstChild();
-	while (!n.isNull())
+	QDomNode item;
+	foreach (item, getChildren(config, "item"))
 	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("item\\d{1,2}")))
-		{
-			QString descr, url;
-			QDomNode child = n.firstChild();
-			while (!child.isNull())
-			{
-				if (child.nodeName() == "descr")
-					descr = child.toElement().text();
-				else if (child.nodeName() == "url")
-					url = child.toElement().text();
-
-				if (descr.length() > 0 && url.length() > 0)
-					break;
-				child = child.nextSibling();
-			}
-			if (descr.length() > 0 && url.length() > 0)
-				radio_list.append(AudioData(url, descr));
-			else
-				qWarning() << "[AUDIO] Error loading radio item " << n.nodeName();
-		}
-		n = n.nextSibling();
+		QString descr = getTextChild(item, "descr");
+		QString url = getTextChild(item, "url");
+		radio_list.append(AudioData(url, descr));
 	}
 
 	QVector<QString> list;

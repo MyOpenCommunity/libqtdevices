@@ -180,7 +180,7 @@ class Selector : public QWidget
 {
 Q_OBJECT
 public:
-	Selector(QWidget *parent, Qt::WindowFlags f=0) : QWidget(parent, f) {}
+	Selector(QWidget *parent) : QWidget(parent) {}
 
 public slots:
 	virtual void nextItem() = 0;
@@ -204,7 +204,7 @@ class  FileSelector : public Selector
 {
 Q_OBJECT
 public:
-	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, Qt::WindowFlags f=0);
+	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path);
 
 public slots:
 	void nextItem();
@@ -255,7 +255,7 @@ class RadioSelector : public Selector
 {
 Q_OBJECT
 public:
-	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, Qt::WindowFlags f=0);
+	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config);
 
 public slots:
 	void nextItem();
