@@ -400,9 +400,7 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 {
 	level = 0;
 	list_browser = new ListBrowser(this, rows_per_page);
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
-	main_layout->addWidget(list_browser);
+	list_browser->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs);
