@@ -93,7 +93,8 @@ SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
 	back_btn = new BtButton();
 	back_btn->setImage(IMG_BACK);
 	main_layout->addWidget(back_btn, 0, Qt::AlignLeft);
-	main_layout->setContentsMargins(0, 20, 0, 10);
+	main_layout->setContentsMargins(0, 5, 0, 10);
+	main_layout->setSpacing(0);
 
 	connect(back_btn, SIGNAL(released()), SIGNAL(Closed()));
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SIGNAL(clicked(int)));
@@ -103,7 +104,7 @@ void SourceChoice::addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_bt
 {
 	QHBoxLayout *box = new QHBoxLayout();
 	box->addWidget(label, 0, Qt::AlignLeft);
-	BtButton *btn = new BtButton(this);
+	BtButton *btn = new BtButton();
 	btn->setImage(IMG_SELECT);
 	box->addWidget(btn, 0, Qt::AlignRight);
 	box->setContentsMargins(5, 0, 0, 0);
