@@ -14,6 +14,8 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+#include "main.h"
+
 #include <QWidget>
 
 
@@ -27,7 +29,7 @@ public:
 	virtual void inizializza() {}
 
 public slots:
-	virtual void showPage() { showFullScreen(); }
+	virtual void showPage() { showFullScreen(); setFixedSize(MAX_WIDTH, MAX_HEIGHT);}
 
 signals:
 	/// Emitted when the page is closed.

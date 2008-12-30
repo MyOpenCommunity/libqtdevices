@@ -9,7 +9,7 @@
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
-	setStyleSheet(QString("border:0px;"));
+	setStyleSheet("border:0px;");
 	setFocusPolicy(Qt::NoFocus);
 }
 
@@ -38,6 +38,7 @@ void BtButton::setPressedPixmap(const QPixmap &p)
 void BtButton::setPixmap(const QPixmap &p)
 {
 	pixmap = p;
+	setFixedSize(p.size());
 }
 
 void BtButton::paintEvent(QPaintEvent *event)
@@ -49,8 +50,6 @@ void BtButton::paintEvent(QPaintEvent *event)
 
 	setIcon(*p);
 	setIconSize(p->size());
-	resize(p->size());
-
 	if (isDown())
 		beep();
 

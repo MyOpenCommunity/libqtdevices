@@ -28,6 +28,8 @@
 #ifndef MULTIMEDIA_SOURCE_H
 #define MULTIMEDIA_SOURCE_H
 
+#include "page.h"
+
 #include <QDir>
 #include <QMap>
 #include <QVector>
@@ -38,10 +40,12 @@ class ListBrowser;
 class Selector;
 class PlayWindow;
 class MediaPlayer;
-class QLabel;
 class bannFrecce;
-class ButtonsBar;
 class BtButton;
+
+class QLabel;
+class QButtonGroup;
+class QBoxLayout;
 
 enum AudioSourceType
 {
@@ -63,7 +67,7 @@ struct AudioData
  *
  * This class show the menu to choice from Radio Over Ip and Media Server
  */
-class SourceChoice : public QWidget
+class SourceChoice : public Page
 {
 Q_OBJECT
 public:
@@ -74,8 +78,9 @@ signals:
 	void Closed();
 
 private:
-	ButtonsBar *buttons_bar;
-	BtButton   *back_btn;
+	void addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_btn);
+	BtButton *back_btn;
+	QButtonGroup *buttons_group;
 };
 
 

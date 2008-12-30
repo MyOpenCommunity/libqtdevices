@@ -84,49 +84,49 @@ enum ChoiceButtons
 };
 
 
-SourceChoice::SourceChoice(QWidget *parent) : QWidget(parent)
+SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
 {
 	QFont aFont;
 	FontManager::instance()->getFont(font_listbrowser, aFont);
 	setFont(aFont);
 
-	unsigned num_choices = 2;
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-
-	// Create labels_layout
-	QVBoxLayout *labels_layout = new QVBoxLayout();
-	labels_layout->setMargin(0);
-	labels_layout->setSpacing(0);
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	buttons_group = new QButtonGroup(this);
 
 	TitleLabel *l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 5);
 	l->setText(tr("IP Radio"));
-	labels_layout->addWidget(l);
+	addHorizontalBox(main_layout, l, BUTTON_RADIO);
 
 	l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 15);
 	l->setText(tr("Servers"));
-	labels_layout->addWidget(l);
-	labels_layout->addStretch();
+	addHorizontalBox(main_layout, l, BUTTON_MEDIA);
 
-	// Create buttons_bar
-	buttons_bar = new ButtonsBar(this, num_choices, Qt::Vertical);
-
-	for (unsigned i = 0; i < num_choices; ++i)
-		buttons_bar->setButtonIcon(i, IMG_SELECT);
+	main_layout->addStretch();
 
 	QHBoxLayout *main_controls = new QHBoxLayout();
 	back_btn = new BtButton(this);
 	back_btn->setImage(IMG_BACK);
 	main_controls->addWidget(back_btn);
+	main_controls->addStretch();
+	main_controls->setContentsMargins(0, 0, 0, 0);
 
-	QGridLayout *main_layout = new QGridLayout(this);
-	main_layout->addItem(new QSpacerItem(MAX_WIDTH, 20), 0, 0, 1, 2);
-	main_layout->addLayout(labels_layout, 1, 0);
-	main_layout->addWidget(buttons_bar, 1, 1);
-	main_layout->addLayout(main_controls, 2, 0, 1, 2, Qt::AlignLeft);
-	main_layout->addItem(new QSpacerItem(MAX_WIDTH, 10), 3, 0, 1, 2);
+	main_layout->addLayout(main_controls);
+	main_layout->setContentsMargins(0, 20, 0, 10);
 
 	connect(back_btn, SIGNAL(released()), SIGNAL(Closed()));
-	connect(buttons_bar, SIGNAL(clicked(int)), SIGNAL(clicked(int)));
+	connect(buttons_group, SIGNAL(buttonClicked(int)), SIGNAL(clicked(int)));
+}
+
+void SourceChoice::addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_btn)
+{
+	QHBoxLayout *box = new QHBoxLayout();
+	box->addWidget(label, 0, Qt::AlignLeft);
+	BtButton *btn = new BtButton(this);
+	btn->setImage(IMG_SELECT);
+	box->addWidget(btn, 0, Qt::AlignRight);
+	box->setContentsMargins(5, 0, 0, 0);
+	buttons_group->addButton(btn, id_btn);
+	layout->addLayout(box);
 }
 
 
@@ -321,7 +321,7 @@ void MultimediaSource::showPage()
 	else
 	{
 		bannNavigazione->setHidden(true);
-		source_choice->show();
+		source_choice->showPage();
 	}
 }
 
@@ -339,7 +339,7 @@ void MultimediaSource::handleSelectorExit()
 	{
 		selector->hide();
 		bannNavigazione->setHidden(true);
-		source_choice->show();
+		source_choice->showPage();
 	}
 }
 
