@@ -93,24 +93,19 @@ SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	buttons_group = new QButtonGroup(this);
 
-	TitleLabel *l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 5);
+	TitleLabel *l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, 5);
 	l->setText(tr("IP Radio"));
 	addHorizontalBox(main_layout, l, BUTTON_RADIO);
 
-	l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 15);
+	l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, 15);
 	l->setText(tr("Servers"));
 	addHorizontalBox(main_layout, l, BUTTON_MEDIA);
 
 	main_layout->addStretch();
 
-	QHBoxLayout *main_controls = new QHBoxLayout();
-	back_btn = new BtButton(this);
+	back_btn = new BtButton();
 	back_btn->setImage(IMG_BACK);
-	main_controls->addWidget(back_btn);
-	main_controls->addStretch();
-	main_controls->setContentsMargins(0, 0, 0, 0);
-
-	main_layout->addLayout(main_controls);
+	main_layout->addWidget(back_btn, 0, Qt::AlignLeft);
 	main_layout->setContentsMargins(0, 20, 0, 10);
 
 	connect(back_btn, SIGNAL(released()), SIGNAL(Closed()));
