@@ -13,6 +13,13 @@ BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 	setFocusPolicy(Qt::NoFocus);
 }
 
+QSize BtButton::sizeHint() const
+{
+	if (!pixmap.isNull())
+		return pixmap.size();
+	return QSize();
+}
+
 void BtButton::setImage(const QString &icon_path, IconFlag f)
 {
 	pixmap = *BTouch->getIcon(icon_path);

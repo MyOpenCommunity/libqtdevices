@@ -29,6 +29,8 @@ public:
 
 protected:
 	virtual void paintEvent(QPaintEvent *event);
+	// The sizeHint method is required to obtain a layout management that work fine.
+	virtual QSize sizeHint() const;
 
 private:
 	/// The pixmap to show when the button is down
