@@ -59,7 +59,8 @@ void ListBrowser::showList()
 				if (QWidget *w = li->widget())
 				{
 					w->disconnect();
-					delete w;
+					w->hide();
+					w->deleteLater();
 				}
 
 	QVector<int> h_offsets;
