@@ -49,19 +49,6 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_WAIT = IMG_PATH "loading.png";
 
 
-//#define DEBUG_MEDIA_NAVIGATION
-
-#if defined(DEBUG_MEDIA_NAVIGATION)
-#define DEBUG_MEDIA(msg) \
-do \
-{ \
-	qDebug(QString("Riga ") + QString::number(__LINE__) + QTime::currentTime().toString(" hh:mm:ss.zzz -> ") + (msg)); \
-} while(0)
-#else
-#define DEBUG_MEDIA(msg) {}
-#endif
-
-
 inline QTime startTimeCounter()
 {
 	QTime timer;
