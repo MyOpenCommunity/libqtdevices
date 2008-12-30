@@ -11,14 +11,15 @@
 #include "listbrowser.h"
 #include "fontmanager.h"
 #include "btbutton.h"
-#include "main.h"
+#include "main.h" // MAX_WIDTH
+#include "titlelabel.h"
 
 #include <QButtonGroup>
 #include <QLayout>
 #include <QDebug>
+#include <QLabel>
 #include <QFont>
 
-// Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
 
 

@@ -14,15 +14,9 @@
 #ifndef LIST_BROWSER_H
 #define LIST_BROWSER_H
 
-
-#include "titlelabel.h"
-
 #include <QVector>
 #include <QString>
 #include <QWidget>
-
-
-class ButtonsBar;
 
 class QButtonGroup;
 class QVBoxLayout;

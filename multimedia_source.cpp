@@ -18,6 +18,7 @@
 #include "btbutton.h"
 #include "btmain.h"
 #include "main.h" // BTouch
+#include "titlelabel.h"
 
 #include <QApplication>
 #include <QButtonGroup>
