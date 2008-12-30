@@ -95,15 +95,19 @@ unsigned ListBrowser::getCurrentPage()
 void ListBrowser::nextItem()
 {
 	if (static_cast<int>((current_page + 1) * rows_per_page) < item_list.count())
+	{
 		++current_page;
-	showList();
+		showList();
+	}
 }
 
 void ListBrowser::prevItem()
 {
 	if (current_page)
+	{
 		--current_page;
-	showList();
+		showList();
+	}
 }
 
 void ListBrowser::clicked(int item)
