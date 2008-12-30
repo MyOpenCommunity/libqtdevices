@@ -403,14 +403,13 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 	list_browser->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
-	current_dir.setFilter(QDir::AllDirs);
+	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
 
 	QStringList filters;
 	filters << "*.[mM]3[uU]" << "*.[mM][pP]3" << "*.[wW][[aA][vV]" << "*.[oO][gG][gG]" << "*.[wW][mM][aA]";
 	current_dir.setNameFilters(filters);
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
-
 	changePath(start_path);
 }
 
@@ -563,13 +562,8 @@ bool FileSelector::browseFiles()
 {
 	// Create fileslist from files
 	QList<QFileInfo> temp_files_list = current_dir.entryInfoList();
-	if (temp_files_list.empty())
-	{
-		qWarning("[AUDIO] Error retrieving file list!");
-		return false;
-	}
 
-	if (temp_files_list.count() <= 2)
+	if (temp_files_list.empty())
 	{
 		qDebug() << "[AUDIO] empty directory: " << current_dir.absolutePath();
 		return false;
