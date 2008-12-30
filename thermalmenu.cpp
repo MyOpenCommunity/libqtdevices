@@ -147,11 +147,9 @@ ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
 
 void ProgramMenu::setSeason(Season new_season)
 {
-	bool update = false;
 	if (new_season != season)
 	{
 		season = new_season;
-		update = true;
 		switch (season)
 		{
 		case SUMMER:
@@ -161,16 +159,19 @@ void ProgramMenu::setSeason(Season new_season)
 			createWinterBanners();
 			break;
 		}
-	}
 
-	if (update)
 		forceDraw();
+	}
 }
 
 void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
 {
 	assert((what == "scen" || what == "prog") && "'what' must be either 'prog' or 'scen'");
-	elencoBanner.clear();
+
+	bool create_banner = false;
+	if (elencoBanner.isEmpty())
+		create_banner = true;
+
 	const QString i_ok = QString(IMG_PATH) + "btnok.png";
 
 	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
@@ -182,11 +183,25 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 	QString name = what.left(1);
 
 	QDomNode node;
+	int index = 0;
 	foreach(node, getChildren(program, name))
 	{
-		BannWeekly *bp = new BannWeekly(this);
+		BannWeekly *bp = 0;
+		if (create_banner)
+		{
+			bp = new BannWeekly(this);
+			elencoBanner.append(bp);
+			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
+		}
+		if (index >= elencoBanner.size())
+		{
+			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number \
+of programs between summer and winter");
+			break;
+		}
+		bp = static_cast<BannWeekly*>(elencoBanner[index]);
+		++index;
 		bp->SetIcons(i_ok, QString(), icon);
-		connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 		// set Text taken from conf.xml
 		if (node.isElement())
 		{
@@ -195,7 +210,6 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 			int program_number = node.nodeName().mid(1).toInt();
 			bp->setProgram(program_number);
 		}
-		elencoBanner.append(bp);
 	}
 }
 
