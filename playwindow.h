@@ -58,7 +58,7 @@ protected:
 	virtual void stopPlayer();
 	void playNextTrack();
 
-	void addMainControls(QBoxLayout* layout);
+	void addMainControls();
 
 	/// Return the description of current song/radio played.
 	QString getCurrentDescription();

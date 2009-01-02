@@ -50,31 +50,30 @@ PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent) : QWidget(parent, Q
 	/// set self Geometry
 	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
-	/// Create Main Layout
-	// all others layout must have this as parent, this is not more needed in Qt4
-	// where we can use setMainLayout
 	main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 30, 0, 10);
 	media_player = player;
 
 	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
 	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
 	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
-	QHBoxLayout *main_controls_layout = new QHBoxLayout();
-	addMainControls(main_controls_layout);
-	main_layout->addLayout(main_controls_layout);
+	addMainControls();
 }
 
-void PlayWindow::addMainControls(QBoxLayout* layout)
+void PlayWindow::addMainControls()
 {
-	back_btn = new BtButton(this);
-	settings_btn = new BtButton(this);
-	layout->addWidget(back_btn);
-	layout->addStretch();
-	layout->addWidget(settings_btn);
+	QHBoxLayout *layout = new QHBoxLayout();
+	back_btn = new BtButton();
+	settings_btn = new BtButton();
+	layout->addWidget(back_btn, 0, Qt::AlignLeft);
+	layout->addWidget(settings_btn, 0, Qt::AlignRight);
 
 	back_btn->setImage(IMG_BACK);
 	settings_btn->setImage(IMG_SETTINGS);
+
+	main_layout->addStretch();
+	main_layout->addLayout(layout);
 
 	connect(back_btn, SIGNAL(released()), SIGNAL(backBtn()));
 	connect(settings_btn, SIGNAL(released()), SIGNAL(settingsBtn()));
@@ -201,7 +200,6 @@ QString PlayWindow::getCurrentDescription()
 MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWindow(player, parent)
 {
 	qDebug("[AUDIO] MediaPlayWindow costructor");
-	main_layout->insertSpacing(0, 20);
 
 	/// Create Labels (that contain tags)
 	QFont aFont;
@@ -209,9 +207,11 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWin
 
 	// layouts for media
 	QHBoxLayout *tags_layout = new QHBoxLayout();
-	main_layout->insertLayout(1, tags_layout);
+	main_layout->insertLayout(0, tags_layout);
+	main_layout->insertStretch(1);
 
 	QVBoxLayout *tags_name_layout = new QVBoxLayout();
+	tags_name_layout->setContentsMargins(10, 0, 0, 0);
 	QVBoxLayout *tags_text_layout = new QVBoxLayout();
 
 	addNameLabels(tags_name_layout, aFont);
@@ -228,8 +228,8 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWin
 	play_controls->setButtonIcon(3, IMG_NEXT);
 
 	main_layout->insertWidget(2, play_controls);
-	// Add space to the end of layout to align buttons with previus page
-	main_layout->addSpacing(10);
+	main_layout->insertStretch(3);
+
 	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
 
 	data_refresh_timer = new QTimer(this);
@@ -424,19 +424,17 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWin
 {
 	qDebug("[AUDIO] RadioPlayWindow costructor");
 	read_player_output = false;
-	main_layout->insertSpacing(0, 20);
+	//main_layout->insertSpacing(0, 20);
 
 	/// Create Labels (that contain tags)
 	QFont aFont;
 	FontManager::instance()->getFont(font_playwindow, aFont);
 
-	// layouts for media
-	QVBoxLayout *tags_layout = new QVBoxLayout();
-	main_layout->insertLayout(1, tags_layout);
 	meta_title_label = new TitleLabel(this, MAX_WIDTH, 30, 0, 0, TRUE);
 	meta_title_label->setFont(aFont);
 	meta_title_label->setAlignment(Qt::AlignHCenter);
-	tags_layout->addWidget(meta_title_label);
+	main_layout->insertWidget(0, meta_title_label);
+	main_layout->insertStretch(1);
 
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
@@ -447,8 +445,7 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWin
 	play_controls->setButtonIcon(3, IMG_NEXT);
 
 	main_layout->insertWidget(2, play_controls);
-	// Add space to the end of layout to align buttons with previus page
-	main_layout->addSpacing(10);
+	main_layout->insertStretch(3);
 	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
 }
 
