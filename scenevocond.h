@@ -619,7 +619,7 @@ public slots:
 	//! Down method
 	void Down();
 	//! Invoked when actual device condition has been triggered by a frame
-	//void device_condition_triggered(void);
+	//void device_condition_triggered();
 	//! Reset condition
 	void reset();
 };

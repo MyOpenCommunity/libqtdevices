@@ -28,7 +28,7 @@ void stat_var::get_val(int& out)
 	out = val;
 }
 
-int stat_var::get_val(void) const
+int stat_var::get_val() const
 {
 	return val;
 }
@@ -74,7 +74,7 @@ void stat_var::get_step(int& out)
 	out = step;
 }
 
-int stat_var::get_step(void)
+int stat_var::get_step()
 {
 	return step;
 }
@@ -84,17 +84,17 @@ void stat_var::set_step(int& in)
 	step = in;
 }
 
-bool stat_var::initialized(void)
+bool stat_var::initialized()
 {
 	return _initialized;
 }
 
-void stat_var::invalidate(void)
+void stat_var::invalidate()
 {
 	_initialized = false ;
 }
 
-void stat_var::force_initialized(void)
+void stat_var::force_initialized()
 {
 	_initialized = true;
 }
@@ -114,7 +114,7 @@ device_status::device_status(device_status::type _t)
 	_init_requested = false;
 }
 
-device_status::type device_status::get_type(void)
+device_status::type device_status::get_type()
 {
 	return t;
 }
@@ -165,28 +165,28 @@ int device_status::write_val(int index, stat_var& in)
 	return 0;
 }
 
-bool device_status::initialized(void)
+bool device_status::initialized()
 {
 	return _initialized;
 }
 
-bool device_status::init_requested(void)
+bool device_status::init_requested()
 {
 	return _init_requested;
 }
 
-void device_status::mark_init_requested(void)
+void device_status::mark_init_requested()
 {
 	_init_requested = true;
 }
 
-void device_status::invalidate(void)
+void device_status::invalidate()
 {
   	for (int i = 0; i < vars.size(); ++i)
 		vars.at(i)->invalidate();
 }
 
-void device_status::force_initialized(void)
+void device_status::force_initialized()
 {
   	for (int i = 0; i < vars.size(); ++i)
 		vars.at(i)->force_initialized();

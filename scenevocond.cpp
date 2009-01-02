@@ -46,7 +46,7 @@ void scenEvo_cond::setImg(int index, QString s)
 	*img[index] = s;
 }
 
-int scenEvo_cond::getVal(void)
+int scenEvo_cond::getVal()
 {
 	return val;
 }
@@ -56,7 +56,7 @@ void scenEvo_cond::setVal(int v)
 	val = v;
 }
 
-const char *scenEvo_cond::getDescription(void)
+const char *scenEvo_cond::getDescription()
 {
 	return "Generic scenEvo condition";
 }
@@ -119,11 +119,11 @@ void scenEvo_cond::set_serial_number(int n)
 	serial_number = n;
 }
 
-void scenEvo_cond::inizializza(void)
+void scenEvo_cond::inizializza()
 {
 }
 
-bool scenEvo_cond::isTrue(void)
+bool scenEvo_cond::isTrue()
 {
 	return false;
 }
@@ -170,7 +170,7 @@ void scenEvo_cond_h::set_s(QString _s)
 	qDebug() << "scenEvo_cond_h::set_s : " << s;
 }
 
-const char *scenEvo_cond_h::getDescription(void)
+const char *scenEvo_cond_h::getDescription()
 {
 	return "scenEvo hour condition";
 }
@@ -350,7 +350,7 @@ void scenEvo_cond_h::reset()
 	ora->showTime();
 }
 
-bool scenEvo_cond_h::isTrue(void)
+bool scenEvo_cond_h::isTrue()
 {
 	QTime cur = QDateTime::currentDateTime().time();
 	return ((cond_time->time().hour() == cur.hour()) &&
@@ -394,7 +394,7 @@ void scenEvo_cond_d::set_trigger(QString t)
 	*trigger = t;
 }
 
-const char *scenEvo_cond_d::getDescription(void)
+const char *scenEvo_cond_d::getDescription()
 {
 	return "scenEvo device condition";
 }
@@ -517,24 +517,24 @@ void scenEvo_cond_d::SetIcons()
 	qDebug("scenEvo_cond_d::SetIcons(), end");
 }
 
-void scenEvo_cond_d::Up(void)
+void scenEvo_cond_d::Up()
 {
 	qDebug("scenEvo_cond_d::Up()");
 	actual_condition->Up();
 }
 
-void scenEvo_cond_d::Down(void)
+void scenEvo_cond_d::Down()
 {
 	qDebug("scenEvo_cond_d::Down()");
 	actual_condition->Down();
 }
 
-void scenEvo_cond_d::Apply(void)
+void scenEvo_cond_d::Apply()
 {
 	actual_condition->OK();
 }
 
-void scenEvo_cond_d::OK(void)
+void scenEvo_cond_d::OK()
 {
 	qDebug("scenEvo_cond_d::OK()");
 	// Save ALL conditions here (not just this one)
@@ -558,13 +558,13 @@ void scenEvo_cond_d::reset()
 	actual_condition->reset();
 }
 
-void scenEvo_cond_d::inizializza(void)
+void scenEvo_cond_d::inizializza()
 {
 	if (actual_condition)
 		actual_condition->inizializza();
 }
 
-bool scenEvo_cond_d::isTrue(void)
+bool scenEvo_cond_d::isTrue()
 {
 	return actual_condition ? actual_condition->isTrue() : false;
 }
@@ -604,7 +604,7 @@ bool device_condition::show_OFF_on_zero()
 	return false;
 }
 
-int device_condition::get_condition_value(void)
+int device_condition::get_condition_value()
 {
 	return cond_value;
 }
