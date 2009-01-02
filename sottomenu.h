@@ -12,13 +12,12 @@
 #define SOTTOMENU_H
 
 #include "main.h"
-#include "banner.h"
 #include "page.h"
 
 #include <QDomNode>
 #include <QDateTime>
 
-
+class banner;
 class bannFrecce;
 class scenEvo_cond;
 

@@ -15,7 +15,6 @@
 #include "device.h"
 #include "generic_functions.h" // createMsgOpen
 
-#include <QByteArray>
 #include <QWidget>
 #include <QDebug>
 #include <QChar>

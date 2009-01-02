@@ -14,7 +14,6 @@
 
 #include <openwebnet.h> // class openwebnet
 
-#include <QByteArray>
 #include <QDebug>
 
 /*****************************************************************

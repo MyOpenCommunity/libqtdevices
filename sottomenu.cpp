@@ -13,19 +13,12 @@
 #include "btbutton.h"
 #include "generic_functions.h"
 #include "bannfrecce.h"
-#include "actuators.h"
-#include "amplificatori.h"
-#include "poweramplifier.h"
-#include "sorgentiradio.h"
-#include "sorgentiaux.h"
-#include "sorgentimedia.h"
+#include "banner.h"
 
 #include <QPixmap>
 #include <QTimer>
 #include <QRegExp>
 #include <QDebug>
-
-#include <algorithm>
 
 #include <assert.h>
 

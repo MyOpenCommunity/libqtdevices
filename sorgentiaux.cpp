@@ -14,7 +14,6 @@
 #include "global.h" // BTouch
 #include "generic_functions.h" // createMsgOpen
 
-#include <QByteArray>
 #include <QWidget>
 #include <QDebug>
 
