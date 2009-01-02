@@ -113,22 +113,18 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	// hide children
 	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
 
-	QDomNode n = config.firstChild();
-	while (!n.isNull())
+	QDomNode item;
+	foreach(item, getChildren(config, "item"))
 	{
-		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
-		{
-			QString addr = n.namedItem("where").toElement().text();
-			if (external)
-				addr += "00";
-			device *dev = btouch_device_cache.get_temperature_probe(addr, external);
+		QString addr = getTextChild(item, "where");
+		if (external)
+			addr += "00";
+		device *dev = btouch_device_cache.get_temperature_probe(addr, external);
 
-			banner *b = new BannTemperature(sm, n, dev);
-			b->setText(getTextChild(n, "descr"));
+		banner *b = new BannTemperature(sm, item, dev);
+		b->setText(getTextChild(item, "descr"));
 
-			sm->appendBanner(b);
-		}
-		n = n.nextSibling();
+		sm->appendBanner(b);
 	}
 }
 
