@@ -3,7 +3,6 @@
 #include "bann_antintrusion.h"
 #include "sottomenu.h"
 #include "global.h" // BTouch
-#include "generic_functions.h" // safeAt
 #include "xml_functions.h" // getChildren, getTextChild
 #include "allarme.h"
 
