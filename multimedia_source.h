@@ -89,7 +89,7 @@ private:
  *
  * This class implements the logic for MULTIMEDIA SOURCE
  */
-class MultimediaSource : public QWidget
+class MultimediaSource : public Page
 {
 Q_OBJECT
 public:
@@ -118,10 +118,6 @@ public:
 	void stop();
 
 signals:
-	/*!
-	 * \brief Emitted when the page is going to be closed
-	 */
-	void Closed();
 	/*!
 	 * \brief Emitted when fwd button is pressed
 	 */

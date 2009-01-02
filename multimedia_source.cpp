@@ -113,11 +113,8 @@ void SourceChoice::addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_bt
 
 
 MultimediaSource::MultimediaSource(QWidget *parent, int _where_address) :
-	QWidget(parent), audio_initialized(true)
+	Page(parent), audio_initialized(true)
 {
-	// Set main geometry
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	where_address = _where_address;
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
