@@ -72,7 +72,6 @@ HEADERS += actuators.h \
            bttime.h \
            buttons_bar.h \
            calibrate.h \
-           carico.h \
            cleanscreen.h \
            contrpage.h \
            datetime.h \
@@ -90,6 +89,7 @@ HEADERS += actuators.h \
            lansettings.h \
            lighting.h \
            listbrowser.h \
+           loads.h \
            main.h \
            mediaplayer.h \
            multimedia_source.h \
@@ -166,7 +166,6 @@ SOURCES += actuators.cpp \
            bttime.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
-           carico.cpp \
            cleanscreen.cpp \
            contrpage.cpp \
            datetime.cpp \
@@ -184,6 +183,7 @@ SOURCES += actuators.cpp \
            lansettings.cpp \
            lighting.cpp \
            listbrowser.cpp \
+           loads.cpp \
            main.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \

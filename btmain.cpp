@@ -20,7 +20,7 @@
 #include "lighting.h"
 #include "scenario.h"
 #include "settings.h"
-#include "carico.h"
+#include "loads.h"
 #include "generic_functions.h"
 #include "xml_functions.h"
 #include "calibrate.h"
@@ -170,7 +170,7 @@ Page *BtMain::getPage(int id)
 	}
 	case CARICHI:
 	{
-		Carico *p = new Carico(page_node);
+		Loads *p = new Loads(page_node);
 		p->forceDraw();
 		page = p;
 		break;
