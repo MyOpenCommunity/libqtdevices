@@ -136,9 +136,6 @@ private slots:
 	void init();
 
 signals:
-	void goUP();
-	void goDO();
-
 	/*!
 	\brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
 	*/
@@ -161,11 +158,6 @@ signals:
 	\brief Emitted to go to a further page.
 	*/
 	void goDx();
-
-	/*!
-	\brief Emitted to tell that an item in the list was removed.
-	*/
-	void itemKilled();
 
 	/*!
 	\brief Emitted to tell to BtMain tha state of the password (value and abilitation).

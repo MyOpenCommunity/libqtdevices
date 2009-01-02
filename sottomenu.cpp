@@ -9,8 +9,7 @@
  ****************************************************************/
 
 #include "sottomenu.h"
-#include "btmain.h"
-#include "main.h" // BTouch, Season
+#include "main.h" // Season
 #include "btbutton.h"
 #include "generic_functions.h"
 #include "bannfrecce.h"
@@ -22,7 +21,6 @@
 #include "sorgentimedia.h"
 #include "carico.h"
 
-#include <QByteArray>
 #include <QPixmap>
 #include <QTimer>
 #include <QRegExp>
@@ -31,6 +29,7 @@
 #include <algorithm>
 
 #include <assert.h>
+
 
 sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n) : Page(parent)
 {
