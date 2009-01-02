@@ -9,8 +9,7 @@
  ****************************************************************/
 
 #include "carico.h"
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "global.h" // BTouch
 #include "generic_functions.h" // createMsgOpen
 #include "xml_functions.h" // getChildren, getTextChild
 

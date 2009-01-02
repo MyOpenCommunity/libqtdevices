@@ -10,7 +10,6 @@
 
 #include "plantmenu.h"
 #include "device.h"
-#include "device_cache.h"
 #include "xml_functions.h"
 
 #include <QVariant>

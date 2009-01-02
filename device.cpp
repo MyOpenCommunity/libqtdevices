@@ -1,10 +1,7 @@
-
 #include "device.h"
 #include "openclient.h"
 #include "frame_interpreter.h"
-#include "device_cache.h"
-#include "btmain.h"
-#include "main.h"
+#include "global.h" // BTouch
 
 #include <openmsg.h>
 

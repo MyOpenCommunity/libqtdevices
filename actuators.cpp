@@ -9,13 +9,11 @@
  ****************************************************************/
 
 #include "actuators.h"
-#include "device_cache.h" // btouch_device_cache
 #include "device_status.h"
 #include "device.h"
 #include "btbutton.h"
 #include "generic_functions.h" // getPressName, createMsgOpen
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "global.h" // BTouch, btouch_device_cache
 
 #include <QDebug>
 

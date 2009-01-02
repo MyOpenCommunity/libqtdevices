@@ -1,8 +1,8 @@
 #include "specialpage.h"
 #include "timescript.h"
 #include "btbutton.h"
-#include "btmain.h"
-#include "main.h" // ICON_FRECCIA_SX, BTouch
+#include "global.h" // BTouch
+#include "main.h" // ICON_FRECCIA_SX
 #include "xml_functions.h" // getChildren, getTextChild, getChildWithName
 #include "generic_functions.h" // createMsgOpen
 #include "fontmanager.h"

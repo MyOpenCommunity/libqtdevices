@@ -14,10 +14,8 @@
 #include "sottomenu.h"
 #include "btbutton.h"
 #include "device.h"
-#include "device_cache.h"
 #include "scaleconversion.h"
-#include "btmain.h"
-#include "main.h"
+#include "global.h" // BTouch, btouch_device_cache
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"

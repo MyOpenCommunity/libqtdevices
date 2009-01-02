@@ -1,7 +1,6 @@
 #include "pagecontainer.h"
-#include "main.h"
 #include "btbutton.h"
-#include "btmain.h" // BTouch
+#include "global.h" // BTouch
 #include "xml_functions.h" // getTextChild, getChildren
 #include "generic_functions.h" // rearmWDT
 

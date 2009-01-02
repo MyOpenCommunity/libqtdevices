@@ -10,8 +10,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include "icondispatcher.h"
-
 #include <QDomNode>
 
 QDomNode getPageNode(int id);
@@ -29,11 +27,6 @@ TemperatureScale readTemperatureScale();
 // See getElement
 QDomElement getConfElement(QString path);
 
-// Forward declaration
-class BtMain;
-
-/// A global pointer to the main class of BTouch.
-extern BtMain *BTouch;
 
 /****************************************************************
  ** Default configurazione applicativo

@@ -19,8 +19,7 @@
 #include "bannfrecce.h"
 #include "fontmanager.h"
 #include "brightnesscontrol.h"
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "global.h" // BTouch
 
 #include <openwebnet.h>
 

@@ -12,7 +12,7 @@
 
 #include "thermalmenu.h"
 #include "banntemperature.h"
-#include "device_cache.h"
+#include "global.h" // btouch_device_cache
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannfrecce.h"

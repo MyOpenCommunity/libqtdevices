@@ -3,7 +3,7 @@
 #include "generic_functions.h" // void getZoneName(...)
 #include "fontmanager.h"
 #include "btbutton.h"
-#include "device_cache.h" // btouch_device_cache
+#include "global.h" // btouch_device_cache
 #include "device.h"
 #include "tastiera.h"
 

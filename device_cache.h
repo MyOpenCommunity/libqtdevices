@@ -76,12 +76,6 @@ public:
 	~device_cache();
 };
 
-// Global stuff
-
-/*
- * Devices' cache
- */
-extern device_cache btouch_device_cache;
 
 // Extern functions
 

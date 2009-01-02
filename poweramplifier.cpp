@@ -1,6 +1,6 @@
 #include "poweramplifier.h"
 #include "xml_functions.h" // getChildWithId
-#include "device_cache.h" // btouch_device_cache
+#include "global.h" // btouch_device_cache
 #include "sottomenu.h"
 
 #include <QVariant> // setProperty

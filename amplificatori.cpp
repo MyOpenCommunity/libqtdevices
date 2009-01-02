@@ -9,12 +9,10 @@
  ****************************************************************/
 
 #include "amplificatori.h"
-#include "device_cache.h" // btouch_device_cache
 #include "generic_functions.h" // createMsgOpen
 #include "device_status.h"
 #include "device.h"
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "global.h" // BTouch, btouch_device_cache
 
 
 amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)

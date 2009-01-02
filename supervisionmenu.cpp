@@ -13,10 +13,8 @@
  */
 
 #include "supervisionmenu.h"
-#include "device_cache.h"
 #include "device.h"
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "global.h" // btouch_device_cache
 #include "xml_functions.h" // getChildren, getTextChild
 
 #include <QDebug>

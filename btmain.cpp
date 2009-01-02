@@ -35,6 +35,7 @@
 #include "brightnesscontrol.h"
 #include "specialpage.h"
 #include "page.h"
+#include "global.h" // btouch_device_cache
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>

@@ -1,10 +1,9 @@
 #include "bann_videoentryphone.h"
 #include "openclient.h" // Client
-#include "device_cache.h" // btouch_device_cache
 #include "device_status.h"
 #include "device.h"
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
+#include "global.h" // BTouch, btouch_device_cache
 #include "btbutton.h"
 #include "fontmanager.h"
 

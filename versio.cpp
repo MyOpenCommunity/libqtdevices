@@ -9,8 +9,8 @@
 ****************************************************************/
 
 #include "versio.h"
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "global.h" // BTouch
+#include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
 #include "openclient.h"
 #include "fontmanager.h"
 

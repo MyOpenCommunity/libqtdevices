@@ -1,11 +1,9 @@
 #include "bann_automation.h"
 #include "generic_functions.h" // createMsgOpen
-#include "device_cache.h" // btouch_device_cache
 #include "device_status.h"
 #include "btbutton.h"
 #include "device.h"
-#include "main.h" // BTouch
-#include "btmain.h"
+#include "global.h" // BTouch, btouch_device_cache
 
 #include <QTimer>
 #include <QDebug>

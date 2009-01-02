@@ -1,12 +1,10 @@
 #include "bann_scenario.h"
-#include "device_cache.h" // btouch_device_cache
 #include "device.h"
 #include "scenevocond.h"
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h"
-#include "btmain.h"
-#include "main.h" // BTouch
+#include "global.h" // BTouch, btouch_device_cache
 
 #include <QDir>
 #include <QDebug>

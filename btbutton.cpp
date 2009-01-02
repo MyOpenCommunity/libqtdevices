@@ -1,6 +1,5 @@
 #include "btbutton.h"
-#include "btmain.h"
-#include "main.h"
+#include "global.h" // BTouch
 #include "generic_functions.h" // beep
 
 #include <QDebug>

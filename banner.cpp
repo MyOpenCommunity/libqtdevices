@@ -10,8 +10,7 @@
 
 #include "banner.h"
 #include "btbutton.h"
-#include "btmain.h"
-#include "main.h"
+#include "global.h" // BTouch
 #include "generic_functions.h" // getPressName
 #include "openclient.h"
 #include "fontmanager.h"

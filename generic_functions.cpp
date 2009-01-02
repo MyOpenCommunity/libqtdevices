@@ -10,8 +10,7 @@
 
 #include "generic_functions.h"
 #include "openclient.h"
-#include "main.h"
-#include "btmain.h"
+#include "global.h" // BTouch
 
 #include <QMutableMapIterator>
 #include <QTextStream>

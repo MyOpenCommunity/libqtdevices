@@ -9,6 +9,7 @@
  ****************************************************************/
 
 #include "main.h"
+#include "global.h"
 #include "btmain.h"
 #include "xml_functions.h"
 #include "generic_functions.h"
@@ -55,9 +56,6 @@ char *Suffisso = const_cast<char*>("<BTo>");
 int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
-
-/// A global pointer to BtMain
-BtMain *BTouch;
 
 
 QDomElement getConfElement(QString path)

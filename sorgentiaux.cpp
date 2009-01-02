@@ -9,9 +9,9 @@
  ****************************************************************/
 
 #include "sorgentiaux.h"
-#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, BTouch
+#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
 #include "aux.h" // class myAux
-#include "btmain.h"
+#include "global.h" // BTouch
 #include "generic_functions.h" // createMsgOpen
 
 #include <QByteArray>

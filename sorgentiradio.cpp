@@ -11,7 +11,7 @@
 #include "sorgentiradio.h"
 #include "main.h" // ICON_CICLA
 #include "radio.h"
-#include "device_cache.h" // btouch_device_cache
+#include "global.h" // btouch_device_cache
 #include "device.h"
 #include "generic_functions.h" // createMsgOpen
 

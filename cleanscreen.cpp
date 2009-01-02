@@ -1,8 +1,7 @@
 #include "cleanscreen.h"
 #include "xml_functions.h" // getChildWithId
 #include "fontmanager.h"
-#include "btmain.h"
-#include "main.h"
+#include "global.h" // BTouch
 
 #include <QRegExp>
 #include <QLabel>

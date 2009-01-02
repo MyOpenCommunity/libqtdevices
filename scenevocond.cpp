@@ -1,6 +1,6 @@
 #include "scenevocond.h"
 #include "device.h"
-#include "device_cache.h"
+#include "global.h" // btouch_device_cache
 #include "generic_functions.h" // setCfgValue
 #include "btbutton.h"
 #include "timescript.h"

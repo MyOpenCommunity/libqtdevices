@@ -1,8 +1,7 @@
 #include "settings.h"
 #include "bann_settings.h"
 #include "sveglia.h"
-#include "main.h"
-#include "btmain.h" // BTouch
+#include "global.h" // BTouch
 #include "lansettings.h"
 #include "multisounddiff.h" // contdiff
 #include "xml_functions.h" // getChildren, getTextChild

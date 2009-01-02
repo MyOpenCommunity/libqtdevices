@@ -444,6 +444,3 @@ QString get_device_key(char *who, char *where)
 	return get_device_key(QString(who), QString(where));
 }
 
-// TODO: rimuovere la device cache da qua! Tutta la roba globale deve essere contenuta in BtMain
-// (e usata attraverso il puntatore BTouch)
-device_cache btouch_device_cache;

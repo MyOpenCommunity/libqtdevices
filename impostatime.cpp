@@ -11,8 +11,8 @@
 #include "impostatime.h"
 #include "timescript.h"
 #include "btbutton.h"
-#include "btmain.h"
-#include "main.h" // BTouch, getConfElement
+#include "global.h" // BTouch
+#include "main.h" // getConfElement
 
 #include <QPixmap>
 #include <QDateTime>

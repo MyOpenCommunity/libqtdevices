@@ -9,9 +9,8 @@
  ****************************************************************/
 
 #include "sorgentimedia.h"
-#include "btmain.h"
-#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA, BTouch
-#include "btmain.h"
+#include "global.h" // BTouch
+#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
 
 #include <openwebnet.h> // class openwebnet
 

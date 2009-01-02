@@ -1,7 +1,4 @@
-
 #include "device_status.h"
-#include "device_cache.h"
-
 #include <limits.h>
 
 // Status variable implementation
