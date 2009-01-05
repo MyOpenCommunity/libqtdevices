@@ -4,7 +4,7 @@
 #include "tastiera.h"
 #include "multisounddiff.h" // contdiff
 #include "calibrate.h"
-#include "contrpage.h"
+#include "contrast.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
 
 #include <QTimer>
@@ -115,13 +115,14 @@ void impBeep::toggleBeep()
 }
 
 
-impContr::impContr(sottoMenu *parent, QString val, QString icon) : bannOnDx(parent, icon, new contrPage())
+bannContrast::bannContrast(sottoMenu *parent, QString val, QString icon) :
+	bannOnDx(parent, icon, new Contrast())
 {
 	setContrast(val.toInt(), false);
-	connect(linked_page, SIGNAL(Closed()), SLOT(contrMade()));
+	connect(linked_page, SIGNAL(Closed()), SLOT(done()));
 }
 
-void impContr::contrMade()
+void bannContrast::done()
 {
 	setContrast(getContrast(), true);
 }

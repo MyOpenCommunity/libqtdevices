@@ -73,7 +73,7 @@ HEADERS += actuators.h \
            buttons_bar.h \
            calibrate.h \
            cleanscreen.h \
-           contrpage.h \
+           contrast.h \
            datetime.h \
            device.h \
            device_cache.h \
@@ -167,7 +167,7 @@ SOURCES += actuators.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
            cleanscreen.cpp \
-           contrpage.cpp \
+           contrast.cpp \
            datetime.cpp \
            device.cpp \
            device_cache.cpp \

@@ -1,14 +1,4 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**tastiera.cpp
-**
-**finestra di tastiera numerica
-**
-****************************************************************/
-
-#include "contrpage.h"
+#include "contrast.h"
 #include "main.h"
 #include "generic_functions.h" // getContrast, setContrast
 #include "btbutton.h"
@@ -18,7 +8,7 @@
 #include <QLabel>
 
 
-contrPage::contrPage() : Page(0)
+Contrast::Contrast() : Page(0)
 {
 	aumBut = new BtButton(this);
 	decBut = new BtButton(this);
@@ -52,14 +42,14 @@ contrPage::contrPage() : Page(0)
 	okBut->show();
 	paintLabel->show();
 	colorBar->show();
-	aumBut->setAutoRepeat(TRUE);
-	decBut->setAutoRepeat(TRUE);
+	aumBut->setAutoRepeat(true);
+	decBut->setAutoRepeat(true);
 	connect(decBut,SIGNAL(clicked()),this,SLOT(decContr()));
 	connect(aumBut,SIGNAL(clicked()),this,SLOT(aumContr()));
 	connect(okBut,SIGNAL(clicked()),this,SIGNAL(Closed()));
 }
 
-void contrPage::aumContr()
+void Contrast::aumContr()
 {
 	uchar c;
 
@@ -68,7 +58,7 @@ void contrPage::aumContr()
 		setContrast(c+10, FALSE);
 }
 
-void contrPage::decContr()
+void Contrast::decContr()
 {
 	uchar c;
 

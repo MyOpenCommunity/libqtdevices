@@ -22,7 +22,7 @@ class versio;
 class sveglia;
 class tastiera;
 class Calibrate;
-class contrPage;
+class Contrast;
 class contdiff;
 
 
@@ -118,14 +118,14 @@ private:
 };
 
 
-class impContr : public bannOnDx
+class bannContrast : public bannOnDx
 {
 Q_OBJECT
 public:
-	impContr(sottoMenu *parent, QString val, QString icon);
+	bannContrast(sottoMenu *parent, QString val, QString icon);
 
 private slots:
-	void contrMade();
+	void done();
 };
 
 

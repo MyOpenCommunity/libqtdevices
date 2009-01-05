@@ -59,7 +59,7 @@ void Settings::loadItems(QDomNode config_node)
 			b = new bannOnDx(this, ICON_INFO, new impostaTime());
 			break;
 		case CONTRASTO:
-			b = new impContr(this, getTextChild(item, "value"), img1);
+			b = new bannContrast(this, getTextChild(item, "value"), img1);
 			break;
 		case CALIBRAZIONE:
 		{

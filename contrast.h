@@ -2,14 +2,14 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** contrPage.h
+** contrast.h
 **
 **definizioni della pagina di definizione contrasto
 **
 ****************************************************************/
 
-#ifndef CONTRPAGE_H
-#define CONTRPAGE_H
+#ifndef CONTRAST_H
+#define CONTRAST_H
 
 #include "page.h"
 
@@ -17,19 +17,20 @@ class BtButton;
 class QLabel;
 
 /*!
-  \class contrPage
+  \class Contrast
   \brief This is a class that manage the contrast of the LCD. 
 
-  It occupies an etire page, shows a color bar in the middle and has three buttons on the bottom to increase/decrease the contrast and to confirm the value chosen.
+  It occupies an etire page, shows a color bar in the middle and has three buttons
+  on the bottom to increase/decrease the contrast and to confirm the value chosen.
   \author Davide
   \date lug 2005
 */
 
-class contrPage : public Page
+class Contrast : public Page
 {
 Q_OBJECT
 public:
-	contrPage();
+	Contrast();
 	void draw();
 
 	BtButton *aumBut, *decBut, *okBut;
@@ -44,4 +45,4 @@ private slots:
 #define IMG_X 181
 #define IMG_Y 128
 
-#endif // CONTRPAGE_H
+#endif // CONTRAST_H
