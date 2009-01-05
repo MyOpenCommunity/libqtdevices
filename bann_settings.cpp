@@ -115,35 +115,15 @@ void impBeep::toggleBeep()
 }
 
 
-impContr::impContr(sottoMenu *parent, QString val, QString icon1) : bannOnDx(parent)
+impContr::impContr(sottoMenu *parent, QString val, QString icon) : bannOnDx(parent, icon, new contrPage())
 {
-	contrasto = NULL;
-	SetIcons(icon1, 1);
-	connect(this,SIGNAL(click()),this,SLOT(showContr()));
 	setContrast(val.toInt(), false);
-}
-
-void impContr::showContr()
-{
-	hide();
-	contrasto = new contrPage(NULL,"contr");
-	connect(contrasto, SIGNAL(Close()), this, SLOT(contrMade()));
-	contrasto->show();
+	connect(linked_page, SIGNAL(Closed()), SLOT(contrMade()));
 }
 
 void impContr::contrMade()
 {
-	show();
-	contrasto->hide();
-	setContrast(getContrast(),true);
-	delete contrasto;
-	contrasto = NULL;
-}
-
-void impContr::hideEvent(QHideEvent *event)
-{
-	if (contrasto)
-		contrasto->hide();
+	setContrast(getContrast(), true);
 }
 
 

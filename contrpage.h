@@ -11,7 +11,7 @@
 #ifndef CONTRPAGE_H
 #define CONTRPAGE_H
 
-#include <QWidget>
+#include "page.h"
 
 class BtButton;
 class QLabel;
@@ -25,18 +25,15 @@ class QLabel;
   \date lug 2005
 */
 
-class contrPage : public QWidget
+class contrPage : public Page
 {
 Q_OBJECT
 public:
-	contrPage(QWidget *parent=0, const char *name=0);
+	contrPage();
 	void draw();
 
 	BtButton *aumBut, *decBut, *okBut;
 	QLabel *paintLabel, *colorBar;
-
-signals:
-	void Close();
 
 private slots:
 	void aumContr();

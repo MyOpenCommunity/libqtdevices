@@ -122,15 +122,10 @@ class impContr : public bannOnDx
 {
 Q_OBJECT
 public:
-	impContr(sottoMenu *parent, QString val, QString icon1);
-protected:
-	virtual void hideEvent(QHideEvent *event);
+	impContr(sottoMenu *parent, QString val, QString icon);
 
 private slots:
-	void showContr();
 	void contrMade();
-private:
-	contrPage *contrasto;
 };
 
 

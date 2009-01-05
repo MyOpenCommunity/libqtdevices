@@ -9,24 +9,17 @@
 ****************************************************************/
 
 #include "contrpage.h"
-#include "banner.h"
 #include "main.h"
 #include "generic_functions.h" // getContrast, setContrast
 #include "btbutton.h"
 
-#include <QWidget>
 #include <QFrame>
 #include <QString>
 #include <QLabel>
-#include <QFile>
 
 
-contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
+contrPage::contrPage() : Page(0)
 {
-	showFullScreen(); // TODO: verificare se e' necessario!!
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH,MAX_HEIGHT));
-
 	aumBut = new BtButton(this);
 	decBut = new BtButton(this);
 	okBut = new BtButton(this);
@@ -63,7 +56,7 @@ contrPage::contrPage(QWidget *parent, const char *name) : QWidget(parent)
 	decBut->setAutoRepeat(TRUE);
 	connect(decBut,SIGNAL(clicked()),this,SLOT(decContr()));
 	connect(aumBut,SIGNAL(clicked()),this,SLOT(aumContr()));
-	connect(okBut,SIGNAL(clicked()),this,SIGNAL(Close()));
+	connect(okBut,SIGNAL(clicked()),this,SIGNAL(Closed()));
 }
 
 void contrPage::aumContr()
