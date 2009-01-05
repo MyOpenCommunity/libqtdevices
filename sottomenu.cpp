@@ -47,6 +47,8 @@ sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n) 
 	indice = 0;
 	indicold = 100;
 
+	// TODO: verificare se il setGeometry serve davvero! (dipende da se width e height servono o no..)
+	setGeometry(0,0,width,height);
 	if (!parentWidget())
 		showPage();
 }
