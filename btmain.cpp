@@ -254,38 +254,49 @@ bool BtMain::loadConfiguration(QString cfg_file)
 {
 	if (QFile::exists(cfg_file))
 	{
-		QDomNode pagemenu_home = getChildWithId(getConfElement("displaypages"),
-			QRegExp("pagemenu(\\d{1,2}|)"), 0);
-		Home = new homePage(pagemenu_home);
-
-		QDomNode home_node = getConfElement("displaypages/homepage");
-		if (getTextChild(home_node, "isdefined").toInt())
+		int screensaver_type = ScreenSaver::LINES; // default screensaver
+		QDomNode displaypages = getConfElement("displaypages");
+		if (!displaypages.isNull())
 		{
-			int id_default = getTextChild(home_node, "id").toInt();
-			pagDefault = !id_default ? Home : getPage(id_default);
+			QDomNode pagemenu_home = getChildWithId(displaypages, QRegExp("pagemenu(\\d{1,2}|)"), 0);
+			Home = new homePage(pagemenu_home);
+
+			QDomNode home_node = getChildWithName(displaypages, "homepage");
+			if (getTextChild(home_node, "isdefined").toInt())
+			{
+				int id_default = getTextChild(home_node, "id").toInt();
+				pagDefault = !id_default ? Home : getPage(id_default);
+			}
+
+			QString orientation = getTextChild(displaypages, "orientation");
+			if (!orientation.isNull())
+				setOrientation(orientation);
+
+			// read screensaver type from config file
+			QDomElement screensaver_node = getElement(displaypages, "screensaver/type");
+			if (screensaver_node.isNull())
+				qWarning("Type of screeensaver not found!");
+			else
+				screensaver_type = screensaver_node.text().toInt();
+			screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
 		}
-
-		QDomElement addr = getConfElement("setup/scs/coordinate_scs/diag_addr");
-		bool ok;
-		if (!addr.isNull())
-			datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
-
-		QDomElement model = getConfElement("setup/generale/modello");
-		if (!model.isNull())
-			datiGen->setModel(model.text());
-
-		QDomElement orientation = getConfElement("displaypages/orientation");
-		if (!orientation.isNull())
-			setOrientation(orientation.text());
-
-		// read screensaver type from config file
-		QDomElement screensaver_type_node = getConfElement("displaypages/screensaver/type");
-		int screensaver_type = ScreenSaver::LINES;
-		if (screensaver_type_node.isNull())
-			qWarning("Type of screeensaver not found!");
 		else
-			screensaver_type = screensaver_type_node.text().toInt();
-		screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
+			qFatal("displaypages node not found on xml config file!");
+
+		QDomNode setup = getConfElement("setup");
+		if (!setup.isNull())
+		{
+			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
+			bool ok;
+			if (!addr.isNull())
+				datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
+
+			QDomElement model = getElement(setup, "generale/modello");
+			if (!model.isNull())
+				datiGen->setModel(model.text());
+		}
+		else
+			qWarning("setup node not found on xml config file!");
 
 		// read configuration for brightness
 		BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
@@ -294,14 +305,13 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		else
 		{
 			// brightness conf is in IMPOSTAZIONI page
-			QDomNode conf_page_root = getPageNode(IMPOSTAZIONI);
-			QDomNode bright_item_node = getChildWithId(conf_page_root, QRegExp("item\\d{1,2}"), BRIGHTNESS);
-			if (!bright_item_node.isNull())
+			QDomNode bright_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"),
+				BRIGHTNESS);
+			if (!bright_node.isNull())
 			{
-				QDomNode policy = bright_item_node.namedItem("liv").toElement();
+				QString policy = getTextChild(bright_node, "liv");
 				if (!policy.isNull())
-					conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(
-							policy.toElement().text().toInt());
+					conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(policy.toInt());
 			}
 		}
 		BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
