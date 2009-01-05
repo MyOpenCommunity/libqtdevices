@@ -246,6 +246,7 @@ Page *BtMain::getPage(int id)
 		qFatal("Page %d not found on xml config file!", id);
 	}
 
+	page_list[id] = page;
 	page->hide();
 	return page;
 }
@@ -380,7 +381,7 @@ void BtMain::myMain()
 	qDebug("entro MyMain");
 
 	init();
-	Home->showFullScreen();
+	Home->showPage();
 	datiGen->hide();
 	btouch_device_cache.init_devices();
 
