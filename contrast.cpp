@@ -23,14 +23,10 @@ Contrast::Contrast() : Page(0)
 
 	paintLabel->setGeometry((MAX_WIDTH-IMG_X)/2, (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-2*IMG_Y)/2, IMG_X, IMG_Y);
 	paintLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!
-	//paintLabel->setAutoResize(TRUE);
 	paintLabel->setPixmap(QPixmap(IMG_PATH "my_home.png"));
 
 	colorBar ->setGeometry((MAX_WIDTH-IMG_X)/2, (MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE-2*IMG_Y)/2+IMG_Y, IMG_X, IMG_Y);
 	colorBar ->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	// TODO: vedi sopra!!
-	//colorBar ->setAutoResize(TRUE);
 	colorBar ->setPixmap(QPixmap(IMG_PATH "colorbar.png"));
 
 	decBut->setImage(ICON_MENO);
