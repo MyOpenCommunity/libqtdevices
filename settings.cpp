@@ -11,6 +11,7 @@
 
 #include <QDebug>
 
+#include <assert.h>
 
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
@@ -82,6 +83,8 @@ void Settings::loadItems(QDomNode config_node)
 		case LANSETTINGS:
 			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));
 			break;
+		default:
+			assert(!"Type of item not handled on settings page!");
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
