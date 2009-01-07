@@ -27,17 +27,17 @@ class contdiff;
 
 
 /*!
-  \class impostaSveglia
+  \class bannAlarmClock
   \brief This class is made to make alarm clock settings.
 
   \author Davide
   \date lug 2005
 */
-class impostaSveglia : public bann2But
+class bannAlarmClock : public bann2But
 {
 Q_OBJECT
 public:
-	impostaSveglia(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
+	bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
 		QString icon2, QString icon3, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
@@ -59,7 +59,7 @@ public slots:
 	void toggleAbil();
 
 private:
-	AlarmClock *svegliolina;
+	AlarmClock *alarm_clock;
 	QString icon_on, icon_off;
 
 private slots:

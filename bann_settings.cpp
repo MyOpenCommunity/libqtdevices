@@ -11,50 +11,50 @@
 #include <QDebug>
 
 
-impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
+bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
 	QString icon2, QString icon3, int enabled, int tipo, int freq)
 	: bann2But(parent)
 {
 	icon_on = icon1;
 	icon_off = icon2;
 	SetIcons(icon_off, icon3);
-	svegliolina = new AlarmClock(static_cast<AlarmClock::sveType>(tipo), static_cast<AlarmClock::sveFreq>(freq), diso, hour, minute);
-	svegliolina->hide();
+	alarm_clock = new AlarmClock(static_cast<AlarmClock::sveType>(tipo), static_cast<AlarmClock::sveFreq>(freq), diso, hour, minute);
+	alarm_clock->hide();
 	setAbil(enabled == 1);
-	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(showPage()));
-	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));
+	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
+	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
-	connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*)));
-	connect(svegliolina,SIGNAL(Closed()), svegliolina, SLOT(hide()));
-	connect(svegliolina,SIGNAL(Closed()), this, SLOT(forceDraw()));
+	connect(alarm_clock,SIGNAL(Closed()), alarm_clock, SLOT(hide()));
+	connect(alarm_clock,SIGNAL(Closed()), this, SLOT(forceDraw()));
 }
 
-void impostaSveglia::gestFrame(char* frame)
+void bannAlarmClock::gestFrame(char* frame)
 {
+	alarm_clock->gestFrame(frame);
 }
 
-void impostaSveglia::setAbil(bool b)
+void bannAlarmClock::setAbil(bool b)
 {
-	svegliolina->setActive(b);
+	alarm_clock->setActive(b);
 	forceDraw();
 }
 
-void impostaSveglia::toggleAbil()
+void bannAlarmClock::toggleAbil()
 {
-	svegliolina->setActive(!svegliolina->isActive());
+	alarm_clock->setActive(!alarm_clock->isActive());
 	forceDraw();
 }
 
-void impostaSveglia::forceDraw()
+void bannAlarmClock::forceDraw()
 {
-	SetIcons(0, svegliolina->isActive() ? icon_on : icon_off);
+	SetIcons(0, alarm_clock->isActive() ? icon_on : icon_off);
 	Draw();
-	svegliolina->setSerNum(getSerNum());
+	alarm_clock->setSerNum(getSerNum());
 }
 
-void impostaSveglia::inizializza()
+void bannAlarmClock::inizializza()
 {
-	svegliolina->inizializza();
+	alarm_clock->inizializza();
 }
 
 

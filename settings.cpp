@@ -52,7 +52,7 @@ void Settings::loadItems(QDomNode config_node)
 				else if (BTouch->dm)
 					cont = new contdiff(NULL, BTouch->dm);
 
-			b = new impostaSveglia(this, cont, hour, minute, img1, img2, img3, enabled, type, alarmset);
+			b = new bannAlarmClock(this, cont, hour, minute, img1, img2, img3, enabled, type, alarmset);
 			break;
 		}
 		case SET_DATA_ORA:
