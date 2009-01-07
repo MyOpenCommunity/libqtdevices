@@ -32,7 +32,7 @@ public:
 	virtual ~bannOnDx();
 protected:
 	virtual void hideEvent(QHideEvent *event);
-	QWidget *linked_page;
+	Page *linked_page;
 signals:
 	void click();
 };
