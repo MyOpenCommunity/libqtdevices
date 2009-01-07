@@ -1,16 +1,4 @@
-
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**sveglia.cpp
-**
-**Sottomenù imposta sveglia
-**
-****************************************************************/
-
-
-#include "sveglia.h"
+#include "alarmclock.h"
 #include "generic_functions.h" // setCfgValue, setBacklight, getBeep, setBeep, beep, setBacklight
 #include "multisounddiff.h" // contdiff
 #include "btbutton.h"
@@ -37,7 +25,7 @@
 #include <assert.h>
 
 
-sveglia::sveglia(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int hour, int minute)
+AlarmClock::AlarmClock(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int hour, int minute)
 	: QWidget(parent)
 {
 	// TODO: rimuovere gestione frame!
@@ -116,7 +104,7 @@ sveglia::sveglia(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int h
 	connect(BTouch, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
 
-void sveglia::okTime()
+void AlarmClock::okTime()
 {
 	disconnect(but[0], SIGNAL(clicked()), dataOra, SLOT(aumOra()));
 	disconnect(but[1], SIGNAL(clicked()), dataOra, SLOT(aumMin()));
@@ -142,7 +130,7 @@ void sveglia::okTime()
 		bannNavigazione->nascondi(banner::BUT2);
 }
 
-void sveglia::mostra()
+void AlarmClock::mostra()
 {
 	for (uchar idx = 0; idx < 4; idx++)
 		but[idx]->show();
@@ -186,41 +174,41 @@ void sveglia::mostra()
 		bannNavigazione->mostra(banner::BUT2);
 }
 
-void sveglia::drawSelectPage()
+void AlarmClock::drawSelectPage()
 {
 	for (uchar idx = 0; idx < 4; idx++)
 		choice[idx]->setChecked(idx == tipoSveglia);
 }
 
-void sveglia::sel1(bool isOn)
+void AlarmClock::sel1(bool isOn)
 {
 	if (isOn)
 		tipoSveglia = ONCE;
 	drawSelectPage();
 }
 
-void sveglia::sel2(bool isOn)
+void AlarmClock::sel2(bool isOn)
 {
 	if (isOn)
 		tipoSveglia = SEMPRE;
 	drawSelectPage();
 }
 
-void sveglia::sel3(bool isOn)
+void AlarmClock::sel3(bool isOn)
 {
 	if (isOn)
 		tipoSveglia = FERIALI;
 	drawSelectPage();
 }
 
-void sveglia::sel4(bool isOn)
+void AlarmClock::sel4(bool isOn)
 {
 	if (isOn)
 		tipoSveglia = FESTIVI;
 	drawSelectPage();
 }
 
-void sveglia::Closed()
+void AlarmClock::Closed()
 {
 	qDebug("Sveglia Closed");
 	//imposta la sveglia in
@@ -264,7 +252,7 @@ void sveglia::Closed()
 	setCfgValue(data, SET_SVEGLIA, serNum);
 }
 
-void sveglia::okTipo()
+void AlarmClock::okTipo()
 {
 	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));
 	connect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(Closed()));
@@ -296,7 +284,7 @@ void sveglia::okTipo()
 	}
 }
 
-void sveglia::setActive(bool a)
+void AlarmClock::setActive(bool a)
 {
 	active = a;
 	if (active)
@@ -322,7 +310,7 @@ void sveglia::setActive(bool a)
 	}
 }
 
-void sveglia::gestFrame(char* f)
+void AlarmClock::gestFrame(char* f)
 {
 	if (gesFrameAbil == false)
 		return;
@@ -389,7 +377,7 @@ void sveglia::gestFrame(char* f)
 	}
 }
 
-void sveglia::verificaSveglia()
+void AlarmClock::verificaSveglia()
 {
 	if (!active)
 		return;
@@ -436,12 +424,12 @@ void sveglia::verificaSveglia()
 		minuTimer->start((60-actualDateTime.time().second())*1000);
 }
 
-bool sveglia::isActive()
+bool AlarmClock::isActive()
 {
 	return active;
 }
 
-void sveglia::aumVol()
+void AlarmClock::aumVol()
 {
 	bool amb1 = false;
 	bool amb2 = false;
@@ -576,7 +564,7 @@ void sveglia::aumVol()
 	}
 }
 
-void sveglia::buzzerAlarm()
+void AlarmClock::buzzerAlarm()
 {
 	if (contaBuzzer == 0)
 	{
@@ -607,7 +595,7 @@ void sveglia::buzzerAlarm()
 	}
 }
 
-void sveglia::spegniSveglia(bool b)
+void AlarmClock::spegniSveglia(bool b)
 {
 	if (!b && aumVolTimer)
 	{
@@ -630,12 +618,12 @@ void sveglia::spegniSveglia(bool b)
 	}
 }
 
-void sveglia::setSerNum(int s)
+void AlarmClock::setSerNum(int s)
 {
 	serNum = s;
 }
 
-void sveglia::inizializza()
+void AlarmClock::inizializza()
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	if (tipo == DI_SON)

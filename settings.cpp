@@ -1,6 +1,6 @@
 #include "settings.h"
 #include "bann_settings.h"
-#include "sveglia.h"
+#include "alarmclock.h"
 #include "global.h" // BTouch
 #include "lansettings.h"
 #include "multisounddiff.h" // contdiff
@@ -45,7 +45,7 @@ void Settings::loadItems(QDomNode config_node)
 			int minute = getTextChild(item, "minute").toInt();
 
 			contdiff *cont = 0;
-			if (type == sveglia::DI_SON)
+			if (type == AlarmClock::DI_SON)
 				// Use old or multichannel sd
 				if (BTouch->difSon)
 					cont = new contdiff(BTouch->difSon, NULL);

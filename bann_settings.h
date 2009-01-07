@@ -19,7 +19,7 @@
 #include <QWidget>
 
 class versio;
-class sveglia;
+class AlarmClock;
 class tastiera;
 class Calibrate;
 class Contrast;
@@ -59,7 +59,7 @@ public slots:
 	void toggleAbil();
 
 private:
-	sveglia* svegliolina;
+	AlarmClock *svegliolina;
 	QString icon_on, icon_off;
 
 private slots:

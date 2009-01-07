@@ -32,6 +32,7 @@ QMAKE_CXXFLAGS += -fexceptions
 
 # Input
 HEADERS += actuators.h \
+           alarmclock.h \
            allarme.h \
            ambdiffson.h \
            amplificatori.h \
@@ -115,7 +116,6 @@ HEADERS += actuators.h \
            specialpage.h \
            stopngo.h \
            supervisionmenu.h \
-           sveglia.h \
            tastiera.h \
            temperatureviewer.h \
            thermalmenu.h \
@@ -126,6 +126,7 @@ HEADERS += actuators.h \
            xml_functions.h \
 
 SOURCES += actuators.cpp \
+           alarmclock.cpp \
            allarme.cpp \
            ambdiffson.cpp \
            amplificatori.cpp \
@@ -208,7 +209,6 @@ SOURCES += actuators.cpp \
            specialpage.cpp \
            stopngo.cpp \
            supervisionmenu.cpp \
-           sveglia.cpp \
            tastiera.cpp \
            temperatureviewer.cpp \
            thermalmenu.cpp \

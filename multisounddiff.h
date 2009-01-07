@@ -22,6 +22,7 @@ class SoundDiffusion;
 class AudioSources;
 class device;
 class device_status;
+class AlarmClock;
 
 
 class MultiSoundDiff : public sottoMenu
@@ -82,8 +83,8 @@ public:
 	void ripristinaRighe();
 	void resizewindows();
 	void restorewindows();
-	void connectClosed(sveglia *);
-	void disconnectClosed(sveglia *);
+	void connectClosed(AlarmClock *);
+	void disconnectClosed(AlarmClock *);
 
 public slots:
 	//! Invoke proper hide method

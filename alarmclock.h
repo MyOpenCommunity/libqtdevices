@@ -2,14 +2,14 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** sveglia.h
+** alarmclock.h
 **
-**definizioni della pagine di impostazione sveglia
+** the page to set the alarm clock
 **
 ****************************************************************/
 
-#ifndef SVEGLIA_H
-#define SVEGLIA_H
+#ifndef ALARMCLOCK_H
+#define ALARMCLOCK_H
 
 #include <QWidget>
 
@@ -34,7 +34,7 @@ class QLabel;
   \author Davide
   \date lug 2005
 */
-class sveglia : public QWidget
+class AlarmClock : public QWidget
 {
 Q_OBJECT
 public:
@@ -59,7 +59,7 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-    sveglia(QWidget *parent, sveType t, sveFreq f, contdiff *diso, int hour, int minute);
+	AlarmClock(QWidget *parent, sveType t, sveFreq f, contdiff *diso, int hour, int minute);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
@@ -184,4 +184,4 @@ void sendInit(char*);
 	void ImClosed();
 };
 
-#endif // SVEGLIA_H
+#endif // ALARMCLOCK_H

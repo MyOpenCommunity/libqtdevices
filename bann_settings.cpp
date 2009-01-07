@@ -1,6 +1,6 @@
 #include "bann_settings.h"
 #include "versio.h"
-#include "sveglia.h"
+#include "alarmclock.h"
 #include "tastiera.h"
 #include "multisounddiff.h" // contdiff
 #include "calibrate.h"
@@ -18,7 +18,7 @@ impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, int hour, int mi
 	icon_on = icon1;
 	icon_off = icon2;
 	SetIcons(icon_off, icon3);
-	svegliolina = new sveglia(0, static_cast<sveglia::sveType>(tipo), static_cast<sveglia::sveFreq>(freq), diso, hour, minute);
+	svegliolina = new AlarmClock(0, static_cast<AlarmClock::sveType>(tipo), static_cast<AlarmClock::sveFreq>(freq), diso, hour, minute);
 	svegliolina->hide();
 	setAbil(enabled == 1);
 	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
