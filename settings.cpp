@@ -72,7 +72,7 @@ void Settings::loadItems(QDomNode config_node)
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			break;
 		case VERSIONE:
-			b = new machVers(this, BTouch->datiGen, img1);
+			b = new bannVersion(this, img1, BTouch->datiGen);
 			break;
 		case BRIGHTNESS:
 			b = new bannOnDx(this, ICON_BRIGHTNESS, new BrightnessPage());

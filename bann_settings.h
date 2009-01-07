@@ -129,11 +129,11 @@ private slots:
 };
 
 
-class machVers : public bannOnDx
+class bannVersion : public bannOnDx
 {
 Q_OBJECT
 public:
-	machVers(sottoMenu *parent, Version *ver, QString icon1);
+	bannVersion(sottoMenu *parent, QString icon, Version *ver);
 private slots:
 	void tiempout();
 	void showVers();

@@ -128,21 +128,20 @@ void bannContrast::done()
 }
 
 
-machVers::machVers(sottoMenu *parent, Version *ver, QString icon1)
-	: bannOnDx(parent)
+bannVersion::bannVersion(sottoMenu *parent, QString icon, Version *ver)
+	: bannOnDx(parent, icon)
 {
-	SetIcons(icon1, 1);
-	connect(this,SIGNAL(click()),this,SLOT(showVers()));
+	connect(this, SIGNAL(click()), this, SLOT(showVers()));
 	v = ver;
 }
 
-void machVers::showVers()
+void bannVersion::showVers()
 {
 	v->showPage();
 	QTimer::singleShot(10000, this, SLOT(tiempout()));
 }
 
-void machVers::tiempout()
+void bannVersion::tiempout()
 {
 	v->hide();
 }
