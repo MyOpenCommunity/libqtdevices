@@ -1,5 +1,5 @@
 #include "bann_settings.h"
-#include "versio.h"
+#include "version.h"
 #include "alarmclock.h"
 #include "tastiera.h"
 #include "multisounddiff.h" // contdiff
@@ -128,7 +128,7 @@ void bannContrast::done()
 }
 
 
-machVers::machVers(sottoMenu *parent, versio *ver, QString icon1)
+machVers::machVers(sottoMenu *parent, Version *ver, QString icon1)
 	: bannOnDx(parent)
 {
 	SetIcons(icon1, 1);
@@ -138,7 +138,7 @@ machVers::machVers(sottoMenu *parent, versio *ver, QString icon1)
 
 void machVers::showVers()
 {
-	v->showFullScreen();
+	v->showPage();
 	QTimer::singleShot(10000, this, SLOT(tiempout()));
 }
 

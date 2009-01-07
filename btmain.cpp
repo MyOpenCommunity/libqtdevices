@@ -27,7 +27,7 @@
 #include "genpage.h"
 #include "device_cache.h"
 #include "openclient.h"
-#include "versio.h"
+#include "version.h"
 #include "tastiera.h"
 #include "screensaver.h"
 #include "thermalmenu.h"
@@ -83,7 +83,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	tasti = NULL;
 	pwdOn = 0;
 
-	datiGen = new versio();
+	datiGen = new Version();
 	struct sysinfo info;
 	sysinfo(&info);
 	qDebug("uptime: %d",(int)info.uptime);

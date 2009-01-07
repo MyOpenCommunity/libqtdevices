@@ -1,14 +1,4 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** versio.h
-**
-**definizioni della pagine di visualizzazione versioni
-**
-****************************************************************/
-
-#include "versio.h"
+#include "version.h"
 #include "global.h" // BTouch
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
 #include "openclient.h"
@@ -23,7 +13,7 @@
 #include <stdlib.h>
 
 
-versio::versio() : Page(0)
+Version::Version() : Page(0)
 {
 	datiGen = new QLabel(this);
 	datiGen->setGeometry(15, 150, 210, 160);
@@ -54,7 +44,7 @@ versio::versio() : Page(0)
 	indDisp = 0;
 }
 
-void versio::gestFrame(char* frame)
+void Version::gestFrame(char* frame)
 {
 	openwebnet msg_open;
 	char aggiorna;
@@ -108,7 +98,7 @@ void versio::gestFrame(char* frame)
 	}
 }
 
-void versio::inizializza()
+void Version::inizializza()
 {
 	qDebug("*************** versio::inizializza() ***************");
 	BTouch->sendFrame("*#1013**6##");
@@ -116,12 +106,12 @@ void versio::inizializza()
 	BTouch->sendFrame("*#13**16##");
 }
 
-void versio::setAddr(int a)
+void Version::setAddr(int a)
 {
 	indDisp = a;
 }
 
-void versio::setModel(const QString & m)
+void Version::setModel(const QString & m)
 {
 	model = m;
 	datiGen->setText(model);

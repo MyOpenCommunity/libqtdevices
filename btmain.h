@@ -21,7 +21,7 @@ class SoundDiffusion;
 class MultiSoundDiff;
 class Antintrusion;
 class ThermalMenu;
-class versio;
+class Version;
 class homePage;
 class Calibrate;
 class genPage;
@@ -90,7 +90,7 @@ public:
 	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
 	SoundDiffusion *difSon;
 	MultiSoundDiff *dm;
-	versio *datiGen;
+	Version *datiGen;
 
 private:
 	QHash<int, Page*> page_list;

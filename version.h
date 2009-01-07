@@ -2,13 +2,13 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** versio.h
+** version.h
 **
-**definizioni della pagine di visualizzazione versioni
+** diplay the BTouch version
 **
 ****************************************************************/
-#ifndef GENERIC_CLASSES_H
-#define GENERIC_CLASSES_H
+#ifndef VERSION_H
+#define VERSION_H
 
 #include "page.h"
 
@@ -18,7 +18,7 @@ class QWidget;
 class QLabel;
 
 /*!
-  \class versio
+  \class Version
   \brief This class shows the device versions.
 
   It shows \a software versione, \a pic version and \a hardware version and the seial number of the device among all the TouchScreens installed in the system.
@@ -26,11 +26,11 @@ class QLabel;
   \author Davide
   \date lug 2005
 */  
-class versio : public Page
+class Version : public Page
 {
 Q_OBJECT
 public:
-	versio();
+	Version();
 	/*!
 	\brief Initialize the page asking the versions to the open stack.
 	*/
@@ -64,4 +64,4 @@ private:
 	int indDisp;
 };
 
-#endif //GENERIC_CLASSES_H
+#endif //VERSION_H

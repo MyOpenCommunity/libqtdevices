@@ -121,7 +121,7 @@ HEADERS += actuators.h \
            thermalmenu.h \
            timescript.h \
            titlelabel.h \
-           versio.h \
+           version.h \
            videoentryphone.h \
            xml_functions.h \
 
@@ -214,7 +214,7 @@ SOURCES += actuators.cpp \
            thermalmenu.cpp \
            timescript.cpp \
            titlelabel.cpp \
-           versio.cpp \
+           version.cpp \
            videoentryphone.cpp \
            xml_functions.cpp \
 

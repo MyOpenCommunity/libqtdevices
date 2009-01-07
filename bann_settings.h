@@ -18,7 +18,7 @@
 
 #include <QWidget>
 
-class versio;
+class Version;
 class AlarmClock;
 class tastiera;
 class Calibrate;
@@ -133,12 +133,12 @@ class machVers : public bannOnDx
 {
 Q_OBJECT
 public:
-	machVers(sottoMenu *parent, versio *ver, QString icon1);
+	machVers(sottoMenu *parent, Version *ver, QString icon1);
 private slots:
 	void tiempout();
 	void showVers();
 private:
-	versio *v;
+	Version *v;
 };
 
 
