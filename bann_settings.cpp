@@ -6,6 +6,7 @@
 #include "calibrate.h"
 #include "contrast.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
+#include "global.h"
 
 #include <QTimer>
 #include <QDebug>
@@ -163,19 +164,16 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
 
 	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-	// TODO: e' brutto fare una connessione con il parent.. se il banner viene messo in un'altra gerarchia non funziona
-	// piu' niente!
-	connect(this, SIGNAL(setPwd(bool, QString)), parentWidget(), SIGNAL(setPwd(bool, QString)));
-	active = (attiva == 1);
 
-	emit setPwd(active, password);
+	active = (attiva == 1);
+	BTouch->setPwd(active, password);
 }
 
 void impPassword::toggleActivation()
 {
 	active = !active;
 	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
-	emit setPwd(active, password);
+	BTouch->setPwd(active, password);
 	SetIcons(0, active ? icon_on : icon_off);
 	Draw();
 }
@@ -237,7 +235,7 @@ void impPassword::reShow2(char *c)
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
 		password = c;
 		setCfgValue("value", password, PROTEZIONE, getSerNum());
-		emit setPwd(active, password);
+		BTouch->setPwd(active, password);
 	}
 	show();
 }

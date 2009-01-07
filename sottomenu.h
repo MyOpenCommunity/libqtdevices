@@ -159,11 +159,6 @@ signals:
 	void goDx();
 
 	/*!
-	\brief Emitted to tell to BtMain tha state of the password (value and abilitation).
-	*/
-	void setPwd(bool,QString);
-
-	/*!
 	\brief Parent changed
 	*/
 	void parentChanged(QWidget *newParent);

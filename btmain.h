@@ -68,12 +68,12 @@ public:
 	// devices specific methods, unless you have to send frames without reading responses.
 	void sendFrame(QString frame);
 	void sendInit(QString frame);
+	void setPwd(bool, QString);
 
 private slots:
 	void hom();
 	void init();
 	void gesScrSav();
-	void setPwd(bool, QString);
 	void testPwd(char*);
 	void testFiles();
 	void waitBeforeInit();

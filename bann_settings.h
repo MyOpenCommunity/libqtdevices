@@ -188,10 +188,6 @@ signals:
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
 */
 	void activatePaswd(bool);
-/*!
-  \brief  Emitted when the password is changed so BtMain knows which password has to wait
-*/
-	void setPwd(bool, QString);
 };
 
 #endif
