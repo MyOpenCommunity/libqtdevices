@@ -255,6 +255,21 @@ bool BtMain::loadConfiguration(QString cfg_file)
 {
 	if (QFile::exists(cfg_file))
 	{
+		QDomNode setup = getConfElement("setup");
+		if (!setup.isNull())
+		{
+			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
+			bool ok;
+			if (!addr.isNull())
+				datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
+
+			QDomElement model = getElement(setup, "generale/modello");
+			if (!model.isNull())
+				datiGen->setModel(model.text());
+		}
+		else
+			qWarning("setup node not found on xml config file!");
+
 		int screensaver_type = ScreenSaver::LINES; // default screensaver
 		QDomNode displaypages = getConfElement("displaypages");
 		if (!displaypages.isNull())
@@ -283,21 +298,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		}
 		else
 			qFatal("displaypages node not found on xml config file!");
-
-		QDomNode setup = getConfElement("setup");
-		if (!setup.isNull())
-		{
-			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
-			bool ok;
-			if (!addr.isNull())
-				datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
-
-			QDomElement model = getElement(setup, "generale/modello");
-			if (!model.isNull())
-				datiGen->setModel(model.text());
-		}
-		else
-			qWarning("setup node not found on xml config file!");
 
 		// read configuration for brightness
 		BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
