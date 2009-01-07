@@ -7,12 +7,15 @@
 **definizioni della pagine di visualizzazione versioni
 **
 ****************************************************************/
-#ifndef  GENERIC_CLASSES_H
+#ifndef GENERIC_CLASSES_H
 #define GENERIC_CLASSES_H
 
-#include <QLabel>
+#include "page.h"
+
+#include <QString>
 
 class QWidget;
+class QLabel;
 
 /*!
   \class versio
@@ -23,11 +26,11 @@ class QWidget;
   \author Davide
   \date lug 2005
 */  
-class versio : public QLabel
+class versio : public Page
 {
 Q_OBJECT
 public:
-	versio(QWidget *parent= NULL, unsigned int f =  0);
+	versio();
 	/*!
 	\brief Initialize the page asking the versions to the open stack.
 	*/

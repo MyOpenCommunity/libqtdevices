@@ -91,7 +91,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 
 	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
-		datiGen->show();
+		datiGen->showPage();
 		waitBeforeInit();
 	}
 	else
@@ -99,7 +99,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
-		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(showFullScreen()));
+		connect(calib, SIGNAL(fineCalib()), datiGen, SLOT(showPage()));
 		alreadyCalibrated = true;
 	}
 }

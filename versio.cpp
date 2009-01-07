@@ -18,15 +18,13 @@
 
 #include <QWidget>
 #include <QPixmap>
+#include <QLabel>
 
 #include <stdlib.h>
 
 
-versio::versio(QWidget *parent,unsigned int f) : QLabel(parent)
+versio::versio() : Page(0)
 {
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-
 	datiGen = new QLabel(this);
 	datiGen->setGeometry(15, 150, 210, 160);
 	datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -61,11 +59,9 @@ void versio::gestFrame(char* frame)
 	openwebnet msg_open;
 	char aggiorna;
 
-	aggiorna=0;
-	
+	aggiorna = 0;
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-	
-	
+
 	if (!strcmp(msg_open.Extract_chi(),"13"))
 	{
 		if (!strcmp(msg_open.Extract_grandezza(),"16"))
