@@ -18,15 +18,15 @@ impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, int hour, int mi
 	icon_on = icon1;
 	icon_off = icon2;
 	SetIcons(icon_off, icon3);
-	svegliolina = new AlarmClock(0, static_cast<AlarmClock::sveType>(tipo), static_cast<AlarmClock::sveFreq>(freq), diso, hour, minute);
+	svegliolina = new AlarmClock(static_cast<AlarmClock::sveType>(tipo), static_cast<AlarmClock::sveFreq>(freq), diso, hour, minute);
 	svegliolina->hide();
 	setAbil(enabled == 1);
-	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
+	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(showPage()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));
 
 	connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*)));
-	connect(svegliolina,SIGNAL(ImClosed()), svegliolina, SLOT(hide()));
-	connect(svegliolina,SIGNAL(ImClosed()), this, SLOT(forceDraw()));
+	connect(svegliolina,SIGNAL(Closed()), svegliolina, SLOT(hide()));
+	connect(svegliolina,SIGNAL(Closed()), this, SLOT(forceDraw()));
 }
 
 void impostaSveglia::gestFrame(char* frame)

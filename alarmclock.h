@@ -11,7 +11,7 @@
 #ifndef ALARMCLOCK_H
 #define ALARMCLOCK_H
 
-#include <QWidget>
+#include "page.h"
 
 #define AMPLI_NUM 100
 #define BASE_EEPROM 11360
@@ -24,17 +24,18 @@ class BtButton;
 class bannFrecce;
 class timeScript;
 class QDateTime;
+class QWidget;
 class QLabel;
 
 
 /*!
-  \class sveglia
+  \class AlarmClock
   \brief This class is the implementation af the alarm set.
 
   \author Davide
   \date lug 2005
 */
-class AlarmClock : public QWidget
+class AlarmClock : public Page
 {
 Q_OBJECT
 public:
@@ -59,7 +60,7 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(QWidget *parent, sveType t, sveFreq f, contdiff *diso, int hour, int minute);
+	AlarmClock(sveType t, sveFreq f, contdiff *diso, int hour, int minute);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
@@ -97,7 +98,7 @@ public slots:
 /*!
   \brief Draws the first page for alarm set setting and initializes some connections.
 */
-	void mostra();
+	virtual void showPage();
 
 /*!
   \brief Executed when "once" frequency is selected.
@@ -122,7 +123,7 @@ public slots:
 /*!
   \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
 */
-	void Closed();
+	void handleClose();
 
 /*!
   \brief Execute when the frequency for the alarm set is chosen to show the sound diffusion page if necessary.
@@ -177,11 +178,6 @@ signals:
 */
 void sendFrame(char*);
 void sendInit(char*);
-
-/*!
-  \brief Emitted when the object is closed.
-*/
-	void ImClosed();
 };
 
 #endif // ALARMCLOCK_H

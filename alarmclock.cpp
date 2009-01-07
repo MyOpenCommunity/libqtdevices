@@ -25,15 +25,11 @@
 #include <assert.h>
 
 
-AlarmClock::AlarmClock(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int hour, int minute)
-	: QWidget(parent)
+AlarmClock::AlarmClock(sveType t, sveFreq freq, contdiff *diso, int hour, int minute) : Page(0)
 {
-	// TODO: rimuovere gestione frame!
 	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	for (uchar idx = 0; idx < 2; idx++)
 	{
@@ -99,7 +95,6 @@ AlarmClock::AlarmClock(QWidget *parent, sveType t, sveFreq freq, contdiff *diso,
 	minuTimer = NULL;
 	tipoSveglia = freq;
 	tipo = t;
-	qDebug("tipoSveglia = %d - tipo= %d ",tipoSveglia, tipo);
 
 	connect(BTouch, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
@@ -130,8 +125,10 @@ void AlarmClock::okTime()
 		bannNavigazione->nascondi(banner::BUT2);
 }
 
-void AlarmClock::mostra()
+void AlarmClock::showPage()
 {
+	Page::showPage();
+
 	for (uchar idx = 0; idx < 4; idx++)
 		but[idx]->show();
 	dataOra->show();
@@ -144,8 +141,6 @@ void AlarmClock::mostra()
 		testiChoice[idx]->hide();
 	}
 
-	showFullScreen();
-
 	disconnect(but[0],SIGNAL(clicked()),dataOra,SLOT(aumOra()));
 	disconnect(but[1],SIGNAL(clicked()),dataOra,SLOT(aumMin()));
 	disconnect(but[2],SIGNAL(clicked()),dataOra,SLOT(diminOra()));
@@ -155,12 +150,12 @@ void AlarmClock::mostra()
 	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
 	connect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
 	connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-	connect(bannNavigazione  ,SIGNAL(forwardClick()),this,SLOT(okTime()));
-	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));
-	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(Closed()));
+	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(okTime()));
+	disconnect(bannNavigazione,SIGNAL(forwardClick()), this, SLOT(okTipo()));
+	disconnect(bannNavigazione,SIGNAL(forwardClick()), this, SLOT(handleClose()));
 
-	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
-	connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
+	disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
+	connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 
 	if (difson)
 		difson->connectClosed(this);
@@ -208,13 +203,12 @@ void AlarmClock::sel4(bool isOn)
 	drawSelectPage();
 }
 
-void AlarmClock::Closed()
+void AlarmClock::handleClose()
 {
-	qDebug("Sveglia Closed");
 	//imposta la sveglia in
 	if (difson)
 	{
-		disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
 		difson->disconnectClosed(this);
 		if (aggiornaDatiEEprom)
 		{
@@ -240,7 +234,7 @@ void AlarmClock::Closed()
 
 	gesFrameAbil = false;
 	setActive(true);
-	emit ImClosed();
+	emit Closed();
 	delete oraSveglia;
 	oraSveglia = new QDateTime(dataOra->getDataOra());
 
@@ -255,7 +249,7 @@ void AlarmClock::Closed()
 void AlarmClock::okTipo()
 {
 	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));
-	connect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(Closed()));
+	connect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(handleClose()));
 	for (uchar idx = 0; idx < 4; idx++)
 	{
 		choice[idx]->hide();
@@ -263,7 +257,7 @@ void AlarmClock::okTipo()
 	}
 	Immagine->show();
 	if (tipo != DI_SON)
-		Closed();
+		handleClose();
 	else if (difson)
 	{
 		this->bannNavigazione->hide();
@@ -614,7 +608,7 @@ void AlarmClock::spegniSveglia(bool b)
 	else if (b)
 	{
 		if (isVisible())
-			Closed();
+			handleClose();
 	}
 }
 
