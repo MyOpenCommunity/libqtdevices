@@ -28,7 +28,9 @@ public:
 	void setPixmap(const QPixmap &p);
 
 protected:
-	virtual void paintEvent(QPaintEvent *event);
+	virtual void mousePressEvent(QMouseEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent *event);
+
 	// The sizeHint method is required to obtain a layout management that work fine.
 	virtual QSize sizeHint() const;
 
@@ -37,6 +39,8 @@ private:
 	QPixmap pressed_pixmap;
 	/// The pixmap to show when the button is in normal state
 	QPixmap pixmap;
+private slots:
+	void toggled(bool checked);
 };
 
 #endif // BTBUTTON_H

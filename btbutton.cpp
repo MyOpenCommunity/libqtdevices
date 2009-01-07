@@ -10,6 +10,7 @@ BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
 	setStyleSheet("border:0px;");
 	setFocusPolicy(Qt::NoFocus);
+	connect(this, SIGNAL(toggled(bool)), SLOT(toggled(bool)));
 }
 
 QSize BtButton::sizeHint() const
@@ -21,7 +22,7 @@ QSize BtButton::sizeHint() const
 
 void BtButton::setImage(const QString &icon_path, IconFlag f)
 {
-	pixmap = *BTouch->getIcon(icon_path);
+	setPixmap(*BTouch->getIcon(icon_path));
 
 	if (f == LOAD_PRESSED_ICON)
 	{
@@ -44,20 +45,33 @@ void BtButton::setPressedPixmap(const QPixmap &p)
 void BtButton::setPixmap(const QPixmap &p)
 {
 	pixmap = p;
-	setFixedSize(p.size());
+	setIcon(pixmap);
+	setIconSize(pixmap.size());
 }
 
-void BtButton::paintEvent(QPaintEvent *event)
+void BtButton::mousePressEvent(QMouseEvent *event)
 {
 	QPixmap *p = &pixmap;
 
-	if (!pressed_pixmap.isNull() && (isDown() || isChecked()))
+	if (!pressed_pixmap.isNull())
 		p = &pressed_pixmap;
 
 	setIcon(*p);
-	setIconSize(p->size());
-	if (isDown())
-		beep();
+	beep();
+	QPushButton::mousePressEvent(event);
+}
 
-	QPushButton::paintEvent(event);
+void BtButton::mouseReleaseEvent(QMouseEvent *event)
+{
+	// Manages only normal buttons. Toggle buttons are managed by toggled slot.
+	if (!isCheckable() && !pressed_pixmap.isNull())
+		setIcon(pixmap);
+
+	QPushButton::mouseReleaseEvent(event);
+}
+
+void BtButton::toggled(bool checked)
+{
+	if (!checked && !pressed_pixmap.isNull())
+		setIcon(pixmap);
 }
