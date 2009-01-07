@@ -60,7 +60,7 @@ private:
 	unsigned char hw_release;
 	unsigned char hw_build;
 	QString model;
-	QLabel *datiGen, *bticino;
+	QLabel *box_text;
 	int indDisp;
 };
 

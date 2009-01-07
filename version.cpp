@@ -6,6 +6,7 @@
 
 #include <openwebnet.h>
 
+#include <QVariant>
 #include <QWidget>
 #include <QPixmap>
 #include <QLabel>
@@ -15,32 +16,28 @@
 
 Version::Version() : Page(0)
 {
-	datiGen = new QLabel(this);
-	datiGen->setGeometry(15, 150, 210, 160);
-	datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	setProperty("noStyle", true);
+	box_text = new QLabel(this);
+	box_text->setGeometry(15, 150, 210, 160);
+	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	box_text->setLineWidth(3);
+	box_text->setText("");
+	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	box_text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
 	QLabel *myHome = new QLabel(this);
 	myHome->setGeometry(30, 12, 181, 128);
 	myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!
-	//myHome->setAutoResize(TRUE);
 	myHome->setPixmap(QPixmap(IMG_PATH "my_home.png"));
 
-	bticino = new QLabel(this);
+	QLabel *bticino = new QLabel(this);
 	bticino->setGeometry(129, 258, 92, 42);
 	bticino->setFrameStyle(QFrame::Plain);
-	// TODO: risistemare il layout affinche' non ci sia bisogno del resize!!
-	//bticino->setAutoResize(TRUE);
 	bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
 
-	datiGen->setLineWidth(3);
-	datiGen->setText(model);
-
-	datiGen->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	datiGen->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QFont aFont;
 	FontManager::instance()->getFont(font_versio_datiGen, aFont);
-	datiGen->setFont(aFont);
+	box_text->setFont(aFont);
 	indDisp = 0;
 }
 
@@ -69,7 +66,7 @@ void Version::gestFrame(char* frame)
 			pic_version = atoi(msg_open.Extract_valori(0));
 			pic_release = atoi(msg_open.Extract_valori(1));
 			pic_build = atoi(msg_open.Extract_valori(2));
-			aggiorna=1;
+			aggiorna = 1;
 		}
 		if (!strcmp(msg_open.Extract_grandezza(),"3"))
 		{
@@ -86,15 +83,14 @@ void Version::gestFrame(char* frame)
 		QFont aFont;
 		FontManager::instance()->getFont(font_versio_datiGenFw, aFont);
 
-		datiGen->setFont(aFont);
-		datiGen->setIndent(15);
-		datiGen->setAlignment(Qt::AlignLeft|Qt::AlignTop);
+		box_text->setFont(aFont);
+		box_text->setIndent(15);
+		box_text->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 		QByteArray buf = model.toAscii();
 		sprintf(scritta, "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d",
 			buf.constData(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);
 
-		datiGen->setText(scritta); // FIXME da tradurre??
-		qDebug("setta scritte versio");
+		box_text->setText(scritta); // FIXME da tradurre??
 	}
 }
 
@@ -114,5 +110,5 @@ void Version::setAddr(int a)
 void Version::setModel(const QString & m)
 {
 	model = m;
-	datiGen->setText(model);
+	box_text->setText(model);
 }
