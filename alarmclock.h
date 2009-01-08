@@ -67,11 +67,6 @@ public:
 */
 	void setSerNum(int);
 
-	BtButton *but[4];
-	QLabel *Immagine;
-	BtButton *choice[4];
-	QLabel *testiChoice[4];
-
 /*!
   \brief Sets the alarm set (dis)active.
 */
@@ -87,9 +82,14 @@ public:
 */
 	void inizializza();
 
-
-
 public slots:
+/*!
+  \brief Analyzes the \a Open \a Frame incoming to understand how the end-user want his a sound \a diffusion \a alarm \a set to work.
+*/
+	void gestFrame(char *f);
+
+
+private slots:
 /*!
   \brief Execute when the time for the alarm set is chosen to show the frequency (once-always-mon/fri-sat-sun).
 */
@@ -146,16 +146,15 @@ public slots:
 	void buzzerAlarm();
 
 /*!
-  \brief Analyzes the \a Open \a Frame incoming to understand how the end-user want his a sound \a diffusion \a alarm \a set to work.
-*/
-	void gestFrame(char *f);
-
-/*!
   \brief Stops the alarm set.
 */
 	void spegniSveglia(bool);
 
 private:
+	BtButton *but[4];
+	QLabel *Immagine;
+	BtButton *choice[4];
+	QLabel *testiChoice[4];
 	Type type;
 	Freq freq;
 	void drawSelectPage();
