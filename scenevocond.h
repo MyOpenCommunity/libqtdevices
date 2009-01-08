@@ -39,7 +39,7 @@ public:
 	/*!
 	\brief returns value related to condition
 	*/
-	int getVal(void);
+	int getVal();
 	/*!
 	\brief sets value related to condition
 	\param v value to be set
@@ -56,9 +56,9 @@ public:
 	//! Get serial number
 	int get_serial_number();
 	//! Inits condition
-	virtual void inizializza(void);
+	virtual void inizializza();
 	//! Returns true when condition is satisfied
-	virtual bool isTrue(void);
+	virtual bool isTrue();
 
 public slots:
 	//! Next button pressed
@@ -129,9 +129,9 @@ private:
 	//! Hours, minutes and seconds */
 	QString *h, *m, *s;
 	//! Pointer to condition time
-	QDateTime* cond_time;
+	QDateTime *cond_time;
 	//! Pointers to buttons
-	BtButton*  but[7];
+	BtButton *but[7];
 	//! Pointer to label
 	QLabel *Immagine;
 	//! Time modification object
@@ -168,7 +168,7 @@ public:
 	//! Save condition
 	void save();
 	//! Return true when condition is satisfied
-	bool isTrue(void);
+	bool isTrue();
 public slots:
 	//! OK method
 	void OK();
@@ -236,7 +236,7 @@ private:
 	//! Manages incoming frame
 	void gestFrame(char *);
 	//! Inits condition
-	void inizializza(void);
+	void inizializza();
 public:
 	scenEvo_cond_d();
 	/*!
@@ -271,7 +271,7 @@ public:
 	/*!
 	\brief Returns condition description in human language
 	*/
-	const char *getDescription(void);
+	const char *getDescription();
 	/*!
 	\brief Draws and initializes some connections.
 	*/
@@ -281,7 +281,7 @@ public:
 	//! Save condition
 	virtual void save();
 	//! Return true when condition is satisfied
-	bool isTrue(void);
+	bool isTrue();
 public slots:
 	//! OK method
 	void OK();
@@ -335,7 +335,7 @@ public:
 	//! Returns true if OFF must be shown instead of 0
 	virtual bool show_OFF_on_zero();
 	//! Returns pointer to parent scenEvo_cond_d
-	scenEvo_cond_d *get_parent(void);
+	scenEvo_cond_d *get_parent();
 	//! Sets condition value
 	void set_condition_value(int);
 	//! Translates trigger condition from open encoding to int and sets val
@@ -343,7 +343,7 @@ public:
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	//! Gets condition value
-	virtual int get_condition_value(void);
+	virtual int get_condition_value();
 	//! Gets condition's meas unit
 	virtual QString get_unit();
 	//! Shows condition
@@ -357,9 +357,9 @@ public:
 	//! Sets current value for condition
 	int set_current_value(int);
 	//! Inits condition
-	virtual void inizializza(void);
+	virtual void inizializza();
 	//! Resets condition
-	virtual void reset(void);
+	virtual void reset();
 	//! Setup the device
 	virtual void setup_device(QString);
 	//! Set device pul
@@ -367,7 +367,7 @@ public:
 	//! Set device group
 	void set_group(int);
 	//! Returns true when actual condition is satisfied
-	bool isTrue(void);
+	bool isTrue();
 public slots:
 	//! Invoked when UP button is pressed
 	virtual void Up();
