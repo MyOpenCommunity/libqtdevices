@@ -249,7 +249,7 @@ void scenEvo::configScev()
 	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	co->mostra();
+	co->showPage();
 }
 
 void scenEvo::forzaScev()
@@ -263,24 +263,23 @@ void scenEvo::forzaScev()
 void scenEvo::nextCond()
 {
 	qDebug("scenEvo::nextCond()");
-	scenEvo_cond *co = condList.at(current_condition);
-	disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	co->hide();
+	scenEvo_cond *old_cond = condList.at(current_condition);
+	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 
 	if (current_condition + 1 < static_cast<unsigned>(condList.size()))
 	{
 		++current_condition;
-		co = condList.at(current_condition);
-		qDebug("co = %p", co);
-		if (co)
+		scenEvo_cond *cond = condList.at(current_condition);
+		qDebug("cond = %p", cond);
+		if (cond)
 		{
-			connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-			connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-			connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-			co->inizializza();
-			co->mostra();
+			connect(cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+			connect(cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+			connect(cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
+			cond->inizializza();
+			cond->showPage();
 		}
 	}
 	else
@@ -289,28 +288,28 @@ void scenEvo::nextCond()
 		Draw();
 		show();
 	}
+	old_cond->hide();
 }
 
 void scenEvo::prevCond()
 {
 	qDebug("scenEvo::prevCond()");
-	scenEvo_cond *co = condList.at(current_condition);
-	disconnect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	disconnect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	co->hide();
+	scenEvo_cond *old_cond = condList.at(current_condition);
+	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 
 	if (current_condition > 0)
 	{
 		--current_condition;
-		co = condList.at(current_condition);
-		qDebug("co = %p", co);
-		if (co)
+		scenEvo_cond *cond = condList.at(current_condition);
+		qDebug("cond = %p", cond);
+		if (cond)
 		{
-			connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-			connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-			connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-			co->mostra();
+			connect(cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
+			connect(cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
+			connect(cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
+			cond->showPage();
 		}
 	}
 	else
@@ -318,6 +317,7 @@ void scenEvo::prevCond()
 		Draw();
 		show();
 	}
+	old_cond->hide();
 }
 
 void scenEvo::firstCond()

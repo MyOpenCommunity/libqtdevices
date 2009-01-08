@@ -1,10 +1,10 @@
 #ifndef _SCENEVOCOND_H_
 #define _SCENEVOCOND_H_
 
+#include "page.h"
 #include "device_status.h"
 #include "main.h"
 
-#include <QFrame>
 #include <QList>
 
 class BtButton;
@@ -12,6 +12,8 @@ class timeScript;
 class device;
 class QDateTime;
 class QLabel;
+class QFrame;
+
 
 /*!
   \class scenEvo_cond
@@ -19,7 +21,7 @@ class QLabel;
   \author Ciminaghi
   \date April 2006
 */
-class scenEvo_cond : public QFrame
+class scenEvo_cond : public Page
 {
 Q_OBJECT
 public:
@@ -32,7 +34,7 @@ public:
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
 
-	scenEvo_cond(QWidget *parent);
+	scenEvo_cond();
 	/*!
 	\brief returns value related to condition
 	*/
@@ -46,10 +48,6 @@ public:
 	\brief returns description of condition
 	*/
 	virtual const char *getDescription();
-	/*!
-	\brief Draws and initializes some connections.
-	*/
-	virtual void  mostra();
 	//! Sets icons
 	virtual void SetIcons();
 	//! Set serial number
@@ -140,7 +138,7 @@ private:
 	//! Timer for triggering condition
 	QTimer *timer;
 public:
-	scenEvo_cond_h(QWidget *parent);
+	scenEvo_cond_h();
 	/*!
 	\brief Sets hours
 	\param pointer to hours string
@@ -163,7 +161,7 @@ public:
 	/*!
 	\brief Draws page and initializes some connections
 	*/
-	void mostra();
+	virtual void showPage();
 	//! Sets icons
 	void SetIcons();
 	//! Save condition
@@ -517,7 +515,8 @@ private:
 \author Ciminaghi
 \date April 2006
 */
-class scenEvo_cond_d : public scenEvo_cond {
+class scenEvo_cond_d : public scenEvo_cond
+{
 Q_OBJECT
 private:
 	//! Button width/height
@@ -565,7 +564,7 @@ private:
 	//! Inits condition
 	void inizializza(void);
 public:
-	scenEvo_cond_d(QWidget *parent);
+	scenEvo_cond_d();
 	/*!
 		\brief Set description
 		\param d new description
@@ -602,7 +601,7 @@ public:
 	/*!
 	\brief Draws and initializes some connections.
 	*/
-	void  mostra();
+	virtual void showPage();
 	//! Sets icons
 	void SetIcons();
 	//! Save condition
