@@ -113,31 +113,6 @@ signals:
 class scenEvo_cond_h : public scenEvo_cond
 {
 Q_OBJECT
-private:
-	//! OK button index (area #7)
-	static const int A7_BUTTON_INDEX = 4;
-	//! Area #6 (prev) button index
-	static const int A6_BUTTON_INDEX = 5;
-	//! Area #8 (next) button index
-	static const int A8_BUTTON_INDEX = 6;
-	//! OK icon index (area #7)
-	static const int A7_ICON_INDEX = 3;
-	//! Area #6 (prev) icon index
-	static const int A6_ICON_INDEX = 1;
-	//! Area #8 (next) icon index
-	static const int A8_ICON_INDEX = 2;
-	//! Hours, minutes and seconds */
-	QString *h, *m, *s;
-	//! Pointer to condition time
-	QDateTime *cond_time;
-	//! Pointers to buttons
-	BtButton *but[7];
-	//! Pointer to label
-	QLabel *Immagine;
-	//! Time modification object
-	timeScript *ora;
-	//! Timer for triggering condition
-	QTimer *timer;
 public:
 	scenEvo_cond_h();
 	/*!
@@ -180,6 +155,31 @@ public slots:
 	void scaduta();
 	//! Just setup qt timer (based on cond_time)
 	void setupTimer();
+private:
+	//! OK button index (area #7)
+	static const int A7_BUTTON_INDEX = 4;
+	//! Area #6 (prev) button index
+	static const int A6_BUTTON_INDEX = 5;
+	//! Area #8 (next) button index
+	static const int A8_BUTTON_INDEX = 6;
+	//! OK icon index (area #7)
+	static const int A7_ICON_INDEX = 3;
+	//! Area #6 (prev) icon index
+	static const int A6_ICON_INDEX = 1;
+	//! Area #8 (next) icon index
+	static const int A8_ICON_INDEX = 2;
+	//! Hours, minutes and seconds */
+	QString *h, *m, *s;
+	//! Pointer to condition time
+	QDateTime *cond_time;
+	//! Pointers to buttons
+	BtButton *but[7];
+	//! Pointer to label
+	QLabel *Immagine;
+	//! Time modification object
+	timeScript *ora;
+	//! Timer for triggering condition
+	QTimer *timer;
 };
 
 
@@ -192,51 +192,6 @@ public slots:
 class scenEvo_cond_d : public scenEvo_cond
 {
 Q_OBJECT
-private:
-	//! Button width/height
-	static const int BUTTON_DIM = 60;
-	//! Text area width
-	static const int TEXT_X_DIM = 180;
-	//! Text area height
-	static const int TEXT_Y_DIM = 20;
-	//! Condition description
-	QString *descr;
-	//! Device address (open protocol)
-	QString *where;
-	//! Trigger condition
-	QString *trigger;
-	//! UP button index (area #3)
-	static const int A3_BUTTON_INDEX = 0;
-	//! Down button index (area #4)
-	static const int A4_BUTTON_INDEX = 1;
-	//! Area #5 (OK) button index
-	static const int A5_BUTTON_INDEX = 2;
-	//! Area #6 (prev) button index
-	static const int A6_BUTTON_INDEX = 3;
-	//! Area #1 icon index (symbol)
-	static const int A1_ICON_INDEX = 0;
-	//! Area #3 icon index (up)
-	static const int A3_ICON_INDEX = 1;
-	//! Area #4 icon index (down)
-	static const int A4_ICON_INDEX = 2;
-	//! Area #5 (OK) icon index
-	static const int A5_ICON_INDEX = 3;
-	//! Area #7 (prev) icon index
-	static const int A6_ICON_INDEX = 4;
-	//! Pointers to buttons
-	BtButton *but[7];
-	//! Pointer to area1 label
-	QLabel *area1_ptr;
-	//! Pointer to area2 label
-	QLabel *area2_ptr;
-	//! Specific device condition
-	device_condition *actual_condition;
-	//! Set button icons
-	void SetButtonIcon(int icon_index, int button_index);
-	//! Manages incoming frame
-	void gestFrame(char *);
-	//! Inits condition
-	void inizializza();
 public:
 	scenEvo_cond_d();
 	/*!
@@ -295,6 +250,51 @@ public slots:
 	//void device_condition_triggered();
 	//! Reset condition
 	void reset();
+private:
+	//! Button width/height
+	static const int BUTTON_DIM = 60;
+	//! Text area width
+	static const int TEXT_X_DIM = 180;
+	//! Text area height
+	static const int TEXT_Y_DIM = 20;
+	//! Condition description
+	QString *descr;
+	//! Device address (open protocol)
+	QString *where;
+	//! Trigger condition
+	QString *trigger;
+	//! UP button index (area #3)
+	static const int A3_BUTTON_INDEX = 0;
+	//! Down button index (area #4)
+	static const int A4_BUTTON_INDEX = 1;
+	//! Area #5 (OK) button index
+	static const int A5_BUTTON_INDEX = 2;
+	//! Area #6 (prev) button index
+	static const int A6_BUTTON_INDEX = 3;
+	//! Area #1 icon index (symbol)
+	static const int A1_ICON_INDEX = 0;
+	//! Area #3 icon index (up)
+	static const int A3_ICON_INDEX = 1;
+	//! Area #4 icon index (down)
+	static const int A4_ICON_INDEX = 2;
+	//! Area #5 (OK) icon index
+	static const int A5_ICON_INDEX = 3;
+	//! Area #7 (prev) icon index
+	static const int A6_ICON_INDEX = 4;
+	//! Pointers to buttons
+	BtButton *but[7];
+	//! Pointer to area1 label
+	QLabel *area1_ptr;
+	//! Pointer to area2 label
+	QLabel *area2_ptr;
+	//! Specific device condition
+	device_condition *actual_condition;
+	//! Set button icons
+	void SetButtonIcon(int icon_index, int button_index);
+	//! Manages incoming frame
+	void gestFrame(char *);
+	//! Inits condition
+	void inizializza();
 };
 
 
@@ -307,20 +307,6 @@ public slots:
 class device_condition : public QObject
 {
 Q_OBJECT
-private:
-	//! Condition value
-	int cond_value;
-	//! Current value (displayed, not confirmed)
-	int current_value;
-	//! Pointer to parent scenEvo_cond_d
-	QWidget *parent;
-protected:
-	QFrame *frame;
-	// Our "real" device
-	device *dev;
-	//! True when condition is satisfied
-	bool satisfied;
-
 public:
 	//! Constructor
 	device_condition(QWidget *parent, QString *trigger);
@@ -377,6 +363,19 @@ public slots:
 	virtual void OK();
 	//! Invoked by device when status changes
 	virtual void status_changed(QList<device_status*>) = 0;
+protected:
+	QFrame *frame;
+	// Our "real" device
+	device *dev;
+	//! True when condition is satisfied
+	bool satisfied;
+private:
+	//! Condition value
+	int cond_value;
+	//! Current value (displayed, not confirmed)
+	int current_value;
+	//! Pointer to parent scenEvo_cond_d
+	QWidget *parent;
 signals:
 	//! No more emitted when condition is true
 	// void verificata();
@@ -392,10 +391,7 @@ signals:
 */
 class device_condition_light_status : public device_condition
 {
-	Q_OBJECT
-private:
-	//! Returns string to be displayed as a function of value
-	QString get_string();
+Q_OBJECT
 public:
 	//! Constructor
 	device_condition_light_status(QWidget *parent, QString *trigger);
@@ -410,6 +406,9 @@ public:
 public slots:
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
+private:
+	//! Returns string to be displayed as a function of value
+	QString get_string();
 };
 
 /*!
@@ -421,11 +420,6 @@ public slots:
 class device_condition_dimming : public device_condition
 {
 Q_OBJECT
-private:
-	int min_val;
-	int max_val;
-	int current_value_min;
-	int current_value_max;
 public:
 	//! Constructor
 	device_condition_dimming(QWidget *parent, QString *trigger);
@@ -467,6 +461,11 @@ public slots:
 	void Down();
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
+private:
+	int min_val;
+	int max_val;
+	int current_value_min;
+	int current_value_max;
 };
 
 
@@ -479,11 +478,6 @@ public slots:
 class device_condition_dimming_100 : public device_condition
 {
 Q_OBJECT
-private:
-	int min_val;
-	int max_val;
-	int current_value_min;
-	int current_value_max;
 public:
 	//! Constructor
 	device_condition_dimming_100(QWidget *parent, QString *trigger);
@@ -523,6 +517,11 @@ public slots:
 	void Down();
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
+private:
+	int min_val;
+	int max_val;
+	int current_value_min;
+	int current_value_max;
 };
 
 /*!
@@ -534,11 +533,6 @@ public slots:
 class device_condition_volume : public device_condition
 {
 Q_OBJECT
-private:
-	int min_val;
-	int max_val;
-	int current_value_min;
-	int current_value_max;
 public:
 	//! Constructor
 	device_condition_volume(QWidget *parent, QString *trigger);
@@ -573,6 +567,11 @@ public slots:
 	void Up();
 	//! Invoked when DOWN button is pressed
 	void Down();
+private:
+	int min_val;
+	int max_val;
+	int current_value_min;
+	int current_value_max;
 };
 
 
