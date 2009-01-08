@@ -127,11 +127,6 @@ public:
 	*/
 	void set_m(QString m);
 	/*!
-	\brief Sets seconds
-	\param pointer to seconds string
-	*/
-	void set_s(QString s);
-	/*!
 	\brief Returns condition description
 	*/
 	const char *getDescription();
@@ -170,7 +165,7 @@ private:
 	//! Area #8 (next) icon index
 	static const int A8_ICON_INDEX = 2;
 	//! Hours, minutes and seconds */
-	QString *h, *m, *s;
+	QString *h, *m;
 	//! Pointer to condition time
 	QDateTime *cond_time;
 	//! Pointers to buttons

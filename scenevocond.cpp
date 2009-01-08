@@ -131,7 +131,6 @@ scenEvo_cond_h::scenEvo_cond_h()
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
 	h = new QString("");
 	m = new QString("");
-	s = new QString("");
 	ora = NULL;
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
@@ -155,12 +154,6 @@ void scenEvo_cond_h::set_m(QString _m)
 	ora->setDataOra(QDateTime(QDate::currentDate(), t));
 	ora->showTime();
 	setupTimer();
-}
-
-void scenEvo_cond_h::set_s(QString _s)
-{
-	*s = _s;
-	qDebug() << "scenEvo_cond_h::set_s : " << s;
 }
 
 const char *scenEvo_cond_h::getDescription()
