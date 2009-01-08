@@ -25,7 +25,7 @@
 #include <assert.h>
 
 
-AlarmClock::AlarmClock(sveType t, sveFreq freq, contdiff *diso, int hour, int minute) : Page(0)
+AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute) : Page(0)
 {
 	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
@@ -93,8 +93,8 @@ AlarmClock::AlarmClock(sveType t, sveFreq freq, contdiff *diso, int hour, int mi
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;
 	minuTimer = NULL;
-	tipoSveglia = freq;
-	tipo = t;
+	freq = f;
+	type = t;
 
 	connect(BTouch, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
@@ -115,13 +115,13 @@ void AlarmClock::okTime()
 	{
 		choice[idx]->show();
 		testiChoice[idx]->show();
-		choice[idx]->setChecked(tipoSveglia == idx);
+		choice[idx]->setChecked(freq == idx);
 	}
 
 	dataOra->hide();
 	Immagine->hide();
-	
-	if (tipo != DI_SON)
+
+	if (type != DI_SON)
 		bannNavigazione->nascondi(banner::BUT2);
 }
 
@@ -165,41 +165,41 @@ void AlarmClock::showPage()
 	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
 	connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));
 	aggiornaDatiEEprom = 0;
-	if (tipo != DI_SON)
+	if (type != DI_SON)
 		bannNavigazione->mostra(banner::BUT2);
 }
 
 void AlarmClock::drawSelectPage()
 {
 	for (uchar idx = 0; idx < 4; idx++)
-		choice[idx]->setChecked(idx == tipoSveglia);
+		choice[idx]->setChecked(idx == freq);
 }
 
 void AlarmClock::sel1(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = ONCE;
+		freq = ONCE;
 	drawSelectPage();
 }
 
 void AlarmClock::sel2(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = SEMPRE;
+		freq = SEMPRE;
 	drawSelectPage();
 }
 
 void AlarmClock::sel3(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = FERIALI;
+		freq = FERIALI;
 	drawSelectPage();
 }
 
 void AlarmClock::sel4(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = FESTIVI;
+		freq = FESTIVI;
 	drawSelectPage();
 }
 
@@ -241,7 +241,7 @@ void AlarmClock::handleClose()
 	QMap<QString, QString> data;
 	data["hour"] = oraSveglia->time().toString("hh");
 	data["minute"] = oraSveglia->time().toString("mm");
-	data["alarmset"] = QString::number(tipoSveglia);
+	data["alarmset"] = QString::number(freq);
 
 	setCfgValue(data, SET_SVEGLIA, serNum);
 }
@@ -256,7 +256,7 @@ void AlarmClock::okTipo()
 		testiChoice[idx]->hide();
 	}
 	Immagine->show();
-	if (tipo != DI_SON)
+	if (type != DI_SON)
 		handleClose();
 	else if (difson)
 	{
@@ -378,14 +378,14 @@ void AlarmClock::verificaSveglia()
 
 	QDateTime actualDateTime = QDateTime::currentDateTime();
 
-	if (tipoSveglia == SEMPRE || tipoSveglia == ONCE ||
-		(tipoSveglia == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
-		(tipoSveglia == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
+	if (freq == SEMPRE || freq == ONCE ||
+		(freq == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
+		(freq == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
 	{
 		qDebug("secsTo: %d",oraSveglia->time().secsTo(actualDateTime.time()));
 		if ((actualDateTime.time() >= (oraSveglia->time())) && ((oraSveglia->time().secsTo(actualDateTime.time())<60)))
 		{
-			if (tipo == BUZZER)
+			if (type == BUZZER)
 			{
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(100);
@@ -395,7 +395,7 @@ void AlarmClock::verificaSveglia()
 				BTouch->freeze(true);
 				BTouch->svegl(true);
 			}
-			else if (tipo == DI_SON)
+			else if (type == DI_SON)
 			{
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(3000);
@@ -410,7 +410,7 @@ void AlarmClock::verificaSveglia()
 
 			qDebug("PARTE LA SVEGLIA");
 
-		if (tipoSveglia == ONCE)
+		if (freq == ONCE)
 			setActive(false);
 		}
 	}
@@ -597,7 +597,7 @@ void AlarmClock::spegniSveglia(bool b)
 		{
 			qDebug("SPENGO LA SVEGLIA");
 			aumVolTimer->stop();
-			if (tipo == BUZZER)
+			if (type == BUZZER)
 				setBeep(buzAbilOld,false);
 
 			delete aumVolTimer;
@@ -620,7 +620,7 @@ void AlarmClock::setSerNum(int s)
 void AlarmClock::inizializza()
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	if (tipo == DI_SON)
+	if (type == DI_SON)
 	{
 		int eeprom;
 		char chiave[6];

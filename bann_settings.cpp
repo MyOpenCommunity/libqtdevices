@@ -19,7 +19,7 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	icon_on = icon1;
 	icon_off = icon2;
 	SetIcons(icon_off, icon3);
-	alarm_clock = new AlarmClock(static_cast<AlarmClock::sveType>(tipo), static_cast<AlarmClock::sveFreq>(freq), diso, hour, minute);
+	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), diso, hour, minute);
 	alarm_clock->hide();
 	setAbil(enabled == 1);
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));

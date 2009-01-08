@@ -39,10 +39,10 @@ class AlarmClock : public Page
 {
 Q_OBJECT
 public:
-/*! \enum  sveFreq
+/*! \enum  Freq
   Differentiate the alarm set frequencies of operation
 */
-	enum sveFreq
+	enum Freq
 	{
 		SEMPRE = 1,  /*!< Always -> every day*/
 		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
@@ -51,16 +51,16 @@ public:
 		NESSUNO = 50  /*!< Never*/
 	};
 
-/*! \enum sveType
+/*! \enum Type
   Differentiate the alarm set type
 */
-	enum sveType
+	enum Type
 	{
 		BUZZER = 0,  /*!< The buzzer sounds and backlight flashes*/
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(sveType t, sveFreq f, contdiff *diso, int hour, int minute);
+	AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
@@ -156,8 +156,8 @@ public slots:
 	void spegniSveglia(bool);
 
 private:
-	sveType tipo;
-	sveFreq tipoSveglia;
+	Type type;
+	Freq freq;
 	void drawSelectPage();
 	timeScript *dataOra;
 	bannFrecce *bannNavigazione;
