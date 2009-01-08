@@ -115,17 +115,7 @@ class scenEvo_cond_h : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_h();
-	/*!
-	\brief Sets hours
-	\param pointer to hours string
-	*/
-	void set_h(QString h);
-	/*!
-	\brief Sets minutes
-	\param pointer to minutes string
-	*/
-	void set_m(QString m);
+	scenEvo_cond_h(QString h, QString m);
 	/*!
 	\brief Returns condition description
 	*/
