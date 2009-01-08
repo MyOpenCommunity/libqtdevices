@@ -63,7 +63,6 @@ private slots:
 	void Disattiva();
 private:
 	char type;
-	void inizializza(bool forza = false);
 };
 
 #endif

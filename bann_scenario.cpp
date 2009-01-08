@@ -30,10 +30,6 @@ void bannScenario::Attiva()
 	}
 }
 
-void bannScenario::inizializza(bool forza)
-{
-}
-
 
 gesModScen::gesModScen(QWidget *parent, QString where, QString IcoSx, QString IcoDx, QString IcoCsx,
 	QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2) :  bann4tasLab(parent)

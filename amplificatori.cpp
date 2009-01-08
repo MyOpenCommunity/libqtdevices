@@ -181,6 +181,3 @@ void grAmplificatori::Diminuisci()
 		BTouch->sendFrame(createMsgOpen("16", "1101", elencoDisp.at(i)));
 }
 
-void grAmplificatori::inizializza(bool forza)
-{
-}

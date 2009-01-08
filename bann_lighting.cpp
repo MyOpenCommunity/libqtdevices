@@ -405,10 +405,6 @@ void grDimmer::Diminuisci()
 	sendFrame("31");
 }
 
-void grDimmer::inizializza(bool forza)
-{
-}
-
 
 grDimmer100::grDimmer100(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString iconsx,
 	QString icondx, QList<int>sstart, QList<int>sstop) : grDimmer(parent, addresses, IconaSx, IconaDx, iconsx, icondx)

@@ -89,7 +89,6 @@ class grDimmer : public bannRegolaz
 Q_OBJECT
 public:
 	grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString Iconsx, QString Icondx);
-	void inizializza(bool forza = false);
 protected:
 	QList<QString> elencoDisp;
 private:

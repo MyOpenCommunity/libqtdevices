@@ -27,7 +27,6 @@ class bannLoads : public bannOnSx
 Q_OBJECT
 public:
 	bannLoads(sottoMenu *parent, QString indirizzo, QString IconaSx);
-	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
 public slots:

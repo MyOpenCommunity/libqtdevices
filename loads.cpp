@@ -33,10 +33,6 @@ void bannLoads::Attiva()
 	BTouch->sendFrame(createMsgOpen("3", "2", getAddress()));
 }
 
-void bannLoads::inizializza(bool forza)
-{
-}
-
 
 Loads::Loads(QDomNode config_node)
 {

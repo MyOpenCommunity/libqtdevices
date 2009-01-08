@@ -132,7 +132,6 @@ public slots:
 	void Ferma();
 private:
 	QList<QString> elencoDisp;
-	void inizializza(bool forza = false);
 	void sendFrame(QString msg);
 };
 
