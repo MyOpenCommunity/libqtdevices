@@ -171,13 +171,6 @@ private:
 	bool gesFrameAbil, active, onceToGest;
 	QTimer *minuTimer,*aumVolTimer;
 	QString frame;
-
-signals:
-/*!
-  \brief Emitted to send \a Open \a Frame to the system.
-*/
-void sendFrame(char*);
-void sendInit(char*);
 };
 
 #endif // ALARMCLOCK_H
