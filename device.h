@@ -4,7 +4,6 @@
 #define __DEVICE_H__
 
 #include "device_status.h"
-#include "bttime.h"
 
 #include <QDateTime>
 #include <QString>
@@ -13,6 +12,7 @@
 
 class frame_interpreter;
 class Client;
+class BtTime;
 
 //! Generic device
 class device : public QObject

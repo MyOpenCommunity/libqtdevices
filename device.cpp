@@ -2,6 +2,7 @@
 #include "openclient.h"
 #include "frame_interpreter.h"
 #include "global.h" // BTouch
+#include "bttime.h"
 
 #include <openmsg.h>
 
