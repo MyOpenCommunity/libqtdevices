@@ -277,8 +277,6 @@ private:
 	device_condition *actual_condition;
 	//! Set button icons
 	void SetButtonIcon(int icon_index, int button_index);
-	//! Manages incoming frame
-	void gestFrame(char *);
 	//! Inits condition
 	void inizializza();
 };
@@ -437,8 +435,7 @@ public:
 	virtual void set_condition_value(QString);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
-	//! Decodes incoming frame
-	//void gestFrame(char*);
+
 public slots:
 	void OK();
 	//! Invoked when UP button is pressed
@@ -595,8 +592,6 @@ public:
 	virtual void set_condition_value(QString);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
-	//! Decodes incoming frame
-	void gestFrame(char*);
 public slots:
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);

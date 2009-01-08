@@ -29,8 +29,6 @@ public:
 	bannLoads(sottoMenu *parent, QString indirizzo, QString IconaSx);
 private slots:
 	void Attiva();
-public slots:
-	void gestFrame(char*);
 };
 
 
