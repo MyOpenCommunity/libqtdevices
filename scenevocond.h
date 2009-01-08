@@ -34,8 +34,6 @@ public:
 
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
-
-	scenEvo_cond();
 	/*!
 	\brief returns value related to condition
 	*/
@@ -75,6 +73,9 @@ public slots:
 	virtual void reset();
 
 protected:
+	// The constructor is protected to avoid the building of scenEvo_cond objects.
+	scenEvo_cond();
+
 	/*!
 	\brief: Returns image path for a certain index
 	\arg: index of image whose path shall be returned
