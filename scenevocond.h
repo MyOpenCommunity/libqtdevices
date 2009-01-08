@@ -13,6 +13,7 @@ class device;
 class QDateTime;
 class QLabel;
 class QFrame;
+class device_condition;
 
 
 /*!
@@ -181,7 +182,121 @@ public slots:
 	void setupTimer();
 };
 
-class scenEvo_cond_d;
+
+/*!
+\class scenEvo_cond_d
+\brief This class represent a device based advanced scenario condition
+\author Ciminaghi
+\date April 2006
+*/
+class scenEvo_cond_d : public scenEvo_cond
+{
+Q_OBJECT
+private:
+	//! Button width/height
+	static const int BUTTON_DIM = 60;
+	//! Text area width
+	static const int TEXT_X_DIM = 180;
+	//! Text area height
+	static const int TEXT_Y_DIM = 20;
+	//! Condition description
+	QString *descr;
+	//! Device address (open protocol)
+	QString *where;
+	//! Trigger condition
+	QString *trigger;
+	//! UP button index (area #3)
+	static const int A3_BUTTON_INDEX = 0;
+	//! Down button index (area #4)
+	static const int A4_BUTTON_INDEX = 1;
+	//! Area #5 (OK) button index
+	static const int A5_BUTTON_INDEX = 2;
+	//! Area #6 (prev) button index
+	static const int A6_BUTTON_INDEX = 3;
+	//! Area #1 icon index (symbol)
+	static const int A1_ICON_INDEX = 0;
+	//! Area #3 icon index (up)
+	static const int A3_ICON_INDEX = 1;
+	//! Area #4 icon index (down)
+	static const int A4_ICON_INDEX = 2;
+	//! Area #5 (OK) icon index
+	static const int A5_ICON_INDEX = 3;
+	//! Area #7 (prev) icon index
+	static const int A6_ICON_INDEX = 4;
+	//! Pointers to buttons
+	BtButton *but[7];
+	//! Pointer to area1 label
+	QLabel *area1_ptr;
+	//! Pointer to area2 label
+	QLabel *area2_ptr;
+	//! Specific device condition
+	device_condition *actual_condition;
+	//! Set button icons
+	void SetButtonIcon(int icon_index, int button_index);
+	//! Manages incoming frame
+	void gestFrame(char *);
+	//! Inits condition
+	void inizializza(void);
+public:
+	scenEvo_cond_d();
+	/*!
+		\brief Set description
+		\param d new description
+	*/
+	void set_descr(QString d);
+	/*
+		\brief get <descr> value
+		\param output <descr>
+	*/
+	void get_descr(QString&);
+	/*!
+		\brief Set device address
+		\param w new device address
+	*/
+	void set_where(QString w);
+	/*!
+		\brief Read device address
+	*/
+	void get_where(QString&);
+	/*!
+	\brief get trigger condition
+	\param t output
+	*/
+	void get_trigger(QString&);
+	/*!
+	\brief Set trigger condition
+	\param t new trigger condition
+	*/
+	void set_trigger(QString t);
+	/*!
+	\brief Returns condition description in human language
+	*/
+	const char *getDescription(void);
+	/*!
+	\brief Draws and initializes some connections.
+	*/
+	virtual void showPage();
+	//! Sets icons
+	void SetIcons();
+	//! Save condition
+	virtual void save();
+	//! Return true when condition is satisfied
+	bool isTrue(void);
+public slots:
+	//! OK method
+	void OK();
+	//!  Apply method
+	void Apply();
+	//! Up method
+	void Up();
+	//! Down method
+	void Down();
+	//! Invoked when actual device condition has been triggered by a frame
+	//void device_condition_triggered();
+	//! Reset condition
+	void reset();
+};
+
 
 /*! 
   \class device_condition
@@ -506,121 +621,6 @@ private:
 	/// Step value for temperature conditions
 	int step;
 	TemperatureScale temp_scale;
-};
-
-
-/*!
-\class scenEvo_cond_d
-\brief This class represent a device based advanced scenario condition
-\author Ciminaghi
-\date April 2006
-*/
-class scenEvo_cond_d : public scenEvo_cond
-{
-Q_OBJECT
-private:
-	//! Button width/height
-	static const int BUTTON_DIM = 60;
-	//! Text area width
-	static const int TEXT_X_DIM = 180;
-	//! Text area height
-	static const int TEXT_Y_DIM = 20;
-	//! Condition description
-	QString *descr;
-	//! Device address (open protocol)
-	QString *where;
-	//! Trigger condition
-	QString *trigger;
-	//! UP button index (area #3)
-	static const int A3_BUTTON_INDEX = 0;
-	//! Down button index (area #4)
-	static const int A4_BUTTON_INDEX = 1;
-	//! Area #5 (OK) button index
-	static const int A5_BUTTON_INDEX = 2;
-	//! Area #6 (prev) button index
-	static const int A6_BUTTON_INDEX = 3;
-	//! Area #1 icon index (symbol)
-	static const int A1_ICON_INDEX = 0;
-	//! Area #3 icon index (up)
-	static const int A3_ICON_INDEX = 1;
-	//! Area #4 icon index (down)
-	static const int A4_ICON_INDEX = 2;
-	//! Area #5 (OK) icon index
-	static const int A5_ICON_INDEX = 3;
-	//! Area #7 (prev) icon index
-	static const int A6_ICON_INDEX = 4;
-	//! Pointers to buttons
-	BtButton *but[7];
-	//! Pointer to area1 label
-	QLabel *area1_ptr;
-	//! Pointer to area2 label
-	QLabel *area2_ptr;
-	//! Specific device condition
-	device_condition *actual_condition;
-	//! Set button icons
-	void SetButtonIcon(int icon_index, int button_index);
-	//! Manages incoming frame
-	void gestFrame(char *);
-	//! Inits condition
-	void inizializza(void);
-public:
-	scenEvo_cond_d();
-	/*!
-		\brief Set description
-		\param d new description
-	*/
-	void set_descr(QString d);
-	/*
-		\brief get <descr> value
-		\param output <descr>
-	*/
-	void get_descr(QString&);
-	/*!
-		\brief Set device address
-		\param w new device address
-	*/
-	void set_where(QString w);
-	/*!
-		\brief Read device address
-	*/
-	void get_where(QString&);
-	/*!
-	\brief get trigger condition
-	\param t output
-	*/
-	void get_trigger(QString&);
-	/*!
-	\brief Set trigger condition
-	\param t new trigger condition
-	*/
-	void set_trigger(QString t);
-	/*!
-	\brief Returns condition description in human language
-	*/
-	const char *getDescription(void);
-	/*!
-	\brief Draws and initializes some connections.
-	*/
-	virtual void showPage();
-	//! Sets icons
-	void SetIcons();
-	//! Save condition
-	virtual void save();
-	//! Return true when condition is satisfied
-	bool isTrue(void);
-public slots:
-	//! OK method
-	void OK();
-	//!  Apply method
-	void Apply();
-	//! Up method
-	void Up();
-	//! Down method
-	void Down();
-	//! Invoked when actual device condition has been triggered by a frame
-	//void device_condition_triggered();
-	//! Reset condition
-	void reset();
 };
 
 
