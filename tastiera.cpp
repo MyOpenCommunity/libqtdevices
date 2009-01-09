@@ -136,7 +136,8 @@ void tastiera::canc()
 	else
 	{
 		hide();
-		emit Closed(NULL);
+		text = "";
+		emit Closed();
 	}
 	draw();
 }
@@ -147,12 +148,17 @@ void tastiera::ok()
 	// che NON deve avere parametri. Il testo/password devono essere specificati
 	// attraverso un'altro segnale (o estratti attraverso un getter)
 	hide();
-	emit Closed(text.toAscii().data());
+	emit Closed();
 }
 
 void tastiera::setMode(tastiType t)
 {
 	mode = t;
+}
+
+QString tastiera::getText()
+{
+	return text;
 }
 
 

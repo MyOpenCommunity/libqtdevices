@@ -279,7 +279,7 @@ void impAnti::Inserisci()
 		delete tasti;
 	inserting = true;
 	tasti = new tastiera_con_stati(s, NULL);
-	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Insert1(char*)));
+	connect(tasti, SIGNAL(Closed()), this, SLOT(Insert1()));
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showFullScreen();
 }
@@ -289,19 +289,19 @@ void impAnti::Disinserisci()
 	if (tasti)
 		delete tasti;
 	tasti = new tastiera(NULL);
-	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(DeInsert(char*)));
+	connect(tasti, SIGNAL(Closed()), this, SLOT(DeInsert()));
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showFullScreen();
 }
 
-void impAnti::Insert1(char *pwd)
+void impAnti::Insert1()
 {
-	if (!pwd)
+	if (tasti->getText().isEmpty())
 	{
 		parentWidget()->show();
 		return;
 	}
-	passwd = pwd;
+	passwd = tasti->getText();
 
 	qDebug("impAnti::Insert()");
 	if (!send_part_msg)
@@ -310,7 +310,7 @@ void impAnti::Insert1(char *pwd)
 		parentWidget()->show();
 		return;
 	}
-	QString f = QString("*5*50#") + pwd + "#";
+	QString f = "*5*50#" + passwd + "#";
 	for (int i = 0; i < MAX_ZONE; i++)
 		f += le_zone[i] && le_zone[i]->isActive() ? "0" : "1";
 	f += "*0##";
@@ -335,18 +335,19 @@ void impAnti::Insert3()
 {
 	qDebug("impAnti::Insert3()");
 	emit clearAlarms();
-	dev->sendFrame(QString("*5*36#") + passwd + "*0##");
+	dev->sendFrame("*5*36#" + passwd + "*0##");
 	parentWidget()->show();
 	inserting = false;
 	QTimer::singleShot(5000, this, SLOT(inizializza()));
 	ToSendParz(false);
 }
 
-void impAnti::DeInsert(char *pwd)
+void impAnti::DeInsert()
 {
 	qDebug("impAnti::DeInsert()");
-	if (pwd)
-		dev->sendFrame(QString("*5*36#") + pwd + "*0##");
+	QString pwd = tasti->getText();
+	if (!pwd.isEmpty())
+		dev->sendFrame("*5*36#" + pwd + "*0##");
 	parentWidget()->show();
 }
 
@@ -358,7 +359,8 @@ void impAnti::openAckRx()
 		qDebug("Not inserting");
 		return;
 	}
-	if (!part_msg_sent) return;
+	if (!part_msg_sent)
+		return;
 	part_msg_sent = false;
 	qDebug("waiting 5 seconds before sending insert message");
 	// Do second step of insert

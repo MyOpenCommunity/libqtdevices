@@ -163,7 +163,7 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	connect(this,SIGNAL(dxClick()),tasti,SLOT(showFullScreen()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
 
-	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
+	connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
 
 	active = (attiva == 1);
 	BTouch->setPwd(active, password);
@@ -185,24 +185,24 @@ void impPassword::showEvent(QShowEvent *event)
 	if (password.isEmpty())
 	{
 		qDebug("password = ZERO");
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
 		tasti->setMode(tastiera::CLEAN);
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
+		connect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
 	}
 	else
 	{
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
 		tasti->setMode(tastiera::HIDDEN);
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
+		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
 	}
 }
 
-void impPassword::reShow1(char *c)
+void impPassword::reShow1()
 {
-	qDebug("impPassword::reShow1");
-	if (c == NULL)
+	QString c = tasti->getText();
+	if (c.isEmpty())
 	{
 		show();
 		return;
@@ -218,21 +218,21 @@ void impPassword::reShow1(char *c)
 	}
 	else
 	{
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
+		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
+		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
 		tasti->setMode(tastiera::CLEAN);
 		tasti->showFullScreen();
 		qDebug("password giusta");
 	}
 }
 
-void impPassword::reShow2(char *c)
+void impPassword::reShow2()
 {
-	qDebug("impPassword::reShow2");
-	if (c)
+	QString c = tasti->getText();
+	if (!c.isEmpty())
 	{
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
+		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
+		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
 		password = c;
 		setCfgValue("value", password, PROTEZIONE, getSerNum());
 		BTouch->setPwd(active, password);

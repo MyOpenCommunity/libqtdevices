@@ -76,7 +76,7 @@ public:
 
 public slots:
 	void Parzializza();
-	void Parz(char* pwd);
+	void Parz();
 	void IsParz(bool);
 /*!
   \brief analyzes the open frame coming from the plant. If there are an allarm is added to the queue; if the plant is inserted the alarm queue is resetted

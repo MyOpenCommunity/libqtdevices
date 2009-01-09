@@ -163,11 +163,11 @@ public slots:
 /*!
   \brief  Shows the keypad to compose the password key
 */
-	void reShow1(char*);
+	void reShow1();
 /*!
   \brief  Shows the keypad to compose the confirmation of the password key
 */
-	void reShow2(char*);
+	void reShow2();
 /*!
   \brief  Stops the error beep made when the password insertion is wrong
 */

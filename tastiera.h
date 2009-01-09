@@ -52,6 +52,10 @@ public:
   \brief Selects the mode of operation (encripted or not).
 */
 	void setMode(tastiType t);
+
+	/// Return the text inserted in the virtual Keyboard
+	QString getText();
+
 public slots:
 /*!
   \brief Executed when the \a ok \a button is clicked. Hides the object and closes.
@@ -80,7 +84,7 @@ signals:
 /*!
   \brief Emitted when the object is closed. The argument represent the code composed by the user.
 */
-	void Closed(char*);
+	void Closed();
 };
 
 

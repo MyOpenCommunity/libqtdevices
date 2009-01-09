@@ -78,16 +78,16 @@ private:
 	bool send_part_msg;
 	bool part_msg_sent;
 	bool inserting;
-	char *passwd;
+	QString passwd;
 	device *dev;
 private slots:
 	void inizializza(bool forza = false);
 	void Inserisci();
 	void Disinserisci();
-	void Insert1(char*);
+	void Insert1();
 	void Insert2();
 	void Insert3();
-	void DeInsert(char*);
+	void DeInsert();
 signals:
 	void impiantoInserito();
 	void abilitaParz(bool);

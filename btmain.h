@@ -74,7 +74,7 @@ private slots:
 	void hom();
 	void init();
 	void gesScrSav();
-	void testPwd(char*);
+	void testPwd();
 	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();

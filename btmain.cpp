@@ -583,7 +583,7 @@ void BtMain::freeze(bool b)
 				tasti = new tastiera(NULL);
 				tasti->setMode(tastiera::HIDDEN);
 				tasti->showFullScreen();
-				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
+				connect(tasti, SIGNAL(Closed()), this, SLOT(testPwd()));
 			}
 		}
 		qApp->removeEventFilter(this);
@@ -602,9 +602,10 @@ void BtMain::setPwd(bool b, QString p)
 	qDebug() << "BtMain nuova pwd = " << pwd << "-" << pwdOn;
 }
 
-void BtMain::testPwd(char* p)
+void BtMain::testPwd()
 {
-	if (p)
+	QString p = tasti->getText();
+	if (!p.isEmpty())
 	{
 		if (p != pwd)
 		{
