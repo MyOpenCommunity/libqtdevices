@@ -164,6 +164,7 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
 
 	connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
+	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
 
 	active = (attiva == 1);
 	BTouch->setPwd(active, password);

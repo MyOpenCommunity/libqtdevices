@@ -609,17 +609,17 @@ void BtMain::testPwd()
 	{
 		if (p != pwd)
 		{
-			tasti->showFullScreen();
+			tasti->resetText();
 			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
 		}
 		else
 		{
-			delete tasti;
+			tasti->disconnect();
+			tasti->hide();
+			tasti->deleteLater();
 			tasti = NULL;
 		}
 	}
-	else
-		tasti->showFullScreen();
 }
 
 void BtMain::svegl(bool b)

@@ -280,6 +280,7 @@ void impAnti::Inserisci()
 	inserting = true;
 	tasti = new tastiera_con_stati(s, NULL);
 	connect(tasti, SIGNAL(Closed()), this, SLOT(Insert1()));
+	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showFullScreen();
 }
@@ -290,6 +291,7 @@ void impAnti::Disinserisci()
 		delete tasti;
 	tasti = new tastiera(NULL);
 	connect(tasti, SIGNAL(Closed()), this, SLOT(DeInsert()));
+	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
 	tasti->setMode(tastiera::HIDDEN);
 	tasti->showFullScreen();
 }

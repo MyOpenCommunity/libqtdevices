@@ -135,7 +135,6 @@ void tastiera::canc()
 		text.chop(1);
 	else
 	{
-		hide();
 		text = "";
 		emit Closed();
 	}
@@ -144,10 +143,6 @@ void tastiera::canc()
 
 void tastiera::ok()
 {
-	// TODO: l'hide deve essere la classe "esterna" a gestirlo sul segnale Closed()
-	// che NON deve avere parametri. Il testo/password devono essere specificati
-	// attraverso un'altro segnale (o estratti attraverso un getter)
-	hide();
 	emit Closed();
 }
 
@@ -159,6 +154,12 @@ void tastiera::setMode(tastiType t)
 QString tastiera::getText()
 {
 	return text;
+}
+
+void tastiera::resetText()
+{
+	text = "";
+	draw();
 }
 
 

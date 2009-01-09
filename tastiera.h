@@ -56,6 +56,9 @@ public:
 	/// Return the text inserted in the virtual Keyboard
 	QString getText();
 
+	/// A function to reset the text inserted by virtual Keyboard.
+	void resetText();
+
 public slots:
 /*!
   \brief Executed when the \a ok \a button is clicked. Hides the object and closes.
