@@ -16,14 +16,16 @@
 #ifndef STOPNGO_H
 #define STOPNGO_H
 
+#include "page.h"
 #include "bannpuls.h"
 #include "btbutton.h"
 
-#include <QWidget>
+
 #include <QList>
 
 class device_status;
 class QLCDNumber;
+class QWidget;
 class QTimer;
 class QLabel;
 
@@ -85,11 +87,11 @@ public slots:
   \author Lucio Macellari - Mac S.r.l.
   \date jul 2008
 */
-class StopngoPage : public QWidget
+class StopngoPage : public Page
 {
 Q_OBJECT
 public:
-	StopngoPage(QWidget *parent, QString where, int id = 0, QString pageTitle = "");
+	StopngoPage(QString where, int id = 0, QString pageTitle = "");
 	~StopngoPage();
 
 private:
@@ -100,7 +102,7 @@ private:
 	QLabel *statusIcon;
 	QLCDNumber *freqLcdNumber;
 	QTimer *freqSendTimer;
-	
+
 	void AddItems();
 	void SetStatusIcon(const char *);
 	void SetButtonIcon(BtButton *, const char *);
@@ -108,7 +110,6 @@ private:
 
 public slots:
 	void status_changed(QList<device_status*>);
-	void showPage();
 
 private slots:
 	void AutoArmClick();
@@ -120,9 +121,6 @@ private slots:
 	void PlusClick();
 	void LoadTimer();
 	void FireFreqFrame();
-
-signals:
-	void Closed();
 };
 
 #endif
