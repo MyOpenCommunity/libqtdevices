@@ -191,6 +191,7 @@ SOURCES += actuators.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \
            openclient.cpp \
+           page.cpp \
            pagecontainer.cpp \
            plantmenu.cpp \
            playwindow.cpp \

@@ -2,6 +2,7 @@
 #include "xml_functions.h" // getChildWithId
 #include "fontmanager.h"
 #include "global.h" // BTouch
+#include "main.h" // IMG_PATH
 
 #include <QRegExp>
 #include <QLabel>

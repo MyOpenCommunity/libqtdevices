@@ -14,8 +14,6 @@
 #ifndef PAGE_H
 #define PAGE_H
 
-#include "main.h"
-
 #include <QWidget>
 
 
@@ -23,13 +21,13 @@ class Page : public QWidget
 {
 Q_OBJECT
 public:
-	// Normally, the page is a fullscreen page, but sometimes is a part of
+	// Normally, the page is a fullscreen window, but sometimes is a part of
 	// another page (see Antintrusion or SoundDiffusion)
-	Page(QWidget *parent=0) : QWidget(parent) {}
-	virtual void inizializza() {}
+	Page(QWidget *parent=0);
+	virtual void inizializza();
 
 public slots:
-	virtual void showPage() { showFullScreen(); setFixedSize(MAX_WIDTH, MAX_HEIGHT);}
+	virtual void showPage();
 
 signals:
 	/// Emitted when the page is closed.
