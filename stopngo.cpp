@@ -580,7 +580,7 @@ void StopngoPage::SetStatusIcon(const char* iconPath)
 {
 	if (!iconPath)
 		return;
-	
+
 	statusIcon->setPixmap(*BTouch->getIcon(iconPath));
 }
 
@@ -627,18 +627,18 @@ void StopngoPage::FireFreqFrame()
 	qDebug("StopngoPage::FireFreqFrame() Enter");
 	QString f = QString("*#%1*%2*#%3*%4##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_FREQ_AUTOTEST).arg(autotestFreq);
 	qDebug() << "StopngoPage::FireFreqFrame() fire frame: " << f;
-	BTouch->sendFrame(f);
+	sendFrame(f);
 	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_FREQ_AUTOTEST);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 }
 
 void StopngoPage::AutoArmClick()
 {
 	QString what = statusBmp & STATUS_BIT_AUTOREARM_DISABLED ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF;
 	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 }
 
 void StopngoPage::OnClick()
@@ -647,7 +647,7 @@ void StopngoPage::OnClick()
 		return;
 
 	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(OPEN_WHAT_CLOSE).arg(where);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 }
 
 void StopngoPage::OffClick()
@@ -656,25 +656,25 @@ void StopngoPage::OffClick()
 		return;
 
 	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(OPEN_WHAT_OPEN).arg(where);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 }
 
 void StopngoPage::VerifyClick()
 {
 	QString what = statusBmp & STATUS_BIT_VERIFY_DISABLED ? OPEN_WHAT_VERIFY_ON : OPEN_WHAT_VERIFY_OFF;
 	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 }
 
 void StopngoPage::AutotestClick()
 {
 	QString what = statusBmp & STATUS_BIT_AUTOTEST_DISABLED ? OPEN_WHAT_AUTOTEST_ON : OPEN_WHAT_AUTOTEST_OFF;
 	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
-	BTouch->sendFrame(f);
+	sendFrame(f);
 }
 
 void StopngoPage::MinusClick()

@@ -58,7 +58,7 @@ void TemperatureViewer::inizializza()
 			frame += "*0##";
 		else
 			frame += "00*15#" + temp.where + "##";
-		BTouch->sendInit(frame);
+		linked_page->sendInit(frame);
 	}
 }
 

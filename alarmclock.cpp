@@ -25,7 +25,7 @@
 #include <assert.h>
 
 
-AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute) : Page(0)
+AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute)
 {
 	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
@@ -335,7 +335,7 @@ void AlarmClock::gestFrame(char* f)
 				if (!strcmp(msg_open.Extract_cosa(),"3"))
 				{
 					qDebug("ho visto un ampli acceso!");
-					BTouch->sendFrame("*#16*" + QString::number(deviceAddr) + "*1##");
+					sendFrame("*#16*" + QString::number(deviceAddr) + "*1##");
 				}
 			}
 			else
@@ -343,7 +343,7 @@ void AlarmClock::gestFrame(char* f)
 				if (!strcmp(msg_open.Extract_grandezza(),"1"))
 				{
 					int vol;
-					vol=atoi(msg_open.Extract_valori(0))&0x1F;
+					vol = atoi(msg_open.Extract_valori(0)) & 0x1F;
 					volSveglia[deviceAddr] = vol;
 					qDebug("o visto un volume di %d pari a %d",deviceAddr, vol);
 				}
@@ -436,8 +436,8 @@ void AlarmClock::aumVol()
 
 	if (conta2min == 0)
 	{
-		BTouch->sendFrame("*16*3*" + QString::number(sorgente) + "##");
-		BTouch->sendFrame("*#16*" + QString::number(sorgente) + "*#7*" + QString::number(stazione) + "##");
+		sendFrame("*16*3*" + QString::number(sorgente) + "##");
+		sendFrame("*#16*" + QString::number(sorgente) + "*#7*" + QString::number(stazione) + "##");
 
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
@@ -448,7 +448,7 @@ void AlarmClock::aumVol()
 					if (!amb1)
 					{
 						amb1 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 10) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 10) + "##");
 					}
 				}
 				if (idx >= 20 && idx <= 29)
@@ -456,7 +456,7 @@ void AlarmClock::aumVol()
 					if (!amb2)
 					{
 						amb2 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 20) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 20) + "##");
 					}
 				}
 				if (idx >= 30 && idx <= 39)
@@ -464,7 +464,7 @@ void AlarmClock::aumVol()
 					if (!amb3)
 					{
 						amb3 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 30) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 30) + "##");
 					}
 				}
 				if (idx >= 40 && idx <= 49)
@@ -472,7 +472,7 @@ void AlarmClock::aumVol()
 					if (!amb4)
 					{
 						amb4 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 40) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 40) + "##");
 					}
 				}
 				if (idx >= 50 && idx <= 59)
@@ -480,7 +480,7 @@ void AlarmClock::aumVol()
 					if (!amb5)
 					{
 						amb5 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 50) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 50) + "##");
 					}
 				}
 				if (idx >= 60 && idx <= 69)
@@ -488,7 +488,7 @@ void AlarmClock::aumVol()
 					if (!amb6)
 					{
 						amb6 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 60) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 60) + "##");
 					}
 				}
 				if (idx >= 70 && idx <= 79)
@@ -496,7 +496,7 @@ void AlarmClock::aumVol()
 					if (!amb7)
 					{
 						amb7 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 70) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 70) + "##");
 					}
 				}
 				if (idx >= 80 && idx <= 89)
@@ -504,22 +504,22 @@ void AlarmClock::aumVol()
 					if (!amb8)
 					{
 						amb8 = true;
-						BTouch->sendFrame("*16*3*" + QString::number(sorgente + 80) + "##");
+						sendFrame("*16*3*" + QString::number(sorgente + 80) + "##");
 					}
 				}
 				if (volSveglia[idx] < 10)
 				{
 					QString f;
-					BTouch->sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, volSveglia[idx]));
+					sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, volSveglia[idx]));
 				}
 				else
 				{
 					QString f;
-					BTouch->sendFrame(f.sprintf("*#16*%02d*#1*8##", idx));
+					sendFrame(f.sprintf("*#16*%02d*#1*8##", idx));
 				}
 
 				QString f;
-				BTouch->sendFrame(f.sprintf("*16*3*%02d##", idx));
+				sendFrame(f.sprintf("*16*3*%02d##", idx));
 			}
 		}
 		conta2min = 9;
@@ -533,7 +533,7 @@ void AlarmClock::aumVol()
 			if (volSveglia[idx] >= conta2min)
 			{
 				QString f;
-				BTouch->sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, conta2min));
+				sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, conta2min));
 			}
 		}
 	}
@@ -550,7 +550,7 @@ void AlarmClock::aumVol()
 			if (volSveglia[idx]>-1)
 			{
 				QString f;
-				BTouch->sendFrame(f.sprintf("*16*13*%02d##", idx));
+				sendFrame(f.sprintf("*16*13*%02d##", idx));
 			}
 		}
 		BTouch->freeze(false);

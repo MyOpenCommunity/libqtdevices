@@ -10,7 +10,6 @@
 
 #include "sounddiffusion.h"
 #include "sottomenu.h"
-#include "global.h" // BTouch
 #include "amplificatori.h" // grAmplificatori
 #include "xml_functions.h" // getChildren, getTextChild
 #include "sorgentiaux.h"
@@ -245,7 +244,7 @@ void SoundDiffusion::inizializza()
 {
 	amplificatori->inizializza();
 	sorgenti->inizializza();
-	BTouch->sendInit("*16*53*100##");
+	sendInit("*16*53*100##");
 }
 
 void SoundDiffusion::gestFrame(char*frame)

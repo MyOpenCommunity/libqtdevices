@@ -2,7 +2,6 @@
 #include "keypad.h"
 #include "bann_antintrusion.h"
 #include "sottomenu.h"
-#include "global.h" // BTouch
 #include "xml_functions.h" // getChildren, getTextChild
 #include "allarme.h"
 
@@ -138,7 +137,7 @@ void Antintrusion::Parz()
 			f += ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1";
 		f += "*0##";
 		qDebug() << "sending part frame" << f;
-		BTouch->sendFrame(f);
+		sendFrame(f);
 		((impAnti *)impianto->getLast())->ToSendParz(false);
 	}
 	impianto->show();
@@ -366,12 +365,12 @@ void Antintrusion::hideEvent(QHideEvent *event)
 
 	qDebug("Richiesta stato zone");
 	for (int i = 1; i <= 8; ++i)
-		BTouch->sendFrame(QString("*#5*#%1##").arg(i));
+		sendFrame(QString("*#5*#%1##").arg(i));
 }
 
 void Antintrusion::request()
 {
 	request_timer.stop();
 	disconnect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
-	BTouch->sendInit("*#5*0##");
+	sendInit("*#5*0##");
 }

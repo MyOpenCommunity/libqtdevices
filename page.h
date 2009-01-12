@@ -16,6 +16,8 @@
 
 #include <QWidget>
 
+class Client;
+
 
 class Page : public QWidget
 {
@@ -25,9 +27,19 @@ public:
 	// another page (see Antintrusion or SoundDiffusion)
 	Page(QWidget *parent=0);
 	virtual void inizializza();
+	static void setClients(Client *command, Client *request);
+
+	// A global way to send frames/init requests. Do not use these directly, prefer using
+	// devices specific methods, unless you have to send frames without reading responses.
+	void sendFrame(QString frame);
+	void sendInit(QString frame);
 
 public slots:
 	virtual void showPage();
+
+private:
+	static Client *client_richieste;
+	static Client *client_comandi;
 
 signals:
 	/// Emitted when the page is closed.

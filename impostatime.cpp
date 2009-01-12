@@ -88,14 +88,14 @@ void impostaTime::OKTime()
 	connect(but[6] ,SIGNAL(clicked()), SLOT(OKDate()));
 
 	QString f = "*#13**#0*" + dataOra->getDataOra().toString("hh*mm*ss") + "**##";
-	BTouch->sendFrame(f);
+	sendFrame(f);
 }
 
 void impostaTime::OKDate()
 {
 	disconnectAllButton();
 	QString f = "*#13**#1*00*" + dataOra->getDataOra().toString("dd*MM*yyyy") + "##";
-	BTouch->sendFrame(f);
+	sendFrame(f);
 	emit Closed();
 }
 

@@ -1,5 +1,4 @@
 #include "version.h"
-#include "global.h" // BTouch
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
 #include "openclient.h"
 #include "fontmanager.h"
@@ -14,7 +13,7 @@
 #include <stdlib.h>
 
 
-Version::Version() : Page(0)
+Version::Version()
 {
 	setProperty("noStyle", true);
 	box_text = new QLabel(this);
@@ -97,9 +96,9 @@ void Version::gestFrame(char* frame)
 void Version::inizializza()
 {
 	qDebug("*************** versio::inizializza() ***************");
-	BTouch->sendFrame("*#1013**6##");
-	BTouch->sendFrame("*#1013**3##");
-	BTouch->sendFrame("*#13**16##");
+	sendFrame("*#1013**6##");
+	sendFrame("*#1013**3##");
+	sendFrame("*#13**16##");
 }
 
 void Version::setAddr(int a)

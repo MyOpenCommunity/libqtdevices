@@ -1,7 +1,6 @@
 #include "specialpage.h"
 #include "timescript.h"
 #include "btbutton.h"
-#include "global.h" // BTouch
 #include "main.h" // ICON_FRECCIA_SX
 #include "xml_functions.h" // getChildren, getTextChild, getChildWithName
 #include "generic_functions.h" // createMsgOpen
@@ -105,17 +104,17 @@ void SpecialPage::clickedButton()
 	if (type == CYCLIC)
 		what = what == "0" ? "1" : "0";
 
-	BTouch->sendFrame(createMsgOpen(who, what, where));
+	sendFrame(createMsgOpen(who, what, where));
 }
 
 void SpecialPage::pressedButton()
 {
-	BTouch->sendFrame(createMsgOpen(who, "1", where));
+	sendFrame(createMsgOpen(who, "1", where));
 }
 
 void SpecialPage::releasedButton()
 {
-	BTouch->sendFrame(createMsgOpen(who, "0", where));
+	sendFrame(createMsgOpen(who, "0", where));
 }
 
 void SpecialPage::gestFrame(char *frame)

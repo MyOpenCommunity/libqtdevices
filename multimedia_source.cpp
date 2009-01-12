@@ -235,7 +235,7 @@ void MultimediaSource::initAudio()
 	// perform Audio Init
 	if (!audio_initialized)
 	{
-		BTouch->sendFrame(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address));
+		sendFrame(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address));
 		audio_initialized = true;
 	}
 }
@@ -338,12 +338,12 @@ void MultimediaSource::handleChoiceSource(int button_id)
 
 void MultimediaSource::handleStartPlay()
 {
-	BTouch->sendFrame(QString("*22*1#4#1*2#%1##").arg(where_address));
+	sendFrame(QString("*22*1#4#1*2#%1##").arg(where_address));
 }
 
 void MultimediaSource::handleStopPlay()
 {
-	BTouch->sendFrame(QString("*22*0#4#1*2#%1##").arg(where_address));
+	sendFrame(QString("*22*0#4#1*2#%1##").arg(where_address));
 }
 
 void MultimediaSource::enableSource(bool send_frame)
