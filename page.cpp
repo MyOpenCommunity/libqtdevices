@@ -2,6 +2,7 @@
 #include "main.h"
 #include "openclient.h"
 
+#include <assert.h>
 
 // Inizialization of static member
 Client *Page::client_comandi = 0;
