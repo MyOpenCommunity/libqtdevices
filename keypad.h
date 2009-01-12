@@ -37,10 +37,10 @@ public:
 */
 	void draw();
 
-/*! \enum tastiType
+/*! \enum Type
   differentiate between encripted and clean mode
 */
-	enum tastiType
+	enum Type
 	{
 		HIDDEN = 0,  /*!< When the code is composed the only a \a * is shown for each digit on the display */
 		CLEAN  /*!< When the code is composed the digits are shown on the display*/
@@ -49,7 +49,7 @@ public:
 /*!
   \brief Selects the mode of operation (encripted or not).
 */
-	void setMode(tastiType t);
+	void setMode(Type t);
 
 	/// Return the text inserted in the virtual Keyboard
 	QString getText();
@@ -75,7 +75,7 @@ protected:
 private:
 	BtButton *zeroBut, *unoBut, *dueBut, *treBut, *quatBut, *cinBut, *seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
 	QString text;
-	tastiType mode;
+	Type mode;
 	QButtonGroup *buttons_group;
 
 private slots:

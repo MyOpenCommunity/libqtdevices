@@ -134,7 +134,7 @@ void Keypad::ok()
 	emit Closed();
 }
 
-void Keypad::setMode(tastiType t)
+void Keypad::setMode(Type t)
 {
 	mode = t;
 }
