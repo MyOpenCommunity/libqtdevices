@@ -1,7 +1,7 @@
 #include "bann_settings.h"
 #include "version.h"
 #include "alarmclock.h"
-#include "tastiera.h"
+#include "keypad.h"
 #include "multisounddiff.h" // contdiff
 #include "calibrate.h"
 #include "contrast.h"
@@ -157,9 +157,9 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 
 	SetIcons(icon_off, icon3);
 
-	tasti = new tastiera();
+	tasti = new Keypad();
 	tasti->hide();
-	tasti->setMode(tastiera::HIDDEN);
+	tasti->setMode(Keypad::HIDDEN);
 	connect(this,SIGNAL(dxClick()),tasti,SLOT(showPage()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
 
@@ -188,14 +188,14 @@ void impPassword::showEvent(QShowEvent *event)
 		qDebug("password = ZERO");
 		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
 		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
-		tasti->setMode(tastiera::CLEAN);
+		tasti->setMode(Keypad::CLEAN);
 		connect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
 	}
 	else
 	{
 		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
 		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
-		tasti->setMode(tastiera::HIDDEN);
+		tasti->setMode(Keypad::HIDDEN);
 		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
 	}
 }
@@ -221,7 +221,7 @@ void impPassword::reShow1()
 	{
 		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
 		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
-		tasti->setMode(tastiera::CLEAN);
+		tasti->setMode(Keypad::CLEAN);
 		tasti->showPage();
 		qDebug("password giusta");
 	}

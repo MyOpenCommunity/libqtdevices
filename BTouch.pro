@@ -87,6 +87,7 @@ HEADERS += actuators.h \
            homepage.h \
            icondispatcher.h \
            impostatime.h \
+           keypad.h \
            lansettings.h \
            lighting.h \
            listbrowser.h \
@@ -116,7 +117,6 @@ HEADERS += actuators.h \
            specialpage.h \
            stopngo.h \
            supervisionmenu.h \
-           tastiera.h \
            temperatureviewer.h \
            thermalmenu.h \
            timescript.h \
@@ -181,6 +181,7 @@ SOURCES += actuators.cpp \
            homepage.cpp \
            icondispatcher.cpp \
            impostatime.cpp \
+           keypad.cpp \
            lansettings.cpp \
            lighting.cpp \
            listbrowser.cpp \
@@ -209,7 +210,6 @@ SOURCES += actuators.cpp \
            specialpage.cpp \
            stopngo.cpp \
            supervisionmenu.cpp \
-           tastiera.cpp \
            temperatureviewer.cpp \
            thermalmenu.cpp \
            timescript.cpp \

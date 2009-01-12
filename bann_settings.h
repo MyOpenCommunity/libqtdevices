@@ -20,7 +20,7 @@
 
 class Version;
 class AlarmClock;
-class tastiera;
+class Keypad;
 class Calibrate;
 class Contrast;
 class contdiff;
@@ -181,7 +181,7 @@ private:
 	bool active;
 	QString icon_on, icon_off;
 	QString password;
-	tastiera *tasti;
+	Keypad *tasti;
 	bool sb;
 signals:
 /*!

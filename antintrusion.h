@@ -21,7 +21,7 @@
 
 class sottoMenu;
 class zonaAnti;
-class tastiera;
+class Keypad;
 class allarme;
 class QDomNode;
 class QWidget;
@@ -145,7 +145,7 @@ private:
   \param <testoIntrusione> text for a intrusion alarm  
 */
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
-	tastiera *tasti;
+	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
 

@@ -1,15 +1,4 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**tastiera.cpp
-**
-**finestra di tastiera numerica
-**
-****************************************************************/
-
-
-#include "tastiera.h"
+#include "keypad.h"
 #include "banner.h"
 #include "fontmanager.h"
 #include "btbutton.h"
@@ -30,7 +19,8 @@
 #define BUT_SMALL_DIM (MAX_WIDTH-POSX1*2)/8
 #define POSX1_SMALL POSX1
 
-tastiera::tastiera(int line)
+
+Keypad::Keypad(int line)
 {
 	buttons_group = new QButtonGroup(this);
 	unoBut = new BtButton(this);
@@ -105,12 +95,12 @@ tastiera::tastiera(int line)
 	connect(okBut,SIGNAL(clicked()),this,SLOT(ok()));
 }
 
-void tastiera::showEvent(QShowEvent *event)
+void Keypad::showEvent(QShowEvent *event)
 {
 	draw();
 }
 
-void tastiera::draw()
+void Keypad::draw()
 {
 	qDebug("tastiera::draw(), mode = %d", mode);
 	if (mode == CLEAN)
@@ -119,7 +109,7 @@ void tastiera::draw()
 		digitLabel->setText(QString(text.length(),'*'));
 }
 
-void tastiera::buttonClicked(int number)
+void Keypad::buttonClicked(int number)
 {
 	qDebug() << "button clicked " << number;
 	if (text.length() < 5)
@@ -127,7 +117,7 @@ void tastiera::buttonClicked(int number)
 	draw();
 }
 
-void tastiera::canc()
+void Keypad::canc()
 {
 	if (text.length() > 0)
 		text.chop(1);
@@ -139,30 +129,29 @@ void tastiera::canc()
 	draw();
 }
 
-void tastiera::ok()
+void Keypad::ok()
 {
 	emit Closed();
 }
 
-void tastiera::setMode(tastiType t)
+void Keypad::setMode(tastiType t)
 {
 	mode = t;
 }
 
-QString tastiera::getText()
+QString Keypad::getText()
 {
 	return text;
 }
 
-void tastiera::resetText()
+void Keypad::resetText()
 {
 	text = "";
 	draw();
 }
 
 
-// tastiera_con_stati implementation
-tastiera_con_stati::tastiera_con_stati(int s[8]) : tastiera(MAX_HEIGHT/6)
+KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
 {
 	int i, x;
 	char tmp[2] = "1";
@@ -197,7 +186,7 @@ tastiera_con_stati::tastiera_con_stati(int s[8]) : tastiera(MAX_HEIGHT/6)
 	digitLabel->show();
 }
 
-void tastiera_con_stati::paintEvent(QPaintEvent *event)
+void KeypadWithState::paintEvent(QPaintEvent *event)
 {
 	for (int i = 0; i < 8; i++)
 	{

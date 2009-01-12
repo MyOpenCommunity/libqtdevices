@@ -5,7 +5,7 @@
 #include "btbutton.h"
 #include "global.h" // btouch_device_cache
 #include "device.h"
-#include "tastiera.h"
+#include "keypad.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -278,10 +278,10 @@ void impAnti::Inserisci()
 	if (tasti)
 		delete tasti;
 	inserting = true;
-	tasti = new tastiera_con_stati(s);
+	tasti = new KeypadWithState(s);
 	connect(tasti, SIGNAL(Closed()), this, SLOT(Insert1()));
 	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
-	tasti->setMode(tastiera::HIDDEN);
+	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
 
@@ -289,10 +289,10 @@ void impAnti::Disinserisci()
 {
 	if (tasti)
 		delete tasti;
-	tasti = new tastiera();
+	tasti = new Keypad();
 	connect(tasti, SIGNAL(Closed()), this, SLOT(DeInsert()));
 	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
-	tasti->setMode(tastiera::HIDDEN);
+	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
 

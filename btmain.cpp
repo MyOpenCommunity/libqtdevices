@@ -28,7 +28,7 @@
 #include "device_cache.h"
 #include "openclient.h"
 #include "version.h"
-#include "tastiera.h"
+#include "keypad.h"
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
@@ -580,8 +580,8 @@ void BtMain::freeze(bool b)
 		{
 			if (!tasti)
 			{
-				tasti = new tastiera();
-				tasti->setMode(tastiera::HIDDEN);
+				tasti = new Keypad();
+				tasti->setMode(Keypad::HIDDEN);
 				tasti->showPage();
 				connect(tasti, SIGNAL(Closed()), this, SLOT(testPwd()));
 			}

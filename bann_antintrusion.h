@@ -9,7 +9,7 @@
 #include <QList>
 
 /// Forward Declarations
-class tastiera;
+class Keypad;
 class device;
 
 
@@ -73,7 +73,7 @@ protected:
 	virtual void hideEvent(QHideEvent *event);
 private:
 	static const int MAX_ZONE = 8;
-	tastiera *tasti;
+	Keypad *tasti;
 	zonaAnti *le_zone[MAX_ZONE];
 	bool send_part_msg;
 	bool part_msg_sent;

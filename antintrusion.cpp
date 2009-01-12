@@ -1,5 +1,5 @@
 #include "antintrusion.h"
-#include "tastiera.h"
+#include "keypad.h"
 #include "bann_antintrusion.h"
 #include "sottomenu.h"
 #include "global.h" // BTouch
@@ -120,10 +120,10 @@ void Antintrusion::Parzializza()
 	}
 	if (tasti)
 		delete tasti;
-	tasti = new tastiera_con_stati(s);
+	tasti = new KeypadWithState(s);
 	connect(tasti, SIGNAL(Closed()), this, SLOT(Parz()));
 	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
-	tasti->setMode(tastiera::HIDDEN);
+	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
 

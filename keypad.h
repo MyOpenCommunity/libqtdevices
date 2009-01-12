@@ -2,14 +2,14 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** tastiera.h
+** keypad.h
 **
-**definizioni della pagina di tastiera numerica
+** A numeric keypad
 **
 ****************************************************************/
 
-#ifndef TASTIERA_H
-#define TASTIERA_H
+#ifndef KEYPAD_H
+#define KEYPAD_H
 
 #include "page.h"
 #include "main.h"
@@ -21,17 +21,17 @@ class QButtonGroup;
 #define LINE MAX_HEIGHT/5
 
 /*!
-  \class tastiera
+  \class Keypad
   \brief This class is the implementation of a keypad intended for password inserting.
 
   \author Davide
   \date lug 2005
 */
-class tastiera : public Page
+class Keypad : public Page
 {
 Q_OBJECT
 public:
-	tastiera(int line=LINE);
+	Keypad(int line=LINE);
 /*!
   \brief Draws the page
 */
@@ -84,11 +84,11 @@ private slots:
 
 
 //! Normal keyboard with a line containing 8 disabled buttons representing 8 status bits
-class tastiera_con_stati : public tastiera
+class KeypadWithState : public Keypad
 {
 Q_OBJECT
 public:
-	tastiera_con_stati(int s[8]);
+	KeypadWithState(int s[8]);
 protected:
 	virtual void paintEvent(QPaintEvent *event);  //! Invert fg/bg colors for active "stati"
 private:
@@ -97,4 +97,4 @@ private:
 };
 
 
-#endif // TASTIERA_H
+#endif // KEYPAD_H
