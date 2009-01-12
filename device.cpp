@@ -2,7 +2,6 @@
 #include "openclient.h"
 #include "frame_interpreter.h"
 #include "bttime.h"
-#include "device_cache.h" // get_device_key
 
 #include <openmsg.h>
 
@@ -146,7 +145,7 @@ void device::add_device_status(device_status *_ds)
 
 QString device::get_key(void)
 {
-	return get_device_key(who, where);
+	return who + "*" + where;
 }
 
 device::~device()
