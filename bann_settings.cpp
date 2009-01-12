@@ -155,8 +155,6 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	icon_off = icon2;
 	password = pwd;
 
-	SetIcons(icon_off, icon3);
-
 	tasti = new Keypad();
 	tasti->hide();
 	tasti->setMode(Keypad::HIDDEN);
@@ -168,6 +166,8 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 
 	active = (attiva == 1);
 	BTouch->setPwd(active, password);
+	SetIcons(1, icon3);
+	SetIcons(0, active ? icon_on : icon_off);
 }
 
 void impPassword::toggleActivation()
