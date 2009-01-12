@@ -23,18 +23,9 @@ bannLoads::bannLoads(sottoMenu *parent, QString indirizzo, QString IconaSx) : ba
 	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
 }
 
-void bannLoads::gestFrame(char*)
-{
-
-}
-
 void bannLoads::Attiva()
 {
 	BTouch->sendFrame(createMsgOpen("3", "2", getAddress()));
-}
-
-void bannLoads::inizializza(bool forza)
-{
 }
 
 

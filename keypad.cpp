@@ -1,21 +1,11 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**tastiera.cpp
-**
-**finestra di tastiera numerica
-**
-****************************************************************/
-
-
-#include "tastiera.h"
+#include "keypad.h"
 #include "banner.h"
 #include "fontmanager.h"
 #include "btbutton.h"
 
 #include <QFrame>
 #include <QLabel>
+#include <QWidget>
 #include <QString>
 #include <QFile>
 #include <QDebug>
@@ -29,11 +19,9 @@
 #define BUT_SMALL_DIM (MAX_WIDTH-POSX1*2)/8
 #define POSX1_SMALL POSX1
 
-tastiera::tastiera(QWidget *parent, int line) : QWidget(parent)
-{
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
+Keypad::Keypad(int line)
+{
 	buttons_group = new QButtonGroup(this);
 	unoBut = new BtButton(this);
 	dueBut = new BtButton(this);
@@ -107,12 +95,12 @@ tastiera::tastiera(QWidget *parent, int line) : QWidget(parent)
 	connect(okBut,SIGNAL(clicked()),this,SLOT(ok()));
 }
 
-void tastiera::showEvent(QShowEvent *event)
+void Keypad::showEvent(QShowEvent *event)
 {
 	draw();
 }
 
-void tastiera::draw()
+void Keypad::draw()
 {
 	qDebug("tastiera::draw(), mode = %d", mode);
 	if (mode == CLEAN)
@@ -121,7 +109,7 @@ void tastiera::draw()
 		digitLabel->setText(QString(text.length(),'*'));
 }
 
-void tastiera::buttonClicked(int number)
+void Keypad::buttonClicked(int number)
 {
 	qDebug() << "button clicked " << number;
 	if (text.length() < 5)
@@ -129,42 +117,47 @@ void tastiera::buttonClicked(int number)
 	draw();
 }
 
-void tastiera::canc()
+void Keypad::canc()
 {
 	if (text.length() > 0)
 		text.chop(1);
 	else
 	{
-		hide();
-		emit Closed(NULL);
+		text = "";
+		emit Closed();
 	}
 	draw();
 }
 
-void tastiera::ok()
+void Keypad::ok()
 {
-	// TODO: l'hide deve essere la classe "esterna" a gestirlo sul segnale Closed()
-	// che NON deve avere parametri. Il testo/password devono essere specificati
-	// attraverso un'altro segnale (o estratti attraverso un getter)
-	hide();
-	emit Closed(text.toAscii().data());
+	emit Closed();
 }
 
-void tastiera::setMode(tastiType t)
+void Keypad::setMode(Type t)
 {
 	mode = t;
 }
 
+QString Keypad::getText()
+{
+	return text;
+}
 
-// tastiera_con_stati implementation
-tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent)
-	: tastiera(parent, MAX_HEIGHT/6)
+void Keypad::resetText()
+{
+	text = "";
+	draw();
+}
+
+
+KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
 {
 	int i, x;
 	char tmp[2] = "1";
 	QFont aFont;
 	FontManager::instance()->getFont(font_tastiera_bottoni_stati, aFont);
-	
+
 	for (i = 0, x = POSX1_SMALL; i < 8; i++, x += BUT_SMALL_DIM)
 	{
 		// Create button
@@ -193,7 +186,7 @@ tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent)
 	digitLabel->show();
 }
 
-void tastiera_con_stati::paintEvent(QPaintEvent *event)
+void KeypadWithState::paintEvent(QPaintEvent *event)
 {
 	for (int i = 0; i < 8; i++)
 	{

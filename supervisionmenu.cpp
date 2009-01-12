@@ -60,7 +60,7 @@ void SupervisionMenu::loadItems(QDomNode config_node)
 			b->setText(getTextChild(node, "descr"));
 			b->setId(id);
 			appendBanner(b);
-			CreateStopnGoMenu(node, static_cast<bannPuls*>(b));
+			CreateStopnGoMenu(node, b);
 			++classesCount;
 			break;
 		}
@@ -143,7 +143,7 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 
 void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 {
-	StopngoPage* pg = new StopngoPage(NULL, itm->GetWhere(), itm->GetId(), itm->GetDescr());
+	StopngoPage* pg = new StopngoPage(itm->GetWhere(), itm->GetId(), itm->GetDescr());
 	pg->hide();
 
 	connect(bnr, SIGNAL(sxClick()), pg, SLOT(showPage()));

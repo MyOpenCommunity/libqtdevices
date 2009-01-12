@@ -2,18 +2,17 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** tastiera.h
+** keypad.h
 **
-**definizioni della pagina di tastiera numerica
+** A numeric keypad
 **
 ****************************************************************/
 
-#ifndef TASTIERA_H
-#define TASTIERA_H
+#ifndef KEYPAD_H
+#define KEYPAD_H
 
+#include "page.h"
 #include "main.h"
-
-#include <QWidget>
 
 class BtButton;
 class QLabel;
@@ -22,27 +21,26 @@ class QButtonGroup;
 #define LINE MAX_HEIGHT/5
 
 /*!
-  \class tastiera
+  \class Keypad
   \brief This class is the implementation of a keypad intended for password inserting.
 
   \author Davide
   \date lug 2005
 */
-
-class tastiera : public QWidget
+class Keypad : public Page
 {
 Q_OBJECT
 public:
-    tastiera(QWidget *parent=0, int line=LINE);
+	Keypad(int line=LINE);
 /*!
   \brief Draws the page
 */
 	void draw();
 
-/*! \enum tastiType
+/*! \enum Type
   differentiate between encripted and clean mode
 */
-	enum tastiType
+	enum Type
 	{
 		HIDDEN = 0,  /*!< When the code is composed the only a \a * is shown for each digit on the display */
 		CLEAN  /*!< When the code is composed the digits are shown on the display*/
@@ -51,7 +49,14 @@ public:
 /*!
   \brief Selects the mode of operation (encripted or not).
 */
-	void setMode(tastiType t);
+	void setMode(Type t);
+
+	/// Return the text inserted in the virtual Keyboard
+	QString getText();
+
+	/// A function to reset the text inserted by virtual Keyboard.
+	void resetText();
+
 public slots:
 /*!
   \brief Executed when the \a ok \a button is clicked. Hides the object and closes.
@@ -70,27 +75,20 @@ protected:
 private:
 	BtButton *zeroBut, *unoBut, *dueBut, *treBut, *quatBut, *cinBut, *seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
 	QString text;
-	tastiType mode;
+	Type mode;
 	QButtonGroup *buttons_group;
 
 private slots:
 	void buttonClicked(int number);
-
-signals:
-/*!
-  \brief Emitted when the object is closed. The argument represent the code composed by the user.
-*/
-	void Closed(char*);
 };
 
 
 //! Normal keyboard with a line containing 8 disabled buttons representing 8 status bits
-class tastiera_con_stati : public tastiera
+class KeypadWithState : public Keypad
 {
 Q_OBJECT
 public:
-	//! Constructor
-	tastiera_con_stati(int s[8], QWidget *parent=0);
+	KeypadWithState(int s[8]);
 protected:
 	virtual void paintEvent(QPaintEvent *event);  //! Invert fg/bg colors for active "stati"
 private:
@@ -99,4 +97,4 @@ private:
 };
 
 
-#endif // TASTIERA_H
+#endif // KEYPAD_H

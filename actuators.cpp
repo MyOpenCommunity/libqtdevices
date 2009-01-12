@@ -124,7 +124,3 @@ void attuatPuls::Disattiva()
 	}
 }
 
-void attuatPuls::inizializza(bool forza)
-{
-}
-

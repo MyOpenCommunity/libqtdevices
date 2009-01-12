@@ -21,7 +21,7 @@
 
 class sottoMenu;
 class zonaAnti;
-class tastiera;
+class Keypad;
 class allarme;
 class QDomNode;
 class QWidget;
@@ -76,7 +76,7 @@ public:
 
 public slots:
 	void Parzializza();
-	void Parz(char* pwd);
+	void Parz();
 	void IsParz(bool);
 /*!
   \brief analyzes the open frame coming from the plant. If there are an allarm is added to the queue; if the plant is inserted the alarm queue is resetted
@@ -145,7 +145,7 @@ private:
   \param <testoIntrusione> text for a intrusion alarm  
 */
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
-	tastiera *tasti;
+	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
 

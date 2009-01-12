@@ -18,26 +18,26 @@
 
 #include <QWidget>
 
-class versio;
-class sveglia;
-class tastiera;
+class Version;
+class AlarmClock;
+class Keypad;
 class Calibrate;
 class Contrast;
 class contdiff;
 
 
 /*!
-  \class impostaSveglia
+  \class bannAlarmClock
   \brief This class is made to make alarm clock settings.
 
   \author Davide
   \date lug 2005
 */
-class impostaSveglia : public bann2But
+class bannAlarmClock : public bann2But
 {
 Q_OBJECT
 public:
-	impostaSveglia(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
+	bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
 		QString icon2, QString icon3, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
@@ -59,7 +59,7 @@ public slots:
 	void toggleAbil();
 
 private:
-	sveglia* svegliolina;
+	AlarmClock *alarm_clock;
 	QString icon_on, icon_off;
 
 private slots:
@@ -129,16 +129,16 @@ private slots:
 };
 
 
-class machVers : public bannOnDx
+class bannVersion : public bannOnDx
 {
 Q_OBJECT
 public:
-	machVers(sottoMenu *parent, versio *ver, QString icon1);
+	bannVersion(sottoMenu *parent, QString icon, Version *ver);
 private slots:
 	void tiempout();
 	void showVers();
 private:
-	versio *v;
+	Version *v;
 };
 
 
@@ -163,11 +163,11 @@ public slots:
 /*!
   \brief  Shows the keypad to compose the password key
 */
-	void reShow1(char*);
+	void reShow1();
 /*!
   \brief  Shows the keypad to compose the confirmation of the password key
 */
-	void reShow2(char*);
+	void reShow2();
 /*!
   \brief  Stops the error beep made when the password insertion is wrong
 */
@@ -181,17 +181,13 @@ private:
 	bool active;
 	QString icon_on, icon_off;
 	QString password;
-	tastiera *tasti;
+	Keypad *tasti;
 	bool sb;
 signals:
 /*!
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
 */
 	void activatePaswd(bool);
-/*!
-  \brief  Emitted when the password is changed so BtMain knows which password has to wait
-*/
-	void setPwd(bool, QString);
 };
 
 #endif

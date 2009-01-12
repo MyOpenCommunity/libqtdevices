@@ -22,8 +22,7 @@
 ** Advanced scenario management generic condition
 ****************************************************************/
 
-// TODO: vedere se puo' essere trasformato in un QWidget!
-scenEvo_cond::scenEvo_cond(QWidget *parent) : QFrame(parent)
+scenEvo_cond::scenEvo_cond() : Page(0)
 {
 	val = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
@@ -59,12 +58,6 @@ void scenEvo_cond::setVal(int v)
 const char *scenEvo_cond::getDescription()
 {
 	return "Generic scenEvo condition";
-}
-
-void scenEvo_cond::mostra()
-{
-	// Does nothing by default
-	qDebug("scenEvo_cond::mostra()");
 }
 
 void scenEvo_cond::SetIcons()
@@ -133,41 +126,23 @@ bool scenEvo_cond::isTrue()
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(QWidget *parent) : scenEvo_cond(parent)
+scenEvo_cond_h::scenEvo_cond_h(QString _h, QString _m)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
-	h = new QString("");
-	m = new QString("");
-	s = new QString("");
+	*h = _h;
+	*m = _m;
 	ora = NULL;
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
 	cond_time = new QDateTime(QDateTime::currentDateTime());
 	ora = new timeScript(this, 2 , cond_time);
 	hasTimeCondition = true;
-}
 
-void scenEvo_cond_h::set_h(QString _h)
-{
-	*h = _h;
-	qDebug() << "scenEvo_cond_h::set_h : " << h;
-}
-
-void scenEvo_cond_h::set_m(QString _m)
-{
-	*m = _m;
-	qDebug() << "scenEvo_cond_h::set_m : " << m;
 	QTime t(h->toInt(), m->toInt(), 0);
 	cond_time->setTime(t);
 	ora->setDataOra(QDateTime(QDate::currentDate(), t));
 	ora->showTime();
 	setupTimer();
-}
-
-void scenEvo_cond_h::set_s(QString _s)
-{
-	*s = _s;
-	qDebug() << "scenEvo_cond_h::set_s : " << s;
 }
 
 const char *scenEvo_cond_h::getDescription()
@@ -180,8 +155,6 @@ void scenEvo_cond_h::SetIcons()
 	qDebug("scenEvo_cond_h::SetIcons()");
 	for (int i = 0; i < 6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	for (uchar idx = 0; idx < 2; idx++)
 	{
@@ -245,16 +218,16 @@ void scenEvo_cond_h::SetIcons()
 	qDebug("scenEvo_cond_h::SetIcons(), fine");
 }
 
-void scenEvo_cond_h::mostra()
+void scenEvo_cond_h::showPage()
 {
-	qDebug("scenEvo_cond_h::mostra()");
+	scenEvo_cond::showPage();
+	qDebug("scenEvo_cond_h::showPage()");
 	for (uchar idx = 0; idx < 8; idx++)
 		if (but[idx])
 			but[idx]->show();
 	ora->show();
 	Immagine->show();
 
-	show();
 	disconnect(but[0] ,SIGNAL(clicked()), ora, SLOT(aumOra()));
 	disconnect(but[1] ,SIGNAL(clicked()), ora, SLOT(aumMin()));
 	disconnect(but[2] ,SIGNAL(clicked()), ora, SLOT(diminOra()));
@@ -361,7 +334,7 @@ bool scenEvo_cond_h::isTrue()
 ** Advanced scenario management, device condition
 ****************************************************************/
 
-scenEvo_cond_d::scenEvo_cond_d(QWidget *parent) : scenEvo_cond(parent)
+scenEvo_cond_d::scenEvo_cond_d()
 {
 	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
 	descr = new QString("");
@@ -399,9 +372,10 @@ const char *scenEvo_cond_d::getDescription()
 	return "scenEvo device condition";
 }
 
-void scenEvo_cond_d::mostra()
+void scenEvo_cond_d::showPage()
 {
-	qDebug("scenEvo_cond_d::mostra()");
+	scenEvo_cond::showPage();
+	qDebug("scenEvo_cond_d::showPage()");
 	for (uchar idx = 0; idx < 8; idx++)
 		if (but[idx])
 			but[idx]->show();
@@ -411,7 +385,6 @@ void scenEvo_cond_d::mostra()
 	area2_ptr->show();
 	if (actual_condition)
 		actual_condition->show();
-	show();
 }
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
@@ -436,8 +409,7 @@ void scenEvo_cond_d::SetIcons()
 	QPixmap *Icon1 = new QPixmap();
 	for (int i=0; i<6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
+
 	area1_ptr = new QLabel(this);
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
 	area2_ptr = new QLabel(this);

@@ -19,6 +19,7 @@
 #include "global.h" // BTouch
 #include "main.h" // ICON...
 
+#include <QWidget>
 #include <QLCDNumber>
 #include <QDebug>
 #include <QLabel>
@@ -211,12 +212,8 @@ void BannPulsDynIcon::status_changed(QList<device_status*> sl)
 	StopngoPage class definition
 ==================================================================================================*/
 
-StopngoPage::StopngoPage(QWidget *parent, QString where, int id, QString pageTitle) : QWidget(parent)
+StopngoPage::StopngoPage(QString where, int id, QString pageTitle)
 {
-	showFullScreen(); // TODO: verificare se e' necessario!
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-
 	this->where = where;
 	this->id = id;
 	this->pageTitle = pageTitle;
@@ -288,7 +285,7 @@ void StopngoPage::AddItems()
 	SetButtonIcon(okBut, ICON_FRECCIA_SX);
 	connect(okBut, SIGNAL(clicked()), this, SIGNAL(Closed()));
 	okBut->show();
-	
+
 	//Draw the status icon
 	statusIcon = new QLabel(this);
 	statusIcon->setGeometry((MAX_WIDTH-STATUS_ICON_WIDTH)/2, FIRST_ROW_Y, STATUS_ICON_WIDTH, STATUS_ICON_HEIGHT);
@@ -393,11 +390,6 @@ void StopngoPage::AddItems()
 	SetButtonIcon(autoArmBut, ICON_STOPNGO_A_RIARMO);
 	connect(autoArmBut, SIGNAL(clicked()), this, SLOT(AutoArmClick()));
 	autoArmBut->show();
-}
-
-void StopngoPage::showPage()
-{
-	showFullScreen();
 }
 
 void StopngoPage::status_changed(QList<device_status*> sl)

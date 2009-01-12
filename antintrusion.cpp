@@ -1,5 +1,5 @@
 #include "antintrusion.h"
-#include "tastiera.h"
+#include "keypad.h"
 #include "bann_antintrusion.h"
 #include "sottomenu.h"
 #include "global.h" // BTouch
@@ -120,18 +120,20 @@ void Antintrusion::Parzializza()
 	}
 	if (tasti)
 		delete tasti;
-	tasti = new tastiera_con_stati(s, NULL);
-	connect(tasti, SIGNAL(Closed(char*)), this, SLOT(Parz(char*)));
-	tasti->setMode(tastiera::HIDDEN);
-	tasti->showFullScreen();
+	tasti = new KeypadWithState(s);
+	connect(tasti, SIGNAL(Closed()), this, SLOT(Parz()));
+	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
+	tasti->setMode(Keypad::HIDDEN);
+	tasti->showPage();
 }
 
-void Antintrusion::Parz(char* pwd)
+void Antintrusion::Parz()
 {
 	qDebug("antintrusione::Parz()");
-	if (pwd)
+	QString pwd = tasti->getText();
+	if (!pwd.isEmpty())
 	{
-		QString f = QString("*5*50#") + pwd + "#";
+		QString f = "*5*50#" + pwd + "#";
 		for (int i = 0; i < MAX_ZONE; i++)
 			f += ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1";
 		f += "*0##";

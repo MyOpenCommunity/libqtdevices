@@ -1,60 +1,61 @@
 #include "bann_settings.h"
-#include "versio.h"
-#include "sveglia.h"
-#include "tastiera.h"
+#include "version.h"
+#include "alarmclock.h"
+#include "keypad.h"
 #include "multisounddiff.h" // contdiff
 #include "calibrate.h"
 #include "contrast.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
+#include "global.h"
 
 #include <QTimer>
 #include <QDebug>
 
 
-impostaSveglia::impostaSveglia(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
+bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
 	QString icon2, QString icon3, int enabled, int tipo, int freq)
 	: bann2But(parent)
 {
 	icon_on = icon1;
 	icon_off = icon2;
 	SetIcons(icon_off, icon3);
-	svegliolina = new sveglia(0, static_cast<sveglia::sveType>(tipo), static_cast<sveglia::sveFreq>(freq), diso, hour, minute);
-	svegliolina->hide();
+	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), diso, hour, minute);
+	alarm_clock->hide();
 	setAbil(enabled == 1);
-	connect(this,SIGNAL(dxClick()),svegliolina,SLOT(mostra()));
-	connect(this,SIGNAL(sxClick()),this,SLOT(toggleAbil()));
+	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
+	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
-	connect(parentWidget() , SIGNAL(gestFrame(char*)),svegliolina,SLOT(gestFrame(char*)));
-	connect(svegliolina,SIGNAL(ImClosed()), svegliolina, SLOT(hide()));
-	connect(svegliolina,SIGNAL(ImClosed()), this, SLOT(forceDraw()));
+	connect(alarm_clock,SIGNAL(Closed()), alarm_clock, SLOT(hide()));
+	connect(alarm_clock,SIGNAL(Closed()), this, SLOT(forceDraw()));
 }
 
-void impostaSveglia::gestFrame(char* frame)
+void bannAlarmClock::gestFrame(char* frame)
 {
+	alarm_clock->gestFrame(frame);
 }
 
-void impostaSveglia::setAbil(bool b)
+void bannAlarmClock::setAbil(bool b)
 {
-	svegliolina->setActive(b);
+	alarm_clock->setActive(b);
 	forceDraw();
 }
 
-void impostaSveglia::toggleAbil()
+void bannAlarmClock::toggleAbil()
 {
-	svegliolina->setActive(!svegliolina->isActive());
+	alarm_clock->setActive(!alarm_clock->isActive());
 	forceDraw();
 }
 
-void impostaSveglia::forceDraw()
+void bannAlarmClock::forceDraw()
 {
-	SetIcons(0, svegliolina->isActive() ? icon_on : icon_off);
+	SetIcons(0, alarm_clock->isActive() ? icon_on : icon_off);
 	Draw();
-	svegliolina->setSerNum(getSerNum());
+	alarm_clock->setSerNum(getSerNum());
 }
 
-void impostaSveglia::inizializza()
+void bannAlarmClock::inizializza()
 {
-	svegliolina->inizializza();
+	alarm_clock->inizializza();
 }
 
 
@@ -128,21 +129,20 @@ void bannContrast::done()
 }
 
 
-machVers::machVers(sottoMenu *parent, versio *ver, QString icon1)
-	: bannOnDx(parent)
+bannVersion::bannVersion(sottoMenu *parent, QString icon, Version *ver)
+	: bannOnDx(parent, icon)
 {
-	SetIcons(icon1, 1);
-	connect(this,SIGNAL(click()),this,SLOT(showVers()));
+	connect(this, SIGNAL(click()), this, SLOT(showVers()));
 	v = ver;
 }
 
-void machVers::showVers()
+void bannVersion::showVers()
 {
-	v->showFullScreen();
+	v->showPage();
 	QTimer::singleShot(10000, this, SLOT(tiempout()));
 }
 
-void machVers::tiempout()
+void bannVersion::tiempout()
 {
 	v->hide();
 }
@@ -155,28 +155,26 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	icon_off = icon2;
 	password = pwd;
 
-	SetIcons(icon_off, icon3);
-
-	tasti = new tastiera();
+	tasti = new Keypad();
 	tasti->hide();
-	tasti->setMode(tastiera::HIDDEN);
-	connect(this,SIGNAL(dxClick()),tasti,SLOT(showFullScreen()));
+	tasti->setMode(Keypad::HIDDEN);
+	connect(this,SIGNAL(dxClick()),tasti,SLOT(showPage()));
 	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
 
-	connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-	// TODO: e' brutto fare una connessione con il parent.. se il banner viene messo in un'altra gerarchia non funziona
-	// piu' niente!
-	connect(this, SIGNAL(setPwd(bool, QString)), parentWidget(), SIGNAL(setPwd(bool, QString)));
-	active = (attiva == 1);
+	connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
+	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
 
-	emit setPwd(active, password);
+	active = (attiva == 1);
+	BTouch->setPwd(active, password);
+	SetIcons(1, icon3);
+	SetIcons(0, active ? icon_on : icon_off);
 }
 
 void impPassword::toggleActivation()
 {
 	active = !active;
 	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
-	emit setPwd(active, password);
+	BTouch->setPwd(active, password);
 	SetIcons(0, active ? icon_on : icon_off);
 	Draw();
 }
@@ -188,24 +186,24 @@ void impPassword::showEvent(QShowEvent *event)
 	if (password.isEmpty())
 	{
 		qDebug("password = ZERO");
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
-		tasti->setMode(tastiera::CLEAN);
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
+		tasti->setMode(Keypad::CLEAN);
+		connect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
 	}
 	else
 	{
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
-		tasti->setMode(tastiera::HIDDEN);
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
+		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
+		tasti->setMode(Keypad::HIDDEN);
+		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
 	}
 }
 
-void impPassword::reShow1(char *c)
+void impPassword::reShow1()
 {
-	qDebug("impPassword::reShow1");
-	if (c == NULL)
+	QString c = tasti->getText();
+	if (c.isEmpty())
 	{
 		show();
 		return;
@@ -221,24 +219,24 @@ void impPassword::reShow1(char *c)
 	}
 	else
 	{
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-		tasti->setMode(tastiera::CLEAN);
-		tasti->showFullScreen();
+		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
+		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
+		tasti->setMode(Keypad::CLEAN);
+		tasti->showPage();
 		qDebug("password giusta");
 	}
 }
 
-void impPassword::reShow2(char *c)
+void impPassword::reShow2()
 {
-	qDebug("impPassword::reShow2");
-	if (c)
+	QString c = tasti->getText();
+	if (!c.isEmpty())
 	{
-		connect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
-		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow2(char*)));
+		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
+		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
 		password = c;
 		setCfgValue("value", password, PROTEZIONE, getSerNum());
-		emit setPwd(active, password);
+		BTouch->setPwd(active, password);
 	}
 	show();
 }

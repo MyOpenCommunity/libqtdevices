@@ -2,16 +2,16 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** sveglia.h
+** alarmclock.h
 **
-**definizioni della pagine di impostazione sveglia
+** the page to set the alarm clock
 **
 ****************************************************************/
 
-#ifndef SVEGLIA_H
-#define SVEGLIA_H
+#ifndef ALARMCLOCK_H
+#define ALARMCLOCK_H
 
-#include <QWidget>
+#include "page.h"
 
 #define AMPLI_NUM 100
 #define BASE_EEPROM 11360
@@ -24,24 +24,25 @@ class BtButton;
 class bannFrecce;
 class timeScript;
 class QDateTime;
+class QWidget;
 class QLabel;
 
 
 /*!
-  \class sveglia
+  \class AlarmClock
   \brief This class is the implementation af the alarm set.
 
   \author Davide
   \date lug 2005
 */
-class sveglia : public QWidget
+class AlarmClock : public Page
 {
 Q_OBJECT
 public:
-/*! \enum  sveFreq
+/*! \enum  Freq
   Differentiate the alarm set frequencies of operation
 */
-	enum sveFreq
+	enum Freq
 	{
 		SEMPRE = 1,  /*!< Always -> every day*/
 		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
@@ -50,26 +51,21 @@ public:
 		NESSUNO = 50  /*!< Never*/
 	};
 
-/*! \enum sveType
+/*! \enum Type
   Differentiate the alarm set type
 */
-	enum sveType
+	enum Type
 	{
 		BUZZER = 0,  /*!< The buzzer sounds and backlight flashes*/
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-    sveglia(QWidget *parent, sveType t, sveFreq f, contdiff *diso, int hour, int minute);
+	AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
 */
 	void setSerNum(int);
-
-	BtButton *but[4];
-	QLabel *Immagine;
-	BtButton *choice[4];
-	QLabel *testiChoice[4];
 
 /*!
   \brief Sets the alarm set (dis)active.
@@ -86,9 +82,14 @@ public:
 */
 	void inizializza();
 
-
-
 public slots:
+/*!
+  \brief Analyzes the \a Open \a Frame incoming to understand how the end-user want his a sound \a diffusion \a alarm \a set to work.
+*/
+	void gestFrame(char *f);
+
+
+private slots:
 /*!
   \brief Execute when the time for the alarm set is chosen to show the frequency (once-always-mon/fri-sat-sun).
 */
@@ -97,7 +98,7 @@ public slots:
 /*!
   \brief Draws the first page for alarm set setting and initializes some connections.
 */
-	void mostra();
+	virtual void showPage();
 
 /*!
   \brief Executed when "once" frequency is selected.
@@ -122,7 +123,7 @@ public slots:
 /*!
   \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
 */
-	void Closed();
+	void handleClose();
 
 /*!
   \brief Execute when the frequency for the alarm set is chosen to show the sound diffusion page if necessary.
@@ -145,18 +146,17 @@ public slots:
 	void buzzerAlarm();
 
 /*!
-  \brief Analyzes the \a Open \a Frame incoming to understand how the end-user want his a sound \a diffusion \a alarm \a set to work.
-*/
-	void gestFrame(char *f);
-
-/*!
   \brief Stops the alarm set.
 */
 	void spegniSveglia(bool);
 
 private:
-	sveType tipo;
-	sveFreq tipoSveglia;
+	BtButton *but[4];
+	QLabel *Immagine;
+	BtButton *choice[4];
+	QLabel *testiChoice[4];
+	Type type;
+	Freq freq;
 	void drawSelectPage();
 	timeScript *dataOra;
 	bannFrecce *bannNavigazione;
@@ -170,18 +170,6 @@ private:
 	bool gesFrameAbil, active, onceToGest;
 	QTimer *minuTimer,*aumVolTimer;
 	QString frame;
-
-signals:
-/*!
-  \brief Emitted to send \a Open \a Frame to the system.
-*/
-void sendFrame(char*);
-void sendInit(char*);
-
-/*!
-  \brief Emitted when the object is closed.
-*/
-	void ImClosed();
 };
 
-#endif // SVEGLIA_H
+#endif // ALARMCLOCK_H

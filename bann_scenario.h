@@ -28,7 +28,6 @@ class bannScenario : public bannOnSx
 Q_OBJECT
 public:
 	bannScenario(sottoMenu *parent, QString where, QString IconaSx);
-	void inizializza(bool forza = false);
 private slots:
 	void Attiva();
 };

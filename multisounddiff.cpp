@@ -12,7 +12,7 @@
 #include "ambdiffson.h"
 #include "device.h"
 #include "device_status.h"
-#include "sveglia.h"
+#include "alarmclock.h"
 #include "sounddiffusion.h"
 #include "scenevocond.h"
 #include "global.h" // btouch_device_cache
@@ -300,7 +300,7 @@ void contdiff::restorewindows()
 		dm->resizewindows(0, 0, 240, 320);
 }
 
-void contdiff::connectClosed(sveglia *s)
+void contdiff::connectClosed(AlarmClock *s)
 {
 	disconnect(this, SIGNAL(Closed()), s, SLOT(Closed()));
 	connect(this, SIGNAL(Closed()), s, SLOT(Closed()));
@@ -308,7 +308,7 @@ void contdiff::connectClosed(sveglia *s)
 		connect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
 }
 
-void contdiff::disconnectClosed(sveglia *s)
+void contdiff::disconnectClosed(AlarmClock *s)
 {
 	if (dm)
 		disconnect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));

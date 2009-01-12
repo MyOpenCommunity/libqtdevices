@@ -1,6 +1,6 @@
 #include "settings.h"
 #include "bann_settings.h"
-#include "sveglia.h"
+#include "alarmclock.h"
 #include "global.h" // BTouch
 #include "lansettings.h"
 #include "multisounddiff.h" // contdiff
@@ -45,14 +45,14 @@ void Settings::loadItems(QDomNode config_node)
 			int minute = getTextChild(item, "minute").toInt();
 
 			contdiff *cont = 0;
-			if (type == sveglia::DI_SON)
+			if (type == AlarmClock::DI_SON)
 				// Use old or multichannel sd
 				if (BTouch->difSon)
 					cont = new contdiff(BTouch->difSon, NULL);
 				else if (BTouch->dm)
 					cont = new contdiff(NULL, BTouch->dm);
 
-			b = new impostaSveglia(this, cont, hour, minute, img1, img2, img3, enabled, type, alarmset);
+			b = new bannAlarmClock(this, cont, hour, minute, img1, img2, img3, enabled, type, alarmset);
 			break;
 		}
 		case SET_DATA_ORA:
@@ -72,7 +72,7 @@ void Settings::loadItems(QDomNode config_node)
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			break;
 		case VERSIONE:
-			b = new machVers(this, BTouch->datiGen, img1);
+			b = new bannVersion(this, img1, BTouch->datiGen);
 			break;
 		case BRIGHTNESS:
 			b = new bannOnDx(this, ICON_BRIGHTNESS, new BrightnessPage());

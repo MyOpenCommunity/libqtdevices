@@ -352,6 +352,3 @@ void grAttuatInt::Ferma()
 	sendFrame("0");
 }
 
-void grAttuatInt::inizializza(bool forza)
-{
-}

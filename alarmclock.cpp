@@ -1,16 +1,4 @@
-
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**sveglia.cpp
-**
-**Sottomenù imposta sveglia
-**
-****************************************************************/
-
-
-#include "sveglia.h"
+#include "alarmclock.h"
 #include "generic_functions.h" // setCfgValue, setBacklight, getBeep, setBeep, beep, setBacklight
 #include "multisounddiff.h" // contdiff
 #include "btbutton.h"
@@ -37,15 +25,11 @@
 #include <assert.h>
 
 
-sveglia::sveglia(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int hour, int minute)
-	: QWidget(parent)
+AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute) : Page(0)
 {
-	// TODO: rimuovere gestione frame!
 	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
 	for (uchar idx = 0; idx < 2; idx++)
 	{
@@ -109,14 +93,13 @@ sveglia::sveglia(QWidget *parent, sveType t, sveFreq freq, contdiff *diso, int h
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;
 	minuTimer = NULL;
-	tipoSveglia = freq;
-	tipo = t;
-	qDebug("tipoSveglia = %d - tipo= %d ",tipoSveglia, tipo);
+	freq = f;
+	type = t;
 
 	connect(BTouch, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
 
-void sveglia::okTime()
+void AlarmClock::okTime()
 {
 	disconnect(but[0], SIGNAL(clicked()), dataOra, SLOT(aumOra()));
 	disconnect(but[1], SIGNAL(clicked()), dataOra, SLOT(aumMin()));
@@ -132,18 +115,20 @@ void sveglia::okTime()
 	{
 		choice[idx]->show();
 		testiChoice[idx]->show();
-		choice[idx]->setChecked(tipoSveglia == idx);
+		choice[idx]->setChecked(freq == idx);
 	}
 
 	dataOra->hide();
 	Immagine->hide();
-	
-	if (tipo != DI_SON)
+
+	if (type != DI_SON)
 		bannNavigazione->nascondi(banner::BUT2);
 }
 
-void sveglia::mostra()
+void AlarmClock::showPage()
 {
+	Page::showPage();
+
 	for (uchar idx = 0; idx < 4; idx++)
 		but[idx]->show();
 	dataOra->show();
@@ -156,8 +141,6 @@ void sveglia::mostra()
 		testiChoice[idx]->hide();
 	}
 
-	showFullScreen();
-
 	disconnect(but[0],SIGNAL(clicked()),dataOra,SLOT(aumOra()));
 	disconnect(but[1],SIGNAL(clicked()),dataOra,SLOT(aumMin()));
 	disconnect(but[2],SIGNAL(clicked()),dataOra,SLOT(diminOra()));
@@ -167,12 +150,12 @@ void sveglia::mostra()
 	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
 	connect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
 	connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-	connect(bannNavigazione  ,SIGNAL(forwardClick()),this,SLOT(okTime()));
-	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));
-	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(Closed()));
+	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(okTime()));
+	disconnect(bannNavigazione,SIGNAL(forwardClick()), this, SLOT(okTipo()));
+	disconnect(bannNavigazione,SIGNAL(forwardClick()), this, SLOT(handleClose()));
 
-	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
-	connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(Closed()));
+	disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
+	connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 
 	if (difson)
 		difson->connectClosed(this);
@@ -182,51 +165,50 @@ void sveglia::mostra()
 	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
 	connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));
 	aggiornaDatiEEprom = 0;
-	if (tipo != DI_SON)
+	if (type != DI_SON)
 		bannNavigazione->mostra(banner::BUT2);
 }
 
-void sveglia::drawSelectPage()
+void AlarmClock::drawSelectPage()
 {
 	for (uchar idx = 0; idx < 4; idx++)
-		choice[idx]->setChecked(idx == tipoSveglia);
+		choice[idx]->setChecked(idx == freq);
 }
 
-void sveglia::sel1(bool isOn)
+void AlarmClock::sel1(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = ONCE;
+		freq = ONCE;
 	drawSelectPage();
 }
 
-void sveglia::sel2(bool isOn)
+void AlarmClock::sel2(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = SEMPRE;
+		freq = SEMPRE;
 	drawSelectPage();
 }
 
-void sveglia::sel3(bool isOn)
+void AlarmClock::sel3(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = FERIALI;
+		freq = FERIALI;
 	drawSelectPage();
 }
 
-void sveglia::sel4(bool isOn)
+void AlarmClock::sel4(bool isOn)
 {
 	if (isOn)
-		tipoSveglia = FESTIVI;
+		freq = FESTIVI;
 	drawSelectPage();
 }
 
-void sveglia::Closed()
+void AlarmClock::handleClose()
 {
-	qDebug("Sveglia Closed");
 	//imposta la sveglia in
 	if (difson)
 	{
-		disconnect(difson,SIGNAL(Closed()),this,SLOT(Closed()));
+		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
 		difson->disconnectClosed(this);
 		if (aggiornaDatiEEprom)
 		{
@@ -252,30 +234,30 @@ void sveglia::Closed()
 
 	gesFrameAbil = false;
 	setActive(true);
-	emit ImClosed();
+	emit Closed();
 	delete oraSveglia;
 	oraSveglia = new QDateTime(dataOra->getDataOra());
 
 	QMap<QString, QString> data;
 	data["hour"] = oraSveglia->time().toString("hh");
 	data["minute"] = oraSveglia->time().toString("mm");
-	data["alarmset"] = QString::number(tipoSveglia);
+	data["alarmset"] = QString::number(freq);
 
 	setCfgValue(data, SET_SVEGLIA, serNum);
 }
 
-void sveglia::okTipo()
+void AlarmClock::okTipo()
 {
 	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));
-	connect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(Closed()));
+	connect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(handleClose()));
 	for (uchar idx = 0; idx < 4; idx++)
 	{
 		choice[idx]->hide();
 		testiChoice[idx]->hide();
 	}
 	Immagine->show();
-	if (tipo != DI_SON)
-		Closed();
+	if (type != DI_SON)
+		handleClose();
 	else if (difson)
 	{
 		this->bannNavigazione->hide();
@@ -296,7 +278,7 @@ void sveglia::okTipo()
 	}
 }
 
-void sveglia::setActive(bool a)
+void AlarmClock::setActive(bool a)
 {
 	active = a;
 	if (active)
@@ -322,7 +304,7 @@ void sveglia::setActive(bool a)
 	}
 }
 
-void sveglia::gestFrame(char* f)
+void AlarmClock::gestFrame(char* f)
 {
 	if (gesFrameAbil == false)
 		return;
@@ -389,21 +371,21 @@ void sveglia::gestFrame(char* f)
 	}
 }
 
-void sveglia::verificaSveglia()
+void AlarmClock::verificaSveglia()
 {
 	if (!active)
 		return;
 
 	QDateTime actualDateTime = QDateTime::currentDateTime();
 
-	if (tipoSveglia == SEMPRE || tipoSveglia == ONCE ||
-		(tipoSveglia == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
-		(tipoSveglia == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
+	if (freq == SEMPRE || freq == ONCE ||
+		(freq == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
+		(freq == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
 	{
 		qDebug("secsTo: %d",oraSveglia->time().secsTo(actualDateTime.time()));
 		if ((actualDateTime.time() >= (oraSveglia->time())) && ((oraSveglia->time().secsTo(actualDateTime.time())<60)))
 		{
-			if (tipo == BUZZER)
+			if (type == BUZZER)
 			{
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(100);
@@ -413,7 +395,7 @@ void sveglia::verificaSveglia()
 				BTouch->freeze(true);
 				BTouch->svegl(true);
 			}
-			else if (tipo == DI_SON)
+			else if (type == DI_SON)
 			{
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(3000);
@@ -428,7 +410,7 @@ void sveglia::verificaSveglia()
 
 			qDebug("PARTE LA SVEGLIA");
 
-		if (tipoSveglia == ONCE)
+		if (freq == ONCE)
 			setActive(false);
 		}
 	}
@@ -436,12 +418,12 @@ void sveglia::verificaSveglia()
 		minuTimer->start((60-actualDateTime.time().second())*1000);
 }
 
-bool sveglia::isActive()
+bool AlarmClock::isActive()
 {
 	return active;
 }
 
-void sveglia::aumVol()
+void AlarmClock::aumVol()
 {
 	bool amb1 = false;
 	bool amb2 = false;
@@ -576,7 +558,7 @@ void sveglia::aumVol()
 	}
 }
 
-void sveglia::buzzerAlarm()
+void AlarmClock::buzzerAlarm()
 {
 	if (contaBuzzer == 0)
 	{
@@ -607,7 +589,7 @@ void sveglia::buzzerAlarm()
 	}
 }
 
-void sveglia::spegniSveglia(bool b)
+void AlarmClock::spegniSveglia(bool b)
 {
 	if (!b && aumVolTimer)
 	{
@@ -615,7 +597,7 @@ void sveglia::spegniSveglia(bool b)
 		{
 			qDebug("SPENGO LA SVEGLIA");
 			aumVolTimer->stop();
-			if (tipo == BUZZER)
+			if (type == BUZZER)
 				setBeep(buzAbilOld,false);
 
 			delete aumVolTimer;
@@ -626,19 +608,19 @@ void sveglia::spegniSveglia(bool b)
 	else if (b)
 	{
 		if (isVisible())
-			Closed();
+			handleClose();
 	}
 }
 
-void sveglia::setSerNum(int s)
+void AlarmClock::setSerNum(int s)
 {
 	serNum = s;
 }
 
-void sveglia::inizializza()
+void AlarmClock::inizializza()
 {
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	if (tipo == DI_SON)
+	if (type == DI_SON)
 	{
 		int eeprom;
 		char chiave[6];

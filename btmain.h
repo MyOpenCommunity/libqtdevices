@@ -21,12 +21,12 @@ class SoundDiffusion;
 class MultiSoundDiff;
 class Antintrusion;
 class ThermalMenu;
-class versio;
+class Version;
 class homePage;
 class Calibrate;
 class genPage;
 class Client;
-class tastiera;
+class Keypad;
 class ScreenSaver;
 class SupervisionMenu;
 class SpecialPage;
@@ -68,13 +68,13 @@ public:
 	// devices specific methods, unless you have to send frames without reading responses.
 	void sendFrame(QString frame);
 	void sendInit(QString frame);
+	void setPwd(bool, QString);
 
 private slots:
 	void hom();
 	void init();
 	void gesScrSav();
-	void setPwd(bool, QString);
-	void testPwd(char*);
+	void testPwd();
 	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();
@@ -90,7 +90,7 @@ public:
 	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
 	SoundDiffusion *difSon;
 	MultiSoundDiff *dm;
-	versio *datiGen;
+	Version *datiGen;
 
 private:
 	QHash<int, Page*> page_list;
@@ -105,7 +105,7 @@ private:
 	QTimer *tempo2;
 	QString pwd;
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
-	tastiera *tasti;
+	Keypad *tasti;
 	bool event_unfreeze;
 	bool firstTime, bloccato;
 	bool pd_shown;

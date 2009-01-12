@@ -27,8 +27,8 @@
 #include "genpage.h"
 #include "device_cache.h"
 #include "openclient.h"
-#include "versio.h"
-#include "tastiera.h"
+#include "version.h"
+#include "keypad.h"
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
@@ -83,7 +83,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	tasti = NULL;
 	pwdOn = 0;
 
-	datiGen = new versio();
+	datiGen = new Version();
 	struct sysinfo info;
 	sysinfo(&info);
 	qDebug("uptime: %d",(int)info.uptime);
@@ -91,7 +91,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 
 	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
-		datiGen->show();
+		datiGen->showPage();
 		waitBeforeInit();
 	}
 	else
@@ -99,7 +99,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
-		connect(calib, SIGNAL(fineCalib()), datiGen,SLOT(showFullScreen()));
+		connect(calib, SIGNAL(fineCalib()), datiGen, SLOT(showPage()));
 		alreadyCalibrated = true;
 	}
 }
@@ -255,6 +255,21 @@ bool BtMain::loadConfiguration(QString cfg_file)
 {
 	if (QFile::exists(cfg_file))
 	{
+		QDomNode setup = getConfElement("setup");
+		if (!setup.isNull())
+		{
+			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
+			bool ok;
+			if (!addr.isNull())
+				datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
+
+			QDomElement model = getElement(setup, "generale/modello");
+			if (!model.isNull())
+				datiGen->setModel(model.text());
+		}
+		else
+			qWarning("setup node not found on xml config file!");
+
 		int screensaver_type = ScreenSaver::LINES; // default screensaver
 		QDomNode displaypages = getConfElement("displaypages");
 		if (!displaypages.isNull())
@@ -283,21 +298,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		}
 		else
 			qFatal("displaypages node not found on xml config file!");
-
-		QDomNode setup = getConfElement("setup");
-		if (!setup.isNull())
-		{
-			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
-			bool ok;
-			if (!addr.isNull())
-				datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
-
-			QDomElement model = getElement(setup, "generale/modello");
-			if (!model.isNull())
-				datiGen->setModel(model.text());
-		}
-		else
-			qWarning("setup node not found on xml config file!");
 
 		// read configuration for brightness
 		BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
@@ -580,10 +580,10 @@ void BtMain::freeze(bool b)
 		{
 			if (!tasti)
 			{
-				tasti = new tastiera(NULL);
-				tasti->setMode(tastiera::HIDDEN);
-				tasti->showFullScreen();
-				connect(tasti, SIGNAL(Closed(char*)), this, SLOT(testPwd(char*)));
+				tasti = new Keypad();
+				tasti->setMode(Keypad::HIDDEN);
+				tasti->showPage();
+				connect(tasti, SIGNAL(Closed()), this, SLOT(testPwd()));
 			}
 		}
 		qApp->removeEventFilter(this);
@@ -602,23 +602,24 @@ void BtMain::setPwd(bool b, QString p)
 	qDebug() << "BtMain nuova pwd = " << pwd << "-" << pwdOn;
 }
 
-void BtMain::testPwd(char* p)
+void BtMain::testPwd()
 {
-	if (p)
+	QString p = tasti->getText();
+	if (!p.isEmpty())
 	{
 		if (p != pwd)
 		{
-			tasti->showFullScreen();
+			tasti->resetText();
 			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
 		}
 		else
 		{
-			delete tasti;
+			tasti->disconnect();
+			tasti->hide();
+			tasti->deleteLater();
 			tasti = NULL;
 		}
 	}
-	else
-		tasti->showFullScreen();
 }
 
 void BtMain::svegl(bool b)
