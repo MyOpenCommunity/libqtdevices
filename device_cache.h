@@ -8,21 +8,11 @@
 #include <QMap>
 #include <QString>
 
-class Client;
 class device;
 
 
 class device_cache : public QMap<QString, device*>
 {
-private:
-	//! Connect comm signals
-	void connect_comm(device *);
-	//! Disconnect comm signals
-	void disconnect_comm(device *);
-
-	Client *client_comandi;
-	Client *client_monitor;
-	Client *client_richieste;
 public:
 	//! Constructor
 	device_cache();
@@ -70,8 +60,6 @@ public:
 	void put_device(QString k);
 	//! Add already created device to cache. Key is device's who+where
 	device * add_device(device * d);
-	//! Set pointers to clients
-	void set_clients(Client* com, Client* mon, Client* ri);
 	//! Destructor
 	~device_cache();
 };

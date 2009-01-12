@@ -24,6 +24,8 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 	pul = p;
 	group = g;
 	refcount = 0;
+	assert(client_monitor && "Client monitor not set!");
+	connect(client_monitor, SIGNAL(frameIn(char *)), SLOT(frame_rx_handler(char *)));
 }
 
 void device::sendFrame(QString frame)
