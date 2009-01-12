@@ -16,6 +16,7 @@
 
 #include <QFrame>
 #include <QLabel>
+#include <QWidget>
 #include <QString>
 #include <QFile>
 #include <QDebug>
@@ -29,11 +30,8 @@
 #define BUT_SMALL_DIM (MAX_WIDTH-POSX1*2)/8
 #define POSX1_SMALL POSX1
 
-tastiera::tastiera(QWidget *parent, int line) : QWidget(parent)
+tastiera::tastiera(int line)
 {
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-
 	buttons_group = new QButtonGroup(this);
 	unoBut = new BtButton(this);
 	dueBut = new BtButton(this);
@@ -164,14 +162,13 @@ void tastiera::resetText()
 
 
 // tastiera_con_stati implementation
-tastiera_con_stati::tastiera_con_stati(int s[8], QWidget *parent)
-	: tastiera(parent, MAX_HEIGHT/6)
+tastiera_con_stati::tastiera_con_stati(int s[8]) : tastiera(MAX_HEIGHT/6)
 {
 	int i, x;
 	char tmp[2] = "1";
 	QFont aFont;
 	FontManager::instance()->getFont(font_tastiera_bottoni_stati, aFont);
-	
+
 	for (i = 0, x = POSX1_SMALL; i < 8; i++, x += BUT_SMALL_DIM)
 	{
 		// Create button

@@ -120,11 +120,11 @@ void Antintrusion::Parzializza()
 	}
 	if (tasti)
 		delete tasti;
-	tasti = new tastiera_con_stati(s, NULL);
+	tasti = new tastiera_con_stati(s);
 	connect(tasti, SIGNAL(Closed()), this, SLOT(Parz()));
 	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
 	tasti->setMode(tastiera::HIDDEN);
-	tasti->showFullScreen();
+	tasti->showPage();
 }
 
 void Antintrusion::Parz()

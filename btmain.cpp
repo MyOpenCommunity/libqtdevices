@@ -580,9 +580,9 @@ void BtMain::freeze(bool b)
 		{
 			if (!tasti)
 			{
-				tasti = new tastiera(NULL);
+				tasti = new tastiera();
 				tasti->setMode(tastiera::HIDDEN);
-				tasti->showFullScreen();
+				tasti->showPage();
 				connect(tasti, SIGNAL(Closed()), this, SLOT(testPwd()));
 			}
 		}

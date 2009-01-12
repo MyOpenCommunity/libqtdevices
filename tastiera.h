@@ -11,9 +11,8 @@
 #ifndef TASTIERA_H
 #define TASTIERA_H
 
+#include "page.h"
 #include "main.h"
-
-#include <QWidget>
 
 class BtButton;
 class QLabel;
@@ -28,12 +27,11 @@ class QButtonGroup;
   \author Davide
   \date lug 2005
 */
-
-class tastiera : public QWidget
+class tastiera : public Page
 {
 Q_OBJECT
 public:
-    tastiera(QWidget *parent=0, int line=LINE);
+	tastiera(int line=LINE);
 /*!
   \brief Draws the page
 */
@@ -82,12 +80,6 @@ private:
 
 private slots:
 	void buttonClicked(int number);
-
-signals:
-/*!
-  \brief Emitted when the object is closed. The argument represent the code composed by the user.
-*/
-	void Closed();
 };
 
 
@@ -96,8 +88,7 @@ class tastiera_con_stati : public tastiera
 {
 Q_OBJECT
 public:
-	//! Constructor
-	tastiera_con_stati(int s[8], QWidget *parent=0);
+	tastiera_con_stati(int s[8]);
 protected:
 	virtual void paintEvent(QPaintEvent *event);  //! Invert fg/bg colors for active "stati"
 private:
