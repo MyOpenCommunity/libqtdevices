@@ -13,7 +13,7 @@
 #include "device.h"
 #include "btbutton.h"
 #include "generic_functions.h" // getPressName, createMsgOpen
-#include "global.h" // BTouch, btouch_device_cache
+#include "global.h" // btouch_device_cache
 
 #include <QDebug>
 
@@ -98,13 +98,13 @@ void attuatPuls::Attiva()
 	switch (type)
 	{
 	case  AUTOMAZ:
-		BTouch->sendFrame(createMsgOpen("1", "1", getAddress()));
+		sendFrame(createMsgOpen("1", "1", getAddress()));
 		break;
 	case  VCT_SERR:
-		BTouch->sendFrame(createMsgOpen("6", "10", getAddress()));
+		sendFrame(createMsgOpen("6", "10", getAddress()));
 		break;
 	case  VCT_LS:
-		BTouch->sendFrame(createMsgOpen("6", "12", getAddress()));
+		sendFrame(createMsgOpen("6", "12", getAddress()));
 		break;
 	}
 }
@@ -114,12 +114,12 @@ void attuatPuls::Disattiva()
 	switch (type)
 	{
 	case  AUTOMAZ:
-		BTouch->sendFrame(createMsgOpen("1", "0", getAddress()));
+		sendFrame(createMsgOpen("1", "0", getAddress()));
 		break;
 	case  VCT_SERR:
 		break;
 	case  VCT_LS:
-		BTouch->sendFrame(createMsgOpen("6", "11", getAddress()));
+		sendFrame(createMsgOpen("6", "11", getAddress()));
 		break;
 	}
 }

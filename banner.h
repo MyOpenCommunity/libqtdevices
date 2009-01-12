@@ -22,6 +22,7 @@
 
 class BtButton;
 class sottoMenu;
+class Client;
 
 class QPixmap;
 class QTimer;
@@ -266,6 +267,9 @@ public:
 	};
 
 	virtual void addAmb(QString);
+
+	static void setClients(Client *command, Client *request);
+
 public slots:
 	/*!
 	 *  \brief Must be reimplemented to analyze the \a Open \a Frame incoming.
@@ -335,7 +339,16 @@ protected:
 	 * Utility function to draw all buttons except the rightmost one
 	 */
 	void drawAllButRightButton();
+
+	// A global way to send frames/init requests. Do not use these directly, prefer using
+	// devices specific methods, unless you have to send frames without reading responses.
+	void sendFrame(QString frame);
+	void sendInit(QString frame);
+
 private:
+	static Client *client_richieste;
+	static Client *client_comandi;
+
 	QTimer *animationTimer;
 	/**
 	 *   Utility functions to get icon name root. For istance

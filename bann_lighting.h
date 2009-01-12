@@ -92,7 +92,7 @@ public:
 protected:
 	QList<QString> elencoDisp;
 private:
-	void sendFrame(QString msg);
+	void sendMsg(QString msg);
 private slots:
 	virtual void Attiva();
 	virtual void Disattiva();

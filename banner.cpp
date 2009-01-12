@@ -14,6 +14,7 @@
 #include "generic_functions.h" // getPressName
 #include "openclient.h"
 #include "fontmanager.h"
+#include "openclient.h"
 
 #include <QPixmap>
 #include <QLabel>
@@ -23,6 +24,11 @@
 #include <QApplication> //qapp
 
 #include <assert.h> // assert
+
+
+// Inizialization of static member
+Client *banner::client_comandi = 0;
+Client *banner::client_richieste = 0;
 
 
 banner::banner(QWidget *parent) : QWidget(parent)
@@ -638,3 +644,24 @@ QString banner::getNameRoot(QString full_string, QString text_to_strip)
 {
 	return full_string.mid(0, full_string.lastIndexOf('.'));
 }
+
+void banner::sendFrame(QString frame)
+{
+	assert(client_comandi && "Client comandi not set!");
+	QByteArray buf = frame.toAscii();
+	client_comandi->ApriInviaFrameChiudi(buf.constData());
+}
+
+void banner::sendInit(QString frame)
+{
+	assert(client_richieste && "Client richieste not set!");
+	QByteArray buf = frame.toAscii();
+	client_richieste->ApriInviaFrameChiudi(buf.constData());
+}
+
+void banner::setClients(Client *command, Client *request)
+{
+	client_comandi = command;
+	client_richieste = request;
+}
+

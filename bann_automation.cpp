@@ -3,7 +3,7 @@
 #include "device_status.h"
 #include "btbutton.h"
 #include "device.h"
-#include "global.h" // BTouch, btouch_device_cache
+#include "global.h" // btouch_device_cache
 
 #include <QTimer>
 #include <QDebug>
@@ -334,7 +334,7 @@ grAttuatInt::grAttuatInt(QWidget *parent, QList<QString> addresses, QString Icon
 void grAttuatInt::sendFrame(QString msg)
 {
 	for (int i = 0; i < elencoDisp.size();++i)
-		BTouch->sendFrame(createMsgOpen("2", msg, elencoDisp.at(i)));
+		sendFrame(createMsgOpen("2", msg, elencoDisp.at(i)));
 }
 
 void grAttuatInt::Alza()

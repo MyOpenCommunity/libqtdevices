@@ -11,7 +11,6 @@
 #include "sorgentiaux.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
 #include "aux.h" // class myAux
-#include "global.h" // BTouch
 #include "generic_functions.h" // createMsgOpen
 
 #include <QWidget>
@@ -45,12 +44,12 @@ sorgente_aux::~sorgente_aux()
 
 void sorgente_aux::ciclaSorg()
 {
-	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
+	sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
 }
 
 void sorgente_aux::decBrano()
 {
-	BTouch->sendFrame(createMsgOpen("16","6101", getAddress()));
+	sendFrame(createMsgOpen("16","6101", getAddress()));
 }
 
 void sorgente_aux::aumBrano()
@@ -59,7 +58,7 @@ void sorgente_aux::aumBrano()
 	if (myAux)
 		if (addr.at(1) == '0')
 			addr[1] = '1';
-	BTouch->sendFrame(createMsgOpen("16", "6001", addr));
+	sendFrame(createMsgOpen("16", "6001", addr));
 }
 
 void sorgente_aux::inizializza(bool forza)
@@ -98,7 +97,7 @@ void sorgenteMultiAux::attiva()
 	if (!multiamb)
 	{
 		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
-		BTouch->sendFrame(f);
+		sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
 	else
@@ -106,10 +105,10 @@ void sorgenteMultiAux::attiva()
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
 		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			BTouch->sendFrame("*22*0#4#" + *it + "*6##");
-			BTouch->sendFrame("*#16*1000*11##");
-			BTouch->sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
-			BTouch->sendFrame("*#16*1000*11##");
+			sendFrame("*22*0#4#" + *it + "*6##");
+			sendFrame("*#16*1000*11##");
+			sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
+			sendFrame("*#16*1000*11##");
 		}
 	}
 }

@@ -3,7 +3,7 @@
 #include "device.h"
 #include "btbutton.h"
 #include "fontmanager.h"
-#include "global.h" // BTouch, btouch_device_cache
+#include "global.h" // btouch_device_cache
 #include "generic_functions.h" // createMsgOpen
 
 #include <openwebnet.h> // class openwebnet
@@ -379,30 +379,30 @@ grDimmer::grDimmer(QWidget *parent, QList<QString> addresses, QString IconaSx, Q
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
-void grDimmer::sendFrame(QString msg)
+void grDimmer::sendMsg(QString msg)
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
-		BTouch->sendFrame(createMsgOpen("1", msg, elencoDisp.at(i)));
+		sendFrame(createMsgOpen("1", msg, elencoDisp.at(i)));
 }
 
 void grDimmer::Attiva()
 {
-	sendFrame("1");
+	sendMsg("1");
 }
 
 void grDimmer::Disattiva()
 {
-	sendFrame("0");
+	sendMsg("0");
 }
 
 void grDimmer::Aumenta()
 {
-	sendFrame("30");
+	sendMsg("30");
 }
 
 void grDimmer::Diminuisci()
 {
-	sendFrame("31");
+	sendMsg("31");
 }
 
 
@@ -418,25 +418,25 @@ grDimmer100::grDimmer100(QWidget *parent, QList<QString> addresses, QString Icon
 void grDimmer100::Attiva()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(QString("*1*1#%1*%2##").arg(soft_start.at(idx)).arg(elencoDisp.at(idx)));
+		sendFrame(QString("*1*1#%1*%2##").arg(soft_start.at(idx)).arg(elencoDisp.at(idx)));
 }
 
 void grDimmer100::Disattiva()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(QString("*1*0#%1*%2##").arg(soft_stop.at(idx)).arg(elencoDisp.at(idx)));
+		sendFrame(QString("*1*0#%1*%2##").arg(soft_stop.at(idx)).arg(elencoDisp.at(idx)));
 }
 
 void grDimmer100::Aumenta()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(createMsgOpen("1", "30#5#255", elencoDisp.at(idx)));
+		sendFrame(createMsgOpen("1", "30#5#255", elencoDisp.at(idx)));
 }
 
 void grDimmer100::Diminuisci()
 {
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
-		BTouch->sendFrame(createMsgOpen("1", "31#5#255", elencoDisp.at(idx)));
+		sendFrame(createMsgOpen("1", "31#5#255", elencoDisp.at(idx)));
 }
 
 
@@ -452,13 +452,13 @@ grAttuatAutom::grAttuatAutom(QWidget *parent, QList<QString> addresses, QString 
 void grAttuatAutom::Attiva()
 {
 	for (int i = 0; i < elencoDisp.size();++i)
-		BTouch->sendFrame(createMsgOpen("1", "1", elencoDisp.at(i)));
+		sendFrame(createMsgOpen("1", "1", elencoDisp.at(i)));
 }
 
 void grAttuatAutom::Disattiva()
 {
 	for (int i = 0; i < elencoDisp.size();++i)
-		BTouch->sendFrame(createMsgOpen("1", "0", elencoDisp.at(i)));
+		sendFrame(createMsgOpen("1", "0", elencoDisp.at(i)));
 }
 
 

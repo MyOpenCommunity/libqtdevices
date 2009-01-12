@@ -60,6 +60,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
 	client_richieste = new Client(Client::RICHIESTE);
+	banner::setClients(client_comandi, client_richieste);
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));

@@ -12,7 +12,7 @@
 #include "generic_functions.h" // createMsgOpen
 #include "device_status.h"
 #include "device.h"
-#include "global.h" // BTouch, btouch_device_cache
+#include "global.h" // btouch_device_cache
 
 
 amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
@@ -155,7 +155,7 @@ void grAmplificatori::sendActivationFrame(QString argm)
 		else
 			f = QString("*22*%3#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1)).arg(argm);
 
-		BTouch->sendFrame(f);
+		sendFrame(f);
 	}
 }
 
@@ -172,12 +172,12 @@ void grAmplificatori::Disattiva()
 void grAmplificatori::Aumenta()
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
-		BTouch->sendFrame(createMsgOpen("16", "1001", elencoDisp.at(i)));
+		sendFrame(createMsgOpen("16", "1001", elencoDisp.at(i)));
 }
 
 void grAmplificatori::Diminuisci()
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
-		BTouch->sendFrame(createMsgOpen("16", "1101", elencoDisp.at(i)));
+		sendFrame(createMsgOpen("16", "1101", elencoDisp.at(i)));
 }
 

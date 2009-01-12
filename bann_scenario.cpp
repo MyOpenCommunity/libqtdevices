@@ -4,7 +4,7 @@
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h"
-#include "global.h" // BTouch, btouch_device_cache
+#include "global.h" // btouch_device_cache
 
 #include <QDir>
 #include <QDebug>
@@ -26,7 +26,7 @@ void bannScenario::Attiva()
 	if (strstr(cosa,"*"))
 	{
 		memset(index(cosa,'*'),'\000',sizeof(cosa)-(index(cosa,'*')-cosa));
-		BTouch->sendFrame(createMsgOpen("0", cosa, strstr(buf_addr.constData(),"*")+1));
+		sendFrame(createMsgOpen("0", cosa, strstr(buf_addr.constData(),"*")+1));
 	}
 }
 
@@ -437,7 +437,7 @@ void scenEvo::trig(bool forced)
 	}
 
 	qDebug() << "scenEvo::trig(), act = " << action;
-	BTouch->sendFrame(action);
+	sendFrame(action);
 }
 
 void scenEvo::inizializza(bool forza)
@@ -516,28 +516,28 @@ scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Ic
 void scenSched::enable()
 {
 	qDebug("scenSched::enable()");
-	BTouch->sendFrame(action_enable);
+	sendFrame(action_enable);
 	Draw();
 }
 
 void scenSched::start()
 {
 	qDebug("scenSched::start()");
-	BTouch->sendFrame(action_start);
+	sendFrame(action_start);
 	Draw();
 }
 
 void scenSched::stop()
 {
 	qDebug("scenSched::stop()");
-	BTouch->sendFrame(action_stop);
+	sendFrame(action_stop);
 	Draw();
 }
 
 void scenSched::disable()
 {
 	qDebug("scenSched::disable()");
-	BTouch->sendFrame(action_disable);
+	sendFrame(action_disable);
 	Draw();
 }
 

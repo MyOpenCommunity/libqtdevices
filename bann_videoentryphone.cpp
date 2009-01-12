@@ -87,19 +87,19 @@ void postoExt::call_notifier_closed(call_notifier *cn)
 void postoExt::open_door_clicked()
 {
 	qDebug("postoExt::open_door_clicked()");
-	BTouch->sendFrame(QString("*6*10*%1##").arg(where));
+	sendFrame(QString("*6*10*%1##").arg(where));
 }
 
 void postoExt::stairlight_pressed()
 {
 	qDebug("postoExt::stairlight_pressed()");
-	BTouch->sendFrame(QString("*6*12*%1##").arg(where));
+	sendFrame(QString("*6*12*%1##").arg(where));
 }
 
 void postoExt::stairlight_released()
 {
 	qDebug("postoExt::stairlight_released()");
-	BTouch->sendFrame(QString("*6*11*%1##").arg(where));
+	sendFrame(QString("*6*11*%1##").arg(where));
 }
 
 void postoExt::get_where(QString& out)

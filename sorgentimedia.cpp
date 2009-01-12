@@ -9,7 +9,6 @@
  ****************************************************************/
 
 #include "sorgentimedia.h"
-#include "global.h" // BTouch
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
 
 #include <openwebnet.h> // class openwebnet
@@ -41,7 +40,7 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, QString indi
 void BannerSorgenteMultimedia::ciclaSorg()
 {
 	qDebug("BannerSorgenteMultimedia::ciclaSorg()");
-	BTouch->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
+	sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
 }
 
 void BannerSorgenteMultimedia::decBrano()
@@ -91,7 +90,7 @@ void BannerSorgenteMultimedia::hideEvent(QHideEvent *event)
 void BannerSorgenteMultimedia::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimedia::inizializza()");
-	BTouch->sendInit(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(getAddress().at(2)));
+	sendInit(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(getAddress().at(2)));
 }
 
 /*
@@ -116,7 +115,7 @@ void BannerSorgenteMultimediaMC::attiva()
 	if (!multiamb)
 	{
 		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
-		BTouch->sendFrame(f);
+		sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 		source_menu.enableSource(false);
 		source_menu.resume();
@@ -126,10 +125,10 @@ void BannerSorgenteMultimediaMC::attiva()
 		QStringList::Iterator it;
 		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			BTouch->sendFrame("*22*0#4#" + *it + "*6##");
-			BTouch->sendFrame("*#16*1000*11##");
-			BTouch->sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
-			BTouch->sendFrame("*#16*1000*11##");
+			sendFrame("*22*0#4#" + *it + "*6##");
+			sendFrame("*#16*1000*11##");
+			sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
+			sendFrame("*#16*1000*11##");
 		}
 		source_menu.enableSource(false);
 		source_menu.resume();
@@ -168,7 +167,7 @@ void BannerSorgenteMultimediaMC::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimediaMC::inizializza()");
 
-	BTouch->sendInit(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice).arg(indirizzo_semplice));
+	sendInit(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice).arg(indirizzo_semplice));
 }
 
 void BannerSorgenteMultimediaMC::gestFrame(char *frame)

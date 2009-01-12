@@ -9,7 +9,6 @@
  ****************************************************************/
 
 #include "loads.h"
-#include "global.h" // BTouch
 #include "generic_functions.h" // createMsgOpen
 #include "xml_functions.h" // getChildren, getTextChild
 
@@ -25,7 +24,7 @@ bannLoads::bannLoads(sottoMenu *parent, QString indirizzo, QString IconaSx) : ba
 
 void bannLoads::Attiva()
 {
-	BTouch->sendFrame(createMsgOpen("3", "2", getAddress()));
+	sendFrame(createMsgOpen("3", "2", getAddress()));
 }
 
 
