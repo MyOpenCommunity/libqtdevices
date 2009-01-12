@@ -64,10 +64,6 @@ public:
 	// Return a pixmap* to the icon with 'name', using the cache of icons.
 	QPixmap* getIcon(QString name, const char *format=0, Qt::ImageConversionFlags flags=Qt::AutoColor);
 
-	// A global way to send frames/init requests. Do not use these directly, prefer using
-	// devices specific methods, unless you have to send frames without reading responses.
-	void sendFrame(QString frame);
-	void sendInit(QString frame);
 	void setPwd(bool, QString);
 
 private slots:

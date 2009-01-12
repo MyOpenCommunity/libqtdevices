@@ -36,6 +36,7 @@
 #include "specialpage.h"
 #include "page.h"
 #include "global.h" // btouch_device_cache
+#include "device.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -62,6 +63,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	client_richieste = new Client(Client::RICHIESTE);
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
+	device::setClients(client_comandi, client_richieste, client_monitor);
 	btouch_device_cache.set_clients(client_comandi, client_monitor, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
@@ -653,14 +655,3 @@ QPixmap* BtMain::getIcon(QString name, const char *format, Qt::ImageConversionFl
 	return icons_library.getIcon(name, format, flags);
 }
 
-void BtMain::sendFrame(QString frame)
-{
-	QByteArray buf = frame.toAscii();
-	client_comandi->ApriInviaFrameChiudi(buf.constData());
-}
-
-void BtMain::sendInit(QString frame)
-{
-	QByteArray buf = frame.toAscii();
-	client_richieste->ApriInviaFrameChiudi(buf.constData());
-}

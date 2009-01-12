@@ -41,6 +41,8 @@ public:
 	void sendFrame(QString frame);
 	void sendInit(QString frame);
 
+	static void setClients(Client *command, Client *request, Client *monitor);
+
 signals:
 	//! Status changed
 	void status_changed(QList<device_status*>);
@@ -77,9 +79,9 @@ private:
 	//! Number of users
 	int refcount;
 
-	Client *client_comandi;
-	Client *client_monitor;
-	Client *client_richieste;
+	static Client *client_comandi;
+	static Client *client_monitor;
+	static Client *client_richieste;
 };
 
 /********************* Specific class device children classes **********************/

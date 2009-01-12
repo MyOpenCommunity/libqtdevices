@@ -1,14 +1,20 @@
 #include "device.h"
 #include "openclient.h"
 #include "frame_interpreter.h"
-#include "global.h" // BTouch
 #include "bttime.h"
+#include "device_cache.h" // get_device_key
 
 #include <openmsg.h>
 
 #include <QStringList>
 
 #include <assert.h>
+
+// Inizialization of static member
+Client *device::client_comandi = 0;
+Client *device::client_richieste = 0;
+Client *device::client_monitor = 0;
+
 
 // Device implementation
 
@@ -23,12 +29,23 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 
 void device::sendFrame(QString frame)
 {
-	BTouch->sendFrame(frame);
+	assert(client_comandi && "Client comandi not set!");
+	QByteArray buf = frame.toAscii();
+	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendInit(QString frame)
 {
-	BTouch->sendInit(frame);
+	assert(client_richieste && "Client richieste not set!");
+	QByteArray buf = frame.toAscii();
+	client_richieste->ApriInviaFrameChiudi(buf.constData());
+}
+
+void device::setClients(Client *command, Client *request, Client *monitor)
+{
+	client_comandi = command;
+	client_richieste = request;
+	client_monitor = monitor;
 }
 
 void device::init(bool force)
