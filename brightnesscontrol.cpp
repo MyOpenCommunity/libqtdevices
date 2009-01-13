@@ -49,7 +49,7 @@ bool BrightnessControl::setBrightnessPolicy(DefautPolicy policy)
 			));
 		break;
 	}
-	setCfgValue("liv", QString::number(policy), BRIGHTNESS);
+	//setCfgValue("liv", QString::number(policy), BRIGHTNESS);
 	return true;
 }
 

@@ -8,12 +8,10 @@
 #include "cleanscreen.h"
 #include "impostatime.h"
 #include "brightnesspage.h"
-
+#include "displaypage.h"
 #include <QDebug>
 
 #include <assert.h>
-
-static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 
 Settings::Settings(QDomNode config_node)
@@ -61,28 +59,15 @@ void Settings::loadItems(QDomNode config_node)
 		case CONTRASTO:
 			b = new bannContrast(this, getTextChild(item, "value"), img1);
 			break;
-		case CALIBRAZIONE:
-		{
-			b = new calibration(this, img1);
-			connect(b, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
-			connect(b, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
+		case DISPLAY:
+			b = new bannOnDx(this, ICON_FRECCIA_DX, new DisplayPage(item));
 			break;
-		}
 		case PROTEZIONE:
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			break;
 		case VERSIONE:
 			b = new bannVersion(this, img1, BTouch->datiGen);
 			break;
-		case BRIGHTNESS:
-			b = new bannOnDx(this, ICON_BRIGHTNESS, new BrightnessPage());
-			break;
-		case CLEANSCREEN:
-		{
-			int clean_time = getTextChild(item, "time").toInt();
-			b = new bannOnDx(this, ICON_INFO, new CleanScreen(clean_time));
-			break;
-		}
 		case LANSETTINGS:
 			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));
 			break;

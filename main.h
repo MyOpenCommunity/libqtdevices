@@ -341,7 +341,7 @@ enum  bannerType
 	AMPLIFICATORE=18,                             /*!<  Amplifier */
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
-	CALIBRAZIONE=21,                              /*!<  Calibration */
+	DISPLAY=21,                                   /*!<  Display */
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
 	SUONO=25,                                     /*!<  Beep */
@@ -385,9 +385,6 @@ enum  bannerType
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	// keep 69-71 free for energy management devices
-	CLEANSCREEN=72,                               /*!< clean screen widget */
-	BRIGHTNESS=73,                                /*!< brightness selection widget */
-
 	LANSETTINGS=79,                               /*!< LAN settings and information [DUMMY id] */
 
 };

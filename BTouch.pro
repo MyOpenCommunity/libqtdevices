@@ -79,6 +79,7 @@ HEADERS += actuators.h \
            device.h \
            device_cache.h \
            device_status.h \
+           displaypage.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -173,6 +174,7 @@ SOURCES += actuators.cpp \
            device.cpp \
            device_cache.cpp \
            device_status.cpp \
+           displaypage.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \

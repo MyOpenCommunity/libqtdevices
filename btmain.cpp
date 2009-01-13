@@ -304,6 +304,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 
 		// read configuration for brightness
 		BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
+		/*
 		if (screensaver_type == ScreenSaver::NONE)
 			conf_brightness_policy = BrightnessControl::POLICY_OFF;
 		else
@@ -318,6 +319,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 					conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(policy.toInt());
 			}
 		}
+		*/
 		BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
 		BrightnessControl::instance()->setState(ON);
 
