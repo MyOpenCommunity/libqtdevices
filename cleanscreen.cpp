@@ -6,14 +6,13 @@
 
 #include <QRegExp>
 #include <QLabel>
-#include <QDateTime>
 
 #include <assert.h>
 
 
 static const char *CLEANSCREEN_ICON = IMG_PATH "btnplusp.png";
 
-CleanScreen::CleanScreen()
+CleanScreen::CleanScreen(int clean_time)
 {
 	connect(&secs_timer, SIGNAL(timeout()), SLOT(update()));
 
@@ -35,12 +34,7 @@ CleanScreen::CleanScreen()
 	icon_label->setAlignment(Qt::AlignHCenter);
 	icon_label->setGeometry(ICON_LABEL_X, ICON_LABEL_Y, ICON_LABEL_WIDTH, ICON_LABEL_HEIGHT);
 
-	// TODO: rimuovere! Nei banner non va letta la configurazione, ma solo nella pagine principali!
-	QDomNode page_root = getPageNode(IMPOSTAZIONI);
-	assert(!page_root.isNull());
-	QDomNode cleanscreen_root = getChildWithId(page_root, QRegExp("item\\d{1,2}"), CLEANSCREEN);
-	assert(!cleanscreen_root.isNull());
-	wait_time_sec = cleanscreen_root.namedItem("time").toElement().text().toInt();
+	wait_time_sec = clean_time;
 }
 
 
@@ -49,8 +43,7 @@ void CleanScreen::resetTime()
 	// update the widget every second
 	secs_timer.start(1 * 1000);
 	timer.start(wait_time_sec * 1000);
-	// TODO: serve davvero time() ?? Non si puo' usare qualcosa QT, magari QTime.elapsed?
-	end_time = time(0) + wait_time_sec;
+	end_time.restart();
 }
 
 void CleanScreen::showEvent(QShowEvent *e)
@@ -72,10 +65,13 @@ void CleanScreen::mouseMoveEvent(QMouseEvent *e)
 void CleanScreen::paintEvent(QPaintEvent *e)
 {
 	// we use QTime only to format the output
-	QTime diff;
-	diff = diff.addSecs(end_time - time(0));
-	if (diff.minute())
-		time_label->setText(diff.toString("mm:ss"));
+	QTime remaining_time;
+	// The following setText() 'floors' the number of seconds remaining, so
+	// add 900 to display correctly the number of remaining seconds without
+	// using ceil (which is for floating point numbers)
+	remaining_time = remaining_time.addMSecs(wait_time_sec * 1000 - end_time.elapsed() + 900);
+	if (remaining_time.minute())
+		time_label->setText(remaining_time.toString("mm:ss"));
 	else
-		time_label->setText(diff.toString("ss"));
+		time_label->setText(remaining_time.toString("ss"));
 }
