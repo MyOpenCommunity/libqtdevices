@@ -1,17 +1,14 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bannOnDx.cpp
-**
-**Riga con tasto ON a Dx e scritta descrittiva da parte
-**
-****************************************************************/
-
 #include "bannondx.h"
 #include "sottomenu.h"
 #include "page.h"
 #include "main.h"
+
+
+#define BUTONDX_BUT_DIM_X 60
+#define BUTONDX_BUT_DIM_Y 60
+#define BUTONSX_BUT_DIM_X 60
+#define BUTONSX_BUT_DIM_Y 60
+#define BUTONDX_H_SCRITTA 20
 
 
 bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
@@ -48,11 +45,19 @@ bannOnDx::~bannOnDx()
 }
 
 
-bannOnSx::bannOnSx(sottoMenu *parent) : banner(parent)
+bannOnSx::bannOnSx(sottoMenu *parent, QString icon) : banner(parent)
 {
-	unsigned char nr=parent->getNumRig();
-	addItem(BUT1, 0,  (((MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE)/nr)-BUTONSX_BUT_DIM_Y)/2 ,  BUTONSX_BUT_DIM_X ,
+	unsigned char nr = parent->getNumRig();
+	addItem(BUT1, 0, (((MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE)/nr) - BUTONSX_BUT_DIM_Y)/2, BUTONSX_BUT_DIM_X,
 		BUTONSX_BUT_DIM_Y);
-	addItem(TEXT ,BUTONSX_BUT_DIM_X, 0 , MAX_WIDTH-BUTONSX_BUT_DIM_X, ((MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE)/nr));
-	connect(this,SIGNAL(sxClick()),this,SIGNAL(click()));
+	addItem(TEXT ,BUTONSX_BUT_DIM_X, 0, MAX_WIDTH - BUTONSX_BUT_DIM_X, ((MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE)/nr));
+	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
+
+	if (!icon.isEmpty())
+		SetIcons(icon, 1);
+}
+
+BtButton *bannOnSx::getButton()
+{
+	return sxButton;
 }

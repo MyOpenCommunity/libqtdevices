@@ -14,6 +14,7 @@
 #include "banner.h"
 
 class sottoMenu;
+class BtButton;
 class Page;
 
 /*!
@@ -38,17 +39,6 @@ signals:
 };
 
 
-#define BUTONDX_BUT_DIM_X 60
-#define BUTONDX_BUT_DIM_Y 60
-#define BUTONSX_BUT_DIM_X 60
-#define BUTONSX_BUT_DIM_Y 60
-#define BUTONDX_H_SCRITTA 20
-
-#endif //BANNONDX
-
-#ifndef BANNONSX_H
-#define BANNONSX_H
-
 /*!
   \class bannOnSx
   \brief This is a class that describes a banner with a button on the left and a text on the remaining area
@@ -59,9 +49,10 @@ class bannOnSx : public banner
 {
 Q_OBJECT
 public:
-	bannOnSx(sottoMenu *parent);
+	bannOnSx(sottoMenu *parent, QString icon=QString());
+	BtButton *getButton();
 signals:
 	void click();
 };
 
-#endif //BANNONSX
+#endif //BANNONDX_H

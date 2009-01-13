@@ -13,19 +13,10 @@
 #define BRIGHTNESSPAGE_H
 
 #include "sottomenu.h"
-#include "bannondx.h"
 #include "brightnesscontrol.h"
 
 #include <QButtonGroup>
 
-class BannToggle : public bannOnSx
-{
-Q_OBJECT
-public:
-	BannToggle(sottoMenu *parent=0);
-	BtButton *getButton();
-	~BannToggle() { };
-};
 
 class BrightnessPage : public sottoMenu
 {
@@ -35,8 +26,9 @@ public:
 public slots:
 	void brightnessSelected();
 private:
-	BannToggle *getBanner(const QString &banner_text);
+	void addBanner(const QString &text, int id);
 	QButtonGroup buttons;
 };
+
 
 #endif // BRIGHTNESSPAGE_H
