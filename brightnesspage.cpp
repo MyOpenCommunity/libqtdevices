@@ -9,41 +9,42 @@
  */
 
 #include "brightnesspage.h"
+#include "brightnesscontrol.h"
 #include "main.h" // for ICON_{OK,VUOTO}
 #include "bannondx.h"
 #include "btbutton.h"
+
+#include <QDebug>
 
 
 BrightnessPage::BrightnessPage(QWidget *parent) : sottoMenu(parent)
 {
 	setNavBarMode(10, ICON_OK);
-
-	const int off_id = 0;
-	const int low_id = 1;
-	const int high_id = 2;
-
-	addBanner(tr("Off"), off_id);
-	addBanner(tr("Low brightness"), low_id);
-	addBanner(tr("High brightness"), high_id);
-
 	buttons.setExclusive(true);
+
+	addBanner(tr("Off"), BRIGHTNESS_OFF);
+	addBanner(tr("Low brightness"), BRIGHTNESS_LOW);
+	addBanner(tr("Normal brightness"), BRIGHTNESS_NORMAL);
+
 	connect(this, SIGNAL(goDx()), SLOT(brightnessSelected()));
 }
 
 void BrightnessPage::addBanner(const QString &text, int id)
 {
 	bannOnSx *bann = new bannOnSx(this, ICON_VUOTO);
-	bann->getButton()->setCheckable(true);
+	BtButton *btn = bann->getButton();
+	btn->setCheckable(true);
 	bann->setText(text);
-	buttons.addButton(bann->getButton(), id);
+	buttons.addButton(btn, id);
 	elencoBanner.append(bann);
+
+	if (id == BrightnessControl::instance()->currentLevel())
+		btn->setChecked(true);
 }
 
 void BrightnessPage::brightnessSelected()
 {
-	BrightnessControl::instance()->setBrightnessPolicy(
-			static_cast<BrightnessControl::DefautPolicy>(buttons.checkedId()));
-	// this will close the window
+	BrightnessControl::instance()->setLevel(static_cast<BrightnessLevel>(buttons.checkedId()));
 	emit Closed();
 }
 

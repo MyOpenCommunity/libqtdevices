@@ -302,26 +302,19 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		else
 			qFatal("displaypages node not found on xml config file!");
 
-		// read configuration for brightness
-		BrightnessControl::DefautPolicy conf_brightness_policy = BrightnessControl::POLICY_HIGH;
-		/*
-		if (screensaver_type == ScreenSaver::NONE)
-			conf_brightness_policy = BrightnessControl::POLICY_OFF;
-		else
+
+		QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
+
+		BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
+		if (!display_node.isNull())
 		{
-			// brightness conf is in IMPOSTAZIONI page
-			QDomNode bright_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"),
-				BRIGHTNESS);
-			if (!bright_node.isNull())
-			{
-				QString policy = getTextChild(bright_node, "liv");
-				if (!policy.isNull())
-					conf_brightness_policy = static_cast<BrightnessControl::DefautPolicy>(policy.toInt());
-			}
+			QDomElement n = getElement(display_node, "brightness/level");
+			if (!n.isNull())
+				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
-		*/
-		BrightnessControl::instance()->setBrightnessPolicy(conf_brightness_policy);
-		BrightnessControl::instance()->setState(ON);
+
+		BrightnessControl::instance()->setLevel(level);
+		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 
 		return true;
 	}
@@ -414,7 +407,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			BrightnessControl::instance()->setState(ON);
+			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -431,7 +424,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			BrightnessControl::instance()->setState(ON);
+			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -448,7 +441,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			BrightnessControl::instance()->setState(ON);
+			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -465,7 +458,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			BrightnessControl::instance()->setState(ON);
+			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -530,7 +523,7 @@ void BtMain::gesScrSav()
 			if  (tiempo >= 65 && screensaver && screensaver->isHidden())
 			{
 				screensaver->showFullScreen();
-				BrightnessControl::instance()->setState(SCREENSAVER);
+				BrightnessControl::instance()->setState(DISPLAY_SCREENSAVER);
 			}
 
 			// FIXME: do we need to change tempo1 if there's no screensaver?
@@ -554,7 +547,7 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = false;
-		BrightnessControl::instance()->setState(ON);
+		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 		tempo1->start(2000);
 		bloccato = false;
 	}
@@ -578,7 +571,7 @@ void BtMain::freeze(bool b)
 	if (!bloccato)
 	{
 		event_unfreeze = true;
-		BrightnessControl::instance()->setState(ON);
+		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 		if (screensaver)
 			screensaver->hide();
 		if (pwdOn)
@@ -595,7 +588,7 @@ void BtMain::freeze(bool b)
 	}
 	else
 	{
-		BrightnessControl::instance()->setState(OFF);
+		BrightnessControl::instance()->setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(this);
 	}
 }

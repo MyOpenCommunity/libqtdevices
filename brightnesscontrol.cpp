@@ -1,75 +1,73 @@
 #include "brightnesscontrol.h"
-#include "generic_functions.h"
-#include "main.h"
+#include "generic_functions.h" // setCfgValue
+
+#include <assert.h>
+
 
 BrightnessControl *BrightnessControl::_instance = 0;
 
-static brightness_policy_t getBrightnessPolicy(brightness_state_t on_state,
-		brightness_state_t off_state, brightness_state_t screensaver_state)
-{
-	brightness_policy_t policy;
-	policy.push_back(on_state);
-	policy.push_back(off_state);
-	policy.push_back(screensaver_state);
-	return policy;
-}
 
 BrightnessControl::BrightnessControl()
 {
-	setBrightnessPolicy(POLICY_HIGH);
 }
 
-bool BrightnessControl::setBrightnessPolicy(DefautPolicy policy)
+void BrightnessControl::setLevel(BrightnessLevel level)
 {
-	switch (policy)
+	switch (level)
 	{
-	case POLICY_OFF:
-		setBrightnessPolicy(getBrightnessPolicy(
-			brightness_state_t(BACKLIGHT_ON, 10),
-			brightness_state_t(BACKLIGHT_OFF, 10),
-			brightness_state_t(BACKLIGHT_OFF, 10)
-			));
+	case BRIGHTNESS_OFF:
+		data[DISPLAY_FREEZED].brightness = 10;
+		data[DISPLAY_FREEZED].backlight = false;
+		data[DISPLAY_FREEZED].screensaver = false;
+		data[DISPLAY_SCREENSAVER].brightness = 10;
+		data[DISPLAY_SCREENSAVER].backlight = false;
+		data[DISPLAY_SCREENSAVER].screensaver = false;
 		break;
-	case POLICY_LOW:
-		setBrightnessPolicy(getBrightnessPolicy(
-			brightness_state_t(BACKLIGHT_ON, 10),
-			brightness_state_t(BACKLIGHT_ON, 255),
-			brightness_state_t(BACKLIGHT_ON, 255)
-			));
+
+	case BRIGHTNESS_LOW:
+		data[DISPLAY_FREEZED].brightness = 255;
+		data[DISPLAY_FREEZED].backlight = true;
+		data[DISPLAY_FREEZED].screensaver = false;
+		data[DISPLAY_SCREENSAVER].brightness = 255;
+		data[DISPLAY_SCREENSAVER].backlight = true;
+		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
+
+	case BRIGHTNESS_NORMAL:
+		data[DISPLAY_FREEZED].brightness = 210;
+		data[DISPLAY_FREEZED].backlight = true;
+		data[DISPLAY_FREEZED].screensaver = false;
+		data[DISPLAY_SCREENSAVER].brightness = 210;
+		data[DISPLAY_SCREENSAVER].backlight = true;
+		data[DISPLAY_SCREENSAVER].screensaver = true;
+		break;
+
 	default:
-		//should we return false instead of raising a warning?
-		qWarning("Unknown default policy, setting POLICY_HIGH");
-		// fall through
-	case POLICY_HIGH:
-		setBrightnessPolicy(getBrightnessPolicy(
-			brightness_state_t(BACKLIGHT_ON, 10),
-			brightness_state_t(BACKLIGHT_ON, 210),
-			brightness_state_t(BACKLIGHT_ON, 210)
-			));
-		break;
+		assert(!"Unknown level for brightness");
 	}
-	//setCfgValue("liv", QString::number(policy), BRIGHTNESS);
-	return true;
+
+	// Operative status has the same values for all levels
+	data[DISPLAY_OPERATIVE].brightness = 10;
+	data[DISPLAY_OPERATIVE].backlight = true;
+	data[DISPLAY_OPERATIVE].screensaver = false;
+
+	// TODO: dato che all'interno dell'item "DISPLAY" esiste un solo nodo level
+	// allora non ci sono ambiguita'. In ogni caso sarebbe l'ideale poter scrivere
+	// setCfgValue("brightness/level", level, DISPLAY) con significato analogo
+	// a quello della getElement.
+	setCfgValue("level", QString::number(level), DISPLAY);
+	current_level = level;
 }
 
-bool BrightnessControl::setBrightnessPolicy(const brightness_policy_t &bp)
+BrightnessLevel BrightnessControl::currentLevel()
 {
-	if (bp.size() != NUMBER_OF_STATES)
-	{
-		qWarning("Invalid brightness policy: there are not exactly %u states", NUMBER_OF_STATES);
-		return false;
-	}
-	policy = bp;
-	return true;
+	return current_level;
 }
 
-void BrightnessControl::setState(BrightnessState state)
+void BrightnessControl::setState(DisplayStatus status)
 {
-	// FIXME: cosi' funziona ma forse e' meglio fare un cast a bool
-	setBacklightOn(policy[state].first);
-
-	setBrightnessLevel(policy[state].second);
+	setBacklightOn(data[status].backlight);
+	setBrightnessLevel(data[status].brightness);
 }
 
 BrightnessControl *BrightnessControl::instance()

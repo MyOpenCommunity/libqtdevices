@@ -13,7 +13,6 @@
 #define BRIGHTNESSPAGE_H
 
 #include "sottomenu.h"
-#include "brightnesscontrol.h"
 
 #include <QButtonGroup>
 
@@ -25,10 +24,10 @@ public:
 	BrightnessPage(QWidget *parent = 0);
 public slots:
 	void brightnessSelected();
+
 private:
 	void addBanner(const QString &text, int id);
 	QButtonGroup buttons;
 };
-
 
 #endif // BRIGHTNESSPAGE_H

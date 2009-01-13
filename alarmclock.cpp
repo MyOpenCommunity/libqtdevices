@@ -401,7 +401,7 @@ void AlarmClock::verificaSveglia()
 				aumVolTimer->start(3000);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
-				BrightnessControl::instance()->setState(ON);
+				BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 				BTouch->freeze(true);
 				BTouch->svegl(true);
 			}
@@ -572,9 +572,9 @@ void AlarmClock::buzzerAlarm()
 	}
 
 	if (contaBuzzer % 8 == 0)
-		BrightnessControl::instance()->setState(ON);
+		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
 	else
-		BrightnessControl::instance()->setState(OFF);
+		BrightnessControl::instance()->setState(DISPLAY_FREEZED);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
