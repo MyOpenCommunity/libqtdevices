@@ -31,6 +31,7 @@ bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
 		connect(this, SIGNAL(sxClick()), linked_page, SLOT(showPage()));
 		connect(linked_page, SIGNAL(Closed()), linked_page, SLOT(hide()));
 	}
+	Draw();
 }
 
 void bannOnDx::hideEvent(QHideEvent *event)
@@ -55,6 +56,7 @@ bannOnSx::bannOnSx(sottoMenu *parent, QString icon) : banner(parent)
 
 	if (!icon.isEmpty())
 		SetIcons(icon, 1);
+	Draw();
 }
 
 BtButton *bannOnSx::getButton()
