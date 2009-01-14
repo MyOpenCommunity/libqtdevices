@@ -3,7 +3,7 @@
 #include "device_status.h"
 #include "btbutton.h"
 #include "device.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 
 #include <QTimer>
 #include <QDebug>
@@ -19,7 +19,7 @@ automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString Ico
 	setAddress(where);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_autom_device(getAddress());
+	dev = bt_global::devices_cache.get_autom_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
@@ -39,7 +39,7 @@ automCancAttuatIll::automCancAttuatIll(QWidget *parent, QString where, QString I
 	setAddress(where);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_autom_device(getAddress());
+	dev = bt_global::devices_cache.get_autom_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
@@ -86,7 +86,7 @@ attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, QString where, QString Ico
 	connect(this,SIGNAL(dxReleased()),this,SLOT(doRil()));
 
 	uprunning = dorunning = 0;
-	dev = btouch_device_cache.get_autom_device(getAddress());
+	dev = bt_global::devices_cache.get_autom_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
@@ -222,7 +222,7 @@ attuatAutomInt::attuatAutomInt(QWidget *parent, QString where, QString IconaSx, 
 	connect(this,SIGNAL(dxClick()),this,SLOT(analizzaDown()));
 
 	uprunning = dorunning = 0;
-	dev = btouch_device_cache.get_autom_device(getAddress());
+	dev = bt_global::devices_cache.get_autom_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

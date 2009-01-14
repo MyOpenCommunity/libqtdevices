@@ -15,7 +15,7 @@
 #include "alarmclock.h"
 #include "sounddiffusion.h"
 #include "scenevocond.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "xml_functions.h" // getChildren, getTextChild
 
 #include <QTimer>
@@ -31,7 +31,7 @@ MultiSoundDiff::MultiSoundDiff(QDomNode config_node) : sottoMenu((QWidget*)0, 3,
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
 	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
-	matr = btouch_device_cache.get_sound_matr_device();
+	matr = bt_global::devices_cache.get_sound_matr_device();
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));

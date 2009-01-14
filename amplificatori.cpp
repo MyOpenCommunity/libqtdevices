@@ -12,7 +12,7 @@
 #include "generic_functions.h" // createMsgOpen
 #include "device_status.h"
 #include "device.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 
 
 amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
@@ -29,7 +29,7 @@ amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx
 	setValue(1);
 	impostaAttivo(0);
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_sound_device(getAddress());
+	dev = bt_global::devices_cache.get_sound_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

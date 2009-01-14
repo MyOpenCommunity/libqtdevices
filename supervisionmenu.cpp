@@ -14,7 +14,7 @@
 
 #include "supervisionmenu.h"
 #include "device.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "xml_functions.h" // getChildren, getTextChild
 
 #include <QDebug>
@@ -126,7 +126,7 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 			bp->setId(itm->GetId());
 
 			// Get status changed events back
-			mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere());
+			mci_device* dev = (mci_device*)bt_global::devices_cache.get_mci_device(itm->GetWhere());
 			connect(dev, SIGNAL(status_changed(QList<device_status*>)), bp, SLOT(status_changed(QList<device_status*>)));
 			stopngoSubmenu->appendBanner(bp);  // Add the new banner to the submenu
 			LinkBanner2Page(bp, itm);  // Connect the new banner to the page
@@ -152,7 +152,7 @@ void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 	connect(pg, SIGNAL(Closed()), pg, SLOT(hide()));
 
 	// Get status changed events back
-	mci_device* dev = (mci_device*)btouch_device_cache.get_mci_device(itm->GetWhere());
+	mci_device* dev = (mci_device*)bt_global::devices_cache.get_mci_device(itm->GetWhere());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			pg, SLOT(status_changed(QList<device_status*>)));
 

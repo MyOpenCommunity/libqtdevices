@@ -16,7 +16,7 @@
 #include "device.h"
 #include "scaleconversion.h"
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"
@@ -78,44 +78,44 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 	case fs_4z_probe:
 		{
 			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-					btouch_device_cache.get_temperature_probe_controlled(
+					bt_global::devices_cache.get_temperature_probe_controlled(
 						where_composed, THERMO_Z4, false, ind_centrale, simple_address));
 			QString thermr_where = QString("0#") + ind_centrale;
 			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
+					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
 			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
 		}
 		break;
 	case fs_99z_probe:
 		{
 			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-					btouch_device_cache.get_temperature_probe_controlled(
+					bt_global::devices_cache.get_temperature_probe_controlled(
 						simple_address, THERMO_Z99, false, ind_centrale, simple_address));
 			QString thermr_where = ind_centrale;
 			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
+					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
 			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
 		}
 		break;
 	case fs_4z_fancoil:
 		{
 			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-					btouch_device_cache.get_temperature_probe_controlled(
+					bt_global::devices_cache.get_temperature_probe_controlled(
 						where_composed, THERMO_Z4, true, ind_centrale, simple_address));
 			QString thermr_where = QString("0#") + ind_centrale;
 			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
+					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
 			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
 		}
 		break;
 	case fs_99z_fancoil:
 		{
 			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
-					btouch_device_cache.get_temperature_probe_controlled(
+					bt_global::devices_cache.get_temperature_probe_controlled(
 						simple_address, THERMO_Z99, true, ind_centrale, simple_address));
 			QString thermr_where = ind_centrale;
 			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
-					btouch_device_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
+					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
 			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
 		}
 		break;
@@ -123,7 +123,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 		{
 			where_composed = QString("0#") + ind_centrale;
 			thermal_regulator_4z *dev = static_cast<thermal_regulator_4z *>(
-					btouch_device_cache.get_thermal_regulator(where_composed, THERMO_Z4));
+					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
 			bfs = new FSBannTermoReg4z(n, dev, parent);
 		}
 		break;
@@ -131,7 +131,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 		{
 			where_composed = ind_centrale;
 			thermal_regulator_99z *dev = static_cast<thermal_regulator_99z *>(
-					btouch_device_cache.get_thermal_regulator(where_composed, THERMO_Z99));
+					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
 			bfs = new FSBannTermoReg99z(n, dev, parent);
 		}
 		break;

@@ -70,5 +70,6 @@ public:
 QString get_device_key(QString who, QString where);
 QString get_device_key(char *who, char *where);
 
+namespace bt_global { extern DevicesCache devices_cache; }
 
 #endif // __DEVICESCACHE_H__

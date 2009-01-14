@@ -25,7 +25,6 @@
 #include "xml_functions.h"
 #include "calibrate.h"
 #include "genpage.h"
-#include "devices_cache.h"
 #include "openclient.h"
 #include "version.h"
 #include "keypad.h"
@@ -35,7 +34,7 @@
 #include "brightnesscontrol.h" // bt_global::brightness
 #include "specialpage.h"
 #include "page.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
 
 #include <QXmlSimpleReader>
@@ -381,7 +380,7 @@ void BtMain::myMain()
 	init();
 	Home->showPage();
 	datiGen->hide();
-	btouch_device_cache.init_devices();
+	bt_global::devices_cache.init_devices();
 
 	tempo1 = new QTimer(this);
 	tempo1->start(2000);

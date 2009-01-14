@@ -1,6 +1,6 @@
 #include "poweramplifier.h"
 #include "xml_functions.h" // getChildWithId
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "sottomenu.h"
 
 #include <QVariant> // setProperty
@@ -36,7 +36,7 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, QString indirizzo, QString onIco
 	setValue(1);
 	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl, true);
 	setAddress(indirizzo);
-	dev = static_cast<poweramplifier_device*>(btouch_device_cache.get_poweramplifier_device(getAddress()));
+	dev = static_cast<poweramplifier_device*>(bt_global::devices_cache.get_poweramplifier_device(getAddress()));
 	connect(dev, SIGNAL(status_changed(QMap<status_key_t, stat_var>)),
 			SLOT(status_changed(QMap<status_key_t, stat_var>)));
 

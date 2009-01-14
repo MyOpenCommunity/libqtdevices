@@ -11,7 +11,7 @@
 #include "sorgentiradio.h"
 #include "main.h" // ICON_CICLA
 #include "radio.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
 #include "generic_functions.h" // createMsgOpen
 
@@ -65,7 +65,7 @@ banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString &
 	connect(myRadio,SIGNAL(richFreq()),this,SLOT(richFreq()));
 
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_radio_device(getAddress());
+	dev = bt_global::devices_cache.get_radio_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
 }

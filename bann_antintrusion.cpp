@@ -3,7 +3,7 @@
 #include "generic_functions.h" // void getZoneName(...)
 #include "fontmanager.h"
 #include "btbutton.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
 #include "keypad.h"
 
@@ -38,7 +38,7 @@ zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QStr
 	zonaNonAttiva = IconDisactive;
 	already_changed = false;
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_zonanti_device(getAddress());
+	dev = bt_global::devices_cache.get_zonanti_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
@@ -190,7 +190,7 @@ impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconI
 	connect(this,SIGNAL(sxClick()), parentWidget(),SIGNAL(goDx()));
 
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_impanti_device();
+	dev = bt_global::devices_cache.get_impanti_device();
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

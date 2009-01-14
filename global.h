@@ -22,7 +22,4 @@
 /// A pointer to the main class of BTouch.
 extern BtMain *BTouch;
 
-/// Devices' cache
-extern DevicesCache btouch_device_cache;
-
 #endif // GLOBAL_H

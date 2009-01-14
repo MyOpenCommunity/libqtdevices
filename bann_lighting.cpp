@@ -3,7 +3,7 @@
 #include "device.h"
 #include "btbutton.h"
 #include "fontmanager.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" // createMsgOpen
 
 #include <openwebnet.h> // class openwebnet
@@ -31,7 +31,7 @@ dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx,
 	if (to_be_connect)
 	{
 		// Crea o preleva il dispositivo dalla cache
-		dev = btouch_device_cache.get_dimmer(getAddress());
+		dev = bt_global::devices_cache.get_dimmer(getAddress());
 		// Get status changed events back
 		connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 				this, SLOT(status_changed(QList<device_status*>)));
@@ -224,7 +224,7 @@ dimmer100::dimmer100(QWidget *parent, QString where, QString IconaSx, QString Ic
 	setValue(0);
 	// TODO: non lo fa gia' dimmer? Perche' c'e' questa duplicazione??
 	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, breakIcon, false);
-	dev = btouch_device_cache.get_dimmer100(getAddress());
+	dev = bt_global::devices_cache.get_dimmer100(getAddress());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
 }
@@ -483,7 +483,7 @@ attuatAutomTemp::attuatAutomTemp(QWidget *parent, QString where, QString IconaSx
 
 	assegna_tempo_display();
 	setSecondaryText(tempo_display);
-	dev = btouch_device_cache.get_light(getAddress());
+	dev = bt_global::devices_cache.get_light(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
@@ -790,11 +790,11 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, QString where, QSt
 	setSecondaryText(tmp);
 	connect(this,SIGNAL(dxClick()),this,SLOT(Attiva())); 
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_newtimed(getAddress());
+	dev = bt_global::devices_cache.get_newtimed(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
-	dev = btouch_device_cache.get_dimmer(getAddress());
+	dev = bt_global::devices_cache.get_dimmer(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

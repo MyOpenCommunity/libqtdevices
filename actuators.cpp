@@ -13,7 +13,7 @@
 #include "device.h"
 #include "btbutton.h"
 #include "generic_functions.h" // getPressName, createMsgOpen
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 
 #include <QDebug>
 
@@ -26,7 +26,7 @@ attuatAutom::attuatAutom(QWidget *parent,QString where,QString IconaSx, QString 
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_light(getAddress());
+	dev = bt_global::devices_cache.get_light(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

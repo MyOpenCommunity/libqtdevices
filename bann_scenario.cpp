@@ -4,7 +4,7 @@
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 
 #include <QDir>
 #include <QDebug>
@@ -62,7 +62,7 @@ gesModScen::gesModScen(QWidget *parent, QString where, QString IcoSx, QString Ic
 	connect(this,SIGNAL(cdxClick()),this,SLOT(cancScen()));
 
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_modscen_device(getAddress());
+	dev = bt_global::devices_cache.get_modscen_device(getAddress());
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

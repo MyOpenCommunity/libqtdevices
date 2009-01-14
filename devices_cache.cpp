@@ -405,3 +405,6 @@ QString get_device_key(char *who, char *where)
 	return get_device_key(QString(who), QString(where));
 }
 
+// The global definition of devices_cache
+DevicesCache bt_global::devices_cache;
+

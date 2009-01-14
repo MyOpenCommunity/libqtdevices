@@ -1,6 +1,6 @@
 #include "scenevocond.h"
 #include "device.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" // setCfgValue
 #include "btbutton.h"
 #include "timescript.h"
@@ -701,7 +701,7 @@ void device_condition::setup_device(QString s)
 	qDebug() << "device_condition::setup_device(" << s << ")";
 	dev->set_where(s);
 	// Add the device to cache, or replace it with the instance found in cache
-	dev = btouch_device_cache.add_device(dev);
+	dev = bt_global::devices_cache.add_device(dev);
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));

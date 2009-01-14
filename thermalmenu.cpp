@@ -12,7 +12,7 @@
 
 #include "thermalmenu.h"
 #include "banntemperature.h"
-#include "global.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannfrecce.h"
@@ -119,7 +119,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 		QString addr = getTextChild(item, "where");
 		if (external)
 			addr += "00";
-		device *dev = btouch_device_cache.get_temperature_probe(addr, external);
+		device *dev = bt_global::devices_cache.get_temperature_probe(addr, external);
 
 		banner *b = new BannTemperature(sm, item, dev);
 		b->setText(getTextChild(item, "descr"));
