@@ -45,18 +45,22 @@ void BtButton::setPressedPixmap(const QPixmap &p)
 void BtButton::setPixmap(const QPixmap &p)
 {
 	pixmap = p;
-	setIcon(pixmap);
-	setIconSize(pixmap.size());
+	// Icon is set only the first time; in other cases the pixmap (pressed
+	// or normal) is set when there is a status change.
+	if (icon().isNull())
+	{
+		setIcon(pixmap);
+		setIconSize(pixmap.size());
+	}
 }
 
 void BtButton::mousePressEvent(QMouseEvent *event)
 {
-	QPixmap *p = &pixmap;
+	// Toggle buttons are managed by toggled slot, that is always called when
+	// the button changes its state.
+	if (!isCheckable() && !pressed_pixmap.isNull())
+		setIcon(pressed_pixmap);
 
-	if (!pressed_pixmap.isNull())
-		p = &pressed_pixmap;
-
-	setIcon(*p);
 	beep();
 	QPushButton::mousePressEvent(event);
 }
@@ -72,6 +76,9 @@ void BtButton::mouseReleaseEvent(QMouseEvent *event)
 
 void BtButton::toggled(bool checked)
 {
-	if (!checked && !pressed_pixmap.isNull())
-		setIcon(pixmap);
+	// If the pressed_pixmap doesn't exists, there is nothing to do (because the
+	// pixmap is already the normal one)
+	if (!pressed_pixmap.isNull())
+		setIcon(!checked ? pixmap : pressed_pixmap);
 }
+
