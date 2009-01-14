@@ -32,8 +32,6 @@ private:
 
 public:
 	QHash<QString, QPixmap*> cache;
-
-	IconDispatcher(QObject *parent = 0);
 	~IconDispatcher();
 
 	/**
@@ -46,5 +44,8 @@ public:
 	 */
 	QPixmap* getIcon(QString name, const char * format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor);
 };
+
+
+namespace bt_global { extern IconDispatcher icons_cache; }
 
 #endif

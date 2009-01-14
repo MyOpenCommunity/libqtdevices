@@ -11,8 +11,6 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
-#include "icondispatcher.h"
-
 #include <QWidget>
 #include <QHash>
 
@@ -60,9 +58,6 @@ public:
 	void freeze(bool);
 	/// Set on/off the sveglia status
 	void svegl(bool);
-
-	// Return a pixmap* to the icon with 'name', using the cache of icons.
-	QPixmap* getIcon(QString name, const char *format=0, Qt::ImageConversionFlags flags=Qt::AutoColor);
 
 	void setPwd(bool, QString);
 
@@ -117,8 +112,6 @@ private:
 	bool monitor_ready;
 	// A flag that is set when the configuration has loaded
 	bool config_loaded;
-	// The manager of icons
-	IconDispatcher icons_library;
 
 	void myMain();
 	/// Load the main configuration

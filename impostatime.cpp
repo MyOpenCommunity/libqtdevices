@@ -11,7 +11,7 @@
 #include "impostatime.h"
 #include "timescript.h"
 #include "btbutton.h"
-#include "global.h" // BTouch
+#include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // getConfElement
 
 #include <QPixmap>
@@ -61,7 +61,7 @@ void impostaTime::OKTime()
 	disconnectAllButton();
 	dataOra->showDate();
 
-	QPixmap *icon = BTouch->getIcon(ICON_CALENDARIO);
+	QPixmap *icon = bt_global::icons_cache.getIcon(ICON_CALENDARIO);
 	if (icon)
 		Immagine->setPixmap(*icon);
 
@@ -105,7 +105,7 @@ void impostaTime::showEvent(QShowEvent *event)
 	dataOra->reset();
 	dataOra->showTime();
 
-	QPixmap *icon = BTouch->getIcon(ICON_OROLOGIO);
+	QPixmap *icon = bt_global::icons_cache.getIcon(ICON_OROLOGIO);
 	if (icon)
 		Immagine->setPixmap(*icon);
 

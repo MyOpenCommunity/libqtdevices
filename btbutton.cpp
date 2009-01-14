@@ -1,5 +1,5 @@
 #include "btbutton.h"
-#include "global.h" // BTouch
+#include "icondispatcher.h" // bt_global::icons_cache
 #include "generic_functions.h" // beep
 
 #include <QDebug>
@@ -22,7 +22,7 @@ QSize BtButton::sizeHint() const
 
 void BtButton::setImage(const QString &icon_path, IconFlag f)
 {
-	setPixmap(*BTouch->getIcon(icon_path));
+	setPixmap(*bt_global::icons_cache.getIcon(icon_path));
 
 	if (f == LOAD_PRESSED_ICON)
 	{
@@ -34,7 +34,7 @@ void BtButton::setImage(const QString &icon_path, IconFlag f)
 
 void BtButton::setPressedImage(const QString &pressed_icon)
 {
-	pressed_pixmap = *BTouch->getIcon(pressed_icon);
+	pressed_pixmap = *bt_global::icons_cache.getIcon(pressed_icon);
 }
 
 void BtButton::setPressedPixmap(const QPixmap &p)

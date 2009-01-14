@@ -1,7 +1,7 @@
 #include "cleanscreen.h"
 #include "xml_functions.h" // getChildWithId
 #include "fontmanager.h"
-#include "global.h" // BTouch
+#include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // IMG_PATH
 
 #include <QRegExp>
@@ -29,7 +29,7 @@ CleanScreen::CleanScreen(int clean_time)
 	time_label->setGeometry(TIME_LABEL_X, TIME_LABEL_Y, TIME_LABEL_WIDTH, TIME_LABEL_HEIGHT);
 
 	icon_label = new QLabel(this);
-	QPixmap *icon = BTouch->getIcon(CLEANSCREEN_ICON);
+	QPixmap *icon = bt_global::icons_cache.getIcon(CLEANSCREEN_ICON);
 	icon_label->setPixmap(*icon);
 	icon_label->setAlignment(Qt::AlignHCenter);
 	icon_label->setGeometry(ICON_LABEL_X, ICON_LABEL_Y, ICON_LABEL_WIDTH, ICON_LABEL_HEIGHT);

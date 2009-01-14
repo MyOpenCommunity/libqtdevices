@@ -10,7 +10,7 @@
 
 #include "banner.h"
 #include "btbutton.h"
-#include "global.h" // BTouch
+#include "icondispatcher.h" // bt_global::icons_cache
 #include "generic_functions.h" // getPressName
 #include "openclient.h"
 #include "fontmanager.h"
@@ -117,8 +117,8 @@ QString banner::getPressedIconName(QString iconname)
 void banner::SetIcons(int id, QString name)
 {
 	assert(id < MAX_PRESS_ICON && id >= 0 && "Index of icon out of range!");
-	Icon[id]      = BTouch->getIcon(name);
-	pressIcon[id] = BTouch->getIcon(getPressedIconName(name));
+	Icon[id]      = bt_global::icons_cache.getIcon(name);
+	pressIcon[id] = bt_global::icons_cache.getIcon(getPressedIconName(name));
 }
 
 void banner::SetIcons(QString name, int type)
@@ -193,7 +193,6 @@ void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, 
 void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, QString centerInactiveIcon, QString breakIcon, bool inactiveLevel)
 {
 	SetIcons(sxIcon, dxIcon);
-	
 	// Load base Icon that can be *sxl0 or *dxl0
 	//FIXME FIXME FIXME(anche sopra)
 	QString inactive_root_of_name = getNameRoot(centerInactiveIcon, ".png");
@@ -206,20 +205,20 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	qDebug() << "________________________________________________________________________________";
 
 	// Set first 2 icons from inactive root
-	Icon[2] = BTouch->getIcon(QString("%1sxl0.png").arg(inactive_root_of_name));
-	Icon[3] = BTouch->getIcon(QString("%1dxl0.png").arg(inactive_root_of_name));
-	
+	Icon[2] = bt_global::icons_cache.getIcon(QString("%1sxl0.png").arg(inactive_root_of_name));
+	Icon[3] = bt_global::icons_cache.getIcon(QString("%1dxl0.png").arg(inactive_root_of_name));
+
 	qDebug() << "New Icon[2] <- " << QString("%1sxl0.png").arg(inactive_root_of_name);
 	qDebug() << "New Icon[3] <- " << QString("%1dxl0.png").arg(inactive_root_of_name);
 	for (int i = minValue, y = 0; i <= maxValue; i+=step, y++)
 	{
 		nomeFile = QString("%1sxl%2.png").arg(active_root_of_name).arg(i);
-		Icon[4+y*2] = BTouch->getIcon(nomeFile);
+		Icon[4+y*2] = bt_global::icons_cache.getIcon(nomeFile);
 		qDebug() << "New Icon[" << 4+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1sxl%2.png").arg(inactive_root_of_name).arg(i);
-			Icon[22+y*2] = BTouch->getIcon(nomeFile);
+			Icon[22+y*2] = bt_global::icons_cache.getIcon(nomeFile);
 			qDebug() << "New Icon[" << 22+y*2 << "] <- " << nomeFile;
 		}
 	}
@@ -227,12 +226,12 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	for (int i = minValue, y = 0; i <= maxValue; i+=step, y++)
 	{
 		nomeFile = QString("%1dxl%2.png").arg(active_root_of_name).arg(i);
-		Icon[5+y*2] = BTouch->getIcon(nomeFile);
+		Icon[5+y*2] = bt_global::icons_cache.getIcon(nomeFile);
 		qDebug() << "New Icon[" << 5+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1dxl%2.png").arg(inactive_root_of_name).arg(i);
-			Icon[23+y*2] = BTouch->getIcon(nomeFile);
+			Icon[23+y*2] = bt_global::icons_cache.getIcon(nomeFile);
 			qDebug() << "New Icon[" << 23+y*2 << "] <- " << nomeFile;
 		}
 	}
@@ -241,10 +240,10 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	{
 		QString break_root_of_name = getNameRoot(breakIcon, ".png");
 		nomeFile = QString("%1sx.png").arg(break_root_of_name);
-		Icon[44] = BTouch->getIcon(nomeFile);
+		Icon[44] = bt_global::icons_cache.getIcon(nomeFile);
 		qDebug() << "New Icon[" << 44 << "] <- " << nomeFile;
 		nomeFile = QString("%1dx.png").arg(break_root_of_name);
-		Icon[45] = BTouch->getIcon(nomeFile);
+		Icon[45] = bt_global::icons_cache.getIcon(nomeFile);
 		qDebug() << "New Icon[" << 45 << "] <- " << nomeFile;
 	}
 }

@@ -16,7 +16,7 @@
 #include "fontmanager.h"
 #include "mediaplayer.h"
 #include "btbutton.h"
-#include "global.h" // BTouch
+#include "icondispatcher.h" // bt_global::icons_cache
 #include "titlelabel.h"
 #include "xml_functions.h" // getChildren, getTextChild
 
@@ -533,7 +533,7 @@ void FileSelector::destroyWaitDialog(QLabel *l)
 QLabel *FileSelector::createWaitDialog()
 {
 	QLabel* l = new QLabel((QWidget*)parent());
-	QPixmap *icon = BTouch->getIcon(IMG_WAIT);
+	QPixmap *icon = bt_global::icons_cache.getIcon(IMG_WAIT);
 	l->setPixmap(*icon);
 
 	QRect r = icon->rect();

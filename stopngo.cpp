@@ -16,7 +16,7 @@
 #include "stopngo.h"
 #include "fontmanager.h"
 #include "device.h"
-#include "global.h" // BTouch
+#include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // ICON...
 
 #include <QWidget>
@@ -581,7 +581,7 @@ void StopngoPage::SetStatusIcon(const char* iconPath)
 	if (!iconPath)
 		return;
 
-	statusIcon->setPixmap(*BTouch->getIcon(iconPath));
+	statusIcon->setPixmap(*bt_global::icons_cache.getIcon(iconPath));
 }
 
 void StopngoPage::SetButtonIcon(BtButton *btn, const char *icnPath)

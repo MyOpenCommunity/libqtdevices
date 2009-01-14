@@ -21,7 +21,6 @@
 #include <QFile>
 #include <QDebug>
 
-IconDispatcher::IconDispatcher(QObject *parent) : QObject(parent) { }
 
 IconDispatcher::~IconDispatcher()
 {
@@ -70,3 +69,7 @@ QPixmap* IconDispatcher::getIcon(QString name, const char * format, Qt::ImageCon
 		}
 	return image_pointer;
 }
+
+// The global definition of icons_cache
+IconDispatcher bt_global::icons_cache;
+

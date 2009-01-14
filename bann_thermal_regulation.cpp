@@ -15,7 +15,8 @@
 #include "btbutton.h"
 #include "device.h"
 #include "scaleconversion.h"
-#include "global.h" // BTouch, btouch_device_cache
+#include "icondispatcher.h" // bt_global::icons_cache
+#include "global.h" // btouch_device_cache
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"
@@ -42,7 +43,7 @@
 QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 {
 	QLabel *tmp = new QLabel(parent);
-	tmp->setPixmap(*BTouch->getIcon(img));
+	tmp->setPixmap(*bt_global::icons_cache.getIcon(img));
 	tmp->setAlignment((Qt::Alignment)alignment);
 	return tmp;
 }
@@ -783,7 +784,7 @@ FSBannDate::FSBannDate(QWidget *parent) : BannFullScreen(parent), main_layout(th
 {
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	QLabel *top = new QLabel(this);
-	top->setPixmap(*BTouch->getIcon(top_img));
+	top->setPixmap(*bt_global::icons_cache.getIcon(top_img));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	date_edit = new BtDateEdit(this);
@@ -799,7 +800,7 @@ FSBannTime::FSBannTime(QWidget *parent) : BannFullScreen(parent), main_layout(th
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	QLabel *top = new QLabel(this);
-	top->setPixmap(*BTouch->getIcon(i_top_img));
+	top->setPixmap(*bt_global::icons_cache.getIcon(i_top_img));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	time_edit = new BtTimeEdit(this);
@@ -882,14 +883,14 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			{
 			case device_status_thermal_regulator::OFF:
 				{
-					QPixmap *icon = BTouch->getIcon(IMG_OFF_S);
+					QPixmap *icon = bt_global::icons_cache.getIcon(IMG_OFF_S);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}
 				break;
 			case device_status_thermal_regulator::PROTECTION:
 				{
-					QPixmap *icon = BTouch->getIcon(IMG_ANTIFREEZE_S);
+					QPixmap *icon = bt_global::icons_cache.getIcon(IMG_ANTIFREEZE_S);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}
@@ -902,7 +903,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 						i_img += "manuale.png";
 					else
 						i_img += "manuale_temporizzato.png";
-					QPixmap *icon = BTouch->getIcon(i_img);
+					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 					stat_var curr_sp(stat_var::SP);
 					ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
@@ -927,7 +928,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::WEEK_PROGRAM:
 				{
 					const QString i_img = QString(IMG_PATH) + "settimanale.png";
-					QPixmap *icon = BTouch->getIcon(i_img);
+					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 
 					stat_var curr_program(stat_var::PROGRAM);
@@ -951,7 +952,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::SCENARIO:
 				{
 					const QString i_img = QString(IMG_PATH) + "scenari.png";
-					QPixmap *icon = BTouch->getIcon(i_img);
+					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 
 					stat_var curr_scenario(stat_var::SCENARIO);
@@ -973,7 +974,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::HOLIDAY:
 				{
 					const QString i_img = QString(IMG_PATH) + "feriale.png";
-					QPixmap *icon = BTouch->getIcon(i_img);
+					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}
@@ -981,7 +982,7 @@ void FSBannTermoReg::status_changed(QList<device_status*> sl)
 			case device_status_thermal_regulator::WEEKEND:
 				{
 					const QString i_img = QString(IMG_PATH) + "festivo.png";
-					QPixmap *icon = BTouch->getIcon(i_img);
+					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
 					mode_icon->setPixmap(*icon);
 					description_visible = false;
 				}
@@ -1004,7 +1005,7 @@ void FSBannTermoReg::setSeason(Season new_season)
 			img += "estate_s.png";
 		else
 			img += "inverno_s.png";
-		QPixmap *icon = BTouch->getIcon(img);
+		QPixmap *icon = bt_global::icons_cache.getIcon(img);
 		season_icon->setPixmap(*icon);
 		program_choice->setSeason(new_season);
 		program_menu->setSeason(new_season);
