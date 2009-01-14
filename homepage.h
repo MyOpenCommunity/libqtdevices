@@ -149,6 +149,7 @@ signals:
 	void freeze(bool);
 /*! \brief Emitted to send \a Open \a frame on the system.*/
 	void sendFrame(char*);
+/*! \brief Emitted to send \a Open \a frame on the system for inizialization.*/
 	void sendInit(char*);
 /*! \brief Emitted when the \a schedulation subtree(sottoMenu) is required.*/
 	void Schedulazioni();

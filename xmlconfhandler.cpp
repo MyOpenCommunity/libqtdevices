@@ -77,7 +77,7 @@ static const char *banTesti[] =
 
 /*! pagTesti: text utilized during the initialization sequence when the menu is built up */
 static const char pagTesti[14][20] = {"AUTOMAZIONE","ILLUMINAZIONE","ANTINTRUSIONE","CARICHI","TERMOREG","DIFSON","SCENARI","IMPOSTAZ",\
-	"BACK","SPECIAL","VIDEOCITOF","SCENARI EVO", "DIFSON_MULTI", "SUPERVISIONE" };
+	"BACK","SPECIAL","VIDEOCITOFONIA","SCENARI EVOLUTI", "DIFSON_MULTI", "SUPERVISIONE" };
 
 /*******************************************
  *

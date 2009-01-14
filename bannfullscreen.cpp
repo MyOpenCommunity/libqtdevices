@@ -728,7 +728,7 @@ void FSBannManual::performAction()
 		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
 		bt_temp = celsius2Bt(temp);
 	}
-	emit(temperatureSelected(bt_temp));
+	emit temperatureSelected(bt_temp);
 }
 
 void FSBannManual::incSetpoint()

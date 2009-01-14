@@ -19,7 +19,10 @@ QString celsiusString(int celsius_temp)
 {
 	QString str;
 	str.sprintf("%d", celsius_temp);
-	str.insert(str.length() -1, ".");
+	if((celsius_temp < 10) && (celsius_temp > -10))
+		str.insert(str.length() -1, "0.");
+	else
+		str.insert(str.length() -1, ".");
 	str += TEMP_DEGREES"C";
 	return str;
 }
@@ -46,7 +49,7 @@ float toCelsius(float temperature)
 int bt2Celsius(unsigned bt_temp)
 {
 	bool isNegative = false;
-	if (bt_temp > 1000)
+	if (bt_temp >= 1000)
 	{
 		isNegative = true;
 		bt_temp -= 1000;

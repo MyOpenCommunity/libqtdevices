@@ -288,7 +288,7 @@ void impPassword::show()
 	qDebug("impPassword::show()");
 	Draw();
 	qDebug("passwd = %s %d", &paswd[0], paswd[0]);
-	if (paswd[0]=='\000') 
+	if (paswd[0]=='\000')
 	{
 		qDebug("passwd = ZERO");
 		disconnect(tasti,SIGNAL(Closed(char*)),this , SLOT(reShow1(char*)));
