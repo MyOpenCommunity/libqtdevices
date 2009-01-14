@@ -14,8 +14,6 @@
 #include "sounddiffusion.h"
 #include "multisounddiff.h"
 #include "fontmanager.h"
-#include "btmain.h"
-#include "main.h" // BTouch
 
 #include <QDebug>
 #include <QLabel>

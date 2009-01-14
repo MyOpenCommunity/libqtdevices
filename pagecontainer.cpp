@@ -1,6 +1,6 @@
 #include "pagecontainer.h"
 #include "btbutton.h"
-#include "global.h" // BTouch
+#include "btmain.h" // bt_global::btmain
 #include "xml_functions.h" // getTextChild, getChildren
 #include "generic_functions.h" // rearmWDT
 
@@ -31,7 +31,7 @@ void PageContainer::loadItems(QDomNode config_node)
 		int y = getTextChild(item, "top").toInt();
 
 		// Within the pagemenu element, it can exists items that are not a page.
-		if (Page *p = BTouch->getPage(id))
+		if (Page *p = bt_global::btmain->getPage(id))
 			addPage(p, id, img1, x, y);
 
 		if (wdtime.elapsed() > 1000)

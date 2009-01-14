@@ -9,8 +9,7 @@
  ****************************************************************/
 
 #include "main.h"
-#include "global.h"
-#include "btmain.h"
+#include "btmain.h" // bt_global::btmain
 #include "xml_functions.h"
 #include "generic_functions.h"
 
@@ -47,7 +46,7 @@ GlobalConfig global_config;
 // A global pointer to the log file
 FILE *StdLog = stdout;
 
-// The global verbosity_level, used by BTouch and libcommon (MySignal)
+// The global verbosity_level, used by bt_global::btmain and libcommon (MySignal)
 int VERBOSITY_LEVEL;
 
 // Only for the linking with libcommon
@@ -147,7 +146,7 @@ static void loadGlobalConfig(QString xml_file)
 			QDomNode el = getElement(qdom_config, "root/sw");
 			if (!el.isNull())
 			{
-				QDomElement v = getElement(el, "BTouch/logverbosity");
+				QDomElement v = getElement(el, "bt_global::btmain/logverbosity");
 				if (!v.isNull())
 					global_config.verbosity_level = v.text().toInt();
 
@@ -209,6 +208,6 @@ int main(int argc, char **argv)
 	signal(SIGUSR2, resetTimer);
 
 	qDebug("Start BtMain");
-	BTouch = new BtMain(NULL);
+	bt_global::btmain = new BtMain(NULL);
 	return a.exec();
 }

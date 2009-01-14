@@ -3,7 +3,7 @@
 #include "device_status.h"
 #include "device.h"
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
-#include "global.h" // BTouch
+#include "btmain.h" // bt_global::btmain
 #include "devices_cache.h" // bt_global::devices_cache
 #include "btbutton.h"
 #include "fontmanager.h"
@@ -61,7 +61,7 @@ postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, Q
 				this, SLOT(frame_captured_handler(call_notifier *)));
 		connect(cnm, SIGNAL(call_notifier_closed(call_notifier *)),
 				this, SLOT(call_notifier_closed(call_notifier *)));
-		connect(BTouch->client_monitor, SIGNAL(frameIn(char *)),
+		connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)),
 				cnm, SLOT(gestFrame(char *)));
 	}
 	cnm->add_call_notifier(cn);
@@ -77,7 +77,7 @@ void postoExt::frame_captured_handler(call_notifier *cn)
 {
 	qDebug("postoExt::frame_captured_handler()");
 	// Just unfreeze
-	BTouch->freeze(false);
+	bt_global::btmain->freeze(false);
 }
 
 void postoExt::call_notifier_closed(call_notifier *cn)

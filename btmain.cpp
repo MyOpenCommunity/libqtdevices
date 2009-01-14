@@ -643,3 +643,6 @@ void BtMain::resetTimer()
 	emit resettimer();
 }
 
+// The global definition of btmain pointer
+BtMain *bt_global::btmain;
+

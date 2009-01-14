@@ -1,6 +1,5 @@
 #include "temperatureviewer.h"
 #include "fontmanager.h"
-#include "global.h" // BTouch
 #include "scaleconversion.h"
 #include "page.h"
 

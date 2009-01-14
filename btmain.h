@@ -124,4 +124,6 @@ signals:
 	void freezed(bool);
 };
 
+namespace bt_global { extern BtMain *btmain; }
+
 #endif// BTMAIN_H

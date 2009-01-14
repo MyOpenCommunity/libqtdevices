@@ -1,7 +1,7 @@
 #include "settings.h"
 #include "bann_settings.h"
 #include "alarmclock.h"
-#include "global.h" // BTouch
+#include "btmain.h" // bt_global::btmain
 #include "lansettings.h"
 #include "multisounddiff.h" // contdiff
 #include "xml_functions.h" // getChildren, getTextChild
@@ -45,10 +45,10 @@ void Settings::loadItems(QDomNode config_node)
 			contdiff *cont = 0;
 			if (type == AlarmClock::DI_SON)
 				// Use old or multichannel sd
-				if (BTouch->difSon)
-					cont = new contdiff(BTouch->difSon, NULL);
-				else if (BTouch->dm)
-					cont = new contdiff(NULL, BTouch->dm);
+				if (bt_global::btmain->difSon)
+					cont = new contdiff(bt_global::btmain->difSon, NULL);
+				else if (bt_global::btmain->dm)
+					cont = new contdiff(NULL, bt_global::btmain->dm);
 
 			b = new bannAlarmClock(this, cont, hour, minute, img1, img2, img3, enabled, type, alarmset);
 			break;
@@ -66,7 +66,7 @@ void Settings::loadItems(QDomNode config_node)
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			break;
 		case VERSIONE:
-			b = new bannVersion(this, img1, BTouch->datiGen);
+			b = new bannVersion(this, img1, bt_global::btmain->datiGen);
 			break;
 		case LANSETTINGS:
 			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));

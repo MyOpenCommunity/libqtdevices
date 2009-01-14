@@ -6,7 +6,7 @@
 #include "calibrate.h"
 #include "contrast.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
-#include "global.h"
+#include "btmain.h" // bt_global::btmain
 
 #include <QTimer>
 #include <QDebug>
@@ -165,7 +165,7 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
 
 	active = (attiva == 1);
-	BTouch->setPwd(active, password);
+	bt_global::btmain->setPwd(active, password);
 	SetIcons(1, icon3);
 	SetIcons(0, active ? icon_on : icon_off);
 }
@@ -174,7 +174,7 @@ void impPassword::toggleActivation()
 {
 	active = !active;
 	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
-	BTouch->setPwd(active, password);
+	bt_global::btmain->setPwd(active, password);
 	SetIcons(0, active ? icon_on : icon_off);
 	Draw();
 }
@@ -236,7 +236,7 @@ void impPassword::reShow2()
 		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
 		password = c;
 		setCfgValue("value", password, PROTEZIONE, getSerNum());
-		BTouch->setPwd(active, password);
+		bt_global::btmain->setPwd(active, password);
 	}
 	show();
 }

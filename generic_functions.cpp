@@ -10,7 +10,7 @@
 
 #include "generic_functions.h"
 #include "openclient.h"
-#include "global.h" // BTouch
+#include "btmain.h" // bt_global::btmain
 
 #include <QMutableMapIterator>
 #include <QTextStream>
@@ -388,7 +388,7 @@ void getName(char *name)
 void resetTimer(int signo)
 {
 	qDebug("resetTimer()");
-	BTouch->resetTimer();
+	bt_global::btmain->resetTimer();
 }
 
 void grabScreen(void* pWidget)

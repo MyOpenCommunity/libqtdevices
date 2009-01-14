@@ -7,7 +7,7 @@
 #include "bannfrecce.h"
 #include "fontmanager.h"
 #include "brightnesscontrol.h" // bt_global::brightness
-#include "global.h" // BTouch
+#include "btmain.h" // bt_global::btmain
 
 #include <openwebnet.h>
 
@@ -96,7 +96,7 @@ AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute)
 	freq = f;
 	type = t;
 
-	connect(BTouch, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
+	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
 
 void AlarmClock::okTime()
@@ -392,8 +392,8 @@ void AlarmClock::verificaSveglia()
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(buzzerAlarm()));
 				contaBuzzer = 0;
 				conta2min = 0;
-				BTouch->freeze(true);
-				BTouch->svegl(true);
+				bt_global::btmain->freeze(true);
+				bt_global::btmain->svegl(true);
 			}
 			else if (type == DI_SON)
 			{
@@ -402,8 +402,8 @@ void AlarmClock::verificaSveglia()
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
 				bt_global::brightness.setState(DISPLAY_OPERATIVE);
-				BTouch->freeze(true);
-				BTouch->svegl(true);
+				bt_global::btmain->freeze(true);
+				bt_global::btmain->svegl(true);
 			}
 			else
 				assert(!"Unknown sveglia type!");
@@ -553,8 +553,8 @@ void AlarmClock::aumVol()
 				sendFrame(f.sprintf("*16*13*%02d##", idx));
 			}
 		}
-		BTouch->freeze(false);
-		BTouch->svegl(false);
+		bt_global::btmain->freeze(false);
+		bt_global::btmain->svegl(false);
 	}
 }
 
@@ -584,8 +584,8 @@ void AlarmClock::buzzerAlarm()
 		setBeep(buzAbilOld,false);
 		delete aumVolTimer;
 		aumVolTimer = NULL;
-		BTouch->freeze(false);
-		BTouch->svegl(false);
+		bt_global::btmain->freeze(false);
+		bt_global::btmain->svegl(false);
 	}
 }
 
@@ -602,7 +602,7 @@ void AlarmClock::spegniSveglia(bool b)
 
 			delete aumVolTimer;
 			aumVolTimer = NULL;
-			BTouch->svegl(false);
+			bt_global::btmain->svegl(false);
 		}
 	}
 	else if (b)
