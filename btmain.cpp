@@ -32,7 +32,7 @@
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
-#include "brightnesscontrol.h"
+#include "brightnesscontrol.h" // bt_global::brightness
 #include "specialpage.h"
 #include "page.h"
 #include "global.h" // btouch_device_cache
@@ -313,8 +313,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
 
-		BrightnessControl::instance()->setLevel(level);
-		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+		bt_global::brightness.setLevel(level);
+		bt_global::brightness.setState(DISPLAY_OPERATIVE);
 
 		return true;
 	}
@@ -407,7 +407,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+			bt_global::brightness.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -424,7 +424,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+			bt_global::brightness.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -441,7 +441,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+			bt_global::brightness.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -458,7 +458,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+			bt_global::brightness.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -523,7 +523,7 @@ void BtMain::gesScrSav()
 			if  (tiempo >= 65 && screensaver && screensaver->isHidden())
 			{
 				screensaver->showFullScreen();
-				BrightnessControl::instance()->setState(DISPLAY_SCREENSAVER);
+				bt_global::brightness.setState(DISPLAY_SCREENSAVER);
 			}
 
 			// FIXME: do we need to change tempo1 if there's no screensaver?
@@ -547,7 +547,7 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = false;
-		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+		bt_global::brightness.setState(DISPLAY_OPERATIVE);
 		tempo1->start(2000);
 		bloccato = false;
 	}
@@ -571,7 +571,7 @@ void BtMain::freeze(bool b)
 	if (!bloccato)
 	{
 		event_unfreeze = true;
-		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+		bt_global::brightness.setState(DISPLAY_OPERATIVE);
 		if (screensaver)
 			screensaver->hide();
 		if (pwdOn)
@@ -588,7 +588,7 @@ void BtMain::freeze(bool b)
 	}
 	else
 	{
-		BrightnessControl::instance()->setState(DISPLAY_FREEZED);
+		bt_global::brightness.setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(this);
 	}
 }

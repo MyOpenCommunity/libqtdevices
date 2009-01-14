@@ -4,13 +4,6 @@
 #include <assert.h>
 
 
-BrightnessControl *BrightnessControl::_instance = 0;
-
-
-BrightnessControl::BrightnessControl()
-{
-}
-
 void BrightnessControl::setLevel(BrightnessLevel level)
 {
 	switch (level)
@@ -70,9 +63,6 @@ void BrightnessControl::setState(DisplayStatus status)
 	setBrightnessLevel(data[status].brightness);
 }
 
-BrightnessControl *BrightnessControl::instance()
-{
-	if (!_instance)
-		_instance = new BrightnessControl();
-	return _instance;
-}
+// The global definition of brightness
+BrightnessControl bt_global::brightness;
+

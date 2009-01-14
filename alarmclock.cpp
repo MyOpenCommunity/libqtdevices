@@ -6,7 +6,7 @@
 #include "timescript.h"
 #include "bannfrecce.h"
 #include "fontmanager.h"
-#include "brightnesscontrol.h"
+#include "brightnesscontrol.h" // bt_global::brightness
 #include "global.h" // BTouch
 
 #include <openwebnet.h>
@@ -401,7 +401,7 @@ void AlarmClock::verificaSveglia()
 				aumVolTimer->start(3000);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
-				BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+				bt_global::brightness.setState(DISPLAY_OPERATIVE);
 				BTouch->freeze(true);
 				BTouch->svegl(true);
 			}
@@ -572,9 +572,9 @@ void AlarmClock::buzzerAlarm()
 	}
 
 	if (contaBuzzer % 8 == 0)
-		BrightnessControl::instance()->setState(DISPLAY_OPERATIVE);
+		bt_global::brightness.setState(DISPLAY_OPERATIVE);
 	else
-		BrightnessControl::instance()->setState(DISPLAY_FREEZED);
+		bt_global::brightness.setState(DISPLAY_FREEZED);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)

@@ -21,7 +21,6 @@ enum DisplayStatus
 class BrightnessControl
 {
 public:
-	static BrightnessControl *instance();
 	void setState(DisplayStatus status);
 	BrightnessLevel currentLevel();
 	void setLevel(BrightnessLevel level);
@@ -34,12 +33,11 @@ private:
 		bool screensaver;
 	};
 
-	BrightnessControl();
-	BrightnessControl(BrightnessControl &);
-
 	QMap<DisplayStatus, DisplayData> data;
 	BrightnessLevel current_level;
 	static BrightnessControl *_instance;
 };
+
+namespace bt_global { extern BrightnessControl brightness; }
 
 #endif //BRIGHTNESSCONTROL_H

@@ -9,7 +9,7 @@
  */
 
 #include "brightnesspage.h"
-#include "brightnesscontrol.h"
+#include "brightnesscontrol.h" // bt_global::brightness
 #include "main.h" // for ICON_{OK,VUOTO}
 #include "bannondx.h"
 #include "btbutton.h"
@@ -38,20 +38,20 @@ void BrightnessPage::addBanner(const QString &text, int id)
 	buttons.addButton(btn, id);
 	elencoBanner.append(bann);
 
-	if (id == BrightnessControl::instance()->currentLevel())
+	if (id == bt_global::brightness.currentLevel())
 		btn->setChecked(true);
 }
 
 void BrightnessPage::brightnessSelected()
 {
-	BrightnessControl::instance()->setLevel(static_cast<BrightnessLevel>(buttons.checkedId()));
+	bt_global::brightness.setLevel(static_cast<BrightnessLevel>(buttons.checkedId()));
 	emit Closed();
 }
 
 void BrightnessPage::showEvent(QShowEvent *event)
 {
 	sottoMenu::showEvent(event);
-	int level = BrightnessControl::instance()->currentLevel();
+	int level = bt_global::brightness.currentLevel();
 	QAbstractButton* btn;
 	foreach (btn, buttons.buttons())
 		if (buttons.id(btn) == level)
