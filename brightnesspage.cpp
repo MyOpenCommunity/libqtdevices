@@ -48,3 +48,12 @@ void BrightnessPage::brightnessSelected()
 	emit Closed();
 }
 
+void BrightnessPage::showEvent(QShowEvent *event)
+{
+	sottoMenu::showEvent(event);
+	int level = BrightnessControl::instance()->currentLevel();
+	QAbstractButton* btn;
+	foreach (btn, buttons.buttons())
+		if (buttons.id(btn) == level)
+			btn->setChecked(true);
+}

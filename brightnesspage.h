@@ -25,6 +25,9 @@ public:
 public slots:
 	void brightnessSelected();
 
+protected:
+	virtual void showEvent(QShowEvent *event);
+
 private:
 	void addBanner(const QString &text, int id);
 	QButtonGroup buttons;
