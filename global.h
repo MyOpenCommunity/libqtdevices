@@ -17,12 +17,12 @@
 #define GLOBAL_H
 
 #include "btmain.h"
-#include "device_cache.h"
+#include "devices_cache.h"
 
 /// A pointer to the main class of BTouch.
 extern BtMain *BTouch;
 
 /// Devices' cache
-extern device_cache btouch_device_cache;
+extern DevicesCache btouch_device_cache;
 
 #endif // GLOBAL_H

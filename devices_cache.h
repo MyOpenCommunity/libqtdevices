@@ -1,7 +1,7 @@
 //! This class describes a device cache
 
-#ifndef __DEVICE_CACHE_H__
-#define __DEVICE_CACHE_H__
+#ifndef __DEVICESCACHE_H__
+#define __DEVICESCACHE_H__
 
 #include "device_status.h"
 
@@ -11,11 +11,11 @@
 class device;
 
 
-class device_cache : public QMap<QString, device*>
+class DevicesCache : public QMap<QString, device*>
 {
 public:
 	//! Constructor
-	device_cache();
+	DevicesCache();
 	//! Inits all devices
 	void init_devices();
 	//! Get simple light device
@@ -61,7 +61,7 @@ public:
 	//! Add already created device to cache. Key is device's who+where
 	device * add_device(device * d);
 	//! Destructor
-	~device_cache();
+	~DevicesCache();
 };
 
 
@@ -71,4 +71,4 @@ QString get_device_key(QString who, QString where);
 QString get_device_key(char *who, char *where);
 
 
-#endif // __DEVICE_CACHE_H__
+#endif // __DEVICESCACHE_H__

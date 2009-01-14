@@ -2,5 +2,5 @@
 
 BtMain *BTouch;
 
-device_cache btouch_device_cache;
+DevicesCache btouch_device_cache;
 

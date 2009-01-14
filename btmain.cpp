@@ -25,7 +25,7 @@
 #include "xml_functions.h"
 #include "calibrate.h"
 #include "genpage.h"
-#include "device_cache.h"
+#include "devices_cache.h"
 #include "openclient.h"
 #include "version.h"
 #include "keypad.h"

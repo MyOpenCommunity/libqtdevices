@@ -77,8 +77,8 @@ HEADERS += actuators.h \
            contrast.h \
            datetime.h \
            device.h \
-           device_cache.h \
            device_status.h \
+           devices_cache.h \
            displaypage.h \
            fontmanager.h \
            frame_interpreter.h \
@@ -172,8 +172,8 @@ SOURCES += actuators.cpp \
            contrast.cpp \
            datetime.cpp \
            device.cpp \
-           device_cache.cpp \
            device_status.cpp \
+           devices_cache.cpp \
            displaypage.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
