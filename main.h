@@ -27,6 +27,7 @@ TemperatureScale readTemperatureScale();
 // See getElement
 QDomElement getConfElement(QString path);
 
+void resetTimer(int signo);
 
 /****************************************************************
  ** Default configurazione applicativo

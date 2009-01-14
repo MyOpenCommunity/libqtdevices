@@ -2,9 +2,10 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-**genericfunz.h
+** generic_functions.h
 **
-**funzioni generiche usate qua e là
+** this file is a container of generic functions that are NOT
+** specifically related to touchscreen code.
 **
 ****************************************************************/
 
@@ -116,8 +117,6 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const
 bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 void getName(char *name);
-
-void resetTimer(int signo);
 
 void grabScreen(void* pWidget);
 

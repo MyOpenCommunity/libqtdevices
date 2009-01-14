@@ -174,6 +174,11 @@ static void setupLogger(QString log_file)
 	qInstallMsgHandler(myMessageOutput);
 }
 
+void resetTimer(int signo)
+{
+	qDebug("resetTimer()");
+	bt_global::btmain->resetTimer();
+}
 
 int main(int argc, char **argv)
 {

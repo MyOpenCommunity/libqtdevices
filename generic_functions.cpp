@@ -1,16 +1,4 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**genericFunz.cpp
-**
-**funzioni generiche usate qua e là
-**
-****************************************************************/
-
 #include "generic_functions.h"
-#include "openclient.h"
-#include "btmain.h" // bt_global::btmain
 
 #include <QMutableMapIterator>
 #include <QTextStream>
@@ -383,12 +371,6 @@ void getName(char *name)
 			close(fd);
 		}
 	}
-}
-
-void resetTimer(int signo)
-{
-	qDebug("resetTimer()");
-	bt_global::btmain->resetTimer();
 }
 
 void grabScreen(void* pWidget)
