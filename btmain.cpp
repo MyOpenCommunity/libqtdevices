@@ -325,12 +325,11 @@ void BtMain::hom()
 	datiGen->inizializza();
 
 	if (loadConfiguration(CFG_FILE))
-	{
-		if (screensaver)
-			screensaver->hide();
 		hide();
-	}
 
+	// The stylesheet can contain some references to dynamic properties,
+	// so loading of css must be done after setting these properties (otherwise
+	// it might be necessary to force a stylesheet recomputation).
 	if (!loadStyleSheet(CSS_FILE))
 		qWarning("Unable to load skin file!");
 
@@ -519,23 +518,16 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && screensaver && screensaver->isHidden())
+			if  (tiempo >= 65 && screensaver && !screensaver->isRunning())
 			{
-				screensaver->showFullScreen();
+				Page *target = pagDefault ? pagDefault : Home;
+				screensaver->start(target);
 				bt_global::brightness.setState(DISPLAY_SCREENSAVER);
-			}
-
-			// FIXME: do we need to change tempo1 if there's no screensaver?
-			if (screensaver && !screensaver->isHidden())
-			{
-				QWidget *target = pagDefault ? pagDefault : Home;
-				screensaver->refresh(QPixmap::grabWidget(target,0,0,MAX_WIDTH,MAX_HEIGHT));
-				tempo1->start(100);
 			}
 		}
 		else
-			if (screensaver)
-				screensaver->hide();
+			if (screensaver && screensaver->isRunning())
+				screensaver->stop();
 	}
 	else if (tiempo >= 120)
 	{
@@ -571,8 +563,8 @@ void BtMain::freeze(bool b)
 	{
 		event_unfreeze = true;
 		bt_global::brightness.setState(DISPLAY_OPERATIVE);
-		if (screensaver)
-			screensaver->hide();
+		if (screensaver && screensaver->isRunning())
+			screensaver->stop();
 		if (pwdOn)
 		{
 			if (!tasti)
