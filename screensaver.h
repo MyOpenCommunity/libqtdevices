@@ -28,9 +28,10 @@ Q_OBJECT
 public:
 	enum Type
 	{
-		NONE = 0,       // no screensaver
-		LINES = 1,      // single line that goes up and down
-		BALLS = 2,      // many balls on screen
+		NONE = 0,   // no screensaver
+		LINES,       // single line that goes up and down
+		BALLS,      // many balls on screen
+		TIME,       // a single line with a clock inside
 	};
 
 	virtual void start(Page *p);
@@ -67,9 +68,13 @@ public:
 protected slots:
 	virtual void refresh();
 
-private:
+protected:
 	QLabel *line;
 
+	virtual QString styleDownToUp();
+	virtual QString styleUpToDown();
+
+private:
 	bool up_to_down; // true if the direction of the movement is from up to down
 	int y;
 };
@@ -98,6 +103,22 @@ private:
 	QHash<QLabel*, BallData> ball_list;
 
 	void initBall(QLabel* ball, BallData& data);
+};
+
+
+/**
+ * The concrete class that represent a screensaver with a scrolling line and a
+ *.time clock inside.
+ */
+class ScreenSaverTime : public ScreenSaverLine
+{
+Q_OBJECT
+public:
+	virtual void start(Page *p);
+
+protected:
+	virtual QString styleDownToUp();
+	virtual QString styleUpToDown();
 };
 
 #endif

@@ -1,7 +1,10 @@
 #include "screensaver.h"
 #include "main.h"
 #include "page.h"
+#include "timescript.h"
+#include "fontmanager.h"
 
+#include <QVBoxLayout>
 #include <QPainter>
 #include <QBitmap>
 #include <QLabel>
@@ -22,6 +25,8 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 		return new ScreenSaverBalls();
 	case ScreenSaver::LINES:
 		return new ScreenSaverLine();
+	case ScreenSaver::TIME:
+		return new ScreenSaverTime();
 	case ScreenSaver::NONE:
 		return 0;
 	default:
@@ -174,7 +179,7 @@ void ScreenSaverLine::start(Page *p)
 	ScreenSaver::start(p);
 	line = new QLabel(p);
 	line->resize(MAX_WIDTH, 6);
-	line->setStyleSheet(QString("QLabel {background-color:#FFFFFF;}"));
+	line->setStyleSheet(styleUpToDown());
 	line->show();
 }
 
@@ -190,14 +195,14 @@ void ScreenSaverLine::refresh()
 	{
 		y = MAX_HEIGHT;
 		up_to_down = false;
-		line->setStyleSheet(QString("QLabel {background-color:#000000;}"));
+		line->setStyleSheet(styleDownToUp());
 	}
 
 	if (y < 0)
 	{
 		y = 0;
 		up_to_down = true;
-		line->setStyleSheet(QString("QLabel {background-color:#FFFFFF;}"));
+		line->setStyleSheet(styleUpToDown());
 	}
 
 	if (up_to_down)
@@ -206,5 +211,44 @@ void ScreenSaverLine::refresh()
 		y -= 3;
 
 	line->move(0, y);
+}
+
+QString ScreenSaverLine::styleDownToUp()
+{
+	return "QLabel {background-color:#000000;}";
+}
+
+QString ScreenSaverLine::styleUpToDown()
+{
+	return "QLabel {background-color:#FFFFFF;}";
+}
+
+
+void ScreenSaverTime::start(Page *p)
+{
+	ScreenSaverLine::start(p);
+	line->resize(MAX_WIDTH, 30);
+
+	timeScript *time = new timeScript(line, 1);
+	time->setFrameStyle(QFrame::Plain);
+
+	QFont aFont;
+	FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
+	time->setFont(aFont);
+
+	QVBoxLayout *layout = new QVBoxLayout;
+	layout->setContentsMargins(0, 2, 0, 2);
+	layout->addWidget(time, 0, Qt::AlignCenter);
+	line->setLayout(layout);
+}
+
+QString ScreenSaverTime::styleDownToUp()
+{
+	return "* {background-color:#000000; color:#FFFFFF;}";
+}
+
+QString ScreenSaverTime::styleUpToDown()
+{
+	return "* {background-color:#FFFFFF; color:#000000; }";
 }
 
