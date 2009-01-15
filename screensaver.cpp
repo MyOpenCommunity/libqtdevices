@@ -58,7 +58,6 @@ bool ScreenSaver::isRunning()
 
 ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
 {
-	backcol = 0;
 }
 
 void ScreenSaverBalls::start(Page *p)
@@ -68,8 +67,32 @@ void ScreenSaverBalls::start(Page *p)
 	{
 		QLabel *l = new QLabel(p);
 		ball_list[l] = BallData();
+		initBall(l, ball_list[l]);
 		l->show();
 	}
+}
+
+void ScreenSaverBalls::initBall(QLabel* ball, BallData& data)
+{
+	data.x = (int)(200.0 * rand() / (RAND_MAX + 1.0));
+	data.y = (int)(200.0 * rand() / (RAND_MAX + 1.0));
+	data.vx = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
+	data.vy = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
+	if (data.vx == 0)
+		data.vx = 1;
+	if (data.vy == 0)
+		data.vy = 1;
+
+	data.dim = (int)(10.0 * rand() / (RAND_MAX + 1.0)) + 15;
+	ball->resize(data.dim, data.dim);
+
+	QBitmap mask = QBitmap(data.dim, data.dim);
+	mask.clear();
+	QPainter p(&mask);
+	p.setBrush(QBrush(Qt::color1, Qt::SolidPattern));
+	for (int i = 2; i <= data.dim; ++i)
+		p.drawEllipse((data.dim - i) / 2, (data.dim - i) / 2, i, i);
+	ball->setMask(mask);
 }
 
 void ScreenSaverBalls::stop()
@@ -87,87 +110,55 @@ void ScreenSaverBalls::stop()
 
 void ScreenSaverBalls::refresh()
 {
-	if (backcol < 3)
+	QMutableHashIterator<QLabel*, BallData> it(ball_list);
+	while (it.hasNext())
 	{
-		backcol = 4;
-		QMutableHashIterator<QLabel*, BallData> it(ball_list);
-		while (it.hasNext())
+		it.next();
+		BallData& data = it.value();
+		data.x += data.vx;
+		data.y += data.vy;
+
+		bool change_style = false;
+		if (data.x <= 0)
 		{
-			it.next();
-			BallData& data = it.value();
-			data.x = (int)(200.0 * rand() / (RAND_MAX + 1.0));
-			data.y = (int)(200.0 * rand() / (RAND_MAX + 1.0));
-			data.vx = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
-			data.vy = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
-			if (data.vx == 0)
-				data.vx = 1;
+			data.vx = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) + 5;
+			data.x = 0;
+			change_style = true;
+		}
+		if (data.y > MAX_HEIGHT - data.dim)
+		{
+			data.vy = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) - 15;
+			data.y = MAX_HEIGHT - data.dim;
+			change_style = true;
+		}
+
+		if (data.y <= 0)
+		{
+			data.vy = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) + 5;
 			if (data.vy == 0)
 				data.vy = 1;
-
-			data.dim = (int)(10.0 * rand() / (RAND_MAX + 1.0)) + 15;
-			it.key()->resize(data.dim, data.dim);
-
-			QBitmap mask = QBitmap(data.dim, data.dim);
-			mask.clear();
-			QPainter p(&mask);
-			p.setBrush(QBrush(Qt::color1, Qt::SolidPattern));
-			for (int i = 2; i <= data.dim; ++i)
-				p.drawEllipse((data.dim - i) / 2, (data.dim - i) / 2, i, i);
-			it.key()->setMask(mask);
+			data.y = 0;
+			change_style = true;
 		}
-	}
-	else
-	{
-		++backcol;
-		if (backcol == 9)
-			backcol = 4;
-
-		QMutableHashIterator<QLabel*, BallData> it(ball_list);
-		while (it.hasNext())
+		if (data.x > MAX_WIDTH - data.dim)
 		{
-			it.next();
-			BallData& data = it.value();
-			data.x += data.vx;
-			data.y += data.vy;
+			data.vx = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) - 15;
+			if (data.vx == 0)
+				data.vx = 1;
+			data.x = MAX_WIDTH - data.dim;
+			change_style = true;
+		}
 
+		if (change_style)
+		{
 			QColor ball_bg = QColor((int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
 									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
 									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150);
-			int rand_number = (int)(10.0 * rand() / (RAND_MAX + 1.0));
 
-			QLabel *ball = it.key();
 			QString ball_style = QString("QLabel {background-color:%1;}").arg(ball_bg.name());
-			if (data.x <= 0)
-			{
-				data.vx = rand_number + 5;
-				data.x = 0;
-				ball->setStyleSheet(ball_style);
-			}
-			if (data.y > MAX_HEIGHT - data.dim)
-			{
-				data.vy = rand_number - 15;
-				data.y = MAX_HEIGHT - data.dim;
-				ball->setStyleSheet(ball_style);
-			}
-
-			if (data.y <= 0)
-			{
-				data.vy = rand_number + 5;
-				if (data.vy == 0)
-					data.vy = 1;
-				data.y = 0;
-				ball->setStyleSheet(ball_style);
-			}
-			if (data.x > MAX_WIDTH - data.dim)
-			{
-				data.vx = rand_number - 15;
-				if (data.vx == 0)
-					data.vx = 1;
-				data.x = MAX_WIDTH - data.dim;
-				ball->setStyleSheet(ball_style);
-			}
-			ball->move(data.x, data.y);
+			it.key()->setStyleSheet(ball_style);
 		}
+		it.key()->move(data.x, data.y);
 	}
 }
 
@@ -175,7 +166,6 @@ void ScreenSaverBalls::refresh()
 ScreenSaverLine::ScreenSaverLine() : ScreenSaver(150)
 {
 	line = 0;
-	backcol = 10;
 	up_to_down = true;
 }
 
@@ -196,11 +186,6 @@ void ScreenSaverLine::stop()
 
 void ScreenSaverLine::refresh()
 {
-	if (backcol >= 5)
-		backcol = 0;
-
-	++backcol;
-
 	if (y > MAX_HEIGHT)
 	{
 		y = MAX_HEIGHT;

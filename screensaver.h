@@ -68,7 +68,6 @@ protected slots:
 	virtual void refresh();
 
 private:
-	int backcol;
 	QLabel *line;
 
 	bool up_to_down; // true if the direction of the movement is from up to down
@@ -97,7 +96,8 @@ private:
 	};
 
 	QHash<QLabel*, BallData> ball_list;
-	int backcol;
+
+	void initBall(QLabel* ball, BallData& data);
 };
 
 #endif
