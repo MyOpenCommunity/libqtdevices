@@ -24,6 +24,7 @@ public:
 	void setState(DisplayStatus status);
 	BrightnessLevel currentLevel();
 	void setLevel(BrightnessLevel level);
+	bool screenSaverActive();
 
 private:
 	struct DisplayData

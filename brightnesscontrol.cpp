@@ -63,6 +63,11 @@ void BrightnessControl::setState(DisplayStatus status)
 	setBrightnessLevel(data[status].brightness);
 }
 
+bool BrightnessControl::screenSaverActive()
+{
+	return data[DISPLAY_SCREENSAVER].screensaver;
+}
+
 // The global definition of brightness
 BrightnessControl bt_global::brightness;
 

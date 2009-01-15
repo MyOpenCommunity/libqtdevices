@@ -36,6 +36,7 @@
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
+#include "brightnesscontrol.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -518,7 +519,7 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && screensaver && !screensaver->isRunning())
+			if  (tiempo >= 65 && screensaver && !screensaver->isRunning() && bt_global::brightness.screenSaverActive())
 			{
 				Page *target = pagDefault ? pagDefault : Home;
 				screensaver->start(target);
