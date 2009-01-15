@@ -1,13 +1,3 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-**impostaTime.cpp
-**
-**Sottomenù imposta data/ora
-**
-****************************************************************/
-
 #include "impostatime.h"
 #include "timescript.h"
 #include "btbutton.h"
@@ -17,15 +7,10 @@
 #include <QPixmap>
 #include <QDateTime>
 #include <QLabel>
-#include <QFile>
-
 
 
 impostaTime::impostaTime()
 {
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-
 	QDateTime OroTemp = QDateTime::currentDateTime();
 	dataOra = new timeScript(this,1,&OroTemp);
 	dataOra->setGeometry(10,120,220,80);
