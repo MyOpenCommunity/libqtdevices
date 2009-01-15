@@ -146,7 +146,7 @@ static void loadGlobalConfig(QString xml_file)
 			QDomNode el = getElement(qdom_config, "root/sw");
 			if (!el.isNull())
 			{
-				QDomElement v = getElement(el, "bt_global::btmain/logverbosity");
+				QDomElement v = getElement(el, "BTouch/logverbosity");
 				if (!v.isNull())
 					global_config.verbosity_level = v.text().toInt();
 
