@@ -4,6 +4,8 @@
 #include "cleanscreen.h"
 #include "brightnesspage.h"
 #include "xml_functions.h" // getElement
+#include "screensaverpage.h"
+
 
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
@@ -23,17 +25,21 @@ void DisplayPage::loadItems(QDomNode config_node)
 		wait_time = n.text().toInt();
 
 	b = new bannOnDx(this, ICON_INFO, new CleanScreen(wait_time));
-	b->setText("Clean Screen");
+	b->setText(tr("Clean Screen"));
 	appendBanner(b);
 
 	b = new calibration(this, ICON_INFO);
 	connect(b, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
 	connect(b, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
-	b->setText("Calibration");
+	b->setText(tr("Calibration"));
 	appendBanner(b);
 
 	b = new bannOnDx(this, ICON_BRIGHTNESS, new BrightnessPage());
-	b->setText("Brightness");
+	b->setText(tr("Brightness"));
+	appendBanner(b);
+
+	b = new bannOnDx(this, ICON_INFO, new ScreenSaverPage());
+	b->setText(tr("Screen Saver"));
 	appendBanner(b);
 }
 

@@ -10,50 +10,22 @@
 
 #include "brightnesspage.h"
 #include "brightnesscontrol.h" // bt_global::brightness
-#include "main.h" // for ICON_{OK,VUOTO}
-#include "bannondx.h"
-#include "btbutton.h"
-
-#include <QDebug>
 
 
-BrightnessPage::BrightnessPage(QWidget *parent) : sottoMenu(parent)
+BrightnessPage::BrightnessPage()
 {
-	setNavBarMode(10, ICON_OK);
-	buttons.setExclusive(true);
-
 	addBanner(tr("Off"), BRIGHTNESS_OFF);
 	addBanner(tr("Low brightness"), BRIGHTNESS_LOW);
 	addBanner(tr("Normal brightness"), BRIGHTNESS_NORMAL);
-
-	connect(this, SIGNAL(goDx()), SLOT(brightnessSelected()));
 }
 
-void BrightnessPage::addBanner(const QString &text, int id)
+int BrightnessPage::getCurrentId()
 {
-	bannOnSx *bann = new bannOnSx(this, ICON_VUOTO);
-	BtButton *btn = bann->getButton();
-	btn->setCheckable(true);
-	bann->setText(text);
-	buttons.addButton(btn, id);
-	elencoBanner.append(bann);
-
-	if (id == bt_global::brightness.currentLevel())
-		btn->setChecked(true);
+	return bt_global::brightness.currentLevel();
 }
 
-void BrightnessPage::brightnessSelected()
+void BrightnessPage::bannerSelected(int id)
 {
-	bt_global::brightness.setLevel(static_cast<BrightnessLevel>(buttons.checkedId()));
-	emit Closed();
+	bt_global::brightness.setLevel(static_cast<BrightnessLevel>(id));
 }
 
-void BrightnessPage::showEvent(QShowEvent *event)
-{
-	sottoMenu::showEvent(event);
-	int level = bt_global::brightness.currentLevel();
-	QAbstractButton* btn;
-	foreach (btn, buttons.buttons())
-		if (buttons.id(btn) == level)
-			btn->setChecked(true);
-}

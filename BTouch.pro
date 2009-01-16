@@ -108,7 +108,9 @@ HEADERS += actuators.h \
            scenario.h \
            scenevocond.h \
            screensaver.h \
+           screensaverpage.h \
            settings.h \
+           singlechoicepage.h \
            sorgentiaux.h \
            sorgentimedia.h \
            sorgentiradio.h \
@@ -202,7 +204,9 @@ SOURCES += actuators.cpp \
            scenario.cpp \
            scenevocond.cpp \
            screensaver.cpp \
+           screensaverpage.cpp \
            settings.cpp \
+           singlechoicepage.cpp \
            sorgentiaux.cpp \
            sorgentimedia.cpp \
            sorgentiradio.cpp \

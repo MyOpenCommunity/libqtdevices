@@ -12,25 +12,20 @@
 #ifndef BRIGHTNESSPAGE_H
 #define BRIGHTNESSPAGE_H
 
-#include "sottomenu.h"
+#include "singlechoicepage.h"
 
-#include <QButtonGroup>
-
-
-class BrightnessPage : public sottoMenu
+/*
+ * The page used to choose the Brightness value.
+ */
+class BrightnessPage : public SingleChoicePage
 {
 Q_OBJECT
 public:
-	BrightnessPage(QWidget *parent = 0);
-public slots:
-	void brightnessSelected();
+	BrightnessPage();
 
 protected:
-	virtual void showEvent(QShowEvent *event);
-
-private:
-	void addBanner(const QString &text, int id);
-	QButtonGroup buttons;
+	virtual int getCurrentId();
+	virtual void bannerSelected(int id);
 };
 
 #endif // BRIGHTNESSPAGE_H
