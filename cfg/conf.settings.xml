@@ -57,10 +57,6 @@
    </setup>
    <displaypages>
       <orientation>0</orientation>
-      <screensaver>
-	      <!-- 0: no screensaver, 1: lines, 2: balls, 3: line+hour, 4: line+text -->
-	      <type>1</type>
-      </screensaver>
       <homepage>
          <isdefined>0</isdefined>
          <id>0</id>
@@ -306,9 +302,20 @@
         <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
         <cid>804</cid>
         <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>TARATURA</descr>
+        <descr>DISPLAY</descr>
         <!-- lista immagini -->
         <cimg1>btninfo.png</cimg1>
+        <screensaver>
+	  <!-- 0: no screensaver, 1: lines, 2: balls, 3: line+hour, 4: line+text -->
+          <type>1</type>
+          <text>Screensaver</text>
+        </screensaver>
+        <brightness>
+          <level>2</level>
+        </brightness>
+        <cleaning>
+          <time>45</time>
+        </cleaning>
       </item5>
       <item6>
         <!-- identifica la tipologia di item, vedi tab. skinObj -->
@@ -336,16 +343,6 @@
         <!-- lista immagini -->
         <cimg1>btninfo.png</cimg1>
       </item7>
-      <item8>
-        <!-- identifica la tipologia di item, vedi tab. skinObj -->
-        <id>72</id>
-        <!-- identificativo per il configuratore da pc, vedi tab. skinObj -->
-        <cid>807</cid>
-        <!-- descr: contiene il testo da mostrare nell'item -->
-        <descr>Pulizia schermo</descr>
-        <!-- value: valore del contrasto 0-255 -->
-        <time>10</time>
-      </item8>
       </page0>
    </displaypages>
    <impianto/>
