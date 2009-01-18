@@ -602,8 +602,7 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode c
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
-	QDomNode item;
-	foreach (item, getChildren(config, "item"))
+	foreach (const QDomNode &item, getChildren(config, "item"))
 	{
 		QString descr = getTextChild(item, "descr");
 		QString url = getTextChild(item, "url");

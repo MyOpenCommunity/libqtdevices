@@ -22,8 +22,7 @@ void PageContainer::loadItems(QDomNode config_node)
 	QTime wdtime;
 	wdtime.start(); // Start counting for wd refresh
 
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");

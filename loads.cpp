@@ -35,8 +35,7 @@ Loads::Loads(QDomNode config_node)
 
 void Loads::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		assert(id == CARICO && "Type of item not handled on loads page!");

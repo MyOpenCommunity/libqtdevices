@@ -39,8 +39,7 @@ void AudioSources::addAmb(QString a)
 
 void AudioSources::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString descr = getTextChild(item, "descr");
@@ -124,8 +123,7 @@ AmpliContainer::AmpliContainer(QWidget *parent, QDomNode config_node) :
 void AmpliContainer::loadAmplifiers(QDomNode config_node)
 {
 	// Amplifiers are items in SoundDiffusion and devices in MultiSoundDiff
-	QDomNode node;
-	foreach (node, getChildren(config_node, "item") + getChildren(config_node, "device"))
+	foreach (const QDomNode &node, getChildren(config_node, "item") + getChildren(config_node, "device"))
 	{
 		int id = getTextChild(node, "id").toInt();
 		QString descr = getTextChild(node, "descr");
@@ -157,12 +155,11 @@ void AmpliContainer::loadAmplifiers(QDomNode config_node)
 			// in SoundDiffusion in the form:
 			// <where1>..</where1><where2>..</where2>..
 			QList<QString> addresses;
-			QDomNode a;
-			foreach (a, getChildren(node, "element"))
+			foreach (const QDomNode &a, getChildren(node, "element"))
 				addresses.append(getTextChild(a, "where"));
 
 			if (addresses.isEmpty())
-				foreach (a, getChildren(node, "where"))
+				foreach (const QDomNode &a, getChildren(node, "where"))
 				{
 					QStringList l = a.toElement().text().split(',');
 					for (int i = 0; i < l.size(); ++i)

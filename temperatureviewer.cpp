@@ -49,8 +49,7 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 
 void TemperatureViewer::inizializza()
 {
-	TemperatureData temp;
-	foreach (temp, temp_list)
+	foreach (const TemperatureData &temp, temp_list)
 	{
 		QString frame = "*#4*" + temp.where;
 		if (temp.ext == "0")
@@ -98,8 +97,7 @@ void TemperatureViewer::gestFrame(char* frame)
 		if (dove[0] == '#')
 			strcpy(&dove[0], &dove[1]);
 
-		TemperatureData temp;
-		foreach (temp, temp_list)
+		foreach (TemperatureData temp, temp_list)
 		{
 			int icx = -1;
 			if (temp.ext == "0" && temp.where == QString(dove) && !strcmp(msg_open.Extract_grandezza(), "0"))

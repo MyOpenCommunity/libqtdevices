@@ -46,8 +46,7 @@ void SupervisionMenu::loadItems(QDomNode config_node)
 {
 	classesCount = 0;
 
-	QDomNode node;
-	foreach (node, getChildren(config_node, "class"))
+	foreach (const QDomNode &node, getChildren(config_node, "class"))
 	{
 		int id = getTextChild(node, "id").toInt();
 		switch (id)
@@ -96,8 +95,7 @@ void SupervisionMenu::loadItems(QDomNode config_node)
 
 void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 {
-	QDomNode item;
-	foreach (item, getChildren(node, "item"))
+	foreach (const QDomNode &item, getChildren(node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		int cid = getTextChild(item, "cid").toInt();

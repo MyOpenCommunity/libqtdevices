@@ -14,8 +14,7 @@
 static QList<QString> getAddresses(QDomNode item)
 {
 	QList<QString> l;
-	QDomNode el;
-	foreach (el, getChildren(item, "element"))
+	foreach (const QDomNode &el, getChildren(item, "element"))
 		l.append(getTextChild(el, "where"));
 	return l;
 }
@@ -28,8 +27,7 @@ Lighting::Lighting(QDomNode config_node)
 
 void Lighting::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString where = getTextChild(item, "where");
@@ -40,8 +38,7 @@ void Lighting::loadItems(QDomNode config_node)
 		QString img5 = IMG_PATH + getTextChild(item, "cimg5");
 
 		QList<QString> times;
-		QDomNode el;
-		foreach (el, getChildren(item, "time"))
+		foreach (const QDomNode &el, getChildren(item, "time"))
 			times.append(el.toElement().text());
 
 		banner *b;
@@ -82,8 +79,7 @@ void Lighting::loadItems(QDomNode config_node)
 			QList<int> sstart, sstop;
 			QList<QString> addresses;
 
-			QDomNode el;
-			foreach (el, getChildren(item, "element"))
+			foreach (const QDomNode &el, getChildren(item, "element"))
 			{
 				sstart.append(getTextChild(el, "softstart").toInt());
 				sstop.append(getTextChild(el, "softstop").toInt());

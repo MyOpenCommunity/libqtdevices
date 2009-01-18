@@ -18,8 +18,7 @@ Scenario::Scenario(QDomNode config_node)
 
 void Scenario::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString where = getTextChild(item, "where");
@@ -90,8 +89,7 @@ QList<scenEvo_cond*> Scenario::loadConditions(QDomNode config_node)
 {
 	// Note: the ownership of scenEvo_cond objects is taken by scenEvo instance.
 	QList<scenEvo_cond*> l;
-	QDomNode cond;
-	foreach (cond, getChildren(config_node, "condH"))
+	foreach (const QDomNode &cond, getChildren(config_node, "condH"))
 	{
 		scenEvo_cond_h *c = new scenEvo_cond_h(getTextChild(cond, "hour"), getTextChild(cond, "minute"));
 		if (int v = getTextChild(cond, "value").toInt())
@@ -109,7 +107,7 @@ QList<scenEvo_cond*> Scenario::loadConditions(QDomNode config_node)
 		}
 	}
 
-	foreach (cond, getChildren(config_node, "condDevice"))
+	foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
 	{
 		scenEvo_cond_d *c = new scenEvo_cond_d;
 		if (int v = getTextChild(cond, "value").toInt())

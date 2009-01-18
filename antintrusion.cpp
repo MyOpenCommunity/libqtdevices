@@ -37,8 +37,7 @@ Antintrusion::Antintrusion(QDomNode config_node)
 
 void Antintrusion::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");

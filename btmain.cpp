@@ -357,8 +357,7 @@ void BtMain::init()
 	if (datiGen)
 		datiGen->inizializza();
 
-	Page *p;
-	foreach (p, page_list)
+	foreach (Page *p, page_list)
 		p->inizializza();
 
 	struct sysinfo info;

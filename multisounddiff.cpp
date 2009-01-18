@@ -47,8 +47,7 @@ MultiSoundDiff::~MultiSoundDiff()
 
 void MultiSoundDiff::loadAmbienti(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString descr = getTextChild(item, "descr");

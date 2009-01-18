@@ -18,8 +18,7 @@ Automation::Automation(QDomNode config_node)
 
 void Automation::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString where = getTextChild(item, "where");
@@ -47,8 +46,7 @@ void Automation::loadItems(QDomNode config_node)
 		case GR_ATTUAT_INT:
 		{
 			QList<QString> addresses;
-			QDomNode el;
-			foreach (el, getChildren(item, "element"))
+			foreach (const QDomNode &el, getChildren(item, "element"))
 				addresses.append(getTextChild(el, "where"));
 
 			b = new grAttuatInt(this, addresses, img1, img2, img3);

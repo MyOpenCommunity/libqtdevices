@@ -16,8 +16,7 @@ void VideoEntryPhone::loadDevices(QDomNode config_node)
 {
 	QString unknown = getTextChild(config_node, "unknown");
 
-	QDomNode device;
-	foreach (device, getChildren(config_node, "device"))
+	foreach (const QDomNode &device, getChildren(config_node, "device"))
 	{
 		int id = getTextChild(device, "id").toInt();
 		if (id != POSTO_ESTERNO)

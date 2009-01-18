@@ -28,7 +28,7 @@ void SingleChoicePage::addBanner(const QString &text, int id)
 }
 
 void SingleChoicePage::okPressed()
-{
+{;
 	bannerSelected(buttons.checkedId());
 	emit Closed();
 }
@@ -36,8 +36,7 @@ void SingleChoicePage::okPressed()
 void SingleChoicePage::showEvent(QShowEvent *event)
 {
 	sottoMenu::showEvent(event);
-	QAbstractButton* btn;
-	foreach (btn, buttons.buttons())
+	foreach (QAbstractButton *btn, buttons.buttons())
 		if (buttons.id(btn) == getCurrentId())
 			btn->setChecked(true);
 }

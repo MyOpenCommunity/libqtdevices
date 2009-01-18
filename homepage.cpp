@@ -27,8 +27,7 @@ homePage::homePage(QDomNode config_node) : PageContainer(config_node)
 // Load only the item that is not a section page (which is loaded by PageContainer)
 void homePage::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		int x = getTextChild(item, "left").toInt();

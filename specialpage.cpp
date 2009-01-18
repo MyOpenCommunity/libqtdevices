@@ -28,8 +28,7 @@ SpecialPage::SpecialPage(QDomNode config_node)
 
 void SpecialPage::loadItems(QDomNode config_node)
 {
-	QDomNode item;
-	foreach (item, getChildren(config_node, "item"))
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
 		// We get the number after "item"

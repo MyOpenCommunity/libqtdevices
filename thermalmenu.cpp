@@ -59,18 +59,17 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 void ThermalMenu::loadBanners(QDomNode config_node)
 {
 	bannPuls *b = NULL;
-	QDomNode node;
-	foreach (node, getChildren(config_node, "plant"))
+	foreach (const QDomNode &node, getChildren(config_node, "plant"))
 	{
 		b = addMenuItem(node.toElement(), i_plant);
 		createPlantMenu(node.toElement(), b);
 	}
-	foreach (node, getChildren(config_node, "extprobe"))
+	foreach (const QDomNode &node, getChildren(config_node, "extprobe"))
 	{
 		b = addMenuItem(node.toElement(), i_ext_probe);
 		createProbeMenu(node.toElement(), b, true);
 	}
-	foreach (node, getChildren(config_node, "tempprobe"))
+	foreach (const QDomNode &node, getChildren(config_node, "tempprobe"))
 	{
 		b = addMenuItem(node.toElement(), i_temp_probe);
 		createProbeMenu(node.toElement(), b, false);
@@ -113,8 +112,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	// hide children
 	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
 
-	QDomNode item;
-	foreach(item, getChildren(config, "item"))
+	foreach (const QDomNode &item, getChildren(config, "item"))
 	{
 		QString addr = getTextChild(item, "where");
 		if (external)
@@ -178,9 +176,8 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 	// The leaves we are looking for start with either "p" or "s"
 	QString name = what.left(1);
 
-	QDomNode node;
 	int index = 0;
-	foreach(node, getChildren(program, name))
+	foreach (const QDomNode &node, getChildren(program, name))
 	{
 		BannWeekly *bp = 0;
 		if (create_banner)
