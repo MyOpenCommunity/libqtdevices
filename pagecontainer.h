@@ -31,7 +31,7 @@ public:
 private:
 	QButtonGroup buttons_group;
 	QHash<int, Page*> page_list;
-	void loadItems(QDomNode config_node);
+	void loadItems(QDomNode config_node); // TODO: rendere config_node un const QDomNode&
 private slots:
 	void clicked(int id);
 };
