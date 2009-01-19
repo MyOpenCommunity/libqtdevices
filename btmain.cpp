@@ -520,9 +520,8 @@ void BtMain::gesScrSav()
 				bt_global::brightness.setState(DISPLAY_SCREENSAVER);
 			}
 		}
-		else
-			if (screensaver && screensaver->isRunning())
-				screensaver->stop();
+		else if (screensaver && screensaver->isRunning())
+			screensaver->stop();
 	}
 	else if (tiempo >= 120)
 	{
