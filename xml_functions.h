@@ -19,7 +19,7 @@
  */
 
 /// Return the node child of 'parent' with name 'name'.
-QDomNode getChildWithName(QDomNode parent, QString name);
+QDomNode getChildWithName(const QDomNode &parent, const QString &name);
 
 /**
  * Finds a node in a DOM tree with the path given as a parameter.
@@ -30,15 +30,15 @@ QDomNode getChildWithName(QDomNode parent, QString name);
  * Example: "setup/generale/clock/dateformat"
  * \return A Null node if the path is not found, a valid node otherwise.
  */
-QDomElement getElement(QDomNode root, QString path);
+QDomElement getElement(const QDomNode &root, const QString &path);
 
 /// Return the node child of 'parent' that match the 'regexp' and have an attribute with id 'id'.
-QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
+QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int id);
 
 /// A wrapper function around getChildWithName. Return the text of child if present, a null QString otherwise.
-QString getTextChild(QDomNode parent, QString name);
+QString getTextChild(const QDomNode &parent, const QString &name);
 
 /// Return a list of children of node 'parent' whose name start with 'name'.
-QList<QDomNode> getChildren(QDomNode parent, QString name);
+QList<QDomNode> getChildren(const QDomNode &parent, const QString &name);
 
 #endif
