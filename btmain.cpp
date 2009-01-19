@@ -273,7 +273,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		else
 			qWarning("setup node not found on xml config file!");
 
-		int screensaver_type = ScreenSaver::LINES; // default screensaver
 		QDomNode displaypages = getConfElement("displaypages");
 		if (!displaypages.isNull())
 		{
@@ -290,14 +289,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			QString orientation = getTextChild(displaypages, "orientation");
 			if (!orientation.isNull())
 				setOrientation(orientation);
-
-			// read screensaver type from config file
-			QDomElement screensaver_node = getElement(displaypages, "screensaver/type");
-			if (screensaver_node.isNull())
-				qWarning("Type of screeensaver not found!");
-			else
-				screensaver_type = screensaver_node.text().toInt();
-			screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
 		}
 		else
 			qFatal("displaypages node not found on xml config file!");
@@ -315,6 +306,10 @@ bool BtMain::loadConfiguration(QString cfg_file)
 
 		bt_global::brightness.setLevel(level);
 		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+
+		QDomNode screensaver_node = getElement(display_node, "screensaver");
+		int screensaver_type = getScreenSaverType(screensaver_node);
+		screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
 
 		return true;
 	}

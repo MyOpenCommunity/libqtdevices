@@ -17,6 +17,7 @@
 class Page;
 class QLabel;
 class QTimer;
+class QDomNode;
 
 
 /**
@@ -52,6 +53,10 @@ private:
 
 /// The factory method that build the screensaver of type 'ScreenSaver::Type'
 ScreenSaver *getScreenSaver(ScreenSaver::Type type);
+
+/// Return the screensaver type from the configuration node, or the default type
+/// if the config_node is null/invalid.
+ScreenSaver::Type getScreenSaverType(const QDomNode &config_node);
 
 
 /**

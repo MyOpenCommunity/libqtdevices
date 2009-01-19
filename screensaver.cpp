@@ -3,8 +3,10 @@
 #include "page.h"
 #include "timescript.h"
 #include "fontmanager.h"
+#include "xml_functions.h"
 
 #include <QVBoxLayout>
+#include <QDomNode>
 #include <QPainter>
 #include <QBitmap>
 #include <QLabel>
@@ -32,6 +34,18 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 	default:
 		assert(!"Type of screensaver not handled!");
 	}
+}
+
+ScreenSaver::Type getScreenSaverType(const QDomNode &config_node)
+{
+	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
+	if (!config_node.isNull())
+	{
+		QString n = getTextChild(config_node, "type");
+		if (!n.isNull())
+			type = static_cast<ScreenSaver::Type>(n.toInt());
+	}
+	return type;
 }
 
 
