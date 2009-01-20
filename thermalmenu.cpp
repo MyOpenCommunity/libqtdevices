@@ -115,12 +115,13 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	foreach (const QDomNode &item, getChildren(config, "item"))
 	{
 		QString addr = getTextChild(item, "where");
+		QString text = getTextChild(item, "descr");
 		if (external)
 			addr += "00";
 		device *dev = bt_global::devices_cache.get_temperature_probe(addr, external);
 
-		banner *b = new BannTemperature(sm, item, dev);
-		b->setText(getTextChild(item, "descr"));
+		banner *b = new BannTemperature(sm, addr, text, dev);
+		b->setText(text);
 
 		sm->appendBanner(b);
 	}

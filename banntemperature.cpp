@@ -20,18 +20,14 @@
 #include <QFont>
 
 
-BannTemperature::BannTemperature(QWidget *parent, QDomNode config, device *dev) : banner(parent)
+BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, device *dev) : banner(parent)
 {
-	conf_root = config;
-	probe_descr = conf_root.namedItem("descr").toElement().text();
+	probe_descr = descr;
 	temperature = 1235;
 	temp_scale = readTemperatureScale();
 
-	QDomNode addr = conf_root.namedItem("where");
-	if (!addr.isNull())
-		setAddress(addr.toElement().text());
-	else
-		qFatal("[TERMO] no where in configuration");
+	if (!where.isNull())
+		setAddress(where);
 
 	descr_label = new QLabel(this);
 	descr_label->setGeometry(BORDER_WIDTH, 0, DESCRIPTION_WIDTH, BANPULS_ICON_DIM_Y);
