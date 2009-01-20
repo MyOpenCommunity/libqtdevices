@@ -304,13 +304,17 @@ bool BtMain::loadConfiguration(QString cfg_file)
 				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
 
-		bt_global::display.setBrightness(level);
+		bt_global::display._setBrightness(level);
 		bt_global::display.setState(DISPLAY_OPERATIVE);
 
-		QDomNode screensaver_node = getElement(display_node, "screensaver");
-		int screensaver_type = getScreenSaverType(screensaver_node);
-		screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
-
+		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
+		if (!display_node.isNull())
+		{
+			QDomElement n = getElement(display_node, "screensaver/type");
+			if (!n.isNull())
+				type = static_cast<ScreenSaver::Type>(n.text().toInt());
+		}
+		bt_global::display.current_screensaver = type;
 		return true;
 	}
 	return false;
@@ -513,9 +517,19 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && screensaver && !screensaver->isRunning() && bt_global::display.screenSaverActive())
+			if  (tiempo >= 65 && (!screensaver || !screensaver->isRunning()) && bt_global::display.screenSaverActive())
 			{
 				Page *target = pagDefault ? pagDefault : Home;
+
+				if (screensaver && screensaver->type() != bt_global::display.currentScreenSaver())
+				{
+					delete screensaver;
+					screensaver = 0;
+				}
+
+				if (!screensaver)
+					screensaver = getScreenSaver(bt_global::display.currentScreenSaver());
+
 				screensaver->start(target);
 				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}

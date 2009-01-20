@@ -38,9 +38,7 @@ void DisplayPage::loadItems(QDomNode config_node)
 	b->setText(tr("Brightness"));
 	appendBanner(b);
 
-	QDomNode screensaver_node = getElement(config_node, "screensaver");
-	ScreenSaver::Type type = static_cast<ScreenSaver::Type>(getScreenSaverType(screensaver_node));
-	b = new bannOnDx(this, ICON_INFO, new ScreenSaverPage(type));
+	b = new bannOnDx(this, ICON_INFO, new ScreenSaverPage());
 	b->setText(tr("Screen Saver"));
 	appendBanner(b);
 }

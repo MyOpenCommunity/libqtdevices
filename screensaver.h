@@ -38,6 +38,7 @@ public:
 	virtual void start(Page *p);
 	virtual void stop();
 	bool isRunning();
+	virtual Type type() = 0;
 
 protected:
 	ScreenSaver(int refresh_time);
@@ -54,10 +55,6 @@ private:
 /// The factory method that build the screensaver of type 'ScreenSaver::Type'
 ScreenSaver *getScreenSaver(ScreenSaver::Type type);
 
-/// Return the screensaver type from the configuration node, or the default type
-/// if the config_node is null/invalid.
-ScreenSaver::Type getScreenSaverType(const QDomNode &config_node);
-
 
 /**
  * The concrete class that represent a screensaver with a scrolling line.
@@ -69,6 +66,7 @@ public:
 	ScreenSaverLine();
 	virtual void start(Page *p);
 	virtual void stop();
+	virtual Type type() { return LINES; }
 
 protected slots:
 	virtual void refresh();
@@ -95,6 +93,7 @@ public:
 	ScreenSaverBalls();
 	virtual void start(Page *p);
 	virtual void stop();
+	virtual Type type() { return BALLS; }
 
 protected slots:
 	virtual void refresh();
@@ -120,6 +119,7 @@ class ScreenSaverTime : public ScreenSaverLine
 Q_OBJECT
 public:
 	virtual void start(Page *p);
+	virtual Type type() { return TIME; }
 
 protected:
 	virtual QString styleDownToUp();

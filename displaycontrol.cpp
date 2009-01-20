@@ -4,7 +4,7 @@
 #include <assert.h>
 
 
-void DisplayControl::setBrightness(BrightnessLevel level)
+void DisplayControl::_setBrightness(BrightnessLevel level)
 {
 	switch (level)
 	{
@@ -44,12 +44,17 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 	data[DISPLAY_OPERATIVE].backlight = true;
 	data[DISPLAY_OPERATIVE].screensaver = false;
 
+	current_brightness = level;
+}
+
+void DisplayControl::setBrightness(BrightnessLevel level)
+{
+	_setBrightness(level);
 	// TODO: dato che all'interno dell'item "DISPLAY" esiste un solo nodo level
 	// allora non ci sono ambiguita'. In ogni caso sarebbe l'ideale poter scrivere
 	// setCfgValue("brightness/level", level, DISPLAY) con significato analogo
 	// a quello della getElement.
 	setCfgValue("level", QString::number(level), DISPLAY);
-	current_brightness = level;
 }
 
 BrightnessLevel DisplayControl::currentBrightness()
@@ -68,6 +73,17 @@ bool DisplayControl::screenSaverActive()
 	return data[DISPLAY_SCREENSAVER].screensaver;
 }
 
+void DisplayControl::setScreenSaver(ScreenSaver::Type t)
+{
+	setCfgValue("type", QString::number(t), DISPLAY);
+	current_screensaver = t;
+}
+
+ScreenSaver::Type DisplayControl::currentScreenSaver()
+{
+	return current_screensaver;
+}
+
+
 // The global definition of display
 DisplayControl bt_global::display;
-

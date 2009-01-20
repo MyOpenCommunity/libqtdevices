@@ -36,18 +36,6 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 	}
 }
 
-ScreenSaver::Type getScreenSaverType(const QDomNode &config_node)
-{
-	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
-	if (!config_node.isNull())
-	{
-		QString n = getTextChild(config_node, "type");
-		if (!n.isNull())
-			type = static_cast<ScreenSaver::Type>(n.toInt());
-	}
-	return type;
-}
-
 
 ScreenSaver::ScreenSaver(int refresh_time)
 {
