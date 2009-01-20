@@ -21,7 +21,6 @@ Version::Version()
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	box_text->setLineWidth(3);
 	box_text->setText("");
-	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	box_text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
 	QLabel *myHome = new QLabel(this);
@@ -43,9 +42,8 @@ Version::Version()
 void Version::gestFrame(char* frame)
 {
 	openwebnet msg_open;
-	char aggiorna;
 
-	aggiorna = 0;
+	bool reload = false;
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 
 	if (!strcmp(msg_open.Extract_chi(),"13"))
@@ -55,7 +53,7 @@ void Version::gestFrame(char* frame)
 			vers = atoi(msg_open.Extract_valori(0));
 			release = atoi(msg_open.Extract_valori(1));
 			build = atoi(msg_open.Extract_valori(2));
-			aggiorna = 1;
+			reload = true;
 		}
 	}
 	if (!strcmp(msg_open.Extract_chi(),"1013"))
@@ -65,31 +63,29 @@ void Version::gestFrame(char* frame)
 			pic_version = atoi(msg_open.Extract_valori(0));
 			pic_release = atoi(msg_open.Extract_valori(1));
 			pic_build = atoi(msg_open.Extract_valori(2));
-			aggiorna = 1;
+			reload = true;
 		}
 		if (!strcmp(msg_open.Extract_grandezza(),"3"))
 		{
 			hw_version = atoi(msg_open.Extract_valori(0));
 			hw_release = atoi(msg_open.Extract_valori(1));
 			hw_build = atoi(msg_open.Extract_valori(2));
-			aggiorna = 1;
+			reload = true;
 			qDebug("presa vers HW = %d.%d.%d",hw_version, hw_release, hw_build);
 		}
 	}
-	if (aggiorna)
+	if (reload)
 	{
-		char scritta[100];
 		QFont aFont;
 		FontManager::instance()->getFont(font_versio_datiGenFw, aFont);
 
 		box_text->setFont(aFont);
 		box_text->setIndent(15);
 		box_text->setAlignment(Qt::AlignLeft|Qt::AlignTop);
-		QByteArray buf = model.toAscii();
-		sprintf(scritta, "art. %s\n\nFIRMWARE: %d.%d.%d\nPIC REL: %d.%d.%d\nHARDWARE: %d.%d.%d\nT.S. n. %d",
-			buf.constData(), vers, release, build, pic_version, pic_release, pic_build, hw_version, hw_release, hw_build, indDisp);
-
-		box_text->setText(scritta); // FIXME da tradurre??
+		QString text = QString("art. %1\n\nFIRMWARE: %2.%3.%4\n").arg(model).arg(vers).arg(release).arg(build);
+		text += QString("PIC REL: %1.%2.%3\n").arg(pic_version).arg(pic_release).arg(pic_build);
+		text += QString("HARDWARE: %1.%2.%3\nT.S. n. %4").arg(hw_version).arg(hw_release).arg(hw_build).arg(indDisp);
+		box_text->setText(text);
 	}
 }
 
@@ -106,7 +102,7 @@ void Version::setAddr(int a)
 	indDisp = a;
 }
 
-void Version::setModel(const QString & m)
+void Version::setModel(const QString &m)
 {
 	model = m;
 	box_text->setText(model);
