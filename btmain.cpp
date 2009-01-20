@@ -31,12 +31,12 @@
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
-#include "brightnesscontrol.h" // bt_global::brightness
+#include "displaycontrol.h" // bt_global::display
 #include "specialpage.h"
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
-#include "brightnesscontrol.h"
+
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -304,8 +304,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
 
-		bt_global::brightness.setLevel(level);
-		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+		bt_global::display.setBrightness(level);
+		bt_global::display.setState(DISPLAY_OPERATIVE);
 
 		QDomNode screensaver_node = getElement(display_node, "screensaver");
 		int screensaver_type = getScreenSaverType(screensaver_node);
@@ -400,7 +400,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -417,7 +417,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -434,7 +434,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -451,7 +451,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -513,11 +513,11 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && screensaver && !screensaver->isRunning() && bt_global::brightness.screenSaverActive())
+			if  (tiempo >= 65 && screensaver && !screensaver->isRunning() && bt_global::display.screenSaverActive())
 			{
 				Page *target = pagDefault ? pagDefault : Home;
 				screensaver->start(target);
-				bt_global::brightness.setState(DISPLAY_SCREENSAVER);
+				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
 		}
 		else if (screensaver && screensaver->isRunning())
@@ -532,7 +532,7 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = false;
-		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+		bt_global::display.setState(DISPLAY_OPERATIVE);
 		tempo1->start(2000);
 		bloccato = false;
 	}
@@ -556,7 +556,7 @@ void BtMain::freeze(bool b)
 	if (!bloccato)
 	{
 		event_unfreeze = true;
-		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+		bt_global::display.setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 			screensaver->stop();
 		if (pwdOn)
@@ -573,7 +573,7 @@ void BtMain::freeze(bool b)
 	}
 	else
 	{
-		bt_global::brightness.setState(DISPLAY_FREEZED);
+		bt_global::display.setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(this);
 	}
 }

@@ -1,10 +1,10 @@
-#include "brightnesscontrol.h"
+#include "displaycontrol.h"
 #include "generic_functions.h" // setCfgValue
 
 #include <assert.h>
 
 
-void BrightnessControl::setLevel(BrightnessLevel level)
+void DisplayControl::setBrightness(BrightnessLevel level)
 {
 	switch (level)
 	{
@@ -49,25 +49,25 @@ void BrightnessControl::setLevel(BrightnessLevel level)
 	// setCfgValue("brightness/level", level, DISPLAY) con significato analogo
 	// a quello della getElement.
 	setCfgValue("level", QString::number(level), DISPLAY);
-	current_level = level;
+	current_brightness = level;
 }
 
-BrightnessLevel BrightnessControl::currentLevel()
+BrightnessLevel DisplayControl::currentBrightness()
 {
-	return current_level;
+	return current_brightness;
 }
 
-void BrightnessControl::setState(DisplayStatus status)
+void DisplayControl::setState(DisplayStatus status)
 {
 	setBacklightOn(data[status].backlight);
 	setBrightnessLevel(data[status].brightness);
 }
 
-bool BrightnessControl::screenSaverActive()
+bool DisplayControl::screenSaverActive()
 {
 	return data[DISPLAY_SCREENSAVER].screensaver;
 }
 
-// The global definition of brightness
-BrightnessControl bt_global::brightness;
+// The global definition of display
+DisplayControl bt_global::display;
 

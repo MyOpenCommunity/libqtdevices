@@ -1,5 +1,5 @@
-#ifndef BRIGHTNESSCONTROL_H
-#define BRIGHTNESSCONTROL_H
+#ifndef DISPLAYCONTROL_H
+#define DISPLAYCONTROL_H
 
 #include <QMap>
 
@@ -18,12 +18,12 @@ enum DisplayStatus
 };
 
 
-class BrightnessControl
+class DisplayControl
 {
 public:
 	void setState(DisplayStatus status);
-	BrightnessLevel currentLevel();
-	void setLevel(BrightnessLevel level);
+	BrightnessLevel currentBrightness();
+	void setBrightness(BrightnessLevel level);
 	bool screenSaverActive();
 
 private:
@@ -35,10 +35,9 @@ private:
 	};
 
 	QMap<DisplayStatus, DisplayData> data;
-	BrightnessLevel current_level;
-	static BrightnessControl *_instance;
+	BrightnessLevel current_brightness;
 };
 
-namespace bt_global { extern BrightnessControl brightness; }
+namespace bt_global { extern DisplayControl display; }
 
-#endif //BRIGHTNESSCONTROL_H
+#endif //DISPLAYCONTROL_H

@@ -9,7 +9,7 @@
  */
 
 #include "brightnesspage.h"
-#include "brightnesscontrol.h" // bt_global::brightness
+#include "displaycontrol.h" // bt_global::display
 
 
 BrightnessPage::BrightnessPage()
@@ -21,11 +21,11 @@ BrightnessPage::BrightnessPage()
 
 int BrightnessPage::getCurrentId()
 {
-	return bt_global::brightness.currentLevel();
+	return bt_global::display.currentBrightness();
 }
 
 void BrightnessPage::bannerSelected(int id)
 {
-	bt_global::brightness.setLevel(static_cast<BrightnessLevel>(id));
+	bt_global::display.setBrightness(static_cast<BrightnessLevel>(id));
 }
 

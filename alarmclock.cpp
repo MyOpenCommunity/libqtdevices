@@ -6,7 +6,7 @@
 #include "timescript.h"
 #include "bannfrecce.h"
 #include "fontmanager.h"
-#include "brightnesscontrol.h" // bt_global::brightness
+#include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
 
 #include <openwebnet.h>
@@ -401,7 +401,7 @@ void AlarmClock::verificaSveglia()
 				aumVolTimer->start(3000);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
-				bt_global::brightness.setState(DISPLAY_OPERATIVE);
+				bt_global::display.setState(DISPLAY_OPERATIVE);
 				bt_global::btmain->freeze(true);
 				bt_global::btmain->svegl(true);
 			}
@@ -572,9 +572,9 @@ void AlarmClock::buzzerAlarm()
 	}
 
 	if (contaBuzzer % 8 == 0)
-		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+		bt_global::display.setState(DISPLAY_OPERATIVE);
 	else
-		bt_global::brightness.setState(DISPLAY_FREEZED);
+		bt_global::display.setState(DISPLAY_FREEZED);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)

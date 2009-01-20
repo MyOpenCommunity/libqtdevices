@@ -67,7 +67,6 @@ HEADERS += actuators.h \
            bannregolaz.h \
            banntemperature.h \
            brightnesspage.h \
-           brightnesscontrol.h \
            btbutton.h \
            btmain.h \
            bttime.h \
@@ -79,6 +78,7 @@ HEADERS += actuators.h \
            device.h \
            device_status.h \
            devices_cache.h \
+           displaycontrol.h \
            displaypage.h \
            fontmanager.h \
            frame_interpreter.h \
@@ -165,7 +165,6 @@ SOURCES += actuators.cpp \
            btbutton.cpp \
            btmain.cpp \
            brightnesspage.cpp \
-           brightnesscontrol.cpp \
            bttime.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
@@ -175,6 +174,7 @@ SOURCES += actuators.cpp \
            device.cpp \
            device_status.cpp \
            devices_cache.cpp \
+           displaycontrol.cpp \
            displaypage.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
