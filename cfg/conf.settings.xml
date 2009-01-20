@@ -343,6 +343,12 @@
         <!-- lista immagini -->
         <cimg1>btninfo.png</cimg1>
       </item7>
+	  <item8>
+		  <id>72</id>
+		  <cid>807</cid>
+		  <descr>RETE</descr>
+		  <value>1</value>
+	  </item8>
       </page0>
    </displaypages>
    <impianto/>
