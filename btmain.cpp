@@ -310,9 +310,11 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
 		if (!display_node.isNull())
 		{
-			QDomElement n = getElement(display_node, "screensaver/type");
+			QDomElement screensaver_node = getElement(display_node, "screensaver");
+			QDomElement n = getElement(screensaver_node, "type");
 			if (!n.isNull())
 				type = static_cast<ScreenSaver::Type>(n.text().toInt());
+			ScreenSaver::initData(screensaver_node);
 		}
 		bt_global::display.current_screensaver = type;
 		return true;

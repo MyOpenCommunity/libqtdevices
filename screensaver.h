@@ -33,6 +33,7 @@ public:
 		LINES,       // single line that goes up and down
 		BALLS,      // many balls on screen
 		TIME,       // a single line with a clock inside
+		TEXT,       // a line with a text
 	};
 
 	virtual void start(Page *p);
@@ -40,10 +41,12 @@ public:
 	bool isRunning();
 	virtual Type type() = 0;
 	Page *target() { return page; }
+	static void initData(const QDomNode &config_node);
 
 protected:
-	ScreenSaver(int refresh_time);
 	Page *page;
+	static QString text;
+	ScreenSaver(int refresh_time);
 
 protected slots:
 	virtual void refresh() = 0;
@@ -121,10 +124,19 @@ Q_OBJECT
 public:
 	virtual void start(Page *p);
 	virtual Type type() { return TIME; }
+};
 
-protected:
-	virtual QString styleDownToUp();
-	virtual QString styleUpToDown();
+
+/**
+ * The concrete class that represent a screensaver with a scrolling line and a
+ *.text inside.
+ */
+class ScreenSaverText : public ScreenSaverLine
+{
+Q_OBJECT
+public:
+	virtual void start(Page *p);
+	virtual Type type() { return TEXT; }
 };
 
 #endif

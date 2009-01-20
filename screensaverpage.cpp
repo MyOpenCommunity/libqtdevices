@@ -9,7 +9,7 @@ ScreenSaverPage::ScreenSaverPage() : SingleChoicePage(true)
 	addBanner(tr("Line"), ScreenSaver::LINES);
 	addBanner(tr("Balls"), ScreenSaver::BALLS);
 	addBanner(tr("Time"), ScreenSaver::TIME);
-
+	addBanner(tr("Text"), ScreenSaver::TEXT);
 }
 
 int ScreenSaverPage::getCurrentId()
