@@ -13,7 +13,7 @@
 #include <QPainter>
 
 
-TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, Qt::WindowFlags f) :
+TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling) :
 	QLabel(parent)
 {
 	// Style
@@ -56,7 +56,7 @@ void TitleLabel::resetTextPosition()
 
 void TitleLabel::setText(const QString & text_to_set)
 {
-	// store full string and full lenght
+	// store full string and full length
 	text         = text_to_set;
 	text_length  = text_to_set.length();
 	current_shift = 0;
