@@ -21,7 +21,7 @@ BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode con
 {
 	conf_root = config;
 	probe_descr = conf_root.namedItem("descr").toElement().text();
-	temperature = 1235;
+	temperature = -235;
 	temp_scale = readTemperatureScale();
 
 	setChi("4");
@@ -80,7 +80,7 @@ void BannTemperature::Draw()
 			temp_label->setText(celsiusString(temperature));
 			break;
 		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(temperature));
+			temp_label->setText(fahrenheitString(bt2Fahrenheit(celsius2Bt(temperature))));
 			break;
 		default:
 			qWarning("BannTemperature: unknown scale");

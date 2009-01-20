@@ -699,10 +699,10 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 					if (curr_lev.get_val())
 						set_status(ds, 1);
 					else 
-						request_init(ds);
+						request_init(ds, ds->init_request_delay());
 				} else {
 					qDebug("emit(request_init(ds))");
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				}
 				break;
 			case 19:
@@ -715,7 +715,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 				if (ds->initialized())
 					set_status(ds, sv.get_val() + sv.get_step());
 				else
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 			case 31:
 				// DOWN
@@ -723,7 +723,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 				if (ds->initialized())
 					set_status(ds, sv.get_val() - sv.get_step());
 				else
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 			default:
 				if ((cosa >=2) && (cosa <= 10)) {
@@ -882,10 +882,10 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 					if (curr_lev.get_val())
 						set_status(ds, 1);
 					else 
-						request_init(ds);
+						request_init(ds, ds->init_request_delay());
 				} else {
 					qDebug("emit(request_init(ds))");
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				}
 				break;
 			case 19:
@@ -898,7 +898,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 					ds->read((int)device_status_dimmer::LEV_INDEX, lev);
 					set_status(ds, lev.get_val() + lev.get_step());
 				} else 
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 			case 31:
 				// DOWN
@@ -906,10 +906,10 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 					ds->read((int)device_status_dimmer::LEV_INDEX, lev);
 					set_status(ds, lev.get_val() - lev.get_step());
 				} else 
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 			default:
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 				break;
 		} 
 	} else if (m.IsMeasureFrame()) {
@@ -1019,19 +1019,19 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 				// ON
 				set_status(ds, -1, -1, -1, 1);
 				if (!ds->initialized())
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 			case 30:
 				// UP
 				set_status(ds, -1, -1, -1, 1);
 				if (!ds->initialized())
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 			case 31:
 				// DOWN
 				set_status(ds, -1, -1, -1, 1);
 				if (!ds->initialized())
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 			case 19:
 				// FAULT !!
@@ -1049,7 +1049,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m,
 					set_status(ds, -1, -1, -1, 1);
 				}
 				if (!ds->initialized())
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 				break;
 		} 
 	} else if (m.IsMeasureFrame()) {
