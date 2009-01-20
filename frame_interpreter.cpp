@@ -736,12 +736,12 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_dimm
 				if (curr_lev.get_val())
 					set_status(ds, 1);
 				else
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 			}
 			else
 			{
 				qDebug("emit(request_init(ds))");
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			}
 			break;
 		case 19:
@@ -754,7 +754,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_dimm
 			if (ds->initialized())
 				set_status(ds, sv.get_val() + sv.get_step());
 			else
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		case 31:
 			// DOWN
@@ -762,7 +762,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_dimm
 			if (ds->initialized())
 				set_status(ds, sv.get_val() - sv.get_step());
 			else
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		default:
 			if ((cosa >=2) && (cosa <= 10))

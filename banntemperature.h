@@ -59,7 +59,7 @@ private:
 	/// Name of the zone where the probe is installed (read from config)
 	QString  probe_descr;
 	/// Probed temperature
-	unsigned  temperature;
+	int temperature;
 	/// Temperature label
 	QLabel  *temp_label;
 	/// Zone name label

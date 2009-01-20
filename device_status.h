@@ -178,7 +178,7 @@ public:
 };
 
 #ifndef DIMMER_REQ_DELAY
-#define DIMMER_REQ_DELAY 4000
+#define DIMMER_REQ_DELAY 9000
 #endif
 
 //! Dimmer status

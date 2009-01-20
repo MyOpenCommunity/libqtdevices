@@ -23,7 +23,7 @@
 BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, device *dev) : banner(parent)
 {
 	probe_descr = descr;
-	temperature = 1235;
+	temperature = -235;
 	temp_scale = readTemperatureScale();
 
 	if (!where.isNull())
@@ -72,10 +72,10 @@ void BannTemperature::Draw()
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			temp_label->setText(celsiusString(bt2Celsius(temperature)));
+			temp_label->setText(celsiusString(temperature));
 			break;
 		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(bt2Fahrenheit(temperature)));
+			temp_label->setText(fahrenheitString(temperature));
 			break;
 		default:
 			qWarning("BannTemperature: unknown scale");
