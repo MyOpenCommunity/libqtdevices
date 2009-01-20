@@ -519,19 +519,22 @@ void BtMain::gesScrSav()
 
 			if  (tiempo >= 65 && (!screensaver || !screensaver->isRunning()) && bt_global::display.screenSaverActive())
 			{
-				Page *target = pagDefault ? pagDefault : Home;
-
-				if (screensaver && screensaver->type() != bt_global::display.currentScreenSaver())
+				ScreenSaver::Type current_screensaver = bt_global::display.currentScreenSaver();
+				if (current_screensaver != ScreenSaver::NONE)
 				{
-					delete screensaver;
-					screensaver = 0;
+					if (screensaver && screensaver->type() != current_screensaver)
+					{
+						delete screensaver;
+						screensaver = 0;
+					}
+
+					if (!screensaver)
+						screensaver = getScreenSaver(current_screensaver);
+
+					Page *target = pagDefault ? pagDefault : Home;
+					screensaver->start(target);
+					bt_global::display.setState(DISPLAY_SCREENSAVER);
 				}
-
-				if (!screensaver)
-					screensaver = getScreenSaver(bt_global::display.currentScreenSaver());
-
-				screensaver->start(target);
-				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
 		}
 		else if (screensaver && screensaver->isRunning())
