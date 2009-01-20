@@ -532,13 +532,20 @@ void BtMain::gesScrSav()
 						screensaver = getScreenSaver(current_screensaver);
 
 					Page *target = pagDefault ? pagDefault : Home;
+					if (target != pagDefault)
+						target->raise();
 					screensaver->start(target);
 					bt_global::display.setState(DISPLAY_SCREENSAVER);
 				}
 			}
 		}
 		else if (screensaver && screensaver->isRunning())
+		{
+			Page *target = screensaver->target();
+			if (target != pagDefault)
+				target->lower();
 			screensaver->stop();
+		}
 	}
 	else if (tiempo >= 120)
 	{
@@ -575,7 +582,12 @@ void BtMain::freeze(bool b)
 		event_unfreeze = true;
 		bt_global::display.setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
+		{
+			Page *target = screensaver->target();
+			if (target != pagDefault)
+				target->lower();
 			screensaver->stop();
+		}
 		if (pwdOn)
 		{
 			if (!tasti)

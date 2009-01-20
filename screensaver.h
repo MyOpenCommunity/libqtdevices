@@ -39,6 +39,7 @@ public:
 	virtual void stop();
 	bool isRunning();
 	virtual Type type() = 0;
+	Page *target() { return page; }
 
 protected:
 	ScreenSaver(int refresh_time);
