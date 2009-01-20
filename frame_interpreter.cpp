@@ -937,12 +937,12 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_dimm
 				if (curr_lev.get_val())
 					set_status(ds, 1);
 				else
-					request_init(ds);
+					request_init(ds, ds->init_request_delay());
 			}
 			else
 			{
 				qDebug("emit(request_init(ds))");
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			}
 			break;
 		case 19:
@@ -957,7 +957,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_dimm
 				set_status(ds, lev.get_val() + lev.get_step());
 			}
 			else
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		case 31:
 			// DOWN
@@ -967,10 +967,10 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_dimm
 				set_status(ds, lev.get_val() - lev.get_step());
 			}
 			else
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		default:
-			request_init(ds);
+			request_init(ds, ds->init_request_delay());
 			break;
 		}
 	}
@@ -1088,19 +1088,19 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_new_
 			// ON
 			set_status(ds, -1, -1, -1, 1);
 			if (!ds->initialized())
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		case 30:
 			// UP
 			set_status(ds, -1, -1, -1, 1);
 			if (!ds->initialized())
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		case 31:
 			// DOWN
 			set_status(ds, -1, -1, -1, 1);
 			if (!ds->initialized())
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		case 19:
 			// FAULT !!
@@ -1121,7 +1121,7 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_new_
 				set_status(ds, -1, -1, -1, 1);
 			}
 			if (!ds->initialized())
-				request_init(ds);
+				request_init(ds, ds->init_request_delay());
 			break;
 		}
 	}

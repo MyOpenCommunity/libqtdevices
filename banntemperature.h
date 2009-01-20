@@ -58,7 +58,7 @@ public slots:
 private:
 	/// Name of the zone where the probe is installed (read from config)
 	QString  probe_descr;
-	/// Probed temperature
+	/// Probed temperature (in celsius)
 	int temperature;
 	/// Temperature label
 	QLabel  *temp_label;
