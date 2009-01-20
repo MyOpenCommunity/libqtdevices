@@ -25,9 +25,9 @@ class Automation : public sottoMenu
 {
 Q_OBJECT
 public:
-	Automation(QDomNode config_node);
+	Automation(const QDomNode &config_node);
 private:
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 };
 
 #endif

@@ -19,14 +19,14 @@
 #define DIM_BUT_BACK 60
 
 
-SpecialPage::SpecialPage(QDomNode config_node)
+SpecialPage::SpecialPage(const QDomNode &config_node)
 {
 	temp_viewer = new TemperatureViewer(this);
 	loadItems(config_node);
 	loadSpecial(config_node);
 }
 
-void SpecialPage::loadItems(QDomNode config_node)
+void SpecialPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -59,7 +59,7 @@ void SpecialPage::loadItems(QDomNode config_node)
 	}
 }
 
-void SpecialPage::loadSpecial(QDomNode config_node)
+void SpecialPage::loadSpecial(const QDomNode &config_node)
 {
 	// Load the back button
 	BtButton *b = new BtButton(this);

@@ -36,9 +36,9 @@ class Loads : public sottoMenu
 {
 Q_OBJECT
 public:
-	Loads(QDomNode config_node);
+	Loads(const QDomNode &config_node);
 private:
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 };
 
 #endif

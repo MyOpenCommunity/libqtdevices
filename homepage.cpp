@@ -18,14 +18,14 @@
 #include <QDomNode>
 
 
-homePage::homePage(QDomNode config_node) : PageContainer(config_node)
+homePage::homePage(const QDomNode &config_node) : PageContainer(config_node)
 {
 	temp_viewer = new TemperatureViewer(this);
 	loadItems(config_node);
 }
 
 // Load only the item that is not a section page (which is loaded by PageContainer)
-void homePage::loadItems(QDomNode config_node)
+void homePage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{

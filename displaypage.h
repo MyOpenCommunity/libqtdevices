@@ -8,10 +8,10 @@ class DisplayPage : public sottoMenu
 {
 Q_OBJECT
 public:
-	DisplayPage(QDomNode config_node);
+	DisplayPage(const QDomNode &config_node);
 
 private:
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 };
 
 

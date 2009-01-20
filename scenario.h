@@ -25,10 +25,10 @@ class Scenario : public sottoMenu
 {
 Q_OBJECT
 public:
-	Scenario(QDomNode config_node);
+	Scenario(const QDomNode &config_node);
 private:
-	QList<scenEvo_cond*> loadConditions(QDomNode config_node);
-	void loadItems(QDomNode config_node);
+	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node);
 signals:
 	void resettimer();
 };

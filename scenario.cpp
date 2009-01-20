@@ -11,12 +11,12 @@
 #include <assert.h>
 
 
-Scenario::Scenario(QDomNode config_node)
+Scenario::Scenario(const QDomNode &config_node)
 {
 	loadItems(config_node);
 }
 
-void Scenario::loadItems(QDomNode config_node)
+void Scenario::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
@@ -85,7 +85,7 @@ void Scenario::loadItems(QDomNode config_node)
 	}
 }
 
-QList<scenEvo_cond*> Scenario::loadConditions(QDomNode config_node)
+QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 {
 	// Note: the ownership of scenEvo_cond objects is taken by scenEvo instance.
 	QList<scenEvo_cond*> l;

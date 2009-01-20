@@ -20,12 +20,12 @@ static QList<QString> getAddresses(QDomNode item)
 }
 
 
-Lighting::Lighting(QDomNode config_node)
+Lighting::Lighting(const QDomNode &config_node)
 {
 	loadItems(config_node);
 }
 
-void Lighting::loadItems(QDomNode config_node)
+void Lighting::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{

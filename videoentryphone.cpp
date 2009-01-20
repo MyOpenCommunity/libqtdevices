@@ -7,12 +7,12 @@
 #include <assert.h>
 
 
-VideoEntryPhone::VideoEntryPhone(QDomNode config_node)
+VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
 	loadDevices(config_node);
 }
 
-void VideoEntryPhone::loadDevices(QDomNode config_node)
+void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 {
 	QString unknown = getTextChild(config_node, "unknown");
 

@@ -26,7 +26,7 @@
 #include <assert.h>
 
 
-AudioSources::AudioSources(QWidget *parent, QDomNode config_node) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE, 1)
+AudioSources::AudioSources(QWidget *parent, const QDomNode &config_node) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE, 1)
 {
 	loadItems(config_node);
 }
@@ -37,7 +37,7 @@ void AudioSources::addAmb(QString a)
 		elencoBanner.at(idx)->addAmb(a);
 }
 
-void AudioSources::loadItems(QDomNode config_node)
+void AudioSources::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -114,13 +114,13 @@ void AudioSources::mostra_all(char but)
 }
 
 
-AmpliContainer::AmpliContainer(QWidget *parent, QDomNode config_node) :
+AmpliContainer::AmpliContainer(QWidget *parent, const QDomNode &config_node) :
 	sottoMenu(parent, 3, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE + 3, 2)
 {
 	loadAmplifiers(config_node);
 }
 
-void AmpliContainer::loadAmplifiers(QDomNode config_node)
+void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 {
 	// Amplifiers are items in SoundDiffusion and devices in MultiSoundDiff
 	foreach (const QDomNode &node, getChildren(config_node, "item") + getChildren(config_node, "device"))
@@ -189,13 +189,13 @@ void AmpliContainer::setIndice(char c)
 }
 
 
-SoundDiffusion::SoundDiffusion(AudioSources *s, QDomNode config_node)
+SoundDiffusion::SoundDiffusion(AudioSources *s, const QDomNode &config_node)
 {
 	init(config_node);
 	setSorgenti(s);
 }
 
-SoundDiffusion::SoundDiffusion(QDomNode config_node)
+SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
 {
 	init(config_node);
 	AudioSources *s = new AudioSources(this, config_node);
@@ -203,7 +203,7 @@ SoundDiffusion::SoundDiffusion(QDomNode config_node)
 	setSorgenti(s);
 }
 
-void SoundDiffusion::init(QDomNode config_node)
+void SoundDiffusion::init(const QDomNode &config_node)
 {
 	numRighe = NUM_RIGHE;
 	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore

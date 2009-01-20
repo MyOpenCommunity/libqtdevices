@@ -11,13 +11,13 @@
 #define DIM_BUT 80
 
 
-PageContainer::PageContainer(QDomNode config_node) : buttons_group(this)
+PageContainer::PageContainer(const QDomNode &config_node) : buttons_group(this)
 {
 	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 	loadItems(config_node);
 }
 
-void PageContainer::loadItems(QDomNode config_node)
+void PageContainer::loadItems(const QDomNode &config_node)
 {
 	QTime wdtime;
 	wdtime.start(); // Start counting for wd refresh

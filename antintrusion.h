@@ -39,7 +39,7 @@ class Antintrusion : public Page
 {
 Q_OBJECT
 public:
-	Antintrusion(QDomNode config_node);
+	Antintrusion(const QDomNode &config_node);
 	~Antintrusion();
 /*!
   \brief sets the rows number fot the object. This method automatically give the exact row number to the \a sottomenu: impianto-zone-allarmi
@@ -149,7 +149,7 @@ private:
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
 
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 
 signals:
 /*!

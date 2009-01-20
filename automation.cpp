@@ -11,12 +11,12 @@
 #include <assert.h>
 
 
-Automation::Automation(QDomNode config_node)
+Automation::Automation(const QDomNode &config_node)
 {
 	loadItems(config_node);
 }
 
-void Automation::loadItems(QDomNode config_node)
+void Automation::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{

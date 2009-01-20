@@ -14,12 +14,12 @@
 #include <assert.h>
 
 
-Settings::Settings(QDomNode config_node)
+Settings::Settings(const QDomNode &config_node)
 {
 	loadItems(config_node);
 }
 
-void Settings::loadItems(QDomNode config_node)
+void Settings::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{

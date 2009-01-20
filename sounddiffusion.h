@@ -25,7 +25,7 @@ class AudioSources : public sottoMenu
 {
 Q_OBJECT
 public:
-	AudioSources(QWidget *parent, QDomNode config_node);
+	AudioSources(QWidget *parent, const QDomNode &config_node);
 	/// add amb to all banners (source)
 	void addAmb(QString a);
 
@@ -35,7 +35,7 @@ public:
 	void mostra_all(char);
 
 private:
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 signals:
 	void actSrcChanged(int, int);
 
@@ -49,13 +49,13 @@ class AmpliContainer : public sottoMenu
 {
 Q_OBJECT
 public:
-	AmpliContainer(QWidget *parent, QDomNode config_node);
+	AmpliContainer(QWidget *parent, const QDomNode &config_node);
 
 	/// Sets the index of the list forcing which is the first item to draw.
 	void setIndice(char);
 
 private:
-	void loadAmplifiers(QDomNode config_node);
+	void loadAmplifiers(const QDomNode &config_node);
 };
 
 
@@ -72,8 +72,8 @@ class SoundDiffusion : public Page
 {
 Q_OBJECT
 public:
-	SoundDiffusion(QDomNode config_node);
-	SoundDiffusion(AudioSources *s, QDomNode config_node);
+	SoundDiffusion(const QDomNode &config_node);
+	SoundDiffusion(AudioSources *s, const QDomNode &config_node);
 
 	/*!
 	 * \brief Sets the row's number.
@@ -141,7 +141,7 @@ private:
 	 * \brief Set the "sorgenti" submenu"
 	 */
 	void setSorgenti(AudioSources *s);
-	void init(QDomNode config_node);
+	void init(const QDomNode &config_node);
 	bool isVisual;
 	uchar numRighe;
 	AudioSources *sorgenti;

@@ -15,7 +15,7 @@
 #include <assert.h>
 
 
-Antintrusion::Antintrusion(QDomNode config_node)
+Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
@@ -35,7 +35,7 @@ Antintrusion::Antintrusion(QDomNode config_node)
 	loadItems(config_node);
 }
 
-void Antintrusion::loadItems(QDomNode config_node)
+void Antintrusion::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{

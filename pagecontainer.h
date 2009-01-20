@@ -26,12 +26,12 @@ class PageContainer : public Page
 {
 Q_OBJECT
 public:
-	PageContainer(QDomNode config_node);
+	PageContainer(const QDomNode &config_node);
 	void addPage(Page *page, int id, QString iconName, int x, int y);
 private:
 	QButtonGroup buttons_group;
 	QHash<int, Page*> page_list;
-	void loadItems(QDomNode config_node); // TODO: rendere config_node un const QDomNode&
+	void loadItems(const QDomNode &config_node);
 private slots:
 	void clicked(int id);
 };

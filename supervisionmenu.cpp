@@ -24,7 +24,7 @@
 #define STOPNGO_BANN_IMAGE ICON_STOPNGO_CHIUSO
 
 
-SupervisionMenu::SupervisionMenu(QDomNode config_node)
+SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
 	stopngoSubmenu = NULL;
 	loadItems(config_node);
@@ -42,7 +42,7 @@ SupervisionMenu::~SupervisionMenu()
 		delete stopngoSubmenu;
 }
 
-void SupervisionMenu::loadItems(QDomNode config_node)
+void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
 	classesCount = 0;
 

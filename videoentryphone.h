@@ -25,10 +25,10 @@ class VideoEntryPhone : public sottoMenu
 {
 Q_OBJECT
 public:
-	VideoEntryPhone(QDomNode config_node);
+	VideoEntryPhone(const QDomNode &config_node);
 
 private:
-	void loadDevices(QDomNode config_node);
+	void loadDevices(const QDomNode &config_node);
 };
 
 #endif
