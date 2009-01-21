@@ -65,7 +65,7 @@ void Settings::loadItems(const QDomNode &config_node)
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			break;
 		case VERSIONE:
-			b = new bannVersion(this, img1, bt_global::btmain->datiGen);
+			b = new bannVersion(this, img1, bt_global::btmain->version);
 			break;
 		case LANSETTINGS:
 			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));

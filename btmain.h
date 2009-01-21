@@ -81,7 +81,7 @@ public:
 	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
 	SoundDiffusion *difSon;
 	MultiSoundDiff *dm;
-	Version *datiGen;
+	Version *version;
 
 private:
 	QHash<int, Page*> page_list;

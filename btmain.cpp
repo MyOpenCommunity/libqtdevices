@@ -86,7 +86,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	tasti = NULL;
 	pwdOn = 0;
 
-	datiGen = new Version();
+	version = new Version();
 	struct sysinfo info;
 	sysinfo(&info);
 	qDebug("uptime: %d",(int)info.uptime);
@@ -94,7 +94,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 
 	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
-		datiGen->showPage();
+		version->showPage();
 		waitBeforeInit();
 	}
 	else
@@ -102,7 +102,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
-		connect(calib, SIGNAL(fineCalib()), datiGen, SLOT(showPage()));
+		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
 		alreadyCalibrated = true;
 	}
 }
@@ -264,11 +264,11 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
 			bool ok;
 			if (!addr.isNull())
-				datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
+				version->setAddr(addr.text().toInt(&ok, 16) - 768);
 
 			QDomElement model = getElement(setup, "generale/modello");
 			if (!model.isNull())
-				datiGen->setModel(model.text());
+				version->setModel(model.text());
 		}
 		else
 			qWarning("setup node not found on xml config file!");
@@ -324,7 +324,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 
 void BtMain::hom()
 {
-	datiGen->inizializza();
+	version->inizializza();
 
 	if (loadConfiguration(CFG_FILE))
 		hide();
@@ -352,11 +352,11 @@ void BtMain::monitorReady()
 void BtMain::init()
 {
 	qDebug("BtMain::init()");
-	connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
+	connect(client_monitor,SIGNAL(frameIn(char *)),version,SLOT(gestFrame(char *)));
 
 	Home->inizializza();
-	if (datiGen)
-		datiGen->inizializza();
+	if (version)
+		version->inizializza();
 
 	foreach (Page *p, page_list)
 		p->inizializza();
@@ -379,7 +379,7 @@ void BtMain::myMain()
 
 	init();
 	Home->showPage();
-	datiGen->hide();
+	version->hide();
 	bt_global::devices_cache.init_devices();
 
 	tempo1 = new QTimer(this);
