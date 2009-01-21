@@ -114,11 +114,13 @@ QString banner::getPressedIconName(QString iconname)
 	return QFile::exists(pressIconName) ? pressIconName : iconname;
 }
 
-void banner::SetIcons(int id, QString name)
+void banner::SetIcons(int id, QString name, QString pressed_name)
 {
 	assert(id < MAX_PRESS_ICON && id >= 0 && "Index of icon out of range!");
 	Icon[id]      = bt_global::icons_cache.getIcon(name);
-	pressIcon[id] = bt_global::icons_cache.getIcon(getPressedIconName(name));
+	if (pressed_name.isNull())
+		pressed_name = getPressedIconName(name);
+	pressIcon[id] = bt_global::icons_cache.getIcon(pressed_name);
 }
 
 void banner::SetIcons(QString name, int type)

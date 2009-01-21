@@ -7,6 +7,7 @@
 #include "contrast.h"
 #include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
 #include "btmain.h" // bt_global::btmain
+#include "btbutton.h"
 
 #include <QTimer>
 #include <QDebug>
@@ -16,10 +17,13 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	QString icon2, QString icon3, int enabled, int tipo, int freq)
 	: bann2But(parent)
 {
-	icon_on = icon1;
-	icon_off = icon2;
-	SetIcons(icon_off, icon3);
+	sxButton->setCheckable(true);
+	SetIcons(0, icon2, icon1);
+	SetIcons(1, icon3);
+	Draw(); // Draw must be called before setAbil.. see impBeep
+
 	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), diso, hour, minute);
+	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 	setAbil(enabled == 1);
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
@@ -36,21 +40,13 @@ void bannAlarmClock::gestFrame(char* frame)
 
 void bannAlarmClock::setAbil(bool b)
 {
+	sxButton->setChecked(b);
 	alarm_clock->setActive(b);
-	forceDraw();
 }
 
 void bannAlarmClock::toggleAbil()
 {
-	alarm_clock->setActive(!alarm_clock->isActive());
-	forceDraw();
-}
-
-void bannAlarmClock::forceDraw()
-{
-	SetIcons(0, alarm_clock->isActive() ? icon_on : icon_off);
-	Draw();
-	alarm_clock->setSerNum(getSerNum());
+	setAbil(!alarm_clock->isActive());
 }
 
 void bannAlarmClock::inizializza()
@@ -85,18 +81,15 @@ void calibration::fineCalib()
 impBeep::impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2)
 	: bannOnSx(parent)
 {
-	icon_on = icon1;
-	icon_off = icon2;
-	connect(this,SIGNAL(click()),this,SLOT(toggleBeep()));
-	SetIcons(0, icon_on);
+	connect(this, SIGNAL(click()), this, SLOT(toggleBeep()));
 
 	bool on = (val.toInt() == 1);
+	sxButton->setCheckable(true);
 	setBeep(on, false);
-	if (on)
-		SetIcons(1, icon_on);
-	else
-		SetIcons(0, icon_off);
-	Draw();
+
+	SetIcons(0, icon2, icon1);
+	Draw(); // Draw must be called before setChecked (because it calls the setPixmap function)
+	sxButton->setChecked(on);
 }
 
 void impBeep::toggleBeep()
@@ -104,15 +97,14 @@ void impBeep::toggleBeep()
 	if (getBeep())
 	{
 		setBeep(false, true);
-		SetIcons(0, icon_off);
+		sxButton->setChecked(false);
 	}
 	else
 	{
 		setBeep(true, true);
-		SetIcons(0, icon_on);
+		sxButton->setChecked(true);
 		beep();
 	}
-	Draw();
 }
 
 
@@ -151,8 +143,6 @@ void bannVersion::tiempout()
 impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString icon3, QString pwd, int attiva)
 	: bann2But(parent)
 {
-	icon_on = icon1;
-	icon_off = icon2;
 	password = pwd;
 
 	tasti = new Keypad();
@@ -164,10 +154,15 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
 	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
 
+	SetIcons(1, icon3);
+	SetIcons(0, icon2, icon1);
+	Draw();
+	sxButton->setCheckable(true);
+
 	active = (attiva == 1);
 	bt_global::btmain->setPwd(active, password);
-	SetIcons(1, icon3);
-	SetIcons(0, active ? icon_on : icon_off);
+
+	sxButton->setChecked(active);
 }
 
 void impPassword::toggleActivation()
@@ -175,8 +170,7 @@ void impPassword::toggleActivation()
 	active = !active;
 	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
 	bt_global::btmain->setPwd(active, password);
-	SetIcons(0, active ? icon_on : icon_off);
-	Draw();
+	sxButton->setChecked(active);
 }
 
 void impPassword::showEvent(QShowEvent *event)
