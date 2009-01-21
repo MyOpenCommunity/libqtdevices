@@ -5,6 +5,7 @@
 
 #include <openwebnet.h>
 
+#include <QStringList>
 #include <QVariant>
 #include <QWidget>
 #include <QPixmap>
@@ -82,10 +83,13 @@ void Version::gestFrame(char* frame)
 		box_text->setFont(aFont);
 		box_text->setIndent(15);
 		box_text->setAlignment(Qt::AlignLeft|Qt::AlignTop);
-		QString text = QString("art. %1\n\nFIRMWARE: %2.%3.%4\n").arg(model).arg(vers).arg(release).arg(build);
-		text += QString("PIC REL: %1.%2.%3\n").arg(pic_version).arg(pic_release).arg(pic_build);
-		text += QString("HARDWARE: %1.%2.%3\nT.S. n. %4").arg(hw_version).arg(hw_release).arg(hw_build).arg(indDisp);
-		box_text->setText(text);
+		QStringList text;
+		text << QString("art. %1").arg(model) << "";
+		text << QString("FIRMWARE: %1.%2%3").arg(vers).arg(release).arg(build);
+		text << QString("PIC REL: %1.%2.%3").arg(pic_version).arg(pic_release).arg(pic_build);
+		text << QString("HARDWARE: %1.%2.%3").arg(hw_version).arg(hw_release).arg(hw_build);
+		text << QString("T.S. n. %1").arg(indDisp);
+		box_text->setText(text.join("\n"));
 	}
 }
 
