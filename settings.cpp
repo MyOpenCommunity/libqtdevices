@@ -9,6 +9,8 @@
 #include "impostatime.h"
 #include "brightnesspage.h"
 #include "displaypage.h"
+#include "version.h"
+
 #include <QDebug>
 
 #include <assert.h>
@@ -68,7 +70,7 @@ void Settings::loadItems(const QDomNode &config_node)
 			b = new bannVersion(this, img1, bt_global::btmain->version);
 			break;
 		case LANSETTINGS:
-			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));
+			b = new bannOnDx(this, ICON_INFO, new LanSettings(item));
 			break;
 		default:
 			assert(!"Type of item not handled on settings page!");

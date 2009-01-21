@@ -1,15 +1,21 @@
-#ifndef LAN_SETTINGS
-#define LAN_SETTINGS
+#ifndef LAN_SETTINGS_H
+#define LAN_SETTINGS_H
 
-#include "sottomenu.h"
+#include "page.h"
 
-class LanSettings : public sottoMenu
+class BtButton;
+class QDomNode;
+class QLabel;
+
+
+class LanSettings : public Page
 {
 Q_OBJECT
 public:
-	LanSettings(QWidget *parent = 0);
-signals:
-	void Closed();
+	LanSettings(const QDomNode &config_node);
+private:
+	BtButton *back_btn, *activate_btn;
+	QLabel *box_text;
 };
 
-#endif
+#endif // LAN_SETTINGS_H
