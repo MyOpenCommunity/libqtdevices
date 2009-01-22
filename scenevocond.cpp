@@ -23,7 +23,7 @@
 ** Advanced scenario management generic condition
 ****************************************************************/
 
-scenEvo_cond::scenEvo_cond() : Page(0)
+scenEvo_cond::scenEvo_cond()
 {
 	val = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
