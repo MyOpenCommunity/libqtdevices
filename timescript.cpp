@@ -9,7 +9,7 @@
 ****************************************************************/
 
 #include "timescript.h"
-#include "main.h" // getConfElement
+#include "main.h" // getConfElement, bt_global::config
 
 #include <QTimerEvent>
 
@@ -81,8 +81,7 @@ void timeScript::showDate()
 
 	QString s;
 
-	QDomElement el = getConfElement("setup/generale/clock/dateformat");
-	if (!el.isNull() && el.text().toInt() == 1)
+	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
 		s = date.toString("MM.dd.yy");
 	else
 		s = date.toString("dd.MM.yy");

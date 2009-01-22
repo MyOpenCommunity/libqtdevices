@@ -10,7 +10,7 @@
  */
 #include "datetime.h"
 #include "btbutton.h"
-#include "main.h"
+#include "main.h" // bt_global::config
 
 #include <QLayout>
 
@@ -98,7 +98,7 @@ void BtTimeEdit::decMin()
 	num->display(_time.toString());
 }
 
-QString BtDateEdit::DATE_FORMAT;
+QString BtDateEdit::FORMAT_STRING;
 
 
 BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentDate())
@@ -139,18 +139,12 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 	h_down_box->addWidget(btn_bottom_right);
 	main_layout->addLayout(h_down_box);
 
-	// read date format and set connection accordingly
-	QDomElement e = getConfElement("setup/generale/clock/dateformat");
-	DateFormat fmt;
-	if (!e.isNull())
-		fmt = static_cast<DateFormat>(e.text().toInt());
-	else
-		fmt = NONE;
+	DateFormat fmt = static_cast<DateFormat>(bt_global::config[DATE_FORMAT].toInt());
 
 	switch (fmt)
 	{
 	case USA_DATE:
-		DATE_FORMAT = "MM.dd.yy";
+		FORMAT_STRING = "MM.dd.yy";
 		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incDay()));
 		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incMonth()));
 		connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incYear()));
@@ -158,11 +152,9 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 		connect(btn_bottom_left, SIGNAL(clicked()), this, SLOT(decMonth()));
 		connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decYear()));
 		break;
-	default:
-		qWarning("No date format found, defaulting to European format");
-		// fall below
 	case EUROPEAN_DATE:
-		DATE_FORMAT = "dd.MM.yy";
+	default:
+		FORMAT_STRING = "dd.MM.yy";
 		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incDay()));
 		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incMonth()));
 		connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incYear()));
@@ -172,7 +164,7 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 		break;
 	}
 
-	date_display->display(_date.toString(DATE_FORMAT));
+	date_display->display(_date.toString(FORMAT_STRING));
 }
 
 QDate BtDateEdit::date()
@@ -183,19 +175,19 @@ QDate BtDateEdit::date()
 void BtDateEdit::incDay()
 {
 	_date = _date.addDays(1);
-	date_display->display(_date.toString(DATE_FORMAT));
+	date_display->display(_date.toString(FORMAT_STRING));
 }
 
 void BtDateEdit::incMonth()
 {
 	_date = _date.addMonths(1);
-	date_display->display(_date.toString(DATE_FORMAT));
+	date_display->display(_date.toString(FORMAT_STRING));
 }
 
 void BtDateEdit::incYear()
 {
 	_date = _date.addYears(1);
-	date_display->display(_date.toString(DATE_FORMAT));
+	date_display->display(_date.toString(FORMAT_STRING));
 }
 
 void BtDateEdit::decDay()
@@ -203,7 +195,7 @@ void BtDateEdit::decDay()
 	if (_date.addDays(-1) >= QDate::currentDate())
 	{
 		_date = _date.addDays(-1);
-		date_display->display(_date.toString(DATE_FORMAT));
+		date_display->display(_date.toString(FORMAT_STRING));
 	}
 }
 
@@ -212,7 +204,7 @@ void BtDateEdit::decMonth()
 	if (_date.addMonths(-1) >= QDate::currentDate())
 	{
 		_date = _date.addMonths(-1);
-		date_display->display(_date.toString(DATE_FORMAT));
+		date_display->display(_date.toString(FORMAT_STRING));
 	}
 }
 
@@ -221,6 +213,6 @@ void BtDateEdit::decYear()
 	if (_date.addYears(-1) >= QDate::currentDate())
 	{
 		_date = _date.addYears(-1);
-		date_display->display(_date.toString(DATE_FORMAT));
+		date_display->display(_date.toString(FORMAT_STRING));
 	}
 }

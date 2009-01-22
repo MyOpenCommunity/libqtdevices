@@ -14,12 +14,11 @@
 #include <QHash>
 #include <QString>
 
-QDomNode getPageNode(int id);
-
 enum GlobalFields
 {
 	LANGUAGE,
-	TEMPERATURE_SCALE
+	TEMPERATURE_SCALE,
+	DATE_FORMAT
 };
 
 namespace bt_global { extern QHash<GlobalFields, QString> config; }
@@ -30,6 +29,14 @@ enum TemperatureScale
 	FAHRENHEIT,
 	NONE,
 };
+
+enum DateFormat
+{
+	EUROPEAN_DATE = 0,
+	USA_DATE
+};
+
+QDomNode getPageNode(int id);
 
 // See getElement
 QDomElement getConfElement(QString path);

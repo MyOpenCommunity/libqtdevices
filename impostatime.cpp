@@ -2,7 +2,7 @@
 #include "timescript.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "main.h" // getConfElement
+#include "main.h" // getConfElement, bt_global::config
 
 #include <QPixmap>
 #include <QDateTime>
@@ -50,8 +50,7 @@ void impostaTime::OKTime()
 	if (icon)
 		Immagine->setPixmap(*icon);
 
-	QDomElement el = getConfElement("setup/generale/clock/dateformat");
-	if (!el.isNull() && el.text().toInt() == 1)
+	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
 	{
 		connect(but[1], SIGNAL(clicked()),dataOra,SLOT(aumDay()));
 		connect(but[0], SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
