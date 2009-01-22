@@ -52,7 +52,6 @@ HEADERS += actuators.h \
            bann_videoentryphone.h \
            bannbut2icon.h \
            bannciclaz.h \
-           bannciclaz3but.h \
            banner.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
@@ -147,7 +146,6 @@ SOURCES += actuators.cpp \
            bann_videoentryphone.cpp \
            bannbut2icon.cpp \
            bannciclaz.cpp \
-           bannciclaz3but.cpp \
            banner.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
