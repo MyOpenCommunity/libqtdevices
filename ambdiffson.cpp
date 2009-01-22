@@ -114,7 +114,7 @@ bool ambDiffSon::isDraw()
  ****************************************************************/
 
 insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2,
-	SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm) : bannButIcon(parent)
+	SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm) : bannPuls(parent)
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
 	descr = d;

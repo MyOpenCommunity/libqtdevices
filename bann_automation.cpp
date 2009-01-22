@@ -12,12 +12,12 @@
 
 
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
-	: bannButIcon(parent)
+	: bannPuls(parent)
 {
 	qDebug("automCancAttuatVC::automCancAttuatVC()");
 	SetIcons(IconaSx, QString(), IconaDx);
 	setAddress(where);
-	connect(this,SIGNAL(sxPressed()),this,SLOT(Attiva()));
+	connect(this, SIGNAL(pressed()), SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache
 	dev = bt_global::devices_cache.get_autom_device(getAddress());
 	// Get status changed events back
@@ -32,12 +32,12 @@ void automCancAttuatVC::Attiva()
 
 
 automCancAttuatIll::automCancAttuatIll(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString t)
-	: bannButIcon(parent)
+	: bannPuls(parent)
 {
 	qDebug("automCancAttuatIll::automCancAttuatIll()");
 	SetIcons(IconaSx, QString(), IconaDx);
 	setAddress(where);
-	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
+	connect(this, SIGNAL(click()), SLOT(Attiva()));
 	// Crea o preleva il dispositivo dalla cache
 	dev = bt_global::devices_cache.get_autom_device(getAddress());
 	// Get status changed events back

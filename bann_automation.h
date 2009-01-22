@@ -1,7 +1,7 @@
 #ifndef BANN_AUTOMATION_H
 #define BANN_AUTOMATION_H
 
-#include "bannbuticon.h"
+#include "bannpuls.h"
 #include "bann3but.h"
 #include "bannonoff.h"
 
@@ -19,7 +19,7 @@ class device_status;
  * \author Ciminaghi
  * \date June 2006
  */
-class automCancAttuatVC : public bannButIcon
+class automCancAttuatVC : public bannPuls
 {
 Q_OBJECT
 public:
@@ -37,7 +37,7 @@ private slots:
  * \author Ciminaghi
  * \date June 2006
  */
-class automCancAttuatIll : public bannButIcon
+class automCancAttuatIll : public bannPuls
 {
 Q_OBJECT
 public:

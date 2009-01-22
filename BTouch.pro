@@ -51,7 +51,6 @@ HEADERS += actuators.h \
            bann_settings.h \
            bann_videoentryphone.h \
            bannbut2icon.h \
-           bannbuticon.h \
            bannciclaz.h \
            bannciclaz3but.h \
            banner.h \
@@ -147,7 +146,6 @@ SOURCES += actuators.cpp \
            bann_settings.cpp \
            bann_videoentryphone.cpp \
            bannbut2icon.cpp \
-           bannbuticon.cpp \
            bannciclaz.cpp \
            bannciclaz3but.cpp \
            banner.cpp \
