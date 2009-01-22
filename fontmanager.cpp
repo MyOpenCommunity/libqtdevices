@@ -10,8 +10,9 @@
 ****************************************************************/
 
 #include "fontmanager.h"
-#include "main.h" // MY_FILE_CFG_FONT
+#include "main.h" // MY_FILE_CFG_FONT, bt_global::config
 
+#include <QDebug>
 #include <QFile>
 
 #include <stdlib.h>
@@ -46,8 +47,7 @@ FontManager::FontManager()
 int FontManager::addElement(int nElement, FontInfo & fi, QString tagName, QString text)
 {
 	static int testCounter = 0;
-	
-	
+
 	if (tagName.compare(XMLfieldNames[eId], Qt::CaseInsensitive) == 0)
 	{
 		fi.id = text.toInt();
@@ -98,9 +98,8 @@ int FontManager::addElement(int nElement, FontInfo & fi, QString tagName, QStrin
 int FontManager::loadFonts()
 {
 	QDomDocument doc("mydocument");
-	QString language_suffix = getLanguage();
 
-	QString font_file = QString(MY_FILE_CFG_FONT).arg(language_suffix);
+	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
 
 	QFile file(font_file);
 	if (!file.open(QIODevice::ReadOnly))

@@ -11,18 +11,25 @@
 #define MAIN_H
 
 #include <QDomNode>
+#include <QHash>
+#include <QString>
 
 QDomNode getPageNode(int id);
-QString getLanguage();
 
-// FIXME: next time a global function is needed, create an object that stores global configuration
+enum GlobalFields
+{
+	LANGUAGE,
+	TEMPERATURE_SCALE
+};
+
+namespace bt_global { extern QHash<GlobalFields, QString> config; }
+
 enum TemperatureScale
 {
 	CELSIUS = 0,
 	FAHRENHEIT,
 	NONE,
 };
-TemperatureScale readTemperatureScale();
 
 // See getElement
 QDomElement getConfElement(QString path);

@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "btmain.h"
-#include "main.h"
+#include "main.h" // bt_global::config
 #include "homepage.h"
 #include "sottomenu.h"
 #include "sounddiffusion.h"
@@ -55,6 +55,7 @@
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
+	loadGlobalConfig();
 	qDebug("parte BtMain");
 	QWSServer::setCursorVisible(false);
 
@@ -111,6 +112,21 @@ BtMain::~BtMain()
 {
 	if (screensaver)
 		delete screensaver;
+}
+
+void BtMain::loadGlobalConfig()
+{
+	bt_global::config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
+	bt_global::config[LANGUAGE] = DEFAULT_LANGUAGE;
+
+	QDomNode root = getConfElement("setup/generale");
+	QDomElement temperature_format = getElement(root, "temperature/format");
+	if (!temperature_format.isNull())
+		bt_global::config[TEMPERATURE_SCALE] = temperature_format.text();
+
+	QDomElement l = getElement(root, "language");
+	if (!l.isNull())
+		bt_global::config[LANGUAGE] = l.text();
 }
 
 void BtMain::waitBeforeInit()
