@@ -30,8 +30,8 @@
 #include <signal.h>
 
 
-/// The struct that contain the global configuration values
-struct GlobalConfig
+/// The struct that contain the general configuration values
+struct GeneralConfig
 {
 	int verbosity_level;
 	QString log_file;
@@ -42,13 +42,10 @@ QHash<GlobalFields, QString> bt_global::config;
 // Instance DOM global object to handle configuration.
 QDomDocument qdom_appconfig;
 
-// Instance of a global config
-GlobalConfig global_config;
-
 // A global pointer to the log file
 FILE *StdLog = stdout;
 
-// The global verbosity_level, used by bt_global::btmain and libcommon (MySignal)
+// The global verbosity_level, used by BTouch and libcommon (MySignal)
 int VERBOSITY_LEVEL;
 
 // Only for the linking with libcommon
@@ -102,10 +99,10 @@ QDomNode getPageNode(int id)
 	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special)"), id);
 }
 
-static void loadGlobalConfig(QString xml_file)
+static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
-	global_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
-	global_config.log_file = MY_FILE_LOG_DEFAULT;
+	general_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
+	general_config.log_file = MY_FILE_LOG_DEFAULT;
 
 	if (QFile::exists(xml_file))
 	{
@@ -118,11 +115,11 @@ static void loadGlobalConfig(QString xml_file)
 			{
 				QDomElement v = getElement(el, "BTouch/logverbosity");
 				if (!v.isNull())
-					global_config.verbosity_level = v.text().toInt();
+					general_config.verbosity_level = v.text().toInt();
 
 				QDomNode l = getChildWithName(el, "logfile");
 				if (!l.isNull())
-					global_config.log_file = l.toElement().text();
+					general_config.log_file = l.toElement().text();
 			}
 		}
 	}
@@ -166,6 +163,7 @@ void installTranslator(QApplication &a, QString language_suffix)
 
 int main(int argc, char **argv)
 {
+	GeneralConfig general_config;
 	QApplication a(argc, argv);
 
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
@@ -176,9 +174,9 @@ int main(int argc, char **argv)
 	}
 	file.close();
 
-	loadGlobalConfig(MY_FILE_CFG_DEFAULT);
-	setupLogger(global_config.log_file);
-	VERBOSITY_LEVEL = global_config.verbosity_level;
+	loadGeneralConfig(MY_FILE_CFG_DEFAULT, general_config);
+	setupLogger(general_config.log_file);
+	VERBOSITY_LEVEL = general_config.verbosity_level;
 
 	// Fine Lettura configurazione applicativo
 	signal(SIGUSR1, MySignal);
