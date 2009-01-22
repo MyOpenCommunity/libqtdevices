@@ -127,19 +127,21 @@ BtMain::~BtMain()
 
 void BtMain::loadGlobalConfig()
 {
+	using bt_global::config;
+
 	// Load the default values
-	bt_global::config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
-	bt_global::config[LANGUAGE] = DEFAULT_LANGUAGE;
-	bt_global::config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
+	config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
+	config[LANGUAGE] = DEFAULT_LANGUAGE;
+	config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
 
 	QDomNode n = getConfElement("setup/generale");
 
 	// Load the current values
-	setConfigValue(n, "temperature/format", bt_global::config[TEMPERATURE_SCALE]);
-	setConfigValue(n, "language", bt_global::config[LANGUAGE]);
-	setConfigValue(n, "clock/dateformat", bt_global::config[DATE_FORMAT]);
-	setConfigValue(n, "modello", bt_global::config[MODEL]);
-	setConfigValue(n, "nome", bt_global::config[NAME]);
+	setConfigValue(n, "temperature/format", config[TEMPERATURE_SCALE]);
+	setConfigValue(n, "language", config[LANGUAGE]);
+	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
+	setConfigValue(n, "modello", config[MODEL]);
+	setConfigValue(n, "nome", config[NAME]);
 }
 
 void BtMain::waitBeforeInit()
