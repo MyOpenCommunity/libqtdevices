@@ -19,7 +19,8 @@ enum GlobalFields
 	LANGUAGE,
 	TEMPERATURE_SCALE,
 	DATE_FORMAT,
-	MODEL
+	MODEL,
+	NAME
 };
 
 namespace bt_global { extern QHash<GlobalFields, QString> config; }

@@ -19,7 +19,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 
 	QStringList text;
 	text << bt_global::config[MODEL] << "";
-	text << "Name"  << "Mac address" << "IP" << "Subnet Mask" << "Gateway" << "DNS";
+	text << bt_global::config[NAME]  << "Mac address" << "IP" << "Subnet Mask" << "Gateway" << "DNS";
 	box_text->setText(text.join("\n"));
 
 	QVBoxLayout *main_layout = new QVBoxLayout;

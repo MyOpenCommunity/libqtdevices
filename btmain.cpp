@@ -139,6 +139,7 @@ void BtMain::loadGlobalConfig()
 	setConfigValue(n, "language", bt_global::config[LANGUAGE]);
 	setConfigValue(n, "clock/dateformat", bt_global::config[DATE_FORMAT]);
 	setConfigValue(n, "modello", bt_global::config[MODEL]);
+	setConfigValue(n, "nome", bt_global::config[NAME]);
 }
 
 void BtMain::waitBeforeInit()
