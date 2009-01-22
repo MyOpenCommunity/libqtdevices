@@ -31,6 +31,8 @@ Q_OBJECT
 public:
 	bannOnDx(sottoMenu *parent, QString icon=QString(), Page *page=0);
 	virtual ~bannOnDx();
+	virtual void inizializza();
+
 protected:
 	virtual void hideEvent(QHideEvent *event);
 	Page *linked_page;

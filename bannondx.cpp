@@ -45,6 +45,11 @@ bannOnDx::~bannOnDx()
 	delete linked_page;
 }
 
+void bannOnDx::inizializza()
+{
+	linked_page->inizializza();
+}
+
 
 bannOnSx::bannOnSx(sottoMenu *parent, QString icon) : banner(parent)
 {
