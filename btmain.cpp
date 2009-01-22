@@ -98,6 +98,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	pwdOn = 0;
 
 	version = new Version();
+	version->setModel(bt_global::config[MODEL]);
 	struct sysinfo info;
 	sysinfo(&info);
 	qDebug("uptime: %d",(int)info.uptime);
@@ -126,15 +127,18 @@ BtMain::~BtMain()
 
 void BtMain::loadGlobalConfig()
 {
+	// Load the default values
 	bt_global::config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
 	bt_global::config[LANGUAGE] = DEFAULT_LANGUAGE;
 	bt_global::config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
 
 	QDomNode n = getConfElement("setup/generale");
 
+	// Load the current values
 	setConfigValue(n, "temperature/format", bt_global::config[TEMPERATURE_SCALE]);
 	setConfigValue(n, "language", bt_global::config[LANGUAGE]);
 	setConfigValue(n, "clock/dateformat", bt_global::config[DATE_FORMAT]);
+	setConfigValue(n, "modello", bt_global::config[MODEL]);
 }
 
 void BtMain::waitBeforeInit()
@@ -289,10 +293,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			bool ok;
 			if (!addr.isNull())
 				version->setAddr(addr.text().toInt(&ok, 16) - 768);
-
-			QDomElement model = getElement(setup, "generale/modello");
-			if (!model.isNull())
-				version->setModel(model.text());
 		}
 		else
 			qWarning("setup node not found on xml config file!");

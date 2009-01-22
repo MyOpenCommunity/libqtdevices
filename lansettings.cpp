@@ -1,6 +1,6 @@
 #include "lansettings.h"
 #include "btbutton.h"
-#include "main.h"
+#include "main.h" // bt_global::config, IMG_PATH
 
 #include <QLabel>
 #include <QDomNode>
@@ -18,7 +18,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
 
 	QStringList text;
-	text << "Model" << "";
+	text << bt_global::config[MODEL] << "";
 	text << "Name"  << "Mac address" << "IP" << "Subnet Mask" << "Gateway" << "DNS";
 	box_text->setText(text.join("\n"));
 
