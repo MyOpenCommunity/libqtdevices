@@ -88,6 +88,7 @@ HEADERS += actuators.h \
            icondispatcher.h \
            impostatime.h \
            keypad.h \
+           landevice.h \
            lansettings.h \
            lighting.h \
            listbrowser.h \
@@ -184,6 +185,7 @@ SOURCES += actuators.cpp \
            icondispatcher.cpp \
            impostatime.cpp \
            keypad.cpp \
+           landevice.cpp \
            lansettings.cpp \
            lighting.cpp \
            listbrowser.cpp \

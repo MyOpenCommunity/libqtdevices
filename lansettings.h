@@ -3,6 +3,7 @@
 
 #include "page.h"
 
+class LanDevice;
 class BtButton;
 class QDomNode;
 class QLabel;
@@ -16,6 +17,7 @@ public:
 private:
 	BtButton *back_btn, *activate_btn;
 	QLabel *box_text;
+	LanDevice *dev;
 };
 
 #endif // LAN_SETTINGS_H
