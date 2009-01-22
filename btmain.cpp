@@ -52,6 +52,16 @@
 
 #define CFG_FILE MY_FILE_USER_CFG_DEFAULT
 
+namespace
+{
+	void setConfigValue(QDomNode root, QString path, QString &dest)
+	{
+		QDomElement n = getElement(root, path);
+		if (!n.isNull())
+			dest = n.text();
+	}
+}
+
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
@@ -119,14 +129,10 @@ void BtMain::loadGlobalConfig()
 	bt_global::config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
 	bt_global::config[LANGUAGE] = DEFAULT_LANGUAGE;
 
-	QDomNode root = getConfElement("setup/generale");
-	QDomElement temperature_format = getElement(root, "temperature/format");
-	if (!temperature_format.isNull())
-		bt_global::config[TEMPERATURE_SCALE] = temperature_format.text();
+	QDomNode n = getConfElement("setup/generale");
 
-	QDomElement l = getElement(root, "language");
-	if (!l.isNull())
-		bt_global::config[LANGUAGE] = l.text();
+	setConfigValue(n, "temperature/format", bt_global::config[TEMPERATURE_SCALE]);
+	setConfigValue(n, "language", bt_global::config[LANGUAGE]);
 }
 
 void BtMain::waitBeforeInit()
