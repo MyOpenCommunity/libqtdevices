@@ -2,6 +2,7 @@
 #include "fontmanager.h"
 #include "scaleconversion.h"
 #include "page.h"
+#include "main.h" // bt_global::config
 
 #include <openwebnet.h>
 
@@ -15,7 +16,7 @@
 
 TemperatureViewer::TemperatureViewer(Page *page) : linked_page(page)
 {
-	temp_scale = readTemperatureScale();
+	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 }
 
 void TemperatureViewer::add(QString where, int x, int y, int width, int height, int style, int line, QString descr, QString ext)

@@ -8,7 +8,7 @@
 #include <QLabel>
 
 
-Contrast::Contrast() : Page(0)
+Contrast::Contrast()
 {
 	aumBut = new BtButton(this);
 	decBut = new BtButton(this);

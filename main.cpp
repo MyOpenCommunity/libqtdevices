@@ -18,7 +18,8 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QVector>
-#include <QtDebug>
+#include <QDebug>
+#include <QHash>
 #include <QFile>
 
 #define TIMESTAMP
@@ -29,24 +30,22 @@
 #include <signal.h>
 
 
-/// The struct that contain the global configuration values
-struct GlobalConfig
+/// The struct that contain the general configuration values
+struct GeneralConfig
 {
 	int verbosity_level;
 	QString log_file;
 };
 
+QHash<GlobalFields, QString> bt_global::config;
 
 // Instance DOM global object to handle configuration.
 QDomDocument qdom_appconfig;
 
-// Instance of a global config
-GlobalConfig global_config;
-
 // A global pointer to the log file
 FILE *StdLog = stdout;
 
-// The global verbosity_level, used by bt_global::btmain and libcommon (MySignal)
+// The global verbosity_level, used by BTouch and libcommon (MySignal)
 int VERBOSITY_LEVEL;
 
 // Only for the linking with libcommon
@@ -60,29 +59,6 @@ char *ssl_certificate_path = NULL;
 QDomElement getConfElement(QString path)
 {
 	return getElement(qdom_appconfig.documentElement(), path);
-}
-
-TemperatureScale readTemperatureScale()
-{
-	TemperatureScale default_scale = CELSIUS;
-
-	static TemperatureScale scale = NONE;
-	// cache the value
-	if (scale != NONE)
-		return scale;
-
-	QDomElement temperature_format = getConfElement("setup/generale/temperature/format");
-	if (temperature_format.isNull())
-	{
-		qWarning("Temperature scale not found on conf.xml!");
-		scale = default_scale;
-	}
-	else
-	{
-		scale = static_cast<TemperatureScale>(temperature_format.text().toInt());
-	}
-
-	return scale;
 }
 
 void myMessageOutput(QtMsgType type, const char *msg)
@@ -123,19 +99,10 @@ QDomNode getPageNode(int id)
 	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special)"), id);
 }
 
-QString getLanguage()
+static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
-	QDomElement l = getConfElement("setup/generale/language");
-	if (!l.isNull())
-		return l.text();
-
-	return QString(DEFAULT_LANGUAGE);
-}
-
-static void loadGlobalConfig(QString xml_file)
-{
-	global_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
-	global_config.log_file = MY_FILE_LOG_DEFAULT;
+	general_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
+	general_config.log_file = MY_FILE_LOG_DEFAULT;
 
 	if (QFile::exists(xml_file))
 	{
@@ -148,11 +115,11 @@ static void loadGlobalConfig(QString xml_file)
 			{
 				QDomElement v = getElement(el, "BTouch/logverbosity");
 				if (!v.isNull())
-					global_config.verbosity_level = v.text().toInt();
+					general_config.verbosity_level = v.text().toInt();
 
 				QDomNode l = getChildWithName(el, "logfile");
 				if (!l.isNull())
-					global_config.log_file = l.toElement().text();
+					general_config.log_file = l.toElement().text();
 			}
 		}
 	}
@@ -180,23 +147,8 @@ void resetTimer(int signo)
 	bt_global::btmain->resetTimer();
 }
 
-int main(int argc, char **argv)
+void installTranslator(QApplication &a, QString language_suffix)
 {
-	QApplication a(argc, argv);
-
-	QFile file(MY_FILE_USER_CFG_DEFAULT);
-	if (!qdom_appconfig.setContent(&file))
-	{
-		file.close();
-		qFatal("Error in qdom_appconfig file, exiting");
-	}
-	file.close();
-
-	loadGlobalConfig(MY_FILE_CFG_DEFAULT);
-	setupLogger(global_config.log_file);
-	VERBOSITY_LEVEL = global_config.verbosity_level;
-
-	QString language_suffix = getLanguage();
 	if (language_suffix != QString(DEFAULT_LANGUAGE))
 	{
 		QString language_file;
@@ -207,12 +159,31 @@ int main(int argc, char **argv)
 		else
 			qWarning() << "File " << language_file << " not found for language " << language_suffix;
 	}
+}
+
+int main(int argc, char **argv)
+{
+	GeneralConfig general_config;
+	QApplication a(argc, argv);
+
+	QFile file(MY_FILE_USER_CFG_DEFAULT);
+	if (!qdom_appconfig.setContent(&file))
+	{
+		file.close();
+		qFatal("Error in qdom_appconfig file, exiting");
+	}
+	file.close();
+
+	loadGeneralConfig(MY_FILE_CFG_DEFAULT, general_config);
+	setupLogger(general_config.log_file);
+	VERBOSITY_LEVEL = general_config.verbosity_level;
 
 	// Fine Lettura configurazione applicativo
 	signal(SIGUSR1, MySignal);
 	signal(SIGUSR2, resetTimer);
 
 	qDebug("Start BtMain");
-	bt_global::btmain = new BtMain(NULL);
+	bt_global::btmain = new BtMain;
+	installTranslator(a, bt_global::config[LANGUAGE]);
 	return a.exec();
 }

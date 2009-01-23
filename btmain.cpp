@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "btmain.h"
-#include "main.h"
+#include "main.h" // bt_global::config
 #include "homepage.h"
 #include "sottomenu.h"
 #include "sounddiffusion.h"
@@ -36,7 +36,7 @@
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
-
+#include "energy_data.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -52,9 +52,20 @@
 
 #define CFG_FILE MY_FILE_USER_CFG_DEFAULT
 
+namespace
+{
+	void setConfigValue(QDomNode root, QString path, QString &dest)
+	{
+		QDomElement n = getElement(root, path);
+		if (!n.isNull())
+			dest = n.text();
+	}
+}
+
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
+	loadGlobalConfig();
 	qDebug("parte BtMain");
 	QWSServer::setCursorVisible(false);
 
@@ -87,6 +98,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	pwdOn = 0;
 
 	version = new Version();
+	version->setModel(bt_global::config[MODEL]);
 	struct sysinfo info;
 	sysinfo(&info);
 	qDebug("uptime: %d",(int)info.uptime);
@@ -111,6 +123,25 @@ BtMain::~BtMain()
 {
 	if (screensaver)
 		delete screensaver;
+}
+
+void BtMain::loadGlobalConfig()
+{
+	using bt_global::config;
+
+	// Load the default values
+	config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
+	config[LANGUAGE] = DEFAULT_LANGUAGE;
+	config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
+
+	QDomNode n = getConfElement("setup/generale");
+
+	// Load the current values
+	setConfigValue(n, "temperature/format", config[TEMPERATURE_SCALE]);
+	setConfigValue(n, "language", config[LANGUAGE]);
+	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
+	setConfigValue(n, "modello", config[MODEL]);
+	setConfigValue(n, "nome", config[NAME]);
 }
 
 void BtMain::waitBeforeInit()
@@ -245,6 +276,12 @@ Page *BtMain::getPage(int id)
 		page = p;
 		break;
 	}
+	case ENERGY_DATA:
+	{
+		EnergyData *p = new EnergyData(page_node);
+		page = p;
+		break;
+	}
 	default:
 		qFatal("Page %d not found on xml config file!", id);
 	}
@@ -265,10 +302,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			bool ok;
 			if (!addr.isNull())
 				version->setAddr(addr.text().toInt(&ok, 16) - 768);
-
-			QDomElement model = getElement(setup, "generale/modello");
-			if (!model.isNull())
-				version->setModel(model.text());
 		}
 		else
 			qWarning("setup node not found on xml config file!");

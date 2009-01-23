@@ -30,10 +30,7 @@ class bannOnDx : public banner
 Q_OBJECT
 public:
 	bannOnDx(sottoMenu *parent, QString icon=QString(), Page *page=0);
-	virtual ~bannOnDx();
-protected:
-	virtual void hideEvent(QHideEvent *event);
-	Page *linked_page;
+
 signals:
 	void click();
 };

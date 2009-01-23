@@ -23,6 +23,7 @@
 class BtButton;
 class sottoMenu;
 class Client;
+class Page;
 
 class QPixmap;
 class QTimer;
@@ -297,6 +298,11 @@ public slots:
 	 */
 	virtual void parentChanged(QWidget *newParent);
 
+	/// Connect the page argument with button on sx side
+	void connectSxButton(Page *page);
+	/// Connect the page argument with button on dx side
+	void connectDxButton(Page *page);
+
 protected:
 	QLabel *BannerIcon;
 	QLabel *BannerIcon2;
@@ -306,6 +312,8 @@ protected:
 	BtButton *dxButton;
 	BtButton *csxButton;
 	BtButton *cdxButton;
+	Page *linked_sx_page;
+	Page *linked_dx_page;
 
 	QPixmap *Icon[MAX_NUM_ICON];
 	QPixmap *pressIcon[MAX_PRESS_ICON];
@@ -326,6 +334,8 @@ protected:
 	void sendFrame(QString frame);
 	void sendInit(QString frame);
 
+	virtual void hideEvent(QHideEvent *event);
+
 private:
 	static Client *client_richieste;
 	static Client *client_comandi;
@@ -336,7 +346,6 @@ private:
 	 *   from "ondimmer.png" we can get "ondimmer" in a generic way
 	 */
 	QString getNameRoot(QString full_string, QString text_to_strip);
-
 
 private slots:
 	void animate();

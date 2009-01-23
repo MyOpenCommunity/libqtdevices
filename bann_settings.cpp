@@ -30,7 +30,6 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
 	connect(alarm_clock,SIGNAL(Closed()), alarm_clock, SLOT(hide()));
-	connect(alarm_clock,SIGNAL(Closed()), this, SLOT(forceDraw()));
 }
 
 void bannAlarmClock::gestFrame(char* frame)
@@ -112,7 +111,7 @@ bannContrast::bannContrast(sottoMenu *parent, QString val, QString icon) :
 	bannOnDx(parent, icon, new Contrast())
 {
 	setContrast(val.toInt(), false);
-	connect(linked_page, SIGNAL(Closed()), SLOT(done()));
+	connect(linked_dx_page, SIGNAL(Closed()), SLOT(done()));
 }
 
 void bannContrast::done()

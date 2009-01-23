@@ -13,7 +13,7 @@
 #include "fontmanager.h"
 #include "device.h"
 #include "device_status.h"
-#include "main.h"
+#include "main.h" // bt_global::config
 #include "scaleconversion.h"
 
 #include <QLabel>
@@ -24,7 +24,7 @@ BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, 
 {
 	probe_descr = descr;
 	temperature = -235;
-	temp_scale = readTemperatureScale();
+	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 
 	if (!where.isNull())
 		setAddress(where);

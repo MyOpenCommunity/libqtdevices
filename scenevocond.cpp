@@ -6,6 +6,7 @@
 #include "timescript.h"
 #include "fontmanager.h"
 #include "scaleconversion.h"
+#include "main.h" // bt_global::config
 
 #include <QDateTime>
 #include <QPixmap>
@@ -22,7 +23,7 @@
 ** Advanced scenario management generic condition
 ****************************************************************/
 
-scenEvo_cond::scenEvo_cond() : Page(0)
+scenEvo_cond::scenEvo_cond()
 {
 	val = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
@@ -1662,7 +1663,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 	l->setFont(aFont);
 	frame = l;
 
-	temp_scale = readTemperatureScale();
+	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 	switch (temp_scale)
 	{
 	case CELSIUS:

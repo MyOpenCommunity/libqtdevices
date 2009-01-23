@@ -119,6 +119,9 @@ private:
 	/// Load the skin configuration
 	bool loadStyleSheet(QString filename);
 
+	// Load the global configuration (the item in "generale" section of xml config file)
+	void loadGlobalConfig();
+
 signals:
 	void resettimer();
 	void freezed(bool);
