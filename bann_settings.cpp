@@ -30,7 +30,6 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
 	connect(alarm_clock,SIGNAL(Closed()), alarm_clock, SLOT(hide()));
-	connect(alarm_clock,SIGNAL(Closed()), this, SLOT(forceDraw()));
 }
 
 void bannAlarmClock::gestFrame(char* frame)
