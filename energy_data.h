@@ -24,4 +24,13 @@ public:
 	EnergyCost();
 };
 
+class EnergyInterface : public sottoMenu
+{
+Q_OBJECT
+public:
+	EnergyInterface(const QDomNode &config_node, QWidget *parent = 0);
+private:
+	void loadItems(const QDomNode &config_node);
+};
+
 #endif // ENERGY_DATA_H
