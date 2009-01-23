@@ -347,8 +347,6 @@ private:
 	 */
 	QString getNameRoot(QString full_string, QString text_to_strip);
 
-	void connectPage(Page *page);
-
 private slots:
 	void animate();
 

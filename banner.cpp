@@ -667,21 +667,21 @@ void banner::setClients(Client *command, Client *request)
 void banner::connectDxButton(Page *page)
 {
 	linked_dx_page = page;
-	connectPage(linked_dx_page);
+	if (page)
+	{
+		page->hide();
+		connect(this, SIGNAL(sxClick()), page, SLOT(showPage()));
+		connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+	}
 }
 
 void banner::connectSxButton(Page *page)
 {
 	linked_sx_page = page;
-	connectPage(linked_sx_page);
-}
-
-void banner::connectPage(Page *page)
-{
 	if (page)
 	{
 		page->hide();
-		connect(this, SIGNAL(sxClick()), page, SLOT(showPage()));
+		connect(this, SIGNAL(dxClick()), page, SLOT(showPage()));
 		connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 	}
 }
