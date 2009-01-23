@@ -80,6 +80,7 @@ HEADERS += actuators.h \
            devices_cache.h \
            displaycontrol.h \
            displaypage.h \
+           energy_data.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -177,6 +178,7 @@ SOURCES += actuators.cpp \
            devices_cache.cpp \
            displaycontrol.cpp \
            displaypage.cpp \
+           energy_data.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \

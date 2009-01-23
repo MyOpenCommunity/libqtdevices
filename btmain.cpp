@@ -36,7 +36,7 @@
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
-
+#include "energy_data.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -273,6 +273,12 @@ Page *BtMain::getPage(int id)
 		SpecialPage *p = new SpecialPage(page_node);
 		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		connect(p, SIGNAL(Closed()), p, SLOT(hide()));
+		page = p;
+		break;
+	}
+	case ENERGY_DATA:
+	{
+		EnergyData *p = new EnergyData(page_node);
 		page = p;
 		break;
 	}
