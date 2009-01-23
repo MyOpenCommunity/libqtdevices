@@ -234,6 +234,13 @@ Page *BtMain::getPage(int id)
 		page = p;
 		break;
 	}
+	case ENERGY_MANAGEMENT:
+	{
+		PageContainer *p = new PageContainer(page_node);
+		p->addBackButton();
+		page = p;
+		break;
+	}
 	case SCENARI:
 	case SCENARI_EVOLUTI:
 	{

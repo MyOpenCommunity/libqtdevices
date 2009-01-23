@@ -28,6 +28,7 @@ Q_OBJECT
 public:
 	PageContainer(const QDomNode &config_node);
 	void addPage(Page *page, int id, QString iconName, int x, int y);
+	void addBackButton();
 private:
 	QButtonGroup buttons_group;
 	QHash<int, Page*> page_list;

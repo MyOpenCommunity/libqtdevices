@@ -96,7 +96,7 @@ QDomNode getPageNode(int id)
 	if (n.isNull())
 		return QDomNode();
 
-	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special)"), id);
+	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special|menu\\d{1,2})"), id);
 }
 
 static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
