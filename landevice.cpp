@@ -1,5 +1,10 @@
 #include "landevice.h"
 
+#include <openmsg.h>
+
+#include <QDebug>
+
+
 LanDevice::LanDevice() : device(QString("13"), QString(""))
 {
 }
@@ -13,7 +18,7 @@ void LanDevice::enableLan(bool enable)
 
 void LanDevice::sendRequest(int what)
 {
-	sendInit(QString("*#%1**#%2##").arg(who).arg(what));
+	sendInit(QString("*#%1**%2##").arg(who).arg(what));
 }
 
 void LanDevice::requestStatus()
@@ -53,4 +58,16 @@ void LanDevice::requestDNS2()
 
 void LanDevice::frame_rx_handler(char *frame)
 {
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame, strlen(frame));
+
+	if (who.toInt() != msg.who())
+		return;
+
+	if (msg.what() == 12 || msg.what() == 10 || msg.what() == 11 || msg.what() == 20 ||
+		msg.what() == 51 || msg.what() == 52 || msg.what() == 9)
+	{
+		qDebug("LanDevice::frame_rx_handler");
+		qDebug("frame read:%s", frame);
+	}
 }

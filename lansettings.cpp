@@ -5,6 +5,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 
 #include <QLabel>
+#include <QDebug>
 #include <QDomNode>
 #include <QBoxLayout>
 
@@ -41,7 +42,18 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	main_layout->addWidget(back_btn, 0, Qt::AlignLeft);
 	setLayout(main_layout);
 
-	dev = new LanDevice;
-	bt_global::devices_cache.add_device(dev);
+	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(new LanDevice));
+}
+
+void LanSettings::inizializza()
+{
+	qDebug() << "LanSettings::inizializza()";
+	dev->requestStatus();
+	dev->requestIp();
+	dev->requestNetmask();
+	dev->requestMacAddress();
+	dev->requestGateway();
+	dev->requestDNS1();
+	dev->requestDNS2();
 }
 
