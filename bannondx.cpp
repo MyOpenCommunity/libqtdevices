@@ -45,9 +45,10 @@ bannOnDx::~bannOnDx()
 	delete linked_page;
 }
 
-void bannOnDx::inizializza()
+void bannOnDx::inizializza(bool forza)
 {
-	linked_page->inizializza();
+	if (linked_page)
+		linked_page->inizializza();
 }
 
 
