@@ -111,7 +111,7 @@ bannContrast::bannContrast(sottoMenu *parent, QString val, QString icon) :
 	bannOnDx(parent, icon, new Contrast())
 {
 	setContrast(val.toInt(), false);
-	connect(linked_page, SIGNAL(Closed()), SLOT(done()));
+	connect(linked_dx_page, SIGNAL(Closed()), SLOT(done()));
 }
 
 void bannContrast::done()

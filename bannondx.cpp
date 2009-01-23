@@ -1,7 +1,6 @@
 #include "bannondx.h"
 #include "sottomenu.h"
-#include "page.h"
-#include "main.h"
+#include "main.h" // MAX_WIDTH, MAX_HEIGHT, ..
 
 
 #define BUTONDX_BUT_DIM_X 60
@@ -24,31 +23,8 @@ bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
 	if (!icon.isEmpty())
 		SetIcons(icon, 1);
 
-	linked_page = page;
-	if (linked_page)
-	{
-		linked_page->hide();
-		connect(this, SIGNAL(sxClick()), linked_page, SLOT(showPage()));
-		connect(linked_page, SIGNAL(Closed()), linked_page, SLOT(hide()));
-	}
+	connectDxButton(page);
 	Draw();
-}
-
-void bannOnDx::hideEvent(QHideEvent *event)
-{
-	if (linked_page)
-		linked_page->hide();
-}
-
-bannOnDx::~bannOnDx()
-{
-	delete linked_page;
-}
-
-void bannOnDx::inizializza(bool forza)
-{
-	if (linked_page)
-		linked_page->inizializza();
 }
 
 

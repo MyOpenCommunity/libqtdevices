@@ -15,6 +15,7 @@
 #include "openclient.h"
 #include "fontmanager.h"
 #include "openclient.h"
+#include "page.h"
 
 #include <QPixmap>
 #include <QLabel>
@@ -33,17 +34,19 @@ Client *banner::client_richieste = 0;
 
 banner::banner(QWidget *parent) : QWidget(parent)
 {
-	BannerIcon = NULL;
-	BannerText = NULL;
-	SecondaryText = NULL;
-	sxButton = NULL;
-	dxButton = NULL;
-	csxButton = NULL;
-	cdxButton = NULL;
+	linked_sx_page = 0;
+	linked_dx_page = 0;
+	BannerIcon = 0;
+	BannerText = 0;
+	SecondaryText = 0;
+	sxButton = 0;
+	dxButton = 0;
+	csxButton = 0;
+	cdxButton = 0;
 	for (int idx = 0; idx < MAX_NUM_ICON; idx++)
-		Icon[idx] = NULL;
+		Icon[idx] = 0;
 	for (int idx = 0; idx < MAX_PRESS_ICON; idx++)
-		pressIcon[idx] = NULL;
+		pressIcon[idx] = 0;
 	periodo = 0;
 	numFrame = contFrame = 0;
 	value = 0;
@@ -56,31 +59,21 @@ banner::banner(QWidget *parent) : QWidget(parent)
 
 banner::~banner()
 {
-	if (BannerIcon)
-		delete BannerIcon;
-	if (BannerText)
-		delete BannerText;
-	if (SecondaryText)
-		delete SecondaryText;
-	if (dxButton)
-		delete dxButton;
-	if (csxButton)
-		delete csxButton;
-	if (cdxButton)
-		delete cdxButton;
-	if (sxButton)
-		delete sxButton;
-	BannerIcon = NULL;
-	BannerText = NULL;
-	SecondaryText = NULL;
-	sxButton = NULL;
-	dxButton = NULL;
-	csxButton = NULL;
-	cdxButton = NULL;
+	delete BannerIcon;
+	delete BannerText;
+	delete SecondaryText;
+	delete dxButton;
+	delete csxButton;
+	delete cdxButton;
+	delete sxButton;
+
 	for (int idx = 0; idx < MAX_NUM_ICON; idx++)
 		Icon[idx] = NULL;
 	for (int idx = 0; idx < MAX_PRESS_ICON; idx++)
 		pressIcon[idx] = NULL;
+
+	delete linked_sx_page;
+	delete linked_dx_page;
 }
 
 void banner::setText(const QString & text)
@@ -588,6 +581,11 @@ QString banner::getAddress()
 
 void banner::inizializza(bool forza)
 {
+	if (linked_sx_page)
+		linked_sx_page->inizializza();
+
+	if (linked_dx_page)
+		linked_dx_page->inizializza();
 }
 
 void  banner::rispStato(char*)
@@ -664,5 +662,36 @@ void banner::setClients(Client *command, Client *request)
 {
 	client_comandi = command;
 	client_richieste = request;
+}
+
+void banner::connectDxButton(Page *page)
+{
+	linked_dx_page = page;
+	connectPage(linked_dx_page);
+}
+
+void banner::connectSxButton(Page *page)
+{
+	linked_sx_page = page;
+	connectPage(linked_sx_page);
+}
+
+void banner::connectPage(Page *page)
+{
+	if (page)
+	{
+		page->hide();
+		connect(this, SIGNAL(sxClick()), page, SLOT(showPage()));
+		connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+	}
+}
+
+void banner::hideEvent(QHideEvent *event)
+{
+	if (linked_sx_page && !linked_sx_page->isHidden())
+		linked_sx_page->hide();
+
+	if (linked_dx_page && !linked_dx_page->isHidden())
+		linked_dx_page->hide();
 }
 
