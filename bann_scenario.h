@@ -2,9 +2,9 @@
 #ifndef BANN_SCENARIO_H
 #define BANN_SCENARIO_H
 
-#include "bann1_button.h" // class bannOnSx
+#include "bann1_button.h" // bannOnSx
 #include "bann4taslab.h"
-#include "bann3but.h"
+#include "bann3_buttons.h" // bann3But
 #include "bann4but.h"
 #include "device_status.h"
 

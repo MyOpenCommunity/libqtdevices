@@ -2,21 +2,18 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** bann3but.h
+** bann3_buttons.h
 **
-**Riga con tasto ON OFF, icona centrale e scritta sotto
+** In this file there are contained all generic banners with 3 buttons.
 **
 ****************************************************************/
 
-#ifndef BANN3BUT_H
-#define BANN3BUT_H
+#ifndef BANN3_BUTTONS_H
+#define BANN3_BUTTONS_H
 
 #include "banner.h"
 
-#include <QWidget>
-
-#define BAN3BUT_BUT_DIM 60
-#define BAN3BUT_BUTCEN_DIM 120
+class QWidget;
 
 
 /*!
@@ -35,4 +32,4 @@ signals:
 	void centerClick();
 };
 
-#endif //BANN3BUT_H
+#endif // BANN3_BUTTONS_H

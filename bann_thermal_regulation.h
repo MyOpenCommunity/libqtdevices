@@ -13,7 +13,7 @@
 #define BANNFULLSCREEN_H
 
 #include "banner.h"
-#include "bann3but.h"
+#include "bann3_buttons.h" // bann3But
 #include "bann4but.h"
 #include "bann1_button.h"
 #include "device_status.h"

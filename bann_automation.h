@@ -2,7 +2,7 @@
 #define BANN_AUTOMATION_H
 
 #include "bann1_button.h" // bannPuls
-#include "bann3but.h"
+#include "bann3_buttons.h" // bann3But
 #include "bann2_buttons.h" // bannOnOff
 
 #include <QWidget>

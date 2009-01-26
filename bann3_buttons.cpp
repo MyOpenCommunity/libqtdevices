@@ -1,15 +1,9 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bann3But.cpp
-**
-**Riga con tasto ON OFF, icona centrale e scritta sotto
-**
-****************************************************************/
+#include "bann3_buttons.h"
+#include "main.h" // MAX_WIDTG, MAX_HEIGHT, NUM_RIGHE,..
 
-#include "bann3but.h"
-#include "main.h"
+#define BAN3BUT_BUT_DIM 60
+#define BAN3BUT_BUTCEN_DIM 120
+
 
 bann3But::bann3But(QWidget *parent) : banner(parent)
 {
