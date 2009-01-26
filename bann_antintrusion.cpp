@@ -168,7 +168,7 @@ void zonaAnti::inizializza(bool forza)
 
 
 impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
-	: bann2butLab(parent)
+	: bann3ButLab(parent)
 {
 	tasti = NULL;
 	QString disactive_icon_path;

@@ -32,4 +32,20 @@ signals:
 	void centerClick();
 };
 
+
+/*!
+  \class bann3ButLab
+  \brief This is a class that describes a banner with a label between 2 buttons and a text under them
+  There are 2 alternative buttons on the left and only one is visible at a time.
+  \author Davide
+  \date lug 2005
+*/
+class bann3ButLab : public banner
+{
+Q_OBJECT
+public:
+	bann3ButLab(QWidget *parent);
+};
+
+
 #endif // BANN3_BUTTONS_H

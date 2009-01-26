@@ -41,7 +41,6 @@ HEADERS += actuators.h \
            aux.h \
            bann1_button.h \
            bann2_buttons.h \
-           bann2butlab.h \
            bann3_buttons.h \
            bann4but.h \
            bann4taslab.h \
@@ -132,7 +131,6 @@ SOURCES += actuators.cpp \
            bann1_button.cpp \
            bann2_buttons.cpp \
            bann4taslab.cpp \
-           bann2butlab.cpp \
            bann3_buttons.cpp \
            bann4but.cpp \
            bann_antintrusion.cpp \
