@@ -3,9 +3,8 @@
 #define BANN_SCENARIO_H
 
 #include "bann1_button.h" // bannOnSx
-#include "bann4taslab.h"
 #include "bann3_buttons.h" // bann3But
-#include "bann4_buttons.h" // bann4But
+#include "bann4_buttons.h" // bann4But, bann4tasLab
 #include "device_status.h"
 
 #include <QObject>
