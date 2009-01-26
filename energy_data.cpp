@@ -44,8 +44,8 @@ EnergyCost::EnergyCost() : sottoMenu(0, 1)
 	appendBanner(b);
 }
 
-EnergyInterface::EnergyInterface(const QDomNode &config_node, QWidget *parent) :
-		sottoMenu(parent, 1)
+EnergyInterface::EnergyInterface(const QDomNode &config_node) :
+	sottoMenu(0, 1)
 {
 	loadItems(config_node);
 }
