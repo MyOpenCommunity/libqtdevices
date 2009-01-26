@@ -21,7 +21,7 @@ class EnergyCost : public sottoMenu
 {
 Q_OBJECT
 public:
-	EnergyCost();
+	EnergyCost(const QDomNode &config_node);
 };
 
 class EnergyInterface : public sottoMenu
