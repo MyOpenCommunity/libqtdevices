@@ -14,8 +14,8 @@
 
 #include "banner.h"
 #include "bann3_buttons.h" // bann3But
-#include "bann4but.h"
-#include "bann1_button.h"
+#include "bann4_buttons.h" // bann4But
+#include "bann1_button.h" // bannPuls
 #include "device_status.h"
 #include "bttime.h"
 #include "main.h"

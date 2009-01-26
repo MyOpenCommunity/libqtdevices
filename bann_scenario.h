@@ -5,7 +5,7 @@
 #include "bann1_button.h" // bannOnSx
 #include "bann4taslab.h"
 #include "bann3_buttons.h" // bann3But
-#include "bann4but.h"
+#include "bann4_buttons.h" // bann4But
 #include "device_status.h"
 
 #include <QObject>

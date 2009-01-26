@@ -2,18 +2,18 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** bann4but.h
+** bann4_buttons.h
 **
-**Riga con 4 tasti e scritta sotto
+** In this file there are contained all generic banners with 4 buttons.
 **
 ****************************************************************/
 
-#ifndef BANN4BUT_H
-#define BANN4BUT_H
+#ifndef BANN4_BUTTONS_H
+#define BANN4_BUTTONS_H
 
 #include "banner.h"
 
-#include <QWidget>
+class QWidget;
 
 
 #define BAN4BUT_DIM 60
@@ -31,4 +31,4 @@ public:
 	bann4But(QWidget *);
 };
 
-#endif //BANN3BUT_H
+#endif // BANN4_BUTTONS_H

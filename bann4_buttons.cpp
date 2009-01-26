@@ -1,14 +1,4 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bann4But.cpp
-**
-**Riga con 4 tasti e riga sotto
-**
-****************************************************************/
-
-#include "bann4but.h"
+#include "bann4_buttons.h"
 #include "main.h"
 
 
