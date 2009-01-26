@@ -26,7 +26,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 	{
 		int mode = getTextChild(item, "mode").toInt();
 		bannOnOff *b = new bannOnOff(this);
-		b->SetIcons(IMG_SELECT, IMG_SETTINGS, NULL, IMG_PRESET);
+		b->SetIcons(IMG_SELECT, IMG_SETTINGS, QString(), IMG_PRESET);
 		b->connectSxButton(new EnergyCost);
 		b->connectDxButton(new EnergyInterface(item));
 		b->setText(getTextChild(item, "descr"));
@@ -55,7 +55,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bannPuls *b = new bannPuls(this);
-		b->SetIcons(IMG_SELECT, NULL, IMG_PRESET);
+		b->SetIcons(IMG_SELECT, QString(), IMG_PRESET);
 		// TODO: change this
 		b->connectDxButton(new EnergyCost());
 		b->setText(getTextChild(item, "descr"));
