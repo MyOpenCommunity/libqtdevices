@@ -3,7 +3,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannonoff.h"
 #include "bann2but.h"
-#include "bannpuls.h"
+#include "bann1_button.h" // bannPuls
 
 #include <QDomNode>
 

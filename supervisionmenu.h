@@ -17,7 +17,7 @@
 
 
 #include "sottomenu.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "main.h"
 #include "stopngo.h"
 

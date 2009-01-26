@@ -12,7 +12,7 @@
 #define ACTUATORS_H
 
 #include "bannonoff.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "main.h" // MAX_PATH
 
 class device;

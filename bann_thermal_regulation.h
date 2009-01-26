@@ -15,7 +15,7 @@
 #include "banner.h"
 #include "bann3but.h"
 #include "bann4but.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "device_status.h"
 #include "bttime.h"
 #include "main.h"

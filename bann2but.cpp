@@ -2,9 +2,9 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** bann2But.cpp
+** bann2but.cpp
 **
-**Riga con tasto ON OFF, icona centrale e scritta sotto
+**Riga con tasto ON OFF, testo centrale e scritta sotto
 **
 ****************************************************************/
 

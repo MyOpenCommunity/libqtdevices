@@ -17,7 +17,7 @@
 #define STOPNGO_H
 
 #include "page.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "btbutton.h"
 
 

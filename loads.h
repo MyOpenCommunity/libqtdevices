@@ -11,7 +11,7 @@
 #ifndef LOADS_H
 #define LOADS_H
 
-#include "bannondx.h" // class bannOnSx
+#include "bann1_button.h" // class bannOnSx
 #include "sottomenu.h"
 
 

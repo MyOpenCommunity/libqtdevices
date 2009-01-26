@@ -1,7 +1,7 @@
 #ifndef BANN_ANTINTRUSION_H
 #define BANN_ANTINTRUSION_H
 
-#include "bannonicons.h"
+#include "bann1_button.h" // bannOnIcons
 #include "bann2butlab.h"
 #include "device_status.h"
 

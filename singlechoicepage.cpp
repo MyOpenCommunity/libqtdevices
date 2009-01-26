@@ -1,6 +1,6 @@
 #include "singlechoicepage.h"
 #include "main.h" // for ICON_{OK,VUOTO}
-#include "bannondx.h"
+#include "bann1_button.h" // bannOnSx
 #include "btbutton.h"
 
 #include <QDebug>

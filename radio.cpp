@@ -11,7 +11,6 @@
 
 #include "radio.h"
 #include "banner.h"
-#include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
 #include "btbutton.h"

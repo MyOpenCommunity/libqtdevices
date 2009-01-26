@@ -9,7 +9,7 @@
  */
 
 #include "banntemperature.h"
-#include "bannpuls.h"
+#include "bann1_button.h" // bannPuls
 #include "fontmanager.h"
 #include "device.h"
 #include "device_status.h"

@@ -4,7 +4,7 @@
 **
 ** bann2but.h
 **
-**Riga con tasto ON OFF, icona centrale e scritta sotto
+**Riga con tasto ON OFF, testo centrale e scritta sotto
 **
 ****************************************************************/
 

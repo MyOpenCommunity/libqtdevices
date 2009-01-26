@@ -39,6 +39,7 @@ HEADERS += actuators.h \
            antintrusion.h \
            automation.h \
            aux.h \
+           bann1_button.h \
            bann2but.h \
            bann2butlab.h \
            bann3but.h \
@@ -56,12 +57,9 @@ HEADERS += actuators.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
            bannon2scr.h \
-           bannondx.h \
-           bannonicons.h \
            bannonoff.h \
            bannonoff2scr.h \
            bannonoffcombo.h \
-           bannpuls.h \
            bannregolaz.h \
            banntemperature.h \
            brightnesspage.h \
@@ -135,6 +133,7 @@ SOURCES += actuators.cpp \
            antintrusion.cpp \
            automation.cpp \
            aux.cpp \
+           bann1_button.cpp \
            bann4taslab.cpp \
            bann2but.cpp \
            bann2butlab.cpp \
@@ -152,12 +151,9 @@ SOURCES += actuators.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
            bannon2scr.cpp \
-           bannondx.cpp \
-           bannonicons.cpp \
            bannonoff.cpp \
            bannonoff2scr.cpp \
            bannonoffcombo.cpp \
-           bannpuls.cpp \
            bannregolaz.cpp \
            banntemperature.cpp \
            btbutton.cpp \

@@ -11,7 +11,7 @@
 #define PLANTMENU_H
 
 #include "sottomenu.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "bann_thermal_regulation.h"
 
 #include <QSignalMapper>

@@ -13,7 +13,7 @@
 #define BANN_SETTINGS_H
 
 #include "banner.h"
-#include "bannondx.h"
+#include "bann1_button.h" // bannOnDx, bannOnSx
 #include "bann2but.h"
 
 #include <QWidget>

@@ -20,7 +20,7 @@
 #define BTOUCH_THERMALMENU_H
 
 #include "sottomenu.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "bttime.h"
 #include "bann_thermal_regulation.h"
 

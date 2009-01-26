@@ -1,5 +1,5 @@
 #include "displaypage.h"
-#include "bannondx.h"
+#include "bann1_button.h" // bannOnDx
 #include "bann_settings.h"
 #include "cleanscreen.h"
 #include "brightnesspage.h"

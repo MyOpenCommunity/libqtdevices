@@ -12,7 +12,6 @@
 #include "playwindow.h"
 #include "titlelabel.h"
 #include "mediaplayer.h"
-#include "bannondx.h"
 #include "fontmanager.h"
 #include "buttons_bar.h"
 #include "main.h"
