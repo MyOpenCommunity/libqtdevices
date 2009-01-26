@@ -3,8 +3,7 @@
 
 #include "bannregolaz.h"
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
-
-#include "bannon2scr.h"
+#include "bann1_button.h" // bannOn2scr
 
 #include <QWidget>
 #include <QString>

@@ -56,7 +56,6 @@ HEADERS += actuators.h \
            banner.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
-           bannon2scr.h \
            bannonoffcombo.h \
            bannregolaz.h \
            banntemperature.h \
@@ -148,7 +147,6 @@ SOURCES += actuators.cpp \
            banner.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
-           bannon2scr.cpp \
            bannonoffcombo.cpp \
            bannregolaz.cpp \
            banntemperature.cpp \

@@ -87,4 +87,17 @@ public:
 };
 
 
+/*!
+  \class bannOn2scr
+  \brief This is a class that describes a banner with a button on the right, text on the bottom area and on the left, plus a couple of icons in the middle
+  \author Ciminaghi
+  \date apr 2006
+*/
+class bannOn2scr : public banner
+{
+Q_OBJECT
+public:
+	bannOn2scr(QWidget *w=0);
+};
+
 #endif // BANN1_BUTTON_H
