@@ -15,6 +15,7 @@
 #include "multisounddiff.h"
 #include "fontmanager.h"
 
+#include <QWidget>
 #include <QDebug>
 #include <QLabel>
 #include <QFont>

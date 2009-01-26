@@ -100,4 +100,19 @@ public:
 	bannOn2scr(QWidget *w=0);
 };
 
+
+/*!
+  \class bannBut2Icon
+  \brief This is a class that describes a banner with a button on the right,
+  two icons in the middle and some text below
+  \author Ciminaghi
+  \date jun 2006
+*/
+class bannBut2Icon : public banner
+{
+Q_OBJECT
+public:
+	bannBut2Icon(QWidget *);
+};
+
 #endif // BANN1_BUTTON_H

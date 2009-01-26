@@ -11,10 +11,8 @@
 #ifndef AMBDIFFSON_H
 #define AMBDIFFSON_H
 
-#include "bann1_button.h"
-#include "bannbut2icon.h"
+#include "bann1_button.h" // bannBut2Icon, bannPuls
 
-#include <QWidget>
 #include <QString>
 #include <QList>
 
