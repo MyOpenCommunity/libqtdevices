@@ -14,7 +14,7 @@
 
 #include "banner.h"
 #include "bann1_button.h" // bannOnDx, bannOnSx
-#include "bann2but.h"
+#include "bann2_buttons.h" // bann2But
 
 #include <QWidget>
 

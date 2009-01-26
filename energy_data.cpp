@@ -1,8 +1,7 @@
 #include "energy_data.h"
 #include "main.h" // IMG_PATH
 #include "xml_functions.h" // getChildren, getTextChild
-#include "bannonoff.h"
-#include "bann2but.h"
+#include "bann2_buttons.h" // bann2But, bannOnOff
 #include "bann1_button.h" // bannPuls
 
 #include <QDomNode>

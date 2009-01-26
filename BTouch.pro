@@ -40,7 +40,7 @@ HEADERS += actuators.h \
            automation.h \
            aux.h \
            bann1_button.h \
-           bann2but.h \
+           bann2_buttons.h \
            bann2butlab.h \
            bann3but.h \
            bann4but.h \
@@ -57,8 +57,6 @@ HEADERS += actuators.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
            bannon2scr.h \
-           bannonoff.h \
-           bannonoff2scr.h \
            bannonoffcombo.h \
            bannregolaz.h \
            banntemperature.h \
@@ -134,8 +132,8 @@ SOURCES += actuators.cpp \
            automation.cpp \
            aux.cpp \
            bann1_button.cpp \
+           bann2_buttons.cpp \
            bann4taslab.cpp \
-           bann2but.cpp \
            bann2butlab.cpp \
            bann3but.cpp \
            bann4but.cpp \
@@ -151,8 +149,6 @@ SOURCES += actuators.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
            bannon2scr.cpp \
-           bannonoff.cpp \
-           bannonoff2scr.cpp \
            bannonoffcombo.cpp \
            bannregolaz.cpp \
            banntemperature.cpp \

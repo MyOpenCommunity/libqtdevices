@@ -11,8 +11,8 @@
 #ifndef ACTUATORS_H
 #define ACTUATORS_H
 
-#include "bannonoff.h"
-#include "bann1_button.h"
+#include "bann2_buttons.h" // bannOnOff
+#include "bann1_button.h" // bannPuls
 #include "main.h" // MAX_PATH
 
 class device;
