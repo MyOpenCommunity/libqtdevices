@@ -10,6 +10,8 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPen>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #define ICON_FWD IMG_PATH "btnforward.png"
 #define ICON_BACK IMG_PATH "btnbackward.png"
@@ -17,6 +19,7 @@
 // TODO: modificare con le icone corrette
 #define ICON_GRAPH IMG_PATH "arrrg.png"
 #define ICON_CURRENCY IMG_PATH "btncanc.png"
+
 
 BtButton *getTrimmedButton(QWidget *parent, QString icon)
 {
@@ -41,31 +44,30 @@ QLabel *getLabel(QWidget *parent, QString text, eFontID font)
 }
 
 
-TimePeriodSelection::TimePeriodSelection(QWidget *parent) :
-	QWidget(parent),
-	main_layout(this),
-	status(DAY),
-	selection_date(QDate::currentDate())
+TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
+	status = DAY;
+	selection_date = QDate::currentDate();
+	QHBoxLayout *main_layout = new QHBoxLayout;
 	back_period = getTrimmedButton(this, ICON_BACK);
 	back_period->setAutoRepeat(true);
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
-	main_layout.addWidget(back_period);
+	main_layout->addWidget(back_period);
 
 	//TODO: questo font e' microscopico, va bene lo stesso? senno' il pulsante in vista giornaliera va fuori
 	date_period_label = getLabel(this, selection_date.toString("dd/MM/yy"), font_versio_datiGenFw);
-	date_period_label->setAlignment(Qt::AlignCenter);
-	main_layout.addWidget(date_period_label);
+	main_layout->addWidget(date_period_label, 0, Qt::AlignCenter);
 
 	forw_period = getTrimmedButton(this, ICON_FWD);
 	forw_period->setAutoRepeat(true);
 	connect(forw_period, SIGNAL(clicked()), SLOT(periodForward()));
-	main_layout.addWidget(forw_period);
+	main_layout->addWidget(forw_period);
 
 	BtButton *btn_cycle;
 	btn_cycle = getTrimmedButton(this, ICON_AVANTI);
 	connect(btn_cycle, SIGNAL(clicked()), SLOT(changeTimeScale()));
-	main_layout.addWidget(btn_cycle);
+	main_layout->addWidget(btn_cycle);
+	setLayout(main_layout);
 }
 
 void TimePeriodSelection::changeTimeScale()
@@ -294,34 +296,34 @@ banner *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView() :
-	main_layout(this),
-	nav_bar(new bannFrecce(this, 10, ICON_CURRENCY))
+EnergyView::EnergyView()
 {
-	nav_bar->setGeometry(0 , 240, MAX_WIDTH, 80);
+	QVBoxLayout *main_layout = new QVBoxLayout;
+	nav_bar = new bannFrecce(this, 10, ICON_CURRENCY);
+	nav_bar->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH ,MAX_HEIGHT/NUM_RIGHE);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	main_layout.setAlignment(Qt::AlignTop);
+
+	main_layout->setAlignment(Qt::AlignTop);
 
 	// title section
 	const QString name = "Electricity";
-	QLabel *title = getLabel(this, name, font_items_bannertext);
-	title->setAlignment(Qt::AlignCenter);
-	main_layout.addWidget(title);
+	main_layout->addWidget(getLabel(this, name, font_items_bannertext), 0, Qt::AlignCenter);
 
 	time_period = new TimePeriodSelection(this);
-	main_layout.addWidget(time_period);
+	main_layout->addWidget(time_period);
 
 	// energy data section
 	cumulative_banner = getBanner(this, "Cumulative");
-	main_layout.addWidget(cumulative_banner);
+	main_layout->addWidget(cumulative_banner);
 	connect(cumulative_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
 	current_banner = getBanner(this, "Current");
 	current_banner->nascondi(banner::BUT1);
-	main_layout.addWidget(current_banner);
+	main_layout->addWidget(current_banner);
 	daily_av_banner = getBanner(this, "Daily Average");
 	connect(daily_av_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
 	daily_av_banner->hide();
-	main_layout.addWidget(daily_av_banner);
+	main_layout->addWidget(daily_av_banner);
+	setLayout(main_layout);
 }
 
 void EnergyView::changeTimePeriod(int status)

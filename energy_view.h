@@ -5,8 +5,6 @@
 
 #include <QColor>
 #include <QDate>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QVector>
 #include <QWidget>
 
@@ -43,7 +41,6 @@ private:
 	void changeTimePeriod(int delta);
 	void setDate(QDate new_date);
 
-	QHBoxLayout main_layout;
 	TimePeriod status;
 	BtButton *back_period, *forw_period;
 	QLabel *date_period_label;
@@ -95,7 +92,6 @@ private:
 	void setDayPeriod();
 	void setMonthPeriod();
 	void setYearPeriod();
-	QVBoxLayout main_layout;
 	// TODO: this must be changed once the correct banner is ready
 	banner *cumulative_banner, *current_banner, *daily_av_banner;
 	TimePeriodSelection *time_period;
