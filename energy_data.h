@@ -22,7 +22,11 @@ class EnergyCost : public sottoMenu
 Q_OBJECT
 public:
 	EnergyCost(const QDomNode &config_node);
+private:
+	int delta;
+	void addBanner(const QDomNode &config_node, QString desc, int n_decimal);
 };
+
 
 class EnergyInterface : public sottoMenu
 {

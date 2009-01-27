@@ -5,6 +5,7 @@
 #include "bann1_button.h" // bannPuls
 
 #include <QDomNode>
+#include <QDebug>
 
 #include <assert.h>
 
@@ -40,31 +41,25 @@ EnergyCost::EnergyCost(const QDomNode &config_node) : sottoMenu(0, 1)
 	QDomElement currency_node = getElement(config_node, "currency");
 	assert(!currency_node.isNull() && "currency node null!");
 
+	delta = getTextChild(currency_node, "delta").toInt();
+
 	QString unit_measure = getTextChild(currency_node, "symbol") + "/" +
 		getTextChild(config_node, "measure");
 
-	int num_decimal = getTextChild(currency_node, "n_decimal").toInt();
-	int num_integer = getTextChild(currency_node, "n_integer").toInt();
-	int delta = getTextChild(currency_node, "delta").toInt();
+	int n_decimal = getTextChild(currency_node, "n_decimal").toInt();
 
-	QDomElement cost_node = getElement(config_node, "cost");
-	if (!cost_node.isNull() && getTextChild(cost_node, "ab").toInt() == 1)
+	addBanner(getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, n_decimal);
+	addBanner(getElement(config_node, "prod"), tr("Production") + " " + unit_measure, n_decimal);
+}
+
+void EnergyCost::addBanner(const QDomNode &config_node, QString desc, int n_decimal)
+{
+	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
 	{
 		bann2But *b = new bann2But(this);
 		b->SetIcons(IMG_MINUS, IMG_PLUS);
-		int rate = getTextChild(cost_node, "rate").toInt();
-		b->setText("0,167");
-		b->setSecondaryText(tr("Consumption") + " " + unit_measure);
-		appendBanner(b);
-	}
-
-	QDomElement prod_node = getElement(config_node, "prod");
-	if (!prod_node.isNull() && getTextChild(prod_node, "ab").toInt() == 1)
-	{
-		bann2But *b = new bann2But(this);
-		b->SetIcons(IMG_MINUS, IMG_PLUS);
-		b->setText("0,154");
-		b->setSecondaryText(tr("Production") + " " + unit_measure);
+		b->setText(QString::number(getTextChild(config_node, "rate").toFloat(), 'f', n_decimal));
+		b->setSecondaryText(desc);
 		appendBanner(b);
 	}
 }
