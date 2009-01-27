@@ -3,6 +3,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann2_buttons.h" // bann2But, bannOnOff
 #include "bann1_button.h" // bannPuls
+#include "energy_view.h" // EnergyView
 
 #include <QDomNode>
 #include <QDebug>
@@ -77,8 +78,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	{
 		bannPuls *b = new bannPuls(this);
 		b->SetIcons(IMG_SELECT, QString(), IMG_PRESET);
-		// TODO: change this
-		//b->connectDxButton(new EnergyCost());
+		b->connectDxButton(new EnergyView);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		// TODO: is address same as 'where'?
