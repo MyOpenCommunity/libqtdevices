@@ -17,7 +17,7 @@
 #include <QWidget>
 
 class Client;
-
+class QVBoxLayout;
 
 class Page : public QWidget
 {
@@ -36,6 +36,9 @@ public:
 
 public slots:
 	virtual void showPage();
+
+protected:
+	QVBoxLayout *main_layout;
 
 private:
 	static Client *client_richieste;

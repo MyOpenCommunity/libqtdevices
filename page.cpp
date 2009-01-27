@@ -2,7 +2,10 @@
 #include "main.h"
 #include "openclient.h"
 
+#include <QVBoxLayout>
+
 #include <assert.h>
+
 
 // Inizialization of static member
 Client *Page::client_comandi = 0;
@@ -11,6 +14,10 @@ Client *Page::client_richieste = 0;
 
 Page::Page(QWidget *parent) : QWidget(parent)
 {
+	main_layout = new QVBoxLayout;
+	main_layout->setContentsMargins(0, 5, 0, 0);
+	main_layout->setSpacing(0);
+	setLayout(main_layout);
 }
 
 void Page::inizializza()
