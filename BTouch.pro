@@ -71,6 +71,7 @@ HEADERS += actuators.h \
            displaycontrol.h \
            displaypage.h \
            energy_data.h \
+           energy_view.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -159,6 +160,7 @@ SOURCES += actuators.cpp \
            displaycontrol.cpp \
            displaypage.cpp \
            energy_data.cpp \
+           energy_view.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \
