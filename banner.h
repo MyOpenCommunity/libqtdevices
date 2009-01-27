@@ -335,6 +335,10 @@ protected:
 	void sendInit(QString frame);
 
 	virtual void hideEvent(QHideEvent *event);
+	// The sizeHint method is required to have a layout management that work fine.
+	// Note that this sizeHint is ok for banner with a standard dimension, banner
+	// bigger or smaller should be re-define this method.
+	virtual QSize sizeHint() const;
 
 private:
 	static Client *client_richieste;
