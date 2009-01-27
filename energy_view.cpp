@@ -1,9 +1,12 @@
 #include "energy_view.h"
+#include "banner.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getPressName
 #include "fontmanager.h"
+#include "bannfrecce.h"
 
+#include <QDebug>
 #include <QLabel>
 #include <QPainter>
 #include <QPen>
@@ -11,6 +14,9 @@
 #define ICON_FWD IMG_PATH "btnforward.png"
 #define ICON_BACK IMG_PATH "btnbackward.png"
 #define ICON_AVANTI IMG_PATH "btnavanti.png"
+// TODO: modificare con le icone corrette
+#define ICON_GRAPH IMG_PATH "arrrg.png"
+#define ICON_CURRENCY IMG_PATH "btncanc.png"
 
 BtButton *getTrimmedButton(QWidget *parent, QString icon)
 {
@@ -191,7 +197,6 @@ void GraphWidget::setColors(QColor first, QColor second)
 		secondary_color = primary_color;
 }
 
-
 void GraphWidget::paintEvent(QPaintEvent *e)
 {
 	QPainter p(this);
@@ -268,4 +273,95 @@ void GraphWidget::paintEvent(QPaintEvent *e)
 			p.drawRect(tmp);
 		}
 	}
+}
+
+
+banner *getBanner(QWidget *parent, QString primary_text)
+{
+	banner *bann = new banner(parent);
+#define BANN_TEXT2_X 60
+#define BANN_TEXT2_Y 0
+#define BANN_TEXT2_WIDHT 120
+#define BANN_TEXT2_HEIGHT 60
+	bann->addItem(banner::TEXT2, BANN_TEXT2_X, BANN_TEXT2_Y, BANN_TEXT2_WIDHT, BANN_TEXT2_HEIGHT);
+	bann->addItem(banner::BUT1, MAX_WIDTH-BANN_TEXT2_X, BANN_TEXT2_Y,  BANN_TEXT2_X, BANN_TEXT2_X);
+	bann->addItem(banner::TEXT, BANN_TEXT2_Y, BANN_TEXT2_X, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE-BANN_TEXT2_X);
+	bann->setText(primary_text);
+	bann->setSecondaryText("100 kWh");
+	bann->SetIcons(banner::BUT1, ICON_GRAPH);
+	bann->Draw();
+	return bann;
+}
+
+
+EnergyView::EnergyView() :
+	main_layout(this),
+	nav_bar(new bannFrecce(this, 10, ICON_CURRENCY))
+{
+	nav_bar->setGeometry(0 , 240, MAX_WIDTH, 80);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	main_layout.setAlignment(Qt::AlignTop);
+
+	// title section
+	const QString name = "Electricity";
+	QLabel *title = getLabel(this, name, font_items_bannertext);
+	title->setAlignment(Qt::AlignCenter);
+	main_layout.addWidget(title);
+
+	time_period = new TimePeriodSelection(this);
+	main_layout.addWidget(time_period);
+
+	// energy data section
+	cumulative_banner = getBanner(this, "Cumulative");
+	main_layout.addWidget(cumulative_banner);
+	connect(cumulative_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
+	current_banner = getBanner(this, "Current");
+	current_banner->nascondi(banner::BUT1);
+	main_layout.addWidget(current_banner);
+	daily_av_banner = getBanner(this, "Daily Average");
+	connect(daily_av_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
+	daily_av_banner->hide();
+	main_layout.addWidget(daily_av_banner);
+}
+
+void EnergyView::changeTimePeriod(int status)
+{
+	switch (status)
+	{
+	case TimePeriodSelection::DAY:
+		setDayPeriod();
+		break;
+	case TimePeriodSelection::MONTH:
+		setMonthPeriod();
+		break;
+	case TimePeriodSelection::YEAR:
+		setYearPeriod();
+		break;
+	}
+}
+
+void EnergyView::toggleCurrency()
+{
+	qWarning("Not yet implemented");
+}
+
+void EnergyView::setDayPeriod()
+{
+	cumulative_banner->show();
+	daily_av_banner->hide();
+	current_banner->show();
+}
+
+void EnergyView::setMonthPeriod()
+{
+	cumulative_banner->show();
+	daily_av_banner->show();
+	current_banner->hide();
+}
+
+void EnergyView::setYearPeriod()
+{
+	cumulative_banner->show();
+	daily_av_banner->hide();
+	current_banner->hide();
 }
