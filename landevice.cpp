@@ -4,6 +4,14 @@
 
 #include <QDebug>
 
+#define DIM_STATUS 9
+#define DIM_IP 10
+#define DIM_NETMASK 11
+#define DIM_MACADDR 12
+#define DIM_GATEWAY 50
+#define DIM_DNS1 51
+#define DIM_DNS2 52
+
 
 LanDevice::LanDevice() : device(QString("13"), QString(""))
 {
@@ -12,7 +20,7 @@ LanDevice::LanDevice() : device(QString("13"), QString(""))
 void LanDevice::enableLan(bool enable)
 {
 	int val = enable ? 1 : 0;
-	int what = 9;
+	int what = DIM_STATUS;
 	sendFrame(QString("*#%1**#%2*%3##").arg(who).arg(what).arg(val));
 }
 
@@ -23,37 +31,37 @@ void LanDevice::sendRequest(int what)
 
 void LanDevice::requestStatus()
 {
-	sendRequest(9);
+	sendRequest(DIM_STATUS);
 }
 
 void LanDevice::requestIp()
 {
-	sendRequest(10);
+	sendRequest(DIM_IP);
 }
 
 void LanDevice::requestNetmask()
 {
-	sendRequest(11);
+	sendRequest(DIM_NETMASK);
 }
 
 void LanDevice::requestMacAddress()
 {
-	sendRequest(12);
+	sendRequest(DIM_MACADDR);
 }
 
 void LanDevice::requestGateway()
 {
-	sendRequest(20);
+	sendRequest(DIM_GATEWAY);
 }
 
 void LanDevice::requestDNS1()
 {
-	sendRequest(51);
+	sendRequest(DIM_DNS1);
 }
 
 void LanDevice::requestDNS2()
 {
-	sendRequest(52);
+	sendRequest(DIM_DNS2);
 }
 
 void LanDevice::frame_rx_handler(char *frame)
@@ -64,8 +72,9 @@ void LanDevice::frame_rx_handler(char *frame)
 	if (who.toInt() != msg.who())
 		return;
 
-	if (msg.what() == 12 || msg.what() == 10 || msg.what() == 11 || msg.what() == 20 ||
-		msg.what() == 51 || msg.what() == 52 || msg.what() == 9)
+	if (msg.what() == DIM_MACADDR || msg.what() == DIM_IP || msg.what() == DIM_NETMASK ||
+		msg.what() == DIM_GATEWAY || msg.what() == DIM_DNS1 || msg.what() == DIM_DNS2 ||
+		msg.what() == DIM_STATUS)
 	{
 		qDebug("LanDevice::frame_rx_handler");
 		qDebug("frame read:%s", frame);
