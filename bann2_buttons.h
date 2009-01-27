@@ -31,6 +31,20 @@ public:
 
 
 /*!
+  \class bann2ButLa
+  \brief This is a class that describes a banner with a text between 2 buttons and a text on the bottom
+  \author Davide
+  \date lug 2005
+*/
+class bann2ButLab : public banner
+{
+Q_OBJECT
+public:
+	bann2ButLab(QWidget *parent);
+};
+
+
+/*!
   \class bannOnOff
   \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
   \author Davide

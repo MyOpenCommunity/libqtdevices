@@ -56,7 +56,7 @@ void EnergyCost::addBanner(const QDomNode &config_node, QString desc, int n_deci
 {
 	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
 	{
-		bann2But *b = new bann2But(this);
+		bann2ButLab *b = new bann2ButLab(this);
 		b->SetIcons(IMG_MINUS, IMG_PLUS);
 		b->setText(QString::number(getTextChild(config_node, "rate").toFloat(), 'f', n_decimal));
 		b->setSecondaryText(desc);
