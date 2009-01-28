@@ -14,8 +14,6 @@
 
 #define MAX_NUM_ICON    46
 #define MAX_PRESS_ICON  5
-#define MAX_TEXT        21
-#define MAX_TEXT_2      11
 
 #include <QWidget>
 

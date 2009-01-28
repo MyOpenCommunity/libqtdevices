@@ -76,16 +76,14 @@ banner::~banner()
 	delete linked_dx_page;
 }
 
-void banner::setText(const QString & text)
+void banner::setText(const QString &text)
 {
 	qtesto = text;
-	qtesto.truncate(MAX_PATH*2-1);
 }
 
-void banner::setSecondaryText(const QString & text)
+void banner::setSecondaryText(const QString &text)
 {
 	qtestoSecondario = text;
-	qtestoSecondario.truncate(MAX_TEXT_2-1);
 }
 
 BtButton *banner::customButton()
