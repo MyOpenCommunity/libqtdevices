@@ -5,6 +5,7 @@
 #include "bann1_button.h" // bannPuls
 #include "energy_view.h" // EnergyView
 
+#include <QVBoxLayout>
 #include <QDomNode>
 #include <QDebug>
 
@@ -37,7 +38,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 }
 
 
-EnergyCost::EnergyCost(const QDomNode &config_node) : sottoMenu(0, 1)
+EnergyCost::EnergyCost(const QDomNode &config_node)
 {
 	QDomElement currency_node = getElement(config_node, "currency");
 	assert(!currency_node.isNull() && "currency node null!");
@@ -51,6 +52,7 @@ EnergyCost::EnergyCost(const QDomNode &config_node) : sottoMenu(0, 1)
 
 	addBanner(getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, n_decimal);
 	addBanner(getElement(config_node, "prod"), tr("Production") + " " + unit_measure, n_decimal);
+	addBackButton();
 }
 
 void EnergyCost::addBanner(const QDomNode &config_node, QString desc, int n_decimal)
@@ -61,7 +63,8 @@ void EnergyCost::addBanner(const QDomNode &config_node, QString desc, int n_deci
 		b->SetIcons(IMG_MINUS, IMG_PLUS);
 		b->setText(QString::number(getTextChild(config_node, "rate").toFloat(), 'f', n_decimal));
 		b->setSecondaryText(desc);
-		appendBanner(b);
+		b->Draw();
+		main_layout->addWidget(b);
 	}
 }
 

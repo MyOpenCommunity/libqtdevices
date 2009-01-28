@@ -17,7 +17,7 @@ private:
 };
 
 
-class EnergyCost : public sottoMenu
+class EnergyCost : public Page
 {
 Q_OBJECT
 public:
