@@ -2,6 +2,8 @@
 #include "main.h"
 
 #include <QWidget>
+#include <QLabel>
+
 
 #define BAN2BUT_BUT_DIM 60
 #define BUTONOFF_ICON_DIM_X 120
@@ -10,6 +12,7 @@
 #define BUTONOFF2SCR_ICON_DIM_X 80
 #define BUTONOFF2SCR_ICON_DIM_Y 60
 #define BANONOFF2SCR_BUT_DIM 60
+
 
 bann2But::bann2But(QWidget *parent) : banner(parent)
 {
@@ -21,11 +24,17 @@ bann2But::bann2But(QWidget *parent) : banner(parent)
 
 bann2ButLab::bann2ButLab(QWidget *parent) : banner(parent)
 {
-	addItem(BUT1, 0 ,(MAX_HEIGHT/NUM_RIGHE - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(BUT2, MAX_WIDTH - BAN2BUT_BUT_DIM ,(MAX_HEIGHT/NUM_RIGHE - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
+	addItem(BUT1, 0, 0, BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
+	addItem(BUT2, MAX_WIDTH - BAN2BUT_BUT_DIM, 0, BAN2BUT_BUT_DIM, BAN2BUT_BUT_DIM);
 	addItem(TEXT, BAN2BUT_BUT_DIM , 0, MAX_WIDTH - 2 * BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(TEXT2, BAN2BUT_BUT_DIM , BANONOFF_BUT_DIM-20, BUTONOFF_ICON_DIM_X , BAN2BUT_BUT_DIM);
+	addItem(TEXT2, 0, BAN2BUT_BUT_DIM-5, MAX_WIDTH , 25);
 }
+
+QSize bann2ButLab::sizeHint() const
+{
+	return banner::sizeHint() + QSize(0, 20);
+}
+
 
 
 bannOnOff::bannOnOff(QWidget *parent) : banner(parent)

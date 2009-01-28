@@ -41,6 +41,8 @@ class bann2ButLab : public banner
 Q_OBJECT
 public:
 	bann2ButLab(QWidget *parent);
+protected:
+	virtual QSize sizeHint() const;
 };
 
 
