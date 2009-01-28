@@ -1,10 +1,13 @@
 #include "page.h"
-#include "main.h"
-#include "openclient.h"
+#include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
+#include "openclient.h" // Client
+#include "btbutton.h"
 
 #include <QVBoxLayout>
 
 #include <assert.h>
+
+static const char *IMG_BACK = IMG_PATH "arrlf.png";
 
 
 // Inizialization of static member
@@ -50,3 +53,12 @@ void Page::setClients(Client *command, Client *request)
 	client_richieste = request;
 }
 
+void Page::addBackButton()
+{
+	BtButton *back_btn = new BtButton;
+	back_btn->setImage(IMG_BACK);
+	connect(back_btn, SIGNAL(clicked()), this, SIGNAL(Closed()));
+	main_layout->addStretch();
+	main_layout->addWidget(back_btn, 0, Qt::AlignLeft);
+	main_layout->addSpacing(10);
+}
