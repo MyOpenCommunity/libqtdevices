@@ -37,6 +37,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
 #include "energy_data.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -68,6 +69,9 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	loadGlobalConfig();
 	qDebug("parte BtMain");
 	QWSServer::setCursorVisible(false);
+
+	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
+	bt_global::font.loadFonts(font_file);
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);

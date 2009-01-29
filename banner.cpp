@@ -13,7 +13,7 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "generic_functions.h" // getPressName
 #include "openclient.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "openclient.h"
 #include "page.h"
 
@@ -483,18 +483,14 @@ void banner::drawAllButRightButton()
 
 	if (BannerText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_banner_BannerText, aFont);
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(aFont);
+		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 		BannerText->setText(qtesto);
 	}
 	if (SecondaryText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
 		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(aFont);
+		SecondaryText->setFont(bt_global::font.get(FontManager::TEXT));
 		SecondaryText->setText(qtestoSecondario);
 	}
 }

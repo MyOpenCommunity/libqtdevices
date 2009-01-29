@@ -3,7 +3,7 @@
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getPressName
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "bannfrecce.h"
 
 #include <QDebug>
@@ -33,12 +33,10 @@ BtButton *getTrimmedButton(QWidget *parent, QString icon)
 	return btn;
 }
 
-QLabel *getLabel(QWidget *parent, QString text, eFontID font)
+QLabel *getLabel(QWidget *parent, QString text, FontManager::Type t)
 {
-	QFont aFont;
 	QLabel *label = new QLabel(parent);
-	FontManager::instance()->getFont(font, aFont);
-	label->setFont(aFont);
+	label->setFont(bt_global::font.get(t));
 	label->setText(text);
 	return label;
 }
@@ -55,7 +53,7 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	main_layout->addWidget(back_period);
 
 	//TODO: questo font e' microscopico, va bene lo stesso? senno' il pulsante in vista giornaliera va fuori
-	date_period_label = getLabel(this, selection_date.toString("dd/MM/yy"), font_versio_datiGenFw);
+	date_period_label = getLabel(this, selection_date.toString("dd/MM/yy"), FontManager::SMALLTEXT);
 	main_layout->addWidget(date_period_label, 0, Qt::AlignCenter);
 
 	forw_period = getTrimmedButton(this, ICON_FWD);
@@ -213,9 +211,7 @@ void GraphWidget::paintEvent(QPaintEvent *e)
 		int remaining_height = rect().height();
 		int remaining_width = rect().width();
 
-		QFont font;
-		FontManager::instance()->getFont(font_versio_datiGenFw, font);
-		p.setFont(font);
+		p.setFont(bt_global::font.get(FontManager::SMALLTEXT));
 		QFontMetrics fm = p.fontMetrics();
 
 		//
@@ -307,7 +303,7 @@ EnergyView::EnergyView()
 
 	// title section
 	const QString name = "Electricity";
-	main_layout->addWidget(getLabel(this, name, font_items_bannertext), 0, Qt::AlignCenter);
+	main_layout->addWidget(getLabel(this, name, FontManager::TEXT), 0, Qt::AlignCenter);
 
 	time_period = new TimePeriodSelection(this);
 	main_layout->addWidget(time_period);

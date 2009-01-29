@@ -10,7 +10,7 @@
 
 #include "banntemperature.h"
 #include "bann1_button.h" // bannPuls
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "device.h"
 #include "device_status.h"
 #include "main.h" // bt_global::config
@@ -60,14 +60,11 @@ void BannTemperature::status_changed(QList<device_status*> sl)
 
 void BannTemperature::Draw()
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	descr_label->setFont(aFont);
+	descr_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	descr_label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	descr_label->setText(probe_descr);
 
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	temp_label->setFont(aFont);
+	temp_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	temp_label->setAlignment(Qt::AlignCenter);
 	switch (temp_scale)
 	{

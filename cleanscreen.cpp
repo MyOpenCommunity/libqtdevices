@@ -1,6 +1,6 @@
 #include "cleanscreen.h"
 #include "xml_functions.h" // getChildWithId
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // IMG_PATH
 
@@ -20,11 +20,8 @@ CleanScreen::CleanScreen(int clean_time)
 	connect(&timer, SIGNAL(timeout()), SIGNAL(Closed()));
 	timer.setSingleShot(true);
 
-	QFont aFont;
-	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
-
 	time_label = new QLabel(this);
-	time_label->setFont(aFont);
+	time_label->setFont(bt_global::font.get(FontManager::TEXT));
 	time_label->setAlignment(Qt::AlignHCenter);
 	time_label->setGeometry(TIME_LABEL_X, TIME_LABEL_Y, TIME_LABEL_WIDTH, TIME_LABEL_HEIGHT);
 

@@ -12,7 +12,7 @@
 #include "bannfrecce.h"
 #include "btbutton.h"
 #include "generic_functions.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <QPixmap>
 #include <QLabel>
@@ -30,15 +30,12 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 	auxName = new QLabel(this);
 	ambDescr = new QLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	QFont aFont;
-	FontManager::instance()->getFont(font_aux_descr_ambiente, aFont);
-	ambDescr->setFont(aFont);
+	ambDescr->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	ambDescr->setText(amb);
 	auxName->setGeometry(0,30,240,40);
 	auxName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 
-	FontManager::instance()->getFont(font_aux_nome_sorgente, aFont);
-	auxName->setFont(aFont);
+	auxName->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
 

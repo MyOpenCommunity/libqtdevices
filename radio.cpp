@@ -14,7 +14,7 @@
 #include "bannfrecce.h"
 #include "main.h"
 #include "btbutton.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <QLabel>
 #include <QPixmap>
@@ -50,9 +50,7 @@ radio::radio(QWidget *parent, const QString & amb)
 	radioName = new QLabel(this);
 	ambDescr = new QLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
- 	QFont aFont;
-	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
-	ambDescr->setFont(aFont);
+	ambDescr->setFont(bt_global::font.get(FontManager::SMALLTEXT));
 	ambDescr->setText(amb);
 	freq = new QLCDNumber(this);
 	progrText = new QLabel(this);
@@ -177,13 +175,11 @@ void radio::setAmbDescr(const QString & d)
 
 void radio::draw()
 {
-	QFont aFont;
 	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	FontManager::instance()->getFont(font_radio_rdsLabel, aFont);
-	rdsLabel->setFont(aFont);
+	rdsLabel->setFont(bt_global::font.get(FontManager::SUBTITLE));
+
 	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	FontManager::instance()->getFont(font_radio_radioName, aFont);
-	radioName->setFont(aFont);
+	radioName->setFont(bt_global::font.get(FontManager::SMALLTEXT));
 	radioName->setText(qnome);
 	rdsLabel->setText(qrds);
 	char fr[10];
@@ -206,8 +202,7 @@ void radio::draw()
 	wasManual=manual;
 
 	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	FontManager::instance()->getFont(font_radio_progrText, aFont);
-	progrText->setFont(aFont);
+	progrText->setFont(bt_global::font.get(FontManager::TEXT));
 	progrText->setText(QString::number((int)stazione)+":");
 }
 

@@ -2,7 +2,7 @@
 #include "device_status.h"
 #include "device.h"
 #include "btbutton.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" // createMsgOpen
 
@@ -98,18 +98,14 @@ void dimmer::Draw()
 	}
 	if (BannerText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_bannertext, aFont);
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(aFont);
+		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 		BannerText->setText(qtesto);
 	}
 	if (SecondaryText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_secondarytext, aFont);
 		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(aFont);
+		SecondaryText->setFont(bt_global::font.get(FontManager::TEXT));
 		SecondaryText->setText(qtestoSecondario);
 	}
 }
@@ -1015,18 +1011,14 @@ void attuatAutomTempNuovoF::Draw()
 	}
 	if (BannerText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_bannertext, aFont);
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(aFont);
+		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 		BannerText->setText(qtesto);
 	}
 	if (SecondaryText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_secondarytext, aFont);
 		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(aFont);
+		SecondaryText->setFont(bt_global::font.get(FontManager::TEXT));
 		SecondaryText->setText(qtestoSecondario);
 	}
 }

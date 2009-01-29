@@ -13,7 +13,7 @@
 #include "playwindow.h"
 #include "bannfrecce.h"
 #include "listbrowser.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "mediaplayer.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // bt_global::icons_cache
@@ -72,9 +72,7 @@ enum ChoiceButtons
 
 SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_listbrowser, aFont);
-	setFont(aFont);
+	setFont(bt_global::font.get(FontManager::TEXT));
 
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	buttons_group = new QButtonGroup(this);

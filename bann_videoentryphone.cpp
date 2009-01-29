@@ -6,7 +6,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "devices_cache.h" // bt_global::devices_cache
 #include "btbutton.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <QDebug>
 #include <QLabel>
@@ -241,9 +241,8 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 	area1_ptr = new QLabel(this);
 	area1_ptr->setGeometry(0, (MAX_HEIGHT/4)-2*LABEL_HEIGHT,
 				MAX_WIDTH, LABEL_HEIGHT);
-	QFont aFont;
-	FontManager::instance()->getFont(font_videocitof_area1, aFont);
-	area1_ptr->setFont(aFont);
+
+	area1_ptr->setFont(bt_global::font.get(FontManager::TEXT));
 	area1_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	QString s;
 	if (my_station)
@@ -263,8 +262,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 		area3_ptr->setGeometry(BUTTON_DIM,
 				(MAX_HEIGHT/2)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
 				LABEL_WIDTH, LABEL_HEIGHT);
-		FontManager::instance()->getFont(font_videocitof_area3, aFont);
-		area3_ptr->setFont(aFont);
+		area3_ptr->setFont(bt_global::font.get(FontManager::TEXT));
 		area3_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		s = _txt2;
 		area3_ptr->setText(s);
@@ -285,8 +283,7 @@ void call_notifier::SetIcons(QString _txt1, QString _txt2, QString _txt3)
 		area5_ptr->setGeometry(BUTTON_DIM,
 				((3*MAX_HEIGHT)/4)-(BUTTON_DIM/2)-(LABEL_HEIGHT/2),
 				LABEL_WIDTH, LABEL_HEIGHT);
-		FontManager::instance()->getFont(font_videocitof_area5, aFont);
-		area5_ptr->setFont(aFont);
+		area5_ptr->setFont(bt_global::font.get(FontManager::TEXT));
 		area5_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		s = _txt3;
 		area5_ptr->setText(s);

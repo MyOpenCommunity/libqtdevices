@@ -2,7 +2,7 @@
 #include "allarme.h"
 #include "bannfrecce.h"
 #include "main.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <QPixmap>
 #include <QWidget>
@@ -52,9 +52,7 @@ void allarme::SetIcons(QString icon)
 		ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
 
     descr = new QLabel(this);
-    QFont aFont;
-    FontManager::instance()->getFont(font_allarme_descr, aFont);
-    descr->setFont(aFont);
+	descr->setFont(bt_global::font.get(FontManager::TEXT));
     descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 

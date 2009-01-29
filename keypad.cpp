@@ -1,6 +1,6 @@
 #include "keypad.h"
 #include "banner.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 
 #include <QFrame>
@@ -81,14 +81,11 @@ Keypad::Keypad(int line)
 	mode = CLEAN;
 
 	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_tastiera_scritta_label, aFont);
-	scrittaLabel->setFont(aFont);
+	scrittaLabel->setFont(bt_global::font.get(FontManager::TEXT));
 	scrittaLabel->setText(tr("PASSWORD:"));
-	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
-	FontManager::instance()->getFont(font_tastiera_digit_label, aFont);
-	digitLabel->setFont(aFont);
+	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+	digitLabel->setFont(bt_global::font.get(FontManager::TEXT));
 
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(canc()));
@@ -155,8 +152,7 @@ KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
 {
 	int i, x;
 	char tmp[2] = "1";
-	QFont aFont;
-	FontManager::instance()->getFont(font_tastiera_bottoni_stati, aFont);
+	QFont aFont = bt_global::font.get(FontManager::TEXT);
 
 	for (i = 0, x = POSX1_SMALL; i < 8; i++, x += BUT_SMALL_DIM)
 	{

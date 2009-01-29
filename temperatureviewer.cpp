@@ -1,5 +1,5 @@
 #include "temperatureviewer.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
 #include "page.h"
 #include "main.h" // bt_global::config
@@ -32,10 +32,8 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 
 	if (!descr.isEmpty())
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
 		temp.text = new QLabel(linked_page);
-		temp.text->setFont(aFont);
+		temp.text->setFont(bt_global::font.get(FontManager::TEXT));
 		temp.text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		temp.text->setText(descr);
 		temp.text->setGeometry(x, y + height - H_SCR_TEMP, width, H_SCR_TEMP);

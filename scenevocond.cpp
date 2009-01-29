@@ -4,7 +4,7 @@
 #include "generic_functions.h" // setCfgValue
 #include "btbutton.h"
 #include "timescript.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
 #include "main.h" // bt_global::config
 
@@ -405,7 +405,6 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 
 void scenEvo_cond_d::SetIcons()
 {
-	QFont aFont;
 	qDebug("scenEvo_cond_d::SetIcons()");
 	QPixmap *Icon1 = new QPixmap();
 	for (int i=0; i<6; i++)
@@ -415,8 +414,7 @@ void scenEvo_cond_d::SetIcons()
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
 	area2_ptr = new QLabel(this);
 	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2,	TEXT_X_DIM, TEXT_Y_DIM);
-	FontManager::instance()->getFont(font_scenEvoCond_Area2, aFont);
-	area2_ptr->setFont(aFont);
+	area2_ptr->setFont(bt_global::font.get(FontManager::TEXT));
 	area2_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	BtButton *b = new BtButton(this);
 	but[A3_BUTTON_INDEX] = b;
@@ -727,9 +725,7 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
-	l->setFont(aFont);
+	l->setFont(bt_global::font.get(FontManager::TEXT));
 
 	frame = l;
 	set_condition_value(*c);
@@ -828,9 +824,7 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c) 
 	qDebug() << "device_condition_dimming::device_condition_dimming(" << c << ")";
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_scenEvoCond_device_condition_dimming, aFont);
-	l->setFont(aFont);
+	l->setFont(bt_global::font.get(FontManager::TEXT));
 
 	frame = l;
 	if (*c == "0")
@@ -1097,9 +1091,7 @@ device_condition(parent, c)
 	qDebug() << "device_condition_dimming_100::device_condition_dimming_100(" << c << ")";
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
-	l->setFont(aFont);
+	l->setFont(bt_global::font.get(FontManager::TEXT));
 	frame = l;
 	if (*c == "0")
 	{
@@ -1377,9 +1369,7 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString *c) :
 	char sup[10];
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
-	l->setFont(aFont);
+	l->setFont(bt_global::font.get(FontManager::TEXT));
 	frame = l;
 	if (*c == "-1")
 	{
@@ -1658,9 +1648,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
-	l->setFont(aFont);
+	l->setFont(bt_global::font.get(FontManager::TEXT));
 	frame = l;
 
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
@@ -1844,9 +1832,7 @@ device_condition_aux::device_condition_aux(QWidget *parent, QString *c) :
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	QFont aFont;
-	FontManager::instance()->getFont(font_scenEvoCond_light_status, aFont);
-	l->setFont(aFont);
+	l->setFont(bt_global::font.get(FontManager::TEXT));
 
 	frame = l;
 	set_condition_value(*c);

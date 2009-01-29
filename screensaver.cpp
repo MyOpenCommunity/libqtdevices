@@ -2,7 +2,7 @@
 #include "main.h"
 #include "page.h"
 #include "timescript.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "xml_functions.h"
 #include "titlelabel.h"
 
@@ -244,10 +244,7 @@ void ScreenSaverTime::start(Page *p)
 
 	timeScript *time = new timeScript(line, 1);
 	time->setFrameStyle(QFrame::Plain);
-
-	QFont aFont;
-	FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
-	time->setFont(aFont);
+	time->setFont(bt_global::font.get(FontManager::TEXT));
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setContentsMargins(0, 2, 0, 2);
@@ -260,10 +257,7 @@ void ScreenSaverText::start(Page *p)
 {
 	ScreenSaverLine::start(p);
 	line->resize(MAX_WIDTH, 30);
-
-	QFont aFont;
-	FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
-	line->setFont(aFont);
+	line->setFont(bt_global::font.get(FontManager::TEXT));
 	line->setAlignment(Qt::AlignCenter);
 	line->setText(text);
 }

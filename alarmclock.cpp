@@ -5,7 +5,7 @@
 #include "openclient.h"
 #include "timescript.h"
 #include "bannfrecce.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
 
@@ -56,8 +56,8 @@ AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute)
 
 	Immagine->setGeometry(90,0,80,80);
 
-	QFont aFont;
-	FontManager::instance()->getFont(font_sveglia_scelta, aFont);
+	QFont aFont = bt_global::font.get(FontManager::TEXT);
+
 	for (uchar idx = 0; idx < 4; idx++)
 	{
 		choice[idx] = new BtButton(this);

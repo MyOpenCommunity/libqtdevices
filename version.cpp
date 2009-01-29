@@ -1,7 +1,7 @@
 #include "version.h"
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
 #include "openclient.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <openwebnet.h>
 
@@ -34,9 +34,7 @@ Version::Version()
 	bticino->setFrameStyle(QFrame::Plain);
 	bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
 
-	QFont aFont;
-	FontManager::instance()->getFont(font_versio_datiGen, aFont);
-	box_text->setFont(aFont);
+	box_text->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	indDisp = 0;
 }
 
@@ -77,10 +75,7 @@ void Version::gestFrame(char* frame)
 	}
 	if (reload)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_versio_datiGenFw, aFont);
-
-		box_text->setFont(aFont);
+		box_text->setFont(bt_global::font.get(FontManager::SMALLTEXT));
 		box_text->setIndent(15);
 		box_text->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 		QStringList text;

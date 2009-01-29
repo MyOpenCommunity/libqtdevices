@@ -14,7 +14,7 @@
 
 
 #include "stopngo.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "device.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // ICON...
@@ -265,16 +265,12 @@ StopngoPage::~StopngoPage()
 
 void StopngoPage::AddItems()
 {
-	QFont aFont, tFont;
-	FontManager::instance()->getFont(font_stopngo_page_labels, aFont);
-	FontManager::instance()->getFont(font_stopngo_page_title, tFont);
-
 	//Draw the title bar
 	titleBar = new QLabel(this);
 	titleBar->setGeometry(0, 0, MAX_WIDTH, TITLE_BAR_HEIGHT);
 	titleBar->setFrameStyle(QFrame::NoFrame);
 	titleBar->setIndent(TITLE_BAR_INDENT);
-	titleBar->setFont(tFont);
+	titleBar->setFont(bt_global::font.get(FontManager::TEXT));
 	titleBar->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 	titleBar->setText(pageTitle);
 	titleBar->show();
@@ -322,7 +318,7 @@ void StopngoPage::AddItems()
 		labelVerify = new QLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
-		labelVerify->setFont(aFont);
+		labelVerify->setFont(bt_global::font.get(FontManager::TEXT));
 		labelVerify->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 		labelVerify->setText(tr("Test"));
 		labelVerify->show();
@@ -339,7 +335,7 @@ void StopngoPage::AddItems()
 		labelVerify = new QLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
-		labelVerify->setFont(aFont);
+		labelVerify->setFont(bt_global::font.get(FontManager::TEXT));
 		labelVerify->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 		labelVerify->setText(tr("Self-test"));
 		labelVerify->show();
@@ -380,7 +376,7 @@ void StopngoPage::AddItems()
 	labelAutoArm = new QLabel(this);
 	labelAutoArm->setGeometry(0, secondRowY+BUT_DIM, armLabelW, LABELS_HEIGHT);
 	labelAutoArm->setFrameStyle(QFrame::NoFrame);
-	labelAutoArm->setFont(aFont);
+	labelAutoArm->setFont(bt_global::font.get(FontManager::TEXT));
 	labelAutoArm->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 	labelAutoArm->setText(tr("Self-recluser"));
 	labelAutoArm->show();
