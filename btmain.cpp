@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "btmain.h"
-#include "main.h"
+#include "main.h" // bt_global::config
 #include "homepage.h"
 #include "sottomenu.h"
 #include "sounddiffusion.h"
@@ -31,12 +31,13 @@
 #include "screensaver.h"
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
-#include "brightnesscontrol.h" // bt_global::brightness
+#include "displaycontrol.h" // bt_global::display
 #include "specialpage.h"
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
-#include "brightnesscontrol.h"
+#include "energy_data.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -52,11 +53,25 @@
 
 #define CFG_FILE MY_FILE_USER_CFG_DEFAULT
 
+namespace
+{
+	void setConfigValue(QDomNode root, QString path, QString &dest)
+	{
+		QDomElement n = getElement(root, path);
+		if (!n.isNull())
+			dest = n.text();
+	}
+}
+
 
 BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 {
+	loadGlobalConfig();
 	qDebug("parte BtMain");
 	QWSServer::setCursorVisible(false);
+
+	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
+	bt_global::font.loadFonts(font_file);
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
@@ -86,7 +101,8 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	tasti = NULL;
 	pwdOn = 0;
 
-	datiGen = new Version();
+	version = new Version();
+	version->setModel(bt_global::config[MODEL]);
 	struct sysinfo info;
 	sysinfo(&info);
 	qDebug("uptime: %d",(int)info.uptime);
@@ -94,7 +110,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 
 	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
 	{
-		datiGen->showPage();
+		version->showPage();
 		waitBeforeInit();
 	}
 	else
@@ -102,7 +118,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
-		connect(calib, SIGNAL(fineCalib()), datiGen, SLOT(showPage()));
+		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
 		alreadyCalibrated = true;
 	}
 }
@@ -111,6 +127,25 @@ BtMain::~BtMain()
 {
 	if (screensaver)
 		delete screensaver;
+}
+
+void BtMain::loadGlobalConfig()
+{
+	using bt_global::config;
+
+	// Load the default values
+	config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
+	config[LANGUAGE] = DEFAULT_LANGUAGE;
+	config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
+
+	QDomNode n = getConfElement("setup/generale");
+
+	// Load the current values
+	setConfigValue(n, "temperature/format", config[TEMPERATURE_SCALE]);
+	setConfigValue(n, "language", config[LANGUAGE]);
+	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
+	setConfigValue(n, "modello", config[MODEL]);
+	setConfigValue(n, "nome", config[NAME]);
 }
 
 void BtMain::waitBeforeInit()
@@ -203,6 +238,13 @@ Page *BtMain::getPage(int id)
 		page = p;
 		break;
 	}
+	case ENERGY_MANAGEMENT:
+	{
+		PageContainer *p = new PageContainer(page_node);
+		p->addBackButton();
+		page = p;
+		break;
+	}
 	case SCENARI:
 	case SCENARI_EVOLUTI:
 	{
@@ -245,6 +287,12 @@ Page *BtMain::getPage(int id)
 		page = p;
 		break;
 	}
+	case ENERGY_DATA:
+	{
+		EnergyData *p = new EnergyData(page_node);
+		page = p;
+		break;
+	}
 	default:
 		qFatal("Page %d not found on xml config file!", id);
 	}
@@ -264,16 +312,11 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
 			bool ok;
 			if (!addr.isNull())
-				datiGen->setAddr(addr.text().toInt(&ok, 16) - 768);
-
-			QDomElement model = getElement(setup, "generale/modello");
-			if (!model.isNull())
-				datiGen->setModel(model.text());
+				version->setAddr(addr.text().toInt(&ok, 16) - 768);
 		}
 		else
 			qWarning("setup node not found on xml config file!");
 
-		int screensaver_type = ScreenSaver::LINES; // default screensaver
 		QDomNode displaypages = getConfElement("displaypages");
 		if (!displaypages.isNull())
 		{
@@ -290,14 +333,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			QString orientation = getTextChild(displaypages, "orientation");
 			if (!orientation.isNull())
 				setOrientation(orientation);
-
-			// read screensaver type from config file
-			QDomElement screensaver_node = getElement(displaypages, "screensaver/type");
-			if (screensaver_node.isNull())
-				qWarning("Type of screeensaver not found!");
-			else
-				screensaver_type = screensaver_node.text().toInt();
-			screensaver = getScreenSaver(static_cast<ScreenSaver::Type>(screensaver_type));
 		}
 		else
 			qFatal("displaypages node not found on xml config file!");
@@ -313,9 +348,19 @@ bool BtMain::loadConfiguration(QString cfg_file)
 				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
 
-		bt_global::brightness.setLevel(level);
-		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+		bt_global::display._setBrightness(level);
+		bt_global::display.setState(DISPLAY_OPERATIVE);
 
+		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
+		if (!display_node.isNull())
+		{
+			QDomElement screensaver_node = getElement(display_node, "screensaver");
+			QDomElement n = getElement(screensaver_node, "type");
+			if (!n.isNull())
+				type = static_cast<ScreenSaver::Type>(n.text().toInt());
+			ScreenSaver::initData(screensaver_node);
+		}
+		bt_global::display.current_screensaver = type;
 		return true;
 	}
 	return false;
@@ -323,7 +368,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 
 void BtMain::hom()
 {
-	datiGen->inizializza();
+	version->inizializza();
 
 	if (loadConfiguration(CFG_FILE))
 		hide();
@@ -351,11 +396,11 @@ void BtMain::monitorReady()
 void BtMain::init()
 {
 	qDebug("BtMain::init()");
-	connect(client_monitor,SIGNAL(frameIn(char *)),datiGen,SLOT(gestFrame(char *))); 
+	connect(client_monitor,SIGNAL(frameIn(char *)),version,SLOT(gestFrame(char *)));
 
 	Home->inizializza();
-	if (datiGen)
-		datiGen->inizializza();
+	if (version)
+		version->inizializza();
 
 	foreach (Page *p, page_list)
 		p->inizializza();
@@ -378,7 +423,7 @@ void BtMain::myMain()
 
 	init();
 	Home->showPage();
-	datiGen->hide();
+	version->hide();
 	bt_global::devices_cache.init_devices();
 
 	tempo1 = new QTimer(this);
@@ -405,7 +450,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -422,7 +467,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -439,7 +484,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -456,7 +501,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			bt_global::brightness.setState(DISPLAY_OPERATIVE);
+			bt_global::display.setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -518,16 +563,35 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && screensaver && !screensaver->isRunning() && bt_global::brightness.screenSaverActive())
+			if  (tiempo >= 65 && (!screensaver || !screensaver->isRunning()) && bt_global::display.screenSaverActive())
 			{
-				Page *target = pagDefault ? pagDefault : Home;
-				screensaver->start(target);
-				bt_global::brightness.setState(DISPLAY_SCREENSAVER);
+				ScreenSaver::Type current_screensaver = bt_global::display.currentScreenSaver();
+				if (current_screensaver != ScreenSaver::NONE)
+				{
+					if (screensaver && screensaver->type() != current_screensaver)
+					{
+						delete screensaver;
+						screensaver = 0;
+					}
+
+					if (!screensaver)
+						screensaver = getScreenSaver(current_screensaver);
+
+					Page *target = pagDefault ? pagDefault : Home;
+					if (target != pagDefault)
+						target->raise();
+					screensaver->start(target);
+					bt_global::display.setState(DISPLAY_SCREENSAVER);
+				}
 			}
 		}
-		else
-			if (screensaver && screensaver->isRunning())
-				screensaver->stop();
+		else if (screensaver && screensaver->isRunning())
+		{
+			Page *target = screensaver->target();
+			if (target != pagDefault)
+				target->lower();
+			screensaver->stop();
+		}
 	}
 	else if (tiempo >= 120)
 	{
@@ -538,7 +602,7 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = false;
-		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+		bt_global::display.setState(DISPLAY_OPERATIVE);
 		tempo1->start(2000);
 		bloccato = false;
 	}
@@ -562,9 +626,14 @@ void BtMain::freeze(bool b)
 	if (!bloccato)
 	{
 		event_unfreeze = true;
-		bt_global::brightness.setState(DISPLAY_OPERATIVE);
+		bt_global::display.setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
+		{
+			Page *target = screensaver->target();
+			if (target != pagDefault)
+				target->lower();
 			screensaver->stop();
+		}
 		if (pwdOn)
 		{
 			if (!tasti)
@@ -579,7 +648,7 @@ void BtMain::freeze(bool b)
 	}
 	else
 	{
-		bt_global::brightness.setState(DISPLAY_FREEZED);
+		bt_global::display.setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(this);
 	}
 }

@@ -10,7 +10,7 @@
  */
 
 #include "bann_thermal_regulation.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "sottomenu.h"
 #include "btbutton.h"
 #include "device.h"
@@ -20,6 +20,7 @@
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"
+#include "main.h" // bt_global::config
 
 #include <QVariant>
 #include <QLabel>
@@ -164,9 +165,7 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureSca
 
 void FSBannSimpleProbe::Draw()
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempMis, aFont);
-	temp_label->setFont(aFont);
+	temp_label->setFont(bt_global::font.get(FontManager::TITLE));
 	temp_label->setAlignment(Qt::AlignHCenter);
 	switch (temp_scale)
 	{
@@ -181,9 +180,7 @@ void FSBannSimpleProbe::Draw()
 		temp_label->setText(celsiusString(temp));
 	}
 
-
-	FontManager::instance()->getFont(font_banTermo_testo, aFont);
-	descr_label->setFont(aFont);
+	descr_label->setFont(bt_global::font.get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
 	descr_label->setText(descr);
 }
@@ -359,9 +356,6 @@ void FSBannProbe::Draw()
 	icon_antifreeze->setVisible(isAntigelo);
 	navbar_button->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-
 	switch (temp_scale)
 	{
 	case CELSIUS:
@@ -375,11 +369,10 @@ void FSBannProbe::Draw()
 		setpoint_label->setText(celsiusString(setpoint));
 	}
 
-	setpoint_label->setFont(aFont);
+	setpoint_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 
-	FontManager::instance()->getFont(font_banTermo_testo, aFont);
-	local_temp_label->setFont(aFont);
+	local_temp_label->setFont(bt_global::font.get(FontManager::TEXT));
 	local_temp_label->setAlignment(Qt::AlignHCenter);
 	local_temp_label->setText(local_temp);
 
@@ -678,14 +671,11 @@ void FSBannManual::decSetpoint()
 
 void FSBannManual::Draw()
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_testo, aFont);
-	descr_label->setFont(aFont);
+	descr_label->setFont(bt_global::font.get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	descr_label->setText(descr);
 
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	temp_label->setFont(aFont);
+	temp_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	temp_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
 	switch (temp_scale)
@@ -844,7 +834,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent) : BannFullScreen(par
 	date_edit = 0;
 	time_edit = 0;
 	program_choice = 0;
-	temp_scale = readTemperatureScale();
+	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 }
 
 BtButton *FSBannTermoReg::customButton()
@@ -854,10 +844,8 @@ BtButton *FSBannTermoReg::customButton()
 
 void FSBannTermoReg::Draw()
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
 	description_label->setVisible(description_visible);
-	description_label->setFont(aFont);
+	description_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
 	// TODO: verificare che venga impostato correttamente!!

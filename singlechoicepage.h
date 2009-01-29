@@ -14,7 +14,7 @@ class SingleChoicePage : public sottoMenu
 {
 Q_OBJECT
 public:
-	SingleChoicePage();
+	SingleChoicePage(bool paging=false);
 private slots:
 	void okPressed();
 

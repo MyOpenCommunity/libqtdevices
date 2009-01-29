@@ -1,6 +1,6 @@
 #include "calibrate.h"
 #include "main.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 
 #include <QDesktopWidget>
@@ -56,10 +56,8 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	button_timer = new QTimer(this);
 	b1 = createButton(IMG_OK, 5, 5);
 	b2 = createButton(IMG_OK, 175, 255);
-	QFont aFont;
-	FontManager::instance()->getFont(font_homepage_bottoni_label, aFont);
 	box_text = new QLabel(this);
-	box_text->setFont(aFont);
+	box_text->setFont(bt_global::font.get(FontManager::TEXT));
 	box_text->setAlignment(Qt::AlignHCenter);
 	box_text->setGeometry(0, 205, desk.width(), 50);
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)

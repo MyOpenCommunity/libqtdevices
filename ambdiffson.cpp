@@ -13,8 +13,9 @@
 #include "btbutton.h"
 #include "sounddiffusion.h"
 #include "multisounddiff.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 
+#include <QWidget>
 #include <QDebug>
 #include <QLabel>
 #include <QFont>
@@ -54,10 +55,8 @@ void ambDiffSon::Draw()
 	BannerIcon2->repaint();
 	BannerIcon2->setPixmap(*(Icon[3]));
 	BannerIcon2->repaint();
-	QFont aFont;
-	FontManager::instance()->getFont(font_items_bannertext, aFont);
 	BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	BannerText->setFont(aFont);
+	BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 	BannerText->setText(qtesto);
 }
 
@@ -114,7 +113,7 @@ bool ambDiffSon::isDraw()
  ****************************************************************/
 
 insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2,
-	SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm) : bannButIcon(parent)
+	SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm) : bannPuls(parent)
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
 	descr = d;
@@ -135,10 +134,8 @@ void insAmbDiffSon::Draw()
 	BannerIcon->repaint();
 	BannerIcon->setPixmap(*(Icon[0]));
 	BannerIcon->repaint();
-	QFont aFont;
-	FontManager::instance()->getFont(font_items_bannertext, aFont);
 	BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	BannerText->setFont(aFont);
+	BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 	BannerText->setText(qtesto);
 }
 

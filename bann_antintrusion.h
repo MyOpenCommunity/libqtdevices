@@ -1,8 +1,8 @@
 #ifndef BANN_ANTINTRUSION_H
 #define BANN_ANTINTRUSION_H
 
-#include "bannonicons.h"
-#include "bann2butlab.h"
+#include "bann1_button.h" // bannOnIcons
+#include "bann3_buttons.h" // bann3ButLab
 #include "device_status.h"
 
 #include <QString>
@@ -56,7 +56,7 @@ signals:
  * \author Davide
  * \date lug 2005
  */
-class impAnti : public  bann2butLab
+class impAnti : public bann3ButLab
 {
 Q_OBJECT
 public:

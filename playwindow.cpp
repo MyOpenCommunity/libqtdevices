@@ -12,8 +12,7 @@
 #include "playwindow.h"
 #include "titlelabel.h"
 #include "mediaplayer.h"
-#include "bannondx.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "buttons_bar.h"
 #include "main.h"
 
@@ -202,8 +201,7 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWin
 	qDebug("[AUDIO] MediaPlayWindow costructor");
 
 	/// Create Labels (that contain tags)
-	QFont aFont;
-	FontManager::instance()->getFont(font_playwindow, aFont);
+	QFont aFont = bt_global::font.get(FontManager::TEXT);
 
 	// layouts for media
 	QHBoxLayout *tags_layout = new QHBoxLayout();
@@ -427,11 +425,9 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWin
 	//main_layout->insertSpacing(0, 20);
 
 	/// Create Labels (that contain tags)
-	QFont aFont;
-	FontManager::instance()->getFont(font_playwindow, aFont);
 
 	meta_title_label = new TitleLabel(this, MAX_WIDTH, 30, 0, 0, TRUE);
-	meta_title_label->setFont(aFont);
+	meta_title_label->setFont(bt_global::font.get(FontManager::TEXT));
 	meta_title_label->setAlignment(Qt::AlignHCenter);
 	main_layout->insertWidget(0, meta_title_label);
 	main_layout->insertStretch(1);

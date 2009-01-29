@@ -17,6 +17,7 @@
 class Page;
 class QLabel;
 class QTimer;
+class QDomNode;
 
 
 /**
@@ -32,15 +33,20 @@ public:
 		LINES,       // single line that goes up and down
 		BALLS,      // many balls on screen
 		TIME,       // a single line with a clock inside
+		TEXT,       // a line with a text
 	};
 
 	virtual void start(Page *p);
 	virtual void stop();
 	bool isRunning();
+	virtual Type type() = 0;
+	Page *target() { return page; }
+	static void initData(const QDomNode &config_node);
 
 protected:
-	ScreenSaver(int refresh_time);
 	Page *page;
+	static QString text;
+	ScreenSaver(int refresh_time);
 
 protected slots:
 	virtual void refresh() = 0;
@@ -64,6 +70,7 @@ public:
 	ScreenSaverLine();
 	virtual void start(Page *p);
 	virtual void stop();
+	virtual Type type() { return LINES; }
 
 protected slots:
 	virtual void refresh();
@@ -90,6 +97,7 @@ public:
 	ScreenSaverBalls();
 	virtual void start(Page *p);
 	virtual void stop();
+	virtual Type type() { return BALLS; }
 
 protected slots:
 	virtual void refresh();
@@ -115,10 +123,20 @@ class ScreenSaverTime : public ScreenSaverLine
 Q_OBJECT
 public:
 	virtual void start(Page *p);
+	virtual Type type() { return TIME; }
+};
 
-protected:
-	virtual QString styleDownToUp();
-	virtual QString styleUpToDown();
+
+/**
+ * The concrete class that represent a screensaver with a scrolling line and a
+ *.text inside.
+ */
+class ScreenSaverText : public ScreenSaverLine
+{
+Q_OBJECT
+public:
+	virtual void start(Page *p);
+	virtual Type type() { return TEXT; }
 };
 
 #endif

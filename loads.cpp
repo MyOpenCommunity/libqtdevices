@@ -28,12 +28,12 @@ void bannLoads::Attiva()
 }
 
 
-Loads::Loads(QDomNode config_node)
+Loads::Loads(const QDomNode &config_node)
 {
 	loadItems(config_node);
 }
 
-void Loads::loadItems(QDomNode config_node)
+void Loads::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{

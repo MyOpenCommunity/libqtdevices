@@ -30,7 +30,7 @@ class homePage : public PageContainer
 {
 Q_OBJECT
 public:
-	homePage(QDomNode config_node);
+	homePage(const QDomNode &config_node);
 	void inizializza();
 
 private slots:
@@ -38,7 +38,7 @@ private slots:
 
 private:
 	TemperatureViewer *temp_viewer;
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 };
 
 

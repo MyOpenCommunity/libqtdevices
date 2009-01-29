@@ -4,7 +4,7 @@
 #include "main.h" // ICON_FRECCIA_SX
 #include "xml_functions.h" // getChildren, getTextChild, getChildWithName
 #include "generic_functions.h" // createMsgOpen
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "temperatureviewer.h"
 
 #include <openwebnet.h>
@@ -19,14 +19,14 @@
 #define DIM_BUT_BACK 60
 
 
-SpecialPage::SpecialPage(QDomNode config_node)
+SpecialPage::SpecialPage(const QDomNode &config_node)
 {
 	temp_viewer = new TemperatureViewer(this);
 	loadItems(config_node);
 	loadSpecial(config_node);
 }
 
-void SpecialPage::loadItems(QDomNode config_node)
+void SpecialPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -59,7 +59,7 @@ void SpecialPage::loadItems(QDomNode config_node)
 	}
 }
 
-void SpecialPage::loadSpecial(QDomNode config_node)
+void SpecialPage::loadSpecial(const QDomNode &config_node)
 {
 	// Load the back button
 	BtButton *b = new BtButton(this);
@@ -87,10 +87,8 @@ void SpecialPage::loadSpecial(QDomNode config_node)
 		connect(b, SIGNAL(clicked()), SLOT(clickedButton()));
 
 	// Load the description of special button
-	QFont aFont;
-	FontManager::instance()->getFont(font_homepage_bottoni_descrizione, aFont);
 	QLabel *box_text = new QLabel(this);
-	box_text->setFont(aFont);
+	box_text->setFont(bt_global::font.get(FontManager::TEXT));
 	box_text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	box_text->setText(getTextChild(command, "descr"));
 	box_text->setGeometry(DIM_BUT_BACK, 240, 260 - DIM_BUT_BACK, 20);

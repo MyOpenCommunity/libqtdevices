@@ -1,7 +1,7 @@
 #ifndef BANN_VIDEOENTRYPHONE_H
 #define BANN_VIDEOENTRYPHONE_H
 
-#include "bann4taslab.h"
+#include "bann4_buttons.h"
 
 #include <QWidget>
 #include <QString>

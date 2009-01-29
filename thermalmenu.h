@@ -20,7 +20,7 @@
 #define BTOUCH_THERMALMENU_H
 
 #include "sottomenu.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "bttime.h"
 #include "bann_thermal_regulation.h"
 
@@ -38,7 +38,7 @@ public:
 	/**
 	 * 
 	 */
-	ThermalMenu(QDomNode config_node);
+	ThermalMenu(const QDomNode &config_node);
 
 public slots:
 	/**
@@ -60,7 +60,7 @@ private:
 	void createProbeMenu(QDomNode config, bannPuls *bann, bool external);
 
 	void createPlantMenu(QDomNode config, bannPuls *bann);
-	void loadBanners(QDomNode config_node);
+	void loadBanners(const QDomNode &config_node);
 
 	/// do NOT setAutoDelete(true), since banners are children of
 	/// ThermalMenu and will be deleted by Qt

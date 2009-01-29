@@ -108,7 +108,7 @@ void PowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t, st
 PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent) : bannOnOff(parent)
 {
 	qDebug("PowerAmplifierPreset::PowerAmplifierPreset()");
-	SetIcons(IMG_PLUS, IMG_MINUS, NULL, IMG_PRESET);
+	SetIcons(IMG_PLUS, IMG_MINUS, QString(), IMG_PRESET);
 	preset = 0;
 	num_preset = 20;
 	fillPresetDesc();
@@ -206,7 +206,7 @@ void PowerAmplifierPreset::nextPreset()
 PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent) : bannOnOff2scr(parent)
 {
 	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_TREBLE);
+	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_TREBLE);
 	level = 0;
 	qDebug("PowerAmplifierTreble::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
@@ -245,7 +245,7 @@ void PowerAmplifierTreble::showLevel()
 PowerAmplifierBass::PowerAmplifierBass(QWidget *parent) : bannOnOff2scr(parent)
 {
 	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_BASS);
+	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_BASS);
 	level = 0;
 	qDebug("PowerAmplifierBass::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));

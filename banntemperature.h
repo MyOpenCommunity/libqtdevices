@@ -18,9 +18,8 @@
 #define BANNTEMPERATURE_H
 
 #include "banner.h"
-#include "main.h"
+#include "main.h"  // TemperatureScale
 
-#include <QDomNode>
 #include <QString>
 #include <QList>
 
@@ -47,7 +46,7 @@ public:
 	 * \param config The node in the Dom tree that acts as root of this device
 	 * \param dev    The probe (device) connected with this banner
 	 */
-	BannTemperature(QWidget *parent, QDomNode config, device *dev);
+	BannTemperature(QWidget *parent, QString where, QString descr, device *dev);
 	virtual void Draw();
 public slots:
 	/**
@@ -57,11 +56,10 @@ public slots:
 	 */
 	void status_changed(QList<device_status*> sl);
 private:
-	QDomNode conf_root;
 	/// Name of the zone where the probe is installed (read from config)
 	QString  probe_descr;
-	/// Probed temperature
-	unsigned  temperature;
+	/// Probed temperature (in celsius)
+	int temperature;
 	/// Temperature label
 	QLabel  *temp_label;
 	/// Zone name label

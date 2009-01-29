@@ -29,7 +29,7 @@ class MultiSoundDiff : public sottoMenu
 {
 Q_OBJECT
 public:
-	MultiSoundDiff(QDomNode config_node);
+	MultiSoundDiff(const QDomNode &config_node);
 	~MultiSoundDiff();
 
 	/*!
@@ -53,7 +53,7 @@ protected:
 	virtual void hideEvent(QHideEvent *event);
 
 private:
-	void loadAmbienti(QDomNode config_node);
+	void loadAmbienti(const QDomNode &config_node);
 
 	QList<SoundDiffusion*> dslist;
 	AudioSources *sorgenti;

@@ -13,8 +13,8 @@
 #define BANN_SETTINGS_H
 
 #include "banner.h"
-#include "bannondx.h"
-#include "bann2but.h"
+#include "bann1_button.h" // bannOnDx, bannOnSx
+#include "bann2_buttons.h" // bann2But
 
 #include <QWidget>
 
@@ -60,10 +60,6 @@ public slots:
 
 private:
 	AlarmClock *alarm_clock;
-	QString icon_on, icon_off;
-
-private slots:
-	void forceDraw();
 
 signals:
 /*!
@@ -113,8 +109,6 @@ public:
 	impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2);
 public slots:
 	void toggleBeep();
-private:
-	QString icon_on, icon_off;
 };
 
 
@@ -179,7 +173,6 @@ protected:
 
 private:
 	bool active;
-	QString icon_on, icon_off;
 	QString password;
 	Keypad *tasti;
 	bool sb;

@@ -2,9 +2,8 @@
 #define BANN_LIGHTING_H
 
 #include "bannregolaz.h"
-#include "bannonoff.h"
-#include "bannonoff2scr.h"
-#include "bannon2scr.h"
+#include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
+#include "bann1_button.h" // bannOn2scr
 
 #include <QWidget>
 #include <QString>

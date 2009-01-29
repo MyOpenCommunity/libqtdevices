@@ -17,7 +17,7 @@
 #include <QWidget>
 
 class Client;
-
+class QVBoxLayout;
 
 class Page : public QWidget
 {
@@ -34,8 +34,13 @@ public:
 	void sendFrame(QString frame);
 	void sendInit(QString frame);
 
+	virtual void addBackButton();
+
 public slots:
 	virtual void showPage();
+
+protected:
+	QVBoxLayout *main_layout;
 
 private:
 	static Client *client_richieste;

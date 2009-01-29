@@ -9,17 +9,19 @@
 #include "impostatime.h"
 #include "brightnesspage.h"
 #include "displaypage.h"
+#include "version.h"
+
 #include <QDebug>
 
 #include <assert.h>
 
 
-Settings::Settings(QDomNode config_node)
+Settings::Settings(const QDomNode &config_node)
 {
 	loadItems(config_node);
 }
 
-void Settings::loadItems(QDomNode config_node)
+void Settings::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
@@ -65,10 +67,10 @@ void Settings::loadItems(QDomNode config_node)
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			break;
 		case VERSIONE:
-			b = new bannVersion(this, img1, bt_global::btmain->datiGen);
+			b = new bannVersion(this, img1, bt_global::btmain->version);
 			break;
 		case LANSETTINGS:
-			b = new bannOnDx(this, ICON_INFO, new LanSettings(this));
+			b = new bannOnDx(this, ICON_INFO, new LanSettings(item));
 			break;
 		default:
 			assert(!"Type of item not handled on settings page!");

@@ -3,7 +3,7 @@
 #include "scenevocond.h"
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
 
 #include <QDir>
@@ -381,18 +381,14 @@ void scenEvo::Draw()
 	}
 	if (BannerText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_bannertext, aFont);
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(aFont);
+		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 		BannerText->setText(qtesto);
 	}
 	if (SecondaryText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_secondarytext, aFont);
 		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(aFont);
+		SecondaryText->setFont(bt_global::font.get(FontManager::TEXT));
 		SecondaryText->setText(qtestoSecondario);
 	}
 }
@@ -578,10 +574,8 @@ void scenSched::Draw()
 	}
 	if (BannerText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_bannertext, aFont);
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(aFont);
+		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 		BannerText->setText(qtesto);
 	}
 }

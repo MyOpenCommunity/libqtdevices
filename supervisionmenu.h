@@ -17,7 +17,7 @@
 
 
 #include "sottomenu.h"
-#include "bannpuls.h"
+#include "bann1_button.h"
 #include "main.h"
 #include "stopngo.h"
 
@@ -36,7 +36,7 @@ class SupervisionMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	SupervisionMenu(QDomNode config_node);
+	SupervisionMenu(const QDomNode &config_node);
 	~SupervisionMenu();
 
 private:
@@ -47,7 +47,7 @@ private:
 
 	void Create2ButBanner(QDomElement, QString, QString);
 	void CreateStopnGoMenu(QDomNode, bannPuls*);
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 	void LinkBanner2Page(bannPuls*, StopngoItem*);
 
 public slots:

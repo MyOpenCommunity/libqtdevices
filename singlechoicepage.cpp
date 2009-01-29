@@ -1,14 +1,18 @@
 #include "singlechoicepage.h"
 #include "main.h" // for ICON_{OK,VUOTO}
-#include "bannondx.h"
+#include "bann1_button.h" // bannOnSx
 #include "btbutton.h"
 
 #include <QDebug>
 
 
-SingleChoicePage::SingleChoicePage()
+SingleChoicePage::SingleChoicePage(bool paging)
 {
-	setNavBarMode(10, ICON_OK);
+	if (paging)
+		setNavBarMode(4, ICON_OK);
+	else
+		setNavBarMode(10, ICON_OK);
+
 	buttons.setExclusive(true);
 
 	connect(this, SIGNAL(goDx()), SLOT(okPressed()));

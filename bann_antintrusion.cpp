@@ -1,7 +1,7 @@
 #include "bann_antintrusion.h"
 #include "main.h" // MAX_PATH, IMG_PATH
 #include "generic_functions.h" // void getZoneName(...)
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
@@ -27,10 +27,8 @@ zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QStr
 
 	if (BannerText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_items_bannertext, aFont);
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(aFont);
+		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 		BannerText->setText(name);
 	}
 
@@ -168,7 +166,7 @@ void zonaAnti::inizializza(bool forza)
 
 
 impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
-	: bann2butLab(parent)
+	: bann3ButLab(parent)
 {
 	tasti = NULL;
 	QString disactive_icon_path;

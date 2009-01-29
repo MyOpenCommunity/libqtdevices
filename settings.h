@@ -25,10 +25,10 @@ class Settings : public sottoMenu
 {
 Q_OBJECT
 public:
-	Settings(QDomNode config_node);
+	Settings(const QDomNode &config_node);
 
 private:
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 };
 
 #endif

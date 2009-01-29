@@ -40,35 +40,24 @@ HEADERS += actuators.h \
            antintrusion.h \
            automation.h \
            aux.h \
-           bann2but.h \
-           bann2butlab.h \
-           bann3but.h \
-           bann4but.h \
-           bann4taslab.h \
+           bann1_button.h \
+           bann2_buttons.h \
+           bann3_buttons.h \
+           bann4_buttons.h \
            bann_antintrusion.h \
            bann_automation.h \
            bann_lighting.h \
            bann_scenario.h \
            bann_settings.h \
            bann_videoentryphone.h \
-           bannbut2icon.h \
-           bannbuticon.h \
            bannciclaz.h \
-           bannciclaz3but.h \
            banner.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
-           bannon2scr.h \
-           bannondx.h \
-           bannonicons.h \
-           bannonoff.h \
-           bannonoff2scr.h \
            bannonoffcombo.h \
-           bannpuls.h \
            bannregolaz.h \
            banntemperature.h \
            brightnesspage.h \
-           brightnesscontrol.h \
            btbutton.h \
            btmain.h \
            bttime.h \
@@ -80,7 +69,10 @@ HEADERS += actuators.h \
            device.h \
            device_status.h \
            devices_cache.h \
+           displaycontrol.h \
            displaypage.h \
+           energy_data.h \
+           energy_view.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -89,6 +81,7 @@ HEADERS += actuators.h \
            icondispatcher.h \
            impostatime.h \
            keypad.h \
+           landevice.h \
            lansettings.h \
            lighting.h \
            listbrowser.h \
@@ -136,37 +129,26 @@ SOURCES += actuators.cpp \
            antintrusion.cpp \
            automation.cpp \
            aux.cpp \
-           bann4taslab.cpp \
-           bann2but.cpp \
-           bann2butlab.cpp \
-           bann3but.cpp \
-           bann4but.cpp \
+           bann1_button.cpp \
+           bann2_buttons.cpp \
+           bann3_buttons.cpp \
+           bann4_buttons.cpp \
            bann_antintrusion.cpp \
            bann_automation.cpp \
            bann_lighting.cpp \
            bann_scenario.cpp \
            bann_settings.cpp \
            bann_videoentryphone.cpp \
-           bannbut2icon.cpp \
-           bannbuticon.cpp \
            bannciclaz.cpp \
-           bannciclaz3but.cpp \
            banner.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
-           bannon2scr.cpp \
-           bannondx.cpp \
-           bannonicons.cpp \
-           bannonoff.cpp \
-           bannonoff2scr.cpp \
            bannonoffcombo.cpp \
-           bannpuls.cpp \
            bannregolaz.cpp \
            banntemperature.cpp \
            btbutton.cpp \
            btmain.cpp \
            brightnesspage.cpp \
-           brightnesscontrol.cpp \
            bttime.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
@@ -176,7 +158,10 @@ SOURCES += actuators.cpp \
            device.cpp \
            device_status.cpp \
            devices_cache.cpp \
+           displaycontrol.cpp \
            displaypage.cpp \
+           energy_data.cpp \
+           energy_view.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \
@@ -185,6 +170,7 @@ SOURCES += actuators.cpp \
            icondispatcher.cpp \
            impostatime.cpp \
            keypad.cpp \
+           landevice.cpp \
            lansettings.cpp \
            lighting.cpp \
            listbrowser.cpp \

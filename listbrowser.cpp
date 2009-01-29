@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "listbrowser.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "main.h" // MAX_WIDTH
 #include "titlelabel.h"
@@ -70,8 +70,7 @@ void ListBrowser::showList()
 	h_offsets.append(-1);
 	h_offsets.append(0);
 
-	QFont aFont;
-	FontManager::instance()->getFont(font_listbrowser, aFont);
+	QFont aFont = bt_global::font.get(FontManager::TEXT);
 
 	for (int i = 0; i < count; ++i)
 	{

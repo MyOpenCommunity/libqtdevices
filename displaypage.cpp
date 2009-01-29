@@ -1,5 +1,5 @@
 #include "displaypage.h"
-#include "bannondx.h"
+#include "bann1_button.h" // bannOnDx
 #include "bann_settings.h"
 #include "cleanscreen.h"
 #include "brightnesspage.h"
@@ -10,12 +10,12 @@
 static const char *ICON_BRIGHTNESS = IMG_PATH "btlum.png";
 
 
-DisplayPage::DisplayPage(QDomNode config_node)
+DisplayPage::DisplayPage(const QDomNode &config_node)
 {
 	loadItems(config_node);
 }
 
-void DisplayPage::loadItems(QDomNode config_node)
+void DisplayPage::loadItems(const QDomNode &config_node)
 {
 	banner *b;
 

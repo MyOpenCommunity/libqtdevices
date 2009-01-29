@@ -26,12 +26,12 @@ class SpecialPage : public Page
 {
 Q_OBJECT
 public:
-	SpecialPage(QDomNode config_node);
+	SpecialPage(const QDomNode &config_node);
 	virtual void inizializza();
 
 private:
-	void loadItems(QDomNode config_node);
-	void loadSpecial(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
+	void loadSpecial(const QDomNode &config_node);
 
 	// Define the behaviour of special button
 	enum specialType

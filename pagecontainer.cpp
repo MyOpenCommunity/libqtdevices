@@ -9,15 +9,19 @@
 #include <QTime>
 
 #define DIM_BUT 80
+#define BACK_BUTTON_X    0
+#define BACK_BUTTON_Y  250
+#define BACK_BUTTON_DIM 60
+#define IMG_BACK_BUTTON     IMG_PATH "arrlf.png"
 
 
-PageContainer::PageContainer(QDomNode config_node) : buttons_group(this)
+PageContainer::PageContainer(const QDomNode &config_node) : buttons_group(this)
 {
 	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 	loadItems(config_node);
 }
 
-void PageContainer::loadItems(QDomNode config_node)
+void PageContainer::loadItems(const QDomNode &config_node)
 {
 	QTime wdtime;
 	wdtime.start(); // Start counting for wd refresh
@@ -54,6 +58,14 @@ void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
 	// giusto di risolverlo!
 	//connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+}
+
+void PageContainer::addBackButton()
+{
+	BtButton *b = new BtButton(this);
+	b->setGeometry(BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_DIM, BACK_BUTTON_DIM);
+	b->setImage(IMG_BACK_BUTTON);
+	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
 }
 
 void PageContainer::clicked(int id)

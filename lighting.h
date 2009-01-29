@@ -25,14 +25,14 @@ class Lighting : public sottoMenu
 {
 Q_OBJECT
 public:
-	Lighting(QDomNode config_node);
+	Lighting(const QDomNode &config_node);
 
 protected:
 	virtual void showEvent(QShowEvent *event);
 
 private:
 	void initDimmer();
-	void loadItems(QDomNode config_node);
+	void loadItems(const QDomNode &config_node);
 };
 
 #endif

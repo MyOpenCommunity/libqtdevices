@@ -13,8 +13,9 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "generic_functions.h" // getPressName
 #include "openclient.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "openclient.h"
+#include "page.h"
 
 #include <QPixmap>
 #include <QLabel>
@@ -33,17 +34,19 @@ Client *banner::client_richieste = 0;
 
 banner::banner(QWidget *parent) : QWidget(parent)
 {
-	BannerIcon = NULL;
-	BannerText = NULL;
-	SecondaryText = NULL;
-	sxButton = NULL;
-	dxButton = NULL;
-	csxButton = NULL;
-	cdxButton = NULL;
+	linked_sx_page = 0;
+	linked_dx_page = 0;
+	BannerIcon = 0;
+	BannerText = 0;
+	SecondaryText = 0;
+	sxButton = 0;
+	dxButton = 0;
+	csxButton = 0;
+	cdxButton = 0;
 	for (int idx = 0; idx < MAX_NUM_ICON; idx++)
-		Icon[idx] = NULL;
+		Icon[idx] = 0;
 	for (int idx = 0; idx < MAX_PRESS_ICON; idx++)
-		pressIcon[idx] = NULL;
+		pressIcon[idx] = 0;
 	periodo = 0;
 	numFrame = contFrame = 0;
 	value = 0;
@@ -56,43 +59,31 @@ banner::banner(QWidget *parent) : QWidget(parent)
 
 banner::~banner()
 {
-	if (BannerIcon)
-		delete BannerIcon;
-	if (BannerText)
-		delete BannerText;
-	if (SecondaryText)
-		delete SecondaryText;
-	if (dxButton)
-		delete dxButton;
-	if (csxButton)
-		delete csxButton;
-	if (cdxButton)
-		delete cdxButton;
-	if (sxButton)
-		delete sxButton;
-	BannerIcon = NULL;
-	BannerText = NULL;
-	SecondaryText = NULL;
-	sxButton = NULL;
-	dxButton = NULL;
-	csxButton = NULL;
-	cdxButton = NULL;
+	delete BannerIcon;
+	delete BannerText;
+	delete SecondaryText;
+	delete dxButton;
+	delete csxButton;
+	delete cdxButton;
+	delete sxButton;
+
 	for (int idx = 0; idx < MAX_NUM_ICON; idx++)
 		Icon[idx] = NULL;
 	for (int idx = 0; idx < MAX_PRESS_ICON; idx++)
 		pressIcon[idx] = NULL;
+
+	delete linked_sx_page;
+	delete linked_dx_page;
 }
 
-void banner::setText(const QString & text)
+void banner::setText(const QString &text)
 {
 	qtesto = text;
-	qtesto.truncate(MAX_PATH*2-1);
 }
 
-void banner::setSecondaryText(const QString & text)
+void banner::setSecondaryText(const QString &text)
 {
 	qtestoSecondario = text;
-	qtestoSecondario.truncate(MAX_TEXT_2-1);
 }
 
 BtButton *banner::customButton()
@@ -114,11 +105,13 @@ QString banner::getPressedIconName(QString iconname)
 	return QFile::exists(pressIconName) ? pressIconName : iconname;
 }
 
-void banner::SetIcons(int id, QString name)
+void banner::SetIcons(int id, QString name, QString pressed_name)
 {
 	assert(id < MAX_PRESS_ICON && id >= 0 && "Index of icon out of range!");
 	Icon[id]      = bt_global::icons_cache.getIcon(name);
-	pressIcon[id] = bt_global::icons_cache.getIcon(getPressedIconName(name));
+	if (pressed_name.isNull())
+		pressed_name = getPressedIconName(name);
+	pressIcon[id] = bt_global::icons_cache.getIcon(pressed_name);
 }
 
 void banner::SetIcons(QString name, int type)
@@ -338,6 +331,11 @@ void banner::nascondi(char item)
 	}
 }
 
+QSize banner::sizeHint() const
+{
+	return QSize(MAX_WIDTH, MAX_HEIGHT / NUM_RIGHE);
+}
+
 void banner::mostra(char item)
 {
 	switch(item)
@@ -485,18 +483,14 @@ void banner::drawAllButRightButton()
 
 	if (BannerText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_banner_BannerText, aFont);
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(aFont);
+		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
 		BannerText->setText(qtesto);
 	}
 	if (SecondaryText)
 	{
-		QFont aFont;
-		FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
 		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(aFont);
+		SecondaryText->setFont(bt_global::font.get(FontManager::TEXT));
 		SecondaryText->setText(qtestoSecondario);
 	}
 }
@@ -586,6 +580,11 @@ QString banner::getAddress()
 
 void banner::inizializza(bool forza)
 {
+	if (linked_sx_page)
+		linked_sx_page->inizializza();
+
+	if (linked_dx_page)
+		linked_dx_page->inizializza();
 }
 
 void  banner::rispStato(char*)
@@ -662,5 +661,36 @@ void banner::setClients(Client *command, Client *request)
 {
 	client_comandi = command;
 	client_richieste = request;
+}
+
+void banner::connectDxButton(Page *page)
+{
+	linked_dx_page = page;
+	if (page)
+	{
+		page->hide();
+		connect(this, SIGNAL(sxClick()), page, SLOT(showPage()));
+		connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+	}
+}
+
+void banner::connectSxButton(Page *page)
+{
+	linked_sx_page = page;
+	if (page)
+	{
+		page->hide();
+		connect(this, SIGNAL(dxClick()), page, SLOT(showPage()));
+		connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+	}
+}
+
+void banner::hideEvent(QHideEvent *event)
+{
+	if (linked_sx_page && !linked_sx_page->isHidden())
+		linked_sx_page->hide();
+
+	if (linked_dx_page && !linked_dx_page->isHidden())
+		linked_dx_page->hide();
 }
 

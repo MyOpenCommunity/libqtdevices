@@ -11,10 +11,8 @@
 #ifndef AMBDIFFSON_H
 #define AMBDIFFSON_H
 
-#include "bannbuticon.h"
-#include "bannbut2icon.h"
+#include "bann1_button.h" // bannBut2Icon, bannPuls
 
-#include <QWidget>
 #include <QString>
 #include <QList>
 
@@ -69,7 +67,7 @@ signals:
  * \author Ciminaghi
  * \date jul 2006
  */
-class insAmbDiffSon : public bannButIcon
+class insAmbDiffSon : public bannPuls
 {
 Q_OBJECT
 public:

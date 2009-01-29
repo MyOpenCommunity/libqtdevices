@@ -2,19 +2,33 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** bann4taslab.h
+** bann4_buttons.h
 **
-**Riga con tasto ON OFF, icona centrale e scritta sotto
+** In this file there are contained all generic banners with 4 buttons.
 **
 ****************************************************************/
 
-#ifndef BANN4TASLAB_H
-#define BANN4TASLAB_H
+#ifndef BANN4_BUTTONS_H
+#define BANN4_BUTTONS_H
 
 #include "banner.h"
 
-#define BUT4TL_DIM 60
-#define ICO4TL_DIM 120
+class QWidget;
+
+
+/*!
+  \class bann4But
+  \brief This is a class that describes a banner with 4 buttons
+  \author Ciminaghi
+  \date June 2006
+*/
+class bann4But : public banner
+{
+Q_OBJECT
+public:
+	bann4But(QWidget *);
+};
+
 
 /*!
 \class bann4tasLab
@@ -23,7 +37,6 @@ In this banner it is possible to have 4 buttons visible and the label hidden or 
 \author Davide
 \date lug 2005
 */
-
 class bann4tasLab : public banner
 {
 Q_OBJECT
@@ -31,5 +44,4 @@ public:
 	bann4tasLab(QWidget * parent=NULL);
 };
 
-
-#endif //BANN4TASLAB_H
+#endif // BANN4_BUTTONS_H

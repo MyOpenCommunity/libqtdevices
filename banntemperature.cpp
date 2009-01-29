@@ -9,29 +9,25 @@
  */
 
 #include "banntemperature.h"
-#include "bannpuls.h"
-#include "fontmanager.h"
+#include "bann1_button.h" // bannPuls
+#include "fontmanager.h" // bt_global::font
 #include "device.h"
 #include "device_status.h"
-#include "main.h"
+#include "main.h" // bt_global::config
 #include "scaleconversion.h"
 
 #include <QLabel>
 #include <QFont>
 
 
-BannTemperature::BannTemperature(QWidget *parent, QDomNode config, device *dev) : banner(parent)
+BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, device *dev) : banner(parent)
 {
-	conf_root = config;
-	probe_descr = conf_root.namedItem("descr").toElement().text();
-	temperature = 1235;
-	temp_scale = readTemperatureScale();
+	probe_descr = descr;
+	temperature = -235;
+	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 
-	QDomNode addr = conf_root.namedItem("where");
-	if (!addr.isNull())
-		setAddress(addr.toElement().text());
-	else
-		qFatal("[TERMO] no where in configuration");
+	if (!where.isNull())
+		setAddress(where);
 
 	descr_label = new QLabel(this);
 	descr_label->setGeometry(BORDER_WIDTH, 0, DESCRIPTION_WIDTH, BANPULS_ICON_DIM_Y);
@@ -64,22 +60,19 @@ void BannTemperature::status_changed(QList<device_status*> sl)
 
 void BannTemperature::Draw()
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	descr_label->setFont(aFont);
+	descr_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	descr_label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	descr_label->setText(probe_descr);
 
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	temp_label->setFont(aFont);
+	temp_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
 	temp_label->setAlignment(Qt::AlignCenter);
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			temp_label->setText(celsiusString(bt2Celsius(temperature)));
+			temp_label->setText(celsiusString(temperature));
 			break;
 		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(bt2Fahrenheit(temperature)));
+			temp_label->setText(fahrenheitString(celsius2Bt(temperature)));
 			break;
 		default:
 			qWarning("BannTemperature: unknown scale");

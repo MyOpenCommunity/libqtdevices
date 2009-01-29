@@ -11,18 +11,34 @@
 #define MAIN_H
 
 #include <QDomNode>
+#include <QHash>
+#include <QString>
 
-QDomNode getPageNode(int id);
-QString getLanguage();
+enum GlobalFields
+{
+	LANGUAGE,
+	TEMPERATURE_SCALE,
+	DATE_FORMAT,
+	MODEL,
+	NAME
+};
 
-// FIXME: next time a global function is needed, create an object that stores global configuration
+namespace bt_global { extern QHash<GlobalFields, QString> config; }
+
 enum TemperatureScale
 {
 	CELSIUS = 0,
 	FAHRENHEIT,
 	NONE,
 };
-TemperatureScale readTemperatureScale();
+
+enum DateFormat
+{
+	EUROPEAN_DATE = 0,
+	USA_DATE
+};
+
+QDomNode getPageNode(int id);
 
 // See getElement
 QDomElement getConfElement(QString path);
@@ -156,7 +172,9 @@ enum pagSecLiv
 	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
 	SUPERVISIONE=14,                              /*!< Supervision system */
-	TERMOREG_MULTI_PLANT=15                       /*!< Thermoregulation system with one or more 4-zones plants */
+	TERMOREG_MULTI_PLANT=15,                      /*!< Thermoregulation system with one or more 4-zones plants */
+	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
+	ENERGY_DATA=17                                /*!< Energy data system */
 };
 
 
@@ -386,7 +404,7 @@ enum  bannerType
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	// keep 69-71 free for energy management devices
-	LANSETTINGS=79,                               /*!< LAN settings and information [DUMMY id] */
+	LANSETTINGS=72,                               /*!< LAN settings and information */
 
 };
 

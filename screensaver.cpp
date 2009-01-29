@@ -2,9 +2,12 @@
 #include "main.h"
 #include "page.h"
 #include "timescript.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
+#include "xml_functions.h"
+#include "titlelabel.h"
 
 #include <QVBoxLayout>
+#include <QDomNode>
 #include <QPainter>
 #include <QBitmap>
 #include <QLabel>
@@ -22,17 +25,22 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 	switch (type)
 	{
 	case ScreenSaver::BALLS:
-		return new ScreenSaverBalls();
+		return new ScreenSaverBalls;
 	case ScreenSaver::LINES:
-		return new ScreenSaverLine();
+		return new ScreenSaverLine;
 	case ScreenSaver::TIME:
-		return new ScreenSaverTime();
+		return new ScreenSaverTime;
+	case ScreenSaver::TEXT:
+		return new ScreenSaverText;
 	case ScreenSaver::NONE:
 		return 0;
 	default:
 		assert(!"Type of screensaver not handled!");
 	}
 }
+
+// Definition of static member
+QString ScreenSaver::text;
 
 
 ScreenSaver::ScreenSaver(int refresh_time)
@@ -60,6 +68,11 @@ bool ScreenSaver::isRunning()
 	return page != 0;
 }
 
+void ScreenSaver::initData(const QDomNode &config_node)
+{
+	text = getTextChild(config_node, "text");
+}
+
 
 ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
 {
@@ -77,7 +90,7 @@ void ScreenSaverBalls::start(Page *p)
 	}
 }
 
-void ScreenSaverBalls::initBall(QLabel* ball, BallData& data)
+void ScreenSaverBalls::initBall(QLabel *ball, BallData &data)
 {
 	data.x = (int)(200.0 * rand() / (RAND_MAX + 1.0));
 	data.y = (int)(200.0 * rand() / (RAND_MAX + 1.0));
@@ -215,12 +228,12 @@ void ScreenSaverLine::refresh()
 
 QString ScreenSaverLine::styleDownToUp()
 {
-	return "QLabel {background-color:#000000;}";
+	return "* {background-color:#000000; color:#FFFFFF; }";
 }
 
 QString ScreenSaverLine::styleUpToDown()
 {
-	return "QLabel {background-color:#FFFFFF;}";
+	return "* {background-color:#FFFFFF; color:#000000; }";
 }
 
 
@@ -231,10 +244,7 @@ void ScreenSaverTime::start(Page *p)
 
 	timeScript *time = new timeScript(line, 1);
 	time->setFrameStyle(QFrame::Plain);
-
-	QFont aFont;
-	FontManager::instance()->getFont(font_banner_SecondaryText, aFont);
-	time->setFont(aFont);
+	time->setFont(bt_global::font.get(FontManager::TEXT));
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setContentsMargins(0, 2, 0, 2);
@@ -242,13 +252,14 @@ void ScreenSaverTime::start(Page *p)
 	line->setLayout(layout);
 }
 
-QString ScreenSaverTime::styleDownToUp()
+
+void ScreenSaverText::start(Page *p)
 {
-	return "* {background-color:#000000; color:#FFFFFF;}";
+	ScreenSaverLine::start(p);
+	line->resize(MAX_WIDTH, 30);
+	line->setFont(bt_global::font.get(FontManager::TEXT));
+	line->setAlignment(Qt::AlignCenter);
+	line->setText(text);
 }
 
-QString ScreenSaverTime::styleUpToDown()
-{
-	return "* {background-color:#FFFFFF; color:#000000; }";
-}
 

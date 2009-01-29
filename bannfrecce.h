@@ -2,7 +2,7 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** bannonoff.h
+** bannFrecce.h
 **
 **Riga con tasto ON OFF, icona centrale e scritta sotto
 **

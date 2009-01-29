@@ -3,7 +3,7 @@
 #include <QStringList>
 
 
-QDomNode getChildWithName(QDomNode parent, QString name)
+QDomNode getChildWithName(const QDomNode &parent, const QString &name)
 {
 	QDomNode n = parent.firstChild();
 	while (!n.isNull())
@@ -16,7 +16,7 @@ QDomNode getChildWithName(QDomNode parent, QString name)
 	return QDomNode();
 }
 
-QDomElement getElement(QDomNode root, QString path)
+QDomElement getElement(const QDomNode &root, const QString &path)
 {
 	QStringList sl = path.split('/');
 	QDomNode node = root;
@@ -30,7 +30,7 @@ QDomElement getElement(QDomNode root, QString path)
 	return node.toElement();
 }
 
-QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id)
+QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int id)
 {
 	QDomNode n = parent.firstChild();
 	while (!n.isNull())
@@ -49,7 +49,7 @@ QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id)
 	return QDomNode();
 }
 
-QList<QDomNode> getChildren(QDomNode parent, QString name)
+QList<QDomNode> getChildren(const QDomNode &parent, const QString &name)
 {
 	QList<QDomNode> l;
 	QDomNode n = parent.firstChild();
@@ -63,7 +63,7 @@ QList<QDomNode> getChildren(QDomNode parent, QString name)
 	return l;
 }
 
-QString getTextChild(QDomNode parent, QString name)
+QString getTextChild(const QDomNode &parent, const QString &name)
 {
 	QDomNode n = getChildWithName(parent, name);
 	if (n.isNull())
