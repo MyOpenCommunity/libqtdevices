@@ -47,14 +47,15 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	status = DAY;
 	selection_date = QDate::currentDate();
 	QHBoxLayout *main_layout = new QHBoxLayout;
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
 	back_period = getTrimmedButton(this, ICON_BACK);
 	back_period->setAutoRepeat(true);
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
 	main_layout->addWidget(back_period);
 
-	//TODO: questo font e' microscopico, va bene lo stesso? senno' il pulsante in vista giornaliera va fuori
 	date_period_label = getLabel(this, selection_date.toString("dd/MM/yy"), FontManager::SMALLTEXT);
-	main_layout->addWidget(date_period_label, 0, Qt::AlignCenter);
+	main_layout->addWidget(date_period_label, 1, Qt::AlignCenter);
 
 	forw_period = getTrimmedButton(this, ICON_FWD);
 	forw_period->setAutoRepeat(true);
