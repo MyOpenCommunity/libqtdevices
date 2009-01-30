@@ -12,7 +12,7 @@ class QLabel;
 class BtButton;
 // TODO: this must be changed once the correct banner is ready
 class banner;
-class bannFrecce;
+
 
 class TimePeriodSelection : public QWidget
 {
@@ -82,7 +82,7 @@ class EnergyView : public Page
 {
 Q_OBJECT
 public:
-	EnergyView();
+	EnergyView(QString energy_type);
 
 public slots:
 	void toggleCurrency();
@@ -92,10 +92,11 @@ private:
 	void setDayPeriod();
 	void setMonthPeriod();
 	void setYearPeriod();
+	QWidget *buildBannerWidget();
+
 	// TODO: this must be changed once the correct banner is ready
 	banner *cumulative_banner, *current_banner, *daily_av_banner;
 	TimePeriodSelection *time_period;
-	bannFrecce *nav_bar;
 
 signals:
 	//TODO: this will have to indicate the period of time for which we want

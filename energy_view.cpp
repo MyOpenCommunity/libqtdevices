@@ -12,6 +12,7 @@
 #include <QPen>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QStackedWidget>
 
 #define ICON_FWD IMG_PATH "btnforward.png"
 #define ICON_BACK IMG_PATH "btnbackward.png"
@@ -293,32 +294,46 @@ banner *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView()
+EnergyView::EnergyView(QString energy_type)
 {
-	nav_bar = new bannFrecce(this, 10, ICON_CURRENCY);
-	nav_bar->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH ,MAX_HEIGHT/NUM_RIGHE);
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-
 	main_layout->setAlignment(Qt::AlignTop);
 
 	// title section
-	const QString name = "Electricity";
-	main_layout->addWidget(getLabel(this, name, FontManager::TEXT), 0, Qt::AlignCenter);
+	main_layout->addWidget(getLabel(this, energy_type, FontManager::TEXT), 0, Qt::AlignCenter);
 
 	time_period = new TimePeriodSelection(this);
 	main_layout->addWidget(time_period);
 
-	// energy data section
+	QStackedWidget *stacked_widget = new QStackedWidget;
+	stacked_widget->addWidget(buildBannerWidget());
+	main_layout->addWidget(stacked_widget, 1);
+
+	bannFrecce *nav_bar = new bannFrecce(this, 10, ICON_CURRENCY);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	main_layout->addWidget(nav_bar);
+}
+
+QWidget *EnergyView::buildBannerWidget()
+{
+	QWidget *w = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout;
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+	w->setLayout(main_layout);
+
 	cumulative_banner = getBanner(this, "Cumulative");
 	main_layout->addWidget(cumulative_banner);
 	connect(cumulative_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
+
 	current_banner = getBanner(this, "Current");
 	current_banner->nascondi(banner::BUT1);
 	main_layout->addWidget(current_banner);
+
 	daily_av_banner = getBanner(this, "Daily Average");
 	connect(daily_av_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
 	daily_av_banner->hide();
 	main_layout->addWidget(daily_av_banner);
+	return w;
 }
 
 void EnergyView::changeTimePeriod(int status)
