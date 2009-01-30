@@ -294,7 +294,6 @@ banner *getBanner(QWidget *parent, QString primary_text)
 
 EnergyView::EnergyView()
 {
-	QVBoxLayout *main_layout = new QVBoxLayout;
 	nav_bar = new bannFrecce(this, 10, ICON_CURRENCY);
 	nav_bar->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH ,MAX_HEIGHT/NUM_RIGHE);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -319,7 +318,6 @@ EnergyView::EnergyView()
 	connect(daily_av_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
 	daily_av_banner->hide();
 	main_layout->addWidget(daily_av_banner);
-	setLayout(main_layout);
 }
 
 void EnergyView::changeTimePeriod(int status)
