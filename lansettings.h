@@ -1,3 +1,15 @@
+/**
+ * \file
+ * <!--
+ * Copyright 2009 Develer S.r.l. (http://www.develer.com/)
+ * All rights reserved.
+ * -->
+ *
+ * \brief This file contain the page to show and control network settings.
+ *
+ * \author Gianni Valdambrini <aleister@develer.com>
+ */
+
 #ifndef LAN_SETTINGS_H
 #define LAN_SETTINGS_H
 
@@ -13,6 +25,12 @@ class QDomNode;
 class QLabel;
 
 
+/**
+ * \class LanSettings
+ *
+ * This class is a page used to show lan settings and enable activation
+ * (disactivation) of lan interface.
+ */
 class LanSettings : public Page
 {
 Q_OBJECT

@@ -21,7 +21,13 @@
 
 class QDomNode;
 
-
+/**
+ * \class PageContainer
+ *
+ * A container for other pages. Show a list of buttons, each of them is automatically
+ * connected (in addPage method) with the correspondent page through the slot
+ * 'showPage' and signal 'Closed'.
+ */
 class PageContainer : public Page
 {
 Q_OBJECT
