@@ -31,6 +31,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	activate_btn = new BtButton;
 	activate_btn->setImage(ACTIVATE_ICON);
 	main_layout->addWidget(activate_btn, 0, Qt::AlignHCenter);
+	addBackButton();
 
 	LanDevice *d = new LanDevice;
 	// TODO: verificare le altre parti del codice dove viene usata la add_device
