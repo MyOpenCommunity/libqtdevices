@@ -3,6 +3,7 @@
 #include "main.h" // bt_global::config, IMG_PATH
 #include "landevice.h"
 #include "devices_cache.h" // bt_global::devices_cache
+#include "fontmanager.h" // bt_global::font
 
 #include <QLabel>
 #include <QDebug>
@@ -24,6 +25,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text = new QLabel;
 	box_text->setStyleSheet("background-color:#f0f0f0; color:#000000;");
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	box_text->setFont(bt_global::font.get(FontManager::SMALLTEXT));
 
 	text << bt_global::config[MODEL] << "";
 	text << bt_global::config[NAME]  << "Mac address" << "IP" << "Subnet Mask" << "Gateway" << "DNS";
