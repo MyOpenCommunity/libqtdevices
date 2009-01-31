@@ -8,7 +8,6 @@
  **
  ****************************************************************/
 
-#include "main.h"
 #include "btmain.h" // bt_global::btmain
 #include "xml_functions.h"
 #include "generic_functions.h"
@@ -41,20 +40,6 @@ QHash<GlobalFields, QString> bt_global::config;
 
 // Instance DOM global object to handle configuration.
 QDomDocument qdom_appconfig;
-
-// A global pointer to the log file
-FILE *StdLog = stdout;
-
-// The global verbosity_level, used by BTouch and libcommon (MySignal)
-int VERBOSITY_LEVEL;
-
-// Only for the linking with libcommon
-char *My_Parser = const_cast<char*>(MY_PARSER_DEFAULT);
-char *Suffisso = const_cast<char*>("<BTo>");
-int use_ssl = false;
-char *ssl_cert_key_path = NULL;
-char *ssl_certificate_path = NULL;
-
 
 QDomElement getConfElement(QString path)
 {

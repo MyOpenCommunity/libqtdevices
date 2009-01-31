@@ -155,6 +155,7 @@ SOURCES += actuators.cpp \
            cleanscreen.cpp \
            contrast.cpp \
            datetime.cpp \
+           definitions.cpp \
            device.cpp \
            device_status.cpp \
            devices_cache.cpp \
