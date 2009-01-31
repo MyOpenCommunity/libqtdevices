@@ -6,8 +6,10 @@
 #include "device_status.h"
 
 #include <QDateTime>
+#include <QVariant>
 #include <QString>
 #include <QObject>
+#include <QHash>
 #include <QList>
 
 class frame_interpreter;
@@ -44,8 +46,18 @@ public:
 	static void setClients(Client *command, Client *request, Client *monitor);
 
 signals:
-	//! Status changed
+	/// Old Status changed
 	void status_changed(QList<device_status*>);
+
+	/// The status changed signal, used to inform that a dimension of device
+	/// has changed. For some devices, more than one dimension can be changes
+	/// at same time, so the int is used as an enum to recognize the dimensions.
+	/// Note that using an int is a design choice. In this way the signal is
+	/// generic (so the connections can be made in a generic way) and the enum
+	/// can be specific for a device, avoiding the coupling between abstract
+	/// and concrete device class.
+	void status_changed(QHash<int, QVariant> status_list);
+
 	//! Invoked after successful initialization
 	void initialized(device_status *);
 	//! We want a frame to be handled
@@ -381,6 +393,7 @@ private:
 	stat_var status;
 
 signals:
+	// TODO: rimpiazzare questo segnale con lo status_changed(QHash<>)..
 	void status_changed(stat_var);
 };
 

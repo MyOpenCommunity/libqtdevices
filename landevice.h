@@ -59,17 +59,6 @@ public slots:
 
 private:
 	void sendRequest(int what) const;
-
-signals:
-	// TODO: spostare questo segnale status_changed nella classe device!
-	// L'argomento deve rimanere un generico intero piuttosto che un enum in
-	// modo da lasciare l'interpretazione del valore alla reale classe device
-	// istanziata (visto che l'oggetto grafico conosce la specializzazione del
-	// device utilizzata e di conseguenza puo' usare un suo enum per interpretare
-	// i valori interi chiave dell'hash, evitando in questo modo dipendenze).
-
-	// The key of hash represent a value in the enum 'Type'
-	void status_changed(QHash<int, QVariant> status_list);
 };
 
 #endif // LANDEVICE_H
