@@ -78,16 +78,13 @@ void LanDevice::frame_rx_handler(char *frame)
 		what == DIM_STATUS)
 	{
 		qDebug("LanDevice::frame_rx_handler -> frame read:%s", frame);
+
 		switch (what)
 		{
-		case DIM_IP:
+		case DIM_STATUS:
 		{
-			assert(what_args == 4); // IPv4 is composed by 4 parts
-			QStringList parts;
-			for (int i = 0; i < what_args; ++i)
-				parts << QString::number(msg.whatArgN(i));
-			qDebug() << "Indirizzo ip" << parts.join(".");
-			v.setValue(parts.join("."));
+			bool st = msg.whatArgN(0) == 1;
+			v.setValue(st);
 			break;
 		}
 		case DIM_MACADDR:
@@ -95,17 +92,15 @@ void LanDevice::frame_rx_handler(char *frame)
 			QStringList parts;
 			for (int i = 0; i < what_args; ++i)
 				parts << QString::number(msg.whatArgN(i));
-			qDebug() << "Mac address" << parts.join(".");
-			v.setValue(parts.join("."));
+			v.setValue(parts.join(":"));
 			break;
 		}
-		case DIM_NETMASK:
+		default:
 		{
-			assert(what_args == 4); // IPv4 netmask is composed by 4 parts
+			assert(what_args == 4); // IPv4 ip are composed by 4 parts
 			QStringList parts;
 			for (int i = 0; i < what_args; ++i)
 				parts << QString::number(msg.whatArgN(i));
-			qDebug() << "Netmask" << parts.join(".");
 			v.setValue(parts.join("."));
 			break;
 		}
