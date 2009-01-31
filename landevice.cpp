@@ -7,14 +7,6 @@
 
 #include <assert.h>
 
-#define DIM_STATUS 9
-#define DIM_IP 10
-#define DIM_NETMASK 11
-#define DIM_MACADDR 12
-#define DIM_GATEWAY 50
-#define DIM_DNS1 51
-#define DIM_DNS2 52
-
 
 LanDevice::LanDevice() : device(QString("13"), QString(""))
 {
@@ -76,6 +68,10 @@ void LanDevice::frame_rx_handler(char *frame)
 		return;
 
 	int what = msg.what();
+	int what_args = msg.whatArgCnt();
+
+	QHash<int, QVariant> status_list;
+	QVariant v;
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||
 		what == DIM_GATEWAY || what == DIM_DNS1 || what == DIM_DNS2 ||
@@ -86,30 +82,36 @@ void LanDevice::frame_rx_handler(char *frame)
 		{
 		case DIM_IP:
 		{
-			assert(msg.whatArgCnt() == 4); // IPv4 is composed by 4 parts
+			assert(what_args == 4); // IPv4 is composed by 4 parts
 			QStringList parts;
-			for (int i = 0; i < 4; ++i)
+			for (int i = 0; i < what_args; ++i)
 				parts << QString::number(msg.whatArgN(i));
 			qDebug() << "Indirizzo ip" << parts.join(".");
+			v.setValue(parts.join("."));
 			break;
 		}
 		case DIM_MACADDR:
 		{
 			QStringList parts;
-			for (int i = 0; i < static_cast<int>(msg.whatArgCnt()); ++i)
+			for (int i = 0; i < what_args; ++i)
 				parts << QString::number(msg.whatArgN(i));
 			qDebug() << "Mac address" << parts.join(".");
+			v.setValue(parts.join("."));
 			break;
 		}
 		case DIM_NETMASK:
 		{
-			assert(msg.whatArgCnt() == 4); // IPv4 netmask is composed by 4 parts
+			assert(what_args == 4); // IPv4 netmask is composed by 4 parts
 			QStringList parts;
-			for (int i = 0; i < 4; ++i)
+			for (int i = 0; i < what_args; ++i)
 				parts << QString::number(msg.whatArgN(i));
 			qDebug() << "Netmask" << parts.join(".");
+			v.setValue(parts.join("."));
 			break;
 		}
 		}
+
+		status_list[what] = v;
+		emit status_changed(status_list);
 	}
 }
