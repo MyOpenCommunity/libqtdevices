@@ -32,7 +32,12 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	activate_btn->setImage(ACTIVATE_ICON);
 	main_layout->addWidget(activate_btn, 0, Qt::AlignHCenter);
 
-	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(new LanDevice));
+	LanDevice *d = new LanDevice;
+	// TODO: verificare le altre parti del codice dove viene usata la add_device
+	// se questa puo' portare a memory leak!
+	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(d));
+	if (dev != d)
+		delete d;
 }
 
 void LanSettings::inizializza()
