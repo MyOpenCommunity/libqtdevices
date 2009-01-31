@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QStringList>
 
+#include <assert.h>
+
 #define DIM_STATUS 9
 #define DIM_IP 10
 #define DIM_NETMASK 11
