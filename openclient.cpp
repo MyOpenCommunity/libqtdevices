@@ -40,7 +40,6 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 void Client::socketConnected()
 {
 	qDebug("Client::socketConnected()");
-	qDebug("Connected to server");
 	if (type == MONITOR)
 	{
 		qDebug("TRY TO START monitor session");
@@ -53,11 +52,8 @@ void Client::socketConnected()
 		qDebug("TRY TO START command");
 }
 
-// TODO: rendere frame una QString!
 void Client::ApriInviaFrameChiudi(const char* frame)
 {
-	qDebug("Client::ApriInviaFrameChiudi()");
-
 	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
 	{
 		last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
@@ -70,10 +66,10 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 				socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
 		}
 		socket->write(frame);
-		qDebug("invio: %s",frame);
+		qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame);
 	}
 	else
-		qDebug("Frame Open <%s> already send", frame);
+		qDebug("Client::ApriInviaFrameChiudi() Frame Open <%s> already send", frame);
 
 	// TODO: questa funzione dovra' gestire anche i Nak e ack (e la sua versione "w"
 	// dovra' sparire), attendendo che arrivi o un ack o un nack con un ciclo tipo:
