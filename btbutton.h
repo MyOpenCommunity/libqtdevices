@@ -26,6 +26,13 @@ public:
 
 	void setPressedPixmap(const QPixmap &p);
 	void setPixmap(const QPixmap &p);
+	// Set the button as a 'on-off button'. This means that the button is almost
+	// a toggle button, but instead of changes status when the button is pressed
+	// down, changes its status manually, calling the 'setStatus' method.
+	void setOnOff();
+
+public slots:
+	void setStatus(bool on);
 
 protected:
 	virtual void mousePressEvent(QMouseEvent *event);
@@ -35,12 +42,14 @@ protected:
 	virtual QSize sizeHint() const;
 
 private:
-	/// The pixmap to show when the button is down
+	/// The pixmap to show when the button is down, cheched or on.
 	QPixmap pressed_pixmap;
 	/// The pixmap to show when the button is in normal state
 	QPixmap pixmap;
-private slots:
-	void toggled(bool checked);
+
+	bool is_on_off; // a flag that mark if the button is a on-off button
+
+	bool isToggle();
 };
 
 #endif // BTBUTTON_H

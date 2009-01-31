@@ -10,7 +10,8 @@ BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
 	setStyleSheet("border:0px;");
 	setFocusPolicy(Qt::NoFocus);
-	connect(this, SIGNAL(toggled(bool)), SLOT(toggled(bool)));
+	is_on_off = false;
+	connect(this, SIGNAL(toggled(bool)), SLOT(setStatus(bool)));
 }
 
 QSize BtButton::sizeHint() const
@@ -18,6 +19,16 @@ QSize BtButton::sizeHint() const
 	if (!pixmap.isNull())
 		return pixmap.size();
 	return QSize();
+}
+
+void BtButton::setOnOff()
+{
+	is_on_off = true;
+}
+
+bool BtButton::isToggle()
+{
+	return isCheckable() || is_on_off;
 }
 
 void BtButton::setImage(const QString &icon_path, IconFlag f)
@@ -58,7 +69,7 @@ void BtButton::mousePressEvent(QMouseEvent *event)
 {
 	// Toggle buttons are managed by toggled slot, that is always called when
 	// the button changes its state.
-	if (!isCheckable() && !pressed_pixmap.isNull())
+	if (!isToggle() && !pressed_pixmap.isNull())
 		setIcon(pressed_pixmap);
 
 	beep();
@@ -68,17 +79,17 @@ void BtButton::mousePressEvent(QMouseEvent *event)
 void BtButton::mouseReleaseEvent(QMouseEvent *event)
 {
 	// Manages only normal buttons. Toggle buttons are managed by toggled slot.
-	if (!isCheckable() && !pressed_pixmap.isNull())
+	if (!isToggle() && !pressed_pixmap.isNull())
 		setIcon(pixmap);
 
 	QPushButton::mouseReleaseEvent(event);
 }
 
-void BtButton::toggled(bool checked)
+void BtButton::setStatus(bool on)
 {
 	// If the pressed_pixmap doesn't exists, there is nothing to do (because the
 	// pixmap is already the normal one)
 	if (!pressed_pixmap.isNull())
-		setIcon(!checked ? pixmap : pressed_pixmap);
+		setIcon(!on ? pixmap : pressed_pixmap);
 }
 
