@@ -77,11 +77,12 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node) :
 
 void EnergyInterface::loadItems(const QDomNode &config_node)
 {
+	QString energy_type = getTextChild(config_node, "descr");
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bannPuls *b = new bannPuls(this);
 		b->SetIcons(IMG_SELECT, QString(), IMG_PRESET);
-		b->connectDxButton(new EnergyView);
+		b->connectDxButton(new EnergyView(energy_type));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		// TODO: is address same as 'where'?
