@@ -9,14 +9,14 @@
 #include <QDomNode>
 #include <QBoxLayout>
 
-static const char *ACTIVATE_ICON = IMG_PATH "btnplus.png";
+static const char *TOGGLE_ICON_ON = IMG_PATH "beepon.png";
+static const char *TOGGLE_ICON_OFF = IMG_PATH "beepoff.png";
 
 #define MACADDR_ROW 3
 #define IP_ROW 4
 #define NETMASK_ROW 5
 #define GATEWAY_ROW 6
-#define DNS1_ROW 7
-
+#define DNS_ROW 7
 
 
 LanSettings::LanSettings(const QDomNode &config_node)
@@ -34,9 +34,14 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	label_layout->addWidget(box_text);
 	main_layout->addLayout(label_layout);
 
-	activate_btn = new BtButton;
-	activate_btn->setImage(ACTIVATE_ICON);
-	main_layout->addWidget(activate_btn, 0, Qt::AlignHCenter);
+	toggle_btn = new BtButton;
+	toggle_btn->setOnOff();
+	toggle_btn->setImage(TOGGLE_ICON_OFF, BtButton::NO_FLAG);
+	toggle_btn->setPressedImage(TOGGLE_ICON_ON);
+	lan_status = false; // This value must be keep in sync with the icon of toggle_btn.
+	connect(toggle_btn, SIGNAL(clicked()), SLOT(toggleLan()));
+	main_layout->addWidget(toggle_btn, 0, Qt::AlignHCenter);
+
 	addBackButton();
 
 	LanDevice *d = new LanDevice;
@@ -61,12 +66,19 @@ void LanSettings::inizializza()
 	dev->requestDNS2();
 }
 
+void LanSettings::toggleLan()
+{
+	dev->enableLan(!lan_status);
+}
+
 void LanSettings::status_changed(QHash<int, QVariant> status_list)
 {
 	QHash<int, int> dim_to_row;
 	dim_to_row[LanDevice::DIM_IP] = IP_ROW;
 	dim_to_row[LanDevice::DIM_NETMASK] = NETMASK_ROW;
 	dim_to_row[LanDevice::DIM_MACADDR] = MACADDR_ROW;
+	dim_to_row[LanDevice::DIM_GATEWAY] = GATEWAY_ROW;
+	dim_to_row[LanDevice::DIM_DNS1] = DNS_ROW;
 
 	bool update_text = false;
 	QHashIterator<int, QVariant> it(status_list);
@@ -77,6 +89,11 @@ void LanSettings::status_changed(QHash<int, QVariant> status_list)
 		{
 			text[dim_to_row[it.key()]] = it.value().toString();
 			update_text = true;
+		}
+		else if (it.key() == LanDevice::DIM_STATUS)
+		{
+			lan_status = it.value().toBool();
+			toggle_btn->setStatus(lan_status);
 		}
 	}
 

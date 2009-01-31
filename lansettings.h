@@ -39,13 +39,15 @@ public:
 	virtual void inizializza();
 
 private:
-	BtButton *back_btn, *activate_btn;
+	BtButton *toggle_btn;
 	QLabel *box_text;
 	LanDevice *dev;
 	QStringList text;
+	bool lan_status;
 
 private slots:
 	void status_changed(QHash<int, QVariant> status_list);
+	void toggleLan();
 };
 
 #endif // LAN_SETTINGS_H
