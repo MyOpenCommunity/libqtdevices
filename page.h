@@ -38,8 +38,8 @@ public:
 
 	// A global way to send frames/init requests. Do not use these directly, prefer using
 	// devices specific methods, unless you have to send frames without reading responses.
-	void sendFrame(QString frame);
-	void sendInit(QString frame);
+	void sendFrame(QString frame) const;
+	void sendInit(QString frame) const;
 
 	/// Add the back buttons at the bottom of Page, using the layout. The buttons
 	/// is connected with signal Closed.

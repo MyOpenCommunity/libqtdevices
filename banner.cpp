@@ -643,14 +643,14 @@ QString banner::getNameRoot(QString full_string, QString text_to_strip)
 	return full_string.mid(0, full_string.lastIndexOf('.'));
 }
 
-void banner::sendFrame(QString frame)
+void banner::sendFrame(QString frame) const
 {
 	assert(client_comandi && "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
-void banner::sendInit(QString frame)
+void banner::sendInit(QString frame) const
 {
 	assert(client_richieste && "Client richieste not set!");
 	QByteArray buf = frame.toAscii();

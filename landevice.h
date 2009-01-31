@@ -35,13 +35,13 @@ public:
 	void enableLan(bool enable);
 
 	// The request methods, used to request an information
-	void requestStatus();
-	void requestIp();
-	void requestNetmask();
-	void requestMacAddress();
-	void requestGateway();
-	void requestDNS1();
-	void requestDNS2();
+	void requestStatus() const;
+	void requestIp() const;
+	void requestNetmask() const;
+	void requestMacAddress() const;
+	void requestGateway() const;
+	void requestDNS1() const;
+	void requestDNS2() const;
 
 	enum Type
 	{
@@ -58,7 +58,7 @@ public slots:
 	virtual void frame_rx_handler(char *);
 
 private:
-	void sendRequest(int what);
+	void sendRequest(int what) const;
 
 signals:
 	// TODO: spostare questo segnale status_changed nella classe device!

@@ -38,8 +38,8 @@ public:
 	QString get_key(void);
 	virtual ~device();
 
-	void sendFrame(QString frame);
-	void sendInit(QString frame);
+	void sendFrame(QString frame) const;
+	void sendInit(QString frame) const;
 
 	static void setClients(Client *command, Client *request, Client *monitor);
 

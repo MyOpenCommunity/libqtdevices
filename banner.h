@@ -329,8 +329,8 @@ protected:
 
 	// A global way to send frames/init requests. Do not use these directly, prefer using
 	// devices specific methods, unless you have to send frames without reading responses.
-	void sendFrame(QString frame);
-	void sendInit(QString frame);
+	void sendFrame(QString frame) const;
+	void sendInit(QString frame) const;
 
 	virtual void hideEvent(QHideEvent *event);
 	// The sizeHint method is required to have a layout management that work fine.

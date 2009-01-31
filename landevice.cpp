@@ -19,42 +19,42 @@ void LanDevice::enableLan(bool enable)
 	sendFrame(QString("*#%1**#%2*%3##").arg(who).arg(what).arg(val));
 }
 
-void LanDevice::sendRequest(int what)
+void LanDevice::sendRequest(int what) const
 {
 	sendInit(QString("*#%1**%2##").arg(who).arg(what));
 }
 
-void LanDevice::requestStatus()
+void LanDevice::requestStatus() const
 {
 	sendRequest(DIM_STATUS);
 }
 
-void LanDevice::requestIp()
+void LanDevice::requestIp() const
 {
 	sendRequest(DIM_IP);
 }
 
-void LanDevice::requestNetmask()
+void LanDevice::requestNetmask() const
 {
 	sendRequest(DIM_NETMASK);
 }
 
-void LanDevice::requestMacAddress()
+void LanDevice::requestMacAddress() const
 {
 	sendRequest(DIM_MACADDR);
 }
 
-void LanDevice::requestGateway()
+void LanDevice::requestGateway() const
 {
 	sendRequest(DIM_GATEWAY);
 }
 
-void LanDevice::requestDNS1()
+void LanDevice::requestDNS1() const
 {
 	sendRequest(DIM_DNS1);
 }
 
-void LanDevice::requestDNS2()
+void LanDevice::requestDNS2() const
 {
 	sendRequest(DIM_DNS2);
 }

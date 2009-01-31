@@ -28,14 +28,14 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 	connect(client_monitor, SIGNAL(frameIn(char *)), SLOT(frame_rx_handler(char *)));
 }
 
-void device::sendFrame(QString frame)
+void device::sendFrame(QString frame) const
 {
 	assert(client_comandi && "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
-void device::sendInit(QString frame)
+void device::sendInit(QString frame) const
 {
 	assert(client_richieste && "Client richieste not set!");
 	QByteArray buf = frame.toAscii();

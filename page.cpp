@@ -33,14 +33,14 @@ void Page::showPage()
 	setFixedSize(MAX_WIDTH, MAX_HEIGHT);
 }
 
-void Page::sendFrame(QString frame)
+void Page::sendFrame(QString frame) const
 {
 	assert(client_comandi && "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
-void Page::sendInit(QString frame)
+void Page::sendInit(QString frame) const
 {
 	assert(client_richieste && "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
