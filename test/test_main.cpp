@@ -10,14 +10,43 @@
 Q_DECLARE_METATYPE(StatusList)
 
 
-void getDimFromSignal(const QSignalSpy &spy, int dim_type, QVariant &dim)
+void getDimFromSignal(const QSignalSpy &spy, int dim_type, QVariant &res)
 {
 	QCOMPARE(spy.count(), 1);
 	QVariant signal_arg = spy.at(0).at(0); // get the first argument from first signal
 	QVERIFY(signal_arg.canConvert<StatusList>());
 	StatusList sl = signal_arg.value<StatusList>();
 	QVERIFY(sl.contains(dim_type));
-	dim = sl[dim_type];
+	res = sl[dim_type];
+}
+
+
+class TestDevice
+{
+public:
+	TestDevice(device *d, int dim);
+	void check(QString frame, const QVariant &v);
+
+private:
+	QSignalSpy spy;
+	int dim_type;
+	device *dev;
+};
+
+
+TestDevice::TestDevice(device *d, int type) : spy(d, SIGNAL(status_changed(StatusList)))
+{
+	dim_type = type;
+	dev = d;
+}
+
+void TestDevice::check(QString frame, const QVariant& v)
+{
+	QVariant res;
+	spy.clear();
+	dev->frame_rx_handler(frame.toAscii().data());
+	getDimFromSignal(spy, dim_type, res);
+	QVERIFY(res == v);
 }
 
 
@@ -53,48 +82,27 @@ void TestLanDevice::cleanupTestCase()
 
 void TestLanDevice::readStatus()
 {
-	QSignalSpy spy(dev, SIGNAL(status_changed(StatusList)));
-	QVariant dim;
-
-	dev->frame_rx_handler(const_cast<char*>("*#13**9*0##"));
-	getDimFromSignal(spy, LanDevice::DIM_STATUS, dim);
-	QVERIFY(dim.toBool() == false);
-
-	spy.clear();
-
-	dev->frame_rx_handler(const_cast<char*>("*#13**9*1##"));
-	getDimFromSignal(spy, LanDevice::DIM_STATUS, dim);
-	QVERIFY(dim.toBool() == true);
+	TestDevice t(dev, LanDevice::DIM_STATUS);
+	t.check("*#13**9*0##", false);
+	t.check("*#13**9*1##", true);
 }
 
 void TestLanDevice::readIp()
 {
-	QSignalSpy spy(dev, SIGNAL(status_changed(StatusList)));
-	QVariant dim;
-
-	dev->frame_rx_handler(const_cast<char*>("*#13**10*10*3*3*81##"));
-	getDimFromSignal(spy, LanDevice::DIM_IP, dim);
-	QVERIFY(dim.toString() == "10.3.3.81");
+	TestDevice t(dev, LanDevice::DIM_IP);
+	t.check("*#13**10*10*3*3*81##", "10.3.3.81");
 }
 
 void TestLanDevice::readNetmask()
 {
-	QSignalSpy spy(dev, SIGNAL(status_changed(StatusList)));
-	QVariant dim;
-
-	dev->frame_rx_handler(const_cast<char*>("*#13**11*255*255*255*0##"));
-	getDimFromSignal(spy, LanDevice::DIM_NETMASK, dim);
-	QVERIFY(dim.toString() == "255.255.255.0");
+	TestDevice t(dev, LanDevice::DIM_NETMASK);
+	t.check("*#13**11*255*255*255*0##", "255.255.255.0");
 }
 
 void TestLanDevice::readMacAddress()
 {
-	QSignalSpy spy(dev, SIGNAL(status_changed(StatusList)));
-	QVariant dim;
-
-	dev->frame_rx_handler(const_cast<char*>("*#13**12*0*3*80*0*34*45##"));
-	getDimFromSignal(spy, LanDevice::DIM_MACADDR, dim);
-	QVERIFY(dim.toString() == "0:3:80:0:34:45");
+	TestDevice t(dev, LanDevice::DIM_MACADDR);
+	t.check("*#13**12*0*3*80*0*34*45##", "0:3:80:0:34:45");
 }
 
 
