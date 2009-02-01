@@ -61,6 +61,9 @@ private slots:
 	void readIp();
 	void readNetmask();
 	void readMacAddress();
+	void readGateway();
+	void readDns1();
+	void readDns2();
 
 private:
 	LanDevice *dev;
@@ -105,6 +108,23 @@ void TestLanDevice::readMacAddress()
 	t.check("*#13**12*0*3*80*0*34*45##", "0:3:80:0:34:45");
 }
 
+void TestLanDevice::readGateway()
+{
+	TestDevice t(dev, LanDevice::DIM_GATEWAY);
+	t.check("*#13**50*27*238*64*1##", "27.238.64.1");
+}
+
+void TestLanDevice::readDns1()
+{
+	TestDevice t(dev, LanDevice::DIM_DNS1);
+	t.check("*#13**51*208*67*222*222##", "208.67.222.222");
+}
+
+void TestLanDevice::readDns2()
+{
+	TestDevice t(dev, LanDevice::DIM_DNS2);
+	t.check("*#13**52*208*67*220*220*##", "208.67.220.220");
+}
 
 QTEST_MAIN(TestLanDevice)
 #include "test_main.moc"
