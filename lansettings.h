@@ -24,6 +24,8 @@ class BtButton;
 class QDomNode;
 class QLabel;
 
+// TODO: capire come evitare questa doppia typedef!!
+typedef QHash<int, QVariant> StatusList;
 
 /**
  * \class LanSettings
@@ -46,7 +48,7 @@ private:
 	bool lan_status;
 
 private slots:
-	void status_changed(QHash<int, QVariant> status_list);
+	void status_changed(StatusList status_list);
 	void toggleLan();
 };
 

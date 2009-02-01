@@ -16,6 +16,8 @@ class frame_interpreter;
 class Client;
 class BtTime;
 
+typedef QHash<int, QVariant> StatusList;
+
 //! Generic device
 class device : public QObject
 {
@@ -56,7 +58,7 @@ signals:
 	/// generic (so the connections can be made in a generic way) and the enum
 	/// can be specific for a device, avoiding the coupling between abstract
 	/// and concrete device class.
-	void status_changed(QHash<int, QVariant> status_list);
+	void status_changed(StatusList status_list);
 
 	//! Invoked after successful initialization
 	void initialized(device_status *);

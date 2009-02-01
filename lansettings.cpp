@@ -50,8 +50,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	// TODO: verificare le altre parti del codice dove viene usata la add_device
 	// se questa puo' portare a memory leak!
 	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(d));
-	connect(dev, SIGNAL(status_changed(QHash<int, QVariant>)),
-			SLOT(status_changed(QHash<int, QVariant>)));
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 	if (dev != d)
 		delete d;
 }
@@ -73,7 +72,7 @@ void LanSettings::toggleLan()
 	dev->enableLan(!lan_status);
 }
 
-void LanSettings::status_changed(QHash<int, QVariant> status_list)
+void LanSettings::status_changed(StatusList status_list)
 {
 	QHash<int, int> dim_to_row;
 	dim_to_row[LanDevice::DIM_IP] = IP_ROW;
@@ -83,10 +82,9 @@ void LanSettings::status_changed(QHash<int, QVariant> status_list)
 	dim_to_row[LanDevice::DIM_DNS1] = DNS_ROW;
 
 	bool update_text = false;
-	QHashIterator<int, QVariant> it(status_list);
-	while (it.hasNext())
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
 	{
-		it.next();
 		if (dim_to_row.contains(it.key()))
 		{
 			text[dim_to_row[it.key()]] = it.value().toString();
@@ -97,6 +95,7 @@ void LanSettings::status_changed(QHash<int, QVariant> status_list)
 			lan_status = it.value().toBool();
 			toggle_btn->setStatus(lan_status);
 		}
+		++it;
 	}
 
 	if (update_text)
