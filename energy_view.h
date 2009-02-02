@@ -12,6 +12,7 @@ class QLabel;
 class BtButton;
 // TODO: this must be changed once the correct banner is ready
 class banner;
+class QStackedWidget;
 
 
 class TimePeriodSelection : public QWidget
@@ -51,33 +52,6 @@ signals:
 };
 
 
-class GraphWidget : public QWidget
-{
-Q_OBJECT
-public:
-	GraphWidget(QWidget *parent);
-	void clearData();
-	void setColors(QColor first, QColor second = QColor());
-
-public slots:
-	// assume that all values are positive
-	void setGraphData(QVector<int> data);
-	void setNumberOfBars(int num);
-
-protected:
-	void paintEvent(QPaintEvent *e);
-	void showEvent(QShowEvent *e);
-
-private:
-	int findMax();
-	void generateRandomValues();
-	unsigned number_of_bars;
-	QVector<int> graph_data;
-	int max_value;
-	QColor primary_color, secondary_color;
-};
-
-
 class EnergyView : public Page
 {
 Q_OBJECT
@@ -87,17 +61,23 @@ public:
 private:
 	QWidget *buildBannerWidget();
 
+	enum Widget
+	{
+		BANNER_WIDGET = 0,
+		GRAPH_WIDGET = 1
+	};
+
 	// TODO: this must be changed once the correct banner is ready
 	banner *cumulative_banner, *current_banner, *daily_av_banner;
 	TimePeriodSelection *time_period;
+	QStackedWidget *widget_container;
+	Widget current_widget;
 
 private slots:
 	void toggleCurrency();
 	void changeTimePeriod(int);
-
-signals:
-	//TODO: this will have to indicate the period of time for which we want
-	//to visualize the graph
-	void showGraph();
+	void showGraphWidget();
+	void showBannerWidget();
+	void backClick();
 };
 #endif // ENERGY_VIEW_H
