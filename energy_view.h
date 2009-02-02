@@ -84,19 +84,16 @@ Q_OBJECT
 public:
 	EnergyView(QString energy_type);
 
-public slots:
-	void toggleCurrency();
-	void changeTimePeriod(int);
-
 private:
-	void setDayPeriod();
-	void setMonthPeriod();
-	void setYearPeriod();
 	QWidget *buildBannerWidget();
 
 	// TODO: this must be changed once the correct banner is ready
 	banner *cumulative_banner, *current_banner, *daily_av_banner;
 	TimePeriodSelection *time_period;
+
+private slots:
+	void toggleCurrency();
+	void changeTimePeriod(int);
 
 signals:
 	//TODO: this will have to indicate the period of time for which we want

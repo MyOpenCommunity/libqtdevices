@@ -50,6 +50,7 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	QHBoxLayout *main_layout = new QHBoxLayout;
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(0);
+
 	back_period = getTrimmedButton(this, ICON_BACK);
 	back_period->setAutoRepeat(true);
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
@@ -302,6 +303,7 @@ EnergyView::EnergyView(QString energy_type)
 	main_layout->addWidget(getLabel(this, energy_type, FontManager::TEXT), 0, Qt::AlignCenter);
 
 	time_period = new TimePeriodSelection(this);
+	connect(time_period, SIGNAL(timeScaleChanged(int)), SLOT(changeTimePeriod(int)));
 	main_layout->addWidget(time_period);
 
 	QStackedWidget *stacked_widget = new QStackedWidget;
@@ -310,7 +312,11 @@ EnergyView::EnergyView(QString energy_type)
 
 	bannFrecce *nav_bar = new bannFrecce(this, 10, ICON_CURRENCY);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(dxClick()), SLOT(toggleCurrency()));
 	main_layout->addWidget(nav_bar);
+
+	// default period, sync with default period in TimePeriodSelection
+	changeTimePeriod(TimePeriodSelection::DAY);
 }
 
 QWidget *EnergyView::buildBannerWidget()
@@ -331,7 +337,6 @@ QWidget *EnergyView::buildBannerWidget()
 
 	daily_av_banner = getBanner(this, "Daily Average");
 	connect(daily_av_banner, SIGNAL(sxClick()), SIGNAL(showGraph()));
-	daily_av_banner->hide();
 	main_layout->addWidget(daily_av_banner);
 	return w;
 }
@@ -341,13 +346,16 @@ void EnergyView::changeTimePeriod(int status)
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
-		setDayPeriod();
+		daily_av_banner->hide();
+		current_banner->show();
 		break;
 	case TimePeriodSelection::MONTH:
-		setMonthPeriod();
+		daily_av_banner->show();
+		current_banner->hide();
 		break;
 	case TimePeriodSelection::YEAR:
-		setYearPeriod();
+		daily_av_banner->hide();
+		current_banner->hide();
 		break;
 	}
 }
@@ -357,23 +365,3 @@ void EnergyView::toggleCurrency()
 	qWarning("Not yet implemented");
 }
 
-void EnergyView::setDayPeriod()
-{
-	cumulative_banner->show();
-	daily_av_banner->hide();
-	current_banner->show();
-}
-
-void EnergyView::setMonthPeriod()
-{
-	cumulative_banner->show();
-	daily_av_banner->show();
-	current_banner->hide();
-}
-
-void EnergyView::setYearPeriod()
-{
-	cumulative_banner->show();
-	daily_av_banner->hide();
-	current_banner->hide();
-}
