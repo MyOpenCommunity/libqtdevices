@@ -24,8 +24,6 @@ class BtButton;
 class QDomNode;
 class QLabel;
 
-// TODO: capire come evitare questa doppia typedef!!
-typedef QHash<int, QVariant> StatusList;
 
 /**
  * \class LanSettings
