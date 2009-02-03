@@ -45,8 +45,6 @@ public:
 	};
 
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
-
-public slots:
 	void ApriInviaFrameChiudi(const char *);
 
 private slots:
