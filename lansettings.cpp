@@ -75,7 +75,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	// TODO: verificare le altre parti del codice dove viene usata la add_device
 	// se questa puo' portare a memory leak!
 	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(d));
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 	if (dev != d)
 		delete d;
 }
@@ -97,7 +97,7 @@ void LanSettings::toggleLan()
 	dev->enableLan(!lan_status);
 }
 
-void LanSettings::status_changed(StatusList status_list)
+void LanSettings::status_changed(const StatusList &status_list)
 {
 	const int MACADDR_ROW = 4;
 	const int IP_ROW = 5;

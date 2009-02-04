@@ -34,7 +34,7 @@ private:
 };
 
 
-TestDevice::TestDevice(device *d, int type) : spy(d, SIGNAL(status_changed(StatusList)))
+TestDevice::TestDevice(device *d, int type) : spy(d, SIGNAL(status_changed(const StatusList&)))
 {
 	dim_type = type;
 	dev = d;

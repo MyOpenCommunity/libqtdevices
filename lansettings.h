@@ -64,7 +64,7 @@ private:
 	bool lan_status;
 
 private slots:
-	void status_changed(StatusList status_list);
+	void status_changed(const StatusList &status_list);
 	void toggleLan();
 };
 
