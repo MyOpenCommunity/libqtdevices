@@ -5,31 +5,56 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "fontmanager.h" // bt_global::font
 
-#include <QLabel>
 #include <QDebug>
+#include <QLabel>
 #include <QDomNode>
 #include <QBoxLayout>
 
 static const char *TOGGLE_ICON_ON = IMG_PATH "beepon.png";
 static const char *TOGGLE_ICON_OFF = IMG_PATH "beepoff.png";
 
-#define MACADDR_ROW 3
-#define IP_ROW 4
-#define NETMASK_ROW 5
-#define GATEWAY_ROW 6
-#define DNS_ROW 7
+
+Text2Column::Text2Column()
+{
+	main_layout = new QGridLayout(this);
+	main_layout->setSpacing(0);
+}
+
+void Text2Column::addRow(QString text, Qt::Alignment align)
+{
+	main_layout->addWidget(new QLabel(text), main_layout->rowCount(), 0, 1, 2, align);
+}
+
+void Text2Column::addRow(QString label, QString text)
+{
+	int row = main_layout->rowCount();
+	main_layout->addWidget(new QLabel(label), row, 0, 1, 1);
+	main_layout->addWidget(new QLabel(text), row, 1, 1, 1);
+}
+
+void Text2Column::setText(int row, QString text)
+{
+	if (QWidget *w = main_layout->itemAtPosition(row, 1)->widget())
+		static_cast<QLabel*>(w)->setText(text);
+}
 
 
 LanSettings::LanSettings(const QDomNode &config_node)
 {
-	box_text = new QLabel;
+	box_text = new Text2Column;
 	box_text->setStyleSheet("background-color:#f0f0f0; color:#000000;");
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	box_text->setFont(bt_global::font.get(FontManager::SMALLTEXT));
 
-	text << bt_global::config[MODEL] << "";
-	text << bt_global::config[NAME]  << "Mac address" << "IP" << "Subnet Mask" << "Gateway" << "DNS";
-	box_text->setText(text.join("\n"));
+	box_text->addRow(bt_global::config[MODEL]);
+	box_text->addRow("");
+	box_text->addRow(bt_global::config[NAME]);
+	box_text->addRow(tr("Mac"), "");
+	box_text->addRow(tr("IP"), "");
+	box_text->addRow(tr("Subnet mask"), "");
+	box_text->addRow(tr("Gateway"), "");
+	box_text->addRow(tr("DNS"), "");
+	box_text->addRow("", "");
 
 	QHBoxLayout *label_layout = new QHBoxLayout;
 	label_layout->setContentsMargins(5, 0, 5, 0);
@@ -74,22 +99,26 @@ void LanSettings::toggleLan()
 
 void LanSettings::status_changed(StatusList status_list)
 {
+	const int MACADDR_ROW = 4;
+	const int IP_ROW = 5;
+	const int NETMASK_ROW = 6;
+	const int GATEWAY_ROW = 7;
+	const int DNS1_ROW = 8;
+	const int DNS2_ROW = 9;
+
 	QHash<int, int> dim_to_row;
 	dim_to_row[LanDevice::DIM_IP] = IP_ROW;
 	dim_to_row[LanDevice::DIM_NETMASK] = NETMASK_ROW;
 	dim_to_row[LanDevice::DIM_MACADDR] = MACADDR_ROW;
 	dim_to_row[LanDevice::DIM_GATEWAY] = GATEWAY_ROW;
-	dim_to_row[LanDevice::DIM_DNS1] = DNS_ROW;
+	dim_to_row[LanDevice::DIM_DNS1] = DNS1_ROW;
+	dim_to_row[LanDevice::DIM_DNS2] = DNS2_ROW;
 
-	bool update_text = false;
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (dim_to_row.contains(it.key()))
-		{
-			text[dim_to_row[it.key()]] = it.value().toString();
-			update_text = true;
-		}
+			box_text->setText(dim_to_row[it.key()], it.value().toString());
 		else if (it.key() == LanDevice::DIM_STATUS)
 		{
 			lan_status = it.value().toBool();
@@ -97,8 +126,5 @@ void LanSettings::status_changed(StatusList status_list)
 		}
 		++it;
 	}
-
-	if (update_text)
-		box_text->setText(text.join("\n"));
 }
 
