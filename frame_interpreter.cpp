@@ -363,8 +363,13 @@ void frame_interpreter::deferred_request_init()
 	int ms = -1;
 	do
 	{
+		if (deferred_list.isEmpty())
+			break;
 		// Build an invalid time
 		QTime next_expires = QTime(25, 61);
+		if (!next_expires.isValid()) {
+			qDebug("no more deferred status requests");
+		}
 
 		while (it.hasNext())
 		{
@@ -374,7 +379,7 @@ void frame_interpreter::deferred_request_init()
 				qDebug("requesting status");
 				request_init(de.ds, false);
 				it.remove();
-				continue;
+				break;
 			}
 			if (!next_expires.isValid() || de.expires < next_expires)
 				next_expires = de.expires;
@@ -386,7 +391,10 @@ void frame_interpreter::deferred_request_init()
 			ms = -1;
 		}
 		else
+		{
+			qDebug("more deferred status requests");
 			ms = QTime::currentTime().msecsTo(next_expires);
+		}
 
 		// One more round if more deferred requests are ready
 		restart = (ms <= 0);
@@ -398,6 +406,8 @@ void frame_interpreter::deferred_request_init()
 		qDebug("restarting deferred request timer with %d ms delay", ms);
 		deferred_timer.start(ms);
 	}
+	else
+		deferred_timer.stop();
 }
 
 // This is reimplemented by children
