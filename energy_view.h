@@ -48,7 +48,7 @@ private:
 	QDate selection_date;
 
 signals:
-	void timeScaleChanged(int);
+	void timeChanged(int, QDate);
 };
 
 
@@ -75,7 +75,7 @@ private:
 
 private slots:
 	void toggleCurrency();
-	void changeTimePeriod(int);
+	void changeTimePeriod(int, QDate);
 	void showGraphWidget();
 	void showBannerWidget();
 	void backClick();

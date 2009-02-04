@@ -93,7 +93,7 @@ void TimePeriodSelection::changeTimeScale()
 		date_period_label->setText(selection_date.toString("dd/MM/yy"));
 		break;
 	}
-	emit timeScaleChanged(status);
+	emit timeChanged(status, selection_date);
 }
 
 void TimePeriodSelection::setDate(QDate new_date)
@@ -115,6 +115,7 @@ void TimePeriodSelection::changeTimePeriod(int delta)
 	case DAY:
 		setDate(selection_date.addDays(delta));
 		date_period_label->setText(selection_date.toString("dd/MM/yy"));
+		emit timeChanged(status, selection_date);
 		break;
 	case MONTH:
 		setDate(selection_date.addMonths(delta));
@@ -168,7 +169,7 @@ EnergyView::EnergyView(QString energy_type)
 	main_layout->addWidget(getLabel(this, energy_type, FontManager::TEXT), 0, Qt::AlignCenter);
 
 	time_period = new TimePeriodSelection(this);
-	connect(time_period, SIGNAL(timeScaleChanged(int)), SLOT(changeTimePeriod(int)));
+	connect(time_period, SIGNAL(timeChanged(int, QDate)), SLOT(changeTimePeriod(int, QDate)));
 	main_layout->addWidget(time_period);
 
 	widget_container = new QStackedWidget;
@@ -184,7 +185,7 @@ EnergyView::EnergyView(QString energy_type)
 	main_layout->addWidget(nav_bar);
 
 	// default period, sync with default period in TimePeriodSelection
-	changeTimePeriod(TimePeriodSelection::DAY);
+	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
 }
 
 void EnergyView::backClick()
@@ -229,13 +230,16 @@ QWidget *EnergyView::buildBannerWidget()
 	return w;
 }
 
-void EnergyView::changeTimePeriod(int status)
+void EnergyView::changeTimePeriod(int status, QDate selection_date)
 {
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
 		daily_av_banner->hide();
-		current_banner->show();
+		if (QDate::currentDate() == selection_date)
+			current_banner->show();
+		else
+			current_banner->hide();
 		break;
 	case TimePeriodSelection::MONTH:
 		daily_av_banner->show();
