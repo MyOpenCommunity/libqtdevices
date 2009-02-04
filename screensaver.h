@@ -11,8 +11,11 @@
 #ifndef SCREENSAVER_H
 #define SCREENSAVER_H
 
+#include <QWidget>
 #include <QObject>
 #include <QHash>
+#include <QBasicTimer>
+#include <QDateTime>
 
 class Page;
 class QLabel;
@@ -23,17 +26,18 @@ class QDomNode;
 /**
  * This abstract class is the interface of all screensavers.
  */
-class ScreenSaver : protected QObject
+class ScreenSaver : protected QWidget
 {
 Q_OBJECT
 public:
 	enum Type
 	{
 		NONE = 0,   // no screensaver
-		LINES,       // single line that goes up and down
+		LINES,      // single line that goes up and down
 		BALLS,      // many balls on screen
 		TIME,       // a single line with a clock inside
 		TEXT,       // a line with a text
+		DEFORM,     // the deformer
 	};
 
 	virtual void start(Page *p);
@@ -137,6 +141,44 @@ Q_OBJECT
 public:
 	virtual void start(Page *p);
 	virtual Type type() { return TEXT; }
+};
+
+
+/**
+ * The concrete class that represent a deformer screensaver.
+ */
+class ScreenSaverDeform : public ScreenSaver
+{
+Q_OBJECT
+public:
+	ScreenSaverDeform();
+	virtual void start(Page *p);
+	virtual void stop();
+	virtual Type type() { return DEFORM; }
+
+protected:
+	virtual void timerEvent(QTimerEvent *e);
+	virtual void paintEvent(QPaintEvent *e);
+
+protected slots:
+	virtual void refresh();
+
+private:
+	void generateLensPixmap();
+	void buildLookupTable();
+
+	int radius;
+	QPointF current_pos;
+	QPointF direction;
+	int font_size;
+	QBasicTimer repaint_timer;
+	QTime repaint_tracker;
+	qreal deformation;
+	QPixmap lens_pixmap;
+	QPixmap bg_image;
+	QVector<QVector<QPoint> > lens_lookup_table;
+	QImage bg_img;
+	bool need_refresh;
 };
 
 #endif

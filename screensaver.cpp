@@ -13,6 +13,8 @@
 #include <QLabel>
 #include <QTimer>
 #include <QDebug>
+#include <QPaintEvent>
+#include <qmath.h>
 
 #include <stdlib.h> // RAND_MAX
 #include <assert.h>
@@ -32,6 +34,8 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 		return new ScreenSaverTime;
 	case ScreenSaver::TEXT:
 		return new ScreenSaverText;
+	case ScreenSaver::DEFORM:
+		return new ScreenSaverDeform;
 	case ScreenSaver::NONE:
 		return 0;
 	default:
@@ -263,3 +267,191 @@ void ScreenSaverText::start(Page *p)
 }
 
 
+static inline QRect circle_bounds(const QPointF &center, qreal radius, qreal compensation)
+{
+	return QRect(qRound(center.x() - radius - compensation),
+				 qRound(center.y() - radius - compensation),
+				 qRound((radius + compensation) * 2),
+				 qRound((radius + compensation) * 2));
+}
+
+const int LENS_EXTENT = 10;
+
+ScreenSaverDeform::ScreenSaverDeform() : ScreenSaver(500)
+{
+	radius = 20;
+	current_pos = QPointF(radius, radius);
+	direction = QPointF(1, 1);
+	font_size = 24;
+	repaint_timer.start(150, this);
+	repaint_tracker.start();
+	deformation = 30;
+	need_refresh = true;
+
+	buildLookupTable();
+	generateLensPixmap();
+}
+
+void ScreenSaverDeform::start(Page *p)
+{
+	ScreenSaver::start(p);
+	showFullScreen();
+	refresh();
+	raise();
+}
+
+void ScreenSaverDeform::stop()
+{
+	ScreenSaver::stop();
+	close();
+}
+
+void ScreenSaverDeform::refresh()
+{
+	bg_image = QPixmap::grabWidget(page, 0, 0);
+	bg_img = bg_image.toImage();
+	need_refresh = true;
+	update();
+}
+
+void ScreenSaverDeform::buildLookupTable()
+{
+	int total_radius = radius + LENS_EXTENT;
+	lens_lookup_table.resize(total_radius * 2);
+
+	for (int x = -total_radius; x < total_radius; ++x)
+	{
+		lens_lookup_table[x + total_radius].resize(total_radius * 2);
+
+		for (int y = -total_radius; y < total_radius; ++y)
+		{
+			qreal flip = deformation / qreal(100);
+			qreal len = qSqrt(x * x + y * y) - total_radius;
+
+			int pickx, picky;
+
+			if (len < 0)
+			{
+				pickx = static_cast<int>(x - flip * x * (-len) / radius);
+				picky = static_cast<int>(y - flip * y * (-len) / radius);
+			}
+			else
+			{
+				pickx = x;
+				picky = y;
+			}
+			lens_lookup_table[x + total_radius][y + total_radius] = QPoint(pickx, picky);
+		}
+	}
+}
+
+void ScreenSaverDeform::generateLensPixmap()
+{
+	qreal rad = radius + LENS_EXTENT;
+
+	QRect bounds = circle_bounds(QPointF(), rad, 0);
+
+	QPainter painter;
+
+	lens_pixmap = QPixmap(bounds.size());
+	lens_pixmap.fill(Qt::transparent);
+	painter.begin(&lens_pixmap);
+
+	QRadialGradient gr(rad, rad, rad, 3 * rad / 5, 3 * rad / 5);
+	gr.setColorAt(0.0, QColor(255, 255, 255, 191));
+	gr.setColorAt(0.2, QColor(255, 255, 127, 191));
+	gr.setColorAt(0.9, QColor(150, 150, 200, 63));
+	gr.setColorAt(0.95, QColor(0, 0, 0, 127));
+	gr.setColorAt(1, QColor(0, 0, 0, 0));
+	painter.setRenderHint(QPainter::Antialiasing);
+	painter.setBrush(gr);
+	painter.setPen(Qt::NoPen);
+	painter.drawEllipse(0, 0, bounds.width(), bounds.height());
+}
+
+void ScreenSaverDeform::timerEvent(QTimerEvent *)
+{
+	if (QLineF(QPointF(0,0), direction).length() > 1)
+		direction *= 0.995;
+	qreal time = repaint_tracker.restart();
+
+	QRect rectBefore = circle_bounds(current_pos, radius, font_size);
+
+	qreal dx = direction.x();
+	qreal dy = direction.y();
+	if (time > 0)
+	{
+		dx = dx * time * .05;
+		dy = dy * time * .05;
+	}
+
+	current_pos += QPointF(dx, dy);
+
+	if (current_pos.x() - radius < 0)
+	{
+		direction.setX(-direction.x());
+		current_pos.setX(radius);
+	}
+	else if (current_pos.x() + radius > width())
+	{
+		direction.setX(-direction.x());
+		current_pos.setX(width() - radius);
+	}
+
+	if (current_pos.y() - radius < 0)
+	{
+		direction.setY(-direction.y());
+		current_pos.setY(radius);
+	}
+	else if (current_pos.y() + radius > height())
+	{
+		direction.setY(-direction.y());
+		current_pos.setY(height() - radius);
+	}
+
+	QRect rectAfter = circle_bounds(current_pos, radius, font_size);
+	update(rectAfter | rectBefore);
+}
+
+void ScreenSaverDeform::paintEvent(QPaintEvent *event)
+{
+	QPainter painter(this);
+	if (need_refresh)
+	{
+		painter.drawPixmap(0, 0, bg_image);
+		need_refresh = false;
+	}
+	else
+		painter.drawPixmap(event->rect(), bg_image, event->rect());
+
+	int total_radius = radius + LENS_EXTENT;
+
+	QPoint topleft = current_pos.toPoint() - QPoint(total_radius, total_radius);
+	QPoint bottomright = current_pos.toPoint() + QPoint(total_radius, total_radius);
+
+	int x, y;
+
+	for (y = topleft.y(); y < bottomright.y() - 1; ++y)
+		for (x = topleft.x(); x < bottomright.x() - 1; ++x)
+		{
+			int pos_x = static_cast<int>(current_pos.x());
+			int pos_y = static_cast<int>(current_pos.y());
+			int lx = x - pos_x + total_radius;
+			int ly = y - pos_y + total_radius;
+
+			int pickx = lens_lookup_table[lx][ly].x() + pos_x;
+			int picky = lens_lookup_table[lx][ly].y() + pos_y;
+
+			QColor pixel_color = bg_img.pixel(pickx, picky);
+			if (pickx >= 0 && pickx < bg_img.width() &&
+				picky >= 0 && picky < bg_img.height() &&
+				pixel_color != bg_img.pixel(x, y))
+			{
+				painter.setPen(pixel_color);
+				painter.drawPoint(x, y);
+				//painter.fillRect(x, y, 2, 2, QBrush(QColor(bg_img.pixel(pickx, picky))));
+			}
+		}
+
+	painter.drawPixmap(topleft, lens_pixmap);
+}
