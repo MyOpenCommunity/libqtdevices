@@ -126,6 +126,12 @@ void TestLanDevice::readDns2()
 	t.check("*#13**52*208*67*220*220*##", "208.67.220.220");
 }
 
-QTEST_MAIN(TestLanDevice)
+int main(int argc, char *argv[])
+{
+	QCoreApplication app(argc, argv);
+	TestLanDevice test_lan_device;
+	QTest::qExec(&test_lan_device, argc, argv);
+}
+
 #include "test_main.moc"
 
