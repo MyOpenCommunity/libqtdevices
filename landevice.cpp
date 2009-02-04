@@ -91,7 +91,7 @@ void LanDevice::frame_rx_handler(char *frame)
 		{
 			QStringList parts;
 			for (int i = 0; i < what_args; ++i)
-				parts << QString::number(msg.whatArgN(i));
+				parts << QString::number(msg.whatArgN(i), 16).rightJustified(2, '0');
 			v.setValue(parts.join(":"));
 			break;
 		}

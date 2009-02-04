@@ -19,6 +19,10 @@
 class Client;
 class QVBoxLayout;
 
+// This typedef is needed by slots status_changed(StatusList). In order to avoid
+// duplication the typedef is put here, so all pages can be use freely
+typedef QHash<int, QVariant> StatusList;
+
 
 /**
  * \class Page

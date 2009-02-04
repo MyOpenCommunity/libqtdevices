@@ -15,17 +15,34 @@
 
 #include "page.h"
 
-#include <QStringList>
 #include <QVariant>
+#include <QFrame>
 #include <QHash>
 
 class LanDevice;
 class BtButton;
+class QGridLayout;
 class QDomNode;
-class QLabel;
 
-// TODO: capire come evitare questa doppia typedef!!
-typedef QHash<int, QVariant> StatusList;
+
+/**
+ * \class Fram2Column
+ *
+ * An utility class to show text in 2 column like a table.
+ */
+class Text2Column : public QFrame
+{
+Q_OBJECT
+public:
+	Text2Column();
+	void addRow(QString text, Qt::Alignment align=Qt::AlignLeft);
+	void addRow(QString label, QString text);
+	void setText(int row, QString text);
+
+private:
+	QGridLayout *main_layout;
+};
+
 
 /**
  * \class LanSettings
@@ -42,9 +59,8 @@ public:
 
 private:
 	BtButton *toggle_btn;
-	QLabel *box_text;
+	Text2Column *box_text;
 	LanDevice *dev;
-	QStringList text;
 	bool lan_status;
 
 private slots:

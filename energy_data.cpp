@@ -69,8 +69,7 @@ void EnergyCost::addBanner(const QDomNode &config_node, QString desc, int n_deci
 }
 
 
-EnergyInterface::EnergyInterface(const QDomNode &config_node) :
-	sottoMenu(0, 1)
+EnergyInterface::EnergyInterface(const QDomNode &config_node) : sottoMenu(0, 1)
 {
 	loadItems(config_node);
 }

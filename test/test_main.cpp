@@ -105,7 +105,7 @@ void TestLanDevice::readNetmask()
 void TestLanDevice::readMacAddress()
 {
 	TestDevice t(dev, LanDevice::DIM_MACADDR);
-	t.check("*#13**12*0*3*80*0*34*45##", "0:3:80:0:34:45");
+	t.check("*#13**12*0*3*80*0*34*45##", "00:03:50:00:22:2d");
 }
 
 void TestLanDevice::readGateway()
