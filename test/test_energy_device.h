@@ -15,6 +15,9 @@ private slots:
 	void cleanupTestCase();
 
 	void readCumulativeDay();
+	void readCurrent();
+	void readCumulativeMonth();
+	void readCumulativeYear();
 
 private:
 	EnergyDevice *dev;

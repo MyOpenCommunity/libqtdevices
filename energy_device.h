@@ -18,6 +18,9 @@
 #include <QHash>
 #include <QVariant>
 
+class QDate;
+
+
 class EnergyDevice : public device
 {
 Q_OBJECT
@@ -26,41 +29,26 @@ public:
 
 	// The request methods, used to request an information
 	void requestCumulativeDay() const;
+	void requestCurrent() const;
+	void requestCumulativeMonth(QDate date) const;
+	void requestCumulativeYear() const;
+
+	enum Type
+	{
+		DIM_CUMULATIVE_DAY = 54,
+		DIM_CURRENT = 113,
+		DIM_CUMULATIVE_MONTH = 53,
+		_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
+		DIM_CUMULATIVE_YEAR = 51,
+	};
 
 public slots:
 	void frame_rx_handler(char *frame);
 
 private:
 	void sendRequest(int what) const;
-
-#if 0
-	void enableLan(bool enable);
-
-	// The request methods, used to request an information
-	void requestStatus() const;
-	void requestIp() const;
-	void requestNetmask() const;
-	void requestMacAddress() const;
-	void requestGateway() const;
-	void requestDNS1() const;
-	void requestDNS2() const;
-
-	enum Type
-	{
-		DIM_STATUS = 9,
-		DIM_IP = 10,
-		DIM_NETMASK = 11,
-		DIM_MACADDR = 12,
-		DIM_GATEWAY = 50,
-		DIM_DNS1 = 51,
-		DIM_DNS2 = 52
-	};
-
-public slots:
-	virtual void frame_rx_handler(char *);
-
-private:
-	void sendRequest(int what) const;
-#endif
+	void sendRequest(QString what) const;
 };
+
 #endif // ENERGY_DEVICE_H
+
