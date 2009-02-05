@@ -1,4 +1,5 @@
 #include "landevice.h"
+#include "generic_functions.h" // createRequestOpen
 
 #include <openmsg.h>
 
@@ -21,7 +22,7 @@ void LanDevice::enableLan(bool enable)
 
 void LanDevice::sendRequest(int what) const
 {
-	sendInit(QString("*#%1**%2##").arg(who).arg(what));
+	sendInit(createRequestOpen(who, QString::number(what), ""));
 }
 
 void LanDevice::requestStatus() const
