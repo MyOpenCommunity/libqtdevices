@@ -1,5 +1,6 @@
 #include "test_landevice.h"
 #include "test_device.h"
+#include "openserver_mock.h"
 
 #include <landevice.h>
 
@@ -12,13 +13,15 @@ void TestLanDevice::initTestCase()
 	// To use StatusList in signal/slots and watch them through QSignalSpy
 	qRegisterMetaType<StatusList>("StatusList");
 
-	device::setClients(0, 0, 0);
+	server = new OpenServerMock;
+	device::setClients(server->connectCommand(), server->connectMonitor(), server->connectRequest());
 	dev = new LanDevice;
 }
 
 void TestLanDevice::cleanupTestCase()
 {
 	delete dev;
+	delete server;
 }
 
 void TestLanDevice::readStatus()

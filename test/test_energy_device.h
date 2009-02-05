@@ -5,7 +5,7 @@
 #include <QString>
 
 class EnergyDevice;
-
+class OpenServerMock;
 
 class TestEnergyDevice : public QObject
 {
@@ -20,6 +20,7 @@ private slots:
 	void readCumulativeYear();
 
 private:
+	OpenServerMock *server;
 	EnergyDevice *dev;
 	QString where;
 };

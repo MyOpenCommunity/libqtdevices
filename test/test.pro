@@ -18,6 +18,7 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 HEADERS += test_device.h \
            test_landevice.h \
            test_energy_device.h \
+           openserver_mock.h \
            ../energy_device.h \
            ../landevice.h \
            ../device.h \
@@ -32,6 +33,7 @@ SOURCES += test_main.cpp \
            test_device.cpp \
            test_landevice.cpp \
            test_energy_device.cpp \
+           openserver_mock.cpp \
            ../energy_device.cpp \
            ../landevice.cpp \
            ../device.cpp \

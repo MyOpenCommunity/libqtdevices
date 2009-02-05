@@ -1,5 +1,6 @@
 #include "test_energy_device.h"
 #include "test_device.h"
+#include "openserver_mock.h"
 
 #include <energy_device.h>
 
@@ -12,7 +13,8 @@ void TestEnergyDevice::initTestCase()
 	// To use StatusList in signal/slots and watch them through QSignalSpy
 	qRegisterMetaType<StatusList>("StatusList");
 
-	device::setClients(0, 0, 0);
+	server = new OpenServerMock;
+	device::setClients(server->connectCommand(), server->connectMonitor(), server->connectRequest());
 	where = "20";
 	dev = new EnergyDevice(where);
 }
@@ -20,6 +22,7 @@ void TestEnergyDevice::initTestCase()
 void TestEnergyDevice::cleanupTestCase()
 {
 	delete dev;
+	delete server;
 }
 
 void TestEnergyDevice::readCumulativeDay()

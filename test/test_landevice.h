@@ -4,6 +4,7 @@
 #include <QObject>
 
 class LanDevice;
+class OpenServerMock;
 
 
 class TestLanDevice : public QObject
@@ -23,6 +24,7 @@ private slots:
 
 private:
 	LanDevice *dev;
+	OpenServerMock *server;
 };
 
 #endif // TEST_LANDEVICE_H
