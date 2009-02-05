@@ -1,5 +1,5 @@
-#ifndef TEST_DEVICE_H
-#define TEST_DEVICE_H
+#ifndef DEVICE_TESTER_H
+#define DEVICE_TESTER_H
 
 #include <QSignalSpy>
 
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif // TEST_DEVICE_H
+#endif // DEVICE_TESTER_H
