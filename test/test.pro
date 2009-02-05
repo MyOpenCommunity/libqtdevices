@@ -17,6 +17,8 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 HEADERS += test_device.h \
            test_landevice.h \
+           test_energy_device.h \
+           ../energy_device.h \
            ../landevice.h \
            ../device.h \
            ../device_status.h \
@@ -29,6 +31,8 @@ HEADERS += test_device.h \
 SOURCES += test_main.cpp \
            test_device.cpp \
            test_landevice.cpp \
+           test_energy_device.cpp \
+           ../energy_device.cpp \
            ../landevice.cpp \
            ../device.cpp \
            ../device_status.cpp \
