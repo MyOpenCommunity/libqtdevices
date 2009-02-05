@@ -56,7 +56,7 @@ class EnergyView : public Page
 {
 Q_OBJECT
 public:
-	EnergyView(QString energy_type);
+	EnergyView(QString energy_type, QString address);
 
 private:
 	QWidget *buildBannerWidget();

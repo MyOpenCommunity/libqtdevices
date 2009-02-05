@@ -25,14 +25,14 @@ EnergyData::EnergyData(const QDomNode &config_node)
 
 void EnergyData::loadTypes(const QDomNode &config_node)
 {
-	foreach (const QDomNode& item, getChildren(config_node, "energy_type"))
+	foreach (const QDomNode& type, getChildren(config_node, "energy_type"))
 	{
 		bannOnOff *b = new bannOnOff(this);
 		b->SetIcons(IMG_SELECT, IMG_SETTINGS, QString(), IMG_PRESET);
-		b->connectSxButton(new EnergyCost(item));
-		b->connectDxButton(new EnergyInterface(item));
-		b->setText(getTextChild(item, "descr"));
-		b->setId(getTextChild(item, "id").toInt());
+		b->connectSxButton(new EnergyCost(type));
+		b->connectDxButton(new EnergyInterface(type));
+		b->setText(getTextChild(type, "descr"));
+		b->setId(getTextChild(type, "id").toInt());
 		appendBanner(b);
 	}
 }
@@ -81,12 +81,9 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	{
 		bannPuls *b = new bannPuls(this);
 		b->SetIcons(IMG_SELECT, QString(), IMG_PRESET);
-		b->connectDxButton(new EnergyView(energy_type));
+		b->connectDxButton(new EnergyView(energy_type, getTextChild(item, "address")));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
-		// TODO: is address same as 'where'?
-		QString address = getTextChild(item, "address");
-		int type = getTextChild(item, "type").toInt();
 		appendBanner(b);
 	}
 }

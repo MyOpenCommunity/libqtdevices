@@ -161,7 +161,7 @@ banner *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString energy_type)
+EnergyView::EnergyView(QString energy_type, QString address)
 {
 	main_layout->setAlignment(Qt::AlignTop);
 
