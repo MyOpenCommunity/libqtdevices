@@ -13,7 +13,7 @@ class BtButton;
 // TODO: this must be changed once the correct banner is ready
 class banner;
 class QStackedWidget;
-
+class EnergyDevice;
 
 class TimePeriodSelection : public QWidget
 {
@@ -72,6 +72,7 @@ private:
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	Widget current_widget;
+	EnergyDevice *dev;
 
 private slots:
 	void toggleCurrency();
@@ -79,5 +80,6 @@ private slots:
 	void showGraphWidget();
 	void showBannerWidget();
 	void backClick();
+	void status_changed(const StatusList &status_list);
 };
 #endif // ENERGY_VIEW_H

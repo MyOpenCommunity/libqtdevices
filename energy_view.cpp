@@ -1,11 +1,13 @@
 #include "energy_view.h"
 #include "energy_graph.h"
+#include "energy_device.h"
 #include "banner.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getPressName
 #include "fontmanager.h" // bt_global::font
 #include "bannfrecce.h"
+#include "devices_cache.h" // bt_global::devices_cache
 
 #include <QDebug>
 #include <QLabel>
@@ -163,6 +165,13 @@ banner *getBanner(QWidget *parent, QString primary_text)
 
 EnergyView::EnergyView(QString energy_type, QString address)
 {
+	// TODO: gestire in un modo migliore!!
+	EnergyDevice *d = new EnergyDevice(address);
+	dev = static_cast<EnergyDevice*>(bt_global::devices_cache.add_device(d));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	if (dev != d)
+		delete d;
+
 	main_layout->setAlignment(Qt::AlignTop);
 
 	// title section
@@ -186,6 +195,18 @@ EnergyView::EnergyView(QString energy_type, QString address)
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
+	dev->requestCumulativeDay();
+}
+
+void EnergyView::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == 54)
+			cumulative_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+		++it;
+	}
 }
 
 void EnergyView::backClick()
