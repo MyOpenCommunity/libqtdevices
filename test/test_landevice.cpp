@@ -1,5 +1,5 @@
 #include "test_landevice.h"
-#include "test_device.h"
+#include "device_tester.h"
 #include "openserver_mock.h"
 
 #include <landevice.h>
@@ -26,44 +26,44 @@ void TestLanDevice::cleanupTestCase()
 
 void TestLanDevice::readStatus()
 {
-	TestDevice t(dev, LanDevice::DIM_STATUS);
+	DeviceTester t(dev, LanDevice::DIM_STATUS);
 	t.check("*#13**9*0##", false);
 	t.check("*#13**9*1##", true);
 }
 
 void TestLanDevice::readIp()
 {
-	TestDevice t(dev, LanDevice::DIM_IP);
+	DeviceTester t(dev, LanDevice::DIM_IP);
 	t.check("*#13**10*10*3*3*81##", "10.3.3.81");
 }
 
 void TestLanDevice::readNetmask()
 {
-	TestDevice t(dev, LanDevice::DIM_NETMASK);
+	DeviceTester t(dev, LanDevice::DIM_NETMASK);
 	t.check("*#13**11*255*255*255*0##", "255.255.255.0");
 }
 
 void TestLanDevice::readMacAddress()
 {
-	TestDevice t(dev, LanDevice::DIM_MACADDR);
+	DeviceTester t(dev, LanDevice::DIM_MACADDR);
 	t.check("*#13**12*0*3*80*0*34*45##", "00:03:50:00:22:2d");
 }
 
 void TestLanDevice::readGateway()
 {
-	TestDevice t(dev, LanDevice::DIM_GATEWAY);
+	DeviceTester t(dev, LanDevice::DIM_GATEWAY);
 	t.check("*#13**50*27*238*64*1##", "27.238.64.1");
 }
 
 void TestLanDevice::readDns1()
 {
-	TestDevice t(dev, LanDevice::DIM_DNS1);
+	DeviceTester t(dev, LanDevice::DIM_DNS1);
 	t.check("*#13**51*208*67*222*222##", "208.67.222.222");
 }
 
 void TestLanDevice::readDns2()
 {
-	TestDevice t(dev, LanDevice::DIM_DNS2);
+	DeviceTester t(dev, LanDevice::DIM_DNS2);
 	t.check("*#13**52*208*67*220*220*##", "208.67.220.220");
 }
 

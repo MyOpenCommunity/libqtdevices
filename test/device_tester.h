@@ -7,11 +7,14 @@ class QString;
 class QVariant;
 class device;
 
-
-class TestDevice
+/**
+  * An utility class to test the signal emitted by device after the parsing of
+  * a frame from openserver.
+  */
+class DeviceTester
 {
 public:
-	TestDevice(device *d, int dim);
+	DeviceTester(device *d, int dim);
 	void check(QString frame, const QVariant &v);
 
 private:

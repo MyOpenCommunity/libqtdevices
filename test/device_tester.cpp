@@ -1,4 +1,4 @@
-#include "test_device.h"
+#include "device_tester.h"
 
 #include <device.h>
 
@@ -21,13 +21,13 @@ void getDimFromSignal(const QSignalSpy &spy, int dim_type, QVariant &res)
 	res = sl[dim_type];
 }
 
-TestDevice::TestDevice(device *d, int type) : spy(d, SIGNAL(status_changed(const StatusList&)))
+DeviceTester::DeviceTester(device *d, int type) : spy(d, SIGNAL(status_changed(const StatusList&)))
 {
 	dim_type = type;
 	dev = d;
 }
 
-void TestDevice::check(QString frame, const QVariant& v)
+void DeviceTester::check(QString frame, const QVariant& v)
 {
 	QVariant res;
 	spy.clear();

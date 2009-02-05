@@ -15,7 +15,7 @@ TEMPLATE = app
 
 LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
-HEADERS += test_device.h \
+HEADERS += device_tester.h \
            test_landevice.h \
            test_energy_device.h \
            openserver_mock.h \
@@ -30,7 +30,7 @@ HEADERS += test_device.h \
            ../main.h
 
 SOURCES += test_main.cpp \
-           test_device.cpp \
+           device_tester.cpp \
            test_landevice.cpp \
            test_energy_device.cpp \
            openserver_mock.cpp \
