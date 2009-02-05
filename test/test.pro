@@ -15,7 +15,9 @@ TEMPLATE = app
 
 LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
-HEADERS += ../landevice.h \
+HEADERS += test_device.h \
+           test_landevice.h \
+           ../landevice.h \
            ../device.h \
            ../device_status.h \
            ../frame_interpreter.h \
@@ -25,6 +27,8 @@ HEADERS += ../landevice.h \
            ../main.h
 
 SOURCES += test_main.cpp \
+           test_device.cpp \
+           test_landevice.cpp \
            ../landevice.cpp \
            ../device.cpp \
            ../device_status.cpp \
