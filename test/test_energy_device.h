@@ -1,13 +1,15 @@
 #ifndef TEST_ENERGY_DEVICE_H
 #define TEST_ENERGY_DEVICE_H
 
-#include <QObject>
+#include "test_device.h"
+
 #include <QString>
 
 class EnergyDevice;
 class OpenServerMock;
 
-class TestEnergyDevice : public QObject
+
+class TestEnergyDevice : public TestDevice
 {
 Q_OBJECT
 private slots:
@@ -20,7 +22,6 @@ private slots:
 	void readCumulativeYear();
 
 private:
-	OpenServerMock *server;
 	EnergyDevice *dev;
 	QString where;
 };

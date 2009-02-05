@@ -1,13 +1,12 @@
 #ifndef TEST_LANDEVICE_H
 #define TEST_LANDEVICE_H
 
-#include <QObject>
+#include "test_device.h"
 
 class LanDevice;
-class OpenServerMock;
 
 
-class TestLanDevice : public QObject
+class TestLanDevice : public TestDevice
 {
 Q_OBJECT
 private slots:
@@ -24,7 +23,6 @@ private slots:
 
 private:
 	LanDevice *dev;
-	OpenServerMock *server;
 };
 
 #endif // TEST_LANDEVICE_H

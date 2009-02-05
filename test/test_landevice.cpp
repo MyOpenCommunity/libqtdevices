@@ -1,27 +1,19 @@
 #include "test_landevice.h"
 #include "device_tester.h"
-#include "openserver_mock.h"
 
 #include <landevice.h>
 
 #include <QVariant>
-#include <QMetaType>
 
 
 void TestLanDevice::initTestCase()
 {
-	// To use StatusList in signal/slots and watch them through QSignalSpy
-	qRegisterMetaType<StatusList>("StatusList");
-
-	server = new OpenServerMock;
-	device::setClients(server->connectCommand(), server->connectMonitor(), server->connectRequest());
 	dev = new LanDevice;
 }
 
 void TestLanDevice::cleanupTestCase()
 {
 	delete dev;
-	delete server;
 }
 
 void TestLanDevice::readStatus()
