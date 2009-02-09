@@ -20,6 +20,9 @@ private slots:
 	void readCurrent();
 	void readCumulativeMonth();
 	void readCumulativeYear();
+	void readDailyAverageGraph();
+	void readDailyAverageGraph2();
+	void readDailyAverageGraph3();
 
 private:
 	EnergyDevice *dev;

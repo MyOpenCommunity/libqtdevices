@@ -3,9 +3,10 @@
 
 #include <QSignalSpy>
 
-class QString;
+class QStringList;
 class QVariant;
 class device;
+
 
 /**
   * An utility class to test the signal emitted by device after the parsing of
@@ -15,7 +16,12 @@ class DeviceTester
 {
 public:
 	DeviceTester(device *d, int dim);
-	void check(QString frame, const QVariant &v);
+
+	// NOTE: be aware that QVariant::operator== with custom types compare addresses of objects
+	void check(const QStringList &frames, const QVariant &result);
+	void check(QString frame, const QVariant &result);
+
+	QVariant getResult(const QStringList& frames);
 
 private:
 	QSignalSpy spy;
