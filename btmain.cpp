@@ -127,6 +127,9 @@ BtMain::~BtMain()
 {
 	if (screensaver)
 		delete screensaver;
+	delete client_comandi;
+	delete client_monitor;
+	delete client_richieste;
 }
 
 void BtMain::loadGlobalConfig()
