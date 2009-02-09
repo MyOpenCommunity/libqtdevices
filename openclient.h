@@ -16,12 +16,32 @@
 #include <QTimer>
 #include <QTcpSocket>
 #include <QByteArray>
+#include <QRegExp>
 
 #ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
 #endif
 
 #define OPENSERVER_PORT 20000
+
+class FrameCompressor : public QObject
+{
+Q_OBJECT
+public:
+	FrameCompressor(int timeout, const QRegExp &r, QObject *parent = 0);
+	/// If frame_open matches regex, start the timer and save the frame for later use
+	bool analyzeFrame(const QString &frame_open);
+
+private slots:
+	void emitFrame();
+
+private:
+	QTimer timer;
+	QRegExp regex;
+	QString frame;
+signals:
+	void compressedFrame(QString);
+};
 
 
 /*!
@@ -48,7 +68,7 @@ public:
 	void ApriInviaFrameChiudi(const char *);
 
 public slots:
-	void sendFrameOpen(const char *frame);
+	void sendFrameOpen(const QString &frame_open);
 
 private slots:
 	void connetti();

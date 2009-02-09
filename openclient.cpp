@@ -15,6 +15,31 @@
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
 
+FrameCompressor::FrameCompressor(int timeout, const QRegExp &r, QObject *parent) : QObject(parent)
+{
+	regex = r;
+	timer.setInterval(timeout);
+	timer.setSingleShot(true);
+	connect(&timer, SIGNAL(timeout()), SLOT(emitFrame()));
+}
+
+bool FrameCompressor::analyzeFrame(const QString &frame_open)
+{
+	if (frame_open.contains(regex))
+	{
+		frame = frame_open;
+		timer.start();
+		return true;
+	}
+	else
+		return false;
+}
+
+void FrameCompressor::emitFrame()
+{
+	emit compressedFrame(frame);
+}
+
 
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
@@ -67,8 +92,9 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 	// restituendo quindi un booleano che vale true se e' un ack, false altrimenti.
 }
 
-void Client::sendFrameOpen(const char *frame)
+void Client::sendFrameOpen(const QString &frame_open)
 {
+	char *frame = frame_open.toLatin1().data();
 	last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
 	{
