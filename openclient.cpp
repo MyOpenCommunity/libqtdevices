@@ -15,7 +15,7 @@
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
 
-FrameCompressor::FrameCompressor(int timeout, const QRegExp &r, QObject *parent) : QObject(parent)
+FrameCompressor::FrameCompressor(int timeout, const QRegExp &r)
 {
 	regex = r;
 	timer.setInterval(timeout);
@@ -62,6 +62,19 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
+void Client::installFrameCompressor(FrameCompressor *comp)
+{
+	// TODO: if we ever implement a removeCompressor, remember to delete the compressor removed from the list
+	compressor_list.push_back(comp);
+	connect(comp, SIGNAL(compressedFrame(QString)), SLOT(sendFrameOpen(QString)));
+}
+
+Client::~Client()
+{
+	for (int i = 0; i < compressor_list.size(); ++i)
+		delete compressor_list[i];
+}
+
 void Client::socketConnected()
 {
 	qDebug("Client::socketConnected()");
@@ -81,7 +94,16 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 {
 	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
 	{
-		sendFrameOpen(frame);
+		if (compressor_list.empty())
+			sendFrameOpen(frame);
+		else
+		{
+			bool delay_frame_send = false;
+			for (int i = 0; i < compressor_list.size(); ++i)
+				delay_frame_send = compressor_list[i]->analyzeFrame(frame);
+			if (!delay_frame_send)
+				sendFrameOpen(frame);
+		}
 	}
 	else
 		qDebug("Client::ApriInviaFrameChiudi() Frame Open <%s> already send", frame);

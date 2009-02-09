@@ -28,7 +28,7 @@ class FrameCompressor : public QObject
 {
 Q_OBJECT
 public:
-	FrameCompressor(int timeout, const QRegExp &r, QObject *parent = 0);
+	FrameCompressor(int timeout, const QRegExp &r);
 	/// If frame_open matches regex, start the timer and save the frame for later use
 	bool analyzeFrame(const QString &frame_open);
 
@@ -66,9 +66,8 @@ public:
 
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 	void ApriInviaFrameChiudi(const char *);
-
-public slots:
-	void sendFrameOpen(const QString &frame_open);
+	void installFrameCompressor(FrameCompressor *comp);
+	~Client();
 
 private slots:
 	void connetti();
@@ -83,6 +82,7 @@ private slots:
 	void ApriInviaFrameChiudiw(char*);
 	void richStato(QString richiesta);
 	void ackReceived();
+	void sendFrameOpen(const QString &frame_open);
 
 	void clear_last_msg_open_read();
 
@@ -103,6 +103,7 @@ private:
 
 	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
+	QList<FrameCompressor*> compressor_list;
 
 signals:
 	void frameIn(char*);
