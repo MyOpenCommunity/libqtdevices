@@ -47,6 +47,9 @@ public:
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 	void ApriInviaFrameChiudi(const char *);
 
+public slots:
+	void sendFrameOpen(const char *frame);
+
 private slots:
 	void connetti();
 	/// Reads messages from the socket

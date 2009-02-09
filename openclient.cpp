@@ -56,17 +56,7 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 {
 	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
 	{
-		last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
-		if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
-		{
-			connetti();
-			if (type == RICHIESTE)
-				socket->write(SOCKET_RICHIESTE);
-			else
-				socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
-		}
-		socket->write(frame);
-		qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame);
+		sendFrameOpen(frame);
 	}
 	else
 		qDebug("Client::ApriInviaFrameChiudi() Frame Open <%s> already send", frame);
@@ -75,6 +65,21 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 	// dovra' sparire), attendendo che arrivi o un ack o un nack con un ciclo tipo:
 	// while (socketWaitForAck() < 0 || socketWaitForNak() < 0);
 	// restituendo quindi un booleano che vale true se e' un ack, false altrimenti.
+}
+
+void Client::sendFrameOpen(const char *frame)
+{
+	last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
+	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
+	{
+		connetti();
+		if (type == RICHIESTE)
+			socket->write(SOCKET_RICHIESTE);
+		else
+			socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
+	}
+	socket->write(frame);
+	qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame);
 }
 
 void Client::ApriInviaFrameChiudiw(char *frame)
