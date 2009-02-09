@@ -16,6 +16,8 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
+	void requestCumulativeMonth();
+	void requestCumulativeMonth2();
 	void readCumulativeDay();
 	void readCurrent();
 	void readCumulativeMonth();

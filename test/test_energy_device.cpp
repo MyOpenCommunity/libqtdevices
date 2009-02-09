@@ -1,5 +1,7 @@
 #include "test_energy_device.h"
 #include "device_tester.h"
+#include "openserver_mock.h"
+#include "openclient.h"
 
 #include <energy_device.h>
 
@@ -122,5 +124,19 @@ void TestEnergyDevice::readDailyAverageGraph3()
 	data[24] = 1025;
 
 	QVERIFY(data == result.value<GraphData>());
+}
+
+void TestEnergyDevice::requestCumulativeMonth()
+{
+	dev->requestCumulativeMonth(QDate::currentDate());
+	client_request->flush();
+	QVERIFY(server->frameRequest() == "*#18*20*53##");
+}
+
+void TestEnergyDevice::requestCumulativeMonth2()
+{
+	dev->requestCumulativeMonth(QDate(2009, 1, 10));
+	client_request->flush();
+	QVERIFY(server->frameRequest() == "*#18*20*52#9#1##");
 }
 

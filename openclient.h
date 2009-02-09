@@ -24,6 +24,7 @@
 
 #define OPENSERVER_PORT 20000
 
+
 class FrameCompressor : public QObject
 {
 Q_OBJECT
@@ -54,6 +55,7 @@ signals:
 
 class Client : public QObject
 {
+friend class OpenServerMock;
 Q_OBJECT
 public:
 
@@ -67,6 +69,7 @@ public:
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 	void ApriInviaFrameChiudi(const char *);
 	void installFrameCompressor(FrameCompressor *comp);
+	void flush() { socket->flush(); }
 	~Client();
 
 private slots:

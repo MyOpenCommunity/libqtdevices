@@ -13,7 +13,10 @@ TestDevice::TestDevice()
 	qRegisterMetaType<StatusList>("StatusList");
 
 	server = new OpenServerMock;
-	device::setClients(server->connectCommand(), server->connectMonitor(), server->connectRequest());
+	client_command = server->connectCommand();
+	client_request = server->connectRequest();
+	client_monitor = server->connectMonitor();
+	device::setClients(client_command, client_request, client_monitor);
 }
 
 TestDevice::~TestDevice()

@@ -4,6 +4,7 @@
 #include <QObject>
 
 class OpenServerMock;
+class Client;
 
 
 /**
@@ -17,6 +18,9 @@ public:
 
 protected:
 	OpenServerMock *server;
+	Client *client_command;
+	Client *client_request;
+	Client *client_monitor;
 };
 
 

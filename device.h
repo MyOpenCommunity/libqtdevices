@@ -21,6 +21,7 @@ typedef QHash<int, QVariant> StatusList;
 //! Generic device
 class device : public QObject
 {
+friend class TestDevice;
 Q_OBJECT
 
 public:

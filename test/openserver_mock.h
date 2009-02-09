@@ -17,10 +17,12 @@ public:
 	Client *connectMonitor();
 	Client *connectCommand();
 	Client *connectRequest();
+	QString frameRequest();
 
 private:
 	QTcpServer server;
 	int port;
+	int timeout;
 
 	QTcpSocket *command, *monitor, *request;
 };
