@@ -37,6 +37,7 @@ bool FrameCompressor::analyzeFrame(const QString &frame_open)
 
 void FrameCompressor::emitFrame()
 {
+	qDebug() << "FrameCompressor, now emitting frame: " << frame;
 	emit compressedFrame(frame);
 }
 
@@ -130,8 +131,8 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 
 void Client::sendFrameOpen(const QString &frame_open)
 {
-	char *frame = frame_open.toLatin1().data();
-	last_msg_open_write.CreateMsgOpen(frame, strlen(frame));
+	QByteArray frame = frame_open.toLatin1();
+	last_msg_open_write.CreateMsgOpen(frame.data(), strlen(frame.data()));
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
 	{
 		connetti();
@@ -141,7 +142,7 @@ void Client::sendFrameOpen(const QString &frame_open)
 			socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
 	}
 	socket->write(frame);
-	qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame);
+	qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame.data());
 }
 
 void Client::ApriInviaFrameChiudiw(char *frame)
