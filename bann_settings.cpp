@@ -56,7 +56,7 @@ void bannAlarmClock::inizializza()
 
 calibration::calibration(sottoMenu *parent, QString icon) : bannOnDx(parent)
 {
-	SetIcons(ICON_INFO,1);
+	SetIcons(icon, 1);
 	connect(this,SIGNAL(click()),this,SLOT(doCalib()));
 }
 

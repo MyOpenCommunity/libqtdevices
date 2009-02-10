@@ -17,7 +17,7 @@ QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 	<item>
 		<cid>804</cid>
 		<img_display>arrrg.png</img_display>
-		<img_items>set.png</img_items>
+		<img_display_items>set.png</img_display_items>
 		<img_cleanscreen>btnclean.png</img_cleanscreen>
 		<img_calibration>btntar.png</img_calibration>
 		<img_brightness>btnlum.png</img_brightness>
