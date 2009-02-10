@@ -40,6 +40,11 @@ void FrameCompressor::emitFrame()
 	emit compressedFrame(frame);
 }
 
+QString FrameCompressor::getPattern() const
+{
+	return regex.pattern();
+}
+
 
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
@@ -64,15 +69,24 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 void Client::installFrameCompressor(FrameCompressor *comp)
 {
-	// TODO: if we ever implement a removeCompressor, remember to delete the compressor removed from the list
-	compressor_list.push_back(comp);
-	connect(comp, SIGNAL(compressedFrame(QString)), SLOT(sendFrameOpen(QString)));
+	// check if a compressor with the same pattern is already installed
+	if (compressor_map.contains(comp->getPattern()))
+	{
+		// do nothing, but delete the compressor
+		delete comp;
+	}
+	else
+	{
+		// TODO: if we ever implement a removeCompressor, remember to delete the compressor removed from the list
+		compressor_map[comp->getPattern()] = comp;
+		connect(comp, SIGNAL(compressedFrame(QString)), SLOT(sendFrameOpen(QString)));
+	}
 }
 
 Client::~Client()
 {
-	for (int i = 0; i < compressor_list.size(); ++i)
-		delete compressor_list[i];
+	foreach (FrameCompressor *compressor, compressor_map)
+		delete compressor;
 }
 
 void Client::socketConnected()
@@ -94,13 +108,13 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 {
 	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
 	{
-		if (compressor_list.empty())
+		if (compressor_map.empty())
 			sendFrameOpen(frame);
 		else
 		{
 			bool delay_frame_send = false;
-			for (int i = 0; i < compressor_list.size(); ++i)
-				delay_frame_send = compressor_list[i]->analyzeFrame(frame);
+			foreach (FrameCompressor *compressor, compressor_map)
+				delay_frame_send = compressor->analyzeFrame(frame);
 			if (!delay_frame_send)
 				sendFrameOpen(frame);
 		}

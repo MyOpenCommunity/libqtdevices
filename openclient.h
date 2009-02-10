@@ -17,6 +17,7 @@
 #include <QTcpSocket>
 #include <QByteArray>
 #include <QRegExp>
+#include <QHash>
 
 #ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
@@ -32,6 +33,7 @@ public:
 	FrameCompressor(int timeout, const QRegExp &r);
 	/// If frame_open matches regex, start the timer and save the frame for later use
 	bool analyzeFrame(const QString &frame_open);
+	QString getPattern() const;
 
 private slots:
 	void emitFrame();
@@ -106,7 +108,7 @@ private:
 
 	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
-	QList<FrameCompressor*> compressor_list;
+	QHash<QString, FrameCompressor*> compressor_map;
 
 signals:
 	void frameIn(char*);
