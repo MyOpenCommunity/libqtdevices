@@ -33,7 +33,6 @@ public:
 	FrameCompressor(int timeout, const QRegExp &r);
 	/// If frame_open matches regex, start the timer and save the frame for later use
 	bool analyzeFrame(const QString &frame_open);
-	QString getPattern() const;
 
 private slots:
 	void emitFrame();
@@ -70,7 +69,7 @@ public:
 
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 	void ApriInviaFrameChiudi(const char *);
-	void installFrameCompressor(FrameCompressor *comp);
+	void installFrameCompressor(int timeout, const QString &regex);
 	void flush() { socket->flush(); }
 	~Client();
 

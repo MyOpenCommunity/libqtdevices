@@ -41,11 +41,6 @@ void FrameCompressor::emitFrame()
 	emit compressedFrame(frame);
 }
 
-QString FrameCompressor::getPattern() const
-{
-	return regex.pattern();
-}
-
 
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
@@ -68,18 +63,14 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
-void Client::installFrameCompressor(FrameCompressor *comp)
+void Client::installFrameCompressor(int timeout, const QString &regex)
 {
 	// check if a compressor with the same pattern is already installed
-	if (compressor_map.contains(comp->getPattern()))
+	if (!compressor_map.contains(regex))
 	{
-		// do nothing, but delete the compressor
-		delete comp;
-	}
-	else
-	{
+		FrameCompressor *comp = new FrameCompressor(timeout, QRegExp(regex));
 		// TODO: if we ever implement a removeCompressor, remember to delete the compressor removed from the list
-		compressor_map[comp->getPattern()] = comp;
+		compressor_map[regex] = comp;
 		connect(comp, SIGNAL(compressedFrame(QString)), SLOT(sendFrameOpen(QString)));
 	}
 }
