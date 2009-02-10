@@ -71,7 +71,7 @@ void LanDevice::frame_rx_handler(char *frame)
 	int what = msg.what();
 	int what_args = msg.whatArgCnt();
 
-	QHash<int, QVariant> status_list;
+	StatusList status_list;
 	QVariant v;
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||

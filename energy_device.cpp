@@ -67,7 +67,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 
 	int what = msg.what();
 
-	QHash<int, QVariant> status_list;
+	StatusList status_list;
 	QVariant v;
 
 	if (what == DIM_CUMULATIVE_DAY || what == DIM_CURRENT || what == DIM_CUMULATIVE_MONTH ||
