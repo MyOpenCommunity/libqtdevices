@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<style>
+	<ver_xml>1.0</ver_xml>
+	<css>
+QWidget {background-color:#1E1E1E;color:#D8D8D8;}
+QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;} QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
+QWidget[SecondFgColor="true"] {color:#6FB2FF;} QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
+QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
+	</css>
+	<common>
+		<img_back>arrlf.png</img_back>
+		<img_ok>btnok.png</img_ok>
+		<img_choice>btnemty.png</img_choice>
+		<img_scroll_up>arrup.png</img_scroll_up>
+		<img_scroll_down>arrdw.png</img_scroll_down>
+	</common>
+	<item>
+		<cid>804</cid>
+		<img_display>arrrg.png</img_display>
+		<img_items>set.png</img_items>
+		<img_cleanscreen>btnclean.png</img_cleanscreen>
+		<img_calibration>btntar.png</img_calibration>
+		<img_brightness>btnlum.png</img_brightness>
+		<img_calibration_bg>my_home.png</img_calibration_bg>
+		<img_calibration_ok>btnok.png</img_calibration_ok>
+	</item>
+	<item>
+		<cid>807</cid>
+		<img_network>set.png</img_network>
+		<img_network_enable>ethon.png</img_network_enable>
+		<img_network_disable>ethoff.png</img_network_disable>
+	</item>
+	<item>
+		<cid>1400</cid>
+		<img_electricity>electricity.png</img_electricity>
+		<img_water>water.png</img_water>
+		<img_gas>gas.png</img_gas>
+		<img_dwh>dhw.png</img_dwh>
+		<img_liquid_gas>liq_gas.png</img_liquid_gas>
+	</item>
+</style>

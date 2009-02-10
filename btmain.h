@@ -116,8 +116,6 @@ private:
 	void myMain();
 	/// Load the main configuration
 	bool loadConfiguration(QString cfg_file);
-	/// Load the skin configuration
-	bool loadStyleSheet(QString filename);
 
 	// Load the global configuration (the item in "generale" section of xml config file)
 	void loadGlobalConfig();

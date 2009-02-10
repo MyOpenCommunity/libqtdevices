@@ -1,4 +1,0 @@
-QWidget {background-color:#1E1E1E;color:#D8D8D8;}
-QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;} QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
-QWidget[SecondFgColor="true"] {color:#6FB2FF;} QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
-QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}

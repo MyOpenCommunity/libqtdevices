@@ -38,6 +38,7 @@
 #include "device.h"
 #include "energy_data.h"
 #include "fontmanager.h" // bt_global::font
+#include "skinmanager.h" // bt_global::skin
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -154,21 +155,6 @@ void BtMain::loadGlobalConfig()
 void BtMain::waitBeforeInit()
 {
 	QTimer::singleShot(200, this, SLOT(hom()));
-}
-
-bool BtMain::loadStyleSheet(QString filename)
-{
-	if (QFile::exists(filename))
-	{
-		QFile file(filename);
-		if (file.open(QFile::ReadOnly))
-		{
-			qApp->setStyleSheet(file.readAll());
-			file.close();
-			return true;
-		}
-	}
-	return false;
 }
 
 Page *BtMain::getPage(int id)
@@ -372,6 +358,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 void BtMain::hom()
 {
 	version->inizializza();
+	bt_global::skin = new SkinManager(SKIN_FILE);
 
 	if (loadConfiguration(CFG_FILE))
 		hide();
@@ -379,8 +366,11 @@ void BtMain::hom()
 	// The stylesheet can contain some references to dynamic properties,
 	// so loading of css must be done after setting these properties (otherwise
 	// it might be necessary to force a stylesheet recomputation).
-	if (!loadStyleSheet(CSS_FILE))
+	QString style = bt_global::skin->getStyle();
+	if (style.isNull())
 		qWarning("Unable to load skin file!");
+	else
+		qApp->setStyleSheet(style);
 
 	config_loaded = true;
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);

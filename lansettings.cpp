@@ -1,17 +1,16 @@
 #include "lansettings.h"
 #include "btbutton.h"
-#include "main.h" // bt_global::config, IMG_PATH
+#include "main.h" // bt_global::config
 #include "landevice.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "fontmanager.h" // bt_global::font
+#include "xml_functions.h" // getTextChild
+#include "skinmanager.h" // bt_global::skin
 
 #include <QDebug>
 #include <QLabel>
 #include <QDomNode>
 #include <QBoxLayout>
-
-static const char *TOGGLE_ICON_ON = IMG_PATH "beepon.png";
-static const char *TOGGLE_ICON_OFF = IMG_PATH "beepoff.png";
 
 
 Text2Column::Text2Column()
@@ -41,6 +40,7 @@ void Text2Column::setText(int row, QString text)
 
 LanSettings::LanSettings(const QDomNode &config_node)
 {
+	bt_global::skin->setCid(getTextChild(config_node, "cid").toInt());
 	box_text = new Text2Column;
 	box_text->setStyleSheet("background-color:#f0f0f0; color:#000000;");
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -63,8 +63,8 @@ LanSettings::LanSettings(const QDomNode &config_node)
 
 	toggle_btn = new BtButton;
 	toggle_btn->setOnOff();
-	toggle_btn->setImage(TOGGLE_ICON_OFF, BtButton::NO_FLAG);
-	toggle_btn->setPressedImage(TOGGLE_ICON_ON);
+	toggle_btn->setImage(bt_global::skin->getImage("network_disable"), BtButton::NO_FLAG);
+	toggle_btn->setPressedImage(bt_global::skin->getImage("network_enable"));
 	lan_status = false; // This value must be keep in sync with the icon of toggle_btn.
 	connect(toggle_btn, SIGNAL(clicked()), SLOT(toggleLan()));
 	main_layout->addWidget(toggle_btn, 0, Qt::AlignHCenter);

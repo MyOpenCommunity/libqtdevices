@@ -76,10 +76,10 @@ void resetTimer(int signo);
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
 #define EXTRA_FILE                  "cfg/extra/1/extra.xml"
-/*! \def CSS_FILE
- *  Define the css file that contains the stylesheets for the application
+/*! \def SKIN_FILE
+ *  Define the css file that contains the styles for the application
  */
-#define CSS_FILE                  "cfg/extra/1/stylesheet.css"
+#define SKIN_FILE                  "cfg/extra/1/skin.xml"
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
