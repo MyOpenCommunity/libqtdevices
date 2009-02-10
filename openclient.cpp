@@ -117,7 +117,7 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 void Client::sendFrameOpen(const QString &frame_open)
 {
 	char *frame = frame_open.toLatin1().data();
-	last_msg_open_write.CreateMsgOpen(const_cast<char*>(frame), strlen(frame));
+	last_msg_open_write.CreateMsgOpen(frame, strlen(frame));
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
 	{
 		connetti();
