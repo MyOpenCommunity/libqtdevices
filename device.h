@@ -11,12 +11,35 @@
 #include <QObject>
 #include <QHash>
 #include <QList>
+#include <QTimer>
 
 class frame_interpreter;
 class Client;
 class BtTime;
 
 typedef QHash<int, QVariant> StatusList;
+
+
+class FrameCompressor : public QObject
+{
+Q_OBJECT
+public:
+	// w is 'what'
+	FrameCompressor(int timeout, int w = -1);
+	/// If frame_open matches regex, start the timer and save the frame for later use
+	bool analyzeFrame(const QString &frame_open);
+
+private slots:
+	void emitFrame();
+
+private:
+	QTimer timer;
+	int what;
+	QString frame;
+signals:
+	void compressedFrame(QString);
+};
+
 
 //! Generic device
 class device : public QObject

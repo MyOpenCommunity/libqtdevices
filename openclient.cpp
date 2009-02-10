@@ -15,33 +15,6 @@
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
 
-FrameCompressor::FrameCompressor(int timeout, const QRegExp &r)
-{
-	regex = r;
-	timer.setInterval(timeout);
-	timer.setSingleShot(true);
-	connect(&timer, SIGNAL(timeout()), SLOT(emitFrame()));
-}
-
-bool FrameCompressor::analyzeFrame(const QString &frame_open)
-{
-	if (frame_open.contains(regex))
-	{
-		frame = frame_open;
-		timer.start();
-		return true;
-	}
-	else
-		return false;
-}
-
-void FrameCompressor::emitFrame()
-{
-	qDebug() << "FrameCompressor, now emitting frame: " << frame;
-	emit compressedFrame(frame);
-}
-
-
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
 	qDebug("Client::Client()");
@@ -63,22 +36,8 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
-void Client::installFrameCompressor(int timeout, const QString &regex)
-{
-	// check if a compressor with the same pattern is already installed
-	if (!compressor_map.contains(regex))
-	{
-		FrameCompressor *comp = new FrameCompressor(timeout, QRegExp(regex));
-		// TODO: if we ever implement a removeCompressor, remember to delete the compressor removed from the list
-		compressor_map[regex] = comp;
-		connect(comp, SIGNAL(compressedFrame(QString)), SLOT(sendFrameOpen(QString)));
-	}
-}
-
 Client::~Client()
 {
-	foreach (FrameCompressor *compressor, compressor_map)
-		delete compressor;
 }
 
 void Client::socketConnected()
@@ -99,18 +58,7 @@ void Client::socketConnected()
 void Client::ApriInviaFrameChiudi(const char* frame)
 {
 	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
-	{
-		if (compressor_map.empty())
-			sendFrameOpen(frame);
-		else
-		{
-			bool delay_frame_send = false;
-			foreach (FrameCompressor *compressor, compressor_map)
-				delay_frame_send = compressor->analyzeFrame(frame);
-			if (!delay_frame_send)
-				sendFrameOpen(frame);
-		}
-	}
+		sendFrameOpen(frame);
 	else
 		qDebug("Client::ApriInviaFrameChiudi() Frame Open <%s> already send", frame);
 

@@ -25,27 +25,6 @@
 
 #define OPENSERVER_PORT 20000
 
-
-class FrameCompressor : public QObject
-{
-Q_OBJECT
-public:
-	FrameCompressor(int timeout, const QRegExp &r);
-	/// If frame_open matches regex, start the timer and save the frame for later use
-	bool analyzeFrame(const QString &frame_open);
-
-private slots:
-	void emitFrame();
-
-private:
-	QTimer timer;
-	QRegExp regex;
-	QString frame;
-signals:
-	void compressedFrame(QString);
-};
-
-
 /*!
   \class Client
   \brief This class manages the socket communication throught the application and the \a openserver.
@@ -107,7 +86,6 @@ private:
 
 	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
-	QHash<QString, FrameCompressor*> compressor_map;
 
 signals:
 	void frameIn(char*);

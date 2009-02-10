@@ -15,6 +15,42 @@ Client *device::client_richieste = 0;
 Client *device::client_monitor = 0;
 
 
+FrameCompressor::FrameCompressor(int timeout, int w)
+{
+	what = w;
+	timer.setInterval(timeout);
+	timer.setSingleShot(true);
+	connect(&timer, SIGNAL(timeout()), SLOT(emitFrame()));
+}
+
+bool FrameCompressor::analyzeFrame(const QString &frame_open)
+{
+	OpenMsg msg(frame_open.toStdString());
+
+	// TODO: accept more than one what
+	if (what == -1)
+	{
+		frame = frame_open;
+		timer.start();
+		return true;
+	}
+	else if (what == msg.what())
+	{
+		frame = frame_open;
+		timer.start();
+		return true;
+	}
+	else
+		return false;
+}
+
+void FrameCompressor::emitFrame()
+{
+	qDebug() << "FrameCompressor, now emitting frame: " << frame;
+	emit compressedFrame(frame);
+}
+
+
 // Device implementation
 
 device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
