@@ -205,6 +205,7 @@ void FSBannSimpleProbe::status_changed(QList<device_status*> sl)
 		Draw();
 }
 
+
 FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
 	TemperatureScale scale) : FSBannSimpleProbe(parent, n, scale),
 	delta_setpoint(false),
@@ -220,6 +221,8 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
 	connect(navbar_button, SIGNAL(clicked()), SLOT(changeStatus()));
+	//install compressor
+	dev->installFrameCompressor(setpoint_delay);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
@@ -282,7 +285,6 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal
 	isOff = false;
 	isAntigelo = false;
 
-	connect(&setpoint_timer, SIGNAL(timeout()), this, SLOT(setSetpoint()));
 }
 
 void FSBannProbe::setDeviceToManual()
@@ -325,7 +327,7 @@ void FSBannProbe::incSetpoint()
 	else
 		setpoint += setpoint_delta;
 	Draw();
-	setpoint_timer.start(setpoint_delay);
+	setDeviceToManual();
 	delta_setpoint = true;
 }
 
@@ -336,14 +338,8 @@ void FSBannProbe::decSetpoint()
 	else
 		setpoint -= setpoint_delta;
 	Draw();
-	setpoint_timer.start(setpoint_delay);
-	delta_setpoint = true;
-}
-
-void FSBannProbe::setSetpoint()
-{
-	setpoint_timer.stop();
 	setDeviceToManual();
+	delta_setpoint = true;
 }
 
 void FSBannProbe::Draw()

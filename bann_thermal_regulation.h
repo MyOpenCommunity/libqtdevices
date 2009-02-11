@@ -166,8 +166,6 @@ private:
 	probe_status status;
 	thermo_type_t probe_type;
 
-	/// Send a setpoint frame only if 2 seconds are elapsed
-	QTimer setpoint_timer;
 	/// Time to wait (in msec) before sending a frame when the user presses on plus or minus buttons to modify setpoint temperature
 	/// \sa setpoint
 	const unsigned setpoint_delay;
@@ -181,7 +179,6 @@ private:
 
 private slots:
 	void changeStatus();
-	void setSetpoint();
 
 	/**
 	 * Called when the user press on the plus button to increase setpoint temperature.
