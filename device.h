@@ -66,10 +66,8 @@ public:
 	QString get_key(void);
 	virtual ~device();
 
-	void sendFrame(QString frame) const;
-	void sendInit(QString frame) const;
-
 	static void setClients(Client *command, Client *request, Client *monitor);
+	void installFrameCompressor(int timeout, int what = -1);
 
 signals:
 	/// Old Status changed
@@ -94,6 +92,9 @@ public slots:
 	//! Initialization requested by frame interpreter
 	void init_requested_handler(QString msg);
 
+	void sendFrame(QString frame) const;
+	void sendInit(QString frame) const;
+
 protected:
 	// The costructor is protected only to make device abstract.
 	device(QString who, QString where, bool p=false, int g=-1);
@@ -110,12 +111,18 @@ protected:
 	void setup_frame_interpreter(frame_interpreter* i);
 
 private:
+	// Send a frame using the frame compressor
+	void sendCompressedFrame(const QString &frame) const;
+	void sendCompressedInit(const QString &frame) const;
+
 	//! Pul status
 	bool pul;
 	//! Device's group
 	int group;
 	//! Number of users
 	int refcount;
+	FrameCompressor *cmd_compressor;
+	FrameCompressor *req_compressor;
 
 	static Client *client_comandi;
 	static Client *client_monitor;
