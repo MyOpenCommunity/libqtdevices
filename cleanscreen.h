@@ -26,7 +26,7 @@ class CleanScreen : public Page
 {
 Q_OBJECT
 public:
-	CleanScreen(int clean_time);
+	CleanScreen(QString img_clean, int clean_time);
 private:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);

@@ -10,9 +10,7 @@
 #include <assert.h>
 
 
-static const char *CLEANSCREEN_ICON = IMG_PATH "btnplusp.png";
-
-CleanScreen::CleanScreen(int clean_time)
+CleanScreen::CleanScreen(QString img_clean, int clean_time)
 {
 	connect(&secs_timer, SIGNAL(timeout()), SLOT(update()));
 
@@ -26,14 +24,12 @@ CleanScreen::CleanScreen(int clean_time)
 	time_label->setGeometry(TIME_LABEL_X, TIME_LABEL_Y, TIME_LABEL_WIDTH, TIME_LABEL_HEIGHT);
 
 	icon_label = new QLabel(this);
-	QPixmap *icon = bt_global::icons_cache.getIcon(CLEANSCREEN_ICON);
-	icon_label->setPixmap(*icon);
+	icon_label->setPixmap(*bt_global::icons_cache.getIcon(img_clean));
 	icon_label->setAlignment(Qt::AlignHCenter);
 	icon_label->setGeometry(ICON_LABEL_X, ICON_LABEL_Y, ICON_LABEL_WIDTH, ICON_LABEL_HEIGHT);
 
 	wait_time_sec = clean_time;
 }
-
 
 void CleanScreen::resetTime()
 {
