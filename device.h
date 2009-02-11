@@ -109,12 +109,11 @@ protected:
 
 	/// connect the frame interpreter with the device
 	void setup_frame_interpreter(frame_interpreter* i);
-
-private:
 	// Send a frame using the frame compressor
 	void sendCompressedFrame(const QString &frame) const;
 	void sendCompressedInit(const QString &frame) const;
 
+private:
 	//! Pul status
 	bool pul;
 	//! Device's group

@@ -569,7 +569,7 @@ void temperature_probe_controlled::setManual(unsigned setpoint)
 	QString sharp_where = QString("#") + where;
 
 	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	sendFrame(msg);
+	sendCompressedFrame(msg);
 }
 
 void temperature_probe_controlled::setAutomatic()
