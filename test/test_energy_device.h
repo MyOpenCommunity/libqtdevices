@@ -25,6 +25,10 @@ private slots:
 	void readDailyAverageGraph();
 	void readDailyAverageGraph2();
 	void readDailyAverageGraph3();
+	void readDayGraph();
+	void readDayGraph2();
+	void readDayGraph3();
+	void requestDayGraph();
 
 private:
 	EnergyDevice *dev;

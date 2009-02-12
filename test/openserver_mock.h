@@ -18,6 +18,7 @@ public:
 	Client *connectCommand();
 	Client *connectRequest();
 	QString frameRequest();
+	QString frameCommand();
 
 private:
 	QTcpServer server;

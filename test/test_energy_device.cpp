@@ -140,3 +140,100 @@ void TestEnergyDevice::requestCumulativeMonth2()
 	QVERIFY(server->frameRequest() == "*#18*20*52#9#1##");
 }
 
+void TestEnergyDevice::readDayGraph()
+{
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_RX_DAY_GRAPH);
+	QString tmp(QString("*#18*%1*%2#8#1*1*45*210##").arg(where).arg(EnergyDevice::DIM_RX_DAY_GRAPH));
+	QStringList frames;
+	frames << tmp;
+	QVariant result = t.getResult(frames);
+
+	QVERIFY(result.canConvert<GraphData>());
+
+	GraphData data;
+	data[1] = 210;
+
+	QVERIFY(data == result.value<GraphData>());
+}
+
+void TestEnergyDevice::readDayGraph2()
+{
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_RX_DAY_GRAPH);
+	QString tmp(QString("*#18*%1*%2#8#1").arg(where).arg(EnergyDevice::DIM_RX_DAY_GRAPH));
+	QStringList frames;
+
+	frames << tmp + "*1*45*210##"
+		<< tmp + "*2*12*67*255##";
+	QVariant result = t.getResult(frames);
+
+	QVERIFY(result.canConvert<GraphData>());
+
+	GraphData data;
+	data[1] = 210;
+	data[2] = 12;
+	data[3] = 67;
+	data[4] = 0;
+
+	QVERIFY(data == result.value<GraphData>());
+}
+
+void TestEnergyDevice::readDayGraph3()
+{
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_RX_DAY_GRAPH);
+	QString tmp(QString("*#18*%1*%2#8#1").arg(where).arg(EnergyDevice::DIM_RX_DAY_GRAPH));
+	QStringList frames;
+
+	frames << tmp + "*1*3*255##"
+		<< tmp + "*2*0*1*12##"
+		<< tmp + "*3*200*150*255##"
+		<< tmp + "*4*190*191*192##"
+		<< tmp + "*5*180*181*182##"
+		<< tmp + "*6*170*171*172##"
+		<< tmp + "*6*253*254*255##"
+		<< tmp + "*7*253*254*255##"
+		<< tmp + "*8*253*254*255##"
+		<< tmp + "*9*253*254*9999##"
+		<< tmp + "*10*9999*6666##";
+	QVariant result = t.getResult(frames);
+
+	QVERIFY(result.canConvert<GraphData>());
+
+	GraphData data;
+	data[1] = 0;
+	data[2] = 0;
+	data[3] = 1;
+	data[4] = 12;
+	data[5] = 200;
+	data[6] = 150;
+	data[7] = 0;
+	data[8] = 190;
+	data[9] = 191;
+	data[10] = 192;
+	data[11] = 180;
+	data[12] = 181;
+	data[13] = 182;
+	data[14] = 170;
+	data[15] = 171;
+	data[16] = 172;
+	data[17] = 253;
+	data[18] = 254;
+	data[19] = 0;
+	data[20] = 253;
+	data[21] = 254;
+	data[22] = 0;
+	data[23] = 253;
+	data[24] = 254;
+}
+
+void TestEnergyDevice::requestDayGraph()
+{
+	dev->requestDayGraph(QDate(2009, 1, 9));
+	client_command->flush();
+//	TX -> *18*52#mese#giorno*dove##
+	QString req(QString("*18*52#1#9*%1##").arg(where));
+	QVERIFY(server->frameCommand() == req);
+}
+

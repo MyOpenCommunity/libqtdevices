@@ -47,3 +47,9 @@ QString OpenServerMock::frameRequest()
 	return request->readAll();
 }
 
+QString OpenServerMock::frameCommand()
+{
+	command->waitForReadyRead(timeout);
+	return command->readAll();
+}
+
