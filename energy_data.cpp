@@ -77,11 +77,12 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node) : sottoMenu(0, 1)
 void EnergyInterface::loadItems(const QDomNode &config_node)
 {
 	QString energy_type = getTextChild(config_node, "descr");
+	QString measure = getTextChild(config_node, "measure");
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bannPuls *b = new bannPuls(this);
 		b->SetIcons(IMG_SELECT, QString(), IMG_PRESET);
-		b->connectDxButton(new EnergyView(energy_type, getTextChild(item, "address")));
+		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address")));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		appendBanner(b);

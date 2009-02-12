@@ -56,7 +56,7 @@ class EnergyView : public Page
 {
 Q_OBJECT
 public:
-	EnergyView(QString energy_type, QString address);
+	EnergyView(QString measure, QString energy_type, QString address);
 
 private:
 	QWidget *buildBannerWidget();
@@ -68,11 +68,13 @@ private:
 	};
 
 	// TODO: this must be changed once the correct banner is ready
-	banner *cumulative_banner, *current_banner, *daily_av_banner;
+	banner *current_banner, *daily_av_banner;
+	banner *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	Widget current_widget;
 	EnergyDevice *dev;
+	QString unit_measure;
 
 private slots:
 	void toggleCurrency();

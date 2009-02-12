@@ -163,7 +163,7 @@ banner *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString energy_type, QString address)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 {
 	// TODO: gestire in un modo migliore!!
 	EnergyDevice *d = new EnergyDevice(address);
@@ -196,6 +196,7 @@ EnergyView::EnergyView(QString energy_type, QString address)
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
 	dev->requestCumulativeDay();
+	unit_measure = measure;
 }
 
 void EnergyView::status_changed(const StatusList &status_list)
@@ -203,8 +204,18 @@ void EnergyView::status_changed(const StatusList &status_list)
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
-		if (it.key() == 54)
-			cumulative_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+		switch (it.key())
+		{
+		case EnergyDevice::DIM_CUMULATIVE_DAY:
+			cumulative_day_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			break;
+		case EnergyDevice::DIM_CUMULATIVE_MONTH:
+			cumulative_month_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			break;
+		case EnergyDevice::DIM_CUMULATIVE_YEAR:
+			cumulative_year_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			break;
+		}
 		++it;
 	}
 }
@@ -237,9 +248,19 @@ QWidget *EnergyView::buildBannerWidget()
 	main_layout->setSpacing(0);
 	w->setLayout(main_layout);
 
-	cumulative_banner = getBanner(this, "Cumulative");
-	main_layout->addWidget(cumulative_banner);
-	connect(cumulative_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+	// blah.. non c'e' un modo migliore di realizzare la pagina dei banner per
+	// le varie situazioni?? (giornaliero, mensile, annuale)
+	cumulative_day_banner = getBanner(this, "Cumulative");
+	main_layout->addWidget(cumulative_day_banner);
+	connect(cumulative_day_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+
+	cumulative_month_banner = getBanner(this, "Cumulative");
+	main_layout->addWidget(cumulative_month_banner);
+	connect(cumulative_month_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+
+	cumulative_year_banner = getBanner(this, "Cumulative");
+	main_layout->addWidget(cumulative_year_banner);
+	connect(cumulative_year_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
 
 	current_banner = getBanner(this, "Current");
 	current_banner->nascondi(banner::BUT1);
@@ -256,6 +277,9 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
+		cumulative_day_banner->show();
+		cumulative_month_banner->hide();
+		cumulative_year_banner->hide();
 		daily_av_banner->hide();
 		if (QDate::currentDate() == selection_date)
 			current_banner->show();
@@ -263,10 +287,16 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 			current_banner->hide();
 		break;
 	case TimePeriodSelection::MONTH:
+		cumulative_day_banner->hide();
+		cumulative_month_banner->show();
+		cumulative_year_banner->hide();
 		daily_av_banner->show();
 		current_banner->hide();
 		break;
 	case TimePeriodSelection::YEAR:
+		cumulative_day_banner->hide();
+		cumulative_month_banner->hide();
+		cumulative_year_banner->show();
 		daily_av_banner->hide();
 		current_banner->hide();
 		break;
