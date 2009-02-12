@@ -40,6 +40,7 @@ public:
 	void requestCumulativeYear() const;
 	void requestDailyAverageGraph(QDate date) const;
 	void requestDayGraph(QDate date) const;
+	void requestCumulativeMonthGraph(QDate date) const;
 
 	enum Type
 	{
@@ -51,6 +52,8 @@ public:
 		DIM_DAILY_AVERAGE     = 57,    // read graph data for cumulative daily average
 		DIM_RX_DAY_GRAPH      = 56,    // read graph data for a specific day
 		DIM_TX_DAY_GRAPH      = 52,    // request graph data for a specific day
+		DIM_TX_CUMULATIVE_MONTH = 56,  // request graph data for cumulative month
+		DIM_RX_CUMULATIVE_MONTH = 510, // read graph data for cumulative month
 	};
 
 public slots:
@@ -60,6 +63,7 @@ private:
 	void sendRequest(int what) const;
 	void sendRequest(QString what) const;
 	QVariant parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg);
+	QVariant parseCumulativeMonthGraph(const QList<QString> &buffer_frame);
 	static const int MAX_VALUE = 255;
 	mutable QList<QString> buffer_frame;
 };

@@ -51,6 +51,13 @@ void EnergyDevice::requestDayGraph(QDate date) const
 	buffer_frame.clear();
 }
 
+void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
+{
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(DIM_TX_CUMULATIVE_MONTH)
+		.arg(date.month()), where));
+	buffer_frame.clear();
+}
+
 void EnergyDevice::requestCumulativeMonth(QDate date) const
 {
 	QDate curr = QDate::currentDate();
@@ -79,7 +86,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 
 	if (what == DIM_CUMULATIVE_DAY || what == DIM_CURRENT || what == DIM_CUMULATIVE_MONTH ||
 		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == DIM_DAILY_AVERAGE ||
-		what == DIM_RX_DAY_GRAPH)
+		what == DIM_RX_DAY_GRAPH || what == DIM_RX_CUMULATIVE_MONTH)
 	{
 		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
 
@@ -117,6 +124,13 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			if (num_frame > 0 && num_frame < 10)
 				buffer_frame.append(frame);
 			status_list[what] = parseDayGraph(buffer_frame, msg);
+		}
+		else if (what == DIM_RX_CUMULATIVE_MONTH)
+		{
+			int num_frame = msg.whatArgN(0);
+			if (num_frame > 0 && num_frame < 22)
+				buffer_frame.append(frame);
+			status_list[what] = parseCumulativeMonthGraph(buffer_frame);
 		}
 		else
 		{
@@ -158,6 +172,32 @@ QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg
 	GraphData data;
 	for (int i = 0; i < values.size(); ++i)
 		data[i + 1] = values[i] == MAX_VALUE ? 0 : values[i];
+	QVariant v;
+	v.setValue(data);
+	return v;
+}
+
+QVariant EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_frame)
+{
+	QList<int> values;
+	for (int i = 0; i < buffer_frame.size(); ++i)
+	{
+		OpenMsg frame_parser(buffer_frame[i].toStdString());
+		assert(frame_parser.whatArgCnt() > 1);
+		values.append(frame_parser.whatArgN(1));
+		values.append(frame_parser.whatArgN(2));
+		if (frame_parser.whatArgN(0) != 1)
+			values.append(frame_parser.whatArgN(3));
+	}
+
+	GraphData data;
+	for (int i = 0; i + 1 < values.size(); i += 2)
+	{
+		int high = values[i] == 255 ? 0 : values[i];
+		int low = values[i+1] == 255 ? 0 : values[i+1];
+		data[i / 2 + 1] = high * 256 + low;
+	}
+
 	QVariant v;
 	v.setValue(data);
 	return v;
