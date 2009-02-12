@@ -15,13 +15,14 @@
 
 #include "device.h"
 
-#include <QHash>
+#include <QMap>
 #include <QVariant>
 
 class QDate;
+class OpenMsg;
 
 
-typedef QHash<int, int> GraphData;
+typedef QMap<int, int> GraphData;
 Q_DECLARE_METATYPE(GraphData)
 
 
@@ -38,6 +39,7 @@ public:
 	void requestCumulativeMonth(QDate date) const;
 	void requestCumulativeYear() const;
 	void requestDailyAverageGraph(QDate date) const;
+	void requestDayGraph(QDate date) const;
 
 	enum Type
 	{
@@ -46,7 +48,9 @@ public:
 		DIM_CUMULATIVE_MONTH  = 53,
 		_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
 		DIM_CUMULATIVE_YEAR   = 51,
-		DIM_DAILY_AVERAGE     = 57
+		DIM_DAILY_AVERAGE     = 57,    // read graph data for cumulative daily average
+		DIM_RX_DAY_GRAPH      = 56,    // read graph data for a specific day
+		DIM_TX_DAY_GRAPH      = 52,    // request graph data for a specific day
 	};
 
 public slots:
@@ -55,6 +59,8 @@ public slots:
 private:
 	void sendRequest(int what) const;
 	void sendRequest(QString what) const;
+	QVariant parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg);
+	static const int MAX_VALUE = 255;
 	mutable QList<QString> buffer_frame;
 };
 

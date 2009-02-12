@@ -44,6 +44,13 @@ void EnergyDevice::requestDailyAverageGraph(QDate date) const
 	buffer_frame.clear();
 }
 
+void EnergyDevice::requestDayGraph(QDate date) const
+{
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2#%3").arg(DIM_TX_DAY_GRAPH)
+		.arg(date.month()).arg(date.day()), where));
+	buffer_frame.clear();
+}
+
 void EnergyDevice::requestCumulativeMonth(QDate date) const
 {
 	QDate curr = QDate::currentDate();
@@ -71,7 +78,8 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	QVariant v;
 
 	if (what == DIM_CUMULATIVE_DAY || what == DIM_CURRENT || what == DIM_CUMULATIVE_MONTH ||
-		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == DIM_DAILY_AVERAGE)
+		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == DIM_DAILY_AVERAGE ||
+		what == DIM_RX_DAY_GRAPH)
 	{
 		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
 
@@ -103,6 +111,13 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			v.setValue(data);
 			status_list[what] = v;
 		}
+		else if (what == DIM_RX_DAY_GRAPH)
+		{
+			int num_frame = msg.whatArgN(0);
+			if (num_frame > 0 && num_frame < 10)
+				buffer_frame.append(frame);
+			status_list[what] = parseDayGraph(buffer_frame, msg);
+		}
 		else
 		{
 			assert(msg.whatArgCnt() == 1);
@@ -117,4 +132,33 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		emit status_changed(status_list);
 	}
 
+}
+
+QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg)
+{
+	QList<int> values;
+	// assume that frames arrive in order
+	for (int i = 0; i < buffer_frame.size(); ++i)
+	{
+		assert(msg.whatArgCnt() > 1);
+		OpenMsg frame_parser(buffer_frame[i].toStdString());
+		if (frame_parser.whatArgN(0) == 1)
+			values.append(frame_parser.whatArgN(2));
+		else if (frame_parser.whatArgN(0) == 9)
+		{
+
+			values.append(frame_parser.whatArgN(1));
+			values.append(frame_parser.whatArgN(2));
+		}
+		else
+			for (int j = 1; j < 4; ++j)
+				values.append(frame_parser.whatArgN(j));
+	}
+
+	GraphData data;
+	for (int i = 0; i < values.size(); ++i)
+		data[i + 1] = values[i] == MAX_VALUE ? 0 : values[i];
+	QVariant v;
+	v.setValue(data);
+	return v;
 }
