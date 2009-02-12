@@ -29,6 +29,9 @@ private slots:
 	void readDayGraph2();
 	void readDayGraph3();
 	void requestDayGraph();
+	void requestCumulativeMonthGraph();
+	void readCumulativeMonthGraph();
+	void readCumulativeMonthGraph2();
 
 private:
 	EnergyDevice *dev;

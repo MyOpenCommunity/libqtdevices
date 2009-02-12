@@ -232,8 +232,55 @@ void TestEnergyDevice::requestDayGraph()
 {
 	dev->requestDayGraph(QDate(2009, 1, 9));
 	client_command->flush();
-//	TX -> *18*52#mese#giorno*dove##
 	QString req(QString("*18*52#1#9*%1##").arg(where));
 	QVERIFY(server->frameCommand() == req);
 }
 
+void TestEnergyDevice::requestCumulativeMonthGraph()
+{
+	dev->requestCumulativeMonthGraph(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*18*56#1*%1##").arg(where));
+	QVERIFY(server->frameCommand() == req);
+}
+
+void TestEnergyDevice::readCumulativeMonthGraph()
+{
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_RX_CUMULATIVE_MONTH);
+	QString tmp(QString("*#18*%1*%2#8").arg(where).arg(EnergyDevice::DIM_RX_CUMULATIVE_MONTH));
+	QStringList frames;
+
+	frames << tmp + "*1*3*255##";
+	QVariant result = t.getResult(frames);
+	QVERIFY(result.canConvert<GraphData>());
+
+	GraphData data;
+	data[1] = (3 << 8) + 0;
+	QVERIFY(data == result.value<GraphData>());
+}
+
+void TestEnergyDevice::readCumulativeMonthGraph2()
+{
+	// test one missing frame
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_RX_CUMULATIVE_MONTH);
+	QString tmp(QString("*#18*%1*%2#8").arg(where).arg(EnergyDevice::DIM_RX_CUMULATIVE_MONTH));
+	QStringList frames;
+
+	frames << tmp + "*1*3*255##"
+		<< tmp + "*2*20*90*255##"
+		<< tmp + "*4*45*150*185##";
+	QVariant result = t.getResult(frames);
+	QVERIFY(result.canConvert<GraphData>());
+
+	GraphData data;
+	data[1] = (3 << 8) + 0;
+	data[2] = (20 << 8) + 90;
+	data[3] = 0;
+	data[4] = 0;
+	data[5] = (45 << 8) + 150;
+	data[6] = (185 << 8);
+
+	QVERIFY(data == result.value<GraphData>());
+}
