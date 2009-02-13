@@ -23,26 +23,45 @@
 #define ICON_CURRENCY IMG_PATH "btncanc.png"
 
 
-BtButton *getTrimmedButton(QWidget *parent, QString icon)
+namespace
 {
-#define SM_BTN_WIDTH 60
-#define SM_BTN_HEIGHT 40
-	BtButton *btn = new BtButton(parent);
-	QPixmap tmp = (*bt_global::icons_cache.getIcon(icon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
-	btn->setPixmap(tmp);
-	tmp = (*bt_global::icons_cache.getIcon(getPressName(icon))).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
-	btn->setPressedPixmap(tmp);
-	return btn;
-}
+	BtButton *getTrimmedButton(QWidget *parent, QString icon)
+	{
+	#define SM_BTN_WIDTH 60
+	#define SM_BTN_HEIGHT 40
+		BtButton *btn = new BtButton(parent);
+		QPixmap tmp = (*bt_global::icons_cache.getIcon(icon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+		btn->setPixmap(tmp);
+		tmp = (*bt_global::icons_cache.getIcon(getPressName(icon))).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+		btn->setPressedPixmap(tmp);
+		return btn;
+	}
 
-QLabel *getLabel(QWidget *parent, QString text, FontManager::Type t)
-{
-	QLabel *label = new QLabel(parent);
-	label->setFont(bt_global::font.get(t));
-	label->setText(text);
-	return label;
-}
+	QLabel *getLabel(QWidget *parent, QString text, FontManager::Type t)
+	{
+		QLabel *label = new QLabel(parent);
+		label->setFont(bt_global::font.get(t));
+		label->setText(text);
+		return label;
+	}
 
+	QWidget *createWidgetWithVBoxLayout()
+	{
+		QWidget *w = new QWidget;
+		QVBoxLayout *main_layout = new QVBoxLayout;
+		main_layout->setContentsMargins(0, 0, 0, 0);
+		main_layout->setSpacing(0);
+		w->setLayout(main_layout);
+		return w;
+	}
+
+	enum EnergyViewPages
+	{
+		DAILY_PAGE = 0,
+		MONTHLY_PAGE,
+		YEARLY_PAGE
+	};
+}
 
 TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
@@ -242,63 +261,62 @@ void EnergyView::showBannerWidget()
 
 QWidget *EnergyView::buildBannerWidget()
 {
-	QWidget *w = new QWidget;
-	QVBoxLayout *main_layout = new QVBoxLayout;
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
-	w->setLayout(main_layout);
-
-	// blah.. non c'e' un modo migliore di realizzare la pagina dei banner per
-	// le varie situazioni?? (giornaliero, mensile, annuale)
+	// Daily page
 	cumulative_day_banner = getBanner(this, "Cumulative");
-	main_layout->addWidget(cumulative_day_banner);
 	connect(cumulative_day_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
-
-	cumulative_month_banner = getBanner(this, "Cumulative");
-	main_layout->addWidget(cumulative_month_banner);
-	connect(cumulative_month_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
-
-	cumulative_year_banner = getBanner(this, "Cumulative");
-	main_layout->addWidget(cumulative_year_banner);
-	connect(cumulative_year_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
 
 	current_banner = getBanner(this, "Current");
 	current_banner->nascondi(banner::BUT1);
-	main_layout->addWidget(current_banner);
+
+	QWidget *daily_widget = createWidgetWithVBoxLayout();
+	daily_widget->layout()->addWidget(cumulative_day_banner);
+	daily_widget->layout()->addWidget(current_banner);
+
+	// Monthly page
+	cumulative_month_banner = getBanner(this, "Cumulative");
+	connect(cumulative_month_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
 
 	daily_av_banner = getBanner(this, "Daily Average");
 	connect(daily_av_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
-	main_layout->addWidget(daily_av_banner);
+
+	QWidget *monthly_widget = createWidgetWithVBoxLayout();
+	monthly_widget->layout()->addWidget(cumulative_month_banner);
+	monthly_widget->layout()->addWidget(daily_av_banner);
+
+	// Yearly page
+	cumulative_year_banner = getBanner(this, "Cumulative");
+	connect(cumulative_year_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+
+	QWidget *yearly_widget = createWidgetWithVBoxLayout();
+	yearly_widget->layout()->addWidget(cumulative_year_banner);
+
+	QStackedWidget *w = new QStackedWidget;
+	w->insertWidget(DAILY_PAGE, daily_widget);
+	w->insertWidget(MONTHLY_PAGE, monthly_widget);
+	w->insertWidget(YEARLY_PAGE, yearly_widget);
+
+	w->setCurrentIndex(DAILY_PAGE); // default page
+
 	return w;
 }
 
 void EnergyView::changeTimePeriod(int status, QDate selection_date)
 {
+	QStackedWidget *w = static_cast<QStackedWidget*>(widget_container->widget(BANNER_WIDGET));
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
-		cumulative_day_banner->show();
-		cumulative_month_banner->hide();
-		cumulative_year_banner->hide();
-		daily_av_banner->hide();
+		w->setCurrentIndex(DAILY_PAGE);
 		if (QDate::currentDate() == selection_date)
 			current_banner->show();
 		else
 			current_banner->hide();
 		break;
 	case TimePeriodSelection::MONTH:
-		cumulative_day_banner->hide();
-		cumulative_month_banner->show();
-		cumulative_year_banner->hide();
-		daily_av_banner->show();
-		current_banner->hide();
+		w->setCurrentIndex(MONTHLY_PAGE);
 		break;
 	case TimePeriodSelection::YEAR:
-		cumulative_day_banner->hide();
-		cumulative_month_banner->hide();
-		cumulative_year_banner->show();
-		daily_av_banner->hide();
-		current_banner->hide();
+		w->setCurrentIndex(YEARLY_PAGE);
 		break;
 	}
 }
