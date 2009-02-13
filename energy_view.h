@@ -57,6 +57,7 @@ class EnergyView : public Page
 Q_OBJECT
 public:
 	EnergyView(QString measure, QString energy_type, QString address);
+	virtual void inizializza();
 
 private:
 	QWidget *buildBannerWidget();

@@ -214,8 +214,15 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
-	dev->requestCumulativeDay();
 	unit_measure = measure;
+}
+
+void EnergyView::inizializza()
+{
+	// Ask for data showed in the default period.
+	dev->requestCurrent();
+	dev->requestCumulativeDay();
+	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
 void EnergyView::status_changed(const StatusList &status_list)
@@ -226,13 +233,16 @@ void EnergyView::status_changed(const StatusList &status_list)
 		switch (it.key())
 		{
 		case EnergyDevice::DIM_CUMULATIVE_DAY:
-			cumulative_day_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_day_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_MONTH:
-			cumulative_month_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_month_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
-			cumulative_year_banner->setText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_year_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			break;
+		case EnergyDevice::DIM_CURRENT:
+			current_banner->setSecondaryText(QString("%1·kW").arg(it.value().toInt()/1000.0, 0, 'f', 3));
 			break;
 		}
 		++it;
