@@ -8,12 +8,13 @@
 #include <QVector>
 #include <QWidget>
 
-class QLabel;
+
 class BtButton;
-// TODO: this must be changed once the correct banner is ready
-class banner;
-class QStackedWidget;
+class banner; // TODO: this must be changed once the correct banner is ready
 class EnergyDevice;
+class QLabel;
+class QStackedWidget;
+
 
 class TimePeriodSelection : public QWidget
 {
@@ -58,6 +59,9 @@ Q_OBJECT
 public:
 	EnergyView(QString measure, QString energy_type, QString address);
 	virtual void inizializza();
+
+protected:
+	void timerEvent(QTimerEvent *);
 
 private:
 	QWidget *buildBannerWidget();

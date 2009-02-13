@@ -22,6 +22,8 @@
 #define ICON_GRAPH IMG_PATH "arrrg.png"
 #define ICON_CURRENCY IMG_PATH "btncanc.png"
 
+#define POLLING_CURRENT_DATA 5 // time to refresh data visualized in the current banner
+
 
 namespace
 {
@@ -62,6 +64,7 @@ namespace
 		YEARLY_PAGE
 	};
 }
+
 
 TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
@@ -215,6 +218,13 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
 	unit_measure = measure;
+	startTimer(POLLING_CURRENT_DATA * 1000);
+}
+
+void EnergyView::timerEvent(QTimerEvent *)
+{
+	if (current_banner->isVisible())
+		dev->requestCurrent();
 }
 
 void EnergyView::inizializza()
