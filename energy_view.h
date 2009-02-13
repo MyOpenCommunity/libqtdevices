@@ -14,6 +14,7 @@ class banner; // TODO: this must be changed once the correct banner is ready
 class EnergyDevice;
 class QLabel;
 class QStackedWidget;
+class QSignalMapper;
 
 
 class TimePeriodSelection : public QWidget
@@ -72,6 +73,14 @@ private:
 		GRAPH_WIDGET = 1
 	};
 
+	enum GraphType
+	{
+		CUMULATIVE_DAY,
+		CUMULATIVE_MONTH,
+		CUMULATIVE_YEAR,
+		DAILY_AVERAGE
+	};
+
 	// TODO: this must be changed once the correct banner is ready
 	banner *current_banner, *daily_av_banner;
 	banner *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
@@ -80,11 +89,13 @@ private:
 	Widget current_widget;
 	EnergyDevice *dev;
 	QString unit_measure;
+	QSignalMapper *mapper;
+	GraphType current_graph;
 
 private slots:
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
-	void showGraphWidget();
+	void showGraph(int graph_type);
 	void showBannerWidget();
 	void backClick();
 	void status_changed(const StatusList &status_list);

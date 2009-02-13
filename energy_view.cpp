@@ -14,6 +14,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QStackedWidget>
+#include <QSignalMapper>
 
 #define ICON_FWD IMG_PATH "btnforward.png"
 #define ICON_BACK IMG_PATH "btnbackward.png"
@@ -57,7 +58,7 @@ namespace
 		return w;
 	}
 
-	enum EnergyViewPages
+	enum EnergyViewPage
 	{
 		DAILY_PAGE = 0,
 		MONTHLY_PAGE,
@@ -194,6 +195,9 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 	if (dev != d)
 		delete d;
 
+	mapper = new QSignalMapper(this);
+	connect(mapper, SIGNAL(mapped(int)), SLOT(showGraph(int)));
+
 	main_layout->setAlignment(Qt::AlignTop);
 
 	// title section
@@ -267,9 +271,10 @@ void EnergyView::backClick()
 		showBannerWidget();
 }
 
-void EnergyView::showGraphWidget()
+void EnergyView::showGraph(int graph_type)
 {
 	current_widget = GRAPH_WIDGET;
+	current_graph = static_cast<GraphType>(graph_type);
 	widget_container->setCurrentIndex(current_widget);
 }
 
@@ -279,13 +284,17 @@ void EnergyView::showBannerWidget()
 	widget_container->setCurrentIndex(current_widget);
 }
 
+
 QWidget *EnergyView::buildBannerWidget()
 {
-	// Daily page
-	cumulative_day_banner = getBanner(this, "Cumulative");
-	connect(cumulative_day_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+	QString cumulative_text = tr("Cumulative");
 
-	current_banner = getBanner(this, "Current");
+	// Daily page
+	cumulative_day_banner = getBanner(this, cumulative_text);
+	connect(cumulative_day_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	mapper->setMapping(cumulative_day_banner, CUMULATIVE_DAY);
+
+	current_banner = getBanner(this, tr("Current"));
 	current_banner->nascondi(banner::BUT1);
 
 	QWidget *daily_widget = createWidgetWithVBoxLayout();
@@ -293,19 +302,22 @@ QWidget *EnergyView::buildBannerWidget()
 	daily_widget->layout()->addWidget(current_banner);
 
 	// Monthly page
-	cumulative_month_banner = getBanner(this, "Cumulative");
-	connect(cumulative_month_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+	cumulative_month_banner = getBanner(this, cumulative_text);
+	connect(cumulative_month_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	mapper->setMapping(cumulative_month_banner, CUMULATIVE_MONTH);
 
-	daily_av_banner = getBanner(this, "Daily Average");
-	connect(daily_av_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+	daily_av_banner = getBanner(this, tr("Daily Average"));
+	connect(daily_av_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	mapper->setMapping(daily_av_banner, DAILY_AVERAGE);
 
 	QWidget *monthly_widget = createWidgetWithVBoxLayout();
 	monthly_widget->layout()->addWidget(cumulative_month_banner);
 	monthly_widget->layout()->addWidget(daily_av_banner);
 
 	// Yearly page
-	cumulative_year_banner = getBanner(this, "Cumulative");
-	connect(cumulative_year_banner, SIGNAL(sxClick()), SLOT(showGraphWidget()));
+	cumulative_year_banner = getBanner(this, cumulative_text);
+	connect(cumulative_year_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	mapper->setMapping(cumulative_year_banner, CUMULATIVE_YEAR);
 
 	QWidget *yearly_widget = createWidgetWithVBoxLayout();
 	yearly_widget->layout()->addWidget(cumulative_year_banner);
