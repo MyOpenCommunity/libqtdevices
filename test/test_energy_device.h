@@ -28,7 +28,7 @@ private slots:
 	void readDayGraph();
 	void readDayGraph2();
 	void readDayGraph3();
-	void requestDayGraph();
+	void requestCumulativeDayGraph();
 	void requestCumulativeMonthGraph();
 	void readCumulativeMonthGraph();
 	void readCumulativeMonthGraph2();

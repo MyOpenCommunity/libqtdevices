@@ -228,9 +228,9 @@ void TestEnergyDevice::readDayGraph3()
 	data[24] = 254;
 }
 
-void TestEnergyDevice::requestDayGraph()
+void TestEnergyDevice::requestCumulativeDayGraph()
 {
-	dev->requestDayGraph(QDate(2009, 1, 9));
+	dev->requestCumulativeDayGraph(QDate(2009, 1, 9));
 	client_command->flush();
 	QString req(QString("*18*52#1#9*%1##").arg(where));
 	QVERIFY(server->frameCommand() == req);
