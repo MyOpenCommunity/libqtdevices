@@ -8,6 +8,14 @@
 
 #include <assert.h>
 
+enum RequestDimension
+{
+	_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
+
+	REQ_DAILY_AVERAGE_GRAPH      = 53,   // graph data for daily average
+	REQ_DAY_GRAPH                = 52,   // request graph data for a specific day
+	REQ_CUMULATIVE_MONTH_GRAPH   = 56,   // request graph data for cumulative month
+};
 
 EnergyDevice::EnergyDevice(QString where) : device(QString("18"), where)
 {
@@ -40,20 +48,21 @@ void EnergyDevice::requestCumulativeYear() const
 
 void EnergyDevice::requestDailyAverageGraph(QDate date) const
 {
-	sendFrame(createMsgOpen(who, QString("53#%1").arg(date.month()), where));
+	sendFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH)
+		.arg(date.month()), where));
 	buffer_frame.clear();
 }
 
 void EnergyDevice::requestDayGraph(QDate date) const
 {
-	sendCompressedFrame(createMsgOpen(who, QString("%1#%2#%3").arg(DIM_TX_DAY_GRAPH)
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2#%3").arg(REQ_DAY_GRAPH)
 		.arg(date.month()).arg(date.day()), where));
 	buffer_frame.clear();
 }
 
 void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 {
-	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(DIM_TX_CUMULATIVE_MONTH)
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_CUMULATIVE_MONTH_GRAPH)
 		.arg(date.month()), where));
 	buffer_frame.clear();
 }
@@ -85,12 +94,12 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	QVariant v;
 
 	if (what == DIM_CUMULATIVE_DAY || what == DIM_CURRENT || what == DIM_CUMULATIVE_MONTH ||
-		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == DIM_DAILY_AVERAGE ||
-		what == DIM_RX_DAY_GRAPH || what == DIM_RX_CUMULATIVE_MONTH)
+		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == ANS_DAILY_AVERAGE_GRAPH ||
+		what == ANS_DAY_GRAPH || what == ANS_CUMULATIVE_MONTH_GRAPH)
 	{
 		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
 
-		if (what == DIM_DAILY_AVERAGE)
+		if (what == ANS_DAILY_AVERAGE_GRAPH)
 		{
 			// We assume that the frames came in correct (sequential) order
 			int num_frame = msg.whatArgN(0);
@@ -118,14 +127,14 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			v.setValue(data);
 			status_list[what] = v;
 		}
-		else if (what == DIM_RX_DAY_GRAPH)
+		else if (what == ANS_DAY_GRAPH)
 		{
 			int num_frame = msg.whatArgN(0);
 			if (num_frame > 0 && num_frame < 10)
 				buffer_frame.append(frame);
 			status_list[what] = parseDayGraph(buffer_frame, msg);
 		}
-		else if (what == DIM_RX_CUMULATIVE_MONTH)
+		else if (what == ANS_CUMULATIVE_MONTH_GRAPH)
 		{
 			int num_frame = msg.whatArgN(0);
 			if (num_frame > 0 && num_frame < 22)

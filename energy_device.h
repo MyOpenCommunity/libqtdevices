@@ -44,16 +44,14 @@ public:
 
 	enum Type
 	{
+		DIM_CUMULATIVE_YEAR   = 51,
+		DIM_CUMULATIVE_MONTH  = 53,
 		DIM_CUMULATIVE_DAY    = 54,
 		DIM_CURRENT           = 113,
-		DIM_CUMULATIVE_MONTH  = 53,
-		_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
-		DIM_CUMULATIVE_YEAR   = 51,
-		DIM_DAILY_AVERAGE     = 57,    // read graph data for cumulative daily average
-		DIM_RX_DAY_GRAPH      = 56,    // read graph data for a specific day
-		DIM_TX_DAY_GRAPH      = 52,    // request graph data for a specific day
-		DIM_TX_CUMULATIVE_MONTH = 56,  // request graph data for cumulative month
-		DIM_RX_CUMULATIVE_MONTH = 510, // read graph data for cumulative month
+
+		ANS_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
+		ANS_DAY_GRAPH                = 56,    // read graph data for a specific day
+		ANS_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
 	};
 
 public slots:
