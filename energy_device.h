@@ -39,7 +39,7 @@ public:
 	void requestCumulativeMonth(QDate date) const;
 	void requestCumulativeYear() const;
 	void requestDailyAverageGraph(QDate date) const;
-	void requestDayGraph(QDate date) const;
+	void requestCumulativeDayGraph(QDate date) const;
 	void requestCumulativeMonthGraph(QDate date) const;
 
 	enum Type

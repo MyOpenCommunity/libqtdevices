@@ -53,7 +53,7 @@ void EnergyDevice::requestDailyAverageGraph(QDate date) const
 	buffer_frame.clear();
 }
 
-void EnergyDevice::requestDayGraph(QDate date) const
+void EnergyDevice::requestCumulativeDayGraph(QDate date) const
 {
 	sendCompressedFrame(createMsgOpen(who, QString("%1#%2#%3").arg(REQ_DAY_GRAPH)
 		.arg(date.month()).arg(date.day()), where));
