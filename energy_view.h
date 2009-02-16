@@ -2,12 +2,13 @@
 #define ENERGY_VIEW_H
 
 #include "page.h"
+#include "energy_device.h" // GraphData
 
 #include <QColor>
 #include <QDate>
 #include <QVector>
 #include <QWidget>
-
+#include <QCache>
 
 class BtButton;
 class banner; // TODO: this must be changed once the correct banner is ready
@@ -15,6 +16,8 @@ class EnergyDevice;
 class QLabel;
 class QStackedWidget;
 class QSignalMapper;
+
+typedef QCache<QDate, GraphData> GraphCache;
 
 
 class TimePeriodSelection : public QWidget
@@ -59,6 +62,7 @@ class EnergyView : public Page
 Q_OBJECT
 public:
 	EnergyView(QString measure, QString energy_type, QString address);
+	~EnergyView();
 	virtual void inizializza();
 
 protected:
@@ -91,6 +95,7 @@ private:
 	QString unit_measure;
 	QSignalMapper *mapper;
 	GraphType current_graph;
+	QHash<GraphType, GraphCache*> graph_data_cache;
 
 private slots:
 	void toggleCurrency();

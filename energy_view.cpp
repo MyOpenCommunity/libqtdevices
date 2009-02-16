@@ -1,6 +1,5 @@
 #include "energy_view.h"
 #include "energy_graph.h"
-#include "energy_device.h"
 #include "banner.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
@@ -16,6 +15,8 @@
 #include <QStackedWidget>
 #include <QSignalMapper>
 
+#include <assert.h>
+
 #define ICON_FWD IMG_PATH "btnforward.png"
 #define ICON_BACK IMG_PATH "btnbackward.png"
 #define ICON_AVANTI IMG_PATH "btnavanti.png"
@@ -24,6 +25,9 @@
 #define ICON_CURRENCY IMG_PATH "btncanc.png"
 
 #define POLLING_CURRENT_DATA 5 // time to refresh data visualized in the current banner
+
+// To use QDate as a key in QHash
+inline bool qHash(const QDate &date) { return qHash(date.toString()); }
 
 
 namespace
@@ -225,6 +229,16 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 	startTimer(POLLING_CURRENT_DATA * 1000);
 }
 
+EnergyView::~EnergyView()
+{
+	QMutableHashIterator<GraphType, GraphCache*> it(graph_data_cache);
+	while (it.hasNext())
+	{
+		it.next();
+		delete it.value();
+	}
+}
+
 void EnergyView::timerEvent(QTimerEvent *)
 {
 	if (current_banner->isVisible())
@@ -233,7 +247,7 @@ void EnergyView::timerEvent(QTimerEvent *)
 
 void EnergyView::inizializza()
 {
-	// Ask for data showed in the default period.
+	// Ask for the data showed in the default period.
 	dev->requestCurrent();
 	dev->requestCumulativeDay();
 	dev->requestCumulativeDayGraph(QDate::currentDate());
@@ -257,6 +271,15 @@ void EnergyView::status_changed(const StatusList &status_list)
 			break;
 		case EnergyDevice::DIM_CURRENT:
 			current_banner->setSecondaryText(QString("%1·kW").arg(it.value().toInt()/1000.0, 0, 'f', 3));
+			break;
+		case EnergyDevice::ANS_DAILY_AVERAGE_GRAPH:
+			assert(it.value().canConvert<GraphData>());
+			GraphData *d = new GraphData(it.value().value<GraphData>());
+			if (!graph_data_cache.contains(DAILY_AVERAGE))
+				graph_data_cache[DAILY_AVERAGE] = new GraphCache;
+
+			GraphCache *cache = graph_data_cache[DAILY_AVERAGE];
+			cache->insert(time_period->date(), d);
 			break;
 		}
 		++it;
