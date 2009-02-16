@@ -21,21 +21,6 @@
 class QDate;
 class OpenMsg;
 
-typedef struct _GraphData
-{
-	_GraphData() : type(0) { }
-	QMap<int, int> graph;
-	QDate date;
-	int type;
-	bool operator==(const _GraphData &other)
-	{
-		return (graph == other.graph) && (date == other.date) &&
-			(type == other.type);
-	}
-} GraphData;
-Q_DECLARE_METATYPE(GraphData)
-
-
 class EnergyDevice : public device
 {
 friend class TestEnergyDevice;
@@ -64,6 +49,14 @@ public:
 		ANS_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
 	};
 
+		enum GraphType
+	{
+		CUMULATIVE_DAY,
+		CUMULATIVE_MONTH,
+		CUMULATIVE_YEAR,
+		DAILY_AVERAGE
+	};
+
 public slots:
 	void frame_rx_handler(char *frame);
 
@@ -77,6 +70,21 @@ private:
 	static const int MAX_VALUE = 255;
 	mutable QList<QString> buffer_frame;
 };
+
+
+typedef struct _GraphData
+{
+	_GraphData() : type(EnergyDevice::CUMULATIVE_DAY) { }
+	QMap<int, int> graph;
+	QDate date;
+	EnergyDevice::GraphType type;
+	bool operator==(const _GraphData &other)
+	{
+		return (graph == other.graph) && (date == other.date) &&
+			(type == other.type);
+	}
+} GraphData;
+Q_DECLARE_METATYPE(GraphData)
 
 #endif // ENERGY_DEVICE_H
 
