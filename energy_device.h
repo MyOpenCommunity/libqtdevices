@@ -21,8 +21,18 @@
 class QDate;
 class OpenMsg;
 
-
-typedef QMap<int, int> GraphData;
+typedef struct _GraphData
+{
+	_GraphData() : type(0) { }
+	QMap<int, int> graph;
+	QDate date;
+	int type;
+	bool operator==(const _GraphData &other)
+	{
+		return (graph == other.graph) && (date == other.date) &&
+			(type == other.type);
+	}
+} GraphData;
 Q_DECLARE_METATYPE(GraphData)
 
 
@@ -62,6 +72,8 @@ private:
 	void sendRequest(QString what) const;
 	QVariant parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg);
 	QVariant parseCumulativeMonthGraph(const QList<QString> &buffer_frame);
+	QVariant parseDailyAverageGraph(const QList<QString> &buffer_frame);
+	QDate getDateFromFrame(OpenMsg &msg);
 	static const int MAX_VALUE = 255;
 	mutable QList<QString> buffer_frame;
 };

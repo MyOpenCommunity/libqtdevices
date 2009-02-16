@@ -106,26 +106,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			if (num_frame > 0 && num_frame < 18)
 				buffer_frame.append(frame);
 
-			OpenMsg frame_parser;
-			QList<int> values_list;
-			for (int i = 0; i < buffer_frame.size(); ++i)
-			{
-				frame_parser.CreateMsgOpen(buffer_frame[i].toAscii().data(), buffer_frame[i].length());
-				values_list.append(frame_parser.whatArgN(1));
-				if (frame_parser.whatArgN(0) != 17)
-				{
-					values_list.append(frame_parser.whatArgN(2));
-					if (frame_parser.whatArgN(0) != 1)
-						values_list.append(frame_parser.whatArgN(3));
-				}
-			}
-
-			GraphData data;
-			for (int i = 0; i + 1 < values_list.size(); i+=2)
-				data[i / 2 + 1] = values_list[i] * 256 + values_list[i + 1];
-
-			v.setValue(data);
-			status_list[what] = v;
+			status_list[what] = parseDailyAverageGraph(buffer_frame);
 		}
 		else if (what == ANS_DAY_GRAPH)
 		{
@@ -154,12 +135,41 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		}
 		emit status_changed(status_list);
 	}
+}
 
+QVariant EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame)
+{
+	QList<int> values_list;
+	GraphData data;
+	OpenMsg tmp(buffer_frame[0].toStdString());
+	data.date = getDateFromFrame(tmp);
+	for (int i = 0; i < buffer_frame.size(); ++i)
+	{
+		OpenMsg frame_parser(buffer_frame[i].toStdString());
+		values_list.append(frame_parser.whatArgN(1));
+		if (frame_parser.whatArgN(0) != 17)
+		{
+			values_list.append(frame_parser.whatArgN(2));
+			if (frame_parser.whatArgN(0) != 1)
+				values_list.append(frame_parser.whatArgN(3));
+		}
+	}
+
+	for (int i = 0; i + 1 < values_list.size(); i+=2)
+		data.graph[i / 2 + 1] = values_list[i] * 256 + values_list[i + 1];
+
+	QVariant v;
+	v.setValue(data);
+	return v;
 }
 
 QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg)
 {
 	QList<int> values;
+	GraphData data;
+	OpenMsg tmp(buffer_frame[0].toStdString());
+	data.date = getDateFromFrame(tmp);
+
 	// assume that frames arrive in order
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
@@ -178,9 +188,8 @@ QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg
 				values.append(frame_parser.whatArgN(j));
 	}
 
-	GraphData data;
 	for (int i = 0; i < values.size(); ++i)
-		data[i + 1] = values[i] == MAX_VALUE ? 0 : values[i];
+		data.graph[i + 1] = values[i] == MAX_VALUE ? 0 : values[i];
 	QVariant v;
 	v.setValue(data);
 	return v;
@@ -188,7 +197,12 @@ QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg
 
 QVariant EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_frame)
 {
+	GraphData data;
 	QList<int> values;
+	OpenMsg tmp(buffer_frame[0].toStdString());
+	data.date = getDateFromFrame(tmp);
+	// TODO: data.type;
+
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
 		OpenMsg frame_parser(buffer_frame[i].toStdString());
@@ -199,15 +213,24 @@ QVariant EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_fr
 			values.append(frame_parser.whatArgN(3));
 	}
 
-	GraphData data;
 	for (int i = 0; i + 1 < values.size(); i += 2)
 	{
 		int high = values[i] == 255 ? 0 : values[i];
 		int low = values[i+1] == 255 ? 0 : values[i+1];
-		data[i / 2 + 1] = high * 256 + low;
+		data.graph[i / 2 + 1] = high * 256 + low;
 	}
 
 	QVariant v;
 	v.setValue(data);
 	return v;
+}
+
+QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
+{
+	assert(msg.whatSubArgCnt() > 0);
+	QDate current = QDate::currentDate();
+	int month = msg.whatSubArgN(0);
+	int day = msg.whatSubArgCnt() > 1 ? msg.whatSubArgN(1) : 1;
+	int year = month <= current.month() ? current.year() : current.year() - 1;
+	return QDate(year, month, day);
 }
