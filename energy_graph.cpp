@@ -80,9 +80,11 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		p.drawText(rect().width() - remaining_width, font_y, "1");
 		QString num = QString::number(number_of_bars);
 		p.drawText(remaining_width - fm.width(num), font_y, num);
+		remaining_height -= fm.height();
 
 		p.drawText(remaining_width - fm.width(text), fm.height(), text);
-		remaining_height -= fm.height();
+		// We leave some space between text and bars
+		int text_space = fm.height()*3/2;
 
 		// 3. draw axis
 		p.save();
@@ -103,7 +105,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		p.restore();
 
 		// calculate the width of each bar
-		float bar_width = static_cast<float>(remaining_width) / number_of_bars;
+		int bar_width = static_cast<int>(remaining_width / static_cast<float>(number_of_bars));
 
 		// draw bars
 		p.setPen(QColor("blue"));
@@ -115,9 +117,9 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			it.next();
 			p.setBrush(it.key() % 2 ? primary_color : secondary_color);
 			float ratio = it.value() / static_cast<float>(max_value);
-			int bar_height = static_cast<int>(ratio * remaining_height);
-			QRect tmp = QRect(x, remaining_height - bar_height, static_cast<int>(bar_width), bar_height);
-			x += static_cast<int>(bar_width);
+			int bar_height = static_cast<int>(ratio * (remaining_height  - text_space));
+			QRect tmp = QRect(x, remaining_height - bar_height, bar_width, bar_height);
+			x += bar_width;
 			p.drawRect(tmp);
 		}
 	}
