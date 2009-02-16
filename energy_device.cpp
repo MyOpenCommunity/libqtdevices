@@ -113,7 +113,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		{
 			if (num_frame > 0 && num_frame < 10)
 				buffer_frame.append(frame);
-			status_list[what] = parseDayGraph(buffer_frame, msg);
+			status_list[what] = parseCumulativeDayGraph(buffer_frame);
 		}
 		else if (what == ANS_CUMULATIVE_MONTH_GRAPH)
 		{
@@ -163,7 +163,7 @@ QVariant EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame
 	return v;
 }
 
-QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg)
+QVariant EnergyDevice::parseCumulativeDayGraph(const QList<QString> &buffer_frame)
 {
 	QList<int> values;
 	GraphData data;
@@ -174,8 +174,8 @@ QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg
 	// assume that frames arrive in order
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
-		assert(msg.whatArgCnt() > 1);
 		OpenMsg frame_parser(buffer_frame[i].toStdString());
+		assert(frame_parser.whatArgCnt() > 1);
 		if (frame_parser.whatArgN(0) == 1)
 			values.append(frame_parser.whatArgN(2));
 		else if (frame_parser.whatArgN(0) == 9)

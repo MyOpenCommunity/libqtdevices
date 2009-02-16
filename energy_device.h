@@ -63,7 +63,7 @@ public slots:
 private:
 	void sendRequest(int what) const;
 	void sendRequest(QString what) const;
-	QVariant parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg);
+	QVariant parseCumulativeDayGraph(const QList<QString> &buffer_frame);
 	QVariant parseCumulativeMonthGraph(const QList<QString> &buffer_frame);
 	QVariant parseDailyAverageGraph(const QList<QString> &buffer_frame);
 	QDate getDateFromFrame(OpenMsg &msg);
