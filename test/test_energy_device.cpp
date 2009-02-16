@@ -59,6 +59,7 @@ void TestEnergyDevice::readDailyAverageGraph()
 	GraphData data;
 	data.graph[1] = 517;
 	data.date = QDate(2008, 9, 1);
+	data.type = EnergyDevice::DAILY_AVERAGE;
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -77,6 +78,7 @@ void TestEnergyDevice::readDailyAverageGraph2()
 	data.graph[1] = 517;
 	data.graph[2] = 265;
 	data.date = QDate(2008, 9, 1);
+	data.type = EnergyDevice::DAILY_AVERAGE;
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -126,6 +128,7 @@ void TestEnergyDevice::readDailyAverageGraph3()
 	data.graph[23] = 258;
 	data.graph[24] = 1025;
 	data.date = QDate(2008, 9, 1);
+	data.type = EnergyDevice::DAILY_AVERAGE;
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -158,6 +161,7 @@ void TestEnergyDevice::readDayGraph()
 	GraphData data;
 	data.graph[1] = 210;
 	data.date = QDate(2008, 8, 1);
+	data.type = EnergyDevice::CUMULATIVE_DAY;
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -181,6 +185,7 @@ void TestEnergyDevice::readDayGraph2()
 	data.graph[3] = 67;
 	data.graph[4] = 0;
 	data.date = QDate(2008, 8, 1);
+	data.type = EnergyDevice::CUMULATIVE_DAY;
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -233,6 +238,7 @@ void TestEnergyDevice::readDayGraph3()
 	data.graph[23] = 253;
 	data.graph[24] = 254;
 	data.date = QDate(2008, 8, 1);
+	data.type = EnergyDevice::CUMULATIVE_DAY;
 }
 
 void TestEnergyDevice::requestCumulativeDayGraph()
@@ -265,6 +271,7 @@ void TestEnergyDevice::readCumulativeMonthGraph()
 	GraphData data;
 	data.graph[1] = (3 << 8) + 0;
 	data.date = QDate(2008, 8, 1);
+	data.type = EnergyDevice::CUMULATIVE_MONTH;
 	QVERIFY(data == result.value<GraphData>());
 }
 
@@ -290,6 +297,7 @@ void TestEnergyDevice::readCumulativeMonthGraph2()
 	data.graph[5] = (45 << 8) + 150;
 	data.graph[6] = (185 << 8);
 	data.date = QDate(2008, 8, 1);
+	data.type = EnergyDevice::CUMULATIVE_MONTH;
 
 	QVERIFY(data == result.value<GraphData>());
 }
