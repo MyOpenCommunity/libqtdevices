@@ -141,6 +141,8 @@ QVariant EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame
 	GraphData data;
 	OpenMsg tmp(buffer_frame[0].toStdString());
 	data.date = getDateFromFrame(tmp);
+	data.type = DAILY_AVERAGE;
+
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
 		OpenMsg frame_parser(buffer_frame[i].toStdString());
@@ -167,6 +169,7 @@ QVariant EnergyDevice::parseDayGraph(const QList<QString> &buffer_frame, OpenMsg
 	GraphData data;
 	OpenMsg tmp(buffer_frame[0].toStdString());
 	data.date = getDateFromFrame(tmp);
+	data.type = CUMULATIVE_DAY;
 
 	// assume that frames arrive in order
 	for (int i = 0; i < buffer_frame.size(); ++i)
@@ -199,7 +202,7 @@ QVariant EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_fr
 	QList<int> values;
 	OpenMsg tmp(buffer_frame[0].toStdString());
 	data.date = getDateFromFrame(tmp);
-	// TODO: data.type;
+	data.type = CUMULATIVE_MONTH;
 
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
