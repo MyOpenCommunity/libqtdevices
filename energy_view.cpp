@@ -298,6 +298,7 @@ void EnergyView::showGraph(int graph_type)
 {
 	current_widget = GRAPH_WIDGET;
 	current_graph = static_cast<GraphType>(graph_type);
+	current_date = time_period->date();
 	widget_container->setCurrentIndex(current_widget);
 }
 

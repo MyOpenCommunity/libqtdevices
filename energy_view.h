@@ -95,6 +95,7 @@ private:
 	QString unit_measure;
 	QSignalMapper *mapper;
 	GraphType current_graph;
+	QDate current_date;
 	QHash<GraphType, GraphCache*> graph_data_cache;
 
 private slots:
