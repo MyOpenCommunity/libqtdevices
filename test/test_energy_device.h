@@ -32,6 +32,7 @@ private slots:
 	void requestCumulativeMonthGraph();
 	void readCumulativeMonthGraph();
 	void readCumulativeMonthGraph2();
+	void testGetDateFromFrame();
 
 private:
 	EnergyDevice *dev;

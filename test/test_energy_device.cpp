@@ -4,6 +4,7 @@
 #include "openclient.h"
 
 #include <energy_device.h>
+#include <openmsg.h>
 
 #include <QtTest/QtTest>
 #include <QStringList>
@@ -56,7 +57,8 @@ void TestEnergyDevice::readDailyAverageGraph()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = 517;
+	data.graph[1] = 517;
+	data.date = QDate(2008, 9, 1);
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -72,8 +74,9 @@ void TestEnergyDevice::readDailyAverageGraph2()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = 517;
-	data[2] = 265;
+	data.graph[1] = 517;
+	data.graph[2] = 265;
+	data.date = QDate(2008, 9, 1);
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -98,30 +101,31 @@ void TestEnergyDevice::readDailyAverageGraph3()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = 517;
-	data[2] = 265;
-	data[3] = 834;
-	data[4] = 266;
-	data[5] = 1281;
-	data[6] = 14;
-	data[7] = 2;
-	data[8] = 521;
-	data[9] = 1030;
-	data[10] = 768;
-	data[11] = 1803;
-	data[12] = 770;
-	data[13] = 1281;
-	data[14] = 120;
-	data[15] = 344;
-	data[16] = 256;
-	data[17] = 543;
-	data[18] = 544;
-	data[19] = 65;
-	data[20] = 436;
-	data[21] = 7;
-	data[22] = 771;
-	data[23] = 258;
-	data[24] = 1025;
+	data.graph[1] = 517;
+	data.graph[2] = 265;
+	data.graph[3] = 834;
+	data.graph[4] = 266;
+	data.graph[5] = 1281;
+	data.graph[6] = 14;
+	data.graph[7] = 2;
+	data.graph[8] = 521;
+	data.graph[9] = 1030;
+	data.graph[10] = 768;
+	data.graph[11] = 1803;
+	data.graph[12] = 770;
+	data.graph[13] = 1281;
+	data.graph[14] = 120;
+	data.graph[15] = 344;
+	data.graph[16] = 256;
+	data.graph[17] = 543;
+	data.graph[18] = 544;
+	data.graph[19] = 65;
+	data.graph[20] = 436;
+	data.graph[21] = 7;
+	data.graph[22] = 771;
+	data.graph[23] = 258;
+	data.graph[24] = 1025;
+	data.date = QDate(2008, 9, 1);
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -152,7 +156,8 @@ void TestEnergyDevice::readDayGraph()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = 210;
+	data.graph[1] = 210;
+	data.date = QDate(2008, 8, 1);
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -171,10 +176,11 @@ void TestEnergyDevice::readDayGraph2()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = 210;
-	data[2] = 12;
-	data[3] = 67;
-	data[4] = 0;
+	data.graph[1] = 210;
+	data.graph[2] = 12;
+	data.graph[3] = 67;
+	data.graph[4] = 0;
+	data.date = QDate(2008, 8, 1);
 
 	QVERIFY(data == result.value<GraphData>());
 }
@@ -202,30 +208,31 @@ void TestEnergyDevice::readDayGraph3()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = 0;
-	data[2] = 0;
-	data[3] = 1;
-	data[4] = 12;
-	data[5] = 200;
-	data[6] = 150;
-	data[7] = 0;
-	data[8] = 190;
-	data[9] = 191;
-	data[10] = 192;
-	data[11] = 180;
-	data[12] = 181;
-	data[13] = 182;
-	data[14] = 170;
-	data[15] = 171;
-	data[16] = 172;
-	data[17] = 253;
-	data[18] = 254;
-	data[19] = 0;
-	data[20] = 253;
-	data[21] = 254;
-	data[22] = 0;
-	data[23] = 253;
-	data[24] = 254;
+	data.graph[1] = 0;
+	data.graph[2] = 0;
+	data.graph[3] = 1;
+	data.graph[4] = 12;
+	data.graph[5] = 200;
+	data.graph[6] = 150;
+	data.graph[7] = 0;
+	data.graph[8] = 190;
+	data.graph[9] = 191;
+	data.graph[10] = 192;
+	data.graph[11] = 180;
+	data.graph[12] = 181;
+	data.graph[13] = 182;
+	data.graph[14] = 170;
+	data.graph[15] = 171;
+	data.graph[16] = 172;
+	data.graph[17] = 253;
+	data.graph[18] = 254;
+	data.graph[19] = 0;
+	data.graph[20] = 253;
+	data.graph[21] = 254;
+	data.graph[22] = 0;
+	data.graph[23] = 253;
+	data.graph[24] = 254;
+	data.date = QDate(2008, 8, 1);
 }
 
 void TestEnergyDevice::requestCumulativeDayGraph()
@@ -256,7 +263,8 @@ void TestEnergyDevice::readCumulativeMonthGraph()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = (3 << 8) + 0;
+	data.graph[1] = (3 << 8) + 0;
+	data.date = QDate(2008, 8, 1);
 	QVERIFY(data == result.value<GraphData>());
 }
 
@@ -275,12 +283,20 @@ void TestEnergyDevice::readCumulativeMonthGraph2()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data[1] = (3 << 8) + 0;
-	data[2] = (20 << 8) + 90;
-	data[3] = 0;
-	data[4] = 0;
-	data[5] = (45 << 8) + 150;
-	data[6] = (185 << 8);
+	data.graph[1] = (3 << 8) + 0;
+	data.graph[2] = (20 << 8) + 90;
+	data.graph[3] = 0;
+	data.graph[4] = 0;
+	data.graph[5] = (45 << 8) + 150;
+	data.graph[6] = (185 << 8);
+	data.date = QDate(2008, 8, 1);
 
 	QVERIFY(data == result.value<GraphData>());
+}
+
+void TestEnergyDevice::testGetDateFromFrame()
+{
+	EnergyDevice dev("20");
+	OpenMsg frame("*#18*20*57#8*1*22*33##");
+	QVERIFY(QDate(2008, 8, 1) == dev.getDateFromFrame(frame));
 }
