@@ -5,29 +5,23 @@
 #include <QPen>
 
 
-EnergyGraph::EnergyGraph() : number_of_bars(1),
-	// dummy values
-	graph_data(QVector<int>(10, 10)),
-	max_value(findMax()),
-	primary_color(QColor("white")),
-	secondary_color(primary_color)
+EnergyGraph::EnergyGraph()
 {
-	setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-	// TODO: read these from config file
+	number_of_bars = 1;
+	//setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	setColors(QColor("cyan"), QColor("white"));
 }
 
 void EnergyGraph::setNumberOfBars(int num)
 {
 	number_of_bars = num;
-	generateRandomValues();
 	update();
 }
 
 void EnergyGraph::generateRandomValues()
 {
 	// TODO: just for the demo, fill in the graph with random values
-	for (QVector<int>::size_type i = 0; i < graph_data.size(); ++i)
+	for (int i = 0; i < number_of_bars; ++i)
 		graph_data[i] = rand();
 	max_value = findMax();
 }
@@ -35,20 +29,21 @@ void EnergyGraph::generateRandomValues()
 int EnergyGraph::findMax()
 {
 	int max = -1;
-	for (QVector<int>::size_type i = 0; i < graph_data.size(); ++i)
-		max = qMax(max, graph_data[i]);
+	foreach (int val, graph_data)
+		max = qMax (max, val);
+
 	return max;
 }
 
-void EnergyGraph::setGraphData(QVector<int> data)
+void EnergyGraph::setData(const QMap<int, int> &data)
 {
 	graph_data = data;
 	max_value = findMax();
+	update();
 }
 
 void EnergyGraph::showEvent(QShowEvent *e)
 {
-	generateRandomValues();
 	update();
 }
 
@@ -124,10 +119,13 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		// draw bars
 		p.setPen(QColor("blue"));
 		x = rect().width() - remaining_width;
-		for (QVector<int>::size_type i = 0; i < graph_data.size(); ++i)
+
+		QMapIterator<int, int> it(graph_data);
+		while (it.hasNext())
 		{
-			(i % 2) ? p.setBrush(primary_color) : p.setBrush(secondary_color);
-			float ratio = graph_data[i] / static_cast<float>(max_value);
+			it.next();
+			p.setBrush(it.key() % 2 ? primary_color : secondary_color);
+			float ratio = it.value() / static_cast<float>(max_value);
 			int bar_height = static_cast<int>(ratio * remaining_height);
 			QRect tmp = QRect(x, remaining_height - bar_height, static_cast<int>(bar_width), bar_height);
 			x += static_cast<int>(bar_width);
