@@ -50,21 +50,18 @@ void EnergyDevice::requestDailyAverageGraph(QDate date) const
 {
 	sendFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH)
 		.arg(date.month()), where));
-	buffer_frame.clear();
 }
 
 void EnergyDevice::requestCumulativeDayGraph(QDate date) const
 {
 	sendCompressedFrame(createMsgOpen(who, QString("%1#%2#%3").arg(REQ_DAY_GRAPH)
 		.arg(date.month()).arg(date.day()), where));
-	buffer_frame.clear();
 }
 
 void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 {
 	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_CUMULATIVE_MONTH_GRAPH)
 		.arg(date.month()), where));
-	buffer_frame.clear();
 }
 
 void EnergyDevice::requestCumulativeMonth(QDate date) const
@@ -97,12 +94,16 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == ANS_DAILY_AVERAGE_GRAPH ||
 		what == ANS_DAY_GRAPH || what == ANS_CUMULATIVE_MONTH_GRAPH)
 	{
+		assert(msg.whatArgCnt() > 0);
 		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
+		int num_frame = msg.whatArgN(0);
+		// clear the buffer if the first frame of a new graph arrives
+		if (num_frame == 1 && msg.whatArgCnt() > 1)
+			buffer_frame.clear();
 
 		if (what == ANS_DAILY_AVERAGE_GRAPH)
 		{
 			// We assume that the frames came in correct (sequential) order
-			int num_frame = msg.whatArgN(0);
 			if (num_frame > 0 && num_frame < 18)
 				buffer_frame.append(frame);
 
@@ -110,21 +111,18 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		}
 		else if (what == ANS_DAY_GRAPH)
 		{
-			int num_frame = msg.whatArgN(0);
 			if (num_frame > 0 && num_frame < 10)
 				buffer_frame.append(frame);
 			status_list[what] = parseDayGraph(buffer_frame, msg);
 		}
 		else if (what == ANS_CUMULATIVE_MONTH_GRAPH)
 		{
-			int num_frame = msg.whatArgN(0);
 			if (num_frame > 0 && num_frame < 22)
 				buffer_frame.append(frame);
 			status_list[what] = parseCumulativeMonthGraph(buffer_frame);
 		}
 		else
 		{
-			assert(msg.whatArgCnt() == 1);
 			int val = msg.whatArgN(0);
 			v.setValue(val);
 
