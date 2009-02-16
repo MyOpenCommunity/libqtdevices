@@ -255,6 +255,7 @@ void EnergyView::inizializza()
 
 void EnergyView::status_changed(const StatusList &status_list)
 {
+	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
@@ -278,8 +279,12 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (!graph_data_cache.contains(DAILY_AVERAGE))
 				graph_data_cache[DAILY_AVERAGE] = new GraphCache;
 
+			// TODO: modificare date quando sara' cambiata la struttura GraphData
+			const QDate &date = time_period->date();
 			GraphCache *cache = graph_data_cache[DAILY_AVERAGE];
-			cache->insert(time_period->date(), d);
+			cache->insert(date, d);
+			if (current_graph == DAILY_AVERAGE && date.year() == current_date.year() && date.month() == current_date.month())
+				graph->setData(*d);
 			break;
 		}
 		++it;
@@ -296,9 +301,25 @@ void EnergyView::backClick()
 
 void EnergyView::showGraph(int graph_type)
 {
+	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
+
 	current_widget = GRAPH_WIDGET;
 	current_graph = static_cast<GraphType>(graph_type);
 	current_date = time_period->date();
+	switch (current_graph)
+	{
+	case DAILY_AVERAGE:
+		graph->setNumberOfBars(24);
+		if (graph_data_cache[DAILY_AVERAGE]->contains(current_date))
+			graph->setData(*graph_data_cache[DAILY_AVERAGE]->object(current_date));
+
+		break;
+	case CUMULATIVE_MONTH:
+	default:
+		graph->setNumberOfBars(time_period->date().daysInMonth());
+		break;
+	}
+
 	widget_container->setCurrentIndex(current_widget);
 }
 
