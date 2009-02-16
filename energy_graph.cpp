@@ -8,7 +8,6 @@
 EnergyGraph::EnergyGraph()
 {
 	number_of_bars = 1;
-	//setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	setColors(QColor("cyan"), QColor("white"));
 }
 

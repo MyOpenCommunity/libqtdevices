@@ -11,6 +11,7 @@ Q_OBJECT
 public:
 	EnergyGraph();
 	void setColors(QColor first, QColor second = QColor());
+	void generateRandomValues();
 
 public slots:
 	void setData(const QMap<int, int> &data);
@@ -22,7 +23,7 @@ protected:
 
 private:
 	int findMax();
-	void generateRandomValues();
+
 	int number_of_bars;
 	QMap<int, int> graph_data;
 	int max_value;

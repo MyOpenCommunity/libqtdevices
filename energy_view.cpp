@@ -309,10 +309,11 @@ void EnergyView::showGraph(int graph_type)
 	switch (current_graph)
 	{
 	case DAILY_AVERAGE:
+	case CUMULATIVE_DAY:
 		graph->setNumberOfBars(24);
-		if (graph_data_cache[DAILY_AVERAGE]->contains(current_date))
-			graph->setData(*graph_data_cache[DAILY_AVERAGE]->object(current_date));
-
+		break;
+	case CUMULATIVE_YEAR:
+		graph->setNumberOfBars(12);
 		break;
 	case CUMULATIVE_MONTH:
 	default:
@@ -320,6 +321,9 @@ void EnergyView::showGraph(int graph_type)
 		break;
 	}
 
+	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(current_date))
+		graph->setData(*graph_data_cache[current_graph]->object(current_date));
+	graph->generateRandomValues(); // TODO: rimuovere!
 	widget_container->setCurrentIndex(current_widget);
 }
 
