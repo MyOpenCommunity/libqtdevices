@@ -5,15 +5,23 @@
 #include <QPen>
 
 
-EnergyGraph::EnergyGraph()
+EnergyGraph::EnergyGraph() : primary_color("#1449C8"), secondary_color("#3587FF")
 {
 	number_of_bars = 1;
-	setColors(QColor("cyan"), QColor("white"));
 }
 
-void EnergyGraph::setNumberOfBars(int num)
+void EnergyGraph::init(int bars, QString t)
 {
-	number_of_bars = num;
+	text = t;
+	number_of_bars = bars;
+	graph_data.clear();
+	update();
+}
+
+void EnergyGraph::setData(const QMap<int, int> &data)
+{
+	graph_data = data;
+	max_value = findMax();
 	update();
 }
 
@@ -34,34 +42,15 @@ int EnergyGraph::findMax()
 	return max;
 }
 
-void EnergyGraph::setData(const QMap<int, int> &data)
-{
-	graph_data = data;
-	max_value = findMax();
-	update();
-}
-
 void EnergyGraph::showEvent(QShowEvent *e)
 {
 	update();
 }
 
-void EnergyGraph::setColors(QColor first, QColor second)
-{
-	primary_color = first;
-	second.isValid() ?
-		secondary_color = second :
-		secondary_color = primary_color;
-}
-
 void EnergyGraph::paintEvent(QPaintEvent *e)
 {
 	QPainter p(this);
-	if (graph_data.isEmpty())
-	{
-		// draw a text "loading" on it
-	}
-	else
+	if (!graph_data.isEmpty())
 	{
 		int x = rect().x();
 		int y = rect().y();
@@ -92,12 +81,13 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		QString num = QString::number(number_of_bars);
 		p.drawText(remaining_width - fm.width(num), font_y, num);
 
+		p.drawText(remaining_width - fm.width(text), fm.height(), text);
 		remaining_height -= fm.height();
 
 		// 3. draw axis
 		p.save();
 		QPen pen;
-#define AXIS_PEN_WIDTH 2
+#define AXIS_PEN_WIDTH 1
 		pen.setStyle(Qt::SolidLine);
 		pen.setWidth(AXIS_PEN_WIDTH);
 		pen.setColor(QColor("white")); //axis color

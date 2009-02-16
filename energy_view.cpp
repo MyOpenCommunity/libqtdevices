@@ -310,14 +310,14 @@ void EnergyView::showGraph(int graph_type)
 	{
 	case DAILY_AVERAGE:
 	case CUMULATIVE_DAY:
-		graph->setNumberOfBars(24);
+		graph->init(24, tr("Kwh/Hours"));
 		break;
 	case CUMULATIVE_YEAR:
-		graph->setNumberOfBars(12);
+		graph->init(12, tr("Kwh/months"));
 		break;
 	case CUMULATIVE_MONTH:
 	default:
-		graph->setNumberOfBars(time_period->date().daysInMonth());
+		graph->init(time_period->date().daysInMonth(), tr("Kwh/days"));
 		break;
 	}
 
