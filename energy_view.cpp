@@ -231,7 +231,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 
 EnergyView::~EnergyView()
 {
-	QMutableHashIterator<GraphType, GraphCache*> it(graph_data_cache);
+	QMutableHashIterator<EnergyDevice::GraphType, GraphCache*> it(graph_data_cache);
 	while (it.hasNext())
 	{
 		it.next();
@@ -276,14 +276,15 @@ void EnergyView::status_changed(const StatusList &status_list)
 		case EnergyDevice::ANS_DAILY_AVERAGE_GRAPH:
 			assert(it.value().canConvert<GraphData>());
 			GraphData *d = new GraphData(it.value().value<GraphData>());
-			if (!graph_data_cache.contains(DAILY_AVERAGE))
-				graph_data_cache[DAILY_AVERAGE] = new GraphCache;
+			if (!graph_data_cache.contains(EnergyDevice::DAILY_AVERAGE))
+				graph_data_cache[EnergyDevice::DAILY_AVERAGE] = new GraphCache;
 
 			// TODO: modificare date quando sara' cambiata la struttura GraphData
 			const QDate &date = time_period->date();
-			GraphCache *cache = graph_data_cache[DAILY_AVERAGE];
+			GraphCache *cache = graph_data_cache[EnergyDevice::DAILY_AVERAGE];
 			cache->insert(date, d);
-			if (current_graph == DAILY_AVERAGE && date.year() == current_date.year() && date.month() == current_date.month())
+			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
+				date.month() == current_date.month())
 				graph->setData(d->graph);
 			break;
 		}
@@ -304,18 +305,18 @@ void EnergyView::showGraph(int graph_type)
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 
 	current_widget = GRAPH_WIDGET;
-	current_graph = static_cast<GraphType>(graph_type);
+	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
 	current_date = time_period->date();
 	switch (current_graph)
 	{
-	case DAILY_AVERAGE:
-	case CUMULATIVE_DAY:
+	case EnergyDevice::DAILY_AVERAGE:
+	case EnergyDevice::CUMULATIVE_DAY:
 		graph->init(24, tr("Kwh/hours"));
 		break;
-	case CUMULATIVE_YEAR:
+	case EnergyDevice::CUMULATIVE_YEAR:
 		graph->init(12, tr("Kwh/months"));
 		break;
-	case CUMULATIVE_MONTH:
+	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
 		graph->init(time_period->date().daysInMonth(), tr("Kwh/days"));
 		break;
@@ -341,7 +342,7 @@ QWidget *EnergyView::buildBannerWidget()
 	// Daily page
 	cumulative_day_banner = getBanner(this, cumulative_text);
 	connect(cumulative_day_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
-	mapper->setMapping(cumulative_day_banner, CUMULATIVE_DAY);
+	mapper->setMapping(cumulative_day_banner, EnergyDevice::CUMULATIVE_DAY);
 
 	current_banner = getBanner(this, tr("Current"));
 	current_banner->nascondi(banner::BUT1);
@@ -353,11 +354,11 @@ QWidget *EnergyView::buildBannerWidget()
 	// Monthly page
 	cumulative_month_banner = getBanner(this, cumulative_text);
 	connect(cumulative_month_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
-	mapper->setMapping(cumulative_month_banner, CUMULATIVE_MONTH);
+	mapper->setMapping(cumulative_month_banner, EnergyDevice::CUMULATIVE_MONTH);
 
 	daily_av_banner = getBanner(this, tr("Daily Average"));
 	connect(daily_av_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
-	mapper->setMapping(daily_av_banner, DAILY_AVERAGE);
+	mapper->setMapping(daily_av_banner, EnergyDevice::DAILY_AVERAGE);
 
 	QWidget *monthly_widget = createWidgetWithVBoxLayout();
 	monthly_widget->layout()->addWidget(cumulative_month_banner);
@@ -366,7 +367,7 @@ QWidget *EnergyView::buildBannerWidget()
 	// Yearly page
 	cumulative_year_banner = getBanner(this, cumulative_text);
 	connect(cumulative_year_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
-	mapper->setMapping(cumulative_year_banner, CUMULATIVE_YEAR);
+	mapper->setMapping(cumulative_year_banner, EnergyDevice::CUMULATIVE_YEAR);
 
 	QWidget *yearly_widget = createWidgetWithVBoxLayout();
 	yearly_widget->layout()->addWidget(cumulative_year_banner);

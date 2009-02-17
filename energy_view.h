@@ -77,14 +77,6 @@ private:
 		GRAPH_WIDGET = 1
 	};
 
-	enum GraphType
-	{
-		CUMULATIVE_DAY,
-		CUMULATIVE_MONTH,
-		CUMULATIVE_YEAR,
-		DAILY_AVERAGE
-	};
-
 	// TODO: this must be changed once the correct banner is ready
 	banner *current_banner, *daily_av_banner;
 	banner *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
@@ -94,9 +86,9 @@ private:
 	EnergyDevice *dev;
 	QString unit_measure;
 	QSignalMapper *mapper;
-	GraphType current_graph;
+	EnergyDevice::GraphType current_graph;
 	QDate current_date;
-	QHash<GraphType, GraphCache*> graph_data_cache;
+	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
 
 private slots:
 	void toggleCurrency();
