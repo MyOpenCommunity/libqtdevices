@@ -21,14 +21,10 @@ public slots:
 
 protected:
 	void paintEvent(QPaintEvent *e);
-	void showEvent(QShowEvent *e);
 
 private:
-	int findMax();
-
 	int number_of_bars;
 	QMap<int, int> graph_data;
-	int max_value;
 	QString text;
 	QColor primary_color, secondary_color;
 };

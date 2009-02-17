@@ -22,7 +22,6 @@ void EnergyGraph::init(int bars, QString t)
 void EnergyGraph::setData(const QMap<int, int> &data)
 {
 	graph_data = data;
-	max_value = findMax();
 	update();
 }
 
@@ -31,21 +30,6 @@ void EnergyGraph::generateRandomValues()
 	// TODO: just for the demo, fill in the graph with random values
 	for (int i = 0; i < number_of_bars; ++i)
 		graph_data[i] = rand();
-	max_value = findMax();
-}
-
-int EnergyGraph::findMax()
-{
-	int max = -1;
-	foreach (int val, graph_data)
-		max = qMax(max, val);
-
-	return max;
-}
-
-void EnergyGraph::showEvent(QShowEvent *e)
-{
-	update();
 }
 
 void EnergyGraph::paintEvent(QPaintEvent *e)
@@ -57,6 +41,10 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 	QPainter p(this);
 	if (!graph_data.isEmpty())
 	{
+		int max_value = -1;
+		foreach (int val, graph_data)
+			max_value = qMax(max_value, val);
+
 		int left = rect().left() + MARGIN;
 		int top = rect().top() + MARGIN;
 		int width = rect().width() - MARGIN * 2;
