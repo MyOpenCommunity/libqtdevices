@@ -49,7 +49,7 @@ public:
 		ANS_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
 	};
 
-		enum GraphType
+	enum GraphType
 	{
 		CUMULATIVE_DAY,
 		CUMULATIVE_MONTH,
@@ -63,27 +63,28 @@ public slots:
 private:
 	void sendRequest(int what) const;
 	void sendRequest(QString what) const;
-	QVariant parseDayGraph(const QList<QString> &buffer_frame, OpenMsg &msg);
-	QVariant parseCumulativeMonthGraph(const QList<QString> &buffer_frame);
-	QVariant parseDailyAverageGraph(const QList<QString> &buffer_frame);
+	void  parseCumulativeDayGraph(const QList<QString> &buffer_frame, QVariant &v);
+	void parseCumulativeMonthGraph(const QList<QString> &buffer_frame, QVariant &v);
+	void parseDailyAverageGraph(const QList<QString> &buffer_frame, QVariant &v);
+	void computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph);
 	QDate getDateFromFrame(OpenMsg &msg);
 	static const int MAX_VALUE = 255;
 	mutable QList<QString> buffer_frame;
 };
 
 
-typedef struct _GraphData
+struct GraphData
 {
-	_GraphData() : type(EnergyDevice::CUMULATIVE_DAY) { }
+	GraphData() : type(EnergyDevice::CUMULATIVE_DAY) { }
 	QMap<int, int> graph;
 	QDate date;
 	EnergyDevice::GraphType type;
-	bool operator==(const _GraphData &other)
+	bool operator==(const GraphData &other)
 	{
 		return (graph == other.graph) && (date == other.date) &&
 			(type == other.type);
 	}
-} GraphData;
+};
 Q_DECLARE_METATYPE(GraphData)
 
 #endif // ENERGY_DEVICE_H
