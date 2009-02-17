@@ -147,13 +147,12 @@ void TimePeriodSelection::setDate(QDate new_date)
 
 void TimePeriodSelection::changeTimePeriod(int delta)
 {
-	//TODO: do something sensible!! :)
+	QDate previous_date = selection_date;
 	switch (status)
 	{
 	case DAY:
 		setDate(selection_date.addDays(delta));
 		date_period_label->setText(selection_date.toString("dd/MM/yy"));
-		emit timeChanged(status, selection_date);
 		break;
 	case MONTH:
 		setDate(selection_date.addMonths(delta));
@@ -163,6 +162,8 @@ void TimePeriodSelection::changeTimePeriod(int delta)
 		qWarning("periodForward called with status==YEAR");
 		break;
 	}
+	if (selection_date != previous_date)
+		emit timeChanged(status, selection_date);
 }
 
 QDate TimePeriodSelection::date()
