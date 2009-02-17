@@ -53,10 +53,6 @@ void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;
-	// TODO: attualmente chiudere la pagina contenitore e riaprirla sul Closed
-	// crea un aggiornamento grafico piuttosto brutto.. capire quale e' il mdo
-	// giusto di risolverlo!
-	//connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
 }
 
@@ -71,6 +67,5 @@ void PageContainer::addBackButton()
 void PageContainer::clicked(int id)
 {
 	page_list[id]->showPage();
-	//hide();
 }
 
