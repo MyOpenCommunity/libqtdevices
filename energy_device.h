@@ -44,9 +44,9 @@ public:
 		DIM_CUMULATIVE_DAY    = 54,
 		DIM_CURRENT           = 113,
 
-		ANS_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
-		ANS_DAY_GRAPH                = 56,    // read graph data for a specific day
-		ANS_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
+		DIM_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
+		DIM_DAY_GRAPH                = 56,    // read graph data for a specific day
+		DIM_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
 	};
 
 	enum GraphType

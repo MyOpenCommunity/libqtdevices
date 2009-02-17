@@ -295,7 +295,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		case EnergyDevice::DIM_CURRENT:
 			current_banner->setSecondaryText(QString("%1·kW").arg(it.value().toInt()/1000.0, 0, 'f', 3));
 			break;
-		case EnergyDevice::ANS_DAILY_AVERAGE_GRAPH:
+		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE);
 			const QDate &date = d->date;
@@ -304,7 +304,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 				graph->setData(d->graph);
 			break;
 		}
-		case EnergyDevice::ANS_DAY_GRAPH:
+		case EnergyDevice::DIM_DAY_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
