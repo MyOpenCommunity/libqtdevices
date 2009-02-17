@@ -348,7 +348,6 @@ void EnergyView::showBannerWidget()
 	widget_container->setCurrentIndex(current_widget);
 }
 
-
 QWidget *EnergyView::buildBannerWidget()
 {
 	QString cumulative_text = tr("Cumulative");
@@ -398,19 +397,40 @@ QWidget *EnergyView::buildBannerWidget()
 
 void EnergyView::changeTimePeriod(int status, QDate selection_date)
 {
-	QStackedWidget *w = static_cast<QStackedWidget*>(widget_container->widget(BANNER_WIDGET));
-	switch (status)
+	if (widget_container->currentIndex() == BANNER_WIDGET)
 	{
-	case TimePeriodSelection::DAY:
-		w->setCurrentIndex(DAILY_PAGE);
-		current_banner->setVisible(QDate::currentDate() == selection_date);
-		break;
-	case TimePeriodSelection::MONTH:
-		w->setCurrentIndex(MONTHLY_PAGE);
-		break;
-	case TimePeriodSelection::YEAR:
-		w->setCurrentIndex(YEARLY_PAGE);
-		break;
+		QStackedWidget *w = static_cast<QStackedWidget*>(widget_container->widget(BANNER_WIDGET));
+		switch (status)
+		{
+		case TimePeriodSelection::DAY:
+			w->setCurrentIndex(DAILY_PAGE);
+			current_banner->setVisible(QDate::currentDate() == selection_date);
+			break;
+		case TimePeriodSelection::MONTH:
+			w->setCurrentIndex(MONTHLY_PAGE);
+			break;
+		case TimePeriodSelection::YEAR:
+			w->setCurrentIndex(YEARLY_PAGE);
+			break;
+		}
+	}
+	else // GRAPH_WIDGET
+	{
+		int graph_type;
+
+		switch (status)
+		{
+		case TimePeriodSelection::DAY:
+			graph_type = EnergyDevice::CUMULATIVE_DAY;
+			break;
+		case TimePeriodSelection::YEAR:
+			graph_type = EnergyDevice::CUMULATIVE_YEAR;
+			break;
+		case TimePeriodSelection::MONTH:
+			graph_type = EnergyDevice::CUMULATIVE_MONTH;
+			break;
+		}
+		showGraph(graph_type);
 	}
 }
 
