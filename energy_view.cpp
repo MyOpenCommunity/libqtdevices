@@ -284,7 +284,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphCache *cache = graph_data_cache[DAILY_AVERAGE];
 			cache->insert(date, d);
 			if (current_graph == DAILY_AVERAGE && date.year() == current_date.year() && date.month() == current_date.month())
-				graph->setData(*d);
+				graph->setData(d->graph);
 			break;
 		}
 		++it;
@@ -322,7 +322,7 @@ void EnergyView::showGraph(int graph_type)
 	}
 
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(current_date))
-		graph->setData(*graph_data_cache[current_graph]->object(current_date));
+		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
 	graph->generateRandomValues(); // TODO: rimuovere!
 	widget_container->setCurrentIndex(current_widget);
 }
