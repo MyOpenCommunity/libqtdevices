@@ -55,7 +55,7 @@ public:
 private slots:
 	void connetti();
 	/// Reads messages from the socket
-	int socketFrameRead(void);
+	int socketFrameRead();
 
 	void socketConnected();
 	void socketConnectionClosed();

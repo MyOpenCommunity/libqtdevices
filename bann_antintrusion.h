@@ -33,7 +33,7 @@ public slots:
 	void status_changed(QList<device_status*>);
 	void ToggleParzializza();
 	void abilitaParz(bool);
-	void clearChanged(void);
+	void clearChanged();
 	int getIndex();
 private:
 	void SetIcons();
@@ -91,8 +91,8 @@ private slots:
 signals:
 	void impiantoInserito();
 	void abilitaParz(bool);
-	void clearChanged(void);
-	void clearAlarms(void);
+	void clearChanged();
+	void clearAlarms();
 };
 
 #endif

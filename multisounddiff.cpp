@@ -158,7 +158,7 @@ void MultiSoundDiff::resizewindows(int x, int y, int w, int h)
 	}
 }
 
-void MultiSoundDiff::ripristinaRighe(void)
+void MultiSoundDiff::ripristinaRighe()
 {
 	sottoMenu::setNumRighe(3);
 

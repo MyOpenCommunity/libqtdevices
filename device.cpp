@@ -221,7 +221,7 @@ void device::add_device_status(device_status *_ds)
 	stat.append(_ds);
 }
 
-QString device::get_key(void)
+QString device::get_key()
 {
 	return who + "*" + where;
 }
@@ -238,12 +238,12 @@ void device::frame_rx_handler(char *s)
 	emit handle_frame(s, stat);
 }
 
-void device::get(void)
+void device::get()
 {
 	++refcount;
 }
 
-int device::put(void)
+int device::put()
 {
 	--refcount;
 	return refcount;

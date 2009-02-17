@@ -143,12 +143,12 @@ signals:
 	/*!
 	\brief Open ack received
 	*/
-	void openAckRx(void);
+	void openAckRx();
 
 	/*!
 	\brief Open nak received
 	*/
-	void openNakRx(void);
+	void openNakRx();
 
 	void richStato(QString);
 	void rispStato(char*);

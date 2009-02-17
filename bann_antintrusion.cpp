@@ -70,7 +70,7 @@ void zonaAnti::Draw()
 	BannerIcon2->setPixmap(*Icon[3]);
 }
 
-int zonaAnti::getIndex(void)
+int zonaAnti::getIndex()
 {
 	QString addr = getAddress();
 	addr.remove(0, 1);

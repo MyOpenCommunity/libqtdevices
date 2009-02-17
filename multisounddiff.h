@@ -38,7 +38,7 @@ public:
 	 */
 	virtual void setNavBarMode(uchar=0, QString IconBut4=ICON_FRECCIA_DX);
 	void setNumRighe(uchar);
-	void ripristinaRighe(void);
+	void ripristinaRighe();
 	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 	void resizewindows(int x, int y, int w, int h);
 

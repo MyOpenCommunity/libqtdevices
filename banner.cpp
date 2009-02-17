@@ -591,12 +591,12 @@ void  banner::rispStato(char*)
 {
 }
 
-void banner::openAckRx(void)
+void banner::openAckRx()
 {
 	qDebug("openAckRx()");
 }
 
-void banner::openNakRx(void)
+void banner::openNakRx()
 {
 	qDebug("openNakRx()");
 }

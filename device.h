@@ -63,7 +63,7 @@ public:
 	//! Decrement reference count, return reference count after decrement
 	int put();
 	//! Returns cache key
-	QString get_key(void);
+	QString get_key();
 	virtual ~device();
 
 	static void setClients(Client *command, Client *request, Client *monitor);

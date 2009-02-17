@@ -23,7 +23,7 @@ DevicesCache::DevicesCache() : QMap<QString, device*>()
 	clear();
 }
 
-void DevicesCache::init_devices(void)
+void DevicesCache::init_devices()
 {
 	qDebug("initializing devices");
 	DevicesCache::Iterator it;
