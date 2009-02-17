@@ -106,36 +106,34 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			// We assume that the frames came in correct (sequential) order
 			if (num_frame > 0 && num_frame < 18)
 				buffer_frame.append(frame);
-
-			status_list[what] = parseDailyAverageGraph(buffer_frame);
+			parseDailyAverageGraph(buffer_frame, v);
 		}
 		else if (what == ANS_DAY_GRAPH)
 		{
 			if (num_frame > 0 && num_frame < 10)
 				buffer_frame.append(frame);
-			status_list[what] = parseCumulativeDayGraph(buffer_frame);
+			parseCumulativeDayGraph(buffer_frame, v);
 		}
 		else if (what == ANS_CUMULATIVE_MONTH_GRAPH)
 		{
 			if (num_frame > 0 && num_frame < 22)
 				buffer_frame.append(frame);
-			status_list[what] = parseCumulativeMonthGraph(buffer_frame);
+			parseCumulativeMonthGraph(buffer_frame, v);
 		}
 		else
 		{
 			int val = msg.whatArgN(0);
 			v.setValue(val);
-
-			if (what == _DIM_CUMULATIVE_MONTH)
-				status_list[DIM_CUMULATIVE_MONTH] = v;
-			else
-				status_list[what] = v;
 		}
+		if (what == _DIM_CUMULATIVE_MONTH)
+			status_list[DIM_CUMULATIVE_MONTH] = v;
+		else
+			status_list[what] = v;
 		emit status_changed(status_list);
 	}
 }
 
-QVariant EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame)
+void EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame, QVariant &v)
 {
 	QList<int> values_list;
 	GraphData data;
@@ -154,16 +152,12 @@ QVariant EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame
 				values_list.append(frame_parser.whatArgN(3));
 		}
 	}
+	computeMonthGraphData(values_list, data.graph);
 
-	for (int i = 0; i + 1 < values_list.size(); i+=2)
-		data.graph[i / 2 + 1] = values_list[i] * 256 + values_list[i + 1];
-
-	QVariant v;
 	v.setValue(data);
-	return v;
 }
 
-QVariant EnergyDevice::parseCumulativeDayGraph(const QList<QString> &buffer_frame)
+void EnergyDevice::parseCumulativeDayGraph(const QList<QString> &buffer_frame, QVariant &v)
 {
 	QList<int> values;
 	GraphData data;
@@ -191,12 +185,11 @@ QVariant EnergyDevice::parseCumulativeDayGraph(const QList<QString> &buffer_fram
 
 	for (int i = 0; i < values.size(); ++i)
 		data.graph[i + 1] = values[i] == MAX_VALUE ? 0 : values[i];
-	QVariant v;
+
 	v.setValue(data);
-	return v;
 }
 
-QVariant EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_frame)
+void EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_frame, QVariant &v)
 {
 	GraphData data;
 	QList<int> values;
@@ -213,17 +206,19 @@ QVariant EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_fr
 		if (frame_parser.whatArgN(0) != 1)
 			values.append(frame_parser.whatArgN(3));
 	}
+	computeMonthGraphData(values, data.graph);
 
+	v.setValue(data);
+}
+
+void EnergyDevice::computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph)
+{
 	for (int i = 0; i + 1 < values.size(); i += 2)
 	{
 		int high = values[i] == 255 ? 0 : values[i];
 		int low = values[i+1] == 255 ? 0 : values[i+1];
-		data.graph[i / 2 + 1] = high * 256 + low;
+		graph[i / 2 + 1] = high * 256 + low;
 	}
-
-	QVariant v;
-	v.setValue(data);
-	return v;
 }
 
 QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
