@@ -2,6 +2,7 @@
 #include "fontmanager.h" // bt_global::font
 
 #include <QPainter>
+#include <QDebug>
 #include <QPen>
 
 
@@ -37,7 +38,7 @@ int EnergyGraph::findMax()
 {
 	int max = -1;
 	foreach (int val, graph_data)
-		max = qMax (max, val);
+		max = qMax(max, val);
 
 	return max;
 }
@@ -49,67 +50,62 @@ void EnergyGraph::showEvent(QShowEvent *e)
 
 void EnergyGraph::paintEvent(QPaintEvent *e)
 {
+	const int MARGIN = 5;
+	const int SPACING = 3;
+	const int AXIS_PEN_WIDTH = 1;
+
 	QPainter p(this);
 	if (!graph_data.isEmpty())
 	{
-		int x = rect().x();
-		int y = rect().y();
-		int remaining_height = rect().height();
-		int remaining_width = rect().width();
+		int left = rect().left() + MARGIN;
+		int top = rect().top() + MARGIN;
+		int width = rect().width() - MARGIN * 2;
+		int height = rect().height() - MARGIN * 2;
 
 		p.setFont(bt_global::font.get(FontManager::SMALLTEXT));
 		QFontMetrics fm = p.fontMetrics();
 
-		//
-		// draw right legend
-		p.save();
-		int font_y = remaining_height / 2;
-		int font_x = 0;
-		font_x += fm.ascent();
-		p.translate(font_x, font_y);
-		p.rotate(-90);
-		p.drawText(0, 0, tr("kWh"));
-		remaining_width -= fm.height();
-		p.restore();
+		// Max value on y axis
+		QString val = "100"; // TODO: put real value!
+		p.drawText(left, top + fm.height(), val);
 
-		// draw bottom legend
-		font_y = remaining_height;
-		font_y -= fm.descent();
-		// for now, just draw top and bottom of scale (ie, 1-24 for hours, 1-30 for days...)
-		// bottom of scale
-		p.drawText(rect().width() - remaining_width, font_y, "1");
-		QString num = QString::number(number_of_bars);
-		p.drawText(remaining_width - fm.width(num), font_y, num);
-		remaining_height -= fm.height();
+		int axis_left = left + fm.width(val) + SPACING;
+		int axis_top = top + height - fm.ascent() - SPACING - AXIS_PEN_WIDTH;
 
-		p.drawText(remaining_width - fm.width(text), fm.height(), text);
-		// We leave some space between text and bars
-		int text_space = fm.height()*3/2;
-
-		// 3. draw axis
+		// Draw axis
 		p.save();
 		QPen pen;
-#define AXIS_PEN_WIDTH 1
+
 		pen.setStyle(Qt::SolidLine);
 		pen.setWidth(AXIS_PEN_WIDTH);
 		pen.setColor(QColor("white")); //axis color
 		p.setPen(pen);
+
 		// x axis
-		int y_axis = remaining_height;
-		p.drawLine(rect().width() - remaining_width, y_axis, rect().width(), y_axis);
-		remaining_height -= AXIS_PEN_WIDTH;
+		p.drawLine(axis_left, axis_top, left + width, axis_top);
+
 		// y axis
-		int x_axis = rect().width() - remaining_width;
-		p.drawLine(x_axis, y_axis, x_axis, y);
-		remaining_width -= AXIS_PEN_WIDTH;
+		p.drawLine(axis_left, axis_top, axis_left, top);
 		p.restore();
 
+		// Min & Max values on x axis
+		int font_y_pos = axis_top + AXIS_PEN_WIDTH + fm.ascent() + SPACING;
+		p.drawText(axis_left, font_y_pos, "1");
+		QString num = QString::number(number_of_bars);
+		p.drawText(left + width - fm.width(num), font_y_pos, num);
+
+		// Descriptive text
+		p.drawText(left + width - fm.width(text), top + fm.height(), text);
+
+		int graph_height = axis_top - top - AXIS_PEN_WIDTH - fm.height() - SPACING;
+		int graph_width = width - (axis_left + AXIS_PEN_WIDTH - left);
+
 		// calculate the width of each bar
-		int bar_width = static_cast<int>(remaining_width / static_cast<float>(number_of_bars));
+		int bar_width = static_cast<int>(graph_width/ static_cast<float>(number_of_bars));
 
 		// draw bars
 		p.setPen(QColor("blue"));
-		x = rect().width() - remaining_width;
+		int current_left = axis_left + AXIS_PEN_WIDTH;
 
 		QMapIterator<int, int> it(graph_data);
 		while (it.hasNext())
@@ -117,10 +113,9 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			it.next();
 			p.setBrush(it.key() % 2 ? primary_color : secondary_color);
 			float ratio = it.value() / static_cast<float>(max_value);
-			int bar_height = static_cast<int>(ratio * (remaining_height  - text_space));
-			QRect tmp = QRect(x, remaining_height - bar_height, bar_width, bar_height);
-			x += bar_width;
-			p.drawRect(tmp);
+			int bar_height = static_cast<int>(ratio * graph_height);
+			p.drawRect(QRect(current_left, axis_top - bar_height - AXIS_PEN_WIDTH, bar_width, bar_height));
+			current_left += bar_width;
 		}
 	}
 }
