@@ -310,7 +310,7 @@ void EnergyView::showGraph(int graph_type)
 	{
 	case DAILY_AVERAGE:
 	case CUMULATIVE_DAY:
-		graph->init(24, tr("Kwh/Hours"));
+		graph->init(24, tr("Kwh/hours"));
 		break;
 	case CUMULATIVE_YEAR:
 		graph->init(12, tr("Kwh/months"));
