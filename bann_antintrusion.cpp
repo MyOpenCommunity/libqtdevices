@@ -28,7 +28,7 @@ zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QStr
 	if (BannerText)
 	{
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
+		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
 		BannerText->setText(name);
 	}
 

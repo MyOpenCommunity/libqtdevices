@@ -60,11 +60,11 @@ void BannTemperature::status_changed(QList<device_status*> sl)
 
 void BannTemperature::Draw()
 {
-	descr_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	descr_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	descr_label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	descr_label->setText(probe_descr);
 
-	temp_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	temp_label->setAlignment(Qt::AlignCenter);
 	switch (temp_scale)
 	{

@@ -70,7 +70,7 @@ void ListBrowser::showList()
 	h_offsets.append(-1);
 	h_offsets.append(0);
 
-	QFont aFont = bt_global::font.get(FontManager::TEXT);
+	QFont aFont = bt_global::font->get(FontManager::TEXT);
 
 	for (int i = 0; i < count; ++i)
 	{

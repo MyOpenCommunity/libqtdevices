@@ -88,7 +88,7 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 
 	// Load the description of special button
 	QLabel *box_text = new QLabel(this);
-	box_text->setFont(bt_global::font.get(FontManager::TEXT));
+	box_text->setFont(bt_global::font->get(FontManager::TEXT));
 	box_text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	box_text->setText(getTextChild(command, "descr"));
 	box_text->setGeometry(DIM_BUT_BACK, 240, 260 - DIM_BUT_BACK, 20);

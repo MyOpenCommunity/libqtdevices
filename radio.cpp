@@ -50,7 +50,7 @@ radio::radio(QWidget *parent, const QString & amb)
 	radioName = new QLabel(this);
 	ambDescr = new QLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	ambDescr->setFont(bt_global::font.get(FontManager::SMALLTEXT));
+	ambDescr->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	ambDescr->setText(amb);
 	freq = new QLCDNumber(this);
 	progrText = new QLabel(this);
@@ -176,10 +176,10 @@ void radio::setAmbDescr(const QString & d)
 void radio::draw()
 {
 	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	rdsLabel->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
 
 	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	radioName->setFont(bt_global::font.get(FontManager::SMALLTEXT));
+	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	radioName->setText(qnome);
 	rdsLabel->setText(qrds);
 	char fr[10];
@@ -202,7 +202,7 @@ void radio::draw()
 	wasManual=manual;
 
 	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	progrText->setFont(bt_global::font.get(FontManager::TEXT));
+	progrText->setFont(bt_global::font->get(FontManager::TEXT));
 	progrText->setText(QString::number((int)stazione)+":");
 }
 

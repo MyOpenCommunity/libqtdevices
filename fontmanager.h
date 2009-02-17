@@ -27,8 +27,7 @@ class QString;
 class FontManager
 {
 public:
-	// The dummy costructor.. see .cpp for details
-	FontManager();
+	FontManager(QString font_file);
 
 	enum Type
 	{
@@ -39,7 +38,6 @@ public:
 	};
 
 	const QFont& get(Type t);
-	void loadFonts(QString font_file);
 
 private:
 	FontManager(const FontManager &);
@@ -49,6 +47,6 @@ private:
 };
 
 
-namespace bt_global { extern FontManager font; }
+namespace bt_global { extern FontManager *font; }
 
 #endif // FONTMANAGER_H

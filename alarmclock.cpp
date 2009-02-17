@@ -56,7 +56,7 @@ AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute)
 
 	Immagine->setGeometry(90,0,80,80);
 
-	QFont aFont = bt_global::font.get(FontManager::TEXT);
+	QFont aFont = bt_global::font->get(FontManager::TEXT);
 
 	for (uchar idx = 0; idx < 4; idx++)
 	{

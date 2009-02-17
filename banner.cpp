@@ -484,13 +484,13 @@ void banner::drawAllButRightButton()
 	if (BannerText)
 	{
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font.get(FontManager::TEXT));
+		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
 		BannerText->setText(qtesto);
 	}
 	if (SecondaryText)
 	{
 		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(bt_global::font.get(FontManager::TEXT));
+		SecondaryText->setFont(bt_global::font->get(FontManager::TEXT));
 		SecondaryText->setText(qtestoSecondario);
 	}
 }

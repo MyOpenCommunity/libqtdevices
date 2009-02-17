@@ -72,7 +72,7 @@ enum ChoiceButtons
 
 SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
 {
-	setFont(bt_global::font.get(FontManager::TEXT));
+	setFont(bt_global::font->get(FontManager::TEXT));
 
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	buttons_group = new QButtonGroup(this);

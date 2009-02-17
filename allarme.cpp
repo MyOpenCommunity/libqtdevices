@@ -52,7 +52,7 @@ void allarme::SetIcons(QString icon)
 		ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
 
     descr = new QLabel(this);
-	descr->setFont(bt_global::font.get(FontManager::TEXT));
+	descr->setFont(bt_global::font->get(FontManager::TEXT));
     descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 

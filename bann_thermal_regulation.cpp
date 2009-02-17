@@ -165,7 +165,7 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureSca
 
 void FSBannSimpleProbe::Draw()
 {
-	temp_label->setFont(bt_global::font.get(FontManager::TITLE));
+	temp_label->setFont(bt_global::font->get(FontManager::TITLE));
 	temp_label->setAlignment(Qt::AlignHCenter);
 	switch (temp_scale)
 	{
@@ -180,7 +180,7 @@ void FSBannSimpleProbe::Draw()
 		temp_label->setText(celsiusString(temp));
 	}
 
-	descr_label->setFont(bt_global::font.get(FontManager::TEXT));
+	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
 	descr_label->setText(descr);
 }
@@ -365,10 +365,10 @@ void FSBannProbe::Draw()
 		setpoint_label->setText(celsiusString(setpoint));
 	}
 
-	setpoint_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	setpoint_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 
-	local_temp_label->setFont(bt_global::font.get(FontManager::TEXT));
+	local_temp_label->setFont(bt_global::font->get(FontManager::TEXT));
 	local_temp_label->setAlignment(Qt::AlignHCenter);
 	local_temp_label->setText(local_temp);
 
@@ -667,11 +667,11 @@ void FSBannManual::decSetpoint()
 
 void FSBannManual::Draw()
 {
-	descr_label->setFont(bt_global::font.get(FontManager::TEXT));
+	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	descr_label->setText(descr);
 
-	temp_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	temp_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
 	switch (temp_scale)
@@ -841,7 +841,7 @@ BtButton *FSBannTermoReg::customButton()
 void FSBannTermoReg::Draw()
 {
 	description_label->setVisible(description_visible);
-	description_label->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	description_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	description_label->setText(description);
 	// should I color text only if it is a setpoint temperature?
 	// TODO: verificare che venga impostato correttamente!!

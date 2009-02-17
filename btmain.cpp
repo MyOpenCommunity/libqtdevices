@@ -72,7 +72,7 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 	QWSServer::setCursorVisible(false);
 
 	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
-	bt_global::font.loadFonts(font_file);
+	bt_global::font = new FontManager(font_file);
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
@@ -126,8 +126,9 @@ BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
 
 BtMain::~BtMain()
 {
-	if (screensaver)
-		delete screensaver;
+	delete screensaver;
+	delete bt_global::skin;
+	delete bt_global::font;
 	delete client_comandi;
 	delete client_monitor;
 	delete client_richieste;

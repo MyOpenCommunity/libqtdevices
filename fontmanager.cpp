@@ -20,18 +20,7 @@ namespace
 	}
 }
 
-// FontManager is used as global object, but depends on the language var set in
-// configuration file. So, the configuration must be read before loading fonts.
-// To ensure that, the costructor is empty, so it doesn't matter if the global
-// configuration object is built before or after the global font object.
-// The loading of fonts is done through loadFonts method by btmain, after the
-// reading of configuration.
-
-FontManager::FontManager()
-{
-}
-
-void FontManager::loadFonts(QString font_file)
+FontManager::FontManager(QString font_file)
 {
 	qDebug("Font file: %s", qPrintable(font_file));
 	if (QFile::exists(font_file))
@@ -74,5 +63,5 @@ const QFont& FontManager::get(Type t)
 
 
 // The global definition of font manager
-FontManager bt_global::font;
+FontManager *bt_global::font = 0;
 

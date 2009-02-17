@@ -33,7 +33,7 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 	if (!descr.isEmpty())
 	{
 		temp.text = new QLabel(linked_page);
-		temp.text->setFont(bt_global::font.get(FontManager::TEXT));
+		temp.text->setFont(bt_global::font->get(FontManager::TEXT));
 		temp.text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 		temp.text->setText(descr);
 		temp.text->setGeometry(x, y + height - H_SCR_TEMP, width, H_SCR_TEMP);

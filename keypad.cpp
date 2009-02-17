@@ -81,11 +81,11 @@ Keypad::Keypad(int line)
 	mode = CLEAN;
 
 	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	scrittaLabel->setFont(bt_global::font.get(FontManager::TEXT));
+	scrittaLabel->setFont(bt_global::font->get(FontManager::TEXT));
 	scrittaLabel->setText(tr("PASSWORD:"));
 
 	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-	digitLabel->setFont(bt_global::font.get(FontManager::TEXT));
+	digitLabel->setFont(bt_global::font->get(FontManager::TEXT));
 
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(canc()));
@@ -152,7 +152,7 @@ KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
 {
 	int i, x;
 	char tmp[2] = "1";
-	QFont aFont = bt_global::font.get(FontManager::TEXT);
+	QFont aFont = bt_global::font->get(FontManager::TEXT);
 
 	for (i = 0, x = POSX1_SMALL; i < 8; i++, x += BUT_SMALL_DIM)
 	{

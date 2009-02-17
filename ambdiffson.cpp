@@ -56,7 +56,7 @@ void ambDiffSon::Draw()
 	BannerIcon2->setPixmap(*(Icon[3]));
 	BannerIcon2->repaint();
 	BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	BannerText->setFont(bt_global::font.get(FontManager::TEXT));
+	BannerText->setFont(bt_global::font->get(FontManager::TEXT));
 	BannerText->setText(qtesto);
 }
 
@@ -135,7 +135,7 @@ void insAmbDiffSon::Draw()
 	BannerIcon->setPixmap(*(Icon[0]));
 	BannerIcon->repaint();
 	BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	BannerText->setFont(bt_global::font.get(FontManager::TEXT));
+	BannerText->setFont(bt_global::font->get(FontManager::TEXT));
 	BannerText->setText(qtesto);
 }
 

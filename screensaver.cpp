@@ -248,7 +248,7 @@ void ScreenSaverTime::start(Page *p)
 
 	timeScript *time = new timeScript(line, 1);
 	time->setFrameStyle(QFrame::Plain);
-	time->setFont(bt_global::font.get(FontManager::TEXT));
+	time->setFont(bt_global::font->get(FontManager::TEXT));
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->setContentsMargins(0, 2, 0, 2);
@@ -261,7 +261,7 @@ void ScreenSaverText::start(Page *p)
 {
 	ScreenSaverLine::start(p);
 	line->resize(MAX_WIDTH, 30);
-	line->setFont(bt_global::font.get(FontManager::TEXT));
+	line->setFont(bt_global::font->get(FontManager::TEXT));
 	line->setAlignment(Qt::AlignCenter);
 	line->setText(text);
 }

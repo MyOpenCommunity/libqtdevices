@@ -50,7 +50,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		int width = rect().width() - MARGIN * 2;
 		int height = rect().height() - MARGIN * 2;
 
-		p.setFont(bt_global::font.get(FontManager::SMALLTEXT));
+		p.setFont(bt_global::font->get(FontManager::SMALLTEXT));
 		QFontMetrics fm = p.fontMetrics();
 
 		// Max value on y axis

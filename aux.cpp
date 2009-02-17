@@ -30,12 +30,12 @@ aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(p
 	auxName = new QLabel(this);
 	ambDescr = new QLabel(this);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	ambDescr->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	ambDescr->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	ambDescr->setText(amb);
 	auxName->setGeometry(0,30,240,40);
 	auxName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 
-	auxName->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	auxName->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	auxName->setText(name);
 	ambDescr->setGeometry(0,100,240,40);
 

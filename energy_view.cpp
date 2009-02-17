@@ -47,7 +47,7 @@ namespace
 	QLabel *getLabel(QWidget *parent, QString text, FontManager::Type t)
 	{
 		QLabel *label = new QLabel(parent);
-		label->setFont(bt_global::font.get(t));
+		label->setFont(bt_global::font->get(t));
 		label->setText(text);
 		return label;
 	}

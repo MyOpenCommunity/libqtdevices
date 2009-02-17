@@ -34,7 +34,7 @@ Version::Version()
 	bticino->setFrameStyle(QFrame::Plain);
 	bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
 
-	box_text->setFont(bt_global::font.get(FontManager::SUBTITLE));
+	box_text->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	indDisp = 0;
 }
 
@@ -75,7 +75,7 @@ void Version::gestFrame(char* frame)
 	}
 	if (reload)
 	{
-		box_text->setFont(bt_global::font.get(FontManager::SMALLTEXT));
+		box_text->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 		box_text->setIndent(15);
 		box_text->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 		QStringList text;

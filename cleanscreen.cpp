@@ -19,7 +19,7 @@ CleanScreen::CleanScreen(QString img_clean, int clean_time)
 	timer.setSingleShot(true);
 
 	time_label = new QLabel(this);
-	time_label->setFont(bt_global::font.get(FontManager::TEXT));
+	time_label->setFont(bt_global::font->get(FontManager::TEXT));
 	time_label->setAlignment(Qt::AlignHCenter);
 	time_label->setGeometry(TIME_LABEL_X, TIME_LABEL_Y, TIME_LABEL_WIDTH, TIME_LABEL_HEIGHT);
 

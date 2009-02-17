@@ -57,7 +57,7 @@ Calibrate::Calibrate(QWidget* parent, unsigned char m) :
 	b1 = createButton(IMG_OK, 5, 5);
 	b2 = createButton(IMG_OK, 175, 255);
 	box_text = new QLabel(this);
-	box_text->setFont(bt_global::font.get(FontManager::TEXT));
+	box_text->setFont(bt_global::font->get(FontManager::TEXT));
 	box_text->setAlignment(Qt::AlignHCenter);
 	box_text->setGeometry(0, 205, desk.width(), 50);
 #if defined (BTWEB) ||  defined (BT_EMBEDDED)
