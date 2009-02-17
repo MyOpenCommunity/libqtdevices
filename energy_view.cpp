@@ -253,6 +253,18 @@ void EnergyView::inizializza()
 	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
+GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t)
+{
+	assert(v.canConvert<GraphData>());
+	GraphData *d = new GraphData(v.value<GraphData>());
+	if (!graph_data_cache.contains(t))
+		graph_data_cache[t] = new GraphCache;
+
+	GraphCache *cache = graph_data_cache[t];
+	cache->insert(d->date, d);
+	return d;
+}
+
 void EnergyView::status_changed(const StatusList &status_list)
 {
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
@@ -274,19 +286,21 @@ void EnergyView::status_changed(const StatusList &status_list)
 			current_banner->setSecondaryText(QString("%1·kW").arg(it.value().toInt()/1000.0, 0, 'f', 3));
 			break;
 		case EnergyDevice::ANS_DAILY_AVERAGE_GRAPH:
-			assert(it.value().canConvert<GraphData>());
-			GraphData *d = new GraphData(it.value().value<GraphData>());
-			if (!graph_data_cache.contains(EnergyDevice::DAILY_AVERAGE))
-				graph_data_cache[EnergyDevice::DAILY_AVERAGE] = new GraphCache;
-
-			// TODO: modificare date quando sara' cambiata la struttura GraphData
-			const QDate &date = time_period->date();
-			GraphCache *cache = graph_data_cache[EnergyDevice::DAILY_AVERAGE];
-			cache->insert(date, d);
+		{
+			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE);
+			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
 				graph->setData(d->graph);
 			break;
+		}
+		case EnergyDevice::ANS_DAY_GRAPH:
+		{
+			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
+			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
+				graph->setData(d->graph);
+			break;
+		}
 		}
 		++it;
 	}
@@ -389,10 +403,7 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 	{
 	case TimePeriodSelection::DAY:
 		w->setCurrentIndex(DAILY_PAGE);
-		if (QDate::currentDate() == selection_date)
-			current_banner->show();
-		else
-			current_banner->hide();
+		current_banner->setVisible(QDate::currentDate() == selection_date);
 		break;
 	case TimePeriodSelection::MONTH:
 		w->setCurrentIndex(MONTHLY_PAGE);

@@ -70,6 +70,7 @@ protected:
 
 private:
 	QWidget *buildBannerWidget();
+	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
 
 	enum Widget
 	{
