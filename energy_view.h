@@ -31,6 +31,8 @@ public:
 		YEAR,
 	};
 	TimePeriodSelection(QWidget *parent);
+	void hideCycleButton();
+	void showCycleButton();
 	QDate date();
 
 private slots:
@@ -48,7 +50,7 @@ private:
 	void setDate(QDate new_date);
 
 	TimePeriod status;
-	BtButton *back_period, *forw_period;
+	BtButton *back_period, *forw_period, *btn_cycle;
 	QLabel *date_period_label;
 	QDate selection_date;
 

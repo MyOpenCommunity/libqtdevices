@@ -92,11 +92,20 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	connect(forw_period, SIGNAL(clicked()), SLOT(periodForward()));
 	main_layout->addWidget(forw_period);
 
-	BtButton *btn_cycle;
 	btn_cycle = getTrimmedButton(this, ICON_AVANTI);
 	connect(btn_cycle, SIGNAL(clicked()), SLOT(changeTimeScale()));
 	main_layout->addWidget(btn_cycle);
 	setLayout(main_layout);
+}
+
+void TimePeriodSelection::hideCycleButton()
+{
+	btn_cycle->hide();
+}
+
+void TimePeriodSelection::showCycleButton()
+{
+	btn_cycle->show();
 }
 
 void TimePeriodSelection::changeTimeScale()
@@ -340,10 +349,13 @@ void EnergyView::showGraph(int graph_type)
 		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
 	graph->generateRandomValues(); // TODO: rimuovere!
 	widget_container->setCurrentIndex(current_widget);
+	if (current_graph == EnergyDevice::DAILY_AVERAGE)
+		time_period->hideCycleButton();
 }
 
 void EnergyView::showBannerWidget()
 {
+	time_period->showCycleButton();
 	current_widget = BANNER_WIDGET;
 	widget_container->setCurrentIndex(current_widget);
 }
