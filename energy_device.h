@@ -21,6 +21,16 @@
 class QDate;
 class OpenMsg;
 
+/**
+ * This class parses the incoming frames for who = 18 (Energy Management) and sends
+ * updates to widgets through status_changed() signal.
+ * The main assumptions on the incoming frames are that:
+ *  - the frames for a graph arrive in order;
+ *  - if a graph frame stream is interrupted, no other frames for that stream will arrive later
+ *      (ie, there can't be 'holes' in the stream);
+ *  - if a stream is interrupted and the last value of the last frame is the high byte
+ *      (ie, we can't reconstruct the complete value), nothing must be visualized for that value.
+ */
 class EnergyDevice : public device
 {
 friend class TestEnergyDevice;
@@ -44,9 +54,9 @@ public:
 		DIM_CUMULATIVE_DAY    = 54,
 		DIM_CURRENT           = 113,
 
-		ANS_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
-		ANS_DAY_GRAPH                = 56,    // read graph data for a specific day
-		ANS_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
+		DIM_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
+		DIM_DAY_GRAPH                = 56,    // read graph data for a specific day
+		DIM_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
 	};
 
 	enum GraphType
@@ -63,7 +73,7 @@ public slots:
 private:
 	void sendRequest(int what) const;
 	void sendRequest(QString what) const;
-	void  parseCumulativeDayGraph(const QList<QString> &buffer_frame, QVariant &v);
+	void parseCumulativeDayGraph(const QList<QString> &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph(const QList<QString> &buffer_frame, QVariant &v);
 	void parseDailyAverageGraph(const QList<QString> &buffer_frame, QVariant &v);
 	void computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph);

@@ -91,8 +91,8 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	QVariant v;
 
 	if (what == DIM_CUMULATIVE_DAY || what == DIM_CURRENT || what == DIM_CUMULATIVE_MONTH ||
-		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == ANS_DAILY_AVERAGE_GRAPH ||
-		what == ANS_DAY_GRAPH || what == ANS_CUMULATIVE_MONTH_GRAPH)
+		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == DIM_DAILY_AVERAGE_GRAPH ||
+		what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH)
 	{
 		assert(msg.whatArgCnt() > 0);
 		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
@@ -101,20 +101,20 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		if (num_frame == 1 && msg.whatArgCnt() > 1)
 			buffer_frame.clear();
 
-		if (what == ANS_DAILY_AVERAGE_GRAPH)
+		if (what == DIM_DAILY_AVERAGE_GRAPH)
 		{
 			// We assume that the frames came in correct (sequential) order
 			if (num_frame > 0 && num_frame < 18)
 				buffer_frame.append(frame);
 			parseDailyAverageGraph(buffer_frame, v);
 		}
-		else if (what == ANS_DAY_GRAPH)
+		else if (what == DIM_DAY_GRAPH)
 		{
 			if (num_frame > 0 && num_frame < 10)
 				buffer_frame.append(frame);
 			parseCumulativeDayGraph(buffer_frame, v);
 		}
-		else if (what == ANS_CUMULATIVE_MONTH_GRAPH)
+		else if (what == DIM_CUMULATIVE_MONTH_GRAPH)
 		{
 			if (num_frame > 0 && num_frame < 22)
 				buffer_frame.append(frame);
