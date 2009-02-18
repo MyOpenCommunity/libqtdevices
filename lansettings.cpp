@@ -71,13 +71,8 @@ LanSettings::LanSettings(const QDomNode &config_node)
 
 	addBackButton();
 
-	LanDevice *d = new LanDevice;
-	// TODO: verificare le altre parti del codice dove viene usata la add_device
-	// se questa puo' portare a memory leak!
-	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(d));
+	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(new LanDevice));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
-	if (dev != d)
-		delete d;
 }
 
 void LanSettings::inizializza()

@@ -59,7 +59,9 @@ public:
 	//! Destroy device given key
 	void put_device(QString k);
 	//! Add already created device to cache. Key is device's who+where
-	device * add_device(device * d);
+	// NOTE: be aware that the device argument can be destroyed if the device for
+	// the key already exists.
+	device *add_device(device *d);
 	//! Destructor
 	~DevicesCache();
 };
