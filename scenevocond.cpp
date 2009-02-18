@@ -127,19 +127,16 @@ bool scenEvo_cond::isTrue()
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(QString _h, QString _m)
+scenEvo_cond_h::scenEvo_cond_h(QString h, QString m)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
-	*h = _h;
-	*m = _m;
 	ora = NULL;
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
 	cond_time = new QDateTime(QDateTime::currentDateTime());
 	ora = new timeScript(this, 2 , cond_time);
 	hasTimeCondition = true;
-
-	QTime t(h->toInt(), m->toInt(), 0);
+	QTime t(h.toInt(), m.toInt(), 0);
 	cond_time->setTime(t);
 	ora->setDataOra(QDateTime(QDate::currentDate(), t));
 	ora->showTime();

@@ -154,8 +154,6 @@ private:
 	static const int A6_ICON_INDEX = 1;
 	//! Area #8 (next) icon index
 	static const int A8_ICON_INDEX = 2;
-	//! Hours, minutes and seconds */
-	QString *h, *m;
 	//! Pointer to condition time
 	QDateTime *cond_time;
 	//! Pointers to buttons
