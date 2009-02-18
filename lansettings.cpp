@@ -71,7 +71,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 
 	addBackButton();
 
-	dev = static_cast<LanDevice*>(bt_global::devices_cache.add_device(new LanDevice));
+	dev = bt_global::add_device_to_cache(new LanDevice);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 }
 

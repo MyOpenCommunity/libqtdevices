@@ -1,5 +1,4 @@
 #include "devices_cache.h"
-#include "device.h"
 #include "poweramplifier_device.h"
 
 #include <QWidget>
@@ -359,28 +358,6 @@ void DevicesCache::put_device(QString k)
 	if (!d->put()) // Reference count is zero, delete object
 		delete d;
 	qDebug("DevicesCache::put_device(), end");
-}
-
-// Add already existing device to cache
-device *DevicesCache::add_device(device *p)
-{
-	qDebug("DevicesCache::add_device(%p)", p);
-	QString k = p->get_key();
-	qDebug() << "key is " << k;
-	if ((*this)[k])
-	{
-		qDebug("device is already there (%p), deleting %p", (*this)[k], p);
-		delete p;
-		p = (*this)[k];
-	}
-	else
-	{
-		qDebug("device %p inserted", p);
-		(*this)[k] = p;
-	}
-
-	qDebug("DevicesCache::add_device() returning");
-	return p;
 }
 
 // Destructor

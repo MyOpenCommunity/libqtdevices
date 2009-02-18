@@ -202,7 +202,7 @@ banner *getBanner(QWidget *parent, QString primary_text)
 
 EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 {
-	dev = static_cast<EnergyDevice*>(bt_global::devices_cache.add_device(new EnergyDevice(address)));
+	dev = bt_global::add_device_to_cache(new EnergyDevice(address));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	mapper = new QSignalMapper(this);
