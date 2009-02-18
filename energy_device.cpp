@@ -8,6 +8,8 @@
 
 #include <assert.h>
 
+const int MAX_VALUE = 255;
+
 enum RequestDimension
 {
 	_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
@@ -215,8 +217,8 @@ void EnergyDevice::computeMonthGraphData(const QList<int> &values, QMap<int, int
 {
 	for (int i = 0; i + 1 < values.size(); i += 2)
 	{
-		int high = values[i] == 255 ? 0 : values[i];
-		int low = values[i+1] == 255 ? 0 : values[i+1];
+		int high = values[i] == MAX_VALUE ? 0 : values[i];
+		int low = values[i+1] == MAX_VALUE ? 0 : values[i+1];
 		graph[i / 2 + 1] = high * 256 + low;
 	}
 }

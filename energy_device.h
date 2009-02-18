@@ -79,7 +79,6 @@ private:
 	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);
 	void computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph);
 	QDate getDateFromFrame(OpenMsg &msg);
-	static const int MAX_VALUE = 255;
 	mutable QStringList buffer_frame;
 };
 
