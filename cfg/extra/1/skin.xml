@@ -19,10 +19,6 @@ QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 		<img_display>arrrg.png</img_display>
 		<img_display_items>set.png</img_display_items>
 		<img_cleanscreen>btnclean.png</img_cleanscreen>
-		<img_calibration>btntar.png</img_calibration>
-		<img_brightness>btnlum.png</img_brightness>
-		<img_calibration_bg>my_home.png</img_calibration_bg>
-		<img_calibration_ok>btnok.png</img_calibration_ok>
 	</item>
 	<item>
 		<cid>807</cid>
@@ -32,10 +28,22 @@ QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 	</item>
 	<item>
 		<cid>1400</cid>
-		<img_electricity>electricity.png</img_electricity>
-		<img_water>water.png</img_water>
-		<img_gas>gas.png</img_gas>
-		<img_dwh>dhw.png</img_dwh>
-		<img_liquid_gas>liq_gas.png</img_liquid_gas>
+		<img_energy_type>electricity.png</img_energy_type>
+	</item>
+	<item>
+		<cid>1401</cid>
+		<img_energy_type>water.png</img_energy_type>
+	</item>
+	<item>
+		<cid>1402</cid>
+		<img_energy_type>gas.png</img_energy_type>
+	</item>
+	<item>
+		<cid>1403</cid>
+		<img_energy_type>dwh.png</img_energy_type>
+	</item>
+	<item>
+		<cid>1404</cid>
+		<img_energy_type>liq_gas.png</img_energy_type>
 	</item>
 </style>
