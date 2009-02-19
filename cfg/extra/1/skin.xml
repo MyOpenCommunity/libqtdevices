@@ -13,6 +13,11 @@ QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 		<img_choice>btnemty.png</img_choice>
 		<img_scroll_up>arrup.png</img_scroll_up>
 		<img_scroll_down>arrdw.png</img_scroll_down>
+		<img_plus>btnplus.png</img_plus>
+		<img_minus>btnmin.png</img_minus>
+		<img_fast_forward>btnforward.png</img_fast_forward>
+		<img_fast_backward>btnbackward.png</img_fast_backward>
+		<img_cycle>btnavanti.png</img_cycle>
 	</common>
 	<item>
 		<cid>804</cid>
@@ -25,6 +30,14 @@ QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 		<img_network>set.png</img_network>
 		<img_network_enable>ethon.png</img_network_enable>
 		<img_network_disable>ethoff.png</img_network_disable>
+	</item>
+	<item>
+		<cid>17</cid>
+		<img_graph>chart.png</img_graph>
+		<img_select>arrrg.png</img_select>
+		<img_empty>empty.png</img_empty>
+		<img_currency>currency.png</img_currency>
+		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
 	</item>
 	<item>
 		<cid>1400</cid>

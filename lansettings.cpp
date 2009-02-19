@@ -40,7 +40,7 @@ void Text2Column::setText(int row, QString text)
 
 LanSettings::LanSettings(const QDomNode &config_node)
 {
-	bt_global::skin->setCid(getTextChild(config_node, "cid").toInt());
+	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
 	box_text = new Text2Column;
 	box_text->setStyleSheet("background-color:#f0f0f0; color:#000000;");
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -70,6 +70,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	main_layout->addWidget(toggle_btn, 0, Qt::AlignHCenter);
 
 	addBackButton();
+	bt_global::skin->removeFromContext();
 
 	dev = bt_global::add_device_to_cache(new LanDevice);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));

@@ -20,10 +20,10 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 {
 	banner *b;
 
+	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
 	QString img_items = bt_global::skin->getImage("display_items");
 	QString img_clean = bt_global::skin->getImage("cleanscreen");
 
-	bt_global::skin->setCid(getTextChild(config_node, "cid").toInt());
 	int wait_time = 45; // Default waiting time in seconds.
 	QDomElement n = getElement(config_node, "cleaning/time");
 	if (!n.isNull())
@@ -46,5 +46,6 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b = new bannOnDx(this,img_items, new ScreenSaverPage());
 	b->setText(tr("Screen Saver"));
 	appendBanner(b);
+	bt_global::skin->removeFromContext();
 }
 

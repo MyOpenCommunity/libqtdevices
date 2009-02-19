@@ -4,18 +4,13 @@
 #include "bann2_buttons.h" // bann2But, bannOnOff
 #include "bann1_button.h" // bannPuls
 #include "energy_view.h" // EnergyView
+#include "skinmanager.h" // bt_global::skin
 
 #include <QVBoxLayout>
 #include <QDomNode>
 #include <QDebug>
 
 #include <assert.h>
-
-static const char *IMG_SETTINGS = IMG_PATH "setscen.png";
-static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_PRESET = IMG_PATH "preset.png";
-static const char *IMG_PLUS = IMG_PATH "btnplus.png";
-static const char *IMG_MINUS = IMG_PATH "btnmin.png";
 
 
 EnergyData::EnergyData(const QDomNode &config_node)
@@ -25,16 +20,21 @@ EnergyData::EnergyData(const QDomNode &config_node)
 
 void EnergyData::loadTypes(const QDomNode &config_node)
 {
+	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode& type, getChildren(config_node, "energy_type"))
 	{
+		bt_global::skin->addToContext(getTextChild(type, "cid").toInt());
 		bannOnOff *b = new bannOnOff(this);
-		b->SetIcons(IMG_SELECT, IMG_SETTINGS, QString(), IMG_PRESET);
+		b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
+					QString(), bt_global::skin->getImage("energy_type"));
 		b->connectSxButton(new EnergyCost(type));
 		b->connectDxButton(new EnergyInterface(type));
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		appendBanner(b);
+		bt_global::skin->removeFromContext();
 	}
+	bt_global::skin->removeFromContext();
 }
 
 
@@ -60,7 +60,7 @@ void EnergyCost::addBanner(const QDomNode &config_node, QString desc, int n_deci
 	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
 	{
 		bann2ButLab *b = new bann2ButLab(this);
-		b->SetIcons(IMG_MINUS, IMG_PLUS);
+		b->SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"));
 		b->setText(QString::number(getTextChild(config_node, "rate").toFloat(), 'f', n_decimal));
 		b->setSecondaryText(desc);
 		b->Draw();
@@ -76,12 +76,13 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node) : sottoMenu(0, 1)
 
 void EnergyInterface::loadItems(const QDomNode &config_node)
 {
+	assert(bt_global::skin->hasContext() && "Skin context not set!");
 	QString energy_type = getTextChild(config_node, "descr");
 	QString measure = getTextChild(config_node, "measure");
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bannPuls *b = new bannPuls(this);
-		b->SetIcons(IMG_SELECT, QString(), IMG_PRESET);
+		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address")));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());

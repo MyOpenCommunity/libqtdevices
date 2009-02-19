@@ -3,6 +3,7 @@
 #include "main.h" // IMG_PATH
 
 #include <QDomNode>
+#include <QDebug>
 #include <QFile>
 #include <qglobal.h>
 
@@ -11,7 +12,6 @@
 
 SkinManager::SkinManager(QString filename)
 {
-	current_cid = -1; // invalid cid
 	if (QFile::exists(filename))
 	{
 		QFile file(filename);
@@ -50,24 +50,34 @@ QString SkinManager::getStyle()
 	return style;
 }
 
-void SkinManager::setCid(int cid)
+void SkinManager::addToContext(int cid)
 {
-	current_cid = cid;
+	assert(cid >=0 && "Invalid cid context");
+	cid_lookup_list.append(cid);
+}
+
+void SkinManager::removeFromContext()
+{
+	cid_lookup_list.removeLast();
+}
+
+bool SkinManager::hasContext()
+{
+	return !cid_lookup_list.isEmpty();
 }
 
 QString SkinManager::getImage(QString name)
 {
-	assert(current_cid != -1 && "Invalid cid");
-	if (!images.contains(current_cid))
-	{
-		qWarning("SkinManager: No cid %d loaded", current_cid);
-		return QString();
-	}
-	if (images[current_cid].contains(name))
-		return IMG_PATH + images[current_cid][name];
-	else if (images[-1].contains(name))
+	assert(!cid_lookup_list.isEmpty() && "List of cid empty");
+
+	foreach (int cid, cid_lookup_list)
+		if (images[cid].contains(name))
+			return IMG_PATH + images[cid][name];
+
+	if (images[-1].contains(name))
 		return IMG_PATH + images[-1][name];
 
+	qWarning("SkinManager: No image %s found", qPrintable(name));
 	return QString();
 }
 

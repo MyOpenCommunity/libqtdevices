@@ -13,6 +13,7 @@
 #ifndef SKINMANAGER_H
 #define SKINMANAGER_H
 
+#include <QList>
 #include <QHash>
 #include <QString>
 
@@ -20,21 +21,27 @@
  * \class SkinManager
  *
  * This class load the stylesheet and images from the skin configuration file.
- * To get images, you should set the cid before getting image as the "context".
+ * To get images, you often should set (adding or removing cid) the "explicit" context
+ * before getting them. An "implicit" context, which can be used to retrieve common
+ * images, is always set.
  */
 class SkinManager
 {
 public:
 	SkinManager(QString filename);
 	QString getStyle();
-	void setCid(int cid);
+	void addToContext(int cid);
+	void removeFromContext();
+	// Check if an explicit context is set.
+	bool hasContext();
 
-	// Return the full image path
+	// Return the full image path. The argument name is the same of the tag in
+	// the xml file without the prefix "img_".
 	QString getImage(QString name);
 
 private:
 	QString style;
-	int current_cid;
+	QList<int> cid_lookup_list;
 	QHash<int, QHash<QString, QString> > images;
 };
 

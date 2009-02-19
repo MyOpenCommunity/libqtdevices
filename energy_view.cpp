@@ -7,6 +7,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "bannfrecce.h"
 #include "devices_cache.h" // bt_global::devices_cache
+#include "skinmanager.h" // bt_global::skin
 
 #include <QDebug>
 #include <QLabel>
@@ -17,12 +18,6 @@
 
 #include <assert.h>
 
-#define ICON_FWD IMG_PATH "btnforward.png"
-#define ICON_BACK IMG_PATH "btnbackward.png"
-#define ICON_AVANTI IMG_PATH "btnavanti.png"
-// TODO: modificare con le icone corrette
-#define ICON_GRAPH IMG_PATH "arrrg.png"
-#define ICON_CURRENCY IMG_PATH "btncanc.png"
 
 #define POLLING_CURRENT_DATA 5 // time to refresh data visualized in the current banner
 
@@ -79,7 +74,7 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(0);
 
-	back_period = getTrimmedButton(this, ICON_BACK);
+	back_period = getTrimmedButton(this, bt_global::skin->getImage("fast_backward"));
 	back_period->setAutoRepeat(true);
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
 	main_layout->addWidget(back_period);
@@ -87,12 +82,12 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	date_period_label = getLabel(this, selection_date.toString("dd/MM/yy"), FontManager::SMALLTEXT);
 	main_layout->addWidget(date_period_label, 1, Qt::AlignCenter);
 
-	forw_period = getTrimmedButton(this, ICON_FWD);
+	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
 	forw_period->setAutoRepeat(true);
 	connect(forw_period, SIGNAL(clicked()), SLOT(periodForward()));
 	main_layout->addWidget(forw_period);
 
-	btn_cycle = getTrimmedButton(this, ICON_AVANTI);
+	btn_cycle = getTrimmedButton(this, bt_global::skin->getImage("cycle"));
 	connect(btn_cycle, SIGNAL(clicked()), SLOT(changeTimeScale()));
 	main_layout->addWidget(btn_cycle);
 	setLayout(main_layout);
@@ -184,6 +179,7 @@ void TimePeriodSelection::periodBackward()
 
 banner *getBanner(QWidget *parent, QString primary_text)
 {
+	assert(bt_global::skin->hasContext() && "Skin context not set!");
 	banner *bann = new banner(parent);
 #define BANN_TEXT2_X 60
 #define BANN_TEXT2_Y 0
@@ -194,7 +190,7 @@ banner *getBanner(QWidget *parent, QString primary_text)
 	bann->addItem(banner::TEXT, BANN_TEXT2_Y, BANN_TEXT2_X, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE-BANN_TEXT2_X);
 	bann->setText(primary_text);
 	bann->setSecondaryText("100 kWh");
-	bann->SetIcons(banner::BUT1, ICON_GRAPH);
+	bann->SetIcons(banner::BUT1, bt_global::skin->getImage("graph"));
 	bann->Draw();
 	return bann;
 }
@@ -202,6 +198,7 @@ banner *getBanner(QWidget *parent, QString primary_text)
 
 EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 {
+	assert(bt_global::skin->hasContext() && "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
@@ -224,7 +221,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address)
 	showBannerWidget();
 	main_layout->addWidget(widget_container, 1);
 
-	bannFrecce *nav_bar = new bannFrecce(this, 10, ICON_CURRENCY);
+	bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 	connect(nav_bar, SIGNAL(dxClick()), SLOT(toggleCurrency()));
 	main_layout->addWidget(nav_bar);
