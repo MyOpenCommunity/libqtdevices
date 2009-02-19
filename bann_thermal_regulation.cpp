@@ -1029,9 +1029,9 @@ void FSBannTermoReg4z::createSettingsMenu()
 	settings = new sottoMenu;
 	if (settings)
 	{
-		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
-		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(raise()));
-		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(showPage()));
+		// TODO: quando si tocca di nuovo questa parte, bisogna levare questo parentWidget()
+		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
 		// hide children
 		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
@@ -1092,9 +1092,8 @@ void FSBannTermoReg99z::createSettingsMenu()
 	settings = new sottoMenu;
 	if (settings)
 	{
-		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(show()));
-		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(raise()));
-		connect(settings, SIGNAL(Closed()), settings, SLOT(hide()));
+		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(showPage()));
+		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
 		// hide children
 		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
@@ -1138,29 +1137,19 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
 
 	settings->appendBanner(manual);
 	manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(show()));
-	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(raise()));
-	// hide children
-	connect(settings, SIGNAL(hideChildren()), manual_menu, SLOT(hide()));
+	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(showPage()));
 
 	FSBannManual *bann = new FSBannManual(manual_menu, dev, temp_scale);
 
 	manual_menu->appendBanner(bann);
 	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
-	connect(manual_menu, SIGNAL(Closed()), this, SLOT(manualCancelled()));
-	manual_menu->hide();
-}
-
-void FSBannTermoReg::manualCancelled()
-{
-	manual_menu->hide();
+	connect(bann, SIGNAL(temperatureSelected(unsigned)), settings, SIGNAL(Closed()));
+	connect(manual_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
 }
 
 void FSBannTermoReg::manualSelected(unsigned temp)
 {
 	dev()->setManualTemp(temp);
-	manual_menu->hide();
-	settings->hide();
 }
 
 void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
@@ -1171,26 +1160,16 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_re
 
 	program_menu = new WeeklyMenu(0, conf);
 
-	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(show()));
-	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(raise()));
-	// hide children
-	connect(settings, SIGNAL(hideChildren()), program_menu, SLOT(hide()));
+	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(showPage()));
 
-	connect(program_menu, SIGNAL(Closed()), this, SLOT(weekProgramCancelled()));
+	connect(program_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(weekProgramSelected(int)));
-	program_menu->hide();
-}
-
-void FSBannTermoReg::weekProgramCancelled()
-{
-	program_menu->hide();
+	connect(program_menu, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
 }
 
 void FSBannTermoReg::weekProgramSelected(int program)
 {
 	dev()->setWeekProgram(program);
-	program_menu->hide();
-	settings->hide();
 }
 
 void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
@@ -1228,10 +1207,7 @@ banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString 
 DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 {
 	DateEditMenu *date_edit = new DateEditMenu;
-	// hide children
-	connect(settings, SIGNAL(hideChildren()), date_edit, SLOT(hide()));
-	date_edit->hide();
-	connect(date_edit, SIGNAL(Closed()), this, SLOT(dateCancelled()));
+	connect(date_edit, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(date_edit, SIGNAL(dateSelected(QDate)), this, SLOT(dateSelected(QDate)));
 	return date_edit;
 }
@@ -1239,9 +1215,6 @@ DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 {
 	TimeEditMenu *time_edit = new TimeEditMenu;
-	// hide children
-	connect(settings, SIGNAL(hideChildren()), time_edit, SLOT(hide()));
-	time_edit->hide();
 	connect(time_edit, SIGNAL(timeSelected(BtTime)), this, SLOT(timeSelected(BtTime)));
 	connect(time_edit, SIGNAL(Closed()), this, SLOT(timeCancelled()));
 	return time_edit;
@@ -1250,10 +1223,8 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
-	// hide children
-	connect(settings, SIGNAL(hideChildren()), program_choice, SLOT(hide()));
-	program_choice->hide();
 	connect(program_choice, SIGNAL(programClicked(int)), this, SLOT(weekendHolidaySettingsEnd(int)));
+	connect(program_choice, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
 	connect(program_choice, SIGNAL(Closed()), this, SLOT(programCancelled()));
 	return program_choice;
 }
@@ -1261,44 +1232,35 @@ WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode co
 void FSBannTermoReg::holidaySettingsStart()
 {
 	weekendHolidayStatus = HOLIDAY;
-	date_edit->show();
-	date_edit->raise();
+	date_edit->showPage();
 }
 
 void FSBannTermoReg::weekendSettingsStart()
 {
 	weekendHolidayStatus = WEEKEND;
-	date_edit->show();
-	date_edit->raise();
-}
-
-void FSBannTermoReg::dateCancelled()
-{
-	date_edit->hide();
+	date_edit->showPage();
 }
 
 void FSBannTermoReg::dateSelected(QDate d)
 {
 	date_end = d;
-	time_edit->show();
-	time_edit->raise();
+	time_edit->showPage();
 }
 
 void FSBannTermoReg::timeCancelled()
 {
-	time_edit->hide();
+	date_edit->showPage();
 }
 
 void FSBannTermoReg::timeSelected(BtTime t)
 {
 	time_end = t;
-	program_choice->show();
-	program_choice->raise();
+	program_choice->showPage();
 }
 
 void FSBannTermoReg::programCancelled()
 {
-	program_choice->hide();
+	time_edit->showPage();
 }
 
 void FSBannTermoReg::weekendHolidaySettingsEnd(int program)
@@ -1309,10 +1271,6 @@ void FSBannTermoReg::weekendHolidaySettingsEnd(int program)
 		dev()->setHolidayDateTime(date_end, time_end, program);
 	else
 		qWarning("FSBannTermoReg::weekendHolidaySettingsEnd: unknown status");
-	program_choice->hide();
-	time_edit->hide();
-	date_edit->hide();
-	settings->hide();
 }
 
 void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
@@ -1329,26 +1287,16 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulato
 	bann->setMaxHours(25);
 
 	timed_manual_menu->appendBanner(bann);
-	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(show()));
-	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(raise()));
-	// hide children
-	connect(settings, SIGNAL(hideChildren()), timed_manual_menu, SLOT(hide()));
+	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(showPage()));
 
-	connect(timed_manual_menu, SIGNAL(Closed()), this, SLOT(manualTimedCancelled()));
+	connect(timed_manual_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), this, SLOT(manualTimedSelected(BtTime, int)));
-	timed_manual_menu->hide();
-}
-
-void FSBannTermoReg4z::manualTimedCancelled()
-{
-	timed_manual_menu->hide();
+	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), settings, SIGNAL(Closed()));
 }
 
 void FSBannTermoReg4z::manualTimedSelected(BtTime time, int temp)
 {
 	_dev->setManualTempTimed(temp, time);
-	timed_manual_menu->hide();
-	settings->hide();
 }
 
 void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
@@ -1359,26 +1307,16 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, the
 
 	scenario_menu = new ScenarioMenu(0, conf);
 
-	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(show()));
-	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(raise()));
-	// hide children
-	connect(settings, SIGNAL(hideChildren()), scenario_menu, SLOT(hide()));
+	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(showPage()));
 
-	connect(scenario_menu, SIGNAL(Closed()), this, SLOT(scenarioCancelled()));
+	connect(scenario_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(scenario_menu, SIGNAL(programClicked(int)), this, SLOT(scenarioSelected(int)));
-	scenario_menu->hide();
-}
-
-void FSBannTermoReg99z::scenarioCancelled()
-{
-	scenario_menu->hide();
+	connect(scenario_menu, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
 }
 
 void FSBannTermoReg99z::scenarioSelected(int scenario)
 {
 	_dev->setScenario(scenario);
-	scenario_menu->hide();
-	settings->hide();
 }
 
 

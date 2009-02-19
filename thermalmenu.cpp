@@ -47,13 +47,9 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
 	sottoMenu *sm = new PlantMenu(NULL, config);
 
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
+	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
 	single_submenu = sm;
-
-	sm->hide();
-	// hide children
-	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
 }
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
@@ -99,18 +95,8 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 	unsigned submenu_scroll_step = NUM_RIGHE - 1;
 	sm->setScrollStep(submenu_scroll_step);
 
-	/**
-	 * Now submenus work. To add another submenu:
-	 *  - make all the submenus children of the same parent (NULL), so that they are all siblings.
-	 *  - create the submenu as usual, ie. make all banners children of the sottoMenu class.
-	 *  - connect the clicked() signal with show() slot of the submenu to be shown.
-	 *  - connect the Closed() signal of the submenu now created with its hide() slot.
-	 */
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-	sm->hide();
-	// hide children
-	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
+	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
 
 	foreach (const QDomNode &item, getChildren(config, "item"))
 	{

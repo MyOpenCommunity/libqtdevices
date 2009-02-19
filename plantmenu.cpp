@@ -73,8 +73,7 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent),
 
 			signal_mapper.setMapping(bp, banner_id);
 			connect(bp, SIGNAL(sxClick()), &signal_mapper, SLOT(map()));
-			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(show()));
-			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(raise()));
+			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(showPage()));
 
 			connect(&signal_mapper, SIGNAL(mapped(int)), &items_submenu, SLOT(showItem(int)));
 
@@ -82,7 +81,7 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent),
 		}
 		n = n.nextSibling();
 	}
-	connect(&items_submenu, SIGNAL(Closed()), &items_submenu, SLOT(hide()));
+	connect(&items_submenu, SIGNAL(Closed()), this, SLOT(showPage()));
 }
 
 bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type)

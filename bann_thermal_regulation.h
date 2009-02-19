@@ -277,11 +277,6 @@ private slots:
 	void weekendSettingsStart();
 
 	/**
-	 * User cancelled date editing, go back to main settings menu.
-	 */
-	void dateCancelled();
-
-	/**
 	 * User confirmed date, go to time editing.
 	 */
 	void dateSelected(QDate d);
@@ -308,10 +303,8 @@ private slots:
 	// End of holiday/weekend related functions
 
 
-	void manualCancelled();
 	void manualSelected(unsigned temp);
 
-	void weekProgramCancelled();
 	void weekProgramSelected(int program);
 private:
 	enum weekend_t
@@ -379,7 +372,6 @@ private:
 	sottoMenu *timed_manual_menu;
 private slots:
 	void manualTimedSelected(BtTime time, int temp);
-	void manualTimedCancelled();
 };
 
 
@@ -402,7 +394,6 @@ private:
 	thermal_regulator_99z *_dev;
 	ScenarioMenu *scenario_menu;
 private slots:
-	void scenarioCancelled();
 	void scenarioSelected(int scenario);
 };
 
