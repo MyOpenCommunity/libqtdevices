@@ -409,7 +409,7 @@ void BtMain::init()
 		Home->hide();
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
-		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showFullScreen()));
+		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showPage()));
 		alreadyCalibrated = true;
 	}
 }
@@ -420,7 +420,6 @@ void BtMain::myMain()
 
 	init();
 	Home->showPage();
-	version->hide();
 	bt_global::devices_cache.init_devices();
 
 	tempo1 = new QTimer(this);
@@ -576,7 +575,7 @@ void BtMain::gesScrSav()
 
 					Page *target = pagDefault ? pagDefault : Home;
 					if (target != pagDefault)
-						target->raise();
+						target->showPage();
 					screensaver->start(target);
 					bt_global::display.setState(DISPLAY_SCREENSAVER);
 				}

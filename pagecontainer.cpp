@@ -53,7 +53,7 @@ void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;
-	connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 }
 
 void PageContainer::addBackButton()
