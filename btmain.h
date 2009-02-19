@@ -14,6 +14,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QHash>
+#include <QStackedWidget>
 
 class sottoMenu;
 class SoundDiffusion;
@@ -108,6 +109,7 @@ private:
 	bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;
+	QStackedWidget page_arbiter;
 
 	// A flag that is set when the client monitor socket is ready
 	bool monitor_ready;

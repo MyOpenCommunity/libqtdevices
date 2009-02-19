@@ -17,6 +17,7 @@
 #include <QWidget>
 
 class Client;
+class QStackedWidget;
 class QVBoxLayout;
 
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
@@ -44,6 +45,7 @@ public:
 	// devices specific methods, unless you have to send frames without reading responses.
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
+	static void setPageArbiter(QStackedWidget *arbiter);
 
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
@@ -53,6 +55,7 @@ public slots:
 private:
 	static Client *client_richieste;
 	static Client *client_comandi;
+	static QStackedWidget *page_arbiter;
 
 signals:
 	/// Emitted when the page is closed.

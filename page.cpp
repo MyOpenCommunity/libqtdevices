@@ -3,6 +3,7 @@
 #include "openclient.h" // Client
 #include "btbutton.h"
 
+#include <QStackedWidget>
 #include <QVBoxLayout>
 
 #include <assert.h>
@@ -13,20 +14,29 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 // Inizialization of static member
 Client *Page::client_comandi = 0;
 Client *Page::client_richieste = 0;
+QStackedWidget *Page::page_arbiter = 0;
 
 
 Page::Page(QWidget *parent) : QWidget(parent)
 {
+	// pages with parent have a special meaning (for example, sound diffusion)
+	// so they must not handled here
+	if (page_arbiter && !parent)
+		page_arbiter->addWidget(this);
 }
 
 void Page::inizializza()
 {
 }
 
+void Page::setPageArbiter(QStackedWidget *arbiter)
+{
+	page_arbiter = arbiter;
+}
+
 void Page::showPage()
 {
-	showFullScreen();
-	setFixedSize(MAX_WIDTH, MAX_HEIGHT);
+	page_arbiter->setCurrentWidget(this);
 }
 
 void Page::sendFrame(QString frame) const

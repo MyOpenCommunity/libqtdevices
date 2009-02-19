@@ -80,6 +80,9 @@ BtMain::BtMain()
 	client_richieste = new Client(Client::RICHIESTE);
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
+	Page::setPageArbiter(&page_arbiter);
+	page_arbiter.showFullScreen();
+	page_arbiter.setFixedSize(MAX_WIDTH, MAX_HEIGHT);
 	device::setClients(client_comandi, client_richieste, client_monitor);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
