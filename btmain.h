@@ -11,7 +11,7 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
-#include <QWidget>
+#include <QObject>
 #include <QTimer>
 #include <QHash>
 
@@ -43,7 +43,7 @@ class QString;
   \date lug 2005
 */
 
-class BtMain : public QWidget
+class BtMain : public QObject
 {
 Q_OBJECT
 friend class PageContainer;

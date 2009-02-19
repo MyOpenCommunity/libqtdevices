@@ -362,8 +362,8 @@ void BtMain::hom()
 	version->inizializza();
 	bt_global::skin = new SkinManager(SKIN_FILE);
 
-	if (loadConfiguration(CFG_FILE))
-		hide();
+	if (!loadConfiguration(CFG_FILE))
+		qFatal("Unable to load configuration");
 
 	// The stylesheet can contain some references to dynamic properties,
 	// so loading of css must be done after setting these properties (otherwise
