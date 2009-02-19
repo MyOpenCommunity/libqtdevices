@@ -54,7 +54,7 @@ class bannOnDx : public banner
 {
 Q_OBJECT
 public:
-	bannOnDx(sottoMenu *parent, QString icon=QString(), Page *page=0);
+	bannOnDx(sottoMenu *parent, QString icon=QString(), Page *page=0, Page *back_page=0);
 
 signals:
 	void click();

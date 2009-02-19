@@ -34,7 +34,7 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
-bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
+bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page, Page *back_page) : banner(parent)
 {
 	unsigned char nr = parent->getNumRig();
 
@@ -48,6 +48,7 @@ bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
 		SetIcons(icon, 1);
 
 	connectDxButton(page);
+	connect(page, SIGNAL(Closed()), back_page, SLOT(showPage()));
 	Draw();
 }
 
