@@ -108,7 +108,7 @@ void impBeep::toggleBeep()
 
 
 bannContrast::bannContrast(sottoMenu *parent, QString val, QString icon) :
-	bannOnDx(parent, icon, new Contrast())
+	bannOnDx(parent, icon, new Contrast(), parent)
 {
 	setContrast(val.toInt(), false);
 	connect(linked_dx_page, SIGNAL(Closed()), SLOT(done()));

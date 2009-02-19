@@ -29,7 +29,7 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	if (!n.isNull())
 		wait_time = n.text().toInt();
 
-	b = new bannOnDx(this, img_items, new CleanScreen(img_clean, wait_time));
+	b = new bannOnDx(this, img_items, new CleanScreen(img_clean, wait_time), this);
 	b->setText(tr("Clean Screen"));
 	appendBanner(b);
 
@@ -39,11 +39,11 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b->setText(tr("Calibration"));
 	appendBanner(b);
 
-	b = new bannOnDx(this,img_items, new BrightnessPage());
+	b = new bannOnDx(this,img_items, new BrightnessPage(), this);
 	b->setText(tr("Brightness"));
 	appendBanner(b);
 
-	b = new bannOnDx(this,img_items, new ScreenSaverPage());
+	b = new bannOnDx(this,img_items, new ScreenSaverPage(), this);
 	b->setText(tr("Screen Saver"));
 	appendBanner(b);
 	bt_global::skin->removeFromContext();
