@@ -14,29 +14,29 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 // Inizialization of static member
 Client *Page::client_comandi = 0;
 Client *Page::client_richieste = 0;
-QStackedWidget *Page::page_arbiter = 0;
+QStackedWidget *Page::main_window = 0;
 
 
 Page::Page(QWidget *parent) : QWidget(parent)
 {
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
-	if (page_arbiter && !parent)
-		page_arbiter->addWidget(this);
+	if (main_window && !parent)
+		main_window->addWidget(this);
 }
 
 void Page::inizializza()
 {
 }
 
-void Page::setPageArbiter(QStackedWidget *arbiter)
+void Page::setMainWindow(QStackedWidget *window)
 {
-	page_arbiter = arbiter;
+	main_window = window;
 }
 
 void Page::showPage()
 {
-	page_arbiter->setCurrentWidget(this);
+	main_window->setCurrentWidget(this);
 }
 
 void Page::sendFrame(QString frame) const

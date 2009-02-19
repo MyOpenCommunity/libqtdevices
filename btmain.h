@@ -109,7 +109,7 @@ private:
 	bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;
-	QStackedWidget page_arbiter;
+	QStackedWidget main_window;
 
 	// A flag that is set when the client monitor socket is ready
 	bool monitor_ready;
