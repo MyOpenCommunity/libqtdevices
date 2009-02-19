@@ -5,7 +5,6 @@
 #include <QDomNode>
 #include <QDebug>
 #include <QFile>
-#include <qglobal.h>
 
 #include <assert.h>
 
