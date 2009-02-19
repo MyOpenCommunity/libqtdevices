@@ -65,8 +65,9 @@ namespace
 }
 
 
-BtMain::BtMain(QWidget *parent) : QWidget(parent), screensaver(0)
+BtMain::BtMain()
 {
+	screensaver = 0;
 	loadGlobalConfig();
 	qDebug("parte BtMain");
 	QWSServer::setCursorVisible(false);
@@ -374,7 +375,6 @@ void BtMain::hom()
 		qApp->setStyleSheet(style);
 
 	config_loaded = true;
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 
 	if (monitor_ready)
 		myMain();

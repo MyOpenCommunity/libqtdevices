@@ -12,6 +12,7 @@
 #define BTMAIN_H
 
 #include <QWidget>
+#include <QTimer>
 #include <QHash>
 
 class sottoMenu;
@@ -47,7 +48,7 @@ class BtMain : public QWidget
 Q_OBJECT
 friend class PageContainer;
 public:
-	BtMain(QWidget *parent=0);
+	BtMain();
 	~BtMain();
 	Client *client_richieste;
 	Client *client_comandi;
