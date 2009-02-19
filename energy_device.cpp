@@ -4,9 +4,11 @@
 #include <openmsg.h>
 
 #include <QDebug>
-#include <QDate>
+#include <QList>
 
 #include <assert.h>
+
+const int MAX_VALUE = 255;
 
 enum RequestDimension
 {
@@ -133,7 +135,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	}
 }
 
-void EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame, QVariant &v)
+void EnergyDevice::parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v)
 {
 	QList<int> values_list;
 	GraphData data;
@@ -157,7 +159,7 @@ void EnergyDevice::parseDailyAverageGraph(const QList<QString> &buffer_frame, QV
 	v.setValue(data);
 }
 
-void EnergyDevice::parseCumulativeDayGraph(const QList<QString> &buffer_frame, QVariant &v)
+void EnergyDevice::parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v)
 {
 	QList<int> values;
 	GraphData data;
@@ -189,7 +191,7 @@ void EnergyDevice::parseCumulativeDayGraph(const QList<QString> &buffer_frame, Q
 	v.setValue(data);
 }
 
-void EnergyDevice::parseCumulativeMonthGraph(const QList<QString> &buffer_frame, QVariant &v)
+void EnergyDevice::parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v)
 {
 	GraphData data;
 	QList<int> values;
@@ -215,8 +217,8 @@ void EnergyDevice::computeMonthGraphData(const QList<int> &values, QMap<int, int
 {
 	for (int i = 0; i + 1 < values.size(); i += 2)
 	{
-		int high = values[i] == 255 ? 0 : values[i];
-		int low = values[i+1] == 255 ? 0 : values[i+1];
+		int high = values[i] == MAX_VALUE ? 0 : values[i];
+		int low = values[i+1] == MAX_VALUE ? 0 : values[i+1];
 		graph[i / 2 + 1] = high * 256 + low;
 	}
 }

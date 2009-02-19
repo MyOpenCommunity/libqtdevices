@@ -203,9 +203,8 @@ void TestEnergyDevice::readDayGraph3()
 		<< tmp + "*4*190*191*192##"
 		<< tmp + "*5*180*181*182##"
 		<< tmp + "*6*170*171*172##"
-		<< tmp + "*6*253*254*255##"
 		<< tmp + "*7*253*254*255##"
-		<< tmp + "*8*253*254*255##"
+		<< tmp + "*8*222*223*224##"
 		<< tmp + "*9*253*254*9999##"
 		<< tmp + "*10*9999*6666##";
 	QVariant result = t.getResult(frames);
@@ -232,13 +231,15 @@ void TestEnergyDevice::readDayGraph3()
 	data.graph[17] = 253;
 	data.graph[18] = 254;
 	data.graph[19] = 0;
-	data.graph[20] = 253;
-	data.graph[21] = 254;
-	data.graph[22] = 0;
+	data.graph[20] = 222;
+	data.graph[21] = 223;
+	data.graph[22] = 224;
 	data.graph[23] = 253;
 	data.graph[24] = 254;
 	data.date = QDate(2008, 8, 1);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
+
+	QVERIFY(data == result.value<GraphData>());
 }
 
 void TestEnergyDevice::requestCumulativeDayGraph()

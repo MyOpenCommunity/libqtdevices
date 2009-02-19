@@ -15,10 +15,11 @@
 
 #include "device.h"
 
+#include <QDate>
 #include <QMap>
+#include <QStringList>
 #include <QVariant>
 
-class QDate;
 class OpenMsg;
 
 /**
@@ -73,13 +74,12 @@ public slots:
 private:
 	void sendRequest(int what) const;
 	void sendRequest(QString what) const;
-	void parseCumulativeDayGraph(const QList<QString> &buffer_frame, QVariant &v);
-	void parseCumulativeMonthGraph(const QList<QString> &buffer_frame, QVariant &v);
-	void parseDailyAverageGraph(const QList<QString> &buffer_frame, QVariant &v);
+	void parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v);
+	void parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v);
+	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);
 	void computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph);
 	QDate getDateFromFrame(OpenMsg &msg);
-	static const int MAX_VALUE = 255;
-	mutable QList<QString> buffer_frame;
+	mutable QStringList buffer_frame;
 };
 
 
