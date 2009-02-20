@@ -668,9 +668,8 @@ void banner::connectDxButton(Page *page)
 	linked_dx_page = page;
 	if (page)
 	{
-		page->hide();
 		connect(this, SIGNAL(sxClick()), page, SLOT(showPage()));
-		connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+		connect(page, SIGNAL(Closed()), SIGNAL(pageClosed()));
 	}
 }
 
@@ -679,9 +678,8 @@ void banner::connectSxButton(Page *page)
 	linked_sx_page = page;
 	if (page)
 	{
-		page->hide();
 		connect(this, SIGNAL(dxClick()), page, SLOT(showPage()));
-		connect(page, SIGNAL(Closed()), page, SLOT(hide()));
+		connect(page, SIGNAL(Closed()), SIGNAL(pageClosed()));
 	}
 }
 

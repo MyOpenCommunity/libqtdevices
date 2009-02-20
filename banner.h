@@ -405,6 +405,9 @@ signals:
 	// di stato e usare direttamente BTouch.. ma poi c'e' anche il rischio di abusare
 	// troppo di quella variabile globale!
 	void richStato(QString);
+
+	/// Emitted when any of the linked pages is closed
+	void pageClosed();
 };
 
 
