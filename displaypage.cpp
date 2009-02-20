@@ -30,6 +30,7 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 		wait_time = n.text().toInt();
 
 	b = new bannOnDx(this, img_items, new CleanScreen(img_clean, wait_time));
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Clean Screen"));
 	appendBanner(b);
 
@@ -40,10 +41,12 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	appendBanner(b);
 
 	b = new bannOnDx(this,img_items, new BrightnessPage());
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Brightness"));
 	appendBanner(b);
 
 	b = new bannOnDx(this,img_items, new ScreenSaverPage());
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Screen Saver"));
 	appendBanner(b);
 	bt_global::skin->removeFromContext();

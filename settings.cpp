@@ -78,5 +78,6 @@ void Settings::loadItems(const QDomNode &config_node)
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		appendBanner(b);
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }

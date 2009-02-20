@@ -29,7 +29,7 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
-	connect(alarm_clock,SIGNAL(Closed()), alarm_clock, SLOT(hide()));
+	connect(alarm_clock,SIGNAL(Closed()), SIGNAL(pageClosed()));
 }
 
 void bannAlarmClock::gestFrame(char* frame)
