@@ -17,7 +17,7 @@ private:
 };
 
 
-class EnergyCost : public Page
+class EnergyCost : public PageLayout
 {
 Q_OBJECT
 public:

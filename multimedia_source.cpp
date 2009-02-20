@@ -69,7 +69,7 @@ enum ChoiceButtons
 };
 
 
-SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
+SourceChoice::SourceChoice(QWidget *parent) : PageLayout(parent)
 {
 	setFont(bt_global::font->get(FontManager::TEXT));
 	buttons_group = new QButtonGroup(this);

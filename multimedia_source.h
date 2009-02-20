@@ -67,7 +67,7 @@ struct AudioData
  *
  * This class show the menu to choice from Radio Over Ip and Media Server
  */
-class SourceChoice : public Page
+class SourceChoice : public PageLayout
 {
 Q_OBJECT
 public:

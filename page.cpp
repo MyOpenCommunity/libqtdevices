@@ -17,10 +17,6 @@ Client *Page::client_richieste = 0;
 
 Page::Page(QWidget *parent) : QWidget(parent)
 {
-	main_layout = new QVBoxLayout;
-	main_layout->setContentsMargins(0, 5, 0, 0);
-	main_layout->setSpacing(0);
-	setLayout(main_layout);
 }
 
 void Page::inizializza()
@@ -53,7 +49,15 @@ void Page::setClients(Client *command, Client *request)
 	client_richieste = request;
 }
 
-void Page::addBackButton()
+
+PageLayout::PageLayout(QWidget *parent) : Page(parent)
+{
+	main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 5, 0, 0);
+	main_layout->setSpacing(0);
+}
+
+void PageLayout::addBackButton()
 {
 	BtButton *back_btn = new BtButton;
 	back_btn->setImage(IMG_BACK);
@@ -62,3 +66,4 @@ void Page::addBackButton()
 	main_layout->addWidget(back_btn, 0, Qt::AlignLeft);
 	main_layout->addSpacing(10);
 }
+

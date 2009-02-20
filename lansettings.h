@@ -50,7 +50,7 @@ private:
  * This class is a page used to show lan settings and enable activation
  * (disactivation) of lan interface.
  */
-class LanSettings : public Page
+class LanSettings : public PageLayout
 {
 Q_OBJECT
 public:

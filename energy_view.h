@@ -59,7 +59,7 @@ signals:
 };
 
 
-class EnergyView : public Page
+class EnergyView : public PageLayout
 {
 Q_OBJECT
 public:
