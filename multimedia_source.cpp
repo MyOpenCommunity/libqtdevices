@@ -44,7 +44,6 @@ static const char *stop_play_script = "/bin/audio_off.tcl";
 
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_WAIT = IMG_PATH "loading.png";
 
 
@@ -73,8 +72,6 @@ enum ChoiceButtons
 SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
 {
 	setFont(bt_global::font->get(FontManager::TEXT));
-
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	buttons_group = new QButtonGroup(this);
 
 	TitleLabel *l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, 5);
@@ -85,15 +82,7 @@ SourceChoice::SourceChoice(QWidget *parent) : Page(parent)
 	l->setText(tr("Servers"));
 	addHorizontalBox(main_layout, l, BUTTON_MEDIA);
 
-	main_layout->addStretch();
-
-	back_btn = new BtButton();
-	back_btn->setImage(IMG_BACK);
-	main_layout->addWidget(back_btn, 0, Qt::AlignLeft);
-	main_layout->setContentsMargins(0, 5, 0, 10);
-	main_layout->setSpacing(0);
-
-	connect(back_btn, SIGNAL(released()), SIGNAL(Closed()));
+	addBackButton();
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SIGNAL(clicked(int)));
 }
 
