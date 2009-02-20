@@ -61,7 +61,7 @@ void Settings::loadItems(const QDomNode &config_node)
 			b = new bannContrast(this, getTextChild(item, "value"), img1);
 			break;
 		case DISPLAY:
-			b = new bannOnDx(this, ICON_FRECCIA_DX, new DisplayPage(item), this);
+			b = new bannOnDx(this, ICON_FRECCIA_DX, new DisplayPage(item));
 			break;
 		case PROTEZIONE:
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
