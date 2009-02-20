@@ -79,6 +79,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 		}
 		if (b)
 		{
+			connect(b, SIGNAL(pageClosed()), SLOT(showSoundDiff()));
 			if (multi_channel)
 			{
 				connect(b, SIGNAL(csxClick()), this, SLOT(goDown()));
@@ -91,6 +92,14 @@ void AudioSources::loadItems(const QDomNode &config_node)
 			appendBanner(b);
 		}
 	}
+}
+
+void AudioSources::showSoundDiff()
+{
+	// The parent is always the SoundDiffusion instance (in MultiSoundDiff
+	// AudioSources is reparented in "configura()")
+	Page *parent = static_cast<Page*>(parentWidget());
+	parent->showPage();
 }
 
 void AudioSources::setIndex(QString addr)

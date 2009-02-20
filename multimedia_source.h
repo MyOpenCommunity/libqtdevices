@@ -71,7 +71,7 @@ class SourceChoice : public PageLayout
 {
 Q_OBJECT
 public:
-	SourceChoice(QWidget *parent);
+	SourceChoice();
 
 signals:
 	void clicked(int);
@@ -93,7 +93,8 @@ class MultimediaSource : public Page
 {
 Q_OBJECT
 public:
-	MultimediaSource(QWidget *parent, int where_address);
+	MultimediaSource(int where_address);
+	~MultimediaSource();
 	/*!
 	 * \brief Sets amb. description
 	 */
@@ -127,14 +128,10 @@ signals:
 	void notifyStopPlay();
 
 public slots:
-	void showPage();
+	virtual void showPage();
 
 private:
 	void sourceMenu(AudioSourceType t);
-	/*!
-	 * \brief Draws the page
-	 */
-	void draw() {};
 
 	void loadSources();
 

@@ -19,7 +19,7 @@
  **SorgenteMultimedia
  ****************************************************************/
 BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, QString indirizzo, int where, int nbut) :
-	bannCiclaz(parent, nbut), source_menu(NULL, where) // where is the number of source in mono and indirizzo in multi!
+	bannCiclaz(parent, nbut), source_menu(where) // where is the number of source in mono and indirizzo in multi!
 {
 	SetIcons(ICON_CICLA, ICON_IMPOSTA, ICON_FFWD, ICON_REW);
 	setAddress(indirizzo);
@@ -28,13 +28,10 @@ BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, QString indi
 	if (nbut == 4)
 	{
 		connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));
-		connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
-		connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+		connect(this, SIGNAL(csxClick()), this, SLOT(decBrano()));
+		connect(this, SIGNAL(cdxClick()), this, SLOT(aumBrano()));
 	}
-
-	QWidget *sotto_menu = this->parentWidget()->parentWidget();
-	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
-	connect(&source_menu, SIGNAL(Closed()), &source_menu, SLOT(hide()));
+	connect(&source_menu, SIGNAL(Closed()), SIGNAL(pageClosed()));
 }
 
 void BannerSorgenteMultimedia::ciclaSorg()

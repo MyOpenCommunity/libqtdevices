@@ -69,7 +69,7 @@ enum ChoiceButtons
 };
 
 
-SourceChoice::SourceChoice(QWidget *parent) : PageLayout(parent)
+SourceChoice::SourceChoice()
 {
 	setFont(bt_global::font->get(FontManager::TEXT));
 	buttons_group = new QButtonGroup(this);
@@ -99,10 +99,9 @@ void SourceChoice::addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_bt
 }
 
 
-MultimediaSource::MultimediaSource(QWidget *parent, int _where_address) :
-	Page(parent), audio_initialized(true)
+MultimediaSource::MultimediaSource(int _where_address)
 {
-
+	audio_initialized = true;
 	where_address = _where_address;
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
@@ -110,8 +109,7 @@ MultimediaSource::MultimediaSource(QWidget *parent, int _where_address) :
 	bannNavigazione = new bannFrecce(this, 4, ICON_DIFFSON);
 	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	source_choice = new SourceChoice(this);
-	source_choice->hide();
+	source_choice = new SourceChoice;
 	source_type = NONE_SOURCE;
 	media_player = new MediaPlayer(this);
 	play_window = 0;
@@ -121,6 +119,11 @@ MultimediaSource::MultimediaSource(QWidget *parent, int _where_address) :
 	connect(source_choice, SIGNAL(clicked(int)), SLOT(handleChoiceSource(int)));
 
 	loadSources();
+}
+
+MultimediaSource::~MultimediaSource()
+{
+	delete source_choice;
 }
 
 void MultimediaSource::loadSources()
@@ -174,8 +177,6 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 	else
 		play_window = new MediaPlayWindow(media_player, this);
 
-	play_window->setFont(font());
-
 	if (selector)
 		selector->deleteLater();
 
@@ -205,7 +206,6 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 
 void MultimediaSource::handleClose()
 {
-	source_choice->hide();
 	bannNavigazione->setHidden(false);
 	if (source_type != NONE_SOURCE)
 	{
@@ -259,10 +259,6 @@ void MultimediaSource::resume()
 
 void MultimediaSource::showPage()
 {
-	// draw and show itself
-	draw();
-	showFullScreen();
-
 	if (source_type != NONE_SOURCE && play_window->isPlaying())
 		play_window->show();
 	else if (mediaserver_enabled && !radio_enabled)
@@ -279,7 +275,9 @@ void MultimediaSource::showPage()
 	{
 		bannNavigazione->setHidden(true);
 		source_choice->showPage();
+		return;
 	}
+	Page::showPage();
 }
 
 void MultimediaSource::handlePlayerExit()
@@ -315,7 +313,9 @@ void MultimediaSource::handleChoiceSource(int button_id)
 	}
 	assert(play_window && "PlayWindow not set!");
 	bannNavigazione->setHidden(false);
-	source_choice->hide();
+	// This is Page::showPage otherwise SourceChoices is displayed again (and again,
+	// and again and again..) if both radio and mediaserver are enabled.
+	Page::showPage();
 
 	if (play_window->isPlaying())
 		play_window->show();

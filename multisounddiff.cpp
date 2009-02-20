@@ -25,9 +25,10 @@
 #include <assert.h>
 
 
-MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node) : sottoMenu((QWidget*)0, 3, MAX_WIDTH, MAX_HEIGHT, NUM_RIGHE-1)
+MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
 {
 	sorgenti = new AudioSources(this, config_node);
+	sorgenti->hide();
 	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
 	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
@@ -139,7 +140,7 @@ void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
 		elencoBanner.at(i)->show();
 	}
 	forceDraw();
-	showFullScreen();
+	showPage();
 }
 
 void MultiSoundDiff::hideEvent(QHideEvent *event)

@@ -36,6 +36,10 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
+
+private slots:
+	void showSoundDiff();
+
 signals:
 	void actSrcChanged(int, int);
 

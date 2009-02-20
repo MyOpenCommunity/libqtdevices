@@ -74,7 +74,7 @@ void ambDiffSon::configura()
 	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	diffson->setFirstSource(actSrc);
 	diffson->forceDraw();
-	diffson->showFullScreen();
+	diffson->showPage();
 	setDraw(true);
 }
 
@@ -148,7 +148,7 @@ void insAmbDiffSon::configura()
 	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	sorgenti->mostra_all(banner::BUT2);
 	diffson->forceDraw();
-	diffson->showFullScreen();
+	diffson->showPage();
 }
 
 
