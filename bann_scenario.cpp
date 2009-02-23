@@ -321,10 +321,9 @@ void scenEvo::firstCond()
 	qDebug("scenEvo::firstCond()");
 	scenEvo_cond *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	co->hide();
 	current_condition = 0;
 	Draw();
-	show();
+	emit pageClosed();
 }
 
 void scenEvo::saveAndApplyAll()
@@ -346,6 +345,7 @@ void scenEvo::resetAll()
 		scenEvo_cond *co = condList.at(i);
 		co->reset();
 	}
+	emit pageClosed();
 }
 
 void scenEvo::Draw()
@@ -444,16 +444,6 @@ void scenEvo::inizializza(bool forza)
 		scenEvo_cond *co = condList.at(i);
 		qDebug() << "Ciclo n. " << i << co->getDescription();
 		co->inizializza();
-	}
-}
-
-void scenEvo::hideEvent(QHideEvent *event)
-{
-	qDebug("scenEvo::hideEvent()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		scenEvo_cond *co = condList.at(i);
-		co->hide();
 	}
 }
 
