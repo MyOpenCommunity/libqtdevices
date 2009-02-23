@@ -254,6 +254,11 @@ protected:
 	 */
 	void weekendSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev);
 
+	/**
+	 * Utility function to create off, antifreeze and summer/winter banners.
+	 */
+	void createButtonsBanners(thermal_regulator *dev);
+
 	/// The settings menu of the thermal regulator
 	sottoMenu *settings;
 	/// A reference to the configuration of the thermal regulator

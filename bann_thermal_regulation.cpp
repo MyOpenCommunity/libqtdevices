@@ -1011,6 +1011,24 @@ QString FSBannTermoReg::lookupProgramDescription(QString season, QString what, i
 		return node.text();
 }
 
+void FSBannTermoReg::createButtonsBanners(thermal_regulator *dev)
+{
+	// off banner
+	BannOff *off = new BannOff(settings, dev);
+	settings->appendBanner(off);
+	connect(off, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
+
+	// antifreeze banner
+	BannAntifreeze *antifreeze = new BannAntifreeze(settings, dev);
+	settings->appendBanner(antifreeze);
+	connect(antifreeze, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
+
+	// summer_winter banner
+	BannSummerWinter *summer_winter = new BannSummerWinter(settings, dev);
+	settings->appendBanner(summer_winter);
+	connect(summer_winter, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
+}
+
 FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent)
 	: FSBannTermoReg(n, parent)
 {
@@ -1046,20 +1064,7 @@ void FSBannTermoReg4z::createSettingsMenu()
 
 	weekendSettings(settings, conf_root, _dev);
 
-	// off banner
-	BannOff *off = new BannOff(settings, _dev);
-	settings->appendBanner(off);
-	connect(off, SIGNAL(clicked()), settings, SLOT(hide()));
-
-	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, _dev);
-	settings->appendBanner(antifreeze);
-	connect(antifreeze, SIGNAL(clicked()), settings, SLOT(hide()));
-
-	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, _dev);
-	settings->appendBanner(summer_winter);
-	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
+	createButtonsBanners(_dev);
 	settings->hide();
 }
 
@@ -1105,20 +1110,7 @@ void FSBannTermoReg99z::createSettingsMenu()
 
 	weekendSettings(settings, conf_root, _dev);
 
-	// off banner
-	BannOff *off = new BannOff(settings, _dev);
-	settings->appendBanner(off);
-	connect(off, SIGNAL(clicked()), settings, SLOT(hide()));
-
-	// antifreeze banner
-	BannAntifreeze *antifreeze = new BannAntifreeze(settings, _dev);
-	settings->appendBanner(antifreeze);
-	connect(antifreeze, SIGNAL(clicked()), settings, SLOT(hide()));
-
-	// summer_winter banner
-	BannSummerWinter *summer_winter = new BannSummerWinter(settings, _dev);
-	settings->appendBanner(summer_winter);
-	connect(summer_winter, SIGNAL(clicked()), settings, SLOT(hide()));
+	createButtonsBanners(_dev);
 	settings->hide();
 }
 
