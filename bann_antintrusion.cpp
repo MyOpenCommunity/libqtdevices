@@ -277,8 +277,8 @@ void impAnti::Inserisci()
 		delete tasti;
 	inserting = true;
 	tasti = new KeypadWithState(s);
-	connect(tasti, SIGNAL(Closed()), this, SLOT(Insert1()));
-	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
+	connect(tasti, SIGNAL(Closed()), SLOT(Insert1()));
+	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
 	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
@@ -288,8 +288,8 @@ void impAnti::Disinserisci()
 	if (tasti)
 		delete tasti;
 	tasti = new Keypad();
-	connect(tasti, SIGNAL(Closed()), this, SLOT(DeInsert()));
-	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
+	connect(tasti, SIGNAL(Closed()), SLOT(DeInsert()));
+	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
 	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }

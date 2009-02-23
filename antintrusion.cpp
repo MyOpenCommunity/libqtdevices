@@ -26,7 +26,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
 	curr_alarm = -1;
 	setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-	connect(zone  ,SIGNAL(Closed()),this,SIGNAL(Closed()));
+	connect(zone,SIGNAL(Closed()), this, SIGNAL(Closed()));
 	connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
 	connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
 	connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
@@ -54,9 +54,10 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			b->setText(descr);
 			b->setId(id);
 			impianto->appendBanner(b);
-			connect(b, SIGNAL(impiantoInserito()), this, SLOT(doClearAlarms()));
-			connect(b, SIGNAL(abilitaParz(bool)), this, SIGNAL(abilitaParz(bool)));
-			connect(b, SIGNAL(clearChanged()), this, SIGNAL(clearChanged()));
+			connect(b, SIGNAL(impiantoInserito()), SLOT(doClearAlarms()));
+			connect(b, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
+			connect(b, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			connect(this, SIGNAL(partChanged(zonaAnti*)), b, SLOT(partChanged(zonaAnti*)));
 			connect(impianto, SIGNAL(openAckRx()), b, SLOT(openAckRx()));
 			connect(impianto, SIGNAL(openNakRx()), b, SLOT(openNakRx()));
@@ -75,7 +76,8 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			zone->appendBanner(b);
 			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
 			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
-			connect(b, SIGNAL(partChanged(zonaAnti*)), this, SIGNAL(partChanged(zonaAnti*)));
+			connect(b, SIGNAL(partChanged(zonaAnti*)), SIGNAL(partChanged(zonaAnti*)));
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			// Alhtough looking at the source one would say that more than
 			// one "impianto" could be configured, in real life only one
 			// impianto can exist
@@ -120,7 +122,7 @@ void Antintrusion::Parzializza()
 		delete tasti;
 	tasti = new KeypadWithState(s);
 	connect(tasti, SIGNAL(Closed()), this, SLOT(Parz()));
-	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
+	connect(tasti, SIGNAL(Closed()), this, SLOT(showPage()));
 	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
