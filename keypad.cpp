@@ -134,6 +134,7 @@ void Keypad::ok()
 void Keypad::setMode(Type t)
 {
 	mode = t;
+	draw();
 }
 
 QString Keypad::getText()
