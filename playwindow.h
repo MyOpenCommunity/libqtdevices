@@ -35,7 +35,7 @@ class QBoxLayout;
  * This (abstract) class realize the Play Window, called by MultimediaSource
  * when an item is clicked.
  */
-class  PlayWindow : public QWidget
+class  PlayWindow : public PageLayout
 {
 Q_OBJECT
 public:
@@ -53,12 +53,10 @@ public:
 
 protected:
 	// To make PlayWindow an abstract class.
-	PlayWindow(MediaPlayer *player, QWidget *parent = 0);
+	PlayWindow(MediaPlayer *player);
 	virtual void startPlayer(unsigned int);
 	virtual void stopPlayer();
 	void playNextTrack();
-
-	void addMainControls();
 
 	/// Return the description of current song/radio played.
 	QString getCurrentDescription();
@@ -68,9 +66,6 @@ protected:
 
 	/// Main control
 	BtButton    *back_btn, *settings_btn;
-
-	/// Main layout
-	QBoxLayout *main_layout;
 
 	/// To read media player output
 	bool read_player_output;
@@ -107,7 +102,7 @@ class MediaPlayWindow : public PlayWindow
 {
 Q_OBJECT
 public:
-	MediaPlayWindow(MediaPlayer *player, QWidget *parent = 0);
+	MediaPlayWindow(MediaPlayer *player);
 
 	// Play control
 	void pause();
@@ -163,7 +158,7 @@ class RadioPlayWindow : public PlayWindow
 {
 Q_OBJECT
 public:
-	RadioPlayWindow(MediaPlayer *player, QWidget *parent = 0);
+	RadioPlayWindow(MediaPlayer *player);
 
 protected:
 	void startPlayer(unsigned int);

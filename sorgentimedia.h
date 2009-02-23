@@ -36,7 +36,6 @@ private slots:
 	void aumBrano();
 	void menu();
 protected:
-	virtual void hideEvent(QHideEvent *event);
 	MultimediaSource source_menu;
 };
 

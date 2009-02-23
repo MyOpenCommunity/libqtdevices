@@ -40,7 +40,6 @@ class ListBrowser;
 class Selector;
 class PlayWindow;
 class MediaPlayer;
-class bannFrecce;
 class BtButton;
 
 class QLabel;
@@ -141,7 +140,6 @@ private:
 
 	char amb[80];
 	char nome[15];
-	bannFrecce *bannNavigazione;
 	QLabel *label;
 	bool audio_initialized;
 	int where_address;
@@ -160,7 +158,6 @@ private slots:
 	void handleChoiceSource(int button_id);
 	void handleSelectorExit();
 	void handlePlayerExit();
-	void handleClose();
 };
 
 /**
@@ -169,11 +166,11 @@ private slots:
  * Realize a common interface for all selector classes.
  *
  */
-class Selector : public QWidget
+class Selector : public PageLayout
 {
 Q_OBJECT
 public:
-	Selector(QWidget *parent) : QWidget(parent) {}
+	Selector() {}
 
 public slots:
 	virtual void nextItem() = 0;
@@ -197,7 +194,7 @@ class  FileSelector : public Selector
 {
 Q_OBJECT
 public:
-	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path);
+	FileSelector(unsigned rows_per_page, QString start_path);
 
 public slots:
 	void nextItem();
@@ -205,11 +202,9 @@ public slots:
 
 	void itemIsClicked(int item);
 	void browseUp();
+	virtual void showPage();
 
 private:
-	/// before to show itself some init is done.
-	void showEvent(QShowEvent *event);
-
 	void showFiles();
 
 	/// The handler of current directory
@@ -248,7 +243,7 @@ class RadioSelector : public Selector
 {
 Q_OBJECT
 public:
-	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config);
+	RadioSelector(unsigned rows_per_page, QDomNode config);
 
 public slots:
 	void nextItem();

@@ -78,12 +78,6 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 	}
 }
 
-void BannerSorgenteMultimedia::hideEvent(QHideEvent *event)
-{
-	qDebug("BannerSorgenteMultimedia::hideEvent()");
-	source_menu.hide();
-}
-
 void BannerSorgenteMultimedia::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimedia::inizializza()");

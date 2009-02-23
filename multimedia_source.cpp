@@ -105,17 +105,13 @@ MultimediaSource::MultimediaSource(int _where_address)
 	where_address = _where_address;
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
-	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
-	bannNavigazione = new bannFrecce(this, 4, ICON_DIFFSON);
-	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
-
 	source_choice = new SourceChoice;
 	source_type = NONE_SOURCE;
 	media_player = new MediaPlayer(this);
 	play_window = 0;
 	selector = 0;
 
-	connect(source_choice, SIGNAL(Closed()), SLOT(handleClose()));
+	connect(source_choice, SIGNAL(Closed()), SIGNAL(Closed()));
 	connect(source_choice, SIGNAL(clicked(int)), SLOT(handleChoiceSource(int)));
 
 	loadSources();
@@ -173,46 +169,30 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 		play_window->deleteLater();
 
 	if (source_type == RADIO_SOURCE)
-		play_window = new RadioPlayWindow(media_player, this);
+		play_window = new RadioPlayWindow(media_player);
 	else
-		play_window = new MediaPlayWindow(media_player, this);
+		play_window = new MediaPlayWindow(media_player);
 
 	if (selector)
 		selector->deleteLater();
 
 	if (source_type == RADIO_SOURCE)
-		selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE, radio_node);
+		selector = new RadioSelector(BROWSER_ROWS_PER_PAGE, radio_node);
 	else
-		selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
-
-	// Pulsanti up, down e back
-	connect(bannNavigazione, SIGNAL(downClick()), selector, SLOT(prevItem()));
-	connect(bannNavigazione, SIGNAL(upClick()), selector, SLOT(nextItem()));
-	connect(bannNavigazione, SIGNAL(backClick()), selector, SLOT(browseUp()));
-	connect(bannNavigazione, SIGNAL(forwardClick()), SLOT(handleClose()));
+		selector = new FileSelector(BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
 
 	// Connection to be notified about Start and Stop Play
 	connect(this, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
 	connect(this, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
 	connect(play_window, SIGNAL(notifyStopPlay()), SIGNAL(notifyStopPlay()));
-	connect(play_window, SIGNAL(settingsBtn()), SLOT(handleClose()));
+	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
 	connect(play_window, SIGNAL(backBtn()), SLOT(handlePlayerExit()));
 
 	connect(selector, SIGNAL(notifyExit()), SLOT(handleSelectorExit()));
+	connect(selector, SIGNAL(Closed()), SIGNAL(Closed()));
 
 	connect(selector, SIGNAL(startPlayer(QVector<AudioData>, unsigned)),
 			SLOT(startPlayer(QVector<AudioData>, unsigned)));
-}
-
-void MultimediaSource::handleClose()
-{
-	bannNavigazione->setHidden(false);
-	if (source_type != NONE_SOURCE)
-	{
-		play_window->hide();
-		selector->hide();
-	}
-	emit Closed();
 }
 
 void MultimediaSource::initAudio()
@@ -260,42 +240,32 @@ void MultimediaSource::resume()
 void MultimediaSource::showPage()
 {
 	if (source_type != NONE_SOURCE && play_window->isPlaying())
-		play_window->show();
+		play_window->showPage();
 	else if (mediaserver_enabled && !radio_enabled)
 	{
 		sourceMenu(FILE_SOURCE);
-		selector->show();
+		selector->showPage();
 	}
 	else if (radio_enabled && !mediaserver_enabled)
 	{
 		sourceMenu(RADIO_SOURCE);
-		selector->show();
+		selector->showPage();
 	}
 	else
-	{
-		bannNavigazione->setHidden(true);
 		source_choice->showPage();
-		return;
-	}
-	Page::showPage();
 }
 
 void MultimediaSource::handlePlayerExit()
 {
-	play_window->hide();
-	selector->show();
+	selector->showPage();
 }
 
 void MultimediaSource::handleSelectorExit()
 {
 	if (!radio_enabled || !mediaserver_enabled)
-		handleClose();
+		emit Closed();
 	else
-	{
-		selector->hide();
-		bannNavigazione->setHidden(true);
 		source_choice->showPage();
-	}
 }
 
 void MultimediaSource::handleChoiceSource(int button_id)
@@ -312,15 +282,11 @@ void MultimediaSource::handleChoiceSource(int button_id)
 		play_window->stop();
 	}
 	assert(play_window && "PlayWindow not set!");
-	bannNavigazione->setHidden(false);
-	// This is Page::showPage otherwise SourceChoices is displayed again (and again,
-	// and again and again..) if both radio and mediaserver are enabled.
-	Page::showPage();
 
 	if (play_window->isPlaying())
-		play_window->show();
+		play_window->showPage();
 	else
-		selector->show();
+		selector->showPage();
 }
 
 void MultimediaSource::handleStartPlay()
@@ -359,22 +325,26 @@ void MultimediaSource::disableSource(bool send_frame)
 
 void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 {
-	selector->hide();
 	play_window->startPlayer(list, element);
-	play_window->show();
+	play_window->showPage();
 }
 
 
-/// ***********************************************************************************************************************
-/// Methods for FileSelector
-/// ***********************************************************************************************************************
-
-FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path) :
-	Selector(parent)
+FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 {
 	level = 0;
+	main_layout->setContentsMargins(0, 0, 0, 0);
+
 	list_browser = new ListBrowser(this, rows_per_page);
-	list_browser->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
+	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+	main_layout->addWidget(list_browser, 1);
+
+	bannFrecce *nav_bar = new bannFrecce(this, 4, ICON_DIFFSON);
+	connect(nav_bar, SIGNAL(downClick()), SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+	main_layout->addWidget(nav_bar);
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
@@ -382,12 +352,10 @@ FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString star
 	QStringList filters;
 	filters << "*.[mM]3[uU]" << "*.[mM][pP]3" << "*.[wW][[aA][vV]" << "*.[oO][gG][gG]" << "*.[wW][mM][aA]";
 	current_dir.setNameFilters(filters);
-
-	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	changePath(start_path);
 }
 
-void FileSelector::showEvent(QShowEvent *event)
+void FileSelector::showPage()
 {
 	// refresh QDir information
 	current_dir.refresh();
@@ -396,13 +364,12 @@ void FileSelector::showEvent(QShowEvent *event)
 	QTime time_counter = startTimeCounter();
 
 	if (!browseFiles())
-	{
-		// FIXME display error?
 		emit notifyExit();
-	}
 
 	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 	destroyWaitDialog(l);
+
+	Selector::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)
@@ -519,7 +486,7 @@ void FileSelector::destroyWaitDialog(QLabel *l)
 
 QLabel *FileSelector::createWaitDialog()
 {
-	QLabel* l = new QLabel((QWidget*)parent());
+	QLabel* l = new QLabel(parentWidget());
 	QPixmap *icon = bt_global::icons_cache.getIcon(IMG_WAIT);
 	l->setPixmap(*icon);
 
@@ -577,17 +544,19 @@ void FileSelector::prevItem()
 }
 
 
-/// ***********************************************************************************************************************
-/// Methods for RadioSelector
-/// ***********************************************************************************************************************
-
-RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config) :
-	Selector(parent)
+RadioSelector::RadioSelector(unsigned rows_per_page, QDomNode config)
 {
+	main_layout->setContentsMargins(0, 0, 0, 0);
 	list_browser = new ListBrowser(this, rows_per_page);
-	list_browser->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+	main_layout->addWidget(list_browser, 1);
+
+	bannFrecce *nav_bar = new bannFrecce(this, 4, ICON_DIFFSON);
+	connect(nav_bar, SIGNAL(downClick()), SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+	main_layout->addWidget(nav_bar);
 
 	foreach (const QDomNode &item, getChildren(config, "item"))
 	{

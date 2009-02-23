@@ -15,6 +15,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "buttons_bar.h"
 #include "main.h"
+#include "bannfrecce.h"
 
 #include <QLayout>
 
@@ -28,7 +29,6 @@ static const char *IMG_STOP = IMG_PATH "btnsdstop.png";
 static const char *IMG_PAUSE = IMG_PATH "btnpause.png";
 static const char *IMG_NEXT = IMG_PATH "btnforward.png";
 static const char *IMG_PREV = IMG_PATH "btnbackward.png";
-static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
 
 /*
@@ -41,41 +41,22 @@ static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
 /// Methods for PlayWindow
 /// ***********************************************************************************************************************
 
-PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::Window)
+PlayWindow::PlayWindow(MediaPlayer *player)
 {
 	current_track = CURRENT_TRACK_NONE;
 	read_player_output = true;
 
-	/// set self Geometry
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-
-	main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 30, 0, 10);
+	main_layout->addSpacing(25);
 	media_player = player;
 
 	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
 	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
 	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
-	addMainControls();
-}
-
-void PlayWindow::addMainControls()
-{
-	QHBoxLayout *layout = new QHBoxLayout();
-	back_btn = new BtButton();
-	settings_btn = new BtButton();
-	layout->addWidget(back_btn, 0, Qt::AlignLeft);
-	layout->addWidget(settings_btn, 0, Qt::AlignRight);
-
-	back_btn->setImage(IMG_BACK);
-	settings_btn->setImage(IMG_SETTINGS);
-
-	main_layout->addStretch();
-	main_layout->addLayout(layout);
-
-	connect(back_btn, SIGNAL(released()), SIGNAL(backBtn()));
-	connect(settings_btn, SIGNAL(released()), SIGNAL(settingsBtn()));
+	bannFrecce *nav_bar = new bannFrecce(this, 10, IMG_SETTINGS);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(backBtn()));
+	connect(nav_bar, SIGNAL(dxClick()), SIGNAL(settingsBtn()));
+	main_layout->addWidget(nav_bar);
 }
 
 void PlayWindow::prevTrack()
@@ -196,7 +177,7 @@ QString PlayWindow::getCurrentDescription()
 /// Methods for MediaPlayWindow
 /// ***********************************************************************************************************************
 
-MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWindow(player, parent)
+MediaPlayWindow::MediaPlayWindow(MediaPlayer *player) : PlayWindow(player)
 {
 	qDebug("[AUDIO] MediaPlayWindow costructor");
 
@@ -418,7 +399,7 @@ void MediaPlayWindow::handleButtons(int button_number)
 /// Methods for RadioPlayWindow
 /// ***********************************************************************************************************************
 
-RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent) : PlayWindow(player, parent)
+RadioPlayWindow::RadioPlayWindow(MediaPlayer *player) : PlayWindow(player)
 {
 	qDebug("[AUDIO] RadioPlayWindow costructor");
 	read_player_output = false;
