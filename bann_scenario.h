@@ -79,9 +79,6 @@ public:
 public slots:
 	void inizializza(bool forza = false);
 
-protected:
-	virtual void hideEvent(QHideEvent *event);
-
 private:
 	QList<scenEvo_cond*> condList;
 	unsigned current_condition;

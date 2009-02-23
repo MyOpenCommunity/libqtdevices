@@ -82,6 +82,7 @@ void Scenario::loadItems(const QDomNode &config_node)
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		appendBanner(b); // TODO: deve gestire tutte le connect??
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
 
