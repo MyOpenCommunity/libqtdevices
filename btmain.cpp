@@ -96,6 +96,7 @@ BtMain::BtMain()
 	event_unfreeze = false;
 	firstTime = true;
 	pagDefault = NULL;
+	prev_page = NULL;
 	Home = NULL;
 	screen = NULL;
 	alreadyCalibrated = false;
@@ -277,7 +278,6 @@ Page *BtMain::getPage(int id)
 	{
 		SpecialPage *p = new SpecialPage(page_node);
 		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
-		connect(p, SIGNAL(Closed()), p, SLOT(hide()));
 		page = p;
 		break;
 	}
@@ -368,6 +368,8 @@ void BtMain::hom()
 	if (!loadConfiguration(CFG_FILE))
 		qFatal("Unable to load configuration");
 
+	if (pagDefault)
+		connect(pagDefault, SIGNAL(Closed()), Home, SLOT(showPage()));
 	// The stylesheet can contain some references to dynamic properties,
 	// so loading of css must be done after setting these properties (otherwise
 	// it might be necessary to force a stylesheet recomputation).
@@ -575,7 +577,10 @@ void BtMain::gesScrSav()
 
 					Page *target = pagDefault ? pagDefault : Home;
 					if (target != pagDefault)
+					{
+						prev_page = static_cast<Page *>(main_window.currentWidget());
 						target->showPage();
+					}
 					screensaver->start(target);
 					bt_global::display.setState(DISPLAY_SCREENSAVER);
 				}
@@ -585,7 +590,7 @@ void BtMain::gesScrSav()
 		{
 			Page *target = screensaver->target();
 			if (target != pagDefault)
-				target->lower();
+				prev_page->showPage();
 			screensaver->stop();
 		}
 	}
@@ -627,7 +632,7 @@ void BtMain::freeze(bool b)
 		{
 			Page *target = screensaver->target();
 			if (target != pagDefault)
-				target->lower();
+				prev_page->showPage();
 			screensaver->stop();
 		}
 		if (pwdOn)

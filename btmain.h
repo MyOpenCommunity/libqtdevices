@@ -93,6 +93,8 @@ private:
 
 	homePage *Home;
 	Page *pagDefault;
+	/// A pointer to the previous visualized page, to be used when resuming from screensaver
+	Page *prev_page;
 
 	QTimer *tempo1;
 	QTimer *tempo2;
