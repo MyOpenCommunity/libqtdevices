@@ -67,6 +67,9 @@ namespace
 
 BtMain::BtMain()
 {
+	difSon = 0;
+	dm = 0;
+	version = 0;
 	screensaver = 0;
 	loadGlobalConfig();
 	qDebug("parte BtMain");
@@ -106,7 +109,7 @@ BtMain::BtMain()
 	tasti = NULL;
 	pwdOn = 0;
 
-	version = new Version();
+	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
 	struct sysinfo info;
 	sysinfo(&info);
