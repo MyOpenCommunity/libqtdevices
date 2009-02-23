@@ -129,7 +129,6 @@ Q_OBJECT
 public:
 	bannVersion(sottoMenu *parent, QString icon, Version *ver);
 private slots:
-	void tiempout();
 	void showVers();
 private:
 	Version *v;

@@ -130,12 +130,7 @@ bannVersion::bannVersion(sottoMenu *parent, QString icon, Version *ver)
 void bannVersion::showVers()
 {
 	v->showPage();
-	QTimer::singleShot(10000, this, SLOT(tiempout()));
-}
-
-void bannVersion::tiempout()
-{
-	v->hide();
+	QTimer::singleShot(10000, this, SIGNAL(pageClosed()));
 }
 
 
