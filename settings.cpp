@@ -65,6 +65,7 @@ void Settings::loadItems(const QDomNode &config_node)
 			break;
 		case PROTEZIONE:
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			break;
 		case VERSIONE:
 			b = new bannVersion(this, img1, bt_global::btmain->version);
