@@ -207,9 +207,7 @@ SoundDiffusion::SoundDiffusion(AudioSources *s, const QDomNode &config_node)
 SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
 {
 	init(config_node);
-	AudioSources *s = new AudioSources(this, config_node);
-	connect(s, SIGNAL(Closed()), SLOT(fineVis()));
-	setSorgenti(s);
+	setSorgenti(new AudioSources(this, config_node));
 }
 
 void SoundDiffusion::init(const QDomNode &config_node)
