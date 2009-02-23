@@ -14,6 +14,7 @@ contains(PLATFORM, arm) {
 
 contains(PLATFORM, x86) {
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
+        DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
 	LIBS+= -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86

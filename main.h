@@ -91,7 +91,9 @@ void resetTimer(int signo);
 /*! \def VERBOSITY_LEVEL_DEFAUL
  *  It defines the starting path for mediaserver
  */
+#ifndef MEDIASERVER_PATH
 #define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
+#endif
 /*! \def XML_FILE_IN_DEFAULT
  */
 #define XML_FILE_IN_DEFAULT        ".bto-to-xml"
