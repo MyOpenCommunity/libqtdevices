@@ -31,6 +31,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		b->connectDxButton(new EnergyInterface(type));
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
 		bt_global::skin->removeFromContext();
 	}
@@ -86,6 +87,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address")));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
 	}
 }
