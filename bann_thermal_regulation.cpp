@@ -1032,8 +1032,6 @@ void FSBannTermoReg4z::createSettingsMenu()
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(showPage()));
 		// TODO: quando si tocca di nuovo questa parte, bisogna levare questo parentWidget()
 		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
-		// hide children
-		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");
@@ -1094,8 +1092,6 @@ void FSBannTermoReg99z::createSettingsMenu()
 	{
 		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(showPage()));
 		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
-		// hide children
-		connect(parentWidget(), SIGNAL(hideChildren()), settings, SLOT(hide()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");

@@ -34,9 +34,6 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent),
 	else
 		ind_centrale = thermr_address.toElement().text();
 
-	// hide children
-	connect(this, SIGNAL(hideChildren()), &items_submenu, SLOT(hide()));
-
 	QDomNode n = conf_root.firstChild();
 	int banner_id = 0;
 	while (!n.isNull())
