@@ -85,6 +85,9 @@ BtMain::BtMain() : transition_widget(&main_window)
 	Page::installTransitionWidget(&transition_widget);
 	main_window.showFullScreen();
 	main_window.setFixedSize(MAX_WIDTH, MAX_HEIGHT);
+	// TODO: this ugly workaround is needed because the QStackedWidget in some ways
+	// invalidate the first widget inserted. FIX it asap!
+	main_window.addWidget(new QWidget);
 	device::setClients(client_comandi, client_richieste, client_monitor);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
@@ -108,7 +111,6 @@ BtMain::BtMain() : transition_widget(&main_window)
 
 	tasti = NULL;
 	pwdOn = 0;
-
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
 
