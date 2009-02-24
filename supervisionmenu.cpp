@@ -108,11 +108,8 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 	{
 		// Show a submenu listing the devices to control
 		stopngoSubmenu = new sottoMenu;
-		stopngoSubmenu->hide();
 		connect(bann, SIGNAL(sxClick()), stopngoSubmenu, SLOT(showPage()));  // Connect submenu
-		connect(this, SIGNAL(hideChildren()), stopngoSubmenu, SLOT(hide()));
 		connect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showPage()));
-		connect(stopngoSubmenu, SIGNAL(Closed()), stopngoSubmenu, SLOT(hide()));
 
 		for (int i = 0; i < stopngoList.size(); ++i)
 		{
@@ -142,12 +139,9 @@ void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 void SupervisionMenu::LinkBanner2Page(bannPuls* bnr, StopngoItem* itm)
 {
 	StopngoPage* pg = new StopngoPage(itm->GetWhere(), itm->GetId(), itm->GetDescr());
-	pg->hide();
 
 	connect(bnr, SIGNAL(sxClick()), pg, SLOT(showPage()));
-	connect(stopngoSubmenu, SIGNAL(hideChildren()), pg, SLOT(hide()));
 	connect(pg, SIGNAL(Closed()), stopngoSubmenu, SLOT(showPage()));
-	connect(pg, SIGNAL(Closed()), pg, SLOT(hide()));
 
 	// Get status changed events back
 	mci_device* dev = (mci_device*)bt_global::devices_cache.get_mci_device(itm->GetWhere());
