@@ -239,7 +239,6 @@ void scenEvo::toggleAttivaScev()
 void scenEvo::configScev()
 {
 	qDebug("scenEvo::configScev");
-	hide();
 	scenEvo_cond *co = condList.at(current_condition);
 	qDebug("Invoco %p->mostra()", co);
 	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));

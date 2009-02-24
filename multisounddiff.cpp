@@ -132,7 +132,6 @@ void MultiSoundDiff::inizializza()
 void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
 {
 	qDebug("MultiSoundDiff::ds_closed()");
-	ds->hide();
 
 	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
@@ -141,12 +140,6 @@ void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
 	}
 	forceDraw();
 	showPage();
-}
-
-void MultiSoundDiff::hideEvent(QHideEvent *event)
-{
-	for (int i = 0; i < dslist.size(); ++i)
-		dslist.at(i)->hide();
 }
 
 void MultiSoundDiff::resizewindows(int x, int y, int w, int h)

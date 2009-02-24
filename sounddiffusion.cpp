@@ -317,7 +317,6 @@ void SoundDiffusion::freezed_handler(bool f)
 void SoundDiffusion::showEvent(QShowEvent *event)
 {
 	qDebug("SoundDiffusion::showEvent()");
-	openwebnet msg_open;
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
 	isVisual = true;
@@ -341,8 +340,6 @@ void SoundDiffusion::forceDraw()
 void SoundDiffusion::hideEvent(QHideEvent *event)
 {
 	qDebug("SoundDiffusion::hideEvent()");
-
-	sorgenti->hide();
 	amplificatori->setIndice(0);
 	isVisual = false;
 }

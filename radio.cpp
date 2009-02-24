@@ -24,8 +24,7 @@
 #include <QFile>
 
 
-radio::radio(QWidget *parent, const QString & amb)
-	: QWidget(parent)
+radio::radio(const QString &amb)
 {
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
@@ -126,10 +125,10 @@ radio::radio(QWidget *parent, const QString & amb)
 	connect(cinBut,SIGNAL(clicked()),this,SLOT(memo5()));
 }
 
-void radio::showRadio()
+void radio::showPage()
 {
 	draw();
-	showFullScreen();
+	Page::showPage();
 }
 
 void radio::setFreq(float f)

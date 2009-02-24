@@ -47,7 +47,6 @@ protected:
 	bool old_diffson;
 	device *dev;
 	void pre_show();
-	virtual void hideEvent(QHideEvent *event);
 	virtual void showEvent(QShowEvent *event);
 
 protected slots:

@@ -12,6 +12,8 @@
 #ifndef RADIO_H
 #define RADIO_H
 
+#include "page.h"
+
 #include <QWidget>
 
 class BtButton;
@@ -27,11 +29,11 @@ class QLabel;
  * \author Davide
  * \date lug 2005
  */
-class  radio : public QWidget
+class  radio : public Page
 {
 Q_OBJECT
 public:
-	radio(QWidget *parent=0, const QString & amb="");
+	radio(const QString &amb="");
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
@@ -121,7 +123,7 @@ public slots:
 	/*!
 	 * \brief Shows the tuner details page 
 	 */
-	void showRadio();
+	virtual void showPage();
 	/*!
 	 * \brief Changes the state to automatic search
 	 */
