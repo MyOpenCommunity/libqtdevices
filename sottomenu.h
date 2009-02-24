@@ -102,7 +102,6 @@ public slots:
 protected:
 	void connectLastBanner();
 
-	virtual void hideEvent(QHideEvent *event);
 	virtual void showEvent(QShowEvent *event);
 	QList<banner*> elencoBanner;
 	int indice, indicold;
@@ -167,11 +166,6 @@ signals:
 	\brief Parent changed
 	*/
 	void parentChanged(QWidget *newParent);
-
-	/*!
-	\brief hide all children
-	*/
-	void hideChildren();
 
 	/*!
 	\brief emitted on calibration start

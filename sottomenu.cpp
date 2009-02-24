@@ -277,12 +277,6 @@ void sottoMenu::setGeometry(int x, int y, int w, int h)
 	Page::setGeometry(x, y, w, h);
 }
 
-void sottoMenu::hideEvent(QHideEvent *event)
-{
-	qDebug() << "sottoMenu::hideEvent()";
-	emit hideChildren();
-}
-
 void sottoMenu::resetIndex()
 {
 	indice = 0;
