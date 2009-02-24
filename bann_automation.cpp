@@ -326,12 +326,12 @@ grAttuatInt::grAttuatInt(QWidget *parent, QList<QString> addresses, QString Icon
 {
 	SetIcons(IconaDx, IconaSx, QString(), icon);
 	elencoDisp = addresses;
-	connect(this,SIGNAL(dxClick()),this,SLOT(Alza()));
-	connect(this,SIGNAL(sxClick()),this,SLOT(Abbassa()));
-	connect(this,SIGNAL(centerClick()),this,SLOT(Ferma()));
+	connect(this,SIGNAL(dxClick()), SLOT(Alza()));
+	connect(this,SIGNAL(sxClick()), SLOT(Abbassa()));
+	connect(this,SIGNAL(centerClick()), SLOT(Ferma()));
 }
 
-void grAttuatInt::sendFrame(QString msg)
+void grAttuatInt::sendAllFrames(QString msg)
 {
 	for (int i = 0; i < elencoDisp.size();++i)
 		sendFrame(createMsgOpen("2", msg, elencoDisp.at(i)));
@@ -339,16 +339,16 @@ void grAttuatInt::sendFrame(QString msg)
 
 void grAttuatInt::Alza()
 {
-	sendFrame("1");
+	sendAllFrames("1");
 }
 
 void grAttuatInt::Abbassa()
 {
-	sendFrame("2");
+	sendAllFrames("2");
 }
 
 void grAttuatInt::Ferma()
 {
-	sendFrame("0");
+	sendAllFrames("0");
 }
 

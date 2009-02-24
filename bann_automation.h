@@ -132,7 +132,7 @@ public slots:
 	void Ferma();
 private:
 	QList<QString> elencoDisp;
-	void sendFrame(QString msg);
+	void sendAllFrames(QString msg);
 };
 
 
