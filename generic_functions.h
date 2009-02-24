@@ -111,6 +111,9 @@ bool getBeep();
 */
 unsigned long getTimePress();
 
+// Retrieves the uptime of the system
+unsigned long getUptime();
+
  /*!
   \brief WatchDog rearm.
 */

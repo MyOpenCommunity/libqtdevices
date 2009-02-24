@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <assert.h>
+#include <sys/sysinfo.h> // sysinfo.uptime
 
 
 QString createMsgOpen(QString who, QString what, QString where)
@@ -338,7 +339,7 @@ unsigned long getTimePress()
 {
 	unsigned long t = 0;
 	char time[50];
-	
+
 	memset(time,'\000',sizeof(time));
 	if (QFile::exists("/proc/sys/dev/btweb/touch_ago"))
 	{
@@ -349,6 +350,13 @@ unsigned long getTimePress()
 		t = atol(time);
 	}
 	return t;
+}
+
+unsigned long getUptime()
+{
+	struct sysinfo info;
+	sysinfo(&info);
+	return info.uptime;
 }
 
 void rearmWDT()

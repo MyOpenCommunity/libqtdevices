@@ -50,7 +50,6 @@
 #include <QTimer>
 #include <QFile>
 
-#include <sys/sysinfo.h>
 
 #define CFG_FILE MY_FILE_USER_CFG_DEFAULT
 
@@ -112,12 +111,11 @@ BtMain::BtMain()
 
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
-	struct sysinfo info;
-	sysinfo(&info);
-	qDebug("uptime: %d",(int)info.uptime);
-	qDebug("touch ago: %d",(int)getTimePress());
 
-	if ((QFile::exists("/etc/pointercal")) && ((info.uptime>200) || ((unsigned long)(info.uptime-1)<=(unsigned long)getTimePress())))
+	unsigned long uptime = getUptime();
+	qDebug() << "uptime:" << uptime << "touch ago:" << getTimePress();
+
+	if (QFile::exists("/etc/pointercal") && (uptime > 200 || uptime - 1 <= getTimePress()))
 	{
 		version->showPage();
 		waitBeforeInit();
@@ -407,9 +405,9 @@ void BtMain::init()
 	foreach (Page *p, page_list)
 		p->inizializza();
 
-	struct sysinfo info;
-	sysinfo(&info);
-	if (info.uptime < 200 && ((unsigned long)(info.uptime - 1) > (unsigned long)getTimePress()) && !alreadyCalibrated)
+	unsigned long uptime = getUptime();
+
+	if (uptime < 200 && (uptime - 1 > getTimePress()) && !alreadyCalibrated)
 	{
 		Home->hide();
 		calib = new Calibrate(NULL, 1);
