@@ -580,7 +580,8 @@ void BtMain::gesScrSav()
 					if (target != pagDefault)
 					{
 						prev_page = static_cast<Page *>(main_window.currentWidget());
-						target->showPage();
+						// don't use showPage() because transition doesn't make sense here
+						main_window.setCurrentWidget(target);
 					}
 					screensaver->start(target);
 					bt_global::display.setState(DISPLAY_SCREENSAVER);
@@ -591,7 +592,7 @@ void BtMain::gesScrSav()
 		{
 			Page *target = screensaver->target();
 			if (target != pagDefault)
-				prev_page->showPage();
+				main_window.setCurrentWidget(prev_page);
 			screensaver->stop();
 		}
 	}
@@ -633,7 +634,7 @@ void BtMain::freeze(bool b)
 		{
 			Page *target = screensaver->target();
 			if (target != pagDefault)
-				prev_page->showPage();
+				main_window.setCurrentWidget(prev_page);
 			screensaver->stop();
 		}
 		if (pwdOn)
