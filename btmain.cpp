@@ -65,7 +65,7 @@ namespace
 }
 
 
-BtMain::BtMain()
+BtMain::BtMain() : transition_widget(&main_window)
 {
 	difSon = 0;
 	dm = 0;
@@ -84,6 +84,7 @@ BtMain::BtMain()
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
 	Page::setMainWindow(&main_window);
+	Page::installTransitionWidget(&transition_widget);
 	main_window.showFullScreen();
 	main_window.setFixedSize(MAX_WIDTH, MAX_HEIGHT);
 	device::setClients(client_comandi, client_richieste, client_monitor);

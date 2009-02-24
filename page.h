@@ -19,6 +19,7 @@
 class Client;
 class QStackedWidget;
 class QVBoxLayout;
+class TransitionWidget;
 
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
@@ -47,6 +48,7 @@ public:
 	void sendInit(QString frame) const;
 
 	static void setMainWindow(QStackedWidget *window);
+	static void installTransitionWidget(TransitionWidget *tr);
 
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
@@ -57,6 +59,7 @@ private:
 	static Client *client_richieste;
 	static Client *client_comandi;
 	static QStackedWidget *main_window;
+	static TransitionWidget *transition_widget;
 
 signals:
 	/// Emitted when the page is closed.
