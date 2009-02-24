@@ -17,6 +17,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "pagefactory.h" // getPage
 #include "banner.h"
+#include "transitionwidget.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -42,7 +43,7 @@ namespace
 }
 
 
-BtMain::BtMain() : transition_widget(&main_window)
+BtMain::BtMain()
 {
 	difSon = 0;
 	dm = 0;
@@ -60,7 +61,6 @@ BtMain::BtMain() : transition_widget(&main_window)
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
 	Page::setMainWindow(&main_window);
-	Page::installTransitionWidget(&transition_widget);
 	main_window.showFullScreen();
 	main_window.setFixedSize(MAX_WIDTH, MAX_HEIGHT);
 	// TODO: this ugly workaround is needed because the QStackedWidget in some ways
@@ -203,6 +203,9 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			ScreenSaver::initData(screensaver_node);
 		}
 		bt_global::display.current_screensaver = type;
+
+		// TODO: read the transition effect from configuration
+		Page::installTransitionWidget(new TransitionWidget(&main_window));
 		return true;
 	}
 	return false;
