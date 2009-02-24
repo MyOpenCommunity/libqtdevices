@@ -18,11 +18,9 @@
 #include <QHash>
 #include <QStackedWidget>
 
-class sottoMenu;
+
 class SoundDiffusion;
 class MultiSoundDiff;
-class Antintrusion;
-class ThermalMenu;
 class Version;
 class homePage;
 class Calibrate;
@@ -30,8 +28,6 @@ class genPage;
 class Client;
 class Keypad;
 class ScreenSaver;
-class SupervisionMenu;
-class SpecialPage;
 class Page;
 
 class QPixmap;
@@ -49,7 +45,7 @@ class QString;
 class BtMain : public QObject
 {
 Q_OBJECT
-friend class PageContainer;
+friend Page *getPage(int id);
 public:
 	BtMain();
 	~BtMain();
@@ -89,9 +85,6 @@ public:
 
 private:
 	QHash<int, Page*> page_list;
-
-	/// build the page related to id if exists and return it, otherwise return 0
-	Page *getPage(int id);
 
 	homePage *Home;
 	Page *pagDefault;

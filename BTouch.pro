@@ -96,6 +96,7 @@ HEADERS += actuators.h \
            openclient.h \
            page.h \
            pagecontainer.h \
+           pagefactory.h \
            plantmenu.h \
            playwindow.h \
            poweramplifier.h \
@@ -190,6 +191,7 @@ SOURCES += actuators.cpp \
            openclient.cpp \
            page.cpp \
            pagecontainer.cpp \
+           pagefactory.cpp \
            plantmenu.cpp \
            playwindow.cpp \
            poweramplifier.cpp \

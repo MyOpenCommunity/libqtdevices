@@ -1,44 +1,22 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** BtMain.cpp
- **
- **Apertura pagina iniziale e associazione tasti-sottomenù
- **
- ****************************************************************/
-
 #include "btmain.h"
 #include "main.h" // bt_global::config
 #include "homepage.h"
-#include "sottomenu.h"
-#include "sounddiffusion.h"
-#include "multisounddiff.h"
-#include "videoentryphone.h"
-#include "antintrusion.h"
-#include "automation.h"
-#include "lighting.h"
-#include "scenario.h"
-#include "settings.h"
-#include "loads.h"
-#include "generic_functions.h"
-#include "xml_functions.h"
+#include "generic_functions.h" // rearmWDT, getUptime, getTimePress, setOrientation, getBacklight
+#include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "calibrate.h"
 #include "genpage.h"
 #include "openclient.h"
 #include "version.h"
 #include "keypad.h"
 #include "screensaver.h"
-#include "thermalmenu.h"
-#include "supervisionmenu.h"
 #include "displaycontrol.h" // bt_global::display
-#include "specialpage.h"
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
-#include "energy_data.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
+#include "pagefactory.h" // getPage
+#include "banner.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -164,138 +142,6 @@ void BtMain::loadGlobalConfig()
 void BtMain::waitBeforeInit()
 {
 	QTimer::singleShot(200, this, SLOT(hom()));
-}
-
-Page *BtMain::getPage(int id)
-{
-	QDomNode page_node = getPageNode(id);
-	if (page_node.isNull())
-		return 0;
-
-	// A section page can be built only once.
-	if (page_list.contains(id))
-		return page_list[id];
-
-	Page *page = 0;
-	switch (id)
-	{
-	case AUTOMAZIONE:
-	{
-		Automation *p = new Automation(page_node);
-		p->forceDraw();
-		page = p;
-		break;
-	}
-	case ILLUMINAZIONE:
-	{
-		Lighting *p = new Lighting(page_node);
-		p->forceDraw();
-		connect(p, SIGNAL(richStato(QString)), client_richieste, SLOT(richStato(QString)));
-		page = p;
-		break;
-	}
-	case ANTIINTRUSIONE:
-	{
-		Antintrusion *p = new Antintrusion(page_node);
-		p->draw();
-		connect(client_comandi, SIGNAL(openAckRx()), p, SIGNAL(openAckRx()));
-		connect(client_comandi, SIGNAL(openNakRx()), p, SIGNAL(openNakRx()));
-		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gesFrame(char *)));
-		page = p;
-		break;
-	}
-	case CARICHI:
-	{
-		Loads *p = new Loads(page_node);
-		p->forceDraw();
-		page = p;
-		break;
-	}
-	case TERMOREGOLAZIONE:
-	case TERMOREG_MULTI_PLANT:
-	{
-		ThermalMenu *p = new ThermalMenu(page_node);
-		p->forceDraw();
-		connect(client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
-		page = p;
-		break;
-	}
-	case DIFSON:
-	{
-		SoundDiffusion *p = new SoundDiffusion(page_node);
-		p->draw();
-		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
-		page = p;
-		break;
-	}
-	case DIFSON_MULTI:
-	{
-		MultiSoundDiff *p = new MultiSoundDiff(page_node);
-		p->forceDraw();
-		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
-		page = p;
-		break;
-	}
-	case ENERGY_MANAGEMENT:
-	{
-		PageContainer *p = new PageContainer(page_node);
-		p->addBackButton();
-		page = p;
-		break;
-	}
-	case SCENARI:
-	case SCENARI_EVOLUTI:
-	{
-		Scenario *p = new Scenario(page_node);
-		p->forceDraw();
-		page = p;
-		break;
-	}
-	case IMPOSTAZIONI:
-	{
-		Settings *p = new Settings(page_node);
-		p->forceDraw();
-		connect(client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
-		connect(p, SIGNAL(startCalib()), this, SLOT(startCalib()));
-		connect(p, SIGNAL(endCalib()), this, SLOT(endCalib()));
-		page = p;
-		break;
-	}
-	case VIDEOCITOFONIA:
-	{
-		VideoEntryPhone *p = new VideoEntryPhone(page_node);
-		p->forceDraw();
-		page = p;
-		break;
-	}
-	case SUPERVISIONE:
-	{
-		SupervisionMenu *p = new SupervisionMenu(page_node);
-		p->forceDraw();
-		connect(client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
-		connect(p, SIGNAL(richStato(QString)), client_richieste, SLOT(richStato(QString)));
-		page = p;
-		break;
-	}
-	case SPECIAL:
-	{
-		SpecialPage *p = new SpecialPage(page_node);
-		connect(client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
-		page = p;
-		break;
-	}
-	case ENERGY_DATA:
-	{
-		EnergyData *p = new EnergyData(page_node);
-		page = p;
-		break;
-	}
-	default:
-		qFatal("Page %d not found on xml config file!", id);
-	}
-
-	page_list[id] = page;
-	return page;
 }
 
 bool BtMain::loadConfiguration(QString cfg_file)
