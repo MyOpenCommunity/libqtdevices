@@ -125,5 +125,3 @@ bool setCfgValue(QString field, QString value, int item_id, int num_item=1, cons
 
 void getName(char *name);
 
-void grabScreen(void* pWidget);
-

@@ -6,10 +6,17 @@
 
 #include <QStackedWidget>
 #include <QVBoxLayout>
+#include <QMetaObject> // className
+#include <QTime>
+#include <QDir>
 
 #include <assert.h>
 
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
+
+// The defines to grab screenshot of pages
+#define GRAB_PAGES 0
+#define SCREENSHOT_DIR "/tmp/screenshots"
 
 
 // Inizialization of static member
@@ -52,6 +59,18 @@ void Page::showPage()
 	}
 	else
 		main_window->setCurrentWidget(this);
+
+#if GRAB_PAGES
+	Page *p = static_cast<Page *>(main_window->currentWidget());
+	QPixmap screenshot = QPixmap::grabWidget(p);
+
+	QDir grab_dir(SCREENSHOT_DIR);
+	if (!grab_dir.exists())
+		grab_dir.mkpath(SCREENSHOT_DIR);
+
+	QString filename(QString(p->metaObject()->className()) + "_" + QTime::currentTime().toString("hh.mm.ss.zzz") + ".png");
+	screenshot.save(QString(SCREENSHOT_DIR) + "/" + filename);
+#endif
 }
 
 void Page::sendFrame(QString frame) const
