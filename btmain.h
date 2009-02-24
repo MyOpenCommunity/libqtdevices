@@ -11,6 +11,8 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
+#include "transitionwidget.h"
+
 #include <QObject>
 #include <QTimer>
 #include <QHash>
@@ -112,6 +114,7 @@ private:
 	Calibrate *calib;
 	ScreenSaver *screensaver;
 	QStackedWidget main_window;
+	TransitionWidget transition_widget;
 
 	// A flag that is set when the client monitor socket is ready
 	bool monitor_ready;

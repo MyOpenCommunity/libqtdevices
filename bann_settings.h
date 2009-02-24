@@ -148,38 +148,42 @@ class impPassword : public bann2But
 Q_OBJECT
 public:
 	impPassword(QWidget *parent, QString icon1, QString icon2, QString icon3, QString pwd, int attiva);
+
 public slots:
 /*!
   \brief  Changes the activation state
-*/ 
+*/
 	void toggleActivation();
-/*!
-  \brief  Shows the keypad to compose the password key
-*/
-	void reShow1();
-/*!
-  \brief  Shows the keypad to compose the confirmation of the password key
-*/
-	void reShow2();
+
 /*!
   \brief  Stops the error beep made when the password insertion is wrong
 */
 	void tiempout();
 
 protected:
-	virtual void hideEvent(QHideEvent *event);
 	virtual void showEvent(QShowEvent *event);
 
+private slots:
+	void checkPasswd();
+
 private:
+	enum PasswdStatus
+	{
+	    PASSWD_SET,
+	    PASSWD_NOT_SET,
+	};
 	bool active;
+	PasswdStatus status;
 	QString password;
 	Keypad *tasti;
 	bool sb;
+
 signals:
 /*!
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
 */
 	void activatePaswd(bool);
+	void pageClosed();
 };
 
 #endif

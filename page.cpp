@@ -2,6 +2,7 @@
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
 #include "openclient.h" // Client
 #include "btbutton.h"
+#include "transitionwidget.h"
 
 #include <QStackedWidget>
 #include <QVBoxLayout>
@@ -15,6 +16,7 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 Client *Page::client_comandi = 0;
 Client *Page::client_richieste = 0;
 QStackedWidget *Page::main_window = 0;
+TransitionWidget *Page::transition_widget = 0;
 
 
 Page::Page(QWidget *parent) : QWidget(parent)
@@ -36,9 +38,20 @@ void Page::setMainWindow(QStackedWidget *window)
 	main_window = window;
 }
 
+void Page::installTransitionWidget(TransitionWidget *tr)
+{
+	transition_widget = tr;
+}
+
 void Page::showPage()
 {
-	main_window->setCurrentWidget(this);
+	if (transition_widget)
+	{
+		Page *prev_page = static_cast<Page *>(main_window->currentWidget());
+		transition_widget->startTransition(prev_page, this);
+	}
+	else
+		main_window->setCurrentWidget(this);
 }
 
 void Page::sendFrame(QString frame) const

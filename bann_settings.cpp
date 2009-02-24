@@ -138,15 +138,21 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	: bann2But(parent)
 {
 	password = pwd;
-
 	tasti = new Keypad();
-	tasti->hide();
-	tasti->setMode(Keypad::HIDDEN);
-	connect(this,SIGNAL(dxClick()),tasti,SLOT(showPage()));
-	connect(this,SIGNAL(sxClick()),this,SLOT(toggleActivation()));
+	if (password.isEmpty())
+	{
+		status = PASSWD_NOT_SET;
+		tasti->setMode(Keypad::CLEAN);
+	}
+	else
+	{
+		status = PASSWD_SET;
+		tasti->setMode(Keypad::HIDDEN);
+	}
 
-	connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
-	connect(tasti, SIGNAL(Closed()), tasti, SLOT(hide()));
+	connect(this, SIGNAL(dxClick()), tasti, SLOT(showPage()));
+	connect(this, SIGNAL(sxClick()), this, SLOT(toggleActivation()));
+	connect(tasti, SIGNAL(Closed()), this, SLOT(checkPasswd()));
 
 	SetIcons(1, icon3);
 	SetIcons(0, icon2, icon1);
@@ -174,69 +180,59 @@ void impPassword::showEvent(QShowEvent *event)
 	if (password.isEmpty())
 	{
 		qDebug("password = ZERO");
-		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
-		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
-		tasti->setMode(Keypad::CLEAN);
-		connect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
+		status = PASSWD_NOT_SET;
 	}
 	else
 	{
-		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow1()));
-		disconnect(tasti, SIGNAL(Closed()),this , SLOT(reShow2()));
+		status = PASSWD_SET;
 		tasti->setMode(Keypad::HIDDEN);
-		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
+		qDebug("password not ZERO");
 	}
 }
 
-void impPassword::reShow1()
+void impPassword::checkPasswd()
 {
 	QString c = tasti->getText();
-	if (c.isEmpty())
+	if (status == PASSWD_NOT_SET)
 	{
-		show();
-		return;
+		if (!c.isEmpty())
+		{
+			password = c;
+			setCfgValue("value", password, PROTEZIONE, getSerNum());
+			bt_global::btmain->setPwd(active, password);
+			status = PASSWD_SET;
+			emit pageClosed();
+		}
 	}
-	if (password != c)
+	else // status == PASSWD_SET
 	{
-		show();
-		qDebug() << "password errata doveva essere " << password;
-		sb = getBeep();
-		setBeep(true,false);
-		beep(1000);
-		QTimer::singleShot(1100, this, SLOT(tiempout()));
+		if (c.isEmpty())
+		{
+			emit pageClosed();
+			return;
+		}
+		if (password != c)
+		{
+			qDebug() << "password errata doveva essere " << password;
+			sb = getBeep();
+			setBeep(true,false);
+			beep(1000);
+			QTimer::singleShot(1100, this, SLOT(tiempout()));
+			emit pageClosed();
+		}
+		else //password is correct
+		{
+			tasti->setMode(Keypad::CLEAN);
+			tasti->showPage();
+			qDebug("password giusta");
+			status = PASSWD_NOT_SET;
+			tasti->showPage();
+		}
 	}
-	else
-	{
-		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
-		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
-		tasti->setMode(Keypad::CLEAN);
-		tasti->showPage();
-		qDebug("password giusta");
-	}
-}
-
-void impPassword::reShow2()
-{
-	QString c = tasti->getText();
-	if (!c.isEmpty())
-	{
-		connect(tasti, SIGNAL(Closed()), this, SLOT(reShow1()));
-		disconnect(tasti, SIGNAL(Closed()), this, SLOT(reShow2()));
-		password = c;
-		setCfgValue("value", password, PROTEZIONE, getSerNum());
-		bt_global::btmain->setPwd(active, password);
-	}
-	show();
 }
 
 void impPassword::tiempout()
 {
 	setBeep(sb,false);
-}
-
-void impPassword::hideEvent(QHideEvent *event)
-{
-	if (tasti)
-		tasti->hide();
 }
 
