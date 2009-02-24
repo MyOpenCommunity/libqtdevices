@@ -14,7 +14,6 @@
 
 #include <QString>
 
-class QWidget;
 class QLabel;
 
 /*!
@@ -34,7 +33,7 @@ public:
 	/*!
 	\brief Initialize the page asking the versions to the open stack.
 	*/
-	void inizializza();
+	virtual void inizializza();
 	/*!
 	\brief Sets the serial number of the device among all the TouchScreens installed in the system
 	*/

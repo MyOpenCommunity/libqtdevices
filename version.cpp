@@ -1,17 +1,14 @@
 #include "version.h"
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
-#include "openclient.h"
 #include "fontmanager.h" // bt_global::font
 
 #include <openwebnet.h>
 
 #include <QStringList>
-#include <QVariant>
+#include <QVariant> // setProperty
 #include <QWidget>
 #include <QPixmap>
 #include <QLabel>
-
-#include <stdlib.h>
 
 
 Version::Version()
