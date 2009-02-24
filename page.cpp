@@ -19,9 +19,11 @@ QStackedWidget *Page::main_window = 0;
 
 Page::Page(QWidget *parent) : QWidget(parent)
 {
+	assert(main_window && "Main window not set!");
+
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
-	if (main_window && !parent)
+	if (!parent)
 		main_window->addWidget(this);
 }
 
