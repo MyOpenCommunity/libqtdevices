@@ -68,7 +68,6 @@ BtMain::BtMain()
 {
 	difSon = 0;
 	dm = 0;
-	version = 0;
 	screensaver = 0;
 	loadGlobalConfig();
 	qDebug("parte BtMain");
@@ -293,7 +292,6 @@ Page *BtMain::getPage(int id)
 	}
 
 	page_list[id] = page;
-	page->hide();
 	return page;
 }
 
@@ -409,7 +407,6 @@ void BtMain::init()
 
 	if (uptime < 200 && (uptime - 1 > getTimePress()) && !alreadyCalibrated)
 	{
-		Home->hide();
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showPage()));
