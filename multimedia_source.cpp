@@ -9,7 +9,6 @@
  ****************************************************************/
 
 #include "multimedia_source.h"
-#include "xml_functions.h" // getChildWithId
 #include "playwindow.h"
 #include "bannfrecce.h"
 #include "listbrowser.h"
@@ -99,7 +98,7 @@ void SourceChoice::addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_bt
 }
 
 
-MultimediaSource::MultimediaSource(int _where_address)
+MultimediaSource::MultimediaSource(const QDomNode &config_node, int _where_address)
 {
 	audio_initialized = true;
 	where_address = _where_address;
@@ -114,7 +113,7 @@ MultimediaSource::MultimediaSource(int _where_address)
 	connect(source_choice, SIGNAL(Closed()), SIGNAL(Closed()));
 	connect(source_choice, SIGNAL(clicked(int)), SLOT(handleChoiceSource(int)));
 
-	loadSources();
+	loadSources(config_node);
 }
 
 MultimediaSource::~MultimediaSource()
@@ -122,36 +121,12 @@ MultimediaSource::~MultimediaSource()
 	delete source_choice;
 }
 
-void MultimediaSource::loadSources()
+void MultimediaSource::loadSources(const QDomNode &config_node)
 {
-	bool diff_multi = true;
-	QDomNode node_page = getPageNode(DIFSON_MULTI);
-	if (node_page.isNull())
-	{
-		node_page = getPageNode(DIFSON);
-		diff_multi = false;
-	}
+	radio_enabled = getTextChild(config_node, "radiooip").toInt() == 1;
+	mediaserver_enabled = getTextChild(config_node, "mediaserver").toInt() == 1;
 
-	if (node_page.isNull())
-	{
-		qWarning("[AUDIO] ERROR loading configuration");
-		return;
-	}
-
-	int id = diff_multi ? SORGENTE_MULTIM_MC : SORGENTE_MULTIM;
-	QDomNode n = getChildWithId(node_page, QRegExp("item\\d{1,2}"), id);
-
-	radio_enabled = false;
-	mediaserver_enabled = false;
-
-	if (!n.isNull())
-	{
-		radio_node = getChildWithName(n, "web_radio");
-		QString radio = getTextChild(n, "radiooip");
-		radio_enabled = radio.isNull() ? 0 : (radio.toInt() == 1);
-		QString media = getTextChild(n, "mediaserver");
-		mediaserver_enabled = media.isNull() ? 0 : (media.toInt() == 1);
-	}
+	radio_node = getChildWithName(config_node, "web_radio");
 
 	// Check for correctness
 	if (radio_enabled && radio_node.isNull())

@@ -18,6 +18,8 @@
 #include <QString>
 #include <QWidget>
 
+class QDomNode;
+
 
 /**
  * \brief This class is made to manage a multimedia source.
@@ -26,7 +28,7 @@ class BannerSorgenteMultimedia : public bannCiclaz
 {
 Q_OBJECT
 public:
-BannerSorgenteMultimedia(QWidget *parent, QString indirizzo, int where, int nbutt);
+	BannerSorgenteMultimedia(QWidget *parent, const QDomNode &config_node, QString indirizzo, int where, int nbutt);
 	virtual void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
@@ -34,7 +36,6 @@ private slots:
 	void ciclaSorg();
 	void decBrano();
 	void aumBrano();
-	void menu();
 protected:
 	MultimediaSource source_menu;
 };
@@ -46,7 +47,7 @@ class BannerSorgenteMultimediaMC : public BannerSorgenteMultimedia
 {
 Q_OBJECT
 public:
-	BannerSorgenteMultimediaMC(QWidget *parent, QString indirizzo, int where,
+	BannerSorgenteMultimediaMC(QWidget *parent, const QDomNode &config_node, QString indirizzo, int where,
 		QString icon_onoff, QString icon_cycle, QString icon_settings);
 	void inizializza(bool forza = false);
 public slots:

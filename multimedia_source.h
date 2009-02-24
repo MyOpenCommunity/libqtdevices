@@ -45,6 +45,8 @@ class BtButton;
 class QLabel;
 class QButtonGroup;
 class QBoxLayout;
+class QDomNode;
+
 
 enum AudioSourceType
 {
@@ -92,7 +94,7 @@ class MultimediaSource : public Page
 {
 Q_OBJECT
 public:
-	MultimediaSource(int where_address);
+	MultimediaSource(const QDomNode &config_node, int where_address);
 	~MultimediaSource();
 	/*!
 	 * \brief Sets amb. description
@@ -132,7 +134,7 @@ public slots:
 private:
 	void sourceMenu(AudioSourceType t);
 
-	void loadSources();
+	void loadSources(const QDomNode &config_node);
 
 	PlayWindow *play_window;
 	Selector *selector;

@@ -15,11 +15,9 @@
 
 #include <QDebug>
 
-/*****************************************************************
- **SorgenteMultimedia
- ****************************************************************/
-BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, QString indirizzo, int where, int nbut) :
-	bannCiclaz(parent, nbut), source_menu(where) // where is the number of source in mono and indirizzo in multi!
+
+BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const QDomNode &config_node, QString indirizzo,
+	int where, int nbut) : bannCiclaz(parent, nbut), source_menu(config_node, where) // where is the number of source in mono and indirizzo in multi!
 {
 	SetIcons(ICON_CICLA, ICON_IMPOSTA, ICON_FFWD, ICON_REW);
 	setAddress(indirizzo);
@@ -49,8 +47,6 @@ void BannerSorgenteMultimedia::aumBrano()
 {
 	source_menu.nextTrack();
 }
-
-void BannerSorgenteMultimedia::menu() {}
 
 void BannerSorgenteMultimedia::gestFrame(char *frame)
 {
@@ -87,8 +83,9 @@ void BannerSorgenteMultimedia::inizializza(bool forza)
 /*
  * Banner Sorgente Multimediale Multicanale
  */
-BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, QString indirizzo, int where,
-	QString icon_onoff, QString icon_cycle, QString icon_settings) : BannerSorgenteMultimedia(parent, indirizzo, where, 3)
+BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const QDomNode &config_node,
+	QString indirizzo, int where, QString icon_onoff, QString icon_cycle, QString icon_settings)
+	: BannerSorgenteMultimedia(parent, config_node, indirizzo, where, 3)
 {
 	SetIcons(icon_onoff, QString(), icon_cycle, icon_settings);
 

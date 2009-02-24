@@ -59,7 +59,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 			b = new banradio(this, where);
 			break;
 		case SORGENTE_MULTIM:
-			b = new BannerSorgenteMultimedia(this, where, QString(where.at(2)).toInt(), 4);
+			b = new BannerSorgenteMultimedia(this, item, where, QString(where.at(2)).toInt(), 4);
 			break;
 		case SORG_RADIO:
 			b = new sorgenteMultiRadio(this, where, img1, img2, img3);
@@ -70,7 +70,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 			multi_channel = true;
 			break;
 		case SORGENTE_MULTIM_MC:
-			b = new BannerSorgenteMultimediaMC(this, where, where.toInt(), img1, img2, img3);
+			b = new BannerSorgenteMultimediaMC(this, item, where, where.toInt(), img1, img2, img3);
 			multi_channel = true;
 			break;
 		default:
