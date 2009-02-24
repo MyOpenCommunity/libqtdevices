@@ -49,9 +49,6 @@ public slots:
 	void status_changed(QList<device_status*> sl);
 	void gestFrame(char*);
 
-protected:
-	virtual void hideEvent(QHideEvent *event);
-
 private:
 	void loadAmbienti(const QDomNode &config_node);
 
