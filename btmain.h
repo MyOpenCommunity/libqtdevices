@@ -14,7 +14,6 @@
 #include "transitionwidget.h"
 
 #include <QObject>
-#include <QTimer>
 #include <QHash>
 #include <QStackedWidget>
 
@@ -32,6 +31,7 @@ class Page;
 
 class QPixmap;
 class QString;
+class QTimer;
 
 /*!
   \class BtMain

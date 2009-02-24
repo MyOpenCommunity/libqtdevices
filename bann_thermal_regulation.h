@@ -24,7 +24,6 @@
 #include <QButtonGroup>
 #include <QDomNode>
 #include <QLCDNumber>
-#include <QTimer>
 #include <QMap>
 
 class device;

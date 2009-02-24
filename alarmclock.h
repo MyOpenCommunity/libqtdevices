@@ -23,9 +23,11 @@ class contdiff;
 class BtButton;
 class bannFrecce;
 class timeScript;
+
 class QDateTime;
 class QWidget;
 class QLabel;
+class QTimer;
 
 
 /*!
