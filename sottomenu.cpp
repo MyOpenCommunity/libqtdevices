@@ -46,6 +46,10 @@ sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n) 
 
 	indice = 0;
 	indicold = 100;
+	// reset the index only when we are closing
+	// we can't rely on hideEvent() because QStackedWidget (ie main_window) hides and shows
+	// the pages it is displaying
+	connect(this, SIGNAL(Closed()), SLOT(resetIndex()));
 
 	// TODO: verificare se il setGeometry serve davvero! (dipende da se width e height servono o no..)
 	setGeometry(0,0,width,height);
@@ -277,17 +281,11 @@ void sottoMenu::hideEvent(QHideEvent *event)
 {
 	qDebug() << "sottoMenu::hideEvent()";
 	emit hideChildren();
+}
 
-	// TODO: diffsonora era l'unica a chiamare hide(false), evitando quindi che
-	// fosse resettato l'indice.. capire come mai!
+void sottoMenu::resetIndex()
+{
 	indice = 0;
-	/*
-	if (index)
-	{
-		indice = 0;
-		forceDraw();
-	}
-	*/
 }
 
 void sottoMenu::showEvent(QShowEvent *event)

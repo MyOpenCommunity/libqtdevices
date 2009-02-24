@@ -134,6 +134,11 @@ private slots:
 	*/
 	void init();
 
+	/**
+	 * Reset the index of the top banner to be shown
+	 */
+	void resetIndex();
+
 signals:
 	/*!
 	\brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
