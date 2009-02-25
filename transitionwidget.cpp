@@ -4,6 +4,7 @@
 
 #include <QPainter>
 #include <QStackedWidget>
+#include <QDebug>
 
 #include <assert.h>
 
@@ -57,7 +58,7 @@ void BlendingTransition::paintEvent(QPaintEvent *e)
 }
 
 
-MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 600)
+MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 400)
 {
 	connect(&timeline, SIGNAL(frameChanged(int)), SLOT(triggerRepaint(int)));
 }
@@ -65,6 +66,7 @@ MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 
 void MosaicTransition::startTransition(Page *prev, Page *next)
 {
 	curr_index = 0;
+	mosaic_map.clear();
 	const int SQUARE_DIM = 40;
 
 	int num_x = MAX_WIDTH / SQUARE_DIM;
@@ -75,7 +77,6 @@ void MosaicTransition::startTransition(Page *prev, Page *next)
 		int y = rand() % num_y;
 		mosaic_map.append(QRect(x * SQUARE_DIM, y * SQUARE_DIM, SQUARE_DIM, SQUARE_DIM));
 	}
-
 	timeline.setFrameRange(0, mosaic_map.size() - 1);
 	timeline.setStartFrame(0);
 
