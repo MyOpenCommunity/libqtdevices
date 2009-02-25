@@ -78,12 +78,18 @@ void MosaicTransition::initTransition()
 
 	int num_x = MAX_WIDTH / SQUARE_DIM;
 	int num_y = MAX_HEIGHT / SQUARE_DIM;
-	for (int i = 0; i < num_x * num_y; ++i)
+
+	QList<QRect> ordered_list;
+	for (int i = 0; i < num_x; ++i)
+		for (int j = 0; j < num_y; ++j)
+			ordered_list.append(QRect(i * SQUARE_DIM, j * SQUARE_DIM, SQUARE_DIM, SQUARE_DIM));
+
+	while (ordered_list.size() > 0)
 	{
-		int x = rand() % num_x;
-		int y = rand() % num_y;
-		mosaic_map.append(QRect(x * SQUARE_DIM, y * SQUARE_DIM, SQUARE_DIM, SQUARE_DIM));
+		int index = static_cast<int>(static_cast<float>(ordered_list.size()) * (rand() / (RAND_MAX + 1.0)));
+		mosaic_map.append(ordered_list.takeAt(index));
 	}
+
 	timeline.setFrameRange(0, mosaic_map.size() - 1);
 	timeline.setStartFrame(0);
 }
