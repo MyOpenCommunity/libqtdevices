@@ -100,5 +100,8 @@ private slots:
 	void showBannerWidget();
 	void backClick();
 	void status_changed(const StatusList &status_list);
+
+private:
+	void changeWidget();
 };
 #endif // ENERGY_VIEW_H

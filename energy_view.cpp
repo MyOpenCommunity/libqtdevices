@@ -8,6 +8,7 @@
 #include "bannfrecce.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
+#include "transitionwidget.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -317,6 +318,18 @@ void EnergyView::backClick()
 		showBannerWidget();
 }
 
+void EnergyView::changeWidget()
+{
+	if (transition_widget)
+	{
+		transition_widget->setStartingImage(grabCurrentPage());
+		widget_container->setCurrentIndex(current_widget);
+		transition_widget->startTransition(grabCurrentPage());
+	}
+	else
+		widget_container->setCurrentIndex(current_widget);
+}
+
 void EnergyView::showGraph(int graph_type)
 {
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
@@ -342,7 +355,8 @@ void EnergyView::showGraph(int graph_type)
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(current_date))
 		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
 	graph->generateRandomValues(); // TODO: rimuovere!
-	widget_container->setCurrentIndex(current_widget);
+
+	changeWidget();
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
 }
@@ -351,7 +365,7 @@ void EnergyView::showBannerWidget()
 {
 	time_period->showCycleButton();
 	current_widget = BANNER_WIDGET;
-	widget_container->setCurrentIndex(current_widget);
+	changeWidget();
 }
 
 QWidget *EnergyView::buildBannerWidget()
