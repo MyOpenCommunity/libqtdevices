@@ -10,6 +10,10 @@
 class Page;
 class QStackedWidget;
 
+
+/**
+ * This is the base (abstract) class for all transition widget.
+ */
 class TransitionWidget : protected QWidget
 {
 Q_OBJECT
@@ -24,6 +28,9 @@ protected:
 };
 
 
+/**
+ * Do a blend transition between two widgets
+ */
 class BlendingTransition : public TransitionWidget
 {
 Q_OBJECT
@@ -44,7 +51,9 @@ private:
 
 };
 
-
+/**
+ * Do a mosaic transition between two widgets
+ */
 class MosaicTransition : public TransitionWidget
 {
 Q_OBJECT
@@ -63,6 +72,7 @@ private:
 	QList<QRect> mosaic_map;
 	QPixmap prev_page;
 	QPixmap next_page;
+	void initMosaic();
 };
 
 #endif // TRANSITIONWIDGET_H

@@ -63,7 +63,7 @@ MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 
 	connect(&timeline, SIGNAL(frameChanged(int)), SLOT(triggerRepaint(int)));
 }
 
-void MosaicTransition::startTransition(Page *prev, Page *next)
+void MosaicTransition::initMosaic()
 {
 	curr_index = 0;
 	mosaic_map.clear();
@@ -79,7 +79,11 @@ void MosaicTransition::startTransition(Page *prev, Page *next)
 	}
 	timeline.setFrameRange(0, mosaic_map.size() - 1);
 	timeline.setStartFrame(0);
+}
 
+void MosaicTransition::startTransition(Page *prev, Page *next)
+{
+	initMosaic();
 	prev_page = QPixmap::grabWidget(prev);
 	// this shows the transition widget (that now shows the prev page)
 	showFullScreen();
