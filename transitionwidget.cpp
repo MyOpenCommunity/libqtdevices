@@ -15,6 +15,27 @@ TransitionWidget::TransitionWidget(QStackedWidget *win, int time) : timeline(tim
 	connect(&timeline, SIGNAL(finished()), &local_loop, SLOT(quit()));
 }
 
+void TransitionWidget::setStartingImage(const QPixmap &prev)
+{
+	prev_page = prev;
+	// this shows the transition widget (that now shows the prev page)
+	showFullScreen();
+	update();
+	local_loop.processEvents();
+}
+
+void TransitionWidget::startTransition(const QPixmap &next)
+{
+	initTransition();
+	// this sets the next page and applies all layout computation before starting the transition
+	local_loop.processEvents();
+	next_page = next;
+
+	timeline.start();
+	local_loop.exec();
+	hide();
+}
+
 
 BlendingTransition::BlendingTransition(QStackedWidget *win) : TransitionWidget(win, 400)
 {
@@ -22,23 +43,9 @@ BlendingTransition::BlendingTransition(QStackedWidget *win) : TransitionWidget(w
 	blending_factor = 0.0;
 }
 
-void BlendingTransition::startTransition(Page *prev, Page *next)
+void BlendingTransition::initTransition()
 {
 	blending_factor = 0.0;
-	prev_page = QPixmap::grabWidget(prev);
-	// this shows the transition widget (that now shows the prev page)
-	showFullScreen();
-	update();
-	local_loop.processEvents();
-
-	// this sets the next page and applies all layout computation before starting the transition
-	main_window->setCurrentWidget(next);
-	local_loop.processEvents();
-	next_page = QPixmap::grabWidget(next);
-
-	timeline.start();
-	local_loop.exec();
-	hide();
 }
 
 void BlendingTransition::triggerRepaint(qreal value)
@@ -63,11 +70,11 @@ MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 
 	connect(&timeline, SIGNAL(frameChanged(int)), SLOT(triggerRepaint(int)));
 }
 
-void MosaicTransition::initMosaic()
+void MosaicTransition::initTransition()
 {
 	curr_index = 0;
 	mosaic_map.clear();
-	const int SQUARE_DIM = 40;
+	const int SQUARE_DIM = 10;
 
 	int num_x = MAX_WIDTH / SQUARE_DIM;
 	int num_y = MAX_HEIGHT / SQUARE_DIM;
@@ -79,25 +86,6 @@ void MosaicTransition::initMosaic()
 	}
 	timeline.setFrameRange(0, mosaic_map.size() - 1);
 	timeline.setStartFrame(0);
-}
-
-void MosaicTransition::startTransition(Page *prev, Page *next)
-{
-	initMosaic();
-	prev_page = QPixmap::grabWidget(prev);
-	// this shows the transition widget (that now shows the prev page)
-	showFullScreen();
-	update();
-	local_loop.processEvents();
-
-	// this sets the next page and applies all layout computation before starting the transition
-	main_window->setCurrentWidget(next);
-	local_loop.processEvents();
-	next_page = QPixmap::grabWidget(next);
-
-	timeline.start();
-	local_loop.exec();
-	hide();
 }
 
 void MosaicTransition::triggerRepaint(int index)

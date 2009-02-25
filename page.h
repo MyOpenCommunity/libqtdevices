@@ -59,7 +59,10 @@ private:
 	static Client *client_richieste;
 	static Client *client_comandi;
 	static QStackedWidget *main_window;
+
+protected:
 	static TransitionWidget *transition_widget;
+	static QPixmap grabCurrentPage();
 
 signals:
 	/// Emitted when the page is closed.
