@@ -205,7 +205,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		bt_global::display.current_screensaver = type;
 
 		// TODO: read the transition effect from configuration
-		Page::installTransitionWidget(new TransitionWidget(&main_window));
+		Page::installTransitionWidget(new BlendingTransition(&main_window));
 		return true;
 	}
 	return false;
