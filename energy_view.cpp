@@ -318,18 +318,6 @@ void EnergyView::backClick()
 		showBannerWidget();
 }
 
-void EnergyView::changeWidget()
-{
-	if (transition_widget)
-	{
-		transition_widget->setStartingImage(grabCurrentPage());
-		widget_container->setCurrentIndex(current_widget);
-		transition_widget->startTransition(grabCurrentPage());
-	}
-	else
-		widget_container->setCurrentIndex(current_widget);
-}
-
 void EnergyView::showGraph(int graph_type)
 {
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
@@ -356,16 +344,20 @@ void EnergyView::showGraph(int graph_type)
 		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
 	graph->generateRandomValues(); // TODO: rimuovere!
 
-	changeWidget();
+	initTransition();
+	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
+	startTransition();
 }
 
 void EnergyView::showBannerWidget()
 {
-	time_period->showCycleButton();
 	current_widget = BANNER_WIDGET;
-	changeWidget();
+	initTransition();
+	time_period->showCycleButton();
+	widget_container->setCurrentIndex(current_widget);
+	startTransition();
 }
 
 QWidget *EnergyView::buildBannerWidget()

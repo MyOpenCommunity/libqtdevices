@@ -50,21 +50,23 @@ void Page::installTransitionWidget(TransitionWidget *tr)
 	transition_widget = tr;
 }
 
-QPixmap Page::grabCurrentPage()
+void Page::initTransition()
 {
-	return QPixmap::grabWidget(main_window->currentWidget());
+	if (transition_widget)
+		transition_widget->setStartingImage(QPixmap::grabWidget(main_window->currentWidget()));
+}
+
+void Page::startTransition()
+{
+	if (transition_widget)
+		transition_widget->startTransition(QPixmap::grabWidget(main_window->currentWidget()));
 }
 
 void Page::showPage()
 {
-	if (transition_widget)
-	{
-		transition_widget->setStartingImage(grabCurrentPage());
-		main_window->setCurrentWidget(this);
-		transition_widget->startTransition(grabCurrentPage());
-	}
-	else
-		main_window->setCurrentWidget(this);
+	initTransition();
+	main_window->setCurrentWidget(this);
+	startTransition();
 
 #if GRAB_PAGES
 	Page *p = static_cast<Page *>(main_window->currentWidget());

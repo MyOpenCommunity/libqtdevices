@@ -55,14 +55,17 @@ public slots:
 	/// only show the page in fullscreen mode.
 	virtual void showPage();
 
+protected:
+	// Init the transition widget with the current page
+	void initTransition();
+	// Let's start the transition
+	void startTransition();
+
 private:
 	static Client *client_richieste;
 	static Client *client_comandi;
 	static QStackedWidget *main_window;
-
-protected:
 	static TransitionWidget *transition_widget;
-	static QPixmap grabCurrentPage();
 
 signals:
 	/// Emitted when the page is closed.
