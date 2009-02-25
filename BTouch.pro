@@ -21,7 +21,8 @@ contains(PLATFORM, x86) {
 }
 
 LIBS+= -lssl
-CONFIG+= qt debug warn_on
+CONFIG += qt debug warn_on
+CONFIG -= release
 DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB
 release:DEFINES += NDEBUG
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
