@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QStackedWidget>
 #include <QDebug>
+#include <QTime>
 
 #include <assert.h>
 
@@ -65,14 +66,18 @@ void BlendingTransition::paintEvent(QPaintEvent *e)
 }
 
 
-MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 400)
+MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 500)
 {
+	// be careful: changing the parameters of the timeline has severe impacts on performance and
+	// smoothness of transition
+	timeline.setCurveShape(QTimeLine::LinearCurve);
 	connect(&timeline, SIGNAL(frameChanged(int)), SLOT(triggerRepaint(int)));
 }
 
 void MosaicTransition::initTransition()
 {
 	curr_index = 0;
+	prev_index = 0;
 	mosaic_map.clear();
 	const int SQUARE_DIM = 10;
 
@@ -92,11 +97,13 @@ void MosaicTransition::initTransition()
 
 	timeline.setFrameRange(0, mosaic_map.size() - 1);
 	timeline.setStartFrame(0);
+	dest_pix = prev_page;
 }
 
 void MosaicTransition::triggerRepaint(int index)
 {
 	assert(index < mosaic_map.size() && "Invalid index value!");
+	prev_index = curr_index;
 	curr_index = index;
 	update();
 }
@@ -104,9 +111,14 @@ void MosaicTransition::triggerRepaint(int index)
 void MosaicTransition::paintEvent(QPaintEvent *e)
 {
 	Q_UNUSED(e);
+	if (mosaic_map.size() == 0)
+		return;
+
+	QPainter paint(&dest_pix);
+	for (int i = prev_index; i < curr_index; ++i)
+		paint.drawPixmap(mosaic_map.at(i), next_page.copy(mosaic_map.at(i)));
+
 	QPainter p(this);
-	p.drawPixmap(QPoint(0,0), prev_page);
-	for (int i = 0; i < curr_index; ++i)
-		p.drawPixmap(mosaic_map.at(i), next_page.copy(mosaic_map.at(i)));
+	p.drawPixmap(QPoint(0,0), dest_pix);
 }
 

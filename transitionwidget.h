@@ -72,6 +72,8 @@ private slots:
 
 private:
 	int curr_index;
+	int prev_index;
+	QPixmap dest_pix;
 	QList<QRect> mosaic_map;
 };
 
