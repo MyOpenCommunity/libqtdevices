@@ -14,8 +14,6 @@
 
 #include "page.h"
 
-#include <QWidget>
-
 class BtButton;
 class bannFrecce;
 class QLCDNumber;

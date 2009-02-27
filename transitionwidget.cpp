@@ -5,7 +5,6 @@
 #include <QPainter>
 #include <QStackedWidget>
 #include <QDebug>
-#include <QTime>
 
 #include <assert.h>
 
