@@ -14,22 +14,28 @@ class QStackedWidget;
 /**
  * This is the base (abstract) class for all transition widget.
  */
-class TransitionWidget : protected QWidget
+class TransitionWidget : public QWidget
 {
 Q_OBJECT
 public:
 	TransitionWidget(QStackedWidget *win, int time);
 	void setStartingImage(const QPixmap &prev);
-	void startTransition(const QPixmap &next);
+	void startTransition(Page *next);
 
 protected:
 	QStackedWidget *main_window;
 	QTimeLine timeline;
-	QEventLoop local_loop;
 	QPixmap prev_page;
 	QPixmap next_page;
 
 	virtual void initTransition() {}
+
+private slots:
+	void transitionEnd();
+
+private:
+	Page *dest_page;
+	QEventLoop local_loop;
 };
 
 

@@ -12,30 +12,35 @@
 TransitionWidget::TransitionWidget(QStackedWidget *win, int time) : timeline(time, this)
 {
 	main_window = win;
+	main_window->addWidget(this);
 	connect(&timeline, SIGNAL(finished()), &local_loop, SLOT(quit()));
+	connect(&timeline, SIGNAL(finished()), SLOT(transitionEnd()));
 }
 
 void TransitionWidget::setStartingImage(const QPixmap &prev)
 {
 	prev_page = prev;
 	// this shows the transition widget (that now shows the prev page)
-	showFullScreen();
-	update();
-	local_loop.processEvents();
+	main_window->setCurrentWidget(this);
 }
 
-void TransitionWidget::startTransition(const QPixmap &next)
+void TransitionWidget::transitionEnd()
 {
+	dest_page->show();
+	main_window->setCurrentWidget(dest_page);
+}
+
+void TransitionWidget::startTransition(Page *next)
+{
+	dest_page = next;
 	initTransition();
+
 	// this sets the next page and applies all layout computation before starting the transition
-	local_loop.processEvents();
-	next_page = next;
+	next_page = QPixmap::grabWidget(next);
 
 	timeline.start();
 	local_loop.exec();
-	hide();
 }
-
 
 BlendingTransition::BlendingTransition(QStackedWidget *win) : TransitionWidget(win, 400)
 {
@@ -70,7 +75,10 @@ MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 
 	// be careful: changing the parameters of the timeline has severe impacts on performance and
 	// smoothness of transition
 	timeline.setCurveShape(QTimeLine::LinearCurve);
+
 	connect(&timeline, SIGNAL(frameChanged(int)), SLOT(triggerRepaint(int)));
+	curr_index = 0;
+	prev_index = 0;
 }
 
 void MosaicTransition::initTransition()

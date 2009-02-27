@@ -59,15 +59,18 @@ void Page::initTransition()
 void Page::startTransition()
 {
 	if (transition_widget)
-		transition_widget->startTransition(QPixmap::grabWidget(main_window->currentWidget()));
+		transition_widget->startTransition(this);
 }
 
 void Page::showPage()
 {
-	initTransition();
-	main_window->setCurrentWidget(this);
-	startTransition();
-
+	if (transition_widget)
+	{
+		initTransition();
+		startTransition();
+	}
+	else
+		main_window->setCurrentWidget(this);
 #if GRAB_PAGES
 	Page *p = static_cast<Page *>(main_window->currentWidget());
 	QPixmap screenshot = QPixmap::grabWidget(p);
