@@ -284,7 +284,7 @@ ScreenSaverDeform::ScreenSaverDeform() : ScreenSaver(500)
 	font_size = 24;
 	repaint_timer.start(50, this);
 	repaint_tracker.start();
-	deformation = 30;
+	deformation = 60;
 	need_refresh = true;
 
 	buildLookupTable();
@@ -307,7 +307,10 @@ void ScreenSaverDeform::stop()
 
 void ScreenSaverDeform::refresh()
 {
-	bg_image = QPixmap::grabWidget(page, 0, 0).toImage().convertToFormat(QImage::Format_RGB32);
+	QImage tmp_image(page->size(), QImage::Format_RGB16);
+	page->render(&tmp_image);
+	// Copy the QImage is not a problem, thanks to implicit data sharing.
+	bg_image = tmp_image;
 	need_refresh = true;
 	update();
 }
@@ -428,7 +431,7 @@ void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 
 	for (y = topleft.y(); y < bottomright.y() - 1; ++y)
 	{
-		QRgb *line_colors = (QRgb*)(canvas_image.scanLine(y));
+		quint16 *line_colors = (quint16*)canvas_image.scanLine(y);
 		for (x = topleft.x(); x < bottomright.x() - 1; ++x)
 		{
 			int pos_x = static_cast<int>(current_pos.x());
@@ -439,10 +442,12 @@ void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 			int pickx = lens_lookup_table[lx][ly].x() + pos_x;
 			int picky = lens_lookup_table[lx][ly].y() + pos_y;
 
-			QColor pixel_color = bg_image.pixel(pickx, picky);
+			// We pick the color from the right position (calculated by lens_lookup_table)
+			// in the source QImage and put it into the dest QImage simply copying the raw
+			// color data (that is stored using the 16 bit RGB color format)
 			if (pickx >= 0 && pickx < bg_image.width() &&
 				picky >= 0 && picky < bg_image.height())
-				line_colors[x] = pixel_color.rgb();
+				line_colors[x] = ((quint16*)bg_image.scanLine(picky))[pickx];
 		}
 	}
 
