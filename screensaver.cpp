@@ -275,11 +275,10 @@ static inline QRect circle_bounds(const QPointF &center, qreal radius, qreal com
 				 qRound((radius + compensation) * 2));
 }
 
-const int LENS_EXTENT = 10;
 
 ScreenSaverDeform::ScreenSaverDeform() : ScreenSaver(500)
 {
-	radius = 20;
+	radius = 30;
 	current_pos = QPointF(radius, radius);
 	direction = QPointF(1, 1);
 	font_size = 24;
@@ -315,17 +314,16 @@ void ScreenSaverDeform::refresh()
 
 void ScreenSaverDeform::buildLookupTable()
 {
-	int total_radius = radius + LENS_EXTENT;
-	lens_lookup_table.resize(total_radius * 2);
+	lens_lookup_table.resize(radius * 2);
 
-	for (int x = -total_radius; x < total_radius; ++x)
+	for (int x = -radius; x < radius; ++x)
 	{
-		lens_lookup_table[x + total_radius].resize(total_radius * 2);
+		lens_lookup_table[x + radius].resize(radius * 2);
 
-		for (int y = -total_radius; y < total_radius; ++y)
+		for (int y = -radius; y < radius; ++y)
 		{
 			qreal flip = deformation / qreal(100);
-			qreal len = qSqrt(x * x + y * y) - total_radius;
+			qreal len = qSqrt(x * x + y * y) - radius;
 
 			int pickx, picky;
 
@@ -339,14 +337,14 @@ void ScreenSaverDeform::buildLookupTable()
 				pickx = x;
 				picky = y;
 			}
-			lens_lookup_table[x + total_radius][y + total_radius] = QPoint(pickx, picky);
+			lens_lookup_table[x + radius][y + radius] = QPoint(pickx, picky);
 		}
 	}
 }
 
 void ScreenSaverDeform::generateLensPixmap()
 {
-	qreal rad = radius + LENS_EXTENT;
+	qreal rad = radius;
 
 	QRect bounds = circle_bounds(QPointF(), rad, 0);
 
@@ -423,10 +421,8 @@ void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 		p.drawImage(event->rect(), bg_image, event->rect());
 	}
 
-	int total_radius = radius + LENS_EXTENT;
-
-	QPoint topleft = current_pos.toPoint() - QPoint(total_radius, total_radius);
-	QPoint bottomright = current_pos.toPoint() + QPoint(total_radius, total_radius);
+	QPoint topleft = current_pos.toPoint() - QPoint(radius, radius);
+	QPoint bottomright = current_pos.toPoint() + QPoint(radius, radius);
 
 	int x, y;
 
@@ -437,8 +433,8 @@ void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 		{
 			int pos_x = static_cast<int>(current_pos.x());
 			int pos_y = static_cast<int>(current_pos.y());
-			int lx = x - pos_x + total_radius;
-			int ly = y - pos_y + total_radius;
+			int lx = x - pos_x + radius;
+			int ly = y - pos_y + radius;
 
 			int pickx = lens_lookup_table[lx][ly].x() + pos_x;
 			int picky = lens_lookup_table[lx][ly].y() + pos_y;
