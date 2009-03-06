@@ -1,9 +1,11 @@
 #include "transitionwidget.h"
 #include "page.h"
 #include "main.h"
+#include "sottomenu.h"
 
 #include <QPainter>
 #include <QStackedWidget>
+#include <QLayout>
 #include <QDebug>
 
 #include <assert.h>
@@ -34,6 +36,17 @@ void TransitionWidget::startTransition(Page *next)
 {
 	dest_page = next;
 	initTransition();
+
+	// Before grab the screenshot of the next page, we have to ensure that its
+	// visualization is correct.
+	next->resize(main_window->size());
+	if (QLayout *layout = next->layout())
+	{
+		layout->activate();
+		layout->update();
+	}
+	else if (sottoMenu *p = qobject_cast<sottoMenu*>(next))
+		p->forceDraw();
 
 	// this sets the next page and applies all layout computation before starting the transition
 	next_page = QPixmap::grabWidget(next);
