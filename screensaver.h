@@ -16,6 +16,11 @@
 #include <QHash>
 #include <QBasicTimer>
 #include <QDateTime>
+#include <QPixmap>
+#include <QImage>
+#include <QPointF>
+#include <QTime>
+#include <QVector>
 
 class Page;
 class QLabel;
@@ -175,9 +180,8 @@ private:
 	QTime repaint_tracker;
 	qreal deformation;
 	QPixmap lens_pixmap;
-	QPixmap bg_image;
 	QVector<QVector<QPoint> > lens_lookup_table;
-	QImage bg_img;
+	QImage bg_image, canvas_image;
 	bool need_refresh;
 };
 

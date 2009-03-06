@@ -283,7 +283,7 @@ ScreenSaverDeform::ScreenSaverDeform() : ScreenSaver(500)
 	current_pos = QPointF(radius, radius);
 	direction = QPointF(1, 1);
 	font_size = 24;
-	repaint_timer.start(150, this);
+	repaint_timer.start(50, this);
 	repaint_tracker.start();
 	deformation = 30;
 	need_refresh = true;
@@ -308,8 +308,7 @@ void ScreenSaverDeform::stop()
 
 void ScreenSaverDeform::refresh()
 {
-	bg_image = QPixmap::grabWidget(page, 0, 0);
-	bg_img = bg_image.toImage();
+	bg_image = QPixmap::grabWidget(page, 0, 0).toImage().convertToFormat(QImage::Format_RGB32);
 	need_refresh = true;
 	update();
 }
@@ -413,16 +412,16 @@ void ScreenSaverDeform::timerEvent(QTimerEvent *)
 	update(rectAfter | rectBefore);
 }
 
+
 void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 {
-	QPainter painter(this);
 	if (need_refresh)
-	{
-		painter.drawPixmap(0, 0, bg_image);
-		need_refresh = false;
-	}
+		canvas_image = bg_image;
 	else
-		painter.drawPixmap(event->rect(), bg_image, event->rect());
+	{
+		QPainter p(&canvas_image);
+		p.drawImage(event->rect(), bg_image, event->rect());
+	}
 
 	int total_radius = radius + LENS_EXTENT;
 
@@ -432,6 +431,8 @@ void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 	int x, y;
 
 	for (y = topleft.y(); y < bottomright.y() - 1; ++y)
+	{
+		QRgb *line_colors = (QRgb*)(canvas_image.scanLine(y));
 		for (x = topleft.x(); x < bottomright.x() - 1; ++x)
 		{
 			int pos_x = static_cast<int>(current_pos.x());
@@ -442,16 +443,15 @@ void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 			int pickx = lens_lookup_table[lx][ly].x() + pos_x;
 			int picky = lens_lookup_table[lx][ly].y() + pos_y;
 
-			QColor pixel_color = bg_img.pixel(pickx, picky);
-			if (pickx >= 0 && pickx < bg_img.width() &&
-				picky >= 0 && picky < bg_img.height() &&
-				pixel_color != bg_img.pixel(x, y))
-			{
-				painter.setPen(pixel_color);
-				painter.drawPoint(x, y);
-				//painter.fillRect(x, y, 2, 2, QBrush(QColor(bg_img.pixel(pickx, picky))));
-			}
+			QColor pixel_color = bg_image.pixel(pickx, picky);
+			if (pickx >= 0 && pickx < bg_image.width() &&
+				picky >= 0 && picky < bg_image.height())
+				line_colors[x] = pixel_color.rgb();
 		}
+	}
 
+	QPainter painter(this);
+	painter.drawImage(canvas_image.rect(), canvas_image);
 	painter.drawPixmap(topleft, lens_pixmap);
 }
+
