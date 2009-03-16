@@ -222,9 +222,9 @@ void ScreenSaverLine::refresh()
 		line->setStyleSheet(styleDownToUp());
 	}
 
-	if (y < 0)
+	if (y + line_height < 0)
 	{
-		y = 0;
+		y = - line_height;
 		up_to_down = true;
 		line->setStyleSheet(styleUpToDown());
 	}
