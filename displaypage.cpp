@@ -29,7 +29,7 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	if (!n.isNull())
 		wait_time = n.text().toInt();
 
-	b = new bannOnDx(this, img_items, new CleanScreen(img_clean, wait_time));
+	b = new bannSimple(this, img_clean, new CleanScreen(img_clean, wait_time));
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Clean Screen"));
 	appendBanner(b);
