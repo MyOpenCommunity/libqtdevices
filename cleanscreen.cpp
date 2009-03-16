@@ -31,29 +31,13 @@ CleanScreen::CleanScreen(QString img_clean, int clean_time)
 	wait_time_sec = clean_time;
 }
 
-void CleanScreen::resetTime()
+void CleanScreen::showEvent(QShowEvent *e)
 {
-	// update the widget every second
 	secs_timer.start(1 * 1000);
 	timer.start(wait_time_sec * 1000);
 	end_time.restart();
 }
 
-void CleanScreen::showEvent(QShowEvent *e)
-{
-	resetTime();
-}
-
-void CleanScreen::mousePressEvent(QMouseEvent *e)
-{
-	resetTime();
-}
-
-// if we move when the touch panel is pressed
-void CleanScreen::mouseMoveEvent(QMouseEvent *e)
-{
-	resetTime();
-}
 
 void CleanScreen::paintEvent(QPaintEvent *e)
 {

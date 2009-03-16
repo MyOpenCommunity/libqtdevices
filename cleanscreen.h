@@ -16,8 +16,6 @@
 #include <QDateTime>
 #include <QTimer>
 
-#include <time.h> //time_t and time()
-
 
 class QLabel;
 
@@ -28,11 +26,8 @@ Q_OBJECT
 public:
 	CleanScreen(QString img_clean, int clean_time);
 private:
-	void mousePressEvent(QMouseEvent *e);
-	void mouseMoveEvent(QMouseEvent *e);
 	void showEvent(QShowEvent *e);
 	void paintEvent(QPaintEvent *e);
-	void resetTime();
 	/// Timer that controls show/hide of widget
 	QTimer timer;
 	/// Timer that updates the widget every second
@@ -54,9 +49,6 @@ private:
 	static const unsigned ICON_LABEL_Y = 20;
 	static const unsigned ICON_LABEL_WIDTH = 80;
 	static const unsigned ICON_LABEL_HEIGHT = 80;
-
-signals:
-	void Closed();
 };
 
 #endif
