@@ -86,9 +86,11 @@ protected slots:
 
 protected:
 	QLabel *line;
+	int line_height;
 
 	virtual QString styleDownToUp();
 	virtual QString styleUpToDown();
+	void setLineHeight(int height);
 
 private:
 	bool up_to_down; // true if the direction of the movement is from up to down
