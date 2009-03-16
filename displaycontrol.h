@@ -27,6 +27,7 @@ class DisplayControl
 {
 friend class BtMain;
 public:
+	DisplayControl();
 	void setState(DisplayStatus status);
 	// Brightness methods
 	BrightnessLevel currentBrightness();
@@ -36,6 +37,8 @@ public:
 	void setScreenSaver(ScreenSaver::Type t);
 	ScreenSaver::Type currentScreenSaver();
 
+	// To force (or to remove the forcing) the display to run in the operative mode.
+	void forceOperativeMode(bool enable);
 private:
 	struct DisplayData
 	{
@@ -47,6 +50,8 @@ private:
 	QMap<DisplayStatus, DisplayData> data;
 	BrightnessLevel current_brightness;
 	ScreenSaver::Type current_screensaver;
+	bool forced_operative_mode;
+
 	// Set the brightness. The difference between this method and the one without
 	// underscore is that the other also store the brightness level in the configuration
 	// file. So, use this method only in inizialization.

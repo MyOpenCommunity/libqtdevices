@@ -1,8 +1,13 @@
 #include "displaycontrol.h"
-#include "generic_functions.h" // setCfgValue
+#include "generic_functions.h" // setCfgValue, setBrightnessLevel, setBacklightOn
 
 #include <assert.h>
 
+
+DisplayControl::DisplayControl()
+{
+	forced_operative_mode = false;
+}
 
 void DisplayControl::_setBrightness(BrightnessLevel level)
 {
@@ -62,15 +67,25 @@ BrightnessLevel DisplayControl::currentBrightness()
 	return current_brightness;
 }
 
+void DisplayControl::forceOperativeMode(bool enable)
+{
+	forced_operative_mode = enable;
+	if (enable)
+		setState(DISPLAY_OPERATIVE);
+}
+
 void DisplayControl::setState(DisplayStatus status)
 {
-	setBacklightOn(data[status].backlight);
-	setBrightnessLevel(data[status].brightness);
+	if (!forced_operative_mode || forced_operative_mode && status == DISPLAY_OPERATIVE)
+	{
+		setBacklightOn(data[status].backlight);
+		setBrightnessLevel(data[status].brightness);
+	}
 }
 
 bool DisplayControl::screenSaverActive()
 {
-	return data[DISPLAY_SCREENSAVER].screensaver;
+	return data[DISPLAY_SCREENSAVER].screensaver && !forced_operative_mode;
 }
 
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
