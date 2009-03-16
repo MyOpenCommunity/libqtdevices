@@ -43,6 +43,21 @@ signals:
 	void released();
 };
 
+/*!
+  \class bannSimple
+  \brief A very simple banner with only a button in the center.
+*/
+
+class bannSimple : public banner
+{
+Q_OBJECT
+public:
+	bannSimple(sottoMenu *parent, QString icon=QString(), Page *page=0);
+
+signals:
+	void click();
+};
+
 
 /*!
   \class bannOnDx

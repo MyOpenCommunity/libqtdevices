@@ -34,6 +34,20 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
+bannSimple::bannSimple(sottoMenu *parent, QString icon, Page *page) : banner(parent)
+{
+	// This banner uses a dx button but shows it in central position.
+	addItem(BUT1, (MAX_WIDTH - BANPULS_BUT_DIM) / 2, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
+	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
+
+	if (!icon.isEmpty())
+		SetIcons(icon, 1);
+
+	connectDxButton(page);
+	Draw();
+}
+
+
 bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
 {
 	unsigned char nr = parent->getNumRig();
