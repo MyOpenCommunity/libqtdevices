@@ -188,18 +188,22 @@ void ScreenSaverBalls::refresh()
 ScreenSaverLine::ScreenSaverLine() : ScreenSaver(150)
 {
 	line = 0;
-	up_to_down = false;
-	y = 0;
-	line_height = 6;
 }
 
 void ScreenSaverLine::start(Page *p)
 {
 	ScreenSaver::start(p);
 	line = new QLabel(p);
-	setLineHeight(6);
+	customizeLine();
+	y = 0;
+	up_to_down = true;
 	line->setStyleSheet(styleUpToDown());
 	line->show();
+}
+
+void ScreenSaverLine::customizeLine()
+{
+	setLineHeight(6);
 }
 
 void ScreenSaverLine::setLineHeight(int height)
@@ -249,9 +253,8 @@ QString ScreenSaverLine::styleUpToDown()
 }
 
 
-void ScreenSaverTime::start(Page *p)
+void ScreenSaverTime::customizeLine()
 {
-	ScreenSaverLine::start(p);
 	setLineHeight(30);
 	timeScript *time = new timeScript(line, 1);
 	time->setFrameStyle(QFrame::Plain);
@@ -263,10 +266,8 @@ void ScreenSaverTime::start(Page *p)
 	line->setLayout(layout);
 }
 
-
-void ScreenSaverText::start(Page *p)
+void ScreenSaverText::customizeLine()
 {
-	ScreenSaverLine::start(p);
 	setLineHeight(30);
 	line->setFont(bt_global::font->get(FontManager::TEXT));
 	line->setAlignment(Qt::AlignCenter);

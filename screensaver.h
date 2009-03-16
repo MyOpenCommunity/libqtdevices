@@ -91,6 +91,7 @@ protected:
 	virtual QString styleDownToUp();
 	virtual QString styleUpToDown();
 	void setLineHeight(int height);
+	virtual void customizeLine();
 
 private:
 	bool up_to_down; // true if the direction of the movement is from up to down
@@ -133,8 +134,9 @@ class ScreenSaverTime : public ScreenSaverLine
 {
 Q_OBJECT
 public:
-	virtual void start(Page *p);
 	virtual Type type() { return TIME; }
+protected:
+	virtual void customizeLine();
 };
 
 
@@ -146,8 +148,9 @@ class ScreenSaverText : public ScreenSaverLine
 {
 Q_OBJECT
 public:
-	virtual void start(Page *p);
 	virtual Type type() { return TEXT; }
+protected:
+	virtual void customizeLine();
 };
 
 
