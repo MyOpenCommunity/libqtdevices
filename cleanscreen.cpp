@@ -4,7 +4,6 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // IMG_PATH
 
-#include <QRegExp>
 #include <QLabel>
 
 #include <assert.h>
