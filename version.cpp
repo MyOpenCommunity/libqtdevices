@@ -77,7 +77,7 @@ void Version::gestFrame(char* frame)
 		box_text->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 		QStringList text;
 		text << QString("art. %1").arg(model) << "";
-		text << QString("FIRMWARE: %1.%2%3").arg(vers).arg(release).arg(build);
+		text << QString("FIRMWARE: %1.%2.%3").arg(vers).arg(release).arg(build);
 		text << QString("PIC REL: %1.%2.%3").arg(pic_version).arg(pic_release).arg(pic_build);
 		text << QString("HARDWARE: %1.%2.%3").arg(hw_version).arg(hw_release).arg(hw_build);
 		text << QString("T.S. n. %1").arg(indDisp);
