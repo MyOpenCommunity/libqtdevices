@@ -188,7 +188,8 @@ void ScreenSaverBalls::refresh()
 ScreenSaverLine::ScreenSaverLine() : ScreenSaver(150)
 {
 	line = 0;
-	up_to_down = true;
+	up_to_down = false;
+	y = 0;
 	line_height = 6;
 }
 
