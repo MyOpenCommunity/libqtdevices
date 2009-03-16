@@ -2,6 +2,7 @@
 #include "xml_functions.h" // getChildWithId
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
+#include "displaycontrol.h" // bt_global::display
 #include "main.h" // IMG_PATH
 
 #include <QLabel>
@@ -13,8 +14,7 @@ CleanScreen::CleanScreen(QString img_clean, int clean_time)
 {
 	connect(&secs_timer, SIGNAL(timeout()), SLOT(update()));
 
-	connect(&timer, SIGNAL(timeout()), &secs_timer, SLOT(stop()));
-	connect(&timer, SIGNAL(timeout()), SIGNAL(Closed()));
+	connect(&timer, SIGNAL(timeout()), SLOT(handleClose()));
 	timer.setSingleShot(true);
 
 	time_label = new QLabel(this);
@@ -35,8 +35,15 @@ void CleanScreen::showEvent(QShowEvent *e)
 	secs_timer.start(1 * 1000);
 	timer.start(wait_time_sec * 1000);
 	end_time.restart();
+	bt_global::display.forceOperativeMode(true);
 }
 
+void CleanScreen::handleClose()
+{
+	bt_global::display.forceOperativeMode(false);
+	secs_timer.stop();
+	emit Closed();
+}
 
 void CleanScreen::paintEvent(QPaintEvent *e)
 {

@@ -28,6 +28,7 @@ public:
 private:
 	void showEvent(QShowEvent *e);
 	void paintEvent(QPaintEvent *e);
+
 	/// Timer that controls show/hide of widget
 	QTimer timer;
 	/// Timer that updates the widget every second
@@ -49,6 +50,9 @@ private:
 	static const unsigned ICON_LABEL_Y = 20;
 	static const unsigned ICON_LABEL_WIDTH = 80;
 	static const unsigned ICON_LABEL_HEIGHT = 80;
+
+private slots:
+	void handleClose();
 };
 
 #endif
