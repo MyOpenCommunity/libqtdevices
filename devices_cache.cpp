@@ -1,5 +1,4 @@
 #include "devices_cache.h"
-#include "poweramplifier_device.h"
 
 #include <QWidget>
 #include <QDebug>
@@ -253,21 +252,6 @@ device *DevicesCache::get_thermal_regulator(QString where, thermo_type_t type)
 	return out;
 }
 
-device *DevicesCache::get_poweramplifier_device(QString w)
-{
-	QString k = get_device_key(QString("22"), w);
-	qDebug() << "DevicesCache::get_poweramplifier_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new poweramplifier_device(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_poweramplifier_device() returning %p", out);
-	return out;
-}
 
 device *DevicesCache::get_temperature_probe_controlled(QString w, thermo_type_t type,
 		bool fancoil, QString ind_centrale, QString indirizzo)

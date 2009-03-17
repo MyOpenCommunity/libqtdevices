@@ -1,40 +1,35 @@
-#ifndef __POWERAMPLIFIER_DEVICE_H__
-#define __POWERAMPLIFIER_DEVICE_H__
+/**
+ * \file
+ * <!--
+ * Copyright 2009 Develer S.r.l. (http://www.develer.com/)
+ * All rights reserved.
+ * -->
+ *
+ * \brief This file contain the specific device for the power amplifier.
+ *
+ * \author Gianni Valdambrini <aleister@develer.com>
+ */
+
+#ifndef POWERAMPLIFIER_DEVICE_H
+#define POWERAMPLIFIER_DEVICE_H
 
 #include "device.h"
 
-#include <QMap>
-
-
-class poweramplifier_device : public device
+class PowerAmplifierDevice : public device
 {
 Q_OBJECT
 public:
-	enum status_key_t
-	{
-		ON_OFF,
-		VOLUME,
-		PRESET,
-		TREBLE,
-		BASS,
-		BALANCE,
-		LOUD
-	};
+	PowerAmplifierDevice(QString address);
 
-	poweramplifier_device(QString, bool p=false, int g=-1);
-
-	void init(bool force);
-	void turn_on();
-	void turn_off();
+	// The request methods, used to request an information
+	void requestStatus() const;
 
 public slots:
 	//! receive a frame
-	void frame_rx_handler(char *);
+	void frame_rx_handler(char *frame);
 
 private:
-	QMap <status_key_t, stat_var> status;
-signals:
-	void status_changed(QMap<status_key_t, stat_var>);
+	void sendRequest(int what) const;
 };
 
 #endif

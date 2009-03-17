@@ -24,16 +24,15 @@ static const char *IMG_MORE = IMG_PATH "more.png";
 static const char *IMG_LESS = IMG_PATH "less.png";
 
 
-BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo, QString onIcon,
+BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, QString onIcon,
 	QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon) : bannRegolaz(parent)
 {
 	setRange(1,9);
 	setValue(1);
 	SetIcons(settingIcon, offIcon, onAmpl, offAmpl, true);
-	setAddress(indirizzo);
-	dev = static_cast<poweramplifier_device*>(bt_global::devices_cache.get_poweramplifier_device(getAddress()));
-	connect(dev, SIGNAL(status_changed(QMap<status_key_t, stat_var>)),
-			SLOT(status_changed(QMap<status_key_t, stat_var>)));
+	setAddress(address);
+	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
@@ -63,10 +62,6 @@ void BannPowerAmplifier::turnDown()
 	qDebug("PowerAmplifier::turnDown()");
 }
 
-void BannPowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st)
-{
-
-}
 
 
 PowerAmplifier::PowerAmplifier(const QDomNode &config_node)

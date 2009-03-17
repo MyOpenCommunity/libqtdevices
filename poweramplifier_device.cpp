@@ -1,74 +1,25 @@
 #include "poweramplifier_device.h"
-#include "device_status.h"
-#include <openmsg.h>
+#include "generic_functions.h" // createRequestOpen
 
-#define MM_TYPE 4
 
-enum multimedia_what_t
+PowerAmplifierDevice::PowerAmplifierDevice(QString address) :
+	device(QString("22"), "3#" + address[0] + "#" + address[1])
 {
-	OFF = 0,
-	ON_FOLLOW_ME = 34
-};
-
-poweramplifier_device::poweramplifier_device(QString w, bool p, int g) :
-	device(QString("22"), w, p, g)
-{
-	qDebug("poweramplifier_device::poweramplifier_device()");
-	where = "3#" + where[0] + "#" + where[1];
-	status[ON_OFF] = stat_var(stat_var::NONE, 0, 0, 1, 1);
-	status[VOLUME] = stat_var(stat_var::NONE, 0, 0, 31, 1);
-	status[PRESET] = stat_var(stat_var::NONE, 0, 0, 20, 1);
-	status[TREBLE] = stat_var(stat_var::NONE, 0, -10, 10, 1);
-	status[BASS] = stat_var(stat_var::NONE, 0, -10, 10, 1);
-	status[BALANCE] = stat_var(stat_var::NONE, 0, -10, 10, 1);
-	status[LOUD] = stat_var(stat_var::NONE, 0, 0, 1, 1);
 }
 
-void poweramplifier_device::init(bool force)
-{	
-	OpenMsg msg = OpenMsg::createReadDim(who.toStdString(), where.toStdString());
-	qDebug("poweramplifier_device::init message: %s", msg.frame_open);
-	sendInit(msg.frame_open);
-}
 
-void poweramplifier_device::frame_rx_handler(char *frame)
+void PowerAmplifierDevice::frame_rx_handler(char *frame)
 {
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-
-	if (who.toInt() != msg.who() || where.toInt() != msg.where())
-		return;
-
-	qDebug("poweramplifier_device::frame_rx_handler");
-	qDebug("frame read:%s", frame);
-
-	QMap<status_key_t, stat_var> st;
-
-	// FIX: Add code here!
-
-	if (st.size())
-		emit status_changed(st);
+	// We cannot use OpenMsg because where is not an int!!
 }
 
-void poweramplifier_device::turn_on()
+void PowerAmplifierDevice::sendRequest(int what) const
 {
-	// TODO: non faccio il porting di questi due metodi perche' il codice non e'
-	// stato ancora sviluppato completamente (e quindi non e' usato ma fortemente
-	// soggetto a modifiche)
-/*
-	QString what;
-	what.sprintf("%d#%d#%s", ON_FOLLOW_ME, MM_TYPE, QString(where[3]).ascii());
-	OpenMsg msg = OpenMsg::createCmd(who.ascii(), where.ascii(), what.ascii());
-	sendFrame(msg.frame_open);
-*/
+	sendInit(createRequestOpen(who, QString::number(what), where));
 }
 
-void poweramplifier_device::turn_off()
+void PowerAmplifierDevice::requestStatus() const
 {
-/*
-	QString what;
-	what.sprintf("%d#%d#%s", OFF, MM_TYPE, QString(where[3]).ascii());
-	OpenMsg msg = OpenMsg::createCmd(who.ascii(), where.ascii(), what.ascii());
-	sendFrame(msg.frame_open);
-*/
+	sendRequest(12);
 }
+

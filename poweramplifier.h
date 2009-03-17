@@ -25,13 +25,12 @@ private slots:
 	void toggleStatus();
 	void turnUp();
 	void turnDown();
-	void status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st);
 
 private:
 	QString off_icon, on_icon;
 	bool status;
 	sottoMenu *settings_page;
-	poweramplifier_device *dev;
+	PowerAmplifierDevice *dev;
 };
 
 
