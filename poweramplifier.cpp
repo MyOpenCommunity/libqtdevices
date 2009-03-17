@@ -1,13 +1,14 @@
 #include "poweramplifier.h"
-#include "xml_functions.h" // getChildWithId
+#include "xml_functions.h" // getChildWithId, getChildren
 #include "devices_cache.h" // bt_global::devices_cache
 
 #include <QVariant> // setProperty
+#include <QDomNode>
 #include <QRegExp>
+#include <QString>
 #include <QLabel>
 #include <QList>
 
-#include <stdlib.h>
 
 static const char *IMG_PLUS = IMG_PATH "btnplus.png";
 static const char *IMG_MINUS = IMG_PATH "btnmin.png";
@@ -28,7 +29,7 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 {
 	setRange(1,9);
 	setValue(1);
-	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl, true);
+	SetIcons(settingIcon, offIcon, onAmpl, offAmpl, true);
 	setAddress(indirizzo);
 	dev = static_cast<poweramplifier_device*>(bt_global::devices_cache.get_poweramplifier_device(getAddress()));
 	connect(dev, SIGNAL(status_changed(QMap<status_key_t, stat_var>)),
@@ -70,11 +71,18 @@ void BannPowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t
 
 PowerAmplifier::PowerAmplifier(const QDomNode &config_node)
 {
-	banner *b = new PowerAmplifierPreset(this);
-	b->setText(tr("Preset"));
-	appendBanner(b);
+	loadBanners(config_node);
+}
 
-	b = new PowerAmplifierTreble(this);
+void PowerAmplifier::loadBanners(const QDomNode &config_node)
+{
+	QMap<int, QString> preset_list;
+	foreach (const QDomNode &preset_node, getChildren(config_node, "pre"))
+		preset_list[preset_node.nodeName().mid(3).toInt()] = preset_node.toElement().text();
+
+	appendBanner(new PowerAmplifierPreset(this, preset_list));
+
+	banner *b = new PowerAmplifierTreble(this);
 	b->setText(tr("Treble"));
 	appendBanner(b);
 
@@ -92,22 +100,20 @@ PowerAmplifier::PowerAmplifier(const QDomNode &config_node)
 }
 
 
-/*****************************************************************
- ** PowerAmplifierPreset
- ****************************************************************/
-
-PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent) : bannOnOff(parent)
+PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent, const QMap<int, QString>& preset_list)
+	: bannOnOff(parent)
 {
-	qDebug("PowerAmplifierPreset::PowerAmplifierPreset()");
 	SetIcons(IMG_PLUS, IMG_MINUS, QString(), IMG_PRESET);
-	preset = 0;
+	curr_preset = 0;
 	num_preset = 20;
-	fillPresetDesc();
+	fillPresetDesc(preset_list);
+	setText(preset_desc[curr_preset]);
+	Draw();
 	connect(this, SIGNAL(sxClick()), SLOT(nextPreset()));
 	connect(this, SIGNAL(dxClick()), SLOT(prevPreset()));
 }
 
-void PowerAmplifierPreset::fillPresetDesc()
+void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
 {
 	preset_desc.reserve(num_preset);
 	preset_desc.append(tr("Normal"));
@@ -121,72 +127,35 @@ void PowerAmplifierPreset::fillPresetDesc()
 	preset_desc.append(tr("Full Bass"));
 	preset_desc.append(tr("Full Treble"));
 
-	for (unsigned i=10; i < num_preset; ++i)
+	for (unsigned i = preset_desc.size(); i < num_preset; ++i)
+		preset_desc.append(QString("%1 %2").arg(tr("Preset")).arg(i + 1));
+
+	QMapIterator<int, QString> it(preset_list);
+	while (it.hasNext())
 	{
-		QString desc = QString("%1 %2").arg( tr("Preset")).arg(i + 1);
-		preset_desc.append(desc);
+		it.next();
+		if (it.key() > 0 && it.key() <= num_preset)
+			preset_desc[it.key() - 1] = it.value();
 	}
-
-	// TODO: rimuovere lettura xml da qua! Deve essere letto solo da pagine principali!
-	QDomNode n = getPowerAmplifierNode();
-	QDomNode node = n.firstChild();
-	while (!node.isNull())
-	{
-		QRegExp reg("pre\\d{1,2}");
-		int pos = reg.indexIn(node.nodeName());
-		if (pos != -1)
-		{
-			int preset_id = node.nodeName().mid(pos + 3, reg.matchedLength()).toInt();
-			if (preset_id > 0 && preset_id <= (int)num_preset)
-				preset_desc[preset_id - 1] = node.toElement().text();
-			else
-				qWarning("[AUDIO] Preset %d is not a valid preset number", preset_id);
-		}
-		node = node.nextSibling();
-	}
-}
-
-QDomNode PowerAmplifierPreset::getPowerAmplifierNode()
-{
-	QDomNode node_page = getPageNode(DIFSON_MULTI);
-	if (!node_page.isNull())
-	{
-		QDomNode node_item = getChildWithId(node_page, QRegExp("item\\d{1,2}"), AMBIENTE);
-		if (!node_item.isNull())
-			return getChildWithId(node_item, QRegExp("device\\d{1,2}"), POWER_AMPLIFIER);
-	}
-
-	node_page = getPageNode(DIFSON);
-	if (!node_page.isNull())
-		return getChildWithId(node_page, QRegExp("item\\d{1,2}"), POWER_AMPLIFIER);
-	return QDomNode();
-}
-
-void PowerAmplifierPreset::showEvent(QShowEvent *event)
-{
-	setText(preset_desc[preset]);
-	Draw();
 }
 
 void PowerAmplifierPreset::prevPreset()
 {
-	qDebug("PowerAmplifierPreset::prevPreset()");
-	if (!preset)
-		preset = num_preset - 1;
+	if (!curr_preset)
+		curr_preset = num_preset - 1;
 	else
-		--preset;
-	setText(preset_desc[preset]);
+		--curr_preset;
+	setText(preset_desc[curr_preset]);
 	Draw();
 }
 
 void PowerAmplifierPreset::nextPreset()
 {
-	qDebug("PowerAmplifierPreset::nextPreset()");
-	if (preset + 1 >= num_preset)
-		preset = 0;
+	if (curr_preset + 1 >= num_preset)
+		curr_preset = 0;
 	else
-		++preset;
-	setText(preset_desc[preset]);
+		++curr_preset;
+	setText(preset_desc[curr_preset]);
 	Draw();
 }
 

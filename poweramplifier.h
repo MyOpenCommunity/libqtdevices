@@ -10,6 +10,9 @@
 #include <QDomNode>
 #include <QWidget>
 #include <QVector>
+#include <QMap>
+
+class QString;
 
 
 class BannPowerAmplifier : public bannRegolaz
@@ -37,6 +40,8 @@ class PowerAmplifier : public sottoMenu
 Q_OBJECT
 public:
 	PowerAmplifier(const QDomNode &config_node);
+private:
+	void loadBanners(const QDomNode &config_node);
 };
 
 
@@ -44,20 +49,16 @@ class PowerAmplifierPreset : public bannOnOff
 {
 Q_OBJECT
 public:
-	PowerAmplifierPreset(QWidget *parent=0);
-
-protected:
-	void showEvent(QShowEvent *event);
+	PowerAmplifierPreset(QWidget *parent, const QMap<int, QString>& preset_list);
 
 private slots:
 	void nextPreset();
 	void prevPreset();
 
 private:
-	unsigned preset, num_preset;
+	int curr_preset, num_preset;
 	QVector<QString> preset_desc;
-	void fillPresetDesc();
-	QDomNode getPowerAmplifierNode();
+	void fillPresetDesc(const QMap<int, QString>& preset_list);
 };
 
 
