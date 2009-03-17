@@ -1,7 +1,6 @@
 #include "poweramplifier.h"
 #include "xml_functions.h" // getChildWithId
 #include "devices_cache.h" // bt_global::devices_cache
-#include "sottomenu.h"
 
 #include <QVariant> // setProperty
 #include <QRegExp>
@@ -24,14 +23,9 @@ static const char *IMG_MORE = IMG_PATH "more.png";
 static const char *IMG_LESS = IMG_PATH "less.png";
 
 
-/*****************************************************************
- ** PowerAmplifier
- ****************************************************************/
-
-PowerAmplifier::PowerAmplifier(QWidget *parent, QString indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon)
-	: bannRegolaz(parent)
+BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo, QString onIcon,
+	QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon) : bannRegolaz(parent)
 {
-	qDebug("PowerAmplifier::PowerAmplifier()");
 	setRange(1,9);
 	setValue(1);
 	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl, true);
@@ -40,7 +34,6 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, QString indirizzo, QString onIco
 	connect(dev, SIGNAL(status_changed(QMap<status_key_t, stat_var>)),
 			SLOT(status_changed(QMap<status_key_t, stat_var>)));
 
-	connect(this, SIGNAL(sxClick()), SLOT(showSettings()));
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
 	connect(this, SIGNAL(csxClick()), SLOT(turnDown()));
@@ -48,58 +41,56 @@ PowerAmplifier::PowerAmplifier(QWidget *parent, QString indirizzo, QString onIco
 	off_icon = offIcon;
 	on_icon = onIcon;
 	status = false;
-	settings_page = new sottoMenu(NULL);
 
-	banner *b = new PowerAmplifierPreset(settings_page);
-	b->setText(tr("Preset"));
-	settings_page->appendBanner(b);
-
-	b = new PowerAmplifierTreble(settings_page);
-	b->setText(tr("Treble"));
-	settings_page->appendBanner(b);
-
-	b = new PowerAmplifierBass(settings_page);
-	b->setText(tr("Bass"));
-	settings_page->appendBanner(b);
-
-	b = new PowerAmplifierBalance(settings_page);
-	b->setText(tr("Balance"));
-	settings_page->appendBanner(b);
-
-	b = new PowerAmplifierLoud(settings_page);
-	b->setText(tr("Loud"));
-	settings_page->appendBanner(b);
-
-	settings_page->hide();
-	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
+	connectDxButton(new PowerAmplifier(config_node));
 }
 
-void PowerAmplifier::showSettings()
-{
-	settings_page->show();
-}
-
-void PowerAmplifier::toggleStatus()
+void BannPowerAmplifier::toggleStatus()
 {
 	SetIcons(1, status ? off_icon : on_icon);
 	status = !status;
 	Draw();
 }
 
-void PowerAmplifier::turnUp()
+void BannPowerAmplifier::turnUp()
 {
 	qDebug("PowerAmplifier::turnUp()");
 }
 
-void PowerAmplifier::turnDown()
+void BannPowerAmplifier::turnDown()
 {
 	qDebug("PowerAmplifier::turnDown()");
 }
 
-void PowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st)
+void BannPowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st)
 {
 
 }
+
+
+PowerAmplifier::PowerAmplifier(const QDomNode &config_node)
+{
+	banner *b = new PowerAmplifierPreset(this);
+	b->setText(tr("Preset"));
+	appendBanner(b);
+
+	b = new PowerAmplifierTreble(this);
+	b->setText(tr("Treble"));
+	appendBanner(b);
+
+	b = new PowerAmplifierBass(this);
+	b->setText(tr("Bass"));
+	appendBanner(b);
+
+	b = new PowerAmplifierBalance(this);
+	b->setText(tr("Balance"));
+	appendBanner(b);
+
+	b = new PowerAmplifierLoud(this);
+	b->setText(tr("Loud"));
+	appendBanner(b);
+}
+
 
 /*****************************************************************
  ** PowerAmplifierPreset

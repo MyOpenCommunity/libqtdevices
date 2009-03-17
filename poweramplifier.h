@@ -5,30 +5,20 @@
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bannonoffcombo.h"
 #include "poweramplifier_device.h"
+#include "sottomenu.h"
 
 #include <QDomNode>
 #include <QWidget>
 #include <QVector>
 
-class sottoMenu;
 
-
-/*****************************************************************
- **Power amplifier
- ****************************************************************/
-/*!
- * \class PowerAmplifier
- * \brief This class is made to manage a power audio amplifier.
- *
- */
-class PowerAmplifier : public bannRegolaz
+class BannPowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
 public:
-	PowerAmplifier(QWidget *parent, QString indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
+	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
 
 private slots:
-	void showSettings();
 	void toggleStatus();
 	void turnUp();
 	void turnDown();
@@ -39,6 +29,14 @@ private:
 	bool status;
 	sottoMenu *settings_page;
 	poweramplifier_device *dev;
+};
+
+
+class PowerAmplifier : public sottoMenu
+{
+Q_OBJECT
+public:
+	PowerAmplifier(const QDomNode &config_node);
 };
 
 

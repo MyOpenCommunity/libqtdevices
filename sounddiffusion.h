@@ -58,6 +58,8 @@ public:
 	/// Sets the index of the list forcing which is the first item to draw.
 	void setIndice(char);
 
+private slots:
+	void showSoundDiff();
 private:
 	void loadAmplifiers(const QDomNode &config_node);
 };

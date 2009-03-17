@@ -129,6 +129,13 @@ AmpliContainer::AmpliContainer(QWidget *parent, const QDomNode &config_node) :
 	loadAmplifiers(config_node);
 }
 
+void AmpliContainer::showSoundDiff()
+{
+	// The parent is always the SoundDiffusion instance
+	Page *parent = static_cast<Page*>(parentWidget());
+	parent->showPage();
+}
+
 void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 {
 	// Amplifiers are items in SoundDiffusion and devices in MultiSoundDiff
@@ -150,7 +157,8 @@ void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 			b = new amplificatore(this, where, img1, img2, img3, img4);
 			break;
 		case POWER_AMPLIFIER:
-			b = new PowerAmplifier(this, where, img1, img2, img3, img4, img5);
+			b = new BannPowerAmplifier(this, node, where, img1, img2, img3, img4, img5);
+			connect(b, SIGNAL(pageClosed()), SLOT(showSoundDiff()));
 			break;
 		case GR_AMPLIFICATORI:
 		{
