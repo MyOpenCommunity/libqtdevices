@@ -21,8 +21,10 @@ HEADERS += device_tester.h \
            test_device.h \
            test_landevice.h \
            test_energy_device.h \
+           test_poweramplifier_device.h \
            openserver_mock.h \
            ../energy_device.h \
+           ../poweramplifier_device.h \
            ../landevice.h \
            ../device.h \
            ../device_status.h \
@@ -37,8 +39,10 @@ SOURCES += test_main.cpp \
            device_tester.cpp \
            test_landevice.cpp \
            test_energy_device.cpp \
+           test_poweramplifier_device.cpp \
            openserver_mock.cpp \
            ../energy_device.cpp \
+           ../poweramplifier_device.cpp \
            ../landevice.cpp \
            ../device.cpp \
            ../device_status.cpp \
