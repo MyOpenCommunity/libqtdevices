@@ -267,7 +267,7 @@ void Antintrusion::gesFrame(char*frame)
 	if (aggiorna)
 	{
 		qDebug("ARRIVATO ALLARME!!!!");
-		assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+		assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
 		allarme *curr = allarmi.at(curr_alarm);
 		curr->show();
 		ctrlAllarm();
@@ -282,7 +282,7 @@ void Antintrusion::setNavBarMode(uchar c)
 void Antintrusion::nextAlarm()
 {
 	qDebug("antiintrusione::nextAlarm()");
-	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
 	allarmi.at(curr_alarm)->hide();
 
 	if (++curr_alarm >= allarmi.size())
@@ -294,7 +294,7 @@ void Antintrusion::nextAlarm()
 void Antintrusion::prevAlarm()
 {
 	qDebug("antiintrusione::prevAlarm()");
-	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
 	allarmi.at(curr_alarm)->hide();
 
 	if (--curr_alarm < 0)
@@ -306,7 +306,7 @@ void Antintrusion::prevAlarm()
 void Antintrusion::deleteAlarm()
 {
 	qDebug("antiintrusione::deleteAlarm()");
-	assert(curr_alarm > 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
 	allarmi.at(curr_alarm)->hide();
 	allarmi.takeAt(curr_alarm)->deleteLater();
 
