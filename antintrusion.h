@@ -62,10 +62,6 @@ public:
 */
 	virtual void inizializza();
 /*!
-  \brief sets the geometry of the object
-*/
-	void setGeom(int,int,int,int);
-/*!
   \brief sets the kind of the navigation bar on the bottom
 */
 	void setNavBarMode(uchar);

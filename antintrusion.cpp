@@ -19,13 +19,16 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
+
+	impianto = new sottoMenu(this, 0 ,MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
+
 	zone = new sottoMenu(this,4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
 	zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
-	impianto = new sottoMenu(this,0,MAX_WIDTH, MAX_HEIGHT/numRighe,1);
+	zone->move(0, MAX_HEIGHT/numRighe);
+
 	connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
 	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
 	curr_alarm = -1;
-	setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
 	connect(zone,SIGNAL(Closed()), this, SIGNAL(Closed()));
 	connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
 	connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
@@ -269,16 +272,6 @@ void Antintrusion::gesFrame(char*frame)
 		curr->show();
 		ctrlAllarm();
 	}
-}
-
-void Antintrusion::setGeom(int x,int y,int w,int h)
-{
-	qDebug("antiintrusione::setGeom(%d, %d, %d, %d)", x, y, w, h);
-	QWidget::setGeometry(x,y,w,h);
-	if (impianto)
-		impianto->setGeometry(x,y,w,h/numRighe);
-	if (zone)
-		zone->setGeometry(x,h/numRighe,w,h/numRighe*(numRighe-1));
 }
 
 void Antintrusion::setNavBarMode(uchar c)
