@@ -53,6 +53,8 @@ public:
 	void balanceDown() const;
 	void nextPreset() const;
 	void prevPreset() const;
+	void loudOn() const;
+	void loudOff() const;
 
 public slots:
 	//! receive a frame

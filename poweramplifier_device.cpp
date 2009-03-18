@@ -22,7 +22,7 @@ enum RequestDimension
 	REQ_BALANCE_DOWN = 43,
 	REQ_NEXT_PRESET = 55,
 	REQ_PREV_PRESET = 56,
-
+	REQ_LOUD = 20
 };
 
 
@@ -170,5 +170,15 @@ void PowerAmplifierDevice::nextPreset() const
 void PowerAmplifierDevice::prevPreset() const
 {
 	sendCommand(QString::number(REQ_PREV_PRESET));
+}
+
+void PowerAmplifierDevice::loudOn() const
+{
+	sendFrame(createRequestOpen(who, QString("%1*1").arg(REQ_LOUD), where));
+}
+
+void PowerAmplifierDevice::loudOff() const
+{
+	sendFrame(createRequestOpen(who, QString("%1*0").arg(REQ_LOUD), where));
 }
 

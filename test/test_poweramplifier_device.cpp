@@ -144,3 +144,19 @@ void TestPowerAmplifierDevice::sendPrevPreset()
 	QVERIFY(server->frameCommand() == cmd);
 }
 
+void TestPowerAmplifierDevice::sendLoudOn()
+{
+	dev->loudOn();
+	client_command->flush();
+	QString cmd(QString("*#22*3#%1#%2*20*1##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
+void TestPowerAmplifierDevice::sendLoudOff()
+{
+	dev->loudOff();
+	client_command->flush();
+	QString cmd(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
