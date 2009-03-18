@@ -21,6 +21,8 @@ private slots:
 	void sendTurnOff();
 	void sendVolumeUp();
 	void sendVolumeDown();
+	void sendTrebleUp();
+	void sendTrebleDown();
 
 	void receiveStatus();
 	void receiveVolume();

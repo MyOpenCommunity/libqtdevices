@@ -80,3 +80,19 @@ void TestPowerAmplifierDevice::sendVolumeDown()
 	QVERIFY(server->frameCommand() == cmd);
 }
 
+void TestPowerAmplifierDevice::sendTrebleUp()
+{
+	dev->trebleUp();
+	client_command->flush();
+	QString cmd(QString("*22*40#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
+void TestPowerAmplifierDevice::sendTrebleDown()
+{
+	dev->trebleDown();
+	client_command->flush();
+	QString cmd(QString("*22*41#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+

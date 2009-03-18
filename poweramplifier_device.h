@@ -45,6 +45,8 @@ public:
 	void turnOff() const;
 	void volumeUp() const;
 	void volumeDown() const;
+	void trebleUp() const;
+	void trebleDown() const;
 
 public slots:
 	//! receive a frame
