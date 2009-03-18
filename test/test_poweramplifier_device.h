@@ -16,11 +16,11 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
-	void requestStatus();
+	void sendRequestStatus();
 
-	void readStatus();
-	void readVolume();
-	void readLoud();
+	void receiveStatus();
+	void receiveVolume();
+	void receiveLoud();
 
 private:
 	PowerAmplifierDevice *dev;

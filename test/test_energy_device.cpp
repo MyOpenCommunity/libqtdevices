@@ -22,21 +22,21 @@ void TestEnergyDevice::cleanupTestCase()
 	delete dev;
 }
 
-void TestEnergyDevice::requestCumulativeMonth()
+void TestEnergyDevice::sendRequestCumulativeMonth()
 {
 	dev->requestCumulativeMonth(QDate::currentDate());
 	client_request->flush();
 	QVERIFY(server->frameRequest() == "*#18*20*53##");
 }
 
-void TestEnergyDevice::requestCumulativeMonth2()
+void TestEnergyDevice::sendRequestCumulativeMonth2()
 {
 	dev->requestCumulativeMonth(QDate(2009, 1, 10));
 	client_request->flush();
 	QVERIFY(server->frameRequest() == "*#18*20*52#9#1##");
 }
 
-void TestEnergyDevice::requestCumulativeDayGraph()
+void TestEnergyDevice::sendRequestCumulativeDayGraph()
 {
 	dev->requestCumulativeDayGraph(QDate(2009, 1, 9));
 	client_command->flush();
@@ -44,7 +44,7 @@ void TestEnergyDevice::requestCumulativeDayGraph()
 	QVERIFY(server->frameCommand() == req);
 }
 
-void TestEnergyDevice::requestCumulativeMonthGraph()
+void TestEnergyDevice::sendRequestCumulativeMonthGraph()
 {
 	dev->requestCumulativeMonthGraph(QDate(2009, 1, 9));
 	client_command->flush();
@@ -52,32 +52,32 @@ void TestEnergyDevice::requestCumulativeMonthGraph()
 	QVERIFY(server->frameCommand() == req);
 }
 
-void TestEnergyDevice::readCumulativeDay()
+void TestEnergyDevice::receiveCumulativeDay()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
 	t.check(QString("*#18*%1*54*150##").arg(where), 150);
 }
 
-void TestEnergyDevice::readCurrent()
+void TestEnergyDevice::receiveCurrent()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CURRENT);
 	t.check(QString("*#18*%1*113*74##").arg(where), 74);
 }
 
-void TestEnergyDevice::readCumulativeMonth()
+void TestEnergyDevice::receiveCumulativeMonth()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH);
 	t.check(QString("*#18*%1*52#8#2*106##").arg(where), 106);
 	t.check(QString("*#18*%1*53*95##").arg(where), 95);
 }
 
-void TestEnergyDevice::readCumulativeYear()
+void TestEnergyDevice::receiveCumulativeYear()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR);
 	t.check(QString("*#18*%1*51*33##").arg(where), 33);
 }
 
-void TestEnergyDevice::readDailyAverageGraph()
+void TestEnergyDevice::receiveDailyAverageGraph()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
@@ -94,7 +94,7 @@ void TestEnergyDevice::readDailyAverageGraph()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::readDailyAverageGraph2()
+void TestEnergyDevice::receiveDailyAverageGraph2()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
@@ -113,7 +113,7 @@ void TestEnergyDevice::readDailyAverageGraph2()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::readDailyAverageGraph3()
+void TestEnergyDevice::receiveDailyAverageGraph3()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
@@ -163,7 +163,7 @@ void TestEnergyDevice::readDailyAverageGraph3()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::readDayGraph()
+void TestEnergyDevice::receiveDayGraph()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAY_GRAPH);
@@ -182,7 +182,7 @@ void TestEnergyDevice::readDayGraph()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::readDayGraph2()
+void TestEnergyDevice::receiveDayGraph2()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAY_GRAPH);
@@ -206,7 +206,7 @@ void TestEnergyDevice::readDayGraph2()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::readDayGraph3()
+void TestEnergyDevice::receiveDayGraph3()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAY_GRAPH);
@@ -258,7 +258,7 @@ void TestEnergyDevice::readDayGraph3()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::readCumulativeMonthGraph()
+void TestEnergyDevice::receiveCumulativeMonthGraph()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH);
@@ -276,7 +276,7 @@ void TestEnergyDevice::readCumulativeMonthGraph()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::readCumulativeMonthGraph2()
+void TestEnergyDevice::receiveCumulativeMonthGraph2()
 {
 	// test one missing frame
 	dev->buffer_frame.clear();

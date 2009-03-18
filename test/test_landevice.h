@@ -13,13 +13,13 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
-	void readStatus();
-	void readIp();
-	void readNetmask();
-	void readMacAddress();
-	void readGateway();
-	void readDns1();
-	void readDns2();
+	void receiveStatus();
+	void receiveIp();
+	void receiveNetmask();
+	void receiveMacAddress();
+	void receiveGateway();
+	void receiveDns1();
+	void receiveDns2();
 
 private:
 	LanDevice *dev;

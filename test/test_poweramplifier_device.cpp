@@ -20,7 +20,7 @@ void TestPowerAmplifierDevice::cleanupTestCase()
 	delete dev;
 }
 
-void TestPowerAmplifierDevice::requestStatus()
+void TestPowerAmplifierDevice::sendRequestStatus()
 {
 	dev->requestStatus();
 	client_request->flush();
@@ -28,20 +28,20 @@ void TestPowerAmplifierDevice::requestStatus()
 	QVERIFY(server->frameRequest() == req);
 }
 
-void TestPowerAmplifierDevice::readStatus()
+void TestPowerAmplifierDevice::receiveStatus()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_STATUS);
 	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(where[0]).arg(where[1]), true);
 	t.check(QString("*#22*3#%1#%2*12*0*255##").arg(where[0]).arg(where[1]), false);
 }
 
-void TestPowerAmplifierDevice::readVolume()
+void TestPowerAmplifierDevice::receiveVolume()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_VOLUME);
 	t.check(QString("*#22*3#%1#%2*1*20##").arg(where[0]).arg(where[1]), 20);
 }
 
-void TestPowerAmplifierDevice::readLoud()
+void TestPowerAmplifierDevice::receiveLoud()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_LOUD);
 	t.check(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]), false);
