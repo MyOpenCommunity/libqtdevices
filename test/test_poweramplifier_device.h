@@ -25,6 +25,10 @@ private slots:
 	void sendTrebleDown();
 	void sendBassUp();
 	void sendBassDown();
+	void sendBalanceUp();
+	void sendBalanceDown();
+	void sendNextPreset();
+	void sendPrevPreset();
 
 	void receiveStatus();
 	void receiveVolume();

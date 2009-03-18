@@ -111,3 +111,36 @@ void TestPowerAmplifierDevice::sendBassDown()
 	QString cmd(QString("*22*37#1*3#%1#%2##").arg(where[0]).arg(where[1]));
 	QVERIFY(server->frameCommand() == cmd);
 }
+
+void TestPowerAmplifierDevice::sendBalanceUp()
+{
+	dev->balanceUp();
+	client_command->flush();
+	QString cmd(QString("*22*42#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
+void TestPowerAmplifierDevice::sendBalanceDown()
+{
+	dev->balanceDown();
+	client_command->flush();
+	QString cmd(QString("*22*43#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
+void TestPowerAmplifierDevice::sendNextPreset()
+{
+	dev->nextPreset();
+	client_command->flush();
+	QString cmd(QString("*22*55*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
+void TestPowerAmplifierDevice::sendPrevPreset()
+{
+	dev->prevPreset();
+	client_command->flush();
+	QString cmd(QString("*22*56*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
