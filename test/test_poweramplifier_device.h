@@ -15,7 +15,10 @@ Q_OBJECT
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
+
 	void requestStatus();
+
+	void readStatus();
 
 private:
 	PowerAmplifierDevice *dev;

@@ -28,3 +28,9 @@ void TestPowerAmplifierDevice::requestStatus()
 	QVERIFY(server->frameRequest() == req);
 }
 
+void TestPowerAmplifierDevice::readStatus()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_STATUS);
+	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(where[0]).arg(where[1]), 1);
+}
+
