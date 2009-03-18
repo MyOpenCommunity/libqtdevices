@@ -305,19 +305,18 @@ void TestEnergyDevice::readCumulativeMonthGraph2()
 
 void TestEnergyDevice::testGetDateFromFrame()
 {
-	EnergyDevice dev("20");
 	OpenMsg frame("*#18*20*57#8*1*22*33##");
-	QVERIFY(QDate(2008, 8, 1) == dev.getDateFromFrame(frame));
+	QVERIFY(QDate(2008, 8, 1) == dev->getDateFromFrame(frame));
 }
 
 void TestEnergyDevice::testConsecutiveGraphFrames()
 {
-	EnergyDevice dev("20");
+	dev->buffer_frame.clear();
 	QStringList frames;
 	frames << "*#18*20*57#8*1*22*33##"
 		<< "*#18*20*57#8*2*28*33*55##"
 		<< "*#18*20*56#6#2*1*1*44##";
 	for (int i = 0; i < frames.size(); ++i)
-		dev.frame_rx_handler(frames[i].toAscii().data());
-	QVERIFY(dev.buffer_frame.size() == 1);
+		dev->frame_rx_handler(frames[i].toAscii().data());
+	QVERIFY(dev->buffer_frame.size() == 1);
 }
