@@ -35,7 +35,7 @@ void PowerAmplifierDevice::frame_rx_handler(char *frame)
 
 	int what = msg.what();
 
-	if (what == DIM_STATUS || what == DIM_VOLUME)
+	if (what == DIM_STATUS || what == DIM_VOLUME || what == DIM_LOUD)
 	{
 		v.setValue(msg.whatArgN(0));
 		status_list[what] = v;
