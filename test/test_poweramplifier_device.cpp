@@ -31,7 +31,8 @@ void TestPowerAmplifierDevice::requestStatus()
 void TestPowerAmplifierDevice::readStatus()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_STATUS);
-	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(where[0]).arg(where[1]), 1);
+	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(where[0]).arg(where[1]), true);
+	t.check(QString("*#22*3#%1#%2*12*0*255##").arg(where[0]).arg(where[1]), false);
 }
 
 void TestPowerAmplifierDevice::readVolume()
@@ -43,6 +44,7 @@ void TestPowerAmplifierDevice::readVolume()
 void TestPowerAmplifierDevice::readLoud()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_LOUD);
-	t.check(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]), false);
+	t.check(QString("*#22*3#%1#%2*20*1##").arg(where[0]).arg(where[1]), true);
 }
 
