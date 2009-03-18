@@ -24,6 +24,11 @@ public:
 	// The request methods, used to request an information
 	void requestStatus() const;
 
+	enum Type
+	{
+		DIM_STATUS = 12,
+	};
+
 public slots:
 	//! receive a frame
 	void frame_rx_handler(char *frame);
