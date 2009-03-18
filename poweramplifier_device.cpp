@@ -50,6 +50,35 @@ void PowerAmplifierDevice::sendRequest(int what) const
 
 void PowerAmplifierDevice::requestStatus() const
 {
-	sendRequest(12);
+	sendRequest(DIM_STATUS);
 }
 
+void PowerAmplifierDevice::requestVolume() const
+{
+	sendRequest(DIM_VOLUME);
+}
+
+void PowerAmplifierDevice::requestTreble() const
+{
+	sendRequest(DIM_TREBLE);
+}
+
+void PowerAmplifierDevice::requestBass() const
+{
+	sendRequest(DIM_BASS);
+}
+
+void PowerAmplifierDevice::requestBalance() const
+{
+	sendRequest(DIM_BALANCE);
+}
+
+void PowerAmplifierDevice::requestPreset() const
+{
+	sendRequest(DIM_PRESET);
+}
+
+void PowerAmplifierDevice::requestLoud() const
+{
+	sendRequest(DIM_LOUD);
+}

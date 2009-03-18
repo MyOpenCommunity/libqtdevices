@@ -23,10 +23,22 @@ public:
 
 	// The request methods, used to request an information
 	void requestStatus() const;
+	void requestVolume() const;
+	void requestTreble() const;
+	void requestBass() const;
+	void requestBalance() const;
+	void requestPreset() const;
+	void requestLoud() const;
 
 	enum Type
 	{
 		DIM_STATUS = 12,
+		DIM_VOLUME = 1,
+		DIM_TREBLE = 2,
+		DIM_BASS = 4,
+		DIM_BALANCE = 17,
+		DIM_PRESET = 19,
+		DIM_LOUD = 20
 	};
 
 public slots:
