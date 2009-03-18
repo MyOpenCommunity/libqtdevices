@@ -10,7 +10,10 @@
 
 enum RequestDimension
 {
-	REQ_STATUS = 4,
+	REQ_STATUS_ON = 1,
+	REQ_STATUS_OFF = 0,
+	REQ_VOLUME_UP = 3,
+	REQ_VOLUME_DOWN = 4
 };
 
 
@@ -60,6 +63,11 @@ void PowerAmplifierDevice::sendRequest(int what) const
 	sendInit(createRequestOpen(who, QString::number(what), where));
 }
 
+void PowerAmplifierDevice::sendCommand(QString what) const
+{
+	sendFrame(createMsgOpen(who, what, where));
+}
+
 void PowerAmplifierDevice::requestStatus() const
 {
 	sendRequest(DIM_STATUS);
@@ -97,11 +105,21 @@ void PowerAmplifierDevice::requestLoud() const
 
 void PowerAmplifierDevice::turnOn() const
 {
-	sendFrame(createMsgOpen(who, QString("1#%1#%2").arg(REQ_STATUS).arg(location), where));
+	sendCommand(QString("%1#4#%2").arg(REQ_STATUS_ON).arg(location));
 }
 
 void PowerAmplifierDevice::turnOff() const
 {
-	sendFrame(createMsgOpen(who, QString("0#%1#%2").arg(REQ_STATUS).arg(location), where));
+	sendCommand(QString("%1#4#%2").arg(REQ_STATUS_OFF).arg(location));
+}
+
+void PowerAmplifierDevice::volumeUp() const
+{
+	sendCommand(QString("%1#1").arg(REQ_VOLUME_UP));
+}
+
+void PowerAmplifierDevice::volumeDown() const
+{
+	sendCommand(QString("%1#1").arg(REQ_VOLUME_DOWN));
 }
 

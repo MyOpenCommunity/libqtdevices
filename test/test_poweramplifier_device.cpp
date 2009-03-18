@@ -64,3 +64,19 @@ void TestPowerAmplifierDevice::sendTurnOff()
 	QVERIFY(server->frameCommand() == cmd);
 }
 
+void TestPowerAmplifierDevice::sendVolumeUp()
+{
+	dev->volumeUp();
+	client_command->flush();
+	QString cmd(QString("*22*3#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
+void TestPowerAmplifierDevice::sendVolumeDown()
+{
+	dev->volumeDown();
+	client_command->flush();
+	QString cmd(QString("*22*4#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+

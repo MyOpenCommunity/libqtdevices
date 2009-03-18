@@ -43,6 +43,8 @@ public:
 
 	void turnOn() const;
 	void turnOff() const;
+	void volumeUp() const;
+	void volumeDown() const;
 
 public slots:
 	//! receive a frame
@@ -54,6 +56,7 @@ private:
 	int location;
 
 	void sendRequest(int what) const;
+	void sendCommand(QString what) const;
 };
 
 #endif

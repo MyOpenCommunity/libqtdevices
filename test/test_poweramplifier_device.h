@@ -19,6 +19,8 @@ private slots:
 	void sendRequestStatus();
 	void sendTurnOn();
 	void sendTurnOff();
+	void sendVolumeUp();
+	void sendVolumeDown();
 
 	void receiveStatus();
 	void receiveVolume();
