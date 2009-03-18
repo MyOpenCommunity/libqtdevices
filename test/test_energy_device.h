@@ -16,8 +16,11 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
+	void requestCumulativeDayGraph();
+	void requestCumulativeMonthGraph();
 	void requestCumulativeMonth();
 	void requestCumulativeMonth2();
+
 	void readCumulativeDay();
 	void readCurrent();
 	void readCumulativeMonth();
@@ -28,10 +31,9 @@ private slots:
 	void readDayGraph();
 	void readDayGraph2();
 	void readDayGraph3();
-	void requestCumulativeDayGraph();
-	void requestCumulativeMonthGraph();
 	void readCumulativeMonthGraph();
 	void readCumulativeMonthGraph2();
+
 	void testGetDateFromFrame();
 	void testConsecutiveGraphFrames();
 

@@ -22,6 +22,36 @@ void TestEnergyDevice::cleanupTestCase()
 	delete dev;
 }
 
+void TestEnergyDevice::requestCumulativeMonth()
+{
+	dev->requestCumulativeMonth(QDate::currentDate());
+	client_request->flush();
+	QVERIFY(server->frameRequest() == "*#18*20*53##");
+}
+
+void TestEnergyDevice::requestCumulativeMonth2()
+{
+	dev->requestCumulativeMonth(QDate(2009, 1, 10));
+	client_request->flush();
+	QVERIFY(server->frameRequest() == "*#18*20*52#9#1##");
+}
+
+void TestEnergyDevice::requestCumulativeDayGraph()
+{
+	dev->requestCumulativeDayGraph(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*18*52#1#9*%1##").arg(where));
+	QVERIFY(server->frameCommand() == req);
+}
+
+void TestEnergyDevice::requestCumulativeMonthGraph()
+{
+	dev->requestCumulativeMonthGraph(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*18*56#1*%1##").arg(where));
+	QVERIFY(server->frameCommand() == req);
+}
+
 void TestEnergyDevice::readCumulativeDay()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
@@ -133,20 +163,6 @@ void TestEnergyDevice::readDailyAverageGraph3()
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::requestCumulativeMonth()
-{
-	dev->requestCumulativeMonth(QDate::currentDate());
-	client_request->flush();
-	QVERIFY(server->frameRequest() == "*#18*20*53##");
-}
-
-void TestEnergyDevice::requestCumulativeMonth2()
-{
-	dev->requestCumulativeMonth(QDate(2009, 1, 10));
-	client_request->flush();
-	QVERIFY(server->frameRequest() == "*#18*20*52#9#1##");
-}
-
 void TestEnergyDevice::readDayGraph()
 {
 	dev->buffer_frame.clear();
@@ -240,22 +256,6 @@ void TestEnergyDevice::readDayGraph3()
 	data.type = EnergyDevice::CUMULATIVE_DAY;
 
 	QVERIFY(data == result.value<GraphData>());
-}
-
-void TestEnergyDevice::requestCumulativeDayGraph()
-{
-	dev->requestCumulativeDayGraph(QDate(2009, 1, 9));
-	client_command->flush();
-	QString req(QString("*18*52#1#9*%1##").arg(where));
-	QVERIFY(server->frameCommand() == req);
-}
-
-void TestEnergyDevice::requestCumulativeMonthGraph()
-{
-	dev->requestCumulativeMonthGraph(QDate(2009, 1, 9));
-	client_command->flush();
-	QString req(QString("*18*56#1*%1##").arg(where));
-	QVERIFY(server->frameCommand() == req);
 }
 
 void TestEnergyDevice::readCumulativeMonthGraph()
