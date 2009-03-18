@@ -19,7 +19,7 @@ void PowerAmplifierDevice::frame_rx_handler(char *frame)
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
 
-	if (who.toInt() != msg.who())
+	if (who.toInt() != msg.who() || msg.whereArgCnt() != 2)
 		return;
 
 	QString msg_where = QString("%1#%2#%3").arg(msg.where()).arg(msg.whereArg(0).c_str()).arg(msg.whereArg(1).c_str());
