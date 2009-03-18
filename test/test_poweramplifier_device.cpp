@@ -48,3 +48,19 @@ void TestPowerAmplifierDevice::receiveLoud()
 	t.check(QString("*#22*3#%1#%2*20*1##").arg(where[0]).arg(where[1]), true);
 }
 
+void TestPowerAmplifierDevice::sendTurnOn()
+{
+	dev->turnOn();
+	client_command->flush();
+	QString cmd(QString("*22*1#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+
+void TestPowerAmplifierDevice::sendTurnOff()
+{
+	dev->turnOff();
+	client_command->flush();
+	QString cmd(QString("*22*0#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QVERIFY(server->frameCommand() == cmd);
+}
+

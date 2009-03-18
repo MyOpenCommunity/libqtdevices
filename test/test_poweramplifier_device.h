@@ -17,6 +17,8 @@ private slots:
 	void cleanupTestCase();
 
 	void sendRequestStatus();
+	void sendTurnOn();
+	void sendTurnOff();
 
 	void receiveStatus();
 	void receiveVolume();

@@ -41,11 +41,18 @@ public:
 		DIM_LOUD = 20
 	};
 
+	void turnOn() const;
+	void turnOff() const;
+
 public slots:
 	//! receive a frame
 	void frame_rx_handler(char *frame);
 
 private:
+	// The location is normally used inside 'where' so we don't need to store it.
+	// As exception, the turnOn/Off methods require to specify this information.
+	int location;
+
 	void sendRequest(int what) const;
 };
 

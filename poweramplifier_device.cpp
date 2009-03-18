@@ -8,10 +8,16 @@
 
 #include <assert.h>
 
+enum RequestDimension
+{
+	REQ_STATUS = 4,
+};
+
 
 PowerAmplifierDevice::PowerAmplifierDevice(QString address) :
 	device(QString("22"), "3#" + address[0] + "#" + address[1])
 {
+	location = QString(address[0]).toInt();
 }
 
 void PowerAmplifierDevice::frame_rx_handler(char *frame)
@@ -88,3 +94,14 @@ void PowerAmplifierDevice::requestLoud() const
 {
 	sendRequest(DIM_LOUD);
 }
+
+void PowerAmplifierDevice::turnOn() const
+{
+	sendFrame(createMsgOpen(who, QString("1#%1#%2").arg(REQ_STATUS).arg(location), where));
+}
+
+void PowerAmplifierDevice::turnOff() const
+{
+	sendFrame(createMsgOpen(who, QString("0#%1#%2").arg(REQ_STATUS).arg(location), where));
+}
+
