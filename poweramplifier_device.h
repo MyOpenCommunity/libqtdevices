@@ -47,6 +47,8 @@ public:
 	void volumeDown() const;
 	void trebleUp() const;
 	void trebleDown() const;
+	void bassUp() const;
+	void bassDown() const;
 
 public slots:
 	//! receive a frame

@@ -16,6 +16,8 @@ enum RequestDimension
 	REQ_VOLUME_DOWN = 4,
 	REQ_TREBLE_UP = 40,
 	REQ_TREBLE_DOWN = 41,
+	REQ_BASS_UP = 36,
+	REQ_BASS_DOWN = 37,
 };
 
 
@@ -135,3 +137,12 @@ void PowerAmplifierDevice::trebleDown() const
 	sendCommand(QString("%1#1").arg(REQ_TREBLE_DOWN));
 }
 
+void PowerAmplifierDevice::bassUp() const
+{
+	sendCommand(QString("%1#1").arg(REQ_BASS_UP));
+}
+
+void PowerAmplifierDevice::bassDown() const
+{
+	sendCommand(QString("%1#1").arg(REQ_BASS_DOWN));
+}
