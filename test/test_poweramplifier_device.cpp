@@ -34,3 +34,9 @@ void TestPowerAmplifierDevice::readStatus()
 	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(where[0]).arg(where[1]), 1);
 }
 
+void TestPowerAmplifierDevice::readVolume()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_VOLUME);
+	t.check(QString("*#22*3#%1#%2*1*20##").arg(where[0]).arg(where[1]), 20);
+}
+

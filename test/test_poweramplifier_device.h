@@ -19,6 +19,7 @@ private slots:
 	void requestStatus();
 
 	void readStatus();
+	void readVolume();
 
 private:
 	PowerAmplifierDevice *dev;
