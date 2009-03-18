@@ -432,6 +432,7 @@ void BtMain::gesScrSav()
 						// don't use showPage() because transition doesn't make sense here
 						main_window.setCurrentWidget(target);
 					}
+					qDebug() << "START SCREENSAVER";
 					screensaver->start(target);
 					bt_global::display.setState(DISPLAY_SCREENSAVER);
 				}
