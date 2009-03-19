@@ -6,6 +6,7 @@
 #include <openmsg.h>
 
 #include <QStringList>
+#include <QDebug>
 
 #include <assert.h>
 

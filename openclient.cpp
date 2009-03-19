@@ -11,9 +11,12 @@
 #include "openclient.h"
 #include "generic_functions.h" // rearmWDT
 
+#include <QDebug>
+
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
+
 
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
