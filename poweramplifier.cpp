@@ -6,6 +6,7 @@
 #include <QDomNode>
 #include <QRegExp>
 #include <QString>
+#include <QDebug>
 #include <QLabel>
 #include <QList>
 
@@ -27,16 +28,18 @@ static const char *IMG_LESS = IMG_PATH "less.png";
 BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, QString onIcon,
 	QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon) : bannRegolaz(parent)
 {
-	setRange(1,9);
+	setRange(1, 9);
 	setValue(1);
 	SetIcons(settingIcon, offIcon, onAmpl, offAmpl, true);
 	setAddress(address);
-	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
+	PowerAmplifierDevice *amp = new PowerAmplifierDevice(address);
+	dev = bt_global::add_device_to_cache(amp);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), amp, SLOT(status_changed(const StatusList&)));
 
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
-	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
-	connect(this, SIGNAL(csxClick()), SLOT(turnDown()));
+	connect(this, SIGNAL(cdxClick()), SLOT(volumeUp()));
+	connect(this, SIGNAL(csxClick()), SLOT(volumeDown()));
 
 	off_icon = offIcon;
 	on_icon = onIcon;
@@ -47,21 +50,49 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 
 void BannPowerAmplifier::toggleStatus()
 {
-	SetIcons(1, status ? off_icon : on_icon);
-	status = !status;
-	Draw();
+	if (status)
+		dev->turnOff();
+	else
+		dev->turnOn();
 }
 
-void BannPowerAmplifier::turnUp()
+void BannPowerAmplifier::inizializza(bool forza)
 {
-	qDebug("PowerAmplifier::turnUp()");
+	dev->requestStatus();
+	dev->requestVolume();
+	banner::inizializza(forza);
 }
 
-void BannPowerAmplifier::turnDown()
+void BannPowerAmplifier::status_changed(const StatusList &status_list)
 {
-	qDebug("PowerAmplifier::turnDown()");
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
+		{
+			SetIcons(1, it.value().toBool() ? off_icon : on_icon);
+			Draw();
+		}
+		else if (it.key() == PowerAmplifierDevice::DIM_VOLUME)
+		{
+			int volume = it.value().toInt();
+			// We have to normalize the volume value (from 0 to 31) in a value
+			// that we can represent into the banner (that accept values from 1 to 9)
+			// so we use the following formula.
+			setValue((volume + 1) / 4 + 1);
+		}
+	}
 }
 
+void BannPowerAmplifier::volumeUp()
+{
+	dev->volumeUp();
+}
+
+void BannPowerAmplifier::volumeDown()
+{
+	dev->volumeDown();
+}
 
 
 PowerAmplifier::PowerAmplifier(const QDomNode &config_node)
@@ -94,6 +125,10 @@ void PowerAmplifier::loadBanners(const QDomNode &config_node)
 	appendBanner(b);
 }
 
+void PowerAmplifier::status_changed(const StatusList &status_list)
+{
+}
+
 
 PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent, const QMap<int, QString>& preset_list)
 	: bannOnOff(parent)
@@ -122,7 +157,7 @@ void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
 	preset_desc.append(tr("Full Bass"));
 	preset_desc.append(tr("Full Treble"));
 
-	for (unsigned i = preset_desc.size(); i < num_preset; ++i)
+	for (int i = preset_desc.size(); i < num_preset; ++i)
 		preset_desc.append(QString("%1 %2").arg(tr("Preset")).arg(i + 1));
 
 	QMapIterator<int, QString> it(preset_list);
@@ -154,16 +189,12 @@ void PowerAmplifierPreset::nextPreset()
 	Draw();
 }
 
-/*****************************************************************
- ** PowerAmplifierTreble
- ****************************************************************/
 
 PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent) : bannOnOff2scr(parent)
 {
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_TREBLE);
 	level = 0;
-	qDebug("PowerAmplifierTreble::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
 	showLevel();
@@ -171,7 +202,6 @@ PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent) : bannOnOff2scr(pare
 
 void PowerAmplifierTreble::up()
 {
-	qDebug("PowerAmplifierTreble::up()");
 	level += 10;
 	showLevel();
 	Draw();
@@ -179,7 +209,6 @@ void PowerAmplifierTreble::up()
 
 void PowerAmplifierTreble::down()
 {
-	qDebug("PowerAmplifierTreble::down()");
 	level -= 10;
 	showLevel();
 	Draw();
@@ -193,16 +222,11 @@ void PowerAmplifierTreble::showLevel()
 }
 
 
-/*****************************************************************
- ** PowerAmplifierBass
- ****************************************************************/
-
 PowerAmplifierBass::PowerAmplifierBass(QWidget *parent) : bannOnOff2scr(parent)
 {
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_BASS);
 	level = 0;
-	qDebug("PowerAmplifierBass::PowerAmplifierTreble()");
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
 	showLevel();
@@ -210,7 +234,6 @@ PowerAmplifierBass::PowerAmplifierBass(QWidget *parent) : bannOnOff2scr(parent)
 
 void PowerAmplifierBass::up()
 {
-	qDebug("PowerAmplifierBass::up()");
 	level += 10;
 	showLevel();
 	Draw();
@@ -218,7 +241,6 @@ void PowerAmplifierBass::up()
 
 void PowerAmplifierBass::down()
 {
-	qDebug("PowerAmplifierBass::down()");
 	level -= 10;
 	showLevel();
 	Draw();
@@ -232,13 +254,8 @@ void PowerAmplifierBass::showLevel()
 }
 
 
-/*****************************************************************
- ** PowerAmplifierBalance
- ****************************************************************/
-
 PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent) : BannOnOffCombo(parent)
 {
-	qDebug("PowerAmplifierBalance::PowerAmplifierBalance()");
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MORE, IMG_LESS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
 	balance = 0;
@@ -248,7 +265,6 @@ PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent) : BannOnOffCombo(p
 
 void PowerAmplifierBalance::sx()
 {
-	qDebug("PowerAmplifierBalance::sx()");
 	if (balance >= 0 && balance - 10 <= 0)
 		changeStatus(balance - 10 ? SX : CENTER);
 
@@ -259,7 +275,6 @@ void PowerAmplifierBalance::sx()
 
 void PowerAmplifierBalance::dx()
 {
-	qDebug("PowerAmplifierBalance::dx()");
 	if (balance <= 0 && balance + 10 >= 0)
 		changeStatus(balance + 10 ? DX : CENTER);
 
@@ -276,13 +291,8 @@ void PowerAmplifierBalance::showBalance()
 }
 
 
-/*****************************************************************
- ** PowerAmplifierLoud
- ****************************************************************/
-
 PowerAmplifierLoud::PowerAmplifierLoud(QWidget *parent) : bannOnOff(parent)
 {
-	qDebug("PowerAmplifierLoud::PowerAmplifierLoud()");
 	SetIcons(ICON_ON, ICON_OFF, IMG_LOUD_ON, IMG_LOUD_OFF);
 	impostaAttivo(0);
 	connect(this, SIGNAL(sxClick()), SLOT(loudOn()));
@@ -291,14 +301,12 @@ PowerAmplifierLoud::PowerAmplifierLoud(QWidget *parent) : bannOnOff(parent)
 
 void PowerAmplifierLoud::loudOff()
 {
-	qDebug("PowerAmplifierLoud::loudOff()");
 	impostaAttivo(0);
 	Draw();
 }
 
 void PowerAmplifierLoud::loudOn()
 {
-	qDebug("PowerAmplifierLoud::loudOn()");
 	impostaAttivo(1);
 	Draw();
 }

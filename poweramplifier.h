@@ -20,11 +20,13 @@ class BannPowerAmplifier : public bannRegolaz
 Q_OBJECT
 public:
 	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
+	virtual void inizializza(bool forza=false);
 
 private slots:
 	void toggleStatus();
-	void turnUp();
-	void turnDown();
+	void volumeUp();
+	void volumeDown();
+	void status_changed(const StatusList &status_list);
 
 private:
 	QString off_icon, on_icon;
@@ -39,6 +41,10 @@ class PowerAmplifier : public sottoMenu
 Q_OBJECT
 public:
 	PowerAmplifier(const QDomNode &config_node);
+
+private slots:
+	void status_changed(const StatusList &status_list);
+
 private:
 	void loadBanners(const QDomNode &config_node);
 };
