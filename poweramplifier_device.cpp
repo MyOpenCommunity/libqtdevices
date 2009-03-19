@@ -53,12 +53,28 @@ void PowerAmplifierDevice::frame_rx_handler(char *frame)
 
 	int what = msg.what();
 
-	if (what == DIM_STATUS || what == DIM_VOLUME || what == DIM_LOUD)
+	if (what == DIM_STATUS || what == DIM_VOLUME || what == DIM_LOUD || what == DIM_PRESET ||
+		what == DIM_TREBLE || what == DIM_BASS || what == DIM_BALANCE)
 	{
 		if (what == DIM_STATUS || what == DIM_LOUD)
 		{
 			bool st = msg.whatArgN(0) == 1;
 			v.setValue(st);
+		}
+		else if (what == DIM_TREBLE || what == DIM_BASS)
+		{
+			int raw_value = msg.whatArgN(0);
+			v.setValue(raw_value / 3 - 10);
+		}
+		else if (what == DIM_BALANCE)
+		{
+			QString raw_value = msg.whatArg(0).c_str();
+			if (raw_value.length() >= 2)
+			{
+				bool balance_left = raw_value[0] == '0';
+				int value = raw_value.mid(1).toInt() / 3;
+				v.setValue((balance_left ? -1 : 1) * value);
+			}
 		}
 		else
 			v.setValue(msg.whatArgN(0));

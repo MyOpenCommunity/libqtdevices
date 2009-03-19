@@ -35,6 +35,10 @@ private slots:
 	void receiveStatus();
 	void receiveVolume();
 	void receiveLoud();
+	void receivePreset();
+	void receiveTreble();
+	void receiveBass();
+	void receiveBalance();
 
 private:
 	PowerAmplifierDevice *dev;

@@ -28,26 +28,6 @@ void TestPowerAmplifierDevice::sendRequestStatus()
 	QVERIFY(server->frameRequest() == req);
 }
 
-void TestPowerAmplifierDevice::receiveStatus()
-{
-	DeviceTester t(dev, PowerAmplifierDevice::DIM_STATUS);
-	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(where[0]).arg(where[1]), true);
-	t.check(QString("*#22*3#%1#%2*12*0*255##").arg(where[0]).arg(where[1]), false);
-}
-
-void TestPowerAmplifierDevice::receiveVolume()
-{
-	DeviceTester t(dev, PowerAmplifierDevice::DIM_VOLUME);
-	t.check(QString("*#22*3#%1#%2*1*20##").arg(where[0]).arg(where[1]), 20);
-}
-
-void TestPowerAmplifierDevice::receiveLoud()
-{
-	DeviceTester t(dev, PowerAmplifierDevice::DIM_LOUD);
-	t.check(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]), false);
-	t.check(QString("*#22*3#%1#%2*20*1##").arg(where[0]).arg(where[1]), true);
-}
-
 void TestPowerAmplifierDevice::sendTurnOn()
 {
 	dev->turnOn();
@@ -159,4 +139,64 @@ void TestPowerAmplifierDevice::sendLoudOff()
 	QString cmd(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]));
 	QVERIFY(server->frameCommand() == cmd);
 }
+
+void TestPowerAmplifierDevice::receiveStatus()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_STATUS);
+	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(where[0]).arg(where[1]), true);
+	t.check(QString("*#22*3#%1#%2*12*0*255##").arg(where[0]).arg(where[1]), false);
+}
+
+void TestPowerAmplifierDevice::receiveVolume()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_VOLUME);
+	t.check(QString("*#22*3#%1#%2*1*20##").arg(where[0]).arg(where[1]), 20);
+}
+
+void TestPowerAmplifierDevice::receiveLoud()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_LOUD);
+	t.check(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]), false);
+	t.check(QString("*#22*3#%1#%2*20*1##").arg(where[0]).arg(where[1]), true);
+}
+
+void TestPowerAmplifierDevice::receivePreset()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_PRESET);
+	t.check(QString("*#22*3#%1#%2*19*6##").arg(where[0]).arg(where[1]), 6);
+}
+
+void TestPowerAmplifierDevice::receiveTreble()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_TREBLE);
+	t.check(QString("*#22*3#%1#%2*2*0##").arg(where[0]).arg(where[1]), -10);
+	t.check(QString("*#22*3#%1#%2*2*3##").arg(where[0]).arg(where[1]), -9);
+	t.check(QString("*#22*3#%1#%2*2*4##").arg(where[0]).arg(where[1]), -9);
+	t.check(QString("*#22*3#%1#%2*2*30##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*2*60##").arg(where[0]).arg(where[1]), 10);
+}
+
+void TestPowerAmplifierDevice::receiveBass()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_BASS);
+	t.check(QString("*#22*3#%1#%2*4*0##").arg(where[0]).arg(where[1]), -10);
+	t.check(QString("*#22*3#%1#%2*4*3##").arg(where[0]).arg(where[1]), -9);
+	t.check(QString("*#22*3#%1#%2*4*4##").arg(where[0]).arg(where[1]), -9);
+	t.check(QString("*#22*3#%1#%2*4*30##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*4*60##").arg(where[0]).arg(where[1]), 10);
+}
+
+void TestPowerAmplifierDevice::receiveBalance()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_BALANCE);
+	t.check(QString("*#22*3#%1#%2*17*00##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*17*03##").arg(where[0]).arg(where[1]), -1);
+	t.check(QString("*#22*3#%1#%2*17*04##").arg(where[0]).arg(where[1]), -1);
+	t.check(QString("*#22*3#%1#%2*17*030##").arg(where[0]).arg(where[1]), -10);
+	t.check(QString("*#22*3#%1#%2*17*10##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*17*11##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*17*13##").arg(where[0]).arg(where[1]), 1);
+	t.check(QString("*#22*3#%1#%2*17*115##").arg(where[0]).arg(where[1]), 5);
+}
+
 
