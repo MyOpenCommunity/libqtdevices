@@ -152,6 +152,7 @@ private:
 	uchar numRighe;
 	AudioSources *sorgenti;
 	AmpliContainer *amplificatori;
+	bool shared_audiosources;
 
 private slots:
 	/*!

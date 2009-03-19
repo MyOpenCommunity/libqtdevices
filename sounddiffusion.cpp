@@ -210,12 +210,14 @@ SoundDiffusion::SoundDiffusion(AudioSources *s, const QDomNode &config_node)
 {
 	init(config_node);
 	setSorgenti(s);
+	shared_audiosources = true;
 }
 
 SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
 {
 	init(config_node);
 	setSorgenti(new AudioSources(this, config_node));
+	shared_audiosources = false;
 }
 
 void SoundDiffusion::init(const QDomNode &config_node)
@@ -255,7 +257,10 @@ void SoundDiffusion::setNumRighe(uchar n)
 void SoundDiffusion::inizializza()
 {
 	amplificatori->inizializza();
-	sorgenti->inizializza();
+	// If the audio sources are shared as in the MultiSoundDiff the initialization is
+	// done by the object that instantiate the audio sources.
+	if (!shared_audiosources)
+		sorgenti->inizializza();
 	sendInit("*16*53*100##");
 }
 

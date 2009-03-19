@@ -127,6 +127,8 @@ void MultiSoundDiff::inizializza()
 	qDebug("MultiSoundDiff::inizializza()");
 	sorgenti->inizializza();
 	matr->init();
+	for (int i = 0; i < dslist.size(); ++i)
+		dslist.at(i)->inizializza();
 }
 
 void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
