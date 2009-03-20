@@ -135,7 +135,7 @@ void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
 	preset_desc.append(tr("Pop"));
 	preset_desc.append(tr("Rock"));
 	preset_desc.append(tr("Classical"));
-	preset_desc.append(tr("Jazz"));
+	preset_desc.append(tr("Techno"));
 	preset_desc.append(tr("Party"));
 	preset_desc.append(tr("Soft"));
 	preset_desc.append(tr("Full Bass"));
