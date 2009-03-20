@@ -37,8 +37,7 @@ class BannPowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
 public:
-	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo, QString onIcon,
-		QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
+	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo);
 	virtual void inizializza(bool forza=false);
 
 private slots:
@@ -48,7 +47,6 @@ private slots:
 	void status_changed(const StatusList &status_list);
 
 private:
-	QString off_icon, on_icon;
 	bool status;
 	PowerAmplifierDevice *dev;
 };

@@ -1,36 +1,22 @@
 #include "poweramplifier.h"
 #include "xml_functions.h" // getChildWithId, getChildren
 #include "devices_cache.h" // bt_global::devices_cache
+#include "skinmanager.h" // bt_global::skin
 
 #include <QVariant> // setProperty
 #include <QDomNode>
-#include <QRegExp>
-#include <QString>
 #include <QDebug>
 #include <QLabel>
-#include <QList>
 
 
-static const char *IMG_PLUS = IMG_PATH "btnplus.png";
-static const char *IMG_MINUS = IMG_PATH "btnmin.png";
-static const char *IMG_PRESET = IMG_PATH "preset.png";
-static const char *IMG_TREBLE = IMG_PATH "louds.png";
-static const char *IMG_BASS = IMG_PATH "lows.png";
-static const char *IMG_BALANCE = IMG_PATH "balance_0.png";
-static const char *IMG_BALANCE_SX = IMG_PATH "balance_sx.png";
-static const char *IMG_BALANCE_DX = IMG_PATH "balance_dx.png";
-static const char *IMG_LOUD_ON = IMG_PATH "loud.png";
-static const char *IMG_LOUD_OFF = IMG_PATH "loud_off.png";
-static const char *IMG_MORE = IMG_PATH "more.png";
-static const char *IMG_LESS = IMG_PATH "less.png";
-
-
-BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, QString onIcon,
-	QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon) : bannRegolaz(parent)
+BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address)
+	: bannRegolaz(parent)
 {
 	setRange(1, 9);
 	setValue(1);
-	SetIcons(settingIcon, offIcon, onAmpl, offAmpl, true);
+	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("off"),
+		bt_global::skin->getImage("volume_up"), bt_global::skin->getImage("volume_down"), true);
 	setAddress(address);
 	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
@@ -39,11 +25,10 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	connect(this, SIGNAL(cdxClick()), SLOT(volumeUp()));
 	connect(this, SIGNAL(csxClick()), SLOT(volumeDown()));
 
-	off_icon = offIcon;
-	on_icon = onIcon;
 	status = false;
 
 	connectDxButton(new PowerAmplifier(dev, config_node));
+	bt_global::skin->removeFromContext();
 }
 
 void BannPowerAmplifier::toggleStatus()
@@ -69,7 +54,7 @@ void BannPowerAmplifier::status_changed(const StatusList &status_list)
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
 		{
 			status = it.value().toBool();
-			SetIcons(1, status ? off_icon : on_icon);
+			SetIcons(1, bt_global::skin->getImage(status ? "off" : "on"));
 			Draw();
 		}
 		else if (it.key() == PowerAmplifierDevice::DIM_VOLUME)
@@ -129,7 +114,8 @@ PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *par
 	: bannOnOff(parent)
 {
 	dev = d;
-	SetIcons(IMG_PLUS, IMG_MINUS, QString(), IMG_PRESET);
+	SetIcons(bt_global::skin->getImage("plus"), bt_global::skin->getImage("minus"), QString(),
+		bt_global::skin->getImage("preset"));
 	num_preset = 20;
 	fillPresetDesc(preset_list);
 	connect(this, SIGNAL(sxClick()), SLOT(next()));
@@ -206,7 +192,8 @@ PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *par
 {
 	dev = d;
 	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_TREBLE);
+	SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString(),
+		bt_global::skin->getImage("treble"));
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
@@ -250,7 +237,8 @@ PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent)
 {
 	dev = d;
 	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_BASS);
+	SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString(),
+		bt_global::skin->getImage("bass"));
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
@@ -294,7 +282,8 @@ PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *p
 {
 	dev = d;
 	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(IMG_MORE, IMG_LESS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
+	SetIcons(bt_global::skin->getImage("more"), bt_global::skin->getImage("less"), bt_global::skin->getImage("balance"),
+		bt_global::skin->getImage("balance_sx"), bt_global::skin->getImage("balance_dx"));
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
 	connect(this, SIGNAL(dxClick()), SLOT(sx()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
@@ -344,7 +333,8 @@ void PowerAmplifierBalance::showBalance(int balance)
 PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff(parent)
 {
 	dev = d;
-	SetIcons(ICON_ON, ICON_OFF, IMG_LOUD_ON, IMG_LOUD_OFF);
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("loud_on"),
+		bt_global::skin->getImage("loud_off"));
 	connect(this, SIGNAL(sxClick()), SLOT(on()));
 	connect(this, SIGNAL(dxClick()), SLOT(off()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));

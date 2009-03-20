@@ -157,7 +157,7 @@ void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 			b = new amplificatore(this, where, img1, img2, img3, img4);
 			break;
 		case POWER_AMPLIFIER:
-			b = new BannPowerAmplifier(this, node, where, img1, img2, img3, img4, img5);
+			b = new BannPowerAmplifier(this, node, where);
 			connect(b, SIGNAL(pageClosed()), SLOT(showSoundDiff()));
 			break;
 		case GR_AMPLIFICATORI:
