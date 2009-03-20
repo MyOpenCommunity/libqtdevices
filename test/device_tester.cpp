@@ -17,12 +17,28 @@ DeviceTester::DeviceTester(device *d, int type) : spy(d, SIGNAL(status_changed(c
 	dev = d;
 }
 
-QVariant DeviceTester::getResult(const QStringList& frames)
+void DeviceTester::sendFrames(const QStringList& frames)
 {
 	spy.clear();
 	for (int i = 0; i < frames.size(); ++i)
 		dev->frame_rx_handler(frames[i].toAscii().data());
+}
 
+void DeviceTester::checkSignals(QString frame, int num_signals)
+{
+	sendFrames(QStringList(frame));
+	QVERIFY(spy.count() == num_signals);
+}
+
+void DeviceTester::checkSignals(const QStringList& frames, int num_signals)
+{
+	sendFrames(frames);
+	QVERIFY(spy.count() == num_signals);
+}
+
+QVariant DeviceTester::getResult(const QStringList& frames)
+{
+	sendFrames(frames);
 	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
 	if (signal_arg.canConvert<StatusList>())
 	{

@@ -21,12 +21,17 @@ public:
 	void check(const QStringList &frames, const QVariant &result);
 	void check(QString frame, const QVariant &result);
 
+	// Verify the number of signals emitted
+	void checkSignals(const QStringList &frames, int num_signals);
+	void checkSignals(QString frame, int num_signals);
+
 	QVariant getResult(const QStringList& frames);
 
 private:
 	QSignalSpy spy;
 	int dim_type;
 	device *dev;
+	void sendFrames(const QStringList& frames);
 };
 
 
