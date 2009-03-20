@@ -167,7 +167,7 @@ void PowerAmplifierPreset::status_changed(const StatusList &status_list)
 		if (it.key() == PowerAmplifierDevice::DIM_PRESET)
 		{
 			int preset = it.value().toInt();
-			if (preset > 0 && preset < num_preset)
+			if (preset >= 0 && preset < num_preset)
 			{
 				setText(preset_desc[preset]);
 				Draw();
