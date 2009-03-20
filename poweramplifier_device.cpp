@@ -76,6 +76,20 @@ void PowerAmplifierDevice::frame_rx_handler(char *frame)
 				v.setValue((balance_left ? -1 : 1) * value);
 			}
 		}
+		else if (what == DIM_PRESET)
+		{
+			int value = -1;
+			int raw_value = msg.whatArgN(0);
+			if (raw_value >= 2 && raw_value <= 11) // fixed presets
+				value = raw_value -2;
+			else if (raw_value >= 16 && raw_value <= 25) // custom presets
+				value = raw_value -6;
+
+			if (value == -1)
+				return;
+			else
+				v.setValue(value);
+		}
 		else
 			v.setValue(msg.whatArgN(0));
 		status_list[what] = v;

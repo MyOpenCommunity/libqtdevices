@@ -163,7 +163,13 @@ void TestPowerAmplifierDevice::receiveLoud()
 void TestPowerAmplifierDevice::receivePreset()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_PRESET);
-	t.check(QString("*#22*3#%1#%2*19*6##").arg(where[0]).arg(where[1]), 6);
+	t.check(QString("*#22*3#%1#%2*19*2##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*19*6##").arg(where[0]).arg(where[1]), 4);
+	t.check(QString("*#22*3#%1#%2*19*11##").arg(where[0]).arg(where[1]), 9);
+	t.checkSignals(QString("*#22*3#%1#%2*19*12##").arg(where[0]).arg(where[1]), 0);
+	t.checkSignals(QString("*#22*3#%1#%2*19*15##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*19*16##").arg(where[0]).arg(where[1]), 10);
+	t.check(QString("*#22*3#%1#%2*19*25##").arg(where[0]).arg(where[1]), 19);
 }
 
 void TestPowerAmplifierDevice::receiveTreble()
