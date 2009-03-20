@@ -65,6 +65,7 @@ void BannPowerAmplifier::status_changed(const StatusList &status_list)
 			// so we use the following formula.
 			setValue((volume + 1) / 4 + 1);
 		}
+		++it;
 	}
 }
 
@@ -174,6 +175,7 @@ void PowerAmplifierPreset::status_changed(const StatusList &status_list)
 			else
 				qWarning("Preset value (%d) is out of admitted range! [0 - %d]", preset, num_preset);
 		}
+		++it;
 	}
 }
 
@@ -210,8 +212,11 @@ void PowerAmplifierTreble::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
+	{
 		if (it.key() == PowerAmplifierDevice::DIM_TREBLE)
 			showLevel(it.value().toInt());
+		++it;
+	}
 }
 
 void PowerAmplifierTreble::up()
@@ -255,8 +260,11 @@ void PowerAmplifierBass::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
+	{
 		if (it.key() == PowerAmplifierDevice::DIM_BASS)
 			showLevel(it.value().toInt());
+		++it;
+	}
 }
 
 void PowerAmplifierBass::up()
@@ -300,8 +308,11 @@ void PowerAmplifierBalance::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
+	{
 		if (it.key() == PowerAmplifierDevice::DIM_BALANCE)
 			showBalance(it.value().toInt());
+		++it;
+	}
 }
 
 void PowerAmplifierBalance::sx()
@@ -351,11 +362,14 @@ void PowerAmplifierLoud::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
+	{
 		if (it.key() == PowerAmplifierDevice::DIM_LOUD)
 		{
 			impostaAttivo(it.value().toBool());
 			Draw();
 		}
+		++it;
+	}
 }
 
 void PowerAmplifierLoud::off()
