@@ -1,3 +1,15 @@
+/**
+ * \file
+ * <!--
+ * Copyright 2009 Develer S.r.l. (http://www.develer.com/)
+ * All rights reserved.
+ * -->
+ *
+ * \brief This file contain the banners for the power amplifier.
+ *
+ * \author Gianni Valdambrini <aleister@develer.com>
+ */
+
 #ifndef POWER_AMPLIFIER_H
 #define POWER_AMPLIFIER_H
 
@@ -7,14 +19,20 @@
 #include "poweramplifier_device.h"
 #include "sottomenu.h"
 
-#include <QDomNode>
-#include <QWidget>
 #include <QVector>
+#include <QString>
 #include <QMap>
 
-class QString;
+class QDomNode;
+class QWidget;
 
 
+/**
+ * \class BannPowerAmplifier
+ *
+ * The main banner of the power amplifier. It instantiate the device and manage
+ * the link with the page of settings.
+ */
 class BannPowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
@@ -32,11 +50,15 @@ private slots:
 private:
 	QString off_icon, on_icon;
 	bool status;
-	sottoMenu *settings_page;
 	PowerAmplifierDevice *dev;
 };
 
-
+/**
+ * \class PowerAmplifier
+ *
+ * The page of the settings of the power amplifier. It simply delegate the
+ * functionality to the correct banner.
+ */
 class PowerAmplifier : public sottoMenu
 {
 Q_OBJECT
