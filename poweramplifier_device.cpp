@@ -204,11 +204,11 @@ void PowerAmplifierDevice::prevPreset() const
 
 void PowerAmplifierDevice::loudOn() const
 {
-	sendFrame(createRequestOpen(who, QString("%1*1").arg(REQ_LOUD), where));
+	sendFrame(createWriteRequestOpen(who, QString("%1*1").arg(REQ_LOUD), where));
 }
 
 void PowerAmplifierDevice::loudOff() const
 {
-	sendFrame(createRequestOpen(who, QString("%1*0").arg(REQ_LOUD), where));
+	sendFrame(createWriteRequestOpen(who, QString("%1*0").arg(REQ_LOUD), where));
 }
 

@@ -23,6 +23,9 @@ QString createMsgOpen(QString who, QString what, QString where);
 // Create a 'dimension request' frame
 QString createRequestOpen(QString who, QString what, QString where);
 
+// Create a 'write dimension request' frame
+QString createWriteRequestOpen(QString who, QString what, QString where);
+
  /*!
   \brief Transform a image file name into a pressed one.
 
