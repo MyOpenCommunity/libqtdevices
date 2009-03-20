@@ -19,7 +19,8 @@ class BannPowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
 public:
-	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo, QString onIcon, QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
+	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo, QString onIcon,
+		QString offIcon, QString onAmpl, QString offAmpl, QString settingIcon);
 	virtual void inizializza(bool forza=false);
 
 private slots:
@@ -40,13 +41,10 @@ class PowerAmplifier : public sottoMenu
 {
 Q_OBJECT
 public:
-	PowerAmplifier(const QDomNode &config_node);
-
-private slots:
-	void status_changed(const StatusList &status_list);
+	PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node);
 
 private:
-	void loadBanners(const QDomNode &config_node);
+	void loadBanners(PowerAmplifierDevice *dev, const QDomNode &config_node);
 };
 
 
@@ -54,15 +52,18 @@ class PowerAmplifierPreset : public bannOnOff
 {
 Q_OBJECT
 public:
-	PowerAmplifierPreset(QWidget *parent, const QMap<int, QString>& preset_list);
+	PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list);
+	virtual void inizializza(bool forza=false);
 
 private slots:
-	void nextPreset();
-	void prevPreset();
+	void next();
+	void prev();
+	void status_changed(const StatusList &status_list);
 
 private:
-	int curr_preset, num_preset;
+	int num_preset;
 	QVector<QString> preset_desc;
+	PowerAmplifierDevice *dev;
 	void fillPresetDesc(const QMap<int, QString>& preset_list);
 };
 
@@ -71,15 +72,17 @@ class PowerAmplifierTreble : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-	PowerAmplifierTreble(QWidget *parent=0);
+	PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
 	void up();
 	void down();
+	void status_changed(const StatusList &status_list);
 
 private:
-	int level;
-	void showLevel();
+	PowerAmplifierDevice *dev;
+	void showLevel(int level);
 };
 
 
@@ -87,15 +90,17 @@ class PowerAmplifierBass : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-	PowerAmplifierBass(QWidget *parent=0);
+	PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
 	void up();
 	void down();
+	void status_changed(const StatusList &status_list);
 
 private:
-	int level;
-	void showLevel();
+	PowerAmplifierDevice *dev;
+	void showLevel(int level);
 };
 
 
@@ -103,15 +108,17 @@ class PowerAmplifierBalance : public BannOnOffCombo
 {
 Q_OBJECT
 public:
-	PowerAmplifierBalance(QWidget *parent=0);
+	PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
 	void dx();
 	void sx();
+	void status_changed(const StatusList &status_list);
 
 private:
-	int balance;
-	void showBalance();
+	PowerAmplifierDevice *dev;
+	void showBalance(int balance);
 };
 
 
@@ -119,11 +126,16 @@ class PowerAmplifierLoud : public bannOnOff
 {
 Q_OBJECT
 public:
-	PowerAmplifierLoud(QWidget *parent=0);
+	PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
-	void loudOn();
-	void loudOff();
+	void on();
+	void off();
+	void status_changed(const StatusList &status_list);
+
+private:
+	PowerAmplifierDevice *dev;
 };
 
 #endif

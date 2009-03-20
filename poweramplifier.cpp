@@ -32,10 +32,8 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	setValue(1);
 	SetIcons(settingIcon, offIcon, onAmpl, offAmpl, true);
 	setAddress(address);
-	PowerAmplifierDevice *amp = new PowerAmplifierDevice(address);
-	dev = bt_global::add_device_to_cache(amp);
+	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), amp, SLOT(status_changed(const StatusList&)));
 
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(volumeUp()));
@@ -45,7 +43,7 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	on_icon = onIcon;
 	status = false;
 
-	connectDxButton(new PowerAmplifier(config_node));
+	connectDxButton(new PowerAmplifier(dev, config_node));
 }
 
 void BannPowerAmplifier::toggleStatus()
@@ -70,7 +68,8 @@ void BannPowerAmplifier::status_changed(const StatusList &status_list)
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
 		{
-			SetIcons(1, it.value().toBool() ? off_icon : on_icon);
+			status = it.value().toBool();
+			SetIcons(1, status ? off_icon : on_icon);
 			Draw();
 		}
 		else if (it.key() == PowerAmplifierDevice::DIM_VOLUME)
@@ -95,52 +94,50 @@ void BannPowerAmplifier::volumeDown()
 }
 
 
-PowerAmplifier::PowerAmplifier(const QDomNode &config_node)
+PowerAmplifier::PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node)
 {
-	loadBanners(config_node);
+	loadBanners(dev, config_node);
 }
 
-void PowerAmplifier::loadBanners(const QDomNode &config_node)
+void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &config_node)
 {
 	QMap<int, QString> preset_list;
 	foreach (const QDomNode &preset_node, getChildren(config_node, "pre"))
 		preset_list[preset_node.nodeName().mid(3).toInt()] = preset_node.toElement().text();
 
-	appendBanner(new PowerAmplifierPreset(this, preset_list));
+	appendBanner(new PowerAmplifierPreset(dev, this, preset_list));
 
-	banner *b = new PowerAmplifierTreble(this);
+	banner *b = new PowerAmplifierTreble(dev, this);
 	b->setText(tr("Treble"));
 	appendBanner(b);
 
-	b = new PowerAmplifierBass(this);
+	b = new PowerAmplifierBass(dev, this);
 	b->setText(tr("Bass"));
 	appendBanner(b);
 
-	b = new PowerAmplifierBalance(this);
+	b = new PowerAmplifierBalance(dev, this);
 	b->setText(tr("Balance"));
 	appendBanner(b);
 
-	b = new PowerAmplifierLoud(this);
+	b = new PowerAmplifierLoud(dev, this);
 	b->setText(tr("Loud"));
 	appendBanner(b);
 }
 
-void PowerAmplifier::status_changed(const StatusList &status_list)
-{
-}
 
-
-PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent, const QMap<int, QString>& preset_list)
+PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list)
 	: bannOnOff(parent)
 {
+	dev = d;
 	SetIcons(IMG_PLUS, IMG_MINUS, QString(), IMG_PRESET);
-	curr_preset = 0;
 	num_preset = 20;
 	fillPresetDesc(preset_list);
-	setText(preset_desc[curr_preset]);
+	connect(this, SIGNAL(sxClick()), SLOT(next()));
+	connect(this, SIGNAL(dxClick()), SLOT(prev()));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+
+	setText(preset_desc[0]);
 	Draw();
-	connect(this, SIGNAL(sxClick()), SLOT(nextPreset()));
-	connect(this, SIGNAL(dxClick()), SLOT(prevPreset()));
 }
 
 void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
@@ -169,144 +166,213 @@ void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
 	}
 }
 
-void PowerAmplifierPreset::prevPreset()
+void PowerAmplifierPreset::inizializza(bool forza)
 {
-	if (!curr_preset)
-		curr_preset = num_preset - 1;
-	else
-		--curr_preset;
-	setText(preset_desc[curr_preset]);
-	Draw();
+	dev->requestPreset();
+	banner::inizializza(forza);
 }
 
-void PowerAmplifierPreset::nextPreset()
+void PowerAmplifierPreset::status_changed(const StatusList &status_list)
 {
-	if (curr_preset + 1 >= num_preset)
-		curr_preset = 0;
-	else
-		++curr_preset;
-	setText(preset_desc[curr_preset]);
-	Draw();
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_PRESET)
+		{
+			int preset = it.value().toInt();
+			if (preset > 0 && preset < num_preset)
+			{
+				setText(preset_desc[preset]);
+				Draw();
+			}
+			else
+				qWarning("Preset value (%d) is out of admitted range! [0 - %d]", preset, num_preset);
+		}
+	}
+}
+
+void PowerAmplifierPreset::prev()
+{
+	dev->prevPreset();
+}
+
+void PowerAmplifierPreset::next()
+{
+	dev->nextPreset();
 }
 
 
-PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent) : bannOnOff2scr(parent)
+PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff2scr(parent)
 {
+	dev = d;
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_TREBLE);
-	level = 0;
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
-	showLevel();
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	showLevel(0);
+}
+
+void PowerAmplifierTreble::inizializza(bool forza)
+{
+	dev->requestTreble();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierTreble::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+		if (it.key() == PowerAmplifierDevice::DIM_TREBLE)
+			showLevel(it.value().toInt());
 }
 
 void PowerAmplifierTreble::up()
 {
-	level += 10;
-	showLevel();
-	Draw();
+	dev->trebleUp();
 }
 
 void PowerAmplifierTreble::down()
 {
-	level -= 10;
-	showLevel();
-	Draw();
+	dev->trebleDown();
 }
 
-void PowerAmplifierTreble::showLevel()
+void PowerAmplifierTreble::showLevel(int level)
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
 	setSecondaryText(desc);
+	Draw();
 }
 
 
-PowerAmplifierBass::PowerAmplifierBass(QWidget *parent) : bannOnOff2scr(parent)
+PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff2scr(parent)
 {
+	dev = d;
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MINUS, IMG_PLUS, QString(), IMG_BASS);
-	level = 0;
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
-	showLevel();
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	showLevel(0);
+}
+
+void PowerAmplifierBass::inizializza(bool forza)
+{
+	dev->requestBass();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierBass::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+		if (it.key() == PowerAmplifierDevice::DIM_BASS)
+			showLevel(it.value().toInt());
 }
 
 void PowerAmplifierBass::up()
 {
-	level += 10;
-	showLevel();
-	Draw();
+	dev->bassUp();
 }
 
 void PowerAmplifierBass::down()
 {
-	level -= 10;
-	showLevel();
-	Draw();
+	dev->bassDown();
 }
 
-void PowerAmplifierBass::showLevel()
+void PowerAmplifierBass::showLevel(int level)
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
 	setSecondaryText(desc);
+	Draw();
 }
 
 
-PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent) : BannOnOffCombo(parent)
+PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent) : BannOnOffCombo(parent)
 {
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MORE, IMG_LESS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
-	balance = 0;
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
 	connect(this, SIGNAL(dxClick()), SLOT(sx()));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	showBalance(0);
+}
+
+void PowerAmplifierBalance::inizializza(bool forza)
+{
+	dev->requestBalance();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierBalance::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+		if (it.key() == PowerAmplifierDevice::DIM_BALANCE)
+			showBalance(it.value().toInt());
 }
 
 void PowerAmplifierBalance::sx()
 {
-	if (balance >= 0 && balance - 10 <= 0)
-		changeStatus(balance - 10 ? SX : CENTER);
-
-	balance -= 10;
-	showBalance();
-	Draw();
+	dev->balanceDown();
 }
 
 void PowerAmplifierBalance::dx()
 {
-	if (balance <= 0 && balance + 10 >= 0)
-		changeStatus(balance + 10 ? DX : CENTER);
-
-	balance += 10;
-	showBalance();
-	Draw();
+	dev->balanceUp();
 }
 
-void PowerAmplifierBalance::showBalance()
+void PowerAmplifierBalance::showBalance(int balance)
 {
+	if (balance == 0)
+		changeStatus(CENTER);
+	else if (balance < 0)
+		changeStatus(SX);
+	else
+		changeStatus(DX);
+
 	QString desc;
 	desc.sprintf("%d", abs(balance));
 	setSecondaryText(desc);
+	Draw();
 }
 
 
-PowerAmplifierLoud::PowerAmplifierLoud(QWidget *parent) : bannOnOff(parent)
+PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff(parent)
 {
+	dev = d;
 	SetIcons(ICON_ON, ICON_OFF, IMG_LOUD_ON, IMG_LOUD_OFF);
+	connect(this, SIGNAL(sxClick()), SLOT(on()));
+	connect(this, SIGNAL(dxClick()), SLOT(off()));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 	impostaAttivo(0);
-	connect(this, SIGNAL(sxClick()), SLOT(loudOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(loudOff()));
 }
 
-void PowerAmplifierLoud::loudOff()
+void PowerAmplifierLoud::inizializza(bool forza)
 {
-	impostaAttivo(0);
-	Draw();
+	dev->requestLoud();
+	banner::inizializza(forza);
 }
 
-void PowerAmplifierLoud::loudOn()
+void PowerAmplifierLoud::status_changed(const StatusList &status_list)
 {
-	impostaAttivo(1);
-	Draw();
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+		if (it.key() == PowerAmplifierDevice::DIM_LOUD)
+		{
+			impostaAttivo(it.value().toBool());
+			Draw();
+		}
+}
+
+void PowerAmplifierLoud::off()
+{
+	dev->loudOff();
+}
+
+void PowerAmplifierLoud::on()
+{
+	dev->loudOn();
 }
