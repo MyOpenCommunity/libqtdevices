@@ -7,8 +7,26 @@
 
 #include <QTimer>
 #include <QDebug>
+#include <QEvent>
+#include <QObject>
 
 #include <openwebnet.h> // class openwebnet
+
+// internal class
+class MousePressFilter : public QObject
+{
+public:
+	MousePressFilter(QObject *parent = 0) : QObject(parent) { }
+	virtual bool eventFilter(QObject *obj, QEvent *ev)
+	{
+		if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonRelease)
+			return true;
+		else
+			return QObject::eventFilter(obj, ev);
+	}
+};
+
+MousePressFilter pressFilter;
 
 
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
@@ -119,8 +137,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					aggiorna=1;
 					SetIcons(0, icon_sx);
 					SetIcons(1, icon_dx);
-					sxButton->setEnabled(1);
-					dxButton->setEnabled(1);
+					sxButton->removeEventFilter(&pressFilter);
+					dxButton->removeEventFilter(&pressFilter);
 				}
 				break;
 			case 1:
@@ -132,8 +150,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					aggiorna = 1;
 					SetIcons(0, icon_stop);
 					SetIcons(1, icon_dx);
-					dxButton->setDisabled(1);
-					sxButton->setEnabled(1);
+					dxButton->installEventFilter(&pressFilter);
+					sxButton->removeEventFilter(&pressFilter);
 				}
 				break;
 			case 2:
@@ -145,8 +163,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					aggiorna = 1;
 					SetIcons(0, icon_sx);
 					SetIcons(1, icon_stop);
-					sxButton->setDisabled(1);
-					dxButton->setEnabled(1);
+					sxButton->installEventFilter(&pressFilter);
+					dxButton->removeEventFilter(&pressFilter);
 				}
 				break;
 			default:
@@ -256,8 +274,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					aggiorna = 1;
 					SetIcons(0, icon_sx);
 					SetIcons(1, icon_dx);
-					sxButton->setEnabled(1);
-					dxButton->setEnabled(1);
+					sxButton->removeEventFilter(&pressFilter);
+					dxButton->removeEventFilter(&pressFilter);
 				}
 				break;
 			case 1:
@@ -269,8 +287,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					aggiorna = 1;
 					SetIcons(0, icon_stop);
 					SetIcons(1, icon_dx);
-					dxButton->setDisabled(1);
-					sxButton->setEnabled(1);
+					sxButton->removeEventFilter(&pressFilter);
+					dxButton->installEventFilter(&pressFilter);
 				}
 				break;
 			case 2:
@@ -282,8 +300,8 @@ void attuatAutomInt::status_changed(QList<device_status*> sl)
 					aggiorna = 1;
 					SetIcons(0, icon_sx);
 					SetIcons(1, icon_stop);
-					sxButton->setDisabled(1);
-					dxButton->setEnabled(1);
+					sxButton->installEventFilter(&pressFilter);
+					dxButton->removeEventFilter(&pressFilter);
 				}
 				break;
 			default:
