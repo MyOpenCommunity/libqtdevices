@@ -15,7 +15,7 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	setRange(1, 9);
 	setValue(1);
 	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("off"),
+	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("volume_up"), bt_global::skin->getImage("volume_down"), true);
 	setAddress(address);
 	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
@@ -64,6 +64,7 @@ void BannPowerAmplifier::status_changed(const StatusList &status_list)
 			// that we can represent into the banner (that accept values from 1 to 9)
 			// so we use the following formula.
 			setValue((volume + 1) / 4 + 1);
+			Draw();
 		}
 		++it;
 	}
