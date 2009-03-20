@@ -165,20 +165,14 @@ void PowerAmplifierPreset::status_changed(const StatusList &status_list)
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_PRESET)
 		{
-			int preset = -1; // invalid value
-			int val = it.value().toInt();
-			if (val >= 2 && val <= 11) // fixed presets
-				preset = val -2;
-			else if (val >= 16 && val <= 25) // custom presets
-				preset = val - 6;
-
-			if (preset != -1)
+			int preset = it.value().toInt();
+			if (preset > 0 && preset < num_preset)
 			{
 				setText(preset_desc[preset]);
 				Draw();
 			}
 			else
-				qWarning("Preset value (%d) is out of admitted range!", val);
+				qWarning("Preset value (%d) is out of admitted range! [0 - %d]", preset, num_preset);
 		}
 	}
 }
