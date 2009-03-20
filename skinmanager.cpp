@@ -67,8 +67,6 @@ bool SkinManager::hasContext()
 
 QString SkinManager::getImage(QString name)
 {
-	assert(!cid_lookup_list.isEmpty() && "List of cid empty");
-
 	foreach (int cid, cid_lookup_list)
 		if (images[cid].contains(name))
 			return IMG_PATH + images[cid][name];
