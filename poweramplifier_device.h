@@ -15,6 +15,15 @@
 
 #include "device.h"
 
+
+/**
+ * \class PowerAmplifierDevice
+ *
+ * This class represent a device for managing the power amplifier. It has methods
+ * to retrieve information about its settings (the request* methods) and methods to
+ * modify a setting. When a request of information is done (or when something change
+ * after a command), the response is sent through the signal status_changed.
+ */
 class PowerAmplifierDevice : public device
 {
 Q_OBJECT
