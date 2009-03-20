@@ -16,7 +16,7 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	setValue(1);
 	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
 	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("volume_up"), bt_global::skin->getImage("volume_down"), true);
+		bt_global::skin->getImage("volume_active"), bt_global::skin->getImage("volume_inactive"), true);
 	setAddress(address);
 	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
@@ -54,6 +54,7 @@ void BannPowerAmplifier::status_changed(const StatusList &status_list)
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
 		{
 			status = it.value().toBool();
+			impostaAttivo(status);
 			SetIcons(1, bt_global::skin->getImage(status ? "off" : "on"));
 			Draw();
 		}
