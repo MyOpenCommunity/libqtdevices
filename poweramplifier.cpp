@@ -292,6 +292,7 @@ void PowerAmplifierBass::showLevel(int level)
 
 PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent) : BannOnOffCombo(parent)
 {
+	dev = d;
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(IMG_MORE, IMG_LESS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
