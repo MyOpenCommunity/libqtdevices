@@ -27,6 +27,8 @@ BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
 BtTimeEdit::BtTimeEdit(QWidget *parent) : QWidget(parent), _time(0, 0)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 0);
 
 	BtButton *btn1, *btn2;
 	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
@@ -45,7 +47,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent) : QWidget(parent), _time(0, 0)
 	num->setNumDigits(5);
 	num->display(_time.toString());
 	num->setFrameStyle(QFrame::NoFrame);
-	main_layout->addWidget(num);
+	main_layout->addWidget(num, 1);
 
 	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
 	btn1 = getButton(btn_down_img, this, true);
@@ -105,6 +107,8 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 {
 	_date = _date.addDays(1);
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 0);
 	// Buttons to increase day, month, year
 	BtButton *btn_top_left, *btn_top_center, *btn_top_right;
 	// Buttons to decrease day, month, year
@@ -125,7 +129,7 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 	date_display->setSegmentStyle(QLCDNumber::Flat);
 	date_display->setNumDigits(8);
 	date_display->setFrameStyle(QFrame::NoFrame);
-	main_layout->addWidget(date_display);
+	main_layout->addWidget(date_display, 1);
 
 	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
 
