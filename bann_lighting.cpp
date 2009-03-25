@@ -218,8 +218,6 @@ dimmer100::dimmer100(QWidget *parent, QString where, QString IconaSx, QString Ic
 	setRange(5,100);
 	setStep(5);
 	setValue(0);
-	// TODO: non lo fa gia' dimmer? Perche' c'e' questa duplicazione??
-	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, breakIcon, false);
 	dev = bt_global::devices_cache.get_dimmer100(getAddress());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
