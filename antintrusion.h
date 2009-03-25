@@ -99,11 +99,6 @@ public slots:
 */
 	void deleteAlarm();
 /*!
-  \brief Invoked when the current alarm window must be closed and this window 
-must be displayed.
-*/
-	void closeAlarms();
-/*!
   \brief Invoked when alarm list must be shown
 */
 	void showAlarms();

@@ -144,8 +144,6 @@ void Antintrusion::Parz()
 		sendFrame(f);
 		((impAnti *)impianto->getLast())->ToSendParz(false);
 	}
-	impianto->show();
-	zone->show();
 	connect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
 	request_timer.start(5000);
 }
@@ -162,8 +160,6 @@ void Antintrusion:: ctrlAllarm()
 		impianto->getLast()->mostra(banner::BUT1);
 	else
 		impianto->getLast()->nascondi(banner::BUT1);
-	impianto->show();
-	zone->show();
 }
 
 void Antintrusion::draw()
@@ -197,7 +193,7 @@ void Antintrusion::inizializza()
 }
 
 void Antintrusion::gesFrame(char*frame)
-{	
+{
 	emit gestFrame(frame);
 	openwebnet msg_open;
 	char aggiorna;
@@ -253,11 +249,11 @@ void Antintrusion::gesFrame(char*frame)
 			descr += time;
 			descr.truncate(2 * MAX_PATH);
 
-			allarmi.append(new allarme(NULL, descr, NULL, ICON_DEL, t));
+			allarmi.append(new allarme(descr, NULL, ICON_DEL, t));
 			// The current alarm is the last alarm inserted
 			curr_alarm = allarmi.size() - 1;
 			allarme *curr = allarmi.at(curr_alarm);
-			connect(curr, SIGNAL(Back()), this, SLOT(closeAlarms()));
+			connect(curr, SIGNAL(Back()), this, SLOT(showPage()));
 			connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
 			connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
 			connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
@@ -269,7 +265,7 @@ void Antintrusion::gesFrame(char*frame)
 		qDebug("ARRIVATO ALLARME!!!!");
 		assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
 		allarme *curr = allarmi.at(curr_alarm);
-		curr->show();
+		curr->showPage();
 		ctrlAllarm();
 	}
 }
@@ -283,31 +279,26 @@ void Antintrusion::nextAlarm()
 {
 	qDebug("antiintrusione::nextAlarm()");
 	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
-	allarmi.at(curr_alarm)->hide();
-
 	if (++curr_alarm >= allarmi.size())
 		curr_alarm = 0;
 
-	allarmi.at(curr_alarm)->show();
+	allarmi.at(curr_alarm)->showPage();
 }
 
 void Antintrusion::prevAlarm()
 {
 	qDebug("antiintrusione::prevAlarm()");
 	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
-	allarmi.at(curr_alarm)->hide();
-
 	if (--curr_alarm < 0)
 		curr_alarm = allarmi.size() - 1;
 
-	allarmi.at(curr_alarm)->show();
+	allarmi.at(curr_alarm)->showPage();
 }
 
 void Antintrusion::deleteAlarm()
 {
 	qDebug("antiintrusione::deleteAlarm()");
 	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
-	allarmi.at(curr_alarm)->hide();
 	allarmi.takeAt(curr_alarm)->deleteLater();
 
 	if (allarmi.isEmpty())
@@ -319,17 +310,7 @@ void Antintrusion::deleteAlarm()
 	else if (curr_alarm >= allarmi.size())
 		curr_alarm = allarmi.size() - 1;
 
-	allarmi.at(curr_alarm)->show();
-}
-
-void Antintrusion::closeAlarms()
-{
-	qDebug("antiintrusione::closeAlarms()");
-	for (int i = 0; i < allarmi.size(); ++i)
-		allarmi.at(i)->hide();
-
-	impianto->show();
-	zone->show();
+	allarmi.at(curr_alarm)->showPage();
 }
 
 void Antintrusion::showAlarms()
@@ -339,9 +320,7 @@ void Antintrusion::showAlarms()
 		return;
 
 	curr_alarm = allarmi.size() - 1;
-	impianto->hide();
-	zone->hide();
-	allarmi.at(curr_alarm)->show();
+	allarmi.at(curr_alarm)->showPage();
 }
 
 void Antintrusion::doClearAlarms()
@@ -354,9 +333,6 @@ void Antintrusion::doClearAlarms()
 void Antintrusion::hideEvent(QHideEvent *event)
 {
 	qDebug("antiintrusione::hideEvent()");
-	for (int i = 0; i < allarmi.size(); ++i)
-		allarmi.at(i)->hide();
-
 	qDebug("Richiesta stato zone");
 	for (int i = 1; i <= 8; ++i)
 		sendFrame(QString("*#5*#%1##").arg(i));

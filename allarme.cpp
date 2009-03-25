@@ -14,21 +14,17 @@
 ** Generic alarm
 ****************************************************************/	
 
-allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, QString IconaDx, altype t): QFrame(parent)
+allarme::allarme(const QString &name, char *indirizzo, QString IconaDx, altype t)
 {
-    qDebug("allarme::allarme()");
-    qDebug() << "indirizzo =" << indirizzo << ", IconaDx =" << IconaDx << ", tipo = " << t;
-    type = t;
-    SetIcons(IconaDx);
-    setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-    descr->setText(name);
-    connect(bnav, SIGNAL(backClick()), this, SIGNAL(Back()));
-    connect(bnav, SIGNAL(upClick()), this, SIGNAL(Prev()));
-    connect(bnav, SIGNAL(downClick()), this, SIGNAL(Next()));
-    connect(bnav, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
-    // ??
-    show();
+	qDebug("allarme::allarme()");
+	qDebug() << "indirizzo =" << indirizzo << ", IconaDx =" << IconaDx << ", tipo = " << t;
+	type = t;
+	SetIcons(IconaDx);
+	descr->setText(name);
+	connect(bnav, SIGNAL(backClick()), this, SIGNAL(Back()));
+	connect(bnav, SIGNAL(upClick()), this, SIGNAL(Prev()));
+	connect(bnav, SIGNAL(downClick()), this, SIGNAL(Next()));
+	connect(bnav, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
 }
 
 void allarme::SetIcons(QString icon)
@@ -46,18 +42,22 @@ void allarme::SetIcons(QString icon)
 		break;
     }
 	p.load(icon_name);
-    Immagine = new QLabel(this);
-    Immagine->setPixmap(p);
-    Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
+	Immagine = new QLabel(this);
+	Immagine->setPixmap(p);
+	Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
 		ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
 
-    descr = new QLabel(this);
+	descr = new QLabel(this);
 	descr->setFont(bt_global::font->get(FontManager::TEXT));
-    descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-    descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-    bnav = new bannFrecce(this, 4, icon);
-    bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	bnav = new bannFrecce(this, 4, icon);
+	bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+
+	bnav->show();
+	Immagine->show();
+	descr->show();
 }
 
 void allarme::draw()
@@ -65,10 +65,3 @@ void allarme::draw()
     qDebug("allarme::draw()");
 }
 
-void allarme::showEvent(QShowEvent *event)
-{
-    qDebug("allarme::showEvent()");
-    bnav->show();
-    Immagine->show();
-    descr->show();
-}
