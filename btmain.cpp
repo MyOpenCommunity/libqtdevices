@@ -1,7 +1,7 @@
 #include "btmain.h"
 #include "main.h" // bt_global::config
 #include "homepage.h"
-#include "generic_functions.h" // rearmWDT, getUptime, getTimePress, setOrientation, getBacklight
+#include "generic_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "calibrate.h"
 #include "genpage.h"
@@ -28,6 +28,7 @@
 #include <QString>
 #include <QTimer>
 #include <QFile>
+#include <QTime>
 
 
 #define CFG_FILE MY_FILE_USER_CFG_DEFAULT
@@ -45,6 +46,10 @@ namespace
 
 BtMain::BtMain()
 {
+	bt_global::display._setBrightness(BRIGHTNESS_NORMAL);
+	bt_global::display.setState(DISPLAY_OPERATIVE);
+	boot_time = new QTime();
+	boot_time->start();
 	difSon = 0;
 	dm = 0;
 	screensaver = 0;
@@ -92,10 +97,7 @@ BtMain::BtMain()
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
 
-	unsigned long uptime = getUptime();
-	qDebug() << "uptime:" << uptime << "touch ago:" << getTimePress();
-
-	if (QFile::exists("/etc/pointercal") && (uptime > 200 || uptime - 1 <= getTimePress()))
+	if (QFile::exists("/etc/pointercal"))
 	{
 		version->showPage();
 		waitBeforeInit();
@@ -189,9 +191,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			if (!n.isNull())
 				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
-
 		bt_global::display._setBrightness(level);
-		bt_global::display.setState(DISPLAY_OPERATIVE);
 
 		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
 		if (!display_node.isNull())
@@ -255,9 +255,7 @@ void BtMain::init()
 	foreach (Page *p, page_list)
 		p->inizializza();
 
-	unsigned long uptime = getUptime();
-
-	if (uptime < 200 && (uptime - 1 > getTimePress()) && !alreadyCalibrated)
+	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
@@ -432,7 +430,6 @@ void BtMain::gesScrSav()
 						// don't use showPage() because transition doesn't make sense here
 						main_window.setCurrentWidget(target);
 					}
-					qDebug() << "START SCREENSAVER";
 					screensaver->start(target);
 					bt_global::display.setState(DISPLAY_SCREENSAVER);
 				}
@@ -455,7 +452,6 @@ void BtMain::gesScrSav()
 	else if (tiempo <= 5)
 	{
 		firstTime = false;
-		bt_global::display.setState(DISPLAY_OPERATIVE);
 		tempo1->start(2000);
 		bloccato = false;
 	}
