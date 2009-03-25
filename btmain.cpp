@@ -395,7 +395,6 @@ void BtMain::gesScrSav()
 		{
 			tempo1->start(2000);
 			pd_shown = false;
-			freeze(false);
 		}
 		if  (tiempo >= 60 && !svegliaIsOn && !calibrating)
 		{
@@ -459,6 +458,10 @@ void BtMain::gesScrSav()
 
 bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 {
+	// Discard the mouse press and mouse double click
+	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+		return true;
+
 	if (ev->type() != QEvent::MouseButtonRelease)
 		return false;
 
