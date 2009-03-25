@@ -330,14 +330,6 @@ void Antintrusion::doClearAlarms()
 		delete allarmi.takeFirst();
 }
 
-void Antintrusion::hideEvent(QHideEvent *event)
-{
-	qDebug("antiintrusione::hideEvent()");
-	qDebug("Richiesta stato zone");
-	for (int i = 1; i <= 8; ++i)
-		sendFrame(QString("*#5*#%1##").arg(i));
-}
-
 void Antintrusion::request()
 {
 	request_timer.stop();

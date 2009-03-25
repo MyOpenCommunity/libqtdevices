@@ -108,9 +108,6 @@ public slots:
 	void doClearAlarms();
 	void request();
 
-protected:
-	virtual void hideEvent(QHideEvent *event);
-
 private:
 /*!
   \param <numRighe> row number of the object
