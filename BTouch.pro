@@ -77,6 +77,9 @@ HEADERS += actuators.h \
            energy_device.h \
            energy_graph.h \
            energy_view.h \
+           feedmanager.h \
+           feeditemwidget.h \
+           feedparser.h \
            fontmanager.h \
            frame_interpreter.h \
            generic_functions.h \
@@ -172,6 +175,9 @@ SOURCES += actuators.cpp \
            energy_device.cpp \
            energy_graph.cpp \
            energy_view.cpp \
+           feedmanager.cpp \
+           feeditemwidget.cpp \
+           feedparser.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            generic_functions.cpp \
