@@ -49,6 +49,9 @@ public:
 
 	FeedManager();
 
+public slots:
+	virtual void showPage();
+
 private:
 	FeedParser parser;
 	FeedData data;
@@ -62,7 +65,6 @@ private:
 
 	/// Load the feed list from the configuration file.
 	void loadFeedList();
-	void showEvent(QShowEvent *e);
 	void setupPage();
 
 private slots:
@@ -72,9 +74,6 @@ private slots:
 	void backClick();
 	void downClick();
 	void upClick();
-
-signals:
-	void Closed();
 };
 
 #endif

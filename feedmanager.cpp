@@ -74,9 +74,10 @@ void FeedManager::loadFeedList()
 	}
 }
 
-void FeedManager::showEvent(QShowEvent *e)
+void FeedManager::showPage()
 {
 	setupPage();
+	Page::showPage();
 }
 
 void FeedManager::setupPage()
@@ -127,6 +128,7 @@ void FeedManager::itemIsClicked(int item)
 		page_indexes[data.feed_title] = list_browser->getCurrentPage();
 		feed_widget->setFeedInfo(data.entry_list[item]);
 		feed_widget->show();
+		list_browser->hide();
 		status = READING;
 		break;
 
@@ -158,6 +160,7 @@ void FeedManager::backClick()
 	case READING:
 		status = BROWSING;
 		feed_widget->hide();
+		list_browser->show();
 		break;
 	default:
 		assert(!"Feed status not handled!");

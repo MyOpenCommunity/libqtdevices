@@ -28,6 +28,9 @@ public:
 	void scrollUp();
 	void scrollDown();
 
+protected:
+	void hideEvent(QHideEvent *e);
+
 private:
 	QVBoxLayout *main_layout;
 	QTextEdit *text_area;
