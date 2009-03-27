@@ -33,8 +33,9 @@ FeedManager::FeedManager()
 	connect(feed_widget, SIGNAL(Closed()), feed_widget, SLOT(hide()));
 	connect(&parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
-	connect(bannNavigazione, SIGNAL(downClick()), SLOT(downClick()));
-	connect(bannNavigazione, SIGNAL(upClick()), SLOT(upClick()));
+	// bannNavigazione up/down signals are inverted...
+	connect(bannNavigazione, SIGNAL(upClick()), SLOT(downClick()));
+	connect(bannNavigazione, SIGNAL(downClick()), SLOT(upClick()));
 	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
 }
 
@@ -180,10 +181,10 @@ void FeedManager::upClick()
 	{
 	case SELECTION:
 	case BROWSING:
-		list_browser->nextItem();
+		list_browser->prevItem();
 		break;
 	case READING:
-		feed_widget->scrollDown();
+		feed_widget->scrollUp();
 		break;
 	default:
 		assert(!"Feed status not handled!");
@@ -197,10 +198,10 @@ void FeedManager::downClick()
 	{
 	case SELECTION:
 	case BROWSING:
-		list_browser->prevItem();
+		list_browser->nextItem();
 		break;
 	case READING:
-		feed_widget->scrollUp();
+		feed_widget->scrollDown();
 		break;
 	default:
 		assert(!"Feed status not handled!");
