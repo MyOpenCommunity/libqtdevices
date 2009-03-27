@@ -25,6 +25,7 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 	text_area->setReadOnly(true);
 	text_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	text_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	text_area->setFrameShape(QFrame::NoFrame);
 	main_layout->addWidget(text_area);
 
 }
