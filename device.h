@@ -1,4 +1,4 @@
-//! Header file for device classes
+//!  Header file for device classes
 
 #ifndef __DEVICE_H__
 #define __DEVICE_H__
