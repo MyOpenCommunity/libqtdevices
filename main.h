@@ -4,7 +4,7 @@
  **
  ** main.h
  **
- **definizioni di carattere generale
+ ** definizioni di carattere generale
  **
  ****************************************************************/
 #ifndef MAIN_H
