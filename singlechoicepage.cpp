@@ -32,16 +32,12 @@ void SingleChoicePage::addBanner(const QString &text, int id)
 }
 
 void SingleChoicePage::okPressed()
-{;
-	bannerSelected(buttons.checkedId());
-	emit Closed();
-}
-
-void SingleChoicePage::showEvent(QShowEvent *event)
 {
-	sottoMenu::showEvent(event);
+	bannerSelected(buttons.checkedId()); // update the current id and do custom actions
 	foreach (QAbstractButton *btn, buttons.buttons())
 		if (buttons.id(btn) == getCurrentId())
 			btn->setChecked(true);
+
+	emit Closed();
 }
 

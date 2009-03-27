@@ -19,7 +19,6 @@ private slots:
 	void okPressed();
 
 protected:
-	virtual void showEvent(QShowEvent *event);
 	// The current id used to choose which button is toggled
 	virtual int getCurrentId() = 0;
 	// A method called when a button is pressed
