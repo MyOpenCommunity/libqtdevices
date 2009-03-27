@@ -108,8 +108,10 @@ void FeedManager::setupPage()
 		break;
 	}
 
+	initTransition();
 	list_browser->setList(item_list, page);
 	list_browser->showList();
+	startTransition();
 }
 
 void FeedManager::itemIsClicked(int item)
@@ -127,8 +129,10 @@ void FeedManager::itemIsClicked(int item)
 		assert(item >= 0 && item < (int)data.entry_list.size() && "Item index out of range!");
 		page_indexes[data.feed_title] = list_browser->getCurrentPage();
 		feed_widget->setFeedInfo(data.entry_list[item]);
+		initTransition();
 		feed_widget->show();
 		list_browser->hide();
+		startTransition();
 		status = READING;
 		break;
 
@@ -159,8 +163,10 @@ void FeedManager::backClick()
 		break;
 	case READING:
 		status = BROWSING;
+		initTransition();
 		feed_widget->hide();
 		list_browser->show();
+		startTransition();
 		break;
 	default:
 		assert(!"Feed status not handled!");
