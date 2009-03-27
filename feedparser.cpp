@@ -22,18 +22,43 @@
 static void parseRSS20Item(QDomNode item, FeedData *feed_data);
 static void parseRSS20Channel(QDomNode channel, FeedData *feed_data);
 static void parseATOM10Entry(QDomNode entry, FeedData *data);
-static QDateTime parseDate(QString text_date);
 
 
 FeedParser::FeedParser()
 {
 	busy = false;
 	connect(&connection, SIGNAL(done(bool)), SLOT(downloadFinished(bool)));
+	connect(&connection, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)), SLOT(responseHeader(const QHttpResponseHeader &)));
+}
+
+void FeedParser::responseHeader(const QHttpResponseHeader &h)
+{
+	qDebug() << "response header code: " << h.statusCode();
+	switch (h.statusCode())
+	{
+	// TODO: implement max number of redirections, as stated in http specs
+	case 301:  // permanent move, update conf.xml
+		// TODO: update conf.xml
+		//fall below
+	case 302: // temporary move, don't update conf.xml
+	case 307: // temporary redirect
+		appendRequest(h.value("location"));
+		break;
+	default:
+		break;
+	}
 }
 
 FeedData FeedParser::getFeedData()
 {
 	return feed_info;
+}
+
+void FeedParser::appendRequest(const QString &url)
+{
+	qDebug() << "fetching url: " << url << ", from host: " << QUrl(url).host();
+	connection.setHost(QUrl(url).host());
+	connection.get(url);
 }
 
 void FeedParser::parse(QString url)
@@ -43,20 +68,23 @@ void FeedParser::parse(QString url)
 
 	busy = true;
 	feed_info = FeedData();
-	connection.setHost(QUrl(url).host());
-	connection.get(url);
+	appendRequest(url);
 }
 
 void FeedParser::downloadFinished(bool error)
 {
-	busy = false;
-	if (error)
-		qWarning("Connection error on download feed!");
-	else
+	// check if we were redirected
+	if (!connection.hasPendingRequests())
 	{
-		QByteArray xml_data = connection.readAll();
-		assert(xml_data.size() != 0);
-		extractFeedData(xml_data);
+		busy = false;
+		if (error)
+			qWarning("Connection error on download feed!");
+		else
+		{
+			QByteArray xml_data = connection.readAll();
+			assert(xml_data.size() != 0);
+			extractFeedData(xml_data);
+		}
 	}
 }
 
@@ -225,17 +253,3 @@ static void parseATOM10Entry(QDomNode entry, FeedData *data)
 	data->entry_list.append(feed_entry);
 }
 
-QDateTime parseDate(QString text_date)
-{
-	// try Qt default format
-	QDateTime date = QDateTime::fromString(text_date);
-	if (!date.isValid())
-	{
-		// try ISO format
-		date = QDateTime::fromString(text_date, Qt::ISODate);
-		if (!date.isValid())
-			qWarning("Date is not valid");
-	}
-	// it may be invalid
-	return date;
-}

@@ -74,6 +74,11 @@ signals:
 	void feedReady();
 private slots:
 	void downloadFinished(bool error);
+
+	/**
+	 * Analyse the response header. It's currently used to check for redirections.
+	 */
+	void responseHeader(const QHttpResponseHeader &h);
 private:
 	/**
 	 * Parses the downloaded feed and fills the FeedData structure
@@ -101,6 +106,12 @@ private:
 	 * \param data The struct that holds the feed's fields
 	 */
 	void parseAtom10(const QByteArray &xml_data);
+
+	/**
+	 * Enqueues a request to the connection, for example a redirect request.
+	 * \param url The url to fetch
+	 */
+	void appendRequest(const QString &url);
 
 	FeedParser(const FeedParser &);
 	FeedParser &operator=(FeedParser &);
