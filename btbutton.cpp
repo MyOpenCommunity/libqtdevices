@@ -55,9 +55,7 @@ void BtButton::setPressedPixmap(const QPixmap &p)
 
 void BtButton::setPixmap(const QPixmap &p)
 {
-	// Pixmaps are saved into a cache, so if two pixmap are the same also the addresses
-	// are equal.
-	bool need_update = (&pixmap != &p);
+	bool need_update = (pixmap.toImage() != p.toImage());
 	pixmap = p;
 	// Icon is set only the first time; in other cases the pixmap (pressed
 	// or normal) is set when there is a status change.
