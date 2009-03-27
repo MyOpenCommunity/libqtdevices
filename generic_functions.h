@@ -110,12 +110,9 @@ void beep(int);
 bool getBeep();
 
  /*!
-  \brief Retrieves the time elapsed from last pressure of the device.
+  \brief Retrieves the time elapsed (in seconds) from last pressure of the device.
 */
 unsigned long getTimePress();
-
-// Retrieves the uptime of the system
-unsigned long getUptime();
 
  /*!
   \brief WatchDog rearm.

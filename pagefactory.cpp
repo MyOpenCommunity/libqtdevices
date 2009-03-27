@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "loads.h"
 #include "thermalmenu.h"
+#include "feedmanager.h"
 #include "supervisionmenu.h"
 #include "specialpage.h"
 #include "energy_data.h"
@@ -141,6 +142,12 @@ Page *getPage(int id)
 	case ENERGY_DATA:
 	{
 		EnergyData *p = new EnergyData(page_node);
+		page = p;
+		break;
+	}
+	case FEED_READER:
+	{
+		FeedManager *p = new FeedManager;
 		page = p;
 		break;
 	}

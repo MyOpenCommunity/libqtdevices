@@ -176,7 +176,8 @@ enum pagSecLiv
 	SUPERVISIONE=14,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=15,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
-	ENERGY_DATA=17                                /*!< Energy data system */
+	ENERGY_DATA=17,                               /*!< Energy data system */
+	FEED_READER=99,                               /*!< Feed reader page */
 };
 
 

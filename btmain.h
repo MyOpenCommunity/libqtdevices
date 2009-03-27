@@ -30,6 +30,7 @@ class Page;
 class QPixmap;
 class QString;
 class QTimer;
+class QTime;
 
 /*!
   \class BtMain
@@ -83,7 +84,7 @@ public:
 
 private:
 	QHash<int, Page*> page_list;
-
+	QTime *boot_time;
 	homePage *Home;
 	Page *pagDefault;
 	/// A pointer to the previous visualized page, to be used when resuming from screensaver

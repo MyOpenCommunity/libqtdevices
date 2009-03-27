@@ -328,9 +328,8 @@ void attuatAutomInt::analizzaUp()
 
 void attuatAutomInt::analizzaDown()
 {
-	// TODO: verificare... che senso ha quel doppio controllo su uprunning??
 	if (!uprunning)
-		dev->sendFrame(createMsgOpen("2", uprunning ? "0" : "2", getAddress()));
+		dev->sendFrame(createMsgOpen("2", dorunning ? "0" : "2", getAddress()));
 }
 
 void attuatAutomInt::inizializza(bool forza)

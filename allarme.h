@@ -1,7 +1,7 @@
 #ifndef _ALLARME_H_
 #define _ALLARME_H_
 
-#include <QFrame>
+#include "page.h"
 
 class banner;
 class QLabel;
@@ -12,7 +12,7 @@ class QLabel;
   \author Ciminaghi
   \date April 2006
 */
-class allarme : public QFrame
+class allarme : public Page
 {
 Q_OBJECT
 public:
@@ -24,14 +24,12 @@ public:
 		PANIC,
 	} altype;
 
-	allarme(QWidget *parent, const QString & name, char *indirizzo, QString IconaDx, altype t);
+	allarme(const QString &name, char *indirizzo, QString IconaDx, altype t);
 
 public slots:
 	/*! Draw widget */
 	void draw();
 
-protected:
-	virtual void showEvent(QShowEvent *event);
 private:
 	static const int ICON_DIM = 80;
 	static const int NAV_DIM = 60;

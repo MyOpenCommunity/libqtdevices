@@ -775,6 +775,8 @@ FSBannDate::FSBannDate(QWidget *parent) : BannFullScreen(parent), main_layout(th
 
 	date_edit = new BtDateEdit(this);
 	main_layout.addWidget(date_edit);
+	main_layout.setSpacing(0);
+	main_layout.setContentsMargins(0, 0, 0, 0);
 }
 
 QDate FSBannDate::date()
@@ -791,6 +793,8 @@ FSBannTime::FSBannTime(QWidget *parent) : BannFullScreen(parent), main_layout(th
 
 	time_edit = new BtTimeEdit(this);
 	main_layout.addWidget(time_edit);
+	main_layout.setSpacing(0);
+	main_layout.setContentsMargins(0, 0, 0, 0);
 }
 
 BtTime FSBannTime::time()

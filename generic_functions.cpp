@@ -12,7 +12,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <assert.h>
-#include <sys/sysinfo.h> // sysinfo.uptime
 
 
 QString createMsgOpen(QString who, QString what, QString where)
@@ -355,13 +354,6 @@ unsigned long getTimePress()
 		t = atol(time);
 	}
 	return t;
-}
-
-unsigned long getUptime()
-{
-	struct sysinfo info;
-	sysinfo(&info);
-	return info.uptime;
 }
 
 void rearmWDT()
