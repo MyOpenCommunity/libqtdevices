@@ -70,8 +70,7 @@ public:
 		ATOM10,
 		NONE,
 	};
-signals:
-	void feedReady();
+
 private slots:
 	void downloadFinished(bool error);
 
@@ -79,6 +78,7 @@ private slots:
 	 * Analyse the response header. It's currently used to check for redirections.
 	 */
 	void responseHeader(const QHttpResponseHeader &h);
+
 private:
 	/**
 	 * Parses the downloaded feed and fills the FeedData structure
@@ -122,6 +122,9 @@ private:
 	FeedData feed_info;
 	/// A flag that indicate when the parser is already performing a request
 	bool busy;
+
+signals:
+	void feedReady();
 };
 
 #endif // FEEDPARSER_H
