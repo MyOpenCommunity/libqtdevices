@@ -10,6 +10,7 @@ contains(PLATFORM, arm) {
 	LIBS+= -L../common_files -lcommon
 	OBJECTS_DIR = obj/arm
 	MOC_DIR = moc/arm
+        DEFINES += BT_EMBEDDED
 }
 
 contains(PLATFORM, x86) {
@@ -23,7 +24,7 @@ contains(PLATFORM, x86) {
 LIBS+= -lssl
 CONFIG += qt debug warn_on
 CONFIG -= release
-DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB
+DEFINES += QT_QWS_EBX BTWEB
 release:DEFINES += NDEBUG
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
 QT += network xml

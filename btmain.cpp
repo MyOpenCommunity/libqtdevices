@@ -96,6 +96,7 @@ BtMain::BtMain()
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
 
+#if BT_EMBEDDED
 	if (QFile::exists("/etc/pointercal"))
 	{
 		version->showPage();
@@ -109,6 +110,10 @@ BtMain::BtMain()
 		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
 		alreadyCalibrated = true;
 	}
+#else
+	version->showPage();
+	waitBeforeInit();
+#endif
 }
 
 BtMain::~BtMain()
@@ -254,6 +259,7 @@ void BtMain::init()
 	foreach (Page *p, page_list)
 		p->inizializza();
 
+#if BT_EMBEDDED
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
 		calib = new Calibrate(NULL, 1);
@@ -261,6 +267,7 @@ void BtMain::init()
 		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showPage()));
 		alreadyCalibrated = true;
 	}
+#endif
 }
 
 void BtMain::myMain()
