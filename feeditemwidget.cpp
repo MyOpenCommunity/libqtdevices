@@ -17,6 +17,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <QRegExp>
 
 FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 {
@@ -27,14 +28,21 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 	text_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	text_area->setFrameShape(QFrame::NoFrame);
 	main_layout->addWidget(text_area);
+}
 
+void FeedItemWidget::removeImages(QString &html)
+{
+	QRegExp img_remove("<img.*>", Qt::CaseInsensitive);
+	html.remove(img_remove);
 }
 
 void FeedItemWidget::setFeedInfo(const FeedItemInfo &feed_item)
 {
 	text_area->insertHtml("<h2>" + feed_item.title + "</h2><br>");
 	text_area->insertHtml("<h2>" + feed_item.last_updated + "</h2><br>");
-	text_area->insertHtml(feed_item.description);
+	QString descr = feed_item.description;
+	removeImages(descr);
+	text_area->insertHtml(descr);
 	text_area->moveCursor(QTextCursor::Start);
 }
 
