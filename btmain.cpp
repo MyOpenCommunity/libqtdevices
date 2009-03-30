@@ -21,7 +21,7 @@
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
-#include <QWSServer>
+#include <QApplication>
 #include <QObject>
 #include <QBitmap>
 #include <QPixmap>
@@ -55,7 +55,6 @@ BtMain::BtMain()
 	screensaver = 0;
 	loadGlobalConfig();
 	qDebug("parte BtMain");
-	QWSServer::setCursorVisible(false);
 
 	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);

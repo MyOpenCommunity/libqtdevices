@@ -16,6 +16,7 @@
 
 #include <QApplication>
 #include <QTranslator>
+#include <QWSServer>
 #include <QVector>
 #include <QDebug>
 #include <QHash>
@@ -150,6 +151,7 @@ int main(int argc, char **argv)
 {
 	GeneralConfig general_config;
 	QApplication a(argc, argv);
+	QWSServer::setCursorVisible(false);
 
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
 	if (!qdom_appconfig.setContent(&file))
