@@ -18,6 +18,7 @@
 #include <QVBoxLayout>
 #include <QScrollBar>
 #include <QRegExp>
+#include <QDebug>
 
 FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 {
@@ -32,8 +33,21 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 
 void FeedItemWidget::removeImages(QString &html)
 {
-	QRegExp img_remove("<img.*>", Qt::CaseInsensitive);
-	html.remove(img_remove);
+	QRegExp image_alternate("<img[^>]*alt=\"(\\w*)\"[^>]*/>", Qt::CaseInsensitive);
+	html.contains(image_alternate);
+	if (!image_alternate.cap(1).isEmpty())
+	{
+		qDebug() << "image alternate present";
+		// replace img tag with alternate text
+		html.replace(image_alternate, "[" + image_alternate.cap(1) + "]");
+	}
+	else
+	{
+		qDebug() << "image alternate not present";
+		// remove image
+		QRegExp img_remove("<img[^>]+/>", Qt::CaseInsensitive);
+		html.remove(img_remove);
+	}
 }
 
 void FeedItemWidget::setFeedInfo(const FeedItemInfo &feed_item)
