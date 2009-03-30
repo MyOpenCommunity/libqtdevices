@@ -17,6 +17,8 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <QRegExp>
+#include <QDebug>
 
 FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 {
@@ -25,15 +27,36 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 	text_area->setReadOnly(true);
 	text_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	text_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	text_area->setFrameShape(QFrame::NoFrame);
 	main_layout->addWidget(text_area);
+}
 
+void FeedItemWidget::removeImages(QString &html)
+{
+	QRegExp image_alternate("<img[^>]*alt=\"(\\w*)\"[^>]*/>", Qt::CaseInsensitive);
+	html.contains(image_alternate);
+	if (!image_alternate.cap(1).isEmpty())
+	{
+		qDebug() << "image alternate present";
+		// replace img tag with alternate text
+		html.replace(image_alternate, "[" + image_alternate.cap(1) + "]");
+	}
+	else
+	{
+		qDebug() << "image alternate not present";
+		// remove image
+		QRegExp img_remove("<img[^>]+/>", Qt::CaseInsensitive);
+		html.remove(img_remove);
+	}
 }
 
 void FeedItemWidget::setFeedInfo(const FeedItemInfo &feed_item)
 {
 	text_area->insertHtml("<h2>" + feed_item.title + "</h2><br>");
 	text_area->insertHtml("<h2>" + feed_item.last_updated + "</h2><br>");
-	text_area->insertHtml(feed_item.description);
+	QString descr = feed_item.description;
+	removeImages(descr);
+	text_area->insertHtml(descr);
 	text_area->moveCursor(QTextCursor::Start);
 }
 

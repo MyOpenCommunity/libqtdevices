@@ -521,6 +521,7 @@ void BtMain::setPwd(bool b, QString p)
 void BtMain::testPwd()
 {
 	QString p = tasti->getText();
+	qDebug() << "testing password, input text is: " << p;
 	if (!p.isEmpty())
 	{
 		if (p != pwd)
@@ -530,8 +531,9 @@ void BtMain::testPwd()
 		}
 		else
 		{
+			qDebug() << "pwd ok!";
+			Home->showPage();
 			tasti->disconnect();
-			tasti->hide();
 			tasti->deleteLater();
 			tasti = NULL;
 		}

@@ -82,7 +82,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 			connect(b, SIGNAL(pageClosed()), SLOT(showSoundDiff()));
 			if (multi_channel)
 			{
-				connect(b, SIGNAL(csxClick()), this, SLOT(goDown()));
+				connect(b, SIGNAL(csxClick()), this, SLOT(goUp()));
 				connect(this, SIGNAL(ambChanged(const QString &, bool, QString)),
 					b, SLOT(ambChanged(const QString &, bool, QString)));
 				connect(b, SIGNAL(active(int, int)), this, SIGNAL(actSrcChanged(int, int)));

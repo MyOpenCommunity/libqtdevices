@@ -3253,8 +3253,3 @@ void frame_interpreter_mci::handle_frame(openwebnet_ext m, device_status_mci *ds
 		qDebug("frame_interpreter_mci::handle_frame - IsWriteFrame");
 	}
 }
-
-
-
-
-
