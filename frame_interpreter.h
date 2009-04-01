@@ -18,7 +18,7 @@
 class frame_interpreter;
 
 //! Openwebnet where
-class openwebnet_where : public QString
+class openwebnet_where : private QString
 {
 private:
 	bool estesa;
