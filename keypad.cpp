@@ -187,13 +187,11 @@ void KeypadWithState::paintEvent(QPaintEvent *event)
 {
 	for (int i = 0; i < 8; i++)
 	{
+		QString style;
+		// TODO: do it with the global stylesheet or something like that
 		if (st[i])
-		{
-			// TODO: e' necessario trovare un modo per invertire colore di testo e sfondo
-			// con gli stylesheet, che forse e' parsare la stringa ottenuta con stylesheet()!!
-			//QColor fc = stati[i]->paletteForegroundColor();
-			//stati[i]->setPaletteForegroundColor(stati[i]->paletteBackgroundColor());
-			//stati[i]->setPaletteBackgroundColor(fc);
-		}
+			style = "BtButton { background-color:white; color:black; }";
+
+		stati[i]->setStyleSheet(style);
 	}
 }
