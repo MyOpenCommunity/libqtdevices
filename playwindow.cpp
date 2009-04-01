@@ -19,7 +19,7 @@
 
 #include <QLayout>
 
-#include <unistd.h>
+#include <unistd.h> // usleep
 
 /*
  * Interface icon paths.
@@ -30,11 +30,6 @@ static const char *IMG_PAUSE = IMG_PATH "btnpause.png";
 static const char *IMG_NEXT = IMG_PATH "btnforward.png";
 static const char *IMG_PREV = IMG_PATH "btnbackward.png";
 static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
-
-/*
- * Path in conf.xml where the configurable label texts are found.
- */
-#define CFG_LABELS_MEDIAPLAYER "configuratore/setup/labels/mediaplayer/"
 
 
 /// ***********************************************************************************************************************
