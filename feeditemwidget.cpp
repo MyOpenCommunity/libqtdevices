@@ -34,19 +34,25 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 void FeedItemWidget::removeImages(QString &html)
 {
 	QRegExp image_alternate("<img[^>]*alt=\"(\\w*)\"[^>]*/>", Qt::CaseInsensitive);
-	html.contains(image_alternate);
-	if (!image_alternate.cap(1).isEmpty())
+	// capture only the smallest subset
+	image_alternate.setMinimal(true);
+	int index = html.indexOf(image_alternate);
+	while (index >= 0)
 	{
-		qDebug() << "image alternate present";
-		// replace img tag with alternate text
-		html.replace(image_alternate, "[" + image_alternate.cap(1) + "]");
-	}
-	else
-	{
-		qDebug() << "image alternate not present";
-		// remove image
-		QRegExp img_remove("<img[^>]+/>", Qt::CaseInsensitive);
-		html.remove(img_remove);
+		QString alt;
+		if (!image_alternate.cap(1).isEmpty())
+		{
+			qDebug() << "image alternate present";
+			// replace img tag with alternate text
+			alt = "[" + image_alternate.cap(1) + "]";
+		}
+		else
+		{
+			qDebug() << "image alternate not present";
+			// remove image
+		}
+		html.replace(index, image_alternate.matchedLength(), alt);
+		index = html.indexOf(image_alternate);
 	}
 }
 
