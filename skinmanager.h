@@ -30,8 +30,13 @@ class SkinManager
 public:
 	SkinManager(QString filename);
 	QString getStyle();
+
+	// Add/Remove a skin context. Most of the time, you have no need to use these
+	// directly, because you can use the wrapper SkinContext, that automatically
+	// add a context in the constructor and remove it in the destructor.
 	void addToContext(int cid);
 	void removeFromContext();
+
 	// Check if an explicit context is set.
 	bool hasContext();
 
@@ -45,6 +50,20 @@ private:
 	QHash<int, QHash<QString, QString> > images;
 };
 
+
+/**
+ * \class SkinContext
+ *
+ * This class is a simply wrapper around the SkinManager::addToContext and
+ * SkinManager::removeFromContext, useful to avoid the explicit remove call from
+ * the context.
+ */
+class SkinContext
+{
+public:
+	SkinContext(int cid);
+	~SkinContext();
+};
 
 namespace bt_global { extern SkinManager *skin; }
 

@@ -1,7 +1,7 @@
 #include "poweramplifier.h"
 #include "xml_functions.h" // getChildWithId, getChildren
 #include "devices_cache.h" // bt_global::devices_cache
-#include "skinmanager.h" // bt_global::skin
+#include "skinmanager.h" // SkinContext, bt_global::skin
 
 #include <QVariant> // setProperty
 #include <QDomNode>
@@ -14,7 +14,7 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 {
 	setRange(1, 9);
 	setValue(1);
-	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("volume_active"), bt_global::skin->getImage("volume_inactive"), true);
 	setAddress(address);
@@ -28,7 +28,6 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	status = false;
 
 	connectDxButton(new PowerAmplifier(dev, config_node));
-	bt_global::skin->removeFromContext();
 }
 
 void BannPowerAmplifier::toggleStatus()

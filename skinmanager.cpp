@@ -78,5 +78,18 @@ QString SkinManager::getImage(QString name)
 	return QString();
 }
 
+
+SkinContext::SkinContext(int cid)
+{
+	assert(bt_global::skin && "SkinManager not yet built!");
+	bt_global::skin->addToContext(cid);
+}
+
+SkinContext::~SkinContext()
+{
+	bt_global::skin->removeFromContext();
+}
+
+
 // The global definition of skin manager pointer
 SkinManager *bt_global::skin = 0;

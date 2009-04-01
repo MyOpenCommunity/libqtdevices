@@ -4,7 +4,7 @@
 #include "bann2_buttons.h" // bann2But, bannOnOff
 #include "bann1_button.h" // bannPuls
 #include "energy_view.h" // EnergyView
-#include "skinmanager.h" // bt_global::skin
+#include "skinmanager.h" // bt_global::skin, SkinContext
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -20,10 +20,10 @@ EnergyData::EnergyData(const QDomNode &config_node)
 
 void EnergyData::loadTypes(const QDomNode &config_node)
 {
-	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode& type, getChildren(config_node, "energy_type"))
 	{
-		bt_global::skin->addToContext(getTextChild(type, "cid").toInt());
+		SkinContext cont(getTextChild(type, "cid").toInt());
 		bannOnOff *b = new bannOnOff(this);
 		b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
 					QString(), bt_global::skin->getImage("energy_type"));
@@ -33,9 +33,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
-		bt_global::skin->removeFromContext();
 	}
-	bt_global::skin->removeFromContext();
 }
 
 

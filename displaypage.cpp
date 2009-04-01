@@ -5,10 +5,9 @@
 #include "brightnesspage.h"
 #include "xml_functions.h" // getElement
 #include "screensaverpage.h"
-#include "skinmanager.h" // bt_global::skin
+#include "skinmanager.h" // SkinContext, bt_global::skin
 
 #include <QDebug>
-
 
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
@@ -20,7 +19,7 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 {
 	banner *b;
 
-	bt_global::skin->addToContext(getTextChild(config_node, "cid").toInt());
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	QString img_items = bt_global::skin->getImage("display_items");
 	QString img_clean = bt_global::skin->getImage("cleanscreen");
 
@@ -49,6 +48,5 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Screen Saver"));
 	appendBanner(b);
-	bt_global::skin->removeFromContext();
 }
 
