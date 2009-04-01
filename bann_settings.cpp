@@ -29,7 +29,14 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
-	connect(alarm_clock,SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(alarm_clock,SIGNAL(Closed()), SLOT(handleClose()));
+}
+
+void bannAlarmClock::handleClose()
+{
+	// When the page of the alarmclock is closed, the alarm is always set as 'on'.
+	sxButton->setChecked(true);
+	emit pageClosed();
 }
 
 void bannAlarmClock::gestFrame(char* frame)

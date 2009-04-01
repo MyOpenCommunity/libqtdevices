@@ -61,6 +61,9 @@ public slots:
 private:
 	AlarmClock *alarm_clock;
 
+private slots:
+	void handleClose();
+
 signals:
 /*!
 \brief Emitted to turn alarm clock off
