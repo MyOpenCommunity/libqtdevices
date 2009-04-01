@@ -36,6 +36,9 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
 	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
 	loadItems(config_node);
+	t = new QTimer(this);
+	t->setSingleShot(true);
+	connect(t, SIGNAL(timeout()), SLOT(ctrlAllarm()));
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -150,7 +153,7 @@ void Antintrusion::Parz()
 
 void Antintrusion::testranpo()
 {
-	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
+	t->start(150);
 }
 
 void Antintrusion:: ctrlAllarm()
@@ -297,7 +300,6 @@ void Antintrusion::prevAlarm()
 
 void Antintrusion::deleteAlarm()
 {
-	qDebug("antiintrusione::deleteAlarm()");
 	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
 	allarmi.takeAt(curr_alarm)->deleteLater();
 

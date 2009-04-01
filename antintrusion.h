@@ -136,6 +136,7 @@ private:
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
+	QTimer *t;
 
 	void loadItems(const QDomNode &config_node);
 

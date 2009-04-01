@@ -3,6 +3,7 @@
 #include "bannfrecce.h"
 #include "main.h"
 #include "fontmanager.h" // bt_global::font
+#include "icondispatcher.h" // bt_global::icons_cache
 
 #include <QPixmap>
 #include <QWidget>
@@ -29,10 +30,9 @@ allarme::allarme(const QString &name, char *indirizzo, QString IconaDx, altype t
 
 void allarme::SetIcons(QString icon)
 {
-    qDebug("allarme::SetIcons()");
-	QPixmap p;
+	qDebug("allarme::SetIcons()");
 	QString icon_name;
-    switch (type)
+	switch (type)
 	{
     case allarme::TECNICO:
 		icon_name = IMG_PATH "imgalltec.png";
@@ -40,10 +40,9 @@ void allarme::SetIcons(QString icon)
     default:
 		icon_name = IMG_PATH "imgallintr.png";
 		break;
-    }
-	p.load(icon_name);
+	}
 	Immagine = new QLabel(this);
-	Immagine->setPixmap(p);
+	Immagine->setPixmap(*bt_global::icons_cache.getIcon(icon_name));
 	Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
 		ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
 
