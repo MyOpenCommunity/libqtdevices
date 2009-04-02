@@ -17,11 +17,12 @@
 #include <QDebug>
 
 
-BrightnessPage::BrightnessPage()
+BrightnessPage::BrightnessPage() : SingleChoicePage(true)
 {
 	addBanner(tr("Off"), BRIGHTNESS_OFF);
 	addBanner(tr("Low brightness"), BRIGHTNESS_LOW);
 	addBanner(tr("Normal brightness"), BRIGHTNESS_NORMAL);
+	addBanner(tr("High brightness"), BRIGHTNESS_HIGH);
 }
 
 int BrightnessPage::getCurrentId()

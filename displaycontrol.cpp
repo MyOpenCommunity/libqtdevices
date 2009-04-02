@@ -40,6 +40,15 @@ void DisplayControl::_setBrightness(BrightnessLevel level)
 		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
 
+	case BRIGHTNESS_HIGH:
+		data[DISPLAY_FREEZED].brightness = 50;
+		data[DISPLAY_FREEZED].backlight = true;
+		data[DISPLAY_FREEZED].screensaver = false;
+		data[DISPLAY_SCREENSAVER].brightness = 50;
+		data[DISPLAY_SCREENSAVER].backlight = true;
+		data[DISPLAY_SCREENSAVER].screensaver = true;
+		break;
+
 	default:
 		assert(!"Unknown level for brightness");
 	}
