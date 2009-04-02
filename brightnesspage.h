@@ -29,7 +29,8 @@ public:
 protected:
 	virtual int getCurrentId();
 	virtual void bannerSelected(int id);
-
+	// the showEvent method is required because also other objects can change
+	// the brightness value.
 	virtual void showEvent(QShowEvent *e);
 };
 
