@@ -138,7 +138,11 @@ private:
 	QTimer request_timer;
 	QTimer *t;
 
+	Page *previous_page;
 	void loadItems(const QDomNode &config_node);
+
+private slots:
+	void closeAlarms();
 
 signals:
 /*!

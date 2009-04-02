@@ -61,6 +61,8 @@ protected:
 	// Let's start the transition
 	void startTransition();
 
+	Page *currentPage();
+
 private:
 	static Client *client_richieste;
 	static Client *client_comandi;

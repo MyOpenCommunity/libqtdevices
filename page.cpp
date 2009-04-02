@@ -62,6 +62,11 @@ void Page::startTransition()
 		transition_widget->startTransition(this);
 }
 
+Page *Page::currentPage()
+{
+	return static_cast<Page *>(main_window->currentWidget());
+}
+
 void Page::showPage()
 {
 	if (transition_widget)
@@ -72,7 +77,7 @@ void Page::showPage()
 	else
 		main_window->setCurrentWidget(this);
 #if GRAB_PAGES
-	Page *p = static_cast<Page *>(main_window->currentWidget());
+	Page *p = currentPage();
 	QPixmap screenshot = QPixmap::grabWidget(p);
 
 	QDir grab_dir(SCREENSHOT_DIR);

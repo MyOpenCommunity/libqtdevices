@@ -19,6 +19,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	tasti = NULL;
 	numRighe = NUM_RIGHE;
+	previous_page = 0;
 
 	impianto = new sottoMenu(this, 0 ,MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
 
@@ -256,7 +257,7 @@ void Antintrusion::gesFrame(char*frame)
 			// The current alarm is the last alarm inserted
 			curr_alarm = allarmi.size() - 1;
 			allarme *curr = allarmi.at(curr_alarm);
-			connect(curr, SIGNAL(Back()), this, SLOT(showPage()));
+			connect(curr, SIGNAL(Back()), this, SLOT(closeAlarms()));
 			connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
 			connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
 			connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
@@ -267,10 +268,21 @@ void Antintrusion::gesFrame(char*frame)
 	{
 		qDebug("ARRIVATO ALLARME!!!!");
 		assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+		previous_page = currentPage();
 		allarme *curr = allarmi.at(curr_alarm);
 		curr->showPage();
 		ctrlAllarm();
 	}
+}
+
+void Antintrusion::closeAlarms()
+{
+	// An alarm can arrive in every moment, so when closing the alarm page it is
+	// required to move back to the original page.
+	if (previous_page)
+		previous_page->showPage();
+	else
+		showPage();
 }
 
 void Antintrusion::setNavBarMode(uchar c)
