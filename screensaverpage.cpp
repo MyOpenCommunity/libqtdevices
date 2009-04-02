@@ -21,4 +21,6 @@ int ScreenSaverPage::getCurrentId()
 void ScreenSaverPage::bannerSelected(int id)
 {
 	bt_global::display.setScreenSaver(static_cast<ScreenSaver::Type>(id));
+	if (id == ScreenSaver::NONE)
+		bt_global::display.setBrightness(BRIGHTNESS_OFF);
 }

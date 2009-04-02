@@ -14,6 +14,9 @@
 
 #include "singlechoicepage.h"
 
+class QShowEvent;
+
+
 /*
  * The page used to choose the Brightness value.
  */
@@ -26,6 +29,8 @@ public:
 protected:
 	virtual int getCurrentId();
 	virtual void bannerSelected(int id);
+
+	virtual void showEvent(QShowEvent *e);
 };
 
 #endif // BRIGHTNESSPAGE_H
