@@ -7,6 +7,8 @@
 DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
+	_setBrightness(BRIGHTNESS_NORMAL);
+	setState(DISPLAY_OPERATIVE);
 }
 
 void DisplayControl::_setBrightness(BrightnessLevel level)
@@ -90,6 +92,12 @@ void DisplayControl::setState(DisplayStatus status)
 		setBacklightOn(data[status].backlight);
 		setBrightnessLevel(data[status].brightness);
 	}
+	current_state = status;
+}
+
+DisplayStatus DisplayControl::currentState()
+{
+	return current_state;
 }
 
 bool DisplayControl::screenSaverActive()

@@ -29,10 +29,14 @@ class DisplayControl
 friend class BtMain;
 public:
 	DisplayControl();
+	// Set the state of the display
 	void setState(DisplayStatus status);
+	DisplayStatus currentState();
+
 	// Brightness methods
 	BrightnessLevel currentBrightness();
 	void setBrightness(BrightnessLevel level);
+
 	// Screensaver methods
 	bool screenSaverActive();
 	void setScreenSaver(ScreenSaver::Type t);
@@ -40,6 +44,7 @@ public:
 
 	// To force (or to remove the forcing) the display to run in the operative mode.
 	void forceOperativeMode(bool enable);
+
 private:
 	struct DisplayData
 	{
@@ -51,6 +56,7 @@ private:
 	QMap<DisplayStatus, DisplayData> data;
 	BrightnessLevel current_brightness;
 	ScreenSaver::Type current_screensaver;
+	DisplayStatus current_state;
 	bool forced_operative_mode;
 
 	// Set the brightness. The difference between this method and the one without

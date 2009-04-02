@@ -46,8 +46,6 @@ namespace
 
 BtMain::BtMain()
 {
-	bt_global::display._setBrightness(BRIGHTNESS_NORMAL);
-	bt_global::display.setState(DISPLAY_OPERATIVE);
 	boot_time = new QTime();
 	boot_time->start();
 	difSon = 0;
@@ -417,7 +415,7 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && (!screensaver || !screensaver->isRunning()) && bt_global::display.screenSaverActive())
+			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED && bt_global::display.screenSaverActive())
 			{
 				ScreenSaver::Type current_screensaver = bt_global::display.currentScreenSaver();
 				if (current_screensaver != ScreenSaver::NONE)
