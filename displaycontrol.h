@@ -38,7 +38,6 @@ public:
 	void setBrightness(BrightnessLevel level);
 
 	// Screensaver methods
-	bool screenSaverActive();
 	void setScreenSaver(ScreenSaver::Type t);
 	ScreenSaver::Type currentScreenSaver();
 

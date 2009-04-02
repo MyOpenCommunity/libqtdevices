@@ -100,11 +100,6 @@ DisplayStatus DisplayControl::currentState()
 	return current_state;
 }
 
-bool DisplayControl::screenSaverActive()
-{
-	return data[DISPLAY_SCREENSAVER].screensaver && !forced_operative_mode;
-}
-
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
 	setCfgValue("type", QString::number(t), DISPLAY);

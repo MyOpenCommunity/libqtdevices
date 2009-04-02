@@ -415,30 +415,33 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED && bt_global::display.screenSaverActive())
+			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
 			{
-				ScreenSaver::Type current_screensaver = bt_global::display.currentScreenSaver();
-				if (current_screensaver != ScreenSaver::NONE)
+				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
+				// When the brightness is set to off in the old hardware the display
+				// is not really off, so it is required to use a screensaver to protect
+				// the display, even if the screensaver is not visible.
+				if (bt_global::display.currentBrightness() == BRIGHTNESS_OFF)
+					target_screensaver = ScreenSaver::LINES;
+
+				if (screensaver && screensaver->type() != target_screensaver)
 				{
-					if (screensaver && screensaver->type() != current_screensaver)
-					{
-						delete screensaver;
-						screensaver = 0;
-					}
-
-					if (!screensaver)
-						screensaver = getScreenSaver(current_screensaver);
-
-					Page *target = pagDefault ? pagDefault : Home;
-					if (target != pagDefault)
-					{
-						prev_page = static_cast<Page *>(main_window.currentWidget());
-						// don't use showPage() because transition doesn't make sense here
-						main_window.setCurrentWidget(target);
-					}
-					screensaver->start(target);
-					bt_global::display.setState(DISPLAY_SCREENSAVER);
+					delete screensaver;
+					screensaver = 0;
 				}
+
+				if (!screensaver)
+					screensaver = getScreenSaver(target_screensaver);
+
+				Page *target = pagDefault ? pagDefault : Home;
+				if (target != pagDefault)
+				{
+					prev_page = static_cast<Page *>(main_window.currentWidget());
+					// don't use showPage() because transition doesn't make sense here
+					main_window.setCurrentWidget(target);
+				}
+				screensaver->start(target);
+				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
 		}
 		else if (screensaver && screensaver->isRunning())
