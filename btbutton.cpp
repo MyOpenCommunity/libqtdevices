@@ -11,6 +11,7 @@ BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 	setStyleSheet("border:0px;");
 	setFocusPolicy(Qt::NoFocus);
 	is_on_off = false;
+	is_enabled = true;
 	connect(this, SIGNAL(toggled(bool)), SLOT(setStatus(bool)));
 }
 
@@ -68,6 +69,8 @@ void BtButton::setPixmap(const QPixmap &p)
 
 void BtButton::mousePressEvent(QMouseEvent *event)
 {
+	if (!is_enabled)
+		return;
 	// Toggle buttons are managed by toggled slot, that is always called when
 	// the button changes its state.
 	if (!isToggle() && !pressed_pixmap.isNull())
@@ -79,6 +82,8 @@ void BtButton::mousePressEvent(QMouseEvent *event)
 
 void BtButton::mouseReleaseEvent(QMouseEvent *event)
 {
+	if (!is_enabled)
+		return;
 	// Manages only normal buttons. Toggle buttons are managed by toggled slot.
 	if (!isToggle() && !pressed_pixmap.isNull())
 		setIcon(pixmap);
@@ -92,5 +97,15 @@ void BtButton::setStatus(bool on)
 	// pixmap is already the normal one)
 	if (!pressed_pixmap.isNull())
 		setIcon(!on ? pixmap : pressed_pixmap);
+}
+
+void BtButton::enable()
+{
+	is_enabled = true;
+}
+
+void BtButton::disable()
+{
+	is_enabled = false;
 }
 

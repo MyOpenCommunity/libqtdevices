@@ -31,6 +31,9 @@ public:
 	// down, changes its status manually, calling the 'setStatus' method.
 	void setOnOff();
 
+	void enable();
+	void disable();
+
 public slots:
 	void setStatus(bool on);
 
@@ -42,6 +45,8 @@ protected:
 	virtual QSize sizeHint() const;
 
 private:
+	bool is_enabled;
+
 	/// The pixmap to show when the button is down, cheched or on.
 	QPixmap pressed_pixmap;
 	/// The pixmap to show when the button is in normal state
