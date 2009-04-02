@@ -65,12 +65,12 @@ class attuatAutomIntSic : public bannOnOff
 Q_OBJECT
 public:
 	attuatAutomIntSic(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive, QString IconDisactive);
+	virtual void inizializza(bool forza = false);
 public slots:
 	virtual void status_changed(QList<device_status*>);
 private:
 	char uprunning ,dorunning;
 	QString icon_sx, icon_dx, icon_stop;
-	void inizializza(bool forza = false);
 	device *dev;
 private slots:
 	void doPres();
@@ -96,6 +96,7 @@ class attuatAutomInt : public bannOnOff
 Q_OBJECT
 public:
 	attuatAutomInt(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString IconActive, QString IconDisactive);
+	virtual void inizializza(bool forza = false);
 public slots:
 	virtual void status_changed(QList<device_status*>);
 private slots:
@@ -105,10 +106,7 @@ private:
 	char uprunning,dorunning;
 	QString icon_sx, icon_dx, icon_stop;
 	device *dev;
-	void inizializza(bool forza = false);
 };
-
-
 
 
 /*!
