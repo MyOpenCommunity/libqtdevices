@@ -165,27 +165,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		else
 			qWarning("setup node not found on xml config file!");
 
-		QDomNode displaypages = getConfElement("displaypages");
-		if (!displaypages.isNull())
-		{
-			QDomNode pagemenu_home = getChildWithId(displaypages, QRegExp("pagemenu(\\d{1,2}|)"), 0);
-			Home = new homePage(pagemenu_home);
-
-			QDomNode home_node = getChildWithName(displaypages, "homepage");
-			if (getTextChild(home_node, "isdefined").toInt())
-			{
-				int id_default = getTextChild(home_node, "id").toInt();
-				pagDefault = !id_default ? Home : getPage(id_default);
-			}
-
-			QString orientation = getTextChild(displaypages, "orientation");
-			if (!orientation.isNull())
-				setOrientation(orientation);
-		}
-		else
-			qFatal("displaypages node not found on xml config file!");
-
-
 		QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
 
 		BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
@@ -207,6 +186,29 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			ScreenSaver::initData(screensaver_node);
 		}
 		bt_global::display.current_screensaver = type;
+
+		QDomNode displaypages = getConfElement("displaypages");
+		if (!displaypages.isNull())
+		{
+			QDomNode pagemenu_home = getChildWithId(displaypages, QRegExp("pagemenu(\\d{1,2}|)"), 0);
+			// homePage must be built after the loading of the configuration,
+			// to ensure that values displayed (by homePage or its child pages)
+			// is in according with saved values.
+			Home = new homePage(pagemenu_home);
+
+			QDomNode home_node = getChildWithName(displaypages, "homepage");
+			if (getTextChild(home_node, "isdefined").toInt())
+			{
+				int id_default = getTextChild(home_node, "id").toInt();
+				pagDefault = !id_default ? Home : getPage(id_default);
+			}
+
+			QString orientation = getTextChild(displaypages, "orientation");
+			if (!orientation.isNull())
+				setOrientation(orientation);
+		}
+		else
+			qFatal("displaypages node not found on xml config file!");
 
 		// TODO: read the transition effect from configuration
 		Page::installTransitionWidget(new BlendingTransition(&main_window));
