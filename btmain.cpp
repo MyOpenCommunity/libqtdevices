@@ -395,7 +395,8 @@ void BtMain::gesScrSav()
 		{
 			if (!svegliaIsOn)
 			{
-				freeze(true);
+				if (!bloccato)
+					freeze(true);
 				tempo1->start(500);
 			}
 		}
