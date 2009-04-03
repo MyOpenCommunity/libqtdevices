@@ -76,13 +76,14 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node) : sottoMenu(0, 1)
 void EnergyInterface::loadItems(const QDomNode &config_node)
 {
 	assert(bt_global::skin->hasContext() && "Skin context not set!");
+	int mode = getTextChild(config_node, "mode").toInt();
 	QString energy_type = getTextChild(config_node, "descr");
 	QString measure = getTextChild(config_node, "measure");
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bannPuls *b = new bannPuls(this);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
-		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address")));
+		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address"), mode));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));

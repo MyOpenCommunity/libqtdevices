@@ -37,7 +37,7 @@ class EnergyDevice : public device
 friend class TestEnergyDevice;
 Q_OBJECT
 public:
-	EnergyDevice(QString where);
+	EnergyDevice(QString where, int _mode);
 
 	// The request methods, used to request an information
 	void requestCumulativeDay() const;
@@ -53,8 +53,9 @@ public:
 		DIM_CUMULATIVE_YEAR   = 51,
 		DIM_CUMULATIVE_MONTH  = 53,
 		DIM_CUMULATIVE_DAY    = 54,
-		DIM_CURRENT           = 113,
-
+		// The value of DIM_CURRENT doesn't matter, because the real value depends on mode
+		// (see the implementation of the requestCurrent method for more detail)
+		DIM_CURRENT,
 		DIM_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
 		DIM_DAY_GRAPH                = 56,    // read graph data for a specific day
 		DIM_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
@@ -80,6 +81,7 @@ private:
 	void computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph);
 	QDate getDateFromFrame(OpenMsg &msg);
 	mutable QStringList buffer_frame;
+	int mode;
 };
 
 

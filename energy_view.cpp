@@ -197,10 +197,10 @@ banner *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode)
 {
 	assert(bt_global::skin->hasContext() && "Skin context not set!");
-	dev = bt_global::add_device_to_cache(new EnergyDevice(address));
+	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	mapper = new QSignalMapper(this);

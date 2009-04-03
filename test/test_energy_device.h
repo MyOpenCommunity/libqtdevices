@@ -20,6 +20,9 @@ private slots:
 	void sendRequestCumulativeMonthGraph();
 	void sendRequestCumulativeMonth();
 	void sendRequestCumulativeMonth2();
+	void sendRequestCurrent();
+	void sendRequestCurrent2();
+	void sendRequestCurrent3();
 
 	void receiveCumulativeDay();
 	void receiveCurrent();

@@ -10,6 +10,7 @@
 
 const int MAX_VALUE = 255;
 
+
 enum RequestDimension
 {
 	_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
@@ -19,8 +20,20 @@ enum RequestDimension
 	REQ_CUMULATIVE_MONTH_GRAPH   = 56,   // request graph data for cumulative month
 };
 
-EnergyDevice::EnergyDevice(QString where) : device(QString("18"), where)
+
+enum RequestCurrent
 {
+	REQ_CURRENT_MODE_1 = 113,
+	REQ_CURRENT_MODE_2 = 1133,
+	REQ_CURRENT_MODE_3 = 1129,
+	REQ_CURRENT_MODE_4 = -1, // TODO: fake value, to be defined
+	REQ_CURRENT_MODE_5 = -1, // TODO: fake value, to be defined
+};
+
+
+EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), where)
+{
+	mode = _mode;
 }
 
 void EnergyDevice::sendRequest(int what) const
@@ -40,7 +53,28 @@ void EnergyDevice::requestCumulativeDay() const
 
 void EnergyDevice::requestCurrent() const
 {
-	sendRequest(DIM_CURRENT);
+	int what;
+	switch (mode)
+	{
+	case 1:
+		what = REQ_CURRENT_MODE_1;
+		break;
+	case 2:
+		what = REQ_CURRENT_MODE_2;
+		break;
+	case 3:
+		what = REQ_CURRENT_MODE_3;
+		break;
+	case 4:
+		what = REQ_CURRENT_MODE_4;
+		break;
+	case 5:
+		what = REQ_CURRENT_MODE_5;
+		break;
+	default:
+		assert(!"Unknown mode on the energy management!");
+	}
+	sendRequest(what);
 }
 
 void EnergyDevice::requestCumulativeYear() const
@@ -92,9 +126,10 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	StatusList status_list;
 	QVariant v;
 
-	if (what == DIM_CUMULATIVE_DAY || what == DIM_CURRENT || what == DIM_CUMULATIVE_MONTH ||
-		what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR || what == DIM_DAILY_AVERAGE_GRAPH ||
-		what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH)
+	if (what == DIM_CUMULATIVE_DAY || what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 ||
+		what == REQ_CURRENT_MODE_3 || what == REQ_CURRENT_MODE_4 || what == REQ_CURRENT_MODE_5 ||
+		what == DIM_CUMULATIVE_MONTH || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR ||
+		what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH)
 	{
 		assert(msg.whatArgCnt() > 0);
 		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
@@ -129,6 +164,11 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		}
 		if (what == _DIM_CUMULATIVE_MONTH)
 			status_list[DIM_CUMULATIVE_MONTH] = v;
+		else if (what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 || what == REQ_CURRENT_MODE_3 ||
+				 what == REQ_CURRENT_MODE_4 || what == REQ_CURRENT_MODE_5)
+		{
+			status_list[DIM_CURRENT] = v;
+		}
 		else
 			status_list[what] = v;
 		emit status_changed(status_list);
