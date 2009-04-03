@@ -69,6 +69,7 @@ HEADERS += actuators.h \
            cleanscreen.h \
            contrast.h \
            datetime.h \
+           dev_automation.h \
            device.h \
            device_status.h \
            devices_cache.h \
@@ -167,6 +168,7 @@ SOURCES += actuators.cpp \
            contrast.cpp \
            datetime.cpp \
            definitions.cpp \
+           dev_automation.cpp \
            device.cpp \
            device_status.cpp \
            devices_cache.cpp \

@@ -18,6 +18,7 @@ TEMPLATE = app
 LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 HEADERS += device_tester.h \
+           test_dev_automation.h \
            test_device.h \
            test_landevice.h \
            test_energy_device.h \
@@ -26,6 +27,7 @@ HEADERS += device_tester.h \
            ../energy_device.h \
            ../poweramplifier_device.h \
            ../landevice.h \
+           ../dev_automation.h \
            ../device.h \
            ../device_status.h \
            ../frame_interpreter.h \
@@ -35,8 +37,9 @@ HEADERS += device_tester.h \
            ../main.h
 
 SOURCES += test_main.cpp \
-           test_device.cpp \
            device_tester.cpp \
+           test_dev_automation.cpp \
+           test_device.cpp \
            test_landevice.cpp \
            test_energy_device.cpp \
            test_poweramplifier_device.cpp \
@@ -44,6 +47,7 @@ SOURCES += test_main.cpp \
            ../energy_device.cpp \
            ../poweramplifier_device.cpp \
            ../landevice.cpp \
+           ../dev_automation.cpp \
            ../device.cpp \
            ../device_status.cpp \
            ../frame_interpreter.cpp \
