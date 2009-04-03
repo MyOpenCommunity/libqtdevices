@@ -29,6 +29,11 @@ QString createWriteRequestOpen(QString who, QString what, QString where)
 	return QString("*#%1*%2*#%3##").arg(who).arg(where).arg(what);
 }
 
+QString createStatusRequestOpen(QString who, QString where)
+{
+	return QString("*#%1*%2##").arg(who).arg(where);
+}
+
 // TODO: unificare queste tre funzioni praticamente identiche!
 QString getPressName(QString name)
 {

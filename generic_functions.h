@@ -26,6 +26,9 @@ QString createRequestOpen(QString who, QString what, QString where);
 // Create a 'write dimension request' frame
 QString createWriteRequestOpen(QString who, QString what, QString where);
 
+// Create a 'status request' frame
+QString createStatusRequestOpen(QString who, QString where);
+
  /*!
   \brief Transform a image file name into a pressed one.
 
