@@ -347,7 +347,6 @@ void EnergyView::showGraph(int graph_type)
 
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(current_date))
 		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
-	graph->generateRandomValues(); // TODO: rimuovere!
 
 	initTransition();
 	widget_container->setCurrentIndex(current_widget);
