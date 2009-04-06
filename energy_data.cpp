@@ -9,6 +9,7 @@
 
 #include <QVBoxLayout>
 #include <QDomNode>
+#include <QLocale>
 #include <QDebug>
 
 #include <assert.h>
@@ -89,7 +90,9 @@ void EnergyCost::showValue(banner *b, float value)
 {
 	if (b)
 	{
-		b->setText(QString::number(value, 'f', n_decimal));
+		// Fixed for now
+		QLocale loc(QLocale::Italian);
+		b->setText(loc.toString(value, 'f', n_decimal));
 		b->Draw();
 	}
 }
