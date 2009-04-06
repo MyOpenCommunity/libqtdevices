@@ -25,10 +25,21 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 	foreach (const QDomNode& type, getChildren(config_node, "energy_type"))
 	{
 		SkinContext cont(getTextChild(type, "cid").toInt());
-		bannOnOff *b = new bannOnOff(this);
-		b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
+		banner *b;
+		if (getElement(type, "currency/ab").text().toInt() == 1)
+		{
+			b = new bannOnOff(this);
+			b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
 					QString(), bt_global::skin->getImage("energy_type"));
-		b->connectSxButton(new EnergyCost(type));
+
+			b->connectSxButton(new EnergyCost(type));
+		}
+		else
+		{
+			b = new bannPuls(this);
+			b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
+		}
+
 		b->connectDxButton(new EnergyInterface(type));
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
@@ -155,11 +166,12 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	int mode = getTextChild(config_node, "mode").toInt();
 	QString energy_type = getTextChild(config_node, "descr");
 	QString measure = getTextChild(config_node, "measure");
+	bool currency_enabled = (getElement(config_node, "currency/ab").text().toInt() == 1);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bannPuls *b = new bannPuls(this);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
-		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address"), mode));
+		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address"), mode, currency_enabled));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));

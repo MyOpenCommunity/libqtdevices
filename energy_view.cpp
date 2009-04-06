@@ -197,7 +197,7 @@ banner *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled)
 {
 	assert(bt_global::skin->hasContext() && "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
@@ -222,10 +222,15 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	showBannerWidget();
 	main_layout->addWidget(widget_container, 1);
 
-	bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
-	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
-	connect(nav_bar, SIGNAL(dxClick()), SLOT(toggleCurrency()));
-	main_layout->addWidget(nav_bar);
+	if (currency_enabled)
+	{
+		bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
+		connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
+		connect(nav_bar, SIGNAL(dxClick()), SLOT(toggleCurrency()));
+		main_layout->addWidget(nav_bar);
+	}
+	else
+		addBackButton();
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());

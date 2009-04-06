@@ -63,7 +63,7 @@ class EnergyView : public PageLayout
 {
 Q_OBJECT
 public:
-	EnergyView(QString measure, QString energy_type, QString address, int mode);
+	EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled);
 	~EnergyView();
 	virtual void inizializza();
 
