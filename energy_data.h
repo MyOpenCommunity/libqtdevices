@@ -3,6 +3,7 @@
 
 #include "sottomenu.h"
 
+class banner;
 class QDomNode;
 
 
@@ -17,14 +18,34 @@ private:
 };
 
 
+/**
+ * The page to set the related cost and incentive of an energy typology.
+ */
 class EnergyCost : public PageLayout
 {
 Q_OBJECT
 public:
 	EnergyCost(const QDomNode &config_node);
+
+private slots:
+	void closePage();
+	void saveCostAndProd();
+	void decreaseCost();
+	void increaseCost();
+	void decreaseProd();
+	void increaseProd();
+
 private:
-	int delta;
-	void addBanner(const QDomNode &config_node, QString desc, int n_decimal);
+	float delta;
+	// The rates for consumption and production. The temp_ attribute are used
+	// to modify the real values (the attributes without temp_) only when the user
+	// click on the "ok" button.
+	float cons_rate, prod_rate, temp_cons_rate, temp_prod_rate;
+	banner *banner_cost, *banner_prod;
+	// The number of decimal to show in cunsumption and production.
+	int n_decimal;
+	banner *addBanner(const QDomNode &config_node, QString desc, float& rate);
+	void showValue(banner *b, float value);
 };
 
 
