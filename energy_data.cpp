@@ -87,8 +87,11 @@ EnergyCost::EnergyCost(const QDomNode &config_node)
 
 void EnergyCost::showValue(banner *b, float value)
 {
-	b->setText(QString::number(value, 'f', n_decimal));
-	b->Draw();
+	if (b)
+	{
+		b->setText(QString::number(value, 'f', n_decimal));
+		b->Draw();
+	}
 }
 
 banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& rate)
