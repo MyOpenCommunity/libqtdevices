@@ -105,7 +105,12 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 
 	// Use a text stream to handle unicode properly
 	QTextStream tmp_stream(&tmp_file);
-	tmp_stream << doc.toString(0);
+	QString xml = doc.toString(0);
+	// Other processes don't support empty tags on xml, so we replace it with tags
+	// with empty content.
+	QRegExp empty_tag_reg("<([^>]+)/>");
+	empty_tag_reg.setMinimal(true);
+	tmp_stream << xml.replace(empty_tag_reg, "<\\1></\\1>");
 	tmp_stream.flush();
 	tmp_file.close();
 
