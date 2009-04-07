@@ -84,7 +84,7 @@ void EnergyDevice::requestCumulativeYear() const
 
 void EnergyDevice::requestDailyAverageGraph(QDate date) const
 {
-	sendFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH)
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH)
 		.arg(date.month()), where));
 }
 
