@@ -1,8 +1,11 @@
 #include "generic_functions.h"
+#include "xml_functions.h"
 
-#include <QMutableMapIterator>
+#include <QMapIterator>
 #include <QTextStream>
 #include <QDateTime>
+#include <QDomElement>
+#include <QDomNode>
 #include <QWidget>
 #include <QPixmap>
 #include <QRegExp>
@@ -12,7 +15,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <assert.h>
-
 
 QString createMsgOpen(QString who, QString what, QString where)
 {
@@ -66,77 +68,56 @@ QString getAmbName(QString name, QString amb)
  * Changes a value in conf.xml file atomically.
  * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
  */
-bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item, const QString &filename)
+bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
 {
-	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
-	if (fd >= 0)
-		close(fd);
+	QFile config_file(filename);
+	if (!config_file.open(QIODevice::ReadOnly))
+		return false;
 
 	const QString tmp_filename = "cfg/appoggio.xml";
 	if (QFile::exists(tmp_filename))
 		QFile::remove(tmp_filename);
 
 	QFile tmp_file(tmp_filename);
-
 	if (!tmp_file.open(QIODevice::WriteOnly))
 		return false;
 
-	QFile out_file(filename);
-	if (!out_file.open(QIODevice::WriteOnly | QIODevice::ReadOnly))
-		return false;
-
-	QTextStream out_stream(&out_file);
-	QTextStream tmp_stream(&tmp_file);
-
-	QRegExp item_tag = QRegExp(QString("<\\s*id\\s*>\\s*%1\\s*<\\s*/\\s*id\\s*>").arg(item_id));
-
-	while (true)
+	QDomDocument doc("config_document");
+	if (!doc.setContent(&config_file))
 	{
-		QString line = out_stream.readLine();
-		if (line.isNull())
-			break;
-		tmp_stream << line.append('\n');
-
-		if (line.contains(item_tag))
-		{
-			int count = 1;
-			if (count == num_item)
-			{
-				while (true)
-				{
-					QString line = out_stream.readLine();
-					if (line.isNull())
-						break;
-
-					QMutableMapIterator<QString, QString> it(data);
-					while (it.hasNext())
-					{
-						it.next();
-						QRegExp field = QRegExp(QString("<\\s*%1\\s*/?\\s*>").arg(it.key()));
-						if (line.contains(field))
-						{
-							line = QString("<%1>%2</%1>").arg(it.key()).arg(it.value());
-							it.remove();
-							break;
-						}
-					}
-					tmp_stream << line.append("\n");
-				}
-				assert(!data.size() && "Some fields not found on configuration file!");
-
-				tmp_stream.flush();
-				tmp_file.close();
-				out_file.flush();
-				out_file.close();
-
-				// QDir::rename fails if destination file exists so we use rename system call
-				if (!::rename(tmp_filename.toLatin1().constData(), filename.toLatin1().constData()))
-					return true;
-			}
-			else
-				++count;
-		}
+		config_file.close();
+		return false;
 	}
+	config_file.close();
+
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
+	assert(!n.isNull() && qPrintable(QString("No object found with id %1").arg(item_id)));
+
+	QMapIterator<QString, QString> it(data);
+	while (it.hasNext())
+	{
+		it.next();
+		QDomElement el = getElement(n, it.key());
+		assert(!el.isNull() && qPrintable(QString("No element found: %1").arg(it.key())));
+		// To replace the text of the element
+		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
+	}
+
+	// Use a text stream to handle unicode properly
+	QTextStream tmp_stream(&tmp_file);
+	tmp_stream << doc.toString(0);
+	tmp_stream.flush();
+	tmp_file.close();
+
+	// QDir::rename fails if destination file exists so we use rename system call
+	if (!::rename(qPrintable(tmp_filename), qPrintable(filename)))
+		return true;
+
+	// Write an empty file to warn other process that the configuration file has changed.
+	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
+	if (fd >= 0)
+		close(fd);
+
 	return false;
 }
 

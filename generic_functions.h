@@ -122,8 +122,17 @@ unsigned long getTimePress();
 */
 void rearmWDT();
 
+/**
+ * Save one or more values in the configuration file related to a specific object.
+ * \param data the map of the fields to save. The map has as key the path of the node (see
+ * the function getElement to more details about the path) and as value the value that must
+ * to be saved.
+ * \param item_id the unique id of the object
+ * \param num_item the serial number of the object
+ */
 bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
+// A convenient overload for the above function
 bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 void getName(char *name);

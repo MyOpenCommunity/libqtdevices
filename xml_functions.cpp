@@ -49,6 +49,32 @@ QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int 
 	return QDomNode();
 }
 
+QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, int id, int& serial_number)
+{
+	QDomNode n = root.firstChild();
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName().contains(node_regexp))
+		{
+			QDomNode child = n.firstChild();
+			while (!child.isNull() && child.nodeName() != "id")
+				child = child.nextSibling();
+
+			if (!child.isNull() && child.toElement().text().toInt() == id)
+				if (!--serial_number)
+					return n;
+		}
+		if (n.hasChildNodes())
+		{
+			QDomNode res = findXmlNode(n, node_regexp, id, serial_number);
+			if (!res.isNull())
+				return res;
+		}
+		n = n.nextSibling();
+	}
+	return QDomNode();
+}
+
 QList<QDomNode> getChildren(const QDomNode &parent, const QString &name)
 {
 	QList<QDomNode> l;

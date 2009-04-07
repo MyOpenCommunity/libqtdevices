@@ -66,11 +66,7 @@ void DisplayControl::_setBrightness(BrightnessLevel level)
 void DisplayControl::setBrightness(BrightnessLevel level)
 {
 	_setBrightness(level);
-	// TODO: dato che all'interno dell'item "DISPLAY" esiste un solo nodo level
-	// allora non ci sono ambiguita'. In ogni caso sarebbe l'ideale poter scrivere
-	// setCfgValue("brightness/level", level, DISPLAY) con significato analogo
-	// a quello della getElement.
-	setCfgValue("level", QString::number(level), DISPLAY);
+	setCfgValue("brightness/level", QString::number(level), DISPLAY);
 }
 
 BrightnessLevel DisplayControl::currentBrightness()
