@@ -268,7 +268,8 @@ void Antintrusion::gesFrame(char*frame)
 	{
 		qDebug("ARRIVATO ALLARME!!!!");
 		assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
-		previous_page = currentPage();
+		if (!previous_page)
+			previous_page = currentPage();
 		allarme *curr = allarmi.at(curr_alarm);
 		curr->showPage();
 		ctrlAllarm();
@@ -280,7 +281,10 @@ void Antintrusion::closeAlarms()
 	// An alarm can arrive in every moment, so when closing the alarm page it is
 	// required to move back to the original page.
 	if (previous_page)
+	{
 		previous_page->showPage();
+		previous_page = 0;
+	}
 	else
 		showPage();
 }
@@ -318,6 +322,7 @@ void Antintrusion::deleteAlarm()
 	if (allarmi.isEmpty())
 	{
 		curr_alarm = -1;
+		closeAlarms();
 		testranpo();
 		return;
 	}
