@@ -154,6 +154,7 @@ KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
 	int i, x;
 	char tmp[2] = "1";
 	QFont aFont = bt_global::font->get(FontManager::TEXT);
+	QString zone_style = "BtButton { background-color:white; color:black; }";
 
 	for (i = 0, x = POSX1_SMALL; i < 8; i++, x += BUT_SMALL_DIM)
 	{
@@ -171,6 +172,8 @@ KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
 		{
 			stati[i]->setText(tmp);
 			st[i] = s[i];
+			if (st[i])
+				stati[i]->setStyleSheet(zone_style);
 		}
 		tmp[0]++;
 		stati[i]->setGeometry(x, (MAX_HEIGHT/6)*4 + MAX_HEIGHT/12, BUT_SMALL_DIM, BUT_SMALL_DIM);
@@ -181,17 +184,4 @@ KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
 	digitLabel->setGeometry(MAX_WIDTH/2,(MAX_HEIGHT/6)*5,MAX_WIDTH/2, MAX_HEIGHT/6);
 	scrittaLabel->show();
 	digitLabel->show();
-}
-
-void KeypadWithState::paintEvent(QPaintEvent *event)
-{
-	for (int i = 0; i < 8; i++)
-	{
-		QString style;
-		// TODO: do it with the global stylesheet or something like that
-		if (st[i])
-			style = "BtButton { background-color:white; color:black; }";
-
-		stati[i]->setStyleSheet(style);
-	}
 }

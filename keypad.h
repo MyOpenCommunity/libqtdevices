@@ -89,8 +89,6 @@ class KeypadWithState : public Keypad
 Q_OBJECT
 public:
 	KeypadWithState(int s[8]);
-protected:
-	virtual void paintEvent(QPaintEvent *event);  //! Invert fg/bg colors for active "stati"
 private:
 	BtButton *stati[8];
 	bool st[8];
