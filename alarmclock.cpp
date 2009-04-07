@@ -555,6 +555,7 @@ void AlarmClock::aumVol()
 		}
 		bt_global::btmain->freeze(false);
 		bt_global::btmain->svegl(false);
+		emit alarmClockFired();
 	}
 }
 
@@ -586,6 +587,7 @@ void AlarmClock::buzzerAlarm()
 		aumVolTimer = NULL;
 		bt_global::btmain->freeze(false);
 		bt_global::btmain->svegl(false);
+		emit alarmClockFired();
 	}
 }
 
@@ -603,6 +605,7 @@ void AlarmClock::spegniSveglia(bool b)
 			delete aumVolTimer;
 			aumVolTimer = NULL;
 			bt_global::btmain->svegl(false);
+			emit alarmClockFired();
 		}
 	}
 	else if (b)

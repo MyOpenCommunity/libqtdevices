@@ -57,6 +57,7 @@ public slots:
 \brief changes the alarm set abilitation
 */
 	void toggleAbil();
+	void setButtonIcon();
 
 private:
 	AlarmClock *alarm_clock;

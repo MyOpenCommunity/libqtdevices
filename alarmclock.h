@@ -74,9 +74,11 @@ public:
 */
 	void setActive(bool);
 
-/*!
-  \brief Retrieves the state of the alarm set.
-*/
+	/**
+	 * Returns the active state of the alarm clock. When alarm clock type is ONCE, this method
+	 * returns false as soon as the alarm clock fires.
+	 * \return True if the alarm clock is set, false otherwise.
+	 */
 	bool isActive();
 
 /*!
@@ -172,6 +174,9 @@ private:
 	bool gesFrameAbil, active, onceToGest;
 	QTimer *minuTimer,*aumVolTimer;
 	QString frame;
+
+signals:
+	void alarmClockFired();
 };
 
 #endif // ALARMCLOCK_H
