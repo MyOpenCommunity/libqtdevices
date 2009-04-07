@@ -5,6 +5,8 @@
 #include "bann1_button.h" // bannPuls
 #include "energy_view.h" // EnergyView
 #include "skinmanager.h" // bt_global::skin, SkinContext
+#include "generic_functions.h" // setCfgValue
+
 #include "bannfrecce.h"
 
 #include <QVBoxLayout>
@@ -30,14 +32,16 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		if (getElement(type, "currency/ab").text().toInt() == 1)
 		{
 			b = new bannOnOff(this);
+			appendBanner(b); // to increase the serial number
 			b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
 					QString(), bt_global::skin->getImage("energy_type"));
 
-			b->connectSxButton(new EnergyCost(type));
+			b->connectSxButton(new EnergyCost(type, b->getSerNum()));
 		}
 		else
 		{
 			b = new bannPuls(this);
+			appendBanner(b);
 			b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
 		}
 
@@ -45,12 +49,11 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-		appendBanner(b);
 	}
 }
 
 
-EnergyCost::EnergyCost(const QDomNode &config_node)
+EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 {
 	QDomElement currency_node = getElement(config_node, "currency");
 	assert(!currency_node.isNull() && "currency node null!");
@@ -84,6 +87,7 @@ EnergyCost::EnergyCost(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(backClick()), SLOT(closePage()));
 	connect(nav_bar, SIGNAL(dxClick()), SLOT(saveCostAndProd()));
 	main_layout->addWidget(nav_bar);
+	serial_number = serial;
 }
 
 void EnergyCost::showValue(banner *b, float value)
@@ -156,6 +160,11 @@ void EnergyCost::saveCostAndProd()
 	// refresh the values visualized
 	showValue(banner_cost, temp_cons_rate);
 	showValue(banner_prod, temp_prod_rate);
+
+	QMap<QString, QString> data;
+	data["cons/rate"] = QString::number(cons_rate, 'f', 3);
+	data["prod/rate"] = QString::number(prod_rate, 'f', 3);
+	setCfgValue(data, ENERGY_TYPE, serial_number);
 	// TODO: save values in the xml conf file.
 	emit Closed();
 }

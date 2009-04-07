@@ -25,7 +25,7 @@ class EnergyCost : public PageLayout
 {
 Q_OBJECT
 public:
-	EnergyCost(const QDomNode &config_node);
+	EnergyCost(const QDomNode &config_node, int serial);
 
 private slots:
 	void closePage();
@@ -36,6 +36,7 @@ private slots:
 	void increaseProd();
 
 private:
+	int serial_number;
 	float delta;
 	// The rates for consumption and production. The temp_ attribute are used
 	// to modify the real values (the attributes without temp_) only when the user

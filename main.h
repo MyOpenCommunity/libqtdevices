@@ -406,6 +406,7 @@ enum  bannerType
 	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
+	ENERGY_TYPE=70,
 	// keep 69-71 free for energy management devices
 	LANSETTINGS=72,                               /*!< LAN settings and information */
 
