@@ -322,6 +322,7 @@ void Antintrusion::deleteAlarm()
 	if (allarmi.isEmpty())
 	{
 		curr_alarm = -1;
+		closeAlarms();
 		testranpo();
 		return;
 	}
