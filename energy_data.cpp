@@ -16,6 +16,9 @@
 
 #include <assert.h>
 
+// The language used for the floating point number
+QLocale loc(QLocale::Italian);
+
 
 EnergyData::EnergyData(const QDomNode &config_node)
 {
@@ -58,7 +61,7 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 	QDomElement currency_node = getElement(config_node, "currency");
 	assert(!currency_node.isNull() && "currency node null!");
 
-	delta = getTextChild(currency_node, "delta").toFloat();
+	delta = loc.toFloat(getTextChild(currency_node, "delta"));
 
 	QString unit_measure = getTextChild(currency_node, "symbol") + "/" +
 		getTextChild(config_node, "measure");
@@ -94,8 +97,6 @@ void EnergyCost::showValue(banner *b, float value)
 {
 	if (b)
 	{
-		// Fixed for now
-		QLocale loc(QLocale::Italian);
 		b->setText(loc.toString(value, 'f', n_decimal));
 		b->Draw();
 	}
@@ -107,7 +108,8 @@ banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& 
 	{
 		bann2ButLab *b = new bann2ButLab(this);
 		b->SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"));
-		rate = getTextChild(config_node, "rate").toFloat();
+
+		rate = loc.toFloat(getTextChild(config_node, "rate"));
 		showValue(b, rate);
 		b->setSecondaryText(desc);
 		b->Draw();
@@ -162,8 +164,8 @@ void EnergyCost::saveCostAndProd()
 	showValue(banner_prod, temp_prod_rate);
 
 	QMap<QString, QString> data;
-	data["cons/rate"] = QString::number(cons_rate, 'f', 3);
-	data["prod/rate"] = QString::number(prod_rate, 'f', 3);
+	data["cons/rate"] = loc.toString(cons_rate, 'f', 3);
+	data["prod/rate"] = loc.toString(prod_rate, 'f', 3);
 	setCfgValue(data, ENERGY_TYPE, serial_number);
 	// TODO: save values in the xml conf file.
 	emit Closed();
