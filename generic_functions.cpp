@@ -111,12 +111,14 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 
 	// QDir::rename fails if destination file exists so we use rename system call
 	if (!::rename(qPrintable(tmp_filename), qPrintable(filename)))
-		return true;
+	{
+		// Write an empty file to warn other process that the configuration file has changed.
+		int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
+		if (fd >= 0)
+			close(fd);
 
-	// Write an empty file to warn other process that the configuration file has changed.
-	int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
-	if (fd >= 0)
-		close(fd);
+		return true;
+	}
 
 	return false;
 }
