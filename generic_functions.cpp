@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <QDomElement>
+#include <QtGlobal> // Q_ASSERT_X
 #include <QDomNode>
 #include <QWidget>
 #include <QPixmap>
@@ -14,7 +15,7 @@
 
 #include <fcntl.h>
 #include <unistd.h>
-#include <assert.h>
+
 
 QString createMsgOpen(QString who, QString what, QString where)
 {
@@ -91,14 +92,14 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	config_file.close();
 
 	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
-	assert(!n.isNull() && qPrintable(QString("No object found with id %1").arg(item_id)));
+	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
 
 	QMapIterator<QString, QString> it(data);
 	while (it.hasNext())
 	{
 		it.next();
 		QDomElement el = getElement(n, it.key());
-		assert(!el.isNull() && qPrintable(QString("No element found: %1").arg(it.key())));
+		Q_ASSERT_X(!el.isNull(), "setCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
 		// To replace the text of the element
 		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
 	}

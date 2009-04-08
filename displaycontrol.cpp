@@ -98,7 +98,7 @@ DisplayStatus DisplayControl::currentState()
 
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
-	setCfgValue("type", QString::number(t), DISPLAY);
+	setCfgValue("screensaver/type", QString::number(t), DISPLAY);
 	current_screensaver = t;
 }
 
