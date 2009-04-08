@@ -17,10 +17,9 @@
 #include <QStackedWidget>
 #include <QSignalMapper>
 
-#include <assert.h>
 
-
-#define POLLING_CURRENT_DATA 5 // time to refresh data visualized in the current banner
+#define POLLING_CURRENT_DATA 5 // time to refresh data visualized in the current banner (in sec.)
+#define ENERGY_GRAPH_DELAY 1000 // msec to wait before request a graph data
 
 // To use QDate as a key in QHash
 inline bool qHash(const QDate &date) { return qHash(date.toString()); }
@@ -180,7 +179,7 @@ void TimePeriodSelection::periodBackward()
 
 banner *getBanner(QWidget *parent, QString primary_text)
 {
-	assert(bt_global::skin->hasContext() && "Skin context not set!");
+	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
 	banner *bann = new banner(parent);
 #define BANN_TEXT2_X 60
 #define BANN_TEXT2_Y 0
@@ -199,8 +198,9 @@ banner *getBanner(QWidget *parent, QString primary_text)
 
 EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled)
 {
-	assert(bt_global::skin->hasContext() && "Skin context not set!");
+	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
+	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	mapper = new QSignalMapper(this);
@@ -258,13 +258,13 @@ void EnergyView::inizializza()
 {
 	// Ask for the data showed in the default period.
 	dev->requestCurrent();
-	dev->requestCumulativeDay();
+	dev->requestCumulativeDay(QDate::currentDate());
 	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
 GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t)
 {
-	assert(v.canConvert<GraphData>());
+	Q_ASSERT_X(v.canConvert<GraphData>(), "EnergyView::saveGraphInCache", "Cannot convert graph data");
 	GraphData *d = new GraphData(v.value<GraphData>());
 	if (!graph_data_cache.contains(t))
 		graph_data_cache[t] = new GraphCache;
@@ -284,15 +284,19 @@ void EnergyView::status_changed(const StatusList &status_list)
 		{
 		case EnergyDevice::DIM_CUMULATIVE_DAY:
 			cumulative_day_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_day_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_MONTH:
 			cumulative_month_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_month_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
 			cumulative_year_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_year_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CURRENT:
 			current_banner->setSecondaryText(QString("%1·kW").arg(it.value().toInt()/1000.0, 0, 'f', 3));
+			current_banner->Draw();
 			break;
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
@@ -420,12 +424,19 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		{
 		case TimePeriodSelection::DAY:
 			w->setCurrentIndex(DAILY_PAGE);
+			dev->requestCumulativeDay(selection_date);
+			dev->requestCumulativeDayGraph(selection_date);
+			// The request for the current is automatically done by the timerEvent slot.
 			current_banner->setVisible(QDate::currentDate() == selection_date);
 			break;
 		case TimePeriodSelection::MONTH:
+			dev->requestCumulativeMonth(selection_date);
+			dev->requestCumulativeMonthGraph(selection_date);
 			w->setCurrentIndex(MONTHLY_PAGE);
 			break;
 		case TimePeriodSelection::YEAR:
+			dev->requestCumulativeYear();
+			// TODO: add the request for the graph year
 			w->setCurrentIndex(YEARLY_PAGE);
 			break;
 		}
@@ -438,12 +449,15 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		{
 		case TimePeriodSelection::DAY:
 			graph_type = EnergyDevice::CUMULATIVE_DAY;
+			dev->requestCumulativeDayGraph(selection_date);
 			break;
 		case TimePeriodSelection::YEAR:
 			graph_type = EnergyDevice::CUMULATIVE_YEAR;
+			dev->requestCumulativeMonthGraph(selection_date);
 			break;
 		case TimePeriodSelection::MONTH:
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
+			// TODO: add the request for the graph year
 			break;
 		}
 		showGraph(graph_type);

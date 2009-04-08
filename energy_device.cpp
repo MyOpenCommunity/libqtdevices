@@ -46,8 +46,10 @@ void EnergyDevice::sendRequest(QString what) const
 	sendInit(createRequestOpen(who, what, where));
 }
 
-void EnergyDevice::requestCumulativeDay() const
+void EnergyDevice::requestCumulativeDay(QDate date) const
 {
+	// TODO: per i giorni != dal corrente, e' necessario richiedere il grafico
+	// cumulativo giornaliero di quel giorno, e calcolare da quello il totale.
 	sendRequest(DIM_CUMULATIVE_DAY);
 }
 

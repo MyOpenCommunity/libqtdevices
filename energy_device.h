@@ -40,7 +40,7 @@ public:
 	EnergyDevice(QString where, int _mode);
 
 	// The request methods, used to request an information
-	void requestCumulativeDay() const;
+	void requestCumulativeDay(QDate date) const;
 	void requestCurrent() const;
 	void requestCumulativeMonth(QDate date) const;
 	void requestCumulativeYear() const;
