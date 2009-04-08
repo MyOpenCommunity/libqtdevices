@@ -207,6 +207,7 @@ void impPassword::showEvent(QShowEvent *event)
 void impPassword::checkPasswd()
 {
 	QString c = tasti->getText();
+	tasti->resetText();
 	if (status == PASSWD_NOT_SET)
 	{
 		if (!c.isEmpty())
@@ -215,8 +216,8 @@ void impPassword::checkPasswd()
 			setCfgValue("value", password, PROTEZIONE, getSerNum());
 			bt_global::btmain->setPwd(active, password);
 			status = PASSWD_SET;
-			emit pageClosed();
 		}
+		emit pageClosed();
 	}
 	else // status == PASSWD_SET
 	{
@@ -237,7 +238,6 @@ void impPassword::checkPasswd()
 		else //password is correct
 		{
 			tasti->setMode(Keypad::CLEAN);
-			tasti->showPage();
 			qDebug("password giusta");
 			status = PASSWD_NOT_SET;
 			tasti->showPage();
