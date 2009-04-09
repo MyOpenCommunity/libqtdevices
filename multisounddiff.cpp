@@ -247,7 +247,7 @@ void MultiSoundDiffAlarm::ripristinaRighe()
 
 
 // contdiff implementation
-contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiff *_dm) : QObject()
+contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiffAlarm *_dm) : QObject()
 {
 	qDebug("contdiff::contdiff(ds = %p, dm = %p)", _ds, _dm);
 	ds = _ds;
@@ -255,7 +255,10 @@ contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiff *_dm) : QObject()
 	if (ds)
 		connect(ds, SIGNAL(Closed()), this, SIGNAL(Closed()));
 	if (dm)
+	{
 		connect(dm, SIGNAL(Closed()), this, SIGNAL(Closed()));
+		connect(dm, SIGNAL(ambSelected()), dm, SLOT(hide()));
+	}
 }
 
 void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool showIt)
@@ -351,7 +354,7 @@ void contdiff::restorewindows()
 void contdiff::connectClosed(AlarmClock *s)
 {
 	disconnect(this, SIGNAL(Closed()), s, SLOT(Closed()));
-	connect(this, SIGNAL(Closed()), s, SLOT(Closed()));
+	connect(this, SIGNAL(Closed()), s, SIGNAL(Closed()));
 	if (dm)
 		connect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
 }

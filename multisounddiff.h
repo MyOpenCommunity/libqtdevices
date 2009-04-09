@@ -99,7 +99,7 @@ class contdiff : public QObject
 {
 Q_OBJECT
 public:
-	contdiff(SoundDiffusion *, MultiSoundDiff *);
+	contdiff(SoundDiffusion *, MultiSoundDiffAlarm *);
 	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
 	void setNavBarMode(uchar);
 	void setNumRighe(uchar);
@@ -118,7 +118,7 @@ public slots:
 
 private:
 	SoundDiffusion *ds;
-	MultiSoundDiff *dm;
+	MultiSoundDiffAlarm *dm;
 
 signals:
 	/*!

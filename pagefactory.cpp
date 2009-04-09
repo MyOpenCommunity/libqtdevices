@@ -89,6 +89,10 @@ Page *getPage(int id)
 		p->forceDraw();
 		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
+
+		MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
+		tmp->forceDraw();
+		bt_global::btmain->dm = tmp;
 		break;
 	}
 	case ENERGY_MANAGEMENT:

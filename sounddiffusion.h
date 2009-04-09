@@ -169,4 +169,15 @@ signals:
 	void gesFrame(char*);
 };
 
+
+class SoundDiffusionAlarm : public SoundDiffusion
+{
+Q_OBJECT
+public:
+	SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node) : SoundDiffusion(s, config_node)
+	{ setGeom(0, 0, 240, 240); }
+	virtual void inizializza() { }
+	virtual void showPage() { show();}
+};
+
 #endif // SOUND_DIFFUSION

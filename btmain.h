@@ -17,7 +17,7 @@
 
 
 class SoundDiffusion;
-class MultiSoundDiff;
+class MultiSoundDiffAlarm;
 class Version;
 class homePage;
 class Calibrate;
@@ -79,7 +79,7 @@ protected:
 public:
 	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
 	SoundDiffusion *difSon;
-	MultiSoundDiff *dm;
+	MultiSoundDiffAlarm *dm;
 	Version *version;
 
 private:
