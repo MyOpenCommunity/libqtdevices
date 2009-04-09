@@ -24,29 +24,15 @@
 
 #include <assert.h>
 
+AudioSources *MultiSoundDiffInterface::sorgenti = 0;
 
-MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
-{
-	sorgenti = new AudioSources(this, config_node);
-	sorgenti->hide();
-	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
-	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
-
-	matr = bt_global::devices_cache.get_sound_matr_device();
-	// Get status changed events back
-	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
-		this, SLOT(status_changed(QList<device_status*>)));
-
-	loadAmbienti(config_node);
-}
-
-MultiSoundDiff::~MultiSoundDiff()
+MultiSoundDiffInterface::~MultiSoundDiffInterface()
 {
 	while (!dslist.isEmpty())
 		delete dslist.takeFirst();
 }
 
-void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
+void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -60,9 +46,10 @@ void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
 		if (id == INSIEME_AMBIENTI || id == AMBIENTE)
 		{
 			// Do not create "sorgenti" submenu
-			ds = new SoundDiffusion(sorgenti, item);
+			ds = createSoundDiffusion(sorgenti, item);
+
 			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SLOT(ds_closed(SoundDiffusion*)));
-			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SIGNAL(dsClosed()));
+			connect(ds, SIGNAL(closed(SoundDiffusion*)), SLOT(showPage()));
 			ds->draw();
 			dslist.append(ds);
 		}
@@ -96,6 +83,28 @@ void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
 	draw();
 }
 
+
+MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
+{
+	if (!sorgenti)
+		sorgenti = new AudioSources(this, config_node);
+	sorgenti->hide();
+	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
+	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
+
+	matr = bt_global::devices_cache.get_sound_matr_device();
+	// Get status changed events back
+	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
+
+	loadAmbienti(config_node);
+}
+
+SoundDiffusion *MultiSoundDiff::createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf)
+{
+	return new SoundDiffusion(sorgenti, conf);
+}
+
 void MultiSoundDiff::setNavBarMode(uchar a, QString i)
 {
 	sottoMenu::setNavBarMode(a, i);
@@ -108,18 +117,6 @@ void MultiSoundDiff::setNumRighe(uchar n)
 	sottoMenu::setNumRighe(n);
 	for (int i = 0; i < dslist.size(); ++i)
 		dslist.at(i)->setNumRighe(n);
-}
-
-void MultiSoundDiff::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint & p, bool showIt)
-{
-	sottoMenu::reparent(parent, f, p, showIt);
-	for (int i = 0; i < dslist.size(); ++i)
-	{
-		SoundDiffusion *ds = dslist.at(i);
-		ds->setParent(!parent ? parent : this);
-		ds->setWindowFlags(f);
-		ds->move(p);
-	}
 }
 
 void MultiSoundDiff::inizializza()
@@ -142,24 +139,6 @@ void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
 	}
 	forceDraw();
 	showPage();
-}
-
-void MultiSoundDiff::resizewindows(int x, int y, int w, int h)
-{
-	for (int i = 0; i < dslist.size(); ++i)
-	{
-		SoundDiffusion *ds = dslist.at(i);
-		ds->setGeom(x, y, w, h);
-		ds->forceDraw();
-	}
-}
-
-void MultiSoundDiff::ripristinaRighe()
-{
-	sottoMenu::setNumRighe(3);
-
-	for (int i = 0; i < dslist.size(); ++i)
-		dslist.at(i)->setNumRighe(4);
 }
 
 void MultiSoundDiff::status_changed(QList<device_status*> sl)
@@ -193,10 +172,41 @@ void MultiSoundDiff::gestFrame(char*frame)
 	emit gesFrame(frame);
 }
 
-// contdiff implementation
-contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiff *_dm) : QObject()
+
+MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 {
-	qDebug("contdiff::contdiff(ds = %p, dm = %p)", _ds, _dm);
+	if (!sorgenti)
+		sorgenti = new AudioSources(this, config_node);
+
+	loadAmbienti(config_node);
+
+	setGeometry(0, 80, 240, 240);
+	move(0, 80);
+	setNavBarMode(6);
+	setNumRighe(3);
+}
+
+void MultiSoundDiffAlarm::reparent(QWidget *parent, const QPoint & p, bool showIt)
+{
+	sottoMenu::reparent(parent, 0, p, showIt);
+}
+
+void MultiSoundDiffAlarm::showPage()
+{
+	show();
+}
+
+SoundDiffusion *MultiSoundDiffAlarm::createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf)
+{
+	SoundDiffusion *sd = new SoundDiffusionAlarm(sorgenti, conf);
+	connect(sd, SIGNAL(Closed()), SIGNAL(Closed()));
+	return sd;
+}
+
+
+// contdiff implementation
+contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiffAlarm *_dm) : QObject()
+{
 	ds = _ds;
 	dm = _dm;
 	if (ds)
@@ -211,6 +221,7 @@ void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool show
 
 	if (ds)
 	{
+		// TODO: this doesn't seem a good thing to do...
 		ds->setParent(parent);
 		ds->setWindowFlags((Qt::WindowFlags)f);
 		ds->move(point);
@@ -218,7 +229,7 @@ void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool show
 			ds->show();
 	}
 	if (dm)
-		dm->reparent(parent, (Qt::WindowFlags)f, point, showIt);
+		dm->reparent(parent, point, showIt);
 }
 
 void contdiff::setNavBarMode(uchar m)
@@ -270,14 +281,6 @@ void contdiff::show()
 		dm->show();
 }
 
-void contdiff::ripristinaRighe()
-{
-	if (ds)
-		ds->setNumRighe((uchar)4);
-	if (dm)
-		dm->ripristinaRighe();
-}
-
 void contdiff::resizewindows()
 {
 	if (ds)
@@ -285,26 +288,6 @@ void contdiff::resizewindows()
 	if (dm)
 	{
 		dm->setGeometry(0, 80, 240, 240);
-		dm->resizewindows(0, 0, 240, 240);
 	}
 }
 
-void contdiff::restorewindows()
-{
-	if (dm)
-		dm->resizewindows(0, 0, 240, 320);
-}
-
-void contdiff::connectClosed(AlarmClock *s)
-{
-	disconnect(this, SIGNAL(Closed()), s, SLOT(Closed()));
-	connect(this, SIGNAL(Closed()), s, SLOT(Closed()));
-	if (dm)
-		connect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
-}
-
-void contdiff::disconnectClosed(AlarmClock *s)
-{
-	if (dm)
-		disconnect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
-}

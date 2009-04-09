@@ -127,8 +127,6 @@ void AlarmClock::okTime()
 
 void AlarmClock::showPage()
 {
-	Page::showPage();
-
 	for (uchar idx = 0; idx < 4; idx++)
 		but[idx]->show();
 	dataOra->show();
@@ -157,9 +155,6 @@ void AlarmClock::showPage()
 	disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 	connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 
-	if (difson)
-		difson->connectClosed(this);
-
 	connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
 	connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
 	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
@@ -167,6 +162,8 @@ void AlarmClock::showPage()
 	aggiornaDatiEEprom = 0;
 	if (type != DI_SON)
 		bannNavigazione->mostra(banner::BUT2);
+
+	Page::showPage();
 }
 
 void AlarmClock::drawSelectPage()
@@ -208,18 +205,11 @@ void AlarmClock::handleClose()
 	//imposta la sveglia in
 	if (difson)
 	{
+		difson->hide();
 		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
-		difson->disconnectClosed(this);
 		if (aggiornaDatiEEprom)
 		{
-			difson->reparent(NULL,0,QPoint(0,0),false);
-			difson->setNavBarMode(3);
-			difson->ripristinaRighe();
-			difson->restorewindows();
-			difson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-			difson->forceDraw();
-
-#if defined (BTWEB) || defined (BT_EMBEDDED)
+#if defined (BT_EMBEDDED)
 			int eeprom;
 			eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
 			lseek(eeprom,BASE_EEPROM + (serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
@@ -261,10 +251,8 @@ void AlarmClock::okTipo()
 	else if (difson)
 	{
 		this->bannNavigazione->hide();
-		difson->setNumRighe((uchar)3);
-		difson->setGeom(0,80,240,240);
-		difson->setNavBarMode(6);
-		difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)true);
+		difson->reparent(this, 0, QPoint(0,80), true);
+		connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
 		difson->resizewindows();
 		difson->forceDraw();
 
@@ -272,7 +260,7 @@ void AlarmClock::okTipo()
 		gesFrameAbil = true;
 		sorgente = 101;
 		stazione = 0;
-		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
+		for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
 			volSveglia[idx] = -1;
 		difson->show();
 	}
