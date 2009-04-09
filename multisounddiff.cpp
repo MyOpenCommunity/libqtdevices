@@ -207,14 +207,18 @@ MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 {
 	if (!sorgenti)
 		sorgenti = new AudioSources(this, config_node);
-	setNumRighe(3);
-	setGeometry(0, 80, 240, 240);
-	setNavBarMode(6);
-	move(0, 80);
 
 	loadAmbienti(config_node);
-	for (int i = 0; i < elencoBanner.size(); ++i)
-		connect(elencoBanner.at(i), SIGNAL(sxClick()), SIGNAL(ambSelected()));
+
+	setGeometry(0, 80, 240, 240);
+	move(0, 80);
+	setNavBarMode(6);
+	setNumRighe(3);
+}
+
+void MultiSoundDiffAlarm::reparent(QWidget *parent, const QPoint & p, bool showIt)
+{
+	sottoMenu::reparent(parent, 0, p, showIt);
 }
 
 void MultiSoundDiffAlarm::showPage()
@@ -224,17 +228,9 @@ void MultiSoundDiffAlarm::showPage()
 
 SoundDiffusion *MultiSoundDiffAlarm::createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf)
 {
-	return new SoundDiffusionAlarm(sorgenti, conf);
-}
-
-void MultiSoundDiffAlarm::resizewindows(int x, int y, int w, int h)
-{
-	for (int i = 0; i < dslist.size(); ++i)
-	{
-		SoundDiffusion *ds = dslist.at(i);
-		ds->setGeom(x, y, w, h);
-		ds->forceDraw();
-	}
+	SoundDiffusion *sd = new SoundDiffusionAlarm(sorgenti, conf);
+	connect(sd, SIGNAL(Closed()), SIGNAL(Closed()));
+	return sd;
 }
 
 void MultiSoundDiffAlarm::ripristinaRighe()
@@ -249,16 +245,12 @@ void MultiSoundDiffAlarm::ripristinaRighe()
 // contdiff implementation
 contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiffAlarm *_dm) : QObject()
 {
-	qDebug("contdiff::contdiff(ds = %p, dm = %p)", _ds, _dm);
 	ds = _ds;
 	dm = _dm;
 	if (ds)
 		connect(ds, SIGNAL(Closed()), this, SIGNAL(Closed()));
 	if (dm)
-	{
 		connect(dm, SIGNAL(Closed()), this, SIGNAL(Closed()));
-		connect(dm, SIGNAL(ambSelected()), dm, SLOT(hide()));
-	}
 }
 
 void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool showIt)
@@ -274,7 +266,7 @@ void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool show
 			ds->show();
 	}
 	if (dm)
-		dm->reparent(parent, (Qt::WindowFlags)f, point, showIt);
+		dm->reparent(parent, point, showIt);
 }
 
 void contdiff::setNavBarMode(uchar m)
@@ -333,7 +325,6 @@ void contdiff::resizewindows()
 	if (dm)
 	{
 		dm->setGeometry(0, 80, 240, 240);
-		dm->resizewindows(0, 0, 240, 240);
 	}
 }
 

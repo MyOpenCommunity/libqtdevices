@@ -53,10 +53,7 @@ public:
 	 *  bsubtree (see bannFrecce). Also calls downstream SoundDiffusion setNavBarMode
 	 */
 	virtual void setNavBarMode(uchar=0, QString IconBut4=ICON_FRECCIA_DX);
-	void setNumRighe(uchar);
-	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
-
 	virtual void inizializza();
 
 public slots:
@@ -68,6 +65,8 @@ private:
 	QList<SoundDiffusion*> dslist;
 	device *matr;
 	void ripristinaRighe();
+	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
+	void setNumRighe(uchar);
 	void resizewindows(int x, int y, int w, int h);
 
 signals:
@@ -86,11 +85,10 @@ public:
 	virtual void showPage();
 	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
 	void ripristinaRighe();
-	void resizewindows(int x, int y, int w, int h);
+	void reparent(QWidget *parent, const QPoint & p, bool showIt);
 
 signals:
 	void actSrcChanged(int, int);
-	void ambSelected();
 };
 
 
