@@ -231,7 +231,7 @@ void SoundDiffusion::init(const QDomNode &config_node)
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	connect(this, SIGNAL(gesFrame(char *)), amplificatori, SIGNAL(gestFrame(char *)));
 
-	QLabel *linea = new QLabel(this);
+	linea = new QLabel(this);
 	linea->setGeometry(0, MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, 3);
 	linea->setProperty("noStyle", true);
 }
@@ -327,14 +327,15 @@ void SoundDiffusion::freezed_handler(bool f)
 }
 */
 
-void SoundDiffusion::showEvent(QShowEvent *event)
+void SoundDiffusion::showPage()
 {
 	qDebug("SoundDiffusion::showEvent()");
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
 	isVisual = true;
-
 	sorgenti->show();
+
+	Page::showPage();
 }
 
 void SoundDiffusion::draw()
