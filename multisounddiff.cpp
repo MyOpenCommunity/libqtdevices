@@ -24,29 +24,15 @@
 
 #include <assert.h>
 
+AudioSources *MultiSoundDiffInterface::sorgenti = 0;
 
-MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
-{
-	sorgenti = new AudioSources(this, config_node);
-	sorgenti->hide();
-	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
-	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
-
-	matr = bt_global::devices_cache.get_sound_matr_device();
-	// Get status changed events back
-	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
-		this, SLOT(status_changed(QList<device_status*>)));
-
-	loadAmbienti(config_node);
-}
-
-MultiSoundDiff::~MultiSoundDiff()
+MultiSoundDiffInterface::~MultiSoundDiffInterface()
 {
 	while (!dslist.isEmpty())
 		delete dslist.takeFirst();
 }
 
-void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
+void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -60,7 +46,8 @@ void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
 		if (id == INSIEME_AMBIENTI || id == AMBIENTE)
 		{
 			// Do not create "sorgenti" submenu
-			ds = new SoundDiffusion(sorgenti, item);
+			ds = createSoundDiffusion(sorgenti, item);
+
 			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SLOT(ds_closed(SoundDiffusion*)));
 			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SIGNAL(dsClosed()));
 			ds->draw();
@@ -71,12 +58,12 @@ void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
 		switch (id)
 		{
 		case INSIEME_AMBIENTI:
-			b = new insAmbDiffSon(this, descr, img1, img2, ds, sorgenti, this);
+			b = new insAmbDiffSon(this, descr, img1, img2, ds, sorgenti);
 			break;
 		case AMBIENTE:
 		{
 			QString where = getTextChild(item, "where");
-			b = new ambDiffSon(this, descr, where, img1, img2, img3, ds, sorgenti, this);
+			b = new ambDiffSon(this, descr, where, img1, img2, img3, ds, sorgenti);
 			sorgenti->addAmb(where);
 			break;
 		}
@@ -94,6 +81,28 @@ void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
 		}
 	}
 	draw();
+}
+
+
+MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
+{
+	if (!sorgenti)
+		sorgenti = new AudioSources(this, config_node);
+	sorgenti->hide();
+	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
+	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
+
+	matr = bt_global::devices_cache.get_sound_matr_device();
+	// Get status changed events back
+	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
+
+	loadAmbienti(config_node);
+}
+
+SoundDiffusion *MultiSoundDiff::createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf)
+{
+	return new SoundDiffusion(sorgenti, conf);
 }
 
 void MultiSoundDiff::setNavBarMode(uchar a, QString i)
@@ -192,6 +201,50 @@ void MultiSoundDiff::gestFrame(char*frame)
 {
 	emit gesFrame(frame);
 }
+
+
+MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
+{
+	if (!sorgenti)
+		sorgenti = new AudioSources(this, config_node);
+	setNumRighe(3);
+	setGeometry(0, 80, 240, 240);
+	setNavBarMode(6);
+	move(0, 80);
+
+	loadAmbienti(config_node);
+	for (int i = 0; i < elencoBanner.size(); ++i)
+		connect(elencoBanner.at(i), SIGNAL(sxClick()), SIGNAL(ambSelected()));
+}
+
+void MultiSoundDiffAlarm::showPage()
+{
+	show();
+}
+
+SoundDiffusion *MultiSoundDiffAlarm::createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf)
+{
+	return new SoundDiffusionAlarm(sorgenti, conf);
+}
+
+void MultiSoundDiffAlarm::resizewindows(int x, int y, int w, int h)
+{
+	for (int i = 0; i < dslist.size(); ++i)
+	{
+		SoundDiffusion *ds = dslist.at(i);
+		ds->setGeom(x, y, w, h);
+		ds->forceDraw();
+	}
+}
+
+void MultiSoundDiffAlarm::ripristinaRighe()
+{
+	sottoMenu::setNumRighe(3);
+
+	for (int i = 0; i < dslist.size(); ++i)
+		dslist.at(i)->setNumRighe(4);
+}
+
 
 // contdiff implementation
 contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiff *_dm) : QObject()

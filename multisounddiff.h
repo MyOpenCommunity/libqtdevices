@@ -24,13 +24,29 @@ class device;
 class device_status;
 class AlarmClock;
 
+class MultiSoundDiffInterface : public sottoMenu
+{
+Q_OBJECT
+public:
+	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf)
+		{ return 0; }
+	void loadAmbienti(const QDomNode &config_node);
+	~MultiSoundDiffInterface();
 
-class MultiSoundDiff : public sottoMenu
+protected:
+	MultiSoundDiffInterface() { }
+	QList<SoundDiffusion*> dslist;
+	static AudioSources *sorgenti;
+
+signals:
+	void actSrcChanged(int, int);
+};
+
+class MultiSoundDiff : public MultiSoundDiffInterface
 {
 Q_OBJECT
 public:
 	MultiSoundDiff(const QDomNode &config_node);
-	~MultiSoundDiff();
 
 	/*!
 	 *  \brief Changes the type of navigation bar present at the
@@ -38,9 +54,8 @@ public:
 	 */
 	virtual void setNavBarMode(uchar=0, QString IconBut4=ICON_FRECCIA_DX);
 	void setNumRighe(uchar);
-	void ripristinaRighe();
 	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
-	void resizewindows(int x, int y, int w, int h);
+	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
 
 	virtual void inizializza();
 
@@ -50,11 +65,10 @@ public slots:
 	void gestFrame(char*);
 
 private:
-	void loadAmbienti(const QDomNode &config_node);
-
 	QList<SoundDiffusion*> dslist;
-	AudioSources *sorgenti;
 	device *matr;
+	void ripristinaRighe();
+	void resizewindows(int x, int y, int w, int h);
 
 signals:
 	void actSrcChanged(int, int);
@@ -63,7 +77,21 @@ signals:
 };
 
 
-class sveglia;
+class MultiSoundDiffAlarm : public MultiSoundDiffInterface
+{
+Q_OBJECT
+public:
+	MultiSoundDiffAlarm(const QDomNode &config_node);
+	virtual void inizializza() { } // avoid a second initialization
+	virtual void showPage();
+	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
+	void ripristinaRighe();
+	void resizewindows(int x, int y, int w, int h);
+
+signals:
+	void actSrcChanged(int, int);
+	void ambSelected();
+};
 
 
 //! Contenitore diffusione sonora/diffusione sonora multicanale per sveglia
