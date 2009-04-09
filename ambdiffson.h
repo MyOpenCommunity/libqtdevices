@@ -36,7 +36,7 @@ class ambDiffSon : public bannBut2Icon
 Q_OBJECT
 public:
 	ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString Icona1, QString Icona2,
-		QString Icona3, SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm);
+		QString Icona3, SoundDiffusion *ds, AudioSources *sorg);
 	void Draw();
 	void setDraw(bool d);
 	bool isDraw();
@@ -48,7 +48,6 @@ protected:
 	virtual void hideEvent(QHideEvent *event);
 private:
 	SoundDiffusion *diffson;
-	MultiSoundDiff *diffmul;
 	AudioSources *sorgenti;
 	int actSrc;
 	bool is_draw;
@@ -72,7 +71,7 @@ class insAmbDiffSon : public bannPuls
 Q_OBJECT
 public:
 	insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2, SoundDiffusion *ds,
-		AudioSources *sorg, MultiSoundDiff *dm);
+		AudioSources *sorg);
 	void Draw();
 public slots:
 	void configura();
@@ -80,7 +79,6 @@ public slots:
 	void actSrcChanged(int, int);
 private:
 	SoundDiffusion *diffson;
-	MultiSoundDiff *diffmul;
 	AudioSources *sorgenti;
 	QString descr;
 signals:
