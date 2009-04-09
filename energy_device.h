@@ -47,6 +47,7 @@ public:
 	void requestDailyAverageGraph(QDate date) const;
 	void requestCumulativeDayGraph(QDate date) const;
 	void requestCumulativeMonthGraph(QDate date) const;
+	void requestCumulativeYearGraph() const;
 
 	enum Type
 	{
@@ -73,8 +74,9 @@ public slots:
 	void frame_rx_handler(char *frame);
 
 private:
-	void sendRequest(int what) const;
-	void sendRequest(QString what) const;
+	void requestCumulativeMonth(QDate date, bool use_compressed_init) const;
+	void sendRequest(int what, bool use_compressed_init=false) const;
+	void sendRequest(QString what, bool use_compressed_init=false) const;
 	void parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v);
 	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);

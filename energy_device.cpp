@@ -36,14 +36,18 @@ EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), whe
 	mode = _mode;
 }
 
-void EnergyDevice::sendRequest(int what) const
+void EnergyDevice::sendRequest(int what, bool use_compressed_init) const
 {
-	sendInit(createRequestOpen(who, QString::number(what), where));
+	sendRequest(QString::number(what), use_compressed_init);
 }
 
-void EnergyDevice::sendRequest(QString what) const
+void EnergyDevice::sendRequest(QString what, bool use_compressed_init) const
 {
-	sendInit(createRequestOpen(who, what, where));
+	QString req = createRequestOpen(who, what, where);
+	if (use_compressed_init)
+		sendCompressedInit(req);
+	else
+		sendInit(req);
 }
 
 void EnergyDevice::requestCumulativeDay(QDate date) const
@@ -104,15 +108,28 @@ void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 
 void EnergyDevice::requestCumulativeMonth(QDate date) const
 {
+	// The public method is not compressed.
+	requestCumulativeMonth(date, false);
+}
+
+void EnergyDevice::requestCumulativeMonth(QDate date, bool use_compressed_init) const
+{
 	QDate curr = QDate::currentDate();
 
 	if (date.year() == curr.year() && date.month() == curr.month())
-		sendRequest(DIM_CUMULATIVE_MONTH);
+		sendRequest(DIM_CUMULATIVE_MONTH, use_compressed_init);
 	else
 	{
 		int year = date.toString("yy").toInt();
-		sendRequest(QString("%1#%2#%3").arg(_DIM_CUMULATIVE_MONTH).arg(year).arg(date.month()));
+		sendRequest(QString("%1#%2#%3").arg(_DIM_CUMULATIVE_MONTH).arg(year).arg(date.month()), use_compressed_init);
 	}
+}
+
+void EnergyDevice::requestCumulativeYearGraph() const
+{
+	QDate curr = QDate::currentDate();
+	for (int i = 0; i < 12; ++i)
+		requestCumulativeMonth(curr.addMonths(i * -1), true); // we compress the request of the graph data
 }
 
 void EnergyDevice::frame_rx_handler(char *frame)

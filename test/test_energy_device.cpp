@@ -52,6 +52,23 @@ void TestEnergyDevice::sendRequestCumulativeMonthGraph()
 	QVERIFY(server->frameCommand() == req);
 }
 
+void TestEnergyDevice::sendRequestCumulativeYearGraph()
+{
+	dev->requestCumulativeYearGraph();
+	client_request->flush();
+
+	QStringList frames;
+	frames << "*#18*20*53##";
+
+	QDate d = QDate::currentDate();
+	for (int i = 1; i < 12; ++i)
+	{
+		d = d.addMonths(-1);
+		frames << QString("*#18*%1*52#%2#%3##").arg(where).arg(d.year() - 2000).arg(d.month());
+	}
+	QVERIFY(server->frameRequest() == frames.join(""));
+}
+
 void TestEnergyDevice::sendRequestCurrent()
 {
 	dev->requestCurrent();
