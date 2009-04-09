@@ -64,14 +64,11 @@ public slots:
 private:
 	QList<SoundDiffusion*> dslist;
 	device *matr;
-	void ripristinaRighe();
 	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
 	void setNumRighe(uchar);
-	void resizewindows(int x, int y, int w, int h);
 
 signals:
 	void actSrcChanged(int, int);
-	void dsClosed();
 	void gesFrame(char *);
 };
 

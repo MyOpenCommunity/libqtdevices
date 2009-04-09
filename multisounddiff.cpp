@@ -49,7 +49,7 @@ void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 			ds = createSoundDiffusion(sorgenti, item);
 
 			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SLOT(ds_closed(SoundDiffusion*)));
-			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SIGNAL(dsClosed()));
+			connect(ds, SIGNAL(closed(SoundDiffusion*)), SLOT(showPage()));
 			ds->draw();
 			dslist.append(ds);
 		}
@@ -151,24 +151,6 @@ void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
 	}
 	forceDraw();
 	showPage();
-}
-
-void MultiSoundDiff::resizewindows(int x, int y, int w, int h)
-{
-	for (int i = 0; i < dslist.size(); ++i)
-	{
-		SoundDiffusion *ds = dslist.at(i);
-		ds->setGeom(x, y, w, h);
-		ds->forceDraw();
-	}
-}
-
-void MultiSoundDiff::ripristinaRighe()
-{
-	sottoMenu::setNumRighe(3);
-
-	for (int i = 0; i < dslist.size(); ++i)
-		dslist.at(i)->setNumRighe(4);
 }
 
 void MultiSoundDiff::status_changed(QList<device_status*> sl)
