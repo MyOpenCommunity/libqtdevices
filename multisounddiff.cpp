@@ -71,12 +71,12 @@ void MultiSoundDiff::loadAmbienti(const QDomNode &config_node)
 		switch (id)
 		{
 		case INSIEME_AMBIENTI:
-			b = new insAmbDiffSon(this, descr, img1, img2, ds, sorgenti, this);
+			b = new insAmbDiffSon(this, descr, img1, img2, ds, sorgenti);
 			break;
 		case AMBIENTE:
 		{
 			QString where = getTextChild(item, "where");
-			b = new ambDiffSon(this, descr, where, img1, img2, img3, ds, sorgenti, this);
+			b = new ambDiffSon(this, descr, where, img1, img2, img3, ds, sorgenti);
 			sorgenti->addAmb(where);
 			break;
 		}
