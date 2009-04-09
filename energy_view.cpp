@@ -301,6 +301,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE);
+			// The setData function of the graph object is called to force the refreshing of the graph
+			// even if the graph page is already open.
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
@@ -436,7 +438,7 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 			break;
 		case TimePeriodSelection::YEAR:
 			dev->requestCumulativeYear();
-			// TODO: add the request for the graph year
+			dev->requestCumulativeYearGraph();
 			w->setCurrentIndex(YEARLY_PAGE);
 			break;
 		}
@@ -451,13 +453,13 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 			graph_type = EnergyDevice::CUMULATIVE_DAY;
 			dev->requestCumulativeDayGraph(selection_date);
 			break;
-		case TimePeriodSelection::YEAR:
-			graph_type = EnergyDevice::CUMULATIVE_YEAR;
-			dev->requestCumulativeMonthGraph(selection_date);
-			break;
 		case TimePeriodSelection::MONTH:
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
-			// TODO: add the request for the graph year
+			dev->requestCumulativeMonthGraph(selection_date);
+			break;
+		case TimePeriodSelection::YEAR:
+			graph_type = EnergyDevice::CUMULATIVE_YEAR;
+			dev->requestCumulativeYearGraph();
 			break;
 		}
 		showGraph(graph_type);
