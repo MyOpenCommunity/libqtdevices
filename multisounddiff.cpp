@@ -326,14 +326,6 @@ void contdiff::show()
 		dm->show();
 }
 
-void contdiff::ripristinaRighe()
-{
-	if (ds)
-		ds->setNumRighe((uchar)4);
-	if (dm)
-		dm->ripristinaRighe();
-}
-
 void contdiff::resizewindows()
 {
 	if (ds)
@@ -345,22 +337,3 @@ void contdiff::resizewindows()
 	}
 }
 
-void contdiff::restorewindows()
-{
-	if (dm)
-		dm->resizewindows(0, 0, 240, 320);
-}
-
-void contdiff::connectClosed(AlarmClock *s)
-{
-	disconnect(this, SIGNAL(Closed()), s, SLOT(Closed()));
-	connect(this, SIGNAL(Closed()), s, SIGNAL(Closed()));
-	if (dm)
-		connect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
-}
-
-void contdiff::disconnectClosed(AlarmClock *s)
-{
-	if (dm)
-		disconnect(dm, SIGNAL(dsClosed()), s, SLOT(Closed()));
-}

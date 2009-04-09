@@ -105,11 +105,7 @@ public:
 	void setNumRighe(uchar);
 	void setGeom(int,int,int,int);
 	void forceDraw();
-	void ripristinaRighe();
 	void resizewindows();
-	void restorewindows();
-	void connectClosed(AlarmClock *);
-	void disconnectClosed(AlarmClock *);
 
 public slots:
 	//! Invoke proper hide method
