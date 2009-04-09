@@ -174,10 +174,9 @@ class SoundDiffusionAlarm : public SoundDiffusion
 {
 Q_OBJECT
 public:
-	SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node) : SoundDiffusion(s, config_node)
-	{ setGeom(0, 0, 240, 240); }
+	SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node);
 	virtual void inizializza() { }
-	virtual void showPage() { show();}
+	virtual void showPage();
 };
 
 #endif // SOUND_DIFFUSION

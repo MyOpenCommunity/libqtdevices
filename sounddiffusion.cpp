@@ -385,3 +385,28 @@ void SoundDiffusion::setFirstSource(int addr)
 	qDebug("SoundDiffusion::setFirstSource(%d)", addr);
 	sorgenti->setIndex(QString::number(addr));
 }
+
+
+SoundDiffusionAlarm::SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node) :
+	SoundDiffusion(s, config_node)
+{
+	setNumRighe(3);
+	setNavBarMode(6);
+	setGeom(0, 80, 240, 240);
+	amplificatori->move(0, 160);
+	linea->move(0, 155);
+	QPixmap Icon(ICON_SVEGLIA_ON);
+
+	QLabel *Immagine = new QLabel(this);
+	if (!Icon.isNull())
+		Immagine->setPixmap(Icon);
+
+	Immagine->setGeometry(90,0,80,80);
+}
+
+void SoundDiffusionAlarm::showPage()
+{
+	sorgenti->move(0, 75);
+	SoundDiffusion::showPage();
+}
+
