@@ -127,8 +127,6 @@ void AlarmClock::okTime()
 
 void AlarmClock::showPage()
 {
-	Page::showPage();
-
 	for (uchar idx = 0; idx < 4; idx++)
 		but[idx]->show();
 	dataOra->show();
@@ -157,9 +155,6 @@ void AlarmClock::showPage()
 	disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 	connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 
-	if (difson)
-		difson->connectClosed(this);
-
 	connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
 	connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
 	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
@@ -167,6 +162,8 @@ void AlarmClock::showPage()
 	aggiornaDatiEEprom = 0;
 	if (type != DI_SON)
 		bannNavigazione->mostra(banner::BUT2);
+
+	Page::showPage();
 }
 
 void AlarmClock::drawSelectPage()
@@ -208,17 +205,10 @@ void AlarmClock::handleClose()
 	//imposta la sveglia in
 	if (difson)
 	{
+		difson->hide();
 		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
-		difson->disconnectClosed(this);
 		if (aggiornaDatiEEprom)
 		{
-			difson->reparent(NULL,0,QPoint(0,0),false);
-			difson->setNavBarMode(3);
-			difson->ripristinaRighe();
-			difson->restorewindows();
-			difson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-			difson->forceDraw();
-
 #if defined (BT_EMBEDDED)
 			int eeprom;
 			eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
@@ -262,6 +252,7 @@ void AlarmClock::okTipo()
 	{
 		this->bannNavigazione->hide();
 		difson->reparent(this, 0, QPoint(0,80), true);
+		connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
 		difson->resizewindows();
 		difson->forceDraw();
 
