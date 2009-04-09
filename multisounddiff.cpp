@@ -119,18 +119,6 @@ void MultiSoundDiff::setNumRighe(uchar n)
 		dslist.at(i)->setNumRighe(n);
 }
 
-void MultiSoundDiff::reparent(QWidget *parent, Qt::WindowFlags f, const QPoint & p, bool showIt)
-{
-	sottoMenu::reparent(parent, f, p, showIt);
-	for (int i = 0; i < dslist.size(); ++i)
-	{
-		SoundDiffusion *ds = dslist.at(i);
-		ds->setParent(!parent ? parent : this);
-		ds->setWindowFlags(f);
-		ds->move(p);
-	}
-}
-
 void MultiSoundDiff::inizializza()
 {
 	qDebug("MultiSoundDiff::inizializza()");
@@ -215,14 +203,6 @@ SoundDiffusion *MultiSoundDiffAlarm::createSoundDiffusion(AudioSources *sorgenti
 	return sd;
 }
 
-void MultiSoundDiffAlarm::ripristinaRighe()
-{
-	sottoMenu::setNumRighe(3);
-
-	for (int i = 0; i < dslist.size(); ++i)
-		dslist.at(i)->setNumRighe(4);
-}
-
 
 // contdiff implementation
 contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiffAlarm *_dm) : QObject()
@@ -241,6 +221,7 @@ void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool show
 
 	if (ds)
 	{
+		// TODO: this doesn't seem a good thing to do...
 		ds->setParent(parent);
 		ds->setWindowFlags((Qt::WindowFlags)f);
 		ds->move(point);

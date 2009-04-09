@@ -55,6 +55,7 @@ public:
 	virtual void setNavBarMode(uchar=0, QString IconBut4=ICON_FRECCIA_DX);
 	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
 	virtual void inizializza();
+	virtual void setNumRighe(uchar);
 
 public slots:
 	void ds_closed(SoundDiffusion *);
@@ -64,8 +65,6 @@ public slots:
 private:
 	QList<SoundDiffusion*> dslist;
 	device *matr;
-	virtual void reparent(QWidget * parent, Qt::WindowFlags f, const QPoint & p, bool showIt = FALSE);
-	void setNumRighe(uchar);
 
 signals:
 	void actSrcChanged(int, int);
@@ -81,7 +80,6 @@ public:
 	virtual void inizializza() { } // avoid a second initialization
 	virtual void showPage();
 	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
-	void ripristinaRighe();
 	void reparent(QWidget *parent, const QPoint & p, bool showIt);
 
 signals:
