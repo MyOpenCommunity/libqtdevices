@@ -116,6 +116,8 @@ public:
 	 */
 	void forceDraw();
 
+	AudioSources *getAudioSources();
+
 public slots:
 	/*!
 	 * \brief Analyze \a Open \a frame to detect which source is active at a certain time.
@@ -175,7 +177,7 @@ class SoundDiffusionAlarm : public SoundDiffusion
 Q_OBJECT
 public:
 	SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node);
-	virtual void inizializza() { }
+	virtual void inizializza() { } // intentionally empty, avoid re initialization
 	virtual void showPage();
 };
 

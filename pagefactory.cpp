@@ -81,6 +81,10 @@ Page *getPage(int id)
 		p->draw();
 		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
+
+		SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
+		sd->forceDraw();
+		bt_global::btmain->difSon = sd;
 		break;
 	}
 	case DIFSON_MULTI:

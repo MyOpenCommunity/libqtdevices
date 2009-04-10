@@ -333,8 +333,10 @@ void SoundDiffusion::showPage()
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
 	isVisual = true;
-	sorgenti->show();
+	// needed when only classical sound diffusion is set
+	sorgenti->setParent(this);
 
+	sorgenti->show();
 	Page::showPage();
 }
 
@@ -386,6 +388,11 @@ void SoundDiffusion::setFirstSource(int addr)
 	sorgenti->setIndex(QString::number(addr));
 }
 
+AudioSources *SoundDiffusion::getAudioSources()
+{
+	return sorgenti;
+}
+
 
 SoundDiffusionAlarm::SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node) :
 	SoundDiffusion(s, config_node)
@@ -406,6 +413,11 @@ SoundDiffusionAlarm::SoundDiffusionAlarm(AudioSources *s, const QDomNode &config
 
 void SoundDiffusionAlarm::showPage()
 {
+	// needed when there is only classical sound diffusion set
+	// doesn't have drawbacks when diff multi is enabled (as the parent is already
+	// set in ambdiffson::configura())
+	sorgenti->setParent(this);
+
 	sorgenti->move(0, 75);
 	SoundDiffusion::showPage();
 }

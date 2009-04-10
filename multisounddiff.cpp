@@ -219,15 +219,6 @@ void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool show
 {
 	qDebug("contdiff::reparent()");
 
-	if (ds)
-	{
-		// TODO: this doesn't seem a good thing to do...
-		ds->setParent(parent);
-		ds->setWindowFlags((Qt::WindowFlags)f);
-		ds->move(point);
-		if (showIt)
-			ds->show();
-	}
 	if (dm)
 		dm->reparent(parent, point, showIt);
 }
@@ -276,18 +267,14 @@ void contdiff::hide()
 void contdiff::show()
 {
 	if (ds)
-		ds->show();
+		ds->showPage();
 	if (dm)
 		dm->show();
 }
 
 void contdiff::resizewindows()
 {
-	if (ds)
-		ds->setGeom(0, 80, 240, 240);
 	if (dm)
-	{
 		dm->setGeometry(0, 80, 240, 240);
-	}
 }
 
