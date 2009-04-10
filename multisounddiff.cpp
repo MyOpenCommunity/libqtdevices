@@ -223,31 +223,6 @@ void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool show
 		dm->reparent(parent, point, showIt);
 }
 
-void contdiff::setNavBarMode(uchar m)
-{
-	if (ds)
-		ds->setNavBarMode(m);
-	if (dm)
-		dm->setNavBarMode(m);
-}
-
-void contdiff::setNumRighe(uchar n)
-{
-	if (ds)
-		ds->setNumRighe(n);
-	if (dm)
-		dm->setNumRighe(n);
-}
-
-void contdiff::setGeom(int x, int y, int w, int h)
-{
-	qDebug("contdiff::setGeom(%d, %d, %d, %d)", x, y, w, h);
-	if (ds)
-		ds->setGeom(x, y, w, h);
-	if (dm)
-		dm->setGeometry(x, y, w, h);
-}
-
 void contdiff::forceDraw()
 {
 	if (ds)

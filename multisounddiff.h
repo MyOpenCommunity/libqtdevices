@@ -94,9 +94,6 @@ Q_OBJECT
 public:
 	contdiff(SoundDiffusion *, MultiSoundDiffAlarm *);
 	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
-	void setNavBarMode(uchar);
-	void setNumRighe(uchar);
-	void setGeom(int,int,int,int);
 	void forceDraw();
 	void resizewindows();
 
