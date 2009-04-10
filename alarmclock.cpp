@@ -131,6 +131,8 @@ void AlarmClock::showPage()
 		but[idx]->show();
 	dataOra->show();
 	Immagine->show();
+	if (difson)
+		difson->hide();
 
 	bannNavigazione->show();
 	for (uchar idx = 0; idx < 4; idx++)
@@ -205,7 +207,6 @@ void AlarmClock::handleClose()
 	//imposta la sveglia in
 	if (difson)
 	{
-		difson->hide();
 		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
 		if (aggiornaDatiEEprom)
 		{
