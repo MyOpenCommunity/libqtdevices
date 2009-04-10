@@ -25,7 +25,8 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), diso, hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
-	setAbil(enabled == 1);
+	sxButton->setChecked(enabled == 1);
+	alarm_clock->_setActive(enabled == 1);
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 

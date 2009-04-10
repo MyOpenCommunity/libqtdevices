@@ -268,6 +268,15 @@ void AlarmClock::okTipo()
 
 void AlarmClock::setActive(bool a)
 {
+	_setActive(a);
+	if (active && !minuTimer)
+		setCfgValue("enabled","1", SET_SVEGLIA, serNum);
+	else if (!active && minuTimer)
+		setCfgValue("enabled", "0", SET_SVEGLIA, serNum);
+}
+
+void AlarmClock::_setActive(bool a)
+{
 	active = a;
 	if (active)
 	{
@@ -276,7 +285,6 @@ void AlarmClock::setActive(bool a)
 			minuTimer = new QTimer(this);
 			minuTimer->start(200);
 			connect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
-			setCfgValue("enabled","1", SET_SVEGLIA, serNum);
 		}
 	}
 	else
@@ -287,7 +295,6 @@ void AlarmClock::setActive(bool a)
 			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
 			delete minuTimer;
 			minuTimer = NULL;
-			setCfgValue("enabled", "0", SET_SVEGLIA, serNum);
 		}
 	}
 }
