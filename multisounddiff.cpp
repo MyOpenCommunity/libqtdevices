@@ -186,11 +186,6 @@ MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 	setNumRighe(3);
 }
 
-void MultiSoundDiffAlarm::reparent(QWidget *parent, const QPoint & p, bool showIt)
-{
-	sottoMenu::reparent(parent, 0, p, showIt);
-}
-
 void MultiSoundDiffAlarm::showPage()
 {
 	show();
@@ -215,12 +210,10 @@ contdiff::contdiff(SoundDiffusion *_ds, MultiSoundDiffAlarm *_dm) : QObject()
 		connect(dm, SIGNAL(Closed()), this, SIGNAL(Closed()));
 }
 
-void contdiff::reparent(QWidget *parent, unsigned int f, QPoint point, bool showIt)
+void contdiff::setParent(QWidget *parent)
 {
-	qDebug("contdiff::reparent()");
-
 	if (dm)
-		dm->reparent(parent, point, showIt);
+		dm->setParent(parent);
 }
 
 void contdiff::forceDraw()

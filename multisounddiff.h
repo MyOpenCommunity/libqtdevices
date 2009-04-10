@@ -80,7 +80,6 @@ public:
 	virtual void inizializza() { } // avoid a second initialization
 	virtual void showPage();
 	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
-	void reparent(QWidget *parent, const QPoint & p, bool showIt);
 
 signals:
 	void actSrcChanged(int, int);
@@ -93,7 +92,7 @@ class contdiff : public QObject
 Q_OBJECT
 public:
 	contdiff(SoundDiffusion *, MultiSoundDiffAlarm *);
-	void reparent(QWidget *, unsigned int f, QPoint, bool showIt= false);
+	void setParent(QWidget *);
 	void forceDraw();
 	void resizewindows();
 

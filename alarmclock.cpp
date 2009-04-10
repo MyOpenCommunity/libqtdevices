@@ -252,7 +252,7 @@ void AlarmClock::okTipo()
 	else if (difson)
 	{
 		this->bannNavigazione->hide();
-		difson->reparent(this, 0, QPoint(0,80), true);
+		difson->setParent(this);
 		connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
 		difson->resizewindows();
 		difson->forceDraw();
