@@ -173,14 +173,14 @@ void MultiSoundDiff::gestFrame(char*frame)
 }
 
 
+// TODO: this should really be a page, so we can get rid of contdiff
+// and the calls to setParent() in AlarmClock
 MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 {
 	if (!sorgenti)
 		sorgenti = new AudioSources(this, config_node);
-
 	loadAmbienti(config_node);
 
-	setGeometry(0, 80, 240, 240);
 	move(0, 80);
 	setNavBarMode(6);
 	setNumRighe(3);
@@ -188,6 +188,8 @@ MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 
 void MultiSoundDiffAlarm::showPage()
 {
+	// this must be called after setParent() otherwise it won't work
+	setGeometry(0, 80, 240, 240);
 	show();
 }
 
@@ -226,8 +228,6 @@ void contdiff::forceDraw()
 
 void contdiff::hide()
 {
-	if (ds)
-		ds->hide();
 	if (dm)
 		dm->hide();
 }
@@ -237,12 +237,6 @@ void contdiff::show()
 	if (ds)
 		ds->showPage();
 	if (dm)
-		dm->show();
-}
-
-void contdiff::resizewindows()
-{
-	if (dm)
-		dm->setGeometry(0, 80, 240, 240);
+		dm->showPage();
 }
 

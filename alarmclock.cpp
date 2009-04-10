@@ -254,7 +254,6 @@ void AlarmClock::okTipo()
 		this->bannNavigazione->hide();
 		difson->setParent(this);
 		connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
-		difson->resizewindows();
 		difson->forceDraw();
 
 		aggiornaDatiEEprom = 1;

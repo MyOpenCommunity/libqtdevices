@@ -94,7 +94,6 @@ public:
 	contdiff(SoundDiffusion *, MultiSoundDiffAlarm *);
 	void setParent(QWidget *);
 	void forceDraw();
-	void resizewindows();
 
 public slots:
 	//! Invoke proper hide method
