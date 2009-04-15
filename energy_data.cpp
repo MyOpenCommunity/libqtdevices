@@ -175,6 +175,8 @@ void EnergyCost::saveCostAndProd()
 EnergyInterface::EnergyInterface(const QDomNode &config_node) : sottoMenu(0, 1)
 {
 	loadItems(config_node);
+	if (elencoBanner.size() == 1)
+		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
 void EnergyInterface::loadItems(const QDomNode &config_node)
@@ -188,11 +190,21 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	{
 		bannPuls *b = new bannPuls(this);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
-		b->connectDxButton(new EnergyView(measure, energy_type, getTextChild(item, "address"), mode, currency_enabled));
+		next_page = new EnergyView(measure, energy_type, getTextChild(item, "address"), mode, currency_enabled);
+		b->connectDxButton(next_page);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
 	}
 }
+
+void EnergyInterface::showPage()
+{
+	if (elencoBanner.size() == 1)
+		next_page->showPage();
+	else
+		Page::showPage();
+}
+
 
