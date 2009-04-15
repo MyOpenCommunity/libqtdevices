@@ -72,7 +72,8 @@ protected:
 
 private:
 	QWidget *buildBannerWidget();
-	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
+	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t, int factor);
+	void convertGraphData(GraphData *v, int factor);
 
 	enum Widget
 	{
@@ -92,6 +93,7 @@ private:
 	EnergyDevice::GraphType current_graph;
 	QDate current_date;
 	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
+	bool is_electricity_view;
 
 private slots:
 	void toggleCurrency();
