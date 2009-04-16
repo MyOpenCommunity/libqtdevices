@@ -9,8 +9,10 @@
  ****************************************************************/
 
 #include "titlelabel.h"
+#include "skinmanager.h"
 
 #include <QPainter>
+#include <QTextDocument>
 
 
 TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling) :
@@ -97,4 +99,33 @@ void TitleLabel::handleScrollingTimer()
 
 	refreshText();
 	repaint();
+}
+
+
+
+TextOnImageLabel::TextOnImageLabel(QWidget *parent, const QString &text) : QLabel(parent)
+{
+	setInternalText(text);
+
+}
+
+void TextOnImageLabel::setInternalText(const QString &text)
+{
+	internal_text = text;
+	update();
+}
+
+void TextOnImageLabel::setBackgroundImage(const QString &path)
+{
+	setPixmap(QPixmap(path));
+}
+
+void TextOnImageLabel::paintEvent(QPaintEvent *e)
+{
+	QLabel::paintEvent(e);
+	QTextDocument td;
+	td.setDefaultStyleSheet(bt_global::skin->getStyle());
+	td.setHtml("<span>" + internal_text + "</span>");
+	QPainter p(this);
+	td.drawContents(&p, QRectF(rect()));
 }
