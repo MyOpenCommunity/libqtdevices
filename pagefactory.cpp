@@ -20,6 +20,52 @@
 
 #include <QObject>
 
+/**
+ * Searches the config file for a sound diffusion section.
+ * \param page_node A node inside the 'displaypages' section (eg. a 'page' node)
+ * \return The 'page' node for multi sound diffusion or sound diffusion if present,
+ *         a null node otherwise
+ */
+QDomNode getSoundDiffusionNode(const QDomNode &page_node)
+{
+	// go back to 'displaypages' node
+	QDomNode displaypages = page_node.parentNode();
+	while (displaypages.nodeName() != "")
+		displaypages = displaypages.parentNode();
+
+	// look for sound diffusion page
+	QDomNode sd = getChildWithId(displaypages, QRegExp("page"), DIFSON);
+	QDomNode msd = getChildWithId(displaypages, QRegExp("page"), DIFSON_MULTI);
+	// both can be null, if there is no sound diffusion set
+	// the order here is important, if we have multi sound diff we also have
+	// sound diff
+	if (!msd.isNull())
+		return msd;
+	else if (!sd.isNull())
+		return sd;
+	else
+		return QDomNode();
+}
+
+/**
+ * Create sound diffusion in bt_global::btmain.
+ * \param page_node It must be a valid node for sound diffusion section (either
+ *        multi channel or mono).
+ */
+void createSoundDiffusion(QDomNode &page_node)
+{
+	int id = page_node.namedItem("id").toElement().text().toInt();
+	if (id == DIFSON_MULTI)
+	{
+		MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
+		tmp->forceDraw();
+		bt_global::btmain->dm = tmp;
+	}
+	else if (id == DIFSON)
+	{
+	}
+}
+
 
 Page *getPage(int id)
 {
@@ -94,9 +140,12 @@ Page *getPage(int id)
 		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 
-		MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
-		tmp->forceDraw();
-		bt_global::btmain->dm = tmp;
+		if (!bt_global::btmain->dm)
+		{
+			MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
+			tmp->forceDraw();
+			bt_global::btmain->dm = tmp;
+		}
 		break;
 	}
 	case ENERGY_MANAGEMENT:
@@ -116,6 +165,15 @@ Page *getPage(int id)
 	}
 	case IMPOSTAZIONI:
 	{
+		if (bt_global::btmain->dm == 0 && bt_global::btmain->difSon == 0)
+		{
+			// Settings section is before sound diffusion section or
+			// sound diffusion is not present
+			QDomNode sd = getSoundDiffusionNode(page_node);
+			if (!sd.isNull())
+				createSoundDiffusion(sd);
+		}
+
 		Settings *p = new Settings(page_node);
 		p->forceDraw();
 		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
