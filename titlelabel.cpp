@@ -10,9 +10,11 @@
 
 #include "titlelabel.h"
 #include "skinmanager.h"
+#include "fontmanager.h" //bt_global::font
 
 #include <QPainter>
 #include <QTextDocument>
+#include <QDebug>
 
 
 TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling) :
@@ -106,7 +108,6 @@ void TitleLabel::handleScrollingTimer()
 TextOnImageLabel::TextOnImageLabel(QWidget *parent, const QString &text) : QLabel(parent)
 {
 	setInternalText(text);
-
 }
 
 void TextOnImageLabel::setInternalText(const QString &text)
@@ -125,7 +126,15 @@ void TextOnImageLabel::paintEvent(QPaintEvent *e)
 	QLabel::paintEvent(e);
 	QTextDocument td;
 	td.setDefaultStyleSheet(bt_global::skin->getStyle());
-	td.setHtml("<span>" + internal_text + "</span>");
+	td.setDefaultFont(bt_global::font->get(FontManager::TEXT));
+	td.setHtml("<p>" + internal_text + "</p>");
+	// find the correct coordinates to center the text
+	QFontMetrics fm(td.defaultFont());
+	QRect dim = rect();
 	QPainter p(this);
+	// +3 at the end is empyrical, centers correctly the text on the label
+	int y = dim.height() / 2 - fm.ascent() + 3;
+	int x = (dim.width() - fm.width(internal_text)) / 2;
+	p.translate(x, y);
 	td.drawContents(&p, QRectF(rect()));
 }

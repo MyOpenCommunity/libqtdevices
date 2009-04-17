@@ -132,11 +132,11 @@ public:
 };
 
 
-class bannTextOnIcon : public banner
+class bannTextOnImage : public banner
 {
 Q_OBJECT
 public:
-	bannTextOnIcon(QWidget *parent, const QString &text = QString());
+	bannTextOnImage(QWidget *parent, const QString &text = QString());
 
 private:
 	TextOnImageLabel *label;
