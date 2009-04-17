@@ -177,8 +177,12 @@ class SoundDiffusionAlarm : public SoundDiffusion
 Q_OBJECT
 public:
 	SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node);
+	SoundDiffusionAlarm(const QDomNode &config_node);
 	virtual void inizializza() { } // intentionally empty, avoid re initialization
 	virtual void showPage();
+
+private:
+	void createWidgets();
 };
 
 #endif // SOUND_DIFFUSION

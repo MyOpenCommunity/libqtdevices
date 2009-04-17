@@ -30,7 +30,7 @@ QDomNode getSoundDiffusionNode(const QDomNode &page_node)
 {
 	// go back to 'displaypages' node
 	QDomNode displaypages = page_node.parentNode();
-	while (displaypages.nodeName() != "")
+	while (displaypages.nodeName() != "displaypages")
 		displaypages = displaypages.parentNode();
 
 	// look for sound diffusion page
@@ -63,6 +63,9 @@ void createSoundDiffusion(QDomNode &page_node)
 	}
 	else if (id == DIFSON)
 	{
+		SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(page_node);
+		sd->forceDraw();
+		bt_global::btmain->difSon = sd;
 	}
 }
 
@@ -128,9 +131,12 @@ Page *getPage(int id)
 		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 
-		SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
-		sd->forceDraw();
-		bt_global::btmain->difSon = sd;
+		if (!bt_global::btmain->difSon)
+		{
+			SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
+			sd->forceDraw();
+			bt_global::btmain->difSon = sd;
+		}
 		break;
 	}
 	case DIFSON_MULTI:

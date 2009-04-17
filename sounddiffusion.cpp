@@ -397,6 +397,17 @@ AudioSources *SoundDiffusion::getAudioSources()
 SoundDiffusionAlarm::SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node) :
 	SoundDiffusion(s, config_node)
 {
+	createWidgets();
+}
+
+SoundDiffusionAlarm::SoundDiffusionAlarm(const QDomNode &config_node) :
+	SoundDiffusion(config_node)
+{
+	createWidgets();
+}
+
+void SoundDiffusionAlarm::createWidgets()
+{
 	setNumRighe(3);
 	setNavBarMode(6);
 	setGeom(0, 80, 240, 240);
