@@ -193,10 +193,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
-	if (mode == 1)
-		is_electricity_view = true;
-	else
-		is_electricity_view = false;
+	is_electricity_view = (mode == 1);
+
 	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
@@ -259,7 +257,7 @@ void EnergyView::inizializza()
 	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
-GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t, int factor)
+GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t)
 {
 	Q_ASSERT_X(v.canConvert<GraphData>(), "EnergyView::saveGraphInCache", "Cannot convert graph data");
 	GraphData *d = new GraphData(v.value<GraphData>());
@@ -267,7 +265,6 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 		graph_data_cache[t] = new GraphCache;
 
 	GraphCache *cache = graph_data_cache[t];
-	convertGraphData(d, factor);
 	cache->insert(d->date, d);
 	return d;
 }
@@ -281,8 +278,7 @@ void EnergyView::convertGraphData(GraphData *v, int factor)
 
 void EnergyView::status_changed(const StatusList &status_list)
 {
-	int conversion_factor;
-	is_electricity_view ? conversion_factor = 1000 : conversion_factor = 1;
+	int conversion_factor = is_electricity_view ? 1000 : 1;
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
@@ -314,18 +310,24 @@ void EnergyView::status_changed(const StatusList &status_list)
 			break;
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
-			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE, conversion_factor);
+			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE);
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
+			{
+				convertGraphData(d, conversion_factor);
 				graph->setData(d->graph);
+			}
 			break;
 		}
 		case EnergyDevice::DIM_DAY_GRAPH:
 		{
-			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY, conversion_factor);
+			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
+			{
+				convertGraphData(d, conversion_factor);
 				graph->setData(d->graph);
+			}
 			break;
 		}
 		}
