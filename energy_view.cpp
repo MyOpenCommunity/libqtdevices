@@ -9,6 +9,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
 #include "transitionwidget.h"
+#include "bann1_button.h" // bannTextOnImage
 
 #include <QDebug>
 #include <QLabel>
@@ -177,19 +178,11 @@ void TimePeriodSelection::periodBackward()
 }
 
 
-banner *getBanner(QWidget *parent, QString primary_text)
+bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	banner *bann = new banner(parent);
-#define BANN_TEXT2_X 60
-#define BANN_TEXT2_Y 0
-#define BANN_TEXT2_WIDHT 120
-#define BANN_TEXT2_HEIGHT 60
-	bann->addItem(banner::TEXT2, BANN_TEXT2_X, BANN_TEXT2_Y, BANN_TEXT2_WIDHT, BANN_TEXT2_HEIGHT);
-	bann->addItem(banner::BUT1, MAX_WIDTH-BANN_TEXT2_X, BANN_TEXT2_Y,  BANN_TEXT2_X, BANN_TEXT2_X);
-	bann->addItem(banner::TEXT, BANN_TEXT2_Y, BANN_TEXT2_X, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE-BANN_TEXT2_X);
+	bannTextOnImage *bann = new bannTextOnImage(parent, "---");
 	bann->setText(primary_text);
-	bann->setSecondaryText("---");
 	bann->SetIcons(banner::BUT1, bt_global::skin->getImage("graph"));
 	bann->Draw();
 	return bann;
