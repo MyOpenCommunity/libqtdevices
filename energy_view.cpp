@@ -290,25 +290,25 @@ void EnergyView::status_changed(const StatusList &status_list)
 		switch (it.key())
 		{
 		case EnergyDevice::DIM_CUMULATIVE_DAY:
-			cumulative_day_banner->setSecondaryText(QString("%1 %2")
+			cumulative_day_banner->setInternalText(QString("%1 %2")
 				.arg(it.value().toInt()/conversion_factor)
 				.arg(unit_measure));
 			cumulative_day_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_MONTH:
-			cumulative_month_banner->setSecondaryText(QString("%1 %2")
+			cumulative_month_banner->setInternalText(QString("%1 %2")
 				.arg(it.value().toInt()/conversion_factor)
 				.arg(unit_measure));
 			cumulative_month_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
-			cumulative_year_banner->setSecondaryText(QString("%1 %2")
+			cumulative_year_banner->setInternalText(QString("%1 %2")
 				.arg(it.value().toInt()/conversion_factor)
 				.arg(unit_measure));
 			cumulative_year_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CURRENT:
-			current_banner->setSecondaryText(QString("%1·kW").arg(it.value().toInt()/
+			current_banner->setInternalText(QString("%1·kW").arg(it.value().toInt()/
 				static_cast<float>(conversion_factor), 0, 'f', 3));
 			current_banner->Draw();
 			break;

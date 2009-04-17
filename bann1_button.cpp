@@ -124,3 +124,8 @@ bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text) : banner(
 	addItem(TEXT, 0, BUT_DIM, MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE - BUT_DIM);
 	SetIcons(bt_global::skin->getImage("forward"), 1);
 }
+
+void bannTextOnImage::setInternalText(const QString &text)
+{
+	label->setInternalText(text);
+}

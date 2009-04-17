@@ -137,6 +137,7 @@ class bannTextOnImage : public banner
 Q_OBJECT
 public:
 	bannTextOnImage(QWidget *parent, const QString &text = QString());
+	void setInternalText(const QString &text);
 
 private:
 	TextOnImageLabel *label;
