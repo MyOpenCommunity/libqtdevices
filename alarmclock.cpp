@@ -94,13 +94,7 @@ AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 	freq = f;
 	type = t;
 
-	if (type == DI_SON)
-	{
-		if (bt_global::btmain->difSon)
-			difson = bt_global::btmain->difSon;
-		if (bt_global::btmain->dm)
-			difson = bt_global::btmain->dm;
-	}
+	difson = 0;
 
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
@@ -137,6 +131,15 @@ void AlarmClock::showPage()
 		but[idx]->show();
 	dataOra->show();
 	Immagine->show();
+	if (!difson)
+		if (type == DI_SON)
+		{
+			if (bt_global::btmain->difSon)
+				difson = bt_global::btmain->difSon;
+			if (bt_global::btmain->dm)
+				difson = bt_global::btmain->dm;
+		}
+
 	if (difson)
 		difson->hide();
 
