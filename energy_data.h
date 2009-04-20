@@ -3,6 +3,9 @@
 
 #include "sottomenu.h"
 
+#include <QHash>
+
+class bannTextOnImage;
 class banner;
 class QDomNode;
 
@@ -56,9 +59,17 @@ Q_OBJECT
 public:
 	EnergyInterface(const QDomNode &config_node);
 	virtual void showPage();
+
+public slots:
+	void status_changed(const StatusList &status_list);
+
 private:
-	Page *next_page;
+	QString findAddress(const StatusList &sl);
 	void loadItems(const QDomNode &config_node);
+	Page *next_page;
+	QHash<QString, bannTextOnImage*> banner_hash;
+	int conversion_factor;
+	QString measure;
 };
 
 #endif // ENERGY_DATA_H
