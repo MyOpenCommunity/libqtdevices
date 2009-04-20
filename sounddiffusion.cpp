@@ -16,6 +16,7 @@
 #include "sorgentimedia.h"
 #include "sorgentiradio.h"
 #include "poweramplifier.h"
+#include "icondispatcher.h" //bt_global::icons_cache
 
 #include <openwebnet.h> // class openwebnet
 
@@ -231,7 +232,7 @@ void SoundDiffusion::init(const QDomNode &config_node)
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	connect(this, SIGNAL(gesFrame(char *)), amplificatori, SIGNAL(gestFrame(char *)));
 
-	QLabel *linea = new QLabel(this);
+	linea = new QLabel(this);
 	linea->setGeometry(0, MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, 3);
 	linea->setProperty("noStyle", true);
 }
@@ -327,14 +328,17 @@ void SoundDiffusion::freezed_handler(bool f)
 }
 */
 
-void SoundDiffusion::showEvent(QShowEvent *event)
+void SoundDiffusion::showPage()
 {
 	qDebug("SoundDiffusion::showEvent()");
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
 	isVisual = true;
+	// needed when only classical sound diffusion is set
+	sorgenti->setParent(this);
 
 	sorgenti->show();
+	Page::showPage();
 }
 
 void SoundDiffusion::draw()
@@ -384,3 +388,46 @@ void SoundDiffusion::setFirstSource(int addr)
 	qDebug("SoundDiffusion::setFirstSource(%d)", addr);
 	sorgenti->setIndex(QString::number(addr));
 }
+
+AudioSources *SoundDiffusion::getAudioSources()
+{
+	return sorgenti;
+}
+
+
+SoundDiffusionAlarm::SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node) :
+	SoundDiffusion(s, config_node)
+{
+	createWidgets();
+}
+
+SoundDiffusionAlarm::SoundDiffusionAlarm(const QDomNode &config_node) :
+	SoundDiffusion(config_node)
+{
+	createWidgets();
+}
+
+void SoundDiffusionAlarm::createWidgets()
+{
+	setNumRighe(3);
+	setNavBarMode(6);
+	setGeom(0, 80, 240, 240);
+	amplificatori->move(0, 160);
+	linea->move(0, 155);
+
+	QLabel *image = new QLabel(this);
+	image->setPixmap(*bt_global::icons_cache.getIcon(ICON_SVEGLIA_ON));
+	image->setGeometry(90,0,80,80);
+}
+
+void SoundDiffusionAlarm::showPage()
+{
+	// needed when there is only classical sound diffusion set
+	// doesn't have drawbacks when diff multi is enabled (as the parent is already
+	// set in ambdiffson::configura())
+	sorgenti->setParent(this);
+
+	sorgenti->move(0, 75);
+	SoundDiffusion::showPage();
+}
+

@@ -28,7 +28,7 @@
 
 
 ambDiffSon::ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString IconaSx, QString IconaDx, QString icon,
-	SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm) : bannBut2Icon(parent)
+	SoundDiffusion *ds, AudioSources *sorg) : bannBut2Icon(parent)
 {
 	qDebug() << "ambDiffSon::ambDiffSon()";
 	descr = d;
@@ -39,7 +39,6 @@ ambDiffSon::ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString Ic
 
 	diffson = ds;
 	sorgenti = sorg;
-	diffmul = dm;
 	setDraw(false);
 }
 
@@ -71,7 +70,6 @@ void ambDiffSon::configura()
 	qDebug("ambDiffSon::configura()");
 	emit ambChanged(descr, false, getAddress());
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	diffson->setFirstSource(actSrc);
 	diffson->forceDraw();
 	diffson->showPage();
@@ -113,7 +111,7 @@ bool ambDiffSon::isDraw()
  ****************************************************************/
 
 insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2,
-	SoundDiffusion *ds, AudioSources *sorg, MultiSoundDiff *dm) : bannPuls(parent)
+	SoundDiffusion *ds, AudioSources *sorg) : bannPuls(parent)
 {
 	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
 	descr = d;
@@ -122,7 +120,6 @@ insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 	diffson = ds;
 	sorgenti = sorg;
-	diffmul = dm;
 }
 
 void insAmbDiffSon::Draw()
@@ -145,7 +142,6 @@ void insAmbDiffSon::configura()
 	emit ambChanged(descr, true, QString());
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	sorgenti->mostra_all(banner::BUT2);
 	diffson->forceDraw();
 	diffson->showPage();

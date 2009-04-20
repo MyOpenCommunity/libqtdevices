@@ -127,12 +127,12 @@ void AlarmClock::okTime()
 
 void AlarmClock::showPage()
 {
-	Page::showPage();
-
 	for (uchar idx = 0; idx < 4; idx++)
 		but[idx]->show();
 	dataOra->show();
 	Immagine->show();
+	if (difson)
+		difson->hide();
 
 	bannNavigazione->show();
 	for (uchar idx = 0; idx < 4; idx++)
@@ -157,9 +157,6 @@ void AlarmClock::showPage()
 	disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 	connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
 
-	if (difson)
-		difson->connectClosed(this);
-
 	connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
 	connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
 	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
@@ -167,6 +164,8 @@ void AlarmClock::showPage()
 	aggiornaDatiEEprom = 0;
 	if (type != DI_SON)
 		bannNavigazione->mostra(banner::BUT2);
+
+	Page::showPage();
 }
 
 void AlarmClock::drawSelectPage()
@@ -209,17 +208,9 @@ void AlarmClock::handleClose()
 	if (difson)
 	{
 		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
-		difson->disconnectClosed(this);
 		if (aggiornaDatiEEprom)
 		{
-			difson->reparent(NULL,0,QPoint(0,0),false);
-			difson->setNavBarMode(3);
-			difson->ripristinaRighe();
-			difson->restorewindows();
-			difson->setGeom(0,0,MAX_WIDTH,MAX_HEIGHT);
-			difson->forceDraw();
-
-#if defined (BTWEB) || defined (BT_EMBEDDED)
+#if defined (BT_EMBEDDED)
 			int eeprom;
 			eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
 			lseek(eeprom,BASE_EEPROM + (serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
@@ -261,24 +252,29 @@ void AlarmClock::okTipo()
 	else if (difson)
 	{
 		this->bannNavigazione->hide();
-		difson->setNumRighe((uchar)3);
-		difson->setGeom(0,80,240,240);
-		difson->setNavBarMode(6);
-		difson->reparent((QWidget*)this,(int)0,QPoint(0,80),(bool)true);
-		difson->resizewindows();
+		difson->setParent(this);
+		connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
 		difson->forceDraw();
 
 		aggiornaDatiEEprom = 1;
 		gesFrameAbil = true;
 		sorgente = 101;
 		stazione = 0;
-		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
+		for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
 			volSveglia[idx] = -1;
 		difson->show();
 	}
 }
 
 void AlarmClock::setActive(bool a)
+{
+	_setActive(a);
+	QString value;
+	active ? value = "1" : value = "0";
+	setCfgValue("enabled", value, SET_SVEGLIA, serNum);
+}
+
+void AlarmClock::_setActive(bool a)
 {
 	active = a;
 	if (active)
@@ -288,7 +284,6 @@ void AlarmClock::setActive(bool a)
 			minuTimer = new QTimer(this);
 			minuTimer->start(200);
 			connect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
-			setCfgValue("enabled","1", SET_SVEGLIA, serNum);
 		}
 	}
 	else
@@ -299,7 +294,6 @@ void AlarmClock::setActive(bool a)
 			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
 			delete minuTimer;
 			minuTimer = NULL;
-			setCfgValue("enabled", "0", SET_SVEGLIA, serNum);
 		}
 	}
 }

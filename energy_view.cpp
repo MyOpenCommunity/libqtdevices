@@ -9,6 +9,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
 #include "transitionwidget.h"
+#include "bann1_button.h" // bannTextOnImage
 
 #include <QDebug>
 #include <QLabel>
@@ -177,19 +178,11 @@ void TimePeriodSelection::periodBackward()
 }
 
 
-banner *getBanner(QWidget *parent, QString primary_text)
+bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	banner *bann = new banner(parent);
-#define BANN_TEXT2_X 60
-#define BANN_TEXT2_Y 0
-#define BANN_TEXT2_WIDHT 120
-#define BANN_TEXT2_HEIGHT 60
-	bann->addItem(banner::TEXT2, BANN_TEXT2_X, BANN_TEXT2_Y, BANN_TEXT2_WIDHT, BANN_TEXT2_HEIGHT);
-	bann->addItem(banner::BUT1, MAX_WIDTH-BANN_TEXT2_X, BANN_TEXT2_Y,  BANN_TEXT2_X, BANN_TEXT2_X);
-	bann->addItem(banner::TEXT, BANN_TEXT2_Y, BANN_TEXT2_X, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE-BANN_TEXT2_X);
+	bannTextOnImage *bann = new bannTextOnImage(parent, "---");
 	bann->setText(primary_text);
-	bann->setSecondaryText("100 kWh");
 	bann->SetIcons(banner::BUT1, bt_global::skin->getImage("graph"));
 	bann->Draw();
 	return bann;
@@ -200,6 +193,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
+	is_electricity_view = (mode == 1);
+
 	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
@@ -274,8 +269,16 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	return d;
 }
 
+void EnergyView::convertGraphData(GraphData *v, int factor)
+{
+	QMap<int, int> &data = v->graph;
+	foreach(int i, data)
+		data[i] /= factor;
+}
+
 void EnergyView::status_changed(const StatusList &status_list)
 {
+	int conversion_factor = is_electricity_view ? 1000 : 1;
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
@@ -283,19 +286,26 @@ void EnergyView::status_changed(const StatusList &status_list)
 		switch (it.key())
 		{
 		case EnergyDevice::DIM_CUMULATIVE_DAY:
-			cumulative_day_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_day_banner->setInternalText(QString("%1 %2")
+				.arg(it.value().toInt()/conversion_factor)
+				.arg(unit_measure));
 			cumulative_day_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_MONTH:
-			cumulative_month_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_month_banner->setInternalText(QString("%1 %2")
+				.arg(it.value().toInt()/conversion_factor)
+				.arg(unit_measure));
 			cumulative_month_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
-			cumulative_year_banner->setSecondaryText(QString("%1 kWh").arg(it.value().toInt()/1000));
+			cumulative_year_banner->setInternalText(QString("%1 %2")
+				.arg(it.value().toInt()/conversion_factor)
+				.arg(unit_measure));
 			cumulative_year_banner->Draw();
 			break;
 		case EnergyDevice::DIM_CURRENT:
-			current_banner->setSecondaryText(QString("%1·kW").arg(it.value().toInt()/1000.0, 0, 'f', 3));
+			current_banner->setInternalText(QString("%1·kW").arg(it.value().toInt()/
+				static_cast<float>(conversion_factor), 0, 'f', 3));
 			current_banner->Draw();
 			break;
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
@@ -306,14 +316,20 @@ void EnergyView::status_changed(const StatusList &status_list)
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
+			{
+				convertGraphData(d, conversion_factor);
 				graph->setData(d->graph);
+			}
 			break;
 		}
 		case EnergyDevice::DIM_DAY_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
+			{
+				convertGraphData(d, conversion_factor);
 				graph->setData(d->graph);
+			}
 			break;
 		}
 		}
@@ -340,14 +356,14 @@ void EnergyView::showGraph(int graph_type)
 	{
 	case EnergyDevice::DAILY_AVERAGE:
 	case EnergyDevice::CUMULATIVE_DAY:
-		graph->init(24, tr("Kwh/hours"));
+		graph->init(24, unit_measure + tr("/hours"));
 		break;
 	case EnergyDevice::CUMULATIVE_YEAR:
-		graph->init(12, tr("Kwh/months"));
+		graph->init(12, unit_measure + tr("/months"));
 		break;
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
-		graph->init(time_period->date().daysInMonth(), tr("Kwh/days"));
+		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
 		break;
 	}
 

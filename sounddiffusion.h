@@ -18,6 +18,7 @@
 #include <QString>
 
 class banner;
+class QLabel;
 
 
 /// A container for sources (aux, touchscreen, radio..)
@@ -115,6 +116,8 @@ public:
 	 */
 	void forceDraw();
 
+	AudioSources *getAudioSources();
+
 public slots:
 	/*!
 	 * \brief Analyze \a Open \a frame to detect which source is active at a certain time.
@@ -128,12 +131,9 @@ public slots:
 	 */
 	void setFirstSource(int addr);
 
-protected:
-	/*!
-	 * \brief Make sure a source being active before showing the page.
-	 */
-	virtual void showEvent(QShowEvent *event);
+	virtual void showPage();
 
+protected:
 	/*!
 	 * \brief Make sure that amplifier index is resetted before hiding.
 	 *
@@ -141,6 +141,10 @@ protected:
 	 * banners will be drawn.
 	 */
 	virtual void hideEvent(QHideEvent *event);
+
+	AudioSources *sorgenti;
+	AmpliContainer *amplificatori;
+	QLabel *linea;
 
 private:
 	/*!
@@ -150,8 +154,6 @@ private:
 	void init(const QDomNode &config_node);
 	bool isVisual;
 	uchar numRighe;
-	AudioSources *sorgenti;
-	AmpliContainer *amplificatori;
 	bool shared_audiosources;
 
 private slots:
@@ -167,6 +169,20 @@ signals:
 	 * \brief Emitted when there are \a Open \a frame incoming to make them arrive to amplifiers and sources.
 	 */
 	void gesFrame(char*);
+};
+
+
+class SoundDiffusionAlarm : public SoundDiffusion
+{
+Q_OBJECT
+public:
+	SoundDiffusionAlarm(AudioSources *s, const QDomNode &config_node);
+	SoundDiffusionAlarm(const QDomNode &config_node);
+	virtual void inizializza() { } // intentionally empty, avoid re initialization
+	virtual void showPage();
+
+private:
+	void createWidgets();
 };
 
 #endif // SOUND_DIFFUSION

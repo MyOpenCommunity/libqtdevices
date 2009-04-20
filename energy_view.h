@@ -11,7 +11,7 @@
 #include <QCache>
 
 class BtButton;
-class banner; // TODO: this must be changed once the correct banner is ready
+class bannTextOnImage;
 class EnergyDevice;
 class QLabel;
 class QStackedWidget;
@@ -73,6 +73,7 @@ protected:
 private:
 	QWidget *buildBannerWidget();
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
+	void convertGraphData(GraphData *v, int factor);
 
 	enum Widget
 	{
@@ -81,8 +82,8 @@ private:
 	};
 
 	// TODO: this must be changed once the correct banner is ready
-	banner *current_banner, *daily_av_banner;
-	banner *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
+	bannTextOnImage *current_banner, *daily_av_banner;
+	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	Widget current_widget;
@@ -92,6 +93,7 @@ private:
 	EnergyDevice::GraphType current_graph;
 	QDate current_date;
 	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
+	bool is_electricity_view;
 
 private slots:
 	void toggleCurrency();

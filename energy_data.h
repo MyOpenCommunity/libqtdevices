@@ -55,7 +55,9 @@ class EnergyInterface : public sottoMenu
 Q_OBJECT
 public:
 	EnergyInterface(const QDomNode &config_node);
+	virtual void showPage();
 private:
+	Page *next_page;
 	void loadItems(const QDomNode &config_node);
 };
 

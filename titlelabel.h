@@ -72,4 +72,20 @@ public slots:
 	void handleScrollingTimer();
 };
 
+
+class TextOnImageLabel : public QLabel
+{
+Q_OBJECT
+public:
+	TextOnImageLabel(QWidget *parent, const QString &text = QString());
+	void setBackgroundImage(const QString &path);
+	void setInternalText(const QString &text);
+
+protected:
+	virtual void paintEvent(QPaintEvent *);
+
+private:
+	QString internal_text;
+};
+
 #endif

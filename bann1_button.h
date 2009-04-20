@@ -17,6 +17,7 @@ class sottoMenu;
 class BtButton;
 class Page;
 class QWidget;
+class TextOnImageLabel;
 
 
 #define BANPULS_BUT_DIM  60
@@ -128,6 +129,18 @@ class bannBut2Icon : public banner
 Q_OBJECT
 public:
 	bannBut2Icon(QWidget *);
+};
+
+
+class bannTextOnImage : public banner
+{
+Q_OBJECT
+public:
+	bannTextOnImage(QWidget *parent, const QString &text = QString());
+	void setInternalText(const QString &text);
+
+private:
+	TextOnImageLabel *label;
 };
 
 #endif // BANN1_BUTTON_H
