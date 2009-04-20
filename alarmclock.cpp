@@ -280,9 +280,7 @@ void AlarmClock::okTipo()
 void AlarmClock::setActive(bool a)
 {
 	_setActive(a);
-	QString value;
-	active ? value = "1" : value = "0";
-	setCfgValue("enabled", value, SET_SVEGLIA, serNum);
+	setCfgValue("enabled", active ? "1" : "0", SET_SVEGLIA, serNum);
 }
 
 void AlarmClock::_setActive(bool a)
