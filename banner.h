@@ -165,7 +165,7 @@ public:
 	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
 	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
 	 */
-	void setSerNum(int);
+	virtual void setSerNum(int);
 
 	/*!
 	 *  \brief Retrieves the serial number of the banner.

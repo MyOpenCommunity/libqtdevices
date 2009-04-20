@@ -48,6 +48,8 @@ public:
 	*/
 	void inizializza();
 
+	virtual void setSerNum(int num);
+
 public slots:
 /*!
 \brief Analizes \a Open \a frames coming form the system

@@ -34,6 +34,12 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	connect(alarm_clock, SIGNAL(alarmClockFired()), SLOT(setButtonIcon()));
 }
 
+void bannAlarmClock::setSerNum(int num)
+{
+	banner::setSerNum(num);
+	alarm_clock->setSerNum(num);
+}
+
 void bannAlarmClock::handleClose()
 {
 	// When the page of the alarmclock is closed, the alarm is always set as 'on'.
