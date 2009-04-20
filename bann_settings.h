@@ -37,7 +37,7 @@ class bannAlarmClock : public bann2But
 {
 Q_OBJECT
 public:
-	bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
+	bannAlarmClock(QWidget *parent, int hour, int minute, QString icon1,
 		QString icon2, QString icon3, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set

@@ -13,7 +13,7 @@
 #include <QDebug>
 
 
-bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int minute, QString icon1,
+bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString icon1,
 	QString icon2, QString icon3, int enabled, int tipo, int freq)
 	: bann2But(parent)
 {
@@ -22,7 +22,7 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, contdiff *diso, int hour, int mi
 	SetIcons(1, icon3);
 	Draw(); // Draw must be called before setAbil.. see impBeep
 
-	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), diso, hour, minute);
+	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 	sxButton->setChecked(enabled == 1);

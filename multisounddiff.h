@@ -85,31 +85,4 @@ signals:
 	void actSrcChanged(int, int);
 };
 
-
-//! Contenitore diffusione sonora/diffusione sonora multicanale per sveglia
-class contdiff : public QObject
-{
-Q_OBJECT
-public:
-	contdiff(SoundDiffusion *, MultiSoundDiffAlarm *);
-	void setParent(QWidget *);
-	void forceDraw();
-
-public slots:
-	//! Invoke proper hide method
-	void hide();
-	void show();
-
-private:
-	SoundDiffusion *ds;
-	MultiSoundDiffAlarm *dm;
-
-signals:
-	/*!
-	 *  \brief Emitted when the object is closed.
-	 */
-	void Closed();
-};
-
-
 #endif // MULTI_SOUNDDIFF_H

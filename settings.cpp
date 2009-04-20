@@ -43,15 +43,7 @@ void Settings::loadItems(const QDomNode &config_node)
 			int hour = getTextChild(item, "hour").toInt();
 			int minute = getTextChild(item, "minute").toInt();
 
-			contdiff *cont = 0;
-			if (type == AlarmClock::DI_SON)
-				// Use old or multichannel sd
-				if (bt_global::btmain->difSon)
-					cont = new contdiff(bt_global::btmain->difSon, NULL);
-				else if (bt_global::btmain->dm)
-					cont = new contdiff(NULL, bt_global::btmain->dm);
-
-			b = new bannAlarmClock(this, cont, hour, minute, img1, img2, img3, enabled, type, alarmset);
+			b = new bannAlarmClock(this, hour, minute, img1, img2, img3, enabled, type, alarmset);
 			break;
 		}
 		case SET_DATA_ORA:

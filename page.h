@@ -40,6 +40,9 @@ public:
 	// another page (see Antintrusion or SoundDiffusion)
 	Page(QWidget *parent=0);
 	virtual void inizializza();
+	// TODO: needed for sound diffusion in AlarmClock. To be removed
+	virtual void forceDraw() { }
+
 	static void setClients(Client *command, Client *request);
 
 	// A global way to send frames/init requests. Do not use these directly, prefer using

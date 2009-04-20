@@ -8,6 +8,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
+#include "sounddiffusion.h" // declare SoundDiffusion*
 
 #include <openwebnet.h>
 
@@ -25,7 +26,7 @@
 #include <assert.h>
 
 
-AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute)
+AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 {
 	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
@@ -86,15 +87,20 @@ AlarmClock::AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute)
 	dataOra->setGeometry(40,140,160,50);
 	dataOra->setFrameStyle(QFrame::Plain);
 	dataOra->setLineWidth(0);
-	difson = diso;
-	if (difson)
-		difson->hide();
 
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;
 	minuTimer = NULL;
 	freq = f;
 	type = t;
+
+	if (type == DI_SON)
+	{
+		if (bt_global::btmain->difSon)
+			difson = bt_global::btmain->difSon;
+		if (bt_global::btmain->dm)
+			difson = bt_global::btmain->dm;
+	}
 
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
@@ -251,8 +257,10 @@ void AlarmClock::okTipo()
 		handleClose();
 	else if (difson)
 	{
-		this->bannNavigazione->hide();
-		difson->setParent(this);
+		bannNavigazione->hide();
+		// reparent only if we have a multichannel sound diffusion
+		if (bt_global::btmain->dm)
+			difson->setParent(this);
 		connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
 		difson->forceDraw();
 
@@ -262,7 +270,7 @@ void AlarmClock::okTipo()
 		stazione = 0;
 		for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
 			volSveglia[idx] = -1;
-		difson->show();
+		difson->showPage();
 	}
 }
 
