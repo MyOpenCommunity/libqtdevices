@@ -117,8 +117,7 @@ bannBut2Icon::bannBut2Icon(QWidget *parent) : banner(parent)
 bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text) : banner(parent)
 {
 	label = new TextOnImageLabel(this, text);
-	const QString emtpy_label = IMG_PATH "empty.png";
-	label->setBackgroundImage(emtpy_label);
+	label->setBackgroundImage(bt_global::skin->getImage("empty_icon"));
 	label->setGeometry(BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y);
 	addItem(BUT1, MAX_WIDTH-BUT_DIM, 0, BUT_DIM ,BUT_DIM);
 	addItem(TEXT, 0, BUT_DIM, MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE - BUT_DIM);

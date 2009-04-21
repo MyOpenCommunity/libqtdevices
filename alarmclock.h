@@ -19,7 +19,6 @@
 #define AL_KEY "\125\252\125\252\125"
 #define SORG_PAR 2
 
-class contdiff;
 class BtButton;
 class bannFrecce;
 class timeScript;
@@ -62,7 +61,7 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(Type t, Freq f, contdiff *diso, int hour, int minute);
+	AlarmClock(Type t, Freq f, int hour, int minute);
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
@@ -174,7 +173,7 @@ private:
 	bool buzAbilOld;
 	unsigned int contaBuzzer;
 	QDateTime *oraSveglia;
-	contdiff *difson;
+	Page *difson;
 	int volSveglia[AMPLI_NUM];
 	bool gesFrameAbil, active, onceToGest;
 	QTimer *minuTimer,*aumVolTimer;

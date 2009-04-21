@@ -143,6 +143,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	int what = msg.what();
 
 	StatusList status_list;
+	status_list[DEVICE_ADDRESS] = where;
 	QVariant v;
 
 	if (what == DIM_CUMULATIVE_DAY || what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 ||

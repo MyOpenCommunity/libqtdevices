@@ -11,6 +11,7 @@
 #include "titlelabel.h"
 #include "skinmanager.h"
 #include "fontmanager.h" //bt_global::font
+#include "icondispatcher.h" //bt_global::icons_cache
 
 #include <QPainter>
 #include <QTextDocument>
@@ -118,7 +119,7 @@ void TextOnImageLabel::setInternalText(const QString &text)
 
 void TextOnImageLabel::setBackgroundImage(const QString &path)
 {
-	setPixmap(QPixmap(path));
+	setPixmap(*bt_global::icons_cache.getIcon(path));
 }
 
 void TextOnImageLabel::paintEvent(QPaintEvent *e)
