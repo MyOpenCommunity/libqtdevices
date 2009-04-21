@@ -22,6 +22,7 @@
 
 class OpenMsg;
 
+
 /**
  * This class parses the incoming frames for who = 18 (Energy Management) and sends
  * updates to widgets through status_changed() signal.
@@ -60,6 +61,7 @@ public:
 		DIM_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
 		DIM_DAY_GRAPH                = 56,    // read graph data for a specific day
 		DIM_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
+		DIM_CUMULATIVE_YEAR_GRAPH,  // read graph data for comulative year (as DIM_CURRENT, value doesn't matter)
 	};
 
 	enum GraphType
@@ -84,6 +86,8 @@ private:
 	QDate getDateFromFrame(OpenMsg &msg);
 	mutable QStringList buffer_frame;
 	int mode;
+
+	QMap<int, int> buffer_year_data; // a buffer used to store the graph data
 };
 
 

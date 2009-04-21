@@ -34,6 +34,9 @@ enum RequestCurrent
 EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), where)
 {
 	mode = _mode;
+
+	for (int i = 0; i < 12; ++i)
+		buffer_year_data[i] = 0;
 }
 
 void EnergyDevice::sendRequest(int what, bool use_compressed_init) const
@@ -191,6 +194,24 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		}
 		else
 			status_list[what] = v;
+
+		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
+		{
+			int index = 11;
+			if (what != DIM_CUMULATIVE_MONTH)
+			{
+				int month_distance = msg.whatSubArgN(1) - QDate::currentDate().month();
+				index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
+			}
+			qDebug() << "INDEX:" << index << "VAL: " << msg.whatArgN(0);
+			buffer_year_data[index] = msg.whatArgN(0);
+			GraphData data;
+			data.type = CUMULATIVE_YEAR;
+			data.graph = buffer_year_data;
+			QVariant v;
+			v.setValue(data);
+			status_list[DIM_CUMULATIVE_YEAR_GRAPH] = v;
+		}
 		emit status_changed(status_list);
 	}
 }
