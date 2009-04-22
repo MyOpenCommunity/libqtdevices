@@ -46,7 +46,10 @@ void attuatAutom::status_changed(QList<device_status*> sl)
 			case device_status::LIGHTS:
 				ds->read(device_status_light::ON_OFF_INDEX, curr_status);
 				qDebug("status = %d", curr_status.get_val());
-				if (!curr_status.get_val() && isActive())
+				// this avoids changing state when the same state arrives
+				// eg when in ACTIVE arrives ON, we must stay in ACTIVE
+				if ((!curr_status.get_val() && isActive()) ||
+					(curr_status.get_val() && !isActive()))
 				{
 					aggiorna = true;
 					impostaAttivo(isActive() ? 0 : 1);
