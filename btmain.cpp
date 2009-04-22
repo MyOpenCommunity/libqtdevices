@@ -415,7 +415,8 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
+			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED &&
+				!bt_global::display.isForcedOperativeMode())
 			{
 				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
 				// When the brightness is set to off in the old hardware the display

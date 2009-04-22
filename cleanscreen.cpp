@@ -4,6 +4,7 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "displaycontrol.h" // bt_global::display
 #include "main.h" // IMG_PATH
+#include "btmain.h" //bt_global::btmain
 
 #include <QLabel>
 
@@ -42,6 +43,10 @@ void CleanScreen::handleClose()
 {
 	bt_global::display.forceOperativeMode(false);
 	secs_timer.stop();
+	// restart screensaver machinery
+	// TODO: this should be removed as soon as BtMain screen saver code is better understood and
+	// refactored.
+	bt_global::btmain->freeze(false);
 	emit Closed();
 }
 
