@@ -43,6 +43,7 @@ public:
 
 	// To force (or to remove the forcing) the display to run in the operative mode.
 	void forceOperativeMode(bool enable);
+	bool isForcedOperativeMode();
 
 private:
 	struct DisplayData

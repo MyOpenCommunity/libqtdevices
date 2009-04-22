@@ -81,6 +81,11 @@ void DisplayControl::forceOperativeMode(bool enable)
 		setState(DISPLAY_OPERATIVE);
 }
 
+bool DisplayControl::isForcedOperativeMode()
+{
+	return forced_operative_mode;
+}
+
 void DisplayControl::setState(DisplayStatus status)
 {
 	if (!forced_operative_mode || forced_operative_mode && status == DISPLAY_OPERATIVE)
