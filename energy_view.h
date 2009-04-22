@@ -74,6 +74,7 @@ private:
 	QWidget *buildBannerWidget();
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
 	void convertGraphData(GraphData *v, int factor);
+	void setBannerPage(int status);
 
 	enum Widget
 	{
