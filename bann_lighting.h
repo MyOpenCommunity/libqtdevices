@@ -227,8 +227,6 @@ public:
 public slots:
 	void status_changed(QList<device_status*>);
 protected:
-	// TODO: rendere tempo una qstring!
-	char tempo[20];
 	void chiedi_stato();
 	int h, m, s, val;
 	QTimer *myTimer;
@@ -241,6 +239,7 @@ protected slots:
 	void update();
 private:
 	device *dev;
+	QString tempo;
 	void inizializza(bool forza=false);
 	 // This function mask the other overload of banner::SetIcons. I don't care about it.
 	void SetIcons(QString i1, QString i2, QString i3);

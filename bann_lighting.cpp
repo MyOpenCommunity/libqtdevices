@@ -741,18 +741,28 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, QString where, QSt
 	setAddress(where);
 	setSecondaryText("????");
 
-	// TODO: riscrivere utilizzando qt e c++!!
-	strncpy(tempo, t.isEmpty() ? t.toAscii().constData() : "0*0*0", sizeof(tempo));
-	char *ptr;
-	char tmp1[50];
-	strcpy(tmp1, tempo);
-	ptr = strtok(tmp1, "*");
-	h = strtol(ptr, NULL, 10);
-	ptr = strtok(NULL, "*");
-	m = strtol(ptr, NULL, 10);
-	ptr = strtok(NULL, "*");
-	s = strtol(ptr, NULL, 10);
-	val = 0;
+	// TODO: putting all 0's here we have a division by zero in Draw(). It must be configured
+	// in conf.xml, but anyway '0*0*1' seems a reasonable default (at least BTouch doesn't segfault...)
+	tempo = t.isEmpty() ? t : "0*0*1";
+
+	QStringList split_list = t.split("*");
+	switch (split_list.size())
+	{
+	case 3:
+		h = split_list.at(0).toInt();
+		m = split_list.at(1).toInt();
+		s = split_list.at(2).toInt();
+		break;
+	case 2:
+		h = split_list.at(0).toInt();
+		m = split_list.at(1).toInt();
+		s = 0;
+	case 1:
+		h = split_list.at(0).toInt();
+		m = 0;
+		s = 0;
+	}
+
 	qDebug("tempo = %d %d %d", h, m, s);
 	char tmp[50];
 	if (!h && !m)
