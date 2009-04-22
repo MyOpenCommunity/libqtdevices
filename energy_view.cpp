@@ -442,8 +442,6 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		case TimePeriodSelection::DAY:
 			dev->requestCumulativeDay(selection_date);
 			dev->requestCumulativeDayGraph(selection_date);
-			// The request for the current is automatically done by the timerEvent slot.
-			current_banner->setVisible(QDate::currentDate() == selection_date);
 			break;
 		case TimePeriodSelection::MONTH:
 			dev->requestCumulativeMonth(selection_date);
@@ -476,10 +474,10 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		}
 		showGraph(graph_type);
 	}
-	setBannerPage(status);
+	setBannerPage(status, selection_date);
 }
 
-void EnergyView::setBannerPage(int status)
+void EnergyView::setBannerPage(int status, const QDate &selection_date)
 {
 	QStackedWidget *w = static_cast<QStackedWidget*>(widget_container->widget(BANNER_WIDGET));
 
@@ -487,6 +485,8 @@ void EnergyView::setBannerPage(int status)
 	{
 	case TimePeriodSelection::DAY:
 		w->setCurrentIndex(DAILY_PAGE);
+		// The request for the current is automatically done by the timerEvent slot.
+		current_banner->setVisible(QDate::currentDate() == selection_date);
 		break;
 	case TimePeriodSelection::MONTH:
 		w->setCurrentIndex(MONTHLY_PAGE);
