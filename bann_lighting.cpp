@@ -5,6 +5,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" // createMsgOpen
+#include "icondispatcher.h" //bt_global::icons_cache
 
 #include <openwebnet.h> // class openwebnet
 
@@ -924,46 +925,38 @@ void attuatAutomTempNuovoF::SetIcons(QString i1, QString i2, QString i3)
 {
 	qDebug("attuatAutomTempNuovoF::SetIcons");
 
-	// TODO: verificare se e' possibile utilizzare qualcuna delle SetIcons o
-	// perlomeno la icon_dispatcher!
-	if (!Icon[0])
-		Icon[0] = new QPixmap();
-
 	int pos = i2.indexOf(".");
 	if (pos != -1)
-		Icon[0]->load(i2.left(pos) + "off.png");
+		Icon[0] = bt_global::icons_cache.getIcon(i2.left(pos) + "off.png");
 	else
-		qWarning() << "Cannot find dot on image " << i2;
-
-	if (!Icon[1])
-		Icon[1] = new QPixmap();
-
-	if (pos != -1)
-		Icon[1]->load(i2.left(pos) + "on.png");
-	else
-		qWarning() << "Cannot find dot on image " << i2;
-
-	if (!Icon[2])
-		Icon[2] = new QPixmap();
-	Icon[2]->load(i3);
-	QString pressIconName = getPressName(i3);
-	if (QFile::exists(pressIconName))
 	{
-		if (!pressIcon[2])
-			pressIcon[2] = new QPixmap();
-		pressIcon[2]->load(pressIconName);
+		qWarning() << "Cannot find dot on image " << i2;
+		Icon[0] = bt_global::icons_cache.getIcon(ICON_VUOTO);
 	}
 
+	if (pos != -1)
+		Icon[1] = bt_global::icons_cache.getIcon(i2.left(pos) + "on.png");
+	else
+	{
+		qWarning() << "Cannot find dot on image " << i2;
+		Icon[1] = bt_global::icons_cache.getIcon(ICON_VUOTO);
+	}
+
+	Icon[2] = bt_global::icons_cache.getIcon(i3);
+
+	QString pressIconName = getPressName(i3);
+	pressIcon[2] = bt_global::icons_cache.getIcon(pressIconName);
+
+	pos = i1.indexOf(".");
 	for (int i = 0; i < NTIMEICONS; i++)
 	{
-		if (!Icon[3 + i])
-			Icon[3 + i] = new QPixmap();
-
-		pos = i1.indexOf(".");
 		if (pos != -1)
-			Icon[0]->load(i1.left(pos) + QString::number(i) + ".png");
+			Icon[3 + i] = bt_global::icons_cache.getIcon(i1.left(pos) + QString::number(i) + ".png");
 		else
+		{
 			qWarning() << "Cannot find dot on image " << i2;
+			Icon[3 + i] = bt_global::icons_cache.getIcon(ICON_VUOTO);
+		}
 	}
 }
 
