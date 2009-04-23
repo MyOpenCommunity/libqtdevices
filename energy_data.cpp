@@ -200,7 +200,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	bool currency_enabled = (getElement(config_node, "currency/ab").text().toInt() == 1);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		bannTextOnImage *b = new bannTextOnImage(this);
+		bannEnergyInterface *b = new bannEnergyInterface(this);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
 		next_page = new EnergyView(measure, energy_type, addr, mode, currency_enabled);
@@ -208,10 +208,11 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		b->setInternalText("---");
+		b->setUnitMeasure(measure);
+
 		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
 		connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-		// TODO: retrieve the address from the device instead of taking it from conf.xml
-		banner_hash[addr] = b;
+		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
 		conversion_factor = (mode == 1) ? 1000 : 1;
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
@@ -224,37 +225,6 @@ void EnergyInterface::showPage()
 		next_page->showPage();
 	else
 		Page::showPage();
-}
-
-void EnergyInterface::status_changed(const StatusList &status_list)
-{
-	StatusList::const_iterator it = status_list.constBegin();
-	QString address = findAddress(status_list);
-	while (it != status_list.constEnd())
-	{
-		if (it.key() == EnergyDevice::DIM_CURRENT)
-		{
-			bannTextOnImage *b = banner_hash[address];
-			b->setInternalText(QString("%1·%2").arg(it.value().toInt()/
-				static_cast<float>(conversion_factor), 0, 'f', 3)
-				.arg(measure));
-			b->Draw();
-			break;
-		}
-		++it;
-	}
-}
-
-QString EnergyInterface::findAddress(const StatusList &sl)
-{
-	StatusList::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
-	{
-		if (it.key() == device::DEVICE_ADDRESS)
-			return it.value().toString();
-		++it;
-	}
-	return QString();
 }
 
 void EnergyInterface::changeConsRate(float cons)

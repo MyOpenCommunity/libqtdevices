@@ -65,12 +65,10 @@ public:
 	virtual void showPage();
 
 public slots:
-	void status_changed(const StatusList &status_list);
 	void changeProdRate(float prod);
 	void changeConsRate(float cons);
 
 private:
-	QString findAddress(const StatusList &sl);
 	void loadItems(const QDomNode &config_node);
 	Page *next_page;
 	QHash<QString, bannTextOnImage*> banner_hash;

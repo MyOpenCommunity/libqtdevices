@@ -48,12 +48,6 @@ friend class TestDevice;
 Q_OBJECT
 
 public:
-	// define common indexes for StatusList, useful for all devices
-	enum CommonIndexes
-	{
-		DEVICE_ADDRESS = -2,
-	};
-
 	//! Init device: send messages initializing data
 	virtual void init(bool force = false);
 	//! Set where
