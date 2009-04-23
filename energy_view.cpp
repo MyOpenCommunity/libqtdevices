@@ -265,6 +265,7 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	if (!graph_data_cache.contains(t))
 		graph_data_cache[t] = new GraphCache;
 
+	qDebug() << "saving graph type " << t << " in date " << d->date;
 	GraphCache *cache = graph_data_cache[t];
 	cache->insert(d->date, d);
 	return d;
@@ -333,6 +334,28 @@ void EnergyView::status_changed(const StatusList &status_list)
 			}
 			break;
 		}
+		case EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH:
+		{
+			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_MONTH);
+			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
+				&& d->date.year() == current_date.year())
+			{
+				convertGraphData(d, conversion_factor);
+				graph->setData(d->graph);
+			}
+			break;
+		}
+		case EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH:
+		{
+			// TODO: see how to save the year graph...
+			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
+			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
+			{
+				convertGraphData(d, conversion_factor);
+				graph->setData(d->graph);
+			}
+			break;
+		}
 		}
 		++it;
 	}
@@ -356,6 +379,8 @@ void EnergyView::showGraph(int graph_type)
 	switch (current_graph)
 	{
 	case EnergyDevice::DAILY_AVERAGE:
+		current_date.setDate(current_date.year(), current_date.month(), 1);
+		// fall below...
 	case EnergyDevice::CUMULATIVE_DAY:
 		graph->init(24, unit_measure + tr("/hours"));
 		break;
@@ -365,8 +390,11 @@ void EnergyView::showGraph(int graph_type)
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
 		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
+		// fix current date, otherwise the graph won't show up
+		current_date.setDate(current_date.year(), current_date.month(), 1);
 		break;
 	}
+	qDebug() << "showing graph of type " << graph_type << " for date " << current_date;
 
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(current_date))
 		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
