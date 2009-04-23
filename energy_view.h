@@ -66,6 +66,8 @@ public:
 	EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled);
 	~EnergyView();
 	virtual void inizializza();
+	void setProdFactor(float p);
+	void setConsFactor(float c);
 
 protected:
 	void timerEvent(QTimerEvent *);
@@ -82,7 +84,6 @@ private:
 		GRAPH_WIDGET = 1
 	};
 
-	// TODO: this must be changed once the correct banner is ready
 	bannTextOnImage *current_banner, *daily_av_banner;
 	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
 	TimePeriodSelection *time_period;
@@ -94,6 +95,7 @@ private:
 	EnergyDevice::GraphType current_graph;
 	QDate current_date;
 	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
+	float cons_factor, prod_factor;
 	bool is_electricity_view;
 
 private slots:

@@ -10,6 +10,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "transitionwidget.h"
 #include "bann1_button.h" // bannTextOnImage
+#include "energy_data.h" // EnergyInterface
 
 #include <QDebug>
 #include <QLabel>
@@ -499,6 +500,16 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 
 void EnergyView::toggleCurrency()
 {
-	qWarning("Not yet implemented");
+	EnergyInterface::toggleCurrencyView();
+}
+
+void EnergyView::setProdFactor(float p)
+{
+	prod_factor = p;
+}
+
+void EnergyView::setConsFactor(float c)
+{
+	cons_factor = c;
 }
 

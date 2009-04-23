@@ -8,6 +8,7 @@
 class bannTextOnImage;
 class banner;
 class QDomNode;
+class EnergyView;
 
 
 class EnergyData : public sottoMenu
@@ -63,6 +64,8 @@ Q_OBJECT
 public:
 	EnergyInterface(const QDomNode &config_node);
 	virtual void showPage();
+	static void toggleCurrencyView();
+	static bool isCurrencyView();
 
 public slots:
 	void changeProdRate(float prod);
@@ -71,10 +74,12 @@ public slots:
 private:
 	void loadItems(const QDomNode &config_node);
 	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
-	Page *next_page;
+	EnergyView *next_page;
 	QHash<QString, bannTextOnImage*> banner_hash;
+	QList<EnergyView*> views;
 	int conversion_factor;
 	QString measure;
+	static bool is_currency_view;
 };
 
 #endif // ENERGY_DATA_H

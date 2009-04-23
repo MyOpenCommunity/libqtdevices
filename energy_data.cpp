@@ -184,6 +184,8 @@ void EnergyCost::saveCostAndProd()
 }
 
 
+bool EnergyInterface::is_currency_view = false;
+
 EnergyInterface::EnergyInterface(const QDomNode &config_node)
 {
 	loadItems(config_node);
@@ -209,6 +211,8 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		b->setId(getTextChild(item, "id").toInt());
 		b->setInternalText("---");
 		b->setUnitMeasure(measure);
+
+		views.append(next_page);
 
 		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
 		connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -252,8 +256,32 @@ void EnergyInterface::showPage()
 
 void EnergyInterface::changeConsRate(float cons)
 {
+	for (int i = 0; i < views.size(); ++i)
+		views[i]->setConsFactor(cons);
+	for (int i = 0; i < elencoBanner.size(); ++i)
+	{
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		b->setConsFactor(cons);
+	}
 }
 
 void EnergyInterface::changeProdRate(float prod)
 {
+	for (int i = 0; i < views.size(); ++i)
+		views[i]->setProdFactor(prod);
+	for (int i = 0; i < elencoBanner.size(); ++i)
+	{
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		b->setProdFactor(prod);
+	}
+}
+
+void EnergyInterface::toggleCurrencyView()
+{
+	is_currency_view = !is_currency_view;
+}
+
+bool EnergyInterface::isCurrencyView()
+{
+	return is_currency_view;
 }
