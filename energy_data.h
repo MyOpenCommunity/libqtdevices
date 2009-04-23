@@ -70,6 +70,7 @@ public slots:
 
 private:
 	void loadItems(const QDomNode &config_node);
+	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
 	Page *next_page;
 	QHash<QString, bannTextOnImage*> banner_hash;
 	int conversion_factor;

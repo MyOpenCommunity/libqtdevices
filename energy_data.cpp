@@ -197,13 +197,13 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	int mode = getTextChild(config_node, "mode").toInt();
 	QString energy_type = getTextChild(config_node, "descr");
 	measure = getTextChild(config_node, "measure");
-	bool currency_enabled = (getElement(config_node, "currency/ab").text().toInt() == 1);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		bannEnergyInterface *b = new bannEnergyInterface(this);
+		bool is_currency_enabled = checkTypeForCurrency(getTextChild(item, "type"), config_node);
+		bannEnergyInterface *b = new bannEnergyInterface(this, is_currency_enabled);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
-		next_page = new EnergyView(measure, energy_type, addr, mode, currency_enabled);
+		next_page = new EnergyView(measure, energy_type, addr, mode, is_currency_enabled);
 		b->connectDxButton(next_page);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
@@ -217,6 +217,29 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
 	}
+}
+
+bool EnergyInterface::checkTypeForCurrency(const QString &type, const QDomNode &conf)
+{
+	bool currency_enabled = (getElement(conf, "currency/ab").text().toInt() == 1);
+	QString node_path;
+	switch (type.toInt())
+	{
+	case 0: //consumption
+		node_path = "cons/ab";
+		break;
+	case 1: // production
+		node_path = "prod/ab";
+		break;
+	}
+	QDomElement node = getElement(conf, node_path);
+	if (!node.isNull())
+	{
+		bool cons_ab = (node.text().toInt() == 1);
+		return currency_enabled && cons_ab;
+	}
+	else
+		return false;
 }
 
 void EnergyInterface::showPage()

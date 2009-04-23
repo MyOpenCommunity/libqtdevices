@@ -130,8 +130,9 @@ void bannTextOnImage::setInternalText(const QString &text)
 }
 
 
-bannEnergyInterface::bannEnergyInterface(QWidget *parent) : bannTextOnImage(parent)
+bannEnergyInterface::bannEnergyInterface(QWidget *parent, bool currency) : bannTextOnImage(parent)
 {
+	currency_enabled = currency;
 }
 
 void bannEnergyInterface::setProdFactor(float prod)

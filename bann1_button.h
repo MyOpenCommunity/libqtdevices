@@ -154,7 +154,7 @@ public:
 		CONSUMPTION,
 	};
 
-	bannEnergyInterface(QWidget *parent);
+	bannEnergyInterface(QWidget *parent, bool currency);
 	void setProdFactor(float prod);
 	void setConsFactor(float cons);
 	void setType(EnergyFactorType t);
@@ -168,6 +168,7 @@ private:
 	EnergyFactorType type;
 	float prod_factor, cons_factor;
 	int device_value;
+	bool currency_enabled;
 	QString measure;
 };
 
