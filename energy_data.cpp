@@ -34,6 +34,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 	{
 		SkinContext cont(getTextChild(type, "cid").toInt());
 		banner *b;
+		EnergyCost *ec_cost = 0;
 		if (getElement(type, "currency/ab").text().toInt() == 1)
 		{
 			b = new bannOnOff(this);
@@ -41,7 +42,8 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 			b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
 					QString(), bt_global::skin->getImage("energy_type"));
 
-			b->connectSxButton(new EnergyCost(type, b->getSerNum()));
+			ec_cost = new EnergyCost(type, b->getSerNum());
+			b->connectSxButton(ec_cost);
 		}
 		else
 		{
@@ -50,7 +52,13 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 			b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
 		}
 
-		b->connectDxButton(new EnergyInterface(type));
+		EnergyInterface *en_interf = new EnergyInterface(type);
+		b->connectDxButton(en_interf);
+		if (ec_cost)
+		{
+			connect(ec_cost, SIGNAL(consValueChanged(float)), en_interf, SLOT(changeConsRate(float)));
+			connect(ec_cost, SIGNAL(prodValueChanged(float)), en_interf, SLOT(changeProdRate(float)));
+		}
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -169,12 +177,14 @@ void EnergyCost::saveCostAndProd()
 	data["cons/rate"] = loc.toString(cons_rate, 'f', 3);
 	data["prod/rate"] = loc.toString(prod_rate, 'f', 3);
 	setCfgValue(data, ENERGY_TYPE, serial_number);
-	// TODO: save values in the xml conf file.
+
+	emit prodValueChanged(prod_rate);
+	emit consValueChanged(cons_rate);
 	emit Closed();
 }
 
 
-EnergyInterface::EnergyInterface(const QDomNode &config_node) : sottoMenu(0, 1)
+EnergyInterface::EnergyInterface(const QDomNode &config_node)
 {
 	loadItems(config_node);
 	if (elencoBanner.size() == 1)
@@ -245,4 +255,12 @@ QString EnergyInterface::findAddress(const StatusList &sl)
 		++it;
 	}
 	return QString();
+}
+
+void EnergyInterface::changeConsRate(float cons)
+{
+}
+
+void EnergyInterface::changeProdRate(float prod)
+{
 }

@@ -50,6 +50,10 @@ private:
 	int n_decimal;
 	banner *addBanner(const QDomNode &config_node, QString desc, float& rate);
 	void showValue(banner *b, float value);
+
+signals:
+	void prodValueChanged(float);
+	void consValueChanged(float);
 };
 
 
@@ -62,6 +66,8 @@ public:
 
 public slots:
 	void status_changed(const StatusList &status_list);
+	void changeProdRate(float prod);
+	void changeConsRate(float cons);
 
 private:
 	QString findAddress(const StatusList &sl);
