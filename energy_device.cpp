@@ -312,3 +312,23 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	int year = month <= current.month() ? current.year() : current.year() - 1;
 	return QDate(year, month, day);
 }
+
+float EnergyDevice::convertToRawData(int bt_bus_data, EnergyDevice::EnergyTypology type)
+{
+	float factor;
+	switch (type)
+	{
+	case DEFAULT_ENERGY:
+		factor = 10.;
+		break;
+	case ELECTRICITY_CURRENT:
+		factor = 1000.;
+		break;
+	}
+	return bt_bus_data / factor;
+}
+
+float EnergyDevice::convertToMoney(float raw_data, float money_factor)
+{
+	return raw_data / money_factor;
+}
