@@ -289,23 +289,30 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	if (!graph_data_cache.contains(t))
 		graph_data_cache[t] = new GraphCache;
 
-	qDebug() << "saving graph type " << t << " in date " << d->date;
 	GraphCache *cache = graph_data_cache[t];
 	QString key = dateToKey(d->date, t);
 	cache->insert(key, d);
 	return d;
 }
 
-void EnergyView::convertGraphData(GraphData *v, int factor)
+void EnergyView::convertGraphData(GraphData *gd)
 {
-	QMap<int, int> &data = v->graph;
+	// convert to raw data
+	QMap<int, int> &data = gd->graph;
 	foreach(int i, data)
-		data[i] /= factor;
+		data[i] = EnergyConversions::convertToRawData(data[i]);
+
+	// convert to economic data
+	if (EnergyInterface::isCurrencyView())
+	{
+		float factor = is_production ? prod_factor : cons_factor;
+		foreach(int i, data)
+			data[i] = EnergyConversions::convertToMoney(data[i], factor);
+	}
 }
 
 void EnergyView::status_changed(const StatusList &status_list)
 {
-	int conversion_factor = is_electricity_view ? 1000 : 1;
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
@@ -334,7 +341,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
 			{
-				convertGraphData(d, conversion_factor);
+				convertGraphData(d);
 				graph->setData(d->graph);
 			}
 			break;
@@ -344,7 +351,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
 			{
-				convertGraphData(d, conversion_factor);
+				convertGraphData(d);
 				graph->setData(d->graph);
 			}
 			break;
@@ -355,7 +362,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year())
 			{
-				convertGraphData(d, conversion_factor);
+				convertGraphData(d);
 				graph->setData(d->graph);
 			}
 			break;
@@ -366,7 +373,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
 			{
-				convertGraphData(d, conversion_factor);
+				convertGraphData(d);
 				graph->setData(d->graph);
 			}
 			break;
@@ -385,11 +392,16 @@ void EnergyView::backClick()
 		showBannerWidget();
 }
 
+void EnergyView::updateCurrentGraph()
+{
+	// TODO: understand how to update the current graph without graph_type information
+}
+
 void EnergyView::showGraph(int graph_type)
 {
-	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
-
 	current_widget = GRAPH_WIDGET;
+
+	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
 	current_date = time_period->date();
 	switch (current_graph)
@@ -406,11 +418,14 @@ void EnergyView::showGraph(int graph_type)
 		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
 		break;
 	}
-	qDebug() << "showing graph of type " << graph_type << " for date " << current_date;
 
 	QString key = dateToKey(current_date, current_graph);
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
-		graph->setData(graph_data_cache[current_graph]->object(key)->graph);
+	{
+		GraphData *d = graph_data_cache[current_graph]->object(key);
+		convertGraphData(d);
+		graph->setData(d->graph);
+	}
 
 	initTransition();
 	widget_container->setCurrentIndex(current_widget);
@@ -544,6 +559,8 @@ void EnergyView::toggleCurrency()
 	EnergyInterface::toggleCurrencyView();
 	if (current_widget == BANNER_WIDGET)
 		updateBanners();
+	else if (current_widget == GRAPH_WIDGET)
+		updateCurrentGraph();
 }
 
 void EnergyView::updateBanners()

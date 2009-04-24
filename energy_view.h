@@ -85,10 +85,11 @@ protected:
 private:
 	QWidget *buildBannerWidget();
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
-	void convertGraphData(GraphData *v, int factor);
+	void convertGraphData(GraphData *gd);
 	void setBannerPage(int status, const QDate &selection_date);
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
 	void updateBanners();
+	void updateCurrentGraph();
 
 	enum Widget
 	{
