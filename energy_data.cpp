@@ -71,7 +71,10 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 	QDomElement currency_node = getElement(config_node, "currency");
 	assert(!currency_node.isNull() && "currency node null!");
 
-	delta = loc.toFloat(getTextChild(currency_node, "delta"));
+	bool ok = true;
+	delta = loc.toFloat(getTextChild(currency_node, "delta"), &ok);
+	if (!ok)
+		qFatal("Delta is in wrong format, you should use ',' instead of '.'");
 
 	QString unit_measure = getTextChild(currency_node, "symbol") + "/" +
 		getTextChild(config_node, "measure");
@@ -119,7 +122,10 @@ banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& 
 		bann2ButLab *b = new bann2ButLab(this);
 		b->SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"));
 
-		rate = loc.toFloat(getTextChild(config_node, "rate"));
+		bool ok;
+		rate = loc.toFloat(getTextChild(config_node, "rate"), &ok);
+		if (!ok)
+			qFatal("Rate is in wrong format, you should use ',' instead of '.'");
 		showValue(b, rate);
 		b->setSecondaryText(desc);
 		b->Draw();
@@ -219,12 +225,27 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		b->setInternalText("---");
 		b->setUnitMeasure(measure);
 
+		// set production/consumption rates
+		QDomElement prod_node = getElement(config_node, "prod/rate");
+		if (!prod_node.isNull())
+		{
+			float rate = loc.toFloat(prod_node.text());
+			next_page->setProdFactor(rate);
+			b->setProdFactor(rate);
+		}
+		QDomElement cons_node = getElement(config_node, "cons/rate");
+		if (!cons_node.isNull())
+		{
+			float rate = loc.toFloat(cons_node.text());
+			next_page->setConsFactor(rate);
+			b->setConsFactor(rate);
+		}
+
 		views.append(next_page);
 
 		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
 		connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
-		conversion_factor = (mode == 1) ? 1000 : 1;
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
 	}
