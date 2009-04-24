@@ -160,7 +160,7 @@ public:
 	 *     enabled for this banner
 	 * \param is_prod True if the data must be interpreted as production, false for consumption
 	 */
-	bannEnergyInterface(QWidget *parent, const QString &_currency_symbol, bool is_prod);
+	bannEnergyInterface(QWidget *parent, const QString &_currency_symbol, bool is_prod, bool is_ele);
 	void setProdFactor(float prod);
 	void setConsFactor(float cons);
 	void setType(EnergyFactorType t);
@@ -176,7 +176,7 @@ private:
 	int device_value;
 	QString currency_symbol;
 	QString measure;
-	bool is_production;
+	bool is_production, is_electricity;
 };
 
 #endif // BANN1_BUTTON_H

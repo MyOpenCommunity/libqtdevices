@@ -215,7 +215,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 
 		bool is_production = (getElement(item, "type").text().toInt() == 1);
 
-		bannEnergyInterface *b = new bannEnergyInterface(this, currency, is_production);
+		bannEnergyInterface *b = new bannEnergyInterface(this, currency, is_production, mode == 1);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
 		next_page = new EnergyView(measure, energy_type, addr, mode, currency, is_production);

@@ -3,6 +3,9 @@
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, ..
 #include "titlelabel.h" // TextOnImageLabel
 #include "skinmanager.h" // bt_global::skin
+#include "energy_data.h" // EnergyInterface
+
+#include <QLocale>
 
 #define BUT_DIM 60
 #define BUTONDX_H_SCRITTA 20
@@ -16,6 +19,10 @@
 #define BANNBUT2ICON_ICON_DIM_X 60
 #define BANNBUT2ICON_ICON_DIM_Y 60
 
+namespace
+{
+	QLocale loc(QLocale::Italian);
+}
 
 bannPuls::bannPuls(QWidget *parent) : banner(parent)
 {
@@ -131,10 +138,12 @@ void bannTextOnImage::setInternalText(const QString &text)
 
 
 bannEnergyInterface::bannEnergyInterface(QWidget *parent, const QString &_currency_symbol,
-	bool is_prod) : bannTextOnImage(parent)
+	bool is_prod, bool is_ele) : bannTextOnImage(parent)
 {
 	currency_symbol = _currency_symbol;
 	is_production = is_prod;
+	is_electricity = is_ele;
+	device_value = 0;
 }
 
 void bannEnergyInterface::setProdFactor(float prod)
@@ -161,11 +170,22 @@ void bannEnergyInterface::setUnitMeasure(const QString &m)
 
 void bannEnergyInterface::updateText()
 {
-	int conversion_factor = 1;
-	// TODO: use locale to set the ',' on float strings
-	setInternalText(QString("%1·%2").arg(device_value/
-		static_cast<float>(conversion_factor), 0, 'f', 3)
-		.arg(measure));
+	if (device_value)
+	{
+		float data = EnergyConversions::convertToRawData(device_value,
+			is_electricity ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
+		float factor = is_production ? prod_factor : cons_factor;
+		QString str = measure;
+		if (EnergyInterface::isCurrencyView())
+		{
+			data = EnergyConversions::convertToMoney(data, factor);
+			str = currency_symbol;
+		}
+
+		setInternalText(QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str));
+	}
+	else
+		setInternalText("---");
 }
 
 void bannEnergyInterface::status_changed(const StatusList &status_list)
