@@ -17,7 +17,7 @@ class QLabel;
 class QStackedWidget;
 class QSignalMapper;
 
-typedef QCache<QDate, GraphData> GraphCache;
+typedef QCache<QString, GraphData> GraphCache;
 
 
 class TimePeriodSelection : public QWidget
@@ -77,6 +77,7 @@ private:
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
 	void convertGraphData(GraphData *v, int factor);
 	void setBannerPage(int status, const QDate &selection_date);
+	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
 
 	enum Widget
 	{

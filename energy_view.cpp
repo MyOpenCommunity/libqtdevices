@@ -258,6 +258,21 @@ void EnergyView::inizializza()
 	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
+QString EnergyView::dateToKey(const QDate &date, EnergyDevice::GraphType t)
+{
+	switch (t)
+	{
+	case EnergyDevice::CUMULATIVE_MONTH:
+	case EnergyDevice::DAILY_AVERAGE:
+		return date.toString("yyyyMM");
+	case EnergyDevice::CUMULATIVE_YEAR:
+		return "";
+	case EnergyDevice::CUMULATIVE_DAY:
+	default:
+		return date.toString("yyyyMMdd");
+	}
+}
+
 GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t)
 {
 	Q_ASSERT_X(v.canConvert<GraphData>(), "EnergyView::saveGraphInCache", "Cannot convert graph data");
@@ -267,7 +282,8 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 	qDebug() << "saving graph type " << t << " in date " << d->date;
 	GraphCache *cache = graph_data_cache[t];
-	cache->insert(d->date, d);
+	QString key = dateToKey(d->date, t);
+	cache->insert(key, d);
 	return d;
 }
 
@@ -379,8 +395,6 @@ void EnergyView::showGraph(int graph_type)
 	switch (current_graph)
 	{
 	case EnergyDevice::DAILY_AVERAGE:
-		current_date.setDate(current_date.year(), current_date.month(), 1);
-		// fall below...
 	case EnergyDevice::CUMULATIVE_DAY:
 		graph->init(24, unit_measure + tr("/hours"));
 		break;
@@ -390,14 +404,13 @@ void EnergyView::showGraph(int graph_type)
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
 		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
-		// fix current date, otherwise the graph won't show up
-		current_date.setDate(current_date.year(), current_date.month(), 1);
 		break;
 	}
 	qDebug() << "showing graph of type " << graph_type << " for date " << current_date;
 
-	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(current_date))
-		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
+	QString key = dateToKey(current_date, current_graph);
+	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
+		graph->setData(graph_data_cache[current_graph]->object(key)->graph);
 
 	initTransition();
 	widget_container->setCurrentIndex(current_widget);
