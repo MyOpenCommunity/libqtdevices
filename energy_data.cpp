@@ -2,7 +2,6 @@
 #include "main.h" // IMG_PATH
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann2_buttons.h" // bann2But, bannOnOff
-#include "bann1_button.h" // bannPuls, bannTextOnImage
 #include "energy_view.h" // EnergyView
 #include "skinmanager.h" // bt_global::skin, SkinContext
 #include "generic_functions.h" // setCfgValue
@@ -312,4 +311,73 @@ void EnergyInterface::toggleCurrencyView()
 bool EnergyInterface::isCurrencyView()
 {
 	return is_currency_view;
+}
+
+
+bannEnergyInterface::bannEnergyInterface(QWidget *parent, const QString &_currency_symbol,
+	bool is_prod, bool is_ele) : bannTextOnImage(parent)
+{
+	currency_symbol = _currency_symbol;
+	is_production = is_prod;
+	is_electricity = is_ele;
+	device_value = 0;
+}
+
+void bannEnergyInterface::setProdFactor(float prod)
+{
+	prod_factor = prod;
+	updateText();
+}
+
+void bannEnergyInterface::setConsFactor(float cons)
+{
+	cons_factor = cons;
+	updateText();
+}
+
+void bannEnergyInterface::setType(EnergyFactorType t)
+{
+	type = t;
+}
+
+void bannEnergyInterface::setUnitMeasure(const QString &m)
+{
+	measure = m;
+}
+
+void bannEnergyInterface::updateText()
+{
+	if (device_value)
+	{
+		float data = EnergyConversions::convertToRawData(device_value,
+			is_electricity ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
+		float factor = is_production ? prod_factor : cons_factor;
+		QString str = measure;
+		if (EnergyInterface::isCurrencyView())
+		{
+			data = EnergyConversions::convertToMoney(data, factor);
+			str = currency_symbol;
+		}
+
+		setInternalText(QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str));
+	}
+	else
+		setInternalText("---");
+}
+
+void bannEnergyInterface::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == EnergyDevice::DIM_CURRENT)
+		{
+			device_value = it.value().toInt();
+			updateText();
+			// TODO: is this necessary?
+			Draw();
+			break;
+		}
+		++it;
+	}
 }

@@ -2,10 +2,10 @@
 #define ENERGY_DATA_H
 
 #include "sottomenu.h"
+#include "bann1_button.h" // bannPuls, bannTextOnImage
 
 #include <QHash>
 
-class bannTextOnImage;
 class banner;
 class QDomNode;
 class EnergyView;
@@ -82,4 +82,39 @@ private:
 	static bool is_currency_view;
 };
 
+
+class bannEnergyInterface : public bannTextOnImage
+{
+Q_OBJECT
+public:
+	enum EnergyFactorType
+	{
+		PRODUCTION = 0,
+		CONSUMPTION,
+	};
+
+	/**
+	 * \param parent The parent widget
+	 * \param _currency_symbol The symbol to use to show economic data. If it's null, then currency is not
+	 *     enabled for this banner
+	 * \param is_prod True if the data must be interpreted as production, false for consumption
+	 */
+	bannEnergyInterface(QWidget *parent, const QString &_currency_symbol, bool is_prod, bool is_ele);
+	void setProdFactor(float prod);
+	void setConsFactor(float cons);
+	void setType(EnergyFactorType t);
+	void setUnitMeasure(const QString &m);
+
+public slots:
+	void status_changed(const StatusList &status_list);
+
+private:
+	void updateText();
+	EnergyFactorType type;
+	float prod_factor, cons_factor;
+	int device_value;
+	QString currency_symbol;
+	QString measure;
+	bool is_production, is_electricity;
+};
 #endif // ENERGY_DATA_H
