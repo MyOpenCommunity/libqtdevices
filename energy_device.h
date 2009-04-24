@@ -30,8 +30,8 @@ namespace EnergyConversions
 		ELECTRICITY_CURRENT,       // specific conversion for current electricity
 	};
 
-	inline float convertToRawData(int bt_bus_data, EnergyTypology type = DEFAULT_ENERGY);
-	inline float convertToMoney(float raw_data, float money_factor);
+	float convertToRawData(int bt_bus_data, EnergyTypology type = DEFAULT_ENERGY);
+	float convertToMoney(float raw_data, float money_factor);
 }
 
 /**

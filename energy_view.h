@@ -88,6 +88,7 @@ private:
 	void convertGraphData(GraphData *v, int factor);
 	void setBannerPage(int status, const QDate &selection_date);
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
+	void updateBanners();
 
 	enum Widget
 	{
@@ -97,6 +98,8 @@ private:
 
 	bannTextOnImage *current_banner, *daily_av_banner;
 	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
+	int current_value, daily_av_value;
+	int cumulative_day_value, cumulative_month_value, cumulative_year_value;
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	Widget current_widget;

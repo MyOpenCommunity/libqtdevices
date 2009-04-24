@@ -308,28 +308,18 @@ void EnergyView::status_changed(const StatusList &status_list)
 		switch (it.key())
 		{
 		case EnergyDevice::DIM_CUMULATIVE_DAY:
-			cumulative_day_banner->setInternalText(QString("%1 %2")
-				.arg(it.value().toInt()/conversion_factor)
-				.arg(unit_measure));
-			cumulative_day_banner->Draw();
+			cumulative_day_value = it.value().toInt();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_MONTH:
-			cumulative_month_banner->setInternalText(QString("%1 %2")
-				.arg(it.value().toInt()/conversion_factor)
-				.arg(unit_measure));
-			cumulative_month_banner->Draw();
+			cumulative_month_value = it.value().toInt();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
-			cumulative_year_banner->setInternalText(QString("%1 %2")
-				.arg(it.value().toInt()/conversion_factor)
-				.arg(unit_measure));
-			cumulative_year_banner->Draw();
+			cumulative_year_value = it.value().toInt();
 			break;
 		case EnergyDevice::DIM_CURRENT:
-			current_banner->setInternalText(QString("%1·kW").arg(it.value().toInt()/
-				static_cast<float>(conversion_factor), 0, 'f', 3));
-			current_banner->Draw();
+			current_value = it.value().toInt();
 			break;
+		// TODO: what about daily average banner? where do I take the value?
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE);
@@ -379,6 +369,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		}
 		++it;
 	}
+	updateBanners();
 }
 
 void EnergyView::backClick()
@@ -546,6 +537,44 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
+	if (current_widget == BANNER_WIDGET)
+		updateBanners();
+}
+
+void EnergyView::updateBanners()
+{
+	// TODO: how to get the correct energy type (electricity current or default)?
+	EnergyConversions::convertToRawData(cumulative_day_value);
+	float day = EnergyConversions::convertToRawData(cumulative_day_value);
+	float current = EnergyConversions::convertToRawData(current_value);
+	float month = EnergyConversions::convertToRawData(cumulative_month_value);
+	float year = EnergyConversions::convertToRawData(cumulative_year_value);
+	float average = EnergyConversions::convertToRawData(daily_av_value);
+	QString str = unit_measure;
+
+	if (EnergyInterface::isCurrencyView())
+	{
+		// TODO: use the correct factor (cons or prod)
+		day = EnergyConversions::convertToMoney(day, 1.);
+		current = EnergyConversions::convertToMoney(current, 1.);
+		month = EnergyConversions::convertToMoney(month, 1.);
+		year = EnergyConversions::convertToMoney(year, 1.);
+		average = EnergyConversions::convertToMoney(average, 1.);
+	}
+
+	// TODO: correct locale (use ',' instead of '.' for floats
+	// TODO: use the currency value instead of unit_measure
+	cumulative_day_banner->setInternalText(QString("%1 %2")
+		.arg(day, 0, 'f', 3).arg(str));
+
+	cumulative_month_banner->setInternalText(QString("%1 %2")
+		 .arg(month, 0, 'f', 3).arg(str));
+
+	cumulative_year_banner->setInternalText(QString("%1 %2")
+		.arg(year,0, 'f', 3).arg(str));
+
+	current_banner->setInternalText(QString("%1·%2")
+		.arg(current, 0, 'f', 3).arg(str));
 }
 
 void EnergyView::setProdFactor(float p)

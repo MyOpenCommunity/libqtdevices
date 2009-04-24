@@ -313,22 +313,22 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	return QDate(year, month, day);
 }
 
-float convertToRawData(int bt_bus_data, EnergyConversions::EnergyTypology type)
+float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::EnergyTypology type)
 {
 	float factor;
 	switch (type)
 	{
-	case EnergyConversions::DEFAULT_ENERGY:
+	case DEFAULT_ENERGY:
 		factor = 10.;
 		break;
-	case EnergyConversions::ELECTRICITY_CURRENT:
+	case ELECTRICITY_CURRENT:
 		factor = 1000.;
 		break;
 	}
 	return bt_bus_data / factor;
 }
 
-float convertToMoney(float raw_data, float money_factor)
+float EnergyConversions::convertToMoney(float raw_data, float money_factor)
 {
 	return raw_data / money_factor;
 }
