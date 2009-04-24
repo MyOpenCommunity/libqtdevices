@@ -154,7 +154,12 @@ public:
 		CONSUMPTION,
 	};
 
-	bannEnergyInterface(QWidget *parent, bool currency);
+	/**
+	 * \param parent The parent widget
+	 * \param _currency_symbol The symbol to use to show economic data. If it's null, then currency is not
+	 *     enabled for this banner
+	 */
+	bannEnergyInterface(QWidget *parent, const QString &_currency_symbol);
 	void setProdFactor(float prod);
 	void setConsFactor(float cons);
 	void setType(EnergyFactorType t);
@@ -168,7 +173,7 @@ private:
 	EnergyFactorType type;
 	float prod_factor, cons_factor;
 	int device_value;
-	bool currency_enabled;
+	QString currency_symbol;
 	QString measure;
 };
 

@@ -63,7 +63,15 @@ class EnergyView : public PageLayout
 {
 Q_OBJECT
 public:
-	EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled);
+	/**
+	 * \param measure Measure unit for this energy type
+	 * \param energy_type The energy type (will be the title of the page)
+	 * \param address Address of the corresponding device
+	 * \param mode Mode of the device
+	 * \param currency_symbol The symbol of the currency. If it's a null string, then currency is not enabled
+	 *    for this energy_type.
+	 */
+	EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol);
 	~EnergyView();
 	virtual void inizializza();
 	void setProdFactor(float p);
@@ -92,6 +100,7 @@ private:
 	Widget current_widget;
 	EnergyDevice *dev;
 	QString unit_measure;
+	QString currency_symbol;
 	QSignalMapper *mapper;
 	EnergyDevice::GraphType current_graph;
 	QDate current_date;

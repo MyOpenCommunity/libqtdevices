@@ -190,7 +190,7 @@ bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
@@ -218,7 +218,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	showBannerWidget();
 	main_layout->addWidget(widget_container, 1);
 
-	if (currency_enabled)
+	currency_symbol = _currency_symbol;
+	if (!currency_symbol.isNull())
 	{
 		bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
 		connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
