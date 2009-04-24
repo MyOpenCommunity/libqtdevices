@@ -202,13 +202,17 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bool is_currency_enabled = checkTypeForCurrency(getTextChild(item, "type"), config_node);
+
 		QString currency;
 		if (is_currency_enabled)
-			currency = getElement(item, "currency/symbol").text();
-		bannEnergyInterface *b = new bannEnergyInterface(this, currency);
+			currency = getElement(config_node, "currency/symbol").text();
+
+		bool is_production = (getElement(item, "type").text().toInt() == 1);
+
+		bannEnergyInterface *b = new bannEnergyInterface(this, currency, is_production);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
-		next_page = new EnergyView(measure, energy_type, addr, mode, currency);
+		next_page = new EnergyView(measure, energy_type, addr, mode, currency, is_production);
 		b->connectDxButton(next_page);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
