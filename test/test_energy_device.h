@@ -23,6 +23,7 @@ private slots:
 	void sendRequestCurrent();
 	void sendRequestCurrent2();
 	void sendRequestCurrent3();
+	void sendRequestCurrent4();
 
 	void receiveCumulativeDay();
 	void receiveCurrent();

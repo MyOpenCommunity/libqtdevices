@@ -24,10 +24,10 @@ enum RequestDimension
 enum RequestCurrent
 {
 	REQ_CURRENT_MODE_1 = 113,
-	REQ_CURRENT_MODE_2 = 1133,
-	REQ_CURRENT_MODE_3 = 1129,
-	REQ_CURRENT_MODE_4 = -1, // TODO: fake value, to be defined
-	REQ_CURRENT_MODE_5 = -1, // TODO: fake value, to be defined
+	REQ_CURRENT_MODE_2 = 1134,
+	REQ_CURRENT_MODE_3 = 1130,
+	REQ_CURRENT_MODE_4 = 1132,
+	REQ_CURRENT_MODE_5 = 1132,
 };
 
 

@@ -82,7 +82,7 @@ void TestEnergyDevice::sendRequestCurrent2()
 	dev->mode = 2;
 	dev->requestCurrent();
 	client_request->flush();
-	QString req(QString("*#18*%1*1133##").arg(where));
+	QString req(QString("*#18*%1*1134##").arg(where));
 	QVERIFY(server->frameRequest() == req);
 }
 
@@ -91,7 +91,16 @@ void TestEnergyDevice::sendRequestCurrent3()
 	dev->mode = 3;
 	dev->requestCurrent();
 	client_request->flush();
-	QString req(QString("*#18*%1*1129##").arg(where));
+	QString req(QString("*#18*%1*1130##").arg(where));
+	QVERIFY(server->frameRequest() == req);
+}
+
+void TestEnergyDevice::sendRequestCurrent4()
+{
+	dev->mode = 4;
+	dev->requestCurrent();
+	client_request->flush();
+	QString req(QString("*#18*%1*1132##").arg(where));
 	QVERIFY(server->frameRequest() == req);
 }
 
@@ -105,8 +114,8 @@ void TestEnergyDevice::receiveCurrent()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CURRENT);
 	t.check(QString("*#18*%1*113*74##").arg(where), 74);
-	t.check(QString("*#18*%1*1133*81##").arg(where), 81);
-	t.check(QString("*#18*%1*1129*60##").arg(where), 60);
+	t.check(QString("*#18*%1*1134*81##").arg(where), 81);
+	t.check(QString("*#18*%1*1130*60##").arg(where), 60);
 }
 
 void TestEnergyDevice::receiveCumulativeMonth()
