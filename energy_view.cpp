@@ -295,20 +295,28 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	return d;
 }
 
-void EnergyView::convertGraphData(GraphData *gd)
+QMap<int, int> EnergyView::convertGraphData(GraphData *gd)
 {
 	// convert to raw data
-	QMap<int, int> &data = gd->graph;
-	foreach(int i, data)
-		data[i] = EnergyConversions::convertToRawData(data[i]);
+	QMap<int, int> data = gd->graph;
+	QList<int> keys = data.keys();
+	for (int i = 0; i < keys.size(); ++i)
+	{
+		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]]);
+	}
 
 	// convert to economic data
+	// TODO: che succede se clicco sui soldi da qualche altra parte ma qui non siamo abilitati a far
+	// vedere i soldi?
 	if (EnergyInterface::isCurrencyView())
 	{
 		float factor = is_production ? prod_factor : cons_factor;
-		foreach(int i, data)
-			data[i] = EnergyConversions::convertToMoney(data[i], factor);
+		for (int i = 0; i < keys.size(); ++i)
+		{
+			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], factor);
+		}
 	}
+	return data;
 }
 
 void EnergyView::status_changed(const StatusList &status_list)
@@ -341,8 +349,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
 			{
-				convertGraphData(d);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
@@ -351,8 +359,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
 			{
-				convertGraphData(d);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
@@ -362,8 +370,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year())
 			{
-				convertGraphData(d);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
@@ -373,8 +381,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
 			{
-				convertGraphData(d);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
@@ -394,16 +402,9 @@ void EnergyView::backClick()
 
 void EnergyView::updateCurrentGraph()
 {
-	// TODO: understand how to update the current graph without graph_type information
-}
-
-void EnergyView::showGraph(int graph_type)
-{
-	current_widget = GRAPH_WIDGET;
-
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
-	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
 	current_date = time_period->date();
+	// TODO: bisogna cambiare la label del grafico quando siamo sui soldi?
 	switch (current_graph)
 	{
 	case EnergyDevice::DAILY_AVERAGE:
@@ -423,9 +424,17 @@ void EnergyView::showGraph(int graph_type)
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
 	{
 		GraphData *d = graph_data_cache[current_graph]->object(key);
-		convertGraphData(d);
-		graph->setData(d->graph);
+		QMap<int, int> g = convertGraphData(d);
+		graph->setData(g);
 	}
+}
+
+void EnergyView::showGraph(int graph_type)
+{
+	current_widget = GRAPH_WIDGET;
+	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
+
+	updateCurrentGraph();
 
 	initTransition();
 	widget_container->setCurrentIndex(current_widget);
@@ -557,18 +566,15 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
-	if (current_widget == BANNER_WIDGET)
-		updateBanners();
-	else if (current_widget == GRAPH_WIDGET)
-		updateCurrentGraph();
+	updateBanners();
+	updateCurrentGraph();
 }
 
 void EnergyView::updateBanners()
 {
-	// TODO: how to get the correct energy type (electricity current or default)?
-	EnergyConversions::convertToRawData(cumulative_day_value);
 	float day = EnergyConversions::convertToRawData(cumulative_day_value);
-	float current = EnergyConversions::convertToRawData(current_value);
+	float current = EnergyConversions::convertToRawData(current_value,
+		is_electricity_view ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
 	float month = EnergyConversions::convertToRawData(cumulative_month_value);
 	float year = EnergyConversions::convertToRawData(cumulative_year_value);
 	float average = EnergyConversions::convertToRawData(daily_av_value);
@@ -585,7 +591,6 @@ void EnergyView::updateBanners()
 		str = currency_symbol;
 	}
 
-	// TODO: correct locale (use ',' instead of '.' for floats
 	cumulative_day_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(day, 'f', 3)).arg(str));
 
