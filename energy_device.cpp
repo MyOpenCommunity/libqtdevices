@@ -330,5 +330,5 @@ float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::En
 
 float EnergyConversions::convertToMoney(float raw_data, float money_factor)
 {
-	return raw_data / money_factor;
+	return raw_data * money_factor;
 }

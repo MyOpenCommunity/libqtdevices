@@ -26,6 +26,11 @@
 // To use QDate as a key in QHash
 inline bool qHash(const QDate &date) { return qHash(date.toString()); }
 
+namespace {
+// The language used for the floating point number
+QLocale loc(QLocale::Italian);
+}
+
 
 namespace
 {
@@ -552,29 +557,29 @@ void EnergyView::updateBanners()
 	float average = EnergyConversions::convertToRawData(daily_av_value);
 	QString str = unit_measure;
 
+	float factor = is_production ? prod_factor : cons_factor;
 	if (EnergyInterface::isCurrencyView())
 	{
-		// TODO: use the correct factor (cons or prod)
-		day = EnergyConversions::convertToMoney(day, 1.);
-		current = EnergyConversions::convertToMoney(current, 1.);
-		month = EnergyConversions::convertToMoney(month, 1.);
-		year = EnergyConversions::convertToMoney(year, 1.);
-		average = EnergyConversions::convertToMoney(average, 1.);
+		day = EnergyConversions::convertToMoney(day, factor);
+		current = EnergyConversions::convertToMoney(current, factor);
+		month = EnergyConversions::convertToMoney(month, factor);
+		year = EnergyConversions::convertToMoney(year, factor);
+		average = EnergyConversions::convertToMoney(average, factor);
+		str = currency_symbol;
 	}
 
 	// TODO: correct locale (use ',' instead of '.' for floats
-	// TODO: use the currency value instead of unit_measure
 	cumulative_day_banner->setInternalText(QString("%1 %2")
-		.arg(day, 0, 'f', 3).arg(str));
+		.arg(loc.toString(day, 'f', 3)).arg(str));
 
 	cumulative_month_banner->setInternalText(QString("%1 %2")
-		 .arg(month, 0, 'f', 3).arg(str));
+		 .arg(loc.toString(month, 'f', 3)).arg(str));
 
 	cumulative_year_banner->setInternalText(QString("%1 %2")
-		.arg(year,0, 'f', 3).arg(str));
+		.arg(loc.toString(year, 'f', 3)).arg(str));
 
 	current_banner->setInternalText(QString("%1·%2")
-		.arg(current, 0, 'f', 3).arg(str));
+		.arg(loc.toString(current, 'f', 3)).arg(str));
 }
 
 void EnergyView::setProdFactor(float p)
