@@ -7,6 +7,8 @@
 #include <QMetaType>
 #include <QtTest/QtTest>
 
+#include <assert.h>
+
 // To put/extract in QVariant
 Q_DECLARE_METATYPE(StatusList)
 
@@ -39,6 +41,8 @@ void DeviceTester::checkSignals(const QStringList& frames, int num_signals)
 QVariant DeviceTester::getResult(const QStringList& frames)
 {
 	sendFrames(frames);
+	assert(spy.count() > 0 && "DeviceTester: No signal emitted!");
+	assert(spy.last().count() > 0 && "DeviceTester: No arguments for the last signal emitted!");
 	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
 	if (signal_arg.canConvert<StatusList>())
 	{
@@ -49,13 +53,8 @@ QVariant DeviceTester::getResult(const QStringList& frames)
 	return QVariant();
 }
 
-void DeviceTester::check(const QStringList& frames, const QVariant& result)
+void DeviceTester::check(QString frame, const char *result)
 {
-	QVERIFY(getResult(frames) == result);
-}
-
-void DeviceTester::check(QString frame, const QVariant& result)
-{
-	QVERIFY(getResult(QStringList(frame)) == result);
+	check(QStringList(frame), QString(result));
 }
 

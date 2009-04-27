@@ -2,6 +2,10 @@
 #define DEVICE_TESTER_H
 
 #include <QSignalSpy>
+#include <QStringList>
+#include <QtTest/QtTest>
+#include <QVariant>
+#include <QMetaType>
 
 class QStringList;
 class QVariant;
@@ -17,9 +21,9 @@ class DeviceTester
 public:
 	DeviceTester(device *d, int dim);
 
-	// NOTE: be aware that QVariant::operator== with custom types compare addresses of objects
-	void check(const QStringList &frames, const QVariant &result);
-	void check(QString frame, const QVariant &result);
+	template<class T> void check(const QStringList &frames, const T &result);
+	template<class T> void check(QString frame, const T &result);
+	void check(QString frame, const char *result);
 
 	// Verify the number of signals emitted
 	void checkSignals(const QStringList &frames, int num_signals);
@@ -34,5 +38,17 @@ private:
 	void sendFrames(const QStringList& frames);
 };
 
+
+template<class T> void DeviceTester::check(const QStringList &frames, const T &result)
+{
+	QVariant r = getResult(frames);
+	QVERIFY(r.canConvert<T>());
+	QVERIFY(result == r.value<T>());
+}
+
+template<class T> void DeviceTester::check(QString frame, const T &result)
+{
+	check(QStringList(frame), result);
+}
 
 #endif // DEVICE_TESTER_H
