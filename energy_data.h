@@ -70,6 +70,7 @@ public:
 public slots:
 	void changeProdRate(float prod);
 	void changeConsRate(float cons);
+	void toggleCurrency();
 
 private:
 	void loadItems(const QDomNode &config_node);
@@ -104,12 +105,12 @@ public:
 	void setConsFactor(float cons);
 	void setType(EnergyFactorType t);
 	void setUnitMeasure(const QString &m);
+	void updateText();
 
 public slots:
 	void status_changed(const StatusList &status_list);
 
 private:
-	void updateText();
 	EnergyFactorType type;
 	float prod_factor, cons_factor;
 	int device_value;
