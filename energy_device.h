@@ -46,6 +46,7 @@ public:
 	void requestCumulativeMonth(QDate date) const;
 	void requestCumulativeYear() const;
 	void requestDailyAverageGraph(QDate date) const;
+	void requestMontlyAverage(QDate date) const;
 	void requestCumulativeDayGraph(QDate date) const;
 	void requestCumulativeMonthGraph(QDate date) const;
 	void requestCumulativeYearGraph() const;
@@ -61,7 +62,8 @@ public:
 		DIM_DAILY_AVERAGE_GRAPH      = 57,    // read graph data for cumulative daily average
 		DIM_DAY_GRAPH                = 56,    // read graph data for a specific day
 		DIM_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
-		DIM_CUMULATIVE_YEAR_GRAPH,  // read graph data for comulative year (as DIM_CURRENT, value doesn't matter)
+		DIM_CUMULATIVE_YEAR_GRAPH,  // read graph data for comulative year (as DIM_CURRENT, the value doesn't matter)
+		DIM_MONTLY_AVERAGE, // as DIM_CURRENT, the value doesn't matter
 	};
 
 	enum GraphType

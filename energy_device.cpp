@@ -4,6 +4,7 @@
 #include <openmsg.h>
 
 #include <QDebug>
+#include <QtGlobal>
 #include <QList>
 
 #include <assert.h>
@@ -95,6 +96,11 @@ void EnergyDevice::requestDailyAverageGraph(QDate date) const
 {
 	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH)
 		.arg(date.month()), where));
+}
+
+void EnergyDevice::requestMontlyAverage(QDate date) const
+{
+	requestCumulativeMonth(date);
 }
 
 void EnergyDevice::requestCumulativeDayGraph(QDate date) const
@@ -196,20 +202,33 @@ void EnergyDevice::frame_rx_handler(char *frame)
 
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{
+			QDate current = QDate::currentDate();
+			// Year graph specific code
 			int index = 11;
 			if (what != DIM_CUMULATIVE_MONTH)
 			{
-				int month_distance = msg.whatSubArgN(1) - QDate::currentDate().month();
+				int month_distance = msg.whatSubArgN(1) - current.month();
 				index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
 			}
-			qDebug() << "INDEX:" << index << "VAL: " << msg.whatArgN(0);
 			buffer_year_data[index] = msg.whatArgN(0);
 			GraphData data;
 			data.type = CUMULATIVE_YEAR;
 			data.graph = buffer_year_data;
-			QVariant v;
-			v.setValue(data);
-			status_list[DIM_CUMULATIVE_YEAR_GRAPH] = v;
+			QVariant v_graph;
+			v_graph.setValue(data);
+			status_list[DIM_CUMULATIVE_YEAR_GRAPH] = v_graph;
+
+			// Montly average specific code
+			QVariant v_average;
+			if (what == _DIM_CUMULATIVE_MONTH)
+			{
+				int year = msg.whatSubArgN(1) < current.month() ? current.year() : current.year() - 1;
+				int total_days = QDate(year, msg.whatSubArgN(1), 1).daysInMonth();
+				v_average.setValue(qRound(1.0 * msg.whatArgN(0) / total_days));
+			}
+			else
+				v_average.setValue(qRound(1.0 * msg.whatArgN(0) / current.day()));
+			status_list[DIM_MONTLY_AVERAGE] = v_average;
 		}
 		emit status_changed(status_list);
 	}
