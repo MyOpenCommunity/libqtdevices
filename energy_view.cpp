@@ -339,6 +339,7 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 
 void EnergyView::status_changed(const StatusList &status_list)
 {
+	current_date = time_period->date();
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
@@ -346,18 +347,36 @@ void EnergyView::status_changed(const StatusList &status_list)
 		switch (it.key())
 		{
 		case EnergyDevice::DIM_CUMULATIVE_DAY:
-			cumulative_day_value = it.value().toInt();
+		{
+			EnergyValue val = it.value().value<EnergyValue>();
+			if (current_date == val.first)
+				cumulative_day_value = val.second;
+		}
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_MONTH:
-			cumulative_month_value = it.value().toInt();
+		{
+			EnergyValue val = it.value().value<EnergyValue>();
+			if (current_date.year() == val.first.year() && current_date.month() == val.first.month())
+				cumulative_month_value = val.second;
+		}
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
-			cumulative_year_value = it.value().toInt();
+		{
+			EnergyValue val = it.value().value<EnergyValue>();
+			if (current_date.year() == val.first.year())
+				cumulative_year_value = val.second;
+		}
+			break;
+		case EnergyDevice::DIM_MONTLY_AVERAGE:
+		{
+			EnergyValue val = it.value().value<EnergyValue>();
+			if (current_date.year() == val.first.year() && current_date.month() == val.first.month())
+				daily_av_value = val.second;
+		}
 			break;
 		case EnergyDevice::DIM_CURRENT:
 			current_value = it.value().toInt();
 			break;
-		// TODO: what about daily average banner? where do I take the value?
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE);
@@ -613,10 +632,13 @@ void EnergyView::updateBanners()
 		.arg(loc.toString(day, 'f', 3)).arg(str));
 
 	cumulative_month_banner->setInternalText(QString("%1 %2")
-		 .arg(loc.toString(month, 'f', 3)).arg(str));
+		.arg(loc.toString(month, 'f', 3)).arg(str));
 
 	cumulative_year_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(year, 'f', 3)).arg(str));
+
+	daily_av_banner->setInternalText(QString("%1 %2")
+		.arg(loc.toString(average, 'f', 3)).arg(str));
 
 	current_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(current, 'f', 3)).arg(str));
