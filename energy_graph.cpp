@@ -19,7 +19,7 @@ void EnergyGraph::init(int bars, QString t)
 	update();
 }
 
-void EnergyGraph::setData(const QMap<int, int> &data)
+void EnergyGraph::setData(const QMap<int, float> &data)
 {
 	graph_data = data;
 	update();
@@ -34,8 +34,8 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 	QPainter p(this);
 	if (!graph_data.isEmpty())
 	{
-		int max_value = -1;
-		foreach (int val, graph_data)
+		float max_value = -1;
+		foreach (float val, graph_data)
 			max_value = qMax(max_value, val);
 
 		int left = rect().left() + MARGIN;
@@ -88,12 +88,12 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		p.setPen(QColor("blue"));
 		int current_left = axis_left + AXIS_PEN_WIDTH;
 
-		QMapIterator<int, int> it(graph_data);
+		QMapIterator<int, float> it(graph_data);
 		while (it.hasNext())
 		{
 			it.next();
 			p.setBrush(it.key() % 2 ? primary_color : secondary_color);
-			float ratio = it.value() / static_cast<float>(max_value);
+			float ratio = it.value() / max_value;
 			int bar_height = static_cast<int>(ratio * graph_height);
 			p.drawRect(QRect(current_left, axis_top - bar_height - AXIS_PEN_WIDTH, bar_width, bar_height));
 			current_left += bar_width;

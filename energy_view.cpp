@@ -310,10 +310,15 @@ void EnergyView::showPage()
 	Page::showPage();
 }
 
-QMap<int, int> EnergyView::convertGraphData(GraphData *gd)
+QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 {
+	QMap<int, float> data;
+	// copy map to float values
+	QList<int> graph_keys = gd->graph.keys();
+	for (int i = 0; i < graph_keys.size(); ++i)
+		data[graph_keys[i]] = gd->graph[graph_keys[i]];
+
 	// convert to raw data
-	QMap<int, int> data = gd->graph;
 	QList<int> keys = data.keys();
 	for (int i = 0; i < keys.size(); ++i)
 	{
@@ -362,7 +367,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -372,7 +377,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -383,7 +388,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year())
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -394,7 +399,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -437,7 +442,7 @@ void EnergyView::updateCurrentGraph()
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
 	{
 		GraphData *d = graph_data_cache[current_graph]->object(key);
-		QMap<int, int> g = convertGraphData(d);
+		QMap<int, float> g = convertGraphData(d);
 		graph->setData(g);
 	}
 }

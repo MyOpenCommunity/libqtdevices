@@ -13,19 +13,17 @@ Q_OBJECT
 public:
 	EnergyGraph();
 
-
 public slots:
 	void init(int bars, QString t);
-	void setData(const QMap<int, int> &data);
+	void setData(const QMap<int, float> &data);
 
 
 protected:
 	void paintEvent(QPaintEvent *e);
 
 private:
-	void generateRandomValues();
 	int number_of_bars;
-	QMap<int, int> graph_data;
+	QMap<int, float> graph_data;
 	QString text;
 	QColor primary_color, secondary_color;
 };
