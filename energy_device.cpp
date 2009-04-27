@@ -324,12 +324,24 @@ void EnergyDevice::computeMonthGraphData(const QList<int> &values, QMap<int, int
 
 QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 {
-	assert(msg.whatSubArgCnt() > 0);
-	QDate current = QDate::currentDate();
-	int month = msg.whatSubArgN(0);
-	int day = msg.whatSubArgCnt() > 1 ? msg.whatSubArgN(1) : 1;
-	int year = month <= current.month() ? current.year() : current.year() - 1;
-	return QDate(year, month, day);
+	int what = msg.what();
+	if (what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH ||
+		what == DIM_DAY_GRAPH)
+	{
+		assert(msg.whatSubArgCnt() > 0);
+		QDate current = QDate::currentDate();
+		int month = msg.whatSubArgN(0);
+		int day = msg.whatSubArgCnt() > 1 ? msg.whatSubArgN(1) : 1;
+		int year = month <= current.month() ? current.year() : current.year() - 1;
+		return QDate(year, month, day);
+	}
+	else if (what == _DIM_CUMULATIVE_MONTH)
+	{
+		int year = msg.whatSubArgN(0);
+		int month = msg.whatSubArgN(1);
+		return QDate(year, month, 1);
+	}
+	return QDate::currentDate();
 }
 
 float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::EnergyTypology type)
