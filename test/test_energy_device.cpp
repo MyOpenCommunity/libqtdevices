@@ -415,8 +415,10 @@ void TestEnergyDevice::receiveMonthlyAverage()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE);
 
-	t.check(QString("*#18*%1*52#8#2*106##").arg(where), qRound(1.0 * 106 / QDate(2008, 2, 1).daysInMonth()));
-	t.check(QString("*#18*%1*53*95##").arg(where), qRound(1.0 * 95 / QDate::currentDate().day()));
+	t.check(QString("*#18*%1*52#8#2*106##").arg(where),
+			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 106 / QDate(2008, 2, 1).daysInMonth())));
+	t.check(QString("*#18*%1*53*95##").arg(where),
+			EnergyValue(QDate::currentDate(), qRound(1.0 * 95 / QDate::currentDate().day())));
 }
 
 void TestEnergyDevice::testGetDateFromFrame()
