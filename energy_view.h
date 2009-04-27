@@ -79,6 +79,9 @@ public:
 	void setProdFactor(float p);
 	void setConsFactor(float c);
 
+public slots:
+	virtual void showPage();
+
 protected:
 	void timerEvent(QTimerEvent *);
 

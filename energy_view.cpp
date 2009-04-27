@@ -302,6 +302,14 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	return d;
 }
 
+void EnergyView::showPage()
+{
+	// switch back to raw data visualization if currency is not supported
+	if (EnergyInterface::isCurrencyView() && currency_symbol.isNull())
+		EnergyInterface::toggleCurrencyView();
+	Page::showPage();
+}
+
 QMap<int, int> EnergyView::convertGraphData(GraphData *gd)
 {
 	// convert to raw data
@@ -313,8 +321,6 @@ QMap<int, int> EnergyView::convertGraphData(GraphData *gd)
 	}
 
 	// convert to economic data
-	// TODO: che succede se clicco sui soldi da qualche altra parte ma qui non siamo abilitati a far
-	// vedere i soldi?
 	if (EnergyInterface::isCurrencyView())
 	{
 		float factor = is_production ? prod_factor : cons_factor;
@@ -607,7 +613,7 @@ void EnergyView::updateBanners()
 	cumulative_year_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(year, 'f', 3)).arg(str));
 
-	current_banner->setInternalText(QString("%1·%2")
+	current_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(current, 'f', 3)).arg(str));
 }
 
