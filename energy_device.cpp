@@ -145,7 +145,6 @@ void EnergyDevice::frame_rx_handler(char *frame)
 {
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
-
 	if (who.toInt() != msg.who() || where.toInt() != msg.where())
 		return;
 
@@ -188,7 +187,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		else
 		{
 			int val = msg.whatArgN(0);
-			v.setValue(val);
+			v.setValue(EnergyValue(getDateFromFrame(msg), val));
 		}
 		if (what == _DIM_CUMULATIVE_MONTH)
 			status_list[DIM_CUMULATIVE_MONTH] = v;
@@ -337,7 +336,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	}
 	else if (what == _DIM_CUMULATIVE_MONTH)
 	{
-		int year = msg.whatSubArgN(0);
+		int year = msg.whatSubArgN(0) + 2000;
 		int month = msg.whatSubArgN(1);
 		return QDate(year, month, 1);
 	}

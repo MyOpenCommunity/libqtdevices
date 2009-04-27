@@ -34,6 +34,7 @@ namespace EnergyConversions
 	float convertToMoney(float raw_data, float money_factor);
 }
 
+
 /**
  * This class parses the incoming frames for who = 18 (Energy Management) and sends
  * updates to widgets through status_changed() signal.
@@ -117,6 +118,14 @@ struct GraphData
 	}
 };
 Q_DECLARE_METATYPE(GraphData)
+
+
+// To use the QPair inside the status_changed we have to register the
+// QPair as a type known to QMetaType. We have also define a typedef
+// to avoid the limitation of the macro, that cannot handle correctly commas
+// inside its arguments.
+typedef QPair<QDate, int> EnergyValue;
+Q_DECLARE_METATYPE(EnergyValue);
 
 #endif // ENERGY_DEVICE_H
 

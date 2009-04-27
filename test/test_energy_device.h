@@ -15,6 +15,7 @@ Q_OBJECT
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
+
 	void sendRequestCumulativeDayGraph();
 	void sendRequestCumulativeMonthGraph();
 	void sendRequestCumulativeYearGraph();

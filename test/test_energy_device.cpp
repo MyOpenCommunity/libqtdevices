@@ -107,28 +107,28 @@ void TestEnergyDevice::sendRequestCurrent4()
 void TestEnergyDevice::receiveCumulativeDay()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
-	t.check(QString("*#18*%1*54*150##").arg(where), 150);
+	t.check(QString("*#18*%1*54*150##").arg(where), EnergyValue(QDate::currentDate(), 150));
 }
 
 void TestEnergyDevice::receiveCurrent()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CURRENT);
-	t.check(QString("*#18*%1*113*74##").arg(where), 74);
-	t.check(QString("*#18*%1*1134*81##").arg(where), 81);
-	t.check(QString("*#18*%1*1130*60##").arg(where), 60);
+	t.check(QString("*#18*%1*113*74##").arg(where), EnergyValue(QDate::currentDate(),74));
+	t.check(QString("*#18*%1*1134*81##").arg(where), EnergyValue(QDate::currentDate(), 81));
+	t.check(QString("*#18*%1*1130*60##").arg(where), EnergyValue(QDate::currentDate(), 60));
 }
 
 void TestEnergyDevice::receiveCumulativeMonth()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH);
-	t.check(QString("*#18*%1*52#8#2*106##").arg(where), 106);
-	t.check(QString("*#18*%1*53*95##").arg(where), 95);
+	t.check(QString("*#18*%1*52#8#2*106##").arg(where), EnergyValue(QDate(2008, 2, 1), 106));
+	t.check(QString("*#18*%1*53*95##").arg(where), EnergyValue(QDate::currentDate(), 95));
 }
 
 void TestEnergyDevice::receiveCumulativeYear()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR);
-	t.check(QString("*#18*%1*51*33##").arg(where), 33);
+	t.check(QString("*#18*%1*51*33##").arg(where), EnergyValue(QDate::currentDate(), 33));
 }
 
 void TestEnergyDevice::receiveDailyAverageGraph()
