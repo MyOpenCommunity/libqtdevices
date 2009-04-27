@@ -204,6 +204,9 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	is_production = is_prod;
 
+	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
+	daily_av_value = current_value = 0;
+
 	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
@@ -235,7 +238,11 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 		main_layout->addWidget(nav_bar);
 	}
 	else
-		addBackButton();
+	{
+		bannFrecce *nav_bar = new bannFrecce(this, 1);
+		connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
+		main_layout->addWidget(nav_bar);
+	}
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
