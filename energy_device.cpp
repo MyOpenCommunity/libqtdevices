@@ -56,9 +56,10 @@ void EnergyDevice::sendRequest(QString what, bool use_compressed_init) const
 
 void EnergyDevice::requestCumulativeDay(QDate date) const
 {
-	// TODO: per i giorni != dal corrente, e' necessario richiedere il grafico
-	// cumulativo giornaliero di quel giorno, e calcolare da quello il totale.
-	sendRequest(DIM_CUMULATIVE_DAY);
+	if (date == QDate::currentDate())
+		sendRequest(DIM_CUMULATIVE_DAY);
+	else
+		requestCumulativeDayGraph(date);
 }
 
 void EnergyDevice::requestCurrent() const
@@ -189,6 +190,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			int val = msg.whatArgN(0);
 			v.setValue(EnergyValue(getDateFromFrame(msg), val));
 		}
+
 		if (what == _DIM_CUMULATIVE_MONTH)
 			status_list[DIM_CUMULATIVE_MONTH] = v;
 		else if (what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 || what == REQ_CURRENT_MODE_3 ||
@@ -199,38 +201,67 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		else
 			status_list[what] = v;
 
+		// Special cases
+		if (what == DIM_DAY_GRAPH && num_frame == 10)
+			fillCumulativeDay(status_list, buffer_frame.at(8), frame);
+
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{
-			QDate current = QDate::currentDate();
-			// Year graph specific code
-			int index = 11;
-			if (what != DIM_CUMULATIVE_MONTH)
-			{
-				int month_distance = msg.whatSubArgN(1) - current.month();
-				index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
-			}
-			buffer_year_data[index] = msg.whatArgN(0);
-			GraphData data;
-			data.type = CUMULATIVE_YEAR;
-			data.graph = buffer_year_data;
-			QVariant v_graph;
-			v_graph.setValue(data);
-			status_list[DIM_CUMULATIVE_YEAR_GRAPH] = v_graph;
-
-			// Montly average specific code
-			QVariant v_average;
-			if (what == _DIM_CUMULATIVE_MONTH)
-			{
-				int year = msg.whatSubArgN(1) < current.month() ? current.year() : current.year() - 1;
-				int total_days = QDate(year, msg.whatSubArgN(1), 1).daysInMonth();
-				v_average.setValue(qRound(1.0 * msg.whatArgN(0) / total_days));
-			}
-			else
-				v_average.setValue(qRound(1.0 * msg.whatArgN(0) / current.day()));
-			status_list[DIM_MONTLY_AVERAGE] = v_average;
+			fillYearGraphData(status_list, msg);
+			fillMonthlyAverage(status_list, msg);
 		}
 		emit status_changed(status_list);
 	}
+}
+
+void EnergyDevice::fillCumulativeDay(StatusList &status_list, QString frame9, QString frame10)
+{
+	OpenMsg f9(frame9.toStdString());
+	int high = f9.whatArgN(3);
+	int low = OpenMsg(frame10.toStdString()).whatArgN(1);
+
+	if (high == MAX_VALUE)
+		high = 0;
+
+	if (low == MAX_VALUE)
+		low = 0;
+
+	QVariant v;
+	v.setValue(EnergyValue(getDateFromFrame(f9), high * 256 + low));
+	status_list[DIM_CUMULATIVE_DAY] = v;
+}
+
+void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
+{
+	QDate current = QDate::currentDate();
+	QVariant v_average;
+	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
+	{
+		int year = msg.whatSubArgN(1) < current.month() ? current.year() : current.year() - 1;
+		int total_days = QDate(year, msg.whatSubArgN(1), 1).daysInMonth();
+		v_average.setValue(qRound(1.0 * msg.whatArgN(0) / total_days));
+	}
+	else
+		v_average.setValue(qRound(1.0 * msg.whatArgN(0) / current.day()));
+	status_list[DIM_MONTLY_AVERAGE] = v_average;
+}
+
+void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
+{
+	QDate current = QDate::currentDate();
+	int index = 11;
+	if (static_cast<int>(msg.what()) != DIM_CUMULATIVE_MONTH)
+	{
+		int month_distance = msg.whatSubArgN(1) - current.month();
+		index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
+	}
+	buffer_year_data[index] = msg.whatArgN(0);
+	GraphData data;
+	data.type = CUMULATIVE_YEAR;
+	data.graph = buffer_year_data;
+	QVariant v_graph;
+	v_graph.setValue(data);
+	status_list[DIM_CUMULATIVE_YEAR_GRAPH] = v_graph;
 }
 
 void EnergyDevice::parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v)

@@ -110,6 +110,31 @@ void TestEnergyDevice::receiveCumulativeDay()
 	t.check(QString("*#18*%1*54*150##").arg(where), EnergyValue(QDate::currentDate(), 150));
 }
 
+void TestEnergyDevice::receiveCumulativeDay2()
+{
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
+	QString tmp(QString("*#18*%1*%2#8#1").arg(where).arg(EnergyDevice::DIM_DAY_GRAPH));
+	QStringList frames;
+
+	frames << tmp + "*1*3*255##"
+		<< tmp + "*2*0*1*12##"
+		<< tmp + "*3*200*150*255##"
+		<< tmp + "*4*190*191*192##"
+		<< tmp + "*5*180*181*182##"
+		<< tmp + "*6*170*171*172##"
+		<< tmp + "*7*253*254*255##"
+		<< tmp + "*8*222*223*224##"
+		<< tmp + "*9*253*254*2##"
+		<< tmp + "*10*13*6666##";
+
+	int year = QDate::currentDate().year();
+	if (QDate::currentDate().month() < 8)
+		--year;
+
+	t.check(frames, EnergyValue(QDate(year, 8, 1), 525));
+}
+
 void TestEnergyDevice::receiveCurrent()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CURRENT);

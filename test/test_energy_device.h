@@ -27,6 +27,7 @@ private slots:
 	void sendRequestCurrent4();
 
 	void receiveCumulativeDay();
+	void receiveCumulativeDay2();
 	void receiveCurrent();
 	void receiveCumulativeMonth();
 	void receiveCumulativeYear();
