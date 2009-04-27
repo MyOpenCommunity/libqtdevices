@@ -2,7 +2,6 @@
 #include "main.h" // IMG_PATH
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann2_buttons.h" // bann2But, bannOnOff
-#include "bann1_button.h" // bannPuls, bannTextOnImage
 #include "energy_view.h" // EnergyView
 #include "skinmanager.h" // bt_global::skin, SkinContext
 #include "generic_functions.h" // setCfgValue
@@ -71,7 +70,10 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 	QDomElement currency_node = getElement(config_node, "currency");
 	assert(!currency_node.isNull() && "currency node null!");
 
-	delta = loc.toFloat(getTextChild(currency_node, "delta"));
+	bool ok = true;
+	delta = loc.toFloat(getTextChild(currency_node, "delta"), &ok);
+	if (!ok)
+		qFatal("Delta is in wrong format, you should use ',' instead of '.'");
 
 	QString unit_measure = getTextChild(currency_node, "symbol") + "/" +
 		getTextChild(config_node, "measure");
@@ -119,7 +121,10 @@ banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& 
 		bann2ButLab *b = new bann2ButLab(this);
 		b->SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"));
 
-		rate = loc.toFloat(getTextChild(config_node, "rate"));
+		bool ok;
+		rate = loc.toFloat(getTextChild(config_node, "rate"), &ok);
+		if (!ok)
+			qFatal("Rate is in wrong format, you should use ',' instead of '.'");
 		showValue(b, rate);
 		b->setSecondaryText(desc);
 		b->Draw();
@@ -202,22 +207,44 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bool is_currency_enabled = checkTypeForCurrency(getTextChild(item, "type"), config_node);
-		bannEnergyInterface *b = new bannEnergyInterface(this, is_currency_enabled);
+
+		QString currency;
+		if (is_currency_enabled)
+			currency = getElement(config_node, "currency/symbol").text();
+
+		bool is_production = (getElement(item, "type").text().toInt() == 1);
+
+		bannEnergyInterface *b = new bannEnergyInterface(this, currency, is_production, mode == 1);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
-		next_page = new EnergyView(measure, energy_type, addr, mode, is_currency_enabled);
+		next_page = new EnergyView(measure, energy_type, addr, mode, currency, is_production);
 		b->connectDxButton(next_page);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		b->setInternalText("---");
 		b->setUnitMeasure(measure);
 
+		// set production/consumption rates
+		QDomElement prod_node = getElement(config_node, "prod/rate");
+		if (!prod_node.isNull())
+		{
+			float rate = loc.toFloat(prod_node.text());
+			next_page->setProdFactor(rate);
+			b->setProdFactor(rate);
+		}
+		QDomElement cons_node = getElement(config_node, "cons/rate");
+		if (!cons_node.isNull())
+		{
+			float rate = loc.toFloat(cons_node.text());
+			next_page->setConsFactor(rate);
+			b->setConsFactor(rate);
+		}
+
 		views.append(next_page);
 
 		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
 		connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
-		conversion_factor = (mode == 1) ? 1000 : 1;
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
 	}
@@ -284,4 +311,73 @@ void EnergyInterface::toggleCurrencyView()
 bool EnergyInterface::isCurrencyView()
 {
 	return is_currency_view;
+}
+
+
+bannEnergyInterface::bannEnergyInterface(QWidget *parent, const QString &_currency_symbol,
+	bool is_prod, bool is_ele) : bannTextOnImage(parent)
+{
+	currency_symbol = _currency_symbol;
+	is_production = is_prod;
+	is_electricity = is_ele;
+	device_value = 0;
+}
+
+void bannEnergyInterface::setProdFactor(float prod)
+{
+	prod_factor = prod;
+	updateText();
+}
+
+void bannEnergyInterface::setConsFactor(float cons)
+{
+	cons_factor = cons;
+	updateText();
+}
+
+void bannEnergyInterface::setType(EnergyFactorType t)
+{
+	type = t;
+}
+
+void bannEnergyInterface::setUnitMeasure(const QString &m)
+{
+	measure = m;
+}
+
+void bannEnergyInterface::updateText()
+{
+	if (device_value)
+	{
+		float data = EnergyConversions::convertToRawData(device_value,
+			is_electricity ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
+		float factor = is_production ? prod_factor : cons_factor;
+		QString str = measure;
+		if (EnergyInterface::isCurrencyView())
+		{
+			data = EnergyConversions::convertToMoney(data, factor);
+			str = currency_symbol;
+		}
+
+		setInternalText(QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str));
+	}
+	else
+		setInternalText("---");
+}
+
+void bannEnergyInterface::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == EnergyDevice::DIM_CURRENT)
+		{
+			device_value = it.value().toInt();
+			updateText();
+			// TODO: is this necessary?
+			Draw();
+			break;
+		}
+		++it;
+	}
 }

@@ -144,32 +144,4 @@ private:
 	TextOnImageLabel *label;
 };
 
-class bannEnergyInterface : public bannTextOnImage
-{
-Q_OBJECT
-public:
-	enum EnergyFactorType
-	{
-		PRODUCTION = 0,
-		CONSUMPTION,
-	};
-
-	bannEnergyInterface(QWidget *parent, bool currency);
-	void setProdFactor(float prod);
-	void setConsFactor(float cons);
-	void setType(EnergyFactorType t);
-	void setUnitMeasure(const QString &m);
-
-public slots:
-	void status_changed(const StatusList &status_list);
-
-private:
-	void updateText();
-	EnergyFactorType type;
-	float prod_factor, cons_factor;
-	int device_value;
-	bool currency_enabled;
-	QString measure;
-};
-
 #endif // BANN1_BUTTON_H

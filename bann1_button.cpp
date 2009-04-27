@@ -16,7 +16,6 @@
 #define BANNBUT2ICON_ICON_DIM_X 60
 #define BANNBUT2ICON_ICON_DIM_Y 60
 
-
 bannPuls::bannPuls(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, MAX_WIDTH-BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
@@ -127,58 +126,4 @@ bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text) : banner(
 void bannTextOnImage::setInternalText(const QString &text)
 {
 	label->setInternalText(text);
-}
-
-
-bannEnergyInterface::bannEnergyInterface(QWidget *parent, bool currency) : bannTextOnImage(parent)
-{
-	currency_enabled = currency;
-}
-
-void bannEnergyInterface::setProdFactor(float prod)
-{
-	prod_factor = prod;
-	updateText();
-}
-
-void bannEnergyInterface::setConsFactor(float cons)
-{
-	cons_factor = cons;
-	updateText();
-}
-
-void bannEnergyInterface::setType(EnergyFactorType t)
-{
-	type = t;
-}
-
-void bannEnergyInterface::setUnitMeasure(const QString &m)
-{
-	measure = m;
-}
-
-void bannEnergyInterface::updateText()
-{
-	int conversion_factor = 1;
-	// TODO: use locale to set the ',' on float strings
-	setInternalText(QString("%1·%2").arg(device_value/
-		static_cast<float>(conversion_factor), 0, 'f', 3)
-		.arg(measure));
-}
-
-void bannEnergyInterface::status_changed(const StatusList &status_list)
-{
-	StatusList::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
-	{
-		if (it.key() == EnergyDevice::DIM_CURRENT)
-		{
-			device_value = it.value().toInt();
-			updateText();
-			// TODO: is this necessary?
-			Draw();
-			break;
-		}
-		++it;
-	}
 }

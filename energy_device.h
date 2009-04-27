@@ -22,6 +22,17 @@
 
 class OpenMsg;
 
+namespace EnergyConversions
+{
+	enum EnergyTypology
+	{
+		DEFAULT_ENERGY,            // default conversion, divide number by 10
+		ELECTRICITY_CURRENT,       // specific conversion for current electricity
+	};
+
+	float convertToRawData(int bt_bus_data, EnergyTypology type = DEFAULT_ENERGY);
+	float convertToMoney(float raw_data, float money_factor);
+}
 
 /**
  * This class parses the incoming frames for who = 18 (Energy Management) and sends
@@ -73,15 +84,6 @@ public:
 		CUMULATIVE_YEAR,
 		DAILY_AVERAGE
 	};
-
-	enum EnergyTypology
-	{
-		DEFAULT_ENERGY,            // default conversion, divide number by 10
-		ELECTRICITY_CURRENT,       // specific conversion for current electricity
-	};
-
-	float convertToRawData(int bt_bus_data, EnergyTypology type = DEFAULT_ENERGY);
-	float convertToMoney(float raw_data, float money_factor);
 
 public slots:
 	void frame_rx_handler(char *frame);

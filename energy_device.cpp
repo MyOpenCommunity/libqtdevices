@@ -332,7 +332,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	return QDate(year, month, day);
 }
 
-float EnergyDevice::convertToRawData(int bt_bus_data, EnergyDevice::EnergyTypology type)
+float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::EnergyTypology type)
 {
 	float factor;
 	switch (type)
@@ -347,7 +347,7 @@ float EnergyDevice::convertToRawData(int bt_bus_data, EnergyDevice::EnergyTypolo
 	return bt_bus_data / factor;
 }
 
-float EnergyDevice::convertToMoney(float raw_data, float money_factor)
+float EnergyConversions::convertToMoney(float raw_data, float money_factor)
 {
-	return raw_data / money_factor;
+	return raw_data * money_factor;
 }

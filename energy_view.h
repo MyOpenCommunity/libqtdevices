@@ -17,7 +17,7 @@ class QLabel;
 class QStackedWidget;
 class QSignalMapper;
 
-typedef QCache<QDate, GraphData> GraphCache;
+typedef QCache<QString, GraphData> GraphCache;
 
 
 class TimePeriodSelection : public QWidget
@@ -63,7 +63,17 @@ class EnergyView : public PageLayout
 {
 Q_OBJECT
 public:
-	EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled);
+	/**
+	 * \param measure Measure unit for this energy type
+	 * \param energy_type The energy type (will be the title of the page)
+	 * \param address Address of the corresponding device
+	 * \param mode Mode of the device
+	 * \param currency_symbol The symbol of the currency. If it's a null string, then currency is not enabled
+	 *    for this energy_type.
+	 * \param is_production True if the data must be interpreted as production, false for consumption
+	 */
+	EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
+		bool is_prod);
 	~EnergyView();
 	virtual void inizializza();
 	void setProdFactor(float p);
@@ -75,8 +85,11 @@ protected:
 private:
 	QWidget *buildBannerWidget();
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
-	void convertGraphData(GraphData *v, int factor);
+	QMap<int, int> convertGraphData(GraphData *gd);
 	void setBannerPage(int status, const QDate &selection_date);
+	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
+	void updateBanners();
+	void updateCurrentGraph();
 
 	enum Widget
 	{
@@ -86,17 +99,21 @@ private:
 
 	bannTextOnImage *current_banner, *daily_av_banner;
 	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
+	int current_value, daily_av_value;
+	int cumulative_day_value, cumulative_month_value, cumulative_year_value;
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	Widget current_widget;
 	EnergyDevice *dev;
 	QString unit_measure;
+	QString currency_symbol;
 	QSignalMapper *mapper;
 	EnergyDevice::GraphType current_graph;
 	QDate current_date;
 	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
 	float cons_factor, prod_factor;
 	bool is_electricity_view;
+	bool is_production;
 
 private slots:
 	void toggleCurrency();

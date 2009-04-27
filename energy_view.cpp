@@ -26,6 +26,11 @@
 // To use QDate as a key in QHash
 inline bool qHash(const QDate &date) { return qHash(date.toString()); }
 
+namespace {
+// The language used for the floating point number
+QLocale loc(QLocale::Italian);
+}
+
 
 namespace
 {
@@ -190,11 +195,14 @@ bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, bool currency_enabled)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
+		bool is_prod)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	is_electricity_view = (mode == 1);
+
+	is_production = is_prod;
 
 	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
@@ -218,7 +226,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	showBannerWidget();
 	main_layout->addWidget(widget_container, 1);
 
-	if (currency_enabled)
+	currency_symbol = _currency_symbol;
+	if (!currency_symbol.isNull())
 	{
 		bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
 		connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
@@ -258,6 +267,21 @@ void EnergyView::inizializza()
 	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
+QString EnergyView::dateToKey(const QDate &date, EnergyDevice::GraphType t)
+{
+	switch (t)
+	{
+	case EnergyDevice::CUMULATIVE_MONTH:
+	case EnergyDevice::DAILY_AVERAGE:
+		return date.toString("yyyyMM");
+	case EnergyDevice::CUMULATIVE_YEAR:
+		return "";
+	case EnergyDevice::CUMULATIVE_DAY:
+	default:
+		return date.toString("yyyyMMdd");
+	}
+}
+
 GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t)
 {
 	Q_ASSERT_X(v.canConvert<GraphData>(), "EnergyView::saveGraphInCache", "Cannot convert graph data");
@@ -265,22 +289,38 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	if (!graph_data_cache.contains(t))
 		graph_data_cache[t] = new GraphCache;
 
-	qDebug() << "saving graph type " << t << " in date " << d->date;
 	GraphCache *cache = graph_data_cache[t];
-	cache->insert(d->date, d);
+	QString key = dateToKey(d->date, t);
+	cache->insert(key, d);
 	return d;
 }
 
-void EnergyView::convertGraphData(GraphData *v, int factor)
+QMap<int, int> EnergyView::convertGraphData(GraphData *gd)
 {
-	QMap<int, int> &data = v->graph;
-	foreach(int i, data)
-		data[i] /= factor;
+	// convert to raw data
+	QMap<int, int> data = gd->graph;
+	QList<int> keys = data.keys();
+	for (int i = 0; i < keys.size(); ++i)
+	{
+		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]]);
+	}
+
+	// convert to economic data
+	// TODO: che succede se clicco sui soldi da qualche altra parte ma qui non siamo abilitati a far
+	// vedere i soldi?
+	if (EnergyInterface::isCurrencyView())
+	{
+		float factor = is_production ? prod_factor : cons_factor;
+		for (int i = 0; i < keys.size(); ++i)
+		{
+			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], factor);
+		}
+	}
+	return data;
 }
 
 void EnergyView::status_changed(const StatusList &status_list)
 {
-	int conversion_factor = is_electricity_view ? 1000 : 1;
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
@@ -288,28 +328,18 @@ void EnergyView::status_changed(const StatusList &status_list)
 		switch (it.key())
 		{
 		case EnergyDevice::DIM_CUMULATIVE_DAY:
-			cumulative_day_banner->setInternalText(QString("%1 %2")
-				.arg(it.value().toInt()/conversion_factor)
-				.arg(unit_measure));
-			cumulative_day_banner->Draw();
+			cumulative_day_value = it.value().toInt();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_MONTH:
-			cumulative_month_banner->setInternalText(QString("%1 %2")
-				.arg(it.value().toInt()/conversion_factor)
-				.arg(unit_measure));
-			cumulative_month_banner->Draw();
+			cumulative_month_value = it.value().toInt();
 			break;
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
-			cumulative_year_banner->setInternalText(QString("%1 %2")
-				.arg(it.value().toInt()/conversion_factor)
-				.arg(unit_measure));
-			cumulative_year_banner->Draw();
+			cumulative_year_value = it.value().toInt();
 			break;
 		case EnergyDevice::DIM_CURRENT:
-			current_banner->setInternalText(QString("%1·kW").arg(it.value().toInt()/
-				static_cast<float>(conversion_factor), 0, 'f', 3));
-			current_banner->Draw();
+			current_value = it.value().toInt();
 			break;
+		// TODO: what about daily average banner? where do I take the value?
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::DAILY_AVERAGE);
@@ -319,8 +349,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
 			{
-				convertGraphData(d, conversion_factor);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
@@ -329,8 +359,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
 			{
-				convertGraphData(d, conversion_factor);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
@@ -340,8 +370,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year())
 			{
-				convertGraphData(d, conversion_factor);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
@@ -351,14 +381,15 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
 			{
-				convertGraphData(d, conversion_factor);
-				graph->setData(d->graph);
+				QMap<int, int> g = convertGraphData(d);
+				graph->setData(g);
 			}
 			break;
 		}
 		}
 		++it;
 	}
+	updateBanners();
 }
 
 void EnergyView::backClick()
@@ -369,18 +400,14 @@ void EnergyView::backClick()
 		showBannerWidget();
 }
 
-void EnergyView::showGraph(int graph_type)
+void EnergyView::updateCurrentGraph()
 {
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
-
-	current_widget = GRAPH_WIDGET;
-	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
 	current_date = time_period->date();
+	// TODO: bisogna cambiare la label del grafico quando siamo sui soldi?
 	switch (current_graph)
 	{
 	case EnergyDevice::DAILY_AVERAGE:
-		current_date.setDate(current_date.year(), current_date.month(), 1);
-		// fall below...
 	case EnergyDevice::CUMULATIVE_DAY:
 		graph->init(24, unit_measure + tr("/hours"));
 		break;
@@ -390,14 +417,24 @@ void EnergyView::showGraph(int graph_type)
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
 		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
-		// fix current date, otherwise the graph won't show up
-		current_date.setDate(current_date.year(), current_date.month(), 1);
 		break;
 	}
-	qDebug() << "showing graph of type " << graph_type << " for date " << current_date;
 
-	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(current_date))
-		graph->setData(graph_data_cache[current_graph]->object(current_date)->graph);
+	QString key = dateToKey(current_date, current_graph);
+	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
+	{
+		GraphData *d = graph_data_cache[current_graph]->object(key);
+		QMap<int, int> g = convertGraphData(d);
+		graph->setData(g);
+	}
+}
+
+void EnergyView::showGraph(int graph_type)
+{
+	current_widget = GRAPH_WIDGET;
+	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
+
+	updateCurrentGraph();
 
 	initTransition();
 	widget_container->setCurrentIndex(current_widget);
@@ -529,6 +566,42 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
+	updateBanners();
+	updateCurrentGraph();
+}
+
+void EnergyView::updateBanners()
+{
+	float day = EnergyConversions::convertToRawData(cumulative_day_value);
+	float current = EnergyConversions::convertToRawData(current_value,
+		is_electricity_view ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
+	float month = EnergyConversions::convertToRawData(cumulative_month_value);
+	float year = EnergyConversions::convertToRawData(cumulative_year_value);
+	float average = EnergyConversions::convertToRawData(daily_av_value);
+	QString str = unit_measure;
+
+	float factor = is_production ? prod_factor : cons_factor;
+	if (EnergyInterface::isCurrencyView())
+	{
+		day = EnergyConversions::convertToMoney(day, factor);
+		current = EnergyConversions::convertToMoney(current, factor);
+		month = EnergyConversions::convertToMoney(month, factor);
+		year = EnergyConversions::convertToMoney(year, factor);
+		average = EnergyConversions::convertToMoney(average, factor);
+		str = currency_symbol;
+	}
+
+	cumulative_day_banner->setInternalText(QString("%1 %2")
+		.arg(loc.toString(day, 'f', 3)).arg(str));
+
+	cumulative_month_banner->setInternalText(QString("%1 %2")
+		 .arg(loc.toString(month, 'f', 3)).arg(str));
+
+	cumulative_year_banner->setInternalText(QString("%1 %2")
+		.arg(loc.toString(year, 'f', 3)).arg(str));
+
+	current_banner->setInternalText(QString("%1·%2")
+		.arg(loc.toString(current, 'f', 3)).arg(str));
 }
 
 void EnergyView::setProdFactor(float p)
