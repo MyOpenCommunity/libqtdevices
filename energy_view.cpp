@@ -204,6 +204,9 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	is_production = is_prod;
 
+	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
+	daily_av_value = current_value = 0;
+
 	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
@@ -235,7 +238,11 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 		main_layout->addWidget(nav_bar);
 	}
 	else
-		addBackButton();
+	{
+		bannFrecce *nav_bar = new bannFrecce(this, 1);
+		connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
+		main_layout->addWidget(nav_bar);
+	}
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
@@ -295,10 +302,23 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	return d;
 }
 
-QMap<int, int> EnergyView::convertGraphData(GraphData *gd)
+void EnergyView::showPage()
 {
+	// switch back to raw data visualization if currency is not supported
+	if (EnergyInterface::isCurrencyView() && currency_symbol.isNull())
+		EnergyInterface::toggleCurrencyView();
+	Page::showPage();
+}
+
+QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
+{
+	QMap<int, float> data;
+	// copy map to float values
+	QList<int> graph_keys = gd->graph.keys();
+	for (int i = 0; i < graph_keys.size(); ++i)
+		data[graph_keys[i]] = gd->graph[graph_keys[i]];
+
 	// convert to raw data
-	QMap<int, int> data = gd->graph;
 	QList<int> keys = data.keys();
 	for (int i = 0; i < keys.size(); ++i)
 	{
@@ -306,8 +326,6 @@ QMap<int, int> EnergyView::convertGraphData(GraphData *gd)
 	}
 
 	// convert to economic data
-	// TODO: che succede se clicco sui soldi da qualche altra parte ma qui non siamo abilitati a far
-	// vedere i soldi?
 	if (EnergyInterface::isCurrencyView())
 	{
 		float factor = is_production ? prod_factor : cons_factor;
@@ -349,7 +367,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month())
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -359,7 +377,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -370,7 +388,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year())
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -381,7 +399,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
 			{
-				QMap<int, int> g = convertGraphData(d);
+				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
 			}
 			break;
@@ -424,7 +442,7 @@ void EnergyView::updateCurrentGraph()
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
 	{
 		GraphData *d = graph_data_cache[current_graph]->object(key);
-		QMap<int, int> g = convertGraphData(d);
+		QMap<int, float> g = convertGraphData(d);
 		graph->setData(g);
 	}
 }
@@ -600,7 +618,7 @@ void EnergyView::updateBanners()
 	cumulative_year_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(year, 'f', 3)).arg(str));
 
-	current_banner->setInternalText(QString("%1·%2")
+	current_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(current, 'f', 3)).arg(str));
 }
 

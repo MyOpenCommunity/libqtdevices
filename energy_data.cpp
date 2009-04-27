@@ -193,6 +193,7 @@ bool EnergyInterface::is_currency_view = false;
 
 EnergyInterface::EnergyInterface(const QDomNode &config_node)
 {
+	is_any_interface_enabled = false;
 	loadItems(config_node);
 	if (elencoBanner.size() == 1)
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
@@ -203,10 +204,13 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 	assert(bt_global::skin->hasContext() && "Skin context not set!");
 	int mode = getTextChild(config_node, "mode").toInt();
 	QString energy_type = getTextChild(config_node, "descr");
-	measure = getTextChild(config_node, "measure");
+	QString measure = getTextChild(config_node, "measure");
+	bool show_currency_button = false;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		bool is_currency_enabled = checkTypeForCurrency(getTextChild(item, "type"), config_node);
+		// check if any of the interfaces have currency enabled
+		show_currency_button |= is_currency_enabled;
 
 		QString currency;
 		if (is_currency_enabled)
@@ -248,6 +252,13 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
 	}
+
+	if (show_currency_button)
+	{
+		is_any_interface_enabled = show_currency_button;
+		setNavBarMode(10, bt_global::skin->getImage("currency"));
+		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
+	}
 }
 
 bool EnergyInterface::checkTypeForCurrency(const QString &type, const QDomNode &conf)
@@ -273,8 +284,22 @@ bool EnergyInterface::checkTypeForCurrency(const QString &type, const QDomNode &
 		return false;
 }
 
+void EnergyInterface::updateBanners()
+{
+	for (int i = 0; i < elencoBanner.size(); ++i)
+	{
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		b->updateText();
+	}
+}
+
 void EnergyInterface::showPage()
 {
+	// restore visualization of raw data if we aren't enabled
+	if (isCurrencyView() && !is_any_interface_enabled)
+		toggleCurrencyView();
+
+	updateBanners();
 	if (elencoBanner.size() == 1)
 		next_page->showPage();
 	else
@@ -301,6 +326,12 @@ void EnergyInterface::changeProdRate(float prod)
 		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
 		b->setProdFactor(prod);
 	}
+}
+
+void EnergyInterface::toggleCurrency()
+{
+	toggleCurrencyView();
+	updateBanners();
 }
 
 void EnergyInterface::toggleCurrencyView()
@@ -347,6 +378,7 @@ void bannEnergyInterface::setUnitMeasure(const QString &m)
 
 void bannEnergyInterface::updateText()
 {
+	QString text("---");
 	if (device_value)
 	{
 		float data = EnergyConversions::convertToRawData(device_value,
@@ -355,14 +387,17 @@ void bannEnergyInterface::updateText()
 		QString str = measure;
 		if (EnergyInterface::isCurrencyView())
 		{
-			data = EnergyConversions::convertToMoney(data, factor);
-			str = currency_symbol;
+			if (!currency_symbol.isNull())
+			{
+				data = EnergyConversions::convertToMoney(data, factor);
+				str = currency_symbol;
+				text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str);
+			}
 		}
-
-		setInternalText(QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str));
+		else
+			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str);
 	}
-	else
-		setInternalText("---");
+	setInternalText(text);
 }
 
 void bannEnergyInterface::status_changed(const StatusList &status_list)

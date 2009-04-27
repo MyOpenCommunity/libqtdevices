@@ -70,15 +70,15 @@ public:
 public slots:
 	void changeProdRate(float prod);
 	void changeConsRate(float cons);
+	void toggleCurrency();
 
 private:
 	void loadItems(const QDomNode &config_node);
 	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
+	void updateBanners();
 	EnergyView *next_page;
-	QHash<QString, bannTextOnImage*> banner_hash;
 	QList<EnergyView*> views;
-	int conversion_factor;
-	QString measure;
+	bool is_any_interface_enabled;
 	static bool is_currency_view;
 };
 
@@ -104,12 +104,12 @@ public:
 	void setConsFactor(float cons);
 	void setType(EnergyFactorType t);
 	void setUnitMeasure(const QString &m);
+	void updateText();
 
 public slots:
 	void status_changed(const StatusList &status_list);
 
 private:
-	void updateText();
 	EnergyFactorType type;
 	float prod_factor, cons_factor;
 	int device_value;
