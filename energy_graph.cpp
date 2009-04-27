@@ -25,13 +25,6 @@ void EnergyGraph::setData(const QMap<int, int> &data)
 	update();
 }
 
-void EnergyGraph::generateRandomValues()
-{
-	// TODO: just for the demo, fill in the graph with random values
-	for (int i = 0; i < number_of_bars; ++i)
-		graph_data[i] = rand();
-}
-
 void EnergyGraph::paintEvent(QPaintEvent *e)
 {
 	const int MARGIN = 5;

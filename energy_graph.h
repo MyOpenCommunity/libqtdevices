@@ -12,7 +12,7 @@ class EnergyGraph : public QWidget
 Q_OBJECT
 public:
 	EnergyGraph();
-	void generateRandomValues();
+
 
 public slots:
 	void init(int bars, QString t);
@@ -23,6 +23,7 @@ protected:
 	void paintEvent(QPaintEvent *e);
 
 private:
+	void generateRandomValues();
 	int number_of_bars;
 	QMap<int, int> graph_data;
 	QString text;
