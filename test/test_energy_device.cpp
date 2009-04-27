@@ -377,7 +377,7 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	for (int i = 0; i < 12; ++i)
 		data.graph[i] = 0;
 
-	// We can't use a fixed month because the month index depends bt the currentDate.
+	// We can't use a fixed month because the month index depends by the currentDate.
 	int month_distance = month - QDate::currentDate().month();
 	int index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
 
