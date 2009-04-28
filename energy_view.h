@@ -49,6 +49,7 @@ private:
 	 */
 	void changeTimePeriod(int delta);
 	void setDate(QDate new_date);
+	QString formatDate(const QDate &date, TimePeriod period);
 
 	TimePeriod status;
 	BtButton *back_period, *forw_period, *btn_cycle;
