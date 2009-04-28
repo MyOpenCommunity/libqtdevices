@@ -74,6 +74,32 @@ void bannFrecce::handleBackRelease()
 	press_timer.stop();
 }
 
+void bannFrecce::addCdxButton()
+{
+	addItem(BUT4, MAX_WIDTH/2+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
+		(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
+}
+void bannFrecce::setCdxIcon(const QString &image)
+{
+	// if I had to explain why this work, you wouldn't believe it...
+	// ...
+	// Ok, I'll explain, as I already know that the next time it will be MY duty to
+	// fix this if something goes wrong (as Murphy already demonstrated).
+	// It is a combination of banner::attivo (default = 0), addItem(BUT4) and
+	// banner::Draw(), which looks for cdxButton (BUT4) AND Icon[3]
+	SetIcons(3, image);
+}
+
+void bannFrecce::showCdxButton()
+{
+	cdxButton->show();
+}
+
+void bannFrecce::hideCdxButton()
+{
+	cdxButton->hide();
+}
+
 void bannFrecce::Draw()
 {
 	if (dxButton != original_dx_button)
