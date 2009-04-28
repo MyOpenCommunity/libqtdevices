@@ -579,6 +579,7 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		case TimePeriodSelection::MONTH:
 			dev->requestCumulativeMonth(selection_date);
 			dev->requestCumulativeMonthGraph(selection_date);
+			dev->requestDailyAverageGraph(selection_date);
 			break;
 		case TimePeriodSelection::YEAR:
 			dev->requestCumulativeYear();
@@ -597,8 +598,10 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 			dev->requestCumulativeDayGraph(selection_date);
 			break;
 		case TimePeriodSelection::MONTH:
-			graph_type = EnergyDevice::CUMULATIVE_MONTH;
+			// we have to preserve the current visualized graph (can be daily average)
+			graph_type = current_graph;
 			dev->requestCumulativeMonthGraph(selection_date);
+			dev->requestDailyAverageGraph(selection_date);
 			break;
 		case TimePeriodSelection::YEAR:
 			graph_type = EnergyDevice::CUMULATIVE_YEAR;
