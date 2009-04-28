@@ -44,6 +44,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text = new Text2Column;
 	box_text->setStyleSheet("background-color:#f0f0f0; color:#000000;");
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	box_text->setLineWidth(3);
 	box_text->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 
 	box_text->addRow(bt_global::config[MODEL]);
