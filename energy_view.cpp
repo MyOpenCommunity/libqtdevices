@@ -587,48 +587,32 @@ QWidget *EnergyView::buildBannerWidget()
 
 void EnergyView::changeTimePeriod(int status, QDate selection_date)
 {
-	if (widget_container->currentIndex() == BANNER_WIDGET)
-	{
-		switch (status)
-		{
-		case TimePeriodSelection::DAY:
-			dev->requestCumulativeDay(selection_date);
-			dev->requestCumulativeDayGraph(selection_date);
-			break;
-		case TimePeriodSelection::MONTH:
-			dev->requestCumulativeMonth(selection_date);
-			dev->requestCumulativeMonthGraph(selection_date);
-			dev->requestDailyAverageGraph(selection_date);
-			break;
-		case TimePeriodSelection::YEAR:
-			dev->requestCumulativeYear();
-			dev->requestCumulativeYearGraph();
-			break;
-		}
-	}
-	else // GRAPH_WIDGET
-	{
-		int graph_type;
+	int graph_type;
 
-		switch (status)
-		{
-		case TimePeriodSelection::DAY:
-			graph_type = EnergyDevice::CUMULATIVE_DAY;
-			dev->requestCumulativeDayGraph(selection_date);
-			break;
-		case TimePeriodSelection::MONTH:
-			// we have to preserve the current visualized graph (can be daily average)
-			graph_type = current_graph;
-			dev->requestCumulativeMonthGraph(selection_date);
-			dev->requestDailyAverageGraph(selection_date);
-			break;
-		case TimePeriodSelection::YEAR:
-			graph_type = EnergyDevice::CUMULATIVE_YEAR;
-			dev->requestCumulativeYearGraph();
-			break;
-		}
-		showGraph(graph_type);
+	switch (status)
+	{
+	case TimePeriodSelection::DAY:
+		graph_type = EnergyDevice::CUMULATIVE_DAY;
+		dev->requestCumulativeDay(selection_date);
+		dev->requestCumulativeDayGraph(selection_date);
+		break;
+	case TimePeriodSelection::MONTH:
+		// we have to preserve the current visualized graph (can be daily average)
+		graph_type = current_graph;
+		dev->requestCumulativeMonth(selection_date);
+		dev->requestCumulativeMonthGraph(selection_date);
+		dev->requestDailyAverageGraph(selection_date);
+		dev->requestMontlyAverage(selection_date);
+		break;
+	case TimePeriodSelection::YEAR:
+		graph_type = EnergyDevice::CUMULATIVE_YEAR;
+		dev->requestCumulativeYear();
+		dev->requestCumulativeYearGraph();
+		break;
 	}
+	if (widget_container->currentIndex() == GRAPH_WIDGET)
+		showGraph(graph_type);
+
 	setBannerPage(status, selection_date);
 }
 
