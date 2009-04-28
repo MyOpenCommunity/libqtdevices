@@ -247,7 +247,6 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		views.append(next_page);
 
 		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
-		connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		appendBanner(b);
