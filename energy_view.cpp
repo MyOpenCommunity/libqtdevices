@@ -86,7 +86,7 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
 	main_layout->addWidget(back_period);
 
-	date_period_label = getLabel(this, selection_date.toString("dd/MM/yy"), FontManager::SMALLTEXT);
+	date_period_label = getLabel(this, formatDate(selection_date, status), FontManager::SMALLTEXT);
 	main_layout->addWidget(date_period_label, 1, Qt::AlignCenter);
 
 	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
@@ -98,6 +98,25 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	connect(btn_cycle, SIGNAL(clicked()), SLOT(changeTimeScale()));
 	main_layout->addWidget(btn_cycle);
 	setLayout(main_layout);
+}
+
+QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
+{
+	switch (period)
+	{
+	case DAY:
+	{
+		QString format("dd.MM.yy");
+		if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
+			format = "MM.dd.yy";
+		return date.toString(format);
+	}
+	case MONTH:
+		// no need to modify the format to american
+		return date.toString("MM.yy");
+	case YEAR:
+		return tr("Last 12 months");
+	}
 }
 
 void TimePeriodSelection::hideCycleButton()
@@ -115,22 +134,26 @@ void TimePeriodSelection::changeTimeScale()
 	switch (status)
 	{
 	case DAY:
+	{
 		status = MONTH;
 		back_period->show();
 		forw_period->show();
-		date_period_label->setText(selection_date.toString("MM/yy"));
+		date_period_label->setText(formatDate(selection_date, status));
+	}
 		break;
 	case MONTH:
 		status = YEAR;
 		back_period->hide();
 		forw_period->hide();
-		date_period_label->setText(tr("Last 12 months"));
+		date_period_label->setText(formatDate(selection_date, status));
 		break;
 	case YEAR:
+	{
 		status = DAY;
 		back_period->show();
 		forw_period->show();
-		date_period_label->setText(selection_date.toString("dd/MM/yy"));
+		date_period_label->setText(formatDate(selection_date, status));
+	}
 		break;
 	}
 	emit timeChanged(status, selection_date);
@@ -154,11 +177,11 @@ void TimePeriodSelection::changeTimePeriod(int delta)
 	{
 	case DAY:
 		setDate(selection_date.addDays(delta));
-		date_period_label->setText(selection_date.toString("dd/MM/yy"));
+		date_period_label->setText(formatDate(selection_date, status));
 		break;
 	case MONTH:
 		setDate(selection_date.addMonths(delta));
-		date_period_label->setText(selection_date.toString("MM/yy"));
+		date_period_label->setText(formatDate(selection_date, status));
 		break;
 	default:
 		qWarning("periodForward called with status==YEAR");
@@ -575,6 +598,7 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		case TimePeriodSelection::MONTH:
 			dev->requestCumulativeMonth(selection_date);
 			dev->requestCumulativeMonthGraph(selection_date);
+			dev->requestDailyAverageGraph(selection_date);
 			break;
 		case TimePeriodSelection::YEAR:
 			dev->requestCumulativeYear();
@@ -593,8 +617,10 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 			dev->requestCumulativeDayGraph(selection_date);
 			break;
 		case TimePeriodSelection::MONTH:
-			graph_type = EnergyDevice::CUMULATIVE_MONTH;
+			// we have to preserve the current visualized graph (can be daily average)
+			graph_type = current_graph;
 			dev->requestCumulativeMonthGraph(selection_date);
+			dev->requestDailyAverageGraph(selection_date);
 			break;
 		case TimePeriodSelection::YEAR:
 			graph_type = EnergyDevice::CUMULATIVE_YEAR;
