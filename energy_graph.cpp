@@ -1,10 +1,19 @@
 #include "energy_graph.h"
 #include "fontmanager.h" // bt_global::font
+#include "bannfrecce.h"
 
+#include <QSpacerItem>
+#include <QBoxLayout>
+#include <QGridLayout>
+#include <QVariant>
 #include <QPainter>
 #include <QDebug>
+#include <QLabel>
 #include <QPen>
 
+#define TABLE_STYLE ".QFrame { border: 2px solid gray;} QLabel { border-color:gray; border-style:solid;} "\
+					"QLabel[left=\"true\"] {border-right-width: 1px;} QLabel[right=\"true\"] {border-left-width: 1px;} "\
+					"QLabel[heading=\"true\"] {border-bottom-width:2px;}"
 
 EnergyGraph::EnergyGraph() : primary_color("#1449C8"), secondary_color("#3587FF")
 {
@@ -23,7 +32,7 @@ void EnergyGraph::init(int bars, QString t)
 void EnergyGraph::generateRandomValues()
 {
 	for (int i = 0; i < number_of_bars; ++i)
-		graph_data[i] = rand() % 100;
+		graph_data[i+1] = rand() % 100;
 }
 #endif
 
@@ -112,13 +121,119 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 
 EnergyTable::EnergyTable()
 {
-	addBackButton();
+	rows_per_page = 8;
+	current_page = 0;
+	main_layout->addSpacing(10);
+
+	date_label = new QLabel;
+	date_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+	main_layout->addWidget(date_label, 0, Qt::AlignCenter);
+
+	createTable();
+	QWidget *central_widget = new QWidget;
+	QHBoxLayout *l = new QHBoxLayout(central_widget);
+	l->setContentsMargins(10, 5, 10, 0);
+	l->setSpacing(0);
+	l->addWidget(table);
+
+	main_layout->addWidget(central_widget, 1);
+
+	bannFrecce *nav_bar = new bannFrecce(this, 3);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(downClick()), SLOT(pageUp()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(pageDown()));
+	main_layout->addWidget(nav_bar);
 }
 
-void EnergyTable::init(int num_values, QString date)
+void EnergyTable::pageUp()
 {
+	if (current_page > 0)
+		--current_page;
+	showData();
+}
+
+void EnergyTable::pageDown()
+{
+	if (static_cast<int>((current_page + 1) * rows_per_page) < table_data.count())
+		++current_page;
+	showData();
+}
+
+void EnergyTable::showData()
+{
+	int start = current_page * rows_per_page;
+
+	QGridLayout *table_layout = static_cast<QGridLayout*>(table->layout());
+	QList<int> data_keys = table_data.keys();
+	for (int i = 0; i < rows_per_page; ++i)
+	{
+		QLabel *left = static_cast<QLabel*>(table_layout->itemAtPosition(i + 1, 0)->widget());
+		QLabel *right = static_cast<QLabel*>(table_layout->itemAtPosition(i + 1, 1)->widget());
+		if (i + start < data_keys.count())
+		{
+			int key = data_keys.at(i + start);
+			left->setText(QString::number(key));
+			right->setText(QString::number(table_data[key]));
+		}
+		else
+		{
+			left->setText("");
+			right->setText("");
+		}
+	}
+	update();
+}
+
+void EnergyTable::createTable()
+{
+	table = new QFrame;
+	table->setStyleSheet(TABLE_STYLE);
+	QGridLayout *table_layout = new QGridLayout(table);
+	table_layout->setContentsMargins(0, 0, 0, 0);
+	table_layout->setSpacing(0);
+	heading_left = new QLabel;
+	heading_left->setAlignment(Qt::AlignCenter);
+	heading_left->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+	heading_left->setProperty("left", true);
+	heading_left->setProperty("heading", true);
+	table_layout->addWidget(heading_left, 0, 0);
+
+	heading_right = new QLabel;
+	heading_right->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+	heading_right->setAlignment(Qt::AlignCenter);
+	heading_right->setProperty("right", true);
+	heading_right->setProperty("heading", true);
+	table_layout->addWidget(heading_right, 0, 1);
+
+
+	for (int i = 0; i < rows_per_page; ++i)
+	{
+		QLabel *left = new QLabel;
+		left->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+		left->setAlignment(Qt::AlignCenter);
+		left->setProperty("left", true);
+
+		QLabel *right = new QLabel;
+		right->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+		right->setAlignment(Qt::AlignCenter);
+		right->setProperty("right", true);
+
+		int row = table_layout->rowCount();
+		table_layout->addWidget(left, row, 0);
+		table_layout->addWidget(right, row, 1);
+	}
+}
+
+void EnergyTable::init(QString left_text, QString right_text, QString date)
+{
+	heading_left->setText(left_text);
+	heading_right->setText(right_text);
+	date_label->setText(date);
 }
 
 void EnergyTable::setData(const QMap<int, float> &data)
 {
+	table_data = data;
+	current_page = 0;
+	showData();
 }

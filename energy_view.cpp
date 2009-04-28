@@ -238,16 +238,17 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	if (!currency_symbol.isNull())
 	{
 		bannNavigazione = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
-		connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
 		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
-		main_layout->addWidget(bannNavigazione);
 	}
 	else
 	{
 		bannNavigazione = new bannFrecce(this, 1);
-		connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
-		main_layout->addWidget(bannNavigazione);
 	}
+	connect(bannNavigazione, SIGNAL(downClick()), table, SLOT(showPage()));
+	connect(table, SIGNAL(Closed()), SLOT(showPage()));
+	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
+	main_layout->addWidget(bannNavigazione);
+
 	bannNavigazione->addCdxButton();
 	bannNavigazione->setCdxIcon(bt_global::skin->getImage("table"));
 	bannNavigazione->Draw();
@@ -462,20 +463,21 @@ void EnergyView::updateCurrentGraph()
 	case EnergyDevice::DAILY_AVERAGE:
 	case EnergyDevice::CUMULATIVE_DAY:
 		graph->init(24, unit_measure + tr("/hours"));
-		table->init(24, time_period->dateDisplayed());
+		table->init(tr("Hour"), unit_measure, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_YEAR:
 		graph->init(12, unit_measure + tr("/months"));
-		table->init(12, time_period->dateDisplayed());
+		table->init(tr("Month"), unit_measure, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
 		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
-		table->init(time_period->date().daysInMonth(), time_period->dateDisplayed());
+		table->init(tr("Day"), unit_measure, time_period->dateDisplayed());
 		break;
 	}
 #ifdef TEST_ENERGY_GRAPH
 	graph->generateRandomValues();
+	table->setData(graph->graph_data);
 	return;
 #endif
 	QString key = dateToKey(current_date, current_graph);
