@@ -1,6 +1,8 @@
 #ifndef ENERGY_GRAPH_H
 #define ENERGY_GRAPH_H
 
+#include "page.h"
+
 #include <QWidget>
 #include <QString>
 #include <QColor>
@@ -30,6 +32,16 @@ private:
 	QMap<int, float> graph_data;
 	QString text;
 	QColor primary_color, secondary_color;
+};
+
+
+class EnergyTable : public PageLayout
+{
+Q_OBJECT
+public:
+	EnergyTable();
+	void init(int num_values, QString date);
+	void setData(const QMap<int, float> &data);
 };
 
 

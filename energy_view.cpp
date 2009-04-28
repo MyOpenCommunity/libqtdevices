@@ -183,6 +183,11 @@ void TimePeriodSelection::periodBackward()
 	changeTimePeriod(-1);
 }
 
+QString TimePeriodSelection::dateDisplayed()
+{
+	return date_period_label->text();
+}
+
 
 bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 {
@@ -228,6 +233,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	showBannerWidget();
 	main_layout->addWidget(widget_container, 1);
+	table = new EnergyTable();
 
 	currency_symbol = _currency_symbol;
 	if (!currency_symbol.isNull())
@@ -388,6 +394,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
+				table->setData(g);
 			}
 			break;
 		}
@@ -398,6 +405,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
+				table->setData(g);
 			}
 			break;
 		}
@@ -409,6 +417,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
+				table->setData(g);
 			}
 			break;
 		}
@@ -420,6 +429,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
+				table->setData(g);
 			}
 			break;
 		}
@@ -447,13 +457,16 @@ void EnergyView::updateCurrentGraph()
 	case EnergyDevice::DAILY_AVERAGE:
 	case EnergyDevice::CUMULATIVE_DAY:
 		graph->init(24, unit_measure + tr("/hours"));
+		table->init(24, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_YEAR:
 		graph->init(12, unit_measure + tr("/months"));
+		table->init(12, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
 		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
+		table->init(time_period->date().daysInMonth(), time_period->dateDisplayed());
 		break;
 	}
 #ifdef TEST_ENERGY_GRAPH
@@ -466,6 +479,7 @@ void EnergyView::updateCurrentGraph()
 		GraphData *d = graph_data_cache[current_graph]->object(key);
 		QMap<int, float> g = convertGraphData(d);
 		graph->setData(g);
+		table->setData(g);
 	}
 }
 

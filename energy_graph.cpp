@@ -109,3 +109,16 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 	}
 }
 
+
+EnergyTable::EnergyTable()
+{
+	addBackButton();
+}
+
+void EnergyTable::init(int num_values, QString date)
+{
+}
+
+void EnergyTable::setData(const QMap<int, float> &data)
+{
+}

@@ -13,6 +13,7 @@
 class BtButton;
 class bannTextOnImage;
 class EnergyDevice;
+class EnergyTable;
 class QLabel;
 class QStackedWidget;
 class QSignalMapper;
@@ -34,6 +35,7 @@ public:
 	void hideCycleButton();
 	void showCycleButton();
 	QDate date();
+	QString dateDisplayed();
 
 private slots:
 	void changeTimeScale();
@@ -106,6 +108,7 @@ private:
 	int cumulative_day_value, cumulative_month_value, cumulative_year_value;
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
+	EnergyTable *table;
 	Widget current_widget;
 	EnergyDevice *dev;
 	QString unit_measure;
@@ -126,4 +129,6 @@ private slots:
 	void backClick();
 	void status_changed(const StatusList &status_list);
 };
+
+
 #endif // ENERGY_VIEW_H
