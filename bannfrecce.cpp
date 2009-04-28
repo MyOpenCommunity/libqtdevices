@@ -9,59 +9,58 @@
 
 bannFrecce::bannFrecce(QWidget *parent, uchar num, QString IconBut4) : banner(parent)
 {
-    qDebug("bannFrecce::bannFrecce(%d)", num);
-    addItem(BUT1,(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-			(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X,
-			BUTFRECCE_DIM_Y);
+	qDebug("bannFrecce::bannFrecce(%d)", num);
+	addItem(BUT1,(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
+		(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X,
+		BUTFRECCE_DIM_Y);
 
-    if (num > 1 && num < 8)
+	if (num > 1 && num < 8)
 	{
 		addItem(BUT3 , MAX_WIDTH/4+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-				(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2,
-				BUTFRECCE_DIM_X , BUTFRECCE_DIM_Y);
+			(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2,
+			BUTFRECCE_DIM_X , BUTFRECCE_DIM_Y);
 
 		if (num > 2 && num < 7)
 			addItem(BUT4 , MAX_WIDTH/2+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-					(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2,
-					BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
-    }
-
-	dx_button_coord = QRect(MAX_WIDTH*3/4+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-							(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2,
-							BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
-
-    if  ((num > 3 && num < 6) || num == 9 || num == 10)
-	{
-		addItem(BUT2, dx_button_coord.left(), dx_button_coord.top(),
-				dx_button_coord.width(), dx_button_coord.height());
+				(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2,
+				BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
 	}
 
-    if (num < 5 || num == 10)
+	dx_button_coord = QRect(MAX_WIDTH*3/4+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
+		(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
+
+	if ((num > 3 && num < 6) || num == 9 || num == 10)
+	{
+		addItem(BUT2, dx_button_coord.left(), dx_button_coord.top(),
+			dx_button_coord.width(), dx_button_coord.height());
+	}
+
+	if (num < 5 || num == 10)
 		SetIcons(ICON_FRECCIA_SX, IconBut4, ICON_FRECCIA_SU, ICON_FRECCIA_GIU);
-    else
+	else
 		SetIcons(ICON_OK, IconBut4, ICON_FRECCIA_SU, ICON_FRECCIA_GIU);
 
-    connect(this, SIGNAL(sxClick()), this, SIGNAL(backClick()));
-    connect(this, SIGNAL(dxClick()), this, SIGNAL(forwardClick()));
-    connect(this, SIGNAL(csxClick()), this, SIGNAL(upClick()));
-    connect(this, SIGNAL(cdxClick()), this, SIGNAL(downClick()));
+	connect(this, SIGNAL(sxClick()), this, SIGNAL(backClick()));
+	connect(this, SIGNAL(dxClick()), this, SIGNAL(forwardClick()));
+	connect(this, SIGNAL(csxClick()), this, SIGNAL(upClick()));
+	connect(this, SIGNAL(cdxClick()), this, SIGNAL(downClick()));
 
-    connect(this, SIGNAL(sxPressed()), this, SIGNAL(backPress()));
-    connect(this, SIGNAL(dxPressed()), this, SIGNAL(forwardPress()));
-    connect(this, SIGNAL(csxPressed()), this, SIGNAL(upPress()));
-    connect(this, SIGNAL(cdxPressed()), this, SIGNAL(downPress()));
+	connect(this, SIGNAL(sxPressed()), this, SIGNAL(backPress()));
+	connect(this, SIGNAL(dxPressed()), this, SIGNAL(forwardPress()));
+	connect(this, SIGNAL(csxPressed()), this, SIGNAL(upPress()));
+	connect(this, SIGNAL(cdxPressed()), this, SIGNAL(downPress()));
 
-    connect(this, SIGNAL(sxReleased()), this, SIGNAL(backRelease()));
-    connect(this, SIGNAL(dxReleased()), this, SIGNAL(forwardRelease()));
-    connect(this, SIGNAL(csxReleased()), this, SIGNAL(upRelease()));
-    connect(this, SIGNAL(cdxReleased()), this, SIGNAL(downRelease()));
+	connect(this, SIGNAL(sxReleased()), this, SIGNAL(backRelease()));
+	connect(this, SIGNAL(dxReleased()), this, SIGNAL(forwardRelease()));
+	connect(this, SIGNAL(csxReleased()), this, SIGNAL(upRelease()));
+	connect(this, SIGNAL(cdxReleased()), this, SIGNAL(downRelease()));
 
-    connect(this, SIGNAL(sxPressed()), this, SLOT(handleBackPress()));
-    connect(this, SIGNAL(sxReleased()), this, SLOT(handleBackRelease()));
-    connect(&press_timer, SIGNAL(timeout()), SIGNAL(longBackPress()));
+	connect(this, SIGNAL(sxPressed()), this, SLOT(handleBackPress()));
+	connect(this, SIGNAL(sxReleased()), this, SLOT(handleBackRelease()));
+	connect(&press_timer, SIGNAL(timeout()), SIGNAL(longBackPress()));
 
-    original_dx_button = dxButton;
-    Draw();
+	original_dx_button = dxButton;
+	Draw();
 }
 
 void bannFrecce::handleBackPress()
