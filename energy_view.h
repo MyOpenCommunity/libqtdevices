@@ -17,6 +17,7 @@ class EnergyTable;
 class QLabel;
 class QStackedWidget;
 class QSignalMapper;
+class bannFrecce;
 
 typedef QCache<QString, GraphData> GraphCache;
 
@@ -102,6 +103,7 @@ private:
 		GRAPH_WIDGET = 1
 	};
 
+	bannFrecce *bannNavigazione;
 	bannTextOnImage *current_banner, *daily_av_banner;
 	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
 	int current_value, daily_av_value;

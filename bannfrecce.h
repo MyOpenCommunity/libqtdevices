@@ -68,6 +68,15 @@ public:
 	 */
 	virtual void Draw();
 
+	// These functions are introduced for EnergyView, that needs three buttons, one for the table
+	//      view of graph data.
+	//
+	// You mustn't use these functions when 2 < num < 7, these already have BUT4 defined
+	void addCdxButton();
+	void setCdxIcon(const QString &image);
+	void showCdxButton();
+	void hideCdxButton();
+
 signals:
 	void backClick();
 	void upClick();

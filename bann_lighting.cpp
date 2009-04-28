@@ -219,6 +219,10 @@ dimmer100::dimmer100(QWidget *parent, QString where, QString IconaSx, QString Ic
 	setRange(5,100);
 	setStep(5);
 	setValue(0);
+	// this is necessary otherwise icons are loaded in the base class,
+	// which has incorrect values for range() and step().
+	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, breakIcon, false);
+
 	dev = bt_global::devices_cache.get_dimmer100(getAddress());
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
