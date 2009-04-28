@@ -226,28 +226,33 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	widget_container->addWidget(buildBannerWidget());
 	widget_container->addWidget(new EnergyGraph);
 
-	showBannerWidget();
 	main_layout->addWidget(widget_container, 1);
 
 	currency_symbol = _currency_symbol;
 	if (!currency_symbol.isNull())
 	{
-		bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
-		connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
-		connect(nav_bar, SIGNAL(dxClick()), SLOT(toggleCurrency()));
-		main_layout->addWidget(nav_bar);
+		bannNavigazione = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
+		connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
+		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
+		main_layout->addWidget(bannNavigazione);
 	}
 	else
 	{
-		bannFrecce *nav_bar = new bannFrecce(this, 1);
-		connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
-		main_layout->addWidget(nav_bar);
+		bannNavigazione = new bannFrecce(this, 1);
+		connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
+		main_layout->addWidget(bannNavigazione);
 	}
+	bannNavigazione->addCdxButton();
+	bannNavigazione->setCdxIcon(bt_global::skin->getImage("table"));
+	bannNavigazione->Draw();
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
 	unit_measure = measure;
 	startTimer(POLLING_CURRENT_DATA * 1000);
+
+	// this must be after creating bannNavigazione, otherwise segfault
+	showBannerWidget();
 }
 
 EnergyView::~EnergyView()
@@ -474,6 +479,7 @@ void EnergyView::showGraph(int graph_type)
 	updateCurrentGraph();
 
 	initTransition();
+	bannNavigazione->showCdxButton();
 	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
@@ -484,6 +490,7 @@ void EnergyView::showBannerWidget()
 {
 	current_widget = BANNER_WIDGET;
 	initTransition();
+	bannNavigazione->hideCdxButton();
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
 	startTransition();
