@@ -19,6 +19,14 @@ void EnergyGraph::init(int bars, QString t)
 	update();
 }
 
+#ifdef TEST_ENERGY_GRAPH
+void EnergyGraph::generateRandomValues()
+{
+	for (int i = 0; i < number_of_bars; ++i)
+		graph_data[i] = rand() % 100;
+}
+#endif
+
 void EnergyGraph::setData(const QMap<int, float> &data)
 {
 	graph_data = data;

@@ -456,7 +456,10 @@ void EnergyView::updateCurrentGraph()
 		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
 		break;
 	}
-
+#ifdef TEST_ENERGY_GRAPH
+	graph->generateRandomValues();
+	return;
+#endif
 	QString key = dateToKey(current_date, current_graph);
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
 	{

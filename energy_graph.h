@@ -13,6 +13,10 @@ Q_OBJECT
 public:
 	EnergyGraph();
 
+#ifdef TEST_ENERGY_GRAPH
+	void generateRandomValues();
+#endif
+
 public slots:
 	void init(int bars, QString t);
 	void setData(const QMap<int, float> &data);
