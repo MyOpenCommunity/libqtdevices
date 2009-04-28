@@ -86,7 +86,10 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
 	main_layout->addWidget(back_period);
 
-	date_period_label = getLabel(this, selection_date.toString("dd/MM/yy"), FontManager::SMALLTEXT);
+	QString format("dd.MM.yy");
+	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
+		format = "MM.dd.yy";
+	date_period_label = getLabel(this, selection_date.toString(format), FontManager::SMALLTEXT);
 	main_layout->addWidget(date_period_label, 1, Qt::AlignCenter);
 
 	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
@@ -115,10 +118,14 @@ void TimePeriodSelection::changeTimeScale()
 	switch (status)
 	{
 	case DAY:
+	{
+		QString format("MM.yy");
+		// no need to modify the format to american
 		status = MONTH;
 		back_period->show();
 		forw_period->show();
-		date_period_label->setText(selection_date.toString("MM/yy"));
+		date_period_label->setText(selection_date.toString(format));
+	}
 		break;
 	case MONTH:
 		status = YEAR;
@@ -127,10 +134,15 @@ void TimePeriodSelection::changeTimeScale()
 		date_period_label->setText(tr("Last 12 months"));
 		break;
 	case YEAR:
+	{
+		QString format("dd.MM.yy");
+		if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
+			format = "MM.dd.yy";
 		status = DAY;
 		back_period->show();
 		forw_period->show();
-		date_period_label->setText(selection_date.toString("dd/MM/yy"));
+		date_period_label->setText(selection_date.toString(format));
+	}
 		break;
 	}
 	emit timeChanged(status, selection_date);
