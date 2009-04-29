@@ -23,10 +23,8 @@
 #define POLLING_CURRENT_DATA 5 // time to refresh data visualized in the current banner (in sec.)
 #define ENERGY_GRAPH_DELAY 1000 // msec to wait before request a graph data
 
-// To use QDate as a key in QHash
-inline bool qHash(const QDate &date) { return qHash(date.toString()); }
-
-namespace {
+namespace
+{
 // The language used for the floating point number
 QLocale loc(QLocale::Italian);
 }
