@@ -235,7 +235,9 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
 	daily_av_value = current_value = 0;
 
-	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
+	// We can't use frame compressor as below (or with a single what as filter), because
+	// it filter also valid requests with different what.
+	//dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	mapper = new QSignalMapper(this);
