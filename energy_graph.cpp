@@ -11,9 +11,10 @@
 #include <QLabel>
 #include <QPen>
 
-#define TABLE_STYLE ".QFrame { border: 2px solid gray;} QLabel { border-color:gray; border-style:solid;} "\
-					"QLabel[left=\"true\"] {border-right-width: 1px;} QLabel[right=\"true\"] {border-left-width: 1px;} "\
-					"QLabel[heading=\"true\"] {border-bottom-width:2px;}"
+#define TABLE_STYLE ".QFrame { border: 1px solid #41474d;} QLabel { border-color:#41474d; border-style:solid;} "\
+					"QLabel[left=\"true\"] {border-right-width: 1px;} QLabel[right=\"true\"] {border-left-width: 0px;} "\
+					"QLabel[heading=\"true\"] {border-bottom-width:1px; background-color:#3587ff;} " \
+					"QLabel[odd=\"true\"] { background-color: #41474d; } QLabel[even=\"true\"] { background-color: #2e3236; }"
 
 EnergyGraph::EnergyGraph() : primary_color("#1449C8"), secondary_color("#3587FF")
 {
@@ -212,15 +213,17 @@ void EnergyTable::createTable()
 		left->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 		left->setAlignment(Qt::AlignCenter);
 		left->setProperty("left", true);
-
+		left->setProperty(i % 2 ? "even" : "odd", true);
 		QLabel *right = new QLabel;
 		right->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 		right->setAlignment(Qt::AlignCenter);
 		right->setProperty("right", true);
+		right->setProperty(i % 2 ? "even" : "odd", true);
 
 		int row = table_layout->rowCount();
 		table_layout->addWidget(left, row, 0);
 		table_layout->addWidget(right, row, 1);
+
 	}
 }
 
