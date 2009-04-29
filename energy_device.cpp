@@ -12,6 +12,14 @@
 const int MAX_VALUE = 255;
 
 
+namespace
+{
+	inline int getValue(int high, int low)
+	{
+		return high == MAX_VALUE && low == MAX_VALUE ? 0 : high * 256 + low;
+	}
+}
+
 enum RequestDimension
 {
 	_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
@@ -188,6 +196,8 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		else
 		{
 			int val = msg.whatArgN(0);
+			if (val == static_cast<int>(4294967295)) // invalid value
+				val = 0;
 			v.setValue(EnergyValue(getDateFromFrame(msg), val));
 		}
 
@@ -220,14 +230,8 @@ void EnergyDevice::fillCumulativeDay(StatusList &status_list, QString frame9, QS
 	int high = f9.whatArgN(3);
 	int low = OpenMsg(frame10.toStdString()).whatArgN(1);
 
-	if (high == MAX_VALUE)
-		high = 0;
-
-	if (low == MAX_VALUE)
-		low = 0;
-
 	QVariant v;
-	v.setValue(EnergyValue(getDateFromFrame(f9), high * 256 + low));
+	v.setValue(EnergyValue(getDateFromFrame(f9), getValue(high, low)));
 	status_list[DIM_CUMULATIVE_DAY] = v;
 }
 
@@ -349,11 +353,7 @@ void EnergyDevice::parseCumulativeMonthGraph(const QStringList &buffer_frame, QV
 void EnergyDevice::computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph)
 {
 	for (int i = 0; i + 1 < values.size(); i += 2)
-	{
-		int high = values[i] == MAX_VALUE ? 0 : values[i];
-		int low = values[i+1] == MAX_VALUE ? 0 : values[i+1];
-		graph[i / 2 + 1] = high * 256 + low;
-	}
+		graph[i / 2 + 1] = getValue(values[i], values[i + 1]);
 }
 
 QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
