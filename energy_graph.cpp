@@ -11,12 +11,8 @@
 #include <QLabel>
 #include <QPen>
 
-#define TABLE_STYLE ".QFrame { border: 1px solid #41474d;} QLabel { border-color:#41474d; border-style:solid;} "\
-					"QLabel[left=\"true\"] {border-right-width: 1px;} QLabel[right=\"true\"] {border-left-width: 0px;} "\
-					"QLabel[heading=\"true\"] {border-bottom-width:1px; background-color:#3587ff;} " \
-					"QLabel[odd=\"true\"] { background-color: #41474d; } QLabel[even=\"true\"] { background-color: #2e3236; }"
 
-EnergyGraph::EnergyGraph() : primary_color("#1449C8"), secondary_color("#3587FF")
+EnergyGraph::EnergyGraph()
 {
 	number_of_bars = 1;
 }
@@ -110,13 +106,33 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		while (it.hasNext())
 		{
 			it.next();
-			p.setBrush(it.key() % 2 ? primary_color : secondary_color);
+			p.setBrush(it.key() % 2 ? QColor(primaryColor()) : QColor(secondaryColor()));
 			float ratio = it.value() / max_value;
 			int bar_height = static_cast<int>(ratio * graph_height);
 			p.drawRect(QRect(current_left, axis_top - bar_height - AXIS_PEN_WIDTH, bar_width, bar_height));
 			current_left += bar_width;
 		}
 	}
+}
+
+QString EnergyGraph::primaryColor()
+{
+	return _primary_color;
+}
+
+QString EnergyGraph::secondaryColor()
+{
+	return _secondary_color;
+}
+
+void EnergyGraph::setSecondaryColor(QString color)
+{
+	_secondary_color = color;
+}
+
+void EnergyGraph::setPrimaryColor(QString color)
+{
+	_primary_color = color;
 }
 
 
@@ -188,7 +204,6 @@ void EnergyTable::showData()
 void EnergyTable::createTable()
 {
 	table = new QFrame;
-	table->setStyleSheet(TABLE_STYLE);
 	QGridLayout *table_layout = new QGridLayout(table);
 	table_layout->setContentsMargins(0, 0, 0, 0);
 	table_layout->setSpacing(0);
