@@ -44,8 +44,8 @@ private:
 	void setPrimaryColor(QString color);
 #ifdef TEST_ENERGY_GRAPH
 public:
-	QMap<int, float> graph_data;
 #endif
+	QMap<int, float> graph_data;
 };
 
 
