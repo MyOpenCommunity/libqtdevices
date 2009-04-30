@@ -1,4 +1,5 @@
 #include "bann2_buttons.h"
+#include "btbutton.h"
 #include "main.h"
 
 #include <QWidget>
@@ -29,6 +30,13 @@ bann2ButLab::bann2ButLab(QWidget *parent) : banner(parent)
 	addItem(TEXT, BAN2BUT_BUT_DIM , 0, MAX_WIDTH - 2 * BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
 	addItem(TEXT2, 0, BAN2BUT_BUT_DIM-5, MAX_WIDTH , 25);
 }
+
+void bann2ButLab::setAutoRepeat()
+{
+	sxButton->setAutoRepeat(true);
+	dxButton->setAutoRepeat(true);
+}
+
 
 QSize bann2ButLab::sizeHint() const
 {
