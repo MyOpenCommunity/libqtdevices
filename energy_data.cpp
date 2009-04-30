@@ -7,7 +7,6 @@
 #include "generic_functions.h" // setCfgValue
 #include "devices_cache.h" // bt_global::devices_cache
 #include "energy_device.h" // EnergyDevice
-
 #include "bannfrecce.h"
 
 #include <QVBoxLayout>
@@ -119,6 +118,7 @@ banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& 
 	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
 	{
 		bann2ButLab *b = new bann2ButLab(this);
+		b->setAutoRepeat();
 		b->SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"));
 
 		bool ok;
@@ -147,8 +147,11 @@ void EnergyCost::closePage()
 
 void EnergyCost::decreaseCost()
 {
-	temp_cons_rate -= delta;
-	showValue(banner_cost, temp_cons_rate);
+	if (temp_cons_rate - delta >= delta)
+	{
+		temp_cons_rate -= delta;
+		showValue(banner_cost, temp_cons_rate);
+	}
 }
 
 void EnergyCost::increaseCost()
@@ -159,8 +162,11 @@ void EnergyCost::increaseCost()
 
 void EnergyCost::decreaseProd()
 {
-	temp_prod_rate -= delta;
-	showValue(banner_prod, temp_prod_rate);
+	if (temp_prod_rate - delta >= delta)
+	{
+		temp_prod_rate -= delta;
+		showValue(banner_prod, temp_prod_rate);
+	}
 }
 
 void EnergyCost::increaseProd()
