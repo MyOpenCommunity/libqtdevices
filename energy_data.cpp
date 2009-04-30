@@ -185,8 +185,10 @@ void EnergyCost::saveCostAndProd()
 	showValue(banner_prod, temp_prod_rate);
 
 	QMap<QString, QString> data;
-	data["cons/rate"] = loc.toString(cons_rate, 'f', 3);
-	data["prod/rate"] = loc.toString(prod_rate, 'f', 3);
+	if (banner_cost)
+		data["cons/rate"] = loc.toString(cons_rate, 'f', 3);
+	if (banner_prod)
+		data["prod/rate"] = loc.toString(prod_rate, 'f', 3);
 	setCfgValue(data, ENERGY_TYPE, serial_number);
 
 	emit prodValueChanged(prod_rate);
