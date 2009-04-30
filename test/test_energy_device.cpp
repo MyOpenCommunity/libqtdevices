@@ -149,6 +149,7 @@ void TestEnergyDevice::receiveCumulativeMonth()
 	t.check(QString("*#18*%1*52#8#2*106##").arg(where), EnergyValue(QDate(2008, 2, 1), 106));
 	t.check(QString("*#18*%1*53*95##").arg(where), EnergyValue(QDate::currentDate(), 95));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where), EnergyValue(QDate::currentDate(), 0));
+	t.check(QString("*#18*%1*53*2147483647##").arg(where), EnergyValue(QDate::currentDate(), 2147483647));
 }
 
 void TestEnergyDevice::receiveCumulativeYear()

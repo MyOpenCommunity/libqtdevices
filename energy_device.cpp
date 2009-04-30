@@ -195,9 +195,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		}
 		else
 		{
-			int val = msg.whatArgN(0);
-			if (val == 2147483647) // invalid value
-				val = 0;
+			int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 			v.setValue(EnergyValue(getDateFromFrame(msg), val));
 		}
 
