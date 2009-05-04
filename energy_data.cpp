@@ -8,6 +8,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "energy_device.h" // EnergyDevice
 #include "bannfrecce.h"
+#include "btmain.h" // bt_global::btmain
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -23,6 +24,31 @@ QLocale loc(QLocale::Italian);
 EnergyData::EnergyData(const QDomNode &config_node)
 {
 	loadTypes(config_node);
+	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(systemTimeChanged()));
+	connect(&day_timer, SIGNAL(timeout()), SLOT(updateDayTimer()));
+	connect(&day_timer, SIGNAL(timeout()), SLOT(updateInterfaces()));
+	day_timer.setSingleShot(true);
+}
+
+void EnergyData::updateDayTimer()
+{
+	const int msecs_in_a_day = 86400000;
+	day_timer.stop();
+	// msecsTo() below returns always negative
+	int next_day_msecs = msecs_in_a_day + QTime::currentTime().msecsTo(QTime(0, 0, 0));
+	day_timer.start(next_day_msecs);
+}
+
+void EnergyData::updateInterfaces()
+{
+	foreach(EnergyInterface *en_int, interfaces)
+		en_int->systemTimeChanged();
+}
+
+void EnergyData::systemTimeChanged()
+{
+	updateDayTimer();
+	updateInterfaces();
 }
 
 void EnergyData::loadTypes(const QDomNode &config_node)
@@ -51,6 +77,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		}
 
 		EnergyInterface *en_interf = new EnergyInterface(type);
+		interfaces.push_back(en_interf);
 		b->connectDxButton(en_interf);
 		if (ec_cost)
 		{
@@ -266,6 +293,12 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		setNavBarMode(10, bt_global::skin->getImage("currency"));
 		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
 	}
+}
+
+void EnergyInterface::systemTimeChanged()
+{
+	for (int i = 0; i < views.size(); ++i)
+		views[i]->systemTimeChanged();
 }
 
 bool EnergyInterface::checkTypeForCurrency(const QString &type, const QDomNode &conf)

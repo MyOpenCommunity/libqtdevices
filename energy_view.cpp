@@ -696,3 +696,8 @@ void EnergyView::setConsFactor(float c)
 	cons_factor = c;
 }
 
+void EnergyView::systemTimeChanged()
+{
+	changeTimePeriod(time_period->status(), time_period->date());
+}
+

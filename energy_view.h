@@ -83,6 +83,7 @@ public:
 	virtual void inizializza();
 	void setProdFactor(float p);
 	void setConsFactor(float c);
+	void systemTimeChanged();
 
 public slots:
 	virtual void showPage();

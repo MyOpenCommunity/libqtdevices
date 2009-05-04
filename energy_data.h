@@ -5,10 +5,12 @@
 #include "bann1_button.h" // bannPuls, bannTextOnImage
 
 #include <QHash>
+#include <QTimer>
 
 class banner;
 class QDomNode;
 class EnergyView;
+class EnergyInterface;
 
 
 class EnergyData : public sottoMenu
@@ -17,8 +19,16 @@ Q_OBJECT
 public:
 	EnergyData(const QDomNode &config_node);
 
+private slots:
+	void systemTimeChanged();
+	void updateInterfaces();
+	void updateDayTimer();
+
 private:
 	void loadTypes(const QDomNode &config_node);
+
+	QTimer day_timer;
+	QList<EnergyInterface *> interfaces;
 };
 
 
@@ -66,6 +76,7 @@ public:
 	virtual void showPage();
 	static void toggleCurrencyView();
 	static bool isCurrencyView();
+	void systemTimeChanged();
 
 public slots:
 	void changeProdRate(float prod);
