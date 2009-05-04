@@ -598,7 +598,8 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		break;
 	case TimePeriodSelection::MONTH:
 		// we have to preserve the current visualized graph (can be daily average)
-		graph_type = current_graph;
+		if (current_graph != EnergyDevice::DAILY_AVERAGE)
+			graph_type = EnergyDevice::CUMULATIVE_MONTH;
 		dev->requestCumulativeMonth(selection_date);
 		dev->requestCumulativeMonthGraph(selection_date);
 		dev->requestDailyAverageGraph(selection_date);
