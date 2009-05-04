@@ -73,7 +73,7 @@ namespace
 
 TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
-	status = DAY;
+	_status = DAY;
 	selection_date = QDate::currentDate();
 	QHBoxLayout *main_layout = new QHBoxLayout;
 	main_layout->setContentsMargins(0, 0, 0, 0);
@@ -84,7 +84,7 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
 	main_layout->addWidget(back_period);
 
-	date_period_label = getLabel(this, formatDate(selection_date, status), FontManager::SMALLTEXT);
+	date_period_label = getLabel(this, formatDate(selection_date, _status), FontManager::SMALLTEXT);
 	main_layout->addWidget(date_period_label, 1, Qt::AlignCenter);
 
 	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
@@ -129,32 +129,32 @@ void TimePeriodSelection::showCycleButton()
 
 void TimePeriodSelection::changeTimeScale()
 {
-	switch (status)
+	switch (_status)
 	{
 	case DAY:
 	{
-		status = MONTH;
+		_status = MONTH;
 		back_period->show();
 		forw_period->show();
-		date_period_label->setText(formatDate(selection_date, status));
+		date_period_label->setText(formatDate(selection_date, _status));
 	}
 		break;
 	case MONTH:
-		status = YEAR;
+		_status = YEAR;
 		back_period->hide();
 		forw_period->hide();
-		date_period_label->setText(formatDate(selection_date, status));
+		date_period_label->setText(formatDate(selection_date, _status));
 		break;
 	case YEAR:
 	{
-		status = DAY;
+		_status = DAY;
 		back_period->show();
 		forw_period->show();
-		date_period_label->setText(formatDate(selection_date, status));
+		date_period_label->setText(formatDate(selection_date, _status));
 	}
 		break;
 	}
-	emit timeChanged(status, selection_date);
+	emit timeChanged(_status, selection_date);
 }
 
 void TimePeriodSelection::setDate(QDate new_date)
@@ -171,27 +171,32 @@ void TimePeriodSelection::setDate(QDate new_date)
 void TimePeriodSelection::changeTimePeriod(int delta)
 {
 	QDate previous_date = selection_date;
-	switch (status)
+	switch (_status)
 	{
 	case DAY:
 		setDate(selection_date.addDays(delta));
-		date_period_label->setText(formatDate(selection_date, status));
+		date_period_label->setText(formatDate(selection_date, _status));
 		break;
 	case MONTH:
 		setDate(selection_date.addMonths(delta));
-		date_period_label->setText(formatDate(selection_date, status));
+		date_period_label->setText(formatDate(selection_date, _status));
 		break;
 	default:
 		qWarning("periodForward called with status==YEAR");
 		break;
 	}
 	if (selection_date != previous_date)
-		emit timeChanged(status, selection_date);
+		emit timeChanged(_status, selection_date);
 }
 
 QDate TimePeriodSelection::date()
 {
 	return selection_date;
+}
+
+int TimePeriodSelection::status()
+{
+	return _status;
 }
 
 void TimePeriodSelection::periodForward()

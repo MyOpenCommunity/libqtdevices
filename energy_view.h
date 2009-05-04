@@ -37,6 +37,7 @@ public:
 	void showCycleButton();
 	QDate date();
 	QString dateDisplayed();
+	int status();
 
 private slots:
 	void changeTimeScale();
@@ -53,7 +54,7 @@ private:
 	void setDate(QDate new_date);
 	QString formatDate(const QDate &date, TimePeriod period);
 
-	TimePeriod status;
+	TimePeriod _status;
 	BtButton *back_period, *forw_period, *btn_cycle;
 	QLabel *date_period_label;
 	QDate selection_date;
