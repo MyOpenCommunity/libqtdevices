@@ -352,6 +352,8 @@ void EnergyView::showPage()
 
 QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 {
+	// TODO: remove the theorical bottleneck using a QMutableMapIterator instead of
+	// accessing to the values using the operator[]
 	QMap<int, float> data;
 	// copy map to float values
 	QList<int> graph_keys = gd->graph.keys();
@@ -361,8 +363,14 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	// convert to raw data
 	QList<int> keys = data.keys();
 	for (int i = 0; i < keys.size(); ++i)
-	{
 		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]]);
+
+	if (gd->type == EnergyDevice::DAILY_AVERAGE)
+	{
+		QDate curr = QDate::currentDate();
+		int divisor = gd->date.month() == curr.month() ? curr.day() : gd->date.daysInMonth();
+		for (int i = 0; i < keys.size(); ++i)
+			data[keys[i]] /= divisor;
 	}
 
 	// convert to economic data
@@ -370,9 +378,7 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	{
 		float factor = is_production ? prod_factor : cons_factor;
 		for (int i = 0; i < keys.size(); ++i)
-		{
 			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], factor);
-		}
 	}
 	return data;
 }
