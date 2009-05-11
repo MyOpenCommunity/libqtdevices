@@ -368,7 +368,14 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	if (gd->type == EnergyDevice::DAILY_AVERAGE)
 	{
 		QDate curr = QDate::currentDate();
-		int divisor = gd->date.month() == curr.month() ? curr.day() : gd->date.daysInMonth();
+		int divisor = gd->date.daysInMonth();
+		if (gd->date.month() == curr.month())
+		{
+			if (curr.day() == 1)
+				divisor = 1;
+			else
+				divisor = curr.day() - 1;
+		}
 		for (int i = 0; i < keys.size(); ++i)
 			data[keys[i]] /= divisor;
 	}
