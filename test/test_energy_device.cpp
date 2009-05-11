@@ -394,7 +394,9 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH);
 	QStringList frames;
 	int month = 1;
+	int invalid_month = 3;
 	frames << QString("*#18*%1*52#9#%2*106##").arg(where).arg(month);
+	frames << QString("*#18*%1*52#9#%2*4294967295##").arg(where).arg(invalid_month);
 	frames << QString("*#18*%1*53*95##").arg(where);
 	QVariant result = t.getResult(frames);
 	QVERIFY(result.canConvert<GraphData>());
@@ -410,6 +412,12 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 
 	data.graph[11] = 95;
 	data.graph[index] = 106;
+
+	// Check for the month that has an invalid value
+	int d = invalid_month - QDate::currentDate().month();
+	int invalid_index = (d < 0 ? d + 12 : d) - 1;
+	data.graph[invalid_index] = 0;
+
 	QVERIFY(data == result.value<GraphData>());
 }
 
@@ -421,6 +429,8 @@ void TestEnergyDevice::receiveMonthlyAverage()
 			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 106 / QDate(2008, 2, 1).daysInMonth())));
 	t.check(QString("*#18*%1*53*95##").arg(where),
 			EnergyValue(QDate::currentDate(), qRound(1.0 * 95 / QDate::currentDate().day())));
+	t.check(QString("*#18*%1*53*4294967295##").arg(where),
+			EnergyValue(QDate::currentDate(), 0));
 }
 
 void TestEnergyDevice::testGetDateFromFrame()

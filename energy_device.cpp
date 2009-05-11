@@ -238,14 +238,15 @@ void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
 	QDate current = QDate::currentDate();
 	int average;
 
+	int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
 	{
 		int year = msg.whatSubArgN(1) < current.month() ? current.year() : current.year() - 1;
 		int total_days = QDate(year, msg.whatSubArgN(1), 1).daysInMonth();
-		average = qRound(1.0 * msg.whatArgN(0) / total_days);
+		average = qRound(1.0 * val / total_days);
 	}
 	else
-		average = qRound(1.0 * msg.whatArgN(0) / current.day());
+		average = qRound(1.0 * val / current.day());
 
 	QVariant v_average;
 	v_average.setValue(EnergyValue(getDateFromFrame(msg), average));
@@ -261,7 +262,7 @@ void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
 		int month_distance = msg.whatSubArgN(1) - current.month();
 		index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
 	}
-	buffer_year_data[index] = msg.whatArgN(0);
+	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 	GraphData data;
 	data.type = CUMULATIVE_YEAR;
 	data.graph = buffer_year_data;
