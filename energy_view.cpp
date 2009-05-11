@@ -370,12 +370,8 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 		QDate curr = QDate::currentDate();
 		int divisor = gd->date.daysInMonth();
 		if (gd->date.month() == curr.month())
-		{
-			if (curr.day() == 1)
-				divisor = 1;
-			else
-				divisor = curr.day() - 1;
-		}
+			divisor = curr.day() == 1 ? 1 : curr.day() - 1;
+
 		for (int i = 0; i < keys.size(); ++i)
 			data[keys[i]] /= divisor;
 	}
