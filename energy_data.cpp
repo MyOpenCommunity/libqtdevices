@@ -449,7 +449,7 @@ void bannEnergyInterface::status_changed(const StatusList &status_list)
 	{
 		if (it.key() == EnergyDevice::DIM_CURRENT)
 		{
-			device_value = it.value().toInt();
+			device_value = it.value().value<EnergyValue>().second;
 			updateText();
 			// TODO: is this necessary?
 			Draw();

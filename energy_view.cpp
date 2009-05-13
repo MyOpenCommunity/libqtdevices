@@ -425,7 +425,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		}
 			break;
 		case EnergyDevice::DIM_CURRENT:
-			current_value = it.value().toInt();
+			current_value = it.value().value<EnergyValue>().second;
 			break;
 		case EnergyDevice::DIM_DAILY_AVERAGE_GRAPH:
 		{
