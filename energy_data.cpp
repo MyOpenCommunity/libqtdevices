@@ -437,7 +437,7 @@ void bannEnergyInterface::updateText()
 			}
 		}
 		else
-			text = QString("%1 %2").arg(loc.toString(data, 'f', n_decimal)).arg(str);
+			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str);
 	}
 	setInternalText(text);
 }

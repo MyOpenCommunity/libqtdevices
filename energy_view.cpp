@@ -681,20 +681,23 @@ void EnergyView::updateBanners()
 		str = currency_symbol;
 	}
 
+	// The number of decimals to show depends on the visualization mode
+	int dec = EnergyInterface::isCurrencyView() ? n_decimal : 3;
+
 	cumulative_day_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(day, 'f', n_decimal)).arg(str));
+		.arg(loc.toString(day, 'f', dec)).arg(str));
 
 	cumulative_month_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(month, 'f', n_decimal)).arg(str));
+		.arg(loc.toString(month, 'f', dec)).arg(str));
 
 	cumulative_year_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(year, 'f', n_decimal)).arg(str));
+		.arg(loc.toString(year, 'f', dec)).arg(str));
 
 	daily_av_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(average, 'f', n_decimal)).arg(str));
+		.arg(loc.toString(average, 'f', dec)).arg(str));
 
 	current_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(current, 'f', n_decimal)).arg(str));
+		.arg(loc.toString(current, 'f', dec)).arg(str));
 }
 
 void EnergyView::setProdFactor(float p)
