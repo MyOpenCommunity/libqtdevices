@@ -68,7 +68,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		QFontMetrics fm = p.fontMetrics();
 
 		// Max value on y axis
-		QString val = loc.toString(max_value, 'f', 1);
+		QString val = loc.toString(max_value + 0.04999, 'f', 1);
 		p.drawText(left, top + fm.height(), val);
 
 		int axis_left = left + fm.width(val) + SPACING;
