@@ -249,8 +249,9 @@ void EnergyTable::createTable()
 	}
 }
 
-void EnergyTable::init(QString left_text, QString right_text, QString date)
+void EnergyTable::init(int num_val, QString left_text, QString right_text, QString date)
 {
+	num_values = num_val;
 	heading_left->setText(left_text);
 	heading_right->setText(right_text);
 	date_label->setText(date);
@@ -258,7 +259,15 @@ void EnergyTable::init(QString left_text, QString right_text, QString date)
 
 void EnergyTable::setData(const QMap<int, float> &data)
 {
-	table_data = data;
+	table_data.clear();
+	int i = 0;
+	QMapIterator<int, float> it(data);
+	while (it.hasNext() && i < num_values)
+	{
+		it.next();
+		table_data[it.key()] = it.value();
+		++i;
+	}
 	current_page = 0;
 	showData();
 }

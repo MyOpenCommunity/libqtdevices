@@ -502,16 +502,16 @@ void EnergyView::updateCurrentGraph()
 	case EnergyDevice::DAILY_AVERAGE:
 	case EnergyDevice::CUMULATIVE_DAY:
 		graph->init(24, label + tr("/hours"));
-		table->init(tr("Hour"), label, time_period->dateDisplayed());
+		table->init(24, tr("Hour"), label, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_YEAR:
 		graph->init(12, label + tr("/months"));
-		table->init(tr("Month"), label, time_period->dateDisplayed());
+		table->init(12, tr("Month"), label, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
 		graph->init(time_period->date().daysInMonth(), label + tr("/days"));
-		table->init(tr("Day"), label, time_period->dateDisplayed());
+		table->init(time_period->date().daysInMonth(), tr("Day"), label, time_period->dateDisplayed());
 		break;
 	}
 #ifdef TEST_ENERGY_GRAPH

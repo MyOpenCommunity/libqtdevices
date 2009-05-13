@@ -54,7 +54,7 @@ class EnergyTable : public PageLayout
 Q_OBJECT
 public:
 	EnergyTable();
-	void init(QString left_text, QString right_text, QString date);
+	void init(int num_val, QString left_text, QString right_text, QString date);
 	void setData(const QMap<int, float> &data);
 
 private slots:
