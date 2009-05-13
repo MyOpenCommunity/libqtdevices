@@ -153,6 +153,8 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureSca
 {
 	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
+	main_layout.setContentsMargins(0, 0, 0, 0);
+	main_layout.setSpacing(0);
 
 	temp_label = new QLabel(this);
 	main_layout.addWidget(temp_label);
