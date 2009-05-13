@@ -495,22 +495,23 @@ void EnergyView::updateCurrentGraph()
 {
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	current_date = time_period->date();
-	// TODO: bisogna cambiare la label del grafico quando siamo sui soldi?
+	QString label = EnergyInterface::isCurrencyView() ? currency_symbol : unit_measure;
+
 	switch (current_graph)
 	{
 	case EnergyDevice::DAILY_AVERAGE:
 	case EnergyDevice::CUMULATIVE_DAY:
-		graph->init(24, unit_measure + tr("/hours"));
-		table->init(tr("Hour"), unit_measure, time_period->dateDisplayed());
+		graph->init(24, label + tr("/hours"));
+		table->init(tr("Hour"), label, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_YEAR:
-		graph->init(12, unit_measure + tr("/months"));
-		table->init(tr("Month"), unit_measure, time_period->dateDisplayed());
+		graph->init(12, label + tr("/months"));
+		table->init(tr("Month"), label, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
-		graph->init(time_period->date().daysInMonth(), unit_measure + tr("/days"));
-		table->init(tr("Day"), unit_measure, time_period->dateDisplayed());
+		graph->init(time_period->date().daysInMonth(), label + tr("/days"));
+		table->init(tr("Day"), label, time_period->dateDisplayed());
 		break;
 	}
 #ifdef TEST_ENERGY_GRAPH
