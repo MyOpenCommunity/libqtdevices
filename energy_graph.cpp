@@ -12,6 +12,13 @@
 #include <QPen>
 
 
+namespace
+{
+// The language used for the floating point number
+QLocale loc(QLocale::Italian);
+}
+
+
 EnergyGraph::EnergyGraph()
 {
 	number_of_bars = 1;
@@ -61,7 +68,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		QFontMetrics fm = p.fontMetrics();
 
 		// Max value on y axis
-		QString val = QString::number(max_value);
+		QString val = loc.toString(max_value, 'f', 1);
 		p.drawText(left, top + fm.height(), val);
 
 		int axis_left = left + fm.width(val) + SPACING;
