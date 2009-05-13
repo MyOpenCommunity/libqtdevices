@@ -227,13 +227,14 @@ bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 
 
 EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
-		bool is_prod)
+		int n_dec, bool is_prod)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	is_electricity_view = (mode == 1);
 
 	is_production = is_prod;
+	n_decimal = n_dec;
 
 	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
 	daily_av_value = current_value = 0;
@@ -680,19 +681,19 @@ void EnergyView::updateBanners()
 	}
 
 	cumulative_day_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(day, 'f', 3)).arg(str));
+		.arg(loc.toString(day, 'f', n_decimal)).arg(str));
 
 	cumulative_month_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(month, 'f', 3)).arg(str));
+		.arg(loc.toString(month, 'f', n_decimal)).arg(str));
 
 	cumulative_year_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(year, 'f', 3)).arg(str));
+		.arg(loc.toString(year, 'f', n_decimal)).arg(str));
 
 	daily_av_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(average, 'f', 3)).arg(str));
+		.arg(loc.toString(average, 'f', n_decimal)).arg(str));
 
 	current_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(current, 'f', 3)).arg(str));
+		.arg(loc.toString(current, 'f', n_decimal)).arg(str));
 }
 
 void EnergyView::setProdFactor(float p)

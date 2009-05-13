@@ -108,9 +108,10 @@ public:
 	 * \param parent The parent widget
 	 * \param _currency_symbol The symbol to use to show economic data. If it's null, then currency is not
 	 *     enabled for this banner
+	 * \param n_dec the number of decimals to show in the labels
 	 * \param is_prod True if the data must be interpreted as production, false for consumption
 	 */
-	bannEnergyInterface(QWidget *parent, const QString &_currency_symbol, bool is_prod, bool is_ele);
+	bannEnergyInterface(QWidget *parent, const QString &_currency_symbol, int n_dec, bool is_prod, bool is_ele);
 	void setProdFactor(float prod);
 	void setConsFactor(float cons);
 	void setType(EnergyFactorType t);
@@ -127,5 +128,6 @@ private:
 	QString currency_symbol;
 	QString measure;
 	bool is_production, is_electricity;
+	int n_decimal;
 };
 #endif // ENERGY_DATA_H

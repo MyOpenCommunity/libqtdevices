@@ -213,9 +213,9 @@ void EnergyCost::saveCostAndProd()
 
 	QMap<QString, QString> data;
 	if (banner_cost)
-		data["cons/rate"] = loc.toString(cons_rate, 'f', 3);
+		data["cons/rate"] = loc.toString(cons_rate, 'f', n_decimal);
 	if (banner_prod)
-		data["prod/rate"] = loc.toString(prod_rate, 'f', 3);
+		data["prod/rate"] = loc.toString(prod_rate, 'f', n_decimal);
 	setCfgValue(data, ENERGY_TYPE, serial_number);
 
 	emit prodValueChanged(prod_rate);
@@ -251,12 +251,13 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		if (is_currency_enabled)
 			currency = getElement(config_node, "currency/symbol").text();
 
+		int n_decimal = getElement(config_node, "currency/n_decimal").text().toInt();
 		bool is_production = (getElement(item, "type").text().toInt() == 1);
 
-		bannEnergyInterface *b = new bannEnergyInterface(this, currency, is_production, mode == 1);
+		bannEnergyInterface *b = new bannEnergyInterface(this, currency, n_decimal, is_production, mode == 1);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
-		next_page = new EnergyView(measure, energy_type, addr, mode, currency, is_production);
+		next_page = new EnergyView(measure, energy_type, addr, mode, currency, n_decimal, is_production);
 		b->connectDxButton(next_page);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
@@ -386,11 +387,12 @@ bool EnergyInterface::isCurrencyView()
 
 
 bannEnergyInterface::bannEnergyInterface(QWidget *parent, const QString &_currency_symbol,
-	bool is_prod, bool is_ele) : bannTextOnImage(parent)
+	int n_dec, bool is_prod, bool is_ele) : bannTextOnImage(parent)
 {
 	currency_symbol = _currency_symbol;
 	is_production = is_prod;
 	is_electricity = is_ele;
+	n_decimal = n_dec;
 	device_value = 0;
 }
 
@@ -431,11 +433,11 @@ void bannEnergyInterface::updateText()
 			{
 				data = EnergyConversions::convertToMoney(data, factor);
 				str = currency_symbol;
-				text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str);
+				text = QString("%1 %2").arg(loc.toString(data, 'f', n_decimal)).arg(str);
 			}
 		}
 		else
-			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str);
+			text = QString("%1 %2").arg(loc.toString(data, 'f', n_decimal)).arg(str);
 	}
 	setInternalText(text);
 }

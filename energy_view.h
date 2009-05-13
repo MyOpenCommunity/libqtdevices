@@ -75,10 +75,11 @@ public:
 	 * \param mode Mode of the device
 	 * \param currency_symbol The symbol of the currency. If it's a null string, then currency is not enabled
 	 *    for this energy_type.
+	 * \param n_dec the number of decimals to show in the labels
 	 * \param is_production True if the data must be interpreted as production, false for consumption
 	 */
 	EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
-		bool is_prod);
+		int n_dec, bool is_prod);
 	~EnergyView();
 	virtual void inizializza();
 	void setProdFactor(float p);
@@ -125,6 +126,7 @@ private:
 	float cons_factor, prod_factor;
 	bool is_electricity_view;
 	bool is_production;
+	int n_decimal;
 
 private slots:
 	void toggleCurrency();
