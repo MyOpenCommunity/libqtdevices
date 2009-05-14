@@ -261,7 +261,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	widget_container->addWidget(new EnergyGraph);
 
 	main_layout->addWidget(widget_container, 1);
-	table = new EnergyTable();
+	table = new EnergyTable(n_dec);
 
 	currency_symbol = _currency_symbol;
 	if (!currency_symbol.isNull())

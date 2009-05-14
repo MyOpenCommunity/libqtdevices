@@ -143,10 +143,11 @@ void EnergyGraph::setPrimaryColor(QString color)
 }
 
 
-EnergyTable::EnergyTable()
+EnergyTable::EnergyTable(int n_dec)
 {
 	rows_per_page = 8;
 	current_page = 0;
+	n_decimal = n_dec;
 	main_layout->addSpacing(10);
 
 	date_label = new QLabel;
@@ -197,7 +198,7 @@ void EnergyTable::showData()
 		{
 			int key = data_keys.at(i + start);
 			left->setText(QString::number(key));
-			right->setText(QString::number(table_data[key]));
+			right->setText(loc.toString(table_data[key], 'f', n_decimal));
 		}
 		else
 		{
