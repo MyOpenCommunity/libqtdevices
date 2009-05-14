@@ -162,8 +162,8 @@ void TimePeriodSelection::setDate(QDate new_date)
 	QDate current = QDate::currentDate();
 	if (new_date > current)
 		selection_date = current;
-	else if (new_date < current.addYears(-1))
-		selection_date = current.addYears(-1);
+	else if (new_date < current.addYears(-1).addMonths(1))
+		selection_date = current.addYears(-1).addMonths(1);
 	else
 		selection_date = new_date;
 }
