@@ -335,9 +335,17 @@ void frame_interpreter::request_init(device_status *ds, int delay)
 		deferred_list_element de;
 		de.ds = ds;
 		de.expires = (QTime::currentTime()).addMSecs(delay);
-		deferred_list.append(de);
 
-		if (!deferred_timer.isActive() || de.expires < deferred_timer_expires)
+		if (!deferred_timer.isActive())
+		{
+			deferred_list.append(de);
+			deferred_timer.setSingleShot(true);
+			deferred_timer_expires = de.expires;
+			deferred_timer.start(delay);
+			return;
+		}
+		// XXX: qt3 code had this condition separeted from the previous one.
+		if (de.expires > deferred_timer_expires)
 		{
 			deferred_timer.setSingleShot(true);
 			deferred_timer_expires = de.expires;
@@ -359,47 +367,36 @@ void frame_interpreter::deferred_request_init()
 	qDebug("frame_interpreter::deferred_request_init()");
 	QMutableListIterator<deferred_list_element> it(deferred_list);
 
-	bool restart = false;
 	int ms = -1;
-	do
-	{
-		if (deferred_list.isEmpty())
-			break;
-		// Build an invalid time
-		QTime next_expires = QTime(25, 61);
-		if (!next_expires.isValid()) {
-			qDebug("no more deferred status requests");
-		}
-
-		while (it.hasNext())
-		{
-			deferred_list_element de = it.next();
-			if (QTime::currentTime().msecsTo(de.expires) <= 0)
-			{
-				qDebug("requesting status");
-				request_init(de.ds, false);
-				it.remove();
-				break;
-			}
-			if (!next_expires.isValid() || de.expires < next_expires)
-				next_expires = de.expires;
-		}
-
-		if (!next_expires.isValid())
-		{
-			qDebug("no more deferred status requests");
-			ms = -1;
-		}
-		else
-		{
-			qDebug("more deferred status requests");
-			ms = QTime::currentTime().msecsTo(next_expires);
-		}
-
-		// One more round if more deferred requests are ready
-		restart = (ms <= 0);
+	if (deferred_list.isEmpty())
+		return;
+	// Build an invalid time
+	QTime next_expires = QTime(25, 61);
+	if (!next_expires.isValid()) {
+		qDebug("no more deferred status requests");
 	}
-	while (!restart);
+
+	while (it.hasNext())
+	{
+		deferred_list_element de = it.next();
+		if (QTime::currentTime().msecsTo(de.expires) <= 0)
+		{
+			qDebug("requesting status");
+			request_init(de.ds, false);
+			it.remove();
+			break;
+		}
+		if (!next_expires.isValid() || de.expires < next_expires)
+			next_expires = de.expires;
+	}
+
+	if (!next_expires.isValid())
+		qDebug("no more deferred status requests");
+	else
+	{
+		qDebug("more deferred status requests");
+		ms = QTime::currentTime().msecsTo(next_expires);
+	}
 
 	if (ms > 0)
 	{

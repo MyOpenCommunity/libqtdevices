@@ -37,6 +37,7 @@ banner::banner(QWidget *parent) : QWidget(parent)
 	linked_sx_page = 0;
 	linked_dx_page = 0;
 	BannerIcon = 0;
+	BannerIcon2 = 0;
 	BannerText = 0;
 	SecondaryText = 0;
 	sxButton = 0;
