@@ -565,7 +565,7 @@ void temperature_probe_controlled::setManual(unsigned setpoint)
 	const unsigned mode = 3; // generic mode
 
 	QString what;
-	what.sprintf("#%d*%04d*%d", dimension, setpoint, mode);
+	what.sprintf("#%d*%04u*%d", dimension, setpoint, mode);
 
 	QString sharp_where = QString("#") + where;
 
