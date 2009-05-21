@@ -261,7 +261,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	widget_container->addWidget(new EnergyGraph);
 
 	main_layout->addWidget(widget_container, 1);
-	table = new EnergyTable(n_dec);
+	table = new EnergyTable(EnergyInterface::isCurrencyView() ? n_dec : 3);
 
 	currency_symbol = _currency_symbol;
 	if (!currency_symbol.isNull())
@@ -656,6 +656,7 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
+	table->setNumDecimal(EnergyInterface::isCurrencyView() ? n_decimal : 3);
 	updateBanners();
 	updateCurrentGraph();
 }

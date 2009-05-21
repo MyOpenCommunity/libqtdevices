@@ -56,6 +56,7 @@ public:
 	EnergyTable(int n_dec);
 	void init(int num_val, QString left_text, QString right_text, QString date);
 	void setData(const QMap<int, float> &data);
+	void setNumDecimal(int d);
 
 private slots:
 	void pageUp();

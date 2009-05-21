@@ -170,6 +170,11 @@ EnergyTable::EnergyTable(int n_dec)
 	main_layout->addWidget(nav_bar);
 }
 
+void EnergyTable::setNumDecimal(int n_dec)
+{
+	n_decimal = n_dec;
+}
+
 void EnergyTable::pageUp()
 {
 	if (current_page > 0)
