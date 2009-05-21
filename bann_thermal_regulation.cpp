@@ -390,7 +390,20 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 			ds->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 			if (delta_setpoint)
 			{
-				int sp = static_cast<int>(setpoint);
+				int sp;
+				switch (temp_scale)
+				{
+				case FAHRENHEIT:
+					sp = static_cast<int>(fahrenheit2Bt(setpoint));
+					break;
+				default:
+					qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+					// fall through
+				case CELSIUS:
+					sp = static_cast<int>(celsius2Bt(setpoint));
+					break;
+				}
+
 				curr_sp.set_val(sp);
 				ds->write_val(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
 				ds->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);

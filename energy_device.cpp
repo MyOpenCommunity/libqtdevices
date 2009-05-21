@@ -211,7 +211,12 @@ void EnergyDevice::frame_rx_handler(char *frame)
 
 		// Special cases
 		if (what == DIM_DAY_GRAPH && num_frame == 10)
-			fillCumulativeDay(status_list, buffer_frame.at(8), frame);
+		{
+			// The cumulative day value must be extracted from graph frames
+			// only for previous days, not the current one (for that we have a specific frame)
+			if (QDate::currentDate() != getDateFromFrame(msg))
+				fillCumulativeDay(status_list, buffer_frame.at(8), frame);
+		}
 
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{

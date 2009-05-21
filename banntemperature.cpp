@@ -72,7 +72,8 @@ void BannTemperature::Draw()
 			temp_label->setText(celsiusString(temperature));
 			break;
 		case FAHRENHEIT:
-			temp_label->setText(fahrenheitString(celsius2Bt(temperature)));
+			// we don't have a direct conversion from celsius degrees to farhrenheit degrees
+			temp_label->setText(fahrenheitString(bt2Fahrenheit(celsius2Bt(temperature))));
 			break;
 		default:
 			qWarning("BannTemperature: unknown scale");
