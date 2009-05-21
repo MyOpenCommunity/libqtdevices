@@ -216,7 +216,15 @@ void EnergyTable::showData()
 		if (i + start < data_keys.count())
 		{
 			int key = data_keys.at(i + start);
-			left->setText(QString::number(key));
+			int left_value = key;
+			if (starting_value != -1)
+			{
+				left_value = (starting_value + key - 1) % num_values;
+				if (left_value == 0)
+					left_value = num_values;
+			}
+
+			left->setText(QString::number(left_value));
 			right->setText(loc.toString(table_data[key], 'f', n_decimal));
 		}
 		else
@@ -269,9 +277,10 @@ void EnergyTable::createTable()
 	}
 }
 
-void EnergyTable::init(int num_val, QString left_text, QString right_text, QString date)
+void EnergyTable::init(int num_val, QString left_text, QString right_text, QString date, int start_val)
 {
 	num_values = num_val;
+	starting_value = start_val;
 	heading_left->setText(left_text);
 	heading_right->setText(right_text);
 	date_label->setText(date);
