@@ -496,21 +496,32 @@ void EnergyView::updateCurrentGraph()
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	current_date = time_period->date();
 	QString label = EnergyInterface::isCurrencyView() ? currency_symbol : unit_measure;
+	QMap<int, QString> graph_x_axis;
 
 	switch (current_graph)
 	{
 	case EnergyDevice::DAILY_AVERAGE:
 	case EnergyDevice::CUMULATIVE_DAY:
-		graph->init(24, label + tr("/hours"));
+		graph->init(24, label + tr("/hours"), graph_x_axis);
 		table->init(24, tr("Hour"), label, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_YEAR:
-		graph->init(12, label + tr("/months"));
+	{
+		int curr_month = QDate::currentDate().month();
+		graph_x_axis[1] = QString::number((curr_month + 1) % 12);
+		if (curr_month != 12)
+		{
+			graph_x_axis[12 - curr_month] = "12";
+			graph_x_axis[12 - curr_month + 1] = "1";
+		}
+		graph_x_axis[12] = QString::number(curr_month);
+		graph->init(12, label + tr("/months"), graph_x_axis);
 		table->init(12, tr("Month"), label, time_period->dateDisplayed());
 		break;
+	}
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
-		graph->init(time_period->date().daysInMonth(), label + tr("/days"));
+		graph->init(time_period->date().daysInMonth(), label + tr("/days"), graph_x_axis);
 		table->init(time_period->date().daysInMonth(), tr("Day"), label, time_period->dateDisplayed());
 		break;
 	}

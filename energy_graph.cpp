@@ -24,10 +24,11 @@ EnergyGraph::EnergyGraph()
 	number_of_bars = 1;
 }
 
-void EnergyGraph::init(int bars, QString t)
+void EnergyGraph::init(int bars, QString t, const QMap<int, QString>& x_axis)
 {
 	text = t;
 	number_of_bars = bars;
+	custom_x_axis = x_axis;
 	graph_data.clear();
 	update();
 }
@@ -90,12 +91,6 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		p.drawLine(axis_left, axis_top, axis_left, top);
 		p.restore();
 
-		// Min & Max values on x axis
-		int font_y_pos = axis_top + AXIS_PEN_WIDTH + fm.ascent() + SPACING;
-		p.drawText(axis_left, font_y_pos, "1");
-		QString num = QString::number(number_of_bars);
-		p.drawText(left + width - fm.width(num), font_y_pos, num);
-
 		// Descriptive text
 		p.drawText(left + width - fm.width(text), top + fm.height(), text);
 
@@ -104,6 +99,25 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 
 		// calculate the width of each bar
 		int bar_width = static_cast<int>(graph_width/ static_cast<float>(number_of_bars));
+
+		// Min & Max values on x axis
+		int font_y_pos = axis_top + AXIS_PEN_WIDTH + fm.ascent() + SPACING;
+
+		if (!custom_x_axis.empty())
+		{
+			QMapIterator<int, QString> it(custom_x_axis);
+			while (it.hasNext())
+			{
+				it.next();
+				p.drawText(axis_left + bar_width * it.key() - fm.width(it.value()), font_y_pos, it.value());
+			}
+		}
+		else
+		{
+			p.drawText(axis_left, font_y_pos, "1");
+			QString num = QString::number(number_of_bars);
+			p.drawText(axis_left + bar_width * number_of_bars - fm.width(num), font_y_pos, num);
+		}
 
 		// draw bars
 		p.setPen(QColor("blue"));
