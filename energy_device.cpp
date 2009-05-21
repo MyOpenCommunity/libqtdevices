@@ -287,14 +287,14 @@ void EnergyDevice::parseDailyAverageGraph(const QStringList &buffer_frame, QVari
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
 		OpenMsg frame_parser(buffer_frame[i].toStdString());
+		if (frame_parser.whatArgN(0) == 1)
+			continue;
+
 		values_list.append(frame_parser.whatArgN(1));
-		if (frame_parser.whatArgN(0) != 17)
-		{
-			values_list.append(frame_parser.whatArgN(2));
-			if (frame_parser.whatArgN(0) != 1)
-				values_list.append(frame_parser.whatArgN(3));
-		}
+		values_list.append(frame_parser.whatArgN(2));
+		values_list.append(frame_parser.whatArgN(3));
 	}
+
 	computeMonthGraphData(values_list, data.graph);
 
 	v.setValue(data);

@@ -162,23 +162,6 @@ void TestEnergyDevice::receiveDailyAverageGraph()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
-	QStringList frames("*#18*20*57#9*1*2*5##");
-	QVariant result = t.getResult(frames);
-
-	QVERIFY(result.canConvert<GraphData>());
-
-	GraphData data;
-	data.graph[1] = 517;
-	data.date = QDate(2008, 9, 1);
-	data.type = EnergyDevice::DAILY_AVERAGE;
-
-	QVERIFY(data == result.value<GraphData>());
-}
-
-void TestEnergyDevice::receiveDailyAverageGraph2()
-{
-	dev->buffer_frame.clear();
-	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
 	QStringList frames;
 	frames << "*#18*20*57#9*1*2*5##" << "*#18*20*57#9*2*0*9*3##";
 	QVariant result = t.getResult(frames);
@@ -186,15 +169,14 @@ void TestEnergyDevice::receiveDailyAverageGraph2()
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data.graph[1] = 517;
-	data.graph[2] = 9;
+	data.graph[1] = 9;
 	data.date = QDate(2008, 9, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 
 	QVERIFY(data == result.value<GraphData>());
 }
 
-void TestEnergyDevice::receiveDailyAverageGraph3()
+void TestEnergyDevice::receiveDailyAverageGraph2()
 {
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
@@ -207,37 +189,37 @@ void TestEnergyDevice::receiveDailyAverageGraph3()
 	frames << "*#18*20*57#9*11*88*1*0##" << "*#18*20*57#9*12*2*31*2##";
 	frames << "*#18*20*57#9*13*32*0*65##" << "*#18*20*57#9*14*1*180*0##";
 	frames << "*#18*20*57#9*15*7*3*3##" << "*#18*20*57#9*16*1*2*4##";
-	frames << "*#18*20*57#9*17*1*0*0##" << "*#18*20*57#9*18*0*0*0##";
+	frames << "*#18*20*57#9*17*1*2*4##" << "*#18*20*57#9*18*0*0*0##";
 	frames << "*#18*20*57#9*19*0##";
 
 	QVariant result = t.getResult(frames);
 	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
-	data.graph[1] = 517;
-	data.graph[2] = 265;
-	data.graph[3] = 834;
-	data.graph[4] = 266;
-	data.graph[5] = 1281;
-	data.graph[6] = 14;
-	data.graph[7] = 2;
-	data.graph[8] = 521;
-	data.graph[9] = 1030;
-	data.graph[10] = 768;
-	data.graph[11] = 1803;
-	data.graph[12] = 770;
-	data.graph[13] = 1281;
-	data.graph[14] = 120;
-	data.graph[15] = 344;
-	data.graph[16] = 256;
-	data.graph[17] = 543;
-	data.graph[18] = 544;
-	data.graph[19] = 65;
-	data.graph[20] = 436;
-	data.graph[21] = 7;
-	data.graph[22] = 771;
-	data.graph[23] = 258;
-	data.graph[24] = 1025;
+	data.graph[1] = 265;
+	data.graph[2] = 834;
+	data.graph[3] = 266;
+	data.graph[4] = 1281;
+	data.graph[5] = 14;
+	data.graph[6] = 2;
+	data.graph[7] = 521;
+	data.graph[8] = 1030;
+	data.graph[9] = 768;
+	data.graph[10] = 1803;
+	data.graph[11] = 770;
+	data.graph[12] = 1281;
+	data.graph[13] = 120;
+	data.graph[14] = 344;
+	data.graph[15] = 256;
+	data.graph[16] = 543;
+	data.graph[17] = 544;
+	data.graph[18] = 65;
+	data.graph[19] = 436;
+	data.graph[20] = 7;
+	data.graph[21] = 771;
+	data.graph[22] = 258;
+	data.graph[23] = 1025;
+	data.graph[24] = 516;
 	data.date = QDate(2008, 9, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 
