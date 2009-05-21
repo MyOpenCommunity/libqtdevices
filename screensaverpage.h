@@ -14,12 +14,6 @@ public:
 protected:
 	virtual int getCurrentId();
 	virtual void bannerSelected(int id);
-
-private:
-	int initial_id;
-
-private slots:
-	void handleClose();
 };
 
 #endif // SCREENSAVERPAGE_H

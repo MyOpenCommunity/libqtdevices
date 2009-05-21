@@ -12,19 +12,12 @@ ScreenSaverPage::ScreenSaverPage() : SingleChoicePage(true)
 	addBanner(tr("Time"), ScreenSaver::TIME);
 	addBanner(tr("Text"), ScreenSaver::TEXT);
 	addBanner(tr("Deform"), ScreenSaver::DEFORM);
-	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
 void ScreenSaverPage::showPage()
 {
-	initial_id = buttons.checkedId();
+	buttons.button(getCurrentId())->setChecked(true);
 	SingleChoicePage::showPage();
-}
-
-void ScreenSaverPage::handleClose()
-{
-	QAbstractButton *b = buttons.button(initial_id);
-	b->setChecked(true);
 }
 
 int ScreenSaverPage::getCurrentId()
