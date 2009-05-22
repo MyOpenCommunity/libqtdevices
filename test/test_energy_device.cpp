@@ -370,7 +370,7 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 {
 	// We have to reset the device buffer
 	dev->buffer_year_data.clear();
-	for (int i = 0; i < 12; ++i)
+	for (int i = 1; i <= 12; ++i)
 		dev->buffer_year_data[i] = 0;
 
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH);
@@ -385,19 +385,19 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 
 	GraphData data;
 	data.type = EnergyDevice::CUMULATIVE_YEAR;
-	for (int i = 0; i < 12; ++i)
+	for (int i = 1; i <= 12; ++i)
 		data.graph[i] = 0;
 
 	// We can't use a fixed month because the month index depends by the currentDate.
 	int month_distance = month - QDate::currentDate().month();
-	int index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
+	int index = month_distance < 0 ? month_distance + 12 : month_distance;
 
-	data.graph[11] = 95;
+	data.graph[12] = 95;
 	data.graph[index] = 106;
 
 	// Check for the month that has an invalid value
 	int d = invalid_month - QDate::currentDate().month();
-	int invalid_index = (d < 0 ? d + 12 : d) - 1;
+	int invalid_index = d < 0 ? d + 12 : d;
 	data.graph[invalid_index] = 0;
 
 	QVERIFY(data == result.value<GraphData>());

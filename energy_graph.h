@@ -54,7 +54,7 @@ class EnergyTable : public PageLayout
 Q_OBJECT
 public:
 	EnergyTable(int n_dec);
-	void init(int num_val, QString left_text, QString right_text, QString date, int start_val=-1);
+	void init(int num_val, QString left_text, QString right_text, QString date, int shift_val=-1);
 	void setData(const QMap<int, float> &data);
 	void setNumDecimal(int d);
 
@@ -65,7 +65,7 @@ private slots:
 private:
 	QLabel *date_label, *heading_left, *heading_right;
 	int num_values;
-	int starting_value;
+	int shift_value;
 	QMap<int, float> table_data;
 	QFrame *table;
 	int rows_per_page;

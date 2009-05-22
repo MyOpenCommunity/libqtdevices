@@ -36,8 +36,8 @@ void EnergyGraph::init(int bars, QString t, const QMap<int, QString>& x_axis)
 #ifdef TEST_ENERGY_GRAPH
 void EnergyGraph::generateRandomValues()
 {
-	for (int i = 0; i < number_of_bars; ++i)
-		graph_data[i+1] = rand() % 100;
+	for (int i = 1; i <= number_of_bars; ++i)
+		graph_data[i] = rand() % 100;
 }
 #endif
 
@@ -217,9 +217,9 @@ void EnergyTable::showData()
 		{
 			int key = data_keys.at(i + start);
 			int left_value = key;
-			if (starting_value != -1)
+			if (shift_value != -1)
 			{
-				left_value = (starting_value + key - 1) % num_values;
+				left_value = (shift_value + key) % num_values;
 				if (left_value == 0)
 					left_value = num_values;
 			}
@@ -277,10 +277,10 @@ void EnergyTable::createTable()
 	}
 }
 
-void EnergyTable::init(int num_val, QString left_text, QString right_text, QString date, int start_val)
+void EnergyTable::init(int num_val, QString left_text, QString right_text, QString date, int shift_val)
 {
 	num_values = num_val;
-	starting_value = start_val;
+	shift_value = shift_val;
 	heading_left->setText(left_text);
 	heading_right->setText(right_text);
 	date_label->setText(date);

@@ -261,11 +261,11 @@ void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
 void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
 {
 	QDate current = QDate::currentDate();
-	int index = 11;
+	int index = 12;
 	if (static_cast<int>(msg.what()) != DIM_CUMULATIVE_MONTH)
 	{
 		int month_distance = msg.whatSubArgN(1) - current.month();
-		index = (month_distance < 0 ? month_distance + 12 : month_distance) - 1;
+		index = month_distance < 0 ? month_distance + 12 : month_distance;
 	}
 	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 	GraphData data;
