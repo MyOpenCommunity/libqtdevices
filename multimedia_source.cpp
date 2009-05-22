@@ -339,7 +339,12 @@ void FileSelector::showPage()
 	QTime time_counter = startTimeCounter();
 
 	if (!browseFiles())
+	{
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
+		destroyWaitDialog(l);
 		emit notifyExit();
+		return;
+	}
 
 	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 	destroyWaitDialog(l);
