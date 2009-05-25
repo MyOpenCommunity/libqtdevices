@@ -18,6 +18,7 @@ void LanDevice::enableLan(bool enable)
 	int val = enable ? 1 : 0;
 	int what = DIM_STATUS;
 	sendFrame(QString("*#%1**#%2*%3##").arg(who).arg(what).arg(val));
+	requestStatus();
 }
 
 void LanDevice::sendRequest(int what) const
