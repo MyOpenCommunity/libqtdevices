@@ -747,7 +747,7 @@ attuatAutomTempNuovoF::attuatAutomTempNuovoF(QWidget *parent, QString where, QSt
 
 	// TODO: putting all 0's here we have a division by zero in Draw(). It must be configured
 	// in conf.xml, but anyway '0*0*1' seems a reasonable default (at least BTouch doesn't segfault...)
-	tempo = t.isEmpty() ? t : "0*0*1";
+	tempo = !t.isEmpty() ? t : "0*0*1";
 
 	QStringList split_list = t.split("*");
 	switch (split_list.size())
