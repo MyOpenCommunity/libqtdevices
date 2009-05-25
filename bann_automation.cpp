@@ -77,9 +77,10 @@ attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, QString where, QString Ico
 	else
 		qWarning() << "Cannot find dot on image " << icon;
 
-	icon_sx = IconaSx;
-	icon_dx = IconaDx;
-	icon_stop = StopIcon;
+	SetIcons(0, IconaSx, getPressName(StopIcon));
+	SetIcons(1, IconaDx, getPressName(StopIcon));
+	sxButton->setOnOff();
+	dxButton->setOnOff();
 
 	setAddress(where);
 	connect(this,SIGNAL(sxPressed()),this,SLOT(upPres()));
@@ -117,10 +118,10 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 				if (isActive())
 				{
 					impostaAttivo(0);
-					uprunning=dorunning=0;
-					aggiorna=1;
-					SetIcons(0, icon_sx);
-					SetIcons(1, icon_dx);
+					uprunning = dorunning = 0;
+					aggiorna = 1;
+					sxButton->setStatus(false);
+					dxButton->setStatus(false);
 					sxButton->enable();
 					dxButton->enable();
 				}
@@ -132,8 +133,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					dorunning = 0;
 					uprunning = 1;
 					aggiorna = 1;
-					SetIcons(0, icon_stop);
-					SetIcons(1, icon_dx);
+					sxButton->setStatus(true);
+					dxButton->setStatus(false);
 					dxButton->disable();
 					sxButton->enable();
 				}
@@ -145,8 +146,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					dorunning = 1;
 					uprunning = 0;
 					aggiorna = 1;
-					SetIcons(0, icon_sx);
-					SetIcons(1, icon_stop);
+					sxButton->setStatus(false);
+					dxButton->setStatus(true);
 					sxButton->disable();
 					dxButton->enable();
 				}
