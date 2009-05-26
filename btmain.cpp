@@ -90,7 +90,7 @@ BtMain::BtMain()
 	pd_shown = false;
 
 	tasti = NULL;
-	pwdOn = 0;
+	pwdOn = false;
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
 
@@ -436,11 +436,11 @@ void BtMain::gesScrSav()
 
 				Page *target = pagDefault ? pagDefault : Home;
 				if (target != pagDefault)
-				{
 					prev_page = static_cast<Page *>(main_window.currentWidget());
-					// don't use showPage() because transition doesn't make sense here
-					main_window.setCurrentWidget(target);
-				}
+
+				// don't use showPage() because transition doesn't make sense here
+				main_window.setCurrentWidget(target);
+				qDebug() << "start screensaver:" << target_screensaver << "on:" << main_window.currentWidget();
 				screensaver->start(target);
 				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
@@ -503,9 +503,10 @@ void BtMain::freeze(bool b)
 			{
 				tasti = new Keypad();
 				tasti->setMode(Keypad::HIDDEN);
-				tasti->showPage();
 				connect(tasti, SIGNAL(Closed()), this, SLOT(testPwd()));
 			}
+			if (main_window.currentWidget() != tasti)
+				tasti->showPage();
 		}
 		qApp->removeEventFilter(this);
 	}
@@ -520,7 +521,7 @@ void BtMain::setPwd(bool b, QString p)
 {
 	pwdOn = b;
 	pwd = p;
-	qDebug() << "BtMain nuova pwd = " << pwd << "-" << pwdOn;
+	qDebug() << "new password:" << pwd << "active:" << pwdOn;
 }
 
 void BtMain::testPwd()
