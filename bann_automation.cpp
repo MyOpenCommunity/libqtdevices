@@ -117,8 +117,8 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 				if (isActive())
 				{
 					impostaAttivo(0);
-					uprunning=dorunning=0;
-					aggiorna=1;
+					uprunning = dorunning = 0;
+					aggiorna = true;
 					SetIcons(0, icon_sx);
 					SetIcons(1, icon_dx);
 					sxButton->enable();
@@ -131,7 +131,7 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					impostaAttivo(1);
 					dorunning = 0;
 					uprunning = 1;
-					aggiorna = 1;
+					aggiorna = true;
 					SetIcons(0, icon_stop);
 					SetIcons(1, icon_dx);
 					dxButton->disable();
@@ -144,7 +144,7 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 					impostaAttivo(2);
 					dorunning = 1;
 					uprunning = 0;
-					aggiorna = 1;
+					aggiorna = true;
 					SetIcons(0, icon_sx);
 					SetIcons(1, icon_stop);
 					sxButton->disable();
@@ -163,7 +163,12 @@ void attuatAutomIntSic::status_changed(QList<device_status*> sl)
 	}
 
 	if (aggiorna)
+	{
 		Draw();
+		sxButton->setStatus(sxButton->isDown());
+		dxButton->setStatus(dxButton->isDown());
+	}
+
 }
 
 void attuatAutomIntSic::upPres()
