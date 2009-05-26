@@ -768,7 +768,7 @@ void FSBannManualTimed::performAction()
 		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
 		bt_temp = celsius2Bt(temp);
 	}
-	emit(timeAndTempSelected(time_edit->time(), temp));
+	emit(timeAndTempSelected(time_edit->time(), bt_temp));
 }
 
 void FSBannManualTimed::setMaxHours(int max)
