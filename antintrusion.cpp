@@ -40,6 +40,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	t = new QTimer(this);
 	t->setSingleShot(true);
 	connect(t, SIGNAL(timeout()), SLOT(ctrlAllarm()));
+	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -349,10 +350,9 @@ void Antintrusion::doClearAlarms()
 		delete allarmi.takeFirst();
 }
 
-void Antintrusion::hideEvent(QHideEvent *event)
+void Antintrusion::requestZoneStatus()
 {
-	qDebug("antiintrusione::hideEvent()");
-	qDebug("Richiesta stato zone");
+	qDebug("Request zone status");
 	for (int i = 1; i <= 8; ++i)
 		sendFrame(QString("*#5*#%1##").arg(i));
 }
