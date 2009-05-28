@@ -16,7 +16,8 @@ class EnergyGraph : public QWidget
 {
 Q_OBJECT
 Q_PROPERTY(QString primary_color READ primaryColor WRITE setPrimaryColor)
-Q_PROPERTY(QString secondary_color READ secondaryColor  WRITE setSecondaryColor)
+Q_PROPERTY(QString secondary_color READ secondaryColor WRITE setSecondaryColor)
+Q_PROPERTY(QString border_color READ borderColor WRITE setBorderColor)
 public:
 	EnergyGraph();
 
@@ -37,11 +38,14 @@ private:
 	QMap<int, QString> custom_x_axis;
 
 	// The attributes to store information set from stylesheet (using the properties)
-	QString _primary_color, _secondary_color;
+	QString _primary_color, _secondary_color, _border_color;
 	QString primaryColor();
 	QString secondaryColor();
+	QString borderColor();
 	void setSecondaryColor(QString color);
 	void setPrimaryColor(QString color);
+	void setBorderColor(QString color);
+
 #ifdef TEST_ENERGY_GRAPH
 public:
 #endif

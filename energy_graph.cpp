@@ -120,7 +120,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		}
 
 		// draw bars
-		p.setPen(QColor("blue"));
+		p.setPen(_border_color);
 		int current_left = axis_left + AXIS_PEN_WIDTH;
 
 		QMapIterator<int, float> it(graph_data);
@@ -154,6 +154,16 @@ void EnergyGraph::setSecondaryColor(QString color)
 void EnergyGraph::setPrimaryColor(QString color)
 {
 	_primary_color = color;
+}
+
+QString EnergyGraph::borderColor()
+{
+	return _border_color;
+}
+
+void EnergyGraph::setBorderColor(QString color)
+{
+	_border_color = color;
 }
 
 
