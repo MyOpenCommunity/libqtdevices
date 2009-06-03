@@ -319,6 +319,7 @@ void dimmer100::status_changed(QList<device_status*> sl)
 		case device_status::DIMMER:
 			ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
 			qDebug("dimmer status variation, ignored");
+			break;
 		case device_status::DIMMER100:
 			ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
 			ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
