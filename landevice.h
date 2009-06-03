@@ -35,7 +35,6 @@ public:
 	void enableLan(bool enable);
 
 	// The request methods, used to request an information
-	void requestStatus() const;
 	void requestIp() const;
 	void requestNetmask() const;
 	void requestMacAddress() const;
@@ -56,6 +55,7 @@ public:
 
 public slots:
 	virtual void frame_rx_handler(char *);
+	void requestStatus() const;
 
 private:
 	void sendRequest(int what) const;

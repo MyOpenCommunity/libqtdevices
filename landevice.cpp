@@ -8,6 +8,9 @@
 
 #include <assert.h>
 
+// the request delay in milliseconds
+#define STATUS_REQUEST_DELAY 1000
+
 
 LanDevice::LanDevice() : device(QString("13"), QString(""))
 {
@@ -18,7 +21,12 @@ void LanDevice::enableLan(bool enable)
 	int val = enable ? 1 : 0;
 	int what = DIM_STATUS;
 	sendFrame(QString("*#%1**#%2*%3##").arg(who).arg(what).arg(val));
-	requestStatus();
+	// We need to perform a status request after the command to toggle the status,
+	// but if we put the requestStatus call immediately after the command frame
+	// the result is that the status request is received by the openserver before
+	// the command. To preserve the order, we have to use a singleshot timer with
+	// some delay.
+	QTimer::singleShot(STATUS_REQUEST_DELAY, this, SLOT(requestStatus()));
 }
 
 void LanDevice::sendRequest(int what) const
