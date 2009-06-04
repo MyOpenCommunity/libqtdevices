@@ -49,7 +49,7 @@ PlayWindow::PlayWindow(MediaPlayer *player)
 	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
 	bannFrecce *nav_bar = new bannFrecce(this, 10, IMG_SETTINGS);
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(backBtn()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(nav_bar, SIGNAL(dxClick()), SIGNAL(settingsBtn()));
 	main_layout->addWidget(nav_bar);
 }

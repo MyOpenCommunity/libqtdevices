@@ -161,7 +161,7 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 	connect(this, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
 	connect(play_window, SIGNAL(notifyStopPlay()), SIGNAL(notifyStopPlay()));
 	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
-	connect(play_window, SIGNAL(backBtn()), SLOT(handlePlayerExit()));
+	connect(play_window, SIGNAL(Closed()), SLOT(handlePlayerExit()));
 
 	connect(selector, SIGNAL(notifyExit()), SLOT(handleSelectorExit()));
 	connect(selector, SIGNAL(Closed()), SIGNAL(Closed()));

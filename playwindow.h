@@ -78,7 +78,6 @@ protected slots:
 
 signals:
 	void settingsBtn();
-	void backBtn();
 	void notifyStopPlay();
 
 private:
