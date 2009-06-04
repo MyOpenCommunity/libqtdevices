@@ -48,8 +48,7 @@ void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 			// Do not create "sorgenti" submenu
 			ds = createSoundDiffusion(sorgenti, item);
 
-			connect(ds, SIGNAL(closed(SoundDiffusion*)), this, SLOT(ds_closed(SoundDiffusion*)));
-			connect(ds, SIGNAL(closed(SoundDiffusion*)), SLOT(showPage()));
+			connect(ds, SIGNAL(Closed()), SLOT(ds_closed()));
 			ds->draw();
 			dslist.append(ds);
 		}
@@ -81,6 +80,19 @@ void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 		}
 	}
 	draw();
+}
+
+void MultiSoundDiffInterface::ds_closed()
+{
+	qDebug("MultiSoundDiff::ds_closed()");
+
+	for (int i = 0; i < elencoBanner.size(); ++i)
+	{
+		elencoBanner.at(i)->Draw();
+		elencoBanner.at(i)->show();
+	}
+	forceDraw();
+	showPage();
 }
 
 
@@ -126,19 +138,6 @@ void MultiSoundDiff::inizializza()
 	matr->init();
 	for (int i = 0; i < dslist.size(); ++i)
 		dslist.at(i)->inizializza();
-}
-
-void MultiSoundDiff::ds_closed(SoundDiffusion *ds)
-{
-	qDebug("MultiSoundDiff::ds_closed()");
-
-	for (int i = 0; i < elencoBanner.size(); ++i)
-	{
-		elencoBanner.at(i)->Draw();
-		elencoBanner.at(i)->show();
-	}
-	forceDraw();
-	showPage();
 }
 
 void MultiSoundDiff::status_changed(QList<device_status*> sl)

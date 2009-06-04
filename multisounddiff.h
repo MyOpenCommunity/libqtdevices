@@ -38,6 +38,8 @@ protected:
 	QList<SoundDiffusion*> dslist;
 	static AudioSources *sorgenti;
 
+private slots:
+	void ds_closed();
 signals:
 	void actSrcChanged(int, int);
 };
@@ -58,7 +60,6 @@ public:
 	virtual void setNumRighe(uchar);
 
 public slots:
-	void ds_closed(SoundDiffusion *);
 	void status_changed(QList<device_status*> sl);
 	void gestFrame(char*);
 

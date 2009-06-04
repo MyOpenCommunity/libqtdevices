@@ -380,7 +380,6 @@ void SoundDiffusion::fineVis()
 {
 	isVisual = false;
 	emit Closed();
-	emit closed(this);
 }
 
 void SoundDiffusion::setFirstSource(int addr)
