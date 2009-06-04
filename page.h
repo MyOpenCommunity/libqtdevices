@@ -34,6 +34,7 @@ typedef QHash<int, QVariant> StatusList;
  */
 class Page : public QWidget
 {
+friend class BtMain;
 Q_OBJECT
 public:
 	// Normally, the page is a fullscreen window, but sometimes is a part of
@@ -64,13 +65,14 @@ protected:
 	// Let's start the transition
 	void startTransition();
 
-	Page *currentPage();
+	static Page *currentPage();
 
 private:
 	static Client *client_richieste;
 	static Client *client_comandi;
 	static QStackedWidget *main_window;
 	static TransitionWidget *transition_widget;
+	void forceClosed();
 
 signals:
 	/// Emitted when the page is closed.

@@ -109,6 +109,10 @@ void Page::setClients(Client *command, Client *request)
 	client_richieste = request;
 }
 
+void Page::forceClosed()
+{
+	emit Closed();
+}
 
 PageLayout::PageLayout(QWidget *parent) : Page(parent)
 {

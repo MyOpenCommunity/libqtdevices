@@ -437,6 +437,24 @@ void BtMain::gesScrSav()
 				Page *target = pagDefault ? pagDefault : Home;
 				prev_page = static_cast<Page *>(main_window.currentWidget());
 
+				if (target == pagDefault)
+				{
+					int seq_pages = 0;
+					if (Page::currentPage() != pagDefault)
+						while (Page::currentPage() != Home)
+						{
+							Page::currentPage()->forceClosed();
+							++seq_pages;
+							// To avoid infinite loop, we assume that the application
+							// can have a maximum number of sequential pages in the
+							// navigation equal to 50.
+							if (seq_pages > 50)
+							{
+								qWarning() << "Maximum number of sequential pages reached";
+								break;
+							}
+						}
+				}
 				// don't use showPage() because transition doesn't make sense here
 				main_window.setCurrentWidget(target);
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << main_window.currentWidget();
