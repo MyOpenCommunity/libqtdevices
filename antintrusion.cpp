@@ -4,6 +4,7 @@
 #include "sottomenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "allarme.h"
+#include "btmain.h" // bt_global::btmain
 
 #include <openwebnet.h> // class openwebnet
 
@@ -41,6 +42,8 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	t->setSingleShot(true);
 	connect(t, SIGNAL(timeout()), SLOT(ctrlAllarm()));
 	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
+			SLOT(requestStatusIfCurrentWidget(Page*)));
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -363,3 +366,12 @@ void Antintrusion::request()
 	disconnect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
 	sendInit("*#5*0##");
 }
+
+void Antintrusion::requestStatusIfCurrentWidget(Page *curr)
+{
+	// We can't use currentPage() because at the time when startscreensaver
+	// is emitted the currentPage is the screensaver page.
+	if (curr == this)
+		requestZoneStatus();
+}
+

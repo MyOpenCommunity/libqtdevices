@@ -435,13 +435,13 @@ void BtMain::gesScrSav()
 					screensaver = getScreenSaver(target_screensaver);
 
 				Page *target = pagDefault ? pagDefault : Home;
-				if (target != pagDefault)
-					prev_page = static_cast<Page *>(main_window.currentWidget());
+				prev_page = static_cast<Page *>(main_window.currentWidget());
 
 				// don't use showPage() because transition doesn't make sense here
 				main_window.setCurrentWidget(target);
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << main_window.currentWidget();
 				screensaver->start(target);
+				emit startscreensaver(prev_page);
 				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
 		}

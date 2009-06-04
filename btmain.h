@@ -122,6 +122,7 @@ private:
 signals:
 	void resettimer();
 	void freezed(bool);
+	void startscreensaver(Page*);
 };
 
 namespace bt_global { extern BtMain *btmain; }

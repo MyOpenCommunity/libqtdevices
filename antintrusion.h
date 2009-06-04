@@ -144,6 +144,7 @@ private:
 private slots:
 	void closeAlarms();
 	void requestZoneStatus();
+	void requestStatusIfCurrentWidget(Page *curr);
 
 signals:
 /*!
