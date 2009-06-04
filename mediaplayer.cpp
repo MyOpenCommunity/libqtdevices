@@ -86,16 +86,17 @@ bool MediaPlayer::play(QString track, bool write_output)
 		}
 
 		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
-		const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
+		//const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
+		const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL};
 
 		QByteArray t = track.toLatin1();
 		if (track.endsWith(".m3u", Qt::CaseInsensitive))
 		{
-			mplayer_args[3] = "-playlist";
-			mplayer_args[4] = t.constData();
+			mplayer_args[1] = "-playlist";
+			mplayer_args[2] = t.constData();
 		}
 		else
-			mplayer_args[3] = t.constData();
+			mplayer_args[1] = t.constData();
 
 		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
 	}

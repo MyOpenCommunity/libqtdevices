@@ -53,9 +53,15 @@ void Client::socketConnected()
 		emit monitorSu();
 	}
 	else if (type == RICHIESTE)
+	{
 		qDebug("TRY TO START request");
+		socket->write(SOCKET_RICHIESTE);
+	}
 	else
+	{
 		qDebug("TRY TO START command");
+		socket->write(SOCKET_COMANDI);
+	}
 }
 
 void Client::ApriInviaFrameChiudi(const char* frame)
