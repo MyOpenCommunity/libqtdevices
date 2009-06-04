@@ -556,7 +556,10 @@ void BtMain::testPwd()
 		else
 		{
 			qDebug() << "pwd ok!";
-			Home->showPage();
+			if (pagDefault)
+				pagDefault->showPage();
+			else
+				Home->showPage();
 			tasti->disconnect();
 			tasti->deleteLater();
 			tasti = NULL;
