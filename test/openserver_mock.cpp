@@ -28,6 +28,8 @@ Client *OpenServerMock::connectCommand()
 		qFatal("Fatal error: client_command cannot connect to OpenServerMock");
 	server.waitForNewConnection(timeout);
 	command = server.nextPendingConnection();
+	client_command->flush();
+	frameCommand(); // discard all data
 	return client_command;
 }
 
@@ -38,6 +40,8 @@ Client *OpenServerMock::connectRequest()
 		qFatal("Fatal error: client_request cannot connect to OpenServerMock");
 	server.waitForNewConnection(timeout);
 	request = server.nextPendingConnection();
+	client_request->flush();
+	frameRequest(); // discard all data
 	return client_request;
 }
 
