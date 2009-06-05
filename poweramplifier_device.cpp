@@ -6,7 +6,6 @@
 #include <QVariant>
 #include <QDebug>
 
-#include <assert.h>
 
 enum RequestDimension
 {
@@ -48,7 +47,12 @@ void PowerAmplifierDevice::frame_rx_handler(char *frame)
 	StatusList status_list;
 	QVariant v;
 
-	assert(msg.whatArgCnt() > 0);
+	// In some cases (when more than a power amplifier is present in the system)
+	// a request frame can arrive from the monitor socket. We have to manage this
+	// situation.
+	if (!msg.whatArgCnt())
+		return;
+
 	qDebug("PowerAmplifierDevice::frame_rx_handler -> frame read:%s", frame);
 
 	int what = msg.what();

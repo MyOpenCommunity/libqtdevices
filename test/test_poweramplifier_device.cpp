@@ -151,6 +151,7 @@ void TestPowerAmplifierDevice::receiveVolume()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_VOLUME);
 	t.check(QString("*#22*3#%1#%2*1*20##").arg(where[0]).arg(where[1]), 20);
+	t.checkSignals(QString("*#22*3#%1#%2*1##").arg(where[0]).arg(where[1]), 0);
 }
 
 void TestPowerAmplifierDevice::receiveLoud()
