@@ -64,7 +64,6 @@ public slots:
 	void gestFrame(char*);
 
 private:
-	QList<SoundDiffusion*> dslist;
 	device *matr;
 
 signals:
