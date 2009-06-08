@@ -466,7 +466,7 @@ void FileSelector::destroyWaitDialog(QLabel *l)
 
 QLabel *FileSelector::createWaitDialog()
 {
-	QLabel* l = new QLabel(parentWidget());
+	QLabel* l = new QLabel(0);
 	QPixmap *icon = bt_global::icons_cache.getIcon(IMG_WAIT);
 	l->setPixmap(*icon);
 
@@ -474,7 +474,7 @@ QLabel *FileSelector::createWaitDialog()
 	r.moveCenter(QPoint(MAX_WIDTH / 2, MAX_HEIGHT / 2));
 	l->setGeometry(r);
 
-	l->show();
+	l->showFullScreen();
 	qApp->processEvents();
 	return l;
 }
