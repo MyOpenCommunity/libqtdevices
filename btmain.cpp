@@ -407,7 +407,7 @@ void BtMain::gesScrSav()
 		{
 			if (pagDefault)
 			{
-				if (!pd_shown)
+				if (!pd_shown && bt_global::display.currentState() == DISPLAY_OPERATIVE)
 				{
 					pd_shown = true;
 					if (pagDefault)
@@ -435,7 +435,7 @@ void BtMain::gesScrSav()
 					screensaver = getScreenSaver(target_screensaver);
 
 				Page *target = pagDefault ? pagDefault : Home;
-				prev_page = static_cast<Page *>(main_window.currentWidget());
+				prev_page = Page::currentPage();
 
 				if (target == pagDefault)
 				{
