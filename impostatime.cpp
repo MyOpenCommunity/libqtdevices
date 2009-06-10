@@ -86,6 +86,7 @@ void impostaTime::OKDate()
 void impostaTime::showEvent(QShowEvent *event)
 {
 	qDebug("impostaTime::showEvent()");
+	disconnectAllButton();
 	dataOra->reset();
 	dataOra->showTime();
 
