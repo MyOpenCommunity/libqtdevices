@@ -33,9 +33,6 @@ public:
 	impostaTime();
 	BtButton *but[7];
 
-protected:
-	virtual void showEvent(QShowEvent *event);
-
 private slots:
 	void OKTime();
 	void OKDate();
@@ -43,7 +40,8 @@ private slots:
 private:
 	timeScript *dataOra;
 	QLabel *Immagine;
-	void disconnectAllButton();
+	void setTimePage();
+	void setDatePage();
 };
 
 

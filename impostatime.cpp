@@ -39,16 +39,34 @@ impostaTime::impostaTime()
 
 	Immagine = new QLabel(this);
 	Immagine->setGeometry(90,0,120,60);
+	setTimePage();
 }
 
 void impostaTime::OKTime()
 {
-	disconnectAllButton();
+	QString f = "*#13**#0*" + dataOra->getDataOra().toString("hh*mm*ss") + "**##";
+	sendFrame(f);
+	setDatePage();
+}
+
+void impostaTime::OKDate()
+{
+	QString f = "*#13**#1*00*" + dataOra->getDataOra().toString("dd*MM*yyyy") + "##";
+	sendFrame(f);
+	setTimePage();
+	emit Closed();
+}
+
+void impostaTime::setDatePage()
+{
 	dataOra->showDate();
 
 	QPixmap *icon = bt_global::icons_cache.getIcon(ICON_CALENDARIO);
 	if (icon)
 		Immagine->setPixmap(*icon);
+
+	for (int i = 0; i <= 6; ++i)
+		but[i]->disconnect();
 
 	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
 	{
@@ -68,31 +86,20 @@ void impostaTime::OKTime()
 		connect(but[4], SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
 		connect(but[5], SIGNAL(clicked()),dataOra,SLOT(diminYear()));
 	}
-
 	connect(but[6] ,SIGNAL(clicked()), SLOT(OKDate()));
-
-	QString f = "*#13**#0*" + dataOra->getDataOra().toString("hh*mm*ss") + "**##";
-	sendFrame(f);
 }
 
-void impostaTime::OKDate()
+void impostaTime::setTimePage()
 {
-	disconnectAllButton();
-	QString f = "*#13**#1*00*" + dataOra->getDataOra().toString("dd*MM*yyyy") + "##";
-	sendFrame(f);
-	emit Closed();
-}
-
-void impostaTime::showEvent(QShowEvent *event)
-{
-	qDebug("impostaTime::showEvent()");
-	disconnectAllButton();
 	dataOra->reset();
 	dataOra->showTime();
 
 	QPixmap *icon = bt_global::icons_cache.getIcon(ICON_OROLOGIO);
 	if (icon)
 		Immagine->setPixmap(*icon);
+
+	for (int i = 0; i <= 6; ++i)
+		but[i]->disconnect();
 
 	connect(but[0], SIGNAL(clicked()),dataOra,SLOT(aumOra()));
 	connect(but[1], SIGNAL(clicked()),dataOra,SLOT(aumMin()));
@@ -103,8 +110,3 @@ void impostaTime::showEvent(QShowEvent *event)
 	connect(but[6], SIGNAL(clicked()),this,SLOT(OKTime()));
 }
 
-void impostaTime::disconnectAllButton()
-{
-	for (int i = 0; i <= 6; ++i)
-		but[i]->disconnect();
-}
