@@ -31,7 +31,7 @@ ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page) : QWidget(par
 
 	main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(0, 5, 5, 0);
-	main_layout->setSpacing(8);
+	main_layout->setSpacing(12);
 	buttons_group = new QButtonGroup(this);
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 }
