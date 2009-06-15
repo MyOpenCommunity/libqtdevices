@@ -31,12 +31,16 @@ CleanScreen::CleanScreen(QString img_clean, int clean_time)
 	wait_time_sec = clean_time;
 }
 
-void CleanScreen::showEvent(QShowEvent *e)
+void CleanScreen::showPage()
 {
-	secs_timer.start(1 * 1000);
-	timer.start(wait_time_sec * 1000);
-	end_time.restart();
-	bt_global::display.forceOperativeMode(true);
+	if (!secs_timer.isActive())
+	{
+		secs_timer.start(1 * 1000);
+		timer.start(wait_time_sec * 1000);
+		end_time.restart();
+		bt_global::display.forceOperativeMode(true);
+	}
+	Page::showPage();
 }
 
 void CleanScreen::handleClose()
