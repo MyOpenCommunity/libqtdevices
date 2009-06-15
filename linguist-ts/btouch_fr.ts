@@ -1,5 +1,62 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>AlarmClock</name>
+    <message>
+        <source>once</source>
+        <translation type="unfinished">une fois</translation>
+    </message>
+    <message>
+        <source>always</source>
+        <translation type="unfinished">toujours</translation>
+    </message>
+    <message>
+        <source>mon-fri</source>
+        <translation type="unfinished">lun-ven</translation>
+    </message>
+    <message>
+        <source>sat-sun</source>
+        <translation type="unfinished">sam-dim</translation>
+    </message>
+</context>
+<context>
+    <name>Antintrusion</name>
+    <message>
+        <source>technical</source>
+        <translation type="unfinished">technique</translation>
+    </message>
+    <message>
+        <source>intrusion</source>
+        <translation type="unfinished">intrusion</translation>
+    </message>
+    <message>
+        <source>tamper</source>
+        <translation type="unfinished">sabotage</translation>
+    </message>
+    <message>
+        <source>anti-panic</source>
+        <translation type="unfinished">anti-panique</translation>
+    </message>
+</context>
+<context>
+    <name>BrightnessPage</name>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Low brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Normal brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>High brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
@@ -11,10 +68,109 @@
     </message>
 </context>
 <context>
+    <name>DisplayPage</name>
+    <message>
+        <source>Clean Screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calibration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Screen Saver</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EnergyCost</name>
+    <message>
+        <source>Consumption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EnergyView</name>
+    <message>
+        <source>/hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/months</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Month</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cumulative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Daily Average</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
         <translation>Manuel</translation>
+    </message>
+</context>
+<context>
+    <name>Keypad</name>
+    <message>
+        <source>PASSWORD:</source>
+        <translation type="unfinished">PASSWORD:</translation>
+    </message>
+</context>
+<context>
+    <name>LanSettings</name>
+    <message>
+        <source>Mac</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subnet mask</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gateway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DNS</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -44,7 +200,7 @@
     <name>PowerAmplifier</name>
     <message>
         <source>Preset</source>
-        <translation>Preset</translation>
+        <translation type="obsolete">Preset</translation>
     </message>
     <message>
         <source>Treble</source>
@@ -87,7 +243,7 @@
     </message>
     <message>
         <source>Jazz</source>
-        <translation>Jazz</translation>
+        <translation type="obsolete">Jazz</translation>
     </message>
     <message>
         <source>Party</source>
@@ -108,6 +264,37 @@
     <message>
         <source>Preset</source>
         <translation>Preset</translation>
+    </message>
+    <message>
+        <source>Techno</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ScreenSaverPage</name>
+    <message>
+        <source>No screensaver</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Balls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deform</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -137,22 +324,29 @@
     </message>
 </context>
 <context>
+    <name>TimePeriodSelection</name>
+    <message>
+        <source>Last 12 months</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>antintrusione</name>
     <message>
         <source>technical</source>
-        <translation>technique</translation>
+        <translation type="obsolete">technique</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>intrusion</translation>
+        <translation type="obsolete">intrusion</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>sabotage</translation>
+        <translation type="obsolete">sabotage</translation>
     </message>
     <message>
         <source>anti-panic</source>
-        <translation>anti-panique</translation>
+        <translation type="obsolete">anti-panique</translation>
     </message>
 </context>
 <context>
@@ -228,26 +422,26 @@
     <name>sveglia</name>
     <message>
         <source>once</source>
-        <translation>une fois</translation>
+        <translation type="obsolete">une fois</translation>
     </message>
     <message>
         <source>always</source>
-        <translation>toujours</translation>
+        <translation type="obsolete">toujours</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>lun-ven</translation>
+        <translation type="obsolete">lun-ven</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>sam-dim</translation>
+        <translation type="obsolete">sam-dim</translation>
     </message>
 </context>
 <context>
     <name>tastiera</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>PASSWORD:</translation>
+        <translation type="obsolete">PASSWORD:</translation>
     </message>
 </context>
 </TS>

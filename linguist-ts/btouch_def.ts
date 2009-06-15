@@ -3,38 +3,38 @@
     <name>AlarmClock</name>
     <message>
         <source>once</source>
-        <translation type="unfinished">una volta</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>always</source>
-        <translation type="unfinished">sempre</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation type="unfinished">lun-ven</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation type="unfinished">sab-dom</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>technical</source>
-        <translation type="unfinished">tecnico</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation type="unfinished">intrusione</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation type="unfinished">manomissione</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>anti-panic</source>
-        <translation type="unfinished">antipanico</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -60,11 +60,11 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation type="unfinished">Premere la croce</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation type="unfinished">Premere il pulsante OK</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -140,14 +140,14 @@
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Manuale</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation type="unfinished">PASSWORD:</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -176,97 +176,89 @@
 <context>
     <name>MediaPlayWindow</name>
     <message>
-        <source>of</source>
-        <translation>di</translation>
-    </message>
-    <message>
         <source>Track:</source>
-        <translation>Brano:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Artista:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Album:</source>
-        <translation>Album:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Durata:</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>of</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
-        <source>Preset</source>
-        <translation type="obsolete">Preset</translation>
-    </message>
-    <message>
         <source>Treble</source>
-        <translation>Alti</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Bassi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Balance</source>
-        <translation>Bilanciamento</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>Loud</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Normal</source>
-        <translation>Normale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>Dance</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation>Pop</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation>Rock</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Classical</source>
-        <translation>Classical</translation>
-    </message>
-    <message>
-        <source>Jazz</source>
-        <translation type="obsolete">Jazz</translation>
-    </message>
-    <message>
-        <source>Party</source>
-        <translation>Party</translation>
-    </message>
-    <message>
-        <source>Soft</source>
-        <translation>Soft</translation>
-    </message>
-    <message>
-        <source>Full Bass</source>
-        <translation>Full Bass</translation>
-    </message>
-    <message>
-        <source>Full Treble</source>
-        <translation>Full Treble</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>Preset</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Techno</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full Bass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full Treble</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preset</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -301,26 +293,26 @@
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>Radio IP</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Servers</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
-        <source>Self-recluser</source>
-        <translation>Riarmo</translation>
-    </message>
-    <message>
         <source>Test</source>
-        <translation>Verifica</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Autotest</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Self-recluser</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -331,117 +323,72 @@
     </message>
 </context>
 <context>
-    <name>antintrusione</name>
-    <message>
-        <source>technical</source>
-        <translation type="obsolete">tecnico</translation>
-    </message>
-    <message>
-        <source>intrusion</source>
-        <translation type="obsolete">intrusione</translation>
-    </message>
-    <message>
-        <source>tamper</source>
-        <translation type="obsolete">manomissione</translation>
-    </message>
-    <message>
-        <source>anti-panic</source>
-        <translation type="obsolete">antipanico</translation>
-    </message>
-</context>
-<context>
     <name>call_notifier</name>
     <message>
         <source>Unknown</source>
-        <translation>Sconosciuto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Luce scale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Door lock</source>
-        <translation>Serratura</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
         <source>ON</source>
-        <translation>ON</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
         <source>ON</source>
-        <translation>ON</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>sveglia</name>
-    <message>
-        <source>once</source>
-        <translation type="obsolete">una volta</translation>
-    </message>
-    <message>
-        <source>always</source>
-        <translation type="obsolete">sempre</translation>
-    </message>
-    <message>
-        <source>mon-fri</source>
-        <translation type="obsolete">lun-ven</translation>
-    </message>
-    <message>
-        <source>sat-sun</source>
-        <translation type="obsolete">sab-dom</translation>
-    </message>
-</context>
-<context>
-    <name>tastiera</name>
-    <message>
-        <source>PASSWORD:</source>
-        <translation type="obsolete">PASSWORD:</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
