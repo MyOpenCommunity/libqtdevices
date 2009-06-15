@@ -57,6 +57,19 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	sprintf(amb, getAddress().toAscii().constData());
 	if ((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strcmp(msg_open.Extract_grandezza(),"12")) &&
+		(!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"2")))
+	{
+		if (!strcmp(msg_open.Extract_interfaccia(), amb+2) &&
+			!strcmp(msg_open.Extract_valori(0), "0"))
+		{
+			source_menu.disableSource(false);
+			source_menu.pause();
+			set_status(false);
+		}
+	}
+	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
 	    (!strncmp(msg_open.Extract_cosa(),"2", 1)) &&
 	    (!strcmp(msg_open.Extract_dove(),"5")) && 
 	    (!strcmp(msg_open.Extract_livello(),"2")))
@@ -65,20 +78,47 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 		{
 			source_menu.enableSource(false);
 			source_menu.resume();
+			set_status(true);
 		}
 		else
 		{
 			source_menu.disableSource(false);
 			source_menu.pause();
+			set_status(false);
 		}
 	}
+	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strcmp(msg_open.Extract_cosa(),"9")) &&
+		(!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3")))
+	{
+		if(get_status())
+			source_menu.nextTrack();
+	}
+
 }
 
 void BannerSorgenteMultimedia::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimedia::inizializza()");
-	sendInit(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(getAddress().at(2)));
+	sendInit(QString("*#22*7*#15*%1***4**0**1*1**1##").arg(getAddress().at(2)));
+	status = false;
 }
+
+void BannerSorgenteMultimedia::set_status(bool stat)
+{
+	qDebug("BannerSorgenteMultimedia::set_status()");
+
+	status = stat;
+}
+
+bool BannerSorgenteMultimedia::get_status()
+{
+	qDebug("BannerSorgenteMultimedia::get_status()");
+
+	return status;
+}
+
 
 /*
  * Banner Sorgente Multimediale Multicanale
@@ -155,7 +195,24 @@ void BannerSorgenteMultimediaMC::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimediaMC::inizializza()");
 
-	sendInit(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice).arg(indirizzo_semplice));
+	sendInit(QString("*#22*7*#15*%1***4**0*%2*1*1**1##").arg(indirizzo_semplice).arg(indirizzo_semplice));
+
+	for(int i = 1; i < 9; i++)
+		status_Amb[i] = false;
+}
+
+void BannerSorgenteMultimediaMC::setstatusAmb(int Amb, bool status)
+{
+	qDebug("BannerSorgenteMultimediaMC::setstatusAmb(%d, %d)", Amb, status);
+
+	status_Amb[Amb] = status;
+}
+
+bool BannerSorgenteMultimediaMC::statusAmb(int Amb)
+{
+	qDebug("BannerSorgenteMultimediaMC::statusAmb(%d)", Amb);
+
+	return status_Amb[Amb];
 }
 
 void BannerSorgenteMultimediaMC::gestFrame(char *frame)
@@ -176,5 +233,28 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 			source_menu.disableSource(false);
 			source_menu.pause();
 		}
+	}
+	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strncmp(msg_open.Extract_cosa(),"2#4#", strlen("2#4#"))) &&
+		(!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"2")))
+	{
+		if (indirizzo_semplice == msg_open.Extract_interfaccia())
+                {
+			source_menu.enableSource(false);
+			source_menu.resume();
+			setstatusAmb(atoi(msg_open.Extract_cosa()+4), true);
+		}
+		else
+			setstatusAmb(atoi(msg_open.Extract_cosa()+4), false);
+
+	}
+	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strcmp(msg_open.Extract_cosa(),"9")) &&
+		(!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3")))
+	{
+		if(statusAmb(atoi(msg_open.Extract_interfaccia())))
+			source_menu.nextTrack();
 	}
 }
