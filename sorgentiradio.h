@@ -14,6 +14,10 @@
 #include "bannciclaz.h"
 #include "device_status.h"
 
+#include <QList>
+#include <QString>
+#include <QStringList>
+
 /// Forward Declarations
 class radio;
 class device;
@@ -34,38 +38,17 @@ class device;
 class banradio : public bannCiclaz
 {
 Q_OBJECT
+public:
+	banradio(QWidget *parent, QString indirizzo, int nbut=4, const QString & ambdescr="");
+	void inizializza(bool forza = false);
+
 protected:
-	void pre_show();
 	radio* myRadio;
 	bool old_diffson;
 	device *dev;
-public:
-	banradio(QWidget *parent,const char *name,char* indirizzo, int nbut=4, const QString & ambdescr="");
-	void inizializza(bool forza = false);
-	/*!
-	  \brief Sets the background color for the banner.
+	void pre_show();
+	virtual void showEvent(QShowEvent *event);
 
-	  The arguments are RGB components for the color.
-	*/
-	void setBGColor(int, int , int);
-	/*!
-	  \brief Sets the foreground color for the banner.
-
-	  The arguments are RGB components for the color.
-	*/
-	void setFGColor(int , int , int);
-	/*!
-	  \brief Sets the background color for the banner.
-
-	  The argument is the QColor description of the color.
-	*/
-	void setBGColor(QColor);
-	/*!
-	  \brief Sets the foreground color for the banner.
-
-	  The argument is the QColor description of the color.
-	*/
-	void setFGColor(QColor);
 protected slots:
 	void ciclaSorg();
 	void decBrano();
@@ -81,10 +64,8 @@ protected slots:
 	void startRDS();
 	void grandadChanged(QWidget *);
 public slots:
-	void status_changed(QPtrList<device_status>);
-	virtual void	show();
-	void hide();
-	void SetTextU(const QString &);
+	void status_changed(QList<device_status*>);
+	virtual void setText(const QString &);
 };
 
 
@@ -100,18 +81,23 @@ public slots:
 class sorgenteMultiRadio : public banradio
 {
 Q_OBJECT
+public:
+	sorgenteMultiRadio(QWidget *parent, QString indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr="");
+
+public slots:
+	void attiva();
+	void addAmb(QString a);
+	void ambChanged(const QString &, bool, QString);
+
+protected:
+	virtual void showEvent(QShowEvent *event);
+
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
-public:
-	sorgenteMultiRadio(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambDescr="");
-public slots:
-	void attiva();
-	void addAmb(char *);
-	void ambChanged(const QString &, bool, char *);
-	void show();
+
 signals:
 	void active(int, int);
 };

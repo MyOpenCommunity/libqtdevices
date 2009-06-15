@@ -12,17 +12,23 @@
 #include "playwindow.h"
 #include "bannfrecce.h"
 #include "listbrowser.h"
-#include "buttons_bar.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "mediaplayer.h"
 #include "btbutton.h"
-#include "main.h"
+#include "icondispatcher.h" // bt_global::icons_cache
+#include "titlelabel.h"
+#include "xml_functions.h" // getChildren, getTextChild
 
-#include <qlayout.h>
-#include <qregexp.h>
-#include <stdlib.h>
-#include <qapplication.h> //qapp
-#include <unistd.h>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QStringList>
+#include <QDomNode>
+#include <QLayout>
+#include <QRegExp>
+#include <QDebug>
+#include <QTime>
+
+#include <assert.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
 
@@ -37,24 +43,7 @@ static const char *stop_play_script = "/bin/audio_off.tcl";
 
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
-static const char *IMG_BACK = IMG_PATH "arrlf.png";
-static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
-
 static const char *IMG_WAIT = IMG_PATH "loading.png";
-
-
-//#define DEBUG_MEDIA_NAVIGATION
-
-#if defined(DEBUG_MEDIA_NAVIGATION)
-#define DEBUG_MEDIA(msg) \
-do \
-{ \
-	qDebug(QString("Riga ") + QString::number(__LINE__) + QTime::currentTime().toString(" hh:mm:ss.zzz -> ") + (msg)); \
-} while(0)
-#else
-#define DEBUG_MEDIA(msg) {}
-#endif
 
 
 inline QTime startTimeCounter()
@@ -79,137 +68,65 @@ enum ChoiceButtons
 };
 
 
-SourceChoice::SourceChoice(QWidget *parent, const char *name) : QWidget(parent, name)
+SourceChoice::SourceChoice()
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_listbrowser, aFont);
-	setFont(aFont);
+	setFont(bt_global::font->get(FontManager::TEXT));
+	buttons_group = new QButtonGroup(this);
 
-	unsigned num_choices = 2;
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-
-	// Create labels_layout
-	QVBoxLayout *labels_layout = new QVBoxLayout();
-	labels_layout->setMargin(0);
-	labels_layout->setSpacing(0);
-
-	TitleLabel *l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 5);
+	TitleLabel *l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, 5);
 	l->setText(tr("IP Radio"));
-	labels_layout->addWidget(l);
+	addHorizontalBox(main_layout, l, BUTTON_RADIO);
 
-	l = new TitleLabel(this, MAX_WIDTH - 60, 50, 9, 15);
+	l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, 15);
 	l->setText(tr("Servers"));
-	labels_layout->addWidget(l);
-	labels_layout->addStretch();
+	addHorizontalBox(main_layout, l, BUTTON_MEDIA);
 
-	// Create buttons_bar
-	buttons_bar = new ButtonsBar(this, num_choices, Qt::Vertical);
-
-	// Set Icons for buttons_bar (using icons_library cache)
-	QPixmap *icon         = icons_library.getIcon(IMG_SELECT);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_SELECT_P);
-	for (unsigned i = 0; i < num_choices; ++i)
-		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
-
-	QHBoxLayout *main_controls = new QHBoxLayout();
-	back_btn = new BtButton(this, "back_btn");
-	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
-	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
-	main_controls->addWidget(back_btn);
-
-	QGridLayout *main_layout = new QGridLayout(this, 4, 2, 1);
-	main_layout->addMultiCell(new QSpacerItem(MAX_WIDTH, 20), 0, 0, 0, 1);
-	main_layout->addLayout(labels_layout, 1, 0);
-	main_layout->addWidget(buttons_bar, 1, 1);
-	main_layout->addMultiCellLayout(main_controls, 2, 2, 0, 1, Qt::AlignLeft);
-	main_layout->addMultiCell(new QSpacerItem(MAX_WIDTH, 10), 3, 3, 0, 1);
-
-	connect(back_btn, SIGNAL(released()), SIGNAL(Closed()));
-	connect(buttons_bar, SIGNAL(clicked(int)), SIGNAL(clicked(int)));
+	addBackButton();
+	connect(buttons_group, SIGNAL(buttonClicked(int)), SIGNAL(clicked(int)));
 }
 
-void SourceChoice::setBGColor(QColor c)
+void SourceChoice::addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_btn)
 {
-	setPaletteBackgroundColor(c);
-	buttons_bar->setBGColor(c);
-	back_btn->setPaletteBackgroundColor(c);
-}
-
-void SourceChoice::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	buttons_bar->setFGColor(c);
-	back_btn->setPaletteForegroundColor(c);
+	QHBoxLayout *box = new QHBoxLayout();
+	box->addWidget(label, 0, Qt::AlignLeft);
+	BtButton *btn = new BtButton();
+	btn->setImage(IMG_SELECT);
+	box->addWidget(btn, 0, Qt::AlignRight);
+	box->setContentsMargins(5, 0, 0, 0);
+	buttons_group->addButton(btn, id_btn);
+	layout->addLayout(box);
 }
 
 
-MultimediaSource::MultimediaSource(QWidget *parent, const char *name, const char *amb, int _where_address) :
-	QWidget(parent, name),
-	audio_initialized(true)
+MultimediaSource::MultimediaSource(const QDomNode &config_node, int _where_address)
 {
-	// Set main geometry
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-
+	audio_initialized = true;
 	where_address = _where_address;
 	qDebug("[AUDIO] MultimediaSource ctor: where_address is %d", _where_address);
 
-	// Create Banner Standard di Navigazione (scroll degli Items e la possibilità di tornare indietro)
-	bannNavigazione = new bannFrecce(this, "bannerfrecce", 4, ICON_DIFFSON);
-	bannNavigazione->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
-
-	source_choice = new SourceChoice(this, name);
-	source_choice->hide();
+	source_choice = new SourceChoice;
 	source_type = NONE_SOURCE;
 	media_player = new MediaPlayer(this);
 	play_window = 0;
 	selector = 0;
 
-	connect(source_choice, SIGNAL(Closed()), SLOT(handleClose()));
+	connect(source_choice, SIGNAL(Closed()), SIGNAL(Closed()));
 	connect(source_choice, SIGNAL(clicked(int)), SLOT(handleChoiceSource(int)));
 
-	loadSources();
+	loadSources(config_node);
 }
 
-void MultimediaSource::loadSources()
+MultimediaSource::~MultimediaSource()
 {
-	bool diff_multi = true;
-	QDomNode node_page = getPageNode(DIFSON_MULTI);
-	if (node_page.isNull())
-	{
-		node_page = getPageNode(DIFSON);
-		diff_multi = false;
-	}
+	delete source_choice;
+}
 
-	if (node_page.isNull())
-	{
-		qDebug("[AUDIO] ERROR loading configuration");
-		return;
-	}
+void MultimediaSource::loadSources(const QDomNode &config_node)
+{
+	radio_enabled = getTextChild(config_node, "radiooip").toInt() == 1;
+	mediaserver_enabled = getTextChild(config_node, "mediaserver").toInt() == 1;
 
-	int id = diff_multi ? SORGENTE_MULTIM_MC : SORGENTE_MULTIM;
-	QDomNode n = getChildWithId(node_page, QRegExp("item\\d{1,2}"), id);
-
-	radio_enabled = false;
-	mediaserver_enabled = false;
-
-	if (!n.isNull())
-	{
-		QDomNode node = n.firstChild();
-		while (!node.isNull())
-		{
-			if (node.nodeName() == "web_radio")
-				radio_node = node;
-
-			if (node.nodeName() == "radiooip")
-				radio_enabled = node.toElement().text().toInt() == 1;
-
-			if (node.nodeName() == "mediaserver")
-				mediaserver_enabled = node.toElement().text().toInt() == 1;
-
-			node = node.nextSibling();
-		}
-	}
+	radio_node = getChildWithName(config_node, "web_radio");
 
 	// Check for correctness
 	if (radio_enabled && radio_node.isNull())
@@ -227,65 +144,30 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 		play_window->deleteLater();
 
 	if (source_type == RADIO_SOURCE)
-		play_window = new RadioPlayWindow(media_player, this);
+		play_window = new RadioPlayWindow(media_player);
 	else
-		play_window = new MediaPlayWindow(media_player, this);
-
-	play_window->setBGColor(paletteBackgroundColor());
-	play_window->setFGColor(paletteForegroundColor());
-	play_window->setPalette(palette());
-	play_window->setFont(font());
+		play_window = new MediaPlayWindow(media_player);
 
 	if (selector)
 		selector->deleteLater();
 
 	if (source_type == RADIO_SOURCE)
-		selector = new RadioSelector(this, BROWSER_ROWS_PER_PAGE, radio_node);
+		selector = new RadioSelector(BROWSER_ROWS_PER_PAGE, radio_node);
 	else
-		selector = new FileSelector(this, BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
-
-	selector->setBGColor(paletteBackgroundColor());
-	selector->setFGColor(paletteForegroundColor());
-
-	// Pulsanti up, down e back
-	connect(bannNavigazione, SIGNAL(downClick()), selector, SLOT(prevItem()));
-	connect(bannNavigazione, SIGNAL(upClick()), selector, SLOT(nextItem()));
-	connect(bannNavigazione, SIGNAL(backClick()), selector, SLOT(browseUp()));
-	connect(bannNavigazione, SIGNAL(forwardClick()), SLOT(handleClose()));
+		selector = new FileSelector(BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
 
 	// Connection to be notified about Start and Stop Play
 	connect(this, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
 	connect(this, SIGNAL(notifyStopPlay()), SLOT(handleStopPlay()));
 	connect(play_window, SIGNAL(notifyStopPlay()), SIGNAL(notifyStopPlay()));
-	connect(play_window, SIGNAL(settingsBtn()), SLOT(handleClose()));
-	connect(play_window, SIGNAL(backBtn()), SLOT(handlePlayerExit()));
+	connect(play_window, SIGNAL(settingsBtn()), SIGNAL(Closed()));
+	connect(play_window, SIGNAL(Closed()), SLOT(handlePlayerExit()));
 
 	connect(selector, SIGNAL(notifyExit()), SLOT(handleSelectorExit()));
+	connect(selector, SIGNAL(Closed()), SIGNAL(Closed()));
 
-	connect(selector, SIGNAL(startPlayer(QValueVector<AudioData>, unsigned)),
-			SLOT(startPlayer(QValueVector<AudioData>, unsigned)));
-}
-
-void MultimediaSource::handleClose()
-{
-	source_choice->hide();
-	bannNavigazione->setHidden(false);
-	if (source_type != NONE_SOURCE)
-	{
-		play_window->hide();
-		selector->hide();
-	}
-	emit Closed();
-}
-
-void MultimediaSource::freezed(bool f)
-{
-	source_choice->setEnabled(!f);
-	if (source_type != NONE_SOURCE)
-	{
-		selector->setEnabled(!f);
-		play_window->setEnabled(!f);
-	}
+	connect(selector, SIGNAL(startPlayer(QVector<AudioData>, unsigned)),
+			SLOT(startPlayer(QVector<AudioData>, unsigned)));
 }
 
 void MultimediaSource::initAudio()
@@ -295,7 +177,7 @@ void MultimediaSource::initAudio()
 	// perform Audio Init
 	if (!audio_initialized)
 	{
-		emit sendFrame((char *)(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address).ascii()));
+		sendFrame(QString("*#22*7*#15*%1***4**0**1***0##").arg(where_address));
 		audio_initialized = true;
 	}
 }
@@ -332,50 +214,37 @@ void MultimediaSource::resume()
 
 void MultimediaSource::showPage()
 {
-	// draw and show itself
-	draw();
-	showFullScreen();
-
 	if (source_type != NONE_SOURCE && play_window->isPlaying())
-		play_window->show();
+		play_window->showPage();
 	else if (mediaserver_enabled && !radio_enabled)
 	{
 		sourceMenu(FILE_SOURCE);
-		selector->show();
+		selector->showPage();
 	}
 	else if (radio_enabled && !mediaserver_enabled)
 	{
 		sourceMenu(RADIO_SOURCE);
-		selector->show();
+		selector->showPage();
 	}
 	else
-	{
-		bannNavigazione->setHidden(true);
-		source_choice->show();
-	}
+		source_choice->showPage();
 }
 
 void MultimediaSource::handlePlayerExit()
 {
-	play_window->hide();
-	selector->show();
+	selector->showPage();
 }
 
 void MultimediaSource::handleSelectorExit()
 {
 	if (!radio_enabled || !mediaserver_enabled)
-		handleClose();
+		emit Closed();
 	else
-	{
-		selector->hide();
-		bannNavigazione->setHidden(true);
-		source_choice->show();
-	}
+		source_choice->showPage();
 }
 
 void MultimediaSource::handleChoiceSource(int button_id)
 {
-
 	// Create the instances only if change the source type
 	if (button_id == BUTTON_RADIO && source_type != RADIO_SOURCE)
 	{
@@ -387,58 +256,22 @@ void MultimediaSource::handleChoiceSource(int button_id)
 		sourceMenu(FILE_SOURCE);
 		play_window->stop();
 	}
-
-	bannNavigazione->setHidden(false);
-	source_choice->hide();
+	assert(play_window && "PlayWindow not set!");
 
 	if (play_window->isPlaying())
-		play_window->show();
+		play_window->showPage();
 	else
-		selector->show();
+		selector->showPage();
 }
 
 void MultimediaSource::handleStartPlay()
 {
-	emit sendFrame((char *)(QString("*22*1#4#1*2#%1##").arg(where_address).ascii()));
+	sendFrame(QString("*22*1#4#1*2#%1##").arg(where_address));
 }
 
 void MultimediaSource::handleStopPlay()
 {
-	emit sendFrame((char *)(QString("*22*0#4#1*2#%1##").arg(where_address).ascii()));
-}
-
-void MultimediaSource::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void MultimediaSource::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void MultimediaSource::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	bannNavigazione->setBGColor(c);
-	source_choice->setBGColor(c);
-}
-void MultimediaSource::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	bannNavigazione->setFGColor(c);
-	source_choice->setFGColor(c);
-}
-
-int MultimediaSource::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if(Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return 0;
-	}
-	return 1;
+	sendFrame(QString("*22*0#4#1*2#%1##").arg(where_address));
 }
 
 void MultimediaSource::enableSource(bool send_frame)
@@ -447,9 +280,9 @@ void MultimediaSource::enableSource(bool send_frame)
 
 	int rc;
 	if ((rc = system(start_play_script)) != 0)
-		qDebug("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
+		qWarning("[AUDIO] Error on start play script, exit code %d", WEXITSTATUS(rc));
 
-	if(send_frame)
+	if (send_frame)
 		emit notifyStartPlay();
 }
 
@@ -459,42 +292,45 @@ void MultimediaSource::disableSource(bool send_frame)
 
 	int rc;
 	if ((rc = system(stop_play_script)) != 0)
-		qDebug("[AUDIO] Error on stop play script, exit code %d", rc);
+		qWarning("[AUDIO] Error on stop play script, exit code %d", rc);
 
-	if(send_frame)
+	if (send_frame)
 		emit notifyStopPlay();
 }
 
-void MultimediaSource::startPlayer(QValueVector<AudioData> list, unsigned element)
+void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 {
-	selector->hide();
 	play_window->startPlayer(list, element);
-	play_window->show();
+	play_window->showPage();
 }
 
-/// ***********************************************************************************************************************
-/// Methods for FileSelector
-/// ***********************************************************************************************************************
 
-FileSelector::FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name, WFlags f) :
-	Selector(parent, name, f)
+FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 {
 	level = 0;
-	list_browser = new ListBrowser(this, rows_per_page, name, f);
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
-	main_layout->addWidget(list_browser);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+
+	list_browser = new ListBrowser(this, rows_per_page);
+	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+	main_layout->addWidget(list_browser, 1);
+
+	bannFrecce *nav_bar = new bannFrecce(this, 4, ICON_DIFFSON);
+	connect(nav_bar, SIGNAL(downClick()), SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+	main_layout->addWidget(nav_bar);
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
-	current_dir.setMatchAllDirs(true);
-	current_dir.setNameFilter("*.[mM]3[uU];*.[mM][pP]3;*.[wW][[aA][vV];*.[oO][gG][gG];*.[wW][mM][aA]");
+	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
 
-	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
-
+	QStringList filters;
+	filters << "*.[mM]3[uU]" << "*.[mM][pP]3" << "*.[wW][[aA][vV]" << "*.[oO][gG][gG]" << "*.[wW][mM][aA]";
+	current_dir.setNameFilters(filters);
 	changePath(start_path);
 }
 
-void FileSelector::showEvent(QShowEvent *event)
+void FileSelector::showPage()
 {
 	// refresh QDir information
 	current_dir.refresh();
@@ -504,12 +340,16 @@ void FileSelector::showEvent(QShowEvent *event)
 
 	if (!browseFiles())
 	{
-		// FIXME display error?
+		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
+		destroyWaitDialog(l);
 		emit notifyExit();
+		return;
 	}
 
 	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 	destroyWaitDialog(l);
+
+	Selector::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)
@@ -518,15 +358,15 @@ void FileSelector::itemIsClicked(int item)
 	QTime time_counter = startTimeCounter();
 
 	const QFileInfo& clicked_element = files_list[item];
-	qDebug("[AUDIO] FileSelector::itemIsClicked %d -> %s", item, clicked_element.fileName().ascii());
+	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.fileName();
 
 	if (!clicked_element.exists())
-		qDebug("[AUDIO] Error retrieving file");
+		qWarning() << "[AUDIO] Error retrieving file: " << clicked_element.absoluteFilePath();
 
 	if (clicked_element.isDir())
 	{
 		++level;
-		if (!browseFiles(clicked_element.absFilePath()))
+		if (!browseFiles(clicked_element.absoluteFilePath()))
 		{
 			destroyWaitDialog(l);
 			emit notifyExit();
@@ -537,18 +377,18 @@ void FileSelector::itemIsClicked(int item)
 	}
 	else
 	{
-		QValueVector<AudioData> play_list;
+		QVector<AudioData> play_list;
 		unsigned element = 0;
 		unsigned track_number = 0;
 
-		for (unsigned i = 0; i < files_list.count(); ++i)
+		for (int i = 0; i < files_list.size(); ++i)
 		{
 			const QFileInfo& fn = files_list[i];
 			if (fn.isDir())
 				continue;
 
-			play_list.append(AudioData(fn.absFilePath(), fn.baseName(true)));
-			if (clicked_element.absFilePath() == fn.absFilePath())
+			play_list.append(AudioData(fn.absoluteFilePath(), fn.completeBaseName()));
+			if (clicked_element.absoluteFilePath() == fn.absoluteFilePath())
 				element = track_number;
 
 			++track_number;
@@ -567,7 +407,7 @@ void FileSelector::browseUp()
 		QLabel *l = createWaitDialog();
 		QTime time_counter = startTimeCounter();
 
-		if (!browseFiles(QFileInfo(current_dir, "..").absFilePath()))
+		if (!browseFiles(QFileInfo(current_dir, "..").absoluteFilePath()))
 		{
 			destroyWaitDialog(l);
 			emit notifyExit();
@@ -582,11 +422,12 @@ void FileSelector::browseUp()
 
 bool FileSelector::browseFiles(QString new_path)
 {
-	QString old_path = current_dir.absPath();
+	QString old_path = current_dir.absolutePath();
 	if (changePath(new_path))
 	{
 		if (!browseFiles())
 		{
+			qDebug() << "[AUDIO] empty directory: "<< new_path;
 			changePath(old_path);
 			--level;
 		}
@@ -594,7 +435,7 @@ bool FileSelector::browseFiles(QString new_path)
 	}
 	else
 	{
-		qDebug("[AUDIO] browseFiles(): path '%s' doesn't exist", new_path.ascii());
+		qDebug() << "[AUDIO] browseFiles(): path '" << new_path << "%s' doesn't exist";
 		changePath(old_path);
 		--level;
 	}
@@ -607,9 +448,9 @@ bool FileSelector::changePath(QString new_path)
 	if (QFileInfo(new_path).exists())
 	{
 		// save the info of old directory
-		pages_indexes[current_dir.absPath()] = list_browser->getCurrentPage();
+		pages_indexes[current_dir.absolutePath()] = list_browser->getCurrentPage();
 
-		QString new_path_string = QFileInfo(new_path).absFilePath();
+		QString new_path_string = QFileInfo(new_path).absoluteFilePath();
 		// change path
 		current_dir.setPath(new_path_string);
 		return true;
@@ -625,15 +466,15 @@ void FileSelector::destroyWaitDialog(QLabel *l)
 
 QLabel *FileSelector::createWaitDialog()
 {
-	QLabel* l = new QLabel((QWidget*)parent());
-	QPixmap *icon = icons_library.getIcon(IMG_WAIT);
+	QLabel* l = new QLabel(0);
+	QPixmap *icon = bt_global::icons_cache.getIcon(IMG_WAIT);
 	l->setPixmap(*icon);
 
 	QRect r = icon->rect();
 	r.moveCenter(QPoint(MAX_WIDTH / 2, MAX_HEIGHT / 2));
 	l->setGeometry(r);
 
-	l->show();
+	l->showFullScreen();
 	qApp->processEvents();
 	return l;
 }
@@ -641,38 +482,31 @@ QLabel *FileSelector::createWaitDialog()
 bool FileSelector::browseFiles()
 {
 	// Create fileslist from files
-	const QFileInfoList *temp_files_list = current_dir.entryInfoList();
-	if (!temp_files_list)
-	{
-		qDebug("[AUDIO] Error retrieving file list!");
-		return false;
-	}
+	QList<QFileInfo> temp_files_list = current_dir.entryInfoList();
 
-	if (temp_files_list->count() <= 2)
+	if (temp_files_list.empty())
 	{
-		qDebug("[AUDIO] empty directory: %s", current_dir.absPath().ascii());
+		qDebug() << "[AUDIO] empty directory: " << current_dir.absolutePath();
 		return false;
 	}
 
 	files_list.clear();
 
-	QFileInfoListIterator it(*temp_files_list);
-	QFileInfo *file;
-	QValueVector<QString> names_list;
+	QVector<QString> names_list;
 
-	while ((file = it.current()) != 0)
+	for (int i = 0; i < temp_files_list.size(); ++i)
 	{
-		if (file->fileName() != "." && file->fileName() != "..")
+		const QFileInfo& f = temp_files_list.at(i);
+		if (f.fileName() != "." && f.fileName() != "..")
 		{
-			names_list.append(file->fileName().latin1());
-			files_list.append(*file);
+			names_list.append(f.fileName());
+			files_list.append(f);
 		}
-		++it;
 	}
 
 	unsigned page = 0;
-	if (pages_indexes.contains(current_dir.absPath()))
-		page = pages_indexes[current_dir.absPath()];
+	if (pages_indexes.contains(current_dir.absolutePath()))
+		page = pages_indexes[current_dir.absolutePath()];
 
 	list_browser->setList(names_list, page);
 	list_browser->showList();
@@ -689,58 +523,30 @@ void FileSelector::prevItem()
 	list_browser->prevItem();
 }
 
-void FileSelector::setBGColor(QColor c)
+
+RadioSelector::RadioSelector(unsigned rows_per_page, QDomNode config)
 {
-	list_browser->setBGColor(c);
-}
-
-void FileSelector::setFGColor(QColor c)
-{
-	list_browser->setFGColor(c);
-}
-
-/// ***********************************************************************************************************************
-/// Methods for RadioSelector
-/// ***********************************************************************************************************************
-
-RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name, WFlags f) :
-	Selector(parent, name, f)
-{
-	list_browser = new ListBrowser(this, rows_per_page, name, f);
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE);
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
-	main_layout->addWidget(list_browser);
-
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	list_browser = new ListBrowser(this, rows_per_page);
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+	main_layout->addWidget(list_browser, 1);
 
-	QDomNode n = config.firstChild();
-	while (!n.isNull())
+	bannFrecce *nav_bar = new bannFrecce(this, 4, ICON_DIFFSON);
+	connect(nav_bar, SIGNAL(downClick()), SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+	main_layout->addWidget(nav_bar);
+
+	foreach (const QDomNode &item, getChildren(config, "item"))
 	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("item\\d{1,2}")))
-		{
-			QString descr, url;
-			QDomNode child = n.firstChild();
-			while (!child.isNull())
-			{
-				if (child.nodeName() == "descr")
-					descr = child.toElement().text();
-				else if (child.nodeName() == "url")
-					url = child.toElement().text();
-
-				if (descr.length() > 0 && url.length() > 0)
-					break;
-				child = child.nextSibling();
-			}
-			if (descr.length() > 0 && url.length() > 0)
-				radio_list.append(AudioData(url, descr));
-			else
-				qDebug("[AUDIO] Error loading radio item %s", n.nodeName().ascii());
-		}
-		n = n.nextSibling();
+		QString descr = getTextChild(item, "descr");
+		QString url = getTextChild(item, "url");
+		radio_list.append(AudioData(url, descr));
 	}
 
-	QValueVector<QString> list;
-	for (unsigned i = 0; i < radio_list.count(); ++i)
+	QVector<QString> list;
+	for (int i = 0; i < radio_list.size(); ++i)
 		list.append(radio_list[i].desc);
 
 	list_browser->setList(list);
@@ -749,7 +555,7 @@ RadioSelector::RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode c
 
 void RadioSelector::itemIsClicked(int item)
 {
-	qDebug("[AUDIO] RadioSelector::itemIsClicked %d -> %s", item, radio_list[item].path.ascii());
+	qDebug() << "[AUDIO] RadioSelector::itemIsClicked " << item << " -> " << radio_list[item].path;
 	emit startPlayer(radio_list, item);
 }
 
@@ -766,14 +572,4 @@ void RadioSelector::nextItem()
 void RadioSelector::prevItem()
 {
 	list_browser->prevItem();
-}
-
-void RadioSelector::setBGColor(QColor c)
-{
-	list_browser->setBGColor(c);
-}
-
-void RadioSelector::setFGColor(QColor c)
-{
-	list_browser->setFGColor(c);
 }

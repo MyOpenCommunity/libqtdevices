@@ -1,45 +1,70 @@
+/**
+ * \file
+ * <!--
+ * Copyright 2009 Develer S.r.l. (http://www.develer.com/)
+ * All rights reserved.
+ * -->
+ *
+ * \brief This file contain the banners for the power amplifier.
+ *
+ * \author Gianni Valdambrini <aleister@develer.com>
+ */
+
 #ifndef POWER_AMPLIFIER_H
 #define POWER_AMPLIFIER_H
 
 #include "bannregolaz.h"
-#include "bannonoff.h"
-#include "bannonoff2scr.h"
+#include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bannonoffcombo.h"
 #include "poweramplifier_device.h"
+#include "sottomenu.h"
 
-#include <qvaluevector.h>
-#include <qdom.h>
+#include <QVector>
+#include <QString>
+#include <QMap>
 
-class sottoMenu;
+class QDomNode;
+class QWidget;
 
-/*****************************************************************
- **Power amplifier
- ****************************************************************/
-/*!
- * \class PowerAmplifier
- * \brief This class is made to manage a power audio amplifier.
+
+/**
+ * \class BannPowerAmplifier
  *
+ * The main banner of the power amplifier. It instantiate the device and manage
+ * the link with the page of settings.
  */
-class PowerAmplifier : public bannRegolaz
+class BannPowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
 public:
-	PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* onIcon, char* offIcon, char *onAmpl, char *offAmpl, char* settingIcon);
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
+	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo);
+	virtual void inizializza(bool forza=false);
 
 private slots:
-	void showSettings();
 	void toggleStatus();
-	void turnUp();
-	void turnDown();
-	void status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st);
+	void volumeUp();
+	void volumeDown();
+	void status_changed(const StatusList &status_list);
 
 private:
-	QString off_icon, on_icon;
 	bool status;
-	sottoMenu *settings_page;
-	poweramplifier_device *dev;
+	PowerAmplifierDevice *dev;
+};
+
+/**
+ * \class PowerAmplifier
+ *
+ * The page of the settings of the power amplifier. It simply delegate the
+ * functionality to the correct banner.
+ */
+class PowerAmplifier : public sottoMenu
+{
+Q_OBJECT
+public:
+	PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node);
+
+private:
+	void loadBanners(PowerAmplifierDevice *dev, const QDomNode &config_node);
 };
 
 
@@ -47,20 +72,19 @@ class PowerAmplifierPreset : public bannOnOff
 {
 Q_OBJECT
 public:
-	PowerAmplifierPreset(QWidget *parent=0, const char *name=NULL);
-
-protected:
-	void showEvent(QShowEvent *event);
+	PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list);
+	virtual void inizializza(bool forza=false);
 
 private slots:
-	void nextPreset();
-	void prevPreset();
+	void next();
+	void prev();
+	void status_changed(const StatusList &status_list);
 
 private:
-	unsigned preset, num_preset;
-	QValueVector <QString> preset_desc;
-	void fillPresetDesc();
-	QDomNode getPowerAmplifierNode();
+	int num_preset;
+	QVector<QString> preset_desc;
+	PowerAmplifierDevice *dev;
+	void fillPresetDesc(const QMap<int, QString>& preset_list);
 };
 
 
@@ -68,17 +92,17 @@ class PowerAmplifierTreble : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-	PowerAmplifierTreble(QWidget *parent=0, const char *name=NULL, QColor SecondForeground=QColor(0,0,0));
-	void setFGColor(QColor);
+	PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
 	void up();
 	void down();
+	void status_changed(const StatusList &status_list);
 
 private:
-	int level;
-	QColor secondary_fg;
-	void showLevel();
+	PowerAmplifierDevice *dev;
+	void showLevel(int level);
 };
 
 
@@ -86,17 +110,17 @@ class PowerAmplifierBass : public bannOnOff2scr
 {
 Q_OBJECT
 public:
-	PowerAmplifierBass(QWidget *parent=0, const char *name=NULL, QColor SecondForeground=QColor(0,0,0));
-	void setFGColor(QColor);
+	PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
 	void up();
 	void down();
+	void status_changed(const StatusList &status_list);
 
 private:
-	int level;
-	QColor secondary_fg;
-	void showLevel();
+	PowerAmplifierDevice *dev;
+	void showLevel(int level);
 };
 
 
@@ -104,17 +128,17 @@ class PowerAmplifierBalance : public BannOnOffCombo
 {
 Q_OBJECT
 public:
-	PowerAmplifierBalance(QWidget *parent=0, const char *name=NULL, QColor SecondForeground=QColor(0,0,0));
-	void setFGColor(QColor c);
+	PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
 	void dx();
 	void sx();
+	void status_changed(const StatusList &status_list);
 
 private:
-	int balance;
-	QColor secondary_fg;
-	void showBalance();
+	PowerAmplifierDevice *dev;
+	void showBalance(int balance);
 };
 
 
@@ -122,11 +146,16 @@ class PowerAmplifierLoud : public bannOnOff
 {
 Q_OBJECT
 public:
-	PowerAmplifierLoud(QWidget *parent=0, const char *name=NULL);
+	PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent=0);
+	virtual void inizializza(bool forza=false);
 
 private slots:
-	void loudOn();
-	void loudOff();
+	void on();
+	void off();
+	void status_changed(const StatusList &status_list);
+
+private:
+	PowerAmplifierDevice *dev;
 };
 
 #endif

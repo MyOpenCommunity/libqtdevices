@@ -12,8 +12,8 @@
 #ifndef BTTIME_H
 #define BTTIME_H
 
-#include <qdatetime.h>
-#include <qstring.h>
+#include <QDateTime>
+#include <QString>
 
 class BtTime
 {

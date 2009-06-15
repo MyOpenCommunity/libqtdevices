@@ -13,9 +13,11 @@
 
 #include "bannciclaz.h"
 
+#include <QString>
+#include <QStringList>
+
 /// Forward Declarations
 class aux;
-class device;
 
 /*****************************************************************
  **Sorgente_AUX
@@ -31,21 +33,17 @@ class device;
 class sorgente_aux : public bannCiclaz
 {
 Q_OBJECT
-protected:
-	aux *myAux;
-	bool vecchia;
 public:
-	sorgente_aux( QWidget *parent,const char *name,char* indirizzo, bool vecchio=true, char *ambdescr="");
+	sorgente_aux(QWidget *parent, QString aux_name, QString indirizzo, bool vecchio=true, QString ambdescr=QString());
+	virtual ~sorgente_aux();
 	void inizializza(bool forza = false);
+protected:
+	virtual void hideEvent(QHideEvent *event);
+	aux *myAux;
 private slots:
 	void ciclaSorg();
 	void decBrano();
 	void aumBrano();
-public slots:
-	void gestFrame(char*);
-	void hide();
-protected:
-	device *dev;
 };
 
 
@@ -61,17 +59,18 @@ protected:
 class sorgenteMultiAux : public sorgente_aux
 {
 Q_OBJECT
+public:
+	sorgenteMultiAux(QWidget *parent, QString aux_name, QString indirizzo, QString Icona1,
+		QString Icona2, QString Icona3, QString ambdescr=QString());
+	void addAmb(QString a);
+public slots:
+	void attiva();
+	void ambChanged(const QString &, bool, QString);
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
-public:
-	sorgenteMultiAux(QWidget *parent=0, const char *name=NULL, char *indirizzo="", char* Icona1="",char *Icona2="", char *Icona3="", char *ambdescr="");
-	void addAmb(char *);
-public slots:
-	void attiva();
-	void ambChanged(const QString &, bool, char *);
 signals:
 	void active(int, int);
 };

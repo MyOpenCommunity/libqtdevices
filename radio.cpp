@@ -1,3 +1,4 @@
+
 /****************************************************************
  **
  ** BTicino Touch scren Colori art. H4686
@@ -10,59 +11,48 @@
 
 #include "radio.h"
 #include "banner.h"
-#include "bannondx.h"
 #include "bannfrecce.h"
 #include "main.h"
-#include "btlabel.h"
-#include "genericfunz.h"
 #include "btbutton.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qframe.h>
-#include <qdatetime.h>
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qfile.h>
+#include <QLabel>
+#include <QPixmap>
+#include <QFrame>
+#include <QDateTime>
+#include <QLCDNumber>
+#include <QFile>
 
 
-radio::radio(QWidget *parent, const char *name, const QString & amb)
-	: QWidget(parent, name)
+radio::radio(const QString &amb)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
-#endif
-
 	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
 	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
 
-	bannNavigazione = new bannFrecce(this,"bannerfrecce",1);
+	bannNavigazione = new bannFrecce(this,1);
 	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
 
-	memoBut = new BtButton(this,"Bottone di memorizzazione");
-	decBut = new BtButton(this,"Bottone di decFreq");
-	aumBut = new BtButton(this,"Bottone di aumFreq");
-	autoBut = new BtButton(this,"Bottone di atoSearch");
-	manBut = new BtButton(this,"Bottone di manSearch");
-	cicBut = new BtButton(this,"Bottone di cicStaz");
-	unoBut = new BtButton(this,"Bottone uno");
-	dueBut = new BtButton(this,"Bottone due");
-	treBut = new BtButton(this,"Bottone tre");
-	quatBut = new BtButton(this,"Bottone quattro");
-	cinBut = new BtButton(this,"Bottone cinque");
-	cancBut = new BtButton(this,"Bottone di canc");
+	memoBut = new BtButton(this);
+	decBut = new BtButton(this);
+	aumBut = new BtButton(this);
+	autoBut = new BtButton(this);
+	manBut = new BtButton(this);
+	cicBut = new BtButton(this);
+	unoBut = new BtButton(this);
+	dueBut = new BtButton(this);
+	treBut = new BtButton(this);
+	quatBut = new BtButton(this);
+	cinBut = new BtButton(this);
+	cancBut = new BtButton(this);
 
-	rdsLabel = new BtLabel(this,"Bottone di sinistra");
-	radioName = new BtLabel(this,"Bottone di sinistra");
-	ambDescr = new BtLabel(this, "descrizione ambiente");
-	ambDescr->setAlignment(AlignHCenter|AlignTop);
- 	QFont aFont;
-	FontManager::instance()->getFont(font_radio_descrizione_ambiente, aFont);
-	ambDescr->setFont(aFont);
+	rdsLabel = new QLabel(this);
+	radioName = new QLabel(this);
+	ambDescr = new QLabel(this);
+	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+	ambDescr->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	ambDescr->setText(amb);
-	freq = new QLCDNumber(this,"pippo");
-	progrText = new BtLabel(this,"progressivo stazione");
+	freq = new QLCDNumber(this);
+	progrText = new QLabel(this);
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(TRUE);
 	freq->setNumDigits(6);
@@ -92,124 +82,29 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	cinBut->hide();
 	cancBut->hide();
 
-	QPixmap* Icon = new QPixmap();
-	QPixmap* pressIcon = new QPixmap();
-	char pressIconName[MAX_PATH];
+	cicBut->setImage(ICON_CICLA);
 
-	Icon->load(ICON_CICLA);
-	getPressName((char*)ICON_CICLA, &pressIconName[0],sizeof(pressIconName));
-	cicBut->setPixmap(*Icon);
+	aumBut->setImage(ICON_PIU);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cicBut->setPressedPixmap(*pressIcon);
-	}
+	decBut->setImage(ICON_MENO);
 
-	Icon->load(ICON_PIU);
-	getPressName((char*)ICON_PIU, &pressIconName[0],sizeof(pressIconName));
-	aumBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		aumBut->setPressedPixmap(*pressIcon);
-	}
+	memoBut->setImage(ICON_MEM);
 
-	Icon->load(ICON_MENO);
-	getPressName((char*)ICON_MENO, &pressIconName[0],sizeof(pressIconName));
-	decBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		decBut->setPressedPixmap(*pressIcon);
-	}
+	manBut->setImage(ICON_MANUAL_ON);
 
-	Icon->load(ICON_MEM);
-	getPressName((char*)ICON_MEM, &pressIconName[0],sizeof(pressIconName));
-	memoBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		memoBut->setPressedPixmap(*pressIcon);
-	}
+	autoBut->setImage(ICON_AUTO_ON);
 
-	Icon->load(ICON_MANUAL_ON);
-	getPressName((char*)ICON_MANUAL_ON, &pressIconName[0],sizeof(pressIconName));
-	manBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		manBut->setPressedPixmap(*pressIcon);
-	}
+	unoBut->setImage(ICON_UNO);
 
-	Icon->load(ICON_AUTO_ON);
-	getPressName((char*)ICON_AUTO_ON, &pressIconName[0],sizeof(pressIconName));
-	autoBut->setPixmap(*Icon);
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		autoBut->setPressedPixmap(*pressIcon);
-	}
+	dueBut->setImage(ICON_DUE);
 
-	Icon->load(ICON_UNO);
-	getPressName((char*)ICON_UNO, &pressIconName[0],sizeof(pressIconName));
-	unoBut->setPixmap(*Icon);
+	treBut->setImage(ICON_TRE);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		unoBut->setPressedPixmap(*pressIcon);
-	}
+	quatBut->setImage(ICON_QUATTRO);
 
-	Icon->load(ICON_DUE);
-	getPressName((char*)ICON_DUE, &pressIconName[0],sizeof(pressIconName));
-	dueBut->setPixmap(*Icon);
+	cinBut->setImage(ICON_CINQUE);
 
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		dueBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_TRE);
-	getPressName((char*)ICON_TRE, &pressIconName[0],sizeof(pressIconName));    
-	treBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		treBut->setPressedPixmap(*pressIcon); 
-	}
-
-	Icon->load(ICON_QUATTRO);
-	getPressName((char*)ICON_QUATTRO, &pressIconName[0],sizeof(pressIconName));
-	quatBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		quatBut->setPressedPixmap(*pressIcon);
-	}
-
-	Icon->load(ICON_CINQUE);
-	getPressName((char*)ICON_CINQUE, &pressIconName[0],sizeof(pressIconName));
-	cinBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cinBut->setPressedPixmap(*pressIcon); 
-	}
-
-	Icon->load(ICON_CANC);
-	getPressName((char*)ICON_CANC, &pressIconName[0],sizeof(pressIconName));
-	cancBut->setPixmap(*Icon);
-
-	if (QFile::exists(pressIconName))
-	{
-		pressIcon->load(pressIconName);
-		cancBut->setPressedPixmap(*pressIcon);
-	}
+	cancBut->setImage(ICON_CANC);
 
 	manual=FALSE;
 	wasManual=TRUE;
@@ -230,73 +125,10 @@ radio::radio(QWidget *parent, const char *name, const QString & amb)
 	connect(cinBut,SIGNAL(clicked()),this,SLOT(memo5()));
 }
 
-void radio::showRadio()
+void radio::showPage()
 {
 	draw();
-	showFullScreen();
-}
-
-void radio::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void radio::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void radio::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	memoBut->setPaletteBackgroundColor(c);
-	decBut->setPaletteBackgroundColor(c);
-	aumBut->setPaletteBackgroundColor(c);
-	autoBut->setPaletteBackgroundColor(c);
-	manBut->setPaletteBackgroundColor(c);
-	cicBut->setPaletteBackgroundColor(c);
-	rdsLabel->setPaletteBackgroundColor(c);
-	radioName->setPaletteBackgroundColor(c);
-	ambDescr->setPaletteBackgroundColor(c);
-	unoBut->setPaletteBackgroundColor(c);
-	dueBut->setPaletteBackgroundColor(c);
-	treBut->setPaletteBackgroundColor(c);
-	quatBut->setPaletteBackgroundColor(c);
-	cinBut->setPaletteBackgroundColor(c);
-	cancBut->setPaletteBackgroundColor(c);
-	bannNavigazione->setBGColor(c);
-}
-
-void radio::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	memoBut->setPaletteForegroundColor(c);
-	decBut->setPaletteForegroundColor(c);
-	aumBut->setPaletteForegroundColor(c);
-	autoBut->setPaletteForegroundColor(c);
-	manBut->setPaletteForegroundColor(c);
-	cicBut->setPaletteForegroundColor(c);
-	rdsLabel->setPaletteForegroundColor(c);
-	radioName->setPaletteForegroundColor(c);
-	ambDescr->setPaletteForegroundColor(c);
-	unoBut->setPaletteForegroundColor(c);
-	dueBut->setPaletteForegroundColor(c);
-	treBut->setPaletteForegroundColor(c);
-	quatBut->setPaletteForegroundColor(c);
-	cinBut->setPaletteForegroundColor(c);
-	cancBut->setPaletteForegroundColor(c);
-	bannNavigazione->setFGColor(c);
-}
-
-int radio::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		return (0);
-	}
-	return (1);
+	Page::showPage();
 }
 
 void radio::setFreq(float f)
@@ -342,49 +174,40 @@ void radio::setAmbDescr(const QString & d)
 
 void radio::draw()
 {
-	QFont aFont;
-	rdsLabel->setAlignment(AlignHCenter|AlignVCenter);
-	FontManager::instance()->getFont(font_radio_rdsLabel, aFont);
-	rdsLabel->setFont(aFont);
-	radioName->setAlignment(AlignHCenter|AlignTop);
-	FontManager::instance()->getFont(font_radio_radioName, aFont);
-	radioName->setFont(aFont);
+	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
+
+	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	radioName->setText(qnome);
 	rdsLabel->setText(qrds);
 	char fr[10];
 	sprintf(fr,"%.2f",frequenza);
-	freq->display(&fr[0]);
+	freq->display(fr);
 
-	QPixmap* Icon = new QPixmap();
 	if (manual!=wasManual)
 	{
 		if (manual)
-			Icon->load(ICON_MANUAL_ON);
+		{
+			manBut->setImage(ICON_MANUAL_ON, BtButton::NO_FLAG);
+			autoBut->setImage(ICON_AUTO_OFF, BtButton::NO_FLAG);
+		}
 		else
-			Icon->load(ICON_MANUAL_OFF);
-		manBut->setPixmap(*Icon);
-		if (manual)
-			Icon->load(ICON_AUTO_OFF);
-		else
-			Icon->load(ICON_AUTO_ON);
-		autoBut->setPixmap(*Icon);
+		{
+			manBut->setImage(ICON_MANUAL_OFF, BtButton::NO_FLAG);
+			autoBut->setImage(ICON_AUTO_ON, BtButton::NO_FLAG);
+		}
 	}
 	wasManual=manual;
 
-	progrText ->setAlignment(AlignHCenter|AlignVCenter);
-	FontManager::instance()->getFont(font_radio_progrText, aFont);
-	progrText ->setFont(aFont);
-	progrText -> setText(QString::number((int)stazione/*,'g',2*/)+":");
+	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	progrText->setFont(bt_global::font->get(FontManager::TEXT));
+	progrText->setText(QString::number((int)stazione)+":");
 }
 
-void radio::setNameU(const QString & s)
+void radio::setName(const QString & s)
 {
 	qnome = s;
-}
-
-QString * radio::getNameU()
-{
-	return &qnome;
 }
 
 void radio::setAuto()
@@ -485,11 +308,4 @@ void radio::verTas()
 {
 	if ((!aumBut->isDown()) && (!decBut->isDown()))
 		emit (richFreq());
-}
-
-void radio::freezed(bool f)
-{
-	qDebug("radio::freezed()");
-	// Disable radio and all of its children
-	setDisabled(f);
 }

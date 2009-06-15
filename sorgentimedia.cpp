@@ -10,51 +10,32 @@
 
 #include "sorgentimedia.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
-#include "device_cache.h"
-#include "device.h"
 
 #include <openwebnet.h> // class openwebnet
 
-/*****************************************************************
- **SorgenteMultimedia
- ****************************************************************/
-BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbut) :
-	bannCiclaz(parent, name, nbut), source_menu(NULL, name, indirizzo, where)
+#include <QDebug>
+
+
+BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const QDomNode &config_node, QString indirizzo,
+	int where, int nbut) : bannCiclaz(parent, nbut), source_menu(config_node, where) // where is the number of source in mono and indirizzo in multi!
 {
 	SetIcons(ICON_CICLA, ICON_IMPOSTA, ICON_FFWD, ICON_REW);
-
 	setAddress(indirizzo);
-	dev = btouch_device_cache.get_device(getAddress());
-	source_menu.setBGColor(parentWidget(TRUE)->backgroundColor());
-	source_menu.setFGColor(parentWidget(TRUE)->foregroundColor());
-	connect(parentWidget(TRUE), SIGNAL(frez(bool)), &source_menu, SLOT(freezed(bool)));
 
 	connect(this, SIGNAL(dxClick()), &source_menu, SLOT(showPage()));
 	if (nbut == 4)
 	{
 		connect(this, SIGNAL(sxClick()), this, SLOT(ciclaSorg()));
-		connect(this  ,SIGNAL(csxClick()),this,SLOT(decBrano()));
-		connect(this  ,SIGNAL(cdxClick()),this,SLOT(aumBrano()));
+		connect(this, SIGNAL(csxClick()), this, SLOT(decBrano()));
+		connect(this, SIGNAL(cdxClick()), this, SLOT(aumBrano()));
 	}
-
-	QWidget *sotto_menu = this->parentWidget(FALSE)->parentWidget(FALSE);
-	connect(&source_menu, SIGNAL(Closed()), sotto_menu, SLOT(show()));
-	connect(&source_menu, SIGNAL(Closed()), &source_menu, SLOT(hide()));
-	connect(&source_menu, SIGNAL(sendFrame(char *)), this, SIGNAL(sendFrame(char *)));
+	connect(&source_menu, SIGNAL(Closed()), SIGNAL(pageClosed()));
 }
 
 void BannerSorgenteMultimedia::ciclaSorg()
 {
-	openwebnet msg_open;
 	qDebug("BannerSorgenteMultimedia::ciclaSorg()");
-	char pippo[50];
-	char amb[3];
-
-	sprintf(amb, getAddress());
-	memset(pippo,'\000',sizeof(pippo));
-	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	dev->sendFrame(msg_open.frame_open);
+	sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
 }
 
 void BannerSorgenteMultimedia::decBrano()
@@ -67,8 +48,6 @@ void BannerSorgenteMultimedia::aumBrano()
 	source_menu.nextTrack();
 }
 
-void BannerSorgenteMultimedia::menu() {}
-
 void BannerSorgenteMultimedia::gestFrame(char *frame)
 {
 	openwebnet msg_open;
@@ -76,7 +55,7 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 	qDebug("BannerSorgenteMultimedia::gestFrame()");
 
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-	sprintf(amb, getAddress());
+	sprintf(amb, getAddress().toAscii().constData());
 	if ((!strcmp(msg_open.Extract_chi(),"22")) &&
 	    (!strncmp(msg_open.Extract_cosa(),"2", 1)) &&
 	    (!strcmp(msg_open.Extract_dove(),"5")) && 
@@ -95,33 +74,22 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 	}
 }
 
-void BannerSorgenteMultimedia::hide() 
-{
-	qDebug("BannerSorgenteMultimedia::hide()");
-	banner::hide();
-	source_menu.hide();
-}
-
 void BannerSorgenteMultimedia::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimedia::inizializza()");
-	openwebnet msg_open;
-	char amb[3];
-
-	sprintf(amb, getAddress());
-	dev->sendInit((char *)(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(amb[2]).ascii()));
+	sendInit(QString("*#22*7*#15*%1***4**0**1*1**0##").arg(getAddress().at(2)));
 }
 
 /*
  * Banner Sorgente Multimediale Multicanale
  */
-BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
-	const char *icon_onoff, const char *icon_cycle, const char *icon_settings) :
-	BannerSorgenteMultimedia(parent, name, indirizzo, where, 3)
+BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const QDomNode &config_node,
+	QString indirizzo, int where, QString icon_onoff, QString icon_cycle, QString icon_settings)
+	: BannerSorgenteMultimedia(parent, config_node, indirizzo, where, 3)
 {
-	SetIcons(icon_onoff, NULL, icon_cycle, icon_settings);
+	SetIcons(icon_onoff, QString(), icon_cycle, icon_settings);
 
-	indirizzo_semplice = QString(indirizzo);
+	indirizzo_semplice = indirizzo;
 	indirizzi_ambienti.clear();
 
 	connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
@@ -130,16 +98,12 @@ BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const ch
 
 void BannerSorgenteMultimediaMC::attiva()
 {
-	char    pippo[50];
-	openwebnet msg_open;
-
 	qDebug("BannerSorgenteMultimediaMC::attiva()");
+
 	if (!multiamb)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		sprintf(pippo,"*22*35#4#%d#%d*3#%d#0##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-		dev->sendFrame(msg_open.frame_open);
+		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 		source_menu.enableSource(false);
 		source_menu.resume();
@@ -149,45 +113,26 @@ void BannerSorgenteMultimediaMC::attiva()
 		QStringList::Iterator it;
 		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*0#4#");
-			strcat(pippo,(*it));
-			strcat(pippo,"*6");
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*1#4#");
-			strcat(pippo,(*it));
-			strcat(pippo,"*2#");
-			strcat(pippo, indirizzo_semplice);
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
+			sendFrame("*22*0#4#" + *it + "*6##");
+			sendFrame("*#16*1000*11##");
+			sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
+			sendFrame("*#16*1000*11##");
 		}
 		source_menu.enableSource(false);
 		source_menu.resume();
 	}
 }
 
-void BannerSorgenteMultimediaMC::ambChanged(const QString & ad, bool multi, char *indamb)
+void BannerSorgenteMultimediaMC::ambChanged(const QString & ad, bool multi, QString indamb)
 {
 	// FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
-	qDebug("BannerSorgenteMultimediaMC::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
+	qDebug() << "BannerSorgenteMultimediaMC::ambChanged(" << ad << ", " << multi << ", " << indamb << ")";
 	QString dove;
 
 	if (!multi)
 	{
 		multiamb = false;
-		indirizzo_ambiente = QString((const char *)indamb).toInt();
+		indirizzo_ambiente = indamb.toInt();
 		dove = QString::number(100 + indirizzo_ambiente * 10 + indirizzo_semplice.toInt(), 10);
 	}
 	else
@@ -195,22 +140,22 @@ void BannerSorgenteMultimediaMC::ambChanged(const QString & ad, bool multi, char
 		multiamb = true;
 		dove = QString::number(100 + indirizzo_semplice.toInt(), 10);
 	}
-	setAddress((char *)dove.ascii());
+	setAddress(dove);
 	source_menu.setAmbDescr(ad);
 
-	qDebug("Source where is now %s", dove.ascii());
+	qDebug() << "Source where is now %s" << dove;
 }
 
-void BannerSorgenteMultimediaMC::addAmb(char *a)
+void BannerSorgenteMultimediaMC::addAmb(QString a)
 {
-	indirizzi_ambienti += QString(a);
+	indirizzi_ambienti += a;
 }
 
 void BannerSorgenteMultimediaMC::inizializza(bool forza)
 {
 	qDebug("BannerSorgenteMultimediaMC::inizializza()");
 
-	dev->sendInit((char *)(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice.ascii()).arg(indirizzo_semplice.ascii()).ascii()));
+	sendInit(QString("*#22*7*#15*%1***4**0*%2*1*1**0##").arg(indirizzo_semplice).arg(indirizzo_semplice));
 }
 
 void BannerSorgenteMultimediaMC::gestFrame(char *frame)
@@ -224,7 +169,8 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 	    (!strcmp(msg_open.Extract_dove(),"5")) && 
 	    (!strcmp(msg_open.Extract_livello(),"2")))
 	{
-		if (!strcmp(msg_open.Extract_interfaccia(), indirizzo_semplice) &&
+
+		if (indirizzo_semplice == msg_open.Extract_interfaccia() &&
 		    !strcmp(msg_open.Extract_valori(0), "0"))
 		{
 			source_menu.disableSource(false);

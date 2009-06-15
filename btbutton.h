@@ -1,111 +1,60 @@
-
-
 #ifndef BTBUTTON_H
 #define BTBUTTON_H
 
-#ifndef QT_H
-#include <qbutton.h>
-#include <qiconset.h>
-#endif // QT_H
-
-#ifndef QT_NO_PUSHBUTTON
-class BtButtonPrivate;
-class QPopupMenu;
-
-/*!
-  \class BtButton
-  \brief This is the QPushButton given by QT modified for the necessities of this application
-
-  In particoular the differencies implemented from QT version of the pushbutton class are:
-  no border is drawed on the contour;
-  no animation is done during pression;
-  a pressed image is added;
-  there is no focus;
-  a beep is generated when the button is pressed (it's heard only if the beep is enabled).  
-  \author Davide
-  \date lug 2005
-  */   
+#include <QPushButton>
 
 
-
-class Q_EXPORT BtButton : public QButton
+class BtButton : public QPushButton
 {
 Q_OBJECT
-
-	//    Q_PROPERTY( bool autoDefault READ autoDefault WRITE setAutoDefault )
-	Q_PROPERTY( bool default READ isDefault WRITE setDefault )
-	//  Q_PROPERTY( bool menuButton READ isMenuButton DESIGNABLE false )
-	//  Q_PROPERTY( QIconSet iconSet READ iconSet WRITE setIconSet )
-	Q_OVERRIDE( bool toggleButton WRITE setToggleButton )
-	Q_OVERRIDE( bool on WRITE setOn )
-	// Q_PROPERTY( bool flat READ isFlat WRITE setFlat )
-	//    Q_OVERRIDE( bool autoMask DESIGNABLE true SCRIPTABLE true )
-
 public:
-	BtButton( QWidget *parent, const char* name=0 );
-	BtButton( const QString &text, QWidget *parent, const char* name=0 );
+	enum IconFlag
+	{
+		NO_FLAG,                    // empty flag
+		LOAD_PRESSED_ICON,          // load pressed icon in setIcon
+	};
+	BtButton(QWidget *parent=0);
 
-	~BtButton();
+	/**
+	 * Loads an icon into the button.
+	 * \param icon_path The full path of the icon to be loaded
+	 * \param f Flags defined in IconFlag. If LOAD_PRESSED_ICON, call setPressedIcon
+	 * with parameter icon_path + "p".
+	 */
+	void setImage(const QString &icon_path, IconFlag f = LOAD_PRESSED_ICON);
+	void setPressedImage(const QString &pressed_icon);
 
-	QSize	sizeHint() const;
+	void setPressedPixmap(const QPixmap &p);
+	void setPixmap(const QPixmap &p);
+	// Set the button as a 'on-off button'. This means that the button is almost
+	// a toggle button, but instead of changes status when the button is pressed
+	// down, changes its status manually, calling the 'setStatus' method.
+	void setOnOff();
 
-	void	move( int x, int y );
-	void	move( const QPoint &p );
-	void	resize( int w, int h );
-	void	resize( const QSize & );
-	void	setGeometry( int x, int y, int w, int h );
-
-	void	setGeometry( const QRect & );
-	virtual void setPressedPixmap( const QPixmap & );//  BONF
-	void setToggleButton( bool );
-
-	bool	autoDefault()	const	{ return autoDefButton; }
-	virtual void setAutoDefault( bool autoDef );
-	bool	isDefault()	const	{ return defButton; }
-	virtual void setDefault( bool def );
-	void setPixmap( const QPixmap & );
-
-
-#ifndef QT_NO_ICONSET
-	QIconSet* iconSet() const;
-#endif
-
+	void enable();
+	void disable();
 
 public slots:
-	virtual void setOn( bool );
+	void setStatus(bool on);
 
 protected:
-	void	drawButton( QPainter * );
-	void	drawButtonLabel( QPainter * );
-	void	focusInEvent( QFocusEvent * );
-	void	focusOutEvent( QFocusEvent * );
-	void	resizeEvent( QResizeEvent * );
-	void	updateMask();
-private slots:
+	virtual void mousePressEvent(QMouseEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent *event);
+
+	// The sizeHint method is required to obtain a layout management that work fine.
+	virtual QSize sizeHint() const;
 
 private:
-	void	init();
+	bool is_enabled;
 
-	uint	autoDefButton	: 1;
-	uint	defButton	: 1;
-	uint	flt		: 1;
-	uint	reserved		: 1; // UNUSED
-	uint	lastEnabled	: 1; // UNUSED
-	uint	hasMenuArrow	: 1;
+	/// The pixmap to show when the button is down, cheched or on.
+	QPixmap pressed_pixmap;
+	/// The pixmap to show when the button is in normal state
+	QPixmap pixmap;
 
-	BtButtonPrivate* d;
-	QPixmap    *prespixmap;
-	QPixmap    *rilpixmap;
+	bool is_on_off; // a flag that mark if the button is a on-off button
 
-	friend class QDialog;
-
-#if defined(Q_DISABLE_COPY)
-	BtButton( const BtButton & );
-	BtButton &operator=( const BtButton & );
-#endif
+	bool isToggle();
 };
 
-
-#endif // QT_NO_PUSHBUTTON
-
-#endif // BtButton_H
+#endif // BTBUTTON_H

@@ -11,10 +11,10 @@
 #ifndef AUX_H
 #define AUX_H
 
-#include <qwidget.h>
-#include <qstring.h>
+#include <QWidget>
+#include <QString>
 
-class BtLabel;
+class QLabel;
 class BtButton;
 class bannFrecce;
 
@@ -31,39 +31,7 @@ Q_OBJECT
 public:
 	aux(QWidget *parent=0, const QString & name="", const QString & amb="");
 
-	/*!
-	\brief Sets the background color for the banner.
-
-	The arguments are RGB components for the color.
-	*/
-	void setBGColor(int, int , int);
-
-	/*!
-	\brief Sets the foreground color for the banner.
-
-	The arguments are RGB components for the color.
-	*/
-	void setFGColor(int , int , int);
-
-	/*!
-	\brief Sets the background color for the banner.
-
-	The argument is the QColor description of the color.
-	*/
-	void setBGColor(QColor);
-
-	/*!
-	\brief Sets the foreground color for the banner.
-
-	The argument is the QColor description of the color.
-	*/
-	void setFGColor(QColor);
-
-	/*!
-	\brief Sets the background pixmap for the banner.
-	*/
-	int setBGPixmap(char*);
-	BtLabel* auxName, *ambDescr;
+	QLabel *auxName, *ambDescr;
 	BtButton *fwdBut;
 
 	/*!
@@ -93,15 +61,11 @@ public slots:
 	*/
 	void showAux();
 
-	/*!
-	\brief Disables/enables everything
-	*/
-	void freezed(bool);
-
 private:
 	char amb[80];
 	char nome[15];
 	bannFrecce * bannNavigazione;
+
 };
 
 

@@ -9,104 +9,94 @@
  ****************************************************************/
 
 #include "listbrowser.h"
-#include "buttons_bar.h"
-#include "fontmanager.h"
-#include "main.h"
+#include "fontmanager.h" // bt_global::font
+#include "btbutton.h"
+#include "main.h" // MAX_WIDTH
+#include "titlelabel.h"
+#include "icondispatcher.h" // icons_cache
+#include "generic_functions.h" // getPressName
+#include "skinmanager.h" // bt_global::skin
 
-#include <qlayout.h>
-#include <algorithm>
+#include <QButtonGroup>
+#include <QLayout>
+#include <QDebug>
+#include <QLabel>
+#include <QFont>
 
-// Interface icon paths.
-static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_SELECT_P = IMG_PATH "arrrgp.png";
-
-
-ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page, const char *name, WFlags f) :
-	QWidget(parent, name, f)
+ListBrowser::ListBrowser(QWidget *parent, unsigned _rows_per_page) : QWidget(parent)
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_listbrowser, aFont);
-	setFont(aFont);
-
-	// Set Style
-	// Look QColorGroup Class Reference
-	QPalette current_color_palette = palette();
-	current_color_palette.setColor(QColorGroup::Text, Qt::white);
-	current_color_palette.setColor(QColorGroup::Base, Qt::black);
-	current_color_palette.setColor(QColorGroup::Background, Qt::black);
-	current_color_palette.setColor(QColorGroup::Foreground, Qt::white);
-	// 3D Effect
-	current_color_palette.setColor(QColorGroup::Shadow, Qt::black);
-	current_color_palette.setColor(QColorGroup::Midlight, Qt::black);
-	current_color_palette.setColor(QColorGroup::Dark, Qt::black);
-	setPalette(current_color_palette);
-
-	// Create main Layout
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
-	main_layout->setMargin(0);
-	main_layout->setSpacing(0);
-
 	// Set the number of elements shown
 	rows_per_page = _rows_per_page;
 	current_page = 0;
 
-	// Create labels_layout
-	QVBoxLayout *labels_layout = new QVBoxLayout(main_layout);
-	labels_layout->setMargin(0);
-	labels_layout->setSpacing(0);
+	main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 5, 5, 0);
+	main_layout->setSpacing(12);
+	buttons_group = new QButtonGroup(this);
+	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
+}
 
-	// Create labels and add them to label_layout
-	// WARNING Quick and Dirty alignment using offsets of TitleLabel
-	QValueVector<int> h_offsets;
+BtButton *getTrimmedButton(QWidget *parent, const QString &icon)
+{
+#define BTN_WIDTH 50
+#define BTN_HEIGHT 50
+	BtButton *btn = new BtButton(parent);
+	QPixmap tmp = (*bt_global::icons_cache.getIcon(icon)).copy(5, 5, BTN_WIDTH, BTN_HEIGHT);
+	btn->setPixmap(tmp);
+	tmp = (*bt_global::icons_cache.getIcon(getPressName(icon))).copy(5, 5, BTN_WIDTH, BTN_HEIGHT);
+	btn->setPressedPixmap(tmp);
+	return btn;
+}
+
+void ListBrowser::addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_btn)
+{
+	QHBoxLayout *box = new QHBoxLayout();
+	box->addWidget(label, 0, Qt::AlignLeft);
+	BtButton *btn = getTrimmedButton(0, bt_global::skin->getImage("forward"));
+	box->addWidget(btn, 0, Qt::AlignRight);
+	box->setContentsMargins(5, 0, 0, 0);
+	buttons_group->addButton(btn, id_btn);
+	layout->addLayout(box);
+}
+
+void ListBrowser::showList()
+{
+	int start = current_page * rows_per_page;
+	int count = qMin(static_cast<int>(start + rows_per_page), item_list.count()) - start;
+
+	// Remove the old children of main_layout
+	while (QLayoutItem *child = main_layout->takeAt(0))
+		if (QLayout *l = child->layout())
+			while (QLayoutItem *li = l->takeAt(0))
+				if (QWidget *w = li->widget())
+				{
+					w->disconnect();
+					w->hide();
+					w->deleteLater();
+				}
+
+	QVector<int> h_offsets;
 	h_offsets.append(-4);
 	h_offsets.append(-2);
 	h_offsets.append(-1);
 	h_offsets.append(0);
-	labels_list.resize(rows_per_page);
-	labels_list.setAutoDelete(true);
-	for (unsigned i = 0; i < rows_per_page; ++i)
+
+	QFont aFont = bt_global::font->get(FontManager::TEXT);
+
+	for (int i = 0; i < count; ++i)
 	{
-		// Create label and add it to labels_layout
-		labels_list.insert(i, new TitleLabel(this, MAX_WIDTH - 60, 50, 9, h_offsets[i], true));
-		labels_layout->addWidget(labels_list[i]);
+		TitleLabel *l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, h_offsets[i], true);
+		l->setText(item_list[start + i]);
+		l->setFont(aFont);
+		addHorizontalBox(main_layout, l, i);
 	}
-
-	// Create buttons_bar
-	buttons_bar = new ButtonsBar(this, rows_per_page, Qt::Vertical);
-
-	// Set Icons for buttons_bar (using icons_library cache)
-	QPixmap *icon         = icons_library.getIcon(IMG_SELECT);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_SELECT_P);
-	for (unsigned i = 0; i < rows_per_page; ++i)
-		buttons_bar->setButtonIcons(i, *icon, *pressed_icon);
-
-	// Add buttons_bar to main_layout
-	main_layout->addWidget(buttons_bar);
-	connect(buttons_bar, SIGNAL(clicked(int)), SLOT(clicked(int)));
+	main_layout->addStretch();
 }
 
-void ListBrowser::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	buttons_bar->setBGColor(c);
-}
-
-void ListBrowser::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	buttons_bar->setFGColor(c);
-}
-
-void ListBrowser::setList(QValueVector<QString> _item_list, unsigned _current_page)
+void ListBrowser::setList(QVector<QString> _item_list, unsigned _current_page)
 {
 	item_list = _item_list;
 	current_page = _current_page;
-}
-
-void ListBrowser::showEvent(QShowEvent *event)
-{
-	for (unsigned i = 0; i < rows_per_page; ++i)
-		labels_list[i]->resetTextPosition();
 }
 
 unsigned ListBrowser::getCurrentPage()
@@ -114,41 +104,22 @@ unsigned ListBrowser::getCurrentPage()
 	return current_page;
 }
 
-void ListBrowser::showList()
-{
-	unsigned start = current_page * rows_per_page;
-	unsigned end   = std::min(start + rows_per_page, item_list.count());
-
-	for (unsigned i = 0; i < labels_list.size(); ++i)
-	{
-		if (i < end-start)
-		{
-			labels_list[i]->setText(item_list[start+i]);
-			buttons_bar->showButton(i);
-		}
-		else
-		{
-			labels_list[i]->setText("");
-			buttons_bar->hideButton(i);
-		}
-	}
-
-	if (start!=end)
-		buttons_bar->setEnabled(true);
-}
-
 void ListBrowser::nextItem()
 {
-	if ((current_page + 1) * rows_per_page < item_list.count())
+	if (static_cast<int>((current_page + 1) * rows_per_page) < item_list.count())
+	{
 		++current_page;
-	showList();
+		showList();
+	}
 }
 
 void ListBrowser::prevItem()
 {
 	if (current_page)
+	{
 		--current_page;
-	showList();
+		showList();
+	}
 }
 
 void ListBrowser::clicked(int item)

@@ -14,15 +14,15 @@
 #ifndef LIST_BROWSER_H
 #define LIST_BROWSER_H
 
-#include "titlelabel.h"
+#include <QVector>
+#include <QString>
+#include <QWidget>
 
-#include <qvaluevector.h>
-#include <qstring.h>
-#include <qwidget.h>
-#include <qptrvector.h>
+class QButtonGroup;
+class QVBoxLayout;
+class QBoxLayout;
+class QLabel;
 
-
-class ButtonsBar;
 
 /**
  * \class ListBrowser
@@ -34,13 +34,9 @@ class ListBrowser : public QWidget
 {
 Q_OBJECT
 public:
-	ListBrowser(QWidget *parent, unsigned rows_per_page, const char *name=0, WFlags f=0);
+	ListBrowser(QWidget *parent, unsigned rows_per_page);
 
-	/// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
-
-	void setList(QValueVector<QString> _item_list, unsigned _current_page = 0);
+	void setList(QVector<QString> _item_list, unsigned _current_page = 0);
 	void showList();
 
 	unsigned getCurrentPage();
@@ -57,14 +53,13 @@ private:
 	unsigned rows_per_page;
 	unsigned current_page;
 
-	QPtrVector<TitleLabel> labels_list;
-	ButtonsBar             *buttons_bar;
+	QButtonGroup *buttons_group;
+	QVBoxLayout *main_layout;
 
 	/// The list of items displayed
-	QValueVector<QString> item_list;
+	QVector<QString> item_list;
 
-	/// before to show itself some init is done
-	void showEvent(QShowEvent *event);
+	void addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_btn);
 
 private slots:
 	void clicked(int item);

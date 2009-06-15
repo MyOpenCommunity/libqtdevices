@@ -1,99 +1,62 @@
 #include "banner.h"
 #include "allarme.h"
 #include "bannfrecce.h"
-#include "btlabel.h"
 #include "main.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
+#include "icondispatcher.h" // bt_global::icons_cache
 
-#include <qpixmap.h>
-#include <qwidget.h>
-#include <qcursor.h>
+#include <QPixmap>
+#include <QWidget>
+#include <QDebug>
+#include <QLabel>
 
 
 /*****************************************************************
 ** Generic alarm
 ****************************************************************/	
 
-allarme::allarme(QWidget *parent, const QString & name, char *indirizzo, char *IconaDx, altype t): QFrame(parent)
+allarme::allarme(const QString &name, char *indirizzo, QString IconaDx, altype t)
 {
-    qDebug("allarme::allarme()");
-    qDebug("indirizzo = %s, IconaDx = %s, tipo = %d", indirizzo, IconaDx, t);
-    type = t;
-    SetIcons(IconaDx);
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-    setCursor(QCursor(blankCursor));
-#endif
-    setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-    setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-    descr->setText(name);
-    connect(bnav, SIGNAL(backClick()), this, SIGNAL(Back()));
-    connect(bnav, SIGNAL(upClick()), this, SIGNAL(Prev()));
-    connect(bnav, SIGNAL(downClick()), this, SIGNAL(Next()));
-    connect(bnav, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
-    // ??
-    show();
+	qDebug("allarme::allarme()");
+	qDebug() << "indirizzo =" << indirizzo << ", IconaDx =" << IconaDx << ", tipo = " << t;
+	type = t;
+	SetIcons(IconaDx);
+	descr->setText(name);
+	connect(bnav, SIGNAL(backClick()), this, SIGNAL(Back()));
+	connect(bnav, SIGNAL(upClick()), this, SIGNAL(Prev()));
+	connect(bnav, SIGNAL(downClick()), this, SIGNAL(Next()));
+	connect(bnav, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
 }
 
-void allarme::SetIcons(char *icon)
+void allarme::SetIcons(QString icon)
 {
-    qDebug("allarme::SetIcons()");
-    QPixmap *Icon1 = new QPixmap();
-    char *icon1;
-    switch(type)
+	qDebug("allarme::SetIcons()");
+	QString icon_name;
+	switch (type)
 	{
     case allarme::TECNICO:
-		icon1 = IMG_PATH "imgalltec.png";
+		icon_name = IMG_PATH "imgalltec.png";
 		break;
     default:
-		icon1 = IMG_PATH "imgallintr.png";
+		icon_name = IMG_PATH "imgallintr.png";
 		break;
-    }
-    Icon1->load(icon1);
-    Immagine = new BtLabel(this, "icona_alarm");
-    Immagine->setPixmap(*Icon1);
-    Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
-			  ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
-    delete(Icon1);
-    descr = new BtLabel(this, "descr_alarm"); 
-    QFont aFont;
-    FontManager::instance()->getFont(font_allarme_descr, aFont);
-    descr->setFont(aFont);
-    descr->setAlignment(AlignHCenter|AlignVCenter);
-    descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,
-		       MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	}
+	Immagine = new QLabel(this);
+	Immagine->setPixmap(*bt_global::icons_cache.getIcon(icon_name));
+	Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
+		ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
 
-    bnav = new bannFrecce(this, "banner_nav", 4, icon);
-    bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE,
-		      MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
-}
+	descr = new QLabel(this);
+	descr->setFont(bt_global::font->get(FontManager::TEXT));
+	descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
+	bnav = new bannFrecce(this, 4, icon);
+	bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-void allarme::setBGColor(QColor c)
-{
-    qDebug("allarme::setBGColor()");
-    bnav->setBGColor(c);
-    setPaletteBackgroundColor(c);
-    Immagine->setPaletteBackgroundColor(c);
-    descr->setPaletteBackgroundColor(c);
-}
-
-void allarme::setFGColor(QColor c)
-{
-    qDebug("allarme::setFGColor()");
-    bnav->setFGColor(c);
-    setPaletteForegroundColor(c);
-    Immagine->setPaletteForegroundColor(c);
-    descr->setPaletteForegroundColor(c);
-}
-
-void allarme::setBGColor(int r, int g, int b)
-{
-    return allarme::setBGColor(QColor(r, g, b));
-}
-
-void allarme::setFGColor(int r, int g, int b)
-{
-    return allarme::setFGColor(QColor(r, g, b));
+	bnav->show();
+	Immagine->show();
+	descr->show();
 }
 
 void allarme::draw()
@@ -101,18 +64,3 @@ void allarme::draw()
     qDebug("allarme::draw()");
 }
 
-void allarme::show()
-{
-    qDebug("allarme::show()");
-    QFrame::show();
-    bnav->show();
-    Immagine->show();
-    descr->show();
-}
-
-void allarme::freezed(bool f)
-{
-    qDebug("allarme::freezed(%d)", f);
-    bool enabled = !f;
-    bnav->setEnabled(enabled);
-}

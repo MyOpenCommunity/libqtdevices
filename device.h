@@ -1,31 +1,55 @@
-//! Header file for device classes
+//!  Header file for device classes
 
 #ifndef __DEVICE_H__
 #define __DEVICE_H__
 
 #include "device_status.h"
-#include "bttime.h"
 
-#include <qstring.h>
-#include <qptrlist.h>
-#include <qobject.h>
-#include <qdatetime.h>
+#include <QDateTime>
+#include <QVariant>
+#include <QString>
+#include <QObject>
+#include <QHash>
+#include <QList>
+#include <QTimer>
 
 class frame_interpreter;
 class Client;
+class BtTime;
+
+typedef QHash<int, QVariant> StatusList;
+
+
+class FrameCompressor : public QObject
+{
+Q_OBJECT
+public:
+	// w is 'what'
+	FrameCompressor(int timeout, int w = -1);
+	/// If frame_open matches regex, start the timer and save the frame for later use
+	bool analyzeFrame(const QString &frame_open);
+
+private slots:
+	void emitFrame();
+
+private:
+	QTimer timer;
+	int what;
+	QString frame;
+signals:
+	void compressedFrame(QString);
+};
+
 
 //! Generic device
 class device : public QObject
 {
+friend class TestDevice;
 Q_OBJECT
 
 public:
-	//! Constructor
-	device(QString who, QString where, bool p=false, int g=-1);
 	//! Init device: send messages initializing data
 	virtual void init(bool force = false);
-	//! Set frame interpreter
-	void set_frame_interpreter(frame_interpreter *fi);
 	//! Set where
 	void set_where(QString);
 	//! Set pul status
@@ -39,40 +63,55 @@ public:
 	//! Decrement reference count, return reference count after decrement
 	int put();
 	//! Returns cache key
-	QString get_key(void);
-
-	void setClients(Client *comandi, Client *monitor, Client *richieste);
-
-	//! Destructor
+	QString get_key();
 	virtual ~device();
 
-	void sendFrame(const char *frame);
-	void sendInit(const char *frame);
+	static void setClients(Client *command, Client *request, Client *monitor);
+	void installFrameCompressor(int timeout, int what = -1);
 
 signals:
-	//! Status changed
-	void status_changed(QPtrList<device_status>);
+	/// Old Status changed
+	void status_changed(QList<device_status*>);
+
+	/// The status changed signal, used to inform that a dimension of device
+	/// has changed. For some devices, more than one dimension can be changes
+	/// at same time, so the int is used as an enum to recognize the dimensions.
+	/// Note that using an int is a design choice. In this way the signal is
+	/// generic (so the connections can be made in a generic way) and the enum
+	/// can be specific for a device, avoiding the coupling between abstract
+	/// and concrete device class.
+	void status_changed(const StatusList &status_list);
+
 	//! Invoked after successful initialization
 	void initialized(device_status *);
-	//! We want to send a frame
-	void send_frame(char *);
 	//! We want a frame to be handled
-	void handle_frame(char *, QPtrList<device_status> *);
+	void handle_frame(char *, QList<device_status*>);
 public slots:
 	//! receive a frame
 	virtual void frame_rx_handler(char *);
 	//! Initialization requested by frame interpreter
 	void init_requested_handler(QString msg);
 
+	void sendFrame(QString frame) const;
+	void sendInit(QString frame) const;
+
 protected:
+	// The costructor is protected only to make device abstract.
+	device(QString who, QString where, bool p=false, int g=-1);
 	//! Interpreter
 	frame_interpreter *interpreter;
 	//! List of device stats
-	QPtrList<device_status> *stat;
+	QList<device_status*> stat;
 	//! Node's who
 	QString who;
 	//! Node's where
 	QString where;
+
+	/// connect the frame interpreter with the device
+	void setup_frame_interpreter(frame_interpreter* i);
+	// Send a frame using the frame compressor
+	void sendCompressedFrame(const QString &frame) const;
+	void sendCompressedInit(const QString &frame) const;
 
 private:
 	//! Pul status
@@ -81,10 +120,12 @@ private:
 	int group;
 	//! Number of users
 	int refcount;
+	FrameCompressor *cmd_compressor;
+	FrameCompressor *req_compressor;
 
-	Client *client_comandi;
-	Client *client_monitor;
-	Client *client_richieste;
+	static Client *client_comandi;
+	static Client *client_monitor;
+	static Client *client_richieste;
 };
 
 /********************* Specific class device children classes **********************/
@@ -384,6 +425,7 @@ private:
 	stat_var status;
 
 signals:
+	// TODO: rimpiazzare questo segnale con lo status_changed(QHash<>)..
 	void status_changed(stat_var);
 };
 

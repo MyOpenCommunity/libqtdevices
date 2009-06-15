@@ -14,7 +14,12 @@
 #include "bannciclaz.h"
 #include "multimedia_source.h"
 
-class device;
+#include <QStringList>
+#include <QString>
+#include <QWidget>
+
+class QDomNode;
+
 
 /**
  * \brief This class is made to manage a multimedia source.
@@ -23,19 +28,16 @@ class BannerSorgenteMultimedia : public bannCiclaz
 {
 Q_OBJECT
 public:
-	BannerSorgenteMultimedia(QWidget *parent, const char *name, char *indirizzo, int where, int nbutt);
+	BannerSorgenteMultimedia(QWidget *parent, const QDomNode &config_node, QString indirizzo, int where, int nbutt);
 	virtual void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
-	void hide();
 private slots:
 	void ciclaSorg();
 	void decBrano();
 	void aumBrano();
-	void menu();
 protected:
 	MultimediaSource source_menu;
-	device *dev;
 };
 
 /**
@@ -45,22 +47,22 @@ class BannerSorgenteMultimediaMC : public BannerSorgenteMultimedia
 {
 Q_OBJECT
 public:
-	BannerSorgenteMultimediaMC(QWidget *parent, const char *name, char *indirizzo, int where,
-		const char *icon_onoff, const char *icon_cycle, const char *icon_settings);
+	BannerSorgenteMultimediaMC(QWidget *parent, const QDomNode &config_node, QString indirizzo, int where,
+		QString icon_onoff, QString icon_cycle, QString icon_settings);
 	void inizializza(bool forza = false);
 public slots:
 	void gestFrame(char *);
 	void attiva();
-	void addAmb(char *);
-	void ambChanged(const QString &, bool, char *);
-signals:
-	void active(int, int);
+	void addAmb(QString a);
+	void ambChanged(const QString &, bool, QString);
 
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
+signals:
+	void active(int, int);
 };
 
 #endif

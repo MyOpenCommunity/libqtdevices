@@ -11,22 +11,28 @@
 #include "sorgentiradio.h"
 #include "main.h" // ICON_CICLA
 #include "radio.h"
-#include <openwebnet.h> // class openwebnet
-#include "device_cache.h" // btouch_device_cache
+#include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
+#include "generic_functions.h" // createMsgOpen
+
+#include <QWidget>
+#include <QDebug>
+#include <QChar>
+
 
 /*****************************************************************
  **sorgente_Radio
  ****************************************************************/
-banradio::banradio(QWidget *parent,const char *name,char* indirizzo, int nbut, const QString & ambdescr)
-: bannCiclaz(parent, name, nbut)
+banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString & ambdescr)
+	: bannCiclaz(parent, nbut)
 {
 	SetIcons(ICON_CICLA,ICON_IMPOSTA,ICON_FFWD,ICON_REW);
 	setAddress(indirizzo);
-	myRadio = new radio(NULL,"radio", ambdescr);
+	myRadio = new radio(ambdescr);
 	myRadio->setRDS("");
 	myRadio->setFreq(0.00);
-	QWidget *grandad = this->parentWidget(FALSE)->parentWidget(FALSE);
+	// TODO: non e' bello fare affidamento su chi e' il grandad!
+	QWidget *grandad = this->parentWidget()->parentWidget();
 
 	myRadio->setStaz((uchar)1);
 
@@ -41,13 +47,13 @@ banradio::banradio(QWidget *parent,const char *name,char* indirizzo, int nbut, c
 	else
 		old_diffson = false;
 
-	connect(this  ,SIGNAL(dxClick()),myRadio,SLOT(showRadio()));
+	connect(this, SIGNAL(dxClick()), myRadio, SLOT(showPage()));
 	connect(this , SIGNAL(dxClick()),this,SLOT(startRDS()));
 	if (!old_diffson)
 		connect(this, SIGNAL(dxClick()), this, SLOT(richFreq()));
 
-	connect(myRadio,SIGNAL(Closed()), grandad, SLOT(show()));
-	connect(myRadio,SIGNAL(Closed()),myRadio,SLOT(hide()));
+	// TODO: probably we should emit a pageClosed() signal here...
+	connect(myRadio, SIGNAL(Closed()), grandad, SLOT(showPage()));
 	connect(myRadio,SIGNAL(Closed()),this,SLOT(stopRDS()));
 
 	connect(myRadio,SIGNAL(decFreqAuto()),this,SLOT(decFreqAuto()));
@@ -59,23 +65,21 @@ banradio::banradio(QWidget *parent,const char *name,char* indirizzo, int nbut, c
 	connect(myRadio,SIGNAL(richFreq()),this,SLOT(richFreq()));
 
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_radio_device(getAddress());
+	dev = bt_global::devices_cache.get_radio_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)), this, SLOT(status_changed(QPtrList<device_status>)));
-	// Get freezed events
-	connect(parent, SIGNAL(frez(bool)), myRadio, SLOT(freezed(bool)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
 }
 
 void banradio::grandadChanged(QWidget *newGrandad)
 {
 	qDebug("banradio::grandadChanged (%p)", newGrandad);
-	QWidget *grandad = this->parentWidget(FALSE)->parentWidget(FALSE);
-	disconnect(myRadio,SIGNAL(Closed()), grandad, SLOT(showFullScreen()));
+	QWidget *grandad = this->parentWidget()->parentWidget();
+	disconnect(myRadio, SIGNAL(Closed()), grandad, 0);
 	grandad = newGrandad;
-	connect(myRadio,SIGNAL(Closed()), grandad, SLOT(showFullScreen()));
+	connect(myRadio, SIGNAL(Closed()), grandad, SLOT(showPage()));
 }
 
-void banradio::status_changed(QPtrList<device_status> sl)
+void banradio::status_changed(QList<device_status*> sl)
 {
 	// TODO: remove duplicate code from RDS stat var!!
 	stat_var curr_freq(stat_var::FREQ);
@@ -90,12 +94,11 @@ void banradio::status_changed(QPtrList<device_status> sl)
 	stat_var curr_rds7(stat_var::RDS7);
 	bool aggiorna = false;
 	qDebug("bannradio::status_changed()");
-	QPtrListIterator<device_status> *dsi = new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
 	float freq;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::RADIO:
@@ -124,7 +127,7 @@ void banradio::status_changed(QPtrList<device_status> sl)
 			qrds += QChar(curr_rds5.get_val());
 			qrds += QChar(curr_rds6.get_val());
 			qrds += QChar(curr_rds7.get_val());
-			qDebug("*** setting rds to %s", qrds.ascii());
+			qDebug() << "*** setting rds to " << qrds;
 			myRadio->setRDS(qrds);
 			aggiorna = 1;
 			break;
@@ -133,39 +136,25 @@ void banradio::status_changed(QPtrList<device_status> sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		myRadio->draw();
-	delete dsi;
 }
 
 void banradio::pre_show()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
 	if (old_diffson)
-	{
-		memset(pippo,'\000',sizeof(pippo));
-		strcat(pippo,"*#16*");
-		strcat(pippo,getAddress());
-		strcat(pippo,"*6##");
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-
-		dev->sendInit(msg_open.frame_open);
-	}
-
-	QWidget::show();
+		dev->sendInit("*#16*" + getAddress() + "*6##");
 }
 
-void banradio::show()
+void banradio::showEvent(QShowEvent *event)
 {
 	pre_show();
 
 	if (!old_diffson)
 	{
-		if (parentWidget()->parentWidget()->parentWidget(TRUE))
+		if (parentWidget()->parentWidget()->parentWidget())
 			nascondi(BUT2);
 		else
 			mostra(BUT2);
@@ -173,74 +162,46 @@ void banradio::show()
 	mostra(BUT2);
 }
 
-void banradio::hide()
+void banradio::setText(const QString & qtext)
 {
-	qDebug("banradio::hide()");
-	if (myRadio->isShown())
-		stopRDS();
-	myRadio->hide();
-	QWidget::hide();
-}
-
-void banradio::SetTextU(const QString & qtext)
-{
-	banner::SetTextU(qtext);
-	myRadio->setNameU(qtext);
+	banner::setText(qtext);
+	myRadio->setName(qtext);
 }
 
 void banradio::ciclaSorg()
 {
-	openwebnet msg_open;
 	qDebug("banradio::ciclaSorg()");
-	char pippo[50];
-	char amb[3];
-
-	sprintf(amb, getAddress());
-	memset(pippo,'\000',sizeof(pippo));
-	sprintf(pippo,"*22*22#4#1*5#2#%c##", amb[2]);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(QString("*22*22#4#1*5#2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::decBrano()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateMsgOpen("16","6101",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "6101", getAddress()));
 }
 
 void banradio::aumBrano()
 {
-	openwebnet msg_open;
-
-	msg_open.CreateMsgOpen("16","6001",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "6001", getAddress()));
 }
+
 void banradio::aumFreqAuto()
 {
-	openwebnet msg_open;
-
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5000",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5000", getAddress()));
 }
+
 void banradio::decFreqAuto()
 {
-	openwebnet msg_open;
-
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5100",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5100", getAddress()));
 }
 
 void banradio::aumFreqMan()
 {
-	openwebnet msg_open;
 	float f;
 
 	f = myRadio->getFreq();
@@ -250,13 +211,11 @@ void banradio::aumFreqMan()
 		f = 87.50;
 	myRadio->setFreq(f);
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5001",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5001", getAddress()));
 }
 
 void banradio::decFreqMan()
 {
-	openwebnet msg_open;
 	float f;
 
 	f = myRadio->getFreq();
@@ -266,118 +225,50 @@ void banradio::decFreqMan()
 		f = 108.00;
 	myRadio->setFreq(f);
 	myRadio->draw();
-	msg_open.CreateMsgOpen("16","5101",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "5101", getAddress()));
 }
 
 void banradio::changeStaz()
 {
-	openwebnet msg_open;
-	char amb[2];
-
-	sprintf(amb, getAddress());
+	QString addr = getAddress();
 	if (!old_diffson)
-		if (amb[1] == '0')
-			amb[1] = '1';
-
-	msg_open.CreateMsgOpen("16","6001",amb,"");
-	dev->sendFrame(msg_open.frame_open);
+		if (addr.at(1) == '0')
+			addr[1] = '1';
+	dev->sendFrame(createMsgOpen("16", "6001", addr));
 }
 
 void banradio::memoStaz(uchar st)
 {
-	openwebnet msg_open;
+	// TODO: sistemare questo metodo quando sara' possibile provarlo!
 	char    pippo[50],pippa[10];
 	unsigned int ic;
 
 	memset(pippo,'\000',sizeof(pippo));
 	memset(pippa,'\000',sizeof(pippa));
 	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
+	strcat(pippo,getAddress().toAscii().constData());
 	strcat(pippo,"*#10*");
 	memset(pippa,'\000',sizeof(pippa));
 	ic = (unsigned int)st;
 	sprintf(pippa,"%01hu",st);
 	strcat(pippo,pippa);
 	strcat(pippo,"##");
-	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(pippo);
 }
 
 void banradio::startRDS()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*16*101*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame("*16*101*" + getAddress() + "##");
 }
 
 void banradio::stopRDS()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*16*102*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"##");
-
-	qDebug(msg_open.frame_open);
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame("*16*102*" + getAddress() + "##");
 }
 
 void banradio::richFreq()
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*6##");
-
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-
-	dev->sendFrame(msg_open.frame_open);
-}
-
-void banradio::setBGColor(int r, int g , int b)
-{
-	setBGColor(QColor(r,g,b));
-}
-
-void banradio::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor(r,g,b));
-}
-
-void banradio::setBGColor(QColor c)
-{
-	if (c.isValid())
-	{
-		myRadio->setBGColor(c);
-		banner::setBGColor(c);
-	}
-}
-
-void banradio::setFGColor(QColor c)
-{
-	if (c.isValid())
-	{
-		myRadio->setFGColor(c);
-		banner::setFGColor(c);
-	}
+	dev->sendFrame("*#16*" + getAddress() + "*6##");
 }
 
 void banradio::inizializza(bool forza)
@@ -388,15 +279,15 @@ void banradio::inizializza(bool forza)
 /*****************************************************************
  ** Sorgente radio diffusione sonora multicanale
  ****************************************************************/
-sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, const char *name, char* indirizzo, char* Icona1, char* Icona2, char *Icona3, char *ambDescr)
-	: banradio(parent, name, indirizzo, 3, ambDescr)
+sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, QString indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr)
+	: banradio(parent, indirizzo, 3, ambDescr)
 {
-	qDebug("sorgenteMultiRadio::sorgenteMultiRadio() : %s %s %s", Icona1, Icona2, Icona3);
+	qDebug("sorgenteMultiRadio::sorgenteMultiRadio()");
 	
-	SetIcons(Icona1, Icona2, NULL, Icona3);
+	SetIcons(Icona1, Icona2, QString(), Icona3);
 	
 	connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
-	indirizzo_semplice = QString(indirizzo);
+	indirizzo_semplice = indirizzo;
 	indirizzi_ambienti.clear();
 	multiamb = false;
 }
@@ -404,15 +295,11 @@ sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, const char *name, char* 
 void sorgenteMultiRadio::attiva()
 {
 	qDebug("sorgenteMultiRadio::attiva()");
-	char pippo[50];
-	openwebnet msg_open;
-  
+
 	if (!multiamb)
 	{
-		memset(pippo,'\000',sizeof(pippo));
-		sprintf(pippo,"*22*35#4#%d#%d*3#%d#0##",indirizzo_ambiente, indirizzo_semplice.toInt(), indirizzo_ambiente);
-		msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-		dev->sendFrame(msg_open.frame_open);
+		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		dev->sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
 	else
@@ -420,65 +307,43 @@ void sorgenteMultiRadio::attiva()
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
 		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*0#4#");
-			strcat(pippo,(*it));
-			strcat(pippo,"*6");
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*22*1#4#");
-			strcat(pippo,(*it));
-			strcat(pippo,"*2#");
-			strcat(pippo, indirizzo_semplice);
-			strcat(pippo,"##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
-			memset(pippo,'\000',sizeof(pippo));
-			strcat(pippo,"*#16*1000*11##");
-			msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-			dev->sendFrame(msg_open.frame_open);
+			dev->sendFrame("*22*0#4#" + *it + "*6##");
+			dev->sendFrame("*#16*1000*11##");
+			dev->sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
+			dev->sendFrame("*#16*1000*11##");
 		}
 	}
 }
 
-void sorgenteMultiRadio::ambChanged(const QString & ad, bool multi, char *indamb)
+void sorgenteMultiRadio::ambChanged(const QString & ad, bool multi, QString indamb)
 {
 	// FIXME: PROPAGA LA VARIAZIONE DI DESCRIZIONE AMBIENTE
-	qDebug("sorgenteMultiRadio::ambChanged(%s, %d, %s)", ad.ascii(), multi, indamb);
+	qDebug() << "sorgenteMultiRadio::ambChanged(" << ad << ", " << multi << ", " << indamb << ")";
 	if (!multi)
 	{
 		multiamb = false;
-		indirizzo_ambiente = QString((const char *)indamb).toInt();
-		QString *dove = new QString(QString::number(100 + indirizzo_ambiente * 10 +
-			indirizzo_semplice.toInt(),10));
-		qDebug("Source where is now %s", dove->ascii());
-		setAddress((char *)dove->ascii());
-		delete dove;
+		indirizzo_ambiente = indamb.toInt();
+		QString dove(QString::number(100 + indirizzo_ambiente * 10 + indirizzo_semplice.toInt(),10));
+		qDebug() << "Source where is now " << dove;
+		setAddress(dove);
 	}
 	else
 	{
 		multiamb = true;
-		QString *dove = new QString(QString::number(100 + indirizzo_semplice.toInt(), 10));
-		qDebug("Source where is now %s", dove->ascii());
-		setAddress((char *)dove->ascii());
-		delete dove;
+		QString dove(QString::number(100 + indirizzo_semplice.toInt(), 10));
+		qDebug() << "Source where is now " << dove;
+		setAddress(dove);
 	}
 	myRadio->setAmbDescr(ad);
 }
 
-void sorgenteMultiRadio::show()
+void sorgenteMultiRadio::showEvent(QShowEvent *event)
 {
 	banradio::pre_show();
 }
 
-void sorgenteMultiRadio::addAmb(char *a)
+void sorgenteMultiRadio::addAmb(QString a)
 {
-	qDebug("sorgenteMultiRadio::addAmb(%s)", a);
-	indirizzi_ambienti += QString(a);
+	qDebug() << "sorgenteMultiRadio::addAmb" << a;
+	indirizzi_ambienti += a;
 }

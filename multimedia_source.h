@@ -28,19 +28,25 @@
 #ifndef MULTIMEDIA_SOURCE_H
 #define MULTIMEDIA_SOURCE_H
 
-#include <qdir.h>
-#include <qvaluevector.h>
-#include <qwidget.h>
-#include <qdom.h>
+#include "page.h"
+
+#include <QDir>
+#include <QMap>
+#include <QVector>
+#include <QWidget>
+#include <QDomNode>
 
 class ListBrowser;
 class Selector;
 class PlayWindow;
 class MediaPlayer;
-class QLabel;
-class bannFrecce;
-class ButtonsBar;
 class BtButton;
+
+class QLabel;
+class QButtonGroup;
+class QBoxLayout;
+class QDomNode;
+
 
 enum AudioSourceType
 {
@@ -62,21 +68,20 @@ struct AudioData
  *
  * This class show the menu to choice from Radio Over Ip and Media Server
  */
-class SourceChoice : public QWidget
+class SourceChoice : public PageLayout
 {
 Q_OBJECT
 public:
-	SourceChoice(QWidget *parent, const char *name);
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
+	SourceChoice();
 
 signals:
 	void clicked(int);
 	void Closed();
 
 private:
-	ButtonsBar *buttons_bar;
-	BtButton   *back_btn;
+	void addHorizontalBox(QBoxLayout *layout, QLabel *label, int id_btn);
+	BtButton *back_btn;
+	QButtonGroup *buttons_group;
 };
 
 
@@ -85,22 +90,12 @@ private:
  *
  * This class implements the logic for MULTIMEDIA SOURCE
  */
-class MultimediaSource : public QWidget
+class MultimediaSource : public Page
 {
 Q_OBJECT
 public:
-	MultimediaSource(QWidget *parent=0, const char *name=0, const char *amb="", int where_address=0);
-
-	/*!
-	 * \brief Sets the background color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setBGColor(QColor);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setFGColor(QColor);
+	MultimediaSource(const QDomNode &config_node, int where_address);
+	~MultimediaSource();
 	/*!
 	 * \brief Sets amb. description
 	 */
@@ -126,47 +121,20 @@ public:
 
 signals:
 	/*!
-	 * \brief Emitted when the page is going to be closed
-	 */
-	void Closed();
-	/*!
 	 * \brief Emitted when fwd button is pressed
 	 */
 	void Btnfwd();
-	/*!
-	 * \brief Send open frame.
-	 */
-	void sendFrame(char *);
 
 	void notifyStartPlay();
 	void notifyStopPlay();
 
 public slots:
-	void showPage();
-	void freezed(bool f);
+	virtual void showPage();
 
 private:
 	void sourceMenu(AudioSourceType t);
-	/*!
-	 * \brief Sets the background color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setBGColor(int, int, int);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setFGColor(int, int, int);
-	/*!
-	 * \brief Sets the background pixmap for the banner.
-	 */
-	int setBGPixmap(char*);
-	/*!
-	 * \brief Draws the page
-	 */
-	void draw() {};
 
-	void loadSources();
+	void loadSources(const QDomNode &config_node);
 
 	PlayWindow *play_window;
 	Selector *selector;
@@ -174,7 +142,6 @@ private:
 
 	char amb[80];
 	char nome[15];
-	bannFrecce *bannNavigazione;
 	QLabel *label;
 	bool audio_initialized;
 	int where_address;
@@ -188,12 +155,11 @@ private slots:
 	/// handles to receive play and stop notifications
 	void handleStartPlay();
 	void handleStopPlay();
-	void startPlayer(QValueVector<AudioData> play_list, unsigned element);
+	void startPlayer(QVector<AudioData> play_list, unsigned element);
 
 	void handleChoiceSource(int button_id);
 	void handleSelectorExit();
 	void handlePlayerExit();
-	void handleClose();
 };
 
 /**
@@ -202,13 +168,11 @@ private slots:
  * Realize a common interface for all selector classes.
  *
  */
-class Selector : public QWidget
+class Selector : public PageLayout
 {
 Q_OBJECT
 public:
-	Selector(QWidget *parent, const char *name=0, WFlags f=0) : QWidget(parent, name, f) {}
-	virtual void setBGColor(QColor c) = 0;
-	virtual void setFGColor(QColor c) = 0;
+	Selector() {}
 
 public slots:
 	virtual void nextItem() = 0;
@@ -219,7 +183,7 @@ public slots:
 
 signals:
 	virtual void notifyExit();
-	virtual void startPlayer(QValueVector<AudioData> play_list, unsigned element);
+	virtual void startPlayer(QVector<AudioData> play_list, unsigned element);
 };
 
 
@@ -232,11 +196,7 @@ class  FileSelector : public Selector
 {
 Q_OBJECT
 public:
-	FileSelector(QWidget *parent, unsigned rows_per_page, QString start_path, const char *name=0, WFlags f=0);
-
-	/// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
+	FileSelector(unsigned rows_per_page, QString start_path);
 
 public slots:
 	void nextItem();
@@ -244,11 +204,9 @@ public slots:
 
 	void itemIsClicked(int item);
 	void browseUp();
+	virtual void showPage();
 
 private:
-	/// before to show itself some init is done.
-	void showEvent(QShowEvent *event);
-
 	void showFiles();
 
 	/// The handler of current directory
@@ -257,7 +215,7 @@ private:
 	// How many subdirs we are descending from root.
 	unsigned level;
 
-	QValueVector<QFileInfo> files_list;
+	QVector<QFileInfo> files_list;
 
 	QMap<QString, unsigned>  pages_indexes;
 
@@ -287,11 +245,7 @@ class RadioSelector : public Selector
 {
 Q_OBJECT
 public:
-	RadioSelector(QWidget *parent, unsigned rows_per_page, QDomNode config, const char *name=0, WFlags f=0);
-
-	/// Apply Style
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
+	RadioSelector(unsigned rows_per_page, QDomNode config);
 
 public slots:
 	void nextItem();
@@ -301,7 +255,7 @@ public slots:
 	void browseUp();
 
 private:
-	QValueVector<AudioData> radio_list;
+	QVector<AudioData> radio_list;
 
 	/// The listBrowser instance, used to display files.
 	ListBrowser *list_browser;

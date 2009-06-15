@@ -1,152 +1,466 @@
 #include "screensaver.h"
 #include "main.h"
+#include "page.h"
+#include "timescript.h"
+#include "fontmanager.h" // bt_global::font
+#include "xml_functions.h"
+#include "titlelabel.h"
 
-#include <qpainter.h>
-#include <qbitmap.h>
+#include <QVBoxLayout>
+#include <QDomNode>
+#include <QPainter>
+#include <QBitmap>
+#include <QLabel>
+#include <QTimer>
+#include <QDebug>
+#include <QPaintEvent>
+#include <qmath.h>
 
 #include <stdlib.h> // RAND_MAX
 #include <assert.h>
+
+#define BALL_NUM 5
+
 
 ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 {
 	switch (type)
 	{
 	case ScreenSaver::BALLS:
-		return new ScreenSaverBalls();
+		return new ScreenSaverBalls;
 	case ScreenSaver::LINES:
-		return new ScreenSaverLine();
+		return new ScreenSaverLine;
+	case ScreenSaver::TIME:
+		return new ScreenSaverTime;
+	case ScreenSaver::TEXT:
+		return new ScreenSaverText;
+	case ScreenSaver::DEFORM:
+		return new ScreenSaverDeform;
+	case ScreenSaver::NONE:
+		return 0;
 	default:
 		assert(!"Type of screensaver not handled!");
 	}
 }
 
+// Definition of static member
+QString ScreenSaver::text;
 
-ScreenSaverBalls::ScreenSaverBalls()
+
+ScreenSaver::ScreenSaver(int refresh_time)
 {
-	backcol = 0;
-	y[0] = 0;
-	for (int idx = 0; idx < BALL_NUM; idx++)
+	page = 0;
+	timer = new QTimer(this);
+	timer->setInterval(refresh_time);
+	connect(timer, SIGNAL(timeout()), SLOT(refresh()));
+}
+
+void ScreenSaver::start(Page *p)
+{
+	page = p;
+	timer->start();
+}
+
+void ScreenSaver::stop()
+{
+	page = 0;
+	timer->stop();
+}
+
+bool ScreenSaver::isRunning()
+{
+	return page != 0;
+}
+
+void ScreenSaver::initData(const QDomNode &config_node)
+{
+	text = getTextChild(config_node, "text");
+}
+
+
+ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
+{
+}
+
+void ScreenSaverBalls::start(Page *p)
+{
+	ScreenSaver::start(p);
+	for (int i = 0; i < BALL_NUM; ++i)
 	{
-		ball[idx] = new BtLabel(this);
-		ball[idx]->setBackgroundMode(Qt::NoBackground);
+		QLabel *l = new QLabel(p);
+		ball_list[l] = BallData();
+		initBall(l, ball_list[l]);
+		l->show();
 	}
 }
 
-void ScreenSaverBalls::refresh(const QPixmap &bg_image)
+void ScreenSaverBalls::initBall(QLabel *ball, BallData &data)
 {
-	if (backcol < 3)
-	{
-		backcol = 4;
-		setPaletteBackgroundPixmap(bg_image);
-		for (int idx = 0; idx < BALL_NUM; idx++)
-		{
-			x[idx] = (int)(200.0 * rand() / (RAND_MAX + 1.0));
-			y[idx] = (int)(200.0 * rand() / (RAND_MAX + 1.0));
-			vx[idx] = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
-			vy[idx] = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
-			if (!vy[idx])
-				vy[idx] = 1;
-			if (!vx[idx])
-				vx[idx] = 1;
-			dim[idx] = (int)(10.0 * rand() / (RAND_MAX + 1.0)) + 15;
+	data.x = (int)(200.0 * rand() / (RAND_MAX + 1.0));
+	data.y = (int)(200.0 * rand() / (RAND_MAX + 1.0));
+	data.vx = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
+	data.vy = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
+	if (data.vx == 0)
+		data.vx = 1;
+	if (data.vy == 0)
+		data.vy = 1;
 
-			QBitmap mask = QBitmap(dim[idx], dim[idx], true);
-			QPainter p(&mask);
-			p.setBrush(QBrush(Qt::color1, Qt::SolidPattern));
-			for (int idy = 2; idy <= dim[idx]; idy++)
-				p.drawEllipse((dim[idx]-idy)/2, (dim[idx]-idy)/2, idy, idy);
-			ball[idx]->setMask(mask);
-		}
+	data.dim = (int)(10.0 * rand() / (RAND_MAX + 1.0)) + 15;
+	ball->resize(data.dim, data.dim);
+
+	QBitmap mask = QBitmap(data.dim, data.dim);
+	mask.clear();
+	QPainter p(&mask);
+	p.setBrush(QBrush(Qt::color1, Qt::SolidPattern));
+	for (int i = 2; i <= data.dim; ++i)
+		p.drawEllipse((data.dim - i) / 2, (data.dim - i) / 2, i, i);
+	ball->setMask(mask);
+}
+
+void ScreenSaverBalls::stop()
+{
+	QMutableHashIterator<QLabel*, BallData> it(ball_list);
+	while (it.hasNext())
+	{
+		it.next();
+		delete it.key();
 	}
-	else
+
+	ball_list.clear();
+	ScreenSaver::stop();
+}
+
+void ScreenSaverBalls::refresh()
+{
+	QMutableHashIterator<QLabel*, BallData> it(ball_list);
+	while (it.hasNext())
 	{
-		backcol++;
-		if (backcol == 9)
+		it.next();
+		BallData& data = it.value();
+		data.x += data.vx;
+		data.y += data.vy;
+
+		bool change_style = false;
+		if (data.x <= 0)
 		{
-			backcol = 4;
-			setPaletteBackgroundPixmap(bg_image);
+			data.vx = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) + 5;
+			data.x = 0;
+			change_style = true;
+		}
+		if (data.y > MAX_HEIGHT - data.dim)
+		{
+			data.vy = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) - 15;
+			data.y = MAX_HEIGHT - data.dim;
+			change_style = true;
 		}
 
-		for (int idx = 0; idx < BALL_NUM; idx++)
+		if (data.y <= 0)
 		{
-			x[idx] += vx[idx];
-			y[idx] += vy[idx];
+			data.vy = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) + 5;
+			if (data.vy == 0)
+				data.vy = 1;
+			data.y = 0;
+			change_style = true;
+		}
+		if (data.x > MAX_WIDTH - data.dim)
+		{
+			data.vx = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) - 15;
+			if (data.vx == 0)
+				data.vx = 1;
+			data.x = MAX_WIDTH - data.dim;
+			change_style = true;
+		}
 
+		if (change_style)
+		{
 			QColor ball_bg = QColor((int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
 									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
 									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150);
-			int rand_number = (int)(10.0 * rand() / (RAND_MAX + 1.0));
-			
-			if  (x[idx] <= 0)
-			{
-				vx[idx] = rand_number + 5;
-				x[idx] = 0;
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
-			}
-			if  (y[idx] > (MAX_HEIGHT-dim[idx]))
-			{
-				vy[idx] = rand_number - 15;
-				y[idx] = MAX_HEIGHT-dim[idx];
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
-			}
-			if   (y[idx] <= 0)
-			{
-				vy[idx] = rand_number + 5;
-				if (!vy[idx])
-					vy[idx] = 1;
-				y[idx] = 0;
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
-			}
-			if  (x[idx] > (MAX_WIDTH-dim[idx]))
-			{
-				vx[idx] = rand_number - 15;
-				if (!vx[idx])
-					vx[idx] = 1;
-				x[idx] = MAX_WIDTH - dim[idx];
-				ball[idx]->setPaletteBackgroundColor(ball_bg);
-			}
-			ball[idx]->setGeometry(x[idx], y[idx], dim[idx], dim[idx]);
-			ball[idx]->show();
+
+			QString ball_style = QString("QLabel {background-color:%1;}").arg(ball_bg.name());
+			it.key()->setStyleSheet(ball_style);
 		}
+		it.key()->move(data.x, data.y);
 	}
 }
 
 
-ScreenSaverLine::ScreenSaverLine()
+ScreenSaverLine::ScreenSaverLine() : ScreenSaver(150)
 {
-	backcol = 10;
-	line = new BtLabel(this);
-	black_line = false;
+	line = 0;
 }
 
-void ScreenSaverLine::refresh(const QPixmap &bg_image)
+void ScreenSaverLine::start(Page *p)
 {
-	if (backcol >= 5)
-	{
-		setPaletteBackgroundPixmap(bg_image);
-		backcol = 0;
-	}
+	ScreenSaver::start(p);
+	line = new QLabel(p);
+	customizeLine();
+	y = 0;
+	up_to_down = true;
+	line->setStyleSheet(styleUpToDown());
+	line->show();
+}
 
-	++backcol;
+void ScreenSaverLine::customizeLine()
+{
+	setLineHeight(6);
+}
 
+void ScreenSaverLine::setLineHeight(int height)
+{
+	line->resize(MAX_WIDTH, height);
+	line_height = height;
+}
+
+void ScreenSaverLine::stop()
+{
+	delete line;
+	ScreenSaver::stop();
+}
+
+void ScreenSaverLine::refresh()
+{
 	if (y > MAX_HEIGHT)
 	{
 		y = MAX_HEIGHT;
-		black_line = true;
+		up_to_down = false;
+		line->setStyleSheet(styleDownToUp());
 	}
 
-	if (y < 0)
+	if (y + line_height < 0)
 	{
-		y = 0;
-		black_line = false;
+		y = - line_height;
+		up_to_down = true;
+		line->setStyleSheet(styleUpToDown());
 	}
 
-	if (!black_line)
+	if (up_to_down)
 		y += 3;
 	else
 		y -= 3;
 
-	line->setGeometry(0, y, MAX_WIDTH, 6);
-	line->setPaletteBackgroundColor(QColor::QColor(black_line ? Qt::black : Qt::white));
-	line->show();
+	line->move(0, y);
 }
+
+QString ScreenSaverLine::styleDownToUp()
+{
+	return "* {background-color:#000000; color:#FFFFFF; }";
+}
+
+QString ScreenSaverLine::styleUpToDown()
+{
+	return "* {background-color:#FFFFFF; color:#000000; }";
+}
+
+
+void ScreenSaverTime::customizeLine()
+{
+	setLineHeight(30);
+	timeScript *time = new timeScript(line, 1);
+	time->setFrameStyle(QFrame::Plain);
+	time->setFont(bt_global::font->get(FontManager::TEXT));
+
+	QVBoxLayout *layout = new QVBoxLayout;
+	layout->setContentsMargins(0, 2, 0, 2);
+	layout->addWidget(time, 0, Qt::AlignCenter);
+	line->setLayout(layout);
+}
+
+void ScreenSaverText::customizeLine()
+{
+	setLineHeight(30);
+	line->setFont(bt_global::font->get(FontManager::TEXT));
+	line->setAlignment(Qt::AlignCenter);
+	line->setText(text);
+}
+
+
+static inline QRect circle_bounds(const QPointF &center, qreal radius, qreal compensation)
+{
+	return QRect(qRound(center.x() - radius - compensation),
+				 qRound(center.y() - radius - compensation),
+				 qRound((radius + compensation) * 2),
+				 qRound((radius + compensation) * 2));
+}
+
+
+ScreenSaverDeform::ScreenSaverDeform() : ScreenSaver(500)
+{
+	radius = 30;
+	current_pos = QPointF(radius, radius);
+	direction = QPointF(1, 1);
+	font_size = 24;
+	repaint_timer.start(50, this);
+	repaint_tracker.start();
+	deformation = 60;
+	need_refresh = true;
+
+	buildLookupTable();
+	generateLensPixmap();
+}
+
+void ScreenSaverDeform::start(Page *p)
+{
+	ScreenSaver::start(p);
+	showFullScreen();
+	refresh();
+	raise();
+}
+
+void ScreenSaverDeform::stop()
+{
+	ScreenSaver::stop();
+	close();
+}
+
+void ScreenSaverDeform::refresh()
+{
+	QImage tmp_image(page->size(), QImage::Format_RGB16);
+	page->render(&tmp_image);
+	// Copy the QImage is not a problem, thanks to implicit data sharing.
+	bg_image = tmp_image;
+	need_refresh = true;
+	update();
+}
+
+void ScreenSaverDeform::buildLookupTable()
+{
+	lens_lookup_table.resize(radius * 2);
+
+	for (int x = -radius; x < radius; ++x)
+	{
+		lens_lookup_table[x + radius].resize(radius * 2);
+
+		for (int y = -radius; y < radius; ++y)
+		{
+			qreal flip = deformation / qreal(100);
+			qreal len = qSqrt(x * x + y * y) - radius;
+
+			int pickx, picky;
+
+			if (len < 0)
+			{
+				pickx = static_cast<int>(x - flip * x * (-len) / radius);
+				picky = static_cast<int>(y - flip * y * (-len) / radius);
+			}
+			else
+			{
+				pickx = x;
+				picky = y;
+			}
+			lens_lookup_table[x + radius][y + radius] = QPoint(pickx, picky);
+		}
+	}
+}
+
+void ScreenSaverDeform::generateLensPixmap()
+{
+	qreal rad = radius;
+
+	QRect bounds = circle_bounds(QPointF(), rad, 0);
+
+	QPainter painter;
+
+	lens_pixmap = QPixmap(bounds.size());
+	lens_pixmap.fill(Qt::transparent);
+	painter.begin(&lens_pixmap);
+
+	QRadialGradient gr(rad, rad, rad, 3 * rad / 5, 3 * rad / 5);
+	gr.setColorAt(0.0, QColor(255, 255, 255, 191));
+	gr.setColorAt(0.2, QColor(255, 255, 127, 191));
+	gr.setColorAt(0.9, QColor(150, 150, 200, 63));
+	gr.setColorAt(0.95, QColor(0, 0, 0, 127));
+	gr.setColorAt(1, QColor(0, 0, 0, 0));
+	painter.setRenderHint(QPainter::Antialiasing);
+	painter.setBrush(gr);
+	painter.setPen(Qt::NoPen);
+	painter.drawEllipse(0, 0, bounds.width(), bounds.height());
+}
+
+void ScreenSaverDeform::timerEvent(QTimerEvent *)
+{
+	if (QLineF(QPointF(0,0), direction).length() > 1)
+		direction *= 0.995;
+	qreal time = repaint_tracker.restart();
+
+	QRect rectBefore = circle_bounds(current_pos, radius, font_size);
+
+	qreal dx = direction.x();
+	qreal dy = direction.y();
+	if (time > 0)
+	{
+		dx = dx * time * .05;
+		dy = dy * time * .05;
+	}
+
+	current_pos += QPointF(dx, dy);
+
+	if (current_pos.x() - radius < 0)
+	{
+		direction.setX(-direction.x());
+		current_pos.setX(radius);
+	}
+	else if (current_pos.x() + radius > width())
+	{
+		direction.setX(-direction.x());
+		current_pos.setX(width() - radius);
+	}
+
+	if (current_pos.y() - radius < 0)
+	{
+		direction.setY(-direction.y());
+		current_pos.setY(radius);
+	}
+	else if (current_pos.y() + radius > height())
+	{
+		direction.setY(-direction.y());
+		current_pos.setY(height() - radius);
+	}
+
+	QRect rectAfter = circle_bounds(current_pos, radius, font_size);
+	update(rectAfter | rectBefore);
+}
+
+
+void ScreenSaverDeform::paintEvent(QPaintEvent *event)
+{
+	if (need_refresh)
+		canvas_image = bg_image;
+	else
+	{
+		QPainter p(&canvas_image);
+		p.drawImage(event->rect(), bg_image, event->rect());
+	}
+
+	QPoint topleft = current_pos.toPoint() - QPoint(radius, radius);
+	QPoint bottomright = current_pos.toPoint() + QPoint(radius, radius);
+
+	int x, y;
+
+	for (y = topleft.y(); y < bottomright.y() - 1; ++y)
+	{
+		quint16 *line_colors = (quint16*)canvas_image.scanLine(y);
+		for (x = topleft.x(); x < bottomright.x() - 1; ++x)
+		{
+			int pos_x = static_cast<int>(current_pos.x());
+			int pos_y = static_cast<int>(current_pos.y());
+			int lx = x - pos_x + radius;
+			int ly = y - pos_y + radius;
+
+			int pickx = lens_lookup_table[lx][ly].x() + pos_x;
+			int picky = lens_lookup_table[lx][ly].y() + pos_y;
+
+			// We pick the color from the right position (calculated by lens_lookup_table)
+			// in the source QImage and put it into the dest QImage simply copying the raw
+			// color data (that is stored using the 16 bit RGB color format)
+			if (pickx >= 0 && pickx < bg_image.width() &&
+				picky >= 0 && picky < bg_image.height())
+				line_colors[x] = ((quint16*)bg_image.scanLine(picky))[pickx];
+		}
+	}
+
+	QPainter painter(this);
+	painter.drawImage(canvas_image.rect(), canvas_image);
+	painter.drawPixmap(topleft, lens_pixmap);
+}
+

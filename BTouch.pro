@@ -1,13 +1,33 @@
 ######################################################################
-# Manually maintained
-######################################################################
+# Manual mantained!
 
 TEMPLATE = app
 
-CONFIG+= qt debug warn_on
-DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB
-LIBS+= -L../common_files -lcommon -lssl
+# determine the target platform on the basis of environment variable TARGET
+PLATFORM = $$(ARCH)
+
+contains(PLATFORM, arm) {
+	LIBS+= -L../common_files -lcommon
+	OBJECTS_DIR = obj/arm
+	MOC_DIR = moc/arm
+        DEFINES += BT_EMBEDDED
+}
+
+contains(PLATFORM, x86) {
+	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
+        DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
+	LIBS+= -L../common_files/lib/x86 -lcommon
+	OBJECTS_DIR = obj/x86
+	MOC_DIR = moc/x86
+}
+
+LIBS+= -lssl
+CONFIG += qt debug warn_on
+CONFIG -= release
+DEFINES += QT_QWS_EBX BTWEB
+release:DEFINES += NDEBUG
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
+QT += network xml
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
@@ -16,177 +36,201 @@ QMAKE_CXXFLAGS += -fexceptions
 
 # Input
 HEADERS += actuators.h \
+           alarmclock.h \
            allarme.h \
            ambdiffson.h \
            amplificatori.h \
-           antintrusione.h \
-           automatismi.h \
+           antintrusion.h \
+           automation.h \
            aux.h \
-           bann2but.h \
-           bann2butlab.h \
-           bann3but.h \
-           bann4but.h \
-           bann4taslab.h \
-           bann_antintrusione.h \
-           bannbut2icon.h \
-           bannbuticon.h \
+           bann1_button.h \
+           bann2_buttons.h \
+           bann3_buttons.h \
+           bann4_buttons.h \
+           bann_antintrusion.h \
+           bann_automation.h \
+           bann_lighting.h \
+           bann_scenario.h \
+           bann_settings.h \
+           bann_videoentryphone.h \
            bannciclaz.h \
-           bannciclaz3but.h \
            banner.h \
            bannfrecce.h \
-           bannfullscreen.h \
-           bannon2scr.h \
-           bannondx.h \
-           bannonicons.h \
-           bannonoff.h \
-           bannonoff2scr.h \
+           bann_thermal_regulation.h \
            bannonoffcombo.h \
-           bannpuls.h \
            bannregolaz.h \
-           bannsettings.h \
            banntemperature.h \
+           brightnesspage.h \
            btbutton.h \
-           btlabel.h \
-           btlabelevo.h \
            btmain.h \
            bttime.h \
-           btwidgets.h \
            buttons_bar.h \
            calibrate.h \
-           carico.h \
-           contrpage.h \
+           cleanscreen.h \
+           contrast.h \
+           datetime.h \
+           dev_automation.h \
            device.h \
-           device_cache.h \
            device_status.h \
-           diffmulti.h \
-           diffsonora.h \
-           dimmers.h \
+           devices_cache.h \
+           displaycontrol.h \
+           displaypage.h \
+           energy_data.h \
+           energy_device.h \
+           energy_graph.h \
+           energy_view.h \
+           feedmanager.h \
+           feeditemwidget.h \
+           feedparser.h \
            fontmanager.h \
            frame_interpreter.h \
-           genericfunz.h \
+           generic_functions.h \
            genpage.h \
            homepage.h \
            icondispatcher.h \
            impostatime.h \
+           keypad.h \
+           landevice.h \
+           lansettings.h \
+           lighting.h \
            listbrowser.h \
+           loads.h \
            main.h \
            mediaplayer.h \
            multimedia_source.h \
+           multisounddiff.h \
            openclient.h \
+           page.h \
+           pagecontainer.h \
+           pagefactory.h \
            plantmenu.h \
            playwindow.h \
-           postoext.h \
            poweramplifier.h \
            poweramplifier_device.h \
            radio.h \
            scaleconversion.h \
-           scenari.h \
+           scenario.h \
            scenevocond.h \
            screensaver.h \
-           setitems.h \
+           screensaverpage.h \
+           settings.h \
+           singlechoicepage.h \
+           skinmanager.h \
            sorgentiaux.h \
            sorgentimedia.h \
            sorgentiradio.h \
            sottomenu.h \
+           sounddiffusion.h \
+           specialpage.h \
            stopngo.h \
-           supervisionMenu.h \
-           sveglia.h \
-           tastiera.h \
+           supervisionmenu.h \
+           temperatureviewer.h \
            thermalmenu.h \
            timescript.h \
            titlelabel.h \
-           versio.h \
-           videocitof.h \
-           xmlconfhandler.h \
-           xmlvarihandler.h \
-           QWSMOUSE/qmouse_qws.h \
-           QWSMOUSE/qmouselinuxtp_qws.h
+           transitionwidget.h \
+           version.h \
+           videoentryphone.h \
+           xml_functions.h \
 
 SOURCES += actuators.cpp \
+           alarmclock.cpp \
            allarme.cpp \
            ambdiffson.cpp \
            amplificatori.cpp \
-           antintrusione.cpp \
-           automatismi.cpp \
+           antintrusion.cpp \
+           automation.cpp \
            aux.cpp \
-           ban4tasLab.cpp \
-           bann2But.cpp \
-           bann2butLab.cpp \
-           bann3But.cpp \
-           bann4But.cpp \
-           bann_antintrusione.cpp \
-           bannBut2Icon.cpp \
-           bannButIcon.cpp \
+           bann1_button.cpp \
+           bann2_buttons.cpp \
+           bann3_buttons.cpp \
+           bann4_buttons.cpp \
+           bann_antintrusion.cpp \
+           bann_automation.cpp \
+           bann_lighting.cpp \
+           bann_scenario.cpp \
+           bann_settings.cpp \
+           bann_videoentryphone.cpp \
            bannciclaz.cpp \
-           bannciclaz3but.cpp \
            banner.cpp \
-           bannFrecce.cpp \
-           bannfullscreen.cpp \
-           bannOn2scr.cpp \
-           bannOnDx.cpp \
-           bannOnIcons.cpp \
-           bannOnOff.cpp \
-           bannOnOff2scr.cpp \
+           bannfrecce.cpp \
+           bann_thermal_regulation.cpp \
            bannonoffcombo.cpp \
-           bannPuls.cpp \
-           bannRegolaz.cpp \
-           bannsettings.cpp \
+           bannregolaz.cpp \
            banntemperature.cpp \
-           BTButton.cpp \
-           BtLabel.cpp \
-           BtMain.cpp \
+           btbutton.cpp \
+           btmain.cpp \
+           brightnesspage.cpp \
            bttime.cpp \
-           btwidgets.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
-           carico.cpp \
-           contrPage.cpp \
+           cleanscreen.cpp \
+           contrast.cpp \
+           datetime.cpp \
+           definitions.cpp \
+           dev_automation.cpp \
            device.cpp \
-           device_cache.cpp \
            device_status.cpp \
-           diffmulti.cpp \
-           diffSonora.cpp \
-           dimmers.cpp \
+           devices_cache.cpp \
+           displaycontrol.cpp \
+           displaypage.cpp \
+           energy_data.cpp \
+           energy_device.cpp \
+           energy_graph.cpp \
+           energy_view.cpp \
+           feedmanager.cpp \
+           feeditemwidget.cpp \
+           feedparser.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
-           genericFunz.cpp \
-           genPage.cpp \
-           homePage.cpp \
+           generic_functions.cpp \
+           genpage.cpp \
+           homepage.cpp \
            icondispatcher.cpp \
            impostatime.cpp \
+           keypad.cpp \
+           landevice.cpp \
+           lansettings.cpp \
+           lighting.cpp \
            listbrowser.cpp \
+           loads.cpp \
            main.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
-           openClient.cpp \
+           multisounddiff.cpp \
+           openclient.cpp \
+           page.cpp \
+           pagecontainer.cpp \
+           pagefactory.cpp \
            plantmenu.cpp \
            playwindow.cpp \
-           postoext.cpp \
            poweramplifier.cpp \
            poweramplifier_device.cpp \
            radio.cpp \
            scaleconversion.cpp \
-           scenari.cpp \
-           scenEvoCond.cpp \
+           scenario.cpp \
+           scenevocond.cpp \
            screensaver.cpp \
-           setItems.cpp \
+           screensaverpage.cpp \
+           settings.cpp \
+           singlechoicepage.cpp \
+           skinmanager.cpp \
            sorgentiaux.cpp \
            sorgentimedia.cpp \
            sorgentiradio.cpp \
-           sottoMenu.cpp \
+           sottomenu.cpp \
+           sounddiffusion.cpp \
+           specialpage.cpp \
            stopngo.cpp \
-           supervisionMenu.cpp \
-           sveglia.cpp \
-           tastiera.cpp \
+           supervisionmenu.cpp \
+           temperatureviewer.cpp \
            thermalmenu.cpp \
-           timeScript.cpp \
+           timescript.cpp \
            titlelabel.cpp \
-           versio.cpp \
-           videocitof.cpp \
-           xmlconfhandler.cpp \
-           xmlvarihandler.cpp \
-           QWSMOUSE/qmouse_qws.cpp \
-           QWSMOUSE/qmouselinuxtp_qws.cpp
+           transitionwidget.cpp \
+           version.cpp \
+           videoentryphone.cpp \
+           xml_functions.cpp \
 
 TRANSLATIONS += linguist-ts/btouch_ar.ts \
                 linguist-ts/btouch_de.ts \

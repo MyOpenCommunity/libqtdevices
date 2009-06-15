@@ -1,124 +1,134 @@
 #include "poweramplifier.h"
-#include "device_cache.h" // btouch_device_cache
-#include "sottomenu.h"
-#include "btlabel.h"
-#include "main.h"
+#include "xml_functions.h" // getChildWithId, getChildren
+#include "devices_cache.h" // bt_global::devices_cache
+#include "skinmanager.h" // SkinContext, bt_global::skin
 
-#include <qregexp.h>
-#include <stdlib.h>
+#include <QVariant> // setProperty
+#include <QDomNode>
+#include <QDebug>
+#include <QLabel>
 
-static const char *IMG_PLUS = IMG_PATH "btnplus.png";
-static const char *IMG_MINUS = IMG_PATH "btnmin.png";
-static const char *IMG_PRESET = IMG_PATH "preset.png";
-static const char *IMG_TREBLE = IMG_PATH "louds.png";
-static const char *IMG_BASS = IMG_PATH "lows.png";
-static const char *IMG_BALANCE = IMG_PATH "balance_0.png";
-static const char *IMG_BALANCE_SX = IMG_PATH "balance_sx.png";
-static const char *IMG_BALANCE_DX = IMG_PATH "balance_dx.png";
-static const char *IMG_LOUD_ON = IMG_PATH "loud.png";
-static const char *IMG_LOUD_OFF = IMG_PATH "loud_off.png";
-static const char *IMG_MORE = IMG_PATH "more.png";
-static const char *IMG_LESS = IMG_PATH "less.png";
 
-/*****************************************************************
- ** PowerAmplifier
- ****************************************************************/
-
-PowerAmplifier::PowerAmplifier(QWidget *parent, const char *name, char* indirizzo, char* onIcon, char* offIcon, char *onAmpl, char *offAmpl, char* settingIcon)
-: bannRegolaz(parent, name)
+BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address)
+	: bannRegolaz(parent)
 {
-	qDebug("PowerAmplifier::PowerAmplifier()");
-	setRange(1,9);
+	setRange(1, 9);
 	setValue(1);
-	SetIcons(settingIcon, offIcon ,onAmpl, offAmpl,(char)1);
-	setAddress(indirizzo);
-	dev = static_cast<poweramplifier_device*>(btouch_device_cache.get_poweramplifier_device(getAddress()));
-	connect(dev, SIGNAL(status_changed(QMap<status_key_t, stat_var>)),
-			SLOT(status_changed(QMap<status_key_t, stat_var>)));
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("volume_active"), bt_global::skin->getImage("volume_inactive"), true);
+	setAddress(address);
+	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
-	connect(this, SIGNAL(sxClick()), SLOT(showSettings()));
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
-	connect(this, SIGNAL(cdxClick()), SLOT(turnUp()));
-	connect(this, SIGNAL(csxClick()), SLOT(turnDown()));
+	connect(this, SIGNAL(cdxClick()), SLOT(volumeUp()));
+	connect(this, SIGNAL(csxClick()), SLOT(volumeDown()));
 
-	off_icon = offIcon;
-	on_icon = onIcon;
 	status = false;
-	settings_page = new sottoMenu(NULL, "PowerAmplifierSettings");
 
-	QColor *bg, *fg1, *fg2;
-	readExtraConf(&bg, &fg1, &fg2);
-
-	QPtrList<QString> icons;
-	settings_page->addItemU((char)POWER_AMPLIFIER_PRESET, tr("Preset"), NULL, icons);
-	settings_page->addItemU((char)POWER_AMPLIFIER_TREBLE, tr("Treble"), NULL, icons, 0, 0, *fg2);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BASS, tr("Bass"), NULL, icons, 0, 0, *fg2);
-	settings_page->addItemU((char)POWER_AMPLIFIER_BALANCE, tr("Balance"), NULL, icons, 0, 0, *fg2);
-	settings_page->addItemU((char)POWER_AMPLIFIER_LOUD, tr("Loud"), NULL, icons, 0, 0, *fg2);
-	settings_page->hide();
-	connect(settings_page, SIGNAL(Closed()), settings_page, SLOT(hide()));
-
-	delete bg;
-	delete fg1;
-	delete fg2;
+	connectDxButton(new PowerAmplifier(dev, config_node));
 }
 
-void PowerAmplifier::setBGColor(QColor c)
+void BannPowerAmplifier::toggleStatus()
 {
-	banner::setBGColor(c);
-	settings_page->setAllBGColor(c);
+	if (status)
+		dev->turnOff();
+	else
+		dev->turnOn();
 }
 
-void PowerAmplifier::setFGColor(QColor c)
+void BannPowerAmplifier::inizializza(bool forza)
 {
-	banner::setFGColor(c);
-	settings_page->setAllFGColor(c);
+	dev->requestStatus();
+	dev->requestVolume();
+	banner::inizializza(forza);
 }
 
-void PowerAmplifier::showSettings()
+void BannPowerAmplifier::status_changed(const StatusList &status_list)
 {
-	settings_page->show();
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
+		{
+			status = it.value().toBool();
+			impostaAttivo(status);
+			SetIcons(1, bt_global::skin->getImage(status ? "off" : "on"));
+			Draw();
+		}
+		else if (it.key() == PowerAmplifierDevice::DIM_VOLUME)
+		{
+			int volume = it.value().toInt();
+			// We have to normalize the volume value (from 0 to 31) in a value
+			// that we can represent into the banner (that accept values from 1 to 9)
+			// so we use the following formula.
+			setValue((volume + 1) / 4 + 1);
+			Draw();
+		}
+		++it;
+	}
 }
 
-void PowerAmplifier::toggleStatus()
+void BannPowerAmplifier::volumeUp()
 {
-	SetIcons(1, status ? off_icon.ascii() : on_icon.ascii());
-	status = !status;
+	dev->volumeUp();
+}
+
+void BannPowerAmplifier::volumeDown()
+{
+	dev->volumeDown();
+}
+
+
+PowerAmplifier::PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node)
+{
+	loadBanners(dev, config_node);
+}
+
+void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &config_node)
+{
+	QMap<int, QString> preset_list;
+	foreach (const QDomNode &preset_node, getChildren(config_node, "pre"))
+		preset_list[preset_node.nodeName().mid(3).toInt()] = preset_node.toElement().text();
+
+	appendBanner(new PowerAmplifierPreset(dev, this, preset_list));
+
+	banner *b = new PowerAmplifierTreble(dev, this);
+	b->setText(tr("Treble"));
+	appendBanner(b);
+
+	b = new PowerAmplifierBass(dev, this);
+	b->setText(tr("Bass"));
+	appendBanner(b);
+
+	b = new PowerAmplifierBalance(dev, this);
+	b->setText(tr("Balance"));
+	appendBanner(b);
+
+	b = new PowerAmplifierLoud(dev, this);
+	b->setText(tr("Loud"));
+	appendBanner(b);
+}
+
+
+PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list)
+	: bannOnOff(parent)
+{
+	dev = d;
+	SetIcons(bt_global::skin->getImage("plus"), bt_global::skin->getImage("minus"), QString(),
+		bt_global::skin->getImage("preset"));
+	num_preset = 20;
+	fillPresetDesc(preset_list);
+	connect(this, SIGNAL(sxClick()), SLOT(next()));
+	connect(this, SIGNAL(dxClick()), SLOT(prev()));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+
+	setText(preset_desc[0]);
 	Draw();
 }
 
-void PowerAmplifier::turnUp()
-{
-	qDebug("PowerAmplifier::turnUp()");
-}
-
-void PowerAmplifier::turnDown()
-{
-	qDebug("PowerAmplifier::turnDown()");
-}
-
-void PowerAmplifier::status_changed(QMap<poweramplifier_device::status_key_t, stat_var> st)
-{
-
-}
-
-/*****************************************************************
- ** PowerAmplifierPreset
- ****************************************************************/
-
-PowerAmplifierPreset::PowerAmplifierPreset(QWidget *parent, const char *name)
- : bannOnOff(parent, name)
-{
-	qDebug("PowerAmplifierPreset::PowerAmplifierPreset()");
-	SetIcons(IMG_PLUS, IMG_MINUS, NULL, IMG_PRESET);
-	preset = 0;
-	num_preset = 20;
-	fillPresetDesc();
-	connect(this, SIGNAL(sxClick()), SLOT(nextPreset()));
-	connect(this, SIGNAL(dxClick()), SLOT(prevPreset()));
-}
-
-void PowerAmplifierPreset::fillPresetDesc()
+void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
 {
 	preset_desc.reserve(num_preset);
 	preset_desc.append(tr("Normal"));
@@ -126,245 +136,249 @@ void PowerAmplifierPreset::fillPresetDesc()
 	preset_desc.append(tr("Pop"));
 	preset_desc.append(tr("Rock"));
 	preset_desc.append(tr("Classical"));
-	preset_desc.append(tr("Jazz"));
+	preset_desc.append(tr("Techno"));
 	preset_desc.append(tr("Party"));
 	preset_desc.append(tr("Soft"));
 	preset_desc.append(tr("Full Bass"));
 	preset_desc.append(tr("Full Treble"));
 
-	for (unsigned i=10; i < num_preset; ++i)
-	{
-		QString desc;
-		desc.sprintf("%s %d", tr("Preset").ascii(), i + 1);
-		preset_desc.append(desc);
-	}
+	for (int i = preset_desc.size(); i < num_preset; ++i)
+		preset_desc.append(QString("%1 %2").arg(tr("Preset")).arg(i + 1));
 
-	QDomNode n = getPowerAmplifierNode();
-	QDomNode node = n.firstChild();
-	while (!node.isNull())
+	QMapIterator<int, QString> it(preset_list);
+	while (it.hasNext())
 	{
-		QRegExp reg("pre\\d{1,2}");
-		int pos = reg.search(node.nodeName());
-		if (pos != -1)
+		it.next();
+		if (it.key() > 0 && it.key() <= num_preset)
+			preset_desc[it.key() - 1] = it.value();
+	}
+}
+
+void PowerAmplifierPreset::inizializza(bool forza)
+{
+	dev->requestPreset();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierPreset::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_PRESET)
 		{
-			int preset_id = node.nodeName().mid(pos + 3, reg.matchedLength()).toInt();
-			if (preset_id > 0 && preset_id <= (int)num_preset)
-				preset_desc[preset_id - 1] = node.toElement().text();
+			int preset = it.value().toInt();
+			if (preset >= 0 && preset < num_preset)
+			{
+				setText(preset_desc[preset]);
+				Draw();
+			}
 			else
-				qWarning("[AUDIO] Preset %d is not a valid preset number", preset_id);
+				qWarning("Preset value (%d) is out of admitted range! [0 - %d]", preset, num_preset);
 		}
-		node = node.nextSibling();
+		++it;
 	}
 }
 
-QDomNode PowerAmplifierPreset::getPowerAmplifierNode()
+void PowerAmplifierPreset::prev()
 {
-	QDomNode node_page = getPageNode(DIFSON_MULTI);
-	if (!node_page.isNull())
-	{
-		QDomNode node_item = getChildWithId(node_page, QRegExp("item\\d{1,2}"), AMBIENTE);
-		if (!node_item.isNull())
-			return getChildWithId(node_item, QRegExp("device\\d{1,2}"), POWER_AMPLIFIER);
-	}
-
-	node_page = getPageNode(DIFSON);
-	if (!node_page.isNull())
-		return getChildWithId(node_page, QRegExp("item\\d{1,2}"), POWER_AMPLIFIER);
-	return QDomNode();
+	dev->prevPreset();
 }
 
-void PowerAmplifierPreset::showEvent(QShowEvent *event)
+void PowerAmplifierPreset::next()
 {
-	SetTextU(preset_desc[preset].ascii());
-	Draw();
+	dev->nextPreset();
 }
 
-void PowerAmplifierPreset::prevPreset()
-{
-	qDebug("PowerAmplifierPreset::prevPreset()");
-	if (!preset)
-		preset = num_preset - 1;
-	else
-		--preset;
-	SetTextU(preset_desc[preset].ascii());
-	Draw();
-}
 
-void PowerAmplifierPreset::nextPreset()
+PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff2scr(parent)
 {
-	qDebug("PowerAmplifierPreset::nextPreset()");
-	if (preset + 1 >= num_preset)
-		preset = 0;
-	else
-		++preset;
-	SetTextU(preset_desc[preset].ascii());
-	Draw();
-}
-
-/*****************************************************************
- ** PowerAmplifierTreble
- ****************************************************************/
-
-PowerAmplifierTreble::PowerAmplifierTreble(QWidget *parent, const char *name, QColor SecondForeground)
- : bannOnOff2scr(parent, name)
-{
-	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_TREBLE);
-	level = 0;
-	qDebug("PowerAmplifierTreble::PowerAmplifierTreble()");
+	dev = d;
+	SecondaryText->setProperty("SecondFgColor", true);
+	SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString(),
+		bt_global::skin->getImage("treble"));
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
-	secondary_fg = SecondForeground;
-	showLevel();
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	showLevel(0);
+}
+
+void PowerAmplifierTreble::inizializza(bool forza)
+{
+	dev->requestTreble();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierTreble::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_TREBLE)
+			showLevel(it.value().toInt());
+		++it;
+	}
 }
 
 void PowerAmplifierTreble::up()
 {
-	qDebug("PowerAmplifierTreble::up()");
-	level += 10;
-	showLevel();
-	Draw();
+	dev->trebleUp();
 }
 
 void PowerAmplifierTreble::down()
 {
-	qDebug("PowerAmplifierTreble::down()");
-	level -= 10;
-	showLevel();
-	Draw();
+	dev->trebleDown();
 }
 
-void PowerAmplifierTreble::showLevel()
+void PowerAmplifierTreble::showLevel(int level)
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	SetSecondaryTextU(desc.ascii());
+	setSecondaryText(desc);
+	Draw();
 }
 
-void PowerAmplifierTreble::setFGColor(QColor c)
-{
-	banner::setFGColor(c);
-	SecondaryText->setPaletteForegroundColor(secondary_fg);
-}
 
-/*****************************************************************
- ** PowerAmplifierBass
- ****************************************************************/
-
-PowerAmplifierBass::PowerAmplifierBass(QWidget *parent, const char *name, QColor SecondForeground)
- : bannOnOff2scr(parent, name)
+PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff2scr(parent)
 {
-	SetIcons(IMG_MINUS, IMG_PLUS, NULL, IMG_BASS);
-	level = 0;
-	qDebug("PowerAmplifierBass::PowerAmplifierTreble()");
+	dev = d;
+	SecondaryText->setProperty("SecondFgColor", true);
+	SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString(),
+		bt_global::skin->getImage("bass"));
 	connect(this, SIGNAL(sxClick()), SLOT(down()));
 	connect(this, SIGNAL(dxClick()), SLOT(up()));
-	secondary_fg = SecondForeground;
-	showLevel();
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	showLevel(0);
+}
+
+void PowerAmplifierBass::inizializza(bool forza)
+{
+	dev->requestBass();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierBass::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_BASS)
+			showLevel(it.value().toInt());
+		++it;
+	}
 }
 
 void PowerAmplifierBass::up()
 {
-	qDebug("PowerAmplifierBass::up()");
-	level += 10;
-	showLevel();
-	Draw();
+	dev->bassUp();
 }
 
 void PowerAmplifierBass::down()
 {
-	qDebug("PowerAmplifierBass::down()");
-	level -= 10;
-	showLevel();
-	Draw();
+	dev->bassDown();
 }
 
-void PowerAmplifierBass::showLevel()
+void PowerAmplifierBass::showLevel(int level)
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	SetSecondaryTextU(desc.ascii());
+	setSecondaryText(desc);
+	Draw();
 }
 
-void PowerAmplifierBass::setFGColor(QColor c)
-{
-	banner::setFGColor(c);
-	SecondaryText->setPaletteForegroundColor(secondary_fg);
-}
 
-/*****************************************************************
- ** PowerAmplifierBalance
- ****************************************************************/
-
-PowerAmplifierBalance::PowerAmplifierBalance(QWidget *parent, const char *name, QColor SecondForeground)
- : BannOnOffCombo(parent, name)
+PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent) : BannOnOffCombo(parent)
 {
-	qDebug("PowerAmplifierBalance::PowerAmplifierBalance()");
-	SetIcons(IMG_MORE, IMG_LESS, IMG_BALANCE, IMG_BALANCE_SX, IMG_BALANCE_DX);
-	secondary_fg = SecondForeground;
-	balance = 0;
+	dev = d;
+	SecondaryText->setProperty("SecondFgColor", true);
+	SetIcons(bt_global::skin->getImage("more"), bt_global::skin->getImage("less"), bt_global::skin->getImage("balance"),
+		bt_global::skin->getImage("balance_sx"), bt_global::skin->getImage("balance_dx"));
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
 	connect(this, SIGNAL(dxClick()), SLOT(sx()));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	showBalance(0);
+}
+
+void PowerAmplifierBalance::inizializza(bool forza)
+{
+	dev->requestBalance();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierBalance::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_BALANCE)
+			showBalance(it.value().toInt());
+		++it;
+	}
 }
 
 void PowerAmplifierBalance::sx()
 {
-	qDebug("PowerAmplifierBalance::sx()");
-	if (balance >= 0 && balance - 10 <= 0)
-		changeStatus(balance - 10 ? SX : CENTER);
-
-	balance -= 10;
-	showBalance();
-	Draw();
+	dev->balanceDown();
 }
 
 void PowerAmplifierBalance::dx()
 {
-	qDebug("PowerAmplifierBalance::dx()");
-	if (balance <= 0 && balance + 10 >= 0)
-		changeStatus(balance + 10 ? DX : CENTER);
-
-	balance += 10;
-	showBalance();
-	Draw();
+	dev->balanceUp();
 }
 
-void PowerAmplifierBalance::showBalance()
+void PowerAmplifierBalance::showBalance(int balance)
 {
+	if (balance == 0)
+		changeStatus(CENTER);
+	else if (balance < 0)
+		changeStatus(SX);
+	else
+		changeStatus(DX);
+
 	QString desc;
 	desc.sprintf("%d", abs(balance));
-	SetSecondaryTextU(desc.ascii());
-}
-
-void PowerAmplifierBalance::setFGColor(QColor c)
-{
-	banner::setFGColor(c);
-	SecondaryText->setPaletteForegroundColor(secondary_fg);
-}
-
-/*****************************************************************
- ** PowerAmplifierLoud
- ****************************************************************/
-
-PowerAmplifierLoud::PowerAmplifierLoud(QWidget *parent, const char *name)
- : bannOnOff(parent, name)
-{
-	qDebug("PowerAmplifierLoud::PowerAmplifierLoud()");
-	SetIcons(ICON_ON, ICON_OFF, IMG_LOUD_ON, IMG_LOUD_OFF);
-	impostaAttivo(0);
-	connect(this, SIGNAL(sxClick()), SLOT(loudOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(loudOff()));
-}
-
-void PowerAmplifierLoud::loudOff()
-{
-	qDebug("PowerAmplifierLoud::loudOff()");
-	impostaAttivo(0);
+	setSecondaryText(desc);
 	Draw();
 }
 
-void PowerAmplifierLoud::loudOn()
+
+PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff(parent)
 {
-	qDebug("PowerAmplifierLoud::loudOn()");
-	impostaAttivo(1);
-	Draw();
+	dev = d;
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("loud_on"),
+		bt_global::skin->getImage("loud_off"));
+	connect(this, SIGNAL(sxClick()), SLOT(on()));
+	connect(this, SIGNAL(dxClick()), SLOT(off()));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	impostaAttivo(0);
+}
+
+void PowerAmplifierLoud::inizializza(bool forza)
+{
+	dev->requestLoud();
+	banner::inizializza(forza);
+}
+
+void PowerAmplifierLoud::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_LOUD)
+		{
+			impostaAttivo(it.value().toBool());
+			Draw();
+		}
+		++it;
+	}
+}
+
+void PowerAmplifierLoud::off()
+{
+	dev->loudOff();
+}
+
+void PowerAmplifierLoud::on()
+{
+	dev->loudOn();
 }

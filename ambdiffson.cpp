@@ -9,82 +9,36 @@
  ****************************************************************/
 
 #include "ambdiffson.h"
-#include "genericfunz.h" // void getAmbName(...)
-#include "btlabel.h"
+#include "generic_functions.h" // void getAmbName(...)
 #include "btbutton.h"
-#include "diffsonora.h"
-#include "diffmulti.h" // struct data_ampli_multi
-#include "sottomenu.h"
-#include "fontmanager.h"
+#include "sounddiffusion.h"
+#include "multisounddiff.h"
+#include "fontmanager.h" // bt_global::font
 
-#include <qfont.h>
+#include <QWidget>
+#include <QDebug>
+#include <QLabel>
+#include <QFont>
 
-#include <stdlib.h>
+#include <assert.h>
 
 /*****************************************************************
  ** Ambiente diffusione sonora multicanale
  ****************************************************************/
 
 
-ambDiffSon::ambDiffSon(QWidget *parent, const char *name, void *indirizzo, char* IconaSx, char* IconaDx, char *icon,
-	QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm) : bannBut2Icon(parent, name)
+ambDiffSon::ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString IconaSx, QString IconaDx, QString icon,
+	SoundDiffusion *ds, AudioSources *sorg) : bannBut2Icon(parent)
 {
-	qDebug("ambDiffSon::ambDiffSon() : %s %s %s %s", (char *)indirizzo, IconaSx, IconaDx, icon);
-	char zoneIcon[50];
-	getAmbName(IconaSx, zoneIcon, (char *)indirizzo, sizeof(zoneIcon));
-	qDebug("zoneIcon = %s", zoneIcon);
-	SetIcons(icon, zoneIcon, IconaDx);
+	qDebug() << "ambDiffSon::ambDiffSon()";
+	descr = d;
+	SetIcons(icon, getAmbName(IconaSx, indirizzo), IconaDx);
 	Draw();
-	setAddress((char *)indirizzo);
+	setAddress(indirizzo);
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 
 	diffson = ds;
 	sorgenti = sorg;
-	diffmul = dm;
-	QPtrListIterator<dati_ampli_multi> *lai = new QPtrListIterator<dati_ampli_multi>(*la);
-	lai->toFirst();
-	dati_ampli_multi *am;
-	while ((am = lai->current()) != 0)
-	{
-		QPtrList<QString> icons;
-		QString qI1(am->I1);
-		QString qI2(am->I2);
-		QString qI3(am->I3);
-		QString qI4(am->I4);
-		QString qI5(am->I5);
-		icons.append(&qI1);
-		icons.append(&qI2);
-		icons.append(&qI3);
-		icons.append(&qI4);
-		icons.append(&qI5);
-
-		if (am->tipo == AMPLIFICATORE || am->tipo == POWER_AMPLIFIER)
-		{
-			qDebug("Adding amplifier (%d, %s %s)", am->tipo, (char *)am->indirizzo, am->descr->at(0)->ascii());
-			diffson->addItemU(am->tipo, *am->descr->at(0), (char *)am->indirizzo, icons, am->modo);
-		}
-		else 
-		{
-			qDebug("Adding amplifier group");
-			qDebug("indirizzo = %p", am->indirizzo);
-			QPtrListIterator<QString> *lii = new QPtrListIterator<QString>(*(QPtrList<QString> *)(am->indirizzo));
-			QString *i;
-			lii->toFirst();
-			while ((i = lii->current()))
-			{
-				QStringList qsl = QStringList::split(QChar(','), *i);
-				QPtrList<QString> *indirizzi = new QPtrList<QString>();
-				indirizzi->setAutoDelete(true);
-				for (unsigned int j = 0; j < qsl.count(); j++)
-					indirizzi->append(new QString(qsl[j]));
-				diffson->addItemU(am->tipo, *am->descr->at(0), indirizzi, icons, am->modo);
-				++(*lii);
-			}
-			delete lii;
-		}
-		++(*lai);
-	}
-	delete lai;
 	setDraw(false);
 }
 
@@ -100,42 +54,32 @@ void ambDiffSon::Draw()
 	BannerIcon2->repaint();
 	BannerIcon2->setPixmap(*(Icon[3]));
 	BannerIcon2->repaint();
-	QFont aFont;
-	FontManager::instance()->getFont(font_items_bannertext, aFont);
-	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont(aFont);
+	BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	BannerText->setFont(bt_global::font->get(FontManager::TEXT));
 	BannerText->setText(qtesto);
 }
 
-void ambDiffSon::hide()
+void ambDiffSon::hideEvent(QHideEvent *event)
 {
-	qDebug("ambDiffSon::hide()");
+	qDebug("ambDiffSon::hideEvent()");
 	setDraw(false);
-	banner::hide();
 }
 
 void ambDiffSon::configura()
 {
 	qDebug("ambDiffSon::configura()");
-	emit(ambChanged(QString(name()), false, getAddress()));
-	qDebug("sorgenti->parent() = %p", sorgenti->parent());
-	qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
-	disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	disconnect(sorgenti->parent(), SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
+	emit ambChanged(descr, false, getAddress());
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-	connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
-	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	diffson->setFirstSource(actSrc);
 	diffson->forceDraw();
-	diffson->showFullScreen();
+	diffson->showPage();
 	setDraw(true);
 }
 
 void ambDiffSon::actSrcChanged(int a, int s)
 {
 	qDebug("ambDiffSon::actSrcChanged(%d, %d)", a, s);
-	if (a != atoi(getAddress()))
+	if (a != getAddress().toInt())
 	{
 		qDebug("not my address, discarding event");
 		return;
@@ -166,62 +110,16 @@ bool ambDiffSon::isDraw()
  ** Insieme ambienti diffusione sonora multicanale
  ****************************************************************/
 
-insAmbDiffSon::insAmbDiffSon(QWidget *parent, QPtrList<QString> *names, void *indirizzo,char* Icona1,char* Icona2, QPtrList<dati_ampli_multi> *la, diffSonora *ds, sottoMenu *sorg, diffmulti *dm)
-	: bannButIcon(parent, (char *)names->at(0)->ascii())
+insAmbDiffSon::insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2,
+	SoundDiffusion *ds, AudioSources *sorg) : bannPuls(parent)
 {
-	qDebug("insAmbDiffSon::insAmbDiffSon() : %s %s %s", (char *)indirizzo, Icona1, Icona2);
+	qDebug() << "insAmbDiffSon::insAmbDiffSon() : " << Icona1 << " " << Icona2;
+	descr = d;
 	SetIcons(Icona1, Icona2);
 	Draw();
 	connect(this, SIGNAL(sxClick()), this, SLOT(configura()));
 	diffson = ds;
 	sorgenti = sorg;
-	diffmul = dm;
-
-	QPtrListIterator<dati_ampli_multi> *lai = new QPtrListIterator<dati_ampli_multi>(*la);
-	lai->toFirst();
-	dati_ampli_multi *am;
-	while ((am = lai->current()) != 0)
-	{
-		QPtrList<QString> icons;
-		QString qI1(am->I1);
-		QString qI2(am->I2);
-		QString qI3(am->I3);
-		QString qI4(am->I4);
-		icons.append(&qI1);
-		icons.append(&qI2);
-		icons.append(&qI3);
-		icons.append(&qI4);
-
-		if (am->tipo == AMPLIFICATORE)
-		{
-			qDebug("Adding amplifier (%d, %s %s)", am->tipo, 
-					(char *)am->indirizzo, (char *)am->descr->at(0)->ascii());
-			diffson->addItemU(am->tipo, *am->descr->at(0), 
-					(char *)am->indirizzo,
-					icons, am->modo);
-		}
-		else
-		{
-			qDebug("Adding amplifier group(%d)", am->tipo);
-			qDebug("indirizzo = %p", am->indirizzo);
-			QPtrListIterator<QString> *lii = new QPtrListIterator<QString>(*(QPtrList<QString> *)(am->indirizzo));
-			QString *i;
-			lii->toFirst();
-			while ((i = lii->current()))
-			{
-				QStringList qsl = QStringList::split(QChar(','), *i);
-				QPtrList<QString> *indirizzi = new QPtrList<QString>();
-				indirizzi->setAutoDelete(true);
-				for (unsigned int j = 0; j < qsl.count(); j++)
-					indirizzi->append(new QString(qsl[j]));
-				diffson->addItemU(am->tipo, *am->descr->at(0), indirizzi, icons, am->modo);
-				++(*lii);
-			}
-			delete lii;
-		}
-		++(*lai);
-	}
-	delete lai;
 }
 
 void insAmbDiffSon::Draw()
@@ -233,28 +131,20 @@ void insAmbDiffSon::Draw()
 	BannerIcon->repaint();
 	BannerIcon->setPixmap(*(Icon[0]));
 	BannerIcon->repaint();
-	QFont aFont;
-	FontManager::instance()->getFont(font_items_bannertext, aFont);
-	BannerText->setAlignment(AlignHCenter|AlignVCenter);//AlignTop);
-	BannerText->setFont(aFont);
+	BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	BannerText->setFont(bt_global::font->get(FontManager::TEXT));
 	BannerText->setText(qtesto);
 }
 
 void insAmbDiffSon::configura()
 {
 	qDebug("insAmbDiffSon::configura()");
-	emit(ambChanged(QString(name()), true, (char *)NULL));
+	emit ambChanged(descr, true, QString());
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
-	qDebug("disconnecting sorgenti->parent from diffmulti(%p)", diffmul);
-	disconnect(sorgenti->parent(), SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	disconnect(sorgenti->parent(), SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-	connect(diffson, SIGNAL(sendFrame(char *)), diffmul, SIGNAL(sendFrame(char *)));
-	connect(diffson, SIGNAL(sendInit(char *)), diffmul, SIGNAL(sendInit(char *)));
-	qDebug("connecting diffson(%p) to diffmul(%p)", diffson, diffmul);
 	sorgenti->mostra_all(banner::BUT2);
 	diffson->forceDraw();
-	diffson->showFullScreen();
+	diffson->showPage();
 }
 
 

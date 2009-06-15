@@ -1,5 +1,5 @@
 /****************************************************************************
-** $Id: qmouse_qws.h,v 1.1 2005/04/11 08:55:34 cvs Exp $
+** $Id: qmouse_qws.h,v 1.1.1.1 2005/04/11 08:55:34 cvs Exp $
 **
 ** Definition of Qt/Embedded mouse driver
 **

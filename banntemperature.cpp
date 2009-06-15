@@ -9,51 +9,46 @@
  */
 
 #include "banntemperature.h"
-#include "bannpuls.h"
-#include "fontmanager.h"
+#include "bann1_button.h" // bannPuls
+#include "fontmanager.h" // bt_global::font
 #include "device.h"
-#include "main.h"
-#include "btlabelevo.h"
+#include "device_status.h"
+#include "main.h" // bt_global::config
 #include "scaleconversion.h"
 
-BannTemperature::BannTemperature(QWidget *parent, const char *name, QDomNode config, device *dev)
-	: banner(parent, name)
+#include <QLabel>
+#include <QFont>
+
+
+BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, device *dev) : banner(parent)
 {
-	conf_root = config;
-	probe_descr = conf_root.namedItem("descr").toElement().text();
+	probe_descr = descr;
 	temperature = -235;
-	temp_scale = readTemperatureScale();
+	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 
-	setChi("4");
+	if (!where.isNull())
+		setAddress(where);
 
-	QDomNode addr = conf_root.namedItem("where");
-	if (!addr.isNull())
-		setAddress(addr.toElement().text().ascii());
-	else
-		qFatal("[TERMO] obj: %s, no where in configuration", probe_descr.ascii());
-
-	descr_label = new BtLabelEvo(this);
+	descr_label = new QLabel(this);
 	descr_label->setGeometry(BORDER_WIDTH, 0, DESCRIPTION_WIDTH, BANPULS_ICON_DIM_Y);
-	temp_label = new BtLabelEvo(this);
+	temp_label = new QLabel(this);
 	temp_label->setGeometry(DESCRIPTION_WIDTH, 0, TEMPERATURE_WIDTH, BANPULS_ICON_DIM_Y);
 
-	QObject::connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-			SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			SLOT(status_changed(QList<device_status*>)));
 }
 
-void BannTemperature::status_changed(QPtrList<device_status> list)
+void BannTemperature::status_changed(QList<device_status*> sl)
 {
-	QPtrListIterator<device_status> it (list);
-	device_status *dev;
 	bool update = false;
 
-	while ((dev = it.current()) != 0)
+	for (int i = 0; i < sl.size(); ++i)
 	{
-		++it;
-		if (dev->get_type() == device_status::TEMPERATURE_PROBE)
+		device_status *ds = sl.at(i);
+		if (ds->get_type() == device_status::TEMPERATURE_PROBE)
 		{
 			stat_var curr_temp(stat_var::TEMPERATURE);
-			dev->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
+			ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
 			temperature = curr_temp.get_val();
 			update = true;
 		}
@@ -65,21 +60,19 @@ void BannTemperature::status_changed(QPtrList<device_status> list)
 
 void BannTemperature::Draw()
 {
-	QFont aFont;
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	descr_label->setFont(aFont);
-	descr_label->setAlignment(AlignAuto | AlignVCenter);
+	descr_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	descr_label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	descr_label->setText(probe_descr);
 
-	FontManager::instance()->getFont(font_banTermo_tempImp, aFont);
-	temp_label->setFont(aFont);
-	temp_label->setAlignment(AlignCenter);
+	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	temp_label->setAlignment(Qt::AlignCenter);
 	switch (temp_scale)
 	{
 		case CELSIUS:
 			temp_label->setText(celsiusString(temperature));
 			break;
 		case FAHRENHEIT:
+			// we don't have a direct conversion from celsius degrees to farhrenheit degrees
 			temp_label->setText(fahrenheitString(bt2Fahrenheit(celsius2Bt(temperature))));
 			break;
 		default:

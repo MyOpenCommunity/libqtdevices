@@ -4,61 +4,46 @@
  **
  ** main.h
  **
- **definizioni di carattere generale
+ ** definizioni di carattere generale
  **
  ****************************************************************/
 #ifndef MAIN_H
 #define MAIN_H
 
-#include "icondispatcher.h"
+#include <QDomNode>
+#include <QHash>
+#include <QString>
 
-#include <qdom.h>
+enum GlobalFields
+{
+	LANGUAGE,
+	TEMPERATURE_SCALE,
+	DATE_FORMAT,
+	MODEL,
+	NAME
+};
 
-QDomNode getPageNode(int id);
-QDomNode getChildWithId(QDomNode parent, const QRegExp &node_regexp, int id);
-QDomNode getChildWithName(QDomNode parent, QString name);
-QString getLanguage();
+namespace bt_global { extern QHash<GlobalFields, QString> config; }
 
-// FIXME: next time a global function is needed, create an object that stores global configuration
 enum TemperatureScale
 {
 	CELSIUS = 0,
 	FAHRENHEIT,
 	NONE,
 };
-TemperatureScale readTemperatureScale();
-void readExtraConf(QColor **bg, QColor **fg1, QColor **fg2);
+
+enum DateFormat
+{
+	EUROPEAN_DATE = 0,
+	USA_DATE
+};
+
+QDomNode getPageNode(int id);
+
+// See getElement
 QDomElement getConfElement(QString path);
 
-/****************************************************************
- ** ICONS LIBRARY
- ****************************************************************/
-/**
- * Icons is a vector with pointers to QPixmap.
- * When an icon is needed, iconsLibrary is asked to create
- * a QPixmap and return the pointer. This pointer is stored
- * in Icons, instead to manually create a QPixmap and store the
- * pointer. In this way iconsLibrary do not waste memory.
- *
- * For instance if we have
- *
- * if(!Icon[0])
- * Icon[0] = new QPixmap();
- * Icon[0]->load(actuallcon);
- *
- * we instead write
- *
- * if(!Icon[0]) Icon[0] = iconsLibrary.getIcon(actuallcon)
- *
- * NOW iconsLibrary has its own destructor for icons
- * no need to destroy them in banner
- */
-/// We use a global object to handle icons_library because different classes need icons.
-extern IconDispatcher icons_library;
-
-/// Global application config built using QDom
-extern QDomDocument qdom_appconfig;
-
+void resetTimer(int signo);
 
 /****************************************************************
  ** Default configurazione applicativo
@@ -91,10 +76,14 @@ extern QDomDocument qdom_appconfig;
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
 #define EXTRA_FILE                  "cfg/extra/1/extra.xml"
+/*! \def SKIN_FILE
+ *  Define the css file that contains the styles for the application
+ */
+#define SKIN_FILE                  "cfg/extra/1/skin.xml"
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
-#define MY_FILE_CFG_FONT        "cfg/extra/3/font_%s.xml"
+#define MY_FILE_CFG_FONT        "cfg/extra/3/font_%1.xml"
 /*! \def MY_FILE_CFG_FONT
  *  The font configuration file
  */
@@ -102,7 +91,9 @@ extern QDomDocument qdom_appconfig;
 /*! \def VERBOSITY_LEVEL_DEFAUL
  *  It defines the starting path for mediaserver
  */
+#ifndef MEDIASERVER_PATH
 #define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
+#endif
 /*! \def XML_FILE_IN_DEFAULT
  */
 #define XML_FILE_IN_DEFAULT        ".bto-to-xml"
@@ -183,7 +174,10 @@ enum pagSecLiv
 	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
 	SUPERVISIONE=14,                              /*!< Supervision system */
-	TERMOREG_MULTI_PLANT=15                       /*!< Thermoregulation system with one or more plants */
+	TERMOREG_MULTI_PLANT=15,                      /*!< Thermoregulation system with one or more 4-zones plants */
+	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
+	ENERGY_DATA=17,                               /*!< Energy data system */
+	FEED_READER=99,                               /*!< Feed reader page */
 };
 
 
@@ -369,7 +363,7 @@ enum  bannerType
 	AMPLIFICATORE=18,                             /*!<  Amplifier */
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
-	CALIBRAZIONE=21,                              /*!<  Calibration */
+	DISPLAY=21,                                   /*!<  Display */
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
 	SUONO=25,                                     /*!<  Beep */
@@ -412,11 +406,10 @@ enum  bannerType
 	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
-	POWER_AMPLIFIER_PRESET=70,
-	POWER_AMPLIFIER_TREBLE=71,
-	POWER_AMPLIFIER_BASS=72,
-	POWER_AMPLIFIER_BALANCE=73,
-	POWER_AMPLIFIER_LOUD=74
+	ENERGY_TYPE=70,
+	// keep 69-71 free for energy management devices
+	LANSETTINGS=72,                               /*!< LAN settings and information */
+
 };
 
 /*! \enum pulsType
@@ -440,10 +433,6 @@ enum pulsType
 /*! \def TIME_RIP_REGOLAZ  time [ms] between two repetitionof a regulation command during the same pressure
  */
 #define TIME_RIP_REGOLAZ 500
-/*! \def BEEP
- * if not defined it's impossible to have a beep when pressing a button
- */
-#define BEEP
 
 /// The simbol of temperature degrees
 #define TEMP_DEGREES "\272"

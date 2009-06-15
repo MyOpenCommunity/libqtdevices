@@ -14,13 +14,16 @@
 
 
 #include "stopngo.h"
-#include "genericfunz.h"
-#include "fontmanager.h"
-#include "main.h"
+#include "fontmanager.h" // bt_global::font
+#include "device.h"
+#include "icondispatcher.h" // bt_global::icons_cache
+#include "main.h" // ICON...
 
-#include <qlcdnumber.h>
-#include <qcursor.h>
-#include <qtimer.h>
+#include <QWidget>
+#include <QLCDNumber>
+#include <QDebug>
+#include <QLabel>
+#include <QTimer>
 
 
 #define TITLE_BAR_HEIGHT 30
@@ -85,33 +88,59 @@
 	StopngoItem class definition
 ==================================================================================================*/
 
-StopngoItem::StopngoItem(int id, int cid, QString descr, QString where)
+StopngoItem::StopngoItem(int _id, int _cid, QString _descr, QString _where)
 {
-	this->id = id;
-	this->cid = cid;
-	this->descr = descr;
-	this->where = where;
+	id = _id;
+	cid = _cid;
+	descr = _descr;
+	where = _where;
 }
 
-StopngoItem::StopngoItem()
+void StopngoItem::SetId(int _id)
 {
-	this->id = 0;
-	this->cid = 0;
-	this->descr = "";
-	this->where = "0";
+	id = id;
 }
 
-
-StopngoItem::~StopngoItem()
+void StopngoItem::SetCid(int _cid)
 {
+	cid = _cid;
 }
 
+void StopngoItem::SetDescr(QString _descr)
+{
+	descr = descr;
+}
+
+void StopngoItem::SetWhere(QString _where)
+{
+	where = where;
+}
+
+int StopngoItem::GetId()
+{
+	return id;
+}
+
+int StopngoItem::GetCid()
+{
+	return cid;
+}
+
+QString StopngoItem::GetDescr()
+{
+	return descr;
+}
+
+QString StopngoItem::GetWhere()
+{
+	return where;
+}
 
 /*==================================================================================================
 	BannPulsDynIcon class definition
 ==================================================================================================*/
 
-BannPulsDynIcon::BannPulsDynIcon(QWidget *parent, const char *name) : bannPuls(parent, name)
+BannPulsDynIcon::BannPulsDynIcon(QWidget *parent) : bannPuls(parent)
 {
 }
 
@@ -120,45 +149,45 @@ BannPulsDynIcon::~BannPulsDynIcon()
 {
 }
 
-
-void BannPulsDynIcon::status_changed(QPtrList<device_status> sl)
+void BannPulsDynIcon::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_stat(stat_var::INFO_MCI);
 
 	bool aggiorna = false;
 	qDebug("supervisionMenu::status_changed()");
-	device_status_mci *ds;                                                       //Scan the list
-  	for (ds = (device_status_mci*)sl.first(); ds; ds = (device_status_mci*)sl.next())
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status_mci *ds = static_cast<device_status_mci*>(sl.at(i));
 		if (ds->get_type() == device_status::SUPERVISION_MCI)
 		{
 			qDebug("Supervision status variation");
 			ds->read(device_status_mci::MCI_STATUS_INDEX, curr_stat);
 			int statusBmp = curr_stat.get_val();
 			qDebug("status = %d", statusBmp);
-			if (!(statusBmp & STATUS_BIT_OPEN_CLOSE))      //Closed
+			if (!(statusBmp & STATUS_BIT_OPEN_CLOSE))  // Closed
 			{
 				qDebug("Supervision: Change banner icon to CLOSED");
 				SetIcons(ICON, ICON_STOPNGO_CHIUSO);
 			}
-			else                                           //Opened
+			else  // Opened
 			{
-				if (statusBmp & STATUS_BIT_LOCKED)           //Open because of lock
+				if (statusBmp & STATUS_BIT_LOCKED) // Open because of lock
 				{
 					qDebug("Supervision: Change banner icon to LOCKED");
 					SetIcons(ICON, ICON_STOPNGO_BLOCCO);
 				}
-				else if (statusBmp & STATUS_BIT_CC)          //Open because of short circuit between L and N
+				else if (statusBmp & STATUS_BIT_CC)  // Open because of short circuit between L and N
 				{
 					qDebug("Supervision: Change banner icon to short circuit");
 					SetIcons(ICON, ICON_STOPNGO_CORTOCIRCUITO);
 				}
-				else if (statusBmp & STATUS_BIT_EARTH_FAIL)  //Open because of earth failure
+				else if (statusBmp & STATUS_BIT_EARTH_FAIL)  // Open because of earth failure
 				{
 					qDebug("Supervision: Change banner icon to EARTH FAILURE");
 					SetIcons(ICON, ICON_STOPNGO_GUASTO_TERRA);
 				}
-				else if (statusBmp & STATUS_BIT_VMAX)        //Open because of out of Vmax
+				else if (statusBmp & STATUS_BIT_VMAX)  // Open because of out of Vmax
 				{
 					qDebug("Supervision: Change banner icon to VMAX");
 					SetIcons(ICON, ICON_STOPNGO_SOVRATENSIONE);
@@ -183,15 +212,8 @@ void BannPulsDynIcon::status_changed(QPtrList<device_status> sl)
 	StopngoPage class definition
 ==================================================================================================*/
 
-StopngoPage::StopngoPage(QWidget *parent, const char *name, QString where, int id, QString pageTitle) : QWidget(parent, name)
+StopngoPage::StopngoPage(QString where, int id, QString pageTitle)
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	setCursor(QCursor(blankCursor));
-	showFullScreen();
-#endif
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-
 	this->where = where;
 	this->id = id;
 	this->pageTitle = pageTitle;
@@ -202,12 +224,12 @@ StopngoPage::StopngoPage(QWidget *parent, const char *name, QString where, int i
 	freqSendTimer = NULL;
 	labelAutoArm = labelVerify = NULL;
 
-	onBut       	= NULL;
-	offBut      	= NULL;
-	verifyBut   	= NULL;
-	autotestBut 	= NULL;
-	minusBut    	= NULL;
-	plusBut     	= NULL;
+	onBut = NULL;
+	offBut = NULL;
+	verifyBut = NULL;
+	autotestBut = NULL;
+	minusBut = NULL;
+	plusBut = NULL;
 	freqLcdNumber = NULL;
 
 	AddItems();
@@ -243,29 +265,25 @@ StopngoPage::~StopngoPage()
 
 void StopngoPage::AddItems()
 {
-	QFont aFont, tFont;
-	FontManager::instance()->getFont(font_stopngo_page_labels, aFont);
-	FontManager::instance()->getFont(font_stopngo_page_title, tFont);
-
 	//Draw the title bar
-	titleBar = new BtLabel(this, "Title Bar");
+	titleBar = new QLabel(this);
 	titleBar->setGeometry(0, 0, MAX_WIDTH, TITLE_BAR_HEIGHT);
 	titleBar->setFrameStyle(QFrame::NoFrame);
 	titleBar->setIndent(TITLE_BAR_INDENT);
-	titleBar->setFont(tFont);
-	titleBar->setAlignment(AlignCenter|AlignTop);
+	titleBar->setFont(bt_global::font->get(FontManager::TEXT));
+	titleBar->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 	titleBar->setText(pageTitle);
 	titleBar->show();
 
 	//Draw the exit button
-	okBut = new BtButton(this, "Exit button");
+	okBut = new BtButton(this);
 	okBut->setGeometry(BUT_POS_X, BUT_POS_Y, BUT_DIM, BUT_DIM);
 	SetButtonIcon(okBut, ICON_FRECCIA_SX);
 	connect(okBut, SIGNAL(clicked()), this, SIGNAL(Closed()));
 	okBut->show();
-	
+
 	//Draw the status icon
-	statusIcon = new BtLabel(this, "Status icon");
+	statusIcon = new QLabel(this);
 	statusIcon->setGeometry((MAX_WIDTH-STATUS_ICON_WIDTH)/2, FIRST_ROW_Y, STATUS_ICON_WIDTH, STATUS_ICON_HEIGHT);
 	statusIcon->setFrameStyle(QFrame::NoFrame);
 	SetStatusIcon(ICON_STOPNGO_CHIUSO);
@@ -285,27 +303,27 @@ void StopngoPage::AddItems()
 	case STOPNGO_PLUS:
 		secondRowY += 10;
 		//Draw the ON button
-		onBut = new BtButton(this, "On button");
+		onBut = new BtButton(this);
 		onBut->setGeometry(MAX_WIDTH-BUT_DIM, FIRST_ROW_Y, BUT_DIM, BUT_DIM);
 		SetButtonIcon(onBut, ICON_ON);
 		connect(onBut, SIGNAL(clicked()), this, SLOT(OnClick()));
 		onBut->show();
 		//Draw the OFF button
-		offBut = new BtButton(this, "Off button");
+		offBut = new BtButton(this);
 		offBut->setGeometry(0, FIRST_ROW_Y, BUT_DIM, BUT_DIM);
 		SetButtonIcon(offBut, ICON_OFF);
 		connect(offBut, SIGNAL(clicked()), this, SLOT(OffClick()));
 		offBut->show();
 		//Draw the verify button label
-		labelVerify = new BtLabel(this, "Verify");
+		labelVerify = new QLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
-		labelVerify->setFont(aFont);
-		labelVerify->setAlignment(AlignCenter|AlignTop);
+		labelVerify->setFont(bt_global::font->get(FontManager::TEXT));
+		labelVerify->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 		labelVerify->setText(tr("Test"));
 		labelVerify->show();
 		//Draw the VERIFY button
-		verifyBut = new BtButton(this, "Verify button");
+		verifyBut = new BtButton(this);
 		verifyBut->setGeometry(MAX_WIDTH-BUT_DIM-(BUT_DIM/2), secondRowY, BUT_DIM, BUT_DIM);
 		SetButtonIcon(verifyBut, ICON_STOPNGO_A_VERIFICA_IMPIANTO);
 		connect(verifyBut, SIGNAL(clicked()), this, SLOT(VerifyClick()));
@@ -314,21 +332,21 @@ void StopngoPage::AddItems()
 
 	case STOPNGO_BTEST:
 		//Draw the Autotest button label
-		labelVerify = new BtLabel(this, "Autotest");
+		labelVerify = new QLabel(this);
 		labelVerify->setGeometry(MAX_WIDTH/2, secondRowY+BUT_DIM, LABELS_WIDTH, LABELS_HEIGHT);
 		labelVerify->setFrameStyle(QFrame::NoFrame);
-		labelVerify->setFont(aFont);
-		labelVerify->setAlignment(AlignCenter|AlignTop);
+		labelVerify->setFont(bt_global::font->get(FontManager::TEXT));
+		labelVerify->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 		labelVerify->setText(tr("Self-test"));
 		labelVerify->show();
 		//Draw the AUTOTEST button
-		autotestBut = new BtButton(this, "Autotest button");
+		autotestBut = new BtButton(this);
 		autotestBut->setGeometry(MAX_WIDTH-BUT_DIM-(BUT_DIM/2), secondRowY, BUT_DIM, BUT_DIM);
 		SetButtonIcon(autotestBut, ICON_STOPNGO_A_AUTOTEST);
 		connect(autotestBut, SIGNAL(clicked()), this, SLOT(AutotestClick()));
 		autotestBut->show();
 		//Draw the MINUS button
-		minusBut = new BtButton(this, "Minus button");
+		minusBut = new BtButton(this);
 		minusBut->setGeometry(0, THIRD_ROW_Y, BUT_DIM, BUT_DIM);
 		minusBut->setAutoRepeat(true);
 		SetButtonIcon(minusBut, ICON_MENO);
@@ -336,7 +354,7 @@ void StopngoPage::AddItems()
 			connect(minusBut, SIGNAL(released()), this, SLOT(LoadTimer()));
 		minusBut->show();
 		//Draw the PLUS button
-		plusBut = new BtButton(this, "Plus button");
+		plusBut = new BtButton(this);
 		plusBut->setGeometry(MAX_WIDTH-BUT_DIM, THIRD_ROW_Y, BUT_DIM, BUT_DIM);
 		plusBut->setAutoRepeat(true);
 		SetButtonIcon(plusBut, ICON_PIU);
@@ -344,7 +362,7 @@ void StopngoPage::AddItems()
 		connect(plusBut, SIGNAL(released()), this, SLOT(LoadTimer()));
 		plusBut->show();
 		  //Draw LCD number
-		freqLcdNumber = new QLCDNumber(3, this, "autotest freq");
+		freqLcdNumber = new QLCDNumber(3, this);
 		freqLcdNumber->setGeometry(BUT_DIM, THIRD_ROW_Y, MAX_WIDTH-(BUT_DIM*2), BUT_DIM);
 		freqLcdNumber->setFrameStyle(QFrame::Plain);
 		freqLcdNumber->setLineWidth(0);
@@ -355,125 +373,30 @@ void StopngoPage::AddItems()
 	}
 
 	//Draw the auto arm button label
-	labelAutoArm = new BtLabel(this, "Rearm");
+	labelAutoArm = new QLabel(this);
 	labelAutoArm->setGeometry(0, secondRowY+BUT_DIM, armLabelW, LABELS_HEIGHT);
 	labelAutoArm->setFrameStyle(QFrame::NoFrame);
-	labelAutoArm->setFont(aFont);
-	labelAutoArm->setAlignment(AlignCenter|AlignTop);
+	labelAutoArm->setFont(bt_global::font->get(FontManager::TEXT));
+	labelAutoArm->setAlignment(Qt::AlignCenter|Qt::AlignTop);
 	labelAutoArm->setText(tr("Self-recluser"));
 	labelAutoArm->show();
 	//Draw the auto arm button
-	autoArmBut = new BtButton(this, "Arm button");
+	autoArmBut = new BtButton(this);
 	autoArmBut->setGeometry(armButX, secondRowY, BUT_DIM, BUT_DIM);
 	SetButtonIcon(autoArmBut, ICON_STOPNGO_A_RIARMO);
 	connect(autoArmBut, SIGNAL(clicked()), this, SLOT(AutoArmClick()));
 	autoArmBut->show();
 }
 
-void StopngoPage::setBGColor(int r, int g, int b)
-{
-	setBGColor(QColor::QColor(r,g,b));
-}
-
-void StopngoPage::setFGColor(int r, int g, int b)
-{
-	setFGColor(QColor::QColor(r,g,b));
-}
-
-void StopngoPage::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-
-	titleBar->setPaletteBackgroundColor(c);
-	okBut->setPaletteBackgroundColor(c);
-	autoArmBut->setPaletteBackgroundColor(c);
-	statusIcon->setPaletteBackgroundColor(c);
-
-	if (onBut)
-		onBut->setPaletteBackgroundColor(c);
-	if (offBut)
-		offBut->setPaletteBackgroundColor(c);
-	if (verifyBut)
-		verifyBut->setPaletteBackgroundColor(c);
-	if (autotestBut)
-		autotestBut->setPaletteBackgroundColor(c);
-	if (minusBut)
-		minusBut->setPaletteBackgroundColor(c);
-	if (plusBut)
-		plusBut->setPaletteBackgroundColor(c);
-	if (freqLcdNumber)
-		freqLcdNumber->setPaletteBackgroundColor(c);
-	if (labelAutoArm)
-		labelAutoArm->setPaletteBackgroundColor(c);
-	if (labelVerify)
-		labelVerify->setPaletteBackgroundColor(c);
-}
-
-void StopngoPage::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-
-	titleBar->setPaletteForegroundColor(c);
-	okBut->setPaletteForegroundColor(c);
-	autoArmBut->setPaletteForegroundColor(c);
-	statusIcon->setPaletteForegroundColor(c);
-	if (onBut)
-		onBut->setPaletteForegroundColor(c);
-	if (offBut)
-		offBut->setPaletteForegroundColor(c);
-	if (verifyBut)
-		verifyBut->setPaletteForegroundColor(c);
-	if (autotestBut)
-		autotestBut->setPaletteForegroundColor(c);
-	if (minusBut)
-		minusBut->setPaletteForegroundColor(c);
-	if (plusBut)
-		plusBut->setPaletteForegroundColor(c);
-	if (freqLcdNumber)
-		freqLcdNumber->setPaletteForegroundColor(c);
-	if (labelAutoArm)
-		labelAutoArm->setPaletteForegroundColor(c);
-	if (labelVerify)
-		labelVerify->setPaletteForegroundColor(c);
-}
-
-int StopngoPage::setBGPixmap(char* backImage)
-{
-	QPixmap Back;
-	if (Back.load(backImage))
-	{
-		setPaletteBackgroundPixmap(Back);
-		QPixmap temp;
-		temp.resize(BUT_DIM, BUT_DIM);
-
-		bitBlt(&temp, 0, 0, &Back, BUT_POS_X, BUT_POS_Y, BUT_DIM, BUT_DIM);
-		okBut->setPaletteBackgroundPixmap(temp);
-		
-		return 0;
-	}
-	return 1;
-}
-
-void StopngoPage::showPage()
-{
-	showFullScreen();
-}
-
-void StopngoPage::freezed(bool f)
-{
-	qDebug("StopngoPage::freezed()");
-	setDisabled(f);
-}
-
-void StopngoPage::status_changed(QPtrList<device_status> sl)
+void StopngoPage::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_stat(stat_var::INFO_MCI);
 	stat_var curr_freq(stat_var::WORD);
 
 	qDebug("StopngoPage::status_changed()");
-	device_status_mci *ds;                                                       //Scan the list
-	for (ds = (device_status_mci*)sl.first(); ds; ds = (device_status_mci*)sl.next())
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status_mci *ds = static_cast<device_status_mci*>(sl.at(i));
 		if (ds->get_type() == device_status::SUPERVISION_MCI)
 		{
 			qDebug("StopngoPage status variation");
@@ -653,8 +576,8 @@ void StopngoPage::SetStatusIcon(const char* iconPath)
 {
 	if (!iconPath)
 		return;
-	
-	statusIcon->setPixmap(*icons_library.getIcon(iconPath));
+
+	statusIcon->setPixmap(*bt_global::icons_cache.getIcon(iconPath));
 }
 
 void StopngoPage::SetButtonIcon(BtButton *btn, const char *icnPath)
@@ -662,8 +585,7 @@ void StopngoPage::SetButtonIcon(BtButton *btn, const char *icnPath)
 	if (!btn || !icnPath)
 		return;
 	
-	btn->setPixmap(*icons_library.getIcon(icnPath));
-	btn->setPressedPixmap(*icons_library.getIcon(getPressedIconName(icnPath)));
+	btn->setImage(icnPath);
 }
 
 void StopngoPage::SetFreqValue(int val)
@@ -692,94 +614,63 @@ void StopngoPage::LoadTimer()
 	}
 	
 	qDebug("StopngoPage::LoadTimer() start timer.");
-	freqSendTimer->start(AUTOTEST_SEND_TIMEOUT, true);
-}
-
-QString StopngoPage::getPressedIconName(const char *iconname)
-{
-	/** This method wraps the previous pressIconName function.
-	*  The main fix introduced is to return the NOT-Pressed Icon Name if
-	*  does not exist pressed icon.
-	*/
-	if (!iconname)
-		return NULL;
-
-	char pressIconName[MAX_PATH];
-	getPressName((char*)iconname, &pressIconName[0], sizeof(pressIconName));
-	
-	/// If pressIconName file exists, return the press icon name
-	/// otherwise the the same name of the NOT PRESSED icon is returned
-	if (pressIconName == NULL || !QFile::exists(pressIconName))
-	{
-		qDebug("could not get pressed icon %s, using: %s", pressIconName, iconname);
-		return QString(iconname);
-	}
-	else
-	{
-		qDebug("got pressed icon: %s", pressIconName);
-		return QString(pressIconName);
-	}
+	freqSendTimer->setSingleShot(true);
+	freqSendTimer->start(AUTOTEST_SEND_TIMEOUT);
 }
 
 void StopngoPage::FireFreqFrame()
 {
 	qDebug("StopngoPage::FireFreqFrame() Enter");
-	char frameOpen[30];
-	sprintf(frameOpen, "*#%s*%s*#%s*%d##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_FREQ_AUTOTEST, autotestFreq);
-	qDebug("StopngoPage::FireFreqFrame() fire frame: %s", frameOpen);
-	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_FREQ_AUTOTEST);
-	emit(sendFrame(frameOpen));
+	QString f = QString("*#%1*%2*#%3*%4##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_FREQ_AUTOTEST).arg(autotestFreq);
+	qDebug() << "StopngoPage::FireFreqFrame() fire frame: " << f;
+	sendFrame(f);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_FREQ_AUTOTEST);
+	sendFrame(f);
 }
 
 void StopngoPage::AutoArmClick()
 {
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_AUTOREARM_DISABLED) ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF, where.ascii());
-	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
-	emit(sendFrame(frameOpen));
+	QString what = statusBmp & STATUS_BIT_AUTOREARM_DISABLED ? OPEN_WHAT_AUTOARM_ON : OPEN_WHAT_AUTOARM_OFF;
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
+	sendFrame(f);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
+	sendFrame(f);
 }
 
 void StopngoPage::OnClick()
 {
 	if ((statusBmp&STOPNGO_WARNING_MASK) || !(statusBmp&STATUS_BIT_OPEN_CLOSE))
 		return;
-	
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_CLOSE, where.ascii());
-	emit(sendFrame(frameOpen));
+
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(OPEN_WHAT_CLOSE).arg(where);
+	sendFrame(f);
 }
 
 void StopngoPage::OffClick()
 {
-	if (statusBmp&STATUS_BIT_OPEN_CLOSE)
+	if (statusBmp & STATUS_BIT_OPEN_CLOSE)
 		return;
-	
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO, OPEN_WHAT_OPEN, where.ascii());
-	emit(sendFrame(frameOpen));
+
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(OPEN_WHAT_OPEN).arg(where);
+	sendFrame(f);
 }
 
 void StopngoPage::VerifyClick()
 {
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_VERIFY_DISABLED)?OPEN_WHAT_VERIFY_ON:OPEN_WHAT_VERIFY_OFF, where.ascii());
-	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
-	emit(sendFrame(frameOpen));
+	QString what = statusBmp & STATUS_BIT_VERIFY_DISABLED ? OPEN_WHAT_VERIFY_ON : OPEN_WHAT_VERIFY_OFF;
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
+	sendFrame(f);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
+	sendFrame(f);
 }
 
 void StopngoPage::AutotestClick()
 {
-	char frameOpen[30];
-	sprintf(frameOpen, "*%s*%s*%s##", OPEN_WHO,
-		(statusBmp & STATUS_BIT_AUTOTEST_DISABLED)?OPEN_WHAT_AUTOTEST_ON:OPEN_WHAT_AUTOTEST_OFF, where.ascii());
-	emit(sendFrame(frameOpen));
-	sprintf(frameOpen, "*#%s*%s*%s##", OPEN_WHO, where.ascii(), OPEN_GRANDEZZA_STATO);
-	emit(sendFrame(frameOpen));
+	QString what = statusBmp & STATUS_BIT_AUTOTEST_DISABLED ? OPEN_WHAT_AUTOTEST_ON : OPEN_WHAT_AUTOTEST_OFF;
+	QString f = QString("*%1*%2*%3##").arg(OPEN_WHO).arg(what).arg(where);
+	sendFrame(f);
+	f = QString("*#%1*%2*%3##").arg(OPEN_WHO).arg(where).arg(OPEN_GRANDEZZA_STATO);
+	sendFrame(f);
 }
 
 void StopngoPage::MinusClick()

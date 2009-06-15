@@ -2,7 +2,7 @@
 **
 ** BTicino Touch scren Colori art. H4686
 **
-** bannonoff.h
+** bannFrecce.h
 **
 **Riga con tasto ON OFF, icona centrale e scritta sotto
 **
@@ -11,7 +11,7 @@
 #ifndef BANNFRECCE
 #define BANNFRECCE
 
-#include <qtimer.h>
+#include <QTimer>
 
 #include "banner.h"
 #include "main.h"
@@ -27,7 +27,7 @@
 
 class bannFrecce : public banner
 {
-    Q_OBJECT
+Q_OBJECT
 public:
 /*!
   the different kinds of navigation bar that can be made are depend on the third argument of the constructor (num):
@@ -44,7 +44,7 @@ public:
 
   if IconBut4 isn't specified the right arrow is shown by default
 */
-	bannFrecce( QWidget * parent=NULL, const char *name=NULL ,uchar num=3,char* IconBut4=ICON_FRECCIA_DX);
+	bannFrecce(QWidget *parent=NULL, uchar num=3, QString IconBut4=ICON_FRECCIA_DX);
 
 	~bannFrecce();
 	/**
@@ -67,6 +67,15 @@ public:
 	 * it is not a custom button.
 	 */
 	virtual void Draw();
+
+	// These functions are introduced for EnergyView, that needs three buttons, one for the table
+	//      view of graph data.
+	//
+	// You mustn't use these functions when 2 < num < 7, these already have BUT4 defined
+	void addCdxButton();
+	void setCdxIcon(const QString &image);
+	void showCdxButton();
+	void hideCdxButton();
 
 signals:
 	void backClick();
@@ -99,9 +108,6 @@ private:
 
 	/// The parent of custom button set with setCustomButton method
 	QWidget *dx_button_parent;
-
-public slots:
-	virtual void setEnabled(bool v);
 };
 
 

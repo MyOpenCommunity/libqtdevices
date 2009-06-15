@@ -11,13 +11,12 @@
 #define PLANTMENU_H
 
 #include "sottomenu.h"
-#include "bannpuls.h"
-#include "bannfullscreen.h"
+#include "bann1_button.h"
+#include "bann_thermal_regulation.h"
 
-#include <qsignalmapper.h>
-#include <qstring.h>
-#include <qcolor.h>
-#include <qdom.h>
+#include <QSignalMapper>
+#include <QString>
+#include <QDomNode>
 
 class device;
 class thermal_regulator_99z;
@@ -29,9 +28,9 @@ class PlantMenu : public sottoMenu
 {
 Q_OBJECT
 public:
-	PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2);
-private:
+	PlantMenu(QWidget *parent, QDomNode conf);
 
+private:
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
 	 * screen banner.
@@ -52,9 +51,6 @@ private:
 	/// Address of the thermal regulation device
 	/// empty in case of 99z device
 	QString ind_centrale;
-
-	/// The second foreground color
-	QColor second_fg;
 
 	/*
 	 * Sub-sub menu used to show the full screen banners corresponding to the

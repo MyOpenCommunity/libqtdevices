@@ -10,38 +10,29 @@
 
 #include "plantmenu.h"
 #include "device.h"
-#include "device_cache.h"
+#include "xml_functions.h"
+#include "main.h" //bt_global::config
 
-#include <qregexp.h>
+#include <QVariant>
+#include <QRegExp>
+
 
 static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
 static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
 static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png");
 
-PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QColor fg, QColor fg2) :
-	sottoMenu(parent, name),
-	items_submenu(this, "items submenu", 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
-	signal_mapper(0, "")
+
+PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent),
+	items_submenu(0, 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
+	signal_mapper(0)
 {
 	conf_root = conf;
-	setBGColor(bg);
-	setFGColor(fg);
-	second_fg = fg2;
 
 	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
 	if (thermr_address.isNull())
 		ind_centrale = "0";
 	else
 		ind_centrale = thermr_address.toElement().text();
-
-	// propagate freeze
-	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SLOT(freezed(bool)));
-	connect(this, SIGNAL(freezePropagate(bool)), &items_submenu, SIGNAL(freezePropagate(bool)));
-	// hide children
-	connect(this, SIGNAL(hideChildren()), &items_submenu, SLOT(hide()));
-
-	items_submenu.setBGColor(paletteBackgroundColor());
-	items_submenu.setFGColor(paletteForegroundColor());
 
 	QDomNode n = conf_root.firstChild();
 	int banner_id = 0;
@@ -50,7 +41,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
 			bannPuls *bp = 0;
-			QString descr = findNamedNode(n, "descr").toElement().text();
+			QString descr = getTextChild(n, "descr");
 			if (descr.isNull())
 				qDebug("[TERMO] PlantMenu::PlantMenu, ``descr'' is null, prepare for strangeness...");
 
@@ -79,8 +70,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 
 			signal_mapper.setMapping(bp, banner_id);
 			connect(bp, SIGNAL(sxClick()), &signal_mapper, SLOT(map()));
-			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(show()));
-			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(raise()));
+			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(showPage()));
 
 			connect(&signal_mapper, SIGNAL(mapped(int)), &items_submenu, SLOT(showItem(int)));
 
@@ -88,7 +78,7 @@ PlantMenu::PlantMenu(QWidget *parent, char *name, QDomNode conf, QColor bg, QCol
 		}
 		n = n.nextSibling();
 	}
-	connect(&items_submenu, SIGNAL(Closed()), &items_submenu, SLOT(hide()));
+	connect(&items_submenu, SIGNAL(Closed()), this, SLOT(showPage()));
 }
 
 bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type)
@@ -96,19 +86,18 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	/*
 	 * Create little banner in selection menu.
 	 */
-	bannPuls *bp = new bannPuls(this, descr.ascii());
-	bp->SetIcons(i_right_arrow.ascii(), 0, central_icon.ascii());
-	initBanner(bp, n);
+	bannPuls *bp = new bannPuls(this);
+	bp->SetIcons(i_right_arrow, QString(), central_icon);
+	bp->setText(getTextChild(n, "descr"));
 	elencoBanner.append(bp);
 	connectLastBanner();
 
 	/*
 	 * Create full screen banner in detail menu.
 	 */
-	TemperatureScale scale = readTemperatureScale();
+	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale, scale);
-	initBanner(fsb, n);
-	fsb->setSecondForeground(second_fg);
+	fsb->setText(getTextChild(n, "descr"));
 	items_submenu.appendBanner(fsb);
 
 	return bp;

@@ -13,17 +13,20 @@
 
 
 #define MAX_NUM_ICON    46
-#define MAX_TEXT        21
-#define MAX_TEXT_2      11
+#define MAX_PRESS_ICON  5
 
-#include <qwidget.h>
+#include <QWidget>
 
-class BtLabel;
+
 class BtButton;
+class sottoMenu;
+class Client;
+class Page;
+
 class QPixmap;
 class QTimer;
-class openwebnet;
-class sottoMenu;
+class QLabel;
+
 
 /*!
  * \class banner
@@ -41,58 +44,59 @@ class banner : public QWidget
 {
 Q_OBJECT
 public:
-	banner(QWidget *, const char *);
+	banner(QWidget *parent);
 	virtual ~banner();
+
 	/*!
 	 * \brief sets the foundamental text one can see on the banner
 	 */
-	virtual void SetTextU(const QString &);
+	virtual void setText(const QString &);
+
 	/*!
 	 * \brief sets a possible additional text one can see on the banner
 	 */
-	void SetSecondaryTextU(const QString & );
+	void setSecondaryText(const QString &);
+
 	/*!
 	 *  \brief return the Pressed Icon Name
 	 *  for a given IconName return the pressed status IconName
 	 *  we added this to wrap GetPressName of genericFunz.cpp
 	 */
-	QString getPressedIconName(const char *);
+	QString getPressedIconName(QString);
+
 	/*!
 	 * \brief sets the Icon of a item in the banner
 	 *
 	 * the arguments describe the item as defined in the oggettinoDelBanner, the image is passed thought the file name
 	 */
-	void SetIcons(uchar , const char *);
+	void SetIcons(int id, QString name, QString pressed_name=QString());
+
 	/*!
 	 * \brief sets the Icon of a item in the banner
 	 */
-	void SetIcons(const char *,char);
+	void SetIcons(QString name, int type);
+
 	/*!
 	 * \brief sets the Icon of left and right button
 	 *
 	 * the arguments describe the images to put on the buttons passing the file names
 	 */
-	void SetIcons(const char *, const char *);
+	void SetIcons(QString sxIcon, QString dxIcon);
+
 	/*!
 	 * \brief sets the Icon of left and right button and the central label
 	 *
 	 * the arguments describe the images to put on the buttons and into the describing label passing the file names
 	 */
-	void SetIcons(const char *, const char *,const char *);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerIcon);
+
 	/*!
 	 * \brief sets the Icon of left and right button and the central label when the banner is active or not
 	 *
 	 * the arguments describe the images to put on the buttons and into the describing label passing the file names
 	 */
-	void SetIcons(const char *, const char *,const char *,const char *);
-	/*!
-	 * \brief sets the Icon of left and right button and the central label when the banner is active or not
-	 *
-	 * the arguments describe the images to put on the buttons and into the describing label passing the file names. 
-	 * The 5° and 6° argument descrive respectively the period and the number of frame considering that the label 
-	 * is rapresented by a animated image when the banner is in active state
-	 */
-	void SetIcons(const char *, const char *, const char *, const char *, int, int);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon);
+
 	/*!
 	 *  \brief sets the Icon of left and right button and the central variable in different levels label when the banner is active or not
 	 *
@@ -100,9 +104,9 @@ public:
 	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has
 	 * to visualize when the banner is in active state
 	 */
-	void SetIcons(const char *, const char *, const char *, const char *, char);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, bool inactiveLevel);
 
-	void SetIcons(const char *, const char *, const char *, const char *, const char *);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon, QString centerUpIcon, QString centerDownIcon);
 	/*!
 	 *  \brief sets the Icon of left and right button and the central variable in different levels label when the banner is active or not. Also an image representing broken state is passed.
 	 *
@@ -110,13 +114,15 @@ public:
 	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has 
 	 * to visualize when the banner is in active state. The 5° argument represent the broken state image path.
 	 */
-	void SetIcons(const char *, const char *, const char *, const char *, const char *, char);
+	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, QString breakIcon, bool inactiveLevel);
+
 	/*!
 	 * \brief Inserts an object in the banner.
 	 *
 	 * The arguments describe the object to insert (as described in oggettinoDelBanner), the position (x,y) and the dimension (w,h)
 	 */
 	void addItem(char, int, int, int, int);
+
 	/*!
 	 * \brief Draws all the objects composing the banner.
 	 *
@@ -138,56 +144,20 @@ public:
 	 *  If the argument is zero the banner assume that the state of what is controlled is "disabled" otherwise is "active".
 	 */
 	void impostaAttivo(char);
+
 	/*!
 	 *  \brief  Changes the address of what is controlled by the banner.
 	 *
 	 *  The argument  describe the Open What of the object controlled by the banner.
 	 */
-	void setAddress(const char *);
+	void setAddress(QString addr);
+
 	/*!
 	 *  \brief Retrieves the address of what is controlled by the banner.
 	 *
 	 *  The returned value is the Open What of the object controlled by the banner.
 	 */
-	char *getAddress();
-	/*!
-	 *  \brief Changes the function of what is controlled by the banner.
-	 *
-	 *  he argument  describe the Open Who of the object controlled by the banner.
-	 */
-	void setChi(char*);
-	/*!
-	 *  \brief Retrieves the function of what is controlled by the banner.
-	 *
-	 *  The returned value is the Open Who of the object controlled by the banner.
-	 */
-	char *getChi();
-	/*!
-	 *  \brief Changes the group list of the object controlled by the banner.
-	 *
-	 *  The group list is an array of 9 bool varibles.
-	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
-	 */
-	void setGroup(bool*);
-	/*!
-	 *  \brief Retrieves the group list of the object controlled by the banner.
-	 *
-	 *  The group list is an array of 9 bool varibles. 
-	 *  The element in position \a n tells if the object controlled is part of the group \a n+1
-	 */
-	bool *getGroup();
-	/*!
-	 *  \brief Force the object controlled being PUL.
-	 *
-	 *  When a ligthing/automation object is considered PUL it changes its state only with \a point \a to \a point commands.
-	 */
-	void setPul();
-	/*!
-	 *  \brief Retrieves if the object controlled is PUL or not.
-	 *
-	 *  When a ligthing/automation object is considered PUL it changes its state only with \a point \a to \a point commands.
-	 */
-	bool getPul();
+	QString getAddress();
 
 	/*!
 	 *  \brief Sets the serial number of the banner.
@@ -195,7 +165,8 @@ public:
 	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
 	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
 	 */
-	void setSerNum(int);
+	virtual void setSerNum(int);
+
 	/*!
 	 *  \brief Retrieves the serial number of the banner.
 	 *
@@ -203,38 +174,17 @@ public:
 	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
 	 */
 	int getSerNum();
+
 	/*!
 	 *  \brief Retrieves the Id of the object controlled by the banner.
 	 */
 	char getId();
+
 	/*!
 	 *  \brief Sets the Id of the object controlled by the banner.
 	 */
 	void setId(char);
-	/*!
-	 *  \brief Sets the background color for the banner.
-	 *
-	 *  The arguments are RGB components for the color.
-	 */
-	virtual void setBGColor(int, int, int);
-	/*!
-	 *  \brief Sets the foreground color for the banner.
-	 *
-	 *  The arguments are RGB components for the color.
-	 */
-	virtual void setFGColor(int , int , int);
-	/*!
-	 *  \brief Sets the background color for the banner.
-	 *
-	 *  The argument is the QColor description of the color.
-	 */
-	virtual void setBGColor(QColor);
-	/*!
-	 *  \brief Sets the foreground color for the banner.
-	 *
-	 *  The argument is the QColor description of the color.
-	 */
-	virtual void setFGColor(QColor);
+
 	/*!
 	 *  \brief Sets the Value for the object controlled by the banner.
 	 *
@@ -242,20 +192,7 @@ public:
 	 *  The function in used to set the value of such an object.
 	 */
 	void setValue(char);
-	/*!
-	 *  \brief Increments the Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to increment the value of such an object.
-	 */
-	void aumValue();
-	/*!
-	 *  \brief Derements the Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to decrement the value of such an object.
-	 */
-	void decValue();
+
 	/*!
 	 *  \brief Retrieves the Value for the object controlled by the banner.
 	 *
@@ -263,20 +200,7 @@ public:
 	 *  The function in used to retrieve the value of such an object.
 	 */
 	char getValue();
-	/*!
-	 *  \brief Sets the maximum Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to determine the maximum value for such an object.
-	 */
-	void setMaxValue(char);
-	/*!
-	 *  \brief Sets the minimum Value for the object controlled by the banner.
-	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
-	 *  The function in used to determine the minimum value for such an object.
-	 */
-	void setMinValue(char);
+
 	/*!
 	 *  \brief Sets the value range for the object controlled by the banner.
 	 *
@@ -284,16 +208,19 @@ public:
 	 *  The function in used to determine the minimum and maximum (in this order) value for such an object.
 	 */
 	void setRange(char,char);
+
 	/*!
 	 *  \brief Sets the step for the object controlled by the banner.
 	 *
 	 *  The object's value is decremented/incremented by this quantity
 	 */
 	void setStep(char);
+
 	/*!
 	 *  \brief Retrieves if the object controlled by the banner is \a active or not.
 	 */
 	unsigned char isActive();
+
 	/*!
 	 *  \brief Sets the parameters necessary for the animation of the image describing the image controlled by the banner.
 	 *
@@ -301,10 +228,7 @@ public:
 	 */
 	void setAnimationParams(int,int);
 	void getAnimationParams(int&, int&);
-	void setNumRighe(uchar);
-	QTimer *animationTimer;
-	uchar numRighe;
-	unsigned char stato;
+
 	virtual void inizializza(bool forza=false);
 	/*!
 	 *  \brief Force an object of the banner to be hided.
@@ -312,24 +236,13 @@ public:
 	 *  The object to be hided is described by the \a oggettinoDelBanner description.
 	 */
 	void nascondi(char);
+
 	/*!
 	 *  \brief Force an object of the banner to be shown.
 	 *
 	 *  The object to be shown is described by the \a oggettinoDelBanner description.
 	 */
 	void mostra(char);
-	/*!
-	 *  \brief Retrieves the state of the object controlled by the banner.
-	 */
-	unsigned char getState();
-	/*!
-	 *  \brief Must be reimplemented to retrieve the filereference of the manual icon for the object controlled by the banner.
-	 */
-	virtual char *getManIcon();
-	/*!
-	 *  \brief Must be reimplemented to retrieve the filereference of the automatic icon for the object controlled by the banner.
-	 */
-	virtual char *getAutoIcon();
 
 	/*!
 	 *  \enum oggettinoDelBanner
@@ -351,15 +264,11 @@ public:
 		BUT4,
 		TEXT2,
 	};
-	virtual void addAmb(char *);
-private:
-	
-	/**
-	 *   Utility functions to get icon name root. For istance
-	 *   from "ondimmer.png" we can get "ondimmer" in a generic way
-	 */
-	QString getNameRoot(QString full_string, QString text_to_strip);
-	QString getNameRoot(char *full_string, QString text_to_strip);
+
+	virtual void addAmb(QString);
+
+	static void setClients(Client *command, Client *request);
+
 public slots:
 	/*!
 	 *  \brief Must be reimplemented to analyze the \a Open \a Frame incoming.
@@ -370,14 +279,6 @@ public slots:
 	 */
 	virtual void  rispStato(char*);
 	/*!
-	 *  \brief Must be reimplemented to do something when hiding the banner.
-	 */
-	virtual void hide();
-	/*!
-	 *  \brief Must be reimplemented to do something when showing the banner.
-	 */
-	virtual void show();
-	/*!
 	 *  \brief Invoked on open ack reception
 	 */
 	virtual void openAckRx();
@@ -385,7 +286,7 @@ public slots:
 	 *  \brief Invoked on open nak reception
 	 */
 	virtual void openNakRx();
-	virtual void ambChanged(const QString &, bool, char *);
+	virtual void ambChanged(const QString &, bool, QString);
 	/*!
 	 *  \brief Parent of my parent changed
 	 */
@@ -394,6 +295,59 @@ public slots:
 	 *  \brief Parent changed
 	 */
 	virtual void parentChanged(QWidget *newParent);
+
+	/// Connect the page argument with button on sx side
+	void connectSxButton(Page *page);
+	/// Connect the page argument with button on dx side
+	void connectDxButton(Page *page);
+
+protected:
+	QLabel *BannerIcon;
+	QLabel *BannerIcon2;
+	QLabel *BannerText;
+	QLabel *SecondaryText;
+	BtButton *sxButton;
+	BtButton *dxButton;
+	BtButton *csxButton;
+	BtButton *cdxButton;
+	Page *linked_sx_page;
+	Page *linked_dx_page;
+
+	QPixmap *Icon[MAX_NUM_ICON];
+	QPixmap *pressIcon[MAX_PRESS_ICON];
+
+	QString qtesto, qtestoSecondario;
+
+	char attivo,value,maxValue,minValue,id,step;
+	int periodo, numFrame,contFrame,serNum;
+	QString address;
+
+	/**
+	 * Utility function to draw all buttons except the rightmost one
+	 */
+	void drawAllButRightButton();
+
+	// A global way to send frames/init requests. Do not use these directly, prefer using
+	// devices specific methods, unless you have to send frames without reading responses.
+	void sendFrame(QString frame) const;
+	void sendInit(QString frame) const;
+
+	virtual void hideEvent(QHideEvent *event);
+	// The sizeHint method is required to have a layout management that work fine.
+	// Note that this sizeHint is ok for banner with a standard dimension, banner
+	// bigger or smaller should be re-define this method.
+	virtual QSize sizeHint() const;
+
+private:
+	static Client *client_richieste;
+	static Client *client_comandi;
+
+	QTimer *animationTimer;
+	/**
+	 *   Utility functions to get icon name root. For istance
+	 *   from "ondimmer.png" we can get "ondimmer" in a generic way
+	 */
+	QString getNameRoot(QString full_string, QString text_to_strip);
 
 private slots:
 	void animate();
@@ -447,85 +401,13 @@ signals:
 	 *  \brief Emitted when the center-right button is pressed.
 	 */
 	void cdxPressed();
-	/*!
-	 *  \brief Emitted to (de)freeze the objects of the banner
-	 */
-	void freezed(bool);
-	/*!
-	 *  \brief Emitted when the banner decide to freeze the device (i.e. when the \a alarm \a clock turns on).
-	 */
-	void freeze(bool);
-	/*!
-	 *  \brief Emitted to communicate when the \a alarm \a clock begins and ends.
-	 */
-	void svegl(bool);
-	void richStato(char*);
-	/*!
-	 *  \brief Emitted when the banner decide send an \a Open \a frame to the system.
-	 */
-	void sendFrame(char*);
-	/*!
-	 *  \brief As above, but we want to wait for the relevant open ack message
-	 */
-	void sendFramew(char*);
-	void sendInit(char*);
-	/*!
-	 *  \brief Emitted when the banner decide to die and to be removed from the list containig it.
-	 */
-	void killMe(banner*);
+	// TODO: forse sarebbe meglio evitare il rimpallo di segnali per fare una richiesta
+	// di stato e usare direttamente BTouch.. ma poi c'e' anche il rischio di abusare
+	// troppo di quella variabile globale!
+	void richStato(QString);
 
-protected:
-
-	BtLabel * BannerIcon;
-	BtLabel * BannerIcon2;
-	BtLabel * BannerText;
-	BtLabel * SecondaryText;
-	BtButton * sxButton;
-	BtButton * dxButton;
-	BtButton * csxButton;
-	BtButton * cdxButton;
-	QPixmap *  Icon[MAX_NUM_ICON];
-	QPixmap * pressIcon[5];
-	// Dichiarazione icons_library - Vecchio modo con la cache che è un membro statico di banner
-	/**
-	 * Icons is a vector with pointers to QPixmap.
-	 * When an icon is needed, iconsLibrary is asked to create
-	 * a QPixmap and return the pointer. This pointer is stored
-	 * in Icons, instead to manually create a QPixmap and store the
-	 * pointer. In this way iconsLibrary do not waste memory.
-	 *
-	 * For instance if we have
-	 *
-	 * if(!Icon[0])
-	 * Icon[0] = new QPixmap();
-	 * Icon[0]->load(actuallcon);
-	 *
-	 * we instead write
-	 *
-	 * if(!Icon[0]) Icon[0] = iconsLibrary.getIcon(actuallcon)
-	 *
-	 * NOW iconsLibrary has its own destructor for icons
-	 * no need to destroy them in banner
-	 */
-	//static IconDispatcher icons_library;
-
-	QString qtesto, qtestoSecondario;
-
-	char attivo,value,maxValue,minValue,id,step;
-	int periodo, numFrame,contFrame,serNum;
-	char address[20];
-	char chi[5];
-	bool group[9];
-	bool pul;
-	/**
-	 *  \brief Returns true if the object is a target for message
-	 */
-	bool isForMe(openwebnet * message);
-
-	/**
-	 * Utility function to draw all buttons except the rightmost one
-	 */
-	void drawAllButRightButton();
+	/// Emitted when any of the linked pages is closed
+	void pageClosed();
 };
 
 

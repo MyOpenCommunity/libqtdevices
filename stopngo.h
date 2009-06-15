@@ -1,3 +1,4 @@
+
 /*!
  * \file
  * <!--
@@ -15,18 +16,19 @@
 #ifndef STOPNGO_H
 #define STOPNGO_H
 
-
-#include "device.h"
-#include "bannpuls.h"
-#include "btlabel.h"
+#include "page.h"
+#include "bann1_button.h"
 #include "btbutton.h"
 
-#include <qwidget.h>
-#include <qptrlist.h>
-#include <qfile.h>
 
+#include <QList>
+
+class device_status;
 class QLCDNumber;
+class QWidget;
 class QTimer;
+class QLabel;
+
 
 /*!
   \class StopngoItem
@@ -38,19 +40,18 @@ class QTimer;
 class StopngoItem
 {
 public:
-	StopngoItem(int id, int cid, QString descr, QString where);
-	StopngoItem();
-	~StopngoItem();
+	StopngoItem(int _id=0, int _cid=0, QString _descr="", QString _where="0");
 
-	inline void SetId(int id){ this->id = id; };
-	inline void SetCid(int cid){ this->cid = cid; };
-	inline void SetDescr(QString descr){ this->descr = descr; };
-	inline void SetWhere(QString where){ this->where = where; };
+	void SetId(int id);
+	void SetCid(int cid);
+	void SetDescr(QString descr);
+	void SetWhere(QString where);
 
-	inline int GetId(){ return this->id; };
-	inline int GetCid(){ return this->cid; };
-	inline QString GetDescr(){ return this->descr; };
-	inline QString GetWhere(){ return this->where; };
+	int GetId();
+	int GetCid();
+	QString GetDescr();
+	QString GetWhere();
+
 private:
 	int id;
 	int cid;
@@ -70,68 +71,56 @@ class BannPulsDynIcon : public bannPuls
 {
 Q_OBJECT
 public:
-	BannPulsDynIcon(QWidget *, const char *);
+	BannPulsDynIcon(QWidget *parent);
 	~BannPulsDynIcon();
 
 public slots:
-	void status_changed(QPtrList<device_status>);
+	void status_changed(QList<device_status*>);
 };
 
 
 
 /*!
   \class StopngoPage
-  \brief Stop & go devices GUI page. 
+  \brief Stop & go devices GUI page.
   
   \author Lucio Macellari - Mac S.r.l.
   \date jul 2008
 */
-class StopngoPage : public QWidget
+class StopngoPage : public Page
 {
 Q_OBJECT
 public:
-	StopngoPage(QWidget *parent, const char *name, QString where, int id = 0, QString pageTitle = "");
+	StopngoPage(QString where, int id = 0, QString pageTitle = "");
 	~StopngoPage();
-	virtual void setBGColor(int, int , int);
-	virtual void setFGColor(int , int , int);
-	virtual void setBGColor(QColor);
-	virtual void setFGColor(QColor);
-	int setBGPixmap(char*);
 
-protected:
+private:
 	QString pageTitle, where;
 	int id, statusBmp, autotestFreq;
-	BtLabel *titleBar, *labelAutoArm, *labelVerify;
+	QLabel *titleBar, *labelAutoArm, *labelVerify;
 	BtButton *okBut, *autoArmBut, *onBut, *offBut, *verifyBut, *autotestBut, *minusBut, *plusBut;
-	BtLabel *statusIcon;
+	QLabel *statusIcon;
 	QLCDNumber *freqLcdNumber;
 	QTimer *freqSendTimer;
-	
-	QString getPressedIconName(const char *);
+
 	void AddItems();
 	void SetStatusIcon(const char *);
 	void SetButtonIcon(BtButton *, const char *);
 	void SetFreqValue(int);
 
 public slots:
-	void status_changed(QPtrList<device_status>);
-	void showPage();
-	void freezed(bool);
+	void status_changed(QList<device_status*>);
 
-protected slots:
-		void AutoArmClick();
-		void OnClick();
-		void OffClick();
-		void VerifyClick();
-		void AutotestClick();
-		void MinusClick();
-		void PlusClick();
-		void LoadTimer();
-		void FireFreqFrame();
-
-signals:
-	void Closed();
-	void sendFrame(char*);
+private slots:
+	void AutoArmClick();
+	void OnClick();
+	void OffClick();
+	void VerifyClick();
+	void AutotestClick();
+	void MinusClick();
+	void PlusClick();
+	void LoadTimer();
+	void FireFreqFrame();
 };
 
 #endif

@@ -12,26 +12,28 @@
 
 #include "thermalmenu.h"
 #include "banntemperature.h"
-#include "device_cache.h"
+#include "devices_cache.h" // bt_global::devices_cache
 #include "plantmenu.h"
+#include "xml_functions.h" // getChildren, getTextChild
+#include "bannfrecce.h"
 
-#include <qregexp.h>
+#include <QRegExp>
+#include <QDebug>
+
+#include <assert.h>
+
+#define IMG_OK IMG_PATH "btnok.png"
 
 static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
 static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png");
 static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
 static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
-ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor bg, QColor fg, QColor fg2) :
-	sottoMenu(parent, name)
+ThermalMenu::ThermalMenu(const QDomNode &config_node)
 {
 	qDebug("[TERMO] thermalmenu: before adding items...");
-	conf_root = n;
-	setBGColor(bg);
-	setFGColor(fg);
-	second_fg = fg2;
 	bann_number = 0;
-	addBanners();
+	loadBanners(config_node);
 
 	qDebug("[TERMO] thermalmenu: end adding items.");
 	// check if plant menus are created?
@@ -43,63 +45,39 @@ ThermalMenu::ThermalMenu(QWidget *parent, const char *name, QDomNode n, QColor b
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new PlantMenu(NULL, "plant menu", config,
-			paletteBackgroundColor(), paletteForegroundColor(), second_fg);
+	sottoMenu *sm = new PlantMenu(NULL, config);
 
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
+	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
 	single_submenu = sm;
-
-	sm->hide();
-	// propagate freeze signal
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SLOT(freezed(bool)));
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SIGNAL(freezePropagate(bool)));
-	// hide children
-	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
-	// do we need this?
-	//connect(sm, SIGNAL(freeze(bool)), BtM, SIGNAL(freeze(bool)));
 }
 
-void ThermalMenu::addBanners()
+void ThermalMenu::loadBanners(const QDomNode &config_node)
 {
 	bannPuls *b = NULL;
-
-	QDomNode node = conf_root.firstChild();
-	while (!node.isNull())
+	foreach (const QDomNode &node, getChildren(config_node, "plant"))
 	{
-		QDomElement e = node.toElement();
-		if (!e.isNull())
-		{
-			if (e.tagName().contains(QRegExp("plant(\\d*)")))
-			{
-				QString descr = findNamedNode(e, "descr").toElement().text();
-				b = addMenuItem(e, i_plant, descr);
-				createPlantMenu(e, b);
-			}
-			else if (e.tagName() == "extprobe")
-			{
-				b = addMenuItem(e, i_ext_probe, "extprobe");
-				createProbeMenu(e, b, true);
-			}
-			else if (e.tagName() == "tempprobe")
-			{
-				b = addMenuItem(e, i_temp_probe, "tempprobe");
-				createProbeMenu(e, b, false);
-			}
-		}
-
-		node = node.nextSibling();
+		b = addMenuItem(node.toElement(), i_plant);
+		createPlantMenu(node.toElement(), b);
+	}
+	foreach (const QDomNode &node, getChildren(config_node, "extprobe"))
+	{
+		b = addMenuItem(node.toElement(), i_ext_probe);
+		createProbeMenu(node.toElement(), b, true);
+	}
+	foreach (const QDomNode &node, getChildren(config_node, "tempprobe"))
+	{
+		b = addMenuItem(node.toElement(), i_temp_probe);
+		createProbeMenu(node.toElement(), b, false);
 	}
 }
 
-bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString descr)
+bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 {
-	bannPuls *bp = new bannPuls(this, descr.ascii());
-	qDebug("[TERMO] addBanners1: %s", descr.ascii());
+	bannPuls *bp = new bannPuls(this);
 
-	bp->SetIcons(i_right_arrow.ascii(), 0, central_icon.ascii());
-
-	initBanner(bp, e);
+	bp->SetIcons(i_right_arrow, QString(), central_icon);
+	bp->setText(getTextChild(e, "descr"));
 
 	elencoBanner.append(bp);
 	connectLastBanner();
@@ -110,54 +88,180 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon, QString 
 
 void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
 {
-	sottoMenu *sm = new sottoMenu(NULL, "sottomenu extprobe");
-	sm->setBGColor(paletteBackgroundColor());
-	sm->setFGColor(paletteForegroundColor());
+	sottoMenu *sm = new sottoMenu;
 	single_submenu = sm;
 	// we want to scroll external probes per pages and not per probes
 	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)
 	unsigned submenu_scroll_step = NUM_RIGHE - 1;
 	sm->setScrollStep(submenu_scroll_step);
 
-	/**
-	 * Now submenus work. To add another submenu:
-	 *  - make all the submenus children of the same parent (NULL), so that they are all siblings.
-	 *  - create the submenu as usual, ie. make all banners children of the sottoMenu class.
-	 *  - connect the clicked() signal with show() slot of the submenu to be shown.
-	 *  - connect the Closed() signal of the submenu now created with its hide() slot.
-	 */
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(show()));
-	connect(sm, SIGNAL(Closed()), sm, SLOT(hide()));
-	sm->hide();
-	// propagate freeze signal
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SLOT(freezed(bool)));
-	connect(this, SIGNAL(freezePropagate(bool)), sm, SIGNAL(freezePropagate(bool)));
-	// hide children
-	connect(this, SIGNAL(hideChildren()), sm, SLOT(hide()));
+	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
+	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
 
-	QDomNode n = config.firstChild();
-	while (!n.isNull())
+	foreach (const QDomNode &item, getChildren(config, "item"))
 	{
-		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
-		{
-			QString addr = n.namedItem("where").toElement().text();
-			if (external)
-				addr += "00";
-			device *dev = btouch_device_cache.get_temperature_probe(addr.ascii(), external);
+		QString addr = getTextChild(item, "where");
+		QString text = getTextChild(item, "descr");
+		if (external)
+			addr += "00";
+		device *dev = bt_global::devices_cache.get_temperature_probe(addr, external);
 
-			banner *b = new BannTemperature(sm, "banner", n, dev);
-			initBanner(b, n);
+		banner *b = new BannTemperature(sm, addr, text, dev);
+		b->setText(text);
 
-			sm->appendBanner(b);
-		}
-		n = n.nextSibling();
+		sm->appendBanner(b);
 	}
 }
 
 void ThermalMenu::showPage()
 {
 	if (bann_number == 1)
-		single_submenu->show();
+		single_submenu->showPage();
 	else
-		show();
+		sottoMenu::showPage();
+}
+
+ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
+{
+	conf_root = conf;
+}
+
+void ProgramMenu::setSeason(Season new_season)
+{
+	if (new_season != season)
+	{
+		season = new_season;
+		switch (season)
+		{
+		case SUMMER:
+			createSummerBanners();
+			break;
+		case WINTER:
+			createWinterBanners();
+			break;
+		}
+
+		forceDraw();
+	}
+}
+
+void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
+{
+	assert((what == "scen" || what == "prog") && "'what' must be either 'prog' or 'scen'");
+
+	bool create_banner = false;
+	if (elencoBanner.isEmpty())
+		create_banner = true;
+
+	const QString i_ok = QString(IMG_PATH) + "btnok.png";
+
+	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
+	{
+		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
+	}
+	QDomElement program = getElement(conf_root, season + "/" + what);
+	// The leaves we are looking for start with either "p" or "s"
+	QString name = what.left(1);
+
+	int index = 0;
+	foreach (const QDomNode &node, getChildren(program, name))
+	{
+		BannWeekly *bp = 0;
+		if (create_banner)
+		{
+			bp = new BannWeekly(this);
+			elencoBanner.append(bp);
+			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
+		}
+		if (index >= elencoBanner.size())
+		{
+			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number \
+of programs between summer and winter");
+			break;
+		}
+		bp = static_cast<BannWeekly*>(elencoBanner[index]);
+		++index;
+		bp->SetIcons(i_ok, QString(), icon);
+		// set Text taken from conf.xml
+		if (node.isElement())
+		{
+			bp->setText(node.toElement().text());
+			// here node name is of the form "s12" or "p3"
+			int program_number = node.nodeName().mid(1).toInt();
+			bp->setProgram(program_number);
+		}
+	}
+}
+
+WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
+{
+	season = SUMMER;
+	createSummerBanners();
+}
+
+void WeeklyMenu::createSummerBanners()
+{
+	const QString i_central = QString(IMG_PATH) + "programma_estivo.png";
+	createSeasonBanner("summer", "prog", i_central);
+}
+
+void WeeklyMenu::createWinterBanners()
+{
+	const QString i_central = QString(IMG_PATH) + "programma_invernale.png";
+	createSeasonBanner("winter", "prog", i_central);
+}
+
+ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
+{
+	season = SUMMER;
+	createSummerBanners();
+}
+
+void ScenarioMenu::createSummerBanners()
+{
+	const QString i_central = QString(IMG_PATH) + "scenario_estivo.png";
+	createSeasonBanner("summer", "scen", i_central);
+
+}
+
+void ScenarioMenu::createWinterBanners()
+{
+	const QString i_central = QString(IMG_PATH) + "scenario_invernale.png";
+	createSeasonBanner("winter", "scen", i_central);
+}
+
+TimeEditMenu::TimeEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
+{
+	setNavBarMode(10, IMG_OK);
+	time_edit = new FSBannTime(this);
+	elencoBanner.append(time_edit);
+	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
+}
+
+void TimeEditMenu::performAction()
+{
+	emit timeSelected(time());
+}
+
+BtTime TimeEditMenu::time()
+{
+	return time_edit->time();
+}
+
+DateEditMenu::DateEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
+{
+	setNavBarMode(10, IMG_OK);
+	date_edit = new FSBannDate(this);
+	elencoBanner.append(date_edit);
+	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
+}
+
+void DateEditMenu::performAction()
+{
+	emit dateSelected(date());
+}
+
+QDate DateEditMenu::date()
+{
+	return date_edit->date();
 }

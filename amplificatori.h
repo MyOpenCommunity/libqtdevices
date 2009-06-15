@@ -12,15 +12,15 @@
 #define AMPLIFICATORI_H
 
 #include "bannregolaz.h"
-#include "device_status.h"
 
-#include <qwidget.h>
+#include <QWidget>
+#include <QString>
+#include <QList>
 
+class device_status;
 class device;
 
-/*****************************************************************
- **Amplificatore
- ****************************************************************/
+
 /*!
  * \class amplificatore
  * \brief This class is made to manage an audio amplifier.
@@ -32,25 +32,22 @@ class device;
 class amplificatore : public bannRegolaz
 {
 Q_OBJECT
-private:
-	char value;
-	device *dev;
 public:
-	amplificatore(QWidget *, const char *,char*,char*,char*,char*,char*);
+	amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon);
 	void inizializza(bool forza = false);
+public slots:
+	void status_changed(QList<device_status*>);
 private slots:
 	void Accendi();
 	void Spegni();
 	void Aumenta();
 	void Diminuisci();
-public slots:
-	void status_changed(QPtrList<device_status>);
+private:
+	char value;
+	device *dev;
 };
 
 
-/*****************************************************************
- **gruppo amplificatori
- ****************************************************************/
 /*!
  * \class grAmplificatori
  * \brief This class is made to manage a number of audio amplifier.
@@ -63,19 +60,16 @@ public slots:
 class grAmplificatori : public bannRegolaz
 {
 Q_OBJECT
-private:
-	QPtrList<QString> elencoDisp;
-	device *dev;
 public:
-	grAmplificatori(QWidget *parent=0, const char *name=NULL ,void*indirizzi=NULL,char* IconaSx=NULL,char* IconaDx=NULL,char*Iconsx=NULL,char*Icondx=NULL,int periodo=0,int numFrame=0);
-	void inizializza(bool forza = false);
-	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class */
-	void setAddress(void*);
+	grAmplificatori(QWidget *parent=0, QList<QString> indirizzi=QList<QString>(), QString IconaSx=QString(), QString IconaDx=QString(), QString Iconsx=QString(), QString Icondx=QString());
 private slots:
 	void Attiva();
 	void Disattiva();
 	void Aumenta();
 	void Diminuisci();
+private:
+	QList<QString> elencoDisp;
+	void sendActivationFrame(QString argm);
 };
 
 #endif

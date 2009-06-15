@@ -11,18 +11,16 @@
 #ifndef AMBDIFFSON_H
 #define AMBDIFFSON_H
 
-#include "bannbuticon.h"
-#include "bannbut2icon.h"
+#include "bann1_button.h" // bannBut2Icon, bannPuls
 
-#include <qptrlist.h>
-#include <qwidget.h>
-#include <qstring.h>
+#include <QString>
+#include <QList>
 
 /// Forward Declarations
-class diffSonora;
-class diffmulti;
-class dati_ampli_multi;
-class sottoMenu;
+class SoundDiffusion;
+class MultiSoundDiff;
+class AudioSources;
+
 
 /*****************************************************************
  ** Ambiente diffusione sonora multicanale
@@ -36,24 +34,26 @@ class sottoMenu;
 class ambDiffSon : public bannBut2Icon
 {
 Q_OBJECT
-private:
-	diffSonora *diffson;
-	diffmulti *diffmul;
-	sottoMenu *sorgenti;
-	int actSrc;
-	bool is_draw;
 public:
-	ambDiffSon(QWidget *parent=0, const char *name=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", char *Icona3="", QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	ambDiffSon(QWidget *parent, QString d, QString indirizzo, QString Icona1, QString Icona2,
+		QString Icona3, SoundDiffusion *ds, AudioSources *sorg);
 	void Draw();
-	void hide();
 	void setDraw(bool d);
 	bool isDraw();
 public slots:
-	void configura(); 
+	void configura();
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
+protected:
+	virtual void hideEvent(QHideEvent *event);
+private:
+	SoundDiffusion *diffson;
+	AudioSources *sorgenti;
+	int actSrc;
+	bool is_draw;
+	QString descr;
 signals:
-	void ambChanged(const QString &, bool, char *);
+	void ambChanged(const QString &, bool, QString);
 };
 
 
@@ -66,22 +66,23 @@ signals:
  * \author Ciminaghi
  * \date jul 2006
  */
-class insAmbDiffSon : public bannButIcon
+class insAmbDiffSon : public bannPuls
 {
 Q_OBJECT
-private:
-	diffSonora *diffson;
-	diffmulti *diffmul;
-	sottoMenu *sorgenti;
 public:
-	insAmbDiffSon(QWidget *parent=0, QPtrList<QString> *descrizioni=NULL, void *indirizzo=NULL, char* Icona1="",char *Icona2="", QPtrList<dati_ampli_multi> *la = NULL, diffSonora *ds=NULL, sottoMenu *sorg=NULL, diffmulti *dm=NULL);
+	insAmbDiffSon(QWidget *parent, QString d, QString Icona1, QString Icona2, SoundDiffusion *ds,
+		AudioSources *sorg);
 	void Draw();
 public slots:
 	void configura();
 	//! receives amb index and active source index
 	void actSrcChanged(int, int);
+private:
+	SoundDiffusion *diffson;
+	AudioSources *sorgenti;
+	QString descr;
 signals:
-	void ambChanged(const QString &, bool, char *);
+	void ambChanged(const QString &, bool, QString);
 };
 
 #endif

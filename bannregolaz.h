@@ -13,7 +13,7 @@
 
 #include "banner.h"
 
-#include <qwidget.h>
+#include <QWidget>
 
 class QTimer;
 
@@ -33,7 +33,7 @@ class bannRegolaz : public banner
 {
 	Q_OBJECT
 public:
-	bannRegolaz(QWidget *, const char *);
+	bannRegolaz(QWidget *parent);
 
 private slots:
 	void armTimRipdx();

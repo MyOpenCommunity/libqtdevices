@@ -9,14 +9,17 @@
  ****************************************************************/
 
 #include "titlelabel.h"
+#include "skinmanager.h"
+#include "fontmanager.h" //bt_global::font
+#include "icondispatcher.h" //bt_global::icons_cache
 
-#include <qpainter.h>
+#include <QPainter>
+#include <QTextDocument>
+#include <QDebug>
 
-/// ***********************************************************************************************************************
-/// Methods for TitleLabel
-/// ***********************************************************************************************************************
-TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling, WFlags f) :
-	BtLabelEvo(parent, 0, f)
+
+TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling) :
+	QLabel(parent)
 {
 	// Style
 	setFixedWidth(w);
@@ -39,13 +42,16 @@ TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offs
 	scrolling = _scrolling;
 
 	// connect timer to scroll text
-	connect(&scrolling_timer, SIGNAL(timeout()), this, SLOT(handleScrollingTimer()));
+	connect(&scrolling_timer, SIGNAL(timeout()), SLOT(handleScrollingTimer()));
 }
 
-void TitleLabel::drawContents(QPainter *p)
+void TitleLabel::paintEvent(QPaintEvent *event)
 {
-	p->translate(w_offset, h_offset);
-	QLabel::drawContents(p);
+	QPainter painter;
+	painter.begin(this);
+	painter.translate(w_offset, h_offset);
+	painter.end();
+	QLabel::paintEvent(event);
 }
 
 void TitleLabel::resetTextPosition()
@@ -55,7 +61,7 @@ void TitleLabel::resetTextPosition()
 
 void TitleLabel::setText(const QString & text_to_set)
 {
-	// store full string and full lenght
+	// store full string and full length
 	text         = text_to_set;
 	text_length  = text_to_set.length();
 	current_shift = 0;
@@ -64,7 +70,7 @@ void TitleLabel::setText(const QString & text_to_set)
 	QLabel::setText(text_to_set);
 
 	// start the timer if scroll is needed
-	if (scrolling == TRUE && text_length > visible_chars)
+	if (scrolling && text_length > visible_chars)
 		scrolling_timer.start(time_per_step);
 	else
 		scrolling_timer.stop();
@@ -96,4 +102,40 @@ void TitleLabel::handleScrollingTimer()
 
 	refreshText();
 	repaint();
+}
+
+
+
+TextOnImageLabel::TextOnImageLabel(QWidget *parent, const QString &text) : QLabel(parent)
+{
+	setInternalText(text);
+}
+
+void TextOnImageLabel::setInternalText(const QString &text)
+{
+	internal_text = text;
+	update();
+}
+
+void TextOnImageLabel::setBackgroundImage(const QString &path)
+{
+	setPixmap(*bt_global::icons_cache.getIcon(path));
+}
+
+void TextOnImageLabel::paintEvent(QPaintEvent *e)
+{
+	QLabel::paintEvent(e);
+	QTextDocument td;
+	td.setDefaultStyleSheet(bt_global::skin->getStyle());
+	td.setDefaultFont(bt_global::font->get(FontManager::TEXT));
+	td.setHtml("<p>" + internal_text + "</p>");
+	// find the correct coordinates to center the text
+	QFontMetrics fm(td.defaultFont());
+	QRect dim = rect();
+	QPainter p(this);
+	// +3 at the end is empyrical, centers correctly the text on the label
+	int y = dim.height() / 2 - fm.ascent() + 3;
+	int x = (dim.width() - fm.width(internal_text)) / 2;
+	p.translate(x, y);
+	td.drawContents(&p, QRectF(rect()));
 }

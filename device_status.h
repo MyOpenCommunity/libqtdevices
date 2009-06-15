@@ -1,7 +1,7 @@
 #ifndef __DEVICE_STATUS_H__
 #define __DEVICE_STATUS_H__
 
-#include <qptrlist.h>
+#include <QList>
 
 /*
  * Not ideal here, thermo specific stuff, but
@@ -70,20 +70,20 @@ public:
 			int step, bool initialized = false);
 	stat_var(stat_var::type=NONE);
 	void get_val(int&);
-	int get_val(void) const;
+	int get_val() const;
 	void set_val(int&);
 	void get_min(int&);
 	void set_min(int&);
 	void get_max(int&);
 	void set_max(int&);
 	void get_step(int&);
-	int get_step(void);
+	int get_step();
 	void set_step(int&);
-	bool initialized(void);
+	bool initialized();
 	//! Invalidate variable contents
-	void invalidate(void);
+	void invalidate();
 	//! Force initialized state
-	void force_initialized(void);
+	void force_initialized();
 	~stat_var();
 };
 
@@ -114,7 +114,7 @@ public:
 	} type;
 private:
 	type t;
-	QPtrList<stat_var> vars;
+	QList<stat_var*> vars;
 	//! True when initialized
 	bool _initialized;
 	//! True when init requested
@@ -122,21 +122,21 @@ private:
 public:
 	device_status(device_status::type);
 	//! Read type
-	device_status::type get_type(void);
+	device_status::type get_type();
 	//! Set type
 	void set_type(device_status::type& t);
-	bool add_var(int index, stat_var *);
+	void add_var(int index, stat_var *v);
 	int read(int index, stat_var& out);
 	int write_val(int index, stat_var& val);
 	//! Returns true when status initialized
-	bool initialized(void);
+	bool initialized();
 	//! Returns true when status initialize has already been requested
-	bool init_requested(void);
+	bool init_requested();
 	//! Sets init_requested flag
-	void mark_init_requested(void);
-	void invalidate(void);
+	void mark_init_requested();
+	void invalidate();
 	//! Force initialized status
-	void force_initialized(void);
+	void force_initialized();
 	//! Return delay for init request deferral (msecs)
 	virtual int init_request_delay() { return 0; }
 	virtual ~device_status();
@@ -178,7 +178,7 @@ public:
 };
 
 #ifndef DIMMER_REQ_DELAY
-#define DIMMER_REQ_DELAY 4000
+#define DIMMER_REQ_DELAY 9000
 #endif
 
 //! Dimmer status
@@ -198,7 +198,7 @@ public:
 };
 
 #ifndef DIMMER100_REQ_DELAY
-#define DIMMER100_REQ_DELAY 9000
+#define DIMMER100_REQ_DELAY 4000
 #endif
 
 //! Dimmer 100 status

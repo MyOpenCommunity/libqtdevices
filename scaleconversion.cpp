@@ -19,10 +19,8 @@ QString celsiusString(int celsius_temp)
 {
 	QString str;
 	str.sprintf("%d", celsius_temp);
-	if((celsius_temp < 10) && (celsius_temp > -10))
-		str.insert(str.length() -1, "0.");
-	else
-		str.insert(str.length() -1, ".");
+	QString val = (celsius_temp < 10 && celsius_temp > -10) ? "0." : ".";
+	str.insert(str.length() -1, val);
 	str += TEMP_DEGREES"C";
 	return str;
 }

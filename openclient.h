@@ -13,14 +13,17 @@
 
 #include <openwebnet.h>
 
-#include <qsocket.h>
-#include <qtimer.h>
+#include <QTimer>
+#include <QTcpSocket>
+#include <QByteArray>
+#include <QRegExp>
+#include <QHash>
 
+#ifndef OPENSERVER_ADDR
+#define OPENSERVER_ADDR "127.0.0.1"
+#endif
 
-#define SOCKET_MONITOR "*99*1##"
-#define SOCKET_COMANDI "*99*9##"
-#define SOCKET_RICHIESTE "*99*0##"
-
+#define OPENSERVER_PORT 20000
 
 /*!
   \class Client
@@ -30,56 +33,62 @@
   \date lug 2005
 */
 
-class Client  : public QObject
+class Client : public QObject
 {
+friend class OpenServerMock;
 Q_OBJECT
 public:
-	Client( const QString &host, Q_UINT16 port, int mon, bool richieste=false);
-	~Client(){};
 
-public slots:
-	/// Connects to the socket
-	void connetti();
+	enum Type
+	{
+		MONITOR = 0,
+		RICHIESTE,
+		COMANDI
+	};
+
+	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 	void ApriInviaFrameChiudi(const char *);
-	void ApriInviaFrameChiudi(char *);
+	void installFrameCompressor(int timeout, const QString &regex);
+	void flush() { socket->flush(); }
+	~Client();
 
 private slots:
- 	/// Closes the socket
-	void closeConnection(void);
-	
+	void connetti();
 	/// Reads messages from the socket
-	int socketFrameRead(void);
-	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
-	int socketWaitForAck(void);
+	int socketFrameRead();
 
-	void socketConnected(void);
-	void socketConnectionClosed(void);
-	void socketClosed(void);
-	void socketError(int e );
+	void socketConnected();
+	void socketConnectionClosed();
+	void socketError(QAbstractSocket::SocketError e);
 
 	/// Send an \a Open \aFrame through the socket and wait for ack
 	void ApriInviaFrameChiudiw(char*);
-	void richStato(char*);
-	void ackReceived(void);
+	void richStato(QString richiesta);
+	void ackReceived();
+	void sendFrameOpen(const QString &frame_open);
 
 	void clear_last_msg_open_read();
 
 private:
-	/// Sends messages throught the socket
-	void sendToServer(const char *);
-
-	QSocket *socket;
-	int ismonitor;
-	bool isrichiesta;
-	QTimer* tick;
+	QTcpSocket *socket;
+	Type type;
+	QString host;
+	unsigned port;
+	QByteArray data_read;
 	QTimer Open_read;
-	void socketStateRead(char*);
-	bool ackRx;
 	openwebnet last_msg_open_read;
 	openwebnet last_msg_open_write;
+	bool ackRx;
+
+	void socketStateRead(char*);
+	void manageFrame(QByteArray frame);
+	QByteArray readFromServer();
+
+	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
+	int socketWaitForAck();
 
 signals:
-	void  frameIn(char*);
+	void frameIn(char*);
 	void rispStato(char*);
 	void monitorSu();
 	void frameToAutoread(char*);

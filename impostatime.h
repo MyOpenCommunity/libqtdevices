@@ -11,11 +11,12 @@
 #ifndef IMPOSTA_TIME_H
 #define IMPOSTA_TIME_H
 
-#include <qframe.h>
-#include "btbutton.h"
-#include "main.h"
-#include "timescript.h"
-#include "btlabel.h"
+#include "page.h"
+
+class timeScript;
+class BtButton;
+class QLabel;
+
 
 /*!
   \class impostaTime
@@ -25,63 +26,12 @@
   \date lug 2005
 */
 
-class  impostaTime : public QFrame
+class  impostaTime : public Page
 {
 Q_OBJECT
 public:
-	impostaTime(QWidget *parent=0, const char *name=0);
-/*!
-  \brief Sets the background color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	void setBGColor(QColor);
-
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The argument is the QColor description of the color.
-*/
-	void setFGColor(QColor);
-
-/*!
-  \brief Sets the background color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setBGColor(int, int , int);
-
-/*!
-  \brief Sets the foreground color for the banner.
-
-  The arguments are RGB components for the color.
-*/
-	void setFGColor(int , int , int);
-
-/*!
-  \brief Sets the background pixmap for the banner.
-*/
-	int setBGPixmap(char*);
+	impostaTime();
 	BtButton *but[7];
-
-signals:
-/*!
-  \brief Emitted when the object is closed.
-*/
-	void Closed();
-
-/*!
-  \brief Emitted to send \a Open \a frame on the system.
-*/
-	void sendFrame(char*);
-	void sendInit(char*);
-
-public slots:
-/*!
-  \brief Draws the object.
-*/
-	void mostra();
-	void hide();
 
 private slots:
 	void OKTime();
@@ -89,7 +39,9 @@ private slots:
 
 private:
 	timeScript *dataOra;
-	BtLabel *Immagine;
+	QLabel *Immagine;
+	void setTimePage();
+	void setDatePage();
 };
 
 

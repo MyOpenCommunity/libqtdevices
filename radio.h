@@ -12,12 +12,12 @@
 #ifndef RADIO_H
 #define RADIO_H
 
-#include <qwidget.h>
+#include "page.h"
 
-class BtLabel;
 class BtButton;
 class bannFrecce;
 class QLCDNumber;
+class QLabel;
 
 
 /*!
@@ -27,47 +27,19 @@ class QLCDNumber;
  * \author Davide
  * \date lug 2005
  */
-class  radio : public QWidget
+class  radio : public Page
 {
 Q_OBJECT
 public:
-	radio(QWidget *parent=0, const char *name=0, const QString & amb="");
-	/*!
-	 * \brief Sets the background color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setBGColor(int, int , int);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The arguments are RGB components for the color.
-	 */
-	void setFGColor(int , int , int);
-	/*!
-	 * \brief Sets the background color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setBGColor(QColor);
-	/*!
-	 * \brief Sets the foreground color for the banner.
-	 * The argument is the QColor description of the color.
-	 */
-	void setFGColor(QColor);
-	/*!
-	 * \brief Sets the background pixmap for the banner.
-	 */
-	int setBGPixmap(char*);
+	radio(const QString &amb="");
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
-	BtLabel* rdsLabel,* radioName,*progrText, *ambDescr;
+	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLCDNumber *freq;
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file
 	 */
-	void setNameU(const QString &);
-	/*!
-	 * \brief Gets the name of the tuner found in user configuration file
-	 */
-	QString * getNameU();
+	void setName(const QString &);
 	/*!
 	 * \brief Sets the frequency of the syntonized station
 	 */
@@ -149,7 +121,7 @@ public slots:
 	/*!
 	 * \brief Shows the tuner details page 
 	 */
-	void showRadio();
+	virtual void showPage();
 	/*!
 	 * \brief Changes the state to automatic search
 	 */
@@ -190,10 +162,6 @@ public slots:
 	 * \brief At the end of a manual search ask the frequency tuned to the tuner to align to the visualized frequency
 	 */
 	void verTas();
-	/*!
-	 * \brief Disables/enables everything
-	 */
-	void freezed(bool);
 private:
 	float frequenza;
 	uchar stazione;

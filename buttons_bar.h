@@ -19,9 +19,11 @@
 
 #include "btbutton.h"
 
-#include <qbuttongroup.h>
-#include <qptrvector.h>
-#include <qwidget.h>
+#include <QButtonGroup>
+#include <QPixmap>
+#include <QVector>
+#include <QWidget>
+
 
 
 /** \class ButtonsBar
@@ -31,20 +33,14 @@ class ButtonsBar : public QWidget
 {
 Q_OBJECT
 public:
-	ButtonsBar(QWidget *parent = 0, unsigned int number_of_buttons = 1, Orientation orientation = Horizontal);
-	bool setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon);
+	ButtonsBar(QWidget *parent = 0, unsigned int number_of_buttons = 1, Qt::Orientation orientation = Qt::Horizontal);
+	~ButtonsBar();
+	bool setButtonIcon(unsigned int button_number, const QString &icon_path);
 	
-	/// Set toggle state on all buttons
-	void setToggleButtons(bool enable);
-	/// If Toggle Status has been enabled, set the given button on;
-	void setToggleStatus(unsigned int button_up_index);
 	void showButton(int idx);
 	void hideButton(int idx);
-	void setBGColor(QColor c);
-	void setFGColor(QColor c);
 private:
-	bool isToggleBar;
-	QPtrVector<BtButton>  buttons_list;
+	QVector<BtButton*>  buttons_list;
 	QButtonGroup *buttons_group;
 signals:
 	/// The signal pressed(int ) of QButton group is connected to the following by the constructor

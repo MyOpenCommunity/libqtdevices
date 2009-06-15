@@ -12,13 +12,14 @@
 #include "playwindow.h"
 #include "titlelabel.h"
 #include "mediaplayer.h"
-#include "bannondx.h"
-#include "fontmanager.h"
+#include "fontmanager.h" // bt_global::font
 #include "buttons_bar.h"
 #include "main.h"
+#include "bannfrecce.h"
 
-#include <qlayout.h>
-#include <unistd.h>
+#include <QLayout>
+
+#include <unistd.h> // usleep
 
 /*
  * Interface icon paths.
@@ -28,80 +29,29 @@ static const char *IMG_STOP = IMG_PATH "btnsdstop.png";
 static const char *IMG_PAUSE = IMG_PATH "btnpause.png";
 static const char *IMG_NEXT = IMG_PATH "btnforward.png";
 static const char *IMG_PREV = IMG_PATH "btnbackward.png";
-static const char *IMG_BACK = IMG_PATH "arrlf.png";
 static const char *IMG_SETTINGS = IMG_PATH "appdiffsmall.png";
-
-static const char *IMG_PLAY_P = IMG_PATH "btnplayp.png"; 
-static const char *IMG_STOP_P = IMG_PATH "btnsdstopp.png";
-static const char *IMG_PAUSE_P = IMG_PATH "btnpausep.png";
-static const char *IMG_NEXT_P = IMG_PATH "btnforwardp.png";
-static const char *IMG_PREV_P = IMG_PATH "btnbackwardp.png";
-static const char *IMG_BACK_P = IMG_PATH "arrlfp.png";
-static const char *IMG_SETTINGS_P = IMG_PATH "appdiffsmallp.png";
-
-/*
- * Path in conf.xml where the configurable label texts are found.
- */
-#define CFG_LABELS_MEDIAPLAYER "configuratore/setup/labels/mediaplayer/"
 
 
 /// ***********************************************************************************************************************
 /// Methods for PlayWindow
 /// ***********************************************************************************************************************
 
-PlayWindow::PlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
-	QWidget(parent, name, WStyle_NoBorder | WType_TopLevel | WStyle_Customize)
+PlayWindow::PlayWindow(MediaPlayer *player)
 {
 	current_track = CURRENT_TRACK_NONE;
 	read_player_output = true;
 
-	/// set self Geometry
-	setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT);
-
-	/// Create Main Layout
-	// all others layout must have this as parent, this is not more needed in Qt4
-	// where we can use setMainLayout
-	main_layout = new QVBoxLayout(this);
+	main_layout->addSpacing(25);
 	media_player = player;
 
 	connect(media_player, SIGNAL(mplayerDone()), SLOT(handlePlayingDone()));
 	connect(media_player, SIGNAL(mplayerKilled()), SLOT(handlePlayingKilled()));
 	connect(media_player, SIGNAL(mplayerAborted()), SLOT(handlePlayingAborted()));
 
-	QHBoxLayout *main_controls_layout = new QHBoxLayout(main_layout);
-	addMainControls(main_controls_layout);
-}
-
-void PlayWindow::addMainControls(QBoxLayout* layout)
-{
-	back_btn = new BtButton(this, "back_btn");
-	settings_btn = new BtButton(this, "settings_btn");
-	layout->addWidget(back_btn);
-	layout->addStretch();
-	layout->addWidget(settings_btn);
-
-	back_btn->setPixmap(*icons_library.getIcon(IMG_BACK));
-	back_btn->setPressedPixmap(*icons_library.getIcon(IMG_BACK_P));
-
-	settings_btn->setPixmap(*icons_library.getIcon(IMG_SETTINGS));
-	settings_btn->setPressedPixmap(*icons_library.getIcon(IMG_SETTINGS_P));
-
-	connect(back_btn, SIGNAL(released()), SIGNAL(backBtn()));
-	connect(settings_btn, SIGNAL(released()), SIGNAL(settingsBtn()));
-}
-
-void PlayWindow::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	back_btn->setPaletteBackgroundColor(c);
-	settings_btn->setPaletteBackgroundColor(c);
-}
-
-void PlayWindow::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	back_btn->setPaletteForegroundColor(c);
-	settings_btn->setPaletteForegroundColor(c);
+	bannFrecce *nav_bar = new bannFrecce(this, 10, IMG_SETTINGS);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(dxClick()), SIGNAL(settingsBtn()));
+	main_layout->addWidget(nav_bar);
 }
 
 void PlayWindow::prevTrack()
@@ -117,7 +67,7 @@ void PlayWindow::prevTrack()
 
 void PlayWindow::nextTrack()
 {
-	if (media_player->isInstanceRunning() && current_track < (play_list.count() - 1))
+	if (media_player->isInstanceRunning() && static_cast<int>(current_track) < (play_list.size() - 1))
 	{
 		playNextTrack();
 		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
@@ -162,7 +112,7 @@ void PlayWindow::handlePlayingDone()
 	 * mplayer has terminated because the track is finished
 	 * so we go to the next track if exists.
 	 */
-	if (current_track < (play_list.count() - 1))
+	if (static_cast<int>(current_track) < (play_list.size() - 1))
 	{
 		playNextTrack();
 	}
@@ -178,7 +128,7 @@ void PlayWindow::handlePlayingAborted()
 	qDebug("[AUDIO] Error in mplayer, stopping playlist");
 }
 
-void PlayWindow::startPlayer(QValueVector<AudioData> _play_list, unsigned element)
+void PlayWindow::startPlayer(QVector<AudioData> _play_list, unsigned element)
 {
 	qDebug("[AUDIO] startPlayer()");
 	stop();
@@ -217,54 +167,43 @@ QString PlayWindow::getCurrentDescription()
 	return play_list[current_track].desc;
 }
 
+
 /// ***********************************************************************************************************************
 /// Methods for MediaPlayWindow
 /// ***********************************************************************************************************************
 
-MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
-	PlayWindow(player, parent, name)
+MediaPlayWindow::MediaPlayWindow(MediaPlayer *player) : PlayWindow(player)
 {
 	qDebug("[AUDIO] MediaPlayWindow costructor");
-	main_layout->insertSpacing(0, 20);
 
 	/// Create Labels (that contain tags)
-	QFont aFont;
-	FontManager::instance()->getFont(font_playwindow, aFont);
+	QFont aFont = bt_global::font->get(FontManager::TEXT);
 
 	// layouts for media
 	QHBoxLayout *tags_layout = new QHBoxLayout();
-	main_layout->insertLayout(1, tags_layout);
+	main_layout->insertLayout(0, tags_layout);
+	main_layout->insertStretch(1);
 
-	QVBoxLayout *tags_name_layout = new QVBoxLayout(tags_layout);
-	QVBoxLayout *tags_text_layout = new QVBoxLayout(tags_layout);
+	QVBoxLayout *tags_name_layout = new QVBoxLayout();
+	tags_name_layout->setContentsMargins(10, 0, 0, 0);
+	QVBoxLayout *tags_text_layout = new QVBoxLayout();
 
 	addNameLabels(tags_name_layout, aFont);
 	addTextLabels(tags_text_layout, aFont);
 
+	tags_layout->addLayout(tags_name_layout);
+	tags_layout->addLayout(tags_text_layout);
+
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	/*
-	 * Create Buttons and set their geometry
-	 */
-	QPixmap *icon;
-	QPixmap *pressed_icon;
-
-	icon         = icons_library.getIcon(IMG_STOP);
-	pressed_icon = icons_library.getIcon(IMG_STOP_P);
-	play_controls->setButtonIcons(1, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_PREV);
-	pressed_icon = icons_library.getIcon(IMG_PREV_P);
-	play_controls->setButtonIcons(2, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_NEXT);
-	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
-	play_controls->setButtonIcons(3, *icon, *pressed_icon);
+	play_controls->setButtonIcon(1, IMG_STOP);
+	play_controls->setButtonIcon(2, IMG_PREV);
+	play_controls->setButtonIcon(3, IMG_NEXT);
 
 	main_layout->insertWidget(2, play_controls);
-	// Add space to the end of layout to align buttons with previus page
-	main_layout->addSpacing(10);
+	main_layout->insertStretch(3);
+
 	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
 
 	data_refresh_timer = new QTimer(this);
@@ -278,28 +217,12 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player, QWidget *parent, const cha
 
 void MediaPlayWindow::showPlayBtn()
 {
-	QPixmap *icon         = icons_library.getIcon(IMG_PLAY);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PLAY_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
+	play_controls->setButtonIcon(0, IMG_PLAY);
 }
 
 void MediaPlayWindow::showPauseBtn()
 {
-	QPixmap *icon         = icons_library.getIcon(IMG_PAUSE);
-	QPixmap *pressed_icon = icons_library.getIcon(IMG_PAUSE_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
-}
-
-void MediaPlayWindow::setBGColor(QColor c)
-{
-	PlayWindow::setBGColor(c);
-	play_controls->setBGColor(c);
-}
-
-void MediaPlayWindow::setFGColor(QColor c)
-{
-	PlayWindow::setFGColor(c);
-	play_controls->setFGColor(c);
+	play_controls->setButtonIcon(0, IMG_PAUSE);
 }
 
 void MediaPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
@@ -378,11 +301,11 @@ void MediaPlayWindow::refreshPlayInfo()
 	// Now we iterate on updated_playing_info and import new entries in playing_info
 	QMap<QString, QString>::Iterator it;
 	for (it = updated_playing_info.begin(); it != updated_playing_info.end(); ++it)
-		playing_info[it.key()] = it.data();
+		playing_info[it.key()] = it.value();
 
 	// Extract Time Data
-	QStringList total   = QStringList::split(".", playing_info["total_time"]);
-	QStringList current = QStringList::split(".", playing_info["current_time"]);
+	QStringList total   = playing_info["total_time"].split(".");
+	QStringList current = playing_info["current_time"].split(".");
 
 	// Set INFO in Labels
 	if (playing_info["meta_title"].isNull())
@@ -471,64 +394,31 @@ void MediaPlayWindow::handleButtons(int button_number)
 /// Methods for RadioPlayWindow
 /// ***********************************************************************************************************************
 
-RadioPlayWindow::RadioPlayWindow(MediaPlayer *player, QWidget *parent, const char * name) :
-	PlayWindow(player, parent, name)
+RadioPlayWindow::RadioPlayWindow(MediaPlayer *player) : PlayWindow(player)
 {
 	qDebug("[AUDIO] RadioPlayWindow costructor");
 	read_player_output = false;
-	main_layout->insertSpacing(0, 20);
+	//main_layout->insertSpacing(0, 20);
 
 	/// Create Labels (that contain tags)
-	QFont aFont;
-	FontManager::instance()->getFont(font_playwindow, aFont);
 
-	// layouts for media
-	QVBoxLayout *tags_layout = new QVBoxLayout();
-	main_layout->insertLayout(1, tags_layout);
 	meta_title_label = new TitleLabel(this, MAX_WIDTH, 30, 0, 0, TRUE);
-	meta_title_label->setFont(aFont);
+	meta_title_label->setFont(bt_global::font->get(FontManager::TEXT));
 	meta_title_label->setAlignment(Qt::AlignHCenter);
-	tags_layout->addWidget(meta_title_label);
+	main_layout->insertWidget(0, meta_title_label);
+	main_layout->insertStretch(1);
 
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
 	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	 // Create Buttons and set their geometry
-	QPixmap *icon;
-	QPixmap *pressed_icon;
-
-	icon         = icons_library.getIcon(IMG_PLAY);
-	pressed_icon = icons_library.getIcon(IMG_PLAY_P);
-	play_controls->setButtonIcons(0, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_STOP);
-	pressed_icon = icons_library.getIcon(IMG_STOP_P);
-	play_controls->setButtonIcons(1, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_PREV);
-	pressed_icon = icons_library.getIcon(IMG_PREV_P);
-	play_controls->setButtonIcons(2, *icon, *pressed_icon);
-
-	icon         = icons_library.getIcon(IMG_NEXT);
-	pressed_icon = icons_library.getIcon(IMG_NEXT_P);
-	play_controls->setButtonIcons(3, *icon, *pressed_icon);
+	play_controls->setButtonIcon(0, IMG_PLAY);
+	play_controls->setButtonIcon(1, IMG_STOP);
+	play_controls->setButtonIcon(2, IMG_PREV);
+	play_controls->setButtonIcon(3, IMG_NEXT);
 
 	main_layout->insertWidget(2, play_controls);
-	// Add space to the end of layout to align buttons with previus page
-	main_layout->addSpacing(10);
+	main_layout->insertStretch(3);
 	connect(play_controls, SIGNAL(clicked(int)), SLOT(handleButtons(int)));
-}
-
-void RadioPlayWindow::setBGColor(QColor c)
-{
-	PlayWindow::setBGColor(c);
-	play_controls->setBGColor(c);
-}
-
-void RadioPlayWindow::setFGColor(QColor c)
-{
-	PlayWindow::setFGColor(c);
-	play_controls->setFGColor(c);
 }
 
 void RadioPlayWindow::startPlayer(unsigned int track)

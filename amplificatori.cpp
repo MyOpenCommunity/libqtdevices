@@ -9,22 +9,18 @@
  ****************************************************************/
 
 #include "amplificatori.h"
-#include "device_cache.h" // btouch_device_cache
+#include "generic_functions.h" // createMsgOpen
+#include "device_status.h"
 #include "device.h"
+#include "devices_cache.h" // bt_global::devices_cache
 
-#include <openwebnet.h> // class openwebnet
 
-/*****************************************************************
- **amplificatore
- ****************************************************************/
-
-amplificatore::amplificatore(QWidget *parent,const char *name,char* indirizzo,char* IconaSx,char* IconaDx,char *icon ,char *inactiveIcon)
-	: bannRegolaz(parent, name)
+amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
+	: bannRegolaz(parent)
 {
 	qDebug("amplificatore::amplificatore()");
 	setRange(1,9);
-	SetIcons(IconaSx, IconaDx ,icon, inactiveIcon,(char)1);
-	qDebug("%s - %s - %s - %s", IconaSx, IconaDx, icon, inactiveIcon);
+	SetIcons(IconaSx, IconaDx, icon, inactiveIcon, true);
 	setAddress(indirizzo);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Accendi()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Spegni()));
@@ -33,50 +29,47 @@ amplificatore::amplificatore(QWidget *parent,const char *name,char* indirizzo,ch
 	setValue(1);
 	impostaAttivo(0);
 	// Crea o preleva il dispositivo dalla cache
-	dev = btouch_device_cache.get_sound_device(getAddress());
+	dev = bt_global::devices_cache.get_sound_device(getAddress());
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QPtrList<device_status>)),
-			this, SLOT(status_changed(QPtrList<device_status>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+			this, SLOT(status_changed(QList<device_status*>)));
 }
 
 int trasformaVol(int vol)
 {
-	if (vol<0)
-		return(-1);
-
-	if (vol<=3) 
-		return(1);
-	if (vol<=7) 
-		return(2);
-	if (vol<=11) 
-		return(3);
-	if (vol<=14) 
-		return(4);
-	if (vol<=17) 
-		return(5);
-	if (vol<=20) 
-		return(6);
-	if (vol<=23) 
-		return(7);
-	if (vol<=27) 
-		return(8);
-	if (vol<=31) 
-		return(9);
-	return(-1);
+	if (vol < 0)
+		return -1;
+	if (vol <= 3)
+		return 1;
+	if (vol <= 7)
+		return 2;
+	if (vol <= 11)
+		return 3;
+	if (vol <= 14)
+		return 4;
+	if (vol <= 17)
+		return 5;
+	if (vol <= 20)
+		return 6;
+	if (vol <= 23)
+		return 7;
+	if (vol <= 27)
+		return 8;
+	if (vol <= 31)
+		return 9;
+	return -1;
 }
 
-void amplificatore::status_changed(QPtrList<device_status>sl)
+void amplificatore::status_changed(QList<device_status*> sl)
 {
 	stat_var curr_lev(stat_var::LEV);
 	stat_var curr_status(stat_var::ON_OFF);
 	bool aggiorna = false;
 	qDebug("amplificatore::status_changed");
-	QPtrListIterator<device_status> *dsi = 
-		new QPtrListIterator<device_status>(sl);
-	dsi->toFirst();
-	device_status *ds;
-	while ((ds = dsi->current()) != 0)
+
+	for (int i = 0; i < sl.size(); ++i)
 	{
+		device_status *ds = sl.at(i);
 		switch (ds->get_type())
 		{
 		case device_status::AMPLIFIER :
@@ -100,160 +93,91 @@ void amplificatore::status_changed(QPtrList<device_status>sl)
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-		++(*dsi);
 	}
+
 	if (aggiorna)
 		Draw();
-	delete dsi;
 }
 
 void amplificatore::Accendi()
 {
-	char pippo[50];
-	char ind[3];
-
+	QString addr = getAddress();
 	qDebug("amplificatore::Accendi()");
-	memset(pippo,'\000',sizeof(pippo));
-	sprintf(ind, "%s", getAddress());
-	sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-	dev->sendFrame(pippo);
+	dev->sendFrame(QString("*22*34#4#%1*3#%1#%2##").arg(addr.at(0)).arg(addr.at(1)));
 }
 
 void amplificatore::Spegni()
 {
-	char pippo[50];
-	char ind[3];
-
+	QString addr = getAddress();
 	qDebug("amplificatore::Spegni()");
-	memset(pippo,'\000',sizeof(pippo));
-	sprintf(ind, "%s", getAddress());
-	sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-	dev->sendFrame(pippo);
+	dev->sendFrame(QString("*22*0#4#%1*3#%1#%2##").arg(addr.at(0)).arg(addr.at(1)));
 }
 
 void amplificatore::Aumenta()
 {
-	openwebnet msg_open;
-
 	qDebug("amplificatore::Aumenta()");
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("16", "1001",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "1001", getAddress()));
 }
 
 void amplificatore::Diminuisci()
 {
-	openwebnet msg_open;
-
 	qDebug("amplificatore::Diminuisci()");
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateMsgOpen("16", "1101",getAddress(),"");
-	dev->sendFrame(msg_open.frame_open);
+	dev->sendFrame(createMsgOpen("16", "1101",getAddress()));
 }
 
 void amplificatore::inizializza(bool forza)
 {
-	openwebnet msg_open;
-	char    pippo[50];
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*1##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	dev->sendInit(msg_open.frame_open);
-
-	memset(pippo,'\000',sizeof(pippo));
-	strcat(pippo,"*#16*");
-	strcat(pippo,getAddress());
-	strcat(pippo,"*5##");
-	msg_open.CreateMsgOpen((char*)&pippo[0],strlen((char*)&pippo[0]));
-	dev->sendInit(msg_open.frame_open);
+	dev->sendInit("*#16*" + getAddress() + "*1##");
+	dev->sendInit("*#16*" + getAddress() + "*5##");
 }
 
-/*****************************************************************
- **gruppo di amplificatori
- ****************************************************************/
 
-grAmplificatori::grAmplificatori(QWidget *parent,const char *name,void *indirizzi,char* IconaSx,char* IconaDx, char *iconsx ,char* icondx,int period,int number)
-	: bannRegolaz(parent, name)
+grAmplificatori::grAmplificatori(QWidget *parent, QList<QString> indirizzi, QString IconaSx,
+	QString IconaDx, QString iconsx, QString icondx) : bannRegolaz(parent), elencoDisp(indirizzi)
 {
-	SetIcons(IconaSx,IconaDx ,icondx,iconsx);
-	setAddress(indirizzi);
-	dev = btouch_device_cache.get_device(getAddress());
+	SetIcons(IconaSx, IconaDx, icondx, iconsx);
 	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Aumenta()));
 	connect(this,SIGNAL(csxClick()),this,SLOT(Diminuisci()));
 }
 
-void grAmplificatori::setAddress(void*indirizzi)
+void grAmplificatori::sendActivationFrame(QString argm)
 {
-	elencoDisp=*((QPtrList<QString>*)indirizzi);
+	for (int i = 0; i < elencoDisp.size(); ++i)
+	{
+		QString ind = elencoDisp.at(i);
+		QString f;
+		if (ind == "0")
+			f = QString("*22*%2#4#%1*5#3#%1##").arg(ind.at(0)).arg(argm);
+		else if (ind.at(0) == '#')
+			f = QString("*22*%2#4#%1*4#%1##").arg(ind.at(1)).arg(argm);
+		else
+			f = QString("*22*%3#4#%1*3#%1#%2##").arg(ind.at(0)).arg(ind.at(1)).arg(argm);
+
+		sendFrame(f);
+	}
 }
 
 void grAmplificatori::Attiva()
 {
-	char pippo[50];
-	char ind[3];
-
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
-	{
-		memset(pippo,'\000',sizeof(pippo));
-		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
-		if (strcmp(ind, "0") == 0)
-			sprintf(pippo,"*22*34#4#%c*5#3#%c##",ind[0], ind[0]);
-		else if (ind[0] == '#')
-			sprintf(pippo,"*22*34#4#%c*4#%c##",ind[1], ind[1]);
-		else
-			sprintf(pippo,"*22*34#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-		dev->sendFrame(pippo);
-	}
+	sendActivationFrame("34");
 }
 
 void grAmplificatori::Disattiva()
 {
-	char pippo[50];
-	char ind[3];
-
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
-	{
-		memset(pippo,'\000',sizeof(pippo));
-		sprintf(ind, "%s", (char*)elencoDisp.at(idx)->ascii());
-		if (strcmp(ind, "0") == 0)
-			sprintf(pippo,"*22*0#4#%c*5#3#%c##",ind[0], ind[0]);
-		else if (ind[0] == '#')
-			sprintf(pippo,"*22*0#4#%c*4#%c##",ind[1], ind[1]);
-		else
-			sprintf(pippo,"*22*0#4#%c*3#%c#%c##",ind[0], ind[0], ind[1]);
-		dev->sendFrame(pippo);
-	}
+	sendActivationFrame("0");
 }
 
 void grAmplificatori::Aumenta()
 {
-	openwebnet msg_open;
-
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("16", "1001",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	for (int i = 0; i < elencoDisp.size(); ++i)
+		sendFrame(createMsgOpen("16", "1001", elencoDisp.at(i)));
 }
 
 void grAmplificatori::Diminuisci()
 {
-	openwebnet msg_open;
-
-	for (uchar idx=0; idx<elencoDisp.count();idx++)
-	{
-		msg_open.CreateNullMsgOpen();
-		msg_open.CreateMsgOpen("16", "1101",(char*)elencoDisp.at(idx)->ascii(),"");
-		dev->sendFrame(msg_open.frame_open);
-	}
+	for (int i = 0; i < elencoDisp.size(); ++i)
+		sendFrame(createMsgOpen("16", "1101", elencoDisp.at(i)));
 }
 
-void grAmplificatori::inizializza(bool forza)
-{
-}

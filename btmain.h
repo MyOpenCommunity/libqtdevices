@@ -11,25 +11,26 @@
 #ifndef BTMAIN_H
 #define BTMAIN_H
 
-#include "btlabel.h"
+#include <QObject>
+#include <QHash>
+#include <QStackedWidget>
 
-#include <common_functions.h>
 
-#include <qwidget.h>
-
-class sottoMenu;
-class diffSonora;
-class diffmulti;
-class antintrusione;
-class ThermalMenu;
-class versio;
+class SoundDiffusion;
+class MultiSoundDiffAlarm;
+class Version;
 class homePage;
 class Calibrate;
 class genPage;
 class Client;
-class tastiera;
+class Keypad;
 class ScreenSaver;
-class SupervisionMenu;
+class Page;
+
+class QPixmap;
+class QString;
+class QTimer;
+class QTime;
 
 /*!
   \class BtMain
@@ -40,63 +41,90 @@ class SupervisionMenu;
   \date lug 2005
 */
 
-class  BtMain : public QWidget
+class BtMain : public QObject
 {
 Q_OBJECT
+friend Page *getPage(int id);
 public:
-	BtMain(QWidget *parent=0, const char *name=0,QApplication*a=NULL);
+	BtMain();
 	~BtMain();
-	homePage * Home, *specPage;
-	sottoMenu *illumino,*scenari,*videocitofonia,*carichi,*imposta,*automazioni,*scenari_evoluti;
-	diffmulti *dm;
-	ThermalMenu *termo;
-	diffSonora *difSon;
-	antintrusione* antintr;
-	SupervisionMenu *supervisione;
-	Client * client_richieste;
-	Client * client_comandi;
-	Client *  client_monitor;
-	versio* datiGen;
-	void ResetTimer();
-signals:
-/*!
-  \brief Emitted to (de)freeze the console
-*/
+	Client *client_richieste;
+	Client *client_comandi;
+	Client *client_monitor;
+
+	void resetTimer();
+	/// Freeze or unfreeze the application
 	void freeze(bool);
-	void resettimer();
+	/// Set on/off the sveglia status
+	void svegl(bool);
+
+	void setPwd(bool, QString);
 
 private slots:
 	void hom();
-	void myMain();
 	void init();
 	void gesScrSav();
-	void freezed(bool);
-	void setPwd(bool,char*);
-	void testPwd(char*);
+	void testPwd();
 	void testFiles();
-	void svegl(bool);
+	void waitBeforeInit();
+	void monitorReady();
 
 public slots:
 	void startCalib();
 	void endCalib();
 
+protected:
+	virtual bool eventFilter(QObject *obj, QEvent *ev);
+
+public:
+	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
+	SoundDiffusion *difSon;
+	MultiSoundDiffAlarm *dm;
+	Version *version;
+
 private:
+	QHash<int, Page*> page_list;
+	QTime *boot_time;
+	homePage *Home;
+	Page *pagDefault;
+	/// A pointer to the previous visualized page, to be used when resuming from screensaver
+	Page *prev_page;
+
 	QTimer *tempo1;
 	QTimer *tempo2;
-	QWidget *pagDefault;
-	char pwd[10];
+	QString pwd;
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
-	tastiera *tasti;
+	Keypad *tasti;
 	bool event_unfreeze;
-	unsigned char firstTime,bloccato;
+	bool firstTime, bloccato;
 	bool pd_shown;
 	genPage *screen;
 	unsigned char tiposcreen;
 	unsigned long tiempo_ev;
 	unsigned long tiempo_last_ev;
 	bool calibrating;
-	Calibrate* calib;
+	Calibrate *calib;
 	ScreenSaver *screensaver;
+	QStackedWidget main_window;
+
+	// A flag that is set when the client monitor socket is ready
+	bool monitor_ready;
+	// A flag that is set when the configuration has loaded
+	bool config_loaded;
+
+	void myMain();
+	/// Load the main configuration
+	bool loadConfiguration(QString cfg_file);
+
+	// Load the global configuration (the item in "generale" section of xml config file)
+	void loadGlobalConfig();
+
+signals:
+	void resettimer();
+	void freezed(bool);
+	void startscreensaver(Page*);
 };
+
+namespace bt_global { extern BtMain *btmain; }
 
 #endif// BTMAIN_H

@@ -10,85 +10,65 @@
 
 #include "buttons_bar.h"
 
-#include <qlayout.h>
-#include <qstring.h>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QBoxLayout>
+#include <QString>
 
 
 /// ***********************************************************************************************************************
 /// Methods for ButtonsBar
 /// ***********************************************************************************************************************
 
-ButtonsBar::ButtonsBar(QWidget *parent, unsigned int number_of_buttons, Orientation orientation) :
-	QWidget(parent, 0, WStyle_NoBorder | WStyle_Customize)
+ButtonsBar::ButtonsBar(QWidget *parent, unsigned int number_of_buttons, Qt::Orientation orientation) :
+	QWidget(parent, Qt::FramelessWindowHint)
 {
+	// TODO: capire come mai non si puo' usare l'operatore ternario!!
+	QBoxLayout *box;
+	if (orientation == Qt::Horizontal)
+		box = new QHBoxLayout(this);
+	else
+		box = new QVBoxLayout(this);
+
 	/// Create ButtonGroup, this can handle QButton objects
-	buttons_group = new QButtonGroup(number_of_buttons, orientation, this);
+	buttons_group = new QButtonGroup(this);
+
+	// TODO: capire come farlo con qt4!
 	// Permettono la corretta disposizione dei pulsanti
-	buttons_group->setInsideMargin(0);
-	buttons_group->setInsideSpacing(0);
+	//buttons_group->setInsideMargin(0);
+	//buttons_group->setInsideSpacing(0);
+
 	// Elimina il bordo bianco
-	buttons_group->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	//buttons_group->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 	/// Init Vector to store BtButton pointers
-	buttons_list.clear();
-	buttons_list.resize(number_of_buttons);
+	buttons_list.reserve(number_of_buttons);
 
 	for (uint i = 0; i < number_of_buttons; i++)
 	{
-		// the BtButton is created and inserted in ButtonGroup automatically because it is
-		// its parent. We also need to store the pointer in the button_list vector because
-		// when we call find method of buttons group we obtain a QButton pointer and no a
-		// BtButton pointer!
-		buttons_list.insert(i, new BtButton(buttons_group, QString("Button%1").arg(i)));
+		BtButton* btn = new BtButton(this);
+		buttons_group->addButton(btn, i);
+		box->addWidget(btn);
+		buttons_list.append(btn);
 	}
-
-	// Senza il seguente Layout la barra non viene visualizzata in modo corretto
-	if (orientation == Horizontal)
-	{
-		QHBoxLayout *main_layout = new QHBoxLayout(this);
-		main_layout->addWidget(buttons_group);
-	}
-	else if (orientation == Vertical)
-	{
-		QVBoxLayout *main_layout = new QVBoxLayout(this);
-		main_layout->addWidget(buttons_group);
-		main_layout->addStretch();
-	}
-
-	isToggleBar = false;
 
 	/// Connect Signal
-	connect(buttons_group, SIGNAL(clicked(int)), this, SIGNAL(clicked(int)));
+	connect(buttons_group, SIGNAL(buttonClicked(int)), this, SIGNAL(clicked(int)));
 }
 
-bool ButtonsBar::setButtonIcons(unsigned int button_number, const QPixmap &icon, const QPixmap &pressed_icon)
+ButtonsBar::~ButtonsBar()
 {
-	if (!buttons_list.at(button_number))
+}
+
+bool ButtonsBar::setButtonIcon(unsigned int button_number, const QString &icon_path)
+{
+	if ((int)button_number >= buttons_list.size())
 		return false;
 
-	buttons_list.at(button_number)->setPixmap(icon);
-	buttons_list.at(button_number)->setPressedPixmap(pressed_icon);
+	buttons_list.at(button_number)->setImage(icon_path);
 	// Non è necessario il setGeometry o il resize dei pulsanti,
 	// ma è molto importante nel costruttore del ButtonGroup indicare il numero di pulsanti
 	return true;
-}
-
-void ButtonsBar::setToggleButtons(bool enable)
-{
-	for (uint i = 0; i < buttons_list.count(); i++)
-		buttons_list.at(i)->setToggleButton(enable);
-	
-	isToggleBar = enable;
-}
-
-void ButtonsBar::setToggleStatus(unsigned int button_up_index)
-{
-	if (isToggleBar && button_up_index < buttons_list.count())
-	{
-		for (uint i = 0; i < buttons_list.count(); i++)
-			buttons_list.at(i)->setOn(false);
-		buttons_list.at(button_up_index)->setOn(true);
-	}
 }
 
 void ButtonsBar::showButton(int idx)
@@ -100,24 +80,3 @@ void ButtonsBar::hideButton(int idx)
 {
 	buttons_list[idx]->hide();
 }
-
-void ButtonsBar::setBGColor(QColor c)
-{
-	setPaletteBackgroundColor(c);
-	setBackgroundColor(c);
-	buttons_group->setPaletteBackgroundColor(c);
-
-	for (uint i = 0; i < buttons_list.size(); i++)
-		buttons_list[i]->setPaletteBackgroundColor(c);
-
-}
-void ButtonsBar::setFGColor(QColor c)
-{
-	setPaletteForegroundColor(c);
-	buttons_group->setPaletteForegroundColor(c);
-
-	for (uint i = 0; i < buttons_list.size(); i++)
-		buttons_list[i]->setPaletteForegroundColor(c);
-}
-
-
