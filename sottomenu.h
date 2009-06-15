@@ -99,6 +99,11 @@ public:
 public slots:
 	void showItem(int id);
 
+	/**
+	 * Reset the index of the top banner to be shown
+	 */
+	void resetIndex();
+
 protected:
 	void connectLastBanner();
 
@@ -133,10 +138,6 @@ private slots:
 	*/
 	void init();
 
-	/**
-	 * Reset the index of the top banner to be shown
-	 */
-	void resetIndex();
 
 signals:
 	/*!

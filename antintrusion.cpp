@@ -28,6 +28,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
 	zone->move(0, MAX_HEIGHT/numRighe);
 
+	connect(this, SIGNAL(Closed()), zone, SLOT(resetIndex()));
 	connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
 	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
 	curr_alarm = -1;
