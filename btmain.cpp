@@ -209,7 +209,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			qFatal("displaypages node not found on xml config file!");
 
 		// TODO: read the transition effect from configuration
-		Page::installTransitionWidget(new BlendingTransition(&main_window));
+		//Page::installTransitionWidget(new BlendingTransition(&main_window));
+		//Page::installTransitionWidget(new MosaicTransition(&main_window));
 		return true;
 	}
 	return false;
