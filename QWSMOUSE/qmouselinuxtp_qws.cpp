@@ -1,35 +1,43 @@
 /****************************************************************************
-** $Id: qmouselinuxtp_qws.cpp,v 1.6 2007/01/08 08:04:11 cvs Exp $
 **
-** Implementation of Qt/Embedded mouse drivers
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: Qt Software Information (qt-info@nokia.com)
 **
-** Created : 20020220
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** Copyright (C) 1992-2002 Trolltech AS.  All rights reserved.
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial Usage
+** Licensees holding valid Qt Commercial licenses may use this file in
+** accordance with the Qt Commercial License Agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Nokia.
 **
-** This file is part of the kernel module of the Qt GUI Toolkit.
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
 ** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
-** Licensees holding valid Qt Enterprise Edition or Qt Professional Edition
-** licenses for Qt/Embedded may use this file in accordance with the
-** Qt Embedded Commercial License Agreement provided with the Software.
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
-**
-**********************************************************************/
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+****************************************************************************/
 
 #include "qmouselinuxtp_qws.h"
 
@@ -38,7 +46,7 @@
 #include "qsocketnotifier.h"
 #include "qtimer.h"
 #include "qapplication.h"
-#include "qgfx_qws.h"
+#include "qscreen_qws.h"
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -50,78 +58,55 @@
 #include <errno.h>
 #include <termios.h>
 
-/*
+QT_BEGIN_NAMESPACE
+
 #if defined(QT_QWS_IPAQ)
-#define QT_QWS_IPAQ_RAW
-typedef struct {
-	unsigned short pressure;
-	unsigned short x;
-	unsigned short y;
-	unsigned short pad;
-} TS_EVENT;
-#elif defined(QT_QWS_EBX)
-#define QT_QWS_EBX_RAW
-#ifndef QT_QWS_SHARP
-typedef struct {
+ #define QT_QWS_IPAQ_RAW
+ #define QT_QWS_SCREEN_COORDINATES
+ typedef struct {
         unsigned short pressure;
         unsigned short x;
         unsigned short y;
         unsigned short pad;
-} TS_EVENT;
-#else
-typedef struct {
+ } TS_EVENT;
+#elif defined(QT_QWS_EBX)
+ #define QT_QWS_EBX_RAW
+ #define QT_QWS_SCREEN_COORDINATES
+#ifndef QT_QWS_SHARP
+  typedef struct {
+        unsigned short pressure;
+        unsigned short x;
+        unsigned short y;
+        unsigned short pad;
+  } TS_EVENT;
+ #else
+  typedef struct {
        long y;
        long x;
        long pressure;
        long long millisecs;
-} TS_EVENT;
-#define QT_QWS_TP_SAMPLE_SIZE 10
-#define QT_QWS_TP_MINIMUM_SAMPLES 2
-#define QT_QWS_TP_PRESSURE_THRESHOLD 500
-#define QT_QWS_TP_MOVE_LIMIT 50
-#define QT_QWS_TP_JITTER_LIMIT 2
-#endif
-//BONF
-#elif defined( QT_QWS_SHARP_LH7x)
- typedef struct {
-         unsigned short pressure;
-         unsigned short x;
-         unsigned short y;
-         unsigned short pad;
   } TS_EVENT;
-
-
-#define QT_QWS_TP_PRESSURE_THRESHOLD 1 
-  
-//ORIGINALE #define QT_QWS_TP_PRESSURE_THRESHOLD 500
-//ORIGINALE #define QT_QWS_TP_MOVE_LIMIT 25
-#define QT_QWS_TP_MOVE_LIMIT 500
-
-#define QT_QWS_TP_SAMPLE_SIZE 5
-//ENDBONF
-#else
-typedef struct {
-	unsigned short pressure;
-	unsigned short x;
-	unsigned short y;
-	unsigned short pad;
-} TS_EVENT;
+  #define QT_QWS_TP_SAMPLE_SIZE 10
+  #define QT_QWS_TP_MINIMUM_SAMPLES 4
+  #define QT_QWS_TP_PRESSURE_THRESHOLD 500
+  #define QT_QWS_TP_MOVE_LIMIT 50
+  #define QT_QWS_TP_JITTER_LIMIT 2
+ #endif
+#else // not IPAQ, not SHARP
+  typedef struct {
+    unsigned short pressure;
+    unsigned short x;
+    unsigned short y;
+    unsigned short pad;
+  } TS_EVENT;
 #endif
-*/
-
-typedef struct {
-	unsigned short pressure;
-	unsigned short x;
-	unsigned short y;
-	unsigned short pad;
-} TS_EVENT;
 
 #ifndef QT_QWS_TP_SAMPLE_SIZE
 #define QT_QWS_TP_SAMPLE_SIZE 5
 #endif
 
 #ifndef QT_QWS_TP_MINIMUM_SAMPLES
-#define QT_QWS_TP_MINIMUM_SAMPLES 2
+#define QT_QWS_TP_MINIMUM_SAMPLES 5
 #endif
 
 #ifndef QT_QWS_TP_PRESSURE_THRESHOLD
@@ -140,31 +125,35 @@ class QWSLinuxTPMouseHandlerPrivate : public QObject
 {
     Q_OBJECT
 public:
-    QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHandler *h );
+    QWSLinuxTPMouseHandlerPrivate(QWSLinuxTPMouseHandler *h, const QString &);
     ~QWSLinuxTPMouseHandlerPrivate();
 
+    void suspend();
+    void resume();
 private:
     static const int mouseBufSize = 2048;
     int mouseFD;
     QPoint oldmouse;
     QPoint oldTotalMousePos;
     bool waspressed;
-    QPointArray samples;
-    unsigned int currSample;
-    unsigned int lastSample;
-    unsigned int numSamples;
+    QPolygon samples;
+    int currSample;
+    int lastSample;
+    int numSamples;
     int skipCount;
     int mouseIdx;
     uchar mouseBuf[mouseBufSize];
     QWSLinuxTPMouseHandler *handler;
+    QSocketNotifier *mouseNotifier;
 
 private slots:
     void readMouseData();
 };
 
-QWSLinuxTPMouseHandler::QWSLinuxTPMouseHandler( const QString &, const QString & )
+QWSLinuxTPMouseHandler::QWSLinuxTPMouseHandler(const QString &driver, const QString &device)
+    : QWSCalibratedMouseHandler(driver, device)
 {
-    d = new QWSLinuxTPMouseHandlerPrivate( this );
+    d = new QWSLinuxTPMouseHandlerPrivate(this, device);
 }
 
 QWSLinuxTPMouseHandler::~QWSLinuxTPMouseHandler()
@@ -172,190 +161,174 @@ QWSLinuxTPMouseHandler::~QWSLinuxTPMouseHandler()
     delete d;
 }
 
-QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHandler *h )
+void QWSLinuxTPMouseHandler::suspend()
+{
+    d->suspend();
+}
+
+void QWSLinuxTPMouseHandler::resume()
+{
+    d->resume();
+}
+
+QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate(QWSLinuxTPMouseHandler *h,
+        const QString &device)
     : samples(QT_QWS_TP_SAMPLE_SIZE), currSample(0), lastSample(0),
     numSamples(0), skipCount(0), handler(h)
 {
-
-    if ((mouseFD = open( "/dev/ts", O_RDONLY | O_NDELAY)) < 0)
-    {
-        qWarning( "Cannot open /dev/ts (%s)", strerror(errno));
+    QString mousedev;
+    if (device.isEmpty()) {
+#if defined(QT_QWS_IPAQ)
+# ifdef QT_QWS_IPAQ_RAW
+        mousedev = QLatin1String("/dev/h3600_tsraw");
+# else
+        mousedev = QLatin1String("/dev/h3600_ts");
+# endif
+#else
+        mousedev = QLatin1String("/dev/ts");
+#endif
+    } else {
+        mousedev = device;
+    }
+    if ((mouseFD = open(mousedev.toLatin1().constData(), O_RDONLY | O_NDELAY)) < 0) {
+        qWarning("Cannot open %s (%s)", qPrintable(mousedev), strerror(errno));
         return;
     }
-    qWarning( "OK open /dev/ts");
-    
 
-
-    QSocketNotifier *mouseNotifier;
-    mouseNotifier = new QSocketNotifier( mouseFD, QSocketNotifier::Read,
-					 this );
+    mouseNotifier = new QSocketNotifier(mouseFD, QSocketNotifier::Read,
+                                         this);
     connect(mouseNotifier, SIGNAL(activated(int)),this, SLOT(readMouseData()));
-
-    // BOH: rilascio manuale
-    //QTimer * tick = new QTimer(this,"tick");
-    //tick->start(400);
-    //QObject::connect(tick,SIGNAL(timeout()), this, SLOT(readMouseData()));
-
-
-    waspressed=FALSE;
+    waspressed=false;
     mouseIdx = 0;
 }
 
 QWSLinuxTPMouseHandlerPrivate::~QWSLinuxTPMouseHandlerPrivate()
 {
     if (mouseFD >= 0)
-	close(mouseFD);
+        close(mouseFD);
 }
 
+void QWSLinuxTPMouseHandlerPrivate::suspend()
+{
+    if (mouseNotifier)
+        mouseNotifier->setEnabled(false);
+}
+
+void QWSLinuxTPMouseHandlerPrivate::resume()
+{
+    mouseIdx=0;
+    currSample=0;
+    lastSample=0;
+    numSamples=0;
+    skipCount=0;
+    if (mouseNotifier)
+        mouseNotifier->setEnabled(true);
+}
 
 
 void QWSLinuxTPMouseHandlerPrivate::readMouseData()
 {
-// DEBUG  qWarning( "readMouseData ");
+    if(!qt_screen)
+        return;
 
+    int n;
+    do {
+        n = read(mouseFD, mouseBuf+mouseIdx, mouseBufSize-mouseIdx);
+        if (n > 0)
+            mouseIdx += n;
+    } while (n > 0 && mouseIdx < mouseBufSize);
 
+    //qDebug("readMouseData()");
 
-  if(!qt_screen)
-    return;
+    TS_EVENT *data;
+    int idx = 0;
 
-  int n;
-//  int myidx;
+    // perhaps we shouldn't be reading EVERY SAMPLE.
+    while (mouseIdx-idx >= (int)sizeof(TS_EVENT)) {
+        uchar *mb = mouseBuf+idx;
+        data = (TS_EVENT *) mb;
 
-//DEBUG  qWarning("mouseIdx=%d",mouseIdx);
-  do
-  {
-    n = read(mouseFD, mouseBuf+mouseIdx, mouseBufSize-mouseIdx );
-
-    if ( n > 0 )
-      mouseIdx += n;
-      
-  } while ( n > 0 && mouseIdx < mouseBufSize );
-
-//DEBUG    if (n<0)
-//DEBUG    {
-//DEBUG      qWarning("ERR");
-//DEBUG    if (mouseIdx==0)
-//DEBUG    {
-//DEBUG  
-//DEBUG      qWarning( "AUTORILASCIO");
-//DEBUG      for (myidx=0;myidx<8;myidx++)
-//DEBUG        mouseBuf[myidx]=0;
-//DEBUG      mouseIdx=8;
-//DEBUG    }
-//DEBUG    }
-//DEBUG  else if (n==0)
-//DEBUG    qWarning("0OO");
-    
-//DEBUG  qWarning( "RAW:mouseIdx=%d",mouseIdx);
-//DEBUG  for (myidx=0;myidx<mouseIdx;myidx++)
-//DEBUG    qWarning( "%d",mouseBuf[myidx]);
-    
-  TS_EVENT *data;
-  int idx = 0;
-
-  // perhaps we shouldn't be reading EVERY SAMPLE.
-  while ( mouseIdx-idx >= (int)sizeof( TS_EVENT ) )
-  {
-    uchar *mb = mouseBuf+idx;
-    data = (TS_EVENT *) mb;
-
-//DEBUG    qWarning( "D:%d,%d,%d",data->pressure,data->x,data->y);
-  
-    if(data->pressure >= QT_QWS_TP_PRESSURE_THRESHOLD) {
-
-//DEBUG    qWarning( "T");
-
+        if(data->pressure >= QT_QWS_TP_PRESSURE_THRESHOLD) {
 #ifdef QT_QWS_SHARP
-    samples[currSample] = QPoint( data->x, data->y );
+            samples[currSample] = QPoint(1000 - data->x, data->y);
 #else
-    samples[currSample] = QPoint( data->x, data->y );
+            samples[currSample] = QPoint(data->x, data->y);
 #endif
+            numSamples++;
+            if (numSamples >= QT_QWS_TP_MINIMUM_SAMPLES) {
+                int sampleCount = qMin(numSamples + 1,samples.count());
 
-    numSamples++;
-    if ( numSamples >= QT_QWS_TP_MINIMUM_SAMPLES )
-    {
-//DEBUG      qWarning( "M");
+                // average the rest
+                QPoint mousePos = QPoint(0, 0);
+                QPoint totalMousePos = oldTotalMousePos;
+                totalMousePos += samples[currSample];
+                if(numSamples >= samples.count())
+                    totalMousePos -= samples[lastSample];
 
-      int sampleCount = QMIN(numSamples + 1,samples.count());
-      // average the rest
-      QPoint mousePos = QPoint( 0, 0 );
-      QPoint totalMousePos = oldTotalMousePos;
-      totalMousePos += samples[currSample];
-      if(numSamples >= samples.count())
-        totalMousePos -= samples[lastSample];
+                mousePos = totalMousePos / (sampleCount - 1);
+#if defined(QT_QWS_SCREEN_COORDINATES)
+                mousePos = handler->transform(mousePos);
+#endif
+                if(!waspressed)
+                    oldmouse = mousePos;
+                QPoint dp = mousePos - oldmouse;
+                int dxSqr = dp.x() * dp.x();
+                int dySqr = dp.y() * dp.y();
+                if (dxSqr + dySqr < (QT_QWS_TP_MOVE_LIMIT * QT_QWS_TP_MOVE_LIMIT)) {
+                    if (waspressed) {
+                        if ((dxSqr + dySqr > (QT_QWS_TP_JITTER_LIMIT * QT_QWS_TP_JITTER_LIMIT)) || skipCount > 2) {
+                            handler->mouseChanged(mousePos,Qt::LeftButton);
+                            oldmouse = mousePos;
+                            skipCount = 0;
+                        } else {
+                            skipCount++;
+                        }
+                    } else {
+                        handler->mouseChanged(mousePos,Qt::LeftButton);
+                        oldmouse=mousePos;
+                        waspressed=true;
+                    }
 
-      mousePos = totalMousePos / (sampleCount - 1);
-
-//# if defined(QT_QWS_IPAQ_RAW) || defined(QT_QWS_EBX_RAW) || defined (QT_QWS_SHARP_LH7x)
-      // si trova in qmouse_qws.cpp
- //     handler->readCalibration();
-      mousePos = handler->transform( mousePos );
-//DEBUG      qWarning( "TRANSFORM");
-//# endif
-      if(!waspressed)
-        oldmouse = mousePos;
-      QPoint dp = mousePos - oldmouse;
-      int dxSqr = dp.x() * dp.x();
-      int dySqr = dp.y() * dp.y();
-      if ( dxSqr + dySqr < (QT_QWS_TP_MOVE_LIMIT * QT_QWS_TP_MOVE_LIMIT) ) {
-        if ( waspressed ) {
-          if ( (dxSqr + dySqr > (QT_QWS_TP_JITTER_LIMIT * QT_QWS_TP_JITTER_LIMIT) ) || skipCount > 2) {
-          handler->mouseChanged(mousePos,Qt::LeftButton);
-          oldmouse = mousePos;
-          skipCount = 0;
-          } else {
-            skipCount++;
-          }
+                    // save recuring information
+                    currSample++;
+                    if (numSamples >= samples.count())
+                        lastSample++;
+                    oldTotalMousePos = totalMousePos;
+                } else {
+                    numSamples--; // don't use this sample, it was bad.
+                }
+            } else {
+                // build up the average
+                oldTotalMousePos += samples[currSample];
+                currSample++;
+            }
+            if (currSample >= samples.count())
+                currSample = 0;
+            if (lastSample >= samples.count())
+                lastSample = 0;
         } else {
-          handler->mouseChanged(mousePos,Qt::LeftButton);
-          oldmouse=mousePos;
-          waspressed=true;
+            currSample = 0;
+            lastSample = 0;
+            numSamples = 0;
+            skipCount = 0;
+            oldTotalMousePos = QPoint(0,0);
+            if (waspressed) {
+                handler->mouseChanged(oldmouse,0);
+                oldmouse = QPoint(-100, -100);
+                waspressed=false;
+            }
         }
-
-        // save recuring information
-        currSample++;
-        if (numSamples >= samples.count())
-          lastSample++;
-        oldTotalMousePos = totalMousePos;
-      } else {
-
-//DEBUG        qWarning( "B");
-        numSamples--; // don't use this sample, it was bad.
-        
-      }
-    } else {
-      // build up the average
-
-//DEBUG     qWarning( "A");
-      oldTotalMousePos += samples[currSample];
-      currSample++;
+        idx += sizeof(TS_EVENT);
     }
-    if ( currSample >= samples.count() )
-      currSample = 0;
-    if ( lastSample >= samples.count() )
-      lastSample = 0;
-    } else {
-      currSample = 0;
-      lastSample = 0;
-      numSamples = 0;
-      skipCount = 0;
-      oldTotalMousePos = QPoint(0,0);
-      if ( waspressed ) {
-        handler->mouseChanged(oldmouse,0);
-        oldmouse = QPoint( -100, -100 );
-        waspressed=false;
-      }
-    }
-    idx += sizeof( TS_EVENT );
-  }
 
-  int surplus = mouseIdx - idx;
-  for ( int i = 0; i < surplus; i++ )
-    mouseBuf[i] = mouseBuf[idx+i];
-  mouseIdx = surplus;
+    int surplus = mouseIdx - idx;
+    for (int i = 0; i < surplus; i++)
+        mouseBuf[i] = mouseBuf[idx+i];
+    mouseIdx = surplus;
 }
 
-// #include "qmouselinuxtp_qws.moc"
-#endif //QT_NO_QWS_MOUSE_LINUXTP
+QT_END_NAMESPACE
 
-#endif
+#include "qmouselinuxtp_qws.moc"
+
+#endif //QT_NO_QWS_MOUSE_LINUXTP
