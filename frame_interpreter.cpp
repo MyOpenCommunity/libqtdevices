@@ -1832,7 +1832,7 @@ void frame_interpreter_sound_matr_device::handle_frame(openwebnet_ext m, device_
 			ds->write_val(atoi(ambiente)-1, curr_act);
 			do_event = true;
 		}
-		//*22*2#4#1*5#2#3##i
+		//*22*2#4#1*5#2#3##
 		if ((strcmp(m.Extract_chi(), "22") == 0) && (strncmp(m.Extract_cosa(), "2#4#", 4) == 0) &&
 			(strcmp(m.Extract_dove(), "5") == 0) && (strcmp(m.Extract_livello(), "2") == 0))
 		{
@@ -1840,13 +1840,16 @@ void frame_interpreter_sound_matr_device::handle_frame(openwebnet_ext m, device_
 			stat_var curr_act(stat_var::ACTIVE_SOURCE);
 			char ambiente[2];
 			sprintf(ambiente,"%d", atoi(m.Extract_cosa()+4));
-			ds->read(atoi(ambiente)-1, curr_act);
-			qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
-			act = atoi(m.Extract_interfaccia());
-			qDebug("New active source = %d", act);
-			curr_act.set_val(act);
-			ds->write_val(atoi(ambiente)-1, curr_act);
-			do_event = true;
+			if(atoi(ambiente) != 0)
+			{
+				ds->read(atoi(ambiente)-1, curr_act);
+				qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
+				act = atoi(m.Extract_interfaccia());
+				qDebug("New active source = %d", act);
+				curr_act.set_val(act);
+				ds->write_val(atoi(ambiente)-1, curr_act);
+				do_event = true;
+			}
 		}
 	}
 	if (do_event)
