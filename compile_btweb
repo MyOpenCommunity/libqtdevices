@@ -16,17 +16,10 @@ if [ "$MACHINE" = "H4684" ] || [ "$MACHINE" = "LGRH4684" ] || [ "$MACHINE" = "H4
 then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
-#  if [ $COMPILING_NOT_CLEAN != "yes" ]
-#  then
-    # $QTDIR/qmake/qmake -project
-    $QTDIR/qmake/qmake
-    make clean
-#  else
-#    echo "Compiling COMPILING_NOT_CLEAN activated"
-#  fi
-
+  export PATH=$PATH:$CROSS_LIB1
+  $QTDIR/bin/qmake
+  #make clean
   make || exit 1
-
   cp BTouch BTouch_no_strip
   $STRIP BTouch
   cp BTouch $BTWEB_APP_BIN_NO_STACKOPEN
@@ -34,13 +27,8 @@ then
   touch BTouch_qws
   chmod +x BTouch_qws
   echo "#!/bin/ettclsh" >> BTouch_qws
-  echo "sleep 15" >> BTouch_qws
-  echo "set env(QWS_MOUSE_PROTO) linuxtp" >>  BTouch_qws
-  if [ "$MACHINE" = "H4684_IP" ] || [ "$MACHINE" = "L4684SDK" ]
-  then
-    echo "set env(QTDIR) /home/bticino/cfg/extra/3" >>  BTouch_qws
-    echo "set env(QWS_DISPLAY) Transformed:Rot180" >>  BTouch_qws
-  fi
+  echo "set env(QWS_MOUSE_PROTO) LinuxTP:/dev/ts" >>  BTouch_qws
+  echo "set env(QWS_DISPLAY) Transformed:Rot180" >>  BTouch_qws
   echo "exec bin/BTouch -qws &" >> BTouch_qws
   cp BTouch_qws $BTWEB_APP_BIN_NO_STACKOPEN
   exit 0
