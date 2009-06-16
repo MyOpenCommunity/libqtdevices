@@ -35,6 +35,7 @@ void CleanScreen::showPage()
 {
 	if (!secs_timer.isActive())
 	{
+		qDebug("reset timer cleanscreen");
 		secs_timer.start(1 * 1000);
 		timer.start(wait_time_sec * 1000);
 		end_time.restart();
