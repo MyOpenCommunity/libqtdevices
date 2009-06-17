@@ -16,17 +16,18 @@ class QStackedWidget;
  */
 class TransitionWidget : public QWidget
 {
+friend class Page;
 Q_OBJECT
 public:
 	TransitionWidget(QStackedWidget *win, int time);
-	void setStartingImage(const QPixmap &prev);
+	void setStartingPage(Page *prev);
 	void startTransition(Page *next);
 
 protected:
 	QStackedWidget *main_window;
 	QTimeLine timeline;
-	QPixmap prev_page;
-	QPixmap next_page;
+	QPixmap prev_image;
+	QPixmap next_image;
 
 	virtual void initTransition() {}
 
@@ -34,8 +35,11 @@ private slots:
 	void transitionEnd();
 
 private:
+	Page *prev_page;
 	Page *dest_page;
 	QEventLoop local_loop;
+
+	void cancelTransition();
 };
 
 

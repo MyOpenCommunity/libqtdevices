@@ -54,6 +54,9 @@ public:
 	static void setMainWindow(QStackedWidget *window);
 	static void installTransitionWidget(TransitionWidget *tr);
 
+	// block the current transition if present and the future transitions until the "unlock"
+	static void blockTransitions(bool);
+
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
 	/// only show the page in fullscreen mode.
@@ -72,6 +75,7 @@ private:
 	static Client *client_comandi;
 	static QStackedWidget *main_window;
 	static TransitionWidget *transition_widget;
+	static bool block_transitions;
 	void forceClosed();
 
 signals:
