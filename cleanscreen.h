@@ -25,8 +25,11 @@ class CleanScreen : public Page
 Q_OBJECT
 public:
 	CleanScreen(QString img_clean, int clean_time);
+
+public slots:
+	virtual void showPage();
+
 private:
-	void showEvent(QShowEvent *e);
 	void paintEvent(QPaintEvent *e);
 
 	/// Timer that controls show/hide of widget
