@@ -40,8 +40,11 @@ private slots:
 private:
 	timeScript *dataOra;
 	QLabel *Immagine;
-	void setTimePage();
 	void setDatePage();
+
+private slots:
+	void setTimePage();
+
 };
 
 
