@@ -24,6 +24,7 @@ Client *Page::client_comandi = 0;
 Client *Page::client_richieste = 0;
 QStackedWidget *Page::main_window = 0;
 TransitionWidget *Page::transition_widget = 0;
+bool Page::block_transitions = false;
 
 
 Page::Page(QWidget *parent) : QWidget(parent)
@@ -40,6 +41,13 @@ void Page::inizializza()
 {
 }
 
+void Page::blockTransitions(bool block)
+{
+	block_transitions = block;
+	if (block && transition_widget)
+		transition_widget->cancelTransition();
+}
+
 void Page::setMainWindow(QStackedWidget *window)
 {
 	main_window = window;
@@ -53,7 +61,7 @@ void Page::installTransitionWidget(TransitionWidget *tr)
 void Page::initTransition()
 {
 	if (transition_widget)
-		transition_widget->setStartingImage(QPixmap::grabWidget(main_window->currentWidget()));
+		transition_widget->setStartingPage(static_cast<Page *>(main_window->currentWidget()));
 }
 
 void Page::startTransition()
@@ -64,18 +72,26 @@ void Page::startTransition()
 
 Page *Page::currentPage()
 {
-	return static_cast<Page *>(main_window->currentWidget());
+	Page *curr = static_cast<Page*>(main_window->currentWidget());
+
+	// if we are in the middle of a transition, we use the previous page as the current page
+	if (TransitionWidget *t = qobject_cast<TransitionWidget*>(curr))
+		return t->prev_page;
+
+	return curr;
 }
 
 void Page::showPage()
 {
-	if (transition_widget)
+	qDebug() << "Page::showPage on" << this;
+	if (transition_widget && !block_transitions)
 	{
 		initTransition();
 		startTransition();
 	}
 	else
 		main_window->setCurrentWidget(this);
+
 #if GRAB_PAGES
 	Page *p = currentPage();
 	QPixmap screenshot = QPixmap::grabWidget(p);

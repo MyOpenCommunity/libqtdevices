@@ -19,11 +19,19 @@ TransitionWidget::TransitionWidget(QStackedWidget *win, int time) : timeline(tim
 	connect(&timeline, SIGNAL(finished()), SLOT(transitionEnd()));
 }
 
-void TransitionWidget::setStartingImage(const QPixmap &prev)
+void TransitionWidget::setStartingPage(Page *prev)
 {
 	prev_page = prev;
+	prev_image = QPixmap::grabWidget(prev);
 	// this shows the transition widget (that now shows the prev page)
 	main_window->setCurrentWidget(this);
+}
+
+void TransitionWidget::cancelTransition()
+{
+	local_loop.quit();
+	timeline.stop();
+	main_window->setCurrentWidget(prev_page);
 }
 
 void TransitionWidget::transitionEnd()
@@ -49,7 +57,7 @@ void TransitionWidget::startTransition(Page *next)
 		p->forceDraw();
 
 	// this sets the next page and applies all layout computation before starting the transition
-	next_page = QPixmap::grabWidget(next);
+	next_image = QPixmap::grabWidget(next);
 
 	timeline.start();
 	local_loop.exec();
@@ -77,9 +85,9 @@ void BlendingTransition::paintEvent(QPaintEvent *e)
 	Q_UNUSED(e);
 	QPainter p(this);
 	p.setRenderHint(QPainter::SmoothPixmapTransform, true);
-	p.drawPixmap(QPoint(0,0), prev_page);
+	p.drawPixmap(QPoint(0,0), prev_image);
 	p.setOpacity(blending_factor);
-	p.drawPixmap(QPoint(0,0), next_page);
+	p.drawPixmap(QPoint(0,0), next_image);
 }
 
 
@@ -117,7 +125,7 @@ void MosaicTransition::initTransition()
 
 	timeline.setFrameRange(0, mosaic_map.size() - 1);
 	timeline.setStartFrame(0);
-	dest_pix = prev_page;
+	dest_pix = prev_image;
 }
 
 void MosaicTransition::triggerRepaint(int index)
@@ -136,7 +144,7 @@ void MosaicTransition::paintEvent(QPaintEvent *e)
 
 	QPainter paint(&dest_pix);
 	for (int i = prev_index; i < curr_index; ++i)
-		paint.drawPixmap(mosaic_map.at(i), next_page.copy(mosaic_map.at(i)));
+		paint.drawPixmap(mosaic_map.at(i), next_image.copy(mosaic_map.at(i)));
 
 	QPainter p(this);
 	p.drawPixmap(QPoint(0,0), dest_pix);
