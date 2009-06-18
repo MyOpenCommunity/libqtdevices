@@ -13,7 +13,7 @@
 
 CleanScreen::CleanScreen(QString img_clean, int clean_time)
 {
-	connect(&secs_timer, SIGNAL(timeout()), SLOT(update()));
+	connect(&secs_timer, SIGNAL(timeout()), SLOT(updateRemainingTime()));
 
 	connect(&timer, SIGNAL(timeout()), SLOT(handleClose()));
 	timer.setSingleShot(true);
@@ -31,6 +31,12 @@ CleanScreen::CleanScreen(QString img_clean, int clean_time)
 	wait_time_sec = clean_time;
 }
 
+void CleanScreen::updateRemainingTime()
+{
+	++secs_counter;
+	update();
+}
+
 void CleanScreen::showPage()
 {
 	if (!secs_timer.isActive())
@@ -38,7 +44,7 @@ void CleanScreen::showPage()
 		qDebug("reset timer cleanscreen");
 		secs_timer.start(1 * 1000);
 		timer.start(wait_time_sec * 1000);
-		end_time.restart();
+		secs_counter = 0;
 		bt_global::display.forceOperativeMode(true);
 	}
 	Page::showPage();
@@ -55,10 +61,7 @@ void CleanScreen::paintEvent(QPaintEvent *e)
 {
 	// we use QTime only to format the output
 	QTime remaining_time;
-	// The following setText() 'floors' the number of seconds remaining, so
-	// add 900 to display correctly the number of remaining seconds without
-	// using ceil (which is for floating point numbers)
-	remaining_time = remaining_time.addMSecs(wait_time_sec * 1000 - end_time.elapsed() + 900);
+	remaining_time = remaining_time.addMSecs((wait_time_sec - secs_counter) * 1000);
 	if (remaining_time.minute())
 		time_label->setText(remaining_time.toString("mm:ss"));
 	else
