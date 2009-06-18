@@ -118,6 +118,8 @@ private:
 
 	// Load the global configuration (the item in "generale" section of xml config file)
 	void loadGlobalConfig();
+	// Unroll all the pages until homepage
+	void unrollPages();
 
 signals:
 	void resettimer();

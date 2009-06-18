@@ -375,10 +375,32 @@ static unsigned long now()
 	return time(NULL);
 }
 
+void BtMain::unrollPages()
+{
+	int seq_pages = 0;
+	if (Page::currentPage() != pagDefault && Page::currentPage() != version)
+		while (Page::currentPage() != Home)
+		{
+			Page::currentPage()->forceClosed();
+			++seq_pages;
+			// To avoid infinite loop, we assume that the application
+			// can have a maximum number of sequential pages in the
+			// navigation equal to 50.
+			if (seq_pages > 50)
+			{
+				qWarning() << "Maximum number of sequential pages reached with" << Page::currentPage();
+				break;
+			}
+		}
+}
+
 void BtMain::gesScrSav()
 {
 	unsigned long tiempo, tiempo_press;
 	rearmWDT();
+
+	if (bt_global::display.isForcedOperativeMode())
+		return;
 
 	tiempo_press = getTimePress();
 	if (event_unfreeze)
@@ -416,8 +438,7 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED &&
-				!bt_global::display.isForcedOperativeMode())
+			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
 			{
 				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
 				// When the brightness is set to off in the old hardware the display
@@ -438,26 +459,12 @@ void BtMain::gesScrSav()
 				Page *target = pagDefault ? pagDefault : Home;
 				prev_page = Page::currentPage();
 
+				Page::blockTransitions(true);
 				if (target == pagDefault)
-				{
-					int seq_pages = 0;
-					if (Page::currentPage() != pagDefault)
-						while (Page::currentPage() != Home)
-						{
-							Page::currentPage()->forceClosed();
-							++seq_pages;
-							// To avoid infinite loop, we assume that the application
-							// can have a maximum number of sequential pages in the
-							// navigation equal to 50.
-							if (seq_pages > 50)
-							{
-								qWarning() << "Maximum number of sequential pages reached";
-								break;
-							}
-						}
-				}
-				// don't use showPage() because transition doesn't make sense here
-				main_window.setCurrentWidget(target);
+					unrollPages();
+
+				target->showPage();
+				Page::blockTransitions(false);
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << main_window.currentWidget();
 				screensaver->start(target);
 				emit startscreensaver(prev_page);
@@ -469,6 +476,7 @@ void BtMain::gesScrSav()
 			Page *target = screensaver->target();
 			if (target != pagDefault)
 				main_window.setCurrentWidget(prev_page);
+
 			screensaver->stop();
 		}
 	}
@@ -514,6 +522,7 @@ void BtMain::freeze(bool b)
 			Page *target = screensaver->target();
 			if (target != pagDefault)
 				main_window.setCurrentWidget(prev_page);
+
 			screensaver->stop();
 		}
 		if (pwdOn)

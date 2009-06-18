@@ -39,6 +39,7 @@ impostaTime::impostaTime()
 
 	Immagine = new QLabel(this);
 	Immagine->setGeometry(90,0,120,60);
+	connect(this, SIGNAL(Closed()), SLOT(setTimePage()));
 	setTimePage();
 }
 
@@ -53,7 +54,6 @@ void impostaTime::OKDate()
 {
 	QString f = "*#13**#1*00*" + dataOra->getDataOra().toString("dd*MM*yyyy") + "##";
 	sendFrame(f);
-	setTimePage();
 	emit Closed();
 }
 
