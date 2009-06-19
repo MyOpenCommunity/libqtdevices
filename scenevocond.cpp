@@ -309,8 +309,8 @@ void scenEvo_cond_h::save()
 	qDebug("scenEvo_cond_h::save()");
 
 	QMap<QString, QString> data;
-	data["hour"] = cond_time->time().toString("hh");
-	data["minute"] = cond_time->time().toString("mm");
+	data["condH/hour"] = cond_time->time().toString("hh");
+	data["condH/minute"] = cond_time->time().toString("mm");
 	setCfgValue(data, SCENARIO_EVOLUTO, get_serial_number());
 }
 
@@ -515,7 +515,7 @@ void scenEvo_cond_d::save()
 	qDebug("scenEvo_cond_d::save()");
 	QString s;
 	actual_condition->get_condition_value(s);
-	setCfgValue("trigger", s, SCENARIO_EVOLUTO, get_serial_number());
+	setCfgValue("condDevice/trigger", s, SCENARIO_EVOLUTO, get_serial_number());
 	reset();
 	inizializza();
 }
