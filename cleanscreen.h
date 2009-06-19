@@ -40,7 +40,9 @@ private:
 	/// Wait time in seconds read from conf file
 	int wait_time_sec;
 	/// Used to compute the remaining time of cleanscreen
-	QTime end_time;
+	// We can't use QTime.elapsed() because its behaviour is undefined if the system
+	// date change after start()
+	int secs_counter;
 	/// labels to show remaining time and cleanscreen icon
 	QLabel *time_label, *icon_label;
 
@@ -56,6 +58,7 @@ private:
 
 private slots:
 	void handleClose();
+	void updateRemainingTime();
 };
 
 #endif
