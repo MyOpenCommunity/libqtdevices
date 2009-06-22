@@ -152,6 +152,7 @@ private:
 	 */
 	void setSorgenti(AudioSources *s);
 	void init(const QDomNode &config_node);
+	void drawLine();
 	bool isVisual;
 	uchar numRighe;
 	bool shared_audiosources;

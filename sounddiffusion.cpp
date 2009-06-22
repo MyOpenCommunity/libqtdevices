@@ -212,6 +212,7 @@ SoundDiffusion::SoundDiffusion(AudioSources *s, const QDomNode &config_node)
 	init(config_node);
 	setSorgenti(s);
 	shared_audiosources = true;
+	drawLine();
 }
 
 SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
@@ -219,6 +220,16 @@ SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
 	init(config_node);
 	setSorgenti(new AudioSources(this, config_node));
 	shared_audiosources = false;
+	// drawLine must be called after setSorgenti in order to draw the line
+	// on the top of the sorgenti banner.
+	drawLine();
+}
+
+void SoundDiffusion::drawLine()
+{
+	linea = new QLabel(this);
+	linea->setGeometry(0, MAX_HEIGHT/NUM_RIGHE - 6, MAX_WIDTH, 3);
+	linea->setProperty("noStyle", true);
 }
 
 void SoundDiffusion::init(const QDomNode &config_node)
@@ -231,10 +242,6 @@ void SoundDiffusion::init(const QDomNode &config_node)
 	amplificatori = new AmpliContainer(this, config_node);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	connect(this, SIGNAL(gesFrame(char *)), amplificatori, SIGNAL(gestFrame(char *)));
-
-	linea = new QLabel(this);
-	linea->setGeometry(0, MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, 3);
-	linea->setProperty("noStyle", true);
 }
 
 void SoundDiffusion::setSorgenti(AudioSources *s)
