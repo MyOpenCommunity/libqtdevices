@@ -352,6 +352,7 @@ void SoundDiffusion::draw()
 {
 	sorgenti->draw();
 	amplificatori->draw();
+	drawLine();
 }
 
 void SoundDiffusion::forceDraw()
@@ -359,6 +360,7 @@ void SoundDiffusion::forceDraw()
 	qDebug("SoundDiffusion::forceDraw()");
 	sorgenti->forceDraw();
 	amplificatori->forceDraw();
+	drawLine();
 }
 
 void SoundDiffusion::hideEvent(QHideEvent *event)
