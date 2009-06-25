@@ -386,7 +386,7 @@ void frame_interpreter::deferred_request_init()
 			it.remove();
 			break;
 		}
-		if (!next_expires.isValid() || de.expires < next_expires)
+		else if (!next_expires.isValid() || de.expires < next_expires)
 			next_expires = de.expires;
 	}
 
