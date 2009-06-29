@@ -87,6 +87,12 @@ void LanSettings::inizializza()
 	dev->requestDNS2();
 }
 
+void LanSettings::showPage()
+{
+	inizializza();
+	PageLayout::showPage();
+}
+
 void LanSettings::toggleLan()
 {
 	dev->enableLan(!lan_status);
