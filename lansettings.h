@@ -57,6 +57,9 @@ public:
 	LanSettings(const QDomNode &config_node);
 	virtual void inizializza();
 
+public slots:
+	virtual void showPage();
+
 private:
 	BtButton *toggle_btn;
 	Text2Column *box_text;
