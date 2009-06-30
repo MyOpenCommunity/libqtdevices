@@ -631,10 +631,6 @@ void banner::parentChanged(QWidget *newParent)
 {
 }
 
-void banner::grandadChanged(QWidget *newGrandad)
-{
-}
-
 void banner::addAmb(QString)
 {
 }

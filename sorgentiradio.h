@@ -62,7 +62,7 @@ protected slots:
 	void richFreq();
 	void stopRDS();
 	void startRDS();
-	void grandadChanged(QWidget *);
+
 public slots:
 	void status_changed(QList<device_status*>);
 	virtual void setText(const QString &);
