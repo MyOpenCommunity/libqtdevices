@@ -2,6 +2,7 @@
 #include "bann_scenario.h"
 #include "scenevocond.h"
 #include "xml_functions.h" // getChildren, getTextChild
+#include "btmain.h" // bt_global::btmain
 
 #include <QDomNode>
 #include <QString>
@@ -102,7 +103,7 @@ QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 				if (!img.isNull())
 					c->setImg(i - 1,  IMG_PATH + img);
 			}
-			connect(this, SIGNAL(resettimer()), c, SLOT(setupTimer()));
+			connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
 			c->SetIcons();
 			l.append(c);
 		}

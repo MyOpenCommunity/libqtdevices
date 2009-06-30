@@ -4,7 +4,7 @@
  **
  ** actuators.cpp
  **
- **definizioni dei vari attuatori implementati
+ ** definizioni dei vari attuatori implementati
  **
  ****************************************************************/
 
