@@ -29,8 +29,6 @@ public:
 private:
 	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node);
 	void loadItems(const QDomNode &config_node);
-signals:
-	void resettimer();
 };
 
 
