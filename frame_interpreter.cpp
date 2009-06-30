@@ -1199,6 +1199,9 @@ void frame_interpreter_dimmer::handle_frame_handler(char *frame, QList<device_st
 	bool dimmer_request = false;
 	device_status *dimmer_ds;
 
+	qDebug() << "DEBUG_SCENEVO status_list size:" << sl.size();
+	qDebug() << "DEBUG_SCENEVO request status:" << request_status;
+
 	for (int i = 0; i < sl.size(); ++i)
 	{
 		device_status *ds;
@@ -1208,6 +1211,7 @@ void frame_interpreter_dimmer::handle_frame_handler(char *frame, QList<device_st
 			// and see if it really changed
 			// Lights and old dimmers have the same status request message
 			// Just avoid sending the same request twice
+			qDebug() << "DEBUG_SCENEVO device status type:" << ds->get_type();
 			if (ds->get_type() == device_status::DIMMER)
 			{
 				dimmer_request = true;
@@ -1216,6 +1220,7 @@ void frame_interpreter_dimmer::handle_frame_handler(char *frame, QList<device_st
 			continue;
 		}
 
+		qDebug() << "DEBUG_SCENEVO device status type:" << ds->get_type();
 		device_status::type type = ds->get_type();
 		switch (type)
 		{
@@ -1228,6 +1233,8 @@ void frame_interpreter_dimmer::handle_frame_handler(char *frame, QList<device_st
 			break;
 		}
 	}
+
+	qDebug() << "DEBUG_SCENEVO evt_list size:" << evt_list.size();
 
 	if (dimmer_request)
 		request_init(dimmer_ds, dimmer_ds->init_request_delay());
