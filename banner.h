@@ -288,10 +288,6 @@ public slots:
 	virtual void openNakRx();
 	virtual void ambChanged(const QString &, bool, QString);
 	/*!
-	 *  \brief Parent of my parent changed
-	 */
-	virtual void grandadChanged(QWidget *newGrandad);
-	/*!
 	 *  \brief Parent changed
 	 */
 	virtual void parentChanged(QWidget *newParent);

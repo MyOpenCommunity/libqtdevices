@@ -31,8 +31,6 @@ banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString &
 	myRadio = new radio(ambdescr);
 	myRadio->setRDS("");
 	myRadio->setFreq(0.00);
-	// TODO: non e' bello fare affidamento su chi e' il grandad!
-	QWidget *grandad = this->parentWidget()->parentWidget();
 
 	myRadio->setStaz((uchar)1);
 
@@ -53,8 +51,8 @@ banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString &
 		connect(this, SIGNAL(dxClick()), this, SLOT(richFreq()));
 
 	// TODO: probably we should emit a pageClosed() signal here...
-	connect(myRadio, SIGNAL(Closed()), grandad, SLOT(showPage()));
-	connect(myRadio,SIGNAL(Closed()),this,SLOT(stopRDS()));
+	connect(myRadio, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(myRadio, SIGNAL(Closed()), SLOT(stopRDS()));
 
 	connect(myRadio,SIGNAL(decFreqAuto()),this,SLOT(decFreqAuto()));
 	connect(myRadio,SIGNAL(aumFreqAuto()),this,SLOT(aumFreqAuto()));
@@ -70,14 +68,6 @@ banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString &
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
 }
 
-void banradio::grandadChanged(QWidget *newGrandad)
-{
-	qDebug("banradio::grandadChanged (%p)", newGrandad);
-	QWidget *grandad = this->parentWidget()->parentWidget();
-	disconnect(myRadio, SIGNAL(Closed()), grandad, 0);
-	grandad = newGrandad;
-	connect(myRadio, SIGNAL(Closed()), grandad, SLOT(showPage()));
-}
 
 void banradio::status_changed(QList<device_status*> sl)
 {

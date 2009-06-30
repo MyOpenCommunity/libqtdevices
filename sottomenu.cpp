@@ -116,7 +116,6 @@ void sottoMenu::connectLastBanner()
 {
 	banner *last = elencoBanner.last();
 	connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
-	connect(this, SIGNAL(parentChanged(QWidget *)), last, SLOT(grandadChanged(QWidget *)));
 	connect(last, SIGNAL(richStato(QString)), this, SIGNAL(richStato(QString)));
 }
 
