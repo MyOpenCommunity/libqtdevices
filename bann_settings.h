@@ -189,7 +189,6 @@ signals:
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
 */
 	void activatePaswd(bool);
-	void pageClosed();
 };
 
 #endif

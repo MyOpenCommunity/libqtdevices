@@ -24,6 +24,7 @@ class device;
 class device_status;
 class AlarmClock;
 
+
 class MultiSoundDiffInterface : public sottoMenu
 {
 Q_OBJECT
@@ -43,6 +44,7 @@ private slots:
 signals:
 	void actSrcChanged(int, int);
 };
+
 
 class MultiSoundDiff : public MultiSoundDiffInterface
 {
@@ -77,9 +79,12 @@ class MultiSoundDiffAlarm : public MultiSoundDiffInterface
 Q_OBJECT
 public:
 	MultiSoundDiffAlarm(const QDomNode &config_node);
-	virtual void inizializza() { } // avoid a second initialization
+	virtual void inizializza() { } // avoid a second initialization (see .cpp for details)
 	virtual void showPage();
 	virtual SoundDiffusion *createSoundDiffusion(AudioSources *sorgenti, const QDomNode &conf);
+
+private slots:
+	void status_changed(QList<device_status*> sl);
 
 signals:
 	void actSrcChanged(int, int);

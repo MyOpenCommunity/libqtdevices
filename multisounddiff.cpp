@@ -71,7 +71,6 @@ void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 		}
 		if (b)
 		{
-			connect(this, SIGNAL(gestFrame(char*)), b, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), b, SLOT(actSrcChanged(int, int)));
 			connect(b, SIGNAL(ambChanged(const QString &, bool, QString)), sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)));
 			b->setText(descr);
@@ -172,12 +171,18 @@ void MultiSoundDiff::gestFrame(char*frame)
 }
 
 
-// TODO: this should really be a page, so we can get rid of contdiff
-// and the calls to setParent() in AlarmClock
 MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 {
-	if (!sorgenti)
-		sorgenti = new AudioSources(this, config_node);
+	// IMPORTANT: We are supposing that MultiSoundDiff is built before MultiSoundDiffAlarm,
+	// so the construction and the initialization of audiosources and matr_device
+	// are already done.
+	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
+
+	device *matr = bt_global::devices_cache.get_sound_matr_device();
+	// Get status changed events back
+	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
+
 	loadAmbienti(config_node);
 
 	move(0, 80);
@@ -197,4 +202,30 @@ SoundDiffusion *MultiSoundDiffAlarm::createSoundDiffusion(AudioSources *sorgenti
 	SoundDiffusion *sd = new SoundDiffusionAlarm(sorgenti, conf);
 	connect(sd, SIGNAL(Closed()), SIGNAL(Closed()));
 	return sd;
+}
+
+void MultiSoundDiffAlarm::status_changed(QList<device_status*> sl)
+{
+	stat_var curr_act(stat_var::ACTIVE_SOURCE);
+	qDebug("MultiSoundDiffAlarm::status_changed()");
+
+	for (int i = 0; i < sl.size(); ++i)
+	{
+		device_status *ds = sl.at(i);
+		switch (ds->get_type())
+		{
+		case device_status::SOUNDMATR:
+			for (int i=device_status_sound_matr::AMB1_INDEX;
+					i<=device_status_sound_matr::AMB8_INDEX; i++)
+			{
+				ds->read(i, curr_act);
+				qDebug("Curr active source for amb %d is now %d", i+1, curr_act.get_val());
+				emit actSrcChanged(i+1, curr_act.get_val());
+			}
+			break;
+		default:
+			qDebug("device status of unknown type (%d)", ds->get_type());
+			break;
+		}
+	}
 }
