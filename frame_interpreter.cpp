@@ -1201,7 +1201,7 @@ void frame_interpreter_dimmer::handle_frame_handler(char *frame, QList<device_st
 
 	for (int i = 0; i < sl.size(); ++i)
 	{
-		device_status *ds;
+		device_status *ds = sl.at(i);
 		if (request_status)
 		{
 			// Frame could be ours, but we need to check device status 
