@@ -928,57 +928,125 @@ void frame_interpreter_lights::handle_frame(openwebnet_ext m, device_status_dimm
 	stat_var lev(stat_var::LEV), speed(stat_var::SPEED);
 	if (m.IsNormalFrame())
 	{
-		int cosa = atoi(m.Extract_cosa());
-		switch (cosa)
+		if(!strncmp(m.Extract_cosa(), "1000#", strlen("1000#")))
 		{
-		case 0:
-			// OFF ,
-			set_status(ds, 0);
-			break;
-		case 1:
-			// ON
-			if (ds->initialized())
+			int cosa = atoi(m.Extract_cosa()+5);
+	                switch (cosa)
 			{
-				stat_var curr_lev(stat_var::LEV);
-				ds->read((int)device_status_dimmer100::LEV_INDEX, curr_lev);
-				if (curr_lev.get_val())
-					set_status(ds, 1);
+			case 0:
+				// OFF ,
+				set_status(ds, 0);
+				break;
+			case 1:
+				// ON
+				if (ds->initialized())
+				{
+					stat_var curr_lev(stat_var::LEV);
+					ds->read((int)device_status_dimmer100::LEV_INDEX, curr_lev);
+					if (curr_lev.get_val())
+						set_status(ds, 1);
+					else
+						request_init(ds, ds->init_request_delay());
+				}
+				else
+				{
+					qDebug("emit(request_init(ds))");
+					request_init(ds, ds->init_request_delay());
+				}
+				break;
+			case 2:
+				set_status(ds, 1);
+				break;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				set_status(ds, (cosa-2)*10);
+				break;
+			case 9:
+				set_status(ds, 75);
+				break;
+			case 10:
+				set_status(ds, 100);
+				break;
+			case 30:
+				// UP
+				if (ds->initialized())
+				{
+					ds->read((int)device_status_dimmer::LEV_INDEX, lev);
+					set_status(ds, lev.get_val() + lev.get_step());
+				}
 				else
 					request_init(ds, ds->init_request_delay());
+				break;
+			case 31:
+				// DOWN
+				if (ds->initialized())
+				{
+					ds->read((int)device_status_dimmer::LEV_INDEX, lev);
+					set_status(ds, lev.get_val() - lev.get_step());
+				}
+				else
+					request_init(ds, ds->init_request_delay());
+				break;
 			}
-			else
+		}
+		else
+		{
+			int cosa = atoi(m.Extract_cosa());
+			switch (cosa)
 			{
-				qDebug("emit(request_init(ds))");
+			case 0:
+				// OFF ,
+				set_status(ds, 0);
+				break;
+			case 1:
+				// ON
+				if (ds->initialized())
+				{
+					stat_var curr_lev(stat_var::LEV);
+					ds->read((int)device_status_dimmer100::LEV_INDEX, curr_lev);
+					if (curr_lev.get_val())
+						set_status(ds, 1);
+					else
+						request_init(ds, ds->init_request_delay());
+				}
+				else
+				{
+					qDebug("emit(request_init(ds))");
+					request_init(ds, ds->init_request_delay());
+				}
+				break;
+			case 19:
+				// FAULT
+				set_status(ds, -1);
+				break;
+			case 30:
+				// UP
+				if (ds->initialized())
+				{
+					ds->read((int)device_status_dimmer::LEV_INDEX, lev);
+					set_status(ds, lev.get_val() + lev.get_step());
+				}
+				else
+					request_init(ds, ds->init_request_delay());
+				break;
+			case 31:
+				// DOWN
+				if (ds->initialized())
+				{
+					ds->read((int)device_status_dimmer::LEV_INDEX, lev);
+					set_status(ds, lev.get_val() - lev.get_step());
+				}
+				else
+					request_init(ds, ds->init_request_delay());
+				break;
+			default:
 				request_init(ds, ds->init_request_delay());
+				break;
 			}
-			break;
-		case 19:
-			// FAULT
-			set_status(ds, -1);
-			break;
-		case 30:
-			// UP
-			if (ds->initialized())
-			{
-				ds->read((int)device_status_dimmer::LEV_INDEX, lev);
-				set_status(ds, lev.get_val() + lev.get_step());
-			}
-			else
-				request_init(ds, ds->init_request_delay());
-			break;
-		case 31:
-			// DOWN
-			if (ds->initialized())
-			{
-				ds->read((int)device_status_dimmer::LEV_INDEX, lev);
-				set_status(ds, lev.get_val() - lev.get_step());
-			}
-			else
-				request_init(ds, ds->init_request_delay());
-			break;
-		default:
-			request_init(ds, ds->init_request_delay());
-			break;
 		}
 	}
 	else if (m.IsMeasureFrame())

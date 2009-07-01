@@ -335,6 +335,8 @@ void dimmer100::status_changed(QList<device_status*> sl)
 				qDebug("level = %d, speed = %d", curr_lev.get_val(), curr_speed.get_val());
 				if ((curr_lev.get_val() == 0))
 					impostaAttivo(0);
+				else
+					impostaAttivo(1);
 				if ((curr_lev.get_val() <= 5))
 					setValue(5);
 				else
