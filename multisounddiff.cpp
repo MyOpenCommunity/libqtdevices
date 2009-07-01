@@ -71,7 +71,6 @@ void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 		}
 		if (b)
 		{
-			connect(this, SIGNAL(gestFrame(char*)), b, SLOT(gestFrame(char*)));
 			connect(this, SIGNAL(actSrcChanged(int, int)), b, SLOT(actSrcChanged(int, int)));
 			connect(b, SIGNAL(ambChanged(const QString &, bool, QString)), sorgenti, SIGNAL(ambChanged(const QString &, bool, QString)));
 			b->setText(descr);
