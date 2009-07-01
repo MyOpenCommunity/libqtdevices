@@ -1,5 +1,5 @@
 #include "alarmclock.h"
-#include "generic_functions.h" // setCfgValue, setBacklight, getBeep, setBeep, beep, setBacklight
+#include "generic_functions.h" // setCfgValue, getBeep, setBeep, beep
 #include "multisounddiff.h" // contdiff
 #include "btbutton.h"
 #include "openclient.h"
@@ -12,6 +12,7 @@
 
 #include <openwebnet.h>
 
+#include <QApplication>
 #include <QDateTime>
 #include <QPixmap>
 #include <QWidget>
@@ -95,8 +96,6 @@ AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 	type = t;
 
 	difson = 0;
-
-	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(spegniSveglia(bool)));
 }
 
 void AlarmClock::okTime()
@@ -374,6 +373,22 @@ void AlarmClock::gestFrame(char* f)
 	}
 }
 
+bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
+{
+	// Discard the mouse press and mouse double click
+	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+		return true;
+
+	if (ev->type() != QEvent::MouseButtonRelease)
+		return false;
+
+	// We stop the alarm and restore the normal behaviour
+	qApp->removeEventFilter(this);
+	spegniSveglia(false);
+	bt_global::display.forceOperativeMode(false);
+	return true;
+}
+
 void AlarmClock::verificaSveglia()
 {
 	if (!active)
@@ -404,8 +419,12 @@ void AlarmClock::verificaSveglia()
 				aumVolTimer->start(3000);
 				connect(aumVolTimer,SIGNAL(timeout()),this,SLOT(aumVol()));
 				conta2min = 0;
-				bt_global::display.setState(DISPLAY_OPERATIVE);
-				bt_global::btmain->freeze(true);
+				// When the alarm ring we have to put the light on (like in the
+				// operative mode) but with a screen "locked" (like in the freezed
+				// mode). We do that with an event filter.
+				bt_global::btmain->freeze(false); // To stop a screensaver, if running
+				bt_global::display.forceOperativeMode(true); // Prevent the screeensaver start
+				qApp->installEventFilter(this);
 				bt_global::btmain->svegl(true);
 			}
 			else
