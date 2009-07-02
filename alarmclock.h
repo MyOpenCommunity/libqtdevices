@@ -96,6 +96,8 @@ public slots:
 */
 	void gestFrame(char *f);
 
+protected:
+	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
 /*!

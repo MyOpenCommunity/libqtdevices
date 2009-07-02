@@ -100,7 +100,7 @@ QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 			for (int i = 1; i <= 4; ++i)
 			{
 				QString img = getTextChild(cond, "cimg" + QString::number(i));
-				if (!img.isNull())
+				if (!img.isEmpty())
 					c->setImg(i - 1,  IMG_PATH + img);
 			}
 			connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
