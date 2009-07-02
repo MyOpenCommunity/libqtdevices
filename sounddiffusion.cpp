@@ -212,6 +212,7 @@ SoundDiffusion::SoundDiffusion(AudioSources *s, const QDomNode &config_node)
 	init(config_node);
 	setSorgenti(s);
 	shared_audiosources = true;
+	linea = 0;
 	drawLine();
 }
 
@@ -220,14 +221,17 @@ SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
 	init(config_node);
 	setSorgenti(new AudioSources(this, config_node));
 	shared_audiosources = false;
+	linea = 0;
 	// drawLine must be called after setSorgenti in order to draw the line
 	// on the top of the sorgenti banner.
 	drawLine();
+	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
 void SoundDiffusion::drawLine()
 {
-	linea = new QLabel(this);
+	if (!linea)
+		linea = new QLabel(this);
 	linea->setGeometry(0, MAX_HEIGHT/NUM_RIGHE - 6, MAX_WIDTH, 3);
 	linea->setProperty("noStyle", true);
 }
@@ -237,7 +241,6 @@ void SoundDiffusion::init(const QDomNode &config_node)
 	numRighe = NUM_RIGHE;
 	// TODO: verificare questo parametro, che prima non era inizializzato, a che valore
 	// deve essere inizializzato
-	isVisual = false;
 
 	amplificatori = new AmpliContainer(this, config_node);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
@@ -315,36 +318,25 @@ void SoundDiffusion::gestFrame(char*frame)
 
 not_ours:
 	if (aggiorna)
-	{
 		sorgenti->draw();
-		if (isVisual)
-		{
-			QWidget::show();
-		}
-	}
+
 }
 
-// TODO: capire il significato di questa gestione particolare del 'isVisual'!!
-/*
-void SoundDiffusion::freezed_handler(bool f)
-{
-	qDebug("SoundDiffusion::freezed(%d)", f);
-	isVisual = f ? false : true;
-	if (isHidden())
-		isVisual = false;
-}
-*/
 
 void SoundDiffusion::showPage()
 {
-	qDebug("SoundDiffusion::showEvent()");
-	sorgenti->forceDraw();
-	amplificatori->forceDraw();
-	isVisual = true;
+	qDebug("SoundDiffusion::showPage()");
+
 	// needed when only classical sound diffusion is set
 	sorgenti->setParent(this);
 
-	sorgenti->show();
+	// In order to draw the line on the top of sorgenti we have to make 'linea'
+	// as the last child of the SoundDiffusion. To do that we initially set
+	// its parent to 0 and after we set (again) the parent as the sounddiffusion
+	// instance.
+	linea->setParent(0);
+	linea->setParent(this);
+	forceDraw();
 	Page::showPage();
 }
 
@@ -363,11 +355,9 @@ void SoundDiffusion::forceDraw()
 	drawLine();
 }
 
-void SoundDiffusion::hideEvent(QHideEvent *event)
+void SoundDiffusion::handleClose()
 {
-	qDebug("SoundDiffusion::hideEvent()");
 	amplificatori->setIndice(0);
-	isVisual = false;
 }
 
 void SoundDiffusion::setGeom(int x,int y,int w,int h)
@@ -387,7 +377,6 @@ void SoundDiffusion::setNavBarMode(uchar c)
 
 void SoundDiffusion::fineVis()
 {
-	isVisual = false;
 	emit Closed();
 }
 
@@ -420,8 +409,6 @@ void SoundDiffusionAlarm::createWidgets()
 	setNumRighe(3);
 	setNavBarMode(6);
 	setGeom(0, 80, 240, 240);
-	amplificatori->move(0, 160);
-	linea->move(0, 155);
 
 	QLabel *image = new QLabel(this);
 	image->setPixmap(*bt_global::icons_cache.getIcon(ICON_SVEGLIA_ON));
@@ -433,9 +420,9 @@ void SoundDiffusionAlarm::showPage()
 	// needed when there is only classical sound diffusion set
 	// doesn't have drawbacks when diff multi is enabled (as the parent is already
 	// set in ambdiffson::configura())
-	sorgenti->setParent(this);
-
-	sorgenti->move(0, 75);
 	SoundDiffusion::showPage();
+	sorgenti->move(0, 75);
+	linea->move(0, 152);
+	amplificatori->move(0, 160);
 }
 

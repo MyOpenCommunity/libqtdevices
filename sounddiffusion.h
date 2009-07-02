@@ -134,13 +134,6 @@ public slots:
 	virtual void showPage();
 
 protected:
-	/*!
-	 * \brief Make sure that amplifier index is resetted before hiding.
-	 *
-	 * Resetting amplifier index guarantees that nex time amplifiers will be shown the first 
-	 * banners will be drawn.
-	 */
-	virtual void hideEvent(QHideEvent *event);
 
 	AudioSources *sorgenti;
 	AmpliContainer *amplificatori;
@@ -153,7 +146,6 @@ private:
 	void setSorgenti(AudioSources *s);
 	void init(const QDomNode &config_node);
 	void drawLine();
-	bool isVisual;
 	uchar numRighe;
 	bool shared_audiosources;
 
@@ -162,6 +154,8 @@ private slots:
 	 * \brief Emittes the closed signal when amplifiers subtree(sottoMenu) is closed.
 	 */
 	void fineVis();
+
+	void handleClose();
 
 signals:
 	void closed(SoundDiffusion*);
