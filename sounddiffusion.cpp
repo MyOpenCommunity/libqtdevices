@@ -329,6 +329,7 @@ void SoundDiffusion::showPage()
 
 	// needed when only classical sound diffusion is set
 	sorgenti->setParent(this);
+	sorgenti->show();
 
 	// In order to draw the line on the top of sorgenti we have to make 'linea'
 	// as the last child of the SoundDiffusion. To do that we initially set
