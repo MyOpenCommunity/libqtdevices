@@ -103,6 +103,8 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 
 	QString unit_measure = getTextChild(currency_node, "symbol") + "/" +
 		getTextChild(config_node, "measure");
+	if((getTextChild(config_node, "mode").toInt()  == 1) || (getTextChild(config_node, "mode").toInt()  == 5))
+		unit_measure += "h";
 
 	n_decimal = getTextChild(currency_node, "n_decimal").toInt();
 
