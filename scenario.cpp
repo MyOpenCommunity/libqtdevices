@@ -64,7 +64,7 @@ void Scenario::loadItems(const QDomNode &config_node)
 				if (!n.isNull())
 				{
 					int v = getTextChild(n, "value").toInt();
-					img.append(v ? getTextChild(n, "cimg1") : QString());
+					img.append(v ? IMG_PATH + getTextChild(n, "cimg1") : QString());
 					descr.append(v ? getTextChild(n, "open") : QString());
 				}
 				else
