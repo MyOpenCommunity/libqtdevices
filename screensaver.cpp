@@ -21,6 +21,16 @@
 
 #define BALL_NUM 5
 
+inline void setRandomColor(QWidget *w)
+{
+	QColor bg = QColor((int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
+						(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
+						(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150);
+
+	QString style = QString("QWidget {background-color:%1;}").arg(bg.name());
+	w->setStyleSheet(style);
+}
+
 
 ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 {
@@ -98,8 +108,8 @@ void ScreenSaverBalls::initBall(QLabel *ball, BallData &data)
 {
 	data.x = (int)(200.0 * rand() / (RAND_MAX + 1.0));
 	data.y = (int)(200.0 * rand() / (RAND_MAX + 1.0));
-	data.vx = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
-	data.vy = (int)(30.0 * rand() / (RAND_MAX + 1.0)) - 15;
+	data.vx = (int)(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
+	data.vy = (int)(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
 	if (data.vx == 0)
 		data.vx = 1;
 	if (data.vy == 0)
@@ -111,10 +121,14 @@ void ScreenSaverBalls::initBall(QLabel *ball, BallData &data)
 	QBitmap mask = QBitmap(data.dim, data.dim);
 	mask.clear();
 	QPainter p(&mask);
+	p.setRenderHints(QPainter::NonCosmeticDefaultPen | QPainter::Antialiasing, true);
 	p.setBrush(QBrush(Qt::color1, Qt::SolidPattern));
-	for (int i = 2; i <= data.dim; ++i)
-		p.drawEllipse((data.dim - i) / 2, (data.dim - i) / 2, i, i);
+
+	QPointF center = QPointF(data.dim / 2.0, data.dim / 2.0);
+	p.drawEllipse(center, data.dim / 2.0, data.dim / 2.0);
+
 	ball->setMask(mask);
+	setRandomColor(ball);
 }
 
 void ScreenSaverBalls::stop()
@@ -143,20 +157,20 @@ void ScreenSaverBalls::refresh()
 		bool change_style = false;
 		if (data.x <= 0)
 		{
-			data.vx = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) + 5;
+			data.vx = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) + 3;
 			data.x = 0;
 			change_style = true;
 		}
 		if (data.y > MAX_HEIGHT - data.dim)
 		{
-			data.vy = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) - 15;
+			data.vy = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
 			data.y = MAX_HEIGHT - data.dim;
 			change_style = true;
 		}
 
 		if (data.y <= 0)
 		{
-			data.vy = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) + 5;
+			data.vy = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) + 3;
 			if (data.vy == 0)
 				data.vy = 1;
 			data.y = 0;
@@ -164,7 +178,7 @@ void ScreenSaverBalls::refresh()
 		}
 		if (data.x > MAX_WIDTH - data.dim)
 		{
-			data.vx = static_cast<int>(10.0 * rand() / (RAND_MAX + 1.0)) - 15;
+			data.vx = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
 			if (data.vx == 0)
 				data.vx = 1;
 			data.x = MAX_WIDTH - data.dim;
@@ -172,14 +186,8 @@ void ScreenSaverBalls::refresh()
 		}
 
 		if (change_style)
-		{
-			QColor ball_bg = QColor((int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
-									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
-									(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150);
+			setRandomColor(it.key());
 
-			QString ball_style = QString("QLabel {background-color:%1;}").arg(ball_bg.name());
-			it.key()->setStyleSheet(ball_style);
-		}
 		it.key()->move(data.x, data.y);
 	}
 }
