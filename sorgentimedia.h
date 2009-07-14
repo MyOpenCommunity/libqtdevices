@@ -30,8 +30,12 @@ Q_OBJECT
 public:
 	BannerSorgenteMultimedia(QWidget *parent, const QDomNode &config_node, QString indirizzo, int where, int nbutt);
 	virtual void inizializza(bool forza = false);
+	void set_status(bool stat);
+	bool get_status();
 public slots:
 	void gestFrame(char *);
+private:
+	bool status;
 private slots:
 	void ciclaSorg();
 	void decBrano();
@@ -50,6 +54,8 @@ public:
 	BannerSorgenteMultimediaMC(QWidget *parent, const QDomNode &config_node, QString indirizzo, int where,
 		QString icon_onoff, QString icon_cycle, QString icon_settings);
 	void inizializza(bool forza = false);
+	void setstatusAmb(int Amb, bool status);
+	bool statusAmb(int Amb);
 public slots:
 	void gestFrame(char *);
 	void attiva();
@@ -61,6 +67,7 @@ private:
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
+	bool status_Amb[10];
 signals:
 	void active(int, int);
 };

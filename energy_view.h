@@ -118,6 +118,7 @@ private:
 	Widget current_widget;
 	EnergyDevice *dev;
 	QString unit_measure;
+	QString unit_measure_med_inst;
 	QString currency_symbol;
 	QSignalMapper *mapper;
 	EnergyDevice::GraphType current_graph;

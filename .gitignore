@@ -1,4 +1,7 @@
 BTouch
+BTouch_no_strip
+BTouch_qws
+test/test
 BTouch.pro.user
 moc
 obj

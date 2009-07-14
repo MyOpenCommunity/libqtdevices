@@ -292,7 +292,7 @@ PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *p
 	dev = d;
 	SecondaryText->setProperty("SecondFgColor", true);
 	SetIcons(bt_global::skin->getImage("more"), bt_global::skin->getImage("less"), bt_global::skin->getImage("balance"),
-		bt_global::skin->getImage("balance_sx"), bt_global::skin->getImage("balance_dx"));
+		bt_global::skin->getImage("balance_dx"), bt_global::skin->getImage("balance_sx"));
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
 	connect(this, SIGNAL(dxClick()), SLOT(sx()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
@@ -318,12 +318,12 @@ void PowerAmplifierBalance::status_changed(const StatusList &status_list)
 
 void PowerAmplifierBalance::sx()
 {
-	dev->balanceDown();
+	dev->balanceUp();
 }
 
 void PowerAmplifierBalance::dx()
 {
-	dev->balanceUp();
+	dev->balanceDown();
 }
 
 void PowerAmplifierBalance::showBalance(int balance)
@@ -331,9 +331,9 @@ void PowerAmplifierBalance::showBalance(int balance)
 	if (balance == 0)
 		changeStatus(CENTER);
 	else if (balance < 0)
-		changeStatus(SX);
-	else
 		changeStatus(DX);
+	else
+		changeStatus(SX);
 
 	QString desc;
 	desc.sprintf("%d", abs(balance));

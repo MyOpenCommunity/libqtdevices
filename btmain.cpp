@@ -210,6 +210,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 
 		// TODO: read the transition effect from configuration
 		//Page::installTransitionWidget(new BlendingTransition(&main_window));
+		//Page::installTransitionWidget(new MosaicTransition(&main_window));
 		return true;
 	}
 	return false;
@@ -340,7 +341,7 @@ void BtMain::testFiles()
 			tempo1->stop();
 		}
 	}
-	else if (QFile::exists(FILE_AGGIORNAMENTO))
+	else if ((QFile::exists(FILE_AGGIORNAMENTO)) || (QFile::exists(FILE_AGGIORNAMENTO_ETH)))
 	{
 		if ((screen) && (tiposcreen != genPage::IMAGE))
 		{

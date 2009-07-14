@@ -284,7 +284,21 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
-	unit_measure = measure;
+	switch(mode)
+	{
+		case 1:
+		case 5:
+			unit_measure_med_inst = measure;
+			unit_measure = measure + "h";
+			break;
+		case 2:
+		case 3:
+		case 4:
+		default:
+			unit_measure_med_inst = measure + "/h";
+			unit_measure = measure;
+			break;
+	}
 	startTimer(POLLING_CURRENT_DATA * 1000);
 
 	// this must be after creating bannNavigazione, otherwise segfault
@@ -681,6 +695,7 @@ void EnergyView::updateBanners()
 	float year = EnergyConversions::convertToRawData(cumulative_year_value);
 	float average = EnergyConversions::convertToRawData(daily_av_value);
 	QString str = unit_measure;
+	QString str_med_inst = unit_measure_med_inst;
 
 	float factor = is_production ? prod_factor : cons_factor;
 	if (EnergyInterface::isCurrencyView())
@@ -691,6 +706,7 @@ void EnergyView::updateBanners()
 		year = EnergyConversions::convertToMoney(year, factor);
 		average = EnergyConversions::convertToMoney(average, factor);
 		str = currency_symbol;
+		str_med_inst = currency_symbol+"/h";
 	}
 
 	// The number of decimals to show depends on the visualization mode
@@ -709,7 +725,7 @@ void EnergyView::updateBanners()
 		.arg(loc.toString(average, 'f', dec)).arg(str));
 
 	current_banner->setInternalText(QString("%1 %2")
-		.arg(loc.toString(current, 'f', dec)).arg(str));
+		.arg(loc.toString(current, 'f', dec)).arg(str_med_inst));
 }
 
 void EnergyView::setProdFactor(float p)

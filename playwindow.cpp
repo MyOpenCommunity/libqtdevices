@@ -72,6 +72,11 @@ void PlayWindow::nextTrack()
 		playNextTrack();
 		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 	}
+	else
+	{
+		startPlayer(0);
+		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+	}
 }
 
 void PlayWindow::playNextTrack()

@@ -1,95 +1,124 @@
 /****************************************************************************
-** $Id: qmouse_qws.h,v 1.1.1.1 2005/04/11 08:55:34 cvs Exp $
 **
-** Definition of Qt/Embedded mouse driver
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: Qt Software Information (qt-info@nokia.com)
 **
-** Created : 20020220
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** Copyright (C) 1992-2002 Trolltech AS.  All rights reserved.
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial Usage
+** Licensees holding valid Qt Commercial licenses may use this file in
+** accordance with the Qt Commercial License Agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Nokia.
 **
-** This file is part of the kernel module of the Qt GUI Toolkit.
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
 ** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
-** Licensees holding valid Qt Enterprise Edition or Qt Professional Edition
-** licenses for Qt/Embedded may use this file in accordance with the
-** Qt Embedded Commercial License Agreement provided with the Software.
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
-**
-**********************************************************************/
+****************************************************************************/
 
 #ifndef QMOUSE_QWS_H
 #define QMOUSE_QWS_H
 
-#ifndef QT_H
-#include "qobject.h"
-#include "qpointarray.h"
-#endif // QT_H
+#include <QtCore/qobject.h>
+#include <QtGui/qpolygon.h>
 
-class QWSPointerCalibrationData
+QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Gui)
+
+class QWSMouseHandlerPrivate;
+class QScreen;
+
+class Q_GUI_EXPORT QWSPointerCalibrationData
 {
 public:
     enum Location { TopLeft = 0, BottomLeft = 1, BottomRight = 2, TopRight = 3,
-		    Center = 4, LastLocation = Center };
+                    Center = 4, LastLocation = Center };
     QPoint devPoints[5];
     QPoint screenPoints[5];
 };
 
-class QWSMouseHandler
+class Q_GUI_EXPORT QWSMouseHandler
 {
 public:
-    QWSMouseHandler( const QString &driver = QString::null, const QString &device = QString::null );
+    explicit QWSMouseHandler(const QString &driver = QString(),
+                             const QString &device = QString());
     virtual ~QWSMouseHandler();
 
     virtual void clearCalibration() {}
-    virtual void calibrate( QWSPointerCalibrationData * ) {}
-    virtual void getCalibration( QWSPointerCalibrationData * ) {}
+    virtual void calibrate(const QWSPointerCalibrationData *) {}
+    virtual void getCalibration(QWSPointerCalibrationData *) const {}
 
-    void limitToScreen( QPoint &pt );
-    void mouseChanged(const QPoint& pos, int bstate);
+    virtual void resume() = 0;
+    virtual void suspend() = 0;
+
+    void limitToScreen(QPoint &pt);
+    void mouseChanged(const QPoint& pos, int bstate, int wheel = 0);
     const QPoint &pos() const { return mousePos; }
+
+    void setScreen(const QScreen *screen);
 
 protected:
     QPoint &mousePos;
+    QWSMouseHandlerPrivate *d_ptr;
 };
 
 
-class QWSCalibratedMouseHandler : public QWSMouseHandler
+class Q_GUI_EXPORT QWSCalibratedMouseHandler : public QWSMouseHandler
 {
 public:
-    QWSCalibratedMouseHandler( const QString &device = QString::null, const QString &device = QString::null );
+    explicit QWSCalibratedMouseHandler(const QString &driver = QString(),
+                                       const QString &device = QString());
 
     virtual void clearCalibration();
-    virtual void calibrate( QWSPointerCalibrationData * );
-    virtual void getCalibration( QWSPointerCalibrationData * );
+    virtual void calibrate(const QWSPointerCalibrationData *);
+    virtual void getCalibration(QWSPointerCalibrationData *) const;
+    
+    QPoint transform(const QPoint &);
 
-    bool sendFiltered( const QPoint &, int button );
-    QPoint transform( const QPoint & );
+protected:
+    bool sendFiltered(const QPoint &, int button);
 
-//protected:
     void readCalibration();
     void writeCalibration();
-    void setFilterSize( int );
+    void setFilterSize(int);
 
 private:
     int a, b, c;
     int d, e, f;
     int s;
-    QPointArray samples;
-    unsigned int currSample;
-    unsigned int numSamples;
+    QPolygon samples;
+    int currSample;
+    int numSamples;
 };
+
+QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QMOUSE_QWS_H

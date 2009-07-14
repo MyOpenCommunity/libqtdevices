@@ -26,7 +26,7 @@ CONFIG += qt debug warn_on
 CONFIG -= release
 DEFINES += QT_QWS_EBX BTWEB
 release:DEFINES += NDEBUG
-INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib
+INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
@@ -132,6 +132,8 @@ HEADERS += actuators.h \
            version.h \
            videoentryphone.h \
            xml_functions.h \
+           QWSMOUSE/qmouse_qws.h \
+           QWSMOUSE/qmouselinuxevent-2-6_qws.h
 
 SOURCES += actuators.cpp \
            alarmclock.cpp \
@@ -231,6 +233,8 @@ SOURCES += actuators.cpp \
            version.cpp \
            videoentryphone.cpp \
            xml_functions.cpp \
+           QWSMOUSE/qmouse_qws.cpp \
+           QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
 
 TRANSLATIONS += linguist-ts/btouch_ar.ts \
                 linguist-ts/btouch_de.ts \
