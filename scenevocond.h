@@ -34,15 +34,11 @@ public:
 
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
+
 	/*!
-	\brief returns value related to condition
+	\brief sets the type of the condition (controlled by a device)
 	*/
-	int getVal();
-	/*!
-	\brief sets value related to condition
-	\param v value to be set
-	*/
-	void setVal(int v);
+	void setConditionType(int t);
 	/*!
 	\brief returns description of condition
 	*/
@@ -73,6 +69,8 @@ public slots:
 	virtual void reset();
 
 protected:
+	int condition_type;
+
 	// The constructor is protected to avoid the building of scenEvo_cond objects.
 	scenEvo_cond();
 
@@ -85,7 +83,6 @@ protected:
 private:
 	static const int MAX_EVO_COND_IMG =5;
 	QString *img[MAX_EVO_COND_IMG];
-	int val;
 	int serial_number;
 
 signals:

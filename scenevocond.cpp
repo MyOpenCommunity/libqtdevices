@@ -25,7 +25,7 @@
 
 scenEvo_cond::scenEvo_cond()
 {
-	val = -1;
+	condition_type = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
 		img[i] = new QString("");
 	hasTimeCondition = false;
@@ -46,14 +46,9 @@ void scenEvo_cond::setImg(int index, QString s)
 	*img[index] = s;
 }
 
-int scenEvo_cond::getVal()
+void scenEvo_cond::setConditionType(int t)
 {
-	return val;
-}
-
-void scenEvo_cond::setVal(int v)
-{
-	val = v;
+	condition_type = t;
 }
 
 const char *scenEvo_cond::getDescription()
@@ -445,8 +440,8 @@ void scenEvo_cond_d::SetIcons()
 	SetButtonIcon(A6_ICON_INDEX, A6_BUTTON_INDEX);
 	// Create actual device condition
 	device_condition *dc;
-	qDebug("#### Condition type = %d", getVal());
-	switch (getVal())
+	qDebug("#### Condition type = %d", condition_type);
+	switch (condition_type)
 	{
 	case 1:
 		dc = new device_condition_light_status(this, trigger);
