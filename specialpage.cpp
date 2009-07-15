@@ -71,7 +71,7 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 	// Load the special button
 	b = new BtButton(this);
 	b->setImage(IMG_PATH + getTextChild(command, "cimg1"));
-	b->setGeometry(DIM_BUT_BACK, 260, 260 - DIM_BUT_BACK, DIM_BUT_BACK);
+	b->setGeometry(DIM_BUT_BACK, 260, MAX_WIDTH - DIM_BUT_BACK, DIM_BUT_BACK);
 
 	type = static_cast<specialType>(getTextChild(command, "type").toInt());
 	who = getTextChild(command, "who");
@@ -91,7 +91,7 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 	box_text->setFont(bt_global::font->get(FontManager::TEXT));
 	box_text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	box_text->setText(getTextChild(command, "descr"));
-	box_text->setGeometry(DIM_BUT_BACK, 240, 260 - DIM_BUT_BACK, 20);
+	box_text->setGeometry(DIM_BUT_BACK, 240, MAX_WIDTH - DIM_BUT_BACK, 20);
 	box_text->setFrameStyle(QFrame::Plain);
 	box_text->setLineWidth(3);
 }
