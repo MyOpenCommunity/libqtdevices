@@ -100,6 +100,8 @@ protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
+	void freezed(bool b);
+
 /*!
   \brief Execute when the time for the alarm set is chosen to show the frequency (once-always-mon/fri-sat-sun).
 */

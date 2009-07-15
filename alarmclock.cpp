@@ -96,6 +96,7 @@ AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 	type = t;
 
 	difson = 0;
+	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
 }
 
 void AlarmClock::okTime()
@@ -611,6 +612,14 @@ void AlarmClock::buzzerAlarm()
 		bt_global::btmain->svegl(false);
 		emit alarmClockFired();
 	}
+}
+
+void AlarmClock::freezed(bool b)
+{
+	// We use freeze only for the buzzer (for the difson we use an event Filter)
+	// TODO: use event filter even for the first.
+	if (!b && type == BUZZER)
+		spegniSveglia(b);
 }
 
 void AlarmClock::spegniSveglia(bool b)
