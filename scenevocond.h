@@ -285,10 +285,23 @@ private:
 */
 class device_condition : public QObject
 {
+friend class scenEvo_cond_d;
 Q_OBJECT
 public:
 	//! Constructor
 	device_condition(QWidget *parent, QString *trigger);
+
+public slots:
+	//! Invoked when UP button is pressed
+	virtual void Up();
+	//! Invoked when DOWN button is pressed
+	virtual void Down();
+	//! Invoked when OK button is pressed
+	virtual void OK();
+	//! Invoked by device when status changes
+	virtual void status_changed(QList<device_status*>) = 0;
+
+protected:
 	//! Returns min value
 	virtual int get_min();
 	//! Returns max value
@@ -333,15 +346,7 @@ public:
 	void set_group(int);
 	//! Returns true when actual condition is satisfied
 	bool isTrue();
-public slots:
-	//! Invoked when UP button is pressed
-	virtual void Up();
-	//! Invoked when DOWN button is pressed
-	virtual void Down();
-	//! Invoked when OK button is pressed
-	virtual void OK();
-	//! Invoked by device when status changes
-	virtual void status_changed(QList<device_status*>) = 0;
+
 protected:
 	QFrame *frame;
 	// Our "real" device

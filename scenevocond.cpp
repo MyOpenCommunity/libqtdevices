@@ -1792,7 +1792,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 				measured_temp = bt2Celsius(curr_temp.get_val());
 			}
 
-			if ((measured_temp >= (trig_v - 10)) &&  (measured_temp <= (trig_v + 10)))
+			if (measured_temp >= (trig_v - 10) && measured_temp <= (trig_v + 10))
 			{
 				qDebug("Condition triggered");
 				if (!satisfied)
