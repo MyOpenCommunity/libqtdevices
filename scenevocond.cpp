@@ -1638,6 +1638,9 @@ void device_condition_volume::reset()
 device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 	device_condition(parent, c)
 {
+	// Temp condition is expressed in bticino format
+	int temp_condition = c->toInt();
+
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	l->setFont(bt_global::font->get(FontManager::TEXT));
@@ -1649,22 +1652,23 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 	case CELSIUS:
 		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
 		min_temp = bt2Celsius(CONDITION_MIN_TEMP);
-		set_condition_value(*c);
+		set_condition_value(bt2Celsius(temp_condition));
 		break;
 	case FAHRENHEIT:
 		max_temp = bt2Fahrenheit(CONDITION_MAX_TEMP);
 		min_temp = bt2Fahrenheit(CONDITION_MIN_TEMP);
-		set_condition_value(QString::number(bt2Fahrenheit((*c).toInt())));
+		set_condition_value(bt2Fahrenheit(temp_condition));
 		break;
 	default:
 		qWarning("Wrong temperature scale, defaulting to celsius");
 		temp_scale = CELSIUS;
 		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
 		min_temp = bt2Celsius(CONDITION_MIN_TEMP);
-		set_condition_value(*c);
+		set_condition_value(bt2Celsius(temp_condition));
 	}
 	step = 5;
 
+	// The condition value and the current value are stored in Celsius or Fahrenheit
 	set_current_value(device_condition::get_condition_value());
 
 	Draw();
@@ -1717,25 +1721,6 @@ void device_condition_temp::Draw()
 	tmp += u;
 
 	((QLabel *)frame)->setText(tmp);
-}
-
-void device_condition_temp::set_condition_value(QString s)
-{
-	// s is in bticino 4-digit form, we should translate to an int
-	int val = s.toInt();
-	switch (temp_scale)
-	{
-	case CELSIUS:
-		val = bt2Celsius(val);
-		break;
-	case FAHRENHEIT:
-		val = bt2Celsius(val);
-		break;
-	default:
-		qWarning("Wrong temperature scale, defaulting to celsius");
-		val = bt2Celsius(val);
-	}
-	device_condition::set_condition_value(val);
 }
 
 void device_condition_temp::get_condition_value(QString& out)

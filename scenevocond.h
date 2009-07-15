@@ -588,8 +588,6 @@ public:
 
 	//! Returns value
 	int intValue();
-	//! Translates trigger condition from open encoding to int and sets val
-	virtual void set_condition_value(QString);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 public slots:
