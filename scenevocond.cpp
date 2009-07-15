@@ -1648,19 +1648,19 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 	{
 	case CELSIUS:
 		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
-		min_temp = bt2Celsius(CONDITION_MIX_TEMP);
+		min_temp = bt2Celsius(CONDITION_MIN_TEMP);
 		set_condition_value(*c);
 		break;
 	case FAHRENHEIT:
 		max_temp = bt2Fahrenheit(CONDITION_MAX_TEMP);
-		min_temp = bt2Fahrenheit(CONDITION_MIX_TEMP);
+		min_temp = bt2Fahrenheit(CONDITION_MIN_TEMP);
 		set_condition_value(QString::number(bt2Fahrenheit((*c).toInt())));
 		break;
 	default:
 		qWarning("Wrong temperature scale, defaulting to celsius");
 		temp_scale = CELSIUS;
 		max_temp = bt2Celsius(CONDITION_MAX_TEMP);
-		min_temp = bt2Celsius(CONDITION_MIX_TEMP);
+		min_temp = bt2Celsius(CONDITION_MIN_TEMP);
 		set_condition_value(*c);
 	}
 	step = 5;

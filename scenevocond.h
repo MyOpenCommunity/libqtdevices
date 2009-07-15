@@ -564,7 +564,7 @@ private:
 \author Ciminaghi
 \date May 2006
 */
-#define CONDITION_MIX_TEMP 1050
+#define CONDITION_MIN_TEMP 1050
 #define CONDITION_MAX_TEMP  500
 class device_condition_temp : public device_condition
 {
