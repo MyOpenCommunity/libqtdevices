@@ -126,7 +126,7 @@ void TextOnImageLabel::paintEvent(QPaintEvent *e)
 {
 	QLabel::paintEvent(e);
 	QTextDocument td;
-	td.setDefaultStyleSheet(bt_global::skin->getStyle());
+	td.setDefaultStyleSheet(QString("* {color: %1}").arg(_text_color));
 	td.setDefaultFont(bt_global::font->get(FontManager::TEXT));
 	td.setHtml("<p>" + internal_text + "</p>");
 	// find the correct coordinates to center the text
@@ -139,3 +139,14 @@ void TextOnImageLabel::paintEvent(QPaintEvent *e)
 	p.translate(x, y);
 	td.drawContents(&p, QRectF(rect()));
 }
+
+QString TextOnImageLabel::textColor()
+{
+	return _text_color;
+}
+
+void TextOnImageLabel::setTextColor(QString color)
+{
+	_text_color = color;
+}
+

@@ -76,6 +76,8 @@ public slots:
 class TextOnImageLabel : public QLabel
 {
 Q_OBJECT
+Q_PROPERTY(QString text_color READ textColor WRITE setTextColor)
+
 public:
 	TextOnImageLabel(QWidget *parent, const QString &text = QString());
 	void setBackgroundImage(const QString &path);
@@ -86,6 +88,10 @@ protected:
 
 private:
 	QString internal_text;
+	QString _text_color; // the internal storage for the property text_color
+
+	QString textColor();
+	void setTextColor(QString color);
 };
 
 #endif
