@@ -9,6 +9,7 @@
 #include "main.h" // bt_global::config
 
 #include <QDateTime>
+#include <QLocale>
 #include <QPixmap>
 #include <QWidget>
 #include <QDebug>
@@ -18,6 +19,15 @@
 #include <QFile>
 
 #include <assert.h>
+
+
+// TODO: create a global locale object
+namespace
+{
+// The language used for the floating point number
+QLocale loc(QLocale::Italian);
+}
+
 
 /*****************************************************************
 ** Advanced scenario management generic condition
@@ -1716,8 +1726,7 @@ void device_condition_temp::Draw()
 	int val = get_current_value();
 	qDebug("device_condition_temp::Draw(), val = %d", val);
 
-	QString tmp = QString::number(val);
-	tmp.insert(tmp.length() - 1, ".");
+	QString tmp = loc.toString(val / 10.0, 'f', 1);
 	tmp += u;
 
 	((QLabel *)frame)->setText(tmp);
