@@ -17,7 +17,9 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	QString icon2, QString icon3, int enabled, int tipo, int freq)
 	: bann2But(parent)
 {
-	sxButton->setCheckable(true);
+	sxButton->setOnOff();
+	sxButton->setStatus(enabled == 1);
+
 	SetIcons(0, icon2, icon1);
 	SetIcons(1, icon3);
 	Draw(); // Draw must be called before setAbil.. see impBeep
@@ -25,7 +27,7 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
-	sxButton->setChecked(enabled == 1);
+
 	alarm_clock->_setActive(enabled == 1);
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
@@ -43,14 +45,14 @@ void bannAlarmClock::setSerNum(int num)
 void bannAlarmClock::handleClose()
 {
 	// When the page of the alarmclock is closed, the alarm is always set as 'on'.
-	sxButton->setChecked(true);
+	sxButton->setStatus(true);
 	emit pageClosed();
 }
 
 void bannAlarmClock::setButtonIcon()
 {
 	if (!alarm_clock->isActive())
-		sxButton->setChecked(false);
+		sxButton->setStatus(false);
 }
 
 void bannAlarmClock::gestFrame(char* frame)
@@ -60,7 +62,7 @@ void bannAlarmClock::gestFrame(char* frame)
 
 void bannAlarmClock::setAbil(bool b)
 {
-	sxButton->setChecked(b);
+	sxButton->setStatus(b);
 	alarm_clock->setActive(b);
 }
 
@@ -108,7 +110,7 @@ impBeep::impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2)
 	setBeep(on, false);
 
 	SetIcons(0, icon2, icon1);
-	Draw(); // Draw must be called before setChecked (because it calls the setPixmap function)
+	Draw(); // Draw must be called before setStatus (because it calls the setPixmap function)
 	sxButton->setStatus(on);
 }
 
@@ -178,12 +180,12 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	SetIcons(1, icon3);
 	SetIcons(0, icon2, icon1);
 	Draw();
-	sxButton->setCheckable(true);
 
 	active = (attiva == 1);
 	bt_global::btmain->setPwd(active, password);
 
-	sxButton->setChecked(active);
+	sxButton->setOnOff();
+	sxButton->setStatus(active);
 }
 
 void impPassword::toggleActivation()
@@ -191,7 +193,7 @@ void impPassword::toggleActivation()
 	active = !active;
 	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
 	bt_global::btmain->setPwd(active, password);
-	sxButton->setChecked(active);
+	sxButton->setStatus(active);
 }
 
 void impPassword::showEvent(QShowEvent *event)
