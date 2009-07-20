@@ -104,12 +104,12 @@ impBeep::impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2)
 	connect(this, SIGNAL(click()), this, SLOT(toggleBeep()));
 
 	bool on = (val.toInt() == 1);
-	sxButton->setCheckable(true);
+	sxButton->setOnOff();
 	setBeep(on, false);
 
 	SetIcons(0, icon2, icon1);
 	Draw(); // Draw must be called before setChecked (because it calls the setPixmap function)
-	sxButton->setChecked(on);
+	sxButton->setStatus(on);
 }
 
 void impBeep::toggleBeep()
@@ -117,12 +117,12 @@ void impBeep::toggleBeep()
 	if (getBeep())
 	{
 		setBeep(false, true);
-		sxButton->setChecked(false);
+		sxButton->setStatus(false);
 	}
 	else
 	{
 		setBeep(true, true);
-		sxButton->setChecked(true);
+		sxButton->setStatus(true);
 		beep();
 	}
 }
