@@ -1736,23 +1736,21 @@ void device_condition_temp::get_condition_value(QString& out)
 {
 	// transform an int value to a string in bticino 4-digit form
 	int val = device_condition::get_condition_value();
+	int temp;
 	switch (temp_scale)
 	{
 	case CELSIUS:
-		out = QString::number(celsius2Bt(val));
+		temp = celsius2Bt(val);
 		break;
 	case FAHRENHEIT:
-		out = QString::number(fahrenheit2Bt(val));
+		temp = fahrenheit2Bt(val);
 		break;
 	default:
 		qWarning("Wrong temperature scale, defaulting to celsius");
-		out = QString::number(celsius2Bt(val));
+		temp = celsius2Bt(val);
 	}
-
-	// if the val is positive, QString::number strips the leading zeros
-	// we need to put them back to be in 4-digit format
-	if (val > 0)
-		out.prepend("0");
+	// bticino_temp is stored in 4 digit format.
+	out = QString("%1").arg(temp, 4, 10, QChar('0'));
 }
 
 void device_condition_temp::status_changed(QList<device_status*> sl)
