@@ -2,6 +2,7 @@
 #define OPENSERVER_MOCK_H
 
 #include <QObject>
+#include <QPair> // prevent a bug in Qt 4.5.0
 #include <QTcpServer>
 
 class QTcpSocket;

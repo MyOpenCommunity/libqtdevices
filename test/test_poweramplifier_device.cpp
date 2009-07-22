@@ -154,6 +154,13 @@ void TestPowerAmplifierDevice::receiveVolume()
 	t.checkSignals(QString("*#22*3#%1#%2*1##").arg(where[0]).arg(where[1]), 0);
 }
 
+void TestPowerAmplifierDevice::receiveStatusRequest()
+{
+	DeviceTester t(dev, PowerAmplifierDevice::DIM_VOLUME); // the dim doesn't matter
+	t.checkSignals(QString("*#22*3#%1#%2##").arg(where[0]).arg(where[1]), 0);
+}
+
+
 void TestPowerAmplifierDevice::receiveLoud()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_LOUD);
