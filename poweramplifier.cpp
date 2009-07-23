@@ -2,6 +2,7 @@
 #include "xml_functions.h" // getChildWithId, getChildren
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
+#include "generic_functions.h" // int trasformaVol(int vol)
 
 #include <QVariant> // setProperty
 #include <QDomNode>
@@ -63,7 +64,7 @@ void BannPowerAmplifier::status_changed(const StatusList &status_list)
 			// We have to normalize the volume value (from 0 to 31) in a value
 			// that we can represent into the banner (that accept values from 1 to 9)
 			// so we use the following formula.
-			setValue((volume + 1) / 4 + 1);
+			setValue(trasformaVol(volume));
 			Draw();
 		}
 		++it;

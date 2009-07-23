@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "amplificatori.h"
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createMsgOpen, trasformaVol
 #include "device_status.h"
 #include "device.h"
 #include "devices_cache.h" // bt_global::devices_cache
@@ -33,31 +33,6 @@ amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
-}
-
-int trasformaVol(int vol)
-{
-	if (vol < 0)
-		return -1;
-	if (vol <= 3)
-		return 1;
-	if (vol <= 7)
-		return 2;
-	if (vol <= 11)
-		return 3;
-	if (vol <= 14)
-		return 4;
-	if (vol <= 17)
-		return 5;
-	if (vol <= 20)
-		return 6;
-	if (vol <= 23)
-		return 7;
-	if (vol <= 27)
-		return 8;
-	if (vol <= 31)
-		return 9;
-	return -1;
 }
 
 void amplificatore::status_changed(QList<device_status*> sl)

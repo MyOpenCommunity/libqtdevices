@@ -378,3 +378,28 @@ void getName(char *name)
 	}
 }
 
+int trasformaVol(int vol)
+{
+	if (vol < 0)
+		return -1;
+	if (vol <= 3)
+		return 1;
+	if (vol <= 7)
+		return 2;
+	if (vol <= 11)
+		return 3;
+	if (vol <= 14)
+		return 4;
+	if (vol <= 17)
+		return 5;
+	if (vol <= 20)
+		return 6;
+	if (vol <= 23)
+		return 7;
+	if (vol <= 27)
+		return 8;
+	if (vol <= 31)
+		return 9;
+	return -1;
+}
+
