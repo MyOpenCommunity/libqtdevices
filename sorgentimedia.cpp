@@ -89,12 +89,24 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 	}
 	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
 		(!strcmp(msg_open.Extract_cosa(),"9")) &&
-		(!strcmp(msg_open.Extract_dove(),"5")) &&
-		(!strcmp(msg_open.Extract_livello(),"3")))
+		(((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3"))) ||
+		(((!strcmp(msg_open.Extract_dove(),"2")) &&
+                (!strcmp(msg_open.Extract_livello(), amb+2))))))
 	{
 		if(get_status())
 			source_menu.nextTrack();
 	}
+        else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+                (!strcmp(msg_open.Extract_cosa(),"10")) &&
+       		(((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3"))) ||
+		(((!strcmp(msg_open.Extract_dove(),"2")) &&
+                (!strcmp(msg_open.Extract_livello(), amb+2))))))
+        {
+                if(get_status())
+                        source_menu.prevTrack();
+        }
 
 }
 
@@ -250,11 +262,35 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 
 	}
 	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
-		(!strcmp(msg_open.Extract_cosa(),"9")) &&
-		(!strcmp(msg_open.Extract_dove(),"5")) &&
-		(!strcmp(msg_open.Extract_livello(),"3")))
+		(!strcmp(msg_open.Extract_cosa(),"9")))
 	{
-		if(statusAmb(atoi(msg_open.Extract_interfaccia())))
-			source_menu.nextTrack();
+		if((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3")))
+		{
+			if(statusAmb(atoi(msg_open.Extract_interfaccia())))
+				source_menu.nextTrack();
+		}
+		else if ((!strcmp(msg_open.Extract_dove(),"2")) &&
+	                (indirizzo_semplice == msg_open.Extract_interfaccia()))
+		{
+			if(get_status())
+				source_menu.nextTrack();
+		}
+	}
+        else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+                (!strcmp(msg_open.Extract_cosa(),"10")))
+	{
+		if((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3")))
+		{
+			if(statusAmb(atoi(msg_open.Extract_interfaccia())))
+				source_menu.prevTrack();
+		}
+		else if ((!strcmp(msg_open.Extract_dove(),"2")) &&
+	                (indirizzo_semplice == msg_open.Extract_interfaccia()))
+		{
+			if(get_status())
+				source_menu.prevTrack();
+		}
 	}
 }
