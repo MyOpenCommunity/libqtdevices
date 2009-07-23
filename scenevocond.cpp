@@ -1676,7 +1676,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 		min_temp = bt2Celsius(CONDITION_MIN_TEMP);
 		set_condition_value(bt2Celsius(temp_condition));
 	}
-	step = 5;
+	step = 1;
 
 	// The condition value and the current value are stored in Celsius or Fahrenheit
 	set_current_value(device_condition::get_condition_value());
