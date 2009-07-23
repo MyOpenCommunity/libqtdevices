@@ -63,6 +63,13 @@ void PlayWindow::prevTrack()
 
 		qDebug("[AUDIO] PlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 	}
+	else
+	{
+		stopPlayer();
+		startPlayer(play_list.count() - 1);
+
+		qDebug("[AUDIO] PlayWindow::prevTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+	}
 }
 
 void PlayWindow::nextTrack()
@@ -74,6 +81,8 @@ void PlayWindow::nextTrack()
 	}
 	else
 	{
+		if (media_player->isInstanceRunning())
+			stopPlayer();
 		startPlayer(0);
 		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
 	}
