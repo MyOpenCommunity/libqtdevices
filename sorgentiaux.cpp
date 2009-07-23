@@ -49,16 +49,12 @@ void sorgente_aux::ciclaSorg()
 
 void sorgente_aux::decBrano()
 {
-	sendFrame(createMsgOpen("16","6101", getAddress()));
+	sendFrame(QString("*22*10*2#%1##").arg(getAddress().at(2)));
 }
 
 void sorgente_aux::aumBrano()
 {
-	QString addr = getAddress();
-	if (myAux)
-		if (addr.at(1) == '0')
-			addr[1] = '1';
-	sendFrame(createMsgOpen("16", "6001", addr));
+        sendFrame(QString("*22*9*2#%1##").arg(getAddress().at(2)));
 }
 
 void sorgente_aux::inizializza(bool forza)
