@@ -3,7 +3,6 @@
 #include "alarmclock.h"
 #include "btmain.h" // bt_global::btmain
 #include "lansettings.h"
-#include "multisounddiff.h" // contdiff
 #include "xml_functions.h" // getChildren, getTextChild
 #include "cleanscreen.h"
 #include "impostatime.h"
