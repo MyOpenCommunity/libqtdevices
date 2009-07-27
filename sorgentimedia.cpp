@@ -62,7 +62,7 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 		(!strcmp(msg_open.Extract_livello(),"2")))
 	{
 		if (!strcmp(msg_open.Extract_interfaccia(), amb+2) &&
-			!strcmp(msg_open.Extract_valori(0), "0"))
+		   (!strcmp(msg_open.Extract_valori(0), "0")))
 		{
 			source_menu.disableSource(false);
 			source_menu.pause();
@@ -70,9 +70,9 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 		}
 	}
 	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
-	    (!strncmp(msg_open.Extract_cosa(),"2", 1)) &&
-	    (!strcmp(msg_open.Extract_dove(),"5")) && 
-	    (!strcmp(msg_open.Extract_livello(),"2")))
+		(!strncmp(msg_open.Extract_cosa(),"2", 1)) &&
+		(!strcmp(msg_open.Extract_dove(),"5")) && 
+		(!strcmp(msg_open.Extract_livello(),"2")))
 	{
 		if (!strcmp(msg_open.Extract_interfaccia(), amb+2))
 		{
@@ -87,27 +87,26 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 			set_status(false);
 		}
 	}
-	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
 		(!strcmp(msg_open.Extract_cosa(),"9")) &&
 		(((!strcmp(msg_open.Extract_dove(),"5")) &&
 		(!strcmp(msg_open.Extract_livello(),"3"))) ||
 		(((!strcmp(msg_open.Extract_dove(),"2")) &&
-                (!strcmp(msg_open.Extract_livello(), amb+2))))))
+		(!strcmp(msg_open.Extract_livello(), amb+2))))))
 	{
-		if(get_status())
+		if (get_status())
 			source_menu.nextTrack();
 	}
-        else if((!strcmp(msg_open.Extract_chi(),"22")) &&
-                (!strcmp(msg_open.Extract_cosa(),"10")) &&
-       		(((!strcmp(msg_open.Extract_dove(),"5")) &&
+	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strcmp(msg_open.Extract_cosa(),"10")) &&
+		(((!strcmp(msg_open.Extract_dove(),"5")) &&
 		(!strcmp(msg_open.Extract_livello(),"3"))) ||
 		(((!strcmp(msg_open.Extract_dove(),"2")) &&
-                (!strcmp(msg_open.Extract_livello(), amb+2))))))
-        {
-                if(get_status())
-                        source_menu.prevTrack();
-        }
-
+		(!strcmp(msg_open.Extract_livello(), amb+2))))))
+	{
+		if (get_status())
+			source_menu.prevTrack();
+	}
 }
 
 void BannerSorgenteMultimedia::inizializza(bool forza)
@@ -209,7 +208,7 @@ void BannerSorgenteMultimediaMC::inizializza(bool forza)
 
 	sendInit(QString("*#22*7*#15*%1***4**0*%2*1*1**1##").arg(indirizzo_semplice).arg(indirizzo_semplice));
 
-	for(int i = 1; i < 9; i++)
+	for (int i = 1; i < MAX_AMB; i++)
 		status_Amb[i] = false;
 }
 
@@ -227,6 +226,19 @@ bool BannerSorgenteMultimediaMC::statusAmb(int Amb)
 	return status_Amb[Amb];
 }
 
+bool BannerSorgenteMultimediaMC::get_status()
+{
+	qDebug("BannerSorgenteMultimediaMC::get_status()");
+
+	for (int i = 1; i < MAX_AMB; i++)
+	{
+		if (status_Amb[i])
+			return true;
+	}
+
+	return false;
+}
+
 void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 {
 	openwebnet msg_open;
@@ -234,25 +246,25 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if ((!strcmp(msg_open.Extract_chi(),"22")) &&
-	    (!strcmp(msg_open.Extract_grandezza(),"12")) &&
-	    (!strcmp(msg_open.Extract_dove(),"5")) && 
-	    (!strcmp(msg_open.Extract_livello(),"2")))
+	   (!strcmp(msg_open.Extract_grandezza(),"12")) &&
+	   (!strcmp(msg_open.Extract_dove(),"5")) && 
+	   (!strcmp(msg_open.Extract_livello(),"2")))
 	{
 
 		if (indirizzo_semplice == msg_open.Extract_interfaccia() &&
-		    !strcmp(msg_open.Extract_valori(0), "0"))
+		   (!strcmp(msg_open.Extract_valori(0), "0")))
 		{
 			source_menu.disableSource(false);
 			source_menu.pause();
 		}
 	}
-	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
 		(!strncmp(msg_open.Extract_cosa(),"2#4#", strlen("2#4#"))) &&
 		(!strcmp(msg_open.Extract_dove(),"5")) &&
 		(!strcmp(msg_open.Extract_livello(),"2")))
 	{
 		if (indirizzo_semplice == msg_open.Extract_interfaccia())
-                {
+		{
 			source_menu.enableSource(false);
 			source_menu.resume();
 			setstatusAmb(atoi(msg_open.Extract_cosa()+4), true);
@@ -261,35 +273,35 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 			setstatusAmb(atoi(msg_open.Extract_cosa()+4), false);
 
 	}
-	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
 		(!strcmp(msg_open.Extract_cosa(),"9")))
 	{
-		if((!strcmp(msg_open.Extract_dove(),"5")) &&
-		(!strcmp(msg_open.Extract_livello(),"3")))
+		if ((!strcmp(msg_open.Extract_dove(),"5")) &&
+		   (!strcmp(msg_open.Extract_livello(),"3")))
 		{
-			if(statusAmb(atoi(msg_open.Extract_interfaccia())))
+			if (statusAmb(atoi(msg_open.Extract_interfaccia())))
 				source_menu.nextTrack();
 		}
 		else if ((!strcmp(msg_open.Extract_dove(),"2")) &&
-	                (indirizzo_semplice == msg_open.Extract_interfaccia()))
+			(indirizzo_semplice == msg_open.Extract_livello()))
 		{
-			if(get_status())
+			if (get_status())
 				source_menu.nextTrack();
 		}
 	}
-        else if((!strcmp(msg_open.Extract_chi(),"22")) &&
-                (!strcmp(msg_open.Extract_cosa(),"10")))
+	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strcmp(msg_open.Extract_cosa(),"10")))
 	{
-		if((!strcmp(msg_open.Extract_dove(),"5")) &&
-		(!strcmp(msg_open.Extract_livello(),"3")))
+		if ((!strcmp(msg_open.Extract_dove(),"5")) &&
+		   (!strcmp(msg_open.Extract_livello(),"3")))
 		{
-			if(statusAmb(atoi(msg_open.Extract_interfaccia())))
+			if (statusAmb(atoi(msg_open.Extract_interfaccia())))
 				source_menu.prevTrack();
 		}
 		else if ((!strcmp(msg_open.Extract_dove(),"2")) &&
-	                (indirizzo_semplice == msg_open.Extract_interfaccia()))
+			(indirizzo_semplice == msg_open.Extract_livello()))
 		{
-			if(get_status())
+			if (get_status())
 				source_menu.prevTrack();
 		}
 	}
