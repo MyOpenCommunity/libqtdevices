@@ -18,8 +18,6 @@
 #include <QString>
 #include <QWidget>
 
-#define MAX_AMB 9
-
 class QDomNode;
 
 
@@ -58,7 +56,6 @@ public:
 	void inizializza(bool forza = false);
 	void setstatusAmb(int Amb, bool status);
 	bool statusAmb(int Amb);
-	bool get_status();
 public slots:
 	void gestFrame(char *);
 	void attiva();
@@ -70,7 +67,7 @@ private:
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
-	bool status_Amb[MAX_AMB];
+	bool status_Amb[10];
 signals:
 	void active(int, int);
 };

@@ -87,24 +87,24 @@ void BannerSorgenteMultimedia::gestFrame(char *frame)
 			set_status(false);
 		}
 	}
-	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
-		 (!strcmp(msg_open.Extract_cosa(),"9")) &&
-		 (((!strcmp(msg_open.Extract_dove(),"5")) &&
-		 (!strcmp(msg_open.Extract_livello(),"3"))) ||
-		 (((!strcmp(msg_open.Extract_dove(),"2")) &&
-                 (!strcmp(msg_open.Extract_livello(), amb+2))))))
+	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strcmp(msg_open.Extract_cosa(),"9")) &&
+		(((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3"))) ||
+		(((!strcmp(msg_open.Extract_dove(),"2")) &&
+                (!strcmp(msg_open.Extract_livello(), amb+2))))))
 	{
-		if (get_status())
+		if(get_status())
 			source_menu.nextTrack();
 	}
-        else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
-                 (!strcmp(msg_open.Extract_cosa(),"10")) &&
-       		 (((!strcmp(msg_open.Extract_dove(),"5")) &&
-		 (!strcmp(msg_open.Extract_livello(),"3"))) ||
-		 (((!strcmp(msg_open.Extract_dove(),"2")) &&
-                 (!strcmp(msg_open.Extract_livello(), amb+2))))))
+        else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+                (!strcmp(msg_open.Extract_cosa(),"10")) &&
+       		(((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3"))) ||
+		(((!strcmp(msg_open.Extract_dove(),"2")) &&
+                (!strcmp(msg_open.Extract_livello(), amb+2))))))
         {
-                if (get_status())
+                if(get_status())
                         source_menu.prevTrack();
         }
 
@@ -209,7 +209,7 @@ void BannerSorgenteMultimediaMC::inizializza(bool forza)
 
 	sendInit(QString("*#22*7*#15*%1***4**0*%2*1*1**1##").arg(indirizzo_semplice).arg(indirizzo_semplice));
 
-	for (int i = 1; i < MAX_AMB; i++)
+	for(int i = 1; i < 9; i++)
 		status_Amb[i] = false;
 }
 
@@ -225,18 +225,6 @@ bool BannerSorgenteMultimediaMC::statusAmb(int Amb)
 	qDebug("BannerSorgenteMultimediaMC::statusAmb(%d)", Amb);
 
 	return status_Amb[Amb];
-}
-
-bool BannerSorgenteMultimediaMC::get_status()
-{
-	qDebug("BannerSorgenteMultimediaMC::get_status()");
-
-	for (int i = 1; i < MAX_AMB; i++)
-	{
-		if (status_Amb[i])
-			return true;
-	}
-        return false;
 }
 
 void BannerSorgenteMultimediaMC::gestFrame(char *frame)
@@ -258,10 +246,10 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 			source_menu.pause();
 		}
 	}
-	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
-		 (!strncmp(msg_open.Extract_cosa(),"2#4#", strlen("2#4#"))) &&
-		 (!strcmp(msg_open.Extract_dove(),"5")) &&
-		 (!strcmp(msg_open.Extract_livello(),"2")))
+	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strncmp(msg_open.Extract_cosa(),"2#4#", strlen("2#4#"))) &&
+		(!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"2")))
 	{
 		if (indirizzo_semplice == msg_open.Extract_interfaccia())
                 {
@@ -273,40 +261,35 @@ void BannerSorgenteMultimediaMC::gestFrame(char *frame)
 			setstatusAmb(atoi(msg_open.Extract_cosa()+4), false);
 
 	}
-	else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
-		 (!strcmp(msg_open.Extract_cosa(),"9")))
+	else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+		(!strcmp(msg_open.Extract_cosa(),"9")))
 	{
-  	qDebug("Agre 1");
-		if ((!strcmp(msg_open.Extract_dove(),"5")) &&
-		    (!strcmp(msg_open.Extract_livello(),"3")))
+		if((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3")))
 		{
-			if (statusAmb(atoi(msg_open.Extract_interfaccia())))
+			if(statusAmb(atoi(msg_open.Extract_interfaccia())))
 				source_menu.nextTrack();
 		}
 		else if ((!strcmp(msg_open.Extract_dove(),"2")) &&
-	                 (indirizzo_semplice == msg_open.Extract_livello()))
+	                (indirizzo_semplice == msg_open.Extract_interfaccia()))
 		{
-  	qDebug("Agre 2");
-			if (get_status())
-{
-  	qDebug("Agre 3");
-
-				source_menu.nextTrack(); }
+			if(get_status())
+				source_menu.nextTrack();
 		}
 	}
-        else if ((!strcmp(msg_open.Extract_chi(),"22")) &&
-                 (!strcmp(msg_open.Extract_cosa(),"10")))
+        else if((!strcmp(msg_open.Extract_chi(),"22")) &&
+                (!strcmp(msg_open.Extract_cosa(),"10")))
 	{
-		if ((!strcmp(msg_open.Extract_dove(),"5")) &&
-		    (!strcmp(msg_open.Extract_livello(),"3")))
+		if((!strcmp(msg_open.Extract_dove(),"5")) &&
+		(!strcmp(msg_open.Extract_livello(),"3")))
 		{
-			if (statusAmb(atoi(msg_open.Extract_interfaccia())))
+			if(statusAmb(atoi(msg_open.Extract_interfaccia())))
 				source_menu.prevTrack();
 		}
 		else if ((!strcmp(msg_open.Extract_dove(),"2")) &&
-	                 (indirizzo_semplice == msg_open.Extract_livello()))
+	                (indirizzo_semplice == msg_open.Extract_interfaccia()))
 		{
-			if (get_status())
+			if(get_status())
 				source_menu.prevTrack();
 		}
 	}
