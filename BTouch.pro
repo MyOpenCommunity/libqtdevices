@@ -249,4 +249,10 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
                 linguist-ts/btouch_pt.ts \
                 linguist-ts/btouch_ru.ts \
                 linguist-ts/btouch_zh_CN.ts \
-                linguist-ts/btouch_zh_TW.ts
+                linguist-ts/btouch_zh_TW.ts \
+                linguist-ts/btouch_hr.ts \
+                linguist-ts/btouch_hu.ts \
+                linguist-ts/btouch_sl.ts \
+                linguist-ts/btouch_el.ts \
+                linguist-ts/btouch_pl.ts \
+                linguist-ts/btouch_tr.ts
