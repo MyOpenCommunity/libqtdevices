@@ -4,138 +4,138 @@
 <context>
     <name>AlarmClock</name>
     <message>
-        <source>once</source>
-        <translation type="unfinished">una volta</translation>
-    </message>
-    <message>
         <source>always</source>
-        <translation type="unfinished">sempre</translation>
+        <translation>sempre</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation type="unfinished">lun-ven</translation>
+        <translation>lun-ven</translation>
+    </message>
+    <message>
+        <source>once</source>
+        <translation>una volta</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation type="unfinished">sab-dom</translation>
+        <translation>sab-dom</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
-        <source>technical</source>
-        <translation type="unfinished">tecnico</translation>
+        <source>anti-panic</source>
+        <translation>antipanico</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation type="unfinished">intrusione</translation>
+        <translation>Intrusione</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation type="unfinished">manomissione</translation>
+        <translation>manomissione</translation>
     </message>
     <message>
-        <source>anti-panic</source>
-        <translation type="unfinished">antipanico</translation>
+        <source>technical</source>
+        <translation>tecnico</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
+        <source>High brightness</source>
+        <translation>Luminosità Alta</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosità Bassa</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosità Normale</translation>
     </message>
     <message>
-        <source>High brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation type="unfinished">Premere la croce</translation>
+        <translation>Premere la croce</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation type="unfinished">Premere il pulsante OK</translation>
+        <translation>Premere il pulsante OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
-        <source>Clean Screen</source>
-        <translation type="unfinished"></translation>
+        <source>Brightness</source>
+        <translation>Luminosità</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Calibrazione</translation>
     </message>
     <message>
-        <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Clean Screen</source>
+        <translation>Pulisci Schermo</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva Schermo</translation>
     </message>
 </context>
 <context>
     <name>EnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation type="unfinished"></translation>
+        <translation>Consumo</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation type="unfinished"></translation>
+        <translation>Produzione</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
-        <source>/hours</source>
-        <translation type="unfinished"></translation>
+        <source>/days</source>
+        <translation>/giorni</translation>
     </message>
     <message>
-        <source>Hour</source>
-        <translation type="unfinished"></translation>
+        <source>/hours</source>
+        <translation>/ore</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Month</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/days</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Day</source>
-        <translation type="unfinished"></translation>
+        <translation>/mesi</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation type="unfinished"></translation>
+        <translation>Cumulativo</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Attuale</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Media Giornaliera</translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation>Giorno</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Ora</translation>
+    </message>
+    <message>
+        <source>Month</source>
+        <translation>Mese</translation>
     </message>
 </context>
 <context>
@@ -149,34 +149,46 @@
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation type="unfinished">PASSWORD:</translation>
+        <translation>PASSWORD:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
-        <source>Mac</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subnet mask</source>
-        <translation type="unfinished"></translation>
+        <source>DNS</source>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation type="unfinished"></translation>
+        <translation>Gateway</translation>
     </message>
     <message>
-        <source>DNS</source>
-        <translation type="unfinished"></translation>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Mac</source>
+        <translation>Mac</translation>
+    </message>
+    <message>
+        <source>Subnet mask</source>
+        <translation>Subnet mask</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
+    <message>
+        <source>Album:</source>
+        <translation>Album:</translation>
+    </message>
+    <message>
+        <source>Artist:</source>
+        <translation>Artista:</translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation>Durata:</translation>
+    </message>
     <message>
         <source>of</source>
         <translation>di</translation>
@@ -185,75 +197,35 @@
         <source>Track:</source>
         <translation>Brano:</translation>
     </message>
-    <message>
-        <source>Artist:</source>
-        <translation>Artista:</translation>
-    </message>
-    <message>
-        <source>Album:</source>
-        <translation>Album:</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation>Durata:</translation>
-    </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
-        <source>Preset</source>
-        <translation type="obsolete">Preset</translation>
-    </message>
-    <message>
-        <source>Treble</source>
-        <translation>Alti</translation>
+        <source>Balance</source>
+        <translation>Bilanciamento</translation>
     </message>
     <message>
         <source>Bass</source>
         <translation>Bassi</translation>
     </message>
     <message>
-        <source>Balance</source>
-        <translation>Bilanciamento</translation>
-    </message>
-    <message>
         <source>Loud</source>
         <translation>Loud</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Alti</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
-        <source>Normal</source>
-        <translation>Normale</translation>
-    </message>
-    <message>
-        <source>Dance</source>
-        <translation>Dance</translation>
-    </message>
-    <message>
-        <source>Pop</source>
-        <translation>Pop</translation>
-    </message>
-    <message>
-        <source>Rock</source>
-        <translation>Rock</translation>
-    </message>
-    <message>
         <source>Classical</source>
         <translation>Classical</translation>
     </message>
     <message>
-        <source>Jazz</source>
-        <translation type="obsolete">Jazz</translation>
-    </message>
-    <message>
-        <source>Party</source>
-        <translation>Party</translation>
-    </message>
-    <message>
-        <source>Soft</source>
-        <translation>Soft</translation>
+        <source>Dance</source>
+        <translation>Dance</translation>
     </message>
     <message>
         <source>Full Bass</source>
@@ -264,39 +236,59 @@
         <translation>Full Treble</translation>
     </message>
     <message>
+        <source>Normal</source>
+        <translation>Normale</translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation>Party</translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation>Pop</translation>
+    </message>
+    <message>
         <source>Preset</source>
         <translation>Preset</translation>
     </message>
     <message>
+        <source>Rock</source>
+        <translation>Rock</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>Soft</translation>
+    </message>
+    <message>
         <source>Techno</source>
-        <translation type="unfinished"></translation>
+        <translation>Techno</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
-        <source>No screensaver</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Balls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Bolle</translation>
     </message>
     <message>
         <source>Deform</source>
-        <translation type="unfinished"></translation>
+        <translation>Deform</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Linea</translation>
+    </message>
+    <message>
+        <source>No screensaver</source>
+        <translation>No Screensaver</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>Testo</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>Tempo</translation>
     </message>
 </context>
 <context>
@@ -313,61 +305,38 @@
 <context>
     <name>StopngoPage</name>
     <message>
-        <source>Self-recluser</source>
-        <translation type="obsolete">Riarmo</translation>
-    </message>
-    <message>
-        <source>Test</source>
-        <translation>Verifica</translation>
+        <source>Enable</source>
+        <translation>Abilita</translation>
     </message>
     <message>
         <source>Self-test</source>
         <translation>Autotest</translation>
     </message>
     <message>
-        <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <source>Test</source>
+        <translation>Verifica</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>antintrusione</name>
-    <message>
-        <source>technical</source>
-        <translation type="obsolete">tecnico</translation>
-    </message>
-    <message>
-        <source>intrusion</source>
-        <translation type="obsolete">intrusione</translation>
-    </message>
-    <message>
-        <source>tamper</source>
-        <translation type="obsolete">manomissione</translation>
-    </message>
-    <message>
-        <source>anti-panic</source>
-        <translation type="obsolete">antipanico</translation>
+        <translation>Ultimi 12 mesi</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
-        <source>Unknown</source>
-        <translation>Sconosciuto</translation>
+        <source>Door lock</source>
+        <translation>Serratura</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Luce scale</translation>
+        <translation>Luce scala</translation>
     </message>
     <message>
-        <source>Door lock</source>
-        <translation>Serratura</translation>
+        <source>Unknown</source>
+        <translation>Sconosciuto</translation>
     </message>
 </context>
 <context>
@@ -380,12 +349,12 @@
 <context>
     <name>device_condition_aux</name>
     <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-    <message>
         <source>OFF</source>
         <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
@@ -405,12 +374,12 @@
 <context>
     <name>device_condition_light_status</name>
     <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-    <message>
         <source>OFF</source>
         <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
@@ -422,32 +391,6 @@
     <message>
         <source>ON</source>
         <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>sveglia</name>
-    <message>
-        <source>once</source>
-        <translation type="obsolete">una volta</translation>
-    </message>
-    <message>
-        <source>always</source>
-        <translation type="obsolete">sempre</translation>
-    </message>
-    <message>
-        <source>mon-fri</source>
-        <translation type="obsolete">lun-ven</translation>
-    </message>
-    <message>
-        <source>sat-sun</source>
-        <translation type="obsolete">sab-dom</translation>
-    </message>
-</context>
-<context>
-    <name>tastiera</name>
-    <message>
-        <source>PASSWORD:</source>
-        <translation type="obsolete">PASSWORD:</translation>
     </message>
 </context>
 </TS>
