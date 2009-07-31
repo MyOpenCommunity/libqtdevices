@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -312,7 +314,7 @@
     <name>StopngoPage</name>
     <message>
         <source>Self-recluser</source>
-        <translation>اعادة ضبط ذاتي</translation>
+        <translation type="obsolete">اعادة ضبط ذاتي</translation>
     </message>
     <message>
         <source>Test</source>
@@ -321,6 +323,10 @@
     <message>
         <source>Self-test</source>
         <translation>اختبار ذاتي</translation>
+    </message>
+    <message>
+        <source>Enable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
