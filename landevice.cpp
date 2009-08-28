@@ -69,13 +69,8 @@ void LanDevice::requestDNS2() const
 	sendRequest(DIM_DNS2);
 }
 
-void LanDevice::frame_rx_handler(char *frame)
+void LanDevice::manageFrame(OpenMsg &msg)
 {
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-
-	if (who.toInt() != msg.who())
-		return;
 
 	int what = msg.what();
 	int what_args = msg.whatArgCnt();
@@ -87,7 +82,7 @@ void LanDevice::frame_rx_handler(char *frame)
 		what == DIM_GATEWAY || what == DIM_DNS1 || what == DIM_DNS2 ||
 		what == DIM_STATUS)
 	{
-		qDebug("LanDevice::frame_rx_handler -> frame read:%s", frame);
+		qDebug("LanDevice::manageFrame -> frame read:%s", msg.frame_open);
 
 		switch (what)
 		{

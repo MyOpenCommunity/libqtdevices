@@ -19,6 +19,9 @@
 #include <QVariant>
 
 
+class OpenMsg;
+
+
 /**
  * \class LanDevice
  *
@@ -42,6 +45,8 @@ public:
 	void requestDNS1() const;
 	void requestDNS2() const;
 
+	virtual void manageFrame(OpenMsg &msg);
+
 	enum Type
 	{
 		DIM_STATUS = 9,
@@ -53,8 +58,9 @@ public:
 		DIM_DNS2 = 52
 	};
 
+
+
 public slots:
-	virtual void frame_rx_handler(char *);
 	void requestStatus() const;
 
 private:

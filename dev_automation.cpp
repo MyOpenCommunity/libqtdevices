@@ -22,12 +22,9 @@ void PPTStatDevice::requestStatus() const
 	sendInit(createStatusRequestOpen(who, where));
 }
 
-void PPTStatDevice::frame_rx_handler(char *frame)
+void PPTStatDevice::manageFrame(OpenMsg &msg)
 {
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-
-	if (who.toInt() != msg.who() || where.toInt() != msg.where())
+	if (where.toInt() != msg.where())
 		return;
 
 	int what = msg.what();

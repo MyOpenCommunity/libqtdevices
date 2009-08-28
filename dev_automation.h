@@ -3,6 +3,9 @@
 
 #include "device.h"
 
+class OpenMsg;
+
+
 /**
  * \class PPTStatDevice
  *
@@ -21,9 +24,7 @@ public:
 		DIM_STATUS
 	};
 
-public slots:
-	//! receive a frame
-	void frame_rx_handler(char *frame);
+	virtual void manageFrame(OpenMsg &msg);
 };
 
 #endif // DEV_AUTOMATION_H

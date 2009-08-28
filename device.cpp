@@ -635,16 +635,12 @@ void aux_device::init(bool force)
 	sendInit(msg.frame_open);
 }
 
-void aux_device::frame_rx_handler(char *frame)
+void aux_device::manageFrame(OpenMsg &msg)
 {
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-
-	if (who.toInt() != msg.who() || where.toInt() != msg.where())
+	if (where.toInt() != msg.where())
 		return;
 
-	qDebug("aux_device::frame_rx_handler");
-	qDebug("frame read:%s", frame);
+	qDebug("aux_device::manageFrame -> frame read:%s", msg.frame_open);
 
 	if (msg.IsNormalFrame())
 	{

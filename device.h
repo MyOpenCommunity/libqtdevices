@@ -17,6 +17,7 @@
 class frame_interpreter;
 class Client;
 class BtTime;
+class OpenMsg;
 
 typedef QHash<int, QVariant> StatusList;
 
@@ -419,8 +420,7 @@ public:
 	aux_device(QString w, bool p=false, int g=-1);
 	virtual void init(bool force = false);
 
-public slots:
-	virtual void frame_rx_handler(char *);
+	virtual void manageFrame(OpenMsg &msg);
 
 private:
 	stat_var status;

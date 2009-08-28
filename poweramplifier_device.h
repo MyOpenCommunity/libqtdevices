@@ -15,6 +15,8 @@
 
 #include "device.h"
 
+class OpenMsg;
+
 
 /**
  * \class PowerAmplifierDevice
@@ -65,9 +67,7 @@ public:
 	void loudOn() const;
 	void loudOff() const;
 
-public slots:
-	//! receive a frame
-	void frame_rx_handler(char *frame);
+	virtual void manageFrame(OpenMsg &msg);
 
 private:
 	// The location is normally used inside 'where' so we don't need to store it.

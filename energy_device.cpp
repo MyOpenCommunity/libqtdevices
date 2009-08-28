@@ -150,11 +150,9 @@ void EnergyDevice::requestCumulativeYearGraph() const
 		requestCumulativeMonth(curr.addMonths(i * -1), true); // we compress the request of the graph data
 }
 
-void EnergyDevice::frame_rx_handler(char *frame)
+void EnergyDevice::manageFrame(OpenMsg &msg)
 {
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-	if (who.toInt() != msg.who() || where.toInt() != msg.where())
+	if (where.toInt() != msg.where())
 		return;
 
 	int what = msg.what();
@@ -168,7 +166,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH)
 	{
 		assert(msg.whatArgCnt() > 0);
-		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
+		qDebug("EnergyDevice::manageFrame -> frame read:%s", msg.frame_open);
 		int num_frame = msg.whatArgN(0);
 		// clear the buffer if the first frame of a new graph arrives
 		if (num_frame == 1 && msg.whatArgCnt() > 1)
@@ -178,19 +176,19 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		{
 			// We assume that the frames came in correct (sequential) order
 			if (num_frame > 0 && num_frame < 18)
-				buffer_frame.append(frame);
+				buffer_frame.append(msg.frame_open);
 			parseDailyAverageGraph(buffer_frame, v);
 		}
 		else if (what == DIM_DAY_GRAPH)
 		{
 			if (num_frame > 0 && num_frame < 10)
-				buffer_frame.append(frame);
+				buffer_frame.append(msg.frame_open);
 			parseCumulativeDayGraph(buffer_frame, v);
 		}
 		else if (what == DIM_CUMULATIVE_MONTH_GRAPH)
 		{
 			if (num_frame > 0 && num_frame < 22)
-				buffer_frame.append(frame);
+				buffer_frame.append(msg.frame_open);
 			parseCumulativeMonthGraph(buffer_frame, v);
 		}
 		else
@@ -215,7 +213,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			// The cumulative day value must be extracted from graph frames
 			// only for previous days, not the current one (for that we have a specific frame)
 			if (QDate::currentDate() != getDateFromFrame(msg))
-				fillCumulativeDay(status_list, buffer_frame.at(8), frame);
+				fillCumulativeDay(status_list, buffer_frame.at(8), msg.frame_open);
 		}
 
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
