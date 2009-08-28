@@ -10,6 +10,9 @@
 
 #include "openclient.h"
 #include "generic_functions.h" // rearmWDT
+#include "frame_receiver.h"
+
+#include <openmsg.h>
 
 #include <QDebug>
 
@@ -146,7 +149,8 @@ void Client::manageFrame(QByteArray frame)
 			last_msg_open_read.CreateMsgOpen(frame.data(),frame.size());
 			Open_read.setSingleShot(true);
 			Open_read.start(1000);
-			emit frameIn(frame.data());
+			dispatchFrame(frame);
+			emit frameIn(frame.data()); // for compatibility reason
 		}
 		else
 			qDebug("Frame Open duplicated");
@@ -167,6 +171,41 @@ void Client::manageFrame(QByteArray frame)
 		}
 	}
 }
+
+void Client::dispatchFrame(QString frame)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame.toAscii().data(), frame.length());
+	if (subscribe_list.contains(msg.who()))
+	{
+		QList<FrameReceiver*> &l = subscribe_list[msg.who()];
+		for (int i = 0; i < l.size(); ++i)
+			l[i]->manageFrame(msg);
+	}
+}
+
+void Client::subscribe(FrameReceiver *obj, int who)
+{
+	subscribe_list[who].append(obj);
+}
+
+void Client::unsubscribe(FrameReceiver *obj)
+{
+	// A frame receiver can be subscribed for one or more "who".
+	QMutableHashIterator<int, QList<FrameReceiver*> > it(subscribe_list);
+	while (it.hasNext())
+	{
+		it.next();
+		QMutableListIterator<FrameReceiver*> it_list(it.value());
+		while (it_list.hasNext())
+		{
+			it_list.next();
+			if (it_list.value() == obj)
+				it_list.remove();
+		}
+	}
+}
+
 
 int Client::socketFrameRead()
 {

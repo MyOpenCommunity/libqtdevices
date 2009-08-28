@@ -90,6 +90,7 @@ HEADERS += actuators.h \
            feedparser.h \
            fontmanager.h \
            frame_interpreter.h \
+	   frame_receiver.h \
            generic_functions.h \
            genpage.h \
            homepage.h \
@@ -137,7 +138,7 @@ HEADERS += actuators.h \
            transitionwidget.h \
            version.h \
            videoentryphone.h \
-		   xml_functions.h
+           xml_functions.h
 
 SOURCES += actuators.cpp \
            alarmclock.cpp \
@@ -189,6 +190,7 @@ SOURCES += actuators.cpp \
            feedparser.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
+	   frame_receiver.cpp \
            generic_functions.cpp \
            genpage.cpp \
            homepage.cpp \

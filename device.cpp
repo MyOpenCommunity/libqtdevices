@@ -63,8 +63,7 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 	refcount = 0;
 	cmd_compressor = 0;
 	req_compressor = 0;
-	assert(client_monitor && "Client monitor not set!");
-	connect(client_monitor, SIGNAL(frameIn(char *)), SLOT(frame_rx_handler(char *)));
+	client_monitor->subscribe(this, who.toInt());
 }
 
 void device::sendFrame(QString frame) const
@@ -231,6 +230,8 @@ device::~device()
 {
 	while (!stat.isEmpty())
 		delete stat.takeFirst();
+
+	client_monitor->unsubscribe(this);
 }
 
 void device::frame_rx_handler(char *s)

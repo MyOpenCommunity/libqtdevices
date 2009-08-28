@@ -4,6 +4,7 @@
 #define __DEVICE_H__
 
 #include "device_status.h"
+#include "frame_receiver.h"
 
 #include <QDateTime>
 #include <QVariant>
@@ -42,7 +43,7 @@ signals:
 
 
 //! Generic device
-class device : public QObject
+class device : public QObject, FrameReceiver
 {
 friend class TestDevice;
 Q_OBJECT
