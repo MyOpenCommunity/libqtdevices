@@ -159,9 +159,7 @@ call_notifier::call_notifier(QWidget *parent, postoExt *ms) : QFrame(parent)
 	myTimer = new QTimer(this);
 	myTimer->setSingleShot(true);
 	connect(myTimer, SIGNAL(timeout()), this, SLOT(close()));
-	// Pass incoming frames on to device
-	connect(this, SIGNAL(frame_available(char *)),
-		station_dev, SLOT(frame_rx_handler(char *)));
+
 	// Get status changed events
 	connect(station_dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
@@ -194,11 +192,10 @@ void call_notifier::showFullScreen()
 	myTimer->start(30000);
 }
 
-// FIXME: direct connection ?
 void call_notifier::frame_available_handler(char *f)
 {
 	qDebug("call_notifier::frame_available_handler()");
-	emit frame_available(f);
+	station_dev->frame_rx_handler(f);
 }
 
 void call_notifier::stairlight_pressed()

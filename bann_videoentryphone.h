@@ -119,8 +119,6 @@ private:
 	//! 30secs idle timer
 	QTimer *myTimer;
 signals:
-	//! A frame is available
-	void frame_available(char *);
 	//! Frame was interesting for us
 	void frame_captured(call_notifier *);
 	//! Emitted when window is closed
