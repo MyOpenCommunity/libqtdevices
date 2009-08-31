@@ -115,7 +115,6 @@ void sottoMenu::appendBanner(banner *b)
 void sottoMenu::connectLastBanner()
 {
 	banner *last = elencoBanner.last();
-	connect(this, SIGNAL(gestFrame(char*)), last, SLOT(gestFrame(char*)));
 	connect(last, SIGNAL(richStato(QString)), this, SIGNAL(richStato(QString)));
 }
 

@@ -69,7 +69,6 @@ private:
 
 signals:
 	void actSrcChanged(int, int);
-	void gesFrame(char *);
 };
 
 

@@ -141,12 +141,6 @@ private slots:
 
 signals:
 	/*!
-	\brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
-	*/
-	// NOTE: the signal gestFrame is automatically connected with the slot "gestFrame" on each banner.
-	void gestFrame(char*);
-
-	/*!
 	\brief Open ack received
 	*/
 	void openAckRx();
