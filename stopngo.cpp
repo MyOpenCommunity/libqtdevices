@@ -378,7 +378,7 @@ void StopngoPage::AddItems()
 	labelAutoArm->setFrameStyle(QFrame::NoFrame);
 	labelAutoArm->setFont(bt_global::font->get(FontManager::TEXT));
 	labelAutoArm->setAlignment(Qt::AlignCenter|Qt::AlignTop);
-	labelAutoArm->setText(tr("Self-recluser"));
+	labelAutoArm->setText(tr("Enable"));
 	labelAutoArm->show();
 	//Draw the auto arm button
 	autoArmBut = new BtButton(this);
