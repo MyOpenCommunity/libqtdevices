@@ -61,7 +61,7 @@ BtMain::BtMain()
 	client_comandi = new Client(Client::COMANDI);
 	client_richieste = new Client(Client::RICHIESTE);
 	banner::setClients(client_comandi, client_richieste);
-	Page::setClients(client_comandi, client_richieste);
+	Page::setClients(client_comandi, client_richieste, client_monitor);
 	Page::setMainWindow(&main_window);
 	main_window.showFullScreen();
 	main_window.setFixedSize(MAX_WIDTH, MAX_HEIGHT);

@@ -44,7 +44,7 @@ public:
 	// TODO: needed for sound diffusion in AlarmClock. To be removed
 	virtual void forceDraw() { }
 
-	static void setClients(Client *command, Client *request);
+	static void setClients(Client *command, Client *request, Client *monitor);
 
 	// A global way to send frames/init requests. Do not use these directly, prefer using
 	// devices specific methods, unless you have to send frames without reading responses.
@@ -63,6 +63,7 @@ public slots:
 	virtual void showPage();
 
 protected:
+	static Client *client_monitor;
 	// Init the transition widget with the current page
 	void initTransition();
 	// Let's start the transition

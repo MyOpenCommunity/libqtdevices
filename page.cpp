@@ -22,6 +22,7 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 // Inizialization of static member
 Client *Page::client_comandi = 0;
 Client *Page::client_richieste = 0;
+Client *Page::client_monitor = 0;
 QStackedWidget *Page::main_window = 0;
 TransitionWidget *Page::transition_widget = 0;
 bool Page::block_transitions = false;
@@ -119,10 +120,11 @@ void Page::sendInit(QString frame) const
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }
 
-void Page::setClients(Client *command, Client *request)
+void Page::setClients(Client *command, Client *request, Client *monitor)
 {
 	client_comandi = command;
 	client_richieste = request;
+	client_monitor = monitor;
 }
 
 void Page::forceClosed()
