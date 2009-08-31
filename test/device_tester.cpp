@@ -1,6 +1,7 @@
 #include "device_tester.h"
 
 #include <device.h>
+#include <openmsg.h>
 
 #include <QStringList>
 #include <QVariant>
@@ -23,7 +24,11 @@ void DeviceTester::sendFrames(const QStringList& frames)
 {
 	spy.clear();
 	for (int i = 0; i < frames.size(); ++i)
-		dev->frame_rx_handler(frames[i].toAscii().data());
+	{
+		OpenMsg msg;
+		msg.CreateMsgOpen(frames[i].toAscii().data(), frames[i].length());
+		dev->manageFrame(msg);
+	}
 }
 
 void DeviceTester::checkSignals(QString frame, int num_signals)

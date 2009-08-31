@@ -31,6 +31,7 @@ HEADERS += device_tester.h \
            ../device.h \
            ../device_status.h \
            ../frame_interpreter.h \
+           ../frame_receiver.h \
            ../openclient.h \
            ../bttime.h \
            ../generic_functions.h \
@@ -52,6 +53,7 @@ SOURCES += test_main.cpp \
            ../device.cpp \
            ../device_status.cpp \
            ../frame_interpreter.cpp \
+           ../frame_receiver.cpp \
            ../openclient.cpp \
            ../bttime.cpp \
            ../generic_functions.cpp \
