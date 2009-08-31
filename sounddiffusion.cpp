@@ -17,7 +17,6 @@
 #include "sorgentiradio.h"
 #include "poweramplifier.h"
 #include "icondispatcher.h" //bt_global::icons_cache
-#include "openclient.h" // client_monitor
 
 #include <openmsg.h>
 
@@ -229,10 +228,6 @@ SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
 	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
-SoundDiffusion::~SoundDiffusion()
-{
-	client_monitor->unsubscribe(this);
-}
 
 void SoundDiffusion::drawLine()
 {
@@ -251,8 +246,8 @@ void SoundDiffusion::init(const QDomNode &config_node)
 	amplificatori = new AmpliContainer(this, config_node);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
 	connect(this, SIGNAL(gesFrame(char *)), amplificatori, SIGNAL(gestFrame(char *)));
-	client_monitor->subscribe(this, 16);
-	client_monitor->subscribe(this, 22);
+	subscribe_monitor(16);
+	subscribe_monitor(22);
 }
 
 void SoundDiffusion::setSorgenti(AudioSources *s)

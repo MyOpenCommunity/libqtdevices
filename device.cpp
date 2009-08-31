@@ -13,7 +13,6 @@
 // Inizialization of static member
 Client *device::client_comandi = 0;
 Client *device::client_richieste = 0;
-Client *device::client_monitor = 0;
 
 
 FrameCompressor::FrameCompressor(int timeout, int w)
@@ -63,7 +62,7 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 	refcount = 0;
 	cmd_compressor = 0;
 	req_compressor = 0;
-	client_monitor->subscribe(this, who.toInt());
+	subscribe_monitor(who.toInt());
 }
 
 void device::sendFrame(QString frame) const
@@ -102,11 +101,10 @@ void device::sendCompressedInit(const QString &frame) const
 		sendInit(frame);
 }
 
-void device::setClients(Client *command, Client *request, Client *monitor)
+void device::setClients(Client *command, Client *request)
 {
 	client_comandi = command;
 	client_richieste = request;
-	client_monitor = monitor;
 }
 
 void device::installFrameCompressor(int timeout, int what)
@@ -230,8 +228,6 @@ device::~device()
 {
 	while (!stat.isEmpty())
 		delete stat.takeFirst();
-
-	client_monitor->unsubscribe(this);
 }
 
 void device::frame_rx_handler(char *s)

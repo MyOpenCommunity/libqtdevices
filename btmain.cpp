@@ -18,6 +18,7 @@
 #include "pagefactory.h" // getPage
 #include "banner.h"
 #include "transitionwidget.h"
+#include "frame_receiver.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -60,15 +61,16 @@ BtMain::BtMain()
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
 	client_richieste = new Client(Client::RICHIESTE);
+	FrameReceiver::setClientMonitor(client_monitor);
 	banner::setClients(client_comandi, client_richieste);
-	Page::setClients(client_comandi, client_richieste, client_monitor);
+	Page::setClients(client_comandi, client_richieste);
 	Page::setMainWindow(&main_window);
 	main_window.showFullScreen();
 	main_window.setFixedSize(MAX_WIDTH, MAX_HEIGHT);
 	// TODO: this ugly workaround is needed because the QStackedWidget in some ways
 	// invalidate the first widget inserted. FIX it asap!
 	main_window.addWidget(new QWidget);
-	device::setClients(client_comandi, client_richieste, client_monitor);
+	device::setClients(client_comandi, client_richieste);
 	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
 

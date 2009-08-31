@@ -5,7 +5,6 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "allarme.h"
 #include "btmain.h" // bt_global::btmain
-#include "openclient.h" // client_monitor
 
 #include <openmsg.h>
 
@@ -46,7 +45,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
 			SLOT(requestStatusIfCurrentWidget(Page*)));
-	client_monitor->subscribe(this, 5);
+	subscribe_monitor(5);
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -106,7 +105,6 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 Antintrusion::~Antintrusion()
 {
 	doClearAlarms();
-	client_monitor->unsubscribe(this);
 }
 
 void Antintrusion::IsParz(bool ab)

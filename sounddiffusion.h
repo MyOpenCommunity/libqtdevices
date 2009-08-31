@@ -82,7 +82,6 @@ Q_OBJECT
 public:
 	SoundDiffusion(const QDomNode &config_node);
 	SoundDiffusion(AudioSources *s, const QDomNode &config_node);
-	~SoundDiffusion();
 	/*!
 	 * \brief Sets the row's number.
 	 */

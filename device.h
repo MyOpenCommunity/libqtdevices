@@ -68,7 +68,7 @@ public:
 	QString get_key();
 	virtual ~device();
 
-	static void setClients(Client *command, Client *request, Client *monitor);
+	static void setClients(Client *command, Client *request);
 	void installFrameCompressor(int timeout, int what = -1);
 
 signals:
@@ -126,7 +126,6 @@ private:
 	FrameCompressor *req_compressor;
 
 	static Client *client_comandi;
-	static Client *client_monitor;
 	static Client *client_richieste;
 };
 
