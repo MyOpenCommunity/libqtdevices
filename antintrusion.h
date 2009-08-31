@@ -147,10 +147,6 @@ private slots:
 	void requestStatusIfCurrentWidget(Page *curr);
 
 signals:
-/*!
-  \brief emitted when a open frame comes from the plant so impianto-zone-allarmi can analyze it
-*/
-	void gestFrame(char*);
 	void openAckRx();
 	void openNakRx();
 

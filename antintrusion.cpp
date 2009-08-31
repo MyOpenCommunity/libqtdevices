@@ -33,8 +33,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
 	curr_alarm = -1;
 	connect(zone,SIGNAL(Closed()), this, SIGNAL(Closed()));
-	connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
-	connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
 	connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
 	connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
 	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
@@ -204,7 +202,6 @@ void Antintrusion::inizializza()
 
 void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	emit gestFrame(msg.frame_open);
 	bool aggiorna = false;
 
 
