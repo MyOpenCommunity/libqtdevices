@@ -195,7 +195,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			// to ensure that values displayed (by homePage or its child pages)
 			// is in according with saved values.
 			Home = new homePage(pagemenu_home);
-			QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), Home, SLOT(gestFrame(char *)));
 
 			QDomNode home_node = getChildWithName(displaypages, "homepage");
 			if (getTextChild(home_node, "isdefined").toInt())

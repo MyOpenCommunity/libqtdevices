@@ -7,7 +7,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "temperatureviewer.h"
 
-#include <openwebnet.h>
+#include <openmsg.h>
 
 #include <QDomNode>
 #include <QDebug>
@@ -94,6 +94,7 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 	box_text->setGeometry(DIM_BUT_BACK, 240, MAX_WIDTH - DIM_BUT_BACK, 20);
 	box_text->setFrameStyle(QFrame::Plain);
 	box_text->setLineWidth(3);
+	subscribe_monitor(who.toInt());
 }
 
 void SpecialPage::clickedButton()
@@ -114,15 +115,11 @@ void SpecialPage::releasedButton()
 	sendFrame(createMsgOpen(who, "0", where));
 }
 
-void SpecialPage::gestFrame(char *frame)
+void SpecialPage::manageFrame(OpenMsg &msg)
 {
-	temp_viewer->gestFrame(frame);
-	openwebnet msg_open;
-	msg_open.CreateMsgOpen(frame, strstr(frame,"##") - frame + 2);
-
-	if (who == QString(msg_open.Extract_chi()) && type == CYCLIC)
-		if (where == QString(msg_open.Extract_dove()))
-			what = QString(msg_open.Extract_cosa());
+	if (who.toInt() == msg.who() && type == CYCLIC)
+		if (where == QString(msg.Extract_dove()))
+			what = QString(msg.Extract_cosa());
 }
 
 void SpecialPage::inizializza()

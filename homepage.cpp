@@ -60,8 +60,3 @@ void homePage::inizializza()
 	temp_viewer->inizializza();
 }
 
-void homePage::gestFrame(char* frame)
-{
-	temp_viewer->gestFrame(frame);
-}
-
