@@ -99,7 +99,7 @@ signals:
 	void frameIn(char*);
 	void rispStato(char*);
 	void monitorSu();
-	void frameToAutoread(char*);
+
 	//! Openwebnet ack received
 	void openAckRx();
 	//! Openwebnet nak received

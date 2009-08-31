@@ -71,7 +71,7 @@ BtMain::BtMain()
 	// invalidate the first widget inserted. FIX it asap!
 	main_window.addWidget(new QWidget);
 	device::setClients(client_comandi, client_richieste);
-	connect(client_comandi, SIGNAL(frameToAutoread(char*)), client_monitor,SIGNAL(frameIn(char*)));
+
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
 
 	monitor_ready = false;
