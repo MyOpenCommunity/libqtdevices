@@ -253,7 +253,6 @@ void BtMain::monitorReady()
 void BtMain::init()
 {
 	qDebug("BtMain::init()");
-	connect(client_monitor,SIGNAL(frameIn(char *)),version,SLOT(gestFrame(char *)));
 
 	Home->inizializza();
 	if (version)

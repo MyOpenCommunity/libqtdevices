@@ -2,7 +2,7 @@
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
 #include "fontmanager.h" // bt_global::font
 
-#include <openwebnet.h>
+#include <openmsg.h>
 
 #include <QStringList>
 #include <QVariant> // setProperty
@@ -33,39 +33,38 @@ Version::Version()
 
 	box_text->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	indDisp = 0;
+	subscribe_monitor(13);
+	subscribe_monitor(1013);
 }
 
-void Version::gestFrame(char* frame)
+void Version::manageFrame(OpenMsg &msg)
 {
-	openwebnet msg_open;
-
 	bool reload = false;
-	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 
-	if (!strcmp(msg_open.Extract_chi(),"13"))
+	if (msg.who() == 13)
 	{
-		if (!strcmp(msg_open.Extract_grandezza(),"16"))
+		if (!strcmp(msg.Extract_grandezza(),"16"))
 		{
-			vers = atoi(msg_open.Extract_valori(0));
-			release = atoi(msg_open.Extract_valori(1));
-			build = atoi(msg_open.Extract_valori(2));
+			vers = atoi(msg.Extract_valori(0));
+			release = atoi(msg.Extract_valori(1));
+			build = atoi(msg.Extract_valori(2));
 			reload = true;
 		}
 	}
-	if (!strcmp(msg_open.Extract_chi(),"1013"))
+	else // who == 1013
 	{
-		if (!strcmp(msg_open.Extract_grandezza(),"6"))
+		if (!strcmp(msg.Extract_grandezza(),"6"))
 		{
-			pic_version = atoi(msg_open.Extract_valori(0));
-			pic_release = atoi(msg_open.Extract_valori(1));
-			pic_build = atoi(msg_open.Extract_valori(2));
+			pic_version = atoi(msg.Extract_valori(0));
+			pic_release = atoi(msg.Extract_valori(1));
+			pic_build = atoi(msg.Extract_valori(2));
 			reload = true;
 		}
-		if (!strcmp(msg_open.Extract_grandezza(),"3"))
+		if (!strcmp(msg.Extract_grandezza(),"3"))
 		{
-			hw_version = atoi(msg_open.Extract_valori(0));
-			hw_release = atoi(msg_open.Extract_valori(1));
-			hw_build = atoi(msg_open.Extract_valori(2));
+			hw_version = atoi(msg.Extract_valori(0));
+			hw_release = atoi(msg.Extract_valori(1));
+			hw_build = atoi(msg.Extract_valori(2));
 			reload = true;
 			qDebug("presa vers HW = %d.%d.%d",hw_version, hw_release, hw_build);
 		}
