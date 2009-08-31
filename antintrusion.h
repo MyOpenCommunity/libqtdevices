@@ -12,8 +12,9 @@
 #ifndef ANTINTRUSION_H
 #define ANTINTRUSION_H
 
-
+#include "frame_receiver.h"
 #include "page.h"
+
 
 #include <QString>
 #include <QTimer>
@@ -35,7 +36,7 @@ class QWidget;
   \author Davide
   \date lug 2005
 */
-class Antintrusion : public Page
+class Antintrusion : public Page, FrameReceiver
 {
 Q_OBJECT
 public:
@@ -70,14 +71,13 @@ public:
 */
 	void draw();
 
+	virtual void manageFrame(OpenMsg &msg);
+
 public slots:
 	void Parzializza();
 	void Parz();
 	void IsParz(bool);
-/*!
-  \brief analyzes the open frame coming from the plant. If there are an allarm is added to the queue; if the plant is inserted the alarm queue is resetted
-*/
-	void gesFrame(char*);
+
 /*!
   \brief if there are no allarms in the queue the button in the plant area which give the possibility to see the queue is hidden
 */

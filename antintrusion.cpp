@@ -5,8 +5,9 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "allarme.h"
 #include "btmain.h" // bt_global::btmain
+#include "openclient.h" // client_monitor
 
-#include <openwebnet.h> // class openwebnet
+#include <openmsg.h>
 
 #include <QDateTime>
 #include <QDebug>
@@ -45,6 +46,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
 			SLOT(requestStatusIfCurrentWidget(Page*)));
+	client_monitor->subscribe(this, 5);
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -104,6 +106,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 Antintrusion::~Antintrusion()
 {
 	doClearAlarms();
+	client_monitor->unsubscribe(this);
 }
 
 void Antintrusion::IsParz(bool ab)
@@ -201,74 +204,68 @@ void Antintrusion::inizializza()
 	connect(((impAnti *)impianto->getLast()), SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
 }
 
-void Antintrusion::gesFrame(char*frame)
+void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	emit gestFrame(frame);
-	openwebnet msg_open;
-	char aggiorna;
+	emit gestFrame(msg.frame_open);
+	bool aggiorna = false;
 
-	aggiorna = 0;
 
-	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-
-	if (!strcmp(msg_open.Extract_chi(),"5"))
+	if ((!strncmp(msg.Extract_cosa(),"12",2)) || (! strncmp(msg.Extract_cosa(),"15",2)) || \
+		(!strncmp(msg.Extract_cosa(),"16",2)) || (! strncmp(msg.Extract_cosa(),"17",2)))
 	{
-		if ((!strncmp(msg_open.Extract_cosa(),"12",2)) || (! strncmp(msg_open.Extract_cosa(),"15",2)) || \
-			(!strncmp(msg_open.Extract_cosa(),"16",2)) || (! strncmp(msg_open.Extract_cosa(),"17",2)))
+		QString descr;
+		char zona[3];
+		QString tipo = "Z";
+		allarme::altype t;
+
+		if  (!strncmp(msg.Extract_cosa(),"12",2) && !testoTecnico.isNull())
 		{
-			QString descr;
-			char zona[3];
-			QString tipo = "Z";
-			allarme::altype t;
-
-			if  (!strncmp(msg_open.Extract_cosa(),"12",2) && !testoTecnico.isNull())
-			{
-				descr = testoTecnico;
-				t = allarme::TECNICO;
-				tipo = "AUX";
-			}
-
-			if  (!strncmp(msg_open.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
-			{
-				descr = testoIntrusione;
-				t = allarme::INTRUSIONE;
-			}
-
-			if  (!strncmp(msg_open.Extract_cosa(),"16",2) && !testoManom.isNull())
-			{
-				descr = testoManom;
-				t = allarme::MANOMISSIONE;
-			}
-
-			if  (!strncmp(msg_open.Extract_cosa(),"17",2) && !testoPanic.isNull())
-			{
-				descr = testoPanic;
-				t = allarme::PANIC;
-			}
-
-			// To simulate old behaviour
-			descr.truncate(MAX_PATH);
-
-			strcpy(zona,msg_open.Extract_dove());
-
-			QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
-			QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
-			QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(&zona[1]);
-
-			descr += time;
-			descr.truncate(2 * MAX_PATH);
-
-			allarmi.append(new allarme(descr, NULL, ICON_DEL, t));
-			// The current alarm is the last alarm inserted
-			curr_alarm = allarmi.size() - 1;
-			allarme *curr = allarmi.at(curr_alarm);
-			connect(curr, SIGNAL(Back()), this, SLOT(closeAlarms()));
-			connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
-			connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
-			connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
-			aggiorna = 1;
+			descr = testoTecnico;
+			t = allarme::TECNICO;
+			tipo = "AUX";
 		}
+
+		if  (!strncmp(msg.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
+		{
+			descr = testoIntrusione;
+			t = allarme::INTRUSIONE;
+		}
+
+		if  (!strncmp(msg.Extract_cosa(),"16",2) && !testoManom.isNull())
+		{
+			descr = testoManom;
+			t = allarme::MANOMISSIONE;
+		}
+
+		if  (!strncmp(msg.Extract_cosa(),"17",2) && !testoPanic.isNull())
+		{
+			descr = testoPanic;
+			t = allarme::PANIC;
+		}
+
+		// To simulate old behaviour
+		descr.truncate(MAX_PATH);
+
+		strcpy(zona,msg.Extract_dove());
+
+		QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
+		QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
+		QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(&zona[1]);
+
+		descr += time;
+		descr.truncate(2 * MAX_PATH);
+
+		allarmi.append(new allarme(descr, NULL, ICON_DEL, t));
+		// The current alarm is the last alarm inserted
+		curr_alarm = allarmi.size() - 1;
+		allarme *curr = allarmi.at(curr_alarm);
+		connect(curr, SIGNAL(Back()), this, SLOT(closeAlarms()));
+		connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
+		connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
+		connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
+		aggiorna = true;
 	}
+
 	if (aggiorna)
 	{
 		qDebug("ARRIVATO ALLARME!!!!");
