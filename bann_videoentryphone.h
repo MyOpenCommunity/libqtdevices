@@ -2,6 +2,7 @@
 #define BANN_VIDEOENTRYPHONE_H
 
 #include "bann4_buttons.h"
+#include "frame_receiver.h"
 
 #include <QWidget>
 #include <QString>
@@ -126,14 +127,9 @@ signals:
 };
 
 
-class call_notifier_manager : public QObject
+class call_notifier_manager : public QObject, FrameReceiver
 {
 Q_OBJECT
-private:
-	//! Pointer to unknown station's notifier
-	call_notifier *unknown_station_notifier;
-	//! True when a frame comes from a known station
-	bool known_station;
 public:
 	//! Constructor
 	call_notifier_manager();
@@ -141,13 +137,14 @@ public:
 	void add_call_notifier(call_notifier *);
 	//! Set unknown call notifier
 	void set_unknown_call_notifier(call_notifier *);
+	void manageFrame(OpenMsg &msg);
+
 public slots:
 	//! A frame is available, pass it on to call notifiers
 	//void frame_available_handler(char *);
 	//! Invoked when a frame notifier has captured a frame
 	void frame_captured_handler(call_notifier *);
-	//! Classical gestFrame
-	void gestFrame(char *);
+
 signals:
 	//! Emitted when a frame is available
 	void frame_available(char *);
@@ -155,6 +152,13 @@ signals:
 	void frame_captured(call_notifier *);
 	//! Emitted when a call notifier window is closed
 	void call_notifier_closed(call_notifier *);
+
+private:
+	//! Pointer to unknown station's notifier
+	call_notifier *unknown_station_notifier;
+	//! True when a frame comes from a known station
+	bool known_station;
+
 };
 
 
