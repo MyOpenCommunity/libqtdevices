@@ -153,11 +153,6 @@ private slots:
 
 signals:
 	void closed(SoundDiffusion*);
-
-	/*!
-	 * \brief Emitted when there are \a Open \a frame incoming to make them arrive to amplifiers and sources.
-	 */
-	void gesFrame(char*);
 };
 
 

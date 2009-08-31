@@ -90,7 +90,6 @@ Page *getPage(int id)
 	{
 		MultiSoundDiff *p = new MultiSoundDiff(page_node);
 		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 
 		if (!bt_global::btmain->dm)

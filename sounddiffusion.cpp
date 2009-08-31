@@ -245,7 +245,6 @@ void SoundDiffusion::init(const QDomNode &config_node)
 
 	amplificatori = new AmpliContainer(this, config_node);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
-	connect(this, SIGNAL(gesFrame(char *)), amplificatori, SIGNAL(gestFrame(char *)));
 	subscribe_monitor(16);
 	subscribe_monitor(22);
 }
@@ -254,7 +253,6 @@ void SoundDiffusion::setSorgenti(AudioSources *s)
 {
 	sorgenti = s;
 	setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
 }
 
 void SoundDiffusion::setNumRighe(uchar n)
@@ -280,7 +278,6 @@ void SoundDiffusion::inizializza()
 
 void SoundDiffusion::manageFrame(OpenMsg &msg)
 {
-	emit gesFrame(msg.frame_open);
 	bool aggiorna = false;
 	int w;
 

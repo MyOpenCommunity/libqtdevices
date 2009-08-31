@@ -12,6 +12,7 @@
 #define SORGENTI_MEDIA_H
 
 #include "bannciclaz.h"
+#include "frame_receiver.h"
 #include "multimedia_source.h"
 
 #include <QStringList>
@@ -26,7 +27,7 @@ class QDomNode;
 /**
  * \brief This class is made to manage a multimedia source.
  */
-class BannerSorgenteMultimedia : public bannCiclaz
+class BannerSorgenteMultimedia : public bannCiclaz, FrameReceiver
 {
 Q_OBJECT
 public:
@@ -34,8 +35,8 @@ public:
 	virtual void inizializza(bool forza = false);
 	void set_status(bool stat);
 	bool get_status();
-public slots:
-	void gestFrame(char *);
+	virtual void manageFrame(OpenMsg &msg);
+
 private:
 	bool status;
 private slots:
@@ -59,8 +60,9 @@ public:
 	void setstatusAmb(int Amb, bool status);
 	bool statusAmb(int Amb);
 	bool get_status();
+	virtual void manageFrame(OpenMsg &msg);
+
 public slots:
-	void gestFrame(char *);
 	void attiva();
 	void addAmb(QString a);
 	void ambChanged(const QString &, bool, QString);

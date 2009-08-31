@@ -63,7 +63,6 @@ public:
 
 public slots:
 	void status_changed(QList<device_status*> sl);
-	void gestFrame(char*);
 
 private:
 	device *matr;
