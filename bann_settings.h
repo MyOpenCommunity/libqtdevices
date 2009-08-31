@@ -52,10 +52,6 @@ public:
 
 public slots:
 /*!
-\brief Analizes \a Open \a frames coming form the system
-*/
-	void gestFrame(char*);
-/*!
 \brief changes the alarm set abilitation
 */
 	void toggleAbil();

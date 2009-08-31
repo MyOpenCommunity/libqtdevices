@@ -10,7 +10,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "sounddiffusion.h" // declare SoundDiffusion*
 
-#include <openwebnet.h>
+#include <openmsg.h>
 
 #include <QApplication>
 #include <QDateTime>
@@ -97,6 +97,7 @@ AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 
 	difson = 0;
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
+	subscribe_monitor(16);
 }
 
 void AlarmClock::okTime()
@@ -307,69 +308,61 @@ void AlarmClock::_setActive(bool a)
 	}
 }
 
-void AlarmClock::gestFrame(char* f)
+void AlarmClock::manageFrame(OpenMsg &msg)
 {
 	if (gesFrameAbil == false)
 		return;
 
-	openwebnet msg_open;
-	int deviceAddr;
-
-	msg_open.CreateMsgOpen(f, strstr(f, "##") - f + 2);
-
-	if (!strcmp(msg_open.Extract_chi(),"16"))
+	int deviceAddr = atoi(msg.Extract_dove());
+	if (deviceAddr >= 0 && deviceAddr <= AMPLI_NUM)
 	{
-		deviceAddr = atoi(msg_open.Extract_dove());
-		if (deviceAddr >= 0 && deviceAddr <= AMPLI_NUM)
+		if (!msg.IsMeasureFrame())
 		{
-			if (!msg_open.IsMeasureFrame())
+			if (!strcmp(msg.Extract_cosa(),"13"))
 			{
-				if (!strcmp(msg_open.Extract_cosa(),"13"))
-				{
-					volSveglia[deviceAddr] = -1;
-					if (deviceAddr == 0)
-						for (uchar idx = 0; idx < AMPLI_NUM; idx++)
-							volSveglia[idx] = -1;
+				volSveglia[deviceAddr] = -1;
+				if (deviceAddr == 0)
+					for (uchar idx = 0; idx < AMPLI_NUM; idx++)
+						volSveglia[idx] = -1;
 
-					if (deviceAddr < 10)
-						for (uchar idx = 0;idx < 10; idx++)
-							volSveglia[deviceAddr * 10 + idx] = -1;
-				}
-				if (!strcmp(msg_open.Extract_cosa(),"3"))
-				{
-					qDebug("ho visto un ampli acceso!");
-					sendFrame("*#16*" + QString::number(deviceAddr) + "*1##");
-				}
+				if (deviceAddr < 10)
+					for (uchar idx = 0;idx < 10; idx++)
+						volSveglia[deviceAddr * 10 + idx] = -1;
 			}
-			else
+			if (!strcmp(msg.Extract_cosa(),"3"))
 			{
-				if (!strcmp(msg_open.Extract_grandezza(),"1"))
-				{
-					int vol;
-					vol = atoi(msg_open.Extract_valori(0)) & 0x1F;
-					volSveglia[deviceAddr] = vol;
-					qDebug("o visto un volume di %d pari a %d",deviceAddr, vol);
-				}
+				qDebug("ho visto un ampli acceso!");
+				sendFrame("*#16*" + QString::number(deviceAddr) + "*1##");
 			}
 		}
 		else
 		{
-			if (!strcmp(msg_open.Extract_cosa(),"3"))
+			if (!strcmp(msg.Extract_grandezza(),"1"))
 			{
-				sorgente = deviceAddr;
-				if (sorgente > 109)
-					sorgente = sorgente - ((sorgente-100)/10)*10;
-				qDebug("Sorgente %d", sorgente);
+				int vol;
+				vol = atoi(msg.Extract_valori(0)) & 0x1F;
+				volSveglia[deviceAddr] = vol;
+				qDebug("o visto un volume di %d pari a %d",deviceAddr, vol);
 			}
-			if (msg_open.IsMeasureFrame() && (!strcmp(msg_open.Extract_grandezza(),"7")))
-			{
-				stazione = atoi(msg_open.Extract_valori(1))&0x1F;
-				qDebug("Stazione %d",stazione);
-				sorgente = deviceAddr;
-				if (sorgente > 109)
-					sorgente = sorgente-((sorgente-100)/10)*10;
-				qDebug("Sorgente %d", sorgente);
-			}
+		}
+	}
+	else
+	{
+		if (!strcmp(msg.Extract_cosa(),"3"))
+		{
+			sorgente = deviceAddr;
+			if (sorgente > 109)
+				sorgente = sorgente - ((sorgente-100)/10)*10;
+			qDebug("Sorgente %d", sorgente);
+		}
+		if (msg.IsMeasureFrame() && (!strcmp(msg.Extract_grandezza(),"7")))
+		{
+			stazione = atoi(msg.Extract_valori(1))&0x1F;
+			qDebug("Stazione %d",stazione);
+			sorgente = deviceAddr;
+			if (sorgente > 109)
+				sorgente = sorgente-((sorgente-100)/10)*10;
+			qDebug("Sorgente %d", sorgente);
 		}
 	}
 }

@@ -121,7 +121,6 @@ Page *getPage(int id)
 	{
 		Settings *p = new Settings(page_node);
 		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
 		QObject::connect(p, SIGNAL(startCalib()), bt_global::btmain, SLOT(startCalib()));
 		QObject::connect(p, SIGNAL(endCalib()), bt_global::btmain, SLOT(endCalib()));
 		page = p;

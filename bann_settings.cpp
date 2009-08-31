@@ -55,11 +55,6 @@ void bannAlarmClock::setButtonIcon()
 		sxButton->setStatus(false);
 }
 
-void bannAlarmClock::gestFrame(char* frame)
-{
-	alarm_clock->gestFrame(frame);
-}
-
 void bannAlarmClock::setAbil(bool b)
 {
 	sxButton->setStatus(b);

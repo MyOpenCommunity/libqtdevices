@@ -11,6 +11,7 @@
 #ifndef ALARMCLOCK_H
 #define ALARMCLOCK_H
 
+#include "frame_receiver.h"
 #include "page.h"
 
 #define AMPLI_NUM 100
@@ -36,7 +37,7 @@ class QTimer;
   \author Davide
   \date lug 2005
 */
-class AlarmClock : public Page
+class AlarmClock : public Page, FrameReceiver
 {
 Q_OBJECT
 public:
@@ -90,11 +91,7 @@ public:
 */
 	void inizializza();
 
-public slots:
-/*!
-  \brief Analyzes the \a Open \a Frame incoming to understand how the end-user want his a sound \a diffusion \a alarm \a set to work.
-*/
-	void gestFrame(char *f);
+	virtual void manageFrame(OpenMsg &msg);
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
