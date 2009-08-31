@@ -71,6 +71,8 @@ public:
 	static void setClients(Client *command, Client *request);
 	void installFrameCompressor(int timeout, int what = -1);
 
+	virtual void manageFrame(OpenMsg &msg);
+
 signals:
 	/// Old Status changed
 	void status_changed(QList<device_status*>);

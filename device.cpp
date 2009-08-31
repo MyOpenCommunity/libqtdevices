@@ -230,6 +230,13 @@ device::~device()
 		delete stat.takeFirst();
 }
 
+// TODO: this method is just for compatibility, remove it when all the device
+// will support the new "manageFrame interface".
+void device::manageFrame(OpenMsg &msg)
+{
+	frame_rx_handler(msg.frame_open);
+}
+
 void device::frame_rx_handler(char *s)
 {
 	qDebug("device::frame_rx_handler");

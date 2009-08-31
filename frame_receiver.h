@@ -21,10 +21,7 @@ public:
 
 	// The method called every time that a frame with the 'who' subscribed arrive
 	// from the openserver.
-	virtual void manageFrame(OpenMsg &msg);
-
-	// TODO: For compatibility with the old structure, remove it as soon as possibile.
-	virtual void frame_rx_handler(char *frame) {}
+	virtual void manageFrame(OpenMsg &msg) = 0;
 
 protected:
 	// Every child that would receive a frame for a 'who' must subscribe itself
