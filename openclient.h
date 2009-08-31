@@ -96,7 +96,6 @@ private:
 	void dispatchFrame(QString frame);
 
 signals:
-	void frameIn(char*);
 	void rispStato(char*);
 	void monitorSu();
 

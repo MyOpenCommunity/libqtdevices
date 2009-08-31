@@ -150,7 +150,6 @@ void Client::manageFrame(QByteArray frame)
 			Open_read.setSingleShot(true);
 			Open_read.start(1000);
 			dispatchFrame(frame);
-			emit frameIn(frame.data()); // for compatibility reason
 		}
 		else
 			qDebug("Frame Open duplicated");
