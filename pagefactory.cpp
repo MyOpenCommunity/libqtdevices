@@ -77,7 +77,6 @@ Page *getPage(int id)
 	{
 		SoundDiffusion *p = new SoundDiffusion(page_node);
 		p->draw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 
 		if (!bt_global::btmain->difSon)
