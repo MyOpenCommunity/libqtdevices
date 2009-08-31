@@ -135,7 +135,6 @@ Page *getPage(int id)
 	{
 		SupervisionMenu *p = new SupervisionMenu(page_node);
 		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
 		QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
 		page = p;
 		break;
