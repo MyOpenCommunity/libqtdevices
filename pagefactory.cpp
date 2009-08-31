@@ -146,7 +146,6 @@ Page *getPage(int id)
 	case SPECIAL:
 	{
 		SpecialPage *p = new SpecialPage(page_node);
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 		break;
 	}
