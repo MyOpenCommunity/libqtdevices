@@ -69,7 +69,6 @@ Page *getPage(int id)
 	{
 		ThermalMenu *p = new ThermalMenu(page_node);
 		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
 		page = p;
 		break;
 	}
