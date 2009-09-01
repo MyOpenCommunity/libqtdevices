@@ -50,12 +50,12 @@
         <translation>低等亮度</translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation>關閉</translation>
+        <source>Normal brightness</source>
+        <translation>正常亮度</translation>
     </message>
     <message>
-        <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>關閉</translation>
     </message>
 </context>
 <context>
