@@ -4,57 +4,57 @@
 <context>
     <name>AlarmClock</name>
     <message>
-        <source>once</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation>herzaman</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation type="unfinished"></translation>
+        <translation>pzt-cum</translation>
+    </message>
+    <message>
+        <source>once</source>
+        <translation>bir kere</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation type="unfinished"></translation>
+        <translation>cts-pzr</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
-        <source>technical</source>
-        <translation type="unfinished"></translation>
+        <source>anti-panic</source>
+        <translation>panik önleme</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation type="unfinished"></translation>
+        <translation>İzinsiz giriş</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation type="unfinished"></translation>
+        <translation>kurcalama</translation>
     </message>
     <message>
-        <source>anti-panic</source>
-        <translation type="unfinished"></translation>
+        <source>technical</source>
+        <translation>teknik</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
+        <source>High brightness</source>
+        <translation>Parlaklık yüksek</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Parlaklık düşük</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Kapalı</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>High brightness</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -62,335 +62,335 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation type="unfinished"></translation>
+        <translation>Artıya tıkla</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation type="unfinished"></translation>
+        <translation>OK butonuna tıkla</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
-        <source>Clean Screen</source>
-        <translation type="unfinished"></translation>
+        <source>Brightness</source>
+        <translation>parlaklık</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayar</translation>
     </message>
     <message>
-        <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Clean Screen</source>
+        <translation>Ekranı temizle</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekran Koruyucu</translation>
     </message>
 </context>
 <context>
     <name>EnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüketim</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation type="unfinished"></translation>
+        <translation>Üretim</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
-        <source>/hours</source>
-        <translation type="unfinished"></translation>
+        <source>/days</source>
+        <translation>/gün</translation>
     </message>
     <message>
-        <source>Hour</source>
-        <translation type="unfinished"></translation>
+        <source>/hours</source>
+        <translation>/saat</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Month</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/days</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Day</source>
-        <translation type="unfinished"></translation>
+        <translation>/ay</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation type="unfinished"></translation>
+        <translation>Kümülatif toplam</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Mevcut durum</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Günlük Ortalama</translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation>Gün</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Saat</translation>
+    </message>
+    <message>
+        <source>Month</source>
+        <translation>Ay</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuel</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation type="unfinished"></translation>
+        <translation>ŞİFRE:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
-        <source>Mac</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subnet mask</source>
-        <translation type="unfinished"></translation>
+        <source>DNS</source>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation type="unfinished"></translation>
+        <translation>Ağ geçidi</translation>
     </message>
     <message>
-        <source>DNS</source>
-        <translation type="unfinished"></translation>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Mac</source>
+        <translation>Mac</translation>
+    </message>
+    <message>
+        <source>Subnet mask</source>
+        <translation>Alt ağ maskesi</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
-        <source>Track:</source>
-        <translation type="unfinished"></translation>
+        <source>Album:</source>
+        <translation>Albüm:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Album:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sanatçı:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzunluk:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Parça:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
-        <source>Treble</source>
-        <translation type="unfinished"></translation>
+        <source>Balance</source>
+        <translation>Balans</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Bass</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation type="unfinished"></translation>
+        <translation>Loud</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Tiz</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
-        <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <source>Classical</source>
+        <translation>Klasik</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rock</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Classical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Techno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Party</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Soft</source>
-        <translation type="unfinished"></translation>
+        <translation>Dans</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation type="unfinished"></translation>
+        <translation>Tam Bas</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation type="unfinished"></translation>
+        <translation>Tam Tiz</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Normal</translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation>Parti</translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ön ayar</translation>
+    </message>
+    <message>
+        <source>Rock</source>
+        <translation>Rock</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>Soft</translation>
+    </message>
+    <message>
+        <source>Techno</source>
+        <translation>Tekno</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
-        <source>No screensaver</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Balls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Toplar</translation>
     </message>
     <message>
         <source>Deform</source>
-        <translation type="unfinished"></translation>
+        <translation>Deforme</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Hat</translation>
+    </message>
+    <message>
+        <source>No screensaver</source>
+        <translation>Ekran koruyucu yok</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>Metin</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>Süre</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Radyo IP</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunucular</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
-        <source>Test</source>
-        <translation type="unfinished"></translation>
+        <source>Enable</source>
+        <translation>İzin ver</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation type="unfinished"></translation>
+        <translation>Oto-test</translation>
     </message>
     <message>
-        <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <source>Test</source>
+        <translation>Test</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation type="unfinished"></translation>
+        <translation>Son 12 ay</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
-        <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <source>Door lock</source>
+        <translation>Kapı kilidi</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation type="unfinished"></translation>
+        <translation>Merdiven lambası</translation>
     </message>
     <message>
-        <source>Door lock</source>
-        <translation type="unfinished"></translation>
+        <source>Unknown</source>
+        <translation>Bilinmeyen</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF (KAPALI)</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON (AÇIK)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF (KAPALI)</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON (AÇIK)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation>ON (AÇIK)</translation>
     </message>
 </context>
 </TS>

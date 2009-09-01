@@ -4,57 +4,57 @@
 <context>
     <name>AlarmClock</name>
     <message>
-        <source>once</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation>πάντοτε</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation type="unfinished"></translation>
+        <translation>δευ-παρ</translation>
+    </message>
+    <message>
+        <source>once</source>
+        <translation>μια φορά</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation type="unfinished"></translation>
+        <translation>σαβ-κυρ</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
-        <source>technical</source>
-        <translation type="unfinished"></translation>
+        <source>anti-panic</source>
+        <translation>αντι-πανικού</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation type="unfinished"></translation>
+        <translation>παρείσφρυση</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation type="unfinished"></translation>
+        <translation>παρέμβλημα</translation>
     </message>
     <message>
-        <source>anti-panic</source>
-        <translation type="unfinished"></translation>
+        <source>technical</source>
+        <translation>τεχνική</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
+        <source>High brightness</source>
+        <translation>Υψηλή φωτεινότητα</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδύναμη φωτεινότητα</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Απενεργοποίηση</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>High brightness</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -62,335 +62,335 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation type="unfinished"></translation>
+        <translation>Κάντε κλικ στο σταυρόνημα</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation type="unfinished"></translation>
+        <translation>Κάντε κλικ στο κουμπί OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
-        <source>Clean Screen</source>
-        <translation type="unfinished"></translation>
+        <source>Brightness</source>
+        <translation>φωτεινότητα</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Βαθμονόμηση</translation>
     </message>
     <message>
-        <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Clean Screen</source>
+        <translation>Καθαρισμός οθόνης</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρόγραμμα προστασίας οθόνης</translation>
     </message>
 </context>
 <context>
     <name>EnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατανάλωση</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation type="unfinished"></translation>
+        <translation>Παραγωγή</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
-        <source>/hours</source>
-        <translation type="unfinished"></translation>
+        <source>/days</source>
+        <translation>/ημέρες</translation>
     </message>
     <message>
-        <source>Hour</source>
-        <translation type="unfinished"></translation>
+        <source>/hours</source>
+        <translation>/ώρες</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Month</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/days</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Day</source>
-        <translation type="unfinished"></translation>
+        <translation>/μήνες</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation type="unfinished"></translation>
+        <translation>Αθροιστική (κατανάλωση)</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Ρεύμα</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Ημερήσιος μέσος όρος</translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation>Ημέρα</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Ώρα</translation>
+    </message>
+    <message>
+        <source>Month</source>
+        <translation>Μήνας</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Χειροκίνητο</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation type="unfinished"></translation>
+        <translation>ΚΩΔΙΚΟΣ:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
-        <source>Mac</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subnet mask</source>
-        <translation type="unfinished"></translation>
+        <source>DNS</source>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation type="unfinished"></translation>
+        <translation>Πύλη</translation>
     </message>
     <message>
-        <source>DNS</source>
-        <translation type="unfinished"></translation>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Mac</source>
+        <translation>Mac</translation>
+    </message>
+    <message>
+        <source>Subnet mask</source>
+        <translation>Μάσκα υποδικτύου</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
-        <source>Track:</source>
-        <translation type="unfinished"></translation>
+        <source>Album:</source>
+        <translation>ΆΛΜΠΟΥΜ</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Album:</source>
-        <translation type="unfinished"></translation>
+        <translation>Καλλιτέχνης:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Διάρκεια:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Ίχνος:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
-        <source>Treble</source>
-        <translation type="unfinished"></translation>
+        <source>Balance</source>
+        <translation>Ισοστάθμιση</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Μπάσα</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation type="unfinished"></translation>
+        <translation>Δυνατά</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Πρίμα</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
-        <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <source>Classical</source>
+        <translation>Κλασσική</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rock</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Classical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Techno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Party</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Soft</source>
-        <translation type="unfinished"></translation>
+        <translation>Χορός</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation type="unfinished"></translation>
+        <translation>Πλήρη μπάσα</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation type="unfinished"></translation>
+        <translation>Μπάσα στο φουλ</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Κανονικό</translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation>Πάρτι</translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation>Ποπ</translation>
     </message>
     <message>
         <source>Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρίμα στο φουλ</translation>
+    </message>
+    <message>
+        <source>Rock</source>
+        <translation>Ροκ</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>Απαλή</translation>
+    </message>
+    <message>
+        <source>Techno</source>
+        <translation>Τέχνο</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
-        <source>No screensaver</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Balls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Μπίλιες</translation>
     </message>
     <message>
         <source>Deform</source>
-        <translation type="unfinished"></translation>
+        <translation>Παραμόρφωση</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Γραμμή</translation>
+    </message>
+    <message>
+        <source>No screensaver</source>
+        <translation>Δεν υπάρχει πρόγραμμα προστασίας της οθόνης</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>Κείμενο</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>Χρόνος</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>IP Ράδιο</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Διακομιστές</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
-        <source>Test</source>
-        <translation type="unfinished"></translation>
+        <source>Enable</source>
+        <translation>Ενεργοποίηση</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation type="unfinished"></translation>
+        <translation>Αυτοδοκιμασία</translation>
     </message>
     <message>
-        <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <source>Test</source>
+        <translation>Δοκιμασία</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation type="unfinished"></translation>
+        <translation>Οι τελευταίοι 12 μήνες</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
-        <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <source>Door lock</source>
+        <translation>Κλειδωμένη πόρτα</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation type="unfinished"></translation>
+        <translation>Φως της σκάλας</translation>
     </message>
     <message>
-        <source>Door lock</source>
-        <translation type="unfinished"></translation>
+        <source>Unknown</source>
+        <translation>Άγνωστος</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation>ON</translation>
     </message>
 </context>
 </TS>
