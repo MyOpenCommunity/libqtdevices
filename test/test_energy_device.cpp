@@ -439,6 +439,12 @@ void TestEnergyDevice::receiveMonthlyAverage()
 			EnergyValue(QDate::currentDate(), 0));
 }
 
+void TestEnergyDevice::receiveCumulativeDayRequest()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
+	t.checkSignals(QString("*#18*%1*54##").arg(where), 0);
+}
+
 void TestEnergyDevice::testGetDateFromFrame()
 {
 	int month = 10;
@@ -458,3 +464,5 @@ void TestEnergyDevice::testConsecutiveGraphFrames()
 		dev->frame_rx_handler(frames[i].toAscii().data());
 	QVERIFY(dev->buffer_frame.size() == 1);
 }
+
+
