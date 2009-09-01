@@ -455,6 +455,9 @@ void TestEnergyDevice::testConsecutiveGraphFrames()
 		<< "*#18*20*57#8*2*28*33*55##"
 		<< "*#18*20*56#6#2*1*1*44##";
 	for (int i = 0; i < frames.size(); ++i)
-		dev->frame_rx_handler(frames[i].toAscii().data());
+	{
+		OpenMsg msg(qPrintable(frames[i]));
+		dev->manageFrame(msg);
+	}
 	QVERIFY(dev->buffer_frame.size() == 1);
 }
