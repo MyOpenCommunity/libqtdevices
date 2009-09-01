@@ -523,10 +523,6 @@ void banner::setAddress(QString addr)
 	address = addr;
 }
 
-void banner::gestFrame(char*)
-{
-}
-
 void banner::setValue(char val)
 {
 	if (val >= minValue && val <= maxValue)

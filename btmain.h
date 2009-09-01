@@ -50,7 +50,6 @@ public:
 	~BtMain();
 	Client *client_richieste;
 	Client *client_comandi;
-	Client *client_monitor;
 
 	void resetTimer();
 	/// Freeze or unfreeze the application
@@ -83,6 +82,7 @@ public:
 	Version *version;
 
 private:
+	Client *client_monitor;
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
 	homePage *Home;

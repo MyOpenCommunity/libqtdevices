@@ -271,10 +271,6 @@ public:
 
 public slots:
 	/*!
-	 *  \brief Must be reimplemented to analyze the \a Open \a Frame incoming.
-	 */
-	virtual void gestFrame(char *);
-	/*!
 	 *  \brief Must be reimplemented to retrieve the state ofthe object controlled by the banner.
 	 */
 	virtual void  rispStato(char*);
