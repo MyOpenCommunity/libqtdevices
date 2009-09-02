@@ -45,7 +45,7 @@ automCancAttuatIll::automCancAttuatIll(QWidget *parent, QString where, QString I
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
-	time = t.isEmpty() ? t : QString("*0*0*18");
+	time = !t.isEmpty() ? t : QString("0*0*18");
 	Draw();
 }
 
