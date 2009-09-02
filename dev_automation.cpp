@@ -4,6 +4,7 @@
 #include <openmsg.h>
 
 #include <QDebug>
+#include <QVariant>
 
 
 enum RequestDimension

@@ -21,6 +21,7 @@ void Automation::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
+		int cid = getTextChild(item, "cid").toInt();
 		QString where = getTextChild(item, "where");
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
@@ -60,6 +61,9 @@ void Automation::loadItems(const QDomNode &config_node)
 			break;
 		case ATTUAT_AUTOM_PULS:
 			b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
+			break;
+		case PPT_STAT:
+			b = new PPTStat(this, where, cid);
 			break;
 		default:
 			assert(!"Type of item not handled on automation page!");

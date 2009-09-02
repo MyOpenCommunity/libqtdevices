@@ -4,13 +4,18 @@
 #include "btbutton.h"
 #include "device.h"
 #include "devices_cache.h" // bt_global::devices_cache
+#include "skinmanager.h" // SkinContext, bt_global::skin
+#include "dev_automation.h" // PPTStatDevice
 
 #include <QTimer>
 #include <QDebug>
 #include <QEvent>
 #include <QObject>
+#include <QVariant>
 
 #include <openwebnet.h> // class openwebnet
+
+#define BUT_DIM     60
 
 
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
@@ -356,5 +361,36 @@ void grAttuatInt::Abbassa()
 void grAttuatInt::Ferma()
 {
 	sendAllFrames("0");
+}
+
+
+PPTStat::PPTStat(QWidget *parent, QString where, int cid) : banner(parent)
+{
+	dev = bt_global::add_device_to_cache(new PPTStatDevice(where));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+
+	// This banner shows only an icon in central position and a text below.
+	addItem(ICON, (MAX_WIDTH - BUT_DIM) / 2, 0,  BUT_DIM ,BUT_DIM);
+	addItem(TEXT, 0, BUT_DIM, MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE - BUT_DIM);
+
+	SkinContext context(cid);
+	img_open = bt_global::skin->getImage("pptstat_open");
+	img_close = bt_global::skin->getImage("pptstat_close");
+
+	if (!img_open.isEmpty())
+		SetIcons(2, img_open);
+	Draw();
+}
+
+void PPTStat::status_changed(const StatusList &status_list)
+{
+	bool st = status_list[PPTStatDevice::DIM_STATUS].toBool();
+	SetIcons(2, st ? img_close : img_open);
+	Draw();
+}
+
+void PPTStat::inizializza(bool forza)
+{
+	dev->requestStatus();
 }
 
