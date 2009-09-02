@@ -2,6 +2,7 @@
 #include "openclient.h"
 #include "frame_interpreter.h"
 #include "bttime.h"
+#include "generic_functions.h" // createRequestOpen, createMsgOpen
 
 #include <openmsg.h>
 
@@ -99,6 +100,16 @@ void device::sendCompressedInit(const QString &frame) const
 	}
 	else
 		sendInit(frame);
+}
+
+void device::sendCommand(QString what) const
+{
+	sendFrame(createMsgOpen(who, what, where));
+}
+
+void device::sendRequest(QString what) const
+{
+	sendInit(createRequestOpen(who, what, where));
 }
 
 void device::setClients(Client *command, Client *request)

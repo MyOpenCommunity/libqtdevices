@@ -58,13 +58,8 @@ public:
 		DIM_DNS2 = 52
 	};
 
-
-
 public slots:
 	void requestStatus() const;
-
-private:
-	void sendRequest(int what) const;
 };
 
 #endif // LANDEVICE_H

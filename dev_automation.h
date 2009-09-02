@@ -38,9 +38,6 @@ public:
 	void increase() const;
 	void decrease() const;
 	void stop() const;
-
-private:
-	void sendCommand(QString what) const;
 };
 
 #endif // DEV_AUTOMATION_H

@@ -1,5 +1,5 @@
 #include "poweramplifier_device.h"
-#include "generic_functions.h" // createRequestOpen
+#include "generic_functions.h" // createWriteRequestOpen
 
 #include <openmsg.h>
 
@@ -98,49 +98,39 @@ void PowerAmplifierDevice::manageFrame(OpenMsg &msg)
 	}
 }
 
-void PowerAmplifierDevice::sendRequest(int what) const
-{
-	sendInit(createRequestOpen(who, QString::number(what), where));
-}
-
-void PowerAmplifierDevice::sendCommand(QString what) const
-{
-	sendFrame(createMsgOpen(who, what, where));
-}
-
 void PowerAmplifierDevice::requestStatus() const
 {
-	sendRequest(DIM_STATUS);
+	sendRequest(QString::number(DIM_STATUS));
 }
 
 void PowerAmplifierDevice::requestVolume() const
 {
-	sendRequest(DIM_VOLUME);
+	sendRequest(QString::number(DIM_VOLUME));
 }
 
 void PowerAmplifierDevice::requestTreble() const
 {
-	sendRequest(DIM_TREBLE);
+	sendRequest(QString::number(DIM_TREBLE));
 }
 
 void PowerAmplifierDevice::requestBass() const
 {
-	sendRequest(DIM_BASS);
+	sendRequest(QString::number(DIM_BASS));
 }
 
 void PowerAmplifierDevice::requestBalance() const
 {
-	sendRequest(DIM_BALANCE);
+	sendRequest(QString::number(DIM_BALANCE));
 }
 
 void PowerAmplifierDevice::requestPreset() const
 {
-	sendRequest(DIM_PRESET);
+	sendRequest(QString::number(DIM_PRESET));
 }
 
 void PowerAmplifierDevice::requestLoud() const
 {
-	sendRequest(DIM_LOUD);
+	sendRequest(QString::number(DIM_LOUD));
 }
 
 void PowerAmplifierDevice::turnOn() const

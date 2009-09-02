@@ -49,11 +49,6 @@ PPTSceDevice::PPTSceDevice(QString address) : device(QString("25"), address)
 {
 }
 
-void PPTSceDevice::sendCommand(QString what) const
-{
-	sendFrame(createMsgOpen(who, what, where));
-}
-
 void PPTSceDevice::turnOn() const
 {
 	sendCommand(CMD_PPT_SCE_ON);

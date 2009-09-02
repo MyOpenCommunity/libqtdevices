@@ -1,5 +1,4 @@
 #include "landevice.h"
-#include "generic_functions.h" // createRequestOpen
 
 #include <openmsg.h>
 
@@ -29,44 +28,39 @@ void LanDevice::enableLan(bool enable)
 	QTimer::singleShot(STATUS_REQUEST_DELAY, this, SLOT(requestStatus()));
 }
 
-void LanDevice::sendRequest(int what) const
-{
-	sendInit(createRequestOpen(who, QString::number(what), ""));
-}
-
 void LanDevice::requestStatus() const
 {
-	sendRequest(DIM_STATUS);
+	sendRequest(QString::number(DIM_STATUS));
 }
 
 void LanDevice::requestIp() const
 {
-	sendRequest(DIM_IP);
+	sendRequest(QString::number(DIM_IP));
 }
 
 void LanDevice::requestNetmask() const
 {
-	sendRequest(DIM_NETMASK);
+	sendRequest(QString::number(DIM_NETMASK));
 }
 
 void LanDevice::requestMacAddress() const
 {
-	sendRequest(DIM_MACADDR);
+	sendRequest(QString::number(DIM_MACADDR));
 }
 
 void LanDevice::requestGateway() const
 {
-	sendRequest(DIM_GATEWAY);
+	sendRequest(QString::number(DIM_GATEWAY));
 }
 
 void LanDevice::requestDNS1() const
 {
-	sendRequest(DIM_DNS1);
+	sendRequest(QString::number(DIM_DNS1));
 }
 
 void LanDevice::requestDNS2() const
 {
-	sendRequest(DIM_DNS2);
+	sendRequest(QString::number(DIM_DNS2));
 }
 
 void LanDevice::manageFrame(OpenMsg &msg)
