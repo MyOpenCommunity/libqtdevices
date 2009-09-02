@@ -167,7 +167,13 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		what == DIM_CUMULATIVE_MONTH || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR ||
 		what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH)
 	{
-		assert(msg.whatArgCnt() > 0);
+
+		// In some cases (when more than a ts is present in the system)
+		// a request frame can arrive from the monitor socket. We have to manage this
+		// situation.
+		if (!msg.whatArgCnt() || msg.IsStateFrame())
+			return;
+
 		qDebug("EnergyDevice::frame_rx_handler -> frame read:%s", frame);
 		int num_frame = msg.whatArgN(0);
 		// clear the buffer if the first frame of a new graph arrives

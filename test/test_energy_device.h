@@ -25,7 +25,6 @@ private slots:
 	void sendRequestCurrent2();
 	void sendRequestCurrent3();
 	void sendRequestCurrent4();
-
 	void receiveCumulativeDay();
 	void receiveCumulativeDay2();
 	void receiveCurrent();
@@ -40,6 +39,7 @@ private slots:
 	void receiveCumulativeMonthGraph2();
 	void receiveCumulativeYearGraph();
 	void receiveMonthlyAverage();
+	void receiveCumulativeDayRequest();
 
 	void testGetDateFromFrame();
 	void testConsecutiveGraphFrames();
