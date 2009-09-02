@@ -86,6 +86,7 @@ signals:
 	void initialized(device_status *);
 	//! We want a frame to be handled
 	void handle_frame(char *, QList<device_status*>);
+
 public slots:
 	//! receive a frame
 	virtual void frame_rx_handler(char *);
@@ -112,6 +113,9 @@ protected:
 	// Send a frame using the frame compressor
 	void sendCompressedFrame(const QString &frame) const;
 	void sendCompressedInit(const QString &frame) const;
+
+	void sendCommand(QString what) const;
+	void sendRequest(QString what) const;
 
 private:
 	//! Pul status

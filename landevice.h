@@ -56,9 +56,6 @@ public:
 public slots:
 	virtual void frame_rx_handler(char *);
 	void requestStatus() const;
-
-private:
-	void sendRequest(int what) const;
 };
 
 #endif // LANDEVICE_H

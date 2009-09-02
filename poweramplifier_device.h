@@ -73,9 +73,6 @@ private:
 	// The location is normally used inside 'where' so we don't need to store it.
 	// As exception, the turnOn/Off methods require to specify this information.
 	int location;
-
-	void sendRequest(int what) const;
-	void sendCommand(QString what) const;
 };
 
 #endif
