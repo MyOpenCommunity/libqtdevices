@@ -29,7 +29,7 @@ then
   echo "#!/bin/ettclsh" >> BTouch_qws
   echo "set env(QWS_MOUSE_PROTO) LinuxTP:/dev/ts" >>  BTouch_qws
   echo "set env(QWS_DISPLAY) Transformed:Rot180" >>  BTouch_qws
-  echo "exec bin/BTouch -qws &" >> BTouch_qws
+  echo "exec bin/BTouch -qws -noswcursor &" >> BTouch_qws
   cp BTouch_qws $BTWEB_APP_BIN_NO_STACKOPEN
   exit 0
 fi

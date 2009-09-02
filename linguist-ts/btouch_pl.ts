@@ -4,57 +4,57 @@
 <context>
     <name>AlarmClock</name>
     <message>
-        <source>once</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation>zawsze</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation type="unfinished"></translation>
+        <translation>pon-pia</translation>
+    </message>
+    <message>
+        <source>once</source>
+        <translation>raz</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation type="unfinished"></translation>
+        <translation>sob-nie</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
-        <source>technical</source>
-        <translation type="unfinished"></translation>
+        <source>anti-panic</source>
+        <translation>anty-panika</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation type="unfinished"></translation>
+        <translation>wtargnięcie</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation type="unfinished"></translation>
+        <translation>ingerencja</translation>
     </message>
     <message>
-        <source>anti-panic</source>
-        <translation type="unfinished"></translation>
+        <source>technical</source>
+        <translation>techniczne</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
+        <source>High brightness</source>
+        <translation>Wysoka jasność</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Niska jasność</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Wył.</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>High brightness</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -62,335 +62,335 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknij krzyżyk</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknij przycisk OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
-        <source>Clean Screen</source>
-        <translation type="unfinished"></translation>
+        <source>Brightness</source>
+        <translation>jasność</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalibracja</translation>
     </message>
     <message>
-        <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Clean Screen</source>
+        <translation>Czysty ekran</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygaszacz ekranu</translation>
     </message>
 </context>
 <context>
     <name>EnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobór</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation type="unfinished"></translation>
+        <translation>Produkcja</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
-        <source>/hours</source>
-        <translation type="unfinished"></translation>
+        <source>/days</source>
+        <translation>/dni</translation>
     </message>
     <message>
-        <source>Hour</source>
-        <translation type="unfinished"></translation>
+        <source>/hours</source>
+        <translation>/godziny</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Month</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/days</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Day</source>
-        <translation type="unfinished"></translation>
+        <translation>/miesiące</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation type="unfinished"></translation>
+        <translation>Łącznie</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Prąd</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Średnia dzienna</translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation>Dzień</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Godzina</translation>
+    </message>
+    <message>
+        <source>Month</source>
+        <translation>Miesiąc</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Ręczny</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation type="unfinished"></translation>
+        <translation>HASŁO:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
-        <source>Mac</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subnet mask</source>
-        <translation type="unfinished"></translation>
+        <source>DNS</source>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation type="unfinished"></translation>
+        <translation>Wejście</translation>
     </message>
     <message>
-        <source>DNS</source>
-        <translation type="unfinished"></translation>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Mac</source>
+        <translation>Mac</translation>
+    </message>
+    <message>
+        <source>Subnet mask</source>
+        <translation>Maska podsieci</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
-        <source>Track:</source>
-        <translation type="unfinished"></translation>
+        <source>Album:</source>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Album:</source>
-        <translation type="unfinished"></translation>
+        <translation>Artysta:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Długość:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Utwór:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
-        <source>Treble</source>
-        <translation type="unfinished"></translation>
+        <source>Balance</source>
+        <translation>Balans</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Basy</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation type="unfinished"></translation>
+        <translation>Głośny</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Soprany</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
-        <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <source>Classical</source>
+        <translation>Klasyczna</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rock</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Classical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Techno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Party</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Soft</source>
-        <translation type="unfinished"></translation>
+        <translation>Dance</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation type="unfinished"></translation>
+        <translation>Pełne basy</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation type="unfinished"></translation>
+        <translation>Pełne soprany</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Normalny</translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation>Party</translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastawianie</translation>
+    </message>
+    <message>
+        <source>Rock</source>
+        <translation>Rock</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>Miękki</translation>
+    </message>
+    <message>
+        <source>Techno</source>
+        <translation>Techno</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
-        <source>No screensaver</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Balls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Piłki</translation>
     </message>
     <message>
         <source>Deform</source>
-        <translation type="unfinished"></translation>
+        <translation>Deformacja</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Linia</translation>
+    </message>
+    <message>
+        <source>No screensaver</source>
+        <translation>Bez wygaszacza ekranu</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>Tekst</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>Czas</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio IP</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Serwery</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
-        <source>Test</source>
-        <translation type="unfinished"></translation>
+        <source>Enable</source>
+        <translation>Uaktywnij</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto-test</translation>
     </message>
     <message>
-        <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <source>Test</source>
+        <translation>Test</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostatnich 12 miesięcy</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
-        <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <source>Door lock</source>
+        <translation>Zamek drzwi</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation type="unfinished"></translation>
+        <translation>Oświetlenie schodów</translation>
     </message>
     <message>
-        <source>Door lock</source>
-        <translation type="unfinished"></translation>
+        <source>Unknown</source>
+        <translation>Nieznany</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation>ON</translation>
     </message>
 </context>
 </TS>

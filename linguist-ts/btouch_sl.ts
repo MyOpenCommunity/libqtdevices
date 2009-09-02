@@ -4,393 +4,393 @@
 <context>
     <name>AlarmClock</name>
     <message>
-        <source>once</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation>vedno</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation type="unfinished"></translation>
+        <translation>pon-pet</translation>
+    </message>
+    <message>
+        <source>once</source>
+        <translation>enkrat</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation type="unfinished"></translation>
+        <translation>sob-ned</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
-        <source>technical</source>
-        <translation type="unfinished"></translation>
+        <source>anti-panic</source>
+        <translation>proti paniki</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Vdor</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation type="unfinished"></translation>
+        <translation>nedovoljen poseg</translation>
     </message>
     <message>
-        <source>anti-panic</source>
-        <translation type="unfinished"></translation>
+        <source>technical</source>
+        <translation>tehničen</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
+        <source>High brightness</source>
+        <translation>Močna osvetlitev</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Šibka osvetlitev</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Normalna osvetlitev</translation>
     </message>
     <message>
-        <source>High brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Izklop</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation type="unfinished"></translation>
+        <translation>Klik na kurzor</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation type="unfinished"></translation>
+        <translation>Klik na gumb OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
-        <source>Clean Screen</source>
-        <translation type="unfinished"></translation>
+        <source>Brightness</source>
+        <translation>osvetlitev</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Umerjanje</translation>
     </message>
     <message>
-        <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Clean Screen</source>
+        <translation>Izbriši zaslon</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohranjevalnik zaslona</translation>
     </message>
 </context>
 <context>
     <name>EnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation type="unfinished"></translation>
+        <translation>Poraba</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvodnja</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
-        <source>/hours</source>
-        <translation type="unfinished"></translation>
+        <source>/days</source>
+        <translation>/dni</translation>
     </message>
     <message>
-        <source>Hour</source>
-        <translation type="unfinished"></translation>
+        <source>/hours</source>
+        <translation>/ur</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Month</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/days</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Day</source>
-        <translation type="unfinished"></translation>
+        <translation>/mesecev</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbirni</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenuten</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Dnevno povprečje</translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation>Dan</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Ura</translation>
+    </message>
+    <message>
+        <source>Month</source>
+        <translation>Mesec</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Ročni</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation type="unfinished"></translation>
+        <translation>GESLO:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
-        <source>Mac</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subnet mask</source>
-        <translation type="unfinished"></translation>
+        <source>DNS</source>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrata</translation>
     </message>
     <message>
-        <source>DNS</source>
-        <translation type="unfinished"></translation>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Mac</source>
+        <translation>Mac</translation>
+    </message>
+    <message>
+        <source>Subnet mask</source>
+        <translation>Maska podomrežja</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
-        <source>Track:</source>
-        <translation type="unfinished"></translation>
+        <source>Album:</source>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Album:</source>
-        <translation type="unfinished"></translation>
+        <translation>Umetnik:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolžina:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>od</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Posnetek:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
-        <source>Treble</source>
-        <translation type="unfinished"></translation>
+        <source>Balance</source>
+        <translation>Ravnotežje</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Nizki toni</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation type="unfinished"></translation>
+        <translation>Glasno</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Visoki toni</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
-        <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <source>Classical</source>
+        <translation>Klasično</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rock</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Classical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Techno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Party</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Soft</source>
-        <translation type="unfinished"></translation>
+        <translation>Ples</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation type="unfinished"></translation>
+        <translation>Najnižji toni</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation type="unfinished"></translation>
+        <translation>Najvišji toni</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Normalno</translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation>Zabava</translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Preset</source>
-        <translation type="unfinished"></translation>
+        <translation>Prednastavitev</translation>
+    </message>
+    <message>
+        <source>Rock</source>
+        <translation>Rock</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>Mehek</translation>
+    </message>
+    <message>
+        <source>Techno</source>
+        <translation>Tehno</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
-        <source>No screensaver</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Balls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Kroglice</translation>
     </message>
     <message>
         <source>Deform</source>
-        <translation type="unfinished"></translation>
+        <translation>Deformacija</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Linija</translation>
+    </message>
+    <message>
+        <source>No screensaver</source>
+        <translation>Brez ohranjevalnika zaslona</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>Besedilo</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>Čas</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>IP radio</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Strežniki</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
-        <source>Test</source>
-        <translation type="unfinished"></translation>
+        <source>Enable</source>
+        <translation>Omogoči</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation type="unfinished"></translation>
+        <translation>Samotestiranje</translation>
     </message>
     <message>
-        <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <source>Test</source>
+        <translation>Preskus</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadnjih 12 mesecev</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
-        <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <source>Door lock</source>
+        <translation>Zaklepanje vrat</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation type="unfinished"></translation>
+        <translation>Osvetlitev stopnišča</translation>
     </message>
     <message>
-        <source>Door lock</source>
-        <translation type="unfinished"></translation>
+        <source>Unknown</source>
+        <translation>Neznan</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
-        <source>ON</source>
-        <translation type="unfinished"></translation>
+        <source>OFF</source>
+        <translation>OFF</translation>
     </message>
     <message>
-        <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation>ON</translation>
     </message>
 </context>
 </TS>
