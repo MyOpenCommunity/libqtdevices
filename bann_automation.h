@@ -11,7 +11,7 @@
 /// Forward Declarations
 class device;
 class device_status;
-
+class PPTStatDevice;
 
 /*!
  * \class
@@ -133,5 +133,19 @@ private:
 	void sendAllFrames(QString msg);
 };
 
+
+class PPTStat : public banner
+{
+Q_OBJECT
+public:
+	PPTStat(QWidget *parent, QString where, int cid);
+	virtual void inizializza(bool forza=false);
+
+private:
+	PPTStatDevice *dev;
+	QString img_open, img_close;
+private slots:
+	void status_changed(const StatusList &status_list);
+};
 
 #endif

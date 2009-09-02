@@ -387,6 +387,8 @@ enum  bannerType
 	SCENARIO_SCHEDULATO=39,                       /*!< Scenario schedulato */
 	AUTOM_CANC_ATTUAT_ILL=40,                     /*!< Automatismi-Cancello con attuatore illuminazione */
 	AUTOM_CANC_ATTUAT_VC=41,                      /*!< Automatismi-Cancello con attuatore videocitofonia */
+	PPT_STAT=42,                                  /*!< Automatismi-PPTStat */
+	PPT_SCE=43,                                   /*!< Automatismi-PPTSce */
 	GR_DIMMER100=44,                              /*!< Gruppo dimmer 100 livelli */
 	SORG_RADIO=45,                                /*!< Sorgente radio per Diffusione Sonora Multicanale */
 	SORG_AUX=46,                                  /*!< Sorgente aux per Diffusione Sonora Multicanale */
