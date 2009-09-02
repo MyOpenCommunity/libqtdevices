@@ -12,6 +12,13 @@ enum RequestDimension
 	REQ_STATUS_CLOSE = 31
 };
 
+// PPTSce commands
+#define CMD_PPT_SCE_ON "11#0"
+#define CMD_PPT_SCE_OFF "12"
+#define CMD_PPT_SCE_INC "13#0#1"
+#define CMD_PPT_SCE_DEC "14#0#1"
+#define CMD_PPT_SCE_STOP "15"
+
 
 PPTStatDevice::PPTStatDevice(QString address) : device(QString("25"), address)
 {
@@ -35,5 +42,40 @@ void PPTStatDevice::manageFrame(OpenMsg &msg)
 		status_list[DIM_STATUS] = QVariant(what == REQ_STATUS_OPEN);
 		emit status_changed(status_list);
 	}
-
 }
+
+
+PPTSceDevice::PPTSceDevice(QString address) : device(QString("25"), address)
+{
+}
+
+void PPTSceDevice::sendCommand(QString what) const
+{
+	sendFrame(createMsgOpen(who, what, where));
+}
+
+void PPTSceDevice::turnOn() const
+{
+	sendCommand(CMD_PPT_SCE_ON);
+}
+
+void PPTSceDevice::turnOff() const
+{
+	sendCommand(CMD_PPT_SCE_OFF);
+}
+
+void PPTSceDevice::increase() const
+{
+	sendCommand(CMD_PPT_SCE_INC);
+}
+
+void PPTSceDevice::decrease() const
+{
+	sendCommand(CMD_PPT_SCE_DEC);
+}
+
+void PPTSceDevice::stop() const
+{
+	sendCommand(CMD_PPT_SCE_STOP);
+}
+
