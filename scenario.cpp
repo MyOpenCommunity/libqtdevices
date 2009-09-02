@@ -40,6 +40,9 @@ void Scenario::loadItems(const QDomNode &config_node)
 			b = new bannScenario(this, where, img1);
 			break;
 
+		case PPT_SCE:
+			b = new PPTSce(this, where, getTextChild(item, "cid").toInt());
+			break;
 		case MOD_SCENARI:
 		{
 			QString img5 = IMG_PATH + getTextChild(item, "cimg5");

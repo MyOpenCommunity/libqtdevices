@@ -5,10 +5,15 @@
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
+#include "dev_automation.h"
+#include "skinmanager.h" // SkinContext, bt_global::skin
 
 #include <QDir>
 #include <QDebug>
 #include <QLabel>
+#include <QTimerEvent>
+
+#define PPTSCE_INTERVAL 1000
 
 
 bannScenario::bannScenario(sottoMenu *parent, QString where, QString IconaSx) : bannOnSx(parent)
@@ -568,3 +573,71 @@ void scenSched::Draw()
 		BannerText->setText(qtesto);
 	}
 }
+
+
+PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)
+{
+	dev = bt_global::add_device_to_cache(new PPTSceDevice(where));
+	connect(this, SIGNAL(sxClick()), dev, SLOT(turnOff()));
+	connect(this, SIGNAL(dxClick()), dev, SLOT(turnOn()));
+
+	// For csx e cdx buttons we have to send a frame every X mseconds when the
+	// button is down and send another frame when the button is raised.
+	increase_timer = 0;
+	decrease_timer = 0;
+	connect(this, SIGNAL(csxPressed()), SLOT(startIncrease()));
+	connect(this, SIGNAL(cdxPressed()), SLOT(startDecrease()));
+	connect(this, SIGNAL(csxReleased()), SLOT(stop()));
+	connect(this, SIGNAL(cdxReleased()), SLOT(stop()));
+
+	SkinContext context(cid);
+	QString img_on = bt_global::skin->getImage("on");
+	QString img_off = bt_global::skin->getImage("off");
+	QString img_inc = bt_global::skin->getImage("pptsce_increase");
+	QString img_decr = bt_global::skin->getImage("pptsce_decrease");
+	SetIcons(img_off, img_on, img_inc, img_decr);
+	Draw();
+}
+
+void PPTSce::startIncrease()
+{
+	if (!increase_timer)
+	{
+		dev->increase();
+		increase_timer = startTimer(PPTSCE_INTERVAL);
+	}
+}
+
+void PPTSce::startDecrease()
+{
+	if (!decrease_timer)
+	{
+		dev->decrease();
+		decrease_timer = startTimer(PPTSCE_INTERVAL);
+	}
+}
+
+void PPTSce::timerEvent(QTimerEvent *e)
+{
+	if (e->timerId() == increase_timer)
+		dev->increase();
+	else
+		dev->decrease();
+}
+
+void PPTSce::stop()
+{
+	if (increase_timer)
+	{
+		killTimer(increase_timer);
+		increase_timer = 0;
+		dev->stop();
+	}
+	if (decrease_timer)
+	{
+		killTimer(decrease_timer);
+		decrease_timer = 0;
+		dev->stop();
+	}
+}
+
