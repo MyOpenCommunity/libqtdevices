@@ -11,8 +11,10 @@
 #include <QString>
 #include <QList>
 
+class PPTSceDevice;
 class scenEvo_cond;
 class device;
+class QTimerEvent;
 class QWidget;
 
 /*!
@@ -128,6 +130,26 @@ public slots:
 	void stop();
 private:
 	QString action_enable, action_disable, action_start, action_stop;
+};
+
+
+class PPTSce : public bann4But
+{
+Q_OBJECT
+public:
+	PPTSce(QWidget *parent, QString where, int cid);
+
+protected:
+	virtual void timerEvent(QTimerEvent *e);
+
+private:
+	PPTSceDevice *dev;
+	int increase_timer, decrease_timer;
+
+private slots:
+	void startIncrease();
+	void startDecrease();
+	void stop();
 };
 
 #endif
