@@ -33,9 +33,9 @@ void TestPPTStatDevice::sendRequestStatus()
 void TestPPTStatDevice::receiveStatus()
 {
 	DeviceTester t(dev, PPTStatDevice::DIM_STATUS);
-	t.check(QString("*25*31#0*%1##").arg(where), false);
-	t.check(QString("*25*31#1*%1##").arg(where), false);
-	t.check(QString("*25*32#0*%1##").arg(where), true);
-	t.check(QString("*25*32#1*%1##").arg(where), true);
+	t.check(QString("*25*31#0*%1##").arg(where), true);
+	t.check(QString("*25*31#1*%1##").arg(where), true);
+	t.check(QString("*25*32#0*%1##").arg(where), false);
+	t.check(QString("*25*32#1*%1##").arg(where), false);
 }
 
