@@ -591,8 +591,8 @@ PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)
 	connect(this, SIGNAL(cdxReleased()), SLOT(stop()));
 
 	SkinContext context(cid);
-	QString img_on = bt_global::skin->getImage("on");
-	QString img_off = bt_global::skin->getImage("off");
+	QString img_on = bt_global::skin->getImage("pptsce_on");
+	QString img_off = bt_global::skin->getImage("pptsce_off");
 	QString img_inc = bt_global::skin->getImage("pptsce_increase");
 	QString img_decr = bt_global::skin->getImage("pptsce_decrease");
 	SetIcons(img_off, img_on, img_inc, img_decr);
