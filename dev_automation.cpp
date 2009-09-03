@@ -43,7 +43,7 @@ void PPTStatDevice::frame_rx_handler(char *frame)
 	if (what == REQ_STATUS_OPEN || what == REQ_STATUS_CLOSE)
 	{
 		StatusList status_list;
-		status_list[DIM_STATUS] = QVariant(what == REQ_STATUS_OPEN);
+		status_list[DIM_STATUS] = QVariant(what == REQ_STATUS_CLOSE);
 		emit status_changed(status_list);
 	}
 }
