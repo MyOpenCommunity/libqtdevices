@@ -1,5 +1,5 @@
 /*!
- * \bannfullscreen.h
+ * \bann_thermal_regulation.h
  * <!--
  * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
  * All rights reserved.
@@ -9,8 +9,8 @@
  *
  * \author Luca Ottaviano <lottaviano@develer.com>
  */
-#ifndef BANNFULLSCREEN_H
-#define BANNFULLSCREEN_H
+#ifndef BANN_THERMAL_REGULATION_H
+#define BANN_THERMAL_REGULATION_H
 
 #include "banner.h"
 #include "bann3_buttons.h" // bann3But
@@ -376,6 +376,7 @@ private:
 	sottoMenu *timed_manual_menu;
 private slots:
 	void manualTimedSelected(BtTime time, int temp);
+	void showSettingsMenu();
 };
 
 
@@ -399,6 +400,7 @@ private:
 	ScenarioMenu *scenario_menu;
 private slots:
 	void scenarioSelected(int scenario);
+	void showSettingsMenu();
 };
 
 
@@ -597,4 +599,4 @@ signals:
 	void programNumber(int);
 };
 
-#endif // BANNFULLSCREEN_H
+#endif // BANN_THERMAL_REGULATION_H
