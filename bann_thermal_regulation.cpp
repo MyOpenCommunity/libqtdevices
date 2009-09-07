@@ -1,13 +1,3 @@
-/*!
- * \bannfullscreen.cpp
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
- * \brief A base class for all banners that are fullscreen
- *
- * \author Luca Ottaviano <lottaviano@develer.com>
- */
 
 #include "bann_thermal_regulation.h"
 #include "fontmanager.h" // bt_global::font
@@ -629,9 +619,11 @@ FSBannManual::FSBannManual(QWidget *parent, thermal_regulator *_dev, Temperature
 	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
+	hbox->addStretch(1);
 
 	hbox->addWidget(temp_label);
 
+	hbox->addStretch(1);
 	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
 	btn = getButton(btn_plus_img);
 	btn->setAutoRepeat(true);
