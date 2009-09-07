@@ -376,6 +376,7 @@ private:
 	sottoMenu *timed_manual_menu;
 private slots:
 	void manualTimedSelected(BtTime time, int temp);
+	void showSettingsMenu();
 };
 
 
@@ -399,6 +400,7 @@ private:
 	ScenarioMenu *scenario_menu;
 private slots:
 	void scenarioSelected(int scenario);
+	void showSettingsMenu();
 };
 
 

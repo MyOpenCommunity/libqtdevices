@@ -1053,12 +1053,18 @@ thermal_regulator *FSBannTermoReg4z::dev()
 	return _dev;
 }
 
+void FSBannTermoReg4z::showSettingsMenu()
+{
+	settings->resetIndex();
+	settings->showPage();
+}
+
 void FSBannTermoReg4z::createSettingsMenu()
 {
 	settings = new sottoMenu;
 	if (settings)
 	{
-		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(showPage()));
+		connect(navbar_button, SIGNAL(clicked()), SLOT(showSettingsMenu()));
 		// TODO: quando si tocca di nuovo questa parte, bisogna levare questo parentWidget()
 		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
 	}
@@ -1076,7 +1082,6 @@ void FSBannTermoReg4z::createSettingsMenu()
 	weekendSettings(settings, conf_root, _dev);
 
 	createButtonsBanners(_dev);
-	settings->hide();
 }
 
 FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent)
@@ -1101,12 +1106,18 @@ void FSBannTermoReg99z::setSeason(Season new_season)
 	FSBannTermoReg::setSeason(new_season);
 }
 
+void FSBannTermoReg99z::showSettingsMenu()
+{
+	settings->resetIndex();
+	settings->showPage();
+}
+
 void FSBannTermoReg99z::createSettingsMenu()
 {
 	settings = new sottoMenu;
 	if (settings)
 	{
-		connect(navbar_button, SIGNAL(clicked()), settings, SLOT(showPage()));
+		connect(navbar_button, SIGNAL(clicked()), SLOT(showSettingsMenu()));
 		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
 	}
 	else
@@ -1122,7 +1133,6 @@ void FSBannTermoReg99z::createSettingsMenu()
 	weekendSettings(settings, conf_root, _dev);
 
 	createButtonsBanners(_dev);
-	settings->hide();
 }
 
 //
