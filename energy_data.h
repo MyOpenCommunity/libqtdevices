@@ -58,7 +58,9 @@ private:
 	float cons_rate, prod_rate, temp_cons_rate, temp_prod_rate;
 	banner *banner_cost, *banner_prod;
 	// The number of decimal to show in cunsumption and production.
-	int n_decimal;
+	unsigned int n_decimal;
+	// The maximum number of integer to show in cunsumption and production.
+	unsigned int n_integer;
 	banner *addBanner(const QDomNode &config_node, QString desc, float& rate);
 	void showValue(banner *b, float value);
 
