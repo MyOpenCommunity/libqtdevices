@@ -445,6 +445,12 @@ void TestEnergyDevice::receiveCumulativeDayRequest()
 	t.checkSignals(QString("*#18*%1*54##").arg(where), 0);
 }
 
+void TestEnergyDevice::receiveCumulativeMonthRequest()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
+	t.checkSignals(QString("*18*56#10*%1##").arg(where), 0);
+}
+
 void TestEnergyDevice::testGetDateFromFrame()
 {
 	int month = 10;

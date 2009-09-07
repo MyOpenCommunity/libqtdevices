@@ -7,8 +7,6 @@
 #include <QtGlobal>
 #include <QList>
 
-#include <assert.h>
-
 const int MAX_VALUE = 255;
 
 
@@ -91,7 +89,7 @@ void EnergyDevice::requestCurrent() const
 		what = REQ_CURRENT_MODE_5;
 		break;
 	default:
-		assert(!"Unknown mode on the energy management!");
+		Q_ASSERT(!"Unknown mode on the energy management!");
 	}
 	sendRequest(what);
 }
@@ -169,7 +167,7 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 		// In some cases (when more than a ts is present in the system)
 		// a request frame can arrive from the monitor socket. We have to manage this
 		// situation.
-		if (!msg.whatArgCnt() || msg.IsStateFrame())
+		if (!msg.whatArgCnt() || msg.IsStateFrame() || msg.IsNormalFrame())
 			return;
 
 		qDebug("EnergyDevice::manageFrame -> frame read:%s", msg.frame_open);
@@ -316,7 +314,7 @@ void EnergyDevice::parseCumulativeDayGraph(const QStringList &buffer_frame, QVar
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
 		OpenMsg frame_parser(buffer_frame[i].toStdString());
-		assert(frame_parser.whatArgCnt() > 1);
+		Q_ASSERT_X(frame_parser.whatArgCnt() > 1, "EnergyDevice::parseCumulativeDayGraph", frame_parser.frame_open);
 		if (frame_parser.whatArgN(0) == 1)
 			values.append(frame_parser.whatArgN(2));
 		else if (frame_parser.whatArgN(0) == 9)
@@ -347,7 +345,7 @@ void EnergyDevice::parseCumulativeMonthGraph(const QStringList &buffer_frame, QV
 	for (int i = 0; i < buffer_frame.size(); ++i)
 	{
 		OpenMsg frame_parser(buffer_frame[i].toStdString());
-		assert(frame_parser.whatArgCnt() > 1);
+		Q_ASSERT_X(frame_parser.whatArgCnt() > 1, "EnergyDevice::parseCumulativeMonthGraph", frame_parser.frame_open);
 		values.append(frame_parser.whatArgN(1));
 		values.append(frame_parser.whatArgN(2));
 		if (frame_parser.whatArgN(0) != 1)
@@ -370,7 +368,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	if (what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH ||
 		what == DIM_DAY_GRAPH)
 	{
-		assert(msg.whatSubArgCnt() > 0);
+		Q_ASSERT_X(msg.whatSubArgCnt() > 0, "EnergyDevice::getDateFromFrame", msg.frame_open);
 		QDate current = QDate::currentDate();
 		int month = msg.whatSubArgN(0);
 		int day = msg.whatSubArgCnt() > 1 ? msg.whatSubArgN(1) : 1;

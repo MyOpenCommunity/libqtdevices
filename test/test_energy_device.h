@@ -40,6 +40,7 @@ private slots:
 	void receiveCumulativeYearGraph();
 	void receiveMonthlyAverage();
 	void receiveCumulativeDayRequest();
+	void receiveCumulativeMonthRequest();
 
 	void testGetDateFromFrame();
 	void testConsecutiveGraphFrames();

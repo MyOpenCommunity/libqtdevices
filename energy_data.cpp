@@ -16,6 +16,7 @@
 #include <QDebug>
 
 #include <assert.h>
+#include <math.h>
 
 // The language used for the floating point number
 QLocale loc(QLocale::Italian);
@@ -106,7 +107,8 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 	if((getTextChild(config_node, "mode").toInt()  == 1) || (getTextChild(config_node, "mode").toInt()  == 5))
 		unit_measure += "h";
 
-	n_decimal = getTextChild(currency_node, "n_decimal").toInt();
+	n_decimal = getTextChild(currency_node, "n_decimal").toUInt();
+	n_integer = getTextChild(currency_node, "n_integer").toUInt();
 
 	banner_cost = addBanner(getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, cons_rate);
 	banner_prod = addBanner(getElement(config_node, "prod"), tr("Production") + " " + unit_measure, prod_rate);
@@ -185,8 +187,11 @@ void EnergyCost::decreaseCost()
 
 void EnergyCost::increaseCost()
 {
-	temp_cons_rate += delta;
-	showValue(banner_cost, temp_cons_rate);
+	if (temp_cons_rate + delta < pow(10, n_integer))
+	{
+		temp_cons_rate += delta;
+		showValue(banner_cost, temp_cons_rate);
+	}
 }
 
 void EnergyCost::decreaseProd()
@@ -200,8 +205,11 @@ void EnergyCost::decreaseProd()
 
 void EnergyCost::increaseProd()
 {
-	temp_prod_rate += delta;
-	showValue(banner_prod, temp_prod_rate);
+	if (temp_prod_rate + delta < pow(10, n_integer))
+	{
+		temp_prod_rate += delta;
+		showValue(banner_prod, temp_prod_rate);
+	}
 }
 
 void EnergyCost::saveCostAndProd()
