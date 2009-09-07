@@ -11,6 +11,9 @@ TARGET = test
 CONFIG   += console
 CONFIG   -= app_bundle
 
+CONFIG += debug
+CONFIG -= release
+
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 
 TEMPLATE = app
