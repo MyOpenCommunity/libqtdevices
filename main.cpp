@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QHash>
 #include <QFile>
+#include <QTextCodec>
 
 #define TIMESTAMP
 #ifdef TIMESTAMP
@@ -152,6 +153,7 @@ int main(int argc, char **argv)
 	GeneralConfig general_config;
 	QApplication a(argc, argv);
 	QWSServer::setCursorVisible(false);
+	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // force the locale as UTF8
 
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
 	if (!qdom_appconfig.setContent(&file))
