@@ -89,7 +89,7 @@ bool MediaPlayer::play(QString track, bool write_output)
 		//const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
 		const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL};
 
-		QByteArray t = track.toLatin1();
+		QByteArray t = track.toLocal8Bit();
 		if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
 		{
 			mplayer_args[1] = "-playlist";
