@@ -22,7 +22,7 @@ allarme::allarme(const QString &name, char *indirizzo, QString IconaDx, altype t
 	type = t;
 	SetIcons(IconaDx);
 	descr->setText(name);
-	connect(bnav, SIGNAL(backClick()), this, SIGNAL(Back()));
+	connect(bnav, SIGNAL(backClick()), this, SIGNAL(Closed()));
 	connect(bnav, SIGNAL(upClick()), this, SIGNAL(Prev()));
 	connect(bnav, SIGNAL(downClick()), this, SIGNAL(Next()));
 	connect(bnav, SIGNAL(forwardClick()), this, SIGNAL(Delete()));

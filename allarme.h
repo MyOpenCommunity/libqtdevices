@@ -44,7 +44,6 @@ signals:
 	void Next();
 	void Prev();
 	void Delete();
-	void Back();
 };
 
 #endif // _ALLARME_H_
