@@ -108,6 +108,8 @@ public slots:
 	void doClearAlarms();
 	void request();
 
+	void plantInserted();
+
 private:
 /*!
   \param <numRighe> row number of the object
@@ -140,6 +142,8 @@ private:
 
 	Page *previous_page;
 	void loadItems(const QDomNode &config_node);
+
+	void clearAlarms();
 
 private slots:
 	void closeAlarms();

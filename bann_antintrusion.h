@@ -69,8 +69,6 @@ public slots:
 	void ToSendParz(bool s);
 	void openAckRx();
 	void openNakRx();
-protected:
-	virtual void hideEvent(QHideEvent *event);
 private:
 	static const int MAX_ZONE = 8;
 	Keypad *tasti;

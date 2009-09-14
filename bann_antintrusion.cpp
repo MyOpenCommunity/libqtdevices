@@ -297,17 +297,14 @@ void impAnti::Disinserisci()
 void impAnti::Insert1()
 {
 	if (tasti->getText().isEmpty())
-	{
-		parentWidget()->show();
 		return;
-	}
+
 	passwd = tasti->getText();
 
 	qDebug("impAnti::Insert()");
 	if (!send_part_msg)
 	{
 		Insert3();
-		parentWidget()->show();
 		return;
 	}
 	QString f = "*5*50#" + passwd + "#";
@@ -319,7 +316,6 @@ void impAnti::Insert1()
 
 	send_part_msg = false;
 	part_msg_sent = true;
-	parentWidget()->show();
 }
 
 void impAnti::Insert2()
@@ -336,7 +332,6 @@ void impAnti::Insert3()
 	qDebug("impAnti::Insert3()");
 	emit clearAlarms();
 	dev->sendFrame("*5*36#" + passwd + "*0##");
-	parentWidget()->show();
 	inserting = false;
 	QTimer::singleShot(5000, this, SLOT(inizializza()));
 	ToSendParz(false);
@@ -348,7 +343,6 @@ void impAnti::DeInsert()
 	QString pwd = tasti->getText();
 	if (!pwd.isEmpty())
 		dev->sendFrame("*5*36#" + pwd + "*0##");
-	parentWidget()->show();
 }
 
 void impAnti::openAckRx()
@@ -396,12 +390,3 @@ void impAnti::inizializza(bool forza)
 	dev->sendInit("*#5*0##");
 }
 
-void impAnti::hideEvent(QHideEvent *event)
-{
-	qDebug("impAnti::hideEvent()");
-	if (tasti && !tasti->isHidden())
-	{
-		qDebug("HIDING KEYBOARD");
-		tasti->hide();
-	}
-}
