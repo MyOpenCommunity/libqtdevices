@@ -26,4 +26,20 @@ public slots:
 	void frame_rx_handler(char *frame);
 };
 
+
+class PPTSceDevice : public device
+{
+Q_OBJECT
+public:
+	PPTSceDevice(QString address);
+	void turnOn() const;
+	void turnOff() const;
+	void increase() const;
+	void decrease() const;
+	void stop() const;
+
+private:
+	void sendCommand(QString what) const;
+};
+
 #endif // DEV_AUTOMATION_H
