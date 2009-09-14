@@ -13,8 +13,6 @@
 #include <QDomNode>
 #include <QWidget>
 
-#include <assert.h>
-
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
@@ -22,6 +20,8 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	numRighe = NUM_RIGHE;
 	previous_page = 0;
 
+	// TODO: the "impianto" is a sottoMenu, but only one banner can be put inside
+	// it (an impAnti instance).. so replace the sottomenu with the banner!
 	impianto = new sottoMenu(this, 0 ,MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
 
 	zone = new sottoMenu(this,4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
@@ -66,7 +66,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			b->setText(descr);
 			b->setId(id);
 			impianto->appendBanner(b);
-			connect(b, SIGNAL(impiantoInserito()), SLOT(doClearAlarms()));
+			connect(b, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
 			connect(b, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
 			connect(b, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -97,13 +97,19 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			zone->forceDraw();
 		}
 		else
-			assert(!"Type of item not handled on antintrusion page!");
+			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
 	}
+}
+
+void Antintrusion::plantInserted()
+{
+	clearAlarms();
+	closeAlarms();
 }
 
 Antintrusion::~Antintrusion()
 {
-	doClearAlarms();
+	clearAlarms();
 }
 
 void Antintrusion::IsParz(bool ab)
@@ -272,7 +278,8 @@ void Antintrusion::gesFrame(char*frame)
 	if (aggiorna)
 	{
 		qDebug("ARRIVATO ALLARME!!!!");
-		assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+		Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::gesFrame",
+			qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
 		if (!previous_page)
 			previous_page = currentPage();
 		allarme *curr = allarmi.at(curr_alarm);
@@ -302,7 +309,9 @@ void Antintrusion::setNavBarMode(uchar c)
 void Antintrusion::nextAlarm()
 {
 	qDebug("antiintrusione::nextAlarm()");
-	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::nextAlarm",
+		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
+
 	if (++curr_alarm >= allarmi.size())
 		curr_alarm = 0;
 
@@ -312,7 +321,8 @@ void Antintrusion::nextAlarm()
 void Antintrusion::prevAlarm()
 {
 	qDebug("antiintrusione::prevAlarm()");
-	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::prevAlarm",
+		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
 	if (--curr_alarm < 0)
 		curr_alarm = allarmi.size() - 1;
 
@@ -321,7 +331,8 @@ void Antintrusion::prevAlarm()
 
 void Antintrusion::deleteAlarm()
 {
-	assert(curr_alarm >= 0 && curr_alarm < allarmi.size() && "Current alarm index out of range!");
+	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::deleteAlarm",
+		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
 	allarmi.takeAt(curr_alarm)->deleteLater();
 
 	if (allarmi.isEmpty())
@@ -349,9 +360,19 @@ void Antintrusion::showAlarms()
 
 void Antintrusion::doClearAlarms()
 {
-	qDebug("antiintrusione::doClearAlarms()");
+	clearAlarms();
+	previous_page = 0;
+}
+
+void Antintrusion::clearAlarms()
+{
+	qDebug("antiintrusione::clearAlarms()");
 	while (!allarmi.isEmpty())
-		delete allarmi.takeFirst();
+	{
+		allarme *a = allarmi.takeFirst();
+		a->disconnect();
+		a->deleteLater();
+	}
 }
 
 void Antintrusion::requestZoneStatus()
