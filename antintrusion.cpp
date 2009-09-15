@@ -103,7 +103,11 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 void Antintrusion::plantInserted()
 {
 	clearAlarms();
-	closeAlarms();
+	if (previous_page)
+	{
+		previous_page->showPage();
+		previous_page = 0;
+	}
 }
 
 Antintrusion::~Antintrusion()
