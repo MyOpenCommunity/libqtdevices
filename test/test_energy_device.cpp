@@ -180,16 +180,12 @@ void TestEnergyDevice::receiveDailyAverageGraph()
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
 	QStringList frames;
 	frames << "*#18*20*57#9*1*2*5##" << "*#18*20*57#9*2*0*9*3##";
-	QVariant result = t.getResult(frames);
-
-	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
 	data.graph[1] = 9;
 	data.date = getDate(month, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
-
-	QVERIFY(data == result.value<GraphData>());
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveDailyAverageGraph2()
@@ -207,9 +203,6 @@ void TestEnergyDevice::receiveDailyAverageGraph2()
 	frames << "*#18*20*57#9*15*7*3*3##" << "*#18*20*57#9*16*1*2*4##";
 	frames << "*#18*20*57#9*17*1*2*4##" << "*#18*20*57#9*18*0*0*0##";
 	frames << "*#18*20*57#9*19*0##";
-
-	QVariant result = t.getResult(frames);
-	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
 	data.graph[1] = 265;
@@ -239,7 +232,7 @@ void TestEnergyDevice::receiveDailyAverageGraph2()
 	data.date = getDate(9, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 
-	QVERIFY(data == result.value<GraphData>());
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveDayGraph()
@@ -251,16 +244,13 @@ void TestEnergyDevice::receiveDayGraph()
 	QString tmp(QString("*#18*%1*%2#%3#%4*1*45*210##").arg(where).arg(EnergyDevice::DIM_DAY_GRAPH).arg(month).arg(day));
 	QStringList frames;
 	frames << tmp;
-	QVariant result = t.getResult(frames);
-
-	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
 	data.graph[1] = 210;
 	data.date = getDate(month, day);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
 
-	QVERIFY(data == result.value<GraphData>());
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveDayGraph2()
@@ -274,9 +264,6 @@ void TestEnergyDevice::receiveDayGraph2()
 
 	frames << tmp + "*1*45*210##"
 		<< tmp + "*2*12*67*255##";
-	QVariant result = t.getResult(frames);
-
-	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
 	data.graph[1] = 210;
@@ -286,7 +273,7 @@ void TestEnergyDevice::receiveDayGraph2()
 	data.date = getDate(month, day);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
 
-	QVERIFY(data == result.value<GraphData>());
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveDayGraph3()
@@ -308,9 +295,6 @@ void TestEnergyDevice::receiveDayGraph3()
 		<< tmp + "*8*222*223*224##"
 		<< tmp + "*9*253*254*9999##"
 		<< tmp + "*10*9999*6666##";
-	QVariant result = t.getResult(frames);
-
-	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
 	data.graph[1] = 0;
@@ -340,7 +324,7 @@ void TestEnergyDevice::receiveDayGraph3()
 	data.date = getDate(month, day);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
 
-	QVERIFY(data == result.value<GraphData>());
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveCumulativeMonthGraph()
@@ -352,14 +336,13 @@ void TestEnergyDevice::receiveCumulativeMonthGraph()
 	QStringList frames;
 
 	frames << tmp + "*1*3*255##";
-	QVariant result = t.getResult(frames);
-	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
 	data.graph[1] = (3 << 8) + 255;
 	data.date = getDate(month, 1);
 	data.type = EnergyDevice::CUMULATIVE_MONTH;
-	QVERIFY(data == result.value<GraphData>());
+
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveCumulativeMonthGraph2()
@@ -375,8 +358,7 @@ void TestEnergyDevice::receiveCumulativeMonthGraph2()
 		<< tmp + "*2*20*90*255##"
 		<< tmp + "*3*255*0*45##"
 		<< tmp + "*4*45*150*185##";
-	QVariant result = t.getResult(frames);
-	QVERIFY(result.canConvert<GraphData>());
+
 
 	GraphData data;
 	data.graph[1] = (3 << 8) + 255;
@@ -387,7 +369,7 @@ void TestEnergyDevice::receiveCumulativeMonthGraph2()
 	data.date = getDate(month, 1);
 	data.type = EnergyDevice::CUMULATIVE_MONTH;
 
-	QVERIFY(data == result.value<GraphData>());
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveCumulativeYearGraph()
@@ -404,8 +386,6 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	frames << QString("*#18*%1*52#9#%2*106##").arg(where).arg(month);
 	frames << QString("*#18*%1*52#9#%2*4294967295##").arg(where).arg(invalid_month);
 	frames << QString("*#18*%1*53*95##").arg(where);
-	QVariant result = t.getResult(frames);
-	QVERIFY(result.canConvert<GraphData>());
 
 	GraphData data;
 	data.type = EnergyDevice::CUMULATIVE_YEAR;
@@ -424,7 +404,7 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	int invalid_index = d < 0 ? d + 12 : d;
 	data.graph[invalid_index] = 0;
 
-	QVERIFY(data == result.value<GraphData>());
+	t.check(frames, data);
 }
 
 void TestEnergyDevice::receiveMonthlyAverage()

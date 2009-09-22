@@ -22,6 +22,8 @@ public:
 	DeviceTester(device *d, int dim);
 
 	template<class T> void check(const QStringList &frames, const T &result);
+
+	// Overload methods, provided for convenience.
 	template<class T> void check(QString frame, const T &result);
 	void check(QString frame, const char *result);
 
@@ -29,13 +31,12 @@ public:
 	void checkSignals(const QStringList &frames, int num_signals);
 	void checkSignals(QString frame, int num_signals);
 
-	QVariant getResult(const QStringList& frames);
-
 private:
 	QSignalSpy spy;
 	int dim_type;
 	device *dev;
 	void sendFrames(const QStringList& frames);
+	QVariant getResult(const QStringList& frames);
 };
 
 

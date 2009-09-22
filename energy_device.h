@@ -121,7 +121,7 @@ struct GraphData
 	QMap<int, int> graph;
 	QDate date;
 	EnergyDevice::GraphType type;
-	bool operator==(const GraphData &other)
+	bool operator==(const GraphData &other) const
 	{
 		return (graph == other.graph) && (date == other.date) &&
 			(type == other.type);
