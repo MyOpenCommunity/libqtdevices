@@ -10,21 +10,21 @@ isEmpty(TEST_ARCH) {
 	message(x86 architecture detected.)
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
 	DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
-	LIBS+= -L../common_files/lib/x86 -lcommon
+	LIBS += -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
 } else {
 	message(ARM architecture detected.)
-	LIBS+= -L../common_files -lcommon
+	LIBS += -L../common_files -lcommon
 	OBJECTS_DIR = obj/arm
 	MOC_DIR = moc/arm
 	DEFINES += BT_EMBEDDED
 
 	HEADERS += QWSMOUSE/qmouse_qws.h \
-			   QWSMOUSE/qmouselinuxevent-2-6_qws.h
+		QWSMOUSE/qmouselinuxevent-2-6_qws.h
 
 	SOURCES += QWSMOUSE/qmouse_qws.cpp \
-			   QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
+		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
 }
 
 
@@ -41,8 +41,8 @@ CONFIG(release,debug|release) {
 }
 DEFINES += QT_QWS_EBX BTWEB
 
-LIBS+= -lssl
-INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib $(ARMLINUX)
+LIBS += -lssl
+INCLUDEPATH += . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
@@ -100,7 +100,7 @@ HEADERS += actuators.h \
            feedparser.h \
            fontmanager.h \
            frame_interpreter.h \
-	   frame_receiver.h \
+           frame_receiver.h \
            generic_functions.h \
            genpage.h \
            homepage.h \
@@ -200,7 +200,7 @@ SOURCES += actuators.cpp \
            feedparser.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
-	   frame_receiver.cpp \
+           frame_receiver.cpp \
            generic_functions.cpp \
            genpage.cpp \
            homepage.cpp \
@@ -248,7 +248,7 @@ SOURCES += actuators.cpp \
            transitionwidget.cpp \
            version.cpp \
            videoentryphone.cpp \
-		   xml_functions.cpp
+           xml_functions.cpp
 
 TRANSLATIONS += linguist-ts/btouch_ar.ts \
                 linguist-ts/btouch_de.ts \
