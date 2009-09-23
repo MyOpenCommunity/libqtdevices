@@ -47,8 +47,8 @@ QT += network xml
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
-QMAKE_CXXFLAGS_RELEASE += -O2
-QMAKE_CXXFLAGS += -fexceptions
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE += -O3
 
 # Input
 HEADERS += actuators.h \
