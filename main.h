@@ -119,10 +119,6 @@ void resetTimer(int signo);
  *  The file name to watch to generate the \a configuration page
  */
 #define FILE_AGGIORNAMENTO	   "MODALITA_AGGIORNAMENTO"
-/*! \def FILE_AGGIORNAMENTO_ETH
- *  The file name to watch to generate the \a configuration page
- */
-#define FILE_AGGIORNAMENTO_ETH     "MODALITA_AGGIORNAMENTO_ETH"
 /*! \def FILE_CHANGE_CONF
  *  The file to generate when changing the user-configurationFile to avoid beinf resetted from bt_processi
  */
