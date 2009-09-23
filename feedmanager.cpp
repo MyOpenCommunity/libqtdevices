@@ -9,8 +9,6 @@
 #include <QDebug>
 #include <QVector>
 
-#include <assert.h>
-
 #define ROWS_PER_PAGE 4
 
 
@@ -105,7 +103,7 @@ void FeedManager::setupPage()
 		break;
 
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 
@@ -120,14 +118,16 @@ void FeedManager::itemIsClicked(int item)
 	switch (status)
 	{
 	case SELECTION:
-		assert(item >= 0 && item < (int)feed_list.size() && "Item index out of range!");
+		Q_ASSERT_X(item >= 0 && item < (int)feed_list.size(), "FeedManager::itemIsClicked",
+			"Item index out of range!");
 		page_indexes["/"] = list_browser->getCurrentPage();
 		qDebug() << "parse url: " << feed_list[item].path;
 		parser.parse(feed_list[item].path);
 		break;
 
 	case BROWSING:
-		assert(item >= 0 && item < (int)data.entry_list.size() && "Item index out of range!");
+		Q_ASSERT_X(item >= 0 && item < (int)data.entry_list.size(), "FeedManager::itemIsClicked",
+			"Item index out of range!");
 		page_indexes[data.feed_title] = list_browser->getCurrentPage();
 		feed_widget->setFeedInfo(data.entry_list[item]);
 		initTransition();
@@ -138,7 +138,7 @@ void FeedManager::itemIsClicked(int item)
 		break;
 
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }
@@ -170,7 +170,7 @@ void FeedManager::backClick()
 		startTransition();
 		break;
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }
@@ -187,7 +187,7 @@ void FeedManager::upClick()
 		feed_widget->scrollUp();
 		break;
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }
@@ -204,7 +204,7 @@ void FeedManager::downClick()
 		feed_widget->scrollDown();
 		break;
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }

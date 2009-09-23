@@ -12,9 +12,6 @@
 #include "generic_functions.h" // createMsgOpen
 #include "xml_functions.h" // getChildren, getTextChild
 
-#include <assert.h>
-
-
 bannLoads::bannLoads(sottoMenu *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
@@ -38,7 +35,7 @@ void Loads::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
-		assert(id == CARICO && "Type of item not handled on loads page!");
+		Q_ASSERT_X(id == CARICO, "Loads::loadItems", "Type of item not handled on loads page!");
 		QString where = getTextChild(item, "where");
 		QString img = IMG_PATH + getTextChild(item, "cimg1");
 

@@ -20,8 +20,6 @@
 #include <QLabel>
 #include <QFont>
 
-#include <assert.h>
-
 /*****************************************************************
  ** Ambiente diffusione sonora multicanale
  ****************************************************************/

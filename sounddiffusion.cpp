@@ -24,8 +24,6 @@
 #include <QDebug>
 #include <QLabel>
 
-#include <assert.h>
-
 
 AudioSources::AudioSources(QWidget *parent, const QDomNode &config_node) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE, 1)
 {

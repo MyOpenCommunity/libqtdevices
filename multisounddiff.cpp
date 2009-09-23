@@ -22,8 +22,6 @@
 #include <QPoint>
 #include <QDebug>
 
-#include <assert.h>
-
 AudioSources *MultiSoundDiffInterface::sorgenti = 0;
 
 MultiSoundDiffInterface::~MultiSoundDiffInterface()

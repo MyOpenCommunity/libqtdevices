@@ -8,8 +8,6 @@
 #include <QDebug>
 #include <QList>
 
-#include <assert.h>
-
 
 Automation::Automation(const QDomNode &config_node)
 {
@@ -66,7 +64,7 @@ void Automation::loadItems(const QDomNode &config_node)
 			b = new PPTStat(this, where, cid);
 			break;
 		default:
-			assert(!"Type of item not handled on automation page!");
+			qFatal("Type of item not handled on automation page!");
 		}
 
 		b->setText(getTextChild(item, "descr"));

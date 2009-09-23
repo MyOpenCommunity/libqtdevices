@@ -28,8 +28,6 @@
 #include <QDebug>
 #include <QTime>
 
-#include <assert.h>
-
 #define BROWSER_ROWS_PER_PAGE 4
 
 #define MEDIASERVER_MSEC_WAIT_TIME 2000
@@ -256,7 +254,7 @@ void MultimediaSource::handleChoiceSource(int button_id)
 		sourceMenu(FILE_SOURCE);
 		play_window->stop();
 	}
-	assert(play_window && "PlayWindow not set!");
+	Q_ASSERT_X(play_window, "MultimediaSource::handleChoiceSource", "PlayWindow not set!");
 
 	if (play_window->isPlaying())
 		play_window->showPage();

@@ -8,9 +8,6 @@
 #include <QDebug>
 #include <QList>
 
-#include <assert.h>
-
-
 static QList<QString> getAddresses(QDomNode item)
 {
 	QList<QString> l;
@@ -90,7 +87,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 			break;
 		}
 		default:
-			assert(!"Type of item not handled on lighting page!");
+			qFatal("Type of item not handled on lighting page!");
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);

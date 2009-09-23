@@ -8,8 +8,6 @@
 #include <QLayout>
 #include <QDebug>
 
-#include <assert.h>
-
 
 TransitionWidget::TransitionWidget(QStackedWidget *win, int time) : timeline(time, this)
 {
@@ -130,7 +128,8 @@ void MosaicTransition::initTransition()
 
 void MosaicTransition::triggerRepaint(int index)
 {
-	assert(index < mosaic_map.size() && "Invalid index value!");
+	Q_ASSERT_X(index < mosaic_map.size(), "MosaicTransition::triggerRepaint",
+		"Invalid index value!");
 	prev_index = curr_index;
 	curr_index = index;
 	update();

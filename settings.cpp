@@ -12,8 +12,6 @@
 
 #include <QDebug>
 
-#include <assert.h>
-
 
 Settings::Settings(const QDomNode &config_node)
 {
@@ -65,7 +63,7 @@ void Settings::loadItems(const QDomNode &config_node)
 			b = new bannOnDx(this, ICON_INFO, new LanSettings(item));
 			break;
 		default:
-			assert(!"Type of item not handled on settings page!");
+			qFatal("Type of item not handled on settings page!");
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);

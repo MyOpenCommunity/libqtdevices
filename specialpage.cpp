@@ -13,8 +13,6 @@
 #include <QDebug>
 #include <QLabel>
 
-#include <assert.h>
-
 
 #define DIM_BUT_BACK 60
 
@@ -54,7 +52,7 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 			break;
 		}
 		default:
-			assert(!"Unknown item type on SpecialPage!");
+			qFatal("Unknown item type on SpecialPage!");
 		}
 	}
 }

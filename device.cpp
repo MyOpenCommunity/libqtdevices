@@ -9,8 +9,6 @@
 #include <QStringList>
 #include <QDebug>
 
-#include <assert.h>
-
 // Inizialization of static member
 Client *device::client_comandi = 0;
 Client *device::client_richieste = 0;
@@ -68,14 +66,14 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 
 void device::sendFrame(QString frame) const
 {
-	assert(client_comandi && "Client comandi not set!");
+	Q_ASSERT_X(client_comandi, "device::sendFrame", "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendInit(QString frame) const
 {
-	assert(client_richieste && "Client richieste not set!");
+	Q_ASSERT_X(client_richieste, "device::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }
@@ -150,7 +148,7 @@ void device::init(bool force)
 		if (force)
 		{
 			qDebug("device status force initialize");
-			assert(interpreter && "interpreter not set!");
+			Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
 			interpreter->get_init_messages(ds, msgl);
 			for (QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it)
 			{
@@ -172,7 +170,7 @@ void device::init(bool force)
 			else
 			{
 				qDebug("getting init message");
-				assert(interpreter && "interpreter not set!");
+				Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
 				interpreter->get_init_messages(ds, msgl);
 				for (QStringList::Iterator it = msgl.begin();it != msgl.end(); ++it)
 				{

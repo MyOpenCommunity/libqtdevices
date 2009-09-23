@@ -19,8 +19,6 @@
 
 #include <QDebug>
 
-#include <assert.h>
-
 #define STOPNGO_BANN_IMAGE ICON_STOPNGO_CHIUSO
 
 
@@ -64,7 +62,7 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 			break;
 		}
 		default:
-			assert(!"Type of class not handled on supervision page!");
+			qFatal("Type of class not handled on supervision page!");
 		}
 	}
 

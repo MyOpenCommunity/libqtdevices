@@ -1,8 +1,6 @@
 #include "displaycontrol.h"
 #include "generic_functions.h" // setCfgValue, setBrightnessLevel, setBacklightOn
 
-#include <assert.h>
-
 
 DisplayControl::DisplayControl()
 {
@@ -52,7 +50,7 @@ void DisplayControl::_setBrightness(BrightnessLevel level)
 		break;
 
 	default:
-		assert(!"Unknown level for brightness");
+		qFatal("Unknown level for brightness");
 	}
 
 	// Operative status has the same values for all levels

@@ -24,8 +24,6 @@
 #include <QDebug>
 #include <QApplication> //qapp
 
-#include <assert.h> // assert
-
 
 // Inizialization of static member
 Client *banner::client_comandi = 0;
@@ -108,7 +106,7 @@ QString banner::getPressedIconName(QString iconname)
 
 void banner::SetIcons(int id, QString name, QString pressed_name)
 {
-	assert(id < MAX_PRESS_ICON && id >= 0 && "Index of icon out of range!");
+	Q_ASSERT_X(id < MAX_PRESS_ICON && id >= 0, "banner::SetIcons", "Index of icon out of range!");
 	Icon[id]      = bt_global::icons_cache.getIcon(name);
 	if (pressed_name.isNull())
 		pressed_name = getPressedIconName(name);
@@ -638,14 +636,14 @@ QString banner::getNameRoot(QString full_string, QString text_to_strip)
 
 void banner::sendFrame(QString frame) const
 {
-	assert(client_comandi && "Client comandi not set!");
+	Q_ASSERT_X(client_comandi, "banner::sendFrame", "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
 void banner::sendInit(QString frame) const
 {
-	assert(client_richieste && "Client richieste not set!");
+	Q_ASSERT_X(client_richieste, "banner::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }

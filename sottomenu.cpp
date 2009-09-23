@@ -20,8 +20,6 @@
 #include <QRegExp>
 #include <QDebug>
 
-#include <assert.h>
-
 
 sottoMenu::sottoMenu(QWidget *parent, uchar navBarMode,int wi,int hei, uchar n) : Page(parent)
 {
@@ -127,7 +125,7 @@ void sottoMenu::showItem(int id)
 void sottoMenu::draw()
 {
 	qDebug() << "sottoMenu::draw()";
-	assert(indice >= 0 && "index of elencoBanner (sottoMenu) less than 0!!");
+	Q_ASSERT_X(indice >= 0, "sottoMenu::draw", "index of elencoBanner (sottoMenu) less than 0!!");
 	if (indicold != indice)
 	{
 		for (int i = 0; i < elencoBanner.size(); ++i)

@@ -20,8 +20,6 @@
 #include <QRegExp>
 #include <QDebug>
 
-#include <assert.h>
-
 #define IMG_OK IMG_PATH "btnok.png"
 
 static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
@@ -147,7 +145,8 @@ void ProgramMenu::setSeason(Season new_season)
 
 void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
 {
-	assert((what == "scen" || what == "prog") && "'what' must be either 'prog' or 'scen'");
+	Q_ASSERT_X(what == "scen" || what == "prog", "ProgramMenu::createSeasonBanner",
+		"'what' must be either 'prog' or 'scen'");
 
 	bool create_banner = false;
 	if (elencoBanner.isEmpty())

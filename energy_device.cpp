@@ -89,7 +89,7 @@ void EnergyDevice::requestCurrent() const
 		what = REQ_CURRENT_MODE_5;
 		break;
 	default:
-		Q_ASSERT(!"Unknown mode on the energy management!");
+		qFatal("Unknown mode on the energy management!");
 	}
 	sendRequest(what);
 }

@@ -15,7 +15,6 @@
 #include <QLocale>
 #include <QDebug>
 
-#include <assert.h>
 #include <math.h>
 
 // The language used for the floating point number
@@ -95,7 +94,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 {
 	QDomElement currency_node = getElement(config_node, "currency");
-	assert(!currency_node.isNull() && "currency node null!");
+	Q_ASSERT_X(!currency_node.isNull(), "EnergyCost::EnergyCost", "currency node null!");
 
 	bool ok = true;
 	delta = loc.toFloat(getTextChild(currency_node, "delta"), &ok);
@@ -246,7 +245,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node)
 
 void EnergyInterface::loadItems(const QDomNode &config_node)
 {
-	assert(bt_global::skin->hasContext() && "Skin context not set!");
+	Q_ASSERT_X(bt_global::skin->hasContext() , "EnergyInterface::loadItems", "Skin context not set!");
 	int mode = getTextChild(config_node, "mode").toInt();
 	QString energy_type = getTextChild(config_node, "descr");
 	QString measure = getTextChild(config_node, "measure");

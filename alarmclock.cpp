@@ -24,8 +24,6 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <assert.h>
-
 
 AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 {
@@ -422,7 +420,7 @@ void AlarmClock::verificaSveglia()
 				bt_global::btmain->svegl(true);
 			}
 			else
-				assert(!"Unknown sveglia type!");
+				qFatal("Unknown sveglia type!");
 
 			qDebug("PARTE LA SVEGLIA");
 

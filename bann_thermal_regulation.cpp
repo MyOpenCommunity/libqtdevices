@@ -16,8 +16,6 @@
 #include <QLabel>
 #include <QDebug>
 
-#include <assert.h>
-
 #define I_OK  IMG_PATH"btnok.png"
 #define IMG_SETTINGS IMG_PATH"set.png"
 #define IMG_PLUS IMG_PATH "btnplus.png"
@@ -1012,7 +1010,8 @@ void FSBannTermoReg::setSeason(Season new_season)
 QString FSBannTermoReg::lookupProgramDescription(QString season, QString what, int program_number)
 {
 	// summer/prog/p[program_number]
-	assert((what == "prog" || what == "scen") && "'what' must be either 'prog' or 'scen'");
+	Q_ASSERT_X(what == "prog" || what == "scen", "FSBannTermoReg::lookupProgramDescription",
+		"'what' must be either 'prog' or 'scen'");
 	QString name = what.left(1);
 	QString path = season + "/" + what + "/" + name + QString::number(program_number);
 	QDomElement node = getElement(conf_root, path);

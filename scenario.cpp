@@ -9,8 +9,6 @@
 #include <QDebug>
 #include <QList>
 
-#include <assert.h>
-
 
 Scenario::Scenario(const QDomNode &config_node)
 {
@@ -81,7 +79,7 @@ void Scenario::loadItems(const QDomNode &config_node)
 			break;
 		}
 		default:
-			assert(!"Type of item not handled on scenario page!");
+			qFatal("Type of item not handled on scenario page!");
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);

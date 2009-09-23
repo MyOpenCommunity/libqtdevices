@@ -18,8 +18,6 @@
 #include <QDir>
 #include <QFile>
 
-#include <assert.h>
-
 
 // TODO: create a global locale object
 namespace
@@ -1889,7 +1887,7 @@ void device_condition_aux::set_condition_value(QString s)
 
 void device_condition_aux::status_changed(QList<device_status*> sl)
 {
-	assert(!"Old status changed on device_condition_aux not implemented!");
+	qFatal("Old status changed on device_condition_aux not implemented!");
 }
 
 void device_condition_aux::OK()

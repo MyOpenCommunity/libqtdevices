@@ -8,8 +8,6 @@
 
 #include <QLabel>
 
-#include <assert.h>
-
 
 CleanScreen::CleanScreen(QString img_clean, int clean_time)
 {

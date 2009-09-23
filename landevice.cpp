@@ -5,8 +5,6 @@
 #include <QDebug>
 #include <QStringList>
 
-#include <assert.h>
-
 // the request delay in milliseconds
 #define STATUS_REQUEST_DELAY 1000
 
@@ -96,7 +94,7 @@ void LanDevice::manageFrame(OpenMsg &msg)
 		}
 		default:
 		{
-			assert(what_args == 4); // IPv4 ip are composed by 4 parts
+			Q_ASSERT(what_args == 4); // IPv4 ip are composed by 4 parts
 			QStringList parts;
 			for (int i = 0; i < what_args; ++i)
 				parts << QString::number(msg.whatArgN(i));

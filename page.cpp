@@ -10,8 +10,6 @@
 #include <QTime>
 #include <QDir>
 
-#include <assert.h>
-
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 
 // The defines to grab screenshot of pages
@@ -29,7 +27,7 @@ bool Page::block_transitions = false;
 
 Page::Page(QWidget *parent) : QWidget(parent)
 {
-	assert(main_window && "Main window not set!");
+	Q_ASSERT_X(main_window, "Page::Page", "Main window not set!");
 
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
@@ -107,14 +105,14 @@ void Page::showPage()
 
 void Page::sendFrame(QString frame) const
 {
-	assert(client_comandi && "Client comandi not set!");
+	Q_ASSERT_X(client_comandi, "Page::sendFrame", "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
 void Page::sendInit(QString frame) const
 {
-	assert(client_richieste && "Client richieste not set!");
+	Q_ASSERT_X(client_richieste, "Page::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }

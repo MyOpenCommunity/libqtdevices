@@ -17,8 +17,6 @@
 #include <qmath.h>
 
 #include <stdlib.h> // RAND_MAX
-#include <assert.h>
-
 #define BALL_NUM 5
 
 inline void setRandomColor(QWidget *w)
@@ -49,7 +47,7 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 	case ScreenSaver::NONE:
 		return 0;
 	default:
-		assert(!"Type of screensaver not handled!");
+		qFatal("Type of screensaver not handled!");
 	}
 }
 
