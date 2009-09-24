@@ -279,6 +279,8 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		if (!previous_page)
 			previous_page = currentPage();
 		allarme *curr = allarmi.at(curr_alarm);
+		// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
+		bt_global::btmain->setPreviousPage(curr);
 		curr->showPage();
 		ctrlAllarm();
 	}
