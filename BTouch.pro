@@ -28,7 +28,7 @@ isEmpty(TEST_ARCH) {
 }
 
 
-CONFIG += qt warn_on
+CONFIG += qt warn_on silent
 CONFIG -= debug_and_release
 
 CONFIG(debug,debug|release) {
