@@ -218,8 +218,8 @@ StopngoPage::StopngoPage(QString where, int id, QString pageTitle)
 	this->id = id;
 	this->pageTitle = pageTitle;
 
-	statusBmp    = 0;
-	autotestFreq = 0;
+	statusBmp    = -1;
+	autotestFreq = -1;
 
 	freqSendTimer = NULL;
 	labelAutoArm = labelVerify = NULL;
