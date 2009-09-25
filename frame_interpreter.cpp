@@ -1886,29 +1886,15 @@ void frame_interpreter_sound_matr_device::handle_frame(openwebnet_ext m, device_
 	}
 	else
 	{
-		if ((strcmp(m.Extract_chi(), "16") == 0) &&  (atoi(m.Extract_cosa()) == 3) && ((atoi(m.Extract_dove()) >= 111)))
-		{
-			qDebug("frame_sound_matr_device::handle_frame, normal frame");
-			stat_var curr_act(stat_var::ACTIVE_SOURCE);
-			char ambiente[2];
-			sprintf(ambiente,"%d", ((atoi(m.Extract_dove())-100)/10));
-			ds->read(atoi(ambiente)-1, curr_act);
-			qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
-			act = atoi(m.Extract_dove())-100-(10*(atoi(ambiente)));
-			qDebug("New active source = %d", act);
-			curr_act.set_val(act);
-			ds->write_val(atoi(ambiente)-1, curr_act);
-			do_event = true;
-		}
 		//*22*2#4#1*5#2#3##
 		if ((strcmp(m.Extract_chi(), "22") == 0) && (strncmp(m.Extract_cosa(), "2#4#", 4) == 0) &&
 			(strcmp(m.Extract_dove(), "5") == 0) && (strcmp(m.Extract_livello(), "2") == 0))
 		{
 			qDebug("frame_sound_matr_device::handle_frame, normal frame WHO = 22");
 			stat_var curr_act(stat_var::ACTIVE_SOURCE);
-			char ambiente[2];
+			char ambiente[3];
 			sprintf(ambiente,"%d", atoi(m.Extract_cosa()+4));
-			if(atoi(ambiente) != 0)
+			if ((atoi(ambiente) != 0) && (atoi(ambiente) != 15))
 			{
 				ds->read(atoi(ambiente)-1, curr_act);
 				qDebug("Curr active source for amb %s = %d", ambiente, curr_act.get_val());
