@@ -395,6 +395,11 @@ void BtMain::unrollPages()
 		}
 }
 
+void BtMain::setPreviousPage(Page *page)
+{
+	prev_page = page;
+}
+
 void BtMain::gesScrSav()
 {
 	unsigned long tiempo, tiempo_press;

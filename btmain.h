@@ -60,6 +60,8 @@ public:
 
 	void setPwd(bool, QString);
 
+	void setPreviousPage(Page *page);
+
 private slots:
 	void hom();
 	void init();
