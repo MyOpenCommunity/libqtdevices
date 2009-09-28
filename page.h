@@ -17,7 +17,7 @@
 #include <QWidget>
 
 class Client;
-class QStackedWidget;
+class MainWindow;
 class QVBoxLayout;
 class TransitionWidget;
 
@@ -51,31 +51,24 @@ public:
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
 
-	static void setMainWindow(QStackedWidget *window);
-	static void installTransitionWidget(TransitionWidget *tr);
-
-	// block the current transition if present and the future transitions until the "unlock"
-	static void blockTransitions(bool);
+	static void setMainWindow(MainWindow *window);
 
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
-	/// only show the page in fullscreen mode.
+	/// show the page in fullscreen mode and call the transition effect if present.
 	virtual void showPage();
 
-protected:
-	// Init the transition widget with the current page
-	void initTransition();
-	// Let's start the transition
-	void startTransition();
+	// The the page as the current page on the main window
+	void setCurrentPage();
 
-	static Page *currentPage();
+protected:
+	Page *currentPage();
+	void startTransition(const QPixmap &prev_image);
 
 private:
+	static MainWindow *main_window;
 	static Client *client_richieste;
 	static Client *client_comandi;
-	static QStackedWidget *main_window;
-	static TransitionWidget *transition_widget;
-	static bool block_transitions;
 	void forceClosed();
 
 signals:

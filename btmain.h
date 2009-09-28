@@ -13,7 +13,6 @@
 
 #include <QObject>
 #include <QHash>
-#include <QStackedWidget>
 
 
 class SoundDiffusion;
@@ -26,6 +25,7 @@ class Client;
 class Keypad;
 class ScreenSaver;
 class Page;
+class MainWindow;
 
 class QPixmap;
 class QString;
@@ -45,6 +45,7 @@ class BtMain : public QObject
 {
 Q_OBJECT
 friend Page *getPage(int id);
+
 public:
 	BtMain();
 	~BtMain();
@@ -59,7 +60,21 @@ public:
 
 	void setPwd(bool, QString);
 
-	void setPreviousPage(Page *page);
+	SoundDiffusion *difSon;
+	MultiSoundDiffAlarm *dm;
+	Version *version;
+
+public slots:
+	void startCalib();
+	void endCalib();
+
+signals:
+	void resettimer();
+	void freezed(bool);
+	void startscreensaver(Page*);
+
+protected:
+	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
 	void hom();
@@ -69,19 +84,7 @@ private slots:
 	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();
-
-public slots:
-	void startCalib();
-	void endCalib();
-
-protected:
-	virtual bool eventFilter(QObject *obj, QEvent *ev);
-
-public:
-	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
-	SoundDiffusion *difSon;
-	MultiSoundDiffAlarm *dm;
-	Version *version;
+	void currentPageChanged(Page *p);
 
 private:
 	Client *client_monitor;
@@ -107,7 +110,7 @@ private:
 	bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;
-	QStackedWidget main_window;
+	MainWindow *main_window;
 
 	// A flag that is set when the client monitor socket is ready
 	bool monitor_ready;
@@ -122,11 +125,6 @@ private:
 	void loadGlobalConfig();
 	// Unroll all the pages until homepage
 	void unrollPages();
-
-signals:
-	void resettimer();
-	void freezed(bool);
-	void startscreensaver(Page*);
 };
 
 namespace bt_global { extern BtMain *btmain; }

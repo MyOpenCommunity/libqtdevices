@@ -113,6 +113,7 @@ HEADERS += actuators.h \
            listbrowser.h \
            loads.h \
            main.h \
+           main_window.h \
            mediaplayer.h \
            multimedia_source.h \
            multisounddiff.h \
@@ -213,6 +214,7 @@ SOURCES += actuators.cpp \
            listbrowser.cpp \
            loads.cpp \
            main.cpp \
+           main_window.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \

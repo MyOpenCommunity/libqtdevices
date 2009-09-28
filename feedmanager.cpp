@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QVector>
+#include <QPixmap>
 
 #define ROWS_PER_PAGE 4
 
@@ -107,10 +108,10 @@ void FeedManager::setupPage()
 		break;
 	}
 
-	initTransition();
+	QPixmap prev_image = QPixmap::grabWidget(this);
 	list_browser->setList(item_list, page);
 	list_browser->showList();
-	startTransition();
+	startTransition(prev_image);
 }
 
 void FeedManager::itemIsClicked(int item)
@@ -126,17 +127,18 @@ void FeedManager::itemIsClicked(int item)
 		break;
 
 	case BROWSING:
+	{
 		Q_ASSERT_X(item >= 0 && item < (int)data.entry_list.size(), "FeedManager::itemIsClicked",
 			"Item index out of range!");
 		page_indexes[data.feed_title] = list_browser->getCurrentPage();
 		feed_widget->setFeedInfo(data.entry_list[item]);
-		initTransition();
+		QPixmap prev_image = QPixmap::grabWidget(this);
 		feed_widget->show();
 		list_browser->hide();
-		startTransition();
+		startTransition(prev_image);
 		status = READING;
 		break;
-
+	}
 	default:
 		qFatal("Feed status not handled!");
 		break;
@@ -163,12 +165,14 @@ void FeedManager::backClick()
 		setupPage();
 		break;
 	case READING:
+	{
 		status = BROWSING;
-		initTransition();
+		QPixmap prev_image = QPixmap::grabWidget(this);
 		feed_widget->hide();
 		list_browser->show();
-		startTransition();
+		startTransition(prev_image);
 		break;
+	}
 	default:
 		qFatal("Feed status not handled!");
 		break;

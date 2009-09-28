@@ -14,6 +14,7 @@
 
 #include <QDebug>
 #include <QLabel>
+#include <QPixmap>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QStackedWidget>
@@ -284,6 +285,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
+
 	switch(mode)
 	{
 		case 1:
@@ -561,22 +563,23 @@ void EnergyView::showGraph(int graph_type)
 
 	updateCurrentGraph();
 
-	initTransition();
+	QPixmap prev_image = QPixmap::grabWidget(this);
 	bannNavigazione->showCdxButton();
 	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
-	startTransition();
+
+	startTransition(prev_image);
 }
 
 void EnergyView::showBannerWidget()
 {
 	current_widget = BANNER_WIDGET;
-	initTransition();
+	QPixmap prev_image = QPixmap::grabWidget(this);
 	bannNavigazione->hideCdxButton();
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
-	startTransition();
+	startTransition(prev_image);
 }
 
 QWidget *EnergyView::buildBannerWidget()

@@ -264,7 +264,7 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		// The current alarm is the last alarm inserted
 		curr_alarm = allarmi.size() - 1;
 		allarme *curr = allarmi.at(curr_alarm);
-		connect(curr, SIGNAL(Back()), this, SLOT(closeAlarms()));
+		connect(curr, SIGNAL(Closed()), this, SLOT(closeAlarms()));
 		connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
 		connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
 		connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
@@ -280,7 +280,6 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 			previous_page = currentPage();
 		allarme *curr = allarmi.at(curr_alarm);
 		// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
-		bt_global::btmain->setPreviousPage(curr);
 		curr->showPage();
 		ctrlAllarm();
 	}
