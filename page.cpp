@@ -14,7 +14,7 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 
 // The defines to grab screenshot of pages
 #define GRAB_PAGES 0
-#define SCREENSHOT_DIR "/tmp/screenshots"
+#define SCREENSHOT_DIR "/home/bticino/cfg/extra/0"
 
 
 // Inizialization of static member

@@ -342,7 +342,7 @@ void BtMain::testFiles()
 			tempo1->stop();
 		}
 	}
-	else if ((QFile::exists(FILE_AGGIORNAMENTO)) || (QFile::exists(FILE_AGGIORNAMENTO_ETH)))
+	else if (QFile::exists(FILE_AGGIORNAMENTO))
 	{
 		if ((screen) && (tiposcreen != genPage::IMAGE))
 		{
