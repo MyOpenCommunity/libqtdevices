@@ -13,27 +13,6 @@ class QVariant;
 class device;
 
 
-template<class T> QString objToString(const T &val)
-{
-	return "unknown object";
-}
-
-template<> inline QString objToString(const bool &val)
-{
-	return val ? "true" : "false";
-}
-
-template<> inline QString objToString(const int &val)
-{
-	return QString::number(val);
-}
-
-template<> inline QString objToString(const QString &val)
-{
-	return val;
-}
-
-
 /**
   * An utility class to test the signal emitted by device after the parsing of
   * a frame from openserver.
@@ -66,9 +45,7 @@ template<class T> void DeviceTester::check(const QStringList &frames, const T &r
 {
 	QVariant r = getResult(frames);
 	QVERIFY2(r.canConvert<T>(), "Unable to convert the result in the proper type");
-	QString exp = objToString(result);
-	QString obt = objToString(r.value<T>());
-	QVERIFY2(result == r.value<T>(), qPrintable(QString("Expected result: %1, obtained: %2").arg(exp).arg(obt)));
+	QCOMPARE(result, r.value<T>());
 }
 
 template<class T> void DeviceTester::check(QString frame, const T &result)

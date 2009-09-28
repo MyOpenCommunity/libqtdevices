@@ -11,6 +11,17 @@
 #include <QVariant>
 
 
+namespace QTest
+{
+	template<> char *toString(const EnergyValue &value)
+	{
+		QByteArray ba = "EnergyValue(";
+		ba += value.first.toString() + ", " + QByteArray::number(value.second);
+		ba += ")";
+		return qstrdup(ba.data());
+	}
+}
+
 namespace
 {
 	// Return the complete date (in the range [previus year/month+1, current_year/month]) for
