@@ -6,7 +6,6 @@
 #include <QString>
 
 class EnergyDevice;
-class OpenServerMock;
 
 
 class TestEnergyDevice : public TestDevice

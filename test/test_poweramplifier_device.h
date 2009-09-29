@@ -6,7 +6,6 @@
 #include <QString>
 
 class PowerAmplifierDevice;
-class OpenServerMock;
 
 
 class TestPowerAmplifierDevice : public TestDevice
