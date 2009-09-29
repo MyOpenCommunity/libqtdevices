@@ -110,6 +110,7 @@ HEADERS += actuators.h \
            landevice.h \
            lansettings.h \
            lighting.h \
+           lighting_device.h \
            listbrowser.h \
            loads.h \
            main.h \
@@ -211,6 +212,7 @@ SOURCES += actuators.cpp \
            landevice.cpp \
            lansettings.cpp \
            lighting.cpp \
+           lighting_device.cpp \
            listbrowser.cpp \
            loads.cpp \
            main.cpp \
