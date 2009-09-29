@@ -11,7 +11,7 @@ TARGET = test
 CONFIG   += console
 CONFIG   -= app_bundle
 
-CONFIG += debug
+CONFIG += debug silent
 CONFIG -= release
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
@@ -25,9 +25,11 @@ HEADERS += device_tester.h \
            test_device.h \
            test_landevice.h \
            test_energy_device.h \
+           test_lighting_device.h \
            test_poweramplifier_device.h \
            openserver_mock.h \
            ../energy_device.h \
+           ../lighting_device.h \
            ../poweramplifier_device.h \
            ../landevice.h \
            ../dev_automation.h \
@@ -47,9 +49,11 @@ SOURCES += test_main.cpp \
            test_device.cpp \
            test_landevice.cpp \
            test_energy_device.cpp \
+           test_lighting_device.cpp \
            test_poweramplifier_device.cpp \
            openserver_mock.cpp \
            ../energy_device.cpp \
+           ../lighting_device.cpp \
            ../poweramplifier_device.cpp \
            ../landevice.cpp \
            ../dev_automation.cpp \

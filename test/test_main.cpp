@@ -4,6 +4,7 @@
 #include "test_energy_device.h"
 #include "test_poweramplifier_device.h"
 #include "test_dev_automation.h"
+#include "test_lighting_device.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,5 +20,11 @@ int main(int argc, char *argv[])
 
 	TestPPTStatDevice test_pptstat_device;
 	QTest::qExec(&test_pptstat_device, argc, argv);
+
+	TestLightingDevice test_lighting_no_interface("0313");
+	QTest::qExec(&test_lighting_no_interface, argc, argv);
+
+	TestLightingDevice test_lighting_interface("0313#4#12");
+	QTest::qExec(&test_lighting_interface, argc, argv);
 }
 
