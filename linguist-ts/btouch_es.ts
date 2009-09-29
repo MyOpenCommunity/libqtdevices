@@ -50,12 +50,12 @@
         <translation>Baja luminosidad</translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation>Off</translation>
+        <source>Normal brightness</source>
+        <translation>Luminosidad normal</translation>
     </message>
     <message>
-        <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Off</translation>
     </message>
 </context>
 <context>

@@ -50,12 +50,12 @@
         <translation>Αδύναμη φωτεινότητα</translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation>Απενεργοποίηση</translation>
+        <source>Normal brightness</source>
+        <translation>κανονικός φωτισμός</translation>
     </message>
     <message>
-        <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Απενεργοποίηση</translation>
     </message>
 </context>
 <context>
@@ -191,7 +191,7 @@
     </message>
     <message>
         <source>of</source>
-        <translation>/</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Track:</source>
