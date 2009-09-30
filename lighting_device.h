@@ -21,7 +21,7 @@ public:
 		DIM_DEVICE_ON = 1,
 	};
 
-	LightingDevice(QString where, PullMode pull);
+	LightingDevice(QString where, PullMode pull = PULL);
 
 	void turnOn();
 	void turnOn(int speed);
