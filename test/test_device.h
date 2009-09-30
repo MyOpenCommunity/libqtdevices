@@ -20,6 +20,7 @@ class TestDevice : public QObject
 {
 public:
 	TestDevice();
+	void init();
 	virtual ~TestDevice();
 
 protected:

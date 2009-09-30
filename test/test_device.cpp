@@ -12,8 +12,11 @@ TestDevice::TestDevice()
 {
 	// To use StatusList in signal/slots and watch them through QSignalSpy
 	qRegisterMetaType<StatusList>("StatusList");
-
 	server = new OpenServerMock;
+}
+
+void TestDevice::init()
+{
 	client_command = server->connectCommand();
 	client_request = server->connectRequest();
 	client_monitor = server->connectMonitor();
