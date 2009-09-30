@@ -107,7 +107,12 @@ LightAddress::LightAddress(OpenMsg &msg)
 
 bool LightAddress::isReceiver(QString where)
 {
-	// TODO: check if given where must receive the frame
+	QString env, lp;
+	splitP2PAddress(where.left(where.indexOf("#")), env, lp);
+	QString dev_extension = where.mid(where.indexOf("#"));
+
+	if ((is_general && extension.isEmpty()) || (is_general && extension == dev_extension))
+		return true;
 	return false;
 }
 
