@@ -1,4 +1,5 @@
 #include <QtTest/QtTest>
+#include <QList>
 
 #include "test_landevice.h"
 #include "test_energy_device.h"
@@ -9,22 +10,42 @@
 int main(int argc, char *argv[])
 {
 	QCoreApplication app(argc, argv);
+
+	QList<TestDevice *> test_list;
+
 	TestLanDevice test_lan_device;
-	QTest::qExec(&test_lan_device, argc, argv);
+	test_list << &test_lan_device;
 
 	TestEnergyDevice test_energy_device;
-	QTest::qExec(&test_energy_device, argc, argv);
+	test_list << &test_energy_device;
 
 	TestPowerAmplifierDevice test_poweramplifier_device;
-	QTest::qExec(&test_poweramplifier_device, argc, argv);
+	test_list << &test_poweramplifier_device;
 
 	TestPPTStatDevice test_pptstat_device;
-	QTest::qExec(&test_pptstat_device, argc, argv);
+	test_list << &test_pptstat_device;
 
 	TestLightingDevice test_lighting_no_interface("0313");
-	QTest::qExec(&test_lighting_no_interface, argc, argv);
+	test_list << &test_lighting_no_interface;
 
 	TestLightingDevice test_lighting_interface("0313#4#12");
-	QTest::qExec(&test_lighting_interface, argc, argv);
+	test_list << &test_lighting_interface;
+
+	QStringList arglist = app.arguments();
+	QString testingClass;
+	int custom_param_pos = arglist.indexOf("--test-class");
+	if (custom_param_pos != -1 && custom_param_pos < arglist.size() - 1)
+	{
+		testingClass = arglist.at(custom_param_pos + 1);
+		arglist.removeAt(custom_param_pos + 1);
+		arglist.removeAt(custom_param_pos);
+	}
+
+	foreach (TestDevice *tester, test_list)
+		if (testingClass.isEmpty() || tester->metaObject()->className() == testingClass)
+		{
+			tester->init();
+			QTest::qExec(tester, arglist);
+		}
 }
 
