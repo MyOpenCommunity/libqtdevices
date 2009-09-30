@@ -441,10 +441,12 @@ bool checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
 
 	// TODO: really tired today, ugly code ahead
 	if (!in.second.isEmpty())
+	{
 		if (in.second == "#3" && our.second.isEmpty())
 			;
 		else if (in.second != our.second)
 			return false;
+	}
 
 	// here we don't need to care about extension anymore
 	// general address
