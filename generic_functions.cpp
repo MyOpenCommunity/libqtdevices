@@ -403,3 +403,57 @@ int trasformaVol(int vol)
 	return -1;
 }
 
+/*
+ * Split a where into a+pf part and address extension.
+ */
+QPair<QString, QString> splitWhere(const QString &w)
+{
+	if (w.indexOf("#") < 0)
+		return qMakePair(w.left(w.indexOf("#")), QString());
+	else
+		return qMakePair(w.left(w.indexOf("#")), w.mid(w.indexOf("#")));
+}
+
+/*
+ * Return the environment part from a+pf string
+ */
+QString getEnvironment(const QString &w)
+{
+	if (w.length() == 2)
+		return w.mid(0, 1);
+	else if (w.length() == 4)
+		return w.mid(0, 2);
+	else if (w.length() == 3)
+	{
+		Q_ASSERT_X(w == "100", "getEnvironment", "Environment with legth 3 must be 100 only");
+		return "10";
+	}
+
+	return QString();
+}
+
+bool checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
+{
+	// frame where (input)
+	QPair<QString, QString> in = splitWhere(msg_where);
+	// device where (our)
+	QPair<QString, QString> our = splitWhere(dev_where);
+
+	// TODO: really tired today, ugly code ahead
+	if (!in.second.isEmpty())
+		if (in.second == "#3" && our.second.isEmpty())
+			;
+		else if (in.second != our.second)
+			return false;
+
+	// here we don't need to care about extension anymore
+	// general address
+	if (in.first == "0")
+		return true;
+	// environment address
+	// use toInt() to remove differences between "00" "0" and so on.
+	if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
+		return true;
+
+	return false;
+}

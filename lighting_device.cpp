@@ -1,5 +1,6 @@
 #include "lighting_device.h"
 #include "openmsg.h"
+#include "generic_functions.h"
 
 #include <QDebug>
 
@@ -40,42 +41,6 @@ void LightingDevice::turnOff(int speed)
 void LightingDevice::requestStatus()
 {
 	sendRequest(QString());
-}
-
-QPair<QString, QString> splitWhere(const QString &w)
-{
-	return qMakePair(w.left(w.indexOf("#")), w.mid(w.indexOf("#")));
-}
-
-QString getEnvironment(const QString &w)
-{
-	if (w.length() == 2)
-		return w.mid(0, 1);
-	else if (w.length() == 4)
-		return w.mid(0, 2);
-
-	return QString();
-}
-
-bool checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
-{
-	// frame where (input)
-	QPair<QString, QString> in = splitWhere(msg_where);
-	// device where (our)
-	QPair<QString, QString> our = splitWhere(dev_where);
-
-	if (in.second != our.second && in.second != "#3")
-		return false;
-
-	// here we don't need to care about extension anymore
-	// general address
-	if (in.first == "0")
-		return true;
-	// environment address
-	if (getEnvironment(our.first) == getEnvironment(in.first))
-		return true;
-
-	return false;
 }
 
 bool LightingDevice::isFrameInteresting(OpenMsg &msg)

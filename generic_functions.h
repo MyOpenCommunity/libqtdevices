@@ -139,3 +139,12 @@ void getName(char *name);
 
 int trasformaVol(int vol);
 
+/**
+ * Check if the address found in a frame is valid for the device.
+ *
+ * Frame address must be environment or general. Addresses must be complete, ie
+ * must have a+pf and extension part (if any).
+ * \return true if msg_where includes the device, false otherwise.
+ */
+bool checkAddressIsForMe(const QString &msg_where, const QString &dev_where);
+
