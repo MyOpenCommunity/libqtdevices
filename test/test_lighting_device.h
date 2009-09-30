@@ -3,6 +3,10 @@
 
 #include "test_device.h"
 
+const QString LIGHT_DEVICE_WHERE = "0313";
+const QString LIGHT_ADDR_EXTENSION = "#4#12";
+const QString LIGHT_ADDR_EXTENSION_2 = "#4#01";
+
 class LightingDevice;
 
 class TestLightingDevice : public TestDevice
@@ -17,6 +21,10 @@ private slots:
 
 	void sendTurnOn();
 	void sendRequestStatus();
+
+	void testLightAddrGeneral();
+	void testLightAddrGeneral2();
+	void testLightAddrGeneral3();
 
 private:
 	LightingDevice *dev;

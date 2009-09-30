@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
 	TestPPTStatDevice test_pptstat_device;
 	test_list << &test_pptstat_device;
 
-	TestLightingDevice test_lighting_no_interface("0313");
+	TestLightingDevice test_lighting_no_interface(LIGHT_DEVICE_WHERE);
 	test_list << &test_lighting_no_interface;
 
-	TestLightingDevice test_lighting_interface("0313#4#12");
+	TestLightingDevice test_lighting_interface(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION);
 	test_list << &test_lighting_interface;
 
 	QStringList arglist = app.arguments();
