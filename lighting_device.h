@@ -3,6 +3,8 @@
 
 #include "device.h"
 
+class LightAddress;
+
 class LightingDevice : public device
 {
 friend class TestLightingDevice;
@@ -13,6 +15,12 @@ public:
 		PULL,
 		NOT_PULL,
 		PULL_UNKNOWN,
+	};
+
+	enum Type
+	{
+		DIM_DEVICE_OFF = 0,
+		DIM_DEVICE_ON = 1,
 	};
 
 	LightingDevice(QString where, PullMode pull);
@@ -26,9 +34,31 @@ public:
 	void requestStatus();
 	// TODO: complete with "temporizzazione variabile" request
 
-	// TODO: complete with manageFrame()
+	virtual void manageFrame(OpenMsg &msg);
+
 private:
 	PullMode mode;
+};
+
+class LightAddress
+{
+friend class TestLightingDevice;
+public:
+	LightAddress() { }
+	LightAddress(OpenMsg &msg);
+	bool isReceiver(QString where);
+
+private:
+	/**
+	 * Splits a point to point address into environment and light point components.
+	 */
+	void splitP2PAddress(const QString &elp, QString &env, QString &lp);
+
+	QString environment;
+	QString light_point;
+	QString extension;
+	bool is_general;
+	bool is_environment;
 };
 
 #endif // LIGHTINGDEVICE_H
