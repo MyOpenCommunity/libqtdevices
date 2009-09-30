@@ -1,6 +1,7 @@
 #include "test_lighting_device.h"
 #include "openserver_mock.h"
 #include "openclient.h"
+#include "generic_functions.h"
 
 #include <lighting_device.h>
 #include <openmsg.h>
@@ -38,39 +39,31 @@ void TestLightingDevice::sendRequestStatus()
 	QCOMPARE(server->frameRequest(), req);
 }
 
-void buildGeneral(const QString &global_addr, LightAddress &addr)
-{
-	QString frame = QString("*1*1*%1##").arg(global_addr);
-	OpenMsg msg(frame.toLatin1().constData());
-	LightAddress la(msg);
-	addr = la;
-}
-
-void TestLightingDevice::testLightAddrGeneral()
+void TestLightingDevice::testCheckAddress()
 {
 	QString global = "0";
-	LightAddress addr;
-	buildGeneral(global, addr);
+	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), true);
+	QCOMPARE(checkAddressIsForMe(global, "01"), true);
 
-	QCOMPARE(addr.isReceiver(where), true);
-}
+	global = "0#3";
+	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), false);
+	QCOMPARE(checkAddressIsForMe(global, "01"), true);
 
-void TestLightingDevice::testLightAddrGeneral2()
-{
-	// if extended, there's a different outcome for the test
-	bool ext = (where.contains("#") == true);
-	QString global = QString("0") + LIGHT_ADDR_EXTENSION;
-	LightAddress addr;
-	buildGeneral(global, addr);
+	global = "0#4#12";
+	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), true);
+	QCOMPARE(checkAddressIsForMe(global, "01"), false);
 
-	QCOMPARE(addr.isReceiver(where), ext ? true : false);
-}
+	global = "0#4#01";
+	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), false);
+	QCOMPARE(checkAddressIsForMe(global, "01"), false);
 
-void TestLightingDevice::testLightAddrGeneral3()
-{
-	QString global = QString("0") + LIGHT_ADDR_EXTENSION_2;
-	LightAddress addr;
-	buildGeneral(global, addr);
+	QString environment = "100";
+	QCOMPARE(checkAddressIsForMe(environment, "1015#4#12"), true);
+	QCOMPARE(checkAddressIsForMe(environment, "1001"), true);
 
-	QCOMPARE(addr.isReceiver(where), false);
+	environment = "00#4#12";
+	QCOMPARE(checkAddressIsForMe(environment, "01#4#12"), true);
+	QCOMPARE(checkAddressIsForMe(environment, "0015#4#12"), true);
+	QCOMPARE(checkAddressIsForMe(environment, "09"), false);
+	QCOMPARE(checkAddressIsForMe(environment, "0015#4#99"), false);
 }

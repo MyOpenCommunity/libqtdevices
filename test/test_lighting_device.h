@@ -22,9 +22,7 @@ private slots:
 	void sendTurnOn();
 	void sendRequestStatus();
 
-	void testLightAddrGeneral();
-	void testLightAddrGeneral2();
-	void testLightAddrGeneral3();
+	void testCheckAddress();
 
 private:
 	LightingDevice *dev;
