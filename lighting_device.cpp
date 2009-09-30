@@ -42,11 +42,53 @@ void LightingDevice::requestStatus()
 	sendRequest(QString());
 }
 
+QPair<QString, QString> splitWhere(const QString &w)
+{
+	return qMakePair(w.left(w.indexOf("#")), w.mid(w.indexOf("#")));
+}
+
+QString getEnvironment(const QString &w)
+{
+	if (w.length() == 2)
+		return w.mid(0, 1);
+	else if (w.length() == 4)
+		return w.mid(0, 2);
+
+	return QString();
+}
+
+bool checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
+{
+	// frame where (input)
+	QPair<QString, QString> in = splitWhere(msg_where);
+	// device where (our)
+	QPair<QString, QString> our = splitWhere(dev_where);
+
+	if (in.second != our.second && in.second != "#3")
+		return false;
+
+	// here we don't need to care about extension anymore
+	// general address
+	if (in.first == "0")
+		return true;
+	// environment address
+	if (getEnvironment(our.first) == getEnvironment(in.first))
+		return true;
+
+	return false;
+}
+
+bool LightingDevice::isFrameInteresting(OpenMsg &msg)
+{
+	bool is_our = (msg.Extract_dove() == where);
+	if (!is_our && mode != PULL)
+		is_our = checkAddressIsForMe(msg.Extract_dove(), where);
+	return is_our;
+}
+
 void LightingDevice::manageFrame(OpenMsg &msg)
 {
-	// TODO: this is not true! we must check also "environment" and general commands
-	LightAddress addr(msg);
-	if (!addr.isReceiver(where))
+	if (!isFrameInteresting(msg))
 		return;
 
 	StatusList sl;
@@ -69,66 +111,4 @@ void LightingDevice::manageFrame(OpenMsg &msg)
 	}
 
 	emit status_changed(sl);
-}
-
-LightAddress::LightAddress(OpenMsg &msg)
-{
-	is_general = false;
-	is_environment = false;
-
-	// environment + light point
-	QString elp = msg.whereStr().c_str();
-	// FIXME: how do we handle groups???
-
-	// check global address
-	if (elp.length() == 1 && elp == "0")
-	{
-		is_general = true;
-	}
-	// check environment address
-	else if ((elp.length() == 1) || (elp == "00") || (elp == "100"))
-	{
-		is_environment = true;
-		// set the correct environment value
-		environment = elp == "100" ? "10" : elp;
-	}
-	// check point to point address
-	else
-	{
-		splitP2PAddress(elp, environment, light_point);
-		Q_ASSERT_X(light_point.toInt() < 16, "LightAddress::LightAddress",
-			"Light point address must be less than 16");
-	}
-
-	// check for extended frames. These are independent from the checks above
-	for (unsigned i = 0; i < msg.whereArgCnt(); ++i)
-		extension += QString("#") + msg.whereArg(i).c_str();
-}
-
-bool LightAddress::isReceiver(QString where)
-{
-	QString env, lp;
-	splitP2PAddress(where.left(where.indexOf("#")), env, lp);
-	QString dev_extension = where.mid(where.indexOf("#"));
-
-	if ((is_general && extension.isEmpty()) || (is_general && extension == dev_extension))
-		return true;
-	return false;
-}
-
-void LightAddress::splitP2PAddress(const QString &elp, QString &env, QString &lp)
-{
-	if (elp.length() == 2)
-	{
-		env = elp.mid(0, 1);
-		lp = elp.mid(1);
-	}
-	else if (elp.length() == 4)
-	{
-		env = elp.mid(0, 2);
-		lp = elp.mid(2);
-	}
-	else
-		Q_ASSERT_X(0, "LightAddress::splitP2PAddress",
-			"Point to point address length is not 2 or 4");
 }
