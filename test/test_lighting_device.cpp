@@ -8,15 +8,13 @@
 
 #include <QtTest/QtTest>
 
-TestLightingDevice::TestLightingDevice(QString w, LightingDevice::PullMode m)
+TestLightingDevice::TestLightingDevice()
 {
-	where = w;
-	mode = m;
 }
 
 void TestLightingDevice::initTestCase()
 {
-	dev = new LightingDevice(where, mode);
+	dev = new LightingDevice(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
 }
 
 void TestLightingDevice::cleanupTestCase()
@@ -28,7 +26,7 @@ void TestLightingDevice::sendTurnOn()
 {
 	dev->turnOn();
 	client_command->flush();
-	QString cmd = QString("*1*1*") + where + "##";
+	QString cmd = QString("*1*1*") + dev->where + "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -36,15 +34,21 @@ void TestLightingDevice::sendRequestStatus()
 {
 	dev->requestStatus();
 	client_request->flush();
-	QString req = QString("*#1*") + where + "##";
+	QString req = QString("*#1*") + dev->where + "##";
 	QCOMPARE(server->frameRequest(), req);
 }
 
 void TestLightingDevice::receiveLightOnOff()
 {
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
-	t.check(QString("*1*1*%1##").arg(where), true);
-	t.check(QString("*1*0*%1##").arg(where), false);
+	t.check(QString("*1*1*%1##").arg(dev->where), true);
+	t.check(QString("*1*0*%1##").arg(dev->where), false);
+}
+
+void TestLightingDevice::setParams(QString w, LightingDevice::PullMode m)
+{
+	dev->where = w;
+	dev->mode = m;
 }
 
 // test device mode
@@ -60,62 +64,55 @@ void TestLightingDevice::checkPullUnknown()
 
 void TestLightingDevice::receiveLightOnOffPull()
 {
-	// no extension
-	if (where.indexOf("#") < 0 && mode == LightingDevice::PULL)
-		checkPullUnknown();
+	setParams(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+	checkPullUnknown();
 }
 
 void TestLightingDevice::receiveLightOnOffUnknown()
 {
-	if (where.indexOf("#") < 0 && mode == LightingDevice::PULL_UNKNOWN)
-		checkPullUnknown();
+	setParams(LIGHT_DEVICE_WHERE, LightingDevice::PULL_UNKNOWN);
+	checkPullUnknown();
 }
 
 
 void TestLightingDevice::receiveLightOnOffPullExt()
 {
-	// extension
-	if (where.indexOf("#") > 0 && mode == LightingDevice::PULL)
-		checkPullUnknown();
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::PULL);
+	checkPullUnknown();
 }
 
 void TestLightingDevice::receiveLightOnOffUnknownExt()
 {
-	// extension
-	if (where.indexOf("#") > 0 && mode == LightingDevice::PULL_UNKNOWN)
-		checkPullUnknown();
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::PULL_UNKNOWN);
+	checkPullUnknown();
 }
 
 void TestLightingDevice::receiveLightOnOffNotPull()
 {
-	if (where.indexOf("#") < 0 && mode == LightingDevice::NOT_PULL)
-	{
-		DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
-		QString global_on = "*1*1*0##";
-		QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
+	setParams(LIGHT_DEVICE_WHERE, LightingDevice::NOT_PULL);
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	QString global_on = "*1*1*0##";
+	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 
-		OpenMsg msg(global_on.toStdString());
-		t.check(global_on, true);
+	OpenMsg msg(global_on.toStdString());
+	t.check(global_on, true);
 
-		OpenMsg msg2(env_off.toStdString());
-		t.check(env_off, false);
-	}
+	OpenMsg msg2(env_off.toStdString());
+	t.check(env_off, false);
 }
 
 void TestLightingDevice::receiveLightOnOffNotPullExt()
 {
-	if (where.indexOf("#") > 0 && mode == LightingDevice::NOT_PULL)
-	{
-		DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
-		QString global_on = "*1*1*0##";
-		QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::NOT_PULL);
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	QString global_on = "*1*1*0##";
+	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 
-		OpenMsg msg(global_on.toStdString());
-		t.check(global_on, true);
+	OpenMsg msg(global_on.toStdString());
+	t.check(global_on, true);
 
-		OpenMsg msg2(env_off.toStdString());
-		t.check(env_off, false);
-	}
+	OpenMsg msg2(env_off.toStdString());
+	t.check(env_off, false);
 }
 
 void TestLightingDevice::testCheckAddress()

@@ -15,7 +15,7 @@ class TestLightingDevice : public TestDevice
 {
 Q_OBJECT
 public:
-	TestLightingDevice(QString w, LightingDevice::PullMode m);
+	TestLightingDevice();
 
 private slots:
 	void initTestCase();
@@ -33,13 +33,12 @@ private slots:
 	void receiveLightOnOffPullExt();
 	void receiveLightOnOffNotPullExt();
 	void receiveLightOnOffUnknownExt();
-	void receiveLightOnOff2();
 
 private:
 	void checkPullUnknown();
+	void setParams(QString w, LightingDevice::PullMode m);
+
 	LightingDevice *dev;
-	QString where;
-	LightingDevice::PullMode mode;
 };
 
 #endif // TEST_LIGHTING_DEVICE_H
