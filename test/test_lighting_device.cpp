@@ -15,11 +15,13 @@ TestLightingDevice::TestLightingDevice()
 void TestLightingDevice::initTestCase()
 {
 	dev = new LightingDevice(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+	dimmer = new Dimmer(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
 }
 
 void TestLightingDevice::cleanupTestCase()
 {
 	delete dev;
+	delete dimmer;
 }
 
 void TestLightingDevice::sendTurnOn()
@@ -36,6 +38,22 @@ void TestLightingDevice::sendRequestStatus()
 	client_request->flush();
 	QString req = QString("*#1*") + dev->where + "##";
 	QCOMPARE(server->frameRequest(), req);
+}
+
+void TestLightingDevice::sendDimmerDecreaseLevel()
+{
+	dimmer->decreaseLevel();
+	client_command->flush();
+	QString cmd = QString("*1*31*%1##").arg(dimmer->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestLightingDevice::sendDimmerIncreaseLevel()
+{
+	dimmer->increaseLevel();
+	client_command->flush();
+	QString cmd = QString("*1*30*%1##").arg(dimmer->where);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestLightingDevice::receiveLightOnOff()

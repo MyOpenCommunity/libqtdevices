@@ -33,6 +33,8 @@ private slots:
 
 	void sendTurnOn();
 	void sendRequestStatus();
+	void sendDimmerIncreaseLevel();
+	void sendDimmerDecreaseLevel();
 
 	void receiveLightOnOff();
 	void receiveLightOnOffPull();
@@ -47,6 +49,7 @@ private:
 	void setParams(QString w, LightingDevice::PullMode m);
 
 	LightingDevice *dev;
+	Dimmer *dimmer;
 };
 
 #endif // TEST_LIGHTING_DEVICE_H
