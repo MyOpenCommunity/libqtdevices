@@ -34,13 +34,13 @@ void DeviceTester::sendFrames(const QStringList& frames)
 void DeviceTester::checkSignals(QString frame, int num_signals)
 {
 	sendFrames(QStringList(frame));
-	QVERIFY(spy.count() == num_signals);
+	QCOMPARE(spy.count(), num_signals);
 }
 
 void DeviceTester::checkSignals(const QStringList& frames, int num_signals)
 {
 	sendFrames(frames);
-	QVERIFY(spy.count() == num_signals);
+	QCOMPARE(spy.count(), num_signals);
 }
 
 QVariant DeviceTester::getResult(const QStringList& frames)
