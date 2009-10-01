@@ -66,4 +66,7 @@ void TestLightingDevice::testCheckAddress()
 	QCOMPARE(checkAddressIsForMe(environment, "0015#4#12"), true);
 	QCOMPARE(checkAddressIsForMe(environment, "09"), false);
 	QCOMPARE(checkAddressIsForMe(environment, "0015#4#99"), false);
+
+	environment = "3#4#12";
+	QCOMPARE(checkAddressIsForMe(environment, "0313#4#12"), true);
 }

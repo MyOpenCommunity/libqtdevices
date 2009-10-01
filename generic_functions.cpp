@@ -428,6 +428,8 @@ QString getEnvironment(const QString &w)
 		Q_ASSERT_X(w == "100", "getEnvironment", "Environment with legth 3 must be 100 only");
 		return "10";
 	}
+	else if (w.length() == 1)
+		return w;
 
 	return QString();
 }
