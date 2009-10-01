@@ -28,8 +28,7 @@ void LightingDevice::turnOn()
 
 void LightingDevice::turnOn(int speed)
 {
-	// TODO: is this method ok also for Dimmers?
-	sendCommand(QString::number(LIGHT_ON) + "#" + QString::number(speed));
+	sendCommand(QString("%1#%2").arg(LIGHT_ON).arg(speed));
 }
 
 void LightingDevice::turnOff()
@@ -39,8 +38,7 @@ void LightingDevice::turnOff()
 
 void LightingDevice::turnOff(int speed)
 {
-	// TODO: is this method ok also for Dimmers?
-	sendCommand(QString::number(LIGHT_OFF) + "#" + QString::number(speed));
+	sendCommand(QString("%1#%2").arg(LIGHT_OFF).arg(speed));
 }
 
 void LightingDevice::requestStatus()
