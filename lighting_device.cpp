@@ -48,37 +48,49 @@ void LightingDevice::requestStatus()
 	sendRequest(QString());
 }
 
-bool LightingDevice::isFrameInteresting(OpenMsg &msg)
-{
-	bool is_our = (msg.Extract_dove() == where);
-	if (!is_our && mode != PULL)
-		is_our = checkAddressIsForMe(msg.Extract_dove(), where);
-	return is_our;
-}
-
 void LightingDevice::manageFrame(OpenMsg &msg)
 {
-	if (!isFrameInteresting(msg))
+	// true if the frame is general or environment (not group).
+	bool is_multi_receiver_frame = false;
+
+	bool is_our = (QString::fromStdString(msg.whereFull()) == where);
+	if (!is_our && mode != PULL)
+	{
+		// here we check if address is general or environment
+		is_our = checkAddressIsForMe(msg.Extract_dove(), where);
+		is_multi_receiver_frame = is_our;
+	}
+	if (!is_our)
 		return;
 
 	StatusList sl;
 	QVariant v;
-
 	int what = msg.what();
+	int status_index = -1;
+
 	switch (what)
 	{
 	case DIM_DEVICE_ON:
-		v.setValue(true);
-		sl[what] = v;
-		break;
 	case DIM_DEVICE_OFF:
-		v.setValue(true);
-		sl[what] = v;
+		v.setValue(what == DIM_DEVICE_ON ? true : false);
+		status_index = DIM_DEVICE_ON;
 		break;
 	// TODO: add "Temporizzazioni variabili" status change
 	default:
 		qDebug() << "LightingDevice::manageFrame(): Unknown what";
 	}
 
-	emit status_changed(sl);
+	if (status_index > 0)
+		sl[status_index] = v;
+	else
+		sl[what] = v;
+
+	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
+	// environment frame), we must send a status request to the device before sending
+	// a status_changed()
+	if (mode == PULL_UNKNOWN && is_multi_receiver_frame)
+		// TODO: optimize this scenario
+		requestStatus();
+	else
+		emit status_changed(sl);
 }

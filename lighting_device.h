@@ -33,9 +33,6 @@ public:
 
 	virtual void manageFrame(OpenMsg &msg);
 
-protected:
-	bool isFrameInteresting(OpenMsg &msg);
-
 private:
 	PullMode mode;
 };
