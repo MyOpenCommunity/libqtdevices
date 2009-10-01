@@ -27,7 +27,7 @@ void TestPPTStatDevice::sendRequestStatus()
 	dev->requestStatus();
 	client_request->flush();
 	QString req(QString("*#25*%1##").arg(where));
-	QVERIFY(server->frameRequest() == req);
+	QCOMPARE(server->frameRequest(), req);
 }
 
 void TestPPTStatDevice::receiveStatus()

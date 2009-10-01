@@ -52,14 +52,14 @@ void TestEnergyDevice::sendRequestCumulativeMonth()
 {
 	dev->requestCumulativeMonth(QDate::currentDate());
 	client_request->flush();
-	QVERIFY(server->frameRequest() == "*#18*20*53##");
+	QCOMPARE(server->frameRequest(), QString("*#18*20*53##"));
 }
 
 void TestEnergyDevice::sendRequestCumulativeMonth2()
 {
 	dev->requestCumulativeMonth(QDate(2009, 1, 10));
 	client_request->flush();
-	QVERIFY(server->frameRequest() == "*#18*20*52#9#1##");
+	QCOMPARE(server->frameRequest(), QString("*#18*20*52#9#1##"));
 }
 
 void TestEnergyDevice::sendRequestCumulativeDayGraph()
@@ -67,7 +67,7 @@ void TestEnergyDevice::sendRequestCumulativeDayGraph()
 	dev->requestCumulativeDayGraph(QDate(2009, 1, 9));
 	client_command->flush();
 	QString req(QString("*18*52#1#9*%1##").arg(where));
-	QVERIFY(server->frameCommand() == req);
+	QCOMPARE(server->frameCommand(), req);
 }
 
 void TestEnergyDevice::sendRequestCumulativeMonthGraph()
@@ -75,7 +75,7 @@ void TestEnergyDevice::sendRequestCumulativeMonthGraph()
 	dev->requestCumulativeMonthGraph(QDate(2009, 1, 9));
 	client_command->flush();
 	QString req(QString("*18*56#1*%1##").arg(where));
-	QVERIFY(server->frameCommand() == req);
+	QCOMPARE(server->frameCommand(), req);
 }
 
 void TestEnergyDevice::sendRequestCumulativeYearGraph()
@@ -92,7 +92,7 @@ void TestEnergyDevice::sendRequestCumulativeYearGraph()
 		d = d.addMonths(-1);
 		frames << QString("*#18*%1*52#%2#%3##").arg(where).arg(d.year() - 2000).arg(d.month());
 	}
-	QVERIFY(server->frameRequest() == frames.join(""));
+	QCOMPARE(server->frameRequest(), frames.join(""));
 }
 
 void TestEnergyDevice::sendRequestCurrent()
@@ -100,7 +100,7 @@ void TestEnergyDevice::sendRequestCurrent()
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*113##").arg(where));
-	QVERIFY(server->frameRequest() == req);
+	QCOMPARE(server->frameRequest(), req);
 }
 
 void TestEnergyDevice::sendRequestCurrent2()
@@ -109,7 +109,7 @@ void TestEnergyDevice::sendRequestCurrent2()
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1134##").arg(where));
-	QVERIFY(server->frameRequest() == req);
+	QCOMPARE(server->frameRequest(), req);
 }
 
 void TestEnergyDevice::sendRequestCurrent3()
@@ -118,7 +118,7 @@ void TestEnergyDevice::sendRequestCurrent3()
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1130##").arg(where));
-	QVERIFY(server->frameRequest() == req);
+	QCOMPARE(server->frameRequest(), req);
 }
 
 void TestEnergyDevice::sendRequestCurrent4()
@@ -127,7 +127,7 @@ void TestEnergyDevice::sendRequestCurrent4()
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1132##").arg(where));
-	QVERIFY(server->frameRequest() == req);
+	QCOMPARE(server->frameRequest(), req);
 }
 
 void TestEnergyDevice::receiveCumulativeDay()
@@ -462,7 +462,7 @@ void TestEnergyDevice::testConsecutiveGraphFrames()
 		OpenMsg msg(qPrintable(frames[i]));
 		dev->manageFrame(msg);
 	}
-	QVERIFY(dev->buffer_frame.size() == 1);
+	QCOMPARE(dev->buffer_frame.size(), 1);
 }
 
 

@@ -25,7 +25,7 @@ void TestPowerAmplifierDevice::sendRequestStatus()
 	dev->requestStatus();
 	client_request->flush();
 	QString req(QString("*#22*3#%1#%2*12##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameRequest() == req);
+	QCOMPARE(server->frameRequest(), req);
 }
 
 void TestPowerAmplifierDevice::sendTurnOn()
@@ -33,7 +33,7 @@ void TestPowerAmplifierDevice::sendTurnOn()
 	dev->turnOn();
 	client_command->flush();
 	QString cmd(QString("*22*1#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendTurnOff()
@@ -41,7 +41,7 @@ void TestPowerAmplifierDevice::sendTurnOff()
 	dev->turnOff();
 	client_command->flush();
 	QString cmd(QString("*22*0#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendVolumeUp()
@@ -49,7 +49,7 @@ void TestPowerAmplifierDevice::sendVolumeUp()
 	dev->volumeUp();
 	client_command->flush();
 	QString cmd(QString("*22*3#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendVolumeDown()
@@ -57,7 +57,7 @@ void TestPowerAmplifierDevice::sendVolumeDown()
 	dev->volumeDown();
 	client_command->flush();
 	QString cmd(QString("*22*4#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendTrebleUp()
@@ -65,7 +65,7 @@ void TestPowerAmplifierDevice::sendTrebleUp()
 	dev->trebleUp();
 	client_command->flush();
 	QString cmd(QString("*22*40#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendTrebleDown()
@@ -73,7 +73,7 @@ void TestPowerAmplifierDevice::sendTrebleDown()
 	dev->trebleDown();
 	client_command->flush();
 	QString cmd(QString("*22*41#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendBassUp()
@@ -81,7 +81,7 @@ void TestPowerAmplifierDevice::sendBassUp()
 	dev->bassUp();
 	client_command->flush();
 	QString cmd(QString("*22*36#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendBassDown()
@@ -89,7 +89,7 @@ void TestPowerAmplifierDevice::sendBassDown()
 	dev->bassDown();
 	client_command->flush();
 	QString cmd(QString("*22*37#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendBalanceUp()
@@ -97,7 +97,7 @@ void TestPowerAmplifierDevice::sendBalanceUp()
 	dev->balanceUp();
 	client_command->flush();
 	QString cmd(QString("*22*42#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendBalanceDown()
@@ -105,7 +105,7 @@ void TestPowerAmplifierDevice::sendBalanceDown()
 	dev->balanceDown();
 	client_command->flush();
 	QString cmd(QString("*22*43#1*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendNextPreset()
@@ -113,7 +113,7 @@ void TestPowerAmplifierDevice::sendNextPreset()
 	dev->nextPreset();
 	client_command->flush();
 	QString cmd(QString("*22*55*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendPrevPreset()
@@ -121,7 +121,7 @@ void TestPowerAmplifierDevice::sendPrevPreset()
 	dev->prevPreset();
 	client_command->flush();
 	QString cmd(QString("*22*56*3#%1#%2##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendLoudOn()
@@ -129,7 +129,7 @@ void TestPowerAmplifierDevice::sendLoudOn()
 	dev->loudOn();
 	client_command->flush();
 	QString cmd(QString("*#22*3#%1#%2*#20*1##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::sendLoudOff()
@@ -137,7 +137,7 @@ void TestPowerAmplifierDevice::sendLoudOff()
 	dev->loudOff();
 	client_command->flush();
 	QString cmd(QString("*#22*3#%1#%2*#20*0##").arg(where[0]).arg(where[1]));
-	QVERIFY(server->frameCommand() == cmd);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::receiveStatus()
