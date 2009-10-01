@@ -115,34 +115,53 @@ void TestLightingDevice::receiveLightOnOffNotPullExt()
 	t.check(env_off, false);
 }
 
-void TestLightingDevice::testCheckAddress()
+void TestLightingDevice::testCheckAddressGlobal()
 {
 	QString global = "0";
 	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), true);
 	QCOMPARE(checkAddressIsForMe(global, "01"), true);
 
-	global = "0#3";
+}
+
+void TestLightingDevice::testCheckAddressGlobal3()
+{
+	QString global = "0#3";
 	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), false);
 	QCOMPARE(checkAddressIsForMe(global, "01"), true);
+}
 
-	global = "0#4#12";
+void TestLightingDevice::testCheckAddressGlobalInterface()
+{
+	QString global = "0#4#12";
 	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), true);
 	QCOMPARE(checkAddressIsForMe(global, "01"), false);
+}
 
-	global = "0#4#01";
+void TestLightingDevice::testCheckAddressGlobalInterfaceFalse()
+{
+	QString global = "0#4#01";
 	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), false);
 	QCOMPARE(checkAddressIsForMe(global, "01"), false);
+}
 
+void TestLightingDevice::testCheckAddressEnvironment10()
+{
 	QString environment = "100";
 	QCOMPARE(checkAddressIsForMe(environment, "1015#4#12"), true);
 	QCOMPARE(checkAddressIsForMe(environment, "1001"), true);
+}
 
-	environment = "00#4#12";
+void TestLightingDevice::testCheckAddressEnvironment0()
+{
+	QString environment = "00#4#12";
 	QCOMPARE(checkAddressIsForMe(environment, "01#4#12"), true);
 	QCOMPARE(checkAddressIsForMe(environment, "0015#4#12"), true);
 	QCOMPARE(checkAddressIsForMe(environment, "09"), false);
 	QCOMPARE(checkAddressIsForMe(environment, "0015#4#99"), false);
+}
 
-	environment = "3#4#12";
+void TestLightingDevice::testCheckAddressEnvironmentInt()
+{
+	QString environment = "3#4#12";
 	QCOMPARE(checkAddressIsForMe(environment, "0313#4#12"), true);
 }
