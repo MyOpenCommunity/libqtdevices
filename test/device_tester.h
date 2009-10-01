@@ -45,7 +45,7 @@ template<class T> void DeviceTester::check(const QStringList &frames, const T &r
 {
 	QVariant r = getResult(frames);
 	QVERIFY2(r.canConvert<T>(), "Unable to convert the result in the proper type");
-	QCOMPARE(result, r.value<T>());
+	QCOMPARE(r.value<T>(), result);
 }
 
 template<class T> void DeviceTester::check(QString frame, const T &result)

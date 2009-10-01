@@ -46,8 +46,8 @@ void DeviceTester::checkSignals(const QStringList& frames, int num_signals)
 QVariant DeviceTester::getResult(const QStringList& frames)
 {
 	sendFrames(frames);
-	assert(spy.count() > 0 && "DeviceTester: No signal emitted!");
-	assert(spy.last().count() > 0 && "DeviceTester: No arguments for the last signal emitted!");
+	Q_ASSERT_X(spy.count() > 0, "DeviceTester::getResult", "DeviceTester: No signal emitted!");
+	Q_ASSERT_X(spy.last().count() > 0, "DeviceTester::getResult", "DeviceTester: No arguments for the last signal emitted!");
 	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
 	if (signal_arg.canConvert<StatusList>())
 	{
