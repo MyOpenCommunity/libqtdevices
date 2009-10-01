@@ -17,7 +17,6 @@ public:
 
 	enum Type
 	{
-		DIM_DEVICE_OFF = 0,
 		DIM_DEVICE_ON = 1,
 	};
 

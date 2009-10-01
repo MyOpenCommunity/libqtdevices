@@ -10,6 +10,11 @@ enum
 	LIGHT_OFF = 0,
 };
 
+enum
+{
+	DIM_DEVICE_OFF = 0,
+};
+
 LightingDevice::LightingDevice(QString where, PullMode pull) :
 	device(QString("1"), where)
 {
