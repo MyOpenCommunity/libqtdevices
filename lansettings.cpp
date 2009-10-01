@@ -76,7 +76,8 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	// Set the network to the initial status
-	dev->enableLan(getTextChild(config_node, "value").toInt());
+	saved_status = getTextChild(config_node, "value").toInt();
+	dev->enableLan(saved_status);
 }
 
 void LanSettings::inizializza()
@@ -128,7 +129,11 @@ void LanSettings::status_changed(const StatusList &status_list)
 		{
 			lan_status = it.value().toBool();
 			toggle_btn->setStatus(lan_status);
-			setCfgValue("value", lan_status ? "1": "0", LANSETTINGS);
+			if (lan_status != saved_status)
+			{
+				saved_status = lan_status;
+				setCfgValue("value", lan_status ? "1": "0", LANSETTINGS);
+			}
 		}
 		++it;
 	}
