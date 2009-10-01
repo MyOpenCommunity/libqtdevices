@@ -8,6 +8,8 @@ enum
 {
 	LIGHT_ON = 1,
 	LIGHT_OFF = 0,
+	DIMMER_INC = 30,
+	DIMMER_DEC = 31,
 };
 
 enum
@@ -91,4 +93,30 @@ void LightingDevice::manageFrame(OpenMsg &msg)
 		requestStatus();
 	else
 		emit status_changed(sl);
+}
+
+
+Dimmer::Dimmer(QString where, PullMode pull) :
+	LightingDevice(where, pull)
+{
+}
+
+void Dimmer::setLevel(int level)
+{
+	// TODO: is this method needed?
+}
+
+void Dimmer::increaseLevel()
+{
+	sendCommand(QString::number(DIMMER_INC));
+}
+
+void Dimmer::decreaseLevel()
+{
+	sendCommand(QString::number(DIMMER_DEC));
+}
+
+void Dimmer::manageFrame(OpenMsg &msg)
+{
+	//TODO: fill in
 }
