@@ -50,7 +50,7 @@ void PowerAmplifierDevice::frame_rx_handler(char *frame)
 	// In some cases (when more than a power amplifier is present in the system)
 	// a request frame can arrive from the monitor socket. We have to manage this
 	// situation.
-	if (!msg.whatArgCnt() || msg.IsStateFrame())
+	if (!msg.whatArgCnt() || msg.IsStateFrame() || msg.IsNormalFrame())
 		return;
 
 	qDebug("PowerAmplifierDevice::frame_rx_handler -> frame read:%s", frame);

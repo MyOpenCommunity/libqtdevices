@@ -198,6 +198,7 @@ void TestPowerAmplifierDevice::receiveBass()
 	t.check(QString("*#22*3#%1#%2*4*4##").arg(where[0]).arg(where[1]), -9);
 	t.check(QString("*#22*3#%1#%2*4*30##").arg(where[0]).arg(where[1]), 0);
 	t.check(QString("*#22*3#%1#%2*4*60##").arg(where[0]).arg(where[1]), 10);
+	t.checkSignals(QString("*22*4#1*3#%1#%2##").arg(where[0]).arg(where[1]), 0);
 }
 
 void TestPowerAmplifierDevice::receiveBalance()
