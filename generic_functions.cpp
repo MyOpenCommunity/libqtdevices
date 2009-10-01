@@ -408,10 +408,11 @@ int trasformaVol(int vol)
  */
 QPair<QString, QString> splitWhere(const QString &w)
 {
-	if (w.indexOf("#") < 0)
-		return qMakePair(w.left(w.indexOf("#")), QString());
+	int idx = w.indexOf("#");
+	if (idx < 0)
+		return qMakePair(w.left(idx), QString());
 	else
-		return qMakePair(w.left(w.indexOf("#")), w.mid(w.indexOf("#")));
+		return qMakePair(w.left(idx), w.mid(idx));
 }
 
 /*
