@@ -1,21 +1,22 @@
 #include "test_lighting_device.h"
 #include "openserver_mock.h"
+#include "device_tester.h"
 #include "openclient.h"
 #include "generic_functions.h"
 
-#include <lighting_device.h>
 #include <openmsg.h>
 
 #include <QtTest/QtTest>
 
-TestLightingDevice::TestLightingDevice(QString w)
+TestLightingDevice::TestLightingDevice(QString w, LightingDevice::PullMode m)
 {
 	where = w;
+	mode = m;
 }
 
 void TestLightingDevice::initTestCase()
 {
-	dev = new LightingDevice(where, LightingDevice::PULL);
+	dev = new LightingDevice(where, mode);
 }
 
 void TestLightingDevice::cleanupTestCase()
@@ -37,6 +38,84 @@ void TestLightingDevice::sendRequestStatus()
 	client_request->flush();
 	QString req = QString("*#1*") + where + "##";
 	QCOMPARE(server->frameRequest(), req);
+}
+
+void TestLightingDevice::receiveLightOnOff()
+{
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	t.check(QString("*1*1*%1##").arg(where), true);
+	t.check(QString("*1*0*%1##").arg(where), false);
+}
+
+// test device mode
+void TestLightingDevice::checkPullUnknown()
+{
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	QString global_on = "*1*1*0##";
+	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
+
+	t.checkSignals(global_on, 0);
+	t.checkSignals(env_off, 0);
+}
+
+void TestLightingDevice::receiveLightOnOffPull()
+{
+	// no extension
+	if (where.indexOf("#") < 0 && mode == LightingDevice::PULL)
+		checkPullUnknown();
+}
+
+void TestLightingDevice::receiveLightOnOffUnknown()
+{
+	if (where.indexOf("#") < 0 && mode == LightingDevice::PULL_UNKNOWN)
+		checkPullUnknown();
+}
+
+
+void TestLightingDevice::receiveLightOnOffPullExt()
+{
+	// extension
+	if (where.indexOf("#") > 0 && mode == LightingDevice::PULL)
+		checkPullUnknown();
+}
+
+void TestLightingDevice::receiveLightOnOffUnknownExt()
+{
+	// extension
+	if (where.indexOf("#") > 0 && mode == LightingDevice::PULL_UNKNOWN)
+		checkPullUnknown();
+}
+
+void TestLightingDevice::receiveLightOnOffNotPull()
+{
+	if (where.indexOf("#") < 0 && mode == LightingDevice::NOT_PULL)
+	{
+		DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+		QString global_on = "*1*1*0##";
+		QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
+
+		OpenMsg msg(global_on.toStdString());
+		t.check(global_on, true);
+
+		OpenMsg msg2(env_off.toStdString());
+		t.check(env_off, false);
+	}
+}
+
+void TestLightingDevice::receiveLightOnOffNotPullExt()
+{
+	if (where.indexOf("#") > 0 && mode == LightingDevice::NOT_PULL)
+	{
+		DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+		QString global_on = "*1*1*0##";
+		QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
+
+		OpenMsg msg(global_on.toStdString());
+		t.check(global_on, true);
+
+		OpenMsg msg2(env_off.toStdString());
+		t.check(env_off, false);
+	}
 }
 
 void TestLightingDevice::testCheckAddress()
