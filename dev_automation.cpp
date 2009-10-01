@@ -27,7 +27,7 @@ PPTStatDevice::PPTStatDevice(QString address) : device(QString("25"), address)
 
 void PPTStatDevice::requestStatus() const
 {
-	sendInit(createStatusRequestOpen(who, where));
+	sendRequest(QString());
 }
 
 void PPTStatDevice::manageFrame(OpenMsg &msg)
