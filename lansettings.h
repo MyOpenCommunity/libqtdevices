@@ -64,7 +64,10 @@ private:
 	BtButton *toggle_btn;
 	Text2Column *box_text;
 	LanDevice *dev;
+	// The real status of the lan
 	bool lan_status;
+	// The status of the lan as stored in the configuration file
+	bool saved_status;
 
 private slots:
 	void status_changed(const StatusList &status_list);
