@@ -6,6 +6,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "xml_functions.h" // getTextChild
 #include "skinmanager.h" // bt_global::skin, SkinContext
+#include "generic_functions.h" // setCfgValue
 
 #include <QDebug>
 #include <QLabel>
@@ -73,6 +74,9 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	addBackButton();
 	dev = bt_global::add_device_to_cache(new LanDevice);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+
+	// Set the network to the initial status
+	dev->enableLan(getTextChild(config_node, "value").toInt());
 }
 
 void LanSettings::inizializza()
@@ -124,6 +128,7 @@ void LanSettings::status_changed(const StatusList &status_list)
 		{
 			lan_status = it.value().toBool();
 			toggle_btn->setStatus(lan_status);
+			setCfgValue("value", lan_status ? "1": "0", LANSETTINGS);
 		}
 		++it;
 	}
