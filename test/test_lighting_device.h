@@ -31,6 +31,7 @@ private slots:
 	void testCheckAddressEnvironment0();
 	void testCheckAddressEnvironmentInt();
 	void testCheckAddressEnvironmentLevel3();
+	void testCheckAddressGroup();
 
 	void sendTurnOn();
 	void sendRequestStatus();
