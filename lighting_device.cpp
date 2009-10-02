@@ -10,6 +10,8 @@ enum
 	LIGHT_OFF = 0,
 	FIXED_TIMING_MIN = 11,
 	FIXED_TIMING_MAX = 18,
+	DIMMER10_LEVEL_MIN = 2,
+	DIMMER10_LEVEL_MAX = 10,
 	DIMMER_INC = 30,
 	DIMMER_DEC = 31,
 };
@@ -146,15 +148,18 @@ void Dimmer::parseFrame(OpenMsg &msg, StatusList *sl)
 
 	QVariant v;
 	int what = msg.what();
-	if (what >= 2 && what <= 10)
+	int status_index = -1;
+
+	if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
 	{
 		v.setValue(what);
-		(*sl)[DIM_DIMMER_LEVEL] = v;
+		status_index = DIM_DIMMER_LEVEL;
 	}
-
-	if (what == 19)
-	{
+	else if (what == DIM_DIMMER_PROBLEM)
 		v.setValue(true);
-		(*sl)[DIM_DIMMER_PROBLEM] = v;
-	}
+
+	if (status_index > 0)
+		(*sl)[status_index] = v;
+	else
+		(*sl)[what] = v;
 }
