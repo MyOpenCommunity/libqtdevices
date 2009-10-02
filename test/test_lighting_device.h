@@ -42,6 +42,11 @@ private slots:
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
 
+	void sendDimmer100IncreaseLevel();
+	void sendDimmer100DecreaseLevel();
+
+
+
 	void receiveLightOnOff();
 	void receiveLightOnOffPull();
 	void receiveLightOnOffNotPull();
@@ -60,6 +65,7 @@ private:
 
 	LightingDevice *dev;
 	Dimmer *dimmer;
+	Dimmer100 *dimmer100;
 };
 
 #endif // TEST_LIGHTING_DEVICE_H
