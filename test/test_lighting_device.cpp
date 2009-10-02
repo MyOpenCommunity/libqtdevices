@@ -95,6 +95,14 @@ void TestLightingDevice::sendDimmer100IncreaseLevel()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestLightingDevice::sendRequestDimmer100Status()
+{
+	dimmer100->requestDimmer100Status();
+	client_request->flush();
+	QString req = QString("*#1*%1*1##").arg(dimmer100->where);
+	QCOMPARE(server->frameRequest(), req);
+}
+
 void TestLightingDevice::receiveLightOnOff()
 {
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
