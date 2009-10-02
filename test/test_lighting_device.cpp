@@ -133,10 +133,7 @@ void TestLightingDevice::receiveLightOnOffNotPull()
 	QString global_on = "*1*1*0##";
 	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 
-	OpenMsg msg(global_on.toStdString());
 	t.check(global_on, true);
-
-	OpenMsg msg2(env_off.toStdString());
 	t.check(env_off, false);
 }
 
@@ -147,10 +144,7 @@ void TestLightingDevice::receiveLightOnOffNotPullExt()
 	QString global_on = "*1*1*0##";
 	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 
-	OpenMsg msg(global_on.toStdString());
 	t.check(global_on, true);
-
-	OpenMsg msg2(env_off.toStdString());
 	t.check(env_off, false);
 }
 
