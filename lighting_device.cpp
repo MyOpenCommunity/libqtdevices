@@ -53,10 +53,15 @@ void LightingDevice::fixedTiming(int value)
 		sendCommand(QString::number(value));
 }
 
-void LightingDevice::variableTiming(QTime t)
+// Limitations:
+// 0 <= h <= 255
+// 0 <= m <= 59
+// 0 <= s <= 59
+void LightingDevice::variableTiming(int h, int m, int s)
 {
-	sendFrame(createWriteRequestOpen(who, QString("%1*%2*%3*%4").arg(DIM_VARIABLE_TIMING)
-		.arg(t.hour()).arg(t.minute()).arg(t.second()), where));
+	if ((h >= 0 && h <= 255) && (m >= 0 && m <= 59) && (s >= 0 && s <= 59))
+		sendFrame(createWriteRequestOpen(who, QString("%1*%2*%3*%4").arg(DIM_VARIABLE_TIMING)
+			.arg(h).arg(m).arg(s), where));
 }
 
 void LightingDevice::requestStatus()
@@ -110,7 +115,14 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		v.setValue(what == DIM_DEVICE_ON ? true : false);
 		status_index = DIM_DEVICE_ON;
 		break;
-	// TODO: add "Temporizzazioni variabili" status change
+	case DIM_VARIABLE_TIMING:
+	{
+		QList<int> l;
+		for (unsigned i = 0; i < msg.whatArgCnt(); ++i)
+			l << msg.whatArgN(i);
+		v.setValue(l);
+	}
+		break;
 	default:
 		qDebug() << "LightingDevice::manageFrame(): Unknown what";
 	}

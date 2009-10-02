@@ -30,8 +30,7 @@ public:
 	void turnOff();
 	void turnOff(int speed);
 	void fixedTiming(int value);
-	// TODO: using a QTime we are limited to 24h, 60min, 60 secs. Is it ok?
-	void variableTiming(QTime t);
+	void variableTiming(int h, int m, int s);
 
 	void requestStatus();
 	void requestVariableTiming();
@@ -44,6 +43,9 @@ protected:
 private:
 	PullMode mode;
 };
+
+// Type returned in StatusList for DIM_VARIABLE_TIMING
+Q_DECLARE_METATYPE(QList<int>);
 
 class Dimmer : public LightingDevice
 {
