@@ -14,6 +14,21 @@
 #include <QBoxLayout>
 
 
+namespace
+{
+	void requestNetworkInfo(LanDevice *dev)
+	{
+		dev->requestStatus();
+		dev->requestIp();
+		dev->requestNetmask();
+		dev->requestMacAddress();
+		dev->requestGateway();
+		dev->requestDNS1();
+		dev->requestDNS2();
+	}
+}
+
+
 Text2Column::Text2Column()
 {
 	main_layout = new QGridLayout(this);
@@ -77,24 +92,18 @@ LanSettings::LanSettings(const QDomNode &config_node)
 
 	// Set the network to the initial status
 	saved_status = getTextChild(config_node, "value").toInt();
-	dev->enableLan(saved_status);
 }
 
 void LanSettings::inizializza()
 {
 	qDebug() << "LanSettings::inizializza()";
-	dev->requestStatus();
-	dev->requestIp();
-	dev->requestNetmask();
-	dev->requestMacAddress();
-	dev->requestGateway();
-	dev->requestDNS1();
-	dev->requestDNS2();
+	dev->enableLan(saved_status);
+	requestNetworkInfo(dev);
 }
 
 void LanSettings::showPage()
 {
-	inizializza();
+	requestNetworkInfo(dev);
 	PageLayout::showPage();
 }
 
