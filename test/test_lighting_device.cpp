@@ -54,7 +54,10 @@ void TestLightingDevice::sendFixedTiming()
 
 void TestLightingDevice::sendVariableTiming()
 {
-	// TODO: to be done, based on variableTiming() parameters
+	dev->variableTiming(100, 22, 50);
+	client_command->flush();
+	QString cmd = QString("*#1*%1*#2*%2*%3*%4##").arg(dev->where).arg(100).arg(22).arg(50);
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestLightingDevice::sendRequestVariableTiming()
