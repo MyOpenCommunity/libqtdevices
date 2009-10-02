@@ -21,6 +21,7 @@ public:
 		DIM_VARIABLE_TIMING = 2,
 		DIM_DIMMER_PROBLEM = 19,
 		DIM_DIMMER_LEVEL,
+		DIM_DIMMER100_STATUS,
 	};
 
 	LightingDevice(QString where, PullMode pull = PULL);
@@ -68,8 +69,11 @@ class Dimmer100 : public Dimmer
 Q_OBJECT
 public:
 	Dimmer100(QString where, PullMode pull = PULL);
+
 	void increaseLevel100(int delta, int speed);
 	void decreaseLevel100(int delta, int speed);
+
+	void requestDimmer100Status();
 
 protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);

@@ -14,6 +14,7 @@ enum
 	DIMMER10_LEVEL_MAX = 10,
 	DIMMER_INC = 30,
 	DIMMER_DEC = 31,
+	DIMMER100_STATUS = 1,
 };
 
 enum
@@ -195,5 +196,10 @@ void Dimmer100::decreaseLevel100(int delta, int speed)
 void Dimmer100::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	Dimmer::parseFrame(msg, sl);
+}
+
+void Dimmer100::requestDimmer100Status()
+{
+	sendRequest(QString::number(DIMMER100_STATUS));
 }
 
