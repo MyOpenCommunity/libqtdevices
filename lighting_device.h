@@ -18,6 +18,8 @@ public:
 	enum Type
 	{
 		DIM_DEVICE_ON = 1,
+		DIM_DIMMER_LEVEL = 2,
+		DIM_DIMMER_PROBLEM = 19,
 	};
 
 	LightingDevice(QString where, PullMode pull = PULL);
@@ -32,6 +34,9 @@ public:
 	// TODO: complete with "temporizzazione variabile" request
 
 	virtual void manageFrame(OpenMsg &msg);
+
+protected:
+	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 
 private:
 	PullMode mode;
@@ -48,7 +53,8 @@ public:
 	void increaseLevel();
 	void decreaseLevel();
 
-	virtual void manageFrame(OpenMsg &msg);
+protected:
+	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 };
 
 #endif // LIGHTINGDEVICE_H

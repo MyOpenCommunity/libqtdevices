@@ -64,6 +64,20 @@ void LightingDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	StatusList sl;
+	parseFrame(msg, &sl);
+
+	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
+	// environment frame), we must send a status request to the device before sending
+	// a status_changed()
+	if (mode == PULL_UNKNOWN && is_multi_receiver_frame)
+		// TODO: optimize this scenario
+		requestStatus();
+	else
+		emit status_changed(sl);
+}
+
+void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
+{
 	QVariant v;
 	int what = msg.what();
 	int status_index = -1;
@@ -81,18 +95,9 @@ void LightingDevice::manageFrame(OpenMsg &msg)
 	}
 
 	if (status_index > 0)
-		sl[status_index] = v;
+		(*sl)[status_index] = v;
 	else
-		sl[what] = v;
-
-	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
-	// environment frame), we must send a status request to the device before sending
-	// a status_changed()
-	if (mode == PULL_UNKNOWN && is_multi_receiver_frame)
-		// TODO: optimize this scenario
-		requestStatus();
-	else
-		emit status_changed(sl);
+		(*sl)[what] = v;
 }
 
 
@@ -116,7 +121,21 @@ void Dimmer::decreaseLevel()
 	sendCommand(QString::number(DIMMER_DEC));
 }
 
-void Dimmer::manageFrame(OpenMsg &msg)
+void Dimmer::parseFrame(OpenMsg &msg, StatusList *sl)
 {
-	//TODO: fill in
+	LightingDevice::parseFrame(msg, sl);
+
+	QVariant v;
+	int what = msg.what();
+	if (what >= 2 && what <= 10)
+	{
+		v.setValue(what);
+		(*sl)[DIM_DIMMER_LEVEL] = v;
+	}
+
+	if (what == 19)
+	{
+		v.setValue(true);
+		(*sl)[DIM_DIMMER_PROBLEM] = v;
+	}
 }
