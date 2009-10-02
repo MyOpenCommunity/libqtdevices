@@ -40,6 +40,27 @@ void TestLightingDevice::sendRequestStatus()
 	QCOMPARE(server->frameRequest(), req);
 }
 
+void TestLightingDevice::sendFixedTiming()
+{
+	dev->fixedTiming(11);
+	client_command->flush();
+	QString cmd = QString("*1*%1*%2##").arg(11).arg(dev->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestLightingDevice::sendVariableTiming()
+{
+	// TODO: to be done, based on variableTiming() parameters
+}
+
+void TestLightingDevice::sendRequestVariableTiming()
+{
+	dev->requestVariableTiming();
+	client_request->flush();
+	QString req = QString("*#1*%1*2##").arg(dev->where);
+	QCOMPARE(server->frameRequest(), req);
+}
+
 void TestLightingDevice::sendDimmerDecreaseLevel()
 {
 	dimmer->decreaseLevel();

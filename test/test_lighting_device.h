@@ -33,6 +33,9 @@ private slots:
 
 	void sendTurnOn();
 	void sendRequestStatus();
+	void sendFixedTiming();
+	void sendVariableTiming();
+	void sendRequestVariableTiming();
 
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
