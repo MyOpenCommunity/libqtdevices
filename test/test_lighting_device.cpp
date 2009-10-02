@@ -8,22 +8,24 @@
 
 #include <QtTest/QtTest>
 
-TestLightingDevice::TestLightingDevice()
+void TestLightingDevice::init()
 {
+	dev = new LightingDevice(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
 }
 
 void TestLightingDevice::initTestCase()
 {
-	dev = new LightingDevice(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
-	dimmer = new Dimmer(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
-	dimmer100 = new Dimmer100(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+	init();
+}
+
+void TestLightingDevice::cleanup()
+{
+	delete dev;
 }
 
 void TestLightingDevice::cleanupTestCase()
 {
-	delete dev;
-	delete dimmer;
-	delete dimmer100;
+	cleanup();
 }
 
 void TestLightingDevice::sendTurnOn()
@@ -60,46 +62,6 @@ void TestLightingDevice::sendRequestVariableTiming()
 	dev->requestVariableTiming();
 	client_request->flush();
 	QString req = QString("*#1*%1*2##").arg(dev->where);
-	QCOMPARE(server->frameRequest(), req);
-}
-
-void TestLightingDevice::sendDimmerDecreaseLevel()
-{
-	dimmer->decreaseLevel();
-	client_command->flush();
-	QString cmd = QString("*1*31*%1##").arg(dimmer->where);
-	QCOMPARE(server->frameCommand(), cmd);
-}
-
-void TestLightingDevice::sendDimmerIncreaseLevel()
-{
-	dimmer->increaseLevel();
-	client_command->flush();
-	QString cmd = QString("*1*30*%1##").arg(dimmer->where);
-	QCOMPARE(server->frameCommand(), cmd);
-}
-
-void TestLightingDevice::sendDimmer100DecreaseLevel()
-{
-	dimmer100->decreaseLevel100(50, 10);
-	client_command->flush();
-	QString cmd = QString("*1*31#%1#%2*%3##").arg(50).arg(10).arg(dimmer100->where);
-	QCOMPARE(server->frameCommand(), cmd);
-}
-
-void TestLightingDevice::sendDimmer100IncreaseLevel()
-{
-	dimmer100->increaseLevel100(10, 150);
-	client_command->flush();
-	QString cmd = QString("*1*30#%1#%2*%3##").arg(10).arg(150).arg(dimmer100->where);
-	QCOMPARE(server->frameCommand(), cmd);
-}
-
-void TestLightingDevice::sendRequestDimmer100Status()
-{
-	dimmer100->requestDimmer100Status();
-	client_request->flush();
-	QString req = QString("*#1*%1*1##").arg(dimmer100->where);
 	QCOMPARE(server->frameRequest(), req);
 }
 
@@ -185,20 +147,6 @@ void TestLightingDevice::receiveVariableTiming()
 	t.check(timing, l);
 }
 
-void TestLightingDevice::receiveDimmerLevel()
-{
-	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
-	QString frame = QString("*1*%1*%2##").arg(9).arg(dimmer->where);
-	t.check(frame, 9);
-}
-
-void TestLightingDevice::receiveDimmerProblem()
-{
-	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_PROBLEM);
-	QString frame = QString("*1*%1*%2##").arg(19).arg(dimmer->where);
-	t.check(frame, true);
-}
-
 void TestLightingDevice::testCheckAddressGlobal()
 {
 	QString global = "0";
@@ -265,4 +213,96 @@ void TestLightingDevice::testCheckAddressGroup()
 	QString group = "#45";
 	QCOMPARE(checkAddressIsForMe(group, "12"), false);
 	QCOMPARE(checkAddressIsForMe(group, "34#4#45"), false);
+}
+
+
+
+void TestDimmer::initTestCase()
+{
+	init();
+}
+
+void TestDimmer::cleanupTestCase()
+{
+	cleanup();
+}
+
+void TestDimmer::init()
+{
+	TestLightingDevice::init();
+	dimmer = new Dimmer(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+}
+
+void TestDimmer::cleanup()
+{
+	TestLightingDevice::cleanup();
+	delete dimmer;
+}
+
+void TestDimmer::sendDimmerDecreaseLevel()
+{
+	dimmer->decreaseLevel();
+	client_command->flush();
+	QString cmd = QString("*1*31*%1##").arg(dimmer->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestDimmer::sendDimmerIncreaseLevel()
+{
+	dimmer->increaseLevel();
+	client_command->flush();
+	QString cmd = QString("*1*30*%1##").arg(dimmer->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestDimmer::receiveDimmerLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	QString frame = QString("*1*%1*%2##").arg(9).arg(dimmer->where);
+	t.check(frame, 9);
+}
+
+void TestDimmer::receiveDimmerProblem()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_PROBLEM);
+	QString frame = QString("*1*%1*%2##").arg(19).arg(dimmer->where);
+	t.check(frame, true);
+}
+
+
+
+void TestDimmer100::initTestCase()
+{
+	TestDimmer::init();
+	dimmer100 = new Dimmer100(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+}
+
+void TestDimmer100::cleanupTestCase()
+{
+	TestDimmer::cleanup();
+	delete dimmer100;
+}
+
+void TestDimmer100::sendDimmer100DecreaseLevel()
+{
+	dimmer100->decreaseLevel100(50, 10);
+	client_command->flush();
+	QString cmd = QString("*1*31#%1#%2*%3##").arg(50).arg(10).arg(dimmer100->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestDimmer100::sendDimmer100IncreaseLevel()
+{
+	dimmer100->increaseLevel100(10, 150);
+	client_command->flush();
+	QString cmd = QString("*1*30#%1#%2*%3##").arg(10).arg(150).arg(dimmer100->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestDimmer100::sendRequestDimmer100Status()
+{
+	dimmer100->requestDimmer100Status();
+	client_request->flush();
+	QString req = QString("*#1*%1*1##").arg(dimmer100->where);
+	QCOMPARE(server->frameRequest(), req);
 }

@@ -14,8 +14,10 @@ class LightingDevice;
 class TestLightingDevice : public TestDevice
 {
 Q_OBJECT
-public:
-	TestLightingDevice();
+protected:
+	void init();
+	void cleanup();
+	void setParams(QString w, LightingDevice::PullMode m);
 
 private slots:
 	void initTestCase();
@@ -39,14 +41,6 @@ private slots:
 	void sendVariableTiming();
 	void sendRequestVariableTiming();
 
-	void sendDimmerIncreaseLevel();
-	void sendDimmerDecreaseLevel();
-
-	void sendDimmer100IncreaseLevel();
-	void sendDimmer100DecreaseLevel();
-	void sendRequestDimmer100Status();
-
-
 	void receiveLightOnOff();
 	void receiveLightOnOffPull();
 	void receiveLightOnOffNotPull();
@@ -56,16 +50,45 @@ private slots:
 	void receiveLightOnOffUnknownExt();
 	void receiveVariableTiming();
 
+private:
+	void checkPullUnknown();
+
+	LightingDevice *dev;
+};
+
+class TestDimmer : public TestLightingDevice
+{
+Q_OBJECT
+protected:
+	void init();
+	void cleanup();
+
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void sendDimmerIncreaseLevel();
+	void sendDimmerDecreaseLevel();
+
 	void receiveDimmerLevel();
 	void receiveDimmerProblem();
 
 private:
-	void checkPullUnknown();
-	void setParams(QString w, LightingDevice::PullMode m);
-
-	LightingDevice *dev;
 	Dimmer *dimmer;
-	Dimmer100 *dimmer100;
 };
 
+class TestDimmer100 : public TestDimmer
+{
+Q_OBJECT
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void sendDimmer100IncreaseLevel();
+	void sendDimmer100DecreaseLevel();
+	void sendRequestDimmer100Status();
+
+private:
+	Dimmer100 *dimmer100;
+};
 #endif // TEST_LIGHTING_DEVICE_H

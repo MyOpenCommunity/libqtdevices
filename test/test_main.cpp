@@ -28,6 +28,12 @@ int main(int argc, char *argv[])
 	TestLightingDevice test_lighting_device;
 	test_list << &test_lighting_device;
 
+	TestDimmer test_dimmer;
+	test_list << &test_dimmer;
+
+	TestDimmer100 test_dimmer100;
+	test_list << &test_dimmer100;
+
 	QStringList arglist = app.arguments();
 	QString testingClass;
 	int custom_param_pos = arglist.indexOf("--test-class");

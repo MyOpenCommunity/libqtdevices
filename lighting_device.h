@@ -50,6 +50,7 @@ Q_DECLARE_METATYPE(QList<int>);
 
 class Dimmer : public LightingDevice
 {
+friend class TestDimmer;
 Q_OBJECT
 public:
 	Dimmer(QString where, PullMode pull = PULL);
@@ -66,6 +67,7 @@ protected:
 
 class Dimmer100 : public Dimmer
 {
+friend class TestDimmer100;
 Q_OBJECT
 public:
 	Dimmer100(QString where, PullMode pull = PULL);
