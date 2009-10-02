@@ -175,3 +175,25 @@ void Dimmer::parseFrame(OpenMsg &msg, StatusList *sl)
 	else
 		(*sl)[what] = v;
 }
+
+
+Dimmer100::Dimmer100(QString where, PullMode pull) :
+	Dimmer(where, pull)
+{
+}
+
+void Dimmer100::increaseLevel100(int delta, int speed)
+{
+	sendCommand(QString("%1#%2#%3").arg(DIMMER_INC).arg(delta).arg(speed));
+}
+
+void Dimmer100::decreaseLevel100(int delta, int speed)
+{
+	sendCommand(QString("%1#%2#%3").arg(DIMMER_DEC).arg(delta).arg(speed));
+}
+
+void Dimmer100::parseFrame(OpenMsg &msg, StatusList *sl)
+{
+	Dimmer::parseFrame(msg, sl);
+}
+

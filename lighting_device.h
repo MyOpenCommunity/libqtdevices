@@ -62,4 +62,16 @@ protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 };
 
+
+class Dimmer100 : public Dimmer
+{
+Q_OBJECT
+public:
+	Dimmer100(QString where, PullMode pull = PULL);
+	void increaseLevel100(int delta, int speed);
+	void decreaseLevel100(int delta, int speed);
+
+protected:
+	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
+};
 #endif // LIGHTINGDEVICE_H
