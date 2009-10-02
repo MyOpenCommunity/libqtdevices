@@ -88,6 +88,8 @@ private slots:
 	void sendDimmer100DecreaseLevel();
 	void sendRequestDimmer100Status();
 
+	void receiveDimmer100Status();
+
 private:
 	Dimmer100 *dimmer100;
 };

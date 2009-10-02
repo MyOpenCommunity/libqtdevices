@@ -306,3 +306,13 @@ void TestDimmer100::sendRequestDimmer100Status()
 	QString req = QString("*#1*%1*1##").arg(dimmer100->where);
 	QCOMPARE(server->frameRequest(), req);
 }
+
+void TestDimmer100::receiveDimmer100Status()
+{
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_STATUS);
+	QList<int> l;
+	l << 134 << 50;
+	QString frame = QString("*#1*%1*1*%2*%3##").arg(dimmer100->where).arg(134).arg(50);
+
+	t.check(frame, l);
+}

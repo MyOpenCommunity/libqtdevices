@@ -193,13 +193,24 @@ void Dimmer100::decreaseLevel100(int delta, int speed)
 	sendCommand(QString("%1#%2#%3").arg(DIMMER_DEC).arg(delta).arg(speed));
 }
 
-void Dimmer100::parseFrame(OpenMsg &msg, StatusList *sl)
-{
-	Dimmer::parseFrame(msg, sl);
-}
-
 void Dimmer100::requestDimmer100Status()
 {
 	sendRequest(QString::number(DIMMER100_STATUS));
 }
 
+void Dimmer100::parseFrame(OpenMsg &msg, StatusList *sl)
+{
+	Dimmer::parseFrame(msg, sl);
+
+	QVariant v;
+	int what = msg.what();
+
+	if (what == DIMMER100_STATUS)
+	{
+		QList<int> l;
+		for (unsigned i = 0; i < msg.whatArgCnt(); ++i)
+			l << msg.whatArgN(i);
+		v.setValue(l);
+	}
+	(*sl)[DIM_DIMMER100_STATUS] = v;
+}
