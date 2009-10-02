@@ -223,3 +223,13 @@ void TestLightingDevice::testCheckAddressEnvironmentInt()
 	QString environment = "3#4#12";
 	QCOMPARE(checkAddressIsForMe(environment, "0313#4#12"), true);
 }
+
+void TestLightingDevice::testCheckAddressEnvironmentLevel3()
+{
+	QString environment = "3#3";
+	QCOMPARE(checkAddressIsForMe(environment, "0313"), true);
+	environment = "00#3";
+	QCOMPARE(checkAddressIsForMe(environment, "01"), true);
+	environment = "100#3";
+	QCOMPARE(checkAddressIsForMe(environment, "1014"), true);
+}
