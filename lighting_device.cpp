@@ -8,6 +8,8 @@ enum
 {
 	LIGHT_ON = 1,
 	LIGHT_OFF = 0,
+	FIXED_TIMING_MIN = 11,
+	FIXED_TIMING_MAX = 18,
 	DIMMER_INC = 30,
 	DIMMER_DEC = 31,
 };
@@ -43,9 +45,26 @@ void LightingDevice::turnOff(int speed)
 	sendCommand(QString("%1#%2").arg(LIGHT_OFF).arg(speed));
 }
 
+void LightingDevice::fixedTiming(int value)
+{
+	if (value >= FIXED_TIMING_MIN && value <= FIXED_TIMING_MAX)
+		sendCommand(QString::number(value));
+}
+
+void LightingDevice::variableTiming(QTime t)
+{
+	sendFrame(createWriteRequestOpen(who, QString("%1*%2*%3*%4").arg(DIM_VARIABLE_TIMING)
+		.arg(t.hour()).arg(t.minute()).arg(t.second()), where));
+}
+
 void LightingDevice::requestStatus()
 {
 	sendRequest(QString());
+}
+
+void LightingDevice::requestVariableTiming()
+{
+	sendRequest(QString::number(DIM_VARIABLE_TIMING));
 }
 
 void LightingDevice::manageFrame(OpenMsg &msg)

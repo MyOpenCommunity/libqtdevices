@@ -18,8 +18,9 @@ public:
 	enum Type
 	{
 		DIM_DEVICE_ON = 1,
-		DIM_DIMMER_LEVEL = 2,
+		DIM_VARIABLE_TIMING = 2,
 		DIM_DIMMER_PROBLEM = 19,
+		DIM_DIMMER_LEVEL,
 	};
 
 	LightingDevice(QString where, PullMode pull = PULL);
@@ -28,10 +29,12 @@ public:
 	void turnOn(int speed);
 	void turnOff();
 	void turnOff(int speed);
-	// TODO: complete with "temporizzazione" frames
+	void fixedTiming(int value);
+	// TODO: using a QTime we are limited to 24h, 60min, 60 secs. Is it ok?
+	void variableTiming(QTime t);
 
 	void requestStatus();
-	// TODO: complete with "temporizzazione variabile" request
+	void requestVariableTiming();
 
 	virtual void manageFrame(OpenMsg &msg);
 
