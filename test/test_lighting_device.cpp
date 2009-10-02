@@ -148,6 +148,17 @@ void TestLightingDevice::receiveLightOnOffNotPullExt()
 	t.check(env_off, false);
 }
 
+void TestLightingDevice::receiveVariableTiming()
+{
+	DeviceTester t(dev, LightingDevice::DIM_VARIABLE_TIMING);
+	QList<int> l;
+	l << 1 << 3 << 55;
+	QString timing = QString("*#1*%1*2*%2*%3*%4##").arg(dev->where)
+		.arg(1).arg(3).arg(55);
+
+	t.check(timing, l);
+}
+
 void TestLightingDevice::receiveDimmerLevel()
 {
 	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);

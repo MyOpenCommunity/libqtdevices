@@ -47,6 +47,7 @@ private slots:
 	void receiveLightOnOffPullExt();
 	void receiveLightOnOffNotPullExt();
 	void receiveLightOnOffUnknownExt();
+	void receiveVariableTiming();
 
 	void receiveDimmerLevel();
 	void receiveDimmerProblem();
