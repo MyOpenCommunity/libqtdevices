@@ -24,7 +24,7 @@ private slots:
 	// these tests must be executed before the others, since they test the commodity
 	// function checkAddress()
 	void testCheckAddressGlobal();
-	void testCheckAddressGlobal3();
+	void testCheckAddressGlobalLevel3();
 	void testCheckAddressGlobalInterface();
 	void testCheckAddressGlobalInterfaceFalse();
 	void testCheckAddressEnvironment10();

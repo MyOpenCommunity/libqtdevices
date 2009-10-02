@@ -181,7 +181,7 @@ void TestLightingDevice::testCheckAddressGlobal()
 
 }
 
-void TestLightingDevice::testCheckAddressGlobal3()
+void TestLightingDevice::testCheckAddressGlobalLevel3()
 {
 	QString global = "0#3";
 	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), false);
