@@ -133,6 +133,20 @@ void TestLightingDevice::receiveLightOnOffNotPullExt()
 	t.check(env_off, false);
 }
 
+void TestLightingDevice::receiveDimmerLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	QString frame = QString("*1*%1*%2##").arg(9).arg(dimmer->where);
+	t.check(frame, 9);
+}
+
+void TestLightingDevice::receiveDimmerProblem()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_PROBLEM);
+	QString frame = QString("*1*%1*%2##").arg(19).arg(dimmer->where);
+	t.check(frame, true);
+}
+
 void TestLightingDevice::testCheckAddressGlobal()
 {
 	QString global = "0";

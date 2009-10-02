@@ -33,6 +33,7 @@ private slots:
 
 	void sendTurnOn();
 	void sendRequestStatus();
+
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
 
@@ -43,6 +44,9 @@ private slots:
 	void receiveLightOnOffPullExt();
 	void receiveLightOnOffNotPullExt();
 	void receiveLightOnOffUnknownExt();
+
+	void receiveDimmerLevel();
+	void receiveDimmerProblem();
 
 private:
 	void checkPullUnknown();
