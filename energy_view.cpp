@@ -127,33 +127,37 @@ void TimePeriodSelection::showCycleButton()
 	btn_cycle->show();
 }
 
+void TimePeriodSelection::displayDate()
+{
+	switch (_status)
+	{
+	case YEAR:
+		back_period->hide();
+		forw_period->hide();
+		break;
+	default:
+		back_period->show();
+		forw_period->show();
+		break;
+	}
+	date_period_label->setText(formatDate(selection_date, _status));
+}
+
 void TimePeriodSelection::changeTimeScale()
 {
 	switch (_status)
 	{
 	case DAY:
-	{
 		_status = MONTH;
-		back_period->show();
-		forw_period->show();
-		date_period_label->setText(formatDate(selection_date, _status));
-	}
 		break;
 	case MONTH:
 		_status = YEAR;
-		back_period->hide();
-		forw_period->hide();
-		date_period_label->setText(formatDate(selection_date, _status));
 		break;
 	case YEAR:
-	{
 		_status = DAY;
-		back_period->show();
-		forw_period->show();
-		date_period_label->setText(formatDate(selection_date, _status));
-	}
 		break;
 	}
+	displayDate();
 	emit timeChanged(_status, selection_date);
 }
 
@@ -166,6 +170,14 @@ void TimePeriodSelection::setDate(QDate new_date)
 		selection_date = current.addYears(-1).addMonths(1);
 	else
 		selection_date = new_date;
+}
+
+void TimePeriodSelection::forceDate(QDate new_date, TimePeriod period)
+{
+	setDate(new_date);
+	_status = period;
+	displayDate();
+	emit timeChanged(_status, selection_date);
 }
 
 void TimePeriodSelection::changeTimePeriod(int delta)
@@ -182,7 +194,7 @@ void TimePeriodSelection::changeTimePeriod(int delta)
 		date_period_label->setText(formatDate(selection_date, _status));
 		break;
 	default:
-		qWarning("periodForward called with status==YEAR");
+		qWarning("changeTimePeriod called with status==YEAR");
 		break;
 	}
 	if (selection_date != previous_date)
@@ -500,7 +512,10 @@ void EnergyView::status_changed(const StatusList &status_list)
 void EnergyView::backClick()
 {
 	if (current_widget == BANNER_WIDGET)
+	{
+		time_period->forceDate(QDate::currentDate());
 		emit Closed();
+	}
 	else
 		showBannerWidget();
 }

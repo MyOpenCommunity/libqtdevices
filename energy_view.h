@@ -38,6 +38,7 @@ public:
 	QDate date();
 	QString dateDisplayed();
 	int status();
+	void forceDate(QDate new_date, TimePeriod period=DAY);
 
 private slots:
 	void changeTimeScale();
@@ -51,8 +52,9 @@ private:
 	 * \param delta The number of days or months to be added to selection_date
 	 */
 	void changeTimePeriod(int delta);
-	void setDate(QDate new_date);
 	QString formatDate(const QDate &date, TimePeriod period);
+	void setDate(QDate new_date);
+	void displayDate();
 
 	TimePeriod _status;
 	BtButton *back_period, *forw_period, *btn_cycle;
