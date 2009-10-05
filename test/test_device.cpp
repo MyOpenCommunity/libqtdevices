@@ -1,5 +1,6 @@
 #include "test_device.h"
 #include "openserver_mock.h"
+#include "openclient.h"
 
 #include <device.h>
 #include <frame_receiver.h>
@@ -31,6 +32,9 @@ TestDevice::~TestDevice()
 
 void TestDevice::cleanBuffers()
 {
+	client_command->flush();
+	client_request->flush();
+	client_monitor->flush();
 	server->frameCommand(1);
 	server->frameRequest(1);
 }
