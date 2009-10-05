@@ -15,11 +15,12 @@ class TestLightingDevice : public TestDevice
 {
 Q_OBJECT
 protected:
-	void init();
-	void cleanup();
+	void initLightingDevice();
+	void cleanupLightingDevice();
 	void setParams(QString w, LightingDevice::PullMode m);
 
 private slots:
+	void init();
 	void initTestCase();
 	void cleanupTestCase();
 
@@ -44,12 +45,12 @@ private slots:
 	void receiveLightOnOff();
 	void receiveLightOnOffPull();
 	void receiveLightOnOffNotPull();
+
 	void receiveLightOnOffUnknown();
 	void receiveLightOnOffPullExt();
 	void receiveLightOnOffNotPullExt();
 	void receiveLightOnOffUnknownExt();
 	void receiveVariableTiming();
-
 private:
 	void checkPullUnknown();
 
@@ -60,8 +61,8 @@ class TestDimmer : public TestLightingDevice
 {
 Q_OBJECT
 protected:
-	void init();
-	void cleanup();
+	void initDimmer();
+	void cleanupDimmer();
 
 private slots:
 	void initTestCase();

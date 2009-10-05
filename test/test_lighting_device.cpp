@@ -8,24 +8,29 @@
 
 #include <QtTest/QtTest>
 
-void TestLightingDevice::init()
+void TestLightingDevice::initLightingDevice()
 {
 	dev = new LightingDevice(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
 }
 
 void TestLightingDevice::initTestCase()
 {
-	init();
+	initLightingDevice();
 }
 
-void TestLightingDevice::cleanup()
+void TestLightingDevice::cleanupLightingDevice()
 {
 	delete dev;
 }
 
 void TestLightingDevice::cleanupTestCase()
 {
-	cleanup();
+	cleanupLightingDevice();
+}
+
+void TestLightingDevice::init()
+{
+	cleanBuffers();
 }
 
 void TestLightingDevice::sendTurnOn()
@@ -222,23 +227,23 @@ void TestLightingDevice::testCheckAddressGroup()
 
 void TestDimmer::initTestCase()
 {
-	init();
+	initDimmer();
 }
 
 void TestDimmer::cleanupTestCase()
 {
-	cleanup();
+	cleanupDimmer();
 }
 
-void TestDimmer::init()
+void TestDimmer::initDimmer()
 {
-	TestLightingDevice::init();
+	initLightingDevice();
 	dimmer = new Dimmer(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
 }
 
-void TestDimmer::cleanup()
+void TestDimmer::cleanupDimmer()
 {
-	TestLightingDevice::cleanup();
+	cleanupLightingDevice();
 	delete dimmer;
 }
 
@@ -276,13 +281,13 @@ void TestDimmer::receiveDimmerProblem()
 
 void TestDimmer100::initTestCase()
 {
-	TestDimmer::init();
+	initDimmer();
 	dimmer100 = new Dimmer100(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
 }
 
 void TestDimmer100::cleanupTestCase()
 {
-	TestDimmer::cleanup();
+	cleanupDimmer();
 	delete dimmer100;
 }
 
