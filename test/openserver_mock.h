@@ -18,13 +18,13 @@ public:
 	Client *connectMonitor();
 	Client *connectCommand();
 	Client *connectRequest();
-	QString frameRequest();
-	QString frameCommand();
+	QString frameRequest(unsigned int timeout = 0);
+	QString frameCommand(unsigned int timeout = 0);
 
 private:
 	QTcpServer server;
 	int port;
-	int timeout;
+	int default_timeout;
 
 	QTcpSocket *command, *monitor, *request;
 };
