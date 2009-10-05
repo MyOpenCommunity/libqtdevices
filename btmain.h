@@ -61,6 +61,8 @@ public:
 	void setPwd(bool, QString);
 
 	void setPreviousPage(Page *page);
+	Page *getPreviousPage();
+	bool screenSaverRunning();
 
 private slots:
 	void hom();
