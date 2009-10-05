@@ -500,6 +500,16 @@ void BtMain::gesScrSav()
 	}
 }
 
+Page *BtMain::getPreviousPage()
+{
+	return prev_page;
+}
+
+bool BtMain::screenSaverRunning()
+{
+	return screensaver && screensaver->isRunning();
+}
+
 bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 {
 	// Discard the mouse press and mouse double click
