@@ -16,7 +16,7 @@ TestDevice::TestDevice()
 	server = new OpenServerMock;
 }
 
-void TestDevice::init()
+void TestDevice::initTestDevice()
 {
 	client_command = server->connectCommand();
 	client_request = server->connectRequest();

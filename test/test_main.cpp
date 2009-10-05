@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 	foreach (TestDevice *tester, test_list)
 		if (testingClass.isEmpty() || tester->metaObject()->className() == testingClass)
 		{
-			tester->init();
+			tester->initTestDevice();
 			QTest::qExec(tester, arglist);
 		}
 }
