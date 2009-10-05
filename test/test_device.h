@@ -28,6 +28,7 @@ protected:
 	Client *client_command;
 	Client *client_request;
 	Client *client_monitor;
+	void cleanBuffers();
 };
 
 

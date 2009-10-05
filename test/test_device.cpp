@@ -28,3 +28,10 @@ TestDevice::~TestDevice()
 {
 	delete server;
 }
+
+void TestDevice::cleanBuffers()
+{
+	server->frameCommand(1);
+	server->frameRequest(1);
+}
+
