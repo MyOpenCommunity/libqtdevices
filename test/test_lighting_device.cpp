@@ -109,6 +109,16 @@ void TestLightingDevice::receiveLightOnOffUnknown()
 	checkPullUnknown();
 }
 
+void TestLightingDevice::receiveLightOnOffUnknown2()
+{
+	setParams(LIGHT_DEVICE_WHERE, LightingDevice::PULL_UNKNOWN);
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	QString global_on = "*1*1*0##";
+	t.checkSignals(global_on, 0);
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev->where));
+}
+
 
 void TestLightingDevice::receiveLightOnOffPullExt()
 {
@@ -120,6 +130,16 @@ void TestLightingDevice::receiveLightOnOffUnknownExt()
 {
 	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::PULL_UNKNOWN);
 	checkPullUnknown();
+}
+
+void TestLightingDevice::receiveLightOnOffUnknownExt2()
+{
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::PULL_UNKNOWN);
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
+	t.checkSignals(env_off, 0);
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev->where));
 }
 
 void TestLightingDevice::receiveLightOnOffNotPull()
