@@ -11,16 +11,20 @@
 #include "transitionwidget.h"
 #include "bann1_button.h" // bannTextOnImage
 #include "energy_data.h" // EnergyInterface
+#include "btmain.h"
 
 #include <QDebug>
 #include <QLabel>
+#include <QTimerEvent>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QStackedWidget>
 #include <QSignalMapper>
 
 
-#define POLLING_CURRENT_DATA 5 // time to refresh data visualized in the current banner (in sec.)
+#define POLLING_CURRENT 5 // time to refresh data visualized in the current banner (in sec.)
+#define POLLING_CUMULATIVE_DAY 60 * 60 // time to refresh data visualized in the comulative day banner (in sec.)
+
 #define ENERGY_GRAPH_DELAY 1000 // msec to wait before request a graph data
 
 namespace
@@ -268,6 +272,9 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	connect(time_period, SIGNAL(timeChanged(int, QDate)), SLOT(changeTimePeriod(int, QDate)));
 	main_layout->addWidget(time_period);
 
+	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screensaverstarted(Page*)));
+
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
 	widget_container->addWidget(new EnergyGraph);
@@ -311,7 +318,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 			unit_measure = measure;
 			break;
 	}
-	startTimer(POLLING_CURRENT_DATA * 1000);
+	current_banner_timer_id = startTimer(POLLING_CURRENT * 1000);
+	cumulative_day_banner_timer_id = startTimer(POLLING_CUMULATIVE_DAY * 1000);
 
 	// this must be after creating bannNavigazione, otherwise segfault
 	showBannerWidget();
@@ -327,10 +335,18 @@ EnergyView::~EnergyView()
 	}
 }
 
-void EnergyView::timerEvent(QTimerEvent *)
+void EnergyView::timerEvent(QTimerEvent *e)
 {
+	// Poll only if the selected day is today.
 	if (current_banner->isVisible())
-		dev->requestCurrent();
+	{
+		if (e->timerId() == current_banner_timer_id)
+			dev->requestCurrent();
+		else if (e->timerId() == cumulative_day_banner_timer_id)
+			dev->requestCumulativeDay(QDate::currentDate());
+		else
+			Q_ASSERT_X(false, "EnergyView::timerEvent", qPrintable(QString::number(e->timerId())));
+	}
 }
 
 void EnergyView::inizializza()
@@ -509,13 +525,21 @@ void EnergyView::status_changed(const StatusList &status_list)
 	updateBanners();
 }
 
+void EnergyView::screensaverstarted(Page *p)
+{
+	if (p == this)
+		handleClose();
+}
+
+void EnergyView::handleClose()
+{
+	time_period->forceDate(QDate::currentDate());
+}
+
 void EnergyView::backClick()
 {
 	if (current_widget == BANNER_WIDGET)
-	{
-		time_period->forceDate(QDate::currentDate());
 		emit Closed();
-	}
 	else
 		showBannerWidget();
 }
