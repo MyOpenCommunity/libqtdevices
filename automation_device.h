@@ -6,6 +6,34 @@
 class OpenMsg;
 
 
+class AutomationDevice : public device
+{
+public:
+	enum PullMode
+	{
+		PULL,
+		NOT_PULL,
+		PULL_UNKNOWN,
+	};
+
+	enum Type
+	{
+		DIM_STOP = 0,
+		DIM_UP = 1,
+		DIM_DOWN = 2,
+	};
+
+	AutomationDevice(QString where, PullMode mode = PULL);
+	void goUp();
+	void goDown();
+	void stop();
+	void requestStatus();
+
+	virtual void manageFrame(OpenMsg &msg);
+private:
+	PullMode mode;
+};
+
 /**
  * \class PPTStatDevice
  *
