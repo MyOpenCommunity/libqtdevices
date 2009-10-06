@@ -165,7 +165,7 @@ void Dimmer::parseFrame(OpenMsg &msg, StatusList *sl)
 
 	if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
 	{
-		v.setValue(what);
+		v.setValue(getDimmerLevel(what));
 		status_index = DIM_DIMMER_LEVEL;
 	}
 	else if (what == DIM_DIMMER_PROBLEM)
@@ -175,6 +175,13 @@ void Dimmer::parseFrame(OpenMsg &msg, StatusList *sl)
 		(*sl)[status_index] = v;
 	else
 		(*sl)[what] = v;
+}
+
+int Dimmer::getDimmerLevel(int what)
+{
+	Q_ASSERT_X(what >= 2 && what <= 10, "Dimmer::getDimmerLevel",
+		"Dimmer level must be between 2 and 10");
+	return what * 10;
 }
 
 
@@ -213,4 +220,19 @@ void Dimmer100::parseFrame(OpenMsg &msg, StatusList *sl)
 		v.setValue(l);
 	}
 	(*sl)[DIM_DIMMER100_STATUS] = v;
+}
+
+int Dimmer100::getDimmerLevel(int what)
+{
+	switch (what)
+	{
+	case 2:
+		return 1;
+	case 9:
+		return 75;
+	default:
+		Q_ASSERT_X((what >= 3 && what <= 8) || what == 10, "Dimmer100::getDimmerLevel",
+			"Dimmer level must be between 2 and 10");
+		return what * 10;
+	}
 }
