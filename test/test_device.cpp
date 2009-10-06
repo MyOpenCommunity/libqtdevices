@@ -37,5 +37,6 @@ void TestDevice::cleanBuffers()
 	client_monitor->flush();
 	server->frameCommand(1);
 	server->frameRequest(1);
+	server->cleanClients(client_command, client_request, client_monitor);
 }
 
