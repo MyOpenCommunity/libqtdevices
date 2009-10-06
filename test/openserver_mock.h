@@ -20,6 +20,8 @@ public:
 	Client *connectRequest();
 	QString frameRequest(unsigned int timeout = 0);
 	QString frameCommand(unsigned int timeout = 0);
+	/* cleanup last_msg_open_* because it keeps state between tests! */
+	void cleanClients(Client *cmd, Client *req, Client *mon);
 
 private:
 	QTcpServer server;
