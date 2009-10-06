@@ -75,20 +75,28 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		int axis_left = left + fm.width(val) + SPACING;
 		int axis_top = top + height - fm.ascent() - SPACING - AXIS_PEN_WIDTH;
 
+		QPen pen_axis;
+
+		pen_axis.setStyle(Qt::SolidLine);
+		pen_axis.setWidth(AXIS_PEN_WIDTH);
+		pen_axis.setColor(QColor("white")); //axis color
+
 		// Draw axis
 		p.save();
-		QPen pen;
-
-		pen.setStyle(Qt::SolidLine);
-		pen.setWidth(AXIS_PEN_WIDTH);
-		pen.setColor(QColor("white")); //axis color
-		p.setPen(pen);
+		p.setPen(pen_axis);
 
 		// x axis
 		p.drawLine(axis_left, axis_top, left + width, axis_top);
 
 		// y axis
 		p.drawLine(axis_left, axis_top, axis_left, top);
+
+		// Draw the dashes in the y axis.
+		int quarter = (top - axis_top) / 4;
+
+		for (int i = 1; i <= 4; ++i)
+			p.drawLine(axis_left, axis_top + quarter*i, axis_left - MARGIN, axis_top + quarter*i);
+
 		p.restore();
 
 		// Descriptive text
@@ -98,7 +106,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		int graph_width = width - (axis_left + AXIS_PEN_WIDTH - left);
 
 		// calculate the width of each bar
-		int bar_width = static_cast<int>(graph_width/ static_cast<float>(number_of_bars));
+		int bar_width = static_cast<int>(graph_width / static_cast<float>(number_of_bars));
 
 		// Min & Max values on x axis
 		int font_y_pos = axis_top + AXIS_PEN_WIDTH + fm.ascent() + SPACING;
