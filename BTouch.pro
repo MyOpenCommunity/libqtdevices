@@ -58,6 +58,7 @@ HEADERS += actuators.h \
            amplificatori.h \
            antintrusion.h \
            automation.h \
+           automation_device.h \
            aux.h \
            bann1_button.h \
            bann2_buttons.h \
@@ -85,7 +86,6 @@ HEADERS += actuators.h \
            cleanscreen.h \
            contrast.h \
            datetime.h \
-           dev_automation.h \
            device.h \
            device_status.h \
            devices_cache.h \
@@ -159,6 +159,7 @@ SOURCES += actuators.cpp \
            amplificatori.cpp \
            antintrusion.cpp \
            automation.cpp \
+           automation_device.cpp \
            aux.cpp \
            bann1_button.cpp \
            bann2_buttons.cpp \
@@ -187,7 +188,6 @@ SOURCES += actuators.cpp \
            contrast.cpp \
            datetime.cpp \
            definitions.cpp \
-           dev_automation.cpp \
            device.cpp \
            device_status.cpp \
            devices_cache.cpp \

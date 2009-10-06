@@ -32,7 +32,7 @@ HEADERS += device_tester.h \
            ../lighting_device.h \
            ../poweramplifier_device.h \
            ../landevice.h \
-           ../dev_automation.h \
+           ../automation_device.h \
            ../device.h \
            ../device_status.h \
            ../frame_interpreter.h \
@@ -56,7 +56,7 @@ SOURCES += test_main.cpp \
            ../lighting_device.cpp \
            ../poweramplifier_device.cpp \
            ../landevice.cpp \
-           ../dev_automation.cpp \
+           ../automation_device.cpp \
            ../device.cpp \
            ../device_status.cpp \
            ../frame_interpreter.cpp \

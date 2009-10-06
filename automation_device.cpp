@@ -1,4 +1,4 @@
-#include "dev_automation.h"
+#include "automation_device.h"
 #include "generic_functions.h" // createStatusRequestOpen
 
 #include <openmsg.h>
