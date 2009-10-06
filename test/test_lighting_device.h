@@ -65,6 +65,7 @@ Q_OBJECT
 protected:
 	void initDimmer();
 	void cleanupDimmer();
+	virtual void checkLevel();
 
 private slots:
 	void initTestCase();
@@ -83,6 +84,9 @@ private:
 class TestDimmer100 : public TestDimmer
 {
 Q_OBJECT
+protected:
+	virtual void checkLevel();
+
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
