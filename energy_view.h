@@ -92,7 +92,7 @@ public slots:
 	virtual void showPage();
 
 protected:
-	void timerEvent(QTimerEvent *);
+	void timerEvent(QTimerEvent *e);
 
 private:
 	QWidget *buildBannerWidget();
@@ -130,6 +130,8 @@ private:
 	bool is_electricity_view;
 	bool is_production;
 	int n_decimal;
+	// the id of the timers used to poll data
+	int current_banner_timer_id, cumulative_day_banner_timer_id;
 
 private slots:
 	void toggleCurrency();
