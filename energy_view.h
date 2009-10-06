@@ -138,6 +138,8 @@ private slots:
 	void showBannerWidget();
 	void backClick();
 	void status_changed(const StatusList &status_list);
+	void screensaverstarted(Page *p);
+	void handleClose();
 };
 
 
