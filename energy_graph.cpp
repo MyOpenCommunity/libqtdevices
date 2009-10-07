@@ -60,6 +60,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		foreach (float val, graph_data)
 			max_value = qMax(max_value, val);
 
+		// Coordinates have the origin in the point on the top left of the display
 		int left = rect().left() + MARGIN;
 		int top = rect().top() + MARGIN;
 		int width = rect().width() - MARGIN * 2;
@@ -68,21 +69,23 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		p.setFont(bt_global::font->get(FontManager::SMALLTEXT));
 		QFontMetrics fm = p.fontMetrics();
 
-		// Max value on y axis
+		// We use the max value as to calculate the shift on the x axis
 		QString val = loc.toString(max_value + 0.04999, 'f', 1);
-		p.drawText(left, top + fm.height(), val);
 
-		int axis_left = left + fm.width(val) + SPACING;
+		int axis_left = left + fm.width(val) + SPACING * 2;
 		int axis_top = top + height - fm.ascent() - SPACING - AXIS_PEN_WIDTH;
 
 		QPen pen_axis;
-
 		pen_axis.setStyle(Qt::SolidLine);
 		pen_axis.setWidth(AXIS_PEN_WIDTH);
 		pen_axis.setColor(QColor("white")); //axis color
 
+		// Calculate the heigth and width of the graph
+		int graph_height = axis_top - top - AXIS_PEN_WIDTH - fm.height() - SPACING;
+		int graph_width = width - (axis_left + AXIS_PEN_WIDTH - left);
+
 		// Draw axis
-		p.save();
+		QPen old_pen = p.pen();
 		p.setPen(pen_axis);
 
 		// x axis
@@ -91,19 +94,25 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		// y axis
 		p.drawLine(axis_left, axis_top, axis_left, top);
 
-		// Draw the dashes in the y axis.
-		int quarter = (top - axis_top) / 4;
+		// Draw the dashes and the text in the y axis.
+		int y_max_value = top + fm.height() + SPACING * 2;
+		int quarter = (axis_top - y_max_value) / 4;
 
-		for (int i = 1; i <= 4; ++i)
-			p.drawLine(axis_left, axis_top + quarter*i, axis_left - MARGIN, axis_top + quarter*i);
+		for (int i = 0; i < 4; ++i)
+		{
+			if (i == 0 || i == 2)
+			{
+				int value = i == 0 ? max_value : max_value / 2;
+				QString text = loc.toString(value + 0.04999, 'f', 1);
+				p.drawText(left, y_max_value + quarter*i + fm.ascent() / 2, text);
+			}
+			p.drawLine(axis_left, y_max_value + quarter*i, axis_left - MARGIN, y_max_value + quarter*i);
+		}
 
-		p.restore();
+		p.setPen(old_pen);
 
 		// Descriptive text
 		p.drawText(left + width - fm.width(text), top + fm.height(), text);
-
-		int graph_height = axis_top - top - AXIS_PEN_WIDTH - fm.height() - SPACING;
-		int graph_width = width - (axis_left + AXIS_PEN_WIDTH - left);
 
 		// calculate the width of each bar
 		int bar_width = static_cast<int>(graph_width / static_cast<float>(number_of_bars));
