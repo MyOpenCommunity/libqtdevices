@@ -1,11 +1,11 @@
 #ifndef TEST_AUTOMATION_DEVICE_H
 #define TEST_AUTOMATION_DEVICE_H
 
-#include "test_device.h"
+#include "test_checkaddress.h"
 
 class AutomationDevice;
 
-class TestAutomationDevice : public TestDevice
+class TestAutomationDevice : public TestCheckAddress
 {
 Q_OBJECT
 private slots:
