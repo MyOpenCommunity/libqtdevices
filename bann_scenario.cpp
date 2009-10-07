@@ -5,7 +5,7 @@
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
-#include "dev_automation.h"
+#include "automation_device.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
 
 #include <QDir>

@@ -5,7 +5,7 @@
 #include "device.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
-#include "dev_automation.h" // PPTStatDevice
+#include "automation_device.h" // PPTStatDevice
 
 #include <QTimer>
 #include <QDebug>
