@@ -1,7 +1,7 @@
 #ifndef TEST_LIGHTING_DEVICE_H
 #define TEST_LIGHTING_DEVICE_H
 
-#include "test_checkaddress.h"
+#include "test_device.h"
 
 #include <lighting_device.h>
 
@@ -11,13 +11,13 @@ const QString LIGHT_ADDR_EXTENSION_2 = "#4#01";
 
 class LightingDevice;
 
-class TestLightingDevice : public TestCheckAddress
+class TestLightingDevice : public TestDevice
 {
 Q_OBJECT
 protected:
 	void initLightingDevice();
 	void cleanupLightingDevice();
-	void setParams(QString w, LightingDevice::PullMode m);
+	void setParams(QString w, PullMode m);
 
 private slots:
 	void init();

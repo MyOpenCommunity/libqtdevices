@@ -10,7 +10,7 @@
 
 void TestLightingDevice::initLightingDevice()
 {
-	dev = new LightingDevice(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+	dev = new LightingDevice(LIGHT_DEVICE_WHERE, PULL);
 }
 
 void TestLightingDevice::initTestCase()
@@ -80,7 +80,7 @@ void TestLightingDevice::receiveLightOnOff()
 	t.check(QString("*1*0*%1##").arg(dev->where), false);
 }
 
-void TestLightingDevice::setParams(QString w, LightingDevice::PullMode m)
+void TestLightingDevice::setParams(QString w, PullMode m)
 {
 	dev->where = w;
 	dev->mode = m;
@@ -99,19 +99,19 @@ void TestLightingDevice::checkPullUnknown()
 
 void TestLightingDevice::receiveLightOnOffPull()
 {
-	setParams(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+	setParams(LIGHT_DEVICE_WHERE, PULL);
 	checkPullUnknown();
 }
 
 void TestLightingDevice::receiveLightOnOffUnknown()
 {
-	setParams(LIGHT_DEVICE_WHERE, LightingDevice::PULL_UNKNOWN);
+	setParams(LIGHT_DEVICE_WHERE, PULL_UNKNOWN);
 	checkPullUnknown();
 }
 
 void TestLightingDevice::receiveLightOnOffUnknown2()
 {
-	setParams(LIGHT_DEVICE_WHERE, LightingDevice::PULL_UNKNOWN);
+	setParams(LIGHT_DEVICE_WHERE, PULL_UNKNOWN);
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
 	QString global_on = "*1*1*0##";
 	t.checkSignals(global_on, 0);
@@ -122,19 +122,19 @@ void TestLightingDevice::receiveLightOnOffUnknown2()
 
 void TestLightingDevice::receiveLightOnOffPullExt()
 {
-	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::PULL);
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, PULL);
 	checkPullUnknown();
 }
 
 void TestLightingDevice::receiveLightOnOffUnknownExt()
 {
-	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::PULL_UNKNOWN);
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, PULL_UNKNOWN);
 	checkPullUnknown();
 }
 
 void TestLightingDevice::receiveLightOnOffUnknownExt2()
 {
-	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::PULL_UNKNOWN);
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, PULL_UNKNOWN);
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
 	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 	t.checkSignals(env_off, 0);
@@ -144,18 +144,18 @@ void TestLightingDevice::receiveLightOnOffUnknownExt2()
 
 void TestLightingDevice::receiveLightOnOffNotPull()
 {
-	setParams(LIGHT_DEVICE_WHERE, LightingDevice::NOT_PULL);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
 	QString global_on = "*1*1*0##";
 	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 
 	t.check(global_on, true);
-	t.check(env_off, false);
+	t.checkSignals(env_off, 0);
 }
 
 void TestLightingDevice::receiveLightOnOffNotPullExt()
 {
-	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, LightingDevice::NOT_PULL);
+	setParams(LIGHT_DEVICE_WHERE + LIGHT_ADDR_EXTENSION, NOT_PULL);
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
 	QString global_on = "*1*1*0##";
 	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
@@ -189,7 +189,7 @@ void TestDimmer::cleanupTestCase()
 void TestDimmer::initDimmer()
 {
 	initLightingDevice();
-	dimmer = new Dimmer(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+	dimmer = new Dimmer(LIGHT_DEVICE_WHERE, PULL);
 }
 
 void TestDimmer::cleanupDimmer()
@@ -238,7 +238,7 @@ void TestDimmer::receiveDimmerProblem()
 void TestDimmer100::initTestCase()
 {
 	initDimmer();
-	dimmer100 = new Dimmer100(LIGHT_DEVICE_WHERE, LightingDevice::PULL);
+	dimmer100 = new Dimmer100(LIGHT_DEVICE_WHERE, PULL);
 }
 
 void TestDimmer100::cleanupTestCase()
