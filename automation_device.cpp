@@ -48,14 +48,6 @@ void AutomationDevice::requestStatus()
 
 void AutomationDevice::manageFrame(OpenMsg &msg)
 {
-	// TODO: this must be refactored, since is cut-and-pasted from
-	// lighting device
-	// Probably a PullEnabledDevice will do the trick: reimplement manageFrame()
-	// to handle the common part and let each device parse the frame by calling
-	// a virtual protected parseFrame().
-	// However, I don't still understand completely the mechanics of mode changing
-	// so I'm pasting the code for now.
-
 	// true if the frame is general or environment (not group).
 	bool is_multi_receiver_frame = false;
 
@@ -97,6 +89,9 @@ void AutomationDevice::manageFrame(OpenMsg &msg)
 	else
 		emit status_changed(sl);
 }
+
+
+
 
 PPTStatDevice::PPTStatDevice(QString address) : device(QString("25"), address)
 {
