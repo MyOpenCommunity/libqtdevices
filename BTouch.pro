@@ -129,6 +129,7 @@ HEADERS += actuators.h \
            radio.h \
            scaleconversion.h \
            scenario.h \
+           scenario_device.h \
            scenevocond.h \
            screensaver.h \
            screensaverpage.h \
@@ -231,6 +232,7 @@ SOURCES += actuators.cpp \
            radio.cpp \
            scaleconversion.cpp \
            scenario.cpp \
+           scenario_device.cpp \
            scenevocond.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
