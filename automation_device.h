@@ -8,6 +8,7 @@ class OpenMsg;
 
 class AutomationDevice : public device
 {
+friend class TestAutomationDevice;
 public:
 	enum PullMode
 	{
