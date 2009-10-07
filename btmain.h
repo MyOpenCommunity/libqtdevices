@@ -51,6 +51,9 @@ public:
 	~BtMain();
 	Client *client_richieste;
 	Client *client_comandi;
+	SoundDiffusion *difSon;
+	MultiSoundDiffAlarm *dm;
+	Version *version;
 
 	void resetTimer();
 	/// Freeze or unfreeze the application
@@ -60,9 +63,8 @@ public:
 
 	void setPwd(bool, QString);
 
-	SoundDiffusion *difSon;
-	MultiSoundDiffAlarm *dm;
-	Version *version;
+	Page *getPreviousPage();
+	bool screenSaverRunning();
 
 public slots:
 	void startCalib();
@@ -75,6 +77,7 @@ signals:
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
+
 
 private slots:
 	void hom();

@@ -38,6 +38,7 @@ public:
 	QDate date();
 	QString dateDisplayed();
 	int status();
+	void forceDate(QDate new_date, TimePeriod period=DAY);
 
 private slots:
 	void changeTimeScale();
@@ -51,8 +52,9 @@ private:
 	 * \param delta The number of days or months to be added to selection_date
 	 */
 	void changeTimePeriod(int delta);
-	void setDate(QDate new_date);
 	QString formatDate(const QDate &date, TimePeriod period);
+	void setDate(QDate new_date);
+	void displayDate();
 
 	TimePeriod _status;
 	BtButton *back_period, *forw_period, *btn_cycle;
@@ -90,7 +92,7 @@ public slots:
 	virtual void showPage();
 
 protected:
-	void timerEvent(QTimerEvent *);
+	void timerEvent(QTimerEvent *e);
 
 private:
 	QWidget *buildBannerWidget();
@@ -128,6 +130,8 @@ private:
 	bool is_electricity_view;
 	bool is_production;
 	int n_decimal;
+	// the id of the timers used to poll data
+	int current_banner_timer_id, cumulative_day_banner_timer_id;
 
 private slots:
 	void toggleCurrency();
@@ -136,6 +140,8 @@ private slots:
 	void showBannerWidget();
 	void backClick();
 	void status_changed(const StatusList &status_list);
+	void screensaverstarted(Page *p);
+	void handleClose();
 };
 
 
