@@ -355,4 +355,6 @@ void TestDimmer100::checkLevel()
 	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER_LEVEL);
 	QString frame = QString("*1*%1*%2##").arg(9).arg(dimmer100->where);
 	t.check(frame, 75);
+	frame = QString("*1*%1*%2##").arg(5).arg(dimmer100->where);
+	t.check(frame, 30);
 }
