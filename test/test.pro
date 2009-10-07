@@ -24,6 +24,7 @@ HEADERS += device_tester.h \
            test_automation_device.h \
            test_checkaddress.h \
            test_dev_automation.h \
+           test_scenario_device.h \
            test_device.h \
            test_landevice.h \
            test_energy_device.h \
@@ -35,6 +36,7 @@ HEADERS += device_tester.h \
            ../poweramplifier_device.h \
            ../landevice.h \
            ../automation_device.h \
+           ../scenario_device.h \
            ../device.h \
            ../device_status.h \
            ../frame_interpreter.h \
@@ -50,6 +52,7 @@ SOURCES += test_main.cpp \
            test_automation_device.cpp \
            test_checkaddress.cpp \
            test_dev_automation.cpp \
+           test_scenario_device.cpp \
            test_device.cpp \
            test_landevice.cpp \
            test_energy_device.cpp \
@@ -61,6 +64,7 @@ SOURCES += test_main.cpp \
            ../poweramplifier_device.cpp \
            ../landevice.cpp \
            ../automation_device.cpp \
+           ../scenario_device.cpp \
            ../device.cpp \
            ../device_status.cpp \
            ../frame_interpreter.cpp \

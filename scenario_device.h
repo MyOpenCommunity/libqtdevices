@@ -5,6 +5,7 @@
 
 class ScenarioDevice : public device
 {
+friend class TestScenarioDevice;
 public:
 	ScenarioDevice(QString where);
 

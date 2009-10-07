@@ -8,6 +8,7 @@
 #include "test_lighting_device.h"
 #include "test_automation_device.h"
 #include "test_checkaddress.h"
+#include "test_scenario_device.h"
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +42,9 @@ int main(int argc, char *argv[])
 
 	TestAutomationDevice test_automation_device;
 	test_list << &test_automation_device;
+
+	TestScenarioDevice test_scenario_device;
+	test_list << &test_scenario_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
