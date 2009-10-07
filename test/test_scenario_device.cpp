@@ -1,5 +1,6 @@
 #include "test_scenario_device.h"
 #include "openserver_mock.h"
+#include "device_tester.h"
 
 #include <openclient.h>
 #include <scenario_device.h>
@@ -49,4 +50,39 @@ void TestScenarioDevice::sendDeleteScenario()
 	dev->deleteScenario(31);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*0*42#31*%1##").arg(dev->where));
+}
+
+void TestScenarioDevice::sendRequestStatus()
+{
+	dev->requestStatus();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#0*%1##").arg(dev->where));
+}
+
+void TestScenarioDevice::receiveStartProgramming()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_START);
+	QString frame = QString("*0*40#22*%1##").arg(dev->where);
+	t.check(frame, true);
+}
+
+void TestScenarioDevice::receiveStopProgramming()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_START);
+	QString frame = QString("*0*41#22*%1##").arg(dev->where);
+	t.check(frame, false);
+}
+
+void TestScenarioDevice::receiveLockDevice()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_LOCK);
+	QString frame = QString("*0*43*%1##").arg(dev->where);
+	t.check(frame, true);
+}
+
+void TestScenarioDevice::receiveUnlockDevice()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_LOCK);
+	QString frame = QString("*0*44*%1##").arg(dev->where);
+	t.check(frame, false);
 }

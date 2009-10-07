@@ -17,6 +17,12 @@ private slots:
 	void sendStopProgramming();
 	void sendDeleteAll();
 	void sendDeleteScenario();
+	void sendRequestStatus();
+
+	void receiveStartProgramming();
+	void receiveStopProgramming();
+	void receiveLockDevice();
+	void receiveUnlockDevice();
 
 private:
 	ScenarioDevice *dev;
