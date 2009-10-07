@@ -2,6 +2,7 @@
 #define DEV_AUTOMATION_H
 
 #include "device.h"
+#include "generic_functions.h"
 
 class OpenMsg;
 
@@ -10,13 +11,6 @@ class AutomationDevice : public device
 {
 friend class TestAutomationDevice;
 public:
-	enum PullMode
-	{
-		PULL,
-		NOT_PULL,
-		PULL_UNKNOWN,
-	};
-
 	enum Type
 	{
 		DIM_STOP = 0,

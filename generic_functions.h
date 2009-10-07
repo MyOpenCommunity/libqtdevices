@@ -9,6 +9,9 @@
 **
 ****************************************************************/
 
+#ifndef GENERIC_FUNCTIONS_H
+#define GENERIC_FUNCTIONS_H
+
 #include <QString>
 #include <QList>
 #include <QMap>
@@ -139,6 +142,22 @@ void getName(char *name);
 
 int trasformaVol(int vol);
 
+
+enum AddressType
+{
+	NOT_MINE = 0,
+	ENVIRONMENT,
+	GLOBAL,
+	P2P,
+};
+
+enum PullMode
+{
+	PULL,
+	NOT_PULL,
+	PULL_UNKNOWN,
+};
+
 /**
  * Check if the address found in a frame is valid for the device.
  *
@@ -146,5 +165,6 @@ int trasformaVol(int vol);
  * must have a+pf and extension part (if any).
  * \return true if msg_where includes the device, false otherwise.
  */
-bool checkAddressIsForMe(const QString &msg_where, const QString &dev_where);
+AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where, PullMode mode);
 
+#endif // GENERIC_FUNCTIONS_H

@@ -1,6 +1,5 @@
 #include "lighting_device.h"
 #include "openmsg.h"
-#include "generic_functions.h"
 
 #include <QDebug>
 
@@ -80,15 +79,17 @@ void LightingDevice::manageFrame(OpenMsg &msg)
 	// true if the frame is general or environment (not group).
 	bool is_multi_receiver_frame = false;
 
-	bool is_our = (QString::fromStdString(msg.whereFull()) == where);
-	if (!is_our && mode != PULL)
+	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, mode))
 	{
-		// here we check if address is general or environment
-		is_our = checkAddressIsForMe(msg.Extract_dove(), where);
-		is_multi_receiver_frame = is_our;
-	}
-	if (!is_our)
+	case NOT_MINE:
 		return;
+	case GLOBAL:
+	case ENVIRONMENT:
+		is_multi_receiver_frame = true;
+		break;
+	default:
+		break;
+	}
 
 	StatusList sl;
 	parseFrame(msg, &sl);

@@ -2,19 +2,13 @@
 #define LIGHTINGDEVICE_H
 
 #include "device.h"
+#include "generic_functions.h"
 
 class LightingDevice : public device
 {
 friend class TestLightingDevice;
 Q_OBJECT
 public:
-	enum PullMode
-	{
-		PULL,
-		NOT_PULL,
-		PULL_UNKNOWN,
-	};
-
 	enum Type
 	{
 		DIM_DEVICE_ON = 1,

@@ -435,30 +435,36 @@ QString getEnvironment(const QString &w)
 	return QString();
 }
 
-bool checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
+AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where, PullMode mode)
 {
-	// frame where (input)
-	QPair<QString, QString> in = splitWhere(msg_where);
-	// device where (our)
-	QPair<QString, QString> our = splitWhere(dev_where);
+	if (msg_where == dev_where)
+		return P2P;
 
-	// TODO: really tired today, ugly code ahead
-	if (!in.second.isEmpty())
+	if (mode != PULL)
 	{
-		if (in.second == "#3" && our.second.isEmpty())
-			;
-		else if (in.second != our.second)
-			return false;
+		// frame where (input)
+		QPair<QString, QString> in = splitWhere(msg_where);
+		// device where (our)
+		QPair<QString, QString> our = splitWhere(dev_where);
+
+		// TODO: really tired today, ugly code ahead
+		if (!in.second.isEmpty())
+		{
+			if (in.second == "#3" && our.second.isEmpty())
+				;
+			else if (in.second != our.second)
+				return NOT_MINE;
+		}
+
+		// here we don't need to care about extension anymore
+		// general address
+		if (in.first == "0")
+			return GLOBAL;
+		// environment address
+		// use toInt() to remove differences between "00" "0" and so on.
+		if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
+			return ENVIRONMENT;
 	}
 
-	// here we don't need to care about extension anymore
-	// general address
-	if (in.first == "0")
-		return true;
-	// environment address
-	// use toInt() to remove differences between "00" "0" and so on.
-	if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
-		return true;
-
-	return false;
+	return NOT_MINE;
 }
