@@ -1,7 +1,7 @@
 #ifndef TEST_LIGHTING_DEVICE_H
 #define TEST_LIGHTING_DEVICE_H
 
-#include "test_device.h"
+#include "test_checkaddress.h"
 
 #include <lighting_device.h>
 
@@ -11,7 +11,7 @@ const QString LIGHT_ADDR_EXTENSION_2 = "#4#01";
 
 class LightingDevice;
 
-class TestLightingDevice : public TestDevice
+class TestLightingDevice : public TestCheckAddress
 {
 Q_OBJECT
 protected:
@@ -23,18 +23,6 @@ private slots:
 	void init();
 	void initTestCase();
 	void cleanupTestCase();
-
-	// these tests must be executed before the others, since they test the commodity
-	// function checkAddress()
-	void testCheckAddressGlobal();
-	void testCheckAddressGlobalLevel3();
-	void testCheckAddressGlobalInterface();
-	void testCheckAddressGlobalInterfaceFalse();
-	void testCheckAddressEnvironment10();
-	void testCheckAddressEnvironment0();
-	void testCheckAddressEnvironmentInt();
-	void testCheckAddressEnvironmentLevel3();
-	void testCheckAddressGroup();
 
 	void sendTurnOn();
 	void sendRequestStatus();

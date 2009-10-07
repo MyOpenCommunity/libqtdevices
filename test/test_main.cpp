@@ -7,6 +7,7 @@
 #include "test_dev_automation.h"
 #include "test_lighting_device.h"
 #include "test_automation_device.h"
+#include "test_checkaddress.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,6 +26,9 @@ int main(int argc, char *argv[])
 
 	TestPPTStatDevice test_pptstat_device;
 	test_list << &test_pptstat_device;
+
+	TestCheckAddress test_checkaddress;
+	test_list << &test_checkaddress;
 
 	TestLightingDevice test_lighting_device;
 	test_list << &test_lighting_device;

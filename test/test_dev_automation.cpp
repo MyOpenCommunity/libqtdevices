@@ -3,7 +3,7 @@
 #include "openserver_mock.h"
 #include "openclient.h"
 
-#include <dev_automation.h>
+#include <automation_device.h>
 #include <openmsg.h>
 
 #include <QtTest/QtTest>

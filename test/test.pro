@@ -22,6 +22,7 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 HEADERS += device_tester.h \
            test_automation_device.h \
+           test_checkaddress.h \
            test_dev_automation.h \
            test_device.h \
            test_landevice.h \
@@ -47,6 +48,7 @@ HEADERS += device_tester.h \
 SOURCES += test_main.cpp \
            device_tester.cpp \
            test_automation_device.cpp \
+           test_checkaddress.cpp \
            test_dev_automation.cpp \
            test_device.cpp \
            test_landevice.cpp \
