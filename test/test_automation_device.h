@@ -16,6 +16,11 @@ private slots:
 	void sendGoDown();
 	void sendStop();
 
+	// TODO: test PULL modes. Use a base class to share code with lighting tests?
+	void receiveUp();
+	void receiveDown();
+	void receiveStop();
+
 private:
 	AutomationDevice *dev;
 };
