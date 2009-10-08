@@ -66,7 +66,7 @@ private slots:
 	void receiveDimmerProblem();
 
 private:
-	Dimmer *dimmer;
+	DimmerDevice *dimmer;
 };
 
 class TestDimmer100 : public TestDimmer
@@ -86,6 +86,6 @@ private slots:
 	void receiveDimmer100Status();
 
 private:
-	Dimmer100 *dimmer100;
+	Dimmer100Device *dimmer100;
 };
 #endif // TEST_LIGHTING_DEVICE_H

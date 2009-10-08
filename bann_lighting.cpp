@@ -91,7 +91,7 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer_broken"), true);
 
-	dev = bt_global::add_device_to_cache(new Dimmer(where, PULL));
+	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
 	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
 	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
 	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));

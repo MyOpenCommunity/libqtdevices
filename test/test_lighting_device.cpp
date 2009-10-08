@@ -189,7 +189,7 @@ void TestDimmer::cleanupTestCase()
 void TestDimmer::initDimmer()
 {
 	initLightingDevice();
-	dimmer = new Dimmer(LIGHT_DEVICE_WHERE, PULL);
+	dimmer = new DimmerDevice(LIGHT_DEVICE_WHERE, PULL);
 }
 
 void TestDimmer::cleanupDimmer()
@@ -238,7 +238,7 @@ void TestDimmer::receiveDimmerProblem()
 void TestDimmer100::initTestCase()
 {
 	initDimmer();
-	dimmer100 = new Dimmer100(LIGHT_DEVICE_WHERE, PULL);
+	dimmer100 = new Dimmer100Device(LIGHT_DEVICE_WHERE, PULL);
 }
 
 void TestDimmer100::cleanupTestCase()

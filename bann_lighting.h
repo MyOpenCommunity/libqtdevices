@@ -15,7 +15,7 @@ class device_status;
 class openwebnet;
 class LightingDevice;
 class QDomNode;
-class Dimmer;
+class DimmerDevice;
 
 class SingleLight : public bannOnOff
 {
@@ -62,7 +62,7 @@ private slots:
 	void decreaseLevel();
 
 private:
-	Dimmer *dev;
+	DimmerDevice *dev;
 };
 
 /*!

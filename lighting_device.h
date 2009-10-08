@@ -41,12 +41,12 @@ private:
 // Type returned in StatusList for DIM_VARIABLE_TIMING
 Q_DECLARE_METATYPE(QList<int>);
 
-class Dimmer : public LightingDevice
+class DimmerDevice : public LightingDevice
 {
 friend class TestDimmer;
 Q_OBJECT
 public:
-	Dimmer(QString where, PullMode pull = PULL);
+	DimmerDevice(QString where, PullMode pull = PULL);
 
 	// TODO: is this needed? There's no graphical interface to set the level...
 	void setLevel(int level);
@@ -59,12 +59,12 @@ protected:
 };
 
 
-class Dimmer100 : public Dimmer
+class Dimmer100Device : public DimmerDevice
 {
 friend class TestDimmer100;
 Q_OBJECT
 public:
-	Dimmer100(QString where, PullMode pull = PULL);
+	Dimmer100Device(QString where, PullMode pull = PULL);
 
 	void increaseLevel100(int delta, int speed);
 	void decreaseLevel100(int delta, int speed);
