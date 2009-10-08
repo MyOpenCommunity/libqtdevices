@@ -42,7 +42,8 @@ void Lighting::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case DIMMER:
-			b = new dimmer(this, where, img1, img2, img3, img4, img5);
+			//b = new dimmer(this, where, img1, img2, img3, img4, img5);
+			b = new DimmerNew(this, item, where);
 			break;
 		case ATTUAT_AUTOM:
 			b = new SingleLight(this, item, where);

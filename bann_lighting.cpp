@@ -81,6 +81,43 @@ void LightGroup::lightOn()
 		l->turnOn();
 }
 
+DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
+	bannRegolaz(parent)
+{
+	setRange(20, 100);
+	setStep(10);
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
+		bt_global::skin->getImage("dimmer_broken"), true);
+
+	dev = bt_global::add_device_to_cache(new Dimmer(where, PULL));
+	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
+	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
+	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+}
+
+void DimmerNew::lightOn()
+{
+	dev->turnOn();
+}
+
+void DimmerNew::lightOff()
+{
+	dev->turnOff();
+}
+
+void DimmerNew::increaseLevel()
+{
+	dev->increaseLevel();
+}
+
+void DimmerNew::decreaseLevel()
+{
+	dev->decreaseLevel();
+}
+
 
 dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
 	bool to_be_connect) : bannRegolaz(parent)

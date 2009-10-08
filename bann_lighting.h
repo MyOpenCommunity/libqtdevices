@@ -15,6 +15,7 @@ class device_status;
 class openwebnet;
 class LightingDevice;
 class QDomNode;
+class Dimmer;
 
 class SingleLight : public bannOnOff
 {
@@ -48,7 +49,21 @@ private:
 	QList<LightingDevice *> devices;
 };
 
+class DimmerNew : public bannRegolaz
+{
+Q_OBJECT
+public:
+	DimmerNew(QWidget *parent, const QDomNode &config_node, QString where);
 
+private slots:
+	void lightOn();
+	void lightOff();
+	void increaseLevel();
+	void decreaseLevel();
+
+private:
+	Dimmer *dev;
+};
 
 /*!
  * \class dimmer
