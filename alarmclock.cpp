@@ -578,6 +578,7 @@ void AlarmClock::aumVol()
 		}
 		bt_global::btmain->freeze(false);
 		bt_global::btmain->svegl(false);
+		bt_global::display.forceOperativeMode(false);
 		emit alarmClockFired();
 	}
 }
