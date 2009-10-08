@@ -9,9 +9,27 @@
 #include <QString>
 #include <QList>
 
+
 class device;
 class device_status;
 class openwebnet;
+class LightingDevice;
+class QDomNode;
+
+class SingleLight : public bannOnOff
+{
+Q_OBJECT
+public:
+	SingleLight(QWidget *parent, const QDomNode &config_node, QString address);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void lightOn();
+	void lightOff();
+
+private:
+	LightingDevice *dev;
+};
 
 /*!
  * \class dimmer

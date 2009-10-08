@@ -6,6 +6,10 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" // createMsgOpen
 #include "icondispatcher.h" //bt_global::icons_cache
+#include "lighting_device.h"
+#include "skinmanager.h" // skincontext
+#include "xml_functions.h" // getTextChild
+
 
 #include <openwebnet.h> // class openwebnet
 
@@ -13,8 +17,40 @@
 #include <QTimer>
 #include <QDebug>
 #include <QFile>
+#include <QDomNode>
 
 #include <stdlib.h> // atoi
+
+SingleLight::SingleLight(QWidget *parent, const QDomNode &config_node, QString address)
+	: bannOnOff(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	// TODO: verify the correct skins
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		bt_global::skin->getImage("lamp_on"), bt_global::skin->getImage("lamp_off"));
+	setText(getTextChild(config_node, "descr"));
+	// TODO: read pull mode from config
+	dev = bt_global::add_device_to_cache(new LightingDevice(address));
+
+	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
+	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
+}
+
+void SingleLight::lightOn()
+{
+	dev->turnOn();
+}
+
+void SingleLight::lightOff()
+{
+	dev->turnOff();
+}
+
+void SingleLight::inizializza(bool forza)
+{
+	dev->requestStatus();
+	banner::inizializza(forza);
+}
 
 
 dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
