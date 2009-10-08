@@ -144,7 +144,7 @@ private slots:
 
 
 /*!
- * \class grAttuatAutom
+ * \class LightGroup
  * \brief This class is made to control a number of automation actuators.
  *
  * It behaves essentially like attuatAutom but it doesn't represent the actuators 
@@ -152,11 +152,11 @@ private slots:
  * \author Davide
  * \date lug 2005
  */
-class grAttuatAutom : public bannOnOff
+class LightGroup : public bannOnOff
 {
 Q_OBJECT
 public:
-	grAttuatAutom(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses);
+	LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
 	void lightOn();

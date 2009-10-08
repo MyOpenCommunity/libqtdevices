@@ -478,7 +478,7 @@ void grDimmer100::Diminuisci()
 }
 
 
-grAttuatAutom::grAttuatAutom(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
+LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
 	: bannOnOff(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -494,13 +494,13 @@ grAttuatAutom::grAttuatAutom(QWidget *parent, const QDomNode &config_node, const
 	connect(this,SIGNAL(dxClick()),this,SLOT(lightOff()));
 }
 
-void grAttuatAutom::lightOff()
+void LightGroup::lightOff()
 {
 	foreach (LightingDevice *l, devices)
 		l->turnOff();
 }
 
-void grAttuatAutom::lightOn()
+void LightGroup::lightOn()
 {
 	foreach (LightingDevice *l, devices)
 		l->turnOn();
