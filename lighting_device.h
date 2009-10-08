@@ -2,7 +2,6 @@
 #define LIGHTINGDEVICE_H
 
 #include "device.h"
-#include "generic_functions.h"
 
 class LightingDevice : public device
 {

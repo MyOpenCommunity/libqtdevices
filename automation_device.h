@@ -2,7 +2,6 @@
 #define DEV_AUTOMATION_H
 
 #include "device.h"
-#include "generic_functions.h"
 
 class OpenMsg;
 
