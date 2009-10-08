@@ -156,13 +156,16 @@ class grAttuatAutom : public bannOnOff
 {
 Q_OBJECT
 public:
-	grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString Icon);
+	grAttuatAutom(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses);
 	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
 private slots:
-	void Attiva();
-	void Disattiva();
+	void lightOn();
+	void lightOff();
+
 private:
-	QList<QString> elencoDisp;
+	// of course these pointers must not be deleted since objects are owned by
+	// the cache
+	QList<LightingDevice *> devices;
 };
 
 

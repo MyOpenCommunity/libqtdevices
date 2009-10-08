@@ -478,25 +478,32 @@ void grDimmer100::Diminuisci()
 }
 
 
-grAttuatAutom::grAttuatAutom(QWidget *parent, QList<QString> addresses, QString IconaDx, QString IconaSx, QString icon)
+grAttuatAutom::grAttuatAutom(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
 	: bannOnOff(parent)
 {
-	SetIcons(IconaDx, IconaSx, QString(), icon);
-	elencoDisp = addresses;
-	connect(this,SIGNAL(sxClick()),this,SLOT(Attiva()));
-	connect(this,SIGNAL(dxClick()),this,SLOT(Disattiva()));
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		 QString(), bt_global::skin->getImage("lamp_group_on"));
+	setText(getTextChild(config_node, "descr"));
+
+	foreach (const QString &address, addresses)
+		// since we don't care about status changes, use PULL mode to analyze fewer frames
+		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL));
+
+	connect(this,SIGNAL(sxClick()),this,SLOT(lightOn()));
+	connect(this,SIGNAL(dxClick()),this,SLOT(lightOff()));
 }
 
-void grAttuatAutom::Attiva()
+void grAttuatAutom::lightOff()
 {
-	for (int i = 0; i < elencoDisp.size();++i)
-		sendFrame(createMsgOpen("1", "1", elencoDisp.at(i)));
+	foreach (LightingDevice *l, devices)
+		l->turnOff();
 }
 
-void grAttuatAutom::Disattiva()
+void grAttuatAutom::lightOn()
 {
-	for (int i = 0; i < elencoDisp.size();++i)
-		sendFrame(createMsgOpen("1", "0", elencoDisp.at(i)));
+	foreach (LightingDevice *l, devices)
+		l->turnOn();
 }
 
 
