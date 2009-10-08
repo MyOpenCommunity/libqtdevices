@@ -95,7 +95,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		p.drawLine(axis_left, axis_top, axis_left, top);
 
 		// Draw the dashes and the text in the y axis.
-		int y_max_value = top + fm.height() + SPACING * 2;
+		int y_max_value = top + fm.height() + SPACING + AXIS_PEN_WIDTH;
 		int quarter = (axis_top - y_max_value) / 4;
 
 		for (int i = 0; i < 4; ++i)
