@@ -31,6 +31,25 @@ private:
 	LightingDevice *dev;
 };
 
+class LightGroup : public bannOnOff
+{
+Q_OBJECT
+public:
+	LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses);
+	// TODO: do we need a inizializza() method? The original class didn't have it...
+
+private slots:
+	void lightOn();
+	void lightOff();
+
+private:
+	// of course these pointers must not be deleted since objects are owned by
+	// the cache
+	QList<LightingDevice *> devices;
+};
+
+
+
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.
@@ -143,30 +162,6 @@ private slots:
 };
 
 
-/*!
- * \class LightGroup
- * \brief This class is made to control a number of automation actuators.
- *
- * It behaves essentially like attuatAutom but it doesn't represent the actuators 
- * state since different actuators can have different states.
- * \author Davide
- * \date lug 2005
- */
-class LightGroup : public bannOnOff
-{
-Q_OBJECT
-public:
-	LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses);
-	/*! \brief This method is used to add an address list of the objects contained int he group managed by this class*/
-private slots:
-	void lightOn();
-	void lightOff();
-
-private:
-	// of course these pointers must not be deleted since objects are owned by
-	// the cache
-	QList<LightingDevice *> devices;
-};
 
 
 /*!

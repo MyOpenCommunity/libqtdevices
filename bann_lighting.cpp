@@ -53,6 +53,35 @@ void SingleLight::inizializza(bool forza)
 }
 
 
+LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
+	: bannOnOff(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		 QString(), bt_global::skin->getImage("lamp_group_on"));
+	setText(getTextChild(config_node, "descr"));
+
+	foreach (const QString &address, addresses)
+		// since we don't care about status changes, use PULL mode to analyze fewer frames
+		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL));
+
+	connect(this,SIGNAL(sxClick()),this,SLOT(lightOn()));
+	connect(this,SIGNAL(dxClick()),this,SLOT(lightOff()));
+}
+
+void LightGroup::lightOff()
+{
+	foreach (LightingDevice *l, devices)
+		l->turnOff();
+}
+
+void LightGroup::lightOn()
+{
+	foreach (LightingDevice *l, devices)
+		l->turnOn();
+}
+
+
 dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
 	bool to_be_connect) : bannRegolaz(parent)
 {
@@ -476,36 +505,6 @@ void grDimmer100::Diminuisci()
 	for (int idx = 0; idx < elencoDisp.size(); idx++)
 		sendFrame(createMsgOpen("1", "31#5#255", elencoDisp.at(idx)));
 }
-
-
-LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
-	: bannOnOff(parent)
-{
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		 QString(), bt_global::skin->getImage("lamp_group_on"));
-	setText(getTextChild(config_node, "descr"));
-
-	foreach (const QString &address, addresses)
-		// since we don't care about status changes, use PULL mode to analyze fewer frames
-		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL));
-
-	connect(this,SIGNAL(sxClick()),this,SLOT(lightOn()));
-	connect(this,SIGNAL(dxClick()),this,SLOT(lightOff()));
-}
-
-void LightGroup::lightOff()
-{
-	foreach (LightingDevice *l, devices)
-		l->turnOff();
-}
-
-void LightGroup::lightOn()
-{
-	foreach (LightingDevice *l, devices)
-		l->turnOn();
-}
-
 
 attuatAutomTemp::attuatAutomTemp(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
 	QString pressedIcon, QList<QString> lt) : bannOnOff2scr(parent)
