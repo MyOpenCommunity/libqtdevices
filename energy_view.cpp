@@ -11,7 +11,6 @@
 #include "transitionwidget.h"
 #include "bann1_button.h" // bannTextOnImage
 #include "energy_data.h" // EnergyInterface
-#include "btmain.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -274,7 +273,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	main_layout->addWidget(time_period);
 
 	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
-	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screensaverstarted(Page*)));
 
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
@@ -525,12 +523,6 @@ void EnergyView::status_changed(const StatusList &status_list)
 		++it;
 	}
 	updateBanners();
-}
-
-void EnergyView::screensaverstarted(Page *p)
-{
-	if (p == this)
-		handleClose();
 }
 
 void EnergyView::handleClose()
