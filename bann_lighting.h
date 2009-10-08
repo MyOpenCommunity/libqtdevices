@@ -65,6 +65,22 @@ private:
 	DimmerDevice *dev;
 };
 
+class DimmerGroup : public bannRegolaz
+{
+Q_OBJECT
+public:
+	DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses);
+
+private slots:
+	void lightOn();
+	void lightOff();
+	void increaseLevel();
+	void decreaseLevel();
+
+private:
+	QList<DimmerDevice *> devices;
+};
+
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.

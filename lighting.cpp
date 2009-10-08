@@ -49,7 +49,8 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new SingleLight(this, item, where);
 			break;
 		case GR_DIMMER:
-			b = new grDimmer(this, getAddresses(item), img1, img2, img3, img4);
+			//b = new grDimmer(this, getAddresses(item), img1, img2, img3, img4);
+			b = new DimmerGroup(this, item, getAddresses(item));
 			break;
 		case GR_ATTUAT_AUTOM:
 			b = new LightGroup(this, item, getAddresses(item));

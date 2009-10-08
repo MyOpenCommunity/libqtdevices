@@ -86,6 +86,7 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 {
 	setRange(20, 100);
 	setStep(10);
+	setValue(30);
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
@@ -116,6 +117,50 @@ void DimmerNew::increaseLevel()
 void DimmerNew::decreaseLevel()
 {
 	dev->decreaseLevel();
+}
+
+
+DimmerGroup::DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses) :
+	bannRegolaz(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		bt_global::skin->getImage("dimmer_grp_dx"), bt_global::skin->getImage("dimmer_grp_sx"));
+	setText(getTextChild(config_node, "descr"));
+
+	foreach (const QString &address, addresses)
+		// since we don't care about status changes, use PULL mode to analyze fewer frames
+		devices << bt_global::add_device_to_cache(new DimmerDevice(address, PULL));
+
+	connect(this,SIGNAL(sxClick()),this,SLOT(lightOn()));
+	connect(this,SIGNAL(dxClick()),this,SLOT(lightOff()));
+	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+}
+
+void DimmerGroup::lightOn()
+{
+	foreach (DimmerDevice *l, devices)
+		l->turnOn();
+}
+
+void DimmerGroup::lightOff()
+{
+	qDebug() << "ciao";
+	foreach (DimmerDevice *l, devices)
+		l->turnOff();
+}
+
+void DimmerGroup::increaseLevel()
+{
+	foreach (DimmerDevice *l, devices)
+		l->increaseLevel();
+}
+
+void DimmerGroup::decreaseLevel()
+{
+	foreach (DimmerDevice *l, devices)
+		l->decreaseLevel();
 }
 
 
