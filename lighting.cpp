@@ -56,7 +56,8 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new LightGroup(this, item, getAddresses(item));
 			break;
 		case ATTUAT_AUTOM_TEMP:
-			b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
+			//b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
+			b = new TempLight(this, item);
 			break;
 		case ATTUAT_VCT_LS:
 			b = new attuatPuls(this, where, img1, img2, VCT_LS);

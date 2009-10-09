@@ -230,6 +230,35 @@ private slots:
 };
 
 
+class TempLight : public bannOnOff2scr
+{
+Q_OBJECT
+public:
+	TempLight(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza);
+
+protected:
+	virtual void readTimes();
+
+	struct Time
+	{
+		Time(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
+		int h, m, s;
+	};
+	QList<struct Time> times;
+
+protected slots:
+	void activate();
+
+private slots:
+	void cycleTime();
+
+private:
+	void updateTimeLabel();
+
+	LightingDevice *dev;
+	int time_index;
+};
 
 
 /*!

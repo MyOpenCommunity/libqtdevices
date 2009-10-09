@@ -690,6 +690,72 @@ void grDimmer100::Diminuisci()
 		sendFrame(createMsgOpen("1", "31#5#255", elencoDisp.at(idx)));
 }
 
+
+
+TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
+	bannOnOff2scr(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("lamp_cycle"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("lamp_time_on"), bt_global::skin->getImage("lamp_time_off"));
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new LightingDevice(where));
+
+	time_index = 0;
+	readTimes();
+	updateTimeLabel();
+	connect(this, SIGNAL(dxClick()), SLOT(activate()));
+	connect(this, SIGNAL(sxClick()), SLOT(cycleTime()));
+}
+
+void TempLight::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
+void TempLight::readTimes()
+{
+	times << Time(0, 1, 0); // 1 min
+	times << Time(0, 2, 0);
+	times << Time(0, 3, 0);
+	times << Time(0, 4, 0);
+	times << Time(0, 5, 0);
+	times << Time(0, 15, 0);
+	times << Time(0, 0, 30);
+	Q_ASSERT_X(times.size() <= 7, "TempLight::readTimes",
+		"times length must be <= 7, otherwise activation will fail");
+}
+
+void TempLight::cycleTime()
+{
+	time_index = (time_index + 1) % times.size();
+	updateTimeLabel();
+}
+
+void TempLight::updateTimeLabel()
+{
+	Time t = times[time_index];
+	QString str;
+	if (t.h == 0 && t.m == 0)  // time in secs
+		str = QString("%1''").arg(t.s);
+	else if (t.h == 0) // time in mins
+		str = QString("%1'").arg(t.m);
+	else if (t.m < 10)   // time in hh:mm
+		str = QString("%1:%2").arg(t.h).arg(t.m, 2, QChar('0'));
+	else
+		str = QString("%1h").arg(t.h);
+
+	setSecondaryText(str);
+	Draw();
+}
+
+void TempLight::activate()
+{
+	dev->fixedTiming(time_index);
+}
+
+
 attuatAutomTemp::attuatAutomTemp(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon,
 	QString pressedIcon, QList<QString> lt) : bannOnOff2scr(parent)
 {
