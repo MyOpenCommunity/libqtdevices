@@ -77,9 +77,12 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new TempLightVariable(this, item);
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_F:
+			/*
 			if (!times.count())
 				times.append("");
 			b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
+			*/
+			b = new TempLightFixed(this, item);
 			break;
 		case GR_DIMMER100:
 		{
@@ -105,6 +108,8 @@ void Lighting::loadItems(const QDomNode &config_node)
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
+		// TODO: probably this should go since the new banners don't emit
+		// the signal richStato()
 		appendBanner(b); // TODO: deve gestire tutte le connect??
 	}
 }

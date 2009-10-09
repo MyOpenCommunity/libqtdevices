@@ -21,6 +21,23 @@
 
 #include <stdlib.h> // atoi
 
+namespace
+{
+	QString formatTime(const Time &t)
+	{
+		QString str;
+		if (t.h == 0 && t.m == 0)  // time in secs
+			str = QString("%1''").arg(t.s);
+		else if (t.h == 0) // time in mins
+			str = QString("%1'").arg(t.m);
+		else if (t.h < 10)   // time in hh:mm
+			str = QString("%1:%2").arg(t.h).arg(t.m, 2, 10, QChar('0'));
+		else
+			str = QString("%1h").arg(t.h);
+		return str;
+	}
+}
+
 SingleLight::SingleLight(QWidget *parent, const QDomNode &config_node, QString address)
 	: bannOnOff(parent)
 {
@@ -737,15 +754,7 @@ void TempLight::cycleTime()
 void TempLight::updateTimeLabel()
 {
 	Time t = times[time_index];
-	QString str;
-	if (t.h == 0 && t.m == 0)  // time in secs
-		str = QString("%1''").arg(t.s);
-	else if (t.h == 0) // time in mins
-		str = QString("%1'").arg(t.m);
-	else if (t.h < 10)   // time in hh:mm
-		str = QString("%1:%2").arg(t.h).arg(t.m, 2, 10, QChar('0'));
-	else
-		str = QString("%1h").arg(t.h);
+	QString str = formatTime(t);
 
 	setSecondaryText(str);
 	Draw();
@@ -785,6 +794,121 @@ void TempLightVariable::activate()
 {
 	Time t = times[time_index];
 	dev->variableTiming(t.h, t.m, t.s);
+}
+
+
+TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
+	bannOn2scr(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),
+		bt_global::skin->getImage("lamp_time"));
+
+	// I think conf.xml will have only one node for time in this banner, however
+	// such node is indicated as "timeX", so I'm using the following overkill code
+	// to be safe
+	QList<QDomNode> children = getChildren(config_node, "time");
+	QStringList sl;
+	foreach (const QDomNode &tmp, children)
+		sl << tmp.toElement().text().split("*");
+
+	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
+	Time t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+	setSecondaryText(formatTime(t));
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
+}
+
+void TempLightFixed::inizializza(bool forza)
+{
+	dev->requestVariableTiming();
+}
+
+enum {
+	TLF_ON_BTN = 0,
+	TLF_OFF = 1,
+	TLF_ON = 2,
+	TLF_TIME0 = 3,
+	TLF_TIME_ICONS = 9,
+};
+
+//void TempLightFixed::SetIcons(QString i1, QString i2, QString i3)
+void TempLightFixed::SetIcons(QString on_icon, QString status_icon, QString time_icon)
+{
+	qDebug() << "TempLightFixed::SetIcons()";
+	// on/off status icon
+	int pos = status_icon.indexOf(".");
+	if (pos != -1)
+	{
+		Icon[TLF_OFF] = bt_global::icons_cache.getIcon(status_icon.left(pos) + "off.png");
+		Icon[TLF_ON] = bt_global::icons_cache.getIcon(status_icon.left(pos) + "on.png");
+	}
+
+	// "on" button on the right
+	Icon[TLF_ON_BTN] = bt_global::icons_cache.getIcon(on_icon);
+	QString pressIconName = getPressName(on_icon);
+	pressIcon[TLF_ON_BTN] = bt_global::icons_cache.getIcon(pressIconName);
+
+	// time status icon
+	pos = time_icon.indexOf(".");
+	for (int i = 0; i < TLF_TIME_ICONS; i++)
+		if (pos != -1)
+		{
+			QString path = time_icon.left(pos) + QString::number(i) + ".png";
+			Icon[TLF_TIME0 + i] = bt_global::icons_cache.getIcon(path);
+		}
+}
+
+void TempLightFixed::Draw()
+{
+	qDebug() << "TempLightFixed::Draw()";
+	if (attivo == 1)
+	{
+		/*
+		TODO: this must be rewritten (used when changing status)
+		int index = ((10 * val * (TLF_TIME_ICONS-1))/((h * 3600) + (m * 60) + s));
+		index = (index % 10) >= 5 ? index/10 + 1 : index/10;
+		if (index >= TLF_TIME_ICONS)
+			index = TLF_TIME_ICONS - 1;
+		*/
+
+		int index = 2;
+		if (Icon[TLF_TIME0 + index] && BannerIcon)
+			BannerIcon->setPixmap(*Icon[TLF_TIME0 + index]);
+
+		if (Icon[TLF_ON] && BannerIcon2)
+			BannerIcon2->setPixmap(*Icon[TLF_ON]);
+	}
+	else
+	{
+		if (Icon[TLF_OFF] && BannerIcon2)
+			BannerIcon2->setPixmap(*Icon[TLF_OFF]);
+
+		if (Icon[TLF_TIME0] && BannerIcon)
+			BannerIcon->setPixmap(*Icon[TLF_TIME0]);
+	}
+
+	if ((dxButton) && (Icon[TLF_ON_BTN]))
+	{
+		dxButton->setPixmap(*Icon[TLF_ON_BTN]);
+		if (pressIcon[TLF_ON_BTN])
+			dxButton->setPressedPixmap(*pressIcon[TLF_ON_BTN]);
+	}
+
+	if (BannerText)
+	{
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
+		BannerText->setText(qtesto);
+	}
+
+	if (SecondaryText)
+	{
+		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+		SecondaryText->setFont(bt_global::font->get(FontManager::TEXT));
+		SecondaryText->setText(qtestoSecondario);
+	}
 }
 
 

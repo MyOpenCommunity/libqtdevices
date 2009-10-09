@@ -229,6 +229,11 @@ private slots:
 	void Diminuisci();
 };
 
+struct Time
+{
+	Time(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
+	int h, m, s;
+};
 
 class TempLight : public bannOnOff2scr
 {
@@ -241,11 +246,6 @@ protected:
 	virtual void readTimes(const QDomNode &node);
 	void updateTimeLabel();
 
-	struct Time
-	{
-		Time(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
-		int h, m, s;
-	};
 	QList<struct Time> times;
 	int time_index;
 	LightingDevice *dev;
@@ -270,6 +270,21 @@ protected:
 protected slots:
 	virtual void activate();
 };
+
+
+class TempLightFixed : public bannOn2scr
+{
+Q_OBJECT
+public:
+	TempLightFixed(QWidget *parent, const QDomNode &config_node);
+	virtual void Draw();
+	virtual void inizializza();
+
+private:
+	void SetIcons(QString on_icon, QString status_icon, QString time_icon);
+	LightingDevice *dev;
+};
+
 
 
 /*!
