@@ -238,7 +238,8 @@ public:
 	virtual void inizializza(bool forza);
 
 protected:
-	virtual void readTimes();
+	virtual void readTimes(const QDomNode &node);
+	void updateTimeLabel();
 
 	struct Time
 	{
@@ -246,18 +247,28 @@ protected:
 		int h, m, s;
 	};
 	QList<struct Time> times;
+	int time_index;
+	LightingDevice *dev;
 
 protected slots:
-	void activate();
+	virtual void activate();
 
 private slots:
 	void cycleTime();
+};
 
-private:
-	void updateTimeLabel();
+class TempLightVariable : public TempLight
+{
+Q_OBJECT
+public:
+	TempLightVariable(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza);
 
-	LightingDevice *dev;
-	int time_index;
+protected:
+	virtual void readTimes(const QDomNode &node);
+
+protected slots:
+	virtual void activate();
 };
 
 

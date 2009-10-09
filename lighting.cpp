@@ -72,7 +72,9 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new Dimmer100New(this, item);
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
-			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
+			// DELETE
+			//b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
+			b = new TempLightVariable(this, item);
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_F:
 			if (!times.count())

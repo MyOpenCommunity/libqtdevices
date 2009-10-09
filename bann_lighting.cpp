@@ -703,7 +703,7 @@ TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
 	time_index = 0;
-	readTimes();
+	readTimes(config_node);
 	updateTimeLabel();
 	connect(this, SIGNAL(dxClick()), SLOT(activate()));
 	connect(this, SIGNAL(sxClick()), SLOT(cycleTime()));
@@ -714,8 +714,9 @@ void TempLight::inizializza(bool forza)
 	dev->requestStatus();
 }
 
-void TempLight::readTimes()
+void TempLight::readTimes(const QDomNode &node)
 {
+	Q_UNUSED(node);
 	times << Time(0, 1, 0); // 1 min
 	times << Time(0, 2, 0);
 	times << Time(0, 3, 0);
@@ -741,8 +742,8 @@ void TempLight::updateTimeLabel()
 		str = QString("%1''").arg(t.s);
 	else if (t.h == 0) // time in mins
 		str = QString("%1'").arg(t.m);
-	else if (t.m < 10)   // time in hh:mm
-		str = QString("%1:%2").arg(t.h).arg(t.m, 2, QChar('0'));
+	else if (t.h < 10)   // time in hh:mm
+		str = QString("%1:%2").arg(t.h).arg(t.m, 2, 10, QChar('0'));
 	else
 		str = QString("%1h").arg(t.h);
 
@@ -753,6 +754,37 @@ void TempLight::updateTimeLabel()
 void TempLight::activate()
 {
 	dev->fixedTiming(time_index);
+}
+
+
+TempLightVariable::TempLightVariable(QWidget *parent, const QDomNode &config_node) :
+	TempLight(parent, config_node)
+{
+	readTimes(config_node);
+	updateTimeLabel();
+}
+
+void TempLightVariable::readTimes(const QDomNode &node)
+{
+	// here, times has still the times of the base class. Remove them
+	times.clear();
+	foreach (const QDomNode &time, getChildren(node, "time"))
+	{
+		QString s = time.toElement().text();
+		QStringList sl = s.split("*");
+		times << Time(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+	}
+}
+
+void TempLightVariable::inizializza(bool forza)
+{
+	dev->requestVariableTiming();
+}
+
+void TempLightVariable::activate()
+{
+	Time t = times[time_index];
+	dev->variableTiming(t.h, t.m, t.s);
 }
 
 
