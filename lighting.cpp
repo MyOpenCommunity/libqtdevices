@@ -42,6 +42,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case DIMMER:
+			// DELETE: remove these comments when the classes are gone
 			//b = new dimmer(this, where, img1, img2, img3, img4, img5);
 			b = new DimmerNew(this, item, where);
 			break;
@@ -49,6 +50,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new SingleLight(this, item, where);
 			break;
 		case GR_DIMMER:
+			// DELETE:
 			//b = new grDimmer(this, getAddresses(item), img1, img2, img3, img4);
 			b = new DimmerGroup(this, item, getAddresses(item));
 			break;
@@ -56,6 +58,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new LightGroup(this, item, getAddresses(item));
 			break;
 		case ATTUAT_AUTOM_TEMP:
+			//DELETE
 			//b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
 			b = new TempLight(this, item);
 			break;
@@ -63,6 +66,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new attuatPuls(this, where, img1, img2, VCT_LS);
 			break;
 		case DIMMER_100:
+			// DELETE
 			//b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
 			//		getTextChild(item,"softstop").toInt());
 			b = new Dimmer100New(this, item);
@@ -78,6 +82,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 		case GR_DIMMER100:
 		{
 			b = new Dimmer100Group(this, item);
+			// DELETE
 			/*
 			QList<int> sstart, sstop;
 			QList<QString> addresses;
