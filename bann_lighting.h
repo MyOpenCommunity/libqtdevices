@@ -118,6 +118,64 @@ private:
 	QList<int> start_speed, stop_speed;
 };
 
+
+struct Time
+{
+	Time(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
+	int h, m, s;
+};
+
+class TempLight : public bannOnOff2scr
+{
+Q_OBJECT
+public:
+	TempLight(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza);
+
+protected:
+	virtual void readTimes(const QDomNode &node);
+	void updateTimeLabel();
+
+	QList<struct Time> times;
+	int time_index;
+	LightingDevice *dev;
+
+protected slots:
+	virtual void activate();
+
+private slots:
+	void cycleTime();
+};
+
+class TempLightVariable : public TempLight
+{
+Q_OBJECT
+public:
+	TempLightVariable(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza);
+
+protected:
+	virtual void readTimes(const QDomNode &node);
+
+protected slots:
+	virtual void activate();
+};
+
+
+class TempLightFixed : public bannOn2scr
+{
+Q_OBJECT
+public:
+	TempLightFixed(QWidget *parent, const QDomNode &config_node);
+	virtual void Draw();
+	virtual void inizializza(bool forza);
+
+private:
+	void SetIcons(QString on_icon, QString status_icon, QString time_icon);
+	LightingDevice *dev;
+};
+
+#if 0
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.
@@ -229,62 +287,6 @@ private slots:
 	void Diminuisci();
 };
 
-struct Time
-{
-	Time(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
-	int h, m, s;
-};
-
-class TempLight : public bannOnOff2scr
-{
-Q_OBJECT
-public:
-	TempLight(QWidget *parent, const QDomNode &config_node);
-	virtual void inizializza(bool forza);
-
-protected:
-	virtual void readTimes(const QDomNode &node);
-	void updateTimeLabel();
-
-	QList<struct Time> times;
-	int time_index;
-	LightingDevice *dev;
-
-protected slots:
-	virtual void activate();
-
-private slots:
-	void cycleTime();
-};
-
-class TempLightVariable : public TempLight
-{
-Q_OBJECT
-public:
-	TempLightVariable(QWidget *parent, const QDomNode &config_node);
-	virtual void inizializza(bool forza);
-
-protected:
-	virtual void readTimes(const QDomNode &node);
-
-protected slots:
-	virtual void activate();
-};
-
-
-class TempLightFixed : public bannOn2scr
-{
-Q_OBJECT
-public:
-	TempLightFixed(QWidget *parent, const QDomNode &config_node);
-	virtual void Draw();
-	virtual void inizializza();
-
-private:
-	void SetIcons(QString on_icon, QString status_icon, QString time_icon);
-	LightingDevice *dev;
-};
-
 
 
 /*!
@@ -384,5 +386,5 @@ private:
 	void SetIcons(QString i1, QString i2, QString i3);
 	void Draw();
 };
-
+#endif
 #endif
