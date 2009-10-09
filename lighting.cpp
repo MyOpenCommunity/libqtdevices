@@ -62,8 +62,9 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new attuatPuls(this, where, img1, img2, VCT_LS);
 			break;
 		case DIMMER_100:
-			b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
-					getTextChild(item,"softstop").toInt());
+			//b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
+			//		getTextChild(item,"softstop").toInt());
+			b = new Dimmer100New(this, item);
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
 			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
@@ -75,6 +76,8 @@ void Lighting::loadItems(const QDomNode &config_node)
 			break;
 		case GR_DIMMER100:
 		{
+			b = new Dimmer100Group(this, item);
+			/*
 			QList<int> sstart, sstop;
 			QList<QString> addresses;
 
@@ -86,6 +89,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 			}
 
 			b = new grDimmer100(this, addresses, img1, img2, img3, img4, sstart, sstop);
+			*/
 			break;
 		}
 		default:

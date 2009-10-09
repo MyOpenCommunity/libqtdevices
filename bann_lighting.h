@@ -16,6 +16,7 @@ class openwebnet;
 class LightingDevice;
 class QDomNode;
 class DimmerDevice;
+class Dimmer100Device;
 
 class SingleLight : public bannOnOff
 {
@@ -49,6 +50,7 @@ private:
 	QList<LightingDevice *> devices;
 };
 
+// TODO: to be renamed when dimmer is gone
 class DimmerNew : public bannRegolaz
 {
 Q_OBJECT
@@ -79,6 +81,41 @@ private slots:
 
 private:
 	QList<DimmerDevice *> devices;
+};
+
+// TODO: to be renamed when dimmer100 is gone
+class Dimmer100New : public bannRegolaz
+{
+Q_OBJECT
+public:
+	Dimmer100New(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void lightOn();
+	void lightOff();
+	void increaseLevel();
+	void decreaseLevel();
+
+private:
+	Dimmer100Device *dev;
+	int start_speed, stop_speed;
+};
+
+class Dimmer100Group : public bannRegolaz
+{
+Q_OBJECT
+public:
+	Dimmer100Group(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void lightOn();
+	void lightOff();
+	void increaseLevel();
+	void decreaseLevel();
+
+private:
+	QList<Dimmer100Device *> devices;
+	QList<int> start_speed, stop_speed;
 };
 
 /*!

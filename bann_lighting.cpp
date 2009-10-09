@@ -146,7 +146,6 @@ void DimmerGroup::lightOn()
 
 void DimmerGroup::lightOff()
 {
-	qDebug() << "ciao";
 	foreach (DimmerDevice *l, devices)
 		l->turnOff();
 }
@@ -162,6 +161,109 @@ void DimmerGroup::decreaseLevel()
 	foreach (DimmerDevice *l, devices)
 		l->decreaseLevel();
 }
+
+enum
+{
+	DIMMER100_STEP = 5,
+	DIMMER100_SPEED = 255,
+};
+
+Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
+	bannRegolaz(parent)
+{
+	// TODO: softstart, softstop
+	setRange(5, 100);
+	setStep(DIMMER100_STEP);
+	setValue(0);
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
+		bt_global::skin->getImage("dimmer_broken"), false);
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
+
+	start_speed = getTextChild(config_node, "softstart").toInt();
+	stop_speed = getTextChild(config_node, "softstop").toInt();
+
+	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
+	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
+	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+}
+
+void Dimmer100New::lightOn()
+{
+	dev->turnOn(start_speed);
+}
+
+void Dimmer100New::lightOff()
+{
+	dev->turnOff(stop_speed);
+}
+
+void Dimmer100New::increaseLevel()
+{
+	dev->increaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
+}
+
+void Dimmer100New::decreaseLevel()
+{
+	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
+}
+
+
+Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
+	bannRegolaz(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		bt_global::skin->getImage("dimmer_grp_dx"), bt_global::skin->getImage("dimmer_grp_sx"));
+	setText(getTextChild(config_node, "descr"));
+
+	// load all devices with relative start and stop speed
+	QList<QDomNode> elements = getChildren(config_node, "element");
+	foreach (const QDomNode &el, elements)
+	{
+		devices << bt_global::add_device_to_cache(new Dimmer100Device(getTextChild(el, "where"), PULL));
+		start_speed << getTextChild(el, "softstart").toInt();
+		stop_speed << getTextChild(el, "softstop").toInt();
+	}
+	Q_ASSERT_X(devices.size() == start_speed.size(), "Dimmer100Group::Dimmer100Group",
+		"Device number and softstart number are different");
+	Q_ASSERT_X(devices.size() == stop_speed.size(), "Dimmer100Group::Dimmer100Group",
+		"Device number and softstop number are different");
+
+	connect(this,SIGNAL(sxClick()),this,SLOT(lightOn()));
+	connect(this,SIGNAL(dxClick()),this,SLOT(lightOff()));
+	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+}
+
+void Dimmer100Group::lightOff()
+{
+	for (int i = 0; i < devices.size(); ++i)
+		devices[i]->turnOff(stop_speed[i]);
+}
+
+void Dimmer100Group::lightOn()
+{
+	for (int i = 0; i < devices.size(); ++i)
+		devices[i]->turnOn(start_speed[i]);
+}
+
+void Dimmer100Group::increaseLevel()
+{
+	for (int i = 0; i < devices.size(); ++i)
+		devices[i]->increaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
+}
+
+void Dimmer100Group::decreaseLevel()
+{
+	for (int i = 0; i < devices.size(); ++i)
+		devices[i]->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
+}
+
 
 
 dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
