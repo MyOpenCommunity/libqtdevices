@@ -50,8 +50,9 @@ void LightingDevice::turnOff(int speed)
 
 void LightingDevice::fixedTiming(int value)
 {
-	if (value >= FIXED_TIMING_MIN && value <= FIXED_TIMING_MAX)
-		sendCommand(QString::number(value));
+	int v = FIXED_TIMING_MIN + value;
+	if (v >= FIXED_TIMING_MIN && v <= FIXED_TIMING_MAX)
+		sendCommand(QString::number(v));
 }
 
 // Limitations:

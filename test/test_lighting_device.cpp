@@ -51,9 +51,9 @@ void TestLightingDevice::sendRequestStatus()
 
 void TestLightingDevice::sendFixedTiming()
 {
-	dev->fixedTiming(11);
+	dev->fixedTiming(7);
 	client_command->flush();
-	QString cmd = QString("*1*%1*%2##").arg(11).arg(dev->where);
+	QString cmd = QString("*1*%1*%2##").arg(18).arg(dev->where);
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
