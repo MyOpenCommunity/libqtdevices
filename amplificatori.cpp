@@ -124,7 +124,7 @@ void grAmplificatori::sendActivationFrame(QString argm)
 		QString ind = elencoDisp.at(i);
 		QString f;
 		if (ind == "0")
-			f = QString("*22*%2#4#%1*5#3#%1##").arg(ind.at(0)).arg(argm);
+			f = QString("*22*%2#4#%1*5#3#%1#%1##").arg(ind.at(0)).arg(argm);
 		else if (ind.at(0) == '#')
 			f = QString("*22*%2#4#%1*4#%1##").arg(ind.at(1)).arg(argm);
 		else
