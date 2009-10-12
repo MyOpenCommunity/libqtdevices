@@ -11,7 +11,7 @@ ScreenSaverPage::ScreenSaverPage() : SingleChoicePage(true)
 	addBanner(tr("Balls"), ScreenSaver::BALLS);
 	addBanner(tr("Time"), ScreenSaver::TIME);
 	addBanner(tr("Text"), ScreenSaver::TEXT);
-	addBanner(tr("Deform"), ScreenSaver::DEFORM);
+	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 }
 
 void ScreenSaverPage::showPage()
