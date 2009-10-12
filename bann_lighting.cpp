@@ -51,6 +51,7 @@ SingleLight::SingleLight(QWidget *parent, const QDomNode &config_node, QString a
 
 	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
 	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
 void SingleLight::lightOn()
@@ -67,6 +68,22 @@ void SingleLight::inizializza(bool forza)
 {
 	dev->requestStatus();
 	banner::inizializza(forza);
+}
+
+void SingleLight::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		switch (it.key())
+		{
+		case LightingDevice::DIM_DEVICE_ON:
+			impostaAttivo(it.value().toBool());
+			break;
+		}
+		++it;
+	}
+	Draw();
 }
 
 

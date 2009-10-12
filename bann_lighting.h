@@ -28,6 +28,7 @@ public:
 private slots:
 	void lightOn();
 	void lightOff();
+	void status_changed(const StatusList &status_list);
 
 private:
 	LightingDevice *dev;
