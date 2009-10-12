@@ -10,6 +10,7 @@
 enum RequestDimension
 {
 	REQ_STATUS_ON = 1,
+	REQ_STATUS_ON_FOLLOW_ME = 34,
 	REQ_STATUS_OFF = 0,
 	REQ_VOLUME_UP = 3,
 	REQ_VOLUME_DOWN = 4,
@@ -138,7 +139,7 @@ void PowerAmplifierDevice::requestLoud() const
 
 void PowerAmplifierDevice::turnOn() const
 {
-	sendCommand(QString("%1#4#%2").arg(REQ_STATUS_ON).arg(location));
+	sendCommand(QString("%1#4#%2").arg(REQ_STATUS_ON_FOLLOW_ME).arg(location));
 }
 
 void PowerAmplifierDevice::turnOff() const
