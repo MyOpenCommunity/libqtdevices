@@ -101,10 +101,7 @@ void sorgenteMultiAux::attiva()
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
 		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			sendFrame("*22*0#4#" + *it + "*6##");
-			sendFrame("*#16*1000*11##");
-			sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
-			sendFrame("*#16*1000*11##");
+			sendFrame("*22*35#4#" + *it + "#" + indirizzo_semplice + "*3#" + *it + "#0##");
 		}
 	}
 }
