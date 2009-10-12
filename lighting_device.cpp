@@ -110,13 +110,15 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	QVariant v;
 	int what = msg.what();
+	// set the value only if status_index has been modified, to avoid overwriting
+	// previously set values which are not considered in this function
 	int status_index = -1;
 
 	switch (what)
 	{
 	case DIM_DEVICE_ON:
 	case DIM_DEVICE_OFF:
-		v.setValue(what == DIM_DEVICE_ON ? true : false);
+		v.setValue(what == DIM_DEVICE_ON);
 		status_index = DIM_DEVICE_ON;
 		break;
 	case DIM_VARIABLE_TIMING:
@@ -125,16 +127,13 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		for (unsigned i = 0; i < msg.whatArgCnt(); ++i)
 			l << msg.whatArgN(i);
 		v.setValue(l);
+		status_index = what;
 	}
 		break;
-	default:
-		qDebug() << "LightingDevice::manageFrame(): Unknown what";
 	}
 
 	if (status_index > 0)
 		(*sl)[status_index] = v;
-	else
-		(*sl)[what] = v;
 }
 
 
@@ -172,12 +171,13 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		status_index = DIM_DIMMER_LEVEL;
 	}
 	else if (what == DIM_DIMMER_PROBLEM)
+	{
 		v.setValue(true);
+		status_index = what;
+	}
 
 	if (status_index > 0)
 		(*sl)[status_index] = v;
-	else
-		(*sl)[what] = v;
 }
 
 int DimmerDevice::getDimmerLevel(int what)
@@ -214,6 +214,7 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 
 	QVariant v;
 	int what = msg.what();
+	int status_index = -1;
 
 	if (what == DIMMER100_STATUS)
 	{
@@ -221,8 +222,11 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 		for (unsigned i = 0; i < msg.whatArgCnt(); ++i)
 			l << msg.whatArgN(i);
 		v.setValue(l);
+		status_index = DIM_DIMMER100_STATUS;
 	}
-	(*sl)[DIM_DIMMER100_STATUS] = v;
+
+	if (status_index > 0)
+		(*sl)[status_index] = v;
 }
 
 int Dimmer100Device::getDimmerLevel(int what)
