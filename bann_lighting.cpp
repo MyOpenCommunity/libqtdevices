@@ -251,8 +251,8 @@ Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
 	Q_ASSERT_X(devices.size() == stop_speed.size(), "Dimmer100Group::Dimmer100Group",
 		"Device number and softstop number are different");
 
-	connect(this,SIGNAL(sxClick()),this,SLOT(lightOn()));
-	connect(this,SIGNAL(dxClick()),this,SLOT(lightOff()));
+	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
+	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
 	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
 	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
 }

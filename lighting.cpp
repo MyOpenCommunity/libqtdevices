@@ -30,6 +30,8 @@ void Lighting::loadItems(const QDomNode &config_node)
 		QString where = getTextChild(item, "where");
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
+		/*
+		DELETE:
 		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
 		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
 		QString img5 = IMG_PATH + getTextChild(item, "cimg5");
@@ -37,6 +39,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 		QList<QString> times;
 		foreach (const QDomNode &el, getChildren(item, "time"))
 			times.append(el.toElement().text());
+		*/
 
 		banner *b;
 		switch (id)
