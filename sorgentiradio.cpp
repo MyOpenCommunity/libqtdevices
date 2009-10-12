@@ -166,12 +166,12 @@ void banradio::ciclaSorg()
 
 void banradio::decBrano()
 {
-	dev->sendFrame(createMsgOpen("16", "6101", getAddress()));
+	dev->sendFrame(QString("*22*10*2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::aumBrano()
 {
-	dev->sendFrame(createMsgOpen("16", "6001", getAddress()));
+	dev->sendFrame(QString("*22*9*2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::aumFreqAuto()
@@ -220,11 +220,7 @@ void banradio::decFreqMan()
 
 void banradio::changeStaz()
 {
-	QString addr = getAddress();
-	if (!old_diffson)
-		if (addr.at(1) == '0')
-			addr[1] = '1';
-	dev->sendFrame(createMsgOpen("16", "6001", addr));
+	dev->sendFrame(QString("*22*9*2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::memoStaz(uchar st)
@@ -297,10 +293,7 @@ void sorgenteMultiRadio::attiva()
 		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
 		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			dev->sendFrame("*22*0#4#" + *it + "*6##");
-			dev->sendFrame("*#16*1000*11##");
-			dev->sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
-			dev->sendFrame("*#16*1000*11##");
+			dev->sendFrame("*22*35#4#" + *it + "#" + indirizzo_semplice + "*3#" + *it + "#0##");
 		}
 	}
 }
@@ -334,6 +327,9 @@ void sorgenteMultiRadio::showEvent(QShowEvent *event)
 
 void sorgenteMultiRadio::addAmb(QString a)
 {
+	for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		if (*it == a)
+			return;
 	qDebug() << "sorgenteMultiRadio::addAmb" << a;
 	indirizzi_ambienti += a;
 }

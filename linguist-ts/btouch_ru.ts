@@ -50,12 +50,12 @@
         <translation>Слабая яркость</translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation>Выкл.</translation>
+        <source>Normal brightness</source>
+        <translation>Нормальная яркость</translation>
     </message>
     <message>
-        <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Выкл.</translation>
     </message>
 </context>
 <context>
@@ -294,12 +294,12 @@
 <context>
     <name>SourceChoice</name>
     <message>
-        <source>Servers</source>
-        <translation>Серверы</translation>
+        <source>IP Radio</source>
+        <translation>IP-radio</translation>
     </message>
     <message>
-        <source>IP Radio</source>
-        <translation type="unfinished"></translation>
+        <source>Servers</source>
+        <translation>Серверы</translation>
     </message>
 </context>
 <context>

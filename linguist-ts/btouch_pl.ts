@@ -50,12 +50,12 @@
         <translation>Niska jasność</translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation>Wył.</translation>
+        <source>Normal brightness</source>
+        <translation>Jasność standardowa</translation>
     </message>
     <message>
-        <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Wył.</translation>
     </message>
 </context>
 <context>
@@ -191,7 +191,7 @@
     </message>
     <message>
         <source>of</source>
-        <translation>/</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Track:</source>
