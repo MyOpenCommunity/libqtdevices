@@ -132,6 +132,9 @@ void sorgenteMultiAux::ambChanged(const QString & ad, bool multi, QString indamb
 
 void sorgenteMultiAux::addAmb(QString a)
 {
+	for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		if (*it == a) 
+			return;
 	qDebug() << "sorgenteMultiAux::addAmb" << a;
 	indirizzi_ambienti += a;
 }

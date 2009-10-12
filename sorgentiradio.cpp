@@ -334,6 +334,9 @@ void sorgenteMultiRadio::showEvent(QShowEvent *event)
 
 void sorgenteMultiRadio::addAmb(QString a)
 {
+	for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		if (*it == a)
+			return;
 	qDebug() << "sorgenteMultiRadio::addAmb" << a;
 	indirizzi_ambienti += a;
 }
