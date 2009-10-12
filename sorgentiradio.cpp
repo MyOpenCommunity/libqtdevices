@@ -166,12 +166,12 @@ void banradio::ciclaSorg()
 
 void banradio::decBrano()
 {
-	dev->sendFrame(createMsgOpen("16", "6101", getAddress()));
+	dev->sendFrame(QString("*22*10*2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::aumBrano()
 {
-	dev->sendFrame(createMsgOpen("16", "6001", getAddress()));
+	dev->sendFrame(QString("*22*9*2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::aumFreqAuto()
@@ -220,11 +220,7 @@ void banradio::decFreqMan()
 
 void banradio::changeStaz()
 {
-	QString addr = getAddress();
-	if (!old_diffson)
-		if (addr.at(1) == '0')
-			addr[1] = '1';
-	dev->sendFrame(createMsgOpen("16", "6001", addr));
+	dev->sendFrame(QString("*22*9*2#%1##").arg(getAddress().at(2)));
 }
 
 void banradio::memoStaz(uchar st)
