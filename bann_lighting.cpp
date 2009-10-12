@@ -115,12 +115,81 @@ void LightGroup::lightOn()
 		l->turnOn();
 }
 
-DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
+
+enum {
+	DIMMER_OFF = 0,
+	DIMMER_ON = 1,
+	DIMMER_FAULT_STATUS = 2,
+};
+
+DimmerBase::DimmerBase(QWidget *parent) :
 	bannRegolaz(parent)
+{
+}
+
+void DimmerBase::Draw()
+{
+	if (getValue() > 100)
+		setValue(100);
+	qDebug("dimmer::Draw(), attivo = %d, value = %d", attivo, getValue());
+	if ((sxButton) && (Icon[0]))
+	{
+		sxButton->setPixmap(*Icon[0]);
+		if (pressIcon[0])
+			sxButton->setPressedPixmap(*pressIcon[0]);
+	}
+
+	if ((dxButton) && (Icon[1]))
+	{
+		dxButton->setPixmap(*Icon[1]);
+		if (pressIcon[1])
+			dxButton->setPressedPixmap(*pressIcon[1]);
+	}
+	if (attivo == DIMMER_ON)
+	{
+		if ((Icon[4+((getValue()-minValue)/step)*2]) && (csxButton))
+			csxButton->setPixmap(*Icon[4+((getValue()-minValue)/step)*2]);
+		if ((cdxButton) && (Icon[5+((getValue()-minValue)/step)*2]))
+			cdxButton->setPixmap(*Icon[5+((getValue()-minValue)/step)*2]);
+	}
+	else if (attivo == DIMMER_OFF)
+	{
+		if ((Icon[2]) && (csxButton))
+			csxButton->setPixmap(*Icon[2]);
+
+		if ((cdxButton) && (Icon[3]))
+			cdxButton->setPixmap(*Icon[3]);
+	}
+	else if (attivo == DIMMER_FAULT_STATUS)
+	{
+		if ((Icon[44]) && (csxButton))
+			csxButton->setPixmap(*Icon[44]);
+
+		if ((cdxButton) && (Icon[45]))
+			cdxButton->setPixmap(*Icon[45]);
+	}
+	if (BannerText)
+	{
+		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
+		BannerText->setText(qtesto);
+	}
+	if (SecondaryText)
+	{
+		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+		SecondaryText->setFont(bt_global::font->get(FontManager::TEXT));
+		SecondaryText->setText(qtestoSecondario);
+	}
+}
+
+
+DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
+	DimmerBase(parent)
 {
 	setRange(20, 100);
 	setStep(10);
-	setValue(30);
+	impostaAttivo(false);
+	light_value = 20;
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
@@ -131,6 +200,7 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
 	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
 	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
 void DimmerNew::lightOn()
@@ -152,6 +222,33 @@ void DimmerNew::decreaseLevel()
 {
 	dev->decreaseLevel();
 }
+
+void DimmerNew::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case LightingDevice::DIM_DEVICE_ON:
+			impostaAttivo(it.value().toBool());
+			setValue(light_value);
+			break;
+		case LightingDevice::DIM_DIMMER_LEVEL:
+			impostaAttivo(DIMMER_ON);
+			light_value = it.value().toInt();
+			setValue(light_value);
+			break;
+		case LightingDevice::DIM_DIMMER_PROBLEM:
+			// TODO: what happens if we are in dimmer fault state?
+			impostaAttivo(DIMMER_FAULT_STATUS);
+			break;
+		}
+		++it;
+	}
+	Draw();
+}
+
 
 
 DimmerGroup::DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses) :
@@ -195,6 +292,7 @@ void DimmerGroup::decreaseLevel()
 	foreach (DimmerDevice *l, devices)
 		l->decreaseLevel();
 }
+
 
 enum
 {

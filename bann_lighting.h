@@ -51,8 +51,16 @@ private:
 	QList<LightingDevice *> devices;
 };
 
+class DimmerBase : public bannRegolaz
+{
+Q_OBJECT
+public:
+	DimmerBase(QWidget *parent);
+	virtual void Draw();
+};
+
 // TODO: to be renamed when dimmer is gone
-class DimmerNew : public bannRegolaz
+class DimmerNew : public DimmerBase
 {
 Q_OBJECT
 public:
@@ -63,9 +71,11 @@ private slots:
 	void lightOff();
 	void increaseLevel();
 	void decreaseLevel();
+	void status_changed(const StatusList &sl);
 
 private:
 	DimmerDevice *dev;
+	int light_value;
 };
 
 class DimmerGroup : public bannRegolaz
