@@ -44,6 +44,7 @@ HEADERS += device_tester.h \
            ../openclient.h \
            ../bttime.h \
            ../generic_functions.h \
+           ../hardware_functions.h \
            ../xml_functions.h \
            ../main.h
 
@@ -72,6 +73,7 @@ SOURCES += test_main.cpp \
            ../openclient.cpp \
            ../bttime.cpp \
            ../generic_functions.cpp \
+           ../hardware_functions.cpp \
            ../xml_functions.cpp \
            ../definitions.cpp
 
