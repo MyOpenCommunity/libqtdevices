@@ -288,4 +288,6 @@ void TestDimmer100::checkLevel()
 	t.check(frame, 75);
 	frame = QString("*1*%1*%2##").arg(5).arg(dimmer100->where);
 	t.check(frame, 30);
+	frame = QString("*1*%1*%2##").arg(10).arg(dimmer100->where);
+	t.check(frame, 100);
 }

@@ -237,8 +237,10 @@ int Dimmer100Device::getDimmerLevel(int what)
 		return 1;
 	case 9:
 		return 75;
+	case 10:
+		return 100;
 	default:
-		Q_ASSERT_X((what >= 3 && what <= 8) || what == 10, "Dimmer100Device::getDimmerLevel",
+		Q_ASSERT_X((what >= 3 && what <= 8), "Dimmer100Device::getDimmerLevel",
 			"Dimmer level must be between 2 and 10");
 		return (what - 2) * 10;
 	}
