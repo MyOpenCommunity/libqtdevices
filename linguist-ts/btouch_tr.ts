@@ -50,12 +50,12 @@
         <translation>Parlaklık düşük</translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation>Kapalı</translation>
+        <source>Normal brightness</source>
+        <translation>Normal parlaklık</translation>
     </message>
     <message>
-        <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Kapalı</translation>
     </message>
 </context>
 <context>
@@ -191,7 +191,7 @@
     </message>
     <message>
         <source>of</source>
-        <translation>/</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Track:</source>

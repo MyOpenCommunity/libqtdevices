@@ -451,9 +451,8 @@ void AlarmClock::aumVol()
 
 	if (conta2min == 0)
 	{
-		sendFrame("*16*3*" + QString::number(sorgente) + "##");
-		sendFrame("*#16*" + QString::number(sorgente) + "*#7*" + QString::number(stazione) + "##");
-
+		QString f = QString("*22*35#4#0#%2*3#1#0##").arg(sorgente-100);
+		sendFrame(f);
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			if (volSveglia[idx] > -1)
@@ -463,7 +462,8 @@ void AlarmClock::aumVol()
 					if (!amb1)
 					{
 						amb1 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 10) + "##");
+						f = QString("*22*35#4#1#%2*3#1#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (idx >= 20 && idx <= 29)
@@ -471,7 +471,8 @@ void AlarmClock::aumVol()
 					if (!amb2)
 					{
 						amb2 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 20) + "##");
+						f = QString("*22*35#4#2#%2*3#2#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (idx >= 30 && idx <= 39)
@@ -479,7 +480,8 @@ void AlarmClock::aumVol()
 					if (!amb3)
 					{
 						amb3 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 30) + "##");
+						f = QString("*22*35#4#3#%2*3#3#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (idx >= 40 && idx <= 49)
@@ -487,7 +489,8 @@ void AlarmClock::aumVol()
 					if (!amb4)
 					{
 						amb4 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 40) + "##");
+						f = QString("*22*35#4#4#%2*3#4#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (idx >= 50 && idx <= 59)
@@ -495,7 +498,8 @@ void AlarmClock::aumVol()
 					if (!amb5)
 					{
 						amb5 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 50) + "##");
+						f = QString("*22*35#4#5#%2*3#5#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (idx >= 60 && idx <= 69)
@@ -503,7 +507,8 @@ void AlarmClock::aumVol()
 					if (!amb6)
 					{
 						amb6 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 60) + "##");
+						f = QString("*22*35#4#6#%2*3#6#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (idx >= 70 && idx <= 79)
@@ -511,7 +516,8 @@ void AlarmClock::aumVol()
 					if (!amb7)
 					{
 						amb7 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 70) + "##");
+						f = QString("*22*35#4#7#%2*3#7#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (idx >= 80 && idx <= 89)
@@ -519,7 +525,8 @@ void AlarmClock::aumVol()
 					if (!amb8)
 					{
 						amb8 = true;
-						sendFrame("*16*3*" + QString::number(sorgente + 80) + "##");
+						f = QString("*22*35#4#8#%2*3#8#0##").arg(sorgente-100);
+						sendFrame(f);
 					}
 				}
 				if (volSveglia[idx] < 10)
@@ -538,6 +545,7 @@ void AlarmClock::aumVol()
 			}
 		}
 		conta2min = 9;
+		sendFrame("*#16*" + QString::number(sorgente) + "*#7*" + QString::number(stazione) + "##");
 	}
 
 	conta2min++;
@@ -570,6 +578,7 @@ void AlarmClock::aumVol()
 		}
 		bt_global::btmain->freeze(false);
 		bt_global::btmain->svegl(false);
+		bt_global::display.forceOperativeMode(false);
 		emit alarmClockFired();
 	}
 }

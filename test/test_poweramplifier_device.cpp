@@ -32,7 +32,7 @@ void TestPowerAmplifierDevice::sendTurnOn()
 {
 	dev->turnOn();
 	client_command->flush();
-	QString cmd(QString("*22*1#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*34#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 

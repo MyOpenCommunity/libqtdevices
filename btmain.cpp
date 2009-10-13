@@ -183,6 +183,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			if (!n.isNull())
 				type = static_cast<ScreenSaver::Type>(n.text().toInt());
 			ScreenSaver::initData(screensaver_node);
+			if (type == ScreenSaver::DEFORM) // deform is for now disabled!
+				type = ScreenSaver::LINES;
 		}
 		bt_global::display.current_screensaver = type;
 

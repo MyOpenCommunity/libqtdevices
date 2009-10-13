@@ -158,12 +158,10 @@ void BannerSorgenteMultimediaMC::attiva()
 	else
 	{
 		QStringList::Iterator it;
+		source_menu.enableSource(false);
 		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
 		{
-			sendFrame("*22*0#4#" + *it + "*6##");
-			sendFrame("*#16*1000*11##");
-			sendFrame("*22*1#4#" + *it + "*2#" + indirizzo_semplice + "##");
-			sendFrame("*#16*1000*11##");
+			sendFrame("*22*35#4#" + *it + "#" + indirizzo_semplice + "*3#" + *it + "#0##");
 		}
 		source_menu.enableSource(false);
 		source_menu.resume();

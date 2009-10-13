@@ -42,20 +42,20 @@
 <context>
     <name>BrightnessPage</name>
     <message>
-        <source>Off</source>
-        <translation>Off</translation>
+        <source>High brightness</source>
+        <translation>Luminosité élevée</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosité faible</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosité normale</translation>
     </message>
     <message>
-        <source>High brightness</source>
-        <translation type="unfinished"></translation>
+        <source>Off</source>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
@@ -85,7 +85,7 @@
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation type="unfinished"></translation>
+        <translation>Ecran de veille</translation>
     </message>
 </context>
 <context>
@@ -102,12 +102,28 @@
 <context>
     <name>EnergyView</name>
     <message>
+        <source>/days</source>
+        <translation>/jours</translation>
+    </message>
+    <message>
+        <source>/hours</source>
+        <translation>/heures</translation>
+    </message>
+    <message>
+        <source>/months</source>
+        <translation>/mois</translation>
+    </message>
+    <message>
         <source>Cumulative</source>
         <translation>Cumulatif</translation>
     </message>
     <message>
         <source>Current</source>
         <translation>Actuel</translation>
+    </message>
+    <message>
+        <source>Daily Average</source>
+        <translation>Moyenne journalière</translation>
     </message>
     <message>
         <source>Day</source>
@@ -118,24 +134,8 @@
         <translation>Heure</translation>
     </message>
     <message>
-        <source>/hours</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/months</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Month</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/days</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Daily Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Mois</translation>
     </message>
 </context>
 <context>
@@ -155,6 +155,10 @@
 <context>
     <name>LanSettings</name>
     <message>
+        <source>DNS</source>
+        <translation>DNS</translation>
+    </message>
+    <message>
         <source>Gateway</source>
         <translation>Passerelle</translation>
     </message>
@@ -163,16 +167,12 @@
         <translation>IP</translation>
     </message>
     <message>
+        <source>Mac</source>
+        <translation>Mac</translation>
+    </message>
+    <message>
         <source>Subnet mask</source>
         <translation>Masque ss-réseau</translation>
-    </message>
-    <message>
-        <source>Mac</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>DNS</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -261,11 +261,19 @@
     </message>
     <message>
         <source>Techno</source>
-        <translation type="unfinished"></translation>
+        <translation>Techno</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
+    <message>
+        <source>Balls</source>
+        <translation>Balles</translation>
+    </message>
+    <message>
+        <source>Deform</source>
+        <translation>Déformation</translation>
+    </message>
     <message>
         <source>Line</source>
         <translation>Ligne</translation>
@@ -275,20 +283,12 @@
         <translation>Pas d&apos;économiseur d&apos;écran</translation>
     </message>
     <message>
+        <source>Text</source>
+        <translation>Texte</translation>
+    </message>
+    <message>
         <source>Time</source>
         <translation>Temps</translation>
-    </message>
-    <message>
-        <source>Balls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
