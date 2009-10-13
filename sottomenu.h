@@ -151,7 +151,6 @@ signals:
 	void openNakRx();
 
 	void richStato(QString);
-	void rispStato(char*);
 
 	/*!
 	\brief Emitted to go to a further page.

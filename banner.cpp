@@ -582,10 +582,6 @@ void banner::inizializza(bool forza)
 		linked_dx_page->inizializza();
 }
 
-void  banner::rispStato(char*)
-{
-}
-
 void banner::openAckRx()
 {
 	qDebug("openAckRx()");

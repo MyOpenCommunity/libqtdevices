@@ -96,7 +96,6 @@ private:
 	void dispatchFrame(QString frame);
 
 signals:
-	void rispStato(char*);
 	void monitorSu();
 
 	//! Openwebnet ack received
