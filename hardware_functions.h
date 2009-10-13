@@ -3,6 +3,13 @@
 
 class QString;
 
+
+// Return the maximum width of the gui
+int maxWidth();
+
+// Return the maximum height of the gui
+int maxHeight();
+
  /*!
   \brief Sets the contrast of the device.
 

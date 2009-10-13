@@ -330,6 +330,7 @@ FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 
 void FileSelector::showPage()
 {
+	Selector::showPage();
 	// refresh QDir information
 	current_dir.refresh();
 
@@ -346,8 +347,6 @@ void FileSelector::showPage()
 
 	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 	destroyWaitDialog(l);
-
-	Selector::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)

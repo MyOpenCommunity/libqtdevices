@@ -2,11 +2,28 @@
 #include "generic_functions.h"
 
 #include <QFile>
+#include <QScreen>
 
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 
+
+int maxWidth()
+{
+	static int width = 0;
+	if (!width)
+		width = QScreen::instance()->width();
+	return width;
+}
+
+int maxHeight()
+{
+	static int height = 0;
+	if (!height)
+		height = QScreen::instance()->height();
+	return height;
+}
 
 void setContrast(unsigned char c,bool b)
 {

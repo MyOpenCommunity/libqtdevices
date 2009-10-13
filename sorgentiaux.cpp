@@ -10,7 +10,7 @@
 
 #include "sorgentiaux.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
-#include "aux.h" // class myAux
+#include "aux.h" // class Aux
 #include "generic_functions.h" // createMsgOpen
 
 #include <QWidget>
@@ -34,7 +34,7 @@ sorgente_aux::sorgente_aux(QWidget *parent, QString aux_name, QString indirizzo,
 		myAux = 0;
 	}
 	else
-		myAux = new aux(NULL, aux_name, ambdescr);
+		myAux = new Aux(aux_name, ambdescr);
 }
 
 sorgente_aux::~sorgente_aux()
@@ -78,11 +78,10 @@ sorgenteMultiAux::sorgenteMultiAux(QWidget *parent, QString aux_name, QString in
 	SetIcons(Icona1, Icona2, QString(), Icona3);
 	indirizzo_semplice = indirizzo;
 	indirizzi_ambienti.clear();
-	connect(this, SIGNAL(dxClick()), myAux, SLOT(showAux()));
-	connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
-	connect(myAux, SIGNAL(Closed()), myAux, SLOT(hide()));
-	connect(myAux, SIGNAL(Closed()), this, SLOT(show()));
-	connect(myAux, SIGNAL(Btnfwd()), this, SLOT(aumBrano()));
+	connect(this, SIGNAL(dxClick()), myAux, SLOT(showPage()));
+	connect(this, SIGNAL(sxClick()), SLOT(attiva()));
+	connect(myAux, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(myAux, SIGNAL(Btnfwd()), SLOT(aumBrano()));
 	multiamb = false;
 }
 

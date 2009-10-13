@@ -1,5 +1,5 @@
 #include "version.h"
-#include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
+#include "main.h" // IMG_PATH
 #include "fontmanager.h" // bt_global::font
 
 #include <openmsg.h>

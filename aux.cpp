@@ -1,63 +1,37 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** aux.cpp
- **
- **finestra di dati sulla sorgente aux
- **
- ****************************************************************/
-
 #include "aux.h"
-#include "bannfrecce.h"
 #include "btbutton.h"
-#include "generic_functions.h"
+#include "main.h" // ICON_FFWD
 #include "fontmanager.h" // bt_global::font
 
-#include <QPixmap>
+#include <QVBoxLayout>
 #include <QLabel>
-#include <QFile>
 
 
-aux::aux(QWidget *parent, const QString & name, const QString & amb) : QWidget(parent)
+Aux::Aux(const QString &name, const QString &amb)
 {
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
+	main_layout->addSpacing(30);
+	aux_name = new QLabel;
+	aux_name->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	aux_name->setText(name);
+	main_layout->addWidget(aux_name, 0, Qt::AlignHCenter);
 
-	bannNavigazione = new bannFrecce(this, 1);
-	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
+	main_layout->addSpacing(30);
+	amb_descr = new QLabel;
+	amb_descr->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	amb_descr->setText(amb);
+	main_layout->addWidget(amb_descr, 0, Qt::AlignHCenter);
 
-	auxName = new QLabel(this);
-	ambDescr = new QLabel(this);
-	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	ambDescr->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	ambDescr->setText(amb);
-	auxName->setGeometry(0,30,240,40);
-	auxName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+	main_layout->addSpacing(20);
+	fwd_but = new BtButton;
+	fwd_but->setImage(ICON_FFWD);
+	main_layout->addWidget(fwd_but, 0, Qt::AlignHCenter);
 
-	auxName->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	auxName->setText(name);
-	ambDescr->setGeometry(0,100,240,40);
-
-	fwdBut = new BtButton(this);
-	fwdBut->setGeometry(MAX_WIDTH/2-30, 160, 60, 60);
-	fwdBut->setImage(ICON_FFWD);
-
-	connect(fwdBut, SIGNAL(clicked()), this, SIGNAL(Btnfwd()));
-	connect(bannNavigazione, SIGNAL(backClick()),this,SIGNAL(Closed()));
+	addBackButton();
+	connect(fwd_but, SIGNAL(clicked()), SIGNAL(Btnfwd()));
 }
 
-void aux::showAux()
+void Aux::setAmbDescr(const QString &d)
 {
-	draw();
-	showFullScreen();
+	amb_descr->setText(d);
 }
 
-void aux::setAmbDescr(const QString & d)
-{
-	ambDescr->setText(d);
-}
-
-void aux::draw()
-{
-}

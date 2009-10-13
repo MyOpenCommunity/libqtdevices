@@ -17,7 +17,7 @@
 #include <QStringList>
 
 /// Forward Declarations
-class aux;
+class Aux;
 
 /*****************************************************************
  **Sorgente_AUX
@@ -39,7 +39,7 @@ public:
 	void inizializza(bool forza = false);
 protected:
 	virtual void hideEvent(QHideEvent *event);
-	aux *myAux;
+	Aux *myAux;
 private slots:
 	void ciclaSorg();
 	void decBrano();
