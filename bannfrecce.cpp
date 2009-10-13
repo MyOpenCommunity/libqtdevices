@@ -10,24 +10,24 @@
 bannFrecce::bannFrecce(QWidget *parent, uchar num, QString IconBut4) : banner(parent)
 {
 	qDebug("bannFrecce::bannFrecce(%d)", num);
-	addItem(BUT1,(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-		(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X,
+	addItem(BUT1,(banner_width/4-BUTFRECCE_DIM_X)/2,
+		(banner_height-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X,
 		BUTFRECCE_DIM_Y);
 
 	if (num > 1 && num < 8)
 	{
-		addItem(BUT3 , MAX_WIDTH/4+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-			(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2,
-			BUTFRECCE_DIM_X , BUTFRECCE_DIM_Y);
+		addItem(BUT3 , banner_width/4+(banner_width/4-BUTFRECCE_DIM_X)/2,
+			(banner_height-BUTFRECCE_DIM_Y)/2,
+			BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
 
 		if (num > 2 && num < 7)
-			addItem(BUT4 , MAX_WIDTH/2+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-				(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2,
+			addItem(BUT4 , banner_width/2 + (banner_width/4 - BUTFRECCE_DIM_X)/2,
+				(banner_height-BUTFRECCE_DIM_Y)/2,
 				BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
 	}
 
-	dx_button_coord = QRect(MAX_WIDTH*3/4+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-		(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
+	dx_button_coord = QRect(banner_width*3/4+(banner_width/4-BUTFRECCE_DIM_X)/2,
+		(banner_height-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
 
 	if ((num > 3 && num < 6) || num == 9 || num == 10)
 	{
@@ -76,8 +76,8 @@ void bannFrecce::handleBackRelease()
 
 void bannFrecce::addCdxButton()
 {
-	addItem(BUT4, MAX_WIDTH/2+(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
-		(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
+	addItem(BUT4, banner_width/2+(banner_width/4-BUTFRECCE_DIM_X)/2,
+		(banner_height-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X, BUTFRECCE_DIM_Y);
 }
 void bannFrecce::setCdxIcon(const QString &image)
 {

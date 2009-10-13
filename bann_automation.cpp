@@ -370,8 +370,8 @@ PPTStat::PPTStat(QWidget *parent, QString where, int cid) : banner(parent)
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	// This banner shows only an icon in central position and a text below.
-	addItem(ICON, (MAX_WIDTH - BUT_DIM * 2) / 2, 0,  BUT_DIM*2 ,BUT_DIM);
-	addItem(TEXT, 0, BUT_DIM, MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE - BUT_DIM);
+	addItem(ICON, (banner_width - BUT_DIM * 2) / 2, 0, BUT_DIM*2 ,BUT_DIM);
+	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 
 	SkinContext context(cid);
 	img_open = bt_global::skin->getImage("pptstat_open");
