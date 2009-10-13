@@ -174,12 +174,11 @@ void TestLightingDevice::receiveLightOnOffNotPullExt()
 void TestLightingDevice::receiveVariableTiming()
 {
 	DeviceTester t(dev, LightingDevice::DIM_VARIABLE_TIMING);
-	QList<int> l;
-	l << 1 << 3 << 55;
+	BasicTime tm(1, 3, 55);
 	QString timing = QString("*#1*%1*2*%2*%3*%4##").arg(dev->where)
 		.arg(1).arg(3).arg(55);
 
-	t.check(timing, l);
+	t.check(timing, tm);
 }
 
 
@@ -287,12 +286,12 @@ void TestDimmer100::sendRequestDimmer100Status()
 
 void TestDimmer100::receiveDimmer100Status()
 {
-	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_STATUS);
-	QList<int> l;
-	l << 134 << 50;
+	DeviceTester tl(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester ts(dimmer100, LightingDevice::DIM_DIMMER100_SPEED, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*#1*%1*1*%2*%3##").arg(dimmer100->where).arg(134).arg(50);
 
-	t.check(frame, l);
+	tl.check(frame, 134);
+	ts.check(frame, 50);
 }
 
 void TestDimmer100::checkLevel()
