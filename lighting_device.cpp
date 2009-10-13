@@ -162,23 +162,26 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	LightingDevice::parseFrame(msg, sl);
 
-	QVariant v;
-	int what = msg.what();
-	int status_index = -1;
-
-	if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
+	if (msg.IsNormalFrame())
 	{
-		v.setValue(getDimmerLevel(what));
-		status_index = DIM_DIMMER_LEVEL;
-	}
-	else if (what == DIM_DIMMER_PROBLEM)
-	{
-		v.setValue(true);
-		status_index = what;
-	}
+		QVariant v;
+		int what = msg.what();
+		int status_index = -1;
 
-	if (status_index > 0)
-		(*sl)[status_index] = v;
+		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
+		{
+			v.setValue(getDimmerLevel(what));
+			status_index = DIM_DIMMER_LEVEL;
+		}
+		else if (what == DIM_DIMMER_PROBLEM)
+		{
+			v.setValue(true);
+			status_index = what;
+		}
+
+		if (status_index > 0)
+			(*sl)[status_index] = v;
+	}
 }
 
 int DimmerDevice::getDimmerLevel(int what)
