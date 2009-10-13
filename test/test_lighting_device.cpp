@@ -8,9 +8,15 @@
 
 #include <QtTest/QtTest>
 
-void TestLightingDevice::initLightingDevice()
+void TestLightingDevice::initLightingDevice(LightingDevice *d)
 {
-	dev = new LightingDevice(LIGHT_DEVICE_WHERE, PULL);
+	if (d)
+	{
+		dev = d;
+		cleanup_required = false;
+	}
+	else
+		dev = new LightingDevice(LIGHT_DEVICE_WHERE, PULL);
 }
 
 void TestLightingDevice::initTestCase()
@@ -20,7 +26,8 @@ void TestLightingDevice::initTestCase()
 
 void TestLightingDevice::cleanupLightingDevice()
 {
-	delete dev;
+	if (cleanup_required)
+		delete dev;
 }
 
 void TestLightingDevice::cleanupTestCase()
@@ -186,16 +193,23 @@ void TestDimmer::cleanupTestCase()
 	cleanupDimmer();
 }
 
-void TestDimmer::initDimmer()
+void TestDimmer::initDimmer(DimmerDevice *d)
 {
-	initLightingDevice();
-	dimmer = new DimmerDevice(LIGHT_DEVICE_WHERE, PULL);
+	initLightingDevice(d);
+	if (d)
+	{
+		dimmer = d;
+		cleanup_required = false;
+	}
+	else
+		dimmer = new DimmerDevice(LIGHT_DEVICE_WHERE, PULL);
 }
 
 void TestDimmer::cleanupDimmer()
 {
 	cleanupLightingDevice();
-	delete dimmer;
+	if (cleanup_required)
+		delete dimmer;
 }
 
 void TestDimmer::sendDimmerDecreaseLevel()
@@ -237,8 +251,8 @@ void TestDimmer::receiveDimmerProblem()
 
 void TestDimmer100::initTestCase()
 {
-	initDimmer();
 	dimmer100 = new Dimmer100Device(LIGHT_DEVICE_WHERE, PULL);
+	initDimmer(dimmer100);
 }
 
 void TestDimmer100::cleanupTestCase()

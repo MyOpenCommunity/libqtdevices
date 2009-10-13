@@ -15,7 +15,7 @@ class TestLightingDevice : public TestDevice
 {
 Q_OBJECT
 protected:
-	void initLightingDevice();
+	void initLightingDevice(LightingDevice *d = 0);
 	void cleanupLightingDevice();
 	void setParams(QString w, PullMode m);
 
@@ -44,6 +44,7 @@ private slots:
 private:
 	void checkPullUnknown();
 
+	bool cleanup_required;
 	LightingDevice *dev;
 };
 
@@ -51,7 +52,7 @@ class TestDimmer : public TestLightingDevice
 {
 Q_OBJECT
 protected:
-	void initDimmer();
+	void initDimmer(DimmerDevice *d = 0);
 	void cleanupDimmer();
 	virtual void checkLevel();
 
@@ -66,6 +67,7 @@ private slots:
 	void receiveDimmerProblem();
 
 private:
+	bool cleanup_required;
 	DimmerDevice *dimmer;
 };
 
