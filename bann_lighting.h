@@ -4,6 +4,7 @@
 #include "bannregolaz.h"
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bann1_button.h" // bannOn2scr
+#include "lighting_device.h" // BasicTime
 
 #include <QWidget>
 #include <QString>
@@ -95,7 +96,7 @@ private:
 };
 
 // TODO: to be renamed when dimmer100 is gone
-class Dimmer100New : public bannRegolaz
+class Dimmer100New : public DimmerBase
 {
 Q_OBJECT
 public:
@@ -106,10 +107,12 @@ private slots:
 	void lightOff();
 	void increaseLevel();
 	void decreaseLevel();
+	void status_changed(const StatusList &sl);
 
 private:
 	Dimmer100Device *dev;
 	int start_speed, stop_speed;
+	int light_value;
 };
 
 class Dimmer100Group : public bannRegolaz
@@ -130,12 +133,6 @@ private:
 };
 
 
-struct Time
-{
-	Time(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
-	int h, m, s;
-};
-
 class TempLight : public bannOnOff2scr
 {
 Q_OBJECT
@@ -147,7 +144,7 @@ protected:
 	virtual void readTimes(const QDomNode &node);
 	void updateTimeLabel();
 
-	QList<struct Time> times;
+	QList<struct BasicTime> times;
 	int time_index;
 	LightingDevice *dev;
 
@@ -186,7 +183,7 @@ private:
 	LightingDevice *dev;
 };
 
-#if 0
+#if 1
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.

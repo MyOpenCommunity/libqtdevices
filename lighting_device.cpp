@@ -122,13 +122,14 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		status_index = DIM_DEVICE_ON;
 		break;
 	case DIM_VARIABLE_TIMING:
-	{
-		QList<int> l;
-		for (unsigned i = 0; i < msg.whatArgCnt(); ++i)
-			l << msg.whatArgN(i);
-		v.setValue(l);
-		status_index = what;
-	}
+		if (msg.IsMeasureFrame())
+		{
+			Q_ASSERT_X(msg.whatArgCnt() == 3, "LightingDevice::parseFrame",
+				"Variable timing message has more than 3 what args");
+			BasicTime t(msg.whatArgN(0), msg.whatArgN(1), msg.whatArgN(2));
+			v.setValue(t);
+			status_index = what;
+		}
 		break;
 	}
 
@@ -212,21 +213,20 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	DimmerDevice::parseFrame(msg, sl);
 
-	QVariant v;
 	int what = msg.what();
-	int status_index = -1;
 
-	if (what == DIMMER100_STATUS)
+	if (what == DIMMER100_STATUS && msg.IsMeasureFrame())
 	{
-		QList<int> l;
-		for (unsigned i = 0; i < msg.whatArgCnt(); ++i)
-			l << msg.whatArgN(i);
-		v.setValue(l);
-		status_index = DIM_DIMMER100_STATUS;
-	}
+		QVariant v;
 
-	if (status_index > 0)
-		(*sl)[status_index] = v;
+		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
+			"Dimmer 100 status frame must have 2 what args");
+		v.setValue(msg.whatArgN(0));
+		(*sl)[DIM_DIMMER100_LEVEL] = v;
+
+		v.setValue(msg.whatArgN(1));
+		(*sl)[DIM_DIMMER100_SPEED] = v;
+	}
 }
 
 int Dimmer100Device::getDimmerLevel(int what)

@@ -6,7 +6,6 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" // createMsgOpen
 #include "icondispatcher.h" //bt_global::icons_cache
-#include "lighting_device.h"
 #include "skinmanager.h" // skincontext
 #include "xml_functions.h" // getTextChild
 
@@ -23,7 +22,7 @@
 
 namespace
 {
-	QString formatTime(const Time &t)
+	QString formatTime(const BasicTime &t)
 	{
 		QString str;
 		if (t.h == 0 && t.m == 0)  // time in secs
@@ -301,12 +300,12 @@ enum
 };
 
 Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
-	bannRegolaz(parent)
+	DimmerBase(parent)
 {
 	// TODO: softstart, softstop
 	setRange(5, 100);
 	setStep(DIMMER100_STEP);
-	setValue(0);
+	light_value = 5;
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
@@ -322,6 +321,7 @@ Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
 	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
 	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
 	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
 void Dimmer100New::lightOn()
@@ -342,6 +342,45 @@ void Dimmer100New::increaseLevel()
 void Dimmer100New::decreaseLevel()
 {
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
+}
+
+void Dimmer100New::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case LightingDevice::DIM_DEVICE_ON:
+			impostaAttivo(it.value().toBool());
+			setValue(light_value);
+			break;
+		case LightingDevice::DIM_DIMMER_LEVEL:
+			impostaAttivo(DIMMER_ON);
+			light_value = it.value().toInt();
+			// values too low are not registered by UI
+			if (light_value < 5)
+				light_value = 5;
+			setValue(light_value);
+			break;
+		case LightingDevice::DIM_DIMMER_PROBLEM:
+			impostaAttivo(DIMMER_FAULT_STATUS);
+			break;
+		case LightingDevice::DIM_DIMMER100_LEVEL:
+		{
+			int l = it.value().toInt();
+			// light values are between 100 (min) and 200 (max)
+			light_value = l - 100;
+			if (light_value < 5)
+				light_value = 5;
+			setValue(light_value);
+			impostaAttivo(DIMMER_ON);
+		}
+			break;
+		}
+		++it;
+	}
+	Draw();
 }
 
 
@@ -422,13 +461,13 @@ void TempLight::inizializza(bool forza)
 void TempLight::readTimes(const QDomNode &node)
 {
 	Q_UNUSED(node);
-	times << Time(0, 1, 0); // 1 min
-	times << Time(0, 2, 0);
-	times << Time(0, 3, 0);
-	times << Time(0, 4, 0);
-	times << Time(0, 5, 0);
-	times << Time(0, 15, 0);
-	times << Time(0, 0, 30);
+	times << BasicTime(0, 1, 0); // 1 min
+	times << BasicTime(0, 2, 0);
+	times << BasicTime(0, 3, 0);
+	times << BasicTime(0, 4, 0);
+	times << BasicTime(0, 5, 0);
+	times << BasicTime(0, 15, 0);
+	times << BasicTime(0, 0, 30);
 	Q_ASSERT_X(times.size() <= 7, "TempLight::readTimes",
 		"times length must be <= 7, otherwise activation will fail");
 }
@@ -441,7 +480,7 @@ void TempLight::cycleTime()
 
 void TempLight::updateTimeLabel()
 {
-	Time t = times[time_index];
+	BasicTime t = times[time_index];
 	QString str = formatTime(t);
 
 	setSecondaryText(str);
@@ -469,7 +508,7 @@ void TempLightVariable::readTimes(const QDomNode &node)
 	{
 		QString s = time.toElement().text();
 		QStringList sl = s.split("*");
-		times << Time(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		times << BasicTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 	}
 }
 
@@ -480,7 +519,7 @@ void TempLightVariable::inizializza(bool forza)
 
 void TempLightVariable::activate()
 {
-	Time t = times[time_index];
+	BasicTime t = times[time_index];
 	dev->variableTiming(t.h, t.m, t.s);
 }
 
@@ -501,7 +540,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 		sl << tmp.toElement().text().split("*");
 
 	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
-	Time t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+	BasicTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 	setSecondaryText(formatTime(t));
 
 	QString where = getTextChild(config_node, "where");
@@ -600,7 +639,7 @@ void TempLightFixed::Draw()
 }
 
 
-#if 0
+#if 1
 
 dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
 	bool to_be_connect) : bannRegolaz(parent)

@@ -3,6 +3,18 @@
 
 #include "device.h"
 
+
+struct BasicTime
+{
+	BasicTime() { }
+	BasicTime(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
+	int h, m, s;
+};
+
+// Type returned in StatusList for DIM_VARIABLE_TIMING
+Q_DECLARE_METATYPE(BasicTime);
+
+
 class LightingDevice : public device
 {
 friend class TestLightingDevice;
@@ -14,7 +26,8 @@ public:
 		DIM_VARIABLE_TIMING = 2,
 		DIM_DIMMER_PROBLEM = 19,
 		DIM_DIMMER_LEVEL,
-		DIM_DIMMER100_STATUS,
+		DIM_DIMMER100_LEVEL,
+		DIM_DIMMER100_SPEED,
 	};
 
 	LightingDevice(QString where, PullMode pull = PULL);
@@ -38,8 +51,6 @@ private:
 	PullMode mode;
 };
 
-// Type returned in StatusList for DIM_VARIABLE_TIMING
-Q_DECLARE_METATYPE(QList<int>);
 
 class DimmerDevice : public LightingDevice
 {
