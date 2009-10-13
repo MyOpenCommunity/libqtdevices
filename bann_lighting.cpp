@@ -451,6 +451,7 @@ TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
 	updateTimeLabel();
 	connect(this, SIGNAL(dxClick()), SLOT(activate()));
 	connect(this, SIGNAL(sxClick()), SLOT(cycleTime()));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
 void TempLight::inizializza(bool forza)
@@ -490,6 +491,25 @@ void TempLight::updateTimeLabel()
 void TempLight::activate()
 {
 	dev->fixedTiming(time_index);
+}
+
+void TempLight::status_changed(const StatusList &sl)
+{
+
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		qDebug() << "TempLight::status_changed" << it.value();
+		switch (it.key())
+		{
+		case LightingDevice::DIM_DEVICE_ON:
+			qDebug() << "device on? " << it.value().toBool();
+			impostaAttivo(it.value().toBool() ? 1 : 0);
+			break;
+		}
+		++it;
+	}
+	Draw();
 }
 
 

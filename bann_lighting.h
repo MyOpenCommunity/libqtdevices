@@ -152,6 +152,7 @@ protected slots:
 	virtual void activate();
 
 private slots:
+	void status_changed(const StatusList &sl);
 	void cycleTime();
 };
 
