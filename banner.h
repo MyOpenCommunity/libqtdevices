@@ -314,6 +314,9 @@ protected:
 	int periodo, numFrame,contFrame,serNum;
 	QString address;
 
+	static const int banner_width = 240;
+	static const int banner_height = 80;
+
 	/**
 	 * Utility function to draw all buttons except the rightmost one
 	 */

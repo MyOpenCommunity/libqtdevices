@@ -9,18 +9,18 @@
 ****************************************************************/
 
 #include "bannregolaz.h"
-#include "main.h"
+#include "main.h" // TIME_RIP_REGOLAZ
 
 #include <QTimer>
 
 
 bannRegolaz::bannRegolaz(QWidget *parent) : banner(parent)
 {
-	addItem(BUT2, 0 , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);
-	addItem(BUT1, MAX_WIDTH - BANREGOL_BUT_DIM , 0 , BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);
-	addItem(BUT3, (MAX_WIDTH - BUTREGOL_ICON_DIM_X)/2 , 0,BUTREGOL_ICON_DIM_X/2 , BUTREGOL_ICON_DIM_Y);
-	addItem(BUT4, MAX_WIDTH/2 , 0,BUTREGOL_ICON_DIM_X/2 , BUTREGOL_ICON_DIM_Y);
-	addItem(TEXT, 0 , BANREGOL_BUT_DIM , MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE - BANREGOL_BUT_DIM);
+	addItem(BUT2, 0, 0, BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);
+	addItem(BUT1, banner_width - BANREGOL_BUT_DIM, 0, BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);
+	addItem(BUT3, (banner_width - BUTREGOL_ICON_DIM_X)/2, 0, BUTREGOL_ICON_DIM_X/2, BUTREGOL_ICON_DIM_Y);
+	addItem(BUT4, banner_width/2, 0, BUTREGOL_ICON_DIM_X/2, BUTREGOL_ICON_DIM_Y);
+	addItem(TEXT, 0, BANREGOL_BUT_DIM, banner_width, banner_height - BANREGOL_BUT_DIM);
 
 	timRip = NULL;
 

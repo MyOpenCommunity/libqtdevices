@@ -332,7 +332,7 @@ void banner::nascondi(char item)
 
 QSize banner::sizeHint() const
 {
-	return QSize(MAX_WIDTH, MAX_HEIGHT / NUM_RIGHE);
+	return QSize(banner_width, banner_height);
 }
 
 void banner::mostra(char item)
