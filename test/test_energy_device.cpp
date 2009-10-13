@@ -139,7 +139,7 @@ void TestEnergyDevice::receiveCumulativeDay()
 void TestEnergyDevice::receiveCumulativeDay2()
 {
 	dev->buffer_frame.clear();
-	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY, DeviceTester::MULTIPLE_VALUES);
 	QString tmp(QString("*#18*%1*%2#8#1").arg(where).arg(EnergyDevice::DIM_DAY_GRAPH));
 	QStringList frames;
 
@@ -171,7 +171,7 @@ void TestEnergyDevice::receiveCurrent()
 
 void TestEnergyDevice::receiveCumulativeMonth()
 {
-	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH);
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH, DeviceTester::MULTIPLE_VALUES);
 	t.check(QString("*#18*%1*52#8#2*106##").arg(where), EnergyValue(QDate(2008, 2, 1), 106));
 	t.check(QString("*#18*%1*53*95##").arg(where), EnergyValue(QDate::currentDate(), 95));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where), EnergyValue(QDate::currentDate(), 0));
@@ -292,7 +292,7 @@ void TestEnergyDevice::receiveDayGraph3()
 	int month = 8;
 	int day = 1;
 	dev->buffer_frame.clear();
-	DeviceTester t(dev, EnergyDevice::DIM_DAY_GRAPH);
+	DeviceTester t(dev, EnergyDevice::DIM_DAY_GRAPH, DeviceTester::MULTIPLE_VALUES);
 	QString tmp(QString("*#18*%1*%2#%3#%4").arg(where).arg(EnergyDevice::DIM_DAY_GRAPH).arg(month).arg(day));
 	QStringList frames;
 
@@ -390,7 +390,7 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	for (int i = 1; i <= 12; ++i)
 		dev->buffer_year_data[i] = 0;
 
-	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH);
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH, DeviceTester::MULTIPLE_VALUES);
 	QStringList frames;
 	int month = 1;
 	int invalid_month = 3;
@@ -420,7 +420,7 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 
 void TestEnergyDevice::receiveMonthlyAverage()
 {
-	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE);
+	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE, DeviceTester::MULTIPLE_VALUES);
 
 	t.check(QString("*#18*%1*52#8#2*106##").arg(where),
 			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 106 / QDate(2008, 2, 1).daysInMonth())));

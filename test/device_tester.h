@@ -20,7 +20,12 @@ class device;
 class DeviceTester
 {
 public:
-	DeviceTester(device *d, int dim);
+	enum StatusListValues
+	{
+		ONE_VALUE,
+		MULTIPLE_VALUES,
+	};
+	DeviceTester(device *d, int dim, StatusListValues it = ONE_VALUE);
 
 	template<class T> void check(const QStringList &frames, const T &result);
 
@@ -36,6 +41,7 @@ private:
 	QSignalSpy spy;
 	int dim_type;
 	device *dev;
+	StatusListValues item_number;
 	void sendFrames(const QStringList& frames);
 	QVariant getResult(const QStringList& frames);
 };

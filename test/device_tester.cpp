@@ -14,10 +14,12 @@
 Q_DECLARE_METATYPE(StatusList)
 
 
-DeviceTester::DeviceTester(device *d, int type) : spy(d, SIGNAL(status_changed(const StatusList&)))
+DeviceTester::DeviceTester(device *d, int type, StatusListValues it) :
+	spy(d, SIGNAL(status_changed(const StatusList&)))
 {
 	dim_type = type;
 	dev = d;
+	item_number = it;
 }
 
 void DeviceTester::sendFrames(const QStringList& frames)
@@ -53,7 +55,12 @@ QVariant DeviceTester::getResult(const QStringList& frames)
 	{
 		StatusList sl = signal_arg.value<StatusList>();
 		if (sl.contains(dim_type))
+		{
+			if (item_number == ONE_VALUE)
+				Q_ASSERT_X(sl.size() == 1, "DeviceTester::getResult",
+					"StatusList must contain only one item");
 			return sl[dim_type];
+		}
 	}
 	return QVariant();
 }
