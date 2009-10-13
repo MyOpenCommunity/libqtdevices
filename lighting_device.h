@@ -8,6 +8,7 @@ struct BasicTime
 {
 	BasicTime() { }
 	BasicTime(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
+	bool operator==(const BasicTime t1) const { return h == t1.h && m == t1.m && s == t1.s; }
 	int h, m, s;
 };
 
