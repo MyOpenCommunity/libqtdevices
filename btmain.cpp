@@ -1,7 +1,7 @@
 #include "btmain.h"
 #include "main.h" // bt_global::config
 #include "homepage.h"
-#include "generic_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
+#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "calibrate.h"
 #include "genpage.h"

@@ -103,6 +103,7 @@ HEADERS += actuators.h \
            frame_receiver.h \
            generic_functions.h \
            genpage.h \
+           hardware_functions.h \
            homepage.h \
            icondispatcher.h \
            impostatime.h \
@@ -206,6 +207,7 @@ SOURCES += actuators.cpp \
            frame_receiver.cpp \
            generic_functions.cpp \
            genpage.cpp \
+           hardware_functions.cpp \
            homepage.cpp \
            icondispatcher.cpp \
            impostatime.cpp \

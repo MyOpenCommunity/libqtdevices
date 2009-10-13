@@ -1,7 +1,7 @@
 //! Implementation of frame interpreter classes
 
 #include "frame_interpreter.h"
-#include "generic_functions.h" // rearmWDT
+#include "hardware_functions.h" // rearmWDT
 #include "device.h"
 
 #include <openmsg.h>

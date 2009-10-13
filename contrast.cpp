@@ -1,6 +1,6 @@
 #include "contrast.h"
 #include "main.h"
-#include "generic_functions.h" // getContrast, setContrast
+#include "hardware_functions.h" // getContrast, setContrast
 #include "btbutton.h"
 
 #include <QFrame>

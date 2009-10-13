@@ -1,5 +1,6 @@
 #include "displaycontrol.h"
-#include "generic_functions.h" // setCfgValue, setBrightnessLevel, setBacklightOn
+#include "generic_functions.h" // setCfgValue
+#include "hardware_functions.h" // setBrightnessLevel, setBacklightOn
 
 
 DisplayControl::DisplayControl()

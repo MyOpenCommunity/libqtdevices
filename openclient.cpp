@@ -9,7 +9,7 @@
 ****************************************************************/
 
 #include "openclient.h"
-#include "generic_functions.h" // rearmWDT
+#include "hardware_functions.h" // rearmWDT
 #include "frame_receiver.h"
 
 #include <openmsg.h>

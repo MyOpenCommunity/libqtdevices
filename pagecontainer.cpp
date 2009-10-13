@@ -2,7 +2,8 @@
 #include "btbutton.h"
 #include "pagefactory.h" // getPage
 #include "xml_functions.h" // getTextChild, getChildren
-#include "generic_functions.h" // rearmWDT
+#include "hardware_functions.h" // rearmWDT
+#include "main.h" // IMG_PATH
 
 #include <QDomNode>
 #include <QDebug>

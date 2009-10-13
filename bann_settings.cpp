@@ -5,7 +5,8 @@
 #include "multisounddiff.h" // contdiff
 #include "calibrate.h"
 #include "contrast.h"
-#include "generic_functions.h" // setBeep, getBeep, beep, setContrast, getContrast, setCfgValue
+#include "generic_functions.h" // setCfgValue
+#include "hardware_functions.h" // setBeep, getBeep, beep, setContrast, getContrast
 #include "btmain.h" // bt_global::btmain
 #include "btbutton.h"
 

@@ -1,5 +1,6 @@
 #include "alarmclock.h"
-#include "generic_functions.h" // setCfgValue, getBeep, setBeep, beep
+#include "generic_functions.h" // setCfgValue
+#include "hardware_functions.h" // getBeep, setBeep, beep
 #include "multisounddiff.h" // contdiff
 #include "btbutton.h"
 #include "openclient.h"
