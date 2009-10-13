@@ -42,7 +42,7 @@ EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), whe
 {
 	mode = _mode;
 
-	for (int i = 0; i < 12; ++i)
+	for (int i = 1; i <= 12; ++i)
 		buffer_year_data[i] = 0;
 }
 
