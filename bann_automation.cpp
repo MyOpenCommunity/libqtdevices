@@ -6,18 +6,62 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "automation_device.h" // PPTStatDevice
+#include "xml_functions.h" // getTextChild
+#include "automation_device.h"
 
 #include <QTimer>
 #include <QDebug>
 #include <QEvent>
 #include <QObject>
 #include <QVariant>
+#include <QDomNode>
 
 #include <openwebnet.h> // class openwebnet
 
 #define BUT_DIM     60
 
+InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &config_node)
+	: bannOnOff(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
+
+	QString icon = bt_global::skin->getImage("shutter");
+	int pos = icon.indexOf(".");
+	QString img1 = icon.left(pos) + "o" + icon.mid(pos);
+	QString img2 = icon.left(pos) + "c" + icon.mid(pos);
+
+	SetIcons(bt_global::skin->getImage("up"), bt_global::skin->getImage("down"),
+		icon, img1, img2);
+	connect(this, SIGNAL(sxClick()), SLOT(sendGoUp()));
+	connect(this, SIGNAL(dxClick()), SLOT(sendGoDown()));
+}
+
+void InterblockedActuator::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
+void InterblockedActuator::sendGoUp()
+{
+	dev->goUp();
+}
+
+void InterblockedActuator::sendGoDown()
+{
+	dev->goDown();
+}
+
+void InterblockedActuator::sendStop()
+{
+	dev->stop();
+}
+
+
+
+#if 1
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
 	: bannPuls(parent)
 {
@@ -362,6 +406,8 @@ void grAttuatInt::Ferma()
 {
 	sendAllFrames("0");
 }
+
+#endif
 
 
 PPTStat::PPTStat(QWidget *parent, QString where, int cid) : banner(parent)
