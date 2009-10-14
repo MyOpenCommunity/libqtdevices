@@ -19,21 +19,6 @@ class QDomNode;
 class DimmerDevice;
 class Dimmer100Device;
 
-class SingleLight : public bannOnOff
-{
-Q_OBJECT
-public:
-	SingleLight(QWidget *parent, const QDomNode &config_node, QString address);
-	virtual void inizializza(bool forza = false);
-
-private slots:
-	void lightOn();
-	void lightOff();
-	void status_changed(const StatusList &status_list);
-
-private:
-	LightingDevice *dev;
-};
 
 class LightGroup : public bannOnOff
 {

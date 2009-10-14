@@ -17,7 +17,27 @@
 
 class device;
 class device_status;
+class LightingDevice;
 
+
+class SingleLight : public bannOnOff
+{
+Q_OBJECT
+public:
+	SingleLight(QWidget *parent, const QDomNode &config_node, QString address);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void lightOn();
+	void lightOff();
+	void status_changed(const StatusList &status_list);
+
+private:
+	LightingDevice *dev;
+};
+
+
+#if 1
 /*!
  * \class attuatAutom
  * \brief This is the \a automation \a actuator-banner class.
@@ -64,5 +84,6 @@ private slots:
 private:
 	char type;
 };
+#endif
 
 #endif
