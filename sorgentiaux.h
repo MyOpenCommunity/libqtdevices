@@ -34,12 +34,8 @@ class sorgente_aux : public bannCiclaz
 {
 Q_OBJECT
 public:
-	sorgente_aux(QWidget *parent, QString aux_name, QString indirizzo, bool vecchio=true, QString ambdescr=QString());
-	virtual ~sorgente_aux();
-	void inizializza(bool forza = false);
-protected:
-	virtual void hideEvent(QHideEvent *event);
-	Aux *myAux;
+	sorgente_aux(QWidget *parent, QString indirizzo, bool vecchio=true);
+
 private slots:
 	void ciclaSorg();
 	void decBrano();
@@ -62,17 +58,22 @@ Q_OBJECT
 public:
 	sorgenteMultiAux(QWidget *parent, QString aux_name, QString indirizzo, QString Icona1,
 		QString Icona2, QString Icona3, QString ambdescr=QString());
+	virtual ~sorgenteMultiAux();
 	void addAmb(QString a);
+
 public slots:
 	void attiva();
 	void ambChanged(const QString &, bool, QString);
+
+signals:
+	void active(int, int);
+
 private:
 	QString indirizzo_semplice;
 	QStringList indirizzi_ambienti;
 	bool multiamb;
 	int indirizzo_ambiente;
-signals:
-	void active(int, int);
+	Aux *myAux;
 };
 
 #endif

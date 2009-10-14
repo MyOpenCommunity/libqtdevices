@@ -52,7 +52,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case SORGENTE_AUX:
-			b = new sorgente_aux(this, descr, where);
+			b = new sorgente_aux(this, where);
 			break;
 		case SORGENTE_RADIO:
 			b = new banradio(this, where);

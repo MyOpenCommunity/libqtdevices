@@ -1,5 +1,5 @@
 #include "page.h"
-#include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
+#include "main.h" // IMG_PATH
 #include "openclient.h" // Client
 #include "btbutton.h"
 #include "transitionwidget.h"
