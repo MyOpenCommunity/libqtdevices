@@ -495,15 +495,12 @@ void TempLight::activate()
 
 void TempLight::status_changed(const StatusList &sl)
 {
-
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
-		qDebug() << "TempLight::status_changed" << it.value();
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			qDebug() << "device on? " << it.value().toBool();
 			impostaAttivo(it.value().toBool() ? 1 : 0);
 			break;
 		}
@@ -580,10 +577,8 @@ enum {
 	TLF_TIME_ICONS = 9,
 };
 
-//void TempLightFixed::SetIcons(QString i1, QString i2, QString i3)
 void TempLightFixed::SetIcons(QString on_icon, QString status_icon, QString time_icon)
 {
-	qDebug() << "TempLightFixed::SetIcons()";
 	// on/off status icon
 	int pos = status_icon.indexOf(".");
 	if (pos != -1)
