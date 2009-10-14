@@ -32,14 +32,18 @@ class  radio : public Page
 Q_OBJECT
 public:
 	radio(const QString &amb="");
-	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
-	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
-	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
-	QLCDNumber *freq;
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file
 	 */
 	void setName(const QString &);
+	/*!
+	 * \brief Sets the station number of the syntonized station
+	 */
+	void setStaz(uchar);
+	/*!
+	 * \brief Draws the page
+	 */
+	void draw();
 	/*!
 	 * \brief Sets the frequency of the syntonized station
 	 */
@@ -56,26 +60,7 @@ public:
 	 * \brief Sets amb. description
 	 */
 	void setAmbDescr(const QString &);
-	/*!
-	 * \brief Gets the RDS message of the syntonized station
-	 */
-	QString * getRDS();
-	/*!
-	 * \brief Sets the station number of the syntonized station
-	 */
-	void setStaz(uchar);
-	/*!
-	 * \brief Gets the station number of the syntonized station
-	 */
-	uchar getStaz();
-	/*!
-	 * \brief Retrieves if the selected search method is automatic or manual
-	 */
-	bool isManual();
-	/*!
-	 * \brief Draws the page
-	 */
-	void draw();
+
 signals:
 	/*!
 	 * \brief Emitted when the page is going to be closed
@@ -116,7 +101,8 @@ signals:
 	/*!
 	 * \brief Emitted to exit the tuner details page
 	 */
-	void	escoParam();
+	void escoParam();
+
 public slots:
 	/*!
 	 * \brief Shows the tuner details page 
@@ -162,6 +148,7 @@ public slots:
 	 * \brief At the end of a manual search ask the frequency tuned to the tuner to align to the visualized frequency
 	 */
 	void verTas();
+
 private:
 	float frequenza;
 	uchar stazione;
@@ -170,6 +157,24 @@ private:
 	QString qnome;
 	bool manual, wasManual;
 	bannFrecce *bannNavigazione;
+	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
+	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
+	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
+	QLCDNumber *freq;
+
+	/*!
+	 * \brief Gets the station number of the syntonized station
+	 */
+	uchar getStaz();
+	/*!
+	 * \brief Retrieves if the selected search method is automatic or manual
+	 */
+	bool isManual();
+	/*!
+	 * \brief Gets the RDS message of the syntonized station
+	 */
+	QString * getRDS();
+
 };
 
 
