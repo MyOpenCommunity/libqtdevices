@@ -20,16 +20,16 @@ class device_status;
 class LightingDevice;
 
 
-class SingleLight : public bannOnOff
+class SingleActuator : public bannOnOff
 {
 Q_OBJECT
 public:
-	SingleLight(QWidget *parent, const QDomNode &config_node, QString address);
+	SingleActuator(QWidget *parent, const QDomNode &config_node, QString address);
 	virtual void inizializza(bool forza = false);
 
 private slots:
-	void lightOn();
-	void lightOff();
+	void activate();
+	void deactivate();
 	void status_changed(const StatusList &status_list);
 
 private:

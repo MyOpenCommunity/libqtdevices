@@ -50,7 +50,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new DimmerNew(this, item, where);
 			break;
 		case ATTUAT_AUTOM:
-			b = new SingleLight(this, item, where);
+			b = new SingleActuator(this, item, where);
 			break;
 		case GR_DIMMER:
 			// DELETE:

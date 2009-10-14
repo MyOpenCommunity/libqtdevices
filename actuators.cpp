@@ -21,7 +21,7 @@
 #include <QDebug>
 
 
-SingleLight::SingleLight(QWidget *parent, const QDomNode &config_node, QString address)
+SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QString address)
 	: bannOnOff(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -32,28 +32,27 @@ SingleLight::SingleLight(QWidget *parent, const QDomNode &config_node, QString a
 	// TODO: read pull mode from config
 	dev = bt_global::add_device_to_cache(new LightingDevice(address));
 
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
+	connect(this, SIGNAL(dxClick()), SLOT(deactivate()));
+	connect(this, SIGNAL(sxClick()), SLOT(activate()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void SingleLight::lightOn()
+void SingleActuator::activate()
 {
 	dev->turnOn();
 }
 
-void SingleLight::lightOff()
+void SingleActuator::deactivate()
 {
 	dev->turnOff();
 }
 
-void SingleLight::inizializza(bool forza)
+void SingleActuator::inizializza(bool forza)
 {
 	dev->requestStatus();
-	banner::inizializza(forza);
 }
 
-void SingleLight::status_changed(const StatusList &status_list)
+void SingleActuator::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
