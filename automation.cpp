@@ -37,7 +37,9 @@ void Automation::loadItems(const QDomNode &config_node)
 			b = new attuatAutomInt(this, where, img1, img2, img3, img4);
 			break;
 		case ATTUAT_AUTOM:
-			b = new attuatAutom(this, where, img1, img2, img3, img4);
+			// DELETE
+			//b = new attuatAutom(this, where, img1, img2, img3, img4);
+			b = new SingleActuator(this, item, where);
 			break;
 		case ATTUAT_VCT_SERR:
 			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
