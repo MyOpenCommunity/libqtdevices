@@ -111,5 +111,6 @@ void MainWindow::blockTransitions(bool block)
 void MainWindow::addPage(Page *p)
 {
 	addWidget(p);
+	p->resize(width(), height());
 }
 
