@@ -186,7 +186,7 @@ void scenEvo_cond_h::SetIcons()
 	{
 		qDebug() << "Area 6: loaded icon " << getImg(A6_ICON_INDEX);
 		but[A6_BUTTON_INDEX] = new BtButton(this);
-		but[A6_BUTTON_INDEX]->setGeometry(0, MAX_HEIGHT - 60, 60, 60);
+		but[A6_BUTTON_INDEX]->setGeometry(0, height() - 60, 60, 60);
 		but[A6_BUTTON_INDEX]->setImage(getImg(A6_ICON_INDEX));
 	}
 	else
@@ -197,7 +197,7 @@ void scenEvo_cond_h::SetIcons()
 	{
 		qDebug() << "Area 7: loaded icon " << getImg(A7_ICON_INDEX);
 		but[A7_BUTTON_INDEX] = new BtButton(this);
-		but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 60, 60);
+		but[A7_BUTTON_INDEX]->setGeometry(width()/2 - 30, height() - 60, 60, 60);
 		but[A7_BUTTON_INDEX]->setImage(getImg(A7_ICON_INDEX));
 	}
 	else
@@ -208,7 +208,7 @@ void scenEvo_cond_h::SetIcons()
 	{
 		qDebug() << "Area 8: loaded icon " << getImg(A8_ICON_INDEX);
 		but[A8_BUTTON_INDEX] = new BtButton(this);
-		but[A8_BUTTON_INDEX]->setGeometry(MAX_WIDTH - 60, MAX_HEIGHT - 60, 60, 60);
+		but[A8_BUTTON_INDEX]->setGeometry(width() - 60, height() - 60, 60, 60);
 		but[A8_BUTTON_INDEX]->setImage(getImg(A8_ICON_INDEX));
 	}
 	else
@@ -418,20 +418,19 @@ void scenEvo_cond_d::SetIcons()
 	area2_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	BtButton *b = new BtButton(this);
 	but[A3_BUTTON_INDEX] = b;
-	b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
+	b->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(Up()));
 	b = new BtButton(this);
 	but[A4_BUTTON_INDEX] = b;
-	b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
+	b->setGeometry(width()/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(Down()));
 	b = new BtButton(this);
 	but[A5_BUTTON_INDEX] = b;
-	b->setGeometry(0, MAX_HEIGHT - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	b->setGeometry(0, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(OK()));
 	b = new BtButton(this);
 	but[A6_BUTTON_INDEX] = b;
-	b->setGeometry(MAX_WIDTH - BUTTON_DIM, MAX_HEIGHT - BUTTON_DIM,
-		BUTTON_DIM, BUTTON_DIM);
+	b->setGeometry(width() - BUTTON_DIM, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
 	// area #1
 	if (QFile::exists(getImg(A1_ICON_INDEX)))
