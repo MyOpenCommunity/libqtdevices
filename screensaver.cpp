@@ -1,5 +1,4 @@
 #include "screensaver.h"
-#include "main.h"
 #include "page.h"
 #include "timescript.h"
 #include "fontmanager.h" // bt_global::font
@@ -159,10 +158,10 @@ void ScreenSaverBalls::refresh()
 			data.x = 0;
 			change_style = true;
 		}
-		if (data.y > MAX_HEIGHT - data.dim)
+		if (data.y > page->height() - data.dim)
 		{
 			data.vy = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
-			data.y = MAX_HEIGHT - data.dim;
+			data.y = page->height() - data.dim;
 			change_style = true;
 		}
 
@@ -174,12 +173,12 @@ void ScreenSaverBalls::refresh()
 			data.y = 0;
 			change_style = true;
 		}
-		if (data.x > MAX_WIDTH - data.dim)
+		if (data.x > page->width() - data.dim)
 		{
 			data.vx = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
 			if (data.vx == 0)
 				data.vx = 1;
-			data.x = MAX_WIDTH - data.dim;
+			data.x = page->width() - data.dim;
 			change_style = true;
 		}
 
@@ -214,7 +213,7 @@ void ScreenSaverLine::customizeLine()
 
 void ScreenSaverLine::setLineHeight(int height)
 {
-	line->resize(MAX_WIDTH, height);
+	line->resize(page->width(), height);
 	line_height = height;
 }
 
@@ -226,9 +225,9 @@ void ScreenSaverLine::stop()
 
 void ScreenSaverLine::refresh()
 {
-	if (y > MAX_HEIGHT)
+	if (y > page->height())
 	{
-		y = MAX_HEIGHT;
+		y = page->height();
 		up_to_down = false;
 		line->setStyleSheet(styleDownToUp());
 	}
