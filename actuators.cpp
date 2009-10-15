@@ -17,22 +17,88 @@
 #include "lighting_device.h"
 #include "skinmanager.h"
 #include "xml_functions.h"
+#include "icondispatcher.h"
+#include "btbutton.h"
+#include "fontmanager.h"
 
 #include <QDebug>
+#include <QLabel>
+
+
+BannOnOffState::BannOnOffState(QWidget *parent) :
+	banner(parent)
+{
+	const int BANONOFF_BUT_DIM = 60;
+	const int BUTONOFF_ICON_DIM_X = 120;
+	const int BUTONOFF_ICON_DIM_Y = 60;
+
+	sx_button = new BtButton(this);
+	sx_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+
+	dx_button = new BtButton(this);
+	dx_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+
+	text = new QLabel(this);
+	text->setGeometry(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM);
+	text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	text->setFont(bt_global::font->get(FontManager::TEXT));
+
+	center_icon = new QLabel(this);
+	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
+}
+
+void BannOnOffState::loadIcons(QString l, QString c, QString r)
+{
+	qDebug() << l << c << r;
+	left = l;
+	center = c;
+	right = r;
+
+	sx_button->setImage(left);
+	dx_button->setImage(right);
+}
+
+void BannOnOffState::setPrimaryText(const QString &t)
+{
+	text->setText(t);
+}
+
+void BannOnOffState::setState(States new_state)
+{
+	switch (new_state)
+	{
+	case ON:
+	{
+		int pos = center.indexOf(".");
+		QString center_on = center.left(pos) + "on" + center.mid(pos);
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
+	}
+		break;
+	case OFF:
+	{
+		int pos = center.indexOf(".");
+		QString center_off = center.left(pos) + "off" + center.mid(pos);
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
+	}
+		break;
+	}
+}
 
 
 SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QString address)
-	: bannOnOff(parent)
+	: BannOnOffState(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("actuator_on"), bt_global::skin->getImage("actuator_off"));
-	setText(getTextChild(config_node, "descr"));
+	loadIcons(bt_global::skin->getImage("off"), bt_global::skin->getImage("actuator_state"),
+		bt_global::skin->getImage("on"));
+	setPrimaryText(getTextChild(config_node, "descr"));
+	setState(OFF);
+
 	// TODO: read pull mode from config
 	dev = bt_global::add_device_to_cache(new LightingDevice(address));
 
-	connect(this, SIGNAL(dxClick()), SLOT(deactivate()));
-	connect(this, SIGNAL(sxClick()), SLOT(activate()));
+	connect(sx_button, SIGNAL(clicked()), SLOT(deactivate()));
+	connect(dx_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -59,7 +125,7 @@ void SingleActuator::status_changed(const StatusList &status_list)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			impostaAttivo(it.value().toBool());
+			it.value().toBool() ? setState(ON) : setState(OFF);
 			break;
 		}
 		++it;

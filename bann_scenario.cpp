@@ -7,16 +7,41 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "automation_device.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
+#include "scenario_device.h"
+#include "xml_functions.h" // getTextChild
 
 #include <QDir>
 #include <QDebug>
 #include <QLabel>
 #include <QTimerEvent>
+#include <QDomNode>
 
 #define PPTSCE_INTERVAL 1000
 
 
-bannScenario::bannScenario(sottoMenu *parent, QString where, QString IconaSx) : bannOnSx(parent)
+BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
+	bannOnSx(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), 1);
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
+
+	scenario_number = getTextChild(config_node, "what").toInt();
+
+	connect(this, SIGNAL(click()), SLOT(activate()));
+}
+
+void BannSimpleScenario::activate()
+{
+	dev->activateScenario(scenario_number);
+}
+
+
+#if 1
+
+bannScenario::bannScenario(QWidget *parent, QString where, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
 	setAddress(where);
@@ -203,6 +228,8 @@ void gesModScen::inizializza(bool forza)
 {
 	nascondi(BUT2);
 }
+
+#endif
 
 
 int scenEvo::next_serial_number = 1;

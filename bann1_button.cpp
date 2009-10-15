@@ -27,7 +27,7 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
-bannSimple::bannSimple(sottoMenu *parent, QString icon, Page *page) : banner(parent)
+bannSimple::bannSimple(QWidget *parent, QString icon, Page *page) : banner(parent)
 {
 	// This banner uses a dx button but shows it in central position.
 	addItem(BUT1, (banner_width - BANPULS_BUT_DIM) / 2, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
@@ -41,7 +41,7 @@ bannSimple::bannSimple(sottoMenu *parent, QString icon, Page *page) : banner(par
 }
 
 
-bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
+bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)
 {
 	addItem(BUT1, banner_width - BUT_DIM, (banner_height-BUT_DIM)/2, BUT_DIM ,BUT_DIM);
 	addItem(TEXT, 0, 0 ,banner_width-BUT_DIM, banner_height);
@@ -55,7 +55,7 @@ bannOnDx::bannOnDx(sottoMenu *parent, QString icon, Page *page) : banner(parent)
 }
 
 
-bannOnSx::bannOnSx(sottoMenu *parent, QString icon) : banner(parent)
+bannOnSx::bannOnSx(QWidget *parent, QString icon) : banner(parent)
 {
 	addItem(BUT1, 0, (banner_height - BUT_DIM)/2, BUT_DIM, BUT_DIM);
 	addItem(TEXT, BUT_DIM, 0, banner_width - BUT_DIM, banner_height);

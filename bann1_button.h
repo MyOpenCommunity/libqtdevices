@@ -54,7 +54,7 @@ class bannSimple : public banner
 {
 Q_OBJECT
 public:
-	bannSimple(sottoMenu *parent, QString icon=QString(), Page *page=0);
+	bannSimple(QWidget *parent, QString icon=QString(), Page *page=0);
 
 signals:
 	void click();
@@ -71,7 +71,7 @@ class bannOnDx : public banner
 {
 Q_OBJECT
 public:
-	bannOnDx(sottoMenu *parent, QString icon=QString(), Page *page=0);
+	bannOnDx(QWidget *parent, QString icon=QString(), Page *page=0);
 
 signals:
 	void click();
@@ -88,7 +88,7 @@ class bannOnSx : public banner
 {
 Q_OBJECT
 public:
-	bannOnSx(sottoMenu *parent, QString icon=QString());
+	bannOnSx(QWidget *parent, QString icon=QString());
 	BtButton *getButton();
 signals:
 	void click();

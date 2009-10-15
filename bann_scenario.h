@@ -16,7 +16,27 @@ class scenEvo_cond;
 class device;
 class QTimerEvent;
 class QWidget;
+class QDomNode;
+class ScenarioDevice;
 
+
+
+class BannSimpleScenario : public bannOnSx
+{
+Q_OBJECT
+public:
+	BannSimpleScenario(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void activate();
+
+private:
+	ScenarioDevice *dev;
+	int scenario_number;
+};
+
+
+#if 1
 /*!
  * \class bannScenario
  * \brief This class is made to control a scenario of a \a scenario \a unit.
@@ -28,7 +48,7 @@ class bannScenario : public bannOnSx
 {
 Q_OBJECT
 public:
-	bannScenario(sottoMenu *parent, QString where, QString IconaSx);
+	bannScenario(QWidget *parent, QString where, QString IconaSx);
 private slots:
 	void Attiva();
 };
@@ -63,6 +83,8 @@ private slots:
 	void stopProgScen();
 	void cancScen();
 };
+
+#endif
 
 
 /*!
