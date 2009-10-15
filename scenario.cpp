@@ -35,7 +35,9 @@ void Scenario::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case SCENARIO:
-			b = new bannScenario(this, where, img1);
+			// DELETE
+			//b = new bannScenario(this, where, img1);
+			b = new BannSimpleScenario(this, item);
 			break;
 
 		case PPT_SCE:
