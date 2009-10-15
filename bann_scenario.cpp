@@ -16,7 +16,7 @@
 #define PPTSCE_INTERVAL 1000
 
 
-bannScenario::bannScenario(sottoMenu *parent, QString where, QString IconaSx) : bannOnSx(parent)
+bannScenario::bannScenario(QWidget *parent, QString where, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
 	setAddress(where);
