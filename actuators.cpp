@@ -14,10 +14,62 @@
 #include "btbutton.h"
 #include "generic_functions.h" // getPressName, createMsgOpen
 #include "devices_cache.h" // bt_global::devices_cache
+#include "lighting_device.h"
+#include "skinmanager.h"
+#include "xml_functions.h"
 
 #include <QDebug>
 
 
+SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QString address)
+	: bannOnOff(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
+		bt_global::skin->getImage("actuator_on"), bt_global::skin->getImage("actuator_off"));
+	setText(getTextChild(config_node, "descr"));
+	// TODO: read pull mode from config
+	dev = bt_global::add_device_to_cache(new LightingDevice(address));
+
+	connect(this, SIGNAL(dxClick()), SLOT(deactivate()));
+	connect(this, SIGNAL(sxClick()), SLOT(activate()));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+}
+
+void SingleActuator::activate()
+{
+	dev->turnOn();
+}
+
+void SingleActuator::deactivate()
+{
+	dev->turnOff();
+}
+
+void SingleActuator::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
+void SingleActuator::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		switch (it.key())
+		{
+		case LightingDevice::DIM_DEVICE_ON:
+			impostaAttivo(it.value().toBool());
+			break;
+		}
+		++it;
+	}
+	Draw();
+}
+
+
+
+#if 1
 attuatAutom::attuatAutom(QWidget *parent,QString where,QString IconaSx, QString IconaDx, QString icon,
 	QString pressedIcon) : bannOnOff(parent)
 {
@@ -126,4 +178,5 @@ void attuatPuls::Disattiva()
 		break;
 	}
 }
+#endif
 

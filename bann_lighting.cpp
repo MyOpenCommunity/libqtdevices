@@ -37,54 +37,6 @@ namespace
 	}
 }
 
-SingleLight::SingleLight(QWidget *parent, const QDomNode &config_node, QString address)
-	: bannOnOff(parent)
-{
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	// TODO: verify the correct skins
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("lamp_on"), bt_global::skin->getImage("lamp_off"));
-	setText(getTextChild(config_node, "descr"));
-	// TODO: read pull mode from config
-	dev = bt_global::add_device_to_cache(new LightingDevice(address));
-
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-}
-
-void SingleLight::lightOn()
-{
-	dev->turnOn();
-}
-
-void SingleLight::lightOff()
-{
-	dev->turnOff();
-}
-
-void SingleLight::inizializza(bool forza)
-{
-	dev->requestStatus();
-	banner::inizializza(forza);
-}
-
-void SingleLight::status_changed(const StatusList &status_list)
-{
-	StatusList::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
-	{
-		switch (it.key())
-		{
-		case LightingDevice::DIM_DEVICE_ON:
-			impostaAttivo(it.value().toBool());
-			break;
-		}
-		++it;
-	}
-	Draw();
-}
-
 
 LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
 	: bannOnOff(parent)

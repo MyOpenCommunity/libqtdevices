@@ -12,7 +12,29 @@
 class device;
 class device_status;
 class PPTStatDevice;
+class AutomationDevice;
+class QDomNode;
 
+
+class InterblockedActuator : public bannOnOff
+{
+Q_OBJECT
+public:
+	InterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void sendGoUp();
+	void sendGoDown();
+	void sendStop();
+
+private:
+	AutomationDevice *dev;
+};
+
+
+
+#if 1
 /*!
  * \class
  * \brief This class represents an automated video-doorphone actuator
@@ -132,6 +154,7 @@ private:
 	QList<QString> elencoDisp;
 	void sendAllFrames(QString msg);
 };
+#endif
 
 
 class PPTStat : public banner
