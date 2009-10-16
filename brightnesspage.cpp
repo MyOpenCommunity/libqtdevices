@@ -19,6 +19,7 @@
 
 BrightnessPage::BrightnessPage() : SingleChoicePage(true)
 {
+	setNumRighe(4);
 	addBanner(tr("Off"), BRIGHTNESS_OFF);
 	addBanner(tr("Low brightness"), BRIGHTNESS_LOW);
 	addBanner(tr("Normal brightness"), BRIGHTNESS_NORMAL);

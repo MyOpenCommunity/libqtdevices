@@ -6,6 +6,8 @@
 
 ScreenSaverPage::ScreenSaverPage() : SingleChoicePage(true)
 {
+	setNumRighe(4);
+	setScrollStep(4);
 	addBanner(tr("No screensaver"), ScreenSaver::NONE);
 	addBanner(tr("Line"), ScreenSaver::LINES);
 	addBanner(tr("Balls"), ScreenSaver::BALLS);

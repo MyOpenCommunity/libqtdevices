@@ -12,6 +12,7 @@
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
 {
+	setNumRighe(4);
 	loadItems(config_node);
 }
 
