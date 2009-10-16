@@ -34,7 +34,8 @@ void Automation::loadItems(const QDomNode &config_node)
 			b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
 			break;
 		case ATTUAT_AUTOM_INT:
-			b = new attuatAutomInt(this, where, img1, img2, img3, img4);
+			//b = new attuatAutomInt(this, where, img1, img2, img3, img4);
+			b = new InterblockedActuator(this, item);
 			break;
 		case ATTUAT_AUTOM:
 			// DELETE
