@@ -19,7 +19,7 @@
 
 
 BannOnOffState::BannOnOffState(QWidget *parent) :
-	banner(parent)
+	BannerNew(parent)
 {
 	sx_button = new BtButton(this);
 	sx_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
@@ -27,10 +27,8 @@ BannOnOffState::BannOnOffState(QWidget *parent) :
 	dx_button = new BtButton(this);
 	dx_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
 
-	text = new QLabel(this);
-	text->setGeometry(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM);
-	text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	text->setFont(bt_global::font->get(FontManager::TEXT));
+	text = getLowerLabel(QRect(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM),
+		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
 
 	center_icon = new QLabel(this);
 	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
@@ -69,7 +67,7 @@ void BannOnOffState::setState(States new_state)
 
 
 BannOpenClose::BannOpenClose(QWidget *parent) :
-	banner(parent)
+	BannerNew(parent)
 {
 	left_button = new BtButton(this);
 	left_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
@@ -77,10 +75,8 @@ BannOpenClose::BannOpenClose(QWidget *parent) :
 	right_button = new BtButton(this);
 	right_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
 
-	text = new QLabel(this);
-	text->setGeometry(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM);
-	text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	text->setFont(bt_global::font->get(FontManager::TEXT));
+	text = getLowerLabel(QRect(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM),
+		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
 
 	center_icon = new QLabel(this);
 	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);

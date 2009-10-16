@@ -33,7 +33,7 @@ class BtButton;
  * Buttons are created protected so that logic banners can manipulate them directly, thus
  * avoiding BtButton interface duplication. All other elements are created private.
  */
-class BannOnOffState : public banner
+class BannOnOffState : public BannerNew
 {
 Q_OBJECT
 protected:
@@ -57,7 +57,7 @@ private:
 };
 
 
-class BannOpenClose : public banner
+class BannOpenClose : public BannerNew
 {
 Q_OBJECT
 protected:

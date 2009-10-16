@@ -27,7 +27,7 @@ class QLabel;
 #define BANPULS_ICON_DIM_Y 60
 
 
-class BannSinglePuls : public banner
+class BannSinglePuls : public BannerNew
 {
 Q_OBJECT
 protected:
