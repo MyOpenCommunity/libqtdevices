@@ -14,14 +14,14 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
 
 
-class Settings : public sottoMenu
+class Settings : public Page
 {
 Q_OBJECT
 public:

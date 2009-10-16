@@ -9,12 +9,15 @@
 #include "brightnesspage.h"
 #include "displaypage.h"
 #include "version.h"
+#include "navigation_bar.h"
+#include "content_widget.h"
 
 #include <QDebug>
 
 
 Settings::Settings(const QDomNode &config_node)
 {
+	buildPage(new NavigationBar, new ContentWidget);
 	loadItems(config_node);
 }
 
@@ -67,7 +70,8 @@ void Settings::loadItems(const QDomNode &config_node)
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		appendBanner(b);
+		b->Draw();
+		content_widget->appendBanner(b);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }

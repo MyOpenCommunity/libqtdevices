@@ -84,7 +84,7 @@ class calibration : public bannOnDx
 {
 Q_OBJECT
 public:
-	calibration(sottoMenu *parent, QString icon);
+	calibration(QWidget *parent, QString icon);
 
 private slots:
 	void doCalib();
@@ -108,7 +108,7 @@ class impBeep : public bannOnSx
 {
 Q_OBJECT
 public:
-	impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2);
+	impBeep(QWidget *parent, QString val, QString icon1, QString icon2);
 public slots:
 	void toggleBeep();
 };
@@ -118,7 +118,7 @@ class bannContrast : public bannOnDx
 {
 Q_OBJECT
 public:
-	bannContrast(sottoMenu *parent, QString val, QString icon);
+	bannContrast(QWidget *parent, QString val, QString icon);
 
 private slots:
 	void done();
@@ -129,7 +129,7 @@ class bannVersion : public bannOnDx
 {
 Q_OBJECT
 public:
-	bannVersion(sottoMenu *parent, QString icon, Version *ver);
+	bannVersion(QWidget *parent, QString icon, Version *ver);
 private slots:
 	void showVers();
 private:

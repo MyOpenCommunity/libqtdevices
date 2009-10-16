@@ -73,7 +73,7 @@ void bannAlarmClock::inizializza()
 }
 
 
-calibration::calibration(sottoMenu *parent, QString icon) : bannOnDx(parent)
+calibration::calibration(QWidget *parent, QString icon) : bannOnDx(parent)
 {
 	SetIcons(icon, 1);
 	connect(this,SIGNAL(click()),this,SLOT(doCalib()));
@@ -96,7 +96,7 @@ void calibration::fineCalib()
 }
 
 
-impBeep::impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2)
+impBeep::impBeep(QWidget *parent, QString val, QString icon1, QString icon2)
 	: bannOnSx(parent)
 {
 	connect(this, SIGNAL(click()), this, SLOT(toggleBeep()));
@@ -126,7 +126,7 @@ void impBeep::toggleBeep()
 }
 
 
-bannContrast::bannContrast(sottoMenu *parent, QString val, QString icon) :
+bannContrast::bannContrast(QWidget *parent, QString val, QString icon) :
 	bannOnDx(parent, icon, new Contrast())
 {
 	setContrast(val.toInt(), false);
@@ -139,7 +139,7 @@ void bannContrast::done()
 }
 
 
-bannVersion::bannVersion(sottoMenu *parent, QString icon, Version *ver)
+bannVersion::bannVersion(QWidget *parent, QString icon, Version *ver)
 	: bannOnDx(parent, icon)
 {
 	connect(this, SIGNAL(click()), this, SLOT(showVers()));
