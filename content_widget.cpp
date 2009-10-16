@@ -40,10 +40,16 @@ void ContentWidget::appendBanner(banner *b)
 void ContentWidget::resetIndex()
 {
 	current_index = 0;
-	update();
+	updateLayout();
 }
 
-void ContentWidget::paintEvent(QPaintEvent *e)
+void ContentWidget::showEvent(QShowEvent *e)
+{
+	updateLayout();
+	QWidget::showEvent(e);
+}
+
+void ContentWidget::updateLayout()
 {
 	// We want a circular list of banner, so we can't use a layout and hide/show
 	// the banner to display or when you click the up button the order is wrong.
@@ -59,7 +65,6 @@ void ContentWidget::paintEvent(QPaintEvent *e)
 		layout()->addWidget(banner_list.at(index));
 		banner_list.at(index)->show();
 	}
-	QWidget::paintEvent(e);
 }
 
 void ContentWidget::upClick()
@@ -68,7 +73,7 @@ void ContentWidget::upClick()
 		--current_index;
 	else
 		current_index = banner_list.size() - 1;
-	update();
+	updateLayout();
 }
 
 void ContentWidget::downClick()
@@ -77,6 +82,6 @@ void ContentWidget::downClick()
 		++current_index;
 	else
 		current_index = 0;
-	update();
+	updateLayout();
 }
 

@@ -5,6 +5,7 @@
 #include <QList>
 
 class banner;
+class QShowEvent;
 
 
 /**
@@ -26,7 +27,7 @@ public slots:
 	void resetIndex();
 
 protected:
-	virtual void paintEvent(QPaintEvent *e);
+	void showEvent(QShowEvent *e);
 
 private:
 	// The index of the current banner
@@ -34,6 +35,7 @@ private:
 	// The maximum number of banners per page
 	int max_banner;
 	QList<banner*> banner_list;
+	void updateLayout();
 };
 
 #endif // CONTENT_WIDGET_H
