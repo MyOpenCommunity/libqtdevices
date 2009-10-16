@@ -9,8 +9,8 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 {
 	main_layout = new QHBoxLayout(this);
 	addButton(back_icon, SIGNAL(backClick()));
-	addButton(up_icon, SIGNAL(upClick()));
 	addButton(down_icon, SIGNAL(downClick()));
+	addButton(up_icon, SIGNAL(upClick()));
 	addButton(forward_icon, SIGNAL(forwardClick()));
 	main_layout->addStretch();
 	main_layout->setContentsMargins(0, 0, 0, 0);

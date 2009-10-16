@@ -47,9 +47,11 @@ void Page::buildPage(NavigationBar *nav_bar, ContentWidget *content)
 	l->setSpacing(0);
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
 	connect(nav_bar, SIGNAL(forwardClick()), content, SLOT(forwardClick()));
 	connect(nav_bar, SIGNAL(upClick()), content, SLOT(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), content, SLOT(downClick()));
+
 	content_widget = content;
 }
 

@@ -27,6 +27,7 @@ void ContentWidget::appendBanner(banner *b)
 {
 	Q_ASSERT_X(layout() != 0, "ContentWidget::appendBanner", "Unable to call appendBanner without a layout");
 	banner_list.append(b);
+	b->hide();
 
 	for (int idx = banner_list.size() - 2; idx >= 0; idx--)
 		if (banner_list.at(idx)->getId() == b->getId())
@@ -34,34 +35,48 @@ void ContentWidget::appendBanner(banner *b)
 			b->setSerNum(banner_list.at(idx)->getSerNum() + 1);
 			idx = -1;
 		}
+}
 
-	QVBoxLayout *main_layout = static_cast<QVBoxLayout*>(layout());
-	main_layout->addWidget(b);
+void ContentWidget::resetIndex()
+{
+	current_index = 0;
+	update();
 }
 
 void ContentWidget::paintEvent(QPaintEvent *e)
 {
-	for (int i = 0; i < banner_list.size(); ++i)
+	// We want a circular list of banner, so we can't use a layout and hide/show
+	// the banner to display or when you click the up button the order is wrong.
+	// So we remove all the child from the layout, hide them and re-add to the
+	// layout only the banner to show.
+	QLayoutItem *child;
+	while ((child = layout()->takeAt(0)) != 0)
+		child->widget()->hide();
+
+	for (int i = 0; i < max_banner; ++i)
 	{
-		if (i >= current_index && i < current_index + max_banner)
-			banner_list.at(i)->show();
-		else
-			banner_list.at(i)->hide();
+		int index = (i + current_index) % banner_list.size();
+		layout()->addWidget(banner_list.at(index));
+		banner_list.at(index)->show();
 	}
 	QWidget::paintEvent(e);
 }
 
 void ContentWidget::upClick()
 {
-	if (current_index - max_banner >= 0)
-		current_index -= max_banner;
+	if (current_index > 0)
+		--current_index;
+	else
+		current_index = banner_list.size() - 1;
 	update();
 }
 
 void ContentWidget::downClick()
 {
-	if (current_index + max_banner < banner_list.size())
-		current_index += max_banner;
+	if (current_index < banner_list.size())
+		++current_index;
+	else
+		current_index = 0;
 	update();
 }
 

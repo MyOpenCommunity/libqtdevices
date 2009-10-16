@@ -23,6 +23,7 @@ public slots:
 	virtual void upClick();
 	virtual void downClick();
 	virtual void forwardClick() {} // Do nothing by default
+	void resetIndex();
 
 protected:
 	virtual void paintEvent(QPaintEvent *e);
