@@ -22,19 +22,18 @@ class QLabel;
 class BannOpenClose : public banner
 {
 Q_OBJECT
-public:
+protected:
 	enum States
 	{
 		STOP,
 		CLOSING,
 		OPENING,
 	};
+
+	BannOpenClose(QWidget *parent);
 	void loadIcons(QString _left, QString _center, QString _right, QString _lr_alternate);
 	void setState(States new_state);
 	void setPrimaryText(QString str);
-
-protected:
-	BannOpenClose(QWidget *parent);
 	BtButton *left_button, *right_button;
 
 private:
