@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QList>
 
+#include "page.h"
+
 class banner;
 class QShowEvent;
 
@@ -13,6 +15,7 @@ class QShowEvent;
  */
 class ContentWidget : public QWidget
 {
+friend void Page::activateLayout();
 Q_OBJECT
 public:
 	ContentWidget(QWidget *parent=0);

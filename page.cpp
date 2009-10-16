@@ -55,6 +55,19 @@ void Page::buildPage(NavigationBar *nav_bar, ContentWidget *content)
 	content_widget = content;
 }
 
+void Page::activateLayout()
+{
+	QLayout *main_layout = layout();
+	if (main_layout)
+	{
+		main_layout->activate();
+		main_layout->update();
+	}
+
+	if (content_widget)
+		content_widget->updateLayout();
+}
+
 void Page::inizializza()
 {
 }

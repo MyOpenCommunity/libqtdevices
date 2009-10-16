@@ -55,6 +55,7 @@ public:
 	void sendInit(QString frame) const;
 
 	static void setMainWindow(MainWindow *window);
+	void activateLayout();
 
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation

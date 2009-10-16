@@ -13,11 +13,8 @@ namespace
 	{
 		p->resize(size);
 
-		if (QLayout *layout = p->layout())
-		{
-			layout->activate();
-			layout->update();
-		}
+		if (p->layout())
+			p->activateLayout();
 		else if (sottoMenu *s = qobject_cast<sottoMenu*>(p))
 			s->forceDraw();
 	}
