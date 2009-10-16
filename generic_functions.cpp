@@ -34,32 +34,29 @@ QString createStatusRequestOpen(QString who, QString where)
 	return QString("*#%1*%2##").arg(who).arg(where);
 }
 
-// TODO: unificare queste tre funzioni praticamente identiche!
-QString getPressName(QString name)
+
+QString getBostikName(const QString &name, const QString &suffix)
 {
 	int pos = name.indexOf(".");
 	if (pos != -1)
-		return name.left(pos) + "p" + name.mid(pos);
+		return name.left(pos) + suffix + name.mid(pos);
 
 	return QString();
+}
+
+QString getPressName(QString name)
+{
+	return getBostikName(name, "p");
 }
 
 QString getZoneName(QString name, QString zone)
 {
-	int pos = name.indexOf(".");
-	if (pos != -1)
-		return name.left(pos) + zone.at(1) + name.mid(pos);
-
-	return QString();
+	return getBostikName(name, zone.at(1));
 }
 
 QString getAmbName(QString name, QString amb)
 {
-	int pos = name.indexOf(".");
-	if (pos != -1)
-		return name.left(pos) + amb.at(0) + name.mid(pos);
-
-	return QString();
+	return getBostikName(name, amb.at(0));
 }
 
 /**

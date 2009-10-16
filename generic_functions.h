@@ -31,6 +31,8 @@ QString createWriteRequestOpen(QString who, QString what, QString where);
 // Create a 'status request' frame
 QString createStatusRequestOpen(QString who, QString where);
 
+QString getBostikName(const QString &name, const QString &suffix);
+
  /*!
   \brief Transform a image file name into a pressed one.
 
