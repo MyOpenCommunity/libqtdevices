@@ -14,9 +14,38 @@ class device_status;
 class PPTStatDevice;
 class AutomationDevice;
 class QDomNode;
+class BtButton;
+class QLabel;
 
 
-class InterblockedActuator : public bannOnOff
+class BannOpenClose : public banner
+{
+Q_OBJECT
+public:
+	enum States
+	{
+		STOP,
+		CLOSING,
+		OPENING,
+	};
+	void loadIcons(QString _left, QString _center, QString _right, QString _lr_alternate);
+	void setState(States new_state);
+	void setPrimaryText(QString str);
+
+protected:
+	BannOpenClose(QWidget *parent);
+	BtButton *left_button, *right_button;
+
+private:
+	QString left, center, right;
+	// alternative icon for left *and* right buttons. If buttons need different
+	// icons, we need to split it.
+	QString alternate;
+	QLabel *text, *center_icon;
+};
+
+
+class InterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
@@ -27,6 +56,26 @@ private slots:
 	void sendGoUp();
 	void sendGoDown();
 	void sendStop();
+	void status_changed(const StatusList &sl);
+
+private:
+	AutomationDevice *dev;
+};
+
+
+class SecureInterblockedActuator : public BannOpenClose
+{
+Q_OBJECT
+public:
+	SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void sendOpen();
+	void sendClose();
+	void buttonReleased();
+	void sendStop();
+	void status_changed(const StatusList &sl);
 
 private:
 	AutomationDevice *dev;

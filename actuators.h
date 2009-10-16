@@ -13,7 +13,6 @@
 
 #include "bann2_buttons.h" // bannOnOff
 #include "bann1_button.h" // bannPuls
-#include "main.h" // MAX_PATH
 #include "banner.h"
 
 class device;
@@ -21,6 +20,7 @@ class device_status;
 class LightingDevice;
 class BtButton;
 class QLabel;
+class QDomNode;
 
 
 /*
@@ -47,12 +47,12 @@ public:
 		ON,
 		OFF,
 	};
-	BannOnOffState(QWidget *parent);
 	void loadIcons(QString l, QString c, QString r);
 	void setState(States new_state);
 	void setPrimaryText(const QString &text);
 
 protected:
+	BannOnOffState(QWidget *parent);
 	BtButton *sx_button, *dx_button;
 
 private:

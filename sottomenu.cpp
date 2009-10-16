@@ -124,7 +124,6 @@ void sottoMenu::showItem(int id)
 
 void sottoMenu::draw()
 {
-	qDebug() << "sottoMenu::draw()";
 	Q_ASSERT_X(indice >= 0, "sottoMenu::draw", "index of elencoBanner (sottoMenu) less than 0!!");
 	if (indicold != indice)
 	{
@@ -152,14 +151,11 @@ void sottoMenu::draw()
 					int tmp = (indice + i) % elencoBanner.size();
 					int y = i * (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
 					int h = (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
-					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d)", tmp, 0, y, width, h);
 					elencoBanner.at(tmp)->setGeometry(0, y, width, h);
 					elencoBanner.at(tmp)->Draw();
 					elencoBanner.at(tmp)->show();
 				}
 			}
-			qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",
-					0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
 			bannNavigazione->setGeometry(0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
 			bannNavigazione->Draw();
 			bannNavigazione->show();
@@ -183,7 +179,6 @@ void sottoMenu::draw()
 
 void sottoMenu::forceDraw()
 {
-	qDebug() << "sottoMenu::forceDraw()";
 	indicold = indice + 1;
 	draw();
 }
@@ -209,7 +204,6 @@ void sottoMenu::goUp()
 
 void sottoMenu::goDown()
 {
-	qDebug("sottoMenu::goDown(), numRighe = %d", numRighe);
 	if (elencoBanner.count() > numRighe)
 	{
 		indicold=indice;
@@ -226,7 +220,6 @@ void sottoMenu::goDown()
 				// remember:indice is negative
 				indice = elencoBanner.count() + indice;
 		}
-		qDebug("indice = %d\n", indice);
 		draw();
 	}
 }
@@ -248,13 +241,11 @@ banner* sottoMenu::getLast()
 
 void sottoMenu::inizializza()
 {
-	qDebug("sottoMenu::inizializza()");
 	QTimer::singleShot(300, this, SLOT(init()));
 }
 
 void sottoMenu::init()
 {
-	qDebug("sottoMenu::init()");
 	for (int i = 0; i < elencoBanner.size(); ++i)
 		elencoBanner.at(i)->inizializza();
 }
@@ -280,7 +271,6 @@ void sottoMenu::resetIndex()
 
 void sottoMenu::showEvent(QShowEvent *event)
 {
-	qDebug() << "sottoMenu::showEvent()";
 	forceDraw();
 }
 
