@@ -47,12 +47,12 @@ public:
 		ON,
 		OFF,
 	};
-	BannOnOffState(QWidget *parent);
 	void loadIcons(QString l, QString c, QString r);
 	void setState(States new_state);
 	void setPrimaryText(const QString &text);
 
 protected:
+	BannOnOffState(QWidget *parent);
 	BtButton *sx_button, *dx_button;
 
 private:
