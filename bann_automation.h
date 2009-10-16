@@ -15,34 +15,6 @@ class PPTStatDevice;
 class AutomationDevice;
 class LightingDevice;
 class QDomNode;
-class BtButton;
-class QLabel;
-
-
-class BannOpenClose : public banner
-{
-Q_OBJECT
-protected:
-	enum States
-	{
-		STOP,
-		CLOSING,
-		OPENING,
-	};
-
-	BannOpenClose(QWidget *parent);
-	void loadIcons(QString _left, QString _center, QString _right, QString _lr_alternate);
-	void setState(States new_state);
-	void setPrimaryText(QString str);
-	BtButton *left_button, *right_button;
-
-private:
-	QString left, center, right;
-	// alternative icon for left *and* right buttons. If buttons need different
-	// icons, we need to split it.
-	QString alternate;
-	QLabel *text, *center_icon;
-};
 
 
 class InterblockedActuator : public BannOpenClose
