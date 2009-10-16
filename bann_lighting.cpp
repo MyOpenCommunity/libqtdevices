@@ -39,19 +39,19 @@ namespace
 
 
 LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
-	: bannOnOff(parent)
+	: BannOnOffNew(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		 QString(), bt_global::skin->getImage("lamp_group_on"));
-	setText(getTextChild(config_node, "descr"));
+
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("lamp_group_on"),
+		bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
 		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL));
 
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
+	connect(sx_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(dx_button, SIGNAL(clicked()), SLOT(lightOff()));
 }
 
 void LightGroup::lightOff()

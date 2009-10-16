@@ -20,7 +20,7 @@ class DimmerDevice;
 class Dimmer100Device;
 
 
-class LightGroup : public bannOnOff
+class LightGroup : public BannOnOffNew
 {
 Q_OBJECT
 public:

@@ -18,7 +18,7 @@
 
 
 
-BannOnOffState::BannOnOffState(QWidget *parent) :
+BannOnOffNew::BannOnOffNew(QWidget *parent) :
 	BannerNew(parent)
 {
 	sx_button = new BtButton(this);
@@ -34,15 +34,14 @@ BannOnOffState::BannOnOffState(QWidget *parent) :
 	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
 }
 
-void BannOnOffState::initBanner(const QString &left, const QString &center, const QString &right,
-	States init_state, const QString &banner_text)
+void BannOnOffNew::initBanner(const QString &left, const QString &center, const QString &right,
+	const QString &banner_text)
 {
 	loadIcons(left, center, right);
-	setState(init_state);
 	text->setText(banner_text);
 }
 
-void BannOnOffState::loadIcons(const QString &l, const QString &c, const QString &r)
+void BannOnOffNew::loadIcons(const QString &l, const QString &c, const QString &r)
 {
 	left = l;
 	center = c;
@@ -50,6 +49,20 @@ void BannOnOffState::loadIcons(const QString &l, const QString &c, const QString
 
 	sx_button->setImage(left);
 	dx_button->setImage(right);
+	center_icon->setPixmap(*bt_global::icons_cache.getIcon(c));
+}
+
+
+BannOnOffState::BannOnOffState(QWidget *parent) :
+	BannOnOffNew(parent)
+{
+}
+
+void BannOnOffState::initBanner(const QString &left, const QString &center, const QString &right,
+	States init_state, const QString &banner_text)
+{
+	BannOnOffNew::initBanner(left, center, right, banner_text);
+	setState(init_state);
 }
 
 void BannOnOffState::setState(States new_state)
@@ -60,7 +73,7 @@ void BannOnOffState::setState(States new_state)
 		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "on")));
 		break;
 	case OFF:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "on")));
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "off")));
 		break;
 	}
 }
