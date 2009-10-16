@@ -30,15 +30,13 @@ class QLabel;
 class BannSinglePuls : public banner
 {
 Q_OBJECT
-public:
-	void loadIcons(const QString &right, const QString &center);
-	void setPrimaryText(const QString &t);
-
 protected:
 	BannSinglePuls(QWidget *parent);
+	void initBanner(const QString &right, const QString &center, const QString &banner_text);
 	BtButton *right_button;
 
 private:
+	void loadIcons(const QString &right, const QString &center);
 	QLabel *center_icon, *text;
 };
 

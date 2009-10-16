@@ -165,8 +165,8 @@ GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &
 	// frames directly. Change as soon as entryphone devices are available!
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
 
-	loadIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"));
-	setPrimaryText(getTextChild(config_node, "descr"));
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
+		getTextChild(config_node, "descr"));
 
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 }
@@ -186,8 +186,8 @@ GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &conf
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
 
-	loadIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"));
-	setPrimaryText(getTextChild(config_node, "descr"));
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
+		getTextChild(config_node, "descr"));
 
 	QStringList sl = getTextChild(config_node, "time").split("*");
 	Q_ASSERT_X(sl.size() == 3, "GateLightingActuator::GateLightingActuator",

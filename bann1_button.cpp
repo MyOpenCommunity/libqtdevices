@@ -33,16 +33,18 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	center_icon->setGeometry(BANPULS_BUT_DIM, 0, BANPULS_ICON_DIM_X, BANPULS_ICON_DIM_Y);
 }
 
+void BannSinglePuls::initBanner(const QString &right, const QString &center, const QString &banner_text)
+{
+	loadIcons(right, center);
+	text->setText(banner_text);
+}
+
 void BannSinglePuls::loadIcons(const QString &right, const QString &center)
 {
 	right_button->setImage(right);
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
 }
 
-void BannSinglePuls::setPrimaryText(const QString &t)
-{
-	text->setText(t);
-}
 
 bannPuls::bannPuls(QWidget *parent) : banner(parent)
 {
