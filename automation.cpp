@@ -60,10 +60,12 @@ void Automation::loadItems(const QDomNode &config_node)
 			break;
 		}
 		case AUTOM_CANC_ATTUAT_ILL:
-			b = new automCancAttuatIll(this, where, img1, img2, time);
+			//b = new automCancAttuatIll(this, where, img1, img2, time);
+			b = new GateLightingActuator(this, item);
 			break;
 		case AUTOM_CANC_ATTUAT_VC:
-			b = new automCancAttuatVC(this, where, img1, img2);
+			//b = new automCancAttuatVC(this, where, img1, img2);
+			b = new GateEntryphoneActuator(this, item);
 			break;
 		case ATTUAT_AUTOM_PULS:
 			b = new attuatPuls(this, where, img1, img2, AUTOMAZ);

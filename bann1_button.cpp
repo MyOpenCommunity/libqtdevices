@@ -2,6 +2,9 @@
 #include "sottomenu.h"
 #include "titlelabel.h" // TextOnImageLabel
 #include "skinmanager.h" // bt_global::skin
+#include "btbutton.h"
+#include "icondispatcher.h" //icons_cache
+#include "fontmanager.h" //FontManager
 
 #define BUT_DIM 60
 #define BUTONDX_H_SCRITTA 20
@@ -14,6 +17,34 @@
 #define BANNBUT2ICON_TEXT_DIM_Y 20
 #define BANNBUT2ICON_ICON_DIM_X 60
 #define BANNBUT2ICON_ICON_DIM_Y 60
+
+BannSinglePuls::BannSinglePuls(QWidget *parent) :
+	banner(parent)
+{
+	right_button = new BtButton(this);
+	right_button->setGeometry(banner_width - BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
+
+	text = new QLabel(this);
+	text->setGeometry(0, BANPULS_BUT_DIM, banner_width, banner_height - BANPULS_BUT_DIM);
+	text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	text->setFont(bt_global::font->get(FontManager::TEXT));
+
+	center_icon = new QLabel(this);
+	center_icon->setGeometry(BANPULS_BUT_DIM, 0, BANPULS_ICON_DIM_X, BANPULS_ICON_DIM_Y);
+}
+
+void BannSinglePuls::initBanner(const QString &right, const QString &center, const QString &banner_text)
+{
+	loadIcons(right, center);
+	text->setText(banner_text);
+}
+
+void BannSinglePuls::loadIcons(const QString &right, const QString &center)
+{
+	right_button->setImage(right);
+	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
+
 
 bannPuls::bannPuls(QWidget *parent) : banner(parent)
 {

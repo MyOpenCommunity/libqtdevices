@@ -6,89 +6,17 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "automation_device.h" // PPTStatDevice
+#include "lighting_device.h" // LightingDevice
 #include "xml_functions.h" // getTextChild
 #include "automation_device.h"
-#include "icondispatcher.h"
-#include "fontmanager.h"
 
 #include <QTimer>
 #include <QDebug>
-#include <QEvent>
 #include <QVariant>
-#include <QLabel>
 
 #include <openwebnet.h> // class openwebnet
 
 #define BUT_DIM     60
-
-
-BannOpenClose::BannOpenClose(QWidget *parent) :
-	banner(parent)
-{
-	const int BANONOFF_BUT_DIM = 60;
-	const int BUTONOFF_ICON_DIM_Y = 60;
-	const int BUTONOFF_ICON_DIM_X = 120;
-
-	left_button = new BtButton(this);
-	left_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
-
-	right_button = new BtButton(this);
-	right_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
-
-	text = new QLabel(this);
-	text->setGeometry(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM);
-	text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	text->setFont(bt_global::font->get(FontManager::TEXT));
-
-	center_icon = new QLabel(this);
-	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
-}
-
-void BannOpenClose::loadIcons(QString _left, QString _center, QString _right, QString _alternate)
-{
-	right = _right;
-	left =_left;
-	center = _center;
-	alternate = _alternate;
-}
-
-void BannOpenClose::setState(States new_state)
-{
-	switch (new_state)
-	{
-	case STOP:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
-		left_button->setImage(left);
-		right_button->setImage(right);
-		break;
-	case OPENING:
-	{
-		int pos = center.indexOf(".");
-		QString img = center.left(pos) + "o" + center.mid(pos);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(img));
-
-		right_button->setImage(alternate);
-		left_button->setImage(left);
-	}
-		break;
-	case CLOSING:
-	{
-		int pos = center.indexOf(".");
-		QString img = center.left(pos) + "c" + center.mid(pos);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(img));
-
-		right_button->setImage(right);
-		left_button->setImage(alternate);
-	}
-		break;
-	}
-}
-
-void BannOpenClose::setPrimaryText(QString str)
-{
-	text->setText(str);
-}
-
 
 
 InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &config_node)
@@ -99,10 +27,9 @@ InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &conf
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
 
-	loadIcons(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"));
-	setPrimaryText(getTextChild(config_node, "descr"));
-	setState(STOP);
+	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
+		getTextChild(config_node, "descr"));
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendGoUp()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sendGoDown()));
@@ -164,10 +91,9 @@ SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QD
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
 
-	loadIcons(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"));
-	setPrimaryText(getTextChild(config_node, "descr"));
-	setState(STOP);
+	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
+		getTextChild(config_node, "descr"));
 
 	connect(right_button, SIGNAL(pressed()), SLOT(sendOpen()));
 	connect(left_button, SIGNAL(pressed()), SLOT(sendClose()));
@@ -228,6 +154,55 @@ void SecureInterblockedActuator::status_changed(const StatusList &sl)
 	}
 }
 
+
+GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node) :
+	BannSinglePuls(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	where = getTextChild(config_node, "where");
+	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
+	// frames directly. Change as soon as entryphone devices are available!
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
+
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
+		getTextChild(config_node, "descr"));
+
+	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
+}
+
+void GateEntryphoneActuator::activate()
+{
+	// TODO: argh!! fix it ASAP!!!
+	dev->sendFrame(createMsgOpen("6", "10", where));
+}
+
+
+GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &config_node) :
+	BannSinglePuls(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
+
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
+		getTextChild(config_node, "descr"));
+
+	QStringList sl = getTextChild(config_node, "time").split("*");
+	Q_ASSERT_X(sl.size() == 3, "GateLightingActuator::GateLightingActuator",
+		"time leaf must have 3 fields");
+	time_h = sl[0].toInt();
+	time_m = sl[1].toInt();
+	time_s = sl[2].toInt();
+
+	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
+}
+
+void GateLightingActuator::activate()
+{
+	dev->variableTiming(time_h, time_m, time_s);
+}
 
 #if 1
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)

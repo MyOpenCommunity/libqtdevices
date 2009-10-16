@@ -19,11 +19,27 @@ class BtButton;
 class Page;
 class QWidget;
 class TextOnImageLabel;
+class QLabel;
 
 
 #define BANPULS_BUT_DIM  60
 #define BANPULS_ICON_DIM_X 120
 #define BANPULS_ICON_DIM_Y 60
+
+
+class BannSinglePuls : public banner
+{
+Q_OBJECT
+protected:
+	BannSinglePuls(QWidget *parent);
+	void initBanner(const QString &right, const QString &center, const QString &banner_text);
+	BtButton *right_button;
+
+private:
+	void loadIcons(const QString &right, const QString &center);
+	QLabel *center_icon, *text;
+};
+
 
 
 /*!

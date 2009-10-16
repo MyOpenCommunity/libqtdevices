@@ -13,36 +13,8 @@ class device;
 class device_status;
 class PPTStatDevice;
 class AutomationDevice;
+class LightingDevice;
 class QDomNode;
-class BtButton;
-class QLabel;
-
-
-class BannOpenClose : public banner
-{
-Q_OBJECT
-public:
-	enum States
-	{
-		STOP,
-		CLOSING,
-		OPENING,
-	};
-	void loadIcons(QString _left, QString _center, QString _right, QString _lr_alternate);
-	void setState(States new_state);
-	void setPrimaryText(QString str);
-
-protected:
-	BannOpenClose(QWidget *parent);
-	BtButton *left_button, *right_button;
-
-private:
-	QString left, center, right;
-	// alternative icon for left *and* right buttons. If buttons need different
-	// icons, we need to split it.
-	QString alternate;
-	QLabel *text, *center_icon;
-};
 
 
 class InterblockedActuator : public BannOpenClose
@@ -81,7 +53,33 @@ private:
 	AutomationDevice *dev;
 };
 
+class GateEntryphoneActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node);
 
+private slots:
+	void activate();
+
+private:
+	QString where;
+	device *dev;
+};
+
+class GateLightingActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	GateLightingActuator(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void activate();
+
+private:
+	int time_h, time_m, time_s;
+	LightingDevice *dev;
+};
 
 #if 1
 /*!
