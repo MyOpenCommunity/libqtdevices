@@ -81,7 +81,23 @@ private:
 	LightingDevice *dev;
 };
 
-#if 1
+
+class InterblockedActuatorGroup : public Bann3Buttons
+{
+Q_OBJECT
+public:
+	InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void sendOpen();
+	void sendClose();
+	void sendStop();
+
+private:
+	QList<AutomationDevice *> actuators;
+};
+
+#if 0
 /*!
  * \class
  * \brief This class represents an automated video-doorphone actuator

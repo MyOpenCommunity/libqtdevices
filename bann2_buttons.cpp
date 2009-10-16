@@ -2,6 +2,7 @@
 #include "btbutton.h"
 #include "fontmanager.h" // FontManager
 #include "icondispatcher.h" // icons_cache
+#include "generic_functions.h" // getBostikName
 
 #include <QWidget>
 #include <QLabel>
@@ -58,18 +59,10 @@ void BannOnOffState::setState(States new_state)
 	switch (new_state)
 	{
 	case ON:
-	{
-		int pos = center.indexOf(".");
-		QString center_on = center.left(pos) + "on" + center.mid(pos);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
-	}
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "on")));
 		break;
 	case OFF:
-	{
-		int pos = center.indexOf(".");
-		QString center_off = center.left(pos) + "off" + center.mid(pos);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
-	}
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "on")));
 		break;
 	}
 }
@@ -119,24 +112,14 @@ void BannOpenClose::setState(States new_state)
 		right_button->setImage(right);
 		break;
 	case OPENING:
-	{
-		int pos = center.indexOf(".");
-		QString img = center.left(pos) + "o" + center.mid(pos);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(img));
-
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "o")));
 		right_button->setImage(alternate);
 		left_button->setImage(left);
-	}
 		break;
 	case CLOSING:
-	{
-		int pos = center.indexOf(".");
-		QString img = center.left(pos) + "c" + center.mid(pos);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(img));
-
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "c")));
 		right_button->setImage(right);
 		left_button->setImage(alternate);
-	}
 		break;
 	}
 }

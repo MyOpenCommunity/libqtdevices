@@ -679,3 +679,13 @@ void banner::hideEvent(QHideEvent *event)
 		linked_dx_page->hide();
 }
 
+
+
+QLabel *BannerNew::getLowerLabel(const QRect &size, Qt::Alignment align, const QFont &font)
+{
+	QLabel *text = new QLabel(this);
+	text->setGeometry(size);
+	text->setAlignment(align);
+	text->setFont(font);
+	return text;
+}

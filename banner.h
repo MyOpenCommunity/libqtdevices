@@ -401,6 +401,15 @@ signals:
 	void pageClosed();
 };
 
+class BannerNew : public banner
+{
+Q_OBJECT
+public:
+	BannerNew(QWidget *parent) : banner(parent) { }
+	virtual void Draw() { }
+protected:
+	QLabel *getLowerLabel(const QRect &size, Qt::Alignment, const QFont &font);
+};
 
 
 #endif //BANNER
