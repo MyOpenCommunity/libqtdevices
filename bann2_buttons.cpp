@@ -35,7 +35,15 @@ BannOnOffState::BannOnOffState(QWidget *parent) :
 	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
 }
 
-void BannOnOffState::loadIcons(QString l, QString c, QString r)
+void BannOnOffState::initBanner(const QString &left, const QString &center, const QString &right,
+	States init_state, const QString &banner_text)
+{
+	loadIcons(left, center, right);
+	setState(init_state);
+	text->setText(banner_text);
+}
+
+void BannOnOffState::loadIcons(const QString &l, const QString &c, const QString &r)
 {
 	left = l;
 	center = c;
@@ -43,11 +51,6 @@ void BannOnOffState::loadIcons(QString l, QString c, QString r)
 
 	sx_button->setImage(left);
 	dx_button->setImage(right);
-}
-
-void BannOnOffState::setPrimaryText(const QString &t)
-{
-	text->setText(t);
 }
 
 void BannOnOffState::setState(States new_state)

@@ -25,10 +25,8 @@ SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QSt
 	: BannOnOffState(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	loadIcons(bt_global::skin->getImage("off"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("on"));
-	setPrimaryText(getTextChild(config_node, "descr"));
-	setState(OFF);
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("actuator_state"),
+		bt_global::skin->getImage("on"), OFF, getTextChild(config_node, "descr"));
 
 	// TODO: read pull mode from config
 	dev = bt_global::add_device_to_cache(new LightingDevice(address));

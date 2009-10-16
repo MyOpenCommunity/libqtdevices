@@ -36,21 +36,21 @@ class BtButton;
 class BannOnOffState : public banner
 {
 Q_OBJECT
-public:
+protected:
 	enum States
 	{
 		ON,
 		OFF,
 	};
-	void loadIcons(QString l, QString c, QString r);
-	void setState(States new_state);
-	void setPrimaryText(const QString &text);
 
-protected:
 	BannOnOffState(QWidget *parent);
+	void initBanner(const QString &left, const QString &center, const QString &right,
+		States init_state, const QString &banner_text);
+	void setState(States new_state);
 	BtButton *sx_button, *dx_button;
 
 private:
+	void loadIcons(const QString &l, const QString &c, const QString &r);
 	QLabel *center_icon;
 	QLabel *text;
 	QString left, center, right;
