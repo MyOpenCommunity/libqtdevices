@@ -3,6 +3,9 @@
 #include "scenevocond.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "btmain.h" // bt_global::btmain
+#include "navigation_bar.h"
+#include "content_widget.h"
+#include "main.h"
 
 #include <QDomNode>
 #include <QString>
@@ -12,6 +15,7 @@
 
 Scenario::Scenario(const QDomNode &config_node)
 {
+	buildPage(new NavigationBar, new ContentWidget);
 	loadItems(config_node);
 }
 
@@ -85,7 +89,8 @@ void Scenario::loadItems(const QDomNode &config_node)
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		appendBanner(b); // TODO: deve gestire tutte le connect??
+		b->Draw();
+		content_widget->appendBanner(b);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }

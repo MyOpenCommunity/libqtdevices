@@ -14,14 +14,16 @@
 #ifndef SCENARIO_H
 #define SCENARIO_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
+#include <QList>
 
 class QDomNode;
+class scenEvo_cond;
 
 
-class Scenario : public sottoMenu
+class Scenario : public Page
 {
 Q_OBJECT
 public:
