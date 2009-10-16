@@ -6,6 +6,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "automation_device.h" // PPTStatDevice
+#include "lighting_device.h" // LightingDevice
 #include "xml_functions.h" // getTextChild
 #include "automation_device.h"
 #include "icondispatcher.h"
@@ -251,6 +252,32 @@ void GateEntryphoneActuator::activate()
 	dev->sendFrame(createMsgOpen("6", "10", where));
 }
 
+
+GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &config_node) :
+	BannSinglePuls(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
+
+	loadIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"));
+	setPrimaryText(getTextChild(config_node, "descr"));
+
+	QStringList sl = getTextChild(config_node, "time").split("*");
+	Q_ASSERT_X(sl.size() == 3, "GateLightingActuator::GateLightingActuator",
+		"time leaf must have 3 fields");
+	time_h = sl[0].toInt();
+	time_m = sl[1].toInt();
+	time_s = sl[2].toInt();
+
+	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
+}
+
+void GateLightingActuator::activate()
+{
+	dev->variableTiming(time_h, time_m, time_s);
+}
 
 #if 1
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)

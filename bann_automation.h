@@ -13,6 +13,7 @@ class device;
 class device_status;
 class PPTStatDevice;
 class AutomationDevice;
+class LightingDevice;
 class QDomNode;
 class BtButton;
 class QLabel;
@@ -93,6 +94,20 @@ private slots:
 private:
 	QString where;
 	device *dev;
+};
+
+class GateLightingActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	GateLightingActuator(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void activate();
+
+private:
+	int time_h, time_m, time_s;
+	LightingDevice *dev;
 };
 
 #if 1
