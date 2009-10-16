@@ -52,11 +52,15 @@ void Automation::loadItems(const QDomNode &config_node)
 			break;
 		case GR_ATTUAT_INT:
 		{
+			/*
+			//DELETE
 			QList<QString> addresses;
 			foreach (const QDomNode &el, getChildren(item, "element"))
 				addresses.append(getTextChild(el, "where"));
 
 			b = new grAttuatInt(this, addresses, img1, img2, img3);
+			*/
+			b = new InterblockedActuatorGroup(this, item);
 			break;
 		}
 		case AUTOM_CANC_ATTUAT_ILL:

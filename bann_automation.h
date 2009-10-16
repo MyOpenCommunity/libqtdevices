@@ -97,7 +97,7 @@ private:
 	QList<AutomationDevice *> actuators;
 };
 
-#if 1
+#if 0
 /*!
  * \class
  * \brief This class represents an automated video-doorphone actuator

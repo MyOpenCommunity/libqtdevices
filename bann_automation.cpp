@@ -242,7 +242,7 @@ void InterblockedActuatorGroup::sendStop()
 		dev->stop();
 }
 
-#if 1
+#if 0
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
 	: bannPuls(parent)
 {
