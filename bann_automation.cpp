@@ -204,6 +204,44 @@ void GateLightingActuator::activate()
 	dev->variableTiming(time_h, time_m, time_s);
 }
 
+
+InterblockedActuatorGroup::InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node) :
+	Bann3Buttons(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	foreach (const QDomNode &el, getChildren(config_node, "element"))
+	{
+		QString where = getTextChild(el, "where");
+		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL)));
+	}
+
+	initBanner(bt_global::skin->getImage("scroll_down"), bt_global::skin->getImage("stop"),
+		bt_global::skin->getImage("scroll_up"), getTextChild(config_node, "descr"));
+
+	connect(right_button, SIGNAL(clicked()), SLOT(sendOpen()));
+	connect(center_button, SIGNAL(clicked()), SLOT(sendStop()));
+	connect(left_button, SIGNAL(clicked()), SLOT(sendClose()));
+}
+
+void InterblockedActuatorGroup::sendClose()
+{
+	foreach (AutomationDevice *dev, actuators)
+		dev->goDown();
+}
+
+void InterblockedActuatorGroup::sendOpen()
+{
+	foreach (AutomationDevice *dev, actuators)
+		dev->goUp();
+}
+
+void InterblockedActuatorGroup::sendStop()
+{
+	foreach (AutomationDevice *dev, actuators)
+		dev->stop();
+}
+
 #if 1
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
 	: bannPuls(parent)

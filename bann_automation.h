@@ -81,6 +81,22 @@ private:
 	LightingDevice *dev;
 };
 
+
+class InterblockedActuatorGroup : public Bann3Buttons
+{
+Q_OBJECT
+public:
+	InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void sendOpen();
+	void sendClose();
+	void sendStop();
+
+private:
+	QList<AutomationDevice *> actuators;
+};
+
 #if 1
 /*!
  * \class
