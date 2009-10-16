@@ -229,6 +229,29 @@ void SecureInterblockedActuator::status_changed(const StatusList &sl)
 }
 
 
+GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node) :
+	BannSinglePuls(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	where = getTextChild(config_node, "where");
+	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
+	// frames directly. Change as soon as entryphone devices are available!
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
+
+	loadIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"));
+	setPrimaryText(getTextChild(config_node, "descr"));
+
+	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
+}
+
+void GateEntryphoneActuator::activate()
+{
+	// TODO: argh!! fix it ASAP!!!
+	dev->sendFrame(createMsgOpen("6", "10", where));
+}
+
+
 #if 1
 automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
 	: bannPuls(parent)

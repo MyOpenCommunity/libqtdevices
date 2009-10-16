@@ -81,7 +81,19 @@ private:
 	AutomationDevice *dev;
 };
 
+class GateEntryphoneActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node);
 
+private slots:
+	void activate();
+
+private:
+	QString where;
+	device *dev;
+};
 
 #if 1
 /*!
