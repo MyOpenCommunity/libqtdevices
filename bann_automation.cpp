@@ -131,7 +131,6 @@ void InterblockedActuator::sendStop()
 
 void InterblockedActuator::status_changed(const StatusList &sl)
 {
-	qWarning() << "InterblockedActuator::status_changed";
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
@@ -157,6 +156,77 @@ void InterblockedActuator::status_changed(const StatusList &sl)
 	}
 }
 
+SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node) :
+	BannOpenClose(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
+
+	loadIcons(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"));
+	setPrimaryText(getTextChild(config_node, "descr"));
+	setState(STOP);
+
+	connect(right_button, SIGNAL(pressed()), SLOT(sendOpen()));
+	connect(left_button, SIGNAL(pressed()), SLOT(sendClose()));
+	connect(right_button, SIGNAL(released()), SLOT(buttonReleased()));
+	connect(left_button, SIGNAL(released()), SLOT(buttonReleased()));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+}
+
+void SecureInterblockedActuator::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
+void SecureInterblockedActuator::sendOpen()
+{
+	dev->goUp();
+}
+
+void SecureInterblockedActuator::sendClose()
+{
+	dev->goDown();
+}
+
+void SecureInterblockedActuator::buttonReleased()
+{
+	QTimer::singleShot(500, this, SLOT(sendStop()));
+}
+
+void SecureInterblockedActuator::sendStop()
+{
+	dev->stop();
+}
+
+void SecureInterblockedActuator::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case AutomationDevice::DIM_UP:
+			setState(OPENING);
+			right_button->enable();
+			left_button->disable();
+			break;
+		case AutomationDevice::DIM_DOWN:
+			setState(CLOSING);
+			right_button->disable();
+			left_button->enable();
+			break;
+		case AutomationDevice::DIM_STOP:
+			setState(STOP);
+			right_button->enable();
+			left_button->enable();
+			break;
+		}
+		++it;
+	}
+}
 
 
 #if 1

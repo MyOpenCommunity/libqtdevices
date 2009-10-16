@@ -63,6 +63,25 @@ private:
 };
 
 
+class SecureInterblockedActuator : public BannOpenClose
+{
+Q_OBJECT
+public:
+	SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void sendOpen();
+	void sendClose();
+	void buttonReleased();
+	void sendStop();
+	void status_changed(const StatusList &sl);
+
+private:
+	AutomationDevice *dev;
+};
+
+
 
 #if 1
 /*!
