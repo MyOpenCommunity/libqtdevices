@@ -4,6 +4,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "content_widget.h"
 #include "navigation_bar.h"
+#include "main.h"
 
 #include <QDomNode>
 #include <QString>
