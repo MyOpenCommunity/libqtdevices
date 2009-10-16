@@ -13,7 +13,6 @@
 
 #include "bann2_buttons.h" // bannOnOff
 #include "bann1_button.h" // bannPuls
-#include "main.h" // MAX_PATH
 #include "banner.h"
 
 class device;
@@ -21,6 +20,7 @@ class device_status;
 class LightingDevice;
 class BtButton;
 class QLabel;
+class QDomNode;
 
 
 /*

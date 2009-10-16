@@ -49,7 +49,6 @@ BannOnOffState::BannOnOffState(QWidget *parent) :
 
 void BannOnOffState::loadIcons(QString l, QString c, QString r)
 {
-	qDebug() << l << c << r;
 	left = l;
 	center = c;
 	right = r;
