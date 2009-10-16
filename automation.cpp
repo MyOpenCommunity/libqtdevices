@@ -31,7 +31,8 @@ void Automation::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case ATTUAT_AUTOM_INT_SIC:
-			b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
+			//b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
+			b = new SecureInterblockedActuator(this, item);
 			break;
 		case ATTUAT_AUTOM_INT:
 			//b = new attuatAutomInt(this, where, img1, img2, img3, img4);
