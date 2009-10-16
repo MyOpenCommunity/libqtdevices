@@ -27,10 +27,9 @@ InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &conf
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
 
-	loadIcons(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"));
-	setPrimaryText(getTextChild(config_node, "descr"));
-	setState(STOP);
+	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
+		getTextChild(config_node, "descr"));
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendGoUp()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sendGoDown()));
@@ -92,10 +91,9 @@ SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QD
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
 
-	loadIcons(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"));
-	setPrimaryText(getTextChild(config_node, "descr"));
-	setState(STOP);
+	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
+		getTextChild(config_node, "descr"));
 
 	connect(right_button, SIGNAL(pressed()), SLOT(sendOpen()));
 	connect(left_button, SIGNAL(pressed()), SLOT(sendClose()));

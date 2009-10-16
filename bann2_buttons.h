@@ -30,12 +30,19 @@ protected:
 	};
 
 	BannOpenClose(QWidget *parent);
-	void loadIcons(QString _left, QString _center, QString _right, QString _lr_alternate);
+	/*
+	 * The 'real' banner constructor. Sets icons, initial state and banner text.
+	 * Since text is fixed, no interface function to manipulate it is given.
+	 */
+	void initBanner(QString left, QString center, QString right, QString lr_alternate,
+		States starting_state, QString banner_text);
 	void setState(States new_state);
-	void setPrimaryText(QString str);
+
 	BtButton *left_button, *right_button;
 
 private:
+	void loadIcons(QString _left, QString _center, QString _right, QString _lr_alternate);
+
 	QString left, center, right;
 	// alternative icon for left *and* right buttons. If buttons need different
 	// icons, we need to split it.

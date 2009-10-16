@@ -34,6 +34,14 @@ BannOpenClose::BannOpenClose(QWidget *parent) :
 	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
 }
 
+void BannOpenClose::initBanner(QString left, QString center, QString right, QString lr_alternate,
+	States starting_state, QString banner_text)
+{
+	loadIcons(left, center, right, lr_alternate);
+	setState(starting_state);
+	text->setText(banner_text);
+}
+
 void BannOpenClose::loadIcons(QString _left, QString _center, QString _right, QString _alternate)
 {
 	right = _right;
@@ -72,11 +80,6 @@ void BannOpenClose::setState(States new_state)
 	}
 		break;
 	}
-}
-
-void BannOpenClose::setPrimaryText(QString str)
-{
-	text->setText(str);
 }
 
 
