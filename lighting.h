@@ -14,14 +14,14 @@
 #ifndef LIGHTING_H
 #define LIGHTING_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
 
 
-class Lighting : public sottoMenu
+class Lighting : public Page
 {
 Q_OBJECT
 public:

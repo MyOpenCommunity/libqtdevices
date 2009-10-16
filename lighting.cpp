@@ -2,11 +2,15 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann_lighting.h"
 #include "actuators.h"
+#include "navigation_bar.h"
+#include "content_widget.h"
+#include "main.h"
 
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
 #include <QList>
+
 
 static QList<QString> getAddresses(QDomNode item)
 {
@@ -19,6 +23,7 @@ static QList<QString> getAddresses(QDomNode item)
 
 Lighting::Lighting(const QDomNode &config_node)
 {
+	buildPage(new NavigationBar, new ContentWidget);
 	loadItems(config_node);
 }
 
@@ -111,18 +116,18 @@ void Lighting::loadItems(const QDomNode &config_node)
 		}
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		// TODO: probably this should go since the new banners don't emit
-		// the signal richStato()
-		appendBanner(b); // TODO: deve gestire tutte le connect??
+		b->Draw();
+		content_widget->appendBanner(b);
 	}
 }
 
 void Lighting::initDimmer()
 {
 	qDebug("Lighting::initDimmer()");
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < content_widget->bannerCount(); ++i)
 	{
-		switch(elencoBanner.at(i)->getId())
+		banner *b = content_widget->getBanner(i);
+		switch (b->getId())
 		{
 		case DIMMER:
 		case DIMMER_100:
@@ -130,7 +135,7 @@ void Lighting::initDimmer()
 		case ATTUAT_AUTOM_TEMP:
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
 		case ATTUAT_AUTOM_TEMP_NUOVO_F:
-			elencoBanner.at(i)->inizializza(true);
+			b->inizializza(true);
 			break;
 		default:
 			break;
@@ -143,5 +148,5 @@ void Lighting::showEvent(QShowEvent *event)
 	qDebug() << "Lighting::showEvent()";
 	initDimmer();
 
-	sottoMenu::showEvent(event);
+	Page::showEvent(event);
 }
