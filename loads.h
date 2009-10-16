@@ -12,8 +12,9 @@
 #define LOADS_H
 
 #include "bann1_button.h" // class bannOnSx
-#include "sottomenu.h"
+#include "page.h"
 
+class QDomNode;
 
 /*!
  * \class bannLoads
@@ -26,13 +27,13 @@ class bannLoads : public bannOnSx
 {
 Q_OBJECT
 public:
-	bannLoads(sottoMenu *parent, QString indirizzo, QString IconaSx);
+	bannLoads(Page *parent, QString indirizzo, QString IconaSx);
 private slots:
 	void Attiva();
 };
 
 
-class Loads : public sottoMenu
+class Loads : public Page
 {
 Q_OBJECT
 public:

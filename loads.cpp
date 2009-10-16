@@ -11,8 +11,11 @@
 #include "loads.h"
 #include "generic_functions.h" // createMsgOpen
 #include "xml_functions.h" // getChildren, getTextChild
+#include "content_widget.h"
+#include "navigation_bar.h"
 
-bannLoads::bannLoads(sottoMenu *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)
+
+bannLoads::bannLoads(Page *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
 	setAddress(indirizzo);
@@ -27,6 +30,7 @@ void bannLoads::Attiva()
 
 Loads::Loads(const QDomNode &config_node)
 {
+	buildPage(new NavigationBar, new ContentWidget);
 	loadItems(config_node);
 }
 
@@ -42,6 +46,7 @@ void Loads::loadItems(const QDomNode &config_node)
 		banner *b = new bannLoads(this, where, img);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		appendBanner(b);
+		b->Draw();
+		content_widget->appendBanner(b);
 	}
 }

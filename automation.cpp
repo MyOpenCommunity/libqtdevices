@@ -2,6 +2,8 @@
 #include "bann_automation.h"
 #include "actuators.h"
 #include "xml_functions.h" // getChildren, getTextChild
+#include "content_widget.h"
+#include "navigation_bar.h"
 
 #include <QDomNode>
 #include <QString>
@@ -11,6 +13,7 @@
 
 Automation::Automation(const QDomNode &config_node)
 {
+	buildPage(new NavigationBar, new ContentWidget);
 	loadItems(config_node);
 }
 
@@ -71,6 +74,7 @@ void Automation::loadItems(const QDomNode &config_node)
 
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		appendBanner(b); // TODO: deve gestire tutte le connect??
+		b->Draw();
+		content_widget->appendBanner(b);
 	}
 }

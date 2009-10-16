@@ -84,6 +84,7 @@ HEADERS += actuators.h \
            buttons_bar.h \
            calibrate.h \
            cleanscreen.h \
+           content_widget.h \
            contrast.h \
            datetime.h \
            device.h \
@@ -119,6 +120,7 @@ HEADERS += actuators.h \
            mediaplayer.h \
            multimedia_source.h \
            multisounddiff.h \
+           navigation_bar.h \
            openclient.h \
            page.h \
            pagecontainer.h \
@@ -187,6 +189,7 @@ SOURCES += actuators.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
            cleanscreen.cpp \
+           content_widget.cpp \
            contrast.cpp \
            datetime.cpp \
            definitions.cpp \
@@ -223,6 +226,7 @@ SOURCES += actuators.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \
+           navigation_bar.cpp \
            openclient.cpp \
            page.cpp \
            pagecontainer.cpp \

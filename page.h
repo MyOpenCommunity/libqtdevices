@@ -20,6 +20,9 @@ class Client;
 class MainWindow;
 class QVBoxLayout;
 class TransitionWidget;
+class ContentWidget;
+class NavigationBar;
+
 
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
@@ -62,8 +65,10 @@ public slots:
 	void setCurrentPage();
 
 protected:
+	ContentWidget *content_widget;
 	Page *currentPage();
 	void startTransition(const QPixmap &prev_image);
+	void buildPage(NavigationBar *nav_bar, ContentWidget *content);
 
 private:
 	static MainWindow *main_window;

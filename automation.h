@@ -14,14 +14,14 @@
 #ifndef AUTOMATION_H
 #define AUTOMATION_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
 
 
-class Automation : public sottoMenu
+class Automation : public Page
 {
 Q_OBJECT
 public:

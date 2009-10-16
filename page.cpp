@@ -4,11 +4,15 @@
 #include "btbutton.h"
 #include "transitionwidget.h"
 #include "main_window.h"
+#include "navigation_bar.h"
+#include "content_widget.h"
 
 #include <QVBoxLayout>
 #include <QMetaObject> // className
 #include <QTime>
 #include <QDir>
+#include <QApplication>
+
 
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
 
@@ -26,11 +30,27 @@ MainWindow *Page::main_window = 0;
 Page::Page(QWidget *parent) : QWidget(parent)
 {
 	Q_ASSERT_X(main_window, "Page::Page", "Main window not set!");
+	content_widget = 0;
 
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
 	if (!parent)
 		main_window->addPage(this);
+}
+
+void Page::buildPage(NavigationBar *nav_bar, ContentWidget *content)
+{
+	QBoxLayout *l = new QVBoxLayout(this);
+	l->addWidget(content, 1);
+	l->addWidget(nav_bar);
+	l->setContentsMargins(0, 5, 0, 10);
+	l->setSpacing(0);
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(forwardClick()), content, SLOT(forwardClick()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(upClick()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(downClick()));
+	content_widget = content;
 }
 
 void Page::inizializza()
