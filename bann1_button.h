@@ -27,6 +27,7 @@ class QLabel;
 #define BANPULS_ICON_DIM_Y 60
 
 
+// substitute for bannPuls
 class BannSinglePuls : public BannerNew
 {
 Q_OBJECT
@@ -38,6 +39,30 @@ protected:
 private:
 	void loadIcons(const QString &right, const QString &center);
 	QLabel *center_icon, *text;
+};
+
+
+// substitute for bannOn2scr
+class BannOn2Labels : public BannerNew
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+	};
+	BannOn2Labels(QWidget *parent);
+	void initBanner(const QString &right, const QString &_right_icon, const QString &_left_icon,
+		const QString &banner_text, const QString &_center_text);
+	// 1 <= time <= 8
+	void setElapsedTime(int time);
+	void setState(States new_state);
+	BtButton *right_button;
+
+private:
+	QString center_right, center_left;
+	QLabel *left_icon, *right_icon, *text, *center_text;
 };
 
 

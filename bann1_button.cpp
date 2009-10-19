@@ -5,6 +5,7 @@
 #include "btbutton.h"
 #include "icondispatcher.h" //icons_cache
 #include "fontmanager.h" //FontManager
+#include "generic_functions.h" // getBostikName
 
 #define BUT_DIM 60
 #define BUTONDX_H_SCRITTA 20
@@ -41,6 +42,61 @@ void BannSinglePuls::loadIcons(const QString &right, const QString &center)
 {
 	right_button->setImage(right);
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
+
+
+BannOn2Labels::BannOn2Labels(QWidget *parent) :
+	BannerNew(parent)
+{
+	right_button = new BtButton(this);
+	right_button->setGeometry(banner_width - BUT_DIM, 0,  BUT_DIM ,BUT_DIM);
+
+	text = createTextLabel(QRect(0, BUT_DIM, banner_width, banner_height - BUT_DIM),
+		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
+
+	center_text = createTextLabel(QRect(0, 0, BANON2SCR_TEXT1_DIM_X, BANON2SCR_TEXT1_DIM_Y),
+		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
+
+	left_icon = new QLabel(this);
+	left_icon->setGeometry(BANON2SCR_TEXT1_DIM_X, 0, BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
+
+	right_icon = new QLabel(this);
+	right_icon->setGeometry(BANON2SCR_TEXT1_DIM_X + BUTON2SCR_ICON_DIM_X, 0,
+		BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
+}
+
+void BannOn2Labels::initBanner(const QString &right, const QString &_right_icon, const QString &_left_icon,
+		const QString &banner_text, const QString &_center_text)
+{
+	right_button->setImage(right);
+	center_right = _right_icon;
+	center_left = _left_icon;
+	text->setText(banner_text);
+	center_text->setText(_center_text);
+	setState(OFF);
+	setElapsedTime(0);
+}
+
+void BannOn2Labels::setState(States new_state)
+{
+	switch (new_state)
+	{
+	case ON:
+		right_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_right, "on")));
+		break;
+	case OFF:
+		left_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_left, "0")));
+		right_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_right, "off")));
+		break;
+	}
+}
+
+void BannOn2Labels::setElapsedTime(int time)
+{
+	if (time >= 1 && time <= 8)
+		left_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_left,
+			QString::number(time))));
+	// TODO: should we also set the light on??
 }
 
 
