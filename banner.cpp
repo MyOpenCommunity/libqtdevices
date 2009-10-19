@@ -681,7 +681,7 @@ void banner::hideEvent(QHideEvent *event)
 
 
 
-QLabel *BannerNew::getLowerLabel(const QRect &size, Qt::Alignment align, const QFont &font)
+QLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font)
 {
 	QLabel *text = new QLabel(this);
 	text->setGeometry(size);

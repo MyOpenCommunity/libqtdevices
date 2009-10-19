@@ -24,7 +24,7 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	right_button = new BtButton(this);
 	right_button->setGeometry(banner_width - BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
 
-	text = getLowerLabel(QRect(0, BANPULS_BUT_DIM, banner_width, banner_height - BANPULS_BUT_DIM),
+	text = createTextLabel(QRect(0, BANPULS_BUT_DIM, banner_width, banner_height - BANPULS_BUT_DIM),
 		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
 
 	center_icon = new QLabel(this);

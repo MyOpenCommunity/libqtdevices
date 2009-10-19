@@ -22,7 +22,7 @@ Bann3Buttons::Bann3Buttons(QWidget *parent) :
 	left_button = new BtButton(this);
 	left_button->setGeometry(0, 0, BAN3BUT_BUT_DIM, BAN3BUT_BUT_DIM);
 
-	text = getLowerLabel(QRect(0, BAN3BUT_BUT_DIM, banner_width, banner_height - BAN3BUT_BUT_DIM),
+	text = createTextLabel(QRect(0, BAN3BUT_BUT_DIM, banner_width, banner_height - BAN3BUT_BUT_DIM),
 		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
 }
 
