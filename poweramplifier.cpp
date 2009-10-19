@@ -3,7 +3,6 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "generic_functions.h" // int trasformaVol(int vol)
-#include "navigation_bar.h"
 #include "content_widget.h"
 
 #include <QVariant> // setProperty
@@ -86,7 +85,7 @@ void BannPowerAmplifier::volumeDown()
 
 PowerAmplifier::PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node)
 {
-	buildPage(new NavigationBar, new ContentWidget);
+	buildPage();
 	loadBanners(dev, config_node);
 }
 

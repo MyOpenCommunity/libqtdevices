@@ -3,8 +3,7 @@
 #include "scenevocond.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "btmain.h" // bt_global::btmain
-#include "navigation_bar.h"
-#include "content_widget.h"
+#include "content_widget.h" // content_widget
 #include "main.h"
 
 #include <QDomNode>
@@ -15,7 +14,7 @@
 
 Scenario::Scenario(const QDomNode &config_node)
 {
-	buildPage(new NavigationBar, new ContentWidget);
+	buildPage();
 	loadItems(config_node);
 }
 

@@ -2,8 +2,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann_lighting.h"
 #include "actuators.h"
-#include "navigation_bar.h"
-#include "content_widget.h"
+#include "content_widget.h" // content_widget
 #include "main.h"
 
 #include <QDomNode>
@@ -23,7 +22,7 @@ static QList<QString> getAddresses(QDomNode item)
 
 Lighting::Lighting(const QDomNode &config_node)
 {
-	buildPage(new NavigationBar, new ContentWidget);
+	buildPage();
 	loadItems(config_node);
 }
 

@@ -38,7 +38,7 @@ Page::Page(QWidget *parent) : QWidget(parent)
 		main_window->addPage(this);
 }
 
-void Page::buildPage(NavigationBar *nav_bar, ContentWidget *content)
+void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar)
 {
 	QBoxLayout *l = new QVBoxLayout(this);
 	l->addWidget(content, 1);
@@ -53,6 +53,11 @@ void Page::buildPage(NavigationBar *nav_bar, ContentWidget *content)
 	connect(nav_bar, SIGNAL(downClick()), content, SLOT(downClick()));
 
 	content_widget = content;
+}
+
+void Page::buildPage()
+{
+	buildPage(new ContentWidget, new NavigationBar);
 }
 
 void Page::activateLayout()

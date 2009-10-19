@@ -9,15 +9,14 @@
 #include "brightnesspage.h"
 #include "displaypage.h"
 #include "version.h"
-#include "navigation_bar.h"
-#include "content_widget.h"
+#include "content_widget.h" // content_widget
 
 #include <QDebug>
 
 
 Settings::Settings(const QDomNode &config_node)
 {
-	buildPage(new NavigationBar, new ContentWidget);
+	buildPage();
 	loadItems(config_node);
 }
 

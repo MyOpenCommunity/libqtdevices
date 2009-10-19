@@ -11,8 +11,7 @@
 #include "loads.h"
 #include "generic_functions.h" // createMsgOpen
 #include "xml_functions.h" // getChildren, getTextChild
-#include "content_widget.h"
-#include "navigation_bar.h"
+#include "content_widget.h" // content_widget
 
 
 bannLoads::bannLoads(Page *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)
@@ -30,7 +29,7 @@ void bannLoads::Attiva()
 
 Loads::Loads(const QDomNode &config_node)
 {
-	buildPage(new NavigationBar, new ContentWidget);
+	buildPage();
 	loadItems(config_node);
 }
 

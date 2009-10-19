@@ -69,7 +69,8 @@ protected:
 	ContentWidget *content_widget;
 	Page *currentPage();
 	void startTransition(const QPixmap &prev_image);
-	void buildPage(NavigationBar *nav_bar, ContentWidget *content);
+	void buildPage(ContentWidget *content, NavigationBar *nav_bar);
+	void buildPage();
 
 private:
 	static MainWindow *main_window;
