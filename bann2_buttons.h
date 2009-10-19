@@ -69,6 +69,27 @@ protected:
 };
 
 
+class BannOnOff2Labels : public BannerNew
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+	};
+	BannOnOff2Labels(QWidget *parent);
+	void initBanner(const QString &left, const QString &_center, const QString &right,
+		States init_state, const QString &banner_text, const QString &second_text);
+	void setCentralText(const QString &str);
+	void setState(States new_state);
+
+	BtButton *right_button, *left_button;
+private:
+	QLabel *center_icon, *center_text, *text;
+	QString center;
+};
+
 class BannOpenClose : public BannerNew
 {
 Q_OBJECT
