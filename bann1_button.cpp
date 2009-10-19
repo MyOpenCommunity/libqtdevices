@@ -113,14 +113,14 @@ bannBut2Icon::bannBut2Icon(QWidget *parent) : banner(parent)
 }
 
 
-bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text) : banner(parent)
+bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString bg_image, QString fwd_image) : banner(parent)
 {
 	label = new TextOnImageLabel(this, text);
-	label->setBackgroundImage(bt_global::skin->getImage("empty_icon"));
+	label->setBackgroundImage(bt_global::skin->getImage(bg_image));
 	label->setGeometry(BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y);
 	addItem(BUT1, MAX_WIDTH-BUT_DIM, 0, BUT_DIM ,BUT_DIM);
 	addItem(TEXT, 0, BUT_DIM, MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE - BUT_DIM);
-	SetIcons(bt_global::skin->getImage("forward"), 1);
+	SetIcons(bt_global::skin->getImage(fwd_image), 1);
 }
 
 void bannTextOnImage::setInternalText(const QString &text)

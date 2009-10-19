@@ -233,9 +233,8 @@ QString TimePeriodSelection::dateDisplayed()
 bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	bannTextOnImage *bann = new bannTextOnImage(parent, "---");
+	bannTextOnImage *bann = new bannTextOnImage(parent, "---", "bg_banner", "graph");
 	bann->setText(primary_text);
-	bann->SetIcons(banner::BUT1, bt_global::skin->getImage("graph"));
 	bann->Draw();
 	return bann;
 }
