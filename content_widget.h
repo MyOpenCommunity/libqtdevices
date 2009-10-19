@@ -37,6 +37,8 @@ private:
 	int current_index;
 	// The maximum number of banners per page
 	int max_banner;
+
+	bool need_update; // a flag to avoid useless call to updateLayout
 	QList<banner*> banner_list;
 	void updateLayout();
 };

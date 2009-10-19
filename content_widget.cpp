@@ -11,6 +11,7 @@ ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
+	need_update = true;
 }
 
 int ContentWidget::bannerCount()
@@ -40,6 +41,7 @@ void ContentWidget::appendBanner(banner *b)
 void ContentWidget::resetIndex()
 {
 	current_index = 0;
+	need_update = true;
 	updateLayout();
 }
 
@@ -51,6 +53,11 @@ void ContentWidget::showEvent(QShowEvent *e)
 
 void ContentWidget::updateLayout()
 {
+	if (!need_update)
+		return;
+
+	need_update = false;
+
 	// We want a circular list of banner, so we can't use a layout and hide/show
 	// the banner to display or when you click the up button the order is wrong.
 	// So we remove all the child from the layout, hide them and re-add to the
@@ -73,15 +80,17 @@ void ContentWidget::upClick()
 		--current_index;
 	else
 		current_index = banner_list.size() - 1;
+	need_update = true;
 	updateLayout();
 }
 
 void ContentWidget::downClick()
 {
-	if (current_index < banner_list.size())
+	if (current_index + 1 < banner_list.size())
 		++current_index;
 	else
 		current_index = 0;
+	need_update = true;
 	updateLayout();
 }
 
