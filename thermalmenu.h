@@ -31,7 +31,8 @@
 class FSBannTime;
 class FSBannDate;
 
-class ThermalMenu : public sottoMenu
+
+class ThermalMenu : public Page
 {
 Q_OBJECT
 public:
@@ -69,6 +70,7 @@ private:
 	/// A reference to the only submenu below us
 	sottoMenu *single_submenu;
 };
+
 
 /**
  * A base class for submenus that allow to choose one program in a list. The list changes

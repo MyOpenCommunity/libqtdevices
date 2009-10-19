@@ -16,6 +16,7 @@
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannfrecce.h"
+#include "content_widget.h" // content_widget
 
 #include <QRegExp>
 #include <QDebug>
@@ -27,24 +28,21 @@ static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png"
 static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
 static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
+
 ThermalMenu::ThermalMenu(const QDomNode &config_node)
 {
-	qDebug("[TERMO] thermalmenu: before adding items...");
 	bann_number = 0;
+	buildPage();
 	loadBanners(config_node);
 
-	qDebug("[TERMO] thermalmenu: end adding items.");
 	// check if plant menus are created?
 	if (bann_number == 1)
-	{
 		connect(single_submenu, SIGNAL(Closed()), SIGNAL(Closed()));
-	}
 }
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
 	sottoMenu *sm = new PlantMenu(NULL, config);
-
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
 	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
 	single_submenu = sm;
@@ -76,10 +74,8 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 
 	bp->SetIcons(i_right_arrow, QString(), central_icon);
 	bp->setText(getTextChild(e, "descr"));
-
-	elencoBanner.append(bp);
-	connectLastBanner();
-
+	bp->Draw();
+	content_widget->appendBanner(bp);
 	++bann_number;
 	return bp;
 }
@@ -116,8 +112,9 @@ void ThermalMenu::showPage()
 	if (bann_number == 1)
 		single_submenu->showPage();
 	else
-		sottoMenu::showPage();
+		Page::showPage();
 }
+
 
 ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
 {
