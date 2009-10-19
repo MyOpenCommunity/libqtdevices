@@ -160,7 +160,6 @@ void BannOnOff2Labels::initBanner(const QString &left, const QString &_center, c
 {
 	left_button->setImage(left);
 	center = _center;
-	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
 	right_button->setImage(right);
 
 	text->setText(banner_text);
