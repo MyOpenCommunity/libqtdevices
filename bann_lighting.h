@@ -118,7 +118,7 @@ private:
 };
 
 
-class TempLight : public bannOnOff2scr
+class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
 public:

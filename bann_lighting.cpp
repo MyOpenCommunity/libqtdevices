@@ -389,11 +389,13 @@ void Dimmer100Group::decreaseLevel()
 
 
 TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
-	bannOnOff2scr(parent)
+	BannOnOff2Labels(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("lamp_cycle"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("lamp_time_on"), bt_global::skin->getImage("lamp_time_off"));
+
+	QString descr = getTextChild(config_node, "descr");
+	initBanner(bt_global::skin->getImage("lamp_cycle"), bt_global::skin->getImage("lamp_time_on"),
+		bt_global::skin->getImage("on"), OFF, descr, QString());
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
@@ -401,8 +403,8 @@ TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
 	time_index = 0;
 	readTimes(config_node);
 	updateTimeLabel();
-	connect(this, SIGNAL(dxClick()), SLOT(activate()));
-	connect(this, SIGNAL(sxClick()), SLOT(cycleTime()));
+	connect(left_button, SIGNAL(clicked()), SLOT(cycleTime()));
+	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -434,10 +436,7 @@ void TempLight::cycleTime()
 void TempLight::updateTimeLabel()
 {
 	BasicTime t = times[time_index];
-	QString str = formatTime(t);
-
-	setSecondaryText(str);
-	Draw();
+	setCentralText(formatTime(t));
 }
 
 void TempLight::activate()
@@ -453,12 +452,11 @@ void TempLight::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			impostaAttivo(it.value().toBool() ? 1 : 0);
+			setState(it.value().toBool() ? ON : OFF);
 			break;
 		}
 		++it;
 	}
-	Draw();
 }
 
 
