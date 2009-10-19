@@ -3,6 +3,8 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "generic_functions.h" // int trasformaVol(int vol)
+#include "navigation_bar.h"
+#include "content_widget.h"
 
 #include <QVariant> // setProperty
 #include <QDomNode>
@@ -84,6 +86,7 @@ void BannPowerAmplifier::volumeDown()
 
 PowerAmplifier::PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node)
 {
+	buildPage(new NavigationBar, new ContentWidget);
 	loadBanners(dev, config_node);
 }
 
@@ -93,23 +96,29 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 	foreach (const QDomNode &preset_node, getChildren(config_node, "pre"))
 		preset_list[preset_node.nodeName().mid(3).toInt()] = preset_node.toElement().text();
 
-	appendBanner(new PowerAmplifierPreset(dev, this, preset_list));
+	banner *b = new PowerAmplifierPreset(dev, this, preset_list);
+	b->Draw();
+	content_widget->appendBanner(b);
 
-	banner *b = new PowerAmplifierTreble(dev, this);
+	b = new PowerAmplifierTreble(dev, this);
 	b->setText(tr("Treble"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 
 	b = new PowerAmplifierBass(dev, this);
 	b->setText(tr("Bass"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 
 	b = new PowerAmplifierBalance(dev, this);
 	b->setText(tr("Balance"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 
 	b = new PowerAmplifierLoud(dev, this);
 	b->setText(tr("Loud"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 }
 
 

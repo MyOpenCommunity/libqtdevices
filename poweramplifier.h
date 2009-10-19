@@ -17,7 +17,7 @@
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bannonoffcombo.h"
 #include "poweramplifier_device.h"
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QVector>
 #include <QString>
@@ -57,7 +57,7 @@ private:
  * The page of the settings of the power amplifier. It simply delegate the
  * functionality to the correct banner.
  */
-class PowerAmplifier : public sottoMenu
+class PowerAmplifier : public Page
 {
 Q_OBJECT
 public:
