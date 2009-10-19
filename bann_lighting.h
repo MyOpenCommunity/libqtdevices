@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QString>
 #include <QList>
+#include <QTimer>
 
 
 class device;
@@ -156,16 +157,21 @@ protected slots:
 };
 
 
-class TempLightFixed : public bannOn2scr
+class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT
 public:
 	TempLightFixed(QWidget *parent, const QDomNode &config_node);
-	virtual void Draw();
 	virtual void inizializza(bool forza);
 
+private slots:
+	void status_changed(const StatusList &sl);
+	void requestStatus();
+	void setOn();
+
 private:
-	void SetIcons(QString on_icon, QString status_icon, QString time_icon);
+	int total_time;
+	QTimer request_timer;
 	LightingDevice *dev;
 };
 
