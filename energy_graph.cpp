@@ -149,6 +149,12 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			int bar_height = static_cast<int>(ratio * graph_height);
 			p.drawRect(QRect(current_left, axis_top - bar_height - AXIS_PEN_WIDTH, bar_width, bar_height));
 			current_left += bar_width;
+
+			// Experimental draw through the x axis
+			QPen old_pen = p.pen();
+			p.setPen(pen_axis);
+			p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
+			p.setPen(old_pen);
 		}
 	}
 }

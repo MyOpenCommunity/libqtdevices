@@ -553,13 +553,16 @@ void EnergyView::updateCurrentGraph()
 	case EnergyDevice::CUMULATIVE_YEAR:
 	{
 		int curr_month = QDate::currentDate().month();
-		graph_x_axis[1] = QString::number(curr_month % 12 + 1);
-		if (curr_month != 12)
-		{
-			graph_x_axis[12 - curr_month] = "12";
-			graph_x_axis[12 - curr_month + 1] = "1";
-		}
-		graph_x_axis[12] = QString::number(curr_month);
+		for (int i = 1; i <= 12; ++i)
+			graph_x_axis[i] = QString::number((curr_month  + i) % 12);
+
+//		graph_x_axis[1] = QString::number(curr_month % 12 + 1);
+//		if (curr_month != 12)
+//		{
+//			graph_x_axis[12 - curr_month] = "12";
+//			graph_x_axis[12 - curr_month + 1] = "1";
+//		}
+//		graph_x_axis[12] = QString::number(curr_month);
 		graph->init(12, label + tr("/months"), graph_x_axis);
 		table->init(12, tr("Month"), label, time_period->dateDisplayed(), curr_month % 12);
 		break;
