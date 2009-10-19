@@ -2,6 +2,7 @@
 #include "banner.h"
 
 #include <QBoxLayout>
+#include <QDebug>
 
 
 ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
@@ -12,6 +13,7 @@ ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 	need_update = true;
+	scroll_step = max_banner;
 }
 
 int ContentWidget::bannerCount()
@@ -76,20 +78,17 @@ void ContentWidget::updateLayout()
 
 void ContentWidget::upClick()
 {
-	if (current_index > 0)
-		--current_index;
-	else
-		current_index = banner_list.size() - 1;
+	current_index -= scroll_step;
+	// We add "banner_list.size()" to ensure that the module is a positive number
+	current_index = (current_index + banner_list.size()) % banner_list.size();
 	need_update = true;
 	updateLayout();
 }
 
 void ContentWidget::downClick()
 {
-	if (current_index + 1 < banner_list.size())
-		++current_index;
-	else
-		current_index = 0;
+	current_index += scroll_step;
+	current_index = current_index % banner_list.size();
 	need_update = true;
 	updateLayout();
 }

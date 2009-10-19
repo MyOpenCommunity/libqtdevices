@@ -18,6 +18,7 @@ class ContentWidget : public QWidget
 friend void Page::activateLayout();
 Q_OBJECT
 public:
+	int scroll_step;
 	ContentWidget(QWidget *parent=0);
 	void appendBanner(banner *b);
 	int bannerCount();
