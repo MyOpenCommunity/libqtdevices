@@ -36,6 +36,10 @@ private:
 	int current_index;
 
 	bool need_update; // a flag to avoid useless call to updateLayout
+	bool first_time; // true if the page is shown for the first time
+
+	// true if the banners height exceed the ContentWidget height (so we have to do a pagination)
+	bool need_pagination;
 	QList<banner*> banner_list;
 	void updateLayout();
 	int calculateNextIndex(bool up_to_down);

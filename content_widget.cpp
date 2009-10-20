@@ -12,6 +12,8 @@ ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 	need_update = true;
+	first_time = true;
+	need_pagination = false;
 }
 
 int ContentWidget::bannerCount()
@@ -55,6 +57,17 @@ void ContentWidget::updateLayout()
 	if (!need_update)
 		return;
 
+	if (first_time)
+	{
+		int total_height = 0;
+		int area_height = contentsRect().height();
+
+		for (int i = 0; i < banner_list.size(); ++i)
+			total_height += banner_list.at(i)->sizeHint().height();
+
+		need_pagination = total_height > area_height;
+	}
+
 	need_update = false;
 
 	// We want a circular list of banner, so we can't use a layout and hide/show
@@ -63,20 +76,34 @@ void ContentWidget::updateLayout()
 	// layout only the banner to show.
 	QLayoutItem *child;
 	while ((child = layout()->takeAt(0)) != 0)
-		child->widget()->hide();
+		if (QWidget *w = child->widget())
+			w->hide();
 
-
-	int next_index = calculateNextIndex(true);
-	Q_ASSERT_X(current_index != -1, "ContentWidget::updateLayout", "calculateNextIndex return -1!");
-	int index = current_index;
-	while (true)
+	if (need_pagination)
 	{
-		banner *b = banner_list.at(index);
-		b->show();
-		layout()->addWidget(b);
-		index = (index + 1) % banner_list.size();
-		if (index == current_index || index == next_index)
-			break;
+		int next_index = calculateNextIndex(true);
+		Q_ASSERT_X(current_index != -1, "ContentWidget::updateLayout", "calculateNextIndex return -1!");
+		int index = current_index;
+		while (true)
+		{
+			banner *b = banner_list.at(index);
+			b->show();
+			layout()->addWidget(b);
+			index = (index + 1) % banner_list.size();
+			if (index == current_index || index == next_index)
+				break;
+		}
+	}
+	else
+	{
+		QBoxLayout *l = qobject_cast<QVBoxLayout*>(layout());
+		for (int i = 0; i < banner_list.size(); ++i)
+		{
+			banner *b = banner_list.at(i);
+			b->show();
+			l->addWidget(b);
+		}
+		l->addStretch(1);
 	}
 }
 
@@ -101,6 +128,7 @@ int ContentWidget::calculateNextIndex(bool up_to_down)
 	int area_height = contentsRect().height();
 	int banners_height = 0;
 	int index = current_index;
+
 	while (true)
 	{
 		banner *b = banner_list.at(index);
