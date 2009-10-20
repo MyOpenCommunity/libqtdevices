@@ -21,7 +21,7 @@ class ScenarioDevice;
 
 
 
-class BannSimpleScenario : public bannOnSx
+class BannSimpleScenario : public BannLeft
 {
 Q_OBJECT
 public:

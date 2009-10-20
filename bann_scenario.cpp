@@ -20,17 +20,17 @@
 
 
 BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
-	bannOnSx(parent)
+	BannLeft(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), 1);
+	initBanner(bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
 
 	scenario_number = getTextChild(config_node, "what").toInt();
 
-	connect(this, SIGNAL(click()), SLOT(activate()));
+	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 }
 
 void BannSimpleScenario::activate()
