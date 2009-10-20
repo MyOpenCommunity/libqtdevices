@@ -36,6 +36,29 @@ private:
 };
 
 
+// substitute for gesModScen
+class ModifyScenario : public Bann4ButtonsIcon
+{
+Q_OBJECT
+public:
+	ModifyScenario(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void status_changed(const StatusList &sl);
+	void activate();
+	void editScenario();
+	void startEditing();
+	void deleteScenario();
+	void stopEditing();
+
+private:
+	void changeLeftFunction(const char *slot);
+	ScenarioDevice *dev;
+	int scenario_number;
+	bool is_editing;
+};
+
+
 #if 1
 /*!
  * \class bannScenario
