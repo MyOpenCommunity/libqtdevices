@@ -42,7 +42,6 @@ void ContentWidget::resetIndex()
 {
 	current_index = 0;
 	need_update = true;
-	updateLayout();
 }
 
 void ContentWidget::showEvent(QShowEvent *e)
