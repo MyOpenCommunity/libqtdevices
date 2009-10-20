@@ -312,8 +312,9 @@ protected:
 	int periodo, numFrame,contFrame,serNum;
 	QString address;
 
-	static const int banner_width = 240;
-	static const int banner_height = 80;
+	// Width and height of the banner. Used for the sizeHint method!
+	int banner_width;
+	int banner_height;
 
 	/**
 	 * Utility function to draw all buttons except the rightmost one

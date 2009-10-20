@@ -32,6 +32,9 @@ Client *banner::client_richieste = 0;
 
 banner::banner(QWidget *parent) : QWidget(parent)
 {
+	banner_width = 240;
+	banner_height = 80;
+
 	linked_sx_page = 0;
 	linked_dx_page = 0;
 	BannerIcon = 0;
