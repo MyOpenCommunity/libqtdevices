@@ -84,5 +84,6 @@ unsigned long getTimePress();
 */
 void rearmWDT();
 
+void getName(char *name);
 
 #endif // HARDWARE_FUNCTIONS_H

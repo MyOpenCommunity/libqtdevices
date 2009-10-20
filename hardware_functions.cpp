@@ -251,3 +251,16 @@ void rearmWDT()
 	}
 }
 
+void getName(char *name)
+{
+	memset(name, '\0', sizeof(name));
+	if (QFile::exists("/proc/sys/dev/btweb/name"))
+	{
+		int fd = open("/proc/sys/dev/btweb/name", O_RDONLY);
+		if (fd >= 0)
+		{
+			read(fd, name, 50);
+			close(fd);
+		}
+	}
+}

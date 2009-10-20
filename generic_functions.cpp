@@ -131,20 +131,6 @@ bool setCfgValue(QString field, QString value, int item_id, int num_item, const 
 	return setCfgValue(m, item_id, num_item, filename);
 }
 
-void getName(char *name)
-{
-	memset(name, '\0', sizeof(name));
-	if (QFile::exists("/proc/sys/dev/btweb/name"))
-	{
-		int fd = open("/proc/sys/dev/btweb/name", O_RDONLY);
-		if (fd >= 0)
-		{
-			read(fd, name, 50);
-			close(fd);
-		}
-	}
-}
-
 int trasformaVol(int vol)
 {
 	if (vol < 0)

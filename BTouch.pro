@@ -13,6 +13,7 @@ isEmpty(TEST_ARCH) {
 	LIBS += -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
+	HARDWARE = x11
 } else {
 	message(ARM architecture detected.)
 	LIBS += -L../common_files -lcommon
@@ -25,6 +26,7 @@ isEmpty(TEST_ARCH) {
 
 	SOURCES += QWSMOUSE/qmouse_qws.cpp \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
+	HARDWARE = btouch
 }
 
 
@@ -210,7 +212,6 @@ SOURCES += actuators.cpp \
            frame_receiver.cpp \
            generic_functions.cpp \
            genpage.cpp \
-           hardware_functions.cpp \
            homepage.cpp \
            icondispatcher.cpp \
            impostatime.cpp \
@@ -261,6 +262,13 @@ SOURCES += actuators.cpp \
            version.cpp \
            videoentryphone.cpp \
            xml_functions.cpp
+
+contains(HARDWARE, x11) {
+	SOURCES += hardware_functions_x11.cpp
+}
+contains(HARDWARE, btouch) {
+	SOURCES += hardware_functions.cpp
+}
 
 TRANSLATIONS += linguist-ts/btouch_ar.ts \
                 linguist-ts/btouch_de.ts \
