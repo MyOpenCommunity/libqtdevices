@@ -3,6 +3,7 @@
 
 #include <QScreen>
 #include <QApplication>
+#include <QProcess>
 
 static bool buzzer_enabled = false;
 static bool backlight = false;
@@ -85,7 +86,8 @@ void setOrientation(QString orientation)
 
 void beep(int t)
 {
-	// do nothing
+	if (buzzer_enabled)
+		QProcess::execute("beep");
 }
 
 void beep()
