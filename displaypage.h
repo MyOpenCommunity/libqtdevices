@@ -1,10 +1,12 @@
 #ifndef DISPLAYPAGE_H
 #define DISPLAYPAGE_H
 
-#include "sottomenu.h"
+#include "page.h"
+
+class QDomNode;
 
 
-class DisplayPage : public sottoMenu
+class DisplayPage : public Page
 {
 Q_OBJECT
 public:

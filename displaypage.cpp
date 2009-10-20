@@ -6,12 +6,12 @@
 #include "xml_functions.h" // getElement
 #include "screensaverpage.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
-
-#include <QDebug>
+#include "content_widget.h"
 
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
 {
+	buildPage();
 	loadItems(config_node);
 }
 
@@ -31,22 +31,26 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b = new bannSimple(this, img_clean, new CleanScreen(img_clean, wait_time));
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Clean Screen"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 
 	b = new calibration(this, img_items);
 	connect(b, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
 	connect(b, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
 	b->setText(tr("Calibration"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 
 	b = new bannOnDx(this,img_items, new BrightnessPage());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Brightness"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 
 	b = new bannOnDx(this,img_items, new ScreenSaverPage());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Screen Saver"));
-	appendBanner(b);
+	b->Draw();
+	content_widget->appendBanner(b);
 }
 
