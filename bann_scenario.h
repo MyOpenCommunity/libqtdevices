@@ -21,7 +21,7 @@ class ScenarioDevice;
 
 
 
-class BannSimpleScenario : public bannOnSx
+class BannSimpleScenario : public BannLeft
 {
 Q_OBJECT
 public:
@@ -33,6 +33,29 @@ private slots:
 private:
 	ScenarioDevice *dev;
 	int scenario_number;
+};
+
+
+// substitute for gesModScen
+class ModifyScenario : public Bann4ButtonsIcon
+{
+Q_OBJECT
+public:
+	ModifyScenario(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void status_changed(const StatusList &sl);
+	void activate();
+	void editScenario();
+	void startEditing();
+	void deleteScenario();
+	void stopEditing();
+
+private:
+	void changeLeftFunction(const char *slot);
+	ScenarioDevice *dev;
+	int scenario_number;
+	bool is_editing;
 };
 
 

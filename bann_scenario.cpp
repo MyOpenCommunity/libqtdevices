@@ -20,22 +20,112 @@
 
 
 BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
-	bannOnSx(parent)
+	BannLeft(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), 1);
+	initBanner(bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
 
 	scenario_number = getTextChild(config_node, "what").toInt();
 
-	connect(this, SIGNAL(click()), SLOT(activate()));
+	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 }
 
 void BannSimpleScenario::activate()
 {
 	dev->activateScenario(scenario_number);
+}
+
+
+ModifyScenario::ModifyScenario(QWidget *parent, const QDomNode &config_node) :
+	Bann4ButtonsIcon(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	initBanner(bt_global::skin->getImage("edit"), bt_global::skin->getImage("forward"),
+		bt_global::skin->getImage("label"), bt_global::skin->getImage("start_prog"),
+		bt_global::skin->getImage("del_scen"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("stop"), LOCKED, getTextChild(config_node, "descr"));
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
+
+	scenario_number = getTextChild(config_node, "what").toInt();
+	is_editing = false;
+	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
+	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
+	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
+	connect(center_right_button, SIGNAL(clicked()), SLOT(deleteScenario()));
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
+}
+
+void ModifyScenario::activate()
+{
+	dev->activateScenario(scenario_number);
+}
+
+void ModifyScenario::editScenario()
+{
+	is_editing = !is_editing;
+	setState(is_editing ? EDIT_VIEW : UNLOCKED);
+}
+
+void ModifyScenario::startEditing()
+{
+	dev->startProgramming(scenario_number);
+}
+
+void ModifyScenario::deleteScenario()
+{
+	dev->deleteScenario(scenario_number);
+}
+
+void ModifyScenario::changeLeftFunction(const char *slot)
+{
+	left_button->disconnect(SIGNAL(clicked()));
+	connect(left_button, SIGNAL(clicked()), slot);
+}
+
+void ModifyScenario::stopEditing()
+{
+	dev->stopProgramming(scenario_number);
+}
+
+void ModifyScenario::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case ScenarioDevice::DIM_LOCK:
+			setState(it.value().toBool() ? LOCKED : UNLOCKED);
+			// TODO: it seems reasonable that when LOCKED the left function returns
+			// to activate(), since the device won't care about our frames.
+			// Ask Agresta.
+			// When UNLOCKED, however, the left function mustn't be touched
+			//changeLeftFunction(SLOT(activate()));
+			break;
+		case ScenarioDevice::DIM_START:
+		{
+			bool is_start_edit = it.value().toBool();
+			if (is_start_edit)
+			{
+				setEditingState(EDIT_ACTIVE);
+				changeLeftFunction(SLOT(stopEditing()));
+			}
+			else
+			{
+				setEditingState(EDIT_INACTIVE);
+				changeLeftFunction(SLOT(activate()));
+			}
+		}
+			break;
+		}
+		++it;
+	}
 }
 
 

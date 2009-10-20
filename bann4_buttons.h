@@ -13,7 +13,39 @@
 
 #include "banner.h"
 
+class BtButton;
 class QWidget;
+class QLabel;
+
+// substitute for bann4tasLab
+class Bann4ButtonsIcon : public BannerNew
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		LOCKED,               // device is locked, no edit is possible (no right button visible)
+		UNLOCKED,             // scenario edit is possible (pencil icon on right)
+		EDIT_VIEW,            // edit buttons visible (right arrow icon on right)
+	};
+	enum EditingStates
+	{
+		EDIT_ACTIVE,          // editing is enabled (stop icon on left)
+		EDIT_INACTIVE,        // editing is disabled (on icon on left)
+	};
+
+	Bann4ButtonsIcon(QWidget *parent);
+	void initBanner(const QString &_right, const QString &_right_alt, const QString &_center,
+		const QString &_c_left, const QString &_c_right, const QString &_left,
+		const QString &_left_alt, States init_state, const QString &banner_text);
+	void setState(States new_state);
+	void setEditingState(EditingStates edit_state);
+	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
+
+private:
+	QLabel *center_icon, *text;
+	QString left_icon, left_alt, right_icon, right_alt;
+};
 
 
 /*!

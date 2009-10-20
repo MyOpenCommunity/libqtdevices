@@ -689,3 +689,12 @@ QLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment align, const
 	text->setFont(font);
 	return text;
 }
+
+QLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
+{
+	QLabel *text = new QLabel(this);
+	text->setAlignment(align);
+	text->setFont(font);
+	return text;
+}
+
