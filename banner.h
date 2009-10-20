@@ -410,7 +410,8 @@ public:
 	BannerNew(QWidget *parent) : banner(parent) { }
 	virtual void Draw() { }
 protected:
-	QLabel *createTextLabel(const QRect &size, Qt::Alignment, const QFont &font);
+	QLabel *createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font);
+	QLabel *createTextLabel(Qt::Alignment align, const QFont &font);
 };
 
 
