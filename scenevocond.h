@@ -452,6 +452,10 @@ public slots:
 	void Down();
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
+
+private slots:
+	void status_changed(const StatusList &sl);
+
 private:
 	int min_val;
 	int max_val;

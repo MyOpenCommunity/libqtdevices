@@ -872,7 +872,10 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c) 
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	// A dimmer is actually a light
-	dev = new dimm(QString(""));
+	//DELETE
+	//dev = new dimm(QString(""));
+	// TODO: to PULL or not to PULL? That is the question...
+	dev = new DimmerDevice("", PULL);
 	Draw();
 }
 
@@ -1062,6 +1065,37 @@ void device_condition_dimming::get_condition_value(QString& out)
 	out =  tmp;
 }
 
+void device_condition_dimming::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	int trig_min = get_condition_value_min();
+	int trig_max = get_condition_value_max();
+
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		// TODO: what about on level? is this code ok?
+		case LightingDevice::DIM_DEVICE_ON:
+		case LightingDevice::DIM_DIMMER_LEVEL:
+		{
+			int level = it.value().toInt() / 10;
+			if (level >= trig_min && level <= trig_max)
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit condSatisfied();
+				}
+			else
+				satisfied = false;
+		}
+			break;
+		}
+		++it;
+	}
+}
+
+//DELETE
 void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
 	int trig_v_min = get_condition_value_min();
