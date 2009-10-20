@@ -48,9 +48,9 @@ void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar)
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
-	connect(nav_bar, SIGNAL(forwardClick()), content, SLOT(forwardClick()));
-	connect(nav_bar, SIGNAL(upClick()), content, SLOT(upClick()));
-	connect(nav_bar, SIGNAL(downClick()), content, SLOT(downClick()));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(forwardClick()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
 
 	content_widget = content;
 }

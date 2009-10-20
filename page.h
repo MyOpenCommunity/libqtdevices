@@ -72,6 +72,9 @@ protected:
 	void buildPage(ContentWidget *content, NavigationBar *nav_bar);
 	void buildPage();
 
+protected slots:
+	virtual void forwardClick() {} // Do nothing by default
+
 private:
 	static MainWindow *main_window;
 	static Client *client_richieste;

@@ -18,30 +18,27 @@ class ContentWidget : public QWidget
 friend void Page::activateLayout();
 Q_OBJECT
 public:
-	int scroll_step;
 	ContentWidget(QWidget *parent=0);
 	void appendBanner(banner *b);
 	int bannerCount();
 	banner *getBanner(int i);
 
 public slots:
-	virtual void upClick();
-	virtual void downClick();
-	virtual void forwardClick() {} // Do nothing by default
+	void pgUp();
+	void pgDown();
 	void resetIndex();
 
 protected:
 	void showEvent(QShowEvent *e);
 
 private:
-	// The index of the current banner
+	// The index of the banner showed at the top of the ContentWidget
 	int current_index;
-	// The maximum number of banners per page
-	int max_banner;
 
 	bool need_update; // a flag to avoid useless call to updateLayout
 	QList<banner*> banner_list;
 	void updateLayout();
+	int calculateNextIndex(bool up_to_down);
 };
 
 #endif // CONTENT_WIDGET_H

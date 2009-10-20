@@ -8,12 +8,10 @@
 ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 {
 	current_index = 0;
-	max_banner = 3;
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 	need_update = true;
-	scroll_step = max_banner;
 }
 
 int ContentWidget::bannerCount()
@@ -68,28 +66,52 @@ void ContentWidget::updateLayout()
 	while ((child = layout()->takeAt(0)) != 0)
 		child->widget()->hide();
 
-	for (int i = 0; i < max_banner; ++i)
+
+	int next_index = calculateNextIndex(true);
+	Q_ASSERT_X(current_index != -1, "ContentWidget::updateLayout", "calculateNextIndex return -1!");
+	int index = current_index;
+	while (true)
 	{
-		int index = (i + current_index) % banner_list.size();
-		layout()->addWidget(banner_list.at(index));
-		banner_list.at(index)->show();
+		banner *b = banner_list.at(index);
+		b->show();
+		layout()->addWidget(b);
+		index = (index + 1) % banner_list.size();
+		if (index == current_index || index == next_index)
+			break;
 	}
 }
 
-void ContentWidget::upClick()
+void ContentWidget::pgUp()
 {
-	current_index -= scroll_step;
-	// We add "banner_list.size()" to ensure that the module is a positive number
-	current_index = (current_index + banner_list.size()) % banner_list.size();
+	current_index = calculateNextIndex(false);
+	Q_ASSERT_X(current_index != -1, "ContentWidget::pgUp", "calculateNextIndex return -1!");
 	need_update = true;
 	updateLayout();
 }
 
-void ContentWidget::downClick()
+void ContentWidget::pgDown()
 {
-	current_index += scroll_step;
-	current_index = current_index % banner_list.size();
+	current_index = calculateNextIndex(true);
+	Q_ASSERT_X(current_index != -1, "ContentWidget::pgDown", "calculateNextIndex return -1!");
 	need_update = true;
 	updateLayout();
+}
+
+int ContentWidget::calculateNextIndex(bool up_to_down)
+{
+	int area_height = contentsRect().height();
+	int banners_height = 0;
+	int index = current_index;
+	while (true)
+	{
+		banner *b = banner_list.at(index);
+		banners_height += b->sizeHint().height();
+		if (banners_height > area_height)
+			return index;
+
+		// We add "banner_list.size()" to ensure that the module is always a positive number
+		index = (index + (up_to_down ? 1 : -1) + banner_list.size()) % banner_list.size();
+	}
+	return -1;
 }
 

@@ -22,6 +22,7 @@ class BtButton;
 class sottoMenu;
 class Client;
 class Page;
+class ContentWidget;
 
 class QPixmap;
 class QTimer;
@@ -42,6 +43,7 @@ class QLabel;
 
 class banner : public QWidget
 {
+friend class ContentWidget;
 Q_OBJECT
 public:
 	banner(QWidget *parent);
