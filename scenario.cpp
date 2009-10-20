@@ -51,7 +51,9 @@ void Scenario::loadItems(const QDomNode &config_node)
 			QString img5 = IMG_PATH + getTextChild(item, "cimg5");
 			QString img6 = IMG_PATH + getTextChild(item, "cimg6");
 			QString img7 = IMG_PATH + getTextChild(item, "cimg7");
-			b = new gesModScen(this, where, img1, img2, img3, img4, img5, img6, img7);
+			// DELETE
+			//b = new gesModScen(this, where, img1, img2, img3, img4, img5, img6, img7);
+			b = new ModifyScenario(this, item);
 			break;
 		}
 		case SCENARIO_EVOLUTO:
