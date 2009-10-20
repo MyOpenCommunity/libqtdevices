@@ -65,8 +65,6 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const
 // A convenient overload for the above function
 bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
-void getName(char *name);
-
 int trasformaVol(int vol);
 
 #endif // GENERIC_FUNCTIONS_H

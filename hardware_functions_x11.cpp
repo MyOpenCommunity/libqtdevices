@@ -102,3 +102,8 @@ void rearmWDT()
 {
 	// do nothing
 }
+
+void getName(char *name)
+{
+	name[0] = 0;
+}
