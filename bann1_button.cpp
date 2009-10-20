@@ -7,6 +7,9 @@
 #include "fontmanager.h" //FontManager
 #include "generic_functions.h" // getBostikName
 
+#include <QHBoxLayout>
+#include <QDebug>
+
 #define BUT_DIM 60
 #define BUTONDX_H_SCRITTA 20
 #define BANNONICONS_ICON_DIM 60
@@ -97,6 +100,26 @@ void BannOn2Labels::setElapsedTime(int time)
 		left_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_left,
 			QString::number(time))));
 	// TODO: should we also set the light on??
+}
+
+
+BannLeft::BannLeft(QWidget *parent) :
+	BannerNew(parent)
+{
+	left_button = new BtButton;
+	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, Qt::AlignLeft);
+	l->addWidget(text, 1, Qt::AlignHCenter);
+}
+
+void BannLeft::initBanner(const QString &left, const QString &center)
+{
+	left_button->setImage(left);
+	text->setText(center);
 }
 
 

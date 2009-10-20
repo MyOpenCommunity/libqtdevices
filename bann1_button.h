@@ -66,6 +66,20 @@ private:
 };
 
 
+// substitute for bannOnSx
+class BannLeft : public BannerNew
+{
+Q_OBJECT
+protected:
+	BannLeft(QWidget *parent);
+	void initBanner(const QString &left, const QString &center);
+	BtButton *left_button;
+
+private:
+	QLabel *text;
+};
+
+
 
 /*!
   \class bannPuls
