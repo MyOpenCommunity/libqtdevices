@@ -762,10 +762,11 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 		{
 		case LightingDevice::DIM_DEVICE_ON:
 			if (device_condition::get_condition_value() == static_cast<int>(it.value().toBool()))
-			{
-				satisfied = true;
-				emit condSatisfied();
-			}
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit condSatisfied();
+				}
 			else
 				satisfied = false;
 			break;
