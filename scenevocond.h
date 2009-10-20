@@ -353,6 +353,10 @@ protected:
 	device *dev;
 	//! True when condition is satisfied
 	bool satisfied;
+
+private slots:
+	virtual void status_changed(const StatusList &sl);
+
 private:
 	//! Condition value
 	int cond_value;
@@ -390,6 +394,10 @@ public:
 public slots:
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
+
+private slots:
+	void status_changed(const StatusList &sl);
+
 private:
 	//! Returns string to be displayed as a function of value
 	QString get_string();

@@ -8,6 +8,8 @@
 #include "scaleconversion.h"
 #include "main.h" // bt_global::config
 
+#include "lighting_device.h"
+
 #include <QDateTime>
 #include <QLocale>
 #include <QPixmap>
@@ -701,8 +703,14 @@ void device_condition::setup_device(QString s)
 	// Add the device to cache, or replace it with the instance found in cache
 	dev = bt_global::add_device_to_cache(dev);
 	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-		this, SLOT(status_changed(QList<device_status*>)));
+	//DELETE
+	//connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+	//	this, SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+}
+
+void device_condition::status_changed(const StatusList &sl)
+{
 }
 
 void device_condition::set_pul(bool p)
@@ -729,7 +737,9 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	frame = l;
 	set_condition_value(*c);
 	set_current_value(device_condition::get_condition_value());
-	dev = new light(QString(""));
+	//dev = new light(QString(""));
+	// TODO: we just need dummy device here, address will be set later on by setup_device()
+	dev = new LightingDevice("", PULL);
 	Draw();
 }
 
@@ -743,6 +753,28 @@ void device_condition_light_status::Draw()
 	((QLabel *)frame)->setText(get_string());
 }
 
+void device_condition_light_status::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case LightingDevice::DIM_DEVICE_ON:
+			if (device_condition::get_condition_value() == static_cast<int>(it.value().toBool()))
+			{
+				satisfied = true;
+				emit condSatisfied();
+			}
+			else
+				satisfied = false;
+			break;
+		}
+		++it;
+	}
+}
+
+//DELETE
 void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
 	int trig_v = device_condition::get_condition_value();
