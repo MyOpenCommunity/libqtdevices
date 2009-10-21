@@ -234,9 +234,8 @@ QString TimePeriodSelection::dateDisplayed()
 bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	bannTextOnImage *bann = new bannTextOnImage(parent, "---");
+	bannTextOnImage *bann = new bannTextOnImage(parent, "---", "bg_banner", "graph");
 	bann->setText(primary_text);
-	bann->SetIcons(banner::BUT1, bt_global::skin->getImage("graph"));
 	bann->Draw();
 	return bann;
 }
@@ -555,13 +554,14 @@ void EnergyView::updateCurrentGraph()
 	case EnergyDevice::CUMULATIVE_YEAR:
 	{
 		int curr_month = QDate::currentDate().month();
-		graph_x_axis[1] = QString::number(curr_month % 12 + 1);
-		if (curr_month != 12)
+		for (int i = 1; i <= 12; ++i)
 		{
-			graph_x_axis[12 - curr_month] = "12";
-			graph_x_axis[12 - curr_month + 1] = "1";
+			int month = (curr_month  + i) % 12;
+			if (month == 0)
+				month = 12;
+			graph_x_axis[i] = QString::number(month);
 		}
-		graph_x_axis[12] = QString::number(curr_month);
+
 		graph->init(12, label + tr("/months"), graph_x_axis);
 		table->init(12, tr("Month"), label, time_period->dateDisplayed(), curr_month % 12);
 		break;

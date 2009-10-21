@@ -126,14 +126,41 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			while (it.hasNext())
 			{
 				it.next();
-				p.drawText(axis_left + bar_width * it.key() - fm.width(it.value()), font_y_pos, it.value());
+				int current_left = axis_left + AXIS_PEN_WIDTH + bar_width * it.key();
+				p.drawText(current_left - bar_width + (bar_width - fm.width(it.value())) / 2, font_y_pos, it.value());
+
+				QPen old_pen = p.pen();
+				p.setPen(pen_axis);
+				p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
+				p.setPen(old_pen);
 			}
 		}
 		else
 		{
 			p.drawText(axis_left, font_y_pos, "1");
-			QString num = QString::number(number_of_bars);
-			p.drawText(axis_left + bar_width * number_of_bars - fm.width(num), font_y_pos, num);
+			QString center = QString::number(number_of_bars / 2);
+			p.drawText(axis_left + bar_width * number_of_bars / 2 - fm.width(center) / 2, font_y_pos, center);
+
+			QString max = QString::number(number_of_bars);
+			p.drawText(axis_left + bar_width * number_of_bars - fm.width(max), font_y_pos, max);
+
+			// Draw a line for each quarter of the graph.
+			QList<int> lines;
+			lines.append(number_of_bars / 4);
+			lines.append(number_of_bars / 2);
+			lines.append(number_of_bars / 4 * 3);
+			lines.append(number_of_bars);
+
+			QPen old_pen = p.pen();
+			p.setPen(pen_axis);
+
+			foreach (int i, lines)
+			{
+				int current_left = axis_left + i * bar_width + AXIS_PEN_WIDTH;
+				p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
+			}
+
+			p.setPen(old_pen);
 		}
 
 		// draw bars

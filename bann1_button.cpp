@@ -3,7 +3,7 @@
 #include "titlelabel.h" // TextOnImageLabel
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"
-#include "icondispatcher.h" //icons_cache
+#include "icondispatcher.h" // bt_global::icons_cache
 #include "fontmanager.h" //FontManager
 #include "generic_functions.h" // getBostikName
 
@@ -217,14 +217,17 @@ bannBut2Icon::bannBut2Icon(QWidget *parent) : banner(parent)
 }
 
 
-bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text) : banner(parent)
+bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString bg_image, QString fwd_image) : banner(parent)
 {
 	label = new TextOnImageLabel(this, text);
-	label->setBackgroundImage(bt_global::skin->getImage("empty_icon"));
-	label->setGeometry(BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y);
-	addItem(BUT1, banner_width - BUT_DIM, 0, BUT_DIM, BUT_DIM);
-	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
-	SetIcons(bt_global::skin->getImage("forward"), 1);
+	QString img = bt_global::skin->getImage(bg_image);
+	QPixmap *p = bt_global::icons_cache.getIcon(img);
+	label->setBackgroundImage(img);
+	int left = MAX_WIDTH - BUT_DIM - p->width();
+	label->setGeometry(left, 0,  p->width() ,BANPULS_ICON_DIM_Y);
+	addItem(BUT1, MAX_WIDTH-BUT_DIM, 0, BUT_DIM, BUT_DIM);
+	addItem(TEXT, left, BUT_DIM, p->width() , MAX_HEIGHT/NUM_RIGHE - BUT_DIM);
+	SetIcons(bt_global::skin->getImage(fwd_image), 1);
 }
 
 void bannTextOnImage::setInternalText(const QString &text)
