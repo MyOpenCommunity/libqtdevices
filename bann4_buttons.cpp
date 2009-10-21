@@ -25,11 +25,11 @@ Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) :
 	QHBoxLayout *l = new QHBoxLayout;
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	l->addWidget(left_button, 1, Qt::AlignLeft);
+	l->addWidget(left_button, 0, Qt::AlignLeft);
 	l->addWidget(center_left_button);
 	l->addWidget(center_icon, 1, Qt::AlignLeft);
 	l->addWidget(center_right_button);
-	l->addWidget(right_button, 1, Qt::AlignRight);
+	l->addWidget(right_button, 0, Qt::AlignRight);
 
 	QVBoxLayout *v = new QVBoxLayout(this);
 	v->setContentsMargins(0, 0, 0, 0);
