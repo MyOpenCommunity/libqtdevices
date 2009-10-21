@@ -1087,11 +1087,13 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 		{
 			int level = it.value().toInt() / 10;
 			if (level >= trig_min && level <= trig_max)
+			{
 				if (!satisfied)
 				{
 					satisfied = true;
 					emit condSatisfied();
 				}
+			}
 			else
 				satisfied = false;
 		}
@@ -1397,11 +1399,13 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 		{
 			int level = it.value().toInt();
 			if (level >= trig_min && level <= trig_max)
+			{
 				if (!satisfied)
 				{
 					satisfied = true;
 					emit condSatisfied();
 				}
+			}
 			else
 				satisfied = false;
 		}
