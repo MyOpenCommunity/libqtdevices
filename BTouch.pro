@@ -30,7 +30,7 @@ contains(PLATFORM, x86) {
 LIBS+= -lssl
 CONFIG += qt debug warn_on
 CONFIG -= release
-DEFINES += QT_QWS_EBX BTWEB TEST_ENERGY_GRAPH
+DEFINES += QT_QWS_EBX BTWEB
 release:DEFINES += NDEBUG
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
