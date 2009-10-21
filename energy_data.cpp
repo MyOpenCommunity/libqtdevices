@@ -9,13 +9,14 @@
 #include "energy_device.h" // EnergyDevice
 #include "bannfrecce.h"
 #include "btmain.h" // bt_global::btmain
+#include "content_widget.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
 #include <QLocale>
 #include <QDebug>
 
-#include <math.h>
+#include <math.h> // pow
 
 // The language used for the floating point number
 QLocale loc(QLocale::Italian);
@@ -23,6 +24,7 @@ QLocale loc(QLocale::Italian);
 
 EnergyData::EnergyData(const QDomNode &config_node)
 {
+	buildPage();
 	loadTypes(config_node);
 	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(systemTimeChanged()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateDayTimer()));
@@ -62,7 +64,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		if (getElement(type, "currency/ab").text().toInt() == 1)
 		{
 			b = new bannOnOff(this);
-			appendBanner(b); // to increase the serial number
+			content_widget->appendBanner(b); // to increase the serial number
 			b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
 					QString(), bt_global::skin->getImage("energy_type"));
 
@@ -72,7 +74,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		else
 		{
 			b = new bannPuls(this);
-			appendBanner(b);
+			content_widget->appendBanner(b);
 			b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
 		}
 
@@ -86,6 +88,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		}
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
+		b->Draw();
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }

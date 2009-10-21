@@ -3,6 +3,7 @@
 
 #include "sottomenu.h"
 #include "bann1_button.h" // bannPuls, bannTextOnImage
+#include "page.h"
 
 #include <QHash>
 #include <QTimer>
@@ -13,7 +14,7 @@ class EnergyView;
 class EnergyInterface;
 
 
-class EnergyData : public sottoMenu
+class EnergyData : public Page
 {
 Q_OBJECT
 public:
