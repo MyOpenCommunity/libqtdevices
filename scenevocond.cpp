@@ -1176,7 +1176,8 @@ device_condition(parent, c)
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	// A dimmer is actually a light
-	dev = new dimm100(QString(""));
+	//dev = new dimm100(QString(""));
+	dev = new Dimmer100Device("", PULL);
 	Draw();
 }
 
@@ -1373,6 +1374,36 @@ void device_condition_dimming_100::get_condition_value(QString& out)
 	out =  tmp;
 }
 
+void device_condition_dimming_100::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	int trig_min = get_condition_value_min();
+	int trig_max = get_condition_value_max();
+
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		// TODO: previous code ignored dim_dimmer_level. What should I do?
+		case LightingDevice::DIM_DIMMER100_LEVEL:
+		{
+			int level = it.value().toInt();
+			if (level >= trig_min && level <= trig_max)
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit condSatisfied();
+				}
+			else
+				satisfied = false;
+		}
+			break;
+		}
+		++it;
+	}
+}
+
+//DELETE
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
 	int trig_v_min = get_condition_value_min();
