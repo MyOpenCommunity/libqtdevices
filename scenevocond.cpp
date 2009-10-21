@@ -762,11 +762,13 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 		{
 		case LightingDevice::DIM_DEVICE_ON:
 			if (device_condition::get_condition_value() == static_cast<int>(it.value().toBool()))
+			{
 				if (!satisfied)
 				{
 					satisfied = true;
 					emit condSatisfied();
 				}
+			}
 			else
 				satisfied = false;
 			break;
@@ -778,6 +780,8 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_aux not implemented!");
+	/*
 	int trig_v = device_condition::get_condition_value();
 	stat_var curr_status(stat_var::ON_OFF);
 	qDebug("device_condition_light_status::status_changed()");
@@ -821,6 +825,7 @@ void device_condition_light_status::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 int device_condition_light_status::get_max()
@@ -1099,6 +1104,8 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_aux not implemented!");
+	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_lev(stat_var::LEV);
@@ -1145,6 +1152,7 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 /*****************************************************************
@@ -1406,6 +1414,8 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_aux not implemented!");
+	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_lev(stat_var::LEV);
@@ -1455,6 +1465,7 @@ void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 /*****************************************************************
