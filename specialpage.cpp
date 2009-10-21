@@ -6,6 +6,7 @@
 #include "generic_functions.h" // createMsgOpen
 #include "fontmanager.h" // bt_global::font
 #include "temperatureviewer.h"
+#include "skinmanager.h" //skin
 
 #include <openmsg.h>
 
@@ -59,18 +60,20 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 
 void SpecialPage::loadSpecial(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
 	// Load the back button
 	BtButton *b = new BtButton(this);
-	b->setImage(ICON_FRECCIA_SX);
+	b->setImage(bt_global::skin->getImage("back"));
 	b->setGeometry(0, 260, DIM_BUT_BACK, DIM_BUT_BACK);
-	connect(b, SIGNAL(clicked()), this, SIGNAL(Closed()));
-	QDomNode command = getChildWithName(config_node, "command");
+	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
 
 	// Load the special button
 	b = new BtButton(this);
-	b->setImage(IMG_PATH + getTextChild(command, "cimg1"));
+	b->setImage(bt_global::skin->getImage("command"));
 	b->setGeometry(DIM_BUT_BACK, 260, MAX_WIDTH - DIM_BUT_BACK, DIM_BUT_BACK);
 
+	QDomNode command = getChildWithName(config_node, "command");
 	type = static_cast<specialType>(getTextChild(command, "type").toInt());
 	who = getTextChild(command, "who");
 	what = getTextChild(command, "what");
@@ -92,6 +95,7 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 	box_text->setGeometry(DIM_BUT_BACK, 240, MAX_WIDTH - DIM_BUT_BACK, 20);
 	box_text->setFrameStyle(QFrame::Plain);
 	box_text->setLineWidth(3);
+
 	subscribe_monitor(who.toInt());
 }
 
