@@ -38,6 +38,7 @@ class WeeklyMenu;
 class ScenarioMenu;
 class BtTimeEdit;
 class BtDateEdit;
+class sottoMenu;
 
 class QLabel;
 

@@ -14,7 +14,6 @@
 #include "banner.h"
 #include "energy_device.h"
 
-class sottoMenu;
 class BtButton;
 class Page;
 class QWidget;

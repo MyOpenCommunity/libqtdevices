@@ -19,7 +19,6 @@
 
 
 class BtButton;
-class sottoMenu;
 class Client;
 class Page;
 class ContentWidget;
