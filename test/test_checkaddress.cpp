@@ -65,6 +65,15 @@ void TestCheckAddress::testCheckAddressEnvironmentLevel3()
 	QCOMPARE(checkAddressIsForMe(environment, "1014", NOT_PULL), ENVIRONMENT);
 }
 
+void TestCheckAddress::testCheckAddressPointToPoint()
+{
+	QString addr = "12";
+	QCOMPARE(checkAddressIsForMe(addr, "11", NOT_PULL), NOT_MINE);
+	addr = "12#4#01";
+	QCOMPARE(checkAddressIsForMe(addr, "19#4#01", NOT_PULL), NOT_MINE);
+	QCOMPARE(checkAddressIsForMe(addr, "12#4#02", NOT_PULL), NOT_MINE);
+}
+
 void TestCheckAddress::testCheckAddressGroup()
 {
 	QString group = "#45";

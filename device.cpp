@@ -70,10 +70,12 @@ AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_whe
 		// general address
 		if (in.first == "0")
 			return GLOBAL;
-		// environment address
+
+		// environment address. The first part must be "00", "100" or numbers 1 to 9
 		// use toInt() to remove differences between "00" "0" and so on.
-		if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
-			return ENVIRONMENT;
+		if (in.first == "00" || in.first == "100" || in.first.length() == 1)
+			if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
+				return ENVIRONMENT;
 	}
 
 	return NOT_MINE;

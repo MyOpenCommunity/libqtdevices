@@ -16,6 +16,7 @@ private slots:
 	void testCheckAddressEnvironmentInt();
 	void testCheckAddressEnvironmentLevel3();
 	void testCheckAddressGroup();
+	void testCheckAddressPointToPoint();
 };
 
 #endif // TEST_CHECKADDRESS_H
