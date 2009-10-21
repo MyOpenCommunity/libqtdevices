@@ -290,7 +290,7 @@ void TestDimmer100::receiveDimmer100Status()
 	DeviceTester ts(dimmer100, LightingDevice::DIM_DIMMER100_SPEED, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*#1*%1*1*%2*%3##").arg(dimmer100->where).arg(134).arg(50);
 
-	tl.check(frame, 134);
+	tl.check(frame, 34);
 	ts.check(frame, 50);
 }
 

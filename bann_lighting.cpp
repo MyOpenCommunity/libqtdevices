@@ -322,7 +322,7 @@ void Dimmer100New::status_changed(const StatusList &sl)
 		{
 			int l = it.value().toInt();
 			// light values are between 100 (min) and 200 (max)
-			light_value = l - 100;
+			light_value = l;
 			if (light_value < 5)
 				light_value = 5;
 			setValue(light_value);
