@@ -58,13 +58,9 @@ AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_whe
 		QPair<QString, QString> our = splitWhere(dev_where);
 
 		// TODO: really tired today, ugly code ahead
-		if (!in.second.isEmpty())
-		{
-			if (in.second == "#3" && our.second.isEmpty())
-				;
-			else if (in.second != our.second)
-				return NOT_MINE;
-		}
+		if (!(in.second == "#3" && our.second.isEmpty()))
+			if (!(in.second.isEmpty()) && (in.second != our.second))
+					return NOT_MINE;
 
 		// here we don't need to care about extension anymore
 		// general address
