@@ -1,18 +1,15 @@
 #include "singlechoicepage.h"
 #include "main.h" // for ICON_{OK,VUOTO}
 #include "bann1_button.h" // bannOnSx
+#include "content_widget.h"
 #include "btbutton.h"
 
 #include <QDebug>
 
 
-SingleChoicePage::SingleChoicePage(bool paging)
+SingleChoicePage::SingleChoicePage()
 {
-	if (paging)
-		setNavBarMode(4, ICON_OK);
-	else
-		setNavBarMode(10, ICON_OK);
-
+	buildPage();
 	buttons.setExclusive(true);
 
 	connect(this, SIGNAL(goDx()), SLOT(okPressed()));
@@ -24,8 +21,9 @@ void SingleChoicePage::addBanner(const QString &text, int id)
 	BtButton *btn = bann->getButton();
 	btn->setCheckable(true);
 	bann->setText(text);
+	bann->Draw();
 	buttons.addButton(btn, id);
-	elencoBanner.append(bann);
+	content_widget->appendBanner(bann);
 
 	if (id == getCurrentId())
 		btn->setChecked(true);

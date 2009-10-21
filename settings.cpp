@@ -10,6 +10,7 @@
 #include "displaypage.h"
 #include "version.h"
 #include "content_widget.h" // content_widget
+#include "main.h"
 
 #include <QDebug>
 

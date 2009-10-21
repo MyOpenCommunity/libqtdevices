@@ -1,20 +1,23 @@
 #ifndef SINGLECHOICEPAGE_H
 #define SINGLECHOICEPAGE_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QButtonGroup>
+
+class QString;
+
 
 /*
  * This abstract class is designed to provide a list of bannOnDx. Each of them
  * contains a toggle button that can be toggle in exclusive mode with the other
  * buttons.
  */
-class SingleChoicePage : public sottoMenu
+class SingleChoicePage : public Page
 {
 Q_OBJECT
 public:
-	SingleChoicePage(bool paging=false);
+	SingleChoicePage();
 private slots:
 	void okPressed();
 

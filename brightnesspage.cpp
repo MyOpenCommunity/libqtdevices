@@ -11,15 +11,15 @@
 #include "brightnesspage.h"
 #include "displaycontrol.h" // bt_global::display
 #include "bann1_button.h" // bannOnSx
+#include "content_widget.h"
 #include "banner.h"
 #include "btbutton.h"
 
 #include <QDebug>
 
 
-BrightnessPage::BrightnessPage() : SingleChoicePage(true)
+BrightnessPage::BrightnessPage()
 {
-	setNumRighe(4);
 	addBanner(tr("Off"), BRIGHTNESS_OFF);
 	addBanner(tr("Low brightness"), BRIGHTNESS_LOW);
 	addBanner(tr("Normal brightness"), BRIGHTNESS_NORMAL);
@@ -41,9 +41,9 @@ void BrightnessPage::showEvent(QShowEvent *e)
 	bool banners_active = (bt_global::display.currentBrightness() != BRIGHTNESS_OFF ||
 		bt_global::display.currentScreenSaver() != ScreenSaver::NONE);
 
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < content_widget->bannerCount(); ++i)
 	{
-		BtButton *b = static_cast<bannOnSx*>(elencoBanner.at(i))->getButton();
+		BtButton *b = static_cast<bannOnSx*>(content_widget->getBanner(i))->getButton();
 		if (buttons.id(b) == getCurrentId())
 			b->setChecked(true);
 
