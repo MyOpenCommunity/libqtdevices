@@ -553,15 +553,13 @@ void EnergyView::updateCurrentGraph()
 	{
 		int curr_month = QDate::currentDate().month();
 		for (int i = 1; i <= 12; ++i)
-			graph_x_axis[i] = QString::number((curr_month  + i) % 12);
+		{
+			int month = (curr_month  + i) % 12;
+			if (month == 0)
+				month = 12;
+			graph_x_axis[i] = QString::number(month);
+		}
 
-//		graph_x_axis[1] = QString::number(curr_month % 12 + 1);
-//		if (curr_month != 12)
-//		{
-//			graph_x_axis[12 - curr_month] = "12";
-//			graph_x_axis[12 - curr_month + 1] = "1";
-//		}
-//		graph_x_axis[12] = QString::number(curr_month);
 		graph->init(12, label + tr("/months"), graph_x_axis);
 		table->init(12, tr("Month"), label, time_period->dateDisplayed(), curr_month % 12);
 		break;
