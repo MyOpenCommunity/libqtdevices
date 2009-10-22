@@ -38,15 +38,10 @@ private:
 	QList<LightingDevice *> devices;
 };
 
-class DimmerBase : public bannRegolaz
-{
-Q_OBJECT
-public:
-	DimmerBase(QWidget *parent);
-	virtual void Draw();
-};
 
-// TODO: to be renamed when dimmer is gone
+/*
+ * A derived class of BannAdjust which handles all dimmer state changes (both levels and states).
+ */
 class AdjustDimmer : public BannAdjust
 {
 Q_OBJECT
@@ -71,6 +66,7 @@ private:
 	QString center_left, center_right, broken;
 };
 
+// TODO: to be renamed when dimmer is gone
 class DimmerNew : public AdjustDimmer
 {
 Q_OBJECT
@@ -106,7 +102,7 @@ private:
 };
 
 // TODO: to be renamed when dimmer100 is gone
-class Dimmer100New : public DimmerBase
+class Dimmer100New : public AdjustDimmer
 {
 Q_OBJECT
 public:

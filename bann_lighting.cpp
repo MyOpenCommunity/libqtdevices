@@ -67,72 +67,6 @@ void LightGroup::lightOn()
 }
 
 
-enum {
-	DIMMER_OFF = 0,
-	DIMMER_ON = 1,
-	DIMMER_FAULT_STATUS = 2,
-};
-
-DimmerBase::DimmerBase(QWidget *parent) :
-	bannRegolaz(parent)
-{
-}
-
-void DimmerBase::Draw()
-{
-	if (getValue() > 100)
-		setValue(100);
-	qDebug("dimmer::Draw(), attivo = %d, value = %d", attivo, getValue());
-	if ((sxButton) && (Icon[0]))
-	{
-		sxButton->setPixmap(*Icon[0]);
-		if (pressIcon[0])
-			sxButton->setPressedPixmap(*pressIcon[0]);
-	}
-
-	if ((dxButton) && (Icon[1]))
-	{
-		dxButton->setPixmap(*Icon[1]);
-		if (pressIcon[1])
-			dxButton->setPressedPixmap(*pressIcon[1]);
-	}
-	if (attivo == DIMMER_ON)
-	{
-		if ((Icon[4+((getValue()-minValue)/step)*2]) && (csxButton))
-			csxButton->setPixmap(*Icon[4+((getValue()-minValue)/step)*2]);
-		if ((cdxButton) && (Icon[5+((getValue()-minValue)/step)*2]))
-			cdxButton->setPixmap(*Icon[5+((getValue()-minValue)/step)*2]);
-	}
-	else if (attivo == DIMMER_OFF)
-	{
-		if ((Icon[2]) && (csxButton))
-			csxButton->setPixmap(*Icon[2]);
-
-		if ((cdxButton) && (Icon[3]))
-			cdxButton->setPixmap(*Icon[3]);
-	}
-	else if (attivo == DIMMER_FAULT_STATUS)
-	{
-		if ((Icon[44]) && (csxButton))
-			csxButton->setPixmap(*Icon[44]);
-
-		if ((cdxButton) && (Icon[45]))
-			cdxButton->setPixmap(*Icon[45]);
-	}
-	if (BannerText)
-	{
-		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
-		BannerText->setText(qtesto);
-	}
-	if (SecondaryText)
-	{
-		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(bt_global::font->get(FontManager::TEXT));
-		SecondaryText->setText(qtestoSecondario);
-	}
-}
-
 
 AdjustDimmer::AdjustDimmer(QWidget *parent) :
 	BannAdjust(parent)
@@ -195,9 +129,10 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	AdjustDimmer(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
+	light_value = 20;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("dimmer_broken"), OFF, 20, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
@@ -304,16 +239,14 @@ enum
 };
 
 Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
-	DimmerBase(parent)
+	AdjustDimmer(parent)
 {
-	// TODO: softstart, softstop
-	setRange(5, 100);
-	setStep(DIMMER100_STEP);
-	light_value = 5;
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
-		bt_global::skin->getImage("dimmer_broken"), false);
+
+	light_value = 5;
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
+		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
@@ -321,10 +254,10 @@ Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
 	start_speed = getTextChild(config_node, "softstart").toInt();
 	stop_speed = getTextChild(config_node, "softstop").toInt();
 
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -356,35 +289,34 @@ void Dimmer100New::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			impostaAttivo(it.value().toBool());
-			setValue(light_value);
+			setState(it.value().toBool() ? ON : OFF);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_LEVEL:
-			impostaAttivo(DIMMER_ON);
+			setState(ON);
 			light_value = it.value().toInt();
 			// values too low are not registered by UI
 			if (light_value < 5)
 				light_value = 5;
-			setValue(light_value);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_PROBLEM:
-			impostaAttivo(DIMMER_FAULT_STATUS);
+			setState(BROKEN);
 			break;
 		case LightingDevice::DIM_DIMMER100_LEVEL:
 		{
 			int l = it.value().toInt();
-			// light values are between 100 (min) and 200 (max)
+			// light values are between 0 (min) and 100 (max)
 			light_value = l;
 			if (light_value < 5)
 				light_value = 5;
-			setValue(light_value);
-			impostaAttivo(DIMMER_ON);
+			setLevel(light_value);
+			setState(ON);
 		}
 			break;
 		}
 		++it;
 	}
-	Draw();
 }
 
 
