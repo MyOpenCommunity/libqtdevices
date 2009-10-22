@@ -22,6 +22,7 @@ public:
 	void appendBanner(banner *b);
 	int bannerCount();
 	banner *getBanner(int i);
+	void initBanners();
 
 public slots:
 	void pgUp();

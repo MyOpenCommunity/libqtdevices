@@ -21,6 +21,12 @@ int ContentWidget::bannerCount()
 	return banner_list.size();
 }
 
+void ContentWidget::initBanners()
+{
+	for (int i = 0; i < banner_list.size(); ++i)
+		banner_list.at(i)->inizializza();
+}
+
 banner *ContentWidget::getBanner(int i)
 {
 	return banner_list.at(i);
