@@ -16,11 +16,26 @@
 #include <QWidget>
 
 class QTimer;
+class BtButton;
+class QLabel;
 
 
 #define BUTREGOL_ICON_DIM_X 120
 #define BUTREGOL_ICON_DIM_Y 60
 #define BANREGOL_BUT_DIM 60
+
+// substitute for bannRegolaz
+class BannAdjust : public BannerNew
+{
+Q_OBJECT
+protected:
+	BannAdjust(QWidget *parent);
+	void initBanner(const QString &banner_text);
+	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
+
+private:
+	QLabel *text;
+};
 
 /*!
   \class bannRegolaz

@@ -10,9 +10,43 @@
 
 #include "bannregolaz.h"
 #include "main.h" // TIME_RIP_REGOLAZ
+#include "btbutton.h"
+#include "fontmanager.h" // fontmanager
 
 #include <QTimer>
+#include <QLabel>
+#include <QHBoxLayout>
 
+BannAdjust::BannAdjust(QWidget *parent) :
+	BannerNew(parent)
+{
+	left_button = new BtButton(this);
+	center_left_button = new BtButton(this);
+	center_right_button = new BtButton(this);
+	right_button = new BtButton(this);
+
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(0);
+	hbox->addWidget(left_button);
+	hbox->addWidget(center_left_button);
+	hbox->addWidget(center_right_button);
+	hbox->addWidget(right_button);
+
+	text = createTextLabel(QRect(0, BANREGOL_BUT_DIM, banner_width, banner_height - BANREGOL_BUT_DIM),
+		Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+
+	QVBoxLayout *vbox = new QVBoxLayout(this);
+	vbox->setContentsMargins(0, 0, 0, 0);
+	vbox->setSpacing(0);
+	vbox->addLayout(hbox);
+	vbox->addWidget(text);
+}
+
+void BannAdjust::initBanner(const QString &banner_text)
+{
+	text->setText(banner_text);
+}
 
 bannRegolaz::bannRegolaz(QWidget *parent) : banner(parent)
 {
