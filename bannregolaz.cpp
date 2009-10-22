@@ -55,6 +55,16 @@ void BannAdjust::initBanner(const QString &banner_text)
 	text->setText(banner_text);
 }
 
+void BannAdjust::initBanner(const QString &left, const QString &center_left, const QString &center_right,
+		const QString &right, const QString &banner_text)
+{
+	left_button->setImage(left);
+	center_left_button->setImage(center_left);
+	center_right_button->setImage(center_right);
+	right_button->setImage(right);
+	text->setText(banner_text);
+}
+
 void BannAdjust::setCenterLeftIcon(const QString &image)
 {
 	center_left_button->setImage(image);

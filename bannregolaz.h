@@ -32,7 +32,11 @@ class BannAdjust : public BannerNew
 Q_OBJECT
 protected:
 	BannAdjust(QWidget *parent);
+	// to be used by derived classes which are still graphics (eg. AdjustDimmer)
 	void initBanner(const QString &banner_text);
+	// use this when no state is required
+	void initBanner(const QString &left, const QString &center_left, const QString &center_right,
+		const QString &right, const QString &banner_text);
 	void setCenterLeftIcon(const QString &image);
 	void setCenterRightIcon(const QString &image);
 	BtButton *left_button, *right_button;
