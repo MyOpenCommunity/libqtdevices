@@ -68,7 +68,7 @@ private:
 };
 
 
-class PowerAmplifierPreset : public bannOnOff
+class PowerAmplifierPreset : public BannOnOffNew
 {
 Q_OBJECT
 public:

@@ -4,6 +4,7 @@
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "generic_functions.h" // int trasformaVol(int vol)
 #include "content_widget.h"
+#include "btbutton.h" // needed to directly connect button signals with slots
 
 #include <QVariant> // setProperty
 #include <QDomNode>
@@ -122,19 +123,18 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 
 
 PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list)
-	: bannOnOff(parent)
+	: BannOnOffNew(parent)
 {
 	dev = d;
-	SetIcons(bt_global::skin->getImage("plus"), bt_global::skin->getImage("minus"), QString(),
-		bt_global::skin->getImage("preset"));
+
 	num_preset = 20;
 	fillPresetDesc(preset_list);
-	connect(this, SIGNAL(sxClick()), SLOT(next()));
-	connect(this, SIGNAL(dxClick()), SLOT(prev()));
+	connect(right_button, SIGNAL(clicked()), SLOT(next()));
+	connect(left_button, SIGNAL(clicked()), SLOT(prev()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
-	setText(preset_desc[0]);
-	Draw();
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("preset"),
+		bt_global::skin->getImage("plus"), preset_desc[0]);
 }
 
 void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
@@ -178,10 +178,7 @@ void PowerAmplifierPreset::status_changed(const StatusList &status_list)
 		{
 			int preset = it.value().toInt();
 			if (preset >= 0 && preset < num_preset)
-			{
-				setText(preset_desc[preset]);
-				Draw();
-			}
+				setBannerText(preset_desc[preset]);
 			else
 				qWarning("Preset value (%d) is out of admitted range! [0 - %d]", preset, num_preset);
 		}
