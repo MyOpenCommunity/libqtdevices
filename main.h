@@ -432,9 +432,6 @@ enum pulsType
  * maximum number of characters describing a file path
  */
 #define MAX_PATH 50
-/*! \def TIME_RIP_REGOLAZ  time [ms] between two repetitionof a regulation command during the same pressure
- */
-#define TIME_RIP_REGOLAZ 500
 
 /// The simbol of temperature degrees
 #define TEMP_DEGREES "\272"

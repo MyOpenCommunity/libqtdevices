@@ -9,13 +9,13 @@
 ****************************************************************/
 
 #include "bannregolaz.h"
-#include "main.h" // TIME_RIP_REGOLAZ
 #include "btbutton.h"
 #include "fontmanager.h" // fontmanager
 
-#include <QTimer>
 #include <QLabel>
 #include <QHBoxLayout>
+
+#define TIME_RIP_REGOLAZ 500
 
 BannAdjust::BannAdjust(QWidget *parent) :
 	BannerNew(parent)
@@ -41,9 +41,13 @@ BannAdjust::BannAdjust(QWidget *parent) :
 	vbox->addLayout(hbox);
 	vbox->addWidget(text);
 
-	// TODO: must be completed with timings!
-	connect(center_left_button, SIGNAL(clicked()), SIGNAL(center_left_clicked()));
-	connect(center_right_button, SIGNAL(clicked()), SIGNAL(center_right_clicked()));
+	timer.setInterval(TIME_RIP_REGOLAZ);
+	// start rate controlling timer
+	connect(center_left_button, SIGNAL(pressed()), SLOT(startLeftTimer()));
+	connect(center_right_button, SIGNAL(pressed()), SLOT(startRightTimer()));
+
+	connect(center_left_button, SIGNAL(released()), &timer, SLOT(stop()));
+	connect(center_right_button, SIGNAL(released()), &timer, SLOT(stop()));
 }
 
 void BannAdjust::initBanner(const QString &banner_text)
@@ -59,6 +63,26 @@ void BannAdjust::setCenterLeftIcon(const QString &image)
 void BannAdjust::setCenterRightIcon(const QString &image)
 {
 	center_right_button->setImage(image);
+}
+
+void BannAdjust::startLeftTimer()
+{
+	if (!timer.isActive())
+	{
+		disconnect(&timer, SIGNAL(timeout()));
+		connect(&timer, SIGNAL(timeout()), SIGNAL(center_left_clicked()));
+		timer.start();
+	}
+}
+
+void BannAdjust::startRightTimer()
+{
+	if (!timer.isActive())
+	{
+		disconnect(&timer, SIGNAL(timeout()));
+		connect(&timer, SIGNAL(timeout()), SIGNAL(center_right_clicked()));
+		timer.start();
+	}
 }
 
 

@@ -13,9 +13,8 @@
 
 #include "banner.h"
 
-#include <QWidget>
+#include <QTimer>
 
-class QTimer;
 class BtButton;
 class QLabel;
 
@@ -25,6 +24,9 @@ class QLabel;
 #define BANREGOL_BUT_DIM 60
 
 // substitute for bannRegolaz
+/*
+ * A class to control the rate of signals emitted
+ */
 class BannAdjust : public BannerNew
 {
 Q_OBJECT
@@ -35,9 +37,14 @@ protected:
 	void setCenterRightIcon(const QString &image);
 	BtButton *left_button, *right_button;
 
+private slots:
+	void startLeftTimer();
+	void startRightTimer();
+
 private:
 	BtButton *center_left_button, *center_right_button;
 	QLabel *text;
+	QTimer timer;
 
 signals:
 	void center_left_clicked();
