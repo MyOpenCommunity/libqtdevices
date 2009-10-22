@@ -134,23 +134,76 @@ void DimmerBase::Draw()
 }
 
 
-DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
-	DimmerBase(parent)
+AdjustDimmer::AdjustDimmer(QWidget *parent) :
+	BannAdjust(parent)
 {
-	setRange(20, 100);
-	setStep(10);
-	impostaAttivo(false);
-	light_value = 20;
+	current_level = 10;
+}
+
+void AdjustDimmer::initBanner(const QString &left, const QString &_center_left, const QString &_center_right,
+		const QString &right, const QString &_broken, States init_state, int init_level,
+		const QString &banner_text)
+{
+	BannAdjust::initBanner(banner_text);
+
+	left_button->setImage(left);
+	right_button->setImage(right);
+
+	center_left = _center_left;
+	center_right = _center_right;
+	broken = _broken;
+
+	setState(init_state);
+	setLevel(init_level);
+}
+
+void AdjustDimmer::setState(States new_state)
+{
+	switch (new_state)
+	{
+	case ON:
+		setOnIcons();
+		break;
+	case OFF:
+		setCenterLeftIcon(getBostikName(center_left, "sxl0"));
+		setCenterRightIcon(getBostikName(center_right, "dxl0"));
+		break;
+	case BROKEN:
+		setCenterLeftIcon(getBostikName(broken, "sx"));
+		setCenterRightIcon(getBostikName(broken, "dx"));
+		break;
+	}
+	current_state = new_state;
+}
+
+void AdjustDimmer::setOnIcons()
+{
+	setCenterLeftIcon(getBostikName(center_left, QString("sxl") + QString::number(current_level)));
+	setCenterRightIcon(getBostikName(center_right, QString("dxl") + QString::number(current_level)));
+}
+
+void AdjustDimmer::setLevel(int level)
+{
+	current_level = level;
+	if (current_state == ON)
+		setOnIcons();
+}
+
+
+
+DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
+	AdjustDimmer(parent)
+{
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
-		bt_global::skin->getImage("dimmer_broken"), true);
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
+		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("dimmer_broken"), OFF, 20, getTextChild(config_node, "descr"));
 
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(decreaseLevel()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -182,22 +235,21 @@ void DimmerNew::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			impostaAttivo(it.value().toBool());
-			setValue(light_value);
+			setState(it.value().toBool() ? ON : OFF);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_LEVEL:
-			impostaAttivo(DIMMER_ON);
+			setState(ON);
 			light_value = it.value().toInt();
-			setValue(light_value);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_PROBLEM:
 			// TODO: what happens if we are in dimmer fault state?
-			impostaAttivo(DIMMER_FAULT_STATUS);
+			setState(BROKEN);
 			break;
 		}
 		++it;
 	}
-	Draw();
 }
 
 

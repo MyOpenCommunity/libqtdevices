@@ -47,7 +47,31 @@ public:
 };
 
 // TODO: to be renamed when dimmer is gone
-class DimmerNew : public DimmerBase
+class AdjustDimmer : public BannAdjust
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+		BROKEN,
+	};
+	AdjustDimmer(QWidget *parent);
+	void initBanner(const QString &left, const QString &center_left, const QString &center_right,
+		const QString &right, const QString &broken, States init_state, int init_level,
+		const QString &banner_text);
+	void setLevel(int level);
+	void setState(States new_state);
+
+private:
+	void setOnIcons();
+	int current_level;
+	States current_state;
+	QString center_left, center_right, broken;
+};
+
+class DimmerNew : public AdjustDimmer
 {
 Q_OBJECT
 public:
