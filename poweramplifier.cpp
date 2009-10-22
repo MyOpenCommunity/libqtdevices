@@ -100,14 +100,10 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 	b->Draw();
 	content_widget->appendBanner(b);
 
-	b = new PowerAmplifierTreble(dev, this);
-	b->setText(tr("Treble"));
-	b->Draw();
+	b = new PowerAmplifierTreble(dev, tr("Treble"), this);
 	content_widget->appendBanner(b);
 
-	b = new PowerAmplifierBass(dev, this);
-	b->setText(tr("Bass"));
-	b->Draw();
+	b = new PowerAmplifierBass(dev, tr("Bass"), this);
 	content_widget->appendBanner(b);
 
 	b = new PowerAmplifierBalance(dev, this);
@@ -197,14 +193,16 @@ void PowerAmplifierPreset::next()
 }
 
 
-PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff2scr(parent)
+PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent) :
+	BannOnOff2Labels(parent)
 {
 	dev = d;
-	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString(),
-		bt_global::skin->getImage("treble"));
-	connect(this, SIGNAL(sxClick()), SLOT(down()));
-	connect(this, SIGNAL(dxClick()), SLOT(up()));
+	setCentralTextSecondaryColor(true);
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("treble"),
+		bt_global::skin->getImage("plus"), ON, banner_text, "");
+
+	connect(left_button, SIGNAL(clicked()), SLOT(down()));
+	connect(right_button, SIGNAL(clicked()), SLOT(up()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 	showLevel(0);
 }
@@ -240,19 +238,20 @@ void PowerAmplifierTreble::showLevel(int level)
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	setSecondaryText(desc);
-	Draw();
+	setCentralText(desc);
 }
 
 
-PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff2scr(parent)
+PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent) :
+	BannOnOff2Labels(parent)
 {
 	dev = d;
-	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString(),
-		bt_global::skin->getImage("bass"));
-	connect(this, SIGNAL(sxClick()), SLOT(down()));
-	connect(this, SIGNAL(dxClick()), SLOT(up()));
+	setCentralTextSecondaryColor(true);
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("bass"),
+		bt_global::skin->getImage("plus"), ON, banner_text, "");
+
+	connect(left_button, SIGNAL(clicked()), SLOT(down()));
+	connect(right_button, SIGNAL(clicked()), SLOT(up()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 	showLevel(0);
 }
@@ -288,8 +287,7 @@ void PowerAmplifierBass::showLevel(int level)
 {
 	QString desc;
 	desc.sprintf("%s%d", level > 0 ? "+" : "", level);
-	setSecondaryText(desc);
-	Draw();
+	setCentralText(desc);
 }
 
 

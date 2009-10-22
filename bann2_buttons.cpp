@@ -6,6 +6,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QVariant> // used for setProperty
 
 
 #define BAN2BUT_BUT_DIM 60
@@ -177,6 +178,11 @@ void BannOnOff2Labels::setCentralText(const QString &str)
 	center_text->setText(str);
 }
 
+void BannOnOff2Labels::setCentralTextSecondaryColor(bool secondary)
+{
+	center_text->setProperty("SecondFgColor", secondary);
+}
+
 void BannOnOff2Labels::setState(States new_state)
 {
 	switch (new_state)
@@ -230,6 +236,7 @@ bannOnOff::bannOnOff(QWidget *parent) : banner(parent)
 }
 
 
+#if 0
 bannOnOff2scr::bannOnOff2scr(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, 0, 0, BANONOFF2SCR_BUT_DIM , BANONOFF2SCR_BUT_DIM);
@@ -238,4 +245,5 @@ bannOnOff2scr::bannOnOff2scr(QWidget *parent) : banner(parent)
 	addItem(ICON, banner_width-BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, 0, BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
 	addItem(TEXT2, BANONOFF2SCR_BUT_DIM, 0, banner_width-2*BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
 }
+#endif
 

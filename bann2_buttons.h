@@ -83,6 +83,7 @@ protected:
 	void initBanner(const QString &left, const QString &_center, const QString &right,
 		States init_state, const QString &banner_text, const QString &second_text);
 	void setCentralText(const QString &str);
+	void setCentralTextSecondaryColor(bool secondary);
 	void setState(States new_state);
 
 	BtButton *right_button, *left_button;
@@ -168,6 +169,7 @@ public:
 };
 
 
+#if 0
 /*!
   \class bannOnOff2scr
   \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
@@ -180,5 +182,6 @@ Q_OBJECT
 public:
 	bannOnOff2scr(QWidget *w=0);
 };
+#endif
 
 #endif // BANN2_BUTTONS_H
