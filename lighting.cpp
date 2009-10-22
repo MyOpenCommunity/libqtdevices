@@ -70,7 +70,9 @@ void Lighting::loadItems(const QDomNode &config_node)
 			b = new TempLight(this, item);
 			break;
 		case ATTUAT_VCT_LS:
-			b = new attuatPuls(this, where, img1, img2, VCT_LS);
+			//DELETE
+			//b = new attuatPuls(this, where, img1, img2, VCT_LS);
+			b = new ButtonActuator(this, item, VCT_LS);
 			break;
 		case DIMMER_100:
 			// DELETE
@@ -113,9 +115,10 @@ void Lighting::loadItems(const QDomNode &config_node)
 		default:
 			qFatal("Type of item not handled on lighting page!");
 		}
-		b->setText(getTextChild(item, "descr"));
+		//DELETE
+		//b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		b->Draw();
+		//b->Draw();
 		content_widget->appendBanner(b);
 	}
 }
