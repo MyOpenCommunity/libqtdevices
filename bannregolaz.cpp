@@ -41,12 +41,28 @@ BannAdjust::BannAdjust(QWidget *parent) :
 	vbox->setSpacing(0);
 	vbox->addLayout(hbox);
 	vbox->addWidget(text);
+
+	// TODO: must be completed with timings!
+	connect(center_left_button, SIGNAL(clicked()), SIGNAL(center_left_clicked()));
+	connect(center_right_button, SIGNAL(clicked()), SIGNAL(center_right_clicked()));
 }
 
 void BannAdjust::initBanner(const QString &banner_text)
 {
 	text->setText(banner_text);
 }
+
+void BannAdjust::setCenterLeftIcon(const QString &image)
+{
+	center_left_button->setImage(image);
+}
+
+void BannAdjust::setCenterRightIcon(const QString &image)
+{
+	center_right_button->setImage(image);
+}
+
+
 
 bannRegolaz::bannRegolaz(QWidget *parent) : banner(parent)
 {

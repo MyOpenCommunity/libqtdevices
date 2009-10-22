@@ -31,10 +31,17 @@ Q_OBJECT
 protected:
 	BannAdjust(QWidget *parent);
 	void initBanner(const QString &banner_text);
-	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
+	void setCenterLeftIcon(const QString &image);
+	void setCenterRightIcon(const QString &image);
+	BtButton *left_button, *right_button;
 
 private:
+	BtButton *center_left_button, *center_right_button;
 	QLabel *text;
+
+signals:
+	void center_left_clicked();
+	void center_right_clicked();
 };
 
 /*!
