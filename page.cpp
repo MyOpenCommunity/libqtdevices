@@ -38,9 +38,14 @@ Page::Page(QWidget *parent) : QWidget(parent)
 		main_window->addPage(this);
 }
 
-void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar)
+void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget)
 {
 	QBoxLayout *l = new QVBoxLayout(this);
+	// top_widget (if present) is a widget that must be at the top of the page,
+	// limiting the height (so even the navigation) of the ContentWidget
+	if (top_widget)
+		l->addWidget(top_widget);
+
 	l->addWidget(content, 1);
 	l->addWidget(nav_bar);
 	l->setContentsMargins(0, 5, 0, 10);
@@ -55,9 +60,9 @@ void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar)
 	content_widget = content;
 }
 
-void Page::buildPage()
+void Page::buildPage(QWidget *top_widget)
 {
-	buildPage(new ContentWidget, new NavigationBar);
+	buildPage(new ContentWidget, new NavigationBar, top_widget);
 }
 
 void Page::activateLayout()

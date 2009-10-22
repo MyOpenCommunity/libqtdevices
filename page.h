@@ -69,8 +69,8 @@ protected:
 	ContentWidget *content_widget;
 	Page *currentPage();
 	void startTransition(const QPixmap &prev_image);
-	void buildPage(ContentWidget *content, NavigationBar *nav_bar);
-	void buildPage();
+	void buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget=0);
+	void buildPage(QWidget *top_widget=0);
 
 protected slots:
 	virtual void forwardClick() {} // Do nothing by default
