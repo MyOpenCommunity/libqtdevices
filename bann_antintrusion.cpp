@@ -185,7 +185,6 @@ impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconI
 	// BUT2 and 4 are actually both on the left of the banner.
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disinserisci()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Inserisci()));
-	connect(this,SIGNAL(sxClick()), parentWidget(),SIGNAL(goDx()));
 
 	// Crea o preleva il dispositivo dalla cache
 	dev = bt_global::devices_cache.get_impanti_device();

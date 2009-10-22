@@ -61,6 +61,8 @@ class impAnti : public bann3ButLab
 Q_OBJECT
 public:
 	impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive);
+	void inizializza(bool forza = false);
+
 public slots:
 	void status_changed(QList<device_status*>);
 	void partChanged(zonaAnti*);
@@ -79,7 +81,7 @@ private:
 	QString passwd;
 	device *dev;
 private slots:
-	void inizializza(bool forza = false);
+
 	void Inserisci();
 	void Disinserisci();
 	void Insert1();
