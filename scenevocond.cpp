@@ -704,8 +704,8 @@ void device_condition::setup_device(QString s)
 	dev = bt_global::add_device_to_cache(dev);
 	// Get status changed events back
 	//DELETE
-	//connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-	//	this, SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
