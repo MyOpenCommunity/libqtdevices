@@ -69,7 +69,7 @@ void SingleActuator::status_changed(const StatusList &status_list)
 
 
 
-#if 1
+#if 0
 attuatAutom::attuatAutom(QWidget *parent,QString where,QString IconaSx, QString IconaDx, QString icon,
 	QString pressedIcon) : bannOnOff(parent)
 {
@@ -135,7 +135,7 @@ void attuatAutom::inizializza(bool forza)
 	else
 		dev->sendInit(f);
 }
-
+#endif
 
 attuatPuls::attuatPuls(QWidget *parent, QString where, QString IconaSx, QString icon, char tipo)
 	: bannPuls(parent)
@@ -178,5 +178,5 @@ void attuatPuls::Disattiva()
 		break;
 	}
 }
-#endif
+
 

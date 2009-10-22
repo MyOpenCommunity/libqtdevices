@@ -37,7 +37,7 @@ private:
 };
 
 
-#if 1
+#if 0
 /*!
  * \class attuatAutom
  * \brief This is the \a automation \a actuator-banner class.
@@ -62,6 +62,7 @@ private slots:
 	void Attiva();
 	void Disattiva();
 };
+#endif
 
 
 /*!
@@ -84,6 +85,5 @@ private slots:
 private:
 	char type;
 };
-#endif
 
 #endif
