@@ -121,7 +121,7 @@ private:
 	int light_value;
 };
 
-class Dimmer100Group : public bannRegolaz
+class Dimmer100Group : public BannAdjust
 {
 Q_OBJECT
 public:

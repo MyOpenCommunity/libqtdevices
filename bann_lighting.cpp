@@ -322,12 +322,13 @@ void Dimmer100New::status_changed(const StatusList &sl)
 
 
 Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
-	bannRegolaz(parent)
+	BannAdjust(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("dimmer_grp_dx"), bt_global::skin->getImage("dimmer_grp_sx"));
-	setText(getTextChild(config_node, "descr"));
+
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer_grp_sx"),
+		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"),
+		getTextChild(config_node, "descr"));
 
 	// load all devices with relative start and stop speed
 	QList<QDomNode> elements = getChildren(config_node, "element");
@@ -342,10 +343,10 @@ Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
 	Q_ASSERT_X(devices.size() == stop_speed.size(), "Dimmer100Group::Dimmer100Group",
 		"Device number and softstop number are different");
 
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
 }
 
 void Dimmer100Group::lightOff()
