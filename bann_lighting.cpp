@@ -569,7 +569,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 }
 
 
-#if 1
+#if 0
 
 dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
 	bool to_be_connect) : bannRegolaz(parent)

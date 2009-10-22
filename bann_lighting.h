@@ -195,7 +195,7 @@ private:
 	LightingDevice *dev;
 };
 
-#if 1
+#if 0
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.
