@@ -31,8 +31,8 @@ SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QSt
 	// TODO: read pull mode from config
 	dev = bt_global::add_device_to_cache(new LightingDevice(address));
 
-	connect(sx_button, SIGNAL(clicked()), SLOT(deactivate()));
-	connect(dx_button, SIGNAL(clicked()), SLOT(activate()));
+	connect(left_button, SIGNAL(clicked()), SLOT(deactivate()));
+	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 

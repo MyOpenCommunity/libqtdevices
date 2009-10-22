@@ -43,7 +43,8 @@ Q_OBJECT
 protected:
 	BannOnOffNew(QWidget *parent);
 	void initBanner(const QString &left, const QString &center, const QString &right, const QString &text);
-	BtButton *sx_button, *dx_button;
+	void setBannerText(const QString &str);
+	BtButton *left_button, *right_button;
 
 private:
 	void loadIcons(const QString &l, const QString &c, const QString &r);

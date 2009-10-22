@@ -21,11 +21,11 @@
 BannOnOffNew::BannOnOffNew(QWidget *parent) :
 	BannerNew(parent)
 {
-	sx_button = new BtButton(this);
-	sx_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	left_button = new BtButton(this);
+	left_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
 
-	dx_button = new BtButton(this);
-	dx_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	right_button = new BtButton(this);
+	right_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
 
 	text = createTextLabel(QRect(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM),
 		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
@@ -47,9 +47,14 @@ void BannOnOffNew::loadIcons(const QString &l, const QString &c, const QString &
 	center = c;
 	right = r;
 
-	sx_button->setImage(left);
-	dx_button->setImage(right);
+	left_button->setImage(left);
+	right_button->setImage(right);
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(c));
+}
+
+void BannOnOffNew::setBannerText(const QString &str)
+{
+	text->setText(str);
 }
 
 

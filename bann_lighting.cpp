@@ -50,8 +50,8 @@ LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
 		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL));
 
-	connect(sx_button, SIGNAL(clicked()), SLOT(lightOn()));
-	connect(dx_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOff()));
 }
 
 void LightGroup::lightOff()
