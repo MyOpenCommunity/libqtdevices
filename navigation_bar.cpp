@@ -3,6 +3,7 @@
 #include "skinmanager.h" // bt_global::skin
 
 #include <QBoxLayout>
+#include <QFileInfo>
 
 
 NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up_icon, QString back_icon, QWidget *parent)
@@ -23,7 +24,10 @@ void NavigationBar::addButton(QString icon, const char *signal)
 	{
 		BtButton *b = new BtButton;
 		connect(b, SIGNAL(clicked()), signal);
-		b->setImage(bt_global::skin->getImage(icon));
+		if (QFileInfo(icon).exists())
+			b->setImage(icon); // for retrocompatibility
+		else
+			b->setImage(bt_global::skin->getImage(icon));
 		main_layout->addWidget(b);
 	}
 }
