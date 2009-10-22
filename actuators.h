@@ -36,6 +36,20 @@ private:
 	LightingDevice *dev;
 };
 
+class ButtonActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	ButtonActuator(QWidget *parent, const QDomNode &config_node, int type);
+
+private slots:
+	void activate();
+	void deactivate();
+
+private:
+	int type;
+};
+
 
 #if 0
 /*!
