@@ -20,10 +20,10 @@
 BannAdjust::BannAdjust(QWidget *parent) :
 	BannerNew(parent)
 {
-	left_button = new BtButton(this);
-	center_left_button = new BtButton(this);
-	center_right_button = new BtButton(this);
-	right_button = new BtButton(this);
+	left_button = new BtButton;
+	center_left_button = new BtButton;
+	center_right_button = new BtButton;
+	right_button = new BtButton;
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
@@ -33,8 +33,7 @@ BannAdjust::BannAdjust(QWidget *parent) :
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
 
-	text = createTextLabel(QRect(0, BANREGOL_BUT_DIM, banner_width, banner_height - BANREGOL_BUT_DIM),
-		Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
 
 	QVBoxLayout *vbox = new QVBoxLayout(this);
 	vbox->setContentsMargins(0, 0, 0, 0);
