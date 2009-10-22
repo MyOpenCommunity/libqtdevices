@@ -162,6 +162,11 @@ void DimmerNew::decreaseLevel()
 	dev->decreaseLevel();
 }
 
+void DimmerNew::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
 void DimmerNew::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
@@ -280,6 +285,11 @@ void Dimmer100New::increaseLevel()
 void Dimmer100New::decreaseLevel()
 {
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
+}
+
+void Dimmer100New::inizializza(bool forza)
+{
+	dev->requestDimmer100Status();
 }
 
 void Dimmer100New::status_changed(const StatusList &sl)

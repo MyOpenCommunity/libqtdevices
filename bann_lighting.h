@@ -72,6 +72,7 @@ class DimmerNew : public AdjustDimmer
 Q_OBJECT
 public:
 	DimmerNew(QWidget *parent, const QDomNode &config_node, QString where);
+	virtual void inizializza(bool forza = false);
 
 private slots:
 	void lightOn();
@@ -107,6 +108,7 @@ class Dimmer100New : public AdjustDimmer
 Q_OBJECT
 public:
 	Dimmer100New(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza = false);
 
 private slots:
 	void lightOn();
