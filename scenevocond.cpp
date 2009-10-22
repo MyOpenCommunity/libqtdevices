@@ -780,7 +780,7 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
-	qFatal("Old status changed on device_condition_aux not implemented!");
+	qFatal("Old status changed on device_condition_light_status not implemented!");
 	/*
 	int trig_v = device_condition::get_condition_value();
 	stat_var curr_status(stat_var::ON_OFF);
@@ -1106,7 +1106,7 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
-	qFatal("Old status changed on device_condition_aux not implemented!");
+	qFatal("Old status changed on device_condition_dimming not implemented!");
 	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
@@ -1418,7 +1418,7 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
-	qFatal("Old status changed on device_condition_aux not implemented!");
+	qFatal("Old status changed on device_condition_dimmin_100 not implemented!");
 	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
