@@ -59,32 +59,40 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		SkinContext cont(getTextChild(type, "cid").toInt());
 		banner *b;
 		EnergyCost *ec_cost = 0;
-		if (getElement(type, "currency/ab").text().toInt() == 1)
-		{
-			b = new bannOnOff(this);
-			appendBanner(b); // to increase the serial number
-			b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
-					QString(), bt_global::skin->getImage("energy_type"));
-
-			ec_cost = new EnergyCost(type, b->getSerNum());
-			b->connectSxButton(ec_cost);
-		}
-		else
-		{
-			b = new bannPuls(this);
-			appendBanner(b);
-			b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
-		}
+		QString descr = getTextChild(type, "descr");
 
 		EnergyInterface *en_interf = new EnergyInterface(type);
 		interfaces.push_back(en_interf);
-		b->connectDxButton(en_interf);
+
+		if (getElement(type, "currency/ab").text().toInt() == 1)
+		{
+			BannOnOffNew *bann = new BannOnOffNew(this);
+
+			appendBanner(bann); // to increase the serial number
+			bann->initBanner(bt_global::skin->getImage("currency_exchange"),
+				bt_global::skin->getImage("energy_type"), bt_global::skin->getImage("select"),
+				descr);
+
+			ec_cost = new EnergyCost(type, b->getSerNum());
+			bann->connectLeftButton(ec_cost);
+			bann->connectRightButton(en_interf);
+			b = bann;
+		}
+		else
+		{
+			BannSinglePuls *bann = new BannSinglePuls(this);
+			appendBanner(bann);
+			bann->initBanner(bt_global::skin->getImage("select"),
+				bt_global::skin->getImage("energy_type"), descr);
+			bann->connectRightButton(en_interf);
+			b = bann;
+		}
+
 		if (ec_cost)
 		{
 			connect(ec_cost, SIGNAL(consValueChanged(float)), en_interf, SLOT(changeConsRate(float)));
 			connect(ec_cost, SIGNAL(prodValueChanged(float)), en_interf, SLOT(changeProdRate(float)));
 		}
-		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
