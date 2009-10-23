@@ -29,6 +29,9 @@ public slots:
 	void pgDown();
 	void resetIndex();
 
+signals:
+	void displayScrollButtons(bool display);
+
 protected:
 	void showEvent(QShowEvent *e);
 

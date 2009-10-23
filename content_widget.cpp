@@ -72,6 +72,7 @@ void ContentWidget::updateLayout()
 			total_height += banner_list.at(i)->sizeHint().height();
 
 		need_pagination = total_height > area_height;
+		emit displayScrollButtons(need_pagination);
 	}
 
 	need_update = false;

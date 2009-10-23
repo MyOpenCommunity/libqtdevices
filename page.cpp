@@ -41,7 +41,7 @@ Page::Page(QWidget *parent) : QWidget(parent)
 void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget)
 {
 	QBoxLayout *l = new QVBoxLayout(this);
-	// top_widget (if present) is a widget that must be at the top of the page,
+	// the top_widget (if present) is a widget that must be at the top of the page,
 	// limiting the height (so even the navigation) of the ContentWidget
 	if (top_widget)
 		l->addWidget(top_widget);
@@ -56,6 +56,7 @@ void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *to
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(forwardClick()));
 	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
 	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	content_widget = content;
 }
