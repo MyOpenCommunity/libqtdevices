@@ -7,6 +7,7 @@
 #include "screensaverpage.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "content_widget.h"
+#include "btmain.h" // bt_global::btmain
 
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
@@ -35,8 +36,8 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	content_widget->appendBanner(b);
 
 	b = new calibration(this, img_items);
-	connect(b, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
-	connect(b, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
+	connect(b, SIGNAL(startCalib()), SLOT(startCalibration()));
+	connect(b, SIGNAL(endCalib()), SLOT(endCalibration()));
 	b->setText(tr("Calibration"));
 	b->Draw();
 	content_widget->appendBanner(b);
@@ -52,5 +53,15 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b->setText(tr("Screen Saver"));
 	b->Draw();
 	content_widget->appendBanner(b);
+}
+
+void DisplayPage::startCalibration()
+{
+	bt_global::btmain->startCalib();
+}
+
+void DisplayPage::endCalibration()
+{
+	bt_global::btmain->endCalib();
 }
 

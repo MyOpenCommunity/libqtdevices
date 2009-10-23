@@ -161,16 +161,6 @@ signals:
 	\brief Parent changed
 	*/
 	void parentChanged(QWidget *newParent);
-
-	/*!
-	\brief emitted on calibration start
-	*/
-	void startCalib();
-
-	/*!
-	\brief emitted on calibration end
-	*/
-	void endCalib();
 };
 
 #endif // SOTTOMENU_H

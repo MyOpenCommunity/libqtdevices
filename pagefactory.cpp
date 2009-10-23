@@ -119,8 +119,6 @@ Page *getPage(int id)
 	{
 		Settings *p = new Settings(page_node);
 		p->forceDraw();
-		QObject::connect(p, SIGNAL(startCalib()), bt_global::btmain, SLOT(startCalib()));
-		QObject::connect(p, SIGNAL(endCalib()), bt_global::btmain, SLOT(endCalib()));
 		page = p;
 		break;
 	}
