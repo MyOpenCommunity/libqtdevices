@@ -102,10 +102,6 @@ signals:
 
 private:
 /*!
-  \param <numRighe> row number of the object
-*/
-	uchar numRighe;
-/*!
   \param <impianto> alarm plant
 */
 	impAnti* impianto;

@@ -20,7 +20,6 @@
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	tasti = NULL;
-	numRighe = NUM_RIGHE;
 	previous_page = 0;
 
 	// We have to use a layout for the top_widget, in order to define an appropriate
