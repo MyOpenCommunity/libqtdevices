@@ -409,7 +409,7 @@ doorphone_device::doorphone_device(QString w, bool p, int g) : device(QString("6
 }
 
 // Imp.anti device
-impanti_device::impanti_device(QString w, bool p, int g) : device(QString("16"), w, p, g)
+impanti_device::impanti_device(QString w, bool p, int g) : device(QString("5"), w, p, g)
 {
 	qDebug("impanti_device::impanti_device()");
 	stat.append(new device_status_impanti());
