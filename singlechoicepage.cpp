@@ -1,6 +1,7 @@
 #include "singlechoicepage.h"
 #include "main.h" // for ICON_{OK,VUOTO}
 #include "bann1_button.h" // bannOnSx
+#include "navigation_bar.h"
 #include "content_widget.h"
 #include "btbutton.h"
 
@@ -9,10 +10,10 @@
 
 SingleChoicePage::SingleChoicePage()
 {
-	buildPage();
+	buildPage(new ContentWidget, new NavigationBar(ICON_OK));
 	buttons.setExclusive(true);
 
-	connect(this, SIGNAL(goDx()), SLOT(okPressed()));
+	connect(this, SIGNAL(forwardClick()), SLOT(okPressed()));
 }
 
 void SingleChoicePage::addBanner(const QString &text, int id)
