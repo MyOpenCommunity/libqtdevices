@@ -53,7 +53,7 @@ void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *to
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(forwardClick()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
 	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
 	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));

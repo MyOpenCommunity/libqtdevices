@@ -72,9 +72,6 @@ protected:
 	void buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget=0);
 	void buildPage(QWidget *top_widget=0);
 
-protected slots:
-	virtual void forwardClick() {} // Do nothing by default
-
 private:
 	static MainWindow *main_window;
 	static Client *client_richieste;
@@ -84,6 +81,7 @@ private:
 signals:
 	/// Emitted when the page is closed.
 	void Closed();
+	void forwardClick();
 };
 
 

@@ -6,6 +6,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "content_widget.h"
 #include "navigation_bar.h"
+#include "btbutton.h"
 
 #include <openmsg.h>
 
@@ -30,10 +31,15 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	l->setSpacing(0);
 	l->setContentsMargins(0, 0, 0, 0);
 
+	// TODO: we introduce a double dependency to customize the image of the forward
+	// button and to obtain a reference of it (to show/hide the button).
+	// We can do better!
 	NavigationBar *nav_bar = new NavigationBar(IMG_PATH "btnparzializzazione.png");
 	buildPage(new ContentWidget, nav_bar, top_widget);
+	forward_button = nav_bar->forward_button;
 
 	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));
+	connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
 	curr_alarm = -1;
 	loadItems(config_node);
 	Q_ASSERT_X(impianto, "Antintrusion::Antintrusion", "Impianto not found on the configuration file!");
@@ -44,11 +50,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
 			SLOT(requestStatusIfCurrentWidget(Page*)));
 	subscribe_monitor(5);
-}
-
-void Antintrusion::forwardClick()
-{
-	Parzializza();
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -125,18 +126,18 @@ Antintrusion::~Antintrusion()
 void Antintrusion::IsParz(bool ab)
 {
 	qDebug("antintrusione::IsParz(%d)", ab);
-/*
+
 	if (ab)
 	{
-		connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-		zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
+		connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
+		forward_button->show();
 	}
 	else
 	{
-		disconnect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-		zone->setNavBarMode(3,"");
+		disconnect(this, SIGNAL(forwardClick()), this, SLOT(Parzializza()));
+		forward_button->hide();
 	}
-*/
+
 }
 
 void Antintrusion::Parzializza()

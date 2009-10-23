@@ -13,6 +13,10 @@ public:
 	NavigationBar(QString forward_icon=QString(), QString down_icon="scroll_down",
 		QString up_icon="scroll_up", QString back_icon="back", QWidget *parent=0);
 
+	// the forward button is a common customization of the NavigationBar, so we
+	// do it public
+	BtButton *forward_button;
+
 public slots:
 	void displayScrollButtons(bool display);
 
@@ -26,7 +30,7 @@ protected:
 	virtual QSize sizeHint() const;
 
 private:
-	BtButton *back_button, *up_button, *down_button, *forward_button;
+	BtButton *back_button, *up_button, *down_button;
 
 	BtButton *createButton(QString icon, const char *signal, int pos);
 };

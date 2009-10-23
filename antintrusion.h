@@ -22,6 +22,7 @@
 
 class impAnti;
 class zonaAnti;
+class BtButton;
 class Keypad;
 class allarme;
 class QDomNode;
@@ -99,9 +100,6 @@ signals:
 */
 	void clearChanged();
 
-protected slots:
-	virtual void forwardClick();
-
 private:
 /*!
   \param <numRighe> row number of the object
@@ -128,6 +126,7 @@ private:
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
 	QTimer *t;
+	BtButton *forward_button; // the forward button of the navigation bar
 
 	Page *previous_page;
 	void loadItems(const QDomNode &config_node);
