@@ -244,6 +244,7 @@ QSize bann2ButLab::sizeHint() const
 
 
 
+#if 0
 bannOnOff::bannOnOff(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
@@ -253,7 +254,6 @@ bannOnOff::bannOnOff(QWidget *parent) : banner(parent)
 }
 
 
-#if 0
 bannOnOff2scr::bannOnOff2scr(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, 0, 0, BANONOFF2SCR_BUT_DIM , BANONOFF2SCR_BUT_DIM);

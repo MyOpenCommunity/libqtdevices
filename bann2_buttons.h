@@ -159,6 +159,7 @@ protected:
 };
 
 
+#if 0
 /*!
   \class bannOnOff
   \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
@@ -173,7 +174,6 @@ public:
 };
 
 
-#if 0
 /*!
   \class bannOnOff2scr
   \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
