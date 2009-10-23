@@ -38,20 +38,41 @@ private:
 	QList<LightingDevice *> devices;
 };
 
-class DimmerBase : public bannRegolaz
+
+/*
+ * A derived class of BannAdjust which handles all dimmer state changes (both levels and states).
+ */
+class AdjustDimmer : public BannAdjust
 {
 Q_OBJECT
-public:
-	DimmerBase(QWidget *parent);
-	virtual void Draw();
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+		BROKEN,
+	};
+	AdjustDimmer(QWidget *parent);
+	void initBanner(const QString &left, const QString &center_left, const QString &center_right,
+		const QString &right, const QString &broken, States init_state, int init_level,
+		const QString &banner_text);
+	void setLevel(int level);
+	void setState(States new_state);
+
+private:
+	void setOnIcons();
+	int current_level;
+	States current_state;
+	QString center_left, center_right, broken;
 };
 
 // TODO: to be renamed when dimmer is gone
-class DimmerNew : public DimmerBase
+class DimmerNew : public AdjustDimmer
 {
 Q_OBJECT
 public:
 	DimmerNew(QWidget *parent, const QDomNode &config_node, QString where);
+	virtual void inizializza(bool forza = false);
 
 private slots:
 	void lightOn();
@@ -65,7 +86,7 @@ private:
 	int light_value;
 };
 
-class DimmerGroup : public bannRegolaz
+class DimmerGroup : public BannAdjust
 {
 Q_OBJECT
 public:
@@ -82,11 +103,12 @@ private:
 };
 
 // TODO: to be renamed when dimmer100 is gone
-class Dimmer100New : public DimmerBase
+class Dimmer100New : public AdjustDimmer
 {
 Q_OBJECT
 public:
 	Dimmer100New(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza = false);
 
 private slots:
 	void lightOn();
@@ -101,7 +123,7 @@ private:
 	int light_value;
 };
 
-class Dimmer100Group : public bannRegolaz
+class Dimmer100Group : public BannAdjust
 {
 Q_OBJECT
 public:
@@ -175,7 +197,7 @@ private:
 	LightingDevice *dev;
 };
 
-#if 1
+#if 0
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.

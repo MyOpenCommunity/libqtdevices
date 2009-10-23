@@ -68,7 +68,7 @@ private:
 };
 
 
-class PowerAmplifierPreset : public bannOnOff
+class PowerAmplifierPreset : public BannOnOffNew
 {
 Q_OBJECT
 public:
@@ -88,11 +88,11 @@ private:
 };
 
 
-class PowerAmplifierTreble : public bannOnOff2scr
+class PowerAmplifierTreble : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *parent=0);
+	PowerAmplifierTreble(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
 	virtual void inizializza(bool forza=false);
 
 private slots:
@@ -106,11 +106,11 @@ private:
 };
 
 
-class PowerAmplifierBass : public bannOnOff2scr
+class PowerAmplifierBass : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent=0);
+	PowerAmplifierBass(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
 	virtual void inizializza(bool forza=false);
 
 private slots:

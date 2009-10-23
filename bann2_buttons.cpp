@@ -6,6 +6,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QVariant> // used for setProperty
 
 
 #define BAN2BUT_BUT_DIM 60
@@ -21,11 +22,11 @@
 BannOnOffNew::BannOnOffNew(QWidget *parent) :
 	BannerNew(parent)
 {
-	sx_button = new BtButton(this);
-	sx_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	left_button = new BtButton(this);
+	left_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
 
-	dx_button = new BtButton(this);
-	dx_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	right_button = new BtButton(this);
+	right_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
 
 	text = createTextLabel(QRect(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM),
 		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
@@ -47,9 +48,14 @@ void BannOnOffNew::loadIcons(const QString &l, const QString &c, const QString &
 	center = c;
 	right = r;
 
-	sx_button->setImage(left);
-	dx_button->setImage(right);
+	left_button->setImage(left);
+	right_button->setImage(right);
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(c));
+}
+
+void BannOnOffNew::setBannerText(const QString &str)
+{
+	text->setText(str);
 }
 
 
@@ -172,6 +178,11 @@ void BannOnOff2Labels::setCentralText(const QString &str)
 	center_text->setText(str);
 }
 
+void BannOnOff2Labels::setCentralTextSecondaryColor(bool secondary)
+{
+	center_text->setProperty("SecondFgColor", secondary);
+}
+
 void BannOnOff2Labels::setState(States new_state)
 {
 	switch (new_state)
@@ -225,6 +236,7 @@ bannOnOff::bannOnOff(QWidget *parent) : banner(parent)
 }
 
 
+#if 0
 bannOnOff2scr::bannOnOff2scr(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, 0, 0, BANONOFF2SCR_BUT_DIM , BANONOFF2SCR_BUT_DIM);
@@ -233,4 +245,5 @@ bannOnOff2scr::bannOnOff2scr(QWidget *parent) : banner(parent)
 	addItem(ICON, banner_width-BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, 0, BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
 	addItem(TEXT2, BANONOFF2SCR_BUT_DIM, 0, banner_width-2*BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
 }
+#endif
 

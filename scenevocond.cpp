@@ -704,8 +704,8 @@ void device_condition::setup_device(QString s)
 	dev = bt_global::add_device_to_cache(dev);
 	// Get status changed events back
 	//DELETE
-	//connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-	//	this, SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -762,11 +762,13 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 		{
 		case LightingDevice::DIM_DEVICE_ON:
 			if (device_condition::get_condition_value() == static_cast<int>(it.value().toBool()))
+			{
 				if (!satisfied)
 				{
 					satisfied = true;
 					emit condSatisfied();
 				}
+			}
 			else
 				satisfied = false;
 			break;
@@ -778,6 +780,8 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_light_status not implemented!");
+	/*
 	int trig_v = device_condition::get_condition_value();
 	stat_var curr_status(stat_var::ON_OFF);
 	qDebug("device_condition_light_status::status_changed()");
@@ -821,6 +825,7 @@ void device_condition_light_status::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 int device_condition_light_status::get_max()
@@ -1082,11 +1087,13 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 		{
 			int level = it.value().toInt() / 10;
 			if (level >= trig_min && level <= trig_max)
+			{
 				if (!satisfied)
 				{
 					satisfied = true;
 					emit condSatisfied();
 				}
+			}
 			else
 				satisfied = false;
 		}
@@ -1099,6 +1106,8 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_dimming not implemented!");
+	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_lev(stat_var::LEV);
@@ -1145,6 +1154,7 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 /*****************************************************************
@@ -1389,11 +1399,13 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 		{
 			int level = it.value().toInt();
 			if (level >= trig_min && level <= trig_max)
+			{
 				if (!satisfied)
 				{
 					satisfied = true;
 					emit condSatisfied();
 				}
+			}
 			else
 				satisfied = false;
 		}
@@ -1406,6 +1418,8 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 //DELETE
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_dimmin_100 not implemented!");
+	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_lev(stat_var::LEV);
@@ -1455,6 +1469,7 @@ void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 /*****************************************************************

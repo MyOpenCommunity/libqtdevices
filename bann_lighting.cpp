@@ -50,8 +50,8 @@ LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
 		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL));
 
-	connect(sx_button, SIGNAL(clicked()), SLOT(lightOn()));
-	connect(dx_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOff()));
 }
 
 void LightGroup::lightOff()
@@ -67,90 +67,78 @@ void LightGroup::lightOn()
 }
 
 
-enum {
-	DIMMER_OFF = 0,
-	DIMMER_ON = 1,
-	DIMMER_FAULT_STATUS = 2,
-};
 
-DimmerBase::DimmerBase(QWidget *parent) :
-	bannRegolaz(parent)
+AdjustDimmer::AdjustDimmer(QWidget *parent) :
+	BannAdjust(parent)
 {
+	current_level = 10;
 }
 
-void DimmerBase::Draw()
+void AdjustDimmer::initBanner(const QString &left, const QString &_center_left, const QString &_center_right,
+		const QString &right, const QString &_broken, States init_state, int init_level,
+		const QString &banner_text)
 {
-	if (getValue() > 100)
-		setValue(100);
-	qDebug("dimmer::Draw(), attivo = %d, value = %d", attivo, getValue());
-	if ((sxButton) && (Icon[0]))
-	{
-		sxButton->setPixmap(*Icon[0]);
-		if (pressIcon[0])
-			sxButton->setPressedPixmap(*pressIcon[0]);
-	}
+	BannAdjust::initBanner(banner_text);
 
-	if ((dxButton) && (Icon[1]))
-	{
-		dxButton->setPixmap(*Icon[1]);
-		if (pressIcon[1])
-			dxButton->setPressedPixmap(*pressIcon[1]);
-	}
-	if (attivo == DIMMER_ON)
-	{
-		if ((Icon[4+((getValue()-minValue)/step)*2]) && (csxButton))
-			csxButton->setPixmap(*Icon[4+((getValue()-minValue)/step)*2]);
-		if ((cdxButton) && (Icon[5+((getValue()-minValue)/step)*2]))
-			cdxButton->setPixmap(*Icon[5+((getValue()-minValue)/step)*2]);
-	}
-	else if (attivo == DIMMER_OFF)
-	{
-		if ((Icon[2]) && (csxButton))
-			csxButton->setPixmap(*Icon[2]);
+	left_button->setImage(left);
+	right_button->setImage(right);
 
-		if ((cdxButton) && (Icon[3]))
-			cdxButton->setPixmap(*Icon[3]);
-	}
-	else if (attivo == DIMMER_FAULT_STATUS)
-	{
-		if ((Icon[44]) && (csxButton))
-			csxButton->setPixmap(*Icon[44]);
+	center_left = _center_left;
+	center_right = _center_right;
+	broken = _broken;
 
-		if ((cdxButton) && (Icon[45]))
-			cdxButton->setPixmap(*Icon[45]);
-	}
-	if (BannerText)
-	{
-		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
-		BannerText->setText(qtesto);
-	}
-	if (SecondaryText)
-	{
-		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(bt_global::font->get(FontManager::TEXT));
-		SecondaryText->setText(qtestoSecondario);
-	}
+	setState(init_state);
+	setLevel(init_level);
 }
+
+void AdjustDimmer::setState(States new_state)
+{
+	switch (new_state)
+	{
+	case ON:
+		setOnIcons();
+		break;
+	case OFF:
+		setCenterLeftIcon(getBostikName(center_left, "sxl0"));
+		setCenterRightIcon(getBostikName(center_right, "dxl0"));
+		break;
+	case BROKEN:
+		setCenterLeftIcon(getBostikName(broken, "sx"));
+		setCenterRightIcon(getBostikName(broken, "dx"));
+		break;
+	}
+	current_state = new_state;
+}
+
+void AdjustDimmer::setOnIcons()
+{
+	setCenterLeftIcon(getBostikName(center_left, QString("sxl") + QString::number(current_level)));
+	setCenterRightIcon(getBostikName(center_right, QString("dxl") + QString::number(current_level)));
+}
+
+void AdjustDimmer::setLevel(int level)
+{
+	current_level = level;
+	if (current_state == ON)
+		setOnIcons();
+}
+
 
 
 DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
-	DimmerBase(parent)
+	AdjustDimmer(parent)
 {
-	setRange(20, 100);
-	setStep(10);
-	impostaAttivo(false);
-	light_value = 20;
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
-		bt_global::skin->getImage("dimmer_broken"), true);
+	light_value = 20;
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
+		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(decreaseLevel()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -174,6 +162,11 @@ void DimmerNew::decreaseLevel()
 	dev->decreaseLevel();
 }
 
+void DimmerNew::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
 void DimmerNew::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
@@ -182,42 +175,42 @@ void DimmerNew::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			impostaAttivo(it.value().toBool());
-			setValue(light_value);
+			setState(it.value().toBool() ? ON : OFF);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_LEVEL:
-			impostaAttivo(DIMMER_ON);
+			setState(ON);
 			light_value = it.value().toInt();
-			setValue(light_value);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_PROBLEM:
 			// TODO: what happens if we are in dimmer fault state?
-			impostaAttivo(DIMMER_FAULT_STATUS);
+			setState(BROKEN);
 			break;
 		}
 		++it;
 	}
-	Draw();
 }
 
 
 
 DimmerGroup::DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses) :
-	bannRegolaz(parent)
+	BannAdjust(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("dimmer_grp_dx"), bt_global::skin->getImage("dimmer_grp_sx"));
-	setText(getTextChild(config_node, "descr"));
+
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer_grp_sx"),
+		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"),
+		getTextChild(config_node, "descr"));
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
 		devices << bt_global::add_device_to_cache(new DimmerDevice(address, PULL));
 
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
 }
 
 void DimmerGroup::lightOn()
@@ -252,16 +245,14 @@ enum
 };
 
 Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
-	DimmerBase(parent)
+	AdjustDimmer(parent)
 {
-	// TODO: softstart, softstop
-	setRange(5, 100);
-	setStep(DIMMER100_STEP);
-	light_value = 5;
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("dimmer"),
-		bt_global::skin->getImage("dimmer_broken"), false);
+
+	light_value = 5;
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
+		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
@@ -269,10 +260,10 @@ Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
 	start_speed = getTextChild(config_node, "softstart").toInt();
 	stop_speed = getTextChild(config_node, "softstop").toInt();
 
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -296,6 +287,11 @@ void Dimmer100New::decreaseLevel()
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
+void Dimmer100New::inizializza(bool forza)
+{
+	dev->requestDimmer100Status();
+}
+
 void Dimmer100New::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
@@ -304,45 +300,45 @@ void Dimmer100New::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			impostaAttivo(it.value().toBool());
-			setValue(light_value);
+			setState(it.value().toBool() ? ON : OFF);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_LEVEL:
-			impostaAttivo(DIMMER_ON);
+			setState(ON);
 			light_value = it.value().toInt();
 			// values too low are not registered by UI
 			if (light_value < 5)
 				light_value = 5;
-			setValue(light_value);
+			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_PROBLEM:
-			impostaAttivo(DIMMER_FAULT_STATUS);
+			setState(BROKEN);
 			break;
 		case LightingDevice::DIM_DIMMER100_LEVEL:
 		{
 			int l = it.value().toInt();
-			// light values are between 100 (min) and 200 (max)
+			// light values are between 0 (min) and 100 (max)
 			light_value = l;
 			if (light_value < 5)
 				light_value = 5;
-			setValue(light_value);
-			impostaAttivo(DIMMER_ON);
+			setLevel(light_value);
+			setState(ON);
 		}
 			break;
 		}
 		++it;
 	}
-	Draw();
 }
 
 
 Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
-	bannRegolaz(parent)
+	BannAdjust(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"),
-		bt_global::skin->getImage("dimmer_grp_dx"), bt_global::skin->getImage("dimmer_grp_sx"));
-	setText(getTextChild(config_node, "descr"));
+
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer_grp_sx"),
+		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"),
+		getTextChild(config_node, "descr"));
 
 	// load all devices with relative start and stop speed
 	QList<QDomNode> elements = getChildren(config_node, "element");
@@ -357,10 +353,10 @@ Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
 	Q_ASSERT_X(devices.size() == stop_speed.size(), "Dimmer100Group::Dimmer100Group",
 		"Device number and softstop number are different");
 
-	connect(this, SIGNAL(sxClick()), SLOT(lightOn()));
-	connect(this, SIGNAL(dxClick()), SLOT(lightOff()));
-	connect(this, SIGNAL(cdxClick()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(csxClick()), SLOT(decreaseLevel()));
+	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
 }
 
 void Dimmer100Group::lightOff()
@@ -583,7 +579,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 }
 
 
-#if 1
+#if 0
 
 dimmer::dimmer(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon, QString breakIcon,
 	bool to_be_connect) : bannRegolaz(parent)
