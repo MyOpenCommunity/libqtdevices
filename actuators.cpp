@@ -184,7 +184,6 @@ void attuatAutom::inizializza(bool forza)
 	else
 		dev->sendInit(f);
 }
-#endif
 
 attuatPuls::attuatPuls(QWidget *parent, QString where, QString IconaSx, QString icon, char tipo)
 	: bannPuls(parent)
@@ -227,5 +226,5 @@ void attuatPuls::Disattiva()
 		break;
 	}
 }
-
+#endif
 

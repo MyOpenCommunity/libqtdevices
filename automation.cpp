@@ -47,7 +47,8 @@ void Automation::loadItems(const QDomNode &config_node)
 			b = new SingleActuator(this, item, where);
 			break;
 		case ATTUAT_VCT_SERR:
-			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
+			//b = new attuatPuls(this, where, img1, img2, VCT_SERR);
+			b = new ButtonActuator(this, item, VCT_SERR);
 			break;
 		case GR_ATTUAT_INT:
 		{
@@ -71,7 +72,8 @@ void Automation::loadItems(const QDomNode &config_node)
 			b = new GateEntryphoneActuator(this, item);
 			break;
 		case ATTUAT_AUTOM_PULS:
-			b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
+			//b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
+			b = new ButtonActuator(this, item, AUTOMAZ);
 			break;
 		case PPT_STAT:
 			b = new PPTStat(this, where, cid);
@@ -80,9 +82,9 @@ void Automation::loadItems(const QDomNode &config_node)
 			qFatal("Type of item not handled on automation page!");
 		}
 
-		b->setText(getTextChild(item, "descr"));
+		//b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		b->Draw();
+		//b->Draw();
 		content_widget->appendBanner(b);
 	}
 }
