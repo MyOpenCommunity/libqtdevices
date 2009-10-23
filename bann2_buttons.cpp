@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QVariant> // used for setProperty
+#include <QBoxLayout>
 
 
 #define BAN2BUT_BUT_DIM 60
@@ -22,17 +23,23 @@
 BannOnOffNew::BannOnOffNew(QWidget *parent) :
 	BannerNew(parent)
 {
-	left_button = new BtButton(this);
-	left_button->setGeometry(0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	left_button = new BtButton;
+	right_button = new BtButton;
+	center_icon = new QLabel;
 
-	right_button = new BtButton(this);
-	right_button->setGeometry(banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(0);
+	hbox->addWidget(left_button, 0, Qt::AlignLeft);
+	hbox->addWidget(center_icon, 1, Qt::AlignCenter);
+	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	text = createTextLabel(QRect(0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM),
-		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
-
-	center_icon = new QLabel(this);
-	center_icon->setGeometry(BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	QVBoxLayout *vbox = new QVBoxLayout(this);
+	vbox->setContentsMargins(0, 0, 0, 0);
+	vbox->setSpacing(0);
+	vbox->addLayout(hbox);
+	vbox->addWidget(text);
 }
 
 void BannOnOffNew::initBanner(const QString &left, const QString &center, const QString &right,
