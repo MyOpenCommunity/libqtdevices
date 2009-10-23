@@ -403,8 +403,8 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 			if (curr_local.initialized())
 			{
 				update = true;
-				if (curr_local.get_val() >= 0  && curr_local.get_val() <= 3 ||
-						curr_local.get_val() >= 11 && curr_local.get_val() <= 13)
+				if ((curr_local.get_val() >= 0  && curr_local.get_val() <= 3) ||
+						(curr_local.get_val() >= 11 && curr_local.get_val() <= 13))
 				{
 					local_temp = QString::number(curr_local.get_val() % 10);
 					if (curr_local.get_val() >= 11)

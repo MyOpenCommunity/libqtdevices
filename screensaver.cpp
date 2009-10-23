@@ -48,6 +48,7 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 	default:
 		qFatal("Type of screensaver not handled!");
 	}
+	return 0; // Only to silent warning from compiler
 }
 
 // Definition of static member

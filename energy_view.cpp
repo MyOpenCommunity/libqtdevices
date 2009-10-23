@@ -117,6 +117,7 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 		// no need to modify the format to american
 		return date.toString("MM.yy");
 	case YEAR:
+	default:
 		return tr("Last 12 months");
 	}
 }

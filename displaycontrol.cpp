@@ -87,7 +87,7 @@ bool DisplayControl::isForcedOperativeMode()
 
 void DisplayControl::setState(DisplayStatus status)
 {
-	if (!forced_operative_mode || forced_operative_mode && status == DISPLAY_OPERATIVE)
+	if (!forced_operative_mode || (forced_operative_mode && status == DISPLAY_OPERATIVE))
 	{
 		setBacklightOn(data[status].backlight);
 		setBrightnessLevel(data[status].brightness);
