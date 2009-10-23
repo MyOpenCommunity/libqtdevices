@@ -142,11 +142,11 @@ private:
 };
 
 
-class PowerAmplifierLoud : public bannOnOff
+class PowerAmplifierLoud : public BannOnOffState
 {
 Q_OBJECT
 public:
-	PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent=0);
+	PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
 	virtual void inizializza(bool forza=false);
 
 private slots:
