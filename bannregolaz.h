@@ -27,11 +27,11 @@ class QLabel;
 /*
  * A class to control the rate of signals emitted
  */
-class BannAdjust : public BannerNew
+class BannLevel : public BannerNew
 {
 Q_OBJECT
 protected:
-	BannAdjust(QWidget *parent);
+	BannLevel(QWidget *parent);
 	// to be used by derived classes which are still graphics (eg. AdjustDimmer)
 	void initBanner(const QString &banner_text);
 	// use this when no state is required
