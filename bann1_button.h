@@ -31,9 +31,12 @@ class QLabel;
 class BannSinglePuls : public BannerNew
 {
 Q_OBJECT
-protected:
+public:
 	BannSinglePuls(QWidget *parent);
 	void initBanner(const QString &right, const QString &center, const QString &banner_text);
+	void connectRightButton(Page *p);
+
+protected:
 	BtButton *right_button;
 
 private:

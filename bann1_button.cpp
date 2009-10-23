@@ -47,6 +47,11 @@ void BannSinglePuls::loadIcons(const QString &right, const QString &center)
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
 }
 
+void BannSinglePuls::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
 
 BannOn2Labels::BannOn2Labels(QWidget *parent) :
 	BannerNew(parent)
