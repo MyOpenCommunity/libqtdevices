@@ -58,6 +58,16 @@ void BannOnOffNew::setBannerText(const QString &str)
 	text->setText(str);
 }
 
+void BannOnOffNew::connectLeftButton(Page *p)
+{
+	connectButtonToPage(left_button, p);
+}
+
+void BannOnOffNew::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
 
 BannOnOffState::BannOnOffState(QWidget *parent) :
 	BannOnOffNew(parent)
