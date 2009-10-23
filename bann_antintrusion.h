@@ -61,7 +61,6 @@ class impAnti : public bann3ButLab
 Q_OBJECT
 public:
 	impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive);
-	void inizializza(bool forza = false);
 
 public slots:
 	void status_changed(QList<device_status*>);
@@ -71,6 +70,14 @@ public slots:
 	void ToSendParz(bool s);
 	void openAckRx();
 	void openNakRx();
+	void inizializza(bool forza = false);
+
+signals:
+	void impiantoInserito();
+	void abilitaParz(bool);
+	void clearChanged();
+	void clearAlarms();
+
 private:
 	static const int MAX_ZONE = 8;
 	Keypad *tasti;
@@ -80,19 +87,14 @@ private:
 	bool inserting;
 	QString passwd;
 	device *dev;
-private slots:
 
+private slots:
 	void Inserisci();
 	void Disinserisci();
 	void Insert1();
 	void Insert2();
 	void Insert3();
 	void DeInsert();
-signals:
-	void impiantoInserito();
-	void abilitaParz(bool);
-	void clearChanged();
-	void clearAlarms();
 };
 
 #endif
