@@ -73,7 +73,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			top_widget->layout()->addWidget(impianto);
 
 			connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
-			connect(impianto, SIGNAL(abilitaParz(bool)), SLOT(abilitaParz(bool)));
+			connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
 			connect(impianto, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
 			connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
 			connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
