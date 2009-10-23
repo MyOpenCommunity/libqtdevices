@@ -1,12 +1,13 @@
 #include "videoentryphone.h"
 #include "bann_videoentryphone.h"
 #include "xml_functions.h" // getTextChild, getChildren
-
-#include <QDebug>
+#include "content_widget.h"
+#include "main.h"
 
 
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
+	buildPage();
 	loadDevices(config_node);
 }
 
@@ -31,6 +32,7 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 		banner *b = new postoExt(this, descr, img1, img2, img3, img4, where, light, key, unknown);
 		b->setText(descr);
 		b->setId(id);
-		appendBanner(b);
+		b->Draw();
+		content_widget->appendBanner(b);
 	}
 }

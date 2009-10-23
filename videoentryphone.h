@@ -14,14 +14,14 @@
 #ifndef VIDEOENTRYPHONE_H
 #define VIDEOENTRYPHONE_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
 
 
-class VideoEntryPhone : public sottoMenu
+class VideoEntryPhone : public Page
 {
 Q_OBJECT
 public:
