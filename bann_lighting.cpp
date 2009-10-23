@@ -69,7 +69,7 @@ void LightGroup::lightOn()
 
 
 AdjustDimmer::AdjustDimmer(QWidget *parent) :
-	BannAdjust(parent)
+	BannLevel(parent)
 {
 	current_level = 10;
 }
@@ -78,7 +78,7 @@ void AdjustDimmer::initBanner(const QString &left, const QString &_center_left, 
 		const QString &right, const QString &_broken, States init_state, int init_level,
 		const QString &banner_text)
 {
-	BannAdjust::initBanner(banner_text);
+	BannLevel::initBanner(banner_text);
 
 	left_button->setImage(left);
 	right_button->setImage(right);
@@ -195,7 +195,7 @@ void DimmerNew::status_changed(const StatusList &sl)
 
 
 DimmerGroup::DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses) :
-	BannAdjust(parent)
+	BannLevel(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
@@ -332,7 +332,7 @@ void Dimmer100New::status_changed(const StatusList &sl)
 
 
 Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
-	BannAdjust(parent)
+	BannLevel(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 

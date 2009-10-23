@@ -73,7 +73,7 @@ ButtonActuator::ButtonActuator(QWidget *parent, const QDomNode &config_node, int
 	BannSinglePuls(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp"),
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("action_icon"),
 		getTextChild(config_node, "descr"));
 	setAddress(getTextChild(config_node, "where"));
 
@@ -184,7 +184,6 @@ void attuatAutom::inizializza(bool forza)
 	else
 		dev->sendInit(f);
 }
-#endif
 
 attuatPuls::attuatPuls(QWidget *parent, QString where, QString IconaSx, QString icon, char tipo)
 	: bannPuls(parent)
@@ -227,5 +226,5 @@ void attuatPuls::Disattiva()
 		break;
 	}
 }
-
+#endif
 

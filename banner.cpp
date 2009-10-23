@@ -701,3 +701,20 @@ QLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
 	return text;
 }
 
+void BannerNew::connectButtonToPage(BtButton *b, Page *p)
+{
+	if (p)
+	{
+		linked_pages.append(p);
+		connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
+		connect(p, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	}
+}
+
+void BannerNew::hideEvent(QHideEvent *event)
+{
+	foreach (Page *p, linked_pages)
+		if (!p->isHidden())
+			p->hide();
+}
+

@@ -40,9 +40,13 @@ class BannOnOffNew : public BannerNew
 // displays the center icon provided. BannOnOffState can change states (and thus the center icon).
 friend class BannOnOffState;
 Q_OBJECT
-protected:
+public:
 	BannOnOffNew(QWidget *parent);
 	void initBanner(const QString &left, const QString &center, const QString &right, const QString &text);
+	void connectLeftButton(Page *p);
+	void connectRightButton(Page *p);
+
+protected:
 	void setBannerText(const QString &str);
 	BtButton *left_button, *right_button;
 
@@ -155,6 +159,7 @@ protected:
 };
 
 
+#if 0
 /*!
   \class bannOnOff
   \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
@@ -169,7 +174,6 @@ public:
 };
 
 
-#if 0
 /*!
   \class bannOnOff2scr
   \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left

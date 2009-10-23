@@ -40,9 +40,9 @@ private:
 
 
 /*
- * A derived class of BannAdjust which handles all dimmer state changes (both levels and states).
+ * A derived class of BannLevel which handles all dimmer state changes (both levels and states).
  */
-class AdjustDimmer : public BannAdjust
+class AdjustDimmer : public BannLevel
 {
 Q_OBJECT
 protected:
@@ -86,7 +86,7 @@ private:
 	int light_value;
 };
 
-class DimmerGroup : public BannAdjust
+class DimmerGroup : public BannLevel
 {
 Q_OBJECT
 public:
@@ -123,7 +123,7 @@ private:
 	int light_value;
 };
 
-class Dimmer100Group : public BannAdjust
+class Dimmer100Group : public BannLevel
 {
 Q_OBJECT
 public:

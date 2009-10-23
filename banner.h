@@ -412,6 +412,11 @@ public:
 protected:
 	QLabel *createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font);
 	QLabel *createTextLabel(Qt::Alignment align, const QFont &font);
+	void connectButtonToPage(BtButton *b, Page *p);
+	virtual void hideEvent(QHideEvent *event);
+
+private:
+	QVector<Page *> linked_pages;
 };
 
 

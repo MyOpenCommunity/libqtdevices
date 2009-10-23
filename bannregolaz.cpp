@@ -17,7 +17,7 @@
 
 #define TIME_RIP_REGOLAZ 500
 
-BannAdjust::BannAdjust(QWidget *parent) :
+BannLevel::BannLevel(QWidget *parent) :
 	BannerNew(parent)
 {
 	left_button = new BtButton;
@@ -50,12 +50,12 @@ BannAdjust::BannAdjust(QWidget *parent) :
 	connect(center_right_button, SIGNAL(released()), &timer, SLOT(stop()));
 }
 
-void BannAdjust::initBanner(const QString &banner_text)
+void BannLevel::initBanner(const QString &banner_text)
 {
 	text->setText(banner_text);
 }
 
-void BannAdjust::initBanner(const QString &left, const QString &center_left, const QString &center_right,
+void BannLevel::initBanner(const QString &left, const QString &center_left, const QString &center_right,
 		const QString &right, const QString &banner_text)
 {
 	left_button->setImage(left);
@@ -65,17 +65,17 @@ void BannAdjust::initBanner(const QString &left, const QString &center_left, con
 	text->setText(banner_text);
 }
 
-void BannAdjust::setCenterLeftIcon(const QString &image)
+void BannLevel::setCenterLeftIcon(const QString &image)
 {
 	center_left_button->setImage(image);
 }
 
-void BannAdjust::setCenterRightIcon(const QString &image)
+void BannLevel::setCenterRightIcon(const QString &image)
 {
 	center_right_button->setImage(image);
 }
 
-void BannAdjust::startLeftTimer()
+void BannLevel::startLeftTimer()
 {
 	if (!timer.isActive())
 	{
@@ -85,7 +85,7 @@ void BannAdjust::startLeftTimer()
 	}
 }
 
-void BannAdjust::startRightTimer()
+void BannLevel::startRightTimer()
 {
 	if (!timer.isActive())
 	{

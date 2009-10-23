@@ -111,9 +111,7 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 	b->Draw();
 	content_widget->appendBanner(b);
 
-	b = new PowerAmplifierLoud(dev, this);
-	b->setText(tr("Loud"));
-	b->Draw();
+	b = new PowerAmplifierLoud(dev, tr("Loud"), this);
 	content_widget->appendBanner(b);
 }
 
@@ -346,15 +344,15 @@ void PowerAmplifierBalance::showBalance(int balance)
 }
 
 
-PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent) : bannOnOff(parent)
+PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent) :
+	BannOnOffState(parent)
 {
 	dev = d;
-	SetIcons(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("loud_on"),
-		bt_global::skin->getImage("loud_off"));
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("loud"),
+		bt_global::skin->getImage("on"), OFF, banner_text);
 	connect(this, SIGNAL(sxClick()), SLOT(on()));
 	connect(this, SIGNAL(dxClick()), SLOT(off()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
-	impostaAttivo(0);
 }
 
 void PowerAmplifierLoud::inizializza(bool forza)
@@ -370,8 +368,7 @@ void PowerAmplifierLoud::status_changed(const StatusList &status_list)
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_LOUD)
 		{
-			impostaAttivo(it.value().toBool());
-			Draw();
+			setState(it.value().toBool() ? ON : OFF);
 		}
 		++it;
 	}

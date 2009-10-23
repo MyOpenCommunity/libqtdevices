@@ -76,7 +76,6 @@ private slots:
 	void Attiva();
 	void Disattiva();
 };
-#endif
 
 
 /*!
@@ -99,5 +98,6 @@ private slots:
 private:
 	char type;
 };
+#endif
 
 #endif
