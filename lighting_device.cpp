@@ -27,13 +27,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	qDebug() << "moreFrameNeeded start, status: " << status << ", mode: " << mode;
 	if (is_environment)
 	{
-		if (status == INVALID_STATE)
-		{
-			status_requested = true;
-			return true;
-		}
-
-		if (status != what)
+		if (status == INVALID_STATE || status != what)
 		{
 			status_requested = true;
 			return true;
@@ -41,17 +35,20 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	}
 	else
 	{
-		if (status_requested)
+		// We can decide the mode only if we have seen an environment frame previously.
+		// If we just get PP frames, we can't decide the mode!
+		if (status_requested && status != INVALID_STATE)
 		{
-			Q_ASSERT_X(status != INVALID_STATE, "PullStateManager::moreFrameNeeded",
-				"status is invalid");
 			if (status == what)
 				mode = PULL;
 			else
 				mode = NOT_PULL;
 		}
 		else
+		{
 			status = what;
+			status_requested = false;
+		}
 	}
 
 	qDebug() << "moreFrameNeeded end, status: " << status << ", mode: " << mode;
