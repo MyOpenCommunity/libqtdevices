@@ -13,6 +13,7 @@ private slots:
 	void testDimmer3();
 	void testDimmer100();
 	void testDimmer100_2();
+	void testDimmer100_3();
 };
 
 #endif //TEST_PULL_MANAGER_H

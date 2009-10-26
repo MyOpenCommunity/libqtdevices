@@ -82,3 +82,13 @@ void TestPullManager::testDimmer100_2()
 	parseFrames("*#1*12*1*140*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 }
+
+void TestPullManager::testDimmer100_3()
+{
+	PullStateManager psm(PULL_UNKNOWN);
+	// dimmer on, general level100 40, dimmer level100 40
+	parseFrames("*1*1*12##", &psm, false);
+	parseFrames("*#1*12*#1*140*255##", &psm, true);
+	parseFrames("*#1*12*1*140*255##", &psm, false);
+	QCOMPARE(psm.getPullMode(), NOT_PULL);
+}
