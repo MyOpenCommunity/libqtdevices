@@ -135,6 +135,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
 	qDebug() << "moreFrameNeeded start, status: " << status << ", mode: " << mode;
 
+	qDebug() << "msg.IsMeasureFrame() " << msg.IsMeasureFrame();
 	// PullStateManager will be used for automation and lighting only.
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
 	int what;
@@ -184,7 +185,54 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	return false;
 }
 
+PullDevice::PullDevice(QString who, QString where, PullMode m) :
+	device(who, where),
+	state(m)
+{
+}
 
+void PullDevice::manageFrame(OpenMsg &msg)
+{
+	// true if the frame is general or environment (not group).
+	bool is_multi_receiver_frame = false;
+
+	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, state.getPullMode()))
+	{
+	case NOT_MINE:
+		return;
+	case GLOBAL:
+	case ENVIRONMENT:
+		is_multi_receiver_frame = true;
+		break;
+	default:
+		break;
+	}
+
+	// pull optimization specific stuff
+	if (is_multi_receiver_frame)
+	{
+		if (state.getPullMode() == NOT_PULL)
+		{
+			StatusList sl;
+			parseFrame(msg, &sl);
+			emit status_changed(sl);
+		}
+		else if (state.getPullMode() == PULL_UNKNOWN)
+			if (state.moreFrameNeeded(msg, true))
+				requestPullStatus();
+		return;
+	}
+	if (state.getPullMode() == PULL_UNKNOWN)
+		state.moreFrameNeeded(msg, false);
+
+	StatusList sl;
+	parseFrame(msg, &sl);
+
+	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
+	// environment frame), we must send a status request to the device before sending
+	// a status_changed()
+	emit status_changed(sl);
+}
 
 
 // Device implementation

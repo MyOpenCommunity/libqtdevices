@@ -16,7 +16,7 @@ struct BasicTime
 Q_DECLARE_METATYPE(BasicTime);
 
 
-class LightingDevice : public device
+class LightingDevice : public PullDevice
 {
 friend class TestLightingDevice;
 Q_OBJECT
@@ -43,13 +43,9 @@ public:
 	void requestStatus();
 	void requestVariableTiming();
 
-	virtual void manageFrame(OpenMsg &msg);
-
 protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
-
-private:
-	PullStateManager state;
+	virtual void requestPullStatus();
 };
 
 
@@ -85,6 +81,7 @@ public:
 
 protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
+	virtual void requestPullStatus();
 	virtual int getDimmerLevel(int what);
 };
 #endif // LIGHTINGDEVICE_H

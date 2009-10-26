@@ -24,8 +24,7 @@ enum
 };
 
 LightingDevice::LightingDevice(QString where, PullMode pull) :
-	device(QString("1"), where),
-	state(pull)
+	PullDevice(QString("1"), where, pull)
 {
 }
 
@@ -77,50 +76,13 @@ void LightingDevice::requestVariableTiming()
 	sendRequest(QString::number(DIM_VARIABLE_TIMING));
 }
 
-void LightingDevice::manageFrame(OpenMsg &msg)
+
+void LightingDevice::requestPullStatus()
 {
-	// true if the frame is general or environment (not group).
-	bool is_multi_receiver_frame = false;
-
-	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, state.getPullMode()))
-	{
-	case NOT_MINE:
-		return;
-	case GLOBAL:
-	case ENVIRONMENT:
-		is_multi_receiver_frame = true;
-		break;
-	default:
-		break;
-	}
-
-	// pull optimization specific stuff
-	if (is_multi_receiver_frame)
-	{
-		if (state.getPullMode() == NOT_PULL)
-		{
-			StatusList sl;
-			parseFrame(msg, &sl);
-			qDebug() << "NOT_PULL, status list = " << sl;
-			emit status_changed(sl);
-		}
-		else if (state.getPullMode() == PULL_UNKNOWN)
-			if (state.moreFrameNeeded(msg, true))
-				requestStatus();
-		return;
-	}
-	if (state.getPullMode() == PULL_UNKNOWN)
-		state.moreFrameNeeded(msg, false);
-
-	StatusList sl;
-	parseFrame(msg, &sl);
-	qDebug() << "PP frame, status list = " << sl;
-
-	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
-	// environment frame), we must send a status request to the device before sending
-	// a status_changed()
-	emit status_changed(sl);
+	requestStatus();
 }
+
+
 
 void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 {
@@ -234,6 +196,11 @@ void Dimmer100Device::decreaseLevel100(int delta, int speed)
 void Dimmer100Device::requestDimmer100Status()
 {
 	sendRequest(QString::number(DIMMER100_STATUS));
+}
+
+void Dimmer100Device::requestPullStatus()
+{
+	requestDimmer100Status();
 }
 
 void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
