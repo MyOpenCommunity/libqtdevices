@@ -17,6 +17,7 @@ Q_DECLARE_METATYPE(BasicTime);
 
 class PullStateManager
 {
+friend class TestLightingDevice;
 public:
 	PullStateManager(PullMode m);
 	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);

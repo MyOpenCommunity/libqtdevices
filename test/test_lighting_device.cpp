@@ -90,7 +90,7 @@ void TestLightingDevice::receiveLightOnOff()
 void TestLightingDevice::setParams(QString w, PullMode m)
 {
 	dev->where = w;
-	dev->mode = m;
+	dev->state.mode= m;
 }
 
 // test device mode
