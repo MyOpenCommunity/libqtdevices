@@ -3,6 +3,7 @@
 
 #include <QFile>
 #include <QScreen>
+#include <QtDebug>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -263,4 +264,63 @@ void getName(char *name)
 			close(fd);
 		}
 	}
+}
+
+void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
+{
+	int eeprom;
+	char chiave[6];
+
+	qDebug() << "Reading alarm volume from nvram for index" << index;
+
+	memset(chiave,'\000',sizeof(chiave));
+	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+
+	if (eeprom == -1)
+		return;
+
+	lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
+	read(eeprom, chiave, 5);
+
+	if (strcmp(chiave,AL_KEY))
+	{
+		lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
+		write(eeprom,AL_KEY,5);
+		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
+		{
+			write(eeprom,"\000",1);
+			volSveglia[idx]=-1;
+		}
+	}
+	else
+	{
+		int ploffete = BASE_EEPROM + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH;
+		lseek(eeprom,ploffete, SEEK_SET);
+		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
+		{
+			read(eeprom,&volSveglia[idx],1);
+			volSveglia[idx]&=0x1F;
+		}
+		read(eeprom,&sorgente,1);
+		read(eeprom,&stazione,1);
+	}
+	close(eeprom);
+}
+
+void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
+{
+	int eeprom;
+	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+
+	qDebug() << "Writing alarm volume to nvram for index" << index;
+
+	if (eeprom == -1)
+		return;
+
+	lseek(eeprom,BASE_EEPROM + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
+	for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
+		write(eeprom,&volSveglia[idx],1);
+	write(eeprom,&sorgente,1);
+	write(eeprom,&stazione,1);
+	close(eeprom);
 }

@@ -218,18 +218,7 @@ void AlarmClock::handleClose()
 	{
 		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
 		if (aggiornaDatiEEprom)
-		{
-#if defined (BT_EMBEDDED)
-			int eeprom;
-			eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
-			lseek(eeprom,BASE_EEPROM + (serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
-			for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
-				write(eeprom,&volSveglia[idx],1);
-			write(eeprom,&sorgente,1);
-			write(eeprom,&stazione,1);
-			::close(eeprom);
-#endif
-		}
+			setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
 	}
 
 	gesFrameAbil = false;
@@ -654,40 +643,6 @@ void AlarmClock::setSerNum(int s)
 
 void AlarmClock::inizializza()
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
 	if (type == DI_SON)
-	{
-		int eeprom;
-		char chiave[6];
-
-		memset(chiave,'\000',sizeof(chiave));
-		eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
-		lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
-		read(eeprom, chiave, 5);
-
-		if (strcmp(chiave,AL_KEY))
-		{
-			lseek(eeprom, BASE_EEPROM+(serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
-			write(eeprom,AL_KEY,5);
-			for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
-			{
-				write(eeprom,"\000",1);
-				volSveglia[idx]=-1;
-			}
-		}
-		else
-		{
-			int ploffete = BASE_EEPROM + (serNum-1)*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH;
-			lseek(eeprom,ploffete, SEEK_SET);
-			for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
-			{
-				read(eeprom,&volSveglia[idx],1);
-				volSveglia[idx]&=0x1F;
-			}
-			read(eeprom,&sorgente,1);
-			read(eeprom,&stazione,1);
-		}
-	::close(eeprom);    // servono i:: se no fa la close() di QWidget
-	}
-#endif
+		getAlarmVolumes(serNum-1, volSveglia, &sorgente, &stazione);
 }

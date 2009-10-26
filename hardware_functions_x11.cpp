@@ -109,3 +109,13 @@ void getName(char *name)
 {
 	name[0] = 0;
 }
+
+void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
+{
+	// do nothing
+}
+
+void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
+{
+	// do nothing
+}

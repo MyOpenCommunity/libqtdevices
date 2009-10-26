@@ -1,8 +1,15 @@
 #ifndef HARDWARE_FUNCTIONS_H
 #define HARDWARE_FUNCTIONS_H
 
-class QString;
+#include <QtGlobal> // uchar
 
+#define AMPLI_NUM 100
+#define BASE_EEPROM 11360
+#define KEY_LENGTH 5
+#define AL_KEY "\125\252\125\252\125"
+#define SORG_PAR 2
+
+class QString;
 
 // Return the maximum width of the gui
 int maxWidth();
@@ -85,5 +92,15 @@ unsigned long getTimePress();
 void rearmWDT();
 
 void getName(char *name);
+
+ /*!
+   \brief Reads alarm volume data
+*/
+void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione);
+
+ /*!
+   \brief Stores alarm valume data
+*/
+void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione);
 
 #endif // HARDWARE_FUNCTIONS_H
