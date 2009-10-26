@@ -103,10 +103,12 @@ BtMain::BtMain()
 	}
 	else
 	{
+#if !defined(BT_HARDWARE_X11)
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
 		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
+#endif
 		alreadyCalibrated = true;
 	}
 #else
@@ -265,9 +267,11 @@ void BtMain::init()
 #if BT_EMBEDDED
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
+#if !defined(BT_HARDWARE_X11)
 		calib = new Calibrate(NULL, 1);
 		calib->showFullScreen();
 		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showPage()));
+#endif
 		alreadyCalibrated = true;
 	}
 #endif

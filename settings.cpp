@@ -49,12 +49,18 @@ void Settings::loadItems(const QDomNode &config_node)
 		case SET_DATA_ORA:
 			b = new bannOnDx(this, ICON_INFO, new impostaTime());
 			break;
+#if !defined(BT_HARDWARE_X11)
 		case CONTRASTO:
 			b = new bannContrast(this, getTextChild(item, "value"), img1);
 			break;
 		case DISPLAY:
 			b = new bannOnDx(this, ICON_FRECCIA_DX, new DisplayPage(item));
 			break;
+#else
+		case CONTRASTO:
+		case DISPLAY:
+			continue;
+#endif
 		case PROTEZIONE:
 			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
