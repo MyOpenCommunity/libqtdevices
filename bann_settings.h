@@ -46,7 +46,7 @@ public:
 	/*!
 	\brief forces a eeprom read to initialyze alarm set settings
 	*/
-	void inizializza();
+	void inizializza(bool forza = false);
 
 	virtual void setSerNum(int num);
 

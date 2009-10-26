@@ -67,8 +67,9 @@ void bannAlarmClock::toggleAbil()
 	setAbil(!alarm_clock->isActive());
 }
 
-void bannAlarmClock::inizializza()
+void bannAlarmClock::inizializza(bool forza)
 {
+	bann2But::inizializza(forza);
 	alarm_clock->inizializza();
 }
 
