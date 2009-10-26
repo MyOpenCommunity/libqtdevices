@@ -160,6 +160,22 @@ private:
 	static Client *client_richieste;
 };
 
+
+class PullStateManager
+{
+friend class TestLightingDevice;
+public:
+	PullStateManager(PullMode m);
+	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
+	PullMode getPullMode();
+
+private:
+	int status;
+	bool status_requested;
+	PullMode mode;
+};
+
+
 /********************* Specific class device children classes **********************/
 
 //! MCI

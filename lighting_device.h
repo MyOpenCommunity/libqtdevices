@@ -15,20 +15,6 @@ struct BasicTime
 // Type returned in StatusList for DIM_VARIABLE_TIMING
 Q_DECLARE_METATYPE(BasicTime);
 
-class PullStateManager
-{
-friend class TestLightingDevice;
-public:
-	PullStateManager(PullMode m);
-	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
-	PullMode getPullMode();
-
-private:
-	int status;
-	bool status_requested;
-	PullMode mode;
-};
-
 
 class LightingDevice : public device
 {

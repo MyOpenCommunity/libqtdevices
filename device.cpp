@@ -114,6 +114,79 @@ void FrameCompressor::emitFrame()
 }
 
 
+enum
+{
+	INVALID_STATE = -1,
+};
+
+PullStateManager::PullStateManager(PullMode m)
+{
+	mode = m;
+	status = INVALID_STATE;
+	status_requested = false;
+}
+
+PullMode PullStateManager::getPullMode()
+{
+	return mode;
+}
+
+bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
+{
+	qDebug() << "moreFrameNeeded start, status: " << status << ", mode: " << mode;
+
+	// PullStateManager will be used for automation and lighting only.
+	// I'll handle all 'what' combinations here, split to a different function or class when needed
+	int what;
+	if (msg.IsMeasureFrame())
+	{
+		// dimmer 100 status
+		if (msg.what() == 1)
+		{
+			what = msg.whatArgN(0) - 100;
+			qDebug() << "moreFrameNeeded, dimmer 100 measure frame. Level: " << what;
+		}
+		// variable temporization
+		// TODO: first try: use the 'what' of fixed temporization
+		else
+			what = 11;
+	}
+	else
+		what = msg.what();
+
+	if (is_environment)
+	{
+		if (status == INVALID_STATE || status != what)
+		{
+			status_requested = true;
+			return true;
+		}
+	}
+	else
+	{
+		// We can decide the mode only if we have seen an environment frame previously.
+		// If we just get PP frames, we can't decide the mode!
+		if (status_requested && status != INVALID_STATE)
+		{
+			if (status == what)
+				mode = PULL;
+			else
+				mode = NOT_PULL;
+		}
+		else
+		{
+			status = what;
+			status_requested = false;
+		}
+	}
+
+	qDebug() << "moreFrameNeeded end, status: " << status << ", mode: " << mode;
+	return false;
+}
+
+
+
+
 // Device implementation
 
 device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
