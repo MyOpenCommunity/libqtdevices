@@ -26,6 +26,7 @@ class Settings : public Page
 Q_OBJECT
 public:
 	Settings(const QDomNode &config_node);
+	virtual void inizializza();
 
 private:
 	void loadItems(const QDomNode &config_node);

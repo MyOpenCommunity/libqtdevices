@@ -21,6 +21,11 @@ Settings::Settings(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+void Settings::inizializza()
+{
+	content_widget->initBanners();
+}
+
 void Settings::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
