@@ -14,6 +14,7 @@ isEmpty(TEST_ARCH) {
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
 	HARDWARE = x11
+	DEFINES += BT_HARDWARE_X11
 } else {
 	message(ARM architecture detected.)
 	LIBS += -L../common_files -lcommon
@@ -27,6 +28,7 @@ isEmpty(TEST_ARCH) {
 	SOURCES += QWSMOUSE/qmouse_qws.cpp \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
 	HARDWARE = btouch
+	DEFINES += BT_HARDWARE_BTOUCH
 }
 
 
