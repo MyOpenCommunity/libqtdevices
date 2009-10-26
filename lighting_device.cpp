@@ -23,8 +23,27 @@ PullMode PullStateManager::getPullMode()
 
 bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
-	int what = msg.what();
 	qDebug() << "moreFrameNeeded start, status: " << status << ", mode: " << mode;
+
+	// PullStateManager will be used for automation and lighting only.
+	// I'll handle all 'what' combinations here, split to a different function or class when needed
+	int what;
+	if (msg.IsMeasureFrame())
+	{
+		// dimmer 100 status
+		if (msg.what() == 1)
+		{
+			what = msg.whatArgN(0) - 100;
+			qDebug() << "moreFrameNeeded, dimmer 100 measure frame. Level: " << what;
+		}
+		// variable temporization
+		// TODO: first try: use the 'what' of fixed temporization
+		else
+			what = 11;
+	}
+	else
+		what = msg.what();
+
 	if (is_environment)
 	{
 		if (status == INVALID_STATE || status != what)
