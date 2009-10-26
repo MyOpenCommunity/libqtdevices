@@ -218,6 +218,14 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		}
 		break;
 	}
+	// handle fixed timing status changing. This is really useful for environment frames only, since
+	// for point-to-point frames we also get a ON/OFF status update directly from the device.
+	// It won't hurt handling twice the state (for point-to-point frames).
+	if (what >= FIXED_TIMING_MIN && what <= FIXED_TIMING_MAX)
+	{
+		v.setValue(true);
+		status_index = DIM_DEVICE_ON;
+	}
 
 	if (status_index > 0)
 		(*sl)[status_index] = v;

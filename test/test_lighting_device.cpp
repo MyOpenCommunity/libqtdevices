@@ -171,6 +171,15 @@ void TestLightingDevice::receiveLightOnOffNotPullExt()
 	t.check(env_off, false);
 }
 
+void TestLightingDevice::receiveFixedTiming()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	QString frame = "*1*11*0##";
+
+	t.check(frame, true);
+}
+
 void TestLightingDevice::receiveVariableTiming()
 {
 	DeviceTester t(dev, LightingDevice::DIM_VARIABLE_TIMING);
