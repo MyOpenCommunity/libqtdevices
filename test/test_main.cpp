@@ -9,6 +9,7 @@
 #include "test_automation_device.h"
 #include "test_checkaddress.h"
 #include "test_scenario_device.h"
+#include "test_pull_manager.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,6 +31,9 @@ int main(int argc, char *argv[])
 
 	TestCheckAddress test_checkaddress;
 	test_list << &test_checkaddress;
+
+	TestPullManager test_pull_manager;
+	test_list << &test_pull_manager;
 
 	TestLightingDevice test_lighting_device;
 	test_list << &test_lighting_device;

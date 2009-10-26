@@ -30,6 +30,7 @@ HEADERS += device_tester.h \
            test_energy_device.h \
            test_lighting_device.h \
            test_poweramplifier_device.h \
+           test_pull_manager.h \
            openserver_mock.h \
            ../energy_device.h \
            ../lighting_device.h \
@@ -59,6 +60,7 @@ SOURCES += test_main.cpp \
            test_energy_device.cpp \
            test_lighting_device.cpp \
            test_poweramplifier_device.cpp \
+           test_pull_manager.cpp \
            openserver_mock.cpp \
            ../energy_device.cpp \
            ../lighting_device.cpp \
