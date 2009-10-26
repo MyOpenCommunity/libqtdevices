@@ -6,6 +6,61 @@
 
 enum
 {
+	INVALID_STATE = -1,
+};
+
+PullStateManager::PullStateManager(PullMode m)
+{
+	mode = m;
+	status = INVALID_STATE;
+	status_requested = false;
+}
+
+PullMode PullStateManager::getPullMode()
+{
+	return mode;
+}
+
+bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
+{
+	int what = msg.what();
+	qDebug() << "moreFrameNeeded start, status: " << status << ", mode: " << mode;
+	if (is_environment)
+	{
+		if (status == INVALID_STATE)
+		{
+			status_requested = true;
+			return true;
+		}
+
+		if (status != what)
+		{
+			status_requested = true;
+			return true;
+		}
+	}
+	else
+	{
+		if (status_requested)
+		{
+			Q_ASSERT_X(status != INVALID_STATE, "PullStateManager::moreFrameNeeded",
+				"status is invalid");
+			if (status == what)
+				mode = PULL;
+			else
+				mode = NOT_PULL;
+		}
+		else
+			status = what;
+	}
+
+	qDebug() << "moreFrameNeeded end, status: " << status << ", mode: " << mode;
+	return false;
+}
+
+
+enum
+{
 	LIGHT_ON = 1,
 	LIGHT_OFF = 0,
 	FIXED_TIMING_MIN = 11,
@@ -23,9 +78,9 @@ enum
 };
 
 LightingDevice::LightingDevice(QString where, PullMode pull) :
-	device(QString("1"), where)
+	device(QString("1"), where),
+	state(pull)
 {
-	mode = pull;
 }
 
 void LightingDevice::turnOn()
@@ -81,7 +136,7 @@ void LightingDevice::manageFrame(OpenMsg &msg)
 	// true if the frame is general or environment (not group).
 	bool is_multi_receiver_frame = false;
 
-	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, mode))
+	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, state.getPullMode()))
 	{
 	case NOT_MINE:
 		return;
@@ -93,17 +148,32 @@ void LightingDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 
+	// pull optimization specific stuff
+	if (is_multi_receiver_frame)
+	{
+		if (state.getPullMode() == NOT_PULL)
+		{
+			StatusList sl;
+			parseFrame(msg, &sl);
+			qDebug() << "NOT_PULL, status list = " << sl;
+			emit status_changed(sl);
+		}
+		else if (state.getPullMode() == PULL_UNKNOWN)
+			if (state.moreFrameNeeded(msg, true))
+				requestStatus();
+		return;
+	}
+	if (state.getPullMode() == PULL_UNKNOWN)
+		state.moreFrameNeeded(msg, false);
+
 	StatusList sl;
 	parseFrame(msg, &sl);
+	qDebug() << "PP frame, status list = " << sl;
 
 	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
 	// environment frame), we must send a status request to the device before sending
 	// a status_changed()
-	if (mode == PULL_UNKNOWN && is_multi_receiver_frame)
-		// TODO: optimize this scenario
-		requestStatus();
-	else
-		emit status_changed(sl);
+	emit status_changed(sl);
 }
 
 void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
