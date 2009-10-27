@@ -25,7 +25,7 @@ InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &conf
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
@@ -89,7 +89,7 @@ SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QD
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
@@ -163,7 +163,7 @@ GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &
 	where = getTextChild(config_node, "where");
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
 
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
 		getTextChild(config_node, "descr"));
@@ -184,7 +184,7 @@ GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &conf
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
 		getTextChild(config_node, "descr"));

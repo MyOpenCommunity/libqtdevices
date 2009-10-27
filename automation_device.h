@@ -17,7 +17,7 @@ public:
 		DIM_DOWN = 2,
 	};
 
-	AutomationDevice(QString where, PullMode mode = PULL);
+	AutomationDevice(QString where, PullMode mode = PULL_UNKNOWN);
 	void goUp();
 	void goDown();
 	void stop();
