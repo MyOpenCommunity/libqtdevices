@@ -22,7 +22,6 @@ class SoundDiffusion;
 class AudioSources;
 class device;
 class device_status;
-class AlarmClock;
 
 
 class MultiSoundDiffInterface : public sottoMenu
