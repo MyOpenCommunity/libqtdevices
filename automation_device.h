@@ -6,7 +6,7 @@
 class OpenMsg;
 
 
-class AutomationDevice : public device
+class AutomationDevice : public PullDevice
 {
 friend class TestAutomationDevice;
 public:
@@ -23,9 +23,8 @@ public:
 	void stop();
 	void requestStatus();
 
-	virtual void manageFrame(OpenMsg &msg);
-private:
-	PullMode mode;
+	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
+	virtual void requestPullStatus();
 };
 
 /**

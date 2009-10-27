@@ -21,9 +21,8 @@ enum RequestDimension
 
 
 AutomationDevice::AutomationDevice(QString where, PullMode m) :
-	device(QString("2"), where)
+	PullDevice(QString("2"), where, m)
 {
-	mode = m;
 }
 
 void AutomationDevice::goUp()
@@ -46,24 +45,13 @@ void AutomationDevice::requestStatus()
 	sendRequest(QString());
 }
 
-void AutomationDevice::manageFrame(OpenMsg &msg)
+void AutomationDevice::requestPullStatus()
 {
-	// true if the frame is general or environment (not group).
-	bool is_multi_receiver_frame = false;
+	requestStatus();
+}
 
-	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, mode))
-	{
-	case NOT_MINE:
-		return;
-	case GLOBAL:
-	case ENVIRONMENT:
-		is_multi_receiver_frame = true;
-		break;
-	default:
-		break;
-	}
-
-	StatusList sl;
+void AutomationDevice::parseFrame(OpenMsg &msg, StatusList *sl)
+{
 	QVariant v;
 	int what = msg.what();
 	switch (what)
@@ -78,16 +66,7 @@ void AutomationDevice::manageFrame(OpenMsg &msg)
 		v.setValue(true);
 		break;
 	}
-	sl[msg.what()] = v;
-
-	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
-	// environment frame), we must send a status request to the device before sending
-	// a status_changed()
-	if (mode == PULL_UNKNOWN && is_multi_receiver_frame)
-		// TODO: optimize this scenario
-		requestStatus();
-	else
-		emit status_changed(sl);
+	(*sl)[msg.what()] = v;
 }
 
 
