@@ -44,7 +44,7 @@ enum PullMode
  * must have a+pf and extension part (if any).
  * \return true if msg_where includes the device, false otherwise.
  */
-AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where, PullMode mode);
+AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where);
 
 
 class FrameCompressor : public QObject

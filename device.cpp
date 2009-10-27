@@ -45,34 +45,30 @@ QString getEnvironment(const QString &w)
 	return QString();
 }
 
-AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where, PullMode mode)
+AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
 {
 	if (msg_where == dev_where)
 		return P2P;
 
-	if (mode != PULL)
-	{
-		// frame where (input)
-		QPair<QString, QString> in = splitWhere(msg_where);
-		// device where (our)
-		QPair<QString, QString> our = splitWhere(dev_where);
+	// frame where (input)
+	QPair<QString, QString> in = splitWhere(msg_where);
+	// device where (our)
+	QPair<QString, QString> our = splitWhere(dev_where);
 
-		// TODO: really tired today, ugly code ahead
-		if (!(in.second == "#3" && our.second.isEmpty()))
-			if (!(in.second.isEmpty()) && (in.second != our.second))
-					return NOT_MINE;
+	if (!(in.second == "#3" && our.second.isEmpty()))
+		if (!(in.second.isEmpty()) && (in.second != our.second))
+			return NOT_MINE;
 
-		// here we don't need to care about extension anymore
-		// general address
-		if (in.first == "0")
-			return GLOBAL;
+	// here we don't need to care about extension anymore
+	// general address
+	if (in.first == "0")
+		return GLOBAL;
 
-		// environment address. The first part must be "00", "100" or numbers 1 to 9
-		// use toInt() to remove differences between "00" "0" and so on.
-		if (in.first == "00" || in.first == "100" || in.first.length() == 1)
-			if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
-				return ENVIRONMENT;
-	}
+	// environment address. The first part must be "00", "100" or numbers 1 to 9
+	// use toInt() to remove differences between "00" "0" and so on.
+	if (in.first == "00" || in.first == "100" || in.first.length() == 1)
+		if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
+			return ENVIRONMENT;
 
 	return NOT_MINE;
 }
@@ -196,7 +192,7 @@ PullDevice::PullDevice(QString who, QString where, PullMode m) :
 
 void PullDevice::manageFrame(OpenMsg &msg)
 {
-	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, state.getPullMode()))
+	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where))
 	{
 	case NOT_MINE:
 		return;
