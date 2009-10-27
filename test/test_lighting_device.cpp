@@ -93,6 +93,11 @@ void TestLightingDevice::setParams(QString w, PullMode m)
 	dev->state.mode= m;
 }
 
+QString TestLightingDevice::getRequestStatusFrame()
+{
+	return QString("*#1*%1##").arg(dev->where);
+}
+
 // test device mode
 void TestLightingDevice::checkPullUnknown()
 {
@@ -123,7 +128,7 @@ void TestLightingDevice::receiveLightOnOffUnknown2()
 	QString global_on = "*1*1*0##";
 	t.checkSignals(global_on, 0);
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev->where));
+	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
 }
 
 
@@ -146,7 +151,7 @@ void TestLightingDevice::receiveLightOnOffUnknownExt2()
 	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 	t.checkSignals(env_off, 0);
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev->where));
+	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
 }
 
 void TestLightingDevice::receiveLightOnOffNotPull()
@@ -312,4 +317,9 @@ void TestDimmer100::checkLevel()
 	t.check(frame, 30);
 	frame = QString("*1*%1*%2##").arg(10).arg(dimmer100->where);
 	t.check(frame, 100);
+}
+
+QString TestDimmer100::getRequestStatusFrame()
+{
+	return QString("*#1*%1*1##").arg(dimmer100->where);
 }

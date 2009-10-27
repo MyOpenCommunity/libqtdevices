@@ -18,6 +18,7 @@ protected:
 	void initLightingDevice(LightingDevice *d = 0);
 	void cleanupLightingDevice();
 	void setParams(QString w, PullMode m);
+	virtual QString getRequestStatusFrame();
 
 private slots:
 	void init();
@@ -77,6 +78,7 @@ class TestDimmer100 : public TestDimmer
 Q_OBJECT
 protected:
 	virtual void checkLevel();
+	virtual QString getRequestStatusFrame();
 
 private slots:
 	void initTestCase();
