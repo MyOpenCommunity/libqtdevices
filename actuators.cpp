@@ -64,7 +64,6 @@ void SingleActuator::status_changed(const StatusList &status_list)
 		}
 		++it;
 	}
-	Draw();
 }
 
 
