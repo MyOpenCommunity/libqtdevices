@@ -4,6 +4,12 @@
 #include "device.h"
 
 
+/*
+ * Wrapper around 3 integers for hours, minutes and seconds.
+ *
+ * Used for variable timing events. We can't use a QTime because variable timing have different limits:
+ * 99 hours, 60 mins, 60 secs.
+ */
 struct BasicTime
 {
 	BasicTime() { }
