@@ -2,7 +2,7 @@
 #include "main.h" // for ICON_{OK,VUOTO}
 #include "bann1_button.h" // bannOnSx
 #include "navigation_bar.h"
-#include "content_widget.h"
+#include "singlechoicecontent.h"
 #include "btbutton.h"
 
 #include <QDebug>
@@ -10,32 +10,33 @@
 
 SingleChoicePage::SingleChoicePage()
 {
-	buildPage(new ContentWidget, new NavigationBar(ICON_OK));
-	buttons.setExclusive(true);
+	buildPage(new SingleChoiceContent, new NavigationBar(ICON_OK));
 
 	connect(this, SIGNAL(forwardClick()), SLOT(okPressed()));
 }
 
+SingleChoiceContent *SingleChoicePage::content()
+{
+	return (SingleChoiceContent*)content_widget;
+}
+
 void SingleChoicePage::addBanner(const QString &text, int id)
 {
-	bannOnSx *bann = new bannOnSx(this, ICON_VUOTO);
-	BtButton *btn = bann->getButton();
-	btn->setCheckable(true);
-	bann->setText(text);
-	bann->Draw();
-	buttons.addButton(btn, id);
-	content_widget->appendBanner(bann);
+	content()->addBanner(text, id);
 
 	if (id == getCurrentId())
-		btn->setChecked(true);
+		setCheckedId(id);
+}
+
+void SingleChoicePage::setCheckedId(int id)
+{
+	content()->setCheckedId(id);
 }
 
 void SingleChoicePage::okPressed()
 {
-	bannerSelected(buttons.checkedId()); // update the current id and do custom actions
-	foreach (QAbstractButton *btn, buttons.buttons())
-		if (buttons.id(btn) == getCurrentId())
-			btn->setChecked(true);
+	bannerSelected(content()->checkedId()); // update the current id and do custom actions
+	setCheckedId(getCurrentId());
 
 	emit Closed();
 }

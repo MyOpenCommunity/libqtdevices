@@ -16,7 +16,7 @@ ScreenSaverPage::ScreenSaverPage()
 
 void ScreenSaverPage::showPage()
 {
-	buttons.button(getCurrentId())->setChecked(true);
+	setCheckedId(getCurrentId());
 	SingleChoicePage::showPage();
 }
 

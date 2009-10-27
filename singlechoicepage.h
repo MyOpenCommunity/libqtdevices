@@ -3,10 +3,8 @@
 
 #include "page.h"
 
-#include <QButtonGroup>
-
 class QString;
-
+class SingleChoiceContent;
 
 /*
  * This abstract class is designed to provide a list of bannOnDx. Each of them
@@ -26,10 +24,12 @@ protected:
 	virtual int getCurrentId() = 0;
 	// A method called when a button is pressed
 	virtual void bannerSelected(int id) = 0;
+	// Set the checked button
+	void setCheckedId(int id);
 
 protected:
+	SingleChoiceContent *content();
 	void addBanner(const QString &text, int id);
-	QButtonGroup buttons;
 };
 
 #endif // SINGLECHOICEPAGE_H
