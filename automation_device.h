@@ -23,6 +23,7 @@ public:
 	void stop();
 	void requestStatus();
 
+protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual void requestPullStatus();
 };

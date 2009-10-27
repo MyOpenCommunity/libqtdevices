@@ -192,13 +192,13 @@ friend class TestLightingDevice;
 Q_OBJECT
 public:
 	virtual void manageFrame(OpenMsg &msg);
+
+protected:
+	PullDevice(QString who, QString where, PullMode m);
 	// parse the frame and put the results into the provided StatusList
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl) = 0;
 	// different devices may need different status requests (eg. Dimmer100)
 	virtual void requestPullStatus() = 0;
-
-protected:
-	PullDevice(QString who, QString where, PullMode m);
 
 private:
 	PullStateManager state;
