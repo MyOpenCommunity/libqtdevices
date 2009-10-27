@@ -26,206 +26,53 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// AlarmClock implementation
+
 AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 {
-	bannNavigazione = new bannFrecce(this,9);
-	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 	aumVolTimer = NULL;
-
-	for (uchar idx = 0; idx < 2; idx++)
-	{
-		but[idx] = new BtButton(this);
-
-		but[idx]->setGeometry(idx*80 + 50,80,60,60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_SU);
-	}
-
-	for (uchar idx = 2; idx < 4; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry((idx-2)*80 + 50,190,60,60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_GIU);
-	}
-
-	QPixmap Icon(ICON_SVEGLIA_ON);
-
-	Immagine = new QLabel(this);
-	if (!Icon.isNull())
-		Immagine->setPixmap(Icon);
-
-	Immagine->setGeometry(90,0,80,80);
-
-	QFont aFont = bt_global::font->get(FontManager::TEXT);
-
-	for (uchar idx = 0; idx < 4; idx++)
-	{
-		choice[idx] = new BtButton(this);
-		choice[idx]->setGeometry(10,idx*60,60,60);
-		choice[idx]->setCheckable(true);
-		choice[idx]->setImage(ICON_VUOTO);
-		choice[idx]->hide();
-
-		testiChoice[idx] = new QLabel(this);
-		testiChoice[idx]->setGeometry(80,idx*60,120,60);
-		testiChoice[idx]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		testiChoice[idx]->setFont(aFont);
-		testiChoice[idx]->hide();
-    }
-
-	dataOra = NULL;
-	testiChoice[0]->setText(tr("once"));
-	testiChoice[1]->setText(tr("always"));
-	testiChoice[2]->setText(tr("mon-fri"));
-	testiChoice[3]->setText(tr("sat-sun"));
 
 	oraSveglia = new QDateTime();
 	oraSveglia->setTime(QTime(hour, minute));
 	oraSveglia->setDate(QDate::currentDate());
-	dataOra = new timeScript(this,2,oraSveglia);
-	dataOra->setGeometry(40,140,160,50);
-	dataOra->setFrameStyle(QFrame::Plain);
-	dataOra->setLineWidth(0);
 
-	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
-		volSveglia[idx] = -1;
 	minuTimer = NULL;
 	freq = f;
 	type = t;
 
-	difson = 0;
+	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
+		volSveglia[idx] = -1;
+
+	alarm_time = new AlarmClockTime(this);
+	alarm_type = new AlarmClockFreq(this);
+	if (type == DI_SON)
+		alarm_sound_diff = new AlarmClockSoundDiff(this);
+	else
+		alarm_sound_diff = NULL;
+
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
+	connect(alarm_type, SIGNAL(selectionChanged(AlarmClock::Freq)), SLOT(setFreq(AlarmClock::Freq)));
+
 	subscribe_monitor(16);
-}
-
-void AlarmClock::okTime()
-{
-	disconnect(but[0], SIGNAL(clicked()), dataOra, SLOT(aumOra()));
-	disconnect(but[1], SIGNAL(clicked()), dataOra, SLOT(aumMin()));
-	disconnect(but[2], SIGNAL(clicked()), dataOra, SLOT(diminOra()));
-	disconnect(but[3], SIGNAL(clicked()), dataOra, SLOT(diminMin()));
-	disconnect(bannNavigazione,SIGNAL(forwardClick()),this,SLOT(okTime()));
-	connect(bannNavigazione,SIGNAL(forwardClick()),this,SLOT(okTipo()));
-
-	for (uchar idx = 0; idx < 4; idx++)
-		but[idx]->hide();
-
-	for (uchar idx = 0; idx < 4; idx++)
-	{
-		choice[idx]->show();
-		testiChoice[idx]->show();
-		choice[idx]->setChecked(freq == idx);
-	}
-
-	dataOra->hide();
-	Immagine->hide();
-
-	if (type != DI_SON)
-		bannNavigazione->nascondi(banner::BUT2);
 }
 
 void AlarmClock::showPage()
 {
-	for (uchar idx = 0; idx < 4; idx++)
-		but[idx]->show();
-	dataOra->show();
-	Immagine->show();
-	if (!difson)
-		if (type == DI_SON)
-		{
-			if (bt_global::btmain->difSon)
-				difson = bt_global::btmain->difSon;
-			if (bt_global::btmain->dm)
-				difson = bt_global::btmain->dm;
-		}
-
-	if (difson)
-		difson->hide();
-
-	bannNavigazione->show();
-	for (uchar idx = 0; idx < 4; idx++)
-	{
-		choice[idx]->hide();
-		testiChoice[idx]->hide();
-	}
-
-	disconnect(but[0],SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-	disconnect(but[1],SIGNAL(clicked()),dataOra,SLOT(aumMin()));
-	disconnect(but[2],SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-	disconnect(but[3],SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-
-	connect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
-	connect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-	connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(okTime()));
-	disconnect(bannNavigazione,SIGNAL(forwardClick()), this, SLOT(okTipo()));
-	disconnect(bannNavigazione,SIGNAL(forwardClick()), this, SLOT(handleClose()));
-
-	disconnect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
-	connect(bannNavigazione, SIGNAL(backClick()), this, SLOT(handleClose()));
-
-	connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
-	connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
-	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
-	connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));
-	aggiornaDatiEEprom = 0;
-	if (type != DI_SON)
-		bannNavigazione->mostra(banner::BUT2);
-
-	Page::showPage();
+	alarm_time->showPage();
 }
 
-void AlarmClock::drawSelectPage()
+void AlarmClock::showTypePage()
 {
-	for (uchar idx = 0; idx < 4; idx++)
-		choice[idx]->setChecked(idx == freq);
-}
-
-void AlarmClock::sel1(bool isOn)
-{
-	if (isOn)
-		freq = ONCE;
-	drawSelectPage();
-}
-
-void AlarmClock::sel2(bool isOn)
-{
-	if (isOn)
-		freq = SEMPRE;
-	drawSelectPage();
-}
-
-void AlarmClock::sel3(bool isOn)
-{
-	if (isOn)
-		freq = FERIALI;
-	drawSelectPage();
-}
-
-void AlarmClock::sel4(bool isOn)
-{
-	if (isOn)
-		freq = FESTIVI;
-	drawSelectPage();
+	alarm_type->showPage();
 }
 
 void AlarmClock::handleClose()
 {
-	//imposta la sveglia in
-	if (difson)
-	{
-		disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
-		if (aggiornaDatiEEprom)
-			setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
-	}
-
 	gesFrameAbil = false;
 	setActive(true);
 	emit Closed();
 	delete oraSveglia;
-	oraSveglia = new QDateTime(dataOra->getDataOra());
+	oraSveglia = new QDateTime(alarm_time->getDataOra());
 
 	QMap<QString, QString> data;
 	data["hour"] = oraSveglia->time().toString("hh");
@@ -233,37 +80,21 @@ void AlarmClock::handleClose()
 	data["alarmset"] = QString::number(freq);
 
 	setCfgValue(data, SET_SVEGLIA, serNum);
+
+	if (aggiornaDatiEEprom)
+		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
 }
 
-void AlarmClock::okTipo()
+void AlarmClock::showSoundDiffPage()
 {
-	disconnect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(okTipo()));
-	connect(bannNavigazione ,SIGNAL(forwardClick()),this,SLOT(handleClose()));
-	for (uchar idx = 0; idx < 4; idx++)
-	{
-		choice[idx]->hide();
-		testiChoice[idx]->hide();
-	}
-	Immagine->show();
-	if (type != DI_SON)
-		handleClose();
-	else if (difson)
-	{
-		bannNavigazione->hide();
-		// reparent only if we have a multichannel sound diffusion
-		if (bt_global::btmain->dm)
-			difson->setParent(this);
-		connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
-		difson->forceDraw();
+	aggiornaDatiEEprom = 1;
+	sorgente = 101;
+	stazione = 0;
+	gesFrameAbil = true;
+	for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
+		volSveglia[idx] = -1;
 
-		aggiornaDatiEEprom = 1;
-		gesFrameAbil = true;
-		sorgente = 101;
-		stazione = 0;
-		for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
-			volSveglia[idx] = -1;
-		difson->showPage();
-	}
+	alarm_sound_diff->showPage();
 }
 
 void AlarmClock::setActive(bool a)
@@ -641,8 +472,167 @@ void AlarmClock::setSerNum(int s)
 	serNum = s;
 }
 
+void AlarmClock::setFreq(AlarmClock::Freq f)
+{
+	freq = f;
+}
+
 void AlarmClock::inizializza()
 {
-	if (type == DI_SON)
-		getAlarmVolumes(serNum-1, volSveglia, &sorgente, &stazione);
+	getAlarmVolumes(serNum-1, volSveglia, &sorgente, &stazione);
+}
+
+// AlarmClockTime implementation
+
+AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
+{
+	bannNavigazione = new bannFrecce(this,9);
+	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+
+	for (uchar idx = 0; idx < 2; idx++)
+	{
+		but[idx] = new BtButton(this);
+
+		but[idx]->setGeometry(idx*80 + 50,80,60,60);
+		but[idx]->setAutoRepeat(true);
+		but[idx]->setImage(ICON_FRECCIA_SU);
+	}
+
+	for (uchar idx = 2; idx < 4; idx++)
+	{
+		but[idx] = new BtButton(this);
+		but[idx]->setGeometry((idx-2)*80 + 50,190,60,60);
+		but[idx]->setAutoRepeat(true);
+		but[idx]->setImage(ICON_FRECCIA_GIU);
+	}
+
+	QPixmap Icon(ICON_SVEGLIA_ON);
+
+	Immagine = new QLabel(this);
+	if (!Icon.isNull())
+		Immagine->setPixmap(Icon);
+
+	Immagine->setGeometry(90,0,80,80);
+
+	dataOra = NULL;
+
+	dataOra = new timeScript(this,2,alarm_page->oraSveglia);
+	dataOra->setGeometry(40,140,160,50);
+	dataOra->setFrameStyle(QFrame::Plain);
+	dataOra->setLineWidth(0);
+
+	connect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
+	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
+	connect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
+	connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
+	connect(bannNavigazione, SIGNAL(forwardClick()), alarm_page, SLOT(showTypePage()));
+	connect(bannNavigazione, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
+}
+
+QDateTime AlarmClockTime::getDataOra() const
+{
+	return dataOra->getDataOra();
+}
+
+// AlarmClockFreq implementation
+
+AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
+{
+	bannNavigazione = new bannFrecce(this,9);
+	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+
+	QFont aFont = bt_global::font->get(FontManager::TEXT);
+
+	for (uchar idx = 0; idx < 4; idx++)
+	{
+		choice[idx] = new BtButton(this);
+		choice[idx]->setGeometry(10,idx*60,60,60);
+		choice[idx]->setCheckable(true);
+		choice[idx]->setImage(ICON_VUOTO);
+
+		testiChoice[idx] = new QLabel(this);
+		testiChoice[idx]->setGeometry(80,idx*60,120,60);
+		testiChoice[idx]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+		testiChoice[idx]->setFont(aFont);
+		testiChoice[idx]->show();
+	}
+
+	testiChoice[0]->setText(tr("once"));
+	testiChoice[1]->setText(tr("always"));
+	testiChoice[2]->setText(tr("mon-fri"));
+	testiChoice[3]->setText(tr("sat-sun"));
+
+	connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
+	connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
+	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
+	connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));
+	connect(bannNavigazione,SIGNAL(forwardClick()),alarm_page,SLOT(showSoundDiffPage()));
+	connect(bannNavigazione, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
+
+	if (alarm_page->type != AlarmClock::DI_SON)
+		bannNavigazione->nascondi(banner::BUT2);
+
+	setSelection(alarm_page->freq);
+}
+
+void AlarmClockFreq::setSelection(AlarmClock::Freq freq)
+{
+	for (uchar idx = 0; idx < 4; idx++)
+		choice[idx]->setChecked(idx == freq);
+	emit selectionChanged(freq);
+}
+
+void AlarmClockFreq::sel1(bool isOn)
+{
+	if (isOn)
+		setSelection(AlarmClock::ONCE);
+}
+
+void AlarmClockFreq::sel2(bool isOn)
+{
+	if (isOn)
+		setSelection(AlarmClock::SEMPRE);
+}
+
+void AlarmClockFreq::sel3(bool isOn)
+{
+	if (isOn)
+		setSelection(AlarmClock::FERIALI);
+}
+
+void AlarmClockFreq::sel4(bool isOn)
+{
+	if (isOn)
+		setSelection(AlarmClock::FESTIVI);
+}
+
+// AlarmClockSoundDiff
+
+AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
+{
+	if (bt_global::btmain->difSon)
+		difson = bt_global::btmain->difSon;
+	if (bt_global::btmain->dm)
+		difson = bt_global::btmain->dm;
+
+	connect(this, SIGNAL(Closed()), alarm_page, SLOT(handleClose()));
+}
+
+void AlarmClockSoundDiff::showPage()
+{
+	Page::showPage();
+
+	// reparent only if we have a multichannel sound diffusion
+	if (bt_global::btmain->dm)
+		difson->setParent(this);
+	difson->forceDraw();
+	difson->showPage();
+
+	connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
+}
+
+void AlarmClockSoundDiff::handleClose()
+{
+	disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
+	emit Closed();
 }
