@@ -25,14 +25,21 @@
 BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	BannerNew(parent)
 {
-	right_button = new BtButton(this);
-	right_button->setGeometry(banner_width - BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
+	right_button = new BtButton;
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	center_icon = new QLabel;
 
-	text = createTextLabel(QRect(0, BANPULS_BUT_DIM, banner_width, banner_height - BANPULS_BUT_DIM),
-		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(0);
+	hbox->addWidget(center_icon, 1, Qt::AlignRight);
+	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	center_icon = new QLabel(this);
-	center_icon->setGeometry(BANPULS_BUT_DIM, 0, BANPULS_ICON_DIM_X, BANPULS_ICON_DIM_Y);
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addLayout(hbox);
+	l->addWidget(text);
 }
 
 void BannSinglePuls::initBanner(const QString &right, const QString &center, const QString &banner_text)
@@ -56,21 +63,25 @@ void BannSinglePuls::connectRightButton(Page *p)
 BannOn2Labels::BannOn2Labels(QWidget *parent) :
 	BannerNew(parent)
 {
-	right_button = new BtButton(this);
-	right_button->setGeometry(banner_width - BUT_DIM, 0,  BUT_DIM ,BUT_DIM);
+	right_button = new BtButton;
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	center_text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+	left_icon = new QLabel;
+	right_icon = new QLabel;
 
-	text = createTextLabel(QRect(0, BUT_DIM, banner_width, banner_height - BUT_DIM),
-		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(0);
+	hbox->addWidget(center_text, 1, Qt::AlignCenter);
+	hbox->addWidget(left_icon);
+	hbox->addWidget(right_icon);
+	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	center_text = createTextLabel(QRect(0, 0, BANON2SCR_TEXT1_DIM_X, BANON2SCR_TEXT1_DIM_Y),
-		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
-
-	left_icon = new QLabel(this);
-	left_icon->setGeometry(BANON2SCR_TEXT1_DIM_X, 0, BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
-
-	right_icon = new QLabel(this);
-	right_icon->setGeometry(BANON2SCR_TEXT1_DIM_X + BUTON2SCR_ICON_DIM_X, 0,
-		BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addLayout(hbox);
+	l->addWidget(text);
 }
 
 void BannOn2Labels::initBanner(const QString &right, const QString &_right_icon, const QString &_left_icon,

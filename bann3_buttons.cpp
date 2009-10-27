@@ -3,6 +3,7 @@
 #include "btbutton.h"
 
 #include <QLabel>
+#include <QHBoxLayout>
 
 #define BAN3BUT_BUT_DIM 60
 #define BAN3BUT_BUTCEN_DIM 120
@@ -13,17 +14,23 @@
 Bann3Buttons::Bann3Buttons(QWidget *parent) :
 	BannerNew(parent)
 {
-	right_button = new BtButton(this);
-	right_button->setGeometry(banner_width - BAN3BUT_BUT_DIM, 0 , BAN3BUT_BUT_DIM , BAN3BUT_BUT_DIM);
+	right_button = new BtButton;
+	center_button = new BtButton;
+	left_button = new BtButton;
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
 
-	center_button = new BtButton(this);
-	center_button->setGeometry(banner_width/2 - BAN3BUT_BUTCEN_DIM/2, 0, BAN3BUT_BUTCEN_DIM, BAN3BUT_BUT_DIM);
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(0);
+	hbox->addWidget(left_button, 0, Qt::AlignLeft);
+	hbox->addWidget(center_button, 1, Qt::AlignHCenter);
+	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	left_button = new BtButton(this);
-	left_button->setGeometry(0, 0, BAN3BUT_BUT_DIM, BAN3BUT_BUT_DIM);
-
-	text = createTextLabel(QRect(0, BAN3BUT_BUT_DIM, banner_width, banner_height - BAN3BUT_BUT_DIM),
-		Qt::AlignHCenter|Qt::AlignVCenter, bt_global::font->get(FontManager::TEXT));
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addLayout(hbox);
+	l->addWidget(text);
 }
 
 void Bann3Buttons::initBanner(const QString &left, const QString &center, const QString &right,
