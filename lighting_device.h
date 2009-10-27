@@ -8,7 +8,7 @@
  * Wrapper around 3 integers for hours, minutes and seconds.
  *
  * Used for variable timing events. We can't use a QTime because variable timing have different limits:
- * 99 hours, 60 mins, 60 secs.
+ * 255 hours, 60 mins, 60 secs.
  */
 struct BasicTime
 {
@@ -62,8 +62,6 @@ Q_OBJECT
 public:
 	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN);
 
-	// TODO: is this needed? There's no graphical interface to set the level...
-	void setLevel(int level);
 	void increaseLevel();
 	void decreaseLevel();
 

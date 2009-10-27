@@ -129,11 +129,6 @@ DimmerDevice::DimmerDevice(QString where, PullMode pull) :
 {
 }
 
-void DimmerDevice::setLevel(int level)
-{
-	// TODO: is this method needed?
-}
-
 void DimmerDevice::increaseLevel()
 {
 	sendCommand(QString::number(DIMMER_INC));
