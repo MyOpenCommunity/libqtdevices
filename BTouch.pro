@@ -141,6 +141,7 @@ HEADERS += actuators.h \
            screensaver.h \
            screensaverpage.h \
            settings.h \
+           singlechoicecontent.h \
            singlechoicepage.h \
            skinmanager.h \
            sorgentiaux.h \
@@ -246,6 +247,7 @@ SOURCES += actuators.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
            settings.cpp \
+           singlechoicecontent.cpp \
            singlechoicepage.cpp \
            skinmanager.cpp \
            sorgentiaux.cpp \
