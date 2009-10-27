@@ -44,7 +44,8 @@ Page *getPage(int id)
 	{
 		Lighting *p = new Lighting(page_node);
 		p->forceDraw();
-		QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
+		// DELETE
+		//QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
 		page = p;
 		break;
 	}
