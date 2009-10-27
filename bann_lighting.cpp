@@ -134,7 +134,7 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
-	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
+	dev = bt_global::add_device_to_cache(new DimmerDevice(where));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(increaseLevel()));
@@ -255,7 +255,7 @@ Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
+	dev = bt_global::add_device_to_cache(new Dimmer100Device(where));
 
 	start_speed = getTextChild(config_node, "softstart").toInt();
 	stop_speed = getTextChild(config_node, "softstop").toInt();
@@ -510,7 +510,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 	total_time = t.h * 3600 + t.m * 60 + t.s;
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
 	QString descr = getTextChild(config_node, "descr");
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),

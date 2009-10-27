@@ -31,7 +31,7 @@ public:
 		DIM_DIMMER100_SPEED,
 	};
 
-	LightingDevice(QString where, PullMode pull = PULL);
+	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN);
 
 	void turnOn();
 	void turnOn(int speed);
@@ -54,7 +54,7 @@ class DimmerDevice : public LightingDevice
 friend class TestDimmer;
 Q_OBJECT
 public:
-	DimmerDevice(QString where, PullMode pull = PULL);
+	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN);
 
 	// TODO: is this needed? There's no graphical interface to set the level...
 	void setLevel(int level);
@@ -72,7 +72,7 @@ class Dimmer100Device : public DimmerDevice
 friend class TestDimmer100;
 Q_OBJECT
 public:
-	Dimmer100Device(QString where, PullMode pull = PULL);
+	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN);
 
 	void increaseLevel100(int delta, int speed);
 	void decreaseLevel100(int delta, int speed);
