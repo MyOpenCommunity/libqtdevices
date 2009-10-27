@@ -10,6 +10,7 @@
 #include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
 #include "sounddiffusion.h" // declare SoundDiffusion*
+#include "singlechoicecontent.h"
 
 #include <openmsg.h>
 
@@ -541,69 +542,28 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 	bannNavigazione = new bannFrecce(this,9);
 	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
 
-	QFont aFont = bt_global::font->get(FontManager::TEXT);
+	content = new SingleChoiceContent(this);
+	content->addBanner(tr("once"), AlarmClock::ONCE);
+	content->addBanner(tr("always"), AlarmClock::SEMPRE);
+	content->addBanner(tr("mon-fri"), AlarmClock::FERIALI);
+	content->addBanner(tr("sat-sun"), AlarmClock::FESTIVI);
+	content->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE);
 
-	for (uchar idx = 0; idx < 4; idx++)
-	{
-		choice[idx] = new BtButton(this);
-		choice[idx]->setGeometry(10,idx*60,60,60);
-		choice[idx]->setCheckable(true);
-		choice[idx]->setImage(ICON_VUOTO);
+	connect(content, SIGNAL(bannerSelected(int)),
+		SLOT(setSelection(int)));
 
-		testiChoice[idx] = new QLabel(this);
-		testiChoice[idx]->setGeometry(80,idx*60,120,60);
-		testiChoice[idx]->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		testiChoice[idx]->setFont(aFont);
-		testiChoice[idx]->show();
-	}
-
-	testiChoice[0]->setText(tr("once"));
-	testiChoice[1]->setText(tr("always"));
-	testiChoice[2]->setText(tr("mon-fri"));
-	testiChoice[3]->setText(tr("sat-sun"));
-
-	connect(choice[0],SIGNAL(toggled(bool)),this,SLOT(sel1(bool)));
-	connect(choice[1],SIGNAL(toggled(bool)),this,SLOT(sel2(bool)));
-	connect(choice[2],SIGNAL(toggled(bool)),this,SLOT(sel3(bool)));
-	connect(choice[3],SIGNAL(toggled(bool)),this,SLOT(sel4(bool)));
 	connect(bannNavigazione,SIGNAL(forwardClick()),alarm_page,SLOT(showSoundDiffPage()));
 	connect(bannNavigazione, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
 
 	if (alarm_page->type != AlarmClock::DI_SON)
 		bannNavigazione->nascondi(banner::BUT2);
 
-	setSelection(alarm_page->freq);
+	content->setCheckedId(alarm_page->freq);
 }
 
-void AlarmClockFreq::setSelection(AlarmClock::Freq freq)
+void AlarmClockFreq::setSelection(int freq)
 {
-	for (uchar idx = 0; idx < 4; idx++)
-		choice[idx]->setChecked(idx == freq);
-	emit selectionChanged(freq);
-}
-
-void AlarmClockFreq::sel1(bool isOn)
-{
-	if (isOn)
-		setSelection(AlarmClock::ONCE);
-}
-
-void AlarmClockFreq::sel2(bool isOn)
-{
-	if (isOn)
-		setSelection(AlarmClock::SEMPRE);
-}
-
-void AlarmClockFreq::sel3(bool isOn)
-{
-	if (isOn)
-		setSelection(AlarmClock::FERIALI);
-}
-
-void AlarmClockFreq::sel4(bool isOn)
-{
-	if (isOn)
-		setSelection(AlarmClock::FESTIVI);
+	emit selectionChanged(AlarmClock::Freq(freq));
 }
 
 // AlarmClockSoundDiff

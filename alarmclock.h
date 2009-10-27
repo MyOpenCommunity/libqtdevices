@@ -26,6 +26,7 @@ class QTimer;
 class AlarmClockTime;
 class AlarmClockFreq;
 class AlarmClockSoundDiff;
+class SingleChoiceContent;
 
 
 /*!
@@ -202,33 +203,13 @@ public:
 	AlarmClockFreq(AlarmClock *alarm_page);
 
 private slots:
-/*!
-  \brief Executed when "once" frequency is selected.
-*/
-	void sel1(bool);
-
-/*!
-  \brief Executed when "always" frequency is selected.
-*/
-	void sel2(bool);
-
-/*!
-  \brief Executed when "mon-fri" frequency is selected.
-*/
-	void sel3(bool);
-
-/*!
-  \brief Executed when "sat-sun" frequency is selected.
-*/
-	void sel4(bool);
+	void setSelection(int freq);
 
 signals:
 	void selectionChanged(AlarmClock::Freq freq);
 
 private:
-	BtButton *choice[4];
-	QLabel *testiChoice[4];
-	void setSelection(AlarmClock::Freq freq);
+	SingleChoiceContent *content;
 	bannFrecce *bannNavigazione;
 };
 
