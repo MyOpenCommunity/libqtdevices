@@ -193,46 +193,33 @@ PullDevice::PullDevice(QString who, QString where, PullMode m) :
 {
 }
 
+
 void PullDevice::manageFrame(OpenMsg &msg)
 {
-	// true if the frame is general or environment (not group).
-	bool is_multi_receiver_frame = false;
-
 	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where, state.getPullMode()))
 	{
 	case NOT_MINE:
 		return;
 	case GLOBAL:
 	case ENVIRONMENT:
-		is_multi_receiver_frame = true;
-		break;
-	default:
-		break;
-	}
-
-	// pull optimization specific stuff
-	if (is_multi_receiver_frame)
-	{
-		if (state.getPullMode() == NOT_PULL)
+		if (state.getPullMode() == PULL_UNKNOWN)
 		{
-			StatusList sl;
-			parseFrame(msg, &sl);
-			emit status_changed(sl);
-		}
-		else if (state.getPullMode() == PULL_UNKNOWN)
 			if (state.moreFrameNeeded(msg, true))
 				requestPullStatus();
-		return;
+			return;
+		}
+		else if (state.getPullMode() == PULL)
+			return;
+		// when NOT_PULL we must parse the frame and emit status_changed() signal
+		break;
+	default:
+		if (state.getPullMode() == PULL_UNKNOWN)
+			state.moreFrameNeeded(msg, false);
+		break;
 	}
-	if (state.getPullMode() == PULL_UNKNOWN)
-		state.moreFrameNeeded(msg, false);
 
 	StatusList sl;
 	parseFrame(msg, &sl);
-
-	// when mode is unknown and the frame is for multiple receivers (ie it's a general or
-	// environment frame), we must send a status request to the device before sending
-	// a status_changed()
 	emit status_changed(sl);
 }
 
