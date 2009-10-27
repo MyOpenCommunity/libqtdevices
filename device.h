@@ -176,6 +176,16 @@ private:
 };
 
 
+/*
+ * Class to encapsulate PULL mode discovering behaviour.
+ *
+ * Derived classes must reimplement the two pure virtual functions
+ * parseFrame(): function called for every received frame. Derived classes must parse the frame and put the
+ *    results into the StatusList.
+ * requestPullStatus(): send a status request to the device. This can be reimplemented depending on device
+ *    necessities.
+ * Derived classes MUST NOT reimplement manageFrame(), as they will override PULL mode discovery logic
+ */
 class PullDevice : public device
 {
 friend class TestLightingDevice;
