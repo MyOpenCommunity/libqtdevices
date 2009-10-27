@@ -178,6 +178,7 @@ private:
 
 class PullDevice : public device
 {
+friend class TestLightingDevice;
 Q_OBJECT
 public:
 	virtual void manageFrame(OpenMsg &msg);

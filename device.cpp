@@ -138,8 +138,10 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	qDebug() << "msg.IsMeasureFrame() " << msg.IsMeasureFrame();
 	// PullStateManager will be used for automation and lighting only.
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
+	// We need to look for write environment commands
 	int what;
-	if (msg.IsMeasureFrame())
+	bool measure_frame = (is_environment && msg.IsWriteFrame()) || (!is_environment && msg.IsMeasureFrame());
+	if (measure_frame)
 	{
 		// dimmer 100 status
 		if (msg.what() == 1)
