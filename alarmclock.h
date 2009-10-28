@@ -18,7 +18,7 @@
 #include <QDateTime>
 
 class BtButton;
-class timeScript;
+class BtTimeEdit;
 
 class QWidget;
 class QLabel;
@@ -184,7 +184,7 @@ public:
 	QDateTime getDataOra() const;
 
 private:
-	timeScript *dataOra;
+	BtTimeEdit *edit;
 };
 
 

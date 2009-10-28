@@ -4,7 +4,7 @@
 #include "multisounddiff.h" // contdiff
 #include "btbutton.h"
 #include "openclient.h"
-#include "timescript.h"
+#include "datetime.h"
 #include "fontmanager.h" // bt_global::font
 #include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
@@ -16,15 +16,11 @@
 
 #include <QApplication>
 #include <QDateTime>
-#include <QPixmap>
 #include <QWidget>
 #include <QLabel>
-#include <QDir>
-#include <QFile>
 #include <QMap>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QGridLayout>
 
 #include <fcntl.h>
 #include <stdlib.h>
@@ -515,62 +511,38 @@ void AlarmClock::inizializza()
 AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 {
 	AlarmNavigation *navigation = new AlarmNavigation(true);
-	BtButton *but[4];
-
-	for (int idx = 0; idx < 4; idx++)
-	{
-		QString arrow = bt_global::skin->getImage(idx < 2 ? "arrow_up" : "arrow_down");
-		but[idx] = new BtButton(this);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(arrow);
-	}
 
 	QLabel *icon = new QLabel;
 	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
 
-	dataOra = NULL;
-
-	dataOra = new timeScript(this,2,&alarm_page->oraSveglia);
-	dataOra->setGeometry(40,140,160,50);
-	dataOra->setLineWidth(0);
+	edit = new BtTimeEdit(this);
+	edit->setTime(alarm_page->oraSveglia.time());
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	QGridLayout *g = new QGridLayout;
+	QHBoxLayout *r = new QHBoxLayout(this);
 
-	// layout the time display and the 4 buttons to change it
-	g->setColumnStretch(0, 1);
-	g->setColumnStretch(4, 1);
-	g->setColumnMinimumWidth(2, 20);
-	g->setRowMinimumHeight(1, 50);
-	g->addWidget(but[0], 0, 1);
-	g->addWidget(but[1], 0, 3);
-	g->addWidget(dataOra, 1, 1, 1, 3);
-	g->addWidget(but[2], 2, 1);
-	g->addWidget(but[3], 2, 3);
-
-	g->setContentsMargins(0, 0, 0, 0);
-	g->setSpacing(0);
+	r->addSpacing(40);
+	r->addWidget(edit);
+	r->addSpacing(40);
 
 	// top level layout
 	l->addWidget(icon, 0, Qt::AlignHCenter);
 	l->addSpacing(10);
-	l->addLayout(g);
+	l->addLayout(r);
 	l->addWidget(navigation);
 
 	l->setContentsMargins(0, 10, 0, 10);
 	l->setSpacing(0);
 
-	connect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
-	connect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-	connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
 	connect(navigation, SIGNAL(forwardClicked()), alarm_page, SLOT(showTypePage()));
 	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
 }
 
 QDateTime AlarmClockTime::getDataOra() const
 {
-	return dataOra->getDataOra();
+	BtTime t = edit->time();
+
+	return QDateTime(QDate(), QTime(t.hour(), t.minute()));
 }
 
 // AlarmClockFreq implementation
