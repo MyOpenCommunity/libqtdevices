@@ -119,10 +119,7 @@ public:
 	\brief Returns condition description
 	*/
 	const char *getDescription();
-	/*!
-	\brief Draws page and initializes some connections
-	*/
-	virtual void showPage();
+
 	//! Sets icons
 	void SetIcons();
 	//! Save condition

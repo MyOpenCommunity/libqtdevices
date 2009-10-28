@@ -174,6 +174,7 @@ void scenEvo_cond_h::SetIcons()
 		but[A6_BUTTON_INDEX] = new BtButton(this);
 		but[A6_BUTTON_INDEX]->setGeometry(0, height() - 60, 60, 60);
 		but[A6_BUTTON_INDEX]->setImage(getImg(A6_ICON_INDEX));
+		connect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
 	}
 	else
 		but[A6_BUTTON_INDEX] = NULL;
@@ -185,6 +186,7 @@ void scenEvo_cond_h::SetIcons()
 		but[A7_BUTTON_INDEX] = new BtButton(this);
 		but[A7_BUTTON_INDEX]->setGeometry(width()/2 - 30, height() - 60, 60, 60);
 		but[A7_BUTTON_INDEX]->setImage(getImg(A7_ICON_INDEX));
+		connect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
 	}
 	else
 		but[A7_BUTTON_INDEX] = NULL;
@@ -196,47 +198,14 @@ void scenEvo_cond_h::SetIcons()
 		but[A8_BUTTON_INDEX] = new BtButton(this);
 		but[A8_BUTTON_INDEX]->setGeometry(width() - 60, height() - 60, 60, 60);
 		but[A8_BUTTON_INDEX]->setImage(getImg(A8_ICON_INDEX));
+		if (but[A7_BUTTON_INDEX])
+			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
+		else
+			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
 	}
 	else
 		but[A8_BUTTON_INDEX] = NULL;
 	qDebug("scenEvo_cond_h::SetIcons(), fine");
-}
-
-void scenEvo_cond_h::showPage()
-{
-	scenEvo_cond::showPage();
-	qDebug("scenEvo_cond_h::showPage()");
-
-	if (but[A6_BUTTON_INDEX])
-	{
-		disconnect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
-		connect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
-	}
-	if (getImg(3).isEmpty())
-	{
-	// cimg4 is empty
-		if (but[A8_BUTTON_INDEX])
-		{
-			qDebug("connecting A8 to Prev");
-			disconnect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-		}
-	}
-	else
-	{
-		if (but[A7_BUTTON_INDEX])
-		{
-			qDebug("connecting A7 to Prev");
-			disconnect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-			connect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-		}
-		if (but[A8_BUTTON_INDEX])
-		{
-			qDebug("connecting A8 to Next");
-			disconnect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
-			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
-		}
-	}
 }
 
 void scenEvo_cond_h::setupTimer()
