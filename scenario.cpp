@@ -122,9 +122,9 @@ QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 
 	foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
 	{
-		scenEvo_cond_d *c = new scenEvo_cond_d;
 		if (int v = getTextChild(cond, "value").toInt())
 		{
+			scenEvo_cond_d *c = new scenEvo_cond_d;
 			c->setConditionType(v);
 			c->set_descr(getTextChild(cond, "descr"));
 			c->set_where(getTextChild(cond, "where"));
