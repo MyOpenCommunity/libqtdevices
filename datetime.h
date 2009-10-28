@@ -30,23 +30,30 @@ class BtTimeEdit : public QWidget
 {
 Q_OBJECT
 public:
-	BtTimeEdit(QWidget *parent);
+	BtTimeEdit(QWidget *parent, bool display_seconds = false);
 
 	/**
 	 * Returns the time set on the widget.
 	 */
 	BtTime time();
+	BtTimeSeconds timeWithSeconds();
 
 	void setMaxHours(int hours);
 	void setMaxMinutes(int minutes);
+	void setMaxSeconds(int minutes);
 private slots:
 	void incHours();
 	void decHours();
 	void incMin();
 	void decMin();
+	void incSec();
+	void decSec();
 private:
-	BtTime _time;
+	void displayTime();
+private:
+	BtTimeSeconds _time;
 	QLCDNumber *num;
+	bool _display_seconds;
 };
 
 /**

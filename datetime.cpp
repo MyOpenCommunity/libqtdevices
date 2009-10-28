@@ -24,41 +24,63 @@ BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
 	return btn;
 }
 
-BtTimeEdit::BtTimeEdit(QWidget *parent) : QWidget(parent), _time(0, 0)
+BtTimeEdit::BtTimeEdit(QWidget *parent, bool display_seconds)
+		: QWidget(parent),
+		_time(0, 0, 0),
+		_display_seconds(display_seconds)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
-	BtButton *btn1, *btn2;
-	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
-	btn1 = getButton(btn_up_img, this, true);
-	btn2 = getButton(btn_up_img, this, true);
-
-	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
-	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
+	BtButton *btn1, *btn2, *btn3;
 	QHBoxLayout *hbox = new QHBoxLayout();
+	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
+
+	btn1 = getButton(btn_up_img, this, true);
+	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
 	hbox->addWidget(btn1);
+
+	btn2 = getButton(btn_up_img, this, true);
+	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
 	hbox->addWidget(btn2);
+
+	if (_display_seconds)
+	{
+		btn3 = getButton(btn_up_img, this, true);
+		connect(btn3, SIGNAL(clicked()), this, SLOT(incSec()));
+		hbox->addWidget(btn3);
+	}
+
 	main_layout->addLayout(hbox);
 
 	num = new QLCDNumber(this);
 	num->setSegmentStyle(QLCDNumber::Flat);
-	num->setNumDigits(5);
-	num->display(_time.toString());
+	num->setNumDigits(_display_seconds ? 8 : 5);
 	num->setFrameStyle(QFrame::NoFrame);
 	main_layout->addWidget(num, 1);
 
-	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
-	btn1 = getButton(btn_down_img, this, true);
-	btn2 = getButton(btn_down_img, this, true);
-
-	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
-	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
 	hbox = new QHBoxLayout();
+	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
+
+	btn1 = getButton(btn_down_img, this, true);
+	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
 	hbox->addWidget(btn1);
+
+	btn2 = getButton(btn_down_img, this, true);
+	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
 	hbox->addWidget(btn2);
+
+	if (_display_seconds)
+	{
+		btn3 = getButton(btn_down_img, this, true);
+		connect(btn3, SIGNAL(clicked()), this, SLOT(decSec()));
+		hbox->addWidget(btn3);
+	}
+
 	main_layout->addLayout(hbox);
+
+	displayTime();
 }
 
 void BtTimeEdit::setMaxHours(int hours)
@@ -71,7 +93,17 @@ void BtTimeEdit::setMaxMinutes(int minutes)
 	_time.setMaxMinutes(minutes);
 }
 
+void BtTimeEdit::setMaxSeconds(int seconds)
+{
+	_time.setMaxSeconds(seconds);
+}
+
 BtTime BtTimeEdit::time()
+{
+	return BtTime(_time);
+}
+
+BtTimeSeconds BtTimeEdit::timeWithSeconds()
 {
 	return _time;
 }
@@ -79,25 +111,48 @@ BtTime BtTimeEdit::time()
 void BtTimeEdit::incHours()
 {
 	_time = _time.addHour(1);
-	num->display(_time.toString());
+	displayTime();
 }
 
 void BtTimeEdit::incMin()
 {
 	_time = _time.addMinute(1);
-	num->display(_time.toString());
+	displayTime();
+}
+
+void BtTimeEdit::incSec()
+{
+	_time = _time.addSecond(1);
+	displayTime();
 }
 
 void BtTimeEdit::decHours()
 {
 	_time = _time.addHour(-1);
-	num->display(_time.toString());
+	displayTime();
 }
 
 void BtTimeEdit::decMin()
 {
 	_time = _time.addMinute(-1);
-	num->display(_time.toString());
+	displayTime();
+}
+
+void BtTimeEdit::decSec()
+{
+	_time = _time.addSecond(-1);
+	displayTime();
+}
+
+void BtTimeEdit::displayTime()
+{
+	QString str;
+	if (_display_seconds)
+		str.sprintf("%02u:%02u:%02u", _time.hour(), _time.minute(), _time.second());
+	else
+		str.sprintf("%u:%02u", _time.hour(), _time.minute());
+
+	num->display(str);
 }
 
 QString BtDateEdit::FORMAT_STRING;
