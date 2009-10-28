@@ -11,6 +11,13 @@
 #include "test_scenario_device.h"
 #include "test_pull_manager.h"
 
+
+// This empty function is required because frame_interpreter use a rearmWDT
+// function, so we have to define it. We don't want to include hardware_functions,
+// in order to compile and execute all tests with the standard version of Qt.
+void rearmWDT() {}
+
+
 int main(int argc, char *argv[])
 {
 	QCoreApplication app(argc, argv);

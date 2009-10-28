@@ -36,6 +36,7 @@ public:
 	// Verify the number of signals emitted
 	void checkSignals(const QStringList &frames, int num_signals);
 	void checkSignals(QString frame, int num_signals);
+	QVariant getResult(const QStringList& frames);
 
 private:
 	QSignalSpy spy;
@@ -43,7 +44,6 @@ private:
 	device *dev;
 	StatusListValues item_number;
 	void sendFrames(const QStringList& frames);
-	QVariant getResult(const QStringList& frames);
 };
 
 
