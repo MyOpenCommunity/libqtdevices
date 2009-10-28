@@ -101,7 +101,7 @@ void Client::ApriInviaFrameChiudiw(char *frame)
 	qDebug("Client::ApriInviaFrameChiudiw()");
 	ApriInviaFrameChiudi(frame);
 	qDebug("Frame sent waiting for ack");
-	while (socketWaitForAck() < 0);
+	while (socketWaitForAck() < 0) {}
 	qDebug("Ack received");
 }
 
