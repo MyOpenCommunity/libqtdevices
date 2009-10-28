@@ -62,9 +62,8 @@ AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 {
 	aumVolTimer = NULL;
 
-	oraSveglia = new QDateTime();
-	oraSveglia->setTime(QTime(hour, minute));
-	oraSveglia->setDate(QDate::currentDate());
+	oraSveglia.setTime(QTime(hour, minute));
+	oraSveglia.setDate(QDate::currentDate());
 
 	minuTimer = NULL;
 	freq = f;
@@ -101,12 +100,11 @@ void AlarmClock::handleClose()
 	gesFrameAbil = false;
 	setActive(true);
 	emit Closed();
-	delete oraSveglia;
-	oraSveglia = new QDateTime(alarm_time->getDataOra());
+	oraSveglia = alarm_time->getDataOra();
 
 	QMap<QString, QString> data;
-	data["hour"] = oraSveglia->time().toString("hh");
-	data["minute"] = oraSveglia->time().toString("mm");
+	data["hour"] = oraSveglia.time().toString("hh");
+	data["minute"] = oraSveglia.time().toString("mm");
 	data["alarmset"] = QString::number(freq);
 
 	setCfgValue(data, SET_SVEGLIA, serNum);
@@ -243,8 +241,8 @@ void AlarmClock::verificaSveglia()
 		(freq == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
 		(freq == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
 	{
-		qDebug("secsTo: %d",oraSveglia->time().secsTo(actualDateTime.time()));
-		if ((actualDateTime.time() >= (oraSveglia->time())) && ((oraSveglia->time().secsTo(actualDateTime.time())<60)))
+		qDebug("secsTo: %d",oraSveglia.time().secsTo(actualDateTime.time()));
+		if ((actualDateTime.time() >= (oraSveglia.time())) && ((oraSveglia.time().secsTo(actualDateTime.time())<60)))
 		{
 			if (type == BUZZER)
 			{
@@ -532,7 +530,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 
 	dataOra = NULL;
 
-	dataOra = new timeScript(this,2,alarm_page->oraSveglia);
+	dataOra = new timeScript(this,2,&alarm_page->oraSveglia);
 	dataOra->setFrameStyle(QFrame::Plain);
 	dataOra->setLineWidth(0);
 

@@ -15,10 +15,11 @@
 #include "hardware_functions.h"
 #include "page.h"
 
+#include <QDateTime>
+
 class BtButton;
 class timeScript;
 
-class QDateTime;
 class QWidget;
 class QLabel;
 class QTimer;
@@ -154,7 +155,7 @@ private:
 	int serNum;
 	bool buzAbilOld;
 	unsigned int contaBuzzer;
-	QDateTime *oraSveglia;
+	QDateTime oraSveglia;
 	int volSveglia[AMPLI_NUM];
 	bool gesFrameAbil, active;
 	QTimer *minuTimer,*aumVolTimer;
