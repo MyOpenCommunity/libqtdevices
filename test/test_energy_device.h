@@ -37,6 +37,7 @@ private slots:
 	void receiveDayGraph3();
 	void receiveCumulativeMonthGraph();
 	void receiveCumulativeMonthGraph2();
+	void receiveCumulativeMonthGraph3();
 	void receiveCumulativeYearGraph();
 	void receiveMonthlyAverage();
 	void receiveCumulativeDayRequest();

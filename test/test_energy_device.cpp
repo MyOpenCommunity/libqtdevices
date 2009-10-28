@@ -390,6 +390,23 @@ void TestEnergyDevice::receiveCumulativeMonthGraph2()
 	QVERIFY(data == result.value<GraphData>());
 }
 
+void TestEnergyDevice::receiveCumulativeMonthGraph3()
+{
+	int month = 2;
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH);
+	QString tmp(QString("*#18*%1*%2#%3").arg(where).arg(EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH).arg(month));
+	QStringList frames;
+
+	for (int i = 1; i <= 22; ++i)
+		frames << tmp + QString("*%1*0*0*0##").arg(i);
+
+	QVariant result = t.getResult(frames);
+	QVERIFY(result.canConvert<GraphData>());
+	GraphData d = result.value<GraphData>();
+	QVERIFY(d.graph.size() == QDate(QDate::currentDate().year(), month, 1).daysInMonth());
+}
+
 void TestEnergyDevice::receiveCumulativeYearGraph()
 {
 	// We have to reset the device buffer
