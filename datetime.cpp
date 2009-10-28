@@ -83,6 +83,18 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, bool display_seconds)
 	displayTime();
 }
 
+void BtTimeEdit::setTime(const BtTime& time)
+{
+	_time = BtTimeSeconds(time.hour(), time.minute(), 0);
+	displayTime();
+}
+
+void BtTimeEdit::setTimeWithSeconds(const BtTimeSeconds& time)
+{
+	_time = time;
+	displayTime();
+}
+
 void BtTimeEdit::setMaxHours(int hours)
 {
 	_time.setMaxHours(hours);

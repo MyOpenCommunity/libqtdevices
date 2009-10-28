@@ -32,6 +32,9 @@ Q_OBJECT
 public:
 	BtTimeEdit(QWidget *parent, bool display_seconds = false);
 
+	void setTime(const BtTime& time);
+	void setTimeWithSeconds(const BtTimeSeconds& time);
+
 	/**
 	 * Returns the time set on the widget.
 	 */
