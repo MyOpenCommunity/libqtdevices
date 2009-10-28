@@ -7,6 +7,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
 #include "main.h" // bt_global::config
+#include "skinmanager.h"
 
 #include "lighting_device.h"
 
@@ -136,8 +137,10 @@ scenEvo_cond_h::scenEvo_cond_h(QString h, QString m)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
 	ora = NULL;
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
+
+	timer.setSingleShot(true);
+	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
+
 	cond_time = new QDateTime(QDateTime::currentDateTime());
 	ora = new timeScript(this, 2 , cond_time);
 	hasTimeCondition = true;
@@ -177,11 +180,9 @@ void scenEvo_cond_h::SetIcons()
 	}
 
 	// Orologio
-	Immagine = new QLabel(this);
-	QPixmap Icon1;
-	if (Icon1.load(getImg(0)))
-		Immagine->setPixmap(Icon1);
-	Immagine->setGeometry(90,0,60,60);
+	QLabel *image = new QLabel(this);
+	image->setPixmap(bt_global::skin->getImage("watch"));
+	image->setGeometry(90,0,60,60);
 
 	// Pulsante in basso a sinistra, area 6 (SE C'E` L'ICONA)
 	if (!getImg(A6_ICON_INDEX).isEmpty())
@@ -228,7 +229,6 @@ void scenEvo_cond_h::showPage()
 		if (but[idx])
 			but[idx]->show();
 	ora->show();
-	Immagine->show();
 
 	disconnect(but[0] ,SIGNAL(clicked()), ora, SLOT(aumOra()));
 	disconnect(but[1] ,SIGNAL(clicked()), ora, SLOT(aumMin()));
@@ -283,9 +283,8 @@ void scenEvo_cond_h::setupTimer()
 		msecsto -= 24 * 60 * 60 * 1000;
 
 	qDebug("(re)starting timer with interval = %d", msecsto);
-	timer->stop();
-	timer->setSingleShot(true);
-	timer->start(msecsto);
+	timer.stop();
+	timer.start(msecsto);
 }
 
 void scenEvo_cond_h::Apply()

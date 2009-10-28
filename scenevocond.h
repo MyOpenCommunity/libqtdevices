@@ -6,6 +6,7 @@
 #include "main.h"
 
 #include <QList>
+#include <QTimer>
 
 class BtButton;
 class timeScript;
@@ -155,12 +156,10 @@ private:
 	QDateTime *cond_time;
 	//! Pointers to buttons
 	BtButton *but[7];
-	//! Pointer to label
-	QLabel *Immagine;
 	//! Time modification object
 	timeScript *ora;
-	//! Timer for triggering condition
-	QTimer *timer;
+
+	QTimer timer;
 };
 
 

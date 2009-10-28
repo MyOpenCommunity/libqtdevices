@@ -5,6 +5,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "content_widget.h" // content_widget
 #include "main.h"
+#include "skinmanager.h" //SkinContext
 
 #include <QDomNode>
 #include <QString>
@@ -98,6 +99,7 @@ void Scenario::loadItems(const QDomNode &config_node)
 
 QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	// Note: the ownership of scenEvo_cond objects is taken by scenEvo instance.
 	QList<scenEvo_cond*> l;
 	foreach (const QDomNode &cond, getChildren(config_node, "condH"))
