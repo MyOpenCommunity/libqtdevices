@@ -46,10 +46,10 @@ void homePage::loadItems(const QDomNode &config_node)
 		}
 		case TEMPERATURA:
 		case TERMO_HOME_NC_PROBE:
-			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, QFrame::Plain, 3, "", "0");
+			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, "", "0");
 			break;
 		case TERMO_HOME_NC_EXTPROBE:
-			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, QFrame::Plain, 3, "", "1");
+			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, "", "1");
 			break;
 		}
 	}

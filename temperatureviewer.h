@@ -31,7 +31,7 @@ class TemperatureViewer : public QObject, FrameReceiver
 {
 public:
 	TemperatureViewer(Page *page);
-	void add(QString where, int x, int y, int width, int height, int style, int line, QString descr, QString ext);
+	void add(QString where, int x, int y, int width, int height, QString descr, QString ext);
 	void inizializza();
 
 	virtual void manageFrame(OpenMsg &msg);

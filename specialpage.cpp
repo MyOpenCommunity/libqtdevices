@@ -48,8 +48,8 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		case TERMO_HOME_NC_EXTPROBE:
 		{
 			QString ext = (id == TERMO_HOME_NC_EXTPROBE) ? "1" : "0";
-			temp_viewer->add(getTextChild(item, "where"), 10, (itemNum-1)*80 + 10, 220, 60, QFrame::Plain,
-				3, getTextChild(item, "descr"), ext);
+			temp_viewer->add(getTextChild(item, "where"), 10, (itemNum-1)*80 + 10, 220, 60,
+				getTextChild(item, "descr"), ext);
 			break;
 		}
 		default:

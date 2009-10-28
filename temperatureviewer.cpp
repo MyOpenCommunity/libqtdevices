@@ -20,10 +20,12 @@ TemperatureViewer::TemperatureViewer(Page *page) : linked_page(page)
 	subscribe_monitor(4);
 }
 
-void TemperatureViewer::add(QString where, int x, int y, int width, int height, int style, int line, QString descr, QString ext)
+void TemperatureViewer::add(QString where, int x, int y, int width, int height, QString descr, QString ext)
 {
 	TemperatureData temp;
 	QLCDNumber *l = new QLCDNumber(linked_page);
+	int style = QFrame::Plain;
+	int line = 3; // line width
 	temp.lcd = l;
 	temp.lcd->setGeometry(x, y, width, height - H_SCR_TEMP);
 	temp.lcd->setFrameStyle(style);
