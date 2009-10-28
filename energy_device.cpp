@@ -297,7 +297,7 @@ void EnergyDevice::parseDailyAverageGraph(const QStringList &buffer_frame, QVari
 		values_list.append(frame_parser.whatArgN(3));
 	}
 
-	computeMonthGraphData(values_list, data.graph);
+	computeMonthGraphData(data.date.daysInMonth(), values_list, data.graph);
 
 	v.setValue(data);
 }
@@ -351,15 +351,19 @@ void EnergyDevice::parseCumulativeMonthGraph(const QStringList &buffer_frame, QV
 		if (frame_parser.whatArgN(0) != 1)
 			values.append(frame_parser.whatArgN(3));
 	}
-	computeMonthGraphData(values, data.graph);
+	computeMonthGraphData(data.date.daysInMonth(), values, data.graph);
 
 	v.setValue(data);
 }
 
-void EnergyDevice::computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph)
+void EnergyDevice::computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph)
 {
 	for (int i = 0; i + 1 < values.size(); i += 2)
+	{
+		if (i / 2 + 1 > days_in_month)
+			break;
 		graph[i / 2 + 1] = getValue(values[i], values[i + 1]);
+	}
 }
 
 QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)

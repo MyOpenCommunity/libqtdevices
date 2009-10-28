@@ -138,11 +138,13 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		else
 		{
 			p.drawText(axis_left, font_y_pos, "1");
+
 			QString center = QString::number(number_of_bars / 2);
-			p.drawText(axis_left + bar_width * number_of_bars / 2 - fm.width(center) / 2, font_y_pos, center);
+			int left = axis_left + AXIS_PEN_WIDTH;
+			p.drawText(left + bar_width * (number_of_bars / 2) - fm.width(center) / 2 - bar_width / 2 , font_y_pos, center);
 
 			QString max = QString::number(number_of_bars);
-			p.drawText(axis_left + bar_width * number_of_bars - fm.width(max), font_y_pos, max);
+			p.drawText(left + bar_width * number_of_bars - fm.width(max) / 2 - bar_width / 2, font_y_pos, max);
 
 			// Draw a line for each quarter of the graph.
 			QList<int> lines;
@@ -156,7 +158,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 
 			foreach (int i, lines)
 			{
-				int current_left = axis_left + i * bar_width + AXIS_PEN_WIDTH;
+				int current_left = left + i * bar_width - bar_width / 2;
 				p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
 			}
 

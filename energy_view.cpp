@@ -588,8 +588,29 @@ void EnergyView::updateCurrentGraph()
 	}
 }
 
-void EnergyView::showGraph(int graph_type)
+void EnergyView::showGraph(int graph_type, bool request_update)
 {
+	if (request_update)
+	{
+		QDate selected_date = time_period->date();
+		switch (graph_type)
+		{
+		case EnergyDevice::CUMULATIVE_DAY:
+			dev->requestCumulativeDayGraph(selected_date);
+			break;
+		case EnergyDevice::CUMULATIVE_MONTH:
+			dev->requestCumulativeMonthGraph(selected_date);
+			break;
+		case EnergyDevice::DAILY_AVERAGE:
+			dev->requestDailyAverageGraph(selected_date);
+			break;
+		case EnergyDevice::CUMULATIVE_YEAR:
+		default:
+			dev->requestCumulativeYearGraph();
+			break;
+		}
+	}
+
 	current_widget = GRAPH_WIDGET;
 	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
 
@@ -688,7 +709,7 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		break;
 	}
 	if (widget_container->currentIndex() == GRAPH_WIDGET)
-		showGraph(graph_type);
+		showGraph(graph_type, false);
 
 	setBannerPage(status, selection_date);
 }

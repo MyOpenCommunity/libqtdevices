@@ -99,7 +99,7 @@ private:
 	void parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v);
 	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);
-	void computeMonthGraphData(const QList<int> &values, QMap<int, int> &graph);
+	void computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph);
 
 	// The following fill* methods are special methods that handle the case when a single
 	// value or a graph value needs to be calculated from other values.
