@@ -265,8 +265,7 @@ bool scenEvo_cond_h::isTrue()
 scenEvo_cond_d::scenEvo_cond_d()
 {
 	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
-	descr = new QString("");
-	where = new QString("");
+	// to avoid changing too much code at the same time...
 	trigger = new QString("");
 	memset(but, 0, sizeof(but));
 	qDebug("scenEvo_cond_d::scenEvo_cond_d(), end");
@@ -275,18 +274,18 @@ scenEvo_cond_d::scenEvo_cond_d()
 void scenEvo_cond_d::set_descr(QString d)
 {
 	qDebug() << "scenEvo_cond_d::set_descr("<< d << ")";
-	*descr = d;
+	descr = d;
 }
 
 void scenEvo_cond_d::set_where(QString w)
 {
 	qDebug() << "scenEvo_cond_d::set_where(" << w << ")";
-	*where = w;
+	where = w;
 }
 
 void scenEvo_cond_d::get_where(QString& out)
 {
-	out = *where;
+	out = where;
 }
 
 void scenEvo_cond_d::set_trigger(QString t)
@@ -304,15 +303,8 @@ void scenEvo_cond_d::showPage()
 {
 	scenEvo_cond::showPage();
 	qDebug("scenEvo_cond_d::showPage()");
-	for (uchar idx = 0; idx < 8; idx++)
-		if (but[idx])
-			but[idx]->show();
 
-	area1_ptr->show();
-	area2_ptr->setText(*descr);
-	area2_ptr->show();
-	if (actual_condition)
-		actual_condition->show();
+	area2_ptr->setText(descr);
 }
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
@@ -408,7 +400,7 @@ void scenEvo_cond_d::SetIcons()
 	{
 		dc->setGeometry(40,140,160,50);
 		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
-		dc->setup_device(*where);
+		dc->setup_device(where);
 	}
 	actual_condition = dc;
 	qDebug("scenEvo_cond_d::SetIcons(), end");

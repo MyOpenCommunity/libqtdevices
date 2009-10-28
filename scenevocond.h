@@ -227,12 +227,12 @@ private:
 	static const int TEXT_X_DIM = 180;
 	//! Text area height
 	static const int TEXT_Y_DIM = 20;
-	//! Condition description
-	QString *descr;
-	//! Device address (open protocol)
-	QString *where;
+
+	QString descr;
+	QString where;
 	//! Trigger condition
 	QString *trigger;
+
 	//! UP button index (area #3)
 	static const int A3_BUTTON_INDEX = 0;
 	//! Down button index (area #4)
