@@ -216,7 +216,6 @@ void scenEvo_cond_h::SetIcons()
 	else
 		but[A8_BUTTON_INDEX] = NULL;
 	ora->setGeometry(40, 140, 160, 50);
-	ora->setFrameStyle(QFrame::Plain);
 	ora->setLineWidth(0);
 	qDebug("scenEvo_cond_h::SetIcons(), fine");
 }

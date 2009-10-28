@@ -39,7 +39,6 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		{
 			timeScript *d = new timeScript(this, id == DATA ? 25 : 1);
 			d->setGeometry(10, (itemNum-1)*80 + 10, 220, 60);
-			d->setFrameStyle(QFrame::Plain);
 			d->setLineWidth(3);
 			break;
 		}

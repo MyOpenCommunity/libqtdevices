@@ -531,7 +531,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	dataOra = NULL;
 
 	dataOra = new timeScript(this,2,&alarm_page->oraSveglia);
-	dataOra->setFrameStyle(QFrame::Plain);
+	dataOra->setGeometry(40,140,160,50);
 	dataOra->setLineWidth(0);
 
 	QVBoxLayout *l = new QVBoxLayout(this);

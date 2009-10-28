@@ -14,7 +14,6 @@ impostaTime::impostaTime()
 	QDateTime OroTemp = QDateTime::currentDateTime();
 	dataOra = new timeScript(this,1,&OroTemp);
 	dataOra->setGeometry(10,120,220,80);
-	dataOra->setFrameStyle(QFrame::Plain);
 	dataOra->setLineWidth(0);
 
 	for (int idx = 0; idx < 3; idx++)
