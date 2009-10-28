@@ -17,6 +17,16 @@
 
 #define DIM_BUT_BACK 60
 
+#define BORDER_SIZE 10
+#define ITEM_HEIGHT 60
+namespace
+{
+	inline int getPosition(int item_number)
+	{
+		return (item_number - 1) * 80 + BORDER_SIZE;
+	}
+}
+
 
 SpecialPage::SpecialPage(const QDomNode &config_node)
 {
@@ -38,7 +48,7 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		case OROLOGIO:
 		{
 			timeScript *d = new timeScript(this, id == DATA ? 25 : 1);
-			d->setGeometry(10, (itemNum-1)*80 + 10, 220, 60);
+			d->setGeometry(BORDER_SIZE, getPosition(itemNum), width() - BORDER_SIZE, ITEM_HEIGHT);
 			d->setLineWidth(3);
 			break;
 		}
@@ -47,8 +57,8 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		case TERMO_HOME_NC_EXTPROBE:
 		{
 			QString ext = (id == TERMO_HOME_NC_EXTPROBE) ? "1" : "0";
-			temp_viewer->add(getTextChild(item, "where"), 10, (itemNum-1)*80 + 10, 220, 60,
-				getTextChild(item, "descr"), ext);
+			temp_viewer->add(getTextChild(item, "where"), BORDER_SIZE, getPosition(itemNum),
+				width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
 			break;
 		}
 		default:
@@ -64,13 +74,14 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 	// Load the back button
 	BtButton *b = new BtButton(this);
 	b->setImage(bt_global::skin->getImage("back"));
-	b->setGeometry(0, 260, DIM_BUT_BACK, DIM_BUT_BACK);
+	b->setGeometry(0, height() - ITEM_HEIGHT, DIM_BUT_BACK, DIM_BUT_BACK);
 	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
 
 	// Load the special button
 	b = new BtButton(this);
 	b->setImage(bt_global::skin->getImage("command"));
-	b->setGeometry(DIM_BUT_BACK, 260, MAX_WIDTH - DIM_BUT_BACK, DIM_BUT_BACK);
+	const int command_button_y = height() - ITEM_HEIGHT;
+	b->setGeometry(DIM_BUT_BACK, command_button_y, width() - DIM_BUT_BACK, DIM_BUT_BACK);
 
 	QDomNode command = getChildWithName(config_node, "command");
 	type = static_cast<specialType>(getTextChild(command, "type").toInt());
@@ -89,11 +100,10 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 	// Load the description of special button
 	QLabel *box_text = new QLabel(this);
 	box_text->setFont(bt_global::font->get(FontManager::TEXT));
-	box_text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	box_text->setAlignment(Qt::AlignCenter);
 	box_text->setText(getTextChild(command, "descr"));
-	box_text->setGeometry(DIM_BUT_BACK, 240, MAX_WIDTH - DIM_BUT_BACK, 20);
-	box_text->setFrameStyle(QFrame::Plain);
-	box_text->setLineWidth(3);
+	const int TEXT_HEIGHT = 20;
+	box_text->setGeometry(DIM_BUT_BACK, command_button_y - TEXT_HEIGHT, width() - DIM_BUT_BACK, TEXT_HEIGHT);
 
 	subscribe_monitor(who.toInt());
 }
