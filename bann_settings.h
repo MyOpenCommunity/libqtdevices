@@ -37,8 +37,8 @@ class bannAlarmClock : public bann2But
 {
 Q_OBJECT
 public:
-	bannAlarmClock(QWidget *parent, int hour, int minute, QString icon1,
-		QString icon2, QString icon3, int enabled, int freq, int tipo);
+	bannAlarmClock(QWidget *parent, int hour, int minute, QString icon_on,
+		QString icon_off, QString icon_label, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
 	*/
@@ -108,7 +108,7 @@ class impBeep : public bannOnSx
 {
 Q_OBJECT
 public:
-	impBeep(QWidget *parent, QString val, QString icon1, QString icon2);
+	impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off);
 public slots:
 	void toggleBeep();
 };
@@ -149,7 +149,7 @@ class impPassword : public bann2But
 {
 Q_OBJECT
 public:
-	impPassword(QWidget *parent, QString icon1, QString icon2, QString icon3, QString pwd, int attiva);
+	impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString pwd, int attiva);
 
 public slots:
 /*!

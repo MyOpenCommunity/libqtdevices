@@ -14,15 +14,15 @@
 #include <QDebug>
 
 
-bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString icon1,
-	QString icon2, QString icon3, int enabled, int tipo, int freq)
+bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString icon_on,
+	QString icon_off, QString icon_label, int enabled, int tipo, int freq)
 	: bann2But(parent)
 {
 	sxButton->setOnOff();
 	sxButton->setStatus(enabled == 1);
 
-	SetIcons(0, icon2, icon1);
-	SetIcons(1, icon3);
+	SetIcons(0, icon_off, icon_on);
+	SetIcons(1, icon_label);
 	Draw(); // Draw must be called before setAbil.. see impBeep
 
 	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), hour, minute);
@@ -97,7 +97,7 @@ void calibration::fineCalib()
 }
 
 
-impBeep::impBeep(QWidget *parent, QString val, QString icon1, QString icon2)
+impBeep::impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off)
 	: bannOnSx(parent)
 {
 	connect(this, SIGNAL(click()), this, SLOT(toggleBeep()));
@@ -106,7 +106,7 @@ impBeep::impBeep(QWidget *parent, QString val, QString icon1, QString icon2)
 	sxButton->setOnOff();
 	setBeep(on, false);
 
-	SetIcons(0, icon2, icon1);
+	SetIcons(0, icon_off, icon_on);
 	Draw(); // Draw must be called before setStatus (because it calls the setPixmap function)
 	sxButton->setStatus(on);
 }
@@ -154,7 +154,7 @@ void bannVersion::showVers()
 }
 
 
-impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString icon3, QString pwd, int attiva)
+impPassword::impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString pwd, int attiva)
 	: bann2But(parent)
 {
 	password = pwd;
@@ -174,8 +174,8 @@ impPassword::impPassword(QWidget *parent, QString icon1, QString icon2, QString 
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleActivation()));
 	connect(tasti, SIGNAL(Closed()), this, SLOT(checkPasswd()));
 
-	SetIcons(1, icon3);
-	SetIcons(0, icon2, icon1);
+	SetIcons(1, icon_label);
+	SetIcons(0, icon_off, icon_on);
 	Draw();
 
 	active = (attiva == 1);
