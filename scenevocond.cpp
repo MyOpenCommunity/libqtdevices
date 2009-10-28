@@ -144,7 +144,7 @@ scenEvo_cond_h::scenEvo_cond_h(QString h, QString m) :
 	time_edit.setMaxHours(24);
 	time_edit.setMaxMinutes(60);
 	time_edit.setGeometry(50, 80, 140, 170);
-	// TODO: need a time_edit.setTime(QTime)
+	time_edit.setTime(QTime(h.toInt(), m.toInt(), 0));
 
 	hasTimeCondition = true;
 	cond_time.setHMS(h.toInt(), m.toInt(), 0);
@@ -257,8 +257,7 @@ void scenEvo_cond_h::save()
 
 void scenEvo_cond_h::reset()
 {
-	qDebug("scenEvo_cond_h::reset()");
-	// TODO: set time on time_edit from cond_time
+	time_edit.setTime(cond_time);
 }
 
 bool scenEvo_cond_h::isTrue()
