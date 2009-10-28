@@ -11,6 +11,7 @@
 #include "version.h"
 #include "content_widget.h" // content_widget
 #include "main.h"
+#include "skinmanager.h"
 
 #include <QDebug>
 
@@ -30,6 +31,8 @@ void Settings::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
+		SkinContext context(getTextChild(item, "cid").toInt());
+
 		int id = getTextChild(item, "id").toInt();
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
