@@ -68,7 +68,7 @@ void TestPullManager::testDimmer100()
 	PullStateManager psm(PULL_UNKNOWN);
 	// dimmer level100 20, general level100 40, dimmer level100 40
 	parseFrames("*#1*12*1*120*255##", &psm, false);
-	parseFrames("*#1*12*#1*140*255##", &psm, true);
+	parseFrames("*#1*0*#1*140*255##", &psm, true);
 	parseFrames("*#1*12*1*140*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 }
@@ -78,7 +78,7 @@ void TestPullManager::testDimmer100_2()
 	PullStateManager psm(PULL_UNKNOWN);
 	// dimmer level100 20, general level100 40, dimmer level100 40
 	parseFrames("*#1*12*1*100*255##", &psm, false);
-	parseFrames("*#1*12*#1*140*255##", &psm, true);
+	parseFrames("*#1*1*#1*140*255##", &psm, true);
 	parseFrames("*#1*12*1*140*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 }
@@ -88,7 +88,40 @@ void TestPullManager::testDimmer100_3()
 	PullStateManager psm(PULL_UNKNOWN);
 	// dimmer on, general level100 40, dimmer level100 40
 	parseFrames("*1*1*12##", &psm, false);
-	parseFrames("*#1*12*#1*140*255##", &psm, true);
+	parseFrames("*#1*1*#1*140*255##", &psm, true);
+	parseFrames("*#1*12*1*140*255##", &psm, false);
+	QCOMPARE(psm.getPullMode(), NOT_PULL);
+}
+
+// From off to on (dimmer)
+void TestPullManager::testVariableTiming()
+{
+	PullStateManager psm(PULL_UNKNOWN);
+	// dimmer off, general variable timing, dimmer level 7
+	parseFrames("*1*0*12##", &psm, false);
+	parseFrames("*#1*0*#2*1*7*4##", &psm, true);
+	parseFrames("*1*7*12##", &psm, false);
+	QCOMPARE(psm.getPullMode(), NOT_PULL);
+}
+
+// When on arrives a variable timing => do nothing
+void TestPullManager::testVariableTiming2()
+{
+	PullStateManager psm(PULL_UNKNOWN);
+	// dimmer level 7, general variable timing
+	parseFrames("*1*7*12##", &psm, false);
+	// we can't decide, no need to request status
+	bool request_status = parseFrames("*#1*0*#2*1*7*4##", &psm, true);
+	QCOMPARE(request_status, false);
+}
+
+// from off to on (dimmer100)
+void TestPullManager::testVariableTiming3()
+{
+	PullStateManager psm(PULL_UNKNOWN);
+	// dimmer off, general variable timing, dimmer level100 40
+	parseFrames("*1*0*12##", &psm, false);
+	parseFrames("*#1*0*#2*1*7*4##", &psm, true);
 	parseFrames("*#1*12*1*140*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 }
