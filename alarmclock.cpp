@@ -57,10 +57,7 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 {
 	aumVolTimer = NULL;
-
-	oraSveglia.setTime(QTime(hour, minute));
-	oraSveglia.setDate(QDate::currentDate());
-
+	alarmTime = QTime(hour, minute);
 	minuTimer = NULL;
 	freq = f;
 	type = t;
@@ -96,11 +93,11 @@ void AlarmClock::handleClose()
 	gesFrameAbil = false;
 	setActive(true);
 	emit Closed();
-	oraSveglia = alarm_time->getDataOra();
+	alarmTime = alarm_time->getAlarmTime();
 
 	QMap<QString, QString> data;
-	data["hour"] = oraSveglia.time().toString("hh");
-	data["minute"] = oraSveglia.time().toString("mm");
+	data["hour"] = alarmTime.toString("hh");
+	data["minute"] = alarmTime.toString("mm");
 	data["alarmset"] = QString::number(freq);
 
 	setCfgValue(data, SET_SVEGLIA, serNum);
@@ -237,8 +234,8 @@ void AlarmClock::verificaSveglia()
 		(freq == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
 		(freq == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
 	{
-		qDebug("secsTo: %d",oraSveglia.time().secsTo(actualDateTime.time()));
-		if ((actualDateTime.time() >= (oraSveglia.time())) && ((oraSveglia.time().secsTo(actualDateTime.time())<60)))
+		qDebug("secsTo: %d",alarmTime.secsTo(actualDateTime.time()));
+		if ((actualDateTime.time() >= alarmTime) && (alarmTime.secsTo(actualDateTime.time())<60))
 		{
 			if (type == BUZZER)
 			{
@@ -516,7 +513,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
 
 	edit = new BtTimeEdit(this);
-	edit->setTime(alarm_page->oraSveglia.time());
+	edit->setTime(alarm_page->alarmTime);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	QHBoxLayout *r = new QHBoxLayout(this);
@@ -538,11 +535,11 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
 }
 
-QDateTime AlarmClockTime::getDataOra() const
+QTime AlarmClockTime::getAlarmTime() const
 {
 	BtTime t = edit->time();
 
-	return QDateTime(QDate(), QTime(t.hour(), t.minute()));
+	return QTime(t.hour(), t.minute());
 }
 
 // AlarmClockFreq implementation

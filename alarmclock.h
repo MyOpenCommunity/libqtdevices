@@ -15,7 +15,7 @@
 #include "hardware_functions.h"
 #include "page.h"
 
-#include <QDateTime>
+#include <QTime>
 
 class BtButton;
 class BtTimeEdit;
@@ -155,7 +155,7 @@ private:
 	int serNum;
 	bool buzAbilOld;
 	unsigned int contaBuzzer;
-	QDateTime oraSveglia;
+	QTime alarmTime;
 	int volSveglia[AMPLI_NUM];
 	bool gesFrameAbil, active;
 	QTimer *minuTimer,*aumVolTimer;
@@ -181,7 +181,7 @@ Q_OBJECT
 public:
 	AlarmClockTime(AlarmClock *alarm_page);
 
-	QDateTime getDataOra() const;
+	QTime getAlarmTime() const;
 
 private:
 	BtTimeEdit *edit;
