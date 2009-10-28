@@ -158,6 +158,7 @@ const char *scenEvo_cond_h::getDescription()
 
 void scenEvo_cond_h::SetIcons()
 {
+	// TODO: move this code to ctor once we understand how to set icons on buttons
 	// Top icon
 	QLabel *image = new QLabel(this);
 	image->setPixmap(bt_global::skin->getImage("watch"));
@@ -169,7 +170,7 @@ void scenEvo_cond_h::SetIcons()
 		bottom_left = new BtButton(this);
 		bottom_left->setGeometry(0, height() - 70, 60, 60);
 		bottom_left->setImage(getImg(A6_ICON_INDEX));
-		connect(bottom_left, SIGNAL(released()), this, SLOT(OK()));
+		connect(bottom_left, SIGNAL(released()), SLOT(OK()));
 	}
 	else
 		bottom_left = NULL;
@@ -179,7 +180,7 @@ void scenEvo_cond_h::SetIcons()
 		bottom_center = new BtButton(this);
 		bottom_center->setGeometry(width()/2 - 30, height() - 70, 60, 60);
 		bottom_center->setImage(getImg(A7_ICON_INDEX));
-		connect(bottom_center, SIGNAL(released()),this, SLOT(Prev()));
+		connect(bottom_center, SIGNAL(released()),SLOT(Prev()));
 	}
 	else
 		bottom_center = NULL;
@@ -190,9 +191,9 @@ void scenEvo_cond_h::SetIcons()
 		bottom_right->setGeometry(width() - 60, height() - 70, 60, 60);
 		bottom_right->setImage(getImg(A8_ICON_INDEX));
 		if (bottom_center)
-			connect(bottom_right, SIGNAL(released()),this, SLOT(Next()));
+			connect(bottom_right, SIGNAL(released()), SLOT(Next()));
 		else
-			connect(bottom_right, SIGNAL(released()),this, SLOT(Prev()));
+			connect(bottom_right, SIGNAL(released()), SLOT(Prev()));
 	}
 	else
 		bottom_right = NULL;
