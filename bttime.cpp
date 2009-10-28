@@ -12,45 +12,90 @@
 
 #include "bttime.h"
 
-BtTime::BtTime()
-	: _hour(0),
-	_minute(0),
-	max_hours(24),
-	max_minutes(60)
+// BtTimeSeconds implementation
+
+BtTimeSeconds::BtTimeSeconds()
+		: _hour(0),
+		_minute(0),
+		_second(0),
+		max_hours(24),
+		max_minutes(60),
+		max_seconds(60)
 {
 }
 
-BtTime::BtTime(int h, int m)
-	: max_hours(24),
-	max_minutes(60)
+BtTimeSeconds::BtTimeSeconds(int h, int m, int s)
+		: _hour(h),
+		_minute(m),
+		_second(s),
+		max_hours(24),
+		max_minutes(60),
+		max_seconds(60)
 {
-	_hour = h;
-	_minute = m;
 }
 
-BtTime::BtTime(const QTime &t)
-	: max_hours(24),
-	max_minutes(60)
+BtTimeSeconds::BtTimeSeconds(const QTime &t)
+		: max_hours(24),
+		max_minutes(60),
+		max_seconds(60)
 {
 	_hour = t.hour();
 	_minute = t.minute();
+	_second = t.second();
 }
 
-void BtTime::setMaxHours(int max)
+void BtTimeSeconds::setMaxHours(int max)
 {
 	max_hours = max;
 }
 
-void BtTime::setMaxMinutes(int max)
+void BtTimeSeconds::setMaxMinutes(int max)
 {
 	max_minutes = max;
 }
 
-BtTime BtTime::addMinute(int m) const
+void BtTimeSeconds::setMaxSeconds(int max)
 {
-	BtTime t(this->_hour, this->_minute);
+	max_seconds = max;
+}
+
+BtTimeSeconds BtTimeSeconds::addSecond(int s) const
+{
+	BtTimeSeconds t(this->_hour, this->_minute, this->_second);
 	t.setMaxHours(max_hours);
 	t.setMaxMinutes(max_minutes);
+	t.setMaxSeconds(max_seconds);
+	if (s == 1)
+	{
+		if (t._second == max_seconds - 1)
+		{
+			t._second = 0;
+			t = t.addMinute(s);
+		}
+		else
+			++t._second;
+	}
+	else if (s == -1)
+	{
+		if (t._second == 0)
+		{
+			t._second = max_seconds - 1;
+			t = t.addMinute(s);
+		}
+		else
+			--t._second;
+	}
+	else
+		qFatal("BtTimeSeconds::addSecond(): _second != +-1");
+	return t;
+}
+
+BtTimeSeconds BtTimeSeconds::addMinute(int m) const
+{
+	BtTimeSeconds t(this->_hour, this->_minute, this->_second);
+	t.setMaxHours(max_hours);
+	t.setMaxMinutes(max_minutes);
+	t.setMaxSeconds(max_seconds);
 	if (m == 1)
 	{
 		if (t._minute == max_minutes - 1)
@@ -76,11 +121,12 @@ BtTime BtTime::addMinute(int m) const
 	return t;
 }
 
-BtTime BtTime::addHour(int h) const
+BtTimeSeconds BtTimeSeconds::addHour(int h) const
 {
-	BtTime t(this->_hour, this->_minute);
+	BtTimeSeconds t(this->_hour, this->_minute, this->_second);
 	t.setMaxHours(max_hours);
 	t.setMaxMinutes(max_minutes);
+	t.setMaxSeconds(max_seconds);
 	if (h == 1)
 	{
 		if (t._hour == max_hours - 1)
@@ -104,14 +150,50 @@ BtTime BtTime::addHour(int h) const
 	return t;
 }
 
-int BtTime::hour() const
+int BtTimeSeconds::hour() const
 {
 	return _hour;
 }
 
-int BtTime::minute() const
+int BtTimeSeconds::minute() const
 {
 	return _minute;
+}
+
+int BtTimeSeconds::second() const
+{
+	return _second;
+}
+
+QString BtTimeSeconds::toString() const
+{
+	QString str;
+	str.sprintf("%u:%02u:%02u", _hour, _minute, _second);
+	return str;
+}
+
+// BtTime implementation
+
+BtTime::BtTime()
+	: BtTimeSeconds()
+{
+}
+
+BtTime::BtTime(int h, int m)
+	: BtTimeSeconds(h, m, 0)
+{
+}
+
+BtTime::BtTime(const QTime &t)
+	: BtTimeSeconds(t.hour(), t.minute(), 0)
+{
+}
+
+BtTime::BtTime(const BtTimeSeconds &t)
+	: BtTimeSeconds(t.hour(), t.minute(), 0)
+{
+	setMaxMinutes(t.max_minutes);
+	setMaxHours(t.max_hours);
 }
 
 QString BtTime::toString() const
@@ -119,4 +201,14 @@ QString BtTime::toString() const
 	QString str;
 	str.sprintf("%u:%02u", _hour, _minute);
 	return str;
+}
+
+BtTime BtTime::addMinute(int minute) const
+{
+	return BtTime(BtTimeSeconds::addMinute(minute));
+}
+
+BtTime BtTime::addHour(int hour) const
+{
+	return BtTime(BtTimeSeconds::addHour(hour));
 }
