@@ -12,7 +12,6 @@
 #include "ambdiffson.h"
 #include "device.h"
 #include "device_status.h"
-#include "alarmclock.h"
 #include "sounddiffusion.h"
 #include "scenevocond.h"
 #include "devices_cache.h" // bt_global::devices_cache

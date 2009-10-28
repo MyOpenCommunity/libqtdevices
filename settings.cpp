@@ -1,6 +1,5 @@
 #include "settings.h"
 #include "bann_settings.h"
-#include "alarmclock.h"
 #include "btmain.h" // bt_global::btmain
 #include "lansettings.h"
 #include "xml_functions.h" // getChildren, getTextChild
