@@ -520,16 +520,14 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 
 	for (int idx = 0; idx < 4; idx++)
 	{
+		QString arrow = bt_global::skin->getImage(idx < 2 ? "arrow_up" : "arrow_down");
 		but[idx] = new BtButton(this);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(idx < 2 ? ICON_FRECCIA_SU : ICON_FRECCIA_GIU);
+		but[idx]->setImage(arrow);
 	}
 
-	QPixmap Icon(ICON_SVEGLIA_ON);
-
 	Immagine = new QLabel(this);
-	if (!Icon.isNull())
-		Immagine->setPixmap(Icon);
+	Immagine->setPixmap(bt_global::skin->getImage("alarm_icon"));
 
 	dataOra = NULL;
 
