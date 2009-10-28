@@ -133,21 +133,23 @@ bool scenEvo_cond::isTrue()
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(QString h, QString m)
+scenEvo_cond_h::scenEvo_cond_h(QString h, QString m) :
+	time_edit(this)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
-	ora = NULL;
 
 	timer.setSingleShot(true);
 	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
 
+	time_edit.setMaxHours(24);
+	time_edit.setMaxMinutes(60);
+	time_edit.setGeometry(50, 80, 140, 170);
+	// TODO: need a time_edit.setTime(QTime)
+
 	cond_time = new QDateTime(QDateTime::currentDateTime());
-	ora = new timeScript(this, 2 , cond_time);
 	hasTimeCondition = true;
 	QTime t(h.toInt(), m.toInt(), 0);
 	cond_time->setTime(t);
-	ora->setDataOra(QDateTime(QDate::currentDate(), t));
-	ora->showTime();
 	setupTimer();
 }
 
@@ -162,24 +164,7 @@ void scenEvo_cond_h::SetIcons()
 	for (int i = 0; i < 6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
 
-	for (uchar idx = 0; idx < 2; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry(idx*80+50, 80, 60, 60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_SU);
-	}
-
-	// Pulsanti giu`
-	for (uchar idx = 2; idx < 4; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry((idx-2)*80+50,190,60,60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_GIU);
-	}
-
-	// Orologio
+	// Top icon
 	QLabel *image = new QLabel(this);
 	image->setPixmap(bt_global::skin->getImage("watch"));
 	image->setGeometry(90,0,60,60);
@@ -216,8 +201,6 @@ void scenEvo_cond_h::SetIcons()
 	}
 	else
 		but[A8_BUTTON_INDEX] = NULL;
-	ora->setGeometry(40, 140, 160, 50);
-	ora->setLineWidth(0);
 	qDebug("scenEvo_cond_h::SetIcons(), fine");
 }
 
@@ -225,19 +208,6 @@ void scenEvo_cond_h::showPage()
 {
 	scenEvo_cond::showPage();
 	qDebug("scenEvo_cond_h::showPage()");
-	for (uchar idx = 0; idx < 8; idx++)
-		if (but[idx])
-			but[idx]->show();
-	ora->show();
-
-	disconnect(but[0] ,SIGNAL(clicked()), ora, SLOT(aumOra()));
-	disconnect(but[1] ,SIGNAL(clicked()), ora, SLOT(aumMin()));
-	disconnect(but[2] ,SIGNAL(clicked()), ora, SLOT(diminOra()));
-	disconnect(but[3] ,SIGNAL(clicked()), ora, SLOT(diminMin()));
-	connect(but[0] , SIGNAL(clicked()), ora, SLOT(aumOra()));
-	connect(but[1] , SIGNAL(clicked()), ora, SLOT(aumMin()));
-	connect(but[2] ,SIGNAL(clicked()), ora, SLOT(diminOra()));
-	connect(but[3] ,SIGNAL(clicked()), ora, SLOT(diminMin()));
 
 	if (but[A6_BUTTON_INDEX])
 	{
@@ -289,7 +259,8 @@ void scenEvo_cond_h::setupTimer()
 
 void scenEvo_cond_h::Apply()
 {
-	*cond_time = ora->getDataOra();
+	BtTime tmp = time_edit.time();
+	// TODO: assign tmp to cond_time
 	setupTimer();
 }
 
@@ -320,8 +291,7 @@ void scenEvo_cond_h::save()
 void scenEvo_cond_h::reset()
 {
 	qDebug("scenEvo_cond_h::reset()");
-	ora->setDataOra(*cond_time);
-	ora->showTime();
+	// TODO: set time on time_edit from cond_time
 }
 
 bool scenEvo_cond_h::isTrue()

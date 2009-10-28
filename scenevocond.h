@@ -4,6 +4,7 @@
 #include "page.h"
 #include "device_status.h"
 #include "main.h"
+#include "datetime.h" //BtTimeEdit
 
 #include <QList>
 #include <QTimer>
@@ -156,9 +157,8 @@ private:
 	QDateTime *cond_time;
 	//! Pointers to buttons
 	BtButton *but[7];
-	//! Time modification object
-	timeScript *ora;
 
+	BtTimeEdit time_edit;
 	QTimer timer;
 };
 
