@@ -16,7 +16,6 @@
 #include "page.h"
 
 class BtButton;
-class bannFrecce;
 class timeScript;
 
 class QDateTime;
@@ -167,6 +166,7 @@ signals:
 	void alarmClockFired();
 };
 
+
 /*!
   \class AlarmClockTime
   \brief Used to set the alarm time.
@@ -186,8 +186,8 @@ private:
 	BtButton *but[4];
 	QLabel *Immagine;
 	timeScript *dataOra;
-	bannFrecce *bannNavigazione;
 };
+
 
 /*!
   \class AlarmClockFreq
@@ -210,8 +210,8 @@ signals:
 
 private:
 	SingleChoiceContent *content;
-	bannFrecce *bannNavigazione;
 };
+
 
 class AlarmClockSoundDiff : public Page
 {
@@ -233,5 +233,25 @@ private slots:
 private:
 	Page *difson;
 };
+
+
+/*!
+  \class AlarmNavigation
+  \brief helper class for the bottom navigation bar.
+
+  \author Davide
+  \date lug 2005
+*/
+class AlarmNavigation : public QWidget
+{
+Q_OBJECT
+public:
+	AlarmNavigation(bool forwardButton, QWidget *parent = 0);
+
+signals:
+	void forwardClicked();
+	void okClicked();
+};
+
 
 #endif // ALARMCLOCK_H

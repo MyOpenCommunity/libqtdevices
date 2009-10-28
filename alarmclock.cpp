@@ -5,12 +5,12 @@
 #include "btbutton.h"
 #include "openclient.h"
 #include "timescript.h"
-#include "bannfrecce.h"
 #include "fontmanager.h" // bt_global::font
 #include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
 #include "sounddiffusion.h" // declare SoundDiffusion*
 #include "singlechoicecontent.h"
+#include "skinmanager.h"
 
 #include <openmsg.h>
 
@@ -22,10 +22,39 @@
 #include <QDir>
 #include <QFile>
 #include <QMap>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
 
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+
+// Alarmnavigation implementation
+
+AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
+		: QWidget(parent)
+{
+	QHBoxLayout *l = new QHBoxLayout(this);
+
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
+	BtButton *ok = new BtButton();
+	connect(ok, SIGNAL(clicked()), SIGNAL(okClicked()));
+	ok->setImage(bt_global::skin->getImage("ok"));
+	l->addWidget(ok);
+	l->addStretch(1);
+
+	if (forwardButton)
+	{
+		BtButton *forward = new BtButton();
+		connect(forward, SIGNAL(clicked()), SIGNAL(forwardClicked()));
+		forward->setImage(bt_global::skin->getImage("forward"));
+		l->addWidget(forward);
+	}
+}
 
 // AlarmClock implementation
 
@@ -487,24 +516,13 @@ void AlarmClock::inizializza()
 
 AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 {
-	bannNavigazione = new bannFrecce(this,9);
-	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	AlarmNavigation *navigation = new AlarmNavigation(true);
 
-	for (uchar idx = 0; idx < 2; idx++)
+	for (int idx = 0; idx < 4; idx++)
 	{
 		but[idx] = new BtButton(this);
-
-		but[idx]->setGeometry(idx*80 + 50,80,60,60);
 		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_SU);
-	}
-
-	for (uchar idx = 2; idx < 4; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry((idx-2)*80 + 50,190,60,60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_GIU);
+		but[idx]->setImage(idx < 2 ? ICON_FRECCIA_SU : ICON_FRECCIA_GIU);
 	}
 
 	QPixmap Icon(ICON_SVEGLIA_ON);
@@ -513,21 +531,44 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	if (!Icon.isNull())
 		Immagine->setPixmap(Icon);
 
-	Immagine->setGeometry(90,0,80,80);
-
 	dataOra = NULL;
 
 	dataOra = new timeScript(this,2,alarm_page->oraSveglia);
-	dataOra->setGeometry(40,140,160,50);
 	dataOra->setFrameStyle(QFrame::Plain);
 	dataOra->setLineWidth(0);
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	QGridLayout *g = new QGridLayout;
+
+	// layout the time display and the 4 buttons to change it
+	g->setColumnStretch(0, 1);
+	g->setColumnStretch(4, 1);
+	g->setColumnMinimumWidth(2, 20);
+	g->setRowMinimumHeight(1, 50);
+	g->addWidget(but[0], 0, 1);
+	g->addWidget(but[1], 0, 3);
+	g->addWidget(dataOra, 1, 1, 1, 3);
+	g->addWidget(but[2], 2, 1);
+	g->addWidget(but[3], 2, 3);
+
+	g->setContentsMargins(0, 0, 0, 0);
+	g->setSpacing(0);
+
+	// top level layout
+	l->addWidget(Immagine, 0, Qt::AlignHCenter);
+	l->addSpacing(10);
+	l->addLayout(g);
+	l->addWidget(navigation);
+
+	l->setContentsMargins(0, 10, 0, 10);
+	l->setSpacing(0);
 
 	connect(but[0] ,SIGNAL(clicked()),dataOra,SLOT(aumOra()));
 	connect(but[1] ,SIGNAL(clicked()),dataOra,SLOT(aumMin()));
 	connect(but[2] ,SIGNAL(clicked()),dataOra,SLOT(diminOra()));
 	connect(but[3] ,SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-	connect(bannNavigazione, SIGNAL(forwardClick()), alarm_page, SLOT(showTypePage()));
-	connect(bannNavigazione, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
+	connect(navigation, SIGNAL(forwardClicked()), alarm_page, SLOT(showTypePage()));
+	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
 }
 
 QDateTime AlarmClockTime::getDataOra() const
@@ -539,26 +580,28 @@ QDateTime AlarmClockTime::getDataOra() const
 
 AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 {
-	bannNavigazione = new bannFrecce(this,9);
-	bannNavigazione->setGeometry(0 , MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	AlarmNavigation *navigation = new AlarmNavigation(alarm_page->type == AlarmClock::DI_SON);
 
 	content = new SingleChoiceContent(this);
 	content->addBanner(tr("once"), AlarmClock::ONCE);
 	content->addBanner(tr("always"), AlarmClock::SEMPRE);
 	content->addBanner(tr("mon-fri"), AlarmClock::FERIALI);
 	content->addBanner(tr("sat-sun"), AlarmClock::FESTIVI);
-	content->setGeometry(0, 0, MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/NUM_RIGHE);
 
 	connect(content, SIGNAL(bannerSelected(int)),
 		SLOT(setSelection(int)));
 
-	connect(bannNavigazione,SIGNAL(forwardClick()),alarm_page,SLOT(showSoundDiffPage()));
-	connect(bannNavigazione, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
-
-	if (alarm_page->type != AlarmClock::DI_SON)
-		bannNavigazione->nascondi(banner::BUT2);
+	connect(navigation,SIGNAL(forwardClicked()),alarm_page,SLOT(showSoundDiffPage()));
+	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
 
 	content->setCheckedId(alarm_page->freq);
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+
+	l->addWidget(content, 1);
+	l->addWidget(navigation);
+	l->setContentsMargins(0, 0, 0, 10);
+	l->setSpacing(0);
 }
 
 void AlarmClockFreq::setSelection(int freq)
