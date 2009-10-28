@@ -158,54 +158,44 @@ const char *scenEvo_cond_h::getDescription()
 
 void scenEvo_cond_h::SetIcons()
 {
-	qDebug("scenEvo_cond_h::SetIcons()");
-	for (int i = 0; i < 6; i++)
-		qDebug() << "icon[" << i << "] = " << getImg(i);
-
 	// Top icon
 	QLabel *image = new QLabel(this);
 	image->setPixmap(bt_global::skin->getImage("watch"));
 	image->setGeometry(90,0,60,60);
 
-	// Pulsante in basso a sinistra, area 6 (SE C'E` L'ICONA)
+	// TODO: understand the logic of when the buttons are created
 	if (!getImg(A6_ICON_INDEX).isEmpty())
 	{
-		qDebug() << "Area 6: loaded icon " << getImg(A6_ICON_INDEX);
-		but[A6_BUTTON_INDEX] = new BtButton(this);
-		but[A6_BUTTON_INDEX]->setGeometry(0, height() - 60, 60, 60);
-		but[A6_BUTTON_INDEX]->setImage(getImg(A6_ICON_INDEX));
-		connect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
+		bottom_left = new BtButton(this);
+		bottom_left->setGeometry(0, height() - 70, 60, 60);
+		bottom_left->setImage(getImg(A6_ICON_INDEX));
+		connect(bottom_left, SIGNAL(released()), this, SLOT(OK()));
 	}
 	else
-		but[A6_BUTTON_INDEX] = NULL;
+		bottom_left = NULL;
 
-	// Pulsante in basso al centro, area 7
 	if (!getImg(A7_ICON_INDEX).isEmpty())
 	{
-		qDebug() << "Area 7: loaded icon " << getImg(A7_ICON_INDEX);
-		but[A7_BUTTON_INDEX] = new BtButton(this);
-		but[A7_BUTTON_INDEX]->setGeometry(width()/2 - 30, height() - 60, 60, 60);
-		but[A7_BUTTON_INDEX]->setImage(getImg(A7_ICON_INDEX));
-		connect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
+		bottom_center = new BtButton(this);
+		bottom_center->setGeometry(width()/2 - 30, height() - 70, 60, 60);
+		bottom_center->setImage(getImg(A7_ICON_INDEX));
+		connect(bottom_center, SIGNAL(released()),this, SLOT(Prev()));
 	}
 	else
-		but[A7_BUTTON_INDEX] = NULL;
+		bottom_center = NULL;
 
-	// Pulsante in basso a destra, area 8
 	if (!getImg(A8_ICON_INDEX).isEmpty())
 	{
-		qDebug() << "Area 8: loaded icon " << getImg(A8_ICON_INDEX);
-		but[A8_BUTTON_INDEX] = new BtButton(this);
-		but[A8_BUTTON_INDEX]->setGeometry(width() - 60, height() - 60, 60, 60);
-		but[A8_BUTTON_INDEX]->setImage(getImg(A8_ICON_INDEX));
-		if (but[A7_BUTTON_INDEX])
-			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
+		bottom_right = new BtButton(this);
+		bottom_right->setGeometry(width() - 60, height() - 70, 60, 60);
+		bottom_right->setImage(getImg(A8_ICON_INDEX));
+		if (bottom_center)
+			connect(bottom_right, SIGNAL(released()),this, SLOT(Next()));
 		else
-			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
+			connect(bottom_right, SIGNAL(released()),this, SLOT(Prev()));
 	}
 	else
-		but[A8_BUTTON_INDEX] = NULL;
-	qDebug("scenEvo_cond_h::SetIcons(), fine");
+		bottom_right = NULL;
 }
 
 void scenEvo_cond_h::setupTimer()

@@ -138,12 +138,6 @@ public slots:
 	//! Just setup qt timer (based on cond_time)
 	void setupTimer();
 private:
-	//! OK button index (area #7)
-	static const int A7_BUTTON_INDEX = 4;
-	//! Area #6 (prev) button index
-	static const int A6_BUTTON_INDEX = 5;
-	//! Area #8 (next) button index
-	static const int A8_BUTTON_INDEX = 6;
 	//! OK icon index (area #7)
 	static const int A7_ICON_INDEX = 3;
 	//! Area #6 (prev) icon index
@@ -152,8 +146,7 @@ private:
 	static const int A8_ICON_INDEX = 2;
 
 	QTime cond_time;
-	//! Pointers to buttons
-	BtButton *but[7];
+	BtButton *bottom_left, *bottom_center, *bottom_right;
 
 	BtTimeEdit time_edit;
 	QTimer timer;
