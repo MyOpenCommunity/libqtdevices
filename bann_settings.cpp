@@ -238,7 +238,7 @@ void impPassword::checkPasswd()
 			sb = getBeep();
 			setBeep(true,false);
 			beep(1000);
-			QTimer::singleShot(1100, this, SLOT(tiempout()));
+			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
 			emit pageClosed();
 		}
 		else //password is correct
@@ -251,7 +251,7 @@ void impPassword::checkPasswd()
 	}
 }
 
-void impPassword::tiempout()
+void impPassword::restoreBeepState()
 {
 	setBeep(sb,false);
 }

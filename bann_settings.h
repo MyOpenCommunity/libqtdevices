@@ -160,7 +160,7 @@ public slots:
 /*!
   \brief  Stops the error beep made when the password insertion is wrong
 */
-	void tiempout();
+	void restoreBeepState();
 
 protected:
 	virtual void showEvent(QShowEvent *event);
