@@ -146,10 +146,8 @@ scenEvo_cond_h::scenEvo_cond_h(QString h, QString m) :
 	time_edit.setGeometry(50, 80, 140, 170);
 	// TODO: need a time_edit.setTime(QTime)
 
-	cond_time = new QDateTime(QDateTime::currentDateTime());
 	hasTimeCondition = true;
-	QTime t(h.toInt(), m.toInt(), 0);
-	cond_time->setTime(t);
+	cond_time.setHMS(h.toInt(), m.toInt(), 0);
 	setupTimer();
 }
 
@@ -244,7 +242,7 @@ void scenEvo_cond_h::showPage()
 void scenEvo_cond_h::setupTimer()
 {
 	QTime now = QTime::currentTime();
-	int msecsto = now.msecsTo(cond_time->time());
+	int msecsto = now.msecsTo(cond_time);
 
 	while (msecsto <= 0) // Do it tomorrow
 		msecsto += 24 * 60 * 60 * 1000;
@@ -260,7 +258,7 @@ void scenEvo_cond_h::setupTimer()
 void scenEvo_cond_h::Apply()
 {
 	BtTime tmp = time_edit.time();
-	// TODO: assign tmp to cond_time
+	cond_time.setHMS(tmp.hour(), tmp.minute(), 0);
 	setupTimer();
 }
 
@@ -283,8 +281,8 @@ void scenEvo_cond_h::save()
 	qDebug("scenEvo_cond_h::save()");
 
 	QMap<QString, QString> data;
-	data["condH/hour"] = cond_time->time().toString("hh");
-	data["condH/minute"] = cond_time->time().toString("mm");
+	data["condH/hour"] = cond_time.toString("hh");
+	data["condH/minute"] = cond_time.toString("mm");
 	setCfgValue(data, SCENARIO_EVOLUTO, get_serial_number());
 }
 
@@ -297,8 +295,8 @@ void scenEvo_cond_h::reset()
 bool scenEvo_cond_h::isTrue()
 {
 	QTime cur = QDateTime::currentDateTime().time();
-	return ((cond_time->time().hour() == cur.hour()) &&
-			(cond_time->time().minute() == cur.minute()));
+	return ((cond_time.hour() == cur.hour()) &&
+			(cond_time.minute() == cur.minute()));
 }
 
 /*****************************************************************
