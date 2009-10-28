@@ -170,7 +170,10 @@ void BtTimeEdit::displayTime()
 QString BtDateEdit::FORMAT_STRING;
 
 
-BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentDate())
+BtDateEdit::BtDateEdit(QWidget *parent)
+		: QWidget(parent),
+		_date(QDate::currentDate()),
+		_allow_past_dates(false)
 {
 	_date = _date.addDays(1);
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
@@ -238,6 +241,11 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 	date_display->display(_date.toString(FORMAT_STRING));
 }
 
+void BtDateEdit::setAllowPastDates(bool v)
+{
+	_allow_past_dates = v;
+}
+
 QDate BtDateEdit::date()
 {
 	return _date;
@@ -263,7 +271,7 @@ void BtDateEdit::incYear()
 
 void BtDateEdit::decDay()
 {
-	if (_date.addDays(-1) >= QDate::currentDate())
+	if (_allow_past_dates || _date.addDays(-1) >= QDate::currentDate())
 	{
 		_date = _date.addDays(-1);
 		date_display->display(_date.toString(FORMAT_STRING));
@@ -272,7 +280,7 @@ void BtDateEdit::decDay()
 
 void BtDateEdit::decMonth()
 {
-	if (_date.addMonths(-1) >= QDate::currentDate())
+	if (_allow_past_dates || _date.addMonths(-1) >= QDate::currentDate())
 	{
 		_date = _date.addMonths(-1);
 		date_display->display(_date.toString(FORMAT_STRING));
@@ -281,7 +289,7 @@ void BtDateEdit::decMonth()
 
 void BtDateEdit::decYear()
 {
-	if (_date.addYears(-1) >= QDate::currentDate())
+	if (_allow_past_dates || _date.addYears(-1) >= QDate::currentDate())
 	{
 		_date = _date.addYears(-1);
 		date_display->display(_date.toString(FORMAT_STRING));

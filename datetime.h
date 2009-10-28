@@ -74,10 +74,13 @@ public:
 	 * Returns the date set on the widget.
 	 */
 	QDate date();
+
+	void setAllowPastDates(bool v);
 private:
 	/// display date set
 	QLCDNumber *date_display;
 	QDate _date;
+	bool _allow_past_dates;
 	static QString FORMAT_STRING;
 private slots:
 	void incDay();
