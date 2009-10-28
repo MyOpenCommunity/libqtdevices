@@ -13,38 +13,58 @@
 
 #include "page.h"
 
-class timeScript;
-class BtButton;
-class QLabel;
+class BtDateEdit;
+class BtTimeEdit;
+class ChangeDate;
 
 
 /*!
-  \class impostaTime
-  \brief This is the class used to set time and date.
+  \class ChangeTime
+  \brief This is the class used to set time.
 
   \author Davide
   \date lug 2005
 */
-
-class  impostaTime : public Page
+class  ChangeTime : public Page
 {
 Q_OBJECT
 public:
-	impostaTime();
-	BtButton *but[7];
+	ChangeTime();
+
+public slots:
+	virtual void showPage();
+
+protected:
+	void timerEvent(QTimerEvent* event);
 
 private slots:
-	void OKTime();
-	void OKDate();
+	void acceptTime();
 
 private:
-	timeScript *dataOra;
-	QLabel *Immagine;
-	void setDatePage();
+	BtTimeEdit *edit;
+	ChangeDate *date; // next page
+	int timer_id;
+};
+
+
+/*!
+  \class ChangeDate
+  \brief This is the class used to set time.
+
+  \author Davide
+  \date lug 2005
+*/
+class  ChangeDate : public Page
+{
+Q_OBJECT
+public:
+	ChangeDate();
 
 private slots:
-	void setTimePage();
+	void acceptDate();
 
+private:
+	BtDateEdit *edit;
 };
 
 

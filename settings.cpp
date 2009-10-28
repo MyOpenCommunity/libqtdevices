@@ -57,7 +57,7 @@ void Settings::loadItems(const QDomNode &config_node)
 			break;
 		}
 		case SET_DATA_ORA:
-			b = new bannOnDx(this, bt_global::skin->getImage("info"), new impostaTime());
+			b = new bannOnDx(this, bt_global::skin->getImage("info"), new ChangeTime());
 			break;
 #if !defined(BT_HARDWARE_X11)
 		case CONTRASTO:

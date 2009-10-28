@@ -1,111 +1,94 @@
 #include "impostatime.h"
-#include "timescript.h"
+#include "datetime.h"
 #include "btbutton.h"
-#include "icondispatcher.h" // bt_global::icons_cache
+#include "skinmanager.h"
 #include "main.h" // getConfElement, bt_global::config
 
-#include <QPixmap>
-#include <QDateTime>
 #include <QLabel>
+#include <QVBoxLayout>
 
+// ChangeTime implementation
 
-impostaTime::impostaTime()
+ChangeTime::ChangeTime()
 {
-	QDateTime OroTemp = QDateTime::currentDateTime();
-	dataOra = new timeScript(this,1,&OroTemp);
-	dataOra->setGeometry(10,120,220,80);
-	dataOra->setLineWidth(0);
+	QLabel *img = new QLabel;
+	img->setPixmap(bt_global::skin->getImage("time_icon"));
 
-	for (int idx = 0; idx < 3; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry(idx*80+10,60,60,60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_SU);
-	}
+	edit = new BtTimeEdit(this, true);
 
-	for (int idx = 3; idx < 6; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry((idx-3)*80+10,200,60,60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_GIU);
-	}
+	BtButton *ok = new BtButton;
+	ok->setImage(bt_global::skin->getImage("ok"));
 
-	but[6] = new BtButton(this);
-	but[6]->setGeometry(90,260,60,60);
-	but[6]->setImage(ICON_OK);
+	date = new ChangeDate();
 
-	Immagine = new QLabel(this);
-	Immagine->setGeometry(90,0,120,60);
-	connect(this, SIGNAL(Closed()), SLOT(setTimePage()));
-	setTimePage();
+	connect(ok, SIGNAL(clicked()), SLOT(acceptTime()));
+	connect(date, SIGNAL(Closed()), SIGNAL(Closed()));
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(10, 0, 10, 0);
+	l->setSpacing(0);
+
+	l->addWidget(img, 0, Qt::AlignCenter);
+	l->addWidget(edit, 1);
+	l->addWidget(ok);
 }
 
-void impostaTime::OKTime()
+void ChangeTime::acceptTime()
 {
-	QString f = "*#13**#0*" + dataOra->getDataOra().toString("hh*mm*ss") + "**##";
+	BtTimeSeconds t = edit->timeWithSeconds();
+	QString f;
+	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());
 	sendFrame(f);
-	setDatePage();
+
+	// go to page date and stop the timer to update seconds
+	date->showPage();
+	killTimer(timer_id);
 }
 
-void impostaTime::OKDate()
+void ChangeTime::showPage()
 {
-	QString f = "*#13**#1*00*" + dataOra->getDataOra().toString("dd*MM*yyyy") + "##";
+	// display current time and start the update timer
+	edit->setTimeWithSeconds(QTime::currentTime());
+	timer_id = startTimer(1000);
+
+	Page::showPage();
+}
+
+void ChangeTime::timerEvent(QTimerEvent *event)
+{
+	// update displayed time
+	BtTimeSeconds t = edit->timeWithSeconds().addSecond(1);
+	edit->setTimeWithSeconds(t);
+}
+
+
+// ChangeDate implementation
+
+ChangeDate::ChangeDate()
+{
+	QLabel *img = new QLabel;
+	img->setPixmap(bt_global::skin->getImage("date_icon"));
+
+	edit = new BtDateEdit(this);
+	edit->setAllowPastDates(true);
+
+	BtButton *ok = new BtButton;
+	ok->setImage(bt_global::skin->getImage("ok"));
+
+	connect(ok, SIGNAL(clicked()), SLOT(acceptDate()));
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(10, 0, 10, 0);
+	l->setSpacing(0);
+
+	l->addWidget(img, 0, Qt::AlignCenter);
+	l->addWidget(edit, 1);
+	l->addWidget(ok);
+}
+
+void ChangeDate::acceptDate()
+{
+	QString f = "*#13**#1*00*" + edit->date().toString("dd*MM*yyyy") + "##";
 	sendFrame(f);
 	emit Closed();
 }
-
-void impostaTime::setDatePage()
-{
-	dataOra->showDate();
-
-	QPixmap *icon = bt_global::icons_cache.getIcon(ICON_CALENDARIO);
-	if (icon)
-		Immagine->setPixmap(*icon);
-
-	for (int i = 0; i <= 6; ++i)
-		but[i]->disconnect();
-
-	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
-	{
-		connect(but[1], SIGNAL(clicked()),dataOra,SLOT(aumDay()));
-		connect(but[0], SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
-		connect(but[2], SIGNAL(clicked()),dataOra,SLOT(aumYear()));
-		connect(but[4], SIGNAL(clicked()),dataOra,SLOT(diminDay()));
-		connect(but[3], SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
-		connect(but[5], SIGNAL(clicked()),dataOra,SLOT(diminYear()));
-	}
-	else
-	{
-		connect(but[0], SIGNAL(clicked()),dataOra,SLOT(aumDay()));
-		connect(but[1], SIGNAL(clicked()),dataOra,SLOT(aumMonth()));
-		connect(but[2], SIGNAL(clicked()),dataOra,SLOT(aumYear()));
-		connect(but[3], SIGNAL(clicked()),dataOra,SLOT(diminDay()));
-		connect(but[4], SIGNAL(clicked()),dataOra,SLOT(diminMonth()));
-		connect(but[5], SIGNAL(clicked()),dataOra,SLOT(diminYear()));
-	}
-	connect(but[6] ,SIGNAL(clicked()), SLOT(OKDate()));
-}
-
-void impostaTime::setTimePage()
-{
-	dataOra->reset();
-	dataOra->showTime();
-
-	QPixmap *icon = bt_global::icons_cache.getIcon(ICON_OROLOGIO);
-	if (icon)
-		Immagine->setPixmap(*icon);
-
-	for (int i = 0; i <= 6; ++i)
-		but[i]->disconnect();
-
-	connect(but[0], SIGNAL(clicked()),dataOra,SLOT(aumOra()));
-	connect(but[1], SIGNAL(clicked()),dataOra,SLOT(aumMin()));
-	connect(but[2], SIGNAL(clicked()),dataOra,SLOT(aumSec()));
-	connect(but[3], SIGNAL(clicked()),dataOra,SLOT(diminOra()));
-	connect(but[4], SIGNAL(clicked()),dataOra,SLOT(diminMin()));
-	connect(but[5], SIGNAL(clicked()),dataOra,SLOT(diminSec()));
-	connect(but[6], SIGNAL(clicked()),this,SLOT(OKTime()));
-}
-
