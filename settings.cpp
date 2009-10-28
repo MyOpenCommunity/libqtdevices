@@ -33,14 +33,13 @@ void Settings::loadItems(const QDomNode &config_node)
 		SkinContext context(getTextChild(item, "cid").toInt());
 
 		int id = getTextChild(item, "id").toInt();
-		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
-		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
-		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
 		banner *b;
 		switch (id)
 		{
 		case SUONO:
-			b = new impBeep(this, getTextChild(item, "value"), img1, img2);
+			b = new impBeep(this, getTextChild(item, "value"),
+					bt_global::skin->getImage("state_on"),
+					bt_global::skin->getImage("state_off"));
 			break;
 		case SET_SVEGLIA:
 		{
@@ -50,18 +49,23 @@ void Settings::loadItems(const QDomNode &config_node)
 			int hour = getTextChild(item, "hour").toInt();
 			int minute = getTextChild(item, "minute").toInt();
 
-			b = new bannAlarmClock(this, hour, minute, img1, img2, img3, enabled, type, alarmset);
+			b = new bannAlarmClock(this, hour, minute,
+					       bt_global::skin->getImage("state_on"),
+					       bt_global::skin->getImage("state_off"),
+					       bt_global::skin->getImage("edit"),
+					       enabled, type, alarmset);
 			break;
 		}
 		case SET_DATA_ORA:
-			b = new bannOnDx(this, ICON_INFO, new impostaTime());
+			b = new bannOnDx(this, bt_global::skin->getImage("info"), new impostaTime());
 			break;
 #if !defined(BT_HARDWARE_X11)
 		case CONTRASTO:
-			b = new bannContrast(this, getTextChild(item, "value"), img1);
+			b = new bannContrast(this, getTextChild(item, "value"),
+					     bt_global::skin->getImage("edit"));
 			break;
 		case DISPLAY:
-			b = new bannOnDx(this, ICON_FRECCIA_DX, new DisplayPage(item));
+			b = new bannOnDx(this, bt_global::skin->getImage("forward"), new DisplayPage(item));
 			break;
 #else
 		case CONTRASTO:
@@ -69,14 +73,18 @@ void Settings::loadItems(const QDomNode &config_node)
 			continue;
 #endif
 		case PROTEZIONE:
-			b = new impPassword(this, img1, img2, img3, getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
+			b = new impPassword(this,
+					    bt_global::skin->getImage("state_on"),
+					    bt_global::skin->getImage("state_off"),
+					    bt_global::skin->getImage("edit"),
+					    getTextChild(item, "value"), getTextChild(item, "enabled").toInt());
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			break;
 		case VERSIONE:
-			b = new bannVersion(this, img1, bt_global::btmain->version);
+			b = new bannVersion(this, bt_global::skin->getImage("info"), bt_global::btmain->version);
 			break;
 		case LANSETTINGS:
-			b = new bannOnDx(this, ICON_INFO, new LanSettings(item));
+			b = new bannOnDx(this, bt_global::skin->getImage("info"), new LanSettings(item));
 			break;
 		default:
 			qFatal("Type of item not handled on settings page!");
