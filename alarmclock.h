@@ -183,8 +183,6 @@ public:
 	QDateTime getDataOra() const;
 
 private:
-	BtButton *but[4];
-	QLabel *Immagine;
 	timeScript *dataOra;
 };
 

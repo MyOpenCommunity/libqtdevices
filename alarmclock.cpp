@@ -517,6 +517,7 @@ void AlarmClock::inizializza()
 AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 {
 	AlarmNavigation *navigation = new AlarmNavigation(true);
+	BtButton *but[4];
 
 	for (int idx = 0; idx < 4; idx++)
 	{
@@ -526,8 +527,8 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 		but[idx]->setImage(arrow);
 	}
 
-	Immagine = new QLabel(this);
-	Immagine->setPixmap(bt_global::skin->getImage("alarm_icon"));
+	QLabel *icon = new QLabel;
+	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
 
 	dataOra = NULL;
 
@@ -553,7 +554,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	g->setSpacing(0);
 
 	// top level layout
-	l->addWidget(Immagine, 0, Qt::AlignHCenter);
+	l->addWidget(icon, 0, Qt::AlignHCenter);
 	l->addSpacing(10);
 	l->addLayout(g);
 	l->addWidget(navigation);
