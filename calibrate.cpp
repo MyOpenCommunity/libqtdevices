@@ -97,6 +97,7 @@ void Calibrate::startCalibration()
 	b1->hide();
 	b2->hide();
 	box_text->setText(tr("Click the crosshair"));
+	qCritical("Start Calibration");
 }
 
 QPoint Calibrate::fromDevice(const QPoint &p)
@@ -233,6 +234,7 @@ void Calibrate::endCalibration()
 	emit fineCalib();
 	if (manut == 1)
 		delete(this);
+	qCritical("Calibration OK");
 }
 
 void Calibrate::trackCrosshair()
@@ -283,6 +285,7 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 		qDebug("location < lastLoc ovvero %d<%d",location,lastLoc);
 		location = (QWSPointerCalibrationData::Location)((int)location + 1);
 		qDebug("new location: %d", location);
+		qCritical("Step %d OK", location);
 	}
 	else
 	{
@@ -297,7 +300,11 @@ void Calibrate::mouseReleaseEvent(QMouseEvent *)
 				endCalibration();
 		}
 		else
+		{
+			qCritical("Calibration KO");
+			qCritical("Start Calibration");
 			location = QWSPointerCalibrationData::TopLeft;
+		}
     }
 
 	if (doMove)
