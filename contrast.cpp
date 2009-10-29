@@ -1,5 +1,5 @@
 #include "contrast.h"
-#include "main.h"
+#include "skinmanager.h"
 #include "hardware_functions.h" // getContrast, setContrast
 #include "btbutton.h"
 
@@ -13,7 +13,7 @@
 static BtButton *getButton(QString img, bool autorepeat)
 {
 	BtButton *btn = new BtButton;
-	btn->setImage(img);
+	btn->setImage(bt_global::skin->getImage(img));
 	btn->setAutoRepeat(autorepeat);
 	return btn;
 }
@@ -21,9 +21,9 @@ static BtButton *getButton(QString img, bool autorepeat)
 Contrast::Contrast()
 {
 	// create buttons
-	BtButton *decBut = getButton(ICON_MENO, true);
-	BtButton *incBut = getButton(ICON_PIU, true);
-	BtButton *okBut = getButton(ICON_OK, false);
+	BtButton *decBut = getButton("minus", true);
+	BtButton *incBut = getButton("plus", true);
+	BtButton *okBut = getButton("ok", false);
 
 	connect(decBut, SIGNAL(clicked()), SLOT(decContrast()));
 	connect(incBut, SIGNAL(clicked()), SLOT(incContrast()));
@@ -34,10 +34,10 @@ Contrast::Contrast()
 	QLabel *colorBar = new QLabel;
 
 	paintLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	paintLabel->setPixmap(QPixmap(IMG_PATH "my_home.png"));
+	paintLabel->setPixmap(QPixmap(bt_global::skin->getImage("logo")));
 
 	colorBar ->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	colorBar ->setPixmap(QPixmap(IMG_PATH "colorbar.png"));
+	colorBar ->setPixmap(QPixmap(bt_global::skin->getImage("colorbar")));
 
 	// layout
 	QHBoxLayout *b = new QHBoxLayout;
