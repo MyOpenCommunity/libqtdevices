@@ -74,17 +74,19 @@ void PlayWindow::prevTrack()
 
 void PlayWindow::nextTrack()
 {
-	if (media_player->isInstanceRunning() && static_cast<int>(current_track) < (play_list.size() - 1))
+	if (media_player->isInstanceRunning())
 	{
-		playNextTrack();
-		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
-	}
-	else
-	{
-		if (media_player->isInstanceRunning())
+		if (static_cast<int>(current_track) < (play_list.size() - 1))
+		{
+			playNextTrack();
+			qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+		}
+		else
+		{
 			stopPlayer();
-		startPlayer(0);
-		qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+			startPlayer(0);
+			qDebug("[AUDIO] PlayWindow::nextTrack() now playing: %u/%u", current_track, play_list.count() - 1);
+		}
 	}
 }
 
