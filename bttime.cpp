@@ -15,33 +15,28 @@
 // BtTimeSeconds implementation
 
 BtTimeSeconds::BtTimeSeconds()
-		: _hour(0),
-		_minute(0),
-		_second(0),
-		max_hours(24),
-		max_minutes(60),
-		max_seconds(60)
 {
+	init(0, 0, 0);
 }
 
 BtTimeSeconds::BtTimeSeconds(int h, int m, int s)
-		: _hour(h),
-		_minute(m),
-		_second(s),
-		max_hours(24),
-		max_minutes(60),
-		max_seconds(60)
 {
+	init(h, m , s);
 }
 
 BtTimeSeconds::BtTimeSeconds(const QTime &t)
-		: max_hours(24),
-		max_minutes(60),
-		max_seconds(60)
 {
-	_hour = t.hour();
-	_minute = t.minute();
-	_second = t.second();
+	init(t.hour(), t.minute(), t.second());
+}
+
+void BtTimeSeconds::init(int h, int m, int s)
+{
+	_hour = h;
+	_minute = m;
+	_second = s;
+	max_hours = 24;
+	max_minutes = 60;
+	max_seconds = 60;
 }
 
 void BtTimeSeconds::setMaxHours(int max)

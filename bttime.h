@@ -101,6 +101,10 @@ public:
 	 */
 	int second() const;
 private:
+	// used by constructors
+	void init(int h, int m, int s);
+
+private:
 	int _hour, _minute, _second;
 	int max_hours, max_minutes, max_seconds;
 };
