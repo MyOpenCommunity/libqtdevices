@@ -8,6 +8,7 @@
 #include "scaleconversion.h"
 #include "main.h" // bt_global::config
 #include "skinmanager.h"
+#include "icondispatcher.h" // icons_cache
 #include "xml_functions.h" //getTextChild
 
 #include "lighting_device.h"
@@ -265,14 +266,8 @@ bool scenEvo_cond_h::isTrue()
 
 scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 {
-	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
-	// to avoid changing too much code at the same time...
-	trigger = new QString("");
-
-	// area #1
-	area1_ptr = new QLabel(this);
+	QLabel *area1_ptr = new QLabel(this);
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
-	// TODO: load pixmap when device condition type is known
 
 	QLabel *area2_ptr = new QLabel(this);
 	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, TEXT_X_DIM, TEXT_Y_DIM);
@@ -281,74 +276,78 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	area2_ptr->setText(getTextChild(config_node, "descr"));
 
 	// create condition buttons
-	BtButton *b = new BtButton(this);
-	but[A3_BUTTON_INDEX] = b;
-	b->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Up()));
-	b = new BtButton(this);
-	but[A4_BUTTON_INDEX] = b;
-	b->setGeometry(width()/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Down()));
-	// create bottom (navigation) buttons
-	b = new BtButton(this);
-	but[A5_BUTTON_INDEX] = b;
-	b->setGeometry(0, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(OK()));
-	b = new BtButton(this);
-	but[A6_BUTTON_INDEX] = b;
-	b->setGeometry(width() - BUTTON_DIM, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
+	BtButton *condition_up = new BtButton(this);
+	condition_up->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
+	condition_up->setImage(bt_global::skin->getImage("plus"));
+	connect(condition_up, SIGNAL(clicked()), SLOT(Up()));
 
-	// area #3
-	SetButtonIcon(A3_ICON_INDEX, A3_BUTTON_INDEX);
-	// area #4
-	SetButtonIcon(A4_ICON_INDEX, A4_BUTTON_INDEX);
-	// area #5
-	SetButtonIcon(A5_ICON_INDEX, A5_BUTTON_INDEX);
-	// area #8
-	SetButtonIcon(A6_ICON_INDEX, A6_BUTTON_INDEX);
+	BtButton *condition_down = new BtButton(this);
+	condition_down->setGeometry(width()/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
+	condition_down->setImage(bt_global::skin->getImage("minus"));
+	connect(condition_down, SIGNAL(clicked()), SLOT(Down()));
+
+	// create bottom (navigation) buttons
+	BtButton *b = new BtButton(this);
+	b->setGeometry(0, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	b->setImage(bt_global::skin->getImage("ok"));
+	connect(b, SIGNAL(clicked()), SLOT(OK()));
+
+	b = new BtButton(this);
+	b->setGeometry(width() - BUTTON_DIM, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	b->setImage(bt_global::skin->getImage("back"));
+	connect(b, SIGNAL(clicked()), SLOT(Prev()));
+
+	// to avoid changing too much code at the same time...
+	QString trigger = getTextChild(config_node, "trigger");
 	// Create actual device condition
 	device_condition *dc;
 	qDebug("#### Condition type = %d", condition_type);
-	switch (condition_type)
+	int type = getTextChild(config_node, "value").toInt();
+	QString icon;
+	switch (type)
 	{
 	case 1:
-		dc = new device_condition_light_status(this, trigger);
+		dc = new device_condition_light_status(this, &trigger);
+		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
-		dc = new device_condition_dimming(this, trigger);
+		dc = new device_condition_dimming(this, &trigger);
+		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 3:
 	case 7:
 	case 8:
-		dc = new device_condition_temp(this, trigger);
-		but[A3_BUTTON_INDEX]->setAutoRepeat(true);
-		but[A4_BUTTON_INDEX]->setAutoRepeat(true);
+		dc = new device_condition_temp(this, &trigger);
+		condition_up->setAutoRepeat(true);
+		condition_down->setAutoRepeat(true);
+		icon = bt_global::skin->getImage("probe");
 		break;
 	case 9:
-		dc = new device_condition_aux(this, trigger);
+		dc = new device_condition_aux(this, &trigger);
+		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
-		dc = new device_condition_volume(this, trigger);
+		dc = new device_condition_volume(this, &trigger);
+		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
-		dc = new device_condition_dimming_100(this, trigger);
+		dc = new device_condition_dimming_100(this, &trigger);
+		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:
 		qDebug("Unknown device condition");
 		dc = NULL;
 	}
+	area1_ptr->setPixmap(*bt_global::icons_cache.getIcon(icon));
 
+	QString w = getTextChild(config_node, "where");
 	if (dc)
 	{
 		dc->setGeometry(40,140,160,50);
-		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
-		dc->setup_device(where);
+		connect(dc, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
+		dc->setup_device(w);
 	}
 	actual_condition = dc;
-
-	memset(but, 0, sizeof(but));
-	qDebug("scenEvo_cond_d::scenEvo_cond_d(), end");
 }
 
 void scenEvo_cond_d::set_descr(QString d)
@@ -371,7 +370,6 @@ void scenEvo_cond_d::get_where(QString& out)
 void scenEvo_cond_d::set_trigger(QString t)
 {
 	qDebug() << "scenEvo_cond_d::set_trigger(" << t << ")";
-	*trigger = t;
 }
 
 const char *scenEvo_cond_d::getDescription()
@@ -382,24 +380,6 @@ const char *scenEvo_cond_d::getDescription()
 void scenEvo_cond_d::showPage()
 {
 	scenEvo_cond::showPage();
-	qDebug("scenEvo_cond_d::showPage()");
-
-
-}
-
-void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
-{
-	if (getImg(icon_index).isEmpty())
-	{
-		but[button_index] = NULL;
-		return;
-	}
-
-	if (QFile::exists(getImg(icon_index)))
-	{
-		if (but[button_index])
-			but[button_index]->setImage(getImg(icon_index));
-	}
 }
 
 void scenEvo_cond_d::SetIcons()

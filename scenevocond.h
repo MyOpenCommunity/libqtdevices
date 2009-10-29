@@ -230,35 +230,9 @@ private:
 
 	QString descr;
 	QString where;
-	//! Trigger condition
-	QString *trigger;
 
-	//! UP button index (area #3)
-	static const int A3_BUTTON_INDEX = 0;
-	//! Down button index (area #4)
-	static const int A4_BUTTON_INDEX = 1;
-	//! Area #5 (OK) button index
-	static const int A5_BUTTON_INDEX = 2;
-	//! Area #6 (prev) button index
-	static const int A6_BUTTON_INDEX = 3;
-	//! Area #1 icon index (symbol)
-	static const int A1_ICON_INDEX = 0;
-	//! Area #3 icon index (up)
-	static const int A3_ICON_INDEX = 1;
-	//! Area #4 icon index (down)
-	static const int A4_ICON_INDEX = 2;
-	//! Area #5 (OK) icon index
-	static const int A5_ICON_INDEX = 3;
-	//! Area #7 (prev) icon index
-	static const int A6_ICON_INDEX = 4;
-	//! Pointers to buttons
-	BtButton *but[7];
-	//! Pointer to area1 label
-	QLabel *area1_ptr;
 	//! Specific device condition
 	device_condition *actual_condition;
-	//! Set button icons
-	void SetButtonIcon(int icon_index, int button_index);
 	//! Inits condition
 	void inizializza();
 };
