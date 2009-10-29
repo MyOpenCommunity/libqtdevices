@@ -3,42 +3,52 @@
 
 TEMPLATE = app
 
-# determine the target platform on the basis of environment variable TARGET
-PLATFORM = $$(ARCH)
-
-contains(PLATFORM, arm) {
-	LIBS+= -L../common_files -lcommon
-	OBJECTS_DIR = obj/arm
-	MOC_DIR = moc/arm
-	DEFINES += BT_EMBEDDED
-
-	HEADERS += QWSMOUSE/qmouse_qws.h \
-			   QWSMOUSE/qmouselinuxevent-2-6_qws.h
-
-	SOURCES += QWSMOUSE/qmouse_qws.cpp \
-			   QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
-}
-
-contains(PLATFORM, x86) {
+# test architecture depending on the compiler used.
+# in this case we are searching for the substring 'arm'
+TEST_ARCH = $$find(QMAKE_CXX,arm)
+isEmpty(TEST_ARCH) {
+	message(x86 architecture detected.)
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
 	DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
 	LIBS+= -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
+} else {
+	message(ARM architecture detected.)
+	LIBS += -L../common_files -lcommon
+	OBJECTS_DIR = obj/arm
+	MOC_DIR = moc/arm
+	DEFINES += BT_EMBEDDED
+
+	HEADERS += QWSMOUSE/qmouse_qws.h \
+		QWSMOUSE/qmouselinuxevent-2-6_qws.h
+
+	SOURCES += QWSMOUSE/qmouse_qws.cpp \
+		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
 }
 
-LIBS+= -lssl
-CONFIG += qt debug warn_on
-CONFIG -= release
+
+CONFIG += qt warn_on silent
+CONFIG -= debug_and_release
+
+CONFIG(debug,debug|release) {
+	message(*** Debug build)
+}
+
+CONFIG(release,debug|release) {
+	message(*** Release build)
+	DEFINES += NDEBUG NO_QT_DEBUG_OUTPUT
+}
 DEFINES += QT_QWS_EBX BTWEB
-release:DEFINES += NDEBUG
+
+LIBS += -lssl
 INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
-QMAKE_CXXFLAGS_RELEASE += -O2
-QMAKE_CXXFLAGS += -fexceptions
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE += -O3
 
 # Input
 HEADERS += actuators.h \
