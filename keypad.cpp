@@ -1,5 +1,6 @@
 #include "keypad.h"
 #include "fontmanager.h" // bt_global::font
+#include "skinmanager.h"
 #include "btbutton.h"
 
 #include <QLabel>
@@ -13,12 +14,6 @@
 
 Keypad::Keypad()
 {
-	static const char *icons[] =
-	{
-		ICON_ZERO, ICON_UNO, ICON_DUE, ICON_TRE, ICON_QUATTRO,
-		ICON_CINQUE, ICON_SEI, ICON_SETTE, ICON_OTTO, ICON_NOVE
-	};
-
 	BtButton *ok = new BtButton;
 	BtButton *canc = new BtButton;
 	BtButton *digits[10];
@@ -28,15 +23,15 @@ Keypad::Keypad()
 	for (int i = 0; i < 10; ++i)
 	{
 		digits[i] = new BtButton;
-		digits[i]->setImage(icons[i]);
+		digits[i]->setImage(bt_global::skin->getImage("num_" + QString::number(i)));
 		buttons->addButton(digits[i], i);
 	}
 
 	digitLabel = new QLabel;
 	QLabel *pwdLabel = new QLabel;
 
-	ok->setImage(ICON_OK);
-	canc->setImage(ICON_CANC);
+	ok->setImage(bt_global::skin->getImage("ok"));
+	canc->setImage(bt_global::skin->getImage("cancel"));
 
 	mode = CLEAN;
 

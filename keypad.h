@@ -12,7 +12,6 @@
 #define KEYPAD_H
 
 #include "page.h"
-#include "main.h"
 
 class QLabel;
 class QVBoxLayout;
