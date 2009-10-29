@@ -54,11 +54,11 @@ void ContentWidget::resetIndex()
 
 void ContentWidget::showEvent(QShowEvent *e)
 {
-	updateLayout();
+	drawContent();
 	QWidget::showEvent(e);
 }
 
-void ContentWidget::updateLayout()
+void ContentWidget::drawContent()
 {
 	if (!need_update)
 		return;
@@ -89,7 +89,7 @@ void ContentWidget::updateLayout()
 	if (need_pagination)
 	{
 		int next_index = calculateNextIndex(true);
-		Q_ASSERT_X(current_index != -1, "ContentWidget::updateLayout", "calculateNextIndex return -1!");
+		Q_ASSERT_X(current_index != -1, "ContentWidget::drawContent", "calculateNextIndex return -1!");
 		int index = current_index;
 		while (true)
 		{
@@ -119,7 +119,7 @@ void ContentWidget::pgUp()
 	current_index = calculateNextIndex(false);
 	Q_ASSERT_X(current_index != -1, "ContentWidget::pgUp", "calculateNextIndex return -1!");
 	need_update = true;
-	updateLayout();
+	drawContent();
 }
 
 void ContentWidget::pgDown()
@@ -127,7 +127,7 @@ void ContentWidget::pgDown()
 	current_index = calculateNextIndex(true);
 	Q_ASSERT_X(current_index != -1, "ContentWidget::pgDown", "calculateNextIndex return -1!");
 	need_update = true;
-	updateLayout();
+	drawContent();
 }
 
 int ContentWidget::calculateNextIndex(bool up_to_down)

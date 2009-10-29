@@ -76,7 +76,7 @@ void Page::activateLayout()
 	}
 
 	if (content_widget)
-		content_widget->updateLayout();
+		content_widget->drawContent();
 }
 
 void Page::inizializza()
