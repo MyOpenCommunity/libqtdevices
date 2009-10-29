@@ -86,6 +86,13 @@ ChangeDate::ChangeDate()
 	l->addWidget(ok);
 }
 
+void ChangeDate::showPage()
+{
+	edit->setDate(QDate::currentDate());
+
+	Page::showPage();
+}
+
 void ChangeDate::acceptDate()
 {
 	QString f = "*#13**#1*00*" + edit->date().toString("dd*MM*yyyy") + "##";
