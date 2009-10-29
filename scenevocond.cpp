@@ -31,35 +31,12 @@ QLocale loc(QLocale::Italian);
 
 scenEvo_cond::scenEvo_cond()
 {
-	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
-		img[i] = new QString("");
 	hasTimeCondition = false;
-}
-
-QString scenEvo_cond::getImg(int index)
-{
-	if (index >= MAX_EVO_COND_IMG)
-		return "";
-	return *img[index];
-}
-
-void scenEvo_cond::setImg(int index, QString s)
-{
-	qDebug() << "scenEvo_cond: setting image " << index << " to " << s;
-	if (index >= MAX_EVO_COND_IMG)
-		return;
-	*img[index] = s;
 }
 
 const char *scenEvo_cond::getDescription()
 {
 	return "Generic scenEvo condition";
-}
-
-void scenEvo_cond::SetIcons()
-{
-	// Does nothing by default
-	qDebug("scenEvo_cond::SetIcons()");
 }
 
 void scenEvo_cond::Next()
@@ -174,10 +151,6 @@ scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node, bool has_next) :
 const char *scenEvo_cond_h::getDescription()
 {
 	return "scenEvo hour condition";
-}
-
-void scenEvo_cond_h::SetIcons()
-{
 }
 
 void scenEvo_cond_h::setupTimer()
@@ -332,10 +305,6 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 const char *scenEvo_cond_d::getDescription()
 {
 	return "scenEvo device condition";
-}
-
-void scenEvo_cond_d::SetIcons()
-{
 }
 
 void scenEvo_cond_d::Up()

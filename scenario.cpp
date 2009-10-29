@@ -109,14 +109,7 @@ QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 		if (getTextChild(cond, "value").toInt())
 		{
 			scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
-			for (int i = 1; i <= 4; ++i)
-			{
-				QString img = getTextChild(cond, "cimg" + QString::number(i));
-				if (!img.isEmpty())
-					c->setImg(i - 1,  IMG_PATH + img);
-			}
 			connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
-			c->SetIcons();
 			l.append(c);
 		}
 	}

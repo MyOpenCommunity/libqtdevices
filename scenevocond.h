@@ -25,12 +25,6 @@ class scenEvo_cond : public Page
 {
 Q_OBJECT
 public:
-	/*!
-	\brief sets image path for a certain index
-	\param index index of image whose path shall be set
-	*/
-	void setImg(int index, QString s);
-
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
 
@@ -38,8 +32,6 @@ public:
 	\brief returns description of condition
 	*/
 	virtual const char *getDescription();
-	//! Sets icons
-	virtual void SetIcons();
 	//! Set serial number
 	void set_serial_number(int);
 	//! Get serial number
@@ -67,15 +59,7 @@ protected:
 	// The constructor is protected to avoid the building of scenEvo_cond objects.
 	scenEvo_cond();
 
-	/*!
-	\brief: Returns image path for a certain index
-	\arg: index of image whose path shall be returned
-	*/
-	QString getImg(int index);
-
 private:
-	static const int MAX_EVO_COND_IMG =5;
-	QString *img[MAX_EVO_COND_IMG];
 	int serial_number;
 
 signals:
@@ -111,8 +95,6 @@ public:
 	*/
 	const char *getDescription();
 
-	//! Sets icons
-	void SetIcons();
 	//! Save condition
 	void save();
 	//! Return true when condition is satisfied
@@ -160,8 +142,6 @@ public:
 	\brief Returns condition description in human language
 	*/
 	const char *getDescription();
-	//! Sets icons
-	void SetIcons();
 	//! Save condition
 	virtual void save();
 	//! Return true when condition is satisfied
