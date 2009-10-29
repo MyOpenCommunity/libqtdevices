@@ -362,10 +362,8 @@ bool scenEvo_cond_d::isTrue()
 /*****************************************************************
  ** Actual generic device condition
 ****************************************************************/
-device_condition::device_condition(QWidget *p, QString *s)
+device_condition::device_condition()
 {
-	qDebug() << "device_condition::device_condition(" << s << ")";
-	parent = p;
 	satisfied = false;
 }
 
@@ -486,11 +484,6 @@ int device_condition::set_current_value(int v)
 	return current_value;
 }
 
-scenEvo_cond_d *device_condition::get_parent()
-{
-	return (scenEvo_cond_d *)parent;
-}
-
 QString device_condition::get_unit()
 {
 	return "";
@@ -545,8 +538,7 @@ void device_condition::set_group(int g)
 /*****************************************************************
 ** Actual light status device condition
 ****************************************************************/
-device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c) :
-	device_condition(parent, c)
+device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -673,8 +665,7 @@ void device_condition_light_status::get_condition_value(QString& out)
 /*****************************************************************
 ** Actual dimming value device condition
 ****************************************************************/
-device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c) :
-	device_condition(parent, c)
+device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c)
 {
 	qDebug() << "device_condition_dimming::device_condition_dimming(" << c << ")";
 	QLabel *l = new QLabel(parent);
@@ -978,8 +969,7 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 /*****************************************************************
  ** Actual dimming 100 value device condition
 ****************************************************************/
-device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c) :
-device_condition(parent, c)
+device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c)
 {
 	char sup[10];
 	qDebug() << "device_condition_dimming_100::device_condition_dimming_100(" << c << ")";
@@ -1293,8 +1283,7 @@ void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 /*****************************************************************
 ** Actual volume device condition
 ****************************************************************/
-device_condition_volume::device_condition_volume(QWidget *parent, QString *c) :
-	device_condition(parent, c)
+device_condition_volume::device_condition_volume(QWidget *parent, QString *c)
 {
 	char sup[10];
 	QLabel *l = new QLabel(parent);
@@ -1573,8 +1562,7 @@ void device_condition_volume::reset()
 /*****************************************************************
 ** Actual temperature device condition
 ****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
-	device_condition(parent, c)
+device_condition_temp::device_condition_temp(QWidget *parent, QString *c)
 {
 	// Temp condition is expressed in bticino format
 	int temp_condition = c->toInt();
@@ -1740,7 +1728,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 ****************************************************************/
 
 device_condition_aux::device_condition_aux(QWidget *parent, QString *c) :
-	device_condition(parent, c), device_initialized(false), device_value(-1)
+	device_initialized(false), device_value(-1)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);

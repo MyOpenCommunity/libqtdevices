@@ -182,10 +182,6 @@ class device_condition : public QObject
 {
 friend class scenEvo_cond_d;
 Q_OBJECT
-public:
-	//! Constructor
-	device_condition(QWidget *parent, QString *trigger);
-
 public slots:
 	//! Invoked when UP button is pressed
 	virtual void Up();
@@ -197,6 +193,8 @@ public slots:
 	virtual void status_changed(QList<device_status*>) = 0;
 
 protected:
+	device_condition();
+
 	//! Returns min value
 	virtual int get_min();
 	//! Returns max value
@@ -207,8 +205,6 @@ protected:
 	virtual int get_divisor();
 	//! Returns true if OFF must be shown instead of 0
 	virtual bool show_OFF_on_zero();
-	//! Returns pointer to parent scenEvo_cond_d
-	scenEvo_cond_d *get_parent();
 	//! Sets condition value
 	void set_condition_value(int);
 	//! Translates trigger condition from open encoding to int and sets val
@@ -257,11 +253,8 @@ private:
 	int cond_value;
 	//! Current value (displayed, not confirmed)
 	int current_value;
-	//! Pointer to parent scenEvo_cond_d
-	QWidget *parent;
+
 signals:
-	//! No more emitted when condition is true
-	// void verificata();
 	//! Emitted when the condition on device is satisfied
 	void condSatisfied();
 };
