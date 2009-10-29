@@ -14,7 +14,7 @@ ChangeTime::ChangeTime()
 	QLabel *img = new QLabel;
 	img->setPixmap(bt_global::skin->getImage("time_icon"));
 
-	edit = new BtTimeEdit(this, true);
+	edit = new BtTimeEdit(this, BtTimeEdit::DISPLAY_SECONDS);
 
 	BtButton *ok = new BtButton;
 	ok->setImage(bt_global::skin->getImage("ok"));

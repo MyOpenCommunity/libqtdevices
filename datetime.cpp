@@ -24,10 +24,10 @@ BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
 	return btn;
 }
 
-BtTimeEdit::BtTimeEdit(QWidget *parent, bool display_seconds)
+BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 		: QWidget(parent),
 		_time(0, 0, 0),
-		_display_seconds(display_seconds)
+		_display_type(type)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setSpacing(0);
@@ -45,7 +45,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, bool display_seconds)
 	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
 	hbox->addWidget(btn2);
 
-	if (_display_seconds)
+	if (_display_type == DISPLAY_SECONDS)
 	{
 		btn3 = getButton(btn_up_img, this, true);
 		connect(btn3, SIGNAL(clicked()), this, SLOT(incSec()));
@@ -56,7 +56,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, bool display_seconds)
 
 	num = new QLCDNumber(this);
 	num->setSegmentStyle(QLCDNumber::Flat);
-	num->setNumDigits(_display_seconds ? 8 : 5);
+	num->setNumDigits(_display_type == DISPLAY_SECONDS ? 8 : 5);
 	num->setFrameStyle(QFrame::NoFrame);
 	main_layout->addWidget(num, 1);
 
@@ -71,7 +71,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, bool display_seconds)
 	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
 	hbox->addWidget(btn2);
 
-	if (_display_seconds)
+	if (_display_type == DISPLAY_SECONDS)
 	{
 		btn3 = getButton(btn_down_img, this, true);
 		connect(btn3, SIGNAL(clicked()), this, SLOT(decSec()));
@@ -159,7 +159,7 @@ void BtTimeEdit::decSec()
 void BtTimeEdit::displayTime()
 {
 	QString str;
-	if (_display_seconds)
+	if (_display_type == DISPLAY_SECONDS)
 		str.sprintf("%02u:%02u:%02u", _time.hour(), _time.minute(), _time.second());
 	else
 		str.sprintf("%u:%02u", _time.hour(), _time.minute());
