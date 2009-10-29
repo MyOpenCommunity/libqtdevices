@@ -1,5 +1,4 @@
 #include "keypad.h"
-#include "banner.h"
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 
