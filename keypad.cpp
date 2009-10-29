@@ -3,7 +3,6 @@
 #include "btbutton.h"
 
 #include <QLabel>
-#include <QDebug>
 #include <QButtonGroup>
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -49,13 +48,12 @@ Keypad::Keypad()
 	digitLabel->setFont(bt_global::font->get(FontManager::TEXT));
 
 	connect(buttons, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
-	connect(canc, SIGNAL(clicked()), SLOT(canc()));
-	connect(ok, SIGNAL(clicked()), SLOT(ok()));
+	connect(canc, SIGNAL(clicked()), SLOT(deleteChar()));
+	connect(ok, SIGNAL(clicked()), SIGNAL(Closed()));
 
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;
 	k->setContentsMargins(0, 0, 0, 0);
-	// k->setSpacing(5);
 
 	for (int i = 0; i < 9; ++i)
 		k->addWidget(digits[i + 1], i / 3, i % 3);
@@ -73,28 +71,24 @@ Keypad::Keypad()
 	p->addWidget(digitLabel, 1);
 
 	// top layout
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 10);
-	l->setSpacing(0);
+	topLayout = new QVBoxLayout(this);
+	topLayout->setContentsMargins(0, 0, 0, 10);
+	topLayout->setSpacing(0);
 
 	// when modifying this, modify insertLayout below
-	l->addLayout(k);
-	l->addLayout(p);
+	topLayout->addLayout(k);
+	topLayout->addLayout(p);
+
+	updateText();
 }
 
 void Keypad::insertLayout(QLayout *l)
 {
-	((QVBoxLayout*)layout())->insertLayout(1, l);
+	topLayout->insertLayout(1, l);
 }
 
-void Keypad::showEvent(QShowEvent *event)
+void Keypad::updateText()
 {
-	draw();
-}
-
-void Keypad::draw()
-{
-	qDebug("tastiera::draw(), mode = %d", mode);
 	if (mode == CLEAN)
 		digitLabel->setText(text);
 	else
@@ -103,33 +97,28 @@ void Keypad::draw()
 
 void Keypad::buttonClicked(int number)
 {
-	qDebug() << "button clicked " << number;
 	if (text.length() < 5)
 		text += QString::number(number);
-	draw();
+	updateText();
 }
 
-void Keypad::canc()
+void Keypad::deleteChar()
 {
 	if (text.length() > 0)
+	{
 		text.chop(1);
+		updateText();
+	}
 	else
 	{
-		text = "";
 		emit Closed();
 	}
-	draw();
-}
-
-void Keypad::ok()
-{
-	emit Closed();
 }
 
 void Keypad::setMode(Type t)
 {
 	mode = t;
-	draw();
+	updateText();
 }
 
 QString Keypad::getText()
@@ -140,7 +129,7 @@ QString Keypad::getText()
 void Keypad::resetText()
 {
 	text = "";
-	draw();
+	updateText();
 }
 
 

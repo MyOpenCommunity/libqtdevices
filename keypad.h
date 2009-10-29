@@ -15,6 +15,7 @@
 #include "main.h"
 
 class QLabel;
+class QVBoxLayout;
 
 /*!
   \class Keypad
@@ -28,10 +29,6 @@ class Keypad : public Page
 Q_OBJECT
 public:
 	Keypad();
-/*!
-  \brief Draws the page
-*/
-	void draw();
 
 /*! \enum Type
   differentiate between encripted and clean mode
@@ -53,29 +50,24 @@ public:
 	/// A function to reset the text inserted by virtual Keyboard.
 	void resetText();
 
-public slots:
-/*!
-  \brief Executed when the \a ok \a button is clicked. Hides the object and closes.
-*/
-	void ok();
-
-/*!
-  \brief Executed when the \a canc \a button is clicked. Hides the object and closes with NULL result.
-*/
-	void canc();
-
 protected:
-	virtual void showEvent(QShowEvent *event);
-
 	// used by KeypadWithState to add the row with the zone state
 	void insertLayout(QLayout *l);
 
 private:
+	void updateText();
+
+private:
+	QVBoxLayout *topLayout;
 	QLabel *digitLabel;
 	QString text;
 	Type mode;
 
 private slots:
+	// remove a digit from the value; close the page if the value is empty
+	void deleteChar();
+
+	// add a digit to the value
 	void buttonClicked(int number);
 };
 
