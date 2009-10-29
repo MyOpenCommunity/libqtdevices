@@ -1,9 +1,8 @@
 #include "scenevocond.h"
 #include "device.h"
-#include "devices_cache.h" // bt_global::devices_cache
+#include "devices_cache.h" // add_device_to_cache
 #include "generic_functions.h" // setCfgValue
 #include "btbutton.h"
-#include "timescript.h"
 #include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
 #include "main.h" // bt_global::config
@@ -13,15 +12,9 @@
 
 #include "lighting_device.h"
 
-#include <QDateTime>
 #include <QLocale>
-#include <QPixmap>
-#include <QWidget>
 #include <QDebug>
 #include <QLabel>
-#include <QTimer>
-#include <QDir>
-#include <QFile>
 
 
 // TODO: create a global locale object

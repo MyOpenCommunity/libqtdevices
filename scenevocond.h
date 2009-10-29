@@ -10,11 +10,8 @@
 #include <QTimer>
 
 class BtButton;
-class timeScript;
 class device;
-class QDateTime;
 class QLabel;
-class QFrame;
 class device_condition;
 
 
