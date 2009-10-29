@@ -247,6 +247,12 @@ void BtDateEdit::setAllowPastDates(bool v)
 	_allow_past_dates = v;
 }
 
+void BtDateEdit::setDate(const QDate &d)
+{
+	_date = d;
+	date_display->display(_date.toString(FORMAT_STRING));
+}
+
 QDate BtDateEdit::date()
 {
 	return _date;
@@ -254,45 +260,33 @@ QDate BtDateEdit::date()
 
 void BtDateEdit::incDay()
 {
-	_date = _date.addDays(1);
-	date_display->display(_date.toString(FORMAT_STRING));
+	setDate(_date.addDays(1));
 }
 
 void BtDateEdit::incMonth()
 {
-	_date = _date.addMonths(1);
-	date_display->display(_date.toString(FORMAT_STRING));
+	setDate(_date.addMonths(1));
 }
 
 void BtDateEdit::incYear()
 {
-	_date = _date.addYears(1);
-	date_display->display(_date.toString(FORMAT_STRING));
+	setDate(_date.addYears(1));
 }
 
 void BtDateEdit::decDay()
 {
 	if (_allow_past_dates || _date.addDays(-1) >= QDate::currentDate())
-	{
-		_date = _date.addDays(-1);
-		date_display->display(_date.toString(FORMAT_STRING));
-	}
+		setDate(_date.addDays(-1));
 }
 
 void BtDateEdit::decMonth()
 {
 	if (_allow_past_dates || _date.addMonths(-1) >= QDate::currentDate())
-	{
-		_date = _date.addMonths(-1);
-		date_display->display(_date.toString(FORMAT_STRING));
-	}
+		setDate(_date.addMonths(-1));
 }
 
 void BtDateEdit::decYear()
 {
 	if (_allow_past_dates || _date.addYears(-1) >= QDate::currentDate())
-	{
-		_date = _date.addYears(-1);
-		date_display->display(_date.toString(FORMAT_STRING));
-	}
+		setDate(_date.addYears(-1));
 }

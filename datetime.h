@@ -76,6 +76,9 @@ class BtDateEdit : public QWidget
 Q_OBJECT
 public:
 	BtDateEdit(QWidget *parent);
+
+	void setDate(const QDate& date);
+
 	/**
 	 * Returns the date set on the widget.
 	 */
