@@ -10,30 +10,34 @@
 #include <QHBoxLayout>
 
 
+static BtButton *getButton(QString img, bool autorepeat)
+{
+	BtButton *btn = new BtButton;
+	btn->setImage(img);
+	btn->setAutoRepeat(autorepeat);
+	return btn;
+}
+
 Contrast::Contrast()
 {
-	aumBut = new BtButton(this);
-	decBut = new BtButton(this);
-	okBut = new BtButton(this);
+	// create buttons
+	BtButton *decBut = getButton(ICON_MENO, true);
+	BtButton *incBut = getButton(ICON_PIU, true);
+	BtButton *okBut = getButton(ICON_OK, false);
 
-	paintLabel = new QLabel(this);
-	colorBar = new QLabel(this);
+	connect(decBut, SIGNAL(clicked()), SLOT(decContrast()));
+	connect(incBut, SIGNAL(clicked()), SLOT(incContrast()));
+	connect(okBut,  SIGNAL(clicked()), SIGNAL(Closed()));
+
+	// create images
+	QLabel *paintLabel = new QLabel;
+	QLabel *colorBar = new QLabel;
 
 	paintLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	paintLabel->setPixmap(QPixmap(IMG_PATH "my_home.png"));
 
 	colorBar ->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	colorBar ->setPixmap(QPixmap(IMG_PATH "colorbar.png"));
-
-	decBut->setImage(ICON_MENO);
-	aumBut->setImage(ICON_PIU);
-	okBut->setImage(ICON_OK);
-
-	aumBut->setAutoRepeat(true);
-	decBut->setAutoRepeat(true);
-	connect(decBut,SIGNAL(clicked()),this,SLOT(decContr()));
-	connect(aumBut,SIGNAL(clicked()),this,SLOT(aumContr()));
-	connect(okBut,SIGNAL(clicked()),this,SIGNAL(Closed()));
 
 	// layout
 	QHBoxLayout *b = new QHBoxLayout;
@@ -42,7 +46,7 @@ Contrast::Contrast()
 
 	b->addWidget(decBut, 0, Qt::AlignLeft);
 	b->addWidget(okBut);
-	b->addWidget(aumBut, 0, Qt::AlignRight);
+	b->addWidget(incBut, 0, Qt::AlignRight);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
@@ -53,20 +57,16 @@ Contrast::Contrast()
 	l->addLayout(b);
 }
 
-void Contrast::aumContr()
+void Contrast::incContrast()
 {
-	uchar c;
-
-	c = getContrast();
+	int c = getContrast();
 	if (c < 140)
 		setContrast(c+10, FALSE);
 }
 
-void Contrast::decContr()
+void Contrast::decContrast()
 {
-	uchar c;
-
-	c = getContrast();
+	int c = getContrast();
 	if (c >= 10)
 		setContrast(c-10,FALSE);
 }
