@@ -105,7 +105,7 @@ class scenEvo_cond_h : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_h(const QDomNode &config_node);
+	scenEvo_cond_h(const QDomNode &config_node, bool has_next);
 	/*!
 	\brief Returns condition description
 	*/

@@ -101,12 +101,14 @@ QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	// Note: the ownership of scenEvo_cond objects is taken by scenEvo instance.
+	// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
+	bool has_next = getElement(config_node, "condDevice/value").text().toInt();
 	QList<scenEvo_cond*> l;
 	foreach (const QDomNode &cond, getChildren(config_node, "condH"))
 	{
 		if (getTextChild(cond, "value").toInt())
 		{
-			scenEvo_cond_h *c = new scenEvo_cond_h(cond);
+			scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
 			for (int i = 1; i <= 4; ++i)
 			{
 				QString img = getTextChild(cond, "cimg" + QString::number(i));

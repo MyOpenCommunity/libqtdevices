@@ -122,7 +122,7 @@ bool scenEvo_cond::isTrue()
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node) :
+scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node, bool has_next) :
 	time_edit(this)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
@@ -130,12 +130,41 @@ scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node) :
 	timer.setSingleShot(true);
 	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
 
+	// Top icon
+	QLabel *image = new QLabel(this);
+	image->setPixmap(bt_global::skin->getImage("watch"));
+	image->setGeometry(90,0,60,60);
+
 	QString h = getTextChild(config_node, "hour");
 	QString m = getTextChild(config_node, "minute");
 	time_edit.setMaxHours(24);
 	time_edit.setMaxMinutes(60);
 	time_edit.setGeometry(50, 80, 140, 170);
 	time_edit.setTime(QTime(h.toInt(), m.toInt(), 0));
+
+	bottom_left = new BtButton(this);
+	bottom_left->setGeometry(0, height() - 70, 60, 60);
+	bottom_left->setImage(bt_global::skin->getImage("ok"));
+	connect(bottom_left, SIGNAL(released()), SLOT(OK()));
+
+	bottom_right = new BtButton(this);
+	bottom_right->setGeometry(width() - 60, height() - 70, 60, 60);
+
+	if (has_next)
+	{
+		bottom_center = new BtButton(this);
+		bottom_center->setGeometry(width()/2 - 30, height() - 70, 60, 60);
+		bottom_center->setImage(bt_global::skin->getImage("back"));
+		connect(bottom_center, SIGNAL(released()),SLOT(Prev()));
+
+		bottom_right->setImage(bt_global::skin->getImage("forward"));
+		connect(bottom_right, SIGNAL(released()), SLOT(Next()));
+	}
+	else
+	{
+		bottom_right->setImage(bt_global::skin->getImage("back"));
+		connect(bottom_right, SIGNAL(released()), SLOT(Prev()));
+	}
 
 	hasTimeCondition = true;
 	cond_time.setHMS(h.toInt(), m.toInt(), 0);
@@ -149,45 +178,6 @@ const char *scenEvo_cond_h::getDescription()
 
 void scenEvo_cond_h::SetIcons()
 {
-	// TODO: move this code to ctor once we understand how to set icons on buttons
-	// Top icon
-	QLabel *image = new QLabel(this);
-	image->setPixmap(bt_global::skin->getImage("watch"));
-	image->setGeometry(90,0,60,60);
-
-	// TODO: understand the logic of when the buttons are created
-	if (!getImg(A6_ICON_INDEX).isEmpty())
-	{
-		bottom_left = new BtButton(this);
-		bottom_left->setGeometry(0, height() - 70, 60, 60);
-		bottom_left->setImage(getImg(A6_ICON_INDEX));
-		connect(bottom_left, SIGNAL(released()), SLOT(OK()));
-	}
-	else
-		bottom_left = NULL;
-
-	if (!getImg(A7_ICON_INDEX).isEmpty())
-	{
-		bottom_center = new BtButton(this);
-		bottom_center->setGeometry(width()/2 - 30, height() - 70, 60, 60);
-		bottom_center->setImage(getImg(A7_ICON_INDEX));
-		connect(bottom_center, SIGNAL(released()),SLOT(Prev()));
-	}
-	else
-		bottom_center = NULL;
-
-	if (!getImg(A8_ICON_INDEX).isEmpty())
-	{
-		bottom_right = new BtButton(this);
-		bottom_right->setGeometry(width() - 60, height() - 70, 60, 60);
-		bottom_right->setImage(getImg(A8_ICON_INDEX));
-		if (bottom_center)
-			connect(bottom_right, SIGNAL(released()), SLOT(Next()));
-		else
-			connect(bottom_right, SIGNAL(released()), SLOT(Prev()));
-	}
-	else
-		bottom_right = NULL;
 }
 
 void scenEvo_cond_h::setupTimer()
