@@ -104,10 +104,9 @@ QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 	QList<scenEvo_cond*> l;
 	foreach (const QDomNode &cond, getChildren(config_node, "condH"))
 	{
-		scenEvo_cond_h *c = new scenEvo_cond_h(getTextChild(cond, "hour"), getTextChild(cond, "minute"));
 		if (int v = getTextChild(cond, "value").toInt())
 		{
-			c->setConditionType(v);
+			scenEvo_cond_h *c = new scenEvo_cond_h(cond);
 			for (int i = 1; i <= 4; ++i)
 			{
 				QString img = getTextChild(cond, "cimg" + QString::number(i));
@@ -125,10 +124,6 @@ QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 		if (int v = getTextChild(cond, "value").toInt())
 		{
 			scenEvo_cond_d *c = new scenEvo_cond_d(cond);
-			c->setConditionType(v);
-			c->set_descr(getTextChild(cond, "descr"));
-			c->set_where(getTextChild(cond, "where"));
-			c->set_trigger(getTextChild(cond, "trigger"));
 			for (int i = 1; i <= 5; ++i)
 			{
 				QString img = getTextChild(cond, "cimg" + QString::number(i));

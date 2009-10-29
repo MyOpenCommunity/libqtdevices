@@ -38,10 +38,6 @@ public:
 	bool hasTimeCondition;
 
 	/*!
-	\brief sets the type of the condition (controlled by a device)
-	*/
-	void setConditionType(int t);
-	/*!
 	\brief returns description of condition
 	*/
 	virtual const char *getDescription();
@@ -71,8 +67,6 @@ public slots:
 	virtual void reset();
 
 protected:
-	int condition_type;
-
 	// The constructor is protected to avoid the building of scenEvo_cond objects.
 	scenEvo_cond();
 
@@ -114,7 +108,7 @@ class scenEvo_cond_h : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_h(QString h, QString m);
+	scenEvo_cond_h(const QDomNode &config_node);
 	/*!
 	\brief Returns condition description
 	*/
@@ -164,43 +158,11 @@ class scenEvo_cond_d : public scenEvo_cond
 Q_OBJECT
 public:
 	scenEvo_cond_d(const QDomNode &config_node);
-	/*!
-		\brief Set description
-		\param d new description
-	*/
-	void set_descr(QString d);
-	/*
-		\brief get <descr> value
-		\param output <descr>
-	*/
-	void get_descr(QString&);
-	/*!
-		\brief Set device address
-		\param w new device address
-	*/
-	void set_where(QString w);
-	/*!
-		\brief Read device address
-	*/
-	void get_where(QString&);
-	/*!
-	\brief get trigger condition
-	\param t output
-	*/
-	void get_trigger(QString&);
-	/*!
-	\brief Set trigger condition
-	\param t new trigger condition
-	*/
-	void set_trigger(QString t);
+
 	/*!
 	\brief Returns condition description in human language
 	*/
 	const char *getDescription();
-	/*!
-	\brief Draws and initializes some connections.
-	*/
-	virtual void showPage();
 	//! Sets icons
 	void SetIcons();
 	//! Save condition
@@ -216,8 +178,6 @@ public slots:
 	void Up();
 	//! Down method
 	void Down();
-	//! Invoked when actual device condition has been triggered by a frame
-	//void device_condition_triggered();
 	//! Reset condition
 	void reset();
 private:
@@ -227,9 +187,6 @@ private:
 	static const int TEXT_X_DIM = 180;
 	//! Text area height
 	static const int TEXT_Y_DIM = 20;
-
-	QString descr;
-	QString where;
 
 	//! Specific device condition
 	device_condition *actual_condition;

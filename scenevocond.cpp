@@ -38,7 +38,6 @@ QLocale loc(QLocale::Italian);
 
 scenEvo_cond::scenEvo_cond()
 {
-	condition_type = -1;
 	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
 		img[i] = new QString("");
 	hasTimeCondition = false;
@@ -57,11 +56,6 @@ void scenEvo_cond::setImg(int index, QString s)
 	if (index >= MAX_EVO_COND_IMG)
 		return;
 	*img[index] = s;
-}
-
-void scenEvo_cond::setConditionType(int t)
-{
-	condition_type = t;
 }
 
 const char *scenEvo_cond::getDescription()
@@ -135,7 +129,7 @@ bool scenEvo_cond::isTrue()
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(QString h, QString m) :
+scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node) :
 	time_edit(this)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
@@ -143,6 +137,8 @@ scenEvo_cond_h::scenEvo_cond_h(QString h, QString m) :
 	timer.setSingleShot(true);
 	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
 
+	QString h = getTextChild(config_node, "hour");
+	QString m = getTextChild(config_node, "minute");
 	time_edit.setMaxHours(24);
 	time_edit.setMaxMinutes(60);
 	time_edit.setGeometry(50, 80, 140, 170);
@@ -301,10 +297,10 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	QString trigger = getTextChild(config_node, "trigger");
 	// Create actual device condition
 	device_condition *dc;
+	int condition_type = getTextChild(config_node, "value").toInt();
 	qDebug("#### Condition type = %d", condition_type);
-	int type = getTextChild(config_node, "value").toInt();
 	QString icon;
-	switch (type)
+	switch (condition_type)
 	{
 	case 1:
 		dc = new device_condition_light_status(this, &trigger);
@@ -350,36 +346,9 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	actual_condition = dc;
 }
 
-void scenEvo_cond_d::set_descr(QString d)
-{
-	qDebug() << "scenEvo_cond_d::set_descr("<< d << ")";
-	descr = d;
-}
-
-void scenEvo_cond_d::set_where(QString w)
-{
-	qDebug() << "scenEvo_cond_d::set_where(" << w << ")";
-	where = w;
-}
-
-void scenEvo_cond_d::get_where(QString& out)
-{
-	out = where;
-}
-
-void scenEvo_cond_d::set_trigger(QString t)
-{
-	qDebug() << "scenEvo_cond_d::set_trigger(" << t << ")";
-}
-
 const char *scenEvo_cond_d::getDescription()
 {
 	return "scenEvo device condition";
-}
-
-void scenEvo_cond_d::showPage()
-{
-	scenEvo_cond::showPage();
 }
 
 void scenEvo_cond_d::SetIcons()
