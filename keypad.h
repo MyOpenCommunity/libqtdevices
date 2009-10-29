@@ -14,11 +14,7 @@
 #include "page.h"
 #include "main.h"
 
-class BtButton;
 class QLabel;
-class QButtonGroup;
-
-#define LINE MAX_HEIGHT/5
 
 /*!
   \class Keypad
@@ -31,7 +27,7 @@ class Keypad : public Page
 {
 Q_OBJECT
 public:
-	Keypad(int line=LINE);
+	Keypad();
 /*!
   \brief Draws the page
 */
@@ -69,14 +65,15 @@ public slots:
 	void canc();
 
 protected:
-	QLabel *digitLabel, *scrittaLabel;
 	virtual void showEvent(QShowEvent *event);
 
+	// used by KeypadWithState to add the row with the zone state
+	void insertLayout(QLayout *l);
+
 private:
-	BtButton *zeroBut, *unoBut, *dueBut, *treBut, *quatBut, *cinBut, *seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
+	QLabel *digitLabel;
 	QString text;
 	Type mode;
-	QButtonGroup *buttons_group;
 
 private slots:
 	void buttonClicked(int number);
@@ -89,9 +86,6 @@ class KeypadWithState : public Keypad
 Q_OBJECT
 public:
 	KeypadWithState(int s[8]);
-private:
-	BtButton *stati[8];
-	bool st[8];
 };
 
 
