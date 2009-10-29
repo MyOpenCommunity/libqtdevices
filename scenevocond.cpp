@@ -280,6 +280,73 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	area2_ptr->setAlignment(Qt::AlignCenter);
 	area2_ptr->setText(getTextChild(config_node, "descr"));
 
+	// create condition buttons
+	BtButton *b = new BtButton(this);
+	but[A3_BUTTON_INDEX] = b;
+	b->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
+	connect(b, SIGNAL(clicked()), this, SLOT(Up()));
+	b = new BtButton(this);
+	but[A4_BUTTON_INDEX] = b;
+	b->setGeometry(width()/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
+	connect(b, SIGNAL(clicked()), this, SLOT(Down()));
+	// create bottom (navigation) buttons
+	b = new BtButton(this);
+	but[A5_BUTTON_INDEX] = b;
+	b->setGeometry(0, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	connect(b, SIGNAL(clicked()), this, SLOT(OK()));
+	b = new BtButton(this);
+	but[A6_BUTTON_INDEX] = b;
+	b->setGeometry(width() - BUTTON_DIM, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
+
+	// area #3
+	SetButtonIcon(A3_ICON_INDEX, A3_BUTTON_INDEX);
+	// area #4
+	SetButtonIcon(A4_ICON_INDEX, A4_BUTTON_INDEX);
+	// area #5
+	SetButtonIcon(A5_ICON_INDEX, A5_BUTTON_INDEX);
+	// area #8
+	SetButtonIcon(A6_ICON_INDEX, A6_BUTTON_INDEX);
+	// Create actual device condition
+	device_condition *dc;
+	qDebug("#### Condition type = %d", condition_type);
+	switch (condition_type)
+	{
+	case 1:
+		dc = new device_condition_light_status(this, trigger);
+		break;
+	case 2:
+		dc = new device_condition_dimming(this, trigger);
+		break;
+	case 3:
+	case 7:
+	case 8:
+		dc = new device_condition_temp(this, trigger);
+		but[A3_BUTTON_INDEX]->setAutoRepeat(true);
+		but[A4_BUTTON_INDEX]->setAutoRepeat(true);
+		break;
+	case 9:
+		dc = new device_condition_aux(this, trigger);
+		break;
+	case 4:
+		dc = new device_condition_volume(this, trigger);
+		break;
+	case 6:
+		dc = new device_condition_dimming_100(this, trigger);
+		break;
+	default:
+		qDebug("Unknown device condition");
+		dc = NULL;
+	}
+
+	if (dc)
+	{
+		dc->setGeometry(40,140,160,50);
+		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
+		dc->setup_device(where);
+	}
+	actual_condition = dc;
+
 	memset(but, 0, sizeof(but));
 	qDebug("scenEvo_cond_d::scenEvo_cond_d(), end");
 }
@@ -337,77 +404,6 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 
 void scenEvo_cond_d::SetIcons()
 {
-	qDebug("scenEvo_cond_d::SetIcons()");
-	QPixmap *Icon1 = new QPixmap();
-	for (int i=0; i<6; i++)
-		qDebug() << "icon[" << i << "] = " << getImg(i);
-
-
-	BtButton *b = new BtButton(this);
-	but[A3_BUTTON_INDEX] = b;
-	b->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Up()));
-	b = new BtButton(this);
-	but[A4_BUTTON_INDEX] = b;
-	b->setGeometry(width()/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Down()));
-	b = new BtButton(this);
-	but[A5_BUTTON_INDEX] = b;
-	b->setGeometry(0, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(OK()));
-	b = new BtButton(this);
-	but[A6_BUTTON_INDEX] = b;
-	b->setGeometry(width() - BUTTON_DIM, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
-
-	// area #3
-	SetButtonIcon(A3_ICON_INDEX, A3_BUTTON_INDEX);
-	// area #4
-	SetButtonIcon(A4_ICON_INDEX, A4_BUTTON_INDEX);
-	// area #5
-	SetButtonIcon(A5_ICON_INDEX, A5_BUTTON_INDEX);
-	// area #8
-	SetButtonIcon(A6_ICON_INDEX, A6_BUTTON_INDEX);
-	// Create actual device condition
-	device_condition *dc;
-	qDebug("#### Condition type = %d", condition_type);
-	switch (condition_type)
-	{
-	case 1:
-		dc = new device_condition_light_status(this, trigger);
-		break;
-	case 2:
-		dc = new device_condition_dimming(this, trigger);
-		break;
-	case 3:
-	case 7:
-	case 8:
-		dc = new device_condition_temp(this, trigger);
-		but[A3_BUTTON_INDEX]->setAutoRepeat(true);
-		but[A4_BUTTON_INDEX]->setAutoRepeat(true);
-		break;
-	case 9:
-		dc = new device_condition_aux(this, trigger);
-		break;
-	case 4:
-		dc = new device_condition_volume(this, trigger);
-		break;
-	case 6:
-		dc = new device_condition_dimming_100(this, trigger);
-		break;
-	default:
-		qDebug("Unknown device condition");
-		dc = NULL;
-	}
-
-	if (dc)
-	{
-		dc->setGeometry(40,140,160,50);
-		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
-		dc->setup_device(where);
-	}
-	actual_condition = dc;
-	qDebug("scenEvo_cond_d::SetIcons(), end");
 }
 
 void scenEvo_cond_d::Up()
