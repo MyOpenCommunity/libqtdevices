@@ -35,10 +35,15 @@ public slots:
 	virtual void showPage();
 
 protected:
-	void timerEvent(QTimerEvent* event);
+	void timerEvent(QTimerEvent *event);
+	void showEvent(QShowEvent *event);
+	void hideEvent(QHideEvent *event);
 
 private slots:
 	void acceptTime();
+
+private:
+	void startTimeUpdate();
 
 private:
 	BtTimeEdit *edit;
