@@ -58,8 +58,11 @@ void Scenario::loadItems(const QDomNode &config_node)
 			break;
 		}
 		case SCENARIO_EVOLUTO:
-			b = new scenEvo(this, loadConditions(item), img1, img2, img3, img4,
-				getElement(item, "action/open").text(), getTextChild(item, "enable").toInt());
+		{
+			SkinContext context(getTextChild(item, "cid").toInt());
+			b = new scenEvo(this, loadConditions(item), getElement(item, "action/open").text(),
+				getTextChild(item, "enable").toInt());
+		}
 			break;
 
 		case SCENARIO_SCHEDULATO:
@@ -99,7 +102,6 @@ void Scenario::loadItems(const QDomNode &config_node)
 
 QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	// Note: the ownership of scenEvo_cond objects is taken by scenEvo instance.
 	// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
 	bool has_next = getElement(config_node, "condDevice/value").text().toInt();
