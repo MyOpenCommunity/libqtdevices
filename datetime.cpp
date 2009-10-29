@@ -11,6 +11,7 @@
 #include "datetime.h"
 #include "btbutton.h"
 #include "main.h" // bt_global::config
+#include "skinmanager.h"
 
 #include <QLayout>
 
@@ -35,7 +36,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 
 	BtButton *btn1, *btn2, *btn3;
 	QHBoxLayout *hbox = new QHBoxLayout();
-	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
+	const QString btn_up_img = bt_global::skin->getImage("arrow_up");
 
 	btn1 = getButton(btn_up_img, this, true);
 	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
@@ -61,7 +62,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 	main_layout->addWidget(num, 1);
 
 	hbox = new QHBoxLayout();
-	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
+	const QString btn_down_img = bt_global::skin->getImage("arrow_down");
 
 	btn1 = getButton(btn_down_img, this, true);
 	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
@@ -184,7 +185,7 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 	// Buttons to decrease day, month, year
 	BtButton *btn_bottom_left, *btn_bottom_center, *btn_bottom_right;
 
-	const QString btn_up_img = QString("%1%2").arg(IMG_PATH).arg("arrup.png");
+	const QString btn_up_img = bt_global::skin->getImage("arrow_up");
 	btn_top_left = getButton(btn_up_img, this, true);
 	btn_top_center = getButton(btn_up_img, this, true);
 	btn_top_right = getButton(btn_up_img, this, true);
@@ -201,7 +202,7 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 	date_display->setFrameStyle(QFrame::NoFrame);
 	main_layout->addWidget(date_display, 1);
 
-	const QString btn_down_img = QString("%1%2").arg(IMG_PATH).arg("arrdw.png");
+	const QString btn_down_img = bt_global::skin->getImage("arrow_down");
 
 	btn_bottom_left = getButton(btn_down_img, this, true);
 	btn_bottom_center = getButton(btn_down_img, this, true);
