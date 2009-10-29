@@ -277,7 +277,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	widget_container->addWidget(new EnergyGraph);
 
 	main_layout->addWidget(widget_container, 1);
-	table = new EnergyTable(EnergyInterface::isCurrencyView() ? n_dec : 3);
+	table = new EnergyTable(3);
 
 	currency_symbol = _currency_symbol;
 	if (!currency_symbol.isNull())
@@ -733,7 +733,7 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
-	table->setNumDecimal(EnergyInterface::isCurrencyView() ? n_decimal : 3);
+	table->setNumDecimal(3);
 	updateBanners();
 	updateCurrentGraph();
 }
@@ -750,6 +750,10 @@ void EnergyView::updateBanners()
 	QString str_med_inst = unit_measure_med_inst;
 
 	float factor = is_production ? prod_factor : cons_factor;
+
+	// The number of decimals to show depends on the visualization mode
+	int dec = is_electricity_view ? 3 : 0;
+
 	if (EnergyInterface::isCurrencyView())
 	{
 		day = EnergyConversions::convertToMoney(day, factor);
@@ -759,10 +763,8 @@ void EnergyView::updateBanners()
 		average = EnergyConversions::convertToMoney(average, factor);
 		str = currency_symbol;
 		str_med_inst = currency_symbol+"/h";
+		dec = 3;
 	}
-
-	// The number of decimals to show depends on the visualization mode
-	int dec = EnergyInterface::isCurrencyView() ? n_decimal : 3;
 
 	cumulative_day_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(day, 'f', dec)).arg(str));
