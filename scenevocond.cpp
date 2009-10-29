@@ -420,12 +420,6 @@ void device_condition::get_condition_value(QString& out)
 	out = tmp;
 }
 
-void device_condition::show()
-{
-	qDebug("device_condition::show()");
-	frame->show();
-}
-
 void device_condition::Draw()
 {
 	QString tmp;
@@ -450,7 +444,6 @@ void device_condition::Up()
 	set_current_value(val);
 	qDebug("val = %d", get_current_value());
 	Draw();
-	show();
 }
 
 void device_condition::Down()
@@ -460,7 +453,6 @@ void device_condition::Down()
 	val -= get_step();
 	set_current_value(val);
 	Draw();
-	show();
 }
 
 void device_condition::OK()
@@ -522,16 +514,6 @@ void device_condition::setup_device(QString s)
 
 void device_condition::status_changed(const StatusList &sl)
 {
-}
-
-void device_condition::set_pul(bool p)
-{
-	dev->set_pul(p);
-}
-
-void device_condition::set_group(int g)
-{
-	dev->set_group(g);
 }
 
 
@@ -741,7 +723,6 @@ void device_condition_dimming::Up()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming::Down()
@@ -766,7 +747,6 @@ void device_condition_dimming::Down()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming::Draw()
@@ -1049,7 +1029,6 @@ void device_condition_dimming_100::Up()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming_100::Down()
@@ -1078,7 +1057,6 @@ void device_condition_dimming_100::Down()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming_100::Draw()
@@ -1427,7 +1405,6 @@ void device_condition_volume::Up()
 	set_current_value_min(v_m);
 	set_current_value_max(v_M);
 	Draw();
-	show();
 }
 
 void device_condition_volume::Down()
@@ -1465,7 +1442,6 @@ void device_condition_volume::Down()
 	set_current_value_min(v_m);
 	set_current_value_max(v_M);
 	Draw();
-	show();
 }
 
 void device_condition_volume::OK()

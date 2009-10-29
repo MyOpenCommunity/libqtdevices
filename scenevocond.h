@@ -215,8 +215,7 @@ protected:
 	virtual int get_condition_value();
 	//! Gets condition's meas unit
 	virtual QString get_unit();
-	//! Shows condition
-	void show();
+
 	//! Sets geometry
 	void setGeometry(int, int, int ,int);
 	//! Draws frame
@@ -231,10 +230,7 @@ protected:
 	virtual void reset();
 	//! Setup the device
 	virtual void setup_device(QString);
-	//! Set device pul
-	void set_pul(bool);
-	//! Set device group
-	void set_group(int);
+
 	//! Returns true when actual condition is satisfied
 	bool isTrue();
 
