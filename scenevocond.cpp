@@ -16,6 +16,7 @@
 #include <QDebug>
 #include <QLabel>
 
+#define BOTTOM_BORDER 10
 
 // TODO: create a global locale object
 namespace
@@ -107,30 +108,34 @@ scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node, bool has_next) :
 	timer.setSingleShot(true);
 	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
 
+	const int BUT_DIM = 60;
 	// Top icon
 	QLabel *image = new QLabel(this);
 	image->setPixmap(bt_global::skin->getImage("watch"));
-	image->setGeometry(90,0,60,60);
+	image->setGeometry(width()/2 - BUT_DIM/2, 0, BUT_DIM, BUT_DIM);
 
 	QString h = getTextChild(config_node, "hour");
 	QString m = getTextChild(config_node, "minute");
 	time_edit.setMaxHours(24);
 	time_edit.setMaxMinutes(60);
-	time_edit.setGeometry(50, 80, 140, 170);
+	const int TIME_EDIT_W = width() / 2;
+	// +10 below is for compatibility reasons
+	const int TIME_EDIT_H = height() / 2 + 10;
+	time_edit.setGeometry(width()/2 - TIME_EDIT_W/2, height()/2 - TIME_EDIT_H/2, TIME_EDIT_W, TIME_EDIT_H);
 	time_edit.setTime(QTime(h.toInt(), m.toInt(), 0));
 
 	bottom_left = new BtButton(this);
-	bottom_left->setGeometry(0, height() - 70, 60, 60);
+	bottom_left->setGeometry(0, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
 	bottom_left->setImage(bt_global::skin->getImage("ok"));
 	connect(bottom_left, SIGNAL(released()), SLOT(OK()));
 
 	bottom_right = new BtButton(this);
-	bottom_right->setGeometry(width() - 60, height() - 70, 60, 60);
+	bottom_right->setGeometry(width() - BUT_DIM, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
 
 	if (has_next)
 	{
 		bottom_center = new BtButton(this);
-		bottom_center->setGeometry(width()/2 - 30, height() - 70, 60, 60);
+		bottom_center->setGeometry(width()/2 - BUT_DIM/2, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
 		bottom_center->setImage(bt_global::skin->getImage("back"));
 		connect(bottom_center, SIGNAL(released()),SLOT(Prev()));
 
@@ -222,7 +227,7 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
 
 	QLabel *area2_ptr = new QLabel(this);
-	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, TEXT_X_DIM, TEXT_Y_DIM);
+	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, width() - BUTTON_DIM, TEXT_Y_DIM);
 	area2_ptr->setFont(bt_global::font->get(FontManager::TEXT));
 	area2_ptr->setAlignment(Qt::AlignCenter);
 	area2_ptr->setText(getTextChild(config_node, "descr"));
@@ -240,16 +245,15 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 
 	// create bottom (navigation) buttons
 	BtButton *b = new BtButton(this);
-	b->setGeometry(0, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	b->setGeometry(0, height() - (BUTTON_DIM + BOTTOM_BORDER), BUTTON_DIM, BUTTON_DIM);
 	b->setImage(bt_global::skin->getImage("ok"));
 	connect(b, SIGNAL(clicked()), SLOT(OK()));
 
 	b = new BtButton(this);
-	b->setGeometry(width() - BUTTON_DIM, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
+	b->setGeometry(width() - BUTTON_DIM, height() - (BUTTON_DIM + BOTTOM_BORDER), BUTTON_DIM, BUTTON_DIM);
 	b->setImage(bt_global::skin->getImage("back"));
 	connect(b, SIGNAL(clicked()), SLOT(Prev()));
 
-	// to avoid changing too much code at the same time...
 	QString trigger = getTextChild(config_node, "trigger");
 	// Create actual device condition
 	device_condition *dc;

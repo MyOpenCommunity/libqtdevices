@@ -160,8 +160,6 @@ public slots:
 private:
 	//! Button width/height
 	static const int BUTTON_DIM = 60;
-	//! Text area width
-	static const int TEXT_X_DIM = 180;
 	//! Text area height
 	static const int TEXT_Y_DIM = 20;
 
