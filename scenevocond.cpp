@@ -8,6 +8,7 @@
 #include "scaleconversion.h"
 #include "main.h" // bt_global::config
 #include "skinmanager.h"
+#include "xml_functions.h" //getTextChild
 
 #include "lighting_device.h"
 
@@ -262,11 +263,23 @@ bool scenEvo_cond_h::isTrue()
 ** Advanced scenario management, device condition
 ****************************************************************/
 
-scenEvo_cond_d::scenEvo_cond_d()
+scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 {
 	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
 	// to avoid changing too much code at the same time...
 	trigger = new QString("");
+
+	// area #1
+	area1_ptr = new QLabel(this);
+	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
+	// TODO: load pixmap when device condition type is known
+
+	QLabel *area2_ptr = new QLabel(this);
+	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, TEXT_X_DIM, TEXT_Y_DIM);
+	area2_ptr->setFont(bt_global::font->get(FontManager::TEXT));
+	area2_ptr->setAlignment(Qt::AlignCenter);
+	area2_ptr->setText(getTextChild(config_node, "descr"));
+
 	memset(but, 0, sizeof(but));
 	qDebug("scenEvo_cond_d::scenEvo_cond_d(), end");
 }
@@ -304,7 +317,7 @@ void scenEvo_cond_d::showPage()
 	scenEvo_cond::showPage();
 	qDebug("scenEvo_cond_d::showPage()");
 
-	area2_ptr->setText(descr);
+
 }
 
 void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
@@ -329,12 +342,7 @@ void scenEvo_cond_d::SetIcons()
 	for (int i=0; i<6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
 
-	area1_ptr = new QLabel(this);
-	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
-	area2_ptr = new QLabel(this);
-	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2,	TEXT_X_DIM, TEXT_Y_DIM);
-	area2_ptr->setFont(bt_global::font->get(FontManager::TEXT));
-	area2_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+
 	BtButton *b = new BtButton(this);
 	but[A3_BUTTON_INDEX] = b;
 	b->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
@@ -351,11 +359,7 @@ void scenEvo_cond_d::SetIcons()
 	but[A6_BUTTON_INDEX] = b;
 	b->setGeometry(width() - BUTTON_DIM, height() - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
 	connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
-	// area #1
-	if (QFile::exists(getImg(A1_ICON_INDEX)))
-		Icon1->load(getImg(A1_ICON_INDEX));
-	area1_ptr->setPixmap(*Icon1);
-	delete Icon1;
+
 	// area #3
 	SetButtonIcon(A3_ICON_INDEX, A3_BUTTON_INDEX);
 	// area #4

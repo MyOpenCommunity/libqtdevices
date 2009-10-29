@@ -163,7 +163,7 @@ class scenEvo_cond_d : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_d();
+	scenEvo_cond_d(const QDomNode &config_node);
 	/*!
 		\brief Set description
 		\param d new description
@@ -255,8 +255,6 @@ private:
 	BtButton *but[7];
 	//! Pointer to area1 label
 	QLabel *area1_ptr;
-	//! Pointer to area2 label
-	QLabel *area2_ptr;
 	//! Specific device condition
 	device_condition *actual_condition;
 	//! Set button icons
