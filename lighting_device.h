@@ -4,24 +4,6 @@
 #include "device.h"
 
 
-/*
- * Wrapper around 3 integers for hours, minutes and seconds.
- *
- * Used for variable timing events. We can't use a QTime because variable timing have different limits:
- * 255 hours, 60 mins, 60 secs.
- */
-struct BasicTime
-{
-	BasicTime() { }
-	BasicTime(int hh, int mm, int ss) { h = hh; m = mm; s = ss; }
-	bool operator==(const BasicTime t1) const { return h == t1.h && m == t1.m && s == t1.s; }
-	int h, m, s;
-};
-
-// Type returned in StatusList for DIM_VARIABLE_TIMING
-Q_DECLARE_METATYPE(BasicTime);
-
-
 class LightingDevice : public PullDevice
 {
 friend class TestLightingDevice;

@@ -12,8 +12,10 @@
 #ifndef BTTIME_H
 #define BTTIME_H
 
-#include <QDateTime>
 #include <QString>
+#include <QVariant>
+
+class QTime;
 
 class BtTimeSeconds
 {
@@ -108,6 +110,8 @@ private:
 	int _hour, _minute, _second;
 	int max_hours, max_minutes, max_seconds;
 };
+
+Q_DECLARE_METATYPE(BtTimeSeconds);
 
 
 class BtTime : private BtTimeSeconds

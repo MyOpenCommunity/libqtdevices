@@ -12,6 +12,8 @@
 
 #include "bttime.h"
 
+#include <QDateTime>
+
 // BtTimeSeconds implementation
 
 BtTimeSeconds::BtTimeSeconds()
