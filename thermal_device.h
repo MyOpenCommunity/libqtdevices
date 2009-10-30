@@ -129,6 +129,7 @@ protected:
 protected:
 	ThermalDevice(QString where);
 
+	void sendWriteRequest(const QString &what);
 	virtual void manageFrame(OpenMsg &msg);
 
 private:

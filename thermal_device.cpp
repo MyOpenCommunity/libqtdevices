@@ -1,7 +1,7 @@
 #include "thermal_device.h"
 #include "openmsg.h"
 #include "bttime.h"
-
+#include "generic_functions.h" // createWriteRequestOpen
 
 // ThermalDevice implementation
 
@@ -12,28 +12,29 @@ ThermalDevice::ThermalDevice(QString where)
 {
 }
 
+void ThermalDevice::sendWriteRequest(const QString &what)
+{
+	sendFrame(createWriteRequestOpen(who, what, where));
+}
+
 void ThermalDevice::setOff()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_OFF)).arg(where);
-	sendFrame(msg);
+	sendCommand(QString::number(GENERIC_OFF));
 }
 
 void ThermalDevice::setProtection()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_PROTECTION)).arg(where);
-	sendFrame(msg);
+	sendCommand(QString::number(GENERIC_PROTECTION));
 }
 
 void ThermalDevice::setSummer()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(SUMMER)).arg(where);
-	sendFrame(msg);
+	sendCommand(QString::number(SUMMER));
 }
 
 void ThermalDevice::setWinter()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(WINTER)).arg(where);
-	sendFrame(msg);
+	sendCommand(QString::number(WINTER));
 }
 
 void ThermalDevice::setManualTemp(unsigned temperature)
@@ -49,17 +50,14 @@ void ThermalDevice::setManualTemp(unsigned temperature)
 	QString what;
 	// temperature is 4 digits wide
 	// prepend some 0 if temperature is positive
-	what.sprintf("#%d*%04d*%d", TEMPERATURE_SET, temperature, GENERIC_MODE);
+	what.sprintf("%d*%04d*%d", TEMPERATURE_SET, temperature, GENERIC_MODE);
 
-	QString msg = QString("*#") + who + "*" + where + "*" + what + "##";
-	sendFrame(msg);
+	sendWriteRequest(what);
 }
 
 void ThermalDevice::setWeekProgram(int program)
 {
-	const QString what = QString::number(WEEK_PROGRAM + program);
-	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
-	sendFrame(msg);
+	sendCommand(QString::number(WEEK_PROGRAM + program));
 }
 
 void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
@@ -70,11 +68,7 @@ void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
 	// - frame at par. 2.3.17 to set time
 	//
 	// First frame: set program
-	const int what_program = WEEK_PROGRAM + program;
-	QString what = QString::number(GENERIC_WEEKEND) + "#" + QString::number(what_program);
-
-	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
-	sendFrame(msg);
+	sendCommand(QString::number(GENERIC_WEEKEND) + "#" + QString::number(WEEK_PROGRAM + program));
 
 	// Second frame: set date
 	setHolidayEndDate(date);
@@ -93,11 +87,7 @@ void ThermalDevice::setHolidayDateTime(QDate date, BtTime time, int program)
 	//
 	// First frame: set program
 	const int number_of_days = 2;
-	QString what;
-	what.sprintf("%d#%d", HOLIDAY_NUM_DAYS + number_of_days, WEEK_PROGRAM + program);
-
-	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
-	sendFrame(msg);
+	sendCommand(QString("%1#%2").arg(HOLIDAY_NUM_DAYS + number_of_days).arg(WEEK_PROGRAM + program));
 
 	// Second frame: set date
 	setHolidayEndDate(date);
@@ -110,20 +100,18 @@ void ThermalDevice::setHolidayEndDate(QDate date)
 {
 	QString what;
 	// day and month must be padded with 0 if they have only one digit
-	what.sprintf("#%d*%02d*%02d*%d", HOLIDAY_DATE_END, date.day(), date.month(), date.year());
+	what.sprintf("%d*%02d*%02d*%d", HOLIDAY_DATE_END, date.day(), date.month(), date.year());
 
-	QString msg = QString("*#") + who + "*" + where + "*" + what + "##";
-	sendFrame(msg);
+	sendWriteRequest(what);
 }
 
 void ThermalDevice::setHolidayEndTime(BtTime time)
 {
 	QString what;
 	// hours and minutes must be padded with 0 if they have only one digit
-	what.sprintf("#%d*%02d*%02d", HOLIDAY_TIME_END, time.hour(), time.minute());
+	what.sprintf("%d*%02d*%02d", HOLIDAY_TIME_END, time.hour(), time.minute());
 
-	QString msg = QString("*#") + who + "*" + where + "*" + what + "##";
-	sendFrame(msg);
+	sendWriteRequest(what);
 }
 
 unsigned ThermalDevice::minimumTemp() const
@@ -277,19 +265,16 @@ void ThermalDevice4Zones::setManualTempTimed(int temperature, BtTime time)
 	// than 24 hours.
 	//
 	// First frame: set temperature
-	const char* number_of_hours = "2";
 	QString what;
-	what.sprintf("%d#%04d#%s", GENERIC_MANUAL_TIMED, temperature, number_of_hours);
+	what.sprintf("%d#%04d#2", GENERIC_MANUAL_TIMED, temperature);
 
-	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
-	sendFrame(msg);
+	sendCommand(what);
 
 	// Second frame: set end time
 	QString what2;
-	what2.sprintf("#%d*%02d*%02d", MANUAL_TIMED_END, time.hour(), time.minute());
+	what2.sprintf("%d*%02d*%02d", MANUAL_TIMED_END, time.hour(), time.minute());
 
-	msg = QString("*#") + who + "*" + where + "*" + what2 + "##";
-	sendFrame(msg);
+	sendWriteRequest(what2);
 }
 
 unsigned ThermalDevice4Zones::maximumTemp() const
@@ -312,9 +297,7 @@ ThermalDevice99Zones::ThermalDevice99Zones(QString where)
 
 void ThermalDevice99Zones::setScenario(int scenario)
 {
-	const QString what = QString::number(SCENARIO_PROGRAM + scenario);
-	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
-	sendFrame(msg);
+	sendCommand(QString::number(SCENARIO_PROGRAM + scenario));
 }
 
 unsigned ThermalDevice99Zones::maximumTemp() const
