@@ -102,7 +102,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		{
 			if (i == 0 || i == 2)
 			{
-				int value = i == 0 ? max_value : max_value / 2;
+				float value = i == 0 ? max_value : max_value / 2;
 				QString text = loc.toString(value + 0.04999, 'f', 1);
 				p.drawText(left, y_max_value + quarter*i + fm.ascent() / 2, text);
 			}
