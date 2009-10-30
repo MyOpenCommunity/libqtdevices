@@ -153,6 +153,7 @@ HEADERS += actuators.h \
            stopngo.h \
            supervisionmenu.h \
            temperatureviewer.h \
+           thermal_device.h \
            thermalmenu.h \
            timescript.h \
            titlelabel.h \
@@ -259,6 +260,7 @@ SOURCES += actuators.cpp \
            stopngo.cpp \
            supervisionmenu.cpp \
            temperatureviewer.cpp \
+           thermal_device.cpp \
            thermalmenu.cpp \
            timescript.cpp \
            titlelabel.cpp \
