@@ -31,6 +31,7 @@ HEADERS += device_tester.h \
            test_lighting_device.h \
            test_poweramplifier_device.h \
            test_pull_manager.h \
+           test_thermal_device.h \
            openserver_mock.h \
            ../energy_device.h \
            ../lighting_device.h \
@@ -38,6 +39,7 @@ HEADERS += device_tester.h \
            ../landevice.h \
            ../automation_device.h \
            ../scenario_device.h \
+           ../thermal_device.h \
            ../device.h \
            ../device_status.h \
            ../frame_interpreter.h \
@@ -60,6 +62,7 @@ SOURCES += test_main.cpp \
            test_lighting_device.cpp \
            test_poweramplifier_device.cpp \
            test_pull_manager.cpp \
+           test_thermal_device.cpp \
            openserver_mock.cpp \
            ../energy_device.cpp \
            ../lighting_device.cpp \
@@ -67,6 +70,7 @@ SOURCES += test_main.cpp \
            ../landevice.cpp \
            ../automation_device.cpp \
            ../scenario_device.cpp \
+           ../thermal_device.cpp \
            ../device.cpp \
            ../device_status.cpp \
            ../frame_interpreter.cpp \

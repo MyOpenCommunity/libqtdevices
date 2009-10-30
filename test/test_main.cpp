@@ -9,6 +9,7 @@
 #include "test_automation_device.h"
 #include "test_checkaddress.h"
 #include "test_scenario_device.h"
+#include "test_thermal_device.h"
 #include "test_pull_manager.h"
 
 
@@ -56,6 +57,12 @@ int main(int argc, char *argv[])
 
 	TestScenarioDevice test_scenario_device;
 	test_list << &test_scenario_device;
+
+	TestThermalDevice4Zones test_thermal_regulator_4zones_device;
+	test_list << &test_thermal_regulator_4zones_device;
+
+	TestThermalDevice99Zones test_thermal_regulator_99zones_device;
+	test_list << &test_thermal_regulator_99zones_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
