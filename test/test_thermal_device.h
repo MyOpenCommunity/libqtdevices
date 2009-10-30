@@ -3,7 +3,8 @@
 
 #include "test_device.h"
 
-const QString THERMAL_DEVICE_WHERE = "0313";
+const QString THERMAL_DEVICE_4Z_WHERE = "1#2";
+const QString THERMAL_DEVICE_99Z_WHERE = "0";
 
 class QDate;
 class BtTime;

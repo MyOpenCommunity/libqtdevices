@@ -263,7 +263,7 @@ void TestThermalDevice::checkStatusSeasonTemperature(int what, int status, int s
 
 void TestThermalDevice4Zones::initTestCase()
 {
-	dev = new ThermalDevice4Zones(THERMAL_DEVICE_WHERE);
+	dev = new ThermalDevice4Zones(THERMAL_DEVICE_4Z_WHERE);
 	setTestDevice(dev);
 }
 
@@ -294,7 +294,7 @@ void TestThermalDevice4Zones::sendSetManualTempTimed()
 
 void TestThermalDevice99Zones::initTestCase()
 {
-	dev = new ThermalDevice99Zones(THERMAL_DEVICE_WHERE);
+	dev = new ThermalDevice99Zones(THERMAL_DEVICE_99Z_WHERE);
 	setTestDevice(dev);
 }
 
