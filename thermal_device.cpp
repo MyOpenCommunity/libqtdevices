@@ -4,8 +4,10 @@
 
 // ThermalDevice implementation
 
+const QString ThermalDevice::WHO = "4";
+
 ThermalDevice::ThermalDevice(QString where, bool p, int g)
-	: device(QString("4"), where, p, g)
+	: device(QString(WHO), where, p, g)
 {
 }
 

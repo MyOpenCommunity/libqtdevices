@@ -91,6 +91,9 @@ public:
 		HOLIDAY_NUM_DAYS = 33000,        // command to set the number of days of holiday mode (generic mode)
 						 // remember to add the number of days to this number
 	};
+
+	static const QString WHO;
+
 protected:
 	ThermalDevice(QString where, bool p=false, int g=-1);
 private:

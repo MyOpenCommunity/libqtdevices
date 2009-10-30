@@ -20,7 +20,7 @@ void TestThermalDevice::sendSetOff()
 {
 	dev->setOff();
 	client_command->flush();
-	QString cmd = QString("*4*303*") + "#" + THERMAL_DEVICE_WHERE + "##";
+	QString cmd = "*" + ThermalDevice::WHO + "*303*#" + THERMAL_DEVICE_WHERE + "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
