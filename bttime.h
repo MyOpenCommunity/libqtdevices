@@ -113,6 +113,16 @@ private:
 
 Q_DECLARE_METATYPE(BtTimeSeconds);
 
+inline bool operator ==(const BtTimeSeconds &f, const BtTimeSeconds &s)
+{
+	return f.hour() == s.hour() && f.minute() == s.minute() && f.second() == s.second();
+}
+
+inline bool operator !=(const BtTimeSeconds &f, const BtTimeSeconds &s)
+{
+	return !(f == s);
+}
+
 
 class BtTime : private BtTimeSeconds
 {
@@ -165,5 +175,14 @@ public:
 	using BtTimeSeconds::setMaxMinutes;
 };
 
+inline bool operator ==(const BtTime &f, const BtTime &s)
+{
+	return f.hour() == s.hour() && f.minute() == s.minute();
+}
+
+inline bool operator !=(const BtTime &f, const BtTime &s)
+{
+	return !(f == s);
+}
 
 #endif //BTTIME_H
