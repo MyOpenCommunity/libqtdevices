@@ -133,6 +133,9 @@ unsigned ThermalDevice::minimumTemp() const
 
 void ThermalDevice::manageFrame(OpenMsg &msg)
 {
+	if (where.toStdString() != msg.whereFull())
+		return;
+
 	int what = msg.what();
 	int command = commandRange(what);
 	int program = what - command;
