@@ -8,31 +8,31 @@
 const QString ThermalDevice::WHO = "4";
 
 ThermalDevice::ThermalDevice(QString where)
-	: device(QString(WHO), where, false, -1)
+	: device(QString(WHO), QString("#") + where, false, -1)
 {
 }
 
 void ThermalDevice::setOff()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_OFF)).arg(QString("#") + where);
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_OFF)).arg(where);
 	sendFrame(msg);
 }
 
 void ThermalDevice::setProtection()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_PROTECTION)).arg(QString("#") + where);
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_PROTECTION)).arg(where);
 	sendFrame(msg);
 }
 
 void ThermalDevice::setSummer()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(SUMMER)).arg(QString("#") + where);
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(SUMMER)).arg(where);
 	sendFrame(msg);
 }
 
 void ThermalDevice::setWinter()
 {
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(WINTER)).arg(QString("#") + where);
+	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(WINTER)).arg(where);
 	sendFrame(msg);
 }
 
@@ -46,28 +46,24 @@ void ThermalDevice::setManualTemp(unsigned temperature)
 			return;
 	}
 
-	const QString sharp_where = QString("#") + where;
 	QString what;
 	// temperature is 4 digits wide
 	// prepend some 0 if temperature is positive
 	what.sprintf("#%d*%04d*%d", TEMPERATURE_SET, temperature, GENERIC_MODE);
 
-	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
+	QString msg = QString("*#") + who + "*" + where + "*" + what + "##";
 	sendFrame(msg);
 }
 
 void ThermalDevice::setWeekProgram(int program)
 {
 	const QString what = QString::number(WEEK_PROGRAM + program);
-	const QString sharp_where = QString("#") + where;
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
 	sendFrame(msg);
 }
 
 void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
 {
-	const QString sharp_where = QString("#") + where;
-
 	// we need to send 3 frames
 	// - frame at par. 2.3.9, to set what program has to be executed at the end of weekend mode
 	// - frame at par. 2.3.16 to set date
@@ -77,7 +73,7 @@ void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
 	const int what_program = WEEK_PROGRAM + program;
 	QString what = QString::number(GENERIC_WEEKEND) + "#" + QString::number(what_program);
 
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
 	sendFrame(msg);
 
 	// Second frame: set date
@@ -89,8 +85,6 @@ void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
 
 void ThermalDevice::setHolidayDateTime(QDate date, BtTime time, int program)
 {
-	const QString sharp_where = QString("#") + where;
-
 	// we need to send 3 frames, as written in bug #44
 	// - frame at par. 2.3.10, with number_of_days = 2 (dummy number, we set end date and time explicitly with
 	// next frames), to set what program has to be executed at the end of holiday mode
@@ -102,7 +96,7 @@ void ThermalDevice::setHolidayDateTime(QDate date, BtTime time, int program)
 	QString what;
 	what.sprintf("%d#%d", HOLIDAY_NUM_DAYS + number_of_days, WEEK_PROGRAM + program);
 
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
 	sendFrame(msg);
 
 	// Second frame: set date
@@ -114,25 +108,21 @@ void ThermalDevice::setHolidayDateTime(QDate date, BtTime time, int program)
 
 void ThermalDevice::setHolidayEndDate(QDate date)
 {
-	const QString sharp_where = QString("#") + where;
-
 	QString what;
 	// day and month must be padded with 0 if they have only one digit
 	what.sprintf("#%d*%02d*%02d*%d", HOLIDAY_DATE_END, date.day(), date.month(), date.year());
 
-	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
+	QString msg = QString("*#") + who + "*" + where + "*" + what + "##";
 	sendFrame(msg);
 }
 
 void ThermalDevice::setHolidayEndTime(BtTime time)
 {
-	const QString sharp_where = QString("#") + where;
-
 	QString what;
 	// hours and minutes must be padded with 0 if they have only one digit
 	what.sprintf("#%d*%02d*%02d", HOLIDAY_TIME_END, time.hour(), time.minute());
 
-	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
+	QString msg = QString("*#") + who + "*" + where + "*" + what + "##";
 	sendFrame(msg);
 }
 
@@ -277,8 +267,6 @@ ThermalDevice4Zones::ThermalDevice4Zones(QString where)
 
 void ThermalDevice4Zones::setManualTempTimed(int temperature, BtTime time)
 {
-	const QString sharp_where = QString("#") + where;
-
 	// we need to send 2 frames
 	// - frame at par. 2.3.13, with number_of_hours = 2 (dummy number, we set end time explicitly with
 	// next frame), to set the temperature of timed manual operation
@@ -290,14 +278,14 @@ void ThermalDevice4Zones::setManualTempTimed(int temperature, BtTime time)
 	QString what;
 	what.sprintf("%d#%04d#%s", GENERIC_MANUAL_TIMED, temperature, number_of_hours);
 
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
 	sendFrame(msg);
 
 	// Second frame: set end time
 	QString what2;
 	what2.sprintf("#%d*%02d*%02d", MANUAL_TIMED_END, time.hour(), time.minute());
 
-	msg = QString("*#") + who + "*" + sharp_where + "*" + what2 + "##";
+	msg = QString("*#") + who + "*" + where + "*" + what2 + "##";
 	sendFrame(msg);
 }
 
@@ -322,8 +310,7 @@ ThermalDevice99Zones::ThermalDevice99Zones(QString where)
 void ThermalDevice99Zones::setScenario(int scenario)
 {
 	const QString what = QString::number(SCENARIO_PROGRAM + scenario);
-	const QString sharp_where = QString("#") + where;
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
+	QString msg = QString("*") + who + "*" + what + "*" + where + "##";
 	sendFrame(msg);
 }
 

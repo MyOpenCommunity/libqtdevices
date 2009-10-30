@@ -24,7 +24,7 @@ void TestThermalDevice::sendSetOff()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*303" +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
@@ -35,7 +35,7 @@ void TestThermalDevice::sendSetSummer()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*0" +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
@@ -46,7 +46,7 @@ void TestThermalDevice::sendSetWinter()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*1" +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
@@ -57,7 +57,7 @@ void TestThermalDevice::sendSetProtection()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*302" +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
@@ -68,7 +68,7 @@ void TestThermalDevice::sendSetHolidayDateTime()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*33002#3115" +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd + holidayDateFrame(QDate(2009, 2, 13)) + holidayTimeFrame(BtTime(23, 31)));
 }
@@ -79,7 +79,7 @@ void TestThermalDevice::sendSetWeekendDateTime()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*315#3112" +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd + holidayDateFrame(QDate(2010, 1, 1)) + holidayTimeFrame(BtTime(4, 4)));
 }
@@ -90,7 +90,7 @@ void TestThermalDevice::sendSetWeekProgram()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*3113" +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
@@ -100,7 +100,7 @@ void TestThermalDevice::sendSetManualTemp()
 	dev->setManualTemp(250);
 	client_command->flush();
 	QString cmd = "*#" + dev->who +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      QString("*#14*%1*3").arg(250, 4, 10, ZERO_FILL) +
 		      "##";
 	QCOMPARE(server->frameCommand(), cmd);
@@ -109,7 +109,7 @@ void TestThermalDevice::sendSetManualTemp()
 QString TestThermalDevice::holidayDateFrame(const QDate &date)
 {
 	QString cmd = "*#" + dev->who +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      QString("*#30*%1*%2*%3").arg(date.day(), 2, 10, ZERO_FILL)
 					      .arg(date.month(), 2, 10, ZERO_FILL)
 					      .arg(date.year(), 4, 10, ZERO_FILL) +
@@ -120,7 +120,7 @@ QString TestThermalDevice::holidayDateFrame(const QDate &date)
 QString TestThermalDevice::holidayTimeFrame(const BtTime &time)
 {
 	QString cmd = "*#" + dev->who +
-		      "*#" + dev->where +
+		      "*" + dev->where +
 		      QString("*#31*%1*%2").arg(time.hour(), 2, 10, ZERO_FILL)
 					   .arg(time.minute(), 2, 10, ZERO_FILL) +
 		      "##";
@@ -280,10 +280,10 @@ void TestThermalDevice4Zones::sendSetManualTempTimed()
 	client_command->flush();
 	QString cmd1 = "*" + dev->who +
 		       QString("*312#%1#2").arg(20, 4, 10, ZERO_FILL) +
-		       "*#" + dev->where +
+		       "*" + dev->where +
 		       "##";
 	QString cmd2 = "*#" + dev->who +
-		       "*#" + dev->where +
+		       "*" + dev->where +
 		       QString("*#32*%1*%2").arg(13, 2, 10, ZERO_FILL).arg(5, 2, 10, ZERO_FILL) +
 		       "##";
 	QCOMPARE(server->frameCommand(), cmd1 + cmd2);
@@ -311,6 +311,6 @@ void TestThermalDevice99Zones::sendSetScenario()
 	client_command->flush();
 	QString cmd = "*" + dev->who +
 		      "*" + QString::number(3200 + 12) +
-		      "*#" + dev->where + "##";
+		      "*" + dev->where + "##";
 	QCOMPARE(server->frameCommand(), cmd);
 }
