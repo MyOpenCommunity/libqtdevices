@@ -9,6 +9,8 @@ class BtTime;
 class ThermalDevice : public device
 {
 friend class TestThermalDevice;
+friend class TestThermalDevice4Zones;
+friend class TestThermalDevice99Zones;
 Q_OBJECT
 public:
 
