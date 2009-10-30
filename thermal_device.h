@@ -95,7 +95,7 @@ public:
 	static const QString WHO;
 
 protected:
-	ThermalDevice(QString where, bool p=false, int g=-1);
+	ThermalDevice(QString where);
 private:
 	/**
 	 * Utility function to set end date for both holiday and weekend mode
@@ -115,7 +115,7 @@ class ThermalDevice4Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
-	ThermalDevice4Zones(QString where, bool p=false, int g=-1);
+	ThermalDevice4Zones(QString where);
 
 	/**
 	 * Sets the temperature for a limited time.
@@ -133,7 +133,7 @@ class ThermalDevice99Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
-	ThermalDevice99Zones(QString where, bool p=false, int g=-1);
+	ThermalDevice99Zones(QString where);
 
 	/**
 	 * Sets the scenario on the thermal regulator.

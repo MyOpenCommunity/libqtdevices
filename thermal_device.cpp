@@ -6,8 +6,8 @@
 
 const QString ThermalDevice::WHO = "4";
 
-ThermalDevice::ThermalDevice(QString where, bool p, int g)
-	: device(QString(WHO), where, p, g)
+ThermalDevice::ThermalDevice(QString where)
+	: device(QString(WHO), where, false, -1)
 {
 }
 
@@ -143,8 +143,8 @@ unsigned ThermalDevice::minimumTemp() const
 
 // ThermalDevice4Zones implementation
 
-ThermalDevice4Zones::ThermalDevice4Zones(QString where, bool p, int g)
-	: ThermalDevice(where, p, g)
+ThermalDevice4Zones::ThermalDevice4Zones(QString where)
+	: ThermalDevice(where)
 {
 	stat.append(new device_status_thermal_regulator_4z());
 	// setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
@@ -189,8 +189,8 @@ thermo_type_t ThermalDevice4Zones::type() const
 
 // ThermalDevice99Zones implementation
 
-ThermalDevice99Zones::ThermalDevice99Zones(QString where, bool p, int g)
-	: ThermalDevice(where, p, g)
+ThermalDevice99Zones::ThermalDevice99Zones(QString where)
+	: ThermalDevice(where)
 {
 	stat.append(new device_status_thermal_regulator_99z());
 	// setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
