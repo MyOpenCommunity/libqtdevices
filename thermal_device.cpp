@@ -1,4 +1,5 @@
 #include "thermal_device.h"
+#include "openmsg.h"
 #include "bttime.h"
 
 
@@ -140,14 +141,138 @@ unsigned ThermalDevice::minimumTemp() const
 	return 30;
 }
 
+void ThermalDevice::manageFrame(OpenMsg &msg)
+{
+	int what = msg.what();
+	int command = commandRange(what);
+	int program = what - command;
+	StatusList sl;
+
+	switch (command)
+	{
+	case 21: // remote control enabled
+	case 30: // malfunctioning found
+	case 31: // battery ko
+		break;
+
+	case SUM_PROTECTION:
+		sl[DIM_STATUS] = QVariant(ST_PROTECTION);
+		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		break;
+
+	case SUM_OFF:
+		sl[DIM_STATUS] = QVariant(ST_OFF);
+		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		break;
+
+	case SUM_MANUAL:
+	case SUM_MANUAL_TIMED:
+		{
+			unsigned arg_count = msg.whatArgCnt();
+			if (arg_count < 1)
+			{
+				qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
+			}
+			int sp = msg.whatArgN(0);
+			sl[DIM_TEMPERATURE] = QVariant(sp);
+		}
+		sl[DIM_STATUS] = QVariant(command == SUM_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED);
+		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		break;
+
+	case SUM_WEEKEND:
+		sl[DIM_STATUS] = QVariant(ST_WEEKEND);
+		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		break;
+
+	case SUM_PROGRAM:
+		sl[DIM_PROGRAM] = QVariant(program);
+		sl[DIM_STATUS] = QVariant(ST_PROGRAM);
+		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		break;
+
+	case SUM_SCENARIO:
+		sl[DIM_SCENARIO] = QVariant(program);
+		sl[DIM_STATUS] = QVariant(ST_SCENARIO);
+		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		break;
+
+	case SUM_HOLIDAY:
+		sl[DIM_STATUS] = QVariant(ST_HOLIDAY);
+		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		break;
+
+	case WIN_PROTECTION:
+		sl[DIM_STATUS] = QVariant(ST_PROTECTION);
+		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		break;
+
+	case WIN_OFF:
+		sl[DIM_STATUS] = QVariant(ST_OFF);
+		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		break;
+
+	case WIN_MANUAL:
+	case WIN_MANUAL_TIMED:
+		{
+			unsigned arg_count = msg.whatArgCnt();
+			if (arg_count < 1)
+			{
+				qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
+			}
+			int sp = msg.whatArgN(0);
+			sl[DIM_TEMPERATURE] = QVariant(sp);
+		}
+		sl[DIM_STATUS] = QVariant(command == WIN_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED);
+		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		break;
+
+	case WIN_WEEKEND:
+		sl[DIM_STATUS] = QVariant(ST_WEEKEND);
+		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		break;
+
+	case WIN_PROGRAM:
+		sl[DIM_PROGRAM] = QVariant(program);
+		sl[DIM_STATUS] = QVariant(ST_PROGRAM);
+		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		break;
+
+	case WIN_SCENARIO:
+		sl[DIM_SCENARIO] = QVariant(program);
+		sl[DIM_STATUS] = QVariant(ST_SCENARIO);
+		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		break;
+
+	case WIN_HOLIDAY:
+		sl[DIM_STATUS] = QVariant(ST_HOLIDAY);
+		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		break;
+
+	default:
+		break;
+	}
+
+	if (sl.count() > 0)
+		emit status_changed(sl);
+}
+
+int ThermalDevice::commandRange(int what)
+{
+	if (what > 10000)
+		return (what/1000) * 1000;
+	else if (what > 1000)
+		return (what/100) * 100;
+	else
+		return what;
+}
+
 
 // ThermalDevice4Zones implementation
 
 ThermalDevice4Zones::ThermalDevice4Zones(QString where)
 	: ThermalDevice(where)
 {
-	stat.append(new device_status_thermal_regulator_4z());
-	// setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
 }
 
 void ThermalDevice4Zones::setManualTempTimed(int temperature, BtTime time)
@@ -192,8 +317,6 @@ thermo_type_t ThermalDevice4Zones::type() const
 ThermalDevice99Zones::ThermalDevice99Zones(QString where)
 	: ThermalDevice(where)
 {
-	stat.append(new device_status_thermal_regulator_99z());
-	// setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
 }
 
 void ThermalDevice99Zones::setScenario(int scenario)

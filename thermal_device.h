@@ -8,8 +8,37 @@ class BtTime;
 
 class ThermalDevice : public device
 {
+friend class TestThermalDevice;
 Q_OBJECT
 public:
+
+	enum Type
+	{
+		DIM_STATUS = 0, // see Status enum
+		DIM_SEASON = 1, // see Season enum
+		DIM_PROGRAM = 2, // program number
+		DIM_SCENARIO = 3, // scenario number
+		DIM_TEMPERATURE = 4 // temperature
+	};
+
+	enum Status
+	{
+		ST_OFF = 0,
+		ST_PROTECTION = 1,
+		ST_MANUAL = 2,
+		ST_MANUAL_TIMED = 3,
+		ST_WEEKEND = 4,
+		ST_PROGRAM = 5,
+		ST_SCENARIO = 6,
+		ST_HOLIDAY = 7
+	};
+
+	enum Season
+	{
+		SE_SUMMER = 0,
+		SE_WINTER = 1
+	};
+
 	void setOff();
 	void setSummer();
 	void setWinter();
@@ -49,6 +78,9 @@ public:
 	 */
 	virtual thermo_type_t type() const = 0;
 
+	static const QString WHO;
+
+protected:
 	enum what_t
 	{
 		SUMMER = 0,
@@ -92,10 +124,11 @@ public:
 						 // remember to add the number of days to this number
 	};
 
-	static const QString WHO;
-
 protected:
 	ThermalDevice(QString where);
+
+	virtual void manageFrame(OpenMsg &msg);
+
 private:
 	/**
 	 * Utility function to set end date for both holiday and weekend mode
@@ -108,7 +141,21 @@ private:
 	 * \param time The end time of the mode.
 	 */
 	void setHolidayEndTime(BtTime time);
+
+	/**
+	 * Utility function to check if `what' is a program or scenario command. This type of commands are in this form:
+	 * xynn (where x={1,2}, y={1,2,3}) where nn is the program or scenario command, or xynnn (where x={1,2}, y={1,2,3}) and
+	 * nnn are the number of days.
+	 * We need to take action based on xy00-type of command, this function returns the command in that form.
+	 *
+	 * \param what  The command to be checked
+	 * \return The command in xy00 form.
+	 */
+	int commandRange(int what);
 };
+
+Q_DECLARE_METATYPE(ThermalDevice::Season)
+Q_DECLARE_METATYPE(ThermalDevice::Status)
 
 
 class ThermalDevice4Zones : public ThermalDevice
