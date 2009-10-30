@@ -25,8 +25,31 @@ private slots:
 	void sendSetWeekProgram();
 	void sendSetManualTemp();
 
+	void receiveSummerProtection();
+	void receiveSummerOff();
+	void receiveSummerWeekend();
+	void receiveSummerHoliday();
+
+	void receiveWinterProtection();
+	void receiveWinterOff();
+	void receiveWinterWeekend();
+	void receiveWinterHoliday();
+
+	void receiveSummerManual();
+	void receiveSummerManualTimed();
+	void receiveSummerProgram();
+	void receiveSummerScenario();
+
+	void receiveWinterManual();
+	void receiveWinterManualTimed();
+	void receiveWinterProgram();
+	void receiveWinterScenario();
+
 protected:
 	void setTestDevice(ThermalDevice *d);
+	void checkStatusSeason(int what, int status, int season);
+	void checkStatusSeasonTemperature(int what, int status,
+					  int season, int temperature);
 
 private:
 	QString holidayDateFrame(const QDate &date);

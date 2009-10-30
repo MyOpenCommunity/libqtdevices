@@ -127,6 +127,137 @@ QString TestThermalDevice::holidayTimeFrame(const BtTime &time)
 	return cmd;
 }
 
+void TestThermalDevice::receiveSummerProtection()
+{
+	checkStatusSeason(202, ThermalDevice::ST_PROTECTION, ThermalDevice::SE_SUMMER);
+}
+
+void TestThermalDevice::receiveSummerOff()
+{
+	checkStatusSeason(203, ThermalDevice::ST_OFF, ThermalDevice::SE_SUMMER);
+}
+
+void TestThermalDevice::receiveSummerWeekend()
+{
+	checkStatusSeason(215, ThermalDevice::ST_WEEKEND, ThermalDevice::SE_SUMMER);
+}
+
+void TestThermalDevice::receiveSummerHoliday()
+{
+	checkStatusSeason(23000, ThermalDevice::ST_HOLIDAY, ThermalDevice::SE_SUMMER);
+}
+
+void TestThermalDevice::receiveWinterProtection()
+{
+	checkStatusSeason(102, ThermalDevice::ST_PROTECTION, ThermalDevice::SE_WINTER);
+}
+
+void TestThermalDevice::receiveWinterOff()
+{
+	checkStatusSeason(103, ThermalDevice::ST_OFF, ThermalDevice::SE_WINTER);
+}
+
+void TestThermalDevice::receiveWinterWeekend()
+{
+	checkStatusSeason(115, ThermalDevice::ST_WEEKEND, ThermalDevice::SE_WINTER);
+}
+
+void TestThermalDevice::receiveWinterHoliday()
+{
+	checkStatusSeason(13000, ThermalDevice::ST_HOLIDAY, ThermalDevice::SE_WINTER);
+}
+
+void TestThermalDevice::receiveSummerManual()
+{
+	checkStatusSeasonTemperature(210, ThermalDevice::ST_MANUAL, ThermalDevice::SE_SUMMER, 250);
+}
+
+void TestThermalDevice::receiveSummerManualTimed()
+{
+	checkStatusSeasonTemperature(212, ThermalDevice::ST_MANUAL_TIMED, ThermalDevice::SE_SUMMER, 260);
+}
+
+void TestThermalDevice::receiveSummerProgram()
+{
+	DeviceTester tst(dev, ThermalDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tse(dev, ThermalDevice::DIM_SEASON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tpr(dev, ThermalDevice::DIM_PROGRAM, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(2100 + 3);
+
+	tst.check<int>(frame, ThermalDevice::ST_PROGRAM);
+	tse.check<int>(frame, ThermalDevice::SE_SUMMER);
+	tpr.check(frame, 3);
+}
+
+void TestThermalDevice::receiveSummerScenario()
+{
+	DeviceTester tst(dev, ThermalDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tse(dev, ThermalDevice::DIM_SEASON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tpr(dev, ThermalDevice::DIM_SCENARIO, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(2200 + 9);
+
+	tst.check<int>(frame, ThermalDevice::ST_SCENARIO);
+	tse.check<int>(frame, ThermalDevice::SE_SUMMER);
+	tpr.check(frame, 9);
+}
+
+void TestThermalDevice::receiveWinterManual()
+{
+	checkStatusSeasonTemperature(110, ThermalDevice::ST_MANUAL, ThermalDevice::SE_WINTER, 250);
+}
+
+void TestThermalDevice::receiveWinterManualTimed()
+{
+	checkStatusSeasonTemperature(112, ThermalDevice::ST_MANUAL_TIMED, ThermalDevice::SE_WINTER, 260);
+}
+
+void TestThermalDevice::receiveWinterProgram()
+{
+	DeviceTester tst(dev, ThermalDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tse(dev, ThermalDevice::DIM_SEASON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tpr(dev, ThermalDevice::DIM_PROGRAM, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(1100 + 3);
+
+	tst.check<int>(frame, ThermalDevice::ST_PROGRAM);
+	tse.check<int>(frame, ThermalDevice::SE_WINTER);
+	tpr.check(frame, 3);
+}
+
+void TestThermalDevice::receiveWinterScenario()
+{
+	DeviceTester tst(dev, ThermalDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tse(dev, ThermalDevice::DIM_SEASON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tpr(dev, ThermalDevice::DIM_SCENARIO, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(1200 + 9);
+
+	tst.check<int>(frame, ThermalDevice::ST_SCENARIO);
+	tse.check<int>(frame, ThermalDevice::SE_WINTER);
+	tpr.check(frame, 9);
+}
+
+void TestThermalDevice::checkStatusSeason(int what, int status, int season)
+{
+	DeviceTester tst(dev, ThermalDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tse(dev, ThermalDevice::DIM_SEASON, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(what);
+
+	tst.check(frame, status);
+	tse.check(frame, season);
+}
+
+void TestThermalDevice::checkStatusSeasonTemperature(int what, int status, int season, int temperature)
+{
+	DeviceTester tst(dev, ThermalDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tse(dev, ThermalDevice::DIM_SEASON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tte(dev, ThermalDevice::DIM_TEMPERATURE, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*#4*%1*%2*%3##").arg(dev->where).arg(what).arg(temperature);
+
+	tst.check(frame, status);
+	tse.check(frame, season);
+	tte.check(frame, temperature);
+}
+
+
 
 // TestThermalDevice4Zones implementation]
 
