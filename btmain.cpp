@@ -92,6 +92,9 @@ BtMain::BtMain()
 
 	tasti = NULL;
 	pwdOn = false;
+
+	bt_global::skin = new SkinManager(SKIN_FILE);
+
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
 
@@ -224,7 +227,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 void BtMain::hom()
 {
 	version->inizializza();
-	bt_global::skin = new SkinManager(SKIN_FILE);
 
 	if (!loadConfiguration(CFG_FILE))
 		qFatal("Unable to load configuration");
