@@ -1,4 +1,5 @@
 #include "devices_cache.h"
+#include "thermal_device.h"
 
 #include <QWidget>
 #include <QDebug>
@@ -237,10 +238,10 @@ device *DevicesCache::get_thermal_regulator(QString where, thermo_type_t type)
 		switch(type)
 		{
 			case THERMO_Z4:
-				out = new thermal_regulator_4z(where);
+				out = new ThermalDevice4Zones(where);
 				break;
 			case THERMO_Z99:
-				out = new thermal_regulator_99z(where);
+				out = new ThermalDevice99Zones(where);
 				break;
 		}
 		qDebug("device is not there, creating device %p", out);
