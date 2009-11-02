@@ -87,6 +87,7 @@ HEADERS += actuators.h \
            bttime.h \
            buttons_bar.h \
            calibrate.h \
+           changedatetime.h \
            cleanscreen.h \
            content_widget.h \
            contrast.h \
@@ -111,7 +112,6 @@ HEADERS += actuators.h \
            hardware_functions.h \
            homepage.h \
            icondispatcher.h \
-           impostatime.h \
            keypad.h \
            landevice.h \
            lansettings.h \
@@ -153,6 +153,7 @@ HEADERS += actuators.h \
            stopngo.h \
            supervisionmenu.h \
            temperatureviewer.h \
+           thermal_device.h \
            thermalmenu.h \
            timescript.h \
            titlelabel.h \
@@ -193,6 +194,7 @@ SOURCES += actuators.cpp \
            bttime.cpp \
            buttons_bar.cpp \
            calibrate.cpp \
+           changedatetime.cpp \
            cleanscreen.cpp \
            content_widget.cpp \
            contrast.cpp \
@@ -217,7 +219,6 @@ SOURCES += actuators.cpp \
            genpage.cpp \
            homepage.cpp \
            icondispatcher.cpp \
-           impostatime.cpp \
            keypad.cpp \
            landevice.cpp \
            lansettings.cpp \
@@ -259,6 +260,7 @@ SOURCES += actuators.cpp \
            stopngo.cpp \
            supervisionmenu.cpp \
            temperatureviewer.cpp \
+           thermal_device.cpp \
            thermalmenu.cpp \
            timescript.cpp \
            titlelabel.cpp \

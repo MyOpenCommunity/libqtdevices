@@ -12,36 +12,33 @@
 
 #include "bttime.h"
 
+#include <QDateTime>
+
 // BtTimeSeconds implementation
 
 BtTimeSeconds::BtTimeSeconds()
-		: _hour(0),
-		_minute(0),
-		_second(0),
-		max_hours(24),
-		max_minutes(60),
-		max_seconds(60)
 {
+	init(0, 0, 0);
 }
 
 BtTimeSeconds::BtTimeSeconds(int h, int m, int s)
-		: _hour(h),
-		_minute(m),
-		_second(s),
-		max_hours(24),
-		max_minutes(60),
-		max_seconds(60)
 {
+	init(h, m , s);
 }
 
 BtTimeSeconds::BtTimeSeconds(const QTime &t)
-		: max_hours(24),
-		max_minutes(60),
-		max_seconds(60)
 {
-	_hour = t.hour();
-	_minute = t.minute();
-	_second = t.second();
+	init(t.hour(), t.minute(), t.second());
+}
+
+void BtTimeSeconds::init(int h, int m, int s)
+{
+	_hour = h;
+	_minute = m;
+	_second = s;
+	max_hours = 24;
+	max_minutes = 60;
+	max_seconds = 60;
 }
 
 void BtTimeSeconds::setMaxHours(int max)
@@ -61,10 +58,7 @@ void BtTimeSeconds::setMaxSeconds(int max)
 
 BtTimeSeconds BtTimeSeconds::addSecond(int s) const
 {
-	BtTimeSeconds t(this->_hour, this->_minute, this->_second);
-	t.setMaxHours(max_hours);
-	t.setMaxMinutes(max_minutes);
-	t.setMaxSeconds(max_seconds);
+	BtTimeSeconds t = *this;
 	if (s == 1)
 	{
 		if (t._second == max_seconds - 1)
@@ -92,10 +86,7 @@ BtTimeSeconds BtTimeSeconds::addSecond(int s) const
 
 BtTimeSeconds BtTimeSeconds::addMinute(int m) const
 {
-	BtTimeSeconds t(this->_hour, this->_minute, this->_second);
-	t.setMaxHours(max_hours);
-	t.setMaxMinutes(max_minutes);
-	t.setMaxSeconds(max_seconds);
+	BtTimeSeconds t = *this;
 	if (m == 1)
 	{
 		if (t._minute == max_minutes - 1)
@@ -123,10 +114,7 @@ BtTimeSeconds BtTimeSeconds::addMinute(int m) const
 
 BtTimeSeconds BtTimeSeconds::addHour(int h) const
 {
-	BtTimeSeconds t(this->_hour, this->_minute, this->_second);
-	t.setMaxHours(max_hours);
-	t.setMaxMinutes(max_minutes);
-	t.setMaxSeconds(max_seconds);
+	BtTimeSeconds t = *this;
 	if (h == 1)
 	{
 		if (t._hour == max_hours - 1)
@@ -190,10 +178,9 @@ BtTime::BtTime(const QTime &t)
 }
 
 BtTime::BtTime(const BtTimeSeconds &t)
-	: BtTimeSeconds(t.hour(), t.minute(), 0)
+	: BtTimeSeconds(t)
 {
-	setMaxMinutes(t.max_minutes);
-	setMaxHours(t.max_hours);
+	_second = 0;
 }
 
 QString BtTime::toString() const

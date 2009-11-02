@@ -8,6 +8,7 @@
 #include "icondispatcher.h" //bt_global::icons_cache
 #include "skinmanager.h" // skincontext
 #include "xml_functions.h" // getTextChild
+#include "lighting_device.h"
 
 
 #include <openwebnet.h> // class openwebnet
@@ -22,17 +23,20 @@
 
 namespace
 {
-	QString formatTime(const BasicTime &t)
+	QString formatTime(const BtTimeSeconds &t)
 	{
 		QString str;
-		if (t.h == 0 && t.m == 0)  // time in secs
-			str = QString("%1''").arg(t.s);
-		else if (t.h == 0) // time in mins
-			str = QString("%1'").arg(t.m);
-		else if (t.h < 10)   // time in hh:mm
-			str = QString("%1:%2").arg(t.h).arg(t.m, 2, 10, QChar('0'));
+		int h = t.hour();
+		int m = t.minute();
+		int s = t.second();
+		if (h == 0 && m == 0)  // time in secs
+			str = QString("%1''").arg(s);
+		else if (h == 0) // time in mins
+			str = QString("%1'").arg(m);
+		else if (h < 10)   // time in hh:mm
+			str = QString("%1:%2").arg(h).arg(m, 2, 10, QChar('0'));
 		else
-			str = QString("%1h").arg(t.h);
+			str = QString("%1h").arg(h);
 		return str;
 	}
 }
@@ -412,13 +416,13 @@ void TempLight::inizializza(bool forza)
 void TempLight::readTimes(const QDomNode &node)
 {
 	Q_UNUSED(node);
-	times << BasicTime(0, 1, 0); // 1 min
-	times << BasicTime(0, 2, 0);
-	times << BasicTime(0, 3, 0);
-	times << BasicTime(0, 4, 0);
-	times << BasicTime(0, 5, 0);
-	times << BasicTime(0, 15, 0);
-	times << BasicTime(0, 0, 30);
+	times << BtTimeSeconds(0, 1, 0); // 1 min
+	times << BtTimeSeconds(0, 2, 0);
+	times << BtTimeSeconds(0, 3, 0);
+	times << BtTimeSeconds(0, 4, 0);
+	times << BtTimeSeconds(0, 5, 0);
+	times << BtTimeSeconds(0, 15, 0);
+	times << BtTimeSeconds(0, 0, 30);
 	Q_ASSERT_X(times.size() <= 7, "TempLight::readTimes",
 		"times length must be <= 7, otherwise activation will fail");
 }
@@ -431,7 +435,7 @@ void TempLight::cycleTime()
 
 void TempLight::updateTimeLabel()
 {
-	BasicTime t = times[time_index];
+	BtTimeSeconds t = times[time_index];
 	setCentralText(formatTime(t));
 }
 
@@ -471,7 +475,7 @@ void TempLightVariable::readTimes(const QDomNode &node)
 	{
 		QString s = time.toElement().text();
 		QStringList sl = s.split("*");
-		times << BasicTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		times << BtTimeSeconds(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 	}
 }
 
@@ -482,8 +486,8 @@ void TempLightVariable::inizializza(bool forza)
 
 void TempLightVariable::activate()
 {
-	BasicTime t = times[time_index];
-	dev->variableTiming(t.h, t.m, t.s);
+	BtTimeSeconds t = times[time_index];
+	dev->variableTiming(t.hour(), t.minute(), t.second());
 }
 
 
@@ -506,8 +510,8 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 		sl << tmp.toElement().text().split("*");
 
 	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
-	BasicTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-	total_time = t.h * 3600 + t.m * 60 + t.s;
+	BtTimeSeconds t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+	total_time = t.hour() * 3600 + t.minute() * 60 + t.second();
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
@@ -565,9 +569,9 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			break;
 		case LightingDevice::DIM_VARIABLE_TIMING:
 		{
-			BasicTime t = it.value().value<BasicTime>();
+			BtTimeSeconds t = it.value().value<BtTimeSeconds>();
 			// convert t to seconds, then compute the number of slices
-			int time = qRound((t.h * 3600 + t.m * 60 + t.s) * TLF_TIME_STATES / total_time);
+			int time = qRound((t.hour() * 3600 + t.minute() * 60 + t.second()) * TLF_TIME_STATES / total_time);
 			setElapsedTime(time);
 			setState(ON);
 			request_timer.start();

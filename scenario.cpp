@@ -58,8 +58,11 @@ void Scenario::loadItems(const QDomNode &config_node)
 			break;
 		}
 		case SCENARIO_EVOLUTO:
-			b = new scenEvo(this, loadConditions(item), img1, img2, img3, img4,
-				getElement(item, "action/open").text(), getTextChild(item, "enable").toInt());
+		{
+			SkinContext context(getTextChild(item, "cid").toInt());
+			b = new scenEvo(this, loadConditions(item), getElement(item, "action/open").text(),
+				getTextChild(item, "enable").toInt());
+		}
 			break;
 
 		case SCENARIO_SCHEDULATO:
@@ -99,43 +102,25 @@ void Scenario::loadItems(const QDomNode &config_node)
 
 QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	// Note: the ownership of scenEvo_cond objects is taken by scenEvo instance.
+	// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
+	bool has_next = getElement(config_node, "condDevice/value").text().toInt();
 	QList<scenEvo_cond*> l;
 	foreach (const QDomNode &cond, getChildren(config_node, "condH"))
 	{
-		scenEvo_cond_h *c = new scenEvo_cond_h(getTextChild(cond, "hour"), getTextChild(cond, "minute"));
-		if (int v = getTextChild(cond, "value").toInt())
+		if (getTextChild(cond, "value").toInt())
 		{
-			c->setConditionType(v);
-			for (int i = 1; i <= 4; ++i)
-			{
-				QString img = getTextChild(cond, "cimg" + QString::number(i));
-				if (!img.isEmpty())
-					c->setImg(i - 1,  IMG_PATH + img);
-			}
+			scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
 			connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
-			c->SetIcons();
 			l.append(c);
 		}
 	}
 
 	foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
 	{
-		scenEvo_cond_d *c = new scenEvo_cond_d;
-		if (int v = getTextChild(cond, "value").toInt())
+		if (getTextChild(cond, "value").toInt())
 		{
-			c->setConditionType(v);
-			c->set_descr(getTextChild(cond, "descr"));
-			c->set_where(getTextChild(cond, "where"));
-			c->set_trigger(getTextChild(cond, "trigger"));
-			for (int i = 1; i <= 5; ++i)
-			{
-				QString img = getTextChild(cond, "cimg" + QString::number(i));
-				if (!img.isNull())
-					c->setImg(i - 1,  IMG_PATH + img);
-			}
-			c->SetIcons();
+			scenEvo_cond_d *c = new scenEvo_cond_d(cond);
 			l.append(c);
 		}
 	}

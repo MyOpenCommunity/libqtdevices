@@ -7,6 +7,7 @@
 #include "content_widget.h"
 #include "navigation_bar.h"
 #include "btbutton.h"
+#include "main.h"
 
 #include <openmsg.h>
 

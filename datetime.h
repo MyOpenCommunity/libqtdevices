@@ -30,7 +30,13 @@ class BtTimeEdit : public QWidget
 {
 Q_OBJECT
 public:
-	BtTimeEdit(QWidget *parent, bool display_seconds = false);
+	enum DisplayType
+	{
+		DISPLAY_MINUTES = 0,
+		DISPLAY_SECONDS = 1
+	};
+
+	BtTimeEdit(QWidget *parent, DisplayType type = DISPLAY_MINUTES);
 
 	void setTime(const BtTime& time);
 	void setTimeWithSeconds(const BtTimeSeconds& time);
@@ -56,7 +62,7 @@ private:
 private:
 	BtTimeSeconds _time;
 	QLCDNumber *num;
-	bool _display_seconds;
+	DisplayType _display_type;
 };
 
 /**
@@ -70,6 +76,9 @@ class BtDateEdit : public QWidget
 Q_OBJECT
 public:
 	BtDateEdit(QWidget *parent);
+
+	void setDate(const QDate& date);
+
 	/**
 	 * Returns the date set on the widget.
 	 */

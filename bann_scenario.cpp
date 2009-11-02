@@ -324,8 +324,8 @@ void gesModScen::inizializza(bool forza)
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1, QString i2,
-	QString i3, QString i4, QString act, int enable) : bann3But(parent), condList(c)
+scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString act, int enable) :
+	bann3But(parent), condList(c)
 {
 	current_condition = 0;
 
@@ -342,7 +342,8 @@ scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1, QString i2
 	}
 
 	action = act;
-	SetIcons(i1, i2, i3, i4);
+	SetIcons(bt_global::skin->getImage("enable_scen"), bt_global::skin->getImage("disable_scen"),
+		bt_global::skin->getImage("start"), bt_global::skin->getImage("program"));
 	impostaAttivo(enable);
 	connect(this,SIGNAL(sxClick()), this, SLOT(toggleAttivaScev()));
 	connect(this,SIGNAL(dxClick()), this, SLOT(configScev()));

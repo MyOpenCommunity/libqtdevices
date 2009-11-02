@@ -1,0 +1,198 @@
+#ifndef THERMAL_DEVICE_H
+#define THERMAL_DEVICE_H
+
+#include "device.h"
+
+class BtTime;
+
+
+class ThermalDevice : public device
+{
+friend class TestThermalDevice;
+friend class TestThermalDevice4Zones;
+friend class TestThermalDevice99Zones;
+Q_OBJECT
+public:
+
+	enum Type
+	{
+		DIM_STATUS = 0, // see Status enum
+		DIM_SEASON = 1, // see Season enum
+		DIM_PROGRAM = 2, // program number
+		DIM_SCENARIO = 3, // scenario number
+		DIM_TEMPERATURE = 4 // temperature
+	};
+
+	enum Status
+	{
+		ST_OFF = 0,
+		ST_PROTECTION = 1,
+		ST_MANUAL = 2,
+		ST_MANUAL_TIMED = 3,
+		ST_WEEKEND = 4,
+		ST_PROGRAM = 5,
+		ST_SCENARIO = 6,
+		ST_HOLIDAY = 7
+	};
+
+	enum Season
+	{
+		SE_SUMMER = 0,
+		SE_WINTER = 1
+	};
+
+	void setOff();
+	void setSummer();
+	void setWinter();
+	void setProtection();
+	void setHolidayDateTime(QDate date, BtTime time, int program);
+
+	/**
+	 * Function to set weekend mode (giorno festivo) with end date and time, and program to be executed at the end of weekend mode.
+	 * \param date The end date of weekend mode.
+	 * \param time The end time of weekend mode.
+	 * \param program The program to be executed at the end of weekend mode.
+	 */
+	void setWeekendDateTime(QDate date, BtTime time, int program);
+	void setWeekProgram(int program);
+
+	/**
+	 * Sends a frame to the thermal regulator to set the temperature in manual mode.
+	 * The frame sent is generic (not winter nor summer).
+	 * \param temperature The temperature to be set, ranges from 50 to 400, step is 5.
+	 */
+	void setManualTemp(unsigned temperature);
+
+	/**
+	 * Getter methods that return the maximum temperature allowed by the thermal regulator.
+	 * \return The maximum temperature allowed by the thermal regulator, in 10th of Celsius degrees.
+	 */
+	virtual unsigned maximumTemp() const = 0;
+	/**
+	 * Getter method that return the minimum temperature allowed by the thermal regulator.
+	 * \return The minimum temperature allowed by the thermal regulator , in 10th of Celsius degrees.
+	 */
+	virtual unsigned minimumTemp() const;
+
+	/**
+	 * Getter method for thermal regulator type.
+	 * \return The type of thermal regulator.
+	 */
+	virtual thermo_type_t type() const = 0;
+
+	static const QString WHO;
+
+protected:
+	enum what_t
+	{
+		SUMMER = 0,
+		WINTER = 1,
+		GENERIC_MODE = 3,
+		TEMPERATURE_SET = 14,            // set the temperature in manual operation, this is a dimension
+		HOLIDAY_DATE_END = 30,           // set the end date of holiday mode, this is a dimension (grandezza)
+		HOLIDAY_TIME_END = 31,           // set the end time of holiday mode, this is a dimension (grandezza)
+		MANUAL_TIMED_END = 32,           // set the end time of timed manual mode
+
+		// summer specific identifiers
+		SUM_PROTECTION = 202,            // protection
+		SUM_OFF = 203,                   // off
+		SUM_MANUAL = 210,                // manual operation (all zones in setpoint temperature)
+		SUM_MANUAL_TIMED = 212,          // manual operation (24h maximum)
+		SUM_WEEKEND = 215,               // weekend operation (festivo)
+		SUM_PROGRAM = 2100,              // weekly program (1 out of 3)
+		SUM_SCENARIO = 2200,             // scenario (1 out of 16, 99zones thermal regulator only)
+		SUM_HOLIDAY = 23000,             // holiday operation (programma ferie)
+
+		// winter specific identifiers
+		WIN_PROTECTION = 102,
+		WIN_OFF = 103,                   // off
+		WIN_MANUAL = 110,                // manual operation (all zones in setpoint temperature)
+		WIN_MANUAL_TIMED = 112,          // manual operation (24h maximum)
+		WIN_WEEKEND = 115,               // weekend operation (festivo)
+		WIN_PROGRAM = 1100,              // weekly program (1 out of 3)
+		WIN_SCENARIO = 1200,             // scenario (1 out of 16, 99zones thermal regulator only)
+		WIN_HOLIDAY = 13000,             // holiday operation (programma ferie)
+
+		// generic identifiers (useful for issuing commands)
+		GENERIC_PROTECTION = 302,
+		GENERIC_OFF = 303,
+		GENERIC_MANUAL_TIMED = 312,      // timed manual operation (generic mode)
+		GENERIC_WEEKEND = 315,           // command to set weekend mode
+		WEEK_PROGRAM = 3100,             // command to set the program to be executed (generic mode)
+						 // remember to add the program number to this number
+		SCENARIO_PROGRAM = 3200,         // command to set the scenario to be executed (generic mode)
+						 // remember to add the program number to this number
+		HOLIDAY_NUM_DAYS = 33000,        // command to set the number of days of holiday mode (generic mode)
+						 // remember to add the number of days to this number
+	};
+
+protected:
+	ThermalDevice(QString where);
+
+	void sendWriteRequest(const QString &what);
+	virtual void manageFrame(OpenMsg &msg);
+
+private:
+	/**
+	 * Utility function to set end date for both holiday and weekend mode
+	 * \param date The end date of the mode.
+	 */
+	void setHolidayEndDate(QDate date);
+
+	/**
+	 * Utility function to set end time for both holiday and weekend mode
+	 * \param time The end time of the mode.
+	 */
+	void setHolidayEndTime(BtTime time);
+
+	/**
+	 * Utility function to check if `what' is a program or scenario command. This type of commands are in this form:
+	 * xynn (where x={1,2}, y={1,2,3}) where nn is the program or scenario command, or xynnn (where x={1,2}, y={1,2,3}) and
+	 * nnn are the number of days.
+	 * We need to take action based on xy00-type of command, this function returns the command in that form.
+	 *
+	 * \param what  The command to be checked
+	 * \return The command in xy00 form.
+	 */
+	int commandRange(int what);
+};
+
+Q_DECLARE_METATYPE(ThermalDevice::Season)
+Q_DECLARE_METATYPE(ThermalDevice::Status)
+
+
+class ThermalDevice4Zones : public ThermalDevice
+{
+Q_OBJECT
+public:
+	ThermalDevice4Zones(QString where);
+
+	/**
+	 * Sets the temperature for a limited time.
+	 * \param temperature The temperature to be set
+	 * \param time The duration of the manual setting (24 hours max?)
+	 */
+	void setManualTempTimed(int temperature, BtTime time);
+
+	virtual unsigned maximumTemp() const;
+	virtual thermo_type_t type() const;
+};
+
+
+class ThermalDevice99Zones : public ThermalDevice
+{
+Q_OBJECT
+public:
+	ThermalDevice99Zones(QString where);
+
+	/**
+	 * Sets the scenario on the thermal regulator.
+	 * \param scenario The scenario to be activated (16 max).
+	 */
+	void setScenario(int scenario);
+
+	virtual unsigned maximumTemp() const;
+	virtual thermo_type_t type() const;
+};
+
+#endif // THERMAL_DEVICE_H

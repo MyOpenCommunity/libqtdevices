@@ -10,11 +10,8 @@
 #include <QTimer>
 
 class BtButton;
-class timeScript;
 class device;
-class QDateTime;
 class QLabel;
-class QFrame;
 class device_condition;
 
 
@@ -28,25 +25,13 @@ class scenEvo_cond : public Page
 {
 Q_OBJECT
 public:
-	/*!
-	\brief sets image path for a certain index
-	\param index index of image whose path shall be set
-	*/
-	void setImg(int index, QString s);
-
 	//! A type flag, used because RTTI is disabled.
 	bool hasTimeCondition;
 
 	/*!
-	\brief sets the type of the condition (controlled by a device)
-	*/
-	void setConditionType(int t);
-	/*!
 	\brief returns description of condition
 	*/
 	virtual const char *getDescription();
-	//! Sets icons
-	virtual void SetIcons();
 	//! Set serial number
 	void set_serial_number(int);
 	//! Get serial number
@@ -71,20 +56,10 @@ public slots:
 	virtual void reset();
 
 protected:
-	int condition_type;
-
 	// The constructor is protected to avoid the building of scenEvo_cond objects.
 	scenEvo_cond();
 
-	/*!
-	\brief: Returns image path for a certain index
-	\arg: index of image whose path shall be returned
-	*/
-	QString getImg(int index);
-
 private:
-	static const int MAX_EVO_COND_IMG =5;
-	QString *img[MAX_EVO_COND_IMG];
 	int serial_number;
 
 signals:
@@ -114,14 +89,12 @@ class scenEvo_cond_h : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_h(QString h, QString m);
+	scenEvo_cond_h(const QDomNode &config_node, bool has_next);
 	/*!
 	\brief Returns condition description
 	*/
 	const char *getDescription();
 
-	//! Sets icons
-	void SetIcons();
 	//! Save condition
 	void save();
 	//! Return true when condition is satisfied
@@ -138,12 +111,6 @@ public slots:
 	//! Just setup qt timer (based on cond_time)
 	void setupTimer();
 private:
-	//! OK button index (area #7)
-	static const int A7_BUTTON_INDEX = 4;
-	//! Area #6 (prev) button index
-	static const int A6_BUTTON_INDEX = 5;
-	//! Area #8 (next) button index
-	static const int A8_BUTTON_INDEX = 6;
 	//! OK icon index (area #7)
 	static const int A7_ICON_INDEX = 3;
 	//! Area #6 (prev) icon index
@@ -152,8 +119,7 @@ private:
 	static const int A8_ICON_INDEX = 2;
 
 	QTime cond_time;
-	//! Pointers to buttons
-	BtButton *but[7];
+	BtButton *bottom_left, *bottom_center, *bottom_right;
 
 	BtTimeEdit time_edit;
 	QTimer timer;
@@ -170,46 +136,12 @@ class scenEvo_cond_d : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_d();
-	/*!
-		\brief Set description
-		\param d new description
-	*/
-	void set_descr(QString d);
-	/*
-		\brief get <descr> value
-		\param output <descr>
-	*/
-	void get_descr(QString&);
-	/*!
-		\brief Set device address
-		\param w new device address
-	*/
-	void set_where(QString w);
-	/*!
-		\brief Read device address
-	*/
-	void get_where(QString&);
-	/*!
-	\brief get trigger condition
-	\param t output
-	*/
-	void get_trigger(QString&);
-	/*!
-	\brief Set trigger condition
-	\param t new trigger condition
-	*/
-	void set_trigger(QString t);
+	scenEvo_cond_d(const QDomNode &config_node);
+
 	/*!
 	\brief Returns condition description in human language
 	*/
 	const char *getDescription();
-	/*!
-	\brief Draws and initializes some connections.
-	*/
-	virtual void showPage();
-	//! Sets icons
-	void SetIcons();
 	//! Save condition
 	virtual void save();
 	//! Return true when condition is satisfied
@@ -223,51 +155,16 @@ public slots:
 	void Up();
 	//! Down method
 	void Down();
-	//! Invoked when actual device condition has been triggered by a frame
-	//void device_condition_triggered();
 	//! Reset condition
 	void reset();
 private:
 	//! Button width/height
 	static const int BUTTON_DIM = 60;
-	//! Text area width
-	static const int TEXT_X_DIM = 180;
 	//! Text area height
 	static const int TEXT_Y_DIM = 20;
-	//! Condition description
-	QString *descr;
-	//! Device address (open protocol)
-	QString *where;
-	//! Trigger condition
-	QString *trigger;
-	//! UP button index (area #3)
-	static const int A3_BUTTON_INDEX = 0;
-	//! Down button index (area #4)
-	static const int A4_BUTTON_INDEX = 1;
-	//! Area #5 (OK) button index
-	static const int A5_BUTTON_INDEX = 2;
-	//! Area #6 (prev) button index
-	static const int A6_BUTTON_INDEX = 3;
-	//! Area #1 icon index (symbol)
-	static const int A1_ICON_INDEX = 0;
-	//! Area #3 icon index (up)
-	static const int A3_ICON_INDEX = 1;
-	//! Area #4 icon index (down)
-	static const int A4_ICON_INDEX = 2;
-	//! Area #5 (OK) icon index
-	static const int A5_ICON_INDEX = 3;
-	//! Area #7 (prev) icon index
-	static const int A6_ICON_INDEX = 4;
-	//! Pointers to buttons
-	BtButton *but[7];
-	//! Pointer to area1 label
-	QLabel *area1_ptr;
-	//! Pointer to area2 label
-	QLabel *area2_ptr;
+
 	//! Specific device condition
 	device_condition *actual_condition;
-	//! Set button icons
-	void SetButtonIcon(int icon_index, int button_index);
 	//! Inits condition
 	void inizializza();
 };
@@ -283,10 +180,6 @@ class device_condition : public QObject
 {
 friend class scenEvo_cond_d;
 Q_OBJECT
-public:
-	//! Constructor
-	device_condition(QWidget *parent, QString *trigger);
-
 public slots:
 	//! Invoked when UP button is pressed
 	virtual void Up();
@@ -298,6 +191,8 @@ public slots:
 	virtual void status_changed(QList<device_status*>) = 0;
 
 protected:
+	device_condition();
+
 	//! Returns min value
 	virtual int get_min();
 	//! Returns max value
@@ -308,8 +203,6 @@ protected:
 	virtual int get_divisor();
 	//! Returns true if OFF must be shown instead of 0
 	virtual bool show_OFF_on_zero();
-	//! Returns pointer to parent scenEvo_cond_d
-	scenEvo_cond_d *get_parent();
 	//! Sets condition value
 	void set_condition_value(int);
 	//! Translates trigger condition from open encoding to int and sets val
@@ -320,8 +213,7 @@ protected:
 	virtual int get_condition_value();
 	//! Gets condition's meas unit
 	virtual QString get_unit();
-	//! Shows condition
-	void show();
+
 	//! Sets geometry
 	void setGeometry(int, int, int ,int);
 	//! Draws frame
@@ -336,10 +228,7 @@ protected:
 	virtual void reset();
 	//! Setup the device
 	virtual void setup_device(QString);
-	//! Set device pul
-	void set_pul(bool);
-	//! Set device group
-	void set_group(int);
+
 	//! Returns true when actual condition is satisfied
 	bool isTrue();
 
@@ -358,11 +247,8 @@ private:
 	int cond_value;
 	//! Current value (displayed, not confirmed)
 	int current_value;
-	//! Pointer to parent scenEvo_cond_d
-	QWidget *parent;
+
 signals:
-	//! No more emitted when condition is true
-	// void verificata();
 	//! Emitted when the condition on device is satisfied
 	void condSatisfied();
 };

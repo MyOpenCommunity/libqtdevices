@@ -4,7 +4,7 @@
 #include "lansettings.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "cleanscreen.h"
-#include "impostatime.h"
+#include "changedatetime.h"
 #include "brightnesspage.h"
 #include "displaypage.h"
 #include "version.h"

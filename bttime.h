@@ -12,8 +12,10 @@
 #ifndef BTTIME_H
 #define BTTIME_H
 
-#include <QDateTime>
 #include <QString>
+#include <QVariant>
+
+class QTime;
 
 class BtTimeSeconds
 {
@@ -101,9 +103,25 @@ public:
 	 */
 	int second() const;
 private:
+	// used by constructors
+	void init(int h, int m, int s);
+
+private:
 	int _hour, _minute, _second;
 	int max_hours, max_minutes, max_seconds;
 };
+
+Q_DECLARE_METATYPE(BtTimeSeconds);
+
+inline bool operator ==(const BtTimeSeconds &f, const BtTimeSeconds &s)
+{
+	return f.hour() == s.hour() && f.minute() == s.minute() && f.second() == s.second();
+}
+
+inline bool operator !=(const BtTimeSeconds &f, const BtTimeSeconds &s)
+{
+	return !(f == s);
+}
 
 
 class BtTime : private BtTimeSeconds
@@ -157,5 +175,14 @@ public:
 	using BtTimeSeconds::setMaxMinutes;
 };
 
+inline bool operator ==(const BtTime &f, const BtTime &s)
+{
+	return f.hour() == s.hour() && f.minute() == s.minute();
+}
+
+inline bool operator !=(const BtTime &f, const BtTime &s)
+{
+	return !(f == s);
+}
 
 #endif //BTTIME_H

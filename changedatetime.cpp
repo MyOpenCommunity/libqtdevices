@@ -1,4 +1,4 @@
-#include "impostatime.h"
+#include "changedatetime.h"
 #include "datetime.h"
 #include "btbutton.h"
 #include "skinmanager.h"
@@ -7,14 +7,16 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
+
 // ChangeTime implementation
 
 ChangeTime::ChangeTime()
+	: timer_id(0)
 {
 	QLabel *img = new QLabel;
 	img->setPixmap(bt_global::skin->getImage("time_icon"));
 
-	edit = new BtTimeEdit(this, true);
+	edit = new BtTimeEdit(this, BtTimeEdit::DISPLAY_SECONDS);
 
 	BtButton *ok = new BtButton;
 	ok->setImage(bt_global::skin->getImage("ok"));
@@ -42,16 +44,26 @@ void ChangeTime::acceptTime()
 
 	// go to page date and stop the timer to update seconds
 	date->showPage();
-	killTimer(timer_id);
 }
 
-void ChangeTime::showPage()
+void ChangeTime::startTimeUpdate()
 {
 	// display current time and start the update timer
 	edit->setTimeWithSeconds(QTime::currentTime());
-	timer_id = startTimer(1000);
+	if (timer_id == 0)
+		timer_id = startTimer(1000);
+}
 
-	Page::showPage();
+void ChangeTime::showEvent(QShowEvent *event)
+{
+	startTimeUpdate();
+}
+
+void ChangeTime::hideEvent(QHideEvent *event)
+{
+	if (timer_id != 0)
+		killTimer(timer_id);
+	timer_id = 0;
 }
 
 void ChangeTime::timerEvent(QTimerEvent *event)
@@ -59,6 +71,13 @@ void ChangeTime::timerEvent(QTimerEvent *event)
 	// update displayed time
 	BtTimeSeconds t = edit->timeWithSeconds().addSecond(1);
 	edit->setTimeWithSeconds(t);
+}
+
+void ChangeTime::showPage()
+{
+	startTimeUpdate();
+
+	Page::showPage();
 }
 
 
@@ -84,6 +103,13 @@ ChangeDate::ChangeDate()
 	l->addWidget(img, 0, Qt::AlignCenter);
 	l->addWidget(edit, 1);
 	l->addWidget(ok);
+}
+
+void ChangeDate::showPage()
+{
+	edit->setDate(QDate::currentDate());
+
+	Page::showPage();
 }
 
 void ChangeDate::acceptDate()

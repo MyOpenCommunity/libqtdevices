@@ -120,7 +120,7 @@ class scenEvo : public bann3But
 {
 Q_OBJECT
 public:
-	scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1=QString(), QString i2=QString(), QString i3=QString(), QString i4=QString(), QString act="", int enabled = 0);
+	scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString act, int enabled = 0);
 	~scenEvo();
 	void Draw();
 public slots:
