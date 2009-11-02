@@ -21,6 +21,9 @@ private slots:
 	void receiveDns1();
 	void receiveDns2();
 
+	void sendSetDate();
+	void sendSetTime();
+
 private:
 	PlatformDevice *dev;
 };

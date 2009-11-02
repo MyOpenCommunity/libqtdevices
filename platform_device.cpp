@@ -1,4 +1,5 @@
 #include "platform_device.h"
+#include "bttime.h"
 
 #include <openmsg.h>
 
@@ -11,6 +12,20 @@
 
 PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 {
+}
+
+void PlatformDevice::setTime(const BtTimeSeconds &t)
+{
+	QString f;
+	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());
+	sendFrame(f);
+}
+
+void PlatformDevice::setDate(const QDate &d)
+{
+	QString f;
+	f.sprintf("*#13**#1*00*%02d*%02d*%04d##", d.day(), d.month(), d.year());
+	sendFrame(f);
 }
 
 void PlatformDevice::enableLan(bool enable)

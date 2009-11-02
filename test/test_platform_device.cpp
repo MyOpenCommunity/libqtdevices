@@ -1,5 +1,8 @@
 #include "test_platform_device.h"
 #include "device_tester.h"
+#include "bttime.h"
+#include "openclient.h"
+#include "openserver_mock.h"
 
 #include <platform_device.h>
 
@@ -59,3 +62,16 @@ void TestPlatformDevice::receiveDns2()
 	t.check("*#13**52*208*67*220*220*##", "208.67.220.220");
 }
 
+void TestPlatformDevice::sendSetDate()
+{
+	dev->setDate(QDate(2010, 11, 12));
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*#13**#1*00*12*11*2010##"));
+}
+
+void TestPlatformDevice::sendSetTime()
+{
+	dev->setTime(BtTimeSeconds(13, 12, 11));
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*#13**#0*13*12*11**##"));
+}

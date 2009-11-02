@@ -20,6 +20,8 @@
 
 
 class OpenMsg;
+class BtTimeSeconds;
+class QDate;
 
 
 /**
@@ -35,6 +37,12 @@ class PlatformDevice : public device
 Q_OBJECT
 public:
 	PlatformDevice();
+
+	// date/time methods
+	void setTime(const BtTimeSeconds &t);
+	void setDate(const QDate &d);
+
+	// lan management methods
 	void enableLan(bool enable);
 
 	// The request methods, used to request an information
