@@ -57,6 +57,7 @@ banner::banner(QWidget *parent) : QWidget(parent)
 	step = 1;
 	animationTimer = NULL;
 	serNum = 1;
+	id = -1;
 }
 
 banner::~banner()

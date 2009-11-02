@@ -39,7 +39,7 @@ void ContentWidget::appendBanner(banner *b)
 	b->hide();
 
 	for (int idx = banner_list.size() - 2; idx >= 0; idx--)
-		if (banner_list.at(idx)->getId() == b->getId())
+		if (banner_list.at(idx)->getId() == b->getId() && b->getId() != -1)
 		{
 			b->setSerNum(banner_list.at(idx)->getSerNum() + 1);
 			idx = -1;

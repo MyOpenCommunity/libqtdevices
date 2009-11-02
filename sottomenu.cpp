@@ -102,7 +102,7 @@ void sottoMenu::appendBanner(banner *b)
 
 	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
 	{
-		if (elencoBanner.at(idx)->getId() == b->getId())
+		if (elencoBanner.at(idx)->getId() == b->getId() && b->getId() != -1)
 		{
 			b->setSerNum(elencoBanner.at(idx)->getSerNum() + 1);
 			idx = -1;
