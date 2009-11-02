@@ -16,6 +16,7 @@
 class BtDateEdit;
 class BtTimeEdit;
 class ChangeDate;
+class PlatformDevice;
 
 
 /*!
@@ -49,6 +50,7 @@ private:
 	BtTimeEdit *edit;
 	ChangeDate *date; // next page
 	int timer_id;
+	PlatformDevice *dev;
 };
 
 
@@ -73,6 +75,7 @@ private slots:
 
 private:
 	BtDateEdit *edit;
+	PlatformDevice *dev;
 };
 
 

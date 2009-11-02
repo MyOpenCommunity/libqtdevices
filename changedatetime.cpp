@@ -3,6 +3,8 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "main.h" // getConfElement, bt_global::config
+#include "platform_device.h"
+#include "devices_cache.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -13,6 +15,8 @@
 ChangeTime::ChangeTime()
 	: timer_id(0)
 {
+	dev = bt_global::add_device_to_cache(new PlatformDevice);
+
 	QLabel *img = new QLabel;
 	img->setPixmap(bt_global::skin->getImage("time_icon"));
 
@@ -37,10 +41,7 @@ ChangeTime::ChangeTime()
 
 void ChangeTime::acceptTime()
 {
-	BtTimeSeconds t = edit->timeWithSeconds();
-	QString f;
-	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());
-	sendFrame(f);
+	dev->setTime(edit->timeWithSeconds());
 
 	// go to page date and stop the timer to update seconds
 	date->showPage();
@@ -85,6 +86,8 @@ void ChangeTime::showPage()
 
 ChangeDate::ChangeDate()
 {
+	dev = bt_global::add_device_to_cache(new PlatformDevice);
+
 	QLabel *img = new QLabel;
 	img->setPixmap(bt_global::skin->getImage("date_icon"));
 
@@ -114,7 +117,6 @@ void ChangeDate::showPage()
 
 void ChangeDate::acceptDate()
 {
-	QString f = "*#13**#1*00*" + edit->date().toString("dd*MM*yyyy") + "##";
-	sendFrame(f);
+	dev->setDate(edit->date());
 	emit Closed();
 }
