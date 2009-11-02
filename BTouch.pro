@@ -41,7 +41,7 @@ CONFIG(debug,debug|release) {
 
 CONFIG(release,debug|release) {
 	message(*** Release build)
-	DEFINES += NDEBUG NO_QT_DEBUG_OUTPUT
+	DEFINES += NO_QT_DEBUG_OUTPUT
 }
 DEFINES += QT_QWS_EBX BTWEB
 
