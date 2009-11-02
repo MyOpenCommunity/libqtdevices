@@ -1,18 +1,18 @@
 #include "version.h"
-#include "main.h" // IMG_PATH
+#include "skinmanager.h"
 #include "fontmanager.h" // bt_global::font
 
 #include <openmsg.h>
 
 #include <QStringList>
 #include <QVariant> // setProperty
-#include <QWidget>
-#include <QPixmap>
 #include <QLabel>
 
 
 Version::Version()
 {
+	SkinContext version_cxt(806);
+
 	setProperty("noStyle", true);
 	box_text = new QLabel(this);
 	box_text->setGeometry(15, 150, 210, 160);
@@ -24,12 +24,12 @@ Version::Version()
 	QLabel *myHome = new QLabel(this);
 	myHome->setGeometry(30, 12, 181, 128);
 	myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	myHome->setPixmap(QPixmap(IMG_PATH "my_home.png"));
+	myHome->setPixmap(bt_global::skin->getImage("logo"));
 
 	QLabel *bticino = new QLabel(this);
 	bticino->setGeometry(129, 258, 92, 42);
 	bticino->setFrameStyle(QFrame::Plain);
-	bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
+	bticino->setPixmap(bt_global::skin->getImage("bticino"));
 
 	box_text->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	indDisp = 0;
