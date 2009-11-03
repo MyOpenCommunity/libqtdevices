@@ -43,17 +43,6 @@ QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
 	"fancoil3off.png", "fancoil3on.png", "fancoilAoff.png", "fancoilAon.png"};
 
-BannFullScreen::BannFullScreen(QWidget *parent) : banner(parent)
-{
-}
-
-BtButton *BannFullScreen::getButton(QString img)
-{
-	BtButton *btn = new BtButton(this);
-	btn->setImage(img);
-	return btn;
-}
-
 ThermalNavigation::ThermalNavigation(QWidget *parent)
 	: QWidget(parent)
 {

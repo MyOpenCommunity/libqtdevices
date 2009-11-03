@@ -53,17 +53,6 @@ enum Season
 };
 
 
-/**
- * An interface class for all full screen banners.
- */
-class BannFullScreen : public banner
-{
-Q_OBJECT
-protected:
-	BannFullScreen(QWidget *parent);
-	BtButton *getButton(QString img);
-};
-
 enum BannID
 {
 	fs_nc_probe = 1,                      // not controlled probe
