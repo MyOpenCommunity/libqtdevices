@@ -77,6 +77,16 @@ enum BannID
 NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_centrale,
 			TemperatureScale scale = CELSIUS);
 
+class ThermalNavigation : public QWidget
+{
+Q_OBJECT
+public:
+	ThermalNavigation(QWidget *parent = 0);
+
+signals:
+	void okClicked();
+	void backClicked();
+};
 
 class NavigationPage : public Page
 {
@@ -365,7 +375,6 @@ private:
 	TimeEditMenu *time_edit;
 	DateEditMenu *date_edit;
 	ProgramMenu *program_choice;
-	sottoMenu *manual_menu;
 	WeeklyMenu *program_menu;
 };
 
@@ -392,7 +401,6 @@ private:
 	void timedManualSettings(sottoMenu *settings, ThermalDevice4Zones *dev);
 
 	ThermalDevice4Zones *_dev;
-	sottoMenu *timed_manual_menu;
 private slots:
 	void manualTimedSelected(BtTime time, int temp);
 	void showSettingsMenu();
@@ -450,22 +458,20 @@ private slots:
 };
 
 
-class FSBannManual : public BannFullScreen
+class PageManual : public Page
 {
 Q_OBJECT
 public:
-	FSBannManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
+	PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
 	virtual void Draw();
-	virtual BtButton *customButton();
 public slots:
 	void status_changed(const StatusList &sl);
 protected:
 	QVBoxLayout main_layout;
-	/// The button to be set on the navbar
-	BtButton *navbar_button;
 	/// The setpoint temperature set on the interface. The scale is given by temp_scale
 	int temp;
 	TemperatureScale temp_scale;
+	ThermalNavigation *nav_bar;
 private:
 	QString descr;
 	QLabel *descr_label;
@@ -486,11 +492,11 @@ signals:
 /**
  * A fullscreen banner to edit setpoint temperature and the duration of manual settings
  */
-class FSBannManualTimed : public FSBannManual
+class PageManualTimed : public PageManual
 {
 Q_OBJECT
 public:
-	FSBannManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale = CELSIUS);
+	PageManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 private:

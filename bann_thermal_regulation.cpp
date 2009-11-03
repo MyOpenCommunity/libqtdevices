@@ -13,6 +13,7 @@
 #include "thermalmenu.h"
 #include "main.h" // bt_global::config
 #include "navigation_bar.h"
+#include "skinmanager.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -52,6 +53,28 @@ BtButton *BannFullScreen::getButton(QString img)
 	btn->setImage(img);
 	return btn;
 }
+
+ThermalNavigation::ThermalNavigation(QWidget *parent)
+	: QWidget(parent)
+{
+	QHBoxLayout *l = new QHBoxLayout(this);
+
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
+	BtButton *back = new BtButton();
+	connect(back, SIGNAL(clicked()), SIGNAL(backClicked()));
+	back->setImage(bt_global::skin->getImage("back"));
+	l->addWidget(back);
+
+	l->addStretch(1);
+
+	BtButton *ok = new BtButton();
+	connect(ok, SIGNAL(clicked()), SIGNAL(okClicked()));
+	ok->setImage(bt_global::skin->getImage("ok"));
+	l->addWidget(ok);
+}
+
 
 NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_centrale,
 			TemperatureScale scale)
@@ -614,12 +637,15 @@ void PageFancoil::status_changed(QList<device_status*> sl)
 	PageProbe::status_changed(sl);
 }
 
-FSBannManual::FSBannManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale)
-	: BannFullScreen(parent), main_layout(this), temp_scale(scale), dev(_dev), setpoint_delta(5)
+PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale)
+	: Page(0), main_layout(this), temp_scale(scale), dev(_dev), setpoint_delta(5)
 {
 	descr = tr("Manual");
 	descr_label = new QLabel(this);
+	main_layout.setSpacing(0);
+	main_layout.setContentsMargins(0, 0, 0, 10);
 	main_layout.addWidget(descr_label);
+	main_layout.addStretch(1);
 
 	switch (temp_scale)
 	{
@@ -641,16 +667,13 @@ FSBannManual::FSBannManual(QWidget *parent, ThermalDevice *_dev, TemperatureScal
 		temp_scale = CELSIUS;
 	}
 
-
-	navbar_button = getButton(I_OK);
-	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
-
 	temp_label = new QLabel(this);
 	temp_label->setProperty("SecondFgColor", true);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
 	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
-	BtButton *btn = getButton(btn_min_img);
+	BtButton *btn = new BtButton(this);
+	btn->setImage(btn_min_img);
 	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
@@ -660,18 +683,27 @@ FSBannManual::FSBannManual(QWidget *parent, ThermalDevice *_dev, TemperatureScal
 
 	hbox->addStretch(1);
 	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
-	btn = getButton(btn_plus_img);
+	btn = new BtButton(this);
+	btn->setImage(btn_plus_img);
 	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
 
 	main_layout.addLayout(hbox);
 
+	nav_bar = new ThermalNavigation;
+	main_layout.addWidget(nav_bar);
+
+	connect(nav_bar, SIGNAL(okClicked()), SLOT(performAction()));
+	connect(nav_bar, SIGNAL(backClicked()), SIGNAL(Closed()));
+
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
+
+	Draw();
 }
 
-void FSBannManual::performAction()
+void PageManual::performAction()
 {
 	unsigned bt_temp;
 	switch (temp_scale)
@@ -689,7 +721,7 @@ void FSBannManual::performAction()
 	emit(temperatureSelected(bt_temp));
 }
 
-void FSBannManual::incSetpoint()
+void PageManual::incSetpoint()
 {
 	// FIXME: forse c'e' da modificare i controlli in caso di fahrenheit
 	if (temp >= maximum_manual_temp)
@@ -699,7 +731,7 @@ void FSBannManual::incSetpoint()
 	Draw();
 }
 
-void FSBannManual::decSetpoint()
+void PageManual::decSetpoint()
 {
 	if (temp <= minimum_manual_temp)
 		return;
@@ -708,7 +740,7 @@ void FSBannManual::decSetpoint()
 	Draw();
 }
 
-void FSBannManual::Draw()
+void PageManual::Draw()
 {
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
@@ -731,12 +763,7 @@ void FSBannManual::Draw()
 	}
 }
 
-BtButton *FSBannManual::customButton()
-{
-	return navbar_button;
-}
-
-void FSBannManual::status_changed(const StatusList &sl)
+void PageManual::status_changed(const StatusList &sl)
 {
 	// TODO check why only for 4-zone regulator
 	if (dev->type() != THERMO_Z4)
@@ -763,19 +790,22 @@ void FSBannManual::status_changed(const StatusList &sl)
 	Draw();
 }
 
-FSBannManualTimed::FSBannManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale)
-	: FSBannManual(parent, _dev, scale),
+PageManualTimed::PageManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale)
+	: PageManual(parent, _dev, scale),
 	dev(_dev)
 {
 	time_edit = new BtTimeEdit(this);
-	main_layout.addWidget(time_edit);
+	// TODO refactor widget creation
+	main_layout.insertWidget(main_layout.count() - 1, time_edit);
 
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
+	connect(nav_bar, SIGNAL(okClicked()), SLOT(performAction()));
+
+	Draw();
 }
 
-void FSBannManualTimed::performAction()
+void PageManualTimed::performAction()
 {
 	unsigned bt_temp;
 	switch (temp_scale)
@@ -793,12 +823,12 @@ void FSBannManualTimed::performAction()
 	emit(timeAndTempSelected(time_edit->time(), bt_temp));
 }
 
-void FSBannManualTimed::setMaxHours(int max)
+void PageManualTimed::setMaxHours(int max)
 {
 	time_edit->setMaxHours(max);
 }
 
-void FSBannManualTimed::setMaxMinutes(int max)
+void PageManualTimed::setMaxMinutes(int max)
 {
 	time_edit->setMaxMinutes(max);
 }
@@ -1161,15 +1191,14 @@ void PageTermoReg::manualSettings(sottoMenu *settings, ThermalDevice *dev)
 	manual->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("manuale.png"));
 
 	settings->appendBanner(manual);
-	manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
-	connect(manual, SIGNAL(sxClick()), manual_menu, SLOT(showPage()));
 
-	FSBannManual *bann = new FSBannManual(manual_menu, dev, temp_scale);
+	PageManual *manual_page = new PageManual(this, dev, temp_scale);
 
-	manual_menu->appendBanner(bann);
-	connect(bann, SIGNAL(temperatureSelected(unsigned)), this, SLOT(manualSelected(unsigned)));
-	connect(bann, SIGNAL(temperatureSelected(unsigned)), settings, SIGNAL(Closed()));
-	connect(manual_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
+	connect(manual, SIGNAL(sxClick()), manual_page, SLOT(showPage()));
+
+	connect(manual_page, SIGNAL(temperatureSelected(unsigned)), SLOT(manualSelected(unsigned)));
+	connect(manual_page, SIGNAL(temperatureSelected(unsigned)), settings, SIGNAL(Closed()));
+	connect(manual_page, SIGNAL(Closed()), settings, SLOT(showPage()));
 }
 
 void PageTermoReg::manualSelected(unsigned temp)
@@ -1305,18 +1334,15 @@ void PageTermoReg4z::timedManualSettings(sottoMenu *settings, ThermalDevice4Zone
 	manual_timed->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("manuale_temporizzato.png"));
 
 	settings->appendBanner(manual_timed);
-	timed_manual_menu = new sottoMenu(0, 10, MAX_WIDTH, MAX_HEIGHT, 1);
 
-	FSBannManualTimed *bann = new FSBannManualTimed(timed_manual_menu, dev, temp_scale);
+	PageManualTimed *timed_manual_page = new PageManualTimed(this, dev, temp_scale);
+	timed_manual_page->setMaxHours(25);
 
-	bann->setMaxHours(25);
+	connect(manual_timed, SIGNAL(sxClick()), timed_manual_page, SLOT(showPage()));
 
-	timed_manual_menu->appendBanner(bann);
-	connect(manual_timed, SIGNAL(sxClick()), timed_manual_menu, SLOT(showPage()));
-
-	connect(timed_manual_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
-	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), this, SLOT(manualTimedSelected(BtTime, int)));
-	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), settings, SIGNAL(Closed()));
+	connect(timed_manual_page, SIGNAL(Closed()), settings, SLOT(showPage()));
+	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTime, int)), SLOT(manualTimedSelected(BtTime, int)));
+	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTime, int)), settings, SIGNAL(Closed()));
 }
 
 void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
