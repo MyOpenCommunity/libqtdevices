@@ -179,12 +179,12 @@ public:
 	/*!
 	 *  \brief Retrieves the Id of the object controlled by the banner.
 	 */
-	char getId();
+	int getId();
 
 	/*!
 	 *  \brief Sets the Id of the object controlled by the banner.
 	 */
-	void setId(char);
+	void setId(int);
 
 	/*!
 	 *  \brief Sets the Value for the object controlled by the banner.
@@ -307,7 +307,8 @@ protected:
 
 	QString qtesto, qtestoSecondario;
 
-	char attivo,value,maxValue,minValue,id,step;
+	char attivo,value,maxValue,minValue,step;
+	int id;
 	int periodo, numFrame,contFrame,serNum;
 	QString address;
 

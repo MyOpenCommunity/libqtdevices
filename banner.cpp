@@ -597,12 +597,12 @@ int banner::getSerNum()
 	return serNum;
 }
 
-char banner::getId()
+int banner::getId()
 {
 	return id;
 }
 
-void banner::setId(char i)
+void banner::setId(int i)
 {
 	id = i;
 }
