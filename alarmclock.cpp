@@ -516,7 +516,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	edit->setTime(alarm_page->alarmTime);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	QHBoxLayout *r = new QHBoxLayout(this);
+	QHBoxLayout *r = new QHBoxLayout;
 
 	r->addSpacing(40);
 	r->addWidget(edit);
