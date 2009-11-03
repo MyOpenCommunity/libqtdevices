@@ -204,18 +204,14 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	Icon[2] = bt_global::icons_cache.getIcon(QString("%1sxl0.png").arg(inactive_root_of_name));
 	Icon[3] = bt_global::icons_cache.getIcon(QString("%1dxl0.png").arg(inactive_root_of_name));
 
-	qDebug() << "New Icon[2] <- " << QString("%1sxl0.png").arg(inactive_root_of_name);
-	qDebug() << "New Icon[3] <- " << QString("%1dxl0.png").arg(inactive_root_of_name);
 	for (int i = minValue, y = 0; i <= maxValue; i+=step, y++)
 	{
 		nomeFile = QString("%1sxl%2.png").arg(active_root_of_name).arg(i);
 		Icon[4+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 4+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1sxl%2.png").arg(inactive_root_of_name).arg(i);
 			Icon[22+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-			qDebug() << "New Icon[" << 22+y*2 << "] <- " << nomeFile;
 		}
 	}
 
@@ -223,12 +219,10 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	{
 		nomeFile = QString("%1dxl%2.png").arg(active_root_of_name).arg(i);
 		Icon[5+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 5+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1dxl%2.png").arg(inactive_root_of_name).arg(i);
 			Icon[23+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-			qDebug() << "New Icon[" << 23+y*2 << "] <- " << nomeFile;
 		}
 	}
 	
@@ -237,10 +231,8 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 		QString break_root_of_name = getNameRoot(breakIcon, ".png");
 		nomeFile = QString("%1sx.png").arg(break_root_of_name);
 		Icon[44] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 44 << "] <- " << nomeFile;
 		nomeFile = QString("%1dx.png").arg(break_root_of_name);
 		Icon[45] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 45 << "] <- " << nomeFile;
 	}
 }
 
@@ -500,7 +492,6 @@ void banner::drawAllButRightButton()
 
 void banner::Draw()
 {
-	qDebug("banner::Draw(), attivo = %d, value = %d", attivo, value);
 	drawAllButRightButton();
 	if (dxButton && Icon[1])
 	{

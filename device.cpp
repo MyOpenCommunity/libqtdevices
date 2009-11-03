@@ -304,9 +304,6 @@ void device::installFrameCompressor(int timeout, int what)
 
 void device::init(bool force)
 {
-	qDebug("device::init()");
-	// True if all device has already been initialized
-
 	QList<device_status*> dsl;
 	for (int i = 0; i < stat.size(); ++i)
 	{
@@ -314,15 +311,12 @@ void device::init(bool force)
 
 		QStringList msgl;
 		msgl.clear();
-		qDebug("ds = %p", ds);
 		if (force)
 		{
-			qDebug("device status force initialize");
 			Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
 			interpreter->get_init_messages(ds, msgl);
 			for (QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it)
 			{
-				qDebug() << "init message is " << *it;
 				if (*it != "")
 					sendFrame(*it);
 			}
@@ -331,7 +325,6 @@ void device::init(bool force)
 		{
 			if (ds->initialized())
 			{
-				qDebug("device status has already been initialized");
 				emit initialized(ds);
 				dsl.append(ds);
 			}
@@ -339,12 +332,10 @@ void device::init(bool force)
 				qDebug("device status init already requested");
 			else
 			{
-				qDebug("getting init message");
 				Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
 				interpreter->get_init_messages(ds, msgl);
 				for (QStringList::Iterator it = msgl.begin();it != msgl.end(); ++it)
 				{
-					qDebug() << "init message is %s" << *it;
 					if (*it != "")
 						sendFrame(*it);
 				}
@@ -354,7 +345,6 @@ void device::init(bool force)
 	}
 	if (!dsl.isEmpty())
 		emit status_changed(dsl);
-	qDebug("device::init() end");
 }
 
 void device::init_requested_handler(QString msg)
