@@ -39,10 +39,10 @@ class WeeklyMenu;
 class ScenarioMenu;
 class BtTimeEdit;
 class BtDateEdit;
-class sottoMenu;
 class NavigationPage;
 class PageSetDate;
 class PageSetTime;
+class SettingsPage;
 
 class QLabel;
 
@@ -262,37 +262,37 @@ protected:
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
-	void weekSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev);
+	void weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu to set the scenario program in thermal
 	 * regulator device.
 	 */
-	void scenarioSettings(sottoMenu *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature
 	 * for the thermal regulator device.
 	 */
-	void manualSettings(sottoMenu *settings, ThermalDevice *dev);
+	void manualSettings(SettingsPage *settings, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev);
+	void holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for weekend settings.
 	 */
-	void weekendSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev);
+	void weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create off, antifreeze and summer/winter banners.
 	 */
-	void createButtonsBanners(ThermalDevice *dev);
+	void createButtonsBanners(SettingsPage *settings, ThermalDevice *dev);
 
 	/// The settings menu of the thermal regulator
-	sottoMenu *settings;
+	SettingsPage *settings;
 	/// A reference to the configuration of the thermal regulator
 	QDomNode conf_root;
 
@@ -355,11 +355,11 @@ private:
 	 * \param icon The icon to be visualized on the banner
 	 * \return The banner that will open the date edit menu
 	 */
-	banner *createHolidayWeekendBanner(sottoMenu *settings, QString icon);
+	banner *createHolidayWeekendBanner(SettingsPage *settings, QString icon);
 
-	PageSetDate *createDateEdit(sottoMenu *settings);
-	PageSetTime *createTimeEdit(sottoMenu *settings);
-	WeeklyMenu *createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev);
+	PageSetDate *createDateEdit(SettingsPage *settings);
+	PageSetTime *createTimeEdit(SettingsPage *settings);
+	WeeklyMenu *createProgramChoice(SettingsPage *settings, QDomNode conf, device *dev);
 
 	/// Label and string that may be visualized
 	QLabel *description_label;
@@ -397,7 +397,7 @@ private:
 	 * Utility function to create the submenu for timed manual operation mode.
 	 * This is used only with 4 zones thermal regulators
 	 */
-	void timedManualSettings(sottoMenu *settings, ThermalDevice4Zones *dev);
+	void timedManualSettings(SettingsPage *settings, ThermalDevice4Zones *dev);
 
 	ThermalDevice4Zones *_dev;
 private slots:
@@ -420,7 +420,7 @@ protected:
 	virtual void createSettingsMenu(QWidget *back);
 	virtual void setSeason(Season new_season);
 private:
-	void scenarioSettings(sottoMenu *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
 
 	ThermalDevice99Zones *_dev;
 	ScenarioMenu *scenario_menu;

@@ -1,7 +1,6 @@
 
 #include "bann_thermal_regulation.h"
 #include "fontmanager.h" // bt_global::font
-#include "sottomenu.h"
 #include "btbutton.h"
 #include "device.h"
 #include "scaleconversion.h"
@@ -13,6 +12,7 @@
 #include "thermalmenu.h"
 #include "main.h" // bt_global::config
 #include "navigation_bar.h"
+#include "content_widget.h"
 #include "skinmanager.h"
 
 #include <QVariant>
@@ -42,6 +42,40 @@ QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
 
 static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
 	"fancoil3off.png", "fancoil3on.png", "fancoilAoff.png", "fancoilAon.png"};
+
+// Helper page for the settings list
+class SettingsPage : public Page
+{
+public:
+	SettingsPage(QWidget *parent = 0);
+
+	virtual void inizializza();
+
+	void appendBanner(banner *b);
+	void resetIndex();
+};
+
+SettingsPage::SettingsPage(QWidget *parent)
+	: Page(parent)
+{
+	buildPage(new ContentWidget, new NavigationBar);
+}
+
+void SettingsPage::inizializza()
+{
+	content_widget->initBanners();
+}
+
+void SettingsPage::appendBanner(banner *b)
+{
+	b->Draw(); // kill Draw
+	content_widget->appendBanner(b);
+}
+
+void SettingsPage::resetIndex()
+{
+	content_widget->resetIndex();
+}
 
 ThermalNavigation::ThermalNavigation(QWidget *parent)
 	: QWidget(parent)
@@ -1060,7 +1094,7 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 		return node.text();
 }
 
-void PageTermoReg::createButtonsBanners(ThermalDevice *dev)
+void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *dev)
 {
 	// off banner
 	BannOff *off = new BannOff(settings, dev);
@@ -1101,15 +1135,8 @@ void PageTermoReg4z::showSettingsMenu()
 
 void PageTermoReg4z::createSettingsMenu(QWidget *back)
 {
-	settings = new sottoMenu;
-	if (settings)
-	{
-		// TODO: quando si tocca di nuovo questa parte, bisogna levare questo parentWidget()
-		connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
-	}
-	else
-		qFatal("[TERMO] could not create settings menu");
-
+	settings = new SettingsPage;
+	connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
 
 	weekSettings(settings, conf_root, _dev);
 	manualSettings(settings, _dev);
@@ -1120,7 +1147,7 @@ void PageTermoReg4z::createSettingsMenu(QWidget *back)
 
 	weekendSettings(settings, conf_root, _dev);
 
-	createButtonsBanners(_dev);
+	createButtonsBanners(settings, _dev);
 }
 
 PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *parent, QWidget *back)
@@ -1155,13 +1182,8 @@ void PageTermoReg99z::showSettingsMenu()
 
 void PageTermoReg99z::createSettingsMenu(QWidget *back)
 {
-	settings = new sottoMenu;
-	if (settings)
-	{
-		connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
-	}
-	else
-		qFatal("[TERMO] could not create settings menu");
+	settings = new SettingsPage;
+	connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
 
 	weekSettings(settings, conf_root, _dev);
 	manualSettings(settings, _dev);
@@ -1172,13 +1194,13 @@ void PageTermoReg99z::createSettingsMenu(QWidget *back)
 
 	weekendSettings(settings, conf_root, _dev);
 
-	createButtonsBanners(_dev);
+	createButtonsBanners(settings, _dev);
 }
 
 //
 // ------------- Utility functions to create thermal regulator settings menus -------------------
 //
-void PageTermoReg::manualSettings(sottoMenu *settings, ThermalDevice *dev)
+void PageTermoReg::manualSettings(SettingsPage *settings, ThermalDevice *dev)
 {
 	// manual banner
 	bannPuls *manual = new bannPuls(settings);
@@ -1200,7 +1222,7 @@ void PageTermoReg::manualSelected(unsigned temp)
 	dev()->setManualTemp(temp);
 }
 
-void PageTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
 	bannPuls *weekly = new bannPuls(settings);
 	weekly->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("settimanale.png"));
@@ -1220,7 +1242,7 @@ void PageTermoReg::weekProgramSelected(int program)
 	dev()->setWeekProgram(program);
 }
 
-void PageTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
 	banner *bann = createHolidayWeekendBanner(settings, "feriale.png");
 	connect(bann, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
@@ -1232,7 +1254,7 @@ void PageTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, ThermalDe
 		program_choice = createProgramChoice(settings, conf, dev);
 }
 
-void PageTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
 	banner *bann = createHolidayWeekendBanner(settings, "festivo.png");
 	connect(bann, SIGNAL(sxClick()), this, SLOT(weekendSettingsStart()));
@@ -1244,7 +1266,7 @@ void PageTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, ThermalDe
 		program_choice = createProgramChoice(settings, conf, dev);
 }
 
-banner *PageTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString icon)
+banner *PageTermoReg::createHolidayWeekendBanner(SettingsPage *settings, QString icon)
 {
 	bannPuls *bann = new bannPuls(settings);
 	bann->SetIcons(IMG_RIGHT_ARROW, 0, IMG_PATH + icon);
@@ -1252,7 +1274,7 @@ banner *PageTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString ic
 	return bann;
 }
 
-PageSetDate *PageTermoReg::createDateEdit(sottoMenu *settings)
+PageSetDate *PageTermoReg::createDateEdit(SettingsPage *settings)
 {
 	PageSetDate *date_edit = new PageSetDate;
 	connect(date_edit, SIGNAL(Closed()), settings, SLOT(showPage()));
@@ -1260,7 +1282,7 @@ PageSetDate *PageTermoReg::createDateEdit(sottoMenu *settings)
 	return date_edit;
 }
 
-PageSetTime *PageTermoReg::createTimeEdit(sottoMenu *settings)
+PageSetTime *PageTermoReg::createTimeEdit(SettingsPage *settings)
 {
 	PageSetTime *time_edit = new PageSetTime;
 	connect(time_edit, SIGNAL(timeSelected(BtTime)), SLOT(timeSelected(BtTime)));
@@ -1268,7 +1290,7 @@ PageSetTime *PageTermoReg::createTimeEdit(sottoMenu *settings)
 	return time_edit;
 }
 
-WeeklyMenu *PageTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
+WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QDomNode conf, device *dev)
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
 	connect(program_choice, SIGNAL(programClicked(int)), SLOT(weekendHolidaySettingsEnd(int)));
@@ -1321,7 +1343,7 @@ void PageTermoReg::weekendHolidaySettingsEnd(int program)
 		qWarning("PageTermoReg::weekendHolidaySettingsEnd: unknown status");
 }
 
-void PageTermoReg4z::timedManualSettings(sottoMenu *settings, ThermalDevice4Zones *dev)
+void PageTermoReg4z::timedManualSettings(SettingsPage *settings, ThermalDevice4Zones *dev)
 {
 	// timed manual banner
 	bannPuls *manual_timed = new bannPuls(settings);
@@ -1344,7 +1366,7 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 	_dev->setManualTempTimed(temp, time);
 }
 
-void PageTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, ThermalDevice99Zones *dev)
+void PageTermoReg99z::scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev)
 {
 	bannPuls *scenario = new bannPuls(settings);
 	scenario->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("scenari.png"));
