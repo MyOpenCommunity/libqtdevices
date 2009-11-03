@@ -13,6 +13,8 @@
 #include "xml_functions.h"
 #include "main.h" //bt_global::config
 #include "bann1_button.h"
+#include "content_widget.h"
+#include "navigation_bar.h"
 
 #include <QVariant>
 #include <QRegExp>
@@ -23,8 +25,10 @@ static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
 static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png");
 
 
-PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
+PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : Page(parent)
 {
+	buildPage(new ContentWidget, new NavigationBar);
+
 	conf_root = conf;
 
 	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
@@ -88,6 +92,11 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
 	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
 }
 
+void PlantMenu::inizializza()
+{
+	content_widget->initBanners();
+}
+
 NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type)
 {
 	/*
@@ -96,8 +105,8 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString
 	bannPuls *bp = new bannPuls(this);
 	bp->SetIcons(i_right_arrow, QString(), central_icon);
 	bp->setText(getTextChild(n, "descr"));
-	elencoBanner.append(bp);
-	connectLastBanner();
+	bp->Draw();
+	content_widget->appendBanner(bp);
 
 	/*
 	 * Create page in detail menu.

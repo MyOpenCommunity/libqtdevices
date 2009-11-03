@@ -10,7 +10,7 @@
 #ifndef PLANTMENU_H
 #define PLANTMENU_H
 
-#include "sottomenu.h"
+#include "page.h"
 #include "bann_thermal_regulation.h"
 
 #include <QSignalMapper>
@@ -21,11 +21,12 @@ class device;
 class NavigationPage;
 
 
-class PlantMenu : public sottoMenu
+class PlantMenu : public Page
 {
 Q_OBJECT
 public:
 	PlantMenu(QWidget *parent, QDomNode conf);
+	virtual void inizializza();
 
 private:
 	/**
