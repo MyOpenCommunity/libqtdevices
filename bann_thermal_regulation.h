@@ -119,17 +119,16 @@ class PageSimpleProbe : public NavigationPage
 Q_OBJECT
 public:
 	PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale = CELSIUS);
-	virtual void Draw();
 public slots:
 	virtual void status_changed(QList<device_status*> sl);
-
+protected:
+	void setTemperature(unsigned temp);
+	void setDescription(const QString &descr);
 protected:
 	/// Measured temperature label and string
 	QLabel *temp_label;
-	unsigned temp;
 	/// Zone description label and string
 	QLabel *descr_label;
-	QString descr;
 	/// Temperature scale
 	TemperatureScale temp_scale;
 };
@@ -146,9 +145,11 @@ Q_OBJECT
 public:
 	PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
 		  TemperatureScale scale = CELSIUS);
-	virtual void Draw();
 public slots:
 	virtual void status_changed(QList<device_status*> sl);
+protected:
+	void updatePointLabel();
+	void updateControlState();
 protected:
 	/// Setpoint temperature. The scale of the temperature may be Celsius or Fahrenheit, depending on the value
 	/// of PageSimpleProbe::temp_scale. Units represent 1/10 of degree, for example -23.5 Celsius degrees
@@ -230,11 +231,13 @@ class PageTermoReg : public NavigationPage
 Q_OBJECT
 public:
 	PageTermoReg(QDomNode n, QWidget *parent = 0);
-	virtual void Draw();
 	virtual ThermalDevice *dev() = 0;
 public slots:
 	virtual void status_changed(const StatusList &sl);
 protected:
+	void showDescription(const QString &desc);
+	void hideDescription();
+
 	/**
 	 * Utility function to create settings menu for the thermal regulator device.
 	 */
@@ -360,9 +363,6 @@ private:
 
 	/// Label and string that may be visualized
 	QLabel *description_label;
-	QString description;
-	/// Set visibility status for description (in off, antifreeze, holiday and weekend description should not be visible)
-	bool description_visible;
 	/// Status icon (summer/winter)
 	QLabel *season_icon;
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
@@ -440,8 +440,9 @@ Q_OBJECT
 public:
 	PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
 		    TemperatureScale scale = CELSIUS);
-	virtual void Draw();
 	virtual void status_changed(QList<device_status*> sl);
+protected:
+	void setFancoilStatus(int status);
 private:
 	/**
 	 * Creates fancoil buttons and loads icons
@@ -451,7 +452,6 @@ private:
 	/// A mapping between speed values and fancoil buttons
 	QMap<int, int> speed_to_btn_tbl;
 	QMap<int, int> btn_to_speed_tbl;
-	int fancoil_status;
 private slots:
 	void handleFancoilButtons(int pressedButton);
 };
@@ -462,9 +462,11 @@ class PageManual : public Page
 Q_OBJECT
 public:
 	PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
-	virtual void Draw();
 public slots:
 	void status_changed(const StatusList &sl);
+protected:
+	void setDescription(const QString &descr);
+	void updateTemperature();
 protected:
 	QVBoxLayout main_layout;
 	/// The setpoint temperature set on the interface. The scale is given by temp_scale
@@ -472,7 +474,6 @@ protected:
 	TemperatureScale temp_scale;
 	ThermalNavigation *nav_bar;
 private:
-	QString descr;
 	QLabel *descr_label;
 	QLabel *temp_label;
 	ThermalDevice *dev;

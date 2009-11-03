@@ -179,26 +179,34 @@ PageSimpleProbe::PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale s
 	: NavigationPage(parent), temp_scale(scale)
 {
 	descr_label = new QLabel(this);
+	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
+	descr_label->setAlignment(Qt::AlignHCenter);
+
 	main_layout.addWidget(descr_label);
 	main_layout.setContentsMargins(0, 0, 0, 0);
 	main_layout.setSpacing(0);
 
 	temp_label = new QLabel(this);
+	temp_label->setFont(bt_global::font->get(FontManager::TITLE));
+	temp_label->setAlignment(Qt::AlignHCenter);
+
 	main_layout.addWidget(temp_label);
 	main_layout.setAlignment(Qt::AlignHCenter);
 
-	temp = 1235;
-	descr = n.namedItem("descr").toElement().text();
+	setTemperature(1235);
+	setDescription(n.namedItem("descr").toElement().text());
 
 	createNavigationBar();
 
-	Draw();
 }
 
-void PageSimpleProbe::Draw()
+void PageSimpleProbe::setDescription(const QString &descr)
 {
-	temp_label->setFont(bt_global::font->get(FontManager::TITLE));
-	temp_label->setAlignment(Qt::AlignHCenter);
+	descr_label->setText(descr);
+}
+
+void PageSimpleProbe::setTemperature(unsigned temp)
+{
 	switch (temp_scale)
 	{
 	case CELSIUS:
@@ -211,16 +219,10 @@ void PageSimpleProbe::Draw()
 		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
 		temp_label->setText(celsiusString(temp));
 	}
-
-	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
-	descr_label->setAlignment(Qt::AlignHCenter);
-	descr_label->setText(descr);
 }
 
 void PageSimpleProbe::status_changed(QList<device_status*> sl)
 {
-	bool update = false;
-
 	for (int i = 0; i < sl.size(); ++i)
 	{
 		device_status *ds = sl.at(i);
@@ -228,13 +230,9 @@ void PageSimpleProbe::status_changed(QList<device_status*> sl)
 		{
 			stat_var curr_temp(stat_var::TEMPERATURE);
 			ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			temp = curr_temp.get_val();
-			update = true;
+			setTemperature(curr_temp.get_val());
 		}
 	}
-
-	if (update)
-		Draw();
 }
 
 
@@ -270,6 +268,8 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 
 	setpoint_label = new QLabel(this);
 	setpoint_label->setGeometry(SETPOINT_X, SETPOINT_Y, SETPOINT_WIDTH, SETPOINT_HEIGHT);
+	setpoint_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	setpoint_label->setAlignment(Qt::AlignHCenter);
 	setpoint_label->setProperty("SecondFgColor", true);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, Qt::AlignHCenter);
@@ -293,8 +293,10 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 
 	local_temp_label = new QLabel(this);
 	local_temp_label->setGeometry(LOCAL_TEMP_X, LOCAL_TEMP_Y,
-			LOCAL_TEMP_WIDTH, LOCAL_TEMP_HEIGHT);
+				      LOCAL_TEMP_WIDTH, LOCAL_TEMP_HEIGHT);
 
+	local_temp_label->setFont(bt_global::font->get(FontManager::TEXT));
+	local_temp_label->setAlignment(Qt::AlignHCenter);
 
 	switch (temp_scale)
 	{
@@ -321,7 +323,8 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	isOff = false;
 	isAntigelo = false;
 
-	Draw();
+	updatePointLabel();
+	updateControlState();
 }
 
 void PageProbe::setDeviceToManual()
@@ -356,7 +359,7 @@ void PageProbe::incSetpoint()
 		return;
 	else
 		setpoint += setpoint_delta;
-	Draw();
+	updatePointLabel();
 	setDeviceToManual();
 	delta_setpoint = true;
 }
@@ -367,21 +370,13 @@ void PageProbe::decSetpoint()
 		return;
 	else
 		setpoint -= setpoint_delta;
-	Draw();
+	updatePointLabel();
 	setDeviceToManual();
 	delta_setpoint = true;
 }
 
-void PageProbe::Draw()
+void PageProbe::updatePointLabel()
 {
-	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	setpoint_label->setVisible(!isOff && !isAntigelo);
-	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
-	icon_off->setVisible(isOff);
-	icon_antifreeze->setVisible(isAntigelo);
-	navbar_button->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-
 	switch (temp_scale)
 	{
 	case CELSIUS:
@@ -394,15 +389,18 @@ void PageProbe::Draw()
 		qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
 		setpoint_label->setText(celsiusString(setpoint));
 	}
+}
 
-	setpoint_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	setpoint_label->setAlignment(Qt::AlignHCenter);
-
-	local_temp_label->setFont(bt_global::font->get(FontManager::TEXT));
-	local_temp_label->setAlignment(Qt::AlignHCenter);
+void PageProbe::updateControlState()
+{
+	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	setpoint_label->setVisible(!isOff && !isAntigelo);
+	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
+	icon_off->setVisible(isOff);
+	icon_antifreeze->setVisible(isAntigelo);
+	navbar_button->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 	local_temp_label->setText(local_temp);
-
-	PageSimpleProbe::Draw();
 }
 
 void PageProbe::status_changed(QList<device_status*> sl)
@@ -488,7 +486,7 @@ void PageProbe::status_changed(QList<device_status*> sl)
 					qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
 					setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
 				}
-				update = true;
+				updatePointLabel();
 			}
 
 			stat_var curr_stat(stat_var::STAT);
@@ -532,7 +530,7 @@ void PageProbe::status_changed(QList<device_status*> sl)
 	}
 
 	if (update)
-		Draw();
+		updateControlState();
 
 	PageSimpleProbe::status_changed(sl);
 }
@@ -545,10 +543,9 @@ PageFancoil::PageFancoil(QDomNode n, temperature_probe_controlled *_dev, Thermal
 
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
-	fancoil_status = 0;
-	connect(&fancoil_buttons, SIGNAL(buttonClicked(int)), SLOT(handleFancoilButtons(int)));
+	setFancoilStatus(0);
 
-	Draw();
+	connect(&fancoil_buttons, SIGNAL(buttonClicked(int)), SLOT(handleFancoilButtons(int)));
 }
 
 void PageFancoil::createFancoilButtons()
@@ -572,10 +569,9 @@ void PageFancoil::createFancoilButtons()
 	main_layout.insertLayout(-1, hbox);
 }
 
-void PageFancoil::Draw()
+void PageFancoil::setFancoilStatus(int status)
 {
-	fancoil_buttons.button(fancoil_status)->setChecked(true);
-	PageProbe::Draw();
+	fancoil_buttons.button(status)->setChecked(true);
 }
 
 void PageFancoil::handleFancoilButtons(int pressedButton)
@@ -592,8 +588,6 @@ void PageFancoil::handleFancoilButtons(int pressedButton)
 
 void PageFancoil::status_changed(QList<device_status*> sl)
 {
-	bool update = false;
-
 	for (int i = 0; i < sl.size(); ++i)
 	{
 		device_status *ds = sl.at(i);
@@ -605,25 +599,22 @@ void PageFancoil::status_changed(QList<device_status*> sl)
 
 			// Set the fancoil Button in the buttons bar
 			if (speed_to_btn_tbl.contains(speed_var.get_val()))
-			{
-				fancoil_status = speed_to_btn_tbl[speed_var.get_val()];
-				update = true;
-			}
+				setFancoilStatus(speed_to_btn_tbl[speed_var.get_val()]);
 			else
 				qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
 		}
 	}
 
-	if (update)
-		Draw();
 	PageProbe::status_changed(sl);
 }
 
 PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale)
 	: Page(0), main_layout(this), temp_scale(scale), dev(_dev), setpoint_delta(5)
 {
-	descr = tr("Manual");
 	descr_label = new QLabel(this);
+	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
+	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+
 	main_layout.setSpacing(0);
 	main_layout.setContentsMargins(0, 0, 0, 10);
 	main_layout.addWidget(descr_label);
@@ -650,6 +641,8 @@ PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale sc
 	}
 
 	temp_label = new QLabel(this);
+	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	temp_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	temp_label->setProperty("SecondFgColor", true);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
@@ -682,7 +675,8 @@ PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale sc
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
 
-	Draw();
+	setDescription(tr("Manual"));
+	updateTemperature();
 }
 
 void PageManual::performAction()
@@ -710,7 +704,7 @@ void PageManual::incSetpoint()
 		return;
 	else
 		temp += setpoint_delta;
-	Draw();
+	updateTemperature();
 }
 
 void PageManual::decSetpoint()
@@ -719,18 +713,16 @@ void PageManual::decSetpoint()
 		return;
 	else
 		temp -= setpoint_delta;
-	Draw();
+	updateTemperature();
 }
 
-void PageManual::Draw()
+void PageManual::setDescription(const QString &descr)
 {
-	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
-	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	descr_label->setText(descr);
+}
 
-	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	temp_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-
+void PageManual::updateTemperature()
+{
 	switch (temp_scale)
 	{
 	case CELSIUS:
@@ -769,7 +761,7 @@ void PageManual::status_changed(const StatusList &sl)
 		temp = bt2Celsius(temperature);
 	}
 
-	Draw();
+	updateTemperature();
 }
 
 PageManualTimed::PageManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale)
@@ -783,8 +775,6 @@ PageManualTimed::PageManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, Tem
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
 	connect(nav_bar, SIGNAL(okClicked()), SLOT(performAction()));
-
-	Draw();
 }
 
 void PageManualTimed::performAction()
@@ -879,6 +869,7 @@ PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
 
 	// Put a sensible default for the description
 	QDomNode descr = conf_root.namedItem("descr");
+	QString description;
 	if (!descr.isNull())
 		description = descr.toElement().text();
 	else
@@ -887,10 +878,9 @@ PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
 		description = "Wrong node";
 	}
 	description_label = new QLabel(this);
+	description_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	description_label->setAlignment(Qt::AlignHCenter);
 	description_label->setProperty("SecondFgColor", true);
-
-	description_visible = true;
 
 	season_icon = getLabelWithPixmap(IMG_SUMMER_S, this, Qt::AlignHCenter);
 
@@ -907,17 +897,18 @@ PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 
 	createNavigationBar(IMG_SETTINGS);
-
-	Draw();
+	showDescription(description);
 }
 
-void PageTermoReg::Draw()
+void PageTermoReg::showDescription(const QString &desc)
 {
-	description_label->setVisible(description_visible);
-	description_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	description_label->setText(description);
-	// should I color text only if it is a setpoint temperature?
-	// TODO: verificare che venga impostato correttamente!!
+	description_label->setText(desc);
+	description_label->setVisible(true);
+}
+
+void PageTermoReg::hideDescription()
+{
+	description_label->setVisible(false);
 }
 
 void PageTermoReg::status_changed(const StatusList &sl)
@@ -936,14 +927,14 @@ void PageTermoReg::status_changed(const StatusList &sl)
 		{
 			QPixmap *icon = bt_global::icons_cache.getIcon(IMG_OFF_S);
 			mode_icon->setPixmap(*icon);
-			description_visible = false;
+			hideDescription();
 		}
 		break;
 	case ThermalDevice::ST_PROTECTION:
 		{
 			QPixmap *icon = bt_global::icons_cache.getIcon(IMG_ANTIFREEZE_S);
 			mode_icon->setPixmap(*icon);
-			description_visible = false;
+			hideDescription();
 		}
 		break;
 	case ThermalDevice::ST_MANUAL:
@@ -959,6 +950,7 @@ void PageTermoReg::status_changed(const StatusList &sl)
 
 			unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
 			// remember: stat_var::get_val() returns an int
+			QString description;
 			switch (temp_scale)
 			{
 			case CELSIUS:
@@ -971,7 +963,7 @@ void PageTermoReg::status_changed(const StatusList &sl)
 				qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
 				description = celsiusString(temperature);
 			}
-			description_visible = true;
+			showDescription(description);
 		}
 		break;
 	case ThermalDevice::ST_PROGRAM:
@@ -982,7 +974,7 @@ void PageTermoReg::status_changed(const StatusList &sl)
 
 			// now search the description in the DOM
 			int program = sl[ThermalDevice::DIM_PROGRAM].toInt();
-
+			QString description;
 			switch (season)
 			{
 			case ThermalDevice::SE_SUMMER:
@@ -992,7 +984,7 @@ void PageTermoReg::status_changed(const StatusList &sl)
 				description = lookupProgramDescription("winter", "prog", program);
 				break;
 			}
-			description_visible = true;
+			showDescription(description);
 		}
 		break;
 	case ThermalDevice::ST_SCENARIO:
@@ -1002,7 +994,7 @@ void PageTermoReg::status_changed(const StatusList &sl)
 			mode_icon->setPixmap(*icon);
 
 			int scenario = sl[ThermalDevice::DIM_SCENARIO].toInt();
-
+			QString description;
 			switch (season)
 			{
 			case ThermalDevice::SE_SUMMER:
@@ -1012,7 +1004,7 @@ void PageTermoReg::status_changed(const StatusList &sl)
 				description = lookupProgramDescription("winter", "scen", scenario);
 				break;
 			}
-			description_visible = true;
+			showDescription(description);
 		}
 		break;
 	case ThermalDevice::ST_HOLIDAY:
@@ -1020,7 +1012,7 @@ void PageTermoReg::status_changed(const StatusList &sl)
 			const QString i_img = QString(IMG_PATH) + "feriale.png";
 			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
 			mode_icon->setPixmap(*icon);
-			description_visible = false;
+			hideDescription();
 		}
 		break;
 	case ThermalDevice::ST_WEEKEND:
@@ -1028,14 +1020,12 @@ void PageTermoReg::status_changed(const StatusList &sl)
 			const QString i_img = QString(IMG_PATH) + "festivo.png";
 			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
 			mode_icon->setPixmap(*icon);
-			description_visible = false;
+			hideDescription();
 		}
 		break;
 	default:
 		break;
 	}
-
-	Draw();
 }
 
 void PageTermoReg::setSeason(int new_season)
