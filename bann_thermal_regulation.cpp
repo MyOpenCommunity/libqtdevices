@@ -350,13 +350,6 @@ void PageProbe::changeStatus()
 		dev->setAutomatic();
 }
 
-BtButton *PageProbe::customButton()
-{
-	if (probe_type == THERMO_Z99)
-		return navbar_button;
-	return 0;
-}
-
 void PageProbe::incSetpoint()
 {
 	if (setpoint >= maximum_manual_temp)

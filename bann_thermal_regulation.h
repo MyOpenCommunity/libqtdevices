@@ -147,7 +147,6 @@ public:
 	PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
 		  TemperatureScale scale = CELSIUS);
 	virtual void Draw();
-	BtButton *customButton();
 public slots:
 	virtual void status_changed(QList<device_status*> sl);
 protected:
