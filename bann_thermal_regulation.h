@@ -206,7 +206,6 @@ private:
 	int minimum_manual_temp;
 	/// The maximum temperature that can be set with manual operation
 	int maximum_manual_temp;
-	BtButton *navbar_button;
 
 private slots:
 	void changeStatus();

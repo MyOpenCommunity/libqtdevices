@@ -230,7 +230,8 @@ PageSimpleProbe::PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale s
 	setTemperature(1235);
 	setDescription(n.namedItem("descr").toElement().text());
 
-	createNavigationBar();
+	createNavigationBar(IMG_MAN);
+	nav_bar->forward_button->hide();
 }
 
 void PageSimpleProbe::setDescription(const QString &descr)
@@ -277,15 +278,12 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 {
 	status = AUTOMATIC;
 	probe_type = thermo_reg->type();
-	navbar_button = new BtButton(this);
-	navbar_button->setImage(IMG_MAN);
 
-	navbar_button->hide();
 	conf_root = n;
 	dev = _dev;
 
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
-	connect(navbar_button, SIGNAL(clicked()), SLOT(changeStatus()));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(changeStatus()));
 	//install compressor
 	dev->installFrameCompressor(setpoint_delay);
 
@@ -432,7 +430,7 @@ void PageProbe::updateControlState()
 	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
 	icon_off->setVisible(isOff);
 	icon_antifreeze->setVisible(isAntigelo);
-	navbar_button->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	nav_bar->forward_button->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 	local_temp_label->setText(local_temp);
 }
 
@@ -530,12 +528,12 @@ void PageProbe::status_changed(QList<device_status*> sl)
 				{
 				case device_status_temperature_probe_extra::S_MAN:
 					status = MANUAL;
-					navbar_button->setImage(IMG_AUTO);
+					nav_bar->forward_button->setImage(IMG_AUTO);
 					update = true;
 					break;
 				case device_status_temperature_probe_extra::S_AUTO:
 					status = AUTOMATIC;
-					navbar_button->setImage(IMG_MAN);
+					nav_bar->forward_button->setImage(IMG_MAN);
 					update = true;
 					break;
 				case device_status_temperature_probe_extra::S_ANTIGELO:
