@@ -225,39 +225,3 @@ void ScenarioMenu::createWinterBanners()
 	const QString i_central = QString(IMG_PATH) + "scenario_invernale.png";
 	createSeasonBanner("winter", "scen", i_central);
 }
-
-TimeEditMenu::TimeEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
-{
-	setNavBarMode(10, IMG_OK);
-	time_edit = new FSBannTime(this);
-	elencoBanner.append(time_edit);
-	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
-}
-
-void TimeEditMenu::performAction()
-{
-	emit timeSelected(time());
-}
-
-BtTime TimeEditMenu::time()
-{
-	return time_edit->time();
-}
-
-DateEditMenu::DateEditMenu(QWidget *parent) : sottoMenu(parent, 10, MAX_WIDTH, MAX_HEIGHT, 1)
-{
-	setNavBarMode(10, IMG_OK);
-	date_edit = new FSBannDate(this);
-	elencoBanner.append(date_edit);
-	connect(bannNavigazione, SIGNAL(forwardClick()), this, SLOT(performAction()));
-}
-
-void DateEditMenu::performAction()
-{
-	emit dateSelected(date());
-}
-
-QDate DateEditMenu::date()
-{
-	return date_edit->date();
-}

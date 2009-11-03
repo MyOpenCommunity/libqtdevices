@@ -41,6 +41,8 @@ class BtTimeEdit;
 class BtDateEdit;
 class sottoMenu;
 class NavigationPage;
+class PageSetDate;
+class PageSetTime;
 
 class QLabel;
 
@@ -355,8 +357,8 @@ private:
 	 */
 	banner *createHolidayWeekendBanner(sottoMenu *settings, QString icon);
 
-	DateEditMenu *createDateEdit(sottoMenu *settings);
-	TimeEditMenu *createTimeEdit(sottoMenu *settings);
+	PageSetDate *createDateEdit(sottoMenu *settings);
+	PageSetTime *createTimeEdit(sottoMenu *settings);
 	WeeklyMenu *createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev);
 
 	/// Label and string that may be visualized
@@ -372,8 +374,8 @@ private:
 
 	QDate date_end;
 	BtTime time_end;
-	TimeEditMenu *time_edit;
-	DateEditMenu *date_edit;
+	PageSetTime *time_edit;
+	PageSetDate *date_edit;
 	ProgramMenu *program_choice;
 	WeeklyMenu *program_menu;
 };
@@ -510,24 +512,32 @@ signals:
 };
 
 
-class FSBannDate : public BannFullScreen
+class PageSetDate : public Page
 {
 Q_OBJECT
 public:
-	FSBannDate(QWidget *parent);
+	PageSetDate(QWidget *parent = 0);
 	QDate date();
+signals:
+	void dateSelected(QDate);
+private slots:
+	void performAction();
 private:
 	QVBoxLayout main_layout;
 	BtDateEdit *date_edit;
 };
 
 
-class FSBannTime : public BannFullScreen
+class PageSetTime : public Page
 {
 Q_OBJECT
 public:
-	FSBannTime(QWidget *parent);
+	PageSetTime(QWidget *parent = 0);
 	BtTime time();
+signals:
+	void timeSelected(BtTime);
+private slots:
+	void performAction();
 private:
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;

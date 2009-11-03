@@ -833,7 +833,7 @@ void PageManualTimed::setMaxMinutes(int max)
 	time_edit->setMaxMinutes(max);
 }
 
-FSBannDate::FSBannDate(QWidget *parent) : BannFullScreen(parent), main_layout(this)
+PageSetDate::PageSetDate(QWidget *parent) : Page(0), main_layout(this)
 {
 	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	QLabel *top = new QLabel(this);
@@ -843,15 +843,26 @@ FSBannDate::FSBannDate(QWidget *parent) : BannFullScreen(parent), main_layout(th
 	date_edit = new BtDateEdit(this);
 	main_layout.addWidget(date_edit);
 	main_layout.setSpacing(0);
-	main_layout.setContentsMargins(0, 0, 0, 0);
+	main_layout.setContentsMargins(0, 0, 0, 10);
+
+	ThermalNavigation *nav = new ThermalNavigation;
+	main_layout.addWidget(nav);
+
+	connect(nav, SIGNAL(okClicked()), SLOT(performAction()));
+	connect(nav, SIGNAL(backClicked()), SIGNAL(Closed()));
 }
 
-QDate FSBannDate::date()
+QDate PageSetDate::date()
 {
 	return date_edit->date();
 }
 
-FSBannTime::FSBannTime(QWidget *parent) : BannFullScreen(parent), main_layout(this)
+void PageSetDate::performAction()
+{
+	emit dateSelected(date());
+}
+
+PageSetTime::PageSetTime(QWidget *parent) : Page(0), main_layout(this)
 {
 	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	QLabel *top = new QLabel(this);
@@ -861,12 +872,23 @@ FSBannTime::FSBannTime(QWidget *parent) : BannFullScreen(parent), main_layout(th
 	time_edit = new BtTimeEdit(this);
 	main_layout.addWidget(time_edit);
 	main_layout.setSpacing(0);
-	main_layout.setContentsMargins(0, 0, 0, 0);
+	main_layout.setContentsMargins(0, 0, 0, 10);
+
+	ThermalNavigation *nav = new ThermalNavigation;
+	main_layout.addWidget(nav);
+
+	connect(nav, SIGNAL(okClicked()), SLOT(performAction()));
+	connect(nav, SIGNAL(backClicked()), SIGNAL(Closed()));
 }
 
-BtTime FSBannTime::time()
+BtTime PageSetTime::time()
 {
 	return time_edit->time();
+}
+
+void PageSetTime::performAction()
+{
+	emit timeSelected(time());
 }
 
 PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
@@ -1258,28 +1280,28 @@ banner *PageTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString ic
 	return bann;
 }
 
-DateEditMenu *PageTermoReg::createDateEdit(sottoMenu *settings)
+PageSetDate *PageTermoReg::createDateEdit(sottoMenu *settings)
 {
-	DateEditMenu *date_edit = new DateEditMenu;
+	PageSetDate *date_edit = new PageSetDate;
 	connect(date_edit, SIGNAL(Closed()), settings, SLOT(showPage()));
-	connect(date_edit, SIGNAL(dateSelected(QDate)), this, SLOT(dateSelected(QDate)));
+	connect(date_edit, SIGNAL(dateSelected(QDate)), SLOT(dateSelected(QDate)));
 	return date_edit;
 }
 
-TimeEditMenu *PageTermoReg::createTimeEdit(sottoMenu *settings)
+PageSetTime *PageTermoReg::createTimeEdit(sottoMenu *settings)
 {
-	TimeEditMenu *time_edit = new TimeEditMenu;
-	connect(time_edit, SIGNAL(timeSelected(BtTime)), this, SLOT(timeSelected(BtTime)));
-	connect(time_edit, SIGNAL(Closed()), this, SLOT(timeCancelled()));
+	PageSetTime *time_edit = new PageSetTime;
+	connect(time_edit, SIGNAL(timeSelected(BtTime)), SLOT(timeSelected(BtTime)));
+	connect(time_edit, SIGNAL(Closed()), SLOT(timeCancelled()));
 	return time_edit;
 }
 
 WeeklyMenu *PageTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
-	connect(program_choice, SIGNAL(programClicked(int)), this, SLOT(weekendHolidaySettingsEnd(int)));
+	connect(program_choice, SIGNAL(programClicked(int)), SLOT(weekendHolidaySettingsEnd(int)));
 	connect(program_choice, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
-	connect(program_choice, SIGNAL(Closed()), this, SLOT(programCancelled()));
+	connect(program_choice, SIGNAL(Closed()), SLOT(programCancelled()));
 	return program_choice;
 }
 

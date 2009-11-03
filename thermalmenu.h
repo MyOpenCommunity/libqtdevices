@@ -28,8 +28,8 @@
 #include <QWidget>
 #include <QString>
 
-class FSBannTime;
-class FSBannDate;
+class PageSetTime;
+class PageSetDate;
 
 
 class ThermalMenu : public Page
@@ -122,41 +122,6 @@ public:
 	ScenarioMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
-};
-
-/**
- * A submenu that let the user choose the time.
- */
-class TimeEditMenu : public sottoMenu
-{
-Q_OBJECT
-public:
-	TimeEditMenu(QWidget *parent=0);
-	BtTime time();
-private:
-	FSBannTime *time_edit;
-private slots:
-	void performAction();
-signals:
-	void timeSelected(BtTime);
-};
-
-/**
- * A submenu that let the users choose a date and emits a signal with the selected date when the user
- * confirms the choice.
- */
-class DateEditMenu : public sottoMenu
-{
-Q_OBJECT
-public:
-	DateEditMenu(QWidget *parent=0);
-	QDate date();
-private:
-	FSBannDate *date_edit;
-private slots:
-	void performAction();
-signals:
-	void dateSelected(QDate);
 };
 
 #endif
