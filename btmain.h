@@ -91,6 +91,9 @@ private slots:
 
 private:
 	Client *client_monitor;
+#if DEBUG
+	Client *client_supervisor;
+#endif
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
 	homePage *Home;

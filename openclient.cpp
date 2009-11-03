@@ -17,6 +17,7 @@
 #include <QDebug>
 
 #define SOCKET_MONITOR "*99*1##"
+#define SOCKET_SUPERVISOR "*99*10##"
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
 
@@ -24,6 +25,9 @@
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
 	qDebug("Client::Client()");
+#if DEBUG
+	to_forward = 0;
+#endif
 
 	socket = new QTcpSocket(this);
 
@@ -59,6 +63,11 @@ void Client::socketConnected()
 	{
 		qDebug("TRY TO START request");
 		socket->write(SOCKET_RICHIESTE);
+	}
+	else if (type == SUPERVISOR)
+	{
+		qDebug("TRY TO START supervisor");
+		socket->write(SOCKET_SUPERVISOR);
 	}
 	else
 	{
@@ -136,7 +145,7 @@ QByteArray Client::readFromServer()
 
 void Client::manageFrame(QByteArray frame)
 {
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 	{
 		qDebug() << "frame read: " << frame;
 		if (frame == "*#*1##")
@@ -171,8 +180,22 @@ void Client::manageFrame(QByteArray frame)
 	}
 }
 
+#if DEBUG
+void Client::forwardFrame(Client *c)
+{
+	to_forward = c;
+}
+#endif
+
 void Client::dispatchFrame(QString frame)
 {
+#if DEBUG
+	if (to_forward)
+	{
+		to_forward->dispatchFrame(frame);
+		return;
+	}
+#endif
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame.toAscii().data(), frame.length());
 	if (subscribe_list.contains(msg.who()))
@@ -238,7 +261,7 @@ int Client::socketWaitForAck()
 {
 	qDebug("Client::socketWaitForAck()");
 
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 		return -1;
 	ackRx = false;
 	connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
@@ -257,16 +280,16 @@ void Client::ackReceived()
 void Client::socketConnectionClosed()
 {
 	qDebug("Client::socketConnectionClosed()");
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 		connetti();
 }
 
 void Client::socketError(QAbstractSocket::SocketError e)
 {
-	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR)
+	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR || type == SUPERVISOR)
 		qWarning() << "OpenClient: error " << e << "occurred " << socket->errorString()
 			<< "on client" << type;
 
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 		QTimer::singleShot(500, this, SLOT(connetti()));
 }

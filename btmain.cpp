@@ -62,6 +62,10 @@ BtMain::BtMain()
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
 	client_richieste = new Client(Client::RICHIESTE);
+#if DEBUG
+	client_supervisor = new Client(Client::SUPERVISOR);
+	client_supervisor->forwardFrame(client_monitor);
+#endif
 	FrameReceiver::setClientMonitor(client_monitor);
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
@@ -125,6 +129,9 @@ BtMain::~BtMain()
 	delete client_comandi;
 	delete client_monitor;
 	delete client_richieste;
+#if DEBUG
+	delete client_supervisor;
+#endif
 }
 
 void BtMain::loadGlobalConfig()

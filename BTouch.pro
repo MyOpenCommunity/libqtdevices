@@ -37,6 +37,7 @@ CONFIG -= debug_and_release
 
 CONFIG(debug,debug|release) {
 	message(*** Debug build)
+	DEFINES += DEBUG
 }
 
 CONFIG(release,debug|release) {

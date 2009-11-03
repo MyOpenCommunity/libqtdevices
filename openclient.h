@@ -46,6 +46,7 @@ public:
 	enum Type
 	{
 		MONITOR = 0,
+		SUPERVISOR,
 		RICHIESTE,
 		COMANDI
 	};
@@ -57,6 +58,9 @@ public:
 	void subscribe(FrameReceiver *obj, int who);
 	void unsubscribe(FrameReceiver *obj);
 	~Client();
+#if DEBUG
+	void forwardFrame(Client *c);
+#endif
 
 private slots:
 	void connetti();
@@ -86,6 +90,10 @@ private:
 	openwebnet last_msg_open_write;
 	bool ackRx;
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
+
+#if DEBUG
+	Client *to_forward;
+#endif
 
 	void socketStateRead(char*);
 	void manageFrame(QByteArray frame);
