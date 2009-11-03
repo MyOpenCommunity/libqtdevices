@@ -1980,6 +1980,11 @@ void frame_interpreter_radio_device::handle_frame(openwebnet_ext m, device_statu
 			curr_freq.set_val(freq);
 			qDebug("Setting frequency to %d", freq);
 			ds->write_val((int)device_status_radio::FREQ_INDEX, curr_freq);
+			staz = 0;
+			ds->read((int)device_status_radio::STAZ_INDEX, curr_staz);
+			curr_staz.set_val(staz);
+			qDebug("Setting staz to NULL");
+			ds->write_val((int)device_status_radio::STAZ_INDEX, curr_staz);
 			do_event = true;
 			break;
 		case 7:

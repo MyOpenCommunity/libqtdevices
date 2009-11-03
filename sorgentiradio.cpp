@@ -32,7 +32,7 @@ banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString &
 	myRadio->setRDS("");
 	myRadio->setFreq(0.00);
 
-	myRadio->setStaz((uchar)1);
+	myRadio->setStaz((uchar)0);
 
 	if (nbut == 4)
 	{
@@ -106,7 +106,9 @@ void banradio::status_changed(QList<device_status*> sl)
 			ds->read(device_status_radio::RDS7_INDEX, curr_rds7);
 			freq = (float)curr_freq.get_val()/1000.0F;
 			myRadio->setFreq(freq);
+			qDebug() << "*** setting freq to " << freq;
 			myRadio->setStaz((uchar)curr_staz.get_val());
+			qDebug() << "*** setting staz to " << myRadio->getStaz();
 
 			QString qrds;
 			qrds += QChar(curr_rds0.get_val());
