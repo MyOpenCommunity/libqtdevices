@@ -3,12 +3,13 @@
 #include "bttime.h"
 #include "generic_functions.h" // createWriteRequestOpen
 
+#include <QDebug>
+
+
 // ThermalDevice implementation
 
-const QString ThermalDevice::WHO = "4";
-
 ThermalDevice::ThermalDevice(QString where)
-	: device(QString(WHO), QString("#") + where, false, -1)
+	: device(QString("4"), QString("#") + where, false, -1)
 {
 }
 
@@ -128,6 +129,8 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	int command = commandRange(what);
 	int program = what - command;
 	StatusList sl;
+
+	qDebug() << "ThermalDevice command" << command << "program" << program;
 
 	switch (command)
 	{

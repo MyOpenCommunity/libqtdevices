@@ -80,8 +80,6 @@ public:
 	 */
 	virtual thermo_type_t type() const = 0;
 
-	static const QString WHO;
-
 protected:
 	enum what_t
 	{

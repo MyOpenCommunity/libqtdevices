@@ -7,6 +7,7 @@
 #include "scaleconversion.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "devices_cache.h" // bt_global::devices_cache
+#include "thermal_device.h"
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"
@@ -70,7 +71,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						where_composed, THERMO_Z4, false, ind_centrale, simple_address));
 			QString thermr_where = QString("0#") + ind_centrale;
-			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
 			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
 		}
@@ -81,7 +82,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						simple_address, THERMO_Z99, false, ind_centrale, simple_address));
 			QString thermr_where = ind_centrale;
-			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
 			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
 		}
@@ -92,7 +93,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						where_composed, THERMO_Z4, true, ind_centrale, simple_address));
 			QString thermr_where = QString("0#") + ind_centrale;
-			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
 			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
 		}
@@ -103,7 +104,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						simple_address, THERMO_Z99, true, ind_centrale, simple_address));
 			QString thermr_where = ind_centrale;
-			thermal_regulator *thermo_reg = static_cast<thermal_regulator *>(
+			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
 			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
 		}
@@ -111,7 +112,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 	case fs_4z_thermal_regulator:
 		{
 			where_composed = QString("0#") + ind_centrale;
-			thermal_regulator_4z *dev = static_cast<thermal_regulator_4z *>(
+			ThermalDevice4Zones *dev = static_cast<ThermalDevice4Zones *>(
 					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
 			bfs = new FSBannTermoReg4z(n, dev, parent);
 		}
@@ -119,7 +120,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 	case fs_99z_thermal_regulator:
 		{
 			where_composed = ind_centrale;
-			thermal_regulator_99z *dev = static_cast<thermal_regulator_99z *>(
+			ThermalDevice99Zones *dev = static_cast<ThermalDevice99Zones *>(
 					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
 			bfs = new FSBannTermoReg99z(n, dev, parent);
 		}
@@ -196,7 +197,7 @@ void FSBannSimpleProbe::status_changed(QList<device_status*> sl)
 }
 
 
-FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
 	TemperatureScale scale) : FSBannSimpleProbe(parent, n, scale),
 	delta_setpoint(false),
 	setpoint_delay(2000),
@@ -497,7 +498,7 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 	FSBannSimpleProbe::status_changed(sl);
 }
 
-FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, thermal_regulator *thermo_reg, QWidget *parent,
+FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
 	TemperatureScale scale) : FSBannProbe(n, _dev, thermo_reg, parent, scale), fancoil_buttons(this)
 {
 	dev = _dev;
@@ -577,7 +578,7 @@ void FSBannFancoil::status_changed(QList<device_status*> sl)
 	FSBannProbe::status_changed(sl);
 }
 
-FSBannManual::FSBannManual(QWidget *parent, thermal_regulator *_dev, TemperatureScale scale)
+FSBannManual::FSBannManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale)
 	: BannFullScreen(parent), main_layout(this), temp_scale(scale), dev(_dev), setpoint_delta(5)
 {
 	descr = tr("Manual");
@@ -630,7 +631,8 @@ FSBannManual::FSBannManual(QWidget *parent, thermal_regulator *_dev, Temperature
 
 	main_layout.addLayout(hbox);
 
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(const StatusList &)),
+		SLOT(status_changed(const StatusList &)));
 }
 
 void FSBannManual::performAction()
@@ -698,48 +700,42 @@ BtButton *FSBannManual::customButton()
 	return navbar_button;
 }
 
-void FSBannManual::status_changed(QList<device_status*> sl)
+void FSBannManual::status_changed(const StatusList &sl)
 {
-	bool update = false;
+	// TODO check why only for 4-zone regulator
+	if (dev->type() != THERMO_Z4)
+		return;
 
-	for (int i = 0; i < sl.size(); ++i)
+	if (!sl.contains(ThermalDevice::DIM_TEMPERATURE))
+		return;
+
+	unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
+
+	switch (temp_scale)
 	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z)
-		{
-			stat_var curr_sp(stat_var::SP);
-			ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
-			if (curr_sp.initialized())
-			{
-				switch (temp_scale)
-				{
-				case CELSIUS:
-					temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
-					break;
-				case FAHRENHEIT:
-					temp = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
-					break;
-				default:
-					qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-					temp = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
-				}
-				update = true;
-			}
-		}
+	case CELSIUS:
+		temp = bt2Celsius(temperature);
+		break;
+	case FAHRENHEIT:
+		temp = bt2Fahrenheit(temperature);
+		break;
+	default:
+		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
+		temp = bt2Celsius(temperature);
 	}
 
-	if (update)
-		Draw();
+	Draw();
 }
 
-FSBannManualTimed::FSBannManualTimed(QWidget *parent, thermal_regulator_4z *_dev, TemperatureScale scale)
+FSBannManualTimed::FSBannManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale)
 	: FSBannManual(parent, _dev, scale),
 	dev(_dev)
 {
 	time_edit = new BtTimeEdit(this);
 	main_layout.addWidget(time_edit);
 
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(const StatusList &)),
+		SLOT(status_changed(const StatusList &)));
 	connect(navbar_button, SIGNAL(clicked()), this, SLOT(performAction()));
 }
 
@@ -856,152 +852,137 @@ void FSBannTermoReg::Draw()
 	// TODO: verificare che venga impostato correttamente!!
 }
 
-void FSBannTermoReg::status_changed(QList<device_status*> sl)
+void FSBannTermoReg::status_changed(const StatusList &sl)
 {
-	int season = thermal_regulator::SUMMER;
+	ThermalDevice::Season season = ThermalDevice::SE_SUMMER;
 
-	for (int i = 0; i < sl.size(); ++i)
+	if (sl.contains(ThermalDevice::DIM_SEASON))
+		season = static_cast<ThermalDevice::Season>(sl[ThermalDevice::DIM_SEASON].toInt());
+
+	setSeason(season);
+
+	int status = sl[ThermalDevice::DIM_STATUS].toInt();
+	switch (status)
 	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::THERMAL_REGULATOR_4Z || ds->get_type() == device_status::THERMAL_REGULATOR_99Z)
+	case ThermalDevice::ST_OFF:
 		{
-			stat_var curr_season(stat_var::SEASON);
-			ds->read(device_status_thermal_regulator::SEASON_INDEX, curr_season);
-			season = curr_season.get_val();
-			setSeason(static_cast<Season>(season));
+			QPixmap *icon = bt_global::icons_cache.getIcon(IMG_OFF_S);
+			mode_icon->setPixmap(*icon);
+			description_visible = false;
+		}
+		break;
+	case ThermalDevice::ST_PROTECTION:
+		{
+			QPixmap *icon = bt_global::icons_cache.getIcon(IMG_ANTIFREEZE_S);
+			mode_icon->setPixmap(*icon);
+			description_visible = false;
+		}
+		break;
+	case ThermalDevice::ST_MANUAL:
+	case ThermalDevice::ST_MANUAL_TIMED:
+		{
+			QString i_img = QString(IMG_PATH);
+			if (status == ThermalDevice::ST_MANUAL)
+				i_img += "manuale.png";
+			else
+				i_img += "manuale_temporizzato.png";
+			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
+			mode_icon->setPixmap(*icon);
 
-			stat_var curr_status(stat_var::THERMR);
-			ds->read(device_status_thermal_regulator::STATUS_INDEX, curr_status);
-			switch (curr_status.get_val())
+			unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
+			// remember: stat_var::get_val() returns an int
+			switch (temp_scale)
 			{
-			case device_status_thermal_regulator::OFF:
-				{
-					QPixmap *icon = bt_global::icons_cache.getIcon(IMG_OFF_S);
-					mode_icon->setPixmap(*icon);
-					description_visible = false;
-				}
+			case CELSIUS:
+				description = celsiusString(bt2Celsius(temperature));
 				break;
-			case device_status_thermal_regulator::PROTECTION:
-				{
-					QPixmap *icon = bt_global::icons_cache.getIcon(IMG_ANTIFREEZE_S);
-					mode_icon->setPixmap(*icon);
-					description_visible = false;
-				}
-				break;
-			case device_status_thermal_regulator::MANUAL:
-			case device_status_thermal_regulator::MANUAL_TIMED:
-				{
-					QString i_img = QString(IMG_PATH);
-					if (curr_status.get_val() == device_status_thermal_regulator::MANUAL)
-						i_img += "manuale.png";
-					else
-						i_img += "manuale_temporizzato.png";
-					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-					mode_icon->setPixmap(*icon);
-					stat_var curr_sp(stat_var::SP);
-					ds->read(device_status_thermal_regulator::SP_INDEX, curr_sp);
-					// remember: stat_var::get_val() returns an int
-					switch (temp_scale)
-					{
-					case CELSIUS:
-						description = celsiusString(bt2Celsius(
-									static_cast<unsigned>(curr_sp.get_val())));
-						break;
-					case FAHRENHEIT:
-						description = fahrenheitString(bt2Fahrenheit(
-									static_cast<unsigned>(curr_sp.get_val())));
-						break;
-					default:
-						qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
-						description = celsiusString(curr_sp.get_val());
-					}
-					description_visible = true;
-				}
-				break;
-			case device_status_thermal_regulator::WEEK_PROGRAM:
-				{
-					const QString i_img = QString(IMG_PATH) + "settimanale.png";
-					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-					mode_icon->setPixmap(*icon);
-
-					stat_var curr_program(stat_var::PROGRAM);
-					ds->read(device_status_thermal_regulator::PROGRAM_INDEX, curr_program);
-
-					// now search the description in the DOM
-					int program = curr_program.get_val();
-
-					switch (season)
-					{
-					case thermal_regulator::SUMMER:
-						description = lookupProgramDescription("summer", "prog", program);
-						break;
-					case thermal_regulator::WINTER:
-						description = lookupProgramDescription("winter", "prog", program);
-						break;
-					}
-					description_visible = true;
-				}
-				break;
-			case device_status_thermal_regulator::SCENARIO:
-				{
-					const QString i_img = QString(IMG_PATH) + "scenari.png";
-					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-					mode_icon->setPixmap(*icon);
-
-					stat_var curr_scenario(stat_var::SCENARIO);
-					ds->read(device_status_thermal_regulator::SCENARIO_INDEX, curr_scenario);
-
-					int scenario = curr_scenario.get_val();
-					switch (season)
-					{
-					case thermal_regulator::SUMMER:
-						description = lookupProgramDescription("summer", "scen", scenario);
-						break;
-					case thermal_regulator::WINTER:
-						description = lookupProgramDescription("winter", "scen", scenario);
-						break;
-					}
-					description_visible = true;
-				}
-				break;
-			case device_status_thermal_regulator::HOLIDAY:
-				{
-					const QString i_img = QString(IMG_PATH) + "feriale.png";
-					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-					mode_icon->setPixmap(*icon);
-					description_visible = false;
-				}
-				break;
-			case device_status_thermal_regulator::WEEKEND:
-				{
-					const QString i_img = QString(IMG_PATH) + "festivo.png";
-					QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-					mode_icon->setPixmap(*icon);
-					description_visible = false;
-				}
+			case FAHRENHEIT:
+				description = fahrenheitString(bt2Fahrenheit(temperature));
 				break;
 			default:
+				qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
+				description = celsiusString(temperature);
+			}
+			description_visible = true;
+		}
+		break;
+	case ThermalDevice::ST_PROGRAM:
+		{
+			const QString i_img = QString(IMG_PATH) + "settimanale.png";
+			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
+			mode_icon->setPixmap(*icon);
+
+			// now search the description in the DOM
+			int program = sl[ThermalDevice::DIM_PROGRAM].toInt();
+
+			switch (season)
+			{
+			case ThermalDevice::SE_SUMMER:
+				description = lookupProgramDescription("summer", "prog", program);
+				break;
+			case ThermalDevice::SE_WINTER:
+				description = lookupProgramDescription("winter", "prog", program);
 				break;
 			}
+			description_visible = true;
 		}
+		break;
+	case ThermalDevice::ST_SCENARIO:
+		{
+			const QString i_img = QString(IMG_PATH) + "scenari.png";
+			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
+			mode_icon->setPixmap(*icon);
+
+			int scenario = sl[ThermalDevice::DIM_SCENARIO].toInt();
+
+			switch (season)
+			{
+			case ThermalDevice::SE_SUMMER:
+				description = lookupProgramDescription("summer", "scen", scenario);
+				break;
+			case ThermalDevice::SE_WINTER:
+				description = lookupProgramDescription("winter", "scen", scenario);
+				break;
+			}
+			description_visible = true;
+		}
+		break;
+	case ThermalDevice::ST_HOLIDAY:
+		{
+			const QString i_img = QString(IMG_PATH) + "feriale.png";
+			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
+			mode_icon->setPixmap(*icon);
+			description_visible = false;
+		}
+		break;
+	case ThermalDevice::ST_WEEKEND:
+		{
+			const QString i_img = QString(IMG_PATH) + "festivo.png";
+			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
+			mode_icon->setPixmap(*icon);
+			description_visible = false;
+		}
+		break;
+	default:
+		break;
 	}
 
 	Draw();
 }
 
-void FSBannTermoReg::setSeason(Season new_season)
+void FSBannTermoReg::setSeason(int new_season)
 {
-	if (new_season == SUMMER || new_season == WINTER)
+	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
 	{
 		QString img = IMG_PATH;
-		if (new_season == SUMMER)
+		if (new_season == ThermalDevice::SE_SUMMER)
 			img += "estate_s.png";
 		else
 			img += "inverno_s.png";
 		QPixmap *icon = bt_global::icons_cache.getIcon(img);
 		season_icon->setPixmap(*icon);
-		program_choice->setSeason(new_season);
-		program_menu->setSeason(new_season);
+		program_choice->setSeason(static_cast<Season>(new_season));
+		program_menu->setSeason(static_cast<Season>(new_season));
 	}
 	else
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
@@ -1021,7 +1002,7 @@ QString FSBannTermoReg::lookupProgramDescription(QString season, QString what, i
 		return node.text();
 }
 
-void FSBannTermoReg::createButtonsBanners(thermal_regulator *dev)
+void FSBannTermoReg::createButtonsBanners(ThermalDevice *dev)
 {
 	// off banner
 	BannOff *off = new BannOff(settings, dev);
@@ -1039,15 +1020,16 @@ void FSBannTermoReg::createButtonsBanners(thermal_regulator *dev)
 	connect(summer_winter, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
 }
 
-FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, thermal_regulator_4z *device, QWidget *parent)
+FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *parent)
 	: FSBannTermoReg(n, parent)
 {
 	_dev = device;
-	connect(_dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
+	connect(_dev, SIGNAL(status_changed(const StatusList &)),
+		SLOT(status_changed(const StatusList &)));
 	createSettingsMenu();
 }
 
-thermal_regulator *FSBannTermoReg4z::dev()
+ThermalDevice *FSBannTermoReg4z::dev()
 {
 	return _dev;
 }
@@ -1083,15 +1065,16 @@ void FSBannTermoReg4z::createSettingsMenu()
 	createButtonsBanners(_dev);
 }
 
-FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, thermal_regulator_99z *device, QWidget *parent)
+FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *parent)
 	: FSBannTermoReg(n, parent)
 {
 	_dev = device;
-	connect(_dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
+	connect(_dev, SIGNAL(status_changed(const StatusList &)),
+		SLOT(status_changed(const StatusList &)));
 	createSettingsMenu();
 }
 
-thermal_regulator *FSBannTermoReg99z::dev()
+ThermalDevice *FSBannTermoReg99z::dev()
 {
 	return _dev;
 }
@@ -1137,7 +1120,7 @@ void FSBannTermoReg99z::createSettingsMenu()
 //
 // ------------- Utility functions to create thermal regulator settings menus -------------------
 //
-void FSBannTermoReg::manualSettings(sottoMenu *settings, thermal_regulator *dev)
+void FSBannTermoReg::manualSettings(sottoMenu *settings, ThermalDevice *dev)
 {
 	// manual banner
 	bannPuls *manual = new bannPuls(settings);
@@ -1160,7 +1143,7 @@ void FSBannTermoReg::manualSelected(unsigned temp)
 	dev()->setManualTemp(temp);
 }
 
-void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
+void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
 {
 	bannPuls *weekly = new bannPuls(settings);
 	weekly->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("settimanale.png"));
@@ -1180,7 +1163,7 @@ void FSBannTermoReg::weekProgramSelected(int program)
 	dev()->setWeekProgram(program);
 }
 
-void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
+void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
 {
 	banner *bann = createHolidayWeekendBanner(settings, "feriale.png");
 	connect(bann, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
@@ -1192,7 +1175,7 @@ void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, thermal
 		program_choice = createProgramChoice(settings, conf, dev);
 }
 
-void FSBannTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, thermal_regulator *dev)
+void FSBannTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
 {
 	banner *bann = createHolidayWeekendBanner(settings, "festivo.png");
 	connect(bann, SIGNAL(sxClick()), this, SLOT(weekendSettingsStart()));
@@ -1281,7 +1264,7 @@ void FSBannTermoReg::weekendHolidaySettingsEnd(int program)
 		qWarning("FSBannTermoReg::weekendHolidaySettingsEnd: unknown status");
 }
 
-void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, thermal_regulator_4z *dev)
+void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, ThermalDevice4Zones *dev)
 {
 	// timed manual banner
 	bannPuls *manual_timed = new bannPuls(settings);
@@ -1307,7 +1290,7 @@ void FSBannTermoReg4z::manualTimedSelected(BtTime time, int temp)
 	_dev->setManualTempTimed(temp, time);
 }
 
-void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, thermal_regulator_99z *dev)
+void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, ThermalDevice99Zones *dev)
 {
 	bannPuls *scenario = new bannPuls(settings);
 	scenario->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("scenari.png"));
@@ -1328,7 +1311,7 @@ void FSBannTermoReg99z::scenarioSelected(int scenario)
 }
 
 
-BannOff::BannOff(QWidget *parent, thermal_regulator *_dev) : bann3But(parent)
+BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
 {
 	QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
 
@@ -1344,7 +1327,7 @@ void BannOff::performAction()
 }
 
 
-BannAntifreeze::BannAntifreeze(QWidget *parent, thermal_regulator *_dev) : bann3But(parent)
+BannAntifreeze::BannAntifreeze(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
 {
 	QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
 
@@ -1359,7 +1342,7 @@ void BannAntifreeze::performAction()
 	dev->setProtection();
 }
 
-BannSummerWinter::BannSummerWinter(QWidget *parent, thermal_regulator *_dev) : bann4But(parent)
+BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : bann4But(parent)
 {
 	QString i_summer = QString("%1%2").arg(IMG_PATH).arg("estate.png");
 	QString i_winter = QString("%1%2").arg(IMG_PATH).arg("inverno.png");

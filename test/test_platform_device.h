@@ -3,10 +3,10 @@
 
 #include "test_device.h"
 
-class LanDevice;
+class PlatformDevice;
 
 
-class TestLanDevice : public TestDevice
+class TestPlatformDevice : public TestDevice
 {
 Q_OBJECT
 private slots:
@@ -21,8 +21,11 @@ private slots:
 	void receiveDns1();
 	void receiveDns2();
 
+	void sendSetDate();
+	void sendSetTime();
+
 private:
-	LanDevice *dev;
+	PlatformDevice *dev;
 };
 
 #endif // TEST_LANDEVICE_H

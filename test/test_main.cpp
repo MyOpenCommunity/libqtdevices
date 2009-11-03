@@ -1,7 +1,7 @@
 #include <QtTest/QtTest>
 #include <QList>
 
-#include "test_landevice.h"
+#include "test_platform_device.h"
 #include "test_energy_device.h"
 #include "test_poweramplifier_device.h"
 #include "test_dev_automation.h"
@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
 
 	QList<TestDevice *> test_list;
 
-	TestLanDevice test_lan_device;
-	test_list << &test_lan_device;
+	TestPlatformDevice test_platform_device;
+	test_list << &test_platform_device;
 
 	TestEnergyDevice test_energy_device;
 	test_list << &test_energy_device;

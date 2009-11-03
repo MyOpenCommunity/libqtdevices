@@ -36,14 +36,14 @@ Page *getPage(int id)
 	case AUTOMAZIONE:
 	{
 		Automation *p = new Automation(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		page = p;
 		break;
 	}
 	case ILLUMINAZIONE:
 	{
 		Lighting *p = new Lighting(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		// DELETE
 		//QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
 		page = p;
@@ -61,7 +61,7 @@ Page *getPage(int id)
 	case CARICHI:
 	{
 		Loads *p = new Loads(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		page = p;
 		break;
 	}
@@ -119,14 +119,14 @@ Page *getPage(int id)
 	case IMPOSTAZIONI:
 	{
 		Settings *p = new Settings(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		page = p;
 		break;
 	}
 	case VIDEOCITOFONIA:
 	{
 		VideoEntryPhone *p = new VideoEntryPhone(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		page = p;
 		break;
 	}

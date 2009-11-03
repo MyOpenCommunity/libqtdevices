@@ -19,9 +19,6 @@
 #include <QDomNode>
 
 class device;
-class thermal_regulator_99z;
-class thermal_regulator_4z;
-class thermal_regulator;
 
 
 class PlantMenu : public sottoMenu

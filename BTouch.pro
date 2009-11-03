@@ -114,7 +114,6 @@ HEADERS += actuators.h \
            homepage.h \
            icondispatcher.h \
            keypad.h \
-           landevice.h \
            lansettings.h \
            lighting.h \
            lighting_device.h \
@@ -131,6 +130,7 @@ HEADERS += actuators.h \
            pagecontainer.h \
            pagefactory.h \
            plantmenu.h \
+           platform_device.h \
            playwindow.h \
            poweramplifier.h \
            poweramplifier_device.h \
@@ -221,7 +221,6 @@ SOURCES += actuators.cpp \
            homepage.cpp \
            icondispatcher.cpp \
            keypad.cpp \
-           landevice.cpp \
            lansettings.cpp \
            lighting.cpp \
            lighting_device.cpp \
@@ -238,6 +237,7 @@ SOURCES += actuators.cpp \
            pagecontainer.cpp \
            pagefactory.cpp \
            plantmenu.cpp \
+           platform_device.cpp \
            playwindow.cpp \
            poweramplifier.cpp \
            poweramplifier_device.cpp \
