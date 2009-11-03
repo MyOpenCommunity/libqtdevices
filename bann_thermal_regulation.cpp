@@ -231,7 +231,6 @@ PageSimpleProbe::PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale s
 	setDescription(n.namedItem("descr").toElement().text());
 
 	createNavigationBar();
-
 }
 
 void PageSimpleProbe::setDescription(const QString &descr)
@@ -314,7 +313,7 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 
 	hbox->addStretch();
 	btn_plus = new BtButton(this);
-	btn_plus->setImage(IMG_MINUS);
+	btn_plus->setImage(IMG_PLUS);
 	btn_plus->hide();
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
