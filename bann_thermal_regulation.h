@@ -68,6 +68,11 @@ enum BannID
 NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_centrale,
 			TemperatureScale scale = CELSIUS);
 
+
+/**
+ * Simple widget with an OK button on the right
+ * and a "back" button on the left
+ */
 class ThermalNavigation : public QWidget
 {
 Q_OBJECT
@@ -79,6 +84,10 @@ signals:
 	void backClicked();
 };
 
+
+/**
+ * Base class for thermal menu subpages with a navigation bar at the bottom
+ */
 class NavigationPage : public Page
 {
 Q_OBJECT
