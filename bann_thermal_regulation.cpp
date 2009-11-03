@@ -298,7 +298,6 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	hbox->addStretch();
 
 	setpoint_label = new QLabel(this);
-	setpoint_label->setGeometry(SETPOINT_X, SETPOINT_Y, SETPOINT_WIDTH, SETPOINT_HEIGHT);
 	setpoint_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 	setpoint_label->setProperty("SecondFgColor", true);
@@ -309,7 +308,7 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	icon_off = getLabelWithPixmap(IMG_OFF_S, this, Qt::AlignHCenter);
 	hbox->addWidget(icon_off);
 
-	hbox->addStretch();
+	hbox->addWidget(setpoint_label, 1, Qt::AlignVCenter);
 	btn_plus = new BtButton(this);
 	btn_plus->setImage(IMG_PLUS);
 	btn_plus->hide();
@@ -319,15 +318,15 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 
 	main_layout.addLayout(hbox);
 
-	// avoid moving of fancoil buttons bar
-	main_layout.addStretch();
-
 	local_temp_label = new QLabel(this);
-	local_temp_label->setGeometry(LOCAL_TEMP_X, LOCAL_TEMP_Y,
-				      LOCAL_TEMP_WIDTH, LOCAL_TEMP_HEIGHT);
 
 	local_temp_label->setFont(bt_global::font->get(FontManager::TEXT));
 	local_temp_label->setAlignment(Qt::AlignHCenter);
+
+	main_layout.addWidget(local_temp_label);
+
+	// avoid moving of fancoil buttons bar
+	main_layout.addStretch();
 
 	switch (temp_scale)
 	{

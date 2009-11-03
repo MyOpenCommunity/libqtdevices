@@ -182,17 +182,6 @@ private:
 		MANUAL
 	};
 
-	/// absolute position of local temp label
-	static const unsigned LOCAL_TEMP_X = (MAX_WIDTH - 50) / 2;
-	static const unsigned LOCAL_TEMP_Y = (MAX_HEIGHT - 50) / 2;
-	static const unsigned LOCAL_TEMP_WIDTH = 50;
-	static const unsigned LOCAL_TEMP_HEIGHT = 50;
-	// absolute position of setpoint temperature
-	static const unsigned SETPOINT_X = 70;
-	static const unsigned SETPOINT_Y = 90;
-	static const unsigned SETPOINT_WIDTH = 100;
-	static const unsigned SETPOINT_HEIGHT = 50;
-
 	bool isOff, isAntigelo;
 	probe_status status;
 	thermo_type_t probe_type;
