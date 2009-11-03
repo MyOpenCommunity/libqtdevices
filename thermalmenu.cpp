@@ -42,7 +42,7 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 
 void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 {
-	sottoMenu *sm = new PlantMenu(NULL, config);
+	Page *sm = new PlantMenu(NULL, config);
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
 	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
 	single_submenu = sm;

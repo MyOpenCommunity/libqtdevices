@@ -11,7 +11,6 @@
 #define PLANTMENU_H
 
 #include "sottomenu.h"
-#include "bann1_button.h"
 #include "bann_thermal_regulation.h"
 
 #include <QSignalMapper>
@@ -19,6 +18,7 @@
 #include <QDomNode>
 
 class device;
+class NavigationPage;
 
 
 class PlantMenu : public sottoMenu
@@ -40,7 +40,7 @@ private:
 	 * \param bannfullscreen The full screen banner that is created with the call to \a addMenuItem
 	 * \return A pointer to the small banner that will show the corresponding full screen banner.
 	 */
-	bannPuls *addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type);
+	NavigationPage *addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type);
 
 	/// Node in the Dom tree that is a `plant' tag
 	QDomNode conf_root;
@@ -48,16 +48,6 @@ private:
 	/// Address of the thermal regulation device
 	/// empty in case of 99z device
 	QString ind_centrale;
-
-	/*
-	 * Sub-sub menu used to show the full screen banners corresponding to the
-	 * same small banners present in the plant menu.
-	 */
-	sottoMenu items_submenu;
-
-	/*
-	 * Used to call show(int) on SottoMenu based on which banner is clicked.
-	 */
-	QSignalMapper signal_mapper;
 };
+
 #endif // PLANTMENU_H

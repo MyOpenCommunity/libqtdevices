@@ -12,6 +12,7 @@
 #include "xml_functions.h"
 #include "thermalmenu.h"
 #include "main.h" // bt_global::config
+#include "navigation_bar.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -52,9 +53,10 @@ BtButton *BannFullScreen::getButton(QString img)
 	return btn;
 }
 
-BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_centrale, TemperatureScale scale)
+NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_centrale,
+			TemperatureScale scale)
 {
-	BannFullScreen *bfs = 0;
+	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
 	QString where_composed;
 	if (!simple_address.isNull())
@@ -63,7 +65,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 	switch (id)
 	{
 	case fs_nc_probe:
-		bfs = new FSBannSimpleProbe(parent, n, scale);
+		p = new PageSimpleProbe(NULL, n, scale);
 		break;
 	case fs_4z_probe:
 		{
@@ -73,7 +75,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			QString thermr_where = QString("0#") + ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
+			p = new PageProbe(n, dev, thermo_reg, NULL, scale);
 		}
 		break;
 	case fs_99z_probe:
@@ -84,7 +86,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			QString thermr_where = ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-			bfs = new FSBannProbe(n, dev, thermo_reg, parent, scale);
+			p = new PageProbe(n, dev, thermo_reg, NULL, scale);
 		}
 		break;
 	case fs_4z_fancoil:
@@ -95,7 +97,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			QString thermr_where = QString("0#") + ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
+			p = new PageFancoil(n, dev, thermo_reg, NULL, scale);
 		}
 		break;
 	case fs_99z_fancoil:
@@ -106,7 +108,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			QString thermr_where = ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-			bfs = new FSBannFancoil(n, dev, thermo_reg, parent, scale);
+			p = new PageFancoil(n, dev, thermo_reg, NULL, scale);
 		}
 		break;
 	case fs_4z_thermal_regulator:
@@ -114,7 +116,7 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			where_composed = QString("0#") + ind_centrale;
 			ThermalDevice4Zones *dev = static_cast<ThermalDevice4Zones *>(
 					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
-			bfs = new FSBannTermoReg4z(n, dev, parent);
+			p = new PageTermoReg4z(n, dev, NULL, parent);
 		}
 		break;
 	case fs_99z_thermal_regulator:
@@ -122,23 +124,47 @@ BannFullScreen *getBanner(BannID id, QWidget *parent, QDomNode n, QString ind_ce
 			where_composed = ind_centrale;
 			ThermalDevice99Zones *dev = static_cast<ThermalDevice99Zones *>(
 					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
-			bfs = new FSBannTermoReg99z(n, dev, parent);
+			p = new PageTermoReg99z(n, dev, NULL, parent);
 		}
-		break;
-	case fs_date_edit:
-		bfs = new FSBannDate(parent);
-		break;
-	case fs_time_edit:
-		bfs = new FSBannTime(parent);
 		break;
 	default:
 		qFatal("Unknown banner type %d on bannfullscreen", id);
 	}
-	return bfs;
+
+	return p;
 }
 
-FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale)
-	: BannFullScreen(parent), main_layout(this), temp_scale(scale)
+NavigationPage::NavigationPage(QWidget *parent)
+	: Page(0), nav_bar(0)
+{
+	main_layout.setSpacing(0);
+	main_layout.setContentsMargins(0, 0, 0, 0);
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 5, 0, 10);
+	l->setSpacing(0);
+
+	l->addLayout(&main_layout, 1);
+}
+
+NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
+{
+	if (nav_bar)
+		return nav_bar;
+
+	nav_bar = new NavigationBar(icon);
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(backClick()));
+	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
+	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
+
+	layout()->addWidget(nav_bar);
+
+	return nav_bar;
+}
+
+PageSimpleProbe::PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale)
+	: NavigationPage(parent), temp_scale(scale)
 {
 	descr_label = new QLabel(this);
 	main_layout.addWidget(descr_label);
@@ -151,10 +177,13 @@ FSBannSimpleProbe::FSBannSimpleProbe(QWidget *parent, QDomNode n, TemperatureSca
 
 	temp = 1235;
 	descr = n.namedItem("descr").toElement().text();
+
+	createNavigationBar();
+
+	Draw();
 }
 
-
-void FSBannSimpleProbe::Draw()
+void PageSimpleProbe::Draw()
 {
 	temp_label->setFont(bt_global::font->get(FontManager::TITLE));
 	temp_label->setAlignment(Qt::AlignHCenter);
@@ -176,7 +205,7 @@ void FSBannSimpleProbe::Draw()
 	descr_label->setText(descr);
 }
 
-void FSBannSimpleProbe::status_changed(QList<device_status*> sl)
+void PageSimpleProbe::status_changed(QList<device_status*> sl)
 {
 	bool update = false;
 
@@ -197,15 +226,17 @@ void FSBannSimpleProbe::status_changed(QList<device_status*> sl)
 }
 
 
-FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
-	TemperatureScale scale) : FSBannSimpleProbe(parent, n, scale),
+PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
+	TemperatureScale scale) : PageSimpleProbe(parent, n, scale),
 	delta_setpoint(false),
 	setpoint_delay(2000),
 	setpoint_delta(5)
 {
 	status = AUTOMATIC;
 	probe_type = thermo_reg->type();
-	navbar_button = getButton(IMG_MAN);
+	navbar_button = new BtButton(this);
+	navbar_button->setImage(IMG_MAN);
+
 	navbar_button->hide();
 	conf_root = n;
 	dev = _dev;
@@ -217,7 +248,8 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, Thermal
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
-	btn_minus = getButton(IMG_MINUS);
+	btn_minus = new BtButton(this);
+	btn_minus->setImage(IMG_MINUS);
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
@@ -235,7 +267,8 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, Thermal
 	hbox->addWidget(icon_off);
 
 	hbox->addStretch();
-	btn_plus = getButton(IMG_PLUS);
+	btn_plus = new BtButton(this);
+	btn_plus->setImage(IMG_MINUS);
 	btn_plus->hide();
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
@@ -276,9 +309,10 @@ FSBannProbe::FSBannProbe(QDomNode n, temperature_probe_controlled *_dev, Thermal
 	isOff = false;
 	isAntigelo = false;
 
+	Draw();
 }
 
-void FSBannProbe::setDeviceToManual()
+void PageProbe::setDeviceToManual()
 {
 	unsigned bt_temp;
 	switch (temp_scale)
@@ -296,7 +330,7 @@ void FSBannProbe::setDeviceToManual()
 	dev->setManual(bt_temp);
 }
 
-void FSBannProbe::changeStatus()
+void PageProbe::changeStatus()
 {
 	if (status == AUTOMATIC)
 		setDeviceToManual();
@@ -304,14 +338,14 @@ void FSBannProbe::changeStatus()
 		dev->setAutomatic();
 }
 
-BtButton *FSBannProbe::customButton()
+BtButton *PageProbe::customButton()
 {
 	if (probe_type == THERMO_Z99)
 		return navbar_button;
 	return 0;
 }
 
-void FSBannProbe::incSetpoint()
+void PageProbe::incSetpoint()
 {
 	if (setpoint >= maximum_manual_temp)
 		return;
@@ -322,7 +356,7 @@ void FSBannProbe::incSetpoint()
 	delta_setpoint = true;
 }
 
-void FSBannProbe::decSetpoint()
+void PageProbe::decSetpoint()
 {
 	if (setpoint <= minimum_manual_temp)
 		return;
@@ -333,7 +367,7 @@ void FSBannProbe::decSetpoint()
 	delta_setpoint = true;
 }
 
-void FSBannProbe::Draw()
+void PageProbe::Draw()
 {
 	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
@@ -363,10 +397,10 @@ void FSBannProbe::Draw()
 	local_temp_label->setAlignment(Qt::AlignHCenter);
 	local_temp_label->setText(local_temp);
 
-	FSBannSimpleProbe::Draw();
+	PageSimpleProbe::Draw();
 }
 
-void FSBannProbe::status_changed(QList<device_status*> sl)
+void PageProbe::status_changed(QList<device_status*> sl)
 {
 	bool update = false;
 
@@ -431,7 +465,7 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 				else
 				{
 					update = false;
-					qDebug("[TERMO] FSBannProbe::status_changed(): local status case not handled!");
+					qDebug("[TERMO] PageProbe::status_changed(): local status case not handled!");
 				}
 			}
 
@@ -495,11 +529,11 @@ void FSBannProbe::status_changed(QList<device_status*> sl)
 	if (update)
 		Draw();
 
-	FSBannSimpleProbe::status_changed(sl);
+	PageSimpleProbe::status_changed(sl);
 }
 
-FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
-	TemperatureScale scale) : FSBannProbe(n, _dev, thermo_reg, parent, scale), fancoil_buttons(this)
+PageFancoil::PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
+	TemperatureScale scale) : PageProbe(n, _dev, thermo_reg, parent, scale), fancoil_buttons(this)
 {
 	dev = _dev;
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
@@ -508,9 +542,11 @@ FSBannFancoil::FSBannFancoil(QDomNode n, temperature_probe_controlled *_dev, The
 	fancoil_buttons.setExclusive(true);
 	fancoil_status = 0;
 	connect(&fancoil_buttons, SIGNAL(buttonClicked(int)), SLOT(handleFancoilButtons(int)));
+
+	Draw();
 }
 
-void FSBannFancoil::createFancoilButtons()
+void PageFancoil::createFancoilButtons()
 {
 	QHBoxLayout *hbox = new QHBoxLayout();
 	for (int i = 0, id = 0; i < 8; i += 2, ++id)
@@ -531,13 +567,13 @@ void FSBannFancoil::createFancoilButtons()
 	main_layout.insertLayout(-1, hbox);
 }
 
-void FSBannFancoil::Draw()
+void PageFancoil::Draw()
 {
 	fancoil_buttons.button(fancoil_status)->setChecked(true);
-	FSBannProbe::Draw();
+	PageProbe::Draw();
 }
 
-void FSBannFancoil::handleFancoilButtons(int pressedButton)
+void PageFancoil::handleFancoilButtons(int pressedButton)
 {
 	dev->setFancoilSpeed(btn_to_speed_tbl[pressedButton]);
 	/*
@@ -549,7 +585,7 @@ void FSBannFancoil::handleFancoilButtons(int pressedButton)
 	dev->requestFancoilStatus();
 }
 
-void FSBannFancoil::status_changed(QList<device_status*> sl)
+void PageFancoil::status_changed(QList<device_status*> sl)
 {
 	bool update = false;
 
@@ -575,7 +611,7 @@ void FSBannFancoil::status_changed(QList<device_status*> sl)
 
 	if (update)
 		Draw();
-	FSBannProbe::status_changed(sl);
+	PageProbe::status_changed(sl);
 }
 
 FSBannManual::FSBannManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale)
@@ -803,10 +839,9 @@ BtTime FSBannTime::time()
 	return time_edit->time();
 }
 
-FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent) : BannFullScreen(parent), main_layout(this)
+PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
 {
 	conf_root = n;
-	navbar_button = getButton(IMG_SETTINGS);
 
 	// Put a sensible default for the description
 	QDomNode descr = conf_root.namedItem("descr");
@@ -814,7 +849,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent) : BannFullScreen(par
 		description = descr.toElement().text();
 	else
 	{
-		qDebug("[TERMO] FSBannTermoReg ctor: no description found, maybe wrong node conf?");
+		qDebug("[TERMO] PageTermoReg ctor: no description found, maybe wrong node conf?");
 		description = "Wrong node";
 	}
 	description_label = new QLabel(this);
@@ -836,14 +871,13 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent) : BannFullScreen(par
 	time_edit = 0;
 	program_choice = 0;
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+
+	createNavigationBar(IMG_SETTINGS);
+
+	Draw();
 }
 
-BtButton *FSBannTermoReg::customButton()
-{
-	return navbar_button;
-}
-
-void FSBannTermoReg::Draw()
+void PageTermoReg::Draw()
 {
 	description_label->setVisible(description_visible);
 	description_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
@@ -852,7 +886,7 @@ void FSBannTermoReg::Draw()
 	// TODO: verificare che venga impostato correttamente!!
 }
 
-void FSBannTermoReg::status_changed(const StatusList &sl)
+void PageTermoReg::status_changed(const StatusList &sl)
 {
 	ThermalDevice::Season season = ThermalDevice::SE_SUMMER;
 
@@ -970,7 +1004,7 @@ void FSBannTermoReg::status_changed(const StatusList &sl)
 	Draw();
 }
 
-void FSBannTermoReg::setSeason(int new_season)
+void PageTermoReg::setSeason(int new_season)
 {
 	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
 	{
@@ -988,10 +1022,10 @@ void FSBannTermoReg::setSeason(int new_season)
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
 }
 
-QString FSBannTermoReg::lookupProgramDescription(QString season, QString what, int program_number)
+QString PageTermoReg::lookupProgramDescription(QString season, QString what, int program_number)
 {
 	// summer/prog/p[program_number]
-	Q_ASSERT_X(what == "prog" || what == "scen", "FSBannTermoReg::lookupProgramDescription",
+	Q_ASSERT_X(what == "prog" || what == "scen", "PageTermoReg::lookupProgramDescription",
 		"'what' must be either 'prog' or 'scen'");
 	QString name = what.left(1);
 	QString path = season + "/" + what + "/" + name + QString::number(program_number);
@@ -1002,7 +1036,7 @@ QString FSBannTermoReg::lookupProgramDescription(QString season, QString what, i
 		return node.text();
 }
 
-void FSBannTermoReg::createButtonsBanners(ThermalDevice *dev)
+void PageTermoReg::createButtonsBanners(ThermalDevice *dev)
 {
 	// off banner
 	BannOff *off = new BannOff(settings, dev);
@@ -1020,34 +1054,34 @@ void FSBannTermoReg::createButtonsBanners(ThermalDevice *dev)
 	connect(summer_winter, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
 }
 
-FSBannTermoReg4z::FSBannTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *parent)
-	: FSBannTermoReg(n, parent)
+PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *parent, QWidget *back)
+	: PageTermoReg(n, parent)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu();
+	createSettingsMenu(back);
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
-ThermalDevice *FSBannTermoReg4z::dev()
+ThermalDevice *PageTermoReg4z::dev()
 {
 	return _dev;
 }
 
-void FSBannTermoReg4z::showSettingsMenu()
+void PageTermoReg4z::showSettingsMenu()
 {
 	settings->resetIndex();
 	settings->showPage();
 }
 
-void FSBannTermoReg4z::createSettingsMenu()
+void PageTermoReg4z::createSettingsMenu(QWidget *back)
 {
 	settings = new sottoMenu;
 	if (settings)
 	{
-		connect(navbar_button, SIGNAL(clicked()), SLOT(showSettingsMenu()));
 		// TODO: quando si tocca di nuovo questa parte, bisogna levare questo parentWidget()
-		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
+		connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");
@@ -1065,42 +1099,42 @@ void FSBannTermoReg4z::createSettingsMenu()
 	createButtonsBanners(_dev);
 }
 
-FSBannTermoReg99z::FSBannTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *parent)
-	: FSBannTermoReg(n, parent)
+PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *parent, QWidget *back)
+	: PageTermoReg(n, parent)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu();
+	createSettingsMenu(back);
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
-ThermalDevice *FSBannTermoReg99z::dev()
+ThermalDevice *PageTermoReg99z::dev()
 {
 	return _dev;
 }
 
-void FSBannTermoReg99z::setSeason(Season new_season)
+void PageTermoReg99z::setSeason(Season new_season)
 {
 	if (new_season == SUMMER || new_season == WINTER)
 		scenario_menu->setSeason(new_season);
 	else
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
-	FSBannTermoReg::setSeason(new_season);
+	PageTermoReg::setSeason(new_season);
 }
 
-void FSBannTermoReg99z::showSettingsMenu()
+void PageTermoReg99z::showSettingsMenu()
 {
 	settings->resetIndex();
 	settings->showPage();
 }
 
-void FSBannTermoReg99z::createSettingsMenu()
+void PageTermoReg99z::createSettingsMenu(QWidget *back)
 {
 	settings = new sottoMenu;
 	if (settings)
 	{
-		connect(navbar_button, SIGNAL(clicked()), SLOT(showSettingsMenu()));
-		connect(settings, SIGNAL(Closed()), parentWidget(), SLOT(showPage()));
+		connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
 	}
 	else
 		qFatal("[TERMO] could not create settings menu");
@@ -1120,7 +1154,7 @@ void FSBannTermoReg99z::createSettingsMenu()
 //
 // ------------- Utility functions to create thermal regulator settings menus -------------------
 //
-void FSBannTermoReg::manualSettings(sottoMenu *settings, ThermalDevice *dev)
+void PageTermoReg::manualSettings(sottoMenu *settings, ThermalDevice *dev)
 {
 	// manual banner
 	bannPuls *manual = new bannPuls(settings);
@@ -1138,12 +1172,12 @@ void FSBannTermoReg::manualSettings(sottoMenu *settings, ThermalDevice *dev)
 	connect(manual_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
 }
 
-void FSBannTermoReg::manualSelected(unsigned temp)
+void PageTermoReg::manualSelected(unsigned temp)
 {
 	dev()->setManualTemp(temp);
 }
 
-void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
 {
 	bannPuls *weekly = new bannPuls(settings);
 	weekly->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("settimanale.png"));
@@ -1158,12 +1192,12 @@ void FSBannTermoReg::weekSettings(sottoMenu *settings, QDomNode conf, ThermalDev
 	connect(program_menu, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
 }
 
-void FSBannTermoReg::weekProgramSelected(int program)
+void PageTermoReg::weekProgramSelected(int program)
 {
 	dev()->setWeekProgram(program);
 }
 
-void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
 {
 	banner *bann = createHolidayWeekendBanner(settings, "feriale.png");
 	connect(bann, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
@@ -1175,7 +1209,7 @@ void FSBannTermoReg::holidaySettings(sottoMenu *settings, QDomNode conf, Thermal
 		program_choice = createProgramChoice(settings, conf, dev);
 }
 
-void FSBannTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, ThermalDevice *dev)
 {
 	banner *bann = createHolidayWeekendBanner(settings, "festivo.png");
 	connect(bann, SIGNAL(sxClick()), this, SLOT(weekendSettingsStart()));
@@ -1187,7 +1221,7 @@ void FSBannTermoReg::weekendSettings(sottoMenu *settings, QDomNode conf, Thermal
 		program_choice = createProgramChoice(settings, conf, dev);
 }
 
-banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString icon)
+banner *PageTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString icon)
 {
 	bannPuls *bann = new bannPuls(settings);
 	bann->SetIcons(IMG_RIGHT_ARROW, 0, IMG_PATH + icon);
@@ -1195,7 +1229,7 @@ banner *FSBannTermoReg::createHolidayWeekendBanner(sottoMenu *settings, QString 
 	return bann;
 }
 
-DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
+DateEditMenu *PageTermoReg::createDateEdit(sottoMenu *settings)
 {
 	DateEditMenu *date_edit = new DateEditMenu;
 	connect(date_edit, SIGNAL(Closed()), settings, SLOT(showPage()));
@@ -1203,7 +1237,7 @@ DateEditMenu *FSBannTermoReg::createDateEdit(sottoMenu *settings)
 	return date_edit;
 }
 
-TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
+TimeEditMenu *PageTermoReg::createTimeEdit(sottoMenu *settings)
 {
 	TimeEditMenu *time_edit = new TimeEditMenu;
 	connect(time_edit, SIGNAL(timeSelected(BtTime)), this, SLOT(timeSelected(BtTime)));
@@ -1211,7 +1245,7 @@ TimeEditMenu *FSBannTermoReg::createTimeEdit(sottoMenu *settings)
 	return time_edit;
 }
 
-WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
+WeeklyMenu *PageTermoReg::createProgramChoice(sottoMenu *settings, QDomNode conf, device *dev)
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
 	connect(program_choice, SIGNAL(programClicked(int)), this, SLOT(weekendHolidaySettingsEnd(int)));
@@ -1220,51 +1254,51 @@ WeeklyMenu *FSBannTermoReg::createProgramChoice(sottoMenu *settings, QDomNode co
 	return program_choice;
 }
 
-void FSBannTermoReg::holidaySettingsStart()
+void PageTermoReg::holidaySettingsStart()
 {
 	weekendHolidayStatus = HOLIDAY;
 	date_edit->showPage();
 }
 
-void FSBannTermoReg::weekendSettingsStart()
+void PageTermoReg::weekendSettingsStart()
 {
 	weekendHolidayStatus = WEEKEND;
 	date_edit->showPage();
 }
 
-void FSBannTermoReg::dateSelected(QDate d)
+void PageTermoReg::dateSelected(QDate d)
 {
 	date_end = d;
 	time_edit->showPage();
 }
 
-void FSBannTermoReg::timeCancelled()
+void PageTermoReg::timeCancelled()
 {
 	date_edit->showPage();
 }
 
-void FSBannTermoReg::timeSelected(BtTime t)
+void PageTermoReg::timeSelected(BtTime t)
 {
 	time_end = t;
 	program_choice->showPage();
 }
 
-void FSBannTermoReg::programCancelled()
+void PageTermoReg::programCancelled()
 {
 	time_edit->showPage();
 }
 
-void FSBannTermoReg::weekendHolidaySettingsEnd(int program)
+void PageTermoReg::weekendHolidaySettingsEnd(int program)
 {
 	if (weekendHolidayStatus == WEEKEND)
 		dev()->setWeekendDateTime(date_end, time_end, program);
 	else if (weekendHolidayStatus == HOLIDAY)
 		dev()->setHolidayDateTime(date_end, time_end, program);
 	else
-		qWarning("FSBannTermoReg::weekendHolidaySettingsEnd: unknown status");
+		qWarning("PageTermoReg::weekendHolidaySettingsEnd: unknown status");
 }
 
-void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, ThermalDevice4Zones *dev)
+void PageTermoReg4z::timedManualSettings(sottoMenu *settings, ThermalDevice4Zones *dev)
 {
 	// timed manual banner
 	bannPuls *manual_timed = new bannPuls(settings);
@@ -1285,12 +1319,12 @@ void FSBannTermoReg4z::timedManualSettings(sottoMenu *settings, ThermalDevice4Zo
 	connect(bann, SIGNAL(timeAndTempSelected(BtTime, int)), settings, SIGNAL(Closed()));
 }
 
-void FSBannTermoReg4z::manualTimedSelected(BtTime time, int temp)
+void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 {
 	_dev->setManualTempTimed(temp, time);
 }
 
-void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, ThermalDevice99Zones *dev)
+void PageTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, ThermalDevice99Zones *dev)
 {
 	bannPuls *scenario = new bannPuls(settings);
 	scenario->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("scenari.png"));
@@ -1305,7 +1339,7 @@ void FSBannTermoReg99z::scenarioSettings(sottoMenu *settings, QDomNode conf, The
 	connect(scenario_menu, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
 }
 
-void FSBannTermoReg99z::scenarioSelected(int scenario)
+void PageTermoReg99z::scenarioSelected(int scenario)
 {
 	_dev->setScenario(scenario);
 }
