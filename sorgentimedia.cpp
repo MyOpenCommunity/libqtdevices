@@ -54,7 +54,7 @@ void BannerSorgenteMultimedia::manageFrame(OpenMsg &msg)
 	qDebug("BannerSorgenteMultimedia::manageFrame()");
 
 	char amb[3];
-	sprintf(amb, getAddress().toAscii().constData());
+	strcpy(amb, getAddress().toAscii().constData());
 
 	if ((!strcmp(msg.Extract_grandezza(),"12")) &&
 		(!strcmp(msg.Extract_dove(),"5")) &&

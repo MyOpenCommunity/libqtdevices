@@ -172,8 +172,8 @@ void radio::draw()
 	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	radioName->setText(qnome);
 	rdsLabel->setText(qrds);
-	char fr[10];
-	sprintf(fr,"%.2f",frequenza);
+	QString fr;
+	fr.sprintf("%.2f",frequenza);
 	freq->display(fr);
 
 	if (manual!=wasManual)
