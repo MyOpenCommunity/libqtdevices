@@ -460,6 +460,7 @@ protected:
 	void setDescription(const QString &descr);
 	void updateTemperature();
 protected:
+	QWidget content;
 	QVBoxLayout main_layout;
 	/// The setpoint temperature set on the interface. The scale is given by temp_scale
 	int temp;
@@ -513,6 +514,7 @@ signals:
 private slots:
 	void performAction();
 private:
+	QWidget content;
 	QVBoxLayout main_layout;
 	BtDateEdit *date_edit;
 };
@@ -529,6 +531,7 @@ signals:
 private slots:
 	void performAction();
 private:
+	QWidget content;
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;
 	int hours, minutes;

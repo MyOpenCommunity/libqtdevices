@@ -622,12 +622,13 @@ void PageFancoil::status_changed(QList<device_status*> sl)
 }
 
 PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale)
-	: Page(0), main_layout(this), temp_scale(scale), dev(_dev), setpoint_delta(5)
+	: Page(0), temp_scale(scale), dev(_dev), setpoint_delta(5)
 {
 	descr_label = new QLabel(this);
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
+	content.setLayout(&main_layout);
 	main_layout.setSpacing(0);
 	main_layout.setContentsMargins(0, 0, 0, 10);
 	main_layout.addWidget(descr_label);
@@ -678,7 +679,7 @@ PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale sc
 	main_layout.addLayout(hbox);
 
 	nav_bar = new ThermalNavigation;
-	main_layout.addWidget(nav_bar);
+	buildPage(&content, nav_bar);
 
 	connect(nav_bar, SIGNAL(okClicked()), SLOT(performAction()));
 	connect(nav_bar, SIGNAL(backClicked()), SIGNAL(Closed()));
@@ -816,8 +817,10 @@ void PageManualTimed::setMaxMinutes(int max)
 	time_edit->setMaxMinutes(max);
 }
 
-PageSetDate::PageSetDate(QWidget *parent) : Page(0), main_layout(this)
+PageSetDate::PageSetDate(QWidget *parent) : Page(0)
 {
+	content.setLayout(&main_layout);
+
 	QLabel *top = new QLabel(this);
 	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("date_icon")));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
@@ -828,7 +831,7 @@ PageSetDate::PageSetDate(QWidget *parent) : Page(0), main_layout(this)
 	main_layout.setContentsMargins(0, 0, 0, 10);
 
 	ThermalNavigation *nav = new ThermalNavigation;
-	main_layout.addWidget(nav);
+	buildPage(&content, nav);
 
 	connect(nav, SIGNAL(okClicked()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClicked()), SIGNAL(Closed()));
@@ -844,8 +847,10 @@ void PageSetDate::performAction()
 	emit dateSelected(date());
 }
 
-PageSetTime::PageSetTime(QWidget *parent) : Page(0), main_layout(this)
+PageSetTime::PageSetTime(QWidget *parent) : Page(0)
 {
+	content.setLayout(&main_layout);
+
 	QLabel *top = new QLabel(this);
 	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("time_icon")));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
@@ -856,7 +861,7 @@ PageSetTime::PageSetTime(QWidget *parent) : Page(0), main_layout(this)
 	main_layout.setContentsMargins(0, 0, 0, 10);
 
 	ThermalNavigation *nav = new ThermalNavigation;
-	main_layout.addWidget(nav);
+	buildPage(&content, nav);
 
 	connect(nav, SIGNAL(okClicked()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClicked()), SIGNAL(Closed()));
