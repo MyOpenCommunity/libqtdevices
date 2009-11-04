@@ -21,7 +21,7 @@
 class QDomNode;
 
 
-class Automation : public Page
+class Automation : public BannerPage
 {
 Q_OBJECT
 public:

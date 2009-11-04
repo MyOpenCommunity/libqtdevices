@@ -21,7 +21,7 @@ class device;
 class NavigationPage;
 
 
-class PlantMenu : public Page
+class PlantMenu : public BannerPage
 {
 Q_OBJECT
 public:

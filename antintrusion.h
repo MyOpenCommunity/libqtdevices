@@ -38,7 +38,7 @@ to \a alarm \a queue one though a button). When there's an alarm the alarm queue
   \author Davide
   \date lug 2005
 */
-class Antintrusion : public Page, FrameReceiver
+class Antintrusion : public BannerPage, FrameReceiver
 {
 Q_OBJECT
 public:

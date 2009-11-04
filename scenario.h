@@ -23,7 +23,7 @@ class QDomNode;
 class scenEvo_cond;
 
 
-class Scenario : public Page
+class Scenario : public BannerPage
 {
 Q_OBJECT
 public:

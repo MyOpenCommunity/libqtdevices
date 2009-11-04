@@ -32,7 +32,7 @@ class PageSetTime;
 class PageSetDate;
 
 
-class ThermalMenu : public Page
+class ThermalMenu : public BannerPage
 {
 Q_OBJECT
 public:

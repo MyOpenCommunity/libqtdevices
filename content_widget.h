@@ -15,7 +15,7 @@ class QShowEvent;
  */
 class ContentWidget : public QWidget
 {
-friend void Page::activateLayout();
+friend void BannerPage::activateLayout();
 Q_OBJECT
 public:
 	ContentWidget(QWidget *parent=0);

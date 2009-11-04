@@ -28,6 +28,13 @@ class NavigationBar;
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> StatusList;
 
+// Allows type-safe access to content_widget from page subclasses; by default
+// it returns a QWidget; to return a different QWidget subtype, add a
+//
+// typedef TYPE ContentType;
+//
+// inside the page subclass (see BannerPage for an example)
+#define page_content (content(this))
 
 /**
  * \class Page
@@ -40,6 +47,10 @@ class Page : public QWidget
 friend class BtMain;
 Q_OBJECT
 public:
+	// the type returned by page_content
+	// see the comment about page_content above
+	typedef QWidget ContentType;
+
 	// Normally, the page is a fullscreen window, but sometimes is a part of
 	// another page (see Antintrusion or SoundDiffusion)
 	Page(QWidget *parent=0);
@@ -55,7 +66,7 @@ public:
 	void sendInit(QString frame) const;
 
 	static void setMainWindow(MainWindow *window);
-	void activateLayout();
+	virtual void activateLayout();
 
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
@@ -66,11 +77,19 @@ public slots:
 	void setCurrentPage();
 
 protected:
-	ContentWidget *content_widget;
+	// used by page_content
+	// see the comment about page_content
+	template<class P>
+	typename P::ContentType* content(P*)
+	{
+		return (typename P::ContentType*)content_widget;
+	}
+
+	// WARNING: do not use this directly, use page_content #defined above
+	QWidget *content_widget;
 	Page *currentPage();
 	void startTransition(const QPixmap &prev_image);
-	void buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget=0);
-	void buildPage(QWidget *top_widget=0);
+	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0);
 
 private:
 	static MainWindow *main_window;
@@ -82,6 +101,27 @@ signals:
 	/// Emitted when the page is closed.
 	void Closed();
 	void forwardClick();
+};
+
+
+/**
+ * \class BannerPage
+ *
+ * A page containing a list of banners.
+ */
+class BannerPage : public Page
+{
+public:
+	// the type returned by page_content
+	typedef ContentWidget ContentType;
+
+	BannerPage(QWidget *parent=0);
+
+	virtual void activateLayout();
+
+protected:
+	void buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget=0);
+	void buildPage(QWidget *top_widget=0);
 };
 
 

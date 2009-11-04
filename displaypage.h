@@ -6,7 +6,7 @@
 class QDomNode;
 
 
-class DisplayPage : public Page
+class DisplayPage : public BannerPage
 {
 Q_OBJECT
 public:

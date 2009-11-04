@@ -33,26 +33,26 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Clean Screen"));
 	b->Draw();
-	content_widget->appendBanner(b);
+	page_content->appendBanner(b);
 
 	b = new calibration(this, img_items);
 	connect(b, SIGNAL(startCalib()), SLOT(startCalibration()));
 	connect(b, SIGNAL(endCalib()), SLOT(endCalibration()));
 	b->setText(tr("Calibration"));
 	b->Draw();
-	content_widget->appendBanner(b);
+	page_content->appendBanner(b);
 
 	b = new bannOnDx(this,img_items, new BrightnessPage());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Brightness"));
 	b->Draw();
-	content_widget->appendBanner(b);
+	page_content->appendBanner(b);
 
 	b = new bannOnDx(this, img_items, new ScreenSaverPage());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Screen Saver"));
 	b->Draw();
-	content_widget->appendBanner(b);
+	page_content->appendBanner(b);
 }
 
 void DisplayPage::startCalibration()

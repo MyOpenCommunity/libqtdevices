@@ -33,7 +33,7 @@ private slots:
 };
 
 
-class Loads : public Page
+class Loads : public BannerPage
 {
 Q_OBJECT
 public:

@@ -119,16 +119,16 @@ void Lighting::loadItems(const QDomNode &config_node)
 		//b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		//b->Draw();
-		content_widget->appendBanner(b);
+		page_content->appendBanner(b);
 	}
 }
 
 void Lighting::initDimmer()
 {
 	qDebug("Lighting::initDimmer()");
-	for (int i = 0; i < content_widget->bannerCount(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		banner *b = content_widget->getBanner(i);
+		banner *b = page_content->getBanner(i);
 		switch (b->getId())
 		{
 		case DIMMER:

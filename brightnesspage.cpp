@@ -14,7 +14,7 @@
 #include "content_widget.h"
 #include "banner.h"
 #include "btbutton.h"
-
+#include "singlechoicecontent.h"
 #include <QDebug>
 
 
@@ -42,9 +42,9 @@ void BrightnessPage::showEvent(QShowEvent *e)
 		bt_global::display.currentScreenSaver() != ScreenSaver::NONE);
 
 	setCheckedId(getCurrentId());
-	for (int i = 0; i < content_widget->bannerCount(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		BtButton *b = static_cast<bannOnSx*>(content_widget->getBanner(i))->getButton();
+		BtButton *b = static_cast<bannOnSx*>(page_content->getBanner(i))->getButton();
 
 		if (banners_active)
 			b->enable();

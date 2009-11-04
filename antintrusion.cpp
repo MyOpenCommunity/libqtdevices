@@ -94,7 +94,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			b->setText(descr);
 			b->setId(id);
 			b->Draw();
-			content_widget->appendBanner(b);
+			page_content->appendBanner(b);
 			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
 			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
 			connect(b, SIGNAL(partChanged(zonaAnti*)), SIGNAL(partChanged(zonaAnti*)));
@@ -201,7 +201,7 @@ void Antintrusion::draw()
 void Antintrusion::inizializza()
 {
 	impianto->inizializza();
-	content_widget->initBanners();
+	page_content->initBanners();
 	connect(impianto, SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
 }
 

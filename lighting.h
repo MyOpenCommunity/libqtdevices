@@ -21,7 +21,7 @@
 class QDomNode;
 
 
-class Lighting : public Page
+class Lighting : public BannerPage
 {
 Q_OBJECT
 public:

@@ -21,7 +21,7 @@
 class QDomNode;
 
 
-class VideoEntryPhone : public Page
+class VideoEntryPhone : public BannerPage
 {
 Q_OBJECT
 public:

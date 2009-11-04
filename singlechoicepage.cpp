@@ -15,14 +15,9 @@ SingleChoicePage::SingleChoicePage()
 	connect(this, SIGNAL(forwardClick()), SLOT(okPressed()));
 }
 
-SingleChoiceContent *SingleChoicePage::content()
-{
-	return (SingleChoiceContent*)content_widget;
-}
-
 void SingleChoicePage::addBanner(const QString &text, int id)
 {
-	content()->addBanner(text, id);
+	page_content->addBanner(text, id);
 
 	if (id == getCurrentId())
 		setCheckedId(id);
@@ -30,12 +25,12 @@ void SingleChoicePage::addBanner(const QString &text, int id)
 
 void SingleChoicePage::setCheckedId(int id)
 {
-	content()->setCheckedId(id);
+	page_content->setCheckedId(id);
 }
 
 void SingleChoicePage::okPressed()
 {
-	bannerSelected(content()->checkedId()); // update the current id and do custom actions
+	bannerSelected(page_content->checkedId()); // update the current id and do custom actions
 	setCheckedId(getCurrentId());
 
 	emit Closed();

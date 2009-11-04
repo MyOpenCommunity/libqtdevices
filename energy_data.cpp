@@ -70,7 +70,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		{
 			BannOnOffNew *bann = new BannOnOffNew(this);
 
-			content_widget->appendBanner(bann); // to increase the serial number
+			page_content->appendBanner(bann); // to increase the serial number
 			bann->initBanner(bt_global::skin->getImage("currency_exchange"),
 				bt_global::skin->getImage("energy_type"), bt_global::skin->getImage("select"),
 				descr);
@@ -83,7 +83,7 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		else
 		{
 			BannSinglePuls *bann = new BannSinglePuls(this);
-			content_widget->appendBanner(bann);
+			page_content->appendBanner(bann);
 			bann->initBanner(bt_global::skin->getImage("select"),
 				bt_global::skin->getImage("energy_type"), descr);
 			bann->connectRightButton(en_interf);

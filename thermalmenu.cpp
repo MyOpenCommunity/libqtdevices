@@ -75,7 +75,7 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 	bp->SetIcons(i_right_arrow, QString(), central_icon);
 	bp->setText(getTextChild(e, "descr"));
 	bp->Draw();
-	content_widget->appendBanner(bp);
+	page_content->appendBanner(bp);
 	++bann_number;
 	return bp;
 }

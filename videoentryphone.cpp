@@ -33,6 +33,6 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 		b->setText(descr);
 		b->setId(id);
 		b->Draw();
-		content_widget->appendBanner(b);
+		page_content->appendBanner(b);
 	}
 }

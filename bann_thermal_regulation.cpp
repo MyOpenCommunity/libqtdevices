@@ -29,7 +29,7 @@ QLabel *getLabelWithPixmap(const QString &img, QWidget *parent, int alignment)
 }
 
 // Helper page for the settings list
-class SettingsPage : public Page
+class SettingsPage : public BannerPage
 {
 public:
 	SettingsPage(QWidget *parent = 0);
@@ -41,25 +41,25 @@ public:
 };
 
 SettingsPage::SettingsPage(QWidget *parent)
-	: Page(parent)
+	: BannerPage(parent)
 {
 	buildPage(new ContentWidget, new NavigationBar);
 }
 
 void SettingsPage::inizializza()
 {
-	content_widget->initBanners();
+	page_content->initBanners();
 }
 
 void SettingsPage::appendBanner(banner *b)
 {
 	b->Draw(); // kill Draw
-	content_widget->appendBanner(b);
+	page_content->appendBanner(b);
 }
 
 void SettingsPage::resetIndex()
 {
-	content_widget->resetIndex();
+	page_content->resetIndex();
 }
 
 ThermalNavigation::ThermalNavigation(QWidget *parent)

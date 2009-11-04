@@ -95,7 +95,7 @@ void Scenario::loadItems(const QDomNode &config_node)
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		b->Draw();
-		content_widget->appendBanner(b);
+		page_content->appendBanner(b);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }

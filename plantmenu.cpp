@@ -21,7 +21,7 @@
 #include <QRegExp>
 
 
-PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : Page(parent)
+PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : BannerPage(parent)
 {
 	buildPage(new ContentWidget, new NavigationBar);
 
@@ -92,7 +92,7 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : Page(parent)
 
 void PlantMenu::inizializza()
 {
-	content_widget->initBanners();
+	page_content->initBanners();
 }
 
 NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type)
@@ -104,7 +104,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString
 	bp->SetIcons(bt_global::skin->getImage("forward"), QString(), central_icon);
 	bp->setText(getTextChild(n, "descr"));
 	bp->Draw();
-	content_widget->appendBanner(bp);
+	page_content->appendBanner(bp);
 
 	/*
 	 * Create page in detail menu.

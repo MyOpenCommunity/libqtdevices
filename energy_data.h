@@ -14,7 +14,7 @@ class EnergyView;
 class EnergyInterface;
 
 
-class EnergyData : public Page
+class EnergyData : public BannerPage
 {
 Q_OBJECT
 public:

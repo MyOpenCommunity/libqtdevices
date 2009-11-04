@@ -11,10 +11,12 @@ class SingleChoiceContent;
  * contains a toggle button that can be toggle in exclusive mode with the other
  * buttons.
  */
-class SingleChoicePage : public Page
+class SingleChoicePage : public BannerPage
 {
 Q_OBJECT
 public:
+	typedef SingleChoiceContent ContentType;
+
 	SingleChoicePage();
 private slots:
 	void okPressed();
@@ -28,7 +30,6 @@ protected:
 	void setCheckedId(int id);
 
 protected:
-	SingleChoiceContent *content();
 	void addBanner(const QString &text, int id);
 };
 

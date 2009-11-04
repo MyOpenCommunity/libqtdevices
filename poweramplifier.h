@@ -57,7 +57,7 @@ private:
  * The page of the settings of the power amplifier. It simply delegate the
  * functionality to the correct banner.
  */
-class PowerAmplifier : public Page
+class PowerAmplifier : public BannerPage
 {
 Q_OBJECT
 public:

@@ -38,7 +38,7 @@ Page::Page(QWidget *parent) : QWidget(parent)
 		main_window->addPage(this);
 }
 
-void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget)
+void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget)
 {
 	QBoxLayout *l = new QVBoxLayout(this);
 	// the top_widget (if present) is a widget that must be at the top of the page,
@@ -51,19 +51,7 @@ void Page::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *to
 	l->setContentsMargins(0, 5, 0, 10);
 	l->setSpacing(0);
 
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
-	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
-	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
-	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
-	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
-
 	content_widget = content;
-}
-
-void Page::buildPage(QWidget *top_widget)
-{
-	buildPage(new ContentWidget, new NavigationBar, top_widget);
 }
 
 void Page::activateLayout()
@@ -74,9 +62,6 @@ void Page::activateLayout()
 		main_layout->activate();
 		main_layout->update();
 	}
-
-	if (content_widget)
-		content_widget->drawContent();
 }
 
 void Page::inizializza()
@@ -143,6 +128,37 @@ void Page::forceClosed()
 void Page::startTransition(const QPixmap &prev_image)
 {
 	main_window->startTransition(prev_image, this);
+}
+
+
+BannerPage::BannerPage(QWidget *parent)
+	: Page(parent)
+{
+}
+
+void BannerPage::activateLayout()
+{
+	Page::activateLayout();
+
+	if (page_content)
+		page_content->drawContent();
+}
+
+void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget)
+{
+	Page::buildPage(content, nav_bar, top_widget);
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+}
+
+void BannerPage::buildPage(QWidget *top_widget)
+{
+	buildPage(new ContentWidget, new NavigationBar, top_widget);
 }
 
 
