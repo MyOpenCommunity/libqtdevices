@@ -562,12 +562,7 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 
 	content->setCheckedId(alarm_page->freq);
 
-	QVBoxLayout *l = new QVBoxLayout(this);
-
-	l->addWidget(content, 1);
-	l->addWidget(navigation);
-	l->setContentsMargins(0, 0, 0, 10);
-	l->setSpacing(0);
+	buildPage(content, navigation);
 }
 
 void AlarmClockFreq::setSelection(int freq)
