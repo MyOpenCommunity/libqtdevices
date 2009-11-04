@@ -21,11 +21,6 @@
 #include <QRegExp>
 
 
-static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
-static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
-static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png");
-
-
 PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : Page(parent)
 {
 	buildPage(new ContentWidget, new NavigationBar);
@@ -56,22 +51,22 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : Page(parent)
 			switch (id)
 			{
 				case TERMO_99Z:
-					pg = addMenuItem(n, i_thermr, descr, fs_99z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), descr, fs_99z_thermal_regulator);
 					break;
 				case TERMO_4Z:
-					pg = addMenuItem(n, i_thermr, descr, fs_4z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), descr, fs_4z_thermal_regulator);
 					break;
 				case TERMO_99Z_PROBE:
-					pg = addMenuItem(n, i_zone, descr, fs_99z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_99z_probe);
 					break;
 				case TERMO_99Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, i_zone, descr, fs_99z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_99z_fancoil);
 					break;
 				case TERMO_4Z_PROBE:
-					pg = addMenuItem(n, i_zone, descr, fs_4z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_4z_probe);
 					break;
 				case TERMO_4Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, i_zone, descr, fs_4z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_4z_fancoil);
 					break;
 			}
 
@@ -106,7 +101,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString
 	 * Create little banner in selection menu.
 	 */
 	bannPuls *bp = new bannPuls(this);
-	bp->SetIcons(i_right_arrow, QString(), central_icon);
+	bp->SetIcons(bt_global::skin->getImage("forward"), QString(), central_icon);
 	bp->setText(getTextChild(n, "descr"));
 	bp->Draw();
 	content_widget->appendBanner(bp);
