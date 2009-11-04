@@ -32,7 +32,8 @@ public:
 		ST_WEEKEND = 4,
 		ST_PROGRAM = 5,
 		ST_SCENARIO = 6,
-		ST_HOLIDAY = 7
+		ST_HOLIDAY = 7,
+		ST_COUNT // must be the last
 	};
 
 	enum Season

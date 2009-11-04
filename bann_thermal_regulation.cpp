@@ -19,29 +19,14 @@
 #include <QLabel>
 #include <QDebug>
 
-#define I_OK  IMG_PATH"btnok.png"
-#define IMG_SETTINGS IMG_PATH"set.png"
-#define IMG_PLUS IMG_PATH "btnplus.png"
-#define IMG_MINUS IMG_PATH "btnmin.png"
-#define IMG_AUTO IMG_PATH "btnauto.png"
-#define IMG_MAN IMG_PATH "btnman.png"
-#define IMG_RIGHT_ARROW IMG_PATH "arrrg.png"
-#define IMG_SUMMER_S IMG_PATH "estate_s.png"
-#define IMG_THERMR IMG_PATH "centrale.png"
-#define IMG_OFF_S IMG_PATH "sondaoff.png"
-#define IMG_ANTIFREEZE_S IMG_PATH "sondaantigelo.png"
 
-
-QLabel *getLabelWithPixmap(const char *img, QWidget *parent, int alignment)
+QLabel *getLabelWithPixmap(const QString &img, QWidget *parent, int alignment)
 {
 	QLabel *tmp = new QLabel(parent);
 	tmp->setPixmap(*bt_global::icons_cache.getIcon(img));
 	tmp->setAlignment((Qt::Alignment)alignment);
 	return tmp;
 }
-
-static const char *FANCOIL_ICONS[] = {"fancoil1off.png", "fancoil1on.png", "fancoil2off.png", "fancoil2on.png",
-	"fancoil3off.png", "fancoil3on.png", "fancoilAoff.png", "fancoilAon.png"};
 
 // Helper page for the settings list
 class SettingsPage : public Page
@@ -230,7 +215,7 @@ PageSimpleProbe::PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale s
 	setTemperature(1235);
 	setDescription(n.namedItem("descr").toElement().text());
 
-	createNavigationBar(IMG_MAN);
+	createNavigationBar(bt_global::skin->getImage("probe_manual"));
 	nav_bar->forward_button->hide();
 }
 
@@ -276,6 +261,9 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	setpoint_delay(2000),
 	setpoint_delta(5)
 {
+	probe_icon_auto = bt_global::skin->getImage("probe_auto");
+	probe_icon_manual = bt_global::skin->getImage("probe_manual");
+
 	status = AUTOMATIC;
 	probe_type = thermo_reg->type();
 
@@ -290,7 +278,7 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	QHBoxLayout *hbox = new QHBoxLayout();
 
 	btn_minus = new BtButton(this);
-	btn_minus->setImage(IMG_MINUS);
+	btn_minus->setImage(bt_global::skin->getImage("minus"));
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
@@ -302,15 +290,15 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 	setpoint_label->setProperty("SecondFgColor", true);
 
-	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, Qt::AlignHCenter);
+	icon_antifreeze = getLabelWithPixmap(bt_global::skin->getImage("probe_antifreeze"), this, Qt::AlignHCenter);
 	hbox->addWidget(icon_antifreeze, 1, Qt::AlignCenter);
 
-	icon_off = getLabelWithPixmap(IMG_OFF_S, this, Qt::AlignHCenter);
+	icon_off = getLabelWithPixmap(bt_global::skin->getImage("probe_off"), this, Qt::AlignHCenter);
 	hbox->addWidget(icon_off, 1, Qt::AlignCenter);
 
 	hbox->addWidget(setpoint_label, 1, Qt::AlignVCenter);
 	btn_plus = new BtButton(this);
-	btn_plus->setImage(IMG_PLUS);
+	btn_plus->setImage(bt_global::skin->getImage("plus"));
 	btn_plus->hide();
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
@@ -527,12 +515,12 @@ void PageProbe::status_changed(QList<device_status*> sl)
 				{
 				case device_status_temperature_probe_extra::S_MAN:
 					status = MANUAL;
-					nav_bar->forward_button->setImage(IMG_AUTO);
+					nav_bar->forward_button->setImage(probe_icon_auto);
 					update = true;
 					break;
 				case device_status_temperature_probe_extra::S_AUTO:
 					status = AUTOMATIC;
-					nav_bar->forward_button->setImage(IMG_MAN);
+					nav_bar->forward_button->setImage(probe_icon_manual);
 					update = true;
 					break;
 				case device_status_temperature_probe_extra::S_ANTIGELO:
@@ -581,10 +569,10 @@ PageFancoil::PageFancoil(QDomNode n, temperature_probe_controlled *_dev, Thermal
 void PageFancoil::createFancoilButtons()
 {
 	QHBoxLayout *hbox = new QHBoxLayout();
-	for (int i = 0, id = 0; i < 8; i += 2, ++id)
+	for (int id = 0; id < 4; ++id)
 	{
-		QString path = QString(IMG_PATH) + FANCOIL_ICONS[i];
-		QString path_pressed = QString(IMG_PATH) + FANCOIL_ICONS[i+1];
+		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
+		QString path_pressed = bt_global::skin->getImage(QString("fan_%1_on").arg(id + 1));
 		BtButton *btn = new BtButton(this);
 		btn->setImage(path);
 		btn->setPressedImage(path_pressed);
@@ -676,9 +664,8 @@ PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale sc
 	temp_label->setProperty("SecondFgColor", true);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
-	const QString btn_min_img = QString("%1%2").arg(IMG_PATH).arg("btnmin.png");
 	BtButton *btn = new BtButton(this);
-	btn->setImage(btn_min_img);
+	btn->setImage(bt_global::skin->getImage("minus"));
 	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
@@ -687,9 +674,8 @@ PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale sc
 	hbox->addWidget(temp_label);
 
 	hbox->addStretch(1);
-	const QString btn_plus_img = QString("%1%2").arg(IMG_PATH).arg("btnplus.png");
 	btn = new BtButton(this);
-	btn->setImage(btn_plus_img);
+	btn->setImage(bt_global::skin->getImage("plus"));
 	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
@@ -837,9 +823,8 @@ void PageManualTimed::setMaxMinutes(int max)
 
 PageSetDate::PageSetDate(QWidget *parent) : Page(0), main_layout(this)
 {
-	const QString top_img = QString("%1%2").arg(IMG_PATH).arg("calendario.png");
 	QLabel *top = new QLabel(this);
-	top->setPixmap(*bt_global::icons_cache.getIcon(top_img));
+	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("date_icon")));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	date_edit = new BtDateEdit(this);
@@ -866,9 +851,8 @@ void PageSetDate::performAction()
 
 PageSetTime::PageSetTime(QWidget *parent) : Page(0), main_layout(this)
 {
-	const QString i_top_img = QString("%1%2").arg(IMG_PATH).arg("orologio.png");
 	QLabel *top = new QLabel(this);
-	top->setPixmap(*bt_global::icons_cache.getIcon(i_top_img));
+	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("time_icon")));
 	main_layout.addWidget(top, 0, Qt::AlignHCenter);
 
 	time_edit = new BtTimeEdit(this);
@@ -893,8 +877,21 @@ void PageSetTime::performAction()
 	emit timeSelected(time());
 }
 
+// match the ormer of enum Status in ThermalDevice
+static QString status_icons_ids[ThermalDevice::ST_COUNT] =
+{
+	"regulator_off", "regulator_antifreeze", "regulator_manual", "regulator_manual_timed",
+	"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
+};
+
 PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
 {
+	icon_summer = bt_global::skin->getImage("summer_flat");
+	icon_winter = bt_global::skin->getImage("winter_flat");
+
+	for (int i = 0; i < ThermalDevice::ST_COUNT; ++i)
+		status_icons.append(bt_global::skin->getImage(status_icons_ids[i]));
+
 	conf_root = n;
 
 	// Put a sensible default for the description
@@ -912,9 +909,9 @@ PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
 	description_label->setAlignment(Qt::AlignHCenter);
 	description_label->setProperty("SecondFgColor", true);
 
-	season_icon = getLabelWithPixmap(IMG_SUMMER_S, this, Qt::AlignHCenter);
+	season_icon = getLabelWithPixmap(bt_global::skin->getImage("summer_flat"), this, Qt::AlignHCenter);
 
-	mode_icon = getLabelWithPixmap(IMG_THERMR, this, Qt::AlignHCenter);
+	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
@@ -926,7 +923,7 @@ PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
 	program_choice = 0;
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 
-	createNavigationBar(IMG_SETTINGS);
+	createNavigationBar(bt_global::skin->getImage("settings"));
 	showDescription(description);
 }
 
@@ -951,33 +948,24 @@ void PageTermoReg::status_changed(const StatusList &sl)
 	setSeason(season);
 
 	int status = sl[ThermalDevice::DIM_STATUS].toInt();
+	if (status < status_icons.count())
+		mode_icon->setPixmap(*bt_global::icons_cache.getIcon(status_icons[status]));
+
 	switch (status)
 	{
 	case ThermalDevice::ST_OFF:
 		{
-			QPixmap *icon = bt_global::icons_cache.getIcon(IMG_OFF_S);
-			mode_icon->setPixmap(*icon);
 			hideDescription();
 		}
 		break;
 	case ThermalDevice::ST_PROTECTION:
 		{
-			QPixmap *icon = bt_global::icons_cache.getIcon(IMG_ANTIFREEZE_S);
-			mode_icon->setPixmap(*icon);
 			hideDescription();
 		}
 		break;
 	case ThermalDevice::ST_MANUAL:
 	case ThermalDevice::ST_MANUAL_TIMED:
 		{
-			QString i_img = QString(IMG_PATH);
-			if (status == ThermalDevice::ST_MANUAL)
-				i_img += "manuale.png";
-			else
-				i_img += "manuale_temporizzato.png";
-			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-			mode_icon->setPixmap(*icon);
-
 			unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
 			// remember: stat_var::get_val() returns an int
 			QString description;
@@ -998,10 +986,6 @@ void PageTermoReg::status_changed(const StatusList &sl)
 		break;
 	case ThermalDevice::ST_PROGRAM:
 		{
-			const QString i_img = QString(IMG_PATH) + "settimanale.png";
-			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-			mode_icon->setPixmap(*icon);
-
 			// now search the description in the DOM
 			int program = sl[ThermalDevice::DIM_PROGRAM].toInt();
 			QString description;
@@ -1019,10 +1003,6 @@ void PageTermoReg::status_changed(const StatusList &sl)
 		break;
 	case ThermalDevice::ST_SCENARIO:
 		{
-			const QString i_img = QString(IMG_PATH) + "scenari.png";
-			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-			mode_icon->setPixmap(*icon);
-
 			int scenario = sl[ThermalDevice::DIM_SCENARIO].toInt();
 			QString description;
 			switch (season)
@@ -1039,17 +1019,11 @@ void PageTermoReg::status_changed(const StatusList &sl)
 		break;
 	case ThermalDevice::ST_HOLIDAY:
 		{
-			const QString i_img = QString(IMG_PATH) + "feriale.png";
-			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-			mode_icon->setPixmap(*icon);
 			hideDescription();
 		}
 		break;
 	case ThermalDevice::ST_WEEKEND:
 		{
-			const QString i_img = QString(IMG_PATH) + "festivo.png";
-			QPixmap *icon = bt_global::icons_cache.getIcon(i_img);
-			mode_icon->setPixmap(*icon);
 			hideDescription();
 		}
 		break;
@@ -1062,11 +1036,11 @@ void PageTermoReg::setSeason(int new_season)
 {
 	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
 	{
-		QString img = IMG_PATH;
+		QString img;
 		if (new_season == ThermalDevice::SE_SUMMER)
-			img += "estate_s.png";
+			img = icon_summer;
 		else
-			img += "inverno_s.png";
+			img = icon_winter;
 		QPixmap *icon = bt_global::icons_cache.getIcon(img);
 		season_icon->setPixmap(*icon);
 		program_choice->setSeason(static_cast<Season>(new_season));
@@ -1200,7 +1174,8 @@ void PageTermoReg::manualSettings(SettingsPage *settings, ThermalDevice *dev)
 {
 	// manual banner
 	bannPuls *manual = new bannPuls(settings);
-	manual->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("manuale.png"));
+	manual->SetIcons(bt_global::skin->getImage("forward"), QString(),
+			 bt_global::skin->getImage("regulator_manual"));
 
 	settings->appendBanner(manual);
 
@@ -1221,7 +1196,8 @@ void PageTermoReg::manualSelected(unsigned temp)
 void PageTermoReg::weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
 	bannPuls *weekly = new bannPuls(settings);
-	weekly->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("settimanale.png"));
+	weekly->SetIcons(bt_global::skin->getImage("forward"), QString(),
+			 bt_global::skin->getImage("regulator_program"));
 	settings->appendBanner(weekly);
 
 	program_menu = new WeeklyMenu(0, conf);
@@ -1240,7 +1216,7 @@ void PageTermoReg::weekProgramSelected(int program)
 
 void PageTermoReg::holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
-	banner *bann = createHolidayWeekendBanner(settings, "feriale.png");
+	banner *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"));
 	connect(bann, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
 	if (!date_edit)
 		date_edit = createDateEdit(settings);
@@ -1252,7 +1228,7 @@ void PageTermoReg::holidaySettings(SettingsPage *settings, QDomNode conf, Therma
 
 void PageTermoReg::weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
-	banner *bann = createHolidayWeekendBanner(settings, "festivo.png");
+	banner *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"));
 	connect(bann, SIGNAL(sxClick()), this, SLOT(weekendSettingsStart()));
 	if (!date_edit)
 		date_edit = createDateEdit(settings);
@@ -1265,7 +1241,7 @@ void PageTermoReg::weekendSettings(SettingsPage *settings, QDomNode conf, Therma
 banner *PageTermoReg::createHolidayWeekendBanner(SettingsPage *settings, QString icon)
 {
 	bannPuls *bann = new bannPuls(settings);
-	bann->SetIcons(IMG_RIGHT_ARROW, 0, IMG_PATH + icon);
+	bann->SetIcons(bt_global::skin->getImage("forward"), 0, icon);
 	settings->appendBanner(bann);
 	return bann;
 }
@@ -1343,7 +1319,8 @@ void PageTermoReg4z::timedManualSettings(SettingsPage *settings, ThermalDevice4Z
 {
 	// timed manual banner
 	bannPuls *manual_timed = new bannPuls(settings);
-	manual_timed->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("manuale_temporizzato.png"));
+	manual_timed->SetIcons(bt_global::skin->getImage("forward"), QString(),
+			       bt_global::skin->getImage("regulator_manual_timed"));
 
 	settings->appendBanner(manual_timed);
 
@@ -1365,7 +1342,8 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 void PageTermoReg99z::scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev)
 {
 	bannPuls *scenario = new bannPuls(settings);
-	scenario->SetIcons(IMG_RIGHT_ARROW, QString(), IMG_PATH + QString("scenari.png"));
+	scenario->SetIcons(bt_global::skin->getImage("forward"), QString(),
+			   bt_global::skin->getImage("regulator_scenario"));
 	settings->appendBanner(scenario);
 
 	scenario_menu = new ScenarioMenu(0, conf);
@@ -1385,9 +1363,7 @@ void PageTermoReg99z::scenarioSelected(int scenario)
 
 BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
 {
-	QString i_off = QString("%1%2").arg(IMG_PATH).arg("off.png");
-
-	SetIcons(QString(), QString(), QString(), i_off);
+	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("probe_off"));
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
 	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
@@ -1401,9 +1377,7 @@ void BannOff::performAction()
 
 BannAntifreeze::BannAntifreeze(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
 {
-	QString i_antifreeze = QString("%1%2").arg(IMG_PATH).arg("antigelo.png");
-
-	SetIcons(QString(), QString(), QString(), i_antifreeze);
+	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("regulator_antifreeze"));
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
 	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
@@ -1416,11 +1390,8 @@ void BannAntifreeze::performAction()
 
 BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : bann4But(parent)
 {
-	QString i_summer = QString("%1%2").arg(IMG_PATH).arg("estate.png");
-	QString i_winter = QString("%1%2").arg(IMG_PATH).arg("inverno.png");
-
 	// see banner:195 (don't know why it works, really)
-	SetIcons(QString(), QString(), i_summer, i_winter);
+	SetIcons(QString(), QString(), bt_global::skin->getImage("summer"), bt_global::skin->getImage("winter"));
 	dev = _dev;
 
 	connect(this, SIGNAL(csxClick()), this, SLOT(setWinter()));

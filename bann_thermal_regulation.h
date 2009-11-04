@@ -185,6 +185,7 @@ private:
 	bool isOff, isAntigelo;
 	probe_status status;
 	thermo_type_t probe_type;
+	QString probe_icon_auto, probe_icon_manual;
 
 	/// Time to wait (in msec) before sending a frame when the user presses on plus or minus buttons to modify setpoint temperature
 	/// \sa setpoint
@@ -356,7 +357,8 @@ private:
 	/// Mode icon (off, protection, manual, week program, holiday, weekend)
 	QLabel *mode_icon;
 
-
+	QString icon_summer, icon_winter;
+	QStringList status_icons;
 	QDate date_end;
 	BtTime time_end;
 	PageSetTime *time_edit;
