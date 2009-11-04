@@ -15,6 +15,7 @@
 #include "bann1_button.h"
 #include "content_widget.h"
 #include "navigation_bar.h"
+#include "skinmanager.h"
 
 #include <QVariant>
 #include <QRegExp>
@@ -48,6 +49,8 @@ PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : Page(parent)
 			QString descr = getTextChild(n, "descr");
 			if (descr.isNull())
 				qDebug("[TERMO] PlantMenu::PlantMenu, ``descr'' is null, prepare for strangeness...");
+
+			SkinContext context(getTextChild(n, "cid").toInt());
 
 			int id = n.namedItem("id").toElement().text().toInt();
 			switch (id)
