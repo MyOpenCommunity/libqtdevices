@@ -7,6 +7,7 @@
 #include "xml_functions.h" // getTextChild
 #include "skinmanager.h" // bt_global::skin, SkinContext
 #include "generic_functions.h" // setCfgValue
+#include "navigation_bar.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -73,6 +74,11 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->addRow(tr("DNS"), "");
 	box_text->addRow("", "");
 
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	QHBoxLayout *label_layout = new QHBoxLayout;
 	label_layout->setContentsMargins(5, 0, 5, 0);
 	label_layout->addWidget(box_text);
@@ -86,7 +92,11 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	connect(toggle_btn, SIGNAL(clicked()), SLOT(toggleLan()));
 	main_layout->addWidget(toggle_btn, 0, Qt::AlignHCenter);
 
-	addBackButton();
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	buildPage(content, nav_bar);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
@@ -104,7 +114,7 @@ void LanSettings::inizializza()
 void LanSettings::showPage()
 {
 	requestNetworkInfo(dev);
-	PageLayout::showPage();
+	Page::showPage();
 }
 
 void LanSettings::toggleLan()
