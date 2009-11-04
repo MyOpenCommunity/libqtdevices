@@ -78,7 +78,7 @@ private:
  * This class emits a signal when a program is clicked. This signal should be used to close
  * the submenu and to take further action, for example sending a frame to the thermal regulator.
  */
-class ProgramMenu : public sottoMenu
+class ProgramMenu : public BannerPage
 {
 Q_OBJECT
 public:

@@ -116,9 +116,10 @@ void ThermalMenu::showPage()
 }
 
 
-ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent)
+ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : BannerPage(parent)
 {
 	conf_root = conf;
+	buildPage();
 }
 
 void ProgramMenu::setSeason(Season new_season)
@@ -146,7 +147,7 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 		"'what' must be either 'prog' or 'scen'");
 
 	bool create_banner = false;
-	if (elencoBanner.isEmpty())
+	if (page_content->bannerCount() == 0)
 		create_banner = true;
 
 	const QString i_ok = QString(IMG_PATH) + "btnok.png";
@@ -166,18 +167,19 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 		if (create_banner)
 		{
 			bp = new BannWeekly(this);
-			elencoBanner.append(bp);
+			page_content->appendBanner(bp);
 			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
 		}
-		if (index >= elencoBanner.size())
+		if (index >= page_content->bannerCount())
 		{
 			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number \
 of programs between summer and winter");
 			break;
 		}
-		bp = static_cast<BannWeekly*>(elencoBanner[index]);
+		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
 		++index;
 		bp->SetIcons(i_ok, QString(), icon);
+		bp->Draw();
 		// set Text taken from conf.xml
 		if (node.isElement())
 		{
