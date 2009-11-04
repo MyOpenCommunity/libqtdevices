@@ -303,10 +303,10 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	setpoint_label->setProperty("SecondFgColor", true);
 
 	icon_antifreeze = getLabelWithPixmap(IMG_ANTIFREEZE_S, this, Qt::AlignHCenter);
-	hbox->addWidget(icon_antifreeze);
+	hbox->addWidget(icon_antifreeze, 1, Qt::AlignCenter);
 
 	icon_off = getLabelWithPixmap(IMG_OFF_S, this, Qt::AlignHCenter);
-	hbox->addWidget(icon_off);
+	hbox->addWidget(icon_off, 1, Qt::AlignCenter);
 
 	hbox->addWidget(setpoint_label, 1, Qt::AlignVCenter);
 	btn_plus = new BtButton(this);
