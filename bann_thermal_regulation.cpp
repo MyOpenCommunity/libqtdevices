@@ -168,14 +168,9 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 NavigationPage::NavigationPage(QWidget *parent)
 	: Page(0), nav_bar(0)
 {
+	content.setLayout(&main_layout);
 	main_layout.setSpacing(0);
 	main_layout.setContentsMargins(0, 0, 0, 0);
-
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 5, 0, 10);
-	l->setSpacing(0);
-
-	l->addLayout(&main_layout, 1);
 }
 
 NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
@@ -189,7 +184,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	layout()->addWidget(nav_bar);
+	buildPage(&content, nav_bar);
 
 	return nav_bar;
 }

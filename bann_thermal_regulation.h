@@ -103,6 +103,8 @@ signals:
 	void downClick();
 
 protected:
+	/// Content widget
+	QWidget content;
 	/// Global layout for the content
 	QVBoxLayout main_layout;
 	/// Navigation bar
