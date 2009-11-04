@@ -7,7 +7,7 @@ class TransitionWidget;
 class Page;
 
 
-class MainWindow : protected QStackedWidget
+class MainWindow : public QStackedWidget
 {
 Q_OBJECT
 public:
