@@ -87,6 +87,7 @@ public:
 	virtual void createWinterBanners() = 0;
 	void setSeason(Season new_season);
 protected:
+	QString summer_icon, winter_icon;
 	int season;
 	QDomNode conf_root;
 	/**

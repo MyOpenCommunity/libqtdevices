@@ -17,6 +17,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannfrecce.h"
 #include "content_widget.h" // content_widget
+#include "skinmanager.h"
 
 #include <QRegExp>
 #include <QDebug>
@@ -150,8 +151,6 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 	if (page_content->bannerCount() == 0)
 		create_banner = true;
 
-	const QString i_ok = QString(IMG_PATH) + "btnok.png";
-
 	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
 	{
 		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
@@ -178,7 +177,7 @@ of programs between summer and winter");
 		}
 		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
 		++index;
-		bp->SetIcons(i_ok, QString(), icon);
+		bp->SetIcons(bt_global::skin->getImage("ok"), QString(), icon);
 		bp->Draw();
 		// set Text taken from conf.xml
 		if (node.isElement())
@@ -193,37 +192,37 @@ of programs between summer and winter");
 
 WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
 {
+	summer_icon = bt_global::skin->getImage("summer_program");
+	winter_icon = bt_global::skin->getImage("winter_program");
 	season = SUMMER;
 	createSummerBanners();
 }
 
 void WeeklyMenu::createSummerBanners()
 {
-	const QString i_central = QString(IMG_PATH) + "programma_estivo.png";
-	createSeasonBanner("summer", "prog", i_central);
+	createSeasonBanner("summer", "prog", summer_icon);
 }
 
 void WeeklyMenu::createWinterBanners()
 {
-	const QString i_central = QString(IMG_PATH) + "programma_invernale.png";
-	createSeasonBanner("winter", "prog", i_central);
+	createSeasonBanner("winter", "prog", winter_icon);
 }
 
 ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
 {
+	summer_icon = bt_global::skin->getImage("summer_scenario");
+	winter_icon = bt_global::skin->getImage("winter_scenario");
 	season = SUMMER;
 	createSummerBanners();
 }
 
 void ScenarioMenu::createSummerBanners()
 {
-	const QString i_central = QString(IMG_PATH) + "scenario_estivo.png";
-	createSeasonBanner("summer", "scen", i_central);
+	createSeasonBanner("summer", "scen", summer_icon);
 
 }
 
 void ScenarioMenu::createWinterBanners()
 {
-	const QString i_central = QString(IMG_PATH) + "scenario_invernale.png";
-	createSeasonBanner("winter", "scen", i_central);
+	createSeasonBanner("winter", "scen", winter_icon);
 }
