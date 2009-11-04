@@ -1363,7 +1363,7 @@ void PageTermoReg99z::scenarioSelected(int scenario)
 
 BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
 {
-	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("probe_off"));
+	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("regulator_off"));
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
 	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
