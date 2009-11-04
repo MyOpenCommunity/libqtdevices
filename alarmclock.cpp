@@ -515,7 +515,8 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	edit = new BtTimeEdit(this);
 	edit->setTime(alarm_page->alarmTime);
 
-	QVBoxLayout *l = new QVBoxLayout(this);
+	QWidget *content = new QWidget;
+	QVBoxLayout *l = new QVBoxLayout(content);
 	QHBoxLayout *r = new QHBoxLayout;
 
 	r->addSpacing(40);
@@ -526,13 +527,11 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	l->addWidget(icon, 0, Qt::AlignHCenter);
 	l->addSpacing(10);
 	l->addLayout(r);
-	l->addWidget(navigation);
-
-	l->setContentsMargins(0, 10, 0, 10);
-	l->setSpacing(0);
 
 	connect(navigation, SIGNAL(forwardClicked()), alarm_page, SLOT(showTypePage()));
 	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
+
+	buildPage(content, navigation);
 }
 
 QTime AlarmClockTime::getAlarmTime() const
