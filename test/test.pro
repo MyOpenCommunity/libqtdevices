@@ -21,6 +21,7 @@ TEMPLATE = app
 LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 HEADERS += device_tester.h \
+           test_alarmsounddiff_device.h \
            test_automation_device.h \
            test_checkaddress.h \
            test_dev_automation.h \
@@ -33,6 +34,7 @@ HEADERS += device_tester.h \
            test_pull_manager.h \
            test_thermal_device.h \
            openserver_mock.h \
+           ../alarmsounddiff_device.h \
            ../energy_device.h \
            ../lighting_device.h \
            ../poweramplifier_device.h \
@@ -52,6 +54,7 @@ HEADERS += device_tester.h \
 
 SOURCES += test_main.cpp \
            device_tester.cpp \
+           test_alarmsounddiff_device.cpp \
            test_automation_device.cpp \
            test_checkaddress.cpp \
            test_dev_automation.cpp \
@@ -64,6 +67,7 @@ SOURCES += test_main.cpp \
            test_pull_manager.cpp \
            test_thermal_device.cpp \
            openserver_mock.cpp \
+           ../alarmsounddiff_device.cpp \
            ../energy_device.cpp \
            ../lighting_device.cpp \
            ../poweramplifier_device.cpp \

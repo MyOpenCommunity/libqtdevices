@@ -11,6 +11,7 @@
 #include "test_scenario_device.h"
 #include "test_thermal_device.h"
 #include "test_pull_manager.h"
+#include "test_alarmsounddiff_device.h"
 
 
 // This empty function is required because frame_interpreter use a rearmWDT
@@ -63,6 +64,9 @@ int main(int argc, char *argv[])
 
 	TestThermalDevice99Zones test_thermal_regulator_99zones_device;
 	test_list << &test_thermal_regulator_99zones_device;
+
+	TestAlarmSoundDiffDevice test_alarm_sound_diff_device;
+	test_list << &test_alarm_sound_diff_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
