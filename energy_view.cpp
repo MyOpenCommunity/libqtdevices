@@ -384,6 +384,7 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
+	time_period->forceDate(QDate::currentDate());
 	// switch back to raw data visualization if currency is not supported
 	if (EnergyInterface::isCurrencyView() && currency_symbol.isNull())
 		EnergyInterface::toggleCurrencyView();
