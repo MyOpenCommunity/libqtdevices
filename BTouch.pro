@@ -58,6 +58,7 @@ QMAKE_CXXFLAGS_RELEASE += -O3
 # Input
 HEADERS += actuators.h \
            alarmclock.h \
+           alarmsounddiff_device.h \
            allarme.h \
            ambdiffson.h \
            amplificatori.h \
@@ -165,6 +166,7 @@ HEADERS += actuators.h \
 
 SOURCES += actuators.cpp \
            alarmclock.cpp \
+           alarmsounddiff_device.cpp \
            allarme.cpp \
            ambdiffson.cpp \
            amplificatori.cpp \
