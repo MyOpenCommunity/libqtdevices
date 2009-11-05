@@ -1,6 +1,8 @@
 #include "alarmsounddiff_device.h"
 #include "hardware_functions.h" // AMPLI_NUM
 
+#define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
+
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice()
 	: device("22", "")
@@ -14,7 +16,7 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 	activateSource(source);
 
 	bool environments[AMPLI_NUM / 10 + 1];
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < ARRAY_SIZE(environments); ++i)
 		environments[i] = false;
 
 	for (int amplifier = 0; amplifier < AMPLI_NUM; ++amplifier)
@@ -23,7 +25,6 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 			continue;
 
 		int environment = amplifier / 10;
-		// TODO check why original code only sent the frame for some environments
 		if (environment > 0 && environment < 9)
 			if (!environments[environment])
 				activateEnvironment(environment, source);
