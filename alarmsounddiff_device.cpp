@@ -1,6 +1,11 @@
 #include "alarmsounddiff_device.h"
 #include "hardware_functions.h" // AMPLI_NUM
 
+#include <stdlib.h> // atoi
+#include <openmsg.h>
+
+#include <QStringList>
+
 #define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
 
 
@@ -79,4 +84,71 @@ void AlarmSoundDiffDevice::amplifierOff(int environment, int amplifier)
 {
 	QString f = QString("*22*0#4#%1*3#%1#%2##").arg(environment).arg(amplifier);
 	sendFrame(f);
+}
+
+void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
+{
+	int where = msg.where();
+	int what = msg.what();
+
+	StatusList sl;
+
+	if (where == 2)
+	{
+		if (what == 5)
+		{
+			// got active source, request radio station
+			QStringList l = QString(msg.Extract_grandezza()).split('#');
+			if (l.size() != 3)
+				return;
+
+			int source = l[2].toInt();
+
+			sl[DIM_SOURCE] = source;
+
+			// request the radio station to check if the source is a radio
+			QString f = QString("*#22*2#%1*11##").arg(source);
+			sendFrame(f);
+		}
+		else if (what == 11)
+		{
+			// got radio station
+			int station = msg.whatArgN(2);
+
+			sl[DIM_RADIO_STATION] = station;
+		}
+	}
+	else if (where == 3)
+	{
+		if (msg.whereArgCnt() != 2)
+			return;
+		// int environment = atoi(msg.whereArg(0).c_str());
+		int amplifier = atoi(msg.whereArg(1).c_str());
+
+		if (what == 12)
+		{
+			// got on/off state
+			int state = msg.whatArgN(0);
+
+			// if we got an "on" state, wait for the volume to emit the
+			// status_changed notification
+			if (state == 0)
+			{
+				sl[DIM_AMPLIFIER] = amplifier;
+				sl[DIM_STATUS] = false;
+			}
+		}
+		else if (what == 1)
+		{
+			// got the volume
+			int volume = msg.whatArgN(0);
+
+			sl[DIM_AMPLIFIER] = amplifier;
+			sl[DIM_STATUS] = true;
+			sl[DIM_VOLUME] = volume;
+		}
+	}
+
+	if (sl.count() > 0)
+		emit status_changed(sl);
 }

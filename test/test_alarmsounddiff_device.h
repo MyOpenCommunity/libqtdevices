@@ -20,6 +20,12 @@ private slots:
 	void sendAmplifierOn();
 	void sendAmplifierOff();
 
+	void receiveStatusOn();
+	void receiveVolume();
+	void receiveStatusOff();
+	void receiveSource();
+	void receiveRadioStation();
+
 private:
 	AlarmSoundDiffDevice *dev;
 };

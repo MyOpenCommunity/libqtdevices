@@ -9,10 +9,23 @@ class AlarmSoundDiffDevice : public device
 friend class TestAlarmSoundDiffDevice;
 Q_OBJECT
 public:
+
+	enum Type
+	{
+		DIM_AMPLIFIER = 1,
+		DIM_STATUS = 2,
+		DIM_VOLUME = 3,
+		DIM_SOURCE = 4,
+		DIM_RADIO_STATION = 5
+	};
+
 	AlarmSoundDiffDevice();
 
 	void startAlarm(int source, int radio_station, int *alarmVolumes);
 	void stopAlarm(int source, int *alarmVolumes);
+
+protected:
+	virtual void manageFrame(OpenMsg &msg);
 
 private:
 	void setRadioStation(int source, int radio_station);
