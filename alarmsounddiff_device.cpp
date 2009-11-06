@@ -10,8 +10,13 @@
 
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice()
-	: device("22", "")
+	: device("22", ""), receive_frames(false)
 {
+}
+
+void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
+{
+	receive_frames = receive;
 }
 
 void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmVolumes)
@@ -88,6 +93,9 @@ void AlarmSoundDiffDevice::amplifierOff(int environment, int amplifier)
 
 void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 {
+	if (!receive_frames)
+		return;
+
 	int where = msg.where();
 	int what = msg.what();
 
