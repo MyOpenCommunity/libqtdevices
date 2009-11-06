@@ -26,6 +26,7 @@ class QTimer;
 class AlarmClockTime;
 class AlarmClockFreq;
 class AlarmClockSoundDiff;
+class AlarmSoundDiffDevice;
 class SingleChoiceContent;
 
 
@@ -36,7 +37,7 @@ class SingleChoiceContent;
   \author Davide
   \date lug 2005
 */
-class AlarmClock : public Page, FrameReceiver
+class AlarmClock : public Page
 {
 	friend class AlarmClockTime;
 	friend class AlarmClockFreq;
@@ -72,8 +73,6 @@ public:
 */
 	void inizializza();
 
-	virtual void manageFrame(OpenMsg &msg);
-
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
 */
@@ -106,6 +105,8 @@ public slots:
   \brief Show the sound diffusion page.
 */
 	void showSoundDiffPage();
+
+	void status_changed(const StatusList &sl);
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
@@ -157,11 +158,12 @@ private:
 	unsigned int contaBuzzer;
 	QTime alarmTime;
 	int volSveglia[AMPLI_NUM];
-	bool gesFrameAbil, active;
+	bool active;
 	QTimer *minuTimer,*aumVolTimer;
 	AlarmClockTime *alarm_time;
 	AlarmClockFreq *alarm_type;
 	AlarmClockSoundDiff *alarm_sound_diff;
+	AlarmSoundDiffDevice *dev;
 
 signals:
 	void alarmClockFired();
