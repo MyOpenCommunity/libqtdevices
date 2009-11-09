@@ -376,6 +376,11 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	QVBoxLayout *l = new QVBoxLayout(content);
 	QHBoxLayout *r = new QHBoxLayout;
 
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	r->setContentsMargins(0, 0, 0, 0);
+	r->setSpacing(0);
+
 	r->addSpacing(40);
 	r->addWidget(edit);
 	r->addSpacing(40);
