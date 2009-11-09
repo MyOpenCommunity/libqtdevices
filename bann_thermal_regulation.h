@@ -94,13 +94,13 @@ Q_OBJECT
 public:
 	NavigationPage(QWidget *parent);
 
-protected:
-	NavigationBar *createNavigationBar(const QString &forwardicon = QString());
-
 signals:
 	void backClick();
 	void upClick();
 	void downClick();
+
+protected:
+	NavigationBar *createNavigationBar(const QString &forwardicon = QString());
 
 protected:
 	/// Content widget
