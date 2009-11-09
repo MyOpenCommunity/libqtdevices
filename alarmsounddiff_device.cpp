@@ -103,24 +103,24 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 
 	StatusList sl;
 
-	if (where == 2)
+	if (where == 5)
 	{
-		if (what == 5)
-		{
-			// got active source, request radio station
-			QStringList l = QString(msg.Extract_grandezza()).split('#');
-			if (l.size() != 3)
-				return;
+		// got active source, request radio station
+		QStringList l = QString(msg.whereFull().c_str()).split('#');
+		if (l.size() != 3)
+			return;
 
-			int source = l[2].toInt();
+		int source = l[2].toInt();
 
-			sl[DIM_SOURCE] = source;
+		sl[DIM_SOURCE] = source;
 
-			// request the radio station to check if the source is a radio
-			QString f = QString("*#22*2#%1*11##").arg(source);
-			sendFrame(f);
-		}
-		else if (what == 11)
+		// request the radio station to check if the source is a radio
+		QString f = QString("*#22*2#%1*11##").arg(source);
+		sendInit(f);
+	}
+	else if (where == 2)
+	{
+		if (what == 11)
 		{
 			// got radio station
 			int station = msg.whatArgN(2);
